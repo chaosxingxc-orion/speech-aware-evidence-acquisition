@@ -3913,3 +3913,26 @@ tests are engineering evidence only.
 and its draft budgets do not lift the owner GPU hold or authorize a successor.
 Fresh model-facing plans, exposure rows, fit bindings and explicit owner resume
 remain required before contact.
+
+
+### 2026-09-15: ordered-action attribution source-read extension
+
+Before extracting full expected/predicted tool-name sequences, root registers
+[the ordered-action read intent](readiness/2026-09-15-a2t-ordered-action-analysis-read-intent-v1.json),
+SHA-256 bb6d7cdc2b3b5d733c41c2943a04e092e3a4b8df681432acca2ac9eaf8adac86. It permits only the pinned first finalized score artifacts
+and already released candidate/metadata projections. No dataset reference file is
+admitted by this initial source release. If full sequences are absent, bind another
+source separately before reading it.
+
+This is a post-hoc descriptive attribution after the prior paired verdict, not a
+new effectiveness test. Preserve repeated action occurrences, distinguish union,
+one-to-one unordered, order-preserving and strict positional compatibility, retain
+unavailable states, and keep official scores and the held scope-tools configuration
+unchanged. No scoring, generation, tokenizer, encoder, GPU or runtime-knowledge
+mutation is authorized or performed.
+
+### 2026-09-15: ordered-action reference read extension
+
+At 2026-09-15T14:10:44.499418+00:00, root bound the original scorer-side reference manifests and sealed final outputs before projecting full ordered tool-name occurrences. [Read extension](readiness/2026-09-15-a2t-ordered-action-reference-read-extension-v1.json), SHA-256 b98479f4bf137b653bf0f21a5bbd5f24dd5cdfad81c4250bae40e9cba9146baa, follows the score-only intent whose saved metrics lack full sequences. Retain the exact4000 discovery roster, repeated names and reference-list order; report compatibility with the scorer reference order, not proven speech chronology. Reuse the pinned a2t-gold-v1 and output parser, crosscheck saved primary/ordered/multiset facts, and never rerun scoring. Do not extract or inspect out-of-roster labels, read transcripts into reports, alter held scope-tools prompts/gates, or write references into runtime knowledge. All GPU/model/tokenizer/encoder/scorer contacts remain zero; the owner hold remains active.
+
+The registered ordered-action projection completed once on all4000 IDs. Shared reference/output parser code matches both frozen runtime commits, and every primary-name, parsed, ordered-name and multiset-name check agrees with the two first scores. [The aggregate report](results/2026-09-15-a2t-ordered-action-attribution-v1.md) closes the deferred full-sequence analysis as post-hoc descriptive evidence. External report SHA-256 17d0aafc9964ef69e8352ed5c735ebf53347d450b1d61d7aff91c718875029ed; projected rows SHA-256 ab3ecbb963a3f3c71fee38bacb724557b400268ebe32a283f8419f237eeb4106; root verification SHA-256 70efc762297bb73fde8497600ad6875ed5718723506152070107ff196185bae5. Preserve old primary coverage72.05%, old outcome/decision bytes and the held scope-tools configuration. No contact authority or new GPU work is introduced.

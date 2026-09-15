@@ -1,0 +1,4699 @@
+{
+  "analysis_id": "SAEA-A2T-ORDERED-ACTION-ATTRIBUTION-V1",
+  "by_candidate_action_count": {
+    "0": {
+      "candidate_action_count": 0,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 31,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 32,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 0,
+        "total": 32,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 0,
+        "strict_one_for_one": 0,
+        "union": 0,
+        "unordered_one_to_one": 0
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.0,
+        "strict_one_for_one": 0.0,
+        "union": 0.0,
+        "unordered_one_to_one": 0.0
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 0,
+        "strict_same_position_match_count": 0,
+        "union_coverage_count": 0,
+        "unordered_one_to_one_match_count": 0
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.0,
+        "strict_same_position_match_count": 0.0,
+        "union_coverage_count": 0.0,
+        "unordered_one_to_one_match_count": 0.0
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "official_tool": {
+            "count": 8.0,
+            "rate": 0.25806451612903225
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 8.0,
+            "rate": 0.25806451612903225
+          },
+          "repo_ordered_tool": {
+            "count": 8.0,
+            "rate": 0.25806451612903225
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "official_tool": {
+            "count": 2.0,
+            "rate": 0.06451612903225806
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 2.0,
+            "rate": 0.06451612903225806
+          },
+          "repo_ordered_tool": {
+            "count": 2.0,
+            "rate": 0.06451612903225806
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.0,
+        "official_tool": -0.1935483870967742,
+        "repo_exact": 0.0,
+        "repo_multiset_tool": -0.1935483870967742,
+        "repo_ordered_tool": -0.1935483870967742
+      },
+      "reference_occurrence_count": 32,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 31,
+      "strict_position_reference_matches": 0,
+      "unknown_reference_occurrences": 0
+    },
+    "1": {
+      "candidate_action_count": 2445,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 2445,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 603,
+        "action_capacity_or_grouping": 9,
+        "order_incompatibility": 0,
+        "strict_position": 14,
+        "total": 626,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 1837,
+        "strict_one_for_one": 1837,
+        "union": 1846,
+        "unordered_one_to_one": 1837
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.7513292433537833,
+        "strict_one_for_one": 0.7513292433537833,
+        "union": 0.7550102249488753,
+        "unordered_one_to_one": 0.7513292433537833
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 1862,
+        "strict_same_position_match_count": 1848,
+        "union_coverage_count": 1871,
+        "unordered_one_to_one_match_count": 1862
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.7526273241713823,
+        "strict_same_position_match_count": 0.7469684721099434,
+        "union_coverage_count": 0.7562651576394502,
+        "unordered_one_to_one_match_count": 0.7526273241713823
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 469.0,
+            "rate": 0.1918200408997955
+          },
+          "official_tool": {
+            "count": 1626.0,
+            "rate": 0.6650306748466258
+          },
+          "repo_exact": {
+            "count": 494.0,
+            "rate": 0.20204498977505111
+          },
+          "repo_multiset_tool": {
+            "count": 1622.0,
+            "rate": 0.6633946830265849
+          },
+          "repo_ordered_tool": {
+            "count": 1620.0,
+            "rate": 0.6625766871165644
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 570.0,
+            "rate": 0.2331288343558282
+          },
+          "official_tool": {
+            "count": 1570.0,
+            "rate": 0.6421267893660532
+          },
+          "repo_exact": {
+            "count": 625.0,
+            "rate": 0.2556237218813906
+          },
+          "repo_multiset_tool": {
+            "count": 1560.0,
+            "rate": 0.6380368098159509
+          },
+          "repo_ordered_tool": {
+            "count": 1557.0,
+            "rate": 0.6368098159509202
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.041308793456032694,
+        "official_tool": -0.02290388548057265,
+        "repo_exact": 0.05357873210633948,
+        "repo_multiset_tool": -0.025357873210633985,
+        "repo_ordered_tool": -0.025766871165644134
+      },
+      "reference_occurrence_count": 2474,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 2445,
+      "strict_position_reference_matches": 1848,
+      "unknown_reference_occurrences": 0
+    },
+    "2": {
+      "candidate_action_count": 2064,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 1032,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 503,
+        "action_capacity_or_grouping": 32,
+        "order_incompatibility": 47,
+        "strict_position": 189,
+        "total": 771,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 554,
+        "strict_one_for_one": 285,
+        "union": 622,
+        "unordered_one_to_one": 598
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.5368217054263565,
+        "strict_one_for_one": 0.2761627906976744,
+        "union": 0.6027131782945736,
+        "unordered_one_to_one": 0.5794573643410853
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 1148,
+        "strict_same_position_match_count": 959,
+        "union_coverage_count": 1227,
+        "unordered_one_to_one_match_count": 1195
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.6635838150289017,
+        "strict_same_position_match_count": 0.554335260115607,
+        "union_coverage_count": 0.7092485549132947,
+        "unordered_one_to_one_match_count": 0.6907514450867052
+      },
+      "official_expected_count_differs": 4,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 199.0,
+            "rate": 0.1928294573643411
+          },
+          "official_tool": {
+            "count": 607.0,
+            "rate": 0.5881782945736435
+          },
+          "repo_exact": {
+            "count": 80.0,
+            "rate": 0.07751937984496124
+          },
+          "repo_multiset_tool": {
+            "count": 427.0,
+            "rate": 0.41375968992248063
+          },
+          "repo_ordered_tool": {
+            "count": 401.0,
+            "rate": 0.38856589147286824
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 234.0,
+            "rate": 0.22674418604651161
+          },
+          "official_tool": {
+            "count": 545.0,
+            "rate": 0.5281007751937985
+          },
+          "repo_exact": {
+            "count": 95.0,
+            "rate": 0.09205426356589147
+          },
+          "repo_multiset_tool": {
+            "count": 401.0,
+            "rate": 0.38856589147286824
+          },
+          "repo_ordered_tool": {
+            "count": 361.0,
+            "rate": 0.3498062015503876
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.03391472868217052,
+        "official_tool": -0.06007751937984496,
+        "repo_exact": 0.01453488372093023,
+        "repo_multiset_tool": -0.025193798449612392,
+        "repo_ordered_tool": -0.038759689922480633
+      },
+      "reference_occurrence_count": 1730,
+      "repeated_reference_names_samples": 14,
+      "sample_count": 1032,
+      "strict_position_reference_matches": 959,
+      "unknown_reference_occurrences": 0
+    },
+    "3": {
+      "candidate_action_count": 1035,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 345,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 270,
+        "action_capacity_or_grouping": 10,
+        "order_incompatibility": 14,
+        "strict_position": 96,
+        "total": 390,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 132,
+        "strict_one_for_one": 83,
+        "union": 150,
+        "unordered_one_to_one": 144
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.3826086956521739,
+        "strict_one_for_one": 0.24057971014492754,
+        "union": 0.43478260869565216,
+        "unordered_one_to_one": 0.41739130434782606
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 587,
+        "strict_same_position_match_count": 491,
+        "union_coverage_count": 611,
+        "unordered_one_to_one_match_count": 601
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.6662883087400681,
+        "strict_same_position_match_count": 0.5573212258796821,
+        "union_coverage_count": 0.6935300794551645,
+        "unordered_one_to_one_match_count": 0.6821793416572077
+      },
+      "official_expected_count_differs": 4,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 60.0,
+            "rate": 0.17391304347826086
+          },
+          "official_tool": {
+            "count": 186.0,
+            "rate": 0.5391304347826087
+          },
+          "repo_exact": {
+            "count": 6.0,
+            "rate": 0.017391304347826087
+          },
+          "repo_multiset_tool": {
+            "count": 90.0,
+            "rate": 0.2608695652173913
+          },
+          "repo_ordered_tool": {
+            "count": 82.0,
+            "rate": 0.23768115942028986
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 84.0,
+            "rate": 0.24347826086956523
+          },
+          "official_tool": {
+            "count": 177.0,
+            "rate": 0.5130434782608696
+          },
+          "repo_exact": {
+            "count": 17.0,
+            "rate": 0.04927536231884058
+          },
+          "repo_multiset_tool": {
+            "count": 84.0,
+            "rate": 0.24347826086956523
+          },
+          "repo_ordered_tool": {
+            "count": 77.0,
+            "rate": 0.22318840579710145
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.06956521739130436,
+        "official_tool": -0.02608695652173909,
+        "repo_exact": 0.0318840579710145,
+        "repo_multiset_tool": -0.01739130434782607,
+        "repo_ordered_tool": -0.014492753623188415
+      },
+      "reference_occurrence_count": 881,
+      "repeated_reference_names_samples": 8,
+      "sample_count": 345,
+      "strict_position_reference_matches": 491,
+      "unknown_reference_occurrences": 0
+    },
+    "4": {
+      "candidate_action_count": 248,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 62,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 62,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 5,
+        "strict_position": 30,
+        "total": 97,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 20,
+        "strict_one_for_one": 2,
+        "union": 21,
+        "unordered_one_to_one": 21
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.3225806451612903,
+        "strict_one_for_one": 0.03225806451612903,
+        "union": 0.3387096774193548,
+        "unordered_one_to_one": 0.3387096774193548
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 101,
+        "strict_same_position_match_count": 71,
+        "union_coverage_count": 106,
+        "unordered_one_to_one_match_count": 106
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.6011904761904762,
+        "strict_same_position_match_count": 0.4226190476190476,
+        "union_coverage_count": 0.6309523809523809,
+        "unordered_one_to_one_match_count": 0.6309523809523809
+      },
+      "official_expected_count_differs": 2,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 7.0,
+            "rate": 0.11290322580645161
+          },
+          "official_tool": {
+            "count": 29.0,
+            "rate": 0.46774193548387094
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 9.0,
+            "rate": 0.14516129032258066
+          },
+          "repo_ordered_tool": {
+            "count": 9.0,
+            "rate": 0.14516129032258066
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 8.0,
+            "rate": 0.12903225806451613
+          },
+          "official_tool": {
+            "count": 27.0,
+            "rate": 0.43548387096774194
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 7.0,
+            "rate": 0.11290322580645161
+          },
+          "repo_ordered_tool": {
+            "count": 7.0,
+            "rate": 0.11290322580645161
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.016129032258064516,
+        "official_tool": -0.032258064516129004,
+        "repo_exact": 0.0,
+        "repo_multiset_tool": -0.032258064516129045,
+        "repo_ordered_tool": -0.032258064516129045
+      },
+      "reference_occurrence_count": 168,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 62,
+      "strict_position_reference_matches": 71,
+      "unknown_reference_occurrences": 0
+    },
+    "5": {
+      "candidate_action_count": 85,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 17,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 19,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 16,
+        "total": 35,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 7,
+        "strict_one_for_one": 0,
+        "union": 7,
+        "unordered_one_to_one": 7
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.4117647058823529,
+        "strict_one_for_one": 0.0,
+        "union": 0.4117647058823529,
+        "unordered_one_to_one": 0.4117647058823529
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 30,
+        "strict_same_position_match_count": 14,
+        "union_coverage_count": 30,
+        "unordered_one_to_one_match_count": 30
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.6122448979591837,
+        "strict_same_position_match_count": 0.2857142857142857,
+        "union_coverage_count": 0.6122448979591837,
+        "unordered_one_to_one_match_count": 0.6122448979591837
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 1.0,
+            "rate": 0.058823529411764705
+          },
+          "official_tool": {
+            "count": 5.0,
+            "rate": 0.29411764705882354
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 2.0,
+            "rate": 0.11764705882352941
+          },
+          "repo_ordered_tool": {
+            "count": 2.0,
+            "rate": 0.11764705882352941
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 3.0,
+            "rate": 0.17647058823529413
+          },
+          "official_tool": {
+            "count": 6.0,
+            "rate": 0.35294117647058826
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_ordered_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.11764705882352942,
+        "official_tool": 0.05882352941176472,
+        "repo_exact": 0.0,
+        "repo_multiset_tool": -0.11764705882352941,
+        "repo_ordered_tool": -0.11764705882352941
+      },
+      "reference_occurrence_count": 49,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 17,
+      "strict_position_reference_matches": 14,
+      "unknown_reference_occurrences": 0
+    },
+    "6": {
+      "candidate_action_count": 48,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 8,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 9,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 3,
+        "total": 12,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 2,
+        "strict_one_for_one": 0,
+        "union": 2,
+        "unordered_one_to_one": 2
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.25,
+        "strict_one_for_one": 0.0,
+        "union": 0.25,
+        "unordered_one_to_one": 0.25
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 8,
+        "strict_same_position_match_count": 5,
+        "union_coverage_count": 8,
+        "unordered_one_to_one_match_count": 8
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.47058823529411764,
+        "strict_same_position_match_count": 0.29411764705882354,
+        "union_coverage_count": 0.47058823529411764,
+        "unordered_one_to_one_match_count": 0.47058823529411764
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "official_tool": {
+            "count": 1.0,
+            "rate": 0.125
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 1.0,
+            "rate": 0.125
+          },
+          "repo_ordered_tool": {
+            "count": 1.0,
+            "rate": 0.125
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "official_tool": {
+            "count": 3.0,
+            "rate": 0.375
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 2.0,
+            "rate": 0.25
+          },
+          "repo_ordered_tool": {
+            "count": 2.0,
+            "rate": 0.25
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.0,
+        "official_tool": 0.25,
+        "repo_exact": 0.0,
+        "repo_multiset_tool": 0.125,
+        "repo_ordered_tool": 0.125
+      },
+      "reference_occurrence_count": 17,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 8,
+      "strict_position_reference_matches": 5,
+      "unknown_reference_occurrences": 0
+    },
+    "7": {
+      "candidate_action_count": 35,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 5,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 5,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 1,
+        "total": 6,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 0,
+        "strict_one_for_one": 0,
+        "union": 0,
+        "unordered_one_to_one": 0
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.0,
+        "strict_one_for_one": 0.0,
+        "union": 0.0,
+        "unordered_one_to_one": 0.0
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 1,
+        "strict_same_position_match_count": 0,
+        "union_coverage_count": 1,
+        "unordered_one_to_one_match_count": 1
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.16666666666666666,
+        "strict_same_position_match_count": 0.0,
+        "union_coverage_count": 0.16666666666666666,
+        "unordered_one_to_one_match_count": 0.16666666666666666
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "official_tool": {
+            "count": 1.0,
+            "rate": 0.2
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_ordered_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "official_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_ordered_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.0,
+        "official_tool": -0.2,
+        "repo_exact": 0.0,
+        "repo_multiset_tool": 0.0,
+        "repo_ordered_tool": 0.0
+      },
+      "reference_occurrence_count": 6,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 5,
+      "strict_position_reference_matches": 0,
+      "unknown_reference_occurrences": 0
+    },
+    "8": {
+      "candidate_action_count": 432,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 54,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 40,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 17,
+        "total": 57,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 15,
+        "strict_one_for_one": 0,
+        "union": 15,
+        "unordered_one_to_one": 15
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.2777777777777778,
+        "strict_one_for_one": 0.0,
+        "union": 0.2777777777777778,
+        "unordered_one_to_one": 0.2777777777777778
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 19,
+        "strict_same_position_match_count": 2,
+        "union_coverage_count": 19,
+        "unordered_one_to_one_match_count": 19
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.3220338983050847,
+        "strict_same_position_match_count": 0.03389830508474576,
+        "union_coverage_count": 0.3220338983050847,
+        "unordered_one_to_one_match_count": 0.3220338983050847
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 4.0,
+            "rate": 0.07407407407407407
+          },
+          "official_tool": {
+            "count": 18.0,
+            "rate": 0.3333333333333333
+          },
+          "repo_exact": {
+            "count": 4.0,
+            "rate": 0.07407407407407407
+          },
+          "repo_multiset_tool": {
+            "count": 18.0,
+            "rate": 0.3333333333333333
+          },
+          "repo_ordered_tool": {
+            "count": 18.0,
+            "rate": 0.3333333333333333
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 3.0,
+            "rate": 0.05555555555555555
+          },
+          "official_tool": {
+            "count": 7.0,
+            "rate": 0.12962962962962962
+          },
+          "repo_exact": {
+            "count": 3.0,
+            "rate": 0.05555555555555555
+          },
+          "repo_multiset_tool": {
+            "count": 7.0,
+            "rate": 0.12962962962962962
+          },
+          "repo_ordered_tool": {
+            "count": 7.0,
+            "rate": 0.12962962962962962
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": -0.018518518518518517,
+        "official_tool": -0.2037037037037037,
+        "repo_exact": -0.018518518518518517,
+        "repo_multiset_tool": -0.2037037037037037,
+        "repo_ordered_tool": -0.2037037037037037
+      },
+      "reference_occurrence_count": 59,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 54,
+      "strict_position_reference_matches": 2,
+      "unknown_reference_occurrences": 0
+    },
+    "unavailable": {
+      "candidate_action_count": 0,
+      "candidate_state_unavailable_count": 1,
+      "coverage_applicable_sample_count": 1,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 0,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 0,
+        "total": 1,
+        "unavailable": 1
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 0,
+        "strict_one_for_one": 0,
+        "union": 0,
+        "unordered_one_to_one": 0
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.0,
+        "strict_one_for_one": 0.0,
+        "union": 0.0,
+        "unordered_one_to_one": 0.0
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 0,
+        "strict_same_position_match_count": 0,
+        "union_coverage_count": 0,
+        "unordered_one_to_one_match_count": 0
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.0,
+        "strict_same_position_match_count": 0.0,
+        "union_coverage_count": 0.0,
+        "unordered_one_to_one_match_count": 0.0
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "official_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_ordered_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "official_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_ordered_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.0,
+        "official_tool": 0.0,
+        "repo_exact": 0.0,
+        "repo_multiset_tool": 0.0,
+        "repo_ordered_tool": 0.0
+      },
+      "reference_occurrence_count": 1,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 1,
+      "strict_position_reference_matches": 0,
+      "unknown_reference_occurrences": 0
+    }
+  },
+  "by_domain": {
+    "smart_car": {
+      "candidate_action_count": 644,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 351,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 143,
+        "action_capacity_or_grouping": 1,
+        "order_incompatibility": 7,
+        "strict_position": 53,
+        "total": 204,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 234,
+        "strict_one_for_one": 192,
+        "union": 240,
+        "unordered_one_to_one": 239
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.6666666666666666,
+        "strict_one_for_one": 0.5470085470085471,
+        "union": 0.6837606837606838,
+        "unordered_one_to_one": 0.6809116809116809
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 406,
+        "strict_same_position_match_count": 353,
+        "union_coverage_count": 414,
+        "unordered_one_to_one_match_count": 413
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.7289048473967684,
+        "strict_same_position_match_count": 0.6337522441651705,
+        "union_coverage_count": 0.7432675044883303,
+        "unordered_one_to_one_match_count": 0.7414721723518851
+      },
+      "official_expected_count_differs": 5,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 157.0,
+            "rate": 0.4472934472934473
+          },
+          "official_tool": {
+            "count": 251.0,
+            "rate": 0.7150997150997151
+          },
+          "repo_exact": {
+            "count": 117.0,
+            "rate": 0.3333333333333333
+          },
+          "repo_multiset_tool": {
+            "count": 206.0,
+            "rate": 0.5868945868945868
+          },
+          "repo_ordered_tool": {
+            "count": 203.0,
+            "rate": 0.5783475783475783
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 179.0,
+            "rate": 0.50997150997151
+          },
+          "official_tool": {
+            "count": 239.0,
+            "rate": 0.6809116809116809
+          },
+          "repo_exact": {
+            "count": 124.0,
+            "rate": 0.35327635327635326
+          },
+          "repo_multiset_tool": {
+            "count": 193.0,
+            "rate": 0.5498575498575499
+          },
+          "repo_ordered_tool": {
+            "count": 189.0,
+            "rate": 0.5384615384615384
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.0626780626780627,
+        "official_tool": -0.03418803418803429,
+        "repo_exact": 0.019943019943019946,
+        "repo_multiset_tool": -0.03703703703703698,
+        "repo_ordered_tool": -0.03988603988603989
+      },
+      "reference_occurrence_count": 557,
+      "repeated_reference_names_samples": 3,
+      "sample_count": 351,
+      "strict_position_reference_matches": 353,
+      "unknown_reference_occurrences": 0
+    },
+    "smart_home": {
+      "candidate_action_count": 4331,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 2792,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 1213,
+        "action_capacity_or_grouping": 18,
+        "order_incompatibility": 24,
+        "strict_position": 200,
+        "total": 1455,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 1699,
+        "strict_one_for_one": 1445,
+        "union": 1730,
+        "unordered_one_to_one": 1718
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.6085243553008596,
+        "strict_one_for_one": 0.5175501432664756,
+        "union": 0.6196275071633238,
+        "unordered_one_to_one": 0.6153295128939829
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 2361,
+        "strict_same_position_match_count": 2161,
+        "union_coverage_count": 2403,
+        "unordered_one_to_one_match_count": 2385
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.6529314159292036,
+        "strict_same_position_match_count": 0.5976216814159292,
+        "union_coverage_count": 0.6645464601769911,
+        "unordered_one_to_one_match_count": 0.6595685840707964
+      },
+      "official_expected_count_differs": 5,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 262.0,
+            "rate": 0.09383954154727794
+          },
+          "official_tool": {
+            "count": 1551.0,
+            "rate": 0.5555157593123209
+          },
+          "repo_exact": {
+            "count": 218.0,
+            "rate": 0.07808022922636103
+          },
+          "repo_multiset_tool": {
+            "count": 1336.0,
+            "rate": 0.4785100286532951
+          },
+          "repo_ordered_tool": {
+            "count": 1329.0,
+            "rate": 0.4760028653295129
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 296.0,
+            "rate": 0.10601719197707736
+          },
+          "official_tool": {
+            "count": 1468.0,
+            "rate": 0.5257879656160458
+          },
+          "repo_exact": {
+            "count": 239.0,
+            "rate": 0.08560171919770773
+          },
+          "repo_multiset_tool": {
+            "count": 1268.0,
+            "rate": 0.45415472779369626
+          },
+          "repo_ordered_tool": {
+            "count": 1256.0,
+            "rate": 0.4498567335243553
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.012177650429799416,
+        "official_tool": -0.029727793696275095,
+        "repo_exact": 0.007521489971346704,
+        "repo_multiset_tool": -0.02435530085959886,
+        "repo_ordered_tool": -0.026146131805157624
+      },
+      "reference_occurrence_count": 3616,
+      "repeated_reference_names_samples": 3,
+      "sample_count": 2792,
+      "strict_position_reference_matches": 2161,
+      "unknown_reference_occurrences": 0
+    },
+    "wearables": {
+      "candidate_action_count": 1417,
+      "candidate_state_unavailable_count": 1,
+      "coverage_applicable_sample_count": 857,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 187,
+        "action_capacity_or_grouping": 32,
+        "order_incompatibility": 35,
+        "strict_position": 113,
+        "total": 368,
+        "unavailable": 1
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 634,
+        "strict_one_for_one": 570,
+        "union": 693,
+        "unordered_one_to_one": 667
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.7397899649941657,
+        "strict_one_for_one": 0.6651108518086347,
+        "union": 0.808634772462077,
+        "unordered_one_to_one": 0.7782963827304551
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 989,
+        "strict_same_position_match_count": 876,
+        "union_coverage_count": 1056,
+        "unordered_one_to_one_match_count": 1024
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.795016077170418,
+        "strict_same_position_match_count": 0.7041800643086816,
+        "union_coverage_count": 0.8488745980707395,
+        "unordered_one_to_one_match_count": 0.8231511254019293
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 321.0,
+            "rate": 0.37456242707117854
+          },
+          "official_tool": {
+            "count": 679.0,
+            "rate": 0.7922987164527421
+          },
+          "repo_exact": {
+            "count": 249.0,
+            "rate": 0.29054842473745623
+          },
+          "repo_multiset_tool": {
+            "count": 635.0,
+            "rate": 0.7409568261376897
+          },
+          "repo_ordered_tool": {
+            "count": 609.0,
+            "rate": 0.7106184364060677
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 427.0,
+            "rate": 0.4982497082847141
+          },
+          "official_tool": {
+            "count": 630.0,
+            "rate": 0.73512252042007
+          },
+          "repo_exact": {
+            "count": 377.0,
+            "rate": 0.43990665110851807
+          },
+          "repo_multiset_tool": {
+            "count": 602.0,
+            "rate": 0.7024504084014003
+          },
+          "repo_ordered_tool": {
+            "count": 568.0,
+            "rate": 0.662777129521587
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.12368728121353556,
+        "official_tool": -0.0571761960326721,
+        "repo_exact": 0.14935822637106183,
+        "repo_multiset_tool": -0.03850641773628938,
+        "repo_ordered_tool": -0.04784130688448074
+      },
+      "reference_occurrence_count": 1244,
+      "repeated_reference_names_samples": 16,
+      "sample_count": 857,
+      "strict_position_reference_matches": 876,
+      "unknown_reference_occurrences": 0
+    }
+  },
+  "by_first_compatibility_failure": {
+    "all_compatible": {
+      "candidate_action_count": 2664,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 2207,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 0,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 0,
+        "total": 0,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 2207,
+        "strict_one_for_one": 2207,
+        "union": 2207,
+        "unordered_one_to_one": 2207
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 1.0,
+        "strict_one_for_one": 1.0,
+        "union": 1.0,
+        "unordered_one_to_one": 1.0
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 2664,
+        "strict_same_position_match_count": 2664,
+        "union_coverage_count": 2664,
+        "unordered_one_to_one_match_count": 2664
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 1.0,
+        "strict_same_position_match_count": 1.0,
+        "union_coverage_count": 1.0,
+        "unordered_one_to_one_match_count": 1.0
+      },
+      "official_expected_count_differs": 1,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 580.0,
+            "rate": 0.2628001812415043
+          },
+          "official_tool": {
+            "count": 1810.0,
+            "rate": 0.8201178069777979
+          },
+          "repo_exact": {
+            "count": 488.0,
+            "rate": 0.2211146352514726
+          },
+          "repo_multiset_tool": {
+            "count": 1682.0,
+            "rate": 0.7621205256003625
+          },
+          "repo_ordered_tool": {
+            "count": 1682.0,
+            "rate": 0.7621205256003625
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 760.0,
+            "rate": 0.3443588581785229
+          },
+          "official_tool": {
+            "count": 1882.0,
+            "rate": 0.8527412777526053
+          },
+          "repo_exact": {
+            "count": 672.0,
+            "rate": 0.304485727231536
+          },
+          "repo_multiset_tool": {
+            "count": 1800.0,
+            "rate": 0.8155867693701858
+          },
+          "repo_ordered_tool": {
+            "count": 1800.0,
+            "rate": 0.8155867693701858
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.08155867693701863,
+        "official_tool": 0.03262347077480743,
+        "repo_exact": 0.0833710919800634,
+        "repo_multiset_tool": 0.05346624376982334,
+        "repo_ordered_tool": 0.05346624376982334
+      },
+      "reference_occurrence_count": 2664,
+      "repeated_reference_names_samples": 2,
+      "sample_count": 2207,
+      "strict_position_reference_matches": 2664,
+      "unknown_reference_occurrences": 0
+    },
+    "ordered_one_to_one": {
+      "candidate_action_count": 128,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 57,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 0,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 57,
+        "strict_position": 62,
+        "total": 119,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 0,
+        "strict_one_for_one": 0,
+        "union": 57,
+        "unordered_one_to_one": 57
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.0,
+        "strict_one_for_one": 0.0,
+        "union": 1.0,
+        "unordered_one_to_one": 1.0
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 67,
+        "strict_same_position_match_count": 5,
+        "union_coverage_count": 124,
+        "unordered_one_to_one_match_count": 124
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.5403225806451613,
+        "strict_same_position_match_count": 0.04032258064516129,
+        "union_coverage_count": 1.0,
+        "unordered_one_to_one_match_count": 1.0
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "official_tool": {
+            "count": 2.0,
+            "rate": 0.03508771929824561
+          },
+          "repo_exact": {
+            "count": 4.0,
+            "rate": 0.07017543859649122
+          },
+          "repo_multiset_tool": {
+            "count": 31.0,
+            "rate": 0.543859649122807
+          },
+          "repo_ordered_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "official_tool": {
+            "count": 1.0,
+            "rate": 0.017543859649122806
+          },
+          "repo_exact": {
+            "count": 12.0,
+            "rate": 0.21052631578947367
+          },
+          "repo_multiset_tool": {
+            "count": 46.0,
+            "rate": 0.8070175438596491
+          },
+          "repo_ordered_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.0,
+        "official_tool": -0.017543859649122806,
+        "repo_exact": 0.14035087719298245,
+        "repo_multiset_tool": 0.26315789473684204,
+        "repo_ordered_tool": 0.0
+      },
+      "reference_occurrence_count": 124,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 57,
+      "strict_position_reference_matches": 5,
+      "unknown_reference_occurrences": 0
+    },
+    "state_unavailable": {
+      "candidate_action_count": 0,
+      "candidate_state_unavailable_count": 1,
+      "coverage_applicable_sample_count": 1,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 0,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 0,
+        "total": 1,
+        "unavailable": 1
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 0,
+        "strict_one_for_one": 0,
+        "union": 0,
+        "unordered_one_to_one": 0
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.0,
+        "strict_one_for_one": 0.0,
+        "union": 0.0,
+        "unordered_one_to_one": 0.0
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 0,
+        "strict_same_position_match_count": 0,
+        "union_coverage_count": 0,
+        "unordered_one_to_one_match_count": 0
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.0,
+        "strict_same_position_match_count": 0.0,
+        "union_coverage_count": 0.0,
+        "unordered_one_to_one_match_count": 0.0
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "official_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_ordered_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "official_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_ordered_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.0,
+        "official_tool": 0.0,
+        "repo_exact": 0.0,
+        "repo_multiset_tool": 0.0,
+        "repo_ordered_tool": 0.0
+      },
+      "reference_occurrence_count": 1,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 1,
+      "strict_position_reference_matches": 0,
+      "unknown_reference_occurrences": 0
+    },
+    "strict_one_for_one": {
+      "candidate_action_count": 924,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 360,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 0,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 159,
+        "total": 159,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 360,
+        "strict_one_for_one": 0,
+        "union": 360,
+        "unordered_one_to_one": 360
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 1.0,
+        "strict_one_for_one": 0.0,
+        "union": 1.0,
+        "unordered_one_to_one": 1.0
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 397,
+        "strict_same_position_match_count": 238,
+        "union_coverage_count": 397,
+        "unordered_one_to_one_match_count": 397
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 1.0,
+        "strict_same_position_match_count": 0.5994962216624685,
+        "union_coverage_count": 1.0,
+        "unordered_one_to_one_match_count": 1.0
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 68.0,
+            "rate": 0.18888888888888888
+          },
+          "official_tool": {
+            "count": 250.0,
+            "rate": 0.6944444444444444
+          },
+          "repo_exact": {
+            "count": 58.0,
+            "rate": 0.16111111111111112
+          },
+          "repo_multiset_tool": {
+            "count": 226.0,
+            "rate": 0.6277777777777778
+          },
+          "repo_ordered_tool": {
+            "count": 225.0,
+            "rate": 0.625
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 70.0,
+            "rate": 0.19444444444444445
+          },
+          "official_tool": {
+            "count": 226.0,
+            "rate": 0.6277777777777778
+          },
+          "repo_exact": {
+            "count": 52.0,
+            "rate": 0.14444444444444443
+          },
+          "repo_multiset_tool": {
+            "count": 174.0,
+            "rate": 0.48333333333333334
+          },
+          "repo_ordered_tool": {
+            "count": 174.0,
+            "rate": 0.48333333333333334
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.005555555555555564,
+        "official_tool": -0.06666666666666665,
+        "repo_exact": -0.01666666666666669,
+        "repo_multiset_tool": -0.14444444444444443,
+        "repo_ordered_tool": -0.14166666666666666
+      },
+      "reference_occurrence_count": 397,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 360,
+      "strict_position_reference_matches": 238,
+      "unknown_reference_occurrences": 0
+    },
+    "union": {
+      "candidate_action_count": 2601,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 1336,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 1543,
+        "action_capacity_or_grouping": 6,
+        "order_incompatibility": 9,
+        "strict_position": 135,
+        "total": 1693,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 0,
+        "strict_one_for_one": 0,
+        "union": 0,
+        "unordered_one_to_one": 0
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.0,
+        "strict_one_for_one": 0.0,
+        "union": 0.0,
+        "unordered_one_to_one": 0.0
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 567,
+        "strict_same_position_match_count": 432,
+        "union_coverage_count": 582,
+        "unordered_one_to_one_match_count": 576
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.2668235294117647,
+        "strict_same_position_match_count": 0.20329411764705882,
+        "union_coverage_count": 0.27388235294117647,
+        "unordered_one_to_one_match_count": 0.27105882352941174
+      },
+      "official_expected_count_differs": 8,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 85.0,
+            "rate": 0.06362275449101797
+          },
+          "official_tool": {
+            "count": 394.0,
+            "rate": 0.2949101796407186
+          },
+          "repo_exact": {
+            "count": 34.0,
+            "rate": 0.025449101796407185
+          },
+          "repo_multiset_tool": {
+            "count": 221.0,
+            "rate": 0.16541916167664672
+          },
+          "repo_ordered_tool": {
+            "count": 219.0,
+            "rate": 0.16392215568862276
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 57.0,
+            "rate": 0.04266467065868264
+          },
+          "official_tool": {
+            "count": 203.0,
+            "rate": 0.15194610778443113
+          },
+          "repo_exact": {
+            "count": 3.0,
+            "rate": 0.002245508982035928
+          },
+          "repo_multiset_tool": {
+            "count": 28.0,
+            "rate": 0.020958083832335328
+          },
+          "repo_ordered_tool": {
+            "count": 27.0,
+            "rate": 0.020209580838323353
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": -0.020958083832335328,
+        "official_tool": -0.14296407185628746,
+        "repo_exact": -0.023203592814371257,
+        "repo_multiset_tool": -0.1444610778443114,
+        "repo_ordered_tool": -0.1437125748502994
+      },
+      "reference_occurrence_count": 2125,
+      "repeated_reference_names_samples": 5,
+      "sample_count": 1336,
+      "strict_position_reference_matches": 432,
+      "unknown_reference_occurrences": 0
+    },
+    "unordered_one_to_one": {
+      "candidate_action_count": 75,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 39,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 0,
+        "action_capacity_or_grouping": 45,
+        "order_incompatibility": 0,
+        "strict_position": 10,
+        "total": 55,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 0,
+        "strict_one_for_one": 0,
+        "union": 39,
+        "unordered_one_to_one": 0
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.0,
+        "strict_one_for_one": 0.0,
+        "union": 1.0,
+        "unordered_one_to_one": 0.0
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 61,
+        "strict_same_position_match_count": 51,
+        "union_coverage_count": 106,
+        "unordered_one_to_one_match_count": 61
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.5754716981132075,
+        "strict_same_position_match_count": 0.4811320754716981,
+        "union_coverage_count": 1.0,
+        "unordered_one_to_one_match_count": 0.5754716981132075
+      },
+      "official_expected_count_differs": 1,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 7.0,
+            "rate": 0.1794871794871795
+          },
+          "official_tool": {
+            "count": 25.0,
+            "rate": 0.6410256410256411
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 17.0,
+            "rate": 0.4358974358974359
+          },
+          "repo_ordered_tool": {
+            "count": 15.0,
+            "rate": 0.38461538461538464
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 15.0,
+            "rate": 0.38461538461538464
+          },
+          "official_tool": {
+            "count": 25.0,
+            "rate": 0.6410256410256411
+          },
+          "repo_exact": {
+            "count": 1.0,
+            "rate": 0.02564102564102564
+          },
+          "repo_multiset_tool": {
+            "count": 15.0,
+            "rate": 0.38461538461538464
+          },
+          "repo_ordered_tool": {
+            "count": 12.0,
+            "rate": 0.3076923076923077
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.20512820512820515,
+        "official_tool": 0.0,
+        "repo_exact": 0.02564102564102564,
+        "repo_multiset_tool": -0.051282051282051266,
+        "repo_ordered_tool": -0.07692307692307693
+      },
+      "reference_occurrence_count": 106,
+      "repeated_reference_names_samples": 15,
+      "sample_count": 39,
+      "strict_position_reference_matches": 51,
+      "unknown_reference_occurrences": 0
+    }
+  },
+  "by_reference_count": {
+    "1": {
+      "candidate_action_count": 4007,
+      "candidate_state_unavailable_count": 1,
+      "coverage_applicable_sample_count": 3004,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 835,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 131,
+        "total": 967,
+        "unavailable": 1
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 2168,
+        "strict_one_for_one": 1837,
+        "union": 2168,
+        "unordered_one_to_one": 2168
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.7217043941411452,
+        "strict_one_for_one": 0.6115179760319573,
+        "union": 0.7217043941411452,
+        "unordered_one_to_one": 0.7217043941411452
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 2168,
+        "strict_same_position_match_count": 2037,
+        "union_coverage_count": 2168,
+        "unordered_one_to_one_match_count": 2168
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.7217043941411452,
+        "strict_same_position_match_count": 0.6780958721704394,
+        "union_coverage_count": 0.7217043941411452,
+        "unordered_one_to_one_match_count": 0.7217043941411452
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 536.0,
+            "rate": 0.17842876165113183
+          },
+          "official_tool": {
+            "count": 1903.0,
+            "rate": 0.6334886817576565
+          },
+          "repo_exact": {
+            "count": 560.0,
+            "rate": 0.18641810918774968
+          },
+          "repo_multiset_tool": {
+            "count": 1892.0,
+            "rate": 0.62982689747004
+          },
+          "repo_ordered_tool": {
+            "count": 1892.0,
+            "rate": 0.62982689747004
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 620.0,
+            "rate": 0.20639147802929428
+          },
+          "official_tool": {
+            "count": 1772.0,
+            "rate": 0.5898801597869507
+          },
+          "repo_exact": {
+            "count": 676.0,
+            "rate": 0.22503328894806923
+          },
+          "repo_multiset_tool": {
+            "count": 1730.0,
+            "rate": 0.5758988015978695
+          },
+          "repo_ordered_tool": {
+            "count": 1730.0,
+            "rate": 0.5758988015978695
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.027962716378162444,
+        "official_tool": -0.04360852197070575,
+        "repo_exact": 0.03861517976031956,
+        "repo_multiset_tool": -0.0539280958721704,
+        "repo_ordered_tool": -0.0539280958721704
+      },
+      "reference_occurrence_count": 3004,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 3004,
+      "strict_position_reference_matches": 2037,
+      "unknown_reference_occurrences": 0
+    },
+    "2": {
+      "candidate_action_count": 1375,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 659,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 353,
+        "action_capacity_or_grouping": 15,
+        "order_incompatibility": 47,
+        "strict_position": 125,
+        "total": 540,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 307,
+        "strict_one_for_one": 285,
+        "union": 369,
+        "unordered_one_to_one": 354
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.4658573596358118,
+        "strict_one_for_one": 0.4324734446130501,
+        "union": 0.5599393019726859,
+        "unordered_one_to_one": 0.5371775417298937
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 903,
+        "strict_same_position_match_count": 778,
+        "union_coverage_count": 965,
+        "unordered_one_to_one_match_count": 950
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.6851289833080425,
+        "strict_same_position_match_count": 0.590288315629742,
+        "union_coverage_count": 0.7321699544764795,
+        "unordered_one_to_one_match_count": 0.7207890743550834
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 133.0,
+            "rate": 0.20182094081942337
+          },
+          "official_tool": {
+            "count": 372.0,
+            "rate": 0.5644916540212443
+          },
+          "repo_exact": {
+            "count": 20.0,
+            "rate": 0.030349013657056147
+          },
+          "repo_multiset_tool": {
+            "count": 206.0,
+            "rate": 0.3125948406676783
+          },
+          "repo_ordered_tool": {
+            "count": 176.0,
+            "rate": 0.26707132018209406
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 188.0,
+            "rate": 0.2852807283763278
+          },
+          "official_tool": {
+            "count": 363.0,
+            "rate": 0.5508345978755691
+          },
+          "repo_exact": {
+            "count": 50.0,
+            "rate": 0.07587253414264036
+          },
+          "repo_multiset_tool": {
+            "count": 252.0,
+            "rate": 0.38239757207890746
+          },
+          "repo_ordered_tool": {
+            "count": 209.0,
+            "rate": 0.3171471927162367
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.08345978755690442,
+        "official_tool": -0.01365705614567525,
+        "repo_exact": 0.04552352048558422,
+        "repo_multiset_tool": 0.06980273141122917,
+        "repo_ordered_tool": 0.05007587253414264
+      },
+      "reference_occurrence_count": 1318,
+      "repeated_reference_names_samples": 3,
+      "sample_count": 659,
+      "strict_position_reference_matches": 778,
+      "unknown_reference_occurrences": 0
+    },
+    "3": {
+      "candidate_action_count": 796,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 278,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 240,
+        "action_capacity_or_grouping": 26,
+        "order_incompatibility": 15,
+        "strict_position": 78,
+        "total": 359,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 89,
+        "strict_one_for_one": 83,
+        "union": 119,
+        "unordered_one_to_one": 99
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.32014388489208634,
+        "strict_one_for_one": 0.29856115107913667,
+        "union": 0.42805755395683454,
+        "unordered_one_to_one": 0.35611510791366907
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 553,
+        "strict_same_position_match_count": 475,
+        "union_coverage_count": 594,
+        "unordered_one_to_one_match_count": 568
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.6630695443645084,
+        "strict_same_position_match_count": 0.5695443645083933,
+        "union_coverage_count": 0.7122302158273381,
+        "unordered_one_to_one_match_count": 0.6810551558752997
+      },
+      "official_expected_count_differs": 10,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 62.0,
+            "rate": 0.22302158273381295
+          },
+          "official_tool": {
+            "count": 171.0,
+            "rate": 0.6151079136690647
+          },
+          "repo_exact": {
+            "count": 4.0,
+            "rate": 0.014388489208633094
+          },
+          "repo_multiset_tool": {
+            "count": 73.0,
+            "rate": 0.26258992805755393
+          },
+          "repo_ordered_tool": {
+            "count": 67.0,
+            "rate": 0.24100719424460432
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 81.0,
+            "rate": 0.29136690647482016
+          },
+          "official_tool": {
+            "count": 163.0,
+            "rate": 0.5863309352517986
+          },
+          "repo_exact": {
+            "count": 14.0,
+            "rate": 0.050359712230215826
+          },
+          "repo_multiset_tool": {
+            "count": 76.0,
+            "rate": 0.2733812949640288
+          },
+          "repo_ordered_tool": {
+            "count": 69.0,
+            "rate": 0.24820143884892087
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.06834532374100721,
+        "official_tool": -0.02877697841726612,
+        "repo_exact": 0.03597122302158273,
+        "repo_multiset_tool": 0.010791366906474864,
+        "repo_ordered_tool": 0.0071942446043165575
+      },
+      "reference_occurrence_count": 834,
+      "repeated_reference_names_samples": 16,
+      "sample_count": 278,
+      "strict_position_reference_matches": 475,
+      "unknown_reference_occurrences": 0
+    },
+    "4": {
+      "candidate_action_count": 142,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 42,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 73,
+        "action_capacity_or_grouping": 8,
+        "order_incompatibility": 2,
+        "strict_position": 18,
+        "total": 101,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 3,
+        "strict_one_for_one": 2,
+        "union": 7,
+        "unordered_one_to_one": 3
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.07142857142857142,
+        "strict_one_for_one": 0.047619047619047616,
+        "union": 0.16666666666666666,
+        "unordered_one_to_one": 0.07142857142857142
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 85,
+        "strict_same_position_match_count": 67,
+        "union_coverage_count": 95,
+        "unordered_one_to_one_match_count": 87
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.5059523809523809,
+        "strict_same_position_match_count": 0.39880952380952384,
+        "union_coverage_count": 0.5654761904761905,
+        "unordered_one_to_one_match_count": 0.5178571428571429
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 8.0,
+            "rate": 0.19047619047619047
+          },
+          "official_tool": {
+            "count": 28.0,
+            "rate": 0.6666666666666666
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 6.0,
+            "rate": 0.14285714285714285
+          },
+          "repo_ordered_tool": {
+            "count": 6.0,
+            "rate": 0.14285714285714285
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 12.0,
+            "rate": 0.2857142857142857
+          },
+          "official_tool": {
+            "count": 28.0,
+            "rate": 0.6666666666666666
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 5.0,
+            "rate": 0.11904761904761904
+          },
+          "repo_ordered_tool": {
+            "count": 5.0,
+            "rate": 0.11904761904761904
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.09523809523809523,
+        "official_tool": 0.0,
+        "repo_exact": 0.0,
+        "repo_multiset_tool": -0.023809523809523808,
+        "repo_ordered_tool": -0.023809523809523808
+      },
+      "reference_occurrence_count": 168,
+      "repeated_reference_names_samples": 3,
+      "sample_count": 42,
+      "strict_position_reference_matches": 67,
+      "unknown_reference_occurrences": 0
+    },
+    "5": {
+      "candidate_action_count": 46,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 11,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 24,
+        "action_capacity_or_grouping": 2,
+        "order_incompatibility": 2,
+        "strict_position": 5,
+        "total": 33,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 0,
+        "strict_one_for_one": 0,
+        "union": 0,
+        "unordered_one_to_one": 0
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.0,
+        "strict_one_for_one": 0.0,
+        "union": 0.0,
+        "unordered_one_to_one": 0.0
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 27,
+        "strict_same_position_match_count": 22,
+        "union_coverage_count": 31,
+        "unordered_one_to_one_match_count": 29
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.4909090909090909,
+        "strict_same_position_match_count": 0.4,
+        "union_coverage_count": 0.5636363636363636,
+        "unordered_one_to_one_match_count": 0.5272727272727272
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 1.0,
+            "rate": 0.09090909090909091
+          },
+          "official_tool": {
+            "count": 4.0,
+            "rate": 0.36363636363636365
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_ordered_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 1.0,
+            "rate": 0.09090909090909091
+          },
+          "official_tool": {
+            "count": 5.0,
+            "rate": 0.45454545454545453
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_ordered_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.0,
+        "official_tool": 0.09090909090909088,
+        "repo_exact": 0.0,
+        "repo_multiset_tool": 0.0,
+        "repo_ordered_tool": 0.0
+      },
+      "reference_occurrence_count": 55,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 11,
+      "strict_position_reference_matches": 22,
+      "unknown_reference_occurrences": 0
+    },
+    "6": {
+      "candidate_action_count": 15,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 4,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 12,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 8,
+        "total": 20,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 0,
+        "strict_one_for_one": 0,
+        "union": 0,
+        "unordered_one_to_one": 0
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.0,
+        "strict_one_for_one": 0.0,
+        "union": 0.0,
+        "unordered_one_to_one": 0.0
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 12,
+        "strict_same_position_match_count": 4,
+        "union_coverage_count": 12,
+        "unordered_one_to_one_match_count": 12
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.5,
+        "strict_same_position_match_count": 0.16666666666666666,
+        "union_coverage_count": 0.5,
+        "unordered_one_to_one_match_count": 0.5
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "official_tool": {
+            "count": 3.0,
+            "rate": 0.75
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_ordered_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "official_tool": {
+            "count": 4.0,
+            "rate": 1.0
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_ordered_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.0,
+        "official_tool": 0.25,
+        "repo_exact": 0.0,
+        "repo_multiset_tool": 0.0,
+        "repo_ordered_tool": 0.0
+      },
+      "reference_occurrence_count": 24,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 4,
+      "strict_position_reference_matches": 4,
+      "unknown_reference_occurrences": 0
+    },
+    "7": {
+      "candidate_action_count": 11,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 2,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 6,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 1,
+        "total": 7,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 0,
+        "strict_one_for_one": 0,
+        "union": 0,
+        "unordered_one_to_one": 0
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.0,
+        "strict_one_for_one": 0.0,
+        "union": 0.0,
+        "unordered_one_to_one": 0.0
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 8,
+        "strict_same_position_match_count": 7,
+        "union_coverage_count": 8,
+        "unordered_one_to_one_match_count": 8
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.5714285714285714,
+        "strict_same_position_match_count": 0.5,
+        "union_coverage_count": 0.5714285714285714,
+        "unordered_one_to_one_match_count": 0.5714285714285714
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "official_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_ordered_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "official_tool": {
+            "count": 2.0,
+            "rate": 1.0
+          },
+          "repo_exact": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_multiset_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          },
+          "repo_ordered_tool": {
+            "count": 0.0,
+            "rate": 0.0
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.0,
+        "official_tool": 1.0,
+        "repo_exact": 0.0,
+        "repo_multiset_tool": 0.0,
+        "repo_ordered_tool": 0.0
+      },
+      "reference_occurrence_count": 14,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 2,
+      "strict_position_reference_matches": 7,
+      "unknown_reference_occurrences": 0
+    }
+  },
+  "by_reference_count_class": {
+    "multiple": {
+      "candidate_action_count": 2385,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 996,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 708,
+        "action_capacity_or_grouping": 51,
+        "order_incompatibility": 66,
+        "strict_position": 235,
+        "total": 1060,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 399,
+        "strict_one_for_one": 370,
+        "union": 495,
+        "unordered_one_to_one": 456
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.4006024096385542,
+        "strict_one_for_one": 0.3714859437751004,
+        "union": 0.49698795180722893,
+        "unordered_one_to_one": 0.4578313253012048
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 1588,
+        "strict_same_position_match_count": 1353,
+        "union_coverage_count": 1705,
+        "unordered_one_to_one_match_count": 1654
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.6581019477828429,
+        "strict_same_position_match_count": 0.5607128056361376,
+        "union_coverage_count": 0.7065893079154579,
+        "unordered_one_to_one_match_count": 0.6854537919602155
+      },
+      "official_expected_count_differs": 10,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 204.0,
+            "rate": 0.20481927710843373
+          },
+          "official_tool": {
+            "count": 578.0,
+            "rate": 0.5803212851405622
+          },
+          "repo_exact": {
+            "count": 24.0,
+            "rate": 0.024096385542168676
+          },
+          "repo_multiset_tool": {
+            "count": 285.0,
+            "rate": 0.286144578313253
+          },
+          "repo_ordered_tool": {
+            "count": 249.0,
+            "rate": 0.25
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 282.0,
+            "rate": 0.28313253012048195
+          },
+          "official_tool": {
+            "count": 565.0,
+            "rate": 0.5672690763052208
+          },
+          "repo_exact": {
+            "count": 64.0,
+            "rate": 0.0642570281124498
+          },
+          "repo_multiset_tool": {
+            "count": 333.0,
+            "rate": 0.33433734939759036
+          },
+          "repo_ordered_tool": {
+            "count": 283.0,
+            "rate": 0.28413654618473894
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.07831325301204822,
+        "official_tool": -0.013052208835341417,
+        "repo_exact": 0.04016064257028112,
+        "repo_multiset_tool": 0.04819277108433734,
+        "repo_ordered_tool": 0.034136546184738936
+      },
+      "reference_occurrence_count": 2413,
+      "repeated_reference_names_samples": 22,
+      "sample_count": 996,
+      "strict_position_reference_matches": 1353,
+      "unknown_reference_occurrences": 0
+    },
+    "single": {
+      "candidate_action_count": 4007,
+      "candidate_state_unavailable_count": 1,
+      "coverage_applicable_sample_count": 3004,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 835,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 131,
+        "total": 967,
+        "unavailable": 1
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 2168,
+        "strict_one_for_one": 1837,
+        "union": 2168,
+        "unordered_one_to_one": 2168
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.7217043941411452,
+        "strict_one_for_one": 0.6115179760319573,
+        "union": 0.7217043941411452,
+        "unordered_one_to_one": 0.7217043941411452
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 2168,
+        "strict_same_position_match_count": 2037,
+        "union_coverage_count": 2168,
+        "unordered_one_to_one_match_count": 2168
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.7217043941411452,
+        "strict_same_position_match_count": 0.6780958721704394,
+        "union_coverage_count": 0.7217043941411452,
+        "unordered_one_to_one_match_count": 0.7217043941411452
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 536.0,
+            "rate": 0.17842876165113183
+          },
+          "official_tool": {
+            "count": 1903.0,
+            "rate": 0.6334886817576565
+          },
+          "repo_exact": {
+            "count": 560.0,
+            "rate": 0.18641810918774968
+          },
+          "repo_multiset_tool": {
+            "count": 1892.0,
+            "rate": 0.62982689747004
+          },
+          "repo_ordered_tool": {
+            "count": 1892.0,
+            "rate": 0.62982689747004
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 620.0,
+            "rate": 0.20639147802929428
+          },
+          "official_tool": {
+            "count": 1772.0,
+            "rate": 0.5898801597869507
+          },
+          "repo_exact": {
+            "count": 676.0,
+            "rate": 0.22503328894806923
+          },
+          "repo_multiset_tool": {
+            "count": 1730.0,
+            "rate": 0.5758988015978695
+          },
+          "repo_ordered_tool": {
+            "count": 1730.0,
+            "rate": 0.5758988015978695
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.027962716378162444,
+        "official_tool": -0.04360852197070575,
+        "repo_exact": 0.03861517976031956,
+        "repo_multiset_tool": -0.0539280958721704,
+        "repo_ordered_tool": -0.0539280958721704
+      },
+      "reference_occurrence_count": 3004,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 3004,
+      "strict_position_reference_matches": 2037,
+      "unknown_reference_occurrences": 0
+    }
+  },
+  "by_tier": {
+    "tier1_direct": {
+      "candidate_action_count": 612,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 500,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 101,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 14,
+        "total": 115,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 399,
+        "strict_one_for_one": 380,
+        "union": 399,
+        "unordered_one_to_one": 399
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.798,
+        "strict_one_for_one": 0.76,
+        "union": 0.798,
+        "unordered_one_to_one": 0.798
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 399,
+        "strict_same_position_match_count": 385,
+        "union_coverage_count": 399,
+        "unordered_one_to_one_match_count": 399
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.798,
+        "strict_same_position_match_count": 0.77,
+        "union_coverage_count": 0.798,
+        "unordered_one_to_one_match_count": 0.798
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 80.0,
+            "rate": 0.16
+          },
+          "official_tool": {
+            "count": 336.0,
+            "rate": 0.672
+          },
+          "repo_exact": {
+            "count": 98.0,
+            "rate": 0.196
+          },
+          "repo_multiset_tool": {
+            "count": 336.0,
+            "rate": 0.672
+          },
+          "repo_ordered_tool": {
+            "count": 336.0,
+            "rate": 0.672
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 49.0,
+            "rate": 0.098
+          },
+          "official_tool": {
+            "count": 307.0,
+            "rate": 0.614
+          },
+          "repo_exact": {
+            "count": 107.0,
+            "rate": 0.214
+          },
+          "repo_multiset_tool": {
+            "count": 305.0,
+            "rate": 0.61
+          },
+          "repo_ordered_tool": {
+            "count": 305.0,
+            "rate": 0.61
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": -0.062,
+        "official_tool": -0.05800000000000005,
+        "repo_exact": 0.017999999999999988,
+        "repo_multiset_tool": -0.062000000000000055,
+        "repo_ordered_tool": -0.062000000000000055
+      },
+      "reference_occurrence_count": 500,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 500,
+      "strict_position_reference_matches": 385,
+      "unknown_reference_occurrences": 0
+    },
+    "tier2_parametric": {
+      "candidate_action_count": 529,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 500,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 72,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 4,
+        "total": 76,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 428,
+        "strict_one_for_one": 417,
+        "union": 428,
+        "unordered_one_to_one": 428
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.856,
+        "strict_one_for_one": 0.834,
+        "union": 0.856,
+        "unordered_one_to_one": 0.856
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 428,
+        "strict_same_position_match_count": 424,
+        "union_coverage_count": 428,
+        "unordered_one_to_one_match_count": 428
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.856,
+        "strict_same_position_match_count": 0.848,
+        "union_coverage_count": 0.856,
+        "unordered_one_to_one_match_count": 0.856
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 141.0,
+            "rate": 0.282
+          },
+          "official_tool": {
+            "count": 392.0,
+            "rate": 0.784
+          },
+          "repo_exact": {
+            "count": 142.0,
+            "rate": 0.284
+          },
+          "repo_multiset_tool": {
+            "count": 392.0,
+            "rate": 0.784
+          },
+          "repo_ordered_tool": {
+            "count": 392.0,
+            "rate": 0.784
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 176.0,
+            "rate": 0.352
+          },
+          "official_tool": {
+            "count": 379.0,
+            "rate": 0.758
+          },
+          "repo_exact": {
+            "count": 165.0,
+            "rate": 0.33
+          },
+          "repo_multiset_tool": {
+            "count": 377.0,
+            "rate": 0.754
+          },
+          "repo_ordered_tool": {
+            "count": 377.0,
+            "rate": 0.754
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.07,
+        "official_tool": -0.026000000000000023,
+        "repo_exact": 0.04600000000000004,
+        "repo_multiset_tool": -0.030000000000000027,
+        "repo_ordered_tool": -0.030000000000000027
+      },
+      "reference_occurrence_count": 500,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 500,
+      "strict_position_reference_matches": 424,
+      "unknown_reference_occurrences": 0
+    },
+    "tier3_multi_intent": {
+      "candidate_action_count": 1127,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 500,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 279,
+        "action_capacity_or_grouping": 14,
+        "order_incompatibility": 29,
+        "strict_position": 70,
+        "total": 392,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 234,
+        "strict_one_for_one": 233,
+        "union": 273,
+        "unordered_one_to_one": 260
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.468,
+        "strict_one_for_one": 0.466,
+        "union": 0.546,
+        "unordered_one_to_one": 0.52
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 851,
+        "strict_same_position_match_count": 781,
+        "union_coverage_count": 894,
+        "unordered_one_to_one_match_count": 880
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.7254901960784313,
+        "strict_same_position_match_count": 0.6658141517476556,
+        "union_coverage_count": 0.7621483375959079,
+        "unordered_one_to_one_match_count": 0.7502131287297528
+      },
+      "official_expected_count_differs": 1,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 102.0,
+            "rate": 0.204
+          },
+          "official_tool": {
+            "count": 338.0,
+            "rate": 0.676
+          },
+          "repo_exact": {
+            "count": 13.0,
+            "rate": 0.026
+          },
+          "repo_multiset_tool": {
+            "count": 170.0,
+            "rate": 0.34
+          },
+          "repo_ordered_tool": {
+            "count": 151.0,
+            "rate": 0.302
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 137.0,
+            "rate": 0.274
+          },
+          "official_tool": {
+            "count": 324.0,
+            "rate": 0.648
+          },
+          "repo_exact": {
+            "count": 34.0,
+            "rate": 0.068
+          },
+          "repo_multiset_tool": {
+            "count": 194.0,
+            "rate": 0.388
+          },
+          "repo_ordered_tool": {
+            "count": 170.0,
+            "rate": 0.34
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.07000000000000003,
+        "official_tool": -0.028000000000000025,
+        "repo_exact": 0.04200000000000001,
+        "repo_multiset_tool": 0.04799999999999999,
+        "repo_ordered_tool": 0.038000000000000034
+      },
+      "reference_occurrence_count": 1173,
+      "repeated_reference_names_samples": 4,
+      "sample_count": 500,
+      "strict_position_reference_matches": 781,
+      "unknown_reference_occurrences": 0
+    },
+    "tier4_implicit": {
+      "candidate_action_count": 883,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 500,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 329,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 31,
+        "total": 360,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 171,
+        "strict_one_for_one": 120,
+        "union": 171,
+        "unordered_one_to_one": 171
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.342,
+        "strict_one_for_one": 0.24,
+        "union": 0.342,
+        "unordered_one_to_one": 0.342
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 171,
+        "strict_same_position_match_count": 140,
+        "union_coverage_count": 171,
+        "unordered_one_to_one_match_count": 171
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.342,
+        "strict_same_position_match_count": 0.28,
+        "union_coverage_count": 0.342,
+        "unordered_one_to_one_match_count": 0.342
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 32.0,
+            "rate": 0.064
+          },
+          "official_tool": {
+            "count": 145.0,
+            "rate": 0.29
+          },
+          "repo_exact": {
+            "count": 32.0,
+            "rate": 0.064
+          },
+          "repo_multiset_tool": {
+            "count": 145.0,
+            "rate": 0.29
+          },
+          "repo_ordered_tool": {
+            "count": 145.0,
+            "rate": 0.29
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 49.0,
+            "rate": 0.098
+          },
+          "official_tool": {
+            "count": 122.0,
+            "rate": 0.244
+          },
+          "repo_exact": {
+            "count": 48.0,
+            "rate": 0.096
+          },
+          "repo_multiset_tool": {
+            "count": 120.0,
+            "rate": 0.24
+          },
+          "repo_ordered_tool": {
+            "count": 120.0,
+            "rate": 0.24
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.034,
+        "official_tool": -0.045999999999999985,
+        "repo_exact": 0.032,
+        "repo_multiset_tool": -0.04999999999999999,
+        "repo_ordered_tool": -0.04999999999999999
+      },
+      "reference_occurrence_count": 500,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 500,
+      "strict_position_reference_matches": 140,
+      "unknown_reference_occurrences": 0
+    },
+    "tier5_needle": {
+      "candidate_action_count": 535,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 500,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 80,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 15,
+        "total": 95,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 420,
+        "strict_one_for_one": 397,
+        "union": 420,
+        "unordered_one_to_one": 420
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.84,
+        "strict_one_for_one": 0.794,
+        "union": 0.84,
+        "unordered_one_to_one": 0.84
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 420,
+        "strict_same_position_match_count": 405,
+        "union_coverage_count": 420,
+        "unordered_one_to_one_match_count": 420
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.84,
+        "strict_same_position_match_count": 0.81,
+        "union_coverage_count": 0.84,
+        "unordered_one_to_one_match_count": 0.84
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 109.0,
+            "rate": 0.218
+          },
+          "official_tool": {
+            "count": 402.0,
+            "rate": 0.804
+          },
+          "repo_exact": {
+            "count": 116.0,
+            "rate": 0.232
+          },
+          "repo_multiset_tool": {
+            "count": 402.0,
+            "rate": 0.804
+          },
+          "repo_ordered_tool": {
+            "count": 402.0,
+            "rate": 0.804
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 139.0,
+            "rate": 0.278
+          },
+          "official_tool": {
+            "count": 372.0,
+            "rate": 0.744
+          },
+          "repo_exact": {
+            "count": 151.0,
+            "rate": 0.302
+          },
+          "repo_multiset_tool": {
+            "count": 371.0,
+            "rate": 0.742
+          },
+          "repo_ordered_tool": {
+            "count": 371.0,
+            "rate": 0.742
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.060000000000000026,
+        "official_tool": -0.06000000000000005,
+        "repo_exact": 0.06999999999999998,
+        "repo_multiset_tool": -0.062000000000000055,
+        "repo_ordered_tool": -0.062000000000000055
+      },
+      "reference_occurrence_count": 500,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 500,
+      "strict_position_reference_matches": 405,
+      "unknown_reference_occurrences": 0
+    },
+    "tier6_correction": {
+      "candidate_action_count": 721,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 500,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 77,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 35,
+        "total": 112,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 423,
+        "strict_one_for_one": 248,
+        "union": 423,
+        "unordered_one_to_one": 423
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.846,
+        "strict_one_for_one": 0.496,
+        "union": 0.846,
+        "unordered_one_to_one": 0.846
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 423,
+        "strict_same_position_match_count": 388,
+        "union_coverage_count": 423,
+        "unordered_one_to_one_match_count": 423
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.846,
+        "strict_same_position_match_count": 0.776,
+        "union_coverage_count": 0.846,
+        "unordered_one_to_one_match_count": 0.846
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 120.0,
+            "rate": 0.24
+          },
+          "official_tool": {
+            "count": 380.0,
+            "rate": 0.76
+          },
+          "repo_exact": {
+            "count": 118.0,
+            "rate": 0.236
+          },
+          "repo_multiset_tool": {
+            "count": 369.0,
+            "rate": 0.738
+          },
+          "repo_ordered_tool": {
+            "count": 369.0,
+            "rate": 0.738
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 145.0,
+            "rate": 0.29
+          },
+          "official_tool": {
+            "count": 364.0,
+            "rate": 0.728
+          },
+          "repo_exact": {
+            "count": 145.0,
+            "rate": 0.29
+          },
+          "repo_multiset_tool": {
+            "count": 335.0,
+            "rate": 0.67
+          },
+          "repo_ordered_tool": {
+            "count": 335.0,
+            "rate": 0.67
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.04999999999999999,
+        "official_tool": -0.03200000000000003,
+        "repo_exact": 0.05399999999999999,
+        "repo_multiset_tool": -0.06799999999999995,
+        "repo_ordered_tool": -0.06799999999999995
+      },
+      "reference_occurrence_count": 500,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 500,
+      "strict_position_reference_matches": 388,
+      "unknown_reference_occurrences": 0
+    },
+    "tier7_multiturn": {
+      "candidate_action_count": 717,
+      "candidate_state_unavailable_count": 1,
+      "coverage_applicable_sample_count": 500,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 174,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 31,
+        "total": 206,
+        "unavailable": 1
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 325,
+        "strict_one_for_one": 274,
+        "union": 325,
+        "unordered_one_to_one": 325
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.65,
+        "strict_one_for_one": 0.548,
+        "union": 0.65,
+        "unordered_one_to_one": 0.65
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 325,
+        "strict_same_position_match_count": 294,
+        "union_coverage_count": 325,
+        "unordered_one_to_one_match_count": 325
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.65,
+        "strict_same_position_match_count": 0.588,
+        "union_coverage_count": 0.65,
+        "unordered_one_to_one_match_count": 0.65
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 53.0,
+            "rate": 0.106
+          },
+          "official_tool": {
+            "count": 245.0,
+            "rate": 0.49
+          },
+          "repo_exact": {
+            "count": 53.0,
+            "rate": 0.106
+          },
+          "repo_multiset_tool": {
+            "count": 245.0,
+            "rate": 0.49
+          },
+          "repo_ordered_tool": {
+            "count": 245.0,
+            "rate": 0.49
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 62.0,
+            "rate": 0.124
+          },
+          "official_tool": {
+            "count": 227.0,
+            "rate": 0.454
+          },
+          "repo_exact": {
+            "count": 60.0,
+            "rate": 0.12
+          },
+          "repo_multiset_tool": {
+            "count": 221.0,
+            "rate": 0.442
+          },
+          "repo_ordered_tool": {
+            "count": 221.0,
+            "rate": 0.442
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.018000000000000002,
+        "official_tool": -0.035999999999999976,
+        "repo_exact": 0.013999999999999999,
+        "repo_multiset_tool": -0.04799999999999999,
+        "repo_ordered_tool": -0.04799999999999999
+      },
+      "reference_occurrence_count": 500,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 500,
+      "strict_position_reference_matches": 294,
+      "unknown_reference_occurrences": 0
+    },
+    "tier8_intent_blending": {
+      "candidate_action_count": 1268,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 500,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 431,
+        "action_capacity_or_grouping": 37,
+        "order_incompatibility": 37,
+        "strict_position": 166,
+        "total": 671,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 167,
+        "strict_one_for_one": 138,
+        "union": 224,
+        "unordered_one_to_one": 198
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.334,
+        "strict_one_for_one": 0.276,
+        "union": 0.448,
+        "unordered_one_to_one": 0.396
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 739,
+        "strict_same_position_match_count": 573,
+        "union_coverage_count": 813,
+        "unordered_one_to_one_match_count": 776
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.5940514469453376,
+        "strict_same_position_match_count": 0.46061093247588425,
+        "union_coverage_count": 0.6535369774919614,
+        "unordered_one_to_one_match_count": 0.6237942122186495
+      },
+      "official_expected_count_differs": 9,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 103.0,
+            "rate": 0.206
+          },
+          "official_tool": {
+            "count": 243.0,
+            "rate": 0.486
+          },
+          "repo_exact": {
+            "count": 12.0,
+            "rate": 0.024
+          },
+          "repo_multiset_tool": {
+            "count": 118.0,
+            "rate": 0.236
+          },
+          "repo_ordered_tool": {
+            "count": 101.0,
+            "rate": 0.202
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 145.0,
+            "rate": 0.29
+          },
+          "official_tool": {
+            "count": 242.0,
+            "rate": 0.484
+          },
+          "repo_exact": {
+            "count": 30.0,
+            "rate": 0.06
+          },
+          "repo_multiset_tool": {
+            "count": 140.0,
+            "rate": 0.28
+          },
+          "repo_ordered_tool": {
+            "count": 114.0,
+            "rate": 0.228
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.08399999999999999,
+        "official_tool": -0.0020000000000000018,
+        "repo_exact": 0.036,
+        "repo_multiset_tool": 0.04400000000000004,
+        "repo_ordered_tool": 0.025999999999999995
+      },
+      "reference_occurrence_count": 1244,
+      "repeated_reference_names_samples": 18,
+      "sample_count": 500,
+      "strict_position_reference_matches": 573,
+      "unknown_reference_occurrences": 0
+    }
+  },
+  "conditional_full_coverage": {
+    "ordered_one_to_one": {
+      "False": {
+        "candidate_action_count": 2804,
+        "candidate_state_unavailable_count": 1,
+        "coverage_applicable_sample_count": 1433,
+        "descriptive_occurrence_losses": {
+          "absent_from_union": 1543,
+          "action_capacity_or_grouping": 51,
+          "order_incompatibility": 66,
+          "strict_position": 207,
+          "total": 1868,
+          "unavailable": 1
+        },
+        "full_coverage_counts": {
+          "ordered_one_to_one": 0,
+          "strict_one_for_one": 0,
+          "union": 96,
+          "unordered_one_to_one": 57
+        },
+        "full_coverage_rates": {
+          "ordered_one_to_one": 0.0,
+          "strict_one_for_one": 0.0,
+          "union": 0.06699232379623168,
+          "unordered_one_to_one": 0.03977669225401256
+        },
+        "occurrence_match_counts": {
+          "ordered_one_to_one_match_count": 695,
+          "strict_same_position_match_count": 488,
+          "union_coverage_count": 812,
+          "unordered_one_to_one_match_count": 761
+        },
+        "occurrence_micro_rates": {
+          "ordered_one_to_one_match_count": 0.29499151103565363,
+          "strict_same_position_match_count": 0.2071307300509338,
+          "union_coverage_count": 0.34465195246179964,
+          "unordered_one_to_one_match_count": 0.32300509337860783
+        },
+        "official_expected_count_differs": 9,
+        "quality": {
+          "direct": {
+            "official_exact": {
+              "count": 92.0,
+              "rate": 0.0642009769713887
+            },
+            "official_tool": {
+              "count": 421.0,
+              "rate": 0.29378925331472433
+            },
+            "repo_exact": {
+              "count": 38.0,
+              "rate": 0.026517794836008374
+            },
+            "repo_multiset_tool": {
+              "count": 269.0,
+              "rate": 0.18771807397069085
+            },
+            "repo_ordered_tool": {
+              "count": 234.0,
+              "rate": 0.16329378925331473
+            }
+          },
+          "system": {
+            "official_exact": {
+              "count": 72.0,
+              "rate": 0.05024424284717376
+            },
+            "official_tool": {
+              "count": 229.0,
+              "rate": 0.159804605722261
+            },
+            "repo_exact": {
+              "count": 16.0,
+              "rate": 0.011165387299371946
+            },
+            "repo_multiset_tool": {
+              "count": 89.0,
+              "rate": 0.062107466852756456
+            },
+            "repo_ordered_tool": {
+              "count": 39.0,
+              "rate": 0.02721563154221912
+            }
+          }
+        },
+        "quality_delta": {
+          "official_exact": -0.013956734124214935,
+          "official_tool": -0.13398464759246334,
+          "repo_exact": -0.015352407536636428,
+          "repo_multiset_tool": -0.1256106071179344,
+          "repo_ordered_tool": -0.1360781577110956
+        },
+        "reference_occurrence_count": 2356,
+        "repeated_reference_names_samples": 20,
+        "sample_count": 1433,
+        "strict_position_reference_matches": 488,
+        "unknown_reference_occurrences": 0
+      },
+      "True": {
+        "candidate_action_count": 3588,
+        "candidate_state_unavailable_count": 0,
+        "coverage_applicable_sample_count": 2567,
+        "descriptive_occurrence_losses": {
+          "absent_from_union": 0,
+          "action_capacity_or_grouping": 0,
+          "order_incompatibility": 0,
+          "strict_position": 159,
+          "total": 159,
+          "unavailable": 0
+        },
+        "full_coverage_counts": {
+          "ordered_one_to_one": 2567,
+          "strict_one_for_one": 2207,
+          "union": 2567,
+          "unordered_one_to_one": 2567
+        },
+        "full_coverage_rates": {
+          "ordered_one_to_one": 1.0,
+          "strict_one_for_one": 0.859758472925594,
+          "union": 1.0,
+          "unordered_one_to_one": 1.0
+        },
+        "occurrence_match_counts": {
+          "ordered_one_to_one_match_count": 3061,
+          "strict_same_position_match_count": 2902,
+          "union_coverage_count": 3061,
+          "unordered_one_to_one_match_count": 3061
+        },
+        "occurrence_micro_rates": {
+          "ordered_one_to_one_match_count": 1.0,
+          "strict_same_position_match_count": 0.9480561907873244,
+          "union_coverage_count": 1.0,
+          "unordered_one_to_one_match_count": 1.0
+        },
+        "official_expected_count_differs": 1,
+        "quality": {
+          "direct": {
+            "official_exact": {
+              "count": 648.0,
+              "rate": 0.2524347487339307
+            },
+            "official_tool": {
+              "count": 2060.0,
+              "rate": 0.802493182703545
+            },
+            "repo_exact": {
+              "count": 546.0,
+              "rate": 0.21269964939618233
+            },
+            "repo_multiset_tool": {
+              "count": 1908.0,
+              "rate": 0.7432800934943514
+            },
+            "repo_ordered_tool": {
+              "count": 1907.0,
+              "rate": 0.7428905336969225
+            }
+          },
+          "system": {
+            "official_exact": {
+              "count": 830.0,
+              "rate": 0.32333463186599143
+            },
+            "official_tool": {
+              "count": 2108.0,
+              "rate": 0.8211920529801324
+            },
+            "repo_exact": {
+              "count": 724.0,
+              "rate": 0.28204129333852745
+            },
+            "repo_multiset_tool": {
+              "count": 1974.0,
+              "rate": 0.7689910401246591
+            },
+            "repo_ordered_tool": {
+              "count": 1974.0,
+              "rate": 0.7689910401246591
+            }
+          }
+        },
+        "quality_delta": {
+          "official_exact": 0.07089988313206075,
+          "official_tool": 0.018698870276587454,
+          "repo_exact": 0.06934164394234513,
+          "repo_multiset_tool": 0.025710946630307707,
+          "repo_ordered_tool": 0.026100506427736647
+        },
+        "reference_occurrence_count": 3061,
+        "repeated_reference_names_samples": 2,
+        "sample_count": 2567,
+        "strict_position_reference_matches": 2902,
+        "unknown_reference_occurrences": 0
+      }
+    },
+    "strict_one_for_one": {
+      "False": {
+        "candidate_action_count": 3728,
+        "candidate_state_unavailable_count": 1,
+        "coverage_applicable_sample_count": 1793,
+        "descriptive_occurrence_losses": {
+          "absent_from_union": 1543,
+          "action_capacity_or_grouping": 51,
+          "order_incompatibility": 66,
+          "strict_position": 366,
+          "total": 2027,
+          "unavailable": 1
+        },
+        "full_coverage_counts": {
+          "ordered_one_to_one": 360,
+          "strict_one_for_one": 0,
+          "union": 456,
+          "unordered_one_to_one": 417
+        },
+        "full_coverage_rates": {
+          "ordered_one_to_one": 0.2007808142777468,
+          "strict_one_for_one": 0.0,
+          "union": 0.2543223647518126,
+          "unordered_one_to_one": 0.23257110987172336
+        },
+        "occurrence_match_counts": {
+          "ordered_one_to_one_match_count": 1092,
+          "strict_same_position_match_count": 726,
+          "union_coverage_count": 1209,
+          "unordered_one_to_one_match_count": 1158
+        },
+        "occurrence_micro_rates": {
+          "ordered_one_to_one_match_count": 0.3966581910642935,
+          "strict_same_position_match_count": 0.2637123138394479,
+          "union_coverage_count": 0.4391572829640392,
+          "unordered_one_to_one_match_count": 0.42063203777697056
+        },
+        "official_expected_count_differs": 9,
+        "quality": {
+          "direct": {
+            "official_exact": {
+              "count": 160.0,
+              "rate": 0.08923591745677635
+            },
+            "official_tool": {
+              "count": 671.0,
+              "rate": 0.37423312883435583
+            },
+            "repo_exact": {
+              "count": 96.0,
+              "rate": 0.053541550474065815
+            },
+            "repo_multiset_tool": {
+              "count": 495.0,
+              "rate": 0.27607361963190186
+            },
+            "repo_ordered_tool": {
+              "count": 459.0,
+              "rate": 0.2559955382041272
+            }
+          },
+          "system": {
+            "official_exact": {
+              "count": 142.0,
+              "rate": 0.07919687674288901
+            },
+            "official_tool": {
+              "count": 455.0,
+              "rate": 0.25376464026770773
+            },
+            "repo_exact": {
+              "count": 68.0,
+              "rate": 0.03792526491912995
+            },
+            "repo_multiset_tool": {
+              "count": 263.0,
+              "rate": 0.14668153931957614
+            },
+            "repo_ordered_tool": {
+              "count": 213.0,
+              "rate": 0.11879531511433351
+            }
+          }
+        },
+        "quality_delta": {
+          "official_exact": -0.010039040713887337,
+          "official_tool": -0.1204684885666481,
+          "repo_exact": -0.015616285554935862,
+          "repo_multiset_tool": -0.1293920803123257,
+          "repo_ordered_tool": -0.13720022308979368
+        },
+        "reference_occurrence_count": 2753,
+        "repeated_reference_names_samples": 20,
+        "sample_count": 1793,
+        "strict_position_reference_matches": 726,
+        "unknown_reference_occurrences": 0
+      },
+      "True": {
+        "candidate_action_count": 2664,
+        "candidate_state_unavailable_count": 0,
+        "coverage_applicable_sample_count": 2207,
+        "descriptive_occurrence_losses": {
+          "absent_from_union": 0,
+          "action_capacity_or_grouping": 0,
+          "order_incompatibility": 0,
+          "strict_position": 0,
+          "total": 0,
+          "unavailable": 0
+        },
+        "full_coverage_counts": {
+          "ordered_one_to_one": 2207,
+          "strict_one_for_one": 2207,
+          "union": 2207,
+          "unordered_one_to_one": 2207
+        },
+        "full_coverage_rates": {
+          "ordered_one_to_one": 1.0,
+          "strict_one_for_one": 1.0,
+          "union": 1.0,
+          "unordered_one_to_one": 1.0
+        },
+        "occurrence_match_counts": {
+          "ordered_one_to_one_match_count": 2664,
+          "strict_same_position_match_count": 2664,
+          "union_coverage_count": 2664,
+          "unordered_one_to_one_match_count": 2664
+        },
+        "occurrence_micro_rates": {
+          "ordered_one_to_one_match_count": 1.0,
+          "strict_same_position_match_count": 1.0,
+          "union_coverage_count": 1.0,
+          "unordered_one_to_one_match_count": 1.0
+        },
+        "official_expected_count_differs": 1,
+        "quality": {
+          "direct": {
+            "official_exact": {
+              "count": 580.0,
+              "rate": 0.2628001812415043
+            },
+            "official_tool": {
+              "count": 1810.0,
+              "rate": 0.8201178069777979
+            },
+            "repo_exact": {
+              "count": 488.0,
+              "rate": 0.2211146352514726
+            },
+            "repo_multiset_tool": {
+              "count": 1682.0,
+              "rate": 0.7621205256003625
+            },
+            "repo_ordered_tool": {
+              "count": 1682.0,
+              "rate": 0.7621205256003625
+            }
+          },
+          "system": {
+            "official_exact": {
+              "count": 760.0,
+              "rate": 0.3443588581785229
+            },
+            "official_tool": {
+              "count": 1882.0,
+              "rate": 0.8527412777526053
+            },
+            "repo_exact": {
+              "count": 672.0,
+              "rate": 0.304485727231536
+            },
+            "repo_multiset_tool": {
+              "count": 1800.0,
+              "rate": 0.8155867693701858
+            },
+            "repo_ordered_tool": {
+              "count": 1800.0,
+              "rate": 0.8155867693701858
+            }
+          }
+        },
+        "quality_delta": {
+          "official_exact": 0.08155867693701863,
+          "official_tool": 0.03262347077480743,
+          "repo_exact": 0.0833710919800634,
+          "repo_multiset_tool": 0.05346624376982334,
+          "repo_ordered_tool": 0.05346624376982334
+        },
+        "reference_occurrence_count": 2664,
+        "repeated_reference_names_samples": 2,
+        "sample_count": 2207,
+        "strict_position_reference_matches": 2664,
+        "unknown_reference_occurrences": 0
+      }
+    },
+    "union": {
+      "False": {
+        "candidate_action_count": 2601,
+        "candidate_state_unavailable_count": 1,
+        "coverage_applicable_sample_count": 1337,
+        "descriptive_occurrence_losses": {
+          "absent_from_union": 1543,
+          "action_capacity_or_grouping": 6,
+          "order_incompatibility": 9,
+          "strict_position": 135,
+          "total": 1694,
+          "unavailable": 1
+        },
+        "full_coverage_counts": {
+          "ordered_one_to_one": 0,
+          "strict_one_for_one": 0,
+          "union": 0,
+          "unordered_one_to_one": 0
+        },
+        "full_coverage_rates": {
+          "ordered_one_to_one": 0.0,
+          "strict_one_for_one": 0.0,
+          "union": 0.0,
+          "unordered_one_to_one": 0.0
+        },
+        "occurrence_match_counts": {
+          "ordered_one_to_one_match_count": 567,
+          "strict_same_position_match_count": 432,
+          "union_coverage_count": 582,
+          "unordered_one_to_one_match_count": 576
+        },
+        "occurrence_micro_rates": {
+          "ordered_one_to_one_match_count": 0.2666980244590781,
+          "strict_same_position_match_count": 0.20319849482596425,
+          "union_coverage_count": 0.2737535277516463,
+          "unordered_one_to_one_match_count": 0.270931326434619
+        },
+        "official_expected_count_differs": 8,
+        "quality": {
+          "direct": {
+            "official_exact": {
+              "count": 85.0,
+              "rate": 0.06357516828721017
+            },
+            "official_tool": {
+              "count": 394.0,
+              "rate": 0.29468960359012714
+            },
+            "repo_exact": {
+              "count": 34.0,
+              "rate": 0.025430067314884067
+            },
+            "repo_multiset_tool": {
+              "count": 221.0,
+              "rate": 0.16529543754674644
+            },
+            "repo_ordered_tool": {
+              "count": 219.0,
+              "rate": 0.1637995512341062
+            }
+          },
+          "system": {
+            "official_exact": {
+              "count": 57.0,
+              "rate": 0.04263275991024682
+            },
+            "official_tool": {
+              "count": 203.0,
+              "rate": 0.1518324607329843
+            },
+            "repo_exact": {
+              "count": 3.0,
+              "rate": 0.002243829468960359
+            },
+            "repo_multiset_tool": {
+              "count": 28.0,
+              "rate": 0.020942408376963352
+            },
+            "repo_ordered_tool": {
+              "count": 27.0,
+              "rate": 0.02019446522064323
+            }
+          }
+        },
+        "quality_delta": {
+          "official_exact": -0.020942408376963352,
+          "official_tool": -0.14285714285714285,
+          "repo_exact": -0.023186237845923708,
+          "repo_multiset_tool": -0.1443530291697831,
+          "repo_ordered_tool": -0.14360508601346297
+        },
+        "reference_occurrence_count": 2126,
+        "repeated_reference_names_samples": 5,
+        "sample_count": 1337,
+        "strict_position_reference_matches": 432,
+        "unknown_reference_occurrences": 0
+      },
+      "True": {
+        "candidate_action_count": 3791,
+        "candidate_state_unavailable_count": 0,
+        "coverage_applicable_sample_count": 2663,
+        "descriptive_occurrence_losses": {
+          "absent_from_union": 0,
+          "action_capacity_or_grouping": 45,
+          "order_incompatibility": 57,
+          "strict_position": 231,
+          "total": 333,
+          "unavailable": 0
+        },
+        "full_coverage_counts": {
+          "ordered_one_to_one": 2567,
+          "strict_one_for_one": 2207,
+          "union": 2663,
+          "unordered_one_to_one": 2624
+        },
+        "full_coverage_rates": {
+          "ordered_one_to_one": 0.9639504318437851,
+          "strict_one_for_one": 0.8287645512579798,
+          "union": 1.0,
+          "unordered_one_to_one": 0.9853548629365377
+        },
+        "occurrence_match_counts": {
+          "ordered_one_to_one_match_count": 3189,
+          "strict_same_position_match_count": 2958,
+          "union_coverage_count": 3291,
+          "unordered_one_to_one_match_count": 3246
+        },
+        "occurrence_micro_rates": {
+          "ordered_one_to_one_match_count": 0.9690063810391978,
+          "strict_same_position_match_count": 0.8988149498632635,
+          "union_coverage_count": 1.0,
+          "unordered_one_to_one_match_count": 0.9863263445761167
+        },
+        "official_expected_count_differs": 2,
+        "quality": {
+          "direct": {
+            "official_exact": {
+              "count": 655.0,
+              "rate": 0.24596319939917385
+            },
+            "official_tool": {
+              "count": 2087.0,
+              "rate": 0.7837025910627112
+            },
+            "repo_exact": {
+              "count": 550.0,
+              "rate": 0.20653398422831393
+            },
+            "repo_multiset_tool": {
+              "count": 1956.0,
+              "rate": 0.7345099511828764
+            },
+            "repo_ordered_tool": {
+              "count": 1922.0,
+              "rate": 0.7217423957942171
+            }
+          },
+          "system": {
+            "official_exact": {
+              "count": 845.0,
+              "rate": 0.3173113030416823
+            },
+            "official_tool": {
+              "count": 2134.0,
+              "rate": 0.801351858805858
+            },
+            "repo_exact": {
+              "count": 737.0,
+              "rate": 0.2767555388659407
+            },
+            "repo_multiset_tool": {
+              "count": 2035.0,
+              "rate": 0.7641757416447615
+            },
+            "repo_ordered_tool": {
+              "count": 1986.0,
+              "rate": 0.7457754412316936
+            }
+          }
+        },
+        "quality_delta": {
+          "official_exact": 0.07134810364250846,
+          "official_tool": 0.01764926774314679,
+          "repo_exact": 0.07022155463762675,
+          "repo_multiset_tool": 0.02966579046188511,
+          "repo_ordered_tool": 0.02403304543747653
+        },
+        "reference_occurrence_count": 3291,
+        "repeated_reference_names_samples": 17,
+        "sample_count": 2663,
+        "strict_position_reference_matches": 2958,
+        "unknown_reference_occurrences": 0
+      }
+    },
+    "unordered_one_to_one": {
+      "False": {
+        "candidate_action_count": 2676,
+        "candidate_state_unavailable_count": 1,
+        "coverage_applicable_sample_count": 1376,
+        "descriptive_occurrence_losses": {
+          "absent_from_union": 1543,
+          "action_capacity_or_grouping": 51,
+          "order_incompatibility": 9,
+          "strict_position": 145,
+          "total": 1749,
+          "unavailable": 1
+        },
+        "full_coverage_counts": {
+          "ordered_one_to_one": 0,
+          "strict_one_for_one": 0,
+          "union": 39,
+          "unordered_one_to_one": 0
+        },
+        "full_coverage_rates": {
+          "ordered_one_to_one": 0.0,
+          "strict_one_for_one": 0.0,
+          "union": 0.028343023255813952,
+          "unordered_one_to_one": 0.0
+        },
+        "occurrence_match_counts": {
+          "ordered_one_to_one_match_count": 628,
+          "strict_same_position_match_count": 483,
+          "union_coverage_count": 688,
+          "unordered_one_to_one_match_count": 637
+        },
+        "occurrence_micro_rates": {
+          "ordered_one_to_one_match_count": 0.28136200716845877,
+          "strict_same_position_match_count": 0.2163978494623656,
+          "union_coverage_count": 0.30824372759856633,
+          "unordered_one_to_one_match_count": 0.2853942652329749
+        },
+        "official_expected_count_differs": 9,
+        "quality": {
+          "direct": {
+            "official_exact": {
+              "count": 92.0,
+              "rate": 0.06686046511627906
+            },
+            "official_tool": {
+              "count": 419.0,
+              "rate": 0.30450581395348836
+            },
+            "repo_exact": {
+              "count": 34.0,
+              "rate": 0.024709302325581394
+            },
+            "repo_multiset_tool": {
+              "count": 238.0,
+              "rate": 0.17296511627906977
+            },
+            "repo_ordered_tool": {
+              "count": 234.0,
+              "rate": 0.17005813953488372
+            }
+          },
+          "system": {
+            "official_exact": {
+              "count": 72.0,
+              "rate": 0.05232558139534884
+            },
+            "official_tool": {
+              "count": 228.0,
+              "rate": 0.16569767441860464
+            },
+            "repo_exact": {
+              "count": 4.0,
+              "rate": 0.0029069767441860465
+            },
+            "repo_multiset_tool": {
+              "count": 43.0,
+              "rate": 0.03125
+            },
+            "repo_ordered_tool": {
+              "count": 39.0,
+              "rate": 0.028343023255813952
+            }
+          }
+        },
+        "quality_delta": {
+          "official_exact": -0.014534883720930224,
+          "official_tool": -0.13880813953488372,
+          "repo_exact": -0.021802325581395346,
+          "repo_multiset_tool": -0.14171511627906977,
+          "repo_ordered_tool": -0.14171511627906977
+        },
+        "reference_occurrence_count": 2232,
+        "repeated_reference_names_samples": 20,
+        "sample_count": 1376,
+        "strict_position_reference_matches": 483,
+        "unknown_reference_occurrences": 0
+      },
+      "True": {
+        "candidate_action_count": 3716,
+        "candidate_state_unavailable_count": 0,
+        "coverage_applicable_sample_count": 2624,
+        "descriptive_occurrence_losses": {
+          "absent_from_union": 0,
+          "action_capacity_or_grouping": 0,
+          "order_incompatibility": 57,
+          "strict_position": 221,
+          "total": 278,
+          "unavailable": 0
+        },
+        "full_coverage_counts": {
+          "ordered_one_to_one": 2567,
+          "strict_one_for_one": 2207,
+          "union": 2624,
+          "unordered_one_to_one": 2624
+        },
+        "full_coverage_rates": {
+          "ordered_one_to_one": 0.9782774390243902,
+          "strict_one_for_one": 0.8410823170731707,
+          "union": 1.0,
+          "unordered_one_to_one": 1.0
+        },
+        "occurrence_match_counts": {
+          "ordered_one_to_one_match_count": 3128,
+          "strict_same_position_match_count": 2907,
+          "union_coverage_count": 3185,
+          "unordered_one_to_one_match_count": 3185
+        },
+        "occurrence_micro_rates": {
+          "ordered_one_to_one_match_count": 0.9821036106750393,
+          "strict_same_position_match_count": 0.9127158555729984,
+          "union_coverage_count": 1.0,
+          "unordered_one_to_one_match_count": 1.0
+        },
+        "official_expected_count_differs": 1,
+        "quality": {
+          "direct": {
+            "official_exact": {
+              "count": 648.0,
+              "rate": 0.24695121951219512
+            },
+            "official_tool": {
+              "count": 2062.0,
+              "rate": 0.7858231707317073
+            },
+            "repo_exact": {
+              "count": 550.0,
+              "rate": 0.20960365853658536
+            },
+            "repo_multiset_tool": {
+              "count": 1939.0,
+              "rate": 0.7389481707317073
+            },
+            "repo_ordered_tool": {
+              "count": 1907.0,
+              "rate": 0.7267530487804879
+            }
+          },
+          "system": {
+            "official_exact": {
+              "count": 830.0,
+              "rate": 0.3163109756097561
+            },
+            "official_tool": {
+              "count": 2109.0,
+              "rate": 0.803734756097561
+            },
+            "repo_exact": {
+              "count": 736.0,
+              "rate": 0.2804878048780488
+            },
+            "repo_multiset_tool": {
+              "count": 2020.0,
+              "rate": 0.7698170731707317
+            },
+            "repo_ordered_tool": {
+              "count": 1974.0,
+              "rate": 0.7522865853658537
+            }
+          }
+        },
+        "quality_delta": {
+          "official_exact": 0.06935975609756095,
+          "official_tool": 0.01791158536585369,
+          "repo_exact": 0.07088414634146345,
+          "repo_multiset_tool": 0.030868902439024404,
+          "repo_ordered_tool": 0.025533536585365835
+        },
+        "reference_occurrence_count": 3185,
+        "repeated_reference_names_samples": 2,
+        "sample_count": 2624,
+        "strict_position_reference_matches": 2907,
+        "unknown_reference_occurrences": 0
+      }
+    }
+  },
+  "diagnostics": {
+    "arms": {
+      "direct": {
+        "ordered_coverage_true_sequence_correct_repo_exact_wrong": 1361,
+        "ordered_coverage_true_sequence_wrong": 660,
+        "ordered_tool_correct_repo_exact_wrong": 1561,
+        "repo_exact_correct_ordered_tool_wrong": 4
+      },
+      "system": {
+        "ordered_coverage_true_sequence_correct_repo_exact_wrong": 1250,
+        "ordered_coverage_true_sequence_wrong": 593,
+        "ordered_tool_correct_repo_exact_wrong": 1286,
+        "repo_exact_correct_ordered_tool_wrong": 13
+      }
+    },
+    "correction": {
+      "equal_action_count": 278,
+      "excess_candidate_actions": 220,
+      "sample_count": 500
+    },
+    "created_at_utc": "2026-09-15T14:19:52.003627+00:00",
+    "multi_reference": {
+      "candidate_action_count": 2385,
+      "candidate_state_unavailable_count": 0,
+      "coverage_applicable_sample_count": 996,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 708,
+        "action_capacity_or_grouping": 51,
+        "order_incompatibility": 66,
+        "strict_position": 235,
+        "total": 1060,
+        "unavailable": 0
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 399,
+        "strict_one_for_one": 370,
+        "union": 495,
+        "unordered_one_to_one": 456
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.4006024096385542,
+        "strict_one_for_one": 0.3714859437751004,
+        "union": 0.49698795180722893,
+        "unordered_one_to_one": 0.4578313253012048
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 1588,
+        "strict_same_position_match_count": 1353,
+        "union_coverage_count": 1705,
+        "unordered_one_to_one_match_count": 1654
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.6581019477828429,
+        "strict_same_position_match_count": 0.5607128056361376,
+        "union_coverage_count": 0.7065893079154579,
+        "unordered_one_to_one_match_count": 0.6854537919602155
+      },
+      "official_expected_count_differs": 10,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 204.0,
+            "rate": 0.20481927710843373
+          },
+          "official_tool": {
+            "count": 578.0,
+            "rate": 0.5803212851405622
+          },
+          "repo_exact": {
+            "count": 24.0,
+            "rate": 0.024096385542168676
+          },
+          "repo_multiset_tool": {
+            "count": 285.0,
+            "rate": 0.286144578313253
+          },
+          "repo_ordered_tool": {
+            "count": 249.0,
+            "rate": 0.25
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 282.0,
+            "rate": 0.28313253012048195
+          },
+          "official_tool": {
+            "count": 565.0,
+            "rate": 0.5672690763052208
+          },
+          "repo_exact": {
+            "count": 64.0,
+            "rate": 0.0642570281124498
+          },
+          "repo_multiset_tool": {
+            "count": 333.0,
+            "rate": 0.33433734939759036
+          },
+          "repo_ordered_tool": {
+            "count": 283.0,
+            "rate": 0.28413654618473894
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.07831325301204822,
+        "official_tool": -0.013052208835341417,
+        "repo_exact": 0.04016064257028112,
+        "repo_multiset_tool": 0.04819277108433734,
+        "repo_ordered_tool": 0.034136546184738936
+      },
+      "reference_occurrence_count": 2413,
+      "repeated_reference_names_samples": 22,
+      "sample_count": 996,
+      "strict_position_reference_matches": 1353,
+      "unknown_reference_occurrences": 0
+    },
+    "observed_single": {
+      "equal_action_count": 2417,
+      "excess_candidate_actions": 556,
+      "sample_count": 3003
+    },
+    "ordered_compatibility_loss_absent_fraction": 0.9289584587597832,
+    "ordered_covered_strict_failed": {
+      "equal_action_count": 0,
+      "excess_candidate_actions": 360,
+      "sample_count": 360
+    },
+    "schema": "saea-ordered-action-saved-row-diagnostics-v1",
+    "single_reference": {
+      "candidate_action_count": 4007,
+      "candidate_state_unavailable_count": 1,
+      "coverage_applicable_sample_count": 3004,
+      "descriptive_occurrence_losses": {
+        "absent_from_union": 835,
+        "action_capacity_or_grouping": 0,
+        "order_incompatibility": 0,
+        "strict_position": 131,
+        "total": 967,
+        "unavailable": 1
+      },
+      "full_coverage_counts": {
+        "ordered_one_to_one": 2168,
+        "strict_one_for_one": 1837,
+        "union": 2168,
+        "unordered_one_to_one": 2168
+      },
+      "full_coverage_rates": {
+        "ordered_one_to_one": 0.7217043941411452,
+        "strict_one_for_one": 0.6115179760319573,
+        "union": 0.7217043941411452,
+        "unordered_one_to_one": 0.7217043941411452
+      },
+      "occurrence_match_counts": {
+        "ordered_one_to_one_match_count": 2168,
+        "strict_same_position_match_count": 2037,
+        "union_coverage_count": 2168,
+        "unordered_one_to_one_match_count": 2168
+      },
+      "occurrence_micro_rates": {
+        "ordered_one_to_one_match_count": 0.7217043941411452,
+        "strict_same_position_match_count": 0.6780958721704394,
+        "union_coverage_count": 0.7217043941411452,
+        "unordered_one_to_one_match_count": 0.7217043941411452
+      },
+      "official_expected_count_differs": 0,
+      "quality": {
+        "direct": {
+          "official_exact": {
+            "count": 536.0,
+            "rate": 0.17842876165113183
+          },
+          "official_tool": {
+            "count": 1903.0,
+            "rate": 0.6334886817576565
+          },
+          "repo_exact": {
+            "count": 560.0,
+            "rate": 0.18641810918774968
+          },
+          "repo_multiset_tool": {
+            "count": 1892.0,
+            "rate": 0.62982689747004
+          },
+          "repo_ordered_tool": {
+            "count": 1892.0,
+            "rate": 0.62982689747004
+          }
+        },
+        "system": {
+          "official_exact": {
+            "count": 620.0,
+            "rate": 0.20639147802929428
+          },
+          "official_tool": {
+            "count": 1772.0,
+            "rate": 0.5898801597869507
+          },
+          "repo_exact": {
+            "count": 676.0,
+            "rate": 0.22503328894806923
+          },
+          "repo_multiset_tool": {
+            "count": 1730.0,
+            "rate": 0.5758988015978695
+          },
+          "repo_ordered_tool": {
+            "count": 1730.0,
+            "rate": 0.5758988015978695
+          }
+        }
+      },
+      "quality_delta": {
+        "official_exact": 0.027962716378162444,
+        "official_tool": -0.04360852197070575,
+        "repo_exact": 0.03861517976031956,
+        "repo_multiset_tool": -0.0539280958721704,
+        "repo_ordered_tool": -0.0539280958721704
+      },
+      "reference_occurrence_count": 3004,
+      "repeated_reference_names_samples": 0,
+      "sample_count": 3004,
+      "strict_position_reference_matches": 2037,
+      "unknown_reference_occurrences": 0
+    },
+    "source_rows_sha256": "ab3ecbb963a3f3c71fee38bacb724557b400268ebe32a283f8419f237eeb4106",
+    "status": "Post-hoc descriptive arithmetic over the registered projected rows; no new source read, scoring or decision."
+  },
+  "equal_domain_sensitivity": {
+    "coverage_applicable_strata": {
+      "ordered_one_to_one": 3,
+      "strict_one_for_one": 3,
+      "union": 3,
+      "unordered_one_to_one": 3
+    },
+    "full_coverage_rates": {
+      "ordered_one_to_one": 0.6716603289872306,
+      "strict_one_for_one": 0.5765565140278858,
+      "union": 0.7040076544620283,
+      "unordered_one_to_one": 0.6915125255120396
+    },
+    "quality": {
+      "direct": {
+        "official_exact": 0.30523180530396793,
+        "official_tool": 0.6876380636215927,
+        "repo_exact": 0.23398732909905018,
+        "repo_multiset_tool": 0.6021204805618572,
+        "repo_ordered_tool": 0.5883229600277197
+      },
+      "system": {
+        "official_exact": 0.37141280341110045,
+        "official_tool": 0.6472740556492655,
+        "repo_exact": 0.29292824119419303,
+        "repo_multiset_tool": 0.5688208953508821,
+        "repo_ordered_tool": 0.550365133835827
+      }
+    },
+    "stratum_count": 3
+  },
+  "equal_tier": {
+    "coverage_applicable_strata": {
+      "ordered_one_to_one": 8,
+      "strict_one_for_one": 8,
+      "union": 8,
+      "unordered_one_to_one": 8
+    },
+    "full_coverage_rates": {
+      "ordered_one_to_one": 0.64175,
+      "strict_one_for_one": 0.55175,
+      "union": 0.6657500000000001,
+      "unordered_one_to_one": 0.656
+    },
+    "quality": {
+      "direct": {
+        "official_exact": 0.185,
+        "official_tool": 0.62025,
+        "repo_exact": 0.146,
+        "repo_multiset_tool": 0.54425,
+        "repo_ordered_tool": 0.53525
+      },
+      "system": {
+        "official_exact": 0.2255,
+        "official_tool": 0.58425,
+        "repo_exact": 0.185,
+        "repo_multiset_tool": 0.51575,
+        "repo_ordered_tool": 0.50325
+      }
+    },
+    "stratum_count": 8
+  },
+  "external_report_sha256": "17d0aafc9964ef69e8352ed5c735ebf53347d450b1d61d7aff91c718875029ed",
+  "limitations": [
+    "Reference-list order is the repository scorer convention, not verified speech chronology.",
+    "Full coverage tests tool-name compatibility only, not arguments or output correctness.",
+    "Official metrics score the primary parsed call; repo ordered-tool and multiset-call metrics differ.",
+    "Conditional outcome partitions and additive compatibility losses are descriptive, not causal.",
+    "No new hypothesis test, promotion decision, runtime knowledge or prompt change is authorized."
+  ],
+  "natural": {
+    "candidate_action_count": 6392,
+    "candidate_state_unavailable_count": 1,
+    "coverage_applicable_sample_count": 4000,
+    "descriptive_occurrence_losses": {
+      "absent_from_union": 1543,
+      "action_capacity_or_grouping": 51,
+      "order_incompatibility": 66,
+      "strict_position": 366,
+      "total": 2027,
+      "unavailable": 1
+    },
+    "full_coverage_counts": {
+      "ordered_one_to_one": 2567,
+      "strict_one_for_one": 2207,
+      "union": 2663,
+      "unordered_one_to_one": 2624
+    },
+    "full_coverage_rates": {
+      "ordered_one_to_one": 0.64175,
+      "strict_one_for_one": 0.55175,
+      "union": 0.66575,
+      "unordered_one_to_one": 0.656
+    },
+    "occurrence_match_counts": {
+      "ordered_one_to_one_match_count": 3756,
+      "strict_same_position_match_count": 3390,
+      "union_coverage_count": 3873,
+      "unordered_one_to_one_match_count": 3822
+    },
+    "occurrence_micro_rates": {
+      "ordered_one_to_one_match_count": 0.6933727155251984,
+      "strict_same_position_match_count": 0.6258076426066088,
+      "union_coverage_count": 0.714971386376223,
+      "unordered_one_to_one_match_count": 0.7055565811334688
+    },
+    "official_expected_count_differs": 10,
+    "quality": {
+      "direct": {
+        "official_exact": {
+          "count": 740.0,
+          "rate": 0.185
+        },
+        "official_tool": {
+          "count": 2481.0,
+          "rate": 0.62025
+        },
+        "repo_exact": {
+          "count": 584.0,
+          "rate": 0.146
+        },
+        "repo_multiset_tool": {
+          "count": 2177.0,
+          "rate": 0.54425
+        },
+        "repo_ordered_tool": {
+          "count": 2141.0,
+          "rate": 0.53525
+        }
+      },
+      "system": {
+        "official_exact": {
+          "count": 902.0,
+          "rate": 0.2255
+        },
+        "official_tool": {
+          "count": 2337.0,
+          "rate": 0.58425
+        },
+        "repo_exact": {
+          "count": 740.0,
+          "rate": 0.185
+        },
+        "repo_multiset_tool": {
+          "count": 2063.0,
+          "rate": 0.51575
+        },
+        "repo_ordered_tool": {
+          "count": 2013.0,
+          "rate": 0.50325
+        }
+      }
+    },
+    "quality_delta": {
+      "official_exact": 0.04050000000000001,
+      "official_tool": -0.03599999999999992,
+      "repo_exact": 0.03900000000000001,
+      "repo_multiset_tool": -0.02849999999999997,
+      "repo_ordered_tool": -0.03200000000000003
+    },
+    "reference_occurrence_count": 5417,
+    "repeated_reference_names_samples": 22,
+    "sample_count": 4000,
+    "strict_position_reference_matches": 3390,
+    "unknown_reference_occurrences": 0
+  },
+  "projected_rows": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-ORDERED-ACTION-ATTRIBUTION-V1/rows.jsonl",
+    "sha256": "ab3ecbb963a3f3c71fee38bacb724557b400268ebe32a283f8419f237eeb4106"
+  },
+  "reference_candidate_count_matrix": {
+    "(1, '0')": 30,
+    "(1, '1')": 2417,
+    "(1, '2')": 407,
+    "(1, '3')": 59,
+    "(1, '4')": 21,
+    "(1, '5')": 7,
+    "(1, '6')": 6,
+    "(1, '7')": 4,
+    "(1, '8')": 52,
+    "(1, 'unavailable')": 1,
+    "(2, '0')": 1,
+    "(2, '1')": 27,
+    "(2, '2')": 559,
+    "(2, '3')": 66,
+    "(2, '4')": 3,
+    "(2, '5')": 1,
+    "(2, '7')": 1,
+    "(2, '8')": 1,
+    "(3, '1')": 1,
+    "(3, '2')": 60,
+    "(3, '3')": 196,
+    "(3, '4')": 18,
+    "(3, '5')": 3,
+    "(4, '2')": 5,
+    "(4, '3')": 20,
+    "(4, '4')": 14,
+    "(4, '5')": 2,
+    "(4, '6')": 1,
+    "(5, '2')": 1,
+    "(5, '3')": 2,
+    "(5, '4')": 5,
+    "(5, '5')": 2,
+    "(5, '8')": 1,
+    "(6, '3')": 2,
+    "(6, '4')": 1,
+    "(6, '5')": 1,
+    "(7, '5')": 1,
+    "(7, '6')": 1
+  },
+  "reference_read_extension_sha256": "b98479f4bf137b653bf0f21a5bbd5f24dd5cdfad81c4250bae40e9cba9146baa",
+  "schema": "saea-ordered-action-attribution-v1",
+  "source_validation": {
+    "encoder_calls": 0,
+    "model_calls": 0,
+    "primary_and_v2_crosschecks": "all passed",
+    "sample_count": 4000,
+    "scorer_invocations": 0,
+    "tokenizer_calls": 0
+  },
+  "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+  "status": "POSTHOC_DESCRIPTIVE_NO_NEW_VERDICT"
+}

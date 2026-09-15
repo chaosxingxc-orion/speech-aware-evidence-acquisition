@@ -1,0 +1,89 @@
+{
+  "analysis_id": "SAEA-A2T-ORDERED-ACTION-ATTRIBUTION-V1",
+  "encoder_calls": 0,
+  "execution_profile": "model-free-check",
+  "expected_sample_count": 4000,
+  "frozen_definitions": {
+    "decomposition": "For observed states, expected count minus union, union minus unordered, unordered minus ordered, ordered minus positional. For unavailable states keep expected occurrences in a separate unavailable category. All are descriptive compatibility losses, not causal error classes.",
+    "full_quality": "Reuse persisted standard scores. Never reinterpret candidate compatibility as output correctness or parameter correctness.",
+    "no_reference_actions": "Retain rows with zero expected occurrences; report them separately with full-coverage flags unavailable, not automatically correct.",
+    "ordered": "Maximum order-preserving one-to-one matching between expected occurrences and candidate actions using exact tool-name membership.",
+    "positional": "Count compatible equal-index pairs. Strict one-for-one sample coverage additionally requires equal action counts.",
+    "state_unavailable": "Keep one finite unavailable state and its denominator; do not credit another state or drop the row.",
+    "union": "Count each expected occurrence whose exact tool name is anywhere in the candidate union; this deliberately ignores assignment and order.",
+    "unordered": "Maximum one-to-one matching from expected action occurrences to distinct candidate actions using exact tool-name membership."
+  },
+  "gpu_launch_allowed": false,
+  "model_calls": 0,
+  "output_namespace": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-ORDERED-ACTION-ATTRIBUTION-V1",
+  "prior_read_release": "docs/readiness/2026-09-15-a2t-native-role-paired-read-release-v1.json",
+  "read_scope": "Inspect persisted full expected and predicted tool-name sequences in the first finalized score artifacts and join them to already verified candidate actions. Read no dataset reference file under this release. If full name sequences are unavailable, stop that extraction and separately bind a permissible source before reading it. Do not invoke any scorer or regenerate candidate states.",
+  "registered_at_utc": "2026-09-15T14:01:12.120966+00:00",
+  "registered_by": "root",
+  "reporting": {
+    "policy": "Keep the scope-tools candidate configuration frozen. Use analysis to refine interpretation and future registered diagnostics, not silently tune its prompts or gates.",
+    "strata": [
+      "tier",
+      "domain",
+      "reference action count",
+      "candidate action count",
+      "single versus multiple expected occurrences"
+    ],
+    "uncertainty": "No new hypothesis test or adoption decision. Report exact descriptive counts and weighting denominators; existing paired inferential result remains unchanged.",
+    "weightings": [
+      "natural sample mixture",
+      "equal tier",
+      "equal domain sensitivity",
+      "reference-occurrence micro coverage separately"
+    ]
+  },
+  "research_status": "Post-hoc descriptive extension after existing outcome inspection; not a preregistered new effectiveness test.",
+  "runtime_knowledge_mutation_allowed": false,
+  "schema": "saea-ordered-candidate-analysis-read-intent-v1",
+  "scorer_invocations": 0,
+  "shared_alignment_module": "analysis.candidate_action_alignment",
+  "sources": {
+    "candidate_audit": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/candidate-source-audit-v2.json",
+      "sha256": "dea6d3026648bcfbc4aa4912da9de57072269b7acb8af8e060f245e4995d1acb"
+    },
+    "direct_attached_score": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1/attempt-a2t-native-role-direct-union4000-generation-v1/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1.scores.json",
+      "sha256": "2071602b9ea40dfa571ded2508d92051cd945ce4b2d50a6a9dd935367a058026"
+    },
+    "direct_first_score_batch": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1/attempt-a2t-native-role-direct-union4000-generation-v1/score-batch/batch-summary.json",
+      "sha256": "931ea3179e1525d6a81e2e77d03c718511ca72da08d8430f440ddc7210fed88e"
+    },
+    "direct_manifest": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1/attempt-a2t-native-role-direct-union4000-generation-v1/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1.run-manifest.json",
+      "sha256": "a3fb34c6c1825a5bbb0642f88c8d130fd72f348c9b8c3d78e0f69d2c2c51d004"
+    },
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/full4000-metadata-v2.json",
+      "sha256": "f0cc01a84506dbd6bd4be9b53388e251c4ffa108711acb46c281a70fb4cd8251"
+    },
+    "prior_binding": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/complete-source-bindings-v1.json",
+      "sha256": "2f21b106f88b7a420b06569c35a441ea2b7bfc4b87462caca59677bd9240af00"
+    },
+    "prior_outcome_join": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/candidate-outcome-join-v1.json",
+      "sha256": "f0c38ab4608f46aeb9c4c722ff8a6941d2075d67e6cb20b76764415528dae95f"
+    },
+    "system_attached_score": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1/attempt-a2t-native-role-dual-store-union4000-recovery-generation-v1/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1.scores.json",
+      "sha256": "8082e46b8f2e0c7693f1bf57cf683ba79112888a104a10d3773c6ce23547cae7"
+    },
+    "system_first_score_batch": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1/attempt-a2t-native-role-dual-store-union4000-recovery-generation-v1/score-batch/batch-summary.json",
+      "sha256": "c99c86f6c6ff75c8a097f4489a8492aec5a6b88e88a8b99796b47d941ecebefb"
+    },
+    "system_manifest": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1/attempt-a2t-native-role-dual-store-union4000-recovery-generation-v1/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1.run-manifest.json",
+      "sha256": "8a4e515bb52ed4692bdca855e7053586c409760e4ee33df9fcca9b4542466b73"
+    }
+  },
+  "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+  "tokenizer_calls": 0
+}
