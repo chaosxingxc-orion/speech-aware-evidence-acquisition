@@ -130,3 +130,12 @@ API and exact all-tier source exclusions are implemented and independently exerc
 Continue shared source-bound compilation and live OBS routing before a new GPU
 registration. The server remains resident with both leases released. The historical
 ordered queue above is superseded where STATUS-046 names the same next work.
+
+
+## September 15 full4000 closure and source integration
+
+The Audio2Tool native sole recovery finalized4,000 rows and retained its first complete scoring batch. GPU dispatch is now held by the owner; preserve resident service memory. See STATUS-129 for exact receipts and current CPU work.
+
+The shared E21 execution-unit/window packets, bounded speech-span and governed-context base merged at d8f4bfa24e852d22132564b76f2f0dd8523c0dda. The corrected postseal JSON Planner audit reader merged at466aba4a665d7d2da22f753739506b915556402b. These integrations occurred after the active flight ended; frozen runtime and historical artifacts remain unchanged.
+
+Root complete-score analysis is documented in docs/results/2026-09-15-a2t-native-role-base-full4000.md with pending paired intervals and candidate attribution stated explicitly. Use the native-system-repair-priorities note for current direction. The older knowledge-on/off and unconditional throughput dispatch language does not override complete-system comparisons or the current GPU hold.

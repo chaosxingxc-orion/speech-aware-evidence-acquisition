@@ -3551,6 +3551,18 @@
         "SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-V1",
         "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-V1"
       ]
+    },
+    {
+      "date": "2026-09-15",
+      "cell_id": "A2T-NATIVE-ROLE-BASE-UNION4000-V1",
+      "status": "PRIMARY_GAIN_TOOL_GUARD_FAILED_NOT_ADOPTED",
+      "source": "docs/results/2026-09-15-a2t-native-role-primary-decision-v1.json",
+      "source_sha256": "dbb8edc282370ecf779d8794888e3694f82fccdceba6a397b7f4a60245ca7c43",
+      "meaning": "Complete native/direct4000 comparison and first scores retained. Official primary-call exact18.50% to22.55%, +4.05pp; paired query-cluster CI95 natural[2.962958,5.164512], equal-tier[2.970283,5.152067], exceeding the1.0pp threshold. Official tool accuracy changes-3.60pp and fails the frozen nonnegative point guard; no adoption or stable-benefit claim. Candidate attribution remains separate and ongoing. GPU hold active.",
+      "run_ids": [
+        "SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1",
+        "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1"
+      ]
     }
   ]
 }

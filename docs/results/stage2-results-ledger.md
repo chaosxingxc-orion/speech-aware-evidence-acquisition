@@ -1430,3 +1430,11 @@ ABORTED_ENGINEERING_FAILURE. The TRAIN A successor stopped after 86 model debits
 ## September 15: repeated useful SLURP agent base
 
 The max512 native dual-store base replication passes the unchanged exploratory rule: NEW500 official micro F1 +14.7970 pp, speaker CI90 [11.5245, 18.0112], DEV1000 +14.6233 and equal-scenario +12.1257. Both complete first-score artifacts and all strata are retained in [the root verdict](2026-09-14-slurp-dual-store-base-replication-verdict-v1.md). The original same-package pair is positive separately; no pooled rescue or generalization claim. Audio2Tool [engineering proof](2026-09-15-a2t-native-role-engineering-proof-v1.md) is sealed with no task-quality result; full4000 remains pending registration.
+
+## September 15 native Audio2Tool complete comparison
+
+| Cell | Decision | Complete result | Source |
+| --- | --- | --- | --- |
+| A2T-NATIVE-ROLE-BASE-UNION4000-V1 | **PRIMARY_GAIN_TOOL_GUARD_FAILED_NOT_ADOPTED** | Official primary-call exact18.50% to22.55%; gain4.05pp, paired query-cluster CI95[2.963,5.165]. Both primary lower-bound checks pass the1.0pp threshold, but official tool accuracy declines3.60pp and fails the original point guard. The complete system has optimization space; stable adoption and isolated component effects are not established. | [Primary decision](2026-09-15-a2t-native-role-primary-decision-v1.json), SHA-256 dbb8edc282370ecf779d8794888e3694f82fccdceba6a397b7f4a60245ca7c43; [full report](2026-09-15-a2t-native-role-base-full4000.md) |
+
+Both raw arms are FINALIZED with4,000 rows and one first complete official scoring batch each. Repo-v2 normalized call-multiset exact improves14.60% to18.50%; its semantics differ from official primary-call exact and do not enforce order. Preserve the original aborted attempt and all exposure. Candidate attribution is still being closed independently; no new GPU work is authorized by this result.

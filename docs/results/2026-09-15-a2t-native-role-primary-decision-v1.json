@@ -1,0 +1,215 @@
+{
+  "all_registered_quality_sources_complete": true,
+  "candidate_attribution_status": "pending_verified_selection_join",
+  "checks": {
+    "official_macro_parameter_f1_point_nonnegative": true,
+    "official_tool_accuracy_point_nonnegative": false,
+    "primary_equal_tier_lower_above_headroom_threshold": true,
+    "primary_natural_lower_above_headroom_threshold": true
+  },
+  "created_at_utc": "2026-09-15T11:08:59.643910+00:00",
+  "decision": "PRIMARY_GAIN_TOOL_GUARD_FAILED_NOT_ADOPTED",
+  "decision_rule": {
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/configs/analysis/a2t-native-role-base-decision-v1.json",
+    "sha256": "6d7cd578f66c44cfc195fff4a2eb42f508e3546b4018918357f347161b468156"
+  },
+  "diagnostic_natural_summary": {
+    "official_exact_match": {
+      "bootstrap": {
+        "ci_high": 4.982745694428087,
+        "ci_level": 0.9,
+        "ci_low": 3.1328289645047476,
+        "n_replicates": 10000,
+        "point_estimate": 4.050000000000001,
+        "seed": 20260914,
+        "sigma_hat": 0.5567770350175654,
+        "units": "percentage-points"
+      },
+      "gain_pp": 4.050000000000001,
+      "left_ratio_pct": 18.5,
+      "n": 4000,
+      "right_ratio_pct": 22.55,
+      "status": "available"
+    },
+    "official_macro_parameter_f1": {
+      "bootstrap": {
+        "ci_high": 5.74647684607732,
+        "ci_level": 0.9,
+        "ci_low": 3.764557329196537,
+        "n_replicates": 10000,
+        "point_estimate": 4.75261904761905,
+        "seed": 20260914,
+        "sigma_hat": 0.6066489008805371,
+        "units": "percentage-points"
+      },
+      "gain_pp": 4.75261904761905,
+      "left_ratio_pct": 30.148988095238096,
+      "n": 4000,
+      "right_ratio_pct": 34.901607142857145,
+      "status": "available"
+    },
+    "official_macro_parameter_precision": {
+      "bootstrap": {
+        "ci_high": 6.42097026988377,
+        "ci_level": 0.9,
+        "ci_low": 4.406911624029934,
+        "n_replicates": 10000,
+        "point_estimate": 5.4250000000000025,
+        "seed": 20260914,
+        "sigma_hat": 0.6136923329267987,
+        "units": "percentage-points"
+      },
+      "gain_pp": 5.4250000000000025,
+      "left_ratio_pct": 29.96875,
+      "n": 4000,
+      "right_ratio_pct": 35.393750000000004,
+      "status": "available"
+    },
+    "official_macro_parameter_recall": {
+      "bootstrap": {
+        "ci_high": 5.571681961337609,
+        "ci_level": 0.9,
+        "ci_low": 3.6589677744976186,
+        "n_replicates": 10000,
+        "point_estimate": 4.610416666666673,
+        "seed": 20260914,
+        "sigma_hat": 0.5760244341300559,
+        "units": "percentage-points"
+      },
+      "gain_pp": 4.610416666666673,
+      "left_ratio_pct": 46.66458333333333,
+      "n": 4000,
+      "right_ratio_pct": 51.275000000000006,
+      "status": "available"
+    },
+    "official_micro_parameter_f1": {
+      "bootstrap": {
+        "ci_high": 6.7854014195443195,
+        "ci_level": 0.9,
+        "ci_low": 4.694313080967684,
+        "n_replicates": 10000,
+        "point_estimate": 5.743210000782706,
+        "seed": 20260914,
+        "sigma_hat": 0.6366018855493192,
+        "units": "percentage-points"
+      },
+      "gain_pp": 5.743210000782706,
+      "left_ratio_pct": 24.53456777699507,
+      "n": 4000,
+      "right_ratio_pct": 30.277777777777775,
+      "status": "available"
+    },
+    "official_tool_accuracy": {
+      "bootstrap": {
+        "ci_high": -2.480752983142919,
+        "ci_level": 0.9,
+        "ci_low": -4.7170510478037135,
+        "n_replicates": 10000,
+        "point_estimate": -3.599999999999992,
+        "seed": 20260914,
+        "sigma_hat": 0.6802910310464969,
+        "units": "percentage-points"
+      },
+      "gain_pp": -3.599999999999992,
+      "left_ratio_pct": 62.025,
+      "n": 4000,
+      "right_ratio_pct": 58.425000000000004,
+      "status": "available"
+    },
+    "repo_ordered_tool_sequence_accuracy": {
+      "bootstrap": {
+        "ci_high": -2.0667127408732453,
+        "ci_level": 0.9,
+        "ci_low": -4.345774716317036,
+        "n_replicates": 10000,
+        "point_estimate": -3.200000000000003,
+        "seed": 20260914,
+        "sigma_hat": 0.6895017968595492,
+        "units": "percentage-points"
+      },
+      "gain_pp": -3.200000000000003,
+      "left_ratio_pct": 53.525,
+      "n": 4000,
+      "right_ratio_pct": 50.324999999999996,
+      "status": "available"
+    }
+  },
+  "experiment_id": "SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1",
+  "full_decision_source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/final-primary-decision-v1.json",
+    "sha256": "425ad43fd597941323a9a564d4031d44f9454ba6ecab9862317a5532a30ed88a"
+  },
+  "gpu_hold_active": true,
+  "limits": [
+    "Previously exposed Stage-2 discovery sample",
+    "No isolated component causal claim",
+    "No independent replication of this new A2T system",
+    "No superiority or generalization claim",
+    "No algorithmic training-free RL claim"
+  ],
+  "model_calls": 0,
+  "paired_result": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/paired-score-result-v2.json",
+    "sha256": "5578ee3f7754ca20267dfb9fd11fadbc9a3fa0a1570a4dea7258df2747d1e765"
+  },
+  "primary_metric_semantics": "Published official first-call tool-plus-parameter exact match; not ordered full-call exact match.",
+  "primary_summary": {
+    "equal_domain_sensitivity": {
+      "bootstrap": {
+        "ci_high": 8.727551197365527,
+        "ci_level": 0.95,
+        "ci_low": 4.479350427803353,
+        "n_replicates": 10000,
+        "point_estimate": 6.618099810713256,
+        "seed": 20260914,
+        "sigma_hat": 1.0728439611544796,
+        "units": "percentage-points"
+      },
+      "gain_pp": 6.6180998107132565,
+      "left_ratio_pct": 30.52318053039679,
+      "n": 4000,
+      "right_ratio_pct": 37.14128034111005,
+      "status": "available"
+    },
+    "equal_tier": {
+      "bootstrap": {
+        "ci_high": 5.152066584515751,
+        "ci_level": 0.95,
+        "ci_low": 2.970282661884242,
+        "n_replicates": 10000,
+        "point_estimate": 4.050000000000001,
+        "seed": 20260914,
+        "sigma_hat": 0.5534894544042183,
+        "units": "percentage-points"
+      },
+      "gain_pp": 4.050000000000001,
+      "left_ratio_pct": 18.5,
+      "n": 4000,
+      "right_ratio_pct": 22.55,
+      "status": "available"
+    },
+    "natural": {
+      "bootstrap": {
+        "ci_high": 5.164511828009255,
+        "ci_level": 0.95,
+        "ci_low": 2.9629584285558805,
+        "n_replicates": 10000,
+        "point_estimate": 4.050000000000001,
+        "seed": 20260914,
+        "sigma_hat": 0.5567770350175654,
+        "units": "percentage-points"
+      },
+      "gain_pp": 4.050000000000001,
+      "left_ratio_pct": 18.5,
+      "n": 4000,
+      "right_ratio_pct": 22.55,
+      "status": "available"
+    }
+  },
+  "promising_system": false,
+  "same_roster_replication_completed": false,
+  "schema": "saea-root-native-system-primary-decision-v1",
+  "scorer_invocations": 0,
+  "stable_benefit_established": false,
+  "threshold_pp": 1.0
+}
