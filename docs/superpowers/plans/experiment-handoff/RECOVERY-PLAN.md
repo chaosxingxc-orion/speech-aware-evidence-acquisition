@@ -1,6 +1,6 @@
 # Owner-directed recovery and continuation plan
 
-**Current overlay:** Read [STATUS-133](STATUS-133.md). Scoped activation knowledge and a complete held Audio2Tool direct/system pair are prepared with283 passing CPU tests and both real4000-row source checks. Reviewer/Planner can query named scope or parameter knowledge and request one bounded candidate refresh; Perception keeps the complete compact legal inventory. The prior lexical-neighbor artifact remains HELD_FOR_VALUE_REDESIGN_NOT_PUBLISHED. No new task gain or actual capacity pass is claimed. GPU generation, fit, encoding and service restart remain held; preserve resident memory. The historical full4000 result retains its exact-match gain, failed tool guard and72.05% candidate inclusion. SLURP broad/factored TRAIN-A stays first after explicit resume, followed by reviewed A2T and E21 transfer. Root owns attribution, design and decisions.
+**Current overlay:** Read [STATUS-136](STATUS-136.md). The parameter-value source audit is complete. The identifier projection gap is real, but historical default-copying failures and the absence of a device alias catalog change the next action: do not append unqualified defaults or infer a catalog from evaluation answers. Preserve the scope-tools preparation under STATUS-133, complete attribution under STATUS-134/135 and all frozen configurations. Full ordered-action candidate coverage is 64.175%; primary inclusion is 72.05%, a different statistic. The current system retains its exact-match gain and failed tool guard. GPU generation, actual fit/tokenizer, encoding and service restart remain held. After explicit resume and per-flight gates, retain SLURP broad/factored TRAIN-A first, the admitted prepared Audio2Tool pair next, then E21 transfer. Root owns interpretation and decisions.
 
 **Latest released TRAIN diagnosis:** Read the [source-bound entity-loss analysis](../../../results/2026-09-14-slurp-train-a-entity-loss-attribution-v1.md). The exact Fold A output/reference join reconciles every saved official ingredient without rescoring. Of 414 reference-empty cases, 184 emit entities; surface, omission and extra-prediction losses all matter. This is a diagnostic, not a new mechanism or runtime memory admission.
 
@@ -147,3 +147,16 @@ Root complete-score analysis is documented in docs/results/2026-09-15-a2t-native
 ## 2026-09-15 primary-parameter and value-source closure
 
 [STATUS-135](STATUS-135.md) records the complete4000 primary-parameter analysis using original parsing/normalization and saved outcomes, with54 passing tests. The common-primary-correct cohort shows fewer wrong values but more omissions, and a concentrated device identifier gap. Public identifier defaults are absent from current compact/parameter values; retain their source status rather than treating them as automatic answers. Root recommends a later named value-evidence investigation through shared target lookup. Preserve the frozen scope-tools comparison, old verdicts and owner GPU hold. No new generation, fit, encoding or scoring occurred.
+
+## 2026-09-15 historical and source reconciliation
+
+[STATUS-136](STATUS-136.md) closes the follow-up to the identifier-value gap. The
+historical supply experiments recorded default-copying failures; their bare-key
+substitution counts are not current official errors or net task benefits. No
+global prohibition on public defaults is inferred, but no raw-default runtime
+view is admitted. The current construction contract contains no device-instance
+alias mapping. Root verified 22 source bindings and exclusion of the current
+4,000 evaluation samples and their query groups using existing metadata. A later
+parameter-evidence extension must establish source meaning and request binding
+through the shared tools. Preserve all held configurations and close this audit;
+do not rebuild unchanged preparations while GPU dispatch is held.

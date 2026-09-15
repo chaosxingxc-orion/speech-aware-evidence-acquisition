@@ -1,0 +1,298 @@
+{
+  "schema": "saea-a2t-parameter-value-evidence-decision-v1",
+  "at_utc": "2026-09-15T15:29:57.341769+00:00",
+  "source_commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+  "status": "HISTORICAL_SOURCE_RECONCILIATION_COMPLETE_NO_DEFAULT_VALUE_ADMISSION",
+  "scope": "CPU-only review of already consumed historical results, source code and existing construction metadata; no new target values or speech content read.",
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "runtime_analytical_tool": 0,
+    "scorer": 0,
+    "service": 0,
+    "network": 0,
+    "gpu_hours": 0
+  },
+  "sources": {
+    "repository": [
+      {
+        "path": "docs/readiness/2026-08-18-pa2t-stage2-preregistration-REGISTERED.md",
+        "commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+        "sha256": "023f6b974f5087fd0a3bbae97c44b3061ad588795b319a43eb1b2f41b80c7ff8",
+        "hash_basis": "git-blob"
+      },
+      {
+        "path": "docs/readiness/2026-08-18-pa2t-stage2b-preregistration-REGISTERED.md",
+        "commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+        "sha256": "ec672560c25cea36c3a0e5b0aec4de5d97d52a5d660b43ba837df26d37849020",
+        "hash_basis": "git-blob"
+      },
+      {
+        "path": "docs/readiness/2026-08-18-pa2t-stage2c-preregistration-REGISTERED.md",
+        "commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+        "sha256": "e939885f6758596a315a0ae42c73cd77de95f26f04b891e8c6da7ddc66d35809",
+        "hash_basis": "git-blob"
+      },
+      {
+        "path": "docs/readiness/2026-08-18-a2t-s2-verdict.md",
+        "commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+        "sha256": "6f07a526f4f3b2ad668e2223cfc625de7d742179ca179f0941f4cb82374c0606",
+        "hash_basis": "git-blob"
+      },
+      {
+        "path": "docs/readiness/2026-08-18-a2t-s2b-verdict.md",
+        "commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+        "sha256": "28a7a6de6fbb578ab7cfa41e33eef688d130983cb9a3b6a1cd0d494ca2ae808f",
+        "hash_basis": "git-blob"
+      },
+      {
+        "path": "docs/readiness/2026-08-18-a2t-s2c-verdict.md",
+        "commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+        "sha256": "d69b3a6f54ede9f196e113569d1a9db59218c5dcc1bdaa17d461cd096ec248f9",
+        "hash_basis": "git-blob"
+      },
+      {
+        "path": "docs/readiness/2026-08-18-stage2b-candidate-qualification-DRAFT.md",
+        "commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+        "sha256": "54044c50207075d18fcdecbccc087cc1ea88160279eb5193ae88a50b798c9622",
+        "hash_basis": "git-blob"
+      },
+      {
+        "path": "docs/readiness/2026-09-11-audio2tool-discriminative-value-readiness.md",
+        "commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+        "sha256": "c04494dc97cc0329412386ef966f8fc5659ff43a14fedb88c41d269cbd11fb03",
+        "hash_basis": "git-blob"
+      },
+      {
+        "path": "docs/readiness/2026-09-15-a2t-native-role-scope-tools-held-v1.md",
+        "commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+        "sha256": "610c2be2319f7049b15963af087e57c348ca238624f717dd5074b979407c8fed",
+        "hash_basis": "git-blob"
+      },
+      {
+        "path": "docs/results/2026-09-15-a2t-primary-parameter-attribution-v1.md",
+        "commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+        "sha256": "6354e7525ad940e58e24a075f59d0119b9703f2160e2c4f5a2039d86241c5d6a",
+        "hash_basis": "git-blob"
+      },
+      {
+        "path": "docs/results/2026-09-15-a2t-ordered-action-attribution-v1.md",
+        "commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+        "sha256": "2154108b3ec643918effb2b45f544c7dcdab684e1f527e7ed0ef57a3b369a6f5",
+        "hash_basis": "git-blob"
+      },
+      {
+        "path": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-org1-domain-grouped-roster/flight-roster-receipt.json",
+        "commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+        "sha256": "e5a81b71e1253ff866262991f79d132b89f4bfb47e7c8a0c0cf0aa04857b8736",
+        "hash_basis": "git-blob"
+      },
+      {
+        "path": "src/speech_aware_evidence_acquisition/rails/knowledge_build_a2t.py",
+        "commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+        "sha256": "5d696ced1f4c340069e7a5230d9a69a457a805dd895018adec012127957c31d8",
+        "hash_basis": "git-blob"
+      },
+      {
+        "path": "src/speech_aware_evidence_acquisition/rails/knowledge_compile_a2t.py",
+        "commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+        "sha256": "78609e152a467d2a03f8616b96bce2efb6cff0c23b4a4c4049a537e9b52f042b",
+        "hash_basis": "git-blob"
+      },
+      {
+        "path": "src/speech_aware_evidence_acquisition/data/audio2tool.py",
+        "commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+        "sha256": "7b4a9ad4305396fa3d8798b6dc19088fe389f2c283024b35a00b0911bf68a7a0",
+        "hash_basis": "git-blob"
+      },
+      {
+        "path": "src/speech_aware_evidence_acquisition/data/audio2tool_tools.py",
+        "commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+        "sha256": "00576d1810549a4b74b3fe692f71a24122abd54eab2c3ca9b442fb5eab7c82ba",
+        "hash_basis": "git-blob"
+      },
+      {
+        "path": "src/speech_aware_evidence_acquisition/data/variant_ids.py",
+        "commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+        "sha256": "a2874a13ca49e896a9e1243ec7cb3d7768d8e3109495a1b42132dbb4b15772b7",
+        "hash_basis": "git-blob"
+      }
+    ],
+    "external": [
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-current-construction-selection-v1.json",
+        "sha256": "04b2750f12e2771fe76c511cdbf913d703743e2ee1ab66f03b3ad71f43f218e2",
+        "hash_basis": "file-bytes"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-current-construction-selection-root-receipt-v1.json",
+        "sha256": "46bab2d2eca0cdebeb545f42792d50372911c07ecb8059e688eee4a681922567",
+        "hash_basis": "file-bytes"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-current-construction-metadata-inventory-v1.json",
+        "sha256": "d189a189a20153d113e0a348f1285676be8c9175de36d5745d241012d8aaacde",
+        "hash_basis": "file-bytes"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-source-binding-exposure-inventory-v1.json",
+        "sha256": "b861a3ade934498561cbd5c08216b26c493e8452ef1d61d0358741f689ed62f7",
+        "hash_basis": "file-bytes"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-MF-CURRENT-CARDS-NATIVE-V1/compilation-receipt.json",
+        "sha256": "ee72a598fcedaeda24a2f072c41bd1cbebcbe9cb0ca8b4c530e47f69ab46b2b5",
+        "hash_basis": "file-bytes"
+      }
+    ]
+  },
+  "construction": {
+    "source_samples": 30733,
+    "source_units": 16843,
+    "exposure_identities": 6479,
+    "excluded_sample_ids": 5274,
+    "excluded_query_groups": 2956,
+    "allowed_query_groups": 1690,
+    "allowed_units": 3208,
+    "allowed_samples": 5955,
+    "allowed_by_tier": {
+      "tier1_direct": {
+        "units": 303,
+        "samples": 606
+      },
+      "tier2_parametric": {
+        "units": 1243,
+        "samples": 2486
+      },
+      "tier3_multi_intent": {
+        "units": 300,
+        "samples": 600
+      },
+      "tier4_implicit": {
+        "units": 297,
+        "samples": 594
+      },
+      "tier5_needle": {
+        "units": 304,
+        "samples": 608
+      },
+      "tier6_correction": {
+        "units": 300,
+        "samples": 600
+      },
+      "tier7_multiturn": {
+        "units": 299,
+        "samples": 299
+      },
+      "tier8_intent_blending": {
+        "units": 162,
+        "samples": 162
+      }
+    },
+    "usable_units_after_quarantine": 3207,
+    "usable_samples_after_quarantine": 5953,
+    "quarantined_units": 1,
+    "compiler_safe_summary_rows": 3194,
+    "compiler_excluded_summary_rows": 13,
+    "all_remaining_complete_units_selected": true,
+    "current_4000_roster_fully_excluded": true,
+    "current_4000_query_groups_disjoint": true,
+    "metadata_join_source": "Existing pinned metadata inventory and current roster; no new full dataset manifest read.",
+    "fresh_global_exposure_union_recomputed": false,
+    "concrete_source_argument_values_rendered": 0,
+    "device_alias_source_available_in_current_contract": false,
+    "limitation": "Compiler validates the supplied exclusion receipt; it does not reconstruct the exposure inventory. This audit checks the current 4000 roster, not all possible future exposures.",
+    "renderer_reported_construction_fields": [
+      "arg_signature",
+      "tool_name"
+    ],
+    "compatibility_derivation_additional_field": "arg_pairs",
+    "serialized_value_processing": "The shared compiler reads serialized construction values from arg_pairs and classifies coarse JSON forms; no observed source argument literal is rendered into runtime cards."
+  },
+  "historical": {
+    "scope": "Same 120 A0-primary-tool-correct/full-call-wrong discovery rows; old protocol and scorer.",
+    "arms": [
+      {
+        "arm": "S1p",
+        "n": 120,
+        "conversions": 16,
+        "induced_bare_key_count": 34,
+        "supply": "Full self-selected correct row replacing the registry"
+      },
+      {
+        "arm": "S2",
+        "n": 120,
+        "conversions": 11,
+        "induced_bare_key_count": 34,
+        "supply": "Correct row and eight distractors replacing the registry"
+      },
+      {
+        "arm": "B1",
+        "n": 120,
+        "conversions": 8,
+        "induced_bare_key_count": 2,
+        "supply": "Self-selected row with argument_defaults removed; replacing"
+      },
+      {
+        "arm": "C1",
+        "n": 120,
+        "conversions": 10,
+        "induced_bare_key_count": 4,
+        "supply": "Permuted stripped row; replacing"
+      },
+      {
+        "arm": "C2",
+        "n": 120,
+        "conversions": 9,
+        "induced_bare_key_count": 3,
+        "supply": "Verbalized stripped row; replacing"
+      },
+      {
+        "arm": "C3",
+        "n": 120,
+        "conversions": 7,
+        "induced_bare_key_count": 22,
+        "supply": "Stripped correct row appended to intact full registry containing defaults"
+      }
+    ],
+    "formal_outcomes": {
+      "stage2": "COPY-TRAP",
+      "stage2_secondary": "DOSE (descriptive)",
+      "stage2b_A": "CONFIRMED-CUT",
+      "stage2b_B": "INCONCLUSIVE-B",
+      "stage2b_MISLEAD": false,
+      "stage2c_primary": "ROBUST",
+      "stage2c_overlay": "CHANNEL-REOPENED"
+    },
+    "conversion_and_induced_counts_share_unit": false,
+    "registry_only_induced_baseline_available": false,
+    "B_C_same_arm_replication_available": false,
+    "global_public_defaults_ban_established": false,
+    "scope_limit": "Historical bare-key induced counts are upper bounds, not unique harmed rows or modern official parameter errors."
+  },
+  "decision": {
+    "root_author": "Codex root",
+    "keep_documented_identifier_gap": true,
+    "admit_raw_default_list_now": false,
+    "create_device_alias_map_from_evaluation_errors": false,
+    "new_runtime_view_implemented": false,
+    "held_flight_configs_changed": false,
+    "evidence_direction": "Investigate source kind, semantic scope and request-to-value binding through existing Reviewer/Planner target lookup; on-demand access itself has no demonstrated protection from copying.",
+    "queue": [
+      "SLURP broad/factored TRAIN-A after explicit owner GPU resume and per-flight gates",
+      "Prepared A2T scope-tools pair if admitted",
+      "E21 transfer"
+    ],
+    "future_value_extension": "Separate prospective registration after predecessor decision and a concrete permitted value source; preserve direct-versus-complete-system comparison and dataset-native metrics.",
+    "algorithmic_rl_claim": false,
+    "research_goal_complete": false
+  },
+  "review_correction": {
+    "initial_external_draft": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-value-evidence-decision-v1/source-audit-v1.json",
+    "initial_external_draft_sha256": "8509dd2e21a96833a2d8f2c029a4a697759990f773c2bb9875cb9feaceeb7719",
+    "issue": "The inherited renderer field list was too broadly labelled as the compiler's full consumed field set.",
+    "resolution": "Scope the renderer fields and explicitly record arg_pairs consumption for serialized value-form classification.",
+    "root_code_verified": "knowledge_compile_a2t.py:426-441"
+  }
+}
