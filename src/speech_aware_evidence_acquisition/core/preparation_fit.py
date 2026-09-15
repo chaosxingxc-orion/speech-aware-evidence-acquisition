@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import base64
+import binascii
+import hashlib
 import json
 from dataclasses import dataclass
 from collections import Counter
@@ -86,6 +89,46 @@ def rendered_speech_feature_descriptors(
                 )
             descriptors.append(dict(descriptor))
     return tuple(descriptors)
+
+
+def rendered_raw_speech_sha256(body: Mapping[str, object]) -> str:
+    """Return the one raw-audio query digest from an actual rendered request.
+
+    Native raw requests carry their source path in the prepared payload, while
+    the wire body carries the audio bytes. Requiring exactly one decoded
+    input_audio part makes the two representations comparable without trusting
+    a transport-provided duration or a synthetic feature descriptor.
+    """
+    messages = body.get("messages")
+    if not isinstance(messages, Sequence) or isinstance(messages, (str, bytes)):
+        raise PreparationError("rendered request messages must be a sequence")
+    audio_parts = []
+    for message_index, message in enumerate(messages):
+        if not isinstance(message, Mapping):
+            raise PreparationError(
+                f"rendered request messages[{message_index}] must be a mapping"
+            )
+        content = message.get("content")
+        if not isinstance(content, list):
+            continue
+        for part_index, part in enumerate(content):
+            if isinstance(part, Mapping) and part.get("type") == "input_audio":
+                audio_parts.append((message_index, part_index, part))
+    if len(audio_parts) != 1:
+        raise PreparationError("native raw fit requires exactly one rendered input_audio")
+    message_index, part_index, part = audio_parts[0]
+    audio = part.get("input_audio")
+    encoded = audio.get("data") if isinstance(audio, Mapping) else None
+    if not isinstance(encoded, str) or not encoded:
+        raise PreparationError(
+            "native raw fit rendered input_audio data is malformed at "
+            f"messages[{message_index}].content[{part_index}]"
+        )
+    try:
+        raw = base64.b64decode(encoded, validate=True)
+    except (binascii.Error, ValueError) as error:
+        raise PreparationError("native raw fit rendered input_audio is not base64") from error
+    return hashlib.sha256(raw).hexdigest()
 
 
 def packet_token_counts(
@@ -901,6 +944,50 @@ def _native_contact_identity(
     return sample_id, contact_id, tuple(dict(item) for item in descriptors)
 
 
+def _native_raw_contact_identity(
+    payload: Mapping[str, object],
+) -> tuple[str, str, dict[str, str]]:
+    """Validate the source identity required for one raw native contact."""
+    sample_id = payload.get("sample_id")
+    if not isinstance(sample_id, str) or not sample_id:
+        raise PreparationError("native contact has no sample_id")
+    history = payload.get("history")
+    if (
+        not isinstance(history, Sequence)
+        or isinstance(history, (str, bytes))
+        or not history
+        or any(not isinstance(item, Mapping) for item in history)
+    ):
+        raise PreparationError("native contact has no bound control history")
+    controls = [item for item in history if item.get("role") == "control"]
+    if len(controls) != 1 or controls[0] is not history[-1]:
+        raise PreparationError(
+            "native contact requires exactly one final control binding"
+        )
+    contact_id = controls[0].get("contact_id")
+    if not isinstance(contact_id, str) or not contact_id:
+        raise PreparationError("native contact has no agent_contact_id")
+    if "speech_feature_parts" in payload:
+        raise PreparationError("native raw contact refuses mixed feature input")
+    raw = payload.get("raw_speech_query")
+    media_relpath = payload.get("media_relpath")
+    if (
+        not isinstance(raw, Mapping)
+        or set(raw) != {"media_relpath", "sha256"}
+        or not isinstance(media_relpath, str)
+        or not media_relpath
+        or raw.get("media_relpath") != media_relpath
+        or not isinstance(raw.get("sha256"), str)
+        or len(raw["sha256"]) != 64
+        or any(character not in "0123456789abcdef" for character in raw["sha256"])
+    ):
+        raise PreparationError("native raw contact source identity is malformed")
+    return sample_id, contact_id, {
+        "media_relpath": media_relpath,
+        "sha256": raw["sha256"],
+    }
+
+
 def build_native_contact_fit_gate(
     runtime,
     program,
@@ -913,9 +1000,10 @@ def build_native_contact_fit_gate(
     This gate certifies a variable trajectory one actual immutable request at
     a time. It is not a whole-roster static capacity guarantee: branches that
     never execute have no request body and receive no fit receipt. The plan
-    reserves ``max_speech_packets + 3`` tokenizer endpoints per possible
-    request, while a realized request spends only its actual packet count plus
-    three.
+    reserves the complete endpoint protocol for each possible request: feature
+    contacts use tokenizer endpoints, and raw-speech contacts use exactly one
+    resident multimodal measurement endpoint. A realized feature contact spends
+    only its actual packet count plus three endpoints.
     """
     import os
     import threading
@@ -936,10 +1024,7 @@ def build_native_contact_fit_gate(
         raise PreparationError(
             "tokenizer fit requires distinct run and attempt identities"
         )
-    if not runtime.uses_speech_feature_packets():
-        raise PreparationError(
-            "native contact fitting requires validated feature packets"
-        )
+    feature_packets = runtime.uses_speech_feature_packets()
     if runtime._session is None or runtime._transport is None:
         raise PreparationError(
             "native contact fitting requires an attached root session"
@@ -957,7 +1042,11 @@ def build_native_contact_fit_gate(
             "native contact fitting requires a unique registered sample roster"
         )
     maximum_requests = len(expected_ids) * program.max_contacts
-    required_cap = maximum_requests * (spec["max_speech_packets"] + 3)
+    # Feature contacts need /props, /apply-template, and one /tokenize per
+    # feature packet plus one prompt tokenization. Raw contacts instead use
+    # the resident multimodal counting endpoint on the rendered WAV body.
+    endpoints_per_contact = spec["max_speech_packets"] + 3 if feature_packets else 1
+    required_cap = maximum_requests * endpoints_per_contact
     if spec["contact_cap"] != required_cap:
         raise PreparationError(
             "native contact fit cap must equal the registered maximum endpoint count"
@@ -975,14 +1064,16 @@ def build_native_contact_fit_gate(
     fit_root.mkdir(parents=True, exist_ok=True)
     identity = runtime.session_required_identity()
     session = runtime._session
-    decoder_hashes = {
-        entry.sha256
-        for entry in session.model_files
-        if "mmproj" not in Path(entry.path).name.lower()
-    }
-    if len(decoder_hashes) != 1:
-        raise PreparationError("native contact fit requires one decoder identity")
-    decoder_sha256 = next(iter(decoder_hashes))
+    decoder_sha256 = None
+    if feature_packets:
+        decoder_hashes = {
+            entry.sha256
+            for entry in session.model_files
+            if "mmproj" not in Path(entry.path).name.lower()
+        }
+        if len(decoder_hashes) != 1:
+            raise PreparationError("native contact fit requires one decoder identity")
+        decoder_sha256 = next(iter(decoder_hashes))
     guarded = GuardedTokenizer(
         None,
         guard=runtime.assert_generation_lease,
@@ -1005,7 +1096,18 @@ def build_native_contact_fit_gate(
         if not isinstance(payload, dict):
             raise PreparationError("prepared native contact payload must be an object")
         with fit_lock:
-            sample_id, contact_id, descriptors = _native_contact_identity(payload)
+            if feature_packets:
+                if "raw_speech_query" in payload:
+                    raise PreparationError(
+                        "native feature contact refuses raw speech input"
+                    )
+                sample_id, contact_id, descriptors = _native_contact_identity(payload)
+                raw_speech_query = None
+            else:
+                sample_id, contact_id, raw_speech_query = _native_raw_contact_identity(
+                    payload
+                )
+                descriptors = ()
             if sample_id not in expected_ids:
                 raise PreparationError(
                     "native contact sample differs from the registered roster"
@@ -1018,7 +1120,7 @@ def build_native_contact_fit_gate(
                 raise PreparationError(
                     "native contact exceeded its per-sample contact ceiling"
                 )
-            if len(descriptors) > spec["max_speech_packets"]:
+            if feature_packets and len(descriptors) > spec["max_speech_packets"]:
                 raise PreparationError(
                     "native contact speech feature descriptor count exceeds its "
                     "registered maximum"
@@ -1027,11 +1129,16 @@ def build_native_contact_fit_gate(
             body = runtime._transport.render_request(prepared_request.payload_bytes)
             if not isinstance(body, Mapping):
                 raise PreparationError("native contact transport returned no request body")
-            rendered_descriptors = rendered_speech_feature_descriptors(body)
-            if rendered_descriptors != descriptors:
+            if feature_packets:
+                rendered_descriptors = rendered_speech_feature_descriptors(body)
+                if rendered_descriptors != descriptors:
+                    raise PreparationError(
+                        "native contact rendered descriptor binding differs from its "
+                        "prepared request"
+                    )
+            elif rendered_raw_speech_sha256(body) != raw_speech_query["sha256"]:
                 raise PreparationError(
-                    "native contact rendered descriptor binding differs from its "
-                    "prepared request"
+                    "native raw contact rendered audio differs from its prepared request"
                 )
             contact_identity_sha256 = digest(
                 {"sample_id": sample_id, "agent_contact_id": contact_id}
@@ -1049,7 +1156,11 @@ def build_native_contact_fit_gate(
                     "sample_id": sample_id,
                     "agent_contact_id": contact_id,
                     "contact_identity_sha256": contact_identity_sha256,
-                    "speech_packet_count": len(descriptors),
+                    **(
+                        {"speech_packet_count": len(descriptors)}
+                        if feature_packets
+                        else {"raw_speech_query": raw_speech_query}
+                    ),
                     "capacity_scope": "actual-variable-trajectory-contact",
                 },
                 "fit_plan": asdict(fit_plan),
@@ -1086,25 +1197,32 @@ def build_native_contact_fit_gate(
                         os.fsync(stream.fileno())
 
                     guarded.contact_sink = record_contact
-                    props = guarded.request_json("GET", "/props", None)
-                    marker = (
-                        props.get("media_marker")
-                        if isinstance(props, Mapping)
-                        else None
-                    )
-                    if not isinstance(marker, str) or not marker:
-                        raise PreparationError(
-                            "resident tokenizer has no media marker"
+                    marker = None
+                    if feature_packets:
+                        props = guarded.request_json("GET", "/props", None)
+                        marker = (
+                            props.get("media_marker")
+                            if isinstance(props, Mapping)
+                            else None
                         )
+                        if not isinstance(marker, str) or not marker:
+                            raise PreparationError(
+                                "resident tokenizer has no media marker"
+                            )
+                    from .preparation import measure_multimodal_request
                     result = fit_requests(
                         (payload,),
                         expected_sample_ids=(sample_id,),
                         transport=runtime._transport,
                         client=guarded,
-                        speech_counts=lambda actual: packet_token_counts(
-                            actual,
-                            feature_root=Path(str(values["speech_feature_root"])),
-                            decoder_sha256=decoder_sha256,
+                        speech_counts=(
+                            lambda actual: packet_token_counts(
+                                actual,
+                                feature_root=Path(str(values["speech_feature_root"])),
+                                decoder_sha256=decoder_sha256,
+                            )
+                            if feature_packets
+                            else lambda _actual: ()
                         ),
                         media_marker=marker,
                         slot_tokens=int(
@@ -1112,6 +1230,9 @@ def build_native_contact_fit_gate(
                         ),
                         fit_multiple=float(values.get("prompt_fit_multiple", 1.0)),
                         rendered_bodies=(body,),
+                        request_measure=(
+                            None if feature_packets else measure_multimodal_request
+                        ),
                     )
                     contact_counts = guarded.counts - before
                     return {
@@ -1119,7 +1240,11 @@ def build_native_contact_fit_gate(
                         "sample_id": sample_id,
                         "agent_contact_id": contact_id,
                         "contact_identity_sha256": contact_identity_sha256,
-                        "speech_packet_count": len(descriptors),
+                        **(
+                            {"speech_packet_count": len(descriptors)}
+                            if feature_packets
+                            else {"raw_speech_query": raw_speech_query}
+                        ),
                         "capacity_scope": "actual-variable-trajectory-contact",
                         "session_id": session.session_id,
                         "session_identity_sha256": digest(identity),
