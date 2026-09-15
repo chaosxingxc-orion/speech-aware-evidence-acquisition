@@ -2897,6 +2897,7 @@ def run_speech_native_agent_loop(
     split_id: str,
     knowledge_snapshot: KnowledgeSnapshot,
     speech_packet_bindings: Mapping[str, Mapping[str, object]],
+    execution_units=None,
     query_source: str = "speech_features",
     controller_policy_id: str,
     # Either a run-wide sequence (the original form: the same ids for every
@@ -3127,7 +3128,21 @@ def run_speech_native_agent_loop(
         raise RailsRunnerError(
             "knowledge BUILD and AgentLoop USE must have different split identities"
         )
-    planned_ceiling = len(samples) * max_contacts
+    from .execution_units import ExecutionUnitRoster
+    if execution_units is not None and not isinstance(execution_units, ExecutionUnitRoster):
+        raise RailsRunnerError("execution_units must be an ExecutionUnitRoster or None")
+    if execution_units is not None:
+        try:
+            execution_units.validate(parent_sample_ids=sample_ids, max_contacts=max_contacts)
+        except RailsError as error:
+            raise RailsRunnerError(str(error)) from error
+        if query_source != "speech_audio":
+            raise RailsRunnerError("execution units require the registered raw speech path")
+        for unit in execution_units.units:
+            core_client.register_slice(unit.slice_record)
+    planned_ceiling = (
+        len(execution_units.units) if execution_units is not None else len(samples)
+    ) * max_contacts
     if planned_ceiling > plan.planned_model_calls:
         raise RailsRunnerError(
             f"AgentLoop contact ceiling {planned_ceiling} exceeds the ExecutionPlan "
@@ -3158,7 +3173,15 @@ def run_speech_native_agent_loop(
             feedback_by_sample[sample_id] = artifact
 
     prepared_tasks: list[_PreparedAgentTask] = []
-    for index, sample in enumerate(samples):
+    tasks = (
+        tuple((sample, None) for sample in samples)
+        if execution_units is None
+        else tuple(
+            (next(sample for sample in samples if sample.sample_id == unit.parent_sample_id), unit)
+            for unit in execution_units.units
+        )
+    )
+    for index, (sample, unit) in enumerate(tasks):
         obs = default_obs_packet(sample)
         task_contract = adapter.build_task_contract(sample, obs)
         if not isinstance(task_contract, str) or not task_contract.strip():
@@ -3168,7 +3191,11 @@ def run_speech_native_agent_loop(
         query_state = _initial_query_state(
             plan=plan,
             sample=sample,
-            descriptor=speech_packet_bindings[sample.sample_id],
+            descriptor=(
+                speech_packet_bindings[sample.sample_id]
+                if unit is None
+                else {"packet_id": unit.slice_record.media_relpath, "sha256": unit.slice_record.sha256}
+            ),
             bootstrap_facet_ids=(
                 bootstrap_facets
                 if per_sample_facets is None
@@ -3186,6 +3213,7 @@ def run_speech_native_agent_loop(
                 )
             ),
             query_source=query_source,
+            execution_unit_id=None if unit is None else unit.request_key,
         )
         if query_source == "speech_audio":
             if (
@@ -3223,6 +3251,8 @@ def run_speech_native_agent_loop(
                 task_contract=task_contract,
                 initial_query_state=query_state,
                 initial_feedback_states=initial_feedback,
+                execution_unit_id=None if unit is None else unit.request_key,
+                execution_unit_binding=None if unit is None else unit.as_json(),
             )
         )
 
