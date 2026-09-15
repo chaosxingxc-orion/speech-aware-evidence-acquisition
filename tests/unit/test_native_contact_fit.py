@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import base64
+import hashlib
 import json
 import threading
 import time
@@ -118,6 +120,41 @@ class _Tokenizer:
         raise AssertionError((method, path))
 
 
+class _RawTransport:
+    def __init__(self, raw=b"RIFF synthetic native raw speech"):
+        self.raw = raw
+        self.calls = []
+
+    def render_request(self, raw):
+        self.calls.append(raw)
+        payload = json.loads(raw)
+        return {
+            "messages": [
+                {"role": "system", "content": payload["task_instruction"]},
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "input_audio",
+                            "input_audio": {
+                                "data": base64.b64encode(self.raw).decode("ascii")
+                            },
+                        }
+                    ],
+                },
+            ],
+            "max_tokens": payload["decoding_params"]["max_tokens"],
+        }
+
+
+class _RawTokenizer(_Tokenizer):
+    def request_json(self, method, path, payload):
+        self.calls.append((method, path, payload))
+        if (method, path) == ("POST", "/v1/chat/completions/input_tokens"):
+            return {"input_tokens": 7}
+        raise AssertionError((method, path))
+
+
 class _Runtime:
     def __init__(self, tmp_path, values=None):
         self._composed = SimpleNamespace(values=values or _values())
@@ -191,6 +228,118 @@ def _prepared(
         ),
         object(),
     )
+
+
+def _raw_prepared(sample_id: str, contact_id: str, raw: bytes) -> PreparedCoreRequest:
+    return PreparedCoreRequest(
+        canonical_bytes(
+            {
+                "request_id": "saea-prepared-request",
+                "sample_id": sample_id,
+                "media_relpath": f"media/{sample_id}.wav",
+                "raw_speech_query": {
+                    "media_relpath": f"media/{sample_id}.wav",
+                    "sha256": hashlib.sha256(raw).hexdigest(),
+                },
+                "task_instruction": "Answer the spoken request.",
+                "history": [
+                    {
+                        "turn": 1,
+                        "role": "control",
+                        "contact_id": contact_id,
+                        "content": "Act in the assigned role.",
+                        "content_sha256": "e" * 64,
+                    }
+                ],
+                "decoding_params": {"max_tokens": 4},
+            }
+        ),
+        object(),
+    )
+
+
+def _raw_runtime(tmp_path):
+    runtime = _Runtime(
+        tmp_path,
+        _values(
+            native_contact_fit={
+                "run_id": "fit-run",
+                "attempt_id": "fit-attempt",
+                # Two roster entries x two allowed contacts x one actual
+                # resident multimodal counting endpoint.
+                "contact_cap": 4,
+            }
+        ),
+    )
+    runtime._transport = _RawTransport()
+    runtime.uses_speech_feature_packets = lambda: False
+    return runtime
+
+
+def test_native_raw_contact_fit_measures_the_rendered_audio_request(tmp_path):
+    runtime = _raw_runtime(tmp_path)
+    tokenizer = _RawTokenizer()
+    gate = build_native_contact_fit_gate(
+        runtime,
+        _program(),
+        _plan(),
+        client_factory=lambda **_kwargs: tokenizer,
+    )
+    request = _raw_prepared("s1", "raw-contact-1", runtime._transport.raw)
+
+    gate(request)
+
+    assert gate.execution_plan.planned_model_calls == 4
+    assert runtime.lease_checks >= 3
+    assert [(method, path) for method, path, _ in tokenizer.calls] == [
+        ("POST", "/v1/chat/completions/input_tokens")
+    ]
+    rendered = runtime._transport.render_request(request.payload_bytes)
+    assert tokenizer.calls[0][2] == rendered
+    artifact = json.loads(open(gate.receipts[0]["path"], encoding="utf-8").read())
+    assert artifact["inputs"]["native_contact"]["raw_speech_query"] == request.as_payload()[
+        "raw_speech_query"
+    ]
+    assert artifact["output"]["rows"][0]["measurement"] == (
+        "resident-multimodal-input-tokens"
+    )
+    assert artifact["output"]["contacts"] == 1
+    assert artifact["output"]["raw_speech_query"] == request.as_payload()[
+        "raw_speech_query"
+    ]
+    with pytest.raises(PreparationError, match="repeated agent_contact_id"):
+        gate(request)
+    assert len(tokenizer.calls) == 1
+
+
+@pytest.mark.parametrize("change", ["feature", "source", "rendered-audio"])
+def test_native_raw_contact_fit_refuses_mixed_or_unbound_audio_before_contact(
+    tmp_path, change
+):
+    runtime = _raw_runtime(tmp_path)
+    tokenizer = _RawTokenizer()
+    request = _raw_prepared("s1", "raw-contact-1", runtime._transport.raw)
+    payload = request.as_payload()
+    if change == "feature":
+        payload["speech_feature_parts"] = []
+    elif change == "source":
+        payload["raw_speech_query"]["media_relpath"] = "media/other.wav"
+    else:
+        runtime._transport.raw += b"changed"
+    if change != "rendered-audio":
+        request = PreparedCoreRequest(canonical_bytes(payload), object())
+    gate = build_native_contact_fit_gate(
+        runtime,
+        _program(),
+        _plan(),
+        client_factory=lambda **_kwargs: tokenizer,
+    )
+
+    with pytest.raises(PreparationError, match="mixed|source identity|rendered audio"):
+        gate(request)
+
+    assert tokenizer.calls == []
+    assert not list(tmp_path.rglob("*.contacts.jsonl"))
 
 
 def test_native_contact_gate_fits_each_actual_request_with_registered_budget(
