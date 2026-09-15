@@ -1,0 +1,131 @@
+{
+  "analysis": {
+    "cluster_field": "query_idx",
+    "contrasts": [
+      {
+        "ci_level": 0.95,
+        "left": "direct",
+        "metrics": [
+          "official_exact_match"
+        ],
+        "name": "system-minus-direct-primary",
+        "right": "system"
+      },
+      {
+        "ci_level": 0.9,
+        "left": "direct",
+        "metrics": [
+          "official_exact_match",
+          "official_macro_parameter_f1",
+          "official_macro_parameter_precision",
+          "official_macro_parameter_recall",
+          "official_micro_parameter_f1",
+          "official_tool_accuracy",
+          "repo_ordered_tool_sequence_accuracy"
+        ],
+        "name": "system-minus-direct-diagnostics",
+        "right": "system"
+      }
+    ],
+    "expected_ids_count": 4000,
+    "format": "generic-scores-v1",
+    "full_roster": {
+      "id_field": "sample_id",
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-org1-domain-grouped-roster/flight-roster-receipt.json",
+      "sha256": "e5a81b71e1253ff866262991f79d132b89f4bfb47e7c8a0c0cf0aa04857b8736"
+    },
+    "grouping_resampling": "whole-cluster",
+    "groupings": {
+      "domain": "domain",
+      "tier": "tier"
+    },
+    "id_field": "sample_id",
+    "max_workers": 2,
+    "metrics": {
+      "official_exact_match": {
+        "direction": "higher",
+        "field": "exact_match",
+        "scorer": "a2t-toolcall-official",
+        "statistic": "mean"
+      },
+      "official_macro_parameter_f1": {
+        "direction": "higher",
+        "field": "param_f1",
+        "scorer": "a2t-toolcall-official",
+        "statistic": "mean"
+      },
+      "official_macro_parameter_precision": {
+        "direction": "higher",
+        "field": "param_precision",
+        "scorer": "a2t-toolcall-official",
+        "statistic": "mean"
+      },
+      "official_macro_parameter_recall": {
+        "direction": "higher",
+        "field": "param_recall",
+        "scorer": "a2t-toolcall-official",
+        "statistic": "mean"
+      },
+      "official_micro_parameter_f1": {
+        "denominator": {
+          "param_gold_keys": 1,
+          "param_predicted_keys": 1
+        },
+        "direction": "higher",
+        "numerator": {
+          "param_correct_keys": 2
+        },
+        "scorer": "a2t-toolcall-official",
+        "statistic": "ratio",
+        "zero_denominator": "zero"
+      },
+      "official_tool_accuracy": {
+        "direction": "higher",
+        "field": "tool_correct",
+        "scorer": "a2t-toolcall-official",
+        "statistic": "mean"
+      },
+      "repo_ordered_tool_sequence_accuracy": {
+        "direction": "higher",
+        "field": "tool_accuracy",
+        "scorer": "a2t-toolcall-v2",
+        "statistic": "mean"
+      }
+    },
+    "n_replicates": 10000,
+    "seed": 20260914
+  },
+  "binding_checks": [
+    "Keep all 4000 exact sample IDs, no positional alignment.",
+    "Derive query_idx and tier from the frozen roster.",
+    "Resolve domain metadata only from pinned released manifests, then bind an outcome-free metadata artifact.",
+    "Verify finalized bundle attachments; never invoke an official scorer again.",
+    "Retain published Table 3 values in the report beside corresponding official and repo columns."
+  ],
+  "candidate_attribution": {
+    "conditional_resolution": "Report final official tool and exact accuracy conditional on operative inclusion, alongside unconditional full4000 metrics; changed candidate sets make conditional comparisons descriptive.",
+    "delivery": "Bind to the exact delivered Solver source; report legal answers outside candidates, finite exhaustion, abstention, fallback and unresolved issues.",
+    "ordered_action_coverage": "Report primary target in the first action and only in a later action separately. For full expected action sequences, preserve repeated occurrences and action order; distinguish ordered occurrence alignment from any-action set membership. Labels join only in sealed analysis.",
+    "primary_target_coverage": "Report the official primary target in the union across all action candidates separately for initial and operative Perception. Missing or invalid operative source remains unavailable and in the full4000 denominator; never borrow a later attempted state.",
+    "read_after": "Both new full4000 finalized manifests and first official scores, with registered source reads.",
+    "refresh": "Report added/removed candidates, operative versus attempted refresh, changed grouping/order, save/harm and tool use. Observational partitions do not establish causal tool or refresh efficacy.",
+    "shared_reader": "analysis.a2t_candidate_supply.analyze_a2t_candidate_supply; latest-source v2",
+    "width": "Report actual width 1/2/3/4 and empty actions; do not treat width as confidence. Candidate coverage95% remains a development priority, not an exclusive adoption gate."
+  },
+  "decision_rule": {
+    "path": "configs/analysis/a2t-native-role-scope-tools-decision-v1.json",
+    "sha256": "9afe24e006f4d76616e2d2488e66cc44c418a765eb82f40b17b14bf0c00e0143"
+  },
+  "diagnostic_limits": {
+    "candidate_coverage": "Needs a separately bound native trajectory join after complete seal. Distinguish the official scorer target from full ordered multi-action coverage. Do not equate candidate-list membership with correct arguments or invent a full-call metric.",
+    "official_micro_parameter_f1": "available; distinct from repo micro slot F1 and macro parameter F1",
+    "ordered_full_call_with_arguments": "unavailable; ordered tool-sequence accuracy is a distinct labelled diagnostic",
+    "repo_micro_slot_f1_paired_interval": "unavailable; persisted counts support whole-roster/tier points only"
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-NATIVE-ROLE-SCOPE-TOOLS-ANALYSIS-V1",
+  "instantiation": "After both complete direct/system manifests seal, bind their first full official score artifacts and metadata by hash. No statistical field is chosen from new outcomes; the shared score_compare_cli reads saved scores and does not rescore.",
+  "schema": "saea-score-analysis-binding-recipe-v1",
+  "shared_entry": "speech_aware_evidence_acquisition.analysis.score_compare_cli",
+  "status": "CPU-prepared; GPU hold active; new complete paired source bindings pending"
+}

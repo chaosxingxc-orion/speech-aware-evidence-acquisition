@@ -3879,3 +3879,37 @@ At 2026-09-15T11:17:04.215315+00:00, register the outcome-free candidate/supply 
 The first registered full-source verification passed all 4,000 samples, then the candidate reader rejected the finite-completion stop-wave shape. Preserve its failed reader receipt; this is not a new flight or a generation recovery. Before rerunning the CPU reader, register [candidate source audit intent v2](readiness/2026-09-15-a2t-candidate-source-audit-intent-v2.json), SHA-256 30719870e8b2f11812d30ac7fb924f6ce28b9b16629602caaf613a2605a52808, reader commit 90a89e3eab6b258f0f92679c9c939bbcf10fe27b. Root corrected and tested terminal-wave handling (84 related tests, lint and engineering checks passed). Reuse the same sealed sources and saved-score read release. Model, tokenizer, encoder and scorer contacts remain zero; new GPU launches remain prohibited by the owner hold.
 
 The v2 candidate reader completed full-source and selection validation successfully. Root joined candidates only to the already released first-score primary gold_tool, with no new gold sequence read or scoring. The immutable candidate attribution summary is docs/results/2026-09-15-a2t-native-role-candidate-attribution-v1.json, SHA-256 6126deb61a143361e5331eb422571b10fde3aa65d0e5ace41e19fc3727bad6c7. Full ordered-action coverage remains deferred. The owner GPU hold remains active.
+
+
+### 2026-09-15: scoped activation CPU preparation; no successor contact authority
+
+Record this as a CPU preparation closure, not a model-contact preregistration.
+The shared compiler produced SAEA-A2T-ACTIVATION-SCOPE-KNOWLEDGE-V1 once from the
+already pinned public registry and permitted construction selection, with its
+invocation recorded before compilation. Root checked all152 exact public value
+projections and published the separate tool-activation-scope-v1 store through
+shared semantic-knowledge preparation. Preserve the held lexical-contrast
+artifact and all prior experimental outcomes.
+
+Artifacts under SPEECHRL_DATA_DIR/coordination/a2t-activation-scope-prepare-v1:
+root-value-review-v1.json SHA-256
+fdf32209a1b0289dd89cb38a5066402ced28839629f5695c396323d2333fa782;
+config-source-check-v1.json SHA-256
+a2dea44634199bdd675f925d890283bf1ad19f5e7a65a7264d64110f2f37f063.
+The scoped compilation receipt SHA-256 is
+6099441adcdd59c1058d0ec010547fe70d8749900ff2ea7a3026c930e3e3c196;
+the store release SHA-256 is
+fb6b6298921f843fe55400d9f9f72627516f95b08da189563a6ef5942c17aaef.
+
+The source check resolves both held configurations through the shared factory
+and contact-free adapter/roster preparation: 4000 rows each, identical compact
+task-contract hash,152 legal tools, dormant activation lookup and latest-state
+parameter supply. A failed audit exposed the missing shared policy registration,
+which is fixed; retain unsuccessful audit records. No actual model, tokenizer,
+encoder, runtime analytical-tool or scoring contact occurred. Synthetic graph
+tests are engineering evidence only.
+
+[The held system plan](readiness/2026-09-15-a2t-native-role-scope-tools-held-v1.md)
+and its draft budgets do not lift the owner GPU hold or authorize a successor.
+Fresh model-facing plans, exposure rows, fit bindings and explicit owner resume
+remain required before contact.

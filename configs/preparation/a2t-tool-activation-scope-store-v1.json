@@ -1,0 +1,15 @@
+{
+  "compilation_receipt": {
+    "relpath": "prepared/SAEA-A2T-ACTIVATION-SCOPE-KNOWLEDGE-V1/compilation-receipt.json",
+    "sha256": "6099441adcdd59c1058d0ec010547fe70d8749900ff2ea7a3026c930e3e3c196"
+  },
+  "output_namespace": "knowledge/audio2tool/tool-activation-scope-v1",
+  "registration_id": "SAEA-A2T-ACTIVATION-SCOPE-STORE-V1",
+  "schema": "saea-compiled-knowledge-store-preparation-v1",
+  "snapshot": {
+    "relpath": "prepared/SAEA-A2T-ACTIVATION-SCOPE-KNOWLEDGE-V1/knowledge-snapshot.json",
+    "sha256": "dc10e235d99893fdbfb9f1e9e09bdb5b04346ccccd088901ad81ecde3ea48fae"
+  },
+  "store_id": "tool-activation",
+  "store_role": "tool-activation"
+}

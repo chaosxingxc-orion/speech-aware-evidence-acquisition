@@ -1,0 +1,80 @@
+{
+  "analysis_recipe": {
+    "repo_relpath": "docs/readiness/2026-09-15-a2t-native-role-scope-tools-analysis-recipe-v1.json",
+    "sha256": "a2b9514bb0b09c6af7fe0160a5a07ca2e9a3a991df03a209020ab9ca0293f904"
+  },
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check"
+      ],
+      "attempt_id": "held-a2t-scope-tools-direct-4000-v1",
+      "baseline_fragment": "a2t-native-role-scope-tools-direct-union4000-held-v1",
+      "cell_id": "direct",
+      "dataset_fragment": "audio2tool-org1-union-4000",
+      "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
+      "readiness": {
+        "reason": "CPU-prepared source-bound configuration only. Owner GPU hold, missing model-facing registration and actual fit; no launch authority.",
+        "state": "held"
+      },
+      "run_id": "HELD-A2T-SCOPE-TOOLS-DIRECT-4000-V1"
+    },
+    {
+      "allowed_execution_stages": [
+        "check"
+      ],
+      "attempt_id": "held-a2t-scope-tools-system-4000-v1",
+      "baseline_fragment": "a2t-native-role-scope-tools-union4000-held-v1",
+      "cell_id": "system",
+      "dataset_fragment": "audio2tool-org1-union-4000",
+      "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
+      "readiness": {
+        "reason": "CPU-prepared source-bound configuration only. Owner GPU hold, missing model-facing registration and actual fit; no launch authority.",
+        "state": "held"
+      },
+      "run_id": "HELD-A2T-SCOPE-TOOLS-SYSTEM-4000-V1"
+    }
+  ],
+  "date": "2026-09-15",
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-NATIVE-ROLE-SCOPE-TOOLS-UNION4000-HELD-V1",
+  "failure_policy": "HELD. Permit structural configuration/source checks only. No model, tokenizer, encoding, fit, preparation through flight stages, GPU, worker, campaign or scoring contact. Do not infer owner resume from this configuration. Preserve all historical attempts.",
+  "fragment_kind": "saea-audio2tool-native-role-scope-tools-held-v1",
+  "pending_root_bindings": {
+    "capacity": "At admission configure direct whole_roster_wave_barrier=true plus live_phase_fit cap12001, and system native_contact_fit cap224000 with max_speech_packets1. Fit complete realized requests under the generation lease before send, including target-tool returns and refreshed states. Keep3 slots of32768, max2048 and4/3 prompt-fit margin for both arms unless a named group-level re-registration is required before generation. No capacity pass is claimed.",
+    "checkpoint": "Freeze the exact approved code/config/analysis hashes and preserve the run worktree until scoring/attribution close.",
+    "comparison": "Generate both fresh arms under one root-managed decoder-only service identity and process, sequentially. First full scoring may overlap the next arm. Read task outcomes only after both complete manifests and scores seal. Require same-roster replication before adopting a stable base.",
+    "execution": "Create fresh model-facing registration, run/attempt identities, structured ExecutionPlans, exposure rows, scientific admission and service identity/lease. This held recipe has no ExecutionPlan or model-contact authority.",
+    "owner_resume": "GPU hold must be explicitly lifted. Run already registered SLURP broad/factored TRAIN-A first; this pair follows after review and registration.",
+    "prepared_supply": "No automatic first-phase supply exists in this version; no prepared_phase_supply is required or claimed. Verify the existing4000 speech promotion and the two knowledge releases; do not regenerate speech or retrieval vectors."
+  },
+  "population": {
+    "count": 4000,
+    "dataset_fragment": "audio2tool-org1-union-4000",
+    "decision_population": "Previously exposed discovery union4000; eight tiers of500, Tier7 first user turn. Reuse identities only; historical dataset-fragment comparator notes do not define this new pairing.",
+    "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6"
+  },
+  "preserve_wire_responses": true,
+  "prospective_budget": {
+    "accounting": "At most two Perception1/Solver1/Reviewer3/Planner2 visits gives14 generation contacts. Reviewer at most2 tool calls and Planner at most1 per visit; at most6 analytical calls per sample. Direct fit is1+3*4000; native actual-fit bound is4*14*4000. No automatic retry or recovery budget is included.",
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "complete_scoring_jobs": 2,
+    "cost_gate": false,
+    "direct_actual_fit_endpoint_calls_cap": 12001,
+    "direct_generation_calls_cap": 4000,
+    "encoder_calls": 0,
+    "family_actual_fit_endpoint_calls_cap": 236001,
+    "family_generation_calls_cap": 60000,
+    "gpu_hours_fit_inclusive_cap": 72.0,
+    "no_tool_no_revision_contacts_per_episode": 4,
+    "speech_audio_seconds_cap": 400000,
+    "status": "DRAFT_NOT_EXECUTION_AUTHORITY",
+    "system_actual_fit_endpoint_calls_cap": 224000,
+    "system_analytical_tool_calls_cap": 24000,
+    "system_contacts_per_episode_cap": 14,
+    "system_generation_calls_cap": 56000
+  },
+  "purpose": "Prepare one complete direct/system comparison after the named candidate-inclusion and downstream-selection failures. Keep the same complete compact legal registry, source speech and frozen4000 roster; compare a progressively expanded system, not a component ablation.",
+  "service_session": "HELD-NO-SERVICE"
+}

@@ -1,0 +1,7 @@
+Resolve all requested actions jointly with their arguments from the original speech. Use the latest complete Perception hypotheses as alternatives rather than locked choices; the complete legal registry remains authoritative even for a tool absent from those candidates.
+
+Use returned activation knowledge to compare public operations and scopes, and parameter explanations to interpret semantic roles, extraction requirements, references, units, types and constraints. Public domain and category are descriptive metadata, not hard activation rules. Where two descriptions overlap, resolve the request from speech and available argument semantics; do not invent a distinction from tool-name similarity. A public default, example or observed construction form is not a spoken value. Include arguments only under the original task contract and supported speech meaning; do not fill absent arguments merely because a public signature lists them.
+
+Preserve requested action order, separate repeated occurrences and the latest explicit corrections. Do not execute a discarded alternative or cancelled request. On revision, address the specific findings and returned evidence while retaining supported parts of the prior answer. Following a refresh, use the most recent Perception state; earlier hypotheses remain historical context.
+
+Only you have final-answer authority. Return only the task output in the original contract's tool-call syntax, without reasoning or review text. Do not call analytical tools.

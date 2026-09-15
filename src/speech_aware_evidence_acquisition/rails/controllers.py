@@ -1275,6 +1275,9 @@ def default_controller_factory(program: PhaseProgram) -> Callable[[str], Evidenc
 
 
 _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
+    "phase-audio2tool-native-candidate-recovery-tools-v1": (
+        "phase-audio2tool-native-candidate-recovery-tools-v1.json"
+    ),
     "phase-audio2tool-native-candidates-review-revise-v1": "phase-audio2tool-native-candidates-review-revise-v1.json",
     "phase-audio2tool-native-candidates-review-revise-json-v1": "phase-audio2tool-native-candidates-review-revise-json-v1.json",
     "phase-native-review-revise-v1": "phase-native-review-revise-v1.json",
@@ -1368,6 +1371,15 @@ def register_phase_programs_v1() -> None:
     # engineering-base gate (scripts/checks/engineering_base_check.py) can
     # read the registered name set from source without importing the package.
     registered = AGENT_CONTROLLERS.names()
+    if "phase-audio2tool-native-candidate-recovery-tools-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-audio2tool-native-candidate-recovery-tools-v1",
+            default_controller_factory(
+                default_phase_program(
+                    "phase-audio2tool-native-candidate-recovery-tools-v1"
+                )
+            ),
+        )
     if "phase-native-candidates-review-refresh-v1" not in registered:
         AGENT_CONTROLLERS.register(
             "phase-native-candidates-review-refresh-v1",

@@ -51,12 +51,14 @@ NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION = "tool-activation"
 NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_CONTRAST_V1 = (
     "tool-activation-contrast-v1"
 )
+NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_SCOPE_V1 = "tool-activation-scope-v1"
 NATIVE_SNAPSHOT_VALUE_VIEW_PARAMETER_MEANING = "parameter-meaning"
 _NATIVE_SNAPSHOT_VALUE_VIEWS = frozenset(
     {
         NATIVE_SNAPSHOT_VALUE_VIEW_FULL,
         NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION,
         NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_CONTRAST_V1,
+        NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_SCOPE_V1,
         NATIVE_SNAPSHOT_VALUE_VIEW_PARAMETER_MEANING,
     }
 )
@@ -88,6 +90,11 @@ _ACTIVATION_CONTRAST_POLICY_V1 = (
     "the, of, on, to, for, and, or, in, is, are, this, that, with, its; score "
     "positive-overlap alternatives by set-Jaccard; exclude self; sort by "
     "descending score then exact tool_name; retain at most 3."
+)
+_ACTIVATION_SCOPE_POLICY_V1 = (
+    "Project exact tool_name, underscore-humanized public domain and category, "
+    "and complete public registry description from an exact registry-to-corpus "
+    "tool_name, signature, and description binding."
 )
 _COMPILATION_CONFIG_REQUIRED_FIELDS = frozenset(
     {
@@ -1518,6 +1525,7 @@ def _native_snapshot_value_text(
     *,
     value_view: str,
     contrast_alternatives: Sequence[NativeCompatibleToolSemanticCard] = (),
+    activation_scope: tuple[str, str] | None = None,
 ) -> str:
     """Project a compiler-owned native card without parsing external text."""
 
@@ -1542,6 +1550,20 @@ def _native_snapshot_value_text(
                     f"{index} choose semantics: {alternative.choose_semantics}",
                 )
             ),
+        )
+    elif value_view == NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_SCOPE_V1:
+        if activation_scope is None:
+            raise SemanticCardCompilationError(
+                f"public registry scope is missing for {card.tool_name!r}"
+            )
+        domain, category = activation_scope
+        selected = (
+            f"TOOL ACTIVATION SCOPE {card.tool_name}",
+            f"Exact tool name: {card.tool_name}",
+            f"Public domain: {domain.replace('_', ' ')}",
+            f"Public category: {category.replace('_', ' ')}",
+            "Operation and scope (public description): "
+            f"{card.choose_semantics}",
         )
     else:
         expected_prefix = (
@@ -1614,11 +1636,68 @@ def _activation_contrast_neighborhoods(
     return neighborhoods
 
 
+def _activation_scope_bindings(
+    corpus: NativeCompatibleSemanticCardCorpus,
+    registry_rows: Sequence[Mapping[str, str]] | None,
+) -> dict[str, tuple[str, str]]:
+    if (
+        registry_rows is None
+        or isinstance(registry_rows, (str, bytes))
+        or not isinstance(registry_rows, Sequence)
+        or not registry_rows
+    ):
+        raise SemanticCardCompilationError(
+            "activation scope view requires a nonempty public registry row set"
+        )
+    cards_by_name = corpus.cards_by_name
+    bindings: dict[str, tuple[str, str]] = {}
+    for row in registry_rows:
+        if not isinstance(row, Mapping):
+            raise SemanticCardCompilationError(
+                "activation scope public registry rows must be objects"
+            )
+        tool_name = row.get("tool_name")
+        if not isinstance(tool_name, str) or not tool_name or tool_name in bindings:
+            raise SemanticCardCompilationError(
+                "activation scope public registry tool names are empty or duplicated"
+            )
+        domain = row.get("domain")
+        category = row.get("category")
+        if (
+            not isinstance(domain, str)
+            or not domain.strip()
+            or not domain.isascii()
+            or not isinstance(category, str)
+            or not category.strip()
+            or not category.isascii()
+        ):
+            raise SemanticCardCompilationError(
+                "activation scope public registry domain and category must be "
+                "nonempty ASCII text"
+            )
+        card = cards_by_name.get(tool_name)
+        if card is not None and (
+            row.get("signature") != card.signature
+            or row.get("description") != card.choose_semantics
+        ):
+            raise SemanticCardCompilationError(
+                "activation scope public registry signature or description differs "
+                f"for {tool_name!r}"
+            )
+        bindings[tool_name] = (domain, category)
+    if set(bindings) != set(cards_by_name):
+        raise SemanticCardCompilationError(
+            "activation scope public registry tool names do not exactly match the corpus"
+        )
+    return bindings
+
+
 def build_native_compatible_knowledge_snapshot(
     corpus: NativeCompatibleSemanticCardCorpus,
     *,
     compilation_source: Mapping[str, object],
     value_view: str | None = None,
+    registry_rows: Sequence[Mapping[str, str]] | None = None,
 ) -> KnowledgeSnapshot:
     """Project native cards into positive keys and complete supplied values.
 
@@ -1713,6 +1792,11 @@ def build_native_compatible_knowledge_snapshot(
         == NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_CONTRAST_V1
         else {}
     )
+    activation_scopes = (
+        _activation_scope_bindings(corpus, registry_rows)
+        if effective_value_view == NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_SCOPE_V1
+        else {}
+    )
     facets: list[KeyFacet] = []
     values: list[ValueBundle] = []
     for card in ordered_cards:
@@ -1722,6 +1806,7 @@ def build_native_compatible_knowledge_snapshot(
             card,
             value_view=effective_value_view,
             contrast_alternatives=contrast_neighborhoods.get(card.tool_name, ()),
+            activation_scope=activation_scopes.get(card.tool_name),
         )
         facets.append(
             KeyFacet(
@@ -1836,6 +1921,7 @@ def validate_compiled_knowledge_snapshot(
         NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION: {
             NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION,
             NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_CONTRAST_V1,
+            NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_SCOPE_V1,
         },
         NATIVE_SNAPSHOT_VALUE_VIEW_PARAMETER_MEANING: {
             NATIVE_SNAPSHOT_VALUE_VIEW_PARAMETER_MEANING,
@@ -1858,7 +1944,15 @@ def validate_compiled_knowledge_snapshot(
         )
         or (
             metadata_value_view
-            != NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_CONTRAST_V1
+            == NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_SCOPE_V1
+            and info.get("value_view_policy") != _ACTIVATION_SCOPE_POLICY_V1
+        )
+        or (
+            metadata_value_view
+            not in {
+                NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_CONTRAST_V1,
+                NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_SCOPE_V1,
+            }
             and "value_view_policy" in info
         )
     ):
@@ -2329,6 +2423,12 @@ def compile_a2t_semantic_card_artifacts(
             corpus,
             compilation_source=snapshot_source,
             value_view=config.snapshot_value_view,
+            registry_rows=(
+                registry
+                if config.snapshot_value_view
+                == NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_SCOPE_V1
+                else None
+            ),
         )
         snapshot_target_tools = {value.task_target for value in snapshot.values}
         if snapshot_target_tools != registry_tools:
@@ -2431,6 +2531,13 @@ def compile_a2t_semantic_card_artifacts(
                 receipt["knowledge_snapshot"]["value_view_policy"] = (
                     _ACTIVATION_CONTRAST_POLICY_V1
                 )
+            elif (
+                config.snapshot_value_view
+                == NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_SCOPE_V1
+            ):
+                receipt["knowledge_snapshot"]["value_view_policy"] = (
+                    _ACTIVATION_SCOPE_POLICY_V1
+                )
     receipt_bytes = (json.dumps(receipt, indent=2, sort_keys=True) + "\n").encode(
         "utf-8"
     )
@@ -2509,6 +2616,7 @@ __all__ = [
     "NATIVE_SNAPSHOT_VALUE_VIEW_PARAMETER_MEANING",
     "NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION",
     "NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_CONTRAST_V1",
+    "NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_SCOPE_V1",
     "PUBLIC_API_LEGALITY_PRESENTATION_V1",
     "CompatibilityRule",
     "ExecutableSemanticCardCorpus",
