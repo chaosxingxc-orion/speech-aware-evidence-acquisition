@@ -231,3 +231,26 @@ def test_preflight_estimate_visits_every_window_and_uses_window_duration(tmp_pat
     assert budgets[0].breakdown.speech_feature_tokens == max(
         1, round(runtime._speech_tokens_per_second)
     )
+
+
+def test_window_material_refuses_unscoped_external_parent_predecessors():
+    from speech_aware_evidence_acquisition.rails.controllers import default_phase_program
+    from speech_aware_evidence_acquisition.rails.phase_material import (
+        PhaseMaterialError, load_phase_material_specs,
+    )
+
+    values = {
+        "prepared_execution_units": {"relpath": "windows.json", "sha256": "a" * 64},
+        "phase_material": {"direct": {
+            "instruction_template": "probes/direct.txt",
+            "instruction_fill": None,
+            "predecessor_binding": "sealed-manifest",
+            "predecessor_source": {
+                "manifest_relpath": "runs/parent-manifest.json",
+                "manifest_sha256": "b" * 64,
+                "producer_policy_id": "phase-direct-only-v1",
+            },
+        }},
+    }
+    with pytest.raises(PhaseMaterialError, match="unit-bound external predecessor"):
+        load_phase_material_specs(values, default_phase_program("phase-direct-only-v1"))

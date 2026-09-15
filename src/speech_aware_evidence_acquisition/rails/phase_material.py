@@ -927,6 +927,14 @@ def load_phase_material_specs(
             raise PhaseMaterialError(
                 f"phase_material[{phase.name!r}] must be an object"
             )
+        if (
+            values.get("prepared_execution_units") is not None
+            and entry.get("predecessor_binding") == "sealed-manifest"
+        ):
+            raise PhaseMaterialError(
+                "execution windows require a unit-bound external predecessor; "
+                "the sealed-manifest loader binds whole-parent outputs only"
+            )
         extra = sorted(set(entry) - _SPEC_KEYS)
         if extra:
             raise PhaseMaterialError(
