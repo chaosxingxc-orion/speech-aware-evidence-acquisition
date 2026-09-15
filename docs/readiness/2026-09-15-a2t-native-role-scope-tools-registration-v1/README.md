@@ -31,8 +31,15 @@ endpoints, 64 GPU hours and 375,000 speech seconds. These values are ceilings,
 not targets. The frozen roster contains 23,418.083083 speech seconds; fourteen
 presentations per system episode total 327,853.163162 seconds.
 
-Root must review this registration, publish
-`coordination/a2t-scope-tools-registration-v1/admission-v1.json`, bind its exact
-decision ID and SHA-256 into both experiment readiness declarations, commit that
-two-file readiness transition, and then freeze the final executable source.
-Only the shared campaign driver may launch the pair after those gates pass.
+Root admission is already published at
+`coordination/a2t-scope-tools-registration-v1/admission-v1.json`; both experiment
+readiness declarations bind its exact decision ID and SHA-256. The composed
+configuration, runtime protocol, four plans and exposure rows were finalized
+after that binding. Root reviews this complete registration and freezes the
+final clean source next. Do not repeat a readiness edit: it would change the
+composed configuration and require recomputing all dependent bindings.
+
+The supported execution entry for this comparison is the committed shared
+direct-then-system campaign after the SLURP generation boundary. No separate
+wire probe, fit-only invocation or partial worker is part of this run plan;
+the campaign performs its registered complete-roster and native fits internally.
