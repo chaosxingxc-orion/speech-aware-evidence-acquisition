@@ -1,6 +1,6 @@
 # Owner-directed recovery and continuation plan
 
-**Current overlay:** Read [STATUS-115](STATUS-116.md). The SLURP matched replication passes its frozen rule, establishing the current exploratory useful base. Audio2Tool engineering generation is sealed and verified without quality scoring; its prepared full4000 comparison awaits final registration. Root owns attribution, design and decisions; delegated agents handle mechanical work only.
+**Current overlay:** Read [STATUS-115](STATUS-117.md). The SLURP matched replication passes its frozen rule, establishing the current exploratory useful base. Audio2Tool engineering generation is sealed and verified without quality scoring; its prepared full4000 comparison awaits final registration. Root owns attribution, design and decisions; delegated agents handle mechanical work only.
 
 **Latest released TRAIN diagnosis:** Read the [source-bound entity-loss analysis](../../../results/2026-09-14-slurp-train-a-entity-loss-attribution-v1.md). The exact Fold A output/reference join reconciles every saved official ingredient without rescoring. Of 414 reference-empty cases, 184 emit entities; surface, omission and extra-prediction losses all matter. This is a diagnostic, not a new mechanism or runtime memory admission.
 
