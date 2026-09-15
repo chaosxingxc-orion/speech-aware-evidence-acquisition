@@ -207,6 +207,7 @@ class _ActualEpisodeHarness:
         execution_plan=None,
         data_root=None,
         query_source: str = "speech_features",
+        execution_units_factory=None,
     ):
         self.world = _World(tmp_path, data_root=data_root)
         self.world.samples = self.world.samples[:sample_count]
@@ -221,7 +222,9 @@ class _ActualEpisodeHarness:
         self.adapter = _FakeAdapter(samples=self.samples)
         self.query_source = query_source
         self.feature_root = tmp_path / "features"
-        all_bindings = (
+        if execution_units_factory is not None:
+            self.feature_root.mkdir(parents=True, exist_ok=True)
+        all_bindings = {} if execution_units_factory is not None else (
             _feature_bindings(self.world, self.feature_root)
             if query_source == "speech_features"
             else {
@@ -232,7 +235,7 @@ class _ActualEpisodeHarness:
                 for sample in self.samples
             }
         )
-        self.speech_bindings = {
+        self.speech_bindings = {} if execution_units_factory is not None else {
             sample.sample_id: all_bindings[sample.sample_id] for sample in self.samples
         }
         self.program = _program(max_contacts=max_contacts)
@@ -391,7 +394,14 @@ class _ActualEpisodeHarness:
                 data_root=self.world.data_root,
                 carrier_root=self.world.carrier_root,
             )
-        if query_source == "speech_features":
+        if execution_units_factory is not None:
+            self.execution_units, registry = execution_units_factory(self)
+            client_kwargs.update(
+                speech_feature_root=self.feature_root,
+                execution_units=self.execution_units,
+                slice_registry=registry,
+            )
+        elif query_source == "speech_features":
             client_kwargs.update(
                 speech_feature_root=self.feature_root,
                 speech_packet_bindings=self.speech_bindings,

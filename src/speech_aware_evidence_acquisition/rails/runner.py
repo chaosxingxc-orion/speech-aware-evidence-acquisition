@@ -3139,7 +3139,10 @@ def run_speech_native_agent_loop(
     sample_ids = tuple(sample.sample_id for sample in samples)
     if len(set(sample_ids)) != len(sample_ids):
         raise RailsRunnerError("AgentLoop split contains duplicate sample ids")
-    if set(speech_packet_bindings) != set(sample_ids):
+    if (
+        (execution_units is None or speech_packet_bindings)
+        and set(speech_packet_bindings) != set(sample_ids)
+    ):
         raise RailsRunnerError(
             "speech_packet_bindings must materialize every query sample exactly once"
         )
@@ -3161,8 +3164,8 @@ def run_speech_native_agent_loop(
             execution_units.validate(parent_sample_ids=sample_ids, max_contacts=max_contacts)
         except RailsError as error:
             raise RailsRunnerError(str(error)) from error
-        if query_source != "speech_audio":
-            raise RailsRunnerError("execution units require the registered raw speech path")
+        for unit in execution_units.units:
+            unit.query_descriptor(query_source)
         for unit in execution_units.units:
             record = unit.slice_record
             existing = core_client.registered_slice(unit.parent_sample_id, record.media_relpath)
@@ -3226,7 +3229,14 @@ def run_speech_native_agent_loop(
             descriptor=(
                 speech_packet_bindings[sample.sample_id]
                 if unit is None
-                else {"packet_id": unit.slice_record.media_relpath, "sha256": unit.slice_record.sha256}
+                else {
+                    "packet_id": (
+                        unit.query_descriptor(query_source)["packet_id"]
+                        if query_source == "speech_features"
+                        else unit.query_descriptor(query_source)["media_relpath"]
+                    ),
+                    "sha256": unit.query_descriptor(query_source)["sha256"],
+                }
             ),
             bootstrap_facet_ids=(
                 bootstrap_facets

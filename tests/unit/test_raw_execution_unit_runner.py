@@ -24,8 +24,10 @@ from test_rails_runner import _knowledge_snapshot
 def _windows(harness):
     sample = harness.samples[0]
     registry = build_slice_registry(data_root=harness.world.data_root, run_id=harness.plan.run_id, samples=harness.samples)
-    harness.client._slice_registry = registry
-    harness.client._adapter._slice_registry = registry
+    harness.unit_registry = registry
+    if getattr(harness, "client", None) is not None:
+        harness.client._slice_registry = registry
+        harness.client._adapter._slice_registry = registry
     units = []
     for i in range(2):
         rel = registry.slice_relpath(sample.sample_id,i)
@@ -38,6 +40,38 @@ def _windows(harness):
         registry.register(record)
         units.append(ExecutionUnit(sample.sample_id,f"{sample.sample_id}#w{i+1:04d}",record))
     return ExecutionUnitRoster(tuple(units))
+
+def _feature_windows(harness):
+    from dataclasses import replace
+    import struct
+    from speech_aware_evidence_acquisition.core.model import (
+        SpeechFeatureChunkData, materialize_speech_feature_packet,
+    )
+    from test_native_episode_runner import _MODEL_FILES
+
+    raw = _windows(harness)
+    units = []
+    for index, unit in enumerate(raw.units):
+        packet = materialize_speech_feature_packet(
+            feature_root=harness.feature_root,
+            packet_id=f"window/{index}",
+            audio_sha256=unit.slice_record.sha256,
+            encoder_receipt_sha256="e" * 64,
+            decoder_gguf_sha256=_MODEL_FILES[0].sha256,
+            mmproj_sha256=_MODEL_FILES[1].sha256,
+            position_mode="mrope_1d", causal_attention=True,
+            chunks=(SpeechFeatureChunkData(
+                n_tokens=2, n_pos=2, n_embd=4,
+                feature_bytes=struct.pack("<8f", *range(8)),
+                position_bytes=struct.pack("<8i", 0,1,0,1,0,1,0,1),
+            ),),
+        )
+        units.append(replace(
+            unit, speech_packet_id=packet.packet_id,
+            speech_packet_sha256=packet.packet_sha256,
+        ))
+    return ExecutionUnitRoster(tuple(units)), harness.unit_registry
+
 
 def _runtime(harness, roster, material, values):
     runtime = object.__new__(FlightRuntime)
@@ -56,7 +90,7 @@ def _runtime(harness, roster, material, values):
         "speech_packet_bindings": harness.speech_bindings,
         "material_for_phase": material,
         "trace_sink": harness.trace,
-        "query_source": "speech_audio", "execution_units": roster,
+        "query_source": harness.query_source, "execution_units": roster,
     }
     runtime._continuous_phase_runner = partial(run_continuous_program, slot_count=2)
     runtime._phase_planner_specs = lambda _policy: {}
@@ -65,11 +99,15 @@ def _runtime(harness, roster, material, values):
     runtime._build_phase_tool_dispatcher = lambda *args, **kwargs: None
     return runtime
 
-def test_two_raw_windows_have_independent_native_histories_contacts_and_budgets(tmp_path, monkeypatch):
+@pytest.mark.parametrize("features", [False, True])
+def test_two_windows_have_independent_native_histories_contacts_and_budgets(tmp_path, monkeypatch, features):
     harness = _ActualEpisodeHarness(tmp_path, sample_count=1,max_revisions=0,max_contacts=4,
-        planner_actions=("ACCEPT",),arm="raw-speech-agent-native-tools",query_source="speech_audio",
+        planner_actions=("ACCEPT",),
+        arm="speech-feature-query-native-tools" if features else "raw-speech-agent-native-tools",
+        query_source="speech_features" if features else "speech_audio",
+        execution_units_factory=_feature_windows if features else None,
         execution_plan=_plan(planned_model_calls=8))
-    roster = _windows(harness)
+    roster = harness.execution_units if features else _windows(harness)
     by_scope = {execution_unit_scope(u.request_key):u.request_key for u in roster.units}
     requests = {}
     lock = threading.Lock()
@@ -156,17 +194,21 @@ def test_two_raw_windows_have_independent_native_histories_contacts_and_budgets(
     ("stop", 64, "cap reached", "first window"),
     ("stop", 3, "", "first window"),
 ])
-def test_raw_direct_windows_share_dispatch_and_normalized_delivery(
-    tmp_path, monkeypatch, reason, completion_tokens, second_text, expected,
+@pytest.mark.parametrize("features", [False, True])
+def test_direct_windows_share_dispatch_and_normalized_delivery(
+    tmp_path, monkeypatch, reason, completion_tokens, second_text, expected, features,
 ):
     from speech_aware_evidence_acquisition.rails.controllers import default_phase_program
 
     harness = _ActualEpisodeHarness(
         tmp_path, sample_count=1, max_revisions=0, max_contacts=4,
-        planner_actions=("ACCEPT",), arm="raw-speech-agent-native-tools",
-        query_source="speech_audio", execution_plan=_plan(planned_model_calls=2),
+        planner_actions=("ACCEPT",),
+        arm="speech-feature-query-native-tools" if features else "raw-speech-agent-native-tools",
+        query_source="speech_features" if features else "speech_audio",
+        execution_units_factory=_feature_windows if features else None,
+        execution_plan=_plan(planned_model_calls=2),
     )
-    roster = _windows(harness)
+    roster = harness.execution_units if features else _windows(harness)
     program = default_phase_program("phase-direct-only-v1")
     def material(phase, context, sealed):
         return PhaseMaterial(

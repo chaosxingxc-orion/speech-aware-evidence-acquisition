@@ -2706,25 +2706,28 @@ class FlightRuntime:
         if getattr(self, "_window_feature_packet_config", None) != identity:
             self._window_feature_packets = load_window_packet_binding(
                 self._composed.values, self._samples, self._data_root, self._repo_root,
+                **({"execution_units": self._source_execution_unit_roster()}
+                   if self._composed.values.get("prepared_execution_units") is not None else {}),
             )
             self._window_feature_packet_config = identity
         return self._window_feature_packets
 
-    def execution_unit_roster(self):
-        """Load explicit raw windows once, without altering the parent split."""
+    def _source_execution_unit_roster(self):
+        """Validate immutable source windows without changing the parent split."""
         values = self._composed.values
         declaration = values.get("prepared_execution_units")
         if declaration is None:
             return None
         from ..preparation_windows import load_raw_execution_unit_roster
-        if self._arm() != "raw-speech-agent-native-tools" or self.uses_speech_feature_packets():
-            raise FlightRuntimeError("execution units require the explicit raw speech arm")
-        if values.get("prepared_window_feature_packets") is not None:
-            raise FlightRuntimeError("raw execution units cannot use window feature packets")
+        features = self.uses_speech_feature_packets()
+        if not features and self._arm() != "raw-speech-agent-native-tools":
+            raise FlightRuntimeError("execution units require an explicit speech arm")
+        if features != (values.get("prepared_window_feature_packets") is not None):
+            raise FlightRuntimeError("feature execution units require prepared window packets; raw units refuse them")
         plan = getattr(self, "_plan", None)
         split_hash = plan.split_identity_hash if plan is not None else self._prepare()[3]
         identity = _canonical_hash({
-            "declaration": declaration, "split": split_hash,
+            "declaration": declaration, "split": split_hash, "arm": self._arm(),
             "parents": [(sample.sample_id, sample.media_relpath, sample.audio_seconds)
                         for sample in self._samples],
         })
@@ -2733,8 +2736,20 @@ class FlightRuntime:
                 declaration, data_root=self._data_root, samples=self._samples,
                 split_identity_hash=split_hash,
             )
-            self._execution_units, self._execution_unit_registry = roster, registry
+            self._source_execution_units, self._execution_unit_registry = roster, registry
             self._execution_unit_config_hash = identity
+        return self._source_execution_units
+
+    def execution_unit_roster(self):
+        """Attach prepared packets to validated source units when configured."""
+        source = self._source_execution_unit_roster()
+        if source is None or not self.uses_speech_feature_packets():
+            return source
+        packets = self.window_feature_packet_binding()
+        identity = (self._execution_unit_config_hash, self._window_feature_packet_config)
+        if getattr(self, "_execution_unit_packet_config", None) != identity:
+            self._execution_units = source.with_speech_packets(packets)
+            self._execution_unit_packet_config = identity
         return self._execution_units
 
     def execution_unit_for_contact(self, sample_id, contact_id):
@@ -2764,6 +2779,22 @@ class FlightRuntime:
         ):
             raise FlightRuntimeError("raw observation migrated outside its execution unit")
         self._execution_unit_registry.verify_slice_bytes(record)
+
+    def validate_execution_unit_feature_payload(self, unit, payload):
+        """Bind formal feature requests to the exact source window before fitting."""
+        query = [part for part in payload.get("speech_feature_parts", ())
+                 if isinstance(part, Mapping) and part.get("role") == "query"]
+        source = unit.slice_record
+        if (
+            query != [unit.query_descriptor("speech_features")]
+            or payload.get("sample_id") != unit.parent_sample_id
+            or payload.get("media_relpath") != source.media_relpath
+            or payload.get("audio_seconds") != source.audio_seconds
+            or payload.get("sample_rate_hz") != source.sample_rate_hz
+            or "raw_speech_query" in payload
+        ):
+            raise FlightRuntimeError("feature request migrated outside its execution unit")
+        self.validate_execution_unit_observation(unit, unit.query_descriptor("speech_audio"))
 
     def _raw_phase_packet_bindings(self):
         roster = self.execution_unit_roster()
@@ -3696,9 +3727,12 @@ class FlightRuntime:
             # from the model fragment (cross-checked against the promotion
             # receipt), the per-sample descriptors from that same receipt.
             kwargs["speech_feature_root"] = self._speech_feature_root()
-            kwargs["speech_packet_bindings"] = self.speech_packet_bindings()
-            if self._validated_packet_set is not None:
-                kwargs["validated_packet_set"] = self._validated_packet_set
+            if baseline_values.get("prepared_execution_units") is not None:
+                kwargs["execution_units"] = self.execution_unit_roster()
+            else:
+                kwargs["speech_packet_bindings"] = self.speech_packet_bindings()
+                if self._validated_packet_set is not None:
+                    kwargs["validated_packet_set"] = self._validated_packet_set
         if CONSTRUCTION_VISIBLE_FIELD in arm_fields:
             # rails.core_client.FrozenCoreClient REFUSES to be constructed for
             # a construction-proposer arm without its targets, and binds them
@@ -5558,6 +5592,7 @@ class FlightRuntime:
                 "_knowledge_store_supply", "_window_feature_packet_config",
                 "_window_feature_packets", "_execution_units",
                 "_execution_unit_registry", "_execution_unit_config_hash",
+                "_source_execution_units", "_execution_unit_packet_config",
             )
         }
         try:
@@ -5644,16 +5679,24 @@ class FlightRuntime:
         for position, (payload, unit) in enumerate(
             zip(payloads, unit_roster.units, strict=True)
         ):
-            expected_query = {
-                "media_relpath": unit.slice_record.media_relpath,
-                "sha256": unit.slice_record.sha256,
-            }
+            if unit.speech_packet_id is not None:
+                queries = [part for part in payload.get("speech_feature_parts", ())
+                           if isinstance(part, Mapping) and part.get("role") == "query"]
+                query_matches = (
+                    queries == [unit.query_descriptor("speech_features")]
+                    and "raw_speech_query" not in payload
+                )
+            else:
+                query_matches = (
+                    payload.get("raw_speech_query") == unit.query_descriptor("speech_audio")
+                    and "speech_feature_parts" not in payload
+                )
             if (
                 payload.get("sample_id") != unit.parent_sample_id
                 or payload.get("media_relpath") != unit.slice_record.media_relpath
                 or payload.get("audio_seconds") != unit.slice_record.audio_seconds
                 or payload.get("sample_rate_hz") != unit.slice_record.sample_rate_hz
-                or payload.get("raw_speech_query") != expected_query
+                or not query_matches
             ):
                 raise PreparationError(
                     f"actual request {position} differs from its ordered execution unit"
@@ -6610,9 +6653,8 @@ class FlightRuntime:
 
         Three refusals, all BEFORE any contact:
 
-        1. the arm must travel the speech-feature packet path -- the agent
-           loop is speech-feature only (``rails.core_client.FrozenCoreClient``
-           refuses ``history`` without ``speech_feature_sample_id``);
+        1. the arm must declare feature packets or the explicit raw speech
+           path; configured execution units retain source and packet custody;
         2. every rendered static instruction, and every per-sample sealed
            state that will be appended to one, must pass the SAME
            protected-material containment rule ``rails.runner`` applies at
@@ -6639,7 +6681,8 @@ class FlightRuntime:
         raw_phase = self._arm() == "raw-speech-agent-native-tools"
         if not self.uses_speech_feature_packets() and not raw_phase:
             raise FlightRuntimeError("phase programs require an explicit feature or raw speech arm")
-        raw_bindings = self._raw_phase_packet_bindings() if raw_phase else None
+        units = self.execution_unit_roster()
+        raw_bindings = self._raw_phase_packet_bindings() if raw_phase and units is None else None
         snapshot = self._load_knowledge_snapshot()
         specs = load_phase_material_specs(self._composed.values, program)
         static_text = {
@@ -6698,9 +6741,12 @@ class FlightRuntime:
         review_for_phase, review_specs = self._resolve_phase_review(program)
         return {
             "knowledge_snapshot": snapshot,
-            "speech_packet_bindings": raw_bindings if raw_phase else self.speech_packet_bindings(),
-            **({"query_source": "speech_audio", "execution_units": self.execution_unit_roster()}
-               if raw_phase else {}),
+            "speech_packet_bindings": (
+                {} if units is not None
+                else raw_bindings if raw_phase else self.speech_packet_bindings()
+            ),
+            **({"query_source": "speech_audio"} if raw_phase else {}),
+            **({"execution_units": units} if units is not None else {}),
             "material_for_phase": build_material_for_phase(
                 specs,
                 program_id=program.program_id,

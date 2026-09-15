@@ -96,7 +96,10 @@ def _expected_execution_ids(bindings, execution_units):
     from .execution_units import ExecutionUnitRoster
     if not isinstance(execution_units, ExecutionUnitRoster):
         raise PhaseRunnerError("execution_units must be an ExecutionUnitRoster")
-    execution_units.validate(parent_sample_ids=tuple(bindings), max_contacts=1)
+    parents = tuple(bindings) or tuple(
+        dict.fromkeys(unit.parent_sample_id for unit in execution_units.units)
+    )
+    execution_units.validate(parent_sample_ids=parents, max_contacts=1)
     return tuple(unit.request_key for unit in execution_units.units)
 
 
@@ -186,8 +189,10 @@ def run_agent_phase(
             "run-level decoding_params must leave response_format to each "
             "phase's own material"
         )
-    if not isinstance(speech_packet_bindings, Mapping) or not speech_packet_bindings:
-        raise PhaseRunnerError("speech_packet_bindings must be a non-empty mapping")
+    if not isinstance(speech_packet_bindings, Mapping) or (
+        not speech_packet_bindings and execution_units is None
+    ):
+        raise PhaseRunnerError("speech_packet_bindings must be a non-empty mapping without units")
     if expected_row_count is not None:
         if (
             isinstance(expected_row_count, bool)
@@ -604,8 +609,10 @@ def run_continuous_program(
             "run-level decoding_params must leave response_format to each "
             "phase's own material"
         )
-    if not isinstance(speech_packet_bindings, Mapping) or not speech_packet_bindings:
-        raise PhaseRunnerError("speech_packet_bindings must be a non-empty mapping")
+    if not isinstance(speech_packet_bindings, Mapping) or (
+        not speech_packet_bindings and execution_units is None
+    ):
+        raise PhaseRunnerError("speech_packet_bindings must be a non-empty mapping without units")
 
     geometry = adapter.serving_geometry()
     resolved_slot_count = slot_count if slot_count is not None else geometry["slots"]

@@ -307,7 +307,7 @@ def fit_requests(
 
 
 def materialize_request_fit_batch(runtime, *, execution_plan=None):
-    """Select the registered raw fit request builder without changing its prompt."""
+    """Select the registered source-window fit builder without changing its prompt."""
 
     values = getattr(getattr(runtime, "_composed", None), "values", {})
     prepared_units = (
@@ -1079,8 +1079,6 @@ def build_native_contact_fit_gate(
     roster_loader = getattr(runtime, "execution_unit_roster", None)
     unit_roster = roster_loader() if callable(roster_loader) else None
     if unit_roster is not None:
-        if feature_packets:
-            raise PreparationError("execution unit fitting requires raw speech")
         unit_roster.validate(parent_sample_ids=expected_ids, max_contacts=program.max_contacts)
     maximum_requests = (
         len(unit_roster.units) if unit_roster is not None else len(expected_ids)
@@ -1163,7 +1161,10 @@ def build_native_contact_fit_gate(
             budget_key = sample_id
             if unit_roster is not None:
                 unit = runtime.execution_unit_for_contact(sample_id, contact_id)
-                runtime.validate_execution_unit_observation(unit, raw_speech_query)
+                if feature_packets:
+                    runtime.validate_execution_unit_feature_payload(unit, payload)
+                else:
+                    runtime.validate_execution_unit_observation(unit, raw_speech_query)
                 budget_key = unit.request_key
                 unit_fields = {
                     "execution_unit_id": unit.request_key,

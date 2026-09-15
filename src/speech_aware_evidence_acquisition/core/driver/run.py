@@ -164,7 +164,7 @@ def _obs_pipeline(values: Mapping[str, object], policy_name: str, batch_size: in
     return depth, dispatcher
 
 
-def load_window_packet_binding(values, samples, data_root, repo_root):
+def load_window_packet_binding(values, samples, data_root, repo_root, *, execution_units=None):
     """Resolve an explicit, source-bound window representation before dispatch."""
     declaration = values.get("prepared_window_feature_packets")
     if declaration is None:
@@ -174,13 +174,35 @@ def load_window_packet_binding(values, samples, data_root, repo_root):
 
     if not isinstance(declaration, Mapping) or set(declaration) != {"path", "sha256"}:
         raise CoreError("prepared_window_feature_packets requires path and sha256")
-    if values.get("arm") != "speech-feature-query" or values.get("policy") not in (
-        "obs-agent-loop-ojw", "obs-repair-loop-ojw",
-    ):
-        raise CoreError("window packets require the shared OJW window query path")
-    cfg = ObsLoopConfig.from_values(values, Path(repo_root))
-    if cfg.boundary_mode != "fixed" or cfg.condition_tail_chars or cfg.vad_trim_min_seconds:
-        raise CoreError("prepared window packets require fixed untrimmed windows without a tail")
+    explicit_units = values.get("prepared_execution_units") is not None
+    if explicit_units != (execution_units is not None):
+        raise CoreError("prepared window units require the validated explicit source roster")
+    if explicit_units:
+        from ...e0.d2_leakage import ARM_VISIBLE_FIELDS
+        from ...rails.controllers import default_phase_program
+        from ...rails.errors import RailsError
+        from ...rails.execution_units import ExecutionUnitRoster
+        if (
+            not isinstance(execution_units, ExecutionUnitRoster)
+            or "speech_feature_parts" not in ARM_VISIBLE_FIELDS.get(values.get("arm"), ())
+        ):
+            raise CoreError("window execution units require a feature arm and a validated roster")
+        try:
+            program = default_phase_program(values.get("policy"))
+            execution_units.validate(
+                parent_sample_ids=tuple(sample.sample_id for sample in samples),
+                max_contacts=program.max_contacts,
+            )
+        except RailsError as error:
+            raise CoreError(f"invalid window phase program binding: {error}") from error
+    else:
+        if values.get("arm") != "speech-feature-query" or values.get("policy") not in (
+            "obs-agent-loop-ojw", "obs-repair-loop-ojw",
+        ):
+            raise CoreError("window packets require the shared OJW window query path")
+        cfg = ObsLoopConfig.from_values(values, Path(repo_root))
+        if cfg.boundary_mode != "fixed" or cfg.condition_tail_chars or cfg.vad_trim_min_seconds:
+            raise CoreError("prepared window packets require fixed untrimmed windows without a tail")
     if values.get("speech_packet_promotion_receipt") is not None:
         raise CoreError("window and whole-sample packet bindings cannot be combined")
     path = declaration["path"]
@@ -202,6 +224,15 @@ def load_window_packet_binding(values, samples, data_root, repo_root):
         != prepared.encoder_identity["decoder_gguf_sha256"]
     ):
         raise CoreError("window packets disagree with the configured feature root or decoder")
+    if explicit_units:
+        try:
+            execution_units.with_speech_packets(prepared)
+        except RailsError as error:
+            raise CoreError(f"window packets differ from execution units: {error}") from error
+        for name in ("speech_feature_key_representation_id", "speech_feature_matcher_policy_id"):
+            if not isinstance(values.get(name), str) or not values[name]:
+                raise CoreError(f"window packets require a nonempty {name}")
+        return prepared
     # A frozen OBS plan may consume an explicit subset of a shared artifact.
     # Validate the selected spans below; never silently narrow an ordinary run.
     if cfg.unit_plan is not None:
