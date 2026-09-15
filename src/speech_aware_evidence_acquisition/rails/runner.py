@@ -1371,7 +1371,9 @@ def _complete_agent_request(
     if not isinstance(result, CoreCompletion):
         raise RailsRunnerError("native contact requires source-bound CoreCompletion")
     result.assert_binding(
-        sample_id=arguments["speech_feature_sample_id"],
+        sample_id=arguments.get(
+            "speech_feature_sample_id", arguments.get("raw_agent_sample_id")
+        ),
         agent_contact_id=arguments["agent_contact_id"],
         response_text=result.text,
     )
@@ -1477,13 +1479,20 @@ def _run_agent_trajectory(
             agent_states=context.agent_states,
             knowledge_value_renderer=knowledge_value_renderer,
         )
+        source_arguments = (
+            {"raw_agent_sample_id": prepared.sample.sample_id}
+            if query_state.query_source == "speech_audio"
+            else {
+                "speech_feature_sample_id": prepared.sample.sample_id,
+                "key_representation_id": contact.key_representation_id,
+                "matcher_policy_id": contact.matcher_policy_id,
+            }
+        )
         response_text, completion = _complete_agent_request(
             core_client=core_client, messages=messages, trace_buffer=trace_buffer,
             arguments={
                 "decoding_params": decoding_params,
-                "speech_feature_sample_id": prepared.sample.sample_id,
-                "key_representation_id": contact.key_representation_id,
-                "matcher_policy_id": contact.matcher_policy_id,
+                **source_arguments,
                 "agent_state": tuple(a.as_json() for a in context.agent_states),
                 "agent_contact_id": contact.contact_id,
                 "contact_instruction": contact.instruction,
@@ -2359,11 +2368,18 @@ def _run_agent_openjiuwen(
         decoding_params.update(dict(node.contact.decoding_params))
         if slot_id is not None:
             decoding_params["id_slot"] = slot_id
+        source_arguments = (
+            {"raw_agent_sample_id": node.context.sample_id}
+            if node.context.query_state.query_source == "speech_audio"
+            else {
+                "speech_feature_sample_id": node.context.sample_id,
+                "key_representation_id": node.contact.key_representation_id,
+                "matcher_policy_id": node.contact.matcher_policy_id,
+            }
+        )
         return {
             "decoding_params": decoding_params,
-            "speech_feature_sample_id": node.context.sample_id,
-            "key_representation_id": node.contact.key_representation_id,
-            "matcher_policy_id": node.contact.matcher_policy_id,
+            **source_arguments,
             "agent_state": tuple(a.as_json() for a in node.context.agent_states),
             "agent_contact_id": node.contact.contact_id,
             "contact_instruction": node.contact.instruction,
@@ -3057,13 +3073,22 @@ def run_speech_native_agent_loop(
             "query_source must be 'speech_features' or 'speech_audio'"
         )
     raw_native_arm = "raw-speech-agent-native-tools"
-    if query_source == "speech_audio" and (
+    raw_direct_only = (
         native_episode_binding is None
-        or not isinstance(core_client, FrozenCoreClient)
+        and controller_policy_id in {
+            "phase-direct-only-v1",
+            "phase-direct-only-v1:direct",
+        }
+        and max_contacts == 1
+    )
+    if query_source == "speech_audio" and (
+        not isinstance(core_client, FrozenCoreClient)
         or core_client.arm != raw_native_arm
+        or not (native_episode_binding is not None or raw_direct_only)
     ):
         raise RailsRunnerError(
-            "speech_audio requires the explicit raw native client and episode"
+            "speech_audio requires the explicit raw native client and either a "
+            "native episode or the shared direct-only controller"
         )
     if (
         query_source == "speech_features"
