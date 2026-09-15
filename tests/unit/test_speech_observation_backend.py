@@ -318,6 +318,75 @@ def test_duration_and_batch_bounds_fail_before_prefetch_or_model_load(monkeypatc
         worker.decode_batch([source("one"), source("two")])
 
 
+def test_bounded_span_protocol_preserves_registered_selected_frames(monkeypatch):
+    calls = {}
+    selected = source("selected", frames=480000, start_frame=16000, end_frame=32000)
+    monkeypatch.setattr(backend, "BoundedAudioPrefetch", FakePrefetch)
+    monkeypatch.setattr(
+        backend,
+        "_load_whisper_stack",
+        lambda *_: fake_stack([FakeResult("selected", [1], -0.1, 0.0)], calls),
+    )
+    worker = backend.LocalWhisperBackend(
+        inventory(), protocol(batch_size=1, source_selection="bounded-span-v1"),
+        "/unused", lambda _: None,
+    )
+
+    worker.prepare_sources([selected])
+    assert FakePrefetch.instances[-1].prepared == [selected]
+    assert worker.decode_batch([selected])[0]["transcript"] == "selected"
+    assert calls["pads"] == [("/verified/selected.flac", 16000, 480000)]
+    assert calls["mels"] == [("/verified/selected.flac", 480000, 128)]
+
+
+def test_bounded_span_protocol_keeps_decode_selected_source_geometry(monkeypatch):
+    calls = {}
+    selected = source("selected", frames=480000, start_frame=32000, end_frame=64000)
+    monkeypatch.setattr(backend, "BoundedAudioPrefetch", FakePrefetch)
+    monkeypatch.setattr(
+        backend,
+        "_load_whisper_stack",
+        lambda *_: fake_stack([FakeResult("selected", [1], -0.1, 0.0)], calls),
+    )
+    worker = backend.LocalWhisperBackend(
+        inventory(), protocol(batch_size=1, source_selection="bounded-span-v1"),
+        "/unused", lambda _: None,
+    )
+
+    assert worker.decode_selected(selected)["transcript"] == "selected"
+    assert FakePrefetch.instances[-1].prepared == [selected]
+    assert calls["pads"] == [("/verified/selected.flac", 32000, 480000)]
+    assert FakePrefetch.instances[-1].closed
+
+
+@pytest.mark.parametrize(
+    "selected",
+    [
+        source("negative", start_frame=-1, end_frame=1),
+        source("empty", start_frame=10, end_frame=10),
+        source("outside", start_frame=0, end_frame=16001),
+        source("oversize", frames=480001, start_frame=0, end_frame=480001),
+    ],
+)
+def test_bounded_span_protocol_refuses_invalid_or_oversize_geometry(monkeypatch, selected):
+    monkeypatch.setattr(backend, "BoundedAudioPrefetch", FakePrefetch)
+    worker = backend.LocalWhisperBackend(
+        inventory(), protocol(batch_size=1, source_selection="bounded-span-v1"),
+        "/unused", lambda _: None,
+    )
+    with pytest.raises(backend.SpeechObservationBackendError):
+        worker.prepare_sources([selected])
+    assert FakePrefetch.instances[-1].prepared == []
+
+
+@pytest.mark.parametrize("selection", ["full-utterance-v1", None, True])
+def test_source_selection_only_accepts_bounded_span_v1(selection):
+    with pytest.raises(backend.SpeechObservationBackendError, match="source_selection"):
+        backend.LocalWhisperBackend(
+            inventory(), protocol(source_selection=selection), "/unused", lambda _: None
+        )
+
+
 def test_sample_len_must_fit_decoder_context_before_forward(monkeypatch):
     calls, events = {}, []
     monkeypatch.setattr(backend, "BoundedAudioPrefetch", FakePrefetch)
