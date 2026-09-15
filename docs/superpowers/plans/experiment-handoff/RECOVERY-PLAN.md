@@ -143,3 +143,7 @@ Root complete-score analysis is documented in docs/results/2026-09-15-a2t-native
 ## 2026-09-15 CPU ordered-action analysis closure
 
 [STATUS-134](STATUS-134.md) closes the deferred full-reference occurrence analysis using the original shared parsers and first saved scores on all4000 IDs. The shared source projection and alignment CLI are verified with49 tests and actual complete-cohort crosschecks. Preserve historical outcomes and the held scope-tools configuration. All-name candidate coverage66.575%, ordered64.175% and strict55.175% are distinct from primary inclusion72.05%. Root retains candidate coverage and parameter/consumption optimization as separate next directions, without a new causal or adoption claim. GPU hold remains active; resume sequence stays SLURP, admitted Audio2Tool pair, then E21.
+
+## 2026-09-15 primary-parameter and value-source closure
+
+[STATUS-135](STATUS-135.md) records the complete4000 primary-parameter analysis using original parsing/normalization and saved outcomes, with54 passing tests. The common-primary-correct cohort shows fewer wrong values but more omissions, and a concentrated device identifier gap. Public identifier defaults are absent from current compact/parameter values; retain their source status rather than treating them as automatic answers. Root recommends a later named value-evidence investigation through shared target lookup. Preserve the frozen scope-tools comparison, old verdicts and owner GPU hold. No new generation, fit, encoding or scoring occurred.

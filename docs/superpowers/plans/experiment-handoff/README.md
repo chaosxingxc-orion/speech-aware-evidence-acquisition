@@ -1,10 +1,10 @@
 # Current continuation: September 15
 
-Read [STATUS-134](STATUS-134.md): the current Audio2Tool task finalized 4000 rows and first-scored; hold all new GPU experiments until the owner explicitly resumes. SLURP and E21 dispatch are held; CPU scoring, analysis and preparation continue. Preserve resident model memory. See [the owner directive](OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15.md).
+Read [STATUS-135](STATUS-135.md): the current Audio2Tool task finalized 4000 rows and first-scored; hold all new GPU experiments until the owner explicitly resumes. SLURP and E21 dispatch are held; CPU scoring, analysis and preparation continue. Preserve resident model memory. See [the owner directive](OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15.md).
 
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-134.md](STATUS-134.md) closes the deferred full ordered Audio2Tool attribution with exact4000 source projection,49 passing tests and all saved-score crosschecks. Primary candidate inclusion72.05% is distinct from all-reference66.575%, ordered64.175% and strict55.175%. Root analysis identifies both missing candidates and post-coverage parameter/selection gaps; the old tool guard remains failed. Scoped target knowledge and complete held configurations from STATUS-133 stay frozen. No new GPU work is authorized or launched.
+**Latest execution:** [STATUS-135.md](STATUS-135.md) closes complete primary-parameter attribution with4000 source/score crosschecks,54 passing tests and engineering checks. Root identifies a documented-value projection gap:43 public deviceId defaults are absent from current parameter values and the compact registry; deviceId accounts for583/941 residual wrong keys in the2089 common-primary-correct rows. Wrong-value cases improve950->784 while omissions rise107->131. These descriptive findings nominate a later value-evidence extension and do not alter the held scope-tools pair, past outcomes or GPU hold. Full ordered-action coverage from STATUS-134 remains64.175%.
 
 **Current comparison direction:** [OWNER-SYSTEM-VERSIONS-025.md](OWNER-SYSTEM-VERSIONS-025.md) makes complete model-versus-system task quality primary and allows evidence-guided expansion of system versions. The supplied/withheld knowledge draft is withdrawn. [The current system plan](../../../readiness/2026-09-13-slurp-direct-vs-native-system-plan-v1.md) and [extension sequence](../../../readiness/2026-09-13-finalized-score-reuse-and-system-extension.md) govern the next work.
 
@@ -12,7 +12,7 @@ Read [STATUS-134](STATUS-134.md): the current Audio2Tool task finalized 4000 row
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 134. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 135. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -45,7 +45,7 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-134.md](STATUS-134.md), state.json and [OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15](OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15.md) first.
+Read [STATUS-135.md](STATUS-135.md), state.json and [OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15](OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15.md) first.
 The September15 owner directive holds all new GPU experiments after the current Audio2Tool
 task completes or stops. It supersedes the launch scheduling in OWNER-GPU-RESUME-013;
 an explicit owner resume is required before dispatching another GPU task. The earlier G6/E21 campaigns' generation, scoring, fixed analysis and all four settlements
@@ -91,4 +91,4 @@ no new test/confirmatory exposure or Stage-3 execution is admitted.
 
 Current knowledge design: [discriminative values](../../../readiness/2026-09-11-discriminative-knowledge-values.md).
 
-Latest implementation handoff: [STATUS-134](STATUS-134.md). Shared target knowledge, native Planner tool dispatch, E21 window/context code and candidate diagnostics are integrated. The new tool has 460 focused CPU tests, including actual OpenJiuwen evidence delivery to Solver. The prepared SLURP broad/factored flight retains its frozen source and original tool configuration. New runtime fits, task gains, replications and the first actual optimizer cycle remain pending. GPU dispatch follows the owner hold. Preserve completed and failed sources. This pointer grants no generation authority.
+Latest implementation handoff: [STATUS-135](STATUS-135.md). Shared target knowledge, native Planner tool dispatch, E21 window/context code and candidate diagnostics are integrated. The new tool has 460 focused CPU tests, including actual OpenJiuwen evidence delivery to Solver. The prepared SLURP broad/factored flight retains its frozen source and original tool configuration. New runtime fits, task gains, replications and the first actual optimizer cycle remain pending. GPU dispatch follows the owner hold. Preserve completed and failed sources. This pointer grants no generation authority.
