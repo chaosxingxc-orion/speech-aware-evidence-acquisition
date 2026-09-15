@@ -70,6 +70,7 @@ class NativeEpisodeSpec:
     refresh_action: str | None = None
     max_candidate_refreshes: int = 0
     finite_completion_policy: str = "raise"
+    planner_output_format: str = "exact-text"
 
     def __post_init__(self) -> None:
         if not isinstance(self.episode_id, str) or not self.episode_id:
@@ -110,6 +111,8 @@ class NativeEpisodeSpec:
             not in {"raise", "deliver-latest-or-abstain"}
         ):
             raise ValueError("finite_completion_policy is invalid")
+        if self.planner_output_format not in {"exact-text", "json-action-v1"}:
+            raise ValueError("planner_output_format is invalid")
 
 
 @dataclass(frozen=True)
@@ -204,12 +207,54 @@ class _RoleQuery(WorkflowComponent):
         return {"state": state, "query": query}
 
 
+def _planner_action(
+    output: str,
+    *,
+    output_format: str,
+    legal: set[str],
+) -> tuple[str, dict[str, str] | None]:
+    if output_format == "exact-text":
+        action = output
+        control = None
+    else:
+        def unique_object(pairs):
+            document = {}
+            for key, value in pairs:
+                if key in document:
+                    raise NativeEpisodeError("Planner JSON action contains a duplicate key")
+                document[key] = value
+            return document
+
+        try:
+            document = json.loads(output, object_pairs_hook=unique_object)
+        except (TypeError, ValueError) as error:
+            raise NativeEpisodeError("Planner output is not strict JSON action control") from error
+        if not isinstance(document, dict) or set(document) != {"action"}:
+            raise NativeEpisodeError("Planner JSON action must contain exactly action")
+        action = document["action"]
+        if not isinstance(action, str):
+            raise NativeEpisodeError("Planner JSON action must be a string")
+        control = {"action": action}
+    if action not in legal:
+        raise NativeEpisodeError("Planner output names no registered action")
+    return action, control
+
+
 class _ApplyRole(WorkflowComponent):
-    def __init__(self, kind: str, actions: NativeEpisodeActions, refresh_action: str | None = None) -> None:
+    def __init__(
+        self,
+        kind: str,
+        actions: NativeEpisodeActions,
+        refresh_action: str | None = None,
+        planner_output_format: str = "exact-text",
+        planner_actions: set[str] | None = None,
+    ) -> None:
         super().__init__()
         self._kind = kind
         self._actions = actions
         self._refresh_action = refresh_action
+        self._planner_output_format = planner_output_format
+        self._planner_actions = planner_actions
 
     async def invoke(
         self, inputs: Input, session: Session, context: ModelContext
@@ -251,11 +296,14 @@ class _ApplyRole(WorkflowComponent):
             }
             if self._refresh_action is not None:
                 legal.add(self._refresh_action)
-            if output not in legal:
-                raise NativeEpisodeError(
-                    "Planner output does not exact-match a registered action"
-                )
+            if self._planner_actions is not None:
+                legal = set(self._planner_actions)
+            action, control = _planner_action(
+                output, output_format=self._planner_output_format, legal=legal
+            )
             updated["plan"] = output
+            if control is not None:
+                updated["planner_control"] = control
             routes = updated.get("planner_routes")
             if not isinstance(routes, Sequence) or isinstance(
                 routes, (str, bytes)
@@ -266,11 +314,11 @@ class _ApplyRole(WorkflowComponent):
                 {
                     "role_visit_index": len(updated_visits) - 1,
                     "revision_count": int(updated["revision_count"]),
-                    "action": output,
+                    "action": action,
                 }
             )
             updated["planner_routes"] = updated_routes
-            result["action"] = output
+            result["action"] = action
         else:
             updated[self._kind] = output
         return result
@@ -331,10 +379,16 @@ class _Exhausted(WorkflowComponent):
 class _TerminalDelivery(WorkflowComponent):
     """Deliver the final Solver draft under an explicit terminal policy."""
 
-    def __init__(self, actions: NativeEpisodeActions, refresh_action: str | None = None) -> None:
+    def __init__(
+        self,
+        actions: NativeEpisodeActions,
+        refresh_action: str | None = None,
+        planner_output_format: str = "exact-text",
+    ) -> None:
         super().__init__()
         self._actions = actions
         self._refresh_action = refresh_action
+        self._planner_output_format = planner_output_format
 
     async def invoke(
         self, inputs: Input, session: Session, context: ModelContext
@@ -344,6 +398,11 @@ class _TerminalDelivery(WorkflowComponent):
         if not isinstance(solver, Mapping) or solver.get("delivery_eligible") is not True:
             raise NativeEpisodeError("terminal delivery has no valid Solver draft")
         planner_action = state.get("plan")
+        if self._planner_output_format == "json-action-v1":
+            control = state.get("planner_control")
+            if not isinstance(control, Mapping) or set(control) != {"action"}:
+                raise NativeEpisodeError("terminal delivery has no parsed Planner control")
+            planner_action = control["action"]
         terminal_actions = {self._actions.revise, self._actions.acquire}
         if self._refresh_action is not None:
             terminal_actions.add(self._refresh_action)
@@ -565,6 +624,11 @@ class NativeEpisodeWorkflow:
         self.spec = spec
         self.nodes = nodes
         self._role_input_builder = role_input_builder
+        self._planner_actions = {spec.actions.accept, spec.actions.revise}
+        if nodes.acquisition is not None:
+            self._planner_actions.add(spec.actions.acquire)
+        if spec.refresh_action is not None:
+            self._planner_actions.add(spec.refresh_action)
 
     def _add_role(
         self,
@@ -600,7 +664,18 @@ class NativeEpisodeWorkflow:
         workflow.add_connection(query_id, role_id)
         workflow.add_workflow_comp(
             apply_id,
-            _ApplyRole(kind, self.spec.actions, self.spec.refresh_action),
+            _ApplyRole(
+                kind,
+                self.spec.actions,
+                self.spec.refresh_action,
+                self.spec.planner_output_format,
+                (
+                    self._planner_actions
+                    if kind == "planner"
+                    and self.spec.planner_output_format == "json-action-v1"
+                    else None
+                ),
+            ),
             inputs_schema={
                 "state": "${" + query_id + ".state}",
                 "role": "${" + role_id + "}",
@@ -681,7 +756,11 @@ class NativeEpisodeWorkflow:
                 exhausted_id = f"exhausted_{revision}"
                 terminal_component: WorkflowComponent
                 if self.spec.exhaustion_policy == "deliver-latest-solver":
-                    terminal_component = _TerminalDelivery(self.spec.actions, self.spec.refresh_action)
+                    terminal_component = _TerminalDelivery(
+                        self.spec.actions,
+                        self.spec.refresh_action,
+                        self.spec.planner_output_format,
+                    )
                     accept_ids.append(exhausted_id)
                 else:
                     terminal_component = _Exhausted()

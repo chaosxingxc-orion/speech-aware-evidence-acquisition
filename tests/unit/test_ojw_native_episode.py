@@ -193,6 +193,7 @@ def _episode(
     refresh_action=None,
     max_candidate_refreshes=0,
     finite_completion_policy="raise",
+    planner_output_format="exact-text",
     perception_values=None,
 ):
     perception, perception_script = _node(
@@ -217,6 +218,7 @@ def _episode(
             refresh_action=refresh_action,
             max_candidate_refreshes=max_candidate_refreshes,
             finite_completion_policy=finite_completion_policy,
+            planner_output_format=planner_output_format,
         ),
         nodes=NativeEpisodeNodes(
             perception=perception,
@@ -281,6 +283,80 @@ def test_accept_delivers_only_the_validated_solver_output():
         "reviewer",
         "planner",
     ]
+
+
+def test_json_planner_action_accepts_and_preserves_raw_control():
+    solver, _ = _node("solver", "solver", ["draft one"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["review one"])
+    raw = '{"action":"ACCEPT"}'
+    planner, _ = _node("planner", "planner", [raw])
+    workflow, _, _ = _episode(
+        solver=solver,
+        reviewer=reviewer,
+        planner=planner,
+        planner_output_format="json-action-v1",
+    )
+
+    result = asyncio.run(workflow.invoke_direct("query", ()))
+
+    assert result["delivery"]["actor_output"] == "draft one"
+    assert result["state"]["plan"] == raw
+    assert result["state"]["planner_control"] == {"action": "ACCEPT"}
+    assert result["state"]["planner_routes"][-1]["action"] == "ACCEPT"
+
+
+def test_json_exhausted_revise_delivers_latest_solver_without_extra_generation():
+    solver, solver_script = _node(
+        "solver", "solver", ["draft one", "draft two"], valid=True
+    )
+    reviewer, reviewer_script = _node(
+        "reviewer", "reviewer", ["review one", "review two"]
+    )
+    planner, planner_script = _node(
+        "planner", "planner",
+        ['{"action":"REVISE"}', '{"action":"REVISE"}'],
+    )
+    workflow, perception_script, _ = _episode(
+        solver=solver,
+        reviewer=reviewer,
+        planner=planner,
+        max_revisions=1,
+        exhaustion_policy="deliver-latest-solver",
+        planner_output_format="json-action-v1",
+    )
+
+    result = asyncio.run(workflow.invoke_direct("query", ()))
+
+    assert result["delivery"]["actor_output"] == "draft two"
+    assert result["state"]["terminal_disposition"]["planner_action"] == "REVISE"
+    assert [len(script.requests) for script in (
+        perception_script, solver_script, reviewer_script, planner_script
+    )] == [1, 2, 2, 2]
+
+
+@pytest.mark.parametrize(
+    "raw",
+    [
+        "REVISE",
+        '{"action":"REVISE","reason":"extra"}',
+        '{"action":"REVISE","action":"ACCEPT"}',
+        '{"action":"UNKNOWN"}',
+        '{"action":"ACQUIRE"}',
+    ],
+)
+def test_json_planner_action_rejects_malformed_extra_duplicate_or_unknown(raw):
+    solver, _ = _node("solver", "solver", ["draft one"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["review one"])
+    planner, _ = _node("planner", "planner", [raw])
+    workflow, _, _ = _episode(
+        solver=solver,
+        reviewer=reviewer,
+        planner=planner,
+        planner_output_format="json-action-v1",
+    )
+
+    with pytest.raises(NativeEpisodeError):
+        asyncio.run(workflow.invoke_direct("query", ()))
 
 
 def test_revise_runs_solver_and_review_again_before_acceptance():

@@ -8,6 +8,8 @@ both sealing and post-seal readers apply the same receipt shape checks.
 
 from __future__ import annotations
 
+import hashlib
+import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 
@@ -49,6 +51,47 @@ def _receipt(
     return value
 
 
+def _validate_planner_control(receipt, visits, routes, *, error_type):
+    raw = receipt.get("plan")
+    control = receipt.get("planner_control")
+    if control is None:
+        return
+    if not isinstance(raw, str) or not isinstance(control, Mapping) or set(control) != {"action"}:
+        _raise(error_type, "structured Planner control is malformed")
+
+    def unique_object(pairs):
+        document = {}
+        for key, value in pairs:
+            if key in document:
+                raise ValueError("duplicate key")
+            document[key] = value
+        return document
+
+    try:
+        parsed = json.loads(raw, object_pairs_hook=unique_object)
+    except (TypeError, ValueError):
+        _raise(error_type, "structured Planner control differs from raw output")
+    if parsed != dict(control) or set(parsed) != {"action"} or not isinstance(parsed["action"], str):
+        _raise(error_type, "structured Planner control differs from raw output")
+    planner_indices = [
+        index for index, visit in enumerate(visits)
+        if isinstance(visit, Mapping) and visit.get("stage") == "planner"
+    ]
+    if not planner_indices or not routes or not isinstance(routes[-1], Mapping):
+        _raise(error_type, "structured Planner control has no final route")
+    planner_receipt = _receipt(
+        visits[planner_indices[-1]].get("execution_receipt"),
+        "structured Planner execution receipt",
+        error_type=error_type,
+    )
+    if (
+        hashlib.sha256(raw.encode()).hexdigest()
+        != planner_receipt["final_contact"].get("response_text_sha256")
+        or routes[-1].get("action") != parsed["action"]
+    ):
+        _raise(error_type, "structured Planner control lacks raw source custody")
+
+
 def validate_native_episode_delivery_receipt(
     receipt: Mapping[str, object],
     role_visits: Sequence[object] | None = None,
@@ -77,6 +120,9 @@ def validate_native_episode_delivery_receipt(
         planner_routes = _sequence(
             receipt.get("planner_routes"), "Planner routes", error_type=error_type
         )
+    _validate_planner_control(
+        receipt, role_visits, planner_routes, error_type=error_type
+    )
     disposition = receipt.get("terminal_disposition")
     if (
         isinstance(disposition, Mapping) and disposition.get("reason") == "finite_completion"
