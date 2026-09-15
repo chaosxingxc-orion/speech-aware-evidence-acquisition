@@ -670,6 +670,13 @@ def test_reports_malformed_and_finite_perception_without_turning_it_into_empty(t
             "revision_count": 0, "planner_accepted": False,
         },
     }
+    result["final_query_state"] = deepcopy(result["initial_query_state"])
+    stop = deepcopy(result["transitions"][-1])
+    stop["prior_query_state_sha256"] = QueryState.from_json(
+        result["initial_query_state"]
+    ).content_hash()
+    result["transitions"] = [stop]
+    result["waves"] = [_terminal_stop_wave(stop)]
     supply = receipts["stages"]["run_phases"]["phase_supply"]
     supply["candidate_selections"] = {}
     supply["candidate_supply"]["candidate_selections"] = {}
@@ -694,6 +701,74 @@ def test_rejects_unsupported_second_perception_visit(tmp_path):
         deepcopy(result["native_episode_receipt"]["role_visits"][0])
     )
     with pytest.raises(A2TCandidateSupplyError, match="one Perception visit"):
+        analyze_a2t_candidate_supply(
+            source, flight_receipts=receipts, candidate_inventory=inventory,
+            data_root=tmp_path,
+        )
+
+
+
+def _terminal_stop_wave(stop):
+    return {
+        "transition": deepcopy(stop),
+        "query_state_sha256": stop["prior_query_state_sha256"],
+        "next_query_state_sha256": None,
+        "termination_reason": "controller-stop",
+        "rank_result": None,
+        "fusion_decision": None,
+    }
+
+
+def _finite_tail(result):
+    receipt = result["native_episode_receipt"]
+    receipt.pop("accepted_solver_receipt")
+    receipt["terminal_disposition"] = {
+        "reason": "finite_completion", "finish_reason": "length",
+        "role_id": "reviewer", "stage": "review", "revision_count": 0,
+        "planner_accepted": False,
+    }
+    result["waves"].append(_terminal_stop_wave(result["transitions"][-1]))
+
+
+def test_finite_reviewer_retains_prior_candidates_and_supply(tmp_path):
+    source, receipts, inventory = _fixture(tmp_path)
+    _finite_tail(source.phase_results["tier1_direct:000001"])
+    row = analyze_a2t_candidate_supply(
+        source, flight_receipts=receipts, candidate_inventory=inventory,
+        data_root=tmp_path,
+    )["samples"][0]
+    assert row["candidate_state_status"] == "observed"
+    assert row["unique_candidate_ids"] == ["alpha", "beta"]
+
+
+@pytest.mark.parametrize("mutation", [
+    "missing_non_stop", "missing_finite_stop", "wrong_stop_query",
+    "stop_has_supply", "stop_wrong_reason", "unregistered_stop_wave",
+    "stop_before_transition",
+])
+def test_rejects_misbound_or_missing_finite_waves(tmp_path, mutation):
+    source, receipts, inventory = _fixture(tmp_path)
+    result = source.phase_results["tier1_direct:000001"]
+    _finite_tail(result)
+    if mutation == "missing_non_stop":
+        result["waves"].pop(0)
+    elif mutation == "missing_finite_stop":
+        result["waves"].pop()
+    elif mutation == "wrong_stop_query":
+        result["waves"][-1]["query_state_sha256"] = "0" * 64
+    elif mutation == "stop_has_supply":
+        result["waves"][-1]["rank_result"] = {"unexpected": "supply"}
+    elif mutation == "stop_wrong_reason":
+        result["waves"][-1]["termination_reason"] = "continue"
+    elif mutation == "unregistered_stop_wave":
+        result["native_episode_receipt"].pop("terminal_disposition")
+    elif mutation == "stop_before_transition":
+        stop = deepcopy(result["transitions"][-1])
+        stop["prior_query_state_sha256"] = QueryState.from_json(
+            result["initial_query_state"]
+        ).content_hash()
+        result["transitions"].insert(0, stop)
+    with pytest.raises(A2TCandidateSupplyError, match="wave|stop"):
         analyze_a2t_candidate_supply(
             source, flight_receipts=receipts, candidate_inventory=inventory,
             data_root=tmp_path,

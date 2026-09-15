@@ -604,6 +604,8 @@ def _transition_context(
             raise A2TCandidateSupplyError("native transition chain or snapshot binding differs")
         transitions.append((document, transition))
         if transition.action_kind == "stop":
+            if index != len(raw_transitions) - 1:
+                raise A2TCandidateSupplyError("native stop transition must be terminal")
             continue
         visible.difference_update(transition.dropped_value_ids)
         visible.update(transition.new_value_ids)
@@ -616,11 +618,20 @@ def _transition_context(
         raise A2TCandidateSupplyError("native transition chain does not reach final query state")
     waves = _sequence(result.get("waves"), "native waves")
     non_stop = [pair for pair in transitions if pair[1].action_kind != "stop"]
-    if len(waves) != len(non_stop):
-        raise A2TCandidateSupplyError("native waves do not cover every non-stop transition")
+    receipt = _mapping(result.get("native_episode_receipt"), "native episode receipt")
+    finite = _finite_reason(receipt)
+    # Finite completion preserves the interrupted contact as a terminal stop
+    # wave. Ordinary acceptance records a stop transition without a contact wave.
+    expected = non_stop
+    if finite is not None:
+        if not transitions or transitions[-1][1].action_kind != "stop":
+            raise A2TCandidateSupplyError("finite completion lacks a terminal stop transition")
+        expected = transitions
+    if len(waves) != len(expected):
+        raise A2TCandidateSupplyError("native waves do not cover the recorded transitions")
     normalized_waves: list[Mapping[str, object]] = []
     for index, (raw_wave, (raw_transition, transition)) in enumerate(
-        zip(waves, non_stop, strict=True)
+        zip(waves, expected, strict=True)
     ):
         wave = _mapping(raw_wave, f"native wave {index}")
         if (
@@ -629,6 +640,14 @@ def _transition_context(
             or wave.get("next_query_state_sha256") != transition.next_query_state_sha256
         ):
             raise A2TCandidateSupplyError("native wave differs from its transition")
+        if transition.action_kind == "stop":
+            if (
+                wave.get("termination_reason") != "controller-stop"
+                or wave.get("rank_result") is not None
+                or wave.get("fusion_decision") is not None
+            ):
+                raise A2TCandidateSupplyError("finite stop wave carries an invalid supply or reason")
+            continue
         normalized_waves.append(wave)
     return {
         "solver_query_hashes": _solver_query_hashes(result, sample_id=sample_id),
