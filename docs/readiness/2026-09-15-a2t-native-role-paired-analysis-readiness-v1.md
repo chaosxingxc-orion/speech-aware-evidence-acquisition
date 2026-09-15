@@ -47,3 +47,12 @@ The shared analysis.native_episode_diagnostics.analyze_verified_native_episode_s
 The generic audit does not establish candidate coverage. Bind a separate preserved-trajectory join before reading that diagnostic, distinguish the official target from full multi-action coverage, and retain actual candidate widths. Lexical overlap with a supplied value is descriptive use attribution, not causal proof of benefit. Do not invent ordered full-call correctness or a repo micro-slot-F1 paired interval absent the required persisted counts.
 
 This readiness note is not a quality verdict, a GPU admission or an algorithmic training-free RL result.
+
+
+## Frozen native attribution recipe
+
+Before either arm's paired quality read, root froze the descriptive definitions in SPEECHRL_DATA_DIR/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/native-attribution-recipe-v1.json, SHA-256 31ac67fbaf2f031d53367be03169ef1eeb9b09d7584173696314d7b2015843bd. This is a definition receipt; source bindings and implementation of the A2T-specific join are still pending complete seal.
+
+Use the active Audio2Tool parser in rails/a2t_perception_state.py and the actual Audio2ToolCandidateSemanticProvider candidate_occurrences/selection receipt. The similarly named analysis/native_candidate_stage_projections.py imports the SLURP parser and cannot substitute for the Audio2Tool projection.
+
+Distinguish the saved official primary tool's union membership from complete ordered action-occurrence coverage. For the latter, a repeated gold tool requires a separate matched candidate action occurrence; preserve order and separately report extra proposed actions and strict equal-count positional coverage. That full-action diagnostic needs separately bound scorer-side action-name sequences and must not be guessed from the official primary-tool metric. Retain unavailable source rows and denominator coverage rather than silently treating absent receipts as observed misses. The primary effectiveness decision remains unchanged.
