@@ -108,3 +108,30 @@ def test_native_tool_action_binds_actual_source_request_unit_before_counting(tmp
             "execution_unit_binding_sha256": digest(roster.units[1].as_json()),
         })
     assert counted == [{"count": 1}]
+
+
+@pytest.mark.parametrize("span_tool,has_units", [(True, True), (False, False), (True, False), (False, True)])
+def test_live_tool_schema_must_match_source_scope_before_contacts(tmp_path, span_tool, has_units):
+    runtime = _runtime(tmp_path)
+    tool = (
+        "saea-tool-live-speech-span-v1" if span_tool
+        else "saea-tool-live-speech-observation-v1"
+    )
+    values = {
+        "arm": "speech-feature-query-native-tools",
+        "live_speech_observations": {"synthetic": True},
+        "phase_tools": {"reviewer": {
+            "mode": "native-tools", "allowed_tools": [tool],
+            "knowledge_views": ["text"], "source_authority_role": "reviewer",
+        }},
+    }
+    if has_units:
+        values["prepared_execution_units"] = {"synthetic": True}
+    runtime._composed = SimpleNamespace(values=values)
+    runtime._obs_policy_names = lambda: set()
+    if span_tool == has_units:
+        assert runtime._phase_tool_specs("phase-native-review-revise-v1")
+    else:
+        with pytest.raises(FlightRuntimeError, match="source scope"):
+            runtime._phase_tool_specs("phase-native-review-revise-v1")
+    assert runtime._live_speech_attempt_handle is None

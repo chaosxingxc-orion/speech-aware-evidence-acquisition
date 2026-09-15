@@ -6529,6 +6529,16 @@ class FlightRuntime:
             raise FlightRuntimeError(
                 "live and prepared speech observations cannot be active together"
             )
+        has_execution_units = values.get("prepared_execution_units") is not None
+        for spec in specs.values():
+            allowed = spec["allowed_tools"]
+            if (
+                LIVE_SPEECH_SPAN_TOOL in allowed and not has_execution_units
+                or LIVE_SPEECH_OBSERVATION_TOOL in allowed and has_execution_units
+            ):
+                raise FlightRuntimeError(
+                    "live speech tool source scope must match configured execution units"
+                )
 
         uses_memory = any(
             CORRECTIVE_MEMORY_TOOL in spec["allowed_tools"] for spec in specs.values()
