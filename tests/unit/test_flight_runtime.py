@@ -908,7 +908,7 @@ def test_run_phases_refuses_a_phase_program_on_a_non_packet_arm(tmp_path):
     """Since E1 a phase program with no explicit bind builds its own binding
     from the baseline fragment, so the refusal is no longer "call
     bind_phase_program_material" -- it names the actual reason. The agent
-    loop is speech-feature-packet only, and this arm is not."""
+    loop admits explicit feature or raw-native arms, and this arm is neither."""
 
     runtime = _make_runtime(
         tmp_path,
@@ -919,7 +919,7 @@ def test_run_phases_refuses_a_phase_program_on_a_non_packet_arm(tmp_path):
     runtime.preprocess()
     runtime.serve()
     with pytest.raises(
-        FlightRuntimeError, match="does not travel the speech-feature packet path"
+        FlightRuntimeError, match="require an explicit feature or raw speech arm"
     ):
         runtime.run_phases()
 

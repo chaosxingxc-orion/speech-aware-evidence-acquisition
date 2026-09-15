@@ -5618,36 +5618,42 @@ class FlightRuntime:
             raise PreparationError(
                 "actual request materialization must cover every execution unit"
             )
-        for position, (payload, unit) in enumerate(
-            zip(payloads, unit_roster.units, strict=True)
-        ):
+        by_unit = {}
+        for payload in payloads:
             history = payload.get("history")
             contact_id = (
                 history[-1].get("contact_id")
-                if isinstance(history, list)
-                and history
-                and isinstance(history[-1], Mapping)
-                else None
+                if isinstance(history, list) and history
+                and isinstance(history[-1], Mapping) else None
             )
+            try:
+                contact_unit = self.execution_unit_for_contact(
+                    payload.get("sample_id"), contact_id,
+                )
+            except FlightRuntimeError as error:
+                raise PreparationError("actual request has no registered execution unit contact") from error
+            if contact_unit is None or contact_unit.request_key in by_unit:
+                raise PreparationError("actual request repeats or lacks an execution unit")
+            by_unit[contact_unit.request_key] = payload
+        expected_keys = tuple(unit.request_key for unit in unit_roster.units)
+        if set(by_unit) != set(expected_keys):
+            raise PreparationError("actual requests differ from the execution unit roster")
+        # Concurrent dispatch may capture contacts out of order. Their bound
+        # identity selects the canonical inventory order without changing bytes.
+        payloads = [by_unit[key] for key in expected_keys]
+        for position, (payload, unit) in enumerate(
+            zip(payloads, unit_roster.units, strict=True)
+        ):
             expected_query = {
                 "media_relpath": unit.slice_record.media_relpath,
                 "sha256": unit.slice_record.sha256,
             }
-            try:
-                contact_unit = self.execution_unit_for_contact(
-                    unit.parent_sample_id, contact_id
-                )
-            except FlightRuntimeError as error:
-                raise PreparationError(
-                    f"actual request {position} has no registered execution unit contact"
-                ) from error
             if (
                 payload.get("sample_id") != unit.parent_sample_id
                 or payload.get("media_relpath") != unit.slice_record.media_relpath
                 or payload.get("audio_seconds") != unit.slice_record.audio_seconds
                 or payload.get("sample_rate_hz") != unit.slice_record.sample_rate_hz
                 or payload.get("raw_speech_query") != expected_query
-                or contact_unit != unit
             ):
                 raise PreparationError(
                     f"actual request {position} differs from its ordered execution unit"
