@@ -33,13 +33,14 @@ from .speech_observation import (
 )
 
 LIVE_SPEECH_OBSERVATION_TOOL = "saea-tool-live-speech-observation-v1"
+LIVE_SPEECH_SPAN_TOOL = "saea-tool-live-speech-span-v1"
 
 TASK_CONTRACT_TOOL = "saea-tool-task-contract-v1"
 PHASE_KNOWLEDGE_TOOL = "saea-tool-phase-knowledge-v1"
 ACTION_TOOLS = frozenset(
     {TASK_CONTRACT_TOOL, PHASE_KNOWLEDGE_TOOL, CORRECTIVE_MEMORY_TOOL,
      PREPARED_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_OBSERVATION_TOOL,
-     CANDIDATE_CONTRACT_TOOL}
+     LIVE_SPEECH_SPAN_TOOL, CANDIDATE_CONTRACT_TOOL}
 )
 MODES = frozenset({"fixed", "core-choice", "native-tools"})
 VIEWS = frozenset({"text", "speech", "paired"})
@@ -130,6 +131,8 @@ def load_phase_tool_specs(config, program):
                 raise PhaseToolError("candidate lookup currently requires native-tools mode")
         elif "candidate_limit" in entry:
             raise PhaseToolError("candidate_limit requires the candidate lookup tool")
+        if LIVE_SPEECH_SPAN_TOOL in tools and mode != "native-tools":
+            raise PhaseToolError("live speech span currently requires native-tools mode")
         fixed = entry.get("fixed_action")
         if mode == "fixed":
             _validate_action(fixed, tools, views)
@@ -234,6 +237,13 @@ def _validate_action(action, allowed, views, *, candidate_limit=None, store_ids=
             raise PhaseToolError(
                 "speech observation requires full-utterance, asr-transcript and a bounded distinction"
             )
+    if tool_id == LIVE_SPEECH_SPAN_TOOL:
+        try:
+            from .live_speech_observation import normalize_live_span_arguments
+
+            args = normalize_live_span_arguments(args)
+        except RailsError as error:
+            raise PhaseToolError(str(error)) from error
     if tool_id == CANDIDATE_CONTRACT_TOOL:
         if set(args) != {"candidate_ids"} or not isinstance(args["candidate_ids"], list):
             raise PhaseToolError("candidate lookup requires only a candidate_ids list")
@@ -263,6 +273,7 @@ def _native_tool_schema(
         ),
         PREPARED_SPEECH_OBSERVATION_TOOL: "Read a prepared speech transcript.",
         LIVE_SPEECH_OBSERVATION_TOOL: "Transcribe the current full utterance on demand.",
+        LIVE_SPEECH_SPAN_TOOL: "Transcribe a bounded span of the current speech unit on demand.",
     }
     if tool_id in {TASK_CONTRACT_TOOL, CORRECTIVE_MEMORY_TOOL}:
         properties = {}
@@ -279,6 +290,21 @@ def _native_tool_schema(
             "uniqueItems": True, "items": {"type": "string", "minLength": 1},
         }}
         required = ["candidate_ids"]
+    elif tool_id == LIVE_SPEECH_SPAN_TOOL:
+        properties = {
+            "span": {
+                "type": "object",
+                "properties": {
+                    "start_seconds": {"type": "number", "minimum": 0},
+                    "end_seconds": {"type": "number", "exclusiveMinimum": 0},
+                },
+                "required": ["start_seconds", "end_seconds"],
+                "additionalProperties": False,
+            },
+            "representation": {"type": "string", "enum": ["asr-transcript"]},
+            "distinction": {"type": "string", "minLength": 1, "maxLength": 512},
+        }
+        required = ["span", "representation", "distinction"]
     else:
         properties = {
             "span": {"type": "string", "enum": ["full-utterance"]},
@@ -393,7 +419,7 @@ class PhaseToolDispatcher:
         ) and speech_observations is None:
             raise PhaseToolError("speech observation action requires a loaded source binding")
         if any(
-            LIVE_SPEECH_OBSERVATION_TOOL in spec["allowed_tools"]
+            set(spec["allowed_tools"]) & {LIVE_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_SPAN_TOOL}
             for spec in specs.values()
         ) and live_speech_observations is None:
             raise PhaseToolError("live speech observation action requires a loaded provider")
@@ -622,6 +648,12 @@ class PhaseToolDispatcher:
                     "source_authority": request["source_authority"],
                     "source_authority_role": spec["source_authority_role"],
                 } if "source_authority" in request else {}),
+                **({
+                    "execution_unit_id": context.execution_unit_id,
+                    "execution_unit_binding_sha256": content_hash(
+                        context.execution_unit_binding
+                    ),
+                } if getattr(context, "execution_unit_id", None) is not None else {}),
                 )
                 if not isinstance(invocation, Mapping):
                     raise PhaseToolError(
@@ -646,6 +678,13 @@ class PhaseToolDispatcher:
             elif action["tool_id"] == PREPARED_SPEECH_OBSERVATION_TOOL:
                 output = tool.call(self.speech_observations, context)
             elif action["tool_id"] == LIVE_SPEECH_OBSERVATION_TOOL:
+                output = tool.call(
+                    self.live_speech_observations,
+                    context,
+                    action["arguments"],
+                    source.source_response_sha256,
+                )
+            elif action["tool_id"] == LIVE_SPEECH_SPAN_TOOL:
                 output = tool.call(
                     self.live_speech_observations,
                     context,
@@ -759,10 +798,11 @@ class PhaseToolDispatcher:
             elif action["tool_id"] in {
                 PREPARED_SPEECH_OBSERVATION_TOOL,
                 LIVE_SPEECH_OBSERVATION_TOOL,
+                LIVE_SPEECH_SPAN_TOOL,
             }:
                 if not isinstance(output.result, SpeechObservationSelection):
                     raise PhaseToolError("speech observation tool returned an unbound selection")
-                if action["tool_id"] == LIVE_SPEECH_OBSERVATION_TOOL:
+                if action["tool_id"] in {LIVE_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_SPAN_TOOL}:
                     visible = output.result.visible
                     lineage = output.result.lineage
                     if (
@@ -783,7 +823,7 @@ class PhaseToolDispatcher:
                         )
                 # The typed OBS block supplies the transcript once; history keeps its reference.
                 result = {key: value for key, value in output.result.visible.items() if key != "transcript"}
-                if action["tool_id"] == LIVE_SPEECH_OBSERVATION_TOOL:
+                if action["tool_id"] in {LIVE_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_SPAN_TOOL}:
                     with self._lock:
                         prior = self._live_selections.get(result["artifact_sha256"])
                         if (
@@ -813,6 +853,7 @@ class PhaseToolDispatcher:
                     )
                 elif action["tool_id"] in {
                     PREPARED_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_OBSERVATION_TOOL,
+                    LIVE_SPEECH_SPAN_TOOL,
                 }:
                     native_content = [output.result.content_block()]
                 else:
@@ -872,6 +913,7 @@ class PhaseToolDispatcher:
             if action["tool_id"] in {
                 PREPARED_SPEECH_OBSERVATION_TOOL,
                 LIVE_SPEECH_OBSERVATION_TOOL,
+                LIVE_SPEECH_SPAN_TOOL,
             }:
                 receipt_document = {
                     **document,
@@ -1090,6 +1132,7 @@ class PhaseToolDispatcher:
             if document.get("tool_id") in {
                 PREPARED_SPEECH_OBSERVATION_TOOL,
                 LIVE_SPEECH_OBSERVATION_TOOL,
+                LIVE_SPEECH_SPAN_TOOL,
             }:
                 if artifact.state_id not in query_state.agent_state_ids:
                     raise PhaseToolError("speech observation is absent from current bound state")
@@ -1222,7 +1265,7 @@ class PhaseToolDispatcher:
             }
         live_records = [
             row for row in records
-            if row["tool_id"] == LIVE_SPEECH_OBSERVATION_TOOL
+            if row["tool_id"] in {LIVE_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_SPAN_TOOL}
         ]
         if self.live_speech_observations is not None:
             receipt["live_speech_observations"] = {
