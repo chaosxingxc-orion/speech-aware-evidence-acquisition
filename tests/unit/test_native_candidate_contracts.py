@@ -101,6 +101,7 @@ def test_actual_candidate_lookup_preserves_native_call_result_and_source():
             "packet_id": context.query_state.speech_packet_id,
             "packet_sha256": context.query_state.speech_packet_sha256,
         }},
+        _live_speech_units=lambda: None,
         _client=SimpleNamespace(record_tool_call=lambda **facts: debits.append(facts)),
         assert_generation_lease=lambda: None,
     )

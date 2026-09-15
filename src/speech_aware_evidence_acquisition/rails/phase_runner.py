@@ -90,6 +90,30 @@ class PhaseRunnerError(RailsError):
     got back, violated the shape this module requires."""
 
 
+def _expected_execution_ids(bindings, execution_units):
+    if execution_units is None:
+        return tuple(bindings)
+    from .execution_units import ExecutionUnitRoster
+    if not isinstance(execution_units, ExecutionUnitRoster):
+        raise PhaseRunnerError("execution_units must be an ExecutionUnitRoster")
+    parents = tuple(bindings) or tuple(
+        dict.fromkeys(unit.parent_sample_id for unit in execution_units.units)
+    )
+    execution_units.validate(parent_sample_ids=parents, max_contacts=1)
+    return tuple(unit.request_key for unit in execution_units.units)
+
+
+def _result_execution_identity(result, execution_units):
+    parent_id = getattr(result, "sample_id", None)
+    if execution_units is None:
+        return parent_id
+    unit_id = getattr(result, "execution_unit_id", None)
+    parents = {unit.request_key: unit.parent_sample_id for unit in execution_units.units}
+    if not isinstance(unit_id, str) or not unit_id or parents.get(unit_id) != parent_id:
+        raise PhaseRunnerError("execution unit result differs from its declared parent binding")
+    return unit_id
+
+
 def run_agent_phase(
     *,
     phase_name: str,
@@ -101,6 +125,7 @@ def run_agent_phase(
     split_id: str,
     knowledge_snapshot: KnowledgeSnapshot,
     speech_packet_bindings: Mapping[str, Mapping[str, object]],
+    execution_units: object = None,
     query_source: str = "speech_features",
     trace_sink: AgentTraceSink,
     decoding_params: Mapping[str, object],
@@ -164,8 +189,10 @@ def run_agent_phase(
             "run-level decoding_params must leave response_format to each "
             "phase's own material"
         )
-    if not isinstance(speech_packet_bindings, Mapping) or not speech_packet_bindings:
-        raise PhaseRunnerError("speech_packet_bindings must be a non-empty mapping")
+    if not isinstance(speech_packet_bindings, Mapping) or (
+        not speech_packet_bindings and execution_units is None
+    ):
+        raise PhaseRunnerError("speech_packet_bindings must be a non-empty mapping without units")
     if expected_row_count is not None:
         if (
             isinstance(expected_row_count, bool)
@@ -175,10 +202,15 @@ def run_agent_phase(
             raise PhaseRunnerError(
                 "expected_row_count must be a positive integer or None"
             )
-        if len(speech_packet_bindings) != expected_row_count:
+        declared_row_count = (
+            len(execution_units.units)
+            if execution_units is not None and hasattr(execution_units, "units")
+            else len(speech_packet_bindings)
+        )
+        if declared_row_count != expected_row_count:
             raise PhaseRunnerError(
                 f"phase {phase_name!r} requires exactly {expected_row_count} "
-                "speech packet bindings"
+                f"{'execution units' if execution_units is not None else 'speech packet bindings'}"
             )
 
     geometry = adapter.serving_geometry()
@@ -201,6 +233,17 @@ def run_agent_phase(
     ):
         raise PhaseRunnerError("queue_depth must be an int >= slot_count")
 
+    if execution_units is not None:
+        from dataclasses import replace
+        from .execution_units import scoped_execution_contact_id
+        source_material = material_for_phase
+
+        def material_for_phase(name, context):
+            material = source_material(name, context)
+            return replace(material, contact_id=scoped_execution_contact_id(
+                material.contact_id, context.execution_unit_id,
+            ))
+
     controller_registry = Registry(
         f"phase runner controller: {solo_program.program_id}"
     )
@@ -222,6 +265,7 @@ def run_agent_phase(
         split_id=split_id,
         knowledge_snapshot=knowledge_snapshot,
         speech_packet_bindings=speech_packet_bindings,
+        **({"execution_units": execution_units} if execution_units is not None else {}),
         query_source=query_source,
         controller_policy_id=solo_program.program_id,
         bootstrap_facet_ids=bootstrap_facet_ids,
@@ -261,6 +305,7 @@ def run_agent_phase(
     row_target = (
         expected_row_count
         if expected_row_count is not None
+        else len(execution_units.units) if execution_units is not None
         else len(speech_packet_bindings)
     )
     if len(results) != row_target:
@@ -280,14 +325,19 @@ def run_agent_phase(
             raise PhaseRunnerError(
                 f"phase {phase_name!r} every result must contain exactly one contact"
             )
-        sample_ids.append(sample_id)
+        sample_ids.append(_result_execution_identity(result, execution_units))
+    expected_ids = _expected_execution_ids(speech_packet_bindings, execution_units)
     if len(set(sample_ids)) != len(sample_ids):
         raise PhaseRunnerError(
-            f"phase {phase_name!r} results have duplicate sample ids"
+            f"phase {phase_name!r} results have "
+            f"{'duplicate execution identities' if execution_units is not None else 'duplicate sample ids'}"
         )
-    if set(sample_ids) != set(speech_packet_bindings):
+    if set(sample_ids) != set(expected_ids) or (
+        execution_units is not None and tuple(sample_ids) != expected_ids
+    ):
         raise PhaseRunnerError(
-            f"phase {phase_name!r} result identities differ from speech_packet_bindings"
+            f"phase {phase_name!r} result identities differ from "
+            f"{'the declared unit roster' if execution_units is not None else 'speech_packet_bindings'}"
         )
     # The Reviewer's verdicts are collected per row WHILE the wave flies and
     # written out HERE, once, in sorted order -- the same "buffer per sample,
@@ -342,6 +392,7 @@ def run_program(
     split_id: str,
     knowledge_snapshot: KnowledgeSnapshot,
     speech_packet_bindings: Mapping[str, Mapping[str, object]],
+    execution_units: object = None,
     query_source: str = "speech_features",
     trace_sink: AgentTraceSink,
     decoding_params: Mapping[str, object],
@@ -408,6 +459,7 @@ def run_program(
             split_id=split_id,
             knowledge_snapshot=knowledge_snapshot,
             speech_packet_bindings=speech_packet_bindings,
+            execution_units=execution_units,
             query_source=query_source,
             trace_sink=trace_sink,
             decoding_params=decoding_params,
@@ -434,7 +486,7 @@ def run_program(
         )
         summaries.append(summary)
         sealed_states = {
-            result.sample_id: _seal_phase_state(
+            _result_execution_identity(result, execution_units): _seal_phase_state(
                 result, phase_name=phase.name, producer_policy_id=program.program_id
             )
             for result in summary.results
@@ -453,6 +505,7 @@ def run_continuous_program(
     split_id: str,
     knowledge_snapshot: KnowledgeSnapshot,
     speech_packet_bindings: Mapping[str, Mapping[str, object]],
+    execution_units: object = None,
     query_source: str = "speech_features",
     trace_sink: AgentTraceSink,
     decoding_params: Mapping[str, object],
@@ -556,8 +609,10 @@ def run_continuous_program(
             "run-level decoding_params must leave response_format to each "
             "phase's own material"
         )
-    if not isinstance(speech_packet_bindings, Mapping) or not speech_packet_bindings:
-        raise PhaseRunnerError("speech_packet_bindings must be a non-empty mapping")
+    if not isinstance(speech_packet_bindings, Mapping) or (
+        not speech_packet_bindings and execution_units is None
+    ):
+        raise PhaseRunnerError("speech_packet_bindings must be a non-empty mapping without units")
 
     geometry = adapter.serving_geometry()
     resolved_slot_count = slot_count if slot_count is not None else geometry["slots"]
@@ -577,7 +632,14 @@ def run_continuous_program(
                 artifact = controller.sealed_states.get(phase_names[index - 1])
                 if artifact is not None:
                     sealed = {sample_id: artifact}
-            return material_for_phase(name, context, sealed)
+            material = material_for_phase(name, context, sealed)
+            if execution_units is not None:
+                from dataclasses import replace
+                from .execution_units import scoped_execution_contact_id
+                material = replace(material, contact_id=scoped_execution_contact_id(
+                    material.contact_id, context.execution_unit_id,
+                ))
+            return material
 
         controller = EvidenceAgentController(
             program=program,
@@ -625,6 +687,7 @@ def run_continuous_program(
             split_id=split_id,
             knowledge_snapshot=knowledge_snapshot,
             speech_packet_bindings=speech_packet_bindings,
+            **({"execution_units": execution_units} if execution_units is not None else {}),
             query_source=query_source,
             controller_policy_id=program.program_id,
             bootstrap_facet_ids=bootstrap_facet_ids,
@@ -655,15 +718,19 @@ def run_continuous_program(
         raise PhaseRunnerError(
             f"program {program.program_id!r} must return a non-empty results tuple"
         )
-    sample_ids = [getattr(result, "sample_id", None) for result in results]
+    sample_ids = [_result_execution_identity(result, execution_units) for result in results]
     if len(set(sample_ids)) != len(sample_ids):
         raise PhaseRunnerError(
-            f"program {program.program_id!r} results have duplicate sample ids"
+            f"program {program.program_id!r} results have "
+            f"{'duplicate execution identities' if execution_units is not None else 'duplicate sample ids'}"
         )
-    if set(sample_ids) != set(speech_packet_bindings):
+    expected_ids = _expected_execution_ids(speech_packet_bindings, execution_units)
+    if set(sample_ids) != set(expected_ids) or (
+        execution_units is not None and tuple(sample_ids) != expected_ids
+    ):
         raise PhaseRunnerError(
             f"program {program.program_id!r} result identities differ from "
-            "speech_packet_bindings"
+            f"{'the declared unit roster' if execution_units is not None else 'speech_packet_bindings'}"
         )
     return summary
 

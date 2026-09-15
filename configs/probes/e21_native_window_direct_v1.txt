@@ -1,0 +1,1 @@
+Transcribe the speech verbatim exactly as spoken. Preserve spoken names, numbers and repetitions. Do not add explanations, speaker labels, timestamps or words unsupported by the audio. Output only the transcript text.

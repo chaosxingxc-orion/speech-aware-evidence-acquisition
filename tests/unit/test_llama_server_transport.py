@@ -3352,6 +3352,7 @@ def test_metered_native_role_roundtrip_sends_bound_framework_history_once(tmp_pa
             "s1": {"packet_id": packet.packet_id, "packet_sha256": packet.packet_sha256}
         },
         _client=client, assert_generation_lease=lambda: None,
+        _live_speech_units=lambda: None,
     )
     phase_dispatcher.tool_contact = lambda **facts: (
         FlightRuntime._record_phase_tool_contact(custody, **facts)

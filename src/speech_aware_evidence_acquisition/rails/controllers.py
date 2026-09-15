@@ -914,6 +914,16 @@ class EvidenceAgentController:
         # "Knowledge views"). source_response_sha256 continues to hash the
         # RAW response through the shared pure sealer.
         state_content = self._resolve_state_view(phase, response_text)
+        state_namespace = self._state_namespace
+        if context.execution_unit_id is not None:
+            from .execution_units import execution_unit_scope
+
+            scope = execution_unit_scope(context.execution_unit_id)
+            state_namespace = scope if state_namespace is None else scope + "/" + state_namespace
+            if state_content == "" and response_text == "":
+                # Record absence as state metadata while retaining empty answer
+                # bytes and their raw source hash for terminal delivery.
+                state_content = '{"schema":"saea-empty-phase-response-v1","response_text":""}'
         artifact = seal_phase_response_state(
             phase_name=phase.name,
             sample_id=context.sample_id,
@@ -921,7 +931,7 @@ class EvidenceAgentController:
             raw_response_text=response_text,
             source_query_state_sha256=context.query_state.content_hash(),
             producer_policy_id=self._program.program_id,
-            state_namespace=self._state_namespace,
+            state_namespace=state_namespace,
             cited_value_ids=(),
         )
         self._sealed[phase.name] = artifact
@@ -1268,6 +1278,7 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-audio2tool-native-candidates-review-revise-v1": "phase-audio2tool-native-candidates-review-revise-v1.json",
     "phase-audio2tool-native-candidates-review-revise-json-v1": "phase-audio2tool-native-candidates-review-revise-json-v1.json",
     "phase-native-review-revise-v1": "phase-native-review-revise-v1.json",
+    "phase-native-review-revise-json-v1": "phase-native-review-revise-json-v1.json",
     "phase-native-candidates-review-revise-v1": "phase-native-candidates-review-revise-v1.json",
     "phase-native-candidates-review-refresh-v1": "phase-native-candidates-review-refresh-v1.json",
     "native-answer-or-one-tool-v1": "native-answer-or-one-tool-v1.json",
@@ -1384,6 +1395,11 @@ def register_phase_programs_v1() -> None:
             default_controller_factory(
                 default_phase_program("phase-native-candidates-review-revise-v1")
             ),
+        )
+    if "phase-native-review-revise-json-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-review-revise-json-v1",
+            default_controller_factory(default_phase_program("phase-native-review-revise-json-v1")),
         )
     if "phase-native-review-revise-v1" not in registered:
         AGENT_CONTROLLERS.register(

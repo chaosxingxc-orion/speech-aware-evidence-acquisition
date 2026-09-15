@@ -54,6 +54,7 @@ _EXPECTED_PROGRAM_SHAPES = {
         ("perception", "reviewer", "planner", "solver"), 12, "native-role-episode"
     ),
     "phase-native-review-revise-v1": (("perception", "reviewer", "planner", "solver"), 11, "native-role-episode"),
+    "phase-native-review-revise-json-v1": (("perception", "reviewer", "planner", "solver"), 11, "native-role-episode"),
     "phase-intent-hypotheses-only-v1": (
         ("hypotheses",),
         1,

@@ -1,0 +1,8 @@
+{
+  "carrier_lock_key": "earnings21-original",
+  "d1_evidence_supplement": "receipts/artifacts/d1-e21-participant-names.json",
+  "d1_evidence_supplement_sha256": "313da4c48acf7403207e2a45c28f90262a94adfaa42873a0c9f251fc9d6bfd83",
+  "dataset_note": "The existing full44 discovery roster with an explicit shared phase-runtime split ID. Both direct and agent arms use this identical dataset declaration. The names supplement is source authority, not automatic evidence supply.",
+  "split_id": "discovery",
+  "split_name": "discovery"
+}

@@ -1458,12 +1458,29 @@ class FlightRuntime:
             )
             for phase, spec in specs.items()
         }
-        bindings = self.speech_packet_bindings()
+        units = self.execution_unit_roster()
+        if units is None:
+            bindings = self.speech_packet_bindings()
+            sources = tuple(
+                (sample, str(sample.sample_id), bindings[str(sample.sample_id)])
+                for sample in samples
+            )
+        else:
+            # Preserve parent task semantics while rendering EVERY registered
+            # window. State custody uses the unit key, as the phase runner does.
+            parents = {str(sample.sample_id): sample for sample in samples}
+            sources = tuple(
+                (parents[unit.parent_sample_id], unit.request_key,
+                 {"packet_id": unit.speech_packet_id, "sha256": unit.speech_packet_sha256})
+                for unit in units.units if unit.parent_sample_id in parents
+            )
+            if not sources or {str(sample.sample_id) for sample, _, _ in sources} != set(parents):
+                raise FlightRuntimeError("prompt estimate does not cover the requested parent roster")
         prompt_order = str(
             baseline_values.get("prompt_order") or "speech-query-prefix-v2"
         )
         ceiling = self._completion_token_ceiling()
-        sample_ids = tuple(str(sample.sample_id) for sample in samples)
+        sample_ids = tuple(identity for _, identity, _ in sources)
 
         # A sealed-manifest phase's predecessor is REAL and per-sample: load
         # the whole roster's states once, from the manifest the fragment
@@ -1514,8 +1531,7 @@ class FlightRuntime:
         supply_blocks = self._phase_supply_prompt_bound(program)
 
         payloads: dict[str, bytes] = {}
-        for sample in samples:
-            sample_id = str(sample.sample_id)
+        for sample, sample_id, descriptor in sources:
             envelopes = render_phase_prompt_envelopes(
                 program_id=program.program_id,
                 phase_names=program.phase_names(),
@@ -1523,7 +1539,7 @@ class FlightRuntime:
                 static_text_by_phase=static_text,
                 system_text=phase_program_system_text(self._adapter, sample),
                 prompt_order=prompt_order,
-                packet_descriptor=bindings[sample_id],
+                packet_descriptor=descriptor,
                 sample_id=sample_id,
                 sealed_states_by_phase=sealed_states,
                 state_fill_by_phase=fills,
@@ -1994,6 +2010,15 @@ class FlightRuntime:
                 if obs_policy
                 else float(getattr(representative, "audio_seconds", 1.0))
             )
+            units = self.execution_unit_roster()
+            if units is not None:
+                # A call is a scoring identity; only one unit reaches a request.
+                # Use the widest declared unit, never the whole parent recording.
+                parent_ids = {str(sample.sample_id) for sample in samples}
+                audio_seconds = max(
+                    unit.slice_record.audio_seconds for unit in units.units
+                    if unit.parent_sample_id in parent_ids
+                )
             speech_tokens = max(
                 1, round(audio_seconds * self._speech_tokens_per_second)
             )
@@ -2152,6 +2177,22 @@ class FlightRuntime:
             raise FlightRuntimeError(f"{label} pin hash differs from the file")
         return path
 
+    def _live_speech_units(self):
+        """Return explicit window custody only when configured; preserve legacy sources."""
+        values = getattr(getattr(self, "_composed", None), "values", {})
+        return (
+            self.execution_unit_roster()
+            if values.get("prepared_execution_units") is not None else None
+        )
+
+    def _live_speech_sources(self):
+        """Bind live observations to current units or historical whole utterances."""
+        units = self._live_speech_units()
+        if units is None:
+            return self.source_audio_bindings(include_address=True)
+        from ...rails.live_speech_observation import execution_unit_source_bindings
+        return execution_unit_source_bindings(units)
+
     def _load_live_speech_observation_config(
         self,
         spec: object,
@@ -2238,14 +2279,19 @@ class FlightRuntime:
             raise FlightRuntimeError("live speech source bindings are unavailable")
         if plan.planned_model_calls < 1:
             raise FlightRuntimeError("live speech plan must admit at least one selected contact")
+        units = self._live_speech_units()
+        if units is not None and protocol.get("source_selection") != "bounded-span-v1":
+            raise FlightRuntimeError("execution-unit speech requires bounded-span-v1")
         total_seconds = sum(
             float(binding["source_audio_duration_seconds"])
             for binding in bindings.values()
         )
-        if plan.planned_speech_audio_seconds + 1e-9 < max(
-            float(binding["source_audio_duration_seconds"])
+        largest_contact = max(
+            min(30.0, float(binding["source_audio_duration_seconds"]))
+            if units is not None else float(binding["source_audio_duration_seconds"])
             for binding in bindings.values()
-        ):
+        )
+        if plan.planned_speech_audio_seconds + 1e-9 < largest_contact:
             raise FlightRuntimeError("live speech audio cap cannot cover one roster source")
         output_relpath = spec["output_relpath"]
         if (
@@ -2265,8 +2311,12 @@ class FlightRuntime:
             raise FlightRuntimeError(
                 "live speech output must be namespaced to its registered attempt"
             )
+        source_identity = (
+            {"bindings": bindings, "execution_unit_roster_sha256": units.content_hash()}
+            if units is not None else bindings
+        )
         source_hash = hashlib.sha256(
-            json.dumps(bindings, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            json.dumps(source_identity, sort_keys=True, separators=(",", ":")).encode("utf-8")
         ).hexdigest()
         return {
             "inventory": inventory,
@@ -2290,20 +2340,47 @@ class FlightRuntime:
             raise FlightRuntimeError("live speech custody is not configured")
         self.assert_generation_lease()
         sample_id = facts.get("sample_id")
+        units = self._live_speech_units()
+        unit_facts = {}
         binding = bindings.get(sample_id)
+        expected_seconds = binding.get("source_audio_duration_seconds") if binding else None
+        expected_span = {
+            "kind": "full-utterance", "start_seconds": 0.0, "end_seconds": expected_seconds,
+        }
+        if units is not None:
+            from ..preparation import digest
+            from ...rails.live_speech_observation import (
+                LiveSpeechObservationError, select_execution_unit_span,
+            )
+            unit = next((u for u in units.units
+                         if u.request_key == facts.get("execution_unit_id")), None)
+            if (
+                unit is None or unit.parent_sample_id != sample_id
+                or facts.get("execution_unit_binding_sha256") != digest(unit.as_json())
+            ):
+                raise FlightRuntimeError("live speech selected execution unit is invalid")
+            binding = bindings.get(unit.request_key)
+            try:
+                expected_span, expected_seconds = select_execution_unit_span(
+                    unit, facts.get("arguments"),
+                )
+            except LiveSpeechObservationError as error:
+                raise FlightRuntimeError(str(error)) from error
+            unit_facts = {
+                "execution_unit_id": unit.request_key,
+                "execution_unit_binding_sha256": digest(unit.as_json()),
+                "selected_span": expected_span,
+            }
+        elif facts.get("execution_unit_id") is not None:
+            raise FlightRuntimeError("live speech unit is not configured")
         source = facts.get("source")
         audio_seconds = facts.get("audio_seconds")
         if (
             not isinstance(binding, Mapping)
             or not isinstance(source, Mapping)
             or source.get("audio_sha256") != binding.get("source_audio_sha256")
-            or audio_seconds != binding.get("source_audio_duration_seconds")
-            or source.get("span")
-            != {
-                "kind": "full-utterance",
-                "start_seconds": 0.0,
-                "end_seconds": binding.get("source_audio_duration_seconds"),
-            }
+            or audio_seconds != expected_seconds
+            or source.get("span") != expected_span
         ):
             raise FlightRuntimeError("live speech selected source identity is invalid")
         plan = config["plan"]
@@ -2339,6 +2416,7 @@ class FlightRuntime:
             "attempt_id": plan.attempt_id,
             "ordinal": calls,
             "sample_id": sample_id,
+            **unit_facts,
             "source_response_sha256": facts.get("source_response_sha256"),
             "cache_key": facts.get("cache_key"),
             "source_audio_sha256": binding["source_audio_sha256"],
@@ -2404,9 +2482,30 @@ class FlightRuntime:
             raise FlightRuntimeError(
                 "native speech tools require FrozenCoreClient.record_tool_call custody"
             )
-        callback(count=1)
+        unit_facts = {}
+        units = self._live_speech_units()
         live_bindings = self._live_speech_source_bindings
-        if isinstance(live_bindings, Mapping) and sample_id in live_bindings:
+        if units is not None:
+            from ..preparation import digest
+            timings = [timing for timing in getattr(self._client, "timings", ())
+                       if timing.request_id == facts["request_id"]]
+            if len(timings) != 1 or timings[0].sample_id != sample_id:
+                raise FlightRuntimeError("native tool source request has no unique execution unit")
+            unit = self.execution_unit_for_contact(sample_id, timings[0].agent_contact_id)
+            if (
+                facts.get("execution_unit_id") != unit.request_key
+                or facts.get("execution_unit_binding_sha256") != digest(unit.as_json())
+            ):
+                raise FlightRuntimeError("native tool action differs from source request unit")
+            descriptor = unit.query_descriptor("speech_features")
+            packet_id, packet_sha256 = descriptor["packet_id"], descriptor["sha256"]
+            unit_facts = {
+                "execution_unit_id": unit.request_key,
+                "execution_unit_binding_sha256": digest(unit.as_json()),
+            }
+        elif facts.get("execution_unit_id") is not None:
+            raise FlightRuntimeError("native tool execution unit is not configured")
+        elif isinstance(live_bindings, Mapping) and sample_id in live_bindings:
             descriptor = live_bindings[sample_id]
             packet_id = descriptor["packet_id"]
             packet_sha256 = descriptor["packet_sha256"]
@@ -2414,9 +2513,11 @@ class FlightRuntime:
             descriptor = self.speech_packet_bindings()[sample_id]
             packet_id = descriptor["packet_id"]
             packet_sha256 = descriptor["sha256"]
+        callback(count=1)
         receipt = {
             "schema": "saea-native-phase-tool-contact-v1",
             "sample_id": sample_id,
+            **unit_facts,
             **{key: facts[key] for key in required_text},
             "arguments_sha256": hashlib.sha256(
                 json.dumps(arguments, sort_keys=True, separators=(",", ":")).encode("utf-8")
@@ -2547,9 +2648,7 @@ class FlightRuntime:
 
         live_spec = values.get("live_speech_observations")
         if live_spec not in (None, {}):
-            self._live_speech_source_bindings = self.source_audio_bindings(
-                include_address=True
-            )
+            self._live_speech_source_bindings = self._live_speech_sources()
             self._live_speech_config = self._load_live_speech_observation_config(
                 live_spec,
                 carrier_lock_key=carrier_lock_key,
@@ -2706,9 +2805,108 @@ class FlightRuntime:
         if getattr(self, "_window_feature_packet_config", None) != identity:
             self._window_feature_packets = load_window_packet_binding(
                 self._composed.values, self._samples, self._data_root, self._repo_root,
+                **({"execution_units": self._source_execution_unit_roster()}
+                   if self._composed.values.get("prepared_execution_units") is not None else {}),
             )
             self._window_feature_packet_config = identity
         return self._window_feature_packets
+
+    def _source_execution_unit_roster(self):
+        """Validate immutable source windows without changing the parent split."""
+        values = self._composed.values
+        declaration = values.get("prepared_execution_units")
+        if declaration is None:
+            return None
+        from ..preparation_windows import load_raw_execution_unit_roster
+        features = self.uses_speech_feature_packets()
+        if not features and self._arm() != "raw-speech-agent-native-tools":
+            raise FlightRuntimeError("execution units require an explicit speech arm")
+        if features != (values.get("prepared_window_feature_packets") is not None):
+            raise FlightRuntimeError("feature execution units require prepared window packets; raw units refuse them")
+        plan = getattr(self, "_plan", None)
+        split_hash = plan.split_identity_hash if plan is not None else self._prepare()[3]
+        identity = _canonical_hash({
+            "declaration": declaration, "split": split_hash, "arm": self._arm(),
+            "parents": [(sample.sample_id, sample.media_relpath, sample.audio_seconds)
+                        for sample in self._samples],
+        })
+        if getattr(self, "_execution_unit_config_hash", None) != identity:
+            roster, registry = load_raw_execution_unit_roster(
+                declaration, data_root=self._data_root, samples=self._samples,
+                split_identity_hash=split_hash,
+            )
+            self._source_execution_units, self._execution_unit_registry = roster, registry
+            self._execution_unit_config_hash = identity
+        return self._source_execution_units
+
+    def execution_unit_roster(self):
+        """Attach prepared packets to validated source units when configured."""
+        source = self._source_execution_unit_roster()
+        if source is None or not self.uses_speech_feature_packets():
+            return source
+        packets = self.window_feature_packet_binding()
+        identity = (self._execution_unit_config_hash, self._window_feature_packet_config)
+        if getattr(self, "_execution_unit_packet_config", None) != identity:
+            self._execution_units = source.with_speech_packets(packets)
+            self._execution_unit_packet_config = identity
+        return self._execution_units
+
+    def execution_unit_for_contact(self, sample_id, contact_id):
+        """Resolve explicit unit authority without inferring it from current audio."""
+        from ...rails.execution_units import execution_unit_scope
+        roster = self.execution_unit_roster()
+        if roster is None:
+            return None
+        scope = contact_id.split("/", 1)[0] if isinstance(contact_id, str) else None
+        units = {execution_unit_scope(unit.request_key): unit for unit in roster.units}
+        unit = units.get(scope)
+        if unit is None or unit.parent_sample_id != sample_id:
+            raise FlightRuntimeError("contact is outside its registered execution unit")
+        return unit
+
+    def validate_execution_unit_observation(self, unit, raw_speech_query):
+        """Keep every re-listen inside the immutable original unit and parent."""
+        original = unit.slice_record
+        record = self._execution_unit_registry.lookup(
+            unit.parent_sample_id, raw_speech_query["media_relpath"],
+        )
+        if (
+            record is None or record.sha256 != raw_speech_query["sha256"]
+            or record.parent_sha256 != original.parent_sha256
+            or record.start_seconds < original.start_seconds
+            or record.end_seconds > original.end_seconds
+        ):
+            raise FlightRuntimeError("raw observation migrated outside its execution unit")
+        self._execution_unit_registry.verify_slice_bytes(record)
+
+    def validate_execution_unit_feature_payload(self, unit, payload):
+        """Bind formal feature requests to the exact source window before fitting."""
+        query = [part for part in payload.get("speech_feature_parts", ())
+                 if isinstance(part, Mapping) and part.get("role") == "query"]
+        source = unit.slice_record
+        if (
+            query != [unit.query_descriptor("speech_features")]
+            or payload.get("sample_id") != unit.parent_sample_id
+            or payload.get("media_relpath") != source.media_relpath
+            or payload.get("audio_seconds") != source.audio_seconds
+            or payload.get("sample_rate_hz") != source.sample_rate_hz
+            or "raw_speech_query" in payload
+        ):
+            raise FlightRuntimeError("feature request migrated outside its execution unit")
+        self.validate_execution_unit_observation(unit, unit.query_descriptor("speech_audio"))
+
+    def _raw_phase_packet_bindings(self):
+        roster = self.execution_unit_roster()
+        if roster is not None:
+            return {unit.parent_sample_id: {
+                "packet_id": unit.slice_record.parent_media_relpath,
+                "sha256": unit.slice_record.parent_sha256,
+            } for unit in roster.units}
+        if self._adapter.preprocess_plan().get("kind") == "raw-speech-windows":
+            raise FlightRuntimeError("raw window phase programs require prepared_execution_units")
+        return {sample.sample_id: {"packet_id": sample.audio_ref.path,
+                                  "sha256": sample.audio_ref.sha256}
+                for sample in self._adapter.load_split(self._split_id)}
 
     def _promotion_receipt_path(self) -> Path:
         value = self._composed.values.get("speech_packet_promotion_receipt")
@@ -3597,6 +3795,9 @@ class FlightRuntime:
             "arm": arm,
             "request_id_prefix": self._request_id_prefix,
         }
+        if baseline_values.get("prepared_execution_units") is not None:
+            self.execution_unit_roster()
+            kwargs["slice_registry"] = self._execution_unit_registry
         arm_fields = ARM_VISIBLE_FIELDS.get(arm, ())
         if "tool_schemas" in arm_fields:
             dispatcher = self._phase_tool_dispatcher
@@ -3605,6 +3806,8 @@ class FlightRuntime:
                 if not callable(schemas):
                     raise FlightRuntimeError("native dispatcher does not expose tool schemas")
                 kwargs["tool_schemas"] = tuple(schemas())
+            elif arm == "raw-speech-agent-native-tools" and not baseline_values.get("phase_tools"):
+                kwargs["tool_schemas"] = ()
             else:
                 fill_name = baseline_values.get("tool_schema_fill")
                 if self._tool_schema_resolver is None or not isinstance(fill_name, str):
@@ -3623,9 +3826,12 @@ class FlightRuntime:
             # from the model fragment (cross-checked against the promotion
             # receipt), the per-sample descriptors from that same receipt.
             kwargs["speech_feature_root"] = self._speech_feature_root()
-            kwargs["speech_packet_bindings"] = self.speech_packet_bindings()
-            if self._validated_packet_set is not None:
-                kwargs["validated_packet_set"] = self._validated_packet_set
+            if baseline_values.get("prepared_execution_units") is not None:
+                kwargs["execution_units"] = self.execution_unit_roster()
+            else:
+                kwargs["speech_packet_bindings"] = self.speech_packet_bindings()
+                if self._validated_packet_set is not None:
+                    kwargs["validated_packet_set"] = self._validated_packet_set
         if CONSTRUCTION_VISIBLE_FIELD in arm_fields:
             # rails.core_client.FrozenCoreClient REFUSES to be constructed for
             # a construction-proposer arm without its targets, and binds them
@@ -4093,14 +4299,20 @@ class FlightRuntime:
                 "nothing to seal"
             )
         last = summaries[-1]
-        last_ids = tuple(result.sample_id for result in last.results)
+        def identity(result):
+            return (result.sample_id, getattr(result, "execution_unit_id", None))
+
+        last_ids = tuple(identity(result) for result in last.results)
+        unit_flags = [key[1] is not None for key in last_ids]
+        if any(unit_flags) and not all(unit_flags):
+            raise FlightRuntimeError("phase output mixes parent and execution unit identities")
         if len(set(last_ids)) != len(last_ids):
             raise FlightRuntimeError(
                 f"phase program {policy!r} final phase returned duplicate sample ids"
             )
         expected = set(last_ids)
         for index, summary in enumerate(summaries[:-1]):
-            ids = {result.sample_id for result in summary.results}
+            ids = {identity(result) for result in summary.results}
             if ids != expected:
                 phase_id = getattr(summary, "controller_policy_id", f"phase[{index}]")
                 raise FlightRuntimeError(
@@ -4118,6 +4330,13 @@ class FlightRuntime:
                 "sample_id": result.sample_id,
                 "final_response_text": getattr(result, "final_response_text", None),
                 "contact_count": len(getattr(result, "contacts", ()) or ()),
+                **(
+                    {
+                        "execution_unit_id": result.execution_unit_id,
+                        "execution_unit_binding": dict(result.execution_unit_binding),
+                    }
+                    if getattr(result, "execution_unit_id", None) is not None else {}
+                ),
                 **(
                     {"native_episode_receipt": dict(result.native_episode_receipt)}
                     if getattr(result, "native_episode_receipt", None) is not None else {}
@@ -4421,7 +4640,9 @@ class FlightRuntime:
                 )
 
                 factory = LiveSpeechObservationProvider
+            units = self._live_speech_units()
             self._live_speech_provider = factory(
+                **({"execution_units": units} if units is not None else {}),
                 inventory=self._live_speech_config["inventory"],
                 protocol=self._live_speech_config["protocol"],
                 source_bindings=self._live_speech_source_bindings,
@@ -4645,6 +4866,10 @@ class FlightRuntime:
             # bind_phase_program_material(...) remains the explicit override
             # and, when it was called, wins outright.
             binding = self._default_phase_program_binding(program, client)
+        source_options = {
+            key: binding[key] for key in ("query_source", "execution_units")
+            if binding.get(key) is not None
+        }
         # rails.runner.run_speech_native_agent_loop requires an append-only
         # AgentTraceSink BOUND TO plan.run_id. FrozenCoreClient is not one --
         # it owns a private TraceSink and exposes only flush_trace_buffer --
@@ -4755,6 +4980,7 @@ class FlightRuntime:
         # pre-flight-seeded FIRST phase, keeps the per-phase barrier form.
         continuous = (
             binding.get("initial_feedback_states") is not None
+            or binding.get("execution_units") is not None
             or native_binding is not None
             or whole_roster
             or planner is not None
@@ -4799,6 +5025,7 @@ class FlightRuntime:
                         ),
                         result_kind=self._result_kind(),
                         **live_options,
+                        **source_options,
                     ),
                 )
             else:
@@ -4819,6 +5046,7 @@ class FlightRuntime:
                     bootstrap_facet_ids_by_phase=facet_seed,
                     bootstrap_value_ids_by_phase=value_seed,
                     result_kind=self._result_kind(),
+                    **source_options,
                 )
             if review_specs:
                 from ...rails.phase_review import (  # noqa: PLC0415 (cycle guard)
@@ -4947,6 +5175,22 @@ class FlightRuntime:
         if whole_roster:
             dispatch["whole_roster_wave_barrier"] = True
             dispatch["live_phase_fit_receipts"] = list(live_fit_gate.receipts)
+        units = binding.get("execution_units")
+        if units is not None:
+            dispatch["execution_unit_roster_sha256"] = units.content_hash()
+            dispatch["execution_unit_count"] = len(units.units)
+            dispatch["parent_sample_count"] = len(binding["speech_packet_bindings"])
+            for suffix in ("", "_ceiling"):
+                key = "contacts_per_sample" + suffix
+                if key in dispatch:
+                    dispatch["contacts_per_execution_unit" + suffix] = dispatch.pop(key)
+            dispatch.pop("contacts_per_sample_observed", None)
+            dispatch["contacts_per_execution_unit_observed"] = [
+                {"sample_id": result.sample_id,
+                 "execution_unit_id": result.execution_unit_id,
+                 "contacts": len(result.contacts)}
+                for summary in self._phase_summaries for result in summary.results
+            ]
         return rows, contact_count, "phase-program", dispatch, phase_receipt
 
     def preparation_context(self):
@@ -5142,15 +5386,12 @@ class FlightRuntime:
         )
 
     def materialize_request_fit_batch(self, *, execution_plan=None):
-        """Return raw E21 fit requests, or ``None`` for phase-program fits.
+        """Return the registered static raw request batch, when configured."""
+        from ..preparation_fit import materialize_request_fit_batch
 
-        The shared preparation fitter calls this before it decides how to
-        render a request. Keeping the dispatch here makes root-coordinated
-        and attach-only fits bind the same request builder and source facts.
-        """
-        if self._adapter.preprocess_plan().get("kind") != "raw-speech-windows":
-            return None
-        return self.materialize_window_batch(execution_plan=execution_plan)
+        return materialize_request_fit_batch(
+            self, execution_plan=execution_plan
+        )
 
     def materialize_window_batch(self, *, execution_plan=None, max_workers: int | None = None):
         """Build the configured E21 raw-window requests without model contact."""
@@ -5276,6 +5517,9 @@ class FlightRuntime:
 
             },
         }
+        if context["values"].get("prepared_execution_units") is not None:
+            sources["execution_unit_inventory"] = dict(context["values"]["prepared_execution_units"])
+            sources["execution_unit_roster_sha256"] = self.execution_unit_roster().content_hash()
         if window_batch is not None:
             from ...reproduction import obs_loop, repair_loop, window_controller
             from ...reproduction.ojw import components as ojw_components
@@ -5366,9 +5610,7 @@ class FlightRuntime:
             self._data_root, "prepared fit", strict=True,
         )
         self._prepare()
-        window_batch = None
-        if self._adapter.preprocess_plan().get("kind") == "raw-speech-windows":
-            window_batch = self.materialize_window_batch()
+        window_batch = self.materialize_request_fit_batch()
         if window_batch is not None:
             payloads = window_batch.payloads
         else:
@@ -5382,17 +5624,27 @@ class FlightRuntime:
         if not isinstance(result, dict) or result.get("every_request_fits") is not True:
             raise PreparationError("prepared request fit did not pass every row")
         rows = result.get("rows")
-        expected = (
-            set(window_batch.request_keys)
+        expected_order = (
+            list(window_batch.request_keys)
             if window_batch is not None
-            else {payload["sample_id"] for payload in payloads}
+            else [payload["sample_id"] for payload in payloads]
         )
+        expected = set(expected_order)
         row_key = "request_key" if window_batch is not None else "sample_id"
+        fit_values = getattr(getattr(self, "_composed", None), "values", {})
+        unit_fit = (
+            isinstance(fit_values, Mapping)
+            and fit_values.get("prepared_execution_units") is not None
+        )
         if (
             not isinstance(rows, list)
             or len(rows) != len(expected)
             or any(not isinstance(row, dict) or row.get("fits") is not True for row in rows)
             or {row.get(row_key) for row in rows} != expected
+            or (
+                unit_fit
+                and [row.get(row_key) for row in rows] != expected_order
+            )
             or result.get("sample_count") != len(expected)
         ):
             raise PreparationError("prepared request fit does not certify the full roster")
@@ -5418,6 +5670,11 @@ class FlightRuntime:
         program = default_phase_program(str(values["policy"]))
         if len(program.phase_names()) != 1:
             raise PreparationError("actual fit requires one phase with sealed predecessors")
+        unit_roster = (
+            self.execution_unit_roster()
+            if values.get("prepared_execution_units") is not None
+            else None
+        )
         payloads = []
         # The shared wire path writes a synthetic plan, client, and phase
         # bindings. None may survive into the registered flight, including
@@ -5434,7 +5691,9 @@ class FlightRuntime:
                 "_live_speech_config", "_live_speech_source_bindings",
                 "_live_speech_provider", "_knowledge_store_binding",
                 "_knowledge_store_supply", "_window_feature_packet_config",
-                "_window_feature_packets",
+                "_window_feature_packets", "_execution_units",
+                "_execution_unit_registry", "_execution_unit_config_hash",
+                "_source_execution_units", "_execution_unit_packet_config",
             )
         }
         try:
@@ -5485,8 +5744,64 @@ class FlightRuntime:
                     setattr(self, name, value)
         expected = [sample.sample_id for sample in self._samples]
         actual = [payload.get("sample_id") for payload in payloads]
-        if len(set(actual)) != len(actual) or set(actual) != set(expected):
-            raise PreparationError("actual request materialization must cover the full roster")
+        if unit_roster is None:
+            if len(set(actual)) != len(actual) or set(actual) != set(expected):
+                raise PreparationError(
+                    "actual request materialization must cover the full roster"
+                )
+            return tuple(payloads)
+        if len(payloads) != len(unit_roster.units):
+            raise PreparationError(
+                "actual request materialization must cover every execution unit"
+            )
+        by_unit = {}
+        for payload in payloads:
+            history = payload.get("history")
+            contact_id = (
+                history[-1].get("contact_id")
+                if isinstance(history, list) and history
+                and isinstance(history[-1], Mapping) else None
+            )
+            try:
+                contact_unit = self.execution_unit_for_contact(
+                    payload.get("sample_id"), contact_id,
+                )
+            except FlightRuntimeError as error:
+                raise PreparationError("actual request has no registered execution unit contact") from error
+            if contact_unit is None or contact_unit.request_key in by_unit:
+                raise PreparationError("actual request repeats or lacks an execution unit")
+            by_unit[contact_unit.request_key] = payload
+        expected_keys = tuple(unit.request_key for unit in unit_roster.units)
+        if set(by_unit) != set(expected_keys):
+            raise PreparationError("actual requests differ from the execution unit roster")
+        # Concurrent dispatch may capture contacts out of order. Their bound
+        # identity selects the canonical inventory order without changing bytes.
+        payloads = [by_unit[key] for key in expected_keys]
+        for position, (payload, unit) in enumerate(
+            zip(payloads, unit_roster.units, strict=True)
+        ):
+            if unit.speech_packet_id is not None:
+                queries = [part for part in payload.get("speech_feature_parts", ())
+                           if isinstance(part, Mapping) and part.get("role") == "query"]
+                query_matches = (
+                    queries == [unit.query_descriptor("speech_features")]
+                    and "raw_speech_query" not in payload
+                )
+            else:
+                query_matches = (
+                    payload.get("raw_speech_query") == unit.query_descriptor("speech_audio")
+                    and "speech_feature_parts" not in payload
+                )
+            if (
+                payload.get("sample_id") != unit.parent_sample_id
+                or payload.get("media_relpath") != unit.slice_record.media_relpath
+                or payload.get("audio_seconds") != unit.slice_record.audio_seconds
+                or payload.get("sample_rate_hz") != unit.slice_record.sample_rate_hz
+                or not query_matches
+            ):
+                raise PreparationError(
+                    f"actual request {position} differs from its ordered execution unit"
+                )
         return tuple(payloads)
 
     def _source_audio_bindings_for_supply(self, binding, spec):
@@ -6182,7 +6497,7 @@ class FlightRuntime:
         from ...rails.phase_tools import load_phase_tool_specs
         specs = load_phase_tool_specs(values, default_phase_program(policy))
         from ...rails.experience_memory_runtime import CORRECTIVE_MEMORY_TOOL
-        from ...rails.phase_tools import LIVE_SPEECH_OBSERVATION_TOOL
+        from ...rails.phase_tools import LIVE_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_SPAN_TOOL
         from ...rails.speech_observation import PREPARED_SPEECH_OBSERVATION_TOOL
         uses_native = any(
             spec.get("mode") == "native-tools" for spec in specs.values()
@@ -6201,7 +6516,9 @@ class FlightRuntime:
                 "speech observation phase tool and prepared speech observation binding must be declared together"
             )
         uses_live_observation = any(
-            LIVE_SPEECH_OBSERVATION_TOOL in spec["allowed_tools"]
+            bool(set(spec["allowed_tools"]) & {
+                LIVE_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_SPAN_TOOL,
+            })
             for spec in specs.values()
         )
         if declares_live_observation != uses_live_observation:
@@ -6212,6 +6529,16 @@ class FlightRuntime:
             raise FlightRuntimeError(
                 "live and prepared speech observations cannot be active together"
             )
+        has_execution_units = values.get("prepared_execution_units") is not None
+        for spec in specs.values():
+            allowed = spec["allowed_tools"]
+            if (
+                LIVE_SPEECH_SPAN_TOOL in allowed and not has_execution_units
+                or LIVE_SPEECH_OBSERVATION_TOOL in allowed and has_execution_units
+            ):
+                raise FlightRuntimeError(
+                    "live speech tool source scope must match configured execution units"
+                )
 
         uses_memory = any(
             CORRECTIVE_MEMORY_TOOL in spec["allowed_tools"] for spec in specs.values()
@@ -6439,9 +6766,8 @@ class FlightRuntime:
 
         Three refusals, all BEFORE any contact:
 
-        1. the arm must travel the speech-feature packet path -- the agent
-           loop is speech-feature only (``rails.core_client.FrozenCoreClient``
-           refuses ``history`` without ``speech_feature_sample_id``);
+        1. the arm must declare feature packets or the explicit raw speech
+           path; configured execution units retain source and packet custody;
         2. every rendered static instruction, and every per-sample sealed
            state that will be appended to one, must pass the SAME
            protected-material containment rule ``rails.runner`` applies at
@@ -6465,13 +6791,11 @@ class FlightRuntime:
             _protected_knowledge_material,
         )
 
-        if not self.uses_speech_feature_packets():
-            raise FlightRuntimeError(
-                f"arm {self._arm()!r} does not travel the speech-feature packet path, but "
-                f"policy {getattr(program, 'program_id', program)!r} is a phase program: "
-                "rails.runner's agent loop binds one input_speech_features query packet "
-                "per contact and rails.core_client refuses Agent history without it"
-            )
+        raw_phase = self._arm() == "raw-speech-agent-native-tools"
+        if not self.uses_speech_feature_packets() and not raw_phase:
+            raise FlightRuntimeError("phase programs require an explicit feature or raw speech arm")
+        units = self.execution_unit_roster()
+        raw_bindings = self._raw_phase_packet_bindings() if raw_phase and units is None else None
         snapshot = self._load_knowledge_snapshot()
         specs = load_phase_material_specs(self._composed.values, program)
         static_text = {
@@ -6530,7 +6854,12 @@ class FlightRuntime:
         review_for_phase, review_specs = self._resolve_phase_review(program)
         return {
             "knowledge_snapshot": snapshot,
-            "speech_packet_bindings": self.speech_packet_bindings(),
+            "speech_packet_bindings": (
+                {} if units is not None
+                else raw_bindings if raw_phase else self.speech_packet_bindings()
+            ),
+            **({"query_source": "speech_audio"} if raw_phase else {}),
+            **({"execution_units": units} if units is not None else {}),
             "material_for_phase": build_material_for_phase(
                 specs,
                 program_id=program.program_id,
@@ -6937,7 +7266,109 @@ class FlightRuntime:
             ),
         }
 
-    def _canonical_output_rows(self, client: object) -> list[Mapping[str, object]]:
+    def _canonical_execution_unit_rows(self, client: object, roster) -> list[Mapping[str, object]]:
+        """Validate each unit's actual delivery before deriving parent outputs."""
+        from ..delivery import stitch_execution_unit_results
+        from ...rails.execution_units import execution_unit_scope
+
+        parents = [sample.sample_id for sample in self._samples]
+        roster.validate(parent_sample_ids=parents, max_contacts=1)
+        expected = [(unit.parent_sample_id, unit.request_key) for unit in roster.units]
+        actual = [(row.get("sample_id"), row.get("execution_unit_id"))
+                  for row in self._output_rows]
+        if actual != expected:
+            raise FlightRuntimeError("execution unit outputs do not exactly cover the ordered roster")
+        by_scope = {execution_unit_scope(unit.request_key): unit for unit in roster.units}
+        by_unit = {unit.request_key: [] for unit in roster.units}
+        seen_requests = set()
+        for timing in getattr(client, "timings", ()) or ():
+            contact_id = getattr(timing, "agent_contact_id", None)
+            scope = contact_id.split("/", 1)[0] if isinstance(contact_id, str) else None
+            unit = by_scope.get(scope)
+            if unit is None or timing.sample_id != unit.parent_sample_id:
+                raise FlightRuntimeError("actual contact has no matching execution unit binding")
+            if timing.request_id in seen_requests:
+                raise FlightRuntimeError("execution unit timing repeats a request identity")
+            seen_requests.add(timing.request_id)
+            by_unit[unit.request_key].append(timing)
+
+        terminal = []
+        for unit, row in zip(roster.units, self._output_rows, strict=True):
+            timings = by_unit[unit.request_key]
+            if not timings:
+                raise FlightRuntimeError("execution unit has no actual request record")
+            sources = [result for summary in self._phase_summaries for result in summary.results
+                       if getattr(result, "execution_unit_id", None) == unit.request_key]
+            if not sources or any(result.sample_id != unit.parent_sample_id for result in sources):
+                raise FlightRuntimeError("execution unit has no matching phase trajectory")
+            selected = self._canonical_output_rows(
+                client, output_rows=(row,), timings=timings,
+                phase_summaries=self._phase_summaries,
+            )[0]
+            recorded = next((timing for timing in timings
+                             if timing.request_id == selected["request_id"]), None)
+            # An abstention already has a verified empty derivative and source
+            # custody from the shared native delivery validator above.
+            terminal.append({
+                **selected,
+                "execution_unit_id": unit.request_key,
+                "execution_unit_binding": row.get("execution_unit_binding"),
+                "saturated": bool(getattr(recorded, "terminal_saturated", False)),
+                "skipped": False,
+            })
+        try:
+            stitched = stitch_execution_unit_results(roster, parents, terminal)
+        except ValueError as error:
+            raise FlightRuntimeError(str(error)) from error
+        return [{
+            "request_id": f"{self._plan.run_id}:{row['sample_id']}:unit-stitch",
+            "sample_id": row["sample_id"],
+            "carrier_lock_key": self._plan.carrier_lock_key,
+            "arm": self._arm(),
+            "text": row["text"],
+            "admitted": True,
+            "request_sha256": row["request_sha256"],
+            "response_sha256": row["response_sha256"],
+            "response_text_sha256": row["response_text_sha256"],
+            "execution_unit_delivery": row,
+        } for row in stitched]
+
+    def _trace_execution_unit_deliveries(self, client: object, rows) -> None:
+        """Record derived stitching without another metered model request."""
+        derived = [row for row in rows if "execution_unit_delivery" in row]
+        if not derived:
+            return
+        from ..tracing import TraceBuffer
+
+        buffer = TraceBuffer(self._plan.run_id)
+        for row in derived:
+            delivery = row["execution_unit_delivery"]
+            base = row["request_id"]
+            buffer.emit("MODEL_REQUEST", base + "/request", {
+                "arm": row["arm"],
+                "payload_sha256": row["request_sha256"],
+                "stitch": True,
+                "stitched_request_ids": delivery["request_ids"],
+                "execution_unit_roster_sha256": delivery["execution_unit_roster_sha256"],
+            })
+            buffer.emit("MODEL_RESPONSE", base + "/response", {
+                "text": row["text"],
+                "response_sha256": row["response_sha256"],
+                "response_text_sha256": row["response_text_sha256"],
+                "stitch": True,
+                "stitched_from_response_sha256s": delivery["source_response_sha256s"],
+            })
+            buffer.emit("USE", base + "/use", {
+                "use_response_sha256": row["response_sha256"],
+                "use_admitted": True,
+                "use_stitched_iterations": len(delivery["sources"]),
+                "use_execution_unit_sources": delivery["sources"],
+            })
+        client.flush_trace_buffer(buffer)
+
+    def _canonical_output_rows(
+        self, client: object, *, output_rows=None, timings=None, phase_summaries=None,
+    ) -> list[Mapping[str, object]]:
         """The outputs rows ``core.bundle.verify_bundle`` actually requires.
 
         ``core.bundle.outputs._REQUIRED_OUTPUTS_FIELDS`` is a hash-bound
@@ -6958,9 +7389,18 @@ class FlightRuntime:
         that stands.
         """
 
+        if output_rows is None:
+            units = self.execution_unit_roster()
+            if units is not None:
+                return self._canonical_execution_unit_rows(client, units)
+            output_rows = self._output_rows
+        if phase_summaries is None:
+            phase_summaries = getattr(self, "_phase_summaries", ())
+        if timings is None:
+            timings = getattr(client, "timings", ()) or ()
         timing_by_sample: dict[str, object] = {}
         timing_by_request: dict[str, object] = {}
-        for timing in getattr(client, "timings", ()) or ():
+        for timing in timings:
             timing_by_sample[timing.sample_id] = timing
             timing_by_request[timing.request_id] = timing
         arm = self._arm()
@@ -6970,7 +7410,7 @@ class FlightRuntime:
         # ``_rows_from_phase_summaries`` now reduces a program to one row
         # per sample, and this says so HERE, where the failure is still
         # free, rather than trusting that it always will.
-        seen: list[str] = [str(row.get("sample_id")) for row in self._output_rows]
+        seen: list[str] = [str(row.get("sample_id")) for row in output_rows]
         duplicates = sorted({sid for sid in seen if seen.count(sid) > 1})
         if duplicates:
             raise FlightRuntimeError(
@@ -6980,7 +7420,7 @@ class FlightRuntime:
                 "sample seals the LAST response, never one row per contact)"
             )
         rows: list[Mapping[str, object]] = []
-        for row in self._output_rows:
+        for row in output_rows:
             sample_id = str(row.get("sample_id"))
             # The Earnings/obs dispatch reads its rows back from the obs
             # driver's own sealed outputs, which ARE this contract's field
@@ -7000,7 +7440,7 @@ class FlightRuntime:
                 # The delivery Solver can precede Reviewer/Planner contacts.
                 # Bind the existing response, without deriving or rewriting text.
                 sources = [
-                    result for summary in self._phase_summaries
+                    result for summary in phase_summaries
                     for result in summary.results
                     if result.sample_id == sample_id
                     and getattr(result, "native_episode_receipt", None) == episode_receipt
@@ -7287,6 +7727,7 @@ class FlightRuntime:
         # scoring fail AFTER every contact had been spent.
         outputs_path = run_dir / f"{self._plan.run_id}.outputs.jsonl"
         canonical_rows = self._canonical_output_rows(self._client)
+        self._trace_execution_unit_deliveries(self._client, canonical_rows)
         with outputs_path.open("w", encoding="utf-8") as handle:
             for row in canonical_rows:
                 handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
@@ -7996,6 +8437,16 @@ class FlightRuntime:
             if obs_policy
             else (1 if policy == "fixed" else len(default_phase_program(policy).phases))
         )
+        execution_unit_roster = (
+            self.execution_unit_roster()
+            if not obs_policy and values.get("prepared_execution_units") is not None
+            else None
+        )
+        execution_count = (
+            len(execution_unit_roster.units)
+            if execution_unit_roster is not None
+            else len(self._samples)
+        )
         stamp = int(self._clock() * 1000)
         wire_run_id = f"{WIRE_CHECK_RUN_ID_PREFIX}{self._run_id}-{stamp:d}"
         wire_attempt_id = f"attempt-wire-check-{stamp:d}"
@@ -8031,7 +8482,7 @@ class FlightRuntime:
             carrier_lock_key=carrier_lock_key,
             split_role=declared["split_role"],
             split_identity_hash=identity_hash,
-            planned_model_calls=max(len(self._samples) * contacts_per_sample, 1),
+            planned_model_calls=max(execution_count * contacts_per_sample, 1),
             planned_gpu_hours=declared["planned_gpu_hours"],
             planned_speech_audio_seconds=declared["planned_speech_audio_seconds"],
             protocol_hash=compute_protocol_hash(
@@ -8058,9 +8509,7 @@ class FlightRuntime:
             self._plan = plan
             live_spec = self._composed.values.get("live_speech_observations")
             if live_spec not in (None, {}) and self._live_speech_config is None:
-                self._live_speech_source_bindings = self.source_audio_bindings(
-                    include_address=True
-                )
+                self._live_speech_source_bindings = self._live_speech_sources()
                 self._live_speech_config = self._load_live_speech_observation_config(
                     live_spec,
                     carrier_lock_key=carrier_lock_key,
@@ -8099,7 +8548,7 @@ class FlightRuntime:
 
         # -- the assertions each landed defect would have failed -----------
         expected_fields = set(ARM_VISIBLE_FIELDS.get(arm, ()))
-        expected_payloads = len(self._samples) * contacts_per_sample
+        expected_payloads = execution_count * contacts_per_sample
         problems: list[str] = []
         planned_stopping = bool(self._composed.values.get("phase_planner")) or (
             policy != "fixed"

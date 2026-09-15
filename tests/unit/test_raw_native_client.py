@@ -11,6 +11,10 @@ from speech_aware_evidence_acquisition.core.model import SliceRecord
 from speech_aware_evidence_acquisition.rails import build_slice_registry
 from speech_aware_evidence_acquisition.rails.controllers import default_phase_program
 from speech_aware_evidence_acquisition.rails.core_client import FrozenCoreClientError
+from speech_aware_evidence_acquisition.rails.execution_units import (
+    ExecutionUnit,
+    ExecutionUnitRoster,
+)
 from speech_aware_evidence_acquisition.rails.material import PhaseMaterial
 from speech_aware_evidence_acquisition.rails.phase_runner import (
     run_agent_phase,
@@ -161,6 +165,75 @@ def test_direct_only_raw_phase_uses_a_registered_slice_with_parent_identity(tmp_
     ]
     assert len(audio) == 1
     assert base64.b64decode(audio[0]["input_audio"]["data"]) == slice_bytes
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_public_direct_raw_phase_keeps_two_registered_windows_of_one_parent(tmp_path):
+    harness = _ActualEpisodeHarness(
+        tmp_path, sample_count=1, max_revisions=0, max_contacts=4,
+        planner_actions=("ACCEPT",), arm=ARM, query_source="speech_audio",
+    )
+    parent = harness.samples[0]
+    slice_registry = build_slice_registry(
+        data_root=harness.world.data_root,
+        run_id=harness.plan.run_id,
+        samples=harness.samples,
+    )
+    harness.client._slice_registry = slice_registry  # noqa: SLF001
+    harness.client._adapter._slice_registry = slice_registry  # noqa: SLF001
+    units = []
+    window_bytes = (b"RIFF registered raw window zero", b"RIFF registered raw window one")
+    for iteration, payload in enumerate(window_bytes):
+        relpath = slice_registry.slice_relpath(parent.sample_id, iteration)
+        path = harness.world.data_root / relpath
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(payload)
+        units.append(
+            ExecutionUnit(
+                parent.sample_id,
+                f"{parent.sample_id}/window-{iteration}",
+                SliceRecord(
+                    sample_id=parent.sample_id,
+                    parent_media_relpath=parent.audio_ref.path,
+                    parent_sha256=parent.audio_ref.sha256,
+                    start_seconds=float(iteration), end_seconds=float(iteration + 1),
+                    audio_seconds=1.0, sample_rate_hz=16000, media_relpath=relpath,
+                    sha256=hashlib.sha256(payload).hexdigest(), bytes=len(payload),
+                    iteration=iteration,
+                ),
+            )
+        )
+    roster = ExecutionUnitRoster(tuple(units))
+    bodies = []
+    harness.transport._post = lambda _url, body: (
+        bodies.append(json.loads(body)) or _wire_response("window direct answer")
+    )
+    try:
+        summary = run_agent_phase(
+            phase_name="direct", program=default_phase_program("phase-direct-only-v1"),
+            adapter=harness.adapter, plan=harness.plan, data_root=harness.world.data_root,
+            core_client=harness.client, split_id="all", knowledge_snapshot=_knowledge_snapshot(),
+            speech_packet_bindings=harness.speech_bindings, execution_units=roster,
+            query_source="speech_audio", trace_sink=harness.trace,
+            decoding_params={"temperature": 0, "max_tokens": 64}, expected_row_count=2,
+            material_for_phase=lambda _phase, _context: PhaseMaterial(
+                instruction="Answer this registered window.", response_format=None,
+                contact_id="two-window-direct", purpose="direct",
+            ),
+        )
+    finally:
+        close_summary = harness.close()
+
+    assert [result.execution_unit_id for result in summary.results] == [
+        "s1/window-0", "s1/window-1"
+    ]
+    assert close_summary["request_count"] == 2
+    assert {
+        base64.b64decode(part["input_audio"]["data"])
+        for body in bodies
+        for part in body["messages"][1]["content"]
+        if part["type"] == "input_audio"
+    } == set(window_bytes)
 
 
 @pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")

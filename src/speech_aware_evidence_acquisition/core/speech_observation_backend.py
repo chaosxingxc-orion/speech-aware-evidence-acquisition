@@ -45,7 +45,7 @@ _PROTOCOL_KEYS = {
     "no_speech_threshold",
     "logprob_threshold",
 }
-_OPTIONAL_PROTOCOL_KEYS = {"cpu_thread_limits"}
+_OPTIONAL_PROTOCOL_KEYS = {"cpu_thread_limits", "source_selection"}
 _CPU_THREAD_LIMIT_KEYS = {"inference_threads", "interop_threads"}
 _SOURCE_KEYS = {
     "media_path",
@@ -106,6 +106,13 @@ def _validate_protocol(protocol):
     )
     if protocol["schema"] != "saea-local-whisper-decode-v1":
         raise SpeechObservationBackendError("Whisper decoding protocol schema is invalid")
+    if (
+        "source_selection" in protocol
+        and protocol["source_selection"] != "bounded-span-v1"
+    ):
+        raise SpeechObservationBackendError(
+            "Whisper source_selection must be 'bounded-span-v1' when supplied"
+        )
     if not isinstance(protocol["device"], str) or not (
         protocol["device"] == "cpu"
         or re.fullmatch(r"cuda(?::\d+)?", protocol["device"])
@@ -157,7 +164,7 @@ def _validate_protocol(protocol):
     _finite(protocol["logprob_threshold"], "Whisper logprob_threshold")
 
 
-def _validate_source(source):
+def _validate_source(source, *, source_selection=None):
     _exact_keys(source, _SOURCE_KEYS, "speech observation source")
     _absolute_path(source["media_path"], "speech observation media_path")
     _sha256(source["audio_sha256"], "speech observation audio_sha256")
@@ -177,7 +184,7 @@ def _validate_source(source):
     end = source["end_frame"]
     if frames < 1 or rate < 1 or not 0 <= start < end <= frames:
         raise SpeechObservationBackendError("speech observation source frame geometry is invalid")
-    if start != 0 or end != frames:
+    if source_selection is None and (start != 0 or end != frames):
         raise SpeechObservationBackendError(
             "speech observation backend v1 requires the full utterance"
         )
@@ -269,7 +276,7 @@ def _diagnostic_number(value):
 
 
 class LocalWhisperBackend:
-    """Decode complete short utterances in one ordered native Whisper batch."""
+    """Decode full utterances or explicitly selected bounded source spans."""
 
     def __init__(self, inventory, protocol, data_root, event):
         _validate_inventory(inventory)
@@ -292,7 +299,9 @@ class LocalWhisperBackend:
         if not sources:
             raise SpeechObservationBackendError("speech observation sources must be non-empty")
         for source in sources:
-            _validate_source(source)
+            _validate_source(
+                source, source_selection=self.protocol.get("source_selection")
+            )
         self.prefetch.prepare_sources(sources)
 
     def _ensure_stack(self):
@@ -378,7 +387,9 @@ class LocalWhisperBackend:
         if not sources or len(sources) > self.protocol["batch_size"]:
             raise SpeechObservationBackendError("speech observation batch_size bound is violated")
         for source in sources:
-            _validate_source(source)
+            _validate_source(
+                source, source_selection=self.protocol.get("source_selection")
+            )
         if not self._decode_lock.acquire(blocking=False):
             raise SpeechObservationBackendError("concurrent Whisper decode is forbidden")
         try:
@@ -391,7 +402,7 @@ class LocalWhisperBackend:
 
         if self._closed:
             raise SpeechObservationBackendError("speech observation backend is closed")
-        _validate_source(source)
+        _validate_source(source, source_selection=self.protocol.get("source_selection"))
         with self._decode_lock:
             selected_prefetch = BoundedAudioPrefetch(self.protocol["cpu_workers"])
             try:

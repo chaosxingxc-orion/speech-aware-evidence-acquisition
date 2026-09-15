@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Mapping
 
 from . import e21_window_pairing as wp
-from .delivery_windows import verified_delivery_windows
+from .delivery_windows import verified_delivery_windows, verified_execution_unit_windows
 from ..core.bundle import verify_bundle
 from ..core.scoring_receipt import SavedScoreReceiptRef, verify_complete_score_receipt
 from ..reproduction import conec_entity_scoring as conec
@@ -206,6 +206,8 @@ def run(config_path: Path, output: Path) -> dict:
     score_doc = _pinned(receipt["score_result"])
     if bundle.manifest["schema"] == "saea-derived-delivery-v1":
         windows = verified_delivery_windows(bundle)
+    elif any("execution_unit_delivery" in row for row in bundle.outputs_rows):
+        windows = verified_execution_unit_windows(bundle)
     elif any(
         record.get("obs_relisten") is True
         for key, record in bundle.trace_records.items() if key.endswith("/obs")

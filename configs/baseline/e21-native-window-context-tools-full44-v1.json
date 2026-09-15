@@ -1,0 +1,166 @@
+{
+  "arm": "speech-feature-query-native-tools",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_stores": {
+    "document-lexicon": {
+      "context_supply": {
+        "solver": {
+          "provider": "source-scoped-context-v1"
+        }
+      },
+      "release": {
+        "relpath": "knowledge/e21/governed/document-lexicon-v1/release.json",
+        "sha256": "0f6863050e1335c763b5ed958e4a49aa684edd035e6ffc2f6df65f37daf28af6"
+      },
+      "snapshot": {
+        "relpath": "knowledge/e21/governed/document-lexicon-v1/snapshot.json",
+        "sha256": "8fbb96aa4c938c1da23d6c014f3c1e12207b9414cb5463204f7c036b2eba186d"
+      },
+      "store_role": "document-lexicon"
+    },
+    "participant-roster": {
+      "context_supply": {
+        "solver": {
+          "provider": "source-scoped-context-v1"
+        }
+      },
+      "release": {
+        "relpath": "knowledge/e21/governed/participant-roster-v1/release.json",
+        "sha256": "b7a366f32797350f3584cc9cd6b88ac0780c67cb4222d7b36dfa1f9f4e6cf212"
+      },
+      "snapshot": {
+        "relpath": "knowledge/e21/governed/participant-roster-v1/snapshot.json",
+        "sha256": "72e7ddff84b6996ccb924564975a92352d186861347760ab9f39c07218ccdb93"
+      },
+      "store_role": "participant-roster"
+    }
+  },
+  "live_speech_observations": {
+    "execution_plan": {
+      "relpath": "docs/readiness/2026-09-15-e21-native-window-system-v1/live-asr-execution-plan-v1.json",
+      "sha256": "9a374d7569795a853594c1b96788756b6ed2fc3e9fafe339ca3f3d3335143ffc"
+    },
+    "inventory": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-SYSTEM-LIVE-SPEECH-PREPARE-V1/full-runtime-inventory-v2.json",
+      "sha256": "e5e6d37646438ab57bb3362ced18726cde4f2762a2893f7e6a416e7e484d0427"
+    },
+    "output_relpath": "prepared/SAEA-E21-NATIVE-WINDOW-CONTEXT-TOOLS-FULL44-ASR-V1/attempt-e21-native-window-context-tools-full44-asr-v1/observations",
+    "protocol": {
+      "relpath": "prepared/SAEA-E21-NATIVE-WINDOW-SPAN-PROTOCOL-V1/protocol.json",
+      "sha256": "566f35df0b3780bfab347726e637065c94c2e3fc8a33abfeafd342895011a112"
+    }
+  },
+  "native_contact_fit": {
+    "attempt_id": "attempt-e21-native-window-context-tools-full44-v1-fit",
+    "contact_cap": 70092,
+    "max_speech_packets": 1,
+    "run_id": "SAEA-E21-NATIVE-WINDOW-CONTEXT-TOOLS-FULL44-V1-FIT"
+  },
+  "native_episode": {
+    "actions": {
+      "accept": "ACCEPT",
+      "acquire": "ACQUIRE",
+      "revise": "REVISE"
+    },
+    "episode_id": "e21-native-window-context-tools-full44-v1",
+    "exhaustion_policy": "deliver-latest-solver",
+    "finite_completion_policy": "deliver-latest-or-abstain",
+    "local_tool_execution": {
+      "max_workers": 1,
+      "mode": "yield-model-slot"
+    },
+    "max_revisions": 1,
+    "planner_output_format": "json-action-v1",
+    "roles": {
+      "perception": {
+        "max_iterations": 1,
+        "phase_id": "perception"
+      },
+      "planner": {
+        "max_iterations": 1,
+        "phase_id": "planner"
+      },
+      "reviewer": {
+        "max_iterations": 3,
+        "phase_id": "reviewer"
+      },
+      "solver": {
+        "max_iterations": 1,
+        "phase_id": "solver"
+      }
+    },
+    "schema": "saea-native-episode-config-v1",
+    "tool_iteration_policy": "reserve-final-report"
+  },
+  "ojw_workflow_timeout_seconds": 21600,
+  "phase_material": {
+    "perception": {
+      "instruction_fill": null,
+      "instruction_template": "probes/e21_native_window_perception_v1.txt",
+      "predecessor_binding": "none"
+    },
+    "planner": {
+      "fill_params": {
+        "actions": [
+          "ACCEPT",
+          "REVISE"
+        ]
+      },
+      "instruction_fill": null,
+      "instruction_template": "probes/e21_native_window_planner_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": "saea-native-planner-action-v1"
+    },
+    "reviewer": {
+      "instruction_fill": null,
+      "instruction_template": "probes/e21_native_window_reviewer_v1.txt",
+      "predecessor_binding": "none"
+    },
+    "solver": {
+      "instruction_fill": null,
+      "instruction_template": "probes/e21_native_window_solver_v1.txt",
+      "predecessor_binding": "none"
+    }
+  },
+  "phase_tools": {
+    "reviewer": {
+      "allowed_tools": [
+        "saea-tool-live-speech-span-v1"
+      ],
+      "knowledge_views": [
+        "text"
+      ],
+      "mode": "native-tools",
+      "source_authority_role": "reviewer"
+    }
+  },
+  "policy": "phase-native-review-revise-json-v1",
+  "prepared_execution_units": {
+    "batch": "SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1",
+    "registry_run_id": "SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1",
+    "relpath": "analysis/SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1/window-inventory.json",
+    "sha256": "7b12a5c32654855701c48b57152ab1643e0c776b9a7a3853fda009a6ac78face",
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "unit_count": 1593
+  },
+  "prepared_window_feature_packets": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+    "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
+  },
+  "prompt_fit_multiple": 1.3333333333333333,
+  "scorers": [
+    "asr-wer-whisper",
+    "conec-entity-wer-official",
+    "numeric-value-accuracy-v1",
+    "semantic-high-impact-error-rate-v1",
+    "cost"
+  ],
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-e21-native-window-v1:current-window",
+  "speech_feature_matcher_policy_id": "saea-e21-native-window-v1",
+  "task_contract_source": "active-instruction",
+  "task_instruction": "Transcribe the speech verbatim exactly as spoken. Preserve spoken names, numbers and repetitions. Do not add explanations, speaker labels, timestamps or words unsupported by the audio. Output only the transcript text.",
+  "what_this_is": "Held full agent comparator: uncertain perception, Solver with both call-scoped external context stores, Reviewer-selected local CPU Whisper spans, JSON Planner and at most one Solver revision. Original audio and Solver authority remain. No precomputed ASR supply, future turns or reference text."
+}

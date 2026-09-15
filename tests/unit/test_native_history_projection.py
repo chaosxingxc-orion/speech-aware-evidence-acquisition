@@ -32,6 +32,7 @@ def world(*, repeat=False, packet_id=None, packet_sha256=None):
         }},
         _client=SimpleNamespace(record_tool_call=lambda **_facts: None),
         assert_generation_lease=lambda: None,
+        _live_speech_units=lambda: None,
     )
     tool = dispatcher(LIVE, provider=LiveProvider(), custody=lambda **facts:
                       FlightRuntime._record_phase_tool_contact(custody_runtime, **facts))

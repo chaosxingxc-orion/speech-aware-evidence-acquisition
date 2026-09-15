@@ -20,6 +20,7 @@ def test_automatic_supply_does_not_grant_named_store_tool_authority(named_tool_a
     runtime._phase_tool_specs = lambda _policy: {"reviewer": tool_spec}
     runtime._phase_knowledge_catalog = lambda _snapshot: None
     runtime._experience_memory = None
+    runtime._candidate_experience_memory = None
     runtime._speech_observations = None
     runtime._live_speech_config = None
     runtime._composed = SimpleNamespace(values={})

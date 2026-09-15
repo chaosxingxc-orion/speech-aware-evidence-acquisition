@@ -126,7 +126,7 @@ def call_of(identifier: str) -> str:
 
 @dataclass(frozen=True)
 class WindowSpan:
-    """One 90-second window as the sealed run actually emitted it.
+    """One delivered speech window in its sealed stitch order.
 
     ``saturated`` is ``True`` when this slice's decode hit ``reproduction.
     obs_loop``'s ``max_tokens`` cap (the trace's own ``obs_saturated``): such a
@@ -146,6 +146,9 @@ class WindowSpan:
     audio_seconds: float
     text: str
     saturated: bool = False
+    execution_unit_id: str | None = None
+    delivery_kind: str | None = None
+    skipped: bool = False
 
     @property
     def identifier(self) -> str:
@@ -161,6 +164,9 @@ class WindowSpan:
             "end_seconds": self.end_seconds,
             "audio_seconds": self.audio_seconds,
             "saturated": self.saturated,
+            **({"execution_unit_id": self.execution_unit_id,
+                "delivery_kind": self.delivery_kind, "skipped": self.skipped}
+               if self.execution_unit_id is not None else {}),
         }
 
 

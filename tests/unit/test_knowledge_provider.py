@@ -456,6 +456,7 @@ def test_knowledge_providers_registry_resolves_every_registered_provider():
         # registered provider seam and released named-store custody.
         "slurp-candidate-semantic-v1",
         "audio2tool-candidate-semantic-v1",
+        "source-scoped-context-v1",
     }
 
 

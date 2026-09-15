@@ -94,6 +94,7 @@ from .tool_wrappers import phase_knowledge as _phase_knowledge
 from .tool_wrappers import candidate_contract_lookup as _candidate_contract_lookup
 from .tool_wrappers import speech_observation as _speech_observation
 from .tool_wrappers import live_speech_observation as _live_speech_observation
+from .tool_wrappers import live_speech_span as _live_speech_span
 
 
 class ToolCatalogError(RailsError):
@@ -1586,5 +1587,39 @@ TOOL_CATALOG.register(
     build_tool_entry(
         LIVE_SPEECH_OBSERVATION_MANIFEST,
         _live_speech_observation.observe_live_speech,
+    ),
+)
+
+
+LIVE_SPEECH_SPAN_MANIFEST = ToolManifest(
+    tool_id="saea-tool-live-speech-span-v1",
+    description=(
+        "Decode a bounded span of the current registered speech execution unit "
+        "only when selected by the frozen core."
+    ),
+    source_ref=(
+        "speech_aware_evidence_acquisition.rails.tool_wrappers.live_speech_span:"
+        "observe_live_speech_span"
+    ),
+    pinned_sha256="07c4f078a10b97b2099b73d88bbf6e6205e2e5f6af5e55af39a7786bf919eb7b",
+    inputs={
+        "provider": "LiveSpeechObservationProvider",
+        "context": "AgentRuntimeContext",
+        "arguments": "Mapping",
+        "source_response_sha256": "str",
+    },
+    outputs={"result": "SpeechObservationSelection"},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="contact",
+    axis="OBS",
+    scope=GENERAL_SCOPE,
+    ledger_row_type="tool-contact",
+)
+TOOL_CATALOG.register(
+    "saea-tool-live-speech-span-v1",
+    build_tool_entry(
+        LIVE_SPEECH_SPAN_MANIFEST,
+        _live_speech_span.observe_live_speech_span,
     ),
 )

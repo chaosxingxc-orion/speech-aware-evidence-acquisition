@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 import hashlib
 import json
 import re
@@ -10,17 +10,24 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import Mapping
 
+from ..core.base import KNOWLEDGE_FUSERS, KNOWLEDGE_RANKERS
+
 from .controllers import PhaseSupply
+from .knowledge import FusionDecision, RankResult
 from .errors import RailsError
 from .hashing import content_hash
 from .knowledge import KnowledgeSnapshot
 
 KNOWLEDGE_STORE_RELEASE_SCHEMA = "saea-knowledge-store-release-v1"
 STORE_SEPARATOR = "::"
+COMPOSITE_CONTEXT_RANK_POLICY_ID = "saea-named-context-composite-rank-v1"
+COMPOSITE_CONTEXT_FUSE_POLICY_ID = "saea-named-context-composite-fuse-v1"
 _STORE_ID = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 _SHA256 = re.compile(r"[0-9a-f]{64}")
 _STORE_KEYS = frozenset({"store_role", "snapshot", "release"})
-_STORE_OPTIONAL_KEYS = frozenset({"phase_supply", "candidate_supply"})
+_STORE_OPTIONAL_KEYS = frozenset(
+    {"phase_supply", "candidate_supply", "context_supply"}
+)
 _PIN_KEYS = frozenset({"relpath", "sha256"})
 _RELEASE_KEYS = frozenset(
     {
@@ -101,6 +108,7 @@ class KnowledgeStore:
     source_pin: Mapping[str, str]
     phase_supply: Mapping[str, object]
     candidate_supply: Mapping[str, object]
+    context_supply: Mapping[str, object] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -371,6 +379,11 @@ def load_knowledge_store_binding(
             raise KnowledgeStoreError(
                 f"knowledge store {store_id} candidate_supply must be a mapping"
             )
+        context_supply = spec.get("context_supply", {})
+        if not isinstance(context_supply, Mapping):
+            raise KnowledgeStoreError(
+                f"knowledge store {store_id} context_supply must be a mapping"
+            )
         stores[store_id] = KnowledgeStore(
             store_id,
             role,
@@ -380,6 +393,7 @@ def load_knowledge_store_binding(
             source_pin,
             MappingProxyType(dict(phase_supply)),
             MappingProxyType(dict(candidate_supply)),
+            MappingProxyType(dict(context_supply)),
         )
     proxy = MappingProxyType(stores)
     composite = _composite(proxy)
@@ -408,8 +422,15 @@ def build_knowledge_store_supply(
         build_candidate_semantic_supply,
         load_candidate_semantic_supply_specs,
     )
+    from .governed_context_supply import (
+        SOURCE_SCOPED_CONTEXT_FUSE_POLICY_ID,
+        SOURCE_SCOPED_CONTEXT_PROVIDER_ID,
+    )
+
+    from .knowledge_provider import resolve_provider
 
     callbacks, explicit_specs_by_store, specs_by_store, receipts = {}, {}, {}, {}
+    context_specs: dict[tuple[str, str], object] = {}
     candidate_specs = load_candidate_semantic_supply_specs(binding, program)
     if candidate_specs and legal_candidate_ids is None:
         raise KnowledgeStoreError(
@@ -427,11 +448,36 @@ def build_knowledge_store_supply(
     first_phase = program.phase_names()[0]
     for store_id in binding.store_ids:
         store = binding.store(store_id)
+        for phase, raw_spec in store.context_supply.items():
+            if (
+                not isinstance(phase, str)
+                or not isinstance(raw_spec, Mapping)
+                or set(raw_spec) != {"provider"}
+                or raw_spec["provider"] != SOURCE_SCOPED_CONTEXT_PROVIDER_ID
+                or phase not in program.phase_names()
+                or phase == first_phase
+                or program.phase(phase).knowledge != "supplied"
+            ):
+                raise KnowledgeStoreError(
+                    "context_supply requires a later supplied phase and the source-scoped provider"
+                )
+            context_specs[(store_id, phase)] = raw_spec
+        if store.context_supply:
+            # Prove scope/provenance compatibility before any runtime contact.
+            resolve_provider(
+                SOURCE_SCOPED_CONTEXT_PROVIDER_ID,
+                snapshot=store.snapshot, value_id_namespace=store_id,
+            )
+    for store_id in binding.store_ids:
+        store = binding.store(store_id)
+        scoped_phases = {phase for (owner, phase) in context_specs if owner == store_id}
+        if set(store.phase_supply).intersection(scoped_phases):
+            raise KnowledgeStoreError("explicit and scoped supply cannot overlap on one store phase")
         specs = load_phase_supply_specs({"phase_supply": store.phase_supply}, program)
-        collisions = set(specs).intersection(candidate_specs)
+        collisions = (set(specs) | scoped_phases).intersection(candidate_specs)
         if collisions:
             raise KnowledgeStoreError(
-                "candidate and explicit phase supply cannot both claim phase(s) "
+                "candidate, explicit, and scoped supply cannot overlap on phase(s) "
                 f"{sorted(collisions)}"
             )
         callback = None
@@ -451,9 +497,10 @@ def build_knowledge_store_supply(
             for phase, spec in candidate_specs.items()
             if spec.store_id == store_id
         }
-        if not specs and not store_candidate_specs:
+        if not specs and not store_candidate_specs and not scoped_phases:
             raise KnowledgeStoreError(f"knowledge store {store_id} has no phase_supply")
         specs_by_store[store_id] = {**specs, **store_candidate_specs}
+        specs_by_store[store_id].update({phase: raw for phase, raw in store.context_supply.items()})
         receipts[store_id] = {
             **binding.store_receipt(store_id),
             "phase_supply": (
@@ -469,6 +516,8 @@ def build_knowledge_store_supply(
                 store_candidate_specs[phase].as_json()
                 for phase in sorted(store_candidate_specs)
             ]
+        if scoped_phases:
+            receipts[store_id]["context_supply"] = sorted(scoped_phases)
 
     def bootstrap_first_phase(
         *,
@@ -518,6 +567,24 @@ def build_knowledge_store_supply(
         )
 
     def route(store_id, phase, context):
+        if (store_id, phase) in context_specs:
+            store = binding.store(store_id)
+            query_state = getattr(context, "query_state", None)
+            provider = resolve_provider(
+                SOURCE_SCOPED_CONTEXT_PROVIDER_ID,
+                snapshot=store.snapshot, value_id_namespace=store_id,
+            )
+            ranking = provider.candidates(
+                {"context": context, "query_state": query_state}, k=1
+            )
+            decision = provider.fuse(
+                [ranking], k=1, policy_id=SOURCE_SCOPED_CONTEXT_FUSE_POLICY_ID
+            )
+            local = PhaseSupply(
+                rank_result=provider.last_rank_result(), fusion_decision=decision,
+                action_target_ref=SOURCE_SCOPED_CONTEXT_PROVIDER_ID,
+            ).validate()
+            return local
         try:
             callback = callbacks[store_id]
         except KeyError as error:
@@ -530,6 +597,48 @@ def build_knowledge_store_supply(
             )
         return callback(phase, context)
 
+    def _compose_supplies(supplies, query_state):
+        if not supplies:
+            return None
+        if len(supplies) == 1:
+            return supplies[0]
+        for supply in supplies:
+            supply.validate()
+            if (
+                supply.packet is not None or supply.retain_prior or supply.expose_facets
+                or supply.rank_result.snapshot_sha256 != binding.binding_sha256
+                or supply.fusion_decision.snapshot_sha256 != binding.binding_sha256
+                or supply.rank_result.query_state_sha256 != query_state.content_hash()
+                or supply.fusion_decision.query_state_sha256 != query_state.content_hash()
+                or supply.fusion_decision.rank_result_sha256 != supply.rank_result.content_hash()
+            ):
+                raise KnowledgeStoreError("context composition requires aligned value-only supplies")
+        ranks = tuple(supply.rank_result for supply in supplies)
+        decisions = tuple(supply.fusion_decision for supply in supplies)
+        rank = KNOWLEDGE_RANKERS.resolve(COMPOSITE_CONTEXT_RANK_POLICY_ID)()(ranks)
+        decision = KNOWLEDGE_FUSERS.resolve(COMPOSITE_CONTEXT_FUSE_POLICY_ID)()(
+            rank=rank, decisions=decisions
+        )
+        return PhaseSupply(
+            rank_result=rank, fusion_decision=decision,
+            action_target_ref="source-scoped-context-composite-v1",
+        ).validate()
+
+    def automatic_for_phase(phase, context):
+        query_state = getattr(context, "query_state", None)
+        if query_state is None:
+            raise KnowledgeStoreError("automatic context supply requires a QueryState")
+        supplies = [
+            binding.qualify_supply(store_id, route(store_id, phase, context), query_state)
+            for store_id in binding.store_ids
+            if (store_id, phase) in context_specs
+        ]
+        if candidate_callback is not None:
+            candidate_supply = candidate_callback(phase, context)
+            if candidate_supply is not None:
+                supplies.append(candidate_supply)
+        return _compose_supplies(supplies, query_state)
+
     route.specs_by_store = specs_by_store
     route.bootstrap_first_phase = bootstrap_first_phase
     candidate_receipt = (
@@ -540,13 +649,66 @@ def build_knowledge_store_supply(
         "binding_sha256": binding.binding_sha256,
         "stores": receipts,
     }
-    if candidate_callback is not None:
+    if context_specs:
+        route.automatic_for_phase = automatic_for_phase
+    elif candidate_callback is not None:
         route.automatic_for_phase = candidate_callback
+    if candidate_receipt is not None:
         route.receipt["candidate_supply"] = candidate_receipt
-        route.receipt["candidate_selections"] = candidate_receipt[
-            "candidate_selections"
-        ]
+        route.receipt["candidate_selections"] = candidate_receipt["candidate_selections"]
     return route
+
+
+def _composite_context_rank(_knobs=None):
+    def rank(ranks):
+        if not ranks:
+            raise KnowledgeStoreError("context composition requires nonempty ranks")
+        for item in ranks:
+            item.validate()
+            if (item.snapshot_sha256, item.query_state_sha256) != (
+                ranks[0].snapshot_sha256, ranks[0].query_state_sha256
+            ):
+                raise KnowledgeStoreError("context ranks have different source/query bindings")
+        return RankResult(
+            snapshot_sha256=ranks[0].snapshot_sha256,
+            query_state_sha256=ranks[0].query_state_sha256,
+            ranking_policy_id=COMPOSITE_CONTEXT_RANK_POLICY_ID,
+            candidates=tuple(sorted(
+                (candidate for item in ranks for candidate in item.candidates),
+                key=lambda item: (-item.score, item.facet_id),
+            )),
+        ).validate()
+    return rank
+
+
+def _composite_context_fuse(_knobs=None):
+    def fuse(*, rank, decisions):
+        rank.validate()
+        if not decisions:
+            raise KnowledgeStoreError("context composition requires nonempty decisions")
+        for decision in decisions:
+            decision.validate()
+            if (decision.snapshot_sha256, decision.query_state_sha256) != (
+                rank.snapshot_sha256, rank.query_state_sha256
+            ):
+                raise KnowledgeStoreError("context decisions have different source/query bindings")
+        supporting = tuple(dict.fromkeys(
+            facet_id for decision in decisions for facet_id in decision.supporting_facet_ids
+        ))
+        if not set(supporting) <= {item.facet_id for item in rank.candidates}:
+            raise KnowledgeStoreError("context decisions refer to unranked facets")
+        return FusionDecision(
+            snapshot_sha256=rank.snapshot_sha256,
+            query_state_sha256=rank.query_state_sha256,
+            rank_result_sha256=rank.content_hash(),
+            fusion_policy_id=COMPOSITE_CONTEXT_FUSE_POLICY_ID,
+            supporting_facet_ids=supporting,
+            selected_value_ids=tuple(
+                value_id for decision in decisions for value_id in decision.selected_value_ids
+            ),
+        ).validate()
+    return fuse
+
 
 
 __all__ = [

@@ -702,3 +702,71 @@ def test_native_contact_fit_serializes_tokenizer_endpoints(tmp_path, monkeypatch
 
     assert maximum_active == 1
     assert len(gate.receipts) == 2
+
+
+def test_native_raw_fit_budgets_and_observations_are_isolated_by_window(tmp_path):
+    from types import MethodType
+    from pathlib import Path
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime, FlightRuntimeError
+    from speech_aware_evidence_acquisition.core.model.slices import SliceRecord, SliceRegistry
+    from speech_aware_evidence_acquisition.rails.execution_units import ExecutionUnit, ExecutionUnitRoster, execution_unit_scope
+
+    runtime = _raw_runtime(tmp_path)
+    runtime._samples = (_Sample("s1"),)
+    parent = tmp_path / "media/s1.wav"
+    parent.parent.mkdir(parents=True)
+    parent.write_bytes(b"RIFF original two-second parent")
+    registry = SliceRegistry(
+        data_root=tmp_path, run_id="source-inventory",
+        parent_facts={"s1": ("media/s1.wav", 2.0)},
+    )
+    units = []
+    for index in range(2):
+        relpath = registry.slice_relpath("s1", index)
+        path = tmp_path / relpath
+        path.parent.mkdir(parents=True, exist_ok=True)
+        raw = f"RIFF window {index}".encode()
+        path.write_bytes(raw)
+        record = registry.register(SliceRecord(
+            sample_id="s1", parent_media_relpath="media/s1.wav",
+            parent_sha256=hashlib.sha256(parent.read_bytes()).hexdigest(),
+            start_seconds=float(index), end_seconds=float(index + 1),
+            audio_seconds=1.0, sample_rate_hz=16000,
+            media_relpath=relpath, sha256=hashlib.sha256(raw).hexdigest(),
+            bytes=len(raw), iteration=index,
+        ))
+        units.append(ExecutionUnit("s1", f"s1#w{index + 1:04d}", record))
+    roster = ExecutionUnitRoster(tuple(units))
+    runtime.execution_unit_roster = lambda: roster
+    runtime._execution_unit_registry = registry
+    runtime.execution_unit_for_contact = MethodType(FlightRuntime.execution_unit_for_contact, runtime)
+    runtime.validate_execution_unit_observation = MethodType(FlightRuntime.validate_execution_unit_observation, runtime)
+    tokenizer = _RawTokenizer()
+    gate = build_native_contact_fit_gate(runtime, _program(), _plan(),
+        client_factory=lambda **_kwargs: tokenizer)
+    assert gate.execution_plan.planned_model_calls == 4
+
+    def request(index, contact_index, source_index=None):
+        unit = units[index]
+        source = units[index if source_index is None else source_index].slice_record
+        raw = (tmp_path / source.media_relpath).read_bytes()
+        runtime._transport.raw = raw
+        contact = execution_unit_scope(unit.request_key) + f"/role:{contact_index}"
+        payload = _raw_prepared("s1", contact, raw).as_payload()
+        payload["media_relpath"] = source.media_relpath
+        payload["raw_speech_query"]["media_relpath"] = source.media_relpath
+        return PreparedCoreRequest(canonical_bytes(payload), object())
+
+    gate(request(0, 1))
+    with pytest.raises(FlightRuntimeError, match="(window|unit)"):
+        gate(request(0, 2, source_index=1))
+    assert len(tokenizer.calls) == 1
+    gate(request(0, 2))
+    with pytest.raises(PreparationError, match="per-unit contact ceiling"):
+        gate(request(0, 3))
+    assert len(tokenizer.calls) == 2
+    gate(request(1, 1))
+    gate(request(1, 2))
+    assert len(tokenizer.calls) == 4
+    assert [json.loads(Path(receipt["path"]).read_text())["inputs"]["native_contact"]["execution_unit_id"]
+            for receipt in gate.receipts] == ["s1#w0001", "s1#w0001", "s1#w0002", "s1#w0002"]

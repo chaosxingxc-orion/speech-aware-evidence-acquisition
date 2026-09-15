@@ -174,3 +174,51 @@ def test_adapter_refuses_instruction_loss_and_rebinding(synthetic_world, repair_
             repo,
             dataset_fragment="e21",
         )
+
+
+@pytest.mark.parametrize("policy", ["phase-direct-only-v1", "phase-native-review-revise-v1"])
+@pytest.mark.parametrize("features", [False, True])
+def test_runtime_adapter_admits_explicit_source_units_on_shared_programs(
+    synthetic_world, repair_repo, policy, features,
+):
+    lock, repo, digest = repair_repo
+    values = _values(repo, digest)
+    values.pop("obs_controller_program")
+    values.update(
+        policy=policy,
+        arm="speech-feature-query-native-tools" if features else "raw-speech-agent-native-tools",
+        prepared_execution_units={"source": "validated by the shared runtime before contact"},
+    )
+    if features:
+        values["prepared_window_feature_packets"] = {"path": "pinned by runtime"}
+    adapter = build_runtime_adapter(
+        values, lock, synthetic_world.data_root, repo, dataset_fragment="e21")
+    assert tuple(sample.sample_id for sample in adapter.load_split("discovery")) == fixtures.E21_IDS
+    adapter.bind_runtime(object(), values)
+    with pytest.raises(CoreError, match="complete manifest"):
+        adapter.score_response(None, "not a per-window score")
+
+
+@pytest.mark.parametrize("mutation", ["missing-units", "wrong-arm", "missing-packets",
+                                    "obs-hook", "wrong-program", "ignored-units"])
+def test_runtime_adapter_refuses_ambiguous_unit_routes(synthetic_world, repair_repo, mutation):
+    lock, repo, digest = repair_repo
+    values = _values(repo, digest)
+    values.pop("obs_controller_program")
+    values.update(policy="phase-direct-only-v1", arm="speech-feature-query",
+                  prepared_execution_units={"source":"registered"},
+                  prepared_window_feature_packets={"path":"registered"})
+    if mutation == "missing-units":
+        values.pop("prepared_execution_units")
+    elif mutation == "wrong-arm":
+        values["arm"] = "fixed-legal-context"
+    elif mutation == "missing-packets":
+        values.pop("prepared_window_feature_packets")
+    elif mutation == "obs-hook":
+        values["obs_controller_program"] = "phase-direct-only-v1"
+    elif mutation == "wrong-program":
+        values["policy"] = "phase-direct-then-slots-v1"
+    else:
+        values["policy"] = "obs-agent-loop-ojw"
+    with pytest.raises(CoreError):
+        build_runtime_adapter(values, lock, synthetic_world.data_root, repo, dataset_fragment="e21")

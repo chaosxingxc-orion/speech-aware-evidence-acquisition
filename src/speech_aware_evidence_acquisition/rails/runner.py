@@ -234,6 +234,8 @@ class AgentRuntimeContext:
     prior_response_sha256s: tuple[str, ...]
     contact_index: int
     core_completions: tuple[CoreCompletion, ...] = ()
+    execution_unit_id: str | None = None
+    execution_unit_binding: Mapping[str, object] | None = None
 
 
 class AgentController(Protocol):
@@ -299,6 +301,8 @@ def _resolve_final_agent_response(
     contact: AgentContact,
     response: AgentResponse,
     final_response_contact_id: str | None,
+    *,
+    allow_empty: bool = False,
 ) -> str:
     """Keep final-answer authority inside an actual frozen-core response."""
 
@@ -311,7 +315,7 @@ def _resolve_final_agent_response(
             raise RailsRunnerError(
                 "final_response_contact_id must select the stopped contact"
             )
-        if not response:
+        if not response and not allow_empty:
             raise RailsRunnerError("stop must select a non-empty model response")
         return response
     if isinstance(contact, AgentContactBatch):
@@ -328,7 +332,7 @@ def _resolve_final_agent_response(
             )
         for plan, response_text in zip(contact.contacts, response, strict=True):
             if plan.contact_id == final_response_contact_id:
-                if not response_text:
+                if not response_text and not allow_empty:
                     raise RailsRunnerError(
                         "stop must select a non-empty model response"
                     )
@@ -782,6 +786,8 @@ class AgentLoopResult:
     consumption: ConsumptionTrace | None
     result_kind: str = TASK_ANSWER_RESULT_KIND
     native_episode_receipt: Mapping[str, object] | None = None
+    execution_unit_id: str | None = None
+    execution_unit_binding: Mapping[str, object] | None = None
 
     def as_json(self) -> dict[str, object]:
         result = {
@@ -805,6 +811,9 @@ class AgentLoopResult:
             result["native_episode_receipt"] = dict(self.native_episode_receipt)
         if self.result_kind != TASK_ANSWER_RESULT_KIND:
             result["result_kind"] = self.result_kind
+        if self.execution_unit_id is not None:
+            result["execution_unit_id"] = self.execution_unit_id
+            result["execution_unit_binding"] = dict(self.execution_unit_binding or {})
         return result
 
 
@@ -845,6 +854,8 @@ class _PreparedAgentTask:
     task_contract: str
     initial_query_state: QueryState
     initial_feedback_states: tuple = ()
+    execution_unit_id: str | None = None
+    execution_unit_binding: Mapping[str, object] | None = None
 
 
 @dataclass(frozen=True)
@@ -1044,6 +1055,7 @@ def _initial_query_state(
     bootstrap_facet_ids: tuple[str, ...],
     bootstrap_value_ids: tuple[str, ...],
     query_source: str = "speech_features",
+    execution_unit_id: str | None = None,
 ) -> QueryState:
     if not isinstance(descriptor, Mapping) or set(descriptor) != {
         "packet_id",
@@ -1054,7 +1066,7 @@ def _initial_query_state(
             "packet_id/sha256 keys"
         )
     return QueryState(
-        query_id=f"{plan.run_id}:{sample.sample_id}:step0",
+        query_id=f"{plan.run_id}:{execution_unit_id or sample.sample_id}:step0",
         query_sample_id=sample.sample_id,
         speech_packet_id=descriptor["packet_id"],
         speech_packet_sha256=descriptor["sha256"],
@@ -1286,6 +1298,8 @@ def _runtime_context(
         ) from None
     return AgentRuntimeContext(
         sample_id=prepared.sample.sample_id,
+        execution_unit_id=prepared.execution_unit_id,
+        execution_unit_binding=prepared.execution_unit_binding,
         knowledge_snapshot_sha256=snapshot_sha256,
         catalog_facet_ids=tuple(facet.facet_id for facet in snapshot.facets),
         catalog_value_ids=tuple(value.value_id for value in snapshot.values),
@@ -1426,7 +1440,7 @@ def _run_agent_trajectory(
         prepared.initial_query_state.speech_packet_sha256,
     )
     observe_record_base = _agent_record_base(
-        prepared.sample.sample_id, record_namespace
+        prepared.sample.sample_id, record_namespace, prepared.execution_unit_id
     )
     relisten_count = 0
     state_store = {item.state_id: item for item in prepared.initial_feedback_states}
@@ -1557,6 +1571,7 @@ def _run_agent_trajectory(
                 contact,
                 response_text,
                 advance.final_response_contact_id,
+                allow_empty=prepared.execution_unit_id is not None,
             )
             return _AgentRuntimeOutcome(
                 prepared=prepared,
@@ -1652,6 +1667,7 @@ async def _invoke_native_role_episode(
     )
     from .material import PhaseMaterial
 
+    from .execution_units import scoped_execution_contact_id
     config, program = binding.config, binding.program
     if bool(config.local_tool_workers) != (run_local is not None):
         raise RailsRunnerError("native local tool scheduling differs from its configuration")
@@ -2008,7 +2024,10 @@ async def _invoke_native_role_episode(
             def contact_context(index, role=role):
                 return NativeRoleContactContext(
                     sample_id=state.prepared.sample.sample_id,
-                    agent_contact_id=f"{program.program_id}:{role.phase_id}:{index}:{state.prepared.sample.sample_id}",
+                    agent_contact_id=scoped_execution_contact_id(
+                        f"{program.program_id}:{role.phase_id}:{index}:{state.prepared.sample.sample_id}",
+                        state.prepared.execution_unit_id,
+                    ),
                     evidence_pins={"knowledge_snapshot": snapshot_sha256},
                     budget_id=run_id,
                 )
@@ -2155,7 +2174,11 @@ async def _invoke_native_role_episode(
             )
             trace.emit("TOOL", f"{derived_id}/request", derived_request)
             trace.emit("TOOL", f"{derived_id}/response", derived_response)
-        trace.emit("USE", f"{state.prepared.sample.sample_id}/{program.program_id}/native-episode", {
+        episode_trace_id = scoped_execution_contact_id(
+            f"{state.prepared.sample.sample_id}/{program.program_id}/native-episode",
+            state.prepared.execution_unit_id,
+        )
+        trace.emit("USE", episode_trace_id, {
             "use_native_episode": compact_receipt,
         })
         state.transitions.append(stop_transition)
@@ -2610,6 +2633,7 @@ def _run_agent_openjiuwen(
                 current_contact,
                 controller_response,
                 advance.final_response_contact_id,
+                allow_empty=state.prepared.execution_unit_id is not None,
             )
             state.final_outcome = _AgentRuntimeOutcome(
                 prepared=state.prepared,
@@ -2666,7 +2690,7 @@ def _run_agent_openjiuwen(
                 snapshot_sha256=snapshot_sha256,
                 sample_id=state.prepared.sample.sample_id,
                 record_base=_agent_record_base(
-                    state.prepared.sample.sample_id, record_namespace
+                    state.prepared.sample.sample_id, record_namespace, state.prepared.execution_unit_id
                 ),
                 origin_packet=(
                     state.prepared.initial_query_state.speech_packet_id,
@@ -2736,7 +2760,9 @@ def _run_agent_openjiuwen(
     )
 
 
-def _agent_record_base(sample_id: str, record_namespace: str | None) -> str:
+def _agent_record_base(
+    sample_id: str, record_namespace: str | None, execution_unit_id: str | None = None,
+) -> str:
     """The trace record id prefix for one sample's agent-loop records.
 
     ``core.tracing.TraceSink`` refuses a duplicate record id, and a PHASE
@@ -2750,6 +2776,10 @@ def _agent_record_base(sample_id: str, record_namespace: str | None) -> str:
     (every pre-existing caller) leaves the id byte-identical to before.
     """
 
+    if execution_unit_id is not None:
+        from .execution_units import execution_unit_scope
+        scope = execution_unit_scope(execution_unit_id)
+        record_namespace = f"{record_namespace}/{scope}" if record_namespace else scope
     if record_namespace is None:
         return f"{sample_id}/agent-loop"
     return f"{sample_id}/{record_namespace}/agent-loop"
@@ -2768,7 +2798,7 @@ def _emit_agent_runtime_trace(
     """Persist gold-free Agent state, supply, and use records in split order."""
 
     sample_id = outcome.prepared.sample.sample_id
-    record_base = _agent_record_base(sample_id, record_namespace)
+    record_base = _agent_record_base(sample_id, record_namespace, outcome.prepared.execution_unit_id)
     sink.emit(
         "ORG",
         f"{record_base}/org",
@@ -2823,6 +2853,9 @@ def _emit_agent_runtime_trace(
         "agent_executor_id": agent_executor_id,
         "agent_executor_version": agent_executor_version,
         "knowledge_snapshot_sha256": snapshot_sha256,
+        **({"execution_unit_id": outcome.prepared.execution_unit_id,
+            "execution_unit_binding": dict(outcome.prepared.execution_unit_binding)}
+           if outcome.prepared.execution_unit_id is not None else {}),
         "initial_query_state_sha256": outcome.prepared.initial_query_state.content_hash(),
         "final_query_state_sha256": outcome.final_query_state.content_hash(),
         "speech_packet_sha256": outcome.final_query_state.speech_packet_sha256,
@@ -2889,6 +2922,7 @@ def run_speech_native_agent_loop(
     split_id: str,
     knowledge_snapshot: KnowledgeSnapshot,
     speech_packet_bindings: Mapping[str, Mapping[str, object]],
+    execution_units=None,
     query_source: str = "speech_features",
     controller_policy_id: str,
     # Either a run-wide sequence (the original form: the same ids for every
@@ -3105,7 +3139,10 @@ def run_speech_native_agent_loop(
     sample_ids = tuple(sample.sample_id for sample in samples)
     if len(set(sample_ids)) != len(sample_ids):
         raise RailsRunnerError("AgentLoop split contains duplicate sample ids")
-    if set(speech_packet_bindings) != set(sample_ids):
+    if (
+        (execution_units is None or speech_packet_bindings)
+        and set(speech_packet_bindings) != set(sample_ids)
+    ):
         raise RailsRunnerError(
             "speech_packet_bindings must materialize every query sample exactly once"
         )
@@ -3119,7 +3156,28 @@ def run_speech_native_agent_loop(
         raise RailsRunnerError(
             "knowledge BUILD and AgentLoop USE must have different split identities"
         )
-    planned_ceiling = len(samples) * max_contacts
+    from .execution_units import ExecutionUnitRoster
+    if execution_units is not None and not isinstance(execution_units, ExecutionUnitRoster):
+        raise RailsRunnerError("execution_units must be an ExecutionUnitRoster or None")
+    if execution_units is not None:
+        try:
+            execution_units.validate(parent_sample_ids=sample_ids, max_contacts=max_contacts)
+        except RailsError as error:
+            raise RailsRunnerError(str(error)) from error
+        for unit in execution_units.units:
+            unit.query_descriptor(query_source)
+        for unit in execution_units.units:
+            record = unit.slice_record
+            existing = core_client.registered_slice(unit.parent_sample_id, record.media_relpath)
+            if existing is None:
+                core_client.register_slice(record)
+            elif existing != record:
+                raise RailsRunnerError("execution unit differs from its registered original slice")
+            else:
+                core_client.admit_registered_slice(record)
+    planned_ceiling = (
+        len(execution_units.units) if execution_units is not None else len(samples)
+    ) * max_contacts
     if planned_ceiling > plan.planned_model_calls:
         raise RailsRunnerError(
             f"AgentLoop contact ceiling {planned_ceiling} exceeds the ExecutionPlan "
@@ -3150,17 +3208,44 @@ def run_speech_native_agent_loop(
             feedback_by_sample[sample_id] = artifact
 
     prepared_tasks: list[_PreparedAgentTask] = []
-    for index, sample in enumerate(samples):
+    tasks = (
+        tuple((sample, None) for sample in samples)
+        if execution_units is None
+        else tuple(
+            (next(sample for sample in samples if sample.sample_id == unit.parent_sample_id), unit)
+            for unit in execution_units.units
+        )
+    )
+    for index, (sample, unit) in enumerate(tasks):
         obs = default_obs_packet(sample)
         task_contract = adapter.build_task_contract(sample, obs)
         if not isinstance(task_contract, str) or not task_contract.strip():
             raise RailsRunnerError(
                 "TaskAdapter.build_task_contract must return non-empty English text"
             )
+        if unit is not None:
+            # Expose source geometry to both direct and agent requests, without labels.
+            duration = unit.slice_record.audio_seconds
+            task_contract += (
+                f"\n\nCurrent speech window: local time starts at 0 seconds and ends "
+                f"at {duration:.9g} seconds. Use this window-local coordinate system "
+                "when referring to positions in the speech."
+            )
         query_state = _initial_query_state(
             plan=plan,
             sample=sample,
-            descriptor=speech_packet_bindings[sample.sample_id],
+            descriptor=(
+                speech_packet_bindings[sample.sample_id]
+                if unit is None
+                else {
+                    "packet_id": (
+                        unit.query_descriptor(query_source)["packet_id"]
+                        if query_source == "speech_features"
+                        else unit.query_descriptor(query_source)["media_relpath"]
+                    ),
+                    "sha256": unit.query_descriptor(query_source)["sha256"],
+                }
+            ),
             bootstrap_facet_ids=(
                 bootstrap_facets
                 if per_sample_facets is None
@@ -3178,6 +3263,7 @@ def run_speech_native_agent_loop(
                 )
             ),
             query_source=query_source,
+            execution_unit_id=None if unit is None else unit.request_key,
         )
         if query_source == "speech_audio":
             if (
@@ -3215,6 +3301,8 @@ def run_speech_native_agent_loop(
                 task_contract=task_contract,
                 initial_query_state=query_state,
                 initial_feedback_states=initial_feedback,
+                execution_unit_id=None if unit is None else unit.request_key,
+                execution_unit_binding=None if unit is None else unit.as_json(),
             )
         )
 
@@ -3324,7 +3412,7 @@ def run_speech_native_agent_loop(
         outcomes, runtime_trace_sha256s, strict=True
     ):
         assert outcome is not None
-        if result_kind == ARTIFACT_RESULT_KIND:
+        if result_kind == ARTIFACT_RESULT_KIND or execution_units is not None:
             metrics = {}
             consumption = None
         else:
@@ -3351,9 +3439,11 @@ def run_speech_native_agent_loop(
                 consumption=consumption,
                 result_kind=result_kind,
                 native_episode_receipt=outcome.native_episode_receipt,
+                execution_unit_id=outcome.prepared.execution_unit_id,
+                execution_unit_binding=outcome.prepared.execution_unit_binding,
             )
         )
-        if result_kind == TASK_ANSWER_RESULT_KIND:
+        if result_kind == TASK_ANSWER_RESULT_KIND and execution_units is None:
             _emit_agent_posthoc_trace(
                 sink=trace_sink,
                 result=results[-1],

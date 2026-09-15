@@ -1481,3 +1481,14 @@ __all__ += [
     "build_intent_boundary_snapshot",
     "build_slot_contract_snapshot",
 ]
+
+
+# Source-governed builders use the same canonical registration boundary.
+from .governed_context_build import (  # noqa: E402
+    GOVERNED_CONTEXT_BUILD_POLICY_ID,
+    build_governed_context_snapshot,
+)
+
+KNOWLEDGE_BUILDERS.register(
+    GOVERNED_CONTEXT_BUILD_POLICY_ID, build_governed_context_snapshot
+)

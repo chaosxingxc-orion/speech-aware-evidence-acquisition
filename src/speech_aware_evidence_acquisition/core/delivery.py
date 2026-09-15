@@ -10,7 +10,25 @@ from __future__ import annotations
 import hashlib
 import json
 
-from typing import Callable, Mapping, Protocol, TypeVar
+from typing import Callable, Mapping, Protocol, Sequence, TypeVar
+
+from ..rails.errors import RailsError
+from ..rails.execution_units import ExecutionUnitRoster
+
+
+_SHA256_LENGTH = 64
+_EXECUTION_UNIT_RESULT_KEYS = {
+    "sample_id",
+    "execution_unit_id",
+    "execution_unit_binding",
+    "request_id",
+    "request_sha256",
+    "response_sha256",
+    "response_text_sha256",
+    "text",
+    "saturated",
+    "skipped",
+}
 
 
 class TerminalDeliveryOutcome(Protocol):
@@ -21,6 +39,185 @@ class TerminalDeliveryOutcome(Protocol):
 
 
 _TerminalOutcome = TypeVar("_TerminalOutcome", bound=TerminalDeliveryOutcome)
+
+
+def _canonical_digest(value: object) -> str:
+    return hashlib.sha256(
+        json.dumps(
+            value,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+            allow_nan=False,
+        ).encode("utf-8")
+    ).hexdigest()
+
+
+def _require_sha256(value: object, label: str) -> str:
+    if (
+        not isinstance(value, str)
+        or len(value) != _SHA256_LENGTH
+        or any(character not in "0123456789abcdef" for character in value)
+    ):
+        raise ValueError(f"execution unit {label} must be a lowercase SHA256")
+    return value
+
+
+def stitch_ordered_text(parts: Sequence[str]) -> str:
+    """Join nonempty ordered delivery parts with the historical OBS separator."""
+
+    if not isinstance(parts, Sequence) or isinstance(parts, (str, bytes)):
+        raise ValueError("ordered stitch parts must be a sequence of strings")
+    if any(not isinstance(part, str) for part in parts):
+        raise ValueError("ordered stitch parts must be strings")
+    return " ".join(part for part in parts if part)
+
+
+def stitch_execution_unit_results(
+    roster: ExecutionUnitRoster,
+    parent_sample_ids: Sequence[str],
+    terminal_results: Sequence[Mapping[str, object]],
+) -> tuple[dict[str, object], ...]:
+    """Validate and stitch one complete ordered result for every execution unit."""
+
+    if not isinstance(roster, ExecutionUnitRoster):
+        raise ValueError("execution unit delivery requires an ExecutionUnitRoster")
+    parents = tuple(parent_sample_ids)
+    try:
+        roster.validate(
+            parent_sample_ids=parents, max_contacts=max(1, len(roster.units))
+        )
+    except (RailsError, TypeError, ValueError) as error:
+        raise ValueError(str(error)) from error
+    if not isinstance(terminal_results, Sequence) or isinstance(
+        terminal_results, (str, bytes)
+    ):
+        raise ValueError("execution unit terminal results must be an ordered sequence")
+    if len(terminal_results) != len(roster.units):
+        raise ValueError(
+            "execution unit terminal results do not exactly cover the roster"
+        )
+
+    roster_sha256 = roster.content_hash()
+    parent_roster_sha256 = _canonical_digest(list(parents))
+    by_parent: dict[str, list[dict[str, object]]] = {parent: [] for parent in parents}
+    request_ids: set[str] = set()
+
+    for position, (unit, result) in enumerate(
+        zip(roster.units, terminal_results, strict=True)
+    ):
+        if not isinstance(result, Mapping) or not _EXECUTION_UNIT_RESULT_KEYS.issubset(
+            result
+        ):
+            raise ValueError(
+                f"execution unit terminal result {position} lacks registered keys"
+            )
+        if (
+            result["sample_id"] != unit.parent_sample_id
+            or result["execution_unit_id"] != unit.request_key
+        ):
+            raise ValueError(
+                f"execution unit terminal result {position} is out of roster order"
+            )
+        binding = result["execution_unit_binding"]
+        if not isinstance(binding, Mapping) or _canonical_digest(
+            binding
+        ) != _canonical_digest(unit.as_json()):
+            raise ValueError(
+                f"execution unit terminal result {position} changed its source binding"
+            )
+        request_id = result["request_id"]
+        if not isinstance(request_id, str) or not request_id:
+            raise ValueError("execution unit request_id must be a nonempty string")
+        if request_id in request_ids:
+            raise ValueError("execution unit terminal results repeat a request_id")
+        request_ids.add(request_id)
+        request_sha256 = _require_sha256(result["request_sha256"], "request_sha256")
+        response_sha256 = _require_sha256(result["response_sha256"], "response_sha256")
+        response_text_sha256 = _require_sha256(
+            result["response_text_sha256"], "response_text_sha256"
+        )
+        text = result["text"]
+        if not isinstance(text, str):
+            raise ValueError("execution unit raw delivery text must be a string")
+        if hashlib.sha256(text.encode("utf-8")).hexdigest() != response_text_sha256:
+            raise ValueError(
+                "execution unit raw delivery text hash differs from its receipt"
+            )
+        saturated, skipped = result["saturated"], result["skipped"]
+        if not isinstance(saturated, bool) or not isinstance(skipped, bool):
+            raise ValueError("execution unit terminal flags must be booleans")
+        if saturated and skipped:
+            raise ValueError(
+                "execution unit terminal result cannot be saturated and skipped"
+            )
+        delivered = normalize_terminal_response(
+            text, saturated=saturated, skipped=skipped
+        )
+        by_parent[unit.parent_sample_id].append(
+            {
+                "execution_unit_id": unit.request_key,
+                "execution_unit_binding": json.loads(
+                    json.dumps(unit.as_json(), allow_nan=False)
+                ),
+                "request_id": request_id,
+                "request_sha256": request_sha256,
+                "response_sha256": response_sha256,
+                "raw_text_sha256": response_text_sha256,
+                "delivery_text_sha256": hashlib.sha256(
+                    delivered.encode("utf-8")
+                ).hexdigest(),
+                "saturated": saturated,
+                "skipped": skipped,
+                "delivery_text": delivered,
+            }
+        )
+
+    rows: list[dict[str, object]] = []
+    for parent in parents:
+        sources = by_parent[parent]
+        stitched = stitch_ordered_text(
+            [str(source["delivery_text"]) for source in sources]
+        )
+        stitched_request_ids = [str(source["request_id"]) for source in sources]
+        source_request_sha256s = [str(source["request_sha256"]) for source in sources]
+        source_response_sha256s = [str(source["response_sha256"]) for source in sources]
+        request_sha256 = _canonical_digest(
+            {
+                "stitched_request_ids": stitched_request_ids,
+                "iteration_request_sha256s": source_request_sha256s,
+            }
+        )
+        response_sha256 = _canonical_digest(
+            {
+                "stitched_text": stitched,
+                "stitched_from_response_sha256s": source_response_sha256s,
+            }
+        )
+        public_sources = []
+        for source in sources:
+            public_source = dict(source)
+            del public_source["delivery_text"]
+            public_sources.append(public_source)
+        rows.append(
+            {
+                "schema": "saea-execution-unit-stitched-result-v1",
+                "sample_id": parent,
+                "execution_unit_roster_sha256": roster_sha256,
+                "parent_roster_sha256": parent_roster_sha256,
+                "text": stitched,
+                "request_ids": stitched_request_ids,
+                "source_request_sha256s": source_request_sha256s,
+                "source_response_sha256s": source_response_sha256s,
+                "sources": public_sources,
+                "request_sha256": request_sha256,
+                "response_sha256": response_sha256,
+                "response_text_sha256": hashlib.sha256(
+                    stitched.encode("utf-8")
+                ).hexdigest(),
+            }
+        )
+    return tuple(rows)
 
 
 def normalize_terminal_response(

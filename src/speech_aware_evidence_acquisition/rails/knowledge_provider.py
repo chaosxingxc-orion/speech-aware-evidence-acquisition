@@ -1839,6 +1839,51 @@ if SLURP_INTENT_CANDIDATES_FUSE_POLICY_ID not in KNOWLEDGE_FUSERS.names():
     )
 
 
+
+def _source_scoped_context_provider(**kwargs):
+    from .governed_context_supply import SourceScopedContextProvider
+
+    return SourceScopedContextProvider(**kwargs)
+
+
+def _source_scoped_context_rank(knobs=None):
+    from .governed_context_supply import _source_scoped_rank
+
+    return _source_scoped_rank(knobs)
+
+
+def _source_scoped_context_fuse(knobs=None):
+    from .governed_context_supply import _source_scoped_fuse
+
+    return _source_scoped_fuse(knobs)
+
+
+def _named_context_rank(knobs=None):
+    from .knowledge_stores import _composite_context_rank
+
+    return _composite_context_rank(knobs)
+
+
+def _named_context_fuse(knobs=None):
+    from .knowledge_stores import _composite_context_fuse
+
+    return _composite_context_fuse(knobs)
+
+
+# Keep all provider/rank/fuse registration at the canonical shared site.
+# Lazy construction avoids circular imports between providers and named stores.
+if "source-scoped-context-v1" not in KNOWLEDGE_PROVIDERS.names():
+    KNOWLEDGE_PROVIDERS.register("source-scoped-context-v1", _source_scoped_context_provider)
+if "saea-source-scoped-context-rank-v1" not in KNOWLEDGE_RANKERS.names():
+    KNOWLEDGE_RANKERS.register("saea-source-scoped-context-rank-v1", _source_scoped_context_rank)
+if "saea-source-scoped-context-fuse-v1" not in KNOWLEDGE_FUSERS.names():
+    KNOWLEDGE_FUSERS.register("saea-source-scoped-context-fuse-v1", _source_scoped_context_fuse)
+if "saea-named-context-composite-rank-v1" not in KNOWLEDGE_RANKERS.names():
+    KNOWLEDGE_RANKERS.register("saea-named-context-composite-rank-v1", _named_context_rank)
+if "saea-named-context-composite-fuse-v1" not in KNOWLEDGE_FUSERS.names():
+    KNOWLEDGE_FUSERS.register("saea-named-context-composite-fuse-v1", _named_context_fuse)
+
+
 def resolve_provider(provider_id: str, **kwargs: object) -> KnowledgeProvider:
     """Construct the registered provider class named ``provider_id`` with
     ``kwargs``, through the shared ``core.base.KNOWLEDGE_PROVIDERS``
