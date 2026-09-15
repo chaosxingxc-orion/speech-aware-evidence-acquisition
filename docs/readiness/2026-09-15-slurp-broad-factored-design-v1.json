@@ -1,0 +1,110 @@
+{
+  "algorithm_boundary": "This is an engineering base improvement, not training-free RL. Later work must explicitly define sampled trajectories, rewards, credit and policy updates on a locked base.",
+  "analysis": {
+    "advance": "A candidate improvement alone is insufficient. Require positive final-task point gain and a CI95 lower bound above zero for advancement to a matched full-roster replication. Report strata and harms. A first positive result is a discovery lead, not stable gain.",
+    "attribution": "This compares an intentional knowledge organization-and-supply package with the incumbent; it cannot separate compaction from breadth causally. No knowledge-off arm is added.",
+    "failure": "Stop and root-cause if complete task quality does not improve or runtime fails. Do not sweep breadth values or repeat until a gate passes.",
+    "inference": "Pair by recording; cluster bootstrap by speaker, 10000 draws, seed 20260915. Use CI95 for task-quality advancement and CI90 for diagnostics. Preserve the prospective analysis recipe before task-quality reads.",
+    "primary": "Complete official SLURP pooled micro-F1 compared with the released incumbent on the exact same 1080 rows.",
+    "secondary": [
+      "Intent/scenario/action accuracy",
+      "Gold membership in the generated distinct candidate list, with actual width",
+      "Final intent accuracy conditional on gold membership, with denominator",
+      "Entity errors conditional on correct intent",
+      "Rescues and harms versus incumbent",
+      "Tool calls, revisions, invalid output, saturation, fallback and input volume",
+      "Natural-mixture and equal-scenario views, all 18 scenario strata"
+    ]
+  },
+  "fit": "Fit every actual immutable native contact before transmission. A byte-reduction audit is not token fit, and future history-dependent requests cannot be predeclared as already fitted.",
+  "fixed_components": [
+    "All 60 legal intents in the task contract",
+    "One to three distinct Perception candidates; no confidence inference from width",
+    "Original role prompts and episode identities",
+    "Original slot store and candidate-conditioned supply limits",
+    "Reviewer task-contract tool; Planner control; Solver answer authority",
+    "Original speech packets and decoding settings"
+  ],
+  "mechanism": "Supply broad, factored discriminative intent knowledge through the existing associated-values provider; retain candidate-conditioned explanatory slot knowledge.",
+  "owner_intent": "Improve the useful agentic system and its candidate coverage while preserving a workspace for later trajectory-based optimization.",
+  "population": {
+    "count": 1080,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "fold_b_authorized": false,
+    "role": "discovery",
+    "split_id": "SLURP-EVO-FOLD-A-V2",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+  },
+  "predecessor": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+  "preparation_registration": {
+    "relpath": "docs/readiness/2026-09-15-slurp-factored-intent-preparation-v1.json",
+    "sha256": "b49a51006db4d3352728594d65831875ab5ec260bfa128d89885da904dbc6efd"
+  },
+  "prospective_single_flight_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "speech_audio_seconds_cap": 33930
+  },
+  "remaining_admission": [
+    "Root review and tests of the factored builder",
+    "Shared semantic release with exact facet/provenance preservation",
+    "Full1080 shared supply preparation and reconciliation",
+    "Final immutable configuration and source freeze",
+    "Generation/fit exposure registration and root service-boundary admission"
+  ],
+  "schema": "saea-root-slurp-broad-factored-design-v1",
+  "scientific_basis": {
+    "already_supplied_old_candidate_misses": 33,
+    "anchor_candidate_coverage": [
+      937,
+      1080
+    ],
+    "breadth_60_own_card_supply": [
+      1074,
+      1080
+    ],
+    "candidate_coverage_target": [
+      1026,
+      1080
+    ],
+    "old_candidate_misses_newly_supplied": 107,
+    "scope": "Released TRAIN diagnostics support a new supply mechanism. Own-card availability is not generated candidate coverage, and neither is final task quality."
+  },
+  "service": {
+    "admission": "Root switches at the active A2T generation boundary only. Complete identity match and an exclusive lease remain mandatory; no new service is started by this design.",
+    "feature_cache": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+    "max_output_tokens": 512,
+    "required_mmproj": "absent",
+    "slot_tokens": 24576,
+    "slots": 4,
+    "total_context": 98304
+  },
+  "source_successor_receipt": {
+    "relpath": "prepared/SAEA-SLURP-FACTORED-INTENT-SOURCE-V1/source-successor-receipt.json",
+    "root": "data",
+    "sha256": "eec80806acece51a6dba6812330f0f7d21b37f4f586bce137d51e777d8385d7c"
+  },
+  "status": "MODEL_FREE_PREPARATION_ONLY",
+  "supply": {
+    "builder_policy_id": "saea-authored-intent-boundaries-factored-v1",
+    "facet_vectors": "Reuse existing sealed vectors only after exact full facet equality is verified. No re-encoding.",
+    "full_coverage_claim": false,
+    "fuse_coverage": {
+      "c": 2,
+      "m": 60,
+      "top_l": 61
+    },
+    "fuse_policy": "saea-fuse-associated-values-v1",
+    "k": 60,
+    "provider": "kb-facet-v1",
+    "rank_policy": "saea-rank-wcos-prior-agree-v1",
+    "shared_value_id": "intent-boundary:shared-guidance",
+    "tau": 0.0
+  }
+}
