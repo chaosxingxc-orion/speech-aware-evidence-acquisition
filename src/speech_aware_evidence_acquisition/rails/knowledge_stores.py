@@ -22,10 +22,6 @@ KNOWLEDGE_STORE_RELEASE_SCHEMA = "saea-knowledge-store-release-v1"
 STORE_SEPARATOR = "::"
 COMPOSITE_CONTEXT_RANK_POLICY_ID = "saea-named-context-composite-rank-v1"
 COMPOSITE_CONTEXT_FUSE_POLICY_ID = "saea-named-context-composite-fuse-v1"
-if COMPOSITE_CONTEXT_RANK_POLICY_ID not in KNOWLEDGE_RANKERS.names():
-    KNOWLEDGE_RANKERS.register(COMPOSITE_CONTEXT_RANK_POLICY_ID, lambda _=None: lambda *a, **k: None)
-if COMPOSITE_CONTEXT_FUSE_POLICY_ID not in KNOWLEDGE_FUSERS.names():
-    KNOWLEDGE_FUSERS.register(COMPOSITE_CONTEXT_FUSE_POLICY_ID, lambda _=None: lambda *a, **k: None)
 _STORE_ID = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 _SHA256 = re.compile(r"[0-9a-f]{64}")
 _STORE_KEYS = frozenset({"store_role", "snapshot", "release"})
@@ -465,12 +461,15 @@ def build_knowledge_store_supply(
                     "context_supply requires a later supplied phase and the source-scoped provider"
                 )
             context_specs[(store_id, phase)] = raw_spec
+        if store.context_supply:
+            # Prove scope/provenance compatibility before any runtime contact.
+            SourceScopedContextProvider(snapshot=store.snapshot, value_id_namespace=store_id)
     for store_id in binding.store_ids:
         store = binding.store(store_id)
-        specs = load_phase_supply_specs({"phase_supply": store.phase_supply}, program)
         scoped_phases = {phase for (owner, phase) in context_specs if owner == store_id}
-        if set(specs).intersection(scoped_phases):
+        if set(store.phase_supply).intersection(scoped_phases):
             raise KnowledgeStoreError("explicit and scoped supply cannot overlap on one store phase")
+        specs = load_phase_supply_specs({"phase_supply": store.phase_supply}, program)
         collisions = (set(specs) | scoped_phases).intersection(candidate_specs)
         if collisions:
             raise KnowledgeStoreError(
@@ -567,7 +566,7 @@ def build_knowledge_store_supply(
         if (store_id, phase) in context_specs:
             store = binding.store(store_id)
             query_state = getattr(context, "query_state", None)
-            provider = SourceScopedContextProvider(snapshot=store.snapshot)
+            provider = SourceScopedContextProvider(snapshot=store.snapshot, value_id_namespace=store_id)
             ranking = provider.candidates(
                 {"context": context, "query_state": query_state}, k=1
             )
@@ -596,28 +595,27 @@ def build_knowledge_store_supply(
             return None
         if len(supplies) == 1:
             return supplies[0]
-        candidates = tuple(
-            candidate
-            for supply in supplies
-            for candidate in supply.rank_result.candidates
+        for supply in supplies:
+            supply.validate()
+            if (
+                supply.packet is not None or supply.retain_prior or supply.expose_facets
+                or supply.rank_result.snapshot_sha256 != binding.binding_sha256
+                or supply.fusion_decision.snapshot_sha256 != binding.binding_sha256
+                or supply.rank_result.query_state_sha256 != query_state.content_hash()
+                or supply.fusion_decision.query_state_sha256 != query_state.content_hash()
+                or supply.fusion_decision.rank_result_sha256 != supply.rank_result.content_hash()
+            ):
+                raise KnowledgeStoreError("context composition requires aligned value-only supplies")
+        ranks = tuple(supply.rank_result for supply in supplies)
+        decisions = tuple(supply.fusion_decision for supply in supplies)
+        rank = KNOWLEDGE_RANKERS.resolve(COMPOSITE_CONTEXT_RANK_POLICY_ID)()(ranks)
+        decision = KNOWLEDGE_FUSERS.resolve(COMPOSITE_CONTEXT_FUSE_POLICY_ID)()(
+            rank=rank, decisions=decisions
         )
-        rank = RankResult(
-            snapshot_sha256=binding.binding_sha256,
-            query_state_sha256=query_state.content_hash(),
-            ranking_policy_id=COMPOSITE_CONTEXT_RANK_POLICY_ID,
-            candidates=tuple(sorted(candidates, key=lambda item: (-item.score, item.facet_id))),
+        return PhaseSupply(
+            rank_result=rank, fusion_decision=decision,
+            action_target_ref="source-scoped-context-composite-v1",
         ).validate()
-        decision = FusionDecision(
-            snapshot_sha256=binding.binding_sha256,
-            query_state_sha256=query_state.content_hash(),
-            rank_result_sha256=rank.content_hash(),
-            fusion_policy_id=COMPOSITE_CONTEXT_FUSE_POLICY_ID,
-            supporting_facet_ids=tuple(candidate.facet_id for candidate in rank.candidates),
-            selected_value_ids=tuple(
-                value_id for supply in supplies for value_id in supply.fusion_decision.selected_value_ids
-            ),
-        ).validate()
-        return PhaseSupply(rank, decision, "source-scoped-context-composite-v1").validate()
 
     def automatic_for_phase(phase, context):
         query_state = getattr(context, "query_state", None)
@@ -644,12 +642,71 @@ def build_knowledge_store_supply(
         "binding_sha256": binding.binding_sha256,
         "stores": receipts,
     }
-    if candidate_callback is not None or context_specs:
+    if context_specs:
         route.automatic_for_phase = automatic_for_phase
-        if candidate_receipt is not None:
-            route.receipt["candidate_supply"] = candidate_receipt
-            route.receipt["candidate_selections"] = candidate_receipt["candidate_selections"]
+    elif candidate_callback is not None:
+        route.automatic_for_phase = candidate_callback
+    if candidate_receipt is not None:
+        route.receipt["candidate_supply"] = candidate_receipt
+        route.receipt["candidate_selections"] = candidate_receipt["candidate_selections"]
     return route
+
+
+def _composite_context_rank(_knobs=None):
+    def rank(ranks):
+        if not ranks:
+            raise KnowledgeStoreError("context composition requires nonempty ranks")
+        for item in ranks:
+            item.validate()
+            if (item.snapshot_sha256, item.query_state_sha256) != (
+                ranks[0].snapshot_sha256, ranks[0].query_state_sha256
+            ):
+                raise KnowledgeStoreError("context ranks have different source/query bindings")
+        return RankResult(
+            snapshot_sha256=ranks[0].snapshot_sha256,
+            query_state_sha256=ranks[0].query_state_sha256,
+            ranking_policy_id=COMPOSITE_CONTEXT_RANK_POLICY_ID,
+            candidates=tuple(sorted(
+                (candidate for item in ranks for candidate in item.candidates),
+                key=lambda item: (-item.score, item.facet_id),
+            )),
+        ).validate()
+    return rank
+
+
+def _composite_context_fuse(_knobs=None):
+    def fuse(*, rank, decisions):
+        rank.validate()
+        if not decisions:
+            raise KnowledgeStoreError("context composition requires nonempty decisions")
+        for decision in decisions:
+            decision.validate()
+            if (decision.snapshot_sha256, decision.query_state_sha256) != (
+                rank.snapshot_sha256, rank.query_state_sha256
+            ):
+                raise KnowledgeStoreError("context decisions have different source/query bindings")
+        supporting = tuple(dict.fromkeys(
+            facet_id for decision in decisions for facet_id in decision.supporting_facet_ids
+        ))
+        if not set(supporting) <= {item.facet_id for item in rank.candidates}:
+            raise KnowledgeStoreError("context decisions refer to unranked facets")
+        return FusionDecision(
+            snapshot_sha256=rank.snapshot_sha256,
+            query_state_sha256=rank.query_state_sha256,
+            rank_result_sha256=rank.content_hash(),
+            fusion_policy_id=COMPOSITE_CONTEXT_FUSE_POLICY_ID,
+            supporting_facet_ids=supporting,
+            selected_value_ids=tuple(
+                value_id for decision in decisions for value_id in decision.selected_value_ids
+            ),
+        ).validate()
+    return fuse
+
+
+if COMPOSITE_CONTEXT_RANK_POLICY_ID not in KNOWLEDGE_RANKERS.names():
+    KNOWLEDGE_RANKERS.register(COMPOSITE_CONTEXT_RANK_POLICY_ID, _composite_context_rank)
+if COMPOSITE_CONTEXT_FUSE_POLICY_ID not in KNOWLEDGE_FUSERS.names():
+    KNOWLEDGE_FUSERS.register(COMPOSITE_CONTEXT_FUSE_POLICY_ID, _composite_context_fuse)
 
 
 __all__ = [

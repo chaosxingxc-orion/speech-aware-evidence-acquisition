@@ -74,11 +74,13 @@ class _WindowAdapter(TaskAdapter):
 
 
 @pytest.mark.parametrize(
-    ("policy", "planned_calls", "actual_contacts", "with_span"),
+    ("policy", "planned_calls", "actual_contacts", "with_span", "with_context"),
     (
-        ("phase-direct-only-v1", 2, 2, False),
-        ("phase-native-review-revise-v1", 22, 8, False),
-        ("phase-native-review-revise-v1", 22, 16, True),
+        ("phase-direct-only-v1", 2, 2, False, False),
+        ("phase-native-review-revise-v1", 22, 8, False, False),
+        ("phase-native-review-revise-v1", 22, 8, False, True),
+        ("phase-native-review-revise-v1", 22, 16, True, False),
+        ("phase-native-review-revise-v1", 22, 16, True, True),
     ),
 )
 def test_configured_feature_units_complete_shared_lifecycle(
@@ -88,6 +90,7 @@ def test_configured_feature_units_complete_shared_lifecycle(
     planned_calls: int,
     actual_contacts: int,
     with_span: bool,
+    with_context: bool,
 ):
     """The real configured path must not require a fake whole-parent packet."""
     from speech_aware_evidence_acquisition.core import preparation_window_packets as packets_module
@@ -187,6 +190,50 @@ def test_configured_feature_units_complete_shared_lifecycle(
                 "contact_cap": 22,
             },
         )
+    if with_context:
+        from speech_aware_evidence_acquisition.rails.governed_context_build import (
+            GovernedContextBuildSpec, GovernedContextRecord, build_governed_context_snapshot,
+        )
+        from test_governed_context_named_stores import _write
+
+        stores = {}
+        for store_role, content in (
+            ("participant-roster", "Jane Example - CFO\n"),
+            ("document-lexicon", "Profit 2\nmargin 3\n1234 8\n"),
+        ):
+            records = tuple(GovernedContextRecord(
+                source_id=f"conec://{store_role}/{sample_id}",
+                source_sha256=hashlib.sha256(text.encode()).hexdigest(),
+                scope_sample_id=sample_id, source_kind=store_role, content=text,
+            ) for sample_id, text in (
+                (parent.sample_id, content),
+                ("unrelated-call", "Other Person - CEO\n" if store_role == "participant-roster"
+                 else "Unrelated 2\n"),
+            ))
+            scoped = build_governed_context_snapshot(records, spec=GovernedContextBuildSpec(
+                snapshot_id=store_role, source_split_identity_hash="a" * 64,
+                store_role=store_role,
+            ))
+            base = f"knowledge/{store_role}"
+            _write(world.data_root / f"{base}/snapshot.json", scoped.frozen_json())
+            source_sha = _write(world.data_root / f"{base}/source.json", {"synthetic": True})
+            release_sha = _write(world.data_root / f"{base}/release.json", {
+                "schema": "saea-knowledge-store-release-v1",
+                "store_id": store_role, "store_role": store_role,
+                "snapshot_sha256": scoped.content_hash(),
+                "source_split_identity_hash": scoped.source_split_identity_hash,
+                "builder_policy_id": scoped.builder_policy_id,
+                "source": {"relpath": f"{base}/source.json", "sha256": source_sha},
+            })
+            stores[store_role] = {
+                "store_role": store_role,
+                "snapshot": {"relpath": f"{base}/snapshot.json", "sha256": scoped.content_hash()},
+                "release": {"relpath": f"{base}/release.json", "sha256": release_sha},
+                "context_supply": {"solver": {"provider": "source-scoped-context-v1"}},
+            }
+        baseline.pop("knowledge_snapshot_relpath")
+        baseline.pop("knowledge_snapshot_sha256")
+        baseline["knowledge_stores"] = stores
     span_events, providers = [], []
     span_tool = "saea-tool-live-speech-span-v1"
     span_args = {
@@ -286,6 +333,13 @@ def test_configured_feature_units_complete_shared_lifecycle(
         window = "one" if "window/0" in wire_text else "two"
         role = next((name for name in phases
                      if f"Complete the {name} role" in current_instruction), "direct")
+        if with_context:
+            assert "Other Person" not in wire_text and "Unrelated" not in wire_text
+            if role == "perception":
+                assert "Jane Example" not in wire_text and "Profit" not in wire_text
+            else:
+                assert "Jane Example" in wire_text and "CFO" in wire_text
+                assert "Profit" in wire_text and "margin" in wire_text
         key = (window, role)
         role_visits[key] = role_visits.get(key, 0) + 1
         if "Complete the planner role" in current_instruction:

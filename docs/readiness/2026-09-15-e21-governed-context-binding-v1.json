@@ -1,0 +1,36 @@
+{
+  "knowledge_stores": {
+    "document-lexicon": {
+      "context_supply": {
+        "solver": {
+          "provider": "source-scoped-context-v1"
+        }
+      },
+      "release": {
+        "relpath": "knowledge/e21/governed/document-lexicon-v1/release.json",
+        "sha256": "0f6863050e1335c763b5ed958e4a49aa684edd035e6ffc2f6df65f37daf28af6"
+      },
+      "snapshot": {
+        "relpath": "knowledge/e21/governed/document-lexicon-v1/snapshot.json",
+        "sha256": "8fbb96aa4c938c1da23d6c014f3c1e12207b9414cb5463204f7c036b2eba186d"
+      },
+      "store_role": "document-lexicon"
+    },
+    "participant-roster": {
+      "context_supply": {
+        "solver": {
+          "provider": "source-scoped-context-v1"
+        }
+      },
+      "release": {
+        "relpath": "knowledge/e21/governed/participant-roster-v1/release.json",
+        "sha256": "b7a366f32797350f3584cc9cd6b88ac0780c67cb4222d7b36dfa1f9f4e6cf212"
+      },
+      "snapshot": {
+        "relpath": "knowledge/e21/governed/participant-roster-v1/snapshot.json",
+        "sha256": "72e7ddff84b6996ccb924564975a92352d186861347760ab9f39c07218ccdb93"
+      },
+      "store_role": "participant-roster"
+    }
+  }
+}

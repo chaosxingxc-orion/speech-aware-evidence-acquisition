@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
 import hashlib
 import json
 from types import SimpleNamespace
@@ -138,5 +139,41 @@ def test_named_context_refuses_first_phase_and_overlap(tmp_path, phase, overlap)
         build_knowledge_store_supply(
             binding,
             program=default_phase_program("native-answer-or-tool-v1"),
+            data_root=tmp_path,
+        )
+
+
+def test_context_reentry_reuses_visible_values(tmp_path):
+    binding = load_knowledge_store_binding(_config(tmp_path), data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=default_phase_program("native-answer-or-tool-v1"), data_root=tmp_path,
+    )
+    context = _context("parent-a", "a0")
+    first = router.automatic_for_phase("decision-2", context)
+    context.query_state = replace(
+        context.query_state, retrieved_value_ids=first.fusion_decision.selected_value_ids,
+    ).validate()
+    repeat = router.automatic_for_phase("decision-2", context)
+    assert repeat.fusion_decision.selected_value_ids == ()
+    assert repeat.rank_result.query_state_sha256 == context.query_state.content_hash()
+
+
+def test_invalid_scoped_snapshot_is_refused_at_router_construction(tmp_path, monkeypatch):
+    import sys
+    from speech_aware_evidence_acquisition.rails.governed_context_supply import (
+        GovernedContextSupplyError,
+    )
+
+    original = _snapshot
+    def malformed(name):
+        snapshot = original(name)
+        return replace(snapshot, facets=tuple(
+            replace(facet, representation_kind="text") for facet in snapshot.facets
+        )).validate()
+    monkeypatch.setattr(sys.modules[__name__], "_snapshot", malformed)
+    binding = load_knowledge_store_binding(_config(tmp_path), data_root=tmp_path)
+    with pytest.raises(GovernedContextSupplyError, match="source-scope facet"):
+        build_knowledge_store_supply(
+            binding, program=default_phase_program("native-answer-or-tool-v1"),
             data_root=tmp_path,
         )

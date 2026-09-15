@@ -30,7 +30,7 @@ class GovernedContextSupplyError(RailsError):
 class SourceScopedContextProvider(KnowledgeProvider):
     """Select exactly one released value by the original query parent ID."""
 
-    def __init__(self, *, snapshot: KnowledgeSnapshot) -> None:
+    def __init__(self, *, snapshot: KnowledgeSnapshot, value_id_namespace: str | None = None) -> None:
         super().__init__(provider_id=SOURCE_SCOPED_CONTEXT_PROVIDER_ID)
         snapshot.validate()
         if snapshot.source_partition_role != EXTERNAL_GOVERNED_PARTITION_ROLE:
@@ -38,6 +38,7 @@ class SourceScopedContextProvider(KnowledgeProvider):
                 "source-scoped context requires an external-governed snapshot"
             )
         self._scope_values = self._validate_snapshot(snapshot)
+        self._value_id_namespace = value_id_namespace
         self.adopt(
             snapshot,
             policy_id=snapshot.builder_policy_id,
@@ -119,14 +120,10 @@ class SourceScopedContextProvider(KnowledgeProvider):
         expected_facet, value_id = self._scope_values[scope]
         if facet_id != expected_facet or rankings[0].as_json() != self._last_ranking.as_json():
             raise GovernedContextSupplyError("source-scoped ranking changed before fusion")
-        decision = FusionDecision(
-            snapshot_sha256=self.snapshot_sha256(),
-            query_state_sha256=self._last_query.content_hash(),
-            rank_result_sha256=self._last_rank.content_hash(),
-            fusion_policy_id=SOURCE_SCOPED_CONTEXT_FUSE_POLICY_ID,
-            supporting_facet_ids=(facet_id,), selected_value_ids=(value_id,),
-        ).validate()
-        return KNOWLEDGE_FUSERS.resolve(SOURCE_SCOPED_CONTEXT_FUSE_POLICY_ID)()(decision)
+        return KNOWLEDGE_FUSERS.resolve(SOURCE_SCOPED_CONTEXT_FUSE_POLICY_ID)()(
+            rank=self._last_rank, facet_id=facet_id, value_id=value_id,
+            query_state=self._last_query, value_id_namespace=self._value_id_namespace,
+        )
 
     def last_rank_result(self) -> RankResult | None:
         return self._last_rank
@@ -139,7 +136,25 @@ def _source_scoped_rank(_knobs: object = None):
 
 
 def _source_scoped_fuse(_knobs: object = None):
-    return lambda decision: decision
+    def fuse(*, rank, facet_id, value_id, query_state, value_id_namespace=None):
+        from .knowledge_stores import qualify_id
+
+        rank.validate()
+        query_state.validate()
+        if rank.query_state_sha256 != query_state.content_hash():
+            raise GovernedContextSupplyError("source-scoped fusion query binding changed")
+        visible_id = value_id if value_id_namespace is None else qualify_id(value_id_namespace, value_id)
+        if tuple(item.facet_id for item in rank.candidates) != (facet_id,):
+            raise GovernedContextSupplyError("source-scoped fusion requires its singleton rank")
+        return FusionDecision(
+            snapshot_sha256=rank.snapshot_sha256,
+            query_state_sha256=rank.query_state_sha256,
+            rank_result_sha256=rank.content_hash(),
+            fusion_policy_id=SOURCE_SCOPED_CONTEXT_FUSE_POLICY_ID,
+            supporting_facet_ids=(facet_id,),
+            selected_value_ids=() if visible_id in query_state.retrieved_value_ids else (value_id,),
+        ).validate()
+    return fuse
 
 
 if SOURCE_SCOPED_CONTEXT_PROVIDER_ID not in KNOWLEDGE_PROVIDERS.names():
