@@ -1043,7 +1043,15 @@ def build_native_contact_fit_gate(
         raise PreparationError(
             "native contact fitting requires a unique registered sample roster"
         )
-    maximum_requests = len(expected_ids) * program.max_contacts
+    roster_loader = getattr(runtime, "execution_unit_roster", None)
+    unit_roster = roster_loader() if callable(roster_loader) else None
+    if unit_roster is not None:
+        if feature_packets:
+            raise PreparationError("execution unit fitting requires raw speech")
+        unit_roster.validate(parent_sample_ids=expected_ids, max_contacts=program.max_contacts)
+    maximum_requests = (
+        len(unit_roster.units) if unit_roster is not None else len(expected_ids)
+    ) * program.max_contacts
     # Feature contacts need /props, /apply-template, and one /tokenize per
     # feature packet plus one prompt tokenization. Raw contacts instead use
     # the resident multimodal counting endpoint on the rendered WAV body.
@@ -1118,9 +1126,22 @@ def build_native_contact_fit_gate(
                 raise PreparationError(
                     f"native contact repeated agent_contact_id {contact_id!r}"
                 )
-            if sample_contacts[sample_id] >= program.max_contacts:
+            unit_fields = {}
+            budget_key = sample_id
+            if unit_roster is not None:
+                unit = runtime.execution_unit_for_contact(sample_id, contact_id)
+                runtime.validate_execution_unit_observation(unit, raw_speech_query)
+                budget_key = unit.request_key
+                unit_fields = {
+                    "execution_unit_id": unit.request_key,
+                    "execution_unit_binding": unit.as_json(),
+                    "execution_unit_roster_sha256": unit_roster.content_hash(),
+                }
+            if sample_contacts[budget_key] >= program.max_contacts:
                 raise PreparationError(
-                    "native contact exceeded its per-sample contact ceiling"
+                    "native contact exceeded its per-unit contact ceiling"
+                    if unit_roster is not None
+                    else "native contact exceeded its per-sample contact ceiling"
                 )
             if feature_packets and len(descriptors) > spec["max_speech_packets"]:
                 raise PreparationError(
@@ -1164,11 +1185,12 @@ def build_native_contact_fit_gate(
                         else {"raw_speech_query": raw_speech_query}
                     ),
                     "capacity_scope": "actual-variable-trajectory-contact",
+                    **unit_fields,
                 },
                 "fit_plan": asdict(fit_plan),
             }
             used_contact_ids.add(contact_id)
-            sample_contacts[sample_id] += 1
+            sample_contacts[budget_key] += 1
 
             def produce():
                 guarded.client = (client_factory or _LoopbackPromptAuditClient)(
@@ -1191,6 +1213,7 @@ def build_native_contact_fit_gate(
                                     "sample_id": sample_id,
                                     "agent_contact_id": contact_id,
                                     "contact_identity_sha256": contact_identity_sha256,
+                                    **unit_fields,
                                 }
                             ).decode()
                             + "\n"
@@ -1251,6 +1274,7 @@ def build_native_contact_fit_gate(
                             else {"raw_speech_query": raw_speech_query}
                         ),
                         "capacity_scope": "actual-variable-trajectory-contact",
+                        **unit_fields,
                         "session_id": session.session_id,
                         "session_identity_sha256": digest(identity),
                         "contact_counts": dict(contact_counts),

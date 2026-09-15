@@ -2710,6 +2710,74 @@ class FlightRuntime:
             self._window_feature_packet_config = identity
         return self._window_feature_packets
 
+    def execution_unit_roster(self):
+        """Load explicit raw windows once, without altering the parent split."""
+        values = self._composed.values
+        declaration = values.get("prepared_execution_units")
+        if declaration is None:
+            return None
+        from ..preparation_windows import load_raw_execution_unit_roster
+        if self._arm() != "raw-speech-agent-native-tools" or self.uses_speech_feature_packets():
+            raise FlightRuntimeError("execution units require the explicit raw speech arm")
+        if values.get("prepared_window_feature_packets") is not None:
+            raise FlightRuntimeError("raw execution units cannot use window feature packets")
+        plan = getattr(self, "_plan", None)
+        split_hash = plan.split_identity_hash if plan is not None else self._prepare()[3]
+        identity = _canonical_hash({
+            "declaration": declaration, "split": split_hash,
+            "parents": [(sample.sample_id, sample.media_relpath, sample.audio_seconds)
+                        for sample in self._samples],
+        })
+        if getattr(self, "_execution_unit_config_hash", None) != identity:
+            roster, registry = load_raw_execution_unit_roster(
+                declaration, data_root=self._data_root, samples=self._samples,
+                split_identity_hash=split_hash,
+            )
+            self._execution_units, self._execution_unit_registry = roster, registry
+            self._execution_unit_config_hash = identity
+        return self._execution_units
+
+    def execution_unit_for_contact(self, sample_id, contact_id):
+        """Resolve explicit unit authority without inferring it from current audio."""
+        from ...rails.execution_units import execution_unit_scope
+        roster = self.execution_unit_roster()
+        if roster is None:
+            return None
+        scope = contact_id.split("/", 1)[0] if isinstance(contact_id, str) else None
+        units = {execution_unit_scope(unit.request_key): unit for unit in roster.units}
+        unit = units.get(scope)
+        if unit is None or unit.parent_sample_id != sample_id:
+            raise FlightRuntimeError("contact is outside its registered execution unit")
+        return unit
+
+    def validate_execution_unit_observation(self, unit, raw_speech_query):
+        """Keep every re-listen inside the immutable original unit and parent."""
+        original = unit.slice_record
+        record = self._execution_unit_registry.lookup(
+            unit.parent_sample_id, raw_speech_query["media_relpath"],
+        )
+        if (
+            record is None or record.sha256 != raw_speech_query["sha256"]
+            or record.parent_sha256 != original.parent_sha256
+            or record.start_seconds < original.start_seconds
+            or record.end_seconds > original.end_seconds
+        ):
+            raise FlightRuntimeError("raw observation migrated outside its execution unit")
+        self._execution_unit_registry.verify_slice_bytes(record)
+
+    def _raw_phase_packet_bindings(self):
+        roster = self.execution_unit_roster()
+        if roster is not None:
+            return {unit.parent_sample_id: {
+                "packet_id": unit.slice_record.parent_media_relpath,
+                "sha256": unit.slice_record.parent_sha256,
+            } for unit in roster.units}
+        if self._adapter.preprocess_plan().get("kind") == "raw-speech-windows":
+            raise FlightRuntimeError("raw window phase programs require prepared_execution_units")
+        return {sample.sample_id: {"packet_id": sample.audio_ref.path,
+                                  "sha256": sample.audio_ref.sha256}
+                for sample in self._adapter.load_split(self._split_id)}
+
     def _promotion_receipt_path(self) -> Path:
         value = self._composed.values.get("speech_packet_promotion_receipt")
         if not isinstance(value, str) or not value:
@@ -3597,6 +3665,9 @@ class FlightRuntime:
             "arm": arm,
             "request_id_prefix": self._request_id_prefix,
         }
+        if baseline_values.get("prepared_execution_units") is not None:
+            self.execution_unit_roster()
+            kwargs["slice_registry"] = self._execution_unit_registry
         arm_fields = ARM_VISIBLE_FIELDS.get(arm, ())
         if "tool_schemas" in arm_fields:
             dispatcher = self._phase_tool_dispatcher
@@ -3605,6 +3676,8 @@ class FlightRuntime:
                 if not callable(schemas):
                     raise FlightRuntimeError("native dispatcher does not expose tool schemas")
                 kwargs["tool_schemas"] = tuple(schemas())
+            elif arm == "raw-speech-agent-native-tools" and not baseline_values.get("phase_tools"):
+                kwargs["tool_schemas"] = ()
             else:
                 fill_name = baseline_values.get("tool_schema_fill")
                 if self._tool_schema_resolver is None or not isinstance(fill_name, str):
@@ -4645,6 +4718,10 @@ class FlightRuntime:
             # bind_phase_program_material(...) remains the explicit override
             # and, when it was called, wins outright.
             binding = self._default_phase_program_binding(program, client)
+        source_options = {
+            key: binding[key] for key in ("query_source", "execution_units")
+            if binding.get(key) is not None
+        }
         # rails.runner.run_speech_native_agent_loop requires an append-only
         # AgentTraceSink BOUND TO plan.run_id. FrozenCoreClient is not one --
         # it owns a private TraceSink and exposes only flush_trace_buffer --
@@ -4755,6 +4832,7 @@ class FlightRuntime:
         # pre-flight-seeded FIRST phase, keeps the per-phase barrier form.
         continuous = (
             binding.get("initial_feedback_states") is not None
+            or binding.get("execution_units") is not None
             or native_binding is not None
             or whole_roster
             or planner is not None
@@ -4799,6 +4877,7 @@ class FlightRuntime:
                         ),
                         result_kind=self._result_kind(),
                         **live_options,
+                        **source_options,
                     ),
                 )
             else:
@@ -4819,6 +4898,7 @@ class FlightRuntime:
                     bootstrap_facet_ids_by_phase=facet_seed,
                     bootstrap_value_ids_by_phase=value_seed,
                     result_kind=self._result_kind(),
+                    **source_options,
                 )
             if review_specs:
                 from ...rails.phase_review import (  # noqa: PLC0415 (cycle guard)
@@ -5276,6 +5356,9 @@ class FlightRuntime:
 
             },
         }
+        if context["values"].get("prepared_execution_units") is not None:
+            sources["execution_unit_inventory"] = dict(context["values"]["prepared_execution_units"])
+            sources["execution_unit_roster_sha256"] = self.execution_unit_roster().content_hash()
         if window_batch is not None:
             from ...reproduction import obs_loop, repair_loop, window_controller
             from ...reproduction.ojw import components as ojw_components
@@ -6465,13 +6548,10 @@ class FlightRuntime:
             _protected_knowledge_material,
         )
 
-        if not self.uses_speech_feature_packets():
-            raise FlightRuntimeError(
-                f"arm {self._arm()!r} does not travel the speech-feature packet path, but "
-                f"policy {getattr(program, 'program_id', program)!r} is a phase program: "
-                "rails.runner's agent loop binds one input_speech_features query packet "
-                "per contact and rails.core_client refuses Agent history without it"
-            )
+        raw_phase = self._arm() == "raw-speech-agent-native-tools"
+        if not self.uses_speech_feature_packets() and not raw_phase:
+            raise FlightRuntimeError("phase programs require an explicit feature or raw speech arm")
+        raw_bindings = self._raw_phase_packet_bindings() if raw_phase else None
         snapshot = self._load_knowledge_snapshot()
         specs = load_phase_material_specs(self._composed.values, program)
         static_text = {
@@ -6530,7 +6610,9 @@ class FlightRuntime:
         review_for_phase, review_specs = self._resolve_phase_review(program)
         return {
             "knowledge_snapshot": snapshot,
-            "speech_packet_bindings": self.speech_packet_bindings(),
+            "speech_packet_bindings": raw_bindings if raw_phase else self.speech_packet_bindings(),
+            **({"query_source": "speech_audio", "execution_units": self.execution_unit_roster()}
+               if raw_phase else {}),
             "material_for_phase": build_material_for_phase(
                 specs,
                 program_id=program.program_id,

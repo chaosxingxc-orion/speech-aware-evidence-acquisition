@@ -1587,6 +1587,30 @@ class FrozenCoreClient:
                 )
             buffer.flush_into(self._sink)
 
+    def registered_slice(self, sample_id: str, media_relpath: str):
+        """Return an immutable existing slice after revalidating its bytes."""
+        if self._slice_registry is None:
+            return None
+        record = self._slice_registry.lookup(sample_id, media_relpath)
+        if record is not None:
+            self._slice_registry.verify_slice_bytes(record)
+        return record
+
+    def admit_registered_slice(self, record: SliceRecord) -> None:
+        """Bind an already registered, byte-verified slice to this client."""
+        if self.registered_slice(record.sample_id, record.media_relpath) != record:
+            raise FrozenCoreClientError("slice differs from its registered source")
+        self._index_registered_slice(record)
+
+    def _index_registered_slice(self, record: SliceRecord) -> None:
+        existing_parent = self._reverse_media_index.get(record.media_relpath)
+        if existing_parent not in (None, record.sample_id):
+            raise FrozenCoreClientError("slice path is already bound to another parent")
+        self._reverse_media_index[record.media_relpath] = record.sample_id
+        self._slice_facts[record.media_relpath] = (
+            record.audio_seconds, record.sample_rate_hz,
+        )
+
     def register_slice(self, record: SliceRecord) -> None:
         """Register a runtime-derived media variant (e.g. a silence-swap
         control) BEFORE any :meth:`complete` call names it. Delegates to the
@@ -1601,11 +1625,7 @@ class FrozenCoreClient:
                 "register_slice requires a slice_registry to have been given at construction"
             )
         self._slice_registry.register(record)
-        self._reverse_media_index[record.media_relpath] = record.sample_id
-        self._slice_facts[record.media_relpath] = (
-            record.audio_seconds,
-            record.sample_rate_hz,
-        )
+        self._index_registered_slice(record)
 
     def _selected_construction_targets(
         self, construction_target_ids: Sequence[str] | None

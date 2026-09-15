@@ -234,6 +234,8 @@ class AgentRuntimeContext:
     prior_response_sha256s: tuple[str, ...]
     contact_index: int
     core_completions: tuple[CoreCompletion, ...] = ()
+    execution_unit_id: str | None = None
+    execution_unit_binding: Mapping[str, object] | None = None
 
 
 class AgentController(Protocol):
@@ -1294,6 +1296,8 @@ def _runtime_context(
         ) from None
     return AgentRuntimeContext(
         sample_id=prepared.sample.sample_id,
+        execution_unit_id=prepared.execution_unit_id,
+        execution_unit_binding=prepared.execution_unit_binding,
         knowledge_snapshot_sha256=snapshot_sha256,
         catalog_facet_ids=tuple(facet.facet_id for facet in snapshot.facets),
         catalog_value_ids=tuple(value.value_id for value in snapshot.values),
@@ -1434,7 +1438,7 @@ def _run_agent_trajectory(
         prepared.initial_query_state.speech_packet_sha256,
     )
     observe_record_base = _agent_record_base(
-        prepared.sample.sample_id, record_namespace
+        prepared.sample.sample_id, record_namespace, prepared.execution_unit_id
     )
     relisten_count = 0
     state_store = {item.state_id: item for item in prepared.initial_feedback_states}
@@ -1660,6 +1664,7 @@ async def _invoke_native_role_episode(
     )
     from .material import PhaseMaterial
 
+    from .execution_units import scoped_execution_contact_id
     config, program = binding.config, binding.program
     if bool(config.local_tool_workers) != (run_local is not None):
         raise RailsRunnerError("native local tool scheduling differs from its configuration")
@@ -2016,7 +2021,10 @@ async def _invoke_native_role_episode(
             def contact_context(index, role=role):
                 return NativeRoleContactContext(
                     sample_id=state.prepared.sample.sample_id,
-                    agent_contact_id=f"{program.program_id}:{role.phase_id}:{index}:{state.prepared.sample.sample_id}",
+                    agent_contact_id=scoped_execution_contact_id(
+                        f"{program.program_id}:{role.phase_id}:{index}:{state.prepared.sample.sample_id}",
+                        state.prepared.execution_unit_id,
+                    ),
                     evidence_pins={"knowledge_snapshot": snapshot_sha256},
                     budget_id=run_id,
                 )
@@ -2163,7 +2171,11 @@ async def _invoke_native_role_episode(
             )
             trace.emit("TOOL", f"{derived_id}/request", derived_request)
             trace.emit("TOOL", f"{derived_id}/response", derived_response)
-        trace.emit("USE", f"{state.prepared.sample.sample_id}/{program.program_id}/native-episode", {
+        episode_trace_id = scoped_execution_contact_id(
+            f"{state.prepared.sample.sample_id}/{program.program_id}/native-episode",
+            state.prepared.execution_unit_id,
+        )
+        trace.emit("USE", episode_trace_id, {
             "use_native_episode": compact_receipt,
         })
         state.transitions.append(stop_transition)
@@ -2674,7 +2686,7 @@ def _run_agent_openjiuwen(
                 snapshot_sha256=snapshot_sha256,
                 sample_id=state.prepared.sample.sample_id,
                 record_base=_agent_record_base(
-                    state.prepared.sample.sample_id, record_namespace
+                    state.prepared.sample.sample_id, record_namespace, state.prepared.execution_unit_id
                 ),
                 origin_packet=(
                     state.prepared.initial_query_state.speech_packet_id,
@@ -2744,7 +2756,9 @@ def _run_agent_openjiuwen(
     )
 
 
-def _agent_record_base(sample_id: str, record_namespace: str | None) -> str:
+def _agent_record_base(
+    sample_id: str, record_namespace: str | None, execution_unit_id: str | None = None,
+) -> str:
     """The trace record id prefix for one sample's agent-loop records.
 
     ``core.tracing.TraceSink`` refuses a duplicate record id, and a PHASE
@@ -2758,6 +2772,10 @@ def _agent_record_base(sample_id: str, record_namespace: str | None) -> str:
     (every pre-existing caller) leaves the id byte-identical to before.
     """
 
+    if execution_unit_id is not None:
+        from .execution_units import execution_unit_scope
+        scope = execution_unit_scope(execution_unit_id)
+        record_namespace = f"{record_namespace}/{scope}" if record_namespace else scope
     if record_namespace is None:
         return f"{sample_id}/agent-loop"
     return f"{sample_id}/{record_namespace}/agent-loop"
@@ -2776,7 +2794,7 @@ def _emit_agent_runtime_trace(
     """Persist gold-free Agent state, supply, and use records in split order."""
 
     sample_id = outcome.prepared.sample.sample_id
-    record_base = _agent_record_base(sample_id, record_namespace)
+    record_base = _agent_record_base(sample_id, record_namespace, outcome.prepared.execution_unit_id)
     sink.emit(
         "ORG",
         f"{record_base}/org",
@@ -2831,6 +2849,9 @@ def _emit_agent_runtime_trace(
         "agent_executor_id": agent_executor_id,
         "agent_executor_version": agent_executor_version,
         "knowledge_snapshot_sha256": snapshot_sha256,
+        **({"execution_unit_id": outcome.prepared.execution_unit_id,
+            "execution_unit_binding": dict(outcome.prepared.execution_unit_binding)}
+           if outcome.prepared.execution_unit_id is not None else {}),
         "initial_query_state_sha256": outcome.prepared.initial_query_state.content_hash(),
         "final_query_state_sha256": outcome.final_query_state.content_hash(),
         "speech_packet_sha256": outcome.final_query_state.speech_packet_sha256,
@@ -3139,7 +3160,14 @@ def run_speech_native_agent_loop(
         if query_source != "speech_audio":
             raise RailsRunnerError("execution units require the registered raw speech path")
         for unit in execution_units.units:
-            core_client.register_slice(unit.slice_record)
+            record = unit.slice_record
+            existing = core_client.registered_slice(unit.parent_sample_id, record.media_relpath)
+            if existing is None:
+                core_client.register_slice(record)
+            elif existing != record:
+                raise RailsRunnerError("execution unit differs from its registered original slice")
+            else:
+                core_client.admit_registered_slice(record)
     planned_ceiling = (
         len(execution_units.units) if execution_units is not None else len(samples)
     ) * max_contacts
@@ -3362,7 +3390,7 @@ def run_speech_native_agent_loop(
         outcomes, runtime_trace_sha256s, strict=True
     ):
         assert outcome is not None
-        if result_kind == ARTIFACT_RESULT_KIND:
+        if result_kind == ARTIFACT_RESULT_KIND or execution_units is not None:
             metrics = {}
             consumption = None
         else:
@@ -3393,7 +3421,7 @@ def run_speech_native_agent_loop(
                 execution_unit_binding=outcome.prepared.execution_unit_binding,
             )
         )
-        if result_kind == TASK_ANSWER_RESULT_KIND:
+        if result_kind == TASK_ANSWER_RESULT_KIND and execution_units is None:
             _emit_agent_posthoc_trace(
                 sink=trace_sink,
                 result=results[-1],

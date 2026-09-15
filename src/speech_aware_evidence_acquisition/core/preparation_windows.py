@@ -516,3 +516,106 @@ def materialize_window_requests(
             if expected != actual:
                 raise PreparationError("prepared window packets do not exactly cover selected requests")
     return WindowRequestBatch(payloads, keys, sources, evidence_binding=evidence_binding)
+
+
+def load_raw_execution_unit_roster(
+    declaration: Mapping[str, object], *, data_root: Path,
+    samples: Sequence[object], split_identity_hash: str,
+):
+    """Consume pinned raw slice sources from the existing exact-window inventory.
+
+    The historical artifact also contains encoding keys. They remain provenance;
+    no feature packets, encoder model, request text or old answer is consumed.
+    Return the immutable unit roster and the same registry the live client uses.
+    """
+    from .model.slices import SliceRecord, SliceRegistry
+    from ..rails.execution_units import ExecutionUnit, ExecutionUnitRoster
+
+    required = {"relpath", "sha256", "batch", "registry_run_id",
+                "unit_count", "split_identity_hash"}
+    if not isinstance(declaration, Mapping) or set(declaration) != required:
+        raise PreparationError("prepared_execution_units requires an exact source declaration")
+    if declaration["split_identity_hash"] != split_identity_hash:
+        raise PreparationError("execution unit inventory differs from the flight split")
+    for key in ("sha256", "split_identity_hash"):
+        value = declaration[key]
+        if not isinstance(value, str) or _SHA256.fullmatch(value) is None:
+            raise PreparationError(f"execution unit {key} must be a lowercase SHA256")
+    count = _positive_int(declaration["unit_count"], "execution unit count")
+    batch_name, registry_run_id = declaration["batch"], declaration["registry_run_id"]
+    for value in (batch_name, registry_run_id):
+        if not isinstance(value, str) or _BATCH_NAME.fullmatch(value) is None:
+            raise PreparationError("execution unit batch and registry IDs must be plain identifiers")
+    _, path = _confined_file(Path(data_root), declaration["relpath"], "execution unit inventory")
+    raw, actual_sha, _ = _read_bytes(path, "execution unit inventory")
+    if actual_sha != declaration["sha256"]:
+        raise PreparationError("execution unit inventory file hash differs")
+    try:
+        artifact = json.loads(raw)
+        output = artifact["output"]
+        if (
+            artifact["schema"] != "saea-prepared-artifact-v1"
+            or artifact["kind"] != WINDOW_FEATURE_INVENTORY_KIND
+            or artifact["contact_class"] != "model-free"
+            or output["schema"] != WINDOW_FEATURE_INVENTORY_SCHEMA
+            or artifact["output_sha256"] != digest(output)
+            or artifact["inputs"]["window_sources_sha256"] != digest(output["batches"])
+        ):
+            raise PreparationError("execution unit source artifact has inconsistent identity")
+        batches = output["batches"]
+        if not isinstance(batches, list) or len({b["name"] for b in batches}) != len(batches):
+            raise PreparationError("execution unit source repeats a batch")
+        selected = [b for b in batches if b["name"] == batch_name]
+        if len(selected) != 1 or len(selected[0]["requests"]) != count:
+            raise PreparationError("execution unit source batch or count differs")
+        requests = selected[0]["requests"]
+    except (KeyError, TypeError, ValueError) as error:
+        raise PreparationError("invalid exact-window execution unit inventory") from error
+    parent_ids = tuple(sample.sample_id for sample in samples)
+    if not parent_ids or len(set(parent_ids)) != len(parent_ids):
+        raise PreparationError("execution units require the unique complete parent roster")
+    parent_facts = {sample.sample_id: (sample.media_relpath, sample.audio_seconds) for sample in samples}
+    registry = SliceRegistry(data_root=Path(data_root), run_id=registry_run_id,
+                             parent_facts=parent_facts)
+    units = []
+    next_iteration = {sid: 0 for sid in parent_ids}
+    last_start = {sid: -1.0 for sid in parent_ids}
+    seen_parents = []
+    for row in requests:
+        if not isinstance(row, Mapping) or set(row) != {
+            "request_key", "payload_sha256", "encoding_key_sha256", "source_provenance"
+        }:
+            raise PreparationError("execution unit request lacks its exact source binding")
+        source = row["source_provenance"]
+        if not isinstance(source, Mapping) or set(source) != _SOURCE_KEYS | {"parent_bytes"}:
+            raise PreparationError("execution unit source fields differ from SliceRecord")
+        parent = source["sample_id"]
+        if parent not in parent_facts:
+            raise PreparationError("execution unit parent is outside the governed split")
+        iteration = _positive_int(source["iteration"], "iteration", allow_zero=True)
+        if iteration != next_iteration[parent] or row["request_key"] != f"{parent}#w{iteration + 1:04d}":
+            raise PreparationError("execution units are duplicated, missing or out of order")
+        start = _finite_number(source["start_seconds"], "start_seconds")
+        if start <= last_start[parent]:
+            raise PreparationError("execution unit chronology is not strictly increasing")
+        if parent not in seen_parents:
+            seen_parents.append(parent)
+        elif seen_parents[-1] != parent:
+            raise PreparationError("execution unit parent windows must be contiguous")
+        # Registry verifies parent custody, bounds, paths and exact slice bytes.
+        record_values = {k: source[k] for k in _SOURCE_KEYS}
+        record_values["preprocess"] = tuple(record_values["preprocess"])
+        try:
+            record = registry.register(SliceRecord(**record_values))
+        except (FrozenCoreError, TypeError, ValueError) as error:
+            raise PreparationError(f"execution unit raw source refused: {error}") from error
+        parent_path = Path(data_root) / record.parent_media_relpath
+        if _positive_int(source["parent_bytes"], "parent bytes") != parent_path.stat().st_size:
+            raise PreparationError("execution unit parent byte count differs")
+        units.append(ExecutionUnit(parent, row["request_key"], record))
+        next_iteration[parent] += 1
+        last_start[parent] = start
+    if tuple(seen_parents) != parent_ids:
+        raise PreparationError("execution unit source parent roster/order differs")
+    roster = ExecutionUnitRoster(tuple(units)).validate(parent_sample_ids=parent_ids, max_contacts=1)
+    return roster, registry

@@ -41,7 +41,7 @@ class ExecutionUnit:
         return {
             "parent_sample_id": self.parent_sample_id,
             "request_key": self.request_key,
-            "slice_record": dict(self.slice_record.__dict__),
+            "slice_record": self.slice_record.trace_view(),
         }
 
 
@@ -54,6 +54,8 @@ class ExecutionUnitRoster:
     def validate(
         self, *, parent_sample_ids: Sequence[str], max_contacts: int
     ) -> "ExecutionUnitRoster":
+        if not isinstance(self.units, tuple):
+            raise RailsError("execution unit roster units must be an immutable tuple")
         validate_execution_units(
             self.units, parent_sample_ids=parent_sample_ids, max_contacts=max_contacts
         )
@@ -98,3 +100,27 @@ def validate_execution_units(
 
 
 __all__ = ["ExecutionUnit", "ExecutionUnitRoster", "validate_execution_units"]
+
+
+def execution_unit_scope(execution_unit_id: str) -> str:
+    """Return a collision-resistant non-model-visible namespace for one unit."""
+    if not isinstance(execution_unit_id, str) or not execution_unit_id:
+        raise RailsError("execution unit ID must be a nonempty string")
+    return "unit-" + hashlib.sha256(execution_unit_id.encode("utf-8")).hexdigest()
+
+
+def scoped_execution_contact_id(contact_id: str, execution_unit_id: str | None) -> str:
+    """Preserve legacy contact IDs unless an explicit unit is bound."""
+    if execution_unit_id is None:
+        return contact_id
+    return execution_unit_scope(execution_unit_id) + "/" + contact_id
+
+
+def unscoped_execution_contact_id(contact_id: str, execution_unit_id: str | None) -> str:
+    """Validate the exact immutable unit before reading its role authority."""
+    if execution_unit_id is None:
+        return contact_id
+    prefix = execution_unit_scope(execution_unit_id) + "/"
+    if not isinstance(contact_id, str) or not contact_id.startswith(prefix):
+        raise RailsError("contact differs from its immutable execution unit")
+    return contact_id[len(prefix):]

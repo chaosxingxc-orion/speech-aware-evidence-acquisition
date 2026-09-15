@@ -916,7 +916,13 @@ class PhaseToolDispatcher:
             authority_role = spec.get("source_authority_role")
             prefix = f"{self.program.program_id}:{authority_role}:"
             suffix = f":{context.sample_id}"
-            contact_id = completion.agent_contact_id
+            from .execution_units import unscoped_execution_contact_id
+            try:
+                contact_id = unscoped_execution_contact_id(
+                    completion.agent_contact_id, getattr(context, "execution_unit_id", None),
+                )
+            except RailsError as error:
+                raise PhaseToolError(str(error)) from error
             if (
                 not isinstance(contact_id, str)
                 or not contact_id.startswith(prefix)
