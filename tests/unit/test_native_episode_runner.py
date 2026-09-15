@@ -91,6 +91,7 @@ def _config(
     max_revisions: int,
     max_contacts: int,
     reviewer_tool: str | None = None,
+    analytical_tool_role: str = "reviewer",
     exhaustion_policy: str = "raise",
 ) -> NativeEpisodeConfig:
     return NativeEpisodeConfig(
@@ -101,9 +102,9 @@ def _config(
             NativeEpisodeRole(
                 phase_id=phase,
                 role_kind=phase,
-                max_iterations=(2 if reviewer_tool and phase == "reviewer" else 1),
+                max_iterations=(2 if reviewer_tool and phase == analytical_tool_role else 1),
                 tool_names=(
-                    (reviewer_tool,) if reviewer_tool and phase == "reviewer" else ()
+                    (reviewer_tool,) if reviewer_tool and phase == analytical_tool_role else ()
                 ),
             )
             for phase in PHASES
@@ -201,6 +202,7 @@ class _ActualEpisodeHarness:
         overlap: bool = False,
         arm: str = "speech-feature-query-native-tools",
         reviewer_task_tool: bool = False,
+        analytical_tool_role: str = "reviewer",
         reviewer_memory: LoadedCandidateExperienceMemory | None = None,
         exhaustion_policy: str = "raise",
         sample_ids: tuple[str, ...] | None = None,
@@ -239,6 +241,8 @@ class _ActualEpisodeHarness:
             sample.sample_id: all_bindings[sample.sample_id] for sample in self.samples
         }
         self.program = _program(max_contacts=max_contacts)
+        assert analytical_tool_role in {"reviewer", "planner"}
+        self.analytical_tool_role = analytical_tool_role
         self.reviewer_tool = (
             CORRECTIVE_MEMORY_TOOL
             if reviewer_memory is not None
@@ -248,6 +252,7 @@ class _ActualEpisodeHarness:
             max_revisions=max_revisions,
             max_contacts=max_contacts,
             reviewer_tool=self.reviewer_tool,
+            analytical_tool_role=analytical_tool_role,
             exhaustion_policy=exhaustion_policy,
         )
         self.planner_actions = planner_actions
@@ -352,11 +357,11 @@ class _ActualEpisodeHarness:
 
             tool_config = {
                 "phase_tools": {
-                    "reviewer": {
+                    analytical_tool_role: {
                             "mode": "native-tools",
                             "allowed_tools": [self.reviewer_tool],
                             "knowledge_views": ["text"],
-                            "source_authority_role": "reviewer",
+                            "source_authority_role": analytical_tool_role,
                     }
                 }
             }
@@ -420,7 +425,7 @@ class _ActualEpisodeHarness:
 
     def _output(self, key):
         sample_id, phase, visit, turn = key
-        if self.reviewer_tool and phase == "reviewer" and visit == turn == 1:
+        if self.reviewer_tool and phase == self.analytical_tool_role and visit == turn == 1:
             return None
         if phase == "planner":
             return self.planner_actions[visit - 1]

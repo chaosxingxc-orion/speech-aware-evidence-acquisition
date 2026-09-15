@@ -1623,3 +1623,21 @@ TOOL_CATALOG.register(
         _live_speech_span.observe_live_speech_span,
     ),
 )
+
+
+KNOWLEDGE_TARGET_LOOKUP_MANIFEST = ToolManifest(
+    tool_id="saea-tool-knowledge-target-lookup-v1",
+    description="Read bounded target-specific values from one frozen named knowledge store.",
+    source_ref="speech_aware_evidence_acquisition.rails.tool_wrappers.phase_knowledge:lookup_target_knowledge",
+    pinned_sha256="62ed754684693f9cfdfc251ba8c3149fc4aef942714e802b182aa0d1296664d4",
+    inputs={"snapshot": "KnowledgeSnapshot", "query_state": "QueryState",
+            "candidate_ids": "Sequence[str]", "max_values_per_candidate": "int",
+            "max_total_values": "int", "already_visible_value_ids": "Sequence[str]"},
+    outputs={"result": "KnowledgeTargetSelection"},
+    changes_bytes=False, derivation_record=None, cost_class="cpu",
+    axis="SUPPLY", scope=GENERAL_SCOPE, ledger_row_type="none",
+)
+TOOL_CATALOG.register(
+    "saea-tool-knowledge-target-lookup-v1",
+    build_tool_entry(KNOWLEDGE_TARGET_LOOKUP_MANIFEST, _phase_knowledge.lookup_target_knowledge),
+)

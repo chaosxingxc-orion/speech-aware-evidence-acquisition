@@ -82,9 +82,14 @@ def test_every_catalog_tool_is_offered_to_at_least_one_task_type():
     """A registered tool nothing may call is either a mistake in the table or
     a tool that should not be registered yet."""
 
-    table = default_toolkit_table()
+    # New capabilities live in versioned opt-in tables; the default stays frozen.
+    tables = [
+        load_toolkit_table(path)
+        for path in sorted((tools.REPO_ROOT / "configs" / "toolkit").glob("*.json"))
+    ]
     offered = {
         tool_id
+        for table in tables
         for task_type in TASK_TYPES
         for role in TOOLKIT_ROLES
         for tool_id in table.for_task(task_type).tools_for(role)

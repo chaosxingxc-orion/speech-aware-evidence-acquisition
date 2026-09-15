@@ -75,7 +75,7 @@ def test_the_real_catalog_passes():
     # renderers, OWNER016 added two explicit task actions, and OWNER017 adds
     # the corrective-memory Planner action; OWNER023 adds one cached OBS
     # action; native dispatch adds full-utterance and bounded-span live OBS actions.
-    assert len(data["tools"]) == 33
+    assert len(data["tools"]) == 34
     assert all(row["complete"] and row["pin_ok"] for row in data["tools"])
     assert all(row["pin_ok"] for row in data["additional_pins"])
     assert data["registered_ids"] == sorted(data["registered_ids"])

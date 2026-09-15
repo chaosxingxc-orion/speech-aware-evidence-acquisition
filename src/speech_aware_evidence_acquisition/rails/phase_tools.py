@@ -37,10 +37,12 @@ LIVE_SPEECH_SPAN_TOOL = "saea-tool-live-speech-span-v1"
 
 TASK_CONTRACT_TOOL = "saea-tool-task-contract-v1"
 PHASE_KNOWLEDGE_TOOL = "saea-tool-phase-knowledge-v1"
+KNOWLEDGE_TARGET_TOOL = "saea-tool-knowledge-target-lookup-v1"
+KNOWLEDGE_TOOLS = frozenset({PHASE_KNOWLEDGE_TOOL, KNOWLEDGE_TARGET_TOOL})
 ACTION_TOOLS = frozenset(
     {TASK_CONTRACT_TOOL, PHASE_KNOWLEDGE_TOOL, CORRECTIVE_MEMORY_TOOL,
      PREPARED_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_OBSERVATION_TOOL,
-     LIVE_SPEECH_SPAN_TOOL, CANDIDATE_CONTRACT_TOOL}
+     LIVE_SPEECH_SPAN_TOOL, CANDIDATE_CONTRACT_TOOL, KNOWLEDGE_TARGET_TOOL}
 )
 MODES = frozenset({"fixed", "core-choice", "native-tools"})
 VIEWS = frozenset({"text", "speech", "paired"})
@@ -78,16 +80,19 @@ def load_phase_tool_specs(config, program):
     if not isinstance(raw, Mapping):
         raise PhaseToolError("phase_tools must be a mapping")
     phases = program.phase_names()
+    tool_phases = phases if getattr(program, "stop_rule", None) == "native-role-episode" else phases[:-1]
     specs = {}
     for phase, entry in raw.items():
-        if phase not in phases[:-1]:
-            raise PhaseToolError("phase_tools must name a nonfinal phase")
+        if phase not in tool_phases:
+            raise PhaseToolError("phase_tools must name a nonfinal phase or a native role")
         if not isinstance(entry, Mapping) or set(entry) - {
             "mode",
             "allowed_tools",
             "knowledge_views",
             "fixed_action",
             "candidate_limit",
+            "knowledge_values_per_candidate",
+            "knowledge_value_limit",
             "knowledge_store_ids",
             "source_authority_role",
         }:
@@ -110,15 +115,15 @@ def load_phase_tool_specs(config, program):
         )
         store_ids = entry.get("knowledge_store_ids")
         if store_ids is not None:
-            if PHASE_KNOWLEDGE_TOOL not in tools:
-                raise PhaseToolError("knowledge_store_ids requires the phase knowledge tool")
+            if not set(tools) & KNOWLEDGE_TOOLS:
+                raise PhaseToolError("knowledge_store_ids requires a knowledge tool")
             if (not isinstance(store_ids, list) or not store_ids
                     or any(not isinstance(item, str) or not item for item in store_ids)
                     or len(set(store_ids)) != len(store_ids)):
                 raise PhaseToolError("knowledge_store_ids must be a nonempty unique list")
             store_ids = tuple(store_ids)
         candidate_limit = entry.get("candidate_limit")
-        if CANDIDATE_CONTRACT_TOOL in tools:
+        if set(tools) & {CANDIDATE_CONTRACT_TOOL, KNOWLEDGE_TARGET_TOOL}:
             if (
                 isinstance(candidate_limit, bool)
                 or not isinstance(candidate_limit, int)
@@ -131,6 +136,20 @@ def load_phase_tool_specs(config, program):
                 raise PhaseToolError("candidate lookup currently requires native-tools mode")
         elif "candidate_limit" in entry:
             raise PhaseToolError("candidate_limit requires the candidate lookup tool")
+        target_limits = {}
+        if KNOWLEDGE_TARGET_TOOL in tools:
+            if (getattr(program, "stop_rule", None) != "native-role-episode"
+                    or authority_role != phase or not store_ids or views != ("text",)):
+                raise PhaseToolError(
+                    "target knowledge requires a native role, named stores and text-only values"
+                )
+            for field in ("knowledge_values_per_candidate", "knowledge_value_limit"):
+                value = entry.get(field)
+                if isinstance(value, bool) or not isinstance(value, int) or not 1 <= value <= 32:
+                    raise PhaseToolError(f"{field} requires an explicit integer between 1 and 32")
+                target_limits[field] = value
+        elif {"knowledge_values_per_candidate", "knowledge_value_limit"} & set(entry):
+            raise PhaseToolError("knowledge value limits require the target knowledge tool")
         if LIVE_SPEECH_SPAN_TOOL in tools and mode != "native-tools":
             raise PhaseToolError("live speech span currently requires native-tools mode")
         fixed = entry.get("fixed_action")
@@ -150,8 +169,9 @@ def load_phase_tool_specs(config, program):
             specs[phase]["knowledge_store_ids"] = store_ids
         if authority_role is not None:
             specs[phase]["source_authority_role"] = authority_role
-        if CANDIDATE_CONTRACT_TOOL in tools:
+        if set(tools) & {CANDIDATE_CONTRACT_TOOL, KNOWLEDGE_TARGET_TOOL}:
             specs[phase]["candidate_limit"] = candidate_limit
+        specs[phase].update(target_limits)
         if candidate_memory and CORRECTIVE_MEMORY_TOOL in tools:
             specs[phase]["candidate_experience_memory"] = True
     stop_rule = getattr(program, "stop_rule", None)
@@ -186,7 +206,7 @@ def load_phase_tool_specs(config, program):
                 "native-role-episode phase tools require native-tools with source authority"
             )
         schemas_by_name = {}
-        for phase in phases[:-1]:
+        for phase in phases:
             spec = specs.get(phase)
             if spec is None:
                 continue
@@ -244,8 +264,20 @@ def _validate_action(action, allowed, views, *, candidate_limit=None, store_ids=
             args = normalize_live_span_arguments(args)
         except RailsError as error:
             raise PhaseToolError(str(error)) from error
-    if tool_id == CANDIDATE_CONTRACT_TOOL:
-        if set(args) != {"candidate_ids"} or not isinstance(args["candidate_ids"], list):
+    if tool_id == KNOWLEDGE_TARGET_TOOL:
+        if set(args) != {"store_id", "view", "candidate_ids", "distinction"}:
+            raise PhaseToolError("target knowledge requires store, view, candidates and distinction")
+        if (not isinstance(args["store_id"], str) or not store_ids
+                or args["store_id"] not in store_ids or args["view"] != "text"):
+            raise PhaseToolError("target knowledge request exceeds its store or view authority")
+        distinction = args["distinction"]
+        if not isinstance(distinction, str) or not distinction.strip() or len(distinction) > 512:
+            raise PhaseToolError("target knowledge requires a bounded nonempty distinction")
+    if tool_id in {CANDIDATE_CONTRACT_TOOL, KNOWLEDGE_TARGET_TOOL}:
+        expected = {"candidate_ids"} if tool_id == CANDIDATE_CONTRACT_TOOL else {
+            "store_id", "view", "candidate_ids", "distinction"
+        }
+        if set(args) != expected or not isinstance(args["candidate_ids"], list):
             raise PhaseToolError("candidate lookup requires only a candidate_ids list")
         try:
             request = CandidateContractRequest.from_ids(args["candidate_ids"])
@@ -266,6 +298,11 @@ def _native_tool_schema(
             "Returned field associations are task knowledge, not evidence of spoken values."
         ),
         PHASE_KNOWLEDGE_TOOL: "Retrieve prepared task knowledge.",
+        KNOWLEDGE_TARGET_TOOL: (
+            "Read target-specific knowledge for a named unresolved distinction. Choose the "
+            "activation or parameter-meaning store as appropriate. Missing targets are reported; "
+            "knowledge is guidance, not evidence that an action or value was spoken."
+        ),
         CORRECTIVE_MEMORY_TOOL: (
             "Read provisional guidance for this registered TRAIN evaluation."
             if candidate_memory
@@ -281,12 +318,21 @@ def _native_tool_schema(
     if tool_id in {TASK_CONTRACT_TOOL, CORRECTIVE_MEMORY_TOOL}:
         properties = {}
         required = []
-    elif tool_id == PHASE_KNOWLEDGE_TOOL:
+    elif tool_id in KNOWLEDGE_TOOLS:
         properties = {"view": {"type": "string", "enum": list(views)}}
         required = ["view"]
         if store_ids is not None:
             properties = {"store_id": {"type": "string", "enum": list(store_ids)}, **properties}
             required = ["store_id", "view"]
+        if tool_id == KNOWLEDGE_TARGET_TOOL:
+            properties.update({
+                "candidate_ids": {
+                    "type": "array", "minItems": 1, "maxItems": candidate_limit,
+                    "uniqueItems": True, "items": {"type": "string", "minLength": 1},
+                },
+                "distinction": {"type": "string", "minLength": 1, "maxLength": 512},
+            })
+            required += ["candidate_ids", "distinction"]
     elif tool_id == CANDIDATE_CONTRACT_TOOL:
         properties = {"candidate_ids": {
             "type": "array", "minItems": 1, "maxItems": candidate_limit,
@@ -400,7 +446,10 @@ class PhaseToolDispatcher:
             for store_id in spec.get("knowledge_store_ids", ())
         }
         if configured_store_ids:
-            if knowledge_stores is None or not callable(supply_for_store):
+            needs_router = any(
+                PHASE_KNOWLEDGE_TOOL in spec["allowed_tools"] for spec in specs.values()
+            )
+            if knowledge_stores is None or (needs_router and not callable(supply_for_store)):
                 raise PhaseToolError("named knowledge stores require a bound store router")
             if not configured_store_ids <= set(getattr(knowledge_stores, "store_ids", ())):
                 raise PhaseToolError("configured knowledge stores differ from the bound releases")
@@ -448,7 +497,8 @@ class PhaseToolDispatcher:
             return ()
         ordered = []
         seen = set()
-        for phase in self.program.phase_names()[:-1]:
+        phases = self.program.phase_names()
+        for phase in (phases if self.native_role_episode else phases[:-1]):
             spec = (
                 self.specs.get(phase)
                 if self.native_role_episode
@@ -524,11 +574,10 @@ class PhaseToolDispatcher:
         if spec is None:
             return None
         phases = self.program.phase_names()
-        sequential_next = phases[phases.index(phase) + 1]
-        if next_phase != sequential_next and not (
-            self.native_role_episode and next_phase == phase
-        ):
-            raise PhaseToolError("action successor differs from the program")
+        phase_index = phases.index(phase)
+        if not (self.native_role_episode and next_phase == phase):
+            if phase_index + 1 >= len(phases) or next_phase != phases[phase_index + 1]:
+                raise PhaseToolError("action successor differs from the program")
         states = [s for s in context.agent_states if s.state_kind == f"phase:{phase}"]
         if not states:
             raise PhaseToolError("action requires the current sealed phase response")
@@ -678,6 +727,20 @@ class PhaseToolDispatcher:
                 output = tool.call(
                     self.candidate_contracts, action["arguments"]["candidate_ids"]
                 )
+            elif action["tool_id"] == KNOWLEDGE_TARGET_TOOL:
+                store_id = action["arguments"]["store_id"]
+                prefix = store_id + "::"
+                visible = tuple(
+                    value_id[len(prefix):] for value_id in context.query_state.retrieved_value_ids
+                    if value_id.startswith(prefix)
+                )
+                output = tool.call(
+                    self.knowledge_stores.snapshot_for(store_id), context.query_state,
+                    action["arguments"]["candidate_ids"],
+                    max_values_per_candidate=spec["knowledge_values_per_candidate"],
+                    max_total_values=spec["knowledge_value_limit"],
+                    already_visible_value_ids=visible,
+                )
             elif action["tool_id"] == PREPARED_SPEECH_OBSERVATION_TOOL:
                 output = tool.call(self.speech_observations, context)
             elif action["tool_id"] == LIVE_SPEECH_OBSERVATION_TOOL:
@@ -711,7 +774,12 @@ class PhaseToolDispatcher:
                 )
             supply = None
             cited = ()
-            if action["tool_id"] == PHASE_KNOWLEDGE_TOOL:
+            store_receipt = None
+            if action["tool_id"] == KNOWLEDGE_TARGET_TOOL:
+                supply, cited, result, store_receipt = self._target_knowledge_result(
+                    output.result, action["arguments"], context
+                )
+            elif action["tool_id"] == PHASE_KNOWLEDGE_TOOL:
                 supply = output.result
                 if not isinstance(supply, PhaseSupply):
                     raise PhaseToolError("knowledge tool did not return a PhaseSupply")
@@ -846,7 +914,7 @@ class PhaseToolDispatcher:
             if native_call is not None:
                 # Preserve the actual return at invocation time. Later knowledge
                 # selections can change the current view but not an earlier turn.
-                if action["tool_id"] == PHASE_KNOWLEDGE_TOOL:
+                if action["tool_id"] in KNOWLEDGE_TOOLS:
                     native_content = list(
                         self._model_knowledge_blocks(
                             self._value_renderer.assemble(
@@ -866,7 +934,7 @@ class PhaseToolDispatcher:
                     {"blocks": native_content}
                 )
             model_result = result
-            if action["tool_id"] == PHASE_KNOWLEDGE_TOOL and store_receipt is not None:
+            if action["tool_id"] in KNOWLEDGE_TOOLS and store_receipt is not None:
                 model_result = {
                     "store_id": result["store_id"],
                     "store_role": result["store_role"],
@@ -874,6 +942,12 @@ class PhaseToolDispatcher:
                     "supporting_facet_ids": result["supporting_facet_ids"],
                     "knowledge_view": result["knowledge_view"],
                 }
+                if action["tool_id"] == KNOWLEDGE_TARGET_TOOL:
+                    model_result.update({
+                        key: result[key] for key in (
+                            "candidate_ids", "missing_candidate_ids", "supply_disposition",
+                        )
+                    })
             document = {
                 **request,
                 "schema": (
@@ -1087,6 +1161,63 @@ class PhaseToolDispatcher:
             self._native_rejections.append(content_hash(document))
         self._emit(context.sample_id, phase, "rejected", document)
         return PhaseToolStep(supply=None, state=artifact)
+
+    def _target_knowledge_result(self, selection, arguments, context):
+        from .knowledge import assert_knowledge_use_binding
+        from .knowledge_target_lookup import KnowledgeTargetSelection
+
+        if not isinstance(selection, KnowledgeTargetSelection):
+            raise PhaseToolError("target knowledge returned an unbound selection")
+        store_id = arguments["store_id"]
+        local = self.knowledge_stores.snapshot_for(store_id)
+        audit = dict(selection.audit)
+        unsigned = {k: v for k, v in audit.items() if k != "selection_sha256"}
+        if (
+            audit.get("snapshot_sha256") != local.content_hash()
+            or audit.get("query_state_sha256") != context.query_state.content_hash()
+            or audit.get("candidate_ids") != arguments["candidate_ids"]
+            or audit.get("selected_value_ids") != list(selection.selected_value_ids)
+            or audit.get("selection_sha256") != content_hash(unsigned)
+        ):
+            raise PhaseToolError("target knowledge selection differs from its source or request")
+        supply = selection.supply
+        receipt = dict(self.knowledge_stores.store_receipt(store_id))
+        if supply is not None:
+            supply.validate()
+            if list(supply.fusion_decision.selected_value_ids) != audit.get("new_value_ids"):
+                raise PhaseToolError("target knowledge supply differs from its selected new values")
+            receipt.update(local_rank_sha256=supply.rank_result.content_hash(),
+                           local_fusion_sha256=supply.fusion_decision.content_hash())
+            supply = self.knowledge_stores.qualify_supply(store_id, supply, context.query_state)
+            assert_knowledge_use_binding(
+                snapshot=self.snapshot, query_state=context.query_state,
+                rank_result=supply.rank_result, fusion_decision=supply.fusion_decision,
+                snapshot_sha256=self.snapshot_sha256,
+            )
+            receipt.update(qualified_rank_sha256=supply.rank_result.content_hash(),
+                           qualified_fusion_sha256=supply.fusion_decision.content_hash())
+        elif audit.get("new_value_ids"):
+            raise PhaseToolError("target knowledge omitted its new-value supply")
+        cited = tuple(f"{store_id}::{value_id}" for value_id in selection.selected_value_ids)
+        introduced = set(supply.fusion_decision.selected_value_ids) if supply else set()
+        if not set(cited) <= set(context.query_state.retrieved_value_ids) | introduced:
+            raise PhaseToolError("target knowledge cites values without retained or new supply")
+        values = {v.value_id: v for v in local.values}
+        facets = tuple(dict.fromkeys(
+            f"{store_id}::{facet}" for value_id in selection.selected_value_ids
+            for facet in values[value_id].associated_facet_ids
+        ))
+        result = {
+            **receipt, "target_selection": audit,
+            "candidate_ids": list(arguments["candidate_ids"]),
+            "missing_candidate_ids": [
+                row["candidate_id"] for row in audit["mappings"] if row["status"] == "absent"
+            ],
+            "supply_disposition": audit["supply_disposition"],
+            "selected_value_ids": list(cited), "supporting_facet_ids": list(facets),
+            "knowledge_view": "text",
+        }
+        return supply, cited, result, receipt
 
     def _emit(self, sample_id, phase, event, payload):
         if self.trace_sink is not None:
