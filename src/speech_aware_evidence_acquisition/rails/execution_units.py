@@ -7,12 +7,14 @@ uses ``request_key`` only to isolate histories, budgets, and trace records.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from collections.abc import Sequence
+from dataclasses import dataclass, replace
+from collections.abc import Mapping, Sequence
 import hashlib
 import json
 
 from ..core.model import SliceRecord
+from ..core.preparation import PreparationError
+from ..core.preparation_window_packets import PreparedWindowFeaturePackets
 from .errors import RailsError
 
 
@@ -23,6 +25,8 @@ class ExecutionUnit:
     parent_sample_id: str
     request_key: str
     slice_record: SliceRecord
+    speech_packet_id: str | None = None
+    speech_packet_sha256: str | None = None
 
     def validate(self) -> "ExecutionUnit":
         if (
@@ -34,15 +38,49 @@ class ExecutionUnit:
             or self.slice_record.sample_id != self.parent_sample_id
         ):
             raise RailsError("execution unit must bind one parent, key, and matching SliceRecord")
+        if (self.speech_packet_id is None) != (self.speech_packet_sha256 is None):
+            raise RailsError("execution unit speech packet ID and SHA256 must appear together")
+        if self.speech_packet_id is not None and (
+            not isinstance(self.speech_packet_id, str)
+            or not self.speech_packet_id
+            or not isinstance(self.speech_packet_sha256, str)
+            or len(self.speech_packet_sha256) != 64
+            or any(character not in "0123456789abcdef" for character in self.speech_packet_sha256)
+        ):
+            raise RailsError("execution unit speech packet identity is malformed")
         return self
 
     def as_json(self) -> dict[str, object]:
         self.validate()
-        return {
+        document = {
             "parent_sample_id": self.parent_sample_id,
             "request_key": self.request_key,
             "slice_record": self.slice_record.trace_view(),
         }
+        if self.speech_packet_id is not None:
+            document.update(
+                speech_packet_id=self.speech_packet_id,
+                speech_packet_sha256=self.speech_packet_sha256,
+            )
+        return document
+
+    def query_descriptor(self, query_source: str) -> dict[str, str]:
+        """Return the source identity in the existing request representation."""
+        self.validate()
+        if query_source == "speech_audio":
+            return {
+                "media_relpath": self.slice_record.media_relpath,
+                "sha256": self.slice_record.sha256,
+            }
+        if query_source == "speech_features":
+            if self.speech_packet_id is None or self.speech_packet_sha256 is None:
+                raise RailsError("feature execution unit has no bound speech packet")
+            return {
+                "packet_id": self.speech_packet_id,
+                "sha256": self.speech_packet_sha256,
+                "role": "query",
+            }
+        raise RailsError("execution unit query source must be speech_audio or speech_features")
 
 
 @dataclass(frozen=True)
@@ -67,6 +105,52 @@ class ExecutionUnitRoster:
         return hashlib.sha256(
             json.dumps(document, sort_keys=True, separators=(",", ":")).encode()
         ).hexdigest()
+
+    def with_speech_packets(self, prepared: PreparedWindowFeaturePackets) -> "ExecutionUnitRoster":
+        """Attach already prepared formal packets to this exact ordered roster."""
+        if not isinstance(prepared, PreparedWindowFeaturePackets):
+            raise RailsError("prepared speech packets have the wrong type")
+        bindings = prepared.by_request_key
+        request_count = prepared.request_count
+        expected = tuple(unit.request_key for unit in self.units)
+        if (
+            not isinstance(bindings, Mapping)
+            or request_count != len(self.units)
+            or len(set(expected)) != len(expected)
+            or set(bindings) != set(expected)
+            or tuple(binding.request_key for binding in prepared.bindings) != expected
+        ):
+            raise RailsError("prepared speech packets must cover the exact execution unit roster")
+        attached = []
+        try:
+            for unit in self.units:
+                binding = prepared.binding_for(
+                    unit.request_key, unit.slice_record.trace_view()
+                )
+                if binding.audio_sha256 != unit.slice_record.sha256:
+                    raise RailsError("speech packet audio differs from its execution unit slice")
+                current = (
+                    None
+                    if unit.speech_packet_id is None
+                    else (unit.speech_packet_id, unit.speech_packet_sha256)
+                )
+                selected = (binding.packet_id, binding.packet_sha256)
+                if current not in (None, selected):
+                    raise RailsError(
+                        "execution unit already carries a different speech packet"
+                    )
+                attached.append(
+                    replace(
+                        unit,
+                        speech_packet_id=binding.packet_id,
+                        speech_packet_sha256=binding.packet_sha256,
+                    ).validate()
+                )
+        except RailsError:
+            raise
+        except PreparationError as error:
+            raise RailsError(f"cannot bind prepared speech packets: {error}") from error
+        return ExecutionUnitRoster(tuple(attached))
 
 
 def validate_execution_units(
