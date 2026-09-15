@@ -155,8 +155,9 @@ geometry within a comparison to conceal a fit failure.
 
 1. Integrate the reviewed, tested shared changes at the allowed flight boundary without
    modifying frozen flight worktrees. The configured synthetic lifecycle is complete.
-2. Build source-bound ConEC store views through shared components. The bounded ASR source
-   contract is CPU-verified; freeze exact role prompts, tool allowlists and iteration bounds.
+2. ConEC stores are built and their actual 1,593-window routing and configured tool/revision
+   lifecycle are verified. See [the preparation checkpoint](2026-09-15-e21-governed-context-readiness-v1.md).
+   Freeze exact role prompts, tool allowlists and iteration bounds for the complete experiment.
 3. Freeze matching direct/system configurations, complete-call scoring and paired analysis,
    serving identity and explicit per-unit generation/tool/fit budgets.
 4. Perform registered actual capacity checks and then complete task experiments. Engineering
