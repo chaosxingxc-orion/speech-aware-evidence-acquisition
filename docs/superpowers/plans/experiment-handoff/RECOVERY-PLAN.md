@@ -1,6 +1,6 @@
 # Owner-directed recovery and continuation plan
 
-**Current overlay:** Read [STATUS-114](STATUS-114.md). SLURP replication continues on its frozen source. Audio2Tool engineering registration and preflight are complete; handoff can follow generation seal while scoring continues. A key-only successor repairs the post-seal diagnostics reader before quality release. Released TRAIN saved-count analysis separates 127 FN-only, 134 FP-only and 264 mixed cases among 525 correct-intent slot errors. Full4000 admission still requires the SLURP verdict and successful engineering proof.
+**Current overlay:** Read [STATUS-115](STATUS-115.md). The SLURP matched replication passes its frozen rule, establishing the current exploratory useful base. Audio2Tool engineering generation is sealed and verified without quality scoring; its prepared full4000 comparison awaits final registration. Root owns attribution, design and decisions; delegated agents handle mechanical work only.
 
 **Latest released TRAIN diagnosis:** Read the [source-bound entity-loss analysis](../../../results/2026-09-14-slurp-train-a-entity-loss-attribution-v1.md). The exact Fold A output/reference join reconciles every saved official ingredient without rescoring. Of 414 reference-empty cases, 184 emit entities; surface, omission and extra-prediction losses all matter. This is a diagnostic, not a new mechanism or runtime memory admission.
 
