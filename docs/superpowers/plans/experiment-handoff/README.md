@@ -45,7 +45,7 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-123.md](STATUS-123.md), state.json and [OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15](OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15.md) first.
+Read [STATUS-124.md](STATUS-124.md), state.json and [OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15](OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15.md) first.
 The September15 owner directive holds all new GPU experiments after the current Audio2Tool
 task completes or stops. It supersedes the launch scheduling in OWNER-GPU-RESUME-013;
 an explicit owner resume is required before dispatching another GPU task. The earlier G6/E21 campaigns' generation, scoring, fixed analysis and all four settlements
@@ -91,4 +91,4 @@ no new test/confirmatory exposure or Stage-3 execution is admitted.
 
 Current knowledge design: [discriminative values](../../../readiness/2026-09-11-discriminative-knowledge-values.md).
 
-Latest implementation handoff: [STATUS-101](STATUS-101.md). Shared bounded terminal outcomes and missing-stage accounting are verified. The next TRAIN A system has passed frozen preflight and launched with an event observer; the first actual optimizer cycle remains pending. Completed and failed experiment sources stay frozen. Monitoring uses local metadata events and a lightweight ChatGPT observer. This pointer grants no separate generation authority.
+Latest implementation handoff: [STATUS-124](STATUS-124.md). Shared execution-window custody, native bounded speech tools and configured CPU lifecycle are verified in the isolated integration worktree. Current GPU scheduling follows the owner hold above. ConEC named-store construction and permitted integration remain next CPU work; the first actual optimizer cycle remains pending. Completed and failed sources stay frozen. Monitoring uses local metadata events and a lightweight ChatGPT observer. This pointer grants no separate generation authority.
