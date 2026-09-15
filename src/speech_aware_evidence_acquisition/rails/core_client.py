@@ -77,6 +77,7 @@ from ..core.model.slices import SliceRecord
 from ..core.tracing import DispatchingSink, TraceBuffer, TraceSink
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
 from .errors import RailsError
+from .execution_units import ExecutionUnit, ExecutionUnitRoster, execution_unit_scope
 from .knowledge import AgentStateArtifact
 
 
@@ -1408,6 +1409,7 @@ class FrozenCoreClient:
         speech_feature_root: Path | None = None,
         speech_packet_bindings: Mapping[str, Mapping[str, str]] | None = None,
         validated_packet_set: ValidatedSpeechPacketSet | None = None,
+        execution_units: ExecutionUnitRoster | None = None,
         tool_schemas: Sequence[Mapping[str, object]] | None = None,
         construction_targets: Sequence[Mapping[str, object]] | None = None,
     ) -> None:
@@ -1491,7 +1493,74 @@ class FrozenCoreClient:
         self._speech_packet_bindings: dict[str, dict[str, str]] = {}
         self._speech_decoder_gguf_sha256: str | None = None
         self._speech_n_embd: int | None = None
-        if self._is_speech_feature_arm and validated_packet_set is not None:
+        self._execution_units_by_scope: dict[str, ExecutionUnit] = {}
+        if self._is_speech_feature_arm and execution_units is not None:
+            if speech_packet_bindings is not None or validated_packet_set is not None:
+                raise FrozenCoreClientError(
+                    "execution-unit speech packets replace parent speech_packet_bindings"
+                )
+            if speech_feature_root is None or slice_registry is None:
+                raise FrozenCoreClientError(
+                    "feature execution units require speech_feature_root and slice_registry"
+                )
+            if not isinstance(execution_units, ExecutionUnitRoster):
+                raise FrozenCoreClientError(
+                    "execution_units must be an ExecutionUnitRoster"
+                )
+            try:
+                execution_units.validate(
+                    parent_sample_ids=tuple(binding.allowed_sample_ids),
+                    max_contacts=1,
+                )
+            except RailsError as error:
+                raise FrozenCoreClientError(str(error)) from error
+            descriptors = []
+            for unit in execution_units.units:
+                try:
+                    descriptor = unit.query_descriptor("speech_features")
+                except RailsError as error:
+                    raise FrozenCoreClientError(str(error)) from error
+                descriptors.append(
+                    {"packet_id": descriptor["packet_id"], "sha256": descriptor["sha256"]}
+                )
+                record = slice_registry.lookup(
+                    unit.parent_sample_id, unit.slice_record.media_relpath
+                )
+                if record != unit.slice_record:
+                    raise FrozenCoreClientError(
+                        "execution unit slice differs from the registered source"
+                    )
+                try:
+                    slice_registry.verify_slice_bytes(record)
+                except FrozenCoreError as error:
+                    raise FrozenCoreClientError(str(error)) from error
+            try:
+                root = Path(speech_feature_root).resolve(strict=True)
+                packets = load_speech_feature_packets(root, tuple(descriptors), workers=8)
+            except (OSError, FrozenCoreError) as error:
+                raise FrozenCoreClientError(
+                    "cannot validate execution-unit speech packets: " + str(error)
+                ) from error
+            for unit, packet in zip(execution_units.units, packets, strict=True):
+                if packet.audio_sha256 != unit.slice_record.sha256:
+                    raise FrozenCoreClientError(
+                        "execution-unit packet does not match its source slice"
+                    )
+                scope = execution_unit_scope(unit.request_key)
+                if scope in self._execution_units_by_scope:
+                    raise FrozenCoreClientError("execution unit scope collision")
+                self._execution_units_by_scope[scope] = unit
+                self.admit_registered_slice(unit.slice_record)
+            decoders = {packet.decoder_gguf_sha256 for packet in packets}
+            dimensions = {chunk.n_embd for packet in packets for chunk in packet.chunks}
+            if len(decoders) != 1 or len(dimensions) != 1:
+                raise FrozenCoreClientError(
+                    "execution-unit packets must share one decoder identity and dimension"
+                )
+            self._speech_feature_root = root
+            self._speech_decoder_gguf_sha256 = next(iter(decoders))
+            self._speech_n_embd = next(iter(dimensions))
+        elif self._is_speech_feature_arm and validated_packet_set is not None:
             if (
                 speech_feature_root is None
                 or speech_packet_bindings is None
@@ -1530,9 +1599,10 @@ class FrozenCoreClient:
             speech_feature_root is not None
             or speech_packet_bindings is not None
             or validated_packet_set is not None
+            or execution_units is not None
         ):
             raise FrozenCoreClientError(
-                "speech feature bindings are only valid for the speech-feature-query arm"
+                "speech feature bindings and execution units are only valid for the speech-feature-query arm"
             )
         self._tool_schemas: tuple[dict[str, object], ...] | None = None
         self._tool_schemas_sha256: str | None = None
@@ -1805,6 +1875,7 @@ class FrozenCoreClient:
                 raise FrozenCoreClientError("raw query bytes changed after preparation")
         descriptors = payload.get("speech_feature_parts")
         if descriptors is not None:
+            self._validate_feature_execution_unit_payload(payload)
             load_speech_feature_packets(
                 self._speech_feature_root,
                 tuple({"packet_id": d["packet_id"], "sha256": d["sha256"]}
@@ -1913,6 +1984,66 @@ class FrozenCoreClient:
                 )
             )
         return response
+
+    def _feature_execution_unit(self, agent_contact_id: str | None):
+        """Resolve the immutable feature unit from its scoped contact ID."""
+        if not self._execution_units_by_scope:
+            return None
+        if not isinstance(agent_contact_id, str) or not agent_contact_id:
+            raise FrozenCoreClientError(
+                "feature execution-unit request requires a scoped agent_contact_id"
+            )
+        scope, separator, _contact = agent_contact_id.partition("/")
+        unit = self._execution_units_by_scope.get(scope)
+        if separator != "/" or unit is None:
+            raise FrozenCoreClientError(
+                "feature request contact is outside the execution unit roster"
+            )
+        return unit
+
+    def _validate_feature_execution_unit_payload(
+        self, payload: Mapping[str, object]
+    ) -> None:
+        """Recheck unit source custody when a prepared request is consumed."""
+        if not self._execution_units_by_scope:
+            return
+        controls = [
+            item.get("contact_id")
+            for item in payload.get("history", ())
+            if isinstance(item, Mapping) and item.get("role") == "control"
+        ]
+        unit = self._feature_execution_unit(controls[-1] if controls else None)
+        try:
+            registered = self.registered_slice(
+                unit.parent_sample_id, unit.slice_record.media_relpath
+            )
+        except FrozenCoreError as error:
+            raise FrozenCoreClientError(
+                "prepared feature execution unit source changed: " + str(error)
+            ) from error
+        if (
+            unit.parent_sample_id != payload.get("sample_id")
+            or unit.slice_record.media_relpath != payload.get("media_relpath")
+            or unit.slice_record.audio_seconds != payload.get("audio_seconds")
+            or unit.slice_record.sample_rate_hz != payload.get("sample_rate_hz")
+            or registered != unit.slice_record
+        ):
+            raise FrozenCoreClientError(
+                "prepared feature request differs from its execution unit source"
+            )
+        query = next(
+            (
+                descriptor
+                for descriptor in payload.get("speech_feature_parts", ())
+                if isinstance(descriptor, Mapping)
+                and descriptor.get("role") == "query"
+            ),
+            None,
+        )
+        if query != unit.query_descriptor("speech_features"):
+            raise FrozenCoreClientError(
+                "prepared feature request differs from its execution unit packet"
+            )
 
     def _raw_speech_identity(self, sample_id: str, media_relpath: str) -> dict[str, str]:
         """Hash only the bound original or a verified registered runtime slice."""
@@ -2064,11 +2195,40 @@ class FrozenCoreClient:
             )
             supply_texts = [part["text"] for part in speech_supply_parts]
             sample_id = speech_feature_sample_id
-            expected_query = self._speech_packet_bindings.get(sample_id)
-            if expected_query is None:
-                raise FrozenCoreClientError(
-                    f"speech_feature_sample_id {sample_id!r} is not bound to this client"
-                )
+            unit = self._feature_execution_unit(agent_contact_id)
+            if unit is None:
+                expected_query = self._speech_packet_bindings.get(sample_id)
+                if expected_query is None:
+                    raise FrozenCoreClientError(
+                        f"speech_feature_sample_id {sample_id!r} is not bound to this client"
+                    )
+                media_relpath = self._binding.media_relpaths[sample_id]
+                audio_seconds, sample_rate_hz = self._binding.sample_facts[sample_id]
+            else:
+                if unit.parent_sample_id != sample_id:
+                    raise FrozenCoreClientError(
+                        "feature execution unit differs from its parent sample"
+                    )
+                descriptor = unit.query_descriptor("speech_features")
+                expected_query = {
+                    "packet_id": descriptor["packet_id"],
+                    "sha256": descriptor["sha256"],
+                }
+                try:
+                    registered = self.registered_slice(
+                        sample_id, unit.slice_record.media_relpath
+                    )
+                except FrozenCoreError as error:
+                    raise FrozenCoreClientError(
+                        "feature execution unit source slice changed: " + str(error)
+                    ) from error
+                if registered != unit.slice_record:
+                    raise FrozenCoreClientError(
+                        "feature execution unit source slice changed"
+                    )
+                media_relpath = unit.slice_record.media_relpath
+                audio_seconds = unit.slice_record.audio_seconds
+                sample_rate_hz = unit.slice_record.sample_rate_hz
             actual_query = next(
                 part for part in speech_feature_parts if part["role"] == "query"
             )
@@ -2093,8 +2253,6 @@ class FrozenCoreClient:
                 expected_decoder_gguf_sha256=self._speech_decoder_gguf_sha256,
                 expected_n_embd=self._speech_n_embd,
             )
-            media_relpath = self._binding.media_relpaths[sample_id]
-            audio_seconds, sample_rate_hz = self._binding.sample_facts[sample_id]
         elif text_only_sample_id is not None:
             if not isinstance(text_only_sample_id, str) or not text_only_sample_id:
                 raise FrozenCoreClientError(
