@@ -1,0 +1,150 @@
+{
+  "schema": "saea-score-analysis-binding-recipe-v1",
+  "experiment_id": "SAEA-SLURP-BROAD-FACTORED-TRAIN-A-ANALYSIS-V1",
+  "execution_profile": "model-free-check",
+  "status": "STATISTICAL_FIELDS_FIXED_FROM_REGISTERED_PROTOCOL; COMPLETE_NEW_SOURCE_BINDINGS_PENDING",
+  "protocol": {
+    "path": "/home/chao/saea-worktrees/slurp-broad-factored-prepare-v1/docs/readiness/2026-09-15-slurp-broad-factored-train-a-v1/protocol-v1.json",
+    "sha256": "4b27a3e9a06f917445c9a6bef62d1b423a7465e2f8e5f73a53eb8d5d929ca01e"
+  },
+  "incumbent_quality_release": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-native-dual-store-train-fold-a-anchor-recovery-v1/root-quality-release-v1.json",
+    "sha256": "0be030c3d4d43bd27035575ff455cf30830d042b5f35d3ab6b83ff69ecc43bdf"
+  },
+  "analysis": {
+    "format": "generic-scores-v1",
+    "id_field": "sample_id",
+    "expected_ids_count": 1080,
+    "full_roster": {
+      "path": "/home/chao/saea-worktrees/slurp-broad-factored-prepare-v1/docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+      "id_field": "sample_id"
+    },
+    "cluster_field": "speaker",
+    "groupings": {
+      "scenario": "scenario"
+    },
+    "grouping_resampling": "whole-cluster",
+    "n_replicates": 10000,
+    "seed": 20260915,
+    "max_workers": 2,
+    "metrics": {
+      "official_slu_micro_f1": {
+        "scorer": "slurp-slu-official-train",
+        "statistic": "ratio",
+        "direction": "higher",
+        "numerator": {
+          "slu_f1_word_tp": 2,
+          "slu_f1_char_tp": 2
+        },
+        "denominator": {
+          "slu_f1_word_tp": 2,
+          "slu_f1_char_tp": 2,
+          "slu_f1_word_fp": 1,
+          "slu_f1_char_fp": 1,
+          "slu_f1_word_fn": 1,
+          "slu_f1_char_fn": 1
+        },
+        "zero_denominator": "zero"
+      },
+      "official_entity_pair_micro_f1": {
+        "scorer": "slurp-slu-official-train",
+        "statistic": "ratio",
+        "direction": "higher",
+        "numerator": {
+          "slot_f1_exact_tp": 2
+        },
+        "denominator": {
+          "slot_f1_exact_tp": 2,
+          "slot_f1_exact_fp": 1,
+          "slot_f1_exact_fn": 1
+        },
+        "zero_denominator": "zero"
+      },
+      "intent_accuracy": {
+        "scorer": "slurp-slu-official-train",
+        "statistic": "mean",
+        "direction": "higher",
+        "field": "scenario_action_exact"
+      },
+      "scenario_accuracy": {
+        "scorer": "slurp-slu-official-train",
+        "statistic": "mean",
+        "direction": "higher",
+        "field": "scenario_exact"
+      },
+      "action_accuracy": {
+        "scorer": "slurp-slu-official-train",
+        "statistic": "mean",
+        "direction": "higher",
+        "field": "action_exact"
+      }
+    },
+    "contrasts": [
+      {
+        "name": "broad-factored-minus-incumbent-primary",
+        "left": "incumbent",
+        "right": "broad_factored",
+        "metrics": [
+          "official_slu_micro_f1"
+        ],
+        "ci_level": 0.95
+      },
+      {
+        "name": "broad-factored-minus-incumbent-diagnostics",
+        "left": "incumbent",
+        "right": "broad_factored",
+        "metrics": [
+          "official_slu_micro_f1",
+          "official_entity_pair_micro_f1",
+          "intent_accuracy",
+          "scenario_accuracy",
+          "action_accuracy"
+        ],
+        "ci_level": 0.9
+      }
+    ]
+  },
+  "binding_steps": [
+    "Require shared campaign completion, exact ordered 1080 roster, finalized attempt and first complete official score. Do not start a second scorer.",
+    "Verify both bundles and bind both manifest and attached score hashes. Verify the already released incumbent source against its quality release; do not re-run its scorer.",
+    "Bind a metadata-only table containing sample_id, scenario from the frozen roster stratum, and speaker from the governed SLURP metadata reader. Pin the live dataset lock, metadata source and derived table; join exactly Fold A and reject missing or ambiguous speaker identities. Do not load Fold B references.",
+    "Root records the complete paired quality release before new task outcomes are read. Only then add analysis.inputs using score_source finalized-bundle, and analysis.metadata using the verified table pin.",
+    "Run the unchanged shared analysis.score_compare_cli once with the final complete binding. Preserve this recipe; create a separately hashed execution configuration."
+  ],
+  "decision": {
+    "authority": "Retain the exact protocol advancement and failure language. This recipe implements the prescribed estimates and adds no decision gate.",
+    "primary": "Natural-mixture pooled official SLU micro F1 is the complete-task primary; report its positive point gain and CI95. Also report equal-scenario pooled ratios and all18 strata. Candidate inclusion alone cannot advance a worse full-task system.",
+    "interpretation": "The earlier incumbent process differs. A positive discovery lead still requires separately registered same-roster matched replication before stable-benefit adoption."
+  },
+  "additional_report": "Use existing native trajectory, reward-link and TRAIN-stage diagnostic readers after release for initial/operative candidates, actual width, covered resolution, correct-intent entity residuals, saves/harms, role/tool routes, failures, fallback and OBS/ORG/SUPPLY/USE. Report actual input and cost; initial service telemetry is missing before its first recorded sample. Do not invent a shared-projection field or causal interpretation for observational partitions.",
+  "validation": {
+    "released_incumbent_rows": 1080,
+    "projection_fields_present": true,
+    "pooled_projection_matches_existing_pooled_f1": true,
+    "new_quality_read": false,
+    "new_model_tool_scorer_contacts": 0
+  },
+  "implementation": [
+    {
+      "path": "/home/chao/saea-worktrees/slurp-broad-factored-prepare-v1/src/speech_aware_evidence_acquisition/analysis/score_compare_cli.py",
+      "sha256": "9ac779f0433bb134b978fd2477b4ef03a8a532ae2192ad88ce7c4e5d9a546ba5"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/slurp-broad-factored-prepare-v1/src/speech_aware_evidence_acquisition/analysis/paired.py",
+      "sha256": "260377bf5ac37fed842636daff69f6a4e28e8011193b9ef1b58265b99b86ca78"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/slurp-broad-factored-prepare-v1/src/speech_aware_evidence_acquisition/analysis/pooled_ratio_compare.py",
+      "sha256": "43dac47d3a82728d6ba200961c297a044b68489d587c3b10bce22dfee0a307ee"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/slurp-broad-factored-prepare-v1/src/speech_aware_evidence_acquisition/analysis/null_calibration_cli.py",
+      "sha256": "865d74deb7983b3670000c07a26cdef9fbce551c56777f6e31e0b73e036a7252"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/slurp-broad-factored-prepare-v1/src/speech_aware_evidence_acquisition/analysis/null_calibration.py",
+      "sha256": "fa387344de31e520ef8bf8f7d6d026345166613bd52ea1eb66dcb4483af3baf8"
+    }
+  ]
+}

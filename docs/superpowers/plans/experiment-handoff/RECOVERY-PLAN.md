@@ -1,6 +1,16 @@
 # Owner-directed recovery and continuation plan
 
-**Current overlay:** Read [STATUS-136](STATUS-136.md). The parameter-value source audit is complete. The identifier projection gap is real, but historical default-copying failures and the absence of a device alias catalog change the next action: do not append unqualified defaults or infer a catalog from evaluation answers. Preserve the scope-tools preparation under STATUS-133, complete attribution under STATUS-134/135 and all frozen configurations. Full ordered-action candidate coverage is 64.175%; primary inclusion is 72.05%, a different statistic. The current system retains its exact-match gain and failed tool guard. GPU generation, actual fit/tokenizer, encoding and service restart remain held. After explicit resume and per-flight gates, retain SLURP broad/factored TRAIN-A first, the admitted prepared Audio2Tool pair next, then E21 transfer. Root owns interpretation and decisions.
+**Current overlay:** Read [STATUS-138](STATUS-138.md). The frozen SLURP
+broad/factored TRAIN-A campaign is running under its exact np4 service. Its last
+bounded observer milestone is 1,009 model calls with a live process and an
+OPENED attempt; it is not a completed-row count. Telemetry before 17:11:58 UTC
+is missing and paired quality remains unread. The current campaign alone owns
+the first full official score. Audio2Tool is reviewed, registered,
+integrated and source-frozen; it awaits the SLURP generation boundary and its
+exact np3 service. Earnings21 held registration preparation is root-reviewed
+and merged without admission, exposure, fit or generation authority. Preserve
+the order SLURP, Audio2Tool, Earnings21 and all frozen and historical records.
+Stable benefit and trajectory-sampling optimization remain incomplete.
 
 **Latest released TRAIN diagnosis:** Read the [source-bound entity-loss analysis](../../../results/2026-09-14-slurp-train-a-entity-loss-attribution-v1.md). The exact Fold A output/reference join reconciles every saved official ingredient without rescoring. Of 414 reference-empty cases, 184 emit entities; surface, omission and extra-prediction losses all matter. This is a diagnostic, not a new mechanism or runtime memory admission.
 
@@ -73,12 +83,11 @@ treatment results exist. Any unresolved analysis must remain descriptive until i
 
 ## Current ordered work queue
 
-1. Close the running same-roster SLURP direct/native replication with first complete official scores, registered paired release and the frozen analysis.
-2. Establish reproducible package benefit and preserve an observable, configurable trajectory workspace. Use the verified genuine campaign receipt persistence without changing active execution source.
-3. Run the registered Audio2Tool engineering proof after the SLURP generation boundary and root service handoff. Admit the full4000 transfer only after scientific readiness, successful actual serving/capacity proof and final full-pair contact registration.
-4. Use disjoint TRAIN evidence to improve candidate inclusion, joint resolution and slot interpretation; add local speech tools as on-demand Reviewer/Planner actions.
-5. Transfer the stable shared base to E21 with dataset-native metrics. E22, summary objectives and held S4 exemplars are not active GPU tasks.
-6. Define training-free RL factors, trajectory sampling, rewards and update rules after the SLURP base/workspace qualifies. Root-led engineering is not an RL algorithm result.
+1. Complete and seal the running frozen SLURP broad/factored TRAIN-A campaign, then perform its first full official score and source-bound analysis through the registered controls.
+2. Run the source-frozen Audio2Tool direct/system scope-tools pair after the SLURP generation boundary and exact np3 service handoff; no further engineering is pending.
+3. Preserve the reviewed and merged Earnings21 held registration preparation; its configs, draft plans and held campaign grant no admission, exposure, fit or generation authority. Retain the supported static fit over 1,593 windows and 4,780 endpoints because the live fit's 44-parent count is not unit-aware.
+4. Establish reproducible package benefit and preserve an observable, configurable trajectory workspace.
+5. Define training-free RL factors, trajectory sampling, rewards and update rules after the shared base/workspace qualifies. Root-led engineering is not an RL algorithm result.
 
 Shared code, frozen source, complete service identity, per-flight plans, zero paid
 experimental APIs and Stage-2 remain binding. No remote push has been performed.
@@ -171,3 +180,18 @@ documentation does not claim a service or GPU contact has started. Continue with
 the admitted Audio2Tool scope-tools pair and then Earnings21 transfer. Root owns
 service switching. Preserve the frozen-core, Stage-2, source, exposure,
 execution-plan, budget, one-flight and quality constraints for every contact.
+
+## 2026-09-15 running SLURP flight and frozen follow-up queue
+
+[STATUS-138](STATUS-138.md) records the running frozen SLURP broad/factored
+TRAIN-A campaign, bounded observer milestone and telemetry limitation without
+interpreting unread paired quality. Its
+[source-binding analysis recipe](../../../readiness/2026-09-15-slurp-broad-factored-train-a-analysis-recipe-v1.json)
+is copied from the root-prepared DATA record and awaits a complete seal. The
+Audio2Tool scope-tools pair is reviewed, registered, integrated and
+source-frozen; it follows the SLURP generation boundary under its exact np3
+service. Earnings21 follows from its reviewed and merged held registration
+preparation, which grants no execution authority, with the existing supported
+static fit. Owner resume remains active. Preserve failed verdicts and
+historical records; stable benefit and trajectory-sampling optimization remain
+incomplete.

@@ -1,17 +1,21 @@
 # Current continuation: September 15
 
-Read [STATUS-137](STATUS-137.md): the owner explicitly resumed GPU execution. Root is
-validating and starting the prepared SLURP broad/factored TRAIN-A work without
-claiming that a model or GPU contact has started. See
+Read [STATUS-138](STATUS-138.md): the frozen SLURP broad/factored TRAIN-A
+campaign is running. Its last bounded observer milestone records 1,009 model
+calls with a live process and an OPENED attempt, not completed rows. Paired
+quality remains unread. See
 [the owner resume directive](OWNER-GPU-RESUME-2026-09-15.md).
 
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-137.md](STATUS-137.md) records the explicit owner GPU
-resume and the start of root readiness validation for the prepared SLURP
-broad/factored TRAIN-A work. The selected queue remains SLURP first, the admitted
-Audio2Tool scope-tools pair second and Earnings21 transfer third. Existing
-per-flight and research constraints remain binding.
+**Latest execution:** [STATUS-138.md](STATUS-138.md) records the running frozen
+SLURP broad/factored TRAIN-A campaign and its bounded observer milestone. The
+[post-seal analysis recipe](../../../readiness/2026-09-15-slurp-broad-factored-train-a-analysis-recipe-v1.json)
+is source-bound pending a complete seal. The Audio2Tool scope-tools pair is
+reviewed, registered, integrated and source-frozen; it awaits the SLURP
+generation boundary and its exact np3 service. The Earnings21 held registration
+preparation is root-reviewed and merged; its configs, draft plans and held
+campaign grant no execution authority.
 
 **Current comparison direction:** [OWNER-SYSTEM-VERSIONS-025.md](OWNER-SYSTEM-VERSIONS-025.md) makes complete model-versus-system task quality primary and allows evidence-guided expansion of system versions. The supplied/withheld knowledge draft is withdrawn. [The current system plan](../../../readiness/2026-09-13-slurp-direct-vs-native-system-plan-v1.md) and [extension sequence](../../../readiness/2026-09-13-finalized-score-reuse-and-system-extension.md) govern the next work.
 
@@ -19,7 +23,7 @@ per-flight and research constraints remain binding.
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 137. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 138. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -52,12 +56,13 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-137.md](STATUS-137.md), state.json and
-[OWNER-GPU-RESUME-2026-09-15](OWNER-GPU-RESUME-2026-09-15.md) first. The owner
-explicitly resumed GPU execution and superseded the September 15 after-current
-scheduling hold for future authorized contacts. Root owns service switching and
-is validating the prepared SLURP work against its existing per-flight gates; no
-started contact is claimed by this record. The earlier G6/E21 campaigns' generation, scoring, fixed analysis and all four settlements
+Read [STATUS-138.md](STATUS-138.md), state.json and
+[OWNER-GPU-RESUME-2026-09-15](OWNER-GPU-RESUME-2026-09-15.md) first. The frozen
+SLURP broad/factored TRAIN-A campaign is running under its exact service and
+registered controls. Treat 1,009 as a bounded model-call milestone, not a
+completed-row count; telemetry before 17:11:58 UTC is missing and paired quality
+remains unread. The current campaign alone owns the first complete official
+score. The earlier G6/E21 campaigns' generation, scoring, fixed analysis and all four settlements
 are complete. Those earlier G6 SLURP and E21 system admissions fail their frozen rules. STATUS-044 separately admits the newer SLURP task-agent working baseline for exploration. The newer role-coverage pair is closed under STATUS-046; it is not adopted and cannot be replayed under its exhausted registration.
 The task-scope
 clarification is [OWNER-DATASET-TASKS-010.md](OWNER-DATASET-TASKS-010.md):
@@ -100,4 +105,10 @@ no new test/confirmatory exposure or Stage-3 execution is admitted.
 
 Current knowledge design: [discriminative values](../../../readiness/2026-09-11-discriminative-knowledge-values.md).
 
-Latest handoff: [STATUS-136](STATUS-136.md). Shared target knowledge, native Planner tool dispatch, E21 window/context code and candidate diagnostics are integrated. The new tool has 460 focused CPU tests, including actual OpenJiuwen evidence delivery to Solver. The prepared SLURP broad/factored flight retains its frozen source and original tool configuration. New runtime fits, task gains, replications and the first actual optimizer cycle remain pending. GPU dispatch follows the owner hold. Preserve completed and failed sources. This pointer grants no generation authority.
+Latest handoff: [STATUS-138](STATUS-138.md). The SLURP broad/factored
+TRAIN-A campaign is running from frozen source. Audio2Tool is source-frozen and
+awaits the SLURP generation boundary and exact np3 service. Earnings21 held
+registration preparation is reviewed and merged without admission, exposure,
+fit or generation authority. The queue is SLURP, Audio2Tool, then Earnings21.
+Stable benefit and trajectory-sampling optimization remain incomplete. Preserve
+completed and failed sources. This pointer grants no generation authority.
