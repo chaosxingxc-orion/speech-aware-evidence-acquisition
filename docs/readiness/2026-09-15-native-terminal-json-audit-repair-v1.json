@@ -1,0 +1,56 @@
+{
+  "change": "Reuse the shared receipt validator's existing raw-plan/control/contact/route binding. Match a JSON-controlled terminal Planner response to the preserved raw plan; keep exact-text behavior unchanged.",
+  "contacts": {
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "created_at_utc": "2026-09-15T09:52:49.712113+00:00",
+  "failed_live_audit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/native-episode-audit-failure-v1.json",
+    "sha256": "16356a85f4c0984616244c6ce10490fcda8bcc1babcd9923da9b9d82e4218b50"
+  },
+  "implementation": {
+    "path": "/home/chao/saea-worktrees/a2t-postseal-analysis-v1/src/speech_aware_evidence_acquisition/analysis/native_episode_diagnostics.py",
+    "sha256": "513fd79dec97f7bd3cb616c30bb27c765059f2bf573a647e76ace83cb0a40a55"
+  },
+  "live_replay": "Pending registered complete-source audit using the same frozen manifests and phase artifacts.",
+  "named_component": "Native terminal-delivery postseal diagnostic compared raw JSON Planner text to the decoded action token.",
+  "negative_cases": [
+    "Missing structured control",
+    "Control action differs from raw JSON",
+    "Raw plan has stale byte identity",
+    "Duplicate JSON action keys"
+  ],
+  "schema": "saea-native-audit-json-compatibility-repair-v1",
+  "scope": "Postseal analysis only. No runtime policy, delivery, candidate, score or original artifact change.",
+  "tests": {
+    "path": "/home/chao/saea-worktrees/a2t-postseal-analysis-v1/tests/unit/test_native_episode_diagnostics.py",
+    "sha256": "f9fc9f43d9f70324dbcaa4db2d7cc66e9688daecae2bc4e6d4d2abdee2c05a3e"
+  },
+  "verification": {
+    "diff": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/native-audit-json-diff-v1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "engineering": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/native-audit-json-engineering-v1.log",
+      "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    "green": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/native-audit-json-green-v1.log",
+      "sha256": "491035cb09de9e9ca237536a6b57818e1d8d72c95adfbd26d5037fc2f4e2a469"
+    },
+    "passed_tests": 44,
+    "ruff": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/native-audit-json-ruff-v1.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    "tdd_red": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/native-audit-json-red-v1.log",
+      "sha256": "8b7114461078303ed0100147d790392911c5bb1c4de17b5e5f9331e3a04c8d67"
+    }
+  }
+}

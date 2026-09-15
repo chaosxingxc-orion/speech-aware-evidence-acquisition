@@ -602,3 +602,45 @@ def test_finite_stop_rejects_finite_metadata_before_interrupted_final_contact():
             phase_results={"s1": phase_result}, output_rows={"s1": output},
             trace_records=trace,
         )
+
+
+@pytest.mark.parametrize("planner_text", [
+    '{"action":"REVISE"}',
+    ' { "action" : "REVISE" }\n',
+])
+def test_terminal_json_planner_uses_validated_raw_control(planner_text):
+    policy, phase_result, output, trace = _terminal_fixture(planner_text=planner_text)
+    episode = phase_result["native_episode_receipt"]
+    episode.update(plan=planner_text, planner_control={"action": "REVISE"})
+
+    result = analyze_verified_native_episode_statistics(
+        sample_ids=("s1",), controller_policy_id=policy,
+        phase_results={"s1": phase_result}, output_rows={"s1": output},
+        trace_records=trace,
+    )
+
+    assert result["terminal_stops"]["by_planner_action"] == {"REVISE": 1}
+    assert result["samples"][0]["terminal_disposition"]["planner_accepted"] is False
+    assert trace["request-planner-1/response"]["text"] == planner_text
+
+
+@pytest.mark.parametrize("mutation", ["missing-control", "wrong-action", "stale-raw-plan", "duplicate-key"])
+def test_terminal_json_planner_rejects_broken_control_custody(mutation):
+    raw = '{"action":"REVISE"}'
+    if mutation == "duplicate-key":
+        raw = '{"action":"REVISE","action":"REVISE"}'
+    policy, phase_result, output, trace = _terminal_fixture(planner_text=raw)
+    episode = phase_result["native_episode_receipt"]
+    if mutation != "missing-control":
+        episode.update(plan=raw, planner_control={"action": "REVISE"})
+    if mutation == "wrong-action":
+        episode["planner_control"]["action"] = "ACCEPT"
+    if mutation == "stale-raw-plan":
+        episode["plan"] = '{ "action": "REVISE" }'
+
+    with pytest.raises(NativeEpisodeDiagnosticError, match="Planner"):
+        analyze_verified_native_episode_statistics(
+            sample_ids=("s1",), controller_policy_id=policy,
+            phase_results={"s1": phase_result}, output_rows={"s1": output},
+            trace_records=trace,
+        )
