@@ -1,9 +1,11 @@
 """Native graph configuration must determine role authority and contact bounds."""
 
 from copy import deepcopy
+from pathlib import Path
 
 import pytest
 
+from speech_aware_evidence_acquisition.core.base import RESPONSE_FORMATS
 from speech_aware_evidence_acquisition.rails.controllers import PhaseProgram, PhaseSpec
 from speech_aware_evidence_acquisition.rails.native_episode_config import (
     NativeEpisodeConfig,
@@ -11,10 +13,14 @@ from speech_aware_evidence_acquisition.rails.native_episode_config import (
 )
 
 
-def program(*, ceiling=4, rule="native-role-episode"):
+def program(*, ceiling=4, rule="native-role-episode", planner_format=None):
     return PhaseProgram(
         program_id="phase-native-role-test",
-        phases=tuple(PhaseSpec(name, name, "none", None, False)
+        phases=tuple(PhaseSpec(
+            name, name, "none",
+            planner_format if name == "planner" else None,
+            False,
+        )
                      for name in ("perception", "reviewer", "planner", "solver")),
         max_contacts=ceiling, stop_rule=rule,
     ).validate()
@@ -75,6 +81,48 @@ def test_exhaustion_policy_defaults_to_raise_and_can_opt_in_to_delivery():
     values["native_episode"]["exhaustion_policy"] = "unknown"
     with pytest.raises(ValueError, match="exhaustion policy"):
         load_native_episode_config(values, program())
+
+
+def test_json_planner_output_requires_registered_planner_phase_format():
+    values = config()
+    values["native_episode"]["planner_output_format"] = "json-action-v1"
+    with pytest.raises(ValueError, match="registered Planner phase response format"):
+        load_native_episode_config(values, program())
+
+    parsed = load_native_episode_config(
+        values,
+        program(planner_format="saea-native-planner-action-v1"),
+    )
+    assert parsed.planner_output_format == "json-action-v1"
+
+    values["native_episode"]["planner_output_format"] = "unregistered"
+    with pytest.raises(ValueError, match="Planner output format"):
+        load_native_episode_config(values, program())
+
+
+def test_registered_json_planner_format_uses_configured_action_enum():
+    builder = RESPONSE_FORMATS.resolve("saea-native-planner-action-v1")
+    response_format = builder(
+        {}, Path("."), actions=["ACCEPT", "REVISE", "ACQUIRE"]
+    )
+    assert response_format == {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "saea_native_planner_action_v1",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["action"],
+                "properties": {
+                    "action": {
+                        "type": "string",
+                        "enum": ["ACCEPT", "REVISE", "ACQUIRE"],
+                    }
+                },
+            },
+        },
+    }
 
 
 def test_finite_completion_policy_defaults_to_raise_and_can_deliver_or_abstain():

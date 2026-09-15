@@ -1,0 +1,76 @@
+{
+  "analysis_recipe": {
+    "repo_relpath": "docs/readiness/2026-09-14-a2t-native-role-base-analysis-recipe-v1.json",
+    "sha256": "7697ce0e8303fa2dd68f34a91bdfd9fc5e3322e986a923f4b11d570a2bb3f104"
+  },
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prepare-supply",
+        "prompt-fit",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-a2t-native-role-dual-store-union4000-recovery-generation-v1",
+      "baseline_fragment": "a2t-native-role-dual-store-union4000-recovery-v1",
+      "cell_id": "a2t-native-role-dual-store-union4000-recovery-v1",
+      "dataset_fragment": "audio2tool-org1-union-4000",
+      "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
+      "readiness": {
+        "reason": "Hold until root verifies the named Planner control and trace preservation repair, bound prepared supply, source freeze and recovery admission.",
+        "requirements": [],
+        "state": "held"
+      },
+      "run_id": "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1"
+    }
+  ],
+  "date": "2026-09-15",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 48.0,
+    "planned_model_calls": 44000,
+    "planned_speech_audio_seconds": 260000,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1",
+  "failure_policy": "Stop and preserve on failure. This is the sole registered recovery of the first named full4000 native failure. No automatic restart, replay, geometry change or second recovery. The four-row proof is engineering-only.",
+  "family_budget": {
+    "accounting_scope": "Direct completed4000 + aborted native83 + recovery proof cap44 + recovery native cap44000; complete direct fit12001 + aborted native fit332 + proof cap176 + recovery fit cap176000. Earlier independent engineering proof retains its own prior ledger.",
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 188509,
+    "generation_calls_cap": 48127,
+    "gpu_hours_fit_inclusive": 58.0,
+    "native_task_contract_calls_cap": 16099,
+    "official_complete_scoring_jobs": 2,
+    "speech_audio_seconds_cap": 292500
+  },
+  "fragment_kind": "saea-audio2tool-native-role-base-v1",
+  "generation_budget": {
+    "cap": 44000,
+    "definition": "Complete roster; native target is the no-tool/no-revision four-contact path, not a required contact count.",
+    "target": 16000
+  },
+  "population": {
+    "count": 4000,
+    "dataset_fragment": "audio2tool-org1-union-4000",
+    "decision_population": "Previously exposed union4000, eight complete tiers of 500; unchanged original speech; Tier7 first user turn only.",
+    "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6"
+  },
+  "preserve_wire_responses": true,
+  "purpose": "Complete the native agent arm after its named first control-format failure, retaining the already completed direct4000 comparator in the same resident service process. Change only Planner action formatting and exhausted-budget control consistency, plus failure trace preservation. Preserve roster, input, knowledge, tool authority, output limit and scientific analysis.",
+  "recovery_of": {
+    "attempt_id": "attempt-a2t-native-role-dual-store-union4000-generation-v1",
+    "named_components": [
+      "Planner action contract",
+      "completed-episode failure trace preservation"
+    ],
+    "recovery_index": 1,
+    "run_id": "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-V1"
+  },
+  "service_session": "serving-a2t-native-role-base-np3-max2048-v2"
+}

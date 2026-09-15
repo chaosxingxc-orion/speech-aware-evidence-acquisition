@@ -1266,6 +1266,7 @@ def default_controller_factory(program: PhaseProgram) -> Callable[[str], Evidenc
 
 _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-audio2tool-native-candidates-review-revise-v1": "phase-audio2tool-native-candidates-review-revise-v1.json",
+    "phase-audio2tool-native-candidates-review-revise-json-v1": "phase-audio2tool-native-candidates-review-revise-json-v1.json",
     "phase-native-review-revise-v1": "phase-native-review-revise-v1.json",
     "phase-native-candidates-review-revise-v1": "phase-native-candidates-review-revise-v1.json",
     "phase-native-candidates-review-refresh-v1": "phase-native-candidates-review-refresh-v1.json",
@@ -1367,6 +1368,15 @@ def register_phase_programs_v1() -> None:
         AGENT_CONTROLLERS.register(
             "phase-audio2tool-native-candidates-review-revise-v1",
             default_controller_factory(default_phase_program("phase-audio2tool-native-candidates-review-revise-v1")),
+        )
+    if "phase-audio2tool-native-candidates-review-revise-json-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-audio2tool-native-candidates-review-revise-json-v1",
+            default_controller_factory(
+                default_phase_program(
+                    "phase-audio2tool-native-candidates-review-revise-json-v1"
+                )
+            ),
         )
     if "phase-native-candidates-review-revise-v1" not in registered:
         AGENT_CONTROLLERS.register(
@@ -1619,6 +1629,43 @@ def audio2tool_perception_state_response_format_v1(
     )
 
 
+def native_planner_action_response_format(
+    actions: Sequence[str],
+) -> Mapping[str, object]:
+    """Render the strict shared Planner control envelope."""
+
+    action_values = tuple(actions)
+    if (
+        not action_values
+        or len(set(action_values)) != len(action_values)
+        or any(not isinstance(action, str) or not action for action in action_values)
+    ):
+        raise ValueError("Planner response actions must be ordered unique strings")
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "saea_native_planner_action_v1",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["action"],
+                "properties": {
+                    "action": {"type": "string", "enum": list(action_values)},
+                },
+            },
+        },
+    }
+
+
+def native_planner_action_response_format_v1(
+    _lock: Mapping[str, object], _root: Path, *, actions: Sequence[str],
+) -> Mapping[str, object]:
+    """Registry adapter for the configuration-bound Planner action enum."""
+
+    return native_planner_action_response_format(actions)
+
+
 def register_response_formats_v1() -> None:
     """Idempotently register the E1 response-format ids into the shared
     ``core.base.RESPONSE_FORMATS`` registry (same shape and same
@@ -1636,6 +1683,11 @@ def register_response_formats_v1() -> None:
         RESPONSE_FORMATS.register(
             "audio2tool-perception-state-v1",
             audio2tool_perception_state_response_format_v1,
+        )
+    if "saea-native-planner-action-v1" not in registered:
+        RESPONSE_FORMATS.register(
+            "saea-native-planner-action-v1",
+            native_planner_action_response_format_v1,
         )
     if "slurp-intent-hypotheses-v1" not in registered:
         from .artifact_results import slurp_intent_hypotheses_response_format

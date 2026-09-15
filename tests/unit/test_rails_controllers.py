@@ -44,6 +44,9 @@ _EXPECTED_PROGRAM_SHAPES = {
     "phase-audio2tool-native-candidates-review-revise-v1": (
         ("perception", "reviewer", "planner", "solver"), 11, "native-role-episode"
     ),
+    "phase-audio2tool-native-candidates-review-revise-json-v1": (
+        ("perception", "reviewer", "planner", "solver"), 11, "native-role-episode"
+    ),
     "phase-native-candidates-review-revise-v1": (
         ("perception", "reviewer", "planner", "solver"), 11, "native-role-episode"
     ),
@@ -193,6 +196,34 @@ def test_load_phase_program_loads_the_shipped_configs(program_id, shape):
     assert program.stop_rule == expected_stop_rule
     for phase in program.phases:
         phase.validate()
+
+
+def test_json_planner_program_changes_only_planner_response_format():
+    historical = rc.load_phase_program(
+        rc.DEFAULT_PROGRAM_CONFIG_DIR
+        / "phase-audio2tool-native-candidates-review-revise-v1.json"
+    )
+    structured = rc.load_phase_program(
+        rc.DEFAULT_PROGRAM_CONFIG_DIR
+        / "phase-audio2tool-native-candidates-review-revise-json-v1.json"
+    )
+
+    assert structured.max_contacts == historical.max_contacts
+    assert structured.stop_rule == historical.stop_rule
+    assert len(structured.phases) == len(historical.phases)
+    for structured_phase, historical_phase in zip(
+        structured.phases, historical.phases, strict=True
+    ):
+        assert structured_phase.name == historical_phase.name
+        assert structured_phase.purpose == historical_phase.purpose
+        assert structured_phase.knowledge == historical_phase.knowledge
+        assert structured_phase.barrier == historical_phase.barrier
+        expected_format = (
+            "saea-native-planner-action-v1"
+            if structured_phase.name == "planner"
+            else historical_phase.response_format_id
+        )
+        assert structured_phase.response_format_id == expected_format
 
 
 def test_registered_program_ids_match_the_shipped_configs():

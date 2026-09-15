@@ -1631,7 +1631,8 @@ async def _invoke_native_role_episode(
         NativeRoleContactContext, NativeRoleNode, NativeRoleNodeSpec, NativeSourceFunction,
     )
     from .controllers import (
-        advance_phase_response_state, seal_phase_response_state,
+        advance_phase_response_state, native_planner_action_response_format,
+        seal_phase_response_state,
     )
     from .material import PhaseMaterial
 
@@ -1725,14 +1726,15 @@ async def _invoke_native_role_episode(
         if not isinstance(material, PhaseMaterial):
             raise RailsRunnerError("native role material must be PhaseMaterial")
         material.validate()
+        revision_index = episode_state["revision_count"]
         limits = {
-            "revision_index": episode_state["revision_count"],
+            "revision_index": revision_index,
             "max_revisions": config.max_revisions,
             "remaining_model_contacts": config.max_contacts - state.scheduled_contacts,
             "role_max_iterations": role_configs[phase_id].max_iterations,
             "available_planner_actions": [
                 config.actions[0],
-                *([config.actions[1]] if episode_state["revision_count"] < config.max_revisions else []),
+                *([config.actions[1]] if revision_index < config.max_revisions else []),
             ],
         }
         if config.refresh_action is not None:
@@ -1740,8 +1742,62 @@ async def _invoke_native_role_episode(
                 config.max_candidate_refreshes - episode_state.get("candidate_refresh_count", 0)
             )
             limits["remaining_candidate_refreshes"] = remaining_refreshes
-            if remaining_refreshes > 0 and episode_state["revision_count"] < config.max_revisions:
+            if remaining_refreshes > 0 and revision_index < config.max_revisions:
                 limits["available_planner_actions"].append(config.refresh_action)
+        if (
+            config.planner_output_format == "json-action-v1"
+            and role_configs[phase_id].role_kind == "planner"
+        ):
+            remaining_revisions = config.max_revisions - revision_index
+            configured_actions = None
+            if role_configs[phase_id].role_kind == "planner":
+                try:
+                    configured_actions = material.response_format["json_schema"][
+                        "schema"
+                    ]["properties"]["action"]["enum"]
+                except (KeyError, TypeError):
+                    raise RailsRunnerError(
+                        "Planner response schema has no configured action enum"
+                    ) from None
+                legal_actions = [config.actions[0], config.actions[1]]
+                if config.refresh_action is not None:
+                    legal_actions.append(config.refresh_action)
+                if (
+                    not isinstance(configured_actions, list)
+                    or not configured_actions
+                    or len(set(configured_actions)) != len(configured_actions)
+                    or configured_actions != legal_actions
+                    or material.response_format
+                    != native_planner_action_response_format(configured_actions)
+                ):
+                    raise RailsRunnerError(
+                        "Planner response schema differs from native episode actions"
+                    )
+            route_actions = [config.actions[0]]
+            if remaining_revisions > 0:
+                route_actions.append(config.actions[1])
+                if config.refresh_action is not None and remaining_refreshes > 0:
+                    route_actions.append(config.refresh_action)
+            elif config.exhaustion_policy == "deliver-latest-solver":
+                route_actions.append(config.actions[1])
+                if config.refresh_action is not None:
+                    route_actions.append(config.refresh_action)
+            available_actions = (
+                route_actions
+                if configured_actions is None
+                else [action for action in route_actions if action in configured_actions]
+            )
+            limits.update(
+                remaining_generation_revisions=remaining_revisions,
+                available_planner_actions=available_actions,
+            )
+            if configured_actions is not None:
+                material = replace(
+                    material,
+                    response_format=native_planner_action_response_format(
+                        available_actions
+                    ),
+                ).validate()
         material = replace(
             material,
             instruction=material.instruction + "\n\nNative episode limits: "
@@ -1960,6 +2016,7 @@ async def _invoke_native_role_episode(
                 config.refresh_action,
                 config.max_candidate_refreshes,
                 config.finite_completion_policy,
+                config.planner_output_format,
             ),
             nodes=NativeEpisodeNodes(**nodes),
             role_input_builder=role_input,
@@ -2109,6 +2166,15 @@ async def _invoke_native_role_episode(
                 raise RailsRunnerError(message) from cleanup_errors[0]
 
 
+def _flush_agent_state_traces(states, trace_sink) -> None:
+    """Preserve completed and interrupted episodes when their shared run fails."""
+    for state in states:
+        if state.final_outcome is not None:
+            state.final_outcome.trace_buffer.flush_into(trace_sink)
+        for key in sorted(state.trace_buffers):
+            state.trace_buffers[key].flush_into(trace_sink)
+
+
 def _run_agent_openjiuwen(
     *,
     prepared_tasks: Sequence[_PreparedAgentTask],
@@ -2171,9 +2237,7 @@ def _run_agent_openjiuwen(
                 local_tool_workers=native_episode_binding.config.local_tool_workers,
             )
         except BaseException:
-            for state in states:
-                for key in sorted(state.trace_buffers):
-                    state.trace_buffers[key].flush_into(trace_sink)
+            _flush_agent_state_traces(states, trace_sink)
             raise
         if any(state.final_outcome is None for state in states):
             raise RailsRunnerError("native graph ended without an accepted Solver outcome")
@@ -2595,12 +2659,7 @@ def _run_agent_openjiuwen(
         publish_workflow_state(state, session)
 
     def flush_partial_traces() -> None:
-        for state in states:
-            if state.final_outcome is not None:
-                state.final_outcome.trace_buffer.flush_into(trace_sink)
-                continue
-            for key in sorted(state.trace_buffers):
-                state.trace_buffers[key].flush_into(trace_sink)
+        _flush_agent_state_traces(states, trace_sink)
 
     def execute_wave(active_states, *, one_wave: bool) -> None:
         starting_wave = {

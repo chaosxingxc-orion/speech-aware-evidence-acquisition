@@ -1,0 +1,99 @@
+{
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 16,
+    "official_complete_scoring_jobs": 0,
+    "speech_audio_seconds_cap": 7264
+  },
+  "configuration": {
+    "composed_config_hash": "50cae674fc18c356076fb54bb80731c03690da75828347eaf309e796e66609f4",
+    "file_pins": {
+      "baseline": "a35b006960195d897ab3a81fb3e3d73d99c9ef6be2a640d81a9d41ab8b9ccfd4",
+      "dataset": "00064d591240d15a4640cdb824160cd6b88d2e767f1e2570d0743f148ef281ef",
+      "experiment": "cd6199bc3ac504676dc19eb029f4394545a8bf2d6956b942242e8f526f6a7426",
+      "model": "853a9645e8a47ff94bc34a61dbb12e963ddba0a3dcf06be7b3f2a3a6fcd5fcd6"
+    },
+    "fragments": {
+      "baseline": "a2t-native-role-control-recovery-proof-v1",
+      "dataset": "audio2tool-org1-union-4000",
+      "experiment": "a2t-native-role-control-recovery-proof-v1",
+      "model": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1"
+    },
+    "planner_prompt_sha256": "a821d7dae60013d204ba479618430d6b204be72c1806acd835a2ab84502acd40",
+    "runtime_protocol_hash": "a2a35f6d8fd1fd70a28b491f4612a25eceaba3e1cc6c2830795c5a53965b46ce"
+  },
+  "direct_generation_calls": 4000,
+  "direct_scoring": "Already finalized and scored once; do not repeat, task quality remains held.",
+  "execution_plans": {
+    "fit": {
+      "attempt_id": "attempt-a2t-native-role-control-recovery-proof-fit-v1",
+      "carrier_lock_key": "audio2tool",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 176,
+      "planned_speech_audio_seconds": 7264,
+      "protocol_hash": "a2a35f6d8fd1fd70a28b491f4612a25eceaba3e1cc6c2830795c5a53965b46ce",
+      "run_id": "SAEA-A2T-NATIVE-ROLE-CONTROL-RECOVERY-PROOF-FIT-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "31fa4c9918d4e4c34f62c6cc0a5d7ef13229e6f711e2889b7c8a3213e63c37c2",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "generation": {
+      "attempt_id": "attempt-a2t-native-role-control-recovery-proof-generation-v1",
+      "carrier_lock_key": "audio2tool",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 44,
+      "planned_speech_audio_seconds": 7264,
+      "protocol_hash": "a2a35f6d8fd1fd70a28b491f4612a25eceaba3e1cc6c2830795c5a53965b46ce",
+      "run_id": "SAEA-A2T-NATIVE-ROLE-CONTROL-RECOVERY-PROOF-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "31fa4c9918d4e4c34f62c6cc0a5d7ef13229e6f711e2889b7c8a3213e63c37c2",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    }
+  },
+  "expected_session_id": "serving-a2t-native-role-base-np3-max2048-v2",
+  "full4000": "Held until this proof seals and root admits/registers full recovery; same original analysis recipe, complete roster and single full score.",
+  "method": "Original four-row engineering selection; only structured Planner control and exhausted-budget action consistency change, plus preserving completed sibling traces on failure.",
+  "named_first_failure": {
+    "actual_generation_calls": 83,
+    "attempt_state": "ABORTED",
+    "cause": "Planner output failed exact registered-action validation after revision exhaustion.",
+    "persisted_canonical_contacts": 14,
+    "run_id": "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-V1",
+    "trace_limit": "Missing canonical contact traces are not reconstructed or presented as complete.",
+    "unflushed_contacts": 69
+  },
+  "on_failure": "Stop and preserve on failure. This is the sole registered recovery of the first named full4000 native failure. No automatic restart, replay, geometry change or second recovery. The four-row proof is engineering-only.",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "audio2tool-org1-union-4000",
+    "decision_population": "Deterministic engineering subset of the already exposed original-speech union4000; one longest recording then three smallest remaining sample IDs. No labels or correctness used.",
+    "split_identity_hash": "31fa4c9918d4e4c34f62c6cc0a5d7ef13229e6f711e2889b7c8a3213e63c37c2"
+  },
+  "preserved_direct_run": "SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1",
+  "readiness_admission": {
+    "data_relpath": "coordination/a2t-native-role-control-recovery-v1/root-proof-admission-v1.json",
+    "sha256": "57d56c3dbd94b99a1e20f38179d0b321fda603b467ed86a94f0312e0ef2405c8"
+  },
+  "registered_at_utc": "2026-09-15T02:34:15.190181+00:00",
+  "registered_by": "root",
+  "schema": "saea-native-control-recovery-proof-protocol-v1",
+  "selected_ids": [
+    "tier1_direct:000003",
+    "tier1_direct:000009",
+    "tier1_direct:000015",
+    "tier6_correction:003151"
+  ],
+  "source_freeze": {
+    "data_relpath": "coordination/a2t-native-role-control-recovery-v1/source-freeze-proof-v1.json",
+    "required_before_contact": true
+  }
+}

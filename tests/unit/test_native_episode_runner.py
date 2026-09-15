@@ -7,6 +7,7 @@ import json
 import struct
 import threading
 from collections import Counter
+from dataclasses import replace
 
 import pytest
 
@@ -15,7 +16,11 @@ from speech_aware_evidence_acquisition.core.model import (
     materialize_speech_feature_packet,
 )
 from speech_aware_evidence_acquisition.core.tracing import TraceBuffer
-from speech_aware_evidence_acquisition.rails.controllers import PhaseProgram, PhaseSpec
+from speech_aware_evidence_acquisition.rails.controllers import (
+    PhaseProgram,
+    PhaseSpec,
+    native_planner_action_response_format,
+)
 from speech_aware_evidence_acquisition.rails.hashing import content_hash
 from speech_aware_evidence_acquisition.rails.material import PhaseMaterial
 from speech_aware_evidence_acquisition.rails.native_episode_config import (
@@ -909,6 +914,69 @@ def test_actual_refresh_request_is_fitted_and_bound_before_second_solver(tmp_pat
         corrupted["planner_routes"][1]["revision_count"] = 0
         with pytest.raises(ValueError, match="ordered role/route"):
             verify(corrupted)
+    finally:
+        harness.close()
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_actual_json_planner_schema_tracks_graph_at_revision_exhaustion(tmp_path):
+    harness = _ActualEpisodeHarness(
+        tmp_path,
+        sample_count=1,
+        max_revisions=1,
+        max_contacts=7,
+        planner_actions=('{"action":"REVISE"}', '{"action":"REVISE"}'),
+        exhaustion_policy="deliver-latest-solver",
+    )
+    harness.program = replace(
+        harness.program,
+        phases=tuple(
+            replace(
+                phase,
+                response_format_id=(
+                    "saea-native-planner-action-v1"
+                    if phase.name == "planner"
+                    else None
+                ),
+            )
+            for phase in harness.program.phases
+        ),
+    ).validate()
+    harness.config = replace(
+        harness.config,
+        planner_output_format="json-action-v1",
+    )
+    legacy_material = harness.material_for_phase
+    configured_format = native_planner_action_response_format(ACTIONS[:2])
+
+    def material_for_phase(phase, context, sealed):
+        material = legacy_material(phase, context, sealed)
+        if phase == "planner":
+            return replace(material, response_format=configured_format).validate()
+        return material
+
+    harness.material_for_phase = material_for_phase
+    try:
+        result = harness.run().results[0]
+        planner_bodies = [
+            prepared["rendered"]
+            for key, prepared in harness.prepared.items()
+            if key[1] == "planner"
+        ]
+        assert len(harness.dispatched) == 7
+        assert result.final_response_text.endswith(":visit:2")
+        assert result.native_episode_receipt["terminal_disposition"][
+            "planner_action"
+        ] == "REVISE"
+        assert [
+            body["response_format"]["json_schema"]["schema"]["properties"][
+                "action"
+            ]["enum"]
+            for body in planner_bodies
+        ] == [
+            ["ACCEPT", "REVISE"],
+            ["ACCEPT", "REVISE"],
+        ]
     finally:
         harness.close()
 

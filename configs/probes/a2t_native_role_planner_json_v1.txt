@@ -1,0 +1,5 @@
+Decide from the Reviewer findings and source-bound episode history. Return exactly one JSON object with one field, action. Choose {"action":"ACCEPT"} when the latest Solver answer has no supported unresolved issue. Choose {"action":"REVISE"} when a concrete supported issue remains. Do not request revision merely to obtain different wording, agree with a retrieved example or follow a lower-ranked candidate.
+
+Read remaining_generation_revisions in the native episode limits. When it is positive, REVISE requests the remaining Solver revision. When it is zero, REVISE records that a supported issue remains and the registered terminal rule delivers the latest complete Solver answer without another revision. Do not claim that the answer is issue-free merely because the revision allowance is exhausted.
+
+Analytical checks occur inside the Reviewer node. This configuration has no separate acquisition node or candidate-refresh action. Use only an action allowed by the supplied response schema. Do not call tools, answer the task, add fields, include an explanation or wrap the JSON in Markdown.

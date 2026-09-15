@@ -5,6 +5,8 @@ from __future__ import annotations
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 
+PLANNER_ACTION_RESPONSE_FORMAT_ID = "saea-native-planner-action-v1"
+
 
 @dataclass(frozen=True)
 class NativeEpisodeRole:
@@ -27,6 +29,7 @@ class NativeEpisodeConfig:
     local_tool_workers: int = 0
     reserve_final_report: bool = False
     finite_completion_policy: str = "raise"
+    planner_output_format: str = "exact-text"
 
     @property
     def terminal_actions(self) -> tuple[str, ...]:
@@ -69,6 +72,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         "local_tool_execution",
         "tool_iteration_policy",
         "finite_completion_policy",
+        "planner_output_format",
     }
     if (
         not isinstance(raw, Mapping)
@@ -94,6 +98,9 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         or finite_completion_policy not in {"raise", "deliver-latest-or-abstain"}
     ):
         raise ValueError("native episode finite completion policy is invalid")
+    planner_output_format = raw.get("planner_output_format", "exact-text")
+    if planner_output_format not in {"exact-text", "json-action-v1"}:
+        raise ValueError("native episode Planner output format is invalid")
     actions = raw["actions"]
     if not isinstance(actions, Mapping) or set(actions) != {"accept", "revise", "acquire"}:
         raise ValueError("native actions must name accept, revise and acquire")
@@ -164,6 +171,14 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         raise ValueError("native roles must cover the program once each")
     if set(tool_specs) - set(phase_ids):
         raise ValueError("native tool phase is outside the episode")
+    planner_phase = program.phase(next(role.phase_id for role in roles if role.role_kind == "planner"))
+    if (
+        planner_output_format == "json-action-v1"
+        and planner_phase.response_format_id != PLANNER_ACTION_RESPONSE_FORMAT_ID
+    ):
+        raise ValueError(
+            "json-action-v1 requires the registered Planner phase response format"
+        )
     if any(phase.barrier for phase in program.phases):
         raise ValueError("conditional native episodes cannot declare whole-roster phase barriers")
     if refresh_action is not None:
@@ -200,4 +215,5 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         local_workers,
         reserve_report,
         finite_completion_policy,
+        planner_output_format,
     )
