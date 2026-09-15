@@ -782,6 +782,8 @@ class AgentLoopResult:
     consumption: ConsumptionTrace | None
     result_kind: str = TASK_ANSWER_RESULT_KIND
     native_episode_receipt: Mapping[str, object] | None = None
+    execution_unit_id: str | None = None
+    execution_unit_binding: Mapping[str, object] | None = None
 
     def as_json(self) -> dict[str, object]:
         result = {
@@ -805,6 +807,9 @@ class AgentLoopResult:
             result["native_episode_receipt"] = dict(self.native_episode_receipt)
         if self.result_kind != TASK_ANSWER_RESULT_KIND:
             result["result_kind"] = self.result_kind
+        if self.execution_unit_id is not None:
+            result["execution_unit_id"] = self.execution_unit_id
+            result["execution_unit_binding"] = dict(self.execution_unit_binding or {})
         return result
 
 
@@ -845,6 +850,8 @@ class _PreparedAgentTask:
     task_contract: str
     initial_query_state: QueryState
     initial_feedback_states: tuple = ()
+    execution_unit_id: str | None = None
+    execution_unit_binding: Mapping[str, object] | None = None
 
 
 @dataclass(frozen=True)
@@ -1044,6 +1051,7 @@ def _initial_query_state(
     bootstrap_facet_ids: tuple[str, ...],
     bootstrap_value_ids: tuple[str, ...],
     query_source: str = "speech_features",
+    execution_unit_id: str | None = None,
 ) -> QueryState:
     if not isinstance(descriptor, Mapping) or set(descriptor) != {
         "packet_id",
@@ -1054,7 +1062,7 @@ def _initial_query_state(
             "packet_id/sha256 keys"
         )
     return QueryState(
-        query_id=f"{plan.run_id}:{sample.sample_id}:step0",
+        query_id=f"{plan.run_id}:{execution_unit_id or sample.sample_id}:step0",
         query_sample_id=sample.sample_id,
         speech_packet_id=descriptor["packet_id"],
         speech_packet_sha256=descriptor["sha256"],
@@ -3351,6 +3359,8 @@ def run_speech_native_agent_loop(
                 consumption=consumption,
                 result_kind=result_kind,
                 native_episode_receipt=outcome.native_episode_receipt,
+                execution_unit_id=outcome.prepared.execution_unit_id,
+                execution_unit_binding=outcome.prepared.execution_unit_binding,
             )
         )
         if result_kind == TASK_ANSWER_RESULT_KIND:
