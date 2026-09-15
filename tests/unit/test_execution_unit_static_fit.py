@@ -139,7 +139,7 @@ def test_materialize_phase_requests_accepts_ordered_units_and_restores_scratch()
         runtime._execution_units = "scratch-units"
         runtime._execution_unit_registry = "scratch-registry"
         runtime._execution_unit_config_hash = "scratch-hash"
-        for unit in roster.units:
+        for unit in reversed(roster.units):
             kwargs["request_payload_observer"](_payload(unit))
 
     runtime.wire_check = wire_check
@@ -151,14 +151,14 @@ def test_materialize_phase_requests_accepts_ordered_units_and_restores_scratch()
 
 
 @pytest.mark.parametrize(
-    "drift", ["order", "parent", "source", "duration", "contact", "missing"]
+    "drift", ["duplicate", "parent", "source", "duration", "contact", "missing"]
 )
 def test_materialize_phase_requests_rejects_unit_coverage_drift(drift: str) -> None:
     roster = ExecutionUnitRoster((_unit("parent", 0), _unit("parent", 1)))
     runtime = _phase_runtime(roster)
     payloads = [_payload(unit) for unit in roster.units]
-    if drift == "order":
-        payloads.reverse()
+    if drift == "duplicate":
+        payloads[0] = payloads[1]
     elif drift == "parent":
         payloads[0]["sample_id"] = "other"
     elif drift == "source":

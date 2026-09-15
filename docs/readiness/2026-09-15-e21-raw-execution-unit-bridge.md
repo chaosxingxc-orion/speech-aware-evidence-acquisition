@@ -27,6 +27,13 @@ Whitespace trimming and output-cap quarantine happen in the shared delivery func
 Derived request/response/use trace records bind the stitch to its ordered sources and do
 not add metered model calls. Existing parent-only timing serialization is unchanged.
 
+The static fit entry point now captures requests from the same single-phase runtime path.
+Captured requests are aligned by their scoped unit identity, then checked against the exact
+ordered source roster; thread completion order cannot change the fit roster. The native
+per-contact fit gate separately binds each observation and counts contacts per unit. Root
+verified that a third contact for one two-contact unit is refused while the second unit
+retains its own budget, and that cross-window audio is rejected before tokenizer contact.
+
 ## Exact inherited source
 
 The configured prepared_execution_units declaration is:
@@ -58,15 +65,16 @@ The two-contact direct program passed the same path, including whitespace, empty
 finish_reason=length, and completion-token cap cases. Original responses were preserved.
 A changed unit binding was rejected. Derived stitching did not change contact counts.
 
-The related root regression ran 253 tests successfully, including inherited controller,
+The related root regression ran 507 tests successfully, including inherited controller,
 native finite-delivery, request staging and delivery identity tests. Ruff and the existing
 engineering-base check passed. These are model-free engineering proofs, not capacity,
 quality, throughput, or full-campaign results.
 
 ## Remaining before an E21 flight
 
-1. Integrate the actual shared single-phase request materialization and its capacity receipt.
-   Conditional native roles retain per-contact capacity checks; do not fabricate future histories.
+1. Prove the integrated single-phase request materializer through complete synthetic runtime
+   construction, then obtain capacity receipts only under a registered GPU contact plan.
+   Conditional native roles retain per-contact checks; do not fabricate future histories.
 2. Verify the complete runtime construction, preparation, dispatch and bundle lifecycle with
    a registered synthetic source before freezing a real flight.
 3. Bind the E21 direct/system configurations, exact source declarations, execution plans,
