@@ -1,15 +1,19 @@
 # Owner-directed recovery and continuation plan
 
-**Current overlay:** Read [STATUS-138](STATUS-138.md). The frozen SLURP
-broad/factored TRAIN-A campaign is running under its exact np4 service. Its last
-bounded observer milestone is 1,009 model calls with a live process and an
-OPENED attempt; it is not a completed-row count. Telemetry before 17:11:58 UTC
-is missing and paired quality remains unread. The current campaign alone owns
-the first full official score. Audio2Tool is reviewed, registered,
-integrated and source-frozen; it awaits the SLURP generation boundary and its
-exact np3 service. Earnings21 held registration preparation is root-reviewed
-and merged without admission, exposure, fit or generation authority. Preserve
-the order SLURP, Audio2Tool, Earnings21 and all frozen and historical records.
+**Current overlay:** Read [STATUS-139](STATUS-139.md). The frozen SLURP
+broad/factored TRAIN-A campaign remains live under worker PID 293426 and server
+PID 293153 on its same np4 service. Exact post-seal analysis metadata is bound
+for 1,080 rows, 125 speakers and 18 scenarios. Model calls do not establish
+completed rows, telemetry before 17:11:58 UTC is missing, treatment quality
+remains unread, and the current campaign alone owns the first complete official
+score. Audio2Tool remains registered and source-frozen at
+`219e305f306f11998e39c44b5fb055b4fcfb3179`; it waits for the SLURP
+generation seal and custody boundary. E21 stable-source admission exists, and
+its [direct static fit](../../../readiness/2026-09-15-e21-native-window-direct-fit-registration-v1/README.md)
+is registered, integrated and source-frozen at
+`1daad5186119b23c3414e36676afb296599dc29f`. The actual fit receipt is absent,
+and generation, native fit and ASR remain held and unregistered. Preserve the
+order SLURP, Audio2Tool, Earnings21 and all frozen and historical records.
 Stable benefit and trajectory-sampling optimization remain incomplete.
 
 **Latest released TRAIN diagnosis:** Read the [source-bound entity-loss analysis](../../../results/2026-09-14-slurp-train-a-entity-loss-attribution-v1.md). The exact Fold A output/reference join reconciles every saved official ingredient without rescoring. Of 414 reference-empty cases, 184 emit entities; surface, omission and extra-prediction losses all matter. This is a diagnostic, not a new mechanism or runtime memory admission.
@@ -83,9 +87,9 @@ treatment results exist. Any unresolved analysis must remain descriptive until i
 
 ## Current ordered work queue
 
-1. Complete and seal the running frozen SLURP broad/factored TRAIN-A campaign, then perform its first full official score and source-bound analysis through the registered controls.
-2. Run the source-frozen Audio2Tool direct/system scope-tools pair after the SLURP generation boundary and exact np3 service handoff; no further engineering is pending.
-3. Preserve the reviewed and merged Earnings21 held registration preparation; its configs, draft plans and held campaign grant no admission, exposure, fit or generation authority. Retain the supported static fit over 1,593 windows and 4,780 endpoints because the live fit's 44-parent count is not unit-aware.
+1. Complete and seal the running frozen SLURP broad/factored TRAIN-A campaign, then perform its campaign-owned first full official score and source-bound analysis through the registered controls.
+2. Run the source-frozen Audio2Tool direct/system scope-tools pair after the SLURP generation seal and custody boundary, using its unchanged same-process campaign and exact np3 service handoff.
+3. Run the source-frozen E21 direct static fit only after the Audio2Tool generation boundary, the exact verified E21 service and first shared monitor sample, and a standard `GenerationLease`. Use the registered attach-only `prompt-fit` route over all 1,593 windows and 4,780 endpoints. The actual fit receipt is absent; generation, native fit and ASR remain held and unregistered.
 4. Establish reproducible package benefit and preserve an observable, configurable trajectory workspace.
 5. Define training-free RL factors, trajectory sampling, rewards and update rules after the shared base/workspace qualifies. Root-led engineering is not an RL algorithm result.
 
@@ -195,3 +199,22 @@ preparation, which grants no execution authority, with the existing supported
 static fit. Owner resume remains active. Preserve failed verdicts and
 historical records; stable benefit and trajectory-sampling optimization remain
 incomplete.
+
+## 2026-09-15 SLURP metadata binding and E21 direct-fit freeze
+
+[STATUS-139](STATUS-139.md) records the exact SLURP analysis metadata binding
+while the frozen campaign remains live and treatment quality remains unread.
+The metadata covers 1,080 rows, 125 speakers and 18 scenarios; calls are not
+completed rows. The current campaign retains custody of its first complete
+official score.
+
+E21 stable-source admission is recorded. Its direct static fit registration adds
+six files and no production change, covers all 1,593 windows and 4,780
+endpoints, and is integrated and source-frozen at
+`1daad5186119b23c3414e36676afb296599dc29f`. The
+[registration README](../../../readiness/2026-09-15-e21-native-window-direct-fit-registration-v1/README.md)
+defines the attach-only `prompt-fit` route and remaining service, monitor and
+lease gates. Sixty-eight focused tests and four correction checks passed with
+overlap. No fit receipt exists yet. Generation, native fit and CPU ASR remain
+held and unregistered. Preserve the SLURP, Audio2Tool, E21 order, prior failed
+verdicts, and the limits on stable-benefit and training-free RL claims.

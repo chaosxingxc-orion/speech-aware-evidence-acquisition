@@ -1,21 +1,22 @@
 # Current continuation: September 15
 
-Read [STATUS-138](STATUS-138.md): the frozen SLURP broad/factored TRAIN-A
-campaign is running. Its last bounded observer milestone records 1,009 model
-calls with a live process and an OPENED attempt, not completed rows. Paired
+Read [STATUS-139](STATUS-139.md): the frozen SLURP broad/factored TRAIN-A
+campaign remains live under worker PID 293426 and server PID 293153 on its same
+np4 service. Its exact post-seal metadata is bound for 1,080 rows, 125 speakers
+and 18 scenarios. Model calls do not establish completed rows; treatment
 quality remains unread. See
 [the owner resume directive](OWNER-GPU-RESUME-2026-09-15.md).
 
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-138.md](STATUS-138.md) records the running frozen
-SLURP broad/factored TRAIN-A campaign and its bounded observer milestone. The
+**Latest execution:** [STATUS-139.md](STATUS-139.md) records the running frozen
+SLURP broad/factored TRAIN-A campaign and its exact metadata binding. The
 [post-seal analysis recipe](../../../readiness/2026-09-15-slurp-broad-factored-train-a-analysis-recipe-v1.json)
-is source-bound pending a complete seal. The Audio2Tool scope-tools pair is
-reviewed, registered, integrated and source-frozen; it awaits the SLURP
-generation boundary and its exact np3 service. The Earnings21 held registration
-preparation is root-reviewed and merged; its configs, draft plans and held
-campaign grant no execution authority.
+remains source-bound pending a complete seal. The Audio2Tool scope-tools pair
+remains registered and source-frozen until the SLURP generation seal and
+custody boundary. The [Earnings21 direct-fit registration](../../../readiness/2026-09-15-e21-native-window-direct-fit-registration-v1/README.md)
+is integrated and source-frozen for all 1,593 windows and 4,780 endpoints.
+Actual fit and every later E21 contact remain pending their own gates.
 
 **Current comparison direction:** [OWNER-SYSTEM-VERSIONS-025.md](OWNER-SYSTEM-VERSIONS-025.md) makes complete model-versus-system task quality primary and allows evidence-guided expansion of system versions. The supplied/withheld knowledge draft is withdrawn. [The current system plan](../../../readiness/2026-09-13-slurp-direct-vs-native-system-plan-v1.md) and [extension sequence](../../../readiness/2026-09-13-finalized-score-reuse-and-system-extension.md) govern the next work.
 
@@ -23,7 +24,7 @@ campaign grant no execution authority.
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 138. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 139. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -56,13 +57,13 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-138.md](STATUS-138.md), state.json and
+Read [STATUS-139.md](STATUS-139.md), state.json and
 [OWNER-GPU-RESUME-2026-09-15](OWNER-GPU-RESUME-2026-09-15.md) first. The frozen
-SLURP broad/factored TRAIN-A campaign is running under its exact service and
-registered controls. Treat 1,009 as a bounded model-call milestone, not a
-completed-row count; telemetry before 17:11:58 UTC is missing and paired quality
-remains unread. The current campaign alone owns the first complete official
-score. The earlier G6/E21 campaigns' generation, scoring, fixed analysis and all four settlements
+SLURP broad/factored TRAIN-A campaign remains live under worker PID 293426 and
+server PID 293153 on its same np4 service. Exact analysis metadata is bound for
+1,080 rows, 125 speakers and 18 scenarios. Do not infer completed rows from
+model calls. Telemetry before 17:11:58 UTC is missing, treatment quality remains
+unread, and the current campaign alone owns the first complete official score. The earlier G6/E21 campaigns' generation, scoring, fixed analysis and all four settlements
 are complete. Those earlier G6 SLURP and E21 system admissions fail their frozen rules. STATUS-044 separately admits the newer SLURP task-agent working baseline for exploration. The newer role-coverage pair is closed under STATUS-046; it is not adopted and cannot be replayed under its exhausted registration.
 The task-scope
 clarification is [OWNER-DATASET-TASKS-010.md](OWNER-DATASET-TASKS-010.md):
@@ -105,10 +106,11 @@ no new test/confirmatory exposure or Stage-3 execution is admitted.
 
 Current knowledge design: [discriminative values](../../../readiness/2026-09-11-discriminative-knowledge-values.md).
 
-Latest handoff: [STATUS-138](STATUS-138.md). The SLURP broad/factored
-TRAIN-A campaign is running from frozen source. Audio2Tool is source-frozen and
-awaits the SLURP generation boundary and exact np3 service. Earnings21 held
-registration preparation is reviewed and merged without admission, exposure,
-fit or generation authority. The queue is SLURP, Audio2Tool, then Earnings21.
-Stable benefit and trajectory-sampling optimization remain incomplete. Preserve
-completed and failed sources. This pointer grants no generation authority.
+Latest handoff: [STATUS-139](STATUS-139.md). The frozen SLURP broad/factored
+TRAIN-A campaign remains live, with exact post-seal metadata bound and treatment
+quality unread. Audio2Tool is source-frozen and awaits the SLURP generation seal
+and custody boundary. Earnings21 stable-source admission exists, and its
+[direct static fit](../../../readiness/2026-09-15-e21-native-window-direct-fit-registration-v1/README.md)
+is integrated and source-frozen; actual fit and later contacts remain gated.
+The queue is SLURP, Audio2Tool, then Earnings21. Preserve completed and failed
+sources. Stable benefit and trajectory-sampling optimization remain incomplete.
