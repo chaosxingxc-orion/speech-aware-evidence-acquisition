@@ -19,9 +19,23 @@
       "dataset_fragment": "audio2tool-org1-union-4000",
       "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
       "readiness": {
-        "reason": "Hold until root verifies the named Planner control and trace preservation repair, bound prepared supply, source freeze and recovery admission.",
-        "requirements": [],
-        "state": "held"
+        "reason": "Root admits the sole full4000 recovery after genuine four-row control proof. Each realized request still requires actual fit; complete task quality remains unread.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "All4000 supply rows verified equal to the original source-bound preparation.",
+            "relpath": "prepared/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1/phase-supply-v1.json",
+            "sha256": "bc3b6ba8e33a49e4b7a3a7a8d936095c85325a6e9d5e37c040042d0e9025be13"
+          },
+          {
+            "expected_decision_id": "a2t-native-role-control-full-recovery-admission-v1",
+            "kind": "decision",
+            "reason": "Root full recovery admission after the named failure and control proof.",
+            "relpath": "coordination/a2t-native-role-control-recovery-v1/root-full-admission-v1.json",
+            "sha256": "98c9914b3c4a886d89637dc39ef588f43d5a98192618c431fadf2cf7868a2558"
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1"
     }
