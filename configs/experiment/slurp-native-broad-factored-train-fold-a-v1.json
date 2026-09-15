@@ -25,14 +25,21 @@
         "campaign"
       ],
       "readiness": {
-        "state": "held",
-        "reason": "DATA_READY: shared knowledge release, unchanged facet validation and all1080 supply preparation are complete. Await root final exposure registration and service-boundary admission after the active A2T generation.",
+        "state": "ready",
+        "reason": "Root admitted this prepared successor for the next matching service boundary; standard campaign preflight and actual-contact fit remain mandatory.",
         "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-broad-factored-train-a-admission-v1",
+            "relpath": "coordination/slurp-broad-factored-v1/admission-v1.json",
+            "sha256": "398c53e6ca62cff6e8e94b80eae12ccc0399275c72407dfbc6850134b6ef7930",
+            "reason": "Root scientific and preparation admission."
+          },
           {
             "kind": "preparation",
             "relpath": "prepared/SAEA-SLURP-NATIVE-BROAD-FACTORED-TRAIN-FOLD-A-V1/phase-supply.json",
             "sha256": "a897a52b7ad9820a3c3ce1e60d01e9a77baa4a01eece0fd44b2cd92a6297ef76",
-            "reason": "Full1080 source-bound factored intent supply."
+            "reason": "Exact full1080 prepared supply."
           }
         ]
       }

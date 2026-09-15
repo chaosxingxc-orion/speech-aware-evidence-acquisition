@@ -1,0 +1,280 @@
+{
+  "schema": "saea-slurp-broad-factored-protocol-v1",
+  "registered_at_utc": "2026-09-15T04:07:22.114244+00:00",
+  "status": "ROOT_PREREGISTERED_AWAITING_SERVICE_BOUNDARY",
+  "source_worktree": "/home/chao/saea-worktrees/slurp-broad-factored-prepare-v1",
+  "accepted_implementation_commit": "5fe9e56ea6da75f83b3db94d2ab9f1c35c3db1b7",
+  "admission": {
+    "relpath": "coordination/slurp-broad-factored-v1/admission-v1.json",
+    "sha256": "398c53e6ca62cff6e8e94b80eae12ccc0399275c72407dfbc6850134b6ef7930"
+  },
+  "final_prepared_cache": {
+    "relpath": "coordination/slurp-broad-factored-v1/root-final-config-cache-validation-v1.json",
+    "sha256": "b5f710ccbd827c49471a48e1e1b00af5fed4f322666804a41524bec9507aa375"
+  },
+  "configuration": {
+    "experiment": "slurp-native-broad-factored-train-fold-a-v1",
+    "cell": "slurp-native-broad-factored-train-fold-a-v1",
+    "run_id": "SAEA-SLURP-NATIVE-BROAD-FACTORED-TRAIN-FOLD-A-V1",
+    "attempt_id": "attempt-slurp-native-broad-factored-train-fold-a-generation-v1",
+    "composed_config_hash": "fc46bc17356fc99d2bf4373778f2d2612a13eed5310f8d466124d3169c005ac8",
+    "execution_plan_protocol_hash": "e1d5af33c1b7be846be6e4c7f01e1ad1de4bb4a1cfe1bfad5bfca623163107f3",
+    "fragments": {
+      "model": {
+        "relpath": "configs/model/q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1.json",
+        "sha256": "d1a644d80646de9e0e6b5799fb98e2151de7e03b1b14c5f260d16f77f8a77f09"
+      },
+      "dataset": {
+        "relpath": "configs/dataset/slurp-speech-native-evo-fold-a-1080.json",
+        "sha256": "4ba55688e80d8d768ec6cfc3ff4bacc9802fb34e4dab54913934015184497215"
+      },
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-broad-factored-train-fold-a-v1.json",
+        "sha256": "95722e69f49ab517d4e8119b9fabb9f3cd463ae1dce87c9cc085d68c7f3f5c7c"
+      },
+      "experiment": {
+        "relpath": "configs/experiment/slurp-native-broad-factored-train-fold-a-v1.json",
+        "sha256": "955bd4059ba8cc7d3b39ddcba4e81f852fd30cc84d07eed224571d49b79e1584"
+      }
+    }
+  },
+  "population": {
+    "count": 1080,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "Complete previously exposed TRAIN Fold A1080 only; both A/B remain excluded from runtime knowledge construction, and Fold B is not executed.",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+  },
+  "program": {
+    "policy": "phase-native-candidates-review-revise-v1",
+    "native_episode": {
+      "actions": {
+        "accept": "ACCEPT",
+        "acquire": "ACQUIRE",
+        "revise": "REVISE"
+      },
+      "episode_id": "slurp-native-dual-store-dev1000-v1",
+      "exhaustion_policy": "deliver-latest-solver",
+      "max_revisions": 1,
+      "roles": {
+        "perception": {
+          "max_iterations": 1,
+          "phase_id": "perception"
+        },
+        "planner": {
+          "max_iterations": 1,
+          "phase_id": "planner"
+        },
+        "reviewer": {
+          "max_iterations": 3,
+          "phase_id": "reviewer"
+        },
+        "solver": {
+          "max_iterations": 1,
+          "phase_id": "solver"
+        }
+      },
+      "schema": "saea-native-episode-config-v1"
+    },
+    "phase_material": {
+      "perception": {
+        "fill_params": {
+          "id": "slurp-intent-hypotheses-v1",
+          "max_candidates": 3,
+          "max_distinction_chars": 128,
+          "max_evidence_refs": 0,
+          "max_unresolved_fields": 0,
+          "min_candidates": 1,
+          "source_catalog": {
+            "data_relpath": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
+            "sha256": "3e60268b3f940c3018ab8b8c80ccd988b1d1efd6c5a198929c6af05ba21f8263",
+            "source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201"
+          }
+        },
+        "instruction_fill": null,
+        "instruction_template": "probes/slurp_native_role_perception_v3.txt",
+        "predecessor_binding": "none",
+        "response_format_id": "slurp-intent-hypotheses-v1",
+        "state_fill": null
+      },
+      "planner": {
+        "fill_params": {},
+        "instruction_fill": null,
+        "instruction_template": "probes/slurp_native_role_planner_v1.txt",
+        "predecessor_binding": "none",
+        "response_format_id": null,
+        "state_fill": null
+      },
+      "reviewer": {
+        "fill_params": {},
+        "instruction_fill": null,
+        "instruction_template": "probes/slurp_native_role_reviewer_v1.txt",
+        "predecessor_binding": "none",
+        "response_format_id": null,
+        "state_fill": null
+      },
+      "solver": {
+        "fill_params": {},
+        "instruction_fill": null,
+        "instruction_template": "probes/slurp_native_role_solver_v2.txt",
+        "predecessor_binding": "none",
+        "response_format_id": null,
+        "state_fill": null
+      }
+    },
+    "phase_tools": {
+      "reviewer": {
+        "allowed_tools": [
+          "saea-tool-task-contract-v1"
+        ],
+        "knowledge_views": [
+          "text"
+        ],
+        "mode": "native-tools",
+        "source_authority_role": "reviewer"
+      }
+    }
+  },
+  "knowledge_stores": {
+    "intent-boundaries": {
+      "phase_supply": {
+        "perception": {
+          "dimensions": [
+            "intent-boundary"
+          ],
+          "expose_facets": false,
+          "facet_source": {
+            "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+            "kind": "sealed-vectors",
+            "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+            "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+            "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+          },
+          "fuse_coverage": {
+            "m": 60,
+            "c": 2,
+            "top_l": 61
+          },
+          "fuse_policy": "saea-fuse-associated-values-v1",
+          "k": 60,
+          "provider": "kb-facet-v1",
+          "query_source": {
+            "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+            "kind": "sealed-segment-vectors",
+            "relpath": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+            "sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b",
+            "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+          },
+          "rank_policy": "saea-rank-wcos-prior-agree-v1",
+          "rank_weights": {
+            "w_agree": 0.0,
+            "w_cos": 1.0,
+            "w_prior": 0.0
+          },
+          "tau": 0.0
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-factored-v1/release.json",
+        "sha256": "1aa06765731be4b9af20cf43cf57b999055b242ba3a3beb5fabb67874c380cff"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-factored-v1/snapshot.json",
+        "sha256": "2f51a962bda72dfbb5469a2d31e1ad99030ecb5634d1e25fc0f9f093d759758b"
+      },
+      "store_role": "intent-boundaries"
+    },
+    "slot-contracts": {
+      "candidate_supply": {
+        "solver": {
+          "candidate_state_phase": "perception",
+          "compact_source_phase": "perception",
+          "fuse_policy": "saea-candidate-semantic-passthrough-v1",
+          "max_candidates": 3,
+          "max_total_values": 28,
+          "max_values_per_candidate": 16,
+          "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+          "provider": "slurp-candidate-semantic-v1",
+          "rank_policy": "saea-ranked-candidate-round-robin-v1"
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+        "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/snapshot.json",
+        "sha256": "11c246e4b815a4f966e8cf8785f06b70515755eca71658862c6f98e9914044e6"
+      },
+      "store_role": "slot-contracts"
+    }
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-BROAD-FACTORED-TRAIN-FOLD-A-V1/phase-supply.json",
+    "sha256": "a897a52b7ad9820a3c3ce1e60d01e9a77baa4a01eece0fd44b2cd92a6297ef76"
+  },
+  "analysis": {
+    "advance": "A candidate improvement alone is insufficient. Require positive final-task point gain and a CI95 lower bound above zero for advancement to a matched full-roster replication. Report strata and harms. A first positive result is a discovery lead, not stable gain.",
+    "attribution": "This compares an intentional knowledge organization-and-supply package with the incumbent; it cannot separate compaction from breadth causally. No knowledge-off arm is added.",
+    "failure": "Stop and root-cause if complete task quality does not improve or runtime fails. Do not sweep breadth values or repeat until a gate passes.",
+    "inference": "Pair by recording; cluster bootstrap by speaker, 10000 draws, seed 20260915. Use CI95 for task-quality advancement and CI90 for diagnostics. Preserve the prospective analysis recipe before task-quality reads.",
+    "primary": "Complete official SLURP pooled micro-F1 compared with the released incumbent on the exact same 1080 rows.",
+    "secondary": [
+      "Intent/scenario/action accuracy",
+      "Gold membership in the generated distinct candidate list, with actual width",
+      "Final intent accuracy conditional on gold membership, with denominator",
+      "Entity errors conditional on correct intent",
+      "Rescues and harms versus incumbent",
+      "Tool calls, revisions, invalid output, saturation, fallback and input volume",
+      "Natural-mixture and equal-scenario views, all 18 scenario strata"
+    ]
+  },
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "generation_budget": {
+    "cap": 11880,
+    "definition": "Complete the unchanged maximum eleven-contact native program for every Fold A row. The ceiling is a conservative safety bound, not an estimated cost or a reusable global allowance.",
+    "target": 5400
+  },
+  "service": {
+    "expected_session_id": "serving-slurp-native-broad-factored-train-a-np4-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "total_context": 98304,
+    "slots": 4,
+    "slot_tokens": 24576,
+    "max_output_tokens": 512,
+    "mmproj": "absent",
+    "feature_cache": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+    "switch": "Root only, after active A2T generation is sealed or terminal and all contacts reconciled; no overlap."
+  },
+  "fit": {
+    "mode": "native_contact_fit",
+    "configuration": {
+      "run_id": "SAEA-SLURP-NATIVE-BROAD-FACTORED-TRAIN-FOLD-A-FIT-V1",
+      "attempt_id": "attempt-slurp-native-broad-factored-train-fold-a-fit-v1",
+      "contact_cap": 47520,
+      "max_speech_packets": 1
+    },
+    "exact_request": "Fit each immutable realized request before dispatch under the same lease, including actual role history and supplied values. No static whole-roster all-branch guarantee is claimed."
+  },
+  "scoring": {
+    "scorers": [
+      "slurp-slu-official-train",
+      "cost"
+    ],
+    "complete_jobs": 1,
+    "per_sample_statistics": true,
+    "release_gate": "Seal full1080 output and first complete official score, then root binds the paired source release before reading task quality. Do not rerun the incumbent scorer."
+  },
+  "inheritance": "Use the released TRAIN anchor for this discovery comparison; its earlier process differs. A first positive result requires a separately registered matched-roster replication. No knowledge-off arm is added.",
+  "failure_policy": "Stop and preserve on failure. Root must identify the failing component and reconcile contacts before any single recovery registration; a second failure closes this flight. No automatic restart, filtering, retry campaign, prompt change or geometry change.",
+  "research_scope": "Stage2 bounded discovery; frozen core; no new fold exposure, ASR, encoding or paid API."
+}

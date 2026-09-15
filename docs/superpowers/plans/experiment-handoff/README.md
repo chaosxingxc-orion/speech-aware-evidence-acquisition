@@ -1,10 +1,10 @@
-# Current continuation: September 14
+# Current continuation: September 15
 
-Read [STATUS-097](STATUS-097.md): the refresh/tools successor failed in a shared tool-schema adapter; root has verified the fix and admitted its sole same-method recovery. The DATA launch receipt determines whether recovery generation has begun. Earlier status snapshots remain historical.
+Read [STATUS-120](STATUS-120.md): Audio2Tool native full4000 recovery is the sole active generation flight; the broad factored SLURP successor is fully prepared and preregistered for the next service boundary. Shared raw direct execution is verified, while E21 full-window integration remains pending. DATA-side receipts determine current process state. Earlier status snapshots remain historical.
 
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-075.md](STATUS-075.md) records the active direct-versus-native DEV1000 campaign. Direct completed and scored once; the system is generating. Quality is unread. Preserve the frozen runtime and resident service, then complete the paired analysis.
+**Latest execution:** [STATUS-120.md](STATUS-120.md) records the active Audio2Tool flight, prepared SLURP successor, verified shared engineering and remaining E21 integration. Preserve frozen active code and release gates.
 
 **Current comparison direction:** [OWNER-SYSTEM-VERSIONS-025.md](OWNER-SYSTEM-VERSIONS-025.md) makes complete model-versus-system task quality primary and allows evidence-guided expansion of system versions. The supplied/withheld knowledge draft is withdrawn. [The current system plan](../../../readiness/2026-09-13-slurp-direct-vs-native-system-plan-v1.md) and [extension sequence](../../../readiness/2026-09-13-finalized-score-reuse-and-system-extension.md) govern the next work.
 
@@ -12,7 +12,7 @@ Read [STATUS-097](STATUS-097.md): the refresh/tools successor failed in a shared
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 75. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 120. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -45,7 +45,7 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-075.md](STATUS-075.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
+Read [STATUS-120.md](STATUS-120.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
 The owner explicitly resumed GPU work after network reconnection and prioritizes
 high utilization. This supersedes OWNER012's scheduling hold. The earlier G6/E21 campaigns' generation, scoring, fixed analysis and all four settlements
 are complete. Those earlier G6 SLURP and E21 system admissions fail their frozen rules. STATUS-044 separately admits the newer SLURP task-agent working baseline for exploration. The newer role-coverage pair is closed under STATUS-046; it is not adopted and cannot be replayed under its exhausted registration.
