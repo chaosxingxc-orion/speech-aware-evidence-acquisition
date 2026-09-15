@@ -1,8 +1,9 @@
 """Config-bound Earnings21 adapter for the shared flight factory.
 
-Reuse the existing carrier loader and original call-level split. The OBS
-executor owns actual window materialization and stitching; the optional
-single-phase controller hook changes neither sample identities nor speech.
+Reuse the existing carrier loader and original call-level split. The shared
+execution path owns window materialization and stitching. OBS policies retain
+their historical controller hook; direct/native phase programs consume explicit,
+source-bound execution units without changing sample identities or speech.
 """
 
 from __future__ import annotations
@@ -16,6 +17,37 @@ from ...core.split_receipt import SplitReceiptError, VerifiedSplit, load_verifie
 from ...reproduction.window_controller import validate_window_controller
 from ..hashing import content_hash
 from .earnings import Earnings21Adapter
+
+
+def _validate_execution_route(values):
+    """Keep historical OBS and explicit unit programs on their shared paths."""
+    policy = values.get("policy")
+    units = values.get("prepared_execution_units")
+    if policy in ("obs-agent-loop-ojw", "obs-repair-loop-ojw"):
+        if units is not None:
+            raise CoreError("E21 OBS execution cannot silently ignore execution units")
+        validate_window_controller(values)
+        return
+    from ...e0.d2_leakage import ARM_VISIBLE_FIELDS
+    from ...reproduction.window_controller import PROGRAM_KEY
+    from ..controllers import default_phase_program
+    from ..errors import RailsError
+
+    if not isinstance(units, Mapping) or not units:
+        raise CoreError("E21 phase execution requires prepared_execution_units")
+    if values.get(PROGRAM_KEY) is not None:
+        raise CoreError("E21 phase execution cannot combine the OBS controller hook")
+    try:
+        program = default_phase_program(policy)
+    except RailsError as error:
+        raise CoreError(f"E21 phase program refused: {error}") from error
+    if program.program_id != "phase-direct-only-v1" and program.stop_rule != "native-role-episode":
+        raise CoreError("E21 unit execution requires the shared direct or native-role program")
+    features = "speech_feature_parts" in ARM_VISIBLE_FIELDS.get(values.get("arm"), ())
+    if not features and values.get("arm") != "raw-speech-agent-native-tools":
+        raise CoreError("E21 unit execution requires an explicit speech arm")
+    if features != (values.get("prepared_window_feature_packets") is not None):
+        raise CoreError("E21 feature units require window packets; raw units refuse them")
 
 
 class Earnings21RuntimeAdapter(Earnings21Adapter):
@@ -65,11 +97,7 @@ class Earnings21RuntimeAdapter(Earnings21Adapter):
                     "E21 runtime subset contains an id outside frozen discovery"
                 )
             self._verified_subset = verified
-        if values.get("policy") not in ("obs-agent-loop-ojw", "obs-repair-loop-ojw"):
-            raise CoreError(
-                "E21 current runtime requires the shared OpenJiuwen OBS executor"
-            )
-        validate_window_controller(values)
+        _validate_execution_route(values)
         geometry = values.get("serving_geometry")
         keys = {"slots", "slot_tokens", "max_tokens"}
         if (
@@ -126,10 +154,10 @@ class Earnings21RuntimeAdapter(Earnings21Adapter):
         )
 
     def bind_runtime(self, runtime, values):
-        """Validate before preflight; shared OBS use sites bind the controller hook."""
+        """Validate immutable config before the shared runtime binds its sources."""
         if content_hash(values) != self._values_hash:
             raise CoreError("E21 runtime config changed after adapter construction")
-        validate_window_controller(values)
+        _validate_execution_route(values)
 
 
 def build_runtime_adapter(values, lock, data_root, repo_root, *, dataset_fragment):
