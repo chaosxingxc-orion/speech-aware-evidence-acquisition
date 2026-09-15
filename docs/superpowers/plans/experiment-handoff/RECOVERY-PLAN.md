@@ -1,6 +1,6 @@
 # Owner-directed recovery and continuation plan
 
-**Current overlay:** Read [STATUS-118](STATUS-118.md). The replicated SLURP package remains the useful exploratory base. Audio2Tool retains its completed direct4000 comparator and has dispatched one registered native recovery after root verified the Planner control repair. The raw speech shared runner is integrated; E21 window integration remains next. Root owns attribution, design and decisions.
+**Current overlay:** Read [STATUS-119](STATUS-119.md). The replicated SLURP package remains the useful exploratory base. Audio2Tool retains its completed direct4000 comparator and has dispatched one registered native recovery after root verified the Planner control repair. The raw speech shared runner is integrated; E21 window integration remains next. Root owns attribution, design and decisions.
 
 **Latest released TRAIN diagnosis:** Read the [source-bound entity-loss analysis](../../../results/2026-09-14-slurp-train-a-entity-loss-attribution-v1.md). The exact Fold A output/reference join reconciles every saved official ingredient without rescoring. Of 414 reference-empty cases, 184 emit entities; surface, omission and extra-prediction losses all matter. This is a diagnostic, not a new mechanism or runtime memory admission.
 
