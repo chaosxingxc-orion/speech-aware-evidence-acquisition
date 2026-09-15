@@ -2118,6 +2118,10 @@ async def _invoke_native_role_episode(
             "role_visits", "planner_routes", "accepted_solver_receipt", "interrupted_role",
             "abstention_receipt",
         ) if key in receipt}
+        if config.planner_output_format == "json-action-v1":
+            compact_receipt.update({
+                key: receipt[key] for key in ("plan", "planner_control") if key in receipt
+            })
         if terminal_disposition is not None:
             if final_solver_receipt is not None:
                 compact_receipt["terminal_solver_receipt"] = dict(final_solver_receipt)

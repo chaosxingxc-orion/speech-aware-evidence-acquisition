@@ -968,6 +968,15 @@ def test_actual_json_planner_schema_tracks_graph_at_revision_exhaustion(tmp_path
         assert result.native_episode_receipt["terminal_disposition"][
             "planner_action"
         ] == "REVISE"
+        assert result.native_episode_receipt["plan"] == '{"action":"REVISE"}'
+        assert result.native_episode_receipt["planner_control"] == {"action": "REVISE"}
+        from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
+            validate_native_episode_delivery_receipt,
+        )
+        validate_native_episode_delivery_receipt(result.native_episode_receipt)
+        corrupted = dict(result.native_episode_receipt, planner_control={"action": "ACCEPT"})
+        with pytest.raises(ValueError, match="structured Planner control differs"):
+            validate_native_episode_delivery_receipt(corrupted)
         assert [
             body["response_format"]["json_schema"]["schema"]["properties"][
                 "action"

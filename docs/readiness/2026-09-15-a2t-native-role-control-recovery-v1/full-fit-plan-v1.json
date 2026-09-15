@@ -1,0 +1,31 @@
+{
+  "attached_generation_run_id": "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1",
+  "cell": "a2t-native-role-dual-store-union4000-recovery-v1",
+  "contact_cap": 176000,
+  "execution_plan": {
+    "attempt_id": "attempt-a2t-native-role-dual-store-union4000-recovery-fit-v1",
+    "carrier_lock_key": "audio2tool",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 48.0,
+    "planned_model_calls": 176000,
+    "planned_speech_audio_seconds": 260000,
+    "protocol_hash": "2042bc1c8327702a0f94ca1a8611e177e5fec1251eaaaa3354f467b457f82524",
+    "run_id": "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-a2t-native-role-base-np3-max2048-v2",
+  "experiment": "a2t-native-role-dual-store-union4000-recovery-v1",
+  "max_speech_packets": 1,
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-15-a2t-native-role-control-recovery-v1/full-protocol-v1.json",
+    "sha256": "ad5f25a5b907c0a7875592a7a7ff8794a458ed4641200ac4780cf26c58a33e8d"
+  },
+  "registered_at_utc": "2026-09-15T02:47:07.962034+00:00",
+  "registration_state": "REGISTERED; clean source freeze, exclusive same-process lease and actual per-contact fit remain mandatory.",
+  "root_registration_required": false,
+  "schema": "saea-registered-dynamic-fit-plan-v1",
+  "scoring": "No scoring; fit every realized request before dispatch."
+}

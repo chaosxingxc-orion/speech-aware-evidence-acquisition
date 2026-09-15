@@ -1,0 +1,127 @@
+{
+  "analysis_recipe": {
+    "repo_relpath": "docs/readiness/2026-09-14-a2t-native-role-base-analysis-recipe-v1.json",
+    "sha256": "7697ce0e8303fa2dd68f34a91bdfd9fc5e3322e986a923f4b11d570a2bb3f104"
+  },
+  "budget": {
+    "accounting_scope": "Direct completed4000 + aborted native83 + recovery proof cap44 + recovery native cap44000; complete direct fit12001 + aborted native fit332 + proof cap176 + recovery fit cap176000. Earlier independent engineering proof retains its own prior ledger.",
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 188509,
+    "generation_calls_cap": 48127,
+    "gpu_hours_fit_inclusive": 58.0,
+    "native_task_contract_calls_cap": 16099,
+    "official_complete_scoring_jobs": 2,
+    "speech_audio_seconds_cap": 292500
+  },
+  "comparator": {
+    "attempt_id": "attempt-a2t-native-role-direct-union4000-generation-v1",
+    "generation_calls": 4000,
+    "run_id": "SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1",
+    "same_resident_process": true,
+    "score": "Keep existing first complete score; do not repeat or read until paired release.",
+    "state": "FINALIZED"
+  },
+  "configuration": {
+    "composed_config_hash": "f1fc02a4dfe18cc7015bc8374b96e2c6b5e68a9cdd2a1d1b756dd70d72bc6378",
+    "file_pins": {
+      "baseline": "3ad880594286eabe9b65f435897a834b327e2e1e6dd8daf6b02b8373a4986742",
+      "dataset": "00064d591240d15a4640cdb824160cd6b88d2e767f1e2570d0743f148ef281ef",
+      "experiment": "f9e2edf9e7cd90c0f73a9b5d470b83293ff594c093e96d43b5fc1a54b7f934c8",
+      "model": "853a9645e8a47ff94bc34a61dbb12e963ddba0a3dcf06be7b3f2a3a6fcd5fcd6"
+    },
+    "fragments": {
+      "baseline": "a2t-native-role-dual-store-union4000-recovery-v1",
+      "dataset": "audio2tool-org1-union-4000",
+      "experiment": "a2t-native-role-dual-store-union4000-recovery-v1",
+      "model": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1"
+    },
+    "planner_prompt_sha256": "a821d7dae60013d204ba479618430d6b204be72c1806acd835a2ab84502acd40",
+    "runtime_protocol_hash": "2042bc1c8327702a0f94ca1a8611e177e5fec1251eaaaa3354f467b457f82524"
+  },
+  "execution_plans": {
+    "fit": {
+      "attempt_id": "attempt-a2t-native-role-dual-store-union4000-recovery-fit-v1",
+      "carrier_lock_key": "audio2tool",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 48.0,
+      "planned_model_calls": 176000,
+      "planned_speech_audio_seconds": 260000,
+      "protocol_hash": "2042bc1c8327702a0f94ca1a8611e177e5fec1251eaaaa3354f467b457f82524",
+      "run_id": "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-FIT-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "generation": {
+      "attempt_id": "attempt-a2t-native-role-dual-store-union4000-recovery-generation-v1",
+      "carrier_lock_key": "audio2tool",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 48.0,
+      "planned_model_calls": 44000,
+      "planned_speech_audio_seconds": 260000,
+      "protocol_hash": "2042bc1c8327702a0f94ca1a8611e177e5fec1251eaaaa3354f467b457f82524",
+      "run_id": "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    }
+  },
+  "expected_session_id": "serving-a2t-native-role-base-np3-max2048-v2",
+  "method": "Same complete original-speech native agent package with strict JSON Planner control and consistent exhausted-budget actions, plus source-bound sealed control and failure trace preservation.",
+  "observed_proof_limits": "Four episodes each revised once then accepted;28 generations and112 fit contacts. No live task-contract tool or exhausted REVISE was observed. Those paths are model-free tested; no full4000 fit claim.",
+  "on_failure": "Stop and preserve on failure. This is the sole registered recovery of the first named full4000 native failure. No automatic restart, replay, geometry change or second recovery. The four-row proof is engineering-only.",
+  "population": {
+    "count": 4000,
+    "dataset_fragment": "audio2tool-org1-union-4000",
+    "decision_population": "Previously exposed union4000, eight complete tiers of 500; unchanged original speech; Tier7 first user turn only.",
+    "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6"
+  },
+  "prerequisites": {
+    "admission": {
+      "data_relpath": "coordination/a2t-native-role-control-recovery-v1/root-full-admission-v1.json",
+      "sha256": "98c9914b3c4a886d89637dc39ef588f43d5a98192618c431fadf2cf7868a2558"
+    },
+    "prepared_supply": {
+      "relpath": "prepared/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1/phase-supply-v1.json",
+      "sha256": "bc3b6ba8e33a49e4b7a3a7a8d936095c85325a6e9d5e37c040042d0e9025be13"
+    },
+    "proof_review": {
+      "data_relpath": "coordination/a2t-native-role-control-recovery-v1/root-proof-review-v1.json",
+      "sha256": "913d97cb02f5fc198afb64006ec6487c5a3f85fe22c87e9ed1bd48fd5d9e8903"
+    }
+  },
+  "recovery_index": 1,
+  "recovery_of": {
+    "actual_fit_endpoint_contacts": 332,
+    "actual_generation_calls": 83,
+    "attempt_id": "attempt-a2t-native-role-dual-store-union4000-generation-v1",
+    "canonical_contact_trace_gap": 69,
+    "canonical_contact_traces_retained": 14,
+    "run_id": "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-V1"
+  },
+  "registered_at_utc": "2026-09-15T02:47:07.962034+00:00",
+  "registered_by": "root",
+  "registration_base_commit": "acea0270b3de769aa9df52fa4ed5798e5de73e48",
+  "schema": "saea-native-control-full-recovery-protocol-v1",
+  "scoring": {
+    "additional_complete_jobs": 1,
+    "direct_rescore": false,
+    "partial_scoring": false,
+    "per_sample": true
+  },
+  "serving_geometry": {
+    "max_output_tokens": 2048,
+    "mmproj": false,
+    "slot_tokens": 32768,
+    "slots": 3,
+    "total_context_tokens": 98304
+  },
+  "source_freeze": {
+    "data_relpath": "coordination/a2t-native-role-control-recovery-v1/source-freeze-full-v1.json",
+    "required_before_contact": true
+  }
+}
