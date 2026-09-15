@@ -19,6 +19,38 @@ def _json(text):
     except (TypeError, ValueError) as error:
         raise FrozenCoreError("native history contains invalid JSON") from error
 
+def _query_speech_identity(payload):
+    """Return one source-bound query speech identity for native history custody."""
+
+    feature_parts = payload.get("speech_feature_parts")
+    raw = payload.get("raw_speech_query")
+    raw_declared = "raw_speech_query" in payload
+    if raw_declared and "speech_feature_parts" in payload:
+        _refuse("raw and feature query speech identities cannot be mixed")
+    if feature_parts is None:
+        feature_parts = []
+    if not isinstance(feature_parts, list):
+        _refuse("speech feature identities must be a list")
+    feature_queries = [
+        item for item in feature_parts
+        if isinstance(item, Mapping) and item.get("role") == "query"
+    ]
+    if raw_declared:
+        if (
+            not isinstance(raw, Mapping)
+            or set(raw) != {"media_relpath", "sha256"}
+            or not isinstance(raw["media_relpath"], str)
+            or not raw["media_relpath"]
+            or not isinstance(raw["sha256"], str)
+            or len(raw["sha256"]) != 64
+            or any(character not in "0123456789abcdef" for character in raw["sha256"])
+        ):
+            _refuse("raw query speech identity is malformed")
+        return raw["media_relpath"], raw["sha256"]
+    if len(feature_queries) != 1:
+        _refuse("one raw or feature query speech identity is required")
+    query = feature_queries[0]
+    return query.get("packet_id"), query.get("sha256")
 
 def _bound_result(state, states, allowed_names, payload):
     from ...rails.hashing import content_hash
@@ -72,10 +104,7 @@ def _bound_result(state, states, allowed_names, payload):
         "sample_id", "phase", "next_phase", "tool_id", "source_response_sha256",
         "tool_call_id", "tool_calls_sha256", "speech_packet_id", "speech_packet_sha256",
     )
-    query_packets = [
-        item for item in payload.get("speech_feature_parts", [])
-        if isinstance(item, Mapping) and item.get("role") == "query"
-    ]
+    query_packet_id, query_packet_sha256 = _query_speech_identity(payload)
     if (
         not isinstance(invocation, Mapping)
         or invocation.get("schema") != invocation_schema
@@ -96,9 +125,8 @@ def _bound_result(state, states, allowed_names, payload):
         ).hexdigest()
         or source["state_kind"] != "phase:" + document["phase"]
         or document["sample_id"] != payload.get("sample_id")
-        or len(query_packets) != 1
-        or document["speech_packet_id"] != query_packets[0].get("packet_id")
-        or document["speech_packet_sha256"] != query_packets[0].get("sha256")
+        or document["speech_packet_id"] != query_packet_id
+        or document["speech_packet_sha256"] != query_packet_sha256
     ):
         _refuse("tool invocation lacks matching counted custody")
     if schema == "saea-phase-tool-result-v1" and not allowed_names:

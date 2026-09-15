@@ -99,6 +99,8 @@ _SPEECH_FEATURE_PROMPT_ORDERS = frozenset(
     }
 )
 
+_RAW_NATIVE_PROMPT_ORDER = "native-raw-speech-v1"
+
 
 def _ordered_speech_feature_content(
     *,
@@ -454,12 +456,13 @@ class LlamaServerTransport:
             "system-instruction-v1",
             "evidence-first-system-v2",
             "evidence-first-system-v3",
+            _RAW_NATIVE_PROMPT_ORDER,
             *_SPEECH_FEATURE_PROMPT_ORDERS,
         ):
             raise SessionError(
                 f"unknown prompt_order {prompt_order!r}; allowed: "
                 "'system-instruction-v1', 'evidence-first-system-v2', "
-                "'evidence-first-system-v3', "
+                "'evidence-first-system-v3', 'native-raw-speech-v1', "
                 f"{', '.join(repr(item) for item in sorted(_SPEECH_FEATURE_PROMPT_ORDERS))}"
             )
         self._prompt_order = prompt_order
@@ -483,7 +486,9 @@ class LlamaServerTransport:
                 "user_turn_text must be a non-empty string when declared; an empty "
                 "user text part would put a meaningless content part on the wire"
             )
-        if user_turn_text is not None and prompt_order in _SPEECH_FEATURE_PROMPT_ORDERS:
+        if user_turn_text is not None and prompt_order in (
+            _SPEECH_FEATURE_PROMPT_ORDERS | {_RAW_NATIVE_PROMPT_ORDER}
+        ):
             # The speech-feature orders build their user content through
             # _ordered_speech_feature_content, whose ordering contract is
             # asserted by _assert_agent_history_suffix. Appending a free text
@@ -529,7 +534,9 @@ class LlamaServerTransport:
                 "dropping it silently would make every recorded protocol hash "
                 "describe a prompt that was never sent"
             )
-        if omit_system_message and prompt_order in _SPEECH_FEATURE_PROMPT_ORDERS:
+        if omit_system_message and prompt_order in (
+            _SPEECH_FEATURE_PROMPT_ORDERS | {_RAW_NATIVE_PROMPT_ORDER}
+        ):
             raise SessionError(
                 f"omit_system_message is not supported under prompt_order "
                 f"{prompt_order!r}; the speech-feature orders own their message "
@@ -709,6 +716,7 @@ class LlamaServerTransport:
         # media item below goes through, never a target-audio-only special
         # case.
         audio_part = None
+        audio_relpath = None
         # The ONE text-only arm: a construction-proposer payload declares
         # ``construction_targets`` (``contracts.identifiers.
         # CONSTRUCTION_VISIBLE_FIELD``, the D2 freeze), writes an ARTIFACT from
@@ -723,7 +731,7 @@ class LlamaServerTransport:
         # by an mmproj-free server, which is what every EVO cell serves.
         text_only = CONSTRUCTION_VISIBLE_FIELD in payload
         if self._prompt_order not in _SPEECH_FEATURE_PROMPT_ORDERS and not text_only:
-            _, audio_part = _load_audio_part(
+            audio_relpath, audio_part = _load_audio_part(
                 self._data_root, payload["media_relpath"], "transport media_relpath"
             )
         # Prefix-cache-friendly order (see module docstring, 2026-08-09,
@@ -864,6 +872,69 @@ class LlamaServerTransport:
                 workers=8,
                 expected_decoder_gguf_sha256=decoder_sha256,
             )
+        elif self._prompt_order == _RAW_NATIVE_PROMPT_ORDER:
+            if audio_part is None:
+                raise FrozenCoreError(
+                    "native raw speech requires exactly one original input_audio query"
+                )
+            if "speech_feature_parts" in payload:
+                raise FrozenCoreError(
+                    "native raw speech refuses mixed raw and feature query identities"
+                )
+            raw_identity = payload.get("raw_speech_query")
+            required_identity_fields = {"media_relpath", "sha256"}
+            if (
+                not isinstance(raw_identity, Mapping)
+                or set(raw_identity) != required_identity_fields
+            ):
+                raise FrozenCoreError(
+                    "native raw speech requires raw_speech_query with exact fields "
+                    "['media_relpath', 'sha256']"
+                )
+            raw_identity_relpath = raw_identity["media_relpath"]
+            raw_identity_sha256 = raw_identity["sha256"]
+            actual_raw_sha256 = hashlib.sha256(
+                base64.b64decode(audio_part["input_audio"]["data"])
+            ).hexdigest()
+            if (
+                not isinstance(raw_identity_relpath, str)
+                or raw_identity_relpath != audio_relpath
+                or not isinstance(raw_identity_sha256, str)
+                or raw_identity_sha256 != actual_raw_sha256
+            ):
+                raise FrozenCoreError(
+                    "native raw speech identity differs from the loaded original audio"
+                )
+            state_texts = _speech_history_texts(payload.get("history", []))
+            content = [
+                *({"type": "text", "text": text} for text in evidence_texts),
+                audio_part,
+                *({"type": "text", "text": text} for text in state_texts),
+            ]
+            _assert_agent_history_suffix(
+                prompt_order=self._prompt_order,
+                content=content,
+                state_texts=state_texts,
+            )
+            messages = [
+                {"role": "system", "content": payload["task_instruction"]},
+                {"role": "user", "content": content},
+            ]
+            from .native_framework_history import project_native_framework_history
+
+            framework_projection = project_native_framework_history(
+                payload=payload, messages=messages, state_texts=state_texts,
+            )
+            if framework_projection is None:
+                messages, historical_descriptors = project_native_history(
+                    payload=payload, messages=messages, state_texts=state_texts,
+                )
+            else:
+                messages, historical_descriptors = framework_projection
+            if historical_descriptors:
+                raise FrozenCoreError(
+                    "native raw speech refuses historical speech-feature descriptors"
+                )
         elif self._prompt_order == "evidence-first-system-v2":
             # Stable-first order: [system: evidence…, instruction(+tail at its
             # end)][user: audio]. The evidence formatting strings are

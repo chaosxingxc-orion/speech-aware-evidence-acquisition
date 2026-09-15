@@ -59,6 +59,7 @@ class NativeRoleSpeechBinding:
     core_kwargs: Mapping[str, object]
     tool_names: tuple[str, ...]
     local_tool_result_ids: tuple[str, ...] = ()
+    query_source: str = "speech_features"
     _messages_bytes: bytes = field(init=False, repr=False)
     _kwargs_bytes: bytes = field(init=False, repr=False)
 
@@ -72,10 +73,12 @@ class NativeRoleSpeechBinding:
                 or any(not isinstance(x, str) or not x for x in values)
             ):
                 raise NativeSpeechRequestError("tool and local result IDs must be ordered unique tuples")
+        if self.query_source not in {"speech_features", "speech_audio"}:
+            raise NativeSpeechRequestError("unsupported speech query source")
         kwargs = dict(self.core_kwargs)
         reserved = {
             "agent_contact_id", "contact_instruction", "tool_names", "prepare_only",
-            "text_only_sample_id", "speech_feature_sample_id",
+            "text_only_sample_id", "speech_feature_sample_id", "raw_agent_sample_id",
         }
         if set(kwargs) & reserved:
             raise NativeSpeechRequestError("binding overrides a controlled request field")
@@ -195,8 +198,13 @@ class MeteredNativeSpeechRequest:
             contact_id=request.context.agent_contact_id, messages=framework,
             local_tool_result_ids=binding.local_tool_result_ids,
         )
+        source_selector = (
+            {"speech_feature_sample_id": binding.sample_id}
+            if binding.query_source == "speech_features"
+            else {"raw_agent_sample_id": binding.sample_id}
+        )
         prepared = self._client.prepare_request(
-            messages, **kwargs, speech_feature_sample_id=binding.sample_id,
+            messages, **kwargs, **source_selector,
             agent_contact_id=request.context.agent_contact_id,
             contact_instruction=instruction,
             tool_names=(

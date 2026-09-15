@@ -72,6 +72,7 @@ from ..core.model import (
 )
 from ..core.model.binding import _PayloadBindingMixin
 from ..core.model.request_types import CoreResponse, wire_response_message
+from ..core.model.paths import _normalized_relative_path, _resolve_confined_any
 from ..core.model.slices import SliceRecord
 from ..core.tracing import DispatchingSink, TraceBuffer, TraceSink
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
@@ -170,7 +171,8 @@ class CoreClient(Protocol):
     (a text-only ``messages`` shape carries no ``media_relpath`` a client
     could otherwise reverse-look-up). ``agent_state`` plus
     ``agent_contact_id``/``contact_instruction`` are accepted only together
-    on a formal speech-feature request. They populate D2's separate
+    on a formal speech-feature request or the explicit raw native arm.
+    They populate D2's separate
     ``history`` field, never ``supplied_evidence``. See
     :class:`FrozenCoreClient.complete` for the real validation this gates.
     """
@@ -182,6 +184,7 @@ class CoreClient(Protocol):
         decoding_params: Mapping[str, object] | None = None,
         text_only_sample_id: str | None = None,
         speech_feature_sample_id: str | None = None,
+        raw_agent_sample_id: str | None = None,
         key_representation_id: str | None = None,
         matcher_policy_id: str | None = None,
         agent_state: Sequence[Mapping[str, object]] | None = None,
@@ -282,17 +285,15 @@ _SPEECH_FEATURE_ARM_FIELDS = _SUPPORTED_ARM_FIELDS | frozenset(
 # same field set plus exactly one extra field, "tool_schemas" (D1a's own
 # "bare-core-native-tools" naming convention: a NEW field on a NEW arm, never
 # grown ad hoc onto an existing frozen tuple -- core.policies module
-# docstring). Only "speech-feature-query-native-tools" is a real,
-# D2-registered arm as of this slice (e0.d2_leakage.ARM_VISIBLE_FIELDS); the
-# raw-audio member of this pair is accepted here too so this acceptance logic
-# never has to change again the day a raw-audio native-tools D2 arm is
-# registered -- constructing this client for an arm name that is not in
-# ARM_VISIBLE_FIELDS still fails closed ("unknown D2 arm") exactly as it
-# always has, regardless of this field-set shape ever being reachable.
+# docstring). The raw-audio member is the explicit
+# ``raw-speech-agent-native-tools`` D2 arm. Construction still fails closed for
+# arm names absent from ARM_VISIBLE_FIELDS ("unknown D2 arm").
 _NATIVE_TOOLS_FIELD = "tool_schemas"
 _NATIVE_TOOLS_SUPPORTED_ARM_FIELDS = _SUPPORTED_ARM_FIELDS | frozenset(
     {_NATIVE_TOOLS_FIELD}
 )
+_RAW_NATIVE_ARM = "raw-speech-agent-native-tools"
+_RAW_NATIVE_ARM_FIELDS = _NATIVE_TOOLS_SUPPORTED_ARM_FIELDS | {"raw_speech_query"}
 _NATIVE_TOOLS_SPEECH_FEATURE_ARM_FIELDS = _SPEECH_FEATURE_ARM_FIELDS | frozenset(
     {_NATIVE_TOOLS_FIELD}
 )
@@ -331,6 +332,7 @@ _ACCEPTED_ARM_FIELD_SETS = frozenset(
         _SUPPORTED_ARM_FIELDS,
         _SPEECH_FEATURE_ARM_FIELDS,
         _NATIVE_TOOLS_SUPPORTED_ARM_FIELDS,
+        _RAW_NATIVE_ARM_FIELDS,
         _NATIVE_TOOLS_SPEECH_FEATURE_ARM_FIELDS,
         _ZERO_SUPPLY_ARM_FIELDS,
         _NATIVE_TOOLS_ZERO_SUPPLY_ARM_FIELDS,
@@ -1183,6 +1185,36 @@ def _parse_rails_messages(
     return task_instruction, media_relpath, supply_texts
 
 
+def _typed_supply_part(part: Mapping[str, object]) -> dict[str, str | None]:
+    """Preserve registered evidence identity across speech input forms."""
+    text = part.get("text")
+    if not isinstance(text, str) or not text:
+        raise FrozenCoreClientError(
+            "text content part must carry non-empty text"
+        )
+    evidence_id = part.get("evidence_id")
+    if evidence_id is not None and (
+        not isinstance(evidence_id, str) or not evidence_id
+    ):
+        raise FrozenCoreClientError(
+            "text content part evidence_id must be a non-empty string or absent"
+        )
+    source_uri = part.get("source_uri")
+    if source_uri is not None and (
+        not isinstance(source_uri, str) or not source_uri
+    ):
+        raise FrozenCoreClientError(
+            "text content part source_uri must be a non-empty string or absent"
+        )
+    knowledge_role = part.get("knowledge_role")
+    if knowledge_role is not None and knowledge_role not in {"key", "value"}:
+        raise FrozenCoreClientError(
+            "text content part knowledge_role must be 'key', 'value', or absent"
+        )
+    return {"text": text, "evidence_id": evidence_id, "source_uri": source_uri,
+            "knowledge_role": knowledge_role}
+
+
 def _parse_speech_feature_messages(
     messages: Sequence[Mapping[str, object]],
 ) -> tuple[str, list[dict[str, str | None]], list[dict[str, str]]]:
@@ -1227,38 +1259,7 @@ def _parse_speech_feature_messages(
                 "materialize every packet before inference"
             )
         if part_type == "text":
-            text = part.get("text")
-            if not isinstance(text, str) or not text:
-                raise FrozenCoreClientError(
-                    "text content part must carry non-empty text"
-                )
-            evidence_id = part.get("evidence_id")
-            if evidence_id is not None and (
-                not isinstance(evidence_id, str) or not evidence_id
-            ):
-                raise FrozenCoreClientError(
-                    "text content part evidence_id must be a non-empty string or absent"
-                )
-            source_uri = part.get("source_uri")
-            if source_uri is not None and (
-                not isinstance(source_uri, str) or not source_uri
-            ):
-                raise FrozenCoreClientError(
-                    "text content part source_uri must be a non-empty string or absent"
-                )
-            knowledge_role = part.get("knowledge_role")
-            if knowledge_role is not None and knowledge_role not in {"key", "value"}:
-                raise FrozenCoreClientError(
-                    "text content part knowledge_role must be 'key', 'value', or absent"
-                )
-            supply_parts.append(
-                {
-                    "text": text,
-                    "evidence_id": evidence_id,
-                    "source_uri": source_uri,
-                    "knowledge_role": knowledge_role,
-                }
-            )
+            supply_parts.append(_typed_supply_part(part))
             continue
         if part_type != "input_speech_features":
             raise FrozenCoreClientError(f"unsupported content part type {part_type!r}")
@@ -1674,6 +1675,7 @@ class FrozenCoreClient:
         decoding_params: Mapping[str, object] | None = None,
         text_only_sample_id: str | None = None,
         speech_feature_sample_id: str | None = None,
+        raw_agent_sample_id: str | None = None,
         key_representation_id: str | None = None,
         matcher_policy_id: str | None = None,
         agent_state: Sequence[Mapping[str, object]] | None = None,
@@ -1687,6 +1689,7 @@ class FrozenCoreClient:
             messages, decoding_params=decoding_params,
             text_only_sample_id=text_only_sample_id,
             speech_feature_sample_id=speech_feature_sample_id,
+            raw_agent_sample_id=raw_agent_sample_id,
             key_representation_id=key_representation_id,
             matcher_policy_id=matcher_policy_id, agent_state=agent_state,
             agent_contact_id=agent_contact_id, contact_instruction=contact_instruction,
@@ -1712,13 +1715,15 @@ class FrozenCoreClient:
         This only validates and reads bound local material. It performs no
         tokenizer, adapter, gate, review or model contact. The owning client
         accepts the template at most once, including a failed send. Raw
-        supplied-evidence templates are refused because their evidence IDs
-        depend on the dispatch request ID and can enter the model prompt.
+        supplied-evidence templates with legacy request-derived IDs are
+        refused. The explicit raw native arm preserves registered stable
+        evidence IDs and binds the actual raw speech bytes.
         """
         if "prepare_only" in kwargs:
             raise FrozenCoreClientError("prepare_only is internal")
         payload = self._build_request_payload(messages, prepare_only=True, **kwargs)
-        if payload.get("supplied_evidence") and "speech_feature_parts" not in payload:
+        if (payload.get("supplied_evidence") and "speech_feature_parts" not in payload
+                and self._arm != _RAW_NATIVE_ARM):
             # Legacy raw supply IDs enter the prompt and include the dispatch
             # request ID. They cannot be normalized away as mere trace routing.
             raise FrozenCoreClientError(
@@ -1770,6 +1775,11 @@ class FrozenCoreClient:
                 raise FrozenCoreClientError("prepared request is foreign, changed or consumed")
             del self._prepared_requests[request.token]
         payload = request.as_payload()
+        if self._arm == _RAW_NATIVE_ARM:
+            if payload["raw_speech_query"] != self._raw_speech_identity(
+                payload["sample_id"], payload["media_relpath"]
+            ):
+                raise FrozenCoreClientError("raw query bytes changed after preparation")
         descriptors = payload.get("speech_feature_parts")
         if descriptors is not None:
             load_speech_feature_packets(
@@ -1787,7 +1797,7 @@ class FrozenCoreClient:
         for index, source in enumerate(payload.get("evidence_provenance", [])):
             if source.get("lock_key") == "rails-supply":
                 source["relpath"] = f"rails-message/{request_id}/{index}"
-        if descriptors is None:
+        if descriptors is None and self._arm != _RAW_NATIVE_ARM:
             for index, evidence in enumerate(payload.get("supplied_evidence", [])):
                 evidence["evidence_id"] = f"{request_id}-supply-{index}"
         if id_slot is not None:
@@ -1866,6 +1876,44 @@ class FrozenCoreClient:
             )
         return response
 
+    def _raw_speech_identity(self, sample_id: str, media_relpath: str) -> dict[str, str]:
+        """Hash only the bound original or a verified registered runtime slice."""
+        try:
+            relative = _normalized_relative_path(media_relpath, "raw native query")
+            if self._reverse_media_index.get(relative) != sample_id:
+                raise FrozenCoreClientError("raw native query is not bound to this sample")
+            record = (
+                self._slice_registry.lookup(sample_id, relative)
+                if self._slice_registry is not None else None
+            )
+            if record is not None:
+                self._slice_registry.verify_slice_bytes(record)
+                digest = record.sha256
+            else:
+                if relative != self._binding.media_relpaths.get(sample_id):
+                    raise FrozenCoreClientError("raw native query is not a registered source")
+                path = _resolve_confined_any(
+                    self._binding.data_root, relative,
+                    (self._binding.carrier_root, *self._binding.derived_media_roots),
+                    "raw native query", strict=True,
+                )
+                with path.open("rb") as stream:
+                    digest = hashlib.file_digest(stream, "sha256").hexdigest()
+        except (OSError, FrozenCoreError) as error:
+            raise FrozenCoreClientError("raw native query identity failed: " + str(error)) from error
+        return {"media_relpath": relative, "sha256": digest}
+
+    def bound_raw_speech_identity(
+        self, sample_id: str, media_relpath: str
+    ) -> dict[str, str]:
+        """Return the source identity admitted by this raw-native client."""
+
+        if self._arm != _RAW_NATIVE_ARM:
+            raise FrozenCoreClientError(
+                "raw speech identity is available only on the explicit raw native arm"
+            )
+        return self._raw_speech_identity(sample_id, media_relpath)
+
     def _build_request_payload(
         self,
         messages: Sequence[Mapping[str, object]],
@@ -1873,6 +1921,7 @@ class FrozenCoreClient:
         decoding_params: Mapping[str, object] | None = None,
         text_only_sample_id: str | None = None,
         speech_feature_sample_id: str | None = None,
+        raw_agent_sample_id: str | None = None,
         key_representation_id: str | None = None,
         matcher_policy_id: str | None = None,
         agent_state: Sequence[Mapping[str, object]] | None = None,
@@ -1918,6 +1967,17 @@ class FrozenCoreClient:
 
         if self._closed:
             raise FrozenCoreClientError("complete() called after close()")
+        raw_native = self._arm == _RAW_NATIVE_ARM
+        if raw_native != (raw_agent_sample_id is not None):
+            raise FrozenCoreClientError(
+                "raw_agent_sample_id requires the explicit raw-speech-agent-native-tools arm"
+            )
+        if raw_native and (
+            not isinstance(raw_agent_sample_id, str) or not raw_agent_sample_id
+            or text_only_sample_id is not None or speech_feature_sample_id is not None
+            or key_representation_id is not None or matcher_policy_id is not None
+        ):
+            raise FrozenCoreClientError("raw native query selectors are ambiguous")
         selected_tool_schemas = self._select_tool_schemas(tool_names)
         if selected_tool_schemas == () and (
             not isinstance(decoding_params, Mapping)
@@ -1933,9 +1993,9 @@ class FrozenCoreClient:
             agent_contact_id=agent_contact_id,
             contact_instruction=contact_instruction,
         )
-        if history and speech_feature_sample_id is None:
+        if history and speech_feature_sample_id is None and not raw_native:
             raise FrozenCoreClientError(
-                "Agent state/control is only valid on a speech-feature decision call"
+                "Agent state/control requires an explicit feature or raw native decision call"
             )
         if speech_feature_sample_id is not None:
             if text_only_sample_id is not None:
@@ -2028,6 +2088,18 @@ class FrozenCoreClient:
                     f"media_relpath {media_relpath!r} is not bound to any sample this client "
                     "was constructed with (and no matching slice was registered)"
                 )
+            if raw_native:
+                if raw_agent_sample_id != sample_id:
+                    raise FrozenCoreClientError("raw native sample differs from the bound audio")
+                speech_supply_parts = [
+                    _typed_supply_part(part) for part in messages[1]["content"]
+                    if part["type"] == "text"
+                ]
+                if any(not part["evidence_id"] or not part["source_uri"]
+                       for part in speech_supply_parts):
+                    raise FrozenCoreClientError(
+                        "raw native supply requires stable evidence_id and source_uri"
+                    )
             # A registered slice's own facts take priority over the parent
             # sample's -- a slice is admitted precisely because its bytes (and
             # therefore its duration) may differ from the parent (comment at
@@ -2094,6 +2166,8 @@ class FrozenCoreClient:
             "history": history,
             "decoding_params": dict(decoding_params) if decoding_params else {},
         }
+        if raw_native:
+            payload["raw_speech_query"] = self._raw_speech_identity(sample_id, media_relpath)
         if self._carries_evidence:
             payload["supplied_evidence"] = supplied_evidence
             payload["evidence_provenance"] = evidence_provenance
