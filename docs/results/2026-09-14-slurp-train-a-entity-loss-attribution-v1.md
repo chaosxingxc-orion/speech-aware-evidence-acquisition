@@ -21,24 +21,24 @@ The loss-mass columns partition the official FP+FN denominator contribution. Sam
 
 The reference annotation has no entity in 414 of 1080 samples. Of those, 184 (44.44 percent) emit at least one entity, totaling 198 predicted entities. This is an annotation-relative result, not proof that every such word is meaningless or hallucinated. The remaining empty entity outputs are not automatically complete-task successes; one unparsed prediction is retained in this group.
 
-This makes the boundary between an allowed slot type and an actually warranted slot value a concrete review target. Check whether existing knowledge and instructions explain both when to fill and when to leave empty. Do not use offline gold-empty membership as a runtime trigger, remove these rows or simply request more extraction.
+Root subsequently checked the frozen Solver prompt and authored slot contracts. Both already require omission when no supported mention is present and prohibit inventing fillers. The context prompt already says that knowledge is not evidence an entity was spoken. The completed replica additionally shows slot-contract supply in every one of its 2,018 Reviewer requests. Adding those existing instructions or merely exposing the same cards to Reviewer is not a supported remedy. Investigate task-specific annotation boundaries, evidence conflicts and actual correction behavior. Do not use offline gold-empty membership as a runtime trigger, remove these rows or simply request more extraction.
 
 ## Priority entity types by attributed loss
 
 | Type | Share of total loss mass |
 | --- | ---: |
-| alarm_type | 0.69% |
-| app_name | 0.43% |
-| artist_name | 1.69% |
-| audiobook_author | 0.09% |
-| audiobook_name | 0.26% |
-| business_name | 6.30% |
-| business_type | 2.97% |
-| change_amount | 0.60% |
-| color_type | 0.26% |
-| cooking_type | 0.69% |
-| currency_name | 1.38% |
 | date | 10.89% |
+| time | 9.15% |
+| place_name | 8.46% |
+| business_name | 6.30% |
+| media_type | 5.62% |
+| person | 4.86% |
+| event_name | 4.18% |
+| food_type | 4.02% |
+| device_type | 3.45% |
+| list_name | 3.43% |
+| business_type | 2.97% |
+| order_type | 2.68% |
 
 These are descriptive priorities, not measured returns from a proposed tool. Time/date conventions and value boundaries may need explanatory knowledge; speech ambiguity may justify an on-demand ASR or localized listening observation. Establish the missing information before choosing an intervention.
 
@@ -78,3 +78,7 @@ Artifact: DATA/analysis/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVER
 Completion: DATA/coordination/slurp-native-dual-store-train-fold-a-anchor-recovery-v1/entity-loss-attribution-completion-v1.json, SHA-256 75c4315c98593817b6123810b87363f505617613e088fddb65f6bef308b8dd6a.
 
 Shared analysis API: analysis.slurp_entity_attribution.attribute_parsed_rows. The recipe pins the governed loader, parser and attribution source; completion additionally binds the actual code commit and helper sources. This diagnostic does not reopen the twice-failed dynamic tool/refresh flight or attribute system gains to any individual component.
+
+## Root source review update
+
+The omission/preservation rules are present in configs/probes/slurp_native_role_solver_v2.txt and slurp_native_role_context_v3.txt, and in the released authored-slot-contracts-v1.json. The Reviewer visibility finding comes from the separately released complete replication, not from a fresh TRAIN-label read. Distinguish rule availability from successful use. The priority-type table is sorted by measured loss mass; the earlier alphabetical excerpt did not rank loss priorities. The numeric attribution artifact remains unchanged.

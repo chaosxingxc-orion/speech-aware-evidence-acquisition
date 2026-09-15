@@ -1426,3 +1426,7 @@ COMPLETE_TRAIN_CONSTRUCTION_ANCHOR. The sole CUDA/reboot recovery completed all 
 ## September 14: native refresh/tools first attempt interrupted
 
 ABORTED_ENGINEERING_FAILURE. The TRAIN A successor stopped after 86 model debits, 344 capacity endpoints and one CPU ASR debit. A valid candidate list failed inside the framework schema formatter before its source-bound handler. No completed task result, comparison or score exists. Root preserved original traces and exposure and admitted the sole same-method recovery after four actual-framework synthetic proof rows and 73 related passing tests. See [recovery protocol and accounting](../readiness/2026-09-14-slurp-native-candidate-refresh-tools-train-fold-a-recovery-v1/README.md). No task metric or scientific threshold changed.
+
+## September 15: repeated useful SLURP agent base
+
+The max512 native dual-store base replication passes the unchanged exploratory rule: NEW500 official micro F1 +14.7970 pp, speaker CI90 [11.5245, 18.0112], DEV1000 +14.6233 and equal-scenario +12.1257. Both complete first-score artifacts and all strata are retained in [the root verdict](2026-09-14-slurp-dual-store-base-replication-verdict-v1.md). The original same-package pair is positive separately; no pooled rescue or generalization claim. Audio2Tool [engineering proof](2026-09-15-a2t-native-role-engineering-proof-v1.md) is sealed with no task-quality result; full4000 remains pending registration.
