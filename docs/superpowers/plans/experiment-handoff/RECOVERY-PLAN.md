@@ -160,3 +160,14 @@ alias mapping. Root verified 22 source bindings and exclusion of the current
 parameter-evidence extension must establish source meaning and request binding
 through the shared tools. Preserve all held configurations and close this audit;
 do not rebuild unchanged preparations while GPU dispatch is held.
+
+## 2026-09-15 owner GPU resume
+
+[STATUS-137](STATUS-137.md) records the owner's explicit authorization to resume
+GPU execution. It supersedes the September 15 after-current scheduling hold for
+future authorized contacts without changing the historical hold record. Root is
+validating and starting the prepared SLURP broad/factored TRAIN-A work; this
+documentation does not claim a service or GPU contact has started. Continue with
+the admitted Audio2Tool scope-tools pair and then Earnings21 transfer. Root owns
+service switching. Preserve the frozen-core, Stage-2, source, exposure,
+execution-plan, budget, one-flight and quality constraints for every contact.

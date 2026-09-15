@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 136,
+  "generation": 137,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,12 +10,12 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
-  "updated_at_utc": "2026-09-15T15:35:21.697543+00:00",
-  "next_action": "Read STATUS-136.md. The historical/default-value and construction-source audit is complete. Preserve the documented identifier gap, but do not append raw defaults or infer device aliases from evaluation answers. No device alias catalog exists in the current contract. All 4000 current evaluation IDs and query groups are excluded from construction in the verified metadata join. A later parameter-evidence extension needs source meaning and request binding through shared Reviewer/Planner tools. Do not rebuild unchanged preparations. Keep all held configs frozen. After explicit owner GPU resume and per-flight gates, the order remains SLURP broad/factored TRAIN-A, admitted prepared A2T scope-tools pair, then E21. New generation, actual fit/tokenizer, encoding and restarts remain held. Stable benefit and trajectory optimization remain unproven.",
+  "snapshot_commit": "107b71ab0c976a027a8bde61e0374cc2a1ef40e1",
+  "updated_at_utc": "2026-09-15T16:57:17.929773+00:00",
+  "next_action": "Read STATUS-137.md. The owner explicitly resumed GPU execution and superseded the September 15 after-current scheduling hold for future authorized contacts. Root is validating and starting the prepared SLURP broad/factored TRAIN-A work; this state does not claim that a service or GPU contact has started. Root owns service switching. Continue only through existing readiness, ExecutionPlan, source, exposure, budget, one-flight and quality gates. The selected order is prepared SLURP broad/factored TRAIN-A, admitted A2T scope-tools pair, then E21. Keep frozen configs and historical records unchanged. Stable benefit and trajectory optimization remain unproven.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
-  "latest_owner_decision_id": "OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15",
+  "latest_owner_decision_id": "OWNER-GPU-RESUME-2026-09-15",
   "owner_power_direction": "2026-09-14: The owner confirmed that current power mode is optimal and instructed root not to dwell on it. Preserve current hardware/service settings.",
-  "owner_gpu_direction": "Current A2T task completed normally at 2026-09-15T09:36:23.183569Z. Hold all new GPU experiments, fit, encoding and restarts until explicit owner resume. CPU analysis/preparation continues; preserve resident memory."
+  "owner_gpu_direction": "2026-09-15: The owner explicitly authorized GPU execution to start. This supersedes the September 15 after-current scheduling hold for future authorized contacts. Root owns service switching and must preserve the selected SLURP, Audio2Tool, then Earnings21 order and every existing per-flight constraint."
 }

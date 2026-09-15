@@ -1,10 +1,17 @@
 # Current continuation: September 15
 
-Read [STATUS-136](STATUS-136.md): the current Audio2Tool task finalized 4000 rows and first-scored; hold all new GPU experiments until the owner explicitly resumes. SLURP and E21 dispatch are held; CPU scoring, analysis and preparation continue. Preserve resident model memory. See [the owner directive](OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15.md).
+Read [STATUS-137](STATUS-137.md): the owner explicitly resumed GPU execution. Root is
+validating and starting the prepared SLURP broad/factored TRAIN-A work without
+claiming that a model or GPU contact has started. See
+[the owner resume directive](OWNER-GPU-RESUME-2026-09-15.md).
 
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-136.md](STATUS-136.md) closes the historical and construction-source review. The published identifier gap from STATUS-135 remains, but historical default-copying failures rule out assuming that a raw default list will help. The current construction contract contains no device alias catalog. Root verified 22 source hashes and exclusion of all 4,000 current evaluation samples and their query groups. Keep the prepared scope-tools pair unchanged; pursue source meaning and request binding only as a later named extension. GPU hold and the SLURP-first resume order remain active.
+**Latest execution:** [STATUS-137.md](STATUS-137.md) records the explicit owner GPU
+resume and the start of root readiness validation for the prepared SLURP
+broad/factored TRAIN-A work. The selected queue remains SLURP first, the admitted
+Audio2Tool scope-tools pair second and Earnings21 transfer third. Existing
+per-flight and research constraints remain binding.
 
 **Current comparison direction:** [OWNER-SYSTEM-VERSIONS-025.md](OWNER-SYSTEM-VERSIONS-025.md) makes complete model-versus-system task quality primary and allows evidence-guided expansion of system versions. The supplied/withheld knowledge draft is withdrawn. [The current system plan](../../../readiness/2026-09-13-slurp-direct-vs-native-system-plan-v1.md) and [extension sequence](../../../readiness/2026-09-13-finalized-score-reuse-and-system-extension.md) govern the next work.
 
@@ -12,7 +19,7 @@ Read [STATUS-136](STATUS-136.md): the current Audio2Tool task finalized 4000 row
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 136. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 137. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -45,10 +52,12 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-136.md](STATUS-136.md), state.json and [OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15](OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15.md) first.
-The September15 owner directive holds all new GPU experiments after the current Audio2Tool
-task completes or stops. It supersedes the launch scheduling in OWNER-GPU-RESUME-013;
-an explicit owner resume is required before dispatching another GPU task. The earlier G6/E21 campaigns' generation, scoring, fixed analysis and all four settlements
+Read [STATUS-137.md](STATUS-137.md), state.json and
+[OWNER-GPU-RESUME-2026-09-15](OWNER-GPU-RESUME-2026-09-15.md) first. The owner
+explicitly resumed GPU execution and superseded the September 15 after-current
+scheduling hold for future authorized contacts. Root owns service switching and
+is validating the prepared SLURP work against its existing per-flight gates; no
+started contact is claimed by this record. The earlier G6/E21 campaigns' generation, scoring, fixed analysis and all four settlements
 are complete. Those earlier G6 SLURP and E21 system admissions fail their frozen rules. STATUS-044 separately admits the newer SLURP task-agent working baseline for exploration. The newer role-coverage pair is closed under STATUS-046; it is not adopted and cannot be replayed under its exhausted registration.
 The task-scope
 clarification is [OWNER-DATASET-TASKS-010.md](OWNER-DATASET-TASKS-010.md):
