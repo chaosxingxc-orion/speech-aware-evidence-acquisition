@@ -36,7 +36,7 @@ from test_llama_server_transport import (
     _MODEL_FILES,
     _spawn_live_matching_process,  # noqa: F401
 )
-from test_native_episode_runner import _wire_response
+from test_native_episode_runner import _wire_response, _wire_tool_call
 from test_rails_runner import _knowledge_snapshot
 
 
@@ -74,8 +74,12 @@ class _WindowAdapter(TaskAdapter):
 
 
 @pytest.mark.parametrize(
-    ("policy", "planned_calls", "actual_contacts"),
-    (("phase-direct-only-v1", 2, 2), ("phase-native-review-revise-v1", 22, 8)),
+    ("policy", "planned_calls", "actual_contacts", "with_span"),
+    (
+        ("phase-direct-only-v1", 2, 2, False),
+        ("phase-native-review-revise-v1", 22, 8, False),
+        ("phase-native-review-revise-v1", 22, 16, True),
+    ),
 )
 def test_configured_feature_units_complete_shared_lifecycle(
     tmp_path: Path,
@@ -83,6 +87,7 @@ def test_configured_feature_units_complete_shared_lifecycle(
     policy: str,
     planned_calls: int,
     actual_contacts: int,
+    with_span: bool,
 ):
     """The real configured path must not require a fake whole-parent packet."""
     from speech_aware_evidence_acquisition.core import preparation_window_packets as packets_module
@@ -182,8 +187,58 @@ def test_configured_feature_units_complete_shared_lifecycle(
                 "contact_cap": 22,
             },
         )
+    span_events, providers = [], []
+    span_tool = "saea-tool-live-speech-span-v1"
+    span_args = {
+        "span": {"start_seconds": 0.0, "end_seconds": 0.125},
+        "representation": "asr-transcript",
+        "distinction": "Resolve uncertain spoken words.",
+    }
+    if with_span:
+        from speech_aware_evidence_acquisition.contracts import ExecutionPlan
+        from test_live_speech_observation import inventory as whisper_inventory
+        from test_live_speech_observation import protocol as whisper_protocol
+
+        paths = {
+            "inventory": world.data_root / "prepared/whisper-inventory.json",
+            "protocol": world.data_root / "prepared/whisper-protocol.json",
+            "execution_plan": repo / "live-speech-plan.json",
+        }
+        paths["inventory"].write_text(json.dumps(whisper_inventory()), encoding="utf-8")
+        paths["protocol"].write_text(json.dumps(
+            whisper_protocol(source_selection="bounded-span-v1")
+        ), encoding="utf-8")
+        speech_plan = ExecutionPlan(
+            run_id=run_id + "-SPEECH", attempt_id="attempt-speech",
+            execution_profile="bounded-discovery-probe", carrier_lock_key="fake-carrier",
+            split_role="discovery", split_identity_hash=split_hash,
+            planned_model_calls=2, planned_gpu_hours=1.0,
+            planned_speech_audio_seconds=1,
+            protocol_hash=hashlib.sha256(paths["protocol"].read_bytes()).hexdigest(),
+        ).validate()
+        repo.mkdir()
+        paths["execution_plan"].write_text(json.dumps({
+            "execution_plan": speech_plan.__dict__,
+        }), encoding="utf-8")
+        baseline["live_speech_observations"] = {
+            key: {
+                "relpath": str(path.relative_to(
+                    repo if key == "execution_plan" else world.data_root
+                )),
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            }
+            for key, path in paths.items()
+        }
+        baseline["live_speech_observations"]["output_relpath"] = (
+            f"prepared/{speech_plan.run_id}/{speech_plan.attempt_id}/live"
+        )
+        baseline["phase_tools"] = {"reviewer": {
+            "mode": "native-tools", "allowed_tools": [span_tool], "knowledge_views": ["text"],
+            "source_authority_role": "reviewer",
+        }}
+
     _write_configs(
-        repo, arm="speech-feature-query", policy=policy, carrier_lock_key="fake-carrier",
+        repo, arm="speech-feature-query-native-tools" if with_span else "speech-feature-query", policy=policy, carrier_lock_key="fake-carrier",
         model_extra={
             "transport": "llama-server", "base_url": _base_url(),
             "runtime_receipt": "receipts/inference.json", "prompt_order": "speech-query-prefix-v2",
@@ -209,21 +264,46 @@ def test_configured_feature_units_complete_shared_lifecycle(
         prompt.parent.mkdir(parents=True, exist_ok=True)
         prompt.write_text(f"Complete the {phase} role for this speech window.\n", encoding="utf-8")
     _write_exposure_ledger(repo, run_id)
+    if with_span:
+        ledger = repo / "docs/exposure-ledger.md"
+        ledger.write_text(
+            ledger.read_text() + f"| {speech_plan.run_id} | no |\n", encoding="utf-8",
+        )
     _git_init_commit(repo)
 
     rendered = []
+    role_visits = {}
+    revised_solver_requests = []
 
     def post(_url, body):
         request = json.loads(body)
         rendered.append(request)
         wire_text = json.dumps(request, sort_keys=True)
-        current_instruction = json.dumps(request["messages"][-1], sort_keys=True)
+        current_instruction = json.dumps(next(
+            message for message in reversed(request["messages"])
+            if message["role"] == "user"
+        ), sort_keys=True)
         window = "one" if "window/0" in wire_text else "two"
+        role = next((name for name in phases
+                     if f"Complete the {name} role" in current_instruction), "direct")
+        key = (window, role)
+        role_visits[key] = role_visits.get(key, 0) + 1
         if "Complete the planner role" in current_instruction:
-            text = "ACCEPT"
+            text = "REVISE" if with_span and role_visits[key] == 1 else "ACCEPT"
         elif "Complete the solver role" in current_instruction:
+            if with_span and role_visits[key] > 1:
+                assert "turn on the kitchen lights" in wire_text
+                assert "unit-relative-frames" in wire_text
+                revised_solver_requests.append(request)
             text = f"solver window {window}"
         elif "Complete the reviewer role" in current_instruction:
+            if with_span and role_visits[key] == 1:
+                assert span_events == [] or len(span_events) == 1
+                response = json.loads(_wire_tool_call(span_tool))
+                response["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"] = (
+                    json.dumps(span_args)
+                )
+                return json.dumps(response).encode()
             text = f"reviewer window {window}"
         elif "Complete the perception role" in current_instruction:
             text = f"perception window {window}"
@@ -264,6 +344,15 @@ def test_configured_feature_units_complete_shared_lifecycle(
         }
         _verify_outputs_trace_binding(rows, traces)
         assert _minimum_model_calls_from_trace(traces) == actual_contacts
+        if with_span:
+            span_records = [
+                row for row in traces.values()
+                if row.get("obs_tool_id") == span_tool
+            ]
+            assert span_records
+            assert all(
+                row.get("use_tool_id") != span_tool for row in traces.values()
+            )
         assert len(rows) == 1 and rows[0]["sample_id"] == parent.sample_id
         assert rows[0]["text"] == (
             "direct window one direct window two"
@@ -308,6 +397,21 @@ def test_configured_feature_units_complete_shared_lifecycle(
 
         monkeypatch.setattr(preparation_fit, "build_native_contact_fit_gate", fit_factory)
 
+    def live_provider_factory(**kwargs):
+        from speech_aware_evidence_acquisition.rails.live_speech_observation import (
+            LiveSpeechObservationProvider,
+        )
+        from test_live_speech_observation import FakeBackend
+
+        provider = LiveSpeechObservationProvider(
+            **kwargs,
+            backend_factory=lambda _i, _p, _d, event: FakeBackend(span_events, event=event),
+            host_memory_guard=lambda: None,
+        )
+        providers.append(provider)
+        assert span_events == []
+        return provider
+
     runtime = FlightRuntime(
         repo, world.data_root, model="m", dataset="d", baseline="b", experiment="e",
         run_id=run_id, attempt_id="attempt-lifecycle", runtime_root=_live["runtime_root"],
@@ -324,6 +428,8 @@ def test_configured_feature_units_complete_shared_lifecycle(
         bundle_finalizer=_fake_bundle_finalizer,
         ledger_validator=_fake_ledger_validator,
         score_batch=scoring_handoff,
+        live_speech_observation_provider_factory=live_provider_factory,
+        whisper_inventory_verifier=lambda value: value,
         host="127.0.0.1", port=_live["port"],
     )
 
@@ -331,6 +437,7 @@ def test_configured_feature_units_complete_shared_lifecycle(
     runtime.preprocess(workers=1)
     assert runtime.execution_unit_roster() == attached
     runtime.serve()
+    assert span_events == []
     phase_receipt = runtime.run_phases(workers=1)
     assert phase_receipt["contact_count"] == actual_contacts
     runtime.seal()
@@ -340,3 +447,14 @@ def test_configured_feature_units_complete_shared_lifecycle(
     assert runtime.receipts.completed_stages() == (
         "preflight", "preprocess", "serve", "run_phases", "seal", "score",
     )
+
+    if with_span:
+        assert len(providers) == 1
+        assert len(span_events) == len(revised_solver_requests) == 2
+        assert all(event == "decode" for event, _source in span_events)
+        assert all(
+            (source["start_frame"], source["end_frame"]) == (0, 2000)
+            for _event, source in span_events
+        )
+        assert runtime._live_speech_attempt_handle.actual_totals() == (2, 0.25)
+        assert runtime._live_speech_finalized

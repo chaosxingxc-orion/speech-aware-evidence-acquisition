@@ -1,0 +1,91 @@
+{
+  "schema": "saea-task-toolkits-v1",
+  "note": "Opt-in bounded speech spans for meeting Reviewer and Planner roles. This table retains the v2 capability catalog; the v1 and v2 files remain unchanged. Catalog membership alone executes nothing. The native episode and phase_tools configuration must explicitly admit the selected tool and role, and the live provider must bind a preregistered execution unit and protocol. Perception and Solver never receive the new analytical speech tool.",
+  "toolkits": {
+    "meeting": {
+      "planner": {
+        "tools": [
+          "saea-tool-prompt-fit-tokens-v1",
+          "saea-tool-live-speech-span-v1"
+        ]
+      },
+      "observer": {
+        "tools": [
+          "saea-tool-diarization-artifact-v1",
+          "saea-tool-speaker-turn-units-v2",
+          "saea-tool-slice-encode-v1",
+          "saea-tool-flagged-spans-v1"
+        ]
+      },
+      "reviewer": {
+        "tools": [
+          "saea-tool-flagged-spans-v1",
+          "saea-tool-repair-alignment-v1",
+          "saea-tool-live-speech-span-v1"
+        ]
+      }
+    },
+    "command": {
+      "planner": {
+        "tools": [
+          "saea-tool-prompt-fit-tokens-v1",
+          "saea-tool-task-contract-v1",
+          "saea-tool-phase-knowledge-v1",
+          "saea-tool-candidate-contract-lookup-v1",
+          "saea-tool-corrective-memory-v1"
+        ]
+      },
+      "observer": {
+        "tools": [
+          "saea-tool-slice-encode-v1",
+          "saea-tool-sealed-vector-query-v1",
+          "saea-tool-prepared-speech-observation-v1",
+          "saea-tool-live-speech-observation-v1"
+        ]
+      },
+      "reviewer": {
+        "tools": [
+          "saea-tool-legal-label-projection-v2"
+        ]
+      }
+    },
+    "tool-call": {
+      "planner": {
+        "tools": [
+          "saea-tool-prompt-fit-tokens-v1",
+          "saea-tool-a2t-ground-prompt-envelopes-v1",
+          "saea-tool-a2t-call-array-response-format-v1",
+          "saea-tool-a2t-select-stage-envelope-v1",
+          "saea-tool-a2t-select-fill-factorial-binding-v1",
+          "saea-tool-a2t-canonical-family-ground-v1",
+          "saea-tool-a2t-construction-example-ground-v1",
+          "saea-tool-a2t-construction-semantic-ground-v1",
+          "saea-tool-a2t-executable-ground-v1",
+          "saea-tool-a2t-executable-semantic-cards-v1",
+          "saea-tool-a2t-frozen-semantic-assets-v1",
+          "saea-tool-a2t-plain-english-retrieval-v1",
+          "saea-tool-a2t-routing-knowledge-ground-v1",
+          "saea-tool-candidate-contract-lookup-v1",
+          "saea-tool-a2t-selected-tool-ground-v1",
+          "saea-tool-a2t-semantic-microground-v1",
+          "saea-tool-a2t-semantic-ranking-fusion-v1"
+        ]
+      },
+      "observer": {
+        "tools": [
+          "saea-tool-slice-encode-v1",
+          "saea-tool-sealed-vector-query-v1",
+          "saea-tool-a2t-observation-state-organizer-v1",
+          "saea-tool-a2t-structured-dialogue-state-v1",
+          "saea-tool-prepared-speech-observation-v1",
+          "saea-tool-live-speech-observation-v1"
+        ]
+      },
+      "reviewer": {
+        "tools": [
+          "saea-tool-a2t-hard-validity-v1"
+        ]
+      }
+    }
+  }
+}

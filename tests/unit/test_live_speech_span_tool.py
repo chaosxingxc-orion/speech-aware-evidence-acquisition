@@ -245,3 +245,22 @@ def test_unit_custody_facts_apply_to_non_speech_tools():
     assert custody.calls[0]["execution_unit_binding_sha256"] == content_hash(
         context.execution_unit_binding
     )
+
+
+def test_opt_in_span_table_preserves_legacy_tables_and_analytical_roles():
+    from pathlib import Path
+    from speech_aware_evidence_acquisition.rails.tools import load_toolkit_table
+
+    root = Path(__file__).resolve().parents[2]
+    path = root / "configs/toolkit/task-toolkits-v3-bounded-speech-span-v1.json"
+    load_toolkit_table(path)
+    table = json.loads(path.read_text())["toolkits"]
+    assert all(
+        LIVE_SPEECH_SPAN_TOOL in table["meeting"][role]["tools"]
+        for role in ("planner", "reviewer")
+    )
+    assert LIVE_SPEECH_SPAN_TOOL not in table["meeting"]["observer"]["tools"]
+    for legacy in (
+        "task-toolkits-v1.json", "task-toolkits-v2-candidate-contract-lookup-v1.json",
+    ):
+        assert LIVE_SPEECH_SPAN_TOOL not in (root / "configs/toolkit" / legacy).read_text()

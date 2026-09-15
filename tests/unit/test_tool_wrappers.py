@@ -89,6 +89,8 @@ def test_catalog_retains_legacy_wrappers_and_explicit_registered_actions():
         "saea-tool-phase-knowledge-v1",
         "saea-tool-corrective-memory-v1",
         "saea-tool-prepared-speech-observation-v1",
+        "saea-tool-live-speech-observation-v1",
+        "saea-tool-live-speech-span-v1",
         "saea-tool-candidate-contract-lookup-v1",
     }
     assert actions <= set(registered)
@@ -142,7 +144,13 @@ def test_no_manifest_claims_a_model_contact():
         manifest = tools.resolve_tool(tool_id).manifest
         assert manifest.ledger_row_type != "model-contact"
         if manifest.cost_class == "contact":
-            assert manifest.ledger_row_type == "service-contact"
+            if tool_id in {
+                "saea-tool-live-speech-observation-v1",
+                "saea-tool-live-speech-span-v1",
+            }:
+                assert manifest.ledger_row_type == "tool-contact"
+            else:
+                assert manifest.ledger_row_type == "service-contact"
 
 
 # ---------------------------------------------------------------------------

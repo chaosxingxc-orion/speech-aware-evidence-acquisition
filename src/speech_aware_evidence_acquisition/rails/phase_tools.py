@@ -273,7 +273,10 @@ def _native_tool_schema(
         ),
         PREPARED_SPEECH_OBSERVATION_TOOL: "Read a prepared speech transcript.",
         LIVE_SPEECH_OBSERVATION_TOOL: "Transcribe the current full utterance on demand.",
-        LIVE_SPEECH_SPAN_TOOL: "Transcribe a bounded span of the current speech unit on demand.",
+        LIVE_SPEECH_SPAN_TOOL: (
+            "Transcribe a span of at most 30 seconds on demand. Start and end are "
+            "seconds relative to the current speech unit, within its duration."
+        ),
     }
     if tool_id in {TASK_CONTRACT_TOOL, CORRECTIVE_MEMORY_TOOL}:
         properties = {}
@@ -1087,7 +1090,10 @@ class PhaseToolDispatcher:
 
     def _emit(self, sample_id, phase, event, payload):
         if self.trace_sink is not None:
-            axis = "OBS" if payload.get("tool_id") in {PREPARED_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_OBSERVATION_TOOL} else "USE"
+            axis = "OBS" if payload.get("tool_id") in {
+                PREPARED_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_OBSERVATION_TOOL,
+                LIVE_SPEECH_SPAN_TOOL,
+            } else "USE"
             event_id = f"{sample_id}/{self.program.program_id}/{phase}/tool-{event}"
             if (
                 self.native_role_episode

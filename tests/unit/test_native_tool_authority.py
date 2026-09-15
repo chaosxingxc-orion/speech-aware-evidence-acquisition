@@ -63,6 +63,7 @@ def _authority_world():
         },
         _client=SimpleNamespace(record_tool_call=lambda **facts: counted.append(facts)),
         assert_generation_lease=lambda: None,
+        _live_speech_units=lambda: None,
     )
     tool.tool_contact = lambda **facts: FlightRuntime._record_phase_tool_contact(
         custody, **facts
@@ -223,6 +224,7 @@ def test_runtime_refuses_changed_authority_before_counting():
         },
         _client=SimpleNamespace(record_tool_call=lambda **facts: counted.append(facts)),
         assert_generation_lease=lambda: None,
+        _live_speech_units=lambda: None,
     )
     with pytest.raises(FlightRuntimeError):
         FlightRuntime._record_phase_tool_contact(
@@ -387,6 +389,7 @@ def test_dispatch_selects_actual_narrowed_schema_and_preserves_structured_conten
         },
         _client=SimpleNamespace(record_tool_call=lambda **facts: counted.append(facts)),
         assert_generation_lease=lambda: None,
+        _live_speech_units=lambda: None,
     )
     tool.tool_contact = lambda **facts: FlightRuntime._record_phase_tool_contact(
         runtime, **facts

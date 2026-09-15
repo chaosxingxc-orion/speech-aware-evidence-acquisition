@@ -6497,7 +6497,7 @@ class FlightRuntime:
         from ...rails.phase_tools import load_phase_tool_specs
         specs = load_phase_tool_specs(values, default_phase_program(policy))
         from ...rails.experience_memory_runtime import CORRECTIVE_MEMORY_TOOL
-        from ...rails.phase_tools import LIVE_SPEECH_OBSERVATION_TOOL
+        from ...rails.phase_tools import LIVE_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_SPAN_TOOL
         from ...rails.speech_observation import PREPARED_SPEECH_OBSERVATION_TOOL
         uses_native = any(
             spec.get("mode") == "native-tools" for spec in specs.values()
@@ -6516,7 +6516,9 @@ class FlightRuntime:
                 "speech observation phase tool and prepared speech observation binding must be declared together"
             )
         uses_live_observation = any(
-            LIVE_SPEECH_OBSERVATION_TOOL in spec["allowed_tools"]
+            bool(set(spec["allowed_tools"]) & {
+                LIVE_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_SPAN_TOOL,
+            })
             for spec in specs.values()
         )
         if declares_live_observation != uses_live_observation:
