@@ -273,6 +273,7 @@ def _raw_runtime(tmp_path):
     )
     runtime._transport = _RawTransport()
     runtime.uses_speech_feature_packets = lambda: False
+    runtime._arm = lambda: "raw-speech-agent-native-tools"
     return runtime
 
 
@@ -312,7 +313,21 @@ def test_native_raw_contact_fit_measures_the_rendered_audio_request(tmp_path):
     assert len(tokenizer.calls) == 1
 
 
-@pytest.mark.parametrize("change", ["feature", "source", "rendered-audio"])
+def test_native_contact_fit_refuses_nonraw_nonfeature_arm_before_lease(tmp_path):
+    runtime = _raw_runtime(tmp_path)
+    runtime._arm = lambda: "construction-proposer-text"
+
+    with pytest.raises(PreparationError, match="raw-speech-agent-native-tools"):
+        build_native_contact_fit_gate(runtime, _program(), _plan())
+
+    assert runtime.lease_checks == 0
+    assert runtime.touches == []
+    assert runtime.unconsumed == []
+
+
+@pytest.mark.parametrize(
+    "change", ["feature", "source", "rendered-audio", "rendered-feature"]
+)
 def test_native_raw_contact_fit_refuses_mixed_or_unbound_audio_before_contact(
     tmp_path, change
 ):
@@ -324,9 +339,27 @@ def test_native_raw_contact_fit_refuses_mixed_or_unbound_audio_before_contact(
         payload["speech_feature_parts"] = []
     elif change == "source":
         payload["raw_speech_query"]["media_relpath"] = "media/other.wav"
-    else:
+    elif change == "rendered-audio":
         runtime._transport.raw += b"changed"
-    if change != "rendered-audio":
+    else:
+        render = runtime._transport.render_request
+
+        def mixed_render(raw):
+            body = render(raw)
+            body["messages"][1]["content"].append(
+                {
+                    "type": "input_speech_features",
+                    "speech_features": {
+                        "packet_id": "fake-packet",
+                        "sha256": "f" * 64,
+                        "role": "query",
+                    },
+                }
+            )
+            return body
+
+        runtime._transport.render_request = mixed_render
+    if change not in {"rendered-audio", "rendered-feature"}:
         request = PreparedCoreRequest(canonical_bytes(payload), object())
     gate = build_native_contact_fit_gate(
         runtime,
@@ -335,7 +368,9 @@ def test_native_raw_contact_fit_refuses_mixed_or_unbound_audio_before_contact(
         client_factory=lambda **_kwargs: tokenizer,
     )
 
-    with pytest.raises(PreparationError, match="mixed|source identity|rendered audio"):
+    with pytest.raises(
+        PreparationError, match="mixed|source identity|rendered audio|rendered speech feature"
+    ):
         gate(request)
 
     assert tokenizer.calls == []
