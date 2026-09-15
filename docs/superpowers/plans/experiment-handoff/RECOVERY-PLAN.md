@@ -139,3 +139,7 @@ The Audio2Tool native sole recovery finalized4,000 rows and retained its first c
 The shared E21 execution-unit/window packets, bounded speech-span and governed-context base merged at d8f4bfa24e852d22132564b76f2f0dd8523c0dda. The corrected postseal JSON Planner audit reader merged at466aba4a665d7d2da22f753739506b915556402b. These integrations occurred after the active flight ended; frozen runtime and historical artifacts remain unchanged.
 
 Root complete-score analysis is documented in docs/results/2026-09-15-a2t-native-role-base-full4000.md with pending paired intervals and candidate attribution stated explicitly. Use the native-system-repair-priorities note for current direction. The older knowledge-on/off and unconditional throughput dispatch language does not override complete-system comparisons or the current GPU hold.
+
+## 2026-09-15 CPU ordered-action analysis closure
+
+[STATUS-134](STATUS-134.md) closes the deferred full-reference occurrence analysis using the original shared parsers and first saved scores on all4000 IDs. The shared source projection and alignment CLI are verified with49 tests and actual complete-cohort crosschecks. Preserve historical outcomes and the held scope-tools configuration. All-name candidate coverage66.575%, ordered64.175% and strict55.175% are distinct from primary inclusion72.05%. Root retains candidate coverage and parameter/consumption optimization as separate next directions, without a new causal or adoption claim. GPU hold remains active; resume sequence stays SLURP, admitted Audio2Tool pair, then E21.
