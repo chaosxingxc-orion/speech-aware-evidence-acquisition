@@ -301,6 +301,8 @@ def _resolve_final_agent_response(
     contact: AgentContact,
     response: AgentResponse,
     final_response_contact_id: str | None,
+    *,
+    allow_empty: bool = False,
 ) -> str:
     """Keep final-answer authority inside an actual frozen-core response."""
 
@@ -313,7 +315,7 @@ def _resolve_final_agent_response(
             raise RailsRunnerError(
                 "final_response_contact_id must select the stopped contact"
             )
-        if not response:
+        if not response and not allow_empty:
             raise RailsRunnerError("stop must select a non-empty model response")
         return response
     if isinstance(contact, AgentContactBatch):
@@ -330,7 +332,7 @@ def _resolve_final_agent_response(
             )
         for plan, response_text in zip(contact.contacts, response, strict=True):
             if plan.contact_id == final_response_contact_id:
-                if not response_text:
+                if not response_text and not allow_empty:
                     raise RailsRunnerError(
                         "stop must select a non-empty model response"
                     )
@@ -1569,6 +1571,7 @@ def _run_agent_trajectory(
                 contact,
                 response_text,
                 advance.final_response_contact_id,
+                allow_empty=prepared.execution_unit_id is not None,
             )
             return _AgentRuntimeOutcome(
                 prepared=prepared,
@@ -2630,6 +2633,7 @@ def _run_agent_openjiuwen(
                 current_contact,
                 controller_response,
                 advance.final_response_contact_id,
+                allow_empty=state.prepared.execution_unit_id is not None,
             )
             state.final_outcome = _AgentRuntimeOutcome(
                 prepared=state.prepared,

@@ -1078,6 +1078,9 @@ class RequestTiming:
     # back. Provenance only: it changes no audited payload, no outputs row
     # and no trace record.
     native_tool_calls: int | None = None
+    # Internal delivery custody. Legacy serialized timing bytes stay unchanged.
+    agent_contact_id: str | None = None
+    terminal_saturated: bool = False
 
     def as_json(self) -> dict[str, object]:
         return {
@@ -1867,6 +1870,19 @@ class FrozenCoreClient:
         with self._state_lock:
             self._last_attempted_request_id = request_id
         response = self._adapter.request(payload)
+        contacts = [item["contact_id"] for item in payload["history"]
+                    if item.get("role") == "control"]
+        agent_contact_id = contacts[-1] if contacts else None
+        saturated = False
+        if agent_contact_id is not None and agent_contact_id.startswith("unit-"):
+            from ..core.delivery import terminal_response_saturated
+
+            saturated = (
+                response.finish_reason == "length"
+                or terminal_response_saturated(
+                    response.usage, payload.get("decoding_params", {}).get("max_tokens"),
+                )
+            )
         with self._state_lock:
             schemas = payload.get("tool_schemas")
             tool_names = (
@@ -1879,6 +1895,8 @@ class FrozenCoreClient:
                     sample_id=sample_id,
                     started_at=started_at,
                     latency_seconds=response.latency_seconds,
+                    agent_contact_id=agent_contact_id,
+                    terminal_saturated=saturated,
                     tool_schemas_sha256=(
                         _tool_schemas_sha256(schemas)
                         if isinstance(schemas, list) else None

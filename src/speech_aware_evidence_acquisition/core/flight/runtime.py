@@ -4166,14 +4166,20 @@ class FlightRuntime:
                 "nothing to seal"
             )
         last = summaries[-1]
-        last_ids = tuple(result.sample_id for result in last.results)
+        def identity(result):
+            return (result.sample_id, getattr(result, "execution_unit_id", None))
+
+        last_ids = tuple(identity(result) for result in last.results)
+        unit_flags = [key[1] is not None for key in last_ids]
+        if any(unit_flags) and not all(unit_flags):
+            raise FlightRuntimeError("phase output mixes parent and execution unit identities")
         if len(set(last_ids)) != len(last_ids):
             raise FlightRuntimeError(
                 f"phase program {policy!r} final phase returned duplicate sample ids"
             )
         expected = set(last_ids)
         for index, summary in enumerate(summaries[:-1]):
-            ids = {result.sample_id for result in summary.results}
+            ids = {identity(result) for result in summary.results}
             if ids != expected:
                 phase_id = getattr(summary, "controller_policy_id", f"phase[{index}]")
                 raise FlightRuntimeError(
@@ -4191,6 +4197,13 @@ class FlightRuntime:
                 "sample_id": result.sample_id,
                 "final_response_text": getattr(result, "final_response_text", None),
                 "contact_count": len(getattr(result, "contacts", ()) or ()),
+                **(
+                    {
+                        "execution_unit_id": result.execution_unit_id,
+                        "execution_unit_binding": dict(result.execution_unit_binding),
+                    }
+                    if getattr(result, "execution_unit_id", None) is not None else {}
+                ),
                 **(
                     {"native_episode_receipt": dict(result.native_episode_receipt)}
                     if getattr(result, "native_episode_receipt", None) is not None else {}
@@ -5027,6 +5040,22 @@ class FlightRuntime:
         if whole_roster:
             dispatch["whole_roster_wave_barrier"] = True
             dispatch["live_phase_fit_receipts"] = list(live_fit_gate.receipts)
+        units = binding.get("execution_units")
+        if units is not None:
+            dispatch["execution_unit_roster_sha256"] = units.content_hash()
+            dispatch["execution_unit_count"] = len(units.units)
+            dispatch["parent_sample_count"] = len(binding["speech_packet_bindings"])
+            for suffix in ("", "_ceiling"):
+                key = "contacts_per_sample" + suffix
+                if key in dispatch:
+                    dispatch["contacts_per_execution_unit" + suffix] = dispatch.pop(key)
+            dispatch.pop("contacts_per_sample_observed", None)
+            dispatch["contacts_per_execution_unit_observed"] = [
+                {"sample_id": result.sample_id,
+                 "execution_unit_id": result.execution_unit_id,
+                 "contacts": len(result.contacts)}
+                for summary in self._phase_summaries for result in summary.results
+            ]
         return rows, contact_count, "phase-program", dispatch, phase_receipt
 
     def preparation_context(self):
@@ -7019,7 +7048,109 @@ class FlightRuntime:
             ),
         }
 
-    def _canonical_output_rows(self, client: object) -> list[Mapping[str, object]]:
+    def _canonical_execution_unit_rows(self, client: object, roster) -> list[Mapping[str, object]]:
+        """Validate each unit's actual delivery before deriving parent outputs."""
+        from ..delivery import stitch_execution_unit_results
+        from ...rails.execution_units import execution_unit_scope
+
+        parents = [sample.sample_id for sample in self._samples]
+        roster.validate(parent_sample_ids=parents, max_contacts=1)
+        expected = [(unit.parent_sample_id, unit.request_key) for unit in roster.units]
+        actual = [(row.get("sample_id"), row.get("execution_unit_id"))
+                  for row in self._output_rows]
+        if actual != expected:
+            raise FlightRuntimeError("execution unit outputs do not exactly cover the ordered roster")
+        by_scope = {execution_unit_scope(unit.request_key): unit for unit in roster.units}
+        by_unit = {unit.request_key: [] for unit in roster.units}
+        seen_requests = set()
+        for timing in getattr(client, "timings", ()) or ():
+            contact_id = getattr(timing, "agent_contact_id", None)
+            scope = contact_id.split("/", 1)[0] if isinstance(contact_id, str) else None
+            unit = by_scope.get(scope)
+            if unit is None or timing.sample_id != unit.parent_sample_id:
+                raise FlightRuntimeError("actual contact has no matching execution unit binding")
+            if timing.request_id in seen_requests:
+                raise FlightRuntimeError("execution unit timing repeats a request identity")
+            seen_requests.add(timing.request_id)
+            by_unit[unit.request_key].append(timing)
+
+        terminal = []
+        for unit, row in zip(roster.units, self._output_rows, strict=True):
+            timings = by_unit[unit.request_key]
+            if not timings:
+                raise FlightRuntimeError("execution unit has no actual request record")
+            sources = [result for summary in self._phase_summaries for result in summary.results
+                       if getattr(result, "execution_unit_id", None) == unit.request_key]
+            if not sources or any(result.sample_id != unit.parent_sample_id for result in sources):
+                raise FlightRuntimeError("execution unit has no matching phase trajectory")
+            selected = self._canonical_output_rows(
+                client, output_rows=(row,), timings=timings,
+                phase_summaries=self._phase_summaries,
+            )[0]
+            recorded = next((timing for timing in timings
+                             if timing.request_id == selected["request_id"]), None)
+            # An abstention already has a verified empty derivative and source
+            # custody from the shared native delivery validator above.
+            terminal.append({
+                **selected,
+                "execution_unit_id": unit.request_key,
+                "execution_unit_binding": row.get("execution_unit_binding"),
+                "saturated": bool(getattr(recorded, "terminal_saturated", False)),
+                "skipped": False,
+            })
+        try:
+            stitched = stitch_execution_unit_results(roster, parents, terminal)
+        except ValueError as error:
+            raise FlightRuntimeError(str(error)) from error
+        return [{
+            "request_id": f"{self._plan.run_id}:{row['sample_id']}:unit-stitch",
+            "sample_id": row["sample_id"],
+            "carrier_lock_key": self._plan.carrier_lock_key,
+            "arm": self._arm(),
+            "text": row["text"],
+            "admitted": True,
+            "request_sha256": row["request_sha256"],
+            "response_sha256": row["response_sha256"],
+            "response_text_sha256": row["response_text_sha256"],
+            "execution_unit_delivery": row,
+        } for row in stitched]
+
+    def _trace_execution_unit_deliveries(self, client: object, rows) -> None:
+        """Record derived stitching without another metered model request."""
+        derived = [row for row in rows if "execution_unit_delivery" in row]
+        if not derived:
+            return
+        from ..tracing import TraceBuffer
+
+        buffer = TraceBuffer(self._plan.run_id)
+        for row in derived:
+            delivery = row["execution_unit_delivery"]
+            base = row["request_id"]
+            buffer.emit("MODEL_REQUEST", base + "/request", {
+                "arm": row["arm"],
+                "payload_sha256": row["request_sha256"],
+                "stitch": True,
+                "stitched_request_ids": delivery["request_ids"],
+                "execution_unit_roster_sha256": delivery["execution_unit_roster_sha256"],
+            })
+            buffer.emit("MODEL_RESPONSE", base + "/response", {
+                "text": row["text"],
+                "response_sha256": row["response_sha256"],
+                "response_text_sha256": row["response_text_sha256"],
+                "stitch": True,
+                "stitched_from_response_sha256s": delivery["source_response_sha256s"],
+            })
+            buffer.emit("USE", base + "/use", {
+                "use_response_sha256": row["response_sha256"],
+                "use_admitted": True,
+                "use_stitched_iterations": len(delivery["sources"]),
+                "use_execution_unit_sources": delivery["sources"],
+            })
+        client.flush_trace_buffer(buffer)
+
+    def _canonical_output_rows(
+        self, client: object, *, output_rows=None, timings=None, phase_summaries=None,
+    ) -> list[Mapping[str, object]]:
         """The outputs rows ``core.bundle.verify_bundle`` actually requires.
 
         ``core.bundle.outputs._REQUIRED_OUTPUTS_FIELDS`` is a hash-bound
@@ -7040,9 +7171,18 @@ class FlightRuntime:
         that stands.
         """
 
+        if output_rows is None:
+            units = self.execution_unit_roster()
+            if units is not None:
+                return self._canonical_execution_unit_rows(client, units)
+            output_rows = self._output_rows
+        if phase_summaries is None:
+            phase_summaries = getattr(self, "_phase_summaries", ())
+        if timings is None:
+            timings = getattr(client, "timings", ()) or ()
         timing_by_sample: dict[str, object] = {}
         timing_by_request: dict[str, object] = {}
-        for timing in getattr(client, "timings", ()) or ():
+        for timing in timings:
             timing_by_sample[timing.sample_id] = timing
             timing_by_request[timing.request_id] = timing
         arm = self._arm()
@@ -7052,7 +7192,7 @@ class FlightRuntime:
         # ``_rows_from_phase_summaries`` now reduces a program to one row
         # per sample, and this says so HERE, where the failure is still
         # free, rather than trusting that it always will.
-        seen: list[str] = [str(row.get("sample_id")) for row in self._output_rows]
+        seen: list[str] = [str(row.get("sample_id")) for row in output_rows]
         duplicates = sorted({sid for sid in seen if seen.count(sid) > 1})
         if duplicates:
             raise FlightRuntimeError(
@@ -7062,7 +7202,7 @@ class FlightRuntime:
                 "sample seals the LAST response, never one row per contact)"
             )
         rows: list[Mapping[str, object]] = []
-        for row in self._output_rows:
+        for row in output_rows:
             sample_id = str(row.get("sample_id"))
             # The Earnings/obs dispatch reads its rows back from the obs
             # driver's own sealed outputs, which ARE this contract's field
@@ -7082,7 +7222,7 @@ class FlightRuntime:
                 # The delivery Solver can precede Reviewer/Planner contacts.
                 # Bind the existing response, without deriving or rewriting text.
                 sources = [
-                    result for summary in self._phase_summaries
+                    result for summary in phase_summaries
                     for result in summary.results
                     if result.sample_id == sample_id
                     and getattr(result, "native_episode_receipt", None) == episode_receipt
@@ -7369,6 +7509,7 @@ class FlightRuntime:
         # scoring fail AFTER every contact had been spent.
         outputs_path = run_dir / f"{self._plan.run_id}.outputs.jsonl"
         canonical_rows = self._canonical_output_rows(self._client)
+        self._trace_execution_unit_deliveries(self._client, canonical_rows)
         with outputs_path.open("w", encoding="utf-8") as handle:
             for row in canonical_rows:
                 handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")

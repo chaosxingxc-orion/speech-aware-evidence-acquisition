@@ -604,8 +604,8 @@ def load_raw_execution_unit_roster(
             raise PreparationError("execution unit parent windows must be contiguous")
         # Registry verifies parent custody, bounds, paths and exact slice bytes.
         record_values = {k: source[k] for k in _SOURCE_KEYS}
-        record_values["preprocess"] = tuple(record_values["preprocess"])
         try:
+            record_values["preprocess"] = tuple(record_values["preprocess"])
             record = registry.register(SliceRecord(**record_values))
         except (FrozenCoreError, TypeError, ValueError) as error:
             raise PreparationError(f"execution unit raw source refused: {error}") from error
