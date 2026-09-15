@@ -2177,6 +2177,22 @@ class FlightRuntime:
             raise FlightRuntimeError(f"{label} pin hash differs from the file")
         return path
 
+    def _live_speech_units(self):
+        """Return explicit window custody only when configured; preserve legacy sources."""
+        values = getattr(getattr(self, "_composed", None), "values", {})
+        return (
+            self.execution_unit_roster()
+            if values.get("prepared_execution_units") is not None else None
+        )
+
+    def _live_speech_sources(self):
+        """Bind live observations to current units or historical whole utterances."""
+        units = self._live_speech_units()
+        if units is None:
+            return self.source_audio_bindings(include_address=True)
+        from ...rails.live_speech_observation import execution_unit_source_bindings
+        return execution_unit_source_bindings(units)
+
     def _load_live_speech_observation_config(
         self,
         spec: object,
@@ -2263,14 +2279,19 @@ class FlightRuntime:
             raise FlightRuntimeError("live speech source bindings are unavailable")
         if plan.planned_model_calls < 1:
             raise FlightRuntimeError("live speech plan must admit at least one selected contact")
+        units = self._live_speech_units()
+        if units is not None and protocol.get("source_selection") != "bounded-span-v1":
+            raise FlightRuntimeError("execution-unit speech requires bounded-span-v1")
         total_seconds = sum(
             float(binding["source_audio_duration_seconds"])
             for binding in bindings.values()
         )
-        if plan.planned_speech_audio_seconds + 1e-9 < max(
-            float(binding["source_audio_duration_seconds"])
+        largest_contact = max(
+            min(30.0, float(binding["source_audio_duration_seconds"]))
+            if units is not None else float(binding["source_audio_duration_seconds"])
             for binding in bindings.values()
-        ):
+        )
+        if plan.planned_speech_audio_seconds + 1e-9 < largest_contact:
             raise FlightRuntimeError("live speech audio cap cannot cover one roster source")
         output_relpath = spec["output_relpath"]
         if (
@@ -2290,8 +2311,12 @@ class FlightRuntime:
             raise FlightRuntimeError(
                 "live speech output must be namespaced to its registered attempt"
             )
+        source_identity = (
+            {"bindings": bindings, "execution_unit_roster_sha256": units.content_hash()}
+            if units is not None else bindings
+        )
         source_hash = hashlib.sha256(
-            json.dumps(bindings, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            json.dumps(source_identity, sort_keys=True, separators=(",", ":")).encode("utf-8")
         ).hexdigest()
         return {
             "inventory": inventory,
@@ -2315,20 +2340,47 @@ class FlightRuntime:
             raise FlightRuntimeError("live speech custody is not configured")
         self.assert_generation_lease()
         sample_id = facts.get("sample_id")
+        units = self._live_speech_units()
+        unit_facts = {}
         binding = bindings.get(sample_id)
+        expected_seconds = binding.get("source_audio_duration_seconds") if binding else None
+        expected_span = {
+            "kind": "full-utterance", "start_seconds": 0.0, "end_seconds": expected_seconds,
+        }
+        if units is not None:
+            from ..preparation import digest
+            from ...rails.live_speech_observation import (
+                LiveSpeechObservationError, select_execution_unit_span,
+            )
+            unit = next((u for u in units.units
+                         if u.request_key == facts.get("execution_unit_id")), None)
+            if (
+                unit is None or unit.parent_sample_id != sample_id
+                or facts.get("execution_unit_binding_sha256") != digest(unit.as_json())
+            ):
+                raise FlightRuntimeError("live speech selected execution unit is invalid")
+            binding = bindings.get(unit.request_key)
+            try:
+                expected_span, expected_seconds = select_execution_unit_span(
+                    unit, facts.get("arguments"),
+                )
+            except LiveSpeechObservationError as error:
+                raise FlightRuntimeError(str(error)) from error
+            unit_facts = {
+                "execution_unit_id": unit.request_key,
+                "execution_unit_binding_sha256": digest(unit.as_json()),
+                "selected_span": expected_span,
+            }
+        elif facts.get("execution_unit_id") is not None:
+            raise FlightRuntimeError("live speech unit is not configured")
         source = facts.get("source")
         audio_seconds = facts.get("audio_seconds")
         if (
             not isinstance(binding, Mapping)
             or not isinstance(source, Mapping)
             or source.get("audio_sha256") != binding.get("source_audio_sha256")
-            or audio_seconds != binding.get("source_audio_duration_seconds")
-            or source.get("span")
-            != {
-                "kind": "full-utterance",
-                "start_seconds": 0.0,
-                "end_seconds": binding.get("source_audio_duration_seconds"),
-            }
+            or audio_seconds != expected_seconds
+            or source.get("span") != expected_span
         ):
             raise FlightRuntimeError("live speech selected source identity is invalid")
         plan = config["plan"]
@@ -2364,6 +2416,7 @@ class FlightRuntime:
             "attempt_id": plan.attempt_id,
             "ordinal": calls,
             "sample_id": sample_id,
+            **unit_facts,
             "source_response_sha256": facts.get("source_response_sha256"),
             "cache_key": facts.get("cache_key"),
             "source_audio_sha256": binding["source_audio_sha256"],
@@ -2429,9 +2482,30 @@ class FlightRuntime:
             raise FlightRuntimeError(
                 "native speech tools require FrozenCoreClient.record_tool_call custody"
             )
-        callback(count=1)
+        unit_facts = {}
+        units = self._live_speech_units()
         live_bindings = self._live_speech_source_bindings
-        if isinstance(live_bindings, Mapping) and sample_id in live_bindings:
+        if units is not None:
+            from ..preparation import digest
+            timings = [timing for timing in getattr(self._client, "timings", ())
+                       if timing.request_id == facts["request_id"]]
+            if len(timings) != 1 or timings[0].sample_id != sample_id:
+                raise FlightRuntimeError("native tool source request has no unique execution unit")
+            unit = self.execution_unit_for_contact(sample_id, timings[0].agent_contact_id)
+            if (
+                facts.get("execution_unit_id") != unit.request_key
+                or facts.get("execution_unit_binding_sha256") != digest(unit.as_json())
+            ):
+                raise FlightRuntimeError("native tool action differs from source request unit")
+            descriptor = unit.query_descriptor("speech_features")
+            packet_id, packet_sha256 = descriptor["packet_id"], descriptor["sha256"]
+            unit_facts = {
+                "execution_unit_id": unit.request_key,
+                "execution_unit_binding_sha256": digest(unit.as_json()),
+            }
+        elif facts.get("execution_unit_id") is not None:
+            raise FlightRuntimeError("native tool execution unit is not configured")
+        elif isinstance(live_bindings, Mapping) and sample_id in live_bindings:
             descriptor = live_bindings[sample_id]
             packet_id = descriptor["packet_id"]
             packet_sha256 = descriptor["packet_sha256"]
@@ -2439,9 +2513,11 @@ class FlightRuntime:
             descriptor = self.speech_packet_bindings()[sample_id]
             packet_id = descriptor["packet_id"]
             packet_sha256 = descriptor["sha256"]
+        callback(count=1)
         receipt = {
             "schema": "saea-native-phase-tool-contact-v1",
             "sample_id": sample_id,
+            **unit_facts,
             **{key: facts[key] for key in required_text},
             "arguments_sha256": hashlib.sha256(
                 json.dumps(arguments, sort_keys=True, separators=(",", ":")).encode("utf-8")
@@ -2572,9 +2648,7 @@ class FlightRuntime:
 
         live_spec = values.get("live_speech_observations")
         if live_spec not in (None, {}):
-            self._live_speech_source_bindings = self.source_audio_bindings(
-                include_address=True
-            )
+            self._live_speech_source_bindings = self._live_speech_sources()
             self._live_speech_config = self._load_live_speech_observation_config(
                 live_spec,
                 carrier_lock_key=carrier_lock_key,
@@ -4566,7 +4640,9 @@ class FlightRuntime:
                 )
 
                 factory = LiveSpeechObservationProvider
+            units = self._live_speech_units()
             self._live_speech_provider = factory(
+                **({"execution_units": units} if units is not None else {}),
                 inventory=self._live_speech_config["inventory"],
                 protocol=self._live_speech_config["protocol"],
                 source_bindings=self._live_speech_source_bindings,
@@ -8421,9 +8497,7 @@ class FlightRuntime:
             self._plan = plan
             live_spec = self._composed.values.get("live_speech_observations")
             if live_spec not in (None, {}) and self._live_speech_config is None:
-                self._live_speech_source_bindings = self.source_audio_bindings(
-                    include_address=True
-                )
+                self._live_speech_source_bindings = self._live_speech_sources()
                 self._live_speech_config = self._load_live_speech_observation_config(
                     live_spec,
                     carrier_lock_key=carrier_lock_key,
