@@ -98,11 +98,21 @@ and release neither arm until both seal or a formal terminal closure ends the co
 Use the shared bundle/score validators and paired resampler. Legacy hard-coded historical
 verdict scripts are not the executable analysis for this new pair.
 
-Postseal native window reconstruction still needs an explicit compatibility proof with the
-shared saved-score window reader. Whole-call scoring and the primary call-level analysis
-do not depend on treating legacy OBS records as native execution-unit receipts. Any required
-adapter belongs in the shared reader, without rerunning official scoring or opening labels
-through a separate analysis path.
+Postseal native window reconstruction is now implemented in the shared saved-score reader
+and verified through the six configured synthetic lifecycle variants. The reader replays the
+recorded unit delivery using the same pure stitch implementation, validates native Solver
+selection or abstention, binds original source windows and request/response/USE records,
+and reconstructs the scored parent text exactly. Normal acceptance, terminal last-Solver
+delivery, finite fallback, abstention, saturation and empty windows remain distinguishable.
+It never treats a later Reviewer or Planner response as the final transcript.
+
+The shared saved-score entry consumes first-score alignments without invoking the official
+scorer or reference loader again. Window statistics preserve the authoritative call totals
+and whole-prefix normalization, including numeric words split across window boundaries.
+Their alignment allocation is a diagnostic convention, not reference-audio timing or a
+causal attribution to a selected tool. Whole-call metrics and call-cluster intervals remain
+the scientific authority. Source-byte validation remains the earlier runtime/preparation
+evidence; this replay verifies sealed custody rather than reopening audio.
 
 Attribute actual evidence supply, tool selection, valid spans, returned evidence consumption,
 Planner routes, first/final Solver changes, saturation, fallback, abstention and contact
@@ -150,11 +160,34 @@ Evidence under SPEECHRL_DATA_DIR:
 
 1. Reconcile and analyze Audio2Tool when authoritative terminal evidence arrives; obey the
    owner's hold on every subsequent GPU contact. Keep active flight worktrees frozen.
-2. Integrate this reviewed shared source at an allowed flight boundary. Verify native
-   window receipt reconstruction in the shared saved-score reader using synthetic evidence.
+2. Integrate this reviewed shared source at an allowed flight boundary. Native saved-score
+   window reconstruction is CPU-verified; preserve its exact receipt/trace and score pins
+   when instantiating a future registered postseal analysis.
 3. Preserve the prepared SLURP and E21 configurations. After explicit owner resume and
    scientific eligibility, complete exposure bindings, serving identity, actual fits and
    full paired execution. Do not infer authorization from this readiness note.
 4. Diagnose task quality personally, then choose only a justified matched replication or
    named component change. Define algorithmic trajectory-sampling factors after the base
    exhibits reproducible benefit.
+
+
+## Window-reader closure
+
+The focused window/delivery/score/native regression passed 263 tests with three existing
+dependency warnings. Ruff, engineering-base and diff checks passed. These checks overlap
+the earlier configuration suite and their counts must not be added as independent coverage.
+The configured lifecycle still mocks neural responses, capacity and final bundle creation;
+the synthetic saved-score entry substitutes already-verified bundle/score receipt boundaries.
+No real core, ASR, tokenizer, encoder, official scorer or reference loader was invoked.
+
+Source changes are confined to shared analysis modules and tests. Historical WindowSpan
+serialization remains unchanged when no explicit execution unit is present; the new path
+adds unit identity, delivery kind and skip status. Rehashed parent output, altered source
+geometry, missing responses, order/hash drift and Planner-as-answer substitutions refuse.
+
+Evidence under SPEECHRL_DATA_DIR:
+
+- coordination/e21-native-window-bridge-v1/root-native-window-analysis-regression-v1.log;
+  SHA256 8bb93f9b7e53698e57c381e4727b16884d579a12b8427853a454f8e5062a7bfd.
+- coordination/e21-native-window-bridge-v1/root-native-window-analysis-engineering-v1.log;
+  SHA256 613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0.

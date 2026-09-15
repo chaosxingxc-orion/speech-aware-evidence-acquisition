@@ -422,6 +422,24 @@ def test_configured_feature_units_complete_shared_lifecycle(
                 row.get("use_tool_id") != span_tool for row in traces.values()
             )
         assert len(rows) == 1 and rows[0]["sample_id"] == parent.sample_id
+        from speech_aware_evidence_acquisition.analysis.delivery_windows import (
+            verified_execution_unit_windows,
+        )
+        from speech_aware_evidence_acquisition.core.bundle.artifacts import VerifiedBundle
+
+        reconstructed = verified_execution_unit_windows(VerifiedBundle(
+            Path(kwargs["run_dir"]) / "synthetic-manifest.json",
+            {"status": "COMPLETED"}, result.outputs_path, rows, traces,
+            frozenset({parent.sample_id}), "FINALIZED",
+        ))
+        spans = reconstructed[parent.sample_id]
+        assert [span.execution_unit_id for span in spans] == [
+            unit.request_key for unit in attached.units
+        ]
+        assert " ".join(span.text for span in spans if span.text) == rows[0]["text"]
+        assert {span.delivery_kind for span in spans} == (
+            {"direct"} if policy == "phase-direct-only-v1" else {"accepted"}
+        )
         assert rows[0]["text"] == (
             "direct window one direct window two"
             if policy == "phase-direct-only-v1"

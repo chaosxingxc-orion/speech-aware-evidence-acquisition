@@ -1,4 +1,4 @@
-"""Recover verified terminal delivery windows from a legacy OBS derivative."""
+"""Recover verified legacy and execution-unit terminal delivery windows."""
 
 from __future__ import annotations
 
@@ -278,3 +278,190 @@ def verified_delivery_windows(
 
 
 __all__ = ["DeliveryWindowsError", "verified_delivery_windows"]
+
+
+def verified_execution_unit_windows(
+    bundle: VerifiedBundle,
+) -> dict[str, tuple[WindowSpan, ...]]:
+    """Replay recorded unit delivery with the shared pure stitch implementation.
+
+    Consume source and terminal-response custody from the verified bundle.
+    Do not reopen audio, model responses outside that bundle, or references.
+    Native Solver selection comes from its recorded role-episode receipt.
+    """
+    import math
+
+    from ..core.bundle import BundleError
+    from ..core.bundle.outputs import _verify_outputs_trace_binding
+    from ..rails.errors import RailsError
+    from ..core.delivery import (
+        native_abstention_records, normalize_terminal_response, stitch_execution_unit_results,
+    )
+    from ..core.model import SliceRecord
+    from ..rails.execution_units import ExecutionUnit, ExecutionUnitRoster, execution_unit_scope
+    from ..rails.native_episode_receipt import validate_native_episode_delivery_receipt
+
+    if not isinstance(bundle, VerifiedBundle):
+        raise TypeError("execution-unit windows require VerifiedBundle")
+    if bundle.attempt_state != "FINALIZED" or bundle.manifest.get("status") != "COMPLETED":
+        raise DeliveryWindowsError("execution-unit windows require finalized task outputs")
+    rows = bundle.outputs_rows
+    parents = tuple(row.get("sample_id") for row in rows)
+    if (
+        not rows or any(not isinstance(parent, str) or not parent for parent in parents)
+        or len(set(parents)) != len(parents) or set(parents) != bundle.split_ids
+    ):
+        raise DeliveryWindowsError("execution-unit outputs must cover the complete parent roster")
+    try:
+        _verify_outputs_trace_binding(rows, bundle.trace_records)
+    except BundleError as error:
+        raise DeliveryWindowsError(str(error)) from error
+    episodes = {}
+    for record_id, record in bundle.trace_records.items():
+        if "use_native_episode" not in record:
+            continue
+        scope = record_id.split("/", 1)[0]
+        if scope in episodes:
+            raise DeliveryWindowsError("execution unit has duplicate native episode receipts")
+        episodes[scope] = _mapping(record["use_native_episode"], "native episode")
+
+    units, terminals, expected_deliveries = [], [], []
+    result = {}
+    for row in rows:
+        parent = row["sample_id"]
+        delivery = _mapping(row.get("execution_unit_delivery"), "execution-unit delivery")
+        if delivery.get("schema") != "saea-execution-unit-stitched-result-v1":
+            raise DeliveryWindowsError("unsupported execution-unit delivery schema")
+        sources = delivery.get("sources")
+        if not isinstance(sources, list) or not sources:
+            raise DeliveryWindowsError("execution-unit delivery has no ordered sources")
+        stitch_id = row["request_id"]
+        request = _mapping(bundle.trace_records.get(stitch_id + "/request"), "stitch request")
+        response = _mapping(bundle.trace_records.get(stitch_id + "/response"), "stitch response")
+        use = _mapping(bundle.trace_records.get(stitch_id + "/use"), "stitch USE")
+        if (
+            request.get("stitch") is not True or response.get("stitch") is not True
+            or request.get("stitched_request_ids") != delivery.get("request_ids")
+            or request.get("execution_unit_roster_sha256") != delivery.get("execution_unit_roster_sha256")
+            or response.get("stitched_from_response_sha256s") != delivery.get("source_response_sha256s")
+            or use.get("use_execution_unit_sources") != sources
+            or use.get("use_stitched_iterations") != len(sources)
+            or use.get("use_response_sha256") != row["response_sha256"]
+            or use.get("use_admitted") is not True
+        ):
+            raise DeliveryWindowsError("execution-unit delivery differs from its stitch trace")
+        spans = []
+        for index, raw_source in enumerate(sources, start=1):
+            source = _mapping(raw_source, "execution-unit source")
+            binding = _mapping(source.get("execution_unit_binding"), "execution-unit binding")
+            raw_slice = _mapping(binding.get("slice_record"), "execution-unit slice")
+            try:
+                record = SliceRecord(**{**raw_slice, "preprocess": tuple(raw_slice["preprocess"])})
+                unit = ExecutionUnit(
+                    binding["parent_sample_id"], binding["request_key"], record,
+                    binding.get("speech_packet_id"), binding.get("speech_packet_sha256"),
+                ).validate()
+            except (KeyError, TypeError, ValueError, RailsError) as error:
+                raise DeliveryWindowsError(f"invalid execution-unit binding: {error}") from error
+            geometry = (record.start_seconds, record.end_seconds, record.audio_seconds)
+            if (
+                any(isinstance(value, bool) or not isinstance(value, (int, float))
+                    or not math.isfinite(value) for value in geometry)
+                or record.start_seconds < 0 or record.end_seconds <= record.start_seconds
+                or record.audio_seconds <= 0
+                or isinstance(record.sample_rate_hz, bool)
+                or not isinstance(record.sample_rate_hz, int) or record.sample_rate_hz <= 0
+                or abs(record.end_seconds - record.start_seconds - record.audio_seconds)
+                > 1 / record.sample_rate_hz
+                or unit.parent_sample_id != parent
+                or source.get("execution_unit_id") != unit.request_key
+                or unit.as_json() != binding
+            ):
+                raise DeliveryWindowsError("execution-unit source geometry or identity changed")
+            request_id = source.get("request_id")
+            if not isinstance(request_id, str) or not request_id:
+                raise DeliveryWindowsError("execution-unit source has no terminal request")
+            raw_request = _mapping(
+                bundle.trace_records.get(request_id + "/request"), "terminal request",
+            )
+            raw_response = _mapping(
+                bundle.trace_records.get(request_id + "/response"), "terminal response",
+            )
+            text = raw_response.get("text")
+            if (
+                not isinstance(text, str)
+                or raw_request.get("payload_sha256") != source.get("request_sha256")
+                or raw_response.get("response_sha256") != source.get("response_sha256")
+                or raw_response.get("response_text_sha256") != source.get("raw_text_sha256")
+                or sha256(text.encode("utf-8")) != source.get("raw_text_sha256")
+            ):
+                raise DeliveryWindowsError("terminal request or response differs from delivery")
+            episode = episodes.get(execution_unit_scope(unit.request_key))
+            kind = "direct"
+            if episode is not None:
+                selected = validate_native_episode_delivery_receipt(
+                    episode, episode.get("role_visits"), episode.get("planner_routes"),
+                    error_type=DeliveryWindowsError,
+                )
+                kind = selected.kind
+                if kind == "abstention":
+                    expected_id, expected_request, expected_response = native_abstention_records(
+                        sample_id=parent, source_contact=selected.final_contact,
+                        finish_reason=selected.terminal_disposition["finish_reason"],
+                    )
+                    if (
+                        request_id != expected_id or raw_request != expected_request
+                        or raw_response != expected_response
+                    ):
+                        raise DeliveryWindowsError("native abstention differs from shared replay")
+                else:
+                    contact = selected.final_contact
+                    if any(contact.get(key) != value for key, value in (
+                        ("request_id", request_id),
+                        ("request_sha256", source["request_sha256"]),
+                        ("response_sha256", source["response_sha256"]),
+                        ("response_text_sha256", source["raw_text_sha256"]),
+                    )):
+                        raise DeliveryWindowsError("delivery is not the recorded native Solver")
+            elif (
+                request_id + "/native-role-contact" in bundle.trace_records
+                or raw_request.get("tool_id") == "native-terminal-abstention-v1"
+            ):
+                raise DeliveryWindowsError("native unit delivery has no episode receipt")
+            if kind != "abstention":
+                payload = _mapping(raw_request.get("payload"), "terminal request payload")
+                if payload.get("sample_id") != parent or payload.get("request_id") != request_id:
+                    raise DeliveryWindowsError("terminal request changed parent or identity")
+            saturated, skipped = source.get("saturated"), source.get("skipped")
+            if not isinstance(saturated, bool) or not isinstance(skipped, bool):
+                raise DeliveryWindowsError("execution-unit terminal flags must be booleans")
+            delivered = normalize_terminal_response(text, saturated=saturated, skipped=skipped)
+            units.append(unit)
+            terminals.append({
+                "sample_id": parent, "execution_unit_id": unit.request_key,
+                "execution_unit_binding": unit.as_json(), "request_id": request_id,
+                "request_sha256": source["request_sha256"],
+                "response_sha256": source["response_sha256"],
+                "response_text_sha256": source["raw_text_sha256"],
+                "text": text, "saturated": saturated, "skipped": skipped,
+            })
+            spans.append(WindowSpan(
+                parent, index, request_id, record.start_seconds, record.end_seconds,
+                record.audio_seconds, delivered, saturated,
+                execution_unit_id=unit.request_key, delivery_kind=kind, skipped=skipped,
+            ))
+        result[parent] = tuple(spans)
+        expected_deliveries.append(delivery)
+    replayed = stitch_execution_unit_results(ExecutionUnitRoster(tuple(units)), parents, terminals)
+    if any(actual != expected for actual, expected in zip(replayed, expected_deliveries, strict=True)):
+        raise DeliveryWindowsError("execution-unit stitch replay differs from the recorded delivery")
+    for row, replay in zip(rows, replayed, strict=True):
+        if any(row[key] != replay[key] for key in (
+            "sample_id", "text", "request_sha256", "response_sha256", "response_text_sha256",
+        )):
+            raise DeliveryWindowsError("execution-unit replay differs from scored parent output")
+    assert_stitch_reproduces_outputs(result, {row["sample_id"]: row["text"] for row in rows})
+    return result
+
+
+__all__.append("verified_execution_unit_windows")
