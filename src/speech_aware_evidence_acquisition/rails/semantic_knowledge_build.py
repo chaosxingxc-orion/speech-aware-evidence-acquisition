@@ -17,7 +17,14 @@ from .knowledge import (
 )
 
 INTENT_BOUNDARY_BUILD_POLICY_ID = "saea-authored-intent-boundaries-v1"
+FACTORED_INTENT_BOUNDARY_BUILD_POLICY_ID = (
+    "saea-authored-intent-boundaries-factored-v1"
+)
 SLOT_CONTRACT_BUILD_POLICY_ID = "saea-authored-slot-contracts-v1"
+SHARED_INTENT_GUIDANCE_VALUE_ID = "intent-boundary:shared-guidance"
+_SHARED_INTENT_GUIDANCE_SCOPE = (
+    "Shared guidance for all intent-boundary values in this store."
+)
 _SHA256 = re.compile(r"[0-9a-f]{64}")
 _SEMANTIC_ID = re.compile(r"[a-z0-9]+(?:[_-][a-z0-9]+)*")
 _BUILD_ROLES = {TRAIN_PARTITION_ROLE, EXTERNAL_GOVERNED_PARTITION_ROLE}
@@ -269,6 +276,122 @@ def build_intent_boundary_snapshot(
     )
 
 
+def _common_intent_guidance(
+    rows: Sequence[Mapping[str, object]],
+) -> tuple[str, tuple[str, ...]]:
+    if len(rows) < 2:
+        raise RailsError("factored intent boundaries require at least two rows")
+    uncertainties = tuple(
+        _text(row["uncertainty_behavior"], "uncertainty_behavior") for row in rows
+    )
+    if len(set(uncertainties)) != 1:
+        raise RailsError(
+            "factored intent boundaries require one shared uncertainty_behavior"
+        )
+    limitations = tuple(_texts(row["limitations"], "limitations") for row in rows)
+    common_length = 0
+    for entries in zip(*limitations, strict=False):
+        if len(set(entries)) != 1:
+            break
+        common_length += 1
+    if common_length == 0:
+        raise RailsError(
+            "factored intent boundaries require a shared leading limitation"
+        )
+    return uncertainties[0], limitations[0][:common_length]
+
+
+def _factored_intent_renderer(
+    *, common_uncertainty: str, common_limitations: tuple[str, ...]
+):
+    shared_segment = (
+        f"\nUncertainty behavior: {common_uncertainty}\nLimitations:\n- "
+        + "\n- ".join(common_limitations)
+    )
+
+    def render(row: Mapping[str, object]) -> tuple[str, tuple[str, ...], str]:
+        intent_id, activation, content = _intent(row)
+        uncertainty = _text(row["uncertainty_behavior"], "uncertainty_behavior")
+        limitations = _texts(row["limitations"], "limitations")
+        if uncertainty != common_uncertainty or (
+            limitations[: len(common_limitations)] != common_limitations
+        ):
+            raise RailsError("factored intent guidance is not shared by every row")
+        special_limitations = limitations[len(common_limitations) :]
+        expected_suffix = shared_segment
+        if special_limitations:
+            expected_suffix += "\n- " + "\n- ".join(special_limitations)
+        if not content.endswith(expected_suffix) or content.count(shared_segment) != 1:
+            raise RailsError(
+                "factored intent guidance does not have one unambiguous exact removal"
+            )
+        factored = content[: -len(expected_suffix)]
+        if special_limitations:
+            factored += "\nLimitations:\n- " + "\n- ".join(special_limitations)
+        return intent_id, activation, factored
+
+    return render
+
+
+def build_factored_intent_boundary_snapshot(
+    spec: AuthoredSemanticKnowledgeSpec,
+    *,
+    rows: Sequence[Mapping[str, object]],
+    forbidden_sample_ids: frozenset[str] = frozenset(),
+) -> KnowledgeSnapshot:
+    """Factor text shared by every reviewed intent into one associated value."""
+
+    original = build_intent_boundary_snapshot(
+        spec, rows=rows, forbidden_sample_ids=forbidden_sample_ids
+    )
+    common_uncertainty, common_limitations = _common_intent_guidance(rows)
+    original_ids = {
+        *(facet.facet_id for facet in original.facets),
+        *(value.value_id for value in original.values),
+    }
+    if SHARED_INTENT_GUIDANCE_VALUE_ID in original_ids:
+        raise RailsError(
+            f"factored intent guidance ID collision: {SHARED_INTENT_GUIDANCE_VALUE_ID}"
+        )
+    factored = _build(
+        spec,
+        rows=rows,
+        forbidden_sample_ids=forbidden_sample_ids,
+        policy_id=FACTORED_INTENT_BOUNDARY_BUILD_POLICY_ID,
+        row_keys=_INTENT_KEYS,
+        id_field="intent_id",
+        dimension="intent-boundary",
+        renderer=_factored_intent_renderer(
+            common_uncertainty=common_uncertainty,
+            common_limitations=common_limitations,
+        ),
+    )
+    shared = ValueBundle(
+        value_id=SHARED_INTENT_GUIDANCE_VALUE_ID,
+        content=(
+            f"{_SHARED_INTENT_GUIDANCE_SCOPE}\n"
+            f"Uncertainty behavior: {common_uncertainty}\nLimitations:\n- "
+            + "\n- ".join(common_limitations)
+        ),
+        associated_facet_ids=tuple(facet.facet_id for facet in original.facets),
+        source_sample_ids=original.source_sample_ids,
+        provenance_refs=tuple(sorted({
+            provenance
+            for value in original.values
+            for provenance in value.provenance_refs
+        })),
+    ).validate()
+    return KnowledgeSnapshot(
+        snapshot_id=factored.snapshot_id,
+        source_split_identity_hash=factored.source_split_identity_hash,
+        source_sample_ids=factored.source_sample_ids,
+        source_partition_role=factored.source_partition_role,
+        builder_policy_id=factored.builder_policy_id,
+        facets=original.facets,
+        values=tuple(sorted((*factored.values, shared), key=lambda value: value.value_id)),
+    ).validate()
+
+
 def build_slot_contract_snapshot(
     spec: AuthoredSemanticKnowledgeSpec,
     *,
@@ -290,9 +413,12 @@ def build_slot_contract_snapshot(
 
 
 __all__ = [
+    "FACTORED_INTENT_BOUNDARY_BUILD_POLICY_ID",
     "INTENT_BOUNDARY_BUILD_POLICY_ID",
+    "SHARED_INTENT_GUIDANCE_VALUE_ID",
     "SLOT_CONTRACT_BUILD_POLICY_ID",
     "AuthoredSemanticKnowledgeSpec",
+    "build_factored_intent_boundary_snapshot",
     "build_intent_boundary_snapshot",
     "build_slot_contract_snapshot",
 ]
