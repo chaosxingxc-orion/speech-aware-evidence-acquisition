@@ -87,6 +87,7 @@ def test_catalog_retains_legacy_wrappers_and_explicit_registered_actions():
     actions = {
         "saea-tool-task-contract-v1",
         "saea-tool-phase-knowledge-v1",
+        "saea-tool-knowledge-target-lookup-v1",
         "saea-tool-corrective-memory-v1",
         "saea-tool-prepared-speech-observation-v1",
         "saea-tool-live-speech-observation-v1",
