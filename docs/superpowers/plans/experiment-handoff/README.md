@@ -1,10 +1,10 @@
 # Current continuation: September 15
 
-Read [STATUS-123](STATUS-123.md): allow the current Audio2Tool GPU task to finish, then hold all new GPU experiments until the owner explicitly resumes. SLURP and E21 dispatch are held; CPU scoring, analysis and preparation continue. Preserve resident model memory. See [the owner directive](OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15.md).
+Read [STATUS-125](STATUS-125.md): allow the current Audio2Tool GPU task to finish, then hold all new GPU experiments until the owner explicitly resumes. SLURP and E21 dispatch are held; CPU scoring, analysis and preparation continue. Preserve resident model memory. See [the owner directive](OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15.md).
 
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-123.md](STATUS-123.md) records the owner GPU scheduling hold, continuing Audio2Tool task and the verified configured E21 window lifecycle (639 tests). Preserve frozen active code and release gates.
+**Latest execution:** [STATUS-125.md](STATUS-125.md) records the owner GPU hold, workflow-based A2T progress estimate, completed ConEC stores and verified 1,593-window context routing. The configured context/tool/revision lifecycle is CPU-verified (106 focused tests). Preserve frozen active code and scientific release gates.
 
 **Current comparison direction:** [OWNER-SYSTEM-VERSIONS-025.md](OWNER-SYSTEM-VERSIONS-025.md) makes complete model-versus-system task quality primary and allows evidence-guided expansion of system versions. The supplied/withheld knowledge draft is withdrawn. [The current system plan](../../../readiness/2026-09-13-slurp-direct-vs-native-system-plan-v1.md) and [extension sequence](../../../readiness/2026-09-13-finalized-score-reuse-and-system-extension.md) govern the next work.
 
@@ -12,7 +12,7 @@ Read [STATUS-123](STATUS-123.md): allow the current Audio2Tool GPU task to finis
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 123. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 125. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -45,7 +45,7 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-124.md](STATUS-124.md), state.json and [OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15](OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15.md) first.
+Read [STATUS-125.md](STATUS-125.md), state.json and [OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15](OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15.md) first.
 The September15 owner directive holds all new GPU experiments after the current Audio2Tool
 task completes or stops. It supersedes the launch scheduling in OWNER-GPU-RESUME-013;
 an explicit owner resume is required before dispatching another GPU task. The earlier G6/E21 campaigns' generation, scoring, fixed analysis and all four settlements
