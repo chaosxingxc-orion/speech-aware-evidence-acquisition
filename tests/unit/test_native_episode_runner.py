@@ -206,6 +206,7 @@ class _ActualEpisodeHarness:
         sample_ids: tuple[str, ...] | None = None,
         execution_plan=None,
         data_root=None,
+        query_source: str = "speech_features",
     ):
         self.world = _World(tmp_path, data_root=data_root)
         self.world.samples = self.world.samples[:sample_count]
@@ -218,8 +219,19 @@ class _ActualEpisodeHarness:
             ]
         self.samples = tuple(self.world.samples)
         self.adapter = _FakeAdapter(samples=self.samples)
+        self.query_source = query_source
         self.feature_root = tmp_path / "features"
-        all_bindings = _feature_bindings(self.world, self.feature_root)
+        all_bindings = (
+            _feature_bindings(self.world, self.feature_root)
+            if query_source == "speech_features"
+            else {
+                sample.sample_id: {
+                    "packet_id": sample.audio_ref.path,
+                    "sha256": sample.audio_ref.sha256,
+                }
+                for sample in self.samples
+            }
+        )
         self.speech_bindings = {
             sample.sample_id: all_bindings[sample.sample_id] for sample in self.samples
         }
@@ -283,9 +295,15 @@ class _ActualEpisodeHarness:
             self.world.data_root,
             post=post,
             session=_fake_inference_session(),
-            feature_root=self.feature_root,
+            feature_root=(
+                self.feature_root if query_source == "speech_features" else None
+            ),
             preserve_wire_responses=True,
-            prompt_order="speech-query-prefix-v2",
+            prompt_order=(
+                "speech-query-prefix-v2"
+                if query_source == "speech_features"
+                else "native-raw-speech-v1"
+            ),
         )
         self.plan = execution_plan or _plan(
             run_id="SAEA-E-native-role-runner-proof",
@@ -351,7 +369,10 @@ class _ActualEpisodeHarness:
         client_kwargs = {}
         if self.tools_for_phase is not None:
             client_kwargs["tool_schemas"] = self.tools_for_phase.native_tool_schemas()
-        elif arm == "speech-feature-query-native-tools":
+        elif arm in {
+            "speech-feature-query-native-tools",
+            "raw-speech-agent-native-tools",
+        }:
             client_kwargs["tool_schemas"] = (
                 {
                     "type": "function",
@@ -370,15 +391,14 @@ class _ActualEpisodeHarness:
                 data_root=self.world.data_root,
                 carrier_root=self.world.carrier_root,
             )
+        if query_source == "speech_features":
+            client_kwargs.update(
+                speech_feature_root=self.feature_root,
+                speech_packet_bindings=self.speech_bindings,
+            )
         self.client, _, _ = _client(
-            self.world,
-            tmp_path,
-            plan=self.plan,
-            transport=self.transport,
-            arm=arm,
-            speech_feature_root=self.feature_root,
-            speech_packet_bindings=self.speech_bindings,
-            **client_kwargs,
+            self.world, tmp_path, plan=self.plan, transport=self.transport,
+            arm=arm, **client_kwargs,
         )
         self.trace = TraceBuffer(self.plan.run_id)
 
@@ -435,6 +455,11 @@ class _ActualEpisodeHarness:
             request_gate=self.request_gate,
             tools_for_phase=self.tools_for_phase,
         )
+        source_kwargs = (
+            {}
+            if self.query_source == "speech_features"
+            else {"query_source": self.query_source}
+        )
         return run_speech_native_agent_loop(
             data_root=self.world.data_root,
             plan=self.plan,
@@ -443,6 +468,7 @@ class _ActualEpisodeHarness:
             split_id="all",
             knowledge_snapshot=_knowledge_snapshot(),
             speech_packet_bindings=self.speech_bindings,
+            **source_kwargs,
             controller_policy_id=self.program.program_id,
             controller_registry=_controller_registry(
                 self.program.program_id, lambda _sample_id: object()
@@ -544,6 +570,9 @@ def test_actual_native_episode_accepts_only_solver_and_preserves_shared_fit_and_
             ("dispatch", key)
         )
         body = harness.prepared[key]["rendered"]
+        serialized = json.dumps(body)
+        assert serialized.count('"type": "input_speech_features"') == 1
+        assert '"type": "input_audio"' not in serialized
         if arm == "speech-feature-query-native-tools":
             assert body["tool_choice"] == "none"
             assert body["parallel_tool_calls"] is False

@@ -1043,6 +1043,7 @@ def _initial_query_state(
     descriptor: Mapping[str, object],
     bootstrap_facet_ids: tuple[str, ...],
     bootstrap_value_ids: tuple[str, ...],
+    query_source: str = "speech_features",
 ) -> QueryState:
     if not isinstance(descriptor, Mapping) or set(descriptor) != {
         "packet_id",
@@ -1060,6 +1061,7 @@ def _initial_query_state(
         use_split_identity_hash=plan.split_identity_hash,
         visible_facet_ids=bootstrap_facet_ids,
         retrieved_value_ids=bootstrap_value_ids,
+        query_source=query_source,
     ).validate()
 
 
@@ -1220,16 +1222,21 @@ def _agent_messages(
     if task_contract not in system_text:
         system_text = f"{system_text}\n\nTask contract:\n{task_contract}"
 
-    content: list[Mapping[str, object]] = [
-        {
-            "type": "input_speech_features",
-            "speech_features": {
-                "packet_id": query_state.speech_packet_id,
-                "sha256": query_state.speech_packet_sha256,
-                "role": "query",
-            },
-        }
-    ]
+    if query_state.query_source == "speech_audio":
+        content: list[Mapping[str, object]] = [
+            {"type": "input_audio", "media_relpath": query_state.speech_packet_id}
+        ]
+    else:
+        content = [
+            {
+                "type": "input_speech_features",
+                "speech_features": {
+                    "packet_id": query_state.speech_packet_id,
+                    "sha256": query_state.speech_packet_sha256,
+                    "role": "query",
+                },
+            }
+        ]
     content.extend(
         {
             "type": "text",
@@ -1841,11 +1848,14 @@ async def _invoke_native_role_episode(
             role_query=visit["query"], base_messages=base_messages(ctx),
             core_kwargs={
                 "decoding_params": {**decoding, "id_slot": visit["slot_id"]},
-                "key_representation_id": plan.key_representation_id,
-                "matcher_policy_id": plan.matcher_policy_id,
+                **({
+                    "key_representation_id": plan.key_representation_id,
+                    "matcher_policy_id": plan.matcher_policy_id,
+                } if ctx.query_state.query_source == "speech_features" else {}),
                 "agent_state": [a.as_json() for a in ctx.agent_states],
             },
             tool_names=names, local_tool_result_ids=tuple(visit["local_ids"]),
+            query_source=ctx.query_state.query_source,
         )
 
     def capture_completion(request, completion):
@@ -2863,6 +2873,7 @@ def run_speech_native_agent_loop(
     split_id: str,
     knowledge_snapshot: KnowledgeSnapshot,
     speech_packet_bindings: Mapping[str, Mapping[str, object]],
+    query_source: str = "speech_features",
     controller_policy_id: str,
     # Either a run-wide sequence (the original form: the same ids for every
     # sample) or, E6, a ``{sample_id: [ids]}`` mapping for a supplied FIRST
@@ -2905,6 +2916,11 @@ def run_speech_native_agent_loop(
     today's graph: no step, no record, no changed byte. Both executors call the
     same helper, so the ``reference-trajectory-v1`` equivalence oracle keeps
     covering the seam.
+
+    ``query_source='speech_audio'`` is the explicit raw-native opt-in. Its
+    binding entries carry the adapter-bound original media path and hash, or a
+    slice already registered with the shared client. The historical default
+    remains ``speech_features``.
     """
 
     if native_episode_binding is not None:
@@ -3036,6 +3052,27 @@ def run_speech_native_agent_loop(
         raise RailsRunnerError(
             "run-level decoding_params cannot choose id_slot; the runner owns it"
         )
+    if query_source not in {"speech_features", "speech_audio"}:
+        raise RailsRunnerError(
+            "query_source must be 'speech_features' or 'speech_audio'"
+        )
+    raw_native_arm = "raw-speech-agent-native-tools"
+    if query_source == "speech_audio" and (
+        native_episode_binding is None
+        or not isinstance(core_client, FrozenCoreClient)
+        or core_client.arm != raw_native_arm
+    ):
+        raise RailsRunnerError(
+            "speech_audio requires the explicit raw native client and episode"
+        )
+    if (
+        query_source == "speech_features"
+        and isinstance(core_client, FrozenCoreClient)
+        and core_client.arm == raw_native_arm
+    ):
+        raise RailsRunnerError(
+            "the raw native client cannot receive a speech_features query"
+        )
 
     samples = tuple(adapter.load_split(split_id))
     if not samples:
@@ -3115,7 +3152,31 @@ def run_speech_native_agent_loop(
                     tuple(per_sample_values.get(sample.sample_id, ())),
                 )
             ),
+            query_source=query_source,
         )
+        if query_source == "speech_audio":
+            if (
+                query_state.speech_packet_id == sample.audio_ref.path
+                and query_state.speech_packet_sha256 != sample.audio_ref.sha256
+            ):
+                raise RailsRunnerError(
+                    f"raw speech binding for {sample.sample_id!r} differs from the adapter source"
+                )
+            try:
+                bound_identity = core_client.bound_raw_speech_identity(
+                    sample.sample_id, query_state.speech_packet_id
+                )
+            except RailsError as error:
+                raise RailsRunnerError(
+                    f"raw speech binding for {sample.sample_id!r} is not admitted"
+                ) from error
+            if bound_identity != {
+                "media_relpath": query_state.speech_packet_id,
+                "sha256": query_state.speech_packet_sha256,
+            }:
+                raise RailsRunnerError(
+                    f"raw speech binding for {sample.sample_id!r} differs from its source"
+                )
         feedback = feedback_by_sample.get(sample.sample_id)
         initial_feedback = () if feedback is None else (feedback,)
         if initial_feedback:

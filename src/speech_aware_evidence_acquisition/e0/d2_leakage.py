@@ -74,6 +74,13 @@ ARM_VISIBLE_FIELDS: dict[str, tuple[str, ...]] = {
         "decoding_params",
         "tool_schemas",
     ),
+    # Raw speech remains raw while native role history preserves tool custody.
+    "raw-speech-agent-native-tools": (
+        "request_id", "carrier_lock_key", "sample_id", "speech_ref",
+        "media_relpath", "audio_seconds", "sample_rate_hz", "task_instruction",
+        "history", "decoding_params", "supplied_evidence", "evidence_provenance",
+        "tool_schemas", "raw_speech_query",
+    ),
     # "construction-proposer-text" (E2.4, 2026-09-05): bare-core's own ten
     # fields plus "construction_targets" -- the ONE arm on which the frozen
     # core may see gold, and only CONSTRUCTION gold. A NEW arm, never a
