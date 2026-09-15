@@ -208,7 +208,7 @@ The metadata covers 1,080 rows, 125 speakers and 18 scenarios; calls are not
 completed rows. The current campaign retains custody of its first complete
 official score.
 
-E21 stable-source admission is recorded. Its direct static fit registration adds
+E21 stable-source admission is recorded. Its direct static fit registration changes
 six files and no production change, covers all 1,593 windows and 4,780
 endpoints, and is integrated and source-frozen at
 `1daad5186119b23c3414e36676afb296599dc29f`. The

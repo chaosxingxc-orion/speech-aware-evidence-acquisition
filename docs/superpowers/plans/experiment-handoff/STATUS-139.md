@@ -32,7 +32,7 @@ SHA-256
 `de78bb55f4fcb46e0b04432da997dc2ff3c8e5a002d358646f7cdcd0542272e8`.
 The [direct-fit registration](../../../readiness/2026-09-15-e21-native-window-direct-fit-registration-v1/README.md)
 is integrated and source-frozen at
-`1daad5186119b23c3414e36676afb296599dc29f`. It adds six files and no
+`1daad5186119b23c3414e36676afb296599dc29f`. It changes six files and no
 production change. Sixty-eight focused tests and four later correction checks
 passed; the counts overlap and are not additive. The registered fit covers all
 1,593 windows and exactly 4,780 endpoints.
@@ -62,6 +62,6 @@ actual fit receipt remains absent. Generation, realized native fit and CPU ASR
 remain held and unregistered.
 
 The active order remains SLURP, Audio2Tool, then E21. Preserve prior failed
-verdicts. Stable benefit and trajectory-sampling or training-free RL remain
-unproven. This update performs no inference, outcome read, service operation,
+verdicts. Stable benefit for these queued system versions and trajectory-sampling or
+training-free RL remain unproven. This update performs no inference, outcome read, service operation,
 scoring or statistical interpretation.
