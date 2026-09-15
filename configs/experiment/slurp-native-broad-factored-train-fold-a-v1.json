@@ -26,7 +26,15 @@
       ],
       "readiness": {
         "state": "held",
-        "reason": "Knowledge release is complete. Root must verify all1080 prepared selections, freeze final source and register exposure before service-boundary admission."
+        "reason": "DATA_READY: shared knowledge release, unchanged facet validation and all1080 supply preparation are complete. Await root final exposure registration and service-boundary admission after the active A2T generation.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-BROAD-FACTORED-TRAIN-FOLD-A-V1/phase-supply.json",
+            "sha256": "a897a52b7ad9820a3c3ce1e60d01e9a77baa4a01eece0fd44b2cd92a6297ef76",
+            "reason": "Full1080 source-bound factored intent supply."
+          }
+        ]
       }
     }
   ],

@@ -225,5 +225,9 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "Prospective broad factored intent supply on the unchanged released TRAIN Fold A roster. Use k60/m60/c2/top_l61/tau0 and the source-bound factored intent store; preserve all candidate, slot, role, prompt, tool, speech and decoding semantics. Held for root full preparation, exposure registration and service-boundary admission. This is a new named supply mechanism, not another recovery of the old anchor."
+  "what_this_is": "Prospective broad factored intent supply on the unchanged released TRAIN Fold A roster. Use k60/m60/c2/top_l61/tau0 and the source-bound factored intent store; preserve all candidate, slot, role, prompt, tool, speech and decoding semantics. Held for root full preparation, exposure registration and service-boundary admission. This is a new named supply mechanism, not another recovery of the old anchor.",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-BROAD-FACTORED-TRAIN-FOLD-A-V1/phase-supply.json",
+    "sha256": "a897a52b7ad9820a3c3ce1e60d01e9a77baa4a01eece0fd44b2cd92a6297ef76"
+  }
 }

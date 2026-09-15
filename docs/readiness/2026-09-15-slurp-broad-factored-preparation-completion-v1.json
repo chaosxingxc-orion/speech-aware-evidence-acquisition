@@ -1,0 +1,53 @@
+{
+  "schema": "saea-root-slurp-broad-factored-preparation-completion-v1",
+  "status": "DATA_READY_AWAITING_EXPOSURE_AND_SERVICE_ADMISSION",
+  "experiment": "slurp-native-broad-factored-train-fold-a-v1",
+  "preparation": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-BROAD-FACTORED-TRAIN-FOLD-A-V1/phase-supply.json",
+    "sha256": "a897a52b7ad9820a3c3ce1e60d01e9a77baa4a01eece0fd44b2cd92a6297ef76"
+  },
+  "evidence": {
+    "root-source-review-v1.json": {
+      "relpath": "coordination/slurp-broad-factored-v1/root-source-review-v1.json",
+      "sha256": "dd1b7bc5e396c93c74a62e5a7b9a1173b2630370a6ad65390ff0d809564f1b4c"
+    },
+    "root-full-supply-review-v1.json": {
+      "relpath": "coordination/slurp-broad-factored-v1/root-full-supply-review-v1.json",
+      "sha256": "3b2e70525e2f7f0f8ffccecfc4fe3d1d6e8d9c5f27acf2c850e6405367d741d1"
+    },
+    "root-builder-verification-v1.json": {
+      "relpath": "coordination/slurp-broad-factored-v1/root-builder-verification-v1.json",
+      "sha256": "038ff208a84e044effbd1371a23a5c7ff1bdec79dd3811b13bdb3d833f0c7da4"
+    },
+    "root-engineering-check-v2.json": {
+      "relpath": "coordination/slurp-broad-factored-v1/root-engineering-check-v2.json",
+      "sha256": "8e7f4d4c777ef8d4a28c2f2967b13fd3ce61c3888d77c726d732d98f710dc966"
+    }
+  },
+  "knowledge": {
+    "intent_values": 60,
+    "shared_values": 1,
+    "facets_unchanged": 60,
+    "special_limitations_retained": 14,
+    "original_content_utf8_bytes": 42133,
+    "factored_content_utf8_bytes": 18127
+  },
+  "full_roster": {
+    "rows": 1080,
+    "same_intent_ids_and_order_as_breadth60_audit": true,
+    "shared_guidance_per_row": 1,
+    "mean_intent_values": 58.19444444444444,
+    "max_intent_values": 60
+  },
+  "verification": {
+    "root_related_tests_passed": 156,
+    "engineering_base_check": "PASS",
+    "existing_registry_exception_list_changed": false
+  },
+  "generation_contacts": 0,
+  "fit_contacts": 0,
+  "encoding_contacts": 0,
+  "quality_claim": null,
+  "source_notes": "The source builder policy constant was expressed on one literal line for the existing static registry check. This does not alter its value, compiled snapshot or retrieval output.",
+  "next": "Create final source-bound generation/fit registrations; admit only at a root-controlled service boundary. Actual request fit remains mandatory."
+}

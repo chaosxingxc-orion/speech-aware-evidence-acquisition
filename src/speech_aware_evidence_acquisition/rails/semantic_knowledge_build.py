@@ -17,9 +17,7 @@ from .knowledge import (
 )
 
 INTENT_BOUNDARY_BUILD_POLICY_ID = "saea-authored-intent-boundaries-v1"
-FACTORED_INTENT_BOUNDARY_BUILD_POLICY_ID = (
-    "saea-authored-intent-boundaries-factored-v1"
-)
+FACTORED_INTENT_BOUNDARY_BUILD_POLICY_ID = "saea-authored-intent-boundaries-factored-v1"
 SLOT_CONTRACT_BUILD_POLICY_ID = "saea-authored-slot-contracts-v1"
 SHARED_INTENT_GUIDANCE_VALUE_ID = "intent-boundary:shared-guidance"
 _SHARED_INTENT_GUIDANCE_SCOPE = (
