@@ -92,21 +92,46 @@ bridge and does not establish a meeting-minutes evaluator.
 
 ## On-demand speech tool scope
 
-The current live ASR provider accepts only a full-utterance source of at most 30 seconds.
-1,575 of the 1,593 E21 source windows exceed 30 seconds. Registering the current full-window source
-with that provider is invalid, even though the core's prepared packet itself fits.
+The historical full-utterance tool remains limited to 30 seconds. Since 1,575 of 1,593 E21
+windows exceed that duration, the new opt-in tool saea-tool-live-speech-span-v1 accepts explicit
+start/end seconds relative to the current execution window. The shared provider rounds outward
+to source frames, refuses invalid or over-30-second selections, and binds the source window,
+packet, bytes and requested frames. It does not silently clip or alias a whole-call source.
 
-The required extension is a shared current-execution-unit source selector with explicit bounded
-start/end offsets, not a new answering model or a fixed ASR preprocessing stage. Preserve the
-parent and unit identity, validate that the requested region lies within the original window,
-bind any prepared WAV slice to its source bytes, and record the selected region in the tool
-receipt. The model requests ASR only during Reviewer/Planner execution. CPU preparation may
-prepare legal audio slices but must not pre-run semantic ASR merely to populate a cache.
+Root integrated backend selection, live provider caching, native dispatch and shared runtime
+accounting. Cold selections debit the selected audio duration before neural execution; repeated
+identical unit/frame selections reuse the validated artifact without another ASR contact. Native
+tool receipts bind the actual originating core request, role and execution unit. Historical
+tool wrappers, pinned source bodies and toolkit tables remain unchanged; an opt-in v3 table
+admits the new meeting tool only to Reviewer and Planner.
 
-Complete this specific source-custody seam before admitting live ASR on E21. Existing knowledge
-and task tools have separate configuration capability; they do not prove speech-tool benefit.
-Keep final transcript authority with the frozen core and measure rescues and harms in actual
-traces before retaining any added tool policy.
+A configured synthetic lifecycle now exercises Reviewer-selected ASR, source-bound evidence
+return, Planner-requested revision and final Solver delivery. Two windows of one parent use
+16 simulated core contacts under a 22-contact reservation and two simulated ASR contacts
+covering 0.25 seconds total. The resulting evidence reaches both revised Solver requests.
+No ASR work happens in preprocessing, provider construction or service preparation. Ordered
+parent delivery, OBS tracing and one complete-manifest scoring handoff are verified.
+
+The main regression at 2ba5043b passed 1,042 tests with one skip and eleven existing warnings.
+The final source-scope admission correction at ff7758bc passed 74 focused tests. The latter
+refuses a full-utterance tool on execution windows, or a span tool without them, before model
+contact. Ruff, engineering-base and tool-catalog checks passed. These counts are separate
+overlapping test runs and must not be added as independent coverage.
+
+Actual model responses, neural ASR, capacity endpoints, synthetic packet artifact loading,
+manifest construction and bundle/scorer boundaries remain simulated. This establishes usable
+shared engineering paths, not tool-selection competence, live service fit, a finalized real
+bundle or task-quality improvement. No new GPU, tokenizer, encoder, frozen-core or ASR contact
+occurred. Production integration remains pending the permitted flight boundary.
+
+The ConEC inventory is now confirmed: the 44 public participant files contain Name - Role
+records; the 44 released context files contain token/count rows. They are not prose documents
+from which to infer financial or company facts. The first named stores must preserve exact
+source-grounded names, roles and lexical forms, with deterministic normalization and auditable
+source references. Discriminative values may distinguish listed names using explicit roster
+information; explanatory values may clarify canonical forms and source limitations. Do not
+invent pronunciations, semantic relationships or spoken occurrences. A public roster never
+proves that a name was uttered, and token counts never establish a factual statement.
 
 ## Capacity preparation
 
@@ -130,8 +155,8 @@ geometry within a comparison to conceal a fit failure.
 
 1. Integrate the reviewed, tested shared changes at the allowed flight boundary without
    modifying frozen flight worktrees. The configured synthetic lifecycle is complete.
-2. Build source-bound ConEC store views and the current-window bounded ASR source contract
-   through shared components. Freeze exact role prompts, tool allowlists and iteration bounds.
+2. Build source-bound ConEC store views through shared components. The bounded ASR source
+   contract is CPU-verified; freeze exact role prompts, tool allowlists and iteration bounds.
 3. Freeze matching direct/system configurations, complete-call scoring and paired analysis,
    serving identity and explicit per-unit generation/tool/fit budgets.
 4. Perform registered actual capacity checks and then complete task experiments. Engineering
@@ -164,3 +189,10 @@ All paths below are relative to SPEECHRL_DATA_DIR.
   SHA256 7a7cd5454311384404a45dbb04e86586c0a8287b1f3500e1814dc8b64bb005ad.
 - coordination/e21-native-window-bridge-v1/root-configured-lifecycle-regression-v2.log;
   SHA256 a5202d979acfe56f86002a4954128e68d2511928a55571978153cde640a0a345.
+
+- coordination/e21-native-window-bridge-v1/root-span-lifecycle-checkpoint-v1.json;
+  SHA256 fc2152b65d8962aac5a289f1a4b3b46a93847b51530b640ff9b8ff754fd47b02.
+- coordination/e21-native-window-bridge-v1/root-span-lifecycle-regression-v2.log;
+  SHA256 6b7333804b0d941e156f998426f03e0a17637a3235f1c640fcdaccd13bcb121c.
+- coordination/e21-native-window-bridge-v1/root-span-scope-admission-regression-v1.log;
+  SHA256 99d1f2776ea1396ed3bc162d6d17ea3fd7698f38a4871b778d2f75e04a59a1f9.
