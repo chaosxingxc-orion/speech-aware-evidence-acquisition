@@ -1,0 +1,208 @@
+{
+  "analysis": {
+    "decision_rule": {
+      "relpath": "configs/analysis/a2t-native-role-scope-tools-decision-v1.json",
+      "sha256": "9afe24e006f4d76616e2d2488e66cc44c418a765eb82f40b17b14bf0c00e0143"
+    },
+    "prospective_recipe": {
+      "relpath": "docs/readiness/2026-09-15-a2t-native-role-scope-tools-analysis-recipe-v1.json",
+      "sha256": "a2b9514bb0b09c6af7fe0160a5a07ca2e9a3a991df03a209020ab9ca0293f904"
+    },
+    "status_note": "The immutable analysis recipe retains its historical CPU-prepared GPU-hold text. OWNER-GPU-RESUME-2026-09-15.md supersedes that scheduling hold for this registration; the recipe, decision rule and read-after-seal requirements are unchanged."
+  },
+  "authorization": {
+    "owner_resume": {
+      "relpath": "docs/superpowers/plans/experiment-handoff/OWNER-GPU-RESUME-2026-09-15.md",
+      "sha256": "08441c3aa0ff020cb91c7a07e5a2c840d211445b38b0e77e47d5ab31cc01e8e1"
+    },
+    "queue_order": "The registered SLURP broad factored TRAIN-A flight runs first. This registration grants no authority to launch without the later root admission."
+  },
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 236001,
+    "generation_calls_cap": 60000,
+    "gpu_hours_fit_inclusive": 72.0,
+    "official_complete_scoring_jobs": 2,
+    "speech_audio_seconds_cap": 400000,
+    "system_analytical_tool_calls_cap": 24000
+  },
+  "configuration": {
+    "direct": {
+      "composed_config_hash": "e6624fcb72dd75fecb406c480422e294afa9e8f1da31dd1206e79a72b00f03bc",
+      "fragment_file_sha256": {
+        "baseline": "2ca28cb11cc34fe8672f0121eeff10f7ec01b98615d8fa13f7dec83283cfd816",
+        "dataset": "00064d591240d15a4640cdb824160cd6b88d2e767f1e2570d0743f148ef281ef",
+        "experiment": "bfd61d2bebfaa1746c610a377319013f7f73e2539b6c306711c015584f053bb5",
+        "model": "853a9645e8a47ff94bc34a61dbb12e963ddba0a3dcf06be7b3f2a3a6fcd5fcd6"
+      },
+      "fragments": {
+        "baseline": "a2t-native-role-scope-tools-direct-union4000-v1",
+        "dataset": "audio2tool-org1-union-4000",
+        "experiment": "a2t-native-role-scope-tools-direct-union4000-v1",
+        "model": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1"
+      },
+      "runtime_protocol_hash": "115e97e7c91ed571c5948e427d43210db412ba35463b1c59f36cf7fdb006207a"
+    },
+    "system": {
+      "composed_config_hash": "6bc399088d118373f1b2fe571542dfa6d5c43bd374c87d5f1bd6855e7aec67fa",
+      "fragment_file_sha256": {
+        "baseline": "a539e407df81b125457cefe6aead04be877203a266973793d386563ef54e96c0",
+        "dataset": "00064d591240d15a4640cdb824160cd6b88d2e767f1e2570d0743f148ef281ef",
+        "experiment": "69ca73bb5956401459c2f0974e96f3cd38b831ac6b61eaa80a0e378843946225",
+        "model": "853a9645e8a47ff94bc34a61dbb12e963ddba0a3dcf06be7b3f2a3a6fcd5fcd6"
+      },
+      "fragments": {
+        "baseline": "a2t-native-role-scope-tools-union4000-v1",
+        "dataset": "audio2tool-org1-union-4000",
+        "experiment": "a2t-native-role-scope-tools-union4000-v1",
+        "model": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1"
+      },
+      "runtime_protocol_hash": "8fceec7ed659e0c63d2992d9189502453ab1a95942aadcf73ed7dc26e481d2d3"
+    }
+  },
+  "execution_plans": {
+    "direct_fit": {
+      "attempt_id": "attempt-a2t-native-role-scope-tools-direct-union4000-fit-v1",
+      "carrier_lock_key": "audio2tool",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 8.0,
+      "planned_model_calls": 12001,
+      "planned_speech_audio_seconds": 25000,
+      "protocol_hash": "115e97e7c91ed571c5948e427d43210db412ba35463b1c59f36cf7fdb006207a",
+      "run_id": "SAEA-A2T-NATIVE-ROLE-SCOPE-TOOLS-DIRECT-UNION4000-FIT-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "direct_generation": {
+      "attempt_id": "attempt-a2t-native-role-scope-tools-direct-union4000-generation-v1",
+      "carrier_lock_key": "audio2tool",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 8.0,
+      "planned_model_calls": 4000,
+      "planned_speech_audio_seconds": 25000,
+      "protocol_hash": "115e97e7c91ed571c5948e427d43210db412ba35463b1c59f36cf7fdb006207a",
+      "run_id": "SAEA-A2T-NATIVE-ROLE-SCOPE-TOOLS-DIRECT-UNION4000-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "system_fit": {
+      "attempt_id": "attempt-a2t-native-role-scope-tools-union4000-fit-v1",
+      "carrier_lock_key": "audio2tool",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 64.0,
+      "planned_model_calls": 224000,
+      "planned_speech_audio_seconds": 375000,
+      "protocol_hash": "8fceec7ed659e0c63d2992d9189502453ab1a95942aadcf73ed7dc26e481d2d3",
+      "run_id": "SAEA-A2T-NATIVE-ROLE-SCOPE-TOOLS-UNION4000-FIT-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "system_generation": {
+      "attempt_id": "attempt-a2t-native-role-scope-tools-union4000-generation-v1",
+      "carrier_lock_key": "audio2tool",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 64.0,
+      "planned_model_calls": 56000,
+      "planned_speech_audio_seconds": 375000,
+      "protocol_hash": "8fceec7ed659e0c63d2992d9189502453ab1a95942aadcf73ed7dc26e481d2d3",
+      "run_id": "SAEA-A2T-NATIVE-ROLE-SCOPE-TOOLS-UNION4000-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    }
+  },
+  "failure_policy": "Preserve every contact and stop on failure. No automatic service restart, replay, new recovery, roster change, prompt change, output shortening or geometry change.",
+  "final_execution_source_freeze": {
+    "binding_policy": "Root publishes this external receipt only after committing the admission-bound executable configuration; it is not self-bound here.",
+    "relpath": "coordination/a2t-scope-tools-registration-v1/source-freeze-v1.json",
+    "root": "data"
+  },
+  "method": {
+    "campaign": "a2t-native-role-scope-tools-union4000-v1",
+    "direct_experiment": "a2t-native-role-scope-tools-direct-union4000-v1",
+    "full_shared_harness": true,
+    "system_experiment": "a2t-native-role-scope-tools-union4000-v1"
+  },
+  "pending_root_bindings": [
+    "Final clean source-freeze receipt after the admission-bound executable commit.",
+    "Exclusive generation lease under the expected resident session before contact.",
+    "Complete direct whole-roster actual fit before direct generation.",
+    "Native actual-contact fit before every realized system request."
+  ],
+  "population": {
+    "count": 4000,
+    "dataset_fragment": "audio2tool-org1-union-4000",
+    "per_tier": 500,
+    "roster_audio_seconds": 23418.083083,
+    "roster_changed": false,
+    "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+    "system_maximum_speech_presentations_seconds": 327853.163162,
+    "tiers": 8
+  },
+  "prepared_sources": {
+    "parameter_meaning": {
+      "release": {
+        "relpath": "knowledge/audio2tool/parameter-meaning-v1/release.json",
+        "sha256": "7bafef2137bbbf9b44baebf0beb70570422d496729f7846ea99a22b6708a4373"
+      },
+      "snapshot": {
+        "file_sha256": "eaee6a2bc4c71a410bcccbfb128bdb58b18a5854bc3e833ad2b631995c650d67",
+        "relpath": "prepared/SAEA-A2T-PARAMETER-MEANING-KNOWLEDGE-V1/knowledge-snapshot.json",
+        "semantic_sha256": "7084f9c56b361ab8f38d2e0a6864ccb2d05bcc053dc70441de263b410ca6041f"
+      }
+    },
+    "speech_packet_promotion": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-NATIVE-SYSTEM-PACKETS-V1/promotion.json",
+      "sha256": "720d81f63a1923f19893c0ee171e1ab7b47f9a946c1e62a06bdddd839243de8a"
+    },
+    "tool_activation_scope": {
+      "release": {
+        "relpath": "knowledge/audio2tool/tool-activation-scope-v1/release.json",
+        "sha256": "fb6b6298921f843fe55400d9f9f72627516f95b08da189563a6ef5942c17aaef"
+      },
+      "snapshot": {
+        "file_sha256": "dc10e235d99893fdbfb9f1e9e09bdb5b04346ccccd088901ad81ecde3ea48fae",
+        "relpath": "prepared/SAEA-A2T-ACTIVATION-SCOPE-KNOWLEDGE-V1/knowledge-snapshot.json",
+        "semantic_sha256": "17d22d2f77e0916527f4662d93c335d191e0f87504e68d1e735b0f79f5934f73"
+      }
+    }
+  },
+  "registered_at_utc": "2026-09-15T17:20:03.261464+00:00",
+  "registered_by": "registration-agent",
+  "root_admission": {
+    "decision_id": "a2t-native-role-scope-tools-union4000-admission-v1",
+    "relpath": "coordination/a2t-scope-tools-registration-v1/admission-v1.json",
+    "sha256": "825ad8ccd90e91a448b8938e13e46e674364cbdc9d49be874762935dd66de5c6",
+    "state": "DECIDED_AND_BOUND_IN_BOTH_EXPERIMENTS"
+  },
+  "schema": "saea-audio2tool-native-role-scope-tools-full4000-protocol-v1",
+  "scoring": {
+    "complete_manifest_only": true,
+    "deferred_until_seal": true,
+    "direct": 1,
+    "per_sample": true,
+    "system": 1
+  },
+  "serving": {
+    "expected_session_id": "serving-a2t-native-role-scope-tools-np3-max2048-v1",
+    "feature_cache": "/home/chao/feat-cache/a2t-native-system-4000-packets-04ccc72a",
+    "geometry": {
+      "max_output_tokens": 2048,
+      "slot_tokens": 32768,
+      "slots": 3,
+      "total_context_tokens": 98304
+    },
+    "mmproj": "absent",
+    "shared_by_arms": true
+  },
+  "status": "ROOT_ADMITTED_PENDING_FINAL_SOURCE_FREEZE"
+}

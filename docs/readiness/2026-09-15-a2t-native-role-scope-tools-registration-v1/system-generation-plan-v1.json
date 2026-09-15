@@ -1,0 +1,28 @@
+{
+  "cell": "a2t-native-role-scope-tools-union4000-v1",
+  "execution_plan": {
+    "attempt_id": "attempt-a2t-native-role-scope-tools-union4000-generation-v1",
+    "carrier_lock_key": "audio2tool",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 64.0,
+    "planned_model_calls": 56000,
+    "planned_speech_audio_seconds": 375000,
+    "protocol_hash": "8fceec7ed659e0c63d2992d9189502453ab1a95942aadcf73ed7dc26e481d2d3",
+    "run_id": "SAEA-A2T-NATIVE-ROLE-SCOPE-TOOLS-UNION4000-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-a2t-native-role-scope-tools-np3-max2048-v1",
+  "experiment": "a2t-native-role-scope-tools-union4000-v1",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-15-a2t-native-role-scope-tools-registration-v1/protocol-v1.json",
+    "sha256": "36455a732e1ed91907a79219e27f79132d4ecf16543448874fc5948246664858"
+  },
+  "registered_at_utc": "2026-09-15T17:20:03.261464+00:00",
+  "registration_state": "ROOT ADMITTED; final source freeze, matching service, actual fit and lease remain mandatory.",
+  "root_registration_required": false,
+  "schema": "saea-registered-generation-plan-v1",
+  "scoring": "One first complete official score after successful seal; no partial score."
+}
