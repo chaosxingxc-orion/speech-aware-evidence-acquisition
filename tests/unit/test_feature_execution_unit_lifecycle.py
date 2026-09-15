@@ -2,6 +2,7 @@
 from dataclasses import dataclass, replace
 import hashlib
 import json
+import math
 from pathlib import Path
 
 import pytest
@@ -32,6 +33,7 @@ from test_llama_server_transport import (
     _fake_inference_session,
     _fake_runtime_receipt,
     _live,
+    _MODEL_FILES,
     _spawn_live_matching_process,  # noqa: F401
 )
 from test_native_episode_runner import _wire_response
@@ -65,21 +67,22 @@ class _WindowAdapter(TaskAdapter):
         return "Transcribe the registered speech window."
 
     def gold(self, sample):
-        return None
+        raise AssertionError("generation must not read gold")
 
     def score_response(self, gold, response):
-        return {}
+        raise AssertionError("generation must not score")
 
 
 @pytest.mark.parametrize(
-    ("policy", "planned_calls"),
-    (("phase-direct-only-v1", 2), ("phase-native-review-revise-v1", 8)),
+    ("policy", "planned_calls", "actual_contacts"),
+    (("phase-direct-only-v1", 2, 2), ("phase-native-review-revise-v1", 22, 8)),
 )
 def test_configured_feature_units_complete_shared_lifecycle(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
     policy: str,
     planned_calls: int,
+    actual_contacts: int,
 ):
     """The real configured path must not require a fake whole-parent packet."""
     from speech_aware_evidence_acquisition.core import preparation_window_packets as packets_module
@@ -163,17 +166,28 @@ def test_configured_feature_units_complete_shared_lifecycle(
         baseline.update(
             native_episode={
                 "schema": "saea-native-episode-config-v1", "episode_id": "configured-window-proof",
-                "max_revisions": 0,
+                "max_revisions": 1,
                 "actions": {"accept": "ACCEPT", "revise": "REVISE", "acquire": "ACQUIRE"},
-                "roles": {role: {"phase_id": role, "max_iterations": 1} for role in phases},
+                "roles": {
+                    role: {
+                        "phase_id": role,
+                        "max_iterations": 3 if role == "reviewer" else 1,
+                    }
+                    for role in phases
+                },
             },
-            native_contact_fit={"run_id": f"{run_id}-FIT", "attempt_id": "attempt-fit", "contact_cap": 8},
+            native_contact_fit={
+                "run_id": f"{run_id}-FIT",
+                "attempt_id": "attempt-fit",
+                "contact_cap": 22,
+            },
         )
     _write_configs(
         repo, arm="speech-feature-query", policy=policy, carrier_lock_key="fake-carrier",
         model_extra={
             "transport": "llama-server", "base_url": _base_url(),
             "runtime_receipt": "receipts/inference.json", "prompt_order": "speech-query-prefix-v2",
+            "preserve_wire_responses": policy == "phase-native-review-revise-v1",
             "speech_feature_root": str(feature_root),
             "decoding_params": {"temperature": 0, "max_tokens": 64},
             "server_args": [], "server_env": {
@@ -183,7 +197,11 @@ def test_configured_feature_units_complete_shared_lifecycle(
         },
         baseline_extra=baseline,
         execution_plan_overrides={
-            "planned_model_calls": planned_calls, "planned_speech_audio_seconds": 3,
+            "planned_model_calls": planned_calls,
+            "planned_speech_audio_seconds": math.ceil(
+                sum(unit.slice_record.audio_seconds for unit in attached.units)
+                * (actual_contacts // len(attached.units))
+            ),
         },
     )
     for phase in phases:
@@ -199,14 +217,15 @@ def test_configured_feature_units_complete_shared_lifecycle(
         request = json.loads(body)
         rendered.append(request)
         wire_text = json.dumps(request, sort_keys=True)
+        current_instruction = json.dumps(request["messages"][-1], sort_keys=True)
         window = "one" if "window/0" in wire_text else "two"
-        if "Complete the planner role" in wire_text:
+        if "Complete the planner role" in current_instruction:
             text = "ACCEPT"
-        elif "Complete the solver role" in wire_text:
+        elif "Complete the solver role" in current_instruction:
             text = f"solver window {window}"
-        elif "Complete the reviewer role" in wire_text:
+        elif "Complete the reviewer role" in current_instruction:
             text = f"reviewer window {window}"
-        elif "Complete the perception role" in wire_text:
+        elif "Complete the perception role" in current_instruction:
             text = f"perception window {window}"
         else:
             text = f"direct window {window}"
@@ -217,10 +236,21 @@ def test_configured_feature_units_complete_shared_lifecycle(
             values["base_url"], data_root, session, runtime_receipt, runtime_root,
             post=post, prompt_order=values["prompt_order"],
             feature_root=Path(values["speech_feature_root"]),
+            preserve_wire_responses=values["preserve_wire_responses"],
         )
 
+    decoder = replace(_MODEL_FILES[0], sha256="d" * 64)
+
     def session_starter(**kwargs):
-        return _fake_inference_session(host=kwargs["host"], port=kwargs["port"])
+        return replace(
+            _fake_inference_session(host=kwargs["host"], port=kwargs["port"]),
+            model_files=(decoder,),
+        )
+
+    def runtime_receipt():
+        receipt = _fake_runtime_receipt()
+        receipt["gguf_files"][0] = {"path": decoder.path, "sha256": decoder.sha256}
+        return receipt
 
     manifest_checks = []
 
@@ -233,7 +263,7 @@ def test_configured_feature_units_complete_shared_lifecycle(
             for row in (json.loads(line) for line in trace_path.read_text().splitlines())
         }
         _verify_outputs_trace_binding(rows, traces)
-        assert _minimum_model_calls_from_trace(traces) == planned_calls
+        assert _minimum_model_calls_from_trace(traces) == actual_contacts
         assert len(rows) == 1 and rows[0]["sample_id"] == parent.sample_id
         assert rows[0]["text"] == (
             "direct window one direct window two"
@@ -250,7 +280,7 @@ def test_configured_feature_units_complete_shared_lifecycle(
             "run_id": run_id,
             "outputs_sha256": hashlib.sha256(result.outputs_path.read_bytes()).hexdigest(),
             "trace_manifest_hash": result.trace_manifest_hash,
-            "model_contacts": planned_calls,
+            "model_contacts": actual_contacts,
         }, sort_keys=True), encoding="utf-8")
         manifest_checks.append(path)
         return path
@@ -283,10 +313,11 @@ def test_configured_feature_units_complete_shared_lifecycle(
         run_id=run_id, attempt_id="attempt-lifecycle", runtime_root=_live["runtime_root"],
         adapter_factory=lambda _lock, _root: _WindowAdapter(samples),
         gate_factory=lambda *_args, **_kwargs: _FakeGate(), lock={},
+        carrier_root_resolver=lambda _lock, _key, _root: world.carrier_root,
         session_starter=session_starter,
         session_stopper=_fake_session_stopper,
         serving_session_finder=lambda _root: None,
-        runtime_receipt_loader=lambda _path: _fake_runtime_receipt(),
+        runtime_receipt_loader=lambda _path: runtime_receipt(),
         transport_factory=transport_factory,
         manifest_builder=manifest_builder,
         bundle_verifier=_fake_bundle_verifier,
@@ -301,10 +332,10 @@ def test_configured_feature_units_complete_shared_lifecycle(
     assert runtime.execution_unit_roster() == attached
     runtime.serve()
     phase_receipt = runtime.run_phases(workers=1)
-    assert phase_receipt["contact_count"] == planned_calls
+    assert phase_receipt["contact_count"] == actual_contacts
     runtime.seal()
     runtime.score()
-    assert len(rendered) == planned_calls
+    assert len(rendered) == actual_contacts
     assert len(score_jobs) == 1
     assert runtime.receipts.completed_stages() == (
         "preflight", "preprocess", "serve", "run_phases", "seal", "score",
