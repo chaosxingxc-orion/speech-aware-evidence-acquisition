@@ -200,4 +200,4 @@ All paths below are relative to SPEECHRL_DATA_DIR.
 
 ## Complete configuration successor
 
-The role prompts, matching direct/native cells, local ASR plan and prospective analysis are now prepared. Read [the complete held configuration](2026-09-15-e21-native-window-system-v1/README.md). The full actual source/config validation and 509-test CPU regression are complete; real service fit, task quality, postseal native window-reader proof and GPU admission remain pending. This successor does not release the owner hold.
+The role prompts, matching direct/native cells, local ASR plan and prospective analysis are now prepared. Read [the complete held configuration](2026-09-15-e21-native-window-system-v1/README.md). The full actual source/config validation and 509-test CPU regression are complete; the subsequent native saved-score window-reader proof passes 263 focused tests; real service fit, task quality and GPU admission remain pending. This successor does not release the owner hold.
