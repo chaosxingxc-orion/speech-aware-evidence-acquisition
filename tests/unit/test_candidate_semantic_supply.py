@@ -137,7 +137,13 @@ def _store(tmp_path, store_id, role, snapshot, source):
     }
 
 
-def _config(tmp_path, *, rows=None, inventory=("alpha", "beta", "gamma", "delta")):
+def _config(
+    tmp_path,
+    *,
+    rows=None,
+    inventory=("alpha", "beta", "gamma", "delta"),
+    max_candidates=3,
+):
     rows = rows or (
         _slot_row("shared", ("alpha", "beta")),
         _slot_row("alpha_one", ("alpha",)),
@@ -171,9 +177,9 @@ def _config(tmp_path, *, rows=None, inventory=("alpha", "beta", "gamma", "delta"
             "rank_policy": "saea-ranked-candidate-round-robin-v1",
             "fuse_policy": "saea-candidate-semantic-passthrough-v1",
             "candidate_state_phase": "hypotheses",
-            "max_candidates": 3,
+            "max_candidates": max_candidates,
             "max_values_per_candidate": 1,
-            "max_total_values": 3,
+            "max_total_values": max_candidates,
         }
     }
     return {"knowledge_stores": stores}, inventory
@@ -278,6 +284,42 @@ def test_ranked_candidates_select_released_cards_round_robin_without_dumping_cat
         "slot-contracts::slot-contract:unused"
         not in supply.fusion_decision.selected_value_ids
     )
+
+
+def test_five_candidates_flow_through_shared_supply_without_catalog_dump(tmp_path):
+    inventory = ("alpha", "beta", "gamma", "delta", "epsilon")
+    rows = tuple(_slot_row(f"{intent}_one", (intent,)) for intent in inventory)
+    config, legal = _config(
+        tmp_path,
+        rows=rows,
+        inventory=inventory,
+        max_candidates=5,
+    )
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding,
+        program=_program(),
+        data_root=tmp_path,
+        legal_candidate_ids=legal,
+    )
+    supply = router.automatic_for_phase(
+        "solve", _context(binding, _artifact("s1", inventory))
+    )
+    assert supply.fusion_decision.selected_value_ids == tuple(
+        f"slot-contracts::slot-contract:{intent}_one" for intent in inventory
+    )
+
+    config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"][
+        "max_candidates"
+    ] = 6
+    invalid_binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    with pytest.raises(CandidateSemanticSupplyError, match="legal candidate"):
+        build_knowledge_store_supply(
+            invalid_binding,
+            program=_program(),
+            data_root=tmp_path,
+            legal_candidate_ids=legal,
+        )
     assert supply.rank_result.snapshot_sha256 == binding.binding_sha256
 
 
@@ -906,6 +948,52 @@ def test_bounded_projection_is_shared_by_treatment_and_control(tmp_path, mode):
     assert len(audit["candidate_projection"]["raw_positions"]) == 3
     assert source.content == raw
     assert router.receipt["candidate_supply"]["specs"][0]["projection_policy"] == spec["projection_policy"]
+
+
+def test_configurable_projection_flows_five_raw_candidates_through_supply(tmp_path):
+    inventory = ("alpha", "beta", "gamma", "delta", "epsilon")
+    rows = tuple(_slot_row(f"{intent}_one", (intent,)) for intent in inventory)
+    config, legal = _config(
+        tmp_path, rows=rows, inventory=inventory, max_candidates=5
+    )
+    spec = config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"]
+    spec.update(
+        compact_source_phase="hypotheses",
+        projection_policy=(
+            "configurable-bounded-first-occurrence-distinct-"
+            "slurp-intent-hypotheses-v1"
+        ),
+    )
+    source = _artifact(
+        "s1", ("alpha", "beta", "gamma", "delta", "epsilon")
+    )
+    raw = json.dumps({"candidates": json.loads(source.content)["candidates"]})
+    source = replace(
+        source,
+        content=raw,
+        source_response_sha256=hashlib.sha256(raw.encode()).hexdigest(),
+    )
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path,
+        legal_candidate_ids=legal,
+    )
+    supply = router.automatic_for_phase("solve", _context(binding, source))
+    assert len(supply.fusion_decision.selected_value_ids) == 5
+    audit = next(iter(router.receipt["candidate_selections"].values()))
+    assert audit["candidate_ids"] == list(inventory)
+    assert audit["candidate_projection"]["projection_policy_id"] == (
+        spec["projection_policy"]
+    )
+
+    spec["projection_policy"] = (
+        "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1"
+    )
+    with pytest.raises(CandidateSemanticSupplyError, match="projection_policy"):
+        build_knowledge_store_supply(
+            load_knowledge_store_binding(config, data_root=tmp_path),
+            program=_program(), data_root=tmp_path, legal_candidate_ids=legal,
+        )
 
 
 @pytest.mark.parametrize("mode,expected", [

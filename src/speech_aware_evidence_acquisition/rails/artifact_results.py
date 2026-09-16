@@ -150,6 +150,7 @@ def build_slurp_hypothesis_artifact_validator(
         )
     if contract.get("id") != SLURP_HYPOTHESIS_CONTENT_ID:
         raise ArtifactContentError("SLURP hypothesis content contract id is invalid")
+    ids, source_sha = _source_catalog(contract, data_root)
     maximum = contract.get("max_candidates")
     minimum = contract.get("min_candidates", 1)
     if (
@@ -157,10 +158,11 @@ def build_slurp_hypothesis_artifact_validator(
         or not isinstance(minimum, int)
         or isinstance(maximum, bool)
         or not isinstance(maximum, int)
-        or not 1 <= minimum <= maximum <= 3
+        or not 1 <= minimum <= maximum <= len(ids)
     ):
         raise ArtifactContentError(
-            "SLURP hypothesis candidate bounds must satisfy 1 <= min <= max <= 3"
+            "SLURP hypothesis candidate bounds must satisfy "
+            "1 <= min <= max <= the legal intent count"
         )
     max_distinction_chars = contract.get("max_distinction_chars")
     if max_distinction_chars is not None and (
@@ -185,7 +187,6 @@ def build_slurp_hypothesis_artifact_validator(
             raise ArtifactContentError(
                 f"SLURP hypothesis output bound {field} must be an integer from 0 to 32"
             )
-    ids, source_sha = _source_catalog(contract, data_root)
     return SlurpHypothesisArtifactValidator(
         ids,
         minimum,

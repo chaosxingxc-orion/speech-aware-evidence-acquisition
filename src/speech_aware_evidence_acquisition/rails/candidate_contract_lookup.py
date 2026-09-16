@@ -15,7 +15,9 @@ from typing import Protocol, Sequence, runtime_checkable
 TOOL_ID = "saea-tool-candidate-contract-lookup-v1"
 SCHEMA = "saea-candidate-contract-lookup-v1"
 EVIDENCE_STATUS = "task-contract"
-MAX_CANDIDATE_IDS = 32
+# The task-facing tools retain their separately configured request limits.
+# This shared result model must also represent a complete SLURP legal inventory.
+MAX_CANDIDATE_IDS = 64
 
 
 class CandidateContractLookupError(ValueError):

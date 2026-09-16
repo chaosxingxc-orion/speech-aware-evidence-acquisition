@@ -32,12 +32,15 @@ from ..data.lock import load_lock
 from ..data.slurp import load_slurp_split
 from ..data.splits import prefixed, split_identity_hash
 from ..rails.phase_material import sealed_states_from_manifest
+from ..rails.candidate_contract_lookup import MAX_CANDIDATE_IDS
 from ..rails.hashing import content_hash
 from ..rails.knowledge import AgentStateArtifact
 from ..rails.errors import RailsError
 from ..rails.slurp_candidate_contracts import build_slurp_candidate_contract_provider
 from ..rails.slurp_intent_hypotheses import (
+    BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_IDS,
     BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
     parse_slurp_intent_hypothesis_state,
 )
 from ..reproduction.slurp_scoring import parse_slu_response
@@ -160,10 +163,11 @@ def _source_candidate_width(
                 or not isinstance(raw_range, Sequence)
                 or len(raw_range) != 2
                 or any(isinstance(value, bool) or not isinstance(value, int) for value in raw_range)
-                or not 1 <= raw_range[0] <= raw_range[1] <= 3
+                or not 1 <= raw_range[0] <= raw_range[1] <= MAX_CANDIDATE_IDS
             ):
                 raise SlurpTopNAnalysisError(
-                    "distinct source candidate_count_range must be [1..3, low <= high]"
+                    "distinct source candidate_count_range must be positive, "
+                    "ordered, and within the shared candidate bound"
                 )
             if raw_width is None:
                 raw_width = raw_range[1]
@@ -174,11 +178,11 @@ def _source_candidate_width(
     if isinstance(raw_width, bool) or not isinstance(raw_width, int) or raw_width < 1:
         raise SlurpTopNAnalysisError(
             "candidate_count must be a positive integer"
-            + (" from 1 through 3 for a distinct source" if distinct else "")
+            + (" within the shared candidate bound for a distinct source" if distinct else "")
         )
-    if distinct and raw_width > 3:
+    if distinct and raw_width > MAX_CANDIDATE_IDS:
         raise SlurpTopNAnalysisError(
-            "candidate_count must be a positive integer from 1 through 3 for a distinct source"
+            "candidate_count exceeds the shared candidate bound"
         )
     if distinct and raw_range is not None and not raw_range[0] <= raw_width <= raw_range[1]:
         raise SlurpTopNAnalysisError(
@@ -348,6 +352,10 @@ def _source_rows(binding, bundle, full_ids, *, state_loader, distinct=False):
     except Exception as error:
         raise SlurpTopNAnalysisError(f"source candidate catalog validation failed: {error}") from error
     width = _source_candidate_width(binding, distinct=distinct)
+    if width > len(validator.legal_intent_ids):
+        raise SlurpTopNAnalysisError(
+            "source candidate width exceeds the legal intent inventory"
+        )
     rows = []
     for sample_id in full_ids:
         try:
@@ -790,7 +798,13 @@ def _native_system_rows(
         not isinstance(producer, str) or not producer
         or source_phase != "perception"
         or not isinstance(selection_phase, str) or not selection_phase
-        or projection_policy != BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+        or projection_policy not in BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_IDS
+        or (
+            width > 3
+            and projection_policy
+            != CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+        )
+        or width > len(legal_ids)
         or phases.get("policy") != producer
     ):
         raise SlurpTopNAnalysisError("native source phase or projection policy binding mismatch")
@@ -1629,10 +1643,17 @@ def run_raw_source(
     ):
         if release_doc.get(key) != binding:
             raise SlurpTopNAnalysisError(f"source quality read registration differs: {key}")
-    width = raw.get("max_candidates", 3)
-    if isinstance(width, bool) or not isinstance(width, int) or not 1 <= width <= 3:
-        raise SlurpTopNAnalysisError("raw max_candidates must be an integer from 1 through 3")
     legal_ids = _raw_legal_ids(raw.get("legal_intent_ids"))
+    width = raw.get("max_candidates", 3)
+    if (
+        isinstance(width, bool)
+        or not isinstance(width, int)
+        or width < 1
+        or (width > 3 and width > len(legal_ids))
+    ):
+        raise SlurpTopNAnalysisError(
+            "raw max_candidates must fit the legal intent inventory"
+        )
     rows = []
     for sample_id in full_ids:
         contact = verified_source.contacts_by_sample_id[sample_id]
@@ -1737,9 +1758,18 @@ def _observed_width_reports(
     candidate_width: int,
 ) -> dict[str, dict[str, object]]:
     """Aggregate descriptive subgroups by observed distinct candidate width."""
-    if isinstance(candidate_width, bool) or not isinstance(candidate_width, int) or not 1 <= candidate_width <= 3:
-        raise SlurpTopNAnalysisError("observed width reports require candidate_width from 1 through 3")
-    groups: dict[int, list[SourceCandidateRow]] = {width: [] for width in (1, 2, 3)}
+    if (
+        isinstance(candidate_width, bool)
+        or not isinstance(candidate_width, int)
+        or not 1 <= candidate_width <= MAX_CANDIDATE_IDS
+    ):
+        raise SlurpTopNAnalysisError(
+            "observed width reports require a positive candidate_width "
+            "within the shared candidate bound"
+        )
+    groups: dict[int, list[SourceCandidateRow]] = {
+        width: [] for width in range(1, candidate_width + 1)
+    }
     for row in source_rows:
         observed = len(set(row.candidate_ids))
         if observed not in groups or observed > candidate_width:

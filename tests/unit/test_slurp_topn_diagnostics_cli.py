@@ -790,16 +790,19 @@ def test_verified_entity_adapter_refuses_score_roster_mismatch():
         )
 
 
-def test_distinct_candidate_range_is_bounded():
+def test_distinct_candidate_range_accepts_configured_five_and_is_bounded():
     assert _select_source_binding(
-        {"shared_distinct_source": {"candidate_count_range": [1, 3]}}
+        {"shared_distinct_source": {"candidate_count_range": [1, 5]}}
     )[2] is True
+    from speech_aware_evidence_acquisition.analysis.slurp_topn_diagnostics_cli import (
+        _source_candidate_width,
+    )
+    assert _source_candidate_width(
+        {"candidate_count_range": [1, 5]}, distinct=True
+    ) == 5
     with pytest.raises(SlurpTopNAnalysisError, match="candidate_count_range"):
-        from speech_aware_evidence_acquisition.analysis.slurp_topn_diagnostics_cli import (
-            _source_candidate_width,
-        )
         _source_candidate_width(
-            {"candidate_count_range": [1, 4]}, distinct=True
+            {"candidate_count_range": [5, 4]}, distinct=True
         )
 
 
@@ -815,19 +818,21 @@ def test_verified_entity_adapter_leaves_missing_sufficient_counts_unavailable():
     ) == {"s1": None}
 
 
-def test_observed_width_reports_cover_one_two_three_and_reject_mismatch():
+def test_observed_width_reports_cover_configured_widths_and_reject_mismatch():
     source = (
         SourceCandidateRow("s1", ("a",)),
         SourceCandidateRow("s2", ("a", "b")),
-        SourceCandidateRow("s3", ("a", "b", "c")),
+        SourceCandidateRow("s3", ("a", "b", "c", "d", "e")),
     )
     refs = tuple(ReferenceIntentRow(sid, "a") for sid in ("s1", "s2", "s3"))
     branches = {"closed_joint": tuple(
         BranchOutcomeRow(sid, "a", False, None) for sid in ("s1", "s2", "s3")
     )}
-    reports = _observed_width_reports(source, refs, branches, candidate_width=3)
-    assert set(reports) == {"1", "2", "3"}
-    assert [reports[str(width)]["source"]["sample_count"] for width in (1, 2, 3)] == [1, 1, 1]
+    reports = _observed_width_reports(source, refs, branches, candidate_width=5)
+    assert set(reports) == {"1", "2", "5"}
+    assert [
+        reports[str(width)]["source"]["sample_count"] for width in (1, 2, 5)
+    ] == [1, 1, 1]
     assert reports["2"]["candidate_width"] == 2
 
     with pytest.raises(SlurpTopNAnalysisError, match="width"):
@@ -835,5 +840,5 @@ def test_observed_width_reports_cover_one_two_three_and_reject_mismatch():
             (SourceCandidateRow("s1", ("a", "b", "c", "d")),),
             (ReferenceIntentRow("s1", "a"),),
             {"closed_joint": (BranchOutcomeRow("s1", "a", False, None),)},
-            candidate_width=4,
+            candidate_width=3,
         )
