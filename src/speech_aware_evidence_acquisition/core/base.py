@@ -130,6 +130,10 @@ PHASE_STATE_VIEWS = Registry("phase state view")
 PHASE_PLANNERS = Registry("phase planner")
 # Consumer-specific source-bound state views; no controller or knowledge acquisition.
 ROLE_CONTEXT_COMPILERS = Registry("role context compiler")
+# Native request projections are bounded, pure wire transformations applied
+# only after the framework history has been validated. Config names the
+# projection explicitly; absent means the historical request bytes.
+NATIVE_EVIDENCE_PROJECTIONS = Registry("native evidence projection")
 
 
 # ---------------------------------------------------------------------------

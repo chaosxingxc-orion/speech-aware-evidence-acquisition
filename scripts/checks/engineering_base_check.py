@@ -77,6 +77,7 @@ ADAPTER_LINE_BUDGET = 260
 # similarly-named local variable) is exactly the fragmentation this check
 # exists to catch, and must NOT be mistaken for a real registration.
 CANONICAL_REGISTRY_FILES = (
+    f"{PACKAGE_ROOT}/core/model/native_evidence_projection.py",
     f"{PACKAGE_ROOT}/core/policies.py",
     f"{PACKAGE_ROOT}/core/evidence.py",
     f"{PACKAGE_ROOT}/core/scorers.py",
@@ -115,6 +116,7 @@ CANONICAL_REGISTRY_FILES = (
 TOP_LEVEL_STRING_KEYS = {
     "policy": ("POLICIES", "AGENT_CONTROLLERS"),
     "evidence_source": ("EVIDENCE_SOURCES",),
+    "native_evidence_projection": ("NATIVE_EVIDENCE_PROJECTIONS",),
 }
 TOP_LEVEL_LIST_KEY = ("scorers", "SCORERS")
 

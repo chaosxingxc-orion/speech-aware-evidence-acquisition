@@ -320,6 +320,9 @@ def test_regex_extraction_agrees_with_package_import():
         # docstring says why), so it is read from there below.
         from speech_aware_evidence_acquisition.rails import tools as _tools
         from speech_aware_evidence_acquisition.rails import phase_planner as _planner  # noqa: F401
+        from speech_aware_evidence_acquisition.core.model import (
+            native_evidence_projection as _native_evidence_projection,  # noqa: F401
+        )
     except ImportError as exc:
         pytest.skip(f"package not importable in this environment: {exc}")
 
@@ -328,6 +331,7 @@ def test_regex_extraction_agrees_with_package_import():
 
     import_registered = {
         "POLICIES": set(core_base.POLICIES.names()),
+        "NATIVE_EVIDENCE_PROJECTIONS": set(core_base.NATIVE_EVIDENCE_PROJECTIONS.names()),
         "EVIDENCE_SOURCES": set(core_base.EVIDENCE_SOURCES.names()),
         "SCORERS": set(core_base.SCORERS.names()),
         "AGENT_CONTROLLERS": set(core_base.AGENT_CONTROLLERS.names()),

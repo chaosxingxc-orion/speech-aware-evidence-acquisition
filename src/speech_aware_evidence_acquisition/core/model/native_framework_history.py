@@ -224,11 +224,28 @@ def validate_native_framework_contact(payload):
     return contract, selected, source_ids
 
 
-def project_native_framework_history(*, payload, messages, state_texts):
+def project_native_framework_history(
+    *, payload, messages, state_texts, evidence_projection=None, receipt_sink=None,
+):
     """Return a validated full wire sequence, or None for the historical path."""
     validated = validate_native_framework_contact(payload)
     if validated is None:
+        if evidence_projection is not None:
+            _refuse("evidence projection requires the native framework contract")
         return None
+    projector = None
+    if evidence_projection is not None:
+        if not callable(receipt_sink):
+            _refuse("evidence projection requires a receipt sink")
+        from ..base import CoreError, NATIVE_EVIDENCE_PROJECTIONS
+        from . import native_evidence_projection  # noqa: F401
+
+        if not isinstance(evidence_projection, str) or not evidence_projection:
+            _refuse("evidence projection must name a registered policy")
+        try:
+            projector = NATIVE_EVIDENCE_PROJECTIONS.resolve(evidence_projection)
+        except CoreError as exc:
+            raise FrozenCoreError("native framework history: unknown evidence projection") from exc
     contract, selected, source_ids = validated
     history = payload["history"]
     framework = contract["messages"]
@@ -277,9 +294,11 @@ def project_native_framework_history(*, payload, messages, state_texts):
         if not groups or groups[-1][0] != source_id:
             groups.append((source_id, []))
         groups[-1][1].append(entry)
+    local_results = []
     for _source_id, group in groups:
         rendered.append(copy.deepcopy(group[0][2]))
         for document, _call, _assistant, packets in group:
+            local_results.append((len(rendered), document))
             rendered.append(native_tool_result_message(document))
             for packet in packets:
                 prior_packet = packet_by_id.setdefault(packet["packet_id"], packet)
@@ -288,4 +307,9 @@ def project_native_framework_history(*, payload, messages, state_texts):
             parts = _speech_parts(document, packets)
             if parts:
                 rendered.append({"role": "user", "content": parts})
+    if projector is not None:
+        rendered, receipt = projector(
+            payload=payload, messages=rendered, local_results=tuple(local_results),
+        )
+        receipt_sink(receipt)
     return rendered, list(packet_by_id.values())

@@ -39,6 +39,17 @@ def set_current_trace_buffer(buffer: object | None) -> None:
     _CURRENT_TRACE_BUFFER.set(buffer)
 
 
+def get_current_trace_buffer() -> object | None:
+    """Return the calling task's active buffer without falling through.
+
+    Request-shaping code uses this accessor when an opt-in transformation
+    must be recorded before dispatch. Returning ``None`` is deliberate: it
+    lets that path fail closed instead of silently writing to another sink.
+    """
+
+    return _CURRENT_TRACE_BUFFER.get()
+
+
 class TraceBuffer:
     """One sample's in-memory trace: same ``emit`` contract as TraceSink
     (eager validation included — a malformed record fails at emit time, not

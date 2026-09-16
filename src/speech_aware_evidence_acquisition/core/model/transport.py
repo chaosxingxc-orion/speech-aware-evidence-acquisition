@@ -73,7 +73,8 @@ from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
 from ...contracts.identifiers import CONSTRUCTION_VISIBLE_FIELD
-from ..base import TRANSPORTS
+from ..base import CoreError, NATIVE_EVIDENCE_PROJECTIONS, TRANSPORTS
+from ..preparation import canonical_bytes
 from ..session import (
     SessionError,
     SessionReceipt,
@@ -81,6 +82,7 @@ from ..session import (
     require_loopback,
 )
 from . import FrozenCoreError
+from . import native_evidence_projection as _native_evidence_projection_registration  # noqa: F401
 from .native_history import project_native_history
 from .paths import _normalized_relative_path, _resolve_confined
 from .prepared_feature_cache import PreparedFeatureCacheGuard
@@ -432,6 +434,7 @@ class LlamaServerTransport:
         omit_system_message: bool = False,
         preserve_wire_responses: bool = False,
         feature_cache_guard: PreparedFeatureCacheGuard | None = None,
+        native_evidence_projection: str | None = None,
     ) -> None:
         # Prompt ordering is part of the request's identity: the bytes the
         # model sees change with it, so it is a MODEL-CONFIG field (inside the
@@ -466,6 +469,25 @@ class LlamaServerTransport:
                 f"{', '.join(repr(item) for item in sorted(_SPEECH_FEATURE_PROMPT_ORDERS))}"
             )
         self._prompt_order = prompt_order
+        if native_evidence_projection is not None:
+            if not isinstance(native_evidence_projection, str):
+                raise SessionError(
+                    "native_evidence_projection must be a registered string policy id "
+                    f"or None, got {type(native_evidence_projection).__name__}"
+                )
+            if prompt_order not in _SPEECH_FEATURE_PROMPT_ORDERS | {
+                _RAW_NATIVE_PROMPT_ORDER
+            }:
+                raise SessionError(
+                    "native_evidence_projection is supported only by the native raw "
+                    "and speech-feature prompt orders; got prompt_order "
+                    f"{prompt_order!r}"
+                )
+            try:
+                NATIVE_EVIDENCE_PROJECTIONS.resolve(native_evidence_projection)
+            except CoreError as error:
+                raise SessionError(str(error)) from error
+        self._native_evidence_projection = native_evidence_projection
         # Fragment-driven user-turn text (2026-09-04, Audio2Tool official-
         # protocol replication). The published Audio2Tool protocol puts a
         # fixed sentence in the USER turn AFTER the audio ("Convert this
@@ -696,8 +718,17 @@ class LlamaServerTransport:
                 "the bank travels in the system message and would be silently dropped"
             )
 
-    def render_request(self, request_bytes: bytes) -> dict[str, object]:
-        """Materialize the actual send body with all identity checks, without POST."""
+    def render_request_with_receipt(
+        self, request_bytes: bytes
+    ) -> tuple[dict[str, object], dict[str, object] | None]:
+        """Materialize the send body and its optional projection receipt.
+
+        The receipt collector is local to this invocation. It is never kept on
+        the transport, so concurrent request preparation cannot observe or
+        overwrite another request's provenance.
+        """
+        projection_receipts: list[Mapping[str, object]] = []
+        evidence_projection = getattr(self, "_native_evidence_projection", None)
         # R0 repair T5 fix-2 (IMPORTANT, reviewer-flagged): re-verify on the
         # send path itself, every time -- not merely once at construction.
         # Cheap (a few KB re-hash of the launcher stub plus one process-image
@@ -842,6 +873,8 @@ class LlamaServerTransport:
 
             framework_projection = project_native_framework_history(
                 payload=payload, messages=messages, state_texts=state_texts,
+                evidence_projection=evidence_projection,
+                receipt_sink=projection_receipts.append,
             )
             if framework_projection is None:
                 messages, historical_descriptors = project_native_history(
@@ -924,6 +957,8 @@ class LlamaServerTransport:
 
             framework_projection = project_native_framework_history(
                 payload=payload, messages=messages, state_texts=state_texts,
+                evidence_projection=evidence_projection,
+                receipt_sink=projection_receipts.append,
             )
             if framework_projection is None:
                 messages, historical_descriptors = project_native_history(
@@ -1046,10 +1081,55 @@ class LlamaServerTransport:
             body[key] = value
         if self._feature_cache_guard is not None:
             self._feature_cache_guard.validate(payload, body)
+        receipt = None
+        if evidence_projection is not None:
+            if len(projection_receipts) != 1:
+                raise FrozenCoreError(
+                    "native evidence projection must produce exactly one receipt; "
+                    f"got {len(projection_receipts)}"
+                )
+            request_id = payload.get("request_id")
+            if not isinstance(request_id, str) or not request_id:
+                raise FrozenCoreError(
+                    "native evidence projection requires a non-empty payload request_id"
+                )
+            receipt = dict(projection_receipts[0])
+            receipt.update(
+                input_request_id=request_id,
+                input_request_bytes_sha256=hashlib.sha256(request_bytes).hexdigest(),
+                rendered_body_canonical_sha256=hashlib.sha256(
+                    canonical_bytes(body)
+                ).hexdigest(),
+            )
+        elif projection_receipts:
+            raise FrozenCoreError(
+                "native evidence projection emitted a receipt without an enabled policy"
+            )
+        return body, receipt
+
+    def render_request(self, request_bytes: bytes) -> dict[str, object]:
+        """Materialize the exact send body with all checks, without POST."""
+
+        body, _receipt = self.render_request_with_receipt(request_bytes)
         return body
 
     def __call__(self, request_bytes: bytes) -> bytes:
-        body = self.render_request(request_bytes)
+        body, projection_receipt = self.render_request_with_receipt(request_bytes)
+        if projection_receipt is not None:
+            from ..tracing import TraceBuffer, get_current_trace_buffer
+
+            trace_buffer = get_current_trace_buffer()
+            if not isinstance(trace_buffer, TraceBuffer):
+                raise FrozenCoreError(
+                    "native evidence projection requires an active native trace buffer "
+                    "before dispatch"
+                )
+            trace_buffer.emit(
+                "ORG",
+                projection_receipt["input_request_id"]
+                + "/native-evidence-projection",
+                {"org_native_evidence_projection": projection_receipt},
+            )
         try:
             raw = self._post(self._url, json.dumps(body).encode("utf-8"))
         except urllib.error.HTTPError as error:
@@ -1214,6 +1294,11 @@ def _llama_server_factory(
             else False
         ),
         feature_cache_guard=feature_cache_guard,
+        native_evidence_projection=(
+            values["native_evidence_projection"]
+            if "native_evidence_projection" in values
+            else None
+        ),
     )
 
 
