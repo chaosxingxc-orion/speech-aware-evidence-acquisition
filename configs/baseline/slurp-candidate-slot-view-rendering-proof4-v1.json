@@ -223,5 +223,9 @@
       "solver",
       "reviewer"
     ]
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CANDIDATE-SLOT-VIEW-RENDERING-PROOF4-V1/phase-supply-v1.json",
+    "sha256": "b3375ff4275bbf5d2fdbb0f9a4f265e72efe83db602c8e73ff7aa00992eefead"
   }
 }
