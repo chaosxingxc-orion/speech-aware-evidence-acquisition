@@ -1,0 +1,29 @@
+{
+  "cell": "slurp-direct-max512-train-fold-a-v1",
+  "composed_config_hash": "b2b6214250d9f0620ca4857157553a38ff0aa5af9679872017c6e99b8e1ab3a1",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-direct-max512-train-fold-a-v1",
+  "preparation_base_commit": "59d7f29840169a5b5449566aa85389ce2a337a6c",
+  "prospective_execution_plan": {
+    "attempt_id": "attempt-slurp-direct-max512-train-fold-a-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 3.0,
+    "planned_model_calls": 1080,
+    "planned_speech_audio_seconds": 3085,
+    "protocol_hash": "PENDING-FINAL-CONTACT-BEARING-CONFIG",
+    "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-16-slurp-typed-role-context-system-vs-direct-train-fold-a-v1/protocol-v1.json",
+    "sha256": "9605dece274ca4cf9115f2042222d1159beebd91943f0894644d5ae49ab46961"
+  },
+  "root_registration_required": true,
+  "schema": "saea-generation-execution-plan-preparation-v1",
+  "status": "PREPARING_ROOT_ADMISSION_REQUIRED",
+  "unused_budget_is_new_attempt_authority": false
+}
