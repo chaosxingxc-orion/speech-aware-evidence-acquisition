@@ -61,6 +61,63 @@ def _contact(value: object, label: str) -> dict[str, str]:
     return result
 
 
+def join_native_role_contact_response(
+    *,
+    sample_id: str,
+    role_id: str,
+    contact: object,
+    trace_records: Mapping[str, Mapping[str, object]],
+    label: str = "native role contact",
+) -> tuple[
+    dict[str, str],
+    Mapping[str, object],
+    Mapping[str, object],
+    Mapping[str, object],
+]:
+    """Join one receipt contact to its exact request, response, and USE trace.
+
+    This is the shared post-seal role-contact custody predicate. Callers may
+    select a role visit, but they must never select response text without this
+    join. The returned tuple is ``(contact, request, response, use)``.
+    """
+    if not isinstance(sample_id, str) or not sample_id:
+        raise NativeEpisodeDiagnosticError("sample_id must be nonempty text")
+    if not isinstance(role_id, str) or not role_id:
+        raise NativeEpisodeDiagnosticError("role_id must be nonempty text")
+    item = _contact(contact, label)
+    request_id = item["request_id"]
+    request = trace_records.get(f"{request_id}/request")
+    response = trace_records.get(f"{request_id}/response")
+    use = trace_records.get(f"{request_id}/native-role-contact")
+    if not all(isinstance(value, Mapping) for value in (request, response, use)):
+        raise NativeEpisodeDiagnosticError(
+            f"native contact {request_id!r} lacks request/response/USE custody"
+        )
+    request = _map(request, "request trace")
+    response = _map(response, "response trace")
+    use = _map(use, "role USE trace")
+    payload = _map(request.get("payload"), "request payload")
+    response_text = response.get("text")
+    if (
+        payload.get("request_id") != request_id
+        or payload.get("sample_id") != sample_id
+        or request.get("payload_sha256") != item["request_sha256"]
+        or not isinstance(response_text, str)
+        or _sha(response_text) != item["response_text_sha256"]
+        or response.get("response_sha256") != item["response_sha256"]
+        or response.get("response_text_sha256") != item["response_text_sha256"]
+        or use.get("use_role_id") != role_id
+        or use.get("use_agent_contact_id") != item["agent_contact_id"]
+        or use.get("use_request_sha256") != item["request_sha256"]
+        or use.get("use_response_sha256") != item["response_sha256"]
+        or use.get("use_response_text_sha256") != item["response_text_sha256"]
+    ):
+        raise NativeEpisodeDiagnosticError(
+            f"native contact {request_id!r} differs from receipt/trace"
+        )
+    return item, request, response, use
+
+
 def _completion(
     request_id: str,
     request: Mapping[str, object],
@@ -406,35 +463,14 @@ def analyze_verified_native_episode_statistics(
                     raise NativeEpisodeDiagnosticError("native episode duplicates a contact identity")
                 request_ids.add(request_id)
                 contact_ids.add(agent_contact_id)
-                request = trace_records.get(f"{request_id}/request")
-                response = trace_records.get(f"{request_id}/response")
-                use = trace_records.get(f"{request_id}/native-role-contact")
-                if not all(isinstance(value, Mapping) for value in (request, response, use)):
-                    raise NativeEpisodeDiagnosticError(
-                        f"native contact {request_id!r} lacks request/response/USE custody"
-                    )
-                request = _map(request, "request trace")
-                response = _map(response, "response trace")
-                use = _map(use, "role USE trace")
+                item, request, response, _use = join_native_role_contact_response(
+                    sample_id=sample_id,
+                    role_id=str(role_id),
+                    contact=item,
+                    trace_records=trace_records,
+                    label=f"native contact {sample_id!r}[{label}][{contact_index}]",
+                )
                 payload = _map(request.get("payload"), "request payload")
-                response_text = response.get("text")
-                if (
-                    payload.get("request_id") != request_id
-                    or payload.get("sample_id") != sample_id
-                    or request.get("payload_sha256") != item["request_sha256"]
-                    or not isinstance(response_text, str)
-                    or _sha(response_text) != item["response_text_sha256"]
-                    or response.get("response_sha256") != item["response_sha256"]
-                    or response.get("response_text_sha256") != item["response_text_sha256"]
-                    or use.get("use_role_id") != role_id
-                    or use.get("use_agent_contact_id") != agent_contact_id
-                    or use.get("use_request_sha256") != item["request_sha256"]
-                    or use.get("use_response_sha256") != item["response_sha256"]
-                    or use.get("use_response_text_sha256") != item["response_text_sha256"]
-                ):
-                    raise NativeEpisodeDiagnosticError(
-                        f"native contact {request_id!r} differs from receipt/trace"
-                    )
                 wire = trace_records.get(f"{request_id}/wire-response")
                 if interrupted:
                     wire_mapping = wire if isinstance(wire, Mapping) else None
