@@ -1425,6 +1425,14 @@ class CandidateSemanticProvider(KnowledgeProvider):
             raise RailsError(
                 "CandidateSemanticProvider needs a non-empty legal candidate inventory"
             )
+        if (
+            isinstance(max_candidates, bool)
+            or not isinstance(max_candidates, int)
+            or max_candidates > len(legal)
+        ):
+            raise RailsError(
+                "max_candidates cannot exceed the legal candidate inventory"
+            )
         for field, value, maximum in (
             ("max_candidates", max_candidates, self.MAX_CANDIDATES),
             ("max_values_per_candidate", max_values_per_candidate, None),
@@ -1660,8 +1668,6 @@ class CandidateSemanticProvider(KnowledgeProvider):
 
 class SlurpCandidateSemanticProvider(CandidateSemanticProvider):
     """Retain the original SLURP candidate and same-ID authored-card contract."""
-
-    MAX_CANDIDATES = 3
 
     def _validate_value_facets(self, value: object, facet_ids: set[str]) -> None:
         if value.value_id not in facet_ids or value.associated_facet_ids != (value.value_id,):

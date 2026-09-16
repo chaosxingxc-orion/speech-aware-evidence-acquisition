@@ -9,6 +9,11 @@ import pytest
 from speech_aware_evidence_acquisition.data.lock import load_lock
 from speech_aware_evidence_acquisition.rails.adapters.slurp import SlurpAdapter
 from speech_aware_evidence_acquisition.rails.knowledge import AgentStateArtifact
+from speech_aware_evidence_acquisition.rails.candidate_contract_lookup import (
+    CandidateContractEvidence,
+    CandidateContractLookupResult,
+    CandidateContractRequest,
+)
 from speech_aware_evidence_acquisition.rails.slurp_hypothesis_candidate_contract_view import (
     SlurpHypothesisCandidateContractStateView,
     SlurpHypothesisCandidateContractViewError,
@@ -106,6 +111,47 @@ def test_view_validates_source_bound_sample_and_candidate_limit(slurp_world):
     three = _artifact("weather_query", "iot_hue_lightdim", "alarm_set")
     with pytest.raises(SlurpHypothesisCandidateContractViewError, match="at most 1"):
         view.with_max_candidates(1).render_state(three, sample_id=SAMPLE_ID)
+
+
+def test_view_renders_five_candidates_and_rejects_bounds_above_inventory(slurp_world):
+    intent_ids = tuple(f"intent_{index}" for index in range(5))
+
+    class FiveProvider:
+        source_sha256 = "d" * 64
+        candidate_ids = intent_ids
+
+        def lookup(self, candidate_ids):
+            request = CandidateContractRequest.from_ids(candidate_ids)
+            return CandidateContractLookupResult(
+                request=request,
+                source_sha256=self.source_sha256,
+                candidates=tuple(
+                    CandidateContractEvidence(
+                        candidate_id=candidate_id,
+                        operation=candidate_id,
+                        schema=(),
+                        contrast=f"Contrast for {candidate_id}.",
+                    ).validate()
+                    for candidate_id in candidate_ids
+                ),
+            ).validate()
+
+    provider = FiveProvider()
+    view = SlurpHypothesisCandidateContractStateView(
+        provider=provider,
+        candidate_source_sha256=provider.source_sha256,
+        max_candidates=5,
+    )
+    document = json.loads(
+        view.render_state(_artifact(*intent_ids), sample_id=SAMPLE_ID)
+    )
+    assert [row["candidate_id"] for row in document["candidates"]] == list(
+        intent_ids
+    )
+    with pytest.raises(
+        SlurpHypothesisCandidateContractViewError, match="legal intent count"
+    ):
+        view.with_max_candidates(6)
 
 
 def test_factory_refuses_foreign_source_pin(slurp_world):

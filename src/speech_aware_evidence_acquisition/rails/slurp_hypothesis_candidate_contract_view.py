@@ -31,7 +31,9 @@ from .slurp_intent_hypotheses import (
 )
 
 VIEW_SCHEMA = "saea-slurp-hypothesis-candidate-contract-view-v1"
-MAX_HYPOTHESIS_CANDIDATES = 3
+DEFAULT_MAX_HYPOTHESIS_CANDIDATES = 3
+# Compatibility alias for callers that imported the historical default.
+MAX_HYPOTHESIS_CANDIDATES = DEFAULT_MAX_HYPOTHESIS_CANDIDATES
 
 
 class SlurpHypothesisCandidateContractViewError(ValueError):
@@ -56,10 +58,14 @@ def _max_candidates(value: object, *, legal_count: int) -> int:
         isinstance(value, bool)
         or not isinstance(value, int)
         or value < 1
-        or value > MAX_HYPOTHESIS_CANDIDATES
+        or (
+            value > DEFAULT_MAX_HYPOTHESIS_CANDIDATES
+            and value > legal_count
+        )
     ):
         raise SlurpHypothesisCandidateContractViewError(
-            f"max_candidates must be between 1 and {MAX_HYPOTHESIS_CANDIDATES}"
+            "max_candidates must be between 1 and the legal intent count "
+            f"({legal_count})"
         )
     if legal_count < 1:
         raise SlurpHypothesisCandidateContractViewError(
@@ -109,7 +115,7 @@ class SlurpHypothesisCandidateContractStateView:
 
     provider: SlurpCandidateContractProvider
     candidate_source_sha256: str
-    max_candidates: int = 3
+    max_candidates: int = DEFAULT_MAX_HYPOTHESIS_CANDIDATES
 
     def __post_init__(self) -> None:
         pinned = _source_sha256(self.candidate_source_sha256)
@@ -170,7 +176,7 @@ def build_slurp_hypothesis_candidate_contract_view(
     root: Path,
     *,
     candidate_source_sha256: str,
-    max_candidates: int = 3,
+    max_candidates: int = DEFAULT_MAX_HYPOTHESIS_CANDIDATES,
 ) -> SlurpHypothesisCandidateContractStateView:
     """Build the canonical TRAIN provider once and verify its source pin."""
 
@@ -183,6 +189,7 @@ def build_slurp_hypothesis_candidate_contract_view(
 
 
 __all__ = [
+    "DEFAULT_MAX_HYPOTHESIS_CANDIDATES",
     "MAX_HYPOTHESIS_CANDIDATES",
     "VIEW_SCHEMA",
     "SlurpHypothesisCandidateContractStateView",

@@ -39,14 +39,16 @@ from .semantic_knowledge_build import (
     build_slot_contract_snapshot,
 )
 from .slurp_intent_hypotheses import (
-    BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_IDS,
+    CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
     SlurpIntentHypothesisError,
 )
 
 CANDIDATE_SUPPLY_SCHEMA = "saea-candidate-semantic-supply-v1"
 SELECTION_SCHEMA = "saea-candidate-semantic-selection-v1"
 AUTHORED_SOURCE_SCHEMA = "saea-authored-semantic-knowledge-source-v1"
-MAX_SLURP_CANDIDATES = 3
+DEFAULT_MAX_SLURP_CANDIDATES = 3
+MAX_SLURP_CANDIDATES = DEFAULT_MAX_SLURP_CANDIDATES
 
 _SPEC_KEYS = frozenset(
     {
@@ -118,8 +120,13 @@ class CandidateSemanticSupplySpec:
                 "candidate_state_selection must be single or latest"
             )
         if self.projection_policy is not None and (
-            self.projection_policy != BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+            self.projection_policy not in BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_IDS
             or self.compact_source_phase is None
+            or (
+                self.max_candidates > DEFAULT_MAX_SLURP_CANDIDATES
+                and self.projection_policy
+                != CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+            )
         ):
             raise CandidateSemanticSupplyError(
                 "projection_policy requires bounded first-occurrence and compact source"
@@ -193,7 +200,6 @@ class CandidateSemanticSupplySpec:
                 raise CandidateSemanticSupplyError(str(error)) from None
         _positive_int(
             self.max_candidates, field="max_candidates",
-            maximum=3 if self.provider == SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID else None,
         )
         _positive_int(self.max_values_per_candidate, field="max_values_per_candidate")
         _positive_int(self.max_total_values, field="max_total_values")
@@ -465,6 +471,19 @@ def build_candidate_semantic_supply(
 
     if not specs:
         return None
+    legal_candidate_count = len(frozenset(legal_candidate_ids))
+    if legal_candidate_count < 1:
+        raise CandidateSemanticSupplyError(
+            "candidate supply requires a nonempty legal candidate inventory"
+        )
+    for spec in specs.values():
+        if (
+            spec.provider == SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID
+            and spec.max_candidates > legal_candidate_count
+        ):
+            raise CandidateSemanticSupplyError(
+                "max_candidates cannot exceed the legal candidate inventory"
+            )
     indexes: dict[str, Mapping[str, tuple[str, ...]]] = {}
     for spec in specs.values():
         if spec.store_id not in indexes:
