@@ -76,6 +76,12 @@
       "store_role": "slot-contracts"
     }
   },
+  "native_contact_fit": {
+    "attempt_id": "attempt-slurp-native-candidate-five-train-fold-a-fit-v1",
+    "contact_cap": 47520,
+    "max_speech_packets": 1,
+    "run_id": "SAEA-SLURP-NATIVE-CANDIDATE-FIVE-TRAIN-FOLD-A-FIT-V1"
+  },
   "native_episode": {
     "actions": {
       "accept": "ACCEPT",
@@ -196,11 +202,14 @@
       "sha256": "c1aaf37a678240633078a8fcca455f949a5c4b2b18d37356129976006c9dc138"
     }
   ],
-  "prospective_phase_supply": {
-    "reason": "Prepare the same K8 selection under the final source-bound candidate-five configuration only after shared width-five support, root admission, execution and fit identities, analysis rule and ledger binding are final.",
-    "state": "preparation-pending"
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-FIVE-TRAIN-FOLD-A-V1/phase-supply-final-v1.json",
+    "sha256": "2d8221a908a05303eb0c2f44ae59fee7652a003b317d14d1e132bfdd3230fc9c"
   },
-  "scorers": [],
+  "scorers": [
+    "slurp-slu-official-train",
+    "cost"
+  ],
   "serving_slot_tokens": 24576,
   "serving_slots": 4,
   "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
@@ -210,5 +219,5 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "PREPARING, check-only SLURP TRAIN Fold A candidate-width arm. It changes the Perception maximum from three to five while keeping minimum one, the retained K8 intent-boundary source and ranker, fixed Solver supply caps of 28 total and 16 per candidate, incumbent roles, task-contract-only Reviewer authority, decoding, full 1,080-row roster and Solver-only answer authority. It carries no admission, execution plan, fit registration, prepared phase-supply receipt, scoring authority or model/tool contact authority."
+  "what_this_is": "Maximum-five SLURP TRAIN Fold A candidate-width contrast. Retain K8 sources/ranker, the unchanged native episode and task-contract-only Reviewer, all 60 legal labels, fixed Solver supply limits and decoding. Prepare exact full-roster supply before root admission; fit each realized native request before dispatch under the shared exclusive lease. Historical maximum-three control is process-unmatched. No ASR, new knowledge or dynamic-tools recovery."
 }

@@ -1,0 +1,47 @@
+{
+  "accepted_implementation_commit": "a9eabb25fc6f6b4ec75f13f0e0496279e086395d",
+  "attached_generation_run_id": "SAEA-SLURP-NATIVE-CANDIDATE-FIVE-TRAIN-FOLD-A-V1",
+  "cell": "slurp-native-candidate-five-train-fold-a-v1",
+  "composed_config_hash": "1d81f613877145fcb1ede3ec294e015526a1045ba4b16dd78d3ed88b91f7dea9",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-candidate-five-train-fold-a-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 11880,
+    "planned_speech_audio_seconds": 33930,
+    "protocol_hash": "087789346bf24733579a4a7ea26c14ca2b0595a96a499631077f3f040a22b90e",
+    "run_id": "SAEA-SLURP-NATIVE-CANDIDATE-FIVE-TRAIN-FOLD-A-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-candidate-five-train-fold-a-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-16-slurp-native-candidate-five-train-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "afd937e362c029dab6c0d4b157b9d773096cf6a08770f1029564e1dbf5c66b5a"
+  },
+  "quality_read_gate": "Seal full1080 output and first complete official score, then root binds the paired source release before reading task quality. Do not rerun the incumbent scorer.",
+  "registered_at_utc": "2026-09-16T04:43:52.574778+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-candidate-five-v1/admission-v2.json",
+    "sha256": "d8cd7e9aae28a6c02cebc171ac8d3816ed7a14bee64f2c7cda33300376c64478"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/slurp-candidate-five-registration-v1",
+  "status": "ROOT_PREREGISTERED_AWAITING_SERVICE_BOUNDARY",
+  "unused_budget_is_new_attempt_authority": false
+}

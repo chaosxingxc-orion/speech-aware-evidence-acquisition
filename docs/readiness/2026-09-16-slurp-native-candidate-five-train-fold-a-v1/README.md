@@ -1,3 +1,9 @@
+# Registered maximum-five SLURP contrast
+
+The final executable registration is protocol-registered-v1.json, generation-plan-v1.json and fit-plan-v1.json. These supersede the preparation-only status below. The old preparation protocols remain immutable history. The source worktree is /home/chao/saea-worktrees/slurp-candidate-five-registration-v1.
+
+Root will attach the exact four-slot SLURP decoder-only service, hold the shared exclusive lease and fit each realized native request before dispatch. The final full1080 K8 preparation is byte-equivalent in selection and supply to the retained maximum-three control. No current result has been generated or read at registration.
+
 # SLURP maximum-five candidate-width preparation
 
 Status: **PREPARING, check-only, and not admitted.** This package authorizes no phase-supply preparation, prompt fit, worker, campaign, model, tool, encoder, tokenizer, scorer, GPU or service contact. It creates no exposure-ledger row.
