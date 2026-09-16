@@ -1,4 +1,4 @@
-Current continuation: read STATUS-145.md. The maximum-five SLURP campaign is launched from frozen source534c92e8; root owns its service. Earlier next-action descriptions below are historical. E21 and Audio2Tool remain held.
+Current continuation: read STATUS-146.md. The maximum-five SLURP campaign is launched from frozen source534c92e8; root owns its service. Earlier next-action descriptions below are historical. E21 and Audio2Tool remain held.
 
 # Historical boundary: September 16, STATUS-142
 
@@ -276,3 +276,7 @@ has been read. Global legacy task-contract examples are a distinct source from t
 two semantic stores. Prepare an opt-in compact legal contract through shared runtime,
 tools and capacity paths, preserving defaults. No Track B flight or held-config migration
 is admitted by this preparation.
+
+## 2026-09-16 full-roster comparison entry point
+
+Read [STATUS-146](STATUS-146.md). Shared candidate comparison now preserves unavailable rows and distinguishes own-covered from common-covered accuracy. It reuses source/score custody and bootstrap APIs. Its held template still requires complete treatment seal/score and paired-release pins; the active maximum-five GPU campaign remains unchanged.
