@@ -27,10 +27,12 @@ from test_rails_runner import _knowledge_snapshot
 
 
 @pytest.mark.parametrize("max_revisions", (0, 1))
+@pytest.mark.parametrize("history_scope", (None, "latest-solver-and-local-tools"))
 def test_flight_config_dispatches_actual_roles_and_preserves_solver_custody(
     tmp_path,
     monkeypatch,
     max_revisions,
+    history_scope,
 ):
     harness = _ActualEpisodeHarness(
         tmp_path,
@@ -62,6 +64,8 @@ def test_flight_config_dispatches_actual_roles_and_preserves_solver_custody(
             "contact_cap": 8 * harness.config.max_contacts,
         },
     }
+    if history_scope is not None:
+        values["native_episode"]["roles"]["reviewer"]["history_scope"] = history_scope
     runtime = object.__new__(FlightRuntime)
     runtime._composed = SimpleNamespace(values=values)
     runtime._model = runtime._dataset = runtime._baseline = {}
@@ -126,6 +130,15 @@ def test_flight_config_dispatches_actual_roles_and_preserves_solver_custody(
     assert dispatch["dispatch"] == "phase-program-continuous"
     assert dispatch["contacts_per_sample_ceiling"] == harness.config.max_contacts
     assert dispatch["native_episode"]["episode_id"] == harness.config.episode_id
+    receipt_roles = {row["role_kind"]: row for row in dispatch["native_episode"]["roles"]}
+    if history_scope is None:
+        assert all("history_scope" not in row for row in receipt_roles.values())
+    else:
+        assert receipt_roles["reviewer"]["history_scope"] == history_scope
+        assert all("history_scope" not in receipt_roles[role] for role in ("perception", "solver", "planner"))
+        for key, prepared in harness.prepared.items():
+            if key[1] == "reviewer":
+                assert "perception-analysis:" not in json.dumps(prepared["rendered"])
     assert len(dispatch["native_contact_fit_receipts"]) == contacts
     assert [row["final_response_text"] for row in rows] == [
         f"solver-answer:s1:visit:{max_revisions + 1}",

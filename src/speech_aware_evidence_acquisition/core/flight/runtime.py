@@ -5164,6 +5164,10 @@ class FlightRuntime:
                         "phase_id": role.phase_id, "role_kind": role.role_kind,
                         "max_iterations": role.max_iterations,
                         "tool_names": list(role.tool_names),
+                        **(
+                            {"history_scope": role.history_scope}
+                            if role.history_scope != "full" else {}
+                        ),
                     }
                     for role in native_config.roles
                 ],

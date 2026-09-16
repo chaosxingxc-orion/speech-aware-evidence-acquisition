@@ -1844,6 +1844,8 @@ async def _invoke_native_role_episode(
         return material.instruction
 
     def speech_binding(request):
+        from .native_episode_config import select_native_role_history
+
         settle()
         ctx = context()
         role = role_configs[request.role_id]
@@ -1868,6 +1870,10 @@ async def _invoke_native_role_episode(
         ).validate()
         _assert_agent_control_excludes_knowledge_payloads(plan, protected_material)
         state.current_context, state.current_contact = ctx, plan
+        exposed_states = select_native_role_history(
+            role=role, solver_phase_id=config.role("solver").phase_id,
+            states=ctx.agent_states, local_tool_result_ids=tuple(visit["local_ids"]),
+        )
         return NativeRoleSpeechBinding(
             role_id=request.role_id, sample_id=ctx.sample_id,
             role_query=visit["query"], base_messages=base_messages(ctx),
@@ -1877,7 +1883,7 @@ async def _invoke_native_role_episode(
                     "key_representation_id": plan.key_representation_id,
                     "matcher_policy_id": plan.matcher_policy_id,
                 } if ctx.query_state.query_source == "speech_features" else {}),
-                "agent_state": [a.as_json() for a in ctx.agent_states],
+                "agent_state": [a.as_json() for a in exposed_states],
             },
             tool_names=names, local_tool_result_ids=tuple(visit["local_ids"]),
             query_source=ctx.query_state.query_source,

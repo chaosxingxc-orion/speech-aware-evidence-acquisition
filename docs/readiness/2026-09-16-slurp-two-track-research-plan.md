@@ -136,3 +136,19 @@ Preserve state, candidate provenance, supplied values, tool actions/results, rev
 [Huang et al., ICLR 2024](https://arxiv.org/abs/2310.01798) find failures of intrinsic self-correction on their reasoning tasks. [Liu et al., 2024](https://arxiv.org/abs/2406.15673) report self-correction under particular prompt and decoding conditions. Their differing findings argue for balanced review prompts and an actual local test, not a universal claim that self-review always works or never works.
 
 [Gou et al., CRITIC, 2024 revision](https://arxiv.org/abs/2305.11738) demonstrate tool-interactive verification and correction on other tasks. This motivates source-grounded review and explicit evidence acquisition. It does not prove that Whisper, a particular review role or any tool budget will improve SLURP.
+
+## Preparation update: controlled Reviewer history
+
+The optional implementation in
+[Reviewer history scope](2026-09-16-slurp-reviewer-history-scope.md) is now verified
+with synthetic shared-runtime tests. It keeps the latest complete Solver state and current
+Reviewer tool chain; it does not strip any rationale embedded inside that Solver state.
+It removes earlier Perception, draft, Reviewer and Planner history from Reviewer only,
+including candidate IDs and descriptions. Current speech and bound knowledge remain.
+Consequently it tests the tradeoff between earlier role influence and useful prior
+information, not pure statistical independence or draft-blind evidence gathering.
+
+The option remains held. Its direct control is the unrun structured-review v2 configuration;
+a historical-anchor contrast would include the other structured-review changes.
+Do not combine prepared factors or schedule extra flights merely because implementation
+is available. Root admits the next contrast after the complete maximum-five verdict.

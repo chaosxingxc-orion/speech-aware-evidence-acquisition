@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 
@@ -14,6 +15,74 @@ class NativeEpisodeRole:
     role_kind: str
     max_iterations: int
     tool_names: tuple[str, ...]
+    history_scope: str = "full"
+
+    def __post_init__(self):
+        if not isinstance(self.history_scope, str) or self.history_scope not in {
+            "full", "latest-solver-and-local-tools",
+        }:
+            raise ValueError("native role history scope is invalid")
+        if self.history_scope != "full" and self.role_kind != "reviewer":
+            raise ValueError("only Reviewer may restrict history to the latest Solver")
+
+
+def select_native_role_history(
+    *, role: NativeEpisodeRole, solver_phase_id: str, states, local_tool_result_ids,
+):
+    """Select exposed state without modifying the complete episode history.
+
+    Keep original speech and supplied knowledge in the caller's base messages.
+    The restricted view retains one current Solver draft and the current
+    Reviewer's complete native call/result chain. Older role opinions and tool
+    conversations are excluded; this is draft-visible, not draft-blind review.
+    """
+    if role.history_scope == "full":
+        return states
+    if not isinstance(local_tool_result_ids, (tuple, list)):
+        raise ValueError("local history IDs must be an ordered sequence")
+    ids = [state.state_id for state in states]
+    if len(ids) != len(set(ids)) or len(local_tool_result_ids) != len(set(local_tool_result_ids)):
+        raise ValueError("role history contains duplicate IDs")
+    positions = {value: index for index, value in enumerate(ids)}
+    solver_indices = [
+        i for i, state in enumerate(states) if state.state_kind == f"phase:{solver_phase_id}"
+    ]
+    if not solver_indices:
+        raise ValueError("restricted Reviewer history requires a Solver draft")
+    solver_index = solver_indices[-1]
+    selected = {ids[solver_index]}
+    encountered = []
+    sources = set()
+    for result_id in local_tool_result_ids:
+        if result_id not in positions:
+            raise ValueError("local tool history result is missing")
+        result_index = positions[result_id]
+        result = states[result_index]
+        if result.state_kind != "tool-result":
+            raise ValueError("local history ID does not name a tool result")
+        try:
+            document = json.loads(result.content)
+            source_id = document.get("native_source_state_id")
+        except (TypeError, ValueError, AttributeError) as error:
+            raise ValueError("local tool history envelope is malformed") from error
+        if not isinstance(source_id, str) or source_id not in positions:
+            raise ValueError("local tool history source is missing")
+        source_index = positions[source_id]
+        if (
+            states[source_index].state_kind != f"phase:{role.phase_id}"
+            or not solver_index < source_index < result_index
+            or result_index != source_index + 1
+            or source_id in sources
+        ):
+            raise ValueError("local tool history has a foreign, old or repeated source")
+        sources.add(source_id)
+        selected.update((source_id, result_id))
+        encountered.append(result_index)
+    if encountered != sorted(encountered):
+        raise ValueError("local tool history result order differs")
+    # The shared framework renderer verifies the full source authority and
+    # exact call/result bytes; retain those artifacts verbatim for that check.
+    return tuple(state for state in states if state.state_id in selected)
 
 
 @dataclass(frozen=True)
@@ -146,7 +215,11 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
     roles = []
     for kind in kinds:
         row = raw_roles[kind]
-        if not isinstance(row, Mapping) or set(row) != {"phase_id", "max_iterations"}:
+        if (
+            not isinstance(row, Mapping)
+            or not {"phase_id", "max_iterations"} <= set(row)
+            or set(row) - {"phase_id", "max_iterations", "history_scope"}
+        ):
             raise ValueError("each native role requires phase_id and max_iterations")
         phase_id, iterations = row["phase_id"], row["max_iterations"]
         if phase_id not in program.phase_names():
@@ -165,7 +238,9 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
                 raise ValueError("native role tool names must be nonempty and unique")
         if reserve_report and tools and iterations < 2:
             raise ValueError("reserve-final-report requires at least two tool-role iterations")
-        roles.append(NativeEpisodeRole(phase_id, kind, iterations, tools))
+        roles.append(NativeEpisodeRole(
+            phase_id, kind, iterations, tools, row.get("history_scope", "full"),
+        ))
     phase_ids = tuple(role.phase_id for role in roles)
     if len(set(phase_ids)) != 4 or set(phase_ids) != set(program.phase_names()):
         raise ValueError("native roles must cover the program once each")
