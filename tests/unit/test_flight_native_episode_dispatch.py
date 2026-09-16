@@ -22,17 +22,26 @@ from speech_aware_evidence_acquisition.rails.phase_review import (
 from speech_aware_evidence_acquisition.rails.phase_runner import run_continuous_program
 
 from test_native_episode_runner import _ActualEpisodeHarness
+from test_role_context_runner import _configure_typed_context
 from test_llama_server_transport import _spawn_live_matching_process  # noqa: F401
 from test_rails_runner import _knowledge_snapshot
 
 
 @pytest.mark.parametrize("max_revisions", (0, 1))
-@pytest.mark.parametrize("history_scope", (None, "latest-solver-and-local-tools"))
+@pytest.mark.parametrize(
+    ("history_scope", "typed_context"),
+    (
+        pytest.param(None, False, id="default"),
+        pytest.param("latest-solver-and-local-tools", False, id="history-scope"),
+        pytest.param(None, True, id="typed-role-context"),
+    ),
+)
 def test_flight_config_dispatches_actual_roles_and_preserves_solver_custody(
     tmp_path,
     monkeypatch,
     max_revisions,
     history_scope,
+    typed_context,
 ):
     harness = _ActualEpisodeHarness(
         tmp_path,
@@ -42,6 +51,7 @@ def test_flight_config_dispatches_actual_roles_and_preserves_solver_custody(
         planner_actions=(("ACCEPT",) if max_revisions == 0 else ("REVISE", "ACCEPT")),
         arm="speech-feature-query",
     )
+    typed_expected = _configure_typed_context(harness) if typed_context else None
     values = {
         "native_episode": {
             "schema": "saea-native-episode-config-v1",
@@ -66,6 +76,10 @@ def test_flight_config_dispatches_actual_roles_and_preserves_solver_custody(
     }
     if history_scope is not None:
         values["native_episode"]["roles"]["reviewer"]["history_scope"] = history_scope
+    if typed_context:
+        values["native_episode"]["role_context"] = json.loads(
+            harness.config.role_context_json
+        )
     runtime = object.__new__(FlightRuntime)
     runtime._composed = SimpleNamespace(values=values)
     runtime._model = runtime._dataset = runtime._baseline = {}
@@ -130,6 +144,12 @@ def test_flight_config_dispatches_actual_roles_and_preserves_solver_custody(
     assert dispatch["dispatch"] == "phase-program-continuous"
     assert dispatch["contacts_per_sample_ceiling"] == harness.config.max_contacts
     assert dispatch["native_episode"]["episode_id"] == harness.config.episode_id
+    if typed_context:
+        assert dispatch["native_episode"]["role_context"] == json.loads(
+            harness.config.role_context_json
+        )
+    else:
+        assert "role_context" not in dispatch["native_episode"]
     receipt_roles = {row["role_kind"]: row for row in dispatch["native_episode"]["roles"]}
     if history_scope is None:
         assert all("history_scope" not in row for row in receipt_roles.values())
@@ -140,10 +160,19 @@ def test_flight_config_dispatches_actual_roles_and_preserves_solver_custody(
             if key[1] == "reviewer":
                 assert "perception-analysis:" not in json.dumps(prepared["rendered"])
     assert len(dispatch["native_contact_fit_receipts"]) == contacts
-    assert [row["final_response_text"] for row in rows] == [
-        f"solver-answer:s1:visit:{max_revisions + 1}",
-        f"solver-answer:s2:visit:{max_revisions + 1}",
-    ]
+    expected_final = (
+        typed_expected["revised_draft" if max_revisions else "first_draft"]
+        if typed_expected is not None
+        else None
+    )
+    assert [row["final_response_text"] for row in rows] == (
+        [expected_final, expected_final]
+        if typed_context
+        else [
+            f"solver-answer:s1:visit:{max_revisions + 1}",
+            f"solver-answer:s2:visit:{max_revisions + 1}",
+        ]
+    )
     for row in rows:
         receipt = row["native_episode_receipt"]
         accepted = receipt["accepted_solver_receipt"]["final_contact"]
@@ -168,7 +197,10 @@ def test_flight_config_dispatches_actual_roles_and_preserves_solver_custody(
     runtime._output_rows = rows
     canonical = runtime._canonical_output_rows(harness.client)
     for row in canonical:
-        assert row["text"].startswith("solver-answer:")
+        if typed_context:
+            assert row["text"] == expected_final
+        else:
+            assert row["text"].startswith("solver-answer:")
         assert (
             hashlib.sha256(row["text"].encode()).hexdigest()
             == row["response_text_sha256"]

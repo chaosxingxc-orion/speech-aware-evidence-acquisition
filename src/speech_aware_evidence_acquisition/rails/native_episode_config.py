@@ -99,6 +99,7 @@ class NativeEpisodeConfig:
     reserve_final_report: bool = False
     finite_completion_policy: str = "raise"
     planner_output_format: str = "exact-text"
+    role_context_json: str | None = None
 
     @property
     def terminal_actions(self) -> tuple[str, ...]:
@@ -142,6 +143,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         "tool_iteration_policy",
         "finite_completion_policy",
         "planner_output_format",
+        "role_context",
     }
     if (
         not isinstance(raw, Mapping)
@@ -254,6 +256,18 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         raise ValueError(
             "json-action-v1 requires the registered Planner phase response format"
         )
+    role_context_json = None
+    if "role_context" in raw:
+        from .role_context_binding import (
+            role_context_source_format_id, validate_role_context_config,
+        )
+
+        if any(role.history_scope != "full" for role in roles):
+            raise ValueError("role context compilation cannot combine with a history filter")
+        role_context_json = validate_role_context_config(raw["role_context"])
+        perception = next(role for role in roles if role.role_kind == "perception")
+        if program.phase(perception.phase_id).response_format_id != role_context_source_format_id(role_context_json):
+            raise ValueError("role context requires the registered Perception phase format")
     if any(phase.barrier for phase in program.phases):
         raise ValueError("conditional native episodes cannot declare whole-roster phase barriers")
     if refresh_action is not None:
@@ -291,4 +305,5 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         reserve_report,
         finite_completion_policy,
         planner_output_format,
+        role_context_json,
     )

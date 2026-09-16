@@ -5172,6 +5172,8 @@ class FlightRuntime:
                     for role in native_config.roles
                 ],
             }
+            if native_config.role_context_json is not None:
+                dispatch["native_episode"]["role_context"] = json.loads(native_config.role_context_json)
             if native_config.refresh_action is not None:
                 dispatch["native_episode"]["candidate_refresh"] = {
                     "action": native_config.refresh_action,

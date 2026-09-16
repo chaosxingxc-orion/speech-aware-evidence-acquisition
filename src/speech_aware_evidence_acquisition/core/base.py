@@ -128,6 +128,8 @@ RESPONSE_POSTPROCESSORS = Registry("response postprocessor")
 PHASE_STATE_VIEWS = Registry("phase state view")
 # A planner consumes typed criticism and returns a bounded continuation decision.
 PHASE_PLANNERS = Registry("phase planner")
+# Consumer-specific source-bound state views; no controller or knowledge acquisition.
+ROLE_CONTEXT_COMPILERS = Registry("role context compiler")
 
 
 # ---------------------------------------------------------------------------
