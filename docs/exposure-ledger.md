@@ -4016,3 +4016,17 @@ Report: docs/results/2026-09-16-slurp-review-context-provenance.md.
 The legacy global ontology derives examples from all real TRAIN, unlike the separately
 fold-excluded semantic-store releases. Preserve that source distinction in historical
 exposure descriptions. This audit does not change the running A1 protocol or admit a successor.
+
+### 2026-09-16: maximum-five complete-source quality release and analysis
+
+The registered A1 generation and first complete official scoring finished, with full1080
+output custody and a FINALIZED attempt. Before quality reads, root recorded
+coordination/slurp-candidate-five-v1/root-paired-quality-release-v1.json,
+SHA256 24b2780f6952662cc13fcde0f9688062f9bed26c69584718386fad831a9d2143.
+The saved-score wrapper added zero official scorer invocations. Source-bound official,
+candidate, conditional-entity and stage analyses use only that released complete pair;
+no Fold B or aborted-flight quality is read. Root verdict:
+coordination/slurp-candidate-five-v1/root-primary-verdict-v1.json,
+SHA256 82aeea0868be49ec2253cdb2d7805b158d6d83a1848a56dd51909f48b1d2e437.
+Decision NOT_ADVANCED. Report: docs/results/2026-09-16-slurp-candidate-five-train-a.md.
+Do not reinterpret unused budget as another attempt.
