@@ -1,76 +1,32 @@
-# Current continuation and Fable5.1 handoff
+# Current continuation and Fable5.1 file handoff
 
-Updated 2026-09-16. Read [LATEST](../../../handoff/2026-09-16-fable51/LATEST.md)
-and [STATUS-165](STATUS-165.md) first, then the direct handoff to Fable5.1.
-These supersede the earlier running-state routing. Do not load every historical note.
+Read [LATEST](../../../handoff/2026-09-16-fable51/LATEST.md) and [STATUS-166](STATUS-166.md).
+The current single entry is [HANDOFF-v3](../../../handoff/2026-09-16-fable51/HANDOFF-v3.md).
+Earlier snapshots and next-action text remain historical.
 
-The owner requested a durable file handoff with designs, results, root interpretation
-and future expectations. The package does not claim Fable5.1 has accepted ownership.
+The older replicated max512 dual-store SLURP agent remains the useful base.
+The candidate-bound slot-view proof has now run and ABORTED after four Perception calls.
+Its source-content mismatch is named; CPU reproduction and a narrow repair are next.
+Read [the closure](../../../handoff/2026-09-16-fable51/LIVE-PROOF-CLOSURE-v1.md) and
+[future designs](../../../handoff/2026-09-16-fable51/NEXT-EXPERIMENTS-v3.md).
 
-## Current work
+The typed-context full-system flight remains CLOSED_SECOND_FAILURE_NO_FURTHER_RECOVERY.
+No partial scoring, held direct score read, replica activation or relabeled third recovery
+is admitted. The latest candidate proof also has no retry under its registered identity.
+E21 and Audio2Tool remain held while the SLURP question closes.
 
-SLURP is the optimization focus. The older max512 dual-store agent has two positive
-matched exploratory comparisons. Maximum-five and broad/factored did not advance.
-E21 and Audio2Tool remain held.
+The resident decoder was left running; the v3 process/file snapshot is timestamped metadata,
+not perpetual endpoint health. Revalidate once on actual takeover. Root owns one service
+and one generation flight; preserve frozen checkouts and explicit WSL import paths.
 
-The new typed-context system's sole full1080 recovery ABORTED after 6,645 generation
-contacts on frozen 9bf27b28. A Reviewer request needed 24,878 tokens in a 24,576-token
-slot and was refused before generation. The flight is
-CLOSED_SECOND_FAILURE_NO_FURTHER_RECOVERY. No complete system manifest/score exists;
-no task-effectiveness conclusion is available. Direct remains complete, first-scored
-and quality-unread under the paired-read contract.
+Run the existing read-only coordination check:
+    /home/chao/.venvs/speechrl/bin/python -B scripts/checks/experiment_handoff_check.py
 
-Read the [terminal report](../../../handoff/2026-09-16-fable51/TERMINAL-UPDATE-20260916.md).
-Do not retry, splice a prefix, score partial rows or activate the held replica.
-Retain the old useful base and perform bounded source-level context/capacity diagnosis
-before a distinct prospective successor. The decoder was resident and idle after
-failure; revalidate metadata/ownership without automatic restart.
+The checker never grants a launch. The legacy owner_directed_execution contract still pins
+Codex. Fable should write an additive takeover receipt and explicitly reconcile that contract
+and checker before claiming execution ownership. Do not fabricate the historical unavailable
+reply or merely change the owner field. Per-flight plans, exposure and leases still apply.
 
-The [root context audit](../../../handoff/2026-09-16-fable51/CONTEXT-ROOT-CAUSE-20260916.md)
-now identifies repeated already-visible knowledge bodies across user and tool surfaces.
-The shared opt-in reference projection is now implemented and verified: 309 tests passed,
-with one platform skip and 92% new-module coverage. Read the
-[implementation update](../../../handoff/2026-09-16-fable51/IMPLEMENTATION-UPDATE.md).
-Canonical observations and the closed-flight boundary are preserved. Real capacity and
-task benefit are not yet demonstrated.
-
-The source-only [slot-binding audit](../../../results/2026-09-16-slurp-slot-binding-footprint-v1.md)
-now quantifies the consumption opportunity. Root selected one
-[candidate-bound slot-view design](../../../readiness/2026-09-16-candidate-bound-slot-view-design-v1.md);
-its shared runtime implementation is now accepted at 7ca75217, with 248 affected tests
-passed and one platform skip. The real-path proof remains held. Do not interpret
-ideal body-byte savings as task benefit.
-
-## Reading routes
-
-- [Future experiment designs and expected outcomes](../../../handoff/2026-09-16-fable51/FUTURE-EXPERIMENT-DESIGNS-v2.md).
-- [Experimental report](../../../handoff/2026-09-16-fable51/EXPERIMENT-REPORT-v2.md).
-- [Operations and recovery](../../../handoff/2026-09-16-fable51/RUNBOOK-SNAPSHOT-v2.md).
-- [System and knowledge map](../../../handoff/2026-09-16-fable51/SYSTEM-AND-KNOWLEDGE.md).
-- [Current consolidated handoff and next steps](../../../handoff/2026-09-16-fable51/HANDOFF.md).
-- [Source index](../../../handoff/2026-09-16-fable51/SOURCE-INDEX.json).
-- [Existing results ledger](../../../results/stage2-results-ledger.md).
-- [Accepted original continuation plan](CONTINUATION-PLAN.md).
-- [Recovered integrations](RECOVERY-PLAN.md).
-- [Model allocation](MODEL-ALLOCATION.md).
-
-STATUS-156 preserves the proof/full-recovery launch; STATUS-157 preserves postseal
-source/API checks; STATUS-158 preserves conditional replica preparation.
-Earlier owner decisions and status notes remain historical evidence. Their next-action
-paragraphs may be superseded. Never rewrite sealed records to remove deviations.
-
-## Coordination contract
-
-Run implementation, tests, preparation, inference and scoring in WSL Ubuntu-24.04.
-One coordinator owns the resident service and one generation flight. Preserve active
-frozen checkouts and explicit import paths. Root owns scientific attribution, decisions
-and merge acceptance; delegate mechanical observation and bounded preparation.
-
-The read-only command is:
-
-    python scripts/checks/experiment_handoff_check.py
-
-Its launch_allowed=false means the coordination checker grants no launch; per-flight
-ExecutionPlan, exposure, source, readiness, lease and budget gates decide model contact.
-The state remains owner_directed_execution under OWNER-CONTINUATION-002. The old unavailable
-Fable reply is not fabricated or rewritten by this reverse handoff.
+Use the current package rather than loading every status note. The full report and source
+index retain historical strata, decisions and provenance. The owner asked for a local-file
+handoff; no email, external message or remote publication is implied.

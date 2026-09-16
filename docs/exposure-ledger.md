@@ -4107,3 +4107,29 @@ Root admits one four-row proof on the older useful dual-store agent. The sole cl
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 2026-09-16T19:06:46.982569+00:00 | SAEA-SLURP-CANDIDATE-SLOT-VIEW-PROOF4-V1 | bounded-discovery-probe | Four-row candidate-bound slot-view engineering generation; structural evidence only. | Frozen Q4_K_M decoder-only c98304 np4 max512. | slurp TRAIN A first four existing engineering rows | discovery | 4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb | no | 44 | 117 | 1.0 | Existing exposed engineering rows; no gold/reference read or new knowledge. | docs/readiness/2026-09-16-slurp-candidate-slot-view-proof4-v1/generation-plan-registered-v1.json | Plan SHA256 dc31972a621e2eabaed6bbf6fcd45e2d53b96cfcbdbc6a8ef51338a15ba208d7; runtime protocol 56fdec692b714c5e81e169227cb17f7ded5c140b2e6fea318054e6caeec304fd; protocol document 6ace9196829e998676d1dabccd15ce8e16eac3fe370ed17eaff8acefc8fc109b; admission 299329b6c6377300656ec85e96e2502451dc6472d937b51663ed8fd0affe89b3; attempt attempt-slurp-candidate-slot-view-proof4-generation-v1; expected session serving-slurp-native-candidate-five-train-a-np4-v1. Shared standalone worker, no scorer. Family caps44 generation,176 FIT endpoints,24 successful analytical tools,117 repeated speechsec,one shared fit-inclusive GPUh. Rejected call objects counted separately. Stop on first failure; no retry, partial scoring, third recovery or replica activation. |
 | 2026-09-16T19:06:46.982569+00:00 | SAEA-SLURP-CANDIDATE-SLOT-VIEW-PROOF4-FIT-V1 | bounded-discovery-probe | Four-row candidate-bound slot-view engineering fit; structural evidence only. | Frozen Q4_K_M decoder-only c98304 np4 max512. | slurp TRAIN A first four existing engineering rows | discovery | 4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb | no | 176 | 117 | 1.0 | Existing exposed engineering rows; no gold/reference read or new knowledge. | docs/readiness/2026-09-16-slurp-candidate-slot-view-proof4-v1/fit-plan-registered-v1.json | Plan SHA256 0b3c3bcaf15663b29da9439015bbe8faa111ae26acddef18af3c576b73c21ee0; runtime protocol 56fdec692b714c5e81e169227cb17f7ded5c140b2e6fea318054e6caeec304fd; protocol document 6ace9196829e998676d1dabccd15ce8e16eac3fe370ed17eaff8acefc8fc109b; admission 299329b6c6377300656ec85e96e2502451dc6472d937b51663ed8fd0affe89b3; attempt attempt-slurp-candidate-slot-view-proof4-fit-v1; expected session serving-slurp-native-candidate-five-train-a-np4-v1. Shared standalone worker, no scorer. Family caps44 generation,176 FIT endpoints,24 successful analytical tools,117 repeated speechsec,one shared fit-inclusive GPUh. Rejected call objects counted separately. Stop on first failure; no retry, partial scoring, third recovery or replica activation. |
+
+## 2026-09-16: candidate-bound slot-view proof terminal settlement
+
+The preregistered SAEA-SLURP-CANDIDATE-SLOT-VIEW-PROOF4-V1 stopped at the first Solver
+source-view validation, before Solver generation. Actual exposure was four Perception
+contacts and 10.5955625 repeated speech seconds. Its four passing FIT receipts consumed
+16 endpoints (four props, four apply-template, eight tokenize); minimum margin 20417
+tokens applies only to those exercised Perception requests. No analytical tool, ASR,
+encoder or official scorer ran; no task-quality read occurred. GPU-hour usage is not
+recomputed by this handoff; the one-hour registration is a cap, not measured consumption.
+
+Root proved worker absence/quiescence, marked the attempt ABORTED and released the
+exclusive worker lease. Preserve all original bytes and frozen source
+3c14a0b0780967a5d224c573e8a991c0fd255607. Closure decision:
+STOPPED_ENGINEERING_SOURCE_CONTENT_MISMATCH_NO_RETRY_UNDER_THIS_PROOF.
+DATA/coordination/slurp-candidate-slot-view-proof4-v1/root-closure-v1.json has SHA256
+4348d68adfb9527d4bb92715cc66cb25b9febd598cda5495a1b44716a655bdde.
+
+The exact named mismatch is the legacy plain canonical slot body versus the new
+projector's expected named-store-prefixed body. Root inspected source and bounded terminal
+metadata only; no raw answer, held direct score or Fold B read. The registered tool ceiling
+was corrected from16 to24 before contact. The original no-consumption registration rows
+remain prospective records; this additive entry records actual partial consumption.
+Read docs/handoff/2026-09-16-fable51/LIVE-PROOF-CLOSURE-v1.md. No retry or new contact is
+authorized here. The current file-handoff audit adds zero model/tokenizer/acoustic/scorer
+contacts and does not change the resident service.

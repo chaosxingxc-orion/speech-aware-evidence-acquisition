@@ -1,0 +1,76 @@
+{
+  "schema": "saea-handoff-operating-snapshot-v3",
+  "captured_at_utc": "2026-09-16T19:30:24.916225+00:00",
+  "canonical_branch": "master",
+  "canonical_source_commit_before_documentation": "854e3d2b814a700784957104c8901c1cfa8c76de",
+  "processes": [
+    {
+      "pid": 364846,
+      "role": "resident-decoder",
+      "expected_start_ticks": 9575036,
+      "exists": true,
+      "state": "S",
+      "start_ticks": 9575036,
+      "matches_expected_start": true,
+      "command": "/home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8080 -m /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf --no-mmproj -c 98304 -np 4 -b 2048 -ub 512 -fa on -ngl 999 -ctk q8_0 -ctv q8_0 --cache-prompt --cache-ram 0 --no-cache-idle-slots --slot-prompt-similarity 0"
+    },
+    {
+      "pid": 364981,
+      "role": "existing-monitor",
+      "expected_start_ticks": 9581534,
+      "exists": true,
+      "state": "S",
+      "start_ticks": 9581534,
+      "matches_expected_start": true,
+      "command": "/home/chao/.venvs/speechrl/bin/python -B -u scripts/serving_monitor.py sample --data-root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data --session-id serving-slurp-native-candidate-five-train-a-np4-v1 --interval 10 --host 127.0.0.1 --port 8080"
+    },
+    {
+      "pid": 425664,
+      "role": "closed-typed-context-worker",
+      "expected_start_ticks": null,
+      "exists": false
+    },
+    {
+      "pid": 467880,
+      "role": "closed-slot-view-proof-worker",
+      "expected_start_ticks": 14679041,
+      "exists": false
+    }
+  ],
+  "source_checkouts": {
+    "/home/chao/saea-worktrees/candidate-bound-slot-view-v1": {
+      "commit": "3c14a0b0780967a5d224c573e8a991c0fd255607",
+      "branch": "codex/candidate-bound-slot-view-v1",
+      "status_porcelain": ""
+    },
+    "/home/chao/saea-worktrees/slurp-typed-context-full-recovery-v1": {
+      "commit": "9bf27b28708bb93607138e7bcd1eacb66eab3f08",
+      "branch": "codex/slurp-typed-context-full-recovery-v1",
+      "status_porcelain": ""
+    },
+    "/home/chao/saea-worktrees/slurp-dual-store-base-replication-v1": {
+      "commit": "1b5009d6f82655b9ffd2f6aa2ce381f330f9f5f9",
+      "branch": "codex/slurp-dual-store-base-replication-v1",
+      "status_porcelain": ""
+    }
+  },
+  "flight_lock_metadata_exists": false,
+  "generation_guard_exists": true,
+  "worker_lease_token_exists": false,
+  "takeover_receipts_in_handoff_directories": [],
+  "proof_closure": {
+    "data_relpath": "coordination/slurp-candidate-slot-view-proof4-v1/root-closure-v1.json",
+    "sha256": "4348d68adfb9527d4bb92715cc66cb25b9febd598cda5495a1b44716a655bdde"
+  },
+  "proof_terminal": {
+    "data_relpath": "coordination/slurp-candidate-slot-view-proof4-v1/worker-terminal-v1.json",
+    "sha256": "2e84618578fce1b9b21e58bd4704c1c04529b3b59393ed8e1129b515c017bc10"
+  },
+  "proof_attempt": {
+    "data_relpath": "attempts/SAEA-SLURP-CANDIDATE-SLOT-VIEW-PROOF4-V1/attempt-slurp-candidate-slot-view-proof4-generation-v1.json",
+    "sha256": "7440804b4a63ec93f23da825edd6b6d3fb59e341a2b442d584affaab6f327946",
+    "state": "ABORTED"
+  },
+  "read_boundary": "Metadata, source code and already released reports only. No model/tokenizer/scorer/acoustic-tool/service endpoint was contacted for this snapshot. No held quality or raw campaign log read.",
+  "interpretation": "Process identity is not endpoint health or future liveness. No service restart/unload, lock mutation or takeover is performed by this snapshot."
+}

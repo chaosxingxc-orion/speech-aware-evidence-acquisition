@@ -1,0 +1,46 @@
+{
+  "schema": "saea-handoff-validation-v3",
+  "recorded_at_utc": "2026-09-16T19:37:01.148783+00:00",
+  "scope": "Documentation and metadata only; no code change or live model/tool/scorer check.",
+  "coordination_check": {
+    "schema_version": 1,
+    "status": "OWNER_DIRECTED_EXECUTION",
+    "checked_at_utc": "2026-09-16T19:33:44.094946+00:00",
+    "current_head": "854e3d2b814a700784957104c8901c1cfa8c76de",
+    "dirty_file_counts": {
+      "tracked": 4,
+      "untracked": 10,
+      "staged": 0,
+      "unstaged": 4,
+      "total": 14
+    },
+    "warnings": [
+      "The working tree has local changes; preserve and reconcile them."
+    ],
+    "errors": [],
+    "execution_authority": "NOT_EVALUATED",
+    "launch_allowed": false,
+    "request_id": "SAEA-HANDOFF-20260909-01",
+    "generation": 166,
+    "snapshot_commit": "854e3d2b814a700784957104c8901c1cfa8c76de",
+    "execution_owner": "Codex",
+    "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md"
+  },
+  "local_link_targets_checked": 69,
+  "missing_targets": [],
+  "historical_manifest_verified_at_commit": "0cb929521ef4eab5c9f11301bbbefb94484c1964",
+  "historical_file_hash_errors": [],
+  "preserved_immutable_v2_files": true,
+  "explicit_mutable_routing_successors": [
+    "docs/handoff/2026-09-16-fable51/LATEST.md",
+    "docs/superpowers/plans/experiment-handoff/README.md",
+    "docs/superpowers/plans/experiment-handoff/state.json"
+  ],
+  "closure_receipts_verified": 4,
+  "english_authored_content_check_passed": true,
+  "git_diff_check_passed": true,
+  "runtime_code_tests_rerun": false,
+  "reason": "No runtime code changed. Prior test evidence and its missed rendering path are documented, not inflated into live acceptance.",
+  "complete_report_v3_integrates_latest_closure": true,
+  "bounded_independent_metadata_review": "No actionable inconsistency in the two closures, Perception-only FIT evidence, cap24, no runtime repair/new admission/takeover, source paths or generation166 routing."
+}

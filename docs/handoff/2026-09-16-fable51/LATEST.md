@@ -1,25 +1,23 @@
 # Latest Fable5.1 handoff
 
-Updated 2026-09-16 after closure, source diagnosis and model-free successor implementation.
+Read [HANDOFF-v3.md](HANDOFF-v3.md) first. It is the current entry.
 
-Read [HANDOFF.md](HANDOFF.md) first. It is the single current entry.
-Then read [the corrected experimental report](EXPERIMENT-REPORT-v2.md) and
-[future experiments with expected outcomes](FUTURE-EXPERIMENT-DESIGNS-v2.md).
-Use [implementation acceptance](IMPLEMENTATION-HANDOVER-v2.md) and
-[the verified operating snapshot/runbook](RUNBOOK-SNAPSHOT-v2.md) when continuing work.
-[HANDOFF-MANIFEST-v2.json](HANDOFF-MANIFEST-v2.json) binds the new package.
+Then read [the full experimental report](EXPERIMENT-REPORT-v3.md), with
+[the latest engineering-proof closure](LIVE-PROOF-CLOSURE-v1.md), and
+[next experiments with expectations](NEXT-EXPERIMENTS-v3.md).
+[HANDOFF-MANIFEST-v3.json](HANDOFF-MANIFEST-v3.json) binds this successor.
 
-The typed-context flight is CLOSED_SECOND_FAILURE_NO_FURTHER_RECOVERY after 6,645 contacts.
-No complete system manifest/score exists. The completed direct score remains unread.
-Do not replay, splice, score partial output or activate the held replica.
+The candidate-bound slot-view proof is ABORTED after four Perception contacts, with
+four passing FIT receipts / 16 endpoints, and no complete task result. The first Solver
+view rejected a plain-versus-prefixed source-content mismatch. No retry is admitted under
+that proof. The immediate step is the named CPU reproduction/repair in a new worktree.
 
-The selected successor is candidate-bound slot views on the older useful dual-store agent.
-Its shared implementation is integrated at 7ca75217ae52da5bd0b81fc569005d5c5fdcefa1:
-248 affected tests passed, one platform skip, 83% combined coverage for two new modules.
-Actual released 54-card/402-binding/60-intent sources bind successfully.
-This proves model-free engineering only; no live FIT, generation or task-quality result exists.
-The four-row config is HELD; new plans, preparation and contact admission remain open.
+The older typed-context flight stays CLOSED_SECOND_FAILURE_NO_FURTHER_RECOVERY.
+Its direct score remains unread and its replica is ineligible. Preserve both failed sources.
 
-The service was alive and idle at the 18:48:12 UTC snapshot; no restart or unload occurred.
-No Fable5.1 takeover is acknowledged. Historical handoff files and indexes remain intact,
-but their running-flight instructions are superseded by this v2 package.
+The service was left resident; the fresh snapshot checks process identity and confirms
+the proof worker and its lease metadata/token are absent. No Fable5.1 takeover is acknowledged.
+
+The v2 files are historical, including their HELD/no-live-proof statements and 16-tool draft
+cap. The final registered cap was 24 before contact. Static readiness in a used configuration
+is not permission to rerun. Do not execute old next-action paragraphs.

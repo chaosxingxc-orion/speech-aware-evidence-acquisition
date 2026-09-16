@@ -1,0 +1,49 @@
+{
+  "schema": "saea-fable51-current-handoff-manifest-v3",
+  "recorded_at_utc": "2026-09-16T19:37:01.177969+00:00",
+  "current_entry": "docs/handoff/2026-09-16-fable51/HANDOFF-v3.md",
+  "canonical_source_commit_before_documentation": "854e3d2b814a700784957104c8901c1cfa8c76de",
+  "coordination_generation": 166,
+  "takeover_acknowledged": false,
+  "files": {
+    "docs/handoff/2026-09-16-fable51/HANDOFF-v3.md": "7dd3351c8c0f070f7728d438992a898d33a423a54a0af762436fa3767526f4c8",
+    "docs/handoff/2026-09-16-fable51/LIVE-PROOF-CLOSURE-v1.md": "0fb114aeca38f1cfdb490f327d3bf2fb390579f18def07cfd45d5a0b68b49cdb",
+    "docs/handoff/2026-09-16-fable51/NEXT-EXPERIMENTS-v3.md": "05fe9ea341bdfa292c3bcc9d5c4497cc2230ac7fb87ca0fc45889cb00234a9d7",
+    "docs/handoff/2026-09-16-fable51/FABLE51-REPLY-TEMPLATE.md": "d744ff2c27198bbed834f095083b5abcb475b72637b86119923273b1a18240b8",
+    "docs/handoff/2026-09-16-fable51/OPERATING-SNAPSHOT-v3.json": "bc41d7a9b3c60b5fc081cebb3b9a35e4a16d0e8744ff4204e24d65ebfbe6d449",
+    "docs/handoff/2026-09-16-fable51/WORKTREE-INVENTORY-v3.json": "4071c960d49d7343f520263c79e1c24da7b2d1caf7afc83c09c03afa62e0d440",
+    "docs/handoff/2026-09-16-fable51/LATEST.md": "0273678f4defbdbe1337d44450b5df62424901ba4cff38839dc7848e6d9bda1f",
+    "docs/superpowers/plans/experiment-handoff/state.json": "782eb045af69e28550f00608c863b9495a6d89ebac397a376e89b00fa15995ee",
+    "docs/superpowers/plans/experiment-handoff/STATUS-166.md": "2e110fa612ea3343d00670efce59fe2d7c356aa9ce96fe399b5117d58fb4b0b3",
+    "docs/superpowers/plans/experiment-handoff/README.md": "507390cb98f0e52cfdabdc3b242a03ad33845e1fdb50d138d784c7534795e710",
+    "docs/exposure-ledger.md": "e4bf13a9e87b34b30d105c4db7a77bd1432c2ea772789515088ccb6ccfa15edd",
+    "docs/handoff/2026-09-16-fable51/VALIDATION-v3.json": "16b74a4fee885102f44775cdc52efb2b056ed647b15ae5c55427eae460e41f66",
+    "docs/handoff/2026-09-16-fable51/EXPERIMENT-REPORT-v3.md": "ed440c1bb02687e22968cc0d07145783017d0ad2e92e88a6271085ddc5417e43"
+  },
+  "reused_historical_reports": {
+    "docs/handoff/2026-09-16-fable51/EXPERIMENT-REPORT-v2.md": "83c4833fc90a25222ead9860c4688c344d9b59eb1122e31287b7285d7d2c4e89",
+    "docs/handoff/2026-09-16-fable51/FUTURE-EXPERIMENT-DESIGNS-v2.md": "167d67730e267819467c75b9df663278cbd54da14c3eaba3ca84401b1522617f",
+    "docs/handoff/2026-09-16-fable51/IMPLEMENTATION-HANDOVER-v2.md": "837dd930e0a74f9a7399e38664ff06a686946d6bdc75ad0b2dbd972d1e71b7ab",
+    "docs/handoff/2026-09-16-fable51/RUNBOOK-SNAPSHOT-v2.md": "b483892218b1bfeabe79570772cb53f2228d2c6a728d9cb4d03dee0f4e494b2e",
+    "docs/handoff/2026-09-16-fable51/HANDOFF-MANIFEST-v2.json": "061f71cf9e03a3435ed4c991e9bab043fa234ae791f02161a332bddc0499365a",
+    "docs/handoff/2026-09-16-fable51/SOURCE-INDEX.json": "1c80c5f083ee39b847e55dfb14c0cd2d4449b0f110dd2924beb42697240947e4"
+  },
+  "source_diagnosis_code": {
+    "src/speech_aware_evidence_acquisition/core/flight/runtime.py": "0ca590187389940f79fccdc689f31f9f645f7d574291488f52074892a8e46473",
+    "src/speech_aware_evidence_acquisition/rails/phase_runner.py": "bcc7bc2511df9dbe34fc10aa59d360e3978261884d7af39f5a82cffe28977cbe",
+    "src/speech_aware_evidence_acquisition/rails/phase_tools.py": "cd8109f29cf0fc390d2748755cd2c1e5bc1f2f17b3dea93ebee67cc0e8afd717",
+    "src/speech_aware_evidence_acquisition/rails/runner.py": "9ee8f3776236fe2e947006e0620e02256b8db135f244ffe890fe77a80b90998a",
+    "src/speech_aware_evidence_acquisition/rails/knowledge_stores.py": "249132ce70c9d9a208493d221f8dc7ee4afd3a0b2912e9315c9cfe029f827772",
+    "src/speech_aware_evidence_acquisition/rails/slot_binding_view.py": "756d56692b491b235f0a07f60ced08d8b92f4911c37389239e69ca9a1fbd4c2d",
+    "configs/baseline/slurp-candidate-slot-view-proof4-v1.json": "addd1f9156c415bc630486da36ee38c1eff9db3ead143fcd126c8f1cab8de630"
+  },
+  "external_artifact_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+  "external_artifacts": {
+    "coordination/slurp-candidate-slot-view-proof4-v1/root-closure-v1.json": "4348d68adfb9527d4bb92715cc66cb25b9febd598cda5495a1b44716a655bdde",
+    "coordination/slurp-candidate-slot-view-proof4-v1/worker-terminal-v1.json": "2e84618578fce1b9b21e58bd4704c1c04529b3b59393ed8e1129b515c017bc10",
+    "attempts/SAEA-SLURP-CANDIDATE-SLOT-VIEW-PROOF4-V1/attempt-slurp-candidate-slot-view-proof4-generation-v1.json": "7440804b4a63ec93f23da825edd6b6d3fb59e341a2b442d584affaab6f327946",
+    "prepared/SAEA-SLURP-CANDIDATE-SLOT-VIEW-PROOF4-V1/phase-supply-v3.json": "7ae22c4f29af17702e51e58e8d73d46246734d3b4fc4f2b897e43cde35fbcdd0"
+  },
+  "historical_manifest_interpretation": "The v2 manifest remains valid at commit 0cb929521ef4eab5c9f11301bbbefb94484c1964. Its immutable reports are unchanged; explicitly mutable LATEST/state/coordination README have additive generation-166 successors.",
+  "scope": "Durable local-file handoff; latest proof is ABORTED with no retry under its identity. CPU repair and prospective experimental designs are documented. No new GPU contact, runtime fix, task-quality release, external send or takeover is claimed."
+}

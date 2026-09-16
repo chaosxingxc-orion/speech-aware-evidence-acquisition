@@ -1,0 +1,595 @@
+{
+  "schema": "saea-handoff-worktree-inventory-v3",
+  "captured_at_utc": "2026-09-16T19:30:24.916225+00:00",
+  "canonical_commit": "854e3d2b814a700784957104c8901c1cfa8c76de",
+  "worktrees": [
+    {
+      "worktree": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition",
+      "HEAD": "854e3d2b814a700784957104c8901c1cfa8c76de",
+      "branch": "refs/heads/master"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-activation-scope-prepare-v1",
+      "HEAD": "d0ffedd9a22a6bbb3fa3503b4e8ed42d29eb8931",
+      "branch": "refs/heads/codex/a2t-activation-scope-prepare-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-candidate-fit-supply-v1",
+      "HEAD": "52161e7faecab1a1199066026aca7f8519d033ff",
+      "branch": "refs/heads/codex/a2t-candidate-fit-supply-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-candidate-inventory-v1",
+      "HEAD": "9fb1fa6d1fecef154a1fdad69602162830044c8a",
+      "branch": "refs/heads/codex/a2t-candidate-inventory-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-candidate-recovery-prepare-v1",
+      "HEAD": "61bb391c05258c45258adffb1f9b5e2857a84f01",
+      "branch": "refs/heads/codex/a2t-candidate-recovery-prepare-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-compiled-snapshot-validator-v1",
+      "HEAD": "339991ecf5478bad781fab84a5fb6db0f0e65a0a",
+      "branch": "refs/heads/codex/a2t-compiled-snapshot-validator-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-context-budget-config-v1",
+      "HEAD": "f54a82b975d920cbf08a333f3fe7c4f785c87c61",
+      "branch": "refs/heads/codex/a2t-context-budget-config-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-native-analysis-v1",
+      "HEAD": "5f79d399dc15016aaeedccac347aebffddfc61ca",
+      "branch": "refs/heads/codex/a2t-native-analysis-v1",
+      "locked": "Frozen or active WSL worktree; preserve metadata across host-side path visibility changes."
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-native-assembly-v1",
+      "HEAD": "7539aab510473b2e1dd1df02a9af3185c084478b",
+      "branch": "refs/heads/codex/a2t-native-assembly-v1",
+      "locked": "Frozen or active WSL worktree; preserve metadata across host-side path visibility changes."
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-native-candidate-state-v1",
+      "HEAD": "a66aa0233a84bf4b3e16486e1d33ced9e56bd9e9",
+      "branch": "refs/heads/codex/a2t-native-candidate-state-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-native-control-full-recovery-v1",
+      "HEAD": "834d4d475ec4ffe0e9d61ea031746d5c2dd024ee",
+      "branch": "refs/heads/codex/a2t-native-control-full-recovery-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-native-control-recovery-v1",
+      "HEAD": "acea0270b3de769aa9df52fa4ed5798e5de73e48",
+      "branch": "refs/heads/codex/a2t-native-control-recovery-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-native-full4000-registration-v1",
+      "HEAD": "a3bec82799044c602df56464811c28eb0f62c7a8",
+      "branch": "refs/heads/codex/a2t-native-full4000-registration-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-native-postseal-read-v1",
+      "HEAD": "7e51daf96f801b5f54d65060e15ffe202bfa8f4c",
+      "branch": "refs/heads/codex/a2t-native-postseal-read-v1",
+      "locked": "Frozen or active WSL worktree; preserve metadata across host-side path visibility changes."
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-native-power-recovery-v1",
+      "HEAD": "22b56d706e2f5601dc79f58a8fad2bb6a9629f51",
+      "branch": "refs/heads/codex/a2t-native-power-recovery-v1",
+      "locked": "Frozen or active WSL worktree; preserve metadata across host-side path visibility changes."
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-native-role-base-prepare-v1",
+      "HEAD": "0ad710661a8570fad2e2d800196cdea6f619452c",
+      "branch": "refs/heads/codex/a2t-native-role-base-prepare-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-ordered-action-analysis-v1",
+      "HEAD": "9435e02fc199443b17213918cae77fd2458c84f7",
+      "branch": "refs/heads/codex/a2t-ordered-action-analysis-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-parameter-attribution-v1",
+      "HEAD": "5f896aeb1c6b04fbdd9146d9988ece5295b2a8bc",
+      "branch": "refs/heads/codex/a2t-parameter-attribution-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-postseal-analysis-v1",
+      "HEAD": "90a89e3eab6b258f0f92679c9c939bbcf10fe27b",
+      "branch": "refs/heads/codex/a2t-postseal-analysis-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-scope-tools-ledger-correction-v1",
+      "HEAD": "790c176f847496c6d2fd8b9d0aeed0b9156f2173",
+      "branch": "refs/heads/codex/a2t-scope-tools-ledger-correction-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-scope-tools-np2-feasibility-v1",
+      "HEAD": "a4576cf438ff2fb14b162c6c07c5e65acb17a787",
+      "branch": "refs/heads/codex/a2t-scope-tools-np2-feasibility-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-scope-tools-np2-proof4-prepare-v1",
+      "HEAD": "f54a82b975d920cbf08a333f3fe7c4f785c87c61",
+      "branch": "refs/heads/codex/a2t-scope-tools-np2-proof4-prepare-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-scope-tools-registration-v1",
+      "HEAD": "219e305f306f11998e39c44b5fb055b4fcfb3179",
+      "branch": "refs/heads/codex/a2t-scope-tools-registration-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/a2t-value-evidence-decision-v1",
+      "HEAD": "107b71ab0c976a027a8bde61e0374cc2a1ef40e1",
+      "branch": "refs/heads/codex/a2t-value-evidence-decision-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/attempt-observer-v1",
+      "HEAD": "6726e6160f95a526125131db6acfe6722385bfe8",
+      "branch": "refs/heads/codex/attempt-observer-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/campaign-flight-receipt-custody-v1",
+      "HEAD": "1c222359dcf982bf2802b733d81df076e8800fdf",
+      "branch": "refs/heads/codex/campaign-flight-receipt-custody-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/candidate-bound-slot-view-v1",
+      "HEAD": "3c14a0b0780967a5d224c573e8a991c0fd255607",
+      "branch": "refs/heads/codex/candidate-bound-slot-view-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/candidate-memory-connected-source-v1",
+      "HEAD": "308a43880da29c5bf35c0fba0ec16c071db3afb3",
+      "branch": "refs/heads/codex/candidate-memory-connected-source-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/candidate-refresh-supply-v1",
+      "HEAD": "9fb974e0d9e86726eb63c5dfcdedb1d5e9708f97",
+      "branch": "refs/heads/codex/candidate-refresh-supply-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/e21-execution-unit-runner-v1",
+      "HEAD": "9a556951d0fcc5542fb23e87af154b7763e9a66b",
+      "branch": "refs/heads/codex/e21-execution-unit-runner-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/e21-feature-unit-client-v1",
+      "HEAD": "71d553f47c251b2897069181abcd1ce845f2bb59",
+      "branch": "refs/heads/codex/e21-feature-unit-client-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/e21-feature-unit-lifecycle-proof-v1",
+      "HEAD": "fdc9db1b605ef18376ddda90e232d6e385a7bd19",
+      "branch": "refs/heads/codex/e21-feature-unit-lifecycle-proof-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/e21-fit-handoff-status139",
+      "HEAD": "d44924f0cfe3e8e011f4c31894eebf5da1cbd708",
+      "branch": "refs/heads/codex/e21-fit-handoff-status139"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/e21-native-raw-bridge-v1",
+      "HEAD": "c44a5ab7e649daf6a1797ff6335abcc8be8b1325",
+      "branch": "refs/heads/codex/e21-native-raw-bridge-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/e21-native-raw-fit-v1",
+      "HEAD": "bdecfa8cca0ec675a0d8e33e5dba5691dccfd5e4",
+      "branch": "refs/heads/codex/e21-native-raw-fit-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/e21-native-unit-static-fit-v1",
+      "HEAD": "93b83b26a8c1eea3234a688b32de1f896865f687",
+      "branch": "refs/heads/codex/e21-native-unit-static-fit-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/e21-native-window-final-registration-v1",
+      "HEAD": "1daad5186119b23c3414e36676afb296599dc29f",
+      "branch": "refs/heads/codex/e21-native-window-final-registration-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/e21-native-window-fit-registration-v1",
+      "HEAD": "1daad5186119b23c3414e36676afb296599dc29f",
+      "branch": "refs/heads/codex/e21-native-window-fit-registration-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/e21-native-window-registration-prepare-v1",
+      "HEAD": "64ff6fe6c744285b48d3a4454be2e74ff11b2431",
+      "branch": "refs/heads/codex/e21-native-window-registration-prepare-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/e21-native-window-runtime-v1",
+      "HEAD": "1553311015798bf447ae8c014dba1c427a0a2110",
+      "branch": "refs/heads/codex/e21-native-window-runtime-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/e21-raw-direct-controller-v1",
+      "HEAD": "dd7f350ecd27faf225112b882f6ee6d18847d683",
+      "branch": "refs/heads/codex/e21-raw-direct-controller-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/e21-real-static-fit-proof-v1",
+      "HEAD": "244af6fc74e52e7c4d4ceb0db859427338e4f8c1",
+      "branch": "refs/heads/codex/e21-real-static-fit-proof-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/e21-shared-unit-delivery-v1",
+      "HEAD": "885eaa0511d7a331ec62d166dfba1da9fa9f5ce1",
+      "branch": "refs/heads/codex/e21-shared-unit-delivery-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/governed-context-builder-v1",
+      "HEAD": "7b37b46d6a0580dfabba422aa02386c05e00d2ea",
+      "branch": "refs/heads/codex/governed-context-builder-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/governed-context-supply-v1",
+      "HEAD": "9581fb483a367acfe772189cecdc7336624205ff",
+      "branch": "refs/heads/codex/governed-context-supply-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/gpu-resume-20260915",
+      "HEAD": "e157375f68735d149f45ff527606a2e935400243",
+      "branch": "refs/heads/codex/gpu-resume-20260915"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/memory-source-membership-v1",
+      "HEAD": "fbfd4064ae0100c5d35deae56ac356a3aeab76d6",
+      "branch": "refs/heads/codex/memory-source-membership-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/native-bounded-evidence-admission-v1",
+      "HEAD": "a92ed428a69eee7dd36d6780de870f9a4c6efd17",
+      "branch": "refs/heads/codex/native-bounded-evidence-admission-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/native-bounded-evidence-recovery-admission-v1",
+      "HEAD": "f2c90cb2a4ab98713e319202f6f95a98765f1e76",
+      "branch": "refs/heads/codex/native-bounded-evidence-recovery-admission-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/native-candidate-refresh-v1",
+      "HEAD": "d847d1730eea062f6eb46b0cbe673d3ebee0cb0c",
+      "branch": "refs/heads/codex/native-candidate-refresh-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/native-candidate-stage-projections-v1",
+      "HEAD": "7a61a2b337bc405f74ebb9b1534e9f421359ab70",
+      "branch": "refs/heads/codex/native-candidate-stage-projections-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/native-knowledge-reference-projection-v1",
+      "HEAD": "6473bf27e47b8835309f436daed5e7c491e57d20",
+      "branch": "refs/heads/codex/native-knowledge-reference-projection-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/native-query-state-replay-v1",
+      "HEAD": "fab666f9d858545cc25be8f766000f32a75277a8",
+      "branch": "refs/heads/codex/native-query-state-replay-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/native-raw-control-integration-check-v1",
+      "HEAD": "73ee6a6e509c819a897245363ce1a422ec106c75",
+      "detached": true
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/native-refresh-tools-admission-v1",
+      "HEAD": "f88bff7c72926b2a7ed956731b129c2271c3f36f",
+      "branch": "refs/heads/codex/native-refresh-tools-admission-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/native-refresh-tools-successor-v1",
+      "HEAD": "5d4256acdfb9c077fcb770e3b528f11cd1977073",
+      "branch": "refs/heads/codex/native-refresh-tools-successor-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/native-target-knowledge-tool-v1",
+      "HEAD": "e40acf880218518dd462a6b99b8170f13e1509be",
+      "branch": "refs/heads/codex/native-target-knowledge-tool-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/native-terminal-bounds-v1",
+      "HEAD": "3a28c98bc8b4cf68aa344da049c06a8ad14e2291",
+      "branch": "refs/heads/codex/native-terminal-bounds-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/native-tool-error-observation-v1",
+      "HEAD": "8d76096ad7ed404a7c249cf576c3a8709dd489c8",
+      "branch": "refs/heads/codex/native-tool-error-observation-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/native-tool-exposure-postseal-v1",
+      "HEAD": "0dbfc600b24dc2bb8eeeba91cdd0ca03d30127d5",
+      "branch": "refs/heads/codex/native-tool-exposure-postseal-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/native-tool-schema-compat-v1",
+      "HEAD": "88c77c94a8a40e5f0370c78d22e4c9e32dfa15a2",
+      "branch": "refs/heads/codex/native-tool-schema-compat-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/proposal-abstention-binding-v1",
+      "HEAD": "6795f81bf98df4e9695292507c898918c43d8df2",
+      "branch": "refs/heads/codex/proposal-abstention-binding-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/provisional-memory-train-evaluation-root-v1",
+      "HEAD": "beeeb41d20058b99ede4777ee467f4a01217c923",
+      "branch": "refs/heads/codex/provisional-memory-train-evaluation-root-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/provisional-memory-train-evaluation-v1",
+      "HEAD": "c576a4f14d6d2965b456f046cc6e5d41fa92282a",
+      "branch": "refs/heads/codex/provisional-memory-train-evaluation-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-broad-factored-prepare-v1",
+      "HEAD": "0bede772c27688c29999798e5fc945035a10b805",
+      "branch": "refs/heads/codex/slurp-broad-factored-prepare-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-candidate-compare-v1",
+      "HEAD": "601c2d616a5700fdc87535010a43b5c92961a9bc",
+      "branch": "refs/heads/codex/slurp-candidate-compare-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-candidate-comparison-orchestration-v1",
+      "HEAD": "429d89be7d857558e317938f6d647c5718c9656d",
+      "branch": "refs/heads/codex/slurp-candidate-comparison-orchestration-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-candidate-five-prepare-v1",
+      "HEAD": "f419b521aef9f01b60d1321bfbdebf4370e2424b",
+      "branch": "refs/heads/codex/slurp-candidate-five-prepare-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-candidate-five-registration-v1",
+      "HEAD": "534c92e8c67a510f48ddb59f98582ade384b0145",
+      "branch": "refs/heads/codex/slurp-candidate-five-registration-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-configurable-candidates-v1",
+      "HEAD": "195b8d9619f19a7735bedec47aa300de55db690e",
+      "branch": "refs/heads/codex/slurp-configurable-candidates-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-contract-construction-exclusions-v1",
+      "HEAD": "50ef801abb37dc7c83ce48e5e7352569c9851c77",
+      "branch": "refs/heads/codex/slurp-contract-construction-exclusions-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-contract-projection-v1",
+      "HEAD": "e79d1ad35bc63ce102e6560943f6bec8f85911df",
+      "branch": "refs/heads/codex/slurp-contract-projection-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-direct-native-dual-store-dev1000-v1",
+      "HEAD": "d22fdd402b3d3ddd167b78d75835f911ec73e71e",
+      "branch": "refs/heads/codex/slurp-direct-native-dual-store-dev1000-v1",
+      "locked": "Frozen registered direct/native dual-store full comparison; retain through scoring and analysis"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-direct-source-recovery-v1",
+      "HEAD": "f3189ce2667a45b1c0c9633e510747ae914118bd",
+      "branch": "refs/heads/codex/slurp-direct-source-recovery-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-dual-store-base-replication-v1",
+      "HEAD": "1b5009d6f82655b9ffd2f6aa2ce381f330f9f5f9",
+      "branch": "refs/heads/codex/slurp-dual-store-base-replication-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-dual-store-reboot-recovery-runtime-v1",
+      "HEAD": "6307a3ab30c93a6be35114deb5f701e6e444292f",
+      "branch": "refs/heads/codex/slurp-dual-store-reboot-recovery-runtime-v1",
+      "locked": "Active same-method reboot recovery and pending complete scoring"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-evidence-review-prepare-v1",
+      "HEAD": "630d31198b429e251eb6c1f59fb2bab3b9716344",
+      "branch": "refs/heads/codex/slurp-evidence-review-prepare-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-intent-factored-builder-v1",
+      "HEAD": "d54784b2b42672d5b8c494f3268606b2865c7295",
+      "branch": "refs/heads/codex/slurp-intent-factored-builder-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-intent-key-encoding-v1",
+      "HEAD": "6fad68641d216d7719bf10aca5eb2b07b02a9a3f",
+      "branch": "refs/heads/codex/slurp-intent-key-encoding-v1",
+      "locked": "Pinned held text-encoder preparation; do not alter code identity."
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-native-bounded-perception-proof-v1",
+      "HEAD": "5a9e78f5dc309f16631e5d5b21687a1850609e7d",
+      "branch": "refs/heads/codex/slurp-native-bounded-perception-proof-v1",
+      "locked": "Frozen registered four-row Perception proof runtime"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-native-support-diagnostics-v1",
+      "HEAD": "ebe19c52577160cc20beb0092017f5bbd6ac60cd",
+      "branch": "refs/heads/codex/slurp-native-support-diagnostics-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-native-system-diagnostics-v1",
+      "HEAD": "8f35ae1f54a8052076141c40139e634e6b942b56",
+      "branch": "refs/heads/codex/slurp-native-system-diagnostics-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-native-terminal-recovery-v1",
+      "HEAD": "64983e41527f968e7ee9c39abeb791ad01594a18",
+      "branch": "refs/heads/codex/slurp-native-terminal-recovery-v1",
+      "locked": "Frozen WSL native terminal recovery; preserve through sealing and scoring."
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-native-tool-rejection-recovery-v1",
+      "HEAD": "d7ff1c1ad9ee9bb6dbf613cf7ef8dbc4fde4cb87",
+      "branch": "refs/heads/codex/slurp-native-tool-rejection-recovery-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-offline-gap-diagnosis-v1",
+      "HEAD": "e12bd08c543871226f19a22a989fdb2faa9b529a",
+      "branch": "refs/heads/codex/slurp-offline-gap-diagnosis-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-retrieval-supply-audit-v1",
+      "HEAD": "916d6597b7dd2b9ec76fdf56e401c00864b2d6db",
+      "branch": "refs/heads/codex/slurp-retrieval-supply-audit-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-review-measurement-v1",
+      "HEAD": "be36e8267f81875f50b229b2ec444a3e9f21689a",
+      "branch": "refs/heads/codex/slurp-review-measurement-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-slot-binding-footprint-v1",
+      "HEAD": "923a0360972cb125ca1671cdd036cd72d6e30418",
+      "branch": "refs/heads/codex/slurp-slot-binding-footprint-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-speech-observation-analysis-runtime-v1",
+      "HEAD": "8b0d7062866f53296c729de942142ce43309d410",
+      "branch": "refs/heads/codex/slurp-speech-observation-analysis-runtime-v1",
+      "locked": "Frozen or active WSL worktree; preserve metadata across host-side path visibility changes."
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-speech-observation-pair-v1",
+      "HEAD": "b0c227f570fe76a4100a361b7ab3cea33d24f275",
+      "branch": "refs/heads/codex/slurp-speech-observation-pair-v1",
+      "locked": "Matched SLURP answering pair"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-speech-tool-control-prepare-v1",
+      "HEAD": "e5149640f853569f79aafc64fe7172cde8233da5",
+      "branch": "refs/heads/codex/slurp-speech-tool-control-prepare-v1",
+      "locked": "Frozen or active WSL worktree; preserve metadata across host-side path visibility changes."
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-speech-tool-registration-v1",
+      "HEAD": "f755559a43fa8fddb67438cf258626507cf8ae84",
+      "branch": "refs/heads/codex/slurp-speech-tool-registration-v1",
+      "locked": "Frozen or active WSL worktree; preserve metadata across host-side path visibility changes."
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-speech-tool-treatment-prepare-v1",
+      "HEAD": "fdef656a9c09d59aa48f36ca11cccc2b83a70217",
+      "branch": "refs/heads/codex/slurp-speech-tool-treatment-prepare-v1",
+      "locked": "Active WSL worktree; preserve metadata across host-side path visibility changes."
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-stage-attribution-v1",
+      "HEAD": "c4b945fc81c468c4ce07056d155b1cf91e663d69",
+      "branch": "refs/heads/codex/slurp-stage-attribution-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-temporal-slot-diagnosis-v1",
+      "HEAD": "b60b46a1d499ef913970d647fd64e14dce02239e",
+      "branch": "refs/heads/codex/slurp-review-completeness-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-train-anchor-cuda-recovery-v1",
+      "HEAD": "826a77c7bd9030ccbc25f2b74cd6fa4ed69db561",
+      "branch": "refs/heads/codex/slurp-train-anchor-cuda-recovery-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-train-anchor-v1",
+      "HEAD": "51b492a01a75a828e003de764db7f59d4a4ceba7",
+      "branch": "refs/heads/codex/slurp-train-anchor-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-typed-context-full-recovery-v1",
+      "HEAD": "9bf27b28708bb93607138e7bcd1eacb66eab3f08",
+      "branch": "refs/heads/codex/slurp-typed-context-full-recovery-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-typed-context-registration-v1",
+      "HEAD": "bae1e743e66c0ee8189851bb1ec35ddc37ab2c49",
+      "branch": "refs/heads/codex/slurp-typed-context-registration-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-typed-context-system-recovery-v1",
+      "HEAD": "8ad1a306dd2a50f67916c93246d083c1218bbbc5",
+      "branch": "refs/heads/codex/slurp-typed-context-system-recovery-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/slurp-whisper-recovery-v1",
+      "HEAD": "5c7d7273163961542bd3b094d8bbb93be141f4f2",
+      "branch": "refs/heads/codex/slurp-whisper-recovery-v1",
+      "locked": "Frozen registered Whisper recovery source"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/speech-observation-span-backend-v1",
+      "HEAD": "46b6301e43babef509f8d7b512ac58cbc7d06652",
+      "branch": "refs/heads/codex/speech-observation-span-backend-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/speech-query-preparation",
+      "HEAD": "9d7e8bd9b5e2ed1007f466f4abc7d79a314c4509",
+      "branch": "refs/heads/codex/speech-query-preparation",
+      "prunable": "gitdir file points to non-existent location"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/speech-span-tool-dispatch-v1",
+      "HEAD": "36a8b734a6cdd7e7f0b2eae8e07c43dd023cd711",
+      "branch": "refs/heads/codex/speech-span-tool-dispatch-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/status-138-handoff-v1",
+      "HEAD": "58c908036bc8a3e51cb8a29824f6d720db16f390",
+      "branch": "refs/heads/codex/status-138-handoff-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/status140-preparation",
+      "HEAD": "71616fd0ca0a9041359f24a10f64d88553062cfc",
+      "branch": "refs/heads/codex/status140-preparation"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/status141-single-dataset",
+      "HEAD": "da6a4cd52aaaf4b88ff6163a436df609b38bc88d",
+      "branch": "refs/heads/codex/status141-single-dataset"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/train-rule-consolidation-v1",
+      "HEAD": "e05cdcf19149809eb56f0787f1acd61cba261240",
+      "branch": "refs/heads/codex/train-rule-consolidation-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/train-stage-diagnostic-export-v1",
+      "HEAD": "95a06e43aab03aa6ba4275761282549fcf7dfa21",
+      "branch": "refs/heads/codex/train-stage-diagnostic-export-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/training-reward-links-v1",
+      "HEAD": "888dd8cce1ec00965aaf9e1532879250be05f40a",
+      "branch": "refs/heads/codex/training-reward-links-v1",
+      "locked": "Active WSL worktree; preserve metadata across host-side path visibility changes."
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/whisper-cpu-thread-envelope-v1",
+      "HEAD": "a0105978c081fab07176a2ace5da0b85d82e3eff",
+      "branch": "refs/heads/codex/whisper-cpu-thread-envelope-v1"
+    },
+    {
+      "worktree": "/home/chao/saea-worktrees/worker-flight-receipt-custody-v1",
+      "HEAD": "d2566ee7a35d350f4e797471c6a0ae04dd20f193",
+      "branch": "refs/heads/codex/worker-flight-receipt-custody-v1"
+    },
+    {
+      "worktree": "/mnt/d/chao_workspace/exploring-l4-intelligence/preprocess-stop-wrapper",
+      "HEAD": "9ca0e78b0a8a9b950256d6eb71f2cfa6626d62bb",
+      "branch": "refs/heads/codex/preprocess-stop-wrapper"
+    },
+    {
+      "worktree": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/saea-g1-runtime",
+      "HEAD": "0805094fb159e37ca5a0baebcaaa0b0e38786e33",
+      "branch": "refs/heads/codex/g1-frozen"
+    }
+  ],
+  "interpretation": "Inventory only. Locked labels may be historical; validate actual attempts. Branch ancestry does not detect all cherry-picked equivalents. Do not merge or prune from this list."
+}
