@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 142,
+  "generation": 143,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,13 +10,13 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "6cac875b0200f3e31917cf61349c9e617d86bd54",
-  "updated_at_utc": "2026-09-16T04:28:29.656303+00:00",
-  "next_action": "Read STATUS-142.md. Shared candidate-width and source-bound on-demand knowledge implementations are integrated and root-reviewed. The corrected candidate-five configuration is integrated and root-validated; root now finalizes paired analysis, exact execution/fit plans, exposure, prepared supply and a frozen WSL source. No new experiment is admitted by the held fragments. Switch the resident to the exact registered SLURP identity only at this boundary. E21 static fit is FAILED_BEFORE_MODEL_CONTACT_HOLD with dead-lease reconciliation complete; do not retry or generate. Audio2Tool remains held. Preserve the incumbent, closed failures and unread aborted partial quality.",
+  "snapshot_commit": "65cdf3e35e3b93f0d69751895582c1c5db056e89",
+  "updated_at_utc": "2026-09-16T04:53:10.400186+00:00",
+  "next_action": "Read STATUS-143.md. Root has registered and launched the maximum-five SLURP TRAIN A1080 campaign from frozen WSL commit534c92e8. Use coordination/slurp-candidate-five-v1 operational receipts for current state. Do not relaunch or alter frozen source. Each realized request is capacity-checked before dispatch; official complete scoring is queued internally after seal. Await complete sealed/scored source before root paired release and quality interpretation. Track B remains held for source-bound draft/issue/evidence measurement and the smallest separately admitted contrast. E21 and Audio2Tool remain held; preserve all closed failures and unread aborted partial quality.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-GPU-RESUME-2026-09-15",
   "owner_power_direction": "2026-09-14: The owner confirmed that current power mode is optimal and instructed root not to dwell on it. Preserve current hardware/service settings.",
-  "owner_gpu_direction": "Owner GPU authorization remains active for separately registered SLURP work. E21's existing fit has failed before model contact and is now held; Audio2Tool proof/full flights remain held. The idle resident E21 server is not a matching SLURP service. Root exclusively manages service switching and lease issuance.",
+  "owner_gpu_direction": "Owner GPU authorization remains active. Root switched the idle E21 service to the registered SLURP maximum-five four-slot decoder-only service; only this campaign may contact it under the shared lease. Root manages all service switching.",
   "owner_research_direction": "September 16: investigate candidate coverage through larger Top-N and broader knowledge information coverage, and intent/slot correctness through better information and independent Reviewer examination of data and decisions. Root retains analysis and decisions."
 }

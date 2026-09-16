@@ -1,9 +1,9 @@
 # Current continuation: September 16
 
-Read [STATUS-142](STATUS-142.md) and [the two-track plan](../../../readiness/2026-09-16-slurp-two-track-research-plan.md).
+Read [STATUS-143](STATUS-143.md) and [the two-track plan](../../../readiness/2026-09-16-slurp-two-track-research-plan.md).
 SLURP is the only active optimization target. Candidate-width support and source-bound
-on-demand knowledge are implemented and tested. Candidate-five and problem-directed
-Reviewer configurations remain held until exact flight admission and capacity validation.
+on-demand knowledge are implemented and tested. The candidate-five campaign is registered and launched from a frozen WSL checkout.
+The problem-directed Reviewer configuration remains held for its own admission.
 
 The existing E21 static fit has failed before model contact; its dead lease was reconciled.
 Do not retry or generate E21. Audio2Tool remains held. Do not reopen the twice-failed
@@ -11,8 +11,8 @@ SLURP dynamic-tools flight or read its partial quality.
 
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-142.md](STATUS-142.md) records integrated implementation,
-root verification, the E21 terminal boundary, and remaining exact SLURP registration work.
+**Latest execution:** [STATUS-143.md](STATUS-143.md) records integrated implementation,
+root verification, the service switch, exact SLURP registration and campaign launch.
 Research preparation runs in parallel; one experiment generates at a time.
 
 **Current comparison direction:** [OWNER-SYSTEM-VERSIONS-025.md](OWNER-SYSTEM-VERSIONS-025.md) makes complete model-versus-system task quality primary and allows evidence-guided expansion of system versions. The supplied/withheld knowledge draft is withdrawn. [The current system plan](../../../readiness/2026-09-13-slurp-direct-vs-native-system-plan-v1.md) and [extension sequence](../../../readiness/2026-09-13-finalized-score-reuse-and-system-extension.md) govern the next work.
@@ -21,7 +21,7 @@ Research preparation runs in parallel; one experiment generates at a time.
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 142. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 143. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -53,6 +53,8 @@ instruction. The actual ExecutionPlan, exposure, runtime, attempt and budget gat
 each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
+
+STATUS-143 supersedes the older execution paragraphs below. The maximum-five SLURP campaign has launched; do not relaunch it. E21 and Audio2Tool remain held. Use source-bound operational receipts for liveness and wait for complete seal/scoring before quality release.
 
 Read [STATUS-141.md](STATUS-141.md), state.json and
 [OWNER-GPU-RESUME-2026-09-15](OWNER-GPU-RESUME-2026-09-15.md) first. SLURP is

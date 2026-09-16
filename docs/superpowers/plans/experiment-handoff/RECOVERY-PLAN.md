@@ -1,3 +1,5 @@
+Current continuation: read STATUS-143.md. The maximum-five SLURP campaign is launched from frozen source534c92e8; root owns its service. Earlier next-action descriptions below are historical. E21 and Audio2Tool remain held.
+
 # Latest boundary: September 16, STATUS-142
 
 Shared configurable candidate width and released semantic target lookup are integrated.
