@@ -1,7 +1,7 @@
 # Current continuation and Fable5.1 handoff
 
 Updated 2026-09-16. Read [LATEST](../../../handoff/2026-09-16-fable51/LATEST.md)
-and [STATUS-163](STATUS-163.md) first, then the direct handoff to Fable5.1.
+and [STATUS-164](STATUS-164.md) first, then the direct handoff to Fable5.1.
 These supersede the earlier running-state routing. Do not load every historical note.
 
 The owner requested a durable file handoff with designs, results, root interpretation
@@ -33,6 +33,12 @@ with one platform skip and 92% new-module coverage. Read the
 [implementation update](../../../handoff/2026-09-16-fable51/IMPLEMENTATION-UPDATE.md).
 Canonical observations and the closed-flight boundary are preserved. Real capacity and
 task benefit are not yet demonstrated.
+
+The source-only [slot-binding audit](../../../results/2026-09-16-slurp-slot-binding-footprint-v1.md)
+now quantifies the consumption opportunity. Root selected one
+[candidate-bound slot-view design](../../../readiness/2026-09-16-candidate-bound-slot-view-design-v1.md);
+it still needs shared runtime integration and prospective proof. Do not interpret
+ideal body-byte savings as task benefit.
 
 ## Reading routes
 

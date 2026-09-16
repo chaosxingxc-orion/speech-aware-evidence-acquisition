@@ -1,0 +1,15 @@
+{
+  "schema": "saea-fable51-slot-view-successor-index-v1",
+  "recorded_at_utc": "2026-09-16T18:24:08.559744+00:00",
+  "analysis_commit": "0fbfd6b7ae56569cefa8d0542a494d00655084fc",
+  "files": {
+    "docs/handoff/2026-09-16-fable51/LATEST.md": "7ce34fb7789fa4f40ae65897ddb8b7d0a8370084973e165fd7d3a0243180a6b9",
+    "docs/superpowers/plans/experiment-handoff/state.json": "bde14fc44089839768d8816d11c68957c92712cbcd7a323a35c433fb7c18d50f",
+    "docs/superpowers/plans/experiment-handoff/STATUS-164.md": "b7fcd7ae1546a45b23a8d98344f27141465c8362624ae605c163a3bd5cee7ec2",
+    "docs/superpowers/plans/experiment-handoff/README.md": "4c2ecad130ce94b8140eaced7413f8aca4d3ba20e2f70b00e7cc0320013a97db",
+    "docs/results/2026-09-16-slurp-slot-binding-footprint-v1.md": "4cd9efb3e6480c988225c2af55f4ff6b919f2237553072d2588d75b677d8a3f4",
+    "docs/results/2026-09-16-slurp-slot-binding-footprint-v1.json": "8990a64bfb52e28fb3560c7af107dd13b2ef13cc8f0c4779d0c33eda30d48269",
+    "docs/readiness/2026-09-16-candidate-bound-slot-view-design-v1.md": "f186c34efcae5f1dcf17ea5f8860d9f45c5c12ab02bb64c6fceda150807876be"
+  },
+  "supersedes_routing": "IMPLEMENTATION-INDEX-v1.json; prior snapshots remain historical."
+}

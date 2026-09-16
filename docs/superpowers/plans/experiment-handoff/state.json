@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 163,
+  "generation": 164,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "e4b8798b4c023c8d0ff5f24ad596d2820da808f9",
-  "updated_at_utc": "2026-09-16T18:06:54.509810+00:00",
-  "next_action": "Read CONTINUATION-BRIEF.md and IMPLEMENTATION-UPDATE.md via LATEST.md. The opt-in shared native knowledge reference projection is implemented and verified with 309 passing WSL tests, one platform skip and 92% new-module coverage. Reconcile takeover and ownership, then define a distinct prospective bounded proof and one scientifically justified successor. No new contacts or third recovery are authorized by implementation. The failed source, unread paired quality and held replica remain preserved.",
+  "snapshot_commit": "0fbfd6b7ae56569cefa8d0542a494d00655084fc",
+  "updated_at_utc": "2026-09-16T18:24:08.559744+00:00",
+  "next_action": "Implement the selected candidate-bound slot-view design through shared source-bound knowledge/context interfaces, starting from the pinned structured authored relation and preserving canonical sources, global rules, all applicable candidate bindings and outside-candidate draft/tool targets. Source-only exhaustive footprint audit is complete (42.5421% ideal body-byte reduction for ordered triples), not a task or token result. Then separately admit a bounded real-path proof and one complete matched scientific comparison. No new GPU contact, third recovery or partial-quality read is authorized by this source audit.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-GPU-RESUME-2026-09-15",
@@ -26,5 +26,7 @@
   "current_flight_status": "CLOSED_SECOND_FAILURE_NO_FURTHER_RECOVERY",
   "current_terminal_at_utc": "2026-09-16T17:07:37.744607+00:00",
   "implementation_source_commit": "e4b8798b4c023c8d0ff5f24ad596d2820da808f9",
-  "implementation_worktree": "/home/chao/saea-worktrees/native-knowledge-reference-projection-v1"
+  "implementation_worktree": "/home/chao/saea-worktrees/native-knowledge-reference-projection-v1",
+  "selected_successor_design": "docs/readiness/2026-09-16-candidate-bound-slot-view-design-v1.md",
+  "source_feasibility_report": "docs/results/2026-09-16-slurp-slot-binding-footprint-v1.md"
 }

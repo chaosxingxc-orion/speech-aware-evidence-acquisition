@@ -36,3 +36,18 @@ The WSL regression suite passed 309 tests with one Windows-only skip; new projec
 coverage is 92%. No model, tokenizer or scoring contact occurred. Historical configs and
 the failed frozen source remain unchanged. Next is takeover and a distinct prospective
 proof/design decision, not automatic full-roster recovery.
+
+## Selected scientific successor after source-only feasibility
+
+The next selected information-use experiment is
+[candidate-bound slot views](../../readiness/2026-09-16-candidate-bound-slot-view-design-v1.md)
+on the older useful dual-store agent. Keep the released facts and role configuration
+fixed; preserve the structured candidate/slot semantic relation through to a derived
+consumer view. Runtime implementation and prospective contact admission remain open.
+
+The [source-only footprint audit](../../results/2026-09-16-slurp-slot-binding-footprint-v1.md)
+enumerated every ordered distinct candidate set of widths one through three using the
+shared selector. For all 205,320 ordered triples, ideal card-body bytes fell 42.5421%
+when cross-candidate binding rows were omitted and every global field retained.
+This is neither campaign weighting nor measured token savings or task benefit.
+The audit did not read any campaign quality and did not contact a model.
