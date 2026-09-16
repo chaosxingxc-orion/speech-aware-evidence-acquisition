@@ -1048,7 +1048,7 @@ def load_verified_native_system_candidate_rows(
     return _native_system_rows(binding, bundle, full_ids, legal_ids=legal_ids)
 
 
-def _references(binding, expected_ids, *, loader):
+def _verified_reference_records(binding, expected_ids, *, loader):
     if binding.get("kind") != "slurp-split":
         raise SlurpTopNAnalysisError("reference source kind must be slurp-split")
     split_id, split_hash = binding.get("split_id"), binding.get("split_identity_hash")
@@ -1083,7 +1083,16 @@ def _references(binding, expected_ids, *, loader):
     selected_hash = split_identity_hash(prefixed("slurp", expected_ids))
     if selected_hash != split_hash:
         raise SlurpTopNAnalysisError("reference analysis-roster identity differs from configured hash")
-    return tuple(ReferenceIntentRow(sample_id, by_id[sample_id].intent) for sample_id in expected_ids)
+    return tuple(by_id[sample_id] for sample_id in expected_ids)
+
+
+def _references(binding, expected_ids, *, loader):
+    return tuple(
+        ReferenceIntentRow(record.sample_id, record.intent)
+        for record in _verified_reference_records(
+            binding, expected_ids, loader=loader
+        )
+    )
 
 
 def load_verified_slurp_reference_intents(binding, expected_ids, *, loader):
@@ -1094,6 +1103,16 @@ def load_verified_slurp_reference_intents(binding, expected_ids, *, loader):
     """
 
     return _references(binding, expected_ids, loader=loader)
+
+
+def load_verified_slurp_reference_records(binding, expected_ids, *, loader):
+    """Return full scoring-side records through the existing verified join.
+
+    Gold fields are offline-only. Callers must never pass these records into a
+    runtime request or copy reference strings into a model-visible artifact.
+    """
+
+    return _verified_reference_records(binding, expected_ids, loader=loader)
 
 
 def _authoritative_candidate_ids(binding: Mapping[str, object], *, loader) -> frozenset[str]:
