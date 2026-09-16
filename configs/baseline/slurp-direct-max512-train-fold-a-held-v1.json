@@ -1,0 +1,37 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame/snapshot.json",
+  "knowledge_snapshot_sha256": "609854e4211891614b621e6431ccf23706c2aa3a3bc9133dae9d9765628c88b8",
+  "live_phase_fit": {
+    "run_id": "HELD-SLURP-DIRECT-MAX512-TRAIN-A-FIT-V1",
+    "attempt_id": "HELD-NO-CONTACT-SLURP-DIRECT-TRAIN-A-FIT-V1",
+    "contact_cap": 3241
+  },
+  "live_phase_fit_audio_seconds_cap": 3085,
+  "phase_material": {
+    "direct": {
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_phase_direct.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null
+    }
+  },
+  "policy": "phase-direct-only-v1",
+  "scorers": [
+    "slurp-slu-official-train",
+    "cost"
+  ],
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_template_active": true,
+  "what_this_is": "HELD full1080 TRAIN A direct frozen-model comparator through the shared direct-only phase, controller, FlightRuntime and OpenJiuwen executor. Reuse the existing max512 direct task instruction, phase instruction and full legal inventory. Match the current TRAIN A native model geometry, original promoted speech and decoding. No candidate history, knowledge supply, memory, review or analytical tool enters the model request. The legacy snapshot stays invisible and supplies shared leakage checks only. Existing whole-roster exact request-fit is required after separate contact admission. This configuration registers no contact and does not itself establish a matched complete-system result.",
+  "whole_roster_wave_barrier": true
+}

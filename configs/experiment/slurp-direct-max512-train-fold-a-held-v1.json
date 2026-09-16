@@ -1,0 +1,49 @@
+{
+  "experiment_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-HELD-V1",
+  "date": "2026-09-16",
+  "execution_profile": "model-free-check",
+  "fragment_kind": "saea-slurp-direct-comparator-preparation-v1",
+  "purpose": "Prepare the decision-relevant direct-model comparator on current TRAIN A1080 without creating another knowledge ablation or launching a contact.",
+  "split_id": "SLURP-EVO-FOLD-A-V2",
+  "service_session": "HELD-NO-SERVICE",
+  "cells": [
+    {
+      "cell_id": "slurp-direct-max512-train-fold-a-held-v1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "baseline_fragment": "slurp-direct-max512-train-fold-a-held-v1",
+      "run_id": "HELD-SLURP-DIRECT-MAX512-TRAIN-A-V1",
+      "attempt_id": "HELD-NO-CONTACT-SLURP-DIRECT-TRAIN-A-V1",
+      "allowed_execution_stages": [
+        "check"
+      ],
+      "readiness": {
+        "state": "held",
+        "reason": "Root must choose and freeze the system comparator, match source/service identity, register generation and fit, and bind complete-result analysis before contact. Current A1 retains the exclusive lease."
+      }
+    }
+  ],
+  "population": {
+    "count": 1080,
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "Previously exposed TRAIN Fold A1080 only; exploratory development. No Fold B references or runtime test labels."
+  },
+  "prospective_workload": {
+    "generation_calls": 1080,
+    "whole_roster_fit_endpoint_calls_cap": 3241,
+    "speech_audio_seconds_one_pass": 3084.5284375,
+    "official_complete_scoring_jobs": 1,
+    "asr_calls": 0,
+    "encoder_calls": 0,
+    "note": "Preparation arithmetic only. No ExecutionPlan, exposure registration or GPU budget is created by these fields."
+  },
+  "pending_root_bindings": {
+    "system_comparator": "Choose the frozen complete system after A1 verdict; keep the choice and any control-relative package differences explicit.",
+    "contact_admission": "Freeze source and complete service identity; assign registered run/attempt IDs, fit and generation budgets, and exposure rows before first contact.",
+    "scoring_and_read": "Score each complete manifest once with per-row statistics. Root releases the complete pair before reading new task quality.",
+    "replication": "An exploratory positive full-task comparison requires same-roster matched replication before stable-benefit language."
+  },
+  "preserve_wire_responses": true,
+  "failure_policy": "HELD: check-only configuration. No worker, campaign, fit endpoint, model generation, ASR, encoder or scorer contact is admitted. Do not reopen any failed historical flight."
+}
