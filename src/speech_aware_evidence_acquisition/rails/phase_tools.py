@@ -734,12 +734,14 @@ class PhaseToolDispatcher:
                     value_id[len(prefix):] for value_id in context.query_state.retrieved_value_ids
                     if value_id.startswith(prefix)
                 )
+                target_index = getattr(self.supply_for_store, "target_indices", {}).get(store_id)
                 output = tool.call(
                     self.knowledge_stores.snapshot_for(store_id), context.query_state,
                     action["arguments"]["candidate_ids"],
                     max_values_per_candidate=spec["knowledge_values_per_candidate"],
                     max_total_values=spec["knowledge_value_limit"],
                     already_visible_value_ids=visible,
+                    **({"target_index": target_index} if target_index is not None else {}),
                 )
             elif action["tool_id"] == PREPARED_SPEECH_OBSERVATION_TOOL:
                 output = tool.call(self.speech_observations, context)
@@ -1180,6 +1182,10 @@ class PhaseToolDispatcher:
             or audit.get("selection_sha256") != content_hash(unsigned)
         ):
             raise PhaseToolError("target knowledge selection differs from its source or request")
+        expected_index = getattr(self.supply_for_store, "target_indices", {}).get(store_id)
+        expected_receipt = None if expected_index is None else dict(expected_index.receipt)
+        if audit.get("target_index") != expected_receipt:
+            raise PhaseToolError("target knowledge selection differs from its released index")
         supply = selection.supply
         receipt = dict(self.knowledge_stores.store_receipt(store_id))
         if supply is not None:

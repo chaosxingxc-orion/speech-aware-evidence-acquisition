@@ -1629,7 +1629,7 @@ KNOWLEDGE_TARGET_LOOKUP_MANIFEST = ToolManifest(
     tool_id="saea-tool-knowledge-target-lookup-v1",
     description="Read bounded target-specific values from one frozen named knowledge store.",
     source_ref="speech_aware_evidence_acquisition.rails.tool_wrappers.phase_knowledge:lookup_target_knowledge",
-    pinned_sha256="62ed754684693f9cfdfc251ba8c3149fc4aef942714e802b182aa0d1296664d4",
+    pinned_sha256="9b34e156205f1401b7be156ef220193e88542b968fdf978605317cff9dec64e7",
     inputs={"snapshot": "KnowledgeSnapshot", "query_state": "QueryState",
             "candidate_ids": "Sequence[str]", "max_values_per_candidate": "int",
             "max_total_values": "int", "already_visible_value_ids": "Sequence[str]"},

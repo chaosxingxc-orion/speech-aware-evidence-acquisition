@@ -1,7 +1,7 @@
 """Pure, bounded knowledge selection for explicit task targets.
 
 The caller supplies ordered candidate IDs. Source values are associated with
-those candidates only through ``ValueBundle.task_target``; value IDs and
+those candidates by a verified released relation or ``ValueBundle.task_target``; value IDs and
 content never participate in the association decision.
 """
 
@@ -151,6 +151,7 @@ def lookup_knowledge_targets(
     max_values_per_candidate: int,
     max_total_values: int,
     already_visible_value_ids: Sequence[str] = (),
+    target_index=None,
 ) -> KnowledgeTargetSelection:
     """Select new knowledge values for explicit ordered task targets.
 
@@ -176,9 +177,17 @@ def lookup_knowledge_targets(
         already_visible_value_ids, local_value_ids=local_value_ids
     )
     visible_set = frozenset(visible)
+    index = _target_value_index(snapshot)
+    if target_index is not None:
+        from .released_target_index import ReleasedTargetIndex
+
+        if not isinstance(target_index, ReleasedTargetIndex):
+            raise KnowledgeTargetLookupError("target index must be a released source binding")
+        target_index.validate(snapshot)
+        index = target_index.mappings
     selected_value_ids, mappings = select_candidate_semantic_values(
         request.candidate_ids,
-        _target_value_index(snapshot),
+        index,
         max_values_per_candidate=per_candidate_bound,
         max_total_values=total_bound,
     )
@@ -209,6 +218,8 @@ def lookup_knowledge_targets(
         "already_visible_selected_value_ids": list(already_visible_selected_value_ids),
         "supply_disposition": disposition,
     }
+    if target_index is not None:
+        audit["target_index"] = dict(target_index.receipt)
     audit["selection_sha256"] = content_hash(audit)
     supply = (
         _new_value_supply(
