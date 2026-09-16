@@ -1,12 +1,12 @@
-Current continuation: read STATUS-143.md. The maximum-five SLURP campaign is launched from frozen source534c92e8; root owns its service. Earlier next-action descriptions below are historical. E21 and Audio2Tool remain held.
+Current continuation: read STATUS-144.md. The maximum-five SLURP campaign is launched from frozen source534c92e8; root owns its service. Earlier next-action descriptions below are historical. E21 and Audio2Tool remain held.
 
-# Latest boundary: September 16, STATUS-142
+# Historical boundary: September 16, STATUS-142
 
 Shared configurable candidate width and released semantic target lookup are integrated.
 Keep SLURP as the sole active optimization dataset; finalize the exact candidate-five
 flight before generation. The previous E21 static fit failed at its exposure gate before
 model contact and is held, with dead-lease reconciliation complete. Audio2Tool stays held.
-Read [STATUS-142](STATUS-142.md) for current evidence and next actions.
+Read [STATUS-144](STATUS-144.md) for current evidence and next actions.
 
 # Owner-directed recovery and continuation plan
 

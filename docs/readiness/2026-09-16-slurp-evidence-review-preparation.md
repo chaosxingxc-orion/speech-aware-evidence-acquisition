@@ -26,7 +26,7 @@ pin is updated with the implementation. No new controller or execution framework
 
 ## Held Reviewer configuration
 
-Use configs/baseline/slurp-native-evidence-review-train-a-held-v1.json with the original
+The original preparation used configs/baseline/slurp-native-evidence-review-train-a-held-v1.json with the original
 candidate module and knowledge sources. Its new Reviewer prompt requests a concrete intent
 or entity issue, the evidence that supports it, and remaining uncertainty. It does not require
 a tool call. Reviewer may query the task contract or either named knowledge store; Planner
@@ -62,3 +62,42 @@ configuration, registers model/tool/fit limits, prepares supply, and verifies ac
 on the matching resident service. Keep this package held while the candidate-width comparison
 is prepared. No Fold B or aborted partial outcomes were read. No new generation, scoring,
 ASR, encoding or tokenization contact occurred in this preparation.
+
+
+## Structured findings and draft-to-final measurement
+
+The current held successor is
+configs/baseline/slurp-native-evidence-review-train-a-held-v2.json. It changes only
+the v1 Reviewer prompt pointer and description. It retains the original maximum-three
+candidate module, the same named-store knowledge sources, target-knowledge and task-contract
+tools, three Reviewer iterations with a reserved report turn, and one possible revision.
+Neither held fragment is a flight admission.
+
+The Reviewer report declares one of no-supported-issue, supported-issue, or
+insufficient-evidence; up to two findings identify intent, slot presence, slot type,
+slot span, or schema concerns. Each finding carries a short rationale and zero to three
+already-visible evidence IDs. The report recommends retaining, reconsidering, or seeking
+evidence. Planner still chooses the actual route, and Solver alone answers. This is a
+prompt-level report contract, not a new decoder grammar or execution program.
+
+The shared offline parser rejects ambiguous or malformed JSON without repairing it.
+Malformed, finite, and missing reports stay distinct from a no-issue declaration.
+The native analysis joins each Reviewer report to its exact request/response/USE receipt,
+the preceding Solver, the actual following Planner route, and attempted versus completed
+revisions. Evidence IDs remain declarations, not proof of exposure or semantic use.
+Historical free-form reviews are not retroactively graded against this new report schema.
+
+The shared SLURP stage attribution compares the first completed Solver draft with the
+actual shared final delivery. It verifies every deterministic final field against the
+saved complete official per-sample result and computes draft diagnostics through the same
+parser and scoring primitives. It distinguishes attempted, completed, and delivered Solver
+revisions, including a truncated later Solver that falls back to an earlier answer.
+It does not call the official evaluator again or replace its corpus-level metric.
+
+Root verification passed 110 related tests, 86 percent combined changed-module coverage,
+Ruff, and the engineering-base check. A synthetic episode through the actual shared
+OpenJiuwen runner verifies that a Reviewer recommendation to reconsider can be followed
+by Planner ACCEPT while the unchanged Solver answer remains final. This is zero-contact
+engineering evidence, not a model-quality or runtime-capacity result.
+The external verification receipt is
+coordination/slurp-review-measurement-v1/root-review-stage-verification-v2.json.

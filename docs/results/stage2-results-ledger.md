@@ -1439,3 +1439,14 @@ The max512 native dual-store base replication passes the unchanged exploratory r
 | A2T-NATIVE-ROLE-BASE-UNION4000-V1 | **PRIMARY_GAIN_TOOL_GUARD_FAILED_NOT_ADOPTED** | Official primary-call exact18.50% to22.55%; gain4.05pp, paired query-cluster CI95[2.963,5.165]. Both primary lower-bound checks pass the1.0pp threshold, but official tool accuracy declines3.60pp and fails the original point guard. The complete system has optimization space; stable adoption and isolated component effects are not established. | [Primary decision](2026-09-15-a2t-native-role-primary-decision-v1.json), SHA-256 dbb8edc282370ecf779d8794888e3694f82fccdceba6a397b7f4a60245ca7c43; [full report](2026-09-15-a2t-native-role-base-full4000.md) |
 
 Both raw arms are FINALIZED with4,000 rows and one first complete official scoring batch each. Repo-v2 normalized call-multiset exact improves14.60% to18.50%; its semantics differ from official primary-call exact and do not enforce order. Preserve the original aborted attempt and all exposure. Candidate attribution is still being closed independently; no new GPU work is authorized by this result.
+
+
+## 2026-09-16: SLURP TRAIN A review-stage attribution
+
+[Complete report](2026-09-16-slurp-train-a-review-stage-attribution.md).
+Model-free analysis of the released full1080 native anchor; no official rescore.
+Five actual Solver revisions produce zero new fully correct answers and one intent harm.
+Two partial slot diagnostics improve and one declines; all failures and all18 strata remain.
+Root personally reviewed all revised trajectories. This diagnoses the review-decision-use
+chain and does not isolate a Reviewer causal effect or admit a successor. The maximum-five
+candidate experiment remains running; its quality has not been read.
