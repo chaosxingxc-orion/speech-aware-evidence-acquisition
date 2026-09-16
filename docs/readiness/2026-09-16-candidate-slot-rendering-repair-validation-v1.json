@@ -1,0 +1,69 @@
+{
+  "schema": "saea-candidate-slot-rendering-repair-acceptance-v1",
+  "recorded_at_utc": "2026-09-16T19:50:40.457148+00:00",
+  "implementation_commit": "23b4ec0eade972f98d961442dd7856c9fa87ec2c",
+  "isolated_worktree": "/home/chao/saea-worktrees/candidate-slot-view-representation-repair-v1",
+  "red_source_commit": "f26f46d00ac560f43cdf1f1f1a485cae8f9144f3",
+  "red_evidence": {
+    "actual_config_source_renderer": "SlotBindingViewError: target slot full content differs",
+    "initial_regression_tests": 8,
+    "failed": 4,
+    "passed": 4
+  },
+  "fix_scope": "Accept only exact canonical-plain-v1 or exact named-store-prefixed-v1 source; preserve that representation in projection/fallback and record it. No source/prompt/authority/config change.",
+  "root_test_files": [
+    "tests/unit/test_slot_binding_view.py",
+    "tests/unit/test_native_slot_binding_view.py",
+    "tests/unit/test_native_slot_view_transport.py",
+    "tests/unit/test_slot_view_shared_rendering.py"
+  ],
+  "root_unique_tests_passed": 46,
+  "new_regression_tests_passed": 14,
+  "delegated_adjacent_tests_passed": 89,
+  "coverage": {
+    "covered_lines": 391,
+    "num_statements": 449,
+    "percent_covered": 87.08240534521158
+  },
+  "checks": {
+    "engineering_base": "PASS",
+    "implementation_and_test_ruff": "PASS",
+    "diff_check": "PASS"
+  },
+  "actual_source_check": {
+    "cards": 54,
+    "intent_bindings": 402,
+    "legal_intents": 60,
+    "views_checked": 108,
+    "projected": 20,
+    "full_body_fallback": 86,
+    "full_body_no_excluded_bindings": 2,
+    "canonical_snapshot_unchanged": true,
+    "synthetic_scope": [
+      "alarm_query",
+      "alarm_remove",
+      "alarm_set"
+    ],
+    "config_hash": "58f27b6ccf0fc850f9a234c993f822eddfb04ecdfc55fce3567073959bc96326",
+    "context_sha256": "585b15573806bf17e4472c0d004f07e73f36d1276cda99abe889ca96c0c3a887",
+    "audit_script_data_relpath": "coordination/candidate-slot-rendering-repair-v1/source-rendering-audit-v1.py",
+    "audit_script_sha256": "a277b2db5d22380ea170aa21833f7472134d4a04fb56ece42db2686e08144612"
+  },
+  "contact_counts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "asr": 0,
+    "official_scorer": 0
+  },
+  "runtime_fix_files": {
+    "src/speech_aware_evidence_acquisition/rails/slot_binding_view.py": "c4dafc83f882a1d53f523889245eb96b3988db64837a13c5652e5265b1990727",
+    "tests/unit/test_slot_view_shared_rendering.py": "6d2b369b1ae90dacb3046d3cc3fc59883c2d3bacade9d076c9f541c4e68c0cc4"
+  },
+  "limitations": [
+    "No new live proof or task-quality result",
+    "Fake POST equality is an engineering test, not measured tokenizer capacity",
+    "Synthetic scope across all cards is not the campaign distribution",
+    "The stopped proof cannot be retried under its original identity; fresh admission remains pending"
+  ]
+}

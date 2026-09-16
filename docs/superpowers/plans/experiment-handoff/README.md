@@ -1,12 +1,12 @@
 # Current continuation and Fable5.1 file handoff
 
-Read [LATEST](../../../handoff/2026-09-16-fable51/LATEST.md) and [STATUS-166](STATUS-166.md).
-The current single entry is [HANDOFF-v3](../../../handoff/2026-09-16-fable51/HANDOFF-v3.md).
+Read [LATEST](../../../handoff/2026-09-16-fable51/LATEST.md) and [STATUS-167](STATUS-167.md).
+Read the [repair update](../../../handoff/2026-09-16-fable51/RENDERING-REPAIR-UPDATE-v1.md)\nbefore the detailed [HANDOFF-v3](../../../handoff/2026-09-16-fable51/HANDOFF-v3.md).
 Earlier snapshots and next-action text remain historical.
 
 The older replicated max512 dual-store SLURP agent remains the useful base.
 The candidate-bound slot-view proof has now run and ABORTED after four Perception calls.
-Its source-content mismatch is named; CPU reproduction and a narrow repair are next.
+Its source-content mismatch is repaired at 23b4ec0e with CPU evidence; fresh live proof\nadmission is pending. The stopped attempt remains unchanged.
 Read [the closure](../../../handoff/2026-09-16-fable51/LIVE-PROOF-CLOSURE-v1.md) and
 [future designs](../../../handoff/2026-09-16-fable51/NEXT-EXPERIMENTS-v3.md).
 

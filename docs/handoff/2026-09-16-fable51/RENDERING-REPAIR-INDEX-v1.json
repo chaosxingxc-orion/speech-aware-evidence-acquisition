@@ -1,0 +1,30 @@
+{
+  "schema": "saea-rendering-repair-handoff-index-v1",
+  "recorded_at_utc": "2026-09-16T19:57:46.850137+00:00",
+  "entry": "docs/handoff/2026-09-16-fable51/RENDERING-REPAIR-UPDATE-v1.md",
+  "implementation_commit": "23b4ec0eade972f98d961442dd7856c9fa87ec2c",
+  "held_prepared_configuration_commit": "d5723280d8cf5feaf7606d0b072adaf93ffba4fe",
+  "coordination_generation": 167,
+  "files": {
+    "docs/handoff/2026-09-16-fable51/RENDERING-REPAIR-UPDATE-v1.md": "6f7704a4aaf5666c184e7664943b2d5c47d6154d8c1c3d5a860573dbd2bb4418",
+    "docs/handoff/2026-09-16-fable51/LATEST.md": "74974d2c4535b70e593489e6da17f916cb13e18be68888f4bc6e19d1fda19de9",
+    "docs/readiness/2026-09-16-candidate-slot-rendering-fresh-proof-proposal-v1.md": "0e7e3e5460439f5511235c7fa1b590321d87a5c8d04a738bd1f5872de5bb6e6b",
+    "docs/readiness/2026-09-16-candidate-slot-rendering-repair-validation-v1.json": "c0d5a0dfa222de2053e45ddfb1418212254fcf360e0a8eea129d9303273cfade",
+    "docs/superpowers/plans/experiment-handoff/STATUS-167.md": "97ad4b36fc8a24be2ad8c7c721ae85e6801a461d342e2800876c748f60ea19a3",
+    "docs/superpowers/plans/experiment-handoff/README.md": "a234ea3f129fa064b59537e1f31d4109ce571e205cf680f19788a71fa1192813",
+    "docs/superpowers/plans/experiment-handoff/state.json": "4a732020d4c5b61bd3110c2d3e8ce1449a4ccda296c544fd9cd21a0bafc9246c",
+    "docs/exposure-ledger.md": "6ea9a29b2b7060930e0ced4a4d5b49cd17a2d2b799eb9786a4c80d3632d68bf9"
+  },
+  "configuration_files": {
+    "configs/baseline/slurp-candidate-slot-view-rendering-proof4-v1.json": "c7c99145b0617bc646bcfd098f12c086e677be9aed667d9a4229bfb91e250c76",
+    "configs/experiment/slurp-candidate-slot-view-rendering-proof4-v1.json": "8d336fe0fc8e87f79e595cc193f6aa81d009477ae6d62ff31826716451a10e95"
+  },
+  "validation": {
+    "links_checked": 33,
+    "coordination_status": "OWNER_DIRECTED_EXECUTION",
+    "coordination_errors": [],
+    "no_new_model_contacts": true
+  },
+  "status": "CPU_ACCEPTED_PREPARED_HELD_PENDING_FRESH_PROOF_ADMISSION",
+  "historical_boundary": "The v3 package remains historical at f26f46d0. This additive update changes mutable routing/state only and preserves both failed source checkouts and all original closures."
+}

@@ -1,6 +1,6 @@
 # Latest Fable5.1 handoff
 
-Read [HANDOFF-v3.md](HANDOFF-v3.md) first. It is the current entry.
+Read [the rendering repair update](RENDERING-REPAIR-UPDATE-v1.md) first, then\n[HANDOFF-v3.md](HANDOFF-v3.md) for the full research handoff.
 
 Then read [the full experimental report](EXPERIMENT-REPORT-v3.md), with
 [the latest engineering-proof closure](LIVE-PROOF-CLOSURE-v1.md), and
@@ -10,7 +10,7 @@ Then read [the full experimental report](EXPERIMENT-REPORT-v3.md), with
 The candidate-bound slot-view proof is ABORTED after four Perception contacts, with
 four passing FIT receipts / 16 endpoints, and no complete task result. The first Solver
 view rejected a plain-versus-prefixed source-content mismatch. No retry is admitted under
-that proof. The immediate step is the named CPU reproduction/repair in a new worktree.
+that proof. The named CPU repair is now integrated at 23b4ec0e and verified. Fresh live proof admission\nis pending; the stopped attempt remains unchanged.
 
 The older typed-context flight stays CLOSED_SECOND_FAILURE_NO_FURTHER_RECOVERY.
 Its direct score remains unread and its replica is ineligible. Preserve both failed sources.

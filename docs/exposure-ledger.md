@@ -4133,3 +4133,14 @@ remain prospective records; this additive entry records actual partial consumpti
 Read docs/handoff/2026-09-16-fable51/LIVE-PROOF-CLOSURE-v1.md. No retry or new contact is
 authorized here. The current file-handoff audit adds zero model/tokenizer/acoustic/scorer
 contacts and does not change the resident service.
+
+## 2026-09-16: model-free source rendering repair and verification
+
+Root reproduced the stopped proof's exact content mismatch through the final composed
+config and shared task-contract-only renderer using the released knowledge source and
+synthetic legal role states. Source23b4ec0eade972f98d961442dd7856c9fa87ec2c preserves exact
+plain/named canonical forms. Checks cover54 cards,402 bindings and108 representation views,
+with unchanged source snapshot. Tests and fake POST checks are in-process only.
+Zero model, tokenizer, encoder, ASR or official-scoring contact. No held quality or Fold B
+read. See docs/readiness/2026-09-16-candidate-slot-rendering-repair-validation-v1.json.
+The proposed fresh engineering proof is not admitted by this entry.
