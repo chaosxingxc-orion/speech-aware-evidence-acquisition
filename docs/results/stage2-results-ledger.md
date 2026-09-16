@@ -1461,3 +1461,14 @@ mismatch and hypothesis/evidence confusion are also observed; isolated causal ef
 and prevalence remain unmeasured. Prepare a consistent opt-in global contract without
 example fillers, preserving the complete legal inventory and historical defaults.
 No new generation, official score, quality verdict or Track B launch is created.
+
+## September 16: maximum-five candidate contrast closed
+
+NOT_ADVANCED. Complete TRAIN A1080 candidate coverage increases 937 to 951, but official
+pooled SLU changes only +0.08674 pp, speaker CI95 [-1.36499, 1.65097]. Final intent decreases
+842 to 837. Only three of 19 newly covered rows finish correct. Seven actual revisions yield
+two intent saves and one full-answer save; there are no binding slot-value cap discards.
+Keep the maximum-three incumbent. Root selects one typed-context/evidence-review system
+package versus matched direct for prospective admission. Read [the full result and all
+18 strata](2026-09-16-slurp-candidate-five-train-a.md). Historical positive DEV system
+replications remain valid within their stated exploratory scope.
