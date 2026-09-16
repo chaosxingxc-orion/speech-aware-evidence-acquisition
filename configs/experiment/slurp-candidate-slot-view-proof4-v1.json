@@ -3,6 +3,7 @@
     {
       "allowed_execution_stages": [
         "check",
+        "worker",
         "prepare-supply"
       ],
       "attempt_id": "attempt-slurp-candidate-slot-view-proof4-generation-v1",
@@ -11,9 +12,21 @@
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "state": "held",
-        "reason": "Runtime source/catalog verification, independent engineering admission, fresh preparation and FIT/generation exposure registration are not yet complete.",
-        "requirements": []
+        "state": "ready",
+        "reason": "Registered engineering-only standalone worker with fresh source-bound preparation; no official scoring job.",
+        "requirements": [
+          {
+            "kind": "decision",
+            "relpath": "coordination/slurp-candidate-slot-view-proof4-v1/admission-v1.json",
+            "sha256": "299329b6c6377300656ec85e96e2502451dc6472d937b51663ed8fd0affe89b3",
+            "expected_decision_id": "slurp-candidate-slot-view-proof4-admission-v1"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-CANDIDATE-SLOT-VIEW-PROOF4-V1/phase-supply-v3.json",
+            "sha256": "7ae22c4f29af17702e51e58e8d73d46246734d3b4fc4f2b897e43cde35fbcdd0"
+          }
+        ]
       },
       "run_id": "SAEA-SLURP-CANDIDATE-SLOT-VIEW-PROOF4-V1"
     }
@@ -36,7 +49,7 @@
     "fit_endpoint_calls_cap": 176,
     "generation_calls_cap": 44,
     "gpu_hours_fit_inclusive": 1.0,
-    "native_analytical_tool_calls_cap": 16,
+    "native_analytical_tool_calls_cap": 24,
     "official_complete_scoring_jobs": 0,
     "repeated_speech_audio_seconds_cap": 117
   },

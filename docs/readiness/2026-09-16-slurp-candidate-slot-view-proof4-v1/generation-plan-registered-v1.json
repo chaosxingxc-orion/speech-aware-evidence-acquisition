@@ -1,0 +1,44 @@
+{
+  "cell": "slurp-candidate-slot-view-proof4-v1",
+  "composed_config_hash": "58f27b6ccf0fc850f9a234c993f822eddfb04ecdfc55fce3567073959bc96326",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-candidate-slot-view-proof4-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "protocol_hash": "56fdec692b714c5e81e169227cb17f7ded5c140b2e6fea318054e6caeec304fd",
+    "run_id": "SAEA-SLURP-CANDIDATE-SLOT-VIEW-PROOF4-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.lease_cli plus standalone core.flight.cli worker; no campaign or scorer. Root structural verification then existing AttemptHandle finalization with engineering verdict.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-candidate-slot-view-proof4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_analytical_tool_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-16-slurp-candidate-slot-view-proof4-v1/protocol-registered-v1.json",
+    "sha256": "6ace9196829e998676d1dabccd15ce8e16eac3fe370ed17eaff8acefc8fc109b"
+  },
+  "quality_read_gate": "Structural/hash/count inspection only. No answer/reference or task-quality interpretation, current held direct score, failed-system partial quality, or official scoring. Proof telemetry may be joined without emitting raw content.",
+  "registered_at_utc": "2026-09-16T19:06:46.982569+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-candidate-slot-view-proof4-v1/admission-v1.json",
+    "sha256": "299329b6c6377300656ec85e96e2502451dc6472d937b51663ed8fd0affe89b3"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/candidate-bound-slot-view-v1"
+}

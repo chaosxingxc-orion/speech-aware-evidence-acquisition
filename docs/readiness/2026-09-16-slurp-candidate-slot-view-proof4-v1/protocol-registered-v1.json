@@ -1,0 +1,66 @@
+{
+  "configuration": {
+    "composed_config_hash": "58f27b6ccf0fc850f9a234c993f822eddfb04ecdfc55fce3567073959bc96326",
+    "execution_protocol_hash": "56fdec692b714c5e81e169227cb17f7ded5c140b2e6fea318054e6caeec304fd",
+    "experiment": "slurp-candidate-slot-view-proof4-v1",
+    "intervention": "native-candidate-slot-view-v1; solver/reviewer; unchanged released sources and legacy role program"
+  },
+  "execution_route": "Shared core.flight.lease_cli plus standalone core.flight.cli worker; no campaign or scorer. Root structural verification then existing AttemptHandle finalization with engineering verdict.",
+  "failure_policy": "Stop on the first execution failure; preserve all contacts and original sources. No retry, scoring, partial quality read, closed-flight recovery or held replica activation under this engineering proof.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_analytical_tool_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "full_comparison_admitted": false,
+  "implementation_commit": "edae8bfaf67fe7b350fc6788af8e76e53ca80d57",
+  "measurement_scope": "Inspect actual trajectories and projection/FIT receipts for custody and structural acceptance only. Test optional paths deterministically if not naturally exercised; no opportunistic added contacts.",
+  "ordered_sample_ids": [
+    "slurp:train:000007:audio--1504197557",
+    "slurp:train:000009:audio-1497557594-headset",
+    "slurp:train:000015:audio-1488524781",
+    "slurp:train:000023:audio-1490956038"
+  ],
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "Established first four rows of exposed TRAIN A; reuse the engineering roster without quality-based selection.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CANDIDATE-SLOT-VIEW-PROOF4-V1/phase-supply-v3.json",
+    "sha256": "7ae22c4f29af17702e51e58e8d73d46246734d3b4fc4f2b897e43cde35fbcdd0"
+  },
+  "preserve_original_attempts": true,
+  "proof_acceptance": [
+    "Four unique roster rows structurally seal through shared native executor; no task scorer.",
+    "Every actual generation is preceded by its matching real-wire FIT receipt; all recorded FIT requests fit the unchanged24576-token slot.",
+    "Every model contact has one source-bound ORG projection receipt matching its final wire body.",
+    "At least one Solver and one Reviewer request exercise a changed candidate-bound slot view; otherwise proof is INCONCLUSIVE and full comparison remains held.",
+    "Retain global guidance, canonical source snapshots/results, local tool groups and Solver delivery authority; quantify full fallbacks and actual omissions.",
+    "All contacts and rejected/failed tool actions remain accounted; generated/tool/FIT/speech bounds hold.",
+    "Do not interpret row quality, reduced input volume or engineering success as effectiveness."
+  ],
+  "protocol_id": "SAEA-SLURP-CANDIDATE-SLOT-VIEW-PROOF4-PROTOCOL-V1",
+  "quality_gate": "Structural/hash/count inspection only. No answer/reference or task-quality interpretation, current held direct score, failed-system partial quality, or official scoring. Proof telemetry may be joined without emitting raw content.",
+  "registered_at_utc": "2026-09-16T19:06:46.982569+00:00",
+  "schema": "saea-native-engineering-proof-protocol-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-candidate-slot-view-proof4-v1/admission-v1.json",
+    "sha256": "299329b6c6377300656ec85e96e2502451dc6472d937b51663ed8fd0affe89b3"
+  },
+  "serving": {
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "max_tokens": 512,
+    "mmproj": false,
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "source_worktree": "/home/chao/saea-worktrees/candidate-bound-slot-view-v1"
+}
