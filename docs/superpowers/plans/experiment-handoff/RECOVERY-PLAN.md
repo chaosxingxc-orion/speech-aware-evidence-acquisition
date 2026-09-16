@@ -1,26 +1,26 @@
 # Owner-directed recovery and continuation plan
 
-**Current overlay:** Read [STATUS-139](STATUS-139.md). The frozen SLURP
-broad/factored TRAIN-A campaign remains live under worker PID 293426 and server
-PID 293153 on its same np4 service. Exact post-seal analysis metadata is bound
-for 1,080 rows, 125 speakers and 18 scenarios. Model calls do not establish
-completed rows, telemetry before 17:11:58 UTC is missing, treatment quality
-remains unread, and the current campaign alone owns the first complete official
-score. Audio2Tool remains registered and source-frozen at
-`219e305f306f11998e39c44b5fb055b4fcfb3179`; it waits for the SLURP
-generation seal and custody boundary. E21 stable-source admission exists, and
-its [direct static fit](../../../readiness/2026-09-15-e21-native-window-direct-fit-registration-v1/README.md)
-is registered, integrated and source-frozen at
-`1daad5186119b23c3414e36676afb296599dc29f`. The actual fit receipt is absent,
-and generation, native fit and ASR remain held and unregistered. Preserve the
-order SLURP, Audio2Tool, Earnings21 and all frozen and historical records.
-Stable benefit and trajectory-sampling optimization remain incomplete.
+**Current overlay:** Read [STATUS-140](STATUS-140.md). The complete SLURP
+paired analysis is closed as NOT_ADVANCED_FULL_TASK_GAIN_GATE_FAILED;
+improvement is not demonstrated, overall harm is not statistically established,
+and no successor is admitted. Audio2Tool's corrected ledger passes direct
+preflight, but system preflight fails before contact because its Perception
+request exceeds the registered slot. Its np2 CPU feasibility geometry remains
+blocked by a shared coarse limit; root authorized a bounded configuration-limits
+fix with default identity and reserve behavior preserved. No GPU proof exists,
+and a future four-row proof is required before full flight. The E21 direct
+static fit remains live from source
+1daad5186119b23c3414e36676afb296599dc29f. Its GPU is resident for fit
+materialization, but generation is not active and no final fit receipt exists.
+Preserve the SLURP, Audio2Tool, Earnings21 order and all frozen and historical
+records. Stable benefit for these queued versions and trajectory-sampling or
+training-free RL remain unproven.
 
 **Latest released TRAIN diagnosis:** Read the [source-bound entity-loss analysis](../../../results/2026-09-14-slurp-train-a-entity-loss-attribution-v1.md). The exact Fold A output/reference join reconciles every saved official ingredient without rescoring. Of 414 reference-empty cases, 184 emit entities; surface, omission and extra-prediction losses all matter. This is a diagnostic, not a new mechanism or runtime memory admission.
 
 **Latest owner direction:** Establish a useful, reproducibly beneficial multimodal agent base and a configurable, observable workspace first. Define training-free RL factors, trajectory sampling and policy optimization only afterward. Root engineering improvements are not algorithm innovation. Retain SLURP-first execution, task-specific separate knowledge stores, corrective memory rather than raw training examples, on-demand Reviewer/Planner evidence tools, sole-Solver answer authority and native dataset metrics. Audio2Tool and E21 transfer remain necessary but follow the stable SLURP anchor.
 
-Role: engineering plan. Coordinator: Codex. Updated: 2026-09-15.
+Role: engineering plan. Coordinator: Codex. Updated: 2026-09-16.
 The owner directed recovery from GitHub history and unmerged worktrees after Fable5.1 exhausted
 its weekly allowance. The current task is to recover and merge completed work, then continue from
 the actual experiment state. The former request/reply exchange is historical; no Fable reply is required.
@@ -87,9 +87,9 @@ treatment results exist. Any unresolved analysis must remain descriptive until i
 
 ## Current ordered work queue
 
-1. Complete and seal the running frozen SLURP broad/factored TRAIN-A campaign, then perform its campaign-owned first full official score and source-bound analysis through the registered controls.
-2. Run the source-frozen Audio2Tool direct/system scope-tools pair after the SLURP generation seal and custody boundary, using its unchanged same-process campaign and exact np3 service handoff.
-3. Run the source-frozen E21 direct static fit only after the Audio2Tool generation boundary, the exact verified E21 service and first shared monitor sample, and a standard `GenerationLease`. Use the registered attach-only `prompt-fit` route over all 1,593 windows and 4,780 endpoints. The actual fit receipt is absent; generation, native fit and ASR remain held and unregistered.
+1. Preserve the closed SLURP analysis and its NOT_ADVANCED_FULL_TASK_GAIN_GATE_FAILED decision. No successor is admitted; do not invoke the unsupported optional own-card suffix metric, rerun the official scorer or make a causal claim.
+2. Complete and validate the authorized bounded shared Audio2Tool configuration-limits fix while preserving default identity and reserve behavior. This is CPU-only preparation with no GPU proof. Preserve both zero-contact failures, and require the future four-row proof before any full flight.
+3. Let the source-frozen E21 direct static fit finish through its registered attach-only prompt-fit route over all 1,593 windows and 4,780 endpoints. The actual fit receipt is absent. Do not start generation until the fit passes and root completes separate final registration; the current final-registration checkout is documentation-only and cannot dispatch. Native fit and ASR remain held and unregistered.
 4. Establish reproducible package benefit and preserve an observable, configurable trajectory workspace.
 5. Define training-free RL factors, trajectory sampling, rewards and update rules after the shared base/workspace qualifies. Root-led engineering is not an RL algorithm result.
 
@@ -218,3 +218,32 @@ lease gates. Sixty-eight focused tests and four correction checks passed with
 overlap. No fit receipt exists yet. Generation, native fit and CPU ASR remain
 held and unregistered. Preserve the SLURP, Audio2Tool, E21 order, prior failed
 verdicts, and the limits on stable-benefit and training-free RL claims.
+
+## 2026-09-16 SLURP closure, Audio2Tool preflight failures and E21 fit
+
+The [STATUS-140](STATUS-140.md) handoff records 5,407 finalized SLURP
+generation contacts and the complete paired decision
+NOT_ADVANCED_FULL_TASK_GAIN_GATE_FAILED. The final stage projection is complete
+under root's corrected scope, without an official rescore, model rerun or causal
+claim. No SLURP successor is admitted.
+
+Root's dispatch boundary occurred about 4.5 hours after SLURP generation
+finalized. The boundary receipt says the cause is not established; do not call
+the interval scientific waiting. Audio2Tool campaign PID 335954 exited before
+model contact or attempt opening because the exposure-ledger carrier text did
+not exactly name one carrier lock key. Preserve the original source and failure
+log. The two-file correction passes direct preflight, but system preflight
+independently fails because the 34,868-token Perception request exceeds its
+32,768-token slot. The np2 CPU feasibility geometry has a 49,152-token slot but
+remains blocked by the shared hard-coded 32,768-token coarse rail. Root
+authorized a bounded shared configuration-limits fix with default identity and
+reserve behavior preserved. It has no GPU proof, and a future four-row proof is
+required before full flight.
+
+Root advanced the independent E21 direct static fit. Its GPU is resident for fit
+materialization, but generation is not active. The fit covers 1,593 units with
+a 4,780-endpoint cap; no final receipt exists. Current activity is bound in
+DATA/coordination/e21-native-window-registration-v1/root-active-handoff-v1.json.
+E21 generation remains held until the fit passes and root completes separate
+final registration. The current final-registration checkout contains
+documentation scaffolding only and cannot dispatch.
