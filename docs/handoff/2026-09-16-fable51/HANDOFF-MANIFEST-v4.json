@@ -1,0 +1,48 @@
+{
+  "schema": "saea-fable51-handoff-manifest-v4",
+  "recorded_at_utc": "2026-09-16T20:12:17.601075+00:00",
+  "source_head": "9c2cda822a91c5cfcde82a9de2698ad4a4d19e31",
+  "entry": "docs/handoff/2026-09-16-fable51/HANDOFF-v4.md",
+  "coordination_generation": 168,
+  "status": "CPU_REPAIR_ACCEPTED_PREPARED_HELD_FRESH_ADMISSION_PENDING",
+  "takeover_acknowledged": false,
+  "new_model_contact": false,
+  "held_quality_read": false,
+  "remote_push": false,
+  "files": {
+    "docs/handoff/2026-09-16-fable51/HANDOFF-v4.md": "a293da1c023dfeebe853e6133eb04bfc248fba3c123d67032209cef3e6be9574",
+    "docs/handoff/2026-09-16-fable51/EXPERIMENT-REPORT-v4.md": "1dea29842c3dcb2865e26082295b0f79f23f5f135a5c91d1ec7cb095a26a8d9b",
+    "docs/handoff/2026-09-16-fable51/NEXT-EXPERIMENTS-v4.md": "5ac523aa0b6296f29596f2df9636d19abfc77664e76c9156ffbd2735941d562d",
+    "docs/handoff/2026-09-16-fable51/COMPARATOR-AUDIT-v1.md": "80394730a0180c8072e833c601262e8953bf2c0823976e7ac6d32392db98cccf",
+    "docs/handoff/2026-09-16-fable51/COMPARATOR-AUDIT-v1.json": "e1d629dc8a6a9c066714d4854873b161cadece86577cae6a6c0cea30c4fb8e14",
+    "docs/handoff/2026-09-16-fable51/TAKEOVER-TEMPLATE-v2.md": "bb505ce2fbfc9eb164e5963b728570e7d33e7c33794fb58a916d978b90111b15",
+    "docs/handoff/2026-09-16-fable51/LATEST.md": "4941e89f8840959708cff7c401a46e4e225c173ea2f3c4e8db4a5f0f43bb1eaf",
+    "docs/superpowers/plans/experiment-handoff/README.md": "878affab9e22e7ccf5ad1a3f3df441156fadd054e874be894842b8d3e3cada57",
+    "docs/superpowers/plans/experiment-handoff/STATUS-168.md": "c6d11a5db7e446fdc681f0596a8296e2805a6f08609a148f255c636028141c6c",
+    "docs/superpowers/plans/experiment-handoff/state.json": "88aa4eeb97bf11c3a47dec95702833d2350d9b6d875e04974c4f9e29eb0edce1",
+    "docs/readiness/2026-09-16-candidate-slot-rendering-repair-validation-v1.json": "c0d5a0dfa222de2053e45ddfb1418212254fcf360e0a8eea129d9303273cfade",
+    "docs/readiness/2026-09-16-candidate-slot-rendering-fresh-proof-proposal-v1.md": "0e7e3e5460439f5511235c7fa1b590321d87a5c8d04a738bd1f5872de5bb6e6b",
+    "configs/baseline/slurp-candidate-slot-view-rendering-proof4-v1.json": "c7c99145b0617bc646bcfd098f12c086e677be9aed667d9a4229bfb91e250c76",
+    "configs/experiment/slurp-candidate-slot-view-rendering-proof4-v1.json": "8d336fe0fc8e87f79e595cc193f6aa81d009477ae6d62ff31826716451a10e95",
+    "src/speech_aware_evidence_acquisition/rails/slot_binding_view.py": "c4dafc83f882a1d53f523889245eb96b3988db64837a13c5652e5265b1990727",
+    "tests/unit/test_slot_view_shared_rendering.py": "6d2b369b1ae90dacb3046d3cc3fc59883c2d3bacade9d076c9f541c4e68c0cc4"
+  },
+  "supersedes_current_routing_from": [
+    "HANDOFF-MANIFEST-v3.json",
+    "RENDERING-REPAIR-INDEX-v1.json"
+  ],
+  "preservation": "All earlier versioned reports, manifests, failed source checkouts and receipts remain unchanged. Their recorded hashes for mutable LATEST/state/coordination README describe historical versions.",
+  "validation": {
+    "local_links_checked": 60,
+    "package_hashes_checked": 16,
+    "audit_input_hashes_checked": 14,
+    "errors": [],
+    "document_checks": "PASS",
+    "coordination_check": "OWNER_DIRECTED_EXECUTION",
+    "coordination_errors": [],
+    "coordination_generation": 168,
+    "coordination_launch_allowed": false,
+    "diff_check": "PASS",
+    "note": "Coordination verified before the documentation commit; it never grants launch. Existing unrelated untracked files were preserved."
+  }
+}

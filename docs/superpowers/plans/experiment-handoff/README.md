@@ -1,32 +1,28 @@
 # Current continuation and Fable5.1 file handoff
 
-Read [LATEST](../../../handoff/2026-09-16-fable51/LATEST.md) and [STATUS-167](STATUS-167.md).
-Read the [repair update](../../../handoff/2026-09-16-fable51/RENDERING-REPAIR-UPDATE-v1.md)\nbefore the detailed [HANDOFF-v3](../../../handoff/2026-09-16-fable51/HANDOFF-v3.md).
+Read [LATEST](../../../handoff/2026-09-16-fable51/LATEST.md) and [STATUS-168](STATUS-168.md).
+The consolidated [HANDOFF-v4](../../../handoff/2026-09-16-fable51/HANDOFF-v4.md) is the current
+entry, followed by the detailed experimental report and future designs linked there.
 Earlier snapshots and next-action text remain historical.
 
-The older replicated max512 dual-store SLURP agent remains the useful base.
-The candidate-bound slot-view proof has now run and ABORTED after four Perception calls.
-Its source-content mismatch is repaired at 23b4ec0e with CPU evidence; fresh live proof\nadmission is pending. The stopped attempt remains unchanged.
-Read [the closure](../../../handoff/2026-09-16-fable51/LIVE-PROOF-CLOSURE-v1.md) and
-[future designs](../../../handoff/2026-09-16-fable51/NEXT-EXPERIMENTS-v3.md).
+The older replicated max512 dual-store SLURP agent remains the useful base. The candidate
+slot-view proof stopped after four Perception calls. Its source mismatch is now repaired,
+verified on CPU and integrated; fresh four-row configuration and preparation are ready but
+HELD pending the existing owner admission question. No model contact is added by this update.
 
-The typed-context full-system flight remains CLOSED_SECOND_FAILURE_NO_FURTHER_RECOVERY.
-No partial scoring, held direct score read, replica activation or relabeled third recovery
-is admitted. The latest candidate proof also has no retry under its registered identity.
-E21 and Audio2Tool remain held while the SLURP question closes.
+The typed-context full-system family remains CLOSED_SECOND_FAILURE_NO_FURTHER_RECOVERY.
+Keep partial outputs, its unread direct quality and the ineligible replica unchanged.
+The separate stopped candidate proof also has no retry under its old identity.
+E21 and Audio2Tool optimization remain held while the SLURP question closes.
 
-The resident decoder was left running; the v3 process/file snapshot is timestamped metadata,
-not perpetual endpoint health. Revalidate once on actual takeover. Root owns one service
-and one generation flight; preserve frozen checkouts and explicit WSL import paths.
+The resident decoder was left running at the last snapshot. Timestamped process metadata is
+not perpetual endpoint health; revalidate once at actual takeover. Keep one service owner,
+one generation flight, frozen source checkouts and explicit WSL import paths.
 
-Run the existing read-only coordination check:
+Read-only coordination check:
     /home/chao/.venvs/speechrl/bin/python -B scripts/checks/experiment_handoff_check.py
 
-The checker never grants a launch. The legacy owner_directed_execution contract still pins
-Codex. Fable should write an additive takeover receipt and explicitly reconcile that contract
-and checker before claiming execution ownership. Do not fabricate the historical unavailable
-reply or merely change the owner field. Per-flight plans, exposure and leases still apply.
-
-Use the current package rather than loading every status note. The full report and source
-index retain historical strata, decisions and provenance. The owner asked for a local-file
-handoff; no email, external message or remote publication is implied.
+The checker never grants a launch. Its legacy contract still pins Codex. Fable should write
+an additive takeover acknowledgement and explicitly reconcile the ownership contract/checker;
+do not fabricate the unavailable historical reply. Per-flight gates still apply.
+The owner requested local files; no external message or remote publication is implied.

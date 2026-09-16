@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 167,
+  "generation": 168,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,16 +10,16 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "d5723280d8cf5feaf7606d0b072adaf93ffba4fe",
-  "updated_at_utc": "2026-09-16T19:57:31.324087+00:00",
-  "next_action": "Resolve the pending concrete fresh four-row proof admission. The exact renderer repair is integrated; fresh held configs and model-free prepared supply are complete and cache-revalidated. If admitted, bind prospective plans/exposure/readiness and freeze a fresh live source before an exclusive lease. Do not reuse stopped identities, read held quality or claim takeover.",
+  "snapshot_commit": "9c2cda822a91c5cfcde82a9de2698ad4a4d19e31",
+  "updated_at_utc": "2026-09-16T20:11:31.227849+00:00",
+  "next_action": "Read the consolidated v4 package and acknowledge actual takeover locally. Resolve the existing pending fresh four-row proof admission; CPU repair and preparation are complete. If approved, prospectively bind fresh plans/exposure/readiness/source and obtain the exclusive credential. Do not reuse stopped attempts or held quality. The comparator audit found no released matched TRAIN direct control in its scoped inventory.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-GPU-RESUME-2026-09-15",
   "owner_power_direction": "2026-09-14: The owner confirmed that current power mode is optimal and instructed root not to dwell on it. Preserve current hardware/service settings.",
   "owner_gpu_direction": "Owner-level GPU authorization remains active; the prior engineering proof has an explicit first-failure/no-retry contract. A concrete fresh four-row post-repair proof was proposed for owner admission. No new contact occurs while that required response is pending.",
   "owner_research_direction": "September 16: focus SLURP on candidate coverage and downstream intent/slot quality; the latest refinement makes a shared role-context module the central mechanism. Analyze, clean and normalize source-bound handoffs, distinguish evidence/knowledge/hypotheses/drafts/review declarations, then supply the information each role needs. Root retains scientific analysis and decisions.",
-  "handoff_package": "docs/handoff/2026-09-16-fable51/RENDERING-REPAIR-UPDATE-v1.md",
+  "handoff_package": "docs/handoff/2026-09-16-fable51/HANDOFF-v4.md",
   "handoff_target": "Fable5.1; actual takeover not yet acknowledged",
   "active_source_commit": "3c14a0b0780967a5d224c573e8a991c0fd255607",
   "active_source_worktree": "/home/chao/saea-worktrees/candidate-bound-slot-view-v1",
@@ -49,5 +49,7 @@
     "output_sha256": "512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733",
     "contact_class": "model-free",
     "cache_revalidation": "warm"
-  }
+  },
+  "handoff_manifest": "docs/handoff/2026-09-16-fable51/HANDOFF-MANIFEST-v4.json",
+  "comparator_audit": "docs/handoff/2026-09-16-fable51/COMPARATOR-AUDIT-v1.json"
 }

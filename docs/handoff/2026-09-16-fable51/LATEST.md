@@ -1,23 +1,19 @@
 # Latest Fable5.1 handoff
 
-Read [the rendering repair update](RENDERING-REPAIR-UPDATE-v1.md) first, then\n[HANDOFF-v3.md](HANDOFF-v3.md) for the full research handoff.
+Read these three files in order:
 
-Then read [the full experimental report](EXPERIMENT-REPORT-v3.md), with
-[the latest engineering-proof closure](LIVE-PROOF-CLOSURE-v1.md), and
-[next experiments with expectations](NEXT-EXPERIMENTS-v3.md).
-[HANDOFF-MANIFEST-v3.json](HANDOFF-MANIFEST-v3.json) binds this successor.
+1. [Current handoff](HANDOFF-v4.md): settled decisions, state, artifacts and first actions.
+2. [Detailed experimental report](EXPERIMENT-REPORT-v4.md): designs, results, limitations and evidence.
+3. [Future experiments and expectations](NEXT-EXPERIMENTS-v4.md): hypotheses, comparisons, metrics, stop rules and algorithm roadmap.
 
-The candidate-bound slot-view proof is ABORTED after four Perception contacts, with
-four passing FIT receipts / 16 endpoints, and no complete task result. The first Solver
-view rejected a plain-versus-prefixed source-content mismatch. No retry is admitted under
-that proof. The named CPU repair is now integrated at 23b4ec0e and verified. Fresh live proof admission\nis pending; the stopped attempt remains unchanged.
+[Package manifest](HANDOFF-MANIFEST-v4.json) binds this version.
+The v4 package consolidates v3 and its rendering-repair addendum, and adds a verified
+[comparator audit](COMPARATOR-AUDIT-v1.md). Prior files remain historical.
 
-The older typed-context flight stays CLOSED_SECOND_FAILURE_NO_FURTHER_RECOVERY.
-Its direct score remains unread and its replica is ineligible. Preserve both failed sources.
+The narrow CPU repair is integrated and the fresh four-row proof is prepared but HELD.
+The existing admission question is unanswered. No new GPU contact, quality result, remote
+push or Fable takeover is claimed. Both earlier stopped attempts stay stopped; held direct
+quality remains unread. Use [the reply template](TAKEOVER-TEMPLATE-v2.md) to acknowledge takeover.
 
-The service was left resident; the fresh snapshot checks process identity and confirms
-the proof worker and its lease metadata/token are absent. No Fable5.1 takeover is acknowledged.
-
-The v2 files are historical, including their HELD/no-live-proof statements and 16-tool draft
-cap. The final registered cap was 24 before contact. Static readiness in a used configuration
-is not permission to rerun. Do not execute old next-action paragraphs.
+Service state in the operating snapshot is timestamped metadata, not perpetual liveness.
+Revalidate once at actual takeover. Do not execute old next-action paragraphs.

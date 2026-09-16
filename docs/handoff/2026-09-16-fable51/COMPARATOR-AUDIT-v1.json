@@ -1,0 +1,118 @@
+{
+  "schema": "saea-handoff-comparator-compatibility-v1",
+  "recorded_at_utc": "2026-09-16T20:08:27.267524+00:00",
+  "source_head": "9c2cda822a91c5cfcde82a9de2698ad4a4d19e31",
+  "scope": "Read-only label-free config comparison and already released/status-only repository documents. No quality release or launch.",
+  "rosters": [
+    {
+      "path": "configs/dataset/slurp-speech-native-dev1000.json",
+      "sha256": "f92846760b3657ba50009e52f98fcec96df27c16ac66ea57467b4f8fa42f288d",
+      "count": 1000,
+      "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+    },
+    {
+      "path": "configs/dataset/slurp-speech-native-evo-fold-a-1080.json",
+      "sha256": "4ba55688e80d8d768ec6cfc3ff4bacc9802fb34e4dab54913934015184497215",
+      "count": 1080,
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    }
+  ],
+  "roster_intersections": {
+    "sample_id": 0,
+    "audio_sha256": 0,
+    "packet_id": 0
+  },
+  "common_declared_model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+  "common_declared_model_fragment_sha256": "d1a644d80646de9e0e6b5799fb98e2151de7e03b1b14c5f260d16f77f8a77f09",
+  "experiment_paths": [
+    "configs/experiment/slurp-native-dual-store-train-fold-a-anchor-recovery-v1.json",
+    "configs/experiment/slurp-candidate-slot-view-rendering-proof4-v1.json",
+    "configs/experiment/slurp-direct-max512-train-fold-a-source-recovery-v1.json",
+    "configs/experiment/slurp-direct-max512-dev1000-base-replication-v1.json"
+  ],
+  "parsed_baseline_difference": {
+    "paths": [
+      "configs/baseline/slurp-native-dual-store-train-fold-a-anchor-recovery-v1.json",
+      "configs/baseline/slurp-candidate-slot-view-rendering-proof4-v1.json"
+    ],
+    "differing_top_level_keys": [
+      "native_contact_fit",
+      "native_evidence_projection",
+      "native_evidence_projection_params",
+      "prepared_phase_supply",
+      "what_this_is"
+    ],
+    "other_top_level_values_equal": true,
+    "interpretation": "The projection mechanism and experiment-specific receipt/identity/prose bindings differ; identical config values do not prove identical future runtime states or FIT."
+  },
+  "direct_sources": [
+    {
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-BASE-REPLICATION-V1",
+      "status": "FINALIZED_QUALITY_RELEASED",
+      "rows": 1000,
+      "roster": "DEV1000",
+      "evidence": "docs/results/2026-09-14-slurp-dual-store-base-replication-verdict-v1.md",
+      "reuse_finding": "Historical evidence only; not the TRAIN A roster."
+    },
+    {
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-V1",
+      "status": "ABORTED_ZERO_CONTACT",
+      "rows": 0,
+      "roster": "TRAIN_A1080",
+      "evidence": "docs/readiness/2026-09-16-slurp-direct-source-recovery-v1/README.md",
+      "reuse_finding": "No completed output to use."
+    },
+    {
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1",
+      "status": "FINALIZED_QUALITY_HELD_UNREAD",
+      "rows": 1080,
+      "roster": "TRAIN_A1080",
+      "source_commit": "f3189ce2667a45b1c0c9633e510747ae914118bd",
+      "evidence": "docs/readiness/2026-09-16-slurp-postseal-source-bindings-v1.md",
+      "reuse_finding": "Exact roster; current paired-release contract prevents quality access or automatic reuse."
+    },
+    {
+      "run_id": "HELD-SLURP-DIRECT-MAX512-TRAIN-A-V1",
+      "status": "HELD_UNEXECUTED",
+      "rows": 0,
+      "evidence": "configs/experiment/slurp-direct-max512-train-fold-a-held-v1.json",
+      "reuse_finding": "Template, not evidence."
+    },
+    {
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-MATCHED-REPLICA-V1",
+      "status": "HELD_UNEXECUTABLE",
+      "rows": 0,
+      "evidence": "docs/readiness/2026-09-16-slurp-typed-context-matched-replication-held-v1/held-bindings.json",
+      "reuse_finding": "Template, not an admitted new direct arm."
+    }
+  ],
+  "root_recommendation": "Keep the fresh four-row proof pending. After a passing proof, register fixed-agent versus projected-agent progression on complete TRAIN A. If making a new TRAIN A system-versus-direct claim, propose a fresh matched direct arm; do not read the held score to decide whether a new control is convenient.",
+  "limitations": [
+    "Inventory is bounded to the named repository sources, not a claim about all filesystem artifacts.",
+    "Shared geometry does not establish shared process, binary, weights or cache identity.",
+    "No held scores, raw responses, gold, references or Fold B were read."
+  ],
+  "new_contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "asr": 0,
+    "official_scorer": 0
+  },
+  "input_sha256": {
+    "configs/baseline/slurp-candidate-slot-view-rendering-proof4-v1.json": "c7c99145b0617bc646bcfd098f12c086e677be9aed667d9a4229bfb91e250c76",
+    "configs/baseline/slurp-native-dual-store-train-fold-a-anchor-recovery-v1.json": "8445f4ef1b29fa776a628cd6000a7ba481622a72c78fb999e107fbdfac380aab",
+    "configs/dataset/slurp-speech-native-dev1000.json": "f92846760b3657ba50009e52f98fcec96df27c16ac66ea57467b4f8fa42f288d",
+    "configs/dataset/slurp-speech-native-evo-fold-a-1080.json": "4ba55688e80d8d768ec6cfc3ff4bacc9802fb34e4dab54913934015184497215",
+    "configs/experiment/slurp-candidate-slot-view-rendering-proof4-v1.json": "8d336fe0fc8e87f79e595cc193f6aa81d009477ae6d62ff31826716451a10e95",
+    "configs/experiment/slurp-direct-max512-dev1000-base-replication-v1.json": "15009cede06c6249b8338187386f93a39754183550339fe0425314cb7cf2613a",
+    "configs/experiment/slurp-direct-max512-train-fold-a-held-v1.json": "eac016fc5348481cb6f5640a08963a5f74950638165619a62f52916214e0fa80",
+    "configs/experiment/slurp-direct-max512-train-fold-a-source-recovery-v1.json": "64dd3b39d70cb83b344e694820150d70520885ab97ebb41a588c3b4359da5429",
+    "configs/experiment/slurp-native-dual-store-train-fold-a-anchor-recovery-v1.json": "5b17a48f015b5fcf817758f9f40d2c4f62fc362f0dfcf0ff6f18330827c748f5",
+    "configs/model/q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1.json": "d1a644d80646de9e0e6b5799fb98e2151de7e03b1b14c5f260d16f77f8a77f09",
+    "docs/readiness/2026-09-16-slurp-direct-source-recovery-v1/README.md": "c5a62ec60123d0beb950a11dadced044c03e8a548b1e613fda86520fbfec6c07",
+    "docs/readiness/2026-09-16-slurp-postseal-source-bindings-v1.md": "c6f5d4c83fc7875dbbe1aca4720a2b82b5bde298387f7ac333728bf973e440c9",
+    "docs/readiness/2026-09-16-slurp-typed-context-matched-replication-held-v1/held-bindings.json": "35672df3e69264ab61571f7f23f9f920c883a74a2ae42556ee952b78818a0895",
+    "docs/results/2026-09-14-slurp-dual-store-base-replication-verdict-v1.md": "62b3b3ca513a4760366126df63b37f8c58f074dced015ec65a93649da2a79fd4"
+  }
+}
