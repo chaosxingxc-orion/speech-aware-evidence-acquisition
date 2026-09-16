@@ -26,7 +26,7 @@
     "analysis_rule": "Root binds the prospective paired complete-task and candidate-width analysis before any result-quality read.",
     "execution_plans": "After admission, bind separate generation and actual-request fit plans with final run/attempt IDs, GPU-hours ceiling, protocol hash and exposure row.",
     "prepared_phase_supply": "Prepare and pin the full 1,080-row K8 supply only after the final executable configuration is frozen.",
-    "shared_width_support": "Bind an accepted shared implementation that propagates maximum five through projection, candidate semantic supply, candidate-contract views and diagnostics while preserving historical maximum-three defaults and identities."
+    "shared_width_support": "Preserve the root-integrated reviewed configurable-width implementation from commits 2f1b12386b9f1460b0fc35a525f72d65b26f0463 and 195b8d9619f19a7735bedec47aa300de55db690e, including historical maximum-three defaults and identities."
   },
   "population": {
     "count": 1080,
@@ -45,13 +45,13 @@
     "generation_derivation": "1080 rows times at most 11 native model contacts: initial Perception 1 + Solver 1 + Reviewer 3 + Planner 1, then at most one revision with Solver 1 + Reviewer 3 + Planner 1.",
     "generation_model_calls_cap": 11880,
     "gpu_hours_fit_inclusive": "PENDING_ROOT_REGISTRATION",
+    "native_task_contract_calls_cap": 6480,
     "official_complete_scoring_jobs": 1,
     "repeated_speech_audio_seconds_exact_max": 33929.8128125,
     "repeated_speech_audio_seconds_registration_ceiling": 33930,
-    "reviewer_task_contract_calls_cap": 4320,
     "roster_audio_seconds": 3084.5284375,
     "speech_derivation": "3084.5284375 roster seconds times 11 possible contacts; ceiling rounded upward.",
-    "tool_derivation": "Two Reviewer waves at most; reserve-final-report leaves at most two tool actions in each three-iteration Reviewer wave: 1080 * 2 * 2."
+    "tool_derivation": "The retained anchor has no tool_iteration_policy, so reserve_final_report defaults false. Each of at most two Reviewer waves permits tools on all three iterations: 1080 * 2 * 3. Successful report paths may consume fewer calls."
   },
   "purpose": "Prospective A1 comparison of the released maximum-three incumbent with one maximum-five arm. Keep minimum one, K8 retrieval and source/ranker identities, fixed Solver value budget, native roles, decoding and full Fold A roster. Do not add N8, refresh, ASR, new knowledge or a third dynamic-tools attempt.",
   "service_session": "HELD-NO-SERVICE",

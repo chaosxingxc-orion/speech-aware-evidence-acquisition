@@ -2,7 +2,7 @@
 
 Status: **PREPARING, check-only, and not admitted.** This package authorizes no phase-supply preparation, prompt fit, worker, campaign, model, tool, encoder, tokenizer, scorer, GPU or service contact. It creates no exposure-ledger row.
 
-Read [the two-track research plan](../2026-09-16-slurp-two-track-research-plan.md) and `protocol-v1.json` together. Protocol SHA-256: `9364b2427eca394ee571619f8eb142ab06b5aee1cb74ed5e6eb4865b973588a8`.
+Read [the two-track research plan](../2026-09-16-slurp-two-track-research-plan.md) and `protocol-v2.json` together. Corrected protocol SHA-256: `a75f7c0fb2d43637b940bf19903e7dda4b360d79ec065db160e520a5233d2a9b`. Preserve `protocol-v1.json` as preparation history; its SHA-256 remains `9364b2427eca394ee571619f8eb142ab06b5aee1cb74ed5e6eb4865b973588a8`.
 
 ## Intended comparison
 
@@ -16,6 +16,7 @@ The new files are:
 - `configs/baseline/slurp-native-candidate-five-train-fold-a-v1.json`
 - `configs/experiment/slurp-native-candidate-five-train-fold-a-v1.json`
 - `docs/readiness/2026-09-16-slurp-native-candidate-five-train-fold-a-v1/protocol-v1.json`
+- `docs/readiness/2026-09-16-slurp-native-candidate-five-train-fold-a-v1/protocol-v2.json`
 
 The experiment permits only the `check` stage and uses `model-free-check`. Its held run and attempt identities cannot be used for contact.
 
@@ -23,20 +24,20 @@ The experiment permits only the `check` stage and uses `model-free-check`. Its h
 
 The unchanged graph allows at most eleven native model contacts per row: six in the initial Perception/Solver/Reviewer/Planner wave and five in one allowed Solver/Reviewer/Planner revision. For 1,080 rows, this yields 11,880 native model contacts.
 
-Each of the at most two Reviewer waves has three iterations, with the final iteration reserved for a report. This leaves at most two task-contract tool actions per wave, or 4,320 total. Each realized native request may require one speech-packet fit plus three request endpoints, so the exact maximum is 47,520 fit endpoints. Repeating all 3,084.5284375 roster seconds across eleven contacts yields 33,929.8128125 seconds; a future registration ceiling is 33,930 seconds. These are ceilings, not targets.
+The retained anchor declares no `tool_iteration_policy`, so `reserve_final_report` remains false. Each of at most two Reviewer waves can use a tool on all three iterations, giving a worst-case ceiling of 6,480 task-contract calls. Successful report paths may consume fewer. Each realized native request may require one speech-packet fit plus three request endpoints, so the exact maximum is 47,520 fit endpoints. Repeating all 3,084.5284375 roster seconds across eleven contacts yields 33,929.8128125 seconds; a future registration ceiling is 33,930 seconds. These are ceilings, not targets.
 
 No fit-inclusive GPU-hours ceiling is invented here. Root must bind it with the final service, execution plans and admission.
 
-## Current implementation gap
+## Shared implementation binding
 
-The canonical parser accepts a configured width up to the legal inventory, but the bounded first-occurrence projection, SLURP candidate semantic provider, candidate-contract state view and native candidate-stage diagnostics still enforce maximum three. Consequently, this package can be composed and inspected, but it is not executable at width five. A separately accepted shared change must propagate the width through those seams while preserving historical maximum-three defaults and identities. This package does not edit shared Python.
+The shared configurable-width implementation was reviewed at commits `2f1b12386b9f1460b0fc35a525f72d65b26f0463` and `195b8d9619f19a7735bedec47aa300de55db690e`. The N5 supply binds projection policy `configurable-bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1` with SHA-256 `e3d6ee6ecb0fe6fb5debee69ea4483b728e0ce76ce1cee84e60c2bc7e11b0ddd`. Root integrated that reviewed implementation after this preparation base; the final canonical source must preserve its registered identities. The historical maximum-three policy identity remains unchanged.
 
 ## Required finalization order
 
-1. Root reviews and accepts the shared width-five implementation and its model-free tests.
+1. Merge this corrected scaffold into the root integration boundary containing the reviewed shared implementation and preserve its model-free checks.
 2. Root freezes the paired complete-task analysis rule and admits this exact comparison.
 3. Bind a fit-inclusive GPU-hours ceiling, final service identity, exposure row, and separate generation and actual-request-fit ExecutionPlans.
-4. Replace held identities with the admitted run and attempt identities documented in `protocol-v1.json`.
+4. Replace held identities with the admitted run and attempt identities documented in `protocol-v2.json`.
 5. Prepare and pin the full 1,080-row K8 phase supply under the final executable configuration.
 6. Recompute fragment, composed-config and protocol hashes; run source, roster, prompt/schema, fake-wire and actual-request-fit checks.
 7. Freeze the final source before any contact.
