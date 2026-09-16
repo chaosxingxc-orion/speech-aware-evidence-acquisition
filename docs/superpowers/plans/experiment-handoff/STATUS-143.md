@@ -6,6 +6,8 @@ Date: 2026-09-16. Root owns science, interpretation and admission.
 
 SLURP is the only active optimization dataset. Root launched the maximum-five TRAIN Fold A1080 campaign at 2026-09-16T04:51:12Z. This is a launch fact, not a completed-result claim. Inspect the current operational receipts before taking any action.
 
+Startup proof at04:56:10Z: service healthy, GPU98percent, four busy slots. The metadata snapshot contains67 actual request-fit receipts and268 fit endpoint records. These are contact counts, not completed rows or quality results. Root reconciliation receipt:coordination/slurp-candidate-five-v1/observer-startup-root-v2.json.
+
 - Frozen source: /home/chao/saea-worktrees/slurp-candidate-five-registration-v1, commit534c92e8c67a510f48ddb59f98582ade384b0145.
 - Canonical integration:65cdf3e35e3b93f0d69751895582c1c5db056e89.
 - Experiment and cell:slurp-native-candidate-five-train-fold-a-v1.
