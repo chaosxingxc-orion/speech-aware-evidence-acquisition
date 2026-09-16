@@ -1,0 +1,35 @@
+{
+  "analysis_binding": {
+    "relpath": "docs/readiness/2026-09-16-slurp-system-vs-direct-train-a-analysis-held-v1.json",
+    "sha256": "e0d68d359c2251b638627fdbb53c1f9f19f540d18f43244ccc810f85dfe72079"
+  },
+  "contact_authorized": false,
+  "direct": {
+    "check_only_composed_config_hash": "b2b6214250d9f0620ca4857157553a38ff0aa5af9679872017c6e99b8e1ab3a1",
+    "fit_cap": 3241,
+    "generation_cap": 1080,
+    "prepared_for_root_registration": true
+  },
+  "pending_root_steps": [
+    "review the exact package and issue scientific admission",
+    "register separate fit and generation exposure rows for each arm",
+    "replace model-free-check with bounded-discovery-probe, mark the cells ready, add admission and preparation requirements, and permit prompt-fit/worker/campaign stages",
+    "recompute each final composed-config and execution-protocol hash and replace pending plan fields",
+    "verify the named resident service, create the shared generation lease, run direct fit then direct generation, then system fit/generation in the ordered campaign",
+    "freeze the final admitted source before first contact"
+  ],
+  "preparation_base_commit": "59d7f29840169a5b5449566aa85389ce2a337a6c",
+  "protocol": {
+    "relpath": "docs/readiness/2026-09-16-slurp-typed-role-context-system-vs-direct-train-fold-a-v1/protocol-v1.json",
+    "sha256": "9605dece274ca4cf9115f2042222d1159beebd91943f0894644d5ae49ab46961"
+  },
+  "schema": "saea-registration-preparation-readiness-v1",
+  "status": "PREPARING_ROOT_ADMISSION_REQUIRED",
+  "system": {
+    "check_only_composed_config_hash": "f1931170fbab0a88efe4af06b6bc5e25142f5cc866e91f869531408c16482761",
+    "fit_cap": 47520,
+    "generation_cap": 11880,
+    "prepared_phase_supply_sha256": "df06cf78124f93fe87723ed88fae8b221140d87327ef95b8c7d011800982f1bf",
+    "prepared_phase_supply_warm_validation": true
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "cells": [
+    {
+      "cell": "slurp-direct-max512-train-fold-a-v1",
+      "experiment": "slurp-direct-max512-train-fold-a-v1"
+    },
+    {
+      "cell": "slurp-native-typed-role-context-train-fold-a-v1",
+      "experiment": "slurp-native-typed-role-context-train-fold-a-v1"
+    }
+  ],
+  "schema": "saea-campaign-plan-v1"
+}
