@@ -60,7 +60,7 @@
           "max_candidates": 5,
           "max_total_values": 28,
           "max_values_per_candidate": 16,
-          "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+          "projection_policy": "configurable-bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
           "provider": "slurp-candidate-semantic-v1",
           "rank_policy": "saea-ranked-candidate-round-robin-v1"
         }
