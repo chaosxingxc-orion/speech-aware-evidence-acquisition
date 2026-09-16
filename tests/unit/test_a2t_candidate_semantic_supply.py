@@ -16,6 +16,9 @@ from speech_aware_evidence_acquisition.rails.knowledge import AgentStateArtifact
 from speech_aware_evidence_acquisition.rails.knowledge_stores import (
     build_knowledge_store_supply, load_knowledge_store_binding,
 )
+from speech_aware_evidence_acquisition.rails.knowledge_provider import (
+    Audio2ToolCandidateSemanticProvider,
+)
 from test_candidate_semantic_supply import _context, _latest_context, _program
 from test_compiled_knowledge_store_preparation import _prepared
 
@@ -98,6 +101,35 @@ def test_ordered_repeated_actions_select_distinct_parameter_values_and_real_keys
     assert audit["max_actions"] == 7 and audit["max_candidates_per_action"] == 4
     assert artifact.content == before
     assert len(binding.composite_snapshot.values) == 152
+
+
+def test_action_occurrence_capacity_may_exceed_distinct_tool_inventory():
+    legal = ("toolAlpha", "toolBeta")
+    provider = Audio2ToolCandidateSemanticProvider(
+        candidate_values={
+            "toolAlpha": ("value-alpha",),
+            "toolBeta": ("value-beta",),
+        },
+        legal_candidate_ids=legal,
+        max_actions=3,
+        max_candidates_per_action=2,
+        max_values_per_candidate=1,
+        max_total_values=6,
+        compact_source_phase="perception",
+    )
+    actions = [
+        _action(0, legal),
+        _action(1, tuple(reversed(legal))),
+        _action(2, legal),
+    ]
+    candidate_ids, audit = provider._candidate_state(
+        _state(actions), sample_id="s1"
+    )
+    assert candidate_ids == legal
+    assert audit["candidate_occurrences"] == [
+        {"action_id": row["action_id"], "candidate_tools": row["candidate_tools"]}
+        for row in actions
+    ]
 
 
 def test_no_action_state_supplies_no_parameter_card_without_filling_candidates(tmp_path):
