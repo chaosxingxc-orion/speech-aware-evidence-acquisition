@@ -1,0 +1,65 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply"
+      ],
+      "attempt_id": "attempt-slurp-candidate-slot-view-proof4-generation-v1",
+      "baseline_fragment": "slurp-candidate-slot-view-proof4-v1",
+      "cell_id": "slurp-candidate-slot-view-proof4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "state": "held",
+        "reason": "Runtime source/catalog verification, independent engineering admission, fresh preparation and FIT/generation exposure registration are not yet complete.",
+        "requirements": []
+      },
+      "run_id": "SAEA-SLURP-CANDIDATE-SLOT-VIEW-PROOF4-V1"
+    }
+  ],
+  "date": "2026-09-16",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-CANDIDATE-SLOT-VIEW-PROOF4-V1",
+  "failure_policy": "Stop on the first execution failure; preserve all contacts and original sources. No retry, scoring, partial quality read, closed-flight recovery or held replica activation under this engineering proof.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_analytical_tool_calls_cap": 16,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-candidate-slot-view-engineering-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "Established first four rows of exposed TRAIN A; reuse the engineering roster without quality-based selection.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Held four-row engineering proof of a candidate-bound slot consumption view on the older qualified dual-store role program. Preserve existing candidate generation, prompts, tools, canonical knowledge and delivery. This is not a recovery of the closed typed-context package. No task-quality claim or full-roster launch is admitted.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2"
+}

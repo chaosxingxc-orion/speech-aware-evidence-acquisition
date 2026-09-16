@@ -1,0 +1,57 @@
+{
+  "schema": "saea-candidate-slot-view-model-free-acceptance-v1",
+  "recorded_at_utc": "2026-09-16T18:51:24.918935+00:00",
+  "base_commit": "923a0360972cb125ca1671cdd036cd72d6e30418",
+  "config_sha256": "eb80cf5c8bee80b777ff90031469fe4e44d5687f14e2dace30cb1e3806d7e3d6",
+  "context_sha256": "585b15573806bf17e4472c0d004f07e73f36d1276cda99abe889ca96c0c3a887",
+  "source_pin": {
+    "relpath": "prepared/SAEA-SLURP-SEMANTIC-AUTHORING-PREPARE-V1/authored-slot-contracts-v1.json",
+    "sha256": "34f6c3dc192eca4a30ef7208d10c1e2b797a0ae2ffe5122f16b376e10a30e4c5"
+  },
+  "slot_values": 54,
+  "slot_intent_bindings": 402,
+  "legal_intents": 60,
+  "actual_source_projection_smoke": {
+    "scope_type": "synthetic legal candidates; no campaign output/reference read",
+    "scope_candidate_ids": [
+      "alarm_query",
+      "alarm_remove",
+      "alarm_set"
+    ],
+    "all_54_released_values_checked": true,
+    "canonical_sources_unchanged": true,
+    "dispositions": {
+      "full-body-no-excluded-bindings": 1,
+      "full-body-fallback": 43,
+      "projected": 10
+    },
+    "full_named_store_body_bytes": 82911,
+    "derived_body_bytes_before_wire_metadata": 72884,
+    "not_a_campaign_average_or_token_measurement": true
+  },
+  "validation": {
+    "affected_tests_passed": 248,
+    "platform_skips": 1,
+    "third_party_warnings": 5,
+    "coverage_combined_new_modules_percent": 83,
+    "wire_module_coverage_percent": 92,
+    "semantic_module_coverage_percent": 81,
+    "post_format_semantic_tests_passed": 7,
+    "engineering_base_check": "PASS, no new offenders",
+    "ruff": "PASS after formatting new semantic test file",
+    "diff_check": "PASS"
+  },
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "asr": 0,
+    "official_scorer": 0
+  },
+  "limitations": [
+    "No live fit or generation proof",
+    "No complete task-quality comparison",
+    "Held config has no qualified execution plan or exposure admission",
+    "Actual-source smoke uses synthetic state and all cards, not selected campaign requests"
+  ]
+}

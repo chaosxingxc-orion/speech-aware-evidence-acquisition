@@ -322,6 +322,7 @@ def test_regex_extraction_agrees_with_package_import():
         from speech_aware_evidence_acquisition.rails import phase_planner as _planner  # noqa: F401
         from speech_aware_evidence_acquisition.core.model import (
             native_evidence_projection as _native_evidence_projection,  # noqa: F401
+            native_slot_binding_view as _native_slot_binding_view,  # noqa: F401
         )
     except ImportError as exc:
         pytest.skip(f"package not importable in this environment: {exc}")

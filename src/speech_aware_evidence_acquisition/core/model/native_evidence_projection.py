@@ -49,14 +49,7 @@ def _tool_content(message):
     return content
 
 
-def project_native_knowledge_references(*, payload, messages, local_results):
-    """Reference only prior visible full bodies; leave canonical observations intact.
-
-    The framework caller validates source authority and complete tool groups first.
-    Local results bind message positions to full dispatcher documents, independently
-    of whether a tool call ID has been reused in another round.
-    """
-    rendered = copy.deepcopy(messages)
+def _local_result_documents(messages, local_results):
     documents = {}
     previous_index = -1
     for index, document in local_results:
@@ -68,6 +61,19 @@ def project_native_knowledge_references(*, payload, messages, local_results):
             _refuse("local tool message differs from its source document")
         documents[index] = document
         previous_index = index
+
+    return documents
+
+
+def project_native_knowledge_references(*, payload, messages, local_results):
+    """Reference only prior visible full bodies; leave canonical observations intact.
+
+    The framework caller validates source authority and complete tool groups first.
+    Local results bind message positions to full dispatcher documents, independently
+    of whether a tool call ID has been reused in another round.
+    """
+    rendered = copy.deepcopy(messages)
+    documents = _local_result_documents(messages, local_results)
 
     # Exact native text parts are required. A substring, an observation, or an
     # ambiguous source binding cannot establish visible knowledge.

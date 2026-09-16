@@ -83,6 +83,7 @@ from ..session import (
 )
 from . import FrozenCoreError
 from . import native_evidence_projection as _native_evidence_projection_registration  # noqa: F401
+from . import native_slot_binding_view as _native_slot_binding_view_registration  # noqa: F401
 from .native_history import project_native_history
 from .paths import _normalized_relative_path, _resolve_confined
 from .prepared_feature_cache import PreparedFeatureCacheGuard
@@ -435,6 +436,7 @@ class LlamaServerTransport:
         preserve_wire_responses: bool = False,
         feature_cache_guard: PreparedFeatureCacheGuard | None = None,
         native_evidence_projection: str | None = None,
+        native_evidence_projection_context: object | None = None,
     ) -> None:
         # Prompt ordering is part of the request's identity: the bytes the
         # model sees change with it, so it is a MODEL-CONFIG field (inside the
@@ -484,10 +486,44 @@ class LlamaServerTransport:
                     f"{prompt_order!r}"
                 )
             try:
-                NATIVE_EVIDENCE_PROJECTIONS.resolve(native_evidence_projection)
+                projector = NATIVE_EVIDENCE_PROJECTIONS.resolve(
+                    native_evidence_projection
+                )
             except CoreError as error:
                 raise SessionError(str(error)) from error
+            validator = getattr(projector, "validate_context", None)
+            if validator is None:
+                if native_evidence_projection_context is not None:
+                    raise SessionError(
+                        f"native evidence projection {native_evidence_projection!r} "
+                        "does not accept a projection context"
+                    )
+            else:
+                if not callable(validator):
+                    raise SessionError(
+                        f"native evidence projection {native_evidence_projection!r} "
+                        "has a non-callable validate_context hook"
+                    )
+                if native_evidence_projection_context is None:
+                    raise SessionError(
+                        f"native evidence projection {native_evidence_projection!r} "
+                        "requires a bound projection context"
+                    )
+                try:
+                    validator(native_evidence_projection_context)
+                except ValueError as error:
+                    raise SessionError(
+                        f"native evidence projection context is invalid: {error}"
+                    ) from error
+        elif native_evidence_projection_context is not None:
+            raise SessionError(
+                "native_evidence_projection_context requires a registered "
+                "native_evidence_projection"
+            )
         self._native_evidence_projection = native_evidence_projection
+        self._native_evidence_projection_context = (
+            native_evidence_projection_context
+        )
         # Fragment-driven user-turn text (2026-09-04, Audio2Tool official-
         # protocol replication). The published Audio2Tool protocol puts a
         # fixed sentence in the USER turn AFTER the audio ("Convert this
@@ -729,6 +765,9 @@ class LlamaServerTransport:
         """
         projection_receipts: list[Mapping[str, object]] = []
         evidence_projection = getattr(self, "_native_evidence_projection", None)
+        projection_context = getattr(
+            self, "_native_evidence_projection_context", None
+        )
         # R0 repair T5 fix-2 (IMPORTANT, reviewer-flagged): re-verify on the
         # send path itself, every time -- not merely once at construction.
         # Cheap (a few KB re-hash of the launcher stub plus one process-image
@@ -874,6 +913,7 @@ class LlamaServerTransport:
             framework_projection = project_native_framework_history(
                 payload=payload, messages=messages, state_texts=state_texts,
                 evidence_projection=evidence_projection,
+                projection_context=projection_context,
                 receipt_sink=projection_receipts.append,
             )
             if framework_projection is None:
@@ -958,6 +998,7 @@ class LlamaServerTransport:
             framework_projection = project_native_framework_history(
                 payload=payload, messages=messages, state_texts=state_texts,
                 evidence_projection=evidence_projection,
+                projection_context=projection_context,
                 receipt_sink=projection_receipts.append,
             )
             if framework_projection is None:
@@ -1261,6 +1302,44 @@ def _llama_server_factory(
     runtime_root: Path,
     feature_cache_guard: PreparedFeatureCacheGuard | None = None,
 ):
+    projection_id = values.get("native_evidence_projection")
+    params_present = "native_evidence_projection_params" in values
+    if params_present and not isinstance(
+        values["native_evidence_projection_params"], Mapping
+    ):
+        raise SessionError(
+            "native_evidence_projection_params must be a mapping when declared"
+        )
+    projection_context = None
+    if projection_id is None:
+        if params_present:
+            raise SessionError(
+                "native_evidence_projection_params requires native_evidence_projection"
+            )
+    elif isinstance(projection_id, str):
+        try:
+            projector = NATIVE_EVIDENCE_PROJECTIONS.resolve(projection_id)
+        except CoreError as error:
+            raise SessionError(str(error)) from error
+        binder = getattr(projector, "bind_config", None)
+        if binder is None:
+            if params_present:
+                raise SessionError(
+                    "native_evidence_projection_params is not accepted by "
+                    f"unbound projection {projection_id!r}"
+                )
+        else:
+            if not callable(binder):
+                raise SessionError(
+                    f"native evidence projection {projection_id!r} has a "
+                    "non-callable bind_config hook"
+                )
+            try:
+                projection_context = binder(values, data_root)
+            except ValueError as error:
+                raise SessionError(
+                    f"native evidence projection configuration is invalid: {error}"
+                ) from error
     return LlamaServerTransport(
         str(values["base_url"]),
         data_root,
@@ -1299,6 +1378,7 @@ def _llama_server_factory(
             if "native_evidence_projection" in values
             else None
         ),
+        native_evidence_projection_context=projection_context,
     )
 
 
