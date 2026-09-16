@@ -1,6 +1,6 @@
 # Current continuation: September 16
 
-Read [STATUS-144](STATUS-144.md) and [the two-track plan](../../../readiness/2026-09-16-slurp-two-track-research-plan.md).
+Read [STATUS-145](STATUS-145.md) and [the two-track plan](../../../readiness/2026-09-16-slurp-two-track-research-plan.md).
 SLURP is the only active optimization target. Candidate-width support and source-bound
 on-demand knowledge are implemented and tested. The candidate-five campaign is registered and launched from a frozen WSL checkout.
 The problem-directed Reviewer configuration remains held for its own admission.
@@ -11,7 +11,7 @@ SLURP dynamic-tools flight or read its partial quality.
 
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-144.md](STATUS-144.md) records the running maximum-five campaign, closed review attribution and integrated measurement,
+**Latest execution:** [STATUS-145.md](STATUS-145.md) records the running maximum-five campaign, closed review attribution and integrated measurement,
 root verification, the service switch, exact SLURP registration and campaign launch.
 Research preparation runs in parallel; one experiment generates at a time.
 
@@ -21,7 +21,7 @@ Research preparation runs in parallel; one experiment generates at a time.
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 143. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 145. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -54,9 +54,9 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-STATUS-144 supersedes the older execution paragraphs below. The maximum-five SLURP campaign has launched; do not relaunch it. E21 and Audio2Tool remain held. Use source-bound operational receipts for liveness and wait for complete seal/scoring before quality release.
+STATUS-145 supersedes the older execution paragraphs below. The maximum-five SLURP campaign has launched; do not relaunch it. E21 and Audio2Tool remain held. Use source-bound operational receipts for liveness and wait for complete seal/scoring before quality release.
 
-Read [STATUS-141.md](STATUS-141.md), state.json and
+Historical STATUS-141 snapshot (superseded by STATUS-145): [STATUS-141.md](STATUS-141.md), state.json and
 [OWNER-GPU-RESUME-2026-09-15](OWNER-GPU-RESUME-2026-09-15.md) first. SLURP is
 the only active optimization target, and no new flight is admitted. The
 incumbent remains in place; broad/factored TRAIN-A was not advanced. Root will
@@ -110,9 +110,10 @@ no new test/confirmatory exposure or Stage-3 execution is admitted.
 
 Current knowledge design: [discriminative values](../../../readiness/2026-09-11-discriminative-knowledge-values.md).
 
-Latest handoff: [STATUS-144](STATUS-144.md) keeps SLURP as the only active optimization
+Latest handoff: [STATUS-145](STATUS-145.md) keeps SLURP as the only active optimization
 target. The maximum-five comparison is already running. The complete TRAIN anchor review
-attribution is closed and the held structured Reviewer package is integrated. Root will
+attribution and context-provenance audit are closed. Shared contract projection and the
+held structured Reviewer package remain preparation capabilities. Root will
 choose its smallest separately admitted comparison after the full candidate-width verdict.
 E21 and Audio2Tool remain held. The closed dynamic-tools flight receives no third attempt
 or relabel restart. Build a stable agentic baseline before later training-free trajectory
