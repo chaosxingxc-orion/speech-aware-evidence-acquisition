@@ -157,3 +157,26 @@ docs/readiness/2026-09-16-slurp-direct-train-a-comparator-preparation.md.
 The old TRAIN A direct contract is full SLU, but its fixed path, max64, seed and geometry
 differ. No old output quality was read. Do not substitute DEV1000 scores for TRAIN A.
 This preparation does not admit a new contact or change A1's advancement rule.
+
+## Complete A1 decision and next selected package
+
+A1 is complete and NOT_ADVANCED; read docs/results/2026-09-16-slurp-candidate-five-train-a.md.
+Candidate coverage gains14 net rows, while the primary pooled SLU interval includes zero.
+Initial-to-final review corrects only two intents across seven revisions. The sealed supply
+audit finds no binding total/per-candidate cap exclusions. Keep maximum-three as incumbent;
+do not automatically increase N or value limits.
+
+Root selects the existing typed role-context plus structured evidence-review package for
+one complete comparison with the prepared max512 direct-only baseline on TRAIN A1080.
+Both use the same service geometry, speech and shared executor. This package includes
+source-bound context compilation, structured review, on-demand existing target-knowledge
+access and a reserved final report. It is not an isolated compiler ablation. Preserve the
+historical task contract and knowledge; keep no-example, history-only, acoustic tools,
+new knowledge values and candidate refresh out of this registration.
+
+The existing DEV1000/NEW500 base has useful exploratory repeatability, recorded in
+docs/results/2026-09-14-slurp-dual-store-base-replication-verdict-v1.md.
+What remains unverified is the new package and its matching TRAIN A direct comparison.
+First positive quality leads require a fresh same-roster matched replication. Root owns
+attribution and admission; mechanical configuration work may proceed in an isolated WSL
+worktree while root closes the completed flight.
