@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 141,
+  "generation": 142,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,13 +10,13 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "2858714ab0b2ae7bac3891f905d47fab5e7cf4c0",
-  "updated_at_utc": "2026-09-16T03:39:59.990527+00:00",
-  "next_action": "Read STATUS-141.md and docs/readiness/2026-09-16-slurp-two-track-research-plan.md. Within SLURP only, investigate Track A candidate inclusion (candidate width and discriminative knowledge coverage) and Track B intent/slot resolution (task-specific information and independent evidence-grounded review) in parallel. Root owns attribution, selection and prospective experiment design. First prepare maximum N=3 versus N=5 with unchanged initial knowledge policy; keep Track B's candidate source fixed for component attribution. No new flight is admitted by this research plan. Retain incumbent and all failed/closed verdicts. Do not reopen the twice-failed dynamic-tools flight. E21 may finish only the existing registered static fit, then hold; Audio2Tool proof/full-flight work remains held. Run one registered GPU experiment at a time and evaluate final complete SLU quality before same-roster replication or transfer.",
+  "snapshot_commit": "6cac875b0200f3e31917cf61349c9e617d86bd54",
+  "updated_at_utc": "2026-09-16T04:28:29.656303+00:00",
+  "next_action": "Read STATUS-142.md. Shared candidate-width and source-bound on-demand knowledge implementations are integrated and root-reviewed. The corrected candidate-five configuration is integrated and root-validated; root now finalizes paired analysis, exact execution/fit plans, exposure, prepared supply and a frozen WSL source. No new experiment is admitted by the held fragments. Switch the resident to the exact registered SLURP identity only at this boundary. E21 static fit is FAILED_BEFORE_MODEL_CONTACT_HOLD with dead-lease reconciliation complete; do not retry or generate. Audio2Tool remains held. Preserve the incumbent, closed failures and unread aborted partial quality.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-GPU-RESUME-2026-09-15",
   "owner_power_direction": "2026-09-14: The owner confirmed that current power mode is optimal and instructed root not to dwell on it. Preserve current hardware/service settings.",
-  "owner_gpu_direction": "The owner authorized GPU execution on September 15. September 16 steering focuses active optimization on SLURP, with two parallel research tracks inside that dataset. E21 may finish only its already registered static fit; hold its later generation and hold Audio2Tool proof/full flights. GPU authorization does not bypass exact per-flight registration, service identity or custody.",
+  "owner_gpu_direction": "Owner GPU authorization remains active for separately registered SLURP work. E21's existing fit has failed before model contact and is now held; Audio2Tool proof/full flights remain held. The idle resident E21 server is not a matching SLURP service. Root exclusively manages service switching and lease issuance.",
   "owner_research_direction": "September 16: investigate candidate coverage through larger Top-N and broader knowledge information coverage, and intent/slot correctness through better information and independent Reviewer examination of data and decisions. Root retains analysis and decisions."
 }

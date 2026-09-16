@@ -1,3 +1,11 @@
+# Latest boundary: September 16, STATUS-142
+
+Shared configurable candidate width and released semantic target lookup are integrated.
+Keep SLURP as the sole active optimization dataset; finalize the exact candidate-five
+flight before generation. The previous E21 static fit failed at its exposure gate before
+model contact and is held, with dead-lease reconciliation complete. Audio2Tool stays held.
+Read [STATUS-142](STATUS-142.md) for current evidence and next actions.
+
 # Owner-directed recovery and continuation plan
 
 Current owner refinement (2026-09-16): conduct two research tracks within SLURP, candidate coverage and evidence-grounded intent/slot resolution. Read [the root two-track plan](../../../readiness/2026-09-16-slurp-two-track-research-plan.md). Research proceeds in parallel; GPU experiments remain sequential and separately registered. E21 and Audio2Tool transfer remain held.

@@ -1,23 +1,19 @@
 # Current continuation: September 16
 
-Current owner refinement (2026-09-16): conduct two research tracks within SLURP, candidate coverage and evidence-grounded intent/slot resolution. Read [the root two-track plan](../../../readiness/2026-09-16-slurp-two-track-research-plan.md). Research proceeds in parallel; GPU experiments remain sequential and separately registered. E21 and Audio2Tool transfer remain held.
+Read [STATUS-142](STATUS-142.md) and [the two-track plan](../../../readiness/2026-09-16-slurp-two-track-research-plan.md).
+SLURP is the only active optimization target. Candidate-width support and source-bound
+on-demand knowledge are implemented and tested. Candidate-five and problem-directed
+Reviewer configurations remain held until exact flight admission and capacity validation.
 
-Read [STATUS-141](STATUS-141.md): SLURP is now the only active optimization
-target. The earlier dynamic-tools flight is closed after two failures, with
-partial quality unread and no third attempt or relabel restart. A future
-successor requires one concrete named information-gain design and separate root
-admission. The current E21 capacity fit may finish, but all E21 generation and
-final registration are held. Audio2Tool's
-four-row proof and full flight are also held.
+The existing E21 static fit has failed before model contact; its dead lease was reconciled.
+Do not retry or generate E21. Audio2Tool remains held. Do not reopen the twice-failed
+SLURP dynamic-tools flight or read its partial quality.
 
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-141.md](STATUS-141.md) records the owner's
-single-dataset direction. Retain the SLURP incumbent and the broad/factored
-non-advancement decision. Root will specify one information-gain mechanism
-within the existing agentic framework, followed by a same-roster full-task
-comparison and replication if promising. CPU preparation and scoring may run
-in parallel within SLURP; experiments do not run across datasets.
+**Latest execution:** [STATUS-142.md](STATUS-142.md) records integrated implementation,
+root verification, the E21 terminal boundary, and remaining exact SLURP registration work.
+Research preparation runs in parallel; one experiment generates at a time.
 
 **Current comparison direction:** [OWNER-SYSTEM-VERSIONS-025.md](OWNER-SYSTEM-VERSIONS-025.md) makes complete model-versus-system task quality primary and allows evidence-guided expansion of system versions. The supplied/withheld knowledge draft is withdrawn. [The current system plan](../../../readiness/2026-09-13-slurp-direct-vs-native-system-plan-v1.md) and [extension sequence](../../../readiness/2026-09-13-finalized-score-reuse-and-system-extension.md) govern the next work.
 
@@ -25,7 +21,7 @@ in parallel within SLURP; experiments do not run across datasets.
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 141. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 142. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 

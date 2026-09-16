@@ -3965,3 +3965,14 @@ encoding and scoring remain held and unregistered.
 | date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |
 |---|---|---|---|---|---|---|---|---|---:|---:|---:|---|---|---|
 | 2026-09-15T18:22:28.980419+00:00 | SAEA-E21-NATIVE-WINDOW-DIRECT-FULL44-FIT-V1 | bounded-discovery-probe | Complete direct static fit over all 1,593 canonical execution-unit requests; zero generation and score. | Shared attach-only prompt-fit tokenizer endpoints against q4km-e21-native-window-packets-cddb000c-np4-max1024-v1; c98304, np4, max1024, no mmproj. | earnings21 original exposed full44 / 1,593 source windows | discovery | fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e | no | 4780 | 141346 | 4.0 | Preserve the existing 44 calls, canonical windows and prepared feature packets; fit and future direct generation share the arm ceilings. | docs/readiness/2026-09-15-e21-native-window-direct-fit-registration-v1/direct-fit-plan-v1.json | Plan SHA-256 f16e4da9b25bcd43743f5e1adfcfb5380581a766f9c5062fc21252ce0e6a8b16; config d4594775716f9ef45c266e82d7bff584de44f039beb6dc4e4112bdcef773b69d; runtime protocol 23ce891d1b9335a4045950e214712a28a072782ee20b83c4b9a7ba7e36d32000; attempt attempt-e21-native-window-direct-full44-fit-v1; expected session serving-e21-native-window-context-tools-np4-max1024-v1. Root final source freeze, verified service and shared monitor, and exclusive lease remain mandatory. |
+
+### E21 static-fit terminal note, 2026-09-16
+
+SAEA-E21-NATIVE-WINDOW-DIRECT-FULL44-FIT-V1 terminated with exit1 before model-contact
+authorization: the original carrier text lacked the exact earnings21-original lock key.
+Preserve that original preregistration unchanged. No tokenizer endpoint or task generation
+was dispatched, and no fit receipt was produced. Root verified process/socket/slot
+quiescence and reconciled stale lease metadata. E21 is held under the owner's SLURP-only
+direction; no repair, retry or successor contact is admitted by this note. Receipt:
+coordination/e21-native-window-registration-v1/root-fit-terminal-reconciliation-v1.json,
+SHA-256 de5ab186a99c39f4aa42799245f51c944882d91190bb36d038a6e8cbed1dc0b0.
