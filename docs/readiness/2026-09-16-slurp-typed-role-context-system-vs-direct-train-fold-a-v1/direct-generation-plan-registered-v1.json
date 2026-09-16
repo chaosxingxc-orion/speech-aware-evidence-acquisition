@@ -1,0 +1,42 @@
+{
+  "cell": "slurp-direct-max512-train-fold-a-v1",
+  "composed_config_hash": "554bda8c7874b42040eb6ec6ab0ab2c259a2a5799689000f1a9e875cf5ce2c07",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-direct-max512-train-fold-a-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 3.0,
+    "planned_model_calls": 1080,
+    "planned_speech_audio_seconds": 3085,
+    "protocol_hash": "370037b2074a2851dc1c63c1b68e1b85bb9b127e0a6234ba8148b6901d95dffe",
+    "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-direct-max512-train-fold-a-v1",
+  "family_budget": {
+    "fit_endpoint_calls_cap": 3241,
+    "generation_calls_cap": 1080,
+    "gpu_hours_fit_inclusive": 3.0,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 3085
+  },
+  "preparation_base_commit": "59d7f29840169a5b5449566aa85389ce2a337a6c",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-16-slurp-typed-role-context-system-vs-direct-train-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "70eedd541a24713a198461f815f7afe47de584e494813e57200e5e3ee6dcf7fd"
+  },
+  "quality_read_gate": "Do not inspect either arm quality until both full1080 outputs and first complete official scores are sealed and root issues the paired release. Scoring direct may overlap system generation; a direct result cannot modify the frozen system.",
+  "registered_at_utc": "2026-09-16T09:31:00.586035+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-typed-context-vs-direct-v1/admission-v1.json",
+    "sha256": "7136d12653800025b33f5f59f001ab75726625abad18f4950cdfa1e9733e70f0"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/slurp-typed-context-registration-v1",
+  "status": "ROOT_REGISTERED_AWAITING_FROZEN_SOURCE_AND_SERVICE_VERIFICATION",
+  "unused_budget_is_new_attempt_authority": false
+}
