@@ -1425,14 +1425,6 @@ class CandidateSemanticProvider(KnowledgeProvider):
             raise RailsError(
                 "CandidateSemanticProvider needs a non-empty legal candidate inventory"
             )
-        if (
-            isinstance(max_candidates, bool)
-            or not isinstance(max_candidates, int)
-            or max_candidates > len(legal)
-        ):
-            raise RailsError(
-                "max_candidates cannot exceed the legal candidate inventory"
-            )
         for field, value, maximum in (
             ("max_candidates", max_candidates, self.MAX_CANDIDATES),
             ("max_values_per_candidate", max_values_per_candidate, None),
@@ -1446,6 +1438,10 @@ class CandidateSemanticProvider(KnowledgeProvider):
             ):
                 suffix = f" and at most {maximum}" if maximum is not None else ""
                 raise RailsError(f"{field} must be a positive integer{suffix}")
+        self._validate_candidate_capacity(
+            max_candidates=max_candidates,
+            legal_candidate_count=len(legal),
+        )
         if max_total_values > max_candidates * max_values_per_candidate:
             raise RailsError(
                 "max_total_values cannot exceed max_candidates times "
@@ -1478,6 +1474,11 @@ class CandidateSemanticProvider(KnowledgeProvider):
         self._last_rank_result: object | None = None
         self._last_selected_value_ids: tuple[str, ...] = ()
         self._last_selection_audit: Mapping[str, object] | None = None
+
+    def _validate_candidate_capacity(
+        self, *, max_candidates: int, legal_candidate_count: int
+    ) -> None:
+        """Validate provider-specific candidate capacity semantics."""
 
     def build(self, source_rows: object, *, policy_id: str) -> object:
         raise RailsError(
@@ -1668,6 +1669,14 @@ class CandidateSemanticProvider(KnowledgeProvider):
 
 class SlurpCandidateSemanticProvider(CandidateSemanticProvider):
     """Retain the original SLURP candidate and same-ID authored-card contract."""
+
+    def _validate_candidate_capacity(
+        self, *, max_candidates: int, legal_candidate_count: int
+    ) -> None:
+        if max_candidates > legal_candidate_count:
+            raise RailsError(
+                "max_candidates cannot exceed the legal candidate inventory"
+            )
 
     def _validate_value_facets(self, value: object, facet_ids: set[str]) -> None:
         if value.value_id not in facet_ids or value.associated_facet_ids != (value.value_id,):
