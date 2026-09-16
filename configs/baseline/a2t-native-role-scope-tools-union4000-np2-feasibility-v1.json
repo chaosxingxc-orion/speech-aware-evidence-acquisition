@@ -1,0 +1,216 @@
+{
+  "arm": "speech-feature-query-native-tools",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_stores": {
+    "parameter-meaning": {
+      "candidate_supply": {
+        "solver": {
+          "candidate_state_phase": "perception",
+          "candidate_state_selection": "latest",
+          "compact_source_phase": "perception",
+          "fuse_policy": "saea-candidate-semantic-passthrough-v1",
+          "max_actions": 8,
+          "max_candidates_per_action": 4,
+          "max_total_values": 32,
+          "max_values_per_candidate": 1,
+          "provider": "audio2tool-candidate-semantic-v1",
+          "rank_policy": "saea-ranked-candidate-round-robin-v1"
+        }
+      },
+      "release": {
+        "relpath": "knowledge/audio2tool/parameter-meaning-v1/release.json",
+        "sha256": "7bafef2137bbbf9b44baebf0beb70570422d496729f7846ea99a22b6708a4373"
+      },
+      "snapshot": {
+        "relpath": "prepared/SAEA-A2T-PARAMETER-MEANING-KNOWLEDGE-V1/knowledge-snapshot.json",
+        "sha256": "7084f9c56b361ab8f38d2e0a6864ccb2d05bcc053dc70441de263b410ca6041f"
+      },
+      "store_role": "parameter-meaning"
+    },
+    "tool-activation": {
+      "release": {
+        "relpath": "knowledge/audio2tool/tool-activation-scope-v1/release.json",
+        "sha256": "fb6b6298921f843fe55400d9f9f72627516f95b08da189563a6ef5942c17aaef"
+      },
+      "snapshot": {
+        "relpath": "prepared/SAEA-A2T-ACTIVATION-SCOPE-KNOWLEDGE-V1/knowledge-snapshot.json",
+        "sha256": "17d22d2f77e0916527f4662d93c335d191e0f87504e68d1e735b0f79f5934f73"
+      },
+      "store_role": "tool-activation"
+    }
+  },
+  "native_contact_fit": {
+    "attempt_id": "attempt-a2t-native-role-scope-tools-union4000-fit-v1",
+    "contact_cap": 224000,
+    "max_speech_packets": 1,
+    "run_id": "SAEA-A2T-NATIVE-ROLE-SCOPE-TOOLS-UNION4000-FIT-V1"
+  },
+  "native_episode": {
+    "actions": {
+      "accept": "ACCEPT",
+      "acquire": "ACQUIRE",
+      "revise": "REVISE"
+    },
+    "candidate_refresh": {
+      "action": "REFRESH_CANDIDATES",
+      "max_refreshes": 1
+    },
+    "episode_id": "a2t-native-role-scope-tools-union4000-v1",
+    "exhaustion_policy": "deliver-latest-solver",
+    "finite_completion_policy": "deliver-latest-or-abstain",
+    "max_revisions": 1,
+    "planner_output_format": "json-action-v1",
+    "roles": {
+      "perception": {
+        "max_iterations": 1,
+        "phase_id": "perception"
+      },
+      "planner": {
+        "max_iterations": 2,
+        "phase_id": "planner"
+      },
+      "reviewer": {
+        "max_iterations": 3,
+        "phase_id": "reviewer"
+      },
+      "solver": {
+        "max_iterations": 1,
+        "phase_id": "solver"
+      }
+    },
+    "schema": "saea-native-episode-config-v1",
+    "tool_iteration_policy": "reserve-final-report"
+  },
+  "phase_material": {
+    "perception": {
+      "fill_params": {
+        "max_actions": 8,
+        "max_candidates_per_action": 4
+      },
+      "instruction_fill": null,
+      "instruction_template": "probes/a2t_native_role_perception_scope_tools_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": "audio2tool-perception-state-v1",
+      "state_fill": null
+    },
+    "planner": {
+      "fill_params": {
+        "actions": [
+          "ACCEPT",
+          "REVISE",
+          "REFRESH_CANDIDATES"
+        ]
+      },
+      "instruction_fill": null,
+      "instruction_template": "probes/a2t_native_role_planner_scope_tools_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": "saea-native-planner-action-v1",
+      "state_fill": null
+    },
+    "reviewer": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/a2t_native_role_reviewer_scope_tools_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    },
+    "solver": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/a2t_native_role_solver_scope_tools_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    }
+  },
+  "phase_tools": {
+    "planner": {
+      "allowed_tools": [
+        "saea-tool-knowledge-target-lookup-v1"
+      ],
+      "candidate_limit": 4,
+      "knowledge_store_ids": [
+        "tool-activation",
+        "parameter-meaning"
+      ],
+      "knowledge_value_limit": 4,
+      "knowledge_values_per_candidate": 1,
+      "knowledge_views": [
+        "text"
+      ],
+      "mode": "native-tools",
+      "source_authority_role": "planner"
+    },
+    "reviewer": {
+      "allowed_tools": [
+        "saea-tool-knowledge-target-lookup-v1",
+        "saea-tool-task-contract-v1"
+      ],
+      "candidate_limit": 4,
+      "knowledge_store_ids": [
+        "tool-activation",
+        "parameter-meaning"
+      ],
+      "knowledge_value_limit": 4,
+      "knowledge_values_per_candidate": 1,
+      "knowledge_views": [
+        "text"
+      ],
+      "mode": "native-tools",
+      "source_authority_role": "reviewer"
+    }
+  },
+  "policy": "phase-audio2tool-native-candidate-recovery-tools-v1",
+  "preparation_source_receipts": [
+    {
+      "relpath": "knowledge/audio2tool/parameter-meaning-v1/release.json",
+      "root": "data",
+      "sha256": "7bafef2137bbbf9b44baebf0beb70570422d496729f7846ea99a22b6708a4373"
+    },
+    {
+      "relpath": "knowledge/audio2tool/parameter-meaning-v1/completion.json",
+      "root": "data",
+      "sha256": "24071625a272ac39b64090f8f1da90d847468523185de0317c32591dbdd1f90a"
+    },
+    {
+      "relpath": "knowledge/audio2tool/tool-activation-scope-v1/release.json",
+      "root": "data",
+      "sha256": "fb6b6298921f843fe55400d9f9f72627516f95b08da189563a6ef5942c17aaef"
+    },
+    {
+      "relpath": "knowledge/audio2tool/tool-activation-scope-v1/completion.json",
+      "root": "data",
+      "sha256": "f6480f1e944759106c87fa99b5b031e4dba208215419677d5ffa6fde54491797"
+    },
+    {
+      "relpath": "coordination/a2t-activation-scope-prepare-v1/root-value-review-v1.json",
+      "root": "data",
+      "sha256": "fdf32209a1b0289dd89cb38a5066402ced28839629f5695c396323d2333fa782"
+    }
+  ],
+  "prompt_fit_multiple": 1.3333333333333333,
+  "scorers": [
+    "a2t-toolcall-official",
+    "a2t-toolcall-v2",
+    "a2t-toolcall",
+    "cost"
+  ],
+  "serving_geometry": {
+    "max_tokens": 2048,
+    "slot_tokens": 49152,
+    "slots": 2
+  },
+  "serving_slot_tokens": 49152,
+  "serving_slots": 2,
+  "speech_feature_key_representation_id": "saea-a2t-native-system-v1:complete-speech",
+  "speech_feature_matcher_policy_id": "saea-a2t-native-system-v1",
+  "speech_packet_promotion_receipt": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-NATIVE-SYSTEM-PACKETS-V1/promotion.json",
+  "speech_packet_promotion_receipt_sha256": "720d81f63a1923f19893c0ee171e1ab7b47f9a946c1e62a06bdddd839243de8a",
+  "task_contract_source": "active-instruction",
+  "task_instruction_fill": "audio2tool-registry-compact",
+  "task_instruction_template": "probes/r1_audio2tool_official.txt",
+  "task_instruction_template_active": true,
+  "what_this_is": "Complete system with broad ordered Perception over the unchanged compact registry, latest-candidate parameter supply, optional Reviewer and Planner target lookup across separate scoped-activation and parameter stores, and one bounded candidate refresh or revision. Solver retains answer authority. No automatic activation shortlist, ASR, hard domain filter or model-generated runtime knowledge. Every realized native request must pass its actual-contact fit before dispatch."
+}

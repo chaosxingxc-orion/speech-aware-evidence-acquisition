@@ -1,0 +1,66 @@
+{
+  "analysis_recipe": {
+    "repo_relpath": "docs/readiness/2026-09-15-a2t-native-role-scope-tools-analysis-recipe-v1.json",
+    "sha256": "a2b9514bb0b09c6af7fe0160a5a07ca2e9a3a991df03a209020ab9ca0293f904"
+  },
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check"
+      ],
+      "attempt_id": "attempt-a2t-native-role-scope-tools-union4000-generation-v1",
+      "baseline_fragment": "a2t-native-role-scope-tools-union4000-np2-feasibility-v1",
+      "cell_id": "a2t-native-role-scope-tools-union4000-v1",
+      "dataset_fragment": "audio2tool-org1-union-4000",
+      "model_fragment": "q4km-mmproj-free-a2t-native-role-np2-max2048-v1",
+      "readiness": {
+        "reason": "CPU-only np2 feasibility proof. This fragment grants no fit, generation, worker, campaign, scoring, or service authority.",
+        "requirements": [],
+        "state": "held"
+      },
+      "run_id": "SAEA-A2T-NATIVE-ROLE-SCOPE-TOOLS-UNION4000-V1"
+    }
+  ],
+  "date": "2026-09-15",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 64.0,
+    "planned_model_calls": 56000,
+    "planned_speech_audio_seconds": 375000,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-A2T-NATIVE-ROLE-SCOPE-TOOLS-UNION4000-V1",
+  "failure_policy": "Current SLURP broad factored TRAIN-A runs first. Do not launch this registration before root admission. Preserve every contact and stop on failure; no automatic restart, replay, new recovery, roster change, prompt change, output shortening or geometry change.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 236001,
+    "generation_calls_cap": 60000,
+    "gpu_hours_fit_inclusive": 72.0,
+    "official_complete_scoring_jobs": 2,
+    "speech_audio_seconds_cap": 400000,
+    "system_analytical_tool_calls_cap": 24000
+  },
+  "fragment_kind": "saea-audio2tool-native-role-scope-tools-v1",
+  "generation_budget": {
+    "cap": 56000,
+    "definition": "Complete roster with at most fourteen realized native contacts per episode. The ceiling is not a target, and every realized request is fitted before dispatch.",
+    "target": 16000
+  },
+  "pending_root_bindings": {
+    "service_and_lease": "Root must establish serving-a2t-native-role-scope-tools-np3-max2048-v1 and the shared campaign must acquire the exclusive generation lease before contact.",
+    "source_freeze": "After the admission-bound executable commit, root must publish the final clean source freeze. The external freeze receipt is intentionally not self-bound in this fragment."
+  },
+  "population": {
+    "count": 4000,
+    "dataset_fragment": "audio2tool-org1-union-4000",
+    "decision_population": "Previously exposed discovery union4000; eight tiers of 500, Tier7 first user turn. Reuse identities only; historical dataset-fragment comparator notes do not define this fresh pairing.",
+    "frozen_roster_audio_seconds": 23418.083083,
+    "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6"
+  },
+  "preserve_wire_responses": true,
+  "purpose": "Run one fresh direct/system comparison after the named candidate-inclusion and downstream-selection failures. Preserve the complete compact legal registry, original speech packets, frozen4000 roster, scoped activation knowledge, parameter knowledge and prospective decision rule.",
+  "service_session": "serving-a2t-native-role-scope-tools-np2-max2048-v1"
+}
