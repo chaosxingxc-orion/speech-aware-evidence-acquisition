@@ -1,0 +1,179 @@
+{
+  "analysis_boundary": "Root owns the analysis recipe and scientific interpretation. A future admitted comparison must report actual distinct widths, duplicates, invalid and empty output, candidate ordering, gold rank when present, candidate coverage, value supply under the fixed total cap, full official SLU and intent outcomes, paired gains/harms, natural and equal-scenario views, all strata, and the selected uncertainty rule.",
+  "closed_flight_boundary": {
+    "protocol": {
+      "relpath": "docs/readiness/2026-09-14-slurp-native-candidate-refresh-tools-train-fold-a-recovery-v1/protocol-v1.json",
+      "sha256": "433d74ead0b38c932457cf59cd7a339d5a7857cefdd72ce1dbc37a8ee7f54b9e"
+    },
+    "statement": "The earlier candidate-refresh/live-tool flight remains closed after its second failure. This candidate-width preparation is a distinct named factor and does not authorize a third attempt or reuse its partial quality."
+  },
+  "comparison": {
+    "control": {
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-dual-store-train-fold-a-anchor-recovery-v1.json",
+        "sha256": "8445f4ef1b29fa776a628cd6000a7ba481622a72c78fb999e107fbdfac380aab"
+      },
+      "experiment": {
+        "relpath": "configs/experiment/slurp-native-dual-store-train-fold-a-anchor-recovery-v1.json",
+        "sha256": "5b17a48f015b5fcf817758f9f40d2c4f62fc362f0dfcf0ff6f18330827c748f5"
+      },
+      "max_candidates": 3,
+      "name": "released retained maximum-three incumbent",
+      "prepared_phase_supply_sha256": "e7d13550753455dc55526d268eab30582e66da2382208b0726133ce51dc959fa",
+      "released_result": {
+        "relpath": "docs/results/2026-09-14-slurp-native-train-a-anchor.md",
+        "sha256": "b017344c220ed10d3aa410f02fec6e72fa882f5bea96b25a95bd1af80c33cd6e"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1"
+    },
+    "not_in_scope": [
+      "N8",
+      "candidate refresh",
+      "new knowledge content or retrieval breadth",
+      "live ASR or another observation tool",
+      "Track B review changes",
+      "Fold B",
+      "a third attempt of the closed dynamic-tools flight"
+    ],
+    "only_intended_runtime_factor": "Permit Perception to return one through five distinct ordered legal intents instead of one through three, and propagate that bound downstream.",
+    "prospective_treatment": {
+      "attempt_id_after_admission": "attempt-slurp-native-candidate-five-train-fold-a-generation-v1",
+      "current_contact_identity": "HELD-NO-CONTACT-SLURP-CANDIDATE-FIVE-TRAIN-FOLD-A",
+      "fit_attempt_id_after_admission": "attempt-slurp-native-candidate-five-train-fold-a-fit-v1",
+      "fit_run_id_after_admission": "SAEA-SLURP-NATIVE-CANDIDATE-FIVE-TRAIN-FOLD-A-FIT-V1",
+      "max_candidates": 5,
+      "min_candidates": 1,
+      "name": "maximum-five candidate width",
+      "run_id_after_admission": "SAEA-SLURP-NATIVE-CANDIDATE-FIVE-TRAIN-FOLD-A-V1"
+    }
+  },
+  "date": "2026-09-16",
+  "fragments": {
+    "baseline": {
+      "relpath": "configs/baseline/slurp-native-candidate-five-train-fold-a-v1.json",
+      "sha256": "8a2d6c8f49e345423bb0352bcde503615eba7c9d97a0a24f246b43be4f9c4164"
+    },
+    "dataset": {
+      "relpath": "configs/dataset/slurp-speech-native-evo-fold-a-1080.json",
+      "reuse": "Direct unchanged incumbent fragment.",
+      "sha256": "4ba55688e80d8d768ec6cfc3ff4bacc9802fb34e4dab54913934015184497215"
+    },
+    "experiment": {
+      "relpath": "configs/experiment/slurp-native-candidate-five-train-fold-a-v1.json",
+      "sha256": "f9e367a4260dd107cb0ab91f19422df69df24d6e162d356dbadab6114db64b1e"
+    },
+    "model": {
+      "relpath": "configs/model/q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1.json",
+      "reuse": "Direct unchanged incumbent fragment.",
+      "sha256": "d1a644d80646de9e0e6b5799fb98e2151de7e03b1b14c5f260d16f77f8a77f09"
+    },
+    "perception_prompt": {
+      "relpath": "configs/probes/slurp_native_role_perception_candidate_five_v1.txt",
+      "sha256": "9a9109347f5daed9c28be6c5537288a3cb94edc35d049d4cb31b6e215c57fb47"
+    }
+  },
+  "population": {
+    "audio_seconds_total": 3084.5284375,
+    "count": 1080,
+    "fold_b": "absent and untouched",
+    "split_id": "SLURP-EVO-FOLD-A-V2",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery"
+  },
+  "prospective_contact_bounds": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_derivation": "11880 realized requests * (one speech packet + three request endpoints).",
+    "gpu_hours_fit_inclusive": "PENDING_ROOT_REGISTRATION",
+    "maximum_fit_endpoint_calls_total": 47520,
+    "maximum_fit_endpoints_per_model_contact": 4,
+    "maximum_native_model_contacts_per_row": 11,
+    "maximum_native_model_contacts_total": 11880,
+    "maximum_repeated_speech_audio_seconds_exact": 33929.8128125,
+    "maximum_task_contract_tool_calls_per_row": 4,
+    "maximum_task_contract_tool_calls_total": 4320,
+    "native_contact_derivation": "Initial Perception 1 + Solver 1 + Reviewer 3 + Planner 1 = 6; one allowed revision adds Solver 1 + Reviewer 3 + Planner 1 = 5.",
+    "official_complete_scoring_jobs": 1,
+    "registration_ceiling_repeated_speech_audio_seconds": 33930,
+    "speech_derivation": "3084.5284375 roster seconds * 11 contacts, rounded upward for registration.",
+    "tool_derivation": "Each of at most two Reviewer waves has three iterations with the final iteration reserved for its report, leaving at most two tool actions."
+  },
+  "readiness": {
+    "blockers": [
+      "Canonical shared code still caps the bounded first-occurrence projection, SLURP candidate semantic provider, candidate-contract state view and native candidate-stage diagnostics at three. An accepted shared width change is required.",
+      "Root scientific admission for this exact maximum-three versus maximum-five comparison.",
+      "Root-owned prospective paired analysis rule and quality-read gate.",
+      "Final fit-inclusive GPU-hours ceiling and model/service session binding.",
+      "Exposure pre-registration and exact generation/fit ExecutionPlans.",
+      "Full 1,080-row phase-supply preparation under the final executable configuration.",
+      "Model-free source freeze and actual-request fit before any contact."
+    ],
+    "current_allowed_stage": [
+      "check"
+    ],
+    "current_execution_profile": "model-free-check",
+    "current_state": "preparation-pending",
+    "no_contact_authority": true,
+    "no_execution_plan": true,
+    "no_exposure_ledger_row": true,
+    "no_native_contact_fit_registration": true,
+    "no_prepared_phase_supply": true
+  },
+  "research_plan": {
+    "relpath": "docs/readiness/2026-09-16-slurp-two-track-research-plan.md",
+    "sha256": "8a073a0ff670de93e9d5c3c91ede54bc83919d6d4a92ed8434ab6a8cb6129a4a"
+  },
+  "retained_invariants": {
+    "decoding": {
+      "id_slot": "per-sample",
+      "max_tokens": 512,
+      "seed": 20260913,
+      "temperature": 0
+    },
+    "intent_boundary_store": "intent-boundaries-v1",
+    "native_roles": {
+      "max_revisions": 1,
+      "perception_max_iterations": 1,
+      "planner_max_iterations": 1,
+      "reviewer_max_iterations": 3,
+      "reviewer_tools": [
+        "saea-tool-task-contract-v1"
+      ],
+      "solver_answer_authority": true,
+      "solver_max_iterations": 1
+    },
+    "retrieval": {
+      "fuse_coverage": {
+        "c": 1,
+        "m": 8,
+        "top_l": 8
+      },
+      "k": 8,
+      "rank_policy": "saea-rank-wcos-prior-agree-v1",
+      "rank_weights": {
+        "w_agree": 0.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "tau": 0.0
+    },
+    "service_geometry": {
+      "mmproj": "absent",
+      "slot_tokens": 24576,
+      "slots": 4,
+      "total_context": 98304
+    },
+    "solver_candidate_supply": {
+      "fuse_policy": "saea-candidate-semantic-passthrough-v1",
+      "max_candidates": 5,
+      "max_total_values": 28,
+      "max_values_per_candidate": 16,
+      "provider": "slurp-candidate-semantic-v1",
+      "rank_policy": "saea-ranked-candidate-round-robin-v1"
+    }
+  },
+  "schema": "saea-slurp-candidate-five-prospective-protocol-v1",
+  "source_commit": "44e559c1972f9792faeb2b1a3c4ad85b0c1c531a",
+  "status": "PREPARING_NOT_ADMITTED"
+}
