@@ -148,3 +148,44 @@ def test_governed_lock_identity_invalidates_entry(source):
     second = cache.load_cached_slurp_contract(changed, root)
     assert first == second
     assert len(cache._CACHE) == 2
+
+
+def test_contract_views_preserve_legacy_bytes_and_do_not_alias(source, monkeypatch):
+    root, lock, _, _ = source
+    calls = 0
+    original = cache.load_slurp_ontology
+
+    def counted(*args, **kwargs):
+        nonlocal calls
+        calls += 1
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(cache, "load_slurp_ontology", counted)
+    ontology = original(lock, root)
+    legacy = cache.load_cached_slurp_contract(lock, root)
+    projected = cache.load_cached_slurp_contract(
+        lock, root, view=cache.SLURP_TASK_CONTRACT_VIEW_LABEL_INVENTORY
+    )
+
+    assert legacy == slurp.render_slurp_ontology(ontology)
+    assert projected == slurp.render_slurp_label_inventory(ontology)
+    assert legacy != projected
+    assert calls == 2
+    assert len(cache._CACHE) == 2
+
+    assert cache.load_cached_slurp_contract(lock, root) == legacy
+    assert cache.load_cached_slurp_contract(
+        lock, root, view=cache.SLURP_TASK_CONTRACT_VIEW_LABEL_INVENTORY
+    ) == projected
+    assert calls == 2
+
+
+def test_unknown_contract_view_refuses_before_source_resolution(source, monkeypatch):
+    root, lock, _, _ = source
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("unknown views must fail before runtime data loading")
+
+    monkeypatch.setattr(cache, "_governed_roots", forbidden)
+    with pytest.raises(cache.SlurpContractCacheError, match="unsupported.*view"):
+        cache.load_cached_slurp_contract(lock, root, view="invented-view")
