@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 149,
+  "generation": 150,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,13 +10,13 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "83c579628c04a28c0d2f580e2dd583563c7f5041",
-  "updated_at_utc": "2026-09-16T08:26:50.112012+00:00",
-  "next_action": "Read STATUS-149.md and the role-context implementation/contract. Preserve frozen A1, service and lease; no restart or partial quality. Typed role-context compilation is integrated and 163 synthetic tests pass; its configuration remains held with no real-model capacity or quality evidence. First close A1 using its saved complete official score and prepared paired analysis, 10000 draws/seed20260915/CI95 advancement. Root chooses a required same-roster replication or one bounded successor; context preparation alone does not admit it. Keep SLURP only, E21/Audio2Tool and closed failures held. Stable benefit over direct and training-free RL remain outstanding.",
+  "snapshot_commit": "33318b7abafeab6d676d89f8cc9e92408c089dde",
+  "updated_at_utc": "2026-09-16T08:47:09.874321+00:00",
+  "next_action": "Read STATUS-150.md. A1 generation sealed COMPLETED at08:40:31Z; first campaign-owned official score is active, not yet attached/finalized at08:43:54Z. Preserve campaign365064, service364846, monitor364981 and frozen534c92e8; GPU is idle after generation. The one-job observer reports terminal changes only. Do not restart/replay/rescore/read partial quality. After complete score and structural verification, root releases and runs the prepared paired official/candidate analysis (10000 draws/seed20260915/CI95), then chooses required replication or one bounded successor. One matched TRAIN A direct-only comparator is now prepared and held; old max64/fixed TRAIN or DEV1000 scores cannot substitute. Typed context is implemented/tested but held. SLURP only; stable gain and training-free RL remain outstanding.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-GPU-RESUME-2026-09-15",
   "owner_power_direction": "2026-09-14: The owner confirmed that current power mode is optimal and instructed root not to dwell on it. Preserve current hardware/service settings.",
-  "owner_gpu_direction": "Owner GPU authorization remains active. Root switched the idle E21 service to the registered SLURP maximum-five four-slot decoder-only service; only this campaign may contact it under the shared lease. Root manages all service switching.",
+  "owner_gpu_direction": "Owner GPU authorization remains active. A1 generation has sealed and first official scoring is active; keep the existing root-owned SLURP decoder-only service loaded. Do not launch an unregistered or scientifically unqualified task to fill idle time. Root manages all service switching.",
   "owner_research_direction": "September 16: focus SLURP on candidate coverage and downstream intent/slot quality; the latest refinement makes a shared role-context module the central mechanism. Analyze, clean and normalize source-bound handoffs, distinguish evidence/knowledge/hypotheses/drafts/review declarations, then supply the information each role needs. Root retains scientific analysis and decisions."
 }
