@@ -6,7 +6,9 @@
   "cells": [
     {
       "allowed_execution_stages": [
-        "check"
+        "check",
+        "worker",
+        "campaign"
       ],
       "attempt_id": "attempt-slurp-direct-max512-train-fold-a-source-recovery-generation-v1",
       "baseline_fragment": "slurp-direct-max512-train-fold-a-source-recovery-v1",
@@ -14,21 +16,30 @@
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Sole precontact direct source recovery is mechanically prepared. Root recovery admission, exposure registration, final plans and source freeze remain pending; no contact is authorized.",
-        "state": "preparation-pending"
+        "reason": "Root admitted sole precontact direct source recovery after full1080 fake-wire and request-equivalence verification; frozen source, exclusive lease and actual fit remain mandatory.",
+        "requirements": [
+          {
+            "expected_decision_id": "slurp-typed-context-direct-source-recovery-admission-v1",
+            "kind": "decision",
+            "reason": "Sole direct source recovery admitted by root; original system remains unchanged.",
+            "relpath": "coordination/slurp-typed-context-vs-direct-v1/direct-source-recovery-admission-v1.json",
+            "sha256": "62eee03c64a8559fcc164c1aadf30d8a2c8f17cb076cb0ec3eed91df7e22a8f1"
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1"
     }
   ],
   "date": "2026-09-16",
   "execution_plan": {
-    "execution_profile": "model-free-check",
+    "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 3.0,
     "planned_model_calls": 1080,
     "planned_speech_audio_seconds": 3085,
     "split_role": "discovery"
   },
-  "execution_profile": "model-free-check",
+  "execution_profile": "bounded-discovery-probe",
   "experiment_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1",
   "failure_policy": "This is the sole direct recovery after a precontact source-overlap failure. Stop and preserve on any failure; a second failure closes the direct flight. No automatic restart, filtering, prompt change, geometry change, scorer rerun or runtime guard change.",
   "family_budget": {
@@ -41,7 +52,7 @@
     "official_complete_scoring_jobs": 1,
     "repeated_speech_audio_seconds_cap": 3085
   },
-  "fragment_kind": "saea-slurp-typed-context-direct-source-recovery-preparation-v1",
+  "fragment_kind": "saea-slurp-typed-context-direct-source-recovery-registered-v1",
   "population": {
     "count": 1080,
     "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
@@ -1136,7 +1147,7 @@
     }
   ],
   "preserve_wire_responses": true,
-  "purpose": "Prepare only the invisible direct leakage-check snapshot source recovery. Preserve the complete registered system-versus-direct science, direct prompts, full TRAIN ontology/examples, generation settings, exact roster, evidence:none and direct-only policy.",
+  "purpose": "Execute the sole direct recovery with an invisible A-disjoint snapshot. Preserve the registered full system-versus-direct science and all direct model-visible inputs.",
   "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "split_id": "SLURP-EVO-FOLD-A-V2"
 }

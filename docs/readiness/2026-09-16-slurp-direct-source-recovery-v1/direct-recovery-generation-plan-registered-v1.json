@@ -1,0 +1,47 @@
+{
+  "cell": "slurp-direct-max512-train-fold-a-source-recovery-v1",
+  "composed_config_hash": "2fb85dee608e48604a36eca09c2bb00ea9d8890f32e3fb41793e58b3fc564c18",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-direct-max512-train-fold-a-source-recovery-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 3.0,
+    "planned_model_calls": 1080,
+    "planned_speech_audio_seconds": 3085,
+    "protocol_hash": "707f3b65ae125239d6365e6551ff2a133568e10173ccea20696d72e97cf794b6",
+    "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-direct-max512-train-fold-a-source-recovery-v1",
+  "family_budget": {
+    "fit_endpoint_calls_cap": 3241,
+    "generation_calls_cap": 1080,
+    "gpu_hours_fit_inclusive": 3.0,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 3085
+  },
+  "preparation_base_commit": "c161265602d6f2c652eb3b9a0cd3a26a7cc59bf9",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-16-slurp-direct-source-recovery-v1/protocol-registered-v1.json",
+    "sha256": "12b8b7f2ee07c9f8c6023565206217139379811e59b0a8078ce1ced5f101cbe6"
+  },
+  "quality_read_gate": "Do not inspect either arm quality until both full1080 outputs and first complete official scores are sealed and root issues the paired release. Scoring direct may overlap system generation; a direct result cannot modify the frozen system.",
+  "recovery_number": 1,
+  "registered_at_utc": "2026-09-16T10:00:40.679201+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-typed-context-vs-direct-v1/direct-source-recovery-admission-v1.json",
+    "sha256": "62eee03c64a8559fcc164c1aadf30d8a2c8f17cb076cb0ec3eed91df7e22a8f1"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/slurp-direct-source-recovery-v1",
+  "status": "ROOT_REGISTERED_AWAITING_FROZEN_SOURCE_AND_SERVICE_VERIFICATION",
+  "supersedes_failed_precontact_plan": {
+    "relpath": "docs/readiness/2026-09-16-slurp-typed-role-context-system-vs-direct-train-fold-a-v1/direct-generation-plan-registered-v2.json",
+    "sha256": "db56f890f3074b4a9da1932288b547a744c9983d6a508fbccad591302ddfa5a7"
+  },
+  "unused_budget_is_new_attempt_authority": false
+}

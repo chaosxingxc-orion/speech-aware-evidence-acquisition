@@ -1,0 +1,181 @@
+{
+  "accepted_implementation_commit": "a75a6d9c2f9192b9b00690a2a6340a22e8578b03",
+  "accounting": {
+    "ceilings_are_not_targets": true,
+    "direct": {
+      "fit_endpoint_calls_cap": 3241,
+      "generation_calls_cap": 1080,
+      "gpu_hours_fit_inclusive": 3.0,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 3085
+    },
+    "system": {
+      "fit_endpoint_calls_cap": 47520,
+      "generation_calls_cap": 11880,
+      "gpu_hours_fit_inclusive": 12.0,
+      "native_analytical_tool_calls_cap": 4320,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 33930
+    },
+    "system_derivation": "At most 11 native contacts per row across the initial wave and one revision. Native request fit uses at most four endpoints per contact. reserve-final-report leaves at most two analytical tool actions in each of at most two Reviewer visits, or four per row."
+  },
+  "analysis_binding": {
+    "primary": "Natural-mixture official pooled SLU micro-F1, system minus direct: require a positive point gain and speaker-cluster CI95 lower bound above zero to identify a replication candidate.",
+    "relpath": "docs/readiness/2026-09-16-slurp-system-vs-direct-train-a-analysis-held-v1.json",
+    "reporting": "Report equal-scenario weighting and all 18 strata. A first positive lead requires an exact-roster matched replication.",
+    "resampling": {
+      "draws": 10000,
+      "seed": 20260915,
+      "unit": "speaker"
+    },
+    "sha256": "e0d68d359c2251b638627fdbb53c1f9f19f540d18f43244ccc810f85dfe72079"
+  },
+  "comparison": {
+    "direct": "One shared direct-only frozen-core answer with the retained full-TRAIN legal ontology and examples; no supplied evidence or intermediate agent state.",
+    "fixed": [
+      "exact TRAIN Fold A1080 roster",
+      "original promoted speech packets",
+      "frozen weights and runtime",
+      "decoder-only np4 4 x 24576 geometry",
+      "max512 deterministic decoding",
+      "full legal ontology and examples",
+      "one official complete score per arm"
+    ],
+    "interpretation": "End-to-end typed-context system versus direct. It is not an isolated role-context ablation and not a training-free reinforcement-learning test.",
+    "system": "The held maximum-three native package with K8 intent-boundary retrieval, candidate-associated slot contracts, typed role context, structured evidence-directed Reviewer, source-bound target lookup, reserved final reports, Planner routing, one bounded revision and Solver-only answer authority."
+  },
+  "configurations": {
+    "direct": {
+      "composed_config_hash": "2fb85dee608e48604a36eca09c2bb00ea9d8890f32e3fb41793e58b3fc564c18",
+      "execution_protocol_hash": "707f3b65ae125239d6365e6551ff2a133568e10173ccea20696d72e97cf794b6",
+      "experiment": "slurp-direct-max512-train-fold-a-source-recovery-v1",
+      "fragments": {
+        "baseline": {
+          "relpath": "configs/baseline/slurp-direct-max512-train-fold-a-source-recovery-v1.json",
+          "sha256": "aa23040ae428ebc4d8293ad8bbc055716323d45187998bea9f274a1fadd09952"
+        },
+        "dataset": {
+          "relpath": "configs/dataset/slurp-speech-native-evo-fold-a-1080.json",
+          "sha256": "4ba55688e80d8d768ec6cfc3ff4bacc9802fb34e4dab54913934015184497215"
+        },
+        "experiment": {
+          "relpath": "configs/experiment/slurp-direct-max512-train-fold-a-source-recovery-v1.json",
+          "sha256": "64dd3b39d70cb83b344e694820150d70520885ab97ebb41a588c3b4359da5429"
+        },
+        "model": {
+          "relpath": "configs/model/q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1.json",
+          "sha256": "d1a644d80646de9e0e6b5799fb98e2151de7e03b1b14c5f260d16f77f8a77f09"
+        }
+      },
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1"
+    },
+    "system": {
+      "composed_config_hash": "b22d2f4e85464353139f4c2a2663e7028186f0c347a42e1db16ab8e1ad1caf83",
+      "execution_protocol_hash": "835ef59908ab4be7f2ea4ecbba004bfba29b8cc877ea5fac0c9b8ffcbbbe14af",
+      "experiment": "slurp-native-typed-role-context-train-fold-a-v1",
+      "fragments": {
+        "baseline": {
+          "relpath": "configs/baseline/slurp-native-typed-role-context-train-fold-a-v1.json",
+          "sha256": "d30323c5a8ac9b7ef913ac52786ac5b04ea7c956c23879deaed3ded42e684e35"
+        },
+        "dataset": {
+          "relpath": "configs/dataset/slurp-speech-native-evo-fold-a-1080.json",
+          "sha256": "4ba55688e80d8d768ec6cfc3ff4bacc9802fb34e4dab54913934015184497215"
+        },
+        "experiment": {
+          "relpath": "configs/experiment/slurp-native-typed-role-context-train-fold-a-v1.json",
+          "sha256": "6a838e9dedb1c02fb2ee182c9e3f1e63f38fa6fba5a5342a34cdc24c701260ff"
+        },
+        "model": {
+          "relpath": "configs/model/q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1.json",
+          "sha256": "d1a644d80646de9e0e6b5799fb98e2151de7e03b1b14c5f260d16f77f8a77f09"
+        }
+      },
+      "run_id": "SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-V1"
+    }
+  },
+  "failure_policy": "This is the sole direct recovery. A second failure closes the direct flight; no automatic restart or further recovery. System remains held if the comparator fails.",
+  "failure_reconciliation": {
+    "relpath": "coordination/slurp-typed-context-vs-direct-v1/root-precontact-failure-reconciliation-v1.json",
+    "sha256": "d0f225894b9bfbed5529c7043eb577ca8b3aaf3e2eea2e3363fd323935df5764"
+  },
+  "model_free_wire_proof": {
+    "relpath": "coordination/slurp-typed-context-vs-direct-v1/root-direct-recovery-wire-proof-v1.json",
+    "sha256": "a2376f713dae227504b3ee04f4dbf11257d1780ba14308b962c3352f5f7fc3fb"
+  },
+  "population": {
+    "count": 1080,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "exposure": "Previously exposed TRAIN Fold A development roster; no unseen-data claim.",
+    "no_fold_b": true,
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery"
+  },
+  "predecessor_decision": {
+    "decision": "NOT_ADVANCED",
+    "relpath": "coordination/slurp-candidate-five-v1/root-primary-verdict-v1.json",
+    "sha256": "82aeea0868be49ec2253cdb2d7805b158d6d83a1848a56dd51909f48b1d2e437"
+  },
+  "preparation": {
+    "base_commit": "59d7f29840169a5b5449566aa85389ce2a337a6c",
+    "contact_authorized": "Only under registered plans, frozen source, matching service and exclusive lease.",
+    "prepared_system_phase_supply": {
+      "contact_class": "model-free",
+      "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+      "relpath": "prepared/SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-V1/phase-supply-registered-v1.json",
+      "sha256": "ca16d15630467035f7fcd3a28fe954a9e2b253bb79b9cb5c58b6aa49d6385700"
+    },
+    "status": "MODEL_FREE_SUPPLY_VERIFIED",
+    "validation": {
+      "relpath": "coordination/slurp-typed-context-vs-direct-v1/root-final-supply-validation-v1.json",
+      "sha256": "01065e08b6e48d64cde90737470faff03cbe68e0547a9545e49d95a2e9032557"
+    }
+  },
+  "protocol_id": "SAEA-SLURP-TYPED-ROLE-CONTEXT-SYSTEM-VS-DIRECT-SOURCE-RECOVERY-TRAIN-FOLD-A-PROTOCOL-V1",
+  "quality_gate": "Do not inspect either arm quality until both full1080 outputs and first complete official scores are sealed and root issues the paired release. Scoring direct may overlap system generation; a direct result cannot modify the frozen system.",
+  "recovery_change": "Invisible direct leakage-check snapshot only. Full1080 request envelopes equal; no task prompts, knowledge visibility, weights, roster, service or budgets changed.",
+  "recovery_number": 1,
+  "registered_at_utc": "2026-09-16T10:00:40.679201+00:00",
+  "request_equivalence": {
+    "relpath": "coordination/slurp-typed-context-vs-direct-v1/root-direct-recovery-request-equivalence-v1.json",
+    "sha256": "e3a5650d8e979c12f3d3a2790917727608a65de5d4719278e65f80d6599a0fd4"
+  },
+  "schema": "saea-slurp-system-vs-direct-registered-protocol-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-typed-context-vs-direct-v1/direct-source-recovery-admission-v1.json",
+    "sha256": "62eee03c64a8559fcc164c1aadf30d8a2c8f17cb076cb0ec3eed91df7e22a8f1"
+  },
+  "serving": {
+    "max_tokens": 512,
+    "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "slot_geometry": "4 x 24576",
+    "transport": "decoder-only np4"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/slurp-direct-source-recovery-v1",
+  "status": "ROOT_REGISTERED_AWAITING_FROZEN_SOURCE_AND_SERVICE_VERIFICATION",
+  "supersedes_failed_direct_registration": {
+    "relpath": "docs/readiness/2026-09-16-slurp-typed-role-context-system-vs-direct-train-fold-a-v1/protocol-registered-v2.json",
+    "sha256": "ff5a7e301f82f964fe0e3494353a11d269c90b8bc387131277bad35552477f50"
+  },
+  "supersedes_preparation_protocol": {
+    "relpath": "docs/readiness/2026-09-16-slurp-typed-role-context-system-vs-direct-train-fold-a-v1/protocol-v1.json",
+    "sha256": "9605dece274ca4cf9115f2042222d1159beebd91943f0894644d5ae49ab46961"
+  },
+  "supersedes_unexecuted_registration": {
+    "reason": "Bind the final contact-bearing configuration to its own newly prepared cache; preserve unchanged selections and earlier unexecuted registration. No model/tool/tokenizer/scorer contacts occurred under v1.",
+    "relpath": "docs/readiness/2026-09-16-slurp-typed-role-context-system-vs-direct-train-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "70eedd541a24713a198461f815f7afe47de584e494813e57200e5e3ee6dcf7fd"
+  },
+  "unchanged_system_authority": {
+    "admission": {
+      "relpath": "coordination/slurp-typed-context-vs-direct-v1/admission-v1.json",
+      "sha256": "7136d12653800025b33f5f59f001ab75726625abad18f4950cdfa1e9733e70f0"
+    },
+    "configuration_unchanged": true,
+    "original_attempt_unstarted": true,
+    "protocol": {
+      "relpath": "docs/readiness/2026-09-16-slurp-typed-role-context-system-vs-direct-train-fold-a-v1/protocol-registered-v2.json",
+      "sha256": "ff5a7e301f82f964fe0e3494353a11d269c90b8bc387131277bad35552477f50"
+    }
+  }
+}
