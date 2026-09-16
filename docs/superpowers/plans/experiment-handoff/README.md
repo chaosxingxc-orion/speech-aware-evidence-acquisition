@@ -1,7 +1,7 @@
 # Current continuation and Fable5.1 handoff
 
-Updated 2026-09-16. Read [START-HERE](../../../handoff/2026-09-16-fable51/START-HERE.md)
-and [STATUS-159](STATUS-159.md) first. They replace the stale STATUS-146 execution routing
+Updated 2026-09-16. Read [TO-FABLE51](../../../handoff/2026-09-16-fable51/TO-FABLE51.md)
+and [STATUS-160](STATUS-160.md) first. They replace the stale STATUS-146 execution routing
 previously on this page. Do not load every historical status note.
 
 The owner requested a durable research handoff before Codex quota exhaustion. The package
@@ -27,6 +27,7 @@ held exact-roster replica. A second system failure closes the flight.
 
 ## Reading routes
 
+- [Future experiment designs and expected outcomes](../../../handoff/2026-09-16-fable51/FUTURE-EXPERIMENT-DESIGNS.md).
 - [Experimental report](../../../handoff/2026-09-16-fable51/EXPERIMENT-REPORT.md).
 - [Operations and recovery](../../../handoff/2026-09-16-fable51/OPERATIONS-AND-RECOVERY.md).
 - [System and knowledge map](../../../handoff/2026-09-16-fable51/SYSTEM-AND-KNOWLEDGE.md).
