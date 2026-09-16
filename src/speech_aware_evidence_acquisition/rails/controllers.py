@@ -1909,3 +1909,17 @@ __all__ = [
     "seal_phase_response_state",
     "select_response_format_v1",
 ]
+
+
+# Consumer-specific views leave canonical phase artifacts and providers unchanged.
+def register_role_context_compilers_v1():
+    from ..core.base import ROLE_CONTEXT_COMPILERS
+    from .role_context_binding import build_slurp_role_context_compiler
+
+    if "typed-slurp-role-context-v1" not in ROLE_CONTEXT_COMPILERS.names():
+        ROLE_CONTEXT_COMPILERS.register(
+            "typed-slurp-role-context-v1", build_slurp_role_context_compiler,
+        )
+
+
+register_role_context_compilers_v1()

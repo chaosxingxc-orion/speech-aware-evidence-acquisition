@@ -10,10 +10,11 @@ Keep SLURP as the only active dataset and continue the frozen A1 maximum-five fl
 Use its complete result to choose the next experiment. No current request is modified.
 Do not launch the prepared history-only restriction automatically.
 
-The shared Reviewer history selector is implemented and synthetically verified. Candidate
-projection and structured review parsers already exist. The complete typed role-context
-compiler described below is the next integration design, not an implemented or admitted
-runtime capability. Do not label this contract a finished implementation.
+The shared typed role-context compiler is implemented through the native role binding and
+has passed 163 focused synthetic tests. Read
+docs/readiness/2026-09-16-role-context-implementation.md for the exact behavior and receipt.
+The configuration remains held: real-model capacity and task benefit are unverified.
+The separate history-only Reviewer selector remains available as a diagnostic option.
 
 Prefer a typed role view over a blanket deletion policy: preserve useful candidate IDs and
 alternatives while explicitly separating their model-authored explanations from observations.

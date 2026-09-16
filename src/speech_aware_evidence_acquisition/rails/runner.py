@@ -1675,6 +1675,8 @@ async def _invoke_native_role_episode(
     visits = {}
     completed = {}
     role_configs = {role.phase_id: role for role in config.roles}
+    context_binding = None
+    context_compilations = {}
 
     def context():
         return _runtime_context(
@@ -1749,6 +1751,7 @@ async def _invoke_native_role_episode(
         pending.clear()
 
     def role_input(phase_id, episode_state):
+        nonlocal context_binding
         settle(next_phase=phase_id)
         ctx = context()
         previous = ctx.agent_states[-1] if ctx.agent_states else None
@@ -1758,6 +1761,18 @@ async def _invoke_native_role_episode(
         if not isinstance(material, PhaseMaterial):
             raise RailsRunnerError("native role material must be PhaseMaterial")
         material.validate()
+        if config.role_context_json is not None and phase_id == config.role("perception").phase_id:
+            from .role_context_binding import build_role_context_binding
+
+            prepared_context = build_role_context_binding(
+                config.role_context_json, material.response_format,
+            )
+            if context_binding is not None and (
+                context_binding.source_format_sha256 != prepared_context.source_format_sha256
+                or context_binding.config_sha256 != prepared_context.config_sha256
+            ):
+                raise RailsRunnerError("role context source schema changed inside the episode")
+            context_binding = prepared_context
         revision_index = episode_state["revision_count"]
         limits = {
             "revision_index": revision_index,
@@ -1870,13 +1885,40 @@ async def _invoke_native_role_episode(
         ).validate()
         _assert_agent_control_excludes_knowledge_payloads(plan, protected_material)
         state.current_context, state.current_contact = ctx, plan
+        messages = base_messages(ctx)
         exposed_states = select_native_role_history(
             role=role, solver_phase_id=config.role("solver").phase_id,
             states=ctx.agent_states, local_tool_result_ids=tuple(visit["local_ids"]),
         )
+        if config.role_context_json is not None:
+            if context_binding is None:
+                raise RailsRunnerError("role context lacks its bound Perception schema")
+            available_ids = [ctx.query_state.speech_packet_id]
+            available_ids.extend(
+                part["evidence_id"] for part in messages[1]["content"]
+                if isinstance(part, Mapping) and isinstance(part.get("evidence_id"), str)
+            )
+            compiled = context_binding.compiler.compile(
+                role_kind=role.role_kind,
+                phase_ids={item.role_kind: item.phase_id for item in config.roles},
+                sample_id=ctx.sample_id, states=ctx.agent_states,
+                local_tool_result_ids=tuple(visit["local_ids"]),
+                available_evidence_ids=tuple(dict.fromkeys(available_ids)),
+                draft_response_schema=context_binding.draft_response_schema,
+            )
+            exposed_states = compiled.states
+            record = {
+                "contact_id": plan.contact_id,
+                "context_config_sha256": context_binding.config_sha256,
+                "perception_response_format_sha256": context_binding.source_format_sha256,
+                "compilation": compiled.receipt,
+            }
+            existing = context_compilations.setdefault(plan.contact_id, record)
+            if existing != record:
+                raise RailsRunnerError("one native contact has conflicting context compilations")
         return NativeRoleSpeechBinding(
             role_id=request.role_id, sample_id=ctx.sample_id,
-            role_query=visit["query"], base_messages=base_messages(ctx),
+            role_query=visit["query"], base_messages=messages,
             core_kwargs={
                 "decoding_params": {**decoding, "id_slot": visit["slot_id"]},
                 **({
@@ -1893,6 +1935,11 @@ async def _invoke_native_role_episode(
         if pending:
             raise RailsRunnerError("native completion overwrote an unsettled source")
         before, plan = state.current_context, state.current_contact
+        if config.role_context_json is not None:
+            context_compilations[plan.contact_id].update(
+                request_sha256=completion.request_sha256,
+                response_sha256=completion.response_sha256,
+            )
         if before is None or plan is None or request.context.agent_contact_id != plan.contact_id:
             raise RailsRunnerError("native completion lost its actual speech contact")
         source = seal_phase_response_state(
@@ -2162,6 +2209,8 @@ async def _invoke_native_role_episode(
             "role_visits", "planner_routes", "accepted_solver_receipt", "interrupted_role",
             "abstention_receipt",
         ) if key in receipt}
+        if config.role_context_json is not None:
+            compact_receipt["role_context_compilations"] = list(context_compilations.values())
         if config.planner_output_format == "json-action-v1":
             compact_receipt.update({
                 key: receipt[key] for key in ("plan", "planner_control") if key in receipt
@@ -2184,6 +2233,10 @@ async def _invoke_native_role_episode(
             f"{state.prepared.sample.sample_id}/{program.program_id}/native-episode",
             state.prepared.execution_unit_id,
         )
+        for compilation in context_compilations.values():
+            trace.emit("ORG", compilation["contact_id"] + "/role-context", {
+                "org_role_context": compilation,
+            })
         trace.emit("USE", episode_trace_id, {
             "use_native_episode": compact_receipt,
         })
