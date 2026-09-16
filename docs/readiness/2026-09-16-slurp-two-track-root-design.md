@@ -130,3 +130,18 @@ unrun structured-review v2 baseline. That is its controlled comparison; a compar
 the historical anchor is a package contrast. Neither arm is admitted here. Keep the optional
 no-example task-contract projection separate. After the complete A1 verdict, root selects
 one bounded, decision-relevant next experiment or the required replication.
+
+## Owner refinement: compile typed role context
+
+The owner identified role-specific analysis, cleaning and normalization of context as the
+central mechanism. Follow
+docs/readiness/2026-09-16-role-context-compilation-contract.md.
+Do not promote the prepared history-only restriction automatically. It removes all Perception
+hypotheses, including potentially useful alternatives. The next shared design should preserve
+useful candidates as explicitly labeled hypotheses and distinguish them from speech, tool
+observations, task knowledge, the current draft and current review declarations.
+
+Reuse the existing projections, parsers, phase-material and native role-binding seam.
+Structural validation and citation availability do not prove semantic correctness; the frozen
+roles retain semantic judgments. The full typed compiler is designed but not yet implemented
+or admitted. Keep A1 frozen and select one next contrast only after its complete verdict.

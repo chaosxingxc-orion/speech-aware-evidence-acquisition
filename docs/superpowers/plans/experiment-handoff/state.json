@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 147,
+  "generation": 148,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,13 +10,13 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "a9df7e6bae63909bd3caec686616ea32c0345fa2",
-  "updated_at_utc": "2026-09-16T07:12:40.659931+00:00",
-  "next_action": "Read STATUS-147.md. Keep the existing frozen SLURP maximum-five campaign running under its current root service and lease; no partial quality or restart. Full released-anchor temporal diagnosis is complete: all84 missing-date rows have the exact card exposed,25 also name the missing expression in a candidate distinction; distinguish evidence exposure from causal use. Prioritize completeness/provenance review and source-derived span/representation distinctions for a later bounded Track B contrast. First close A1 using the prepared complete candidate and original official full-task comparisons, saved score only,10000 draws/seed20260915/CI95 advancement. E21/Audio2Tool and closed failures remain held.",
+  "snapshot_commit": "5959356308a8c50093a49bebef69758cc5eb683f",
+  "updated_at_utc": "2026-09-16T07:48:28.293714+00:00",
+  "next_action": "Read STATUS-148.md and 2026-09-16-role-context-compilation-contract.md. Keep frozen SLURP maximum-five campaign running under its current root service and lease; no restart or partial quality. History-only Reviewer filtering is implemented/tested and held, not the automatically chosen next treatment. The complete typed role-context compiler is designed, not yet implemented; reuse existing projections/parsers and native role binding to retain useful hypotheses without treating them as evidence. First close A1 using saved-score complete candidate and official full-task comparisons, 10000 draws/seed20260915/CI95 advancement. Replicate a positive lead or select one source-grounded bounded successor. E21/Audio2Tool and closed failures remain held.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-GPU-RESUME-2026-09-15",
   "owner_power_direction": "2026-09-14: The owner confirmed that current power mode is optimal and instructed root not to dwell on it. Preserve current hardware/service settings.",
   "owner_gpu_direction": "Owner GPU authorization remains active. Root switched the idle E21 service to the registered SLURP maximum-five four-slot decoder-only service; only this campaign may contact it under the shared lease. Root manages all service switching.",
-  "owner_research_direction": "September 16: investigate candidate coverage through larger Top-N and broader knowledge information coverage, and intent/slot correctness through better information and independent Reviewer examination of data and decisions. Root retains analysis and decisions."
+  "owner_research_direction": "September 16: focus SLURP on candidate coverage and downstream intent/slot quality; the latest refinement makes a shared role-context module the central mechanism. Analyze, clean and normalize source-bound handoffs, distinguish evidence/knowledge/hypotheses/drafts/review declarations, then supply the information each role needs. Root retains scientific analysis and decisions."
 }
