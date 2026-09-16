@@ -1,0 +1,100 @@
+{
+  "accepted_implementation_commit": "d7ff1c1ad9ee9bb6dbf613cf7ef8dbc4fde4cb87",
+  "analysis_binding": {
+    "relpath": "docs/readiness/2026-09-16-slurp-system-vs-direct-train-a-analysis-held-v1.json",
+    "sha256": "e0d68d359c2251b638627fdbb53c1f9f19f540d18f43244ccc810f85dfe72079"
+  },
+  "completed_direct": {
+    "generation_manifest": {
+      "relpath": "runs/SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1/attempt-slurp-direct-max512-train-fold-a-source-recovery-generation-v1/SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1.generation-manifest.json",
+      "sha256": "5219d078dae949fede1f8cd72832ffdbf26b9e2205fd7873e4e7bf631e56b534"
+    },
+    "score_attachment": {
+      "relpath": "runs/SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1/attempt-slurp-direct-max512-train-fold-a-source-recovery-generation-v1/SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1.scores.json",
+      "sha256": "7840a959fe4f43928fda0e0cacfe8c0ee4200116bfcd269bfe3451b59da29c38"
+    }
+  },
+  "configuration": {
+    "composed_config_hash": "4bc94ebd766c466185aab5366f764eba1c992ab809acaab23f7ebc2f59754b3f",
+    "execution_protocol_hash": "f41f0b47664d166a91899aec173cb6bcb552d121a02e845d87ab97c76ca520d8",
+    "experiment": "slurp-native-typed-role-context-train-fold-a-recovery-v1",
+    "fragments": {
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-typed-role-context-train-fold-a-recovery-v1.json",
+        "sha256": "a204d84d24e09e40bf744aeb1e5063ebab1678836efa299895bf444485548926"
+      },
+      "dataset": {
+        "relpath": "configs/dataset/slurp-speech-native-evo-fold-a-1080.json",
+        "sha256": "4ba55688e80d8d768ec6cfc3ff4bacc9802fb34e4dab54913934015184497215"
+      },
+      "experiment": {
+        "relpath": "configs/experiment/slurp-native-typed-role-context-train-fold-a-recovery-v1.json",
+        "sha256": "01b6e788ab3e0917727b82ec2c575626f300fee39f1622378bff11fd03dd27a7"
+      },
+      "model": {
+        "relpath": "configs/model/q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1.json",
+        "sha256": "d1a644d80646de9e0e6b5799fb98e2151de7e03b1b14c5f260d16f77f8a77f09"
+      }
+    },
+    "run_id": "SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-RECOVERY-V1"
+  },
+  "cost_reporting": "Report aborted original system, engineering proof and recovery separately; retain all exposure. Reuse direct generation/scoring exactly once. Ceilings are not targets.",
+  "direct_registration": {
+    "relpath": "docs/readiness/2026-09-16-slurp-direct-source-recovery-v1/protocol-registered-v1.json",
+    "sha256": "12b8b7f2ee07c9f8c6023565206217139379811e59b0a8078ce1ced5f101cbe6"
+  },
+  "engineering_verdict": {
+    "relpath": "coordination/slurp-typed-context-vs-direct-v1/tool-rejection-proof4-root-verdict-v1.json",
+    "sha256": "b104771e2fc7a626de2bce3a55871781faaa15ff62174570ac3904cbdb3362c8"
+  },
+  "failure_policy": "This is the sole system recovery. A second system failure closes the flight. Stop and preserve; do not restart automatically, splice partial rows, alter geometry, regenerate direct or repeat official scoring.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_analytical_tool_calls_cap": 4320,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "interpretation": "Complete agent-system versus direct exploratory comparison; not an isolated component effect, unseen-data claim or training-free RL.",
+  "population": {
+    "count": 1080,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "Complete previously exposed TRAIN Fold A1080 only; no Fold B execution or runtime label access.",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+  },
+  "prepared_output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-RECOVERY-V1/phase-supply-v1.json",
+    "sha256": "eb474db68caacf1ab072d3e62007a74755cfd8935b37ce0df1818368ffdccf29"
+  },
+  "protocol_id": "SAEA-SLURP-TYPED-ROLE-CONTEXT-SYSTEM-RECOVERY-TRAIN-A-PROTOCOL-V1",
+  "quality_gate": "Do not read task quality until complete system generation and its first complete official score are sealed and root authorizes paired analysis. Keep direct quality unread; no partial tuning.",
+  "recovery_number": 1,
+  "registered_at_utc": "2026-09-16T11:53:16.050057+00:00",
+  "schema": "saea-slurp-system-recovery-registered-protocol-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-typed-context-vs-direct-v1/system-recovery-admission-v1.json",
+    "sha256": "12309cc5ef2fba44209db994ed11912b29949a065542a8de5918d30ef7234420"
+  },
+  "scientific_reference": {
+    "relpath": "docs/readiness/2026-09-16-slurp-typed-role-context-system-vs-direct-train-fold-a-v1/protocol-registered-v2.json",
+    "sha256": "ff5a7e301f82f964fe0e3494353a11d269c90b8bc387131277bad35552477f50"
+  },
+  "serving": {
+    "decoder_only": true,
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "gpu_mmproj": false,
+    "max_tokens": 512,
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "source_worktree": "/home/chao/saea-worktrees/slurp-typed-context-full-recovery-v1",
+  "static_compatibility": {
+    "relpath": "coordination/slurp-typed-context-vs-direct-v1/system-recovery-static-compatibility-v1.json",
+    "sha256": "190d846ac24ed474501b1d2bc2804fee6756df21139a99977ddde6477d6d074a"
+  }
+}

@@ -20,3 +20,8 @@ splice the failed507-contact system prefix, expand tool permissions or alter pro
 The full recovery requires its own root decision and exposure registration.
 
 Use proof4 registered-v2 plans and standalone worker. The unexecuted v1 empty-scorer/campaign route was corrected before contacts and remains preserved as superseded documentation.
+
+
+## Recovery admitted after proof
+
+The four-row proof passed and is FINALIZED; see proof4-result-v1.md. The sole full1080 system recovery is now registered by system-recovery-protocol-registered-v1.json and its FIT/generation plans. Its one-cell campaign reuses the resident service and the completed direct comparator. Preserve all failed source bytes and hold current task-quality reads until full paired release.

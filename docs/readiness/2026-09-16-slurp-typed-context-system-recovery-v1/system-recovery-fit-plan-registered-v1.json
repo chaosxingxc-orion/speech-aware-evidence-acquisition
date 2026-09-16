@@ -1,0 +1,44 @@
+{
+  "cell": "slurp-native-typed-role-context-train-fold-a-recovery-v1",
+  "composed_config_hash": "4bc94ebd766c466185aab5366f764eba1c992ab809acaab23f7ebc2f59754b3f",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-typed-role-context-train-fold-a-recovery-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 47520,
+    "planned_speech_audio_seconds": 33930,
+    "protocol_hash": "f41f0b47664d166a91899aec173cb6bcb552d121a02e845d87ab97c76ca520d8",
+    "run_id": "SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-RECOVERY-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-typed-role-context-train-fold-a-recovery-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_analytical_tool_calls_cap": 4320,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-16-slurp-typed-context-system-recovery-v1/system-recovery-protocol-registered-v1.json",
+    "sha256": "fe4e64b1c286cb90fc45a2648ec78eaf42dca7e01e130dd2ef1fe5dea74f6cfd"
+  },
+  "quality_read_gate": "Do not read task quality until complete system generation and its first complete official score are sealed and root authorizes paired analysis. Keep direct quality unread; no partial tuning.",
+  "recovery_number": 1,
+  "registered_at_utc": "2026-09-16T11:53:16.050057+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-typed-context-vs-direct-v1/system-recovery-admission-v1.json",
+    "sha256": "12309cc5ef2fba44209db994ed11912b29949a065542a8de5918d30ef7234420"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/slurp-typed-context-full-recovery-v1"
+}

@@ -17,8 +17,27 @@
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Root registration, source-bound preparation and verified prerequisites pending.",
-        "state": "held"
+        "reason": "Root admitted sole complete system recovery after live current-configuration proof; completed direct retained unread.",
+        "requirements": [
+          {
+            "expected_decision_id": "slurp-typed-context-system-recovery-admission-v1",
+            "kind": "decision",
+            "relpath": "coordination/slurp-typed-context-vs-direct-v1/system-recovery-admission-v1.json",
+            "sha256": "12309cc5ef2fba44209db994ed11912b29949a065542a8de5918d30ef7234420"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-RECOVERY-V1/phase-supply-v1.json",
+            "sha256": "eb474db68caacf1ab072d3e62007a74755cfd8935b37ce0df1818368ffdccf29"
+          },
+          {
+            "kind": "preparation",
+            "reason": "Current-configuration engineering proof passed.",
+            "relpath": "coordination/slurp-typed-context-vs-direct-v1/tool-rejection-proof4-root-verdict-v1.json",
+            "sha256": "b104771e2fc7a626de2bce3a55871781faaa15ff62174570ac3904cbdb3362c8"
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-RECOVERY-V1"
     }
