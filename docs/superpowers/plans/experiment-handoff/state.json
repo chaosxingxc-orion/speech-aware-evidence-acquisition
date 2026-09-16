@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 155,
+  "generation": 156,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,13 +10,13 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "f3189ce2667a45b1c0c9633e510747ae914118bd",
-  "updated_at_utc": "2026-09-16T11:21:58.884007+00:00",
-  "next_action": "Read STATUS-155.md. Shared rejected-batch lifecycle repair passed238 regression tests and engineering checks. No GPU flight running; resident decoder alive and idle. Direct finalized1080 with first score unread; original system aborted507 contacts. Register four-row TRAIN A current-config proof, then sole full1080 system recovery; reuse direct. No paired quality read until full system sealing and first score. SLURP only.",
+  "snapshot_commit": "9bf27b28708bb93607138e7bcd1eacb66eab3f08",
+  "updated_at_utc": "2026-09-16T11:59:34.882462+00:00",
+  "next_action": "Read STATUS-156.md. Four-row current-config proof PASSED and FINALIZED including natural width2 rejection. Sole full1080 system recovery campaign PID425664/exec34947 is live on frozen9bf27b28; observe metadata, no auto-restart or partial quality read. Direct complete1080 score unread. After full system seal and first official score, root paired analysis. Lightweight observer assigned; preserve source and service.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-GPU-RESUME-2026-09-15",
   "owner_power_direction": "2026-09-14: The owner confirmed that current power mode is optimal and instructed root not to dwell on it. Preserve current hardware/service settings.",
-  "owner_gpu_direction": "GPU authorization remains active. Resident decoder preserved; no generation flight active. Bounded shared repair verified; register live four-row engineering proof and then permitted full system recovery before contacts. No power or geometry change.",
+  "owner_gpu_direction": "GPU authorization active. Sole full1080 system recovery launched against the resident decoder; preserve geometry, feature cache and absent mmproj. One generation flight. No restart or extra mechanism.",
   "owner_research_direction": "September 16: focus SLURP on candidate coverage and downstream intent/slot quality; the latest refinement makes a shared role-context module the central mechanism. Analyze, clean and normalize source-bound handoffs, distinguish evidence/knowledge/hypotheses/drafts/review declarations, then supply the information each role needs. Root retains scientific analysis and decisions."
 }
