@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 152,
+  "generation": 153,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,13 +10,13 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "cf3433d457327ff740b6b9d528791cc5c5287f80",
-  "updated_at_utc": "2026-09-16T09:41:26.197754+00:00",
-  "next_action": "Read STATUS-152.md. Root launched registered direct-then-typed-context SLURP TRAIN A1080 campaign PID404247 at09:39:37Z from frozen bae1e743e66c0ee8189851bb1ec35ddc37ab2c49. Attach existing np4/24k/max512 decoder-only service364846 and monitor364981; one lease, direct actual full-wave FIT before generation, native realized-request FIT. Observe terminal metadata only via assigned one-job observer. Do not read direct/partial quality or edit frozen source; both arms and first scores must complete before root paired release. A1 NOT_ADVANCED and closed. SLURP only; no RL claim.",
+  "snapshot_commit": "f3189ce2667a45b1c0c9633e510747ae914118bd",
+  "updated_at_utc": "2026-09-16T10:06:25.014850+00:00",
+  "next_action": "Read STATUS-153.md. Original direct ABORTED precontact with0 calls; sole invisible-source recovery passed full1080 fake-wire and identical request-envelope proofs. Recovery campaign PID407487 launched from frozen f3189ce2; observe actual FIT/generation startup through assigned metadata observer. Same decoder-only service364846/monitor364981. Direct recovery then unchanged typed-context system. Hold all paired quality until both full sources and first scores seal. Second direct failure closes; no automatic restart or source edits. Root owns analysis. SLURP only.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-GPU-RESUME-2026-09-15",
   "owner_power_direction": "2026-09-14: The owner confirmed that current power mode is optimal and instructed root not to dwell on it. Preserve current hardware/service settings.",
-  "owner_gpu_direction": "GPU authorization active. Registered paired campaign launched on existing resident service. Preserve one generation flight and shared lease; score direct in background when sealed. Root alone changes serving state; no power/geometry tweaking or automatic restart.",
+  "owner_gpu_direction": "GPU authorization active. Sole recovered paired campaign launched using existing resident service. One generation flight and shared lease; first complete scoring may overlap next arm. Root alone changes serving state; no power/geometry changes or automatic restart.",
   "owner_research_direction": "September 16: focus SLURP on candidate coverage and downstream intent/slot quality; the latest refinement makes a shared role-context module the central mechanism. Analyze, clean and normalize source-bound handoffs, distinguish evidence/knowledge/hypotheses/drafts/review declarations, then supply the information each role needs. Root retains scientific analysis and decisions."
 }

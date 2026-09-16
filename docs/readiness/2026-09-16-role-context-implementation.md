@@ -1,7 +1,8 @@
 # Source-bound role-context implementation
 
 Date: 2026-09-16. Root owns design, review and experiment admission.
-Status: implemented and model-free verified; the experimental configuration remains held.
+Status: implemented and model-free verified; the registered paired campaign is described
+in STATUS-153. Task benefit remains unverified pending complete paired evaluation.
 
 ## Scope
 
