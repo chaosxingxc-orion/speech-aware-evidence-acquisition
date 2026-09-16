@@ -1,0 +1,13 @@
+# SLURP direct invisible-source recovery preparation
+
+Status: **PREPARING; no recovery admitted and no contact authorized.** This is the sole direct recovery scaffold for the registered typed-context system-versus-direct TRAIN A pair. A second direct failure closes the flight.
+
+The original campaign process 404247 exited with status 1 at 2026-09-16T09:41:15Z before FIT or generation. The shared query-source overlap guard rejected the old invisible direct snapshot because it contains full-TRAIN construction identities. Only preflight, preprocess and serve receipts exist. The FIT directory is empty, there are no attempt journals or model contacts, and the system cell never started. Preserve the original attempted source at bae1e743 and all failed artifacts unchanged.
+
+The recovery changes only the invisible direct leakage-check snapshot pin. It uses knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json with semantic snapshot SHA-256 5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe. The released source has 2,037 admitted construction identities, source split identity f76a7d00172a29452e791b0ec292c08492b9ae48e5eb28f72f58afd7f34cb1df, and release SHA-256 2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4. The snapshot remains invisible because evidence_source stays none and the policy remains direct-only.
+
+The recovery cell is slurp-direct-max512-train-fold-a-source-recovery-v1 with generation run SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1 and FIT run SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-FIT-V1. It preserves the direct prompts, full TRAIN ontology and examples, exact A1080 roster, promoted speech, max512 deterministic generation, service geometry and budgets: 1,080 generation calls, 3,241 FIT endpoints, 3,085 repeated speech seconds and three fit-inclusive GPU hours.
+
+The frozen scientific reference is protocol-registered-v2.json in the paired readiness directory, SHA-256 ff5a7e301f82f964fe0e3494353a11d269c90b8bc387131277bad35552477f50. The system remains the original uncontacted slurp-native-typed-role-context-train-fold-a-v1 cell with its original run, attempt, FIT and configuration identities. The recovery campaign orders the recovery direct cell first and that unchanged system cell second.
+
+Before contact, root must verify prompt and model-visible request equivalence, admit this exact recovery, add distinct recovery FIT and generation exposure rows, bind the recovery protocol and final composed/protocol hashes, enable contact stages, freeze the final source, and verify the existing service and exclusive lease. No runtime guard change is part of this recovery.

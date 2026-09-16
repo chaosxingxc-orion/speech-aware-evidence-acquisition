@@ -1,0 +1,52 @@
+{
+  "cell": "slurp-direct-max512-train-fold-a-source-recovery-v1",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-direct-max512-train-fold-a-source-recovery-v1",
+  "family_budget": {
+    "fit_endpoint_calls_cap": 3241,
+    "generation_calls_cap": 1080,
+    "gpu_hours_fit_inclusive": 3.0,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 3085
+  },
+  "predecessor_failure": {
+    "campaign_pid": 404247,
+    "exit_code": 1,
+    "failed_at_utc": "2026-09-16T09:41:15Z",
+    "fit_contacts": 0,
+    "generation_contacts": 0,
+    "original_direct_run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-V1",
+    "original_source_commit_prefix": "bae1e743",
+    "reason": "Precontact query-source overlap guard rejected the old invisible full-TRAIN direct snapshot.",
+    "system_started": false
+  },
+  "preparation_base_commit": "ad22df2d883aa27d23af80f8bf97c762f8f5b00f",
+  "preparation_composed_config_hash": "258d9d384fd51304faff5365459423515096ce5e314ab420f6c1d584ccb4931c",
+  "prospective_execution_plan": {
+    "attempt_id": "attempt-slurp-direct-max512-train-fold-a-source-recovery-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 3.0,
+    "planned_model_calls": 1080,
+    "planned_speech_audio_seconds": 3085,
+    "protocol_hash": "PENDING-ROOT-RECOVERY-PROTOCOL-BINDING",
+    "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "root_registration_required": true,
+  "schema": "saea-generation-execution-plan-preparation-v1",
+  "science_protocol_reference": {
+    "relpath": "docs/readiness/2026-09-16-slurp-typed-role-context-system-vs-direct-train-fold-a-v1/protocol-registered-v2.json",
+    "sha256": "ff5a7e301f82f964fe0e3494353a11d269c90b8bc387131277bad35552477f50"
+  },
+  "status": "PREPARING_ROOT_RECOVERY_ADMISSION_REQUIRED",
+  "supersedes_failed_precontact_plan": {
+    "contacts": 0,
+    "relpath": "docs/readiness/2026-09-16-slurp-typed-role-context-system-vs-direct-train-fold-a-v1/direct-generation-plan-registered-v2.json",
+    "sha256": "db56f890f3074b4a9da1932288b547a744c9983d6a508fbccad591302ddfa5a7"
+  },
+  "unused_budget_is_new_attempt_authority": false
+}
