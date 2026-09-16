@@ -53,3 +53,51 @@ not a success criterion. Keep acoustic uncertainty, intent-boundary uncertainty,
 meaning/span uncertainty separate so each can request the tool that adds the missing
 information. The current package admits target knowledge only in its held configuration;
 future ASR or selective replay remain separately registered on-demand actions.
+
+
+## Source-grounded context correction under preparation
+
+The completed follow-up in
+docs/results/2026-09-16-slurp-review-context-provenance.md locates an unsupported
+illustrative filler in the legacy global task contract, not either semantic knowledge
+snapshot. It also observes candidate label/description mismatch and a later role treating
+alternative hypotheses as simultaneous evidence. These are distinct failure paths; five
+revision cases do not establish their corpus prevalence or isolated causes.
+
+Prepare one shared opt-in contract projection that retains the full legal inventory but
+omits global example fillers. The same projection must reach the initial instruction,
+task-contract tool and actual capacity request. Preserve historical default bytes and
+leave the active maximum-five experiment unchanged. No held Reviewer configuration or
+flight is automatically updated. Root chooses the later contrast after A1's paired verdict.
+
+Do not substitute stricter prose for information that is missing. A decision value should
+supply the activation condition, nearest alternative and the observation that separates
+them; a slot value should supply meaning, extraction scope and representation boundaries.
+Existing no-invention rules are already visible. On-demand tools should add the missing
+distinction or observation, while the final report distinguishes supporting evidence from
+candidate explanations and previous model opinions. Future evaluation must count actual
+candidate-boundary escapes as well as coverage and covered-set decision accuracy.
+
+
+## Next-decision table
+
+| Complete A1 finding | Next decision |
+| --- | --- |
+| Coverage and the registered full-task gain rule both improve | Register the required same-roster replication before introducing another mechanism. Treat a single positive result as a lead. |
+| Coverage improves but common-covered decision or full-task quality worsens | Attribute the downstream loss and keep the incumbent. Use the larger candidate set as a diagnostic result, not an adopted system. |
+| Coverage does not improve enough | Separate missing relevant intent information from failure to use visible information before selecting a broader or differently organized value supply. Do not launch a blind K sweep. |
+| Full-task gain remains unresolved | Preserve that uncertainty and the fixed verdict; root may choose a separately registered, source-grounded successor without labeling the original successful. |
+
+In the released anchor, 143 gold intents are absent from candidates. Of those, 33 have
+their own intent card visible and 110 do not. Visibility does not establish usefulness,
+and absence does not prove that retrieval caused the miss: 23 covered cases also lack
+their own card. These strata identify different questions for coverage work. Larger N
+may rescue a visible alternative; broader knowledge may rescue a missing distinction.
+Measure new inclusions and lost inclusions separately.
+
+The retained 95 covered-but-finally-wrong cases are the cleanest starting point for
+candidate-conditioned decision analysis. The 525 correct-intent cases with nonexact
+entities expose a separate extraction gap. These two failure slices are disjoint at the final-intent boundary;
+neither is a new evaluation roster or a causal component estimate. Keep all 1080 rows in final
+quality metrics and compare common-covered rows before comparing changing own-covered
+denominators. No fresh roster or small accuracy screen is admitted by this table.

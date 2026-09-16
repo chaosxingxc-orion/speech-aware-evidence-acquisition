@@ -1,4 +1,4 @@
-Current continuation: read STATUS-144.md. The maximum-five SLURP campaign is launched from frozen source534c92e8; root owns its service. Earlier next-action descriptions below are historical. E21 and Audio2Tool remain held.
+Current continuation: read STATUS-145.md. The maximum-five SLURP campaign is launched from frozen source534c92e8; root owns its service. Earlier next-action descriptions below are historical. E21 and Audio2Tool remain held.
 
 # Historical boundary: September 16, STATUS-142
 
@@ -6,13 +6,13 @@ Shared configurable candidate width and released semantic target lookup are inte
 Keep SLURP as the sole active optimization dataset; finalize the exact candidate-five
 flight before generation. The previous E21 static fit failed at its exposure gate before
 model contact and is held, with dead-lease reconciliation complete. Audio2Tool stays held.
-Read [STATUS-144](STATUS-144.md) for current evidence and next actions.
+Read [STATUS-145](STATUS-145.md) for current evidence and next actions.
 
 # Owner-directed recovery and continuation plan
 
 Current owner refinement (2026-09-16): conduct two research tracks within SLURP, candidate coverage and evidence-grounded intent/slot resolution. Read [the root two-track plan](../../../readiness/2026-09-16-slurp-two-track-research-plan.md). Research proceeds in parallel; GPU experiments remain sequential and separately registered. E21 and Audio2Tool transfer remain held.
 
-**Current overlay:** Read [STATUS-141](STATUS-141.md). SLURP is the only
+**Historical STATUS-141 overlay (superseded by STATUS-145):** Read [STATUS-141](STATUS-141.md). SLURP is the only
 active optimization target. Retain its incumbent and broad/factored
 non-advancement decision. Root will personally select one information-gain
 mechanism from the released candidate, within-candidate and slot failures. The
@@ -264,3 +264,15 @@ Audio2Tool remain transfer targets only after the SLURP agentic baseline is
 stable. Training-free RL trajectory and action-space work follows that stable
 baseline. Preserve historical results and allow no multi-dataset experiment
 queue under this boundary.
+
+
+## 2026-09-16 source-grounded review preparation
+
+Root closed the context-provenance audit of all five revised TRAIN-anchor episodes.
+See [STATUS-145](STATUS-145.md) and the
+[source report](../../../results/2026-09-16-slurp-review-context-provenance.md).
+The active maximum-five campaign remains frozen and running; no task-quality result
+has been read. Global legacy task-contract examples are a distinct source from the
+two semantic stores. Prepare an opt-in compact legal contract through shared runtime,
+tools and capacity paths, preserving defaults. No Track B flight or held-config migration
+is admitted by this preparation.

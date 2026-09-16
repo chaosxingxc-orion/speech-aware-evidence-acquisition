@@ -1450,3 +1450,14 @@ Two partial slot diagnostics improve and one declines; all failures and all18 st
 Root personally reviewed all revised trajectories. This diagnoses the review-decision-use
 chain and does not isolate a Reviewer causal effect or admit a successor. The maximum-five
 candidate experiment remains running; its quality has not been read.
+
+
+## 2026-09-16: SLURP review context provenance
+
+[Root source audit](2026-09-16-slurp-review-context-provenance.md) traces an unsupported
+illustrative filler to the legacy global task contract, separate from both released
+semantic stores. All five revised episodes were examined. Candidate label/description
+mismatch and hypothesis/evidence confusion are also observed; isolated causal effects
+and prevalence remain unmeasured. Prepare a consistent opt-in global contract without
+example fillers, preserving the complete legal inventory and historical defaults.
+No new generation, official score, quality verdict or Track B launch is created.

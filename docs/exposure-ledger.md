@@ -3998,3 +3998,21 @@ current maximum-five partial quality, aborted-flight quality or Fold B reference
 Receipt:coordination/slurp-review-measurement-v1/anchor-stage-analysis-preregistration-v1.json,
 SHA2568c9511b929102537a05c78de28d657d1b3a01351716bea2ecd11c785b91a4727.
 Result:docs/results/2026-09-16-slurp-train-a-review-stage-attribution.md.
+
+
+### 2026-09-16: released TRAIN A context-provenance follow-up
+
+Root preregistered examination of the same five revised episodes and their already exposed
+task instructions, tool-return records and released knowledge sources. Source hashes were
+verified before inspection. No current maximum-five partial quality, aborted quality or
+Fold B reference was read. This source audit added zero model, analytical-tool, tokenizer,
+GPU, ASR, encoder or official-score contacts.
+
+Preregistration: coordination/slurp-review-measurement-v1/anchor-context-provenance-audit-preregistration-v1.json,
+SHA256 ddd076cb0c55946041023a42753247a3d61b09039573b837423a93661bf77a14.
+Root interpretation: root-context-provenance-interpretation-v1.json,
+SHA256 d10635e3f5e07710d8c4b6fe1ffe4fd27ae9a2403a8468e001f1e6f65f067794.
+Report: docs/results/2026-09-16-slurp-review-context-provenance.md.
+The legacy global ontology derives examples from all real TRAIN, unlike the separately
+fold-excluded semantic-store releases. Preserve that source distinction in historical
+exposure descriptions. This audit does not change the running A1 protocol or admit a successor.
