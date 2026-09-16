@@ -22,3 +22,7 @@ context/capacity interface; changing the run name or output limit is not a recov
 
 No actual Fable5.1 takeover receipt had been recorded at the last ownership check.
 Record a separate takeover receipt when assuming coordination.
+
+## Subsequent source-bound diagnosis
+
+Read [the context root-cause report](CONTEXT-ROOT-CAUSE-20260916.md) after the terminal report. Two already-visible knowledge lookups repeat full bodies; the second returns 21 blocks totaling 38,938 bytes already in Reviewer input. The next bounded implementation is a source-bound single-copy request projection with explicit references, followed by separately admitted validation. This adds no GPU authorization and does not reopen the closed flight.

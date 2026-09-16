@@ -1,7 +1,7 @@
 # Current continuation and Fable5.1 handoff
 
 Updated 2026-09-16. Read [LATEST](../../../handoff/2026-09-16-fable51/LATEST.md)
-and [STATUS-161](STATUS-161.md) first, then the direct handoff to Fable5.1.
+and [STATUS-162](STATUS-162.md) first, then the direct handoff to Fable5.1.
 These supersede the earlier running-state routing. Do not load every historical note.
 
 The owner requested a durable file handoff with designs, results, root interpretation
@@ -25,6 +25,11 @@ Do not retry, splice a prefix, score partial rows or activate the held replica.
 Retain the old useful base and perform bounded source-level context/capacity diagnosis
 before a distinct prospective successor. The decoder was resident and idle after
 failure; revalidate metadata/ownership without automatic restart.
+
+The [root context audit](../../../handoff/2026-09-16-fable51/CONTEXT-ROOT-CAUSE-20260916.md)
+now identifies repeated already-visible knowledge bodies across user and tool surfaces.
+The next bounded implementation is shared single-copy request projection, with canonical
+observations preserved and no reopening of the closed flight.
 
 ## Reading routes
 
