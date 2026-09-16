@@ -559,7 +559,14 @@ def project_slot_value(
     )["text"]
     if source_uri != expected_uri:
         raise SlotBindingViewError("target slot source URI differs")
-    if content != expected:
+    # Automatic supply keeps canonical bodies plain when the tool dispatcher
+    # has no named-store authority. Bind both exact shared representations;
+    # never infer a source by trimming or stripping an arbitrary wrapper.
+    if content == snapshot_value.content:
+        source_representation = "canonical-plain-v1"
+    elif content == expected:
+        source_representation = "named-store-prefixed-v1"
+    else:
         raise SlotBindingViewError("target slot full content differs")
     candidates = set(scope["candidate_ids"])
     indexed = tuple(enumerate(row.intent_bindings))
@@ -575,9 +582,12 @@ def project_slot_value(
             document = row.document()
             document["intent_bindings"] = [item.as_json() for item in selected]
             _slot_id, _bindings, body = _slot(document)
-            projected = context.knowledge_binding.model_evidence_block(
-                context.store_id, local_evidence_id=local_id, content=body,
-            )["text"]
+            projected = (
+                body if source_representation == "canonical-plain-v1"
+                else context.knowledge_binding.model_evidence_block(
+                    context.store_id, local_evidence_id=local_id, content=body,
+                )["text"]
+            )
             disposition = "projected"
         else:
             disposition = "full-body-no-excluded-bindings"
@@ -596,6 +606,7 @@ def project_slot_value(
         "schema": RECEIPT_SCHEMA, "policy_id": POLICY_ID,
         "context_sha256": context.context_sha256,
         "evidence_id": evidence_id, "source_uri": source_uri,
+        "source_representation": source_representation,
         "source_content_sha256": _sha_text(content),
         "projected_content_sha256": _sha_text(projected),
         "candidate_ids": list(scope["candidate_ids"]),
