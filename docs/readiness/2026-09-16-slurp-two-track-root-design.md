@@ -20,13 +20,13 @@ Knowledge coverage is the next diagnosis-driven choice, not an automatic K sweep
 
 ## Track B: intent decision, slots and evidence review
 
-Keep separate intent-boundary and slot-contract stores. Intent values explain why one candidate fits and nearby alternatives fail. Slot values explain semantic role, admissible values/types, scope, extraction evidence and normalization. Avoid reference-derived answer hints. Candidate-conditioned knowledge must resolve semantic ambiguity rather than merely repeat labels.
+Keep separate intent-boundary and slot-contract stores. Intent values explain why one candidate fits and nearby alternatives fail. Slot values explain semantic role, admissible values/types, scope, extraction evidence and normalization. Avoid reference-derived answer hints. Candidate-conditioned knowledge must resolve semantic ambiguity rather than merely repeat labels. The released September 14 entity-loss audit already verified that omission and evidence-preservation rules exist in Solver/context prompts and authored slot contracts, and that the completed replica exposes slot contracts in every Reviewer request. Repeating these rules or supplying the same visible cards is not a named information-gain mechanism. The next value revision must address a source-grounded annotation boundary, concrete semantic contrast, or otherwise demonstrated missing distinction; an acoustic tool needs a demonstrated hearing uncertainty.
 
 Reviewer checks the draft against the speech and explicit task evidence. It identifies a concrete suspected error or unresolved distinction before requesting information. Planner decides whether to acquire evidence, revise or accept. Solver alone writes the task answer. The existing target-knowledge tool may retrieve a requested candidate's intent distinctions or slot explanation; tool calls remain on demand. Local ASR or re-listening are future evidence tools when the suspected gap is acoustic, not mandatory preprocessing.
 
 Use role separation without claiming statistical independence. The current shared history exposes earlier reasoning, so this is not a draft-blind independent judge. A later separately registered evidence-first review may reduce anchoring, but is not silently bundled into the maximum-five arm.
 
-Measure initial-draft versus final saves and harms, issue detection versus actual draft errors, proposed versus executed revisions, and tool attempted/returned/exposed counts. Visibility is not semantic consumption or causal benefit. The shared source verification and analysis APIs already provide most joins. Before Track B admission, bind only the missing stage-score table, structured issue/action output and traceable evidence-use linkage needed by its claims.
+Measure initial-draft versus final saves and harms, issue detection versus actual draft errors, proposed versus executed revisions, and tool attempted/returned/exposed counts. Visibility is not semantic consumption or causal benefit. The shared source verification and analysis APIs already provide most joins. Before Track B admission, bind only the missing stage-score table, structured issue/action output and traceable evidence-use linkage needed by its claims. The September 16 preparation now supplies shared source-bound Solver stage scores and bounded Reviewer declarations; the current held report configuration is slurp-native-evidence-review-train-a-held-v2. These engineering proofs do not establish model benefit or capacity.
 
 The current held Track B configuration is a preparation artifact, not a launched experiment. It changes Reviewer evidence access and reserves a final report slot, so its effect would be a package contrast unless those factors are separately controlled. Root will finalize the smallest useful contrast after the maximum-five verdict; do not interpret it as an isolated tool effect.
 
@@ -37,3 +37,19 @@ Parallelize model-free preparation and measurement binding; serialize model cont
 Use official pooled SLU micro-F1 on the complete roster as primary, paired speaker-cluster bootstrap with 10000 draws and seed 20260915, CI95 for advancement and CI90 for diagnostics. Report natural-mixture, equal-scenario and all18-stratum results. A positive point gain with CI95 lower bound above zero advances to a separately registered same-roster replication. Only replicated benefit supports a stable-base claim. Preserve historical process differences and prior failures.
 
 Do not treat manual architecture/prompt work as training-free RL. Once the base is stable, expose explicit candidate, knowledge, observation, review and stopping decisions as the optimization workspace, then separately define trajectory sampling, rewards and an algorithmic update. No training-free RL result is claimed here.
+
+
+## Keep the system question explicit
+
+An improvement over the retained agent anchor diagnoses an optimization direction; it does
+not by itself prove superiority over direct model invocation. A promising locked system must
+also be evaluated against the shared-harness direct baseline on a matched, appropriately
+registered roster. Use existing complete comparators where their configuration and population
+actually match. This plan does not create new confirmatory exposure.
+
+Judge review policy by evidence-supported correction precision, missed-error rate, harmful
+revision rate, and final official task quality. More tool calls or more REVISE decisions are
+not a success criterion. Keep acoustic uncertainty, intent-boundary uncertainty, and slot
+meaning/span uncertainty separate so each can request the tool that adds the missing
+information. The current package admits target knowledge only in its held configuration;
+future ASR or selective replay remain separately registered on-demand actions.

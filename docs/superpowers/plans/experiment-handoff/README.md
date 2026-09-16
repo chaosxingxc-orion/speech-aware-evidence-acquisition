@@ -1,6 +1,6 @@
 # Current continuation: September 16
 
-Read [STATUS-143](STATUS-143.md) and [the two-track plan](../../../readiness/2026-09-16-slurp-two-track-research-plan.md).
+Read [STATUS-144](STATUS-144.md) and [the two-track plan](../../../readiness/2026-09-16-slurp-two-track-research-plan.md).
 SLURP is the only active optimization target. Candidate-width support and source-bound
 on-demand knowledge are implemented and tested. The candidate-five campaign is registered and launched from a frozen WSL checkout.
 The problem-directed Reviewer configuration remains held for its own admission.
@@ -11,7 +11,7 @@ SLURP dynamic-tools flight or read its partial quality.
 
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-143.md](STATUS-143.md) records integrated implementation,
+**Latest execution:** [STATUS-144.md](STATUS-144.md) records the running maximum-five campaign, closed review attribution and integrated measurement,
 root verification, the service switch, exact SLURP registration and campaign launch.
 Research preparation runs in parallel; one experiment generates at a time.
 
@@ -54,7 +54,7 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-STATUS-143 supersedes the older execution paragraphs below. The maximum-five SLURP campaign has launched; do not relaunch it. E21 and Audio2Tool remain held. Use source-bound operational receipts for liveness and wait for complete seal/scoring before quality release.
+STATUS-144 supersedes the older execution paragraphs below. The maximum-five SLURP campaign has launched; do not relaunch it. E21 and Audio2Tool remain held. Use source-bound operational receipts for liveness and wait for complete seal/scoring before quality release.
 
 Read [STATUS-141.md](STATUS-141.md), state.json and
 [OWNER-GPU-RESUME-2026-09-15](OWNER-GPU-RESUME-2026-09-15.md) first. SLURP is
@@ -110,12 +110,10 @@ no new test/confirmatory exposure or Stage-3 execution is admitted.
 
 Current knowledge design: [discriminative values](../../../readiness/2026-09-11-discriminative-knowledge-values.md).
 
-Latest handoff: [STATUS-141](STATUS-141.md) makes SLURP the only active
-optimization target. No new flight is admitted; the closed dynamic-tools flight receives no third
-attempt or relabel restart. A future successor requires a concrete named design
-and separate root admission. Root will select one
-information-gain mechanism and require a same-roster full-task comparison and
-replication if promising. The current E21 capacity fit may finish, but final
-registration and all generation remain held. Audio2Tool proof and full flight
-remain held. Build a stable agentic baseline before later training-free RL
-trajectory and action-space work, then transfer to E21 and Audio2Tool.
+Latest handoff: [STATUS-144](STATUS-144.md) keeps SLURP as the only active optimization
+target. The maximum-five comparison is already running. The complete TRAIN anchor review
+attribution is closed and the held structured Reviewer package is integrated. Root will
+choose its smallest separately admitted comparison after the full candidate-width verdict.
+E21 and Audio2Tool remain held. The closed dynamic-tools flight receives no third attempt
+or relabel restart. Build a stable agentic baseline before later training-free trajectory
+optimization and dataset transfer.
