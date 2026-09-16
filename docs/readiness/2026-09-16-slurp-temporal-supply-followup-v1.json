@@ -1,0 +1,44 @@
+{
+  "contacts": {
+    "asr": 0,
+    "audio_decode": 0,
+    "encoder": 0,
+    "model": 0,
+    "official_scorer": 0,
+    "tokenizer": 0
+  },
+  "execution_profile": "model-free-check",
+  "limits": [
+    "This is an exploratory follow-up to the already-read temporal diagnosis, not an effectiveness test.",
+    "An omitted reference mention may have been supplied under a different entity type.",
+    "Text occurrence in Perception may be in a hypothesis rather than grounded observation; inspect the field before interpreting.",
+    "If authoritative request exposure cannot be bound, report unknown instead of inferring it from knowledge preparation."
+  ],
+  "measurement": [
+    "Verify native source with the existing shared custody loader.",
+    "Select the first completed Perception and Solver visits and bind to actual request/response.",
+    "Read the serialized typed slot-contract supply and compare record IDs with date/time IDs; distinguish prepared/recorded supply from exact request exposure if the latter can be joined.",
+    "For missing gold mentions, count local casefold/alphanumeric token containment in the initial Perception response as offline textual agreement only, never proof of hearing, grounding or causal use.",
+    "Report complete-cohort and correct-intent counts with denominators; save only sample IDs, booleans, counts and source hashes.",
+    "Root may read the released reference sentence and relevant trace excerpts offline to resolve category ambiguity. Never export reference strings into runtime knowledge."
+  ],
+  "native_source": {
+    "manifest": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1.run-manifest.json",
+      "sha256": "049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152"
+    },
+    "phase_artifact": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1.phases.json",
+      "sha256": "883ce8711ef5e54efdb157d9572afb72f9e03d2e6877bbb990b9365b0b09ceb7"
+    }
+  },
+  "population": "All 1080 released anchor IDs. Keep separate presence/matching cohorts defined in the pinned temporal diagnostic. Do not read A1 or Fold B.",
+  "prior_diagnostic": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/temporal-slot-diagnosis-v1.json",
+    "sha256": "107194fa81dc054517aad0d70b0fa521589baaee947bb211253d1243e06f5dcb"
+  },
+  "question": "Was the missing temporal type supplied as a semantic slot card to the initial Solver, and was the omitted date/time string already explicitly represented in the initial Perception output?",
+  "registered_at_utc": "2026-09-16T07:01:27.961292+00:00",
+  "schema": "saea-temporal-supply-followup-preregistration-v1",
+  "source_repo_root": "/home/chao/saea-worktrees/slurp-train-anchor-cuda-recovery-v1"
+}
