@@ -143,5 +143,17 @@ observations, task knowledge, the current draft and current review declarations.
 
 Reuse the existing projections, parsers, phase-material and native role-binding seam.
 Structural validation and citation availability do not prove semantic correctness; the frozen
-roles retain semantic judgments. The full typed compiler is designed but not yet implemented
-or admitted. Keep A1 frozen and select one next contrast only after its complete verdict.
+roles retain semantic judgments. The full typed compiler is implemented and passed163
+focused synthetic tests; its real-model configuration remains held. Read
+docs/readiness/2026-09-16-role-context-implementation.md.
+Keep A1 frozen and select one next contrast only after its complete verdict.
+
+## Matched direct comparison preparation
+
+The metadata audit identifies no released TRAIN A comparator matching current max512 and
+shared direct-only execution. A held full1080 direct configuration and saved-score recipe
+now reuse the common base. Read
+docs/readiness/2026-09-16-slurp-direct-train-a-comparator-preparation.md.
+The old TRAIN A direct contract is full SLU, but its fixed path, max64, seed and geometry
+differ. No old output quality was read. Do not substitute DEV1000 scores for TRAIN A.
+This preparation does not admit a new contact or change A1's advancement rule.

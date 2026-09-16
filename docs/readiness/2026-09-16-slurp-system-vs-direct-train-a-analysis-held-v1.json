@@ -1,0 +1,137 @@
+{
+  "schema": "saea-score-analysis-binding-recipe-v1",
+  "experiment_id": "SAEA-SLURP-SYSTEM-VS-DIRECT-TRAIN-A-ANALYSIS-HELD-V1",
+  "execution_profile": "model-free-check",
+  "status": "HELD: prospective estimands; actual complete source pair unresolved.",
+  "analysis": {
+    "format": "generic-scores-v1",
+    "id_field": "sample_id",
+    "expected_ids_count": 1080,
+    "full_roster": {
+      "path": "/home/chao/saea-worktrees/slurp-temporal-slot-diagnosis-v1/docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+      "id_field": "sample_id"
+    },
+    "cluster_field": "speaker",
+    "groupings": {
+      "scenario": "scenario"
+    },
+    "grouping_resampling": "whole-cluster",
+    "n_replicates": 10000,
+    "seed": 20260915,
+    "max_workers": 2,
+    "metrics": {
+      "official_slu_micro_f1": {
+        "scorer": "slurp-slu-official-train",
+        "statistic": "ratio",
+        "direction": "higher",
+        "numerator": {
+          "slu_f1_word_tp": 2,
+          "slu_f1_char_tp": 2
+        },
+        "denominator": {
+          "slu_f1_word_tp": 2,
+          "slu_f1_char_tp": 2,
+          "slu_f1_word_fp": 1,
+          "slu_f1_char_fp": 1,
+          "slu_f1_word_fn": 1,
+          "slu_f1_char_fn": 1
+        },
+        "zero_denominator": "zero"
+      },
+      "official_entity_pair_micro_f1": {
+        "scorer": "slurp-slu-official-train",
+        "statistic": "ratio",
+        "direction": "higher",
+        "numerator": {
+          "slot_f1_exact_tp": 2
+        },
+        "denominator": {
+          "slot_f1_exact_tp": 2,
+          "slot_f1_exact_fp": 1,
+          "slot_f1_exact_fn": 1
+        },
+        "zero_denominator": "zero"
+      },
+      "intent_accuracy": {
+        "scorer": "slurp-slu-official-train",
+        "statistic": "mean",
+        "direction": "higher",
+        "field": "scenario_action_exact"
+      },
+      "scenario_accuracy": {
+        "scorer": "slurp-slu-official-train",
+        "statistic": "mean",
+        "direction": "higher",
+        "field": "scenario_exact"
+      },
+      "action_accuracy": {
+        "scorer": "slurp-slu-official-train",
+        "statistic": "mean",
+        "direction": "higher",
+        "field": "action_exact"
+      }
+    },
+    "contrasts": [
+      {
+        "name": "system-minus-direct-primary",
+        "left": "direct",
+        "right": "system",
+        "metrics": [
+          "official_slu_micro_f1"
+        ],
+        "ci_level": 0.95
+      },
+      {
+        "name": "system-minus-direct-diagnostics",
+        "left": "direct",
+        "right": "system",
+        "metrics": [
+          "official_slu_micro_f1",
+          "official_entity_pair_micro_f1",
+          "intent_accuracy",
+          "scenario_accuracy",
+          "action_accuracy"
+        ],
+        "ci_level": 0.9
+      }
+    ],
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-broad-factored-v1/analysis-metadata-v1.json",
+      "sha256": "53bd634b121b7b21d5172a56ed8cacfce8fa3065643f362b02a5faf2af7bd980",
+      "rows_key": "rows"
+    },
+    "inputs": {
+      "direct": {
+        "manifest": {
+          "path": null,
+          "sha256": "PENDING-COMPLETE-DIRECT-MANIFEST"
+        },
+        "score_source": "finalized-bundle"
+      },
+      "system": {
+        "manifest": {
+          "path": null,
+          "sha256": "PENDING-COMPLETE-SYSTEM-MANIFEST"
+        },
+        "score_source": "finalized-bundle"
+      }
+    }
+  },
+  "scientific_question": "Does the chosen complete frozen-core agentic system improve task-native quality relative to direct model invocation on the same complete development roster?",
+  "decision": {
+    "primary": "Natural-mixture official pooled SLU micro F1 from sufficient counts, system minus direct; positive point difference and speaker-cluster CI95 lower bound above zero identify a replication candidate.",
+    "replication": "Freeze the system before the pair is read. Replicate the selected pair on the same roster under matched conditions; report both outcomes without averaging away failure. This is exploratory stability on an exposed development roster, not confirmatory superiority or generalization.",
+    "secondary": "Report equal-scenario and all18 strata, intent/scenario/action, entity-pair micro F1, malformed/saturated/fallback rows, and all recorded model/tool/input costs. These diagnostics do not silently replace the primary."
+  },
+  "binding_steps": [
+    "Choose the system after complete A1 verdict; bind its implementation, prompts, role-context policy, tools, knowledge snapshots and model/service identity before generation.",
+    "Match all1080 recording IDs, original speech packets, frozen weights/runtime build, decoder geometry, decoding seed/temperature/output limit, full legal inventory and official scorer. Report any implementation or service-process mismatch.",
+    "Use direct-only through the same shared controller, FlightRuntime and OpenJiuwen executor; retain model-visible task definitions but no evidence supply or intermediate candidate/review state.",
+    "Verify both complete finalized bundles and first saved scores, then record the root paired read release and bind immutable manifest hashes in a separate execution recipe. Never overwrite this template or invoke the scorer again.",
+    "Use analysis.score_compare_cli and the existing projection/bootstrap functions. Preserve10000 whole-speaker draws, seed20260915, CI95 primary and CI90 diagnostics.",
+    "Treat system-only candidate and stage diagnostics as descriptive attribution. Direct has no candidate generator, so do not invent direct candidate coverage or filter the primary comparison by system gold membership.",
+    "For intent-conditioned slot comparisons, report the identical rows where both final intents are correct, plus each own-correct denominator separately. Do not interpret changing denominators as a causal component effect."
+  ],
+  "contacts_admitted": 0
+}
