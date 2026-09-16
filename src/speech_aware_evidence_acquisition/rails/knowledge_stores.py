@@ -438,6 +438,16 @@ def build_knowledge_store_supply(
             or not set(requested) <= set(binding.store_ids)):
         raise KnowledgeStoreError("on-demand stores must name unique bound stores")
     on_demand = frozenset(requested)
+    from .released_target_index import build_released_target_index
+
+    target_indices = {}
+    for store_id in requested:
+        index = build_released_target_index(
+            binding.store(store_id), data_root=data_root,
+            legal_candidate_ids=tuple(legal_candidate_ids or ()),
+        )
+        if index is not None:
+            target_indices[store_id] = index
     callbacks, explicit_specs_by_store, specs_by_store, receipts = {}, {}, {}, {}
     context_specs: dict[tuple[str, str], object] = {}
     candidate_specs = load_candidate_semantic_supply_specs(binding, program)
@@ -522,6 +532,8 @@ def build_knowledge_store_supply(
         }
         if store_id in on_demand:
             receipts[store_id]["on_demand_target_lookup"] = True
+            if store_id in target_indices:
+                receipts[store_id]["target_index"] = dict(target_indices[store_id].receipt)
         if store_candidate_specs:
             receipts[store_id]["candidate_supply"] = [
                 store_candidate_specs[phase].as_json()
@@ -650,6 +662,7 @@ def build_knowledge_store_supply(
                 supplies.append(candidate_supply)
         return _compose_supplies(supplies, query_state)
 
+    route.target_indices = MappingProxyType(target_indices)
     route.specs_by_store = specs_by_store
     route.bootstrap_first_phase = bootstrap_first_phase
     candidate_receipt = (

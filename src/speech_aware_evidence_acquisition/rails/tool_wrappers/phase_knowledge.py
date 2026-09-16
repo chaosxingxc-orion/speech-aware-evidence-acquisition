@@ -25,7 +25,7 @@ def retrieve_phase_knowledge(supply_for_phase, next_phase, context):
 
 def lookup_target_knowledge(
     snapshot, query_state, candidate_ids, *, max_values_per_candidate,
-    max_total_values, already_visible_value_ids=(),
+    max_total_values, already_visible_value_ids=(), target_index=None,
 ):
     """Select requested task-target values from an already bound frozen store."""
     from ..knowledge_target_lookup import lookup_knowledge_targets
@@ -38,5 +38,6 @@ def lookup_target_knowledge(
             max_values_per_candidate=max_values_per_candidate,
             max_total_values=max_total_values,
             already_visible_value_ids=already_visible_value_ids,
+            target_index=target_index,
         ),
     )

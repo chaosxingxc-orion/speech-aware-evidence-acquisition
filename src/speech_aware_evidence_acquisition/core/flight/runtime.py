@@ -7014,9 +7014,33 @@ class FlightRuntime:
                     for store in store_binding.stores.values()
                     for entry in store.phase_supply.values()
                 )
+                from ...rails.phase_tools import (  # noqa: PLC0415
+                    KNOWLEDGE_TARGET_TOOL, load_phase_tool_specs,
+                )
+
+                tool_specs = load_phase_tool_specs(self._composed.values, program)
+                on_demand_stores = tuple(sorted({
+                    store_id
+                    for role, tool_spec in tool_specs.items()
+                    if role in {"reviewer", "planner"}
+                    and tool_spec.get("source_authority_role") == role
+                    and KNOWLEDGE_TARGET_TOOL in tool_spec["allowed_tools"]
+                    for store_id in tool_spec.get("knowledge_store_ids", ())
+                }))
+                from ...rails.semantic_knowledge_build import (  # noqa: PLC0415
+                    INTENT_BOUNDARY_BUILD_POLICY_ID, SLOT_CONTRACT_BUILD_POLICY_ID,
+                )
+
+                needs_target_inventory = any(
+                    store_binding.store(store_id).snapshot.builder_policy_id
+                    in {INTENT_BOUNDARY_BUILD_POLICY_ID, SLOT_CONTRACT_BUILD_POLICY_ID}
+                    for store_id in on_demand_stores
+                )
                 legal_candidate_ids = None
                 inventory_options = {}
-                if any(store.candidate_supply for store in store_binding.stores.values()):
+                if needs_target_inventory or any(
+                    store.candidate_supply for store in store_binding.stores.values()
+                ):
                     from ...rails.task_adapter import CandidateInventory  # noqa: PLC0415
 
                     prepare_inventory = getattr(self._adapter, "candidate_inventory", None)
@@ -7035,19 +7059,6 @@ class FlightRuntime:
                             "candidate_inventory_source_sha256": inventory.source_sha256,
                             "candidate_inventory_authority": inventory.source_authority,
                         }
-                from ...rails.phase_tools import (  # noqa: PLC0415
-                    KNOWLEDGE_TARGET_TOOL, load_phase_tool_specs,
-                )
-
-                tool_specs = load_phase_tool_specs(self._composed.values, program)
-                on_demand_stores = tuple(sorted({
-                    store_id
-                    for role, tool_spec in tool_specs.items()
-                    if role in {"reviewer", "planner"}
-                    and tool_spec.get("source_authority_role") == role
-                    and KNOWLEDGE_TARGET_TOOL in tool_spec["allowed_tools"]
-                    for store_id in tool_spec.get("knowledge_store_ids", ())
-                }))
                 router = build_knowledge_store_supply(
                     store_binding, program=program, data_root=self._data_root,
                     on_demand_store_ids=on_demand_stores,
