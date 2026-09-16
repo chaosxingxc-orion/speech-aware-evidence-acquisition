@@ -162,6 +162,7 @@ def _arm_summary(
             "min": min(widths) if widths else None,
             "max": max(widths) if widths else None,
             "mean": sum(widths) / len(widths) if widths else None,
+            "histogram": {str(width): widths.count(width) for width in sorted(set(widths))},
         },
         "final_membership": {
             "in_candidates": in_candidates,
