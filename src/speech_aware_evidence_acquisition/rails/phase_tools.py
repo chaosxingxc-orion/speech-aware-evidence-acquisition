@@ -434,6 +434,7 @@ class PhaseToolDispatcher:
         self._attempts = set()
         self._records = {}
         self._native_rejections = []
+        self._native_rejected_batches = set()
         if (
             any(set(spec["knowledge_views"]) - {"text"} for spec in specs.values())
             and knowledge_catalog is None
@@ -569,15 +570,7 @@ class PhaseToolDispatcher:
     def is_action_phase(self, phase):
         return phase in self.specs
 
-    def __call__(self, phase, next_phase, context):
-        spec = self.specs.get(phase)
-        if spec is None:
-            return None
-        phases = self.program.phase_names()
-        phase_index = phases.index(phase)
-        if not (self.native_role_episode and next_phase == phase):
-            if phase_index + 1 >= len(phases) or next_phase != phases[phase_index + 1]:
-                raise PhaseToolError("action successor differs from the program")
+    def _phase_source(self, phase, context):
         states = [s for s in context.agent_states if s.state_kind == f"phase:{phase}"]
         if not states:
             raise PhaseToolError("action requires the current sealed phase response")
@@ -595,6 +588,18 @@ class PhaseToolDispatcher:
             or context.sample_id != context.query_state.query_sample_id
         ):
             raise PhaseToolError("action has stale or cross-sample source state")
+        return source, expected
+
+    def __call__(self, phase, next_phase, context):
+        spec = self.specs.get(phase)
+        if spec is None:
+            return None
+        phases = self.program.phase_names()
+        phase_index = phases.index(phase)
+        if not (self.native_role_episode and next_phase == phase):
+            if phase_index + 1 >= len(phases) or next_phase != phases[phase_index + 1]:
+                raise PhaseToolError("action successor differs from the program")
+        source, expected = self._phase_source(phase, context)
         native_call = None
         if spec["mode"] == "fixed":
             action = _validate_action(
@@ -1011,7 +1016,7 @@ class PhaseToolDispatcher:
             )
             raise
 
-    def _parse_native_action(self, context, source, spec):
+    def _native_completion(self, context, source, spec):
         completions = []
         for completion in getattr(context, "core_completions", ()):
             if (
@@ -1030,7 +1035,7 @@ class PhaseToolDispatcher:
                 agent_contact_id=completion.agent_contact_id,
                 response_text=source.content,
             )
-            calls = completion.tool_calls
+            completion.tool_calls
         except Exception as error:
             raise PhaseToolError("native completion binding or tool calls are malformed") from error
         if self.native_role_episode:
@@ -1060,6 +1065,11 @@ class PhaseToolDispatcher:
                 raise PhaseToolError(
                     "native completion contact has a malformed iteration identity"
                 )
+        return completion
+
+    def _parse_native_action(self, context, source, spec):
+        completion = self._native_completion(context, source, spec)
+        calls = completion.tool_calls
         if not isinstance(calls, list) or len(calls) != 1:
             raise PhaseToolError("native action must contain exactly one tool call")
         call = calls[0]
@@ -1095,6 +1105,73 @@ class PhaseToolDispatcher:
             "call_id": call["id"],
             "completion": completion,
         }
+
+    def reject_native_batch(self, phase, context):
+        """Reject every returned action before dispatch; execute and count no tool."""
+        from .native_tool_authority import (
+            MULTIPLE_CALL_REJECTION_SCHEMA, build_native_tool_authority,
+            multiple_call_rejection_result, select_completion_tool_schemas,
+            validate_native_call_rejection,
+        )
+
+        spec = self.specs.get(phase)
+        if not self.native_role_episode or spec is None or spec["mode"] != "native-tools":
+            raise PhaseToolError("batch rejection requires a configured native role")
+        source, expected = self._phase_source(phase, context)
+        completion = self._native_completion(context, source, spec)
+        authority = build_native_tool_authority(
+            completion, role_id=spec["source_authority_role"], phase_id=phase,
+            selected_tool_schemas=select_completion_tool_schemas(
+                completion, self.native_tool_schemas(),
+            ),
+        )
+        calls = completion.tool_calls
+        result = multiple_call_rejection_result(len(calls))
+        documents, steps = [], []
+        for call in calls:
+            document = {
+                "schema": MULTIPLE_CALL_REJECTION_SCHEMA,
+                "selection_mode": "native-tools",
+                "tool_id": call["function"]["name"],
+                "arguments": json.loads(call["function"]["arguments"]),
+                "tool_call_id": call["id"],
+                "tool_calls_sha256": completion.tool_calls_sha256,
+                "core_request_id": completion.request_id,
+                "sample_id": context.sample_id, "phase": phase, "next_phase": phase,
+                "query_state_sha256": expected,
+                "source_response_sha256": source.source_response_sha256,
+                "snapshot_sha256": context.knowledge_snapshot_sha256,
+                "speech_packet_id": context.query_state.speech_packet_id,
+                "speech_packet_sha256": context.query_state.speech_packet_sha256,
+                "native_source_state_id": source.state_id,
+                "native_tool_calls_json": completion.tool_calls_json.decode("utf-8"),
+                "source_authority": authority,
+                "source_authority_sha256": content_hash(authority),
+                "result": result, "result_sha256": content_hash(result),
+                "native_result_content": [],
+                "native_result_content_sha256": content_hash({"blocks": []}),
+            }
+            validate_native_call_rejection(document)
+            artifact = AgentStateArtifact(
+                state_id=f"tool-rejection:{phase}:{context.sample_id}:" + content_hash({
+                    "request_id": completion.request_id, "tool_call_id": call["id"],
+                }),
+                state_kind="tool-result", content=json.dumps(document, sort_keys=True),
+                source_query_state_sha256=expected,
+                source_response_sha256=source.source_response_sha256,
+                producer_policy_id=self.program.program_id, cited_value_ids=(),
+            ).validate()
+            documents.append(document)
+            steps.append(PhaseToolStep(supply=None, state=artifact).validate())
+        with self._lock:
+            if completion.request_id in self._native_rejected_batches:
+                raise PhaseToolError("native batch was already rejected")
+            self._native_rejected_batches.add(completion.request_id)
+            self._native_rejections.extend(content_hash(doc) for doc in documents)
+        for document in documents:
+            self._emit(context.sample_id, phase, "attempt", document)
+            self._emit(context.sample_id, phase, "rejected", document)
+        return tuple(steps)
 
     def _native_candidate_rejection(self, phase, context, source, expected, request, key):
         """Return counted input feedback after source validation, before lookup.
@@ -1270,6 +1347,9 @@ class PhaseToolDispatcher:
                         + artifact.state_id
                     ),
                 })
+                continue
+            if document.get("schema") == "saea-phase-tool-rejection-v1":
+                # Rejected actions supply no task evidence; exact feedback stays in history.
                 continue
             result = document.get("result", {})
             if document.get("tool_id") in {

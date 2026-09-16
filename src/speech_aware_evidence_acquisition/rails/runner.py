@@ -1693,13 +1693,13 @@ async def _invoke_native_role_episode(
             agent_states=ctx.agent_states, knowledge_value_renderer=knowledge_value_renderer,
         )
 
-    def settle(*, tool_step=None, next_phase=None):
+    def settle(*, tool_step=None, rejected_steps=(), next_phase=None):
         if not pending:
             return
         completion, source, before, plan, slot_id = (
             pending[name] for name in ("completion", "source", "context", "plan", "slot_id")
         )
-        if completion.tool_calls and tool_step is None:
+        if completion.tool_calls and tool_step is None and not rejected_steps:
             raise RailsRunnerError("native tool request has no source-bound observation")
         staged = replace(
             before, agent_states=before.agent_states + (source,),
@@ -1711,7 +1711,10 @@ async def _invoke_native_role_episode(
             supply = binding.supply_for_phase(next_phase, staged)
         if supply is not None and next_phase is not None and program.phase(next_phase).knowledge != "supplied":
             raise RailsRunnerError("native knowledge supply requires a supplied destination")
+        if rejected_steps and (tool_step is not None or any(step.supply is not None for step in rejected_steps)):
+            raise RailsRunnerError("rejected batch cannot execute a tool or introduce supply")
         added = (source,) + (() if tool_step is None else (tool_step.state,))
+        added += tuple(step.state for step in rejected_steps)
         next_state, transition = advance_phase_response_state(
             context=before, added_states=added,
             action_target_ref=f"{program.program_id}:{pending['phase_id']}:{plan.contact_id}",
@@ -2023,6 +2026,26 @@ async def _invoke_native_role_episode(
                 set_current_trace_buffer(None)
         return await run_contact(contact)
 
+    def reject_tool_batch(phase_id, assistant_message):
+        from ..reproduction.ojw.native_roles import restore_native_assistant_wire_message
+
+        if not pending or pending["phase_id"] != phase_id:
+            raise RailsRunnerError("rejected batch has no pending source completion")
+        completion, source, before = (
+            pending[name] for name in ("completion", "source", "context")
+        )
+        restore_native_assistant_wire_message(assistant_message, completion=completion)
+        staged = replace(
+            before, agent_states=before.agent_states + (source,),
+            prior_response_sha256s=before.prior_response_sha256s + (completion.response_text_sha256,),
+            core_completions=(completion,),
+        )
+        steps = binding.tools_for_phase.reject_native_batch(phase_id, staged)
+        messages = tuple(native_tool_result_message(json.loads(step.state.content)) for step in steps)
+        settle(rejected_steps=steps)
+        visits[phase_id]["local_ids"].extend(step.state.state_id for step in steps)
+        return messages
+
     def ability_for(role, schema):
         function = schema["function"]
         async def invoke(**arguments):
@@ -2091,6 +2114,7 @@ async def _invoke_native_role_episode(
                     reserve_final_report=config.reserve_final_report and bool(role.tool_names),
                 ),
                 metered_request=metered, contact_context_provider=contact_context,
+                reject_tool_batch=reject_tool_batch if role.tool_names else None,
                 abilities=tuple(ability_for(role, schema_by_name[name]) for name in role.tool_names),
                 tool_allowed=(
                     (lambda phase, name, role=role: phase == role.phase_id and name in role.tool_names)

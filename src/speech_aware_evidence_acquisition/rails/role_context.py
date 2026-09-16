@@ -11,6 +11,7 @@ from jsonschema import Draft202012Validator, SchemaError, ValidationError
 
 from ..reproduction.slurp_scoring import parse_slu_response
 from .knowledge import AgentStateArtifact, RailsError
+from .native_tool_authority import validate_native_call_rejection
 from .review_findings import ReviewFindingsError, parse_review_findings
 from .slurp_intent_hypotheses import (
     BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_IDS,
@@ -314,10 +315,11 @@ def _assert_raw_phase_source(
 @dataclass(frozen=True)
 class _NativePair:
     source_position: int
-    result_position: int
+    result_positions: tuple[int, ...]
     source: AgentStateArtifact
-    result: AgentStateArtifact
+    results: tuple[AgentStateArtifact, ...]
     evidence_ids: tuple[str, ...]
+    feedback_kind: str | None
 
 
 def _known_tool_sources(states: tuple[AgentStateArtifact, ...]) -> set[str]:
@@ -344,7 +346,9 @@ def _native_pairs(
     positions = {state.state_id: index for index, state in enumerate(states)}
     pairs = []
     seen_sources = set()
-    for result_id in local_ids:
+    cursor = 0
+    while cursor < len(local_ids):
+        result_id = local_ids[cursor]
         result_position = positions.get(result_id)
         if result_position is None:
             raise RoleContextError("local native tool result is missing")
@@ -353,7 +357,9 @@ def _native_pairs(
             raise RoleContextError("local native history ID is not a tool result")
         document = _strict_json(result.content)
         if not isinstance(document, Mapping) or document.get("schema") not in {
-            "saea-phase-tool-result-v1", "saea-phase-tool-result-v2",
+            "saea-phase-tool-result-v1",
+            "saea-phase-tool-result-v2",
+            "saea-phase-tool-rejection-v1",
         }:
             raise RoleContextError("local native tool result envelope is invalid")
         source_id = document.get("native_source_state_id")
@@ -363,14 +369,9 @@ def _native_pairs(
         source = states[source_position]
         expected_kind = f"phase:{document.get('phase')}"
         if (
-            result_position != source_position + 1
-            or source.state_kind != expected_kind
+            source.state_kind != expected_kind
             or document.get("phase") not in phase_ids.values()
             or document.get("sample_id") != sample_id
-            or document.get("query_state_sha256") != source.source_query_state_sha256
-            or document.get("source_response_sha256") != source.source_response_sha256
-            or result.source_query_state_sha256 != source.source_query_state_sha256
-            or result.source_response_sha256 != source.source_response_sha256
             or _sha256_text(source.content) != source.source_response_sha256
         ):
             raise RoleContextError("local native call/result source binding differs")
@@ -383,11 +384,89 @@ def _native_pairs(
                 raise RoleContextError("Reviewer local tool chain is foreign or stale")
         elif latest_solver_position is None or source_position <= latest_solver_position:
             raise RoleContextError("native tool pair does not follow the latest Solver")
+
+        def validate_result_binding(
+            candidate: AgentStateArtifact, candidate_document: Mapping[str, object],
+        ) -> None:
+            if (
+                candidate_document.get("native_source_state_id") != source_id
+                or candidate_document.get("query_state_sha256")
+                != source.source_query_state_sha256
+                or candidate_document.get("source_response_sha256")
+                != source.source_response_sha256
+                or candidate.source_query_state_sha256
+                != source.source_query_state_sha256
+                or candidate.source_response_sha256 != source.source_response_sha256
+            ):
+                raise RoleContextError("local native call/result source binding differs")
+
+        if document.get("schema") == "saea-phase-tool-rejection-v1":
+            try:
+                authority, _selected_call = validate_native_call_rejection(document)
+                calls = authority["original_assistant_message"]["tool_calls"]
+                original_ids = [call["id"] for call in calls]
+            except (RailsError, KeyError, TypeError) as error:
+                raise RoleContextError("local rejected native batch is invalid") from error
+            batch_ids = local_ids[cursor : cursor + len(original_ids)]
+            if len(batch_ids) != len(original_ids):
+                raise RoleContextError("local rejected native batch is incomplete")
+            batch_positions = []
+            batch_results = []
+            for offset, (batch_id, original_id) in enumerate(
+                zip(batch_ids, original_ids, strict=True), start=1
+            ):
+                batch_position = positions.get(batch_id)
+                if batch_position != source_position + offset:
+                    raise RoleContextError(
+                        "local rejected native batch is omitted, reordered or interleaved"
+                    )
+                batch_result = states[batch_position]
+                if batch_result.state_kind != "tool-result":
+                    raise RoleContextError(
+                        "local rejected native batch contains a non-result"
+                    )
+                batch_document = _strict_json(batch_result.content)
+                try:
+                    batch_authority, batch_call = validate_native_call_rejection(
+                        batch_document
+                    )
+                except (RailsError, TypeError, ValueError) as error:
+                    raise RoleContextError(
+                        "local rejected native batch is invalid"
+                    ) from error
+                if (
+                    batch_authority != authority
+                    or batch_call.get("id") != original_id
+                ):
+                    raise RoleContextError(
+                        "local rejected native batch mixes source or call identities"
+                    )
+                validate_result_binding(batch_result, batch_document)
+                batch_positions.append(batch_position)
+                batch_results.append(batch_result)
+            seen_sources.add(source_id)
+            pairs.append(_NativePair(
+                source_position=source_position,
+                result_positions=tuple(batch_positions),
+                source=source,
+                results=tuple(batch_results),
+                evidence_ids=(),
+                feedback_kind="rejected-action-feedback",
+            ))
+            cursor += len(original_ids)
+            continue
+
+        if result_position != source_position + 1:
+            raise RoleContextError("local native call/result source binding differs")
+        validate_result_binding(result, document)
         blocks = document.get("native_result_content")
-        if not isinstance(blocks, list) or any(not isinstance(block, Mapping) for block in blocks):
+        if not isinstance(blocks, list) or any(
+            not isinstance(block, Mapping) for block in blocks
+        ):
             raise RoleContextError("native tool evidence blocks are malformed")
         evidence_ids = tuple(
-            block["evidence_id"] for block in blocks
+            block["evidence_id"]
+            for block in blocks
             if block.get("type") == "text"
             and isinstance(block.get("evidence_id"), str)
             and block["evidence_id"].strip()
@@ -396,15 +475,20 @@ def _native_pairs(
             raise RoleContextError("native tool evidence IDs are duplicated")
         seen_sources.add(source_id)
         pairs.append(_NativePair(
-            source_position=source_position, result_position=result_position,
-            source=source, result=result, evidence_ids=evidence_ids,
+            source_position=source_position,
+            result_positions=(result_position,),
+            source=source,
+            results=(result,),
+            evidence_ids=evidence_ids,
+            feedback_kind=None,
         ))
-    if [pair.result_position for pair in pairs] != sorted(
-        pair.result_position for pair in pairs
-    ):
+        cursor += 1
+    result_positions = [
+        position for pair in pairs for position in pair.result_positions
+    ]
+    if result_positions != sorted(result_positions):
         raise RoleContextError("local native tool results are reordered")
     return tuple(pairs)
-
 
 class SlurpRoleContextCompiler:
     """Compile one bounded, typed SLURP view without retrieval or judgment."""
@@ -516,6 +600,7 @@ class SlurpRoleContextCompiler:
 
         selected: dict[int, tuple[AgentStateArtifact, str, str | None]] = {}
         derived_audits: dict[int, Mapping[str, object]] = {}
+        tool_feedback_by_position: dict[int, Mapping[str, object]] = {}
         represented_source_ids = set()
 
         def retain_derived(
@@ -586,9 +671,20 @@ class SlurpRoleContextCompiler:
             )
 
         for pair in pairs:
-            selected[pair.source_position] = (pair.source, "verbatim", pair.source.state_id)
-            selected[pair.result_position] = (pair.result, "verbatim", pair.result.state_id)
-            represented_source_ids.update((pair.source.state_id, pair.result.state_id))
+            selected[pair.source_position] = (
+                pair.source, "verbatim", pair.source.state_id,
+            )
+            represented_source_ids.add(pair.source.state_id)
+            for result_position, result in zip(
+                pair.result_positions, pair.results, strict=True,
+            ):
+                selected[result_position] = (result, "verbatim", result.state_id)
+                represented_source_ids.add(result.state_id)
+                if pair.feedback_kind is not None:
+                    tool_feedback_by_position[result_position] = {
+                        "kind": pair.feedback_kind,
+                        "evidence_ids": [],
+                    }
 
         ordered = sorted(selected.items())
         output_states = tuple(item[1][0] for item in ordered)
@@ -607,6 +703,10 @@ class SlurpRoleContextCompiler:
             }
             if position in derived_audits:
                 row["projection"] = dict(derived_audits[position])
+            if position in tool_feedback_by_position:
+                row["native_tool_feedback"] = dict(
+                    tool_feedback_by_position[position]
+                )
             retained.append(row)
 
         selected_candidate = (

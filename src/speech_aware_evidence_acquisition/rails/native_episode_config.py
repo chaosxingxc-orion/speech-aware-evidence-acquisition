@@ -6,6 +6,11 @@ import json
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 
+from .native_tool_authority import (
+    NativeToolAuthorityError,
+    validate_native_call_rejection,
+)
+
 PLANNER_ACTION_RESPONSE_FORMAT_ID = "saea-native-planner-action-v1"
 
 
@@ -41,11 +46,15 @@ def select_native_role_history(
     if not isinstance(local_tool_result_ids, (tuple, list)):
         raise ValueError("local history IDs must be an ordered sequence")
     ids = [state.state_id for state in states]
-    if len(ids) != len(set(ids)) or len(local_tool_result_ids) != len(set(local_tool_result_ids)):
+    if len(ids) != len(set(ids)) or len(local_tool_result_ids) != len(
+        set(local_tool_result_ids)
+    ):
         raise ValueError("role history contains duplicate IDs")
     positions = {value: index for index, value in enumerate(ids)}
     solver_indices = [
-        i for i, state in enumerate(states) if state.state_kind == f"phase:{solver_phase_id}"
+        i
+        for i, state in enumerate(states)
+        if state.state_kind == f"phase:{solver_phase_id}"
     ]
     if not solver_indices:
         raise ValueError("restricted Reviewer history requires a Solver draft")
@@ -53,7 +62,9 @@ def select_native_role_history(
     selected = {ids[solver_index]}
     encountered = []
     sources = set()
-    for result_id in local_tool_result_ids:
+    cursor = 0
+    while cursor < len(local_tool_result_ids):
+        result_id = local_tool_result_ids[cursor]
         if result_id not in positions:
             raise ValueError("local tool history result is missing")
         result_index = positions[result_id]
@@ -71,13 +82,61 @@ def select_native_role_history(
         if (
             states[source_index].state_kind != f"phase:{role.phase_id}"
             or not solver_index < source_index < result_index
-            or result_index != source_index + 1
             or source_id in sources
         ):
+            raise ValueError("local tool history has a foreign, old or repeated source")
+        if document.get("schema") == "saea-phase-tool-rejection-v1":
+            try:
+                authority, _selected_call = validate_native_call_rejection(document)
+                calls = authority["original_assistant_message"]["tool_calls"]
+                original_ids = [call["id"] for call in calls]
+            except (NativeToolAuthorityError, KeyError, TypeError) as error:
+                raise ValueError("local rejected tool batch is malformed") from error
+            batch_ids = list(
+                local_tool_result_ids[cursor : cursor + len(original_ids)]
+            )
+            if len(batch_ids) != len(original_ids):
+                raise ValueError("local rejected tool batch is incomplete")
+            batch_positions = []
+            for offset, (batch_id, original_id) in enumerate(
+                zip(batch_ids, original_ids, strict=True), start=1
+            ):
+                batch_position = positions.get(batch_id)
+                if batch_position != source_index + offset:
+                    raise ValueError(
+                        "local rejected tool batch is omitted, reordered or interleaved"
+                    )
+                batch_state = states[batch_position]
+                if batch_state.state_kind != "tool-result":
+                    raise ValueError("local rejected tool batch contains a non-result")
+                try:
+                    batch_document = json.loads(batch_state.content)
+                    batch_authority, batch_call = validate_native_call_rejection(
+                        batch_document
+                    )
+                except (NativeToolAuthorityError, TypeError, ValueError) as error:
+                    raise ValueError("local rejected tool batch is malformed") from error
+                if (
+                    batch_document.get("native_source_state_id") != source_id
+                    or batch_authority != authority
+                    or batch_call.get("id") != original_id
+                ):
+                    raise ValueError(
+                        "local rejected tool batch mixes source or call identities"
+                    )
+                batch_positions.append(batch_position)
+                selected.add(batch_id)
+            selected.add(source_id)
+            sources.add(source_id)
+            encountered.extend(batch_positions)
+            cursor += len(original_ids)
+            continue
+        if result_index != source_index + 1:
             raise ValueError("local tool history has a foreign, old or repeated source")
         sources.add(source_id)
         selected.update((source_id, result_id))
         encountered.append(result_index)
+        cursor += 1
     if encountered != sorted(encountered):
         raise ValueError("local tool history result order differs")
     # The shared framework renderer verifies the full source authority and

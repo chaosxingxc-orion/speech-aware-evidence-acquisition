@@ -312,3 +312,89 @@ def build_native_tool_authority(
     }
     document["completion_sha256"] = content_hash(_completion_identity(document))
     return validate_native_tool_authority(document)
+
+
+MULTIPLE_CALL_REJECTION_SCHEMA = "saea-phase-tool-rejection-v1"
+
+
+def multiple_call_rejection_result(count: int) -> dict[str, object]:
+    """Describe a rejected selection, never an executed tool or new evidence."""
+    if not isinstance(count, int) or isinstance(count, bool) or count < 2:
+        raise NativeToolAuthorityError("batch rejection requires multiple calls")
+    return {
+        "status": "rejected",
+        "error_code": "multiple-tool-calls",
+        "message": (
+            "No requested tool was executed. Select at most one tool call "
+            "in a model turn, or provide the required final report."
+        ),
+        "tool_call_count": count,
+        "lookup_performed": False,
+    }
+
+
+def validate_native_call_rejection(document):
+    """Validate one rejected call while retaining the entire original batch."""
+    if not isinstance(document, Mapping):
+        raise NativeToolAuthorityError("native call rejection must be an object")
+    authority = validate_native_tool_authority(document.get("source_authority"))
+    calls = authority["original_assistant_message"].get("tool_calls")
+    raw = document.get("native_tool_calls_json")
+    try:
+        parsed_calls = json.loads(raw) if isinstance(raw, str) else None
+    except ValueError as error:
+        raise NativeToolAuthorityError("native rejected call bytes are malformed") from error
+    if (
+        document.get("schema") != MULTIPLE_CALL_REJECTION_SCHEMA
+        or document.get("selection_mode") != "native-tools"
+        or "tool_invocation" in document
+        or not isinstance(calls, list) or len(calls) < 2
+        or not isinstance(raw, str)
+        or hashlib.sha256(raw.encode()).hexdigest() != authority["source_tool_calls_sha256"]
+        or parsed_calls != calls
+        or document.get("tool_calls_sha256") != authority["source_tool_calls_sha256"]
+        or document.get("source_authority_sha256") != content_hash(authority)
+        or document.get("source_response_sha256") != authority["source_response_text_sha256"]
+        or document.get("core_request_id") != authority["request_id"]
+        or document.get("sample_id") != authority["sample_id"]
+        or document.get("phase") != authority["phase_id"]
+        or document.get("next_phase") != authority["phase_id"]
+        or authority["role_id"] != authority["phase_id"]
+    ):
+        raise NativeToolAuthorityError("native batch rejection source differs")
+    call_ids, parsed = [], {}
+    for call in calls:
+        function = call.get("function") if isinstance(call, Mapping) else None
+        if (
+            not isinstance(call, Mapping) or set(call) != {"id", "type", "function"}
+            or call.get("type") != "function"
+            or not isinstance(call.get("id"), str) or not call["id"]
+            or call["id"] in call_ids
+            or not isinstance(function, Mapping) or set(function) != {"name", "arguments"}
+            or function.get("name") not in authority["selected_tool_names"]
+            or not isinstance(function.get("arguments"), str)
+        ):
+            raise NativeToolAuthorityError("native batch rejection call shape differs")
+        try:
+            arguments = json.loads(function["arguments"])
+        except ValueError as error:
+            raise NativeToolAuthorityError("native rejected arguments are malformed") from error
+        if not isinstance(arguments, dict):
+            raise NativeToolAuthorityError("native rejected arguments must be an object")
+        call_ids.append(call["id"])
+        parsed[call["id"]] = arguments
+    matches = [call for call in calls if call["id"] == document.get("tool_call_id")]
+    if len(matches) != 1:
+        raise NativeToolAuthorityError("native batch rejection call identity differs")
+    call = matches[0]
+    result = multiple_call_rejection_result(len(calls))
+    if (
+        document.get("tool_id") != call["function"]["name"]
+        or document.get("arguments") != parsed[call["id"]]
+        or document.get("result") != result
+        or document.get("result_sha256") != content_hash(result)
+        or document.get("native_result_content") != []
+        or document.get("native_result_content_sha256") != content_hash({"blocks": []})
+    ):
+        raise NativeToolAuthorityError("native batch rejection claims changed content or evidence")
+    return authority, dict(call)

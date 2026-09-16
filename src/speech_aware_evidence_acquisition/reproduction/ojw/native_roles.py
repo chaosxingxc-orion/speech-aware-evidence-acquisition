@@ -28,7 +28,7 @@ from types import MappingProxyType
 from typing import Literal, Protocol
 
 from openjiuwen.core.context_engine import ModelContext
-from openjiuwen.core.foundation.llm.schema.message import AssistantMessage
+from openjiuwen.core.foundation.llm.schema.message import AssistantMessage, ToolMessage
 from openjiuwen.core.foundation.llm.schema.tool_call import ToolCall
 from openjiuwen.core.foundation.tool.base import Tool
 from openjiuwen.core.graph.executable import Input, Output
@@ -576,12 +576,15 @@ class _RoleAuthorityRail(AgentRail):
         advertised_names: frozenset[str],
         tool_allowed: Callable[[str, str], bool],
         final_report_iteration: int | None = None,
+        reject_tool_batch=None,
     ) -> None:
         self._role_id = role_id
         self._advertised_names = advertised_names
         self._tool_allowed = tool_allowed
         self._final_report_iteration = final_report_iteration
         self._iteration_key = f"saea-native-report-turn:{role_id}"
+        self._reject_tool_batch = reject_tool_batch
+        self._rejection_key = f"saea-native-rejected-batch:{role_id}"
 
     async def before_model_call(self, ctx) -> None:
         if self._final_report_iteration is None:
@@ -593,8 +596,32 @@ class _RoleAuthorityRail(AgentRail):
             ctx.inputs.tools = []
 
 
-    async def before_tool_call(self, ctx) -> None:
-        name = ctx.inputs.tool_call.name
+    async def after_model_call(self, ctx) -> None:
+        if self._reject_tool_batch is None:
+            return
+        if ctx.extra.get(self._rejection_key):
+            raise FrozenCoreRoleModelError("framework omitted a rejected call result")
+        response = ctx.inputs.response
+        calls = getattr(response, "tool_calls", None)
+        if not calls or len(calls) <= 1:
+            return
+        for call in calls:
+            self._assert_allowed(ctx, call.name)
+        messages = self._reject_tool_batch(self._role_id, response)
+        if (
+            len(messages) != len(calls)
+            or [message.get("tool_call_id") for message in messages] != [call.id for call in calls]
+            or any(set(message) != {"role", "tool_call_id", "content"}
+                   or message["role"] != "tool" or not isinstance(message["content"], str)
+                   for message in messages)
+        ):
+            raise FrozenCoreRoleModelError("batch rejection changed original call identities")
+        ctx.extra[self._rejection_key] = {
+            call.id: (call.name, call.arguments, message["content"])
+            for call, message in zip(calls, messages, strict=True)
+        }
+
+    def _assert_allowed(self, ctx, name):
         if (
             name not in self._advertised_names
             or not self._tool_allowed(self._role_id, name)
@@ -607,6 +634,20 @@ class _RoleAuthorityRail(AgentRail):
                 f"Tool {name!r} is outside role authority for {self._role_id!r}."
             )
             raise AbortError("role tool authority rejection", cause=cause)
+
+    async def before_tool_call(self, ctx) -> None:
+        call = ctx.inputs.tool_call
+        self._assert_allowed(ctx, call.name)
+        rejected = ctx.extra.get(self._rejection_key, {})
+        if not rejected:
+            return
+        item = rejected.pop(call.id, None)
+        if item is None or item[:2] != (call.name, call.arguments):
+            raise FrozenCoreRoleModelError("framework changed a rejected tool call")
+        content = item[2]
+        ctx.inputs.tool_result = content
+        ctx.inputs.tool_msg = ToolMessage(content=content, tool_call_id=call.id)
+        ctx.extra["_skip_tool"] = True
 
 
 class _InstanceOwnedAbility(Tool):
@@ -638,6 +679,7 @@ class NativeRoleNode(WorkflowComponent):
         abilities: Sequence[object] = (),
         tool_allowed: Callable[[str, str], bool] | None = None,
         delivery_allowed: Callable[[str, str], bool] | None = None,
+        reject_tool_batch=None,
     ) -> None:
         super().__init__()
         self.spec = spec
@@ -700,6 +742,7 @@ class NativeRoleNode(WorkflowComponent):
             advertised_names=self._advertised_names,
             tool_allowed=allowed,
             final_report_iteration=(spec.max_iterations if spec.reserve_final_report else None),
+            reject_tool_batch=reject_tool_batch,
         )
         self._rail_registered = False
         self._registration_lock = asyncio.Lock()

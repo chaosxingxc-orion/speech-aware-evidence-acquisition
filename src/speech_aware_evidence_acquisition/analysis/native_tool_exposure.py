@@ -21,7 +21,10 @@ from ..core.model.native_history import project_native_history
 from ..core.model.transport import _speech_history_texts
 from ..rails.errors import RailsError
 from ..rails.hashing import content_hash
-from ..rails.native_tool_authority import validate_native_tool_authority
+from ..rails.native_tool_authority import (
+    validate_native_call_rejection,
+    validate_native_tool_authority,
+)
 from .native_episode_diagnostics import analyze_verified_native_episode_statistics
 
 
@@ -89,13 +92,22 @@ def _check_source_custody(
     document: Mapping[str, object],
     trace_records: Mapping[str, Mapping[str, object]],
 ) -> tuple[dict[str, object], bool]:
+    rejection = document.get("schema") == "saea-phase-tool-rejection-v1"
+    selected_original_call: Mapping[str, object] | None = None
     try:
-        authority = validate_native_tool_authority(document.get("source_authority"))
+        if rejection:
+            authority, selected_original_call = validate_native_call_rejection(document)
+        else:
+            authority = validate_native_tool_authority(document.get("source_authority"))
     except (RailsError, KeyError, TypeError, ValueError) as error:
         raise NativeToolExposureError(
             "native result has invalid source authority"
         ) from error
-    invocation = _mapping(document.get("tool_invocation"), "native tool invocation")
+    invocation = (
+        None
+        if rejection
+        else _mapping(document.get("tool_invocation"), "native tool invocation")
+    )
     raw_calls = document.get("native_tool_calls_json")
     result = document.get("result")
     blocks = document.get("native_result_content")
@@ -103,9 +115,14 @@ def _check_source_custody(
         calls = json.loads(raw_calls) if isinstance(raw_calls, str) else None
     except ValueError as error:
         raise NativeToolExposureError("native result call bytes are invalid") from error
-    if (
-        document.get("schema") != "saea-phase-tool-result-v2"
-        or document.get("selection_mode") != "native-tools"
+    matching_calls = (
+        []
+        if not isinstance(calls, list)
+        else [call for call in calls if isinstance(call, Mapping)
+              and call.get("id") == document.get("tool_call_id")]
+    )
+    common_invalid = (
+        document.get("selection_mode") != "native-tools"
         or document.get("source_authority_sha256") != content_hash(authority)
         or not isinstance(result, Mapping)
         or content_hash(result) != document.get("result_sha256")
@@ -116,12 +133,31 @@ def _check_source_custody(
         or hashlib.sha256(raw_calls.encode()).hexdigest()
         != document.get("tool_calls_sha256")
         or not isinstance(calls, list)
-        or len(calls) != 1
-        or not isinstance(calls[0], Mapping)
-        or calls[0].get("id") != document.get("tool_call_id")
-        or not isinstance(calls[0].get("function"), Mapping)
-        or calls[0]["function"].get("name") != document.get("tool_id")
+        or not calls
+        or len(matching_calls) != 1
+        or not isinstance(matching_calls[0].get("function"), Mapping)
+        or matching_calls[0]["function"].get("name") != document.get("tool_id")
         or authority.get("original_assistant_message", {}).get("tool_calls") != calls
+    )
+    if rejection:
+        if (
+            common_invalid
+            or len(calls) <= 1
+            or "tool_invocation" in document
+            or selected_original_call != matching_calls[0]
+            or result.get("status") != "rejected"
+            or result.get("error_code") != "multiple-tool-calls"
+            or result.get("lookup_performed") is not False
+            or blocks != []
+        ):
+            raise NativeToolExposureError(
+                "native rejection event has invalid source custody"
+            )
+    elif (
+        common_invalid
+        or document.get("schema") != "saea-phase-tool-result-v2"
+        or len(calls) != 1
+        or invocation is None
         or invocation.get("request_id") != document.get("core_request_id")
         or invocation.get("tool_call_id") != document.get("tool_call_id")
         or invocation.get("tool_id") != document.get("tool_id")
@@ -187,7 +223,6 @@ def _check_source_custody(
             f"native result differs from source request/response custody {request_id!r}"
         )
     return authority, completion is not None
-
 
 def _check_event_document(
     receipt: Mapping[str, object], document: Mapping[str, object]
@@ -279,6 +314,7 @@ def analyze_verified_native_tool_exposure(
             contact_rank[request_id] = rank
 
     observations: dict[tuple[str, str], dict[str, object]] = {}
+    pre_dispatch_rejections: set[tuple[str, str]] = set()
     non_results: list[dict[str, object]] = []
     for sample in diagnostics["samples"]:
         sample_id = str(sample["sample_id"])
@@ -306,7 +342,11 @@ def analyze_verified_native_tool_exposure(
                 )
                 prefix = "use" if event["axis"] == "analytical" else "obs"
                 rejected_document = _document(raw_rejection, prefix)
-                if rejected_document.get("schema") != "saea-phase-tool-result-v2":
+                rejection_schema = rejected_document.get("schema")
+                if rejection_schema not in {
+                    "saea-phase-tool-result-v2",
+                    "saea-phase-tool-rejection-v1",
+                }:
                     # Historical pre-dispatch rejections have no counted result.
                     continue
                 rejected_result = _mapping(
@@ -316,6 +356,10 @@ def analyze_verified_native_tool_exposure(
                     rejected_result.get("status") != "rejected"
                     or rejected_result.get("lookup_performed") is not False
                     or rejected_document.get("native_result_content") != []
+                    or (
+                        rejection_schema == "saea-phase-tool-rejection-v1"
+                        and event["contact_receipt_available"] is not False
+                    )
                 ):
                     raise NativeToolExposureError("rejection claims executed evidence")
             rejected = event["event"] == "rejected"
@@ -326,6 +370,12 @@ def analyze_verified_native_tool_exposure(
                 raise NativeToolExposureError(
                     "native trace duplicates a returned call"
                 )
+            if (
+                rejected
+                and rejected_document.get("schema")
+                == "saea-phase-tool-rejection-v1"
+            ):
+                pre_dispatch_rejections.add(key)
             raw = _mapping(
                 trace_records.get(str(event["record_id"])), "tool result event"
             )
@@ -359,6 +409,7 @@ def analyze_verified_native_tool_exposure(
                 "tool_call_id": call_id,
                 "source_completion_sha256": authority["completion_sha256"],
                 "source_completion_trace_available": completion_trace_available,
+                "contact_receipt_available": event["contact_receipt_available"],
                 "result_sha256": result_hash,
                 "result_empty": receipt.get("result") == {},
                 "selection_count": selection_count,
@@ -374,6 +425,20 @@ def analyze_verified_native_tool_exposure(
         for event in sample["native_tool_events"]
         if event["event"] == "attempt" and event["source_call_identity_available"]
     }
+    attempted_with_contact_receipts = {
+        (str(event["request_id"]), str(event["tool_call_id"]))
+        for sample in diagnostics["samples"]
+        for event in sample["native_tool_events"]
+        if (
+            event["event"] == "attempt"
+            and event["source_call_identity_available"]
+            and event["contact_receipt_available"] is True
+        )
+    }
+    if any(key in attempted_with_contact_receipts for key in pre_dispatch_rejections):
+        raise NativeToolExposureError(
+            "native pre-dispatch rejection claims a contact receipt"
+        )
     if any(key not in attempted for key in observations):
         raise NativeToolExposureError(
             "native return lacks its attempt event"
@@ -471,6 +536,9 @@ def analyze_verified_native_tool_exposure(
     rejection_summary = ({
         "rejected_call_count": len(rejected_calls),
         "exposed_rejected_call_count": sum(row["exposed"] is True for row in rejected_calls),
+        "rejected_call_contact_receipt_count": sum(
+            row["contact_receipt_available"] is True for row in rejected_calls
+        ),
         "rejected_calls": rejected_calls,
     } if rejected_calls else {})
     counts = Counter(row["event"] for row in non_results)
