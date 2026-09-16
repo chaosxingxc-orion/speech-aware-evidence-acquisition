@@ -7,6 +7,8 @@
     {
       "allowed_execution_stages": [
         "check",
+        "worker",
+        "campaign",
         "prepare-supply"
       ],
       "attempt_id": "attempt-slurp-native-typed-role-context-train-fold-a-generation-v1",
@@ -15,21 +17,36 @@
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Root admission, exposure registration, final plan binding and source freeze remain pending; model-free phase-supply preparation alone is permitted.",
-        "state": "preparation-pending"
+        "reason": "Registered paired system/direct comparison; shared lease, exact service, frozen source and actual-request fit remain mandatory.",
+        "requirements": [
+          {
+            "expected_decision_id": "slurp-typed-context-vs-direct-train-a-admission-v1",
+            "kind": "decision",
+            "reason": "Root scientific admission after complete A1 verdict.",
+            "relpath": "coordination/slurp-typed-context-vs-direct-v1/admission-v1.json",
+            "sha256": "7136d12653800025b33f5f59f001ab75726625abad18f4950cdfa1e9733e70f0"
+          },
+          {
+            "kind": "preparation",
+            "reason": "Verified full1080 unchanged K8 output prepared without contacts.",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-V1/phase-supply-registered-v1.json",
+            "sha256": "ca16d15630467035f7fcd3a28fe954a9e2b253bb79b9cb5c58b6aa49d6385700"
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-V1"
     }
   ],
   "date": "2026-09-16",
   "execution_plan": {
-    "execution_profile": "model-free-check",
+    "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
     "split_role": "discovery"
   },
-  "execution_profile": "model-free-check",
+  "execution_profile": "bounded-discovery-probe",
   "experiment_id": "SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-V1",
   "failure_policy": "Stop and preserve on failure. No automatic restart, filtering, prompt change, geometry change or scorer rerun. Root owns any separately registered recovery.",
   "family_budget": {
@@ -43,7 +60,7 @@
     "official_complete_scoring_jobs": 1,
     "repeated_speech_audio_seconds_cap": 33930
   },
-  "fragment_kind": "saea-slurp-native-typed-role-context-train-fold-a-registration-preparation-v1",
+  "fragment_kind": "saea-slurp-typed-context-paired-experiment-v1",
   "population": {
     "count": 1080,
     "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
@@ -1138,7 +1155,7 @@
     }
   ],
   "preserve_wire_responses": true,
-  "purpose": "Prepare the selected complete typed-role-context system half of a system-versus-direct comparison. This is an end-to-end package comparison, not an isolated role-context ablation or training-free reinforcement-learning test.",
+  "purpose": "Run the registered complete typed-role-context system half of a system-versus-direct comparison. This is an end-to-end package comparison, not an isolated role-context ablation or training-free reinforcement-learning test.",
   "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "split_id": "SLURP-EVO-FOLD-A-V2"
 }
