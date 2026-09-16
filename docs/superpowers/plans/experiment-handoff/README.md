@@ -1,25 +1,21 @@
 # Current continuation: September 16
 
-Read [STATUS-140](STATUS-140.md): the complete SLURP analysis is closed without
-advancement or a successor. Audio2Tool's np2 CPU feasibility route remains
-blocked by a shared coarse limit pending an authorized bounded fix and later
-four-row proof. The independently registered E21 direct static fit remains
-live; its GPU is resident for fit materialization, but generation is not active.
-See [the owner resume directive](OWNER-GPU-RESUME-2026-09-15.md).
+Read [STATUS-141](STATUS-141.md): SLURP is now the only active optimization
+target. The earlier dynamic-tools flight is closed after two failures, with
+partial quality unread and no third attempt or relabel restart. A future
+successor requires one concrete named information-gain design and separate root
+admission. The current E21 capacity fit may finish, but all E21 generation and
+final registration are held. Audio2Tool's
+four-row proof and full flight are also held.
 
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-140.md](STATUS-140.md) records the complete
-SLURP paired decision NOT_ADVANCED_FULL_TASK_GAIN_GATE_FAILED; see the
-[root report](../../../results/2026-09-16-slurp-broad-factored-train-a.md).
-Audio2Tool's corrected ledger and direct preflight pass, but system preflight
-refuses a 34,868-token Perception request against the 32,768-token slot before
-attempt or contact. The np2 feasibility geometry has a 49,152-token slot but
-remains blocked by the shared 32,768-token coarse rail. Root authorized a
-bounded shared configuration-limits fix; it has no GPU proof and requires a
-future four-row proof. The [Earnings21 direct-fit registration](../../../readiness/2026-09-15-e21-native-window-direct-fit-registration-v1/README.md)
-is now the active gate. Its 1,593-unit static fit is materializing, while
-generation remains held pending a final receipt and separate registration.
+**Latest execution:** [STATUS-141.md](STATUS-141.md) records the owner's
+single-dataset direction. Retain the SLURP incumbent and the broad/factored
+non-advancement decision. Root will specify one information-gain mechanism
+within the existing agentic framework, followed by a same-roster full-task
+comparison and replication if promising. CPU preparation and scoring may run
+in parallel within SLURP; experiments do not run across datasets.
 
 **Current comparison direction:** [OWNER-SYSTEM-VERSIONS-025.md](OWNER-SYSTEM-VERSIONS-025.md) makes complete model-versus-system task quality primary and allows evidence-guided expansion of system versions. The supplied/withheld knowledge draft is withdrawn. [The current system plan](../../../readiness/2026-09-13-slurp-direct-vs-native-system-plan-v1.md) and [extension sequence](../../../readiness/2026-09-13-finalized-score-reuse-and-system-extension.md) govern the next work.
 
@@ -27,7 +23,7 @@ generation remains held pending a final receipt and separate registration.
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 140. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 141. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -60,22 +56,18 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-140.md](STATUS-140.md), state.json and
-[OWNER-GPU-RESUME-2026-09-15](OWNER-GPU-RESUME-2026-09-15.md) first. The
-complete SLURP paired decision is NOT_ADVANCED_FULL_TASK_GAIN_GATE_FAILED;
-improvement is not demonstrated, overall harm is not statistically established,
-and no successor is admitted. Audio2Tool's carrier-case correction is valid,
-but system preflight fails before contact because a 34,868-token Perception
-request exceeds its 32,768-token slot. The original path is closed with zero
-generation, fit or model contacts. Its np2 CPU feasibility geometry is blocked
-by the shared hard-coded 32,768-token coarse rail despite its 49,152-token slot.
-Root authorized a bounded shared configuration-limits fix that preserves default
-identity and reserve behavior; there is no GPU proof, and a future four-row
-proof remains required. The independent E21 direct static fit remains live from
-frozen source 1daad5186119b23c3414e36676afb296599dc29f, with a cap of 4,780
-endpoints over 1,593 units. Its GPU is resident for fit materialization, but
-generation is not active; do not infer maximum load. Generation remains held
-pending the fit result and separate final registration. The earlier G6/E21 campaigns' generation, scoring, fixed analysis and all four settlements
+Read [STATUS-141.md](STATUS-141.md), state.json and
+[OWNER-GPU-RESUME-2026-09-15](OWNER-GPU-RESUME-2026-09-15.md) first. SLURP is
+the only active optimization target, and no new flight is admitted. The
+incumbent remains in place; broad/factored TRAIN-A was not advanced. Root will
+personally examine released candidate, within-candidate and slot failures and
+select one information-gain mechanism in the existing agentic framework. The
+closed dynamic-tools flight receives no third attempt or relabel restart, and
+any future successor requires separate root admission. The current E21 static
+fit may finish only its registered capacity measurement;
+final registration and all E21 generation are held. The accepted Audio2Tool
+shared fix is integrated, while its four-row proof and full flight remain held.
+The earlier G6/E21 campaigns' generation, scoring, fixed analysis and all four settlements
 are complete. Those earlier G6 SLURP and E21 system admissions fail their frozen rules. STATUS-044 separately admits the newer SLURP task-agent working baseline for exploration. The newer role-coverage pair is closed under STATUS-046; it is not adopted and cannot be replayed under its exhausted registration.
 The task-scope
 clarification is [OWNER-DATASET-TASKS-010.md](OWNER-DATASET-TASKS-010.md):
@@ -118,13 +110,12 @@ no new test/confirmatory exposure or Stage-3 execution is admitted.
 
 Current knowledge design: [discriminative values](../../../readiness/2026-09-11-discriminative-knowledge-values.md).
 
-Latest handoff: [STATUS-140](STATUS-140.md) records the complete SLURP
-non-advancement decision, both zero-contact Audio2Tool preflight failures and
-the active E21 static-fit gate. Audio2Tool np2 work is CPU feasibility only; its
-shared limit fix has no GPU proof, and it requires a future four-row proof. The
-[Earnings21 direct static fit](../../../readiness/2026-09-15-e21-native-window-direct-fit-registration-v1/README.md)
-is materializing from its frozen 1,593-unit source; generation remains held
-until fit passes and root completes separate final registration. The current
-final-registration checkout is documentation-only and cannot dispatch.
-Preserve prior historical verdicts and make no causal, stable-benefit or
-training-free RL claim for these queued versions.
+Latest handoff: [STATUS-141](STATUS-141.md) makes SLURP the only active
+optimization target. No new flight is admitted; the closed dynamic-tools flight receives no third
+attempt or relabel restart. A future successor requires a concrete named design
+and separate root admission. Root will select one
+information-gain mechanism and require a same-roster full-task comparison and
+replication if promising. The current E21 capacity fit may finish, but final
+registration and all generation remain held. Audio2Tool proof and full flight
+remain held. Build a stable agentic baseline before later training-free RL
+trajectory and action-space work, then transfer to E21 and Audio2Tool.

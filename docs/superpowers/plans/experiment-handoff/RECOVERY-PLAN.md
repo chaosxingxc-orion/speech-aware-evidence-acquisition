@@ -1,20 +1,17 @@
 # Owner-directed recovery and continuation plan
 
-**Current overlay:** Read [STATUS-140](STATUS-140.md). The complete SLURP
-paired analysis is closed as NOT_ADVANCED_FULL_TASK_GAIN_GATE_FAILED;
-improvement is not demonstrated, overall harm is not statistically established,
-and no successor is admitted. Audio2Tool's corrected ledger passes direct
-preflight, but system preflight fails before contact because its Perception
-request exceeds the registered slot. Its np2 CPU feasibility geometry remains
-blocked by a shared coarse limit; root authorized a bounded configuration-limits
-fix with default identity and reserve behavior preserved. No GPU proof exists,
-and a future four-row proof is required before full flight. The E21 direct
-static fit remains live from source
-1daad5186119b23c3414e36676afb296599dc29f. Its GPU is resident for fit
-materialization, but generation is not active and no final fit receipt exists.
-Preserve the SLURP, Audio2Tool, Earnings21 order and all frozen and historical
-records. Stable benefit for these queued versions and trajectory-sampling or
-training-free RL remain unproven.
+**Current overlay:** Read [STATUS-141](STATUS-141.md). SLURP is the only
+active optimization target. Retain its incumbent and broad/factored
+non-advancement decision. Root will personally select one information-gain
+mechanism from the released candidate, within-candidate and slot failures. The
+prior dynamic-tools flight is closed after two failures, with partial quality
+unread and no third attempt or relabel restart. No new SLURP flight is admitted;
+a future successor requires a concrete named information-gain design and
+separate root admission. The current E21 capacity fit may finish, but final
+registration and all E21 generation are held. The accepted Audio2Tool shared
+fix is integrated; its four-row proof and full flight remain held. Pipeline
+work may run in parallel within SLURP, but experiments do not run across
+datasets.
 
 **Latest released TRAIN diagnosis:** Read the [source-bound entity-loss analysis](../../../results/2026-09-14-slurp-train-a-entity-loss-attribution-v1.md). The exact Fold A output/reference join reconciles every saved official ingredient without rescoring. Of 414 reference-empty cases, 184 emit entities; surface, omission and extra-prediction losses all matter. This is a diagnostic, not a new mechanism or runtime memory admission.
 
@@ -87,9 +84,9 @@ treatment results exist. Any unresolved analysis must remain descriptive until i
 
 ## Current ordered work queue
 
-1. Preserve the closed SLURP analysis and its NOT_ADVANCED_FULL_TASK_GAIN_GATE_FAILED decision. No successor is admitted; do not invoke the unsupported optional own-card suffix metric, rerun the official scorer or make a causal claim.
-2. Complete and validate the authorized bounded shared Audio2Tool configuration-limits fix while preserving default identity and reserve behavior. This is CPU-only preparation with no GPU proof. Preserve both zero-contact failures, and require the future four-row proof before any full flight.
-3. Let the source-frozen E21 direct static fit finish through its registered attach-only prompt-fit route over all 1,593 windows and 4,780 endpoints. The actual fit receipt is absent. Do not start generation until the fit passes and root completes separate final registration; the current final-registration checkout is documentation-only and cannot dispatch. Native fit and ASR remain held and unregistered.
+1. Retain the SLURP incumbent and the broad/factored non-advancement decision. Root personally examines the released candidate, within-candidate and slot failures and specifies one concrete named information-gain mechanism within the existing agentic framework. The closed dynamic-tools flight receives no third attempt or relabel restart. No future successor proceeds without separate root admission.
+2. If the mechanism is promising, run a same-roster full-task comparison and replication under new registration. Parallelize CPU preparation and scoring within SLURP only.
+3. Allow the existing E21 static fit to finish only its registered capacity measurement. Hold final registration and all E21 generation. Keep the accepted Audio2Tool shared fix integrated, but hold its four-row proof and full flight.
 4. Establish reproducible package benefit and preserve an observable, configurable trajectory workspace.
 5. Define training-free RL factors, trajectory sampling, rewards and update rules after the shared base/workspace qualifies. Root-led engineering is not an RL algorithm result.
 
@@ -247,3 +244,11 @@ DATA/coordination/e21-native-window-registration-v1/root-active-handoff-v1.json.
 E21 generation remains held until the fit passes and root completes separate
 final registration. The current final-registration checkout contains
 documentation scaffolding only and cannot dispatch.
+
+## 2026-09-16 single-dataset optimization boundary
+
+[STATUS-141](STATUS-141.md) narrows active optimization to SLURP. E21 and
+Audio2Tool remain transfer targets only after the SLURP agentic baseline is
+stable. Training-free RL trajectory and action-space work follows that stable
+baseline. Preserve historical results and allow no multi-dataset experiment
+queue under this boundary.
