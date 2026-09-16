@@ -1,0 +1,117 @@
+{
+  "accounting": {
+    "ceilings_are_not_targets": true,
+    "direct": {
+      "fit_endpoint_calls_cap": 3241,
+      "generation_calls_cap": 1080,
+      "gpu_hours_fit_inclusive": 3.0,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 3085
+    },
+    "system": {
+      "fit_endpoint_calls_cap": 47520,
+      "generation_calls_cap": 11880,
+      "gpu_hours_fit_inclusive": 12.0,
+      "native_analytical_tool_calls_cap": 4320,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 33930
+    },
+    "system_derivation": "At most 11 native contacts per row across the initial wave and one revision. Native request fit uses at most four endpoints per contact. reserve-final-report leaves at most two analytical tool actions in each of at most two Reviewer visits, or four per row."
+  },
+  "analysis_binding": {
+    "primary": "Natural-mixture official pooled SLU micro-F1, system minus direct: require a positive point gain and speaker-cluster CI95 lower bound above zero to identify a replication candidate.",
+    "relpath": "docs/readiness/2026-09-16-slurp-system-vs-direct-train-a-analysis-held-v1.json",
+    "reporting": "Report equal-scenario weighting and all 18 strata. A first positive lead requires an exact-roster matched replication.",
+    "resampling": {
+      "draws": 10000,
+      "seed": 20260915,
+      "unit": "speaker"
+    },
+    "sha256": "e0d68d359c2251b638627fdbb53c1f9f19f540d18f43244ccc810f85dfe72079"
+  },
+  "comparison": {
+    "direct": "One shared direct-only frozen-core answer with the retained full-TRAIN legal ontology and examples; no supplied evidence or intermediate agent state.",
+    "fixed": [
+      "exact TRAIN Fold A1080 roster",
+      "original promoted speech packets",
+      "frozen weights and runtime",
+      "decoder-only np4 4 x 24576 geometry",
+      "max512 deterministic decoding",
+      "full legal ontology and examples",
+      "one official complete score per arm"
+    ],
+    "interpretation": "End-to-end typed-context system versus direct. It is not an isolated role-context ablation and not a training-free reinforcement-learning test.",
+    "system": "The held maximum-three native package with K8 intent-boundary retrieval, candidate-associated slot contracts, typed role context, structured evidence-directed Reviewer, source-bound target lookup, reserved final reports, Planner routing, one bounded revision and Solver-only answer authority."
+  },
+  "configurations": {
+    "direct": {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-slurp-direct-max512-train-fold-a-generation-v1",
+      "baseline_file_sha256": "e5e8f356d6e5abb8736e2248ec07faf5b4034708179787c3a60870ef94837cb3",
+      "baseline_fragment": "slurp-direct-max512-train-fold-a-v1",
+      "baseline_fragment_sha256": "d3d7651516941004793df0a307bfa34f5c8c6180e805ac1b07986627463e529e",
+      "check_only_composed_config_hash": "b2b6214250d9f0620ca4857157553a38ff0aa5af9679872017c6e99b8e1ab3a1",
+      "check_only_execution_protocol_hash": "0a330659404b1bc3bfb763b21393a97597a9c4b478ba0765ada95efa7f4a0c52",
+      "experiment_file_sha256": "e7587517ce27d487ded5140c8df6d2343671c13fb058038ff34ec408a75be8da",
+      "experiment_fragment": "slurp-direct-max512-train-fold-a-v1",
+      "experiment_fragment_sha256": "56e3efe4ab02f307b05d57f2d1eeaa1c1fba944536718c90f87428d977efd08b",
+      "fit_attempt_id": "attempt-slurp-direct-max512-train-fold-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-FIT-V1",
+      "note": "These hashes bind the preparation-only model-free configuration. Root must recompute the final contact-bearing hashes after admission/readiness/stage binding.",
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-V1"
+    },
+    "system": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-typed-role-context-train-fold-a-generation-v1",
+      "baseline_file_sha256": "877e50f7e2651062f81ad08ec0ed0e3d22f96fae903a57ce6bc9490dde48471f",
+      "baseline_fragment": "slurp-native-typed-role-context-train-fold-a-v1",
+      "baseline_fragment_sha256": "b419e718546e1baf95c55643cd33c4f099df7e04db78b9ea6828e3e5831c721d",
+      "check_only_composed_config_hash": "f1931170fbab0a88efe4af06b6bc5e25142f5cc866e91f869531408c16482761",
+      "check_only_execution_protocol_hash": "832ee5bab9ecb36e188724e78ff7c7a8a271e5a526d098af352fe6e6c1c82d49",
+      "experiment_file_sha256": "92af7291b6a2bb42c29841d46298eb67a72924ec5256cf3fcad9743247ba1b3b",
+      "experiment_fragment": "slurp-native-typed-role-context-train-fold-a-v1",
+      "experiment_fragment_sha256": "0a2933dcfc6714dcd77ee3463ae276fbb9dbb24f00188709ba94d0f0be1834b9",
+      "fit_attempt_id": "attempt-slurp-native-typed-role-context-train-fold-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-FIT-V1",
+      "note": "These hashes bind the preparation-only model-free configuration. Root must recompute the final contact-bearing hashes after admission/readiness/stage binding.",
+      "run_id": "SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-V1"
+    }
+  },
+  "failure_policy": "Stop and preserve on failure. Do not restart automatically, filter the roster, change prompts or geometry, or rerun an official score. Root owns any separately registered recovery.",
+  "population": {
+    "count": 1080,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "exposure": "Previously exposed TRAIN Fold A development roster; no unseen-data claim.",
+    "no_fold_b": true,
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery"
+  },
+  "predecessor_decision": {
+    "decision": "NOT_ADVANCED; retain maximum three candidates",
+    "primary_point_delta_percentage_points": 0.08674,
+    "source": "Root-provided finalized A1 decision; this preparation reads no outcome rows.",
+    "speaker_cluster_ci95_percentage_points": [
+      -1.36499,
+      1.65097
+    ]
+  },
+  "preparation": {
+    "base_commit": "59d7f29840169a5b5449566aa85389ce2a337a6c",
+    "contact_authorized": false,
+    "prepared_system_phase_supply": {
+      "contact_class": "model-free",
+      "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+      "relpath": "prepared/SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-V1/phase-supply-final-v1.json",
+      "sha256": "df06cf78124f93fe87723ed88fae8b221140d87327ef95b8c7d011800982f1bf"
+    },
+    "status": "PREPARING_ROOT_ADMISSION_REQUIRED"
+  },
+  "protocol_id": "SAEA-SLURP-TYPED-ROLE-CONTEXT-SYSTEM-VS-DIRECT-TRAIN-FOLD-A-PROTOCOL-V1",
+  "schema": "saea-slurp-system-vs-direct-preparation-protocol-v1",
+  "serving": {
+    "max_tokens": 512,
+    "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "slot_geometry": "4 x 24576",
+    "transport": "decoder-only np4"
+  }
+}
