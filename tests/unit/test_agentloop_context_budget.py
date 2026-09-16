@@ -18,6 +18,7 @@ from speech_aware_evidence_acquisition.rails.context_budget import (
     ContextBudgetBreakdown,
     ContextBudgetDecision,
     ContextBudgetInput,
+    ContextBudgetLimits,
     ContextBudgetRefusal,
     assess_context_budget,
 )
@@ -313,3 +314,103 @@ def test_forged_receipt_fields_refuse(
 
     with pytest.raises(ContextBudgetRefusal, match=message):
         replace(receipt, **changes)
+
+
+# Configuration-bound limits preserve legacy bytes while allowing a wider
+# serving slot only when the composed geometry says exactly the same thing.
+def test_legacy_context_budget_receipt_identity_is_unchanged() -> None:
+    receipt = assess_context_budget(_candidate(15_090))
+
+    assert receipt.receipt_sha256() == (
+        "1507f91e6938b9b3852cd618ecd4a2fd0bf6f4302b30a91464a556abe9fa0daf"
+    )
+    assert receipt.slot_limit_tokens == 32_768
+    assert receipt.operational_reserve_tokens == 8_192
+
+
+def test_configured_wider_slot_admits_registered_scope_tools_envelope() -> None:
+    limits = ContextBudgetLimits.from_config(
+        {"slot_limit_tokens": 49_152, "operational_reserve_tokens": 8_192},
+        serving_slot_limit_tokens=49_152,
+    )
+
+    receipt = assess_context_budget(_candidate(34_868), limits=limits)
+
+    assert receipt.decision is ContextBudgetDecision.ALLOW
+    assert receipt.slot_limit_tokens == 49_152
+    assert receipt.physical_margin_tokens == 14_284
+    assert receipt.operational_margin_tokens == 6_092
+
+
+def test_configured_legacy_slot_refuses_scope_tools_envelope() -> None:
+    limits = ContextBudgetLimits.from_config(
+        {"slot_limit_tokens": 32_768, "operational_reserve_tokens": 8_192},
+        serving_slot_limit_tokens=32_768,
+    )
+
+    assert (
+        assess_context_budget(_candidate(34_868), limits=limits).decision
+        is ContextBudgetDecision.COMPACT_REQUIRED
+    )
+
+
+def test_configured_limit_keeps_four_thirds_headroom_mandatory() -> None:
+    limits = ContextBudgetLimits.from_config(
+        {"slot_limit_tokens": 49_152, "operational_reserve_tokens": 8_192},
+        serving_slot_limit_tokens=49_152,
+    )
+
+    # The fixed reserve alone would allow this request (49,152 - 37,000 -
+    # 8,192 = 3,960), but 37,000 * 4 exceeds 49,152 * 3.
+    assert (
+        assess_context_budget(_candidate(37_000), limits=limits).decision
+        is ContextBudgetDecision.COMPACT_REQUIRED
+    )
+
+
+@pytest.mark.parametrize(
+    ("config", "serving_slot_limit_tokens", "message"),
+    [
+        (None, 49_152, "mapping"),
+        ({"slot_limit_tokens": 49_152}, 49_152, "exact fields"),
+        (
+            {
+                "slot_limit_tokens": 49_152,
+                "operational_reserve_tokens": 8_192,
+                "extra": 1,
+            },
+            49_152,
+            "exact fields",
+        ),
+        (
+            {"slot_limit_tokens": 49_152, "operational_reserve_tokens": 8_191},
+            49_152,
+            "reserve",
+        ),
+        (
+            {"slot_limit_tokens": 65_537, "operational_reserve_tokens": 8_192},
+            65_537,
+            "GGUF",
+        ),
+        (
+            {"slot_limit_tokens": 49_152, "operational_reserve_tokens": 8_192},
+            32_768,
+            "serving geometry",
+        ),
+        (
+            {"slot_limit_tokens": True, "operational_reserve_tokens": 8_192},
+            49_152,
+            "slot_limit_tokens",
+        ),
+    ],
+)
+def test_invalid_configured_context_budget_limits_refuse(
+    config: object,
+    serving_slot_limit_tokens: int,
+    message: str,
+) -> None:
+    with pytest.raises(ContextBudgetRefusal, match=message):
+        ContextBudgetLimits.from_config(
+            config,
+            serving_slot_limit_tokens=serving_slot_limit_tokens,
+        )

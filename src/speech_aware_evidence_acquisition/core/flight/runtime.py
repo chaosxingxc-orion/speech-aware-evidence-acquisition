@@ -50,6 +50,7 @@ from ...e0.d2_leakage import ARM_VISIBLE_FIELDS
 from ...rails.context_budget import (
     ContextBudgetBreakdown,
     ContextBudgetInput,
+    ContextBudgetLimits,
     REGISTERED_SPECIAL_TOKEN_RESERVE,
     assess_context_budget,
 )
@@ -2025,6 +2026,17 @@ class FlightRuntime:
         payload_bytes = json.dumps(
             list(messages), ensure_ascii=False, sort_keys=True
         ).encode("utf-8")
+        configured_limits = baseline_values.get("context_budget_limits")
+        limits = (
+            None
+            if configured_limits is None
+            else ContextBudgetLimits.from_config(
+                configured_limits,
+                serving_slot_limit_tokens=int(
+                    self._adapter.serving_geometry()["slot_tokens"]
+                ),
+            )
+        )
         receipts: list[Mapping[str, object]] = []
         for phase_name in phase_names:
             phase_bytes = phase_payloads.get(phase_name, payload_bytes)
@@ -2040,7 +2052,7 @@ class FlightRuntime:
                 ),
             )
             candidate = ContextBudgetInput.from_payload(phase_bytes, breakdown=breakdown)
-            decision = assess_context_budget(candidate)
+            decision = assess_context_budget(candidate, limits=limits)
             if decision.decision.value != "ALLOW":
                 # A pre-flight estimate has no live compaction mechanism to
                 # apply, so COMPACT_REQUIRED is just as fail-closed here as

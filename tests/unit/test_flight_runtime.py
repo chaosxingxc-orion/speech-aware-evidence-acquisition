@@ -36,6 +36,7 @@ from speech_aware_evidence_acquisition.core.flight.runtime import (
     FlightStageOrderError,
 )
 from speech_aware_evidence_acquisition.e0.d2_leakage import ARM_VISIBLE_FIELDS
+from speech_aware_evidence_acquisition.rails.context_budget import ContextBudgetRefusal
 from speech_aware_evidence_acquisition.rails.task_adapter import TaskAdapter
 
 # ---------------------------------------------------------------------------
@@ -4473,3 +4474,53 @@ def test_artifact_common_runtime_closes_with_worker_policy_and_zero_score_jobs(
         and row["artifact_role"] == "training-feedback-proposal"
         for row in rows
     )
+
+
+class _ConfiguredWideBudgetFakeAdapter(_FakeAdapter):
+    SERVING_SLOTS = 2
+    SERVING_SLOT_TOKENS = 49_152
+    SERVING_MAX_TOKENS = 2_048
+
+
+def test_preflight_uses_explicit_geometry_bound_context_budget_and_keeps_fit_check(
+    tmp_path, monkeypatch
+):
+    runtime = _make_runtime(
+        tmp_path,
+        adapter_cls=_ConfiguredWideBudgetFakeAdapter,
+        token_counter=lambda _payload: 32_789,
+        config_kwargs={
+            "baseline_extra": {
+                "context_budget_limits": {
+                    "slot_limit_tokens": 49_152,
+                    "operational_reserve_tokens": 8_192,
+                }
+            }
+        },
+    )
+    fit_receipt = {"actual_request_fit": "still-required"}
+    monkeypatch.setattr(runtime, "_verify_phase_prompt_fit", lambda: fit_receipt)
+
+    receipt = runtime.preflight()
+
+    assert receipt["phase_prompt_fit"] == fit_receipt
+    assert receipt["prompt_budget"][0]["decision"] == "ALLOW"
+    assert receipt["prompt_budget"][0]["slot_limit_tokens"] == 49_152
+
+
+def test_preflight_refuses_context_budget_limit_that_differs_from_geometry(tmp_path):
+    runtime = _make_runtime(
+        tmp_path,
+        adapter_cls=_ConfiguredWideBudgetFakeAdapter,
+        config_kwargs={
+            "baseline_extra": {
+                "context_budget_limits": {
+                    "slot_limit_tokens": 32_768,
+                    "operational_reserve_tokens": 8_192,
+                }
+            }
+        },
+    )
+
+    with pytest.raises(ContextBudgetRefusal, match="serving geometry"):
+        runtime.preflight()

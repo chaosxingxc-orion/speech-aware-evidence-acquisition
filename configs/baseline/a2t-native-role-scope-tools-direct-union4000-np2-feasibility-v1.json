@@ -1,5 +1,9 @@
 {
   "arm": "speech-feature-query",
+  "context_budget_limits": {
+    "operational_reserve_tokens": 8192,
+    "slot_limit_tokens": 49152
+  },
   "evidence_mismatch": false,
   "evidence_source": "none",
   "knowledge_snapshot_relpath": "prepared/SAEA-A2T-PARAMETER-MEANING-KNOWLEDGE-V1/knowledge-snapshot.json",

@@ -1,5 +1,9 @@
 {
   "arm": "speech-feature-query-native-tools",
+  "context_budget_limits": {
+    "operational_reserve_tokens": 8192,
+    "slot_limit_tokens": 49152
+  },
   "evidence_mismatch": false,
   "evidence_source": "none",
   "knowledge_stores": {

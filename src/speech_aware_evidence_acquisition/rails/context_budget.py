@@ -12,6 +12,7 @@ from enum import Enum
 import hashlib
 import json
 import re
+from typing import Mapping
 
 GGUF_DECLARED_CONTEXT_TOKENS = 65_536
 SERVER_WIDE_CONTEXT_TOKENS = 65_536
@@ -53,6 +54,68 @@ def _checked_sum(values: tuple[int, ...], *, field: str) -> int:
             raise ContextBudgetRefusal(f"{field} causes accounting overflow")
         total += value
     return total
+
+
+@dataclass(frozen=True)
+class ContextBudgetLimits:
+    """Validated opt-in limits bound to one composed serving geometry."""
+
+    slot_limit_tokens: int
+    operational_reserve_tokens: int = OPERATIONAL_RESERVE_TOKENS
+
+    def __post_init__(self) -> None:
+        slot_limit = _positive_integer(
+            self.slot_limit_tokens, field="slot_limit_tokens"
+        )
+        reserve = _positive_integer(
+            self.operational_reserve_tokens,
+            field="operational_reserve_tokens",
+        )
+        if slot_limit > GGUF_DECLARED_CONTEXT_TOKENS:
+            raise ContextBudgetRefusal(
+                "slot_limit_tokens exceeds the GGUF declared context limit"
+            )
+        if reserve < OPERATIONAL_RESERVE_TOKENS:
+            raise ContextBudgetRefusal(
+                "operational reserve cannot be lower than the registered reserve"
+            )
+        if reserve >= slot_limit:
+            raise ContextBudgetRefusal(
+                "operational reserve must be smaller than slot_limit_tokens"
+            )
+
+    @classmethod
+    def from_config(
+        cls,
+        config: object,
+        *,
+        serving_slot_limit_tokens: int,
+    ) -> "ContextBudgetLimits":
+        """Parse an exact mapping and bind its slot limit to the adapter."""
+
+        if not isinstance(config, Mapping):
+            raise ContextBudgetRefusal(
+                "context_budget_limits must be an explicit mapping"
+            )
+        expected = {"slot_limit_tokens", "operational_reserve_tokens"}
+        if set(config) != expected:
+            raise ContextBudgetRefusal(
+                "context_budget_limits must contain exact fields "
+                "slot_limit_tokens and operational_reserve_tokens"
+            )
+        serving_limit = _positive_integer(
+            serving_slot_limit_tokens, field="serving geometry slot limit"
+        )
+        limits = cls(
+            slot_limit_tokens=config["slot_limit_tokens"],
+            operational_reserve_tokens=config["operational_reserve_tokens"],
+        )
+        if limits.slot_limit_tokens != serving_limit:
+            raise ContextBudgetRefusal(
+                "context budget slot_limit_tokens must equal the serving geometry "
+                "slot limit"
+            )
+        return limits
 
 
 def _validate_sha256(value: object, *, field: str) -> str:
@@ -244,8 +307,12 @@ def _expected_decision(
     *,
     operational_margin_tokens: int,
     compaction_pass: int,
+    four_thirds_margin_numerator: int | None = None,
 ) -> ContextBudgetDecision:
-    if operational_margin_tokens >= 0:
+    if operational_margin_tokens >= 0 and (
+        four_thirds_margin_numerator is None
+        or four_thirds_margin_numerator >= 0
+    ):
         return ContextBudgetDecision.ALLOW
     if compaction_pass < MAX_COMPACTION_PASSES:
         return ContextBudgetDecision.COMPACT_REQUIRED
@@ -265,6 +332,7 @@ class ContextBudgetDecisionReceipt:
     dropped_identifiers: tuple[str, ...]
     slot_limit_tokens: int = PER_SLOT_LIMIT_TOKENS
     operational_reserve_tokens: int = OPERATIONAL_RESERVE_TOKENS
+    _configuration_bound: bool = False
 
     def __post_init__(self) -> None:
         _validate_sha256(self.payload_sha256, field="payload_sha256")
@@ -273,14 +341,24 @@ class ContextBudgetDecisionReceipt:
         if not isinstance(self.decision, ContextBudgetDecision):
             raise ContextBudgetRefusal("decision must be a ContextBudgetDecision")
         _validate_compaction(self.compaction_pass, self.dropped_identifiers)
-        if self.slot_limit_tokens != PER_SLOT_LIMIT_TOKENS:
-            raise ContextBudgetRefusal("slot_limit_tokens drifted from the registered limit")
-        if self.operational_reserve_tokens != OPERATIONAL_RESERVE_TOKENS:
-            raise ContextBudgetRefusal(
-                "operational_reserve_tokens drifted from the registered floor"
+        if type(self._configuration_bound) is not bool:
+            raise ContextBudgetRefusal("configuration-bound marker must be boolean")
+        if self._configuration_bound:
+            ContextBudgetLimits(
+                slot_limit_tokens=self.slot_limit_tokens,
+                operational_reserve_tokens=self.operational_reserve_tokens,
             )
-        physical = PER_SLOT_LIMIT_TOKENS - self.breakdown.required_window_tokens
-        operational = physical - OPERATIONAL_RESERVE_TOKENS
+        else:
+            if self.slot_limit_tokens != PER_SLOT_LIMIT_TOKENS:
+                raise ContextBudgetRefusal(
+                    "slot_limit_tokens drifted from the registered limit"
+                )
+            if self.operational_reserve_tokens != OPERATIONAL_RESERVE_TOKENS:
+                raise ContextBudgetRefusal(
+                    "operational_reserve_tokens drifted from the registered floor"
+                )
+        physical = self.slot_limit_tokens - self.breakdown.required_window_tokens
+        operational = physical - self.operational_reserve_tokens
         if self.physical_margin_tokens != physical:
             raise ContextBudgetRefusal("physical_margin_tokens is inconsistent")
         if self.operational_margin_tokens != operational:
@@ -288,6 +366,12 @@ class ContextBudgetDecisionReceipt:
         expected = _expected_decision(
             operational_margin_tokens=operational,
             compaction_pass=self.compaction_pass,
+            four_thirds_margin_numerator=(
+                self.slot_limit_tokens * 3
+                - self.breakdown.required_window_tokens * 4
+                if self._configuration_bound
+                else None
+            ),
         )
         if self.decision is not expected:
             raise ContextBudgetRefusal("decision is inconsistent with exact accounting")
@@ -319,16 +403,35 @@ class ContextBudgetDecisionReceipt:
         return hashlib.sha256(encoded).hexdigest()
 
 
-def assess_context_budget(candidate: ContextBudgetInput) -> ContextBudgetDecisionReceipt:
-    """Apply the fixed per-slot operational-headroom admission relation."""
+def assess_context_budget(
+    candidate: ContextBudgetInput,
+    *,
+    limits: ContextBudgetLimits | None = None,
+) -> ContextBudgetDecisionReceipt:
+    """Apply legacy limits or an explicit serving-geometry-bound limit."""
 
     if not isinstance(candidate, ContextBudgetInput):
         raise ContextBudgetRefusal("candidate must be a ContextBudgetInput")
-    physical_margin = PER_SLOT_LIMIT_TOKENS - candidate.breakdown.required_window_tokens
-    operational_margin = physical_margin - OPERATIONAL_RESERVE_TOKENS
+    if limits is not None and not isinstance(limits, ContextBudgetLimits):
+        raise ContextBudgetRefusal("limits must be ContextBudgetLimits or None")
+    slot_limit = (
+        PER_SLOT_LIMIT_TOKENS if limits is None else limits.slot_limit_tokens
+    )
+    reserve = (
+        OPERATIONAL_RESERVE_TOKENS
+        if limits is None
+        else limits.operational_reserve_tokens
+    )
+    physical_margin = slot_limit - candidate.breakdown.required_window_tokens
+    operational_margin = physical_margin - reserve
     decision = _expected_decision(
         operational_margin_tokens=operational_margin,
         compaction_pass=candidate.compaction_pass,
+        four_thirds_margin_numerator=(
+            slot_limit * 3 - candidate.breakdown.required_window_tokens * 4
+            if limits is not None
+            else None
+        ),
     )
     return ContextBudgetDecisionReceipt(
         payload_sha256=candidate.payload_sha256,
@@ -338,4 +441,7 @@ def assess_context_budget(candidate: ContextBudgetInput) -> ContextBudgetDecisio
         operational_margin_tokens=operational_margin,
         compaction_pass=candidate.compaction_pass,
         dropped_identifiers=candidate.dropped_identifiers,
+        slot_limit_tokens=slot_limit,
+        operational_reserve_tokens=reserve,
+        _configuration_bound=limits is not None,
     )
