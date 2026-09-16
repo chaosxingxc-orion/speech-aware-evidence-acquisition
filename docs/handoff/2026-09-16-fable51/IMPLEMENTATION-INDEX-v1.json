@@ -1,0 +1,15 @@
+{
+  "schema": "saea-fable51-handoff-implementation-index-v1",
+  "recorded_at_utc": "2026-09-16T18:07:24.448839+00:00",
+  "implementation_commit": "e4b8798b4c023c8d0ff5f24ad596d2820da808f9",
+  "files": {
+    "docs/handoff/2026-09-16-fable51/CONTINUATION-BRIEF.md": "faaa915373b7bf9a3d96b411d158c93751b2a5204b5190e307385b9470542232",
+    "docs/handoff/2026-09-16-fable51/IMPLEMENTATION-UPDATE.md": "d060c825cdcd9bdcd7b671711fb681ffaf826ebdce5d7bd6263aaa48ada20799",
+    "docs/handoff/2026-09-16-fable51/IMPLEMENTATION-VALIDATION.json": "fb8f521d253cd8d861e47564d4f86a36988d4244af0e534e4e1b538cbe89a0ad",
+    "docs/handoff/2026-09-16-fable51/LATEST.md": "a53b1acefda98d000042df492f03ab57678cbdb6d6e929ba0285ef1faa69d1ee",
+    "docs/superpowers/plans/experiment-handoff/STATUS-163.md": "d94faf1eb2f2c76987a9d20e19341620c52ea586caa130e0e0166ee35f8ab2d8",
+    "docs/superpowers/plans/experiment-handoff/state.json": "20ba5adc8d24e0e2bb1c21ff07f8ba0abcd2deb203ae6a274794c6d879775308",
+    "docs/superpowers/plans/experiment-handoff/README.md": "2739302209f11de1741274d5f2d4a1502113c23db5d03ce1da129957d7da8168"
+  },
+  "supersedes_routing": "DIAGNOSIS-INDEX-v1.json; preserve historical capture hashes."
+}

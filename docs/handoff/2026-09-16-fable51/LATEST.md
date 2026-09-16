@@ -9,7 +9,8 @@ It made 6,645 model contacts. One actual Reviewer request needed 24,878 tokens i
 manifest or score exists. Do not read partial quality, retry, splice outputs or activate the
 held replica. The direct comparator remains complete, first-scored and quality-unreleased.
 
-Read [the terminal report](TERMINAL-UPDATE-20260916.md), then
+Read [the continuation brief](CONTINUATION-BRIEF.md) for the current consolidated handoff,
+[the terminal report](TERMINAL-UPDATE-20260916.md), then
 [TO-FABLE51.md](TO-FABLE51.md) and
 [FUTURE-EXPERIMENT-DESIGNS.md](FUTURE-EXPERIMENT-DESIGNS.md).
 The original research findings and design alternatives remain useful; their branch is now
@@ -26,3 +27,12 @@ Record a separate takeover receipt when assuming coordination.
 ## Subsequent source-bound diagnosis
 
 Read [the context root-cause report](CONTEXT-ROOT-CAUSE-20260916.md) after the terminal report. Two already-visible knowledge lookups repeat full bodies; the second returns 21 blocks totaling 38,938 bytes already in Reviewer input. The next bounded implementation is a source-bound single-copy request projection with explicit references, followed by separately admitted validation. This adds no GPU authorization and does not reopen the closed flight.
+
+## Verified implementation successor
+
+The opt-in shared reference projection is implemented at e4b8798b4c023c8d0ff5f24ad596d2820da808f9.
+Read [IMPLEMENTATION-UPDATE.md](IMPLEMENTATION-UPDATE.md) and its validation receipt.
+The WSL regression suite passed 309 tests with one Windows-only skip; new projection
+coverage is 92%. No model, tokenizer or scoring contact occurred. Historical configs and
+the failed frozen source remain unchanged. Next is takeover and a distinct prospective
+proof/design decision, not automatic full-roster recovery.

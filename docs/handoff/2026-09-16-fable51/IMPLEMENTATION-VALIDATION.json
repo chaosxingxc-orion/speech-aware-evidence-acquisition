@@ -1,0 +1,79 @@
+{
+  "schema": "saea-native-reference-model-free-validation-v1",
+  "recorded_at_utc": "2026-09-16T18:06:54.509810+00:00",
+  "implementation_commit": "e4b8798b4c023c8d0ff5f24ad596d2820da808f9",
+  "implementation_worktree": "/home/chao/saea-worktrees/native-knowledge-reference-projection-v1",
+  "python": "/home/chao/.venvs/speechrl/bin/python",
+  "import_path": "/home/chao/saea-worktrees/native-knowledge-reference-projection-v1/src",
+  "environment": "WSL Ubuntu-24.04",
+  "tests": {
+    "files": [
+      "tests/unit/test_native_evidence_projection.py",
+      "tests/unit/test_native_evidence_projection_transport.py",
+      "tests/unit/test_native_framework_history.py",
+      "tests/unit/test_native_history_projection.py",
+      "tests/unit/test_native_batch_rejection_history.py",
+      "tests/unit/test_native_tool_authority.py",
+      "tests/unit/test_native_target_knowledge_tools.py",
+      "tests/unit/test_llama_server_transport.py",
+      "tests/unit/test_raw_native_transport.py",
+      "tests/unit/test_configured_transport.py",
+      "tests/unit/test_native_contact_fit.py",
+      "tests/unit/test_engineering_base_check.py",
+      "tests/unit/test_native_request_regressions.py"
+    ],
+    "passed": 309,
+    "skipped": 1,
+    "skip_reason": "Existing Windows junction probe is inapplicable on WSL/Linux.",
+    "warnings": 5,
+    "warning_scope": "Existing third-party deprecations.",
+    "seconds": 19.32,
+    "stdout_sha256": "3d629548280b4e3bd6ee3dc8900b0f94fda2fb3d2ef59e7149a3f724cedcbd0e"
+  },
+  "projection_coverage": {
+    "covered_lines": 90,
+    "num_statements": 97,
+    "percent_covered": 91.60839160839161,
+    "percent_covered_display": "92",
+    "missing_lines": 7,
+    "excluded_lines": 0,
+    "percent_statements_covered": 92.78350515463917,
+    "percent_statements_covered_display": "93",
+    "num_branches": 46,
+    "num_partial_branches": 5,
+    "covered_branches": 41,
+    "missing_branches": 5,
+    "percent_branches_covered": 89.1304347826087,
+    "percent_branches_covered_display": "89"
+  },
+  "checks": {
+    "ruff": "PASS",
+    "engineering_base_check": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "source_files": {
+    "scripts/checks/engineering_base_check.py": "e1f5d4b31cebcc9c372d6f37650effc68266ee62bc061cfc258f5732f73dc2c7",
+    "src/speech_aware_evidence_acquisition/core/base.py": "ae87b144441c2b661f16d64e9d4abc649fb66eb4062a9f271a8121b087868a6a",
+    "src/speech_aware_evidence_acquisition/core/model/native_evidence_projection.py": "37a878554fa9ec3976477ff33859fcaa2e7b907ff0fd1d3c7b1aff14563a41bc",
+    "src/speech_aware_evidence_acquisition/core/model/native_framework_history.py": "1c2f8cc98beca344f38ea3a1da0b76404d183619539d84d1ce4b4ce1bd26ed83",
+    "src/speech_aware_evidence_acquisition/core/model/transport.py": "58538aed282cb776d49182a2ba271ec45f2e68da767aa6d520f72c653acad6dd",
+    "src/speech_aware_evidence_acquisition/core/tracing.py": "77a307e2dba8bc2fdf819f5016b54e7ac11194563a4f3dba562df68a03d1c5e6",
+    "tests/unit/test_engineering_base_check.py": "c79af9779eff67b5f7cfec1943835ad81252bbcb9b79528f95073be67309d6ee",
+    "tests/unit/test_native_evidence_projection.py": "87889c260092d6031b469227ea826b2616c4efb6878982c9033a4447ed647c6b",
+    "tests/unit/test_native_evidence_projection_transport.py": "980cd6aa2b0c2c3519c01c7854bd6f29d4afe83a1bfa47e91171d1b595378e9b"
+  },
+  "boundary": {
+    "model_contacts": 0,
+    "tokenizer_contacts": 0,
+    "speech_tool_contacts": 0,
+    "official_scoring_runs": 0,
+    "task_quality_read": false,
+    "historical_experiment_configs_changed": false,
+    "failed_source_modified": false
+  },
+  "limits": [
+    "Synthetic proof is not real-token capacity or model understanding.",
+    "No full system performance or failed-flight recovery entitlement.",
+    "No new experiment ExecutionPlan was created."
+  ]
+}

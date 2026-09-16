@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 162,
+  "generation": 163,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "5d54ef194f44be16efac277d146d04e63244694b",
-  "updated_at_utc": "2026-09-16T17:39:22.968018+00:00",
-  "next_action": "Read CONTEXT-ROOT-CAUSE-20260916.md after LATEST.md. Root verified that two already-visible target lookups repeat 3 and 21 knowledge bodies across base evidence and tool-return surfaces. Implement and synthetically validate an opt-in shared single-copy request projection with explicit visible references, preserving canonical observations and historical defaults. Then define a distinct prospective engineering proof; no tokenizer/GPU contact or third recovery is authorized by this diagnosis. Paired quality stays unread.",
+  "snapshot_commit": "e4b8798b4c023c8d0ff5f24ad596d2820da808f9",
+  "updated_at_utc": "2026-09-16T18:06:54.509810+00:00",
+  "next_action": "Read CONTINUATION-BRIEF.md and IMPLEMENTATION-UPDATE.md via LATEST.md. The opt-in shared native knowledge reference projection is implemented and verified with 309 passing WSL tests, one platform skip and 92% new-module coverage. Reconcile takeover and ownership, then define a distinct prospective bounded proof and one scientifically justified successor. No new contacts or third recovery are authorized by implementation. The failed source, unread paired quality and held replica remain preserved.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-GPU-RESUME-2026-09-15",
@@ -24,5 +24,7 @@
   "active_source_commit": "9bf27b28708bb93607138e7bcd1eacb66eab3f08",
   "active_source_worktree": "/home/chao/saea-worktrees/slurp-typed-context-full-recovery-v1",
   "current_flight_status": "CLOSED_SECOND_FAILURE_NO_FURTHER_RECOVERY",
-  "current_terminal_at_utc": "2026-09-16T17:07:37.744607+00:00"
+  "current_terminal_at_utc": "2026-09-16T17:07:37.744607+00:00",
+  "implementation_source_commit": "e4b8798b4c023c8d0ff5f24ad596d2820da808f9",
+  "implementation_worktree": "/home/chao/saea-worktrees/native-knowledge-reference-projection-v1"
 }
