@@ -225,9 +225,12 @@ def validate_native_framework_contact(payload):
 
 
 def project_native_framework_history(
-    *, payload, messages, state_texts, evidence_projection=None, receipt_sink=None,
+    *, payload, messages, state_texts, evidence_projection=None,
+    projection_context=None, receipt_sink=None,
 ):
     """Return a validated full wire sequence, or None for the historical path."""
+    if evidence_projection is None and projection_context is not None:
+        _refuse("projection context requires an evidence projection")
     validated = validate_native_framework_contact(payload)
     if validated is None:
         if evidence_projection is not None:
@@ -239,6 +242,7 @@ def project_native_framework_history(
             _refuse("evidence projection requires a receipt sink")
         from ..base import CoreError, NATIVE_EVIDENCE_PROJECTIONS
         from . import native_evidence_projection  # noqa: F401
+        from . import native_slot_binding_view  # noqa: F401
 
         if not isinstance(evidence_projection, str) or not evidence_projection:
             _refuse("evidence projection must name a registered policy")
@@ -246,6 +250,31 @@ def project_native_framework_history(
             projector = NATIVE_EVIDENCE_PROJECTIONS.resolve(evidence_projection)
         except CoreError as exc:
             raise FrozenCoreError("native framework history: unknown evidence projection") from exc
+        validator = getattr(projector, "validate_context", None)
+        if validator is None:
+            if projection_context is not None:
+                _refuse(
+                    f"evidence projection {evidence_projection!r} does not accept "
+                    "a projection context"
+                )
+        else:
+            if not callable(validator):
+                _refuse(
+                    f"evidence projection {evidence_projection!r} has a non-callable "
+                    "validate_context hook"
+                )
+            if projection_context is None:
+                _refuse(
+                    f"evidence projection {evidence_projection!r} requires a "
+                    "projection context"
+                )
+            try:
+                validator(projection_context)
+            except ValueError as error:
+                raise FrozenCoreError(
+                    "native framework history: projection context is invalid: "
+                    f"{error}"
+                ) from error
     contract, selected, source_ids = validated
     history = payload["history"]
     framework = contract["messages"]
@@ -308,8 +337,13 @@ def project_native_framework_history(
             if parts:
                 rendered.append({"role": "user", "content": parts})
     if projector is not None:
-        rendered, receipt = projector(
-            payload=payload, messages=rendered, local_results=tuple(local_results),
-        )
+        projector_kwargs = {
+            "payload": payload,
+            "messages": rendered,
+            "local_results": tuple(local_results),
+        }
+        if projection_context is not None:
+            projector_kwargs["projection_context"] = projection_context
+        rendered, receipt = projector(**projector_kwargs)
         receipt_sink(receipt)
     return rendered, list(packet_by_id.values())

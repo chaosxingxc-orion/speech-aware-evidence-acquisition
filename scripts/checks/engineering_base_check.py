@@ -78,6 +78,7 @@ ADAPTER_LINE_BUDGET = 260
 # exists to catch, and must NOT be mistaken for a real registration.
 CANONICAL_REGISTRY_FILES = (
     f"{PACKAGE_ROOT}/core/model/native_evidence_projection.py",
+    f"{PACKAGE_ROOT}/core/model/native_slot_binding_view.py",
     f"{PACKAGE_ROOT}/core/policies.py",
     f"{PACKAGE_ROOT}/core/evidence.py",
     f"{PACKAGE_ROOT}/core/scorers.py",
