@@ -1,0 +1,78 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "prepare-supply"
+      ],
+      "attempt_id": "attempt-slurp-native-typed-context-tool-rejection-proof4-generation-v1",
+      "baseline_fragment": "slurp-native-typed-context-tool-rejection-proof4-v1",
+      "cell_id": "slurp-native-typed-context-tool-rejection-proof4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Registered scoreless four-row engineering worker; retain scorer declaration but defer all scoring.",
+        "requirements": [
+          {
+            "expected_decision_id": "slurp-typed-context-tool-rejection-proof4-admission-v2",
+            "kind": "decision",
+            "relpath": "coordination/slurp-typed-context-vs-direct-v1/tool-rejection-proof4-admission-v2.json",
+            "sha256": "43037306fafa12fc70e58f89ca978dccda779f655b2eeef0b0f3a9c19afe8a9f"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-TYPED-CONTEXT-TOOL-REJECTION-PROOF4-V1/phase-supply-v2.json",
+            "sha256": "5b863b0bda8d0e9144e8d5ab6dcaca4f809c4ff03998a3abd44ca3ed143cf736"
+          }
+        ],
+        "state": "ready"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-TYPED-CONTEXT-TOOL-REJECTION-PROOF4-V1"
+    }
+  ],
+  "date": "2026-09-16",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-NATIVE-TYPED-CONTEXT-TOOL-REJECTION-PROOF4-V1",
+  "failure_policy": "Stop and preserve on failure; no automatic restart, prefix splice, prompt or geometry change. No retry or task-quality score under this engineering registration.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_analytical_tool_calls_cap": 16,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-typed-context-paired-experiment-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "First four rows in the already registered exposed TRAIN A1080 ordered roster. Metadata-only deterministic selection; no quality screening.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Engineering proof on a fixed four-row subset of exposed TRAIN A; preserve all current native roles, prompts, tools, knowledge, speech and decoding. No task-quality claim.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2"
+}

@@ -1,0 +1,43 @@
+{
+  "cell": "slurp-native-typed-context-tool-rejection-proof4-v1",
+  "composed_config_hash": "c10453ba819ed8069d0dc88b864b49f6ccb1c2247f47a6711a4d61a4b8cc8de6",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-typed-context-tool-rejection-proof4-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "protocol_hash": "9fb3f200ba31882c487e29c6218587399db66a78e775de2bbf62fafc1b21b8a1",
+    "run_id": "SAEA-SLURP-NATIVE-TYPED-CONTEXT-TOOL-REJECTION-PROOF4-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-typed-context-tool-rejection-proof4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_analytical_tool_calls_cap": 16,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-16-slurp-typed-context-system-recovery-v1/proof4-protocol-registered-v1.json",
+    "sha256": "208646e021b86a2508478f570c8c04521ce6e02363b108b33d4c6bf7e89bfc4f"
+  },
+  "quality_read_gate": "Read structural lifecycle metadata only. Do not read task answers, references, current direct quality or system partial quality; no effectiveness claim.",
+  "registered_at_utc": "2026-09-16T11:31:36.500560+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-typed-context-vs-direct-v1/tool-rejection-proof4-admission-v1.json",
+    "sha256": "3abb040bbd61b3f90070c50baa301f11d96fe501ddd335c96028915215fa06d6"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/slurp-typed-context-system-recovery-v1"
+}

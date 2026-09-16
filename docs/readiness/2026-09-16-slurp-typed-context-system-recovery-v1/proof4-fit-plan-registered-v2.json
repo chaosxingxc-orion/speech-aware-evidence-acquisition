@@ -1,0 +1,48 @@
+{
+  "cell": "slurp-native-typed-context-tool-rejection-proof4-v1",
+  "composed_config_hash": "1b32c2dd9023a40838a787fff42dc7553d5c3b8dd6d84a10a5a1c7e055732d9b",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-typed-context-tool-rejection-proof4-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 176,
+    "planned_speech_audio_seconds": 117,
+    "protocol_hash": "466937e40a944aad806d75b183947bca94d59412f854b35f263c286e8bfaa7bc",
+    "run_id": "SAEA-SLURP-NATIVE-TYPED-CONTEXT-TOOL-REJECTION-PROOF4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared lease_cli plus standalone shared worker; no campaign or official scoring invocation. After structural verification, finalize the attempt with its engineering receipt through the existing AttemptHandle API.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-typed-context-tool-rejection-proof4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_analytical_tool_calls_cap": 16,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-16-slurp-typed-context-system-recovery-v1/proof4-protocol-registered-v2.json",
+    "sha256": "8ba1a5cb63f3cd32a01db67d51fd3b6e6d06c60659c24afccb11b89fb1e5eadd"
+  },
+  "quality_read_gate": "Read structural lifecycle metadata only. Do not read task answers, references, current direct quality or system partial quality; no effectiveness claim.",
+  "registered_at_utc": "2026-09-16T11:37:03.419929+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-typed-context-vs-direct-v1/tool-rejection-proof4-admission-v2.json",
+    "sha256": "43037306fafa12fc70e58f89ca978dccda779f655b2eeef0b0f3a9c19afe8a9f"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/slurp-typed-context-system-recovery-v1",
+  "supersedes_unexecuted_plan": {
+    "relpath": "docs/readiness/2026-09-16-slurp-typed-context-system-recovery-v1/proof4-fit-plan-registered-v1.json",
+    "sha256": "a387c9c90105d5d20853d1e93870aca06c50042f7b495b88a7595f4fe92d14d2"
+  }
+}
