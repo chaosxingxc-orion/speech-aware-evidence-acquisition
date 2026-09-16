@@ -1,22 +1,25 @@
-# Current continuation: September 15
+# Current continuation: September 16
 
-Read [STATUS-139](STATUS-139.md): the frozen SLURP broad/factored TRAIN-A
-campaign remains live under worker PID 293426 and server PID 293153 on its same
-np4 service. Its exact post-seal metadata is bound for 1,080 rows, 125 speakers
-and 18 scenarios. Model calls do not establish completed rows; treatment
-quality remains unread. See
-[the owner resume directive](OWNER-GPU-RESUME-2026-09-15.md).
+Read [STATUS-140](STATUS-140.md): the complete SLURP analysis is closed without
+advancement or a successor. Audio2Tool's np2 CPU feasibility route remains
+blocked by a shared coarse limit pending an authorized bounded fix and later
+four-row proof. The independently registered E21 direct static fit remains
+live; its GPU is resident for fit materialization, but generation is not active.
+See [the owner resume directive](OWNER-GPU-RESUME-2026-09-15.md).
 
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-139.md](STATUS-139.md) records the running frozen
-SLURP broad/factored TRAIN-A campaign and its exact metadata binding. The
-[post-seal analysis recipe](../../../readiness/2026-09-15-slurp-broad-factored-train-a-analysis-recipe-v1.json)
-remains source-bound pending a complete seal. The Audio2Tool scope-tools pair
-remains registered and source-frozen until the SLURP generation seal and
-custody boundary. The [Earnings21 direct-fit registration](../../../readiness/2026-09-15-e21-native-window-direct-fit-registration-v1/README.md)
-is integrated and source-frozen for all 1,593 windows and 4,780 endpoints.
-Actual fit and every later E21 contact remain pending their own gates.
+**Latest execution:** [STATUS-140.md](STATUS-140.md) records the complete
+SLURP paired decision NOT_ADVANCED_FULL_TASK_GAIN_GATE_FAILED; see the
+[root report](../../../results/2026-09-16-slurp-broad-factored-train-a.md).
+Audio2Tool's corrected ledger and direct preflight pass, but system preflight
+refuses a 34,868-token Perception request against the 32,768-token slot before
+attempt or contact. The np2 feasibility geometry has a 49,152-token slot but
+remains blocked by the shared 32,768-token coarse rail. Root authorized a
+bounded shared configuration-limits fix; it has no GPU proof and requires a
+future four-row proof. The [Earnings21 direct-fit registration](../../../readiness/2026-09-15-e21-native-window-direct-fit-registration-v1/README.md)
+is now the active gate. Its 1,593-unit static fit is materializing, while
+generation remains held pending a final receipt and separate registration.
 
 **Current comparison direction:** [OWNER-SYSTEM-VERSIONS-025.md](OWNER-SYSTEM-VERSIONS-025.md) makes complete model-versus-system task quality primary and allows evidence-guided expansion of system versions. The supplied/withheld knowledge draft is withdrawn. [The current system plan](../../../readiness/2026-09-13-slurp-direct-vs-native-system-plan-v1.md) and [extension sequence](../../../readiness/2026-09-13-finalized-score-reuse-and-system-extension.md) govern the next work.
 
@@ -24,7 +27,7 @@ Actual fit and every later E21 contact remain pending their own gates.
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 139. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 140. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -57,13 +60,22 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-139.md](STATUS-139.md), state.json and
-[OWNER-GPU-RESUME-2026-09-15](OWNER-GPU-RESUME-2026-09-15.md) first. The frozen
-SLURP broad/factored TRAIN-A campaign remains live under worker PID 293426 and
-server PID 293153 on its same np4 service. Exact analysis metadata is bound for
-1,080 rows, 125 speakers and 18 scenarios. Do not infer completed rows from
-model calls. Telemetry before 17:11:58 UTC is missing, treatment quality remains
-unread, and the current campaign alone owns the first complete official score. The earlier G6/E21 campaigns' generation, scoring, fixed analysis and all four settlements
+Read [STATUS-140.md](STATUS-140.md), state.json and
+[OWNER-GPU-RESUME-2026-09-15](OWNER-GPU-RESUME-2026-09-15.md) first. The
+complete SLURP paired decision is NOT_ADVANCED_FULL_TASK_GAIN_GATE_FAILED;
+improvement is not demonstrated, overall harm is not statistically established,
+and no successor is admitted. Audio2Tool's carrier-case correction is valid,
+but system preflight fails before contact because a 34,868-token Perception
+request exceeds its 32,768-token slot. The original path is closed with zero
+generation, fit or model contacts. Its np2 CPU feasibility geometry is blocked
+by the shared hard-coded 32,768-token coarse rail despite its 49,152-token slot.
+Root authorized a bounded shared configuration-limits fix that preserves default
+identity and reserve behavior; there is no GPU proof, and a future four-row
+proof remains required. The independent E21 direct static fit remains live from
+frozen source 1daad5186119b23c3414e36676afb296599dc29f, with a cap of 4,780
+endpoints over 1,593 units. Its GPU is resident for fit materialization, but
+generation is not active; do not infer maximum load. Generation remains held
+pending the fit result and separate final registration. The earlier G6/E21 campaigns' generation, scoring, fixed analysis and all four settlements
 are complete. Those earlier G6 SLURP and E21 system admissions fail their frozen rules. STATUS-044 separately admits the newer SLURP task-agent working baseline for exploration. The newer role-coverage pair is closed under STATUS-046; it is not adopted and cannot be replayed under its exhausted registration.
 The task-scope
 clarification is [OWNER-DATASET-TASKS-010.md](OWNER-DATASET-TASKS-010.md):
@@ -106,11 +118,13 @@ no new test/confirmatory exposure or Stage-3 execution is admitted.
 
 Current knowledge design: [discriminative values](../../../readiness/2026-09-11-discriminative-knowledge-values.md).
 
-Latest handoff: [STATUS-139](STATUS-139.md). The frozen SLURP broad/factored
-TRAIN-A campaign remains live, with exact post-seal metadata bound and treatment
-quality unread. Audio2Tool is source-frozen and awaits the SLURP generation seal
-and custody boundary. Earnings21 stable-source admission exists, and its
-[direct static fit](../../../readiness/2026-09-15-e21-native-window-direct-fit-registration-v1/README.md)
-is integrated and source-frozen; actual fit and later contacts remain gated.
-The queue is SLURP, Audio2Tool, then Earnings21. Preserve completed and failed
-sources. Stable benefit and trajectory-sampling optimization remain incomplete.
+Latest handoff: [STATUS-140](STATUS-140.md) records the complete SLURP
+non-advancement decision, both zero-contact Audio2Tool preflight failures and
+the active E21 static-fit gate. Audio2Tool np2 work is CPU feasibility only; its
+shared limit fix has no GPU proof, and it requires a future four-row proof. The
+[Earnings21 direct static fit](../../../readiness/2026-09-15-e21-native-window-direct-fit-registration-v1/README.md)
+is materializing from its frozen 1,593-unit source; generation remains held
+until fit passes and root completes separate final registration. The current
+final-registration checkout is documentation-only and cannot dispatch.
+Preserve prior historical verdicts and make no causal, stable-benefit or
+training-free RL claim for these queued versions.
