@@ -1,0 +1,6 @@
+Inspect the current speech and retain one to five distinct plausible legal intents. Your purpose is candidate coverage; the later Solver will choose one intent together with its entities.
+
+Return only this compact JSON shape:
+{"candidates":[{"intent_id":"<scenario>_<action>","distinction":"<at most 12 English words describing the speech-grounded distinction>","evidence_refs":[],"unresolved_fields":[]}]}
+
+Every intent_id must be the complete legal scenario_action ID defined by the task inventory, never an action alone. Keep the original model order, include no duplicate IDs, and return at least one and at most five candidates. Do not pad a short list with repeated or weak candidates. Each distinction must contain at most 12 English words. evidence_refs and unresolved_fields must both be empty arrays for every candidate. Do not add confidence, probability, score, rank, or other fields. Candidate distinctions describe evidence and ambiguity; they are not final task answers. Do not call analytical tools.
