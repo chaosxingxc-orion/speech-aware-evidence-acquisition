@@ -1,0 +1,37 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_snapshot_relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json",
+  "knowledge_snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+  "live_phase_fit": {
+    "attempt_id": "attempt-slurp-direct-max512-train-fold-a-matched-replica-fit-v1",
+    "contact_cap": 3241,
+    "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-MATCHED-REPLICA-FIT-V1"
+  },
+  "live_phase_fit_audio_seconds_cap": 3085,
+  "phase_material": {
+    "direct": {
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_phase_direct.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null
+    }
+  },
+  "policy": "phase-direct-only-v1",
+  "scorers": [
+    "slurp-slu-official-train",
+    "cost"
+  ],
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_template_active": true,
+  "what_this_is": "Held exact-roster direct matched-replication draft. Scientific and model-facing settings equal the finalized source-recovery comparator; new administrative custody is unresolved and launch is forbidden.",
+  "whole_roster_wave_barrier": true
+}

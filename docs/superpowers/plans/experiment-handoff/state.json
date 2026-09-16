@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 157,
+  "generation": 158,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -11,8 +11,8 @@
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
   "snapshot_commit": "9bf27b28708bb93607138e7bcd1eacb66eab3f08",
-  "updated_at_utc": "2026-09-16T12:20:00.963757+00:00",
-  "next_action": "Read STATUS-157.md. Full1080 system recovery PID425664/exec34947 verified live. Postseal provenance complete; do not expand preparation. Wait for complete seal and first score, then root paired release and shared analysis. Explicitly run analyze_verified_native_tool_exposure after native source verification. Preserve frozen9bf27b28 and completed direct source/score; no partial quality read or automatic restart.",
+  "updated_at_utc": "2026-09-16T12:37:50.428220+00:00",
+  "next_action": "Read STATUS-158.md and retain STATUS-157 postseal instructions. Current full1080 recovery remains the only authorized generation (PID425664/exec34947). Wait for full seal/first score, then root paired release and shared analysis including native_tool_exposure. A conditional exact-roster replica draft is prepared but held; admit it only after a complete valid positive predecessor verdict. Never restart on observation timeout.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-GPU-RESUME-2026-09-15",

@@ -1,0 +1,144 @@
+{
+  "activation_order_correction": "Freeze the final source after configuration, preparation and registration bindings; do not freeze an intermediate draft.",
+  "analysis_binding": {
+    "relpath": "docs/readiness/2026-09-16-slurp-system-vs-direct-train-a-analysis-held-v1.json",
+    "sha256": "e0d68d359c2251b638627fdbb53c1f9f19f540d18f43244ccc810f85dfe72079"
+  },
+  "at_utc": "2026-09-16T12:36:36.177352+00:00",
+  "current_pair_quality_read": false,
+  "decision": "STATIC_DRAFT_ACCEPTED_EXECUTION_HELD",
+  "launch_authorized": false,
+  "model_fragment": {
+    "relpath": "configs/model/q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1.json",
+    "sha256": "d1a644d80646de9e0e6b5799fb98e2151de7e03b1b14c5f260d16f77f8a77f09"
+  },
+  "model_tool_scorer_contacts": 0,
+  "ordered_roster": {
+    "count": 1080,
+    "encoding": "UTF-8 compact JSON array, preserved order",
+    "same_as_predecessors": true,
+    "sha256": "1a4e4772342c5beaec47f883560833b5f355d9bdd2f65074346892f8cf9ee429",
+    "unique": 1080
+  },
+  "schema": "saea-root-held-replication-review-v1",
+  "scientific_dependency": "Current complete pair must pass the unchanged registered primary rule and root source/diagnostic review before a distinct prospective admission.",
+  "scientific_field_checks": {
+    "direct_baseline": {
+      "actual_changed_fields": [
+        "live_phase_fit.attempt_id",
+        "live_phase_fit.run_id",
+        "what_this_is"
+      ],
+      "no_other_fields_changed": true,
+      "source": {
+        "relpath": "configs/baseline/slurp-direct-max512-train-fold-a-source-recovery-v1.json",
+        "sha256": "aa23040ae428ebc4d8293ad8bbc055716323d45187998bea9f274a1fadd09952"
+      },
+      "template": {
+        "relpath": "direct-baseline-template.json",
+        "sha256": "ad6cb61f40d535c5571f7eedec53d2a52f7434c4fe15884d32c1d2bcce68ff39"
+      }
+    },
+    "direct_experiment": {
+      "actual_changed_fields": [
+        "cells[0].allowed_execution_stages",
+        "cells[0].attempt_id",
+        "cells[0].baseline_fragment",
+        "cells[0].cell_id",
+        "cells[0].readiness.reason",
+        "cells[0].readiness.requirements",
+        "cells[0].readiness.state",
+        "cells[0].run_id",
+        "experiment_id",
+        "failure_policy",
+        "purpose"
+      ],
+      "no_other_fields_changed": true,
+      "source": {
+        "relpath": "configs/experiment/slurp-direct-max512-train-fold-a-source-recovery-v1.json",
+        "sha256": "64dd3b39d70cb83b344e694820150d70520885ab97ebb41a588c3b4359da5429"
+      },
+      "template": {
+        "relpath": "direct-experiment-template.json",
+        "sha256": "ef36245b39151e8d4c46c88749581f6a6f638269f5647ea3b7bf0250df8bed7f"
+      }
+    },
+    "system_baseline": {
+      "actual_changed_fields": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "no_other_fields_changed": true,
+      "source": {
+        "relpath": "configs/baseline/slurp-native-typed-role-context-train-fold-a-recovery-v1.json",
+        "sha256": "a204d84d24e09e40bf744aeb1e5063ebab1678836efa299895bf444485548926"
+      },
+      "template": {
+        "relpath": "system-baseline-template.json",
+        "sha256": "a03638633f43f6b8c89ac43c6691c3e1c951d51d9e1ef76bcca5535cf46d9a23"
+      }
+    },
+    "system_experiment": {
+      "actual_changed_fields": [
+        "cells[0].allowed_execution_stages",
+        "cells[0].attempt_id",
+        "cells[0].baseline_fragment",
+        "cells[0].cell_id",
+        "cells[0].readiness.depends_on",
+        "cells[0].readiness.reason",
+        "cells[0].readiness.requirements",
+        "cells[0].readiness.state",
+        "cells[0].run_id",
+        "experiment_id",
+        "failure_policy",
+        "purpose"
+      ],
+      "no_other_fields_changed": true,
+      "source": {
+        "relpath": "configs/experiment/slurp-native-typed-role-context-train-fold-a-recovery-v1.json",
+        "sha256": "01b6e788ab3e0917727b82ec2c575626f300fee39f1622378bff11fd03dd27a7"
+      },
+      "template": {
+        "relpath": "system-experiment-template.json",
+        "sha256": "2d5eebf3adc2c27b2a540050d8084ebb48f7ca085ae3f8425c90b0445f012110"
+      }
+    }
+  },
+  "shared_readiness_checks": {
+    "direct": {
+      "check_allowed": true,
+      "held": true,
+      "refused": [
+        "worker",
+        "campaign",
+        "prompt-fit",
+        "prepare-supply"
+      ]
+    },
+    "system": {
+      "check_allowed": true,
+      "held": true,
+      "refused": [
+        "worker",
+        "campaign",
+        "prompt-fit",
+        "prepare-supply"
+      ]
+    }
+  },
+  "source_commit": "9bf27b28708bb93607138e7bcd1eacb66eab3f08",
+  "technical_dependency": "System replica requires its direct replica sealed; direct full scoring may overlap.",
+  "template_files": {
+    "ACTIVATION-CHECKLIST.md": "2a49dfbb947fc3eab5d30a9a1c35a213dbbe30a775183a7191633305c47454c0",
+    "campaign-template.json": "5b8a39f59db65adebbc5607108c9d7499701addb69c5acffd85b26f1d810a2a8",
+    "direct-baseline-template.json": "ad6cb61f40d535c5571f7eedec53d2a52f7434c4fe15884d32c1d2bcce68ff39",
+    "direct-experiment-template.json": "ef36245b39151e8d4c46c88749581f6a6f638269f5647ea3b7bf0250df8bed7f",
+    "held-bindings.json": "35672df3e69264ab61571f7f23f9f920c883a74a2ae42556ee952b78818a0895",
+    "static-verification.json": "47352d22fb7d3d27a20ff6cfa79660d70dd6dff517799abb85370a2be91867bc",
+    "system-baseline-template.json": "a03638633f43f6b8c89ac43c6691c3e1c951d51d9e1ef76bcca5535cf46d9a23",
+    "system-experiment-template.json": "2d5eebf3adc2c27b2a540050d8084ebb48f7ca085ae3f8425c90b0445f012110"
+  }
+}

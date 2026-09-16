@@ -1,0 +1,58 @@
+{
+  "administrative_changes": {
+    "campaign": [
+      "two replica cell and experiment IDs"
+    ],
+    "direct_baseline": [
+      "live_phase_fit.run_id",
+      "live_phase_fit.attempt_id",
+      "what_this_is"
+    ],
+    "direct_experiment": [
+      "cells[0].allowed_execution_stages",
+      "cells[0].attempt_id",
+      "cells[0].baseline_fragment",
+      "cells[0].cell_id",
+      "cells[0].readiness",
+      "cells[0].run_id",
+      "experiment_id",
+      "failure_policy",
+      "purpose"
+    ],
+    "system_baseline": [
+      "native_contact_fit.run_id",
+      "native_contact_fit.attempt_id",
+      "prepared_phase_supply",
+      "what_this_is"
+    ],
+    "system_experiment": [
+      "cells[0].allowed_execution_stages",
+      "cells[0].attempt_id",
+      "cells[0].baseline_fragment",
+      "cells[0].cell_id",
+      "cells[0].readiness",
+      "cells[0].run_id",
+      "experiment_id",
+      "failure_policy",
+      "purpose"
+    ]
+  },
+  "checks": {
+    "analysis_binding_equal": true,
+    "analysis_seed": 20260915,
+    "budgets_equal_predecessors": true,
+    "cross_arm_ordered_ids_equal": true,
+    "direct_ordered_ids_equal": true,
+    "direct_scientific_fields_equal_after_administrative_mask": true,
+    "held_check_only": true,
+    "model_fragments_equal_predecessors": true,
+    "ordered_id_count": 1080,
+    "ordered_ids_sha256": "1a4e4772342c5beaec47f883560833b5f355d9bdd2f65074346892f8cf9ee429",
+    "predecessor_prepared_supply_not_bound": true,
+    "system_depends_on_direct_sealed": true,
+    "system_ordered_ids_equal": true,
+    "system_scientific_fields_equal_after_administrative_mask": true
+  },
+  "schema": "saea-slurp-typed-context-matched-replication-static-verification-v1",
+  "source_commit": "9bf27b28708bb93607138e7bcd1eacb66eab3f08"
+}

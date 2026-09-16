@@ -1,0 +1,116 @@
+{
+  "analysis": {
+    "binding": {
+      "relpath": "docs/readiness/2026-09-16-slurp-system-vs-direct-train-a-analysis-held-v1.json",
+      "sha256": "e0d68d359c2251b638627fdbb53c1f9f19f540d18f43244ccc810f85dfe72079"
+    },
+    "estimands_preserved": true,
+    "n_replicates": 10000,
+    "seed": 20260915
+  },
+  "forbidden_reuse": {
+    "predecessor_ready_admissions": "FORBIDDEN_FOR_REPLICA_IDS",
+    "system_prepared_supply": {
+      "path": "prepared/SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-RECOVERY-V1/phase-supply-v1.json",
+      "reason": "The artifact is bound to the predecessor system-recovery configuration and IDs.",
+      "sha256": "eb474db68caacf1ab072d3e62007a74755cfd8935b37ce0df1818368ffdccf29"
+    }
+  },
+  "launch_authorized": false,
+  "replica": {
+    "direct": {
+      "attempt_id": "attempt-slurp-direct-max512-train-fold-a-matched-replica-generation-v1",
+      "fit_attempt_id": "attempt-slurp-direct-max512-train-fold-a-matched-replica-fit-v1",
+      "fit_run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-MATCHED-REPLICA-FIT-V1",
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-MATCHED-REPLICA-V1"
+    },
+    "system": {
+      "attempt_id": "attempt-slurp-native-typed-role-context-train-fold-a-matched-replica-generation-v1",
+      "fit_attempt_id": "attempt-slurp-native-typed-role-context-train-fold-a-matched-replica-fit-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-MATCHED-REPLICA-FIT-V1",
+      "run_id": "SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-MATCHED-REPLICA-V1"
+    },
+    "technical_dependency": {
+      "purpose": "Permit direct scoring to overlap system generation after the complete direct bundle is sealed.",
+      "required_state": "sealed",
+      "upstream_run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-MATCHED-REPLICA-V1"
+    }
+  },
+  "schema": "saea-slurp-typed-context-matched-replication-held-bindings-v1",
+  "source": {
+    "commit": "9bf27b28708bb93607138e7bcd1eacb66eab3f08",
+    "files": {
+      "analysis": {
+        "path": "docs/readiness/2026-09-16-slurp-system-vs-direct-train-a-analysis-held-v1.json",
+        "sha256": "e0d68d359c2251b638627fdbb53c1f9f19f540d18f43244ccc810f85dfe72079"
+      },
+      "d_base": {
+        "path": "configs/baseline/slurp-direct-max512-train-fold-a-source-recovery-v1.json",
+        "sha256": "aa23040ae428ebc4d8293ad8bbc055716323d45187998bea9f274a1fadd09952"
+      },
+      "d_exp": {
+        "path": "configs/experiment/slurp-direct-max512-train-fold-a-source-recovery-v1.json",
+        "sha256": "64dd3b39d70cb83b344e694820150d70520885ab97ebb41a588c3b4359da5429"
+      },
+      "pair_campaign": {
+        "path": "configs/campaign/slurp-typed-role-context-system-vs-direct-source-recovery-train-fold-a-v1.json",
+        "sha256": "d0bed220cf28b79035acb31e12cb8ccb92312dab6ac670f7808ef36ce4c87715"
+      },
+      "s_base": {
+        "path": "configs/baseline/slurp-native-typed-role-context-train-fold-a-recovery-v1.json",
+        "sha256": "a204d84d24e09e40bf744aeb1e5063ebab1678836efa299895bf444485548926"
+      },
+      "s_exp": {
+        "path": "configs/experiment/slurp-native-typed-role-context-train-fold-a-recovery-v1.json",
+        "sha256": "01b6e788ab3e0917727b82ec2c575626f300fee39f1622378bff11fd03dd27a7"
+      },
+      "system_campaign": {
+        "path": "configs/campaign/slurp-native-typed-role-context-train-fold-a-recovery-v1.json",
+        "sha256": "563fddec36231cb3ae1460097de056b72acab073a5f20c28dcd5152aad841a00"
+      }
+    }
+  },
+  "status": "HELD_UNEXECUTABLE",
+  "unresolved": {
+    "clean_source_freeze": {
+      "path": "UNRESOLVED",
+      "sha256": "UNRESOLVED"
+    },
+    "direct_fit_registration": {
+      "path": "UNRESOLVED",
+      "sha256": "UNRESOLVED"
+    },
+    "direct_generation_plan": {
+      "path": "UNRESOLVED",
+      "sha256": "UNRESOLVED"
+    },
+    "exposure_ledger_rows": {
+      "path": "UNRESOLVED",
+      "sha256": "UNRESOLVED"
+    },
+    "registered_protocol": {
+      "path": "UNRESOLVED",
+      "sha256": "UNRESOLVED"
+    },
+    "root_replication_admission": {
+      "path": "UNRESOLVED",
+      "sha256": "UNRESOLVED"
+    },
+    "scientific_positive_predecessor_admission": {
+      "path": "UNRESOLVED",
+      "sha256": "UNRESOLVED"
+    },
+    "system_fit_registration": {
+      "path": "UNRESOLVED",
+      "sha256": "UNRESOLVED"
+    },
+    "system_generation_plan": {
+      "path": "UNRESOLVED",
+      "sha256": "UNRESOLVED"
+    },
+    "system_prepared_phase_supply": {
+      "path": "UNRESOLVED",
+      "sha256": "UNRESOLVED"
+    }
+  }
+}
