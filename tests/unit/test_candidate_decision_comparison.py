@@ -90,6 +90,7 @@ def test_comparison_counts_all_partitions_denominators_and_membership_states():
         "min": 1,
         "max": 4,
         "mean": 2.0,
+        "histogram": {"1": 2, "2": 1, "4": 1},
     }
     assert full["right"]["candidate_width"] == {
         "count": 4,
@@ -97,6 +98,7 @@ def test_comparison_counts_all_partitions_denominators_and_membership_states():
         "min": 1,
         "max": 3,
         "mean": 1.75,
+        "histogram": {"1": 2, "2": 1, "3": 1},
     }
     assert full["left"]["final_membership"] == {
         "in_candidates": 2,
@@ -363,6 +365,7 @@ def test_all_unavailable_group_keeps_width_and_membership_unavailable():
         "min": None,
         "max": None,
         "mean": None,
+        "histogram": {},
     }
     assert arm["candidate_availability"]["unavailable"] == 1
     assert arm["final_membership"]["unavailable_or_invalid"] == 1
