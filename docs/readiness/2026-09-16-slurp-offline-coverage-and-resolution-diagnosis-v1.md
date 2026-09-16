@@ -47,3 +47,17 @@ Choose one next bounded mechanism only after root's complete paired verdict; if 
 passes, perform its required exact-roster replication before adding a mechanism.
 Do not automatically expand N, tools, values or datasets. Prior useful DEV replications
 remain intact. This work is base diagnosis, not training-free RL or a confirmatory claim.
+
+## Historical broad-supply extension before extraction
+
+Also reuse the already complete and released broad/factored TRAIN A comparison.
+Its root paired quality release is DATA/coordination/slurp-broad-factored-v1/root-paired-quality-release-v1.json,
+SHA256 0ceb82d0bf4f34542ea73fb24d6012cfde7d0de02842d1587b5eceb459884de8.
+The authoritative closed verdict is docs/results/2026-09-16-slurp-broad-factored-train-a.md.
+Join saved numeric candidate/intent/slot diagnostics across the same1080 rows to identify
+persistent versus intervention-specific failure sets. Keep each source's existing semantic
+and parsing definitions explicit. This is descriptive cross-run triangulation, not a new
+causal comparison or a reopening of the closed broad/factored flight.
+Reuse the already sealed retrieval-supply breadth audit from
+DATA/coordination/slurp-next-agent-base-design-v1/retrieval-supply-audit-v1/final-v2;
+do not rerun its retrieval grid. Current paired quality remains excluded.

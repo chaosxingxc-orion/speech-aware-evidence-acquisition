@@ -4061,3 +4061,5 @@ The original direct attempt is ABORTED with zero model calls and zero speech sec
 ## 2026-09-16: offline SLURP coverage and resolution supplement
 
 Before the supplemental read, root registers docs/readiness/2026-09-16-slurp-offline-coverage-and-resolution-diagnosis-v1.md. Reuse only the already released complete TRAIN A anchor/maximum-five artifacts and registered construction-source definitions. No current paired quality, Fold B, extra reference transcripts, runtime feedback, new scoring or model/tool contact. Delegated extraction is numerical and source-bound; root owns interpretation. This descriptive supplement adds no effectiveness gate or successor execution authority.
+
+Offline supplement extension before extraction: include the already released complete broad/factored TRAIN A numeric diagnostics, root release SHA256 0ceb82d0bf4f34542ea73fb24d6012cfde7d0de02842d1587b5eceb459884de8, and the existing sealed retrieval-supply breadth audit. Preserve exact1080 IDs and semantic definitions; no new model/tool/scorer calls, new reference transcripts or current paired quality. Root uses cross-run failure intersections descriptively only.
