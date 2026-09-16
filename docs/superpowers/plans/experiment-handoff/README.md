@@ -1,29 +1,30 @@
 # Current continuation and Fable5.1 handoff
 
-Updated 2026-09-16. Read [TO-FABLE51](../../../handoff/2026-09-16-fable51/TO-FABLE51.md)
-and [STATUS-160](STATUS-160.md) first. They replace the stale STATUS-146 execution routing
-previously on this page. Do not load every historical status note.
+Updated 2026-09-16. Read [LATEST](../../../handoff/2026-09-16-fable51/LATEST.md)
+and [STATUS-161](STATUS-161.md) first, then the direct handoff to Fable5.1.
+These supersede the earlier running-state routing. Do not load every historical note.
 
-The owner requested a durable research handoff before Codex quota exhaustion. The package
-contains the experiment report, root conclusions, knowledge/runtime map, live metadata,
-postseal analysis steps, held replication branch and future owner decisions. It does not
-claim that Fable5.1 has already taken ownership.
+The owner requested a durable file handoff with designs, results, root interpretation
+and future expectations. The package does not claim Fable5.1 has accepted ownership.
 
 ## Current work
 
-SLURP is the sole active optimization dataset. Maximum-five and broad/factored extensions
-are closed without advancement. The older max512 dual-store agent has two positive
-matched exploratory comparisons against direct invocation.
+SLURP is the optimization focus. The older max512 dual-store agent has two positive
+matched exploratory comparisons. Maximum-five and broad/factored did not advance.
+E21 and Audio2Tool remain held.
 
-The new typed-context system is in its sole full 1,080-row recovery on frozen 9bf27b28.
-Its direct comparator is complete and first-scored; paired quality remains unread.
-Check process/attempt/terminal metadata before acting. Do not relaunch the current campaign
-or mistake observer expiry for failure. E21 and Audio2Tool remain held.
+The new typed-context system's sole full1080 recovery ABORTED after 6,645 generation
+contacts on frozen 9bf27b28. A Reviewer request needed 24,878 tokens in a 24,576-token
+slot and was refused before generation. The flight is
+CLOSED_SECOND_FAILURE_NO_FURTHER_RECOVERY. No complete system manifest/score exists;
+no task-effectiveness conclusion is available. Direct remains complete, first-scored
+and quality-unread under the paired-read contract.
 
-After full system seal and its first full official score, perform prepared source
-verification, root paired release and shared analysis, including the explicit
-native_tool_exposure audit. Only a complete valid positive predecessor can activate the
-held exact-roster replica. A second system failure closes the flight.
+Read the [terminal report](../../../handoff/2026-09-16-fable51/TERMINAL-UPDATE-20260916.md).
+Do not retry, splice a prefix, score partial rows or activate the held replica.
+Retain the old useful base and perform bounded source-level context/capacity diagnosis
+before a distinct prospective successor. The decoder was resident and idle after
+failure; revalidate metadata/ownership without automatic restart.
 
 ## Reading routes
 

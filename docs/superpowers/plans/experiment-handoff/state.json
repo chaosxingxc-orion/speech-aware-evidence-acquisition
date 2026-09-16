@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 160,
+  "generation": 161,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,17 +10,19 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "d96e940ce1f5939c95f43b2491b72b558632b7b5",
-  "updated_at_utc": "2026-09-16T16:54:52.138357+00:00",
-  "next_action": "Read TO-FABLE51.md and FUTURE-EXPERIMENT-DESIGNS.md for the owner-requested file handoff and root hypotheses. Revalidate the existing sole recovery before any action; close/score/analyze it under the unchanged rules. Future designs are conditional alternatives, not launch authorization. Original package and source pins remain preserved.",
+  "snapshot_commit": "cccbbc214d5e14de1b3f5b7e6d0eed1ece04e838",
+  "updated_at_utc": "2026-09-16T17:21:09.449230+00:00",
+  "next_action": "Read docs/handoff/2026-09-16-fable51/LATEST.md and TERMINAL-UPDATE-20260916.md first. The sole system recovery aborted after 6645 generation contacts because a Reviewer request exceeded its slot by 302 tokens; the flight is CLOSED_SECOND_FAILURE_NO_FURTHER_RECOVERY. Preserve unread paired quality and the direct first score. No replay, prefix salvage, partial scoring or held-replica activation. Perform bounded source-level dynamic-context diagnosis before proposing a distinct successor. Record actual Fable takeover separately.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-GPU-RESUME-2026-09-15",
   "owner_power_direction": "2026-09-14: The owner confirmed that current power mode is optimal and instructed root not to dwell on it. Preserve current hardware/service settings.",
-  "owner_gpu_direction": "GPU authorization active. Sole full1080 system recovery launched against the resident decoder; preserve geometry, feature cache and absent mmproj. One generation flight. No restart or extra mechanism.",
+  "owner_gpu_direction": "GPU authorization remains active at owner level, but the sole typed-context recovery is closed after its second failure. No currently qualified successor is authorized by this handoff. The decoder remained resident and idle after failure; no restart or unloading was performed. Revalidate metadata and guarded ownership before any separately admitted contact.",
   "owner_research_direction": "September 16: focus SLURP on candidate coverage and downstream intent/slot quality; the latest refinement makes a shared role-context module the central mechanism. Analyze, clean and normalize source-bound handoffs, distinguish evidence/knowledge/hypotheses/drafts/review declarations, then supply the information each role needs. Root retains scientific analysis and decisions.",
-  "handoff_package": "docs/handoff/2026-09-16-fable51/TO-FABLE51.md",
+  "handoff_package": "docs/handoff/2026-09-16-fable51/LATEST.md",
   "handoff_target": "Fable5.1; actual takeover not yet acknowledged",
   "active_source_commit": "9bf27b28708bb93607138e7bcd1eacb66eab3f08",
-  "active_source_worktree": "/home/chao/saea-worktrees/slurp-typed-context-full-recovery-v1"
+  "active_source_worktree": "/home/chao/saea-worktrees/slurp-typed-context-full-recovery-v1",
+  "current_flight_status": "CLOSED_SECOND_FAILURE_NO_FURTHER_RECOVERY",
+  "current_terminal_at_utc": "2026-09-16T17:07:37.744607+00:00"
 }

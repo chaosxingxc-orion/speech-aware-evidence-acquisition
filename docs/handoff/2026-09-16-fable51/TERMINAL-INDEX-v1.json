@@ -1,0 +1,269 @@
+{
+  "schema": "saea-fable-terminal-handoff-index-v1",
+  "created_at_utc": "2026-09-16T17:22:08.930846+00:00",
+  "status": "CLOSED_SECOND_FAILURE_NO_FURTHER_RECOVERY",
+  "files": [
+    {
+      "path": "docs/handoff/2026-09-16-fable51/LATEST.md",
+      "sha256": "333b23be480cff05d27f055429d39f705b40ee580f2c5a707a5f7d4d3db4c2ff",
+      "bytes": 1519
+    },
+    {
+      "path": "docs/handoff/2026-09-16-fable51/TERMINAL-UPDATE-20260916.md",
+      "sha256": "94c14349bcd0d6a6199312c0026c144a98f5cff77349f1eae07d7ce2371ef0c1",
+      "bytes": 7676
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/state.json",
+      "sha256": "db343f07cdaed9796090f4bdedb87b98918b0be4eb51d24ffbb147b655ff5c3c",
+      "bytes": 2870
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/STATUS-161.md",
+      "sha256": "23e0339214f60742350a29863e97b7d8630427b358b3dce3a31be5d4c8cdf13b",
+      "bytes": 1552
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/README.md",
+      "sha256": "74ccefecbe1fa821cefd994404369ff8687bd42e4c1c4416264eb44699b0f557",
+      "bytes": 3435
+    },
+    {
+      "path": "docs/results/stage2-results-ledger.md",
+      "sha256": "9a046701ddca1344512c5cf12fef00356ec5d63c0f86e2f3362b7c04d0d524c7",
+      "bytes": 169005
+    },
+    {
+      "path": "docs/receipts/2026-09-16-typed-context-terminal-exposure.md",
+      "sha256": "aa0aea0e36e1a3b04fdadece9ec84a009165cfdd5c49c00dc8d5c1c5dbe18946",
+      "bytes": 1984
+    }
+  ],
+  "external_evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-typed-context-vs-direct-v1/root-system-recovery-capacity-metadata-v1.json",
+      "sha256": "f12725f0ad34182946527d19a24ee5b11e168d553e107414a2a2086da93f792a",
+      "bytes": 2372
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-typed-context-vs-direct-v1/root-system-recovery-closure-v1.json",
+      "sha256": "6cbe548587958f4b32622c5496b1cc9c532671bb9c24ba1109adfc13623f737f",
+      "bytes": 7053
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-typed-context-vs-direct-v1/observer-system-recovery-v1.json",
+      "sha256": "d463515627204fb82804b40f84c1ec224dcd703aba5c1798615251b931c1da5c",
+      "bytes": 2506
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-typed-context-vs-direct-v1/root-campaign-system-recovery-terminal-v1.json",
+      "sha256": "a73699d0f3249bf71c94fb14e6879b23edb873e97d6ce124fc3b3535e8453797",
+      "bytes": 141
+    }
+  ],
+  "preserved_handoff": [
+    {
+      "path": "docs/handoff/2026-09-16-fable51/START-HERE.md",
+      "sha256": "6a441d5d4cd45afcd3304633ece83f7f91e53ead7bd0e781f43f9080209dcbe8",
+      "unchanged_from_commit": "cccbbc214d5e14de1b3f5b7e6d0eed1ece04e838"
+    },
+    {
+      "path": "docs/handoff/2026-09-16-fable51/EXPERIMENT-REPORT.md",
+      "sha256": "1838f169d9c605b042794acaa186921f1a1ae85e0fb178e1c8232584a2ae1f38",
+      "unchanged_from_commit": "cccbbc214d5e14de1b3f5b7e6d0eed1ece04e838"
+    },
+    {
+      "path": "docs/handoff/2026-09-16-fable51/OPERATIONS-AND-RECOVERY.md",
+      "sha256": "2c60b99b8b83d6d4f54baad5ea8d228ef82a02b9c32cd8094930c93ff361c721",
+      "unchanged_from_commit": "cccbbc214d5e14de1b3f5b7e6d0eed1ece04e838"
+    },
+    {
+      "path": "docs/handoff/2026-09-16-fable51/SYSTEM-AND-KNOWLEDGE.md",
+      "sha256": "3e3e3a2d4d54599bca0e0be6155ec33acf08fe557c180ecc4eb4fe420808e5ac",
+      "unchanged_from_commit": "cccbbc214d5e14de1b3f5b7e6d0eed1ece04e838"
+    },
+    {
+      "path": "docs/handoff/2026-09-16-fable51/NEXT-STEPS-AND-DECISIONS.md",
+      "sha256": "6430c47a4add422d662651c6ffa8480fe0968d6d6588c81086249e4fbb520360",
+      "unchanged_from_commit": "cccbbc214d5e14de1b3f5b7e6d0eed1ece04e838"
+    },
+    {
+      "path": "docs/handoff/2026-09-16-fable51/LIVE-SNAPSHOT.json",
+      "sha256": "312776c1541f33e6a9b5295a3de39679508310a604209922e3ecd391973ec4ee",
+      "unchanged_from_commit": "cccbbc214d5e14de1b3f5b7e6d0eed1ece04e838"
+    },
+    {
+      "path": "docs/handoff/2026-09-16-fable51/SOURCE-INDEX.json",
+      "sha256": "1c80c5f083ee39b847e55dfb14c0cd2d4449b0f110dd2924beb42697240947e4",
+      "unchanged_from_commit": "cccbbc214d5e14de1b3f5b7e6d0eed1ece04e838"
+    },
+    {
+      "path": "docs/handoff/2026-09-16-fable51/VALIDATION.json",
+      "sha256": "3aa213c968be702c150e38f7e838db96a74d0f9c9877d1e522ec4be4c11a77d8",
+      "unchanged_from_commit": "cccbbc214d5e14de1b3f5b7e6d0eed1ece04e838"
+    },
+    {
+      "path": "docs/handoff/2026-09-16-fable51/TO-FABLE51.md",
+      "sha256": "55a94c321f7439f3f0deb3ca8264a6d2dff5e62d5aa221c108ce92be46eb6873",
+      "unchanged_from_commit": "cccbbc214d5e14de1b3f5b7e6d0eed1ece04e838"
+    },
+    {
+      "path": "docs/handoff/2026-09-16-fable51/FUTURE-EXPERIMENT-DESIGNS.md",
+      "sha256": "0edd689ca74eaf572decfbe6968c5c4472bfc7fb896ff4eb6147d6bcae6c77f5",
+      "unchanged_from_commit": "cccbbc214d5e14de1b3f5b7e6d0eed1ece04e838"
+    },
+    {
+      "path": "docs/handoff/2026-09-16-fable51/SUPPLEMENT-INDEX-v1.json",
+      "sha256": "62e57ee7bc6c2e6608b9a8a5c463614333a19f57e259ae5c9805909a191d0cd0",
+      "unchanged_from_commit": "cccbbc214d5e14de1b3f5b7e6d0eed1ece04e838"
+    }
+  ],
+  "verified_relative_links": [
+    {
+      "from": "docs/handoff/2026-09-16-fable51/LATEST.md",
+      "target": "TERMINAL-UPDATE-20260916.md"
+    },
+    {
+      "from": "docs/handoff/2026-09-16-fable51/LATEST.md",
+      "target": "TO-FABLE51.md"
+    },
+    {
+      "from": "docs/handoff/2026-09-16-fable51/LATEST.md",
+      "target": "FUTURE-EXPERIMENT-DESIGNS.md"
+    },
+    {
+      "from": "docs/superpowers/plans/experiment-handoff/README.md",
+      "target": "../../../handoff/2026-09-16-fable51/LATEST.md"
+    },
+    {
+      "from": "docs/superpowers/plans/experiment-handoff/README.md",
+      "target": "STATUS-161.md"
+    },
+    {
+      "from": "docs/superpowers/plans/experiment-handoff/README.md",
+      "target": "../../../handoff/2026-09-16-fable51/TERMINAL-UPDATE-20260916.md"
+    },
+    {
+      "from": "docs/superpowers/plans/experiment-handoff/README.md",
+      "target": "../../../handoff/2026-09-16-fable51/FUTURE-EXPERIMENT-DESIGNS.md"
+    },
+    {
+      "from": "docs/superpowers/plans/experiment-handoff/README.md",
+      "target": "../../../handoff/2026-09-16-fable51/EXPERIMENT-REPORT.md"
+    },
+    {
+      "from": "docs/superpowers/plans/experiment-handoff/README.md",
+      "target": "../../../handoff/2026-09-16-fable51/OPERATIONS-AND-RECOVERY.md"
+    },
+    {
+      "from": "docs/superpowers/plans/experiment-handoff/README.md",
+      "target": "../../../handoff/2026-09-16-fable51/SYSTEM-AND-KNOWLEDGE.md"
+    },
+    {
+      "from": "docs/superpowers/plans/experiment-handoff/README.md",
+      "target": "../../../handoff/2026-09-16-fable51/NEXT-STEPS-AND-DECISIONS.md"
+    },
+    {
+      "from": "docs/superpowers/plans/experiment-handoff/README.md",
+      "target": "../../../handoff/2026-09-16-fable51/SOURCE-INDEX.json"
+    },
+    {
+      "from": "docs/superpowers/plans/experiment-handoff/README.md",
+      "target": "../../../results/stage2-results-ledger.md"
+    },
+    {
+      "from": "docs/superpowers/plans/experiment-handoff/README.md",
+      "target": "CONTINUATION-PLAN.md"
+    },
+    {
+      "from": "docs/superpowers/plans/experiment-handoff/README.md",
+      "target": "RECOVERY-PLAN.md"
+    },
+    {
+      "from": "docs/superpowers/plans/experiment-handoff/README.md",
+      "target": "MODEL-ALLOCATION.md"
+    },
+    {
+      "from": "docs/results/stage2-results-ledger.md",
+      "target": "../checks/speech-aware-evidence-acquisition/2026-09-09-owner-recovery/runtime-snapshot.json"
+    },
+    {
+      "from": "docs/results/stage2-results-ledger.md",
+      "target": "../superpowers/plans/experiment-handoff/RECOVERY-PLAN.md"
+    },
+    {
+      "from": "docs/results/stage2-results-ledger.md",
+      "target": "../checks/speech-aware-evidence-acquisition/2026-09-10-ku-s3-max256-recovery-verdict/README.md"
+    },
+    {
+      "from": "docs/results/stage2-results-ledger.md",
+      "target": "../checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md"
+    },
+    {
+      "from": "docs/results/stage2-results-ledger.md",
+      "target": "2026-09-10-fable-reproduction-audit.md"
+    },
+    {
+      "from": "docs/results/stage2-results-ledger.md",
+      "target": "../receipts/fable-result-reproduction-v1.json"
+    },
+    {
+      "from": "docs/results/stage2-results-ledger.md",
+      "target": "../readiness/2026-09-13-slurp-direct-vs-native-system-v1-verdict.md"
+    },
+    {
+      "from": "docs/results/stage2-results-ledger.md",
+      "target": "2026-09-14-slurp-native-train-a-anchor.md"
+    },
+    {
+      "from": "docs/results/stage2-results-ledger.md",
+      "target": "../readiness/2026-09-14-slurp-native-candidate-refresh-tools-train-fold-a-recovery-v1/README.md"
+    },
+    {
+      "from": "docs/results/stage2-results-ledger.md",
+      "target": "2026-09-14-slurp-dual-store-base-replication-verdict-v1.md"
+    },
+    {
+      "from": "docs/results/stage2-results-ledger.md",
+      "target": "2026-09-15-a2t-native-role-engineering-proof-v1.md"
+    },
+    {
+      "from": "docs/results/stage2-results-ledger.md",
+      "target": "2026-09-15-a2t-native-role-primary-decision-v1.json"
+    },
+    {
+      "from": "docs/results/stage2-results-ledger.md",
+      "target": "2026-09-15-a2t-native-role-base-full4000.md"
+    },
+    {
+      "from": "docs/results/stage2-results-ledger.md",
+      "target": "2026-09-16-slurp-train-a-review-stage-attribution.md"
+    },
+    {
+      "from": "docs/results/stage2-results-ledger.md",
+      "target": "2026-09-16-slurp-review-context-provenance.md"
+    },
+    {
+      "from": "docs/results/stage2-results-ledger.md",
+      "target": "../handoff/2026-09-16-fable51/TERMINAL-UPDATE-20260916.md"
+    },
+    {
+      "from": "docs/results/stage2-results-ledger.md",
+      "target": "../handoff/2026-09-16-fable51/LATEST.md"
+    },
+    {
+      "from": "docs/receipts/2026-09-16-typed-context-terminal-exposure.md",
+      "target": "../handoff/2026-09-16-fable51/TERMINAL-UPDATE-20260916.md"
+    },
+    {
+      "from": "docs/handoff/2026-09-16-fable51/TERMINAL-UPDATE-20260916.md",
+      "target": "../../receipts/2026-09-16-typed-context-terminal-exposure.md"
+    }
+  ],
+  "scope": "Metadata-only terminal update; no generation, scorer contact or partial task-quality read. Runtime/service/lease untouched.",
+  "preserved_exposure_ledger": {
+    "path": "docs/exposure-ledger.md",
+    "sha256": "6059820087f6e1841f3dab1a44b6cac8b24f52154629fad62a51e167fbb2e5b7",
+    "reason": "Historical registered records include legacy source-language quotes; preserve them and author an English successor."
+  }
+}

@@ -1472,3 +1472,18 @@ Keep the maximum-three incumbent. Root selects one typed-context/evidence-review
 package versus matched direct for prospective admission. Read [the full result and all
 18 strata](2026-09-16-slurp-candidate-five-train-a.md). Historical positive DEV system
 replications remain valid within their stated exploratory scope.
+
+## September 16: typed-context sole recovery closed
+
+**CLOSED_SECOND_FAILURE_NO_FURTHER_RECOVERY.** The sole full1080 recovery aborted
+after 6,645 generation contacts; one actual Reviewer request required 24,878 tokens
+in a 24,576-token slot and was refused before generation. The 6,646 request-fit
+receipts account for 26,584 endpoint contacts. No complete system manifest or score
+exists and no partial quality was read. This is an engineering failure, not evidence
+of task ineffectiveness. The direct comparator remains complete, first-scored and
+quality-unreleased; the conditional replica remains ineligible.
+
+Preserve the older replicated positive SLURP base. No third replay, prefix splice,
+partial scoring or renamed retry is admitted. The next bounded question is dynamic
+role-context capacity. See the [root terminal report and evidence pins](../handoff/2026-09-16-fable51/TERMINAL-UPDATE-20260916.md)
+and [latest file handoff](../handoff/2026-09-16-fable51/LATEST.md).

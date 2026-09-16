@@ -1,0 +1,20 @@
+{
+  "schema": "saea-terminal-handoff-validation-v1",
+  "created_at_utc": "2026-09-16T17:24:15.970326+00:00",
+  "terminal_index_sha256": "090a83b0b77c579d7659cf27cf85416c2b71ff45e56e511d82aac1414299c605",
+  "checks": {
+    "referenced_external_receipt_hashes": "PASS: 4 verified",
+    "preserved_original_handoff_files": "PASS: 11 unchanged at cccbbc214d5e14de1b3f5b7e6d0eed1ece04e838",
+    "relative_links": "PASS: 35 resolved",
+    "json_and_english_update": "PASS",
+    "experiment_handoff_check": "PASS: generation 161, zero errors, existing uncommitted-file warning before this commit",
+    "git_diff_check": "PASS; existing CRLF normalization warnings do not change historical files",
+    "umbrella_current_state_and_context_manifest": "PASS; commit 00efe2c",
+    "historical_exposure_ledger": "Unchanged; English terminal successor added"
+  },
+  "limitations": [
+    "Documentation and metadata verification only; no task-quality read, new inference, scoring or repair validation.",
+    "Fable5.1 actual takeover is not acknowledged.",
+    "Terminal contact counts do not assert a final analytical-tool total or utilization-integrated GPU cost."
+  ]
+}
