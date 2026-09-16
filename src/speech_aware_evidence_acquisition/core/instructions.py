@@ -58,6 +58,10 @@ from ..data.slurp import (
     render_slurp_closed_label_inventory,
     render_slurp_closed_label_inventory_with_slot_schema,
 )
+from ..data.slurp_contract_cache import (
+    SLURP_LABEL_INVENTORY_FILL,
+    load_cached_slurp_label_inventory,
+)
 from .base import INSTRUCTION_FILLS, CoreError
 
 TOOL_SCHEMAS_PLACEHOLDER = "{tool_schemas}"
@@ -302,6 +306,12 @@ INSTRUCTION_FILLS.register("slurp-label-inventory", render_slurp_closed_label_in
 # names it, so every previously rendered instruction is byte-identical.
 INSTRUCTION_FILLS.register(
     "slurp-intent-slot-schema", render_slurp_closed_label_inventory_with_slot_schema
+)
+# Opt-in projection of the same TRAIN-only ontology to legal intent pairs and
+# entity-type names, with no example fillers. The historical fill above and
+# every existing config keep their exact rendering.
+INSTRUCTION_FILLS.register(
+    SLURP_LABEL_INVENTORY_FILL, load_cached_slurp_label_inventory
 )
 # The evolution loop's state A_r (2026-09-05): the SAME compact registry the
 # `audio2tool-registry-compact` fill renders, with the description column of

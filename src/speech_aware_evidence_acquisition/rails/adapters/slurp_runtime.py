@@ -6,6 +6,14 @@ from typing import Mapping
 
 from ...core.base import TASK_ADAPTERS
 from ...core.instructions import resolve_active_task_instruction, resolve_task_instruction
+from ...data.slurp_contract_cache import (
+    SLURP_LABEL_INVENTORY_FILL,
+    SLURP_TASK_CONTRACT_VIEW_LABEL_INVENTORY,
+    SLURP_TASK_CONTRACT_VIEW_LEGACY,
+    SlurpContractCacheError,
+    load_cached_slurp_contract,
+    validate_slurp_task_contract_view,
+)
 from ...reproduction.slurp_scoring import parse_slu_response
 from ..obs import AudioRef
 from .runtime_view import (
@@ -87,6 +95,31 @@ def roster_samples(values, data_root_path, *, limit_sample_ids=None, workers=16)
     return samples
 
 
+def _configured_task_contract_view(values: Mapping[str, object]) -> str:
+    try:
+        view = validate_slurp_task_contract_view(
+            values.get("slurp_task_contract_view", SLURP_TASK_CONTRACT_VIEW_LEGACY)
+        )
+    except SlurpContractCacheError as error:
+        raise RuntimeViewError(str(error)) from error
+    projected_view = view == SLURP_TASK_CONTRACT_VIEW_LABEL_INVENTORY
+    projected_fill = values.get("task_instruction_fill") == SLURP_LABEL_INVENTORY_FILL
+    if projected_view != projected_fill:
+        raise RuntimeViewError(
+            "SLURP projected task contract view and no-example instruction fill "
+            "must be selected together"
+        )
+    if projected_view and (
+        values.get("task_instruction_template_active") is not True
+        or "task_instruction" in values
+    ):
+        raise RuntimeViewError(
+            "SLURP projected task contract requires its active registered "
+            "instruction template and no literal instruction"
+        )
+    return view
+
+
 class RuntimeSlurpAdapter(SlurpAdapter):
     """Bind roster, instruction and serving geometry as data on the existing adapter."""
 
@@ -94,12 +127,26 @@ class RuntimeSlurpAdapter(SlurpAdapter):
         self, lock, root, *, repo_root, split_id, samples, instruction_text,
         serving_slots=None, serving_slot_tokens=None, serving_max_tokens=None,
         split_role="", registered_population_bound=False, runtime_split_name=None,
+        task_contract_view=SLURP_TASK_CONTRACT_VIEW_LEGACY,
     ):
         super().__init__(lock, root, repo_root=repo_root)
         self._split_id = split_id
         if not isinstance(instruction_text, str) or not instruction_text:
             raise RuntimeViewError("runtime SLURP requires a config-resolved instruction")
         self._instruction_text = instruction_text
+        try:
+            self._task_contract_view = validate_slurp_task_contract_view(task_contract_view)
+        except SlurpContractCacheError as error:
+            raise RuntimeViewError(str(error)) from error
+        self._projected_task_contract = None
+        if self._task_contract_view == SLURP_TASK_CONTRACT_VIEW_LABEL_INVENTORY:
+            self._projected_task_contract = load_cached_slurp_contract(
+                lock, root, view=self._task_contract_view
+            )
+            if self._projected_task_contract not in instruction_text:
+                raise RuntimeViewError(
+                    "runtime SLURP instruction must contain its projected label inventory"
+                )
         self._samples = tuple(samples)
         _assert_sample_namespaces(
             self._samples, split_id=split_id, split_role=split_role,
@@ -128,6 +175,11 @@ class RuntimeSlurpAdapter(SlurpAdapter):
     def instruction(self, sample):
         return self._instruction_text
 
+    def build_task_contract(self, sample, obs):
+        if self._projected_task_contract is not None:
+            return self._projected_task_contract
+        return super().build_task_contract(sample, obs)
+
     def gold(self, sample):
         raise RuntimeViewError("gold never enters a runtime flight; score the sealed manifest")
 
@@ -144,6 +196,8 @@ class RuntimeSlurpAdapter(SlurpAdapter):
 
 
 def build_runtime_adapter(values, lock, data_root, repo_root, *, dataset_fragment):
+    # Validate the selector before resolving instructions, rosters, or media.
+    task_contract_view = _configured_task_contract_view(values)
     instruction = (
         resolve_active_task_instruction(values, repo_root, lock, data_root)
         or resolve_task_instruction(values, repo_root, lock, data_root)
@@ -163,6 +217,7 @@ def build_runtime_adapter(values, lock, data_root, repo_root, *, dataset_fragmen
         split_role=str(values.get("execution_plan", {}).get("split_role", "")),
         registered_population_bound=population_ids is not None,
         runtime_split_name=values.get("split_name"),
+        task_contract_view=task_contract_view,
     )
 
 
