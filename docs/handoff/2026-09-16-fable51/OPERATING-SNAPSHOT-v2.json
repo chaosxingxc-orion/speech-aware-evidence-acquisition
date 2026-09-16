@@ -1,0 +1,42 @@
+{
+  "schema": "saea-file-handoff-operating-snapshot-v2",
+  "captured_at_utc": "2026-09-16T18:48:12.000883+00:00",
+  "canonical_branch": "master",
+  "canonical_base_commit": "923a0360972cb125ca1671cdd036cd72d6e30418",
+  "candidate_view_worktree": "/home/chao/saea-worktrees/candidate-bound-slot-view-v1",
+  "candidate_view_branch": "codex/candidate-bound-slot-view-v1",
+  "candidate_view_base_commit": "923a0360972cb125ca1671cdd036cd72d6e30418",
+  "frozen_failed_source": "/home/chao/saea-worktrees/slurp-typed-context-full-recovery-v1",
+  "failed_source_commit": "9bf27b28708bb93607138e7bcd1eacb66eab3f08",
+  "processes": [
+    {
+      "pid": 364846,
+      "role": "decoder",
+      "alive": true,
+      "start_ticks": 9575036,
+      "command": "/home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8080 -m /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf --no-mmproj -c 98304 -np 4 -b 2048 -ub 512 -fa on -ngl 999 -ctk q8_0 -ctv q8_0 --cache-prompt --cache-ram 0 --no-cache-idle-slots --slot-prompt-similarity 0"
+    },
+    {
+      "pid": 364981,
+      "role": "monitor",
+      "alive": true,
+      "start_ticks": 9581534,
+      "command": "/home/chao/.venvs/speechrl/bin/python -B -u scripts/serving_monitor.py sample --data-root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data --session-id serving-slurp-native-candidate-five-train-a-np4-v1 --interval 10 --host 127.0.0.1 --port 8080"
+    },
+    {
+      "pid": 425664,
+      "role": "closed campaign",
+      "alive": false
+    }
+  ],
+  "gpu_query_fields": [
+    "utilization_percent",
+    "memory_used_mib",
+    "memory_total_mib"
+  ],
+  "gpu_values_csv": "0, 22976, 24463",
+  "terminal_closure_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-typed-context-vs-direct-v1/root-system-recovery-closure-v1.json",
+  "terminal_closure_sha256": "6cbe548587958f4b32622c5496b1cc9c532671bb9c24ba1109adfc13623f737f",
+  "takeover_receipts": [],
+  "read_boundary": "Metadata, code and released knowledge sources only. No raw campaign quality, held score, model/tokenizer/audio-tool endpoint or official scorer contacted."
+}

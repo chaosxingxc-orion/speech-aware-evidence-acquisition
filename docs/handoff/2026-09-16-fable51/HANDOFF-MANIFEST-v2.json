@@ -1,0 +1,31 @@
+{
+  "schema": "saea-fable51-current-handoff-manifest-v2",
+  "recorded_at_utc": "2026-09-16T18:56:17.812715+00:00",
+  "current_entry": "docs/handoff/2026-09-16-fable51/HANDOFF.md",
+  "accepted_implementation_commit": "7ca75217ae52da5bd0b81fc569005d5c5fdcefa1",
+  "isolated_implementation_commit": "edae8bfaf67fe7b350fc6788af8e76e53ca80d57",
+  "coordination_generation": 165,
+  "takeover_acknowledged": false,
+  "files": {
+    "docs/handoff/2026-09-16-fable51/HANDOFF.md": "b98393b7d059a47fcba341b9798101cf4d9de5a02385ab3a68010bd7ede922ca",
+    "docs/handoff/2026-09-16-fable51/EXPERIMENT-REPORT-v2.md": "83c4833fc90a25222ead9860c4688c344d9b59eb1122e31287b7285d7d2c4e89",
+    "docs/handoff/2026-09-16-fable51/FUTURE-EXPERIMENT-DESIGNS-v2.md": "167d67730e267819467c75b9df663278cbd54da14c3eaba3ca84401b1522617f",
+    "docs/handoff/2026-09-16-fable51/IMPLEMENTATION-HANDOVER-v2.md": "837dd930e0a74f9a7399e38664ff06a686946d6bdc75ad0b2dbd972d1e71b7ab",
+    "docs/handoff/2026-09-16-fable51/RUNBOOK-SNAPSHOT-v2.md": "b483892218b1bfeabe79570772cb53f2228d2c6a728d9cb4d03dee0f4e494b2e",
+    "docs/handoff/2026-09-16-fable51/OPERATING-SNAPSHOT-v2.json": "83765ecb2c8db45961effe7cf8c1078aa0a898bbaf25d32e4ed1dc220de9e470",
+    "docs/handoff/2026-09-16-fable51/LATEST.md": "66e8ae04827c1c3c42efacb7756715a7d5992586e3616a11addb3e1b7ad1c668",
+    "docs/superpowers/plans/experiment-handoff/state.json": "b2afcba18587607699be653bc076f703436e7a6ca9bd379ae16710ffe9fbdf05",
+    "docs/superpowers/plans/experiment-handoff/STATUS-165.md": "4b6eb4303724c14c997afe94147e82298cee24c417155f3b7727bbe81951880b",
+    "docs/superpowers/plans/experiment-handoff/README.md": "e9dbe5eb1adfc78f24e045fc0a55ffabc867394ccc480daf48b6c3739002f3cb",
+    "docs/readiness/2026-09-16-candidate-slot-view-implementation-validation-v1.json": "47478ba43b14bf50a6d27de07b86e8d61aba72a70866d73b4da8597782c2ee45"
+  },
+  "validation": {
+    "local_link_targets_checked": 55,
+    "missing_targets": [],
+    "non_english_authored_files": [],
+    "json_parsed": true,
+    "historical_reports_preserved": true
+  },
+  "scope": "File handoff and model-free engineering acceptance. No live proof, new quality result, model/tokenizer/speech tool/scorer contact, or source takeover implied.",
+  "historical_routing": "Old START-HERE, TO-FABLE51, reports and immutable indexes remain historical; v2 current entry/report/design/runbook supersede their running-flight instructions."
+}

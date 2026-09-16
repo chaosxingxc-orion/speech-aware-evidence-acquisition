@@ -1,7 +1,7 @@
 # Current continuation and Fable5.1 handoff
 
 Updated 2026-09-16. Read [LATEST](../../../handoff/2026-09-16-fable51/LATEST.md)
-and [STATUS-164](STATUS-164.md) first, then the direct handoff to Fable5.1.
+and [STATUS-165](STATUS-165.md) first, then the direct handoff to Fable5.1.
 These supersede the earlier running-state routing. Do not load every historical note.
 
 The owner requested a durable file handoff with designs, results, root interpretation
@@ -37,16 +37,17 @@ task benefit are not yet demonstrated.
 The source-only [slot-binding audit](../../../results/2026-09-16-slurp-slot-binding-footprint-v1.md)
 now quantifies the consumption opportunity. Root selected one
 [candidate-bound slot-view design](../../../readiness/2026-09-16-candidate-bound-slot-view-design-v1.md);
-it still needs shared runtime integration and prospective proof. Do not interpret
+its shared runtime implementation is now accepted at 7ca75217, with 248 affected tests
+passed and one platform skip. The real-path proof remains held. Do not interpret
 ideal body-byte savings as task benefit.
 
 ## Reading routes
 
-- [Future experiment designs and expected outcomes](../../../handoff/2026-09-16-fable51/FUTURE-EXPERIMENT-DESIGNS.md).
-- [Experimental report](../../../handoff/2026-09-16-fable51/EXPERIMENT-REPORT.md).
-- [Operations and recovery](../../../handoff/2026-09-16-fable51/OPERATIONS-AND-RECOVERY.md).
+- [Future experiment designs and expected outcomes](../../../handoff/2026-09-16-fable51/FUTURE-EXPERIMENT-DESIGNS-v2.md).
+- [Experimental report](../../../handoff/2026-09-16-fable51/EXPERIMENT-REPORT-v2.md).
+- [Operations and recovery](../../../handoff/2026-09-16-fable51/RUNBOOK-SNAPSHOT-v2.md).
 - [System and knowledge map](../../../handoff/2026-09-16-fable51/SYSTEM-AND-KNOWLEDGE.md).
-- [Next steps and decisions](../../../handoff/2026-09-16-fable51/NEXT-STEPS-AND-DECISIONS.md).
+- [Current consolidated handoff and next steps](../../../handoff/2026-09-16-fable51/HANDOFF.md).
 - [Source index](../../../handoff/2026-09-16-fable51/SOURCE-INDEX.json).
 - [Existing results ledger](../../../results/stage2-results-ledger.md).
 - [Accepted original continuation plan](CONTINUATION-PLAN.md).
