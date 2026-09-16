@@ -1,0 +1,86 @@
+{
+  "schema": "saea-slurp-slot-binding-footprint-v1",
+  "candidate_count": 60,
+  "card_count": 54,
+  "binding_count": 402,
+  "full_store_body_bytes": 80049,
+  "selection_caps": {
+    "per_candidate": 16,
+    "total": 28
+  },
+  "weighting": "Every ordered distinct candidate set once; not a campaign mixture.",
+  "all_ordered_candidate_sets": [
+    {
+      "distinct_candidate_width": 1,
+      "ordered_sets": 60,
+      "full_body_bytes_sum": 856922,
+      "projected_body_bytes_sum": 453884,
+      "pooled_body_byte_reduction_fraction": 0.47033218892734696,
+      "per_set_reduction_fraction_min": 0.0,
+      "per_set_reduction_fraction_median": 0.4731905799767896,
+      "per_set_reduction_fraction_max": 0.6323024054982818,
+      "full_body_bytes_min": 1042,
+      "full_body_bytes_max": 33226,
+      "projected_body_bytes_min": 1042,
+      "projected_body_bytes_max": 17959,
+      "selected_card_count_min": 1,
+      "selected_card_count_max": 16
+    },
+    {
+      "distinct_candidate_width": 2,
+      "ordered_sets": 3540,
+      "full_body_bytes_sum": 83416938,
+      "projected_body_bytes_sum": 46171476,
+      "pooled_body_byte_reduction_fraction": 0.44649759261122723,
+      "per_set_reduction_fraction_min": 0.10688259109311742,
+      "per_set_reduction_fraction_median": 0.4500205438033784,
+      "per_set_reduction_fraction_max": 0.5775347912524851,
+      "full_body_bytes_min": 2470,
+      "full_body_bytes_max": 43720,
+      "projected_body_bytes_min": 2129,
+      "projected_body_bytes_max": 25895,
+      "selected_card_count_min": 2,
+      "selected_card_count_max": 23
+    },
+    {
+      "distinct_candidate_width": 3,
+      "ordered_sets": 205320,
+      "full_body_bytes_sum": 6188569374,
+      "projected_body_bytes_sum": 3555820452,
+      "pooled_body_byte_reduction_fraction": 0.42542125051727664,
+      "per_set_reduction_fraction_min": 0.18184049079754602,
+      "per_set_reduction_fraction_median": 0.4274331173089885,
+      "per_set_reduction_fraction_max": 0.554493517908152,
+      "full_body_bytes_min": 3975,
+      "full_body_bytes_max": 50579,
+      "projected_body_bytes_min": 2438,
+      "projected_body_bytes_max": 31688,
+      "selected_card_count_min": 2,
+      "selected_card_count_max": 28
+    }
+  ],
+  "limits": [
+    "Ideal body bytes exclude derived-view headers, references and custody metadata.",
+    "No tokenization, full request fit, model understanding or task quality is measured.",
+    "Retain all global sections; only cross-candidate binding rows are omitted.",
+    "Construction bindings are not exhaustive legal or mandatory slot schemas.",
+    "Actual draft/explicit-tool targets outside candidates need separate handling."
+  ],
+  "source": {
+    "baseline_file_sha256": "8445f4ef1b29fa776a628cd6000a7ba481622a72c78fb999e107fbdfac380aab",
+    "slot_snapshot_content_sha256": "11c246e4b815a4f966e8cf8785f06b70515755eca71658862c6f98e9914044e6",
+    "slot_release_file_pin": {
+      "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+      "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+    },
+    "authored_source_file_pin": {
+      "relpath": "prepared/SAEA-SLURP-SEMANTIC-AUTHORING-PREPARE-V1/authored-slot-contracts-v1.json",
+      "sha256": "34f6c3dc192eca4a30ef7208d10c1e2b797a0ae2ffe5122f16b376e10a30e4c5"
+    },
+    "candidate_catalog_file_pin": {
+      "data_relpath": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
+      "sha256": "3e60268b3f940c3018ab8b8c80ccd988b1d1efd6c5a198929c6af05ba21f8263",
+      "source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201"
+    }
+  }
+}
