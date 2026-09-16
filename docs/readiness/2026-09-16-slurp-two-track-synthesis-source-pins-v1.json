@@ -1,0 +1,59 @@
+{
+  "contact_class": "model-free-source-read",
+  "current_pair_quality_read": false,
+  "derived_numeric_inventory": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-COVERAGE-GAP-DIAGNOSTICS-TRAIN-A-V1/numeric-inventory-v1.json",
+    "sha256": "31a6ac3c6d25da2eda13cbbc5006fdb102ac0fd71fc25597889ff35abe2d4558"
+  },
+  "schema": "saea-document-source-inventory-v1",
+  "sources": [
+    {
+      "relpath": "docs/results/2026-09-14-slurp-dual-store-base-replication-verdict-v1.md",
+      "sha256": "62b3b3ca513a4760366126df63b37f8c58f074dced015ec65a93649da2a79fd4"
+    },
+    {
+      "relpath": "docs/results/2026-09-16-slurp-candidate-five-train-a.md",
+      "sha256": "2a32842096073babe0add6217fe12996a37c93229a846af7bfa5d7221868027a"
+    },
+    {
+      "relpath": "docs/results/2026-09-16-slurp-broad-factored-train-a.md",
+      "sha256": "4db21819b80562e702404b64327e80c5d7135499b7a0e7b4484d4389e7dbfe44"
+    },
+    {
+      "relpath": "docs/readiness/2026-09-15-root-slurp-supply-breadth-analysis-v1.md",
+      "sha256": "151ffe54954c93ffbd4cbb64f8b3265a9881158665aae8ca80ba8b667df11f7d"
+    },
+    {
+      "relpath": "docs/results/2026-09-14-slurp-train-a-entity-loss-attribution-v1.md",
+      "sha256": "e34a67fbaebe9a35030254dedc100afe8ff9d17069ac723867bcd0b627dace0a"
+    },
+    {
+      "relpath": "docs/results/2026-09-16-slurp-temporal-slot-diagnosis.md",
+      "sha256": "7a30705725649d5533eb66948ff21af271470b1a5511ae389fe5e5bacca200c0"
+    },
+    {
+      "relpath": "docs/superpowers/plans/experiment-handoff/STATUS-073.md",
+      "sha256": "162b4969c257ed61f8ecb4cb8d51f0814902e58a8ab49378cef850e411262838"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-typed-role-context-train-fold-a-v1.json",
+      "sha256": "d30323c5a8ac9b7ef913ac52786ac5b04ea7c956c23879deaed3ded42e684e35"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/native_episode.py",
+      "sha256": "f056b1b138218d56a00bf531ae4e7fc2efab8b39720c5ac1f2c320b1f0d3b7d2"
+    },
+    {
+      "relpath": "docs/superpowers/plans/experiment-handoff/STATUS-074.md",
+      "sha256": "afe1e4032f15a9f5f1cbc853c48769f809ada36102828eab55c0c12d41f02a6b"
+    },
+    {
+      "relpath": "docs/results/2026-09-16-slurp-coverage-gap-numeric-inventory.md",
+      "sha256": "ed38208747e04b975725c1bd73424d2f28395d3e091e4cb52c1b69839c97baf0"
+    },
+    {
+      "relpath": "docs/results/2026-09-16-slurp-knowledge-construction-consumption-inventory.md",
+      "sha256": "886904c33b7034c5641d89d4512f6975736c2182efb89168989936f18eff9b62"
+    }
+  ]
+}

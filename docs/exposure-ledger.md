@@ -4063,3 +4063,15 @@ The original direct attempt is ABORTED with zero model calls and zero speech sec
 Before the supplemental read, root registers docs/readiness/2026-09-16-slurp-offline-coverage-and-resolution-diagnosis-v1.md. Reuse only the already released complete TRAIN A anchor/maximum-five artifacts and registered construction-source definitions. No current paired quality, Fold B, extra reference transcripts, runtime feedback, new scoring or model/tool contact. Delegated extraction is numerical and source-bound; root owns interpretation. This descriptive supplement adds no effectiveness gate or successor execution authority.
 
 Offline supplement extension before extraction: include the already released complete broad/factored TRAIN A numeric diagnostics, root release SHA256 0ceb82d0bf4f34542ea73fb24d6012cfde7d0de02842d1587b5eceb459884de8, and the existing sealed retrieval-supply breadth audit. Preserve exact1080 IDs and semantic definitions; no new model/tool/scorer calls, new reference transcripts or current paired quality. Root uses cross-run failure intersections descriptively only.
+
+## 2026-09-16: recovery campaign terminal and model-free diagnosis
+
+The direct source recovery completed1080 generation contacts and its first full official
+score; task-quality values remain unread. The original typed-context system attempt
+ABORTED after507 model contacts and1080.81575 speech seconds, with no complete manifest
+or score. Root read only attempt metadata, whitelisted exception metadata and source code
+to diagnose the shared tool-cardinality/rejected-action settlement failure. Preserve all
+partial contacts; no automatic restart, new model/tool contact or quality release occurs.
+Root triage receipt is recorded in STATUS-154. The separately registered offline
+three-arm numeric join is complete with no new scorer/model/tool contacts; see
+docs/results/2026-09-16-slurp-coverage-gap-numeric-inventory.md.
