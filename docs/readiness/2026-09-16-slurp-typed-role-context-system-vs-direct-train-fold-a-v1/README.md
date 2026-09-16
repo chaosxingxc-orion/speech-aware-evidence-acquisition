@@ -1,3 +1,7 @@
+# Registered typed-context system versus direct comparison
+
+The authoritative successor is protocol-registered-v2.json and the four *-plan-registered-v2.json plans. Root admission and four exposure rows are bound. The earlier preparation below remains history. Use the single direct-then-system campaign; its existing live whole-roster gate fits direct requests before dispatch automatically, and its native gate fits each realized system request. No separate duplicate tokenizer campaign is required. Freeze source and verify the existing resident service before launch; do not read the first arm quality to alter the second.
+
 # Typed-role-context system versus direct TRAIN A preparation
 
 Status: **PREPARING; model-free only; no contact admitted.** This package prepares the selected complete system-versus-direct comparison on the exact 1,080-row TRAIN Fold A roster. It does not authorize FIT, generation, tools, scoring, a service action or a quality read. Root owns admission, exposure registration, final plan hashes, source freeze and launch.

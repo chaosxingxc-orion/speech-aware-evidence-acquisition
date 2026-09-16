@@ -255,8 +255,8 @@
     }
   ],
   "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-V1/phase-supply-final-v1.json",
-    "sha256": "df06cf78124f93fe87723ed88fae8b221140d87327ef95b8c7d011800982f1bf"
+    "relpath": "prepared/SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-V1/phase-supply-registered-v1.json",
+    "sha256": "ca16d15630467035f7fcd3a28fe954a9e2b253bb79b9cb5c58b6aa49d6385700"
   },
   "scorers": [
     "slurp-slu-official-train",
@@ -271,5 +271,5 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "Prepared full1080 TRAIN A complete native system package: maximum-three Perception candidates, K8 intent-boundary supply, candidate-associated slot contracts, typed role-context compilation, structured evidence-directed Reviewer, Reviewer task-contract and source-bound knowledge-target lookup tools, Planner routing, one bounded revision and Solver-only final authority. Preserve the legacy full-TRAIN ontology and examples, max512 decoder-only geometry and original promoted speech. Reserve each Reviewer visit final iteration for its report. Root admission, exposure registration, final plans and source freeze remain pending."
+  "what_this_is": "Registered full1080 TRAIN A complete native system package: maximum-three Perception candidates, K8 intent-boundary supply, candidate-associated slot contracts, typed role-context compilation, structured evidence-directed Reviewer, Reviewer task-contract and source-bound knowledge-target lookup tools, Planner routing, one bounded revision and Solver-only final authority. Preserve the legacy full-TRAIN ontology and examples, max512 decoder-only geometry and original promoted speech. Reserve each Reviewer visit final iteration for its report. Root admission, exposure registration, final plans and source freeze remain pending."
 }
