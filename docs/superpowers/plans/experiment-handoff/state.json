@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 158,
+  "generation": 159,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,13 +10,17 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "9bf27b28708bb93607138e7bcd1eacb66eab3f08",
-  "updated_at_utc": "2026-09-16T12:37:50.428220+00:00",
-  "next_action": "Read STATUS-158.md and retain STATUS-157 postseal instructions. Current full1080 recovery remains the only authorized generation (PID425664/exec34947). Wait for full seal/first score, then root paired release and shared analysis including native_tool_exposure. A conditional exact-roster replica draft is prepared but held; admit it only after a complete valid positive predecessor verdict. Never restart on observation timeout.",
+  "snapshot_commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+  "updated_at_utc": "2026-09-16T16:33:13.952538+00:00",
+  "next_action": "Read docs/handoff/2026-09-16-fable51/START-HERE.md and STATUS-159.md. Verify sole live recovery by exact process and terminal metadata; do not relaunch. After full seal and first score, perform source verification, paired release and shared analysis including native_tool_exposure. Conditional replica remains held. Close on second failure.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-GPU-RESUME-2026-09-15",
   "owner_power_direction": "2026-09-14: The owner confirmed that current power mode is optimal and instructed root not to dwell on it. Preserve current hardware/service settings.",
   "owner_gpu_direction": "GPU authorization active. Sole full1080 system recovery launched against the resident decoder; preserve geometry, feature cache and absent mmproj. One generation flight. No restart or extra mechanism.",
-  "owner_research_direction": "September 16: focus SLURP on candidate coverage and downstream intent/slot quality; the latest refinement makes a shared role-context module the central mechanism. Analyze, clean and normalize source-bound handoffs, distinguish evidence/knowledge/hypotheses/drafts/review declarations, then supply the information each role needs. Root retains scientific analysis and decisions."
+  "owner_research_direction": "September 16: focus SLURP on candidate coverage and downstream intent/slot quality; the latest refinement makes a shared role-context module the central mechanism. Analyze, clean and normalize source-bound handoffs, distinguish evidence/knowledge/hypotheses/drafts/review declarations, then supply the information each role needs. Root retains scientific analysis and decisions.",
+  "handoff_package": "docs/handoff/2026-09-16-fable51/START-HERE.md",
+  "handoff_target": "Fable5.1; actual takeover not yet acknowledged",
+  "active_source_commit": "9bf27b28708bb93607138e7bcd1eacb66eab3f08",
+  "active_source_worktree": "/home/chao/saea-worktrees/slurp-typed-context-full-recovery-v1"
 }

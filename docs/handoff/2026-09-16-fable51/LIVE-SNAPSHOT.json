@@ -1,0 +1,87 @@
+{
+  "schema": "saea-fable51-handoff-snapshot-v1",
+  "sampled_at_utc": "2026-09-16T16:33:13.952538+00:00",
+  "purpose": "Metadata-only handoff snapshot; not launch authority or a quality release.",
+  "canonical_head_before_handoff": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+  "active_source_commit": "9bf27b28708bb93607138e7bcd1eacb66eab3f08",
+  "active_source_tracked_status": "",
+  "campaign": {
+    "pid": 425664,
+    "present": true,
+    "state": "S",
+    "start_ticks": "12073328",
+    "expected_command_identity": true
+  },
+  "attempt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-RECOVERY-V1/attempt-slurp-native-typed-role-context-train-fold-a-recovery-generation-v1.json",
+    "run_id": "SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-RECOVERY-V1",
+    "attempt_id": "attempt-slurp-native-typed-role-context-train-fold-a-recovery-generation-v1",
+    "state": "OPENED",
+    "actual_model_contacts": 6077
+  },
+  "root_original_tool_handle": 34947,
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "service_process": {
+    "pid": 364846,
+    "present": true,
+    "state": "R",
+    "start_ticks": "9575036",
+    "expected_command_identity": true
+  },
+  "monitor_process": {
+    "pid": 364981,
+    "present": true,
+    "state": "S",
+    "start_ticks": "9581534",
+    "expected_command_identity": true
+  },
+  "monitor_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1/monitor.jsonl",
+  "monitor_mtime_utc": "2026-09-16T16:33:11.331823+00:00",
+  "last_monitor_sample": {
+    "gpu": {
+      "clocks_sm_mhz": 180.0,
+      "memory_used_mib": 22976.0,
+      "power_watts": 93.37,
+      "pstate": "P2",
+      "utilization_percent": 94.0
+    },
+    "host_memory": {
+      "host_free_gb": 36.9139404296875,
+      "host_memory_source": "windows+vm",
+      "host_total_gb": 63.43492889404297,
+      "vm_available_gb": 39.278446197509766,
+      "vm_total_gb": 43.10557556152344,
+      "vmmem_ws_gb": 6.453342437744141
+    },
+    "requests_total": 8896,
+    "slots": {
+      "busy": 4,
+      "idle": 0,
+      "total": 4
+    }
+  },
+  "terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-typed-context-vs-direct-v1/root-campaign-system-recovery-terminal-v1.json",
+    "exists": false
+  },
+  "observer": {
+    "agent": "/root/slurp_stage_attribution_sol",
+    "watcher_process": {
+      "pid": 444770,
+      "present": true,
+      "state": "S",
+      "start_ticks": "13582452",
+      "expected_command_identity": true
+    },
+    "reported_allocation_start_utc": "2026-09-16T16:07:26.208094Z",
+    "maximum_allocation_hours": 3,
+    "receipt": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-typed-context-vs-direct-v1/observer-system-recovery-v1.json",
+    "receipt_may_represent_last_completed_window": true
+  },
+  "quality_release": "HELD",
+  "task_scores_read": false,
+  "model_outputs_read": false,
+  "reference_text_read": false,
+  "model_or_tool_contacts_added": 0,
+  "warning": "Counters are not completed samples. Revalidate after takeover. Observer timeout is not experiment failure."
+}

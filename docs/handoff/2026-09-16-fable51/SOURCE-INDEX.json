@@ -1,0 +1,524 @@
+{
+  "schema": "saea-fable51-handoff-source-index-v1",
+  "created_at_utc": "2026-09-16T16:36:45.235687+00:00",
+  "study_root_wsl": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition",
+  "historical_document_commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+  "scope": "Document synthesis and metadata-only handoff; no new experimental contacts or current paired quality analysis.",
+  "precedence": "Fresh durable runtime metadata determines liveness; START-HERE and STATUS-159 determine current routing. Original protocols/verdicts govern their own experiments.",
+  "source_documents": [
+    {
+      "path": "AGENTS.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "ef513f2876773ebd6fb192f0e1d689c2eacba5cb85eeba54f0c01ff2bfd9d88b",
+      "size_bytes": 8674,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "8c1c4b6609aeceb08f33508c73a943cceebdbcdb58e669f6614a474bff8bdc04",
+      "size_bytes": 11554,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-03-a2t-select-fill-agentloop-104-v1-verdict.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "be097d1e9d0ff2523ed461b7ee78499f3c8444ad7315a98f47a97459c2b1bf58",
+      "size_bytes": 14114,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-05-a2t-org1-domain-grouped-registry-v1-verdict.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "1cfed55615714888363250e25814e7c407889dbef9b4993d5b0160dd63bdfc8a",
+      "size_bytes": 18489,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-08-e21-kc-e1f-repair-pass-v2-redecision.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "c25ab5082390d3e019ba06ed23b5e6850124a516cd39b6b10982ea3463b7b07c",
+      "size_bytes": 29835,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-08-e21-kc-e1f-replication-v1-verdict.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "cf8550bd3cf60d8aff741a6df2cf4c4c891704d761a4772c9ec1909e8f76feef",
+      "size_bytes": 21850,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-10-e21-dr-packets-four-delivery-decision.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "e5ea755a45f44df2ee1aa3a48b186dc1fa2ff91665b37efbc2809bb67ef6378f",
+      "size_bytes": 15692,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-10-e21-loop-packets-decision.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "3c473dd3cfd5029565b17c6b454bb88d64e98a35db22b16a2437448e1d709029",
+      "size_bytes": 13578,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-11-e21-offline-system-result.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "2805ae741e3e80cb4548c287aa160a4edb7a924b326c60ccaac1aaed03061a7b",
+      "size_bytes": 11670,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-11-training-free-rl-2026-source-audit.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "5a856a286c3830dd8346a67504e30c2ec8727be184f25570eb79fc9332062059",
+      "size_bytes": 11961,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-11-training-free-rl-2026-source-index.json",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "a86a3ebce8910790b038af8eecc53160d2122f9a1d886eddc52cb1422821387d",
+      "size_bytes": 2842,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-12-a2t-native-system-final-result-v1.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "166511373efe0eb1ed26666139551b4723150eedb2915634f1ae40417a3f0758",
+      "size_bytes": 8475,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-12-slurp-fixed-whisper-result-v1.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "6c486d49619ecbc6172d461f067c9edb04ed0b55456237b1a6b0bb540313a656",
+      "size_bytes": 14180,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-14-slurp-direct-vs-native-dual-store-reboot-recovery-verdict-v1.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "06f210247a27ace34c8f20bf95782f3cafd6b5a743f3e1968a8657b2fb70bc17",
+      "size_bytes": 16517,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-14-trajectory-policy-optimization-v1.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "36a8cfcaccbf9ce3e0cc668e9057e1404e93e6896aa905286adf04df399dfd63",
+      "size_bytes": 17289,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-15-a2t-native-role-scope-tools-held-v1.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "610c2be2319f7049b15963af087e57c348ca238624f717dd5074b979407c8fed",
+      "size_bytes": 14885,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-16-native-tool-batch-rejection-repair-v1.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "271c0fadf41fa408ac05431e351e3f38541a04a7f13cdfd524c424cfd712f4d8",
+      "size_bytes": 3270,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-16-role-context-compilation-contract.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "cde4f8dd505d6926abde8423d1571b81c819f9c9c31c496e978ea0b80791c9fb",
+      "size_bytes": 11113,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-16-role-context-implementation.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "d47b4c4351fc76901055552e599fb99d6501ae245491d3c139ea0f4d02f238b0",
+      "size_bytes": 5198,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-16-slurp-postseal-source-bindings-v1.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "c6f5d4c83fc7875dbbe1aca4720a2b82b5bde298387f7ac333728bf973e440c9",
+      "size_bytes": 5378,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-16-slurp-system-vs-direct-train-a-analysis-held-v1.json",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "e0d68d359c2251b638627fdbb53c1f9f19f540d18f43244ccc810f85dfe72079",
+      "size_bytes": 6023,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-16-slurp-two-track-synthesis-source-pins-v1.json",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "021a2fd5742b5e540dd6de62795e3dbffbb995b4e96e657f96f494cd03426e41",
+      "size_bytes": 2597,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-16-slurp-typed-context-matched-replication-held-v1/ACTIVATION-CHECKLIST.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "2a49dfbb947fc3eab5d30a9a1c35a213dbbe30a775183a7191633305c47454c0",
+      "size_bytes": 2961,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/readiness/2026-09-16-slurp-typed-context-system-recovery-v1/README.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "cec1fa1c8362064e4375b6edd73e288ee6ceaeeda88c60cd897ed82ef54ff7a7",
+      "size_bytes": 1931,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+      "size_bytes": 351670,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/results/2026-09-10-fable-reproduction-audit.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "db9107f90ec73e2f20fc97e28b670a0a04ed486bec7701782eb6d463ba9d0f8b",
+      "size_bytes": 19947,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/results/2026-09-14-slurp-dual-store-base-replication-verdict-v1.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "62b3b3ca513a4760366126df63b37f8c58f074dced015ec65a93649da2a79fd4",
+      "size_bytes": 9412,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/results/2026-09-14-slurp-native-train-a-anchor.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "b017344c220ed10d3aa410f02fec6e72fa882f5bea96b25a95bd1af80c33cd6e",
+      "size_bytes": 5782,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/results/2026-09-14-slurp-train-a-entity-loss-attribution-v1.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "e34a67fbaebe9a35030254dedc100afe8ff9d17069ac723867bcd0b627dace0a",
+      "size_bytes": 7138,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/results/2026-09-15-a2t-native-role-base-full4000.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "82c8b6e7a8166d456d9c0da92a4de01ca6c525b5717f858907c4d05a218b673a",
+      "size_bytes": 22455,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/results/2026-09-15-a2t-ordered-action-attribution-v1.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "2154108b3ec643918effb2b45f544c7dcdab684e1f527e7ed0ef57a3b369a6f5",
+      "size_bytes": 12822,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/results/2026-09-15-a2t-primary-parameter-attribution-v1.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "6354e7525ad940e58e24a075f59d0119b9703f2160e2c4f5a2039d86241c5d6a",
+      "size_bytes": 13747,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/results/2026-09-16-slurp-broad-factored-train-a.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "4db21819b80562e702404b64327e80c5d7135499b7a0e7b4484d4389e7dbfe44",
+      "size_bytes": 12206,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/results/2026-09-16-slurp-candidate-five-train-a.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "2a32842096073babe0add6217fe12996a37c93229a846af7bfa5d7221868027a",
+      "size_bytes": 14029,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/results/2026-09-16-slurp-coverage-gap-numeric-inventory.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "ed38208747e04b975725c1bd73424d2f28395d3e091e4cb52c1b69839c97baf0",
+      "size_bytes": 4266,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/results/2026-09-16-slurp-knowledge-construction-consumption-inventory.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "886904c33b7034c5641d89d4512f6975736c2182efb89168989936f18eff9b62",
+      "size_bytes": 16415,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/results/2026-09-16-slurp-review-context-provenance.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "95b854c0fa62fc33c6d8975305ad723a2d7ff84d6ba402f15d1d687e17088a43",
+      "size_bytes": 7695,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/results/2026-09-16-slurp-temporal-slot-diagnosis.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "7a30705725649d5533eb66948ff21af271470b1a5511ae389fe5e5bacca200c0",
+      "size_bytes": 10924,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/results/2026-09-16-slurp-train-a-review-stage-attribution.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "ec74f8fe17fa5d35aa122a174229855f5c949cbc1e62fa44a1c0a0fe6a2e91dc",
+      "size_bytes": 9035,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/results/2026-09-16-slurp-two-track-evidence-synthesis.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "efe31ed724004357be3ff25a80416fe25729e6fa7ec3aa3061c5adf3dbf4c01c",
+      "size_bytes": 12437,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/results/stage2-results-ledger.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "5bfb00b808122d66c533aadac61f3760dea68546fc8e9a545280790f9200818b",
+      "size_bytes": 168024,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/CONTINUATION-PLAN.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "c80d4ad0bb74185ba8cf8ea81af6b6a06560058e707a01074718695c93417088",
+      "size_bytes": 20085,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/MODEL-ALLOCATION.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "4b6eb5b08f7de1853f0567542cc7fe99711715e83c990a6e0fb7056e7c93f286",
+      "size_bytes": 2791,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/OWNER-AGENT-BASE-BEFORE-RL-2026-09-14.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "bd26745a75475d331236808257cc9da68f2947c4c491ca90d9f53f54c28fbf51",
+      "size_bytes": 984,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/OWNER-ALGORITHMIC-TRAJECTORY-OPTIMIZATION-2026-09-14.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "2fca67cf8fdf8ea8cc246ba53f9dac843562a4334682ddfe3911a5a08ccfc171",
+      "size_bytes": 1312,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/OWNER-CANDIDATE-COVERAGE-PRIORITY-2026-09-14.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "c562f8577ae8685ae574742e32f599dd9a073feeee3f48db3bbb031d5074b040",
+      "size_bytes": 1258,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/OWNER-E21-QUALITY-PRIORITY-022.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "35077885c365e69b54e39d9dbc6c3505c8258c11b0c577c043c51a324d8d5e90",
+      "size_bytes": 1084,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/OWNER-GPU-RESUME-2026-09-15.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "08441c3aa0ff020cb91c7a07e5a2c840d211445b38b0e77e47d5ab31cc01e8e1",
+      "size_bytes": 1260,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/RECOVERY-PLAN.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "5d43daac9bce528181dc26791aae701c4023a39153df2448cd437383df43f3d1",
+      "size_bytes": 23602,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/STATUS-156.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "fc9f50487afe30e01654f69e47a2dc4314b303a3e53052eef7a3c6878a619a49",
+      "size_bytes": 3711,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/STATUS-157.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "6314647c06d6221bd12149760ac8aeb6ed1c7b98fbdeaec293315502db770de1",
+      "size_bytes": 3293,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/STATUS-158.md",
+      "commit": "442d77e89f3d6d112324b3277e73fa6070d12f3c",
+      "git_blob_sha256": "fe55e318c39ad2cf425d7ce5dada6651f9442d5cdbc73fc06c4b06ba6d7ad720",
+      "size_bytes": 2767,
+      "working_bytes_equal_git_blob": true,
+      "classification": "released_or_registered_document; historical next-action text may be superseded"
+    }
+  ],
+  "package_files": [
+    {
+      "path": "docs/handoff/2026-09-16-fable51/EXPERIMENT-REPORT.md",
+      "sha256": "1838f169d9c605b042794acaa186921f1a1ae85e0fb178e1c8232584a2ae1f38",
+      "size_bytes": 23983
+    },
+    {
+      "path": "docs/handoff/2026-09-16-fable51/LIVE-SNAPSHOT.json",
+      "sha256": "312776c1541f33e6a9b5295a3de39679508310a604209922e3ecd391973ec4ee",
+      "size_bytes": 3277
+    },
+    {
+      "path": "docs/handoff/2026-09-16-fable51/NEXT-STEPS-AND-DECISIONS.md",
+      "sha256": "6430c47a4add422d662651c6ffa8480fe0968d6d6588c81086249e4fbb520360",
+      "size_bytes": 10410
+    },
+    {
+      "path": "docs/handoff/2026-09-16-fable51/OPERATIONS-AND-RECOVERY.md",
+      "sha256": "2c60b99b8b83d6d4f54baad5ea8d228ef82a02b9c32cd8094930c93ff361c721",
+      "size_bytes": 10792
+    },
+    {
+      "path": "docs/handoff/2026-09-16-fable51/START-HERE.md",
+      "sha256": "6a441d5d4cd45afcd3304633ece83f7f91e53ead7bd0e781f43f9080209dcbe8",
+      "size_bytes": 6140
+    },
+    {
+      "path": "docs/handoff/2026-09-16-fable51/SYSTEM-AND-KNOWLEDGE.md",
+      "sha256": "3e3e3a2d4d54599bca0e0be6155ec33acf08fe557c180ecc4eb4fe420808e5ac",
+      "size_bytes": 10409
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/README.md",
+      "sha256": "1cbb6a91db290325725913bc07483ee1c78489416c9144fa6ef142e8e8b7a08c",
+      "size_bytes": 3298
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/STATUS-159.md",
+      "sha256": "0447b3d8d3060c26f8f5be782d0558ade312eee82b4deb441cd11665a1d54eca",
+      "size_bytes": 1814
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/state.json",
+      "sha256": "0853f78a253e182172dd04400f22fe7a85f5023f96fcaf1729cba17803672f72",
+      "size_bytes": 2387
+    }
+  ],
+  "external_local_artifacts": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-typed-context-vs-direct-v1/postseal-preparation/source-bindings-known-system-recovery-v1.json",
+      "sha256": "d5d689b0ee5093a9da0d8de2b5fd71181c09b5b5103beb9e5d52bc0e2993287c",
+      "classification": "operational_or_source_binding_metadata"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-typed-context-vs-direct-v1/postseal-preparation/analysis-api-compatibility-v1.json",
+      "sha256": "0b0974e7d0cee3249e24e06d51a0bebff3b28b9d6344c7dfd02fd4f7b1c74819",
+      "classification": "operational_or_source_binding_metadata"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-typed-context-vs-direct-v1/root-campaign-system-recovery-launch-v1.json",
+      "sha256": "2541927a068db3a9d87f4890b0d553df033a6c90b6846dd04d1e114458dcceb6",
+      "classification": "operational_or_source_binding_metadata"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-typed-context-vs-direct-v1/system-recovery-admission-v1.json",
+      "sha256": "12309cc5ef2fba44209db994ed11912b29949a065542a8de5918d30ef7234420",
+      "classification": "operational_or_source_binding_metadata"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-typed-context-vs-direct-v1/system-recovery-preflight-v1.json",
+      "sha256": "bb72f7f22233e61cefb4723f5543675431b83bfc6ebbf7628e6b086f9417d8da",
+      "classification": "operational_or_source_binding_metadata"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-typed-context-vs-direct-v1/tool-rejection-proof4-root-verdict-v1.json",
+      "sha256": "b104771e2fc7a626de2bce3a55871781faaa15ff62174570ac3904cbdb3362c8",
+      "classification": "operational_or_source_binding_metadata"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1/attempt-slurp-direct-max512-train-fold-a-source-recovery-generation-v1/SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1.generation-manifest.json",
+      "sha256": "5219d078dae949fede1f8cd72832ffdbf26b9e2205fd7873e4e7bf631e56b534",
+      "classification": "sealed_current_pair_artifact; bytes hashed only; quality unread"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1/attempt-slurp-direct-max512-train-fold-a-source-recovery-generation-v1/SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1.scores.json",
+      "sha256": "7840a959fe4f43928fda0e0cacfe8c0ee4200116bfcd269bfe3451b59da29c38",
+      "classification": "sealed_current_pair_artifact; bytes hashed only; quality unread"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/e21-native-window-registration-v1/root-fit-terminal-reconciliation-v1.json",
+      "sha256": "de5ab186a99c39f4aa42799245f51c944882d91190bb36d038a6e8cbed1dc0b0",
+      "classification": "historical zero-contact failure metadata; E21 held"
+    }
+  ],
+  "relative_links_verified": 47,
+  "missing_links": [],
+  "protected_read_boundary": "Do not parse current task outputs/scores/references until complete system seal, first full score, source verification and root paired release. Hash-only checks are not quality reads.",
+  "data_identity_authority": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
+}

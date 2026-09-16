@@ -1,0 +1,25 @@
+{
+  "schema": "saea-fable51-handoff-validation-v1",
+  "checked_at_utc": "2026-09-16T16:42:40.208900+00:00",
+  "scope": "Documentation and metadata only; no production code or active frozen source changed.",
+  "source_index_sha256": "1c80c5f083ee39b847e55dfb14c0cd2d4449b0f110dd2924beb42697240947e4",
+  "source_document_git_blob_bindings_verified": 52,
+  "package_hashes_verified": 9,
+  "external_metadata_or_hash_only_bindings": 9,
+  "relative_document_links_verified": 47,
+  "missing_links": [],
+  "authored_json_parse": "PASS",
+  "authored_documents_english": "PASS",
+  "experiment_handoff_check": {
+    "status": "OWNER_DIRECTED_EXECUTION",
+    "exit_code": 0,
+    "errors": [],
+    "warning": "Expected uncommitted handoff and preserved unrelated user files at precommit check; coordination does not grant launch."
+  },
+  "git_diff_check": "PASS",
+  "bounded_historical_metric_review": "No material discrepancy in E21/Audio2Tool statements against released sources; root retains scientific interpretation.",
+  "new_tests_added": 0,
+  "model_or_tool_contacts_added": 0,
+  "official_scores_run": 0,
+  "current_pair_quality_read": false
+}
