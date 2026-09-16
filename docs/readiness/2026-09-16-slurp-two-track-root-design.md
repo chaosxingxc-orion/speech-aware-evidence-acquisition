@@ -101,3 +101,13 @@ entities expose a separate extraction gap. These two failure slices are disjoint
 neither is a new evaluation roster or a causal component estimate. Keep all 1080 rows in final
 quality metrics and compare common-covered rows before comparing changing own-covered
 denominators. No fresh roster or small accuracy screen is admitted by this table.
+
+## Temporal follow-up narrows Track B
+
+Read docs/results/2026-09-16-slurp-temporal-slot-diagnosis.md. All 84 date-omission rows already expose the exact released date card to initial Solver and Reviewer. In 25, the missing expression also appears in a candidate distinction. All initial roles receive speech packets. This names an evidence-to-delivery completeness gap while preserving the distinction between exposure, textual mention, grounding and causal use.
+
+Time has a different pattern: 55 same-type matches but only eight exact filler pairs; representation and span differences are prominent in the offline root audit. The contracts already state generic omission and preservation rules but lack complete per-intent boundaries and serialization. Treat source-derived contract refinement as a distinct hypothesis from acoustic observation.
+
+Prioritize Reviewer checks of supported mentions omitted from the answer and answer fields unsupported by speech. Route missing semantic distinctions to targeted knowledge and unresolved speech to optional acoustic tools. Do not fetch an already visible card and label it new information. Build any new value from admitted construction data excluding A/B; never convert the offline reference cases into runtime exemplars.
+
+Keep the current A1 request program frozen. The next admitted experiment remains conditional on its complete verdict and is one bounded contrast, not a simultaneous rewrite of every role, store and tool.
