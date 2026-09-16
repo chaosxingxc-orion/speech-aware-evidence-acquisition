@@ -50,6 +50,31 @@ BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256 = hashlib.sha256(
         ensure_ascii=True, sort_keys=True, separators=(",", ":"),
     ).encode("utf-8")
 ).hexdigest()
+CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID = (
+    "configurable-bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1"
+)
+_CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY = {
+    **_FIRST_OCCURRENCE_PROJECTION_POLICY,
+    "policy_id": CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    "input_candidate_count": {
+        "min": 1,
+        "max": "configured-max-candidates-within-legal-intent-inventory",
+    },
+}
+CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256 = hashlib.sha256(
+    json.dumps(
+        _CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY,
+        ensure_ascii=True,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+).hexdigest()
+BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_IDS = frozenset(
+    {
+        BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+        CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    }
+)
 _CANDIDATE_KEYS = frozenset(
     {"intent_id", "distinction", "evidence_refs", "unresolved_fields"}
 )
@@ -312,16 +337,42 @@ def project_fixed_three_slurp_intent_hypotheses(
 
 
 def project_bounded_slurp_intent_hypotheses(
-    content: str, *, sample_id: str, legal_intent_ids: Iterable[str],
+    content: str,
+    *,
+    sample_id: str,
+    legal_intent_ids: Iterable[str],
+    max_candidates: int = 3,
+    projection_policy: str = BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
 ) -> SlurpIntentHypothesisProjection:
-    """Project one through three raw candidates without editing the source.
+    """Project a configured bounded response without editing the source.
 
     Validate every raw object before retaining the first occurrence of each
-    intent. This policy has a separate identity from the fixed-three policy.
+    intent. The historical default-three policy retains its exact identity.
     """
     if not isinstance(content, str):
         raise SlurpIntentHypothesisError("bounded hypothesis response must be JSON text")
     legal = _legal_ids(legal_intent_ids)
+    if (
+        isinstance(max_candidates, bool)
+        or not isinstance(max_candidates, int)
+        or not 1 <= max_candidates <= len(legal)
+    ):
+        raise SlurpIntentHypothesisError(
+            "max_candidates must be between 1 and the legal intent count"
+        )
+    if projection_policy not in BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_IDS:
+        raise SlurpIntentHypothesisError(
+            "bounded hypothesis projection policy is unsupported"
+        )
+    if (
+        max_candidates > 3
+        and projection_policy
+        != CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+    ):
+        raise SlurpIntentHypothesisError(
+            "candidate bounds above three require the configurable bounded "
+            "first-occurrence projection policy"
+        )
     try:
         compact = json.loads(content, object_pairs_hook=_unique_json_object)
     except (TypeError, json.JSONDecodeError) as error:
@@ -331,20 +382,28 @@ def project_bounded_slurp_intent_hypotheses(
             "bounded hypothesis response must contain exactly candidates"
         )
     rows = compact["candidates"]
-    if not isinstance(rows, list) or not 1 <= len(rows) <= 3:
+    if not isinstance(rows, list) or not 1 <= len(rows) <= max_candidates:
         raise SlurpIntentHypothesisError(
-            "bounded hypothesis response must contain one through three candidates"
+            "bounded hypothesis response must contain "
+            f"one through {max_candidates} candidates"
         )
+    policy_sha256 = (
+        BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256
+        if projection_policy == BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+        else CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256
+    )
     return _project_validated_rows(
         content, rows=rows, sample_id=sample_id, legal=legal,
-        policy_id=BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
-        policy_sha256=BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256,
+        policy_id=projection_policy,
+        policy_sha256=policy_sha256,
+        max_candidates=max_candidates,
     )
 
 
 def _project_validated_rows(
     content: str, *, rows: list[object], sample_id: str,
     legal: frozenset[str], policy_id: str, policy_sha256: str,
+    max_candidates: int = 3,
 ) -> SlurpIntentHypothesisProjection:
     validated_rows: list[dict[str, object]] = []
     for row in rows:
@@ -396,7 +455,7 @@ def _project_validated_rows(
         projected_compact,
         sample_id=sample_id,
         legal_intent_ids=legal,
-        max_candidates=3,
+        max_candidates=max_candidates,
     )
     return SlurpIntentHypothesisProjection(
         content=projected,
@@ -443,8 +502,13 @@ def parse_slurp_intent_hypothesis_state(
             "hypothesis content does not match its source response SHA-256"
         )
     if projection_policy is not None and (
-        projection_policy != BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+        projection_policy not in BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_IDS
         or compact_source_phase is None
+        or (
+            max_candidates > 3
+            and projection_policy
+            != CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+        )
     ):
         raise SlurpIntentHypothesisError(
             "projection_policy requires the bounded first-occurrence policy and compact source"
@@ -473,7 +537,11 @@ def parse_slurp_intent_hypothesis_state(
             )
         if projection_policy is not None:
             projection = project_bounded_slurp_intent_hypotheses(
-                content, sample_id=sample_id, legal_intent_ids=legal,
+                content,
+                sample_id=sample_id,
+                legal_intent_ids=legal,
+                max_candidates=max_candidates,
+                projection_policy=projection_policy,
             )
             content = projection.content
         else:

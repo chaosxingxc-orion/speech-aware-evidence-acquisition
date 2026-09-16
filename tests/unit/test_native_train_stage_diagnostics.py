@@ -196,6 +196,31 @@ def test_export_separates_coverage_and_conditional_correctness_without_gold_text
     assert result["semantics"]["uncovered_conditional_reward"] is None
 
 
+def test_train_diagnostics_accept_configured_five_and_reject_over_limit():
+    sample_id = "slurp:train:synthetic-five"
+    candidate_ids = tuple(f"intent-{index}" for index in range(5))
+    candidates = (SourceCandidateRow(sample_id, candidate_ids),)
+    references = (ReferenceIntentRow(sample_id, candidate_ids[-1]),)
+    links = (_Link(sample_id, 1),)
+
+    result = build_native_train_stage_diagnostics(
+        candidate_rows=candidates,
+        reference_rows=references,
+        reward_links=links,
+        source=_source((sample_id,)),
+        max_candidates=5,
+    )
+    assert result["samples"][0]["initial_candidate_width"] == 5
+    with pytest.raises(NativeTrainStageDiagnosticError, match="at most 4"):
+        build_native_train_stage_diagnostics(
+            candidate_rows=candidates,
+            reference_rows=references,
+            reward_links=links,
+            source=_source((sample_id,)),
+            max_candidates=4,
+        )
+
+
 def test_absent_coverage_has_an_explicit_zero_denominator_not_conditional_failures():
     ids, candidates, _references, links = _world()
     references = tuple(

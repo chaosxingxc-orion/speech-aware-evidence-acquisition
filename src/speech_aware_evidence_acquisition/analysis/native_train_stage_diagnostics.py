@@ -21,7 +21,8 @@ from ..rails.hashing import content_hash
 from ..rails.reward_link_io import read_verified_reward_link_artifact
 from ..rails.slurp_candidate_contracts import build_slurp_candidate_contract_provider
 from ..rails.slurp_intent_hypotheses import (
-    BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_IDS,
+    CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
 )
 from .native_candidate_stage_projections import (
     PROJECTION_CONFIG_SCHEMA,
@@ -115,6 +116,7 @@ def build_native_train_stage_diagnostics(
     reference_rows: Sequence[ReferenceIntentRow],
     reward_links: Sequence[object],
     source: Mapping[str, object],
+    max_candidates: int = 3,
     _availability: Sequence[bool] | None = None,
 ) -> dict[str, object]:
     """Join exact-cohort candidates, references, and final native correctness.
@@ -128,6 +130,14 @@ def build_native_train_stage_diagnostics(
     links = tuple(reward_links)
     if not candidates:
         raise NativeTrainStageDiagnosticError("diagnostic cohort must be nonempty")
+    if (
+        isinstance(max_candidates, bool)
+        or not isinstance(max_candidates, int)
+        or max_candidates < 1
+    ):
+        raise NativeTrainStageDiagnosticError(
+            "max_candidates must be a positive integer"
+        )
     ids = tuple(row.sample_id for row in candidates)
     availability = (
         tuple(True for _ in candidates)
@@ -144,12 +154,13 @@ def build_native_train_stage_diagnostics(
             not isinstance(row, SourceCandidateRow)
             or (available and not row.candidate_ids)
             or (not available and bool(row.candidate_ids))
-            or len(row.candidate_ids) > 3
+            or len(row.candidate_ids) > max_candidates
             or len(row.candidate_ids) != len(set(row.candidate_ids))
             or any(not isinstance(item, str) or not item for item in row.candidate_ids)
         ):
             raise NativeTrainStageDiagnosticError(
-                "each initial candidate row must contain one to three distinct intent IDs"
+                "each initial candidate row must contain at most "
+                f"{max_candidates} distinct intent IDs"
             )
     if set(source) != _SOURCE_KEYS:
         raise NativeTrainStageDiagnosticError("diagnostic source binding has wrong fields")
@@ -276,6 +287,7 @@ def build_native_train_candidate_stage_diagnostics(
     reference_rows: Sequence[ReferenceIntentRow],
     reward_links: Sequence[object],
     source: Mapping[str, object],
+    max_candidates: int = 3,
 ) -> dict[str, object]:
     """Build numeric C0/C1 coverage diagnostics from verified stage pairs."""
 
@@ -320,6 +332,7 @@ def build_native_train_candidate_stage_diagnostics(
         reference_rows=reference_rows,
         reward_links=reward_links,
         source=source,
+        max_candidates=max_candidates,
         _availability=tuple(pair.c0 is not None for pair in pairs),
     )
     c1_document = build_native_train_stage_diagnostics(
@@ -332,6 +345,7 @@ def build_native_train_candidate_stage_diagnostics(
         reference_rows=reference_rows,
         reward_links=reward_links,
         source=source,
+        max_candidates=max_candidates,
         _availability=tuple(pair.c1 is not None for pair in pairs),
     )
     samples = []
@@ -515,7 +529,7 @@ def prepare_native_train_stage_diagnostics(
         or stage_projection.get("schema") != PROJECTION_CONFIG_SCHEMA
         or stage_projection.get("policy_id") != PROJECTION_POLICY_ID
         or stage_projection.get("candidate_projection_policy")
-        != BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+        not in BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_IDS
     ):
         raise NativeTrainStageDiagnosticError(
             "candidate_stage_projection contract is invalid"
@@ -587,9 +601,23 @@ def prepare_native_train_stage_diagnostics(
         raise NativeTrainStageDiagnosticError(
             "native source lacks Perception candidate bounds"
         ) from error
-    if isinstance(maximum, bool) or not isinstance(maximum, int) or not 1 <= maximum <= 3:
+    if (
+        isinstance(maximum, bool)
+        or not isinstance(maximum, int)
+        or maximum < 1
+        or (
+            maximum > 3
+            and (
+                maximum > len(legal_ids)
+                or not stage_projection_enabled
+                or stage_projection["candidate_projection_policy"]
+                != CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+            )
+        )
+    ):
         raise NativeTrainStageDiagnosticError(
-            "native Perception max_candidates must be from one to three"
+            "native Perception max_candidates must fit the legal inventory and "
+            "use the configurable projection above three"
         )
     candidate_binding = {
         "manifest": manifest_pin,
@@ -660,6 +688,7 @@ def prepare_native_train_stage_diagnostics(
             reference_rows=references,
             reward_links=reward_links,
             source=source,
+            max_candidates=maximum,
         )
         if not stage_projection_enabled
         else build_native_train_candidate_stage_diagnostics(
@@ -667,6 +696,7 @@ def prepare_native_train_stage_diagnostics(
             reference_rows=references,
             reward_links=reward_links,
             source=source,
+            max_candidates=maximum,
         )
     )
     if support_enabled:

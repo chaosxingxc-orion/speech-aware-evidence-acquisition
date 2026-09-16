@@ -24,7 +24,12 @@ from speech_aware_evidence_acquisition.rails.candidate_contract_lookup import (
 from speech_aware_evidence_acquisition.rails.controllers import default_phase_program
 
 
-def _catalog(root: Path):
+def _catalog(
+    root: Path,
+    *,
+    max_candidates: int = 3,
+    candidate_ids=("alarm_set", "weather_query", "music_play"),
+):
     document = {
         "schema": "saea-slurp-candidate-contract-catalog-v1",
         "projection_version": "saea-slurp-candidate-contract-projection-v1",
@@ -36,7 +41,7 @@ def _catalog(root: Path):
         "retention": {"min_share": 0.02, "examples_per_type": 0},
         "profiles": [
             {"candidate_id": value, "utterances": 1, "slot_mentions": 0, "types": []}
-            for value in ("alarm_set", "weather_query", "music_play")
+            for value in candidate_ids
         ],
     }
     path = root / "prepared" / "contracts" / "catalog.json"
@@ -45,7 +50,7 @@ def _catalog(root: Path):
     path.write_bytes(raw)
     contract = {
         "id": "slurp-intent-hypotheses-v1",
-        "max_candidates": 3,
+        "max_candidates": max_candidates,
         "source_catalog": {
             "data_relpath": "prepared/contracts/catalog.json",
             "sha256": hashlib.sha256(raw).hexdigest(),
@@ -53,6 +58,37 @@ def _catalog(root: Path):
         },
     }
     return contract
+
+
+def test_candidate_bound_can_reach_the_complete_source_catalog(tmp_path):
+    candidate_ids = (
+        "alarm_set",
+        "weather_query",
+        "music_play",
+        "calendar_set",
+        "email_send",
+    )
+    contract = _catalog(
+        tmp_path, max_candidates=5, candidate_ids=candidate_ids
+    )
+    validator = build_slurp_hypothesis_artifact_validator(
+        contract, data_root=tmp_path
+    )
+    canonical = validator.canonicalize(
+        _response(*candidate_ids), sample_id="slurp:devel:7"
+    )
+    assert [
+        row["intent_id"] for row in json.loads(canonical)["candidates"]
+    ] == list(candidate_ids)
+    schema = slurp_intent_hypotheses_response_format(
+        {}, tmp_path, **contract
+    )["json_schema"]["schema"]
+    assert schema["properties"]["candidates"]["maxItems"] == 5
+
+    with pytest.raises(ArtifactContentError, match="legal intent count"):
+        build_slurp_hypothesis_artifact_validator(
+            {**contract, "max_candidates": 6}, data_root=tmp_path
+        )
 
 
 def _response(*ids: str) -> str:

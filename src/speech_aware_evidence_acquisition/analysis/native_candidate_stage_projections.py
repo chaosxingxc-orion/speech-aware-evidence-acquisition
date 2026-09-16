@@ -10,7 +10,9 @@ from ..rails.hashing import content_hash
 from ..rails.knowledge import AgentStateArtifact
 from ..rails.native_episode_receipt import validate_native_episode_delivery_receipt
 from ..rails.slurp_intent_hypotheses import (
+    BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_IDS,
     BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
     parse_slurp_intent_hypothesis_state,
 )
 from .slurp_topn_diagnostics_cli import verify_native_perception_state_contact
@@ -235,8 +237,13 @@ def project_verified_native_candidate_stages(
         or any(not isinstance(item, str) or not item for item in legal_candidate_ids)
         or isinstance(max_candidates, bool)
         or not isinstance(max_candidates, int)
-        or not 1 <= max_candidates <= 3
-        or projection_policy != BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+        or not 1 <= max_candidates <= len(legal_candidate_ids)
+        or projection_policy not in BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_IDS
+        or (
+            max_candidates > 3
+            and projection_policy
+            != CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+        )
     ):
         raise NativeCandidateStageProjectionError(
             "candidate stage projection requires bounded candidates and legal inventory"

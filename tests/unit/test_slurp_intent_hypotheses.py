@@ -14,6 +14,8 @@ from speech_aware_evidence_acquisition.rails.phase_material import (
     build_material_for_phase,
 )
 from speech_aware_evidence_acquisition.rails.slurp_intent_hypotheses import (
+    CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256,
     BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
     BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256,
     FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
@@ -490,4 +492,62 @@ def test_bounded_and_fixed_three_projections_have_distinct_policy_identity():
     with pytest.raises(SlurpIntentHypothesisError, match="exactly three"):
         project_fixed_three_slurp_intent_hypotheses(
             json.dumps({"candidates": [_payload()["candidates"][0]]}), **args,
+        )
+
+
+def test_configurable_projection_accepts_five_without_changing_default_identity():
+    candidates = [
+        {
+            "intent_id": intent_id,
+            "distinction": f"Alternative {intent_id}.",
+            "evidence_refs": ["speech:current-query"],
+            "unresolved_fields": [],
+        }
+        for intent_id in (
+            "weather_query",
+            "transport_taxi",
+            "alarm_set",
+            "music_play",
+            "calendar_set",
+        )
+    ]
+    legal = frozenset(row["intent_id"] for row in candidates)
+    raw = json.dumps({"candidates": candidates})
+
+    projected = project_bounded_slurp_intent_hypotheses(
+        raw,
+        sample_id=SAMPLE_ID,
+        legal_intent_ids=legal,
+        max_candidates=5,
+        projection_policy=(
+            CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+        ),
+    )
+    assert len(json.loads(projected.content)["candidates"]) == 5
+    assert projected.projection_policy_id == (
+        CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+    )
+    assert projected.projection_policy_sha256 == (
+        CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256
+    )
+    assert BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256 == (
+        "a4ef54c1b0d1ee4853528fcd667fd0fd6f5b91a3b485c85dd75bd7f33f4c5096"
+    )
+
+    with pytest.raises(SlurpIntentHypothesisError, match="configurable"):
+        project_bounded_slurp_intent_hypotheses(
+            raw,
+            sample_id=SAMPLE_ID,
+            legal_intent_ids=legal,
+            max_candidates=5,
+        )
+    with pytest.raises(SlurpIntentHypothesisError, match="one through 4"):
+        project_bounded_slurp_intent_hypotheses(
+            raw,
+            sample_id=SAMPLE_ID,
+            legal_intent_ids=legal,
+            max_candidates=4,
+            projection_policy=(
+                CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+            ),
         )
