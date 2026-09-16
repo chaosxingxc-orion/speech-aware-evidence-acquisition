@@ -111,3 +111,22 @@ Time has a different pattern: 55 same-type matches but only eight exact filler p
 Prioritize Reviewer checks of supported mentions omitted from the answer and answer fields unsupported by speech. Route missing semantic distinctions to targeted knowledge and unresolved speech to optional acoustic tools. Do not fetch an already visible card and label it new information. Build any new value from admitted construction data excluding A/B; never convert the offline reference cases into runtime exemplars.
 
 Keep the current A1 request program frozen. The next admitted experiment remains conditional on its complete verdict and is one bounded contrast, not a simultaneous rewrite of every role, store and tool.
+
+## Prepared Reviewer history factor
+
+The shared runtime now supports an optional Reviewer-only latest-Solver-and-local-tools
+history scope. Read docs/readiness/2026-09-16-slurp-reviewer-history-scope.md.
+It retains original speech, current knowledge and the latest complete Solver state, plus
+the current review visit's exact tool call/result chain. It removes Perception candidate
+IDs and explanations, older drafts and previous Reviewer/Planner/tool history from this
+role's request only. Full episode custody and other roles are unchanged.
+
+This factor is prepared and tested without real model contact. It can reduce exposure to
+earlier opinions but can also remove useful candidate information. Current knowledge still
+reflects prior candidate selection. Do not call it blind or statistically independent review.
+
+The prepared baseline differs only in history scope and descriptive text from the existing
+unrun structured-review v2 baseline. That is its controlled comparison; a comparison to
+the historical anchor is a package contrast. Neither arm is admitted here. Keep the optional
+no-example task-contract projection separate. After the complete A1 verdict, root selects
+one bounded, decision-relevant next experiment or the required replication.
