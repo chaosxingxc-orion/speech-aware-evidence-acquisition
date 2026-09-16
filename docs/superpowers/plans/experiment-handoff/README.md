@@ -1,5 +1,7 @@
 # Current continuation: September 16
 
+Current owner refinement (2026-09-16): conduct two research tracks within SLURP, candidate coverage and evidence-grounded intent/slot resolution. Read [the root two-track plan](../../../readiness/2026-09-16-slurp-two-track-research-plan.md). Research proceeds in parallel; GPU experiments remain sequential and separately registered. E21 and Audio2Tool transfer remain held.
+
 Read [STATUS-141](STATUS-141.md): SLURP is now the only active optimization
 target. The earlier dynamic-tools flight is closed after two failures, with
 partial quality unread and no third attempt or relabel restart. A future
