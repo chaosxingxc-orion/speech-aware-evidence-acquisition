@@ -65,8 +65,8 @@ discrepancy.
    the flip — because step 1 must still hold at launch. Then re-run `check` (section 3) and confirm
    the runtime-derived protocol hash still equals the registered one; **flipping readiness and
    adding a requirement both change the composed config hash**, so the plan documents, the two
-   ledger notes and this table must be re-pinned in the same commit, exactly as cell B0's package
-   section 7 prescribes.
+   ledger notes and this table must be re-pinned in the same commit. Master has already moved past this
+   branch's base, so do this as the single re-pin cycle of section 10, not twice.
 
 Shell prelude used by every command below:
 
@@ -253,3 +253,56 @@ byte the core sees.
    standalone worker.
 6. **Cell B0's registered composed hash does not reproduce on master.** Section 7, isolated to one
    inert key, with the envelope proof beside it.
+
+## 10. If master moves before launch (it already has)
+
+This branch is based on `6c5c9ab7`. While it was being prepared, another session merged cell B2's
+registration, the E3b store-router fix and cell B0's own first-pass verdict onto master
+(`d62bfa8d`).
+
+The registered **protocol and plan hashes survive that merge**: they derive from the four config
+fragments only, and `core.config.compose`'s own change in that range
+(`assert_preparation_source_receipts_are_well_formed`) is a pure load-time validator that adds
+nothing to `_canonical_hash`'s input — this cell's `preparation_source_receipts` all pin
+`"root": "data"` and already pass it. The **prepared phase-supply artifact does not survive it.**
+Its identity digest (`core.preparation.artifact_inputs`) pins the SHA-256 of `rails.kb_policy`,
+`rails.knowledge_provider`, `rails.phase_supply`, `rails.knowledge_stores` and
+`core.flight.runtime`, and commit `d8d8844b` changes `rails/knowledge_stores.py`. Once it does,
+`_load_phase_supply_seed` raises *prepared artifact identity mismatch* at dispatch.
+
+So the readiness flip of section 2 item 6 and the master merge are **one re-pin cycle**, in this
+order:
+
+```bash
+$PY -B -m speech_aware_evidence_acquisition.core.flight.cli prepare-supply \
+  --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
+  --experiment slurp-native-review-off-train-fold-a-replicate-v1 \
+  --cell slurp-native-review-off-train-fold-a-replicate-v1 --workers 8 \
+  --output "$DATA/prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1/phase-supply-v2.json"
+sha256sum "$DATA/prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1/phase-supply-v2.json"
+```
+
+1. merge master into this branch;
+2. re-run `prepare-supply` as above — **remove `prepared_phase_supply` from the baseline fragment
+   first**, because `core.flight.runtime._phase_supply_seeds` short-circuits to
+   `_load_phase_supply_seed` whenever that key is present and would re-verify the stale pin instead
+   of rebuilding;
+3. **confirm the new artifact still selects what cell B0 selected**: its `output_sha256` must still
+   be `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f`, the digest cell B0's
+   artifact and the sealed anchor preparation both carry. If it moves, the merge changed the
+   knowledge channel and this is no longer a replicate — **stop and report**;
+4. write the new relpath and SHA-256 into `prepared_phase_supply` of
+   `configs/baseline/slurp-native-dual-store-train-fold-a-review-off-replicate-v1.json` and into
+   `cells[0].readiness.requirements[0]` of the experiment fragment;
+5. add the root decision requirement and flip `readiness.state` to `ready`;
+6. recompute the composed and protocol hashes with the command in section 1 — **re-pinning and the
+   readiness flip both change the composed config hash**, because `compose` hashes the whole merged
+   fragment set;
+7. rewrite the hashes in this file, in the preregistration section 2, in the four plan documents and
+   the protocol document, and in the two exposure-ledger notes;
+8. re-run `check` and confirm the runtime-derived protocol hash equals the newly registered one;
+9. re-run the envelope comparison against cell B0 as flown if any of the five identity-bearing
+   modules changed how a request renders. `rails/knowledge_stores.py` is one of them, so on this
+   particular merge, do re-run it: 1080/1080 rows must still be byte-identical.
+
+Nothing else in this package depends on the merge.
