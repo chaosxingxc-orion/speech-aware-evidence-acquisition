@@ -293,15 +293,15 @@ All under `$DATA/coordination/slurp-b7a-ncp-l1-anchor-v1/` (index `INDEX-v1.json
 
 | file | SHA-256 | what it proves |
 | --- | --- | --- |
-| `check-b7a-full-v1.json` | `PENDING_RECEIPT_SHA_CHECK_FULL` | `core.flight.cli check` passes for cell B7a: gate, exposure row, clean tree, attempt free, prompt budget ALLOW for every phase, runtime hashes equal to the registered ones |
-| `check-b7a-smoke-v1.json` | `PENDING_RECEIPT_SHA_CHECK_SMOKE` | the same for the four-row smoke |
-| `phase-supply-vs-anchor-v1.json` | `PENDING_RECEIPT_SHA_PHASE_SUPPLY` | both prepared Perception artifacts carry an `output` block byte-identical to the sealed anchor preparation's (`ba5e1faa…`) on 1080/1080 rows and to the four-row reference (`512583ec…`) on 4/4, and each row's selection equals the anchor's own row |
-| `request-channel-proof-v1.json` | `PENDING_RECEIPT_SHA_REQUEST_CHANNEL` | the contact-by-contact proof over all 5,417 sealed anchor requests: Perception byte-identical on 1080/1080; Solver, Reviewer and Planner differ only in the agent-state parts the policy rewrites; 0 tool-observation states changed; 5,417/5,417 control envelopes identical; every raw row's rendered hash equals its source's |
-| `prompt-fit-v1.json` | `PENDING_RECEIPT_SHA_PROMPT_FIT` | the per-contact bound against the 24,576-token slot, built on the anchor's 5,417 sealed fit receipts plus this cell's word delta; every bound fits, worst margin 8,983 tokens (planner) |
-| `containment-v1.json` | `PENDING_RECEIPT_SHA_CONTAINMENT` | 0 containment collisions, verbatim and casefolded, for both bound snapshots against the five control turns and the six node-context templates |
-| `composed-hashes-v1.json` | `PENDING_RECEIPT_SHA_COMPOSED` | the composed and protocol hashes, the anchor method check, and the cell-versus-anchor composed-key diff (`native_episode` differs in `context_policy` and nothing else) |
-| `plan-hashes-v1.json` | `PENDING_RECEIPT_SHA_PLAN_HASHES` | the SHA-256 of every config fragment, plan, protocol and recipe document in this package |
-| `ledger-parse-v1.json` | `PENDING_RECEIPT_SHA_LEDGER_PARSE` | `contracts._parse_ledger_tables` sees the four rows exactly once, each `consumed = no` |
+| `check-b7a-full-v1.json` | `47a06fa9615aa1abe080f939ec29e784fc7cdaf2a2af2bc79cb36ae5bc23a355` | `core.flight.cli check` passes for cell B7a: gate, exposure row, clean tree, attempt free, prompt budget ALLOW for every phase, runtime hashes equal to the registered ones |
+| `check-b7a-smoke-v1.json` | `09dcd1a067dd0f233016c149964fa3af23a6f911b2059eb1d88e349f25ce13c1` | the same for the four-row smoke |
+| `phase-supply-vs-anchor-v1.json` | `5f98a6125cd92b071dcd8748d8f93c53f4481e663bc812805b27765f42e5cbaf` | both prepared Perception artifacts carry an `output` block byte-identical to the sealed anchor preparation's (`ba5e1faa…`) on 1080/1080 rows and to the four-row reference (`512583ec…`) on 4/4, and each row's selection equals the anchor's own row |
+| `request-channel-proof-v1.json` | `52638c76e5f5ee1558575d325702afd479bbb5fc78a499a5463b27e85168af50` | the contact-by-contact proof over all 5,417 sealed anchor requests: Perception byte-identical on 1080/1080; Solver, Reviewer and Planner differ only in the agent-state parts the policy rewrites; 0 tool-observation states changed; 5,417/5,417 control envelopes identical; every raw row's rendered hash equals its source's |
+| `prompt-fit-v1.json` | `4e33b5fa00839bee31bc3918611ded2df64b60822495b7cff65e439b82881b14` | the per-contact bound against the 24,576-token slot, built on the anchor's 5,417 sealed fit receipts plus this cell's word delta; every bound fits, worst margin 8,983 tokens (planner) |
+| `containment-v1.json` | `75722d6d01c92d669842150ef91a8eddfd84728301d9e64a9600b6051fdd9c1c` | 0 containment collisions, verbatim and casefolded, for both bound snapshots against the five control turns and the six node-context templates |
+| `composed-hashes-v1.json` | `d2dcf4a14ca3bf67bb4231a733b5e5194095be115091accdc65bcab2e3b5aca5` | the composed and protocol hashes, the anchor method check, and the cell-versus-anchor composed-key diff (`native_episode` differs in `context_policy` and nothing else) |
+| `plan-hashes-v1.json` | `e74261f000da4a758e55dc2c5cf5b0ea2d67e1f2747e3f68da2faff27bb2190b` | the SHA-256 of every config fragment, plan, protocol and recipe document in this package |
+| `ledger-parse-v1.json` | `47c4b60087be75cc397435f48423abb63d21467f6ae8b8524c93793195dda72c` | `contracts._parse_ledger_tables` sees the four rows exactly once, each `consumed = no` |
 
 Do not re-run `derived_media_confinement_check.py` from inside the checkout without reverting its
 in-repo receipt afterwards: it rewrites

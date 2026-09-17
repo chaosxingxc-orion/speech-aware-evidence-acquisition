@@ -101,7 +101,7 @@ phase supply, none of which is a channel the model can see. Fold B is absent.
 ### 3.1 What actually changes in the request, proved contact by contact
 
 Receipt: `SPEECHRL_DATA_DIR/coordination/slurp-b7a-ncp-l1-anchor-v1/request-channel-proof-v1.json`
-(SHA-256 `PENDING_RECEIPT_SHA_REQUEST_CHANNEL`).
+(SHA-256 `52638c76e5f5ee1558575d325702afd479bbb5fc78a499a5463b27e85168af50`).
 
 All **5,417** of the sealed anchor's `MODEL_REQUEST` payloads were read from the run's own trace,
 read-only. For each one, its exposed agent-state list was rebuilt as `AgentStateArtifact` values
@@ -292,7 +292,7 @@ calls**, zero scoring jobs.
 
 ## 9. Prompt fit
 
-Receipt: `prompt-fit-v1.json` (SHA-256 `PENDING_RECEIPT_SHA_PROMPT_FIT`). Slot **24,576** tokens;
+Receipt: `prompt-fit-v1.json` (SHA-256 `4e33b5fa00839bee31bc3918611ded2df64b60822495b7cff65e439b82881b14`). Slot **24,576** tokens;
 decision **ALLOW** for every phase.
 
 The bound is the anchor's own **5,417 sealed native contact-fit receipts** -- each realized
@@ -310,6 +310,13 @@ Every one of the 5,417 contacts was matched to its fit receipt; none was unmatch
 Every bound fits on every one of the 5,417 contacts, with at least **8,983 tokens of margin**. This
 is a bound, not a measurement on the flight tokenizer: each flight fits every realized request
 itself through `build_native_contact_fit_gate`, and the coordinator reads those receipts.
+
+Independently, `core.flight.cli check` ran its own model-free budget over the widest request each
+phase renders across the whole roster and returned **ALLOW for every phase of both cells**: full
+cell perception 19,184 required window tokens, reviewer 19,047, planner 18,987, solver 19,227
+(smoke 19,183 / 19,047 / 18,986 / 19,226), each with an operational margin above 5,300 tokens. That
+estimate unions every candidate envelope and is deliberately more conservative than the per-contact
+bound above; both are recorded and neither replaces the other.
 
 ## 10. Failure rule
 
@@ -385,15 +392,15 @@ receipt can dirty the tree the scoring gate reads. Index: `INDEX-v1.json`.
 
 | receipt | SHA-256 |
 | --- | --- |
-| `check-b7a-full-v1.json` | `PENDING_RECEIPT_SHA_CHECK_FULL` |
-| `check-b7a-smoke-v1.json` | `PENDING_RECEIPT_SHA_CHECK_SMOKE` |
-| `phase-supply-vs-anchor-v1.json` | `PENDING_RECEIPT_SHA_PHASE_SUPPLY` |
-| `request-channel-proof-v1.json` | `PENDING_RECEIPT_SHA_REQUEST_CHANNEL` |
-| `prompt-fit-v1.json` | `PENDING_RECEIPT_SHA_PROMPT_FIT` |
-| `containment-v1.json` | `PENDING_RECEIPT_SHA_CONTAINMENT` |
-| `composed-hashes-v1.json` | `PENDING_RECEIPT_SHA_COMPOSED` |
-| `plan-hashes-v1.json` | `PENDING_RECEIPT_SHA_PLAN_HASHES` |
-| `ledger-parse-v1.json` | `PENDING_RECEIPT_SHA_LEDGER_PARSE` |
+| `check-b7a-full-v1.json` | `47a06fa9615aa1abe080f939ec29e784fc7cdaf2a2af2bc79cb36ae5bc23a355` |
+| `check-b7a-smoke-v1.json` | `09dcd1a067dd0f233016c149964fa3af23a6f911b2059eb1d88e349f25ce13c1` |
+| `phase-supply-vs-anchor-v1.json` | `5f98a6125cd92b071dcd8748d8f93c53f4481e663bc812805b27765f42e5cbaf` |
+| `request-channel-proof-v1.json` | `52638c76e5f5ee1558575d325702afd479bbb5fc78a499a5463b27e85168af50` |
+| `prompt-fit-v1.json` | `4e33b5fa00839bee31bc3918611ded2df64b60822495b7cff65e439b82881b14` |
+| `containment-v1.json` | `75722d6d01c92d669842150ef91a8eddfd84728301d9e64a9600b6051fdd9c1c` |
+| `composed-hashes-v1.json` | `d2dcf4a14ca3bf67bb4231a733b5e5194095be115091accdc65bcab2e3b5aca5` |
+| `plan-hashes-v1.json` | `e74261f000da4a758e55dc2c5cf5b0ea2d67e1f2747e3f68da2faff27bb2190b` |
+| `ledger-parse-v1.json` | `47c4b60087be75cc397435f48423abb63d21467f6ae8b8524c93793195dda72c` |
 
 Prepared supply: both cells' Perception artifacts carry an `output` block **byte-identical** to the
 sealed anchor preparation's (`ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f`) on
@@ -407,7 +414,14 @@ five control turns the base sends **and** every one of the six committed node-co
 cell renders, under the runtime rule
 `rails.runner._assert_agent_control_excludes_knowledge_payloads` at its floor of 8 characters.
 
-Ledger: `contracts._parse_ledger_tables` sees all four rows exactly once, each `consumed = no`.
+Ledger: `contracts._parse_ledger_tables` sees all four rows exactly once, each `consumed = no`;
+908 rows parsed in total.
+
+Both `check` receipts were produced at the registration commit that carries every config, plan and
+ledger row these cells fly, and both report `study_commit` equal to it, `generation_authorized`
+false, readiness `held`, and runtime-derived `config_hash` and `protocol_hash` equal to the
+registered ones. The documentation commit that follows changes no config, no plan and no ledger
+row, and `plan-hashes-v1.json` deliberately excludes this document and the runbook for that reason.
 
 ## 15. What this package does not authorise
 
