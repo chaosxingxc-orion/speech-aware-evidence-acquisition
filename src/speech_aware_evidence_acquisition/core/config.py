@@ -76,6 +76,61 @@ class ConfigError(RuntimeError):
     """A config fragment is missing, unreadable, or collides with another."""
 
 
+#: The only two frozen-source-receipt roots ``core.preparation.
+#: verify_source_receipts`` resolves at prepare time.  Kept in sync with
+#: that function's own ``roots = {"repository": ..., "data": ...}`` mapping
+#: by ``test_config_composition.py``'s cross-check.
+_PREPARATION_SOURCE_RECEIPT_ROOTS = frozenset({"repository", "data"})
+_PREPARATION_SOURCE_RECEIPT_PIN_KEYS = frozenset({"root", "relpath", "sha256"})
+
+
+def assert_preparation_source_receipts_are_well_formed(
+    values: Mapping[str, object],
+) -> None:
+    """Refuse a malformed ``preparation_source_receipts`` pin at config LOAD
+    time, structurally, before ``core.preparation.verify_source_receipts``
+    ever walks the filesystem for it at prepare time.
+
+    This never touches a filesystem (no ``repo_root``/``data_root`` is known
+    at composition time) and never checks a SHA-256 against real bytes --
+    only the exact three-key shape and the two accepted ``root`` names that
+    ``verify_source_receipts`` itself enforces. A config whose pin already
+    passes this can still fail ``verify_source_receipts`` later (missing
+    file, hash mismatch); a config that fails this can never reach that far.
+
+    Three real committed fragments (``configs/baseline/
+    slurp-native-dual-store-train-fold-a-exemplars-k20{,-twin}-v1.json`` and
+    the ``-k12-v1`` sibling) pinned a receipt with ``"root": "repo"`` --
+    accepted by nothing, refused only once ``prepare-supply`` actually read
+    it, hundreds of steps into a flight. This closes that gap at the
+    cheapest possible point: the moment ``compose()`` merges the fragment
+    that declared it.
+    """
+
+    receipts = values.get("preparation_source_receipts")
+    if receipts is None:
+        return
+    if not isinstance(receipts, list) or not receipts:
+        raise ConfigError("preparation_source_receipts must be a non-empty list")
+    for pin in receipts:
+        if (
+            not isinstance(pin, Mapping)
+            or set(pin) != _PREPARATION_SOURCE_RECEIPT_PIN_KEYS
+            or not isinstance(pin.get("root"), str)
+            or pin["root"] not in _PREPARATION_SOURCE_RECEIPT_ROOTS
+            or not isinstance(pin.get("relpath"), str)
+            or not pin["relpath"]
+            or not isinstance(pin.get("sha256"), str)
+            or _SHA256.fullmatch(pin["sha256"]) is None
+        ):
+            raise ConfigError(
+                "preparation_source_receipts pin must be exactly "
+                "{root, relpath, sha256} with root in "
+                f"{sorted(_PREPARATION_SOURCE_RECEIPT_ROOTS)} and sha256 a "
+                f"lowercase 64-hex digest, got {pin!r}"
+            )
+
+
 def effective_request_decoding_params(values: Mapping[str, object]) -> object:
     """Resolve the experiment-scoped completion cap without changing service identity.
 
@@ -242,6 +297,7 @@ def compose(
     # one fragment and an observe table in another is still the collision it
     # is, and not silently resolved in the table's favour.
     composed = drop_null_arms(merged)
+    assert_preparation_source_receipts_are_well_formed(composed)
     return ComposedConfig(
         values=composed, config_hash=_canonical_hash(composed), fragments=names
     )

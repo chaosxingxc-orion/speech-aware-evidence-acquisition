@@ -8,6 +8,7 @@ from speech_aware_evidence_acquisition.core.config import (
     DEFAULT_RUNTIME_RECEIPT_RELPATH,
     ComposedConfig,
     ConfigError,
+    assert_preparation_source_receipts_are_well_formed,
     compose,
     model_materialization_root,
     d1_media_supplement_relpath,
@@ -72,6 +73,91 @@ def test_duplicate_key_within_a_single_fragment_fails_closed(tmp_path):
     )
     with pytest.raises(ConfigError, match="duplicate key 'policy'"):
         compose(tmp_path, "m", "d", "b", "e")
+
+
+# ---------------------------------------------------------------------------
+# E3b defect 3: three committed E3 fragments (configs/baseline/
+# slurp-native-dual-store-train-fold-a-exemplars-k20{,-twin}-v1.json and
+# -k12-v1.json) pinned their exemplar knowledge receipt with
+# ``"root": "repo"`` -- a value ``core.preparation.verify_source_receipts``
+# has never accepted (only "repository" and "data"). The refusal used to
+# surface only hundreds of steps into a flight, inside prepare-supply. This
+# validator runs at ``compose()`` -- config LOAD time -- instead.
+# ---------------------------------------------------------------------------
+
+
+def test_preparation_source_receipts_bad_root_is_refused_at_compose_time(tmp_path):
+    _write_fragments(
+        tmp_path,
+        experiment_extra={
+            "preparation_source_receipts": [
+                {"root": "repo", "relpath": "docs/receipts/x.json", "sha256": "a" * 64}
+            ]
+        },
+    )
+    with pytest.raises(ConfigError, match="preparation_source_receipts"):
+        compose(tmp_path, "m", "d", "b", "e")
+
+
+@pytest.mark.parametrize("root", ["repository", "data"])
+def test_preparation_source_receipts_accepted_roots_compose_cleanly(tmp_path, root):
+    _write_fragments(
+        tmp_path,
+        experiment_extra={
+            "preparation_source_receipts": [
+                {"root": root, "relpath": "docs/receipts/x.json", "sha256": "a" * 64}
+            ]
+        },
+    )
+    composed = compose(tmp_path, "m", "d", "b", "e")
+    assert composed.values["preparation_source_receipts"][0]["root"] == root
+
+
+@pytest.mark.parametrize(
+    "receipts",
+    [
+        [],  # empty list
+        [{"root": "repository", "relpath": "x.json"}],  # missing sha256
+        [{"root": "repository", "relpath": "x.json", "sha256": "a" * 64, "extra": 1}],
+        [{"root": "repository", "relpath": "x.json", "sha256": "not-hex"}],
+        [{"root": "repository", "relpath": "", "sha256": "a" * 64}],
+        "not-a-list",
+    ],
+)
+def test_preparation_source_receipts_malformed_pins_are_refused(tmp_path, receipts):
+    _write_fragments(
+        tmp_path, experiment_extra={"preparation_source_receipts": receipts}
+    )
+    with pytest.raises(ConfigError, match="preparation_source_receipts"):
+        compose(tmp_path, "m", "d", "b", "e")
+
+
+def test_preparation_source_receipts_absent_key_is_a_noop():
+    # No key at all: legacy fragments that never declared a receipt compose
+    # exactly as before.
+    assert_preparation_source_receipts_are_well_formed({})
+
+
+def test_the_three_fixed_e3_fragments_pass_the_compose_time_validator():
+    """Regression proof, on the real repository bytes: the three fragments
+    this defect names (configs/baseline/slurp-native-dual-store-train-fold-
+    a-exemplars-k20{,-twin}-v1.json, -k12-v1.json) now pin "repository", not
+    "repo", and pass the validator that would otherwise refuse them at
+    compose() time."""
+
+    from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT
+
+    for name in (
+        "slurp-native-dual-store-train-fold-a-exemplars-k20-v1.json",
+        "slurp-native-dual-store-train-fold-a-exemplars-k20-twin-v1.json",
+        "slurp-native-dual-store-train-fold-a-exemplars-k12-v1.json",
+    ):
+        document = json.loads(
+            (REPO_ROOT / "configs" / "baseline" / name).read_text(encoding="utf-8")
+        )
+        receipts = document["preparation_source_receipts"]
+        assert all(pin["root"] != "repo" for pin in receipts)
+        assert_preparation_source_receipts_are_well_formed(document)
 
 
 def test_missing_fragment_fails_closed(tmp_path):

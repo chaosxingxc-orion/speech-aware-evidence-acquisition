@@ -251,7 +251,7 @@
     },
     {
       "relpath": "docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json",
-      "root": "repo",
+      "root": "repository",
       "sha256": "48d0f34cf536ebf9806d55b5dcced1b607080bec3c68ca7dea27cdb01478cc72"
     }
   ],
