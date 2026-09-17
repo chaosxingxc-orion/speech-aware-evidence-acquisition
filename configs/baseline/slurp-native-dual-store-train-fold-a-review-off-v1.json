@@ -203,8 +203,8 @@
     }
   ],
   "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1/phase-supply-v1.json",
-    "sha256": "14ec428cb03eb16364d084e685340992d5330c0e24a3b48da071c6ddbee7ff3e"
+    "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1/phase-supply-v2.json",
+    "sha256": "7930b9df5fcc8b1bc956495ad303892985a4ebbb6495d936c47c826db1d31b2b"
   },
   "scorers": [
     "slurp-slu-official-train",

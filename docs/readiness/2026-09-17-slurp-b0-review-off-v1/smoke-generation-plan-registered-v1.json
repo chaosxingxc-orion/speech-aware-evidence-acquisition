@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-review-off-smoke-4-v1",
-  "composed_config_hash": "84d8edf317975b035848306fd8d8bae2f015487f89d73999792f3d9381efb785",
+  "composed_config_hash": "fab9af24662c35144366628e596f4e89ad47369e119cdde6272f5c8237c168c0",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-review-off-smoke-4-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 0.2,
     "planned_model_calls": 8,
     "planned_speech_audio_seconds": 25,
-    "protocol_hash": "92dbc194b0589c747196cedb4a076392c52e8732fcd12a32eddc4730155c80cc",
+    "protocol_hash": "5a54400ea7106bcd54416f00cb18e43e2e220a61429fbef7f33bdcafe60be47b",
     "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -32,7 +32,7 @@
   "preparation_base_commit": "fe140d4fcc01a8efa3fa660dad698d73c6c997bd",
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-17-slurp-b0-review-off-v1/protocol-registered-v1.json",
-    "sha256": "2b2edcf850393e7554418c08be0bee96fde5bbfd8e7899c607ec0cdd2cfe6df1"
+    "sha256": "0e61b52c6f93b21e935750d4162a15c230d1993ee5b88359b85ad6e269b43f94"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The comparator is the sealed anchor score artifact; it is never re-flown and never re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, fit receipts and seal, with no answer, reference or quality interpretation.",
   "registered_at_utc": "2026-09-17T02:45:57.224109+00:00",

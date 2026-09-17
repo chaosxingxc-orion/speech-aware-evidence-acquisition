@@ -48,8 +48,8 @@
       "attempt_id": "attempt-slurp-native-review-off-train-fold-a-generation-v1",
       "campaign_plan": "configs/campaign/slurp-native-review-off-train-fold-a-v1.json",
       "cell": "slurp-native-review-off-train-fold-a-v1",
-      "composed_config_hash": "33a2f250ffaa5df45327a8da9f739de1b6d15fa1ee80680260b719d5538bc619",
-      "execution_plan_protocol_hash": "63e22a64788185f141b365981a1590d457f132726f0218a04d9e59aec92e9f7f",
+      "composed_config_hash": "29128fdcbb15d841c77298662499e5f64c0be24c2f48fc2ff1c23966fab49466",
+      "execution_plan_protocol_hash": "990c7b23e2dc2e9ec037f591488f23597c47cbeaca37f723484e5551c153f753",
       "experiment": "slurp-native-review-off-train-fold-a-v1",
       "fit_attempt_id": "attempt-slurp-native-review-off-train-fold-a-fit-v1",
       "fit_run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-FIT-V1",
@@ -60,16 +60,16 @@
         "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
       },
       "prepared_phase_supply": {
-        "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1/phase-supply-v1.json",
-        "sha256": "14ec428cb03eb16364d084e685340992d5330c0e24a3b48da071c6ddbee7ff3e"
+        "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1/phase-supply-v2.json",
+        "sha256": "7930b9df5fcc8b1bc956495ad303892985a4ebbb6495d936c47c826db1d31b2b"
       },
       "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1"
     },
     "smoke": {
       "attempt_id": "attempt-slurp-native-review-off-smoke-4-generation-v1",
       "cell": "slurp-native-review-off-smoke-4-v1",
-      "composed_config_hash": "84d8edf317975b035848306fd8d8bae2f015487f89d73999792f3d9381efb785",
-      "execution_plan_protocol_hash": "92dbc194b0589c747196cedb4a076392c52e8732fcd12a32eddc4730155c80cc",
+      "composed_config_hash": "fab9af24662c35144366628e596f4e89ad47369e119cdde6272f5c8237c168c0",
+      "execution_plan_protocol_hash": "5a54400ea7106bcd54416f00cb18e43e2e220a61429fbef7f33bdcafe60be47b",
       "experiment": "slurp-native-review-off-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-review-off-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-SMOKE-4-FIT-V1",
@@ -86,8 +86,8 @@
         "slurp:train:000023:audio-1490956038"
       ],
       "prepared_phase_supply": {
-        "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-SMOKE-4-V1/phase-supply-v1.json",
-        "sha256": "77b15ab3631ae834365a44c815ec9e22c6182ed99f7677d74d2d7bbc545a91af"
+        "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-SMOKE-4-V1/phase-supply-v2.json",
+        "sha256": "959510d2eaad8b37a8e847a342e98b7303ef4d560d3e5a335d328fbb0e70ab56"
       },
       "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-SMOKE-4-V1",
       "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
