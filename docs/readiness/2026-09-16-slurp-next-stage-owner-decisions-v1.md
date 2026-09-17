@@ -31,3 +31,14 @@ exposed development rosters, twice. It is not a test-split or paper claim.
 - Fold B and the test split stay unread until the v2 base is locked.
 - Program: `docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md`.
 - Coordination: `docs/superpowers/plans/experiment-handoff/OWNER-FABLE-TAKEOVER-2026-09-16.md`.
+
+## Owner decisions of 2026-09-17 (after cell B0 and the Phase A audits)
+
+| # | Question | Decision |
+| --- | --- | --- |
+| 6 | Cell B0 returned HARMFUL by the preregistered intent clause although the point estimate is nil; the imported DEV1000 margin (0.92 pp) is narrower than TRAIN A's CI95 half-width (1.175 pp). | A: re-decide module M0 under the TRAIN A own null. The replicate B0r (byte-identical to B0) supplies the margins as the CI95 half-widths of (B0r minus B0); NEUTRAL needs both passes non-inferior to the anchor at those margins; the first-pass verdict stays on record beside the re-decision. |
+| 7 | Projection v3 (label rule R_action then legal-label v2; filler surface normalisation) gains +3.46 / +3.73 pp official SLU of which about three quarters is case alignment scored at zero by the symmetric scorer. | A: adopt v3 as the fixed post-processing of every official number from now on; every report shows the symmetric-normalised number beside it and states that about 2.5 pp of the 64-point bar is representation alignment, not capability. |
+| 8 | GPU order and twin triggering for the registered cells. | B1 -> B2 -> B4b -> B4a -> B4c; a cell's twin flies only after its arm shows a positive CI95 against the base; one cell in flight. |
+| 9 | B4a's fallback candidate pulls up to 16 slot cards (median +7 values). | B4c (intent store v2 alone) flies only if B4a admits, to separate the store revision from the fallback hypothesis. |
+| 10 | Codex's untracked leftovers in the main checkout and its worktrees. | Remove after merging: the three untracked files move to an archive outside the repository with a receipt; worktrees whose commits are reachable from a branch are pruned with a tombstone receipt; flight worktrees stay until their flights finalize. |
+

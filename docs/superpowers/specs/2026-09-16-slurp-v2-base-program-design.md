@@ -106,7 +106,7 @@ direct-anchor release (`docs/results/2026-09-17-slurp-train-a-direct-anchor-rele
 | B5r | replication of B5 | -- | B5 | 6-7 | ~4-5 |
 | B6 | DEV1000 confirmation | -- | sealed DEV1000 direct 35.68 / agent 50.30 | 6-7 | ~4 |
 
-Order: B0 -> B3 (any time) -> B1 -> B2 -> B4a -> B4b -> B5 -> B5r -> B6.
+Order (owner decision 8, 2026-09-17): B0 -> B0r (own-null re-decision) -> B1 -> B2 -> B4b -> B4a -> B4c only if B4a admits -> B5 -> B5r -> B6; a twin flies only after its arm shows a positive CI95 against the base. B3 (projection v3) is adopted as the fixed post-processing of every official number (owner decision 7), reported beside the symmetric-normalised number.
 
 Decision rules, fixed before each flight and copied into its preregistration:
 
