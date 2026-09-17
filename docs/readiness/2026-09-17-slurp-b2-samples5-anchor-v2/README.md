@@ -376,3 +376,28 @@ harness-admission entry yet and must not have one before a verdict. Targeted tes
    the 12.0-hour ceiling upward is a plan change and needs a new registration; downward does not.
 3. Whether the smoke's readiness is flipped separately from the two full cells (section 2 gives
    both forms).
+## 12. Superseded before contact (2026-09-17, after E2c)
+
+**This package is superseded and must not be flown.** It was registered before **E2c** (merged at
+`59db0f9b`), when agent states were registered per *contact*, so a grouped Solver visit left five
+separate `kind=phase:solver` states and the Reviewer and the Planner read the five raw samples
+rather than the one committed answer. Section 10 deviation 1 and section 11 open decision 1 above
+record that as a known, unrepaired difference: the cell moved two things at once.
+
+E2c repaired it in the harness. A grouped Solver visit now takes one step and registers exactly one
+`kind=phase:solver` state, carrying the commit policy's aggregate, in the same wire form a samples-1
+(anchor) Solver state has, so the Reviewer and the Planner read one draft exactly as they do on the
+anchor; the five raw samples stay in custody in their own contacts, the visit's one
+`action_alternatives` wave and the sealed `solver_group` receipt; and a Planner `REVISE` re-samples
+the whole group and re-commits. Cell B2 is therefore a one-factor cell again, and it is
+re-registered on new run ids and new hashes.
+
+The replacement registration is
+[`../2026-09-17-slurp-b2-samples5-anchor-v3-preregistration.md`](../2026-09-17-slurp-b2-samples5-anchor-v3-preregistration.md)
+with its runbook
+[`../2026-09-17-slurp-b2-samples5-anchor-v3/README.md`](../2026-09-17-slurp-b2-samples5-anchor-v3/README.md).
+
+The three cells registered here never flew. Their six exposure rows stay `consumed = no` and each
+now carries a supersession note. The configs, plans and protocol of this package are left in place
+unchanged as the audit record of what was registered before E2c; nothing in it is edited, and open
+decision 1 of section 11 above is answered by E2c rather than by a configuration choice.

@@ -1,0 +1,78 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-samples5-anchor-smoke-4-generation-v3",
+      "baseline_fragment": "slurp-native-anchor-samples5-smoke-4-v3",
+      "cell_id": "slurp-native-samples5-anchor-smoke-4-v3",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Registered before contact by the cell B2 v3 registration agent on the sealed dual-store ANCHOR. Readiness is HELD: the coordinator adds the root decision requirement and flips this state itself, through scripts/flights/repin_cell.py, immediately before the standalone-worker smoke launch. Exclusive resident attachment to serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "Model-free first-phase Perception supply prepared by the cell B2 v3 registration agent; zero model, tokenizer, encoder, ASR, scorer and server contact. Its output block is byte-identical to the sealed four-row smoke artifacts' output (SHA-256 512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733) on its 4 rows.",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-V3/phase-supply-v1.json",
+            "sha256": "5bc0a23f92b918ad36419c90e26eb1a437905e4ba210195ad54b0a700722518f"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-V3"
+    }
+  ],
+  "date": "2026-09-17",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 76,
+    "planned_speech_audio_seconds": 202,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-V3",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops cell B2 until the fix is proven on this same four-row roster.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 304,
+    "generation_calls_cap": 76,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 202
+  },
+  "fragment_kind": "saea-slurp-native-samples5-anchor-smoke-4-v3",
+  "generation_budget": {
+    "cap": 76,
+    "definition": "The same exact bounded-graph maximum, 19 contacts per row, over the four already-exposed TRAIN A engineering rows: 4 * 19 = 76.",
+    "target": 40
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The four already-exposed TRAIN A engineering rows this repository reuses for every four-row form smoke; no quality-based selection.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row standalone-worker form smoke of the anchor-based B2 grouped-Solver native episode before cell B2 flies. Structural evidence only: contacts per row inside the 19 ceiling with the Reviewer and Planner present, the episode receipt's role_visits and planner_routes, the solver_group custody of all five raw samples with five distinct seeds, exactly one kind=phase:solver agent state per Solver visit carrying the committed answer (E2c), the delivered answer equal to the commit policy's own aggregation replayed offline, one native contact fit receipt per realized contact and a clean seal. No official scoring and no task-quality claim.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2"
+}
