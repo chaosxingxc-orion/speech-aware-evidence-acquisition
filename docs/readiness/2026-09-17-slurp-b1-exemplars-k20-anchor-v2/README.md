@@ -309,3 +309,16 @@ per-request authority remains the `native_contact_fit` gate.
 8. **No `wire-check` stage** on any cell, for the reason in section 8.
 9. **Registered hashes are pre-flip.** Section 1. The re-pin tool recomputes them when the decision
    requirement is pinned and readiness is flipped, exactly as B0, B0r and B4 did.
+10. **Measured at the smoke (2026-09-17, run SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-V2,
+   study commit 0dbd0d1d): the exemplar blocks reach every post-Perception request.** On all four
+   rows the Perception request carries 0 blocks and the Solver, both Reviewer and the Planner
+   requests each carry the same 20 distinct `train-exemplars::value:<id>` items (40 marker
+   occurrences per request: each item names its id twice in the wire form), because the supply
+   accumulates through the episode's QueryState at dispatch, exactly as deviation 2 anticipated and
+   the static render could not show. The module's channel is therefore "exemplar supply declared on
+   the Solver phase and visible to the Solver, Reviewer and Planner"; the Reviewer/Planner requests are
+   NOT byte-identical to the anchor's at dispatch, only in the static render. Fit held on every
+   contact (20 request-fit receipts, every_request_fits true, minimum margin 10,743 tokens). Every
+   row ran perception 1 / solver 1 / reviewer 2 / planner 1 and routed ACCEPT; 20 contacts, 52.98
+   repeated speech seconds, 4 task-contract tool calls, 170,939 prompt tokens. The verdict states
+   this channel; the twin shares it exactly.
