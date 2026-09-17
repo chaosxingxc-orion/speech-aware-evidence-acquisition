@@ -181,7 +181,25 @@ RUN_SWITCH_CLASS = "run"
 SWITCH_CLASS_NAMES = CONFIG_TABLE_NAMES + (RUN_SWITCH_CLASS,)
 
 #: The per-run driver keys the ``run`` class admits.
-RUN_LEVEL_SWITCH_KEYS = frozenset({"obs_prefetch_depth"})
+#:
+#: ``slurp_projection_v3_delivery`` (E4, SLURP v2 base program module M3,
+#: 2026-09-17) is the second: read flat by ``core.flight.runtime.
+#: FlightRuntime._canonical_output_rows``, it turns the USE projection v3
+#: transform (``rails.slurp_projection_v3.apply_slurp_projection_v3_delivery``)
+#: on for the ``slurp`` carrier's own delivered answer. It belongs here, not
+#: in one of the four per-phase tables, for the SAME reason
+#: ``obs_prefetch_depth`` does: the transform runs strictly AFTER the model's
+#: response is already in hand and rewrites only what gets SEALED into the
+#: outputs row (the raw response text is kept in custody beside it, under
+#: ``pre_projection_text``, never overwritten) -- it moves no request byte
+#: whatsoever, so it fails the table classes' own reason for existing (a
+#: table entry changes what the frozen core is asked) exactly as
+#: ``obs_prefetch_depth``'s own admission note states. ``1`` is ON; absent or
+#: ``0`` is OFF (the module's own documented default -- the switch is
+#: read via ``bool(values.get(key))``, and this class's own null-arm rule,
+#: :func:`is_run_null_arm`, already treats both as the null arm for an
+#: integer-valued run key).
+RUN_LEVEL_SWITCH_KEYS = frozenset({"obs_prefetch_depth", "slurp_projection_v3_delivery"})
 
 #: The ``run`` class's null arm, in the two spellings a fragment may use: the
 #: key absent, or the driver's own documented default. ``obs_prefetch_depth``

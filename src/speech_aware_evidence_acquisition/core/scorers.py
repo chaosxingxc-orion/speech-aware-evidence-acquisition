@@ -756,6 +756,8 @@ from ..reproduction.slurp_official_eval import (  # noqa: E402
     score_slurp_outputs_official_projected,
     score_slurp_outputs_official_projected_v2,
     score_slurp_outputs_official_projected_v2_train,
+    score_slurp_outputs_official_projected_v3,
+    score_slurp_outputs_official_projected_v3_train,
     score_slurp_outputs_official_train,
     score_slurp_outputs_slu_normalized,
 )
@@ -810,6 +812,27 @@ SCORERS.register(
 )
 
 # ---------------------------------------------------------------------------
+# The v3 SUCCESSOR: module M3 (SLURP v2 base program, ``docs/superpowers/
+# specs/2026-09-16-slurp-v2-base-program-design.md`` section 3), decided by
+# the A1 USE-projection audit (``docs/results/
+# 2026-09-17-slurp-a1-use-projection-audit-v1.md``).
+#
+# v3 is TWO halves applied together, never one alone: the label half (rule
+# ``R_action`` then the registered v2 fallback,
+# ``rails.slurp_projection_v3.project_slu_label_v3``) and the filler half
+# (surface normalisation P2, all four rungs, no support filter). v1 and v2
+# stay registered beside it for exactly the reason v1 stayed beside v2: the
+# three rules are SIBLINGS, not a revision chain, and a verdict can pair a
+# cell against any one of them. All ids below are keyword bindings of the
+# same ``score_slurp_outputs_official``, never independent implementations.
+# ---------------------------------------------------------------------------
+
+SCORERS.register("slurp-slu-projected-v3", score_slurp_outputs_official_projected_v3)
+SCORERS.register(
+    "slurp-slu-official-projected-v3", score_slurp_outputs_official_projected_v3
+)
+
+# ---------------------------------------------------------------------------
 # The SAME official scorer against TRAIN gold, for the construction-role
 # rosters every EVO cell rewards on.
 #
@@ -831,6 +854,10 @@ SCORERS.register("slurp-slu-official-train", score_slurp_outputs_official_train)
 SCORERS.register(
     "slurp-slu-official-projected-v2-train",
     score_slurp_outputs_official_projected_v2_train,
+)
+SCORERS.register(
+    "slurp-slu-official-projected-v3-train",
+    score_slurp_outputs_official_projected_v3_train,
 )
 
 

@@ -579,10 +579,14 @@ def test_the_unprojected_scorer_still_reports_no_projection_and_loads_no_invento
 
 
 def test_an_unknown_projection_version_fails_closed(wired):
+    """``"v3"`` is no longer an unknown version (E4, module M3) -- probing
+    with it here would exercise the real rule instead of the refusal this
+    test targets, so the example moves to a version nothing registers."""
+
     _record, _captured, tmp_path = wired
     outputs = _write(tmp_path, _RESIDUAL_ROW)
 
     with pytest.raises(SlurpOfficialEvalError, match="unknown projection_version"):
         score_slurp_outputs_official(
-            outputs, {}, tmp_path, project_labels=True, projection_version="v3"
+            outputs, {}, tmp_path, project_labels=True, projection_version="v4"
         )

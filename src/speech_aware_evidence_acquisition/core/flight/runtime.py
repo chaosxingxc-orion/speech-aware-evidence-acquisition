@@ -7451,6 +7451,19 @@ class FlightRuntime:
             timing_by_sample[timing.sample_id] = timing
             timing_by_request[timing.request_id] = timing
         arm = self._arm()
+        # E4 (SLURP v2 base program, module M3): the ONE flat run-level
+        # switch that turns the USE projection v3 delivery transform on.
+        # Deferred import (this module already imports many ``rails``
+        # symbols locally elsewhere for the same reason -- keeping the
+        # module's own import graph acyclic).
+        from ...rails.slurp_projection_v3 import (  # noqa: PLC0415
+            SLURP_PROJECTION_V3_DELIVERY_KEY,
+            apply_slurp_projection_v3_delivery,
+        )
+
+        slurp_projection_v3_on = bool(
+            self._composed.values.get(SLURP_PROJECTION_V3_DELIVERY_KEY)
+        )
         # Defence in depth for the multi-phase path: the bundle refuses
         # duplicate sample ids only inside ``core.bundle.outputs.seal``,
         # i.e. after every contact has already been spent.
@@ -7654,6 +7667,46 @@ class FlightRuntime:
                     f"per-request record for sample {sample_id!r} lacks {missing}; the "
                     "bundle contract binds an outputs row to its response bytes"
                 )
+            carrier_lock_key = (
+                self._plan.carrier_lock_key
+                if self._plan is not None
+                else self._composed.values["carrier_lock_key"]
+            )
+            response_text_sha256 = timing.response_text_sha256
+            projection_v3_fields: dict[str, object] = {}
+            if slurp_projection_v3_on:
+                # Fail closed rather than silently no-op: a carrier that
+                # cannot carry this transform must never declare its switch
+                # (mirrors ``core.driver.run``'s own refusal when
+                # ``obs_prefetch_depth`` is declared on a policy that cannot
+                # use it).
+                if carrier_lock_key != "slurp":
+                    raise FlightRuntimeError(
+                        f"{SLURP_PROJECTION_V3_DELIVERY_KEY} is only defined for "
+                        f"the 'slurp' carrier, got {carrier_lock_key!r}"
+                    )
+                projected = apply_slurp_projection_v3_delivery(
+                    text, carrier_lock_key=carrier_lock_key,
+                )
+                if projected.changed:
+                    # Custody (task instruction: "the raw (pre-projection)
+                    # answer must remain in custody beside the delivered
+                    # one, never overwrite the raw response text"): the raw
+                    # text is kept verbatim under its own field, and
+                    # ``response_text_sha256`` is recomputed to match the
+                    # DELIVERED text -- the SAME self-consistency contract
+                    # ``core.base.SampleOutcome.response_text_sha256`` and
+                    # ``core.bundle.verify_bundle`` already enforce for
+                    # every other row (a row's own "text" and its own
+                    # "response_text_sha256" must always agree).
+                    projection_v3_fields = {
+                        "pre_projection_text": text,
+                        "projection_v3": dict(projected.metadata),
+                    }
+                    text = projected.text
+                    response_text_sha256 = hashlib.sha256(
+                        text.encode("utf-8")
+                    ).hexdigest()
             artifact_fields: dict[str, object] = {}
             if self._result_kind() == "artifact":
                 artifact_fields = {
@@ -7679,17 +7732,16 @@ class FlightRuntime:
                 {
                     "request_id": timing.request_id,
                     "sample_id": sample_id,
-                    "carrier_lock_key": self._plan.carrier_lock_key
-                    if self._plan is not None
-                    else self._composed.values["carrier_lock_key"],
+                    "carrier_lock_key": carrier_lock_key,
                     "arm": arm,
                     "text": text,
                     "admitted": True,
                     "request_sha256": timing.request_sha256,
                     "response_sha256": timing.response_sha256,
-                    "response_text_sha256": timing.response_text_sha256,
+                    "response_text_sha256": response_text_sha256,
                     **derived_output_fields,
                     **artifact_fields,
+                    **projection_v3_fields,
                     **(
                         {"native_episode_receipt": dict(episode_receipt)}
                         if episode_receipt is not None else {}
