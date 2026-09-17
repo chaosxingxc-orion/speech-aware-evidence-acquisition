@@ -12,8 +12,15 @@
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Registered before contact by the B0 preparation agent. The coordinator flips this to ready immediately before the standalone-worker smoke launch.",
+        "reason": "Root (Fable 5.1) admitted cell B0 on 2026-09-17 under owner decision 4 of 2026-09-16; flipped immediately before the standalone-worker smoke launch. Exclusive resident attachment to serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory.",
         "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b0-review-off-admission-v1",
+            "relpath": "coordination/slurp-b0-review-off-v1/root-admission-v1.json",
+            "sha256": "6e9585fd4ecea4a78dca9c382528d179d37c00e772b13bdbe4457260cb9902d4",
+            "reason": "Root admission receipt for the smoke and the full cell, outside the repository under the data root."
+          },
           {
             "kind": "preparation",
             "reason": "Model-free first-phase supply prepared by the B0 preparation agent from the same sealed vectors and knowledge snapshot the anchor used; zero model, tokenizer or encoder contact.",
@@ -21,7 +28,7 @@
             "sha256": "959510d2eaad8b37a8e847a342e98b7303ef4d560d3e5a335d328fbb0e70ab56"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-SMOKE-4-V1"
     }
