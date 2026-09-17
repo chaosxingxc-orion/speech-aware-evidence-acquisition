@@ -130,8 +130,8 @@
       "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-twin-train-fold-a-generation-v2",
       "campaign_plan": "configs/campaign/slurp-native-exemplars-k20-anchor-twin-train-fold-a-v2.json",
       "cell": "slurp-native-exemplars-k20-anchor-twin-train-fold-a-v2",
-      "composed_config_hash": "f9b9d45e49c16e506f61e5ec292f4d3d54181d2f880e42bac3ebcdef3322e813",
-      "execution_plan_protocol_hash": "1bcfc79ff02991137363208344d43e8c8b045095711e17ff659d146154b35a73",
+      "composed_config_hash": "25daa5afb334a899091c6481a9febb33660743bfe96286c8d89903339b788d5c",
+      "execution_plan_protocol_hash": "4abd62bb6da4888095b57c843e59bb045a74bfb6fcce6b73ae3a4435f9207b2c",
       "experiment": "slurp-native-exemplars-k20-anchor-twin-train-fold-a-v2",
       "fit_attempt_id": "attempt-slurp-native-exemplars-k20-anchor-twin-train-fold-a-fit-v2",
       "fit_run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-FIT-V2",
@@ -142,8 +142,8 @@
         "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
       },
       "prepared_phase_supply": {
-        "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2/phase-supply-v1.json",
-        "sha256": "17ee51bcd631abe02240ba8837ed28147f3fc5daf04df5dda9ced18c5d340855"
+        "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2/phase-supply-v2.json",
+        "sha256": "8a33d05022dcdc3fbda16d696e595e37efadabf52461181597668cc23fd02fa7"
       },
       "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2",
       "trigger": "Owner decision 8 of 2026-09-17: the twin flies only after the arm shows a positive CI95 against the base."

@@ -25,10 +25,10 @@ started, stopped or queried the resident service.
 | smoke FIT | `SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-FIT-V2` / `attempt-slurp-native-exemplars-k20-anchor-smoke-4-fit-v2`, 176 endpoints |
 | campaign plans | `configs/campaign/slurp-native-exemplars-k20-anchor-train-fold-a-v2.json`, `configs/campaign/slurp-native-exemplars-k20-anchor-twin-train-fold-a-v2.json` |
 | composed / protocol (arm) | `c5bbdc2e1273a8de76b602b450f2da8c1c9092b703208739353b0b09e02fb67f` / `b251f59a41a4e7cbcf6aae328c07148c4dda2dd0c557fd9576e2f26b10ab49f6` |
-| composed / protocol (twin) | `f9b9d45e49c16e506f61e5ec292f4d3d54181d2f880e42bac3ebcdef3322e813` / `1bcfc79ff02991137363208344d43e8c8b045095711e17ff659d146154b35a73` |
+| composed / protocol (twin) | `25daa5afb334a899091c6481a9febb33660743bfe96286c8d89903339b788d5c` / `4abd62bb6da4888095b57c843e59bb045a74bfb6fcce6b73ae3a4435f9207b2c` |
 | composed / protocol (smoke) | `cfaca2b20af9e08499769a232615d62f779e4777293b4089714fe28d464b7b00` / `c31ac32fd609a2a17313b8fe9767528ccbeb1138ca24ecbcfa5b85cd811da335` |
 | prepared supply (arm) | `prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-V2/phase-supply-v1.json`, SHA-256 `dbd6afbd146ad87aec8e8ad5441ee0c4f35681fbadf8fb4a76943d8c44d3bf97` |
-| prepared supply (twin) | `prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2/phase-supply-v1.json`, SHA-256 `17ee51bcd631abe02240ba8837ed28147f3fc5daf04df5dda9ced18c5d340855` |
+| prepared supply (twin) | `prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2/phase-supply-v2.json`, SHA-256 `8a33d05022dcdc3fbda16d696e595e37efadabf52461181597668cc23fd02fa7` |
 | prepared supply (smoke) | `prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-V2/phase-supply-v1.json`, SHA-256 `76186c55253f3bf535b0496fc783686c83b352c7badbec7a9f01febc4c107aa7` |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |
 | readiness | all three cells are `held` with the `preparation` requirement pinned; the coordinator adds the `decision` requirement and flips the state with the re-pin tool |
