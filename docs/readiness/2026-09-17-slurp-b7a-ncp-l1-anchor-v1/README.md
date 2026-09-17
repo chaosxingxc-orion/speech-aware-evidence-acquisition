@@ -30,7 +30,7 @@ derangement twin flies only on a positive CI95.
 | B7a smoke FIT | `SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-FIT-V1` / `attempt-slurp-native-ncp-l1-anchor-smoke-4-fit-v1`, 176 endpoints |
 | baselines | `configs/baseline/slurp-native-anchor-ncp-l1-train-fold-a-v1.json`, `configs/baseline/slurp-native-anchor-ncp-l1-smoke-4-v1.json` |
 | campaign plan | `configs/campaign/slurp-native-ncp-l1-anchor-train-fold-a-v1.json` |
-| composed / protocol (B7a) | `208e5dba419a8d20b2b83667d700620a77c639303ca08b439b1154d7eb204542` / `f90dd1b2d370795ff438bc53db593057cef98a3bf4336e3d62f905d7b5ed735d` |
+| composed / protocol (B7a) | `c46ce941af01d5bf98f9f04a9a8a2bb10b7108a74bd54850f814f42674d7a032` / `f67eb9bc5e9ff23ff3b0cdcd9efa338163feaa732a1e9ff3e94cd7f2619ddded` |
 | composed / protocol (B7a smoke) | `0fbb9f0001f8d11fbd8459b0a7dfd55f85833f75e4db38895bf1b028f095a8a2` / `deeeba71ceb627efaaeaf46ace94e4eeefebeed5876eb98ae826ca712a814f1b` |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |
 | readiness | both cells are `held` with the preparation requirement pinned; the coordinator appends the decision requirement and flips |
