@@ -493,7 +493,46 @@ def build_knowledge_store_supply(
         if set(store.phase_supply).intersection(scoped_phases):
             raise KnowledgeStoreError("explicit and scoped supply cannot overlap on one store phase")
         specs = load_phase_supply_specs({"phase_supply": store.phase_supply}, program)
-        collisions = (set(specs) | scoped_phases).intersection(candidate_specs)
+        # E3b fix: the E3 fix (module comment above, plain_later_phase_specs)
+        # composes a store's own plain, later-phase phase_supply alongside a
+        # DIFFERENT store's candidate_supply on the SAME phase -- this
+        # program's anchor case (slot-contracts candidate_supply.solver plus
+        # train-exemplars phase_supply.solver) -- but this guard, unchanged
+        # since before E3, tested every store's explicit/scoped specs
+        # against the GLOBAL candidate_specs with no regard for phase order
+        # or store identity, so it refused the very pairing E3 was written
+        # to compose. Three refusals stay exactly as they were:
+        #   1. scoped (context_supply) and candidate supply collide
+        #      wherever they meet, on any phase, from any store: this router
+        #      never composes a source-scoped context provider alongside a
+        #      candidate semantic provider on the same phase.
+        #   2. this store's own explicit phase_supply and ANY store's
+        #      candidate supply collide on the program's FIRST phase,
+        #      unconditionally. The first phase is decided by
+        #      bootstrap_first_phase before any flight, never by this live
+        #      dispatcher, so there is no live composition seam there to
+        #      reconcile the two. (CandidateSemanticSupplySpec.validate
+        #      already makes this unreachable today -- a candidate supply's
+        #      phase must be strictly later than its own
+        #      candidate_state_phase, so candidate_specs can never key the
+        #      first phase -- kept anyway as a defensive equal to the
+        #      pre-fix behaviour rather than relying on that invariant
+        #      holding forever.)
+        #   3. this store's own explicit phase_supply and a candidate supply
+        #      FROM THE SAME STORE collide on any later phase: one store
+        #      cannot serve one phase through both mechanisms at once.
+        # The ONLY new admission: this store's own explicit phase_supply on
+        # a LATER phase may now coexist with a DIFFERENT store's candidate
+        # supply on that same phase.
+        collisions = scoped_phases.intersection(candidate_specs)
+        if first_phase in specs and first_phase in candidate_specs:
+            collisions.add(first_phase)
+        for phase in specs:
+            if phase == first_phase:
+                continue
+            candidate_spec = candidate_specs.get(phase)
+            if candidate_spec is not None and candidate_spec.store_id == store_id:
+                collisions.add(phase)
         if collisions:
             raise KnowledgeStoreError(
                 "candidate, explicit, and scoped supply cannot overlap on phase(s) "
