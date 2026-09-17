@@ -37,7 +37,7 @@ Two owner conditions bind the launch order: **B1 -> B2 -> B4b -> B4a -> B4c** (d
 | campaign plans | `configs/campaign/slurp-native-fallback-quirky-intent-v2-anchor-train-fold-a-v2.json`, `…/slurp-native-slot-store-v2-anchor-train-fold-a-v2.json`, `…/slurp-native-intent-store-v2-anchor-train-fold-a-v2.json` |
 | composed / protocol (B4a) | `a3af83555b14a19ef8192493b7dc31eb18dd4433d3cb3db58e191d8d9d66b662` / `c42a87591753b78d39dbf523efa718014bf7f3a127bd18aa9d0954f34e815939` |
 | composed / protocol (B4a smoke) | `de9e9994ea561c55a320e9b53c8a69f8c2cbfd47d9fcc0ee87d824d4631a5ebb` / `bb90854a6443df2037d5f1cffaf33c8e837a36df0f9dd50bb2c133573a5e4bc8` |
-| composed / protocol (B4b) | `a66fdaf051053075decb946107d13842a590dc44368809ae4a95a48aeaa37671` / `b6a25d846eb2e84a6a9172a069b0264fbc133d1881c210ea5e706afd13a1d7fe` |
+| composed / protocol (B4b) | `8d207b33fa7643b7e5acc4ccbd03354fe9c09df09563544c4879c4bb97ee6a4d` / `567a87ad234bb4f17c4735f94219a82b05b25a19d81fdf1ee32bb93b6eda346a` |
 | composed / protocol (B4b smoke) | `c0572352a9b4758a61654f46d06812819da42d3c7cf9611b24a383882b279661` / `f13ba493375d75a524884f771a6c5d9b410425951b15cccf9d59d1fe76f3cd9c` |
 | composed / protocol (B4c) | `f81a412e61b7f1eb352cf95c6df2a4c408f84e9599b15f4966235802871d8103` / `d290d79234be5d6c56d6ebf6bc4523c856f3a08d0b8c403886070ac2d348a401` |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |

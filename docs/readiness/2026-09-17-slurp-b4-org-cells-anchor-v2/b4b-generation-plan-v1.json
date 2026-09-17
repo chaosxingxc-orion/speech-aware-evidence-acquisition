@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-slot-store-v2-anchor-train-fold-a-v2",
-  "composed_config_hash": "a66fdaf051053075decb946107d13842a590dc44368809ae4a95a48aeaa37671",
+  "composed_config_hash": "8d207b33fa7643b7e5acc4ccbd03354fe9c09df09563544c4879c4bb97ee6a4d",
   "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan; the campaign acquires its own GenerationLease against the resident session and schedules the one official score at finalize.",
   "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "experiment": "slurp-native-slot-store-v2-anchor-train-fold-a-v2",
@@ -23,7 +23,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "b6a25d846eb2e84a6a9172a069b0264fbc133d1881c210ea5e706afd13a1d7fe",
+    "protocol_hash": "567a87ad234bb4f17c4735f94219a82b05b25a19d81fdf1ee32bb93b6eda346a",
     "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V2",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
