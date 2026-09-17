@@ -1,0 +1,192 @@
+{
+  "arms": {
+    "left_primary_anchor": {
+      "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+      "role": "primary comparator, sealed bytes, never re-flown or re-scored",
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+      "run_manifest_sha256": "049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1.scores.json",
+      "scores_sha256": "7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47"
+    },
+    "left_secondary_direct": {
+      "attempt_id": "attempt-slurp-direct-max512-train-fold-a-source-recovery-generation-v1",
+      "role": "secondary comparator, the released TRAIN A direct anchor, sealed bytes",
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1",
+      "run_manifest_sha256": "546109055a373b358c43d36878c532b95784ee5d73d07f011c5fa3ea3d7ce11e",
+      "scores_relpath": "runs/SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1/attempt-slurp-direct-max512-train-fold-a-source-recovery-generation-v1/SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1.scores.json",
+      "scores_sha256": "7840a959fe4f43928fda0e0cacfe8c0ee4200116bfcd269bfe3451b59da29c38"
+    },
+    "right_treatment": {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2",
+      "contact_ceiling": 11880,
+      "expected_contacts": 5417,
+      "role": "cell B1 arm on the anchor base, exemplar-supplied Solver, RECOVERY run on the E3c-fixed code",
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_FIRST_OFFICIAL_SCORE",
+      "supersedes": {
+        "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-V2",
+        "state": "ABORTED 2026-09-17T09:52:35Z after 420 calls on 84 complete rows; never scored, no partial read, ids never reused"
+      }
+    },
+    "right_twin": {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-twin-train-fold-a-generation-v2",
+      "contact_ceiling": 11880,
+      "expected_contacts": 5417,
+      "note": "Registered on its own unflown v2 identity; it flies on the E3c-fixed code after a positive arm CI95 against the base.",
+      "role": "registered form twin, deranged speech key, token-matched",
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_FIRST_OFFICIAL_SCORE",
+      "trigger": "flies only after a positive arm CI95 against the base (owner decision 8)"
+    }
+  },
+  "authority": {
+    "design": "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md",
+    "preregistration": "docs/readiness/2026-09-17-slurp-b1-exemplars-k20-anchor-v2-preregistration.md",
+    "protocol": "docs/readiness/2026-09-17-slurp-b1-exemplars-k20-anchor-v2-recovery-v1/protocol-registered-v1.json",
+    "recovery_note": "docs/readiness/2026-09-17-slurp-b1-exemplars-k20-anchor-v2-recovery-v1.md"
+  },
+  "claim_boundary": "Descriptive paired read on historically exposed TRAIN Fold A discovery rows. No superiority, generalization, component-causal or confirmatory claim; nothing about Fold B, DEV-1000 or the test split.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "contrasts": [
+    "arm minus the sealed anchor (advancement gate)",
+    "arm minus twin (retrieval-key gate)",
+    "arm minus the released direct anchor (reported, never a gate)",
+    "twin minus the sealed anchor (reported: what twenty unrelated exemplars alone do)"
+  ],
+  "decision_rule": {
+    "ADMITTED": "CI95 lower bound of the pooled SLU delta > 0 versus the sealed anchor AND versus the twin, intent non-inferior within h_intent = 1.0051 pp, normalised scorer same sign where a TRAIN sibling exists, no scenario intent loss beyond the null band",
+    "HARMFUL": "otherwise, when a guard fails on the losing side",
+    "NEUTRAL": "otherwise; enters the default plan only if it lowers cost",
+    "no_repeat_to_pass": true,
+    "normalised_scorer_availability": "slurp-slu-f1-normalized-v1 is bound to the devel split and refuses TRAIN sample ids, so the clause has no TRAIN sibling today and is reported as not evaluable.",
+    "read_once": true
+  },
+  "delta_convention": "delta = B1 arm minus its comparator, in percentage points; negative is worse",
+  "diagnostics_required": [
+    "candidate-union coverage realized in the delivered answer, against the A2 availability number 0.9722",
+    "Solver escape-to-neighbour-intent rate: the share of rows whose delivered intent is absent from the sealed Perception candidates but present among the supplied exemplar intents",
+    "exemplar token volume actually rendered per row, against the 1,083-token maximum",
+    "revision counts and review-loop dispositions against the anchor's own"
+  ],
+  "estimators": {
+    "bootstrap_pooled": "analysis.paired.resampled_statistic",
+    "not_used": "analysis.score_compare_cli as the runner: it hard-codes ci_level 0.90 and DEV population names",
+    "paired_per_row": "analysis.paired.paired_contrast",
+    "percentiles": "analysis.bootstrap._percentile over the retained BootstrapResult.replicates",
+    "pooled_micro_f1": "analysis.null_calibration.pooled_f1",
+    "row_reader": "analysis.null_calibration_cli.rows_for"
+  },
+  "execution_profile": "model-free-check",
+  "metrics": [
+    {
+      "counts": "tp = [slu_f1_word_tp, slu_f1_char_tp], fp and fn likewise",
+      "estimand": "pooled count F1",
+      "id": "pooled_slu_f1",
+      "null_half_width_pp": 1.1218,
+      "role": "primary"
+    },
+    {
+      "estimand": "per-row mean of joint scenario+action correctness",
+      "id": "intent_accuracy",
+      "null_half_width_pp": 1.0051,
+      "role": "secondary gate"
+    },
+    {
+      "estimand": "per-row mean",
+      "id": "scenario_accuracy",
+      "null_half_width_pp": 1.0655,
+      "role": "secondary diagnostic"
+    },
+    {
+      "estimand": "per-row mean",
+      "id": "action_accuracy",
+      "null_half_width_pp": 1.0327,
+      "role": "secondary diagnostic"
+    },
+    {
+      "estimand": "pooled count F1 from slot_f1_exact_tp/fp/fn",
+      "id": "pooled_span_f1",
+      "null_half_width_pp": 1.5586,
+      "role": "secondary diagnostic"
+    },
+    {
+      "estimand": "per-row mean",
+      "id": "slu_f1_per_row_mean",
+      "role": "report only"
+    },
+    {
+      "estimand": "per-row mean",
+      "id": "exact_slot_f1_per_row_mean",
+      "role": "report only"
+    }
+  ],
+  "null_margin_source": "cell B0r's own-null read (B0r minus B0) on this exact roster: analysis/SAEA-SLURP-B0-REPLICATE-PAIRED-ANALYSIS-V1/README.md, score-contrasts.json sha256 69abec23e2c6aecca0d55474268ae2c9966631f243497f354a95b332c7ceb849. The imported DEV-1000 margins (intent 0.92, SLU micro 1.18) gate nothing here.",
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-B1-EXEMPLARS-K20-ANCHOR-PAIRED-ANALYSIS-V2",
+    "files": [
+      "score-contrasts.json",
+      "README.md"
+    ],
+    "verdict_document": "docs/results/2026-09-17-slurp-b1-exemplars-k20-anchor-verdict.md"
+  },
+  "population": {
+    "far_field_rows": 557,
+    "headset_rows": 523,
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "roster_id": "SLURP-EVO-FOLD-A-V2",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    },
+    "roster_metadata": {
+      "carries": "sample_id -> scenario, speaker, headset, utterance_id; no text, transcript or gold filler",
+      "relpath": "analysis/SAEA-SLURP-TRAIN-A-DIRECT-ANCHOR-RELEASE-PAIRED-ANALYSIS-V1/roster-metadata.json",
+      "sha256": "07f4cd83b83d83d65500a328e0a38421ede575195c63ae118def0d1006c14e34",
+      "speaker_key": "spk:<usrid>, the 2026-09-09 own-null convention"
+    },
+    "rows": 1080,
+    "rows_per_scenario": 60,
+    "scenario_strata": 18,
+    "speaker_clusters": 125,
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery"
+  },
+  "projection_v3": {
+    "rule": "Owner decision 7 of 2026-09-17: report projection v3 beside every official number over a COPY of each arm's sealed outputs; never let it move the registered rule.",
+    "scorer": "slurp-slu-official-projected-v3-train"
+  },
+  "recipe_id": "SAEA-SLURP-B1-EXEMPLARS-K20-ANCHOR-RECOVERY-PAIRED-ANALYSIS-V2",
+  "resampling": {
+    "draws": 10000,
+    "intervals": [
+      "CI95",
+      "CI90"
+    ],
+    "primary": "paired whole-speaker cluster bootstrap",
+    "seed": 20260915,
+    "seed_advance": "paired_contrast advances the seed by the metric index; pooled metrics use the base seed",
+    "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed, each scenario resampled to its own size"
+  },
+  "schema": "saea-paired-analysis-recipe-v1",
+  "scorer": {
+    "evaluator": "slurp-official-8eb16545",
+    "evaluator_commit": "8eb16545762be97ace75334109d73824217311f1",
+    "id": "slurp-slu-official-train",
+    "runs": "once per complete manifest through core.scoring_batch, never sharded; this read invokes no scorer for any number the rule reads"
+  },
+  "tables_required": [
+    "headline: anchor, arm, twin, delta versus anchor, delta versus twin, speaker CI95, speaker CI90, scenario-stratified CI90, equal-scenario delta, projection v3 beside each",
+    "saves / harms / ties with the exact two-sided McNemar p for every per-row metric, against the anchor and against the twin",
+    "per-scenario table, all 18 scenarios, natural mixture and equal weighting",
+    "cost table: contacts, contacts per row, repeated speech seconds, FIT endpoints, GPU hours from the serving monitor, mean latency, duty cycle, exemplar token volume"
+  ],
+  "title": "SLURP TRAIN A: exemplar-supplied Solver (cell B1, anchor base) versus the sealed dual-store anchor, the released direct anchor and its derangement twin"
+}
