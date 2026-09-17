@@ -1,0 +1,114 @@
+{
+  "contacts": {
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0,
+    "tool": 0
+  },
+  "predecessor": {
+    "relpath": "docs/readiness/2026-09-13-slurp-semantic-store-release-pins-v1.json",
+    "sha256": "ad38deb34c4a198f0b3f4e23f29069688fcdbbffec38460bc3658d6c8b6d0ed2"
+  },
+  "revision_changes": {
+    "relpath": "prepared/SAEA-SLURP-SEMANTIC-AUTHORING-PREPARE-V2/CHANGES.json",
+    "root": "data",
+    "sha256": "48b3ab71706a820856117bcd5e01452ea248829c57f4aa75ca4d22b75c1aa63f"
+  },
+  "schema": "saea-reviewed-semantic-store-release-pins-v2",
+  "status": "RELEASED_PENDING_RUNTIME_CONSUMPTION",
+  "stores": {
+    "intent-boundaries-v2": {
+      "authored_source": {
+        "relpath": "prepared/SAEA-SLURP-SEMANTIC-AUTHORING-PREPARE-V2/authored-intent-boundaries-v3.json",
+        "sha256": "80c6eab120f620188cbae911017cfd74b210c5ca917a17752928a886baf1d22d"
+      },
+      "binding_sha256": "c5a78c7519d6a7f6f2f98da791d2f89be518aaaaaacf840b2140a2bf1b3556c6",
+      "changed_value_ids": [
+        "intent-boundary:general_greet",
+        "intent-boundary:general_joke",
+        "intent-boundary:general_quirky",
+        "intent-boundary:qa_definition",
+        "intent-boundary:qa_factoid"
+      ],
+      "completion": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v2/completion.json",
+        "sha256": "189a54846798706368c6d3f441a8845049b4a9f932db00f6efdb3ff91c90cc1d"
+      },
+      "content_words": {
+        "max": 222,
+        "median": 92.0,
+        "min": 83,
+        "total": 6016
+      },
+      "registration": {
+        "relpath": "docs/readiness/2026-09-17-slurp-intent-boundaries-preparation-registration-v3.json",
+        "sha256": "68c5151b68b0d926369827dc77b52fadb9d399ad90bed516dc6f1e3c82035661"
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v2/release.json",
+        "sha256": "31eb595b54088a21e45daf1acfe790d545e8a4d5330acb3ee4e19f6e1607bc95"
+      },
+      "retrieval_key_text_unchanged": true,
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v2/snapshot.json",
+        "sha256": "8a27424a84d5b419e033391b9bba00f30952de520c993237ea0219a9978c07c5"
+      },
+      "snapshot_file_sha256": "69c3cef660d1b45f263067797b02eb7bd4a393ff8a9edb91426e9a858e79bfc7",
+      "source_recordings": 2037,
+      "store_id": "intent-boundaries",
+      "store_role": "intent-boundaries",
+      "unchanged_value_count": 55,
+      "value_count": 60
+    },
+    "slot-contracts-v2": {
+      "authored_source": {
+        "relpath": "prepared/SAEA-SLURP-SEMANTIC-AUTHORING-PREPARE-V2/authored-slot-contracts-v2.json",
+        "sha256": "fc34b243f2e48e4e0bc3fe10d328d25601b1f1fa7c190c049d696c3ca0db4dd2"
+      },
+      "binding_sha256": "0b63844c31dde29cebc7887073e0dfd4b336b48fd78effbabd1a3290ff457622",
+      "changed_value_ids": [
+        "slot-contract:business_type",
+        "slot-contract:date",
+        "slot-contract:event_name",
+        "slot-contract:media_type",
+        "slot-contract:order_type",
+        "slot-contract:relation",
+        "slot-contract:time",
+        "slot-contract:transport_type"
+      ],
+      "completion": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v2/completion.json",
+        "sha256": "382e2b6a6386ed64236a529a94feafbb11a9f875c4d6799ef233dda1a383037e"
+      },
+      "content_words": {
+        "max": 519,
+        "median": 189.0,
+        "min": 146,
+        "total": 12137
+      },
+      "intent_binding_count": 402,
+      "intent_bindings_added": [],
+      "registration": {
+        "relpath": "docs/readiness/2026-09-17-slurp-slot-contracts-preparation-registration-v2.json",
+        "sha256": "14d61a8411802eaf9a1ac192cf8a7f2ac9b44902cd8a2891c51dc912cc7659fa"
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v2/release.json",
+        "sha256": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b"
+      },
+      "retrieval_key_text_unchanged": true,
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v2/snapshot.json",
+        "sha256": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec"
+      },
+      "snapshot_file_sha256": "a48ed83eb7878e9eaedfe4dbdf4ea747e3e582e08899ff1f0edfdfe438ae8904",
+      "source_recordings": 3162,
+      "store_id": "slot-contracts",
+      "store_role": "slot-contracts",
+      "unchanged_value_count": 46,
+      "value_count": 54
+    }
+  }
+}
