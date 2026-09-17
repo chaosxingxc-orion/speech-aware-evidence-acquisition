@@ -1695,7 +1695,7 @@ async def _invoke_native_role_episode(
     )
     from .controllers import (
         advance_phase_response_state, native_planner_action_response_format,
-        seal_phase_response_state,
+        restrict_repeat_visit_supply, seal_phase_response_state,
     )
     from .material import PhaseMaterial
 
@@ -1829,6 +1829,13 @@ async def _invoke_native_role_episode(
             supply = binding.supply_for_phase(next_phase, staged)
         if supply is not None and next_phase is not None and program.phase(next_phase).knowledge != "supplied":
             raise RailsRunnerError("native knowledge supply requires a supplied destination")
+        if supply is not None and next_phase is not None:
+            # E3c: the Planner's REVISE route re-enters the Solver, and a
+            # prepared phase supply is a pure function of (phase, sample), so
+            # the SAME decision comes back for a phase whose values already
+            # ride the accumulated QueryState. Acquire only what is new; the
+            # first visit of every phase is returned unchanged.
+            supply = restrict_repeat_visit_supply(supply, before, phase_name=next_phase)
         if rejected_steps and (tool_step is not None or any(step.supply is not None for step in rejected_steps)):
             raise RailsRunnerError("rejected batch cannot execute a tool or introduce supply")
         added = (source,) + (() if tool_step is None else (tool_step.state,))

@@ -48,6 +48,12 @@ parse status and parsed answers in the sealed `solver_group` receipt that
 `analysis.native_commit_replay` re-aggregates offline. A Planner `REVISE` re-samples the whole group
 and re-commits; the contact-ceiling formula is unchanged.
 
+E3c (2026-09-17, cell B1 abort): when the Planner routes REVISE the Solver is re-entered and the
+prepared M1 supply returns the same twenty values, so `rails.controllers.restrict_repeat_visit_supply`
+restricts a repeat visit to what the trajectory does not already hold and emits no acquire
+transition when that is nothing — the values still reach the revisited request through the
+accumulated `QueryState`, and every first visit is byte-identical.
+
 ## 4. Phases
 
 **Phase 0 (done or in progress, zero contacts):** takeover receipt, owner decision record,
