@@ -14,6 +14,16 @@ from openjiuwen.core.foundation.tool import LocalFunction, ToolCard
 from openjiuwen.core.workflow import create_workflow_session
 
 from speech_aware_evidence_acquisition.rails.core_client import CoreCompletion
+from speech_aware_evidence_acquisition.rails.commit_policies import (
+    ParsedSlurpAnswer, SolverSampleVote, commit_plurality_support_v1,
+)
+from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
+    validate_solver_group_receipt,
+)
+from speech_aware_evidence_acquisition.reproduction.ojw.native_group_solver import (
+    GroupedSolverRoleNode,
+)
+from speech_aware_evidence_acquisition.reproduction.slurp_scoring import SlotEntity
 from speech_aware_evidence_acquisition.reproduction.ojw import (
     native_episode as native_episode_module,
 )
@@ -1297,3 +1307,312 @@ def test_opt_in_policy_does_not_downgrade_other_source_failures(failure_kind):
 
     with pytest.raises(NativeEpisodeError, match="native episode node failed"):
         asyncio.run(workflow.invoke_direct("query", ()))
+
+
+# --- E2b (SLURP v2 base program M2 live wiring): GroupedSolverRoleNode at the
+# graph's "solver" position, both review-off and review-loop shapes. Model-
+# free: five scripted Solver answers per grouped visit, no rails.runner. ---
+
+_SOLVER_ANSWERS_3_2_SPLIT = [
+    json.dumps({"scenario": "alarm_set", "action": "set", "entities": []}),
+    json.dumps({"scenario": "alarm_set", "action": "set", "entities": []}),
+    json.dumps({"scenario": "alarm_set", "action": "set", "entities": []}),
+    json.dumps({"scenario": "alarm_remove", "action": "remove", "entities": []}),
+    json.dumps({"scenario": "alarm_remove", "action": "remove", "entities": []}),
+]
+
+
+def _grouped_solver_node(role_id: str, answers: list[str], *, samples: int):
+    """A grouped Solver visit: an inner NativeRoleNode whose
+    contact_context_provider tags sample_index 0..samples-1, wrapped in
+    GroupedSolverRoleNode -- the SAME composition rails.runner.
+    _invoke_native_role_episode builds for a samples >= 2 Solver role."""
+
+    script = _Script(list(answers))
+    _ALL_SCRIPTS.append(script)
+    inner = NativeRoleNode(
+        spec=NativeRoleNodeSpec(
+            role_id=role_id, role_kind="solver",
+            prompt=f"Act as the {role_id}.", max_iterations=1,
+        ),
+        metered_request=script,
+        contact_context_provider=lambda index, role=role_id: NativeRoleContactContext(
+            sample_id="sample-1", agent_contact_id=f"{role}-contact-{index + 1}",
+            sample_index=index,
+        ),
+    )
+    node = GroupedSolverRoleNode(
+        inner=inner, samples=samples, fragment_seed=1000,
+        decoding_overrides={"temperature": 0.7, "seed_offset": 0},
+        commit={
+            "policy": "saea-commit-plurality-support-v1",
+            "min_support": 3, "similarity_threshold": 0.8,
+        },
+        delivery_allowed=lambda _role, output: bool(output.strip()),
+    )
+    return node, script
+
+
+def test_grouped_solver_visit_review_off_delivers_the_commit_answer_with_full_custody():
+    perception, perception_script = _node("perception", "perception", ["heard"])
+    grouped, inner_script = _grouped_solver_node("solver", _SOLVER_ANSWERS_3_2_SPLIT, samples=5)
+    seen: list[tuple[str, dict[str, object]]] = []
+
+    def role_input(role_id, state):
+        seen.append((role_id, dict(state)))
+        return f"{role_id}: use the supplied episode state."
+
+    workflow = build_native_episode(
+        spec=NativeEpisodeSpec(
+            episode_id="grouped-review-off-episode",
+            max_revisions=0,
+            actions=NativeEpisodeActions(accept="ACCEPT", revise="REVISE", acquire="ACQUIRE"),
+            review_loop_enabled=False,
+        ),
+        nodes=NativeEpisodeNodes(perception=perception, solver=grouped),
+        role_input_builder=role_input,
+    )
+
+    result = asyncio.run(workflow.invoke_direct("original query", ()))
+    delivery = result["delivery"]
+
+    # Exactly 1 (Perception) + N (grouped Solver samples) contacts -- N = 5.
+    assert len(perception_script.requests) == 1
+    assert len(inner_script.requests) == 5
+    assert delivery["role_id"] == "solver"
+    assert delivery["result_type"] == "answer"
+    assert delivery["delivery_eligible"] is True
+    # The delivered answer is the commit policy's plurality winner (3 of 5).
+    assert json.loads(delivery["actor_output"]) == {
+        "scenario": "alarm_set", "action": "set", "entities": [],
+    }
+    # execution_receipt concatenates every sample's own contact, in order.
+    contacts = delivery["execution_receipt"]["contacts"]
+    assert [c["agent_contact_id"] for c in contacts] == [
+        f"solver-contact-{i + 1}" for i in range(5)
+    ]
+    assert delivery["execution_receipt"]["final_contact"] == contacts[-1]
+    # Full custody of every raw sample plus commit provenance.
+    group = delivery["solver_group"]
+    assert group["commit_policy_id"] == "saea-commit-plurality-support-v1"
+    assert [s["sample_index"] for s in group["samples"]] == [0, 1, 2, 3, 4]
+    assert [s["parse_status"] for s in group["samples"]] == ["ok"] * 5
+    assert [json.loads(a) for a in _SOLVER_ANSWERS_3_2_SPLIT] == [
+        s["parsed_answer"] for s in group["samples"]
+    ]
+    assert len({s["seed"] for s in group["samples"]}) == 5
+    assert group["delivered"]["intent_support"] == 3
+    assert group["delivered"]["intent_member_sample_indices"] == [0, 1, 2]
+    assert group["delivered"]["entities"] == []
+    # latest_solver/accepted_solver_receipt/role_visits carry solver_group
+    # through unchanged (native_episode._ApplyRole/_Accept never read it).
+    assert result["state"]["latest_solver"] == delivery
+    assert result["state"]["accepted_solver_receipt"] == delivery["execution_receipt"]
+    assert [visit["stage"] for visit in result["state"]["role_visits"]] == [
+        "perception", "solver",
+    ]
+    assert "solver_group" not in result["state"]["role_visits"][1]["execution_receipt"]
+
+
+def test_grouped_solver_visit_flows_through_the_review_loop_to_delivery():
+    grouped, inner_script = _grouped_solver_node("solver", _SOLVER_ANSWERS_3_2_SPLIT, samples=5)
+    reviewer, reviewer_script = _node("reviewer", "reviewer", ["review one"])
+    planner, planner_script = _node("planner", "planner", ["ACCEPT"])
+    workflow, perception_script, seen = _episode(solver=grouped, reviewer=reviewer, planner=planner)
+
+    result = asyncio.run(
+        workflow.invoke_direct("original query", ({"intent_id": "intent-a"},))
+    )
+    delivery = result["delivery"]
+
+    # Exactly 1 (Perception) + N (grouped Solver) + 1 (Reviewer) + 1 (Planner).
+    assert len(perception_script.requests) == 1
+    assert len(inner_script.requests) == 5
+    assert len(reviewer_script.requests) == 1
+    assert len(planner_script.requests) == 1
+    assert json.loads(delivery["actor_output"]) == {
+        "scenario": "alarm_set", "action": "set", "entities": [],
+    }
+    assert delivery["solver_group"]["delivered"]["intent_support"] == 3
+    assert result["state"]["review"] == "review one"
+    assert result["state"]["plan"] == "ACCEPT"
+    assert [visit["stage"] for visit in result["state"]["role_visits"]] == [
+        "perception", "solver", "review", "planner",
+    ]
+
+
+# ---------------------------------------------------------------------------
+# E2b (SLURP v2 base program M2 live wiring): GroupedSolverRoleNode at the
+# "solver" graph position. No rails.runner/MeteredNativeSpeechRequest here --
+# _Script bypasses request composition entirely, so these tests are pure
+# proof that native_episode.py's graph (_ApplyRole/_Accept/_TerminalDelivery,
+# build_native_episode's node-type check) carries solver_group through
+# unchanged, for both episode shapes.
+# ---------------------------------------------------------------------------
+
+_GROUPED_ANSWERS = [
+    {"scenario": "alarm", "action": "set", "entities": [{"type": "time", "filler": "six am"}]},
+    {"scenario": "alarm", "action": "set", "entities": [{"type": "time", "filler": "six a m"}]},
+    {"scenario": "alarm", "action": "cancel", "entities": []},
+]
+_GROUPED_COMMIT = {
+    "policy": "saea-commit-plurality-support-v1",
+    "min_support": 2,
+    "similarity_threshold": 0.8,
+}
+
+
+def _grouped_answer_text(answer):
+    import json
+
+    return json.dumps(answer, ensure_ascii=False, sort_keys=True)
+
+
+def _expected_grouped_actor_output():
+    votes = [
+        SolverSampleVote(
+            sample_index=index,
+            parsed=ParsedSlurpAnswer(
+                scenario=answer["scenario"], action=answer["action"],
+                entities=tuple(
+                    SlotEntity(type=entity["type"], filler=entity["filler"])
+                    for entity in answer["entities"]
+                ),
+            ),
+        )
+        for index, answer in enumerate(_GROUPED_ANSWERS)
+    ]
+    outcome = commit_plurality_support_v1(votes, **{
+        k: v for k, v in _GROUPED_COMMIT.items() if k != "policy"
+    })
+    import json
+
+    return json.dumps(
+        {
+            "scenario": outcome.answer.scenario,
+            "action": outcome.answer.action,
+            "entities": [
+                {"type": entity.type, "filler": entity.filler}
+                for entity in outcome.answer.entities
+            ],
+        },
+        ensure_ascii=False, sort_keys=True,
+    )
+
+
+def test_grouped_solver_review_off_delivers_the_commit_policys_aggregated_answer():
+    perception, _ = _node("perception", "perception", ["heard"])
+    inner_solver, inner_script = _node(
+        "solver", "solver",
+        [_grouped_answer_text(answer) for answer in _GROUPED_ANSWERS],
+    )
+    grouped_solver = GroupedSolverRoleNode(
+        inner=inner_solver, samples=3, fragment_seed=500,
+        decoding_overrides={"temperature": 0.7, "seed_offset": 0},
+        commit=_GROUPED_COMMIT,
+    )
+    seen: list[tuple[str, dict[str, object]]] = []
+
+    def role_input(role_id, state):
+        seen.append((role_id, dict(state)))
+        return f"{role_id}: use the supplied episode state."
+
+    workflow = build_native_episode(
+        spec=NativeEpisodeSpec(
+            episode_id="grouped-review-off-episode",
+            max_revisions=0,
+            actions=NativeEpisodeActions(
+                accept="ACCEPT", revise="REVISE", acquire="ACQUIRE"
+            ),
+            review_loop_enabled=False,
+        ),
+        nodes=NativeEpisodeNodes(perception=perception, solver=grouped_solver),
+        role_input_builder=role_input,
+    )
+
+    result = asyncio.run(workflow.invoke_direct("original query", ()))
+
+    delivery = result["delivery"]
+    assert delivery["role_id"] == "solver"
+    assert delivery["result_type"] == "answer"
+    assert delivery["delivery_eligible"] is True
+    assert delivery["actor_output"] == _expected_grouped_actor_output()
+    assert len(delivery["execution_receipt"]["contacts"]) == 3
+    assert delivery["execution_receipt"]["final_contact"] == (
+        delivery["execution_receipt"]["contacts"][-1]
+    )
+    validate_solver_group_receipt(delivery["solver_group"], samples=3)
+    assert delivery["solver_group"]["commit_policy_id"] == "saea-commit-plurality-support-v1"
+    assert [r["sample_index"] for r in delivery["solver_group"]["samples"]] == [0, 1, 2]
+    assert result["state"]["latest_solver"] == delivery
+    assert result["state"]["accepted_solver_receipt"] == delivery["execution_receipt"]
+    # One graph-level "solver" visit, THREE underlying model contacts: the
+    # role input builder (and hence the episode graph) sees ONE visit.
+    assert [role for role, _ in seen] == ["perception", "solver"]
+    assert len(inner_script.requests) == 3
+
+
+def test_grouped_solver_review_loop_on_delivers_solver_group_through_accept():
+    perception, _ = _node("perception", "perception", ["heard"])
+    inner_solver, inner_script = _node(
+        "solver", "solver",
+        [_grouped_answer_text(answer) for answer in _GROUPED_ANSWERS],
+    )
+    grouped_solver = GroupedSolverRoleNode(
+        inner=inner_solver, samples=3, fragment_seed=501,
+        decoding_overrides={"temperature": 0.7, "seed_offset": 0},
+        commit=_GROUPED_COMMIT,
+    )
+    reviewer, reviewer_script = _node("reviewer", "reviewer", ["review one"])
+    planner, planner_script = _node("planner", "planner", ["ACCEPT"])
+    workflow, _, seen = _episode(solver=grouped_solver, reviewer=reviewer, planner=planner)
+
+    result = asyncio.run(
+        workflow.invoke_direct("original query", ({"intent_id": "intent-a"},))
+    )
+
+    delivery = result["delivery"]
+    assert delivery["actor_output"] == _expected_grouped_actor_output()
+    assert len(delivery["execution_receipt"]["contacts"]) == 3
+    validate_solver_group_receipt(delivery["solver_group"], samples=3)
+    assert result["state"]["latest_solver"] == delivery
+    assert [visit["stage"] for visit in result["state"]["role_visits"]] == [
+        "perception", "solver", "review", "planner",
+    ]
+    assert result["state"]["planner_routes"] == [
+        {"role_visit_index": 3, "revision_count": 0, "action": "ACCEPT"},
+    ]
+    assert [role for role, _ in seen] == [
+        "perception", "solver", "reviewer", "planner",
+    ]
+    assert len(inner_script.requests) == 3
+    assert len(reviewer_script.requests) == 1
+    assert len(planner_script.requests) == 1
+
+
+def test_build_native_episode_refuses_a_grouped_node_at_a_non_solver_position():
+    perception, _ = _node("perception", "perception", ["heard"])
+    inner_solver, _ = _node("solver", "solver", [_grouped_answer_text(_GROUPED_ANSWERS[0])] * 3)
+    grouped_solver = GroupedSolverRoleNode(
+        inner=inner_solver, samples=3, fragment_seed=502,
+        decoding_overrides={"temperature": 0.7, "seed_offset": 0},
+        commit=_GROUPED_COMMIT,
+    )
+
+    with pytest.raises(ValueError, match="reviewer"):
+        build_native_episode(
+            spec=NativeEpisodeSpec(
+                episode_id="misplaced-grouped-node",
+                max_revisions=1,
+                actions=NativeEpisodeActions(
+                    accept="ACCEPT", revise="REVISE", acquire="ACQUIRE"
+                ),
+            ),
+            nodes=NativeEpisodeNodes(
+                perception=perception,
+                solver=inner_solver,
+                reviewer=grouped_solver,
+                planner=_node("planner", "planner", ["ACCEPT"])[0],
+            ),
+            role_input_builder=lambda role, _state: f"Run {role}.",
+        )

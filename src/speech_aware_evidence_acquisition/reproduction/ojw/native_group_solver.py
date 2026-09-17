@@ -38,16 +38,31 @@ samples-1 group (this function still accepts N == 1, trivially) is
 byte-identical in its ``execution_receipt`` to a single ungrouped Solver
 visit, with an all-support-1 ``solver_group`` record alongside it.
 
-Remaining integration seam, explicitly out of this module's scope: wiring a
-live episode's Solver ``NativeRoleNode`` with a ``contact_context_provider``
-sized to ``roles.solver.samples`` and calling this module through it is
-``core.flight.runtime.FlightRuntime``'s job, not this module's.
+Live wiring (E2b): :class:`GroupedSolverRoleNode` below is the graph-facing
+seam. ``rails.runner._invoke_native_role_episode`` builds one Solver
+``NativeRoleNode`` exactly as it always has (with a ``contact_context``
+provider that additionally tags every contact's ``sample_index`` as
+``invocation_index % samples`` whenever the Solver role declares
+``samples >= 2``), then wraps it in a ``GroupedSolverRoleNode`` and places
+THAT at the "solver" position of ``reproduction.ojw.native_episode``'s role
+graph instead of the plain node. Every sample is a REAL
+``NativeRoleNode.invoke_direct`` call through the SAME metered request path
+an ungrouped Solver visit uses, so contact counting, budget/FIT gates,
+exposure and cost accounting all see every one of the N contacts as an
+ordinary contact -- no separate accounting path exists or is needed.
 """
 
 from __future__ import annotations
 
 from collections.abc import Awaitable, Callable, Mapping, Sequence
 from typing import Any
+
+from openjiuwen.core.context_engine import ModelContext
+from openjiuwen.core.graph.executable import Input, Output
+from openjiuwen.core.session.node import Session
+from openjiuwen.core.workflow import WorkflowComponent
+
+from .native_roles import NativeRoleNode, NativeRoleNodeSpec
 
 
 class GroupedSolverError(ValueError):
@@ -240,4 +255,79 @@ async def run_grouped_solver_samples(
     }
 
 
-__all__ = ["GroupedSolverError", "run_grouped_solver_samples"]
+class GroupedSolverRoleNode(WorkflowComponent):
+    """The "solver" position of a live native episode graph, grouped (E2b).
+
+    Wraps ONE real Solver ``NativeRoleNode`` (``inner``) built exactly as an
+    ungrouped Solver node always has -- same spec, same metered request
+    path, same ``contact_context_provider`` -- and, on ``invoke()`` (the
+    same ``{"query": ...} -> role-result`` contract
+    ``reproduction.ojw.native_episode._add_role`` wires into the graph),
+    drives :func:`run_grouped_solver_samples` over ``samples`` sequential
+    ``inner.invoke_direct(query)`` calls instead of a single one.
+
+    Placed by ``rails.runner._invoke_native_role_episode`` in place of a
+    plain ``NativeRoleNode`` whenever the Solver role's registered
+    ``samples >= 2``; never constructed for a samples-1 role, so that path
+    is untouched by this class's existence. ``spec`` delegates to
+    ``inner.spec`` (``reproduction.ojw.native_episode.build_native_episode``
+    and ``_RoleQuery`` read only ``spec.role_id``/``spec.role_kind``) and
+    ``close()`` delegates to ``inner.close()``: there is no separate outer
+    agent or rail to release.
+    """
+
+    def __init__(
+        self,
+        *,
+        inner: NativeRoleNode,
+        samples: int,
+        fragment_seed: int,
+        decoding_overrides: Mapping[str, object],
+        commit: Mapping[str, object],
+        delivery_allowed: Callable[[str, str], bool] = _default_delivery_allowed,
+    ) -> None:
+        super().__init__()
+        if not isinstance(inner, NativeRoleNode) or inner.spec.role_kind != "solver":
+            raise GroupedSolverError(
+                "a grouped Solver visit requires an inner Solver NativeRoleNode"
+            )
+        if not callable(delivery_allowed):
+            raise GroupedSolverError("delivery_allowed must be callable")
+        self._inner = inner
+        self._samples = samples
+        self._fragment_seed = fragment_seed
+        self._decoding_overrides = dict(decoding_overrides)
+        self._commit = dict(commit)
+        self._delivery_allowed = delivery_allowed
+
+    @property
+    def spec(self) -> NativeRoleNodeSpec:
+        return self._inner.spec
+
+    async def invoke(
+        self, inputs: Input, session: Session, context: ModelContext
+    ) -> Output:
+        query = inputs.get("query")
+        if not isinstance(query, str) or not query:
+            raise GroupedSolverError("native role query must be non-empty text")
+        inner = self._inner
+
+        async def invoke_sample(_sample_index: int) -> dict[str, object]:
+            return await inner.invoke_direct(query)
+
+        return await run_grouped_solver_samples(
+            invoke_sample,
+            samples=self._samples,
+            fragment_seed=self._fragment_seed,
+            decoding_overrides=self._decoding_overrides,
+            commit=self._commit,
+            delivery_allowed=self._delivery_allowed,
+        )
+
+    async def close(self) -> None:
+        await self._inner.close()
+
+
+__all__ = [
+    "GroupedSolverError", "GroupedSolverRoleNode", "run_grouped_solver_samples",
+]
