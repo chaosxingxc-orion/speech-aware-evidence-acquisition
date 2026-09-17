@@ -340,3 +340,21 @@ the contact-free substitute and is stronger per contact.
 9. **The scenario null band is defined in the preregistration**, which v1 left open.
 10. **No `wire-check` stage** on any cell, for the reason in section 7.
 11. **Registered hashes are pre-flip.** Section 1; use the re-pin tool of section 2.
+
+## 9. Smoke record (2026-09-17, coordinator)
+
+Cell B4b's four-row smoke SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-SMOKE-4-V2 sealed at study commit
+bc65ef84: 20 contacts, every row perception 1 / solver 1 / reviewer 2 / planner 1 routed ACCEPT, 4
+task-contract tool calls, 20 request-fit receipts all fitting (minimum margin 11,094). Against the
+anchor's sealed requests for the same four rows, the Perception evidence content is identical on every
+item and the Solver, Reviewer and Planner evidence differs only on the revised slot cards (1 to 4
+items per row: time, date, media_type); `request_id`, `evidence_provenance` and each item's
+`source_uri` differ as bookkeeping, and the history differs only where the core's own Perception
+output differs (greedy nondeterminism). Two operational facts recorded before the arm flew: the
+B4b lease was first refused by the flight lock the aborted B1 campaign preserved by design, reconciled
+by root after proving quiescence (receipt under
+`$SPEECHRL_DATA_DIR/coordination/slurp-b1-exemplars-k20-anchor-v2/flight-lock-reconciliation-*.json`);
+and the smoke ran while the GPU stayed in its idle power state (about 7 W, 43 s per contact), which
+a non-model matmul ramp preflight now guards before every campaign launch (about 54 TFLOP/s and
+92 W when healthy). B4b flew before the B1 recovery under ready-first GPU scheduling.
+
