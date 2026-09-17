@@ -1,0 +1,2412 @@
+{
+  "schema": "saea-codex-worktree-cleanup-repository-receipt-v1",
+  "completion": {
+    "schema": "saea-codex-worktree-cleanup-completion-v1",
+    "completed_at_utc": "2026-09-17T07:48:42.379774+00:00",
+    "status": "COMPLETE",
+    "removed_count": 219,
+    "removed_allocated_bytes": 52379549696,
+    "backup_allocated_bytes": 9986199552,
+    "estimated_net_reclaimed_bytes": 42393350144,
+    "observed_free_space_increase_during_removal_bytes": 52379521024,
+    "archive": {
+      "schema": "saea-worktree-cleanup-archive-validation-v1",
+      "verified_at_utc": "2026-09-17T07:47:36.011840+00:00",
+      "archive": "/home/chao/saea-archives/worktree-cleanup-2026-09-17-codex-v1/orphan-worktrees.tar.gz",
+      "archive_bytes": 9986026899,
+      "archive_sha256": "0c7c433c85514ea4b2351f18dcb5f5e88d28727a3688ccea67af96875ddcdfed",
+      "tar_compare_exit_code": 0,
+      "target_count": 219,
+      "elapsed_seconds": 653.26,
+      "status": "VERIFIED_NOT_YET_REMOVED"
+    },
+    "preserved_worktree_paths": [
+      "/home/chao/saea-worktrees/fable-b0r-flight"
+    ],
+    "registered_worktrees_after": "worktree /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition\nHEAD 9484079ff316d3a92e198e8bc53816b1734f1438\nbranch refs/heads/master\n\nworktree /home/chao/saea-worktrees/fable-b0r-flight\nHEAD f38d3c33c26b51c3936d8f7f996772989978587c\ndetached\n\n",
+    "remaining_parent_children": [
+      "/home/chao/saea-worktrees/fable-b0r-flight"
+    ],
+    "branch_deletions": 0,
+    "model_contacts": 0,
+    "service_stops_or_restarts": 0,
+    "active_target_references_before_removal": [],
+    "elapsed_removal_seconds": 13.16,
+    "per_directory_journal": "/home/chao/saea-archives/worktree-cleanup-2026-09-17-codex-v1/removed-directories.jsonl",
+    "plan": "/home/chao/saea-archives/worktree-cleanup-2026-09-17-codex-v1/cleanup-plan.json"
+  },
+  "source_receipts_sha256": {
+    "/home/chao/saea-archives/worktree-cleanup-2026-09-17-codex-v1/cleanup-plan.json": "1b4a1212c5dd0eec81779ce2f916cc2dcc3717f9c6f1afc5f322fe26d6bdba73",
+    "/home/chao/saea-archives/worktree-cleanup-2026-09-17-codex-v1/archive-validation.json": "af8b2c72c5d66674f39df04ce30e1eeaa480ae71a406e184f912064f268e571f",
+    "/home/chao/saea-archives/worktree-cleanup-2026-09-17-codex-v1/removed-directories.jsonl": "e65f109dc07c2965b48994a701f7923c7bc20033ec0f0d1eeebb5e5c328a884c",
+    "/home/chao/saea-archives/worktree-cleanup-2026-09-17-codex-v1/cleanup-completion.json": "12a501e4a9ea4dd9cd43d5728cc05ea4e456d1805e74c8a256862adb7989752c"
+  },
+  "retained_branch_check": {
+    "repository_branch_count": 434,
+    "matched_branch_bindings": 209,
+    "missing": [],
+    "changed": []
+  },
+  "removed_directories": [
+    {
+      "name": "a2t-campaign-cli-bridge-v1",
+      "absolute_path": "/home/chao/saea-worktrees/a2t-campaign-cli-bridge-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/a2t-campaign-cli-bridge-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/a2t-campaign-cli-bridge-v1",
+          "commit": "930c50776c81e061e412b6ddfd83bb37d1d7786b"
+        }
+      ]
+    },
+    {
+      "name": "a2t-construction-binding-v1",
+      "absolute_path": "/home/chao/saea-worktrees/a2t-construction-binding-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/a2t-construction-binding-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/a2t-construction-binding-v1",
+          "commit": "c5007cf931ece782005968914afb0455892de284"
+        }
+      ]
+    },
+    {
+      "name": "a2t-generic-packet-promotion",
+      "absolute_path": "/home/chao/saea-worktrees/a2t-generic-packet-promotion",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/a2t-generic-packet-promotion",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/a2t-generic-packet-promotion",
+          "commit": "76c5bb6b9e5e7285a6f8b029b57122c9d5a3ccdc"
+        }
+      ]
+    },
+    {
+      "name": "a2t-live-runtime-v1",
+      "absolute_path": "/home/chao/saea-worktrees/a2t-live-runtime-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/a2t-live-runtime-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/a2t-live-runtime-v1",
+          "commit": "2eaa40583dd05656fca312175a2385c14423a4c0"
+        }
+      ]
+    },
+    {
+      "name": "a2t-native-campaign-v1",
+      "absolute_path": "/home/chao/saea-worktrees/a2t-native-campaign-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/a2t-native-campaign-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/a2t-native-campaign-v1",
+          "commit": "cbc53ac0c36bed94fdb50c3b069a74569d935720"
+        }
+      ]
+    },
+    {
+      "name": "a2t-native-card-snapshot-export-v1",
+      "absolute_path": "/home/chao/saea-worktrees/a2t-native-card-snapshot-export-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/a2t-native-card-snapshot-export-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/a2t-native-card-snapshot-export-v1",
+          "commit": "9227275d7b2d26f3a1770cc80feca7b36d83c639"
+        }
+      ]
+    },
+    {
+      "name": "a2t-native-compatible-presentation-v1",
+      "absolute_path": "/home/chao/saea-worktrees/a2t-native-compatible-presentation-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/a2t-native-compatible-presentation-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/a2t-native-compatible-presentation-v1",
+          "commit": "45628a1b25101caeea5d6919bde1f700f393d2dd"
+        }
+      ]
+    },
+    {
+      "name": "a2t-native-key-runtime-v1",
+      "absolute_path": "/home/chao/saea-worktrees/a2t-native-key-runtime-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/a2t-native-key-runtime-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/a2t-native-key-runtime-v1",
+          "commit": "2e1001ab6919e40db866780aab9bded453c535f6"
+        }
+      ]
+    },
+    {
+      "name": "a2t-native-matched-config-draft-v1",
+      "absolute_path": "/home/chao/saea-worktrees/a2t-native-matched-config-draft-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/a2t-native-matched-config-draft-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/a2t-native-matched-config-draft-v1",
+          "commit": "cf2bcc842ec301e10626d2c393b020db1a3b4c50"
+        }
+      ]
+    },
+    {
+      "name": "a2t-native-report-counters-v1",
+      "absolute_path": "/home/chao/saea-worktrees/a2t-native-report-counters-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/a2t-native-report-counters-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/a2t-native-report-counters-v1",
+          "commit": "b37b483e727f04ff0aa6fc85814e448e2df334ae"
+        }
+      ]
+    },
+    {
+      "name": "a2t-packet-promotion-runtime-v1",
+      "absolute_path": "/home/chao/saea-worktrees/a2t-packet-promotion-runtime-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/a2t-packet-promotion-runtime-v1",
+      "matching_retained_branch_tips": []
+    },
+    {
+      "name": "a2t-public-legality-presentation-v1",
+      "absolute_path": "/home/chao/saea-worktrees/a2t-public-legality-presentation-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/a2t-public-legality-presentation-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/a2t-public-legality-presentation-v1",
+          "commit": "2c23b7fdf7e79cdc789f11c2688abe37e7925d9b"
+        }
+      ]
+    },
+    {
+      "name": "a2t-query-recovery-runtime-v1",
+      "absolute_path": "/home/chao/saea-worktrees/a2t-query-recovery-runtime-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/a2t-query-recovery-runtime-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/a2t-query-recovery-runtime-v1",
+          "commit": "4671c5b4cb2b766367bcb57353704a47c9572b6b"
+        }
+      ]
+    },
+    {
+      "name": "a2t-segmented-query-consumption-v1",
+      "absolute_path": "/home/chao/saea-worktrees/a2t-segmented-query-consumption-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/a2t-segmented-query-consumption-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/a2t-segmented-query-consumption-v1",
+          "commit": "e79612bcad217a4237dc73faf57d9ec72ab8a389"
+        }
+      ]
+    },
+    {
+      "name": "a2t-shared-card-compilation-v1",
+      "absolute_path": "/home/chao/saea-worktrees/a2t-shared-card-compilation-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/a2t-shared-card-compilation-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/a2t-shared-card-compilation-v1",
+          "commit": "643adfeb047ad7e87afc68083f52871fef2bb413"
+        }
+      ]
+    },
+    {
+      "name": "a2t-speech-query-preparation-v1",
+      "absolute_path": "/home/chao/saea-worktrees/a2t-speech-query-preparation-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/a2t-speech-query-preparation-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/a2t-speech-query-preparation-v1",
+          "commit": "0b2a400bd57e43dc3685704e30f96dcb596ec2ba"
+        }
+      ]
+    },
+    {
+      "name": "agentic-native-tool-loop-integration-v1",
+      "absolute_path": "/home/chao/saea-worktrees/agentic-native-tool-loop-integration-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/agentic-native-tool-loop-integration-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/agentic-native-tool-loop-integration-v1",
+          "commit": "f78aab7083580502c81edfe33dcaf13964b5f5b2"
+        }
+      ]
+    },
+    {
+      "name": "agentic-native-tool-loop-v1",
+      "absolute_path": "/home/chao/saea-worktrees/agentic-native-tool-loop-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/agentic-native-tool-loop-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/agentic-native-tool-loop-v1",
+          "commit": "48cd226de3bf1cc605733d4ee5de1184180df0d3"
+        }
+      ]
+    },
+    {
+      "name": "aligned-slurp-scoring",
+      "absolute_path": "/home/chao/saea-worktrees/aligned-slurp-scoring",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/aligned-slurp-scoring",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/aligned-slurp-scoring",
+          "commit": "04d400768bb4a44684657bf3de83d5320dfd7d73"
+        }
+      ]
+    },
+    {
+      "name": "artifact-result-kind-v1",
+      "absolute_path": "/home/chao/saea-worktrees/artifact-result-kind-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/artifact-result-kind-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/artifact-result-kind-v1",
+          "commit": "d1901b6498a8fb8947743300588667cbfd8ad2bb"
+        }
+      ]
+    },
+    {
+      "name": "associated-values-fuser-tests-v1",
+      "absolute_path": "/home/chao/saea-worktrees/associated-values-fuser-tests-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/associated-values-fuser-tests-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/associated-values-fuser-tests-v1",
+          "commit": "f22e8c0a0aa40266ce7672fa90e10a0c8260cf79"
+        }
+      ]
+    },
+    {
+      "name": "bounded-phase-planner",
+      "absolute_path": "/home/chao/saea-worktrees/bounded-phase-planner",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/bounded-phase-planner",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/bounded-phase-planner",
+          "commit": "cede439ad6be7636f94f830daf5fdd201f6bf618"
+        }
+      ]
+    },
+    {
+      "name": "candidate-contract-lookup-v1",
+      "absolute_path": "/home/chao/saea-worktrees/candidate-contract-lookup-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/candidate-contract-lookup-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/candidate-contract-lookup-v1",
+          "commit": "3c5b3c7eb0f06e1f4f6e84d7abb88e07251b5571"
+        }
+      ]
+    },
+    {
+      "name": "codex-a2t-e21-transfer-readiness",
+      "absolute_path": "/home/chao/saea-worktrees/codex-a2t-e21-transfer-readiness",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/codex-a2t-e21-transfer-readiness",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/a2t-e21-transfer-readiness",
+          "commit": "339688982bb578494e423b08517754d8a42cc090"
+        }
+      ]
+    },
+    {
+      "name": "codex-bounded-perception-proof",
+      "absolute_path": "/home/chao/saea-worktrees/codex-bounded-perception-proof",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/codex-bounded-perception-proof",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/bounded-perception-proof",
+          "commit": "842cdafac8a6495aafe00403b459366de583135c"
+        }
+      ]
+    },
+    {
+      "name": "codex-facet-dimension-generalization",
+      "absolute_path": "/home/chao/saea-worktrees/codex-facet-dimension-generalization",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/codex-facet-dimension-generalization",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/facet-dimension-generalization",
+          "commit": "d64f5b2a6b56b6e49bf030d50090b8802c140d92"
+        }
+      ]
+    },
+    {
+      "name": "codex-intent-boundary-encoding-protocol",
+      "absolute_path": "/home/chao/saea-worktrees/codex-intent-boundary-encoding-protocol",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/codex-intent-boundary-encoding-protocol",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/intent-boundary-encoding-protocol",
+          "commit": "78975e28d11f13df711937093366dcedee6e0509"
+        }
+      ]
+    },
+    {
+      "name": "codex-native-episode-exhaustion-analysis",
+      "absolute_path": "/home/chao/saea-worktrees/codex-native-episode-exhaustion-analysis",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/codex-native-episode-exhaustion-analysis",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-episode-exhaustion-analysis",
+          "commit": "ceef798a8d696c59fbec742b62b09a846e0b0632"
+        }
+      ]
+    },
+    {
+      "name": "codex-native-speech-tool-inventory",
+      "absolute_path": "/home/chao/saea-worktrees/codex-native-speech-tool-inventory",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/codex-native-speech-tool-inventory",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-speech-tool-inventory",
+          "commit": "7cb47a72035af63ec4a0e39a4c188c32f92f2a9a"
+        }
+      ]
+    },
+    {
+      "name": "codex-slurp-dual-store-analysis",
+      "absolute_path": "/home/chao/saea-worktrees/codex-slurp-dual-store-analysis",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/codex-slurp-dual-store-analysis",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-dual-store-analysis",
+          "commit": "0458f266baa7114fac6ffcc4170f87b9b2ee38fc"
+        }
+      ]
+    },
+    {
+      "name": "completion-budget-readout",
+      "absolute_path": "/home/chao/saea-worktrees/completion-budget-readout",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/completion-budget-readout",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/completion-budget-readout",
+          "commit": "2914d5e579c48e248d2edba2b0f5f40dc0a1592b"
+        }
+      ]
+    },
+    {
+      "name": "corrective-memory-runtime-v1",
+      "absolute_path": "/home/chao/saea-worktrees/corrective-memory-runtime-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/corrective-memory-runtime-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/corrective-memory-runtime-v1",
+          "commit": "2f5a308e6793687a6d478d58b3a2524c88d18464"
+        }
+      ]
+    },
+    {
+      "name": "delivery-derivative-scoring-v1",
+      "absolute_path": "/home/chao/saea-worktrees/delivery-derivative-scoring-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/delivery-derivative-scoring-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/delivery-derivative-scoring-v1",
+          "commit": "c8d93e4d6f400799f2751e5bd97cc32d6a0497cc"
+        }
+      ]
+    },
+    {
+      "name": "dr-delivery-settlement",
+      "absolute_path": "/home/chao/saea-worktrees/dr-delivery-settlement",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/dr-delivery-settlement",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/dr-delivery-settlement",
+          "commit": "e04721387d6622ca4404ab85132e91792523e220"
+        }
+      ]
+    },
+    {
+      "name": "dr-obs-geometry-strata",
+      "absolute_path": "/home/chao/saea-worktrees/dr-obs-geometry-strata",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/dr-obs-geometry-strata",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/dr-obs-geometry-strata",
+          "commit": "a690cb86f43ea0627afe9f897eb78100eb85bbc1"
+        }
+      ]
+    },
+    {
+      "name": "e21-buffered-decode",
+      "absolute_path": "/home/chao/saea-worktrees/e21-buffered-decode",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-buffered-decode",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-buffered-decode",
+          "commit": "09e8d0eb7b3ca3aeef1fc25742ac54ee7bcf2ce0"
+        }
+      ]
+    },
+    {
+      "name": "e21-cached-bridge",
+      "absolute_path": "/home/chao/saea-worktrees/e21-cached-bridge",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-cached-bridge",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-cached-bridge",
+          "commit": "7ea3e1db7d2fe527643ac9c2457a7c3bf18f5866"
+        }
+      ]
+    },
+    {
+      "name": "e21-cached-qualification",
+      "absolute_path": "/home/chao/saea-worktrees/e21-cached-qualification",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-cached-qualification",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-cached-qualification",
+          "commit": "49c77c380d5141efcf97554d271cbe34b3bc1040"
+        }
+      ]
+    },
+    {
+      "name": "e21-current-executor-proof",
+      "absolute_path": "/home/chao/saea-worktrees/e21-current-executor-proof",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-current-executor-proof",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-current-executor-proof",
+          "commit": "44d8529b5a06e3247033326286300b6aa7995eb6"
+        }
+      ]
+    },
+    {
+      "name": "e21-dialogue-context-readiness",
+      "absolute_path": "/home/chao/saea-worktrees/e21-dialogue-context-readiness",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-dialogue-context-readiness",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-dialogue-context-readiness",
+          "commit": "569080d066070b9780a82f05e5a0985a42f552ed"
+        }
+      ]
+    },
+    {
+      "name": "e21-dr-descriptive-closure",
+      "absolute_path": "/home/chao/saea-worktrees/e21-dr-descriptive-closure",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-dr-descriptive-closure",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-dr-descriptive-closure",
+          "commit": "051fd189ddaf004c7683d0e5460993c83d33f002"
+        }
+      ]
+    },
+    {
+      "name": "e21-dr-packet-proof",
+      "absolute_path": "/home/chao/saea-worktrees/e21-dr-packet-proof",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-dr-packet-proof",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-dr-packet-proof",
+          "commit": "30fc126ffbb0eb53623119b73a44aeb87b491e5d"
+        }
+      ]
+    },
+    {
+      "name": "e21-dr-packets-flight",
+      "absolute_path": "/home/chao/saea-worktrees/e21-dr-packets-flight",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-dr-packets-flight",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-dr-packets-flight",
+          "commit": "9d58248e483c10c5154ad5e8ec834ad7cd940740"
+        }
+      ]
+    },
+    {
+      "name": "e21-dr-packets-recovery",
+      "absolute_path": "/home/chao/saea-worktrees/e21-dr-packets-recovery",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-dr-packets-recovery",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-dr-packets-recovery",
+          "commit": "8e67566258a2b2854b944fda44cc912c0d604a7f"
+        }
+      ]
+    },
+    {
+      "name": "e21-evidence-fit",
+      "absolute_path": "/home/chao/saea-worktrees/e21-evidence-fit",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-evidence-fit",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-evidence-fit",
+          "commit": "26ab8b1fd817a0f0173eb6e287de5425aa3366fe"
+        }
+      ]
+    },
+    {
+      "name": "e21-feature-qualification",
+      "absolute_path": "/home/chao/saea-worktrees/e21-feature-qualification",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-feature-qualification",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-feature-qualification",
+          "commit": "eeab58e4b287dab88ef598ac5771a81d6c7dc19c"
+        }
+      ]
+    },
+    {
+      "name": "e21-fit-bridge",
+      "absolute_path": "/home/chao/saea-worktrees/e21-fit-bridge",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-fit-bridge",
+      "matching_retained_branch_tips": []
+    },
+    {
+      "name": "e21-gpu-encoding-plan",
+      "absolute_path": "/home/chao/saea-worktrees/e21-gpu-encoding-plan",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-gpu-encoding-plan",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-gpu-encoding-plan",
+          "commit": "942ff9ae345f17fb161ebdef2c0e2450e91e0f91"
+        }
+      ]
+    },
+    {
+      "name": "e21-loop-decision-draft",
+      "absolute_path": "/home/chao/saea-worktrees/e21-loop-decision-draft",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-loop-decision-draft",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-loop-decision-draft",
+          "commit": "f5be39be17826bb59ad061faa6d4fecc7a675726"
+        }
+      ]
+    },
+    {
+      "name": "e21-loop-packets-admission",
+      "absolute_path": "/home/chao/saea-worktrees/e21-loop-packets-admission",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-loop-packets-admission",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-loop-packets-admission",
+          "commit": "a802ca2ae70e51c7b74c026c8063234a484aa9ef"
+        }
+      ]
+    },
+    {
+      "name": "e21-loop-packets-generation",
+      "absolute_path": "/home/chao/saea-worktrees/e21-loop-packets-generation",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-loop-packets-generation",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-loop-packets-generation",
+          "commit": "99271e80e4915495535a4c9bf73749fcf36cdf47"
+        }
+      ]
+    },
+    {
+      "name": "e21-loop-packets-preparation",
+      "absolute_path": "/home/chao/saea-worktrees/e21-loop-packets-preparation",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-loop-packets-preparation",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-loop-packets-preparation",
+          "commit": "c0f133b96d45e120588e45c94cfbcf605f4865c4"
+        }
+      ]
+    },
+    {
+      "name": "e21-next-window-readiness",
+      "absolute_path": "/home/chao/saea-worktrees/e21-next-window-readiness",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-next-window-readiness",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-next-window-readiness",
+          "commit": "5131d445a5b77b29bf80a72cf09e9200823db85d"
+        }
+      ]
+    },
+    {
+      "name": "e21-offline-direct-fit",
+      "absolute_path": "/home/chao/saea-worktrees/e21-offline-direct-fit",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-offline-direct-fit",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-offline-direct-fit",
+          "commit": "7a991a9c349f70aff92ae4c6ce6f73b555fc0266"
+        }
+      ]
+    },
+    {
+      "name": "e21-offline-direct-generation",
+      "absolute_path": "/home/chao/saea-worktrees/e21-offline-direct-generation",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-offline-direct-generation",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-offline-direct-generation",
+          "commit": "b4d30c0fafd4e00856dd432d46ef7e51fe143098"
+        }
+      ]
+    },
+    {
+      "name": "e21-offline-direct-registration",
+      "absolute_path": "/home/chao/saea-worktrees/e21-offline-direct-registration",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-offline-direct-registration",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-offline-direct-registration",
+          "commit": "8b417cea5ce59c14114cbacb32f29b6140cc657f"
+        }
+      ]
+    },
+    {
+      "name": "e21-offline-postseal-handoff",
+      "absolute_path": "/home/chao/saea-worktrees/e21-offline-postseal-handoff",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-offline-postseal-handoff",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-offline-postseal-handoff",
+          "commit": "569080d066070b9780a82f05e5a0985a42f552ed"
+        }
+      ]
+    },
+    {
+      "name": "e21-offline-repair",
+      "absolute_path": "/home/chao/saea-worktrees/e21-offline-repair",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-offline-repair",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-offline-repair",
+          "commit": "a3c181bd0ce3a920030db121e5722c7029f01a6d"
+        }
+      ]
+    },
+    {
+      "name": "e21-offline-repair-generation",
+      "absolute_path": "/home/chao/saea-worktrees/e21-offline-repair-generation",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-offline-repair-generation",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-offline-repair-generation",
+          "commit": "64440737a401b80805cfdd4f09d5a04748a3aad7"
+        }
+      ]
+    },
+    {
+      "name": "e21-ojw-integration-proof",
+      "absolute_path": "/home/chao/saea-worktrees/e21-ojw-integration-proof",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-ojw-integration-proof",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-ojw-integration-proof",
+          "commit": "75f536c7aad2a80644163f86889cf9df19f6ee96"
+        }
+      ]
+    },
+    {
+      "name": "e21-shared-fresh-predecessor",
+      "absolute_path": "/home/chao/saea-worktrees/e21-shared-fresh-predecessor",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-shared-fresh-predecessor",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-shared-fresh-predecessor",
+          "commit": "5b200e9a1c34ca6aa7f947d94572464edef9dcc9"
+        }
+      ]
+    },
+    {
+      "name": "e21-window-packets",
+      "absolute_path": "/home/chao/saea-worktrees/e21-window-packets",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/e21-window-packets",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/e21-window-packets",
+          "commit": "db5cc2a7250b27f87f3ae9bfad980441b8874aa2"
+        }
+      ]
+    },
+    {
+      "name": "exact-window-feature-inventory",
+      "absolute_path": "/home/chao/saea-worktrees/exact-window-feature-inventory",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/exact-window-feature-inventory",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/exact-window-feature-inventory",
+          "commit": "02a98def5ab1a35b8881e97f5af7ba9781fbfceb"
+        }
+      ]
+    },
+    {
+      "name": "experiment-closeout-integration",
+      "absolute_path": "/home/chao/saea-worktrees/experiment-closeout-integration",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/experiment-closeout-integration",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/experiment-closeout-integration",
+          "commit": "1c11d910b1d19c7a862ca67f9b2a535bf830c36a"
+        }
+      ]
+    },
+    {
+      "name": "fable-reproduction-audit",
+      "absolute_path": "/home/chao/saea-worktrees/fable-reproduction-audit",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/fable-reproduction-audit",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/fable-reproduction-audit",
+          "commit": "7c2f34f3f4b898f511a49eb051890ef59497bde2"
+        }
+      ]
+    },
+    {
+      "name": "featcache-require-hit-study",
+      "absolute_path": "/home/chao/saea-worktrees/featcache-require-hit-study",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/featcache-require-hit-study",
+      "matching_retained_branch_tips": []
+    },
+    {
+      "name": "feature-cache-audit",
+      "absolute_path": "/home/chao/saea-worktrees/feature-cache-audit",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/feature-cache-audit",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/feature-cache-audit",
+          "commit": "fc6620d68b898266d0699f4d5c2fbdc7507b78c7"
+        }
+      ]
+    },
+    {
+      "name": "fit-journal-association-guard-v1",
+      "absolute_path": "/home/chao/saea-worktrees/fit-journal-association-guard-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/fit-journal-association-guard-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/fit-journal-association-guard-v1",
+          "commit": "8da9c38a29241ce21211a7eec27873f697144d67"
+        }
+      ]
+    },
+    {
+      "name": "flight-evidence-gate-binding",
+      "absolute_path": "/home/chao/saea-worktrees/flight-evidence-gate-binding",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/flight-evidence-gate-binding",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/flight-evidence-gate-binding",
+          "commit": "5ba431850750cf8489204297da4bb96359b59a07"
+        }
+      ]
+    },
+    {
+      "name": "framework-native-audit-v1",
+      "absolute_path": "/home/chao/saea-worktrees/framework-native-audit-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/framework-native-audit-v1",
+      "matching_retained_branch_tips": []
+    },
+    {
+      "name": "g1-max256-recovery-runtime",
+      "absolute_path": "/home/chao/saea-worktrees/g1-max256-recovery-runtime",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/g1-max256-recovery-runtime",
+      "matching_retained_branch_tips": []
+    },
+    {
+      "name": "g1-max256-runtime",
+      "absolute_path": "/home/chao/saea-worktrees/g1-max256-runtime",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/g1-max256-runtime",
+      "matching_retained_branch_tips": []
+    },
+    {
+      "name": "g2-kus4n-runtime",
+      "absolute_path": "/home/chao/saea-worktrees/g2-kus4n-runtime",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/g2-kus4n-runtime",
+      "matching_retained_branch_tips": []
+    },
+    {
+      "name": "g6-live-recovery",
+      "absolute_path": "/home/chao/saea-worktrees/g6-live-recovery",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/g6-live-recovery",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/g6-live-recovery",
+          "commit": "c4dd9342422c2afc0309a19c5dfa328388e19adf"
+        }
+      ]
+    },
+    {
+      "name": "g6-live-registration",
+      "absolute_path": "/home/chao/saea-worktrees/g6-live-registration",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/g6-live-registration",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/g6-live-registration",
+          "commit": "22df6543645a897be38469bf190cb8b27772aa6d"
+        }
+      ]
+    },
+    {
+      "name": "g6-prepared-recall",
+      "absolute_path": "/home/chao/saea-worktrees/g6-prepared-recall",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/g6-prepared-recall",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/g6-prepared-recall",
+          "commit": "d9bfde24d940b3ecc04bfcb1b5a84f035dfbae0f"
+        }
+      ]
+    },
+    {
+      "name": "g6-result-report",
+      "absolute_path": "/home/chao/saea-worktrees/g6-result-report",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/g6-result-report",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/g6-result-report",
+          "commit": "78ee95066b4772622223d631b844c1c6d1498061"
+        }
+      ]
+    },
+    {
+      "name": "g6-score-analysis-wiring",
+      "absolute_path": "/home/chao/saea-worktrees/g6-score-analysis-wiring",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/g6-score-analysis-wiring",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/g6-score-analysis-wiring",
+          "commit": "83c25516c61de671dc73843feb53868f3712264c"
+        }
+      ]
+    },
+    {
+      "name": "g6-shared-phase-barrier",
+      "absolute_path": "/home/chao/saea-worktrees/g6-shared-phase-barrier",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/g6-shared-phase-barrier",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/g6-shared-phase-barrier",
+          "commit": "b232609cbec3bcae353223777da8a0beaac9a0fe"
+        }
+      ]
+    },
+    {
+      "name": "group-relative-feedback-v1",
+      "absolute_path": "/home/chao/saea-worktrees/group-relative-feedback-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/group-relative-feedback-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/group-relative-feedback-v1",
+          "commit": "c5debe5e4ffd78d19a32472658f1c2b9ef32596a"
+        }
+      ]
+    },
+    {
+      "name": "joint-intent-slot-hypotheses-v1",
+      "absolute_path": "/home/chao/saea-worktrees/joint-intent-slot-hypotheses-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/joint-intent-slot-hypotheses-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/joint-intent-slot-hypotheses-v1",
+          "commit": "d1a2c0a328e3f34777f9954c40525bbbb1e5c833"
+        }
+      ]
+    },
+    {
+      "name": "ku-s3-max256",
+      "absolute_path": "/home/chao/saea-worktrees/ku-s3-max256",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/ku-s3-max256",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/ku-s3-max256",
+          "commit": "ac71984fd5327a55c84aefc4baa43ad60501ad31"
+        }
+      ]
+    },
+    {
+      "name": "ku-s4n-g2-refresh-config",
+      "absolute_path": "/home/chao/saea-worktrees/ku-s4n-g2-refresh-config",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/ku-s4n-g2-refresh-config",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/ku-s4n-g2-refresh-config",
+          "commit": "874b04a0c27a34a12c3a43d21b6841eee6433055"
+        }
+      ]
+    },
+    {
+      "name": "ku3-recovery-config",
+      "absolute_path": "/home/chao/saea-worktrees/ku3-recovery-config",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/ku3-recovery-config",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/ku3-recovery-config",
+          "commit": "b3ecd5749e18739b4598edf21887cbc8ad967af0"
+        }
+      ]
+    },
+    {
+      "name": "lease-prep-stage",
+      "absolute_path": "/home/chao/saea-worktrees/lease-prep-stage",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/lease-prep-stage",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/lease-prep-stage",
+          "commit": "13c848280d9725259f0d8cefecf9414562bdfae7"
+        }
+      ]
+    },
+    {
+      "name": "legacy-cache-inspection",
+      "absolute_path": "/home/chao/saea-worktrees/legacy-cache-inspection",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/legacy-cache-inspection",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/legacy-cache-inspection",
+          "commit": "3affdbbd296188fc4fc732e9caaf6857e9c9a14e"
+        }
+      ]
+    },
+    {
+      "name": "live-speech-observation-provider-v1",
+      "absolute_path": "/home/chao/saea-worktrees/live-speech-observation-provider-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/live-speech-observation-provider-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/live-speech-observation-provider-v1",
+          "commit": "ab1eb1dbc7ce79df568f69989b6c4ee7b04aa0b7"
+        }
+      ]
+    },
+    {
+      "name": "local-frozen-retrieval-tool-plan-v1",
+      "absolute_path": "/home/chao/saea-worktrees/local-frozen-retrieval-tool-plan-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/local-frozen-retrieval-tool-plan-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/local-frozen-retrieval-tool-plan-v1",
+          "commit": "6b229146bbb07c9b8e2e6ce695c74a513d9795a5"
+        }
+      ]
+    },
+    {
+      "name": "memory-hypothesis-state-v1",
+      "absolute_path": "/home/chao/saea-worktrees/memory-hypothesis-state-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/memory-hypothesis-state-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/memory-hypothesis-state-v1",
+          "commit": "e63f2c125e3038930e41d452e6873e9f0be66722"
+        }
+      ]
+    },
+    {
+      "name": "micro-metrics",
+      "absolute_path": "/home/chao/saea-worktrees/micro-metrics",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/micro-metrics",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/micro-metrics",
+          "commit": "f04bc49001ad342572448f73713769b27b068499"
+        }
+      ]
+    },
+    {
+      "name": "named-knowledge-store-routing-v1",
+      "absolute_path": "/home/chao/saea-worktrees/named-knowledge-store-routing-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/named-knowledge-store-routing-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/named-knowledge-store-routing-v1",
+          "commit": "cfb59814d4acee9c7aeecf200ad71156f91029e0"
+        }
+      ]
+    },
+    {
+      "name": "named-store-first-phase-bootstrap-v1",
+      "absolute_path": "/home/chao/saea-worktrees/named-store-first-phase-bootstrap-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/named-store-first-phase-bootstrap-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/named-store-first-phase-bootstrap-v1",
+          "commit": "b7a452c3cb01e291ae5fbadbd34323e52b68d76d"
+        }
+      ]
+    },
+    {
+      "name": "native-agentic-role-wire-v1",
+      "absolute_path": "/home/chao/saea-worktrees/native-agentic-role-wire-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/native-agentic-role-wire-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-agentic-role-wire-v1",
+          "commit": "7c7da53fd96b12f66b978f203c32d6b08cb9a2fa"
+        }
+      ]
+    },
+    {
+      "name": "native-agentic-system-integration-v1",
+      "absolute_path": "/home/chao/saea-worktrees/native-agentic-system-integration-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/native-agentic-system-integration-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-agentic-system-integration-v1",
+          "commit": "df1e71f21a37db80e360bb31a683cb0c569abec2"
+        }
+      ]
+    },
+    {
+      "name": "native-answer-tool-runtime-v1",
+      "absolute_path": "/home/chao/saea-worktrees/native-answer-tool-runtime-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/native-answer-tool-runtime-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-answer-tool-runtime-v1",
+          "commit": "e97bd34ba09912ec704aa9f6e3bca80b503d6089"
+        }
+      ]
+    },
+    {
+      "name": "native-contact-fit-v1",
+      "absolute_path": "/home/chao/saea-worktrees/native-contact-fit-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/native-contact-fit-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-contact-fit-v1",
+          "commit": "a331da8de3811fb42ba236c15816c68a2b6ba92a"
+        }
+      ]
+    },
+    {
+      "name": "native-early-stop-fit-v1",
+      "absolute_path": "/home/chao/saea-worktrees/native-early-stop-fit-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/native-early-stop-fit-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-early-stop-fit-v1",
+          "commit": "99142abd476ed4dd24b273345be0654cdf067dc9"
+        }
+      ]
+    },
+    {
+      "name": "native-episode-provenance-v1",
+      "absolute_path": "/home/chao/saea-worktrees/native-episode-provenance-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/native-episode-provenance-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-episode-provenance-v1",
+          "commit": "2a08f6f094ee179e9b1a79a3e329e5f1e77f92ea"
+        }
+      ]
+    },
+    {
+      "name": "native-episode-runner-proof-v1",
+      "absolute_path": "/home/chao/saea-worktrees/native-episode-runner-proof-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/native-episode-runner-proof-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-episode-runner-proof-v1",
+          "commit": "25db501bec096297d6a7a817901d3876c437acd9"
+        }
+      ]
+    },
+    {
+      "name": "native-episode-scheduler-v1",
+      "absolute_path": "/home/chao/saea-worktrees/native-episode-scheduler-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/native-episode-scheduler-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-episode-scheduler-v1",
+          "commit": "6f1feb676b690c13f911a6f321eed067a3b64fa9"
+        }
+      ]
+    },
+    {
+      "name": "native-history-fit-capacity-v1",
+      "absolute_path": "/home/chao/saea-worktrees/native-history-fit-capacity-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/native-history-fit-capacity-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-history-fit-capacity-v1",
+          "commit": "ba927c3c1943ed9b866205439bacb5ca14e174e7"
+        }
+      ]
+    },
+    {
+      "name": "native-internal-tool-dispatcher-v1",
+      "absolute_path": "/home/chao/saea-worktrees/native-internal-tool-dispatcher-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/native-internal-tool-dispatcher-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-internal-tool-dispatcher-v1",
+          "commit": "a06d7508d0b2a4c436e4da90e61fa4104a1cd1b0"
+        }
+      ]
+    },
+    {
+      "name": "native-phase-tool-bridge-v1",
+      "absolute_path": "/home/chao/saea-worktrees/native-phase-tool-bridge-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/native-phase-tool-bridge-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-phase-tool-bridge-v1",
+          "commit": "da13f4a1bca9dd9bbeb604374cbb9109877f6da5"
+        }
+      ]
+    },
+    {
+      "name": "native-request-regressions-v1",
+      "absolute_path": "/home/chao/saea-worktrees/native-request-regressions-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/native-request-regressions-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-request-regressions-v1",
+          "commit": "05ab3a45d7f45ccf51f4762babaf6863bfbe570d"
+        }
+      ]
+    },
+    {
+      "name": "native-role-lifecycle-v1",
+      "absolute_path": "/home/chao/saea-worktrees/native-role-lifecycle-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/native-role-lifecycle-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-role-lifecycle-v1",
+          "commit": "64ae17b0d60bbb1294a37d2e0c5dd18e6fc4a215"
+        }
+      ]
+    },
+    {
+      "name": "native-role-metered-integration-test-v1",
+      "absolute_path": "/home/chao/saea-worktrees/native-role-metered-integration-test-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/native-role-metered-integration-test-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-role-metered-integration-test-v1",
+          "commit": "d230e333bad843aec518a3293650b8f5b24f60e4"
+        }
+      ]
+    },
+    {
+      "name": "native-terminal-text-guard-v1",
+      "absolute_path": "/home/chao/saea-worktrees/native-terminal-text-guard-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/native-terminal-text-guard-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-terminal-text-guard-v1",
+          "commit": "71e7b100197a121d9f2e692be85672d87d5868cf"
+        }
+      ]
+    },
+    {
+      "name": "native-tool-authority-v1",
+      "absolute_path": "/home/chao/saea-worktrees/native-tool-authority-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/native-tool-authority-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-tool-authority-v1",
+          "commit": "9496eb1884d569f158aa563b4e13a9bfc2f7df8f"
+        }
+      ]
+    },
+    {
+      "name": "native-tool-request-controls-v1",
+      "absolute_path": "/home/chao/saea-worktrees/native-tool-request-controls-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/native-tool-request-controls-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-tool-request-controls-v1",
+          "commit": "b0bdcc84709bfceeda83cb3f5a1e34e909000bb4"
+        }
+      ]
+    },
+    {
+      "name": "native-wire-completion-metadata-v1",
+      "absolute_path": "/home/chao/saea-worktrees/native-wire-completion-metadata-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/native-wire-completion-metadata-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/native-wire-completion-metadata-v1",
+          "commit": "3f0ef2270e5d399ea78f549da4b7f06a9adfc953"
+        }
+      ]
+    },
+    {
+      "name": "obs-wire-check",
+      "absolute_path": "/home/chao/saea-worktrees/obs-wire-check",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/obs-wire-check",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/obs-wire-check",
+          "commit": "6468051a684d737e36a29c3defd1f0655c6103e9"
+        }
+      ]
+    },
+    {
+      "name": "ojw-native-episode-v1",
+      "absolute_path": "/home/chao/saea-worktrees/ojw-native-episode-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/ojw-native-episode-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/ojw-native-episode-v1",
+          "commit": "274fe4df6d9bcdfa3cc786a9585330e36d6a6cc6"
+        }
+      ]
+    },
+    {
+      "name": "ojw-native-role-bridge-v1",
+      "absolute_path": "/home/chao/saea-worktrees/ojw-native-role-bridge-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/ojw-native-role-bridge-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/ojw-native-role-bridge-v1",
+          "commit": "bb1dfa94a916882d263221a6e7c206d665702c27"
+        }
+      ]
+    },
+    {
+      "name": "ojw-null-tool-content-v1",
+      "absolute_path": "/home/chao/saea-worktrees/ojw-null-tool-content-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/ojw-null-tool-content-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/ojw-null-tool-content-v1",
+          "commit": "bcc3e344528fe2ee921504cf394b052ea24f8619"
+        }
+      ]
+    },
+    {
+      "name": "owner-status-remaining-queue",
+      "absolute_path": "/home/chao/saea-worktrees/owner-status-remaining-queue",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/owner-status-remaining-queue",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/owner-status-remaining-queue",
+          "commit": "c963ef7cc8858052b43e56950e43449ecdc76ae0"
+        }
+      ]
+    },
+    {
+      "name": "packet-preparation-reuse",
+      "absolute_path": "/home/chao/saea-worktrees/packet-preparation-reuse",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/packet-preparation-reuse",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/packet-preparation-reuse",
+          "commit": "e7c05c6b3754a6e4b80a9f8bb376e13e308937d2"
+        }
+      ]
+    },
+    {
+      "name": "per-contact-tool-subsets-v1",
+      "absolute_path": "/home/chao/saea-worktrees/per-contact-tool-subsets-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/per-contact-tool-subsets-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/per-contact-tool-subsets-v1",
+          "commit": "3aa3fc3ffbe85e88649f5bfea0cd62ecac38f7a0"
+        }
+      ]
+    },
+    {
+      "name": "phase-actor-authority-v1",
+      "absolute_path": "/home/chao/saea-worktrees/phase-actor-authority-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/phase-actor-authority-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/phase-actor-authority-v1",
+          "commit": "867c12e00e57ae100bd768c0c11e2b52ad678d77"
+        }
+      ]
+    },
+    {
+      "name": "phase-delivery-sources",
+      "absolute_path": "/home/chao/saea-worktrees/phase-delivery-sources",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/phase-delivery-sources",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/phase-delivery-sources",
+          "commit": "febd8463f2a20ddaa132a6d485f8285e8e9156aa"
+        }
+      ]
+    },
+    {
+      "name": "phase-materialization-state-repair-v1",
+      "absolute_path": "/home/chao/saea-worktrees/phase-materialization-state-repair-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/phase-materialization-state-repair-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/phase-materialization-state-repair-v1",
+          "commit": "c4e7bb1f42867c344e0697dc842d831882e3e6f8"
+        }
+      ]
+    },
+    {
+      "name": "prepared-cache-guard",
+      "absolute_path": "/home/chao/saea-worktrees/prepared-cache-guard",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/prepared-cache-guard",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/prepared-cache-guard",
+          "commit": "6585cd3d07c1c0648f4ae962696024656e75cbee"
+        }
+      ]
+    },
+    {
+      "name": "prepared-feature-cache-transport",
+      "absolute_path": "/home/chao/saea-worktrees/prepared-feature-cache-transport",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/prepared-feature-cache-transport",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/prepared-feature-cache-transport",
+          "commit": "5180ac62a378187f1dd5f739bf9fd0def8c89e34"
+        }
+      ]
+    },
+    {
+      "name": "prepared-feedback-v1",
+      "absolute_path": "/home/chao/saea-worktrees/prepared-feedback-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/prepared-feedback-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/prepared-feedback-v1",
+          "commit": "067e799d960dd1b12e8dc036db71cd6c19f9b6b3"
+        }
+      ]
+    },
+    {
+      "name": "preprocess-receipt-identity",
+      "absolute_path": "/home/chao/saea-worktrees/preprocess-receipt-identity",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/preprocess-receipt-identity",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/preprocess-receipt-identity",
+          "commit": "f90317e3df3e6ddb3b5ecb37497a1207d1a65f33"
+        }
+      ]
+    },
+    {
+      "name": "provisional-training-candidate-materialization-v1",
+      "absolute_path": "/home/chao/saea-worktrees/provisional-training-candidate-materialization-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/provisional-training-candidate-materialization-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/provisional-training-candidate-materialization-v1",
+          "commit": "a17b6397246bed662bb78b3f7d65eef8460619d4"
+        }
+      ]
+    },
+    {
+      "name": "queue-abort-closure-v1",
+      "absolute_path": "/home/chao/saea-worktrees/queue-abort-closure-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/queue-abort-closure-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/queue-abort-closure-v1",
+          "commit": "cefbdd0b35eb22401d424e836f22b4aa093adfae"
+        }
+      ]
+    },
+    {
+      "name": "queue-refusal-fix",
+      "absolute_path": "/home/chao/saea-worktrees/queue-refusal-fix",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/queue-refusal-fix",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/queue-refusal-fix",
+          "commit": "d2fc5db1106043793f94eb7c4004f2096316355b"
+        }
+      ]
+    },
+    {
+      "name": "request-completion-budget",
+      "absolute_path": "/home/chao/saea-worktrees/request-completion-budget",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/request-completion-budget",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/request-completion-budget",
+          "commit": "fa7ca331298d995df4906be7d4dec8b5055682be"
+        }
+      ]
+    },
+    {
+      "name": "response-state-sealing-v1",
+      "absolute_path": "/home/chao/saea-worktrees/response-state-sealing-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/response-state-sealing-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/response-state-sealing-v1",
+          "commit": "d192228ad2e5048d1658d52a64bdcf6ba50dbabf"
+        }
+      ]
+    },
+    {
+      "name": "results-ledger-current-refresh",
+      "absolute_path": "/home/chao/saea-worktrees/results-ledger-current-refresh",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/results-ledger-current-refresh",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/results-ledger-current-refresh",
+          "commit": "85d3cbd676967f0dabec6a6a98620b5571758425"
+        }
+      ]
+    },
+    {
+      "name": "s3-independent-repeat-decision-report",
+      "absolute_path": "/home/chao/saea-worktrees/s3-independent-repeat-decision-report",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/s3-independent-repeat-decision-report",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/s3-independent-repeat-decision-report",
+          "commit": "6072a07873b42209739c9ce533977b63d9d4a8e1"
+        }
+      ]
+    },
+    {
+      "name": "s3-repeat-integration",
+      "absolute_path": "/home/chao/saea-worktrees/s3-repeat-integration",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/s3-repeat-integration",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/s3-repeat-integration",
+          "commit": "fa155bea37691bf9c711ee37bf5848febcf4fb98"
+        }
+      ]
+    },
+    {
+      "name": "score-compare-explicit-sources-v1",
+      "absolute_path": "/home/chao/saea-worktrees/score-compare-explicit-sources-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/score-compare-explicit-sources-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/score-compare-explicit-sources-v1",
+          "commit": "ba17e07ef76b5583c7b07f5961fb290fa20c7aa5"
+        }
+      ]
+    },
+    {
+      "name": "sealed-native-tool-result-v1",
+      "absolute_path": "/home/chao/saea-worktrees/sealed-native-tool-result-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/sealed-native-tool-result-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/sealed-native-tool-result-v1",
+          "commit": "036232754e7c4b606de80b5356a023476c9ca933"
+        }
+      ]
+    },
+    {
+      "name": "sealed-predecessor-delivery-selector-v1",
+      "absolute_path": "/home/chao/saea-worktrees/sealed-predecessor-delivery-selector-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/sealed-predecessor-delivery-selector-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/sealed-predecessor-delivery-selector-v1",
+          "commit": "717697912e42094996e6b18298f061a73b3781ea"
+        }
+      ]
+    },
+    {
+      "name": "selective-loop-window-verifier",
+      "absolute_path": "/home/chao/saea-worktrees/selective-loop-window-verifier",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/selective-loop-window-verifier",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/selective-loop-window-verifier",
+          "commit": "faec71446abafd7d9319191c8c519e9e0723219c"
+        }
+      ]
+    },
+    {
+      "name": "semantic-knowledge-builders-v1",
+      "absolute_path": "/home/chao/saea-worktrees/semantic-knowledge-builders-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/semantic-knowledge-builders-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/semantic-knowledge-builders-v1",
+          "commit": "f3ea9bec58495c460bb3d0c4936418393782db0a"
+        }
+      ]
+    },
+    {
+      "name": "semantic-knowledge-preparation-v1",
+      "absolute_path": "/home/chao/saea-worktrees/semantic-knowledge-preparation-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/semantic-knowledge-preparation-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/semantic-knowledge-preparation-v1",
+          "commit": "4d8f13ae81cd4c87c15b641e42c891591a78de8d"
+        }
+      ]
+    },
+    {
+      "name": "semantic-knowledge-releases-v1",
+      "absolute_path": "/home/chao/saea-worktrees/semantic-knowledge-releases-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/semantic-knowledge-releases-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/semantic-knowledge-releases-v1",
+          "commit": "6e41745d7146057823704c57e62d0135286a63e9"
+        }
+      ]
+    },
+    {
+      "name": "serving-explicit-stop-race",
+      "absolute_path": "/home/chao/saea-worktrees/serving-explicit-stop-race",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/serving-explicit-stop-race",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/serving-explicit-stop-race",
+          "commit": "1048a0014f4c8944653e24585013f5618d4b237e"
+        }
+      ]
+    },
+    {
+      "name": "serving-slurp-top3-np8-v1",
+      "absolute_path": "/home/chao/saea-worktrees/serving-slurp-top3-np8-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/serving-slurp-top3-np8-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/serving-slurp-top3-np8-v1",
+          "commit": "80c380d09edd8aa2520d85a1890865e7246a74d1"
+        }
+      ]
+    },
+    {
+      "name": "shared-delivery",
+      "absolute_path": "/home/chao/saea-worktrees/shared-delivery",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/shared-delivery",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/shared-delivery",
+          "commit": "2c3f767239e4a1cc122524513196081dfb7fd29c"
+        }
+      ]
+    },
+    {
+      "name": "shared-preparation",
+      "absolute_path": "/home/chao/saea-worktrees/shared-preparation",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/shared-preparation",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/shared-preparation",
+          "commit": "a8f123682203944eeb7aa9128fbbda1faf3b5bdf"
+        }
+      ]
+    },
+    {
+      "name": "shared-runtime",
+      "absolute_path": "/home/chao/saea-worktrees/shared-runtime",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/shared-runtime",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/shared-runtime",
+          "commit": "6151cdb78b2b437348750dc6a9fa790c358b1c55"
+        }
+      ]
+    },
+    {
+      "name": "slurp-candidate-contract-provider-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-candidate-contract-provider-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-candidate-contract-provider-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-candidate-contract-provider-v1",
+          "commit": "90a775b6478aa8e7e1630744f4bb0c72277446a6"
+        }
+      ]
+    },
+    {
+      "name": "slurp-candidate-semantic-supply-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-candidate-semantic-supply-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-candidate-semantic-supply-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-candidate-semantic-supply-v1",
+          "commit": "aa613bb2e04033bd9afb53b8db502a962ed966ce"
+        }
+      ]
+    },
+    {
+      "name": "slurp-contract-cache",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-contract-cache",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-contract-cache",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-contract-cache",
+          "commit": "26ab8b1fd817a0f0173eb6e287de5425aa3366fe"
+        }
+      ]
+    },
+    {
+      "name": "slurp-delivery-root-verify",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-delivery-root-verify",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-delivery-root-verify",
+      "matching_retained_branch_tips": []
+    },
+    {
+      "name": "slurp-direct-native-replication-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-direct-native-replication-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-direct-native-replication-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-direct-native-replication-v1",
+          "commit": "532d8788a3cedca45fd9b81bde81b08fad4a22ec"
+        }
+      ]
+    },
+    {
+      "name": "slurp-distinct-analysis-root-binding-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-distinct-analysis-root-binding-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-distinct-analysis-root-binding-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-distinct-analysis-root-binding-v1",
+          "commit": "33d8db2f62ccbec4f0ff5adc45dbc48a8cce2503"
+        }
+      ]
+    },
+    {
+      "name": "slurp-distinct-analysis-runner-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-distinct-analysis-runner-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-distinct-analysis-runner-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-distinct-analysis-runner-v1",
+          "commit": "817e8942d9b74748befaee35a3582b83bff231dc"
+        }
+      ]
+    },
+    {
+      "name": "slurp-distinct-delivery-diagnostics-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-distinct-delivery-diagnostics-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-distinct-delivery-diagnostics-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-distinct-delivery-diagnostics-v1",
+          "commit": "0bc53729b63b55087772d89c0ba2f8beb50a0543"
+        }
+      ]
+    },
+    {
+      "name": "slurp-distinct-hypothesis-projection-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-distinct-hypothesis-projection-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-distinct-hypothesis-projection-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-distinct-hypothesis-projection-v1",
+          "commit": "81db7fe5f62416f9fb16874c66efbf471b3c7694"
+        }
+      ]
+    },
+    {
+      "name": "slurp-distinct-successor-generation-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-distinct-successor-generation-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-distinct-successor-generation-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-distinct-successor-generation-v1",
+          "commit": "e93bd29495f0681e0dfa0cd468b5cb782b1b901a"
+        }
+      ]
+    },
+    {
+      "name": "slurp-distinct-successor-recovery-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-distinct-successor-recovery-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-distinct-successor-recovery-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-distinct-successor-recovery-v1",
+          "commit": "5dde511a388103faaa555a2da5eb79ad19ea17e2"
+        }
+      ]
+    },
+    {
+      "name": "slurp-dual-store-reboot-recovery-prep-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-dual-store-reboot-recovery-prep-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-dual-store-reboot-recovery-prep-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-dual-store-reboot-recovery-prep-v1",
+          "commit": "7143bc3f21b6bbfc1d5a235bec9fbc8c30c6d86d"
+        }
+      ]
+    },
+    {
+      "name": "slurp-entity-attribution-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-entity-attribution-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-entity-attribution-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-entity-attribution-v1",
+          "commit": "0e32490fceb0dba3e07358172ef21deb8206b625"
+        }
+      ]
+    },
+    {
+      "name": "slurp-hypothesis-artifact-source-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-hypothesis-artifact-source-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-hypothesis-artifact-source-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-hypothesis-artifact-source-v1",
+          "commit": "a41461ad9165aaf9e154f39f80f2c699eb40f01c"
+        }
+      ]
+    },
+    {
+      "name": "slurp-inherited-delivery",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-inherited-delivery",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-inherited-delivery",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-inherited-delivery",
+          "commit": "6fbacf77d224621b00a48a64a4c84e2a4bf2b7d7"
+        }
+      ]
+    },
+    {
+      "name": "slurp-intent-role-coverage-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-intent-role-coverage-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-intent-role-coverage-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-intent-role-coverage-v1",
+          "commit": "1aa6cb5d1e70e594c635ee6d01da526f608edb86"
+        }
+      ]
+    },
+    {
+      "name": "slurp-live-building-blocks",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-live-building-blocks",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-live-building-blocks",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-live-building-blocks",
+          "commit": "7ea3e1db7d2fe527643ac9c2457a7c3bf18f5866"
+        }
+      ]
+    },
+    {
+      "name": "slurp-native-dual-store-associated-values-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-native-dual-store-associated-values-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-native-dual-store-associated-values-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-native-dual-store-associated-values-v1",
+          "commit": "a3b1d470ed209ce5b57bf4e26acc7b3f17bbb813"
+        }
+      ]
+    },
+    {
+      "name": "slurp-native-dual-store-dev1000-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-native-dual-store-dev1000-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-native-dual-store-dev1000-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-native-dual-store-dev1000-v1",
+          "commit": "b9dc13d8fd5608c86fd31c9e18f85d541581e9b0"
+        }
+      ]
+    },
+    {
+      "name": "slurp-native-dual-store-prepare-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-native-dual-store-prepare-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-native-dual-store-prepare-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-native-dual-store-prepare-v1",
+          "commit": "7ee2495c95d284331e42e61971d492f5a69ab056"
+        }
+      ]
+    },
+    {
+      "name": "slurp-native-dual-store-train-source-held-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-native-dual-store-train-source-held-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-native-dual-store-train-source-held-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-native-dual-store-train-source-held-v1",
+          "commit": "0d7ab20a09d7b1f1de8a3914fa54d3d67ae4bbf1"
+        }
+      ]
+    },
+    {
+      "name": "slurp-native-knowledge-consumption-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-native-knowledge-consumption-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-native-knowledge-consumption-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-native-knowledge-consumption-v1",
+          "commit": "657ce3a329f748da99235ae3855303b63319d79b"
+        }
+      ]
+    },
+    {
+      "name": "slurp-native-knowledge-fix-dry-run-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-native-knowledge-fix-dry-run-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-native-knowledge-fix-dry-run-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-native-knowledge-fix-dry-run-v1",
+          "commit": "cac84b5d84a8292e07ee5dadaa446ce0068445a4"
+        }
+      ]
+    },
+    {
+      "name": "slurp-native-knowledge-proof-closure-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-native-knowledge-proof-closure-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-native-knowledge-proof-closure-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-native-knowledge-proof-closure-v1",
+          "commit": "9a775064f2c7214c88ad2d9fc2f0aec1a8d06e22"
+        }
+      ]
+    },
+    {
+      "name": "slurp-native-knowledge-proof-recipe-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-native-knowledge-proof-recipe-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-native-knowledge-proof-recipe-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-native-knowledge-proof-recipe-v1",
+          "commit": "0867a4ce91b442631c8edd58ecdbce88a0319b74"
+        }
+      ]
+    },
+    {
+      "name": "slurp-native-live-speech-config-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-native-live-speech-config-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-native-live-speech-config-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-native-live-speech-config-v1",
+          "commit": "89a9c9489fc690e8a5bdc053981ef1a525141316"
+        }
+      ]
+    },
+    {
+      "name": "slurp-native-role-gpu-flight-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-native-role-gpu-flight-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-native-role-gpu-flight-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-native-role-gpu-flight-v1",
+          "commit": "1003a2de4097b0d7a7dce36af9ac08a030efb1cb"
+        }
+      ]
+    },
+    {
+      "name": "slurp-native-role-gpu-recipe-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-native-role-gpu-recipe-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-native-role-gpu-recipe-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-native-role-gpu-recipe-v1",
+          "commit": "a76b93cc5bb3b8b936638d36339cfb58ec8c2787"
+        }
+      ]
+    },
+    {
+      "name": "slurp-native-slot-values-dev1000-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-native-slot-values-dev1000-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-native-slot-values-dev1000-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-native-slot-values-dev1000-v1",
+          "commit": "7ec4cf340206d52a2cf44f65cdda278352c43363"
+        }
+      ]
+    },
+    {
+      "name": "slurp-native-system-knowledge-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-native-system-knowledge-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-native-system-knowledge-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-native-system-knowledge-v1",
+          "commit": "305e9ed970de1fd55323873a81d56654399bbf6c"
+        }
+      ]
+    },
+    {
+      "name": "slurp-native-tools-engineering-4-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-native-tools-engineering-4-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-native-tools-engineering-4-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-native-tools-engineering-4-v1",
+          "commit": "261f1537a200b9546c930bda11e8afb415f200e7"
+        }
+      ]
+    },
+    {
+      "name": "slurp-program-matched-analysis",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-program-matched-analysis",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-program-matched-analysis",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-program-matched-analysis",
+          "commit": "142411b66fb8ff677ba51ca2384ea62cbd87cca6"
+        }
+      ]
+    },
+    {
+      "name": "slurp-program-matched-config",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-program-matched-config",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-program-matched-config",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-program-matched-config",
+          "commit": "631594a47ba71a5e46dadd1c2fbe9bd482a34df9"
+        }
+      ]
+    },
+    {
+      "name": "slurp-program-matched-generation",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-program-matched-generation",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-program-matched-generation",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-program-matched-generation",
+          "commit": "21ebe2bc8f9c03469a48fe0c68e9b31f1c360dff"
+        }
+      ]
+    },
+    {
+      "name": "slurp-role-coverage-closeout-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-role-coverage-closeout-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-role-coverage-closeout-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-role-coverage-closeout-v1",
+          "commit": "afa69610980690c8c01558b8666e7b71e3367237"
+        }
+      ]
+    },
+    {
+      "name": "slurp-s3-independent-repeat",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-s3-independent-repeat",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-s3-independent-repeat",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-s3-independent-repeat",
+          "commit": "683bd0ec4f050b3f270b3c4a1dd8171bc5d8f696"
+        }
+      ]
+    },
+    {
+      "name": "slurp-semantic-release-bindings-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-semantic-release-bindings-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-semantic-release-bindings-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-semantic-release-bindings-v1",
+          "commit": "9e0535bf6756f4a585872e91a45b195e244a3d5c"
+        }
+      ]
+    },
+    {
+      "name": "slurp-semantic-support-prepare-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-semantic-support-prepare-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-semantic-support-prepare-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-semantic-support-prepare-v1",
+          "commit": "fa9ba618f0ad95ccca31433633494084fa22022c"
+        }
+      ]
+    },
+    {
+      "name": "slurp-speech-observation-analysis-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-speech-observation-analysis-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-speech-observation-analysis-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-speech-observation-analysis-v1",
+          "commit": "a00c34cb3d373a054158d25a2359c3708588bc79"
+        }
+      ]
+    },
+    {
+      "name": "slurp-speech-observation-transport-recovery-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-speech-observation-transport-recovery-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-speech-observation-transport-recovery-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-speech-observation-transport-recovery-v1",
+          "commit": "b9d190291bb3ffe07b3d1a894f8a0e7064596546"
+        }
+      ]
+    },
+    {
+      "name": "slurp-speech-tool-config-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-speech-tool-config-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-speech-tool-config-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-speech-tool-config-v1",
+          "commit": "6b237334c981f548dae3708aa6d731ba3f9f6e65"
+        }
+      ]
+    },
+    {
+      "name": "slurp-task-agent-closeout-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-task-agent-closeout-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-task-agent-closeout-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-task-agent-closeout-v1",
+          "commit": "0db989154641e2422178ee02a5f1c56611865c72"
+        }
+      ]
+    },
+    {
+      "name": "slurp-task-agent-config-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-task-agent-config-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-task-agent-config-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-task-agent-config-v1",
+          "commit": "1dca716d1493293c15756fff5607fbb8a58afdd6"
+        }
+      ]
+    },
+    {
+      "name": "slurp-task-agent-frame-replication-recovery-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-task-agent-frame-replication-recovery-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-task-agent-frame-replication-recovery-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-task-agent-frame-replication-recovery-v1",
+          "commit": "1fd99bbfebe0eda5bbd5e2173408499fe32973b8"
+        }
+      ]
+    },
+    {
+      "name": "slurp-task-agent-replication-closeout-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-task-agent-replication-closeout-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-task-agent-replication-closeout-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-task-agent-replication-closeout-v1",
+          "commit": "594e24122c4c35a8b938a8415381243f498c148c"
+        }
+      ]
+    },
+    {
+      "name": "slurp-task-agent-replication-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-task-agent-replication-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-task-agent-replication-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-task-agent-replication-v1",
+          "commit": "49172afc99ca5c99ad4945b8a6a3e9a09fb3450d"
+        }
+      ]
+    },
+    {
+      "name": "slurp-top3-analysis-recipe-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-top3-analysis-recipe-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-top3-analysis-recipe-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-top3-analysis-recipe-v1",
+          "commit": "beff995b59c81762a60277dff62a8ca23153edaf"
+        }
+      ]
+    },
+    {
+      "name": "slurp-top3-commitment-configs-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-top3-commitment-configs-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-top3-commitment-configs-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-top3-commitment-configs-v1",
+          "commit": "65672f81472d2736074f9f14fcd07eaac2095ef9"
+        }
+      ]
+    },
+    {
+      "name": "slurp-top3-diagnostics-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-top3-diagnostics-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-top3-diagnostics-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-top3-diagnostics-v1",
+          "commit": "0db76f8c9293dde1ad7fcf87135053a572b4dc14"
+        }
+      ]
+    },
+    {
+      "name": "slurp-top3-full-configuration-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-top3-full-configuration-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-top3-full-configuration-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-top3-full-configuration-v1",
+          "commit": "5f7bac44ae7c7197b206fd76755ec5ad03ec6dec"
+        }
+      ]
+    },
+    {
+      "name": "slurp-top3-full-source-static-review-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-top3-full-source-static-review-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-top3-full-source-static-review-v1",
+      "matching_retained_branch_tips": []
+    },
+    {
+      "name": "slurp-top3-full-successors-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-top3-full-successors-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-top3-full-successors-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-top3-full-successors-v1",
+          "commit": "867c12e00e57ae100bd768c0c11e2b52ad678d77"
+        }
+      ]
+    },
+    {
+      "name": "slurp-training-cycle-preparation-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-training-cycle-preparation-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-training-cycle-preparation-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-training-cycle-preparation-v1",
+          "commit": "54fe049c816c10dea30939cefd2fabbeecf30b68"
+        }
+      ]
+    },
+    {
+      "name": "slurp-training-query-embedding-prepare-v1",
+      "absolute_path": "/home/chao/saea-worktrees/slurp-training-query-embedding-prepare-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/slurp-training-query-embedding-prepare-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/slurp-training-query-embedding-prepare-v1",
+          "commit": "9f235826645bf86e7da43bdf9376c1a1be36a20f"
+        }
+      ]
+    },
+    {
+      "name": "speech-observation-integration-v1",
+      "absolute_path": "/home/chao/saea-worktrees/speech-observation-integration-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/speech-observation-integration-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/speech-observation-integration-v1",
+          "commit": "7823f1a9ab0f9117b8785d131c31e89ced182eb7"
+        }
+      ]
+    },
+    {
+      "name": "speech-observation-producer-v1",
+      "absolute_path": "/home/chao/saea-worktrees/speech-observation-producer-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/speech-observation-producer-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/speech-observation-producer-v1",
+          "commit": "a486ba0275e4375ab9ebc46fd150c8378b738d61"
+        }
+      ]
+    },
+    {
+      "name": "speech-tool-preparation-v1",
+      "absolute_path": "/home/chao/saea-worktrees/speech-tool-preparation-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/speech-tool-preparation-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/speech-tool-preparation-v1",
+          "commit": "958ece85ce3c48eb5c46e9df9e2872081ff668df"
+        }
+      ]
+    },
+    {
+      "name": "speech-tool-runtime-v1",
+      "absolute_path": "/home/chao/saea-worktrees/speech-tool-runtime-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/speech-tool-runtime-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/speech-tool-runtime-v1",
+          "commit": "49a59aa74416ca7b019cb83e7319c70b352a84c1"
+        }
+      ]
+    },
+    {
+      "name": "staged-phase-capacity",
+      "absolute_path": "/home/chao/saea-worktrees/staged-phase-capacity",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/staged-phase-capacity",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/staged-phase-capacity",
+          "commit": "9074a92f30910eb055cc8f1bf5ee0d0241cdcecb"
+        }
+      ]
+    },
+    {
+      "name": "strict-cache-serving-validation",
+      "absolute_path": "/home/chao/saea-worktrees/strict-cache-serving-validation",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/strict-cache-serving-validation",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/strict-cache-serving-validation",
+          "commit": "faa03a28611fc6609be4d2882afbba7136a5cf4a"
+        }
+      ]
+    },
+    {
+      "name": "system-optimization-lifecycle-audit-v1",
+      "absolute_path": "/home/chao/saea-worktrees/system-optimization-lifecycle-audit-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/system-optimization-lifecycle-audit-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/system-optimization-lifecycle-audit-v1",
+          "commit": "44a0a9392eea07df639f959c721e0236973ad539"
+        }
+      ]
+    },
+    {
+      "name": "text-encoder-plan-accounting-v1",
+      "absolute_path": "/home/chao/saea-worktrees/text-encoder-plan-accounting-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/text-encoder-plan-accounting-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/text-encoder-plan-accounting-v1",
+          "commit": "1530912ed430946e2214e93012b504f51601b542"
+        }
+      ]
+    },
+    {
+      "name": "text-facet-preparation-v1",
+      "absolute_path": "/home/chao/saea-worktrees/text-facet-preparation-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/text-facet-preparation-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/text-facet-preparation-v1",
+          "commit": "3022590060b3d2b20e4cdca7e69002147008e157"
+        }
+      ]
+    },
+    {
+      "name": "training-action-credit-spec-v1",
+      "absolute_path": "/home/chao/saea-worktrees/training-action-credit-spec-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/training-action-credit-spec-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/training-action-credit-spec-v1",
+          "commit": "a537f969c64fb63990344beceb66cd441c7a701b"
+        }
+      ]
+    },
+    {
+      "name": "training-incumbent-source-prepare-v1",
+      "absolute_path": "/home/chao/saea-worktrees/training-incumbent-source-prepare-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/training-incumbent-source-prepare-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/training-incumbent-source-prepare-v1",
+          "commit": "27b9fc857ea03da55def09495a1fc3e73df20fea"
+        }
+      ]
+    },
+    {
+      "name": "training-incumbent-source-recovery-v1",
+      "absolute_path": "/home/chao/saea-worktrees/training-incumbent-source-recovery-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/training-incumbent-source-recovery-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/training-incumbent-source-recovery-v1",
+          "commit": "639f49b54cc41d40251e81b1f2adf4a805f31cef"
+        }
+      ]
+    },
+    {
+      "name": "training-proposal-supply-v1",
+      "absolute_path": "/home/chao/saea-worktrees/training-proposal-supply-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/training-proposal-supply-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/training-proposal-supply-v1",
+          "commit": "7ac212ed120dae5f3c2c154df386dc8dabe1da5e"
+        }
+      ]
+    },
+    {
+      "name": "typed-training-proposal-output-v1",
+      "absolute_path": "/home/chao/saea-worktrees/typed-training-proposal-output-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/typed-training-proposal-output-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/typed-training-proposal-output-v1",
+          "commit": "dee25914de93816932d958ff8bd90952e9db6772"
+        }
+      ]
+    },
+    {
+      "name": "unsealed-contact-source-v1",
+      "absolute_path": "/home/chao/saea-worktrees/unsealed-contact-source-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/unsealed-contact-source-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/unsealed-contact-source-v1",
+          "commit": "1d07a79404017bd3a987a2b403278953b400aebc"
+        }
+      ]
+    },
+    {
+      "name": "whisper-backend-cpu-v1",
+      "absolute_path": "/home/chao/saea-worktrees/whisper-backend-cpu-v1",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/whisper-backend-cpu-v1",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/whisper-backend-cpu-v1",
+          "commit": "2b847710188972b1a9d038b5dbf994b494c4d990"
+        }
+      ]
+    },
+    {
+      "name": "whole-cluster-pooled-ratios",
+      "absolute_path": "/home/chao/saea-worktrees/whole-cluster-pooled-ratios",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/whole-cluster-pooled-ratios",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/whole-cluster-pooled-ratios",
+          "commit": "7ebf55d2bc84a51a7597d625a12d838ea5696a81"
+        }
+      ]
+    },
+    {
+      "name": "window-feature-encoding",
+      "absolute_path": "/home/chao/saea-worktrees/window-feature-encoding",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/window-feature-encoding",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/window-feature-encoding",
+          "commit": "35906153b4d3d71cf86c0adc64bd227431aad0cc"
+        }
+      ]
+    },
+    {
+      "name": "window-feature-provenance",
+      "absolute_path": "/home/chao/saea-worktrees/window-feature-provenance",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/window-feature-provenance",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/window-feature-provenance",
+          "commit": "0f157ba570033ac4bd28821ef62515e0600543c7"
+        }
+      ]
+    },
+    {
+      "name": "window-inventory-flight-cli",
+      "absolute_path": "/home/chao/saea-worktrees/window-inventory-flight-cli",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/window-inventory-flight-cli",
+      "matching_retained_branch_tips": [
+        {
+          "ref": "refs/heads/codex/window-inventory-flight-cli",
+          "commit": "ffb427aef5fc8847682ba75835e5b5887a0078d1"
+        }
+      ]
+    },
+    {
+      "name": "wire-response",
+      "absolute_path": "/home/chao/saea-worktrees/wire-response",
+      "orphan_gitdir": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/.git/worktrees/wire-response",
+      "matching_retained_branch_tips": []
+    }
+  ],
+  "provenance_note": "The orphan Git administration directories had already been removed before this cleanup. Matching branch names identify retained tips, not independently proven historical checkout HEADs. Complete directory bytes were archived and compared before removal."
+}
