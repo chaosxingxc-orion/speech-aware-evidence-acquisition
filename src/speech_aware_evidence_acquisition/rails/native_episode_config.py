@@ -529,9 +529,15 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         if program.phase(perception.phase_id).response_format_id != role_context_source_format_id(role_context_json):
             raise ValueError("role context requires the registered Perception phase format")
     context_policy_json = None
+    # E8b: what a declared node-context policy adds to the bounded contact
+    # ceiling. Zero for every level up to and including L1, and for every
+    # config that declares no policy at all, so the historical formula below
+    # is reduced to exactly itself.
+    cleaning_contacts_per_revision = 0
     if "context_policy" in raw:
         from .node_context_binding import (
             is_node_context_null_arm,
+            node_context_cleaning_boundaries,
             node_context_producer_formats,
             node_context_source_format_id,
             validate_node_context_policy_config,
@@ -572,6 +578,33 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
                         f"{format_id!r} for the {role_kind} producer, but its phase "
                         f"declares {phase.response_format_id!r}"
                     )
+            # E8b: each declared cleaning boundary spends at most ONE extra
+            # contact per contact of its CONSUMER role, so the ceiling gains
+            # (max_revisions + 1) * consumer.max_iterations. For the only
+            # boundary the design proposes -- planner:review-finding, with a
+            # one-iteration Planner -- that is exactly the (max_revisions + 1)
+            # of design section 7, which takes the anchor's 11 to 13.
+            declared_cleanings = node_context_cleaning_boundaries(context_policy_json)
+            phase_names = set(program.phase_names())
+            for spelling in declared_cleanings:
+                consumer_kind = spelling.split(":", 1)[0]
+                if consumer_kind not in by_kind:
+                    raise ValueError(
+                        f"node context cleaning boundary {spelling!r} names no "
+                        "episode role"
+                    )
+                cleaning_contacts_per_revision += by_kind[consumer_kind].max_iterations
+            for entry in raw["context_policy"].get("boundaries", {}).values():
+                cleaning = entry.get("cleaning") if isinstance(entry, Mapping) else None
+                if isinstance(cleaning, Mapping) and cleaning.get("phase_id") in phase_names:
+                    # A cleaning contact is NOT one of the four role phases: it
+                    # registers no agent state and routes no episode step. Its
+                    # phase_id may therefore never be mistaken for a program
+                    # phase name.
+                    raise ValueError(
+                        "node context cleaning phase_id cannot be one of the "
+                        "episode's own program phases"
+                    )
     if any(phase.barrier for phase in program.phases):
         raise ValueError("conditional native episodes cannot declare whole-roster phase barriers")
     if refresh_action is not None:
@@ -600,6 +633,10 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         r.max_iterations * r.samples if r.role_kind == "solver" else r.max_iterations
         for r in roles[1:]
     )
+    # E8b (SLURP v2 base program M5, design section 7): plus one cleaning
+    # contact per contact of each cleaned boundary's consumer role. Zero
+    # without a declared cleaning boundary.
+    per_revision += cleaning_contacts_per_revision
     ceiling = roles[0].max_iterations + (revisions + 1) * per_revision
     ceiling += refreshes * roles[0].max_iterations
     if program.max_contacts != ceiling:
