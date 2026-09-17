@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-exemplars-k20-anchor-smoke-4-v2",
-  "composed_config_hash": "049ea7c4b21f354247705385d90e28fc9d5a31f33685e1b82ba009ea5c7d5eec",
+  "composed_config_hash": "cfaca2b20af9e08499769a232615d62f779e4777293b4089714fe28d464b7b00",
   "execution_route": "Shared core.flight.lease_cli worker lease plus a standalone core.flight.cli worker attached to the resident session. No campaign, no scorer.",
   "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "experiment": "slurp-native-exemplars-k20-anchor-smoke-4-v2",
@@ -23,7 +23,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 44,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "74f4a464057ae7fafba1f633c7ed35f4d5302c38f337180f48d9e1bc5d69a74f",
+    "protocol_hash": "c31ac32fd609a2a17313b8fe9767528ccbeb1138ca24ecbcfa5b85cd811da335",
     "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-V2",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -32,7 +32,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-17-slurp-b1-exemplars-k20-anchor-v2/protocol-registered-v1.json",
-    "sha256": "a631ee88076f4100595cf83f779af847a21aef69a61cd4c3571cb06193ffd1da"
+    "sha256": "78074efd44e40bf0181b5a9c8c972d70ed4ffef6c25f325fc00dcdb26307de45"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The comparators are the sealed anchor score artifact (primary) and the released direct anchor (secondary); neither is re-flown and neither is re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, the train-exemplars typed content blocks, fit receipts and seal, with no answer, reference or quality interpretation.",
   "root_registration_required": true,

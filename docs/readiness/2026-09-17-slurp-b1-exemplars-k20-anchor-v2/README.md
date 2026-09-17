@@ -26,7 +26,7 @@ started, stopped or queried the resident service.
 | campaign plans | `configs/campaign/slurp-native-exemplars-k20-anchor-train-fold-a-v2.json`, `configs/campaign/slurp-native-exemplars-k20-anchor-twin-train-fold-a-v2.json` |
 | composed / protocol (arm) | `db1f5e0238c60ad689d22dc3d56a92bdd72e7a7098a8921a79d8612de0b6b06d` / `63d62d74948d58309f81e1c1d0f7524688df62670f1c6791d32dd109688cfa81` |
 | composed / protocol (twin) | `f9b9d45e49c16e506f61e5ec292f4d3d54181d2f880e42bac3ebcdef3322e813` / `1bcfc79ff02991137363208344d43e8c8b045095711e17ff659d146154b35a73` |
-| composed / protocol (smoke) | `049ea7c4b21f354247705385d90e28fc9d5a31f33685e1b82ba009ea5c7d5eec` / `74f4a464057ae7fafba1f633c7ed35f4d5302c38f337180f48d9e1bc5d69a74f` |
+| composed / protocol (smoke) | `cfaca2b20af9e08499769a232615d62f779e4777293b4089714fe28d464b7b00` / `c31ac32fd609a2a17313b8fe9767528ccbeb1138ca24ecbcfa5b85cd811da335` |
 | prepared supply (arm) | `prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-V2/phase-supply-v1.json`, SHA-256 `dbd6afbd146ad87aec8e8ad5441ee0c4f35681fbadf8fb4a76943d8c44d3bf97` |
 | prepared supply (twin) | `prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2/phase-supply-v1.json`, SHA-256 `17ee51bcd631abe02240ba8837ed28147f3fc5daf04df5dda9ced18c5d340855` |
 | prepared supply (smoke) | `prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-V2/phase-supply-v1.json`, SHA-256 `76186c55253f3bf535b0496fc783686c83b352c7badbec7a9f01febc4c107aa7` |

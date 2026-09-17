@@ -102,8 +102,8 @@
     "smoke": {
       "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-smoke-4-generation-v2",
       "cell": "slurp-native-exemplars-k20-anchor-smoke-4-v2",
-      "composed_config_hash": "049ea7c4b21f354247705385d90e28fc9d5a31f33685e1b82ba009ea5c7d5eec",
-      "execution_plan_protocol_hash": "74f4a464057ae7fafba1f633c7ed35f4d5302c38f337180f48d9e1bc5d69a74f",
+      "composed_config_hash": "cfaca2b20af9e08499769a232615d62f779e4777293b4089714fe28d464b7b00",
+      "execution_plan_protocol_hash": "c31ac32fd609a2a17313b8fe9767528ccbeb1138ca24ecbcfa5b85cd811da335",
       "experiment": "slurp-native-exemplars-k20-anchor-smoke-4-v2",
       "fit_attempt_id": "attempt-slurp-native-exemplars-k20-anchor-smoke-4-fit-v2",
       "fit_run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-FIT-V2",
