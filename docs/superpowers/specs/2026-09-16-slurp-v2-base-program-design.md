@@ -176,7 +176,7 @@ direct-anchor release (`docs/results/2026-09-17-slurp-train-a-direct-anchor-rele
 | Cell | Module | Base | Control | Contacts/row | GPU-h |
 | --- | --- | --- | --- | ---: | ---: |
 | B0 | M0 | anchor minus review loop | sealed anchor | 2 | ~1.4 |
-| B1 | M1, plain top-20 speech-keyed exemplars | anchor (B0 harmful) | derangement twin + anchor | 5 | ~3.4 |
+| B1 | M1, plain top-20 speech-keyed exemplars | anchor (B0 harmful) | derangement twin + anchor | 5 | ~3.4 | ADMITTED pending the twin 2026-09-17: SLU +12.61 [+10.54, +14.60], intent +2.22, v3 62.67 |
 | B2 | M2, N=5, T=0.7 | anchor (B0 harmful) | 5 greedy repeats aggregated identically + anchor | 10 | ~5-6 |
 | B3 | M3 (A1-decided: R_action + v2 labels, P2 fillers; +3.5 SLU official, about +0.2 symmetric, +1.4 intent) | scorer-side | unprojected | 0 | 0 |
 | B4a | M4a | anchor | anchor | 5 | ~3.4 |

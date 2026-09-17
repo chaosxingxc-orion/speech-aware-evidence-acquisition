@@ -3670,6 +3670,19 @@
         "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V2",
         "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-SMOKE-4-V2"
       ]
+    },
+    {
+      "date": "2026-09-17",
+      "cell_id": "SLURP-B1-EXEMPLARS-K20-ANCHOR-RECOVERY-V2",
+      "status": "ADMITTED_PENDING_THE_DERANGEMENT_TWIN",
+      "source": "docs/results/2026-09-17-slurp-b1-exemplars-k20-verdict.md",
+      "source_sha256": "79a3daa754db36b1d460e4cba04b5e385836b1a8cee40866dad865f7b668d5f1",
+      "meaning": "Module M1 (twenty plain speech-keyed TRAIN exemplars supplied to the Solver as typed content, reaching the Solver, Reviewer and Planner requests) on TRAIN A 1,080 against the sealed anchor: official pooled SLU-F1 48.53 -> 61.14, +12.61 pp CI95 [+10.54, +14.60]; intent 77.96 -> 80.19, +2.22 [+0.74, +3.71] (non-inferior; the point estimate exceeds the own null, the lower bound does not); projection v3 62.67 (+10.67), symmetric 62.97 (+10.89); pooled span F1 +18.93; all 18 scenarios gain SLU; exemplar-filler echo 0.50 of delivered mentions vs the anchor base rate 0.29 (convention transfer), escape-to-neighbour-intent only 6 rows; date omissions 81 -> 48, surface mass 814 -> 534. Against the released direct anchor +27.25 pp SLU. First attempt aborted on the Solver-revisit refusal (420 contacts, preserved), fixed by E3c and proven in flight (7 revisions). Cost 5,425 contacts, 3.68 GPU hours, +7.4 % prompt tokens. ADMITTED pending the derangement twin, which flies next.",
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2",
+        "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-RECOVERY-V2",
+        "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-V2"
+      ]
     }
   ]
 }
