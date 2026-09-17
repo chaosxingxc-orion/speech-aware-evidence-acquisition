@@ -24,7 +24,7 @@ loop leaves the default plan and its budget is re-spent on sampling (M2) and exe
 
 | role | identity |
 | --- | --- |
-| treatment | `SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1` / `attempt-slurp-native-review-off-train-fold-a-generation-v1`, cell `slurp-native-review-off-train-fold-a-v1`, composed config `29128fdcbb15d841c77298662499e5f64c0be24c2f48fc2ff1c23966fab49466`, protocol `990c7b23e2dc2e9ec037f591488f23597c47cbeaca37f723484e5551c153f753` |
+| treatment | `SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1` / `attempt-slurp-native-review-off-train-fold-a-generation-v1`, cell `slurp-native-review-off-train-fold-a-v1`, composed config `45fe779f75694774a5e8f313a6682da5f70531c6e810554b6cd1a06c734400d1`, protocol `c445394b3c5560e07d4b1bf22b520297514456f88ca50d7293bb265f6090a7e6` |
 | comparator | sealed bytes of `SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1` / `attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1`, score artifact SHA-256 `7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47`, run manifest `049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152` |
 
 The comparator is never re-flown and never re-scored. Its official aggregate on these same 1,080

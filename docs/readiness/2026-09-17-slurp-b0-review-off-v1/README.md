@@ -16,8 +16,8 @@ never started, stopped or queried the resident service.
 | smoke cell | experiment and cell `slurp-native-review-off-smoke-4-v1`, run `SAEA-SLURP-NATIVE-REVIEW-OFF-SMOKE-4-V1`, attempt `attempt-slurp-native-review-off-smoke-4-generation-v1` |
 | smoke FIT | `SAEA-SLURP-NATIVE-REVIEW-OFF-SMOKE-4-FIT-V1` / `attempt-slurp-native-review-off-smoke-4-fit-v1`, 32 endpoints |
 | campaign plan | `configs/campaign/slurp-native-review-off-train-fold-a-v1.json` |
-| composed config / protocol (full) | `29128fdcbb15d841c77298662499e5f64c0be24c2f48fc2ff1c23966fab49466` / `990c7b23e2dc2e9ec037f591488f23597c47cbeaca37f723484e5551c153f753` |
-| composed config / protocol (smoke) | `fab9af24662c35144366628e596f4e89ad47369e119cdde6272f5c8237c168c0` / `5a54400ea7106bcd54416f00cb18e43e2e220a61429fbef7f33bdcafe60be47b` |
+| composed config / protocol (full) | `45fe779f75694774a5e8f313a6682da5f70531c6e810554b6cd1a06c734400d1` / `c445394b3c5560e07d4b1bf22b520297514456f88ca50d7293bb265f6090a7e6` |
+| composed config / protocol (smoke) | `d241dd7e76608184f9db83153008f9dbf4a5cb9f3e555c0bdf750923f2e43ed5` / `b3a751293e64abf36dece4b51f1161c75f2c23f89937c1b63cc5137238e4bc8d` |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |
 | readiness | both cells are `held`; the coordinator flips them |
 
