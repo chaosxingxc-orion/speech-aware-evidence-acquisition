@@ -128,7 +128,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
@@ -1020,6 +1020,16 @@ class EvidenceAgentController:
                     )
                 should_stop = True
                 supply = None
+            if supply is not None:
+                # E3c: a phase this trajectory has already answered may not
+                # acquire what it already holds (restrict_repeat_visit_supply).
+                # A linearly walked PhaseProgram never repeats a phase, so
+                # this is a no-op here today and the decision is returned
+                # unchanged; the seam lives on the base because the native
+                # role episode's REVISE route DOES re-enter the Solver.
+                supply = restrict_repeat_visit_supply(
+                    supply, context, phase_name=next_spec.name
+                )
 
         if should_stop:
             transition = AgentStepTransition(
@@ -1244,6 +1254,103 @@ class EvidenceAgentController:
         expose = supply.expose_facets or not selected
         return selected, (newly_supporting if expose else ())
 
+
+def _phase_already_visited(context: AgentRuntimeContext, phase_name: str) -> bool:
+    """Has ``phase_name`` already answered once in THIS trajectory?
+
+    The evidence is the phase's own sealed state: every phase response is
+    sealed by :func:`seal_phase_response_state` with
+    ``state_kind="phase:<phase name>"``, so one such artifact in
+    ``context.agent_states`` means the phase is about to be RE-entered
+    (a native episode's Planner routing REVISE back into the Solver), not
+    entered for the first time.
+    """
+
+    kind = f"phase:{phase_name}"
+    return any(
+        getattr(artifact, "state_kind", None) == kind
+        for artifact in context.agent_states
+    )
+
+
+def restrict_repeat_visit_supply(
+    supply: PhaseSupply,
+    context: AgentRuntimeContext,
+    *,
+    phase_name: str,
+) -> PhaseSupply | None:
+    """The supply decision a RE-ENTERED phase may still acquire (E3c).
+
+    A prepared phase supply is a pure function of (phase, sample): when a
+    native episode's Planner routes REVISE, the Solver is visited a second
+    time and the SAME decision comes back. Its values are already in
+    ``QueryState.retrieved_value_ids`` -- they reached the first Solver
+    request and, because every later request renders from the ACCUMULATED
+    state, they reach the second one too without being acquired again.
+    Acquiring them a second time is not merely redundant: ``QueryState``
+    refuses duplicate ``retrieved_value_ids``, so
+    ``EvidenceAgentController._acquired_ids`` refuses the decision and the
+    whole trajectory dies (the 2026-09-17 cell B1 abort).
+
+    So on a repeat visit this returns the decision restricted to what is
+    NOT yet visible -- exactly what ``rails.kb_policy``'s own fuser does
+    against ``query_state.retrieved_value_ids`` before it ever builds a
+    decision -- as a filtered :class:`PhaseSupply`, or ``None`` when the
+    revisit acquires nothing at all (an ``acquire`` transition that
+    introduces neither a value nor a facet is refused by
+    ``AgentStepTransition.validate``; the wave then seals its response as an
+    ordinary ``organize`` step and the accumulated state still carries every
+    earlier value).
+
+    Two invariants make this safe to put on the base:
+
+    * **The FIRST visit of every phase is untouched.** Without a sealed
+      ``phase:<phase_name>`` state this returns the caller's own object,
+      so the transition, the ``new_value_ids`` and the rendered request
+      bytes are identical to before this function existed -- and
+      ``_acquired_ids``' refusal keeps its original purpose, which is to
+      catch a fuser that fails to exclude already-visible values on a
+      first, genuinely new acquisition.
+    * **Facet exposure does not change.** Whether the decision exposes its
+      supporting facets is decided from the decision AS GIVEN
+      (``expose_facets or not selected_value_ids``, the same expression
+      ``_acquired_ids`` evaluates), never from the filtered selection, so a
+      value-only supply whose values are all visible yields ``None`` rather
+      than silently promoting its facets into a ``knowledge_role="key"``
+      block the first visit never carried.
+
+    A filtered decision keeps every hash edge of the original
+    (``snapshot_sha256``/``query_state_sha256``/``rank_result_sha256`` and
+    the supporting facets), so ``rails.knowledge.assert_knowledge_use_binding``
+    still holds: dropping selected values cannot break the value-to-supporting-
+    facet association it checks.
+    """
+
+    supply.validate()
+    _require_nonempty_str(phase_name, field="restrict_repeat_visit_supply.phase_name")
+    if not _phase_already_visited(context, phase_name):
+        return supply
+    decision = supply.fusion_decision
+    selected = tuple(decision.selected_value_ids)
+    visible_values = set(context.query_state.retrieved_value_ids)
+    unseen = tuple(value_id for value_id in selected if value_id not in visible_values)
+    visible_facets = set(context.query_state.visible_facet_ids)
+    newly_supporting = tuple(
+        facet_id
+        for facet_id in decision.supporting_facet_ids
+        if facet_id not in visible_facets
+    )
+    # The decision's OWN exposure semantics, read off the decision as given
+    # -- `_acquired_ids` evaluates exactly this expression.
+    expose = supply.expose_facets or not selected
+    if not unseen and not (expose and newly_supporting):
+        return None
+    if unseen == selected:
+        return supply
+    return replace(
+        supply,
+        fusion_decision=replace(decision, selected_value_ids=unseen).validate(),
+    ).validate()
 
 
 def _default_material_for_phase(program: PhaseProgram) -> MaterialForPhase:
@@ -1976,6 +2083,7 @@ __all__ = [
     "register_phase_state_views_v1",
     "register_response_formats_v1",
     "registered_program_ids",
+    "restrict_repeat_visit_supply",
     "seal_phase_response_state",
     "select_response_format_v1",
 ]
