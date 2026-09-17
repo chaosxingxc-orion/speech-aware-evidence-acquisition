@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-exemplars-k20-anchor-train-fold-a-recovery-v2",
-  "composed_config_hash": "b15374a9c89b8f9e089e38ea3a408fe02fcf16999e0ab21f721a46b8eaa7521a",
+  "composed_config_hash": "114b791752e160ed0f409fedf12d034b3cc05a8789b4423d1700cc6cb7df000c",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "7ff82128599de2441f11483af07d04a78386294eba73e6eba90b3ad192810c0e",
+    "protocol_hash": "c66d507d1ae03c081d04a72dda7b5be28c29d7d5d22e4f196c38e5912211da2d",
     "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -32,7 +32,7 @@
   "preparation_base_commit": "cfbb5f8b3afc01ee2027eb42752fe29c4740c7e2",
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-17-slurp-b1-exemplars-k20-anchor-v2-recovery-v1/protocol-registered-v1.json",
-    "sha256": "c2fc62c617873cf1d2ff474a8ec4e057a68ceff16a32caeeb401341c8bd36f20"
+    "sha256": "b8f91ddd6ae7e6544d11bc07806b40da56e7955eed2e87c93ee3fb64d74649ff"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The comparators are the sealed anchor score artifact (primary) and the released direct anchor (secondary); neither is re-flown and neither is re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, the train-exemplars typed content blocks, fit receipts and seal, with no answer, reference or quality interpretation.",
   "recovery": {

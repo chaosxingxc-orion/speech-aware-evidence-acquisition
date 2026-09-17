@@ -74,8 +74,8 @@
       "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2",
       "campaign_plan": "configs/campaign/slurp-native-exemplars-k20-anchor-train-fold-a-recovery-v2.json",
       "cell": "slurp-native-exemplars-k20-anchor-train-fold-a-recovery-v2",
-      "composed_config_hash": "b15374a9c89b8f9e089e38ea3a408fe02fcf16999e0ab21f721a46b8eaa7521a",
-      "execution_plan_protocol_hash": "7ff82128599de2441f11483af07d04a78386294eba73e6eba90b3ad192810c0e",
+      "composed_config_hash": "114b791752e160ed0f409fedf12d034b3cc05a8789b4423d1700cc6cb7df000c",
+      "execution_plan_protocol_hash": "c66d507d1ae03c081d04a72dda7b5be28c29d7d5d22e4f196c38e5912211da2d",
       "experiment": "slurp-native-exemplars-k20-anchor-train-fold-a-recovery-v2",
       "fit_attempt_id": "attempt-slurp-native-exemplars-k20-anchor-train-fold-a-fit-recovery-v2",
       "fit_run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-FIT-RECOVERY-V2",
@@ -86,8 +86,8 @@
         "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
       },
       "prepared_phase_supply": {
-        "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2/phase-supply-v1.json",
-        "sha256": "ae9feef8152da8333d3b8bc992037d5776bd3a32c225c9105d879d3398925595"
+        "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2/phase-supply-v2.json",
+        "sha256": "4892dbe8173f480a77dd48f34171eba78bfd029a530efa6b095db4f744b00a00"
       },
       "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2",
       "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
