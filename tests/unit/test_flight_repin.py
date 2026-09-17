@@ -1,0 +1,519 @@
+"""Synthetic-package tests for the registered-cell re-pin tool.
+
+Every test builds its own throwaway git repo with fake model/dataset/baseline/
+experiment fragments, a fake readiness package, and a fake exposure ledger --
+never a real registered package under ``docs/readiness/`` or ``configs/``. The
+model-free ``prepare-supply`` step is always a fake, injected via
+``prepare_supply_fn``; ``run_check_fn`` is disabled (``None``) in every test
+here, since ``core.flight.cli check`` requires a real carrier/model/lock that
+has no place in a unit test -- that integration is exercised only by hand
+against a real study checkout.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import subprocess
+from pathlib import Path
+
+import pytest
+
+from speech_aware_evidence_acquisition.core.config import compose, protocol_hash
+from speech_aware_evidence_acquisition.core.flight.repin import (
+    RepinError,
+    apply_decision_and_readiness,
+    repin_package,
+    rewrite_ledger_notes,
+)
+from speech_aware_evidence_acquisition.data.splits import prefixed, split_identity_hash
+
+RUN_ID = "TEST-RUN-1"
+CELL_ID = "cell-1"
+EXPERIMENT_ID = "experiment-1"
+CARRIER_LOCK_KEY = "testcarrier"
+IDS = ["row-a", "row-b", "row-c"]
+
+
+def _git(repo: Path, *args: str) -> None:
+    subprocess.run(["git", *args], cwd=str(repo), check=True, capture_output=True, text=True)
+
+
+def _init_git(repo: Path) -> None:
+    _git(repo, "init", "-q")
+    _git(repo, "config", "user.email", "test@example.com")
+    _git(repo, "config", "user.name", "Test")
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-q", "-m", "initial fixture")
+
+
+def _write(path: Path, document: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if isinstance(document, str):
+        path.write_text(document, encoding="utf-8", newline="\n")
+    else:
+        path.write_text(json.dumps(document, indent=2), encoding="utf-8", newline="\n")
+
+
+def _sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+class Fake:
+    """A fake ``prepare_supply_fn`` that raises for run ids in ``mismatched``
+    when called on an EXISTING path (simulating a stale pin), and otherwise
+    writes a fresh artifact and returns its receipt."""
+
+    def __init__(self, mismatched: set[str] | None = None, outputs: dict[str, dict] | None = None):
+        self.mismatched = mismatched or set()
+        self.outputs = outputs or {}
+        self.calls: list[dict] = []
+
+    def __call__(self, *, run_id, output_path, **kwargs):
+        self.calls.append({"run_id": run_id, "output_path": str(output_path), **kwargs})
+        output_path = Path(output_path)
+        if output_path.exists():
+            if run_id in self.mismatched:
+                raise RuntimeError(f"simulated identity mismatch for {run_id}")
+            return {"path": str(output_path), "sha256": _sha(output_path), "cache": "warm"}
+        document = {
+            "schema": "saea-prepared-artifact-v1",
+            "kind": "phase-supply",
+            "inputs": {},
+            "contact_class": "model-free",
+            "output": self.outputs.get(run_id, {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}),
+            "output_sha256": "0" * 64,
+        }
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        raw = json.dumps(document, indent=2).encode()
+        output_path.write_bytes(raw)
+        return {"path": str(output_path), "sha256": hashlib.sha256(raw).hexdigest(), "cache": "cold"}
+
+
+def build_package(tmp_path: Path, *, old_artifact_output: dict | None = None, consumed: str = "no"):
+    """Build a synthetic repo + data root carrying one registered cell,
+    committed as the clean starting tree. Returns a dict of paths and the
+    freshly composed old identity values."""
+
+    repo = tmp_path / "repo"
+    data = tmp_path / "data"
+    repo.mkdir()
+    data.mkdir()
+
+    _write(repo / "configs/model/model-1.json", {"model_lock_key": "test-model"})
+    _write(repo / "configs/dataset/dataset-1.json", {"carrier_lock_key": CARRIER_LOCK_KEY})
+
+    old_artifact_path = data / "prepared" / RUN_ID / "phase-supply-v1.json"
+    old_artifact_path.parent.mkdir(parents=True, exist_ok=True)
+    old_document = {
+        "schema": "saea-prepared-artifact-v1",
+        "kind": "phase-supply",
+        "inputs": {},
+        "contact_class": "model-free",
+        "output": old_artifact_output if old_artifact_output is not None else {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}},
+        "output_sha256": "0" * 64,
+    }
+    old_artifact_path.write_bytes(json.dumps(old_document, indent=2).encode())
+    old_artifact_sha = _sha(old_artifact_path)
+
+    _write(
+        repo / "configs/baseline/baseline-1.json",
+        {
+            "arm": "test-arm",
+            "prepared_phase_supply": {
+                "relpath": f"prepared/{RUN_ID}/phase-supply-v1.json",
+                "sha256": old_artifact_sha,
+            },
+        },
+    )
+
+    declared_split = split_identity_hash(prefixed(CARRIER_LOCK_KEY, IDS))
+    experiment_document = {
+        "cells": [
+            {
+                "cell_id": CELL_ID,
+                "model_fragment": "model-1",
+                "dataset_fragment": "dataset-1",
+                "baseline_fragment": "baseline-1",
+                "run_id": RUN_ID,
+                "attempt_id": "attempt-1",
+                "readiness": {
+                    "state": "held",
+                    "reason": "not yet admitted",
+                    "requirements": [
+                        {
+                            "kind": "preparation",
+                            "relpath": f"prepared/{RUN_ID}/phase-supply-v1.json",
+                            "sha256": old_artifact_sha,
+                            "reason": "model-free prepared supply",
+                        }
+                    ],
+                },
+            }
+        ],
+        "population": {"split_identity_hash": declared_split},
+        "populations": [{"ids": list(IDS)}],
+    }
+    _write(repo / "configs/experiment" / f"{EXPERIMENT_ID}.json", experiment_document)
+
+    composed = compose(repo, "model-1", "dataset-1", "baseline-1", EXPERIMENT_ID)
+    old_config_hash = composed.config_hash
+    old_protocol_hash = protocol_hash(old_config_hash, "test-arm", declared_split)
+
+    readiness_dir = repo / "docs/readiness/test-pkg"
+    protocol_document_path = readiness_dir / "protocol-registered-v1.json"
+    _write(
+        protocol_document_path,
+        {
+            "schema": "test-protocol-v1",
+            "cell": {
+                "composed_config_hash": old_config_hash,
+                "execution_plan_protocol_hash": old_protocol_hash,
+                "prepared_phase_supply": {
+                    "relpath": f"prepared/{RUN_ID}/phase-supply-v1.json",
+                    "sha256": old_artifact_sha,
+                },
+            },
+        },
+    )
+    old_doc_sha = _sha(protocol_document_path)
+
+    plan_registered_path = readiness_dir / "generation-plan-registered-v1.json"
+    _write(
+        plan_registered_path,
+        {
+            "composed_config_hash": old_config_hash,
+            "execution_plan": {"protocol_hash": old_protocol_hash, "run_id": RUN_ID},
+            "protocol_document": {
+                "relpath": "docs/readiness/test-pkg/protocol-registered-v1.json",
+                "sha256": old_doc_sha,
+            },
+        },
+    )
+    old_plan_sha = _sha(plan_registered_path)
+
+    _write(
+        readiness_dir / "generation-plan-v1.json",
+        {
+            "composed_config_hash": old_config_hash,
+            "prospective_execution_plan": {"protocol_hash": old_protocol_hash, "run_id": RUN_ID},
+            "protocol_document": {
+                "relpath": "docs/readiness/test-pkg/protocol-registered-v1.json",
+                "sha256": old_doc_sha,
+            },
+        },
+    )
+
+    _write(
+        readiness_dir / "README.md",
+        f"composed config / protocol: `{old_config_hash}` / `{old_protocol_hash}`\n"
+        f"protocol document sha256: `{old_doc_sha}`\n",
+    )
+
+    preregistration_path = repo / "docs/readiness/test-pkg-preregistration.md"
+    _write(
+        preregistration_path,
+        f"treatment protocol `{old_protocol_hash}` composed config `{old_config_hash}`\n",
+    )
+
+    ledger_path = repo / "docs/exposure-ledger.md"
+    notes = (
+        f"Runtime protocol {old_protocol_hash}; protocol document {old_doc_sha}; "
+        f"composed config {old_config_hash}; Plan SHA256 {old_plan_sha}."
+    )
+    ledger_text = (
+        "# Exposure ledger\n\n"
+        "| date | run/experiment id | consumed | artifacts | notes |\n"
+        "| --- | --- | --- | --- | --- |\n"
+        f"| 2026-01-01 | {RUN_ID} | {consumed} | "
+        f"docs/readiness/test-pkg/generation-plan-registered-v1.json | {notes} |\n"
+        "| 2026-01-01 | UNRELATED-RUN | no | some/other/plan.json | unrelated row, untouched |\n"
+    )
+    _write(ledger_path, ledger_text)
+
+    _init_git(repo)
+
+    return {
+        "repo": repo,
+        "data": data,
+        "readiness_dir": readiness_dir,
+        "preregistration_path": preregistration_path,
+        "ledger_path": ledger_path,
+        "old_config_hash": old_config_hash,
+        "old_protocol_hash": old_protocol_hash,
+        "old_doc_sha": old_doc_sha,
+        "old_plan_sha": old_plan_sha,
+        "old_artifact_sha": old_artifact_sha,
+        "plan_registered_path": plan_registered_path,
+        "protocol_document_path": protocol_document_path,
+    }
+
+
+def run(pkg: dict, fake: Fake, **kwargs) -> dict:
+    return repin_package(
+        repo_root=pkg["repo"],
+        data_root=pkg["data"],
+        runtime_root=pkg["repo"],
+        lock_path=pkg["repo"] / "lock.json",
+        experiments=[(EXPERIMENT_ID, None)],
+        readiness_dir=pkg["readiness_dir"],
+        preregistration_path=pkg["preregistration_path"],
+        prepare_supply_fn=fake,
+        run_check_fn=None,
+        **kwargs,
+    )
+
+
+def _all_text(pkg: dict) -> str:
+    parts = [pkg["ledger_path"].read_text(encoding="utf-8")]
+    for path in pkg["readiness_dir"].glob("*"):
+        if path.is_file():
+            parts.append(path.read_text(encoding="utf-8"))
+    parts.append(pkg["preregistration_path"].read_text(encoding="utf-8"))
+    return "\n".join(parts)
+
+
+# --------------------------------------------------------------------------
+# Hash rewriting in dependency order, zero residue.
+# --------------------------------------------------------------------------
+
+
+def test_rewrites_every_dependent_hash_with_zero_residue(tmp_path):
+    pkg = build_package(tmp_path)
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+
+    summary = run(pkg, fake)
+
+    cell_report = summary["cells"][0]
+    new_config = cell_report["new"]["config_hash"]
+    new_protocol = cell_report["new"]["protocol_hash"]
+    assert new_config != pkg["old_config_hash"]
+    assert new_protocol != pkg["old_protocol_hash"]
+    assert cell_report["artifact"]["rebuilt"] is True
+
+    text = _all_text(pkg)
+    assert pkg["old_config_hash"] not in text
+    assert pkg["old_protocol_hash"] not in text
+    assert pkg["old_doc_sha"] not in text
+    assert pkg["old_plan_sha"] not in text
+    assert new_config in text
+    assert new_protocol in text
+
+    # Round 2 propagated: every plan's protocol_document.sha256 now names the
+    # rewritten protocol-registered-v1.json's OWN current sha256.
+    new_doc_sha = _sha(pkg["protocol_document_path"])
+    plan_registered = json.loads(pkg["plan_registered_path"].read_text(encoding="utf-8"))
+    assert plan_registered["protocol_document"]["sha256"] == new_doc_sha
+
+    # Round 3 propagated: the ledger's "Plan SHA256" now names that same
+    # plan file's OWN current sha256 (computed after rounds 1+2 rewrote it).
+    new_plan_sha = _sha(pkg["plan_registered_path"])
+    ledger_text = pkg["ledger_path"].read_text(encoding="utf-8")
+    assert f"Plan SHA256 {new_plan_sha}" in ledger_text
+
+    # The unrelated ledger row is untouched.
+    assert "unrelated row, untouched" in ledger_text
+
+
+def test_no_rebuild_when_artifact_already_matches(tmp_path):
+    pkg = build_package(tmp_path)
+    fake = Fake(mismatched=set())  # the current pin already matches
+
+    summary = run(pkg, fake)
+
+    cell_report = summary["cells"][0]
+    assert cell_report["artifact"]["rebuilt"] is False
+    assert cell_report["old"]["config_hash"] == cell_report["new"]["config_hash"]
+    assert cell_report["old"]["protocol_hash"] == cell_report["new"]["protocol_hash"]
+    assert summary["files_rewritten"] == {}
+    # Nothing under the package changed at all.
+    assert pkg["old_config_hash"] in pkg["readiness_dir"].joinpath("README.md").read_text(encoding="utf-8")
+
+
+# --------------------------------------------------------------------------
+# Refusal on residue.
+# --------------------------------------------------------------------------
+
+
+def test_refuses_on_residue_left_outside_the_package(tmp_path):
+    pkg = build_package(tmp_path)
+    stray = pkg["repo"] / "docs" / "some-other-note.md"
+    _write(stray, f"stray mention of {pkg['old_config_hash']} left behind\n")
+    _git(pkg["repo"], "add", "-A")
+    _git(pkg["repo"], "commit", "-q", "-m", "add stray file with the old hash")
+
+    fake = Fake(mismatched={RUN_ID})
+    with pytest.raises(RepinError, match="residue"):
+        run(pkg, fake)
+
+
+# --------------------------------------------------------------------------
+# Refusal on consumed rows.
+# --------------------------------------------------------------------------
+
+
+def test_refuses_when_the_exposure_row_is_already_consumed(tmp_path):
+    pkg = build_package(tmp_path, consumed="yes")
+    fake = Fake(mismatched={RUN_ID})
+
+    baseline_before = (pkg["repo"] / "configs/baseline/baseline-1.json").read_text(encoding="utf-8")
+    with pytest.raises(RepinError, match="consumed"):
+        run(pkg, fake)
+    # Refused before touching anything.
+    assert (pkg["repo"] / "configs/baseline/baseline-1.json").read_text(encoding="utf-8") == baseline_before
+    assert fake.calls == []
+
+
+def test_refuses_when_the_exposure_row_is_missing(tmp_path):
+    pkg = build_package(tmp_path)
+    text = pkg["ledger_path"].read_text(encoding="utf-8").replace(RUN_ID, "SOME-OTHER-RUN")
+    pkg["ledger_path"].write_text(text, encoding="utf-8")
+    _git(pkg["repo"], "add", "-A")
+    _git(pkg["repo"], "commit", "-q", "-m", "rename the row away")
+
+    fake = Fake(mismatched={RUN_ID})
+    with pytest.raises(RepinError, match="no row"):
+        run(pkg, fake)
+
+
+# --------------------------------------------------------------------------
+# Dirty-tree refusal.
+# --------------------------------------------------------------------------
+
+
+def test_refuses_on_unrelated_dirty_tree(tmp_path):
+    pkg = build_package(tmp_path)
+    unrelated = pkg["repo"] / "configs" / "model" / "model-1.json"
+    unrelated.write_text(unrelated.read_text(encoding="utf-8") + " ", encoding="utf-8")
+
+    fake = Fake(mismatched={RUN_ID})
+    with pytest.raises(RepinError, match="tracked modifications"):
+        run(pkg, fake)
+
+
+# --------------------------------------------------------------------------
+# Readiness flip and decision requirement insertion.
+# --------------------------------------------------------------------------
+
+
+def test_decision_requirement_insertion_and_ready_flip(tmp_path):
+    pkg = build_package(tmp_path)
+    decision_relpath = "coordination/test-pkg/decision-v1.json"
+    decision_path = pkg["data"] / decision_relpath
+    decision_path.parent.mkdir(parents=True, exist_ok=True)
+    decision_path.write_text(json.dumps({"schema": "saea-campaign-decision-v1"}), encoding="utf-8")
+
+    fake = Fake(mismatched=set())
+    summary = run(pkg, fake, decision=(decision_relpath, "decision-1"), set_ready=True)
+    assert summary["cells"]
+
+    document = json.loads((pkg["repo"] / "configs/experiment" / f"{EXPERIMENT_ID}.json").read_text(encoding="utf-8"))
+    readiness = document["cells"][0]["readiness"]
+    assert readiness["state"] == "ready"
+    decision_entries = [r for r in readiness["requirements"] if r.get("kind") == "decision"]
+    assert len(decision_entries) == 1
+    assert decision_entries[0]["expected_decision_id"] == "decision-1"
+    assert decision_entries[0]["relpath"] == decision_relpath
+    assert decision_entries[0]["sha256"] == _sha(decision_path)
+
+    # A second call with the SAME decision does not insert a duplicate.
+    run(pkg, fake, decision=(decision_relpath, "decision-1"), set_ready=True)
+    document = json.loads((pkg["repo"] / "configs/experiment" / f"{EXPERIMENT_ID}.json").read_text(encoding="utf-8"))
+    readiness = document["cells"][0]["readiness"]
+    decision_entries = [r for r in readiness["requirements"] if r.get("kind") == "decision"]
+    assert len(decision_entries) == 1
+
+
+def test_apply_decision_and_readiness_helper_is_upsert(tmp_path):
+    pkg = build_package(tmp_path)
+    decision_relpath = "coordination/test-pkg/decision-v1.json"
+    decision_path = pkg["data"] / decision_relpath
+    decision_path.parent.mkdir(parents=True, exist_ok=True)
+    decision_path.write_bytes(b"{}")
+
+    first = apply_decision_and_readiness(
+        repo_root=pkg["repo"], data_root=pkg["data"], experiment=EXPERIMENT_ID, cell_id=CELL_ID,
+        decision=(decision_relpath, "decision-1"), set_ready=True,
+    )
+    assert first is True
+    second = apply_decision_and_readiness(
+        repo_root=pkg["repo"], data_root=pkg["data"], experiment=EXPERIMENT_ID, cell_id=CELL_ID,
+        decision=(decision_relpath, "decision-1"), set_ready=True,
+    )
+    assert second is False
+
+
+# --------------------------------------------------------------------------
+# Output-equality refusal.
+# --------------------------------------------------------------------------
+
+
+def test_refuses_when_rebuilt_output_changes_without_the_override(tmp_path):
+    pkg = build_package(tmp_path, old_artifact_output={"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"], "row-b": ["v2"]}}})
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+
+    baseline_before = (pkg["repo"] / "configs/baseline/baseline-1.json").read_text(encoding="utf-8")
+    with pytest.raises(RepinError, match="different output"):
+        run(pkg, fake)
+    # The transient pin drop was rolled back on refusal.
+    assert (pkg["repo"] / "configs/baseline/baseline-1.json").read_text(encoding="utf-8") == baseline_before
+
+
+def test_allow_output_change_accepts_a_different_selection(tmp_path):
+    pkg = build_package(tmp_path, old_artifact_output={"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"], "row-b": ["v2"]}}})
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+
+    summary = run(pkg, fake, allow_output_change=True)
+    assert summary["cells"][0]["artifact"]["rebuilt"] is True
+    row_counts = summary["cells"][0]["artifact"]["row_counts"]
+    assert row_counts == {"old": {"facets": 0, "values": 2}, "new": {"facets": 0, "values": 1}}
+
+
+# --------------------------------------------------------------------------
+# Idempotence.
+# --------------------------------------------------------------------------
+
+
+def test_second_run_after_the_fix_lands_changes_nothing(tmp_path):
+    pkg = build_package(tmp_path)
+    fake = Fake(mismatched={RUN_ID})
+    first = run(pkg, fake)
+    assert first["cells"][0]["artifact"]["rebuilt"] is True
+
+    snapshot = {
+        path: path.read_bytes()
+        for path in [
+            pkg["repo"] / "configs/baseline/baseline-1.json",
+            pkg["repo"] / "configs/experiment" / f"{EXPERIMENT_ID}.json",
+            pkg["ledger_path"],
+            *[p for p in pkg["readiness_dir"].glob("*") if p.is_file()],
+            pkg["preregistration_path"],
+        ]
+    }
+
+    # The artifact the tool just built now matches, so the fake never mismatches again.
+    fake_again = Fake(mismatched=set())
+    second = run(pkg, fake_again)
+    assert second["cells"][0]["artifact"]["rebuilt"] is False
+    assert second["files_rewritten"] == {}
+    assert second["cells"][0]["old"]["config_hash"] == second["cells"][0]["new"]["config_hash"]
+
+    for path, content in snapshot.items():
+        assert path.read_bytes() == content, f"{path} changed on the idempotent second run"
+
+
+# --------------------------------------------------------------------------
+# Focused unit coverage for the ledger notes editor.
+# --------------------------------------------------------------------------
+
+
+def test_rewrite_ledger_notes_touches_only_the_matched_rows_notes_cell():
+    text = (
+        "| date | run/experiment id | consumed | notes |\n"
+        "| --- | --- | --- | --- |\n"
+        "| d | RUN-A | no | old-value stays put in RUN-A's notes |\n"
+        "| d | RUN-B | no | old-value here too |\n"
+    )
+    updated, changed = rewrite_ledger_notes(text, run_ids={"RUN-B"}, mapping={"old-value": "new-value"})
+    assert changed == 1
+    assert "RUN-A | no | old-value stays put" in updated
+    assert "RUN-B | no | new-value here too" in updated
