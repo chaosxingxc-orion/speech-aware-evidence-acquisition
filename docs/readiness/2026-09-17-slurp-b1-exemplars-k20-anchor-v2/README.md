@@ -385,7 +385,7 @@ requirement pinned, no decision requirement yet):
 | cell | composed config | protocol | prepared supply SHA-256 |
 | --- | --- | --- | --- |
 | `…-train-fold-a-recovery-v2` | `b15374a9c89b8f9e089e38ea3a408fe02fcf16999e0ab21f721a46b8eaa7521a` | `7ff82128599de2441f11483af07d04a78386294eba73e6eba90b3ad192810c0e` | `ae9feef8152da8333d3b8bc992037d5776bd3a32c225c9105d879d3398925595` |
-| `…-smoke-4-recovery-v2` | `2f1c299aaf5c2778b392c36c5551e88f45b6237054f1d3938c9820b46aa55659` | `e38285952e00de7022e52771dfeac20e729fd3aef3f4e92ad889ba2cde04853a` | `26a4f0167b91d3a1776f56e966fc18d9f0a1d05f8f603e22a1374ff08d003078` |
+| `…-smoke-4-recovery-v2` | `d0876577fb59f17e473b28d0a2ac93c6a983e72a1c2e3b918f84f00c9dcf3900` | `60442419416f8d02aea230dd496ed398e8f316ca5c046e402854bf144aaccede` | `26a4f0167b91d3a1776f56e966fc18d9f0a1d05f8f603e22a1374ff08d003078` |
 
 Both prepared artifacts reproduce the sealed anchor's Perception `output` byte-for-byte:
 `ba5e1faa…` on 1,080 / 1,080 and `512583ec…` on 4 / 4. Pre-contact receipts live under
@@ -394,3 +394,5 @@ section 9 of the recovery note; the runtime `check` for both cells returns readi
 `generation_authorized false` and prompt budget ALLOW on all four phases, and the whole-roster
 pre-flight render is byte-identical to the aborted attempt's own on every phase
 (`request-envelope-comparison-v1.json`, `5ee60cdf5395f7aea63a98e128381391b65eda5e37a9ab275f504d8012d907bb`).
+
+Hash note (coordinator, 2026-09-17): the recovery smoke was flipped ready at study commit d26b2789 by the re-pin tool; its composed/protocol hashes above are the flipped values (d0876577… / 60442419…). The recovery arm's hashes above are pre-flip and move when it is flipped; the recovery package `docs/readiness/2026-09-17-slurp-b1-exemplars-k20-anchor-v2-recovery-v1/` is the authority for the registered values.
