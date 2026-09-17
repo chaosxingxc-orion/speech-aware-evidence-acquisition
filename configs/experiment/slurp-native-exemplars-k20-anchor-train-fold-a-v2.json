@@ -16,13 +16,20 @@
         "reason": "Registered before contact by the B1 re-base agent on the sealed anchor base, after the 2026-09-17 re-decision of module M0 returned HARMFUL under the TRAIN A own null. It stays held: the coordinator pins the root decision receipt and flips the state with scripts/flights/repin_cell.py after the four-row smoke seals. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b1-exemplars-k20-anchor-admission-v1",
+            "relpath": "coordination/slurp-b1-exemplars-k20-anchor-v2/root-admission-v1.json",
+            "sha256": "2e6438160a43a4d60d569ead80810c34bc1723feb6f59d512c965b459c79d4fb",
+            "reason": "Decision slurp-b1-exemplars-k20-anchor-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-V2/phase-supply-v1.json",
             "sha256": "dbd6afbd146ad87aec8e8ad5441ee0c4f35681fbadf8fb4a76943d8c44d3bf97",
             "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-V2"
     }

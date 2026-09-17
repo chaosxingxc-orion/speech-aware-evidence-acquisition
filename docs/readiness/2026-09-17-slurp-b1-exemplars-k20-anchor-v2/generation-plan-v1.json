@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-exemplars-k20-anchor-train-fold-a-v2",
-  "composed_config_hash": "db1f5e0238c60ad689d22dc3d56a92bdd72e7a7098a8921a79d8612de0b6b06d",
+  "composed_config_hash": "c5bbdc2e1273a8de76b602b450f2da8c1c9092b703208739353b0b09e02fb67f",
   "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan; the campaign acquires its own GenerationLease against the resident session and schedules the one official score at finalize.",
   "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "experiment": "slurp-native-exemplars-k20-anchor-train-fold-a-v2",
@@ -23,7 +23,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "63d62d74948d58309f81e1c1d0f7524688df62670f1c6791d32dd109688cfa81",
+    "protocol_hash": "b251f59a41a4e7cbcf6aae328c07148c4dda2dd0c557fd9576e2f26b10ab49f6",
     "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-V2",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -32,7 +32,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-17-slurp-b1-exemplars-k20-anchor-v2/protocol-registered-v1.json",
-    "sha256": "78074efd44e40bf0181b5a9c8c972d70ed4ffef6c25f325fc00dcdb26307de45"
+    "sha256": "ad0d415e2ec6b245292ab1466ac4be58f85afad9f57fb60d3a35f2ee13e6605f"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The comparators are the sealed anchor score artifact (primary) and the released direct anchor (secondary); neither is re-flown and neither is re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, the train-exemplars typed content blocks, fit receipts and seal, with no answer, reference or quality interpretation.",
   "root_registration_required": true,

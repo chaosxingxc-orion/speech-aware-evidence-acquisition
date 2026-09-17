@@ -24,7 +24,7 @@ started, stopped or queried the resident service.
 | smoke cell | experiment and cell `slurp-native-exemplars-k20-anchor-smoke-4-v2`, run `SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-V2`, attempt `attempt-slurp-native-exemplars-k20-anchor-smoke-4-generation-v2` |
 | smoke FIT | `SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-FIT-V2` / `attempt-slurp-native-exemplars-k20-anchor-smoke-4-fit-v2`, 176 endpoints |
 | campaign plans | `configs/campaign/slurp-native-exemplars-k20-anchor-train-fold-a-v2.json`, `configs/campaign/slurp-native-exemplars-k20-anchor-twin-train-fold-a-v2.json` |
-| composed / protocol (arm) | `db1f5e0238c60ad689d22dc3d56a92bdd72e7a7098a8921a79d8612de0b6b06d` / `63d62d74948d58309f81e1c1d0f7524688df62670f1c6791d32dd109688cfa81` |
+| composed / protocol (arm) | `c5bbdc2e1273a8de76b602b450f2da8c1c9092b703208739353b0b09e02fb67f` / `b251f59a41a4e7cbcf6aae328c07148c4dda2dd0c557fd9576e2f26b10ab49f6` |
 | composed / protocol (twin) | `f9b9d45e49c16e506f61e5ec292f4d3d54181d2f880e42bac3ebcdef3322e813` / `1bcfc79ff02991137363208344d43e8c8b045095711e17ff659d146154b35a73` |
 | composed / protocol (smoke) | `cfaca2b20af9e08499769a232615d62f779e4777293b4089714fe28d464b7b00` / `c31ac32fd609a2a17313b8fe9767528ccbeb1138ca24ecbcfa5b85cd811da335` |
 | prepared supply (arm) | `prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-V2/phase-supply-v1.json`, SHA-256 `dbd6afbd146ad87aec8e8ad5441ee0c4f35681fbadf8fb4a76943d8c44d3bf97` |

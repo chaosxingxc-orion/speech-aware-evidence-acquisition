@@ -32,7 +32,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-17-slurp-b1-exemplars-k20-anchor-v2/protocol-registered-v1.json",
-    "sha256": "78074efd44e40bf0181b5a9c8c972d70ed4ffef6c25f325fc00dcdb26307de45"
+    "sha256": "ad0d415e2ec6b245292ab1466ac4be58f85afad9f57fb60d3a35f2ee13e6605f"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The comparators are the sealed anchor score artifact (primary) and the released direct anchor (secondary); neither is re-flown and neither is re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, the train-exemplars typed content blocks, fit receipts and seal, with no answer, reference or quality interpretation.",
   "root_registration_required": true,
