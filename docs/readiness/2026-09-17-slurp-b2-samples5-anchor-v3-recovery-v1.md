@@ -187,7 +187,7 @@ section 6 proves that on all 36 sealed payloads.
 | baseline | `configs/baseline/slurp-native-anchor-samples5-smoke-4-recovery-v3.json` |
 | experiment | `configs/experiment/slurp-native-samples5-anchor-smoke-4-recovery-v3.json` |
 | campaign plan | none. The smoke flies through the standalone `core.flight.cli worker`, exactly as the v3 smoke did |
-| composed / protocol | `2e806bfb003f5f0bbf73ff62fe8d5ac02d21bedb2832cb91c3c80f269f949b5a` / `eb1d172324d0ecbd2b784c5c51fe5067c82d770cbc63d051c8a1249b7005b1b0` |
+| composed / protocol | `187cd0ecb6671bc74212e33ea3981b72a581e16295ac5e52b46fb396ae39b047` / `0e3a0d3eb94c3115d295f248bf8af6469e3a2b3d16693a072b3d1428dd643bc4` |
 | prepared phase supply | `prepared/SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-RECOVERY-V3/phase-supply-v1.json`, SHA-256 `a0721db12339d7931738e7ae414cfac8087b68f9a978353582ebf58e85f2448b`, `output` SHA-256 `512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733` — the sealed smoke artifact's own, on 4 of 4 rows |
 | protocol document | the v3 package's own `docs/readiness/2026-09-17-slurp-b2-samples5-anchor-v3/protocol-registered-v1.json`, SHA-256 `93829f87b4c56e6ff7e976ac017547ee1a0bb847eac825004752716060e025c0`, **unchanged**: the recovery moves the seal path in the code, never the protocol |
 | plans | `docs/readiness/2026-09-17-slurp-b2-samples5-anchor-v3-recovery-v1/` — two prospective and two `-registered` plans |
