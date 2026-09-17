@@ -730,8 +730,21 @@ def rewrite_ledger_notes(text: str, *, run_ids: set[str], mapping: Mapping[str, 
 
 
 def apply_mapping_to_ledger(ledger_path: Path, run_ids: set[str], mapping: Mapping[str, str]) -> int:
+    """Rewrite the package's registration hashes across the whole ledger file.
+
+    A registration package writes its composed/protocol/plan hashes into the
+    notes cells of its rows AND into the prose section that introduces them.
+    Both are pre-contact registration text of an unflown package (the caller
+    has already refused if any package row is consumed), so the rewrite covers
+    the entire file; the notes-only pass runs first so its per-row change
+    count is still reported.
+    """
     text = ledger_path.read_text(encoding="utf-8")
     updated, changed = rewrite_ledger_notes(text, run_ids=run_ids, mapping=mapping)
+    for old, new in mapping.items():
+        if old and old != new and old in updated:
+            changed += updated.count(old)
+            updated = updated.replace(old, new)
     if updated != text:
         ledger_path.write_text(updated, encoding="utf-8", newline="\n")
     return changed
