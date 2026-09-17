@@ -1439,6 +1439,21 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-native-candidates-review-revise-samples5-v1": (
         "phase-native-candidates-review-revise-samples5-v1.json"
     ),
+    # Cell B7b on the sealed anchor, 2026-09-17 (M5 / NCP level L2): the SAME
+    # four phases, the SAME episode_id and the SAME role graph as
+    # "phase-native-candidates-review-revise-v1" -- reviewer 3 / planner 1 /
+    # max_revisions 1 -- with ONE declared cleaning boundary. A cleaned
+    # boundary spends at most one extra contact per contact of its CONSUMER
+    # role, so rails.native_episode_config adds
+    # (max_revisions + 1) * consumer.max_iterations = 2 * 1 to the bounded
+    # graph ceiling: 1 + (1+1)*(1 + 3 + 1 + 1) = 13. A separate program id,
+    # never a flag on the review-revise program, for the reason the samples5
+    # comment states: two program ids must never resolve to the same object
+    # when their contact ceilings differ, and rails.native_episode_config
+    # asserts program.max_contacts equals the graph ceiling.
+    "phase-native-candidates-review-revise-clean1-v1": (
+        "phase-native-candidates-review-revise-clean1-v1.json"
+    ),
     "phase-native-candidates-review-refresh-v1": "phase-native-candidates-review-refresh-v1.json",
     "native-answer-or-one-tool-v1": "native-answer-or-one-tool-v1.json",
     "native-answer-or-tool-v1": "native-answer-or-tool-v1.json",
@@ -1583,6 +1598,13 @@ def register_phase_programs_v1() -> None:
             "phase-native-candidates-review-revise-samples5-v1",
             default_controller_factory(
                 default_phase_program("phase-native-candidates-review-revise-samples5-v1")
+            ),
+        )
+    if "phase-native-candidates-review-revise-clean1-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-candidates-review-revise-clean1-v1",
+            default_controller_factory(
+                default_phase_program("phase-native-candidates-review-revise-clean1-v1")
             ),
         )
     if "phase-native-review-revise-json-v1" not in registered:
