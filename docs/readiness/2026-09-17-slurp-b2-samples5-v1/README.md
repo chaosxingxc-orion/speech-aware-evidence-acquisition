@@ -9,8 +9,12 @@ The preparation agent made **zero model, tokenizer, encoder, ASR, scorer and ser
 never started, stopped or queried the resident service, and never touched cell B0 or its pinned
 worktree while B0 was in flight.
 
-There is **no blocking gate**: `check` and `prepare-supply` were actually run for all three cells on
-this branch and both pass. The only open items are the coordinator's own (section 2).
+There is **no blocking gate in this package**: `check` and `prepare-supply` were actually run for
+all three cells on this branch and both pass. There is one blocking decision outside it — **cell B0
+closed HARMFUL** (`docs/results/2026-09-17-slurp-b0-review-off-verdict.md`, master `ccd2bc88`,
+landed while this package was being prepared), and its registered own-null replicate and
+re-decision rule settle whether cell B2's base is cell B0 or the sealed anchor. Nothing here may
+launch before that. See section 2 step 3 and section 11.
 
 ## 1. What is registered
 
@@ -69,11 +73,31 @@ the protocol hash. Recompute and re-pin before launch (section 7).
    repository.
 2. No flight process is running and no `locks/flight.lock` is held in the data root. Cell B0 must be
    finalized and its verdict published: one experiment in flight.
-3. **If cell B0 was HARMFUL**, re-base both full cells on the sealed anchor before going further:
-   the baseline fragments become anchor-based, and every hash in this package is recomputed. The
-   spec's Phase B table is the authority.
-4. Fill the two `PENDING_B0_FINALIZE` digests (cell B0's score artifact and run manifest SHA-256)
-   into `protocol-registered-v1.json` and `analysis-recipe-v1.json`.
+3. **Cell B0 closed HARMFUL while this package was being prepared — settle the base first.**
+   Master moved from `6c5c9ab7` (this branch's base) to `ccd2bc88`,
+   `docs/results/2026-09-17-slurp-b0-review-off-verdict.md`: HARMFUL by the preregistered intent
+   clause, a width failure with a nil point estimate (pooled SLU +0.13, CI95 [-1.15, +1.45]; intent
+   -0.37, CI95 [-1.53, +0.82]), with a same-roster own-null replicate and a re-decision rule
+   registered in `docs/readiness/2026-09-17-slurp-b0-replicate-v1-preregistration.md`. The spec's
+   Phase B table says later cells then build on the sealed anchor, but the re-decision may restore
+   B0 as the base. **Do not launch until that re-decision lands.** If the base becomes the anchor,
+   re-base both full cells and the smoke on it — the baseline fragments become anchor-based, the
+   review-off role graph goes back to `max_revisions 1` / reviewer 3 / planner 1, the policy
+   fragment becomes a review-revise program whose `max_contacts` equals its own grouped ceiling
+   (`1 + 2*(3 + 1 + 1*5) = 19` for `max_revisions 1`), the contact and FIT budgets are recomputed,
+   and every hash in this package is recomputed. That is a new registration, not an edit.
+   Nothing else in this package depends on the merge: `ccd2bc88` touches only
+   `docs/exposure-ledger.md`, cell B0's own analysis recipe and the results ledger — none of the
+   five modules the prepared phase-supply artifact's identity digest pins — so the prepared supplies
+   and every composed and protocol hash here survive it unchanged.
+4. Fill the two `PENDING_B0_FINALIZE` digests into `protocol-registered-v1.json` and
+   `analysis-recipe-v1.json`. Cell B0 has finalized, so they are known: score artifact
+   `51f37e6c5a78751f2d000ac370cff6f0fff18745cd18d1fc81a2cd145ce960ae`, run manifest
+   `8b6f3f783f1933c4009c46cdc01472e240c547a496f7553c07e5efe301cdfe32` (outputs
+   `108d6851c5cc5347e5b626354a99ea370f65d321c16396a914274e90c2678e65`, 1,080 scored rows, 1,071
+   parsed). They are left as placeholders here only because B0 finalized after this package was
+   written and filling them re-pins the protocol document, the six plan documents that cite its
+   SHA-256 and the six ledger notes — work that the base re-decision of step 3 may moot.
 5. The resident session identity matches:
    `jq -r .identity.props_identity "$DATA/serving/serving-slurp-native-candidate-five-train-a-np4-v1/session.json"`
    reports `slot_n_ctx 24576` and `total_slots 4`; the session id is
@@ -391,7 +415,11 @@ verdict).
 
 ## 11. Open decisions for the coordinator
 
-1. Cell B0's verdict decides the base. If HARMFUL, re-base (checklist step 3).
+1. **The base.** Cell B0 is HARMFUL as read once; its registered own-null replicate and
+   re-decision rule are what settle whether cell B2 sits on B0 or on the sealed anchor. This package
+   is registered on B0, which is where the spec's order (B0 -> B1 -> B2) puts it and what the
+   coordinator's brief specified. Re-basing on the anchor is a new registration, not an edit:
+   see checklist step 3.
 2. Whether to re-price the 5.0 GPU-hour ceiling after reading the smoke's prompt-cache behaviour,
    before launching the arm. Re-pricing the ceiling upward is a plan change and needs a new
    registration; re-pricing it downward does not.
