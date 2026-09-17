@@ -1,0 +1,293 @@
+{
+  "accounting": {
+    "anchor_realized": {
+      "contacts": 5417,
+      "contacts_per_row": 5.016,
+      "gpu_hours": 3.388,
+      "repeated_speech_seconds": 15459.76
+    },
+    "full_cell": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 47520,
+      "generation_calls_cap": 11880,
+      "gpu_hours_fit_inclusive": 12.0,
+      "native_task_contract_calls_cap": 6480,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 33930
+    },
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 117
+    }
+  },
+  "authority": {
+    "coordinator_resolution": "Fable 5.1, 2026-09-17: cell B7a is level 'structured' on exactly the eight model-output boundaries with on_parse_failure raw (refuse for plan-action), the four tool-observation boundaries declared raw, and NO Reviewer producer response format. The Reviewer response format (B7r), the tool-observation rewrite (B7c) and L2 (B7b) are separate later one-factor cells. Fable 5.1, 2026-09-17 (recovery): the sole root-diagnosed recovery re-registration the preregistration's section 10 allows for this run, opened after run SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V1 aborted at 3,278 contacts and 618 rows on a Planner output naming no registered action. Only the E8c harness fix moves; the question, the arms, the metrics, the resampling and the decision rule are the preregistration's, unchanged.",
+    "design": "docs/superpowers/specs/2026-09-17-node-context-policy-design.md",
+    "engineering_item": "E8a, merged at ff668547 (the cell's own module); E8c, commit 2af5955a merged 5bbd54a2 (an illegal Planner action is a retained row disposition, never a flight failure)",
+    "evidence_base": "docs/results/2026-09-17-slurp-node-context-audit-v1.md",
+    "not_a_cell_authority": "E8a is engineering only; this package is the cell registration and it grants no model contact until the coordinator flips readiness",
+    "own_null": "docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md and analysis/SAEA-SLURP-B0-REPLICATE-PAIRED-ANALYSIS-V1/README.md; the TRAIN A own null of this roster and geometry, h_SLU 1.1218 pp and h_intent 1.0051 pp at CI95",
+    "preregistration": "docs/readiness/2026-09-17-slurp-b7a-ncp-l1-anchor-v1-preregistration.md",
+    "program": "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md",
+    "recovery_addendum": "docs/readiness/2026-09-17-slurp-b7a-ncp-l1-anchor-v1-recovery-v1.md"
+  },
+  "base": {
+    "baseline_fragment": "configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json",
+    "contact_ceiling_per_row": 11,
+    "policy": "phase-native-candidates-review-revise-v1",
+    "roster": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+    "roster_sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+    "split_id": "SLURP-EVO-FOLD-A-V2",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery"
+  },
+  "comparators": {
+    "primary": {
+      "note": "sealed bytes; never re-flown or re-scored",
+      "official_aggregate": {
+        "action_accuracy": 79.26,
+        "intent_scenario_plus_action": 77.96,
+        "pooled_slu_f1": 48.53,
+        "pooled_span_f1": 29.5,
+        "scenario_accuracy": 84.81
+      },
+      "projection_v3_aggregate": {
+        "action_accuracy": 80.65,
+        "intent_scenario_plus_action": 79.35,
+        "pooled_slu_f1": 51.99,
+        "pooled_span_f1": 40.3,
+        "scenario_accuracy": 85.46
+      },
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+      "run_manifest_sha256": "049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152",
+      "scores_sha256": "7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47"
+    },
+    "secondary": {
+      "note": "sealed bytes; the system-versus-direct column only",
+      "official_aggregate": {
+        "action_accuracy": 75.09,
+        "intent_scenario_plus_action": 73.7,
+        "pooled_slu_f1": 33.89,
+        "pooled_span_f1": 21.1,
+        "scenario_accuracy": 82.69
+      },
+      "projection_v3_aggregate": {
+        "action_accuracy": 75.93,
+        "intent_scenario_plus_action": 75.37,
+        "pooled_slu_f1": 34.31,
+        "pooled_span_f1": 23.24,
+        "scenario_accuracy": 84.17
+      },
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1",
+      "run_manifest_sha256": "546109055a373b358c43d36878c532b95784ee5d73d07f011c5fa3ea3d7ce11e",
+      "scores_sha256": "7840a959fe4f43928fda0e0cacfe8c0ee4200116bfcd269bfe3451b59da29c38"
+    },
+    "twin": "the L1 derangement control of design section 10 flies ONLY if B7a shows a positive CI95 against the anchor; it is not registered here"
+  },
+  "conditional_order": "One experiment in flight. B7b (L2) flies only if B7a is ADMITTED or NEUTRAL; the L1 derangement twin flies only on a positive CI95; B7r and B7c are separate later one-factor cells and neither is registered here.",
+  "configurations": {
+    "b7a": {
+      "attempt_id": "attempt-slurp-native-ncp-l1-anchor-train-fold-a-generation-recovery-v1",
+      "baseline_fragment": "configs/baseline/slurp-native-anchor-ncp-l1-train-fold-a-recovery-v1.json",
+      "cell": "slurp-native-ncp-l1-anchor-train-fold-a-v1",
+      "composed_config_hash": "03a6c3b596675b64ea4754c004cca6bc0f7898c68fc8461424c751d2b307aa03",
+      "experiment": "slurp-native-ncp-l1-anchor-train-fold-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-ncp-l1-anchor-train-fold-a-fit-recovery-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-FIT-RECOVERY-V1",
+      "protocol_hash": "426e661c24713eac73257710074ac6a2cf96d2c4dc3a2802fccb4030594505de",
+      "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1",
+      "cell_id": "slurp-native-ncp-l1-anchor-train-fold-a-recovery-v1",
+      "experiment_fragment": "configs/experiment/slurp-native-ncp-l1-anchor-train-fold-a-recovery-v1.json",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+      "campaign_plan": "configs/campaign/slurp-native-ncp-l1-anchor-train-fold-a-recovery-v1.json"
+    },
+    "b7a_smoke": {
+      "attempt_id": "attempt-slurp-native-ncp-l1-anchor-smoke-4-generation-recovery-v1",
+      "baseline_fragment": "configs/baseline/slurp-native-anchor-ncp-l1-smoke-4-recovery-v1.json",
+      "cell": "slurp-native-ncp-l1-anchor-smoke-4-v1",
+      "composed_config_hash": "a567286c5b18d00db4661f096d81dac83f48f340ed06e66f780f5dbed6d02d6f",
+      "experiment": "slurp-native-ncp-l1-anchor-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-ncp-l1-anchor-smoke-4-fit-recovery-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-FIT-RECOVERY-V1",
+      "protocol_hash": "fd97da1e89a2adf1949101fca965735f4a45622e57620b7a84de00150033d566",
+      "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-RECOVERY-V1",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+      "cell_id": "slurp-native-ncp-l1-anchor-smoke-4-recovery-v1",
+      "experiment_fragment": "configs/experiment/slurp-native-ncp-l1-anchor-smoke-4-recovery-v1.json"
+    },
+    "moved_factor": {
+      "key": "native_episode.context_policy",
+      "not_moved": [
+        "no producer response format: the Reviewer stays prose (cell B7r)",
+        "no tool-observation rewrite: the duplicated task-contract reference line is cell B7c",
+        "no cleaning contact: level cleaned is E8b and is refused at load time (cell B7b)",
+        "no knowledge, supply, store, roster, geometry, instruction-template or scorer change"
+      ],
+      "off": "the key absent (the sealed anchor), the literal \"raw\", or raw at every boundary",
+      "on": "the structured block: level structured, policy_id typed-slurp-node-context-v1, params (max_candidates 3, projection_policy bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1, the closed draft_response_schema, legal_entity_types = the 55 SLURP ontology entity types the anchor's own slurp-label-inventory fill renders), the eight model-output boundaries at structured with on_parse_failure raw (solver:plan-action refuse) and the four tool-observation boundaries at raw",
+      "switch_class": "episode"
+    }
+  },
+  "contact_free_evidence": {
+    "root": "SPEECHRL_DATA_DIR/coordination/slurp-b7a-ncp-l1-anchor-recovery-v1",
+    "index": "INDEX-v1.json",
+    "v1_package_evidence_still_stands": "SPEECHRL_DATA_DIR/coordination/slurp-b7a-ncp-l1-anchor-v1 -- the request-channel proof, the prompt-fit bound and the containment proof are unchanged by the harness fix and are not re-derived here"
+  },
+  "cost_reporting": [
+    "actual generation contacts against the anchor's realized 5,417 and the ceiling 11,880",
+    "contacts per row against the anchor's 5.016 -- this module adds prompt volume, not contacts",
+    "actual repeated speech seconds against the anchor's 15,459.76 and the ceiling 33,930",
+    "actual FIT endpoints, expected 4 per realized contact, ceiling 47,520",
+    "actual native task-contract tool calls, ceiling 6,480",
+    "GPU hours, mean latency, slot occupancy and duty cycle from the serving monitor over the lease window, never a wall-clock guess, against the anchor's measured 3.388",
+    "the prompt-token delta against the anchor from the cell's own sealed native contact-fit receipts",
+    "the node-context receipt aggregate: rows, parsed, fallback counts and median rendered chars per boundary"
+  ],
+  "decision_rules": {
+    "b7a": {
+      "quoted_from": "docs/superpowers/specs/2026-09-17-node-context-policy-design.md section 11, B7a decision rule, verbatim",
+      "text": "ADMITTED iff the primary official SLU CI95 lower bound is > 0 against the anchor, intent is non-inferior at the own null margin 1.0051 pp, the symmetric-normalised scorer agrees in sign, and no scenario loses intent beyond the null band. NEUTRAL iff both primary metrics are non-inferior within the own null margins (SLU 1.1218, intent 1.0051); a NEUTRAL L1 still enters the SLURP default plan, because it removes a named defect class at no measured cost -- the seven malformed drafts that reached the Planner unflagged and the 2,167 unstructured reviews now carry a declared, receipted disposition. HARMFUL otherwise, and then L2 is not flown."
+    },
+    "operationalised": {
+      "harmful_consequence": "L2 (cell B7b) is not flown",
+      "intent_guard_pp": 1.0051,
+      "neutral_enters_the_plan": "yes, and this is the one place B7a differs from every other cell in this program: the design fixes that a NEUTRAL L1 still enters the SLURP default plan because it removes a named defect class at no measured cost",
+      "no_repeat_to_pass": true,
+      "primary": "official pooled SLU micro F1 delta against the sealed anchor, CI95 lower bound > 0",
+      "read_once": true,
+      "scenario_band": "a scenario loses intent beyond the null band when the CI95 upper bound of that scenario's own paired intent delta is below zero",
+      "slu_null_half_width_pp": 1.1218
+    },
+    "resampling": {
+      "draws": 10000,
+      "intervals": [
+        "CI95 for advancement",
+        "CI90 for diagnostics"
+      ],
+      "primary": "paired whole-speaker cluster bootstrap",
+      "seed": 20260915,
+      "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed",
+      "tables": [
+        "natural mixture",
+        "equal-scenario weighting"
+      ]
+    }
+  },
+  "failure_policy": "Stop and preserve on the first failure. Do not automatically restart, replay, filter rows, change the roster, role graph, prompts, geometry or caps. THIS REGISTRATION IS ALREADY the one root-diagnosed recovery the preregistration allows for this run: a failure here closes the flight, there is no third registration, and the fix must be proven on a four-row dry run before another mechanism is admitted.",
+  "fit": {
+    "decision": "ALLOW",
+    "live": "every flight fits each realized request itself through build_native_contact_fit_gate; coordinate-fit is not run",
+    "method": "the anchor's own 5,417 sealed per-contact required_tokens plus this cell's measured per-contact word delta under analysis.slurp_slot_vocabulary.TOKEN_PROXY_FACTOR 1.3",
+    "minimum_bound_margin_tokens": 8983,
+    "receipt": "coordination/slurp-b7a-ncp-l1-anchor-v1/prompt-fit-v1.json",
+    "slot_tokens": 24576
+  },
+  "hash_caveat": "Every composed and protocol hash in this package is the value of the five recovery config fragments exactly as committed: readiness held, the preparation requirement pinned, prepared_phase_supply pinned, and no decision requirement. Flipping readiness and appending the coordinator's decision requirement each change the composed hash and therefore the protocol hash; use scripts/flights/repin_cell.py, never a hand edit.",
+  "metrics": {
+    "agreement_reading": "projection v3 (slurp-slu-official-projected-v3-train) reported beside every official number, owner decision 7 of 2026-09-17",
+    "diagnostics_required": [
+      "FALLBACK-RAW rate per boundary in the flight's own saea-node-context-policy-v1 receipt rows, against this package's contact-free expectation (7 malformed Solver drafts at planner:current-draft, 14 at reviewer:current-draft, 100 % malformed at planner:review-finding and solver:review-finding)",
+      "rewritten states per role against this package's measured 1,100 solver / 4,344 reviewer / 2,180 planner",
+      "the per-contact prompt-token delta from the cell's own sealed native contact-fit receipts",
+      "per-scenario intent table over all 18 scenarios in both weightings"
+    ],
+    "guard": "intent (joint scenario+action) accuracy, non-inferior within 1.0051 pp",
+    "primary": "official pooled SLU micro F1 (slurp-slu-official-train), natural mixture",
+    "secondaries": [
+      "intent accuracy",
+      "scenario accuracy",
+      "action accuracy",
+      "official pooled span F1",
+      "per-row mean official SLU-F1",
+      "per-row mean exact slot F1",
+      "saves/harms/ties with exact two-sided McNemar p"
+    ],
+    "symmetric_scorer": "slurp-slu-f1-normalized-v1 resolves gold from the SLURP devel split and refuses TRAIN sample ids, so the design rule's symmetric-sign clause is not evaluable on this roster; it is recorded as a deviation, projection v3 is the agreement reading, and the coordinator may register a TRAIN sibling before launch"
+  },
+  "not_authorized": [
+    "no readiness flip: this package leaves both cells held",
+    "no model, tokenizer, encoder, ASR, scorer or server contact",
+    "no paid API spend",
+    "no wire-check stage: FlightRuntime._dispatch_phase_program refuses a native episode whose transport is not the real shared speech renderer",
+    "no coordinate-fit: the native gate fits every request inside the flight",
+    "no second recovery re-registration",
+    "no default-plan edit and no harness-admission entry: the admission entry is written from the sealed verdict, not from this registration"
+  ],
+  "not_claimed": [
+    "no superiority, generalization, paper-scale or held-out claim: TRAIN Fold A is an exposed discovery roster",
+    "nothing about Fold B, DEV-1000 or the test split",
+    "no claim that any particular boundary carried a gain: eight boundaries move together in this cell",
+    "no claim about the Reviewer's output contract, the duplicated task-contract tool message or a cleaning contact; those are B7r, B7c and B7b",
+    "a structural smoke result is never a quality result",
+    "Nothing about task quality from the aborted attempt: its 618 contacted rows were never scored and never read, and no partial read is permitted.",
+    "No claim that the recovery run's realized requests equal the aborted run's: greedy decoding at temperature 0 is not bitwise reproducible across batch compositions, so trajectories may differ row by row. What is pinned is the configuration and the request-construction surface."
+  ],
+  "preparation_base_commit": "ff6685477bc0b94fd5b31d6b65f02ebbea3c2928",
+  "registered_at_utc": "2026-09-17T22:00:00.000000+00:00",
+  "schema": "saea-b7a-ncp-l1-anchor-recovery-v1-protocol-v1",
+  "session": {
+    "attach_only": true,
+    "geometry": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "session_id": "serving-slurp-native-candidate-five-train-a-np4-v1"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/fable-b7a-recovery",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "recovery": {
+    "is_the_one_root_diagnosed_recovery": true,
+    "allowed_by": "preregistration section 10",
+    "aborted_run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V1",
+    "aborted_attempt_id": "attempt-slurp-native-ncp-l1-anchor-train-fold-a-generation-v1",
+    "aborted_flight_commit": "00483f61",
+    "aborted_state": "ABORTED",
+    "aborted_failure_reason": "generation failed during run_phases or seal: NativeEpisodeError: Planner output names no registered action",
+    "aborted_actuals": {
+      "calls": 3278,
+      "repeated_speech_audio_seconds": 8973.15006250008,
+      "rows_contacted": 618,
+      "rows_sealed": 616,
+      "request_fit_receipts": 3278,
+      "official_scoring_jobs": 0,
+      "task_quality_reads": 0
+    },
+    "planner_responses": {
+      "total": 665,
+      "exactly_accept_or_revise": 663,
+      "accept": 615,
+      "revise": 48,
+      "illegal": 2,
+      "illegal_shapes": [
+        {
+          "chars": 6,
+          "sha256": "ec947170824a09f8b502f402ac3ef7eb02b6a4096b54a190836b79d5155e0ed2"
+        },
+        {
+          "chars": 80,
+          "sha256": "0db1d699388e290aeb5ddf7c114d3f90120d70de829ee5a85f0748f7112080e8"
+        }
+      ],
+      "anchor_planner_contacts_with_an_illegal_action": 0,
+      "anchor_planner_contacts": 1085
+    },
+    "fix": {
+      "commit": "2af5955a2c05fd01b3e222332fe09f4b81e40314",
+      "merge": "5bbd54a2",
+      "behaviour": "reproduction.ojw.native_episode._planner_action returns the reserved routing value PLANNER_ACTION_ILLEGAL and the episode graph maps it to the same explicit-accept component an ACCEPT takes. The row is RETAINED: it delivers its committed draft unchanged, contacts no further role, spends no revision, counts toward every budget it consumed, and records disposition planner_action_illegal with the action sha256 and character count.",
+      "tests": [
+        "tests/unit/test_ojw_native_episode.py::test_malformed_planner_action_seals_the_row_instead_of_failing_the_flight",
+        "tests/unit/test_flight_native_episode_dispatch.py::test_an_illegal_planner_token_seals_its_row_and_the_campaign_continues"
+      ],
+      "receipt": "coordination/slurp-b7a-ncp-l1-anchor-recovery-v1/illegal-action-proof-v1.json"
+    },
+    "second_failure_closes_the_cell": true,
+    "verdict_obligation": "the verdict must report the flight's own planner_action_illegal count, and the rows that carry it, as a mandatory diagnostic beside the node-context receipt table"
+  }
+}

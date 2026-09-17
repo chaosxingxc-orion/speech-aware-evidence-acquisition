@@ -334,3 +334,40 @@ above is the contact-free substitute and is stronger per contact.
 
 SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-V1 sealed at study commit ea84dcd5: 24 contacts on four rows (three rows ACCEPT at 5 contacts, one row REVISE then ACCEPT at 9), 5 task-contract tool calls, 24 request-fit receipts all fitting (minimum margin 11,158). Every post-Perception request carried the policy's rendered blocks exactly as designed and one `saea-node-context-policy-v1` receipt row per contact; the revising Solver carried the YOUR PREVIOUS ANSWER and PLANNER DECISION blocks, so the REVISE path of the policy is exercised in flight. The arm was flipped at 00483f61 and flies under ready-first scheduling while B2 v3 waits for the E2d bundle-verifier fix.
 
+## Arm ABORTED 2026-09-17, and its one recovery (coordinator)
+
+`SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V1` (flight commit `00483f61`) **ABORTED** at about
+21:00 UTC on 2026-09-17, after 3,278 contacts over 618 rows and 8,973.150063 repeated speech
+seconds, with `NativeEpisodeError: Planner output names no registered action`. Of its 665 Planner
+responses 663 were exactly `ACCEPT` or `REVISE`; one was a six-character control token and one an
+80-character response (lengths and sha256 values in the recovery note; the bytes are never
+reproduced). `reproduction.ojw.native_episode._planner_action` had no designed behaviour for either
+-- the sealed anchor's own 1,085 Planner contacts never produced one -- so it raised and the
+exception killed the campaign. **No score ran and no partial quality read was taken or is
+permitted.** The run directory is read-only evidence and the flight lock was reconciled by root
+(`coordination/slurp-b7a-ncp-l1-anchor-v1/flight-lock-reconciliation-20260917T203304Z.json`). The
+smoke above could not have caught it: all six of its Planner responses named a registered action.
+
+The fix is **E8c** (commit `2af5955a`, merged `5bbd54a2`): an illegal Planner action is now a
+**retained row disposition** `planner_action_illegal` -- draft delivered, loop stopped, count and
+sha256 recorded -- never a flight failure.
+
+The one root-diagnosed recovery the preregistration section 10 allows is registered separately and
+**does not modify this package**, whose preregistration bytes stay pinned by the sealed root
+decision:
+
+- note [`../2026-09-17-slurp-b7a-ncp-l1-anchor-v1-recovery-v1.md`](../2026-09-17-slurp-b7a-ncp-l1-anchor-v1-recovery-v1.md)
+- plans `../2026-09-17-slurp-b7a-ncp-l1-anchor-v1-recovery-v1/`
+- runs `SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1` / `-FIT-RECOVERY-V1` and
+  `SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-RECOVERY-V1` / `-FIT-RECOVERY-V1`
+- configs `configs/baseline/slurp-native-anchor-ncp-l1-{train-fold-a,smoke-4}-recovery-v1.json`,
+  the matching experiment fragments and
+  `configs/campaign/slurp-native-ncp-l1-anchor-train-fold-a-recovery-v1.json`
+- evidence `SPEECHRL_DATA_DIR/coordination/slurp-b7a-ncp-l1-anchor-recovery-v1/`
+
+Nothing in this package's sections 0-9 changes: the question, the moved factor, the metrics, the
+resampling, the decision rule, the acceptance list and the harness-admission switch shape are the
+recovery's too. Two things are added to post-flight (section 6): the verdict must report the
+flight's own `planner_action_illegal` count, sample ids and action lengths as a diagnostic, and
+those rows are **retained** in every metric, never dropped from the paired read. A second failure
+closes the flight.
