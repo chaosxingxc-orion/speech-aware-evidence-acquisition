@@ -9,6 +9,7 @@ allocation, request history, task prompts, tool execution, or answer scoring.
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
@@ -38,6 +39,28 @@ class NativeEpisodeError(RuntimeError):
     """The bounded role graph cannot produce an explicitly accepted answer."""
 
 
+#: E8c: the routing value :func:`_planner_action` returns instead of raising
+#: when the Planner's own output names no registered action, or is not the
+#: strict action document ``json-action-v1`` requires.  It is a routing
+#: value only: no role is ever asked to emit it, it is refused as a
+#: configured action (:class:`NativeEpisodeActions`, :class:`NativeEpisodeSpec`),
+#: and the graph maps it to the SAME explicit-accept seal an ``ACCEPT``
+#: takes.  One malformed Planner token is a row-level disposition, never a
+#: flight failure: the row is retained, sealed and reported.
+PLANNER_ACTION_ILLEGAL = "__saea_planner_action_illegal__"
+
+#: The ``planner_routes`` disposition and receipt-mark name for that row.
+PLANNER_ACTION_ILLEGAL_DISPOSITION = "planner_action_illegal"
+
+#: The receipt-mark schema the episode state carries once a row took it.
+PLANNER_ACTION_ILLEGAL_SCHEMA = "saea-native-planner-action-illegal-v1"
+
+#: How much of the malformed token the route record keeps.  Beyond this the
+#: token survives only as its sha256: the Planner's output may quote the
+#: draft, which the route record is not a place for.
+PLANNER_ACTION_RECORD_CHARS = 32
+
+
 class RoleInputBuilder(Protocol):
     """Render one role query from a detached snapshot of episode state."""
 
@@ -58,6 +81,9 @@ class NativeEpisodeActions:
             raise ValueError("episode actions must be non-empty strings")
         if len(set(values)) != len(values):
             raise ValueError("episode actions must be distinct")
+        if PLANNER_ACTION_ILLEGAL in values:
+            # E8c: the illegal-output routing value is reserved.
+            raise ValueError("episode actions must not use the reserved illegal action")
 
 
 @dataclass(frozen=True)
@@ -113,6 +139,9 @@ class NativeEpisodeSpec:
             not in {"raise", "deliver-latest-or-abstain"}
         ):
             raise ValueError("finite_completion_policy is invalid")
+        if self.refresh_action == PLANNER_ACTION_ILLEGAL:
+            # E8c: the illegal-output routing value is reserved.
+            raise ValueError("candidate refresh must not use the reserved illegal action")
         if self.planner_output_format not in {"exact-text", "json-action-v1"}:
             raise ValueError("planner_output_format is invalid")
         if not isinstance(self.review_loop_enabled, bool):
@@ -228,32 +257,47 @@ def _planner_action(
     *,
     output_format: str,
     legal: set[str],
-) -> tuple[str, dict[str, str] | None]:
+) -> tuple[str, dict[str, str] | None, str | None]:
+    """Route one Planner output; never fail the flight on the Planner's text.
+
+    E8c.  Returns ``(action, control, illegal_token)``.  For an output the
+    configuration registers, ``action`` is that exact action, ``control`` is
+    the parsed ``json-action-v1`` document (``None`` under ``exact-text``) and
+    ``illegal_token`` is ``None`` -- byte-identical to every route taken
+    before E8c.  For an output that names no registered action, or that is
+    not the strict single-key action document ``json-action-v1`` requires,
+    ``action`` is :data:`PLANNER_ACTION_ILLEGAL`, ``control`` is ``None`` and
+    ``illegal_token`` is the exact text the caller seals by truncation and
+    sha256.  The caller turns that into a row-level disposition: one
+    malformed Planner token ends its own row, not the campaign.
+    """
     if output_format == "exact-text":
         action = output
         control = None
+        token = output
     else:
         def unique_object(pairs):
             document = {}
             for key, value in pairs:
                 if key in document:
-                    raise NativeEpisodeError("Planner JSON action contains a duplicate key")
+                    raise ValueError("Planner JSON action contains a duplicate key")
                 document[key] = value
             return document
 
         try:
             document = json.loads(output, object_pairs_hook=unique_object)
-        except (TypeError, ValueError) as error:
-            raise NativeEpisodeError("Planner output is not strict JSON action control") from error
+        except (TypeError, ValueError):
+            return PLANNER_ACTION_ILLEGAL, None, output
         if not isinstance(document, dict) or set(document) != {"action"}:
-            raise NativeEpisodeError("Planner JSON action must contain exactly action")
+            return PLANNER_ACTION_ILLEGAL, None, output
         action = document["action"]
-        if not isinstance(action, str):
-            raise NativeEpisodeError("Planner JSON action must be a string")
+        if not isinstance(action, str) or not action:
+            return PLANNER_ACTION_ILLEGAL, None, output
         control = {"action": action}
+        token = action
     if action not in legal:
-        raise NativeEpisodeError("Planner output names no registered action")
-    return action, control
+        return PLANNER_ACTION_ILLEGAL, None, token
+    return action, control, None
 
 
 class _ApplyRole(WorkflowComponent):
@@ -314,25 +358,52 @@ class _ApplyRole(WorkflowComponent):
                 legal.add(self._refresh_action)
             if self._planner_actions is not None:
                 legal = set(self._planner_actions)
-            action, control = _planner_action(
+            action, control, illegal_token = _planner_action(
                 output, output_format=self._planner_output_format, legal=legal
             )
             updated["plan"] = output
             if control is not None:
                 updated["planner_control"] = control
+            elif illegal_token is not None:
+                # E8c: an illegal final route must never leave an EARLIER
+                # visit's structured control standing beside it, or the raw
+                # source custody check would bind the wrong route.
+                updated.pop("planner_control", None)
             routes = updated.get("planner_routes")
             if not isinstance(routes, Sequence) or isinstance(
                 routes, (str, bytes)
             ):
                 raise NativeEpisodeError("episode state has invalid Planner routes")
             updated_routes = [copy.deepcopy(route) for route in routes]
-            updated_routes.append(
-                {
-                    "role_visit_index": len(updated_visits) - 1,
-                    "revision_count": int(updated["revision_count"]),
-                    "action": action,
+            record: dict[str, object] = {
+                "role_visit_index": len(updated_visits) - 1,
+                "revision_count": int(updated["revision_count"]),
+                "action": action,
+            }
+            if illegal_token is not None:
+                # E8c: this row's own disposition.  The route keeps at most
+                # PLANNER_ACTION_RECORD_CHARS of the token plus its sha256
+                # over the WHOLE token, so an auditor can bind it to the
+                # Planner visit's response_text_sha256 (identical under
+                # exact-text) without the receipt carrying the text.
+                digest = hashlib.sha256(illegal_token.encode("utf-8")).hexdigest()
+                record["action"] = illegal_token[:PLANNER_ACTION_RECORD_CHARS]
+                record["legal"] = False
+                record["disposition"] = PLANNER_ACTION_ILLEGAL_DISPOSITION
+                record["action_sha256"] = digest
+                record["action_chars"] = len(illegal_token)
+                prior: list[str] = []
+                mark = updated.get(PLANNER_ACTION_ILLEGAL_DISPOSITION)
+                if isinstance(mark, Mapping):
+                    seen = mark.get("action_sha256")
+                    if isinstance(seen, Sequence) and not isinstance(seen, (str, bytes)):
+                        prior = [str(item) for item in seen]
+                updated[PLANNER_ACTION_ILLEGAL_DISPOSITION] = {
+                    "schema": PLANNER_ACTION_ILLEGAL_SCHEMA,
+                    "count": len(prior) + 1,
+                    "action_sha256": [*prior, digest],
                 }
-            )
+            updated_routes.append(record)
             updated["planner_routes"] = updated_routes
             result["action"] = action
         else:
@@ -795,6 +866,18 @@ class NativeEpisodeWorkflow:
                 "${" + planner + ".action} == " + json.dumps(self.spec.actions.accept),
                 accept_id,
             )
+            # E8c: an illegal or unparseable Planner output stops THIS row
+            # exactly as an ACCEPT would -- the committed draft is delivered
+            # unchanged, no further role is contacted and the revision budget
+            # is not spent -- through the very same explicit-accept component.
+            # The truth lives in the route record and the receipt mark
+            # _ApplyRole wrote, not in a separate delivery path.  The
+            # NCP solver:plan-action boundary is reached only on a REVISE, so
+            # it is not on this path at all.
+            router.add_branch(
+                "${" + planner + ".action} == " + json.dumps(PLANNER_ACTION_ILLEGAL),
+                accept_id,
+            )
             if revision == self.spec.max_revisions:
                 exhausted_id = f"exhausted_{revision}"
                 terminal_component: WorkflowComponent
@@ -1013,6 +1096,10 @@ def build_native_episode(
 
 
 __all__ = [
+    "PLANNER_ACTION_ILLEGAL",
+    "PLANNER_ACTION_ILLEGAL_DISPOSITION",
+    "PLANNER_ACTION_ILLEGAL_SCHEMA",
+    "PLANNER_ACTION_RECORD_CHARS",
     "NativeEpisodeActions",
     "NativeEpisodeError",
     "NativeEpisodeNodes",

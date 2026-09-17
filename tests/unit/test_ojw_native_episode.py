@@ -18,6 +18,8 @@ from speech_aware_evidence_acquisition.rails.commit_policies import (
     ParsedSlurpAnswer, SolverSampleVote, commit_plurality_support_v1,
 )
 from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
+    is_illegal_planner_route,
+    validate_native_episode_delivery_receipt,
     validate_solver_group_receipt,
 )
 from speech_aware_evidence_acquisition.reproduction.ojw.native_group_solver import (
@@ -28,6 +30,10 @@ from speech_aware_evidence_acquisition.reproduction.ojw import (
     native_episode as native_episode_module,
 )
 from speech_aware_evidence_acquisition.reproduction.ojw.native_episode import (
+    PLANNER_ACTION_ILLEGAL,
+    PLANNER_ACTION_ILLEGAL_DISPOSITION,
+    PLANNER_ACTION_ILLEGAL_SCHEMA,
+    PLANNER_ACTION_RECORD_CHARS,
     NativeEpisodeActions,
     NativeEpisodeError,
     NativeEpisodeNodes,
@@ -242,6 +248,16 @@ def _episode(
     return workflow, perception_script, seen
 
 
+# E8c.  The two shapes the sealed B7a anchor trace actually carried at the
+# Planner: a six-letter token outside {ACCEPT, REVISE}, and an 80-character
+# response opening on a non-alphabetic character.  Before E8c either one
+# aborted the whole 1,080-row campaign at the row that produced it.
+ILLEGAL_TOKEN = "REJECT"
+ILLEGAL_SENTENCE = (
+    '"' + "the draft already answers the question and no revision is needed"
+).ljust(80, ".")
+
+
 @pytest.fixture(autouse=True)
 def _clear_scripts():
     _ALL_SCRIPTS.clear()
@@ -345,16 +361,31 @@ def test_json_exhausted_revise_delivers_latest_solver_without_extra_generation()
 
 
 @pytest.mark.parametrize(
-    "raw",
+    ("raw", "token"),
     [
-        "REVISE",
-        '{"action":"REVISE","reason":"extra"}',
-        '{"action":"REVISE","action":"ACCEPT"}',
-        '{"action":"UNKNOWN"}',
-        '{"action":"ACQUIRE"}',
+        ("REVISE", "REVISE"),
+        (
+            '{"action":"REVISE","reason":"extra"}',
+            '{"action":"REVISE","reason":"extra"}',
+        ),
+        (
+            '{"action":"REVISE","action":"ACCEPT"}',
+            '{"action":"REVISE","action":"ACCEPT"}',
+        ),
+        ('{"action":"UNKNOWN"}', "UNKNOWN"),
+        ('{"action":"ACQUIRE"}', "ACQUIRE"),
+        ('{"action":42}', '{"action":42}'),
     ],
 )
-def test_json_planner_action_rejects_malformed_extra_duplicate_or_unknown(raw):
+def test_json_planner_action_malformed_extra_duplicate_or_unknown_seals_the_row(
+    raw, token
+):
+    """E8c: the same row-level disposition under ``json-action-v1``.  A
+    document that parses but names no registered action seals the ACTION it
+    named; anything the strict parse refuses seals the raw output.  No
+    structured control survives beside an illegal route, so the raw-source
+    custody check has nothing to bind to the wrong one."""
+
     solver, _ = _node("solver", "solver", ["draft one"], valid=True)
     reviewer, _ = _node("reviewer", "reviewer", ["review one"])
     planner, _ = _node("planner", "planner", [raw])
@@ -365,8 +396,50 @@ def test_json_planner_action_rejects_malformed_extra_duplicate_or_unknown(raw):
         planner_output_format="json-action-v1",
     )
 
-    with pytest.raises(NativeEpisodeError):
-        asyncio.run(workflow.invoke_direct("query", ()))
+    result = asyncio.run(workflow.invoke_direct("query", ()))
+
+    state = result["state"]
+    assert result["delivery"]["actor_output"] == "draft one"
+    assert state["plan"] == raw
+    assert "planner_control" not in state
+    route = state["planner_routes"][-1]
+    assert is_illegal_planner_route(route)
+    assert route["action"] == token[:PLANNER_ACTION_RECORD_CHARS]
+    assert route["action_sha256"] == hashlib.sha256(token.encode("utf-8")).hexdigest()
+    assert state[PLANNER_ACTION_ILLEGAL_DISPOSITION]["count"] == 1
+    assert validate_native_episode_delivery_receipt(
+        state, error_type=NativeEpisodeError
+    ).kind == "accepted"
+
+
+def test_an_illegal_json_route_clears_an_earlier_visit_structured_control():
+    """E8c: a legal REVISE leaves ``planner_control`` behind; the illegal
+    route that follows must not inherit it, or the receipt would claim the
+    previous visit's parsed action as this row's final control."""
+
+    solver, _ = _node("solver", "solver", ["draft one", "draft two"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["review one", "review two"])
+    planner, _ = _node(
+        "planner", "planner", ['{"action":"REVISE"}', '{"action":"REJECT"}']
+    )
+    workflow, _, _ = _episode(
+        solver=solver,
+        reviewer=reviewer,
+        planner=planner,
+        max_revisions=1,
+        planner_output_format="json-action-v1",
+    )
+
+    state = asyncio.run(workflow.invoke_direct("query", ()))["state"]
+
+    assert state["planner_routes"][0] == {
+        "role_visit_index": 3, "revision_count": 0, "action": "REVISE",
+    }
+    assert "planner_control" not in state
+    assert state["planner_routes"][-1]["action"] == "REJECT"
+    assert validate_native_episode_delivery_receipt(
+        state, error_type=NativeEpisodeError
+    ).kind == "accepted"
 
 
 def test_revise_runs_solver_and_review_again_before_acceptance():
@@ -440,15 +513,132 @@ def test_acquire_routes_to_configured_analytical_role_then_revises():
     assert second_solver_state["acquisition"] == "acquired fact"
 
 
-@pytest.mark.parametrize("plan", [" ACCEPT", "accept", "UNKNOWN"])
-def test_malformed_planner_action_never_delivers(plan):
+@pytest.mark.parametrize(
+    "plan", [" ACCEPT", "accept", "UNKNOWN", ILLEGAL_TOKEN, ILLEGAL_SENTENCE]
+)
+def test_malformed_planner_action_seals_the_row_instead_of_failing_the_flight(plan):
+    """E8c.  A Planner output that names no registered action is a ROW-LEVEL
+    disposition: the committed draft is delivered unchanged through the same
+    explicit-accept seal an ACCEPT takes, no further role is contacted, the
+    revision budget is not spent, and the route plus the receipt mark say so
+    with at most 32 characters of the token and its sha256."""
+
+    solver, solver_script = _node("solver", "solver", ["draft one"], valid=True)
+    reviewer, reviewer_script = _node("reviewer", "reviewer", ["review one"])
+    planner, planner_script = _node("planner", "planner", [plan])
+    workflow, perception_script, _ = _episode(
+        solver=solver, reviewer=reviewer, planner=planner
+    )
+
+    result = asyncio.run(workflow.invoke_direct("query", ()))
+
+    state = result["state"]
+    digest = hashlib.sha256(plan.encode("utf-8")).hexdigest()
+    assert result["delivery"]["actor_output"] == "draft one"
+    assert state["accepted_solver_receipt"] == _execution_receipt(
+        text="draft one", contact_id="solver-contact-1", serial=2
+    )
+    assert "terminal_disposition" not in state
+    assert state["revision_count"] == 0
+    assert [visit["stage"] for visit in state["role_visits"]] == [
+        "perception", "solver", "review", "planner",
+    ]
+    assert [len(script.requests) for script in (
+        perception_script, solver_script, reviewer_script, planner_script
+    )] == [1, 1, 1, 1]
+    assert state["planner_routes"] == [
+        {
+            "role_visit_index": 3,
+            "revision_count": 0,
+            "action": plan[:PLANNER_ACTION_RECORD_CHARS],
+            "legal": False,
+            "disposition": PLANNER_ACTION_ILLEGAL_DISPOSITION,
+            "action_sha256": digest,
+            "action_chars": len(plan),
+        },
+    ]
+    assert len(state["planner_routes"][0]["action"]) <= PLANNER_ACTION_RECORD_CHARS
+    assert is_illegal_planner_route(state["planner_routes"][0])
+    assert state[PLANNER_ACTION_ILLEGAL_DISPOSITION] == {
+        "schema": PLANNER_ACTION_ILLEGAL_SCHEMA,
+        "count": 1,
+        "action_sha256": [digest],
+    }
+    # Under exact-text the sealed sha256 IS the Planner visit's own response
+    # text hash, so the mark is bound to that actual contact.
+    assert digest == state["role_visits"][3]["execution_receipt"]["final_contact"][
+        "response_text_sha256"
+    ]
+    assert validate_native_episode_delivery_receipt(
+        state, error_type=NativeEpisodeError
+    ).kind == "accepted"
+
+
+def test_an_eighty_character_planner_sentence_keeps_only_its_first_32_characters():
+    """E8c (b): the truncation is what keeps draft text out of the record."""
+
     solver, _ = _node("solver", "solver", ["draft one"], valid=True)
     reviewer, _ = _node("reviewer", "reviewer", ["review one"])
-    planner, _ = _node("planner", "planner", [plan])
+    planner, _ = _node("planner", "planner", [ILLEGAL_SENTENCE])
     workflow, _, _ = _episode(solver=solver, reviewer=reviewer, planner=planner)
 
-    with pytest.raises(NativeEpisodeError, match="registered action"):
-        asyncio.run(workflow.invoke_direct("query", ()))
+    route = asyncio.run(workflow.invoke_direct("query", ()))["state"]["planner_routes"][-1]
+
+    assert len(ILLEGAL_SENTENCE) == 80
+    assert not ILLEGAL_SENTENCE[0].isalpha()
+    assert route["action_chars"] == 80
+    assert len(route["action"]) == 32
+    assert route["action"] == ILLEGAL_SENTENCE[:32]
+    assert ILLEGAL_SENTENCE[32:] not in json.dumps(route)
+
+
+def test_an_earlier_legal_route_stays_byte_identical_beside_an_illegal_one():
+    """E8c (c): E8c adds keys to the ILLEGAL route only. A route the episode
+    actually took as ACCEPT or REVISE records exactly the three keys it
+    recorded before E8c, and the illegal route that follows spends no
+    revision of its own."""
+
+    solver, _ = _node("solver", "solver", ["draft one", "draft two"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["review one", "review two"])
+    planner, _ = _node("planner", "planner", ["REVISE", ILLEGAL_TOKEN])
+    workflow, _, _ = _episode(
+        solver=solver, reviewer=reviewer, planner=planner, max_revisions=1
+    )
+
+    state = asyncio.run(workflow.invoke_direct("query", ()))["state"]
+
+    assert state["planner_routes"][0] == {
+        "role_visit_index": 3, "revision_count": 0, "action": "REVISE",
+    }
+    assert set(state["planner_routes"][1]) == {
+        "role_visit_index", "revision_count", "action",
+        "legal", "disposition", "action_sha256", "action_chars",
+    }
+    assert state["planner_routes"][1]["revision_count"] == 1
+    # The REVISE spent the one revision; the illegal token spent none.
+    assert state["revision_count"] == 1
+    assert state["accepted_solver_receipt"] == _execution_receipt(
+        text="draft two", contact_id="solver-contact-2", serial=5
+    )
+
+
+def test_the_reserved_illegal_routing_value_is_not_a_configurable_action():
+    """E8c: the sentinel can never collide with a configured action."""
+
+    with pytest.raises(ValueError, match="reserved illegal action"):
+        NativeEpisodeActions(
+            accept=PLANNER_ACTION_ILLEGAL, revise="REVISE", acquire="ACQUIRE"
+        )
+    with pytest.raises(ValueError, match="reserved illegal action"):
+        NativeEpisodeSpec(
+            episode_id="synthetic-episode",
+            max_revisions=1,
+            actions=NativeEpisodeActions(
+                accept="ACCEPT", revise="REVISE", acquire="ACQUIRE"
+            ),
+            refresh_action=PLANNER_ACTION_ILLEGAL,
+            max_candidate_refreshes=1,
+        )
 
 
 def test_exhausted_revision_and_invalid_solver_never_deliver():
@@ -814,15 +1004,22 @@ def test_refresh_after_final_revision_delivers_only_latest_solver_under_explicit
 
 
 def test_unconfigured_refresh_action_never_revisits_perception():
+    """An unconfigured refresh action is not a registered action, so (E8c) it
+    seals the row as a disposition -- and, the point of this test, Perception
+    is still never visited a second time."""
+
     solver, _ = _node("solver", "solver", ["draft one"], valid=True)
     reviewer, _ = _node("reviewer", "reviewer", ["review one"])
     planner, _ = _node("planner", "planner", ["REFRESH_CANDIDATES"])
     workflow, perception_script, _ = _episode(
         solver=solver, reviewer=reviewer, planner=planner,
     )
-    with pytest.raises(NativeEpisodeError, match="registered action"):
-        asyncio.run(workflow.invoke_direct("query", ()))
+    result = asyncio.run(workflow.invoke_direct("query", ()))
     assert len(perception_script.requests) == 1
+    assert result["delivery"]["actor_output"] == "draft one"
+    route = result["state"]["planner_routes"][-1]
+    assert is_illegal_planner_route(route)
+    assert route["action"] == "REFRESH_CANDIDATES"
 
 
 @pytest.mark.parametrize(

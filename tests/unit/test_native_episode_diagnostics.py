@@ -332,6 +332,7 @@ def test_counts_react_contacts_by_role_and_preserves_accepted_solver_custody():
     assert result["planner"] == {
         "route_count": 1,
         "action_counts": {"ACCEPT": 1},
+        "illegal_route_count": 0,
         "revision_count_histogram": {"0": 1},
     }
     assert result["native_tool_events"]["by_axis_and_event"]["analytical"] == {
