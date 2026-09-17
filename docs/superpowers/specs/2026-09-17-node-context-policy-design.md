@@ -570,3 +570,27 @@ own exposure rows registered before the first contact, their own `contracts.Exec
 (`bounded-discovery-probe`, discovery role), their own preregistrations carrying the decision rules of
 section 11 verbatim, and their wire-check, smoke and prompt-fit receipts. No paper-scale claim, no
 Fold B or test read, no reuse of any aborted attempt.
+
+## 15. Coordinator resolutions (Fable 5.1, 2026-09-17, after E8a)
+
+Recorded so the cells are registered against one reading; the owner may override any of them before
+the cell in question registers.
+
+1. **Cell B7a is the eight model-output boundaries at `structured`** (section 3), tool-observation
+   boundaries declared `raw`, no Reviewer producer format. It measures the consumer-side policy alone.
+2. **The Reviewer response format is its own one-factor cell, B7r** (`saea-review-findings-v1`
+   bound on the Reviewer phase on top of B7a's sealed bytes), because it changes what the Reviewer
+   generates, not only what its consumers read.
+3. **The tool-observation rewrite is its own one-factor cell, B7c** (the replayed task-contract
+   observation rendered by reference instead of the 5,424-character echo), on top of B7a's bytes.
+4. **B7b (L2) stays as section 11 defines it**, one cleaning boundary at `planner:review-finding`,
+   on top of B7a's sealed bytes; E8b implements the mechanism.
+5. Order in the GPU queue: after B4a (and B4c if B4a admits), B7a -> B7r -> B7c -> B7b -> B5. Each
+   later cell flies only if its predecessor is not HARMFUL; a NEUTRAL B7a still enters the default
+   plan (section 11); NEUTRAL B7r/B7c/B7b do not unless they lower cost.
+6. The E8a doubts are answered as follows: the registered Reviewer format is the parser's own
+   contract (`parse_review_findings`), not the L2 cleaning schema; `uniqueItems` dropped from the
+   decoding schema is acceptable and the rejection rate is read at B7r's smoke;
+   `scripts/checks/derived_media_confinement_check.py` rewriting its own receipt is a defect filed for
+   repair outside any flight window and the gate is not run while a campaign flies.
+
