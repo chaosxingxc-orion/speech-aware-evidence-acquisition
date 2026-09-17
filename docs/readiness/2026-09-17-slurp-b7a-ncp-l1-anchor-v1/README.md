@@ -329,3 +329,8 @@ above is the contact-free substitute and is stronger per contact.
 5. **No `wire-check` stage**, for the reason in section 8.
 6. **No twin is registered.** The L1 derangement control flies only on a positive CI95.
 7. **Registered hashes are pre-flip.** Section 1; use the re-pin tool of section 2.
+
+## Smoke record (2026-09-17, coordinator)
+
+SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-V1 sealed at study commit ea84dcd5: 24 contacts on four rows (three rows ACCEPT at 5 contacts, one row REVISE then ACCEPT at 9), 5 task-contract tool calls, 24 request-fit receipts all fitting (minimum margin 11,158). Every post-Perception request carried the policy's rendered blocks exactly as designed and one `saea-node-context-policy-v1` receipt row per contact; the revising Solver carried the YOUR PREVIOUS ANSWER and PLANNER DECISION blocks, so the REVISE path of the policy is exercised in flight. The arm was flipped at 00483f61 and flies under ready-first scheduling while B2 v3 waits for the E2d bundle-verifier fix.
+
