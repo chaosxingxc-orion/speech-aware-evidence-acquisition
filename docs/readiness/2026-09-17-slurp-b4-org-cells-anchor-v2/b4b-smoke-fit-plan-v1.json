@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-slot-store-v2-anchor-smoke-4-v2",
-  "composed_config_hash": "4bd106c8b29c4c40baab9998d6d73010accd8b3154531bdaeaf00d535dd66382",
+  "composed_config_hash": "c0572352a9b4758a61654f46d06812819da42d3c7cf9611b24a383882b279661",
   "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realized native request inside the same standalone worker, under the same lease.",
   "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "experiment": "slurp-native-slot-store-v2-anchor-smoke-4-v2",
@@ -23,7 +23,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 176,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "59a119851c3f9f0b3803ee1bc13c9a80f465729533b655e6c95cc5128bf9bedb",
+    "protocol_hash": "f13ba493375d75a524884f771a6c5d9b410425951b15cccf9d59d1fe76f3cd9c",
     "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-SMOKE-4-FIT-V2",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -32,7 +32,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-17-slurp-b4-org-cells-anchor-v2/protocol-registered-v1.json",
-    "sha256": "f6ade582302eec89f3da1781bcbfb161bd70f95bb497849690f07223d5ffb7ba"
+    "sha256": "a8f921814814342f133d4b299b538b2039a22b7ff0bfe1e3ddf310f6f4853426"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The comparators are the sealed dual-store anchor score artifact (primary) and the released direct anchor score artifact (secondary); neither is ever re-flown or re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, the module's own request channel, fit receipts and seal, with no answer, reference or quality interpretation.",
   "root_registration_required": true,

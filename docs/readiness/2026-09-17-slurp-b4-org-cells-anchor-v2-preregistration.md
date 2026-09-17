@@ -72,8 +72,8 @@ Cells B4a and B4b each have a four-row smoke on the four already-exposed TRAIN A
 `de9e9994ea561c55a320e9b53c8a69f8c2cbfd47d9fcc0ee87d824d4631a5ebb`, protocol
 `bb90854a6443df2037d5f1cffaf33c8e837a36df0f9dd50bb2c133573a5e4bc8`) and B4b
 `SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-SMOKE-4-V2` (composed
-`4bd106c8b29c4c40baab9998d6d73010accd8b3154531bdaeaf00d535dd66382`, protocol
-`59a119851c3f9f0b3803ee1bc13c9a80f465729533b655e6c95cc5128bf9bedb`). **Cell B4c has no smoke of its
+`c0572352a9b4758a61654f46d06812819da42d3c7cf9611b24a383882b279661`, protocol
+`f13ba493375d75a524884f771a6c5d9b410425951b15cccf9d59d1fe76f3cd9c`). **Cell B4c has no smoke of its
 own**: its knowledge store, Perception retrieval geometry and prepared-supply inputs are cell B4a's,
 so cell B4a's smoke evidence is reusable as B4c's form evidence.
 

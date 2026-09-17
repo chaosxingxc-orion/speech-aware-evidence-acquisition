@@ -152,8 +152,8 @@
       "smoke": {
         "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-smoke-4-generation-v2",
         "cell": "slurp-native-slot-store-v2-anchor-smoke-4-v2",
-        "composed_config_hash": "4bd106c8b29c4c40baab9998d6d73010accd8b3154531bdaeaf00d535dd66382",
-        "execution_plan_protocol_hash": "59a119851c3f9f0b3803ee1bc13c9a80f465729533b655e6c95cc5128bf9bedb",
+        "composed_config_hash": "c0572352a9b4758a61654f46d06812819da42d3c7cf9611b24a383882b279661",
+        "execution_plan_protocol_hash": "f13ba493375d75a524884f771a6c5d9b410425951b15cccf9d59d1fe76f3cd9c",
         "fit_attempt_id": "attempt-slurp-native-slot-store-v2-anchor-smoke-4-fit-v2",
         "fit_run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-SMOKE-4-FIT-V2",
         "prepared_phase_supply": {
