@@ -51,6 +51,28 @@ def _receipt(
     return value
 
 
+#: E8c: the ``planner_routes`` disposition a row takes when the Planner
+#: named no registered action.  Mirrors
+#: ``reproduction.ojw.native_episode.PLANNER_ACTION_ILLEGAL_DISPOSITION``;
+#: this module keeps no runtime import, so the name is restated here.
+PLANNER_ACTION_ILLEGAL_DISPOSITION = "planner_action_illegal"
+
+
+def is_illegal_planner_route(route: object) -> bool:
+    """Is this route the E8c row-level illegal-Planner-output disposition?
+
+    Such a route seals its row through the same explicit acceptance an
+    ``ACCEPT`` takes -- the committed draft, unchanged -- so its ``action``
+    is the truncated malformed token and is deliberately NOT one of the
+    configured actions.
+    """
+    return (
+        isinstance(route, Mapping)
+        and route.get("legal") is False
+        and route.get("disposition") == PLANNER_ACTION_ILLEGAL_DISPOSITION
+    )
+
+
 def _validate_planner_control(receipt, visits, routes, *, error_type):
     raw = receipt.get("plan")
     control = receipt.get("planner_control")
@@ -285,7 +307,14 @@ def validate_native_candidate_refresh_receipt(
         action = route.get("action")
         if revision == len(routes) - 1:
             delivery = validate_native_episode_delivery_receipt(receipt, error_type=error_type)
-            if delivery.kind == "accepted" and action != accept_action:
+            if (
+                delivery.kind == "accepted"
+                and action != accept_action
+                # E8c: an illegal Planner output ends the row through the
+                # same explicit acceptance, so the final route is the
+                # disposition rather than the configured accept action.
+                and not is_illegal_planner_route(route)
+            ):
                 _raise(error_type, "candidate refresh accepted delivery has no final acceptance")
             if delivery.kind == "terminal" and revision != max_revisions:
                 _raise(error_type, "candidate refresh terminated before the revision allowance")
@@ -603,6 +632,7 @@ def validate_solver_group_receipt(
 
 
 __all__ = [
+    "PLANNER_ACTION_ILLEGAL_DISPOSITION", "is_illegal_planner_route",
     "NativeEpisodeDelivery", "validate_native_episode_delivery_receipt",
     "validate_native_candidate_refresh_receipt", "validate_native_episode_terminal_policy",
     "validate_native_episode_finite_path", "validate_solver_group_receipt",

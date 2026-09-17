@@ -3,10 +3,13 @@
 import copy
 import hashlib
 import json
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 
+from speech_aware_evidence_acquisition.core import scorers as _scorers  # noqa: F401
+from speech_aware_evidence_acquisition.core.base import SCORERS
 from speech_aware_evidence_acquisition.core.bundle import BundleError
 from speech_aware_evidence_acquisition.core.bundle.outputs import (
     _verify_outputs,
@@ -25,8 +28,19 @@ from speech_aware_evidence_acquisition.rails.phase_review import (
     build_review_for_phase,
 )
 from speech_aware_evidence_acquisition.rails.phase_runner import run_continuous_program
+from speech_aware_evidence_acquisition.reproduction import slurp_official_eval as soe
+from speech_aware_evidence_acquisition.reproduction.slurp_scoring import SlotEntity
 
 from test_native_episode_runner import _ActualEpisodeHarness
+from test_slurp_legal_label_projection_v2 import (
+    _PAIRING,
+    _PRIOR,
+    _FakeIntentProfile,
+    _FakeOntology,
+    _FakeSchema,
+    _gold,
+    _official_result,
+)
 from test_native_episode_runner_grouped_solver import (
     ANSWERS,
     COMMIT,
@@ -511,3 +525,250 @@ def test_grouped_solver_seals_a_row_the_bundle_verifier_accepts(tmp_path, monkey
         _verify_outputs(
             forged_raw, frozenset({row["sample_id"]}), row["carrier_lock_key"], row["arm"],
         )
+
+
+# ---------------------------------------------------------------------------
+# E8c: one malformed Planner token is a row, not a campaign.
+# ---------------------------------------------------------------------------
+
+E8C_ACCEPT_ID = "slurp:devel:000001:rec-a"
+E8C_ILLEGAL_ID = "slurp:devel:000002:rec-b"
+#: The six-letter token the sealed B7a anchor trace actually carried.
+E8C_ILLEGAL_TOKEN = "REJECT"
+E8C_DRAFTS = {
+    E8C_ACCEPT_ID: json.dumps(
+        {
+            "scenario": "recommendation",
+            "action": "locations",
+            "entities": [{"type": "place_name", "filler": "berlin"}],
+        },
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ),
+    E8C_ILLEGAL_ID: json.dumps(
+        {
+            "scenario": "alarm",
+            "action": "set",
+            "entities": [{"type": "time", "filler": "seven"}],
+        },
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ),
+}
+
+
+def test_an_illegal_planner_token_seals_its_row_and_the_campaign_continues(
+    tmp_path, monkeypatch
+):
+    """E8c.  Cell B7a's 1,080-row arm aborted at 618 rows because ONE Planner
+    response was the token ``REJECT`` instead of ``ACCEPT``/``REVISE``: the
+    harness raised, and the whole campaign died with it.
+
+    Here the same token arrives on the second sample of a real two-row
+    dispatch.  The row is RETAINED: its committed draft is delivered
+    unchanged, its receipt carries the ``planner_action_illegal`` count and
+    the token's sha256 (never the token beyond 32 characters), the campaign
+    runs the row to its seal and keeps its contact accounting, the bundle
+    verifier accepts the sealed row, and the registered SLURP official scorer
+    scores it exactly like the accepted row beside it.
+    """
+
+    max_contacts = 7  # perception + (solver, reviewer, planner) * 2
+    harness = _ActualEpisodeHarness(
+        tmp_path,
+        sample_count=2,
+        max_revisions=1,
+        max_contacts=max_contacts,
+        planner_actions=("ACCEPT", "ACCEPT"),
+        arm="speech-feature-query",
+        sample_ids=(E8C_ACCEPT_ID, E8C_ILLEGAL_ID),
+    )
+
+    def output(key):
+        sample_id, phase, visit, _turn = key
+        if phase == "solver":
+            return E8C_DRAFTS[sample_id]
+        if phase == "planner":
+            return "ACCEPT" if sample_id == E8C_ACCEPT_ID else E8C_ILLEGAL_TOKEN
+        return f"{phase}-analysis:{sample_id}:visit:{visit}"
+
+    harness._output = output
+    values = {
+        "native_episode": {
+            "schema": "saea-native-episode-config-v1",
+            "episode_id": harness.config.episode_id,
+            "max_revisions": 1,
+            "actions": dict(zip(("accept", "revise", "acquire"), harness.config.actions)),
+            "roles": {
+                role.role_kind: {
+                    "phase_id": role.phase_id,
+                    "max_iterations": role.max_iterations,
+                }
+                for role in harness.config.roles
+            },
+        },
+        "native_contact_fit": {
+            "run_id": "SAEA-NATIVE-ILLEGAL-PLANNER-FIT",
+            "attempt_id": "attempt-native-illegal-planner-fit",
+            "contact_cap": 8 * max_contacts,
+        },
+    }
+    runtime = object.__new__(FlightRuntime)
+    runtime._composed = SimpleNamespace(values=values)
+    runtime._model = runtime._dataset = runtime._baseline = {}
+    runtime._adapter = harness.adapter
+    runtime._data_root = harness.world.data_root
+    runtime._split_id = "all"
+    runtime._transport = harness.transport
+    runtime._arm = lambda: harness.client.arm
+    runtime._plan = harness.plan
+    runtime._phase_program_material = {
+        "knowledge_snapshot": _knowledge_snapshot(),
+        "speech_packet_bindings": harness.speech_bindings,
+        "material_for_phase": harness.material_for_phase,
+        "trace_sink": harness.trace,
+    }
+    runtime._continuous_phase_runner = run_continuous_program
+    runtime._phase_planner_specs = lambda _policy: {}
+    runtime._phase_decoding_params = lambda: {"temperature": 0, "max_tokens": 64}
+    runtime._fit_base_plan = lambda plan: plan
+    runtime._build_phase_tool_dispatcher = lambda *args, **kwargs: None
+
+    def capacity_identity_only(request):
+        harness.request_gate(request)
+        capacity_identity_only.receipts.append({"capacity_verified": False})
+
+    capacity_identity_only.receipts = []
+    monkeypatch.setattr(
+        flight_module, "default_phase_program", lambda _policy: harness.program
+    )
+    monkeypatch.setattr(
+        preparation_fit,
+        "build_native_contact_fit_gate",
+        lambda *_args: capacity_identity_only,
+    )
+    try:
+        rows, contacts, _kind, _dispatch, _phases = runtime._dispatch_phase_program(
+            harness.client, harness.plan, harness.program.program_id,
+        )
+    finally:
+        closed = harness.close()
+
+    # (1) The campaign ran BOTH rows, and neither row spent a revision.
+    assert contacts == closed["request_count"] == 8  # 4 contacts each, no revision
+    by_id = {row["sample_id"]: row for row in rows}
+    assert set(by_id) == {E8C_ACCEPT_ID, E8C_ILLEGAL_ID}
+
+    accepted_receipt = by_id[E8C_ACCEPT_ID]["native_episode_receipt"]
+    assert accepted_receipt["planner_routes"] == [
+        {"role_visit_index": 3, "revision_count": 0, "action": "ACCEPT"}
+    ]
+    assert "planner_action_illegal" not in accepted_receipt
+
+    # (2) The illegal row's own disposition, with the token's sha256 and no
+    # more than 32 characters of the token itself.
+    digest = hashlib.sha256(E8C_ILLEGAL_TOKEN.encode("utf-8")).hexdigest()
+    illegal_receipt = by_id[E8C_ILLEGAL_ID]["native_episode_receipt"]
+    assert illegal_receipt["planner_routes"] == [
+        {
+            "role_visit_index": 3,
+            "revision_count": 0,
+            "action": E8C_ILLEGAL_TOKEN,
+            "legal": False,
+            "disposition": "planner_action_illegal",
+            "action_sha256": digest,
+            "action_chars": len(E8C_ILLEGAL_TOKEN),
+        }
+    ]
+    assert illegal_receipt["planner_action_illegal"] == {
+        "schema": "saea-native-planner-action-illegal-v1",
+        "count": 1,
+        "action_sha256": [digest],
+    }
+    # It still sealed through the ordinary explicit acceptance...
+    assert ":solver:" in illegal_receipt["accepted_solver_receipt"]["final_contact"][
+        "agent_contact_id"
+    ]
+    assert "terminal_disposition" not in illegal_receipt
+    # ...and delivered the committed draft, unchanged.
+    assert by_id[E8C_ILLEGAL_ID]["final_response_text"] == E8C_DRAFTS[E8C_ILLEGAL_ID]
+
+    # (3) The seal is an ordinary row: same shape as the accepted one.
+    runtime._output_rows = rows
+    canonical = {row["sample_id"]: row for row in runtime._canonical_output_rows(harness.client)}
+    assert set(canonical[E8C_ILLEGAL_ID]) == set(canonical[E8C_ACCEPT_ID])
+    for sample_id, row in canonical.items():
+        assert row["text"] == E8C_DRAFTS[sample_id]
+        assert hashlib.sha256(row["text"].encode()).hexdigest() == row["response_text_sha256"]
+
+    # (4) The bundle verifier accepts the sealed rows, against this run's trace.
+    trace_records = {}
+    for line in (
+        (harness.world.run_dir / f"{harness.plan.run_id}.trace.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+    ):
+        document = json.loads(line)
+        trace_records[document["record_id"]] = document["payload"]
+    ordered = [canonical[E8C_ACCEPT_ID], canonical[E8C_ILLEGAL_ID]]
+    raw = "".join(
+        json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n" for row in ordered
+    ).encode("utf-8")
+    verified = _verify_outputs(
+        raw,
+        frozenset(canonical),
+        ordered[0]["carrier_lock_key"],
+        ordered[0]["arm"],
+    )
+    _verify_outputs_trace_binding(verified, trace_records)
+
+    # (5) The registered SLURP official scorer scores the illegal row exactly
+    # like any other: its DELIVERED text is the draft, so it reaches the
+    # official prediction file and the per-sample table with no special case.
+    gold = [
+        _gold(E8C_ACCEPT_ID, "recommendation", "locations", (SlotEntity("place_name", "berlin"),)),
+        _gold(E8C_ILLEGAL_ID, "alarm", "set", (SlotEntity("time", "seven"),)),
+    ]
+    monkeypatch.setattr(
+        soe,
+        "load_slurp_split",
+        lambda lock, root, split_id, *, allow_heldout=False, allow_synthetic=False: gold,
+    )
+    monkeypatch.setattr(soe, "load_slurp_ontology", lambda lock, root: _FakeOntology(_PAIRING))
+    monkeypatch.setattr(
+        soe,
+        "load_slurp_intent_slot_schema",
+        lambda lock, root: _FakeSchema(
+            {intent: _FakeIntentProfile(n) for intent, n in _PRIOR.items()}
+        ),
+    )
+    monkeypatch.setattr(soe, "official_evaluator_root", lambda root: Path("unused"))
+    captured: dict[str, object] = {}
+
+    def _fake_run(gold_path, pred_path, *, evaluator_root, python_executable=None, average="micro"):
+        captured["predictions"] = [
+            json.loads(line)
+            for line in Path(pred_path).read_text(encoding="utf-8").split("\n")
+            if line.strip()
+        ]
+        return _official_result()
+
+    monkeypatch.setattr(soe, "run_official_evaluate", _fake_run)
+    outputs_path = tmp_path / "e8c.outputs.jsonl"
+    outputs_path.write_bytes(raw)
+
+    scored = SCORERS.resolve("slurp-slu-official-projected-v2")(outputs_path, {}, tmp_path)
+
+    predictions = {row["file"]: row for row in captured["predictions"]}
+    assert set(predictions) == {E8C_ACCEPT_ID, E8C_ILLEGAL_ID}
+    assert (predictions[E8C_ILLEGAL_ID]["scenario"], predictions[E8C_ILLEGAL_ID]["action"]) == (
+        "alarm",
+        "set",
+    )
+    assert predictions[E8C_ILLEGAL_ID]["entities"] == [{"type": "time", "filler": "seven"}]
+    per_sample = {row["sample_id"]: row for row in scored["per_sample"]}
+    assert set(per_sample) == {E8C_ACCEPT_ID, E8C_ILLEGAL_ID}
+    assert per_sample[E8C_ILLEGAL_ID]["scenario_action_exact"] == 1.0
+    assert per_sample[E8C_ILLEGAL_ID]["projected"] is False

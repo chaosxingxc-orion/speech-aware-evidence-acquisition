@@ -2728,6 +2728,10 @@ async def _invoke_native_role_episode(
         compact_receipt = {key: receipt[key] for key in (
             "role_visits", "planner_routes", "accepted_solver_receipt", "interrupted_role",
             "abstention_receipt",
+            # E8c: present exactly when a Planner output named no
+            # registered action -- the row is retained and sealed, and
+            # this is the count plus sha256 that says so.
+            "planner_action_illegal",
         ) if key in receipt}
         if not config.review_loop_enabled:
             # Configuration, not failure: record which phases never ran
@@ -2744,7 +2748,12 @@ async def _invoke_native_role_episode(
             compact_receipt["node_context_policy_compilations"] = list(
                 node_context_compilations.values()
             )
-        if config.planner_output_format == "json-action-v1":
+        if config.planner_output_format == "json-action-v1" and "planner_control" in receipt:
+            # E8c: the raw plan is sealed as the SOURCE of the structured
+            # control beside it.  A row whose final Planner output was
+            # illegal has no control (native_episode pops it), and its
+            # malformed text is not custody of anything -- the route
+            # record and the receipt mark carry its sha256 instead.
             compact_receipt.update({
                 key: receipt[key] for key in ("plan", "planner_control") if key in receipt
             })

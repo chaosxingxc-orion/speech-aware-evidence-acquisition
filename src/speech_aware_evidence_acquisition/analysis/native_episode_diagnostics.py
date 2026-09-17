@@ -14,7 +14,10 @@ from typing import Any
 from ..rails.consumption import ConsumptionTrace
 from ..rails.errors import RailsError
 from ..rails.hashing import content_hash
-from ..rails.native_episode_receipt import validate_native_episode_delivery_receipt
+from ..rails.native_episode_receipt import (
+    is_illegal_planner_route,
+    validate_native_episode_delivery_receipt,
+)
 from .completion_budget import CompletionBudgetError, analyze_completion_metadata
 
 
@@ -398,6 +401,7 @@ def analyze_verified_native_episode_statistics(
     final_completions: list[Mapping[str, object]] = []
     consumptions: list[Mapping[str, object]] = []
     action_counts: Counter[str] = Counter()
+    illegal_routes = 0
     revision_counts: Counter[int] = Counter()
     terminal_actions: Counter[str] = Counter()
     terminal_revisions: Counter[int] = Counter()
@@ -547,11 +551,19 @@ def analyze_verified_native_episode_statistics(
                 raise NativeEpisodeDiagnosticError(
                     f"Planner route {sample_id!r}[{index}] is malformed"
                 )
-            ordered_routes.append({
+            ordered_route: dict[str, object] = {
                 "role_visit_index": visit_index,
                 "revision_count": revision,
                 "action": action,
-            })
+            }
+            if is_illegal_planner_route(route):
+                # E8c: a RETAINED row whose Planner named no registered
+                # action. Its "action" is the truncated malformed token,
+                # so a reader must not take it for a configured action.
+                ordered_route["legal"] = False
+                ordered_route["disposition"] = route["disposition"]
+                illegal_routes += 1
+            ordered_routes.append(ordered_route)
             action_counts[action] += 1
             revision_counts[revision] += 1
 
@@ -749,6 +761,9 @@ def analyze_verified_native_episode_statistics(
         "planner": {
             "route_count": sum(action_counts.values()),
             "action_counts": dict(sorted(action_counts.items())),
+            # E8c: how many of those routes are the row-level
+            # illegal-Planner-output disposition rather than an action.
+            "illegal_route_count": illegal_routes,
             "revision_count_histogram": {
                 str(key): value for key, value in sorted(revision_counts.items())
             },

@@ -109,7 +109,9 @@ Deterministic, zero model contacts. For a boundary at L1:
      policy that silently reproduces that is a defect, not a policy. `FALLBACK-OMIT` stays
      implementable and is not admitted for any SLURP boundary without its own cell.
    - `FALLBACK-REFUSE` — fail the row. Reserved for boundaries where a malformed upstream makes the
-     episode meaningless; today only `plan-action`, where the harness already refuses.
+     episode meaningless; today only `plan-action`. (E8c, section 6: the harness no longer refuses
+     a Planner output that names no registered action — it seals that row — and the boundary is
+     reached only on a `REVISE`, so this level is now effectively unreachable on SLURP.)
 
 `knowledge and evidence blocks are unchanged` at L1, by construction: the policy only replaces
 `agent_state` entries, never `supplied_evidence`, never the speech part, never the system message.
@@ -422,6 +424,46 @@ invalid-answer cases, the containment rule, the one-contact-per-consumer-contact
 11 → 13) and `tests/unit/test_node_context_policy_l2_runner.py` (production render path: the cleaned
 block on the Planner's actual request, the extra metered contact and its trace binding, refusal past
 the ceiling, the evidence-free cleaning request, and L0/L1 byte identity against E8a's pins).
+
+E8c (2026-09-17, cell B7a abort): **a malformed Planner output is a retained row, never a flight
+failure.** B7a's 1,080-row L1 arm generated 3,278 contacts and then died at row 618 because ONE of
+its 665 Planner responses was the six-letter token `REJECT` and one was an 80-character sentence;
+the other 663 were exactly `ACCEPT` or `REVISE`. The sealed anchor's 1,085 Planner responses had
+never produced one, so the harness had no designed behaviour for it and
+`reproduction/ojw/native_episode.py::_planner_action` raised, taking the campaign with it. That is a
+harness defect, not a finding about the policy under test: the program's rule is that malformed rows
+are RETAINED and reported. `_planner_action` now returns the reserved routing value
+`PLANNER_ACTION_ILLEGAL` instead of raising -- for a token outside the configured action set, and
+under `json-action-v1` for any output the strict single-key parse refuses -- and the graph maps that
+value to the SAME explicit-accept component an `ACCEPT` takes. The row delivers its committed draft
+unchanged, contacts no further role, spends no revision, and records the truth in two places: its
+`planner_routes` entry gains `"legal": false`, `"disposition": "planner_action_illegal"`,
+`"action_sha256"` over the whole token and `"action_chars"`, with `"action"` cut to the first 32
+characters (the Planner may quote the draft, which the route record is not a place for), and the
+receipt gains a `planner_action_illegal` mark carrying the count and that sha256. Under `exact-text`
+the sealed sha256 IS that Planner visit's own `response_text_sha256`, so the mark is bound to the
+actual contact. A route the episode really took as `ACCEPT` or `REVISE` keeps exactly its three
+pre-E8c keys, and the anchor's pins in `tests/unit/test_node_context_policy_runner.py`
+(`ANCHOR_REQUEST_SHA256`, `ANCHOR_TRANSITION_SHA256`, `ANCHOR_FRAGMENT_SHA256`) and
+`tests/unit/test_native_episode_runner_grouped_solver.py` are unmoved.
+
+The `solver:plan-action` boundary and its `FALLBACK-REFUSE` are untouched by this, and the reason is
+structural: that boundary renders the Planner's plan into a RE-ENTERED Solver, which happens only
+after a `REVISE`. An illegal Planner output terminates its row at the Planner, so the Solver is
+never re-entered and the boundary is never reached. What E8c does change is the sentence in section
+3 that says the harness "already refuses" a malformed plan: it no longer does -- the row is sealed
+before any boundary rendering, so `FALLBACK-REFUSE` now guards only a plan that IS a registered
+action yet defeats `parse_plan_action`, which under `exact-text` (where a registered action is
+exactly `ACCEPT` or `REVISE`) cannot occur.
+
+Proofs: `tests/unit/test_ojw_native_episode.py` (the episode graph: the disposition, the 32-character
+truncation on the 80-character shape, an earlier legal route's byte identity beside an illegal one,
+the `json-action-v1` cases, the reserved routing value) and
+`tests/unit/test_flight_native_episode_dispatch.py::
+test_an_illegal_planner_token_seals_its_row_and_the_campaign_continues` (a real two-row dispatch:
+the campaign runs both rows and its contact accounting, the bundle verifier accepts the sealed row,
+and the registered SLURP official scorer scores it exactly like the accepted row beside it).
+
 
 ## 7. Contact-ceiling arithmetic for L2
 

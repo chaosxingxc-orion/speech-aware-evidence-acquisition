@@ -1,4 +1,14 @@
-"""Failure-path trace custody for concurrent native OpenJiuwen episodes."""
+"""Failure-path trace custody for concurrent native OpenJiuwen episodes.
+
+E8c moved the Planner's OWN OUTPUT off this path: a token that names no
+registered action is now a row-level disposition, not a flight failure
+(tests/unit/test_ojw_native_episode.py, and the campaign-level proof in
+tests/unit/test_flight_native_episode_dispatch.py).  The failure this
+suite still needs is an EPISODE contract failure: this configuration
+allows no revision at all, so a registered REVISE exhausts the episode at
+the same graph position, after the same four contacts, and the trace
+custody claims below are unchanged.
+"""
 
 from __future__ import annotations
 
@@ -37,13 +47,15 @@ def test_completed_and_failing_native_episode_traces_survive_once(tmp_path):
         if sample_id == failing_id and phase == "solver":
             assert completed_planner_returned.wait(timeout=5.0)
         if sample_id == failing_id and phase == "planner":
-            return "NOT_A_REGISTERED_ACTION"
+            # A REGISTERED action this configuration cannot honour:
+            # max_revisions is 0, so REVISE exhausts the episode.
+            return "REVISE"
         return original_output(key)
 
     harness._output = output
     try:
         with pytest.raises(
-            NativeEpisodeError, match="Planner output names no registered action"
+            NativeEpisodeError, match="episode revision limit is exhausted"
         ):
             harness.run()
     finally:

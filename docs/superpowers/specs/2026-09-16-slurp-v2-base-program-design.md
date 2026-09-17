@@ -117,6 +117,23 @@ restricts a repeat visit to what the trajectory does not already hold and emits 
 transition when that is nothing — the values still reach the revisited request through the
 accumulated `QueryState`, and every first visit is byte-identical.
 
+E8c (2026-09-17, cell B7a abort): **harness robustness — a malformed Planner output is a retained
+row, never a flight failure.** The B7a L1 arm aborted at 618 of 1,080 rows and 3,278 contacts
+because one Planner response was `REJECT` and one was an 80-character sentence instead of `ACCEPT`
+or `REVISE`. Every module in this section shares the one harness, so this applies to every cell: a
+Planner output that names no registered action (and, under `json-action-v1`, any output the strict
+single-key parse refuses) now ends its own row through the same explicit-accept seal an `ACCEPT`
+takes — the committed draft delivered unchanged, no further contact, no revision spent — and is
+reported as a row-level disposition, with `"legal": false` and
+`"disposition": "planner_action_illegal"` on the route, the token cut to 32 characters, its sha256
+beside it, and a `planner_action_illegal` count on the row's `native_episode_receipt`. The row
+counts toward every budget it consumed and is scored by the standard scorer like any other row. A
+cell verdict must read that count: rows sealed this way answered without a Planner decision, and a
+cell whose count is not ~0 is reporting on a different population than its comparator. See
+`docs/superpowers/specs/2026-09-17-node-context-policy-design.md` section 6 for the mechanism and
+the proofs.
+
+
 ## 4. Phases
 
 **Phase 0 (done or in progress, zero contacts):** takeover receipt, owner decision record,
