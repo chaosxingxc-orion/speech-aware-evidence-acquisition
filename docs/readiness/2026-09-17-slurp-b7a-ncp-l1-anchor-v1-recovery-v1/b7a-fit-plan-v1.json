@@ -32,7 +32,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-17-slurp-b7a-ncp-l1-anchor-v1-recovery-v1/protocol-registered-v1.json",
-    "sha256": "35a066146bad616a7c6ed91549f27afab8563987bbd80d73888c952913ab8ba7"
+    "sha256": "4577ed663b61d5e2f6702be5cf0622a6e3f4632d8a6365f36c39bf6fbcafb09f"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The aborted run SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V1 is never scored and never read, in whole or in part. The comparators are the sealed dual-store anchor score artifact (primary) and the released direct anchor score artifact (secondary); neither is ever re-flown or re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, the policy's rendered blocks and its receipt rows, fit receipts and seal, with no answer, reference or quality interpretation.",
   "recovery_of": {

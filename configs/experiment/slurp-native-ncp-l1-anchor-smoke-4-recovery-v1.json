@@ -15,13 +15,20 @@
         "reason": "Registered before contact by the B7a recovery registration agent on the E8c-fixed base (commit 2af5955a, merged 5bbd54a2). It stays held until the coordinator flips it immediately before the standalone-worker smoke launch. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b7a-ncp-l1-anchor-recovery-admission-v1",
+            "relpath": "coordination/slurp-b7a-ncp-l1-anchor-v1/root-admission-recovery-v1.json",
+            "sha256": "165b406ef4a1c2ac91f282128f8d28826413a3c54afb7f44083f39afe241d6fc",
+            "reason": "Decision slurp-b7a-ncp-l1-anchor-recovery-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "Model-free first-phase Perception supply prepared by the B7a recovery registration agent on the E8c-fixed base from the same sealed speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed dual-store anchor used; zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed anchor preparation output block on every row and to the aborted v1 registration's own artifact, so the Perception selection channel does not move in this recovery. Receipt coordination/slurp-b7a-ncp-l1-anchor-recovery-v1/prepared-supply-and-hashes-v1.json.",
             "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-RECOVERY-V1/phase-supply-v1.json",
             "sha256": "a3a07acdc44eb082717684376209624f72e960189ba77e0676c81b49422ca270"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-RECOVERY-V1"
     }

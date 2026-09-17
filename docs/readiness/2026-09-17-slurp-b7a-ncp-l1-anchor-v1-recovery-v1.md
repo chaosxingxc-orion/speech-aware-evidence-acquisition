@@ -182,7 +182,7 @@ plan covers its own worst case at the unchanged program ceiling.
 | experiments | `configs/experiment/slurp-native-ncp-l1-anchor-train-fold-a-recovery-v1.json`, `configs/experiment/slurp-native-ncp-l1-anchor-smoke-4-recovery-v1.json` |
 | campaign plan | `configs/campaign/slurp-native-ncp-l1-anchor-train-fold-a-recovery-v1.json` |
 | composed / protocol (arm) | `03a6c3b596675b64ea4754c004cca6bc0f7898c68fc8461424c751d2b307aa03` / `426e661c24713eac73257710074ac6a2cf96d2c4dc3a2802fccb4030594505de` |
-| composed / protocol (smoke) | `a567286c5b18d00db4661f096d81dac83f48f340ed06e66f780f5dbed6d02d6f` / `fd97da1e89a2adf1949101fca965735f4a45622e57620b7a84de00150033d566` |
+| composed / protocol (smoke) | `097d1b9d445b4a959c2654cf6fb45fd8d2f6e81b29873cd5d7f54a95a01e10d3` / `4585fd4dc66618a9448667fd202d67a12d9426098140f4e153a8ea22da094bb0` |
 | prepared supply (arm) | `prepared/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1/phase-supply-v1.json`, SHA-256 `647f88394479acb2c7898ed7e10a45f248022a73a80e5452137f09d2ca4b6587` |
 | prepared supply (smoke) | `prepared/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-RECOVERY-V1/phase-supply-v1.json`, SHA-256 `a3a07acdc44eb082717684376209624f72e960189ba77e0676c81b49422ca270` |
 | plans | `docs/readiness/2026-09-17-slurp-b7a-ncp-l1-anchor-v1-recovery-v1/` -- four prospective and four `-registered` plans, the recovery protocol document and the recovery analysis recipe |
