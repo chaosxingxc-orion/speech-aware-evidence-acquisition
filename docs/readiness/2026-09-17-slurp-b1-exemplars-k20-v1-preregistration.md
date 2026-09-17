@@ -73,8 +73,8 @@ to a neighbour intent is a B1 outcome, not an A2 result.
 
 | role | identity |
 | --- | --- |
-| treatment | `SAEA-SLURP-NATIVE-EXEMPLARS-K20-TRAIN-FOLD-A-V1` / `attempt-slurp-native-exemplars-k20-train-fold-a-generation-v1`, cell `slurp-native-exemplars-k20-train-fold-a-v1`, composed config `4bc39f445f4d0c4b656a140752a8acaccc0112b84f6c9f20a12514252c4894a7`, protocol `0c8b2f3fcf271d1857eb05378d86270f01c60baf1d8c91f2c2dcf9694ee73a7e` |
-| twin | `SAEA-SLURP-NATIVE-EXEMPLARS-K20-TWIN-TRAIN-FOLD-A-V1` / `attempt-slurp-native-exemplars-k20-twin-train-fold-a-generation-v1`, cell `slurp-native-exemplars-k20-twin-train-fold-a-v1`, composed config `c7536e43adce02b5e1e045994c4d94edc474fadf4710076fe57f35a5d3317e80`, protocol `be56e6356491d2132a306271ab00c2e0158fa4760552846f7bd421c1617ad896` |
+| treatment | `SAEA-SLURP-NATIVE-EXEMPLARS-K20-TRAIN-FOLD-A-V1` / `attempt-slurp-native-exemplars-k20-train-fold-a-generation-v1`, cell `slurp-native-exemplars-k20-train-fold-a-v1`, composed config `39ce13ecae402b31bbd062acb459534b17bf2c57b0041f723304bdd720bdc7f7`, protocol `2ccd722e0319a2daf831bfc01a00aa2cf993ec97a5d7545e9493a97a54cd91c3` |
+| twin | `SAEA-SLURP-NATIVE-EXEMPLARS-K20-TWIN-TRAIN-FOLD-A-V1` / `attempt-slurp-native-exemplars-k20-twin-train-fold-a-generation-v1`, cell `slurp-native-exemplars-k20-twin-train-fold-a-v1`, composed config `94df17ed9d6379f5f0152cad750182b7c95b7b07c9ee89f00c817a85567c7a32`, protocol `4735f4b7949c6b2e587d97e5d4df2050b43a1e0ee466689021bf2b435a84bb4d` |
 | primary comparator | sealed bytes of `SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1` (cell B0), score artifact SHA-256 **PENDING — the coordinator fills it in after B0 finalizes**, run manifest SHA-256 likewise |
 | secondary comparator | sealed bytes of `SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1`, score artifact SHA-256 `7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47`, run manifest `049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152`, official aggregate pooled SLU-F1 48.53, intent 77.96, scenario 84.81, action 79.26, pooled span F1 29.50 |
 

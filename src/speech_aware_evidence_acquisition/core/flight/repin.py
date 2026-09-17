@@ -410,8 +410,29 @@ def _set_preparation_requirement(experiment_path: Path, *, cell_id: str, pin: Ar
                 entry["sha256"] = pin.sha256
                 found = True
     if not found:
+        # A package registered before its supply could be prepared (the B1
+        # exemplar cells, blocked by the E3 router guard) carries an empty
+        # requirements list; the first successful preparation creates the
+        # requirement instead of refusing, so the tool completes such a
+        # registration rather than demanding a hand edit.
+        for cell_doc in document["cells"]:
+            if not isinstance(cell_doc, Mapping) or cell_doc.get("cell_id") != cell_id:
+                continue
+            readiness = cell_doc.get("readiness")
+            if not isinstance(readiness, dict):
+                continue
+            requirements = readiness.setdefault("requirements", [])
+            if isinstance(requirements, list):
+                requirements.append({
+                    "kind": "preparation",
+                    "relpath": pin.relpath,
+                    "sha256": pin.sha256,
+                    "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact.",
+                })
+                found = True
+    if not found:
         raise RepinError(
-            f"cell {cell_id!r} in {experiment_path} has no 'preparation' readiness requirement to re-pin"
+            f"cell {cell_id!r} in {experiment_path} has no readiness block to carry a 'preparation' requirement"
         )
     _write_json(experiment_path, document)
 
@@ -709,8 +730,21 @@ def rewrite_ledger_notes(text: str, *, run_ids: set[str], mapping: Mapping[str, 
 
 
 def apply_mapping_to_ledger(ledger_path: Path, run_ids: set[str], mapping: Mapping[str, str]) -> int:
+    """Rewrite the package's registration hashes across the whole ledger file.
+
+    A registration package writes its composed/protocol/plan hashes into the
+    notes cells of its rows AND into the prose section that introduces them.
+    Both are pre-contact registration text of an unflown package (the caller
+    has already refused if any package row is consumed), so the rewrite covers
+    the entire file; the notes-only pass runs first so its per-row change
+    count is still reported.
+    """
     text = ledger_path.read_text(encoding="utf-8")
     updated, changed = rewrite_ledger_notes(text, run_ids=run_ids, mapping=mapping)
+    for old, new in mapping.items():
+        if old and old != new and old in updated:
+            changed += updated.count(old)
+            updated = updated.replace(old, new)
     if updated != text:
         ledger_path.write_text(updated, encoding="utf-8", newline="\n")
     return changed

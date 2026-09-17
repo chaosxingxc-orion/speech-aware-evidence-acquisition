@@ -1,7 +1,7 @@
 {
   "blocker": "NOT LAUNCHABLE AS COMMITTED. rails.knowledge_stores.build_knowledge_store_supply refuses this configuration with 'candidate, explicit, and scoped supply cannot overlap on phase(s) [solver]' because the slot-contracts store already serves the Solver phase through candidate_supply while the train-exemplars store serves it through phase_supply. The refusal is inherited from the committed E3 fragments and is reproduced by the anchor-based slurp-native-dual-store-train-fold-a-exemplars-k20-v1 as well. Until that guard is resolved by a separately reviewed engineering item, check, prepare-supply, the smoke and the campaign all refuse, and prepared_phase_supply cannot be pinned. Receipt: SPEECHRL_DATA_DIR/coordination/slurp-b1-exemplars-k20-v1/store-router-blocker-v1.json.",
   "cell": "slurp-native-exemplars-k20-train-fold-a-v1",
-  "composed_config_hash": "4bc39f445f4d0c4b656a140752a8acaccc0112b84f6c9f20a12514252c4894a7",
+  "composed_config_hash": "39ce13ecae402b31bbd062acb459534b17bf2c57b0041f723304bdd720bdc7f7",
   "composed_hash_caveat": "The composed config hash and the protocol hash registered here are the values of the fragments exactly as committed: readiness held, requirements empty, prepared_phase_supply absent. core.config.compose hashes the whole merged four-fragment document, so pinning the prepared supply and flipping readiness BOTH change these two hashes, exactly as they did for cell B0. Recompute and re-pin them with the command in section 1 of the runbook before launch.",
   "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan; the campaign acquires its own GenerationLease against the resident session and schedules the one official score at finalize.",
   "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
@@ -26,7 +26,7 @@
     "planned_gpu_hours": 2.0,
     "planned_model_calls": 2160,
     "planned_speech_audio_seconds": 6170,
-    "protocol_hash": "0c8b2f3fcf271d1857eb05378d86270f01c60baf1d8c91f2c2dcf9694ee73a7e",
+    "protocol_hash": "2ccd722e0319a2daf831bfc01a00aa2cf993ec97a5d7545e9493a97a54cd91c3",
     "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-TRAIN-FOLD-A-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",

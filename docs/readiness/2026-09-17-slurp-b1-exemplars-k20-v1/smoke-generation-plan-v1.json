@@ -1,7 +1,7 @@
 {
   "blocker": "NOT LAUNCHABLE AS COMMITTED. rails.knowledge_stores.build_knowledge_store_supply refuses this configuration with 'candidate, explicit, and scoped supply cannot overlap on phase(s) [solver]' because the slot-contracts store already serves the Solver phase through candidate_supply while the train-exemplars store serves it through phase_supply. The refusal is inherited from the committed E3 fragments and is reproduced by the anchor-based slurp-native-dual-store-train-fold-a-exemplars-k20-v1 as well. Until that guard is resolved by a separately reviewed engineering item, check, prepare-supply, the smoke and the campaign all refuse, and prepared_phase_supply cannot be pinned. Receipt: SPEECHRL_DATA_DIR/coordination/slurp-b1-exemplars-k20-v1/store-router-blocker-v1.json.",
   "cell": "slurp-native-exemplars-k20-smoke-4-v1",
-  "composed_config_hash": "9ab567171d195b83e77a571205e1ffb97400684df86d813c06a77b65e76054c3",
+  "composed_config_hash": "e967065c01ec49146bd3d923b3297e28af742698290100c8693fafce97f4dd51",
   "composed_hash_caveat": "The composed config hash and the protocol hash registered here are the values of the fragments exactly as committed: readiness held, requirements empty, prepared_phase_supply absent. core.config.compose hashes the whole merged four-fragment document, so pinning the prepared supply and flipping readiness BOTH change these two hashes, exactly as they did for cell B0. Recompute and re-pin them with the command in section 1 of the runbook before launch.",
   "execution_route": "Shared core.flight.lease_cli worker lease plus a standalone core.flight.cli worker attached to the resident session. No campaign, no scorer.",
   "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
@@ -26,7 +26,7 @@
     "planned_gpu_hours": 0.2,
     "planned_model_calls": 8,
     "planned_speech_audio_seconds": 25,
-    "protocol_hash": "fd818c2ad2c8990a51d5c066c642144c15a83de0a92fad5660353a4c6509b6e6",
+    "protocol_hash": "80673120409682e019c7fe303ca2de85bfe9911a8abd8ab609490fd1ad37e1a2",
     "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",

@@ -517,3 +517,22 @@ def test_rewrite_ledger_notes_touches_only_the_matched_rows_notes_cell():
     assert changed == 1
     assert "RUN-A | no | old-value stays put" in updated
     assert "RUN-B | no | new-value here too" in updated
+
+
+def test_a_missing_preparation_requirement_is_created_on_first_pin(tmp_path):
+    """A package registered with an empty requirements list gets its
+    'preparation' requirement created by the first successful pin."""
+    from speech_aware_evidence_acquisition.core.flight import repin as module
+    exp = tmp_path / "exp.json"
+    exp.write_text(json.dumps({"cells": [{"cell_id": "c", "readiness": {"state": "held", "requirements": []}}]}), encoding="utf-8")
+    pin = module.ArtifactPin(relpath="prepared/X/phase-supply-v1.json", sha256="a" * 64)
+    module._set_preparation_requirement(exp, cell_id="c", pin=pin)
+    doc = json.loads(exp.read_text(encoding="utf-8"))
+    reqs = doc["cells"][0]["readiness"]["requirements"]
+    assert [r["kind"] for r in reqs] == ["preparation"]
+    assert reqs[0]["relpath"] == pin.relpath and reqs[0]["sha256"] == pin.sha256
+    # a second pin updates in place, never duplicates
+    module._set_preparation_requirement(exp, cell_id="c", pin=module.ArtifactPin(relpath="prepared/X/phase-supply-v2.json", sha256="b" * 64))
+    doc = json.loads(exp.read_text(encoding="utf-8"))
+    assert len(doc["cells"][0]["readiness"]["requirements"]) == 1
+    assert doc["cells"][0]["readiness"]["requirements"][0]["sha256"] == "b" * 64
