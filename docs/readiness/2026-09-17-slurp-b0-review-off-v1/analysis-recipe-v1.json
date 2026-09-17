@@ -39,8 +39,8 @@
       "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1",
       "attempt_id": "attempt-slurp-native-review-off-train-fold-a-generation-v1",
       "scores_relpath": "runs/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1/attempt-slurp-native-review-off-train-fold-a-generation-v1/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1.scores.json",
-      "scores_sha256": "PENDING_FIRST_OFFICIAL_SCORE",
-      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "51f37e6c5a78751f2d000ac370cff6f0fff18745cd18d1fc81a2cd145ce960ae",
+      "run_manifest_sha256": "8b6f3f783f1933c4009c46cdc01472e240c547a496f7553c07e5efe301cdfe32",
       "expected_contacts": 2160
     }
   },

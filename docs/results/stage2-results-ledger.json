@@ -3635,6 +3635,18 @@
         "SAEA-SLURP-NATIVE-CANDIDATE-FIVE-TRAIN-FOLD-A-V1",
         "SAEA-SLURP-NATIVE-BROAD-FACTORED-TRAIN-FOLD-A-V1"
       ]
+    },
+    {
+      "date": "2026-09-17",
+      "cell_id": "SLURP-B0-REVIEW-OFF-TRAIN-FOLD-A-V1",
+      "status": "HARMFUL_BY_RULE_WIDTH_FAILURE_REDECISION_REGISTERED",
+      "source": "docs/results/2026-09-17-slurp-b0-review-off-verdict.md",
+      "source_sha256": "a36785b6dca3a7f41a99402c8474ca3b73cea10077f0b6b1abaf99281da34694",
+      "meaning": "Module M0 (Reviewer/Planner loop off) on TRAIN A 1,080 against the sealed anchor: pooled official SLU +0.13 pp CI95 [-1.15, +1.45], intent -0.37 pp CI95 [-1.53, +0.82], 22 saves / 26 harms; against the released direct anchor +14.78 pp SLU. The preregistered intent clause fails because the imported 0.92 pp DEV1000 margin is narrower than the 1.175 pp CI95 half-width this roster yields, so the status is HARMFUL by rule while the loop is shown to change at most 2 of 1,080 delivered intents at 60 % of the contacts and 69 % of the GPU hours. A same-roster own-null replicate with a rule fixed before reading is registered for the re-decision.",
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1",
+        "SAEA-SLURP-NATIVE-REVIEW-OFF-SMOKE-4-V1"
+      ]
     }
   ]
 }
