@@ -159,6 +159,8 @@ direct-anchor release (`docs/results/2026-09-17-slurp-train-a-direct-anchor-rele
 
 Order (owner decision 8, 2026-09-17): B0 -> B0r (own-null re-decision) -> B1 -> B2 -> B4b -> B4a -> B4c only if B4a admits -> B5 -> B5r -> B6; a twin flies only after its arm shows a positive CI95 against the base. B3 (projection v3)
 
+Order update (owner decisions 12-17, 2026-09-17): B1 recovery -> B1 twin only on a positive arm CI95 -> B2 v3 -> B7a -> B4b replicate -> B4a -> B4c only if B4a admits -> B7r -> B7c -> B7b -> B5 -> B5r -> B6; every paired read reports net harmed rows per scenario and flags five or more; a TRAIN sibling of the symmetric scorer is registered and every sealed TRAIN A cell re-read offline.
+
 Outcome 2026-09-17 (B0 and B0r flown): module M0 is HARMFUL under the TRAIN A own null (docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md); the review loop is retained and recorded NEUTRAL in the harness-admission table with the SLURP default plan configs/baseline/slurp-native-dual-store-train-fold-a-default-plan-v1.json; cells B1, B2 and B4 re-register on the anchor as v2 packages (the review-off v1 packages are superseded before contact). Every later cell carries the anchor's nominal 5 contacts per row (B2: 10) at about 3.4 GPU hours (B2: about 5 to 6). The measured own null of this roster and geometry, half-widths pooled SLU 1.1218 pp and intent 1.0051 pp, replaces the imported DEV1000 margins in every later TRAIN A rule. B3 (projection v3) is adopted as the fixed post-processing of every official number (owner decision 7), reported beside the symmetric-normalised number.
 
 Decision rules, fixed before each flight and copied into its preregistration:
