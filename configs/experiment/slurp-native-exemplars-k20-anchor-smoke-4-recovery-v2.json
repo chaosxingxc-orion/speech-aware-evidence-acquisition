@@ -15,13 +15,20 @@
         "reason": "Registered before contact by the B1 recovery registration agent on the E3c-fixed base (rails.controllers.restrict_repeat_visit_supply, commit f2595f4c, merged cfbb5f8b), after run SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-V2 aborted at 2026-09-17T09:52:35Z on the first row whose Planner routed REVISE. This is the one recovery re-registration the preregistration section 11 allows for this run. It stays held: the coordinator pins the root decision receipt and flips the state with scripts/flights/repin_cell.py. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b1-exemplars-k20-anchor-recovery-admission-v1",
+            "relpath": "coordination/slurp-b1-exemplars-k20-anchor-v2/root-admission-recovery-v1.json",
+            "sha256": "94d3ea6d8eba0e98a08d86a1106876f08e513f3014d2cb0dca0a483f09763e32",
+            "reason": "Decision slurp-b1-exemplars-k20-anchor-recovery-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-RECOVERY-V2/phase-supply-v1.json",
             "sha256": "26a4f0167b91d3a1776f56e966fc18d9f0a1d05f8f603e22a1374ff08d003078",
             "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-RECOVERY-V2"
     }
