@@ -13,16 +13,23 @@
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Cell B0r is REGISTERED BEFORE CONTACT and held. The preparation receipt below is the model-free first-phase supply rebuilt on this master for this cell's own composed identity; the coordinator adds the root decision requirement and flips this state. Exclusive attach to serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory.",
+        "reason": "Root (Fable 5.1) admitted cell B0r on 2026-09-17 under owner decision 4 of 2026-09-16 and the own-null family rule; supply re-pinned on the launch commit; exclusive resident attachment and exact realized-request fitting remain mandatory.",
         "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b0-replicate-admission-v1",
+            "relpath": "coordination/slurp-b0-replicate-v1/root-admission-v1.json",
+            "sha256": "02bc988a31aa37aed8254c94757f4cce41f5dd942eddf42048dd97e5fa5949d5",
+            "reason": "Root admission receipt under the data root."
+          },
           {
             "kind": "preparation",
             "reason": "Model-free first-phase supply prepared for cell B0r from the same sealed vectors and knowledge snapshot B0 and the anchor used; zero model, tokenizer or encoder contact. Its output is byte-equal to B0's own prepared selection on all 1,080 rows.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1/phase-supply-v2.json",
-            "sha256": "61a659615e55a2f4845de50969e8a700f23b63366d5a1d88148df6e0563f12e7"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1/phase-supply-v3.json",
+            "sha256": "052acd26f790a4e1af04a0c0a10dcc86bfaede1f208819b11ec53097edb1fccf"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1"
     }
