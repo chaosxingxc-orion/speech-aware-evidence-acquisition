@@ -302,3 +302,65 @@ def test_final_report_policy_is_opt_in_and_requires_a_report_turn():
         load_native_episode_config(values, program())
     values["native_episode"]["roles"]["reviewer"]["max_iterations"] = 3
     assert load_native_episode_config(values, program(ceiling=6)).reserve_final_report
+
+
+# ---------------------------------------------------------------------------
+# E1: review loop off (M0). Reviewer and Planner may declare max_iterations 0
+# only together and only with max_revisions 0; every other shape -- including
+# either role alone at 0 -- stays refused exactly as before.
+# ---------------------------------------------------------------------------
+
+
+def test_review_loop_off_accepts_reviewer_planner_and_revisions_all_zero():
+    values = config()
+    values["native_episode"]["roles"]["reviewer"]["max_iterations"] = 0
+    values["native_episode"]["roles"]["planner"]["max_iterations"] = 0
+
+    parsed = load_native_episode_config(values, program(ceiling=2))
+
+    assert parsed.max_contacts == 2
+    assert parsed.review_loop_enabled is False
+    assert parsed.role("reviewer").max_iterations == 0
+    assert parsed.role("planner").max_iterations == 0
+    assert parsed.role("reviewer").tool_names == ()
+    assert parsed.role("planner").tool_names == ()
+    # Perception and Solver are untouched by the pairing.
+    assert parsed.role("perception").max_iterations == 1
+    assert parsed.role("solver").max_iterations == 1
+
+
+def test_review_loop_enabled_defaults_true_for_the_ordinary_positive_shape():
+    assert load_native_episode_config(config(), program()).review_loop_enabled is True
+
+
+@pytest.mark.parametrize("mutation", [
+    # Reviewer alone at 0, Planner stays positive.
+    lambda v: v["native_episode"]["roles"]["reviewer"].update(max_iterations=0),
+    # Planner alone at 0, Reviewer stays positive.
+    lambda v: v["native_episode"]["roles"]["planner"].update(max_iterations=0),
+    # Both roles at 0 but a nonzero revision allowance left with nothing to
+    # spend it on.
+    lambda v: (
+        v["native_episode"]["roles"]["reviewer"].update(max_iterations=0),
+        v["native_episode"]["roles"]["planner"].update(max_iterations=0),
+        v["native_episode"].update(max_revisions=1),
+    ),
+])
+def test_review_loop_off_refuses_every_partial_shape(mutation):
+    values = config()
+    mutation(values)
+    with pytest.raises(
+        ValueError,
+        match="review loop off requires reviewer 0, planner 0 and max_revisions 0",
+    ):
+        load_native_episode_config(values, program(ceiling=2))
+
+
+def test_review_loop_off_ceiling_is_exactly_two():
+    values = config()
+    values["native_episode"]["roles"]["reviewer"]["max_iterations"] = 0
+    values["native_episode"]["roles"]["planner"]["max_iterations"] = 0
+
+    assert load_native_episode_config(values, program(ceiling=2)).max_contacts == 2
+    with pytest.raises(ValueError, match="ceiling"):
+        load_native_episode_config(values, program(ceiling=3))

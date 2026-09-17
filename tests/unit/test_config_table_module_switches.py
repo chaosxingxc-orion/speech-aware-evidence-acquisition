@@ -549,3 +549,110 @@ def test_the_run_switch_class_is_a_closed_allowlist():
     with pytest.raises(ConfigTableError, match="is dotted"):
         resolve_run_switch_key("run.obs_prefetch_depth")
 
+
+# ---------------------------------------------------------------------------
+# 8. E1 review loop off (M0) -- not expressible as one switch key today
+#
+# The module's own channel (docs/superpowers/specs/2026-09-16-slurp-v2-base-
+# program-design.md section 3, row M0) is native_episode.max_revisions 0 +
+# reviewer/planner max_iterations 0 TOGETHER: three leaves under
+# native_episode that share no common dotted prefix (max_revisions is a
+# direct child; roles.reviewer.max_iterations and roles.planner.max_iterations
+# share only "native_episode.roles", not with max_revisions). switch_key's
+# own shared-prefix walk refuses this by construction -- measured below,
+# not asserted from opinion.
+#
+# It is not a spelling defect fixable by moving the fields around, either.
+# The run class requires a FLAT (undotted) top-level key on a closed
+# allowlist (resolve_run_switch_key rejects any dot on sight), and
+# native_episode is a required, structured block for this program -- there
+# is no flat top-level spelling of "the review loop", and no absent/0
+# default the way obs_prefetch_depth has one, because native_episode itself
+# can never be dropped for a native-role-episode program. None of the four
+# per-phase tables (judges/knowledge_views/observe/toolkits) models episode
+# role-graph iteration counts either; they change what the frozen core
+# observes, is supplied, is judged on, or may call, not how many times an
+# agent role runs. So this module stays a "run"-less, table-less registered
+# switch, like the window hook above: expressible and tested, not yet a
+# harness-admission switch class.
+# ---------------------------------------------------------------------------
+
+
+def test_review_loop_off_switch_moves_three_native_episode_keys_today():
+    """Measured, not asserted. E1 (rails.native_episode_config,
+    reproduction.ojw.native_episode, rails.runner) makes the shape legal and
+    NativeEpisodeConfig.review_loop_enabled the single reliable witness of
+    it, but the two committed baseline fragments below are not one switch
+    key -- this pins exactly what moves, so a future wave that lifts this
+    into a class starts from a known diff, not an opinion."""
+
+    on = _committed_baseline("slurp-native-dual-store-train-fold-a-anchor-v1")
+    off = _committed_baseline("slurp-native-dual-store-train-fold-a-review-off-v1")
+
+    diff = config_key_diff(on, off)
+    assert diff == (
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.contact_cap",
+        "native_contact_fit.run_id",
+        "native_episode.max_revisions",
+        "native_episode.roles.planner.max_iterations",
+        "native_episode.roles.reviewer.max_iterations",
+        "phase_tools.reviewer.allowed_tools",
+        "phase_tools.reviewer.knowledge_views",
+        "phase_tools.reviewer.mode",
+        "phase_tools.reviewer.source_authority_role",
+        "policy",
+        "speech_feature_key_representation_id",
+        "speech_feature_matcher_policy_id",
+        "what_this_is",
+    )
+    with pytest.raises(ConfigTableError, match="unrelated config keys"):
+        switch_key(on, off)
+
+    # Restricted to the native_episode block alone -- the module's actual
+    # mechanism, with the bookkeeping fields (policy id, tool removal,
+    # contact-fit cap, speech-feature identity, what_this_is) set aside --
+    # the three moved leaves still share no common prefix, so even that
+    # narrower view is not one key.
+    episode_diff = config_key_diff(on["native_episode"], off["native_episode"])
+    assert episode_diff == (
+        "max_revisions",
+        "roles.planner.max_iterations",
+        "roles.reviewer.max_iterations",
+    )
+    with pytest.raises(ConfigTableError, match="unrelated config keys"):
+        switch_key(on["native_episode"], off["native_episode"])
+
+    # Not a run-level key either: the mechanism is nested inside a required,
+    # structured block, and resolve_run_switch_key refuses any dotted key by
+    # construction, so there is no flat top-level spelling of this module.
+    with pytest.raises(ConfigTableError, match="is dotted"):
+        resolve_run_switch_key("native_episode.max_revisions")
+    assert "native_episode" not in RUN_LEVEL_SWITCH_KEYS
+    assert "review_loop" not in RUN_LEVEL_SWITCH_KEYS
+
+
+def test_review_loop_off_is_the_review_loop_enabled_property_on_the_loaded_config():
+    """The one thing that DOES cleanly gate the module at the loaded-config
+    level: NativeEpisodeConfig.review_loop_enabled, which E1 exposes as the
+    single reliable witness of the paired shape -- backed by
+    load_native_episode_config's own cross-role validation, which is what
+    makes reading Reviewer's max_iterations alone sufficient."""
+
+    from speech_aware_evidence_acquisition.rails.native_episode_config import (
+        load_native_episode_config,
+    )
+
+    on = _committed_baseline("slurp-native-dual-store-train-fold-a-anchor-v1")
+    off = _committed_baseline("slurp-native-dual-store-train-fold-a-review-off-v1")
+    on_program = default_phase_program(on["policy"])
+    off_program = default_phase_program(off["policy"])
+
+    on_config = load_native_episode_config(on, on_program)
+    off_config = load_native_episode_config(off, off_program)
+
+    assert on_config.review_loop_enabled is True
+    assert off_config.review_loop_enabled is False
+    assert on_program.max_contacts == 11
+    assert off_program.max_contacts == 2
+
