@@ -381,3 +381,23 @@ the tree the manifest reads at finalize.
 8. **No `wire-check` stage** on any cell, for the reason in section 8.
 9. **Registered hashes are pre-pin.** Section 1. The coordinator recomputes after pinning the supply
    and flipping readiness, exactly as B0 did.
+## 10. Superseded before contact
+
+**This package was never flown and is superseded by
+[`../2026-09-17-slurp-b1-exemplars-k20-anchor-v2/README.md`](../2026-09-17-slurp-b1-exemplars-k20-anchor-v2/README.md)**
+(preregistration
+[`../2026-09-17-slurp-b1-exemplars-k20-anchor-v2-preregistration.md`](../2026-09-17-slurp-b1-exemplars-k20-anchor-v2-preregistration.md)),
+which registers the same cell on the sealed dual-store anchor.
+
+Reason: the 2026-09-17 re-decision of module M0 under the TRAIN A own null (owner decision 6; the
+B0r read, `SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-B0-REPLICATE-PAIRED-ANALYSIS-V1/README.md`)
+returned **HARMFUL** -- the intent clause fails on both passes and the SLU clause fails once by
+0.028 pp -- so the Reviewer/Planner review loop is retained and every later cell of the program
+builds on the anchor, not on the review-off base. That is exactly the re-base this package's own
+section 2 step 7 and its preregistration section 2 instructed.
+
+The six exposure rows of this package stay `consumed = no`, each annotated as superseded before
+contact; none of its run or attempt ids may ever be reused. The blocking gate of section 0 was
+closed independently by engineering item E3b (commit `d8d8844b`, merge `29bca551`) and the package's
+supplies were completed by `scripts/flights/repin_cell.py`, so nothing here is left open on
+technical grounds -- only on the base it was built against.
