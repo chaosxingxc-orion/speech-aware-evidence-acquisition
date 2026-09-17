@@ -1,0 +1,5 @@
+# saea-node-context-template-v1 renderer=plan-action
+[header]
+PLANNER DECISION: {action}
+[footer]
+Revisions remaining: {revisions_remaining}. Actions still available to the Planner: {available_actions}.

@@ -264,13 +264,27 @@ RUN_NULL_ARMS: tuple[object, ...] = (None, 0)
 #: spelling, not ``"run.<key>"``.
 NATIVE_EPISODE_TOP_LEVEL_KEY = "native_episode"
 
-#: The closed allowlist of ``episode``-class switch keys. Both are dotted
-#: paths under :data:`NATIVE_EPISODE_TOP_LEVEL_KEY`; admitting a third is a
+#: The closed allowlist of ``episode``-class switch keys. All three are dotted
+#: paths under :data:`NATIVE_EPISODE_TOP_LEVEL_KEY`; admitting a fourth is a
 #: code change with a test, not a receipt edit (see the class docstring
 #: above).
+#:
+#: ``native_episode.context_policy`` (E8a, 2026-09-17,
+#: ``docs/superpowers/specs/2026-09-17-node-context-policy-design.md``
+#: section 5) is the THIRD, admitted by coordinator decision 3 of 2026-09-17.
+#: It belongs here for the same reason the other two do: it is one dotted path
+#: under the already-existing, per-run ``native_episode`` block, it changes the
+#: request the frozen core sees (so the ``run`` class is wrong), and it is a
+#: mode of NONE of the four per-phase tables -- it is not what a phase
+#: observes, is supplied with, is judged by or may call, but how the material
+#: an EARLIER node produced is handled before a LATER node reads it.
+#: The pre-existing optional ``native_episode.role_context`` block is folded
+#: under it (``rails.node_context_binding``); a fragment carrying both is
+#: refused by ``rails.native_episode_config.load_native_episode_config``.
 EPISODE_LEVEL_SWITCH_KEYS = frozenset({
     "native_episode.roles.solver",
     "native_episode.review_loop",
+    "native_episode.context_policy",
 })
 
 #: The top-level key every ``stores``-class switch key names one child of.
@@ -1082,13 +1096,26 @@ def resolve_episode_switch_key(key: str) -> str:
 def is_episode_null_arm(key: str, value: object) -> bool:
     """Whether ``value`` is ``key``'s own OFF form in the ``episode`` class.
 
-    Each admitted key has its own null shape, because the two today mean
+    Each admitted key has its own null shape, because the three today mean
     different things: ``native_episode.roles.solver``'s OFF is the historical
     Solver role (no grouped-sampling fields, or ``samples`` explicitly 1);
     ``native_episode.review_loop``'s OFF is the literal marker ``"off"`` (or
-    its absence from a fragment that never declares the marker at all).
+    its absence from a fragment that never declares the marker at all);
+    ``native_episode.context_policy``'s OFF is level L0 -- the key absent, the
+    literal ``"raw"``, or an object whose effective level is ``raw`` at every
+    boundary (``rails.node_context_binding.is_node_context_null_arm``, which
+    ``load_native_episode_config`` applies too, so an all-raw declaration
+    reaches the runtime as no policy at all and renders the pre-policy bytes).
     """
 
+    if key == "native_episode.context_policy":
+        # Function-local: rails.node_context_binding imports core.base and the
+        # policy module, and this table module is imported by everything.
+        from .node_context_binding import (  # noqa: PLC0415
+            is_node_context_null_arm,
+        )
+
+        return is_node_context_null_arm(value)
     if key == "native_episode.roles.solver":
         if value is None:
             return True

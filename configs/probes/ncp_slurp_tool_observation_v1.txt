@@ -1,0 +1,3 @@
+# saea-node-context-template-v1 renderer=tool-observation
+[reference]
+The task contract returned by {tool_id}, verbatim and in full, is the system message of this request. It is referenced here instead of repeated.

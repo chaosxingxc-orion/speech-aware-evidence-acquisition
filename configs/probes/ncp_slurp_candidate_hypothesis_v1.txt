@@ -1,0 +1,16 @@
+# saea-node-context-template-v1 renderer=candidate-hypothesis
+[header]
+PERCEPTION CANDIDATES ({count} of at most {max_candidates}, in the order Perception produced them)
+[item]
+  {position}. {intent_id} - {distinction}
+[items_empty]
+  (none produced)
+[footer]
+These are hypotheses to choose between, not evidence that anything was said.
+[header_unparsed]
+PERCEPTION CANDIDATES (UNPARSED)
+[unparsed]
+UNPARSED PERCEPTION OUTPUT, VERBATIM:
+{source_content}
+[omitted]
+PERCEPTION CANDIDATES omitted: {reason}

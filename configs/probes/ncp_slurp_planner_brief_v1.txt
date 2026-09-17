@@ -1,0 +1,25 @@
+# saea-node-context-template-v1 renderer=planner-brief
+[header]
+DECISION BRIEF (revision {revision_index} of {max_revisions}; you may answer {available_actions})
+[body]
+  draft scenario: {scenario}
+  draft action:   {action}
+  draft intent:   {intent_id}
+[item]
+  draft entity:   {entity_type}={entity_filler}
+[items_empty]
+  draft entities: (none declared)
+[checks]
+HARNESS CHECKS (deterministic, computed from the material above; not a judgment)
+  - draft parses as the task answer schema: {check_parses}
+  - selected intent is one of the Perception candidates: {check_candidate_member}
+  - every entity type is in the legal inventory: {check_entity_types}
+[footer]
+You choose an action. You do not write the answer.
+[header_unparsed]
+DECISION BRIEF (revision {revision_index} of {max_revisions}; you may answer {available_actions})
+[unparsed]
+UNPARSED DRAFT, VERBATIM:
+{source_content}
+[omitted]
+DECISION BRIEF omitted: {reason}

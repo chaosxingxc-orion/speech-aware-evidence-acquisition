@@ -316,6 +316,48 @@ the trace, and the receipt binds the rendered text to every sample's `response_t
 this design E2c is not a special case; it is one boundary entry, and it is the first one because its
 parser, its template and its malformed rule are already written, tested and merged.
 
+**E8a as built (2026-09-17, branch `fable/e8a`), and how it reconciles with E2c.** E2c and the NCP
+stay two seams, and they compose without a special case, because they answer different questions.
+E2c is PRODUCER-side: `rails/runner.py::settle` seals ONE `phase:<solver>` state per grouped visit
+through `seal_phase_response_state`'s `state_content` / `raw_response_text` seam, holding the commit
+policy's aggregated answer re-rendered by `_default_render_answer`. The NCP is CONSUMER-side: what
+each downstream node reads at the `current-draft` boundary. Because the committed state has exactly
+the wire form a samples-1 Solver state has — canonical
+`{"scenario","action","entities"}` JSON — L1 parses it under the same closed draft contract and
+renders it through the same template, with `parse_status: "parsed"` and no fallback. The proof is
+`tests/unit/test_node_context_policy.py::
+test_the_committed_grouped_solver_draft_parses_under_l1_by_construction`. Folding the two into one
+object would have made the commit policy a consumer-side concern and the N raw samples visible to a
+boundary that must never see them; they stay separate.
+
+Four things E8a builds differently from the drafts above, each deliberate:
+
+1. **The policy is a per-state TRANSFORM, never a re-selection.** It keeps every state of the
+   already-selected history, in order, and replaces only the content of the ones whose
+   `(consumer_role_kind, semantic_class)` is a declared, non-`raw` boundary. That is what makes L0's
+   byte identity true by construction rather than by inspection, and it is why the NCP composes with
+   `history_scope`'s own selection instead of competing with it.
+2. **The Planner's brief is two adjacent blocks, not one merged block.** Merging `B-DRAFT-PLAN` and
+   `B-REVIEW-PLAN` would drop a state, which rule 1 forbids. `probes/ncp_slurp_planner_brief_v1.txt`
+   therefore carries the `DECISION BRIEF` header, the draft fields and the `HARNESS CHECKS` block on
+   the draft state, and `probes/ncp_slurp_review_finding_v1.txt` renders the review on the review
+   state immediately after it. The Planner reads the same three things in the same order.
+3. **The tool-observation boundary is confined to REPLAYS.** A Reviewer's own live tool chain is
+   replayed inside its framework contract and verified byte-for-byte against the sealed observation
+   (`core/model/native_framework_history.py`), so the policy leaves it verbatim and records
+   `raw_reason: "live-tool-chain"`. A later role's replay of that same observation is rewritten:
+   `result.task_contract` is replaced by a reference line, and only when the contract is provably a
+   substring of that request's own system message. On the anchor's shape that reaches the Planner's
+   1,080 contacts and the revising Solver's, roughly half of the 2,184 deliveries the audit counted.
+4. **`"raw"` is a declared arm that still emits receipts.** The key's ABSENCE is the arm that
+   composes to the pre-key config hash and is what a cell's OFF arm uses. A DECLARED all-raw policy
+   renders identical request bytes and still emits one `level: "raw"` row per boundary per contact,
+   which is what turns section 9's byte-identity claim into a checked statement.
+
+L2 is not implemented. Its config surface, its receipt fields and its value validation are: a
+`cleaned` level, a `cleaned` boundary or a `cleaning` block is refused at load time with the message
+`E8b not implemented`.
+
 ## 7. Contact-ceiling arithmetic for L2
 
 `rails/native_episode_config.py:530` fixes the ceiling and asserts it equals `program.max_contacts`:
