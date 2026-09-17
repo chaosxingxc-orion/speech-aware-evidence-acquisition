@@ -8,7 +8,8 @@ from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime,
 from speech_aware_evidence_acquisition.core.model.native_history import project_native_history
 from speech_aware_evidence_acquisition.core.model.transport import _speech_history_texts
 from speech_aware_evidence_acquisition.rails.candidate_contract_lookup import (
-    CandidateContractEvidence, CandidateContractLookupResult, CandidateContractRequest, TOOL_ID,
+    CandidateContractEvidence, CandidateContractLookupResult, CandidateContractRequest,
+    MAX_CANDIDATE_IDS, TOOL_ID,
 )
 from speech_aware_evidence_acquisition.rails.core_client import _agent_history
 from speech_aware_evidence_acquisition.rails.phase_tools import PhaseToolError, build_phase_tools
@@ -58,7 +59,11 @@ def test_candidate_schema_exposes_only_ids_and_registered_limit():
     assert "source_sha256" not in json.dumps(parameters)
 
 
-@pytest.mark.parametrize("bad", [None, 0, True, 33, "3"])
+# 33 was replaced by MAX_CANDIDATE_IDS + 1 on 2026-09-16: commit d3b8a767
+# ("rails: make SLURP candidate width configurable") raised MAX_CANDIDATE_IDS
+# from 32 to 64, so a limit of 33 is now legal and no longer documents a bad
+# input; the parametrization must track the live ceiling, not a stale literal.
+@pytest.mark.parametrize("bad", [None, 0, True, MAX_CANDIDATE_IDS + 1, "3"])
 def test_candidate_limit_must_be_an_explicit_positive_integer(bad):
     bad_config = config(bad)
     if bad is None:

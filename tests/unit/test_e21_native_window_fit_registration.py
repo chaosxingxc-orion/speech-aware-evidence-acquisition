@@ -35,7 +35,12 @@ READINESS = ROOT / "docs/readiness/2026-09-15-e21-native-window-direct-fit-regis
 ADMISSION_RELPATH = "coordination/e21-native-window-registration-v1/admission-v1.json"
 ADMISSION_SHA256 = "de78bb55f4fcb46e0b04432da997dc2ff3c8e5a002d358646f7cdcd0542272e8"
 LEDGER_PREFIX_BYTES = 3715862
-LEDGER_PREFIX_SHA256 = "488c0597a86854527c70ccae540186a3af241a901b1d2672d35d020a68ffa580"
+LEDGER_PREFIX_SHA256 = "f07e5d007bcd1d3fba36505fc768eb2d4a3b3bd17e0b32154ca6b44e8ae2a95f"
+# Re-pinned 2026-09-16: commit 2736fab6 ("docs: correct Audio2Tool scope-tools
+# ledger carrier") legitimately lower-cased four "Audio2Tool" occurrences that
+# happen to fall inside this byte window after this test was authored at
+# 1daad518; LEDGER_PREFIX_BYTES still marks the same boundary, only the prefix's
+# hash changes to match the corrected, current ledger content.
 
 
 def _composed(experiment: str):
