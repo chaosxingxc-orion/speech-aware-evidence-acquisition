@@ -51,8 +51,8 @@ is the SLURP TRAIN Fold A version of the first of those two, and section 6 below
 | dataset fragment | `slurp-speech-native-evo-fold-a-1080` |
 | baseline fragment | `slurp-native-dual-store-train-fold-a-review-off-replicate-v1` |
 | campaign plan | `configs/campaign/slurp-native-review-off-train-fold-a-replicate-v1.json` |
-| composed config / protocol | `38e1fc7e40af0239addc1a610f3699a4bf75ea8c473f992b2983a723e9336367` / `6af5f9dce7881a4afeeef21ae06b972ba7525361e457cd9c52131511705c9665` |
-| prepared phase supply | `prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1/phase-supply-v2.json`, SHA-256 `61a659615e55a2f4845de50969e8a700f23b63366d5a1d88148df6e0563f12e7` |
+| composed config / protocol | `086b6387de1f5ef9afb4d86f7f90058c753f3fea78d9ed1ee3ea9ea960f3018a` / `6f1d8dc0120b5f87442ac0d48eb0ca63656603222326df13b159673fe05e7d48` |
+| prepared phase supply | `prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1/phase-supply-v3.json`, SHA-256 `052acd26f790a4e1af04a0c0a10dcc86bfaede1f208819b11ec53097edb1fccf` |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |
 | readiness | `held`, carrying the preparation requirement only; the coordinator adds the decision requirement and flips |
 
@@ -123,7 +123,7 @@ byte-equal to cell B0's and to the sealed anchor preparation's:
 
 | artifact | file SHA-256 | output SHA-256 |
 | --- | --- | --- |
-| B0r | `61a659615e55a2f4845de50969e8a700f23b63366d5a1d88148df6e0563f12e7` | `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` |
+| B0r | `052acd26f790a4e1af04a0c0a10dcc86bfaede1f208819b11ec53097edb1fccf` | `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` |
 | B0 | `7930b9df5fcc8b1bc956495ad303892985a4ebbb6495d936c47c826db1d31b2b` | `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` |
 | anchor | `c5b0b51c23ef22feb1284559cd9e37286922d4cefc2e3cfcf7feafb23e3b595e` | `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` |
 
@@ -144,7 +144,7 @@ byte-equal to cell B0's and to the sealed anchor preparation's:
 The composed config hash of a replicate **necessarily** moves, because the run and attempt ids are
 inside it. What must not move is the behaviour, and section 3.1 is what proves that. Before the
 first contact the coordinator re-runs `core.flight.cli check` and confirms the runtime-derived
-protocol hash equals `6af5f9dce7881a4afeeef21ae06b972ba7525361e457cd9c52131511705c9665`. If it
+protocol hash equals `6f1d8dc0120b5f87442ac0d48eb0ca63656603222326df13b159673fe05e7d48`. If it
 differs by one character, the flight stops and reports.
 
 ### 3.5 One honest discrepancy, isolated and named

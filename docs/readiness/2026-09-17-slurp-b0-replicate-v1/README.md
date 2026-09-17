@@ -15,8 +15,8 @@ never started, stopped or queried the resident service. No other worktree was mo
 | cell | experiment and cell `slurp-native-review-off-train-fold-a-replicate-v1`, run `SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1`, attempt `attempt-slurp-native-review-off-train-fold-a-replicate-generation-v1` |
 | FIT | `SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-FIT-V1` / `attempt-slurp-native-review-off-train-fold-a-replicate-fit-v1`, 8,640 endpoints, inside the same campaign |
 | campaign plan | `configs/campaign/slurp-native-review-off-train-fold-a-replicate-v1.json` |
-| composed config / protocol | `38e1fc7e40af0239addc1a610f3699a4bf75ea8c473f992b2983a723e9336367` / `6af5f9dce7881a4afeeef21ae06b972ba7525361e457cd9c52131511705c9665` |
-| prepared phase supply | `prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1/phase-supply-v2.json`, SHA-256 `61a659615e55a2f4845de50969e8a700f23b63366d5a1d88148df6e0563f12e7`, output SHA-256 `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` |
+| composed config / protocol | `086b6387de1f5ef9afb4d86f7f90058c753f3fea78d9ed1ee3ea9ea960f3018a` / `6f1d8dc0120b5f87442ac0d48eb0ca63656603222326df13b159673fe05e7d48` |
+| prepared phase supply | `prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1/phase-supply-v3.json`, SHA-256 `052acd26f790a4e1af04a0c0a10dcc86bfaede1f208819b11ec53097edb1fccf`, output SHA-256 `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` |
 | budgets | 2,160 generation calls, 8,640 FIT endpoints, 6,170 repeated speech seconds, 2.0 fit-inclusive GPU hours, one official complete score |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |
 | readiness | `held`, carrying the preparation requirement only; **the coordinator adds the decision requirement and flips it** |
@@ -278,8 +278,8 @@ $PY -B -m speech_aware_evidence_acquisition.core.flight.cli prepare-supply \
   --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
   --experiment slurp-native-review-off-train-fold-a-replicate-v1 \
   --cell slurp-native-review-off-train-fold-a-replicate-v1 --workers 8 \
-  --output "$DATA/prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1/phase-supply-v2.json"
-sha256sum "$DATA/prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1/phase-supply-v2.json"
+  --output "$DATA/prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1/phase-supply-v3.json"
+sha256sum "$DATA/prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1/phase-supply-v3.json"
 ```
 
 1. merge master into this branch;

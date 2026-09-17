@@ -49,8 +49,8 @@
     "attempt_id": "attempt-slurp-native-review-off-train-fold-a-replicate-generation-v1",
     "campaign_plan": "configs/campaign/slurp-native-review-off-train-fold-a-replicate-v1.json",
     "cell": "slurp-native-review-off-train-fold-a-replicate-v1",
-    "composed_config_hash": "38e1fc7e40af0239addc1a610f3699a4bf75ea8c473f992b2983a723e9336367",
-    "execution_plan_protocol_hash": "6af5f9dce7881a4afeeef21ae06b972ba7525361e457cd9c52131511705c9665",
+    "composed_config_hash": "086b6387de1f5ef9afb4d86f7f90058c753f3fea78d9ed1ee3ea9ea960f3018a",
+    "execution_plan_protocol_hash": "6f1d8dc0120b5f87442ac0d48eb0ca63656603222326df13b159673fe05e7d48",
     "experiment": "slurp-native-review-off-train-fold-a-replicate-v1",
     "fit_attempt_id": "attempt-slurp-native-review-off-train-fold-a-replicate-fit-v1",
     "fit_run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-FIT-V1",
@@ -62,8 +62,8 @@
     },
     "prepared_phase_supply": {
       "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
-      "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1/phase-supply-v2.json",
-      "sha256": "61a659615e55a2f4845de50969e8a700f23b63366d5a1d88148df6e0563f12e7"
+      "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1/phase-supply-v3.json",
+      "sha256": "052acd26f790a4e1af04a0c0a10dcc86bfaede1f208819b11ec53097edb1fccf"
     },
     "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1"
   },
