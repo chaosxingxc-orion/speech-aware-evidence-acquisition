@@ -140,6 +140,12 @@ class NativeRoleContactContext:
     agent_contact_id: str
     evidence_pins: Mapping[str, str] = field(default_factory=dict)
     budget_id: str | None = None
+    # E2 (SLURP v2 base program M2): the zero-based position of this contact
+    # within one grouped Solver visit's N pinned-seed samples, bound by the
+    # caller's contact_context_provider so native_request.py's decoding
+    # composition knows which sample it is preparing. None for every
+    # non-grouped role/contact -- today's entire behaviour.
+    sample_index: int | None = None
 
     def __post_init__(self) -> None:
         if not isinstance(self.sample_id, str) or not self.sample_id:
@@ -162,6 +168,12 @@ class NativeRoleContactContext:
             not isinstance(self.budget_id, str) or not self.budget_id
         ):
             raise ValueError("budget_id must be a non-empty string or None")
+        if self.sample_index is not None and (
+            isinstance(self.sample_index, bool)
+            or not isinstance(self.sample_index, int)
+            or self.sample_index < 0
+        ):
+            raise ValueError("sample_index must be a nonnegative integer or None")
         object.__setattr__(self, "evidence_pins", MappingProxyType(pins))
 
 

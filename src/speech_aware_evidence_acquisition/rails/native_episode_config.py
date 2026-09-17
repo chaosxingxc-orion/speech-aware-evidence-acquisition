@@ -14,6 +14,12 @@ from .native_tool_authority import (
 PLANNER_ACTION_RESPONSE_FORMAT_ID = "saea-native-planner-action-v1"
 
 
+#: Keys a Solver ``decoding_overrides`` block must carry, exactly.
+SOLVER_DECODING_OVERRIDE_KEYS = frozenset({"temperature", "seed_offset"})
+#: Keys a Solver ``commit`` block must carry, exactly.
+SOLVER_COMMIT_KEYS = frozenset({"policy", "min_support", "similarity_threshold"})
+
+
 @dataclass(frozen=True)
 class NativeEpisodeRole:
     phase_id: str
@@ -21,6 +27,15 @@ class NativeEpisodeRole:
     max_iterations: int
     tool_names: tuple[str, ...]
     history_scope: str = "full"
+    # E2 (SLURP v2 base program M2): grouped Solver sampling. ``samples`` is
+    # the number of distinct pinned-seed contacts made for one Solver visit
+    # (default 1, today's behaviour); ``decoding_overrides``/``commit`` are
+    # required together exactly when ``samples >= 2`` and forbidden
+    # otherwise, so a samples-1 config carries none of this and validates
+    # byte-identically to before this field existed.
+    samples: int = 1
+    decoding_overrides: Mapping[str, object] | None = None
+    commit: Mapping[str, object] | None = None
 
     def __post_init__(self):
         if not isinstance(self.history_scope, str) or self.history_scope not in {
@@ -29,6 +44,82 @@ class NativeEpisodeRole:
             raise ValueError("native role history scope is invalid")
         if self.history_scope != "full" and self.role_kind != "reviewer":
             raise ValueError("only Reviewer may restrict history to the latest Solver")
+        if (
+            isinstance(self.samples, bool)
+            or not isinstance(self.samples, int)
+            or not 1 <= self.samples <= 8
+        ):
+            raise ValueError("solver samples must be an integer between 1 and 8")
+        if self.role_kind != "solver" and (
+            self.samples != 1
+            or self.decoding_overrides is not None
+            or self.commit is not None
+        ):
+            raise ValueError("only the Solver role may declare grouped sampling")
+        if self.samples == 1:
+            if self.decoding_overrides is not None:
+                raise ValueError("decoding_overrides requires samples >= 2")
+            if self.commit is not None:
+                raise ValueError("commit is forbidden when samples == 1")
+            return
+        if (
+            not isinstance(self.decoding_overrides, Mapping)
+            or set(self.decoding_overrides) != SOLVER_DECODING_OVERRIDE_KEYS
+        ):
+            raise ValueError(
+                "samples >= 2 requires decoding_overrides with exactly "
+                "temperature and seed_offset"
+            )
+        temperature = self.decoding_overrides["temperature"]
+        if (
+            isinstance(temperature, bool)
+            or not isinstance(temperature, (int, float))
+            or not 0 < temperature <= 2
+        ):
+            raise ValueError("decoding_overrides.temperature must be in (0, 2]")
+        seed_offset = self.decoding_overrides["seed_offset"]
+        if (
+            isinstance(seed_offset, bool)
+            or not isinstance(seed_offset, int)
+            or seed_offset < 0
+        ):
+            raise ValueError("decoding_overrides.seed_offset must be a nonnegative integer")
+        if not isinstance(self.commit, Mapping) or set(self.commit) != SOLVER_COMMIT_KEYS:
+            raise ValueError(
+                "samples >= 2 requires a commit block with exactly policy, "
+                "min_support and similarity_threshold"
+            )
+        policy_id = self.commit["policy"]
+        if not isinstance(policy_id, str) or not policy_id:
+            raise ValueError("commit.policy must be a non-empty string")
+        # Function-local: importing rails.commit_policies is what POPULATES
+        # core.base.COMMIT_POLICIES (the registration lives beside the
+        # implementation, in the one canonical policy-registration site), and
+        # this module deliberately does not import rails.commit_policies at
+        # module scope (it would be an import cycle: commit_policies needs
+        # nothing from here, but the light-import discipline this package
+        # follows elsewhere keeps registration imports function-local).
+        from . import commit_policies as _commit_policies  # noqa: PLC0415, F401 (registration)
+        from ..core.base import COMMIT_POLICIES, CoreError  # noqa: PLC0415
+
+        try:
+            COMMIT_POLICIES.resolve(policy_id)
+        except CoreError as error:
+            raise ValueError(f"commit.policy is invalid: {error}") from error
+        min_support = self.commit["min_support"]
+        if (
+            isinstance(min_support, bool)
+            or not isinstance(min_support, int)
+            or not 1 <= min_support <= self.samples
+        ):
+            raise ValueError("commit.min_support must be an integer between 1 and samples")
+        similarity_threshold = self.commit["similarity_threshold"]
+        if (
+            isinstance(similarity_threshold, bool)
+            or not isinstance(similarity_threshold, (int, float))
+            or not 0 < similarity_threshold <= 1
+        ):
+            raise ValueError("commit.similarity_threshold must be in (0, 1]")
 
 
 def select_native_role_history(
@@ -286,10 +377,14 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
     iterations_by_kind: dict[str, int] = {}
     for kind in kinds:
         row = raw_roles[kind]
+        base_fields = {"phase_id", "max_iterations", "history_scope"}
+        # Only the Solver row may carry grouped-sampling fields (E2, SLURP v2
+        # base program M2); every other role keeps the historical shape.
+        solver_fields = {"samples", "decoding_overrides", "commit"} if kind == "solver" else set()
         if (
             not isinstance(row, Mapping)
             or not {"phase_id", "max_iterations"} <= set(row)
-            or set(row) - {"phase_id", "max_iterations", "history_scope"}
+            or set(row) - base_fields - solver_fields
         ):
             raise ValueError("each native role requires phase_id and max_iterations")
         if row["phase_id"] not in program.phase_names():
@@ -336,6 +431,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
             raise ValueError("reserve-final-report requires at least two tool-role iterations")
         roles.append(NativeEpisodeRole(
             phase_id, kind, iterations, tools, row.get("history_scope", "full"),
+            row.get("samples", 1), row.get("decoding_overrides"), row.get("commit"),
         ))
     phase_ids = tuple(role.phase_id for role in roles)
     if len(set(phase_ids)) != 4 or set(phase_ids) != set(program.phase_names()):
@@ -382,7 +478,15 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
                     and spec.get("candidate_state_selection", "single") != "latest"
                 ):
                     raise ValueError("candidate refresh requires latest candidate source selection")
-    ceiling = roles[0].max_iterations + (revisions + 1) * sum(r.max_iterations for r in roles[1:])
+    # E2 (SLURP v2 base program M2): the Solver's own contribution is
+    # multiplied by its registered ``samples`` (1 for every role, and for
+    # every pre-E2 config, which reduces this to the historical formula
+    # exactly). Every other role's iterations are unchanged.
+    per_revision = sum(
+        r.max_iterations * r.samples if r.role_kind == "solver" else r.max_iterations
+        for r in roles[1:]
+    )
+    ceiling = roles[0].max_iterations + (revisions + 1) * per_revision
     ceiling += refreshes * roles[0].max_iterations
     if program.max_contacts != ceiling:
         raise ValueError("program contact ceiling must equal the bounded native graph ceiling")
