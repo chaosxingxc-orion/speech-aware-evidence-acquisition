@@ -161,7 +161,34 @@ VIEW_EXEMPLAR = "exemplar"
 #: duplicate an admitted one. The filler view supplies fillers.
 VIEW_SLOT_FILLERS = "slot-fillers"
 
-_ALLOWED_VIEWS: tuple[str, ...] = (VIEW_EXEMPLAR, VIEW_SLOT_FILLERS)
+#: The ANNOTATED-EXEMPLAR view (2026-09-17, SLURP v2 base program item E3 /
+#: cell B1). Same selection, same facet ids, same value ids, same
+#: ``prior_score``s, same provenance as :data:`VIEW_EXEMPLAR` -- only the two
+#: rendered strings change, exactly the discipline :data:`VIEW_SLOT_FILLERS`
+#: already established:
+#:
+#: * a content facet's representation gets the same quoted-descriptor
+#:   treatment as :data:`VIEW_SLOT_FILLERS` (module docstring reasoning
+#:   applies unchanged: the descriptor is the protected payload, never a bare
+#:   English phrase);
+#: * a value's content becomes one line: the utterance, its
+#:   ``scenario_action`` label, and its slot ``type=filler`` pairs, each on
+#:   its own semicolon-separated entry (``type=filler; type=filler ...``, or
+#:   ``none`` when the utterance carries no entity).
+#:
+#: The Solver-phase exemplar supply (``docs/results/
+#: 2026-09-17-slurp-a2-exemplar-headroom-audit-v1.md``) needs the exemplar
+#: sentence AND its scenario/action AND its fillers together -- unlike
+#: :data:`VIEW_SLOT_FILLERS`, whose filler-only rendering was forced by
+#: SLURP intent retrieval being closed (that view's own docstring). This
+#: view is deliberately NOT that constraint: M1 supplies exemplars to the
+#: SOLVER phase, which already sees the full candidate contract, so a
+#: neighbour's own label is additional convention-transfer signal rather than
+#: a duplicate of a closed mechanism.
+VIEW_ANNOTATED_EXEMPLARS = "annotated-exemplars"
+
+_ALLOWED_VIEWS: tuple[str, ...] = (VIEW_EXEMPLAR, VIEW_SLOT_FILLERS, VIEW_ANNOTATED_EXEMPLARS)
+_CONTENT_RECALL_VIEWS: tuple[str, ...] = (VIEW_SLOT_FILLERS, VIEW_ANNOTATED_EXEMPLARS)
 
 # Value-only representations preserve the established retrieval-key view.
 # A label-only projection removes information; the intent frame adds a TRAIN
@@ -423,9 +450,9 @@ class KnowledgeBuildSpec:
             raise RailsError(f"KnowledgeBuildSpec.value_format must be one of {VALUE_FORMATS}")
         if self.value_format != "historical" and self.view != VIEW_SLOT_FILLERS:
             raise RailsError("nonhistorical value_format requires the slot-fillers key view")
-        if self.view == VIEW_SLOT_FILLERS and "content" not in set(self.dimensions):
+        if self.view in _CONTENT_RECALL_VIEWS and "content" not in set(self.dimensions):
             raise RailsError(
-                f"KnowledgeBuildSpec.view={VIEW_SLOT_FILLERS!r} exists to be RECALLED on "
+                f"KnowledgeBuildSpec.view={self.view!r} exists to be RECALLED on "
                 "per-utterance content facets, so it requires the 'content' dimension"
             )
         return self
@@ -513,7 +540,33 @@ def _content_facet_representation(row: KbRow, view: str) -> str:
             f"TRAIN utterance {row.utterance_id} (slot-filler retrieval key): "
             f"\"{row.content}\""
         )
+    if view == VIEW_ANNOTATED_EXEMPLARS:
+        return (
+            f"TRAIN utterance {row.utterance_id} (annotated-exemplar retrieval key): "
+            f"\"{row.content}\""
+        )
     return row.content
+
+
+def _annotated_exemplar_value_content(row: KbRow) -> str:
+    """A value's payload under :data:`VIEW_ANNOTATED_EXEMPLARS`: one line of
+    ``<utterance> | <scenario>_<action> | <type>=<filler>; type=filler ...``.
+
+    One ``type=filler`` entry per observed filler occurrence (a type with two
+    fillers in one utterance renders two entries), lower-case as annotated;
+    ``| none`` when the utterance carries no entity annotation at all. See
+    :data:`VIEW_ANNOTATED_EXEMPLARS` for why the exemplar sentence, its label
+    and its fillers travel together here, unlike the filler-only
+    :data:`VIEW_SLOT_FILLERS` rendering.
+    """
+
+    pairs = [
+        f"{entity_type}={filler}"
+        for entity_type in sorted(row.entity_fillers)
+        for filler in row.entity_fillers[entity_type]
+    ]
+    body = "; ".join(pairs) if pairs else "none"
+    return f"{row.content} | {row.scenario}_{row.action} | {body}"
 
 
 def _slot_filler_value_content(row: KbRow) -> str:
@@ -964,6 +1017,8 @@ def _build_facets_and_values(
             )
         elif spec.view == VIEW_SLOT_FILLERS:
             content_text = _slot_filler_value_content(row)
+        elif spec.view == VIEW_ANNOTATED_EXEMPLARS:
+            content_text = _annotated_exemplar_value_content(row)
         else:
             content_text = (
                 f"Exemplar sentence: \"{row.content}\" -> intent {row.intent} "
@@ -1418,6 +1473,7 @@ __all__ = [
     "SPLIT_IDENTITY_SCHEMA",
     "VIEW_EXEMPLAR",
     "VIEW_SLOT_FILLERS",
+    "VIEW_ANNOTATED_EXEMPLARS",
     "KbRow",
     "KnowledgeBuildSpec",
     "build_knowledge_snapshot",
