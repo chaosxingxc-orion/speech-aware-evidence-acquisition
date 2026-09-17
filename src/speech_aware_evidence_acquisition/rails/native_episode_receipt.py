@@ -478,7 +478,9 @@ def validate_native_episode_finite_path(
             _raise(error_type, "finite path has an unsupported Planner continuation")
 
 
-_SOLVER_GROUP_FIELDS = frozenset({"commit_policy_id", "samples", "delivered"})
+_SOLVER_GROUP_FIELDS = frozenset(
+    {"commit_policy_id", "commit_params", "samples", "delivered"}
+)
 _SOLVER_GROUP_SAMPLE_FIELDS = frozenset(
     {"sample_index", "seed", "temperature", "parse_status", "parsed_answer", "contacts"}
 )
@@ -509,8 +511,9 @@ def validate_solver_group_receipt(
     program M2, ``reproduction.ojw.native_group_solver.
     run_grouped_solver_samples``'s ``solver_group`` output): every raw
     sample of one Solver visit -- its pinned seed, decoding temperature,
-    parse status and parsed answer -- plus the registered commit policy's
-    support/tie-break provenance for the ONE delivered answer.
+    parse status and parsed answer -- plus the registered commit policy's id,
+    the exact parameters it was applied with (E2d) and its support/tie-break
+    provenance for the ONE delivered answer.
 
     This is additional custody beside the role's ordinary
     ``execution_receipt`` (:func:`_receipt` above), which
@@ -525,6 +528,12 @@ def validate_solver_group_receipt(
         _raise(error_type, "solver group receipt has an invalid shape")
     if not isinstance(solver_group["commit_policy_id"], str) or not solver_group["commit_policy_id"]:
         _raise(error_type, "solver group receipt names no commit policy")
+    params = solver_group["commit_params"]
+    if not isinstance(params, Mapping) or not all(
+        isinstance(key, str) and key and isinstance(value, (bool, int, float, str))
+        for key, value in params.items()
+    ):
+        _raise(error_type, "solver group receipt has malformed commit parameters")
     records = _sequence(solver_group["samples"], "solver group samples", error_type=error_type)
     if len(records) != samples:
         _raise(error_type, "solver group receipt does not carry every registered sample")

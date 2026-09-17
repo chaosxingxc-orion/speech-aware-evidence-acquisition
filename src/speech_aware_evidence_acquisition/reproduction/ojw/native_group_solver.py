@@ -29,8 +29,9 @@ and score, merges the N execution receipts into ONE (``contacts`` = every
 sample's contacts concatenated in sample order, ``final_contact`` = the
 last), and returns a role-result dict in that SAME contract shape plus one
 additional ``solver_group`` custody field carrying every raw sample
-(``sample_index``, ``seed``, ``temperature``, parse status, parsed answer)
-and the delivered answer's support/tie-break provenance.
+(``sample_index``, ``seed``, ``temperature``, parse status, parsed answer),
+the commit policy's id and the exact parameters it was applied with, and the
+delivered answer's support/tie-break provenance.
 
 ``reproduction.ojw.native_episode``'s ``_ApplyRole``/``_execution_receipt``
 never read ``solver_group`` and are therefore unchanged by this module; a
@@ -245,6 +246,12 @@ async def run_grouped_solver_samples(
         },
         "solver_group": {
             "commit_policy_id": outcome.policy_id,
+            # E2d (2026-09-17): the parameters the policy was ACTUALLY applied
+            # with, recorded beside its id so a post-seal reader -- the bundle
+            # verifier's I7g re-derivation, and the offline sensitivity table --
+            # can re-run the exact commit this visit made without the composed
+            # config, which no sealed bundle carries.
+            "commit_params": dict(commit_params),
             "samples": sample_records,
             "delivered": {
                 "intent_support": outcome.intent_support,

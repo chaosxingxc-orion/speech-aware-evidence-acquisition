@@ -49,6 +49,34 @@ parse status and parsed answers in the sealed `solver_group` receipt that
 `analysis.native_commit_replay` re-aggregates offline. A Planner `REVISE` re-samples the whole group
 and re-commits; the contact-ceiling formula is unchanged.
 
+E2d (2026-09-17): **a grouped row's delivered text is custody, re-derived at seal.** Cell B2 v3's
+four-row smoke generated every contact and then failed AT THE SEAL. The delivered `text` of a grouped
+Solver row is the commit policy's aggregate over the N raw sample texts and equals none of them,
+while the bundle's I7 invariant reads a row's `response_text_sha256` as "the delivered text IS one
+recorded model response's bytes" — and the pre-E2d runner bound that field to the LAST RAW sample's
+text hash. Two changes close it, both confined to grouped rows. (1) The runner:
+`reproduction.ojw.native_group_solver` now records `solver_group.commit_params`, the exact parameters
+the policy was applied with, beside its already-recorded id; and
+`core.flight.runtime._canonical_output_rows` binds a grouped row's `response_text_sha256` to the
+DELIVERED bytes. Nothing is lost — the raw transport envelope hash stays in `response_sha256`, and
+every raw sample's own request/response hashes stay in `solver_group.samples[i].contacts[j]`. A
+samples-1 row is byte-identical to before (pinned in
+`tests/unit/test_native_episode_runner_grouped_solver.py`). (2) The verifier: `core.bundle.outputs`
+adds invariant **I7g** for a row carrying a `solver_group` receipt — every sample's recorded
+`response_text_sha256` must be the trace's own MODEL_RESPONSE bytes for that contact, the named
+commit policy must resolve in `core.base.COMMIT_POLICIES` and reproduce itself, re-running it over
+the row's own recorded samples through `analysis.native_commit_replay` (the same code the offline
+sensitivity table runs) must reproduce the delivered bytes byte for byte, and the row's
+request/response identity must be that group's LAST sample contact. I7 itself is untouched and still
+binds every row's `text` to its own `response_text_sha256`, grouped rows included; a grouped row
+whose delivered text differs from the recomputation is refused naming I7g and the first differing
+character offset, never the text. A grouped receipt recording no `commit_params` is refused: a bundle
+carries no composed configuration, so without them the delivered text cannot be re-derived from the
+bundle alone. That is also why the smoke's own sealed bytes, written by the pre-E2d runner, do not
+verify — their samples bind to the trace and their commit recomputation reproduces all four delivered
+texts exactly, but the row form is the old one, so cell B2 v3 re-flies its four-row smoke under the
+fixed runner rather than any sealed byte being edited.
+
 E8a (2026-09-17, owner directive of 2026-09-17 on node context): **M5, the Node Context Policy**, one
 declared handling policy per node boundary, where a boundary is the pair
 `(consumer_role_kind, semantic_class)`. Axis USE. Config switch: `episode` class, third and last key

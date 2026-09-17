@@ -7507,7 +7507,8 @@ class FlightRuntime:
             # when this row's Solver visit was grouped (samples >= 2). The
             # delivered final_response_text is then the commit policy's
             # AGGREGATED answer, not the last raw sample's response text --
-            # see the response_text_sha256 carve-out below.
+            # see the response_text_sha256 branch below (E2d), which hashes
+            # the delivered bytes rather than the last raw contact's.
             solver_group = row.get("solver_group")
             if episode_receipt is not None:
                 # The delivery Solver can precede Reviewer/Planner contacts.
@@ -7679,7 +7680,26 @@ class FlightRuntime:
                 if self._plan is not None
                 else self._composed.values["carrier_lock_key"]
             )
-            response_text_sha256 = timing.response_text_sha256
+            # E2d (2026-09-17, SLURP v2 base program M2): a grouped Solver
+            # row's delivered ``text`` is the registered COMMIT policy's
+            # aggregate over this visit's N raw samples and equals none of
+            # them in general, so the LAST raw contact's own text hash does
+            # not describe it. Bind the row's ``response_text_sha256`` to the
+            # DELIVERED bytes instead -- the same row-level self-consistency
+            # (``core.bundle.outputs._verify_outputs``'s I7) every other row
+            # already has, and the same move the projection-v3 branch below
+            # makes for its own delivered transform. Nothing is lost: the raw
+            # transport envelope hash stays in ``response_sha256``, every raw
+            # sample's own request/response hashes stay in
+            # ``solver_group.samples[i].contacts[j]``, and the bundle
+            # verifier re-derives the delivered bytes from exactly those
+            # (I7g). Confined to grouped rows: a samples-1 row still seals
+            # the recorded response text hash byte for byte.
+            response_text_sha256 = (
+                hashlib.sha256(text.encode("utf-8")).hexdigest()
+                if solver_group is not None
+                else timing.response_text_sha256
+            )
             projection_v3_fields: dict[str, object] = {}
             if slurp_projection_v3_on:
                 # Fail closed rather than silently no-op: a carrier that
