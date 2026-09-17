@@ -152,7 +152,7 @@ direct-anchor release (`docs/results/2026-09-17-slurp-train-a-direct-anchor-rele
 | B2 | M2, N=5, T=0.7 | anchor (B0 harmful) | 5 greedy repeats aggregated identically + anchor | 10 | ~5-6 |
 | B3 | M3 (A1-decided: R_action + v2 labels, P2 fillers; +3.5 SLU official, about +0.2 symmetric, +1.4 intent) | scorer-side | unprojected | 0 | 0 |
 | B4a | M4a | anchor | anchor | 5 | ~3.4 |
-| B4b | M4b | anchor | anchor | 5 | ~3.4 |
+| B4b | M4b | anchor | anchor | 5 | ~3.4 | ADMITTED 2026-09-17: SLU +2.55 [+1.13, +3.98], intent +0.56, v3 +2.06; provisional until replicated |
 | B5 | admitted set ("v2 candidate") | -- | anchor, released direct | 6-7 | ~4-5 |
 | B5r | replication of B5 | -- | B5 | 6-7 | ~4-5 |
 | B6 | DEV1000 confirmation | -- | sealed DEV1000 direct 35.68 / agent 50.30 | 6-7 | ~4 |
