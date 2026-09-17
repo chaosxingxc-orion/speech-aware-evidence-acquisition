@@ -53,6 +53,12 @@ _EXPECTED_PROGRAM_SHAPES = {
     "phase-native-candidates-review-revise-v1": (
         ("perception", "reviewer", "planner", "solver"), 11, "native-role-episode"
     ),
+    # Cell B7r, 2026-09-17: the review-revise program with the Reviewer
+    # phase declaring the registered findings output contract. Same four
+    # phases, same ceiling 11; only the Reviewer's response_format_id moves.
+    "phase-native-candidates-review-revise-findings-v1": (
+        ("perception", "reviewer", "planner", "solver"), 11, "native-role-episode"
+    ),
     # E1, 2026-09-16 (M0): the same four phases with the review loop off, so
     # Reviewer and Planner never get a node -- ceiling drops from 11 to 2.
     "phase-native-candidates-solve-v1": (
