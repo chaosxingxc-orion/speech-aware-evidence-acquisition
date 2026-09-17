@@ -1,0 +1,11 @@
+# saea-node-context-template-v1 renderer=cleaned-review-finding
+[header]
+REVIEW OF THE CURRENT DRAFT (Reviewer, restated as structured issues by one cleaning contact)
+[body]
+  verdict: {verdict}
+[item]
+  - {field}: {problem}
+[items_empty]
+  - (no issue stated)
+[footer]
+A review is a hypothesis about the draft, not evidence about the speech.

@@ -1,0 +1,15 @@
+# saea-node-context-template-v1 renderer=cleaning-review
+[instruction]
+Below is one reviewer's free-text commentary on a draft answer, exactly as the harness
+prepared it. Restate that commentary as structured issues.
+Do not add an issue the commentary does not state.
+Do not judge the draft yourself.
+Do not propose a replacement answer.
+Do not mention the speech.
+Every word you write must already appear in the commentary below.
+Answer with the verdict draft_is_supported or draft_has_issues and with at most five issues.
+Each issue names one field -- scenario, action, entity_type, entity_filler or none -- and
+states the problem in at most 140 characters.
+[material]
+REVIEWER COMMENTARY, AS THE HARNESS PREPARED IT:
+{structured_material}

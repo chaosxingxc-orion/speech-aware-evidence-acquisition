@@ -28,7 +28,6 @@ from speech_aware_evidence_acquisition.rails.node_context_policy import (
     CHECK_NO,
     CHECK_NO_INVENTORY,
     CHECK_YES,
-    CLEANED_LEVEL_REFUSAL,
     CLOSED_VOCABULARY,
     FALLBACK_OMIT,
     FALLBACK_RAW,
@@ -640,22 +639,23 @@ def test_raw_and_absent_are_the_same_off_arm():
     ) is False
 
 
-def test_cleaned_is_refused_with_the_e8b_message():
-    """(f) L2's config surface, receipt schema and value validation are E8a's;
-    its implementation is E8b."""
+def test_cleaned_is_a_per_boundary_declaration_with_its_own_cleaning_block():
+    """E8b supersedes E8a's ``E8b not implemented`` refusal. ``cleaned`` is now
+    a real level, and every way of declaring it that does NOT name one bounded
+    cleaning contact is still refused."""
 
-    with pytest.raises(ValueError, match=CLEANED_LEVEL_REFUSAL):
+    with pytest.raises(ValueError, match="bare 'cleaned'"):
         validate_node_context_policy_config("cleaned")
-    with pytest.raises(ValueError, match=CLEANED_LEVEL_REFUSAL):
+    with pytest.raises(ValueError, match="cannot default to 'cleaned'"):
         validate_node_context_policy_config({"level": "cleaned"})
-    with pytest.raises(ValueError, match=CLEANED_LEVEL_REFUSAL):
+    with pytest.raises(ValueError, match="requires a cleaning block"):
         validate_node_context_policy_config({
             "level": "structured",
             "policy_id": "typed-slurp-node-context-v1",
             "params": deepcopy(PARAMS),
             "boundaries": {"planner:review-finding": {"level": "cleaned"}},
         })
-    with pytest.raises(ValueError, match=CLEANED_LEVEL_REFUSAL):
+    with pytest.raises(ValueError, match="only a 'cleaned' boundary"):
         validate_node_context_policy_config({
             "level": "structured",
             "policy_id": "typed-slurp-node-context-v1",

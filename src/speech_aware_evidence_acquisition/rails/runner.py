@@ -366,6 +366,41 @@ def _protected_knowledge_material(snapshot: KnowledgeSnapshot) -> tuple[str, ...
     )
 
 
+def node_context_cleaning_messages(
+    base_messages: Sequence[Mapping[str, object]],
+) -> tuple[Mapping[str, object], Mapping[str, object]]:
+    """E8b: the messages ONE context-cleaning contact is composed from.
+
+    ``knowledge: "none"`` is what the cleaning contact's declared phase says, so
+    this is where it is made true: the system contract stays, the speech part
+    this harness attaches to every contact stays, and every knowledge key/value
+    block the supply path put on the consumer's user turn is dropped. A
+    cleaning contact restates text it was handed; it is not an evidence
+    consumer, and the material it restates rides its instruction.
+
+    Fail-closed: an evidence part that survives the filter, or a user turn that
+    is not the shared speech content list, refuses the contact rather than
+    sending a request whose knowledge exposure is not what its phase declares.
+    """
+
+    if len(base_messages) != 2:
+        raise RailsRunnerError("node context cleaning requires the shared two messages")
+    user = dict(base_messages[1])
+    content = user.get("content")
+    if not isinstance(content, list) or not content:
+        raise RailsRunnerError("node context cleaning requires the shared speech turn")
+    kept = [
+        part for part in content
+        if not (isinstance(part, Mapping) and isinstance(part.get("evidence_id"), str))
+    ]
+    if not kept or any(
+        isinstance(part, Mapping) and "evidence_id" in part for part in kept
+    ):
+        raise RailsRunnerError("node context cleaning request carries evidence")
+    user["content"] = kept
+    return (dict(base_messages[0]), user)
+
+
 def _assert_agent_control_excludes_knowledge_payloads(
     contact: AgentContact,
     protected_material: tuple[str, ...],
@@ -1691,7 +1726,8 @@ async def _invoke_native_role_episode(
         MeteredNativeSpeechRequest, NativeRoleSpeechBinding,
     )
     from ..reproduction.ojw.native_roles import (
-        NativeRoleContactContext, NativeRoleNode, NativeRoleNodeSpec, NativeSourceFunction,
+        NativeRoleContactContext, NativeRoleModelRequest, NativeRoleNode,
+        NativeRoleNodeSpec, NativeSourceFunction,
     )
     from .controllers import (
         advance_phase_response_state, native_planner_action_response_format,
@@ -1743,6 +1779,12 @@ async def _invoke_native_role_episode(
     # ever touched.
     node_context_binding = None
     node_context_compilations = {}
+    # E8b (Node Context Policy level L2): one cleaning contact's binding,
+    # handed to the SECOND MeteredNativeSpeechRequest below by contact id, and
+    # the per-phase invocation counter its contact identity is namespaced by.
+    # Both stay empty unless a declared boundary is ``cleaned``.
+    cleaning_bindings: dict[str, object] = {}
+    cleaning_contact_counts: dict[str, int] = {}
 
     def context():
         return _runtime_context(
@@ -2101,6 +2143,14 @@ async def _invoke_native_role_episode(
                 task_instruction=messages[0]["content"],
                 episode_limits=visit["limits"],
                 actions=config.actions,
+                # E8b: the metered cleaning contact hook. A policy with no
+                # cleaned boundary never calls it; a policy with one calls it
+                # at most once per boundary per contact, ON THIS SLOT, in this
+                # resident session, before this contact's own request is
+                # dispatched.
+                cleaning_invoker=lambda request: run_cleaning_contact(
+                    request, ctx=ctx, visit=visit, base=messages,
+                ),
             )
             exposed_states = compiled_policy.states
             policy_record = {
@@ -2203,6 +2253,145 @@ async def _invoke_native_role_episode(
                     },
                 )
 
+    def cleaning_binding_provider(request):
+        """E8b: hand the cleaning contact its own prepared speech binding.
+
+        The binding is composed by ``run_cleaning_contact`` below and stored
+        under this contact's id, so the SAME
+        ``MeteredNativeSpeechRequest.prepare`` that composes every role
+        contact composes this one: same framework-history encoding, same
+        decoding validation, same tool-scope check, same payload build.
+        """
+
+        binding_for_contact = cleaning_bindings.pop(
+            request.context.agent_contact_id, None,
+        )
+        if binding_for_contact is None:
+            raise RailsRunnerError("node context cleaning contact lost its binding")
+        return binding_for_contact
+
+    def capture_cleaning_completion(_request, _completion):
+        """E8b: a cleaning contact registers NO phase state and settles NO
+        episode step, so this sink deliberately does nothing.
+
+        It exists because ``MeteredNativeSpeechRequest`` requires a completion
+        hook, and because a cleaning contact must never reach
+        ``capture_completion`` -- which would seal a phase state, overwrite the
+        pending role completion and route the episode graph on text that is
+        not a role's answer.
+        """
+
+    def run_cleaning_contact(request, *, ctx, visit, base):
+        """E8b: make ONE metered cleaning contact for a cleaned boundary.
+
+        It runs inside the CONSUMER contact's own ``run_contact`` worker, on
+        the consumer's pinned slot, so it reaches the same resident session and
+        the same serving geometry. Everything that makes a contact a contact
+        applies to it: the registered ceiling, a unique bound contact identity,
+        its own trace buffer and USE record, the flight's request/fit gate, the
+        shared ``FrozenCoreClient`` budget and cost path, and the episode's
+        evidence pins. What it does NOT do is register a phase state or advance
+        the episode -- it produces context for the contact that is composing.
+        """
+
+        from ..core.base import RESPONSE_FORMATS  # noqa: PLC0415
+        from ..core.tracing import get_current_trace_buffer  # noqa: PLC0415
+        from .node_context_policy import CleaningContactOutcome  # noqa: PLC0415
+
+        if state.scheduled_contacts >= config.max_contacts:
+            raise RailsRunnerError(
+                "node context cleaning contact exceeds the registered contact ceiling"
+            )
+        index = cleaning_contact_counts.get(request.phase_id, 0)
+        cleaning_contact_counts[request.phase_id] = index + 1
+        contact_id = scoped_execution_contact_id(
+            f"{program.program_id}:{request.phase_id}:{index}:{ctx.sample_id}",
+            state.prepared.execution_unit_id,
+        )
+        if contact_id in state.seen_contact_ids:
+            raise RailsRunnerError("native graph repeated a contact identity")
+        # ``knowledge: "none"`` -- the shared contract and the speech packet,
+        # with every evidence block of the consumer's turn dropped.
+        system, user = node_context_cleaning_messages(base)
+        decoding = dict(base_decoding_params or {})
+        response_format = RESPONSE_FORMATS.resolve(request.response_format_id)()
+        if not isinstance(response_format, Mapping) or not response_format:
+            raise RailsRunnerError(
+                "node context cleaning response format rendered nothing"
+            )
+        decoding["response_format"] = dict(response_format)
+        decoding.update(tool_choice="none", parallel_tool_calls=False)
+        cleaning_plan = AgentContactPlan(
+            contact_id=contact_id,
+            query_state_sha256=ctx.query_state.content_hash(),
+            purpose=f"node-context-cleaning:{request.boundary_id}",
+            instruction=request.instruction,
+            key_representation_id=f"{program.program_id}:{request.phase_id}",
+            matcher_policy_id=program.program_id,
+            decoding_params=decoding,
+        ).validate()
+        _assert_agent_control_excludes_knowledge_payloads(
+            cleaning_plan, protected_material,
+        )
+        cleaning_bindings[contact_id] = NativeRoleSpeechBinding(
+            role_id=request.phase_id, sample_id=ctx.sample_id,
+            role_query=request.instruction, base_messages=(system, user),
+            core_kwargs={
+                "decoding_params": {**decoding, "id_slot": visit["slot_id"]},
+                **({
+                    "key_representation_id": cleaning_plan.key_representation_id,
+                    "matcher_policy_id": cleaning_plan.matcher_policy_id,
+                } if ctx.query_state.query_source == "speech_features" else {}),
+                # A cleaning contact reads its instruction and nothing else:
+                # the material it restates is IN that instruction, so it needs
+                # no agent-state history of its own.
+                "agent_state": [],
+            },
+            tool_names=(), local_tool_result_ids=(),
+            query_source=ctx.query_state.query_source,
+        )
+        role_request = NativeRoleModelRequest(
+            role_id=request.phase_id,
+            context=NativeRoleContactContext(
+                sample_id=ctx.sample_id,
+                agent_contact_id=contact_id,
+                evidence_pins={"knowledge_snapshot": snapshot_sha256},
+                budget_id=run_id,
+            ),
+            messages=(system, {"role": "user", "content": request.instruction}),
+            tool_schemas=(), visible_tool_names=(), decoding_controls={},
+        )
+        trace = TraceBuffer(run_id)
+        state.trace_buffers[(state.scheduled_contacts, 0)] = trace
+        state.scheduled_contacts += 1
+        state.seen_contact_ids.add(contact_id)
+        consumer_trace = get_current_trace_buffer()
+        set_current_trace_buffer(trace)
+        try:
+            prepared = cleaning_request.prepare(role_request)
+            binding.request_gate(prepared.request)
+            completion = cleaning_request.dispatch(prepared)
+            trace.emit("USE", f"{completion.request_id}/native-role-contact", {
+                "use_role_id": request.phase_id,
+                "use_request_sha256": completion.request_sha256,
+                "use_response_sha256": completion.response_sha256,
+                "use_response_text_sha256": completion.response_text_sha256,
+                "use_agent_contact_id": completion.agent_contact_id,
+            })
+        finally:
+            cleaning_bindings.pop(contact_id, None)
+            set_current_trace_buffer(consumer_trace)
+        if completion.agent_contact_id != contact_id:
+            raise RailsRunnerError("node context cleaning lost its actual contact")
+        return CleaningContactOutcome(
+            agent_contact_id=completion.agent_contact_id,
+            request_id=completion.request_id,
+            request_sha256=completion.request_sha256,
+            response_sha256=completion.response_sha256,
+            response_text_sha256=completion.response_text_sha256,
+            text=completion.text,
+        )
+
     def record_solver_commit(role_result):
         """E2c: take one grouped Solver visit's committed answer in custody.
 
@@ -2237,6 +2426,17 @@ async def _invoke_native_role_episode(
                 "decoding_overrides": dict(solver_role_config.decoding_overrides),
             }
         ),
+    )
+    # E8b: the SAME request composer, bound to the cleaning contact's own
+    # binding provider and to a completion sink that settles nothing. It is a
+    # second instance rather than a second path: every byte of a cleaning
+    # request is built by MeteredNativeSpeechRequest.prepare exactly as a role
+    # contact's is, and dispatched through the same FrozenCoreClient. It is
+    # constructed unconditionally and used only when a boundary is ``cleaned``.
+    cleaning_request = MeteredNativeSpeechRequest(
+        client=core_client, binding_provider=cleaning_binding_provider,
+        render_request=binding.render_request,
+        completion_sink=capture_cleaning_completion,
     )
 
     async def metered(request):

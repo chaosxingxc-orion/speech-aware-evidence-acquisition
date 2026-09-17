@@ -22,7 +22,9 @@ from pathlib import Path
 
 from ..core.base import ROLE_CONTEXT_COMPILERS, CoreError
 from .node_context_policy import (
-    CLEANED_LEVEL_REFUSAL,
+    CLEANING_INVALID_RULES,
+    CLEANING_KEYS,
+    CLEANING_RENDER_TEMPLATES,
     LEVELS,
     PARSE_FAILURE_RULES,
     SLURP_BOUNDARY_IDS,
@@ -116,7 +118,73 @@ def _params(params: object) -> Mapping[str, object]:
     return params
 
 
-def _boundaries(boundaries: object) -> Mapping[str, Mapping[str, object]]:
+def _cleaning(entry: object, *, spelling: str, semantic: str) -> Mapping[str, object]:
+    """E8b: validate one boundary's declared cleaning contact.
+
+    The block's fields are exactly the design's four. The response format id
+    must be registered AND must render with no lock and no root, because the
+    runner resolves it at request-composition time from the frozen registry
+    alone -- there is no flight-side resolution path for a contact that is not
+    a program phase.
+    """
+
+    if semantic not in CLEANING_RENDER_TEMPLATES:
+        raise ValueError(
+            f"node context boundary {spelling!r} cannot be cleaned: this carrier "
+            f"registers a cleaning renderer only for "
+            f"{sorted(CLEANING_RENDER_TEMPLATES)}"
+        )
+    if not isinstance(entry, Mapping) or set(entry) != CLEANING_KEYS:
+        raise ValueError(
+            f"node context boundary {spelling!r} at level 'cleaned' requires a "
+            f"cleaning block declaring exactly {sorted(CLEANING_KEYS)}"
+        )
+    phase_id = entry["phase_id"]
+    if not isinstance(phase_id, str) or not phase_id.strip():
+        raise ValueError(
+            f"node context boundary {spelling!r} cleaning phase_id must be text"
+        )
+    template = entry["instruction_template"]
+    if not isinstance(template, str) or not template.startswith("probes/"):
+        raise ValueError(
+            f"node context boundary {spelling!r} cleaning instruction_template must "
+            "be a 'probes/<name>.txt' path under configs/"
+        )
+    if entry["on_invalid"] not in CLEANING_INVALID_RULES:
+        raise ValueError(
+            f"node context boundary {spelling!r} cleaning on_invalid must be one of "
+            f"{list(CLEANING_INVALID_RULES)}"
+        )
+    format_id = entry["response_format_id"]
+    if not isinstance(format_id, str) or not format_id.strip():
+        raise ValueError(
+            f"node context boundary {spelling!r} cleaning response_format_id must "
+            "be text"
+        )
+    from ..core.base import RESPONSE_FORMATS  # noqa: PLC0415
+    from . import controllers  # noqa: F401, PLC0415 (canonical registrations)
+
+    try:
+        builder = RESPONSE_FORMATS.resolve(format_id)
+    except CoreError as error:
+        raise ValueError(str(error)) from error
+    try:
+        document = builder()
+    except TypeError as error:
+        raise ValueError(
+            f"node context cleaning response format {format_id!r} requires a lock or "
+            "a root; a cleaning contact resolves its format from the registry alone"
+        ) from error
+    if not isinstance(document, Mapping) or not document:
+        raise ValueError(
+            f"node context cleaning response format {format_id!r} renders nothing"
+        )
+    return entry
+
+
+def _boundaries(
+    boundaries: object, *, default_level: str | None = None,
+) -> Mapping[str, Mapping[str, object]]:
     if not isinstance(boundaries, Mapping):
         raise ValueError("node context boundaries must be an object")
     legal = {f"{role}:{semantic}" for role, semantic in SLURP_BOUNDARY_IDS}
@@ -131,17 +199,17 @@ def _boundaries(boundaries: object) -> Mapping[str, Mapping[str, object]]:
                 f"node context boundary {spelling!r} has unknown fields; a boundary "
                 f"declares {sorted(_BOUNDARY_KEYS)}"
             )
-        level = entry.get("level")
+        level = entry.get("level", default_level)
         if level is not None and level not in LEVELS:
             raise ValueError(
                 f"node context boundary {spelling!r} level must be one of {list(LEVELS)}"
             )
         if level == "cleaned":
-            raise ValueError(f"node context boundary {spelling!r}: {CLEANED_LEVEL_REFUSAL}")
-        if "cleaning" in entry:
+            _cleaning(entry.get("cleaning"), spelling=spelling, semantic=spelling.split(":", 1)[1])
+        elif "cleaning" in entry:
             raise ValueError(
-                f"node context boundary {spelling!r} declares a cleaning contact: "
-                f"{CLEANED_LEVEL_REFUSAL}"
+                f"node context boundary {spelling!r} declares a cleaning contact at "
+                f"level {level!r}; only a 'cleaned' boundary may declare one"
             )
         rule = entry.get("on_parse_failure")
         if rule is not None and rule not in PARSE_FAILURE_RULES:
@@ -235,12 +303,10 @@ def validate_node_context_policy_config(document: object) -> str:
             raise ValueError(
                 f"native_episode.context_policy must be one of {list(LEVELS)} or an object"
             )
-        if document == "cleaned":
-            raise ValueError(CLEANED_LEVEL_REFUSAL)
         if document != "raw":
             raise ValueError(
-                "a bare 'structured' level declares no policy_id and no params; the "
-                "structured level needs both, so it is declared as an object"
+                f"a bare {document!r} level declares no policy_id and no params; "
+                "every level above raw needs both, so it is declared as an object"
             )
         return _bytes(document).decode()
     if not isinstance(document, Mapping) or set(document) - _TOP_LEVEL_KEYS:
@@ -253,8 +319,15 @@ def validate_node_context_policy_config(document: object) -> str:
             f"native_episode.context_policy.level must be one of {list(LEVELS)}"
         )
     if level == "cleaned":
-        raise ValueError(CLEANED_LEVEL_REFUSAL)
-    _boundaries(document.get("boundaries", {}))
+        # E8b: the DEFAULT level applies to every boundary of the carrier, and
+        # no carrier registers cleaning assets for every boundary -- cleaning
+        # is declared per boundary, one contact at a time, exactly as design
+        # section 5's fragment does.
+        raise ValueError(
+            "native_episode.context_policy.level cannot default to 'cleaned'; a "
+            "cleaning contact is declared on the boundary it cleans"
+        )
+    _boundaries(document.get("boundaries", {}), default_level=level)
     _producers(document.get("producers", {}))
     if is_node_context_null_arm(document):
         if "params" in document:
@@ -353,6 +426,33 @@ def node_context_source_format_id(config_json: str) -> str:
     return required
 
 
+def node_context_cleaning_boundaries(config_json: str) -> tuple[str, ...]:
+    """E8b: the boundary spellings this policy declares a cleaning contact on.
+
+    ``rails.native_episode_config.load_native_episode_config`` reads this to
+    raise the bounded contact ceiling: one cleaning contact per consumer
+    contact at that boundary, so the ceiling gains
+    ``(max_revisions + 1) * consumer_role.max_iterations`` per entry -- which
+    for the only boundary this program proposes, ``planner:review-finding``
+    with a one-iteration Planner, is exactly the ``(max_revisions + 1)`` design
+    section 7 states, taking the anchor's 11 to 13.
+    """
+
+    spec = json.loads(config_json)
+    if not isinstance(spec, Mapping):
+        return ()
+    boundaries = spec.get("boundaries") or {}
+    if not isinstance(boundaries, Mapping):
+        return ()
+    default_level = spec.get("level", "raw")
+    return tuple(sorted(
+        spelling
+        for spelling, entry in boundaries.items()
+        if isinstance(entry, Mapping)
+        and entry.get("level", default_level) == "cleaned"
+    ))
+
+
 def node_context_producer_formats(config_json: str) -> Mapping[str, str]:
     """``{role_kind: response_format_id}`` the declared policy requires of the
     producing phases -- the coupling ``load_native_episode_config`` checks the
@@ -414,11 +514,22 @@ def build_node_context_policy_binding(
         boundaries=spec.get("boundaries", {}),
         policy_id=spec["policy_id"],
     )
-    templates = {
-        entry["boundary"]: entry["template_sha256"]
-        for entry in policy.declared_boundaries()
-        if entry["template_sha256"] is not None
-    }
+    templates: dict[str, str] = {}
+    for entry in policy.declared_boundaries():
+        if entry["template_sha256"] is not None:
+            templates[entry["boundary"]] = entry["template_sha256"]
+        cleaning = entry.get("cleaning")
+        if cleaning is None:
+            continue
+        # E8b: a cleaned boundary pins THREE committed assets -- its L1
+        # template, the instruction the cleaning contact reads, and the
+        # template an accepted cleaning output is rendered through.
+        templates[f"{entry['boundary']}:cleaning-instruction"] = cleaning[
+            "instruction_template_sha256"
+        ]
+        templates[f"{entry['boundary']}:cleaning-render"] = cleaning[
+            "render_template_sha256"
+        ]
     return NodeContextPolicyBinding(
         policy=policy,
         producers=dict(spec.get("producers", {})),
@@ -439,6 +550,7 @@ __all__ = [
     "build_node_context_policy_binding",
     "build_slurp_node_context_policy_compiler",
     "is_node_context_null_arm",
+    "node_context_cleaning_boundaries",
     "node_context_producer_formats",
     "node_context_source_format_id",
     "validate_node_context_policy_config",
