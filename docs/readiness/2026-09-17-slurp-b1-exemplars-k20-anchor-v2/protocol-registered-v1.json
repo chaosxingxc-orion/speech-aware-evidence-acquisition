@@ -1,0 +1,386 @@
+{
+  "accounting": {
+    "full": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 47520,
+      "generation_calls_cap": 11880,
+      "gpu_hours_fit_inclusive": 12.0,
+      "native_task_contract_calls_cap": 6480,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 33930
+    },
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 117
+    },
+    "twin": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 47520,
+      "generation_calls_cap": 11880,
+      "gpu_hours_fit_inclusive": 12.0,
+      "native_task_contract_calls_cap": 6480,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 33930
+    }
+  },
+  "authority": {
+    "a2_decision": "docs/results/2026-09-17-slurp-a2-exemplar-headroom-audit-v1.md",
+    "b0_first_pass_verdict": "docs/results/2026-09-17-slurp-b0-review-off-verdict.md",
+    "b0_re_decision_read": "analysis/SAEA-SLURP-B0-REPLICATE-PAIRED-ANALYSIS-V1/README.md under the data root (score-contrasts.json sha256 69abec23e2c6aecca0d55474268ae2c9966631f243497f354a95b332c7ceb849)",
+    "cell": "B1 (section 4 Phase B table, module M1)",
+    "design": "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md",
+    "owner_decisions": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md"
+  },
+  "comparators": {
+    "primary": {
+      "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+      "contacts": 5417,
+      "kind": "sealed bytes; never a re-flown control",
+      "official_aggregate": {
+        "action_accuracy": 79.26,
+        "intent_scenario_plus_action": 77.96,
+        "pooled_slu_f1": 48.53,
+        "pooled_span_f1": 29.5,
+        "scenario_accuracy": 84.81
+      },
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+      "run_manifest_sha256": "049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152",
+      "score_sha256": "7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47"
+    },
+    "secondary": {
+      "attempt_id": "attempt-slurp-direct-max512-train-fold-a-source-recovery-generation-v1",
+      "kind": "released TRAIN A direct anchor, sealed bytes",
+      "official_aggregate": {
+        "action_accuracy": 75.09,
+        "intent_scenario_plus_action": 73.7,
+        "pooled_slu_f1": 33.89,
+        "pooled_span_f1": 21.1,
+        "scenario_accuracy": 82.69
+      },
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1",
+      "run_manifest_sha256": "546109055a373b358c43d36878c532b95784ee5d73d07f011c5fa3ea3d7ce11e",
+      "score_sha256": "7840a959fe4f43928fda0e0cacfe8c0ee4200116bfcd269bfe3451b59da29c38"
+    },
+    "twin": {
+      "kind": "token-matched retrieval-key control, flown only after a positive arm CI95",
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2"
+    }
+  },
+  "configurations": {
+    "full": {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-v2",
+      "campaign_plan": "configs/campaign/slurp-native-exemplars-k20-anchor-train-fold-a-v2.json",
+      "cell": "slurp-native-exemplars-k20-anchor-train-fold-a-v2",
+      "composed_config_hash": "db1f5e0238c60ad689d22dc3d56a92bdd72e7a7098a8921a79d8612de0b6b06d",
+      "execution_plan_protocol_hash": "63d62d74948d58309f81e1c1d0f7524688df62670f1c6791d32dd109688cfa81",
+      "experiment": "slurp-native-exemplars-k20-anchor-train-fold-a-v2",
+      "fit_attempt_id": "attempt-slurp-native-exemplars-k20-anchor-train-fold-a-fit-v2",
+      "fit_run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-FIT-V2",
+      "fragments": {
+        "baseline": "slurp-native-anchor-exemplars-k20-train-fold-a-v2",
+        "dataset": "slurp-speech-native-evo-fold-a-1080",
+        "experiment": "slurp-native-exemplars-k20-anchor-train-fold-a-v2",
+        "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-V2/phase-supply-v1.json",
+        "sha256": "dbd6afbd146ad87aec8e8ad5441ee0c4f35681fbadf8fb4a76943d8c44d3bf97"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-V2"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-smoke-4-generation-v2",
+      "cell": "slurp-native-exemplars-k20-anchor-smoke-4-v2",
+      "composed_config_hash": "049ea7c4b21f354247705385d90e28fc9d5a31f33685e1b82ba009ea5c7d5eec",
+      "execution_plan_protocol_hash": "74f4a464057ae7fafba1f633c7ed35f4d5302c38f337180f48d9e1bc5d69a74f",
+      "experiment": "slurp-native-exemplars-k20-anchor-smoke-4-v2",
+      "fit_attempt_id": "attempt-slurp-native-exemplars-k20-anchor-smoke-4-fit-v2",
+      "fit_run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-FIT-V2",
+      "fragments": {
+        "baseline": "slurp-native-anchor-exemplars-k20-smoke-4-v2",
+        "dataset": "slurp-speech-native-evo-fold-a-1080",
+        "experiment": "slurp-native-exemplars-k20-anchor-smoke-4-v2",
+        "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
+      },
+      "ordered_sample_ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ],
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-V2/phase-supply-v1.json",
+        "sha256": "76186c55253f3bf535b0496fc783686c83b352c7badbec7a9f01febc4c107aa7"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-V2",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    },
+    "twin": {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-twin-train-fold-a-generation-v2",
+      "campaign_plan": "configs/campaign/slurp-native-exemplars-k20-anchor-twin-train-fold-a-v2.json",
+      "cell": "slurp-native-exemplars-k20-anchor-twin-train-fold-a-v2",
+      "composed_config_hash": "f9b9d45e49c16e506f61e5ec292f4d3d54181d2f880e42bac3ebcdef3322e813",
+      "execution_plan_protocol_hash": "1bcfc79ff02991137363208344d43e8c8b045095711e17ff659d146154b35a73",
+      "experiment": "slurp-native-exemplars-k20-anchor-twin-train-fold-a-v2",
+      "fit_attempt_id": "attempt-slurp-native-exemplars-k20-anchor-twin-train-fold-a-fit-v2",
+      "fit_run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-FIT-V2",
+      "fragments": {
+        "baseline": "slurp-native-anchor-exemplars-k20-twin-train-fold-a-v2",
+        "dataset": "slurp-speech-native-evo-fold-a-1080",
+        "experiment": "slurp-native-exemplars-k20-anchor-twin-train-fold-a-v2",
+        "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2/phase-supply-v1.json",
+        "sha256": "17ee51bcd631abe02240ba8837ed28147f3fc5daf04df5dda9ced18c5d340855"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2",
+      "trigger": "Owner decision 8 of 2026-09-17: the twin flies only after the arm shows a positive CI95 against the base."
+    }
+  },
+  "contact_free_evidence": {
+    "receipts": [
+      "prepared-supply-and-hashes-v1.json",
+      "request-envelope-comparison-v1.json",
+      "request-envelope-digests-v1.json",
+      "prompt-fit-v1.json",
+      "exemplar-prompt-fit-v1.json",
+      "containment-v1.json",
+      "plan-hashes-v1.txt",
+      "ledger-parse-v1.json"
+    ],
+    "root": "SPEECHRL_DATA_DIR/coordination/slurp-b1-exemplars-k20-anchor-v2 (outside the repository, so no receipt can dirty the tree the scoring gate reads)",
+    "wire_check_unavailable": "core.flight.cli wire-check cannot run for any native-episode cell: FlightRuntime._dispatch_phase_program refuses a native episode whose transport is not the real shared speech renderer, and wire_check installs a text transport double. The sealed anchor and cells B0/B0r declare the same stages for the same reason; the request-envelope comparison stands in its place."
+  },
+  "containment": {
+    "no_example_projection_needed": true,
+    "receipt": "coordination/slurp-b1-exemplars-k20-anchor-v2/containment-v1.json",
+    "texts_checked": [
+      "context (task_instruction_template + task_instruction_fill)",
+      "perception",
+      "perception fill_params.source_catalog",
+      "planner",
+      "reviewer",
+      "solver"
+    ],
+    "total_collisions": 0
+  },
+  "cost_reporting": [
+    "actual generation contacts and contacts per row",
+    "actual repeated speech seconds",
+    "actual FIT endpoints and the minimum fit margin",
+    "GPU hours from the serving monitor over each lease window, never a wall-clock guess",
+    "mean latency, slot occupancy, utilisation and parked fraction",
+    "exemplar token volume actually rendered per row; preprocess and official scoring wall time"
+  ],
+  "decision_rule": {
+    "null_margins_pp": {
+      "action": 1.0327,
+      "intent": 1.0051,
+      "scenario": 1.0655,
+      "slu_micro": 1.1218,
+      "source": "the TRAIN A own null measured by cell B0r (B0r minus B0, CI95 half-widths), replacing the imported DEV-1000 margins"
+    },
+    "primary": "official pooled SLU micro F1",
+    "resampling": {
+      "draws": 10000,
+      "intervals": [
+        "CI95 for advancement",
+        "CI90 for diagnostics"
+      ],
+      "primary": "paired whole-speaker cluster bootstrap",
+      "seed": 20260915,
+      "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed",
+      "tables": [
+        "natural mixture",
+        "equal-scenario weighting"
+      ]
+    },
+    "verdict": {
+      "ADMITTED": "the CI95 lower bound of the pooled SLU delta is greater than 0 versus the sealed anchor AND versus the twin, intent is non-inferior within h_intent = 1.0051 pp, the normalised scorer agrees in sign where a TRAIN sibling exists, and no scenario loses intent beyond the null band",
+      "HARMFUL": "otherwise, when a guard fails on the losing side",
+      "NEUTRAL": "otherwise; it enters the default plan only if it lowers cost",
+      "no_repeat_to_pass": true,
+      "normalised_scorer_note": "slurp-slu-f1-normalized-v1 refuses TRAIN sample ids (it is bound to the devel split), so no TRAIN sibling of the symmetric scorer exists today; the clause is reported as not evaluable on this roster rather than silently dropped."
+    }
+  },
+  "expected_cost": {
+    "contacts_expected": 5417,
+    "contacts_per_row_expected": 5.016,
+    "gpu_hours_expected": 3.4,
+    "note": "The ceiling 11,880 is the exact program maximum, not a target. The anchor's own realized cost at this geometry was 5,417 contacts and 3.388 GPU hours; the exemplar block adds prompt tokens, not contacts."
+  },
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster/role-graph/prompt/geometry/cap change or silent recovery. At most one root-diagnosed recovery re-registration per run; a second failure closes the flight and the fix must be proven on a four-row dry run before another mechanism is admitted.",
+  "fit": {
+    "arithmetic": "1,080 rows * 11 native contacts * (1 speech packet + 3 endpoints) = 47,520",
+    "contact_cap": 47520,
+    "exact_fit": "Every realized immutable request is fitted against the resident tokenizer before it is transmitted; branches that never execute have no body and receive no receipt.",
+    "mode": "native_contact_fit",
+    "not_claimed": "A static all-branches full-roster capacity guarantee.",
+    "smoke_arithmetic": "4 rows * 11 native contacts * (1 speech packet + 3 endpoints) = 176",
+    "smoke_contact_cap": 176
+  },
+  "metrics": {
+    "diagnostics_required": [
+      "candidate-union coverage realized in the delivered answer, against the A2 availability number 0.9722",
+      "Solver escape-to-neighbour-intent rate",
+      "exemplar token volume actually rendered per row, against the 1,083-token maximum",
+      "revision counts and review-loop dispositions, against the anchor's five executed revisions and two intent changes"
+    ],
+    "primary": "official pooled SLU micro F1 (slurp-slu-official-train), natural mixture",
+    "projection_v3": "Owner decision 7 of 2026-09-17: projection v3 is the fixed post-processing of every official number and is reported BESIDE every unprojected official number, together with the symmetric-normalised view. The decision rule reads the unprojected numbers.",
+    "secondaries": [
+      "intent (joint scenario+action) accuracy",
+      "scenario accuracy",
+      "action accuracy",
+      "official pooled span F1"
+    ]
+  },
+  "not_authorized": [
+    "any contact before the coordinator pins the root decision receipt and flips readiness",
+    "spawning, stopping or reconfiguring the resident service; attach only",
+    "a second official scoring job, a re-score of any comparator, or a sharded score",
+    "flying the twin before the arm shows a positive CI95 against the base",
+    "any Fold B, DEV-1000 or test read",
+    "reusing any run or attempt id of the superseded v1 package"
+  ],
+  "not_claimed": [
+    "no superiority, generalization, paper-scale or held-out claim; TRAIN Fold A is an exposed discovery roster",
+    "no component-causal attribution beyond the one added store",
+    "A2's union coverage 0.9722 is availability, not a prediction of the delivered answer",
+    "the twin is a token-matched retrieval-key control, not an information-free control",
+    "a structural smoke result is never a quality result"
+  ],
+  "one_factor": {
+    "channel": "knowledge_stores (the SUPPLY axis)",
+    "held_identical": [
+      "the anchor role graph: perception 1, solver 1, reviewer 3, planner 1, max_revisions 1, policy phase-native-candidates-review-revise-v1, eleven-contact program ceiling",
+      "the roster, split and split identity",
+      "the model fragment and the resident np4 / 24,576-token geometry",
+      "the promoted speech packets",
+      "the intent-boundaries and slot-contracts stores with their release and snapshot hashes and the four-candidate K8/max3, 16/28 supply contract",
+      "every instruction template: the exemplars reach the model as typed content blocks on the acquire transition, never as instruction text",
+      "the phase_tools Reviewer task-contract authority block",
+      "the scorers"
+    ],
+    "known_request_difference": "On all 1,080 rows the rendered Perception, Reviewer and Planner requests are byte-identical to the sealed anchor's, and the Solver request differs only by the twenty traced train-exemplars content blocks: removing exactly those blocks reproduces the anchor's Solver envelope on 1,080 of 1,080 rows (4 of 4 on the smoke roster). render_phase_prompt_envelopes accumulates supply in DECLARATION order (perception, reviewer, planner, solver), so the static render shows the blocks only at the Solver; at dispatch the native episode runs perception -> solver -> reviewer -> planner and the supplied values stay visible in the accumulated QueryState, so the Reviewer and Planner requests that follow a Solver contact carry the same blocks. That runtime propagation is stated, not measured here; the native contact fit gate fits every realized request immediately before dispatch.",
+    "moved": [
+      "knowledge_stores gains the named store train-exemplars, verbatim from the E3 deliverable configs/baseline/slurp-native-dual-store-train-fold-a-exemplars-k20-v1.json",
+      "preparation_source_receipts gains the exemplar release receipt row (docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json, root repository)",
+      "the two speech-feature identity ids, unique per arm (provenance only; proved absent from every rendered request byte)",
+      "this cell's own native_contact_fit run and attempt identity",
+      "this cell's own prepared_phase_supply pin",
+      "two free-English note blocks"
+    ]
+  },
+  "population": {
+    "construction": "The exemplar construction pool excludes every utterance with a recording in TRAIN Fold A, TRAIN Fold B or DEV-1000 (the 2026-09-13 exclusion); 9,354 facets.",
+    "count": 1080,
+    "fold_b": "Fold B stays untouched; no Fold B or test attempt is admitted here.",
+    "name": "TRAIN Fold A",
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    },
+    "split_id": "SLURP-EVO-FOLD-A-V2",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery"
+  },
+  "preparation_base_commit": "bd04f4b970a605d5a6eba6de7f07d775216f8dc4",
+  "prompt_fit": {
+    "anchor_sealed_maxima_required_tokens": {
+      "perception:0": 4270,
+      "planner:0": 15028,
+      "planner:1": 15382,
+      "reviewer:0": 13259,
+      "reviewer:1": 15037,
+      "reviewer:2": 13596,
+      "reviewer:3": 15374,
+      "solver:0": 13157,
+      "solver:1": 13482
+    },
+    "anchor_widest_required_tokens": 15382,
+    "anchor_widest_reviewer_required_tokens": 15374,
+    "anchor_widest_reviewer_visit": "reviewer:3",
+    "anchor_widest_role_visit": "planner:1",
+    "exemplar_block_k20_realized": {
+      "chars": {
+        "max": 4332,
+        "mean": 2974.4,
+        "p50": 2907,
+        "p95": 3796
+      },
+      "k": 20,
+      "max_over_serving_slot": false,
+      "mean_blocks_per_row": 20,
+      "rows": 1080,
+      "serving_slot_tokens": 24576,
+      "tokens_chars_over_4_proxy": {
+        "max": 1083.0,
+        "mean": 743.6,
+        "p95": 949.0
+      }
+    },
+    "receipt": "coordination/slurp-b1-exemplars-k20-anchor-v2/prompt-fit-v1.json",
+    "serving_slot_tokens": 24576,
+    "upper_bounds": {
+      "margin_against_slot_realized": 8111,
+      "margin_against_slot_static_bound": 7558,
+      "realized_worst_case_required_tokens": 16465,
+      "static_bound_worst_case_required_tokens": 17018
+    }
+  },
+  "protocol_id": "SAEA-SLURP-B1-EXEMPLARS-K20-ANCHOR-PROTOCOL-V2",
+  "purpose": "Answer one question: do speech-keyed annotated TRAIN exemplars, supplied to the Solver as typed content blocks, improve official pooled SLU-F1 over the SEALED dual-store anchor on TRAIN Fold A 1,080? One factor moves: knowledge_stores gains one named store, train-exemplars, plain top-k = 20 keyed by the row's own sealed Fold A speech vector.",
+  "quality_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The comparators are the sealed anchor score artifact (primary) and the released direct anchor (secondary); neither is re-flown and neither is re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, the train-exemplars typed content blocks, fit receipts and seal, with no answer, reference or quality interpretation.",
+  "registered_at_utc": "2026-09-17T09:15:00.000000+00:00",
+  "schema": "saea-slurp-b1-exemplars-anchor-protocol-v2",
+  "scoring": {
+    "complete_jobs": 1,
+    "include_per_sample": true,
+    "no_sharding": true,
+    "official_scorer": "Pinned SLURP official evaluate.py (slurp-official-8eb16545) through core.scoring_batch",
+    "scheduled_by": "the campaign finalize step, once, over the complete manifest",
+    "scorers": [
+      "slurp-slu-official-train",
+      "cost"
+    ]
+  },
+  "service": {
+    "attach_only": true,
+    "feature_packets": "Reuse the promoted packets; zero encoding contacts.",
+    "max_output_tokens": 512,
+    "mmproj": "absent",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "slot_tokens": 24576,
+    "slots": 4,
+    "total_context": 98304
+  },
+  "source_worktree": "/home/chao/saea-worktrees/fable-b1-anchor-prep",
+  "status": "PREREGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "supersedes": {
+    "package": "docs/readiness/2026-09-17-slurp-b1-exemplars-k20-v1/",
+    "preregistration": "docs/readiness/2026-09-17-slurp-b1-exemplars-k20-v1-preregistration.md",
+    "reason": "The 2026-09-17 re-decision of module M0 under the TRAIN A own null returned HARMFUL (intent clause fails on both passes; the SLU clause fails once by 0.028 pp), so the Reviewer/Planner loop is retained and every later cell of the program builds on the sealed dual-store anchor rather than on the review-off base. The v1 package was never flown; its six exposure rows stay consumed = no and are annotated as superseded before contact.",
+    "run_ids_superseded": [
+      "SAEA-SLURP-NATIVE-EXEMPLARS-K20-TRAIN-FOLD-A-V1",
+      "SAEA-SLURP-NATIVE-EXEMPLARS-K20-TRAIN-FOLD-A-FIT-V1",
+      "SAEA-SLURP-NATIVE-EXEMPLARS-K20-TWIN-TRAIN-FOLD-A-V1",
+      "SAEA-SLURP-NATIVE-EXEMPLARS-K20-TWIN-TRAIN-FOLD-A-FIT-V1",
+      "SAEA-SLURP-NATIVE-EXEMPLARS-K20-SMOKE-4-V1",
+      "SAEA-SLURP-NATIVE-EXEMPLARS-K20-SMOKE-4-FIT-V1"
+    ]
+  }
+}
