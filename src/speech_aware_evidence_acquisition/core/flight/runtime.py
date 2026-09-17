@@ -4353,6 +4353,10 @@ class FlightRuntime:
                     {"native_episode_receipt": dict(result.native_episode_receipt)}
                     if getattr(result, "native_episode_receipt", None) is not None else {}
                 ),
+                **(
+                    {"solver_group": dict(result.solver_group)}
+                    if getattr(result, "solver_group", None) is not None else {}
+                ),
             }
             for result in last.results
         ]
@@ -7479,6 +7483,12 @@ class FlightRuntime:
             timing = timing_by_sample.get(sample_id)
             derived_output_fields = {}
             episode_receipt = row.get("native_episode_receipt")
+            # E2b (SLURP v2 base program M2 live wiring): present exactly
+            # when this row's Solver visit was grouped (samples >= 2). The
+            # delivered final_response_text is then the commit policy's
+            # AGGREGATED answer, not the last raw sample's response text --
+            # see the response_text_sha256 carve-out below.
+            solver_group = row.get("solver_group")
             if episode_receipt is not None:
                 # The delivery Solver can precede Reviewer/Planner contacts.
                 # Bind the existing response, without deriving or rewriting text.
@@ -7580,11 +7590,28 @@ class FlightRuntime:
                     or any(getattr(timing, key, None) != contact.get(key) for key in (
                         "request_sha256", "response_sha256", "response_text_sha256",
                     ))
-                    or (delivery.kind != "abstention"
+                    or (delivery.kind != "abstention" and solver_group is None
                         and hashlib.sha256(sources[0].final_response_text.encode("utf-8")).hexdigest()
                         != contact.get("response_text_sha256"))
                 ):
                     raise FlightRuntimeError("native source differs from the recorded model response")
+                if solver_group is not None:
+                    from ...rails.native_episode_receipt import (  # noqa: PLC0415
+                        validate_solver_group_receipt,
+                    )
+
+                    raw_roles = (raw_native or {}).get("roles") if isinstance(raw_native, Mapping) else None
+                    raw_solver_role = raw_roles.get("solver") if isinstance(raw_roles, Mapping) else None
+                    declared_samples = (
+                        raw_solver_role.get("samples") if isinstance(raw_solver_role, Mapping) else None
+                    )
+                    if not isinstance(declared_samples, int):
+                        raise FlightRuntimeError(
+                            "grouped Solver delivery requires a declared samples count"
+                        )
+                    validate_solver_group_receipt(
+                        solver_group, samples=declared_samples, error_type=FlightRuntimeError,
+                    )
                 if delivery.kind == "abstention":
                     from ..delivery import native_abstention_records
 
@@ -7666,6 +7693,10 @@ class FlightRuntime:
                     **(
                         {"native_episode_receipt": dict(episode_receipt)}
                         if episode_receipt is not None else {}
+                    ),
+                    **(
+                        {"solver_group": dict(solver_group)}
+                        if solver_group is not None else {}
                     ),
                 }
             )

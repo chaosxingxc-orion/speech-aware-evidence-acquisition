@@ -511,3 +511,90 @@ def test_commit_shape_and_ranges_are_enforced(commit):
     values["native_episode"]["roles"]["solver"]["commit"] = commit
     with pytest.raises(ValueError):
         load_native_episode_config(values, program(ceiling=100))
+
+
+# ---------------------------------------------------------------------------
+# E2b (SLURP v2 base program M2 live wiring): the explicit greedy-repeat
+# twin (docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md
+# section 4, item E2: "N greedy repeats aggregated identically"). Every
+# samples>=2 config above keeps E2's original temperature-in-(0, 2]
+# requirement; only a role that ALSO declares twin: "greedy-repeat" may set
+# temperature 0.
+# ---------------------------------------------------------------------------
+
+
+def test_temperature_zero_is_refused_without_a_declared_twin():
+    values = config()
+    values["native_episode"]["roles"]["solver"]["samples"] = 5
+    values["native_episode"]["roles"]["solver"]["decoding_overrides"] = {
+        "temperature": 0.0, "seed_offset": 0,
+    }
+    values["native_episode"]["roles"]["solver"]["commit"] = VALID_COMMIT
+    with pytest.raises(ValueError, match="temperature"):
+        load_native_episode_config(values, program(ceiling=8))
+
+
+def test_temperature_zero_is_admitted_by_an_explicit_greedy_repeat_twin():
+    values = config()
+    values["native_episode"]["roles"]["solver"]["samples"] = 5
+    values["native_episode"]["roles"]["solver"]["decoding_overrides"] = {
+        "temperature": 0.0, "seed_offset": 0,
+    }
+    values["native_episode"]["roles"]["solver"]["commit"] = VALID_COMMIT
+    values["native_episode"]["roles"]["solver"]["twin"] = "greedy-repeat"
+    parsed = load_native_episode_config(values, program(ceiling=8))
+    solver = parsed.role("solver")
+    assert solver.twin == "greedy-repeat"
+    assert solver.decoding_overrides["temperature"] == 0.0
+
+
+def test_twin_still_enforces_the_upper_temperature_bound():
+    values = config()
+    values["native_episode"]["roles"]["solver"]["samples"] = 5
+    values["native_episode"]["roles"]["solver"]["decoding_overrides"] = {
+        "temperature": 2.5, "seed_offset": 0,
+    }
+    values["native_episode"]["roles"]["solver"]["commit"] = VALID_COMMIT
+    values["native_episode"]["roles"]["solver"]["twin"] = "greedy-repeat"
+    with pytest.raises(ValueError, match="temperature"):
+        load_native_episode_config(values, program(ceiling=8))
+
+
+def test_twin_requires_samples_at_least_two():
+    values = config()
+    values["native_episode"]["roles"]["solver"]["twin"] = "greedy-repeat"
+    with pytest.raises(ValueError, match="samples >= 2"):
+        load_native_episode_config(values, program())
+
+
+@pytest.mark.parametrize("twin", ["", "bogus", "greedy_repeat", 1, True])
+def test_twin_rejects_any_value_other_than_greedy_repeat(twin):
+    values = config()
+    values["native_episode"]["roles"]["solver"]["samples"] = 5
+    values["native_episode"]["roles"]["solver"]["decoding_overrides"] = VALID_OVERRIDES
+    values["native_episode"]["roles"]["solver"]["commit"] = VALID_COMMIT
+    values["native_episode"]["roles"]["solver"]["twin"] = twin
+    with pytest.raises(ValueError, match="greedy-repeat"):
+        load_native_episode_config(values, program(ceiling=8))
+
+
+def test_twin_may_be_declared_alongside_a_positive_temperature():
+    """twin is a custody label, not itself a temperature constraint: a
+    samples>=2 role may declare twin: 'greedy-repeat' with T > 0 too (the
+    field only ever RELAXES the lower bound, from > 0 to >= 0)."""
+
+    values = config()
+    values["native_episode"]["roles"]["solver"]["samples"] = 5
+    values["native_episode"]["roles"]["solver"]["decoding_overrides"] = VALID_OVERRIDES
+    values["native_episode"]["roles"]["solver"]["commit"] = VALID_COMMIT
+    values["native_episode"]["roles"]["solver"]["twin"] = "greedy-repeat"
+    parsed = load_native_episode_config(values, program(ceiling=8))
+    assert parsed.role("solver").twin == "greedy-repeat"
+    assert parsed.role("solver").decoding_overrides["temperature"] == 0.7
+
+
+def test_only_solver_role_may_declare_a_twin():
+    values = config()
+    values["native_episode"]["roles"]["reviewer"]["twin"] = "greedy-repeat"
+    with pytest.raises(ValueError, match="phase_id and max_iterations"):
+        load_native_episode_config(values, program())

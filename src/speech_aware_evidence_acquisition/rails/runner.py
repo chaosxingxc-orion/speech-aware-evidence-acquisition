@@ -788,6 +788,10 @@ class AgentLoopResult:
     native_episode_receipt: Mapping[str, object] | None = None
     execution_unit_id: str | None = None
     execution_unit_binding: Mapping[str, object] | None = None
+    # E2b (SLURP v2 base program M2 live wiring): a top-level sibling of
+    # native_episode_receipt, present exactly when this row's Solver visit
+    # was grouped (samples >= 2). See _AgentRuntimeOutcome.solver_group.
+    solver_group: Mapping[str, object] | None = None
 
     def as_json(self) -> dict[str, object]:
         result = {
@@ -809,6 +813,8 @@ class AgentLoopResult:
         }
         if self.native_episode_receipt is not None:
             result["native_episode_receipt"] = dict(self.native_episode_receipt)
+        if self.solver_group is not None:
+            result["solver_group"] = dict(self.solver_group)
         if self.result_kind != TASK_ANSWER_RESULT_KIND:
             result["result_kind"] = self.result_kind
         if self.execution_unit_id is not None:
@@ -870,6 +876,12 @@ class _AgentRuntimeOutcome:
     final_supply: SupplyPacket | None
     trace_buffer: TraceBuffer
     native_episode_receipt: Mapping[str, object] | None = None
+    # E2b (SLURP v2 base program M2 live wiring): every raw sample custody
+    # plus commit provenance for a grouped Solver visit's delivered answer
+    # (reproduction.ojw.native_group_solver.run_grouped_solver_samples's
+    # solver_group), or None for a samples-1 (or non-native) outcome --
+    # byte-identical to before this field existed.
+    solver_group: Mapping[str, object] | None = None
 
 
 @dataclass
@@ -1639,6 +1651,25 @@ def _run_agent_trajectory(
     )
 
 
+def _solver_fragment_seed(program_id: str) -> int:
+    """Deterministic per-config-fragment base seed for grouped Solver
+    sampling (E2b, SLURP v2 base program M2 live wiring).
+
+    ``reproduction.ojw.native_request.compose_solver_sample_decoding_params``
+    seeds sample i of one Solver visit as ``fragment_seed + seed_offset +
+    i``. Every row of one run shares this SAME base -- it is derived only
+    from the composed program's own identity (``program.program_id``, the
+    same "fragment identity" every other native-episode contact id and key
+    representation id in this function already keys on), never from the row
+    -- so a fixed N-way diversity set repeats identically across rows,
+    exactly as an owner-picked constant seed would, without requiring the
+    frozen ``roles.solver.decoding_overrides``/``commit`` config shape (E2)
+    to carry one.
+    """
+
+    digest = content_hash({"saea_solver_fragment_seed_v1": program_id})
+    return int(digest[:8], 16)
+
 
 async def _invoke_native_role_episode(
     *, state, run_contact, session, binding, adapter, core_client, snapshot,
@@ -1655,6 +1686,7 @@ async def _invoke_native_role_episode(
     from ..reproduction.ojw.native_episode import (
         NativeEpisodeActions, NativeEpisodeNodes, NativeEpisodeSpec, build_native_episode,
     )
+    from ..reproduction.ojw.native_group_solver import GroupedSolverRoleNode
     from ..reproduction.ojw.native_request import (
         MeteredNativeSpeechRequest, NativeRoleSpeechBinding,
     )
@@ -1671,6 +1703,16 @@ async def _invoke_native_role_episode(
     config, program = binding.config, binding.program
     if bool(config.local_tool_workers) != (run_local is not None):
         raise RailsRunnerError("native local tool scheduling differs from its configuration")
+    # E2b (SLURP v2 base program M2 live wiring): the Solver role's own
+    # registered grouped-sampling config, resolved once. A samples-1 Solver
+    # (every config before this program, and every non-M2 config) carries
+    # solver_role_id=None/solver_sampling=None below and an unwrapped node
+    # further down -- byte-identical to before this feature existed.
+    solver_role_config = config.role("solver")
+    solver_group_samples = solver_role_config.samples
+    solver_fragment_seed = (
+        _solver_fragment_seed(program.program_id) if solver_group_samples > 1 else None
+    )
     pending = {}
     visits = {}
     completed = {}
@@ -1996,6 +2038,15 @@ async def _invoke_native_role_episode(
     adapter_request = MeteredNativeSpeechRequest(
         client=core_client, binding_provider=speech_binding,
         render_request=binding.render_request, completion_sink=capture_completion,
+        solver_role_id=(
+            solver_role_config.phase_id if solver_group_samples > 1 else None
+        ),
+        solver_sampling=(
+            None if solver_group_samples <= 1 else {
+                "fragment_seed": solver_fragment_seed,
+                "decoding_overrides": dict(solver_role_config.decoding_overrides),
+            }
+        ),
     )
 
     async def metered(request):
@@ -2104,7 +2155,7 @@ async def _invoke_native_role_episode(
                 continue
 
             def contact_context(index, role=role):
-                return NativeRoleContactContext(
+                kwargs = dict(
                     sample_id=state.prepared.sample.sample_id,
                     agent_contact_id=scoped_execution_contact_id(
                         f"{program.program_id}:{role.phase_id}:{index}:{state.prepared.sample.sample_id}",
@@ -2113,7 +2164,18 @@ async def _invoke_native_role_episode(
                     evidence_pins={"knowledge_snapshot": snapshot_sha256},
                     budget_id=run_id,
                 )
-            nodes[role.role_kind] = NativeRoleNode(
+                if role.role_kind == "solver" and role.samples > 1:
+                    # E2b: this node's own invocation index is GLOBAL across
+                    # the whole episode (every revision's Solver visit), so
+                    # it counts up in exact multiples of one grouped visit's
+                    # sample count -- the same mapping
+                    # rails.native_episode_receipt.validate_solver_group_receipt
+                    # expects (sample_index ascending from 0 within a group).
+                    kwargs["sample_index"] = index % role.samples
+                return NativeRoleContactContext(**kwargs)
+            def role_delivery_allowed(_role: str, output: str) -> bool:
+                return isinstance(output, str) and bool(output.strip())
+            solver_node = NativeRoleNode(
                 spec=NativeRoleNodeSpec(
                     role_id=role.phase_id, role_kind=role.role_kind, prompt=prompt,
                     max_iterations=role.max_iterations, ability_names=role.tool_names,
@@ -2126,8 +2188,22 @@ async def _invoke_native_role_episode(
                     (lambda phase, name, role=role: phase == role.phase_id and name in role.tool_names)
                     if role.role_kind in {"reviewer", "planner"} else None
                 ),
-                delivery_allowed=lambda _role, output: isinstance(output, str) and bool(output.strip()),
+                delivery_allowed=role_delivery_allowed,
             )
+            if role.role_kind == "solver" and role.samples > 1:
+                # E2b: the grouped Solver visit -- N real invoke_direct
+                # calls on the SAME solver_node above, through the SAME
+                # metered request path, aggregated by the registered commit
+                # policy. Every other role (and a samples-1 Solver) keeps
+                # the plain node unwrapped, byte-identical to before.
+                nodes[role.role_kind] = GroupedSolverRoleNode(
+                    inner=solver_node, samples=role.samples,
+                    fragment_seed=solver_fragment_seed,
+                    decoding_overrides=role.decoding_overrides, commit=role.commit,
+                    delivery_allowed=role_delivery_allowed,
+                )
+            else:
+                nodes[role.role_kind] = solver_node
         workflow = build_native_episode(
             spec=NativeEpisodeSpec(
                 config.episode_id,
@@ -2200,17 +2276,38 @@ async def _invoke_native_role_episode(
             )
         accepted = delivery.final_contact
         completion = completed.get(accepted.get("agent_contact_id"))
+        # E2b: a grouped Solver visit's delivered actor_output is the commit
+        # policy's AGGREGATED answer, not the last raw sample's response
+        # text -- solver_group's presence is what tells this apart from an
+        # ordinary (samples-1) delivery, whose actor_output/completion.text
+        # equality below is unchanged.
+        solver_group = (
+            None if delivery.kind == "abstention" else result["delivery"].get("solver_group")
+        )
         if (
             completion is None or completion.request_sha256 != accepted["request_sha256"]
             or completion.response_sha256 != accepted["response_sha256"]
             or completion.response_text_sha256 != accepted["response_text_sha256"]
-            or (delivery.kind != "abstention" and result["delivery"]["actor_output"] != completion.text)
+            or (
+                delivery.kind != "abstention" and solver_group is None
+                and result["delivery"]["actor_output"] != completion.text
+            )
             or (delivery.kind == "abstention" and result["delivery"] != {
                 "actor_output": "", "result_type": "abstention", "delivery_eligible": False,
             })
         ):
             raise RailsRunnerError("native delivery is not bound to its actual source response")
-        final_text = "" if delivery.kind == "abstention" else completion.text
+        if solver_group is not None:
+            from .native_episode_receipt import validate_solver_group_receipt
+
+            validate_solver_group_receipt(
+                solver_group, samples=solver_role_config.samples, error_type=RailsRunnerError,
+            )
+        final_text = (
+            "" if delivery.kind == "abstention"
+            else result["delivery"]["actor_output"] if solver_group is not None
+            else completion.text
+        )
         stop_transition = AgentStepTransition(
             snapshot_sha256=snapshot_sha256,
             prior_query_state_sha256=state.query_state.content_hash(),
@@ -2288,6 +2385,7 @@ async def _invoke_native_role_episode(
             agent_states=tuple(state.state_store[k] for k in state.query_state.agent_state_ids),
             final_supply=_supply_for_state(snapshot, state.query_state),
             trace_buffer=trace, native_episode_receipt=compact_receipt,
+            solver_group=solver_group,
         )
     finally:
         # Public framework resources are episode-owned, not role-visit-owned.
@@ -3540,6 +3638,7 @@ def run_speech_native_agent_loop(
                 native_episode_receipt=outcome.native_episode_receipt,
                 execution_unit_id=outcome.prepared.execution_unit_id,
                 execution_unit_binding=outcome.prepared.execution_unit_binding,
+                solver_group=getattr(outcome, "solver_group", None),
             )
         )
         if result_kind == TASK_ANSWER_RESULT_KIND and execution_units is None:

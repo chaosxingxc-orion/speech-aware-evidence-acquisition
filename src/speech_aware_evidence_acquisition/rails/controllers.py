@@ -1308,6 +1308,16 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     # ids must never resolve to the same object because their contact
     # ceilings differ.
     "phase-native-candidates-solve-v1": "phase-native-candidates-solve-v1.json",
+    # E2b, 2026-09-16: the SAME four phases and the SAME episode_id as
+    # "phase-native-candidates-solve-v1", with a wider contact ceiling for
+    # a grouped Solver visit (rails.native_episode_config: 1 + 1*(0+0+5) =
+    # 6 when the Solver role declares samples 5). A separate program id,
+    # never a flag on the first, for the same reason E1's own comment
+    # above states: the two program ids must never resolve to the same
+    # object because their contact ceilings differ.
+    "phase-native-candidates-solve-samples5-v1": (
+        "phase-native-candidates-solve-samples5-v1.json"
+    ),
     "phase-native-candidates-review-refresh-v1": "phase-native-candidates-review-refresh-v1.json",
     "native-answer-or-one-tool-v1": "native-answer-or-one-tool-v1.json",
     "native-answer-or-tool-v1": "native-answer-or-tool-v1.json",
@@ -1438,6 +1448,13 @@ def register_phase_programs_v1() -> None:
             "phase-native-candidates-solve-v1",
             default_controller_factory(
                 default_phase_program("phase-native-candidates-solve-v1")
+            ),
+        )
+    if "phase-native-candidates-solve-samples5-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-candidates-solve-samples5-v1",
+            default_controller_factory(
+                default_phase_program("phase-native-candidates-solve-samples5-v1")
             ),
         )
     if "phase-native-review-revise-json-v1" not in registered:

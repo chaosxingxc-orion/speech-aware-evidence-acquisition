@@ -26,6 +26,7 @@ from openjiuwen.core.workflow import (
     create_workflow_session,
 )
 
+from .native_group_solver import GroupedSolverRoleNode
 from .native_roles import (
     FrozenCoreRoleFiniteCompletionError,
     FrozenCoreRoleModelError,
@@ -131,7 +132,11 @@ class NativeEpisodeNodes:
     """
 
     perception: NativeRoleNode
-    solver: NativeRoleNode
+    # E2b (SLURP v2 base program M2 live wiring): a ``GroupedSolverRoleNode``
+    # here means the Solver role's registered ``samples >= 2``; ``rails.
+    # runner._invoke_native_role_episode`` builds it in place of the plain
+    # ``NativeRoleNode`` every other role (and a samples-1 Solver) keeps.
+    solver: NativeRoleNode | GroupedSolverRoleNode
     reviewer: NativeRoleNode | None = None
     planner: NativeRoleNode | None = None
     acquisition: NativeRoleNode | None = None
@@ -969,6 +974,19 @@ def build_native_episode(
             if node is not None:
                 raise ValueError(
                     f"{field} must be omitted when the review loop is disabled"
+                )
+            continue
+        if field == "solver":
+            # E2b: a grouped Solver visit (samples >= 2) is a
+            # GroupedSolverRoleNode, not a NativeRoleNode; both expose the
+            # same spec.role_id/spec.role_kind contract this validation and
+            # _RoleQuery/_add_role actually need.
+            if (
+                not isinstance(node, (NativeRoleNode, GroupedSolverRoleNode))
+                or node.spec.role_kind != kind
+            ):
+                raise ValueError(
+                    f"{field} must be a {kind} NativeRoleNode or GroupedSolverRoleNode"
                 )
             continue
         if not isinstance(node, NativeRoleNode) or node.spec.role_kind != kind:

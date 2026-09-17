@@ -36,6 +36,17 @@ class NativeEpisodeRole:
     samples: int = 1
     decoding_overrides: Mapping[str, object] | None = None
     commit: Mapping[str, object] | None = None
+    # E2b (SLURP v2 base program M2 live wiring): an explicit
+    # 'greedy-repeat' twin (docs/superpowers/specs/
+    # 2026-09-16-slurp-v2-base-program-design.md section 4, item E2's
+    # "N greedy repeats aggregated identically" control) is the ONLY way
+    # decoding_overrides.temperature may be 0 -- every other samples>=2
+    # config keeps E2's original temperature-in-(0, 2] requirement. The
+    # twin measures batch-composition nondeterminism only (llama.cpp
+    # greedy decoding is not bitwise reproducible across batch shapes);
+    # its N pinned seeds are recorded custody, never a source of
+    # diversity at temperature 0.
+    twin: str | None = None
 
     def __post_init__(self):
         if not isinstance(self.history_scope, str) or self.history_scope not in {
@@ -54,13 +65,18 @@ class NativeEpisodeRole:
             self.samples != 1
             or self.decoding_overrides is not None
             or self.commit is not None
+            or self.twin is not None
         ):
             raise ValueError("only the Solver role may declare grouped sampling")
+        if self.twin is not None and self.twin != "greedy-repeat":
+            raise ValueError("solver twin, when given, must be 'greedy-repeat'")
         if self.samples == 1:
             if self.decoding_overrides is not None:
                 raise ValueError("decoding_overrides requires samples >= 2")
             if self.commit is not None:
                 raise ValueError("commit is forbidden when samples == 1")
+            if self.twin is not None:
+                raise ValueError("twin requires samples >= 2")
             return
         if (
             not isinstance(self.decoding_overrides, Mapping)
@@ -71,12 +87,20 @@ class NativeEpisodeRole:
                 "temperature and seed_offset"
             )
         temperature = self.decoding_overrides["temperature"]
+        is_greedy_repeat_twin = self.twin == "greedy-repeat"
         if (
             isinstance(temperature, bool)
             or not isinstance(temperature, (int, float))
-            or not 0 < temperature <= 2
+            or not (
+                0 <= temperature <= 2 if is_greedy_repeat_twin else 0 < temperature <= 2
+            )
         ):
-            raise ValueError("decoding_overrides.temperature must be in (0, 2]")
+            raise ValueError(
+                "decoding_overrides.temperature must be in (0, 2], or 0 for an "
+                "explicit twin: greedy-repeat Solver group"
+                if is_greedy_repeat_twin
+                else "decoding_overrides.temperature must be in (0, 2]"
+            )
         seed_offset = self.decoding_overrides["seed_offset"]
         if (
             isinstance(seed_offset, bool)
@@ -380,7 +404,9 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         base_fields = {"phase_id", "max_iterations", "history_scope"}
         # Only the Solver row may carry grouped-sampling fields (E2, SLURP v2
         # base program M2); every other role keeps the historical shape.
-        solver_fields = {"samples", "decoding_overrides", "commit"} if kind == "solver" else set()
+        solver_fields = (
+            {"samples", "decoding_overrides", "commit", "twin"} if kind == "solver" else set()
+        )
         if (
             not isinstance(row, Mapping)
             or not {"phase_id", "max_iterations"} <= set(row)
@@ -432,6 +458,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         roles.append(NativeEpisodeRole(
             phase_id, kind, iterations, tools, row.get("history_scope", "full"),
             row.get("samples", 1), row.get("decoding_overrides"), row.get("commit"),
+            row.get("twin"),
         ))
     phase_ids = tuple(role.phase_id for role in roles)
     if len(set(phase_ids)) != 4 or set(phase_ids) != set(program.phase_names()):
