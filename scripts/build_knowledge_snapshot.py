@@ -85,6 +85,7 @@ from speech_aware_evidence_acquisition.rails.knowledge_build import (  # noqa: E
     SPLIT_IDENTITY_RECEIPT_RELPATH,
     VIEW_EXEMPLAR,
     VIEW_SLOT_FILLERS,
+    VIEW_ANNOTATED_EXEMPLARS,
     VALUE_FORMATS,
     KnowledgeBuildSpec,
     build_knowledge_snapshot,
@@ -340,14 +341,17 @@ def main() -> int:
     )
     parser.add_argument(
         "--view",
-        choices=(VIEW_EXEMPLAR, VIEW_SLOT_FILLERS),
+        choices=(VIEW_EXEMPLAR, VIEW_SLOT_FILLERS, VIEW_ANNOTATED_EXEMPLARS),
         default=VIEW_EXEMPLAR,
         help=(
             "how content facets and values RENDER. 'exemplar' (default) is what every "
             "committed snapshot carries. 'slot-fillers' quotes the utterance inside a "
             "key descriptor and renders each value as that utterance's slot type=filler "
             "pairs alone; it requires the 'content' dimension and writes to "
-            "size-<...>-slot-fillers"
+            "size-<...>-slot-fillers. 'annotated-exemplars' quotes the utterance the same "
+            "way and renders each value as '<utterance> | <scenario>_<action> | "
+            "type=filler; ...' (or '| none'); it also requires 'content' and writes to "
+            "size-<...>-annotated-exemplars"
         ),
     )
     parser.add_argument(

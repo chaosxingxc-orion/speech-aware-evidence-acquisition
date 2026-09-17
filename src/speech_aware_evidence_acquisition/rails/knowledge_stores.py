@@ -647,6 +647,27 @@ def build_knowledge_store_supply(
             action_target_ref="source-scoped-context-composite-v1",
         ).validate()
 
+    # Every store phase this router can serve at RUNTIME (never the first
+    # phase: a first-phase selection has no preceding advance and is decided
+    # by bootstrap_first_phase instead, per store, before the flight). A
+    # store's plain phase_supply entry for a later phase used to be built
+    # into callbacks[store_id] and then never called by anything the
+    # FlightRuntime reads back out (core.flight.runtime.RuntimeAssembly only
+    # ever reads `router.automatic_for_phase`) unless the SAME phase also
+    # carried a context_supply or a candidate_supply on some store -- so a
+    # named store's OWN phase_supply on a non-first phase (e.g. this
+    # program's E3 'train-exemplars' store, phase_supply.solver) was parsed,
+    # validated and receipted, and then silently never consulted at runtime.
+    # This is the E3 fix: every later-phase plain phase_supply entry is
+    # routed here too, alongside context_supply and candidate_supply,
+    # composed the same way context_supply already was.
+    plain_later_phase_specs = {
+        (store_id, phase)
+        for store_id in binding.store_ids
+        for phase in explicit_specs_by_store.get(store_id, {})
+        if phase != first_phase
+    }
+
     def automatic_for_phase(phase, context):
         query_state = getattr(context, "query_state", None)
         if query_state is None:
@@ -656,6 +677,12 @@ def build_knowledge_store_supply(
             for store_id in binding.store_ids
             if (store_id, phase) in context_specs
         ]
+        for store_id in binding.store_ids:
+            if (store_id, phase) in context_specs or (store_id, phase) not in plain_later_phase_specs:
+                continue
+            local_supply = route(store_id, phase, context)
+            if local_supply is not None:
+                supplies.append(binding.qualify_supply(store_id, local_supply, query_state))
         if candidate_callback is not None:
             candidate_supply = candidate_callback(phase, context)
             if candidate_supply is not None:
@@ -673,10 +700,27 @@ def build_knowledge_store_supply(
         "binding_sha256": binding.binding_sha256,
         "stores": receipts,
     }
-    if context_specs:
+    # DELIBERATELY NOT WIDENED (E3): a config whose stores declare later-phase
+    # plain phase_supply and NOTHING ELSE (no context_supply anywhere, no
+    # candidate_supply anywhere) still gets no `automatic_for_phase` -- exactly
+    # the pre-E3 behavior, and exactly what
+    # test_knowledge_stores.test_real_request_gate_retains_exact_qualified_
+    # store_evidence pins (`assert not hasattr(router, "automatic_for_phase")`
+    # against a config whose two stores declare ONLY phase_supply on
+    # non-first phases "decision-2"/"final", consumed there through the
+    # NATIVE-TOOL dispatcher's explicit `store_id` selection instead). That
+    # scenario is deliberately outside automatic dispatch: a store meant to be
+    # reached only by an explicit knowledge-target tool call must not ALSO
+    # fire automatically, or a flight wiring both mechanisms would deliver it
+    # twice. The E3 fix below only ENRICHES what `automatic_for_phase`
+    # already does once something else (context_supply or candidate_supply)
+    # already earns it a dispatcher: a later-phase plain phase_supply store
+    # bound alongside one of those (this program's anchor: 'slot-contracts'
+    # candidate_supply.solver plus the new 'train-exemplars'
+    # phase_supply.solver) now actually gets composed in, where before it was
+    # parsed, validated and receipted and then silently never called.
+    if context_specs or candidate_callback is not None:
         route.automatic_for_phase = automatic_for_phase
-    elif candidate_callback is not None:
-        route.automatic_for_phase = candidate_callback
     if candidate_receipt is not None:
         route.receipt["candidate_supply"] = candidate_receipt
         route.receipt["candidate_selections"] = candidate_receipt["candidate_selections"]
