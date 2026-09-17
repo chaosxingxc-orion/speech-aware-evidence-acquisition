@@ -1,0 +1,496 @@
+{
+  "accounting": {
+    "full": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 8640,
+      "generation_calls_cap": 2160,
+      "gpu_hours_fit_inclusive": 2.0,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 6170
+    },
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 32,
+      "generation_calls_cap": 8,
+      "gpu_hours_fit_inclusive": 0.2,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 25
+    }
+  },
+  "authority": {
+    "audit": "docs/results/2026-09-17-slurp-a3-coverage-confusion-audit-v1.md",
+    "cells": "B4a and B4b (section 4 Phase B table, modules M4a and M4b) plus the added B4c",
+    "design": "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md",
+    "owner_decisions": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "preregistration": "docs/readiness/2026-09-17-slurp-b4-org-cells-v1-preregistration.md",
+    "store_pins": "docs/readiness/2026-09-17-slurp-semantic-store-release-pins-v2.json",
+    "store_release": "docs/readiness/2026-09-17-slurp-semantic-store-revisions-v2-review.md"
+  },
+  "base": {
+    "baseline_fragment": "slurp-native-dual-store-train-fold-a-review-off-v1",
+    "cell": "B0",
+    "note": "If cell B0's verdict is HARMFUL, the coordinator re-bases all three cells on the sealed anchor before launch, and every composed hash, protocol hash, plan hash and ledger note in this package is recomputed. Nothing here may fly before the B0 verdict."
+  },
+  "comparators": {
+    "primary": {
+      "attempt_id": "attempt-slurp-native-review-off-train-fold-a-generation-v1",
+      "role": "cell B0, the review-loop-off base this cell extends; sealed bytes, never re-flown or re-scored",
+      "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_B0_FINALIZE",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1/attempt-slurp-native-review-off-train-fold-a-generation-v1/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1.scores.json",
+      "scores_sha256": "PENDING_B0_FINALIZE"
+    },
+    "secondary": {
+      "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+      "contacts": 5417,
+      "official_aggregate": {
+        "action_accuracy": 79.26,
+        "intent_scenario_plus_action": 77.96,
+        "pooled_slu_f1": 48.53,
+        "pooled_span_f1": 29.5,
+        "scenario_accuracy": 84.81
+      },
+      "role": "the sealed dual-store anchor; sealed bytes, never re-flown or re-scored",
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+      "run_manifest_sha256": "049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1.scores.json",
+      "scores_sha256": "7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47"
+    }
+  },
+  "configurations": {
+    "b4a": {
+      "attempt_id": "attempt-slurp-native-fallback-quirky-intent-v2-train-fold-a-generation-v1",
+      "campaign_plan": "configs/campaign/slurp-native-fallback-quirky-intent-v2-train-fold-a-v1.json",
+      "cell": "slurp-native-fallback-quirky-intent-v2-train-fold-a-v1",
+      "composed_config_hash": "814df815488d08c9bd625434eb93323b25ce1e015314342d376f230b4da2457e",
+      "execution_plan_protocol_hash": "a2c7ddf9fe18bb819a9ecaf8e743972a0591f394b268a56af501d09678a3318b",
+      "experiment": "slurp-native-fallback-quirky-intent-v2-train-fold-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-fallback-quirky-intent-v2-train-fold-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-TRAIN-FOLD-A-FIT-V1",
+      "fragments": {
+        "baseline": "slurp-native-review-off-fallback-quirky-intent-v2-train-fold-a-v1",
+        "dataset": "slurp-speech-native-evo-fold-a-1080",
+        "experiment": "slurp-native-fallback-quirky-intent-v2-train-fold-a-v1",
+        "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-TRAIN-FOLD-A-V1/phase-supply-v1.json",
+        "sha256": "5d1cd609d99b745cc2ca8de774eabb821f4cd744559cdb5cf7cd4e10ecf27089"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-TRAIN-FOLD-A-V1",
+      "smoke": {
+        "attempt_id": "attempt-slurp-native-fallback-quirky-intent-v2-smoke-4-generation-v1",
+        "cell": "slurp-native-fallback-quirky-intent-v2-smoke-4-v1",
+        "composed_config_hash": "eeef90e6e8ffdb6d44f802b096d31eb38d60a848a97ee884477edc16cedb56b5",
+        "execution_plan_protocol_hash": "0192634ef738f82c96d698998692a814585e36636e8306642858953280bd629c",
+        "experiment": "slurp-native-fallback-quirky-intent-v2-smoke-4-v1",
+        "fit_attempt_id": "attempt-slurp-native-fallback-quirky-intent-v2-smoke-4-fit-v1",
+        "fit_run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-SMOKE-4-FIT-V1",
+        "fragments": {
+          "baseline": "slurp-native-review-off-fallback-quirky-intent-v2-smoke-4-v1",
+          "dataset": "slurp-speech-native-evo-fold-a-1080",
+          "experiment": "slurp-native-fallback-quirky-intent-v2-smoke-4-v1",
+          "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
+        },
+        "ordered_sample_ids": [
+          "slurp:train:000007:audio--1504197557",
+          "slurp:train:000009:audio-1497557594-headset",
+          "slurp:train:000015:audio-1488524781",
+          "slurp:train:000023:audio-1490956038"
+        ],
+        "prepared_phase_supply": {
+          "relpath": "prepared/SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-SMOKE-4-V1/phase-supply-v1.json",
+          "sha256": "e4392cc7463b9592e8fcadc7befe829d737e6cc66a28dcf79cbe6ed8b712aed3"
+        },
+        "run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-SMOKE-4-V1",
+        "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+      }
+    },
+    "b4b": {
+      "attempt_id": "attempt-slurp-native-slot-store-v2-train-fold-a-generation-v1",
+      "campaign_plan": "configs/campaign/slurp-native-slot-store-v2-train-fold-a-v1.json",
+      "cell": "slurp-native-slot-store-v2-train-fold-a-v1",
+      "composed_config_hash": "9e677170e47f01c3f6eeeae359afde683eef07b7a9cf45a2cdaedecb40c6588a",
+      "execution_plan_protocol_hash": "e0e7ad859389bfff488a912fcc617c51db57784e757799cc06cce366d4e952e3",
+      "experiment": "slurp-native-slot-store-v2-train-fold-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-slot-store-v2-train-fold-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-TRAIN-FOLD-A-FIT-V1",
+      "fragments": {
+        "baseline": "slurp-native-review-off-slot-store-v2-train-fold-a-v1",
+        "dataset": "slurp-speech-native-evo-fold-a-1080",
+        "experiment": "slurp-native-slot-store-v2-train-fold-a-v1",
+        "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-TRAIN-FOLD-A-V1/phase-supply-v1.json",
+        "sha256": "c0c1bf1fe6adbfb5a4010893d5a400ac5ba9cc1cd56c4c7db2cbe6aca7c388dc"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-TRAIN-FOLD-A-V1",
+      "smoke": {
+        "attempt_id": "attempt-slurp-native-slot-store-v2-smoke-4-generation-v1",
+        "cell": "slurp-native-slot-store-v2-smoke-4-v1",
+        "composed_config_hash": "d0f44d8cebe9f73980a6d0ecaae4a7bad6da6a8315f95680c7f68496d4a8257b",
+        "execution_plan_protocol_hash": "0088be970c2fdfa3e30189a4e7d77e277557a7966ef89d8fe7ac53e228a4915f",
+        "experiment": "slurp-native-slot-store-v2-smoke-4-v1",
+        "fit_attempt_id": "attempt-slurp-native-slot-store-v2-smoke-4-fit-v1",
+        "fit_run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-SMOKE-4-FIT-V1",
+        "fragments": {
+          "baseline": "slurp-native-review-off-slot-store-v2-smoke-4-v1",
+          "dataset": "slurp-speech-native-evo-fold-a-1080",
+          "experiment": "slurp-native-slot-store-v2-smoke-4-v1",
+          "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
+        },
+        "ordered_sample_ids": [
+          "slurp:train:000007:audio--1504197557",
+          "slurp:train:000009:audio-1497557594-headset",
+          "slurp:train:000015:audio-1488524781",
+          "slurp:train:000023:audio-1490956038"
+        ],
+        "prepared_phase_supply": {
+          "relpath": "prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-SMOKE-4-V1/phase-supply-v1.json",
+          "sha256": "0e03cae253aa4808e5e14e113cc2a3e5903238f205b028c2a3fce05cf6fa6dc0"
+        },
+        "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-SMOKE-4-V1",
+        "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+      }
+    },
+    "b4c": {
+      "attempt_id": "attempt-slurp-native-intent-store-v2-train-fold-a-generation-v1",
+      "campaign_plan": "configs/campaign/slurp-native-intent-store-v2-train-fold-a-v1.json",
+      "cell": "slurp-native-intent-store-v2-train-fold-a-v1",
+      "composed_config_hash": "f9635063a5bf745119ab59bc3fd2b84733ae5c3d55de30bec9f564091d5cbab4",
+      "execution_plan_protocol_hash": "ed934dcff2d7a6b5d8ae9e6c950324656ab1f1e7aba9d313a2c6be46463ab428",
+      "experiment": "slurp-native-intent-store-v2-train-fold-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-intent-store-v2-train-fold-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-INTENT-STORE-V2-TRAIN-FOLD-A-FIT-V1",
+      "fragments": {
+        "baseline": "slurp-native-review-off-intent-store-v2-train-fold-a-v1",
+        "dataset": "slurp-speech-native-evo-fold-a-1080",
+        "experiment": "slurp-native-intent-store-v2-train-fold-a-v1",
+        "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-NATIVE-INTENT-STORE-V2-TRAIN-FOLD-A-V1/phase-supply-v1.json",
+        "sha256": "64cf8c39751ef47819d5198f59627fab61934f446e3190038194ff55dac66cee"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-INTENT-STORE-V2-TRAIN-FOLD-A-V1",
+      "smoke": {
+        "none": true,
+        "reason": "Cell B4c shares cell B4a's knowledge store, Perception retrieval geometry and prepared-supply inputs, so cell B4a's four-row smoke evidence is reusable as this cell's form evidence. B4c is the lowest-priority cell and is worth flying only if B4a admits."
+      }
+    }
+  },
+  "contact_free_evidence": {
+    "root": "SPEECHRL_DATA_DIR/coordination/slurp-b4-org-cells-v1 (outside the repository, so no receipt can dirty the tree the scoring gate reads)",
+    "wire_check_unavailable": "core.flight.cli wire-check cannot run for any native-episode cell: FlightRuntime._dispatch_phase_program refuses a native episode whose transport is not the real shared speech renderer, and wire_check installs a text transport double. The sealed anchor, cell B0 and cell B1 declare the same stages for the same reason. The row-for-row rendered-envelope comparison against cell B0 is the contact-free substitute and is stronger per row."
+  },
+  "cost_reporting": [
+    "actual generation contacts (expected 2 per row, 2,160 total per full cell)",
+    "actual repeated speech seconds (expected 2 x 3,084.528 = 6,169.06)",
+    "actual FIT endpoints (expected 4 per realized contact, 8,640 total)",
+    "GPU hours from the serving monitor for the lease window, not a wall-clock guess",
+    "mean latency, slot occupancy and duty cycle from the same monitor",
+    "prompt-token delta against cell B0, from the cell's own sealed fit receipts"
+  ],
+  "decision_rules": {
+    "b4a": {
+      "no_repeat_to_pass": true,
+      "null_margins_pp": {
+        "action": 0.98,
+        "intent": 0.92,
+        "scenario": 0.83,
+        "slu_micro": 1.18
+      },
+      "primary": "intent (joint scenario+action) accuracy, natural mixture",
+      "read_once": true,
+      "resampling": {
+        "draws": 10000,
+        "intervals": [
+          "CI95 for advancement",
+          "CI90 for diagnostics"
+        ],
+        "primary": "paired whole-speaker cluster bootstrap",
+        "seed": 20260915,
+        "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed",
+        "tables": [
+          "natural mixture",
+          "equal-scenario weighting"
+        ]
+      },
+      "secondary_gate": "official pooled SLU micro F1 (slurp-slu-official-train)",
+      "verdict": {
+        "ADMITTED": "the CI95 lower bound of the intent delta against cell B0 is greater than 0, pooled SLU is non-inferior within 1.18 pp (its own-null half-width), the symmetric-normalised scorer agrees in sign, and no scenario loses intent beyond the null band.",
+        "HARMFUL": "the CI95 lower bound of the pooled SLU delta is at or below -1.18 pp, or of the intent delta at or below -0.92 pp, or a scenario loses intent beyond the null band.",
+        "NEUTRAL": "neither gate is breached but the CI95 lower bound of the intent delta is not above 0. The module enters the default plan only if it lowers cost; it does not here, so NEUTRAL means not adopted."
+      },
+      "why_intent_is_primary": "FIX-1 and FIX-2 are candidate-coverage fixes: their whole reach is the 34 rows whose gold intent is general_quirky and never appears among the candidates, plus the 11 rows delivered as qa_* under gold general_quirky. Pooled SLU can only move through the intent that selects the slot contract, so intent is the estimand this cell is powered for and pooled SLU is the guard."
+    },
+    "b4b": {
+      "no_repeat_to_pass": true,
+      "null_margins_pp": {
+        "action": 0.98,
+        "intent": 0.92,
+        "scenario": 0.83,
+        "slu_micro": 1.18
+      },
+      "primary": "official pooled SLU micro F1 (slurp-slu-official-train), natural mixture",
+      "read_once": true,
+      "resampling": {
+        "draws": 10000,
+        "intervals": [
+          "CI95 for advancement",
+          "CI90 for diagnostics"
+        ],
+        "primary": "paired whole-speaker cluster bootstrap",
+        "seed": 20260915,
+        "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed",
+        "tables": [
+          "natural mixture",
+          "equal-scenario weighting"
+        ]
+      },
+      "secondary_gate": "intent (joint scenario+action) accuracy",
+      "verdict": {
+        "ADMITTED": "the CI95 lower bound of the pooled SLU delta against cell B0 is greater than 0, intent is non-inferior within 0.92 pp (its own-null half-width), the symmetric-normalised scorer agrees in sign, and no scenario loses intent beyond the null band.",
+        "HARMFUL": "the CI95 lower bound of the pooled SLU delta is at or below -1.18 pp, or of the intent delta at or below -0.92 pp, or a scenario loses intent beyond the null band.",
+        "NEUTRAL": "neither gate is breached but the CI95 lower bound of the pooled SLU delta is not above 0. The module enters the default plan only if it lowers cost; it does not here, so NEUTRAL means not adopted."
+      }
+    },
+    "b4c": {
+      "no_repeat_to_pass": true,
+      "null_margins_pp": {
+        "action": 0.98,
+        "intent": 0.92,
+        "scenario": 0.83,
+        "slu_micro": 1.18
+      },
+      "primary": "official pooled SLU micro F1 (slurp-slu-official-train), natural mixture",
+      "read_once": true,
+      "resampling": {
+        "draws": 10000,
+        "intervals": [
+          "CI95 for advancement",
+          "CI90 for diagnostics"
+        ],
+        "primary": "paired whole-speaker cluster bootstrap",
+        "seed": 20260915,
+        "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed",
+        "tables": [
+          "natural mixture",
+          "equal-scenario weighting"
+        ]
+      },
+      "secondary_gate": "intent (joint scenario+action) accuracy",
+      "verdict": {
+        "ADMITTED": "the CI95 lower bound of the pooled SLU delta against cell B0 is greater than 0, intent is non-inferior within 0.92 pp (its own-null half-width), the symmetric-normalised scorer agrees in sign, and no scenario loses intent beyond the null band.",
+        "HARMFUL": "the CI95 lower bound of the pooled SLU delta is at or below -1.18 pp, or of the intent delta at or below -0.92 pp, or a scenario loses intent beyond the null band.",
+        "NEUTRAL": "neither gate is breached but the CI95 lower bound of the pooled SLU delta is not above 0. The module enters the default plan only if it lowers cost; it does not here, so NEUTRAL means not adopted."
+      }
+    }
+  },
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster/role-graph/prompt/geometry/cap change or silent recovery. At most one root-diagnosed recovery re-registration per cell; a second failure closes that flight and the fix must be proven on a four-row dry run first.",
+  "fit": {
+    "arithmetic_full": "1,080 rows * 2 native contacts * (1 speech packet + 3 endpoints) = 8,640",
+    "arithmetic_smoke": "4 rows * 2 native contacts * (1 speech packet + 3 endpoints) = 32",
+    "exact_fit": "Every realized immutable request is fitted against the resident tokenizer before it is transmitted; branches that never execute have no body and receive no receipt.",
+    "mode": "native_contact_fit",
+    "not_claimed": "A static all-branches full-roster capacity guarantee."
+  },
+  "hash_caveat": "Every composed and protocol hash in this document is the value of the four config fragments exactly as committed on branch fable/b4-prep: readiness held, the preparation requirement present, prepared_phase_supply pinned. core.config.compose hashes the whole merged four-fragment document, so flipping readiness from held to ready and appending the coordinator's own decision requirement each change the composed hash and therefore the protocol hash. Recompute with the command in the runbook section 1 after every such edit and re-pin this package and the ten exposure-ledger notes before launch, exactly as cells B0 and B1 did.",
+  "metrics": {
+    "delta_convention": "delta = arm minus cell B0, in percentage points; a negative delta means the arm is worse",
+    "diagnostics": [
+      "per-type date and time false-negative and false-positive counts (the FIX-4 / FIX-5 estimands), and the same for media_type, transport_type, business_type, order_type, relation and event_name",
+      "general scenario intent accuracy and general scenario candidate coverage",
+      "candidate coverage with and without the appended fallback, and the share of rows on which the fallback was actually appended",
+      "the share of appended-fallback rows on which general_quirky was then delivered",
+      "saves / harms / ties with the exact two-sided McNemar p for every per-row metric"
+    ],
+    "primary_b4a": "intent (joint scenario+action) accuracy",
+    "primary_b4b_b4c": "official pooled SLU micro F1",
+    "secondaries": [
+      "intent accuracy",
+      "scenario accuracy",
+      "action accuracy",
+      "official pooled span F1"
+    ]
+  },
+  "not_authorized": [
+    "flying any of these cells before the cell B0 verdict is recorded",
+    "a second attempt of any run id without a new registered recovery",
+    "re-scoring or re-flying the sealed cell B0 or anchor comparators",
+    "reading Fold B, DEV-1000 or the test split",
+    "starting, stopping or switching the resident serving profile",
+    "any ASR, encoder or paid-API contact",
+    "merging the preparation branch into master"
+  ],
+  "not_claimed": [
+    "any superiority, generalization or paper-scale conclusion",
+    "any component-causal attribution beyond the one moved channel; cell B4a moves the fallback candidate and the intent store together and can only be decomposed by B4c",
+    "anything about Fold B, DEV-1000 or the test split",
+    "that the A3 row ceilings (34, 11, 81, 46) are predicted gains; they are upper bounds",
+    "that a structural smoke result is a quality result"
+  ],
+  "one_factor": {
+    "b4a": {
+      "held_identical": [
+        "the roster, split and split identity",
+        "the model fragment, resident geometry and promoted speech packets",
+        "the slot-contract store v1 with its release and snapshot hashes",
+        "the candidate contract: 3 candidates, 28 total values, 16 values per candidate, bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+        "the Perception retrieval geometry: k=8, tau 0.0, saea-fuse-associated-values-v1, saea-rank-wcos-prior-agree-v1, the sealed speech-query segment vectors and the sealed intent-boundary facet vectors",
+        "every phase_material instruction template and the task instruction template",
+        "the review-off phase_tools block, kept verbatim and inert",
+        "the native episode role graph and its 2-contact ceiling",
+        "the scorers"
+      ],
+      "moved": [
+        "knowledge_stores.slot-contracts.candidate_supply.solver.fallback_candidates absent -> [general_quirky]",
+        "phase_material.perception.fill_params.fallback_candidates absent -> [general_quirky]",
+        "knowledge_stores.intent-boundaries release/snapshot v1 -> v2 (five revised cards)",
+        "preparation_source_receipts[0..1] repinned to the intent-boundaries-v2 release and completion",
+        "native_contact_fit given this cell's own run and attempt id",
+        "speech_feature_key_representation_id / speech_feature_matcher_policy_id renamed onto this arm (provenance only, never model-visible)",
+        "prepared_phase_supply repinned to this cell's own model-free artifact"
+      ]
+    },
+    "b4a_named_covariate": "Cell B4a moves two things the verdict must not confuse: the candidate list gains one explicitly labelled fallback hypothesis, and the Solver's candidate-bound slot-card supply grows by a median of 7 and at most 16 values on the rows where that happens. A gain could come from either. Cell B4c (intent store v2 alone) and the per-row selection audit are the two instruments that separate them; neither is a substitute for the other.",
+    "b4b": {
+      "held_identical": [
+        "everything cell B4a holds identical, plus the intent-boundary store v1 and the whole Perception channel, and no fallback candidate at any site"
+      ],
+      "moved": [
+        "knowledge_stores.slot-contracts release/snapshot v1 -> v2 (eight revised cards)",
+        "preparation_source_receipts[2..3] repinned to the slot-contracts-v2 release and completion",
+        "native_contact_fit given this cell's own run and attempt id",
+        "speech_feature_key_representation_id / speech_feature_matcher_policy_id renamed onto this arm (provenance only, never model-visible)",
+        "prepared_phase_supply repinned to this cell's own model-free artifact"
+      ]
+    },
+    "b4c": {
+      "held_identical": [
+        "everything cell B4a holds identical, plus the absence of any fallback candidate at any declaration site; B4c is exactly B4a minus the fallback option"
+      ],
+      "moved": [
+        "knowledge_stores.intent-boundaries release/snapshot v1 -> v2 (five revised cards)",
+        "preparation_source_receipts[0..1] repinned to the intent-boundaries-v2 release and completion",
+        "native_contact_fit given this cell's own run and attempt id",
+        "speech_feature_key_representation_id / speech_feature_matcher_policy_id renamed onto this arm (provenance only, never model-visible)",
+        "prepared_phase_supply repinned to this cell's own model-free artifact"
+      ]
+    },
+    "prepared_supply_invariance": {
+      "claim": "The first-phase Perception supply of all five prepared artifacts selects the identical facet ids as the sealed anchor preparation and as cell B0's own artifact, on every row.",
+      "full_cell_output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+      "receipt": "coordination/slurp-b4-org-cells-v1/phase-supply-vs-base-v1.json",
+      "rows": 1080,
+      "smoke_output_sha256": "512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733"
+    },
+    "rendered_request_difference": {
+      "digests": "coordination/slurp-b4-org-cells-v1/request-envelope-digests-v1.json",
+      "per_row_receipt": "coordination/slurp-b4-org-cells-v1/request-channel-proof-v1.json",
+      "perception_channel": {
+        "b4a_and_b4c": "the same ordered facet ids on 1080/1080 rows; 701 rows byte-identical and 379 rows differing, and on every differing row the difference is EXACTLY the revised intent card texts, verified by in-place patching. Rows by number of revised cards selected: {\"0\": 701, \"1\": 258, \"2\": 86, \"3\": 26, \"4\": 9}; knowledge-block byte delta 0 to 1772",
+        "b4b": "byte-identical to cell B0's on 1080/1080 rows and on the smoke's 4/4: the same ordered facet ids and no intent card changed"
+      },
+      "solver_slot_channel": {
+        "b4a_additionally": "the appended general_quirky candidate, carrying the fixed fallback distinction, and the slot cards it brings within the unchanged 16/28 caps: a median of 7 added values (max 16), a median of 0 displaced (max 3), and a reachable knowledge ceiling 637 bytes above cell B0's",
+        "selection_is_store_version_invariant": "over all 34220 legal three-candidate combinations the selected slot value ids are identical between the v1 and v2 stores, so cell B4b's Solver differs from cell B0's only in the eight revised card texts, by 0 to 3302 bytes"
+      },
+      "worst_case_budget_envelope": "the prompt-budget renderer's worst-case union envelope grows by a CONSTANT +1,476 bytes (B4a, B4c) and +3,233 bytes (B4b) on every one of the 1,080 rows and all four declared phases; cells B4a and B4c render byte-identical worst-case envelopes on 1080/1080 rows, because that renderer already unions every candidate's cards. It is a bound, not a request, and its size-ranked card ordering moves when the revised cards grow.",
+      "worst_case_envelope_receipt": "coordination/slurp-b4-org-cells-v1/request-envelope-comparison-v1.json"
+    }
+  },
+  "ordering": [
+    "Cell B0 must be finalized and its verdict recorded first.",
+    "B4a smoke, then B4a campaign.",
+    "B4b smoke, then B4b campaign.",
+    "B4c only if B4a admits; it reuses B4a's smoke evidence and has no smoke of its own.",
+    "One experiment in flight at a time; the spec's order places B4a before B4b."
+  ],
+  "population": {
+    "construction": "Both folds were excluded from the fixed intent and slot knowledge construction, v1 and v2 alike; the v2 revision reuses the same 37,407 construction recordings, permitted support rosters and exclusion rosters as v1.",
+    "count": 1080,
+    "fold_b": "Fold B stays untouched; no Fold B or test attempt is admitted here.",
+    "name": "TRAIN Fold A",
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    },
+    "split_id": "SLURP-EVO-FOLD-A-V2",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery"
+  },
+  "preparation_base_commit": "6c5c9ab73aa056744f626f7dbee5cdb2a8273967",
+  "prompt_fit": {
+    "anchor_sealed_maxima": {
+      "perception:0": {
+        "contacts": 1080,
+        "margin_tokens_min": 20306,
+        "required_tokens_max": 4270
+      },
+      "solver:0": {
+        "contacts": 1080,
+        "margin_tokens_min": 11419,
+        "required_tokens_max": 13157
+      }
+    },
+    "decision": {
+      "b4a": "ALLOW",
+      "b4b": "ALLOW",
+      "b4c": "ALLOW"
+    },
+    "receipt": "coordination/slurp-b4-org-cells-v1/prompt-fit-v1.json",
+    "serving_slot_tokens": 24576,
+    "statement": "Every B4 cell renders the same two roles cell B0 renders, with the same speech packet, the same instruction bodies and the same two-contact ceiling. The only added prompt volume is revised knowledge-card text and, on cell B4a's Solver, the slot cards the appended general_quirky candidate brings within the unchanged 16/28 caps. Under the repository's stated word proxy every role of every cell fits the 24,576-token slot, the tightest margin being cell B4a's Solver at 5223 tokens under the per-row worst case and far more under the reachable ceiling. Decision ALLOW. This is a bound, not a measurement on the flight tokenizer: each flight fits every realized request itself through build_native_contact_fit_gate, and the coordinator reads those receipts. The one-token-per-added-byte rail is printed for transparency and fails only for cell B4a's Solver per-row worst case, where it overstates a 4,734-word block as 33,226 tokens.",
+    "upper_bounds_word_proxy": {
+      "b4a": {
+        "perception": 4629,
+        "solver": 19353
+      },
+      "b4b": {
+        "perception": 4270,
+        "solver": 13794
+      },
+      "b4c": {
+        "perception": 4629,
+        "solver": 13157
+      }
+    }
+  },
+  "protocol_id": "SAEA-SLURP-B4-ORG-CELLS-PROTOCOL-V1",
+  "purpose": "Three one-factor ORG cells on the cell B0 review-off base. B4a asks whether a standing general_quirky fallback hypothesis together with the one-directional qa/general contrast raises intent -- especially in the general scenario -- without harming SLU. B4b asks whether the date/time/omission-type slot-contract revision reduces date omission and time representation loss and raises pooled SLU. B4c separates the intent-store revision from the fallback candidate and is worth flying only if B4a admits.",
+  "quality_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The comparators are the sealed cell B0 score artifact (primary) and the sealed anchor score artifact (secondary); neither is ever re-flown or re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, the module's own request channel, fit receipts and seal, with no answer, reference or quality interpretation.",
+  "registered_at_utc": "2026-09-17T06:30:00.000000+00:00",
+  "schema": "saea-slurp-b4-org-cells-protocol-v1",
+  "scoring": {
+    "complete_jobs": 1,
+    "include_per_sample": true,
+    "no_sharding": true,
+    "official_scorer": "Pinned SLURP official evaluate.py (slurp-official-8eb16545) through core.scoring_batch",
+    "scheduled_by": "the campaign finalize step, once, over the complete manifest",
+    "scorers": [
+      "slurp-slu-official-train",
+      "cost"
+    ]
+  },
+  "service": {
+    "attach_only": true,
+    "feature_packets": "Reuse the promoted EVO-FOLDS-V2 packets; zero encoding contacts.",
+    "max_output_tokens": 512,
+    "mmproj": "absent",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "slot_tokens": 24576,
+    "slots": 4,
+    "total_context": 98304
+  },
+  "source_worktree": "/home/chao/saea-worktrees/fable-b4-prep",
+  "status": "PREREGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP"
+}
