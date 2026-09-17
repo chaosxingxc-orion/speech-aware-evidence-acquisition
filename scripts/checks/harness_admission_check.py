@@ -50,13 +50,31 @@ checked:
    (``rails.config_tables.is_episode_null_arm``).
 
 6. **A whole named knowledge store is one ``knowledge_stores.<store_id>``
-   key.** Added alongside rule 5, for a module that adds a whole named store
-   block (release/snapshot pins plus its own supply) rather than one entry of
-   the ``knowledge_views`` table, which wraps a PHASE's material/supply and
-   not a STORE. Such an entry declares ``switch.table`` ``"stores"``; its key
-   must resolve as ``rails.config_tables.resolve_stores_switch_key`` requires,
-   and its OFF arm must be ``null`` -- the named store absent
-   (``rails.config_tables.is_stores_null_arm``).
+   key, in one of TWO declared arm forms.** Added alongside rule 5, for a
+   module that adds a whole named store block (release/snapshot pins plus its
+   own supply) rather than one entry of the ``knowledge_views`` table, which
+   wraps a PHASE's material/supply and not a STORE. Such an entry declares
+   ``switch.table`` ``"stores"`` and its key must resolve as
+   ``rails.config_tables.resolve_stores_switch_key`` requires. Its arms are
+   then read in one of two forms, and the entry SAYS WHICH:
+
+   * the NULL form (no ``switch.form`` field), for a module that ADDS a store
+     the comparator does not carry: OFF is ``null``, the named store absent
+     (``rails.config_tables.is_stores_null_arm``);
+   * the RE-PIN form (``switch.form`` ``"repin"``, added 2026-09-17 by E9 for
+     cell B4b's module M4b), for a module that REVISES a store the comparator
+     ALREADY carries: OFF and ON are both re-pin arms
+     (``rails.config_tables.is_stores_repin_arm`` -- exactly ``release`` and
+     ``snapshot``, each a ``{relpath, sha256}`` pin), they must DIFFER, and
+     each pin whose relpath resolves to a file in this repository is hashed
+     here. A pin that resolves to no such file is a ``SPEECHRL_DATA_DIR``
+     relpath, which this model-free check never opens and therefore checks for
+     shape alone.
+
+   The form is declared, never inferred: an entry whose OFF arm is not the
+   store's absence and which does not say ``"repin"`` is refused, because an
+   OFF arm silently allowed to be anything at all is the loosening the null
+   form exists to prevent.
 
 A "default plan" is a committed config fragment the receipt itself names in
 ``default_plans`` -- declared, never inferred, because an experimental ON arm
@@ -87,16 +105,20 @@ from speech_aware_evidence_acquisition.rails.config_tables import (  # noqa: E40
     NULL_ARMS,
     RUN_NULL_ARMS,
     RUN_SWITCH_CLASS,
+    STORES_PIN_FIELDS,
+    STORES_REPIN_FORM,
     STORES_SWITCH_CLASS,
     SWITCH_CLASS_NAMES,
     ConfigTableError,
     is_episode_null_arm,
     is_run_null_arm,
     is_stores_null_arm,
+    is_stores_repin_arm,
     resolve_episode_switch_key,
     resolve_run_switch_key,
     resolve_stores_switch_key,
     resolve_switch_key,
+    stores_arm_matches,
 )
 
 RECEIPT_RELPATH = "docs/receipts/harness-admission.json"
@@ -154,13 +176,25 @@ def _is_blocked(entry: Mapping[str, Any]) -> tuple[bool, str]:
     return False, ""
 
 
-def _switch_present(fragment: Mapping[str, Any], table: str, entry_key: str) -> bool:
+def _switch_present(
+    fragment: Mapping[str, Any],
+    table: str,
+    entry_key: str,
+    switch: Mapping[str, Any] | None = None,
+) -> bool:
     """Whether ``fragment`` arms ``entry_key`` of ``table`` with a non-null arm.
 
     The table's own null arm is not "present": that is the OFF arm, and a
     plan declaring it is a plan the module is switched off in. A ``run``-class
     key is FLAT, so it is looked for at the fragment's top level and its null
     arm is the key's absence or the driver's documented default.
+
+    A ``stores``-class module in the RE-PIN form is the one case where "not
+    the null arm" is not the question: its OFF arm is the incumbent's pins,
+    not the store's absence, so a plan arms it only when the plan pins exactly
+    the ON arm's release and snapshot bytes. That is what ``switch`` is passed
+    for -- a plan still carrying the incumbent's pins has not armed the
+    successor, and neither has a plan carrying no store at all.
     """
 
     if table == RUN_SWITCH_CLASS:
@@ -169,6 +203,8 @@ def _switch_present(fragment: Mapping[str, Any], table: str, entry_key: str) -> 
         return _episode_key_present(fragment, entry_key)
     if table == STORES_SWITCH_CLASS:
         store_id = entry_key.split(".", 1)[1]
+        if isinstance(switch, Mapping) and switch.get("form") == STORES_REPIN_FORM:
+            return stores_arm_matches(fragment, store_id, switch.get("on"))
         stores = fragment.get(KNOWLEDGE_STORES_TABLE)
         return isinstance(stores, Mapping) and not is_stores_null_arm(stores.get(store_id))
     block = fragment.get(table)
@@ -299,8 +335,10 @@ def _check_episode_switch(switch: Mapping[str, Any], repo_root: Path, where: str
 
 
 def _check_stores_switch(switch: Mapping[str, Any], repo_root: Path, where: str) -> list[str]:
-    """Rule 6: ``knowledge_stores.<store_id>``, whose OFF arm is the named
-    store's absence."""
+    """Rule 6: ``knowledge_stores.<store_id>``, in one of the class's two
+    DECLARED arm forms -- the null form, whose OFF arm is the named store's
+    absence, and the re-pin form, whose OFF and ON arms are the incumbent's
+    and the successor's release/snapshot pins."""
 
     failures: list[str] = []
     try:
@@ -309,16 +347,108 @@ def _check_stores_switch(switch: Mapping[str, Any], repo_root: Path, where: str)
         failures.append(f"{where}.switch.key: {error}")
         failures.extend(_check_proof(switch["proof"], repo_root, where))
         return failures
-    if not is_stores_null_arm(switch["off"]):
+    form = switch.get("form")
+    if form is not None and form != STORES_REPIN_FORM:
         failures.append(
-            f"{where}.switch.off is {switch['off']!r}; the OFF arm of a 'stores' "
-            "module must be null -- the named store absent -- so OFF is a twin of "
-            "the pre-module knowledge_stores shape rather than a third cell identity"
+            f"{where}.switch.form is {form!r}; a 'stores' entry is in one of two "
+            f"forms -- no 'form' field (the null form: OFF is the named store "
+            f"absent) or {STORES_REPIN_FORM!r} (the re-pin form: OFF and ON are the "
+            "incumbent's and the successor's release/snapshot pins)"
         )
-    if is_stores_null_arm(switch["on"]):
-        failures.append(f"{where}.switch.on is the null arm; an ON arm must arm something")
+        failures.extend(_check_proof(switch["proof"], repo_root, where))
+        return failures
+    if form == STORES_REPIN_FORM:
+        failures.extend(_check_stores_repin_arms(switch, repo_root, where))
+    else:
+        if not is_stores_null_arm(switch["off"]):
+            failures.append(
+                f"{where}.switch.off is {switch['off']!r}; the OFF arm of a 'stores' "
+                "module must be null -- the named store absent -- so OFF is a twin of "
+                "the pre-module knowledge_stores shape rather than a third cell "
+                f"identity. A module that RE-PINS a store the comparator already "
+                f"carries is the class's other form and must declare "
+                f"'form': {STORES_REPIN_FORM!r}"
+            )
+        if is_stores_null_arm(switch["on"]):
+            failures.append(
+                f"{where}.switch.on is the null arm; an ON arm must arm something"
+            )
     failures.extend(_check_proof(switch["proof"], repo_root, where))
     return failures
+
+
+def _check_stores_repin_arms(
+    switch: Mapping[str, Any], repo_root: Path, where: str
+) -> list[str]:
+    """The re-pin form's own rules: two well-formed pin arms, DIFFERENT from
+    each other, and every pin this repository actually holds re-hashed here.
+
+    A re-pin twin is not a null twin, and saying so out loud is the whole
+    point of the form: OFF is a config the comparator really flew, so the
+    check cannot fall back on "absent means off". What it can do instead is
+    insist that the two arms move the two pin leaves and nothing else, and
+    that they are not the same bytes wearing two names.
+    """
+
+    failures: list[str] = []
+    for arm_name in ("off", "on"):
+        if not is_stores_repin_arm(switch[arm_name]):
+            failures.append(
+                f"{where}.switch.{arm_name} is {switch[arm_name]!r}; a re-pin arm must "
+                f"carry exactly {list(STORES_PIN_FIELDS)}, each an object of 'relpath' "
+                "and a lowercase 64-hex 'sha256' -- the two leaves a store re-pin "
+                "moves and the only two it may move"
+            )
+    if failures:
+        return failures
+    if switch["off"] == switch["on"]:
+        failures.append(
+            f"{where}.switch.off equals {where}.switch.on; a re-pin whose two arms pin "
+            "the same release and snapshot bytes switches nothing at all, and a module "
+            "that switches nothing is not a module"
+        )
+    for arm_name in ("off", "on"):
+        for field in STORES_PIN_FIELDS:
+            failures.extend(
+                _check_stores_pin(
+                    switch[arm_name][field],
+                    repo_root,
+                    f"{where}.switch.{arm_name}.{field}",
+                )
+            )
+    return failures
+
+
+def _check_stores_pin(
+    pin: Mapping[str, Any], repo_root: Path, where: str
+) -> list[str]:
+    """One release or snapshot pin of a re-pin arm.
+
+    A store pin is either REPO-relative -- and then its bytes are in this
+    repository and are re-hashed here, because a pin whose file moved is not a
+    pin -- or a ``SPEECHRL_DATA_DIR`` relpath, which this model-free check
+    never opens (it reads no data root) and so checks for shape alone. Which
+    of the two it is, is decided by looking. The one case in between is
+    fail-closed: a relpath whose DIRECTORY is in this repository but whose
+    file is not is a repo-relative pin that names nothing.
+    """
+
+    relpath = str(pin["relpath"])
+    path = repo_root / relpath
+    if path.is_file():
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        if digest != pin["sha256"]:
+            return [
+                f"{where} pins {relpath} at {pin['sha256']}, but that file's bytes in "
+                f"this repository hash to {digest}"
+            ]
+        return []
+    if path.parent.is_dir():
+        return [
+            f"{where} names {relpath}, whose directory is in this repository but whose "
+            "file is not; a repo-relative store pin must name a file that exists"
+        ]
+    return []
 
 
 def _check_falsifier(falsifier: object, repo_root: Path, where: str) -> list[str]:
@@ -504,7 +634,9 @@ def evaluate(repo_root: Path, receipt_path: Path | None = None) -> dict[str, Any
                 plan["config"]
                 for plan in plans
                 if plan["carrier"] == carrier
-                and _switch_present(plan["fragment"], table, entry_key)
+                and _switch_present(
+                    plan["fragment"], table, entry_key, entry["switch"]
+                )
             ]
             if entry_key is not None
             else []
@@ -528,6 +660,7 @@ def evaluate(repo_root: Path, receipt_path: Path | None = None) -> dict[str, Any
                 "in_default_plans": carrying,
                 "module": module,
                 "status": status,
+                "switch_form": entry["switch"].get("form"),
                 "switch_key": entry["switch"].get("key"),
                 "table": table,
             }

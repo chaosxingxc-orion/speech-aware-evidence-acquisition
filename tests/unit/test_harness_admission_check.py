@@ -823,4 +823,249 @@ def test_the_v3_schema_still_validates_every_existing_entry():
     result = hac.evaluate(REPO_ROOT)
     assert result["failures"] == []
     assert result["passed"] is True
-    assert len(result["entries"]) == 4
+    # Every committed entry validates -- read as a count OF THE RECEIPT rather
+    # than as a literal, because this test is about the schema validating what
+    # is committed, and a literal turns every later admission into a failure
+    # here (the SLURP review-loop entry of 2026-09-17 made the old literal 4
+    # wrong without anything being wrong).
+    assert len(result["entries"]) == len(_committed()["entries"])
+
+
+# ---------------------------------------------------------------------------
+# Rule 6, the class's SECOND arm form: the store RE-PIN (E9, 2026-09-17).
+#
+# Cell B4b's module M4b re-pins a store the comparator ALREADY carries --
+# knowledge_stores.slot-contracts, from slot-contracts-v1 to slot-contracts-v2
+# -- so its OFF arm is the incumbent's pins, not the store's absence, and the
+# null form cannot express it. These cases fix what the extension accepts and,
+# more importantly, what it still refuses: an undeclared re-pin, a re-pin that
+# pins the same bytes twice, an arm that moves more than the two pin leaves,
+# and a repo-relative pin whose file is missing or whose bytes moved. Every
+# case runs against a SYNTHETIC receipt; the committed one carries no re-pin
+# entry (the M4b row is not written here) and is never mutated.
+# ---------------------------------------------------------------------------
+
+REPIN_PROOF = (
+    "tests/unit/test_config_table_module_switches.py"
+    "::test_the_stores_repin_form_is_one_key"
+)
+
+#: The two arms exactly as the committed fragments pin them: the sealed anchor
+#: configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json and
+#: cell B4b's configs/baseline/slurp-native-anchor-slot-store-v2-train-fold-a-v2.json.
+#: Both relpaths are SPEECHRL_DATA_DIR paths, so this model-free check reads
+#: neither and both are checked for shape alone.
+V1_PINS = {
+    "release": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+        "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e",
+    },
+    "snapshot": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/snapshot.json",
+        "sha256": "11c246e4b815a4f966e8cf8785f06b70515755eca71658862c6f98e9914044e6",
+    },
+}
+V2_PINS = {
+    "release": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v2/release.json",
+        "sha256": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b",
+    },
+    "snapshot": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v2/snapshot.json",
+        "sha256": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec",
+    },
+}
+
+
+def _repin_entry(tmp_path, **switch_overrides):
+    switch = {
+        "form": "repin",
+        "key": "knowledge_stores.slot-contracts",
+        "off": copy.deepcopy(V1_PINS),
+        "on": copy.deepcopy(V2_PINS),
+        "proof": REPIN_PROOF,
+        "table": "stores",
+    }
+    switch.update(switch_overrides)
+    proof_relpath, _, proof_name = REPIN_PROOF.partition("::")
+    proof = tmp_path / proof_relpath
+    proof.parent.mkdir(parents=True, exist_ok=True)
+    if not proof.exists():
+        proof.write_text(f"def {proof_name}():\n    pass\n", encoding="utf-8")
+    return _entry(
+        module="date/time slot-contract revision (slot store v2)",
+        status="ADMITTED",
+        switch=switch,
+    )
+
+
+def _repin_plan(tmp_path, pins=None, relpath="configs/baseline/repin-plan.json"):
+    """A default-plan fragment pinning the slot-contracts store at ``pins``
+    (the v2 pins by default), beside a second store that never moves. ``pins``
+    of ``None`` writes a plan that carries no slot-contracts store at all."""
+
+    path = tmp_path / relpath
+    path.parent.mkdir(parents=True, exist_ok=True)
+    stores = {"intent-boundaries": {"store_role": "intent-boundaries"}}
+    if pins is not None:
+        stores["slot-contracts"] = {
+            "store_role": "slot-contracts",
+            "candidate_supply": {"solver": {"provider": "slurp-candidate-semantic-v1"}},
+            **copy.deepcopy(pins),
+        }
+    path.write_text(json.dumps({"knowledge_stores": stores}), encoding="utf-8")
+    return relpath
+
+
+def test_a_stores_repin_switch_with_an_arming_plan_passes(tmp_path):
+    plan = _repin_plan(tmp_path, V2_PINS)
+    result = _evaluate(
+        tmp_path,
+        _receipt([_repin_entry(tmp_path)], [{"carrier": "slurp", "config": plan}]),
+    )
+    assert result["failures"] == []
+    assert result["entries"][0]["table"] == "stores"
+    assert result["entries"][0]["switch_form"] == "repin"
+    assert result["entries"][0]["switch_key"] == "knowledge_stores.slot-contracts"
+    assert result["entries"][0]["in_default_plans"] == [plan]
+
+
+def test_a_plan_carrying_the_repin_off_pins_does_not_arm_the_module(tmp_path):
+    """The whole reason plan arming needed the ON arm: the store IS present
+    and is NOT the null arm, and the module is still off."""
+
+    plan = _repin_plan(tmp_path, V1_PINS)
+    result = _evaluate(
+        tmp_path,
+        _receipt([_repin_entry(tmp_path)], [{"carrier": "slurp", "config": plan}]),
+    )
+    assert any("no default plan for" in failure for failure in result["failures"])
+
+
+def test_a_plan_without_the_re_pinned_store_does_not_arm_the_module(tmp_path):
+    plan = _repin_plan(tmp_path, None)
+    result = _evaluate(
+        tmp_path,
+        _receipt([_repin_entry(tmp_path)], [{"carrier": "slurp", "config": plan}]),
+    )
+    assert any("no default plan for" in failure for failure in result["failures"])
+
+
+def test_a_stores_repin_entry_whose_off_equals_on_fails(tmp_path):
+    plan = _repin_plan(tmp_path, V2_PINS)
+    result = _evaluate(
+        tmp_path,
+        _receipt(
+            [_repin_entry(tmp_path, off=copy.deepcopy(V2_PINS))],
+            [{"carrier": "slurp", "config": plan}],
+        ),
+    )
+    assert any("switches nothing at all" in failure for failure in result["failures"])
+
+
+def test_a_stores_repin_entry_without_the_form_marker_fails(tmp_path):
+    """The form is declared, never inferred: the same two arms without
+    ``form: 'repin'`` are read in the null form and refused there."""
+
+    entry = _repin_entry(tmp_path)
+    del entry["switch"]["form"]
+    result = _evaluate(tmp_path, _receipt([entry]))
+    assert any("must be null" in failure for failure in result["failures"])
+    assert any("'repin'" in failure for failure in result["failures"])
+
+
+def test_an_unknown_stores_switch_form_fails(tmp_path):
+    result = _evaluate(tmp_path, _receipt([_repin_entry(tmp_path, form="rebase")]))
+    assert any("one of two" in failure for failure in result["failures"])
+
+
+def test_a_stores_repin_arm_that_is_not_the_two_pins_fails(tmp_path):
+    result = _evaluate(
+        tmp_path,
+        _receipt(
+            [
+                _repin_entry(
+                    tmp_path,
+                    on={**copy.deepcopy(V2_PINS), "store_role": "slot-contracts"},
+                )
+            ]
+        ),
+    )
+    assert any("exactly ['release', 'snapshot']" in failure for failure in result["failures"])
+
+
+def test_a_stores_repin_arm_missing_a_pin_fails(tmp_path):
+    result = _evaluate(
+        tmp_path, _receipt([_repin_entry(tmp_path, off={"release": V1_PINS["release"]})])
+    )
+    assert any("must carry exactly" in failure for failure in result["failures"])
+
+
+def test_a_repo_relative_store_pin_whose_bytes_moved_fails(tmp_path):
+    """A pin that DOES resolve in this repository is re-hashed here, because a
+    pin whose file moved is not a pin."""
+
+    relpath = "knowledge/slurp/semantic/slot-contracts-v2/release.json"
+    path = tmp_path / relpath
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("{}", encoding="utf-8")
+    result = _evaluate(tmp_path, _receipt([_repin_entry(tmp_path)]))
+    assert any("hash to" in failure for failure in result["failures"])
+
+    # The same pins, at the bytes they actually name, pass. Both leaves have
+    # to be written now: the directory exists, so the snapshot is a
+    # repo-relative pin as well.
+    snapshot = tmp_path / "knowledge/slurp/semantic/slot-contracts-v2/snapshot.json"
+    snapshot.write_text('{"values": []}', encoding="utf-8")
+    on = copy.deepcopy(V2_PINS)
+    on["release"]["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+    on["snapshot"]["sha256"] = hashlib.sha256(snapshot.read_bytes()).hexdigest()
+    plan = _repin_plan(tmp_path, on)
+    result = _evaluate(
+        tmp_path,
+        _receipt(
+            [_repin_entry(tmp_path, on=on)], [{"carrier": "slurp", "config": plan}]
+        ),
+    )
+    assert result["failures"] == []
+
+
+def test_a_repo_relative_store_pin_whose_file_is_missing_fails(tmp_path):
+    """The case in between, fail-closed: the directory is in this repository
+    and the file is not."""
+
+    (tmp_path / "knowledge/slurp/semantic/slot-contracts-v2").mkdir(parents=True)
+    result = _evaluate(tmp_path, _receipt([_repin_entry(tmp_path)]))
+    assert any("must name a file that exists" in failure for failure in result["failures"])
+
+
+def test_a_harmful_stores_repin_module_armed_in_a_plan_fails(tmp_path):
+    plan = _repin_plan(tmp_path, V2_PINS)
+    entry = _repin_entry(tmp_path)
+    entry["status"] = "HARMFUL"
+    result = _evaluate(
+        tmp_path, _receipt([entry], [{"carrier": "slurp", "config": plan}])
+    )
+    assert any("status HARMFUL" in failure for failure in result["failures"])
+
+
+def test_the_stores_null_form_still_validates_exactly_as_before(tmp_path):
+    """The extension adds a second form; it does not loosen the first. An
+    entry that declares no form is read under the null rule unchanged, and its
+    plan arming is still "the named store is present and not null"."""
+
+    plan = _stores_plan(tmp_path)
+    result = _evaluate(
+        tmp_path,
+        _receipt([_stores_entry(tmp_path)], [{"carrier": "slurp", "config": plan}]),
+    )
+    assert result["failures"] == []
+    assert result["entries"][0]["switch_form"] is None
+    assert result["entries"][0]["in_default_plans"] == [plan]
+
+    # ... and an OFF arm that is not the store's absence is still refused when
+    # the entry does not declare the re-pin form.
+    refused = _evaluate(
+        tmp_path, _receipt([_stores_entry(tmp_path, off={"store_role": "x"})])
+    )
+    assert any("must be null" in failure for failure in refused["failures"])
