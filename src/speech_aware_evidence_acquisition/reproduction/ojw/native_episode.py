@@ -71,6 +71,7 @@ class NativeEpisodeSpec:
     max_candidate_refreshes: int = 0
     finite_completion_policy: str = "raise"
     planner_output_format: str = "exact-text"
+    review_loop_enabled: bool = True
 
     def __post_init__(self) -> None:
         if not isinstance(self.episode_id, str) or not self.episode_id:
@@ -113,16 +114,26 @@ class NativeEpisodeSpec:
             raise ValueError("finite_completion_policy is invalid")
         if self.planner_output_format not in {"exact-text", "json-action-v1"}:
             raise ValueError("planner_output_format is invalid")
+        if not isinstance(self.review_loop_enabled, bool):
+            raise ValueError("review_loop_enabled must be a boolean")
+        if not self.review_loop_enabled and self.max_revisions != 0:
+            raise ValueError("review loop off requires max_revisions 0")
 
 
 @dataclass(frozen=True)
 class NativeEpisodeNodes:
-    """Public framework role components used by the episode graph."""
+    """Public framework role components used by the episode graph.
+
+    ``reviewer`` and ``planner`` are ``None`` exactly when
+    ``NativeEpisodeSpec.review_loop_enabled`` is ``False``: the review loop
+    is off by configuration, so no Reviewer or Planner node is ever built,
+    let alone contacted (:func:`build_native_episode` enforces the pairing).
+    """
 
     perception: NativeRoleNode
     solver: NativeRoleNode
-    reviewer: NativeRoleNode
-    planner: NativeRoleNode
+    reviewer: NativeRoleNode | None = None
+    planner: NativeRoleNode | None = None
     acquisition: NativeRoleNode | None = None
 
 
@@ -711,6 +722,33 @@ class NativeEpisodeWorkflow:
             predecessors=("episode_state",),
             kind="perception",
         )
+        if not self.spec.review_loop_enabled:
+            # Configured off: Perception feeds the Solver directly and its
+            # answer is delivered through the same explicit-accept seal a
+            # Planner ACCEPT would use. No Reviewer or Planner component is
+            # ever added to this graph, so neither is ever contacted.
+            solver = self._add_role(
+                workflow,
+                checkpoint,
+                stage_id="solver_0",
+                node=self.nodes.solver,
+                predecessors=(perception,),
+                kind="solver",
+            )
+            accept_id = "accept_0"
+            workflow.add_workflow_comp(
+                accept_id,
+                _Accept(),
+                inputs_schema={"state": "${" + solver + ".state}"},
+            )
+            workflow.add_connection(solver, accept_id)
+            workflow.set_end_comp(
+                "end",
+                End(),
+                inputs_schema=_first_accept([accept_id]),
+            )
+            workflow.add_connection(accept_id, "end")
+            return workflow
         solver_predecessors = (perception,)
         accept_ids: list[str] = []
 
@@ -927,6 +965,12 @@ def build_native_episode(
     }
     for field, kind in expected.items():
         node = getattr(nodes, field)
+        if field in {"reviewer", "planner"} and not spec.review_loop_enabled:
+            if node is not None:
+                raise ValueError(
+                    f"{field} must be omitted when the review loop is disabled"
+                )
+            continue
         if not isinstance(node, NativeRoleNode) or node.spec.role_kind != kind:
             raise ValueError(f"{field} must be a {kind} NativeRoleNode")
     if nodes.acquisition is not None and (
@@ -934,7 +978,13 @@ def build_native_episode(
         or nodes.acquisition.spec.role_kind not in {"reviewer", "planner"}
     ):
         raise ValueError("acquisition must be an analytical NativeRoleNode")
-    role_ids = [getattr(nodes, field).spec.role_id for field in expected]
+    if not spec.review_loop_enabled and nodes.acquisition is not None:
+        raise ValueError("acquisition requires the review loop to be enabled")
+    role_ids = [
+        getattr(nodes, field).spec.role_id
+        for field in expected
+        if getattr(nodes, field) is not None
+    ]
     if nodes.acquisition is not None:
         role_ids.append(nodes.acquisition.spec.role_id)
     if len(set(role_ids)) != len(role_ids):

@@ -2097,6 +2097,12 @@ async def _invoke_native_role_episode(
     nodes = {}
     try:
         for role in config.roles:
+            if role.max_iterations == 0:
+                # The review loop is off by configuration: Reviewer/Planner
+                # never get a node, so they can never be contacted -- there
+                # is no NativeRoleNode for them anywhere in this graph.
+                continue
+
             def contact_context(index, role=role):
                 return NativeRoleContactContext(
                     sample_id=state.prepared.sample.sample_id,
@@ -2132,6 +2138,7 @@ async def _invoke_native_role_episode(
                 config.max_candidate_refreshes,
                 config.finite_completion_policy,
                 config.planner_output_format,
+                config.review_loop_enabled,
             ),
             nodes=NativeEpisodeNodes(**nodes),
             role_input_builder=role_input,
@@ -2233,6 +2240,15 @@ async def _invoke_native_role_episode(
             "role_visits", "planner_routes", "accepted_solver_receipt", "interrupted_role",
             "abstention_receipt",
         ) if key in receipt}
+        if not config.review_loop_enabled:
+            # Configuration, not failure: record which phases never ran
+            # rather than let their absence from role_visits speak alone.
+            compact_receipt["review_loop_disposition"] = {
+                "schema": "saea-native-review-loop-skip-v1",
+                "status": "skipped_by_configuration",
+                "reviewer_phase_id": config.role("reviewer").phase_id,
+                "planner_phase_id": config.role("planner").phase_id,
+            }
         if config.role_context_json is not None:
             compact_receipt["role_context_compilations"] = list(context_compilations.values())
         if config.planner_output_format == "json-action-v1":

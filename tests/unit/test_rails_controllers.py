@@ -53,6 +53,11 @@ _EXPECTED_PROGRAM_SHAPES = {
     "phase-native-candidates-review-revise-v1": (
         ("perception", "reviewer", "planner", "solver"), 11, "native-role-episode"
     ),
+    # E1, 2026-09-16 (M0): the same four phases with the review loop off, so
+    # Reviewer and Planner never get a node -- ceiling drops from 11 to 2.
+    "phase-native-candidates-solve-v1": (
+        ("perception", "reviewer", "planner", "solver"), 2, "native-role-episode"
+    ),
     "phase-native-candidates-review-refresh-v1": (
         ("perception", "reviewer", "planner", "solver"), 12, "native-role-episode"
     ),

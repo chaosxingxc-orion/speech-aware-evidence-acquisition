@@ -114,6 +114,27 @@ def _config(
     )
 
 
+def _review_off_config(*, max_contacts: int) -> NativeEpisodeConfig:
+    """The M0 shape (E1): Reviewer and Planner both declare max_iterations 0
+    and max_revisions is 0, so neither ever gets a NativeRoleNode."""
+
+    return NativeEpisodeConfig(
+        episode_id="native-role-runner-proof-v1",
+        max_revisions=0,
+        actions=ACTIONS,
+        roles=tuple(
+            NativeEpisodeRole(
+                phase_id=phase,
+                role_kind=phase,
+                max_iterations=0 if phase in {"reviewer", "planner"} else 1,
+                tool_names=(),
+            )
+            for phase in PHASES
+        ),
+        max_contacts=max_contacts,
+    )
+
+
 def _feature_bindings(world: _World, feature_root):
     bindings = {}
     for sample in world.samples:
@@ -594,6 +615,151 @@ def test_actual_native_episode_accepts_only_solver_and_preserves_shared_fit_and_
         else:
             assert "tool_choice" not in body
             assert "parallel_tool_calls" not in body
+
+
+# ---------------------------------------------------------------------------
+# E1: review loop off (M0), through the actual shared runner.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_review_loop_off_runs_exactly_two_contacts_and_skips_by_configuration(
+    tmp_path,
+):
+    harness = _ActualEpisodeHarness(
+        tmp_path,
+        sample_count=1,
+        max_revisions=0,
+        max_contacts=2,
+        planner_actions=(),
+    )
+    harness.config = _review_off_config(max_contacts=2)
+    try:
+        summary = harness.run()
+    finally:
+        close_summary = harness.close()
+
+    assert [result.final_response_text for result in summary.results] == [
+        "solver-answer:s1:visit:1",
+    ]
+    assert close_summary["request_count"] == 2
+    result = summary.results[0]
+    assert len(result.contacts) == 2
+    receipt = result.native_episode_receipt
+    assert set(receipt) == {
+        "role_visits",
+        "planner_routes",
+        "accepted_solver_receipt",
+        "review_loop_disposition",
+    }
+    assert [visit["stage"] for visit in receipt["role_visits"]] == [
+        "perception",
+        "solver",
+    ]
+    assert receipt["planner_routes"] == []
+    assert receipt["review_loop_disposition"] == {
+        "schema": "saea-native-review-loop-skip-v1",
+        "status": "skipped_by_configuration",
+        "reviewer_phase_id": "reviewer",
+        "planner_phase_id": "planner",
+    }
+    final_contact = receipt["accepted_solver_receipt"]["final_contact"]
+    assert final_contact == harness.traced_contact(final_contact["agent_contact_id"])
+    assert (
+        final_contact["response_text_sha256"]
+        == harness.dispatched[("s1", "solver", 1, 1)]["response_text_sha256"]
+    )
+    # Reviewer and Planner were never even queried for a request, let alone
+    # contacted -- their material_for_phase visit counters stay at zero.
+    assert harness.material_visits[("s1", "reviewer")] == 0
+    assert harness.material_visits[("s1", "planner")] == 0
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_review_loop_off_solver_history_matches_the_review_loop_on_shape(tmp_path):
+    """Request-identity proof (E1 item 5): the Solver's conversation HISTORY
+    -- the original query plus Perception's candidates, with no review
+    findings in either shape -- is byte-identical whether the review loop is
+    on or off. The one channel the module may move is the trailing per-turn
+    instruction, where the injected 'Native episode limits' epilogue
+    legitimately differs (max_revisions, available Planner actions): that is
+    the module's own channel, not a leak (spec section 6: 'the request
+    differs from the base only in the module's channel')."""
+
+    on = _ActualEpisodeHarness(
+        tmp_path / "on",
+        sample_count=1,
+        max_revisions=1,
+        max_contacts=7,
+        planner_actions=("ACCEPT",),
+    )
+    off = _ActualEpisodeHarness(
+        tmp_path / "off",
+        sample_count=1,
+        max_revisions=0,
+        max_contacts=2,
+        planner_actions=(),
+    )
+    off.config = _review_off_config(max_contacts=2)
+
+    try:
+        on_summary = on.run()
+        off_summary = off.run()
+    finally:
+        on.close()
+        off.close()
+
+    assert on_summary.results[0].final_response_text == "solver-answer:s1:visit:1"
+    assert off_summary.results[0].final_response_text == "solver-answer:s1:visit:1"
+
+    on_body = on.prepared[("s1", "solver", 1, 1)]["rendered"]
+    off_body = off.prepared[("s1", "solver", 1, 1)]["rendered"]
+    on_messages = on_body["messages"]
+    off_messages = off_body["messages"]
+    assert len(on_messages) == len(off_messages)
+
+    differing = [
+        index for index in range(len(on_messages))
+        if on_messages[index] != off_messages[index]
+    ]
+    assert differing == [len(on_messages) - 1], (
+        "the Solver request must differ from the review-loop-on shape in "
+        f"nothing but its final instruction message; differing indices: {differing}"
+    )
+    assert on_messages[:-1] == off_messages[:-1]
+
+    def _text_parts(content):
+        # The Solver's per-turn message bundles the speech-feature part with
+        # TWO text parts: the exposed Perception "agent state" and the
+        # per-turn instruction (marker + the limits epilogue). Only the
+        # instruction part may legitimately carry the module's channel.
+        assert isinstance(content, list)
+        return [part["text"] for part in content if part.get("type") == "text"]
+
+    marker = "native-role:solver:sample:s1:visit:1"
+    on_texts = _text_parts(on_messages[-1]["content"])
+    off_texts = _text_parts(off_messages[-1]["content"])
+    assert len(on_texts) == len(off_texts) == 2
+
+    on_instruction = [text for text in on_texts if text.startswith(marker)]
+    off_instruction = [text for text in off_texts if text.startswith(marker)]
+    assert len(on_instruction) == len(off_instruction) == 1
+    on_content, off_content = on_instruction[0], off_instruction[0]
+    assert on_content != off_content
+
+    # The OTHER text part is the exposed Perception agent state -- same role
+    # history, no review findings in either shape -- and it must be
+    # byte-identical, which is the request-identity claim item 5 asks for.
+    on_state = [text for text in on_texts if text != on_content]
+    off_state = [text for text in off_texts if text != off_content]
+    assert on_state == off_state
+
+    on_limits = json.loads(on_content.split("Native episode limits: ", 1)[1])
+    off_limits = json.loads(off_content.split("Native episode limits: ", 1)[1])
+    assert on_limits["max_revisions"] == 1
+    assert off_limits["max_revisions"] == 0
+    assert on_limits["available_planner_actions"] == ["ACCEPT", "REVISE"]
+    assert off_limits["available_planner_actions"] == ["ACCEPT"]
 
 
 @pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")

@@ -164,6 +164,16 @@ class NativeEpisodeConfig:
     def terminal_actions(self) -> tuple[str, ...]:
         return self.actions[1:] + (() if self.refresh_action is None else (self.refresh_action,))
 
+    @property
+    def review_loop_enabled(self) -> bool:
+        """Whether Reviewer/Planner actually run.
+
+        The paired validation in :func:`load_native_episode_config` makes
+        Reviewer's ``max_iterations`` the single reliable witness: it is 0
+        exactly when Planner's is also 0 and ``max_revisions`` is 0.
+        """
+        return self.role("reviewer").max_iterations > 0
+
     def role(self, kind: str) -> NativeEpisodeRole:
         return next(role for role in self.roles if role.role_kind == kind)
 
@@ -273,7 +283,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
     tool_specs = values.get("phase_tools") or {}
     if not isinstance(tool_specs, Mapping):
         raise ValueError("phase_tools must be a mapping")
-    roles = []
+    iterations_by_kind: dict[str, int] = {}
     for kind in kinds:
         row = raw_roles[kind]
         if (
@@ -282,11 +292,36 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
             or set(row) - {"phase_id", "max_iterations", "history_scope"}
         ):
             raise ValueError("each native role requires phase_id and max_iterations")
-        phase_id, iterations = row["phase_id"], row["max_iterations"]
-        if phase_id not in program.phase_names():
+        if row["phase_id"] not in program.phase_names():
             raise ValueError("native role references an unknown program phase")
-        if isinstance(iterations, bool) or not isinstance(iterations, int) or iterations < 1:
+        iterations = row["max_iterations"]
+        # 0 is provisionally accepted here (Reviewer/Planner only, when the
+        # review loop is off); the paired cross-role check below is what
+        # actually decides whether 0 is legal for this configuration.
+        if isinstance(iterations, bool) or not isinstance(iterations, int) or iterations < 0:
             raise ValueError("role max_iterations must be positive")
+        iterations_by_kind[kind] = iterations
+    if iterations_by_kind["perception"] < 1 or iterations_by_kind["solver"] < 1:
+        raise ValueError("role max_iterations must be positive")
+    reviewer_iterations = iterations_by_kind["reviewer"]
+    planner_iterations = iterations_by_kind["planner"]
+    # The review loop (Reviewer + Planner + revisions) is either fully present
+    # or fully absent; a partial shape (only one role at 0, or a nonzero
+    # revision allowance with no role left to consume it) is refused rather
+    # than silently interpreted as either intent.
+    review_loop_disabled = reviewer_iterations == 0 or planner_iterations == 0
+    if review_loop_disabled and (
+        reviewer_iterations != 0 or planner_iterations != 0 or revisions != 0
+    ):
+        raise ValueError(
+            "review loop off requires reviewer 0, planner 0 and max_revisions 0"
+        )
+    if not review_loop_disabled and (reviewer_iterations < 1 or planner_iterations < 1):
+        raise ValueError("role max_iterations must be positive")
+    roles = []
+    for kind in kinds:
+        row = raw_roles[kind]
+        phase_id, iterations = row["phase_id"], iterations_by_kind[kind]
         spec = tool_specs.get(phase_id)
         tools = ()
         if spec is not None:

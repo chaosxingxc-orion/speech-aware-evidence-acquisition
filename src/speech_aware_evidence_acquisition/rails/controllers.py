@@ -266,7 +266,24 @@ class PhaseProgram:
             raise RailsControllersError(
                 "PhaseProgram.phases must have unique phase names"
             )
-        if (
+        # A native-role-episode graph may configure Reviewer and Planner to
+        # 0 iterations (the review loop off, E1); those two phases are then
+        # never contacted, so the floor every other stop rule keeps --
+        # "one contact per phase, at minimum" -- no longer holds. Perception
+        # and Solver are always positive (rails.native_episode_config), so 2
+        # is this stop rule's own true structural minimum; every other stop
+        # rule keeps its unchanged, unmoved len(phases) floor.
+        if self.stop_rule == "native-role-episode":
+            if (
+                isinstance(self.max_contacts, bool)
+                or not isinstance(self.max_contacts, int)
+                or self.max_contacts < 2
+            ):
+                raise RailsControllersError(
+                    "PhaseProgram.max_contacts must be an int >= 2 for a "
+                    "native-role-episode program"
+                )
+        elif (
             isinstance(self.max_contacts, bool)
             or not isinstance(self.max_contacts, int)
             or self.max_contacts < len(self.phases)
@@ -1283,6 +1300,14 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-native-review-revise-v1": "phase-native-review-revise-v1.json",
     "phase-native-review-revise-json-v1": "phase-native-review-revise-json-v1.json",
     "phase-native-candidates-review-revise-v1": "phase-native-candidates-review-revise-v1.json",
+    # E1, 2026-09-16: the SAME four phases as
+    # "phase-native-candidates-review-revise-v1", with the Reviewer/Planner
+    # review loop switched off by the baseline's own native_episode.roles
+    # (max_iterations 0 + max_revisions 0). Only max_contacts moves (11 -> 2)
+    # because the program id still names all four phases; the two program
+    # ids must never resolve to the same object because their contact
+    # ceilings differ.
+    "phase-native-candidates-solve-v1": "phase-native-candidates-solve-v1.json",
     "phase-native-candidates-review-refresh-v1": "phase-native-candidates-review-refresh-v1.json",
     "native-answer-or-one-tool-v1": "native-answer-or-one-tool-v1.json",
     "native-answer-or-tool-v1": "native-answer-or-tool-v1.json",
@@ -1406,6 +1431,13 @@ def register_phase_programs_v1() -> None:
             "phase-native-candidates-review-revise-v1",
             default_controller_factory(
                 default_phase_program("phase-native-candidates-review-revise-v1")
+            ),
+        )
+    if "phase-native-candidates-solve-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-candidates-solve-v1",
+            default_controller_factory(
+                default_phase_program("phase-native-candidates-solve-v1")
             ),
         )
     if "phase-native-review-revise-json-v1" not in registered:

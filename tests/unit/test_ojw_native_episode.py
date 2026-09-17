@@ -592,6 +592,114 @@ def test_framework_node_error_never_delivers():
         asyncio.run(workflow.invoke_direct("query", ()))
 
 
+# ---------------------------------------------------------------------------
+# E1: review loop off (M0). Reviewer and Planner never get a node, let alone
+# a contact; the Solver's answer is delivered through the same explicit
+# accept every ACCEPT route uses.
+# ---------------------------------------------------------------------------
+
+
+def test_review_loop_disabled_delivers_solver_directly_with_two_contacts():
+    perception, perception_script = _node("perception", "perception", ["heard"])
+    solver, solver_script = _node("solver", "solver", ["draft one"], valid=True)
+    seen: list[tuple[str, dict[str, object]]] = []
+
+    def role_input(role_id, state):
+        seen.append((role_id, dict(state)))
+        return f"{role_id}: use the supplied episode state."
+
+    workflow = build_native_episode(
+        spec=NativeEpisodeSpec(
+            episode_id="review-off-episode",
+            max_revisions=0,
+            actions=NativeEpisodeActions(
+                accept="ACCEPT", revise="REVISE", acquire="ACQUIRE"
+            ),
+            review_loop_enabled=False,
+        ),
+        nodes=NativeEpisodeNodes(perception=perception, solver=solver),
+        role_input_builder=role_input,
+    )
+
+    result = asyncio.run(workflow.invoke_direct("original query", ()))
+
+    assert result["delivery"] == {
+        "role_id": "solver",
+        "actor_output": "draft one",
+        "result_type": "answer",
+        "delivery_eligible": True,
+        "execution_receipt": _execution_receipt(
+            text="draft one", contact_id="solver-contact-1", serial=2
+        ),
+    }
+    assert result["state"]["latest_solver"] == result["delivery"]
+    assert result["state"]["accepted_solver_receipt"] == result["delivery"][
+        "execution_receipt"
+    ]
+    # No Reviewer or Planner ever ran: no visit, no route, no state field.
+    assert [visit["stage"] for visit in result["state"]["role_visits"]] == [
+        "perception",
+        "solver",
+    ]
+    assert [visit["role_id"] for visit in result["state"]["role_visits"]] == [
+        "perception",
+        "solver",
+    ]
+    assert result["state"]["planner_routes"] == []
+    assert result["state"]["review"] is None
+    assert result["state"]["plan"] is None
+    assert [role for role, _ in seen] == ["perception", "solver"]
+    assert len(perception_script.requests) == 1
+    assert len(solver_script.requests) == 1
+
+
+def test_review_loop_disabled_refuses_a_present_reviewer_or_planner_node():
+    perception, _ = _node("perception", "perception", ["heard"])
+    solver, _ = _node("solver", "solver", ["draft one"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["unused"])
+    spec = NativeEpisodeSpec(
+        episode_id="review-off-episode",
+        max_revisions=0,
+        actions=NativeEpisodeActions(accept="ACCEPT", revise="REVISE", acquire="ACQUIRE"),
+        review_loop_enabled=False,
+    )
+
+    with pytest.raises(ValueError, match="omitted when the review loop is disabled"):
+        build_native_episode(
+            spec=spec,
+            nodes=NativeEpisodeNodes(perception=perception, solver=solver, reviewer=reviewer),
+            role_input_builder=lambda role, _state: f"Run {role}.",
+        )
+
+
+def test_review_loop_disabled_requires_max_revisions_zero():
+    with pytest.raises(ValueError, match="review loop off requires max_revisions 0"):
+        NativeEpisodeSpec(
+            episode_id="bad-review-off",
+            max_revisions=1,
+            actions=NativeEpisodeActions(accept="ACCEPT", revise="REVISE", acquire="ACQUIRE"),
+            review_loop_enabled=False,
+        )
+
+
+def test_review_loop_enabled_defaults_true_and_still_requires_reviewer_and_planner():
+    perception, _ = _node("perception", "perception", ["heard"])
+    solver, _ = _node("solver", "solver", ["draft one"], valid=True)
+    spec = NativeEpisodeSpec(
+        episode_id="ordinary-episode",
+        max_revisions=1,
+        actions=NativeEpisodeActions(accept="ACCEPT", revise="REVISE", acquire="ACQUIRE"),
+    )
+    assert spec.review_loop_enabled is True
+
+    with pytest.raises(ValueError, match="reviewer must be a reviewer NativeRoleNode"):
+        build_native_episode(
+            spec=spec,
+            nodes=NativeEpisodeNodes(perception=perception, solver=solver),
+            role_input_builder=lambda role, _state: f"Run {role}.",
+        )
+
+
 def test_invoke_direct_passes_the_exact_caller_session(monkeypatch):
     solver, _ = _node("solver", "solver", ["unused"], valid=True)
     reviewer, _ = _node("reviewer", "reviewer", ["unused"])
