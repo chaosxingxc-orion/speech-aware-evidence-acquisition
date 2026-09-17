@@ -2186,6 +2186,138 @@ def test_canonical_output_rows_fail_closed_without_a_per_request_record(tmp_path
 
 
 # ---------------------------------------------------------------------------
+# Phase 2f (E4, SLURP v2 base program module M3): the USE projection v3
+# runtime delivery transform, switched on by the ONE flat run-level config
+# key ``slurp_projection_v3_delivery``
+# (``rails.slurp_projection_v3.SLURP_PROJECTION_V3_DELIVERY_KEY``). The real
+# transform is monkeypatched here (module attribute -- the deferred import
+# inside ``_canonical_output_rows`` re-reads it fresh on every call, so
+# patching ``rails.slurp_projection_v3.apply_slurp_projection_v3_delivery``
+# is visible to it) so these tests exercise the WIRING (switch gating,
+# custody field, hash recomputation) without needing the real TRAIN-mined
+# inventory or a SLURP-shaped fake response body.
+# ---------------------------------------------------------------------------
+
+
+def _slurp_wire_runtime(tmp_path, *, projection_on: bool):
+    baseline_extra = {"slurp_projection_v3_delivery": 1} if projection_on else {}
+    return _wire_runtime(
+        tmp_path,
+        config_kwargs={
+            "carrier_lock_key": "slurp",
+            "arm": "bare-core",
+            "policy": "fixed",
+            "baseline_extra": baseline_extra,
+        },
+    )
+
+
+def test_the_switch_off_seals_a_row_byte_identical_to_before_the_module_existed(tmp_path):
+    """OFF (the key absent) must reproduce exactly what
+    ``test_canonical_output_rows_satisfy_the_bundle_contract`` already
+    asserts for a plain carrier: no ``pre_projection_text``, no
+    ``projection_v3``, and ``response_text_sha256`` bound to the row's own
+    unmodified ``text`` -- the SAME two properties that test already pins,
+    now proved again on the SLURP carrier with the module wired in but
+    switched off."""
+
+    runtime = _slurp_wire_runtime(tmp_path, projection_on=False)
+    runtime.wire_check(seal_and_score=False)
+    rows = runtime._canonical_output_rows(runtime._client)
+    assert len(rows) == 2
+    for row in rows:
+        assert row["carrier_lock_key"] == "slurp"
+        assert "pre_projection_text" not in row
+        assert "projection_v3" not in row
+        assert row["response_text_sha256"] == hashlib.sha256(
+            str(row["text"]).encode("utf-8")
+        ).hexdigest()
+
+
+def test_the_switch_on_keeps_the_raw_text_in_custody_and_reseals_the_delivered_one(
+    tmp_path, monkeypatch
+):
+    from speech_aware_evidence_acquisition.rails import slurp_projection_v3
+
+    fake_delivered_text = '{"scenario": "play", "action": "music", "entities": []}'
+
+    def _fake_transform(text, *, carrier_lock_key, inventory=None):
+        assert carrier_lock_key == "slurp"
+        assert text == "resp"
+        return slurp_projection_v3.SlurpProjectionV3DeliveryResult(
+            text=fake_delivered_text,
+            changed=True,
+            metadata={
+                "rule_id": slurp_projection_v3.SLURP_PROJECTION_V3_ID,
+                "applied": True,
+                "label_branch": "r-action",
+                "label_changed": True,
+                "fillers_changed": 0,
+                "changed": True,
+            },
+        )
+
+    monkeypatch.setattr(
+        slurp_projection_v3, "apply_slurp_projection_v3_delivery", _fake_transform
+    )
+    runtime = _slurp_wire_runtime(tmp_path, projection_on=True)
+    runtime.wire_check(seal_and_score=False)
+    rows = runtime._canonical_output_rows(runtime._client)
+    assert len(rows) == 2
+    for row in rows:
+        # The RAW response is never overwritten -- it is kept in custody
+        # beside the delivered one.
+        assert row["pre_projection_text"] == "resp"
+        assert row["text"] == fake_delivered_text
+        assert row["projection_v3"]["label_branch"] == "r-action"
+        assert row["projection_v3"]["changed"] is True
+        # response_text_sha256 is rebound to the DELIVERED text, exactly the
+        # same self-consistency contract every other row already carries
+        # (test_canonical_output_rows_bind_text_to_its_recorded_hash).
+        assert row["response_text_sha256"] == hashlib.sha256(
+            fake_delivered_text.encode("utf-8")
+        ).hexdigest()
+        assert row["response_text_sha256"] != hashlib.sha256(b"resp").hexdigest()
+
+
+def test_the_switch_on_is_a_no_op_when_the_transform_reports_no_change(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.rails import slurp_projection_v3
+
+    def _fake_unparsed(text, *, carrier_lock_key, inventory=None):
+        return slurp_projection_v3.SlurpProjectionV3DeliveryResult(
+            text=text, changed=False, metadata={"applied": False, "reason": "unparsed"}
+        )
+
+    monkeypatch.setattr(
+        slurp_projection_v3, "apply_slurp_projection_v3_delivery", _fake_unparsed
+    )
+    runtime = _slurp_wire_runtime(tmp_path, projection_on=True)
+    runtime.wire_check(seal_and_score=False)
+    rows = runtime._canonical_output_rows(runtime._client)
+    for row in rows:
+        assert row["text"] == "resp"
+        assert "pre_projection_text" not in row
+        assert "projection_v3" not in row
+        assert row["response_text_sha256"] == hashlib.sha256(b"resp").hexdigest()
+
+
+def test_the_switch_on_refuses_a_non_slurp_carrier(tmp_path):
+    baseline_extra = {"slurp_projection_v3_delivery": 1}
+    runtime = _wire_runtime(
+        tmp_path,
+        config_kwargs={
+            "carrier_lock_key": "fake-carrier",
+            "arm": "bare-core",
+            "policy": "fixed",
+            "baseline_extra": baseline_extra,
+        },
+    )
+    runtime.wire_check(seal_and_score=False)
+    with pytest.raises(FlightRuntimeError, match="only defined for the 'slurp' carrier"):
+        runtime._canonical_output_rows(runtime._client)
+
+
+# ---------------------------------------------------------------------------
 # Phase 3a: native tool calls versus text, recorded where it is still known.
 #
 # core.model.transport canonicalizes a native message.tool_calls into the SAME

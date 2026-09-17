@@ -539,15 +539,83 @@ def test_the_cross_call_dispatcher_is_one_run_level_key(tmp_path):
 def test_the_run_switch_class_is_a_closed_allowlist():
     """A flat key is not admitted to the run class by being flat. Every other
     obs knob on that same fragment is refused, because a module that changes
-    the request the core sees belongs in a config table."""
+    the request the core sees belongs in a config table.
 
-    assert set(RUN_LEVEL_SWITCH_KEYS) == {"obs_prefetch_depth"}
+    Two keys today: ``obs_prefetch_depth`` (the cross-call dispatcher) and
+    ``slurp_projection_v3_delivery`` (E4, SLURP v2 base program module M3,
+    2026-09-17 -- section 9a below has that key's own dedicated proof)."""
+
+    assert set(RUN_LEVEL_SWITCH_KEYS) == {
+        "obs_prefetch_depth",
+        "slurp_projection_v3_delivery",
+    }
     assert resolve_run_switch_key("obs_prefetch_depth") == "obs_prefetch_depth"
     for refused in ("obs_batch_slices", "obs_boundary_mode", "obs_buffer_seconds"):
         with pytest.raises(ConfigTableError, match="closed allowlist"):
             resolve_run_switch_key(refused)
     with pytest.raises(ConfigTableError, match="is dotted"):
         resolve_run_switch_key("run.obs_prefetch_depth")
+
+
+# ---------------------------------------------------------------------------
+# 8a. USE projection v3 delivery -- slurp_projection_v3_delivery, the SECOND
+# ``run`` switch class key (E4, SLURP v2 base program module M3, 2026-09-17).
+#
+# Same admission shape as the cross-call dispatcher above: one flat key, no
+# per-phase table entry, and the module's OWN falsifier is that it moves no
+# request byte at all -- it runs strictly after the Solver's response is
+# already in hand and rewrites only what gets sealed into the outputs row,
+# keeping the raw pre-projection text in custody
+# (rails.slurp_projection_v3.apply_slurp_projection_v3_delivery). Unlike the
+# dispatcher, this key's own harness-admission entry is NOT written by this
+# change: that entry's own switch_rule requires a 'falsifier' of kind
+# 'request-bytes-identical' PLUS the receipt of an actual flown comparator
+# pair, and this module's own E4 engineering mission flies nothing (zero
+# model contacts) -- the receipt is for the coordinator to add once a B-phase
+# cell actually flies the transform live. This test proves the KEY MECHANICS
+# (closed allowlist membership, null arm, one-key config diff on the real
+# committed baseline pair) that the admission entry will cite when it lands.
+# ---------------------------------------------------------------------------
+
+
+def test_the_projection_v3_delivery_switch_is_one_run_level_key_on_the_held_baseline_pair():
+    off_bytes = _committed_baseline("slurp-native-dual-store-train-fold-a-review-off-v1")
+    on_bytes = _committed_baseline(
+        "slurp-native-dual-store-train-fold-a-review-off-projected-v3-v1"
+    )
+
+    # The held ON fragment also changes its own scorers list and
+    # speech-feature identity (deliberately, per its own ``what_this_is``:
+    # a unique cache/dedup identity and the v3-projected scorer declared
+    # side by side with the primary) -- ``switch_key`` therefore cannot
+    # narrow this PAIR to one key, exactly as the review-loop-off pair above
+    # is not one key either. What this test pins instead is the SAME thing
+    # ``config_key_diff`` pins for that pair: the flat switch key is present
+    # on exactly one side, with the OFF side's absence being the documented
+    # null arm.
+    diff = config_key_diff(on_bytes, off_bytes)
+    assert "slurp_projection_v3_delivery" in diff
+
+    assert "slurp_projection_v3_delivery" not in off_bytes
+    assert is_run_null_arm(off_bytes.get("slurp_projection_v3_delivery")) is True
+    assert is_run_null_arm(0) is True
+    assert is_run_null_arm(on_bytes["slurp_projection_v3_delivery"]) is False
+    assert on_bytes["slurp_projection_v3_delivery"] == 1
+
+
+def test_the_projection_v3_delivery_switch_alone_is_one_key_when_nothing_else_moves():
+    """Isolated from the held fragment's OTHER deliberate changes (deliverable
+    3's scorers/speech-feature identity bump): composing two otherwise
+    IDENTICAL fragments that differ only in this one flat key IS resolved by
+    ``switch_key`` to exactly this key -- the same proof
+    ``test_the_cross_call_dispatcher_is_one_run_level_key`` gives
+    ``obs_prefetch_depth``."""
+
+    off_bytes = _committed_baseline("slurp-native-dual-store-train-fold-a-review-off-v1")
+    on_bytes = dict(off_bytes)
+    on_bytes["slurp_projection_v3_delivery"] = 1
+
+    assert switch_key(on_bytes, off_bytes) == "slurp_projection_v3_delivery"
 
 
 # ---------------------------------------------------------------------------
