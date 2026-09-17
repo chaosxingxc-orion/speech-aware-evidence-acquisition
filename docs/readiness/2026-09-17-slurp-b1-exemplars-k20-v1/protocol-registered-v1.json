@@ -1,0 +1,316 @@
+{
+  "authority": {
+    "a2_decision": "docs/results/2026-09-17-slurp-a2-exemplar-headroom-audit-v1.md",
+    "cell": "B1 (section 4 Phase B table, module M1)",
+    "design": "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md",
+    "owner_decisions": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md"
+  },
+  "blocking_gate": {
+    "closes_when": "a reviewed engineering item lands the guard change with a test that composes candidate_supply and a later-phase plain phase_supply on one phase, and the E3 fragments' source-receipt root is corrected. Then: prepare-supply the three cells, pin prepared_phase_supply and the preparation readiness requirement, recompute the composed and protocol hashes, re-pin this package, and re-run check.",
+    "diagnosed_sufficient_change": "Narrowing the guard to first-phase explicit specs, i.e. collisions = ({phase for phase in specs if phase == first_phase} | scoped_phases).intersection(candidate_specs), was verified in a throwaway tree to be sufficient for construction and for a model-free prepare-supply of all three B1 cells. It is NOT applied in this repository: it is a production change that owes its own reviewed engineering item and its own test, and rails.knowledge_stores is one of the five module files whose SHA-256 the prepared phase-supply artifact pins, so any artifact prepared against an unreviewed patch would be invalid the moment that patch is reshaped in review.",
+    "refusal": "rails.knowledge_stores.build_knowledge_store_supply: 'candidate, explicit, and scoped supply cannot overlap on phase(s) [solver]'",
+    "second_defect": "The committed E3 fragments also carry a preparation_source_receipts pin with 'root': 'repo'; core.preparation.verify_source_receipts accepts only 'repository' and 'data' and refuses the pin as malformed. The three B1 fragments registered here use 'repository'; the three committed E3 fragments still need the same correction.",
+    "state": "OPEN",
+    "where": "src/speech_aware_evidence_acquisition/rails/knowledge_stores.py, the per-store collision guard immediately after load_phase_supply_specs",
+    "why": "The slot-contracts store serves the Solver phase through candidate_supply and the E3 train-exemplars store serves the same phase through phase_supply. The E3 commit cfdf08fb added the composition that routes a later-phase plain phase_supply into automatic_for_phase and names this exact pairing in its own module comment, but left the older collision guard that refuses it, and covered only the context_supply pairing with a test. The refusal is therefore inherited: the committed anchor-based configs/baseline/slurp-native-dual-store-train-fold-a-exemplars-k20-v1.json reproduces it identically."
+  },
+  "comparators": {
+    "primary_base": {
+      "attempt_id": "attempt-slurp-native-review-off-train-fold-a-generation-v1",
+      "note": "cell B0 is in flight; the coordinator fills both digests after it finalizes",
+      "role": "primary comparator, sealed bytes, never re-flown or re-scored",
+      "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_B0_FINALIZE",
+      "score_sha256": "PENDING_B0_FINALIZE"
+    },
+    "rebase_rule": "If cell B0 is HARMFUL the coordinator re-bases these cells on the sealed anchor before launch, per the spec's Phase B table.",
+    "secondary_anchor": {
+      "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+      "contacts": 5417,
+      "official_aggregate": {
+        "action_accuracy": 79.26,
+        "intent_scenario_plus_action": 77.96,
+        "pooled_slu_f1": 48.53,
+        "pooled_span_f1": 29.5,
+        "scenario_accuracy": 84.81
+      },
+      "role": "secondary comparator, sealed bytes",
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+      "run_manifest_sha256": "049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152",
+      "score_sha256": "7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47"
+    },
+    "twin_contrast": "arm minus twin, the same 1,080 rows, token-matched by construction"
+  },
+  "composed_hash_caveat": "These composed and protocol hashes are the values of the fragments exactly as committed: readiness held, requirements empty, prepared_phase_supply absent. core.config.compose hashes the whole merged four-fragment document, so pinning the prepared supply and flipping readiness both change them, exactly as they did for cell B0. The method reproduces the sealed anchor's registered protocol hash d1c61c09102dcb8801ea134d763fca0b5b60054d6ef80a3a38752642c107c87d from the anchor fragments.",
+  "configurations": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-train-fold-a-generation-v1",
+      "campaign_plan": "configs/campaign/slurp-native-exemplars-k20-train-fold-a-v1.json",
+      "cell": "slurp-native-exemplars-k20-train-fold-a-v1",
+      "composed_config_hash": "4bc39f445f4d0c4b656a140752a8acaccc0112b84f6c9f20a12514252c4894a7",
+      "execution_plan_protocol_hash": "0c8b2f3fcf271d1857eb05378d86270f01c60baf1d8c91f2c2dcf9694ee73a7e",
+      "experiment": "slurp-native-exemplars-k20-train-fold-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-exemplars-k20-train-fold-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-TRAIN-FOLD-A-FIT-V1",
+      "fragments": {
+        "baseline": "slurp-native-review-off-exemplars-k20-train-fold-a-v1",
+        "dataset": "slurp-speech-native-evo-fold-a-1080",
+        "experiment": "slurp-native-exemplars-k20-train-fold-a-v1",
+        "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
+      },
+      "prepared_phase_supply": "NOT PINNED: blocked, see blocking_gate",
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-TRAIN-FOLD-A-V1"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-smoke-4-generation-v1",
+      "cell": "slurp-native-exemplars-k20-smoke-4-v1",
+      "composed_config_hash": "9ab567171d195b83e77a571205e1ffb97400684df86d813c06a77b65e76054c3",
+      "execution_plan_protocol_hash": "fd818c2ad2c8990a51d5c066c642144c15a83de0a92fad5660353a4c6509b6e6",
+      "experiment": "slurp-native-exemplars-k20-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-exemplars-k20-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-SMOKE-4-FIT-V1",
+      "fragments": {
+        "baseline": "slurp-native-review-off-exemplars-k20-smoke-4-v1",
+        "dataset": "slurp-speech-native-evo-fold-a-1080",
+        "experiment": "slurp-native-exemplars-k20-smoke-4-v1",
+        "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
+      },
+      "ordered_sample_ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ],
+      "prepared_phase_supply": "NOT PINNED: blocked, see blocking_gate",
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-SMOKE-4-V1",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    },
+    "twin": {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-twin-train-fold-a-generation-v1",
+      "campaign_plan": "configs/campaign/slurp-native-exemplars-k20-twin-train-fold-a-v1.json",
+      "cell": "slurp-native-exemplars-k20-twin-train-fold-a-v1",
+      "composed_config_hash": "c7536e43adce02b5e1e045994c4d94edc474fadf4710076fe57f35a5d3317e80",
+      "execution_plan_protocol_hash": "be56e6356491d2132a306271ab00c2e0158fa4760552846f7bd421c1617ad896",
+      "experiment": "slurp-native-exemplars-k20-twin-train-fold-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-exemplars-k20-twin-train-fold-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-TWIN-TRAIN-FOLD-A-FIT-V1",
+      "fragments": {
+        "baseline": "slurp-native-review-off-exemplars-k20-twin-train-fold-a-v1",
+        "dataset": "slurp-speech-native-evo-fold-a-1080",
+        "experiment": "slurp-native-exemplars-k20-twin-train-fold-a-v1",
+        "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
+      },
+      "prepared_phase_supply": "NOT PINNED: blocked, see blocking_gate",
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-TWIN-TRAIN-FOLD-A-V1"
+    }
+  },
+  "contact_free_evidence": {
+    "blocked": [
+      "check-arm-v1.json / check-twin-v1.json / check-smoke-v1.json",
+      "prepare-supply receipts and the prepared_phase_supply pins",
+      "request-envelope-comparison against the cell B0 rendered requests"
+    ],
+    "produced": [
+      "store-router-blocker-v1.json and store-router-blocker-v1.log -- the refusal for all three B1 cells and for the committed anchor-based E3 fragment, and the throwaway-tree diagnosis that the one-line narrowing is sufficient",
+      "containment-v1.json -- 0 collisions between the 9,354 rendered exemplar values and the composed instruction text of every phase",
+      "exemplar-prompt-fit-v1.json -- the k=20 and k=12 block size distributions",
+      "twin-derangement-proof-v1.json -- 0 fixed points on 1,080 rows, recomputed independently",
+      "composed-hashes-v1.json, plan-hashes-v1.txt, ledger-parse-v1.json"
+    ],
+    "root": "SPEECHRL_DATA_DIR/coordination/slurp-b1-exemplars-k20-v1 (outside the repository, so no receipt can dirty the tree the scoring gate reads)",
+    "wire_check_unavailable": "core.flight.cli wire-check cannot run for any native-episode cell: FlightRuntime._dispatch_phase_program refuses a native episode whose transport is not the real shared speech renderer, and wire_check installs a text transport double. The sealed anchor and cell B0 declare the same four stages for the same reason."
+  },
+  "cost_reporting": [
+    "actual generation contacts (expected 2 per row, 2,160 total, per arm)",
+    "actual repeated speech seconds (expected 2 x 3,084.528 = 6,169.06 per arm)",
+    "actual FIT endpoints (expected 4 per realized contact, 8,640 total per arm)",
+    "GPU hours from the serving monitor for each lease window, never a wall-clock guess",
+    "mean latency, slot occupancy and duty cycle from the same monitor",
+    "exemplar token volume actually rendered, against the 1,083-token estimated maximum"
+  ],
+  "decision_rule": {
+    "diagnostics": [
+      "candidate-union coverage realized in the delivered answer",
+      "Solver escape-to-neighbour-intent rate (A2 section: union coverage is availability, not use)",
+      "exemplar token volume actually rendered per row"
+    ],
+    "null_margins_pp": {
+      "action": 0.98,
+      "intent": 0.92,
+      "scenario": 0.83,
+      "slu_micro": 1.18
+    },
+    "primary": "official pooled SLU micro F1 (slurp-slu-official-train), natural mixture",
+    "resampling": {
+      "draws": 10000,
+      "intervals": [
+        "CI95 for advancement",
+        "CI90 for diagnostics"
+      ],
+      "primary": "paired whole-speaker cluster bootstrap",
+      "seed": 20260915,
+      "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed",
+      "tables": [
+        "natural mixture",
+        "equal-scenario weighting"
+      ]
+    },
+    "secondaries": [
+      "intent (joint scenario+action) accuracy",
+      "scenario accuracy",
+      "action accuracy",
+      "official pooled span F1"
+    ],
+    "verdict": {
+      "ADMITTED": "the CI95 lower bound of the pooled SLU delta is greater than 0 against the base AND against the twin, intent is non-inferior within 0.92 pp, the normalised scorer agrees in sign, and no scenario loses intent beyond the null band",
+      "HARMFUL": "otherwise, when a guard fails on the losing side",
+      "NEUTRAL": "otherwise, and it enters the default plan only if it lowers cost",
+      "no_repeat_to_pass": true,
+      "read_once": true
+    }
+  },
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster/role-graph/prompt/geometry/cap change or silent recovery. At most one root-diagnosed recovery re-registration per run; a second failure closes that flight and the fix must be proven on a four-row dry run first. A failed four-row smoke stops cell B1 until the fix is proven on that same four-row roster.",
+  "fit": {
+    "arithmetic": "1,080 rows * 2 native contacts * (1 speech packet + 3 endpoints) = 8,640",
+    "contact_cap": 8640,
+    "exact_fit": "Every realized immutable request is fitted against the resident tokenizer before it is transmitted; branches that never execute have no body and receive no receipt.",
+    "mode": "native_contact_fit",
+    "not_claimed": "A static all-branches full-roster capacity guarantee."
+  },
+  "not_authorized": [
+    "flying either cell while the store-router guard refuses the configuration",
+    "applying the diagnosed guard change from this preparation branch without its own reviewed engineering item and test",
+    "a second attempt of any of these run ids without a new registered recovery",
+    "re-scoring or re-flying the sealed cell B0 or anchor comparators",
+    "reading Fold B, DEV-1000 or the test split",
+    "starting, stopping or switching the resident serving profile",
+    "any ASR, encoder or paid-API contact",
+    "merging this branch into master"
+  ],
+  "not_claimed": [
+    "any superiority, generalization or paper-scale conclusion",
+    "any component-causal attribution beyond the one added store",
+    "anything about Fold B, DEV-1000 or the test split",
+    "that A2 availability numbers (union coverage 0.972) predict the delivered answer",
+    "that a structural smoke result is a quality result"
+  ],
+  "one_factor": {
+    "channel": "the SUPPLY axis: one added named knowledge store",
+    "held_identical": [
+      "the review-off role graph: reviewer and planner max_iterations 0, max_revisions 0, review_loop off, policy phase-native-candidates-solve-v1, two contacts per row",
+      "roster docs/receipts/rosters/slurp-evo-fold-a-v2.json and split identity 61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+      "model fragment, resident geometry (np4, slot 24576, max 512, mmproj absent) and the promoted speech packets",
+      "the intent-boundaries and slot-contracts stores with their release and snapshot hashes and the candidate supply contract (max 3 candidates, 28 values, 16 per candidate)",
+      "every phase_material instruction template and the task instruction template: the exemplars reach the model as typed content blocks on the acquire transition, never as instruction text",
+      "the review-off phase_tools block, kept verbatim and inert",
+      "scorers slurp-slu-official-train and cost",
+      "the prepared first-phase Perception supply: prepare_phase_supply prepares the program's FIRST phase only, and the diagnostic preparation of all three B1 cells reproduced the sealed cell B0 artifact output and the anchor artifact output exactly"
+    ],
+    "moved": [
+      "knowledge_stores gains one store, train-exemplars, taken verbatim from the E3 deliverable configs/baseline/slurp-native-dual-store-train-fold-a-exemplars-k20-v1.json",
+      "native_contact_fit given this cell's own run and attempt id at the same 2-contact ceiling",
+      "speech_feature_key_representation_id / speech_feature_matcher_policy_id renamed onto this arm (provenance only, never model-visible: they ride the audited payload envelope, never the messages)",
+      "preparation_source_receipts gains the exemplar store's own repository receipt"
+    ]
+  },
+  "population": {
+    "construction": "Both folds and DEV-1000 were excluded from the exemplar construction pool and from the fixed intent and slot knowledge construction.",
+    "count": 1080,
+    "fold_b": "Fold B stays untouched; no Fold B or test attempt is admitted here.",
+    "name": "TRAIN Fold A",
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    },
+    "split_id": "SLURP-EVO-FOLD-A-V2",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery"
+  },
+  "preparation_base_commit": "02f2f0af2be9b66e67db9967dc27a87230aa73cd",
+  "prompt_fit": {
+    "bound": "13,157 + 1,083 = 14,240 required Solver tokens in the worst case, a margin of at least 10,336 against the 24,576-token slot. The two maxima are taken over different rows, so the sum is a strict upper bound, not a realized worst case. k = 12 remains the registered fallback (max 682.5 proxy tokens) and is not needed.",
+    "decision": "ALLOW by estimate; the runtime check receipt is blocked with the cell.",
+    "exemplar_block_k20": {
+      "chars_max": 4332,
+      "chars_mean": 2974.4,
+      "chars_p50": 2907,
+      "chars_p95": 3796,
+      "source": "scripts/estimate_slurp_exemplar_prompt_fit.py over the real sealed snapshot and vectors, cross-checked against the real KbFacetProvider on 5 random rows",
+      "tokens_chars_over_4_proxy_max": 1083.0,
+      "tokens_chars_over_4_proxy_mean": 743.6,
+      "tokens_chars_over_4_proxy_p95": 949.0
+    },
+    "measured_base": {
+      "perception_0_margin_tokens_min": 20306,
+      "perception_0_required_tokens_max": 4270,
+      "solver_0_margin_tokens_min": 11419,
+      "solver_0_required_tokens_max": 13157,
+      "source": "the anchor's 5,417 sealed native contact-fit receipts"
+    },
+    "slot_tokens": 24576
+  },
+  "protocol_id": "SAEA-SLURP-B1-EXEMPLARS-K20-PROTOCOL-V1",
+  "purpose": "Answer one question: do speech-keyed annotated TRAIN exemplars, supplied to the Solver as typed content blocks, raise official pooled SLU F1 over the review-off base on TRAIN Fold A 1,080? A2 measured the availability side (plain k=20 union coverage 0.972, type recall 0.960, filler recall 0.566, exact-text-neighbour rate 0.0019, no memorisation channel). B1 measures whether the Solver uses it.",
+  "quality_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist.",
+  "registered_at_utc": "2026-09-17T04:33:08.697823+00:00",
+  "schema": "saea-slurp-b1-exemplar-supply-protocol-v1",
+  "scoring": {
+    "complete_jobs": 1,
+    "include_per_sample": true,
+    "no_sharding": true,
+    "official_scorer": "Pinned SLURP official evaluate.py (slurp-official-8eb16545) through core.scoring_batch",
+    "scheduled_by": "the campaign finalize step, once, over the complete manifest",
+    "scorers": [
+      "slurp-slu-official-train",
+      "cost"
+    ]
+  },
+  "service": {
+    "attach_only": true,
+    "feature_packets": "Reuse the promoted packets; zero encoding contacts.",
+    "max_output_tokens": 512,
+    "mmproj": "absent",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "slot_tokens": 24576,
+    "slots": 4,
+    "total_context": 98304
+  },
+  "source_worktree": "/home/chao/saea-worktrees/fable-b1-prep",
+  "status": "PREREGISTERED_BEFORE_CONTACT_BLOCKED_ON_THE_STORE_ROUTER_GUARD",
+  "store": {
+    "arm_query_source": {
+      "relpath": "vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl",
+      "sha256": "d0f06ed21c6a576d8118d5a914e34807c24a3d3523d89e7b30d90575d24104ff"
+    },
+    "fuse_coverage": {
+      "c": 20,
+      "m": 20,
+      "top_l": 20
+    },
+    "fuse_policy": "saea-fuse-supplyfilter-v1",
+    "k": 20,
+    "pool": "9,354 TRAIN utterances / 60 intents / 54 entity types, after excluding every utterance with a recording in TRAIN Fold A, Fold B or DEV-1000",
+    "rank_policy": "saea-rank-wcos-prior-agree-v1",
+    "rank_weights": {
+      "w_agree": 0.0,
+      "w_cos": 1.0,
+      "w_prior": 0.0
+    },
+    "release": {
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/release.json",
+      "sha256": "171aa4a82c2b15fff2c72e907ea80298be8d72309cca0d7367eb50debb042129"
+    },
+    "snapshot": {
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/snapshot.json",
+      "sha256": "4c498dc0282055b9fe036ed7e950af519bd48b5f26e76876d0250727196a72e9"
+    },
+    "store_id": "train-exemplars",
+    "supplied_phase": "solver",
+    "tau": 0.0,
+    "twin_query_source": {
+      "relpath": "vectors/slurp-exemplars-twin/query-vectors-speech-segments-deranged-v1.jsonl",
+      "sha256": "92e7f72e5566aa8dad2ed75b8ddc3df58dd107ef2de57dc0e1aab66e2ad616c5"
+    }
+  }
+}
