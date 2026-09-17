@@ -273,4 +273,6 @@ exact re-pin sequence, and section 2 the pre-launch checklist.
 
 All under `SPEECHRL_DATA_DIR/coordination/slurp-b2-samples5-v1/`, outside the repository so no
 receipt can dirty the tree the scoring gate reads. The table of file names, SHA-256 values and what
-each proves is in `docs/readiness/2026-09-17-slurp-b2-samples5-v1/README.md` section 6.
+each proves is in `docs/readiness/2026-09-17-slurp-b2-samples5-v1/README.md` section 8. The three
+`core.flight.cli check` receipts of that table also re-derive each registered protocol hash at
+runtime and report `ALLOW` for every phase.
