@@ -261,12 +261,22 @@ All under `$DATA/coordination/slurp-b1-exemplars-k20-anchor-v2/`:
 | `containment-v1.json` | `48389b8d656545380efdfd9df269f47c391bf910ef4ae735325f8204c714dff8` | 0 collisions between the 9,354 rendered exemplar values and all six composed instruction texts, Reviewer and Planner included |
 | `ledger-parse-v1.json` | `f4b162c60b6cd560d4510dee3731186eec3c405f7abb5d6ee30e26a047bc053d` | all six new rows seen exactly once at `consumed = no`; all six superseded v1 rows annotated and still `consumed = no` |
 | `plan-hashes-v1.txt` | see the file | the SHA-256 of every document in this directory |
-| `check-slurp-native-exemplars-k20-anchor-*-v2-v1.json` | see the file | the runtime `check` receipts recorded after the registration commit: the runtime-derived composed and protocol hashes agree with the registered ones and the pre-flight prompt budget is ALLOW on every phase |
+| `check-slurp-native-exemplars-k20-anchor-smoke-4-v2-v1.json` | `4b0ecc8a402d002fd9d9be0215b028b026b6881652883eeabd0d894ef059090e` | runtime `check` at study commit `343e3b59`: config `049ea7c4…`, protocol `74f4a464…`, 4 samples, readiness `held`, `generation_authorized false`, prompt budget ALLOW on all four phases |
+| `check-slurp-native-exemplars-k20-anchor-train-fold-a-v2-v1.json` | `295f60380d8dcde3eb23b8c8f073c99c888232a57eae15fde64f2b145834061e` | runtime `check`: config `db1f5e02…`, protocol `63d62d74…`, 1,080 samples, readiness `held`, prompt budget ALLOW on all four phases |
+| `check-slurp-native-exemplars-k20-anchor-twin-train-fold-a-v2-v1.json` | `d0a48baeb37fe781e602e4e17049ad23faaf2ca9426e9f2f3336ddd619fed86d` | runtime `check`: config `f9b9d45e…`, protocol `1bcfc79f…`, 1,080 samples, readiness `held`, prompt budget ALLOW on all four phases |
 
 `core.flight.cli wire-check` is unavailable for any native-episode cell, as it was for the anchor, B0
 and B0r: `FlightRuntime._dispatch_phase_program` refuses a native episode whose transport is not the
 real shared speech renderer, and `wire_check` installs a text transport double. The request-envelope
 comparison stands in its place.
+
+The runtime `check` confirms the registered identities on this commit: each cell's runtime-derived
+composed config hash and protocol hash equal the values in section 1, `scientific_readiness` is
+`held` and `generation_authorized` is `false`. Its pre-flight prompt budget (the conservative
+whole-roster estimate, not the per-request fit) returns ALLOW on all four phases, with the Solver at
+21,012 required window tokens and an operational margin of 3,564; the anchor's own Solver estimate at
+this geometry is about 19,225, so the exemplar supply costs roughly 1,790 estimate tokens. The exact
+per-request authority remains the `native_contact_fit` gate.
 
 ## 9. Deviations the coordinator should know about
 
