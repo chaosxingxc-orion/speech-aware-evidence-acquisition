@@ -1407,6 +1407,20 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-native-review-revise-v1": "phase-native-review-revise-v1.json",
     "phase-native-review-revise-json-v1": "phase-native-review-revise-json-v1.json",
     "phase-native-candidates-review-revise-v1": "phase-native-candidates-review-revise-v1.json",
+    # Cell B7r, 2026-09-17 (the Node Context Policy's review-finding
+    # PRODUCER format): the SAME four phases, the SAME episode shape and
+    # the SAME contact ceiling 11 as
+    # "phase-native-candidates-review-revise-v1", with the Reviewer phase
+    # declaring the registered "saea-review-findings-v1" output contract.
+    # A phase's output contract has exactly one authority
+    # (rails.phase_material.load_phase_material_specs), and
+    # rails.native_episode_config refuses a context_policy "producers"
+    # block whose declared format differs from the producing phase's, so
+    # the Reviewer format is a program id rather than a flag on the
+    # review-revise program.
+    "phase-native-candidates-review-revise-findings-v1": (
+        "phase-native-candidates-review-revise-findings-v1.json"
+    ),
     # E1, 2026-09-16: the SAME four phases as
     # "phase-native-candidates-review-revise-v1", with the Reviewer/Planner
     # review loop switched off by the baseline's own native_episode.roles
@@ -1562,6 +1576,15 @@ def register_phase_programs_v1() -> None:
             "phase-native-candidates-review-revise-v1",
             default_controller_factory(
                 default_phase_program("phase-native-candidates-review-revise-v1")
+            ),
+        )
+    if "phase-native-candidates-review-revise-findings-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-candidates-review-revise-findings-v1",
+            default_controller_factory(
+                default_phase_program(
+                    "phase-native-candidates-review-revise-findings-v1"
+                )
             ),
         )
     if "phase-native-candidates-solve-v1" not in registered:

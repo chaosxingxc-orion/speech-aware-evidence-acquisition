@@ -1,0 +1,200 @@
+{
+  "arms": {
+    "left_base": {
+      "attempt_id": "attempt-slurp-native-ncp-l1-anchor-train-fold-a-generation-v1",
+      "expected_contacts_nominal": 5417,
+      "role": "cell B7a, the Node Context Policy at level L1 on the sealed dual-store anchor: the base this cell extends and its PRIMARY comparator. Sealed bytes, never re-flown or re-scored. B7a has not flown at registration time, so its score and manifest hashes are filled in from its own seal before this read runs.",
+      "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_B7A_SEAL",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V1/attempt-slurp-native-ncp-l1-anchor-train-fold-a-generation-v1/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V1.scores.json",
+      "scores_sha256": "PENDING_B7A_SEAL"
+    },
+    "left_direct_secondary": {
+      "attempt_id": "attempt-slurp-direct-max512-train-fold-a-source-recovery-generation-v1",
+      "contacts": 1080,
+      "official_aggregate": {
+        "action_accuracy": 75.09,
+        "intent_scenario_plus_action": 73.7,
+        "pooled_slu_f1": 33.89,
+        "pooled_span_f1": 21.1,
+        "scenario_accuracy": 82.69
+      },
+      "projection_v3_aggregate": {
+        "action_accuracy": 75.93,
+        "intent_scenario_plus_action": 75.37,
+        "pooled_slu_f1": 34.31,
+        "pooled_span_f1": 23.24,
+        "scenario_accuracy": 84.17
+      },
+      "role": "the released TRAIN A direct anchor; SECONDARY comparator, for the system-versus-direct column only. Sealed bytes, never re-flown or re-scored.",
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1",
+      "run_manifest_sha256": "546109055a373b358c43d36878c532b95784ee5d73d07f011c5fa3ea3d7ce11e",
+      "scores_relpath": "runs/SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1/attempt-slurp-direct-max512-train-fold-a-source-recovery-generation-v1/SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1.scores.json",
+      "scores_sha256": "7840a959fe4f43928fda0e0cacfe8c0ee4200116bfcd269bfe3451b59da29c38"
+    },
+    "right_treatment": {
+      "attempt_id": "attempt-slurp-native-ncp-l1-reviewer-format-anchor-train-fold-a-generation-v1",
+      "expected_contacts_nominal": 5417,
+      "registered_contact_ceiling": 11880,
+      "role": "cell B7r (Reviewer response format) versus cell B7a",
+      "run_id": "SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1/attempt-slurp-native-ncp-l1-reviewer-format-anchor-train-fold-a-generation-v1/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1.scores.json",
+      "scores_sha256": "PENDING_FIRST_OFFICIAL_SCORE"
+    }
+  },
+  "authority": {
+    "design": "docs/superpowers/specs/2026-09-17-node-context-policy-design.md",
+    "own_null": "analysis/SAEA-SLURP-B0-REPLICATE-PAIRED-ANALYSIS-V1/README.md; the TRAIN A own null of this roster and geometry, h_SLU 1.1218 pp and h_intent 1.0051 pp at CI95",
+    "preregistration": "docs/readiness/2026-09-17-slurp-b7rc-ncp-anchor-v1-preregistration.md",
+    "program": "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md",
+    "protocol": "docs/readiness/2026-09-17-slurp-b7rc-ncp-anchor-v1/protocol-registered-v1.json"
+  },
+  "claim_boundary": "Descriptive paired read on historically exposed TRAIN Fold A discovery rows. No superiority, generalization, component-causal or confirmatory claim; nothing about Fold B, DEV-1000 or the test split. The cell measures what the loop does with a parseable Reviewer output, never what the Reviewer's constrained output says.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "decision_rule": {
+    "neutral_enters_the_plan": false,
+    "neutral_rule": "design section 15 resolution 5: a NEUTRAL B7r/B7c enters the SLURP default plan only if it lowers cost. B7c does; B7r does not.",
+    "no_repeat_to_pass": true,
+    "null_margins_pp": {
+      "intent_ci90": 0.8505,
+      "intent_ci95": 1.0051,
+      "slu_micro_ci90": 0.942,
+      "slu_micro_ci95": 1.1218,
+      "source": "TRAIN A own null measured by cell B0r (docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md)"
+    },
+    "primary": "official pooled SLU micro F1 (slurp-slu-official-train), natural mixture, against cell B7a",
+    "read_once": true,
+    "scenario_band": "a scenario loses intent beyond the null band when the CI95 upper bound of that scenario's own paired intent delta is below zero; roster-level scenario and action margins stay diagnostics, not gates",
+    "scenario_harm_diagnostic": "net harmed rows per scenario is reported for every scenario and any scenario with five or more is flagged (owner decision 17 of 2026-09-17); a diagnostic, not a gate",
+    "secondary_gate": "intent (joint scenario+action) accuracy"
+  },
+  "delta_convention": "delta = cell B7r minus cell B7a, in percentage points; negative is worse",
+  "diagnostics_required": [
+    "the findings rejection rate: rows whose Reviewer output fails rails.review_findings.parse_review_findings, against the sealed anchor's 2,167 of 2,167",
+    "the planner:review-finding and solver:review-finding receipt rows: parsed versus FALLBACK-RAW, with median rendered chars",
+    "whether the Reviewer still issues its task-contract tool call under the constrained output contract, as a count of native task-contract calls against cell B7a's",
+    "per-scenario intent table over all 18 scenarios, natural mixture and equal weighting",
+    "net harmed rows per scenario, flagging any scenario with five or more",
+    "the per-contact prompt-token delta from the cell's own sealed native contact-fit receipts"
+  ],
+  "estimators": {
+    "bootstrap_pooled": "analysis.paired.resampled_statistic",
+    "not_used": "analysis.score_compare_cli as the runner: it hard-codes ci_level 0.90 and DEV population names",
+    "paired_per_row": "analysis.paired.paired_contrast",
+    "percentiles": "analysis.bootstrap._percentile over the retained BootstrapResult.replicates",
+    "pooled_micro_f1": "analysis.null_calibration.pooled_f1",
+    "row_reader": "analysis.null_calibration_cli.rows_for"
+  },
+  "execution_profile": "model-free-check",
+  "metrics": [
+    {
+      "counts": "tp = [slu_f1_word_tp, slu_f1_char_tp], fp and fn likewise",
+      "estimand": "pooled count F1",
+      "id": "pooled_slu_f1",
+      "null_half_width_pp": 1.1218,
+      "role": "primary"
+    },
+    {
+      "estimand": "per-row mean of joint scenario+action correctness",
+      "id": "intent_accuracy",
+      "null_half_width_pp": 1.0051,
+      "role": "secondary gate"
+    },
+    {
+      "estimand": "per-row mean",
+      "id": "scenario_accuracy",
+      "null_half_width_pp": null,
+      "role": "secondary diagnostic"
+    },
+    {
+      "estimand": "per-row mean",
+      "id": "action_accuracy",
+      "null_half_width_pp": null,
+      "role": "secondary diagnostic"
+    },
+    {
+      "estimand": "pooled count F1 from slot_f1_exact_tp/fp/fn",
+      "id": "pooled_span_f1",
+      "null_half_width_pp": null,
+      "role": "secondary diagnostic"
+    },
+    {
+      "estimand": "per-row mean",
+      "id": "slu_f1_per_row_mean",
+      "role": "report only"
+    },
+    {
+      "estimand": "per-row mean",
+      "id": "exact_slot_f1_per_row_mean",
+      "role": "report only"
+    }
+  ],
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-B7R-NCP-REVIEWER-FORMAT-ANCHOR-V1-PAIRED-ANALYSIS-V1",
+    "files": [
+      "score-contrasts.json",
+      "README.md"
+    ],
+    "verdict_document": "docs/results/2026-09-17-slurp-b7r-ncp-reviewer-format-anchor-v1-verdict.md"
+  },
+  "population": {
+    "far_field_rows": 557,
+    "headset_rows": 523,
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "roster_id": "SLURP-EVO-FOLD-A-V2",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    },
+    "roster_metadata": {
+      "carries": "sample_id -> scenario, speaker, headset, utterance_id; no text, transcript or gold filler",
+      "relpath": "analysis/SAEA-SLURP-TRAIN-A-DIRECT-ANCHOR-RELEASE-PAIRED-ANALYSIS-V1/roster-metadata.json",
+      "sha256": "07f4cd83b83d83d65500a328e0a38421ede575195c63ae118def0d1006c14e34",
+      "speaker_key": "spk:<usrid> from the governed SLURP release metadata"
+    },
+    "rows": 1080,
+    "rows_per_scenario": 60,
+    "scenario_strata": 18,
+    "speaker_clusters": 125,
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery"
+  },
+  "recipe_id": "SAEA-SLURP-B7R-NCP-REVIEWER-FORMAT-ANCHOR-V1-PAIRED-ANALYSIS-V1",
+  "resampling": {
+    "draws": 10000,
+    "intervals": [
+      "CI95",
+      "CI90"
+    ],
+    "primary": "paired whole-speaker cluster bootstrap",
+    "seed": 20260915,
+    "seed_advance": "paired_contrast advances the seed by the metric index; pooled metrics use the base seed",
+    "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed, each scenario resampled to its own size"
+  },
+  "schema": "saea-paired-analysis-recipe-v1",
+  "scorer": {
+    "evaluator": "slurp-official-8eb16545",
+    "evaluator_commit": "8eb16545762be97ace75334109d73824217311f1",
+    "id": "slurp-slu-official-train",
+    "projection_v3_companion": "slurp-slu-official-projected-v3-train, run over a COPY of the arm's sealed outputs, reported beside every official number (owner decision 7 of 2026-09-17)",
+    "runs": "once per complete manifest through core.scoring_batch, never sharded; this read invokes no scorer for the primary numbers",
+    "symmetric_normalised_companion": "owner decision 14 of 2026-09-17 registers a TRAIN sibling of slurp-slu-f1-normalized-v1; if available at read time it supplies the symmetric-sign clause, else the clause is not evaluable on TRAIN and projection v3 is the agreement reading, recorded as a deviation"
+  },
+  "tables_required": [
+    "headline: cell B7a, arm, delta, speaker CI95, speaker CI90, scenario-stratified CI90, equal-scenario delta, and the released direct anchor as a secondary column",
+    "the same headline table under projection v3, beside the unprojected one",
+    "saves / harms / ties with the exact two-sided McNemar p for every per-row metric",
+    "per-scenario table, all 18 scenarios, natural mixture and equal weighting",
+    "net harmed rows per scenario, flagging any scenario with five or more (owner decision 17 of 2026-09-17)",
+    "node-context receipt table: per boundary rows, parse status, fallback applied, median rendered chars",
+    "cost table: contacts, contacts per row, repeated speech seconds, FIT endpoints, native task-contract calls, GPU hours from the serving monitor, mean latency, duty cycle, prompt-token delta against cell B7a"
+  ],
+  "title": "SLURP TRAIN A: cell B7r (Reviewer response format) versus cell B7a"
+}
