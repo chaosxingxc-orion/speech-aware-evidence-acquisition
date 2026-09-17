@@ -16,8 +16,13 @@ from .review_findings import ReviewFindingsError, parse_review_findings
 from .slurp_intent_hypotheses import (
     BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_IDS,
     CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    DEFAULT_FALLBACK_DISTINCTION,
+    FALLBACK_CANDIDATE_SOURCE,
+    MODEL_CANDIDATE_SOURCE,
     SlurpIntentHypothesisError,
     project_bounded_slurp_intent_hypotheses,
+    validate_fallback_candidate_ids,
+    validate_fallback_distinction,
 )
 
 ROLE_CONTEXT_POLICY_ID = "typed-slurp-role-context-v1"
@@ -248,6 +253,8 @@ def _review_view(
 def _candidate_view(
     source: AgentStateArtifact, *, sample_id: str, legal_intent_ids: tuple[str, ...],
     max_candidates: int, projection_policy: str, visible_evidence_ids: set[str],
+    fallback_candidates: tuple[str, ...] = (),
+    fallback_distinction: str = DEFAULT_FALLBACK_DISTINCTION,
 ) -> tuple[Mapping[str, object], Mapping[str, object]]:
     if _sha256_text(source.content) != source.source_response_sha256:
         raise RoleContextError("candidate source content differs from its response hash")
@@ -262,9 +269,40 @@ def _candidate_view(
     except SlurpIntentHypothesisError as error:
         raise RoleContextError(str(error)) from error
     document = json.loads(projection.content)
+    # FIX-1 standing fallback: applied ONCE here, after the projection, to
+    # the RENDERED view only -- never to ``document``/``projection``, whose
+    # hashes stay the sealed Perception response's own audit trail. With no
+    # fallback configured, ``candidates`` is ``document["candidates"]``
+    # itself, unchanged, so an unconfigured role view is byte-identical to
+    # the view this function rendered before the option existed.
+    try:
+        fallback_ids = validate_fallback_candidate_ids(
+            fallback_candidates, legal_intent_ids=legal_intent_ids,
+        )
+    except SlurpIntentHypothesisError as error:
+        raise RoleContextError(str(error)) from error
+    if not fallback_ids:
+        candidates = document["candidates"]
+    else:
+        distinction = validate_fallback_distinction(fallback_distinction)
+        candidates = [
+            dict(candidate, source=MODEL_CANDIDATE_SOURCE)
+            for candidate in document["candidates"]
+        ]
+        present = {candidate["intent_id"] for candidate in candidates}
+        for fallback_id in fallback_ids:
+            if fallback_id in present:
+                continue
+            candidates.append({
+                "intent_id": fallback_id,
+                "distinction": distinction,
+                "evidence_refs": [],
+                "unresolved_fields": [],
+                "source": FALLBACK_CANDIDATE_SOURCE,
+            })
     view = {
         "sample_id": sample_id,
-        "candidates": document["candidates"],
+        "candidates": candidates,
         "evidence_ref_availability": [
             {
                 "intent_id": candidate["intent_id"],
@@ -272,7 +310,7 @@ def _candidate_view(
                     candidate["evidence_refs"], visible_evidence_ids,
                 ),
             }
-            for candidate in document["candidates"]
+            for candidate in candidates
         ],
     }
     audit = {
@@ -496,6 +534,8 @@ class SlurpRoleContextCompiler:
     def __init__(
         self, *, legal_intent_ids: Iterable[str], max_candidates: int,
         projection_policy: str,
+        fallback_candidates: Iterable[str] = (),
+        fallback_distinction: str = DEFAULT_FALLBACK_DISTINCTION,
     ) -> None:
         if isinstance(legal_intent_ids, (str, bytes)):
             raise RoleContextError("legal_intent_ids must be an iterable of IDs")
@@ -518,9 +558,22 @@ class SlurpRoleContextCompiler:
             != CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
         ):
             raise RoleContextError("candidate bounds above three require the configurable policy")
+        try:
+            fallback_ids = validate_fallback_candidate_ids(
+                fallback_candidates, legal_intent_ids=legal,
+            )
+            fallback_text = (
+                validate_fallback_distinction(fallback_distinction)
+                if fallback_ids
+                else fallback_distinction
+            )
+        except SlurpIntentHypothesisError as error:
+            raise RoleContextError(str(error)) from error
         self.legal_intent_ids = legal
         self.max_candidates = max_candidates
         self.projection_policy = projection_policy
+        self.fallback_candidates = fallback_ids
+        self.fallback_distinction = fallback_text
 
     def compile(
         self, *, role_kind: str, phase_ids: Mapping[str, str], sample_id: str,
@@ -631,6 +684,8 @@ class SlurpRoleContextCompiler:
                 max_candidates=self.max_candidates,
                 projection_policy=self.projection_policy,
                 visible_evidence_ids=visible_evidence_set,
+                fallback_candidates=self.fallback_candidates,
+                fallback_distinction=self.fallback_distinction,
             )
             retain_derived(
                 position, "candidate-hypothesis", "parsed",

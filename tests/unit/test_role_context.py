@@ -17,6 +17,9 @@ from speech_aware_evidence_acquisition.rails.role_context import (
 )
 from speech_aware_evidence_acquisition.rails.slurp_intent_hypotheses import (
     CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    DEFAULT_FALLBACK_DISTINCTION,
+    FALLBACK_CANDIDATE_SOURCE,
+    MODEL_CANDIDATE_SOURCE,
 )
 
 
@@ -222,6 +225,121 @@ def test_solver_gets_latest_distinct_candidate_projection_with_provenance():
     excluded = next(row for row in result.receipt["excluded"] if row["state_id"] == old.state_id)
     assert excluded["artifact_sha256"] == old.content_hash()
     assert excluded["producer_policy_id"] == old.producer_policy_id
+
+
+# ---------------------------------------------------------------------------
+# FIX-1 standing fallback candidate
+# (docs/results/2026-09-17-slurp-a3-coverage-confusion-audit-v1.md)
+# ---------------------------------------------------------------------------
+
+FALLBACK_ID = "calendar_remove_event"
+
+
+def fallback_compiler(**changes) -> SlurpRoleContextCompiler:
+    return compiler(
+        legal_intent_ids=("calendar_set_event", "calendar_query", FALLBACK_ID),
+        fallback_candidates=(FALLBACK_ID,),
+        **changes,
+    )
+
+
+def compile_fallback_for(role_kind: str, states=(), *, local=(), available=(), **changes):
+    return fallback_compiler(**changes).compile(
+        role_kind=role_kind,
+        phase_ids=PHASE_IDS,
+        sample_id="s1",
+        states=tuple(states),
+        local_tool_result_ids=tuple(local),
+        available_evidence_ids=tuple(available),
+        draft_response_schema=DRAFT_SCHEMA,
+    )
+
+
+def test_candidate_view_appends_labelled_fallback_last_when_absent():
+    perception = phase("perception", 1, candidates("calendar_query"))
+    result = compile_fallback_for("solver", (perception,))
+    view = by_class(result, "candidate-hypothesis")
+    rows = view["view"]["candidates"]
+    assert [row["intent_id"] for row in rows] == ["calendar_query", FALLBACK_ID]
+    # The model's own candidate is unchanged and explicitly labelled model.
+    assert rows[0]["source"] == MODEL_CANDIDATE_SOURCE
+    assert rows[0]["distinction"] == "Model interpretation 1"
+    assert rows[0]["evidence_refs"] == ["claim:1"]
+    # The appended fallback is explicitly labelled -- not a model proposal.
+    fallback_row = rows[1]
+    assert fallback_row["source"] == FALLBACK_CANDIDATE_SOURCE
+    assert fallback_row["distinction"] == DEFAULT_FALLBACK_DISTINCTION
+    assert fallback_row["evidence_refs"] == []
+    assert fallback_row["unresolved_fields"] == []
+    assert view["declaration_status"] == "unverified-model-hypotheses"
+    assert view["view"]["evidence_ref_availability"][-1] == {
+        "intent_id": FALLBACK_ID, "evidence_refs": [],
+    }
+    # The projection audit (the sealed Perception response's own provenance)
+    # is untouched by the fallback append -- it never claims the model named
+    # a candidate it did not.
+    retained = next(
+        row for row in result.receipt["retained"]
+        if row["state_kind"] == "role-context:candidate-hypothesis"
+    )
+    assert [item["intent_id"] for item in retained["projection"]["raw_positions"]] == (
+        ["calendar_query"]
+    )
+
+
+def test_candidate_view_fallback_is_a_noop_when_already_present():
+    perception = phase("perception", 1, candidates(FALLBACK_ID))
+    result = compile_fallback_for("solver", (perception,))
+    view = by_class(result, "candidate-hypothesis")
+    rows = view["view"]["candidates"]
+    # Already present: nothing is appended, but the option is configured, so
+    # the model's own candidate is still explicitly labelled.
+    assert [row["intent_id"] for row in rows] == [FALLBACK_ID]
+    assert rows[0]["source"] == MODEL_CANDIDATE_SOURCE
+    assert rows[0]["distinction"] == "Model interpretation 1"
+
+
+def test_candidate_view_with_no_fallback_configured_carries_no_source_key():
+    """Unconfigured (the default ``fallback_candidates=()``): the rendered
+    candidate view must be byte-for-byte what this function rendered before
+    the option existed -- in particular, no ``source`` key at all."""
+
+    perception = phase("perception", 1, candidates("calendar_query"))
+    result = compile_for("solver", (perception,))
+    view = by_class(result, "candidate-hypothesis")
+    rows = view["view"]["candidates"]
+    assert rows == [{
+        "intent_id": "calendar_query",
+        "distinction": "Model interpretation 1",
+        "evidence_refs": ["claim:1"],
+        "unresolved_fields": ["entity span"],
+    }]
+    assert "source" not in rows[0]
+
+
+def test_candidate_view_empty_fallback_list_is_byte_identical_to_absent():
+    perception = phase("perception", 1, candidates("calendar_query"))
+    absent = compile_for("solver", (perception,))
+    empty = compiler(fallback_candidates=()).compile(
+        role_kind="solver", phase_ids=PHASE_IDS, sample_id="s1",
+        states=(perception,), local_tool_result_ids=(),
+        available_evidence_ids=(), draft_response_schema=DRAFT_SCHEMA,
+    )
+    assert by_class(absent, "candidate-hypothesis") == by_class(empty, "candidate-hypothesis")
+    assert absent.receipt == empty.receipt
+
+
+def test_fallback_candidate_config_refuses_an_id_outside_the_legal_inventory():
+    with pytest.raises(RoleContextError, match="outside the legal inventory"):
+        compiler(fallback_candidates=("not_a_real_intent",))
+
+
+def test_fallback_candidate_config_refuses_more_than_two_ids():
+    with pytest.raises(RoleContextError, match="more than 2"):
+        compiler(
+            legal_intent_ids=("calendar_set_event", "calendar_query", "a", "b"),
+            fallback_candidates=("calendar_set_event", "calendar_query", "a"),
+        )
 
 
 def test_reviewer_keeps_exact_repeated_draft_entities_and_marks_malformed_raw():

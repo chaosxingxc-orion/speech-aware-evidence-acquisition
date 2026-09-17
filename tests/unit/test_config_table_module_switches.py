@@ -370,6 +370,92 @@ def test_a_supplied_phase_with_no_supply_block_is_already_legal():
 
 
 # ---------------------------------------------------------------------------
+# 8. SLURP standing fallback candidate --
+#    knowledge_views.<phase>.material.fill_params.fallback_candidates
+#
+# FIX-1 (docs/results/2026-09-17-slurp-a3-coverage-confusion-audit-v1.md,
+# E5a): a Perception-phase ``fill_params`` key, validated in
+# ``rails.artifact_results.build_slurp_hypothesis_artifact_validator`` next
+# to the rest of the same hypothesis contract (``id``, ``max_candidates``,
+# ``source_catalog``). It needs NO new table code: ``knowledge_views``
+# already wraps a phase's ``phase_material`` entry -- ``fill_params``
+# included -- verbatim (``rails.config_tables.unwrap_knowledge_views``:
+# "each phase's material / supply object is carried over UNCHANGED"), so the
+# switch resolves through the SAME ``knowledge_views.<phase>.material`` entry
+# ``knowledge_views.<phase>.material.state_fill`` already resolves through
+# for the slot-schema view (test 4 above) -- one more field one level
+# deeper, not a new entry kind.
+#
+# The option is validated and hashed here, but it is deliberately inert for
+# what the model itself is asked to produce (the response-format JSON schema
+# ``rails.artifact_results.slurp_intent_hypotheses_response_format`` builds
+# never reads it): the actual consumption-time append happens where the
+# candidate state is READ -- ``rails.knowledge_provider`` (slot-card supply,
+# ``candidate_supply.<phase>.fallback_candidates``) and ``rails.role_context``
+# (Solver/Reviewer rendering, its own ``role_context.params.fallback_candidates``)
+# -- each of which declares this SAME option, by the same name, at its own
+# existing consumption site, exactly as ``max_candidates`` and
+# ``projection_policy`` already are. Those two consumption-side switches are
+# proven directly against real request/audit output in
+# ``test_candidate_semantic_supply.py`` and ``test_role_context.py`` rather
+# than through this file's config-diff shape (neither ``candidate_supply``
+# nor ``role_context.params`` is a ``knowledge_views``/``judges`` table entry
+# today).
+# ---------------------------------------------------------------------------
+
+FALLBACK_PERCEPTION_FILL_PARAMS = {
+    "id": "slurp-intent-hypotheses-v1",
+    "max_candidates": 3,
+    "source_catalog": {
+        "data_relpath": "prepared/x/catalog.json", "sha256": SHA, "source_sha256": SHA,
+    },
+}
+
+
+def _fallback_perception_material(**fill_param_overrides):
+    return _material(
+        "probes/slurp_native_role_perception_v3.txt",
+        response_format_id="slurp-intent-hypotheses-v1",
+        fill_params={**FALLBACK_PERCEPTION_FILL_PARAMS, **fill_param_overrides},
+    )
+
+
+def test_fallback_candidate_is_one_key_in_the_knowledge_views_table(tmp_path):
+    program_id = "phase-native-candidates-review-revise-v1"
+    base = {"arm": "slurp-fallback", "policy": program_id}
+    other_phases = {
+        "reviewer": {"material": _material("probes/slurp_native_role_reviewer_v1.txt")},
+        "planner": {"material": _material("probes/slurp_native_role_planner_v1.txt")},
+        "solver": {"material": _material("probes/slurp_native_role_solver_v2.txt")},
+    }
+    off_views = {
+        "perception": {"material": _fallback_perception_material()},
+        **other_phases,
+    }
+    on_views = {
+        "perception": {
+            "material": _fallback_perception_material(fallback_candidates=["general_quirky"])
+        },
+        **other_phases,
+    }
+    key = _one_key_switch(
+        tmp_path, program_id,
+        dict(base, knowledge_views=on_views),
+        dict(base, knowledge_views=off_views),
+    )
+    assert key == "knowledge_views.perception.material.fill_params.fallback_candidates"
+
+
+def test_fallback_candidate_switch_key_resolves_to_the_material_entry():
+    from speech_aware_evidence_acquisition.rails.config_tables import resolve_switch_key
+
+    assert resolve_switch_key(
+        "knowledge_views",
+        "knowledge_views.perception.material.fill_params.fallback_candidates",
+    ) == "material"
+
+
+# ---------------------------------------------------------------------------
 # 7. window hook -- NOT a table entry yet, and why
 #
 # The per-window instruction and delivery of ``obs-repair-loop`` is a
