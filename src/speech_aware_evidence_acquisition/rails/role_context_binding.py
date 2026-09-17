@@ -15,10 +15,22 @@ def _bytes(value):
     ).encode()
 
 
+_REQUIRED_PARAM_KEYS = {"max_candidates", "projection_policy", "draft_response_schema"}
+#: FIX-1 standing fallback (docs/results/2026-09-17-slurp-a3-coverage-
+#: confusion-audit-v1.md), declared here beside ``projection_policy`` --
+#: role-context rendering already independently declares its own
+#: ``max_candidates``/``projection_policy`` over the same Perception
+#: contract, and this option follows that same established pattern rather
+#: than threading through a single physical config key.
+_OPTIONAL_PARAM_KEYS = {"fallback_candidates", "fallback_distinction"}
+
+
 def _params(params):
-    if not isinstance(params, Mapping) or set(params) != {
-        "max_candidates", "projection_policy", "draft_response_schema",
-    }:
+    if (
+        not isinstance(params, Mapping)
+        or not _REQUIRED_PARAM_KEYS <= set(params)
+        or set(params) - _REQUIRED_PARAM_KEYS - _OPTIONAL_PARAM_KEYS
+    ):
         raise ValueError("role context parameters have unknown or missing fields")
     maximum = params["max_candidates"]
     if isinstance(maximum, bool) or not isinstance(maximum, int) or maximum < 1:
@@ -39,6 +51,24 @@ def _params(params):
     from .role_context import validate_role_context_draft_schema
 
     validate_role_context_draft_schema(params["draft_response_schema"])
+    fallback_candidates = params.get("fallback_candidates", ())
+    if (
+        not isinstance(fallback_candidates, (list, tuple))
+        or len(fallback_candidates) > 2
+        or any(not isinstance(item, str) or not item for item in fallback_candidates)
+        or len(set(fallback_candidates)) != len(fallback_candidates)
+    ):
+        raise ValueError(
+            "role context fallback_candidates must be at most two unique non-empty strings"
+        )
+    if "fallback_distinction" in params:
+        if not fallback_candidates:
+            raise ValueError(
+                "role context fallback_distinction requires a non-empty fallback_candidates"
+            )
+        text = params["fallback_distinction"]
+        if not isinstance(text, str) or not text.strip() or len(text) > 128:
+            raise ValueError("role context fallback_distinction is invalid")
     return params
 
 
@@ -90,9 +120,15 @@ def build_slurp_role_context_compiler(*, perception_response_format, params):
         or candidates.get("maxItems") != params["max_candidates"]
     ):
         raise ValueError("role context candidate inventory or maximum differs")
+    from .slurp_intent_hypotheses import DEFAULT_FALLBACK_DISTINCTION
+
     return SlurpRoleContextCompiler(
         legal_intent_ids=tuple(legal), max_candidates=params["max_candidates"],
         projection_policy=params["projection_policy"],
+        fallback_candidates=tuple(params.get("fallback_candidates", ())),
+        fallback_distinction=params.get(
+            "fallback_distinction", DEFAULT_FALLBACK_DISTINCTION
+        ),
     )
 
 

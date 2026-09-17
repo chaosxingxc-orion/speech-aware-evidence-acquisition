@@ -16,7 +16,12 @@ from typing import Mapping
 from ..core.base import ARTIFACT_CONTENT_VALIDATORS
 from .candidate_contract_lookup import canonical_sha256
 from .slurp_candidate_contracts import PROVIDER_SCHEMA
-from .slurp_intent_hypotheses import canonicalize_slurp_intent_hypothesis_response
+from .slurp_intent_hypotheses import (
+    DEFAULT_FALLBACK_DISTINCTION,
+    canonicalize_slurp_intent_hypothesis_response,
+    validate_fallback_candidate_ids,
+    validate_fallback_distinction,
+)
 
 SLURP_HYPOTHESIS_CONTENT_ID = "slurp-intent-hypotheses-v1"
 
@@ -88,6 +93,24 @@ class SlurpHypothesisArtifactValidator:
     max_distinction_chars: int | None = None
     max_evidence_refs: int | None = None
     max_unresolved_fields: int | None = None
+    #: FIX-1: the Perception-side declaration of the standing fallback
+    #: option (docs/results/2026-09-17-slurp-a3-coverage-confusion-audit-v1.md).
+    #: Validated here, next to the rest of this same contract, so
+    #: ``perception.fill_params.fallback_candidates`` is one legal, hashed
+    #: key of the Perception phase's own material. It is deliberately NEVER
+    #: read by :meth:`canonicalize` or by :func:`slurp_intent_hypotheses_response_format`:
+    #: the fallback must never repair, reorder or drop the model's own
+    #: sealed response, and must never change what the model itself is
+    #: asked to produce. The actual consumption-time append happens where
+    #: the candidate state is READ -- ``rails.knowledge_provider`` (slot
+    #: supply) and ``rails.role_context`` (Solver/Reviewer rendering) --
+    #: each of which declares this SAME option, by the same name, at its
+    #: own consumption site, exactly as ``max_candidates`` and
+    #: ``projection_policy`` are already independently declared at each of
+    #: those sites rather than threaded through a single physical config
+    #: key.
+    fallback_candidates: tuple[str, ...] = ()
+    fallback_distinction: str = DEFAULT_FALLBACK_DISTINCTION
 
     def canonicalize(self, raw_response: str, *, sample_id: str) -> str:
         canonical = canonicalize_slurp_intent_hypothesis_response(
@@ -138,6 +161,8 @@ def build_slurp_hypothesis_artifact_validator(
         "max_distinction_chars",
         "max_evidence_refs",
         "max_unresolved_fields",
+        "fallback_candidates",
+        "fallback_distinction",
     }
     if (
         not isinstance(contract, Mapping)
@@ -187,6 +212,28 @@ def build_slurp_hypothesis_artifact_validator(
             raise ArtifactContentError(
                 f"SLURP hypothesis output bound {field} must be an integer from 0 to 32"
             )
+    # FIX-1: validated here (fail-closed, against this SAME legal inventory)
+    # but never fed to the schema below or to .canonicalize() -- see the
+    # dataclass field comment for why.
+    try:
+        fallback_candidates = validate_fallback_candidate_ids(
+            contract.get("fallback_candidates"), legal_intent_ids=ids,
+        )
+    except ValueError as error:
+        raise ArtifactContentError(str(error)) from error
+    if "fallback_distinction" in contract:
+        if not fallback_candidates:
+            raise ArtifactContentError(
+                "fallback_distinction requires a non-empty fallback_candidates"
+            )
+        try:
+            fallback_distinction = validate_fallback_distinction(
+                contract["fallback_distinction"]
+            )
+        except ValueError as error:
+            raise ArtifactContentError(str(error)) from error
+    else:
+        fallback_distinction = DEFAULT_FALLBACK_DISTINCTION
     return SlurpHypothesisArtifactValidator(
         ids,
         minimum,
@@ -195,6 +242,8 @@ def build_slurp_hypothesis_artifact_validator(
         max_distinction_chars,
         max_evidence_refs,
         max_unresolved_fields,
+        fallback_candidates,
+        fallback_distinction,
     )
 
 

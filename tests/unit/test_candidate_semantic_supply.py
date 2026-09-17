@@ -5,11 +5,13 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import replace
+from pathlib import Path
 
 import pytest
 
 from speech_aware_evidence_acquisition.rails.candidate_semantic_supply import (
     CandidateSemanticSupplyError,
+    CandidateSemanticSupplySpec,
 )
 from speech_aware_evidence_acquisition.rails.controllers import (
     EvidenceAgentController,
@@ -28,6 +30,10 @@ from speech_aware_evidence_acquisition.rails.knowledge_stores import (
 from speech_aware_evidence_acquisition.rails.knowledge_provider import (
     CandidateSemanticProvider,
     select_candidate_semantic_values,
+)
+from speech_aware_evidence_acquisition.rails.slurp_intent_hypotheses import (
+    FALLBACK_CANDIDATE_SOURCE,
+    MODEL_CANDIDATE_SOURCE,
 )
 from speech_aware_evidence_acquisition.rails.runner import AgentRuntimeContext
 from speech_aware_evidence_acquisition.rails.material import PhaseMaterial
@@ -321,6 +327,223 @@ def test_five_candidates_flow_through_shared_supply_without_catalog_dump(tmp_pat
             legal_candidate_ids=legal,
         )
     assert supply.rank_result.snapshot_sha256 == binding.binding_sha256
+
+
+# ---------------------------------------------------------------------------
+# FIX-1 standing fallback candidate
+# (docs/results/2026-09-17-slurp-a3-coverage-confusion-audit-v1.md)
+# ---------------------------------------------------------------------------
+
+
+def _fallback_config(tmp_path, *, fallback_candidates, extra_rows=()):
+    rows = (
+        _slot_row("shared", ("alpha", "beta")),
+        _slot_row("alpha_one", ("alpha",)),
+        _slot_row("alpha_two", ("alpha",)),
+        _slot_row("beta_one", ("beta",)),
+        _slot_row("gamma_one", ("gamma",)),
+        *extra_rows,
+    )
+    config, legal = _config(
+        tmp_path, rows=rows, inventory=("alpha", "beta", "gamma", "delta"),
+        max_candidates=3,
+    )
+    spec = config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"]
+    if fallback_candidates is not None:
+        spec["fallback_candidates"] = list(fallback_candidates)
+    return config, legal
+
+
+def test_fallback_candidate_appends_last_and_binds_no_cards_when_unmapped(tmp_path):
+    """``delta`` is a legal id with no authored slot row -- the "few or none"
+    case the audit expected of ``general_quirky`` (the module docstring on
+    ``SlurpCandidateSemanticProvider`` records that the real released source
+    binds it 16, not 0 -- this test proves the ZERO-card case is still
+    handled, not that ``general_quirky`` itself is empty)."""
+
+    config, legal = _fallback_config(tmp_path, fallback_candidates=["delta"])
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal,
+    )
+    supply = router.automatic_for_phase(
+        "solve", _context(binding, _artifact("s1", ("beta", "alpha")))
+    )
+    # The model's own two candidates keep their exact cards and order; the
+    # appended fallback contributes nothing because it binds no card.
+    assert supply.fusion_decision.selected_value_ids == (
+        "slot-contracts::slot-contract:beta_one",
+        "slot-contracts::slot-contract:alpha_one",
+    )
+    audit = next(iter(router.receipt["candidate_selections"].values()))
+    assert audit["candidate_ids"] == ["beta", "alpha", "delta"]
+    assert audit["candidate_ids_without_fallback"] == ("beta", "alpha")
+    assert audit["candidate_sources"] == {
+        "beta": MODEL_CANDIDATE_SOURCE,
+        "alpha": MODEL_CANDIDATE_SOURCE,
+        "delta": FALLBACK_CANDIDATE_SOURCE,
+    }
+    assert audit["fallback_candidates"] == ["delta"]
+    mapping = {row["candidate_id"]: row for row in audit["mappings"]}
+    assert mapping["delta"]["status"] == "absent"
+    assert mapping["delta"]["selected_value_ids"] == []
+
+
+def test_fallback_candidate_is_capped_and_visited_last_in_the_round_robin(tmp_path):
+    config, legal = _fallback_config(
+        tmp_path, fallback_candidates=["delta"],
+        extra_rows=(_slot_row("delta_one", ("delta",)), _slot_row("delta_two", ("delta",))),
+    )
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal,
+    )
+    supply = router.automatic_for_phase(
+        "solve", _context(binding, _artifact("s1", ("beta", "alpha")))
+    )
+    # max_values_per_candidate=1 and max_total_values=3 (the fixture's
+    # defaults): beta and alpha each take their one round-robin turn first,
+    # then delta (LAST, appended) takes the one remaining slot -- never more
+    # than the pre-existing per-candidate/total caps, never reordering beta
+    # or alpha.
+    assert supply.fusion_decision.selected_value_ids == (
+        "slot-contracts::slot-contract:beta_one",
+        "slot-contracts::slot-contract:alpha_one",
+        "slot-contracts::slot-contract:delta_one",
+    )
+    assert len(supply.fusion_decision.selected_value_ids) == 3
+
+
+def test_fallback_candidate_is_a_noop_when_already_among_model_candidates(tmp_path):
+    config, legal = _fallback_config(tmp_path, fallback_candidates=["gamma"])
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal,
+    )
+    router.automatic_for_phase(
+        "solve", _context(binding, _artifact("s1", ("beta", "alpha", "gamma")))
+    )
+    audit = next(iter(router.receipt["candidate_selections"].values()))
+    # gamma was already a model candidate: the fallback appends nothing, so
+    # the with/without lists agree and every source is "model" -- but the
+    # option is configured, so both coverage fields are still reported (a
+    # downstream diagnostic tabulates every row uniformly, never only the
+    # rows where the fallback actually fired).
+    assert audit["candidate_ids"] == ["beta", "alpha", "gamma"]
+    assert audit["candidate_ids_without_fallback"] == ("beta", "alpha", "gamma")
+    assert audit["candidate_sources"] == {
+        "beta": MODEL_CANDIDATE_SOURCE,
+        "alpha": MODEL_CANDIDATE_SOURCE,
+        "gamma": MODEL_CANDIDATE_SOURCE,
+    }
+
+
+def test_fallback_candidates_absent_or_empty_is_byte_identical(tmp_path):
+    absent_config, legal = _fallback_config(tmp_path, fallback_candidates=None)
+    absent_binding = load_knowledge_store_binding(absent_config, data_root=tmp_path)
+    absent_router = build_knowledge_store_supply(
+        absent_binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal,
+    )
+    absent_supply = absent_router.automatic_for_phase(
+        "solve", _context(absent_binding, _artifact("s1", ("beta", "alpha", "gamma")))
+    )
+
+    empty_config, legal2 = _fallback_config(tmp_path, fallback_candidates=[])
+    empty_binding = load_knowledge_store_binding(empty_config, data_root=tmp_path)
+    empty_router = build_knowledge_store_supply(
+        empty_binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal2,
+    )
+    empty_supply = empty_router.automatic_for_phase(
+        "solve", _context(empty_binding, _artifact("s1", ("beta", "alpha", "gamma")))
+    )
+
+    assert absent_supply.fusion_decision.selected_value_ids == (
+        empty_supply.fusion_decision.selected_value_ids
+    )
+    absent_audit = next(iter(absent_router.receipt["candidate_selections"].values()))
+    empty_audit = next(iter(empty_router.receipt["candidate_selections"].values()))
+    assert absent_audit == empty_audit
+    assert "candidate_ids_without_fallback" not in absent_audit
+    assert "fallback_candidates" not in absent_audit
+
+
+def test_fallback_candidates_is_a_slurp_only_option():
+    spec = CandidateSemanticSupplySpec(
+        phase="solve", store_id="slot-contracts",
+        provider="audio2tool-candidate-semantic-v1",
+        rank_policy="saea-ranked-candidate-round-robin-v1",
+        fuse_policy="saea-candidate-semantic-passthrough-v1",
+        candidate_state_phase="hypotheses",
+        max_candidates=1,
+        max_values_per_candidate=1,
+        max_total_values=1,
+        fallback_candidates=("delta",),
+    )
+    with pytest.raises(CandidateSemanticSupplyError, match="SLURP-only"):
+        spec.validate(_program())
+
+
+def test_fallback_distinction_without_fallback_candidates_is_refused():
+    spec = CandidateSemanticSupplySpec(
+        phase="solve", store_id="slot-contracts",
+        provider="slurp-candidate-semantic-v1",
+        rank_policy="saea-ranked-candidate-round-robin-v1",
+        fuse_policy="saea-candidate-semantic-passthrough-v1",
+        candidate_state_phase="hypotheses",
+        max_candidates=1,
+        max_values_per_candidate=1,
+        max_total_values=1,
+        fallback_distinction="A distinction with no configured fallback id.",
+    )
+    with pytest.raises(CandidateSemanticSupplyError, match="fallback_distinction"):
+        spec.validate(_program())
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
+def test_fallback_quirky_baseline_differs_from_the_anchor_only_by_the_option():
+    anchor = json.loads(
+        (REPO_ROOT / "configs" / "baseline"
+         / "slurp-native-dual-store-train-fold-a-anchor-v1.json").read_text(encoding="utf-8")
+    )
+    fallback = json.loads(
+        (REPO_ROOT / "configs" / "baseline"
+         / "slurp-native-dual-store-train-fold-a-fallback-quirky-v1.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    anchor_solve_spec = dict(
+        anchor["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solver"]
+    )
+    fallback_solve_spec = dict(
+        fallback["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solver"]
+    )
+    added = fallback_solve_spec.pop("fallback_candidates")
+    assert added == ["general_quirky"]
+    assert anchor_solve_spec == fallback_solve_spec
+
+    anchor_fill_params = dict(anchor["phase_material"]["perception"]["fill_params"])
+    fallback_fill_params = dict(fallback["phase_material"]["perception"]["fill_params"])
+    added_fill = fallback_fill_params.pop("fallback_candidates")
+    assert added_fill == ["general_quirky"]
+    assert anchor_fill_params == fallback_fill_params
+
+    # Every other top-level key, including every prepared/sealed asset
+    # pointer and hash, is byte-identical -- unique identity fields and the
+    # narrative note excepted.
+    identity_keys = {"native_contact_fit", "what_this_is"}
+    for key in set(anchor) - identity_keys - {"knowledge_stores", "phase_material"}:
+        assert fallback[key] == anchor[key], key
+    for phase in ("planner", "reviewer", "solver"):
+        assert fallback["phase_material"][phase] == anchor["phase_material"][phase]
+    for store in ("intent-boundaries",):
+        assert fallback["knowledge_stores"][store] == anchor["knowledge_stores"][store]
+    for key in ("release", "snapshot", "store_role"):
+        assert (
+            fallback["knowledge_stores"]["slot-contracts"][key]
+            == anchor["knowledge_stores"]["slot-contracts"][key]
+        )
 
 
 def test_shared_controller_supplies_selected_cards_to_solver_without_tools(tmp_path):

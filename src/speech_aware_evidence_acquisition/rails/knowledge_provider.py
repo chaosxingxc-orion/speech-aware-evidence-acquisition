@@ -84,6 +84,12 @@ from .kb_policy import (
     multidim_segment_recall,
 )
 from .knowledge import AgentStateArtifact, FusionDecision, KnowledgeSnapshot, QueryState
+from .slurp_intent_hypotheses import (
+    DEFAULT_FALLBACK_DISTINCTION,
+    SlurpIntentHypothesisError,
+    validate_fallback_candidate_ids,
+    validate_fallback_distinction,
+)
 from .supply import SupplyDose, SupplyForm, SupplyItem, SupplyPacket
 
 _SHA256_HEX = re.compile(r"[0-9a-f]{64}")
@@ -1417,6 +1423,8 @@ class CandidateSemanticProvider(KnowledgeProvider):
         max_total_values: int,
         compact_source_phase: str | None = None,
         projection_policy: str | None = None,
+        fallback_candidates: Sequence[str] = (),
+        fallback_distinction: str = DEFAULT_FALLBACK_DISTINCTION,
         provider_id: str = SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID,
     ) -> None:
         super().__init__(provider_id=provider_id)
@@ -1425,6 +1433,21 @@ class CandidateSemanticProvider(KnowledgeProvider):
             raise RailsError(
                 "CandidateSemanticProvider needs a non-empty legal candidate inventory"
             )
+        if fallback_candidates and provider_id != SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID:
+            raise RailsError(
+                "fallback_candidates is a SLURP-only option"
+            )
+        try:
+            fallback_ids = validate_fallback_candidate_ids(
+                fallback_candidates, legal_intent_ids=legal,
+            )
+            fallback_text = (
+                validate_fallback_distinction(fallback_distinction)
+                if fallback_ids
+                else fallback_distinction
+            )
+        except SlurpIntentHypothesisError as error:
+            raise RailsError(str(error)) from error
         for field, value, maximum in (
             ("max_candidates", max_candidates, self.MAX_CANDIDATES),
             ("max_values_per_candidate", max_values_per_candidate, None),
@@ -1470,6 +1493,8 @@ class CandidateSemanticProvider(KnowledgeProvider):
         self._max_total_values = max_total_values
         self._compact_source_phase = compact_source_phase
         self._projection_policy = projection_policy
+        self._fallback_candidates = fallback_ids
+        self._fallback_distinction = fallback_text
         self._last_query_state: QueryState | None = None
         self._last_rank_result: object | None = None
         self._last_selected_value_ids: tuple[str, ...] = ()
@@ -1668,7 +1693,32 @@ class CandidateSemanticProvider(KnowledgeProvider):
 
 
 class SlurpCandidateSemanticProvider(CandidateSemanticProvider):
-    """Retain the original SLURP candidate and same-ID authored-card contract."""
+    """Retain the original SLURP candidate and same-ID authored-card contract.
+
+    FIX-1 standing fallback (docs/results/2026-09-17-slurp-a3-coverage-
+    confusion-audit-v1.md, `perception.fill_params.fallback_candidates`
+    mirrored here as ``candidate_supply.<phase>.fallback_candidates`):
+    :meth:`_candidate_state` appends every configured fallback id the
+    Perception response's own projected candidates omit, LAST, so it is
+    visited last by the round-robin in :func:`select_candidate_semantic_values`
+    and only within the existing ``max_values_per_candidate`` /
+    ``max_total_values`` caps -- it never receives special capacity.
+
+    Measured against the pinned authored slot-contract source (SHA-256
+    34f6c3dc192eca4a30ef7208d10c1e2b797a0ae2ffe5122f16b376e10a30e4c5,
+    ``prepared/SAEA-SLURP-SEMANTIC-AUTHORING-PREPARE-V1/authored-slot-contracts-v1.json``),
+    ``general_quirky`` binds 16 of the 54 released slot rows (artist_name,
+    business_type, date, device_type, drink_type, event_name, food_type,
+    meal_type, media_type, movie_name, news_topic, person, place_name,
+    relation, time, timeofday) -- NOT the "few or none" a priori guess, and
+    exactly at the anchor's own ``max_values_per_candidate`` bound of 16.
+    Under the round-robin's per-round one-value-per-candidate interleave, its
+    actual per-row selected count is bounded by ``max_total_values`` (28)
+    divided across however many candidates are simultaneously active that
+    row -- roughly a quarter of 28 when the model itself proposed three
+    distinct candidates and the fallback was absent from them, more if the
+    model proposed fewer distinct ids.
+    """
 
     def _validate_candidate_capacity(
         self, *, max_candidates: int, legal_candidate_count: int
@@ -1684,12 +1734,19 @@ class SlurpCandidateSemanticProvider(CandidateSemanticProvider):
                 "candidate semantic values must retain their same-ID released facet"
             )
 
+    def _candidate_bounds(self) -> dict[str, object]:
+        bounds: dict[str, object] = dict(super()._candidate_bounds())
+        if self._fallback_candidates:
+            bounds["fallback_candidates"] = list(self._fallback_candidates)
+        return bounds
+
     def _candidate_state(
         self, artifact: AgentStateArtifact, *, sample_id: str
     ) -> tuple[tuple[str, ...], dict[str, object]]:
         from dataclasses import asdict  # noqa: PLC0415
 
         from .slurp_intent_hypotheses import (  # noqa: PLC0415
+            append_fallback_slurp_intent_hypothesis_candidates,
             parse_slurp_intent_hypothesis_state,
         )
 
@@ -1704,7 +1761,26 @@ class SlurpCandidateSemanticProvider(CandidateSemanticProvider):
         audit = {}
         if state.projection is not None:
             audit["candidate_projection"] = asdict(state.projection)
-        return tuple(item.intent_id for item in state.candidates), audit
+        if not self._fallback_candidates:
+            # Unconfigured: byte/shape-identical to before this option existed.
+            return tuple(item.intent_id for item in state.candidates), audit
+        candidates = append_fallback_slurp_intent_hypothesis_candidates(
+            state.candidates,
+            fallback_candidates=self._fallback_candidates,
+            fallback_distinction=self._fallback_distinction,
+            legal_intent_ids=self._legal_candidate_ids,
+        )
+        # Coverage must never silently merge the fallback into "what the
+        # model proposed": record both id lists and each retained
+        # candidate's source so a downstream coverage diagnostic can report
+        # gold-in-candidates WITH and WITHOUT the fallback separately.
+        audit["candidate_ids_without_fallback"] = tuple(
+            item.intent_id for item in state.candidates
+        )
+        audit["candidate_sources"] = {
+            candidate.intent_id: candidate.source for candidate in candidates
+        }
+        return tuple(candidate.intent_id for candidate in candidates), audit
 
 
 class Audio2ToolCandidateSemanticProvider(CandidateSemanticProvider):

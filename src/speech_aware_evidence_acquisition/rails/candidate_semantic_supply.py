@@ -41,7 +41,10 @@ from .semantic_knowledge_build import (
 from .slurp_intent_hypotheses import (
     BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_IDS,
     CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    DEFAULT_FALLBACK_DISTINCTION,
+    MAX_FALLBACK_CANDIDATES,
     SlurpIntentHypothesisError,
+    validate_fallback_candidate_ids,
 )
 
 CANDIDATE_SUPPLY_SCHEMA = "saea-candidate-semantic-supply-v1"
@@ -70,6 +73,8 @@ _OPTIONAL_SPEC_KEYS = frozenset(
         "compact_source_phase",
         "supply_mode",
         "projection_policy",
+        "fallback_candidates",
+        "fallback_distinction",
     }
 )
 _SOURCE_KEYS = frozenset(
@@ -110,11 +115,51 @@ class CandidateSemanticSupplySpec:
     candidate_state_selection: str = "single"
     max_actions: int | None = None
     max_candidates_per_action: int | None = None
+    #: FIX-1 standing fallback (docs/results/2026-09-17-slurp-a3-coverage-
+    #: confusion-audit-v1.md): SLURP-only, at most
+    #: :data:`~.slurp_intent_hypotheses.MAX_FALLBACK_CANDIDATES` legal ids,
+    #: appended LAST in the round-robin slot-card selection, never
+    #: displacing or reordering a model-proposed candidate. Declared here,
+    #: beside ``projection_policy``, because this is the codebase's existing
+    #: home for "how Perception's candidate output is post-processed before
+    #: this phase consumes it" -- the same role ``projection_policy``
+    #: already plays.
+    fallback_candidates: tuple[str, ...] = ()
+    fallback_distinction: str = DEFAULT_FALLBACK_DISTINCTION
 
     def validate(self, program: PhaseProgram) -> "CandidateSemanticSupplySpec":
         program.validate()
         if self.supply_mode not in ("provide", "withhold"):
             raise CandidateSemanticSupplyError("supply_mode must be provide or withhold")
+        if (
+            not isinstance(self.fallback_candidates, tuple)
+            or len(self.fallback_candidates) > MAX_FALLBACK_CANDIDATES
+            or any(
+                not isinstance(item, str) or not item
+                for item in self.fallback_candidates
+            )
+            or len(set(self.fallback_candidates)) != len(self.fallback_candidates)
+        ):
+            raise CandidateSemanticSupplyError(
+                "fallback_candidates must be at most "
+                f"{MAX_FALLBACK_CANDIDATES} unique non-empty strings"
+            )
+        if not isinstance(self.fallback_distinction, str) or not self.fallback_distinction.strip():
+            raise CandidateSemanticSupplyError(
+                "fallback_distinction must be a non-empty string"
+            )
+        if self.fallback_candidates and self.provider != SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID:
+            raise CandidateSemanticSupplyError(
+                "fallback_candidates is a SLURP-only option; Audio2Tool selection "
+                "has no standing fallback"
+            )
+        if (
+            not self.fallback_candidates
+            and self.fallback_distinction != DEFAULT_FALLBACK_DISTINCTION
+        ):
+            raise CandidateSemanticSupplyError(
+                "fallback_distinction requires a non-empty fallback_candidates"
+            )
         if self.candidate_state_selection not in ("single", "latest"):
             raise CandidateSemanticSupplyError(
                 "candidate_state_selection must be single or latest"
@@ -236,6 +281,10 @@ class CandidateSemanticSupplySpec:
             result["projection_policy"] = self.projection_policy
         if self.candidate_state_selection != "single":
             result["candidate_state_selection"] = self.candidate_state_selection
+        if self.fallback_candidates:
+            result["fallback_candidates"] = list(self.fallback_candidates)
+            if self.fallback_distinction != DEFAULT_FALLBACK_DISTINCTION:
+                result["fallback_distinction"] = self.fallback_distinction
         return result
 
 
@@ -296,6 +345,10 @@ def load_candidate_semantic_supply_specs(
                 ),
                 max_actions=raw.get("max_actions"),
                 max_candidates_per_action=raw.get("max_candidates_per_action"),
+                fallback_candidates=tuple(raw.get("fallback_candidates") or ()),
+                fallback_distinction=raw.get(
+                    "fallback_distinction", DEFAULT_FALLBACK_DISTINCTION
+                ),
             ).validate(program)
             specs[phase] = spec
     return MappingProxyType(specs)
@@ -477,13 +530,18 @@ def build_candidate_semantic_supply(
             "candidate supply requires a nonempty legal candidate inventory"
         )
     for spec in specs.values():
-        if (
-            spec.provider == SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID
-            and spec.max_candidates > legal_candidate_count
-        ):
-            raise CandidateSemanticSupplyError(
-                "max_candidates cannot exceed the legal candidate inventory"
-            )
+        if spec.provider == SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID:
+            if spec.max_candidates > legal_candidate_count:
+                raise CandidateSemanticSupplyError(
+                    "max_candidates cannot exceed the legal candidate inventory"
+                )
+            if spec.fallback_candidates:
+                try:
+                    validate_fallback_candidate_ids(
+                        spec.fallback_candidates, legal_intent_ids=legal_candidate_ids,
+                    )
+                except SlurpIntentHypothesisError as error:
+                    raise CandidateSemanticSupplyError(str(error)) from error
     indexes: dict[str, Mapping[str, tuple[str, ...]]] = {}
     for spec in specs.values():
         if spec.store_id not in indexes:
@@ -604,7 +662,10 @@ def build_candidate_semantic_supply(
             )
         else:
             provider_args.update(
-                max_candidates=spec.max_candidates, projection_policy=spec.projection_policy
+                max_candidates=spec.max_candidates,
+                projection_policy=spec.projection_policy,
+                fallback_candidates=spec.fallback_candidates,
+                fallback_distinction=spec.fallback_distinction,
             )
         provider = KNOWLEDGE_PROVIDERS.resolve(spec.provider)(**provider_args).adopt(
             store.snapshot,

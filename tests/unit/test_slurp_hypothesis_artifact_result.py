@@ -343,3 +343,76 @@ def test_catalog_tamper_is_refused_before_content_use(tmp_path):
     (tmp_path / contract["source_catalog"]["data_relpath"]).write_text("{}")
     with pytest.raises(ArtifactContentError, match="file SHA"):
         build_slurp_hypothesis_artifact_validator(contract, data_root=tmp_path)
+
+
+# ---------------------------------------------------------------------------
+# FIX-1 standing fallback candidate
+# (docs/results/2026-09-17-slurp-a3-coverage-confusion-audit-v1.md)
+# ---------------------------------------------------------------------------
+
+
+def test_fallback_candidates_is_validated_but_never_reaches_the_response_schema(
+    tmp_path,
+):
+    contract = _catalog(tmp_path)
+    with_fallback = {**contract, "fallback_candidates": ["music_play"]}
+    validator = build_slurp_hypothesis_artifact_validator(
+        with_fallback, data_root=tmp_path
+    )
+    assert validator.fallback_candidates == ("music_play",)
+    # The Perception response-format SCHEMA -- what the model itself is
+    # asked to produce -- is byte-identical whether or not a fallback is
+    # configured: the option never widens or narrows the model's own
+    # contract.
+    with_schema = slurp_intent_hypotheses_response_format(
+        {}, tmp_path, **with_fallback
+    )
+    without_schema = slurp_intent_hypotheses_response_format({}, tmp_path, **contract)
+    assert with_schema == without_schema
+    assert "fallback_candidates" not in json.dumps(with_schema)
+
+
+def test_fallback_candidates_refuses_an_id_outside_the_legal_inventory(tmp_path):
+    contract = _catalog(tmp_path)
+    with pytest.raises(ArtifactContentError, match="outside the legal inventory"):
+        build_slurp_hypothesis_artifact_validator(
+            {**contract, "fallback_candidates": ["not_a_real_intent"]},
+            data_root=tmp_path,
+        )
+
+
+def test_fallback_candidates_refuses_more_than_two_ids(tmp_path):
+    contract = _catalog(tmp_path)
+    with pytest.raises(ArtifactContentError, match="more than 2"):
+        build_slurp_hypothesis_artifact_validator(
+            {
+                **contract,
+                "fallback_candidates": ["alarm_set", "weather_query", "music_play"],
+            },
+            data_root=tmp_path,
+        )
+
+
+def test_fallback_distinction_without_fallback_candidates_is_refused(tmp_path):
+    contract = _catalog(tmp_path)
+    with pytest.raises(ArtifactContentError, match="fallback_distinction"):
+        build_slurp_hypothesis_artifact_validator(
+            {**contract, "fallback_distinction": "An override with no configured id."},
+            data_root=tmp_path,
+        )
+
+
+def test_fallback_candidates_absent_is_the_documented_default():
+    from speech_aware_evidence_acquisition.rails.slurp_intent_hypotheses import (
+        DEFAULT_FALLBACK_DISTINCTION,
+    )
+    from speech_aware_evidence_acquisition.rails.artifact_results import (
+        SlurpHypothesisArtifactValidator,
+    )
+
+    validator = SlurpHypothesisArtifactValidator(
+        legal_intent_ids=("alarm_set",), min_candidates=1, max_candidates=1,
+        source_sha256="a" * 64,
+    )
+    assert validator.fallback_candidates == ()
+    assert validator.fallback_distinction == DEFAULT_FALLBACK_DISTINCTION

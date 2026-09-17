@@ -18,15 +18,23 @@ from speech_aware_evidence_acquisition.rails.slurp_intent_hypotheses import (
     CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256,
     BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
     BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256,
+    DEFAULT_FALLBACK_DISTINCTION,
+    FALLBACK_CANDIDATE_SOURCE,
     FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
     FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256,
     HYPOTHESIS_SEMANTICS,
     HYPOTHESIS_STATE_SCHEMA,
+    MAX_FALLBACK_CANDIDATES,
+    MODEL_CANDIDATE_SOURCE,
+    SlurpIntentHypothesisCandidate,
     SlurpIntentHypothesisError,
     SlurpIntentHypothesisStateFill,
+    append_fallback_slurp_intent_hypothesis_candidates,
     parse_slurp_intent_hypothesis_state,
     project_fixed_three_slurp_intent_hypotheses,
     project_bounded_slurp_intent_hypotheses,
+    validate_fallback_candidate_ids,
+    validate_fallback_distinction,
 )
 
 LEGAL = frozenset({"weather_query", "transport_taxi", "calendar_set"})
@@ -550,4 +558,147 @@ def test_configurable_projection_accepts_five_without_changing_default_identity(
             projection_policy=(
                 CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
             ),
+        )
+
+
+# ---------------------------------------------------------------------------
+# FIX-1 standing fallback candidate
+# (docs/results/2026-09-17-slurp-a3-coverage-confusion-audit-v1.md)
+# ---------------------------------------------------------------------------
+
+FALLBACK_LEGAL = LEGAL | {"general_quirky", "qa_factoid"}
+
+
+def _model_candidate(intent_id, *, distinction="A model-proposed alternative."):
+    return SlurpIntentHypothesisCandidate(
+        intent_id=intent_id,
+        distinction=distinction,
+        evidence_refs=(),
+        unresolved_fields=(),
+    )
+
+
+def test_fallback_candidate_ids_absent_or_empty_is_a_noop():
+    assert validate_fallback_candidate_ids(None, legal_intent_ids=FALLBACK_LEGAL) == ()
+    assert validate_fallback_candidate_ids((), legal_intent_ids=FALLBACK_LEGAL) == ()
+    assert validate_fallback_candidate_ids([], legal_intent_ids=FALLBACK_LEGAL) == ()
+
+
+def test_fallback_candidate_ids_refuse_unknown_id():
+    with pytest.raises(SlurpIntentHypothesisError, match="outside the legal inventory"):
+        validate_fallback_candidate_ids(
+            ["not_a_real_intent"], legal_intent_ids=FALLBACK_LEGAL
+        )
+
+
+def test_fallback_candidate_ids_refuse_too_many():
+    assert MAX_FALLBACK_CANDIDATES == 2
+    with pytest.raises(SlurpIntentHypothesisError, match="more than 2"):
+        validate_fallback_candidate_ids(
+            ["general_quirky", "qa_factoid", "weather_query"],
+            legal_intent_ids=FALLBACK_LEGAL,
+        )
+
+
+def test_fallback_candidate_ids_refuse_duplicates_and_non_strings():
+    with pytest.raises(SlurpIntentHypothesisError, match="unique"):
+        validate_fallback_candidate_ids(
+            ["general_quirky", "general_quirky"], legal_intent_ids=FALLBACK_LEGAL
+        )
+    with pytest.raises(SlurpIntentHypothesisError, match="non-empty strings"):
+        validate_fallback_candidate_ids([""], legal_intent_ids=FALLBACK_LEGAL)
+    with pytest.raises(SlurpIntentHypothesisError, match="list of legal intent ids"):
+        validate_fallback_candidate_ids("general_quirky", legal_intent_ids=FALLBACK_LEGAL)
+
+
+def test_fallback_distinction_validation():
+    assert validate_fallback_distinction(DEFAULT_FALLBACK_DISTINCTION) == (
+        DEFAULT_FALLBACK_DISTINCTION
+    )
+    with pytest.raises(SlurpIntentHypothesisError, match="non-empty string"):
+        validate_fallback_distinction("")
+    with pytest.raises(SlurpIntentHypothesisError, match="exceeds 128"):
+        validate_fallback_distinction("x" * 129)
+
+
+def test_append_fallback_candidate_appends_at_end_when_absent():
+    candidates = (_model_candidate("weather_query"), _model_candidate("transport_taxi"))
+    result = append_fallback_slurp_intent_hypothesis_candidates(
+        candidates,
+        fallback_candidates=["general_quirky"],
+        legal_intent_ids=FALLBACK_LEGAL,
+    )
+    assert [c.intent_id for c in result] == [
+        "weather_query", "transport_taxi", "general_quirky",
+    ]
+    # Model candidates are returned unchanged, in their original order, and
+    # keep their model source; only the appended entry is labelled fallback.
+    assert result[0] == candidates[0]
+    assert result[1] == candidates[1]
+    assert result[0].source == MODEL_CANDIDATE_SOURCE
+    assert result[1].source == MODEL_CANDIDATE_SOURCE
+    fallback = result[2]
+    assert fallback.source == FALLBACK_CANDIDATE_SOURCE
+    assert fallback.distinction == DEFAULT_FALLBACK_DISTINCTION
+    assert fallback.evidence_refs == ()
+    assert fallback.unresolved_fields == ()
+
+
+def test_append_fallback_candidate_is_a_noop_when_already_present():
+    candidates = (
+        _model_candidate("general_quirky"), _model_candidate("transport_taxi"),
+    )
+    result = append_fallback_slurp_intent_hypothesis_candidates(
+        candidates,
+        fallback_candidates=["general_quirky"],
+        legal_intent_ids=FALLBACK_LEGAL,
+    )
+    assert result == candidates
+    assert [c.intent_id for c in result] == ["general_quirky", "transport_taxi"]
+    assert all(c.source == MODEL_CANDIDATE_SOURCE for c in result)
+
+
+def test_append_fallback_candidate_empty_list_is_a_noop_and_preserves_order():
+    candidates = (_model_candidate("transport_taxi"), _model_candidate("weather_query"))
+    result = append_fallback_slurp_intent_hypothesis_candidates(
+        candidates, fallback_candidates=[], legal_intent_ids=FALLBACK_LEGAL,
+    )
+    assert result == candidates
+    result_absent = append_fallback_slurp_intent_hypothesis_candidates(
+        candidates, legal_intent_ids=FALLBACK_LEGAL,
+    )
+    assert result_absent == candidates
+
+
+def test_append_fallback_candidate_preserves_configured_order_of_multiple_ids():
+    candidates = (_model_candidate("transport_taxi"),)
+    result = append_fallback_slurp_intent_hypothesis_candidates(
+        candidates,
+        fallback_candidates=["general_quirky", "qa_factoid"],
+        legal_intent_ids=FALLBACK_LEGAL,
+    )
+    assert [c.intent_id for c in result] == [
+        "transport_taxi", "general_quirky", "qa_factoid",
+    ]
+    assert all(c.source == FALLBACK_CANDIDATE_SOURCE for c in result[1:])
+
+
+def test_append_fallback_candidate_uses_a_configured_distinction_text():
+    candidates = (_model_candidate("transport_taxi"),)
+    result = append_fallback_slurp_intent_hypothesis_candidates(
+        candidates,
+        fallback_candidates=["general_quirky"],
+        fallback_distinction="A shorter override distinction.",
+        legal_intent_ids=FALLBACK_LEGAL,
+    )
+    assert result[-1].distinction == "A shorter override distinction."
+
+
+def test_append_fallback_candidate_refuses_an_id_outside_the_legal_inventory():
+    candidates = (_model_candidate("transport_taxi"),)
+    with pytest.raises(SlurpIntentHypothesisError, match="outside the legal inventory"):
+        append_fallback_slurp_intent_hypothesis_candidates(
+            candidates,
+            fallback_candidates=["not_a_real_intent"],
+            legal_intent_ids=FALLBACK_LEGAL,
         )

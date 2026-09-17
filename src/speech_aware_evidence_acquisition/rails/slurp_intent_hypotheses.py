@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from collections.abc import Iterable, Mapping
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, replace
 
 from .errors import RailsError
@@ -83,6 +83,29 @@ _COMPACT_DOCUMENT_KEYS = frozenset({"candidates"})
 _MAX_TEXT_CHARS = 512
 _MAX_LIST_ITEMS = 32
 
+#: FIX-1 (docs/results/2026-09-17-slurp-a3-coverage-confusion-audit-v1.md):
+#: the source a projected candidate carries. ``"model"`` is every candidate
+#: the Perception response itself proposed -- the only value
+#: :func:`parse_slurp_intent_hypothesis_content` ever assigns, so an
+#: unconfigured cell never sees anything else. ``"fallback"`` marks a
+#: candidate :func:`append_fallback_slurp_intent_hypothesis_candidates`
+#: appended because a configured standing hypothesis was absent from the
+#: model's own set; a fallback candidate is always explicitly labelled and
+#: is never mistaken for a model proposal.
+MODEL_CANDIDATE_SOURCE = "model"
+FALLBACK_CANDIDATE_SOURCE = "fallback"
+CANDIDATE_SOURCES = frozenset({MODEL_CANDIDATE_SOURCE, FALLBACK_CANDIDATE_SOURCE})
+
+#: A standing fallback list is short and bounded -- at most two ids -- so the
+#: option can never grow into a second, uncontrolled candidate channel; and a
+#: fixed English distinction text, overridable up to a small character bound.
+MAX_FALLBACK_CANDIDATES = 2
+MAX_FALLBACK_DISTINCTION_CHARS = 128
+DEFAULT_FALLBACK_DISTINCTION = (
+    "standing fallback hypothesis: open-domain or chit-chat request with no "
+    "other matching intent"
+)
+
 
 class SlurpIntentHypothesisError(ValueError):
     """Raised when a hypothesis state cannot safely condition a later phase."""
@@ -90,12 +113,20 @@ class SlurpIntentHypothesisError(ValueError):
 
 @dataclass(frozen=True)
 class SlurpIntentHypothesisCandidate:
-    """One ranked, mutually exclusive legal intent alternative."""
+    """One ranked, mutually exclusive legal intent alternative.
+
+    ``source`` defaults to :data:`MODEL_CANDIDATE_SOURCE` for every candidate
+    the Perception response itself proposed. Only
+    :func:`append_fallback_slurp_intent_hypothesis_candidates` ever
+    constructs one with :data:`FALLBACK_CANDIDATE_SOURCE`, and it does so
+    only for a configured id the model's own candidates did not name.
+    """
 
     intent_id: str
     distinction: str
     evidence_refs: tuple[str, ...]
     unresolved_fields: tuple[str, ...]
+    source: str = MODEL_CANDIDATE_SOURCE
 
 
 @dataclass(frozen=True)
@@ -163,6 +194,112 @@ def _legal_ids(values: Iterable[str]) -> frozenset[str]:
             "legal_intent_ids must be a non-empty set of strings"
         )
     return legal
+
+
+def validate_fallback_candidate_ids(
+    fallback_candidates: object, *, legal_intent_ids: Iterable[str],
+) -> tuple[str, ...]:
+    """Validate a configured standing-fallback candidate list, fail-closed.
+
+    Absent or empty is legal and returns ``()`` -- the no-op default that
+    keeps an unconfigured cell's candidate set byte-for-byte unchanged. A
+    non-empty declaration must be a plain list of at most
+    :data:`MAX_FALLBACK_CANDIDATES` distinct, non-empty legal intent ids;
+    anything else is refused before any candidate is read, so a
+    misconfigured fallback can never silently become a partial list.
+    """
+
+    if fallback_candidates is None or fallback_candidates == ():
+        return ()
+    if isinstance(fallback_candidates, (str, bytes)) or not isinstance(
+        fallback_candidates, Sequence
+    ):
+        raise SlurpIntentHypothesisError(
+            "fallback_candidates must be a list of legal intent ids"
+        )
+    ids = tuple(fallback_candidates)
+    if not ids:
+        return ()
+    if len(ids) > MAX_FALLBACK_CANDIDATES:
+        raise SlurpIntentHypothesisError(
+            f"fallback_candidates carries more than {MAX_FALLBACK_CANDIDATES} ids"
+        )
+    if any(not isinstance(item, str) or not item for item in ids):
+        raise SlurpIntentHypothesisError(
+            "fallback_candidates entries must be non-empty strings"
+        )
+    if len(set(ids)) != len(ids):
+        raise SlurpIntentHypothesisError("fallback_candidates entries must be unique")
+    legal = _legal_ids(legal_intent_ids)
+    unknown = [item for item in ids if item not in legal]
+    if unknown:
+        raise SlurpIntentHypothesisError(
+            f"fallback_candidates names id(s) outside the legal inventory: {unknown}"
+        )
+    return ids
+
+
+def validate_fallback_distinction(value: object) -> str:
+    """Validate a fixed English fallback distinction text, fail-closed."""
+
+    if not isinstance(value, str) or not value.strip():
+        raise SlurpIntentHypothesisError(
+            "fallback_distinction must be a non-empty string"
+        )
+    if len(value) > MAX_FALLBACK_DISTINCTION_CHARS:
+        raise SlurpIntentHypothesisError(
+            f"fallback_distinction exceeds {MAX_FALLBACK_DISTINCTION_CHARS} characters"
+        )
+    return value
+
+
+def append_fallback_slurp_intent_hypothesis_candidates(
+    candidates: Sequence[SlurpIntentHypothesisCandidate],
+    *,
+    fallback_candidates: object = (),
+    fallback_distinction: str = DEFAULT_FALLBACK_DISTINCTION,
+    legal_intent_ids: Iterable[str],
+) -> tuple[SlurpIntentHypothesisCandidate, ...]:
+    """Append configured standing fallbacks the projected set is missing.
+
+    Applied ONCE, after the bounded first-occurrence projection, to the
+    CONSUMPTION-side candidate list only -- never to the sealed Perception
+    artifact, which stays immutable model evidence
+    (``rails.artifact_results`` module docstring). Every existing candidate
+    is returned unchanged, in its original order, keeping its own
+    :data:`MODEL_CANDIDATE_SOURCE` source; each configured fallback id absent
+    from that set is appended at the END, in configured order, with
+    :data:`FALLBACK_CANDIDATE_SOURCE`, the fixed ``fallback_distinction``
+    text and empty ``evidence_refs``/``unresolved_fields``.
+
+    A no-op -- a byte-for-byte identical output tuple -- whenever
+    ``fallback_candidates`` is empty or every configured id is already
+    present, which is exactly what makes the option's absence and its
+    presence with an empty list the same behaviour.
+    """
+
+    ids = validate_fallback_candidate_ids(
+        fallback_candidates, legal_intent_ids=legal_intent_ids
+    )
+    ordered = tuple(candidates)
+    if not ids:
+        return ordered
+    distinction = validate_fallback_distinction(fallback_distinction)
+    present = {candidate.intent_id for candidate in ordered}
+    extra = tuple(
+        SlurpIntentHypothesisCandidate(
+            intent_id=fallback_id,
+            distinction=distinction,
+            evidence_refs=(),
+            unresolved_fields=(),
+            source=FALLBACK_CANDIDATE_SOURCE,
+        )
+        for fallback_id in ids
+        if fallback_id not in present
+    )
+    if not extra:
+        return ordered
+    return ordered + extra
 
 
 def _unique_json_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
