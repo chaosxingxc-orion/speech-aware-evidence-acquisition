@@ -19,6 +19,15 @@ committed answer, so the Reviewer and the Planner read one draft exactly as on t
 cells never flew, their six exposure rows keep `consumed = no`, and the v2 README and each of the six
 notes carry a supersession line. **Do not fly the v2 cells.**
 
+> **STOP — the four-row smoke of this package failed AT THE SEAL on 2026-09-17 and its two exposure
+> rows are closed.** `SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-V3` generated all 36 of its contacts
+> and was then refused by the bundle verifier on invariant **I7**; the fix is **E2d** (commit
+> `f3a77fb0`, merged `5492c2af`, invariant I7g) and the smoke is re-registered as
+> `SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-RECOVERY-V3`. **Do not fly the smoke cell named in
+> section 1**; fly the recovery cell instead, and re-pin the arm and the twin on the fixed commit
+> before either launches. See section 12 below and
+> [`../2026-09-17-slurp-b2-samples5-anchor-v3-recovery-v1.md`](../2026-09-17-slurp-b2-samples5-anchor-v3-recovery-v1.md).
+
 ## 1. What is registered
 
 | item | value |
@@ -403,3 +412,81 @@ clean on every touched Python file. Exact counts are in the registration commit 
 3. Whether "the Reviewer reviews the sample set" is worth registering as its own later cell now that
    E2c has removed it from B2. It is a different mechanism, not a variant of this one, and nothing
    in this package presumes an answer.
+
+## 12. The four-row smoke failed at the seal (2026-09-17), and the one registered recovery
+
+`SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-V3` / `attempt-…-generation-v3` flew at study commit
+`858ae4ea` under root decision `slurp-b2-samples5-anchor-v3-admission-v1`. It **generated every one
+of its 36 registered contacts on all four rows** — 95.360063 repeated speech seconds, 36 request-fit
+receipts, 4 Reviewer tool calls — and then **failed AT THE SEAL**. `core.bundle.outputs` refused row
+`slurp:train:000007:audio--1504197557` with invariant **I7**: "text does not match its recorded
+`response_text_sha256` — the text was mutated after the model response was recorded (I7)". A grouped
+Solver row's delivered text is the registered commit policy's aggregate over the five raw samples and
+equals none of them, while the pre-E2d runner bound the row's `response_text_sha256` to the **last
+raw sample's** text hash.
+
+None of this package's model-free proofs could have caught it: all of them are proofs about
+*requests* (the envelope comparison, the fake-model rendered proof, the prompt-fit statement) or
+about the *receipt* the runner writes. `wire-check` is unavailable for a native-episode cell, so the
+four-row smoke was the first place a grouped row ever reached `verify_bundle` — which is exactly what
+a form smoke is for.
+
+**What happened to the attempt and the rows.** The worker died at the seal and never settled its
+attempt, so it was left at `OPENED`. Root reconciled it to `ABORTED` through the repository's own
+`core.attempts.store.AttemptStore.abort_if_opened`, with `actual` (36 calls, 95.36006250000004 s) and
+`reserved` preserved unchanged; receipt
+`coordination/slurp-b2-samples5-anchor-v3/attempt-reconciliation-smoke-v1.json`. The two smoke
+exposure rows are now `consumed = yes`, the run directory is read-only evidence, no scorer ran and no
+partial quality read was taken or is permitted. The run manifest reads `status: COMPLETED` only
+because that manifest is written before the verifier runs; it is not evidence that the run sealed.
+
+**The fix.** E2d (commit `f3a77fb0`, merged `5492c2af`) gives a grouped row its own sanctioned
+custody form: the runner records `solver_group.commit_params` and binds a grouped row's
+`response_text_sha256` to the DELIVERED bytes, and invariant **I7g** binds every raw sample to the
+trace's own `MODEL_RESPONSE` bytes, resolves the commit policy in `core.base.COMMIT_POLICIES` and
+re-derives the delivered bytes through `analysis.native_commit_replay`. I7 is unchanged and a
+samples-1 row is byte-identical to before. Validated read-only on the failed smoke's own bytes:
+`verify_bundle` still refuses them (pre-E2d row form, no `commit_params`), while the per-sample trace
+binding passes on 4 of 4 rows and the commit recomputation reproduces all four delivered texts byte
+for byte. No sealed byte was edited.
+
+**The recovery.** `SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-RECOVERY-V3` (generation) and
+`SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-FIT-RECOVERY-V3` (native contact fit), cell
+`slurp-native-samples5-anchor-smoke-4-recovery-v3`, composed
+`2e806bfb003f5f0bbf73ff62fe8d5ac02d21bedb2832cb91c3c80f269f949b5a` / protocol
+`eb1d172324d0ecbd2b784c5c51fe5067c82d770cbc63d051c8a1249b7005b1b0`, readiness `held`, plans under
+`docs/readiness/2026-09-17-slurp-b2-samples5-anchor-v3-recovery-v1/`, statement
+[`../2026-09-17-slurp-b2-samples5-anchor-v3-recovery-v1.md`](../2026-09-17-slurp-b2-samples5-anchor-v3-recovery-v1.md).
+**This is the one root-diagnosed recovery the preregistration section 10 allows for cell B2; a second
+failure closes the cell.** Nothing about the question, the roster, the one moved factor, the commit
+thresholds, the comparators, the decision rule, the budgets or the twin trigger moves — only the
+E2d seal-path fix in the code the cell flies on, plus this package's own bookkeeping identities. The
+caps stay the v3 smoke's own (76 / 304 / 202 s / 1.0 GPU-h / 24 tool calls, zero scoring), and the 36
+calls and 95.360063 speech seconds the failed attempt spent stay charged to the closed run ids.
+
+**What changes for the coordinator in sections 2 to 7 of this runbook.**
+
+1. Section 2's re-pin runs for `--experiment slurp-native-samples5-anchor-smoke-4-recovery-v3` with
+   `--readiness-dir docs/readiness/2026-09-17-slurp-b2-samples5-anchor-v3-recovery-v1` and
+   `--preregistration docs/readiness/2026-09-17-slurp-b2-samples5-anchor-v3-recovery-v1.md`. The same
+   root decision receipt and decision id apply.
+2. Section 4's worker runs on the recovery cell and its own lease token file. Its nine acceptance
+   items all stand, **plus one that is the point of this recovery**: the worker prints a seal, which
+   means the bundle verifier accepted every grouped row under I7g — and each row's `solver_group`
+   carries the new `commit_params` block beside `commit_policy_id`.
+3. Sections 5 and 6 are unchanged, **but the arm and the twin must be re-pinned with
+   `scripts/flights/repin_cell.py` on the fixed commit before either launches**, because their runner
+   now writes the E2d grouped-row form. Both stay `held` at `consumed = no`; the arm launches only
+   after this recovery smoke seals, and the twin still only after a positive arm CI95.
+4. Section 8's evidence table is joined by the recovery receipts, listed in section 9 of the recovery
+   note.
+
+**Runtime `check` on the recovery cell**, at study commit `18605e50`: config `2e806bfb…`, protocol `eb1d1723…` re-derived at runtime and equal to the registered value, 4 samples, readiness `held`, `generation_authorized false`, prompt budget `ALLOW` on all four phases (operational margins 5,348 to 5,588 tokens on the conservative union estimate). Receipt `coordination/slurp-b2-samples5-anchor-v3/recovery-check-smoke-v1.json`, SHA-256 `bb59f041c693a1d35e90b4a0b8e4029df30cbb42beb1aabf11861f4c50685fa1`.
+
+**Deviation 12, added to section 10.** The v3 smoke baseline deliberately shared the **arm's**
+speech-feature key and matcher identity strings. The recovery baseline takes its **own** pair, so the
+recovery flight's trace carries its own provenance. This cannot move a request byte: each payload's
+`key_representation_id` and `matcher_policy_id` are derived from the phase program id, not from the
+baseline, and
+`coordination/slurp-b2-samples5-anchor-v3/recovery-request-envelope-comparison-v1.json` proves it on
+all 36 sealed payloads, alongside a sixteen-needle identity search that returns 0 hits on every field.

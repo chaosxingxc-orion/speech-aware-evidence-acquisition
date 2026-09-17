@@ -1,0 +1,234 @@
+{
+  "arm": "speech-feature-query-native-tools",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_stores": {
+    "intent-boundaries": {
+      "phase_supply": {
+        "perception": {
+          "dimensions": [
+            "intent-boundary"
+          ],
+          "expose_facets": false,
+          "facet_source": {
+            "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+            "kind": "sealed-vectors",
+            "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+            "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+            "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+          },
+          "fuse_coverage": {
+            "c": 1,
+            "m": 8,
+            "top_l": 8
+          },
+          "fuse_policy": "saea-fuse-associated-values-v1",
+          "k": 8,
+          "provider": "kb-facet-v1",
+          "query_source": {
+            "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+            "kind": "sealed-segment-vectors",
+            "relpath": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+            "sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b",
+            "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+          },
+          "rank_policy": "saea-rank-wcos-prior-agree-v1",
+          "rank_weights": {
+            "w_agree": 0.0,
+            "w_cos": 1.0,
+            "w_prior": 0.0
+          },
+          "tau": 0.0
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+        "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json",
+        "sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe"
+      },
+      "store_role": "intent-boundaries"
+    },
+    "slot-contracts": {
+      "candidate_supply": {
+        "solver": {
+          "candidate_state_phase": "perception",
+          "compact_source_phase": "perception",
+          "fuse_policy": "saea-candidate-semantic-passthrough-v1",
+          "max_candidates": 3,
+          "max_total_values": 28,
+          "max_values_per_candidate": 16,
+          "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+          "provider": "slurp-candidate-semantic-v1",
+          "rank_policy": "saea-ranked-candidate-round-robin-v1"
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+        "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/snapshot.json",
+        "sha256": "11c246e4b815a4f966e8cf8785f06b70515755eca71658862c6f98e9914044e6"
+      },
+      "store_role": "slot-contracts"
+    }
+  },
+  "native_contact_fit": {
+    "attempt_id": "attempt-slurp-native-samples5-anchor-smoke-4-fit-recovery-v3",
+    "contact_cap": 304,
+    "max_speech_packets": 1,
+    "run_id": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-FIT-RECOVERY-V3"
+  },
+  "native_episode": {
+    "actions": {
+      "accept": "ACCEPT",
+      "acquire": "ACQUIRE",
+      "revise": "REVISE"
+    },
+    "episode_id": "slurp-native-dual-store-dev1000-v1",
+    "exhaustion_policy": "deliver-latest-solver",
+    "max_revisions": 1,
+    "review_loop": "on",
+    "roles": {
+      "perception": {
+        "max_iterations": 1,
+        "phase_id": "perception"
+      },
+      "planner": {
+        "max_iterations": 1,
+        "phase_id": "planner"
+      },
+      "reviewer": {
+        "max_iterations": 3,
+        "phase_id": "reviewer"
+      },
+      "solver": {
+        "commit": {
+          "min_support": 3,
+          "policy": "saea-commit-plurality-support-v1",
+          "similarity_threshold": 0.8
+        },
+        "decoding_overrides": {
+          "seed_offset": 0,
+          "temperature": 0.7
+        },
+        "max_iterations": 1,
+        "phase_id": "solver",
+        "samples": 5
+      }
+    },
+    "schema": "saea-native-episode-config-v1"
+  },
+  "phase_material": {
+    "perception": {
+      "fill_params": {
+        "id": "slurp-intent-hypotheses-v1",
+        "max_candidates": 3,
+        "max_distinction_chars": 128,
+        "max_evidence_refs": 0,
+        "max_unresolved_fields": 0,
+        "min_candidates": 1,
+        "source_catalog": {
+          "data_relpath": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
+          "sha256": "3e60268b3f940c3018ab8b8c80ccd988b1d1efd6c5a198929c6af05ba21f8263",
+          "source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201"
+        }
+      },
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_perception_v3.txt",
+      "predecessor_binding": "none",
+      "response_format_id": "slurp-intent-hypotheses-v1",
+      "state_fill": null
+    },
+    "planner": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_planner_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    },
+    "reviewer": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_reviewer_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    },
+    "solver": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_solver_v2.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    }
+  },
+  "phase_tools": {
+    "reviewer": {
+      "allowed_tools": [
+        "saea-tool-task-contract-v1"
+      ],
+      "knowledge_views": [
+        "text"
+      ],
+      "mode": "native-tools",
+      "source_authority_role": "reviewer"
+    }
+  },
+  "policy": "phase-native-candidates-review-revise-samples5-v1",
+  "preparation_source_receipts": [
+    {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+      "root": "data",
+      "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/completion.json",
+      "root": "data",
+      "sha256": "ebd60aca7e16e647c750a59370fce8010d55f3b57375d202817a4a08da1f4a5e"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+      "root": "data",
+      "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/slot-contracts-v1/completion.json",
+      "root": "data",
+      "sha256": "7acb644871b037f7123adec0c8fd7283ab9215d67c12fc0a32748a67a0f9dc51"
+    },
+    {
+      "relpath": "preparation-runs/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/encode-v1/receipt.json",
+      "root": "data",
+      "sha256": "3c152fc086ed1d1858f5b3021a336570d1b68c87f9c3a5abbe16209c009e2653"
+    },
+    {
+      "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-TRAIN-FOLD-A-ALIAS-V1/query-dimension-alias.json",
+      "root": "data",
+      "sha256": "c1aaf37a678240633078a8fcca455f949a5c4b2b18d37356129976006c9dc138"
+    }
+  ],
+  "scorers": [
+    "slurp-slu-official-train",
+    "cost"
+  ],
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-samples5-anchor-smoke-4-recovery-v3:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-samples5-anchor-smoke-4-recovery-v3",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
+  "task_instruction_template_active": true,
+  "what_this_is": "THE ONE ROOT-DIAGNOSED RECOVERY of the cell B2 v3 four-row smoke, registered before contact after run SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-V3 / attempt-slurp-native-samples5-anchor-smoke-4-generation-v3 (flight commit 858ae4ea) generated all 36 of its contacts -- 95.36006250000004 repeated speech seconds and 36 request-fit receipts -- and then FAILED AT THE SEAL. core.bundle.outputs refused row slurp:train:000007:audio--1504197557 with invariant I7: \"text does not match its recorded response_text_sha256 -- the text was mutated after the model response was recorded (I7)\". A grouped Solver row's delivered text is the registered commit policy's aggregate over the five raw samples and equals none of them, while the pre-E2d runner bound the row's response_text_sha256 to the LAST RAW sample's text hash. The fix is E2d (commit f3a77fb0, merged 5492c2af): reproduction.ojw.native_group_solver records solver_group.commit_params, core.flight.runtime._canonical_output_rows binds a grouped row's response_text_sha256 to the DELIVERED bytes, rails.native_episode_receipt validates the new field, and core.bundle.outputs adds invariant I7g, which binds every raw sample to the trace's own MODEL_RESPONSE bytes, resolves the named commit policy in core.base.COMMIT_POLICIES and re-derives the delivered bytes through analysis.native_commit_replay. I7 itself is unchanged and a samples-1 row is byte-identical to before. THIS FRAGMENT IS configs/baseline/slurp-native-anchor-samples5-smoke-4-v3.json UNCHANGED except this what_this_is, its own native_contact_fit run and attempt identity (the 304-endpoint cap is the v3 smoke's, unchanged), its own speech-feature key and matcher identity strings (provenance only; both are program-derived inside a request payload, so neither reaches a request byte -- proved over the failed attempt's own 36 sealed MODEL_REQUEST payloads in coordination/slurp-b2-samples5-anchor-v3/recovery-request-envelope-comparison-v1.json) and its own prepared_phase_supply pin. SAME four rows, same roster and split, same policy fragment phase-native-candidates-review-revise-samples5-v1 with max_contacts 19, same role graph (reviewer 3 / planner 1 / max_revisions 1, exhaustion policy deliver-latest-solver), same phase_material instruction templates, same task instruction template, same phase_tools Reviewer saea-tool-task-contract-v1 authority, same knowledge stores with their release and snapshot hashes, same four-candidate supply contract, same promoted speech packets, same model fragment and resident geometry, and the same moved channel: native_episode.roles.solver with samples 5, decoding_overrides {temperature 0.7, seed_offset 0} and commit {policy saea-commit-plurality-support-v1, min_support 3, similarity_threshold 0.8}, the five seeds 1249110493..1249110497. NOTHING about the question, the sampling, the aggregation or the budgets moves; the only change is the E2d seal-path fix in the code this cell flies on. The 36 calls and 95.36006250000004 repeated speech seconds the failed attempt durably spent stay charged to that CLOSED run id and are not re-charged here; its run directory is read-only evidence and neither its run id nor its attempt id is ever reused. Reconciliation receipt: coordination/slurp-b2-samples5-anchor-v3/attempt-reconciliation-smoke-v1.json.",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-RECOVERY-V3/phase-supply-v1.json",
+    "sha256": "a0721db12339d7931738e7ae414cfac8087b68f9a978353582ebf58e85f2448b"
+  }
+}
