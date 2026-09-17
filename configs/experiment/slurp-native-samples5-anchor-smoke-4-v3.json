@@ -15,13 +15,20 @@
         "reason": "Registered before contact by the cell B2 v3 registration agent on the sealed dual-store ANCHOR. Readiness is HELD: the coordinator adds the root decision requirement and flips this state itself, through scripts/flights/repin_cell.py, immediately before the standalone-worker smoke launch. Exclusive resident attachment to serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b2-samples5-anchor-v3-admission-v1",
+            "relpath": "coordination/slurp-b2-samples5-anchor-v3/root-admission-v1.json",
+            "sha256": "4f9e54ebf645dc38d76fc9dd6c35659c09572b82c2a719b80f84a24f7e3246fa",
+            "reason": "Decision slurp-b2-samples5-anchor-v3-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "Model-free first-phase Perception supply prepared by the cell B2 v3 registration agent; zero model, tokenizer, encoder, ASR, scorer and server contact. Its output block is byte-identical to the sealed four-row smoke artifacts' output (SHA-256 512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733) on its 4 rows.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-V3/phase-supply-v1.json",
-            "sha256": "5bc0a23f92b918ad36419c90e26eb1a437905e4ba210195ad54b0a700722518f"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-V3/phase-supply-v2.json",
+            "sha256": "b9db585a7d6b32c592fdc8d01730c77cab53998f037eeb58523b974646efff2e"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-V3"
     }

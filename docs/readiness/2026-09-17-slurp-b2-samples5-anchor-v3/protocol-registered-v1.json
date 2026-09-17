@@ -127,8 +127,8 @@
     "smoke": {
       "attempt_id": "attempt-slurp-native-samples5-anchor-smoke-4-generation-v3",
       "cell": "slurp-native-samples5-anchor-smoke-4-v3",
-      "composed_config_hash": "f2dcb0e8c9c789091c65cdbb5c4b133d0573f680db78176ef12566847dbb70f6",
-      "execution_plan_protocol_hash": "429987aa3d868a5d42c139d1d487fdaba89c2a9ecacccd2b539a0118f43f02d7",
+      "composed_config_hash": "d631960a736c34b0e9a1dd85bf9cdb7370feb7ec2410260a7fcadcf3737b2142",
+      "execution_plan_protocol_hash": "63034f02c67c2fe3b0dde2cab8762df68500ec1ce545ab6f321562ec58324553",
       "experiment": "slurp-native-samples5-anchor-smoke-4-v3",
       "fit_attempt_id": "attempt-slurp-native-samples5-anchor-smoke-4-fit-v3",
       "fit_run_id": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-FIT-V3",
@@ -145,8 +145,8 @@
         "slurp:train:000023:audio-1490956038"
       ],
       "prepared_phase_supply": {
-        "relpath": "prepared/SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-V3/phase-supply-v1.json",
-        "sha256": "5bc0a23f92b918ad36419c90e26eb1a437905e4ba210195ad54b0a700722518f"
+        "relpath": "prepared/SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-V3/phase-supply-v2.json",
+        "sha256": "b9db585a7d6b32c592fdc8d01730c77cab53998f037eeb58523b974646efff2e"
       },
       "run_id": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-V3",
       "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"

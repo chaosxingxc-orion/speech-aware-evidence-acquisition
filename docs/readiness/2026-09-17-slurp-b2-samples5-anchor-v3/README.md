@@ -33,11 +33,11 @@ notes carry a supersession line. **Do not fly the v2 cells.**
 | policy fragment | `configs/policy/phase-native-candidates-review-revise-samples5-v1.json`, `max_contacts` **19** — unchanged from the v2 package, and not re-registered here |
 | composed / protocol (arm) | `ea4b551b422e7e22dc58dd7a394e4c1123a36dc65ff9750e1b77b4abbde81b1d` / `97fafdffbd474a026109af08eb5e6a5b8d0cd799c7f407da253d587960da1be0` |
 | composed / protocol (twin) | `65c9a220f3bced4f523b5c531a8a577c539dd10db4b4b7d439c73edc9a91cc9b` / `0066dd067b27aadf25c8ba3b0e03cbffb78a9d47b3be0be66f4a9f37861430df` |
-| composed / protocol (smoke) | `f2dcb0e8c9c789091c65cdbb5c4b133d0573f680db78176ef12566847dbb70f6` / `429987aa3d868a5d42c139d1d487fdaba89c2a9ecacccd2b539a0118f43f02d7` |
-| protocol document | `protocol-registered-v1.json`, SHA-256 `b3a96d5d9ed9131f5ef379f9e55b7c739fc6a091884832a2d64d43dea539d6da` |
+| composed / protocol (smoke) | `d631960a736c34b0e9a1dd85bf9cdb7370feb7ec2410260a7fcadcf3737b2142` / `63034f02c67c2fe3b0dde2cab8762df68500ec1ce545ab6f321562ec58324553` |
+| protocol document | `protocol-registered-v1.json`, SHA-256 `93829f87b4c56e6ff7e976ac017547ee1a0bb847eac825004752716060e025c0` |
 | prepared phase supply (arm) | `prepared/SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-TRAIN-FOLD-A-V3/phase-supply-v1.json`, SHA-256 `e94496d771a6eda721a7d936273deacef56b0bdd695080e7fde4984cbf9437eb`, output `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` — the anchor's own |
 | prepared phase supply (twin) | `prepared/SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-GREEDY-TWIN-TRAIN-FOLD-A-V3/phase-supply-v1.json`, SHA-256 `43854c81092c49ce99db6f099f775380023beaced3bb11c47500da1411157ff5` |
-| prepared phase supply (smoke) | `prepared/SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-V3/phase-supply-v1.json`, SHA-256 `5bc0a23f92b918ad36419c90e26eb1a437905e4ba210195ad54b0a700722518f`, output `512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733` |
+| prepared phase supply (smoke) | `prepared/SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-V3/phase-supply-v2.json`, SHA-256 `b9db585a7d6b32c592fdc8d01730c77cab53998f037eeb58523b974646efff2e`, output `512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733` |
 | budgets per full arm | 20,520 generation calls, 82,080 FIT endpoints, 58,607 repeated speech seconds, 12.0 fit-inclusive GPU hours, 6,480 Reviewer tool calls, one official complete score |
 | budgets, smoke | 76 generation calls, 304 FIT endpoints, 202 repeated speech seconds, 1.0 GPU hours, 24 tool calls, no scoring |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |
