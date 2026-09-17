@@ -89,4 +89,47 @@ def parse_review_findings(text: str) -> dict[str, Any]:
     return report
 
 
-__all__ = ["REVIEW_FINDINGS_SCHEMA", "ReviewFindingsError", "parse_review_findings"]
+def review_findings_response_format(
+    _lock: Any = None, _root: Any = None, **params: Any
+) -> dict[str, Any]:
+    """The ``core.base.RESPONSE_FORMATS`` entry ``"saea-review-findings-v1"``.
+
+    E8a (coordinator decision 1 of 2026-09-17): the node-context policy's
+    ``review-finding`` PRODUCER may declare a structured output contract, so
+    that the boundary's consumer template has something to structure. The
+    schema rendered here is :data:`_REPORT_SCHEMA` itself, minus the
+    ``uniqueItems`` keyword that constrained decoding does not express -- so a
+    response generated under this format satisfies
+    :func:`parse_review_findings` by construction, and the parser stays the
+    authority on everything the schema cannot say (the verdict/findings/
+    recommendation agreement rules below it).
+
+    The audit measured 0 of 2,167 anchor Reviewer outputs parsing under that
+    parser, because the Reviewer prompt asks for prose and its phase declares
+    no response format (``docs/results/2026-09-17-slurp-node-context-audit-v1.md``
+    section 6). This id is what a cell config binds to close that gap; nothing
+    here changes any phase by itself.
+    """
+
+    if params:
+        raise ReviewFindingsError("review findings response format takes no parameters")
+    schema = json.loads(json.dumps(_REPORT_SCHEMA))
+    del schema["properties"]["findings"]["items"]["properties"]["evidence_ids"][
+        "uniqueItems"
+    ]
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "saea_review_findings_v1",
+            "strict": True,
+            "schema": schema,
+        },
+    }
+
+
+__all__ = [
+    "REVIEW_FINDINGS_SCHEMA",
+    "ReviewFindingsError",
+    "parse_review_findings",
+    "review_findings_response_format",
+]

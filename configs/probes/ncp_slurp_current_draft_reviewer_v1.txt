@@ -1,0 +1,20 @@
+# saea-node-context-template-v1 renderer=current-draft-reviewer
+[header]
+DRAFT UNDER REVIEW (Solver, parsed)
+[body]
+  scenario: {scenario}
+  action:   {action}
+  intent:   {intent_id}  [{candidate_membership}]
+[item]
+  entity:   {entity_type}={entity_filler}
+[items_empty]
+  entities: (none declared)
+[footer]
+This is the draft to check. Only the Solver may change it.
+[header_unparsed]
+DRAFT UNDER REVIEW (Solver, UNPARSED)
+[unparsed]
+UNPARSED DRAFT, VERBATIM:
+{source_content}
+[omitted]
+DRAFT UNDER REVIEW omitted: {reason}

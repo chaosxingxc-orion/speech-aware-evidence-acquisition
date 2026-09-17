@@ -1,0 +1,24 @@
+# saea-node-context-template-v1 renderer=review-finding
+[header]
+REVIEW OF THE CURRENT DRAFT (Reviewer, parsed)
+[body]
+  verdict: {verdict}
+  recommendation: {recommendation}
+  remaining uncertainty: {remaining_uncertainty}
+[item]
+  - {dimension}: {rationale}
+[items_empty]
+  - (no supported issue stated)
+[citation]
+  cited evidence: {evidence_id} [{availability}]
+[citations_empty]
+  cited evidence: (none cited)
+[footer]
+A review is a hypothesis about the draft, not evidence about the speech.
+[header_unparsed]
+REVIEW OF THE CURRENT DRAFT (Reviewer, UNPARSED)
+[unparsed]
+UNPARSED REVIEW, VERBATIM:
+{source_content}
+[omitted]
+REVIEW OF THE CURRENT DRAFT omitted: {reason}

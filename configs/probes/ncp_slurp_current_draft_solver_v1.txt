@@ -1,0 +1,18 @@
+# saea-node-context-template-v1 renderer=current-draft-solver
+[header]
+YOUR PREVIOUS ANSWER (revision {revision_index} of {max_revisions}, parsed)
+[body]
+  scenario: {scenario}   action: {action}
+[item]
+  entity: {entity_type}={entity_filler}
+[items_empty]
+  entities: (none declared)
+[footer]
+Reconsider it only where the intervening evidence gives you a reason to.
+[header_unparsed]
+YOUR PREVIOUS ANSWER (revision {revision_index} of {max_revisions}, UNPARSED)
+[unparsed]
+UNPARSED PREVIOUS ANSWER, VERBATIM:
+{source_content}
+[omitted]
+YOUR PREVIOUS ANSWER omitted: {reason}

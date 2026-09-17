@@ -1908,6 +1908,17 @@ def register_response_formats_v1() -> None:
             "training-feedback-proposal-v1",
             training_feedback_response_format,
         )
+    # E8a (2026-09-17, Node Context Policy, coordinator decision 1): the
+    # structured output contract the ``review-finding`` PRODUCER may declare.
+    # Registering the id gives a cell config something to bind; no phase
+    # changes until one does.
+    if "saea-review-findings-v1" not in registered:
+        from .review_findings import review_findings_response_format
+
+        RESPONSE_FORMATS.register(
+            "saea-review-findings-v1",
+            review_findings_response_format,
+        )
 
 
 register_response_formats_v1()
@@ -2097,6 +2108,17 @@ def register_role_context_compilers_v1():
     if "typed-slurp-role-context-v1" not in ROLE_CONTEXT_COMPILERS.names():
         ROLE_CONTEXT_COMPILERS.register(
             "typed-slurp-role-context-v1", build_slurp_role_context_compiler,
+        )
+    # E8a (2026-09-17): the Node Context Policy registers in the SAME registry
+    # (design section 12) because it is the same seam -- a consumer-specific,
+    # source-bound view of state the episode already holds -- and because
+    # folding ``native_episode.role_context`` under
+    # ``native_episode.context_policy`` means one registry, not two.
+    if "typed-slurp-node-context-v1" not in ROLE_CONTEXT_COMPILERS.names():
+        from .node_context_binding import build_slurp_node_context_policy_compiler
+
+        ROLE_CONTEXT_COMPILERS.register(
+            "typed-slurp-node-context-v1", build_slurp_node_context_policy_compiler,
         )
 
 
