@@ -31,15 +31,19 @@ import pytest
 from speech_aware_evidence_acquisition.core.config import compose
 from speech_aware_evidence_acquisition.rails.config_tables import (
     RUN_LEVEL_SWITCH_KEYS,
+    STORES_PIN_FIELDS,
     ConfigTableError,
     config_key_diff,
     is_episode_null_arm,
     is_run_null_arm,
     is_stores_null_arm,
+    is_stores_repin_arm,
     load_config_tables,
     resolve_episode_switch_key,
     resolve_run_switch_key,
     resolve_stores_switch_key,
+    stores_arm_matches,
+    stores_pins,
     switch_key,
 )
 from speech_aware_evidence_acquisition.rails.controllers import (
@@ -1184,3 +1188,116 @@ def test_the_committed_anchor_declares_no_context_policy():
         "native_episode.context_policy",
         anchor["native_episode"].get("context_policy"),
     ) is True
+
+
+# ---------------------------------------------------------------------------
+# 12. date/time slot-contract revision (E9 / cell B4b, SLURP v2 base program
+#     module M4b) -- the 'stores' class's SECOND arm form, the store RE-PIN.
+#
+# Section 10 above proves the class's FIRST form on a module that ADDS a
+# store: OFF is the store's absence. M4b is the other thing a store module
+# can be -- a REVISION of a store the comparator already carries -- and
+# docs/results/2026-09-17-slurp-b4b-slot-store-v2-verdict.md left exactly one
+# point open about it: its OFF arm is not the store's absence but the anchor's
+# own v1 pin, so the null form cannot express it honestly. This is the proof
+# node id such an entry cites: on the two REAL committed fragments, the switch
+# is one top-level key, one store inside it and the two pinned leaves inside
+# that store -- release and snapshot -- and nothing else moves.
+# ---------------------------------------------------------------------------
+
+_B4B_ANCHOR_V2 = "slurp-native-anchor-slot-store-v2-train-fold-a-v2.json"
+
+#: Bookkeeping, set aside exactly as section 10 sets aside its own: free-
+#: English prose, the cell's speech-feature identity ids and its per-cell
+#: preparation/fit receipts. None of it is the module.
+_B4B_BOOKKEEPING_KEYS = frozenset({
+    "native_contact_fit",
+    "preparation_source_receipts",
+    "speech_feature_key_representation_id",
+    "speech_feature_matcher_policy_id",
+    "what_this_is",
+})
+
+#: DERIVED rather than bookkeeping, and named as such: the prepared phase-
+#: supply artifact IS the pinned store's content materialized before the
+#: flight, so re-pinning the store necessarily re-prepares it. The review-loop
+#: proof sets aside the leaves its marker derives from in the same way and for
+#: the same reason -- a derived consequence of the one key is not a second key.
+_B4B_DERIVED_KEYS = frozenset({"prepared_phase_supply"})
+
+
+def test_the_stores_repin_form_is_one_key():
+    anchor = _load_baseline_json(_E3_ANCHOR)
+    revised = _load_baseline_json(_B4B_ANCHOR_V2)
+
+    entry_key = resolve_stores_switch_key("knowledge_stores.slot-contracts")
+    store_id = entry_key.split(".", 1)[1]
+    assert store_id == "slot-contracts"
+
+    # One top-level key, once bookkeeping and the derived supply artifact are
+    # set aside.
+    compared = (set(anchor) | set(revised)) - _B4B_BOOKKEEPING_KEYS - _B4B_DERIVED_KEYS
+    differing = sorted(key for key in compared if anchor.get(key) != revised.get(key))
+    assert differing == ["knowledge_stores"]
+
+    # One store inside that key -- the other store is byte-identical.
+    stores_off, stores_on = anchor["knowledge_stores"], revised["knowledge_stores"]
+    assert sorted(stores_off) == sorted(stores_on)
+    moved = sorted(name for name in stores_on if stores_off.get(name) != stores_on.get(name))
+    assert moved == [store_id]
+
+    # Two leaves inside that store, and they are the class's two pin leaves:
+    # store_role, candidate_supply and every other field stay put.
+    off_block, on_block = stores_off[store_id], stores_on[store_id]
+    moved_leaves = sorted(
+        field
+        for field in set(off_block) | set(on_block)
+        if off_block.get(field) != on_block.get(field)
+    )
+    assert moved_leaves == sorted(STORES_PIN_FIELDS) == ["release", "snapshot"]
+
+    # Neither arm is the class's NULL arm; both are RE-PIN arms; they differ.
+    off, on = stores_pins(anchor, store_id), stores_pins(revised, store_id)
+    assert is_stores_null_arm(off_block) is False
+    assert is_stores_null_arm(on_block) is False
+    assert is_stores_repin_arm(off) is True
+    assert is_stores_repin_arm(on) is True
+    assert off != on
+    assert off["release"]["relpath"].endswith("slot-contracts-v1/release.json")
+    assert off["snapshot"]["relpath"].endswith("slot-contracts-v1/snapshot.json")
+    assert on["release"]["relpath"].endswith("slot-contracts-v2/release.json")
+    assert on["snapshot"]["relpath"].endswith("slot-contracts-v2/snapshot.json")
+
+    # The question a plan-arming rule asks, answered in both directions: the
+    # ON pins arm the module, the OFF pins do not, and neither does a fragment
+    # that carries no such store.
+    assert stores_arm_matches(revised, store_id, on) is True
+    assert stores_arm_matches(revised, store_id, off) is False
+    assert stores_arm_matches(anchor, store_id, off) is True
+    assert stores_arm_matches(anchor, store_id, on) is False
+    without = {
+        "knowledge_stores": {
+            name: block for name, block in stores_on.items() if name != store_id
+        }
+    }
+    assert stores_arm_matches(without, store_id, on) is False
+    assert stores_arm_matches(without, store_id, None) is True
+    assert stores_arm_matches(revised, store_id, None) is False
+
+    # The FIRST form is not loosened by the second: absence is still the null
+    # arm, a re-pin arm is still not one, and an arm that moves anything
+    # besides the two pins is not a re-pin at all.
+    assert is_stores_null_arm(None) is True
+    assert is_stores_repin_arm(None) is False
+    assert is_stores_repin_arm(on_block) is False
+    assert is_stores_repin_arm({**on, "store_role": store_id}) is False
+    assert is_stores_repin_arm({"release": on["release"]}) is False
+    assert is_stores_repin_arm(
+        {"release": on["release"], "snapshot": {"relpath": "a/b.json", "sha256": "nope"}}
+    ) is False
+    assert is_stores_repin_arm(
+        {
+            "release": on["release"],
+            "snapshot": {"relpath": "/absolute/b.json", "sha256": on["snapshot"]["sha256"]},
+        }
+    ) is False

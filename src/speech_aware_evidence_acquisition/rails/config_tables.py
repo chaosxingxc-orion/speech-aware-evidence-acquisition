@@ -217,6 +217,26 @@ RUN_SWITCH_CLASS = "run"
 #: is a named STORE's whole block (release/snapshot pins plus its own
 #: ``phase_supply``/``candidate_supply``), so a store's switch needs its own
 #: class rather than a `knowledge_views` entry key.
+#:
+#: The ``stores`` class has TWO arm forms and a receipt entry DECLARES which
+#: one it is in. The first, and the only one E6 admitted, is the NULL form:
+#: OFF is the named store ABSENT from ``knowledge_stores``
+#: (:func:`is_stores_null_arm`), which is the shape of a module that ADDS a
+#: store the comparator does not carry. The second, added 2026-09-17 by E9 for
+#: cell B4b's module M4b (``docs/results/
+#: 2026-09-17-slurp-b4b-slot-store-v2-verdict.md``), is the RE-PIN form: a
+#: module that REVISES a store the comparator ALREADY carries moves neither
+#: more nor less than that store's two pinned leaves, so its OFF arm is the
+#: incumbent's ``{release, snapshot}`` pins and its ON arm is the successor's
+#: (:func:`is_stores_repin_arm`, :func:`stores_pins`,
+#: :func:`stores_arm_matches`). The form is declared as ``switch.form``
+#: :data:`STORES_REPIN_FORM` and is never inferred from the arms, because an
+#: OFF arm silently allowed to be anything other than the store's absence is
+#: exactly the loosening the null form exists to refuse; and a re-pin whose
+#: two arms pin the same bytes is refused, because it switches nothing.
+#: Everything else about the class is unchanged: still ONE key, still
+#: ``knowledge_stores.<store_id>``, still a proof test that shows the two
+#: committed fragments differing in that one sub-block alone.
 EPISODE_SWITCH_CLASS = "episode"
 STORES_SWITCH_CLASS = "stores"
 
@@ -289,6 +309,21 @@ EPISODE_LEVEL_SWITCH_KEYS = frozenset({
 
 #: The top-level key every ``stores``-class switch key names one child of.
 KNOWLEDGE_STORES_TABLE = "knowledge_stores"
+
+#: The token a ``stores`` entry declares as ``switch.form`` to be read in the
+#: class's SECOND arm form, the store re-pin. Absent, the entry is in the
+#: class's first (null) form -- see the class comment above.
+STORES_REPIN_FORM = "repin"
+
+#: The two leaves a store re-pin moves, and the only two it may move: the
+#: store's ``release`` and its ``snapshot``, each a ``{relpath, sha256}`` pin.
+#: ``store_role``, ``phase_supply`` and ``candidate_supply`` are NOT re-pin
+#: leaves: a module that moves one of those is not a re-pin of a store, it is
+#: a different store block, and it owes its own arm form rather than this one.
+STORES_PIN_FIELDS: tuple[str, ...] = ("release", "snapshot")
+
+#: The fields of one pin, exactly as :class:`PinnedFile` spells them.
+STORES_PIN_LEAF_FIELDS = frozenset({"relpath", "sha256"})
 
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
@@ -1163,6 +1198,95 @@ def is_stores_null_arm(value: object) -> bool:
     return value is None
 
 
+def is_stores_repin_arm(value: object) -> bool:
+    """Whether ``value`` is a ``stores``-class RE-PIN arm.
+
+    The class's second arm form (:data:`STORES_REPIN_FORM`): a mapping
+    carrying EXACTLY :data:`STORES_PIN_FIELDS`, each of them a pin of exactly
+    ``relpath`` and ``sha256``, under the same refusals every other pinned
+    file in this module is read under (a relative POSIX path, no backslash, no
+    traversal segment; a lowercase 64-hex digest). Exactly, not at least: an
+    arm that also carried ``store_role`` or a supply block would be claiming a
+    re-pin while moving something a re-pin does not move.
+    """
+
+    if not isinstance(value, Mapping):
+        return False
+    if set(value) != set(STORES_PIN_FIELDS):
+        return False
+    for leaf in STORES_PIN_FIELDS:
+        pin = value[leaf]
+        if not isinstance(pin, Mapping) or set(pin) != set(STORES_PIN_LEAF_FIELDS):
+            return False
+        try:
+            _require_relpath(pin["relpath"], field_name=f"{leaf}.relpath")
+            _require_sha256(pin["sha256"], field_name=f"{leaf}.sha256")
+        except ConfigTableError:
+            return False
+    return True
+
+
+def stores_pins(
+    fragment: Mapping[str, object], store_id: str
+) -> dict[str, dict[str, str]] | None:
+    """The ``release``/``snapshot`` pins ``fragment`` gives ``store_id``, or
+    ``None`` when the fragment pins that store no way at all.
+
+    ``None`` covers three cases a caller treats alike -- no ``knowledge_stores``
+    block, no such store in it, or a store whose two pins are not both
+    well-formed -- because none of them is a fragment that carries THESE pins.
+    The return value is a plain, normalized dict, so two fragments' pins
+    compare by value.
+    """
+
+    if not isinstance(fragment, Mapping):
+        return None
+    stores = fragment.get(KNOWLEDGE_STORES_TABLE)
+    if not isinstance(stores, Mapping):
+        return None
+    block = stores.get(store_id)
+    if not isinstance(block, Mapping):
+        return None
+    pins: dict[str, dict[str, str]] = {}
+    for leaf in STORES_PIN_FIELDS:
+        pin = block.get(leaf)
+        if not isinstance(pin, Mapping):
+            return None
+        relpath, sha256 = pin.get("relpath"), pin.get("sha256")
+        if not isinstance(relpath, str) or not isinstance(sha256, str):
+            return None
+        pins[leaf] = {"relpath": relpath, "sha256": sha256}
+    return pins if is_stores_repin_arm(pins) else None
+
+
+def stores_arm_matches(
+    fragment: Mapping[str, object], store_id: str, arm: object
+) -> bool:
+    """Whether ``fragment`` carries ``store_id`` in the arm ``arm`` names.
+
+    The one question a plan-arming rule asks, answered for both of the class's
+    arm forms: a NULL arm matches a fragment the named store is absent from,
+    and a RE-PIN arm matches a fragment whose store pins exactly those release
+    and snapshot bytes. A fragment carrying the OTHER side's pins matches
+    neither, which is the point: a plan that still carries the incumbent's
+    pins has not armed the successor.
+    """
+
+    stores = (
+        fragment.get(KNOWLEDGE_STORES_TABLE) if isinstance(fragment, Mapping) else None
+    )
+    declared = stores.get(store_id) if isinstance(stores, Mapping) else None
+    if is_stores_null_arm(arm):
+        return is_stores_null_arm(declared)
+    if not is_stores_repin_arm(arm):
+        return False
+    expected = {
+        leaf: {"relpath": arm[leaf]["relpath"], "sha256": arm[leaf]["sha256"]}
+        for leaf in STORES_PIN_FIELDS
+    }
+    return stores_pins(fragment, store_id) == expected
+
+
 def table_entry_keys(table: str) -> tuple[str, ...]:
     """The entry keys ``table`` admits, sorted -- what a switch declaration
     in ``docs/receipts/harness-admission.json`` must name."""
@@ -1195,6 +1319,9 @@ __all__ = [
     "RUN_LEVEL_SWITCH_KEYS",
     "RUN_NULL_ARMS",
     "RUN_SWITCH_CLASS",
+    "STORES_PIN_FIELDS",
+    "STORES_PIN_LEAF_FIELDS",
+    "STORES_REPIN_FORM",
     "STORES_SWITCH_CLASS",
     "SWITCH_CLASS_NAMES",
     "TOOLKITS_TABLE",
@@ -1217,10 +1344,13 @@ __all__ = [
     "is_episode_null_arm",
     "is_run_null_arm",
     "is_stores_null_arm",
+    "is_stores_repin_arm",
     "resolve_episode_switch_key",
     "resolve_run_switch_key",
     "resolve_stores_switch_key",
     "resolve_switch_key",
+    "stores_arm_matches",
+    "stores_pins",
     "table_entry_keys",
     "unwrap_judges",
     "unwrap_knowledge_views",
