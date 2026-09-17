@@ -760,6 +760,12 @@ REVIEW_LOOP_DERIVED_LEAVES = frozenset({
 #: speech-feature identity pair this arm pins separately from the anchor, and
 #: the free-English description.
 REVIEW_LOOP_BOOKKEEPING_KEYS = frozenset({
+    # Each cell binds its own model-free prepared Perception supply (the artifact's
+    # identity pins the composed config), so the pin is per-cell bookkeeping, not
+    # part of the module's channel -- the same exemption the E3 stores proof makes
+    # for preparation_source_receipts.
+    "prepared_phase_supply.relpath",
+    "prepared_phase_supply.sha256",
     "native_contact_fit.attempt_id",
     "native_contact_fit.contact_cap",
     "native_contact_fit.run_id",
