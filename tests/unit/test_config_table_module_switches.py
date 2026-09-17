@@ -33,9 +33,13 @@ from speech_aware_evidence_acquisition.rails.config_tables import (
     RUN_LEVEL_SWITCH_KEYS,
     ConfigTableError,
     config_key_diff,
+    is_episode_null_arm,
     is_run_null_arm,
+    is_stores_null_arm,
     load_config_tables,
+    resolve_episode_switch_key,
     resolve_run_switch_key,
+    resolve_stores_switch_key,
     switch_key,
 )
 from speech_aware_evidence_acquisition.rails.controllers import (
@@ -705,7 +709,8 @@ def test_the_projection_v3_delivery_switch_alone_is_one_key_when_nothing_else_mo
 
 
 # ---------------------------------------------------------------------------
-# 8. E1 review loop off (M0) -- not expressible as one switch key today
+# 8. E1 review loop off (M0) -- the 'episode' class's
+#    native_episode.review_loop key (harness-admission v3, Fable E6)
 #
 # The module's own channel (docs/superpowers/specs/2026-09-16-slurp-v2-base-
 # program-design.md section 3, row M0) is native_episode.max_revisions 0 +
@@ -713,64 +718,84 @@ def test_the_projection_v3_delivery_switch_alone_is_one_key_when_nothing_else_mo
 # native_episode that share no common dotted prefix (max_revisions is a
 # direct child; roles.reviewer.max_iterations and roles.planner.max_iterations
 # share only "native_episode.roles", not with max_revisions). switch_key's
-# own shared-prefix walk refuses this by construction -- measured below,
-# not asserted from opinion.
+# own shared-prefix walk still refuses this by construction -- measured
+# below, not asserted from opinion -- and it is not a spelling defect fixable
+# by moving the fields around: native_episode is a required, structured block
+# for this program with no absent/0 default the way obs_prefetch_depth has
+# one, so there is no flat top-level spelling either (resolve_run_switch_key
+# rejects any dotted key on sight).
 #
-# It is not a spelling defect fixable by moving the fields around, either.
-# The run class requires a FLAT (undotted) top-level key on a closed
-# allowlist (resolve_run_switch_key rejects any dot on sight), and
-# native_episode is a required, structured block for this program -- there
-# is no flat top-level spelling of "the review loop", and no absent/0
-# default the way obs_prefetch_depth has one, because native_episode itself
-# can never be dropped for a native-role-episode program. None of the four
-# per-phase tables (judges/knowledge_views/observe/toolkits) models episode
-# role-graph iteration counts either; they change what the frozen core
-# observes, is supplied, is judged on, or may call, not how many times an
-# agent role runs. So this module stays a "run"-less, table-less registered
-# switch, like the window hook above: expressible and tested, not yet a
-# harness-admission switch class.
+# Rather than teach core.config.compose to EXPAND one declared key into those
+# three leaves before hashing -- letting two different JSON fragments hash to
+# the same cell identity, a change to the composition pipeline this module's
+# admission does not need -- rails.native_episode_config.
+# load_native_episode_config gained an OPTIONAL, VALIDATED marker instead:
+# native_episode.review_loop, "on" or "off". The three leaves stay
+# authoritative and required exactly as before this field existed; the
+# marker is refused the instant it disagrees with what they already say
+# (test_review_loop_marker_disagreeing_with_the_leaves_is_refused below).
+# rails.config_tables now names the marker directly: table "episode", key
+# "native_episode.review_loop", OFF is the marker "off" (or its absence),
+# resolved by resolve_episode_switch_key / is_episode_null_arm. The class's
+# proof for this module treats the three leaves -- and the policy id's
+# consequent max_contacts change -- as DERIVED, exactly as the 'stores'
+# class's own proof treats a store's identity/prose fields as bookkeeping.
 # ---------------------------------------------------------------------------
+
+#: The three leaves native_episode.review_loop derives from and is validated
+#: against (rails.native_episode_config.load_native_episode_config). A
+#: proof-level exemption, not a schema field: the leaves stay required and
+#: authoritative in every committed fragment; only the PROOF below treats
+#: them as implied by the marker rather than as free variables of their own.
+REVIEW_LOOP_DERIVED_LEAVES = frozenset({
+    "native_episode.max_revisions",
+    "native_episode.roles.planner.max_iterations",
+    "native_episode.roles.reviewer.max_iterations",
+})
+
+#: Bookkeeping this module's proof also sets aside: attempt/run identity, the
+#: Reviewer tool authority that is simply absent when Reviewer never runs,
+#: the policy id (paired one-for-one with the max_contacts ceiling by
+#: rails.native_episode_config's own cross-role validation), the
+#: speech-feature identity pair this arm pins separately from the anchor, and
+#: the free-English description.
+REVIEW_LOOP_BOOKKEEPING_KEYS = frozenset({
+    "native_contact_fit.attempt_id",
+    "native_contact_fit.contact_cap",
+    "native_contact_fit.run_id",
+    "phase_tools.reviewer.allowed_tools",
+    "phase_tools.reviewer.knowledge_views",
+    "phase_tools.reviewer.mode",
+    "phase_tools.reviewer.source_authority_role",
+    "policy",
+    "speech_feature_key_representation_id",
+    "speech_feature_matcher_policy_id",
+    "what_this_is",
+})
 
 
 def test_review_loop_off_switch_moves_three_native_episode_keys_today():
-    """Measured, not asserted. E1 (rails.native_episode_config,
-    reproduction.ojw.native_episode, rails.runner) makes the shape legal and
-    NativeEpisodeConfig.review_loop_enabled the single reliable witness of
-    it, but the two committed baseline fragments below are not one switch
-    key -- this pins exactly what moves, so a future wave that lifts this
-    into a class starts from a known diff, not an opinion."""
+    """Measured, not asserted, and still true now that the marker exists:
+    the three leaves alone share no common dotted prefix, so a NAIVE
+    switch_key call over the raw fragments (or over native_episode alone)
+    still refuses them. This is exactly why the class needs its own
+    class-aware proof (below) rather than the generic single-prefix
+    algorithm every other module in this file uses."""
 
     on = _committed_baseline("slurp-native-dual-store-train-fold-a-anchor-v1")
     off = _committed_baseline("slurp-native-dual-store-train-fold-a-review-off-v1")
 
-    diff = config_key_diff(on, off)
-    assert diff == (
-        "native_contact_fit.attempt_id",
-        "native_contact_fit.contact_cap",
-        "native_contact_fit.run_id",
-        "native_episode.max_revisions",
-        "native_episode.roles.planner.max_iterations",
-        "native_episode.roles.reviewer.max_iterations",
-        "phase_tools.reviewer.allowed_tools",
-        "phase_tools.reviewer.knowledge_views",
-        "phase_tools.reviewer.mode",
-        "phase_tools.reviewer.source_authority_role",
-        "policy",
-        "speech_feature_key_representation_id",
-        "speech_feature_matcher_policy_id",
-        "what_this_is",
-    )
     with pytest.raises(ConfigTableError, match="unrelated config keys"):
         switch_key(on, off)
 
     # Restricted to the native_episode block alone -- the module's actual
-    # mechanism, with the bookkeeping fields (policy id, tool removal,
-    # contact-fit cap, speech-feature identity, what_this_is) set aside --
-    # the three moved leaves still share no common prefix, so even that
-    # narrower view is not one key.
+    # mechanism -- the marker plus the three leaves still share no common
+    # prefix (review_loop and max_revisions are both direct children), so
+    # even that narrower view is not one key by the generic algorithm.
     episode_diff = config_key_diff(on["native_episode"], off["native_episode"])
     assert episode_diff == (
         "max_revisions",
+        "review_loop",
         "roles.planner.max_iterations",
         "roles.reviewer.max_iterations",
     )
@@ -784,6 +809,59 @@ def test_review_loop_off_switch_moves_three_native_episode_keys_today():
         resolve_run_switch_key("native_episode.max_revisions")
     assert "native_episode" not in RUN_LEVEL_SWITCH_KEYS
     assert "review_loop" not in RUN_LEVEL_SWITCH_KEYS
+
+
+def test_review_loop_off_is_one_episode_class_key_once_derived_leaves_are_set_aside():
+    """The positive proof harness-admission v3 needed: once the three leaves
+    review_loop derives from, and the bookkeeping every module in this file
+    already sets aside, are removed from the raw whole-fragment diff, exactly
+    one key is left -- the marker itself."""
+
+    on = _committed_baseline("slurp-native-dual-store-train-fold-a-anchor-v1")
+    off = _committed_baseline("slurp-native-dual-store-train-fold-a-review-off-v1")
+
+    diff = set(config_key_diff(on, off))
+    remaining = diff - REVIEW_LOOP_DERIVED_LEAVES - REVIEW_LOOP_BOOKKEEPING_KEYS
+    assert remaining == {"native_episode.review_loop"}
+
+    assert (
+        resolve_episode_switch_key("native_episode.review_loop")
+        == "native_episode.review_loop"
+    )
+    assert is_episode_null_arm("native_episode.review_loop", "off") is True
+    assert is_episode_null_arm("native_episode.review_loop", None) is True
+    assert is_episode_null_arm("native_episode.review_loop", "on") is False
+
+    # The anchor (ON) never declares the marker at all -- legal, because the
+    # marker is optional and its absence is not itself a claim about the
+    # loop's state; only a DECLARED value is checked against the leaves.
+    assert "review_loop" not in on["native_episode"]
+    assert off["native_episode"]["review_loop"] == "off"
+
+
+def test_review_loop_marker_disagreeing_with_the_leaves_is_refused():
+    """Item 5's own requirement: a validator that refuses inconsistency
+    between the review_loop marker and the three leaves it derives from."""
+
+    from speech_aware_evidence_acquisition.rails.native_episode_config import (
+        load_native_episode_config,
+    )
+
+    off = _committed_baseline("slurp-native-dual-store-train-fold-a-review-off-v1")
+    off_program = default_phase_program(off["policy"])
+
+    # The committed fragment, unmutated, still validates -- the marker
+    # agrees with the leaves it derives from.
+    load_native_episode_config(off, off_program)
+
+    mutated = json.loads(json.dumps(off))
+    mutated["native_episode"]["review_loop"] = "on"
+    with pytest.raises(ValueError, match="inconsistent"):
+        load_native_episode_config(mutated, off_program)
+
+    mutated["native_episode"]["review_loop"] = "sideways"
+    with pytest.raises(ValueError, match="'on' or 'off'"):
+        load_native_episode_config(mutated, off_program)
 
 
 def test_review_loop_off_is_the_review_loop_enabled_property_on_the_loaded_config():
@@ -811,8 +889,9 @@ def test_review_loop_off_is_the_review_loop_enabled_property_on_the_loaded_confi
     assert off_program.max_contacts == 2
 
 
-# 9. grouped-Solver sampling (E2, SLURP v2 base program M2) -- documented as
-# NEITHER a per-phase table entry NOR a ``run``-class flat key.
+# 9. grouped-Solver sampling (E2, SLURP v2 base program M2) -- the
+#    'episode' class's native_episode.roles.solver key (harness-admission
+#    v3, Fable E6).
 #
 # The M2 design row (docs/superpowers/specs/2026-09-16-slurp-v2-base-
 # program-design.md section 3) names the switch class "judges", but the
@@ -844,12 +923,16 @@ def test_review_loop_off_is_the_review_loop_enabled_property_on_the_loaded_confi
 # (``test_native_episode_config.py::
 # test_anchor_config_ceiling_is_unchanged_by_the_new_field`` and
 # ``test_native_request_grouped_solver.py::
-# test_samples_one_ungrouped_adapter_is_unaffected``). This is recorded here
-# as an open decision for the coordinator/owner: either register a sixth
-# switch class for a per-run, non-``run``-class object (a schema bump, v3,
-# to ``docs/receipts/harness-admission.json``, not made by this change), or
-# accept ``native_episode.roles.solver`` as this module's one-key home
-# without adding it to ``rails.config_tables.CONFIG_TABLE_NAMES``.
+# test_samples_one_ungrouped_adapter_is_unaffected``). The open decision this
+# comment used to record is now resolved: harness-admission v3 (Fable E6,
+# 2026-09-16) registers a SIXTH switch class, ``episode``, for exactly this
+# kind of per-run, non-``run``-class object, on a closed allowlist
+# (``rails.config_tables.EPISODE_LEVEL_SWITCH_KEYS``) rather than by widening
+# ``CONFIG_TABLE_NAMES`` -- ``native_episode.roles.solver`` is admitted to it
+# unchanged, because it was already exactly one key under the generic
+# ``switch_key`` algorithm and needed no new expansion or exemption logic
+# (contrast M0's ``native_episode.review_loop`` in section 8 above, which
+# does).
 # ---------------------------------------------------------------------------
 
 
@@ -916,4 +999,104 @@ def test_grouped_solver_sampling_is_one_native_episode_roles_solver_key(tmp_path
     on_parsed = load_native_episode_config(on.values, _e2_program(8))
     assert on_parsed.max_contacts == 8
     assert on_parsed.role("solver").samples == 5
+
+
+def test_grouped_solver_sampling_key_resolves_in_the_episode_class():
+    """The class-membership half of the proof: unlike M0's review_loop, this
+    key needed no derived-leaves exemption -- it is already exactly one key
+    under the generic algorithm (test above), and the episode class's own
+    resolver and null-arm rule agree with that."""
+
+    assert (
+        resolve_episode_switch_key("native_episode.roles.solver")
+        == "native_episode.roles.solver"
+    )
+    assert is_episode_null_arm("native_episode.roles.solver", None) is True
+    assert is_episode_null_arm(
+        "native_episode.roles.solver", {"phase_id": "solver", "max_iterations": 1}
+    ) is True
+    assert is_episode_null_arm(
+        "native_episode.roles.solver",
+        {
+            "phase_id": "solver",
+            "max_iterations": 1,
+            "samples": 5,
+            "decoding_overrides": {"temperature": 0.7, "seed_offset": 0},
+            "commit": {
+                "policy": "saea-commit-plurality-support-v1",
+                "min_support": 3,
+                "similarity_threshold": 0.8,
+            },
+        },
+    ) is False
+    with pytest.raises(ConfigTableError, match="not admitted"):
+        resolve_episode_switch_key("native_episode.roles.reviewer")
+    with pytest.raises(ConfigTableError, match="does not start with"):
+        resolve_episode_switch_key("roles.solver")
+
+
+# ---------------------------------------------------------------------------
+# 10. exemplar-grounded Solver store (E3, SLURP v2 base program M1) -- the
+#     'stores' class's knowledge_stores.<store_id> key (harness-admission
+#     v3, Fable E6).
+#
+# tests/unit/test_e3_exemplar_supply_config_switch.py already proves, on the
+# real committed fragments, that adding the train-exemplars store is a
+# single JSON top-level 'knowledge_stores' key with a single added child
+# key, whose own sub-block's OFF arm reconstructs the pre-module
+# knowledge_stores block byte for byte. This section names that shape
+# directly through the 'stores' class's own resolver and null-arm rule, so
+# the two proofs cannot silently drift apart.
+# ---------------------------------------------------------------------------
+
+_E3_ANCHOR = "slurp-native-dual-store-train-fold-a-anchor-v1.json"
+_E3_K20 = "slurp-native-dual-store-train-fold-a-exemplars-k20-v1.json"
+
+#: The same bookkeeping top-level keys
+#: test_e3_exemplar_supply_config_switch.py's own BOOKKEEPING_KEYS names.
+_E3_BOOKKEEPING_KEYS = frozenset({
+    "native_contact_fit",
+    "speech_feature_key_representation_id",
+    "what_this_is",
+    "what_the_train_exemplars_store_is",
+    "preparation_source_receipts",
+})
+
+
+def _load_baseline_json(name):
+    return json.loads((REPO_ROOT / "configs" / "baseline" / name).read_text(encoding="utf-8"))
+
+
+def test_exemplar_supply_store_key_resolves_in_the_stores_class():
+    key = resolve_stores_switch_key("knowledge_stores.train-exemplars")
+    assert key == "knowledge_stores.train-exemplars"
+    assert is_stores_null_arm(None) is True
+    assert is_stores_null_arm({"store_role": "train-exemplars"}) is False
+    with pytest.raises(ConfigTableError, match="must be"):
+        resolve_stores_switch_key("phase_material.train-exemplars")
+    with pytest.raises(ConfigTableError, match="must be"):
+        resolve_stores_switch_key("knowledge_stores")
+    with pytest.raises(ConfigTableError, match="must be"):
+        resolve_stores_switch_key("knowledge_stores.train-exemplars.phase_supply")
+
+
+def test_exemplar_supply_store_is_the_only_key_moved_on_the_committed_fragments():
+    """The same real fragments test_e3_exemplar_supply_config_switch.py
+    proves the module's shape on, re-read here through the 'stores' class's
+    own resolver rather than by hand."""
+
+    anchor = _load_baseline_json(_E3_ANCHOR)
+    k20 = _load_baseline_json(_E3_K20)
+
+    non_bookkeeping_keys = (set(anchor) | set(k20)) - _E3_BOOKKEEPING_KEYS
+    differing = sorted(
+        key for key in non_bookkeeping_keys if anchor.get(key) != k20.get(key)
+    )
+    assert differing == ["knowledge_stores"]
+
+    entry_key = resolve_stores_switch_key("knowledge_stores.train-exemplars")
+    store_id = entry_key.split(".", 1)[1]
+    assert store_id == "train-exemplars"
+    assert is_stores_null_arm(anchor["knowledge_stores"].get(store_id)) is True
+    assert is_stores_null_arm(k20["knowledge_stores"].get(store_id)) is False
 

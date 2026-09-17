@@ -328,6 +328,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         "finite_completion_policy",
         "planner_output_format",
         "role_context",
+        "review_loop",
     }
     if (
         not isinstance(raw, Mapping)
@@ -439,6 +440,23 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         )
     if not review_loop_disabled and (reviewer_iterations < 1 or planner_iterations < 1):
         raise ValueError("role max_iterations must be positive")
+    # Fable E6 (2026-09-16, harness-admission v3, class 'episode'): an
+    # OPTIONAL, VALIDATED marker for the module M0 actually is. The three
+    # leaves above stay authoritative and required exactly as before this
+    # field existed; the marker is a redundant, checked declaration of what
+    # they already mean, refused here the moment it disagrees with them, so a
+    # config can never carry a "review_loop": "on" label over a paired-off
+    # shape or vice versa.
+    review_loop_marker = raw.get("review_loop")
+    if review_loop_marker is not None:
+        if review_loop_marker not in ("on", "off"):
+            raise ValueError("native_episode.review_loop must be 'on' or 'off'")
+        expected_marker = "off" if review_loop_disabled else "on"
+        if review_loop_marker != expected_marker:
+            raise ValueError(
+                "native_episode.review_loop is inconsistent with the reviewer/"
+                "planner max_iterations and max_revisions it must agree with"
+            )
     roles = []
     for kind in kinds:
         row = raw_roles[kind]

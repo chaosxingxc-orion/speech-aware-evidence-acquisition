@@ -586,3 +586,241 @@ def test_switch_classes_naming_a_class_the_check_cannot_enforce_fails(tmp_path):
 
 def test_the_committed_receipt_declares_the_switch_classes_this_check_knows():
     assert _committed()["switch_classes"] == list(hac.SWITCH_CLASS_NAMES)
+
+
+# ---------------------------------------------------------------------------
+# Rule 5: the episode switch class -- one dotted path under native_episode,
+# on a closed allowlist, whose OFF arm is that key's own null form.
+#
+# Added by Fable E6 (2026-09-16, harness-admission v3) for the SLURP v2 base
+# program's M0 (review-loop off) and M2 (grouped-Solver sampling). Every case
+# below runs against a SYNTHETIC receipt, so the committed one (which carries
+# no 'episode' entry yet -- no B0/B2 cell has been decided) is never mutated.
+# ---------------------------------------------------------------------------
+
+EPISODE_PROOF = (
+    "tests/unit/test_config_table_module_switches.py"
+    "::test_grouped_solver_sampling_is_one_native_episode_roles_solver_key"
+)
+
+
+def _episode_entry(tmp_path, **switch_overrides):
+    switch = {
+        "key": "native_episode.roles.solver",
+        "off": None,
+        "on": {
+            "samples": 5,
+            "decoding_overrides": {"temperature": 0.7, "seed_offset": 0},
+            "commit": {
+                "policy": "saea-commit-plurality-support-v1",
+                "min_support": 3,
+                "similarity_threshold": 0.8,
+            },
+        },
+        "proof": EPISODE_PROOF,
+        "table": "episode",
+    }
+    switch.update(switch_overrides)
+    proof_relpath, _, proof_name = EPISODE_PROOF.partition("::")
+    proof = tmp_path / proof_relpath
+    proof.parent.mkdir(parents=True, exist_ok=True)
+    if not proof.exists():
+        proof.write_text(f"def {proof_name}():\n    pass\n", encoding="utf-8")
+    return _entry(module="grouped Solver sampling", status="NEUTRAL", switch=switch)
+
+
+def _episode_plan(tmp_path, fragment=None, relpath="configs/baseline/episode-plan.json"):
+    path = tmp_path / relpath
+    path.parent.mkdir(parents=True, exist_ok=True)
+    default = {
+        "native_episode": {
+            "roles": {"solver": {"phase_id": "solver", "max_iterations": 1, "samples": 5}}
+        }
+    }
+    path.write_text(json.dumps(fragment if fragment is not None else default), encoding="utf-8")
+    return relpath
+
+
+def test_an_episode_class_switch_with_an_arming_plan_passes(tmp_path):
+    plan = _episode_plan(tmp_path)
+    result = _evaluate(
+        tmp_path,
+        _receipt([_episode_entry(tmp_path)], [{"carrier": "slurp", "config": plan}]),
+    )
+    assert result["failures"] == []
+    assert result["entries"][0]["table"] == "episode"
+    assert result["entries"][0]["switch_key"] == "native_episode.roles.solver"
+    assert result["entries"][0]["in_default_plans"] == [plan]
+
+
+def test_a_plan_leaving_the_episode_key_at_its_default_does_not_arm_it(tmp_path):
+    plan = _episode_plan(
+        tmp_path,
+        {"native_episode": {"roles": {"solver": {"phase_id": "solver", "max_iterations": 1}}}},
+    )
+    result = _evaluate(
+        tmp_path,
+        _receipt([_episode_entry(tmp_path)], [{"carrier": "slurp", "config": plan}]),
+    )
+    assert any("no default plan for" in failure for failure in result["failures"])
+
+
+def test_an_episode_key_outside_the_closed_allowlist_fails(tmp_path):
+    result = _evaluate(
+        tmp_path,
+        _receipt([_episode_entry(tmp_path, key="native_episode.roles.reviewer")]),
+    )
+    assert any("not admitted" in failure for failure in result["failures"])
+
+
+def test_an_episode_key_not_under_native_episode_fails(tmp_path):
+    result = _evaluate(tmp_path, _receipt([_episode_entry(tmp_path, key="roles.solver")]))
+    assert any("does not start with" in failure for failure in result["failures"])
+
+
+def test_an_episode_off_arm_that_is_not_the_keys_null_form_fails(tmp_path):
+    result = _evaluate(
+        tmp_path, _receipt([_episode_entry(tmp_path, off={"samples": 3})])
+    )
+    assert any("own null form" in failure for failure in result["failures"])
+
+
+def test_an_episode_on_arm_that_is_the_null_arm_fails(tmp_path):
+    result = _evaluate(tmp_path, _receipt([_episode_entry(tmp_path, on=None)]))
+    assert any("must arm something" in failure for failure in result["failures"])
+
+
+def test_a_harmful_episode_module_armed_in_a_plan_fails(tmp_path):
+    plan = _episode_plan(tmp_path)
+    entry = _episode_entry(tmp_path)
+    entry["status"] = "HARMFUL"
+    result = _evaluate(
+        tmp_path, _receipt([entry], [{"carrier": "slurp", "config": plan}])
+    )
+    assert any("status HARMFUL" in failure for failure in result["failures"])
+
+
+def test_the_review_loop_marker_arms_and_disarms_through_the_same_class(tmp_path):
+    """The allowlist's other key, proved through the same machinery: 'on'
+    arms it, 'off' does not."""
+
+    entry = _episode_entry(tmp_path, key="native_episode.review_loop", off="off", on="on")
+    plan_on = _episode_plan(
+        tmp_path, {"native_episode": {"review_loop": "on"}}, "configs/baseline/rl-on.json"
+    )
+    result_on = _evaluate(
+        tmp_path, _receipt([entry], [{"carrier": "slurp", "config": plan_on}])
+    )
+    assert result_on["failures"] == []
+    assert result_on["entries"][0]["in_default_plans"] == [plan_on]
+
+    plan_off = _episode_plan(
+        tmp_path, {"native_episode": {"review_loop": "off"}}, "configs/baseline/rl-off.json"
+    )
+    result_off = _evaluate(
+        tmp_path, _receipt([entry], [{"carrier": "slurp", "config": plan_off}])
+    )
+    assert any("no default plan for" in failure for failure in result_off["failures"])
+
+
+# ---------------------------------------------------------------------------
+# Rule 6: the stores switch class -- knowledge_stores.<store_id>, whose OFF
+# arm is the named store's absence.
+#
+# Added alongside rule 5 for the SLURP v2 base program's M1 (exemplar-
+# grounded Solver, the train-exemplars store). Every case below runs against
+# a SYNTHETIC receipt.
+# ---------------------------------------------------------------------------
+
+STORES_PROOF = (
+    "tests/unit/test_config_table_module_switches.py"
+    "::test_exemplar_supply_store_is_the_only_key_moved_on_the_committed_fragments"
+)
+
+
+def _stores_entry(tmp_path, **switch_overrides):
+    switch = {
+        "key": "knowledge_stores.train-exemplars",
+        "off": None,
+        "on": {"store_role": "train-exemplars"},
+        "proof": STORES_PROOF,
+        "table": "stores",
+    }
+    switch.update(switch_overrides)
+    proof_relpath, _, proof_name = STORES_PROOF.partition("::")
+    proof = tmp_path / proof_relpath
+    proof.parent.mkdir(parents=True, exist_ok=True)
+    if not proof.exists():
+        proof.write_text(f"def {proof_name}():\n    pass\n", encoding="utf-8")
+    return _entry(module="exemplar-grounded Solver", status="NEUTRAL", switch=switch)
+
+
+def _stores_plan(tmp_path, fragment=None, relpath="configs/baseline/stores-plan.json"):
+    path = tmp_path / relpath
+    path.parent.mkdir(parents=True, exist_ok=True)
+    default = {"knowledge_stores": {"train-exemplars": {"store_role": "train-exemplars"}}}
+    path.write_text(json.dumps(fragment if fragment is not None else default), encoding="utf-8")
+    return relpath
+
+
+def test_a_stores_class_switch_with_an_arming_plan_passes(tmp_path):
+    plan = _stores_plan(tmp_path)
+    result = _evaluate(
+        tmp_path,
+        _receipt([_stores_entry(tmp_path)], [{"carrier": "slurp", "config": plan}]),
+    )
+    assert result["failures"] == []
+    assert result["entries"][0]["table"] == "stores"
+    assert result["entries"][0]["switch_key"] == "knowledge_stores.train-exemplars"
+    assert result["entries"][0]["in_default_plans"] == [plan]
+
+
+def test_a_plan_without_the_named_store_does_not_arm_it(tmp_path):
+    plan = _stores_plan(tmp_path, {"knowledge_stores": {}})
+    result = _evaluate(
+        tmp_path,
+        _receipt([_stores_entry(tmp_path)], [{"carrier": "slurp", "config": plan}]),
+    )
+    assert any("no default plan for" in failure for failure in result["failures"])
+
+
+def test_a_stores_key_with_the_wrong_shape_fails(tmp_path):
+    result = _evaluate(tmp_path, _receipt([_stores_entry(tmp_path, key="knowledge_stores")]))
+    assert any("must be" in failure for failure in result["failures"])
+
+
+def test_a_stores_off_arm_that_is_not_null_fails(tmp_path):
+    result = _evaluate(tmp_path, _receipt([_stores_entry(tmp_path, off={})]))
+    assert any("must be null" in failure for failure in result["failures"])
+
+
+def test_a_stores_on_arm_that_is_the_null_arm_fails(tmp_path):
+    result = _evaluate(tmp_path, _receipt([_stores_entry(tmp_path, on=None)]))
+    assert any("must arm something" in failure for failure in result["failures"])
+
+
+def test_a_harmful_stores_module_armed_in_a_plan_fails(tmp_path):
+    plan = _stores_plan(tmp_path)
+    entry = _stores_entry(tmp_path)
+    entry["status"] = "HARMFUL"
+    result = _evaluate(
+        tmp_path, _receipt([entry], [{"carrier": "slurp", "config": plan}])
+    )
+    assert any("status HARMFUL" in failure for failure in result["failures"])
+
+
+# ---------------------------------------------------------------------------
+# Regression: the v3 bump changed only the schema/switch_classes fields --
+# every existing admission entry still validates unchanged.
+# ---------------------------------------------------------------------------
+
+
+def test_the_v3_schema_still_validates_every_existing_entry():
+    assert _committed()["schema"] == "saea-harness-admission-v3"
+    assert set(_committed()["switch_classes"]) == {
+        "judges", "knowledge_views", "observe", "toolkits", "run", "episode", "stores",
+    }
+    result = hac.evaluate(REPO_ROOT)
+    assert result["failures"] == []
+    assert result["passed"] is True
+    assert len(result["entries"]) == 4

@@ -174,11 +174,61 @@ NULL_ARMS: tuple[object, ...] = (None, {})
 #: a code change with a test, not a receipt edit.
 RUN_SWITCH_CLASS = "run"
 
+#: The SIXTH and SEVENTH switch classes, added by Fable E6 (2026-09-16,
+#: ``docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md``
+#: section 3) for three SLURP v2 base program modules that the five existing
+#: classes cannot name: M0 (review-loop off), M2 (grouped-Solver sampling)
+#: and M1 (exemplar-grounded Solver). Unlike the four per-phase tables, none
+#: of these modules is a mode of what a phase observes, is supplied with, is
+#: judged by or may call; unlike ``run``, none of them provably moves zero
+#: request bytes, so neither existing extension point fits.
+#:
+#: ``episode``: one dotted path under the ALREADY-EXISTING, per-run
+#: ``native_episode`` block (``rails.native_episode_config``), on a CLOSED
+#: allowlist for the same reason ``run``'s is closed -- a module that reaches
+#: for a new ``native_episode`` sub-path is a code change with a test, not a
+#: receipt edit. ``native_episode.roles.solver`` (M2) is already exactly one
+#: key under the existing ``switch_key`` shared-prefix rule: the OFF arm is
+#: simply the historical shape (``samples`` absent or 1, no
+#: ``decoding_overrides``/``commit``), so no new expansion code was needed for
+#: it. ``native_episode.review_loop`` (M0) is different: today's OFF arm is
+#: three leaves (``max_revisions``, ``roles.reviewer.max_iterations``,
+#: ``roles.planner.max_iterations``) that share no common dotted prefix, so
+#: ``switch_key`` refuses them by construction
+#: (``tests/unit/test_config_table_module_switches.py``, "E1 review loop
+#: off"). Rather than teach ``core.config.compose`` to EXPAND one declared key
+#: into those three leaves before hashing -- which would let two different
+#: JSON fragments hash to the same cell identity, a much larger change to the
+#: composition pipeline than this module's admission needs -- E1's own
+#: ``rails.native_episode_config.load_native_episode_config`` gained an
+#: OPTIONAL, VALIDATED marker field: a fragment may additionally declare
+#: ``native_episode.review_loop`` as ``"on"``/``"off"``, and the loader
+#: refuses the whole config if the marker disagrees with what the three
+#: leaves already say. The leaves stay authoritative and required exactly as
+#: before; the marker is a redundant, checked declaration of what they mean,
+#: which is what lets a harness-admission proof point at ONE key while still
+#: trusting the leaves it derives, rather than trusting an expansion nobody
+#: can see happen.
+#:
+#: ``stores``: a whole named ``knowledge_stores.<store_id>`` block (M1, the
+#: exemplar-grounded Solver's ``train-exemplars`` store). ``knowledge_views``
+#: wraps a PHASE's ``phase_material``/``phase_supply`` entry
+#: (:data:`WRAPPED_FLAT_KEYS`); it does not wrap ``knowledge_stores``, which
+#: is a named STORE's whole block (release/snapshot pins plus its own
+#: ``phase_supply``/``candidate_supply``), so a store's switch needs its own
+#: class rather than a `knowledge_views` entry key.
+EPISODE_SWITCH_CLASS = "episode"
+STORES_SWITCH_CLASS = "stores"
+
 #: Every switch class a ``docs/receipts/harness-admission.json`` entry may
-#: name: the four config tables, plus ``run``. NOT the same tuple as
-#: :data:`CONFIG_TABLE_NAMES`, which is the hashing rule's own list and must
-#: keep naming exactly the four tables.
-SWITCH_CLASS_NAMES = CONFIG_TABLE_NAMES + (RUN_SWITCH_CLASS,)
+#: name: the four config tables, plus ``run``, ``episode`` and ``stores``.
+#: NOT the same tuple as :data:`CONFIG_TABLE_NAMES`, which is the hashing
+#: rule's own list and must keep naming exactly the four tables.
+SWITCH_CLASS_NAMES = CONFIG_TABLE_NAMES + (
+    RUN_SWITCH_CLASS,
+    EPISODE_SWITCH_CLASS,
+    STORES_SWITCH_CLASS,
+)
 
 #: The per-run driver keys the ``run`` class admits.
 #:
@@ -207,6 +257,24 @@ RUN_LEVEL_SWITCH_KEYS = frozenset({"obs_prefetch_depth", "slurp_projection_v3_de
 #: 2026-09-08 ran, so ``0`` and "no key" are one cell identity exactly as a
 #: table's ``None``/``{}`` are.
 RUN_NULL_ARMS: tuple[object, ...] = (None, 0)
+
+#: The top-level key every ``episode``-class switch key is a dotted path
+#: under. Matches the literal spelling ``rails.native_episode_config`` reads,
+#: not the class label -- exactly as ``run``'s keys are the flat driver
+#: spelling, not ``"run.<key>"``.
+NATIVE_EPISODE_TOP_LEVEL_KEY = "native_episode"
+
+#: The closed allowlist of ``episode``-class switch keys. Both are dotted
+#: paths under :data:`NATIVE_EPISODE_TOP_LEVEL_KEY`; admitting a third is a
+#: code change with a test, not a receipt edit (see the class docstring
+#: above).
+EPISODE_LEVEL_SWITCH_KEYS = frozenset({
+    "native_episode.roles.solver",
+    "native_episode.review_loop",
+})
+
+#: The top-level key every ``stores``-class switch key names one child of.
+KNOWLEDGE_STORES_TABLE = "knowledge_stores"
 
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
@@ -980,6 +1048,94 @@ def is_run_null_arm(value: object) -> bool:
     return isinstance(value, int) and value == 0
 
 
+def resolve_episode_switch_key(key: str) -> str:
+    """The ``episode``-class switch key a ``switch.key`` declaration names,
+    or a refusal.
+
+    Unlike a table key this one is the literal dotted path a fragment
+    carries under ``native_episode`` (not ``"episode.<key>"``), exactly as a
+    ``run``-class key is the literal flat spelling rather than
+    ``"run.<key>"``. The allowlist is closed on purpose: see
+    :data:`EPISODE_LEVEL_SWITCH_KEYS`.
+    """
+
+    if not isinstance(key, str) or not key.strip():
+        raise ConfigTableError("an episode switch key must be a non-empty string")
+    if not key.startswith(f"{NATIVE_EPISODE_TOP_LEVEL_KEY}."):
+        raise ConfigTableError(
+            f"episode switch key {key!r} does not start with "
+            f"{NATIVE_EPISODE_TOP_LEVEL_KEY + '.'!r}; an episode-class module's one "
+            "key is a dotted path under the native_episode block, because that "
+            "block -- not one of the four per-phase tables -- is what the module "
+            "actually changes"
+        )
+    if key not in EPISODE_LEVEL_SWITCH_KEYS:
+        raise ConfigTableError(
+            f"episode switch key {key!r} is not admitted; the episode class is a "
+            f"closed allowlist {sorted(EPISODE_LEVEL_SWITCH_KEYS)} and a module that "
+            "reaches for a new native_episode sub-path is a code change with a "
+            "test, not a receipt edit"
+        )
+    return key
+
+
+def is_episode_null_arm(key: str, value: object) -> bool:
+    """Whether ``value`` is ``key``'s own OFF form in the ``episode`` class.
+
+    Each admitted key has its own null shape, because the two today mean
+    different things: ``native_episode.roles.solver``'s OFF is the historical
+    Solver role (no grouped-sampling fields, or ``samples`` explicitly 1);
+    ``native_episode.review_loop``'s OFF is the literal marker ``"off"`` (or
+    its absence from a fragment that never declares the marker at all).
+    """
+
+    if key == "native_episode.roles.solver":
+        if value is None:
+            return True
+        if not isinstance(value, Mapping):
+            return False
+        return (
+            value.get("samples", 1) == 1
+            and value.get("decoding_overrides") is None
+            and value.get("commit") is None
+        )
+    if key == "native_episode.review_loop":
+        return value is None or value == "off"
+    raise ConfigTableError(f"unknown episode switch key {key!r}")
+
+
+def resolve_stores_switch_key(key: str) -> str:
+    """The ``stores``-class switch key a ``switch.key`` declaration names, or
+    a refusal: ``knowledge_stores.<store_id>``, naming the whole named store
+    block a module adds -- not one ``knowledge_views`` entry, because
+    ``knowledge_views`` wraps a PHASE's ``phase_material``/``phase_supply``
+    (:data:`WRAPPED_FLAT_KEYS`) and a store is a different object: its own
+    release/snapshot pins plus its own supply.
+    """
+
+    if not isinstance(key, str) or not key.strip():
+        raise ConfigTableError("a stores switch key must be a non-empty string")
+    segments = key.split(".")
+    if (
+        len(segments) != 2
+        or segments[0] != KNOWLEDGE_STORES_TABLE
+        or not segments[1].strip()
+    ):
+        raise ConfigTableError(
+            f"stores switch key {key!r} must be {KNOWLEDGE_STORES_TABLE!r} followed "
+            "by '.' and one non-empty store id; a stores-class module's one key "
+            "names the whole named knowledge_stores block the module adds"
+        )
+    return key
+
+
+def is_stores_null_arm(value: object) -> bool:
+    """A named store's null arm: the store id absent from ``knowledge_stores``
+    (or ``knowledge_stores`` itself absent, at the field this key stops at)."""
+
+    return value is None
+
+
 def table_entry_keys(table: str) -> tuple[str, ...]:
     """The entry keys ``table`` admits, sorted -- what a switch declaration
     in ``docs/receipts/harness-admission.json`` must name."""
@@ -1000,14 +1156,19 @@ def table_entry_keys(table: str) -> tuple[str, ...]:
 __all__ = [
     "CONFIG_TABLES_SCHEMA",
     "CONFIG_TABLE_NAMES",
+    "EPISODE_LEVEL_SWITCH_KEYS",
+    "EPISODE_SWITCH_CLASS",
     "JUDGES_TABLE",
+    "KNOWLEDGE_STORES_TABLE",
     "KNOWLEDGE_VIEWS_TABLE",
     "LEGACY_OBSERVE_KEYS",
+    "NATIVE_EPISODE_TOP_LEVEL_KEY",
     "NULL_ARMS",
     "OBSERVE_TABLE",
     "RUN_LEVEL_SWITCH_KEYS",
     "RUN_NULL_ARMS",
     "RUN_SWITCH_CLASS",
+    "STORES_SWITCH_CLASS",
     "SWITCH_CLASS_NAMES",
     "TOOLKITS_TABLE",
     "WRAPPED_FLAT_KEYS",
@@ -1026,8 +1187,12 @@ __all__ = [
     "load_knowledge_views_table",
     "load_observe_table",
     "load_toolkits_table",
+    "is_episode_null_arm",
     "is_run_null_arm",
+    "is_stores_null_arm",
+    "resolve_episode_switch_key",
     "resolve_run_switch_key",
+    "resolve_stores_switch_key",
     "resolve_switch_key",
     "table_entry_keys",
     "unwrap_judges",

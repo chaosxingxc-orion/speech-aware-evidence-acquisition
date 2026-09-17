@@ -38,6 +38,26 @@ checked:
    being outside the tables: a module that moves one byte of the request
    cannot produce one, and belongs in a table.
 
+5. **A per-run episode-graph module names one dotted path under
+   ``native_episode``.** Added by Fable E6 (2026-09-16, v3 schema, SLURP v2
+   base program design section 3) for a module that changes how many times
+   an agent role runs or how the Solver samples/aggregates -- neither a mode
+   of what a phase observes/is supplied with/is judged by/may call (the four
+   tables) nor provably byte-identical to the request (``run``). Such an
+   entry declares ``switch.table`` ``"episode"``; its key must resolve on the
+   closed allowlist ``rails.config_tables.EPISODE_LEVEL_SWITCH_KEYS``, and its
+   OFF arm must be that key's own null form
+   (``rails.config_tables.is_episode_null_arm``).
+
+6. **A whole named knowledge store is one ``knowledge_stores.<store_id>``
+   key.** Added alongside rule 5, for a module that adds a whole named store
+   block (release/snapshot pins plus its own supply) rather than one entry of
+   the ``knowledge_views`` table, which wraps a PHASE's material/supply and
+   not a STORE. Such an entry declares ``switch.table`` ``"stores"``; its key
+   must resolve as ``rails.config_tables.resolve_stores_switch_key`` requires,
+   and its OFF arm must be ``null`` -- the named store absent
+   (``rails.config_tables.is_stores_null_arm``).
+
 A "default plan" is a committed config fragment the receipt itself names in
 ``default_plans`` -- declared, never inferred, because an experimental ON arm
 is a config fragment carrying a table too and reading those as default plans
@@ -62,18 +82,25 @@ sys.path.insert(0, str(REPO_ROOT_DEFAULT / "src"))
 
 from speech_aware_evidence_acquisition.rails.config_tables import (  # noqa: E402
     CONFIG_TABLE_NAMES,
+    EPISODE_SWITCH_CLASS,
+    KNOWLEDGE_STORES_TABLE,
     NULL_ARMS,
     RUN_NULL_ARMS,
     RUN_SWITCH_CLASS,
+    STORES_SWITCH_CLASS,
     SWITCH_CLASS_NAMES,
     ConfigTableError,
+    is_episode_null_arm,
     is_run_null_arm,
+    is_stores_null_arm,
+    resolve_episode_switch_key,
     resolve_run_switch_key,
+    resolve_stores_switch_key,
     resolve_switch_key,
 )
 
 RECEIPT_RELPATH = "docs/receipts/harness-admission.json"
-EXPECTED_SCHEMA = "saea-harness-admission-v2"
+EXPECTED_SCHEMA = "saea-harness-admission-v3"
 
 #: The statuses whose modules belong in a default plan, and the one that
 #: never does. ``PENDING`` is neither: a registered, undecided module has
@@ -138,10 +165,29 @@ def _switch_present(fragment: Mapping[str, Any], table: str, entry_key: str) -> 
 
     if table == RUN_SWITCH_CLASS:
         return entry_key in fragment and not is_run_null_arm(fragment.get(entry_key))
+    if table == EPISODE_SWITCH_CLASS:
+        return _episode_key_present(fragment, entry_key)
+    if table == STORES_SWITCH_CLASS:
+        store_id = entry_key.split(".", 1)[1]
+        stores = fragment.get(KNOWLEDGE_STORES_TABLE)
+        return isinstance(stores, Mapping) and not is_stores_null_arm(stores.get(store_id))
     block = fragment.get(table)
     if any(block == arm for arm in NULL_ARMS) or not isinstance(block, Mapping):
         return False
     return _names_key(block, entry_key)
+
+
+def _episode_key_present(fragment: Mapping[str, Any], key: str) -> bool:
+    """Whether ``fragment`` arms the dotted ``episode``-class key ``key`` --
+    walks the path and asks whether what it finds is that key's own null
+    form (:func:`rails.config_tables.is_episode_null_arm`)."""
+
+    cursor: object = fragment
+    for segment in key.split("."):
+        if not isinstance(cursor, Mapping) or segment not in cursor:
+            return False
+        cursor = cursor[segment]
+    return not is_episode_null_arm(key, cursor)
 
 
 def _names_key(value: object, entry_key: str) -> bool:
@@ -166,6 +212,10 @@ def _check_switch(entry: Mapping[str, Any], repo_root: Path, where: str) -> list
     table = switch["table"]
     if table == RUN_SWITCH_CLASS:
         return _check_run_switch(switch, repo_root, where)
+    if table == EPISODE_SWITCH_CLASS:
+        return _check_episode_switch(switch, repo_root, where)
+    if table == STORES_SWITCH_CLASS:
+        return _check_stores_switch(switch, repo_root, where)
     if table not in CONFIG_TABLE_NAMES:
         failures.append(
             f"{where}.switch.table is {table!r}; the switch classes are "
@@ -222,6 +272,52 @@ def _check_run_switch(switch: Mapping[str, Any], repo_root: Path, where: str) ->
     failures.extend(_check_proof(switch["proof"], repo_root, where))
     if not missing:
         failures.extend(_check_falsifier(switch["falsifier"], repo_root, where))
+    return failures
+
+
+def _check_episode_switch(switch: Mapping[str, Any], repo_root: Path, where: str) -> list[str]:
+    """Rule 5: one dotted path under ``native_episode``, on the closed
+    allowlist, whose OFF arm is that key's own null form."""
+
+    failures: list[str] = []
+    try:
+        key = resolve_episode_switch_key(switch["key"])
+    except ConfigTableError as error:
+        failures.append(f"{where}.switch.key: {error}")
+        failures.extend(_check_proof(switch["proof"], repo_root, where))
+        return failures
+    if not is_episode_null_arm(key, switch["off"]):
+        failures.append(
+            f"{where}.switch.off is {switch['off']!r}; the OFF arm of an 'episode' "
+            f"module must be {key!r}'s own null form, so OFF is a twin of the "
+            "pre-module native_episode shape rather than a third cell identity"
+        )
+    if is_episode_null_arm(key, switch["on"]):
+        failures.append(f"{where}.switch.on is the null arm; an ON arm must arm something")
+    failures.extend(_check_proof(switch["proof"], repo_root, where))
+    return failures
+
+
+def _check_stores_switch(switch: Mapping[str, Any], repo_root: Path, where: str) -> list[str]:
+    """Rule 6: ``knowledge_stores.<store_id>``, whose OFF arm is the named
+    store's absence."""
+
+    failures: list[str] = []
+    try:
+        resolve_stores_switch_key(switch["key"])
+    except ConfigTableError as error:
+        failures.append(f"{where}.switch.key: {error}")
+        failures.extend(_check_proof(switch["proof"], repo_root, where))
+        return failures
+    if not is_stores_null_arm(switch["off"]):
+        failures.append(
+            f"{where}.switch.off is {switch['off']!r}; the OFF arm of a 'stores' "
+            "module must be null -- the named store absent -- so OFF is a twin of "
+            "the pre-module knowledge_stores shape rather than a third cell identity"
+        )
+    if is_stores_null_arm(switch["on"]):
+        failures.append(f"{where}.switch.on is the null arm; an ON arm must arm something")
+    failures.extend(_check_proof(switch["proof"], repo_root, where))
     return failures
 
 
@@ -398,6 +494,10 @@ def evaluate(repo_root: Path, receipt_path: Path | None = None) -> dict[str, Any
             entry_key = resolve_switch_key(table, entry["switch"]["key"])
         elif not switch_failures and table == RUN_SWITCH_CLASS:
             entry_key = resolve_run_switch_key(entry["switch"]["key"])
+        elif not switch_failures and table == EPISODE_SWITCH_CLASS:
+            entry_key = resolve_episode_switch_key(entry["switch"]["key"])
+        elif not switch_failures and table == STORES_SWITCH_CLASS:
+            entry_key = resolve_stores_switch_key(entry["switch"]["key"])
 
         carrying = (
             [
