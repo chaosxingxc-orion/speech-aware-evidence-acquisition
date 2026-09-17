@@ -1106,3 +1106,81 @@ def test_exemplar_supply_store_is_the_only_key_moved_on_the_committed_fragments(
     assert is_stores_null_arm(anchor["knowledge_stores"].get(store_id)) is True
     assert is_stores_null_arm(k20["knowledge_stores"].get(store_id)) is False
 
+
+
+# ---------------------------------------------------------------------------
+# 11. Node Context Policy (E8a, 2026-09-17) -- the 'episode' class's THIRD
+#     key, native_episode.context_policy.
+#
+# docs/superpowers/specs/2026-09-17-node-context-policy-design.md section 5
+# asks for exactly one switch key, whose OFF arm is level L0. This section is
+# the design's own named proof test: the key resolves in the episode class,
+# its OFF arm is the key absent / the literal "raw" / an object that is raw at
+# every boundary, and its ON arm arms something. The committed anchor fragment
+# declares none of it, which is why the anchor's own composed hash is
+# unchanged by E8a (pinned in
+# tests/unit/test_node_context_policy_runner.py).
+# ---------------------------------------------------------------------------
+
+
+def test_node_context_policy_is_one_episode_class_key():
+    from speech_aware_evidence_acquisition.rails.config_tables import (
+        EPISODE_LEVEL_SWITCH_KEYS,
+    )
+
+    key = "native_episode.context_policy"
+    assert key in EPISODE_LEVEL_SWITCH_KEYS
+    assert sorted(EPISODE_LEVEL_SWITCH_KEYS) == [
+        "native_episode.context_policy",
+        "native_episode.review_loop",
+        "native_episode.roles.solver",
+    ]
+    assert resolve_episode_switch_key(key) == key
+
+    # OFF: absent, the literal "raw", or raw at every boundary.
+    assert is_episode_null_arm(key, None) is True
+    assert is_episode_null_arm(key, "raw") is True
+    assert is_episode_null_arm(key, {"level": "raw"}) is True
+    assert is_episode_null_arm(
+        key, {"level": "raw", "boundaries": {"solver:current-draft": {"level": "raw"}}}
+    ) is True
+    assert is_episode_null_arm(
+        key,
+        {
+            "level": "structured",
+            "boundaries": {
+                f"{role}:{semantic}": {"level": "raw"}
+                for role, semantic in _slurp_boundaries()
+            },
+        },
+    ) is True
+
+    # ON: anything that arms a boundary above raw.
+    assert is_episode_null_arm(key, {"level": "structured"}) is False
+    assert is_episode_null_arm(
+        key,
+        {"level": "raw", "boundaries": {"planner:review-finding": {"level": "structured"}}},
+    ) is False
+
+    # A dotted path under native_episode, never a flat run-level key.
+    with pytest.raises(ConfigTableError, match="is dotted"):
+        resolve_run_switch_key(key)
+    with pytest.raises(ConfigTableError, match="does not start with"):
+        resolve_episode_switch_key("context_policy")
+
+
+def _slurp_boundaries():
+    from speech_aware_evidence_acquisition.rails.node_context_policy import (
+        SLURP_BOUNDARY_IDS,
+    )
+
+    return sorted(SLURP_BOUNDARY_IDS)
+
+
+def test_the_committed_anchor_declares_no_context_policy():
+    anchor = _load_baseline_json(_E3_ANCHOR)
+    assert "context_policy" not in anchor["native_episode"]
+    assert is_episode_null_arm(
+        "native_episode.context_policy",
+        anchor["native_episode"].get("context_policy"),
+    ) is True
