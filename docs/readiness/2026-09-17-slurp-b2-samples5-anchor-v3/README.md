@@ -481,6 +481,8 @@ calls and 95.360063 speech seconds the failed attempt spent stay charged to the 
 4. Section 8's evidence table is joined by the recovery receipts, listed in section 9 of the recovery
    note.
 
+**Runtime `check` on the recovery cell**, at study commit `18605e50`: config `2e806bfb…`, protocol `eb1d1723…` re-derived at runtime and equal to the registered value, 4 samples, readiness `held`, `generation_authorized false`, prompt budget `ALLOW` on all four phases (operational margins 5,348 to 5,588 tokens on the conservative union estimate). Receipt `coordination/slurp-b2-samples5-anchor-v3/recovery-check-smoke-v1.json`, SHA-256 `bb59f041c693a1d35e90b4a0b8e4029df30cbb42beb1aabf11861f4c50685fa1`.
+
 **Deviation 12, added to section 10.** The v3 smoke baseline deliberately shared the **arm's**
 speech-feature key and matcher identity strings. The recovery baseline takes its **own** pair, so the
 recovery flight's trace carries its own provenance. This cannot move a request byte: each payload's
