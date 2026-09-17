@@ -32,7 +32,7 @@ and only then open Stage 3 (training-free optimisation of its exposed decisions)
 | M3 | USE projection v3 (label rule R_action then legal-label v2; filler normalisation P2: case, whitespace, punctuation, meridiem, numeric words; NO support filter, rejected by A1) | USE | scorer `slurp-slu-official-projected-v3[-train]` and the runtime judge of the same rule | unprojected; official, symmetric-normalised and rung numbers always reported together |
 | M4a | `general_quirky` fallback candidate + qa/general contrast card | ORG | `knowledge_views`: Perception fill `fallback_candidate` + store version | base without it |
 | M4b | Date/time slot-contract revision | ORG | `knowledge_views`: slot store version pin | base store |
-| M5 | Node Context Policy, L1 `structured` (E8a, 2026-09-17) | USE | `episode`: `native_episode.context_policy` (OFF = absent / `"raw"` / raw at every boundary) | the anchor; L1 derangement twin only on a positive CI95 |
+| M5 | Node Context Policy, L1 `structured` (E8a, 2026-09-17) and L2 `cleaned` (E8b, 2026-09-17) | USE | `episode`: `native_episode.context_policy` (OFF = absent / `"raw"` / raw at every boundary) | the anchor; L1 derangement twin only on a positive CI95; L2's comparator is B7a's sealed bytes |
 
 Boundary for M1: exemplar text and gold annotations come only from the construction pool
 (TRAIN minus every utterance with a recording in TRAIN A, TRAIN B or DEV-1000, the 2026-09-13
@@ -64,6 +64,24 @@ the structured level's implementation — and a fragment carrying both is refuse
 (B7a, B7b): `docs/superpowers/specs/2026-09-17-node-context-policy-design.md`; evidence base:
 `docs/results/2026-09-17-slurp-node-context-audit-v1.md`. E8a is the engineering only: no cell, no
 config commit, no exposure row and no model contact are authorised by it.
+
+E8b (2026-09-17): **M5 gains its level L2, `cleaned`.** A boundary declared
+`{"level": "cleaned", "cleaning": {...}}` performs L1 first and then makes ONE additional contact to
+the same frozen core, on the consumer contact's own pinned slot, in the same resident session and
+serving geometry, composed by the same `MeteredNativeSpeechRequest` path every role contact uses — so
+it is metered, budget-gated, exposure-bound, traced and costed identically and is refused past
+`config.max_contacts`. Its declared phase carries `knowledge: "none"` (its request has no evidence
+block and no agent-state history), its own registered `response_format_id`
+(`ncp-review-issues-v1`), and an instruction that is exactly the committed, hash-pinned template
+`configs/probes/ncp_slurp_cleaning_review_v1.txt` plus the L1 material — never the task, never the
+answer schema, never a request for a new judgment. Its answer is validated against the design's
+closed schema and against the rule that a cleaning contact may not introduce content; on ANY failure
+the boundary falls back to its L1 rendering and the receipt records `validation: "rejected"` with the
+reason, one attempt and no retry. At most one cleaning contact is made per consumer contact per
+boundary (the LAST state of that boundary in the contact's exposed history), which is what makes the
+ceiling exact: the contact ceiling gains `(max_revisions + 1) × consumer_role.max_iterations` per
+cleaned boundary, taking the anchor's 11 to 13 for the one boundary cell B7b declares. Cell B7b's
+whole config difference from B7a is that one boundary entry. E8b, like E8a, is engineering only.
 
 E3c (2026-09-17, cell B1 abort): when the Planner routes REVISE the Solver is re-entered and the
 prepared M1 supply returns the same twenty values, so `rails.controllers.restrict_repeat_visit_supply`

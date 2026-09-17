@@ -354,9 +354,74 @@ Four things E8a builds differently from the drafts above, each deliberate:
    renders identical request bytes and still emits one `level: "raw"` row per boundary per contact,
    which is what turns section 9's byte-identity claim into a checked statement.
 
-L2 is not implemented. Its config surface, its receipt fields and its value validation are: a
-`cleaned` level, a `cleaned` boundary or a `cleaning` block is refused at load time with the message
-`E8b not implemented`.
+**E8b as built (2026-09-17, branch `fable/e8b`): L2.** A boundary declared
+`{"level": "cleaned", "cleaning": {...}}` renders L1 first, then makes ONE additional contact, then
+renders the accepted result or falls back to that L1 rendering. Seven things it fixes that this
+section left open, each deliberate:
+
+1. **The cleaning contact runs inside the CONSUMER contact's own worker.** `run_contact` holds one
+   trajectory lock and one pinned slot per sample, so a nested `run_contact` would deadlock. The
+   invoker therefore runs from inside `speech_binding`, on the consumer's already-held slot, before
+   that consumer's own request is dispatched. That is what makes "the same resident session and
+   geometry" true rather than intended. It composes through a SECOND
+   `MeteredNativeSpeechRequest` instance — the same class, the same `prepare`, the same
+   `FrozenCoreClient` — whose completion sink settles nothing, because a cleaning contact must never
+   reach `capture_completion` and seal a phase state.
+2. **It is a declared contact, not a program phase.** `load_native_episode_config` requires the four
+   role phases to cover the program exactly once, so a fifth phase would be a much larger change
+   than this design asks for. `cleaning.phase_id` is therefore the contact's own identity and
+   namespace, refused when it collides with a program phase name; `knowledge: "none"` is enforced by
+   the runner (every knowledge/evidence part of the consumer's user turn is dropped, the system
+   contract and the speech packet stay, the agent-state history is empty); and
+   `cleaning.response_format_id` is resolved from `core.base.RESPONSE_FORMATS` alone, so the
+   registered builder must render with no lock and no root — checked when the config is validated.
+3. **At most ONE cleaning contact per consumer contact per boundary.** The Planner at revision 2
+   holds BOTH Reviewer outputs; cleaning each would spend three contacts where section 7 budgets
+   two. The policy cleans the LAST state of the boundary in that contact's exposed history — the
+   review the Planner is deciding about — and renders the earlier ones at L1 with
+   `validation: "skipped"`. The ceiling therefore gains
+   `(max_revisions + 1) × consumer_role.max_iterations` per cleaned boundary, which for
+   `planner:review-finding` on a one-iteration Planner is exactly the `(max_revisions + 1)` of
+   section 7: the anchor's 11 becomes 13.
+4. **Two committed templates, not one.** `probes/ncp_slurp_cleaning_review_v1.txt` is the
+   INSTRUCTION the cleaner reads (the contract of section 4 plus the L1 material, and nothing else);
+   `probes/ncp_slurp_cleaned_review_v1.txt` is how an ACCEPTED output is rendered into the
+   consumer's context. Both are ordinary node-context templates, so both are validated at load time
+   and hash-pinned in every receipt, beside the boundary's L1 template. The instruction drops
+   section 4's inline JSON example: the declared `response_format_id` IS that contract, and the
+   template grammar refuses an unrecognised brace.
+5. **The closed schema is section 4's, verbatim.** The two rules it cannot state live in
+   `validate_cleaning_document`: a `problem` may not be blank, and the response may not introduce
+   content — every content token of an accepted output is either one of the schema's own fixed words
+   or occurs, case-folded, in the L1 material that contact was handed. Case is not content; anything
+   else is.
+6. **`cleaned` is declared per boundary, never as a default.** A default level applies to all twelve
+   boundaries and no carrier registers cleaning assets for all twelve, so `"level": "cleaned"` at the
+   top level and a bare `"cleaned"` string are both refused; so is a `cleaning` block on a boundary
+   that is not `cleaned`, a `cleaned` boundary with no `cleaning` block, and a `cleaned` boundary
+   whose semantic class has no registered cleaning renderer (today only `review-finding` has one).
+7. **The cleaning contact is in the trace and in the ceiling, not in the wave ledger.** It carries
+   its own trace buffer, its own ordinary `native-role-contact` USE record, its own
+   `AgentContactPlan` (checked against the knowledge-payload rule), the episode's evidence pins and
+   the run's budget id, and it increments `scheduled_contacts`. It is NOT appended to the episode's
+   `contacts`/`waves` ledger, whose invariant is one wave per QueryState transition: a cleaning
+   contact registers no agent state and routes no episode step. The receipt row's `cleaning_contact`
+   block is what binds it — contact id, request id, request/response digests, the three committed
+   hashes, the schema hash, `validation` and `rejected_reason`.
+
+One consequence worth stating for the cell: the episode appends its own bounded limits to every
+instruction, including `remaining_model_contacts`. A cleaning contact therefore shifts that number
+for every later contact of the same row, and raising the ceiling from 11 to 13 shifts it for every
+contact. B7b's requests are not byte-identical to B7a's outside the cleaned boundary, and the
+wire-check receipt must say so. Holding the ceiling fixed isolates the boundary's own effect, which
+is what `tests/unit/test_node_context_policy_l2_runner.py::
+test_l2_changes_only_the_declared_boundarys_consumer` measures.
+
+Proofs: `tests/unit/test_node_context_policy_l2.py` (model-free: the committed assets, the five
+invalid-answer cases, the containment rule, the one-contact-per-consumer-contact bound, the ceiling
+11 → 13) and `tests/unit/test_node_context_policy_l2_runner.py` (production render path: the cleaned
+block on the Planner's actual request, the extra metered contact and its trace binding, refusal past
+the ceiling, the evidence-free cleaning request, and L0/L1 byte identity against E8a's pins).
 
 ## 7. Contact-ceiling arithmetic for L2
 
