@@ -209,11 +209,15 @@ All under `$DATA/coordination/slurp-b4b-replicate-v2/`:
 | `request-envelope-digests-b4b-asflown-v1.json` | `2b321b1907adaf35b49823d3c979f70de40e2d7d642609032bbcff73e2a49e12` | the same for cell B4b **as flown**, rendered from an export of commit `19ad05b4` with that commit's own code and config bytes, which reproduces B4b's registered composed hash `8d207b33` |
 | `plan-hashes-v1.txt` | `87b27c920c3078d136f0f2b1f1db81c4754427b4ccb8c373a0d9ea65115d0cf8` | the SHA-256 of every plan, protocol and recipe document in this directory |
 | `ledger-parse-v1.json` | `972b2586b6450abe80fdc39b7e233423cbdf823b1cde21132305875d4540fb30` | `contracts._parse_ledger_tables` sees both rows exactly once, each `consumed = no`, out of 910 rows parsed |
-| `check-v1.json` | `PENDING_REGISTRATION_COMMIT` | `core.flight.cli check` passes: gate, exposure row, clean tree, attempt free, prompt budget ALLOW for every phase |
+| `check-v1.json` | `f1311eeba91dd498e3a957c4fc24d04b20a6962d4c193f89ea1270b35b994c26` | `core.flight.cli check` passes: gate, exposure row, clean tree, attempt free, prompt budget ALLOW for every phase |
 
-The `check` receipt is produced at the registration commit that carries every config, plan and ledger
-row this cell flies, because `check` asserts a clean study tree and therefore cannot run before the
-commit exists. Its SHA-256 and that commit are pinned here in the follow-up commit.
+The `check` receipt was produced at commit `5bfe01ab7080a6ebcbd07b6d31aa8dc2c471db9b`, the
+registration commit that carries every config, plan and ledger row this cell flies; `check` asserts a
+clean study tree and therefore cannot run before that commit exists, and the documentation commit
+that follows it changes no config, no plan and no ledger row. The receipt records
+`config_hash 7462a00e…`, `protocol_hash bf24d265…`, `study_commit 5bfe01ab…`, `sample_count 1080`,
+`scientific_readiness.state "held"`, `generation_authorized false`, and prompt-budget **ALLOW** on all
+four phases at exactly the required-window tokens and margins registered above.
 
 Prompt fit against the 24,576-token slot, model-free, over the widest request each phase renders
 across the whole roster: perception 19,992 required window tokens (operational margin 4,584), reviewer
