@@ -351,6 +351,83 @@
         "what_flew": "The ON arm flew configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json WITHOUT the marker (the marker did not exist when the anchor sealed; the loader reads the loop leaves max_revisions 1 / reviewer 3 / planner 1 as the loop ON). The first OFF arm flew the review-off fragment at 5d0d694d WITHOUT the marker (leaves 0 / 0 / 0, policy phase-native-candidates-solve-v1); the second OFF arm flew the same fragment at f38d3c33 WITH the marker 'off', which the envelope receipt proves renders no request byte. The SLURP default plan configs/baseline/slurp-native-dual-store-train-fold-a-default-plan-v1.json is the anchor fragment plus the marker 'on' and its own what_this_is description, nothing else; it is never a cell of its own.",
         "why_this_table": "the module changes the native episode's role graph (which roles run after the Solver draft), not a per-phase request table entry; harness-admission v3 names that class 'episode' and admits this key on its closed allowlist"
       }
+    },
+    {
+      "carrier": "slurp",
+      "comparator": {
+        "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+        "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+        "note": "the sealed dual-store anchor carrying slot-contracts release v1; never re-flown or re-scored"
+      },
+      "date": "2026-09-17",
+      "module": "date/time slot-contract revision (slot store v2: eight revised slot cards authored from construction data only; the same store id re-pinned from release v1 to v2)",
+      "row": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V2",
+      "status": "ADMITTED",
+      "status_basis": "ADMITTED is this table's status for a gain on the carrier's primary metric disjoint from the carrier's own null with every gating guard non-inferior at the measured margin, and all four preregistered clauses pass (docs/readiness/2026-09-17-slurp-b4-org-cells-anchor-v2-preregistration.md section 6): official pooled SLU-F1 48.53 -> 51.09, +2.55 pp CI95 [+1.13, +3.98] (lower bound above zero and above the 1.1218 pp own-null half-width); intent +0.56 pp CI95 [-0.71, +1.82], lower bound above the -1.0051 margin; projection v3 +2.06 pp CI95 [+0.53, +3.51] agreeing in sign (54.05 / 79.72); no scenario's intent CI95 upper bound below zero. The gain is content-driven in the direction the store revision names: time-slot false-negative mass -32.9, filler-distance mass -28 %, date omissions 81 -> 77, exact mentions 272 -> 302 on the roster. The status is provisional on the replication obligation below, as the KC-E1f entry was.",
+      "evidence": {
+        "arm": {
+          "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V2",
+          "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-generation-v2",
+          "study_commit": "19ad05b4"
+        },
+        "smoke": {
+          "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-SMOKE-4-V2",
+          "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-smoke-4-generation-v2"
+        },
+        "primary": "official pooled SLU-F1, 1,080 paired TRAIN A rows, 125 speaker clusters, 10,000 draws, seed 20260915: 48.53 -> 51.09, +2.55 pp, CI95 [+1.13, +3.98], CI90 [+1.38, +3.74]; equal-scenario +2.11; row SLU-F1 saves / harms 112 / 58 (McNemar p 4.2e-5); exact slot F1 saves / harms 63 / 38 (p 0.017)",
+        "guards": "intent (scenario+action) 77.96 -> 78.52, +0.56 pp CI95 [-0.71, +1.82] against the -1.0051 margin: passes; scenario +0.28, action +0.37; no scenario breaches the intent band (0 of 18 with CI95 upper bound below zero), five scenarios (general, recommendation, iot, qa, takeaway) sit exactly on the boundary at 60 rows, recorded as a weakness of the band at that stratum size",
+        "secondary": "against the released direct anchor: pooled SLU +17.20 pp CI95 [+14.00, +20.35], intent +4.81 [+2.56, +7.04], pooled span F1 +11.31; projection v3 beside every official number: anchor 51.99 / 79.35, B4b 54.05 / 79.72, direct 34.31 / 75.37 (SLU / intent); the symmetric-normalised scorer has no TRAIN sibling and is recorded as not evaluable",
+        "margins_from": {
+          "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1",
+          "attempt_id": "attempt-slurp-native-review-off-train-fold-a-replicate-generation-v1",
+          "note": "MEASURED on this roster and geometry (B0r minus B0): pooled SLU half-width 1.1218 pp, intent 1.0051 pp at CI95; the own null of a different configuration of the same harness, and the anchor leg is one shared realisation"
+        },
+        "cost": "5,407 contacts (5.006 per row against the anchor's 5.016), 15,432.81 repeated speech seconds, 1,075 task-contract tool calls, 3.465 GPU hours, wall 12,797 s, slot occupancy 0.925, utilisation 92.4 %, parked 0.025, mean latency 8.76 s; prompt tokens +2.59 % against the anchor for the revised card texts; zero added contacts",
+        "diagnostic": "official-scorer matching reconstructed on the sealed outputs: time exact mentions 8 -> 22 of 76 (FN mass -32.86, FP -18.86, filler-distance mass 74.34 -> 53.48), date exact mentions 28 -> 33 of 138 (omits 81 -> 77), media_type omits 38 -> 29 (FP +8.51); non-revised types also moved (radio_name FN -6.40, news_topic -5.84, person -4.80; food_type +3.78) and are recorded, not attributed",
+        "receipt": "docs/results/2026-09-17-slurp-b4b-slot-store-v2-verdict.md",
+        "verdict_note": "docs/results/2026-09-17-slurp-b4b-slot-store-v2-verdict.md"
+      },
+      "not_admitted_for": [
+        "any default plan before the replication obligation is met: the entry is provisional and the SLURP default plan keeps the v1 pins until then",
+        "any claim about the fallback candidate or the intent store v2 (cells B4a / B4c), which are separate modules",
+        "any claim that the non-revised slot types' movements are caused by the revision; they are recorded as unattributed",
+        "any other roster or carrier; DEV1000, Fold B and the test split are untouched",
+        "any paper-scale or generalisation claim; TRAIN A is a discovery roster"
+      ],
+      "provisional": {
+        "state": "UNMET",
+        "reason": "one realisation of the arm against one realisation of the anchor, under margins measured on a different configuration of the same harness; no twin was registered for this module",
+        "requirement": "replicate on the same roster before the default plan carries the v2 pins: either a request-identical replicate of this cell (about 3.5 GPU hours) or the B5 / B5r combination pair both showing the module's contribution within the own null; a second entry records the replication and this entry stays"
+      },
+      "switch": {
+        "added_by": "docs/results/2026-09-17-slurp-b4b-slot-store-v2-verdict.md; the stores re-pin form of harness-admission v3 (E9, 2026-09-17)",
+        "table": "stores",
+        "key": "knowledge_stores.slot-contracts",
+        "form": "repin",
+        "off": {
+          "release": {
+            "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+            "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+          },
+          "snapshot": {
+            "relpath": "knowledge/slurp/semantic/slot-contracts-v1/snapshot.json",
+            "sha256": "11c246e4b815a4f966e8cf8785f06b70515755eca71658862c6f98e9914044e6"
+          }
+        },
+        "on": {
+          "release": {
+            "relpath": "knowledge/slurp/semantic/slot-contracts-v2/release.json",
+            "sha256": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b"
+          },
+          "snapshot": {
+            "relpath": "knowledge/slurp/semantic/slot-contracts-v2/snapshot.json",
+            "sha256": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec"
+          }
+        },
+        "proof": "tests/unit/test_config_table_module_switches.py::test_the_stores_repin_form_is_one_key",
+        "what_flew": "The ON arm flew configs/baseline/slurp-native-anchor-slot-store-v2-train-fold-a-v2.json at 19ad05b4: the sealed anchor fragment with knowledge_stores.slot-contracts re-pinned from the v1 release/snapshot to v2 and nothing else (the request-channel receipt shows Perception byte-identical on 1,080/1,080 rows and the Solver/Reviewer/Planner evidence differing only on the eight revised slot cards). The OFF arm is the sealed anchor itself, which carries the v1 pins.",
+        "why_this_table": "the module is a revision of a named knowledge store's content, switched by that store's release and snapshot pins; the stores class names the store's whole block, and the re-pin form records that OFF is the prior pin rather than the store's absence"
+      }
     }
   ],
   "switch_classes": [
