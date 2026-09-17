@@ -384,7 +384,7 @@ requirement pinned, no decision requirement yet):
 
 | cell | composed config | protocol | prepared supply SHA-256 |
 | --- | --- | --- | --- |
-| `…-train-fold-a-recovery-v2` | `b15374a9c89b8f9e089e38ea3a408fe02fcf16999e0ab21f721a46b8eaa7521a` | `7ff82128599de2441f11483af07d04a78386294eba73e6eba90b3ad192810c0e` | `ae9feef8152da8333d3b8bc992037d5776bd3a32c225c9105d879d3398925595` |
+| `…-train-fold-a-recovery-v2` | `(pre-flip; the flipped value is in the recovery package)` | `(pre-flip; the flipped value is in the recovery package)` | `ae9feef8152da8333d3b8bc992037d5776bd3a32c225c9105d879d3398925595` |
 | `…-smoke-4-recovery-v2` | `d0876577fb59f17e473b28d0a2ac93c6a983e72a1c2e3b918f84f00c9dcf3900` | `60442419416f8d02aea230dd496ed398e8f316ca5c046e402854bf144aaccede` | `26a4f0167b91d3a1776f56e966fc18d9f0a1d05f8f603e22a1374ff08d003078` |
 
 Both prepared artifacts reproduce the sealed anchor's Perception `output` byte-for-byte:
