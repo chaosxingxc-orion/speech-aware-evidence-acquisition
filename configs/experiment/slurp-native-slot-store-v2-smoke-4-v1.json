@@ -1,0 +1,72 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-slot-store-v2-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-review-off-slot-store-v2-smoke-4-v1",
+      "cell_id": "slurp-native-slot-store-v2-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Registered before contact by the B4 preparation agent. It stays held until the coordinator flips it immediately before the standalone-worker smoke launch, and never before the cell B0 verdict is in. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "Model-free first-phase Perception supply prepared by the B4 preparation agent at commit 6c5c9ab7 from the same sealed speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed anchor and cell B0 used; zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to cell B0's own prepared artifact output and to the sealed anchor preparation output, so the Perception selection channel does not move in this cell. Receipt coordination/slurp-b4-org-cells-v1/phase-supply-vs-base-v1.json.",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "0e03cae253aa4808e5e14e113cc2a3e5903238f205b028c2a3fce05cf6fa6dc0"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-17",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.2,
+    "planned_model_calls": 8,
+    "planned_speech_audio_seconds": 25,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops cell B4b until the fix is proven on this same four-row roster.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 32,
+    "generation_calls_cap": 8,
+    "gpu_hours_fit_inclusive": 0.2,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 25
+  },
+  "fragment_kind": "saea-slurp-native-slot-store-v2-smoke-4-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The four already-exposed TRAIN A engineering rows this repository reuses for every four-row form smoke; no quality-based selection.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row standalone-worker form smoke of cell B4b before it flies. Structural evidence only: exactly two contacts per row, the episode receipt review_loop_disposition, the revised slot-card text in the Solver candidate-bound knowledge block with a byte-identical Perception request, one native contact fit receipt per realized contact and a clean seal. No official scoring and no task-quality claim.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2"
+}

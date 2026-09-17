@@ -1,0 +1,230 @@
+{
+  "arm": "speech-feature-query-native-tools",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_stores": {
+    "intent-boundaries": {
+      "phase_supply": {
+        "perception": {
+          "dimensions": [
+            "intent-boundary"
+          ],
+          "expose_facets": false,
+          "facet_source": {
+            "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+            "kind": "sealed-vectors",
+            "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+            "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+            "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+          },
+          "fuse_coverage": {
+            "c": 1,
+            "m": 8,
+            "top_l": 8
+          },
+          "fuse_policy": "saea-fuse-associated-values-v1",
+          "k": 8,
+          "provider": "kb-facet-v1",
+          "query_source": {
+            "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+            "kind": "sealed-segment-vectors",
+            "relpath": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+            "sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b",
+            "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+          },
+          "rank_policy": "saea-rank-wcos-prior-agree-v1",
+          "rank_weights": {
+            "w_agree": 0.0,
+            "w_cos": 1.0,
+            "w_prior": 0.0
+          },
+          "tau": 0.0
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v2/release.json",
+        "sha256": "31eb595b54088a21e45daf1acfe790d545e8a4d5330acb3ee4e19f6e1607bc95"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v2/snapshot.json",
+        "sha256": "8a27424a84d5b419e033391b9bba00f30952de520c993237ea0219a9978c07c5"
+      },
+      "store_role": "intent-boundaries"
+    },
+    "slot-contracts": {
+      "candidate_supply": {
+        "solver": {
+          "candidate_state_phase": "perception",
+          "compact_source_phase": "perception",
+          "fallback_candidates": [
+            "general_quirky"
+          ],
+          "fuse_policy": "saea-candidate-semantic-passthrough-v1",
+          "max_candidates": 3,
+          "max_total_values": 28,
+          "max_values_per_candidate": 16,
+          "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+          "provider": "slurp-candidate-semantic-v1",
+          "rank_policy": "saea-ranked-candidate-round-robin-v1"
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+        "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/snapshot.json",
+        "sha256": "11c246e4b815a4f966e8cf8785f06b70515755eca71658862c6f98e9914044e6"
+      },
+      "store_role": "slot-contracts"
+    }
+  },
+  "native_contact_fit": {
+    "attempt_id": "attempt-slurp-native-fallback-quirky-intent-v2-smoke-4-fit-v1",
+    "contact_cap": 32,
+    "max_speech_packets": 1,
+    "run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-SMOKE-4-FIT-V1"
+  },
+  "native_episode": {
+    "actions": {
+      "accept": "ACCEPT",
+      "acquire": "ACQUIRE",
+      "revise": "REVISE"
+    },
+    "episode_id": "slurp-native-dual-store-dev1000-v1",
+    "exhaustion_policy": "deliver-latest-solver",
+    "max_revisions": 0,
+    "review_loop": "off",
+    "roles": {
+      "perception": {
+        "max_iterations": 1,
+        "phase_id": "perception"
+      },
+      "planner": {
+        "max_iterations": 0,
+        "phase_id": "planner"
+      },
+      "reviewer": {
+        "max_iterations": 0,
+        "phase_id": "reviewer"
+      },
+      "solver": {
+        "max_iterations": 1,
+        "phase_id": "solver"
+      }
+    },
+    "schema": "saea-native-episode-config-v1"
+  },
+  "phase_material": {
+    "perception": {
+      "fill_params": {
+        "fallback_candidates": [
+          "general_quirky"
+        ],
+        "id": "slurp-intent-hypotheses-v1",
+        "max_candidates": 3,
+        "max_distinction_chars": 128,
+        "max_evidence_refs": 0,
+        "max_unresolved_fields": 0,
+        "min_candidates": 1,
+        "source_catalog": {
+          "data_relpath": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
+          "sha256": "3e60268b3f940c3018ab8b8c80ccd988b1d1efd6c5a198929c6af05ba21f8263",
+          "source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201"
+        }
+      },
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_perception_v3.txt",
+      "predecessor_binding": "none",
+      "response_format_id": "slurp-intent-hypotheses-v1",
+      "state_fill": null
+    },
+    "planner": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_planner_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    },
+    "reviewer": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_reviewer_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    },
+    "solver": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_solver_v2.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    }
+  },
+  "phase_tools": {
+    "reviewer": {
+      "allowed_tools": [
+        "saea-tool-task-contract-v1"
+      ],
+      "knowledge_views": [
+        "text"
+      ],
+      "mode": "native-tools",
+      "source_authority_role": "reviewer"
+    }
+  },
+  "policy": "phase-native-candidates-solve-v1",
+  "preparation_source_receipts": [
+    {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v2/release.json",
+      "root": "data",
+      "sha256": "31eb595b54088a21e45daf1acfe790d545e8a4d5330acb3ee4e19f6e1607bc95"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v2/completion.json",
+      "root": "data",
+      "sha256": "189a54846798706368c6d3f441a8845049b4a9f932db00f6efdb3ff91c90cc1d"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+      "root": "data",
+      "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/slot-contracts-v1/completion.json",
+      "root": "data",
+      "sha256": "7acb644871b037f7123adec0c8fd7283ab9215d67c12fc0a32748a67a0f9dc51"
+    },
+    {
+      "relpath": "preparation-runs/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/encode-v1/receipt.json",
+      "root": "data",
+      "sha256": "3c152fc086ed1d1858f5b3021a336570d1b68c87f9c3a5abbe16209c009e2653"
+    },
+    {
+      "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-TRAIN-FOLD-A-ALIAS-V1/query-dimension-alias.json",
+      "root": "data",
+      "sha256": "c1aaf37a678240633078a8fcca455f949a5c4b2b18d37356129976006c9dc138"
+    }
+  ],
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "e4392cc7463b9592e8fcadc7befe829d737e6cc66a28dcf79cbe6ed8b712aed3"
+  },
+  "scorers": [
+    "slurp-slu-official-train",
+    "cost"
+  ],
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-review-off-fallback-quirky-intent-v2-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-review-off-fallback-quirky-intent-v2-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
+  "task_instruction_template_active": true,
+  "what_this_is": "Four-row engineering smoke of cell B4a (M4a: the general_quirky standing fallback candidate plus intent-boundary store v2; docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md section 4). Byte-for-byte the full-cell baseline configs/baseline/slurp-native-review-off-fallback-quirky-intent-v2-train-fold-a-v1.json except its own native_contact_fit identity, the 4 x 2 x 4 = 32 endpoint ceiling the four-row roster resizes, and its own prepared phase supply. It exists only so the full cell's FIT and generation accounting is never charged smoke contacts. No official scoring job and no task-quality read is admitted here. The review-off phase_tools block is carried verbatim and is inert: the review-off role graph builds no Reviewer node, so no tool action can ever be taken. It is kept because the arm speech-feature-query-native-tools declares tool_schemas and FlightRuntime.frozen_core_client_kwargs has no schema source without it, and because keeping it holds the tool block of every request identical to cell B0's. No execution plan authority, admission, scoring receipt or contact authority is created by this fragment; readiness is held and the coordinator flips it."
+}
