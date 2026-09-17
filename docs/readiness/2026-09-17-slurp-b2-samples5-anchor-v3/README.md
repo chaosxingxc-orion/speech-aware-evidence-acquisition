@@ -42,7 +42,7 @@ notes carry a supersession line. **Do not fly the v2 cells.**
 | budgets, smoke | 76 generation calls, 304 FIT endpoints, 202 repeated speech seconds, 1.0 GPU hours, 24 tool calls, no scoring |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |
 | readiness | all three cells are `held` with the **preparation requirement already pinned**; the coordinator adds the decision requirement and flips |
-| registration commit | this package's commit plus its receipt-pinning commit, on branch `fable/b2-v3`, based on master `36874ed4` (which carries E2c, merged `59db0f9b`) |
+| registration commit | `502d3516` (the package) plus this receipt-pinning commit, on branch `fable/b2-v3`, based on master `36874ed4` (which carries E2c, merged `59db0f9b`); `check` ran against the clean tree at `502d3516` |
 
 Protocol hashes were computed the way the precedent computes them:
 
@@ -310,9 +310,9 @@ All under `$DATA/coordination/slurp-b2-samples5-anchor-v3/`:
 | `prepare-supply-arm-v1.json` | `46c11199f2a805fcb4dd8f731abc5f0f6d8ffb9b48a16283073cbff8031bade2` | the model-free supply preparation receipt for the arm |
 | `prepare-supply-twin-v1.json` | `2ef4e94ce6c8b50b7ec311b7a9495c8b516ded7eb69d3f06706d6436430b842c` | the same for the twin |
 | `prepare-supply-smoke-v1.json` | `d8ab5d804d8e41d925f9aabd005c5b701d22290cfcf9b6dd025072113f6218a8` | the same for the smoke |
-| `check-arm-v1.json` | pinned by the receipt commit below | `core.flight.cli check` passes for the arm: preflight, gate, exposure row, clean tree, attempt free, prompt budget ALLOW for every phase, and the runtime-derived protocol hash equals the registered one |
-| `check-twin-v1.json` | pinned by the receipt commit below | the same for the twin |
-| `check-smoke-v1.json` | pinned by the receipt commit below | the same for the four-row smoke |
+| `check-arm-v1.json` | `10b0663b4f9a738d60cd150db7ca9e761b9e6d0715f27d35d1de592337bd4f71` | `core.flight.cli check` passes for the arm: preflight, gate, exposure row, clean tree, attempt free, prompt budget ALLOW for every phase, and the runtime-derived protocol hash equals the registered one |
+| `check-twin-v1.json` | `a64e0eb0afa4d90a2e15686d615cb66ff7a193f71361e45e8af6a325bbcd2a87` | the same for the twin |
+| `check-smoke-v1.json` | `76d0642c827177a25cbd82fe0ab376ca2af9776ee81dffeffaf6281c1435d82f` | the same for the four-row smoke |
 
 Model-free prompt-budget estimate from `core.flight.cli check` over the widest request each phase
 renders across the whole roster is recorded in the three `check` receipts. That estimate unions
@@ -335,9 +335,11 @@ dirty the tree the manifest reads at finalize.
 ## 9. Gates run on this branch
 
 `scripts/checks/engineering_base_check.py` PASS; `scripts/checks/results_ledger_check.py` PASS;
-`scripts/checks/harness_admission_check.py` PASS (M2 still has no entry and must not have one before
-a verdict). `core.flight.cli check` PASS for all three cells, each re-deriving its registered
-protocol hash at runtime and reporting `ALLOW` for every phase. Targeted tests:
+`scripts/checks/harness_admission_check.py` PASS (5 modules, 3 barred from every default plan;
+M2 still has no entry and must not have one before a verdict). `core.flight.cli check` PASS for
+all three cells at study commit `502d3516`, each re-deriving its registered protocol hash at
+runtime and reporting `ALLOW` for every phase (operational margins 5,347 to 5,588 tokens on the
+conservative union estimate, readiness `held`, `generation_authorized` false). Targeted tests:
 `tests/unit/test_native_episode_runner_grouped_solver.py`, `tests/unit/test_native_group_solver.py`,
 `tests/unit/test_native_request_grouped_solver.py`, `tests/unit/test_commit_policies.py`,
 `tests/unit/test_native_episode_config.py` and `tests/unit/test_rails_controllers.py`. `ruff check`
