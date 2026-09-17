@@ -3,7 +3,10 @@
 
 Only local handoff files and Git metadata are read. A complete reply is ready
 for review; an explicit owner decision can instead authorize reconstruction
-and merging when a reply is unavailable. Neither state grants experiment launch.
+and merging when a reply is unavailable; an explicit owner decision plus a
+Fable takeover receipt records that Fable5.1 has become the coordinator and
+execution owner (phase ``fable_directed_execution``, 2026-09-16). No state
+grants experiment launch: every model contact is gated per flight elsewhere.
 """
 
 from __future__ import annotations
@@ -95,8 +98,14 @@ def _validate_state(state: object, root: Path) -> tuple[Path, Path]:
     if type(state.get("generation")) is not int or state["generation"] < 1:
         raise ValueError("generation must be a positive integer")
     phase = state.get("phase")
-    if phase not in ("awaiting_fable_reply", "owner_directed_recovery", "owner_directed_execution"):
-        raise ValueError("phase must be awaiting_fable_reply, owner_directed_recovery or owner_directed_execution")
+    if phase not in (
+        "awaiting_fable_reply", "owner_directed_recovery", "owner_directed_execution",
+        "fable_directed_execution",
+    ):
+        raise ValueError(
+            "phase must be awaiting_fable_reply, owner_directed_recovery, "
+            "owner_directed_execution or fable_directed_execution"
+        )
     expected_response = "awaiting_reply" if phase == "awaiting_fable_reply" else "unavailable"
     if state.get("response_status") != expected_response:
         raise ValueError(f"response_status must be {expected_response} for this phase")
@@ -168,6 +177,67 @@ def _validate_owner_recovery(state: dict, root: Path, request: Path, response: P
             raise ValueError(f"owner decision requires one exact {marker} marker")
 
 
+def _require_markers(content: str, markers: dict[str, str], what: str) -> None:
+    for marker, expected in markers.items():
+        values = re.findall(
+            rf"^\s*(?:#{{1,6}} +)?{re.escape(marker)}: ([^\r\n]+?)\s*$",
+            content,
+            re.MULTILINE,
+        )
+        if values != [expected]:
+            raise ValueError(f"{what} requires one exact {marker} marker")
+
+
+def _validate_fable_takeover(state: dict, root: Path, request: Path, response: Path) -> Path:
+    """Require an explicit owner decision AND a Fable takeover receipt.
+
+    The takeover is recorded, never inferred: the owner decision names Fable5.1
+    as execution owner for a bounded scope, and the receipt is Fable's own
+    acknowledgement bound to the same request id. Neither grants a launch.
+    """
+    if state["generation"] < 2:
+        raise ValueError("fable takeover must supersede the initial handoff generation")
+    if state["coordinator"] != "Fable5.1" or state["execution_owner"] != "Fable5.1":
+        raise ValueError("fable takeover coordinator and execution_owner must be Fable5.1")
+    reserved = {request, response, _confined_path(root, STATE_PATH)}
+    decision_id = state.get("owner_decision_id")
+    if not isinstance(decision_id, str) or not re.fullmatch(
+        r"[A-Za-z0-9][A-Za-z0-9._-]*", decision_id
+    ):
+        raise ValueError("owner_decision_id must be a nonempty identifier")
+    decision = _confined_path(root, state.get("owner_decision_path"))
+    if decision in reserved:
+        raise ValueError("owner decision must be distinct from state, request and response")
+    if not decision.is_file():
+        raise ValueError("owner decision file is missing or is not a regular file")
+    _require_markers(decision.read_text(encoding="utf-8"), {
+        "Decision ID": decision_id,
+        "Request ID": state["request_id"],
+        "Owner decision": "AUTHORIZE_FABLE_TAKEOVER",
+        "Execution owner": "Fable5.1",
+        "Scope": "SLURP_V2_BASE_PROGRAM",
+        "Per-flight gates": "required",
+    }, "owner takeover decision")
+    receipt_id = state.get("takeover_receipt_id")
+    if not isinstance(receipt_id, str) or not re.fullmatch(
+        r"[A-Za-z0-9][A-Za-z0-9._-]*", receipt_id
+    ):
+        raise ValueError("takeover_receipt_id must be a nonempty identifier")
+    receipt = _confined_path(root, state.get("takeover_receipt_path"))
+    if receipt in reserved or receipt == decision:
+        raise ValueError("takeover receipt must be distinct from state, request, response and decision")
+    if not receipt.is_file():
+        raise ValueError("takeover receipt file is missing or is not a regular file")
+    _require_markers(receipt.read_text(encoding="utf-8"), {
+        "Takeover ID": receipt_id,
+        "Request ID": state["request_id"],
+        "Takeover status": "ACKNOWLEDGED",
+        "Execution owner": "Fable5.1",
+        "Per-flight gates": "required",
+    }, "fable takeover receipt")
+    return receipt
+
+
 def _reply_status(response: Path, request_id: str, warnings: list[str]) -> str:
     if not response.exists():
         return "WAITING_FOR_REPLY"
@@ -221,6 +291,12 @@ def inspect_handoff(repo_root: Path) -> dict:
             _validate_owner_recovery(state, root, request, response)
             report["execution_owner"] = state["execution_owner"]
             report["owner_decision_path"] = state["owner_decision_path"]
+            report["status"] = state["phase"].upper()
+        elif state["phase"] == "fable_directed_execution":
+            _validate_fable_takeover(state, root, request, response)
+            report["execution_owner"] = state["execution_owner"]
+            report["owner_decision_path"] = state["owner_decision_path"]
+            report["takeover_receipt_path"] = state["takeover_receipt_path"]
             report["status"] = state["phase"].upper()
         else:
             report["status"] = _reply_status(response, state["request_id"], report["warnings"])

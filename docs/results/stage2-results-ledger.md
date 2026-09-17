@@ -1487,3 +1487,8 @@ Preserve the older replicated positive SLURP base. No third replay, prefix splic
 partial scoring or renamed retry is admitted. The next bounded question is dynamic
 role-context capacity. See the [root terminal report and evidence pins](../handoff/2026-09-16-fable51/TERMINAL-UPDATE-20260916.md)
 and [latest file handoff](../handoff/2026-09-16-fable51/LATEST.md).
+
+## 2026-09-17: TRAIN A direct anchor released (Fable 5.1)
+
+Under owner decision 3 of 2026-09-16 the held direct score of SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1 was read once: official pooled SLU 33.885 %, intent 73.70 %, scenario 82.69 %, action 75.09 %, span F1 21.10 % on the 1,080-row Fold A roster. Paired against the retained dual-store anchor on the same rows (whole-speaker bootstrap, 10,000 draws, seed 20260915): pooled SLU +14.65 pp, CI95 [+11.79, +17.51]; intent +4.26 pp, CI95 [+2.15, +6.46]; action +4.17; pooled span F1 +8.40; scenario +2.13 with CI95 crossing zero. Three scenarios lose pooled SLU (iot, music, lists) and five lose intent (alarm, calendar, datetime, lists, general -10.00). Zero new contacts; the closed typed-context pair is not reopened. Source: [release note](2026-09-17-slurp-train-a-direct-anchor-release.md), SHA-256 `92728dde617254692f72727147037ab3d0af437c2ce672b1e5c27b34c57a8c56`; machine result `analysis/SAEA-SLURP-TRAIN-A-DIRECT-ANCHOR-RELEASE-PAIRED-ANALYSIS-V1/score-contrasts.json` under `SPEECHRL_DATA_DIR`, SHA-256 `fe1008ec97627b4b2358870543b4bb4d58a764211e9fa119f35e36f59ae800e5`. Owner decisions and the program: [owner decisions note](../readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md), [program spec](../superpowers/specs/2026-09-16-slurp-v2-base-program-design.md).
+

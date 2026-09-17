@@ -110,6 +110,91 @@ class HandoffCheckTests(unittest.TestCase):
         self.write_state()
         return decision
 
+    def fable_takeover(self):
+        self.owner_continuation()
+        self.state.update({
+            "generation": 5,
+            "phase": "fable_directed_execution",
+            "coordinator": "Fable5.1",
+            "execution_owner": "Fable5.1",
+            "owner_decision_id": "OWNER-FABLE-TAKEOVER-001",
+            "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-FABLE-TAKEOVER-001.md",
+            "takeover_receipt_id": "TAKEOVER-FABLE51-001",
+            "takeover_receipt_path": "docs/handoff/synthetic/TAKEOVER-FABLE51-001.md",
+            "next_action": "Run the bounded program under per-flight gates",
+        })
+        self.write_state()
+        decision = self.root / self.state["owner_decision_path"]
+        decision.write_text(
+            "# Synthetic owner takeover decision\n"
+            "Decision ID: OWNER-FABLE-TAKEOVER-001\n"
+            f"Request ID: {self.state['request_id']}\n"
+            "Owner decision: AUTHORIZE_FABLE_TAKEOVER\n"
+            "Execution owner: Fable5.1\n"
+            "Scope: SLURP_V2_BASE_PROGRAM\n"
+            "Per-flight gates: required\n"
+            "Synthetic private owner text must not appear in the report.\n",
+            encoding="utf-8",
+        )
+        receipt = self.root / self.state["takeover_receipt_path"]
+        receipt.parent.mkdir(parents=True, exist_ok=True)
+        receipt.write_text(
+            "# Synthetic takeover receipt\n"
+            "Takeover ID: TAKEOVER-FABLE51-001\n"
+            f"Request ID: {self.state['request_id']}\n"
+            "Takeover status: ACKNOWLEDGED\n"
+            "Execution owner: Fable5.1\n"
+            "Per-flight gates: required\n"
+            "Synthetic private receipt text must not appear in the report.\n",
+            encoding="utf-8",
+        )
+        return decision, receipt
+
+    def test_fable_takeover_is_recorded_without_granting_launch(self):
+        self.fable_takeover()
+        result, report = self.cli_report()
+        self.assertEqual(result, 0)
+        self.assertEqual(report["status"], "FABLE_DIRECTED_EXECUTION")
+        self.assertEqual(report["execution_owner"], "Fable5.1")
+        self.assertEqual(report["takeover_receipt_path"], self.state["takeover_receipt_path"])
+        self.assertFalse(report["launch_allowed"])
+        self.assertEqual(report["execution_authority"], "NOT_EVALUATED")
+        self.assertNotIn("private", json.dumps(report))
+
+    def test_fable_takeover_requires_both_records_and_exact_markers(self):
+        decision, receipt = self.fable_takeover()
+        for path, markers in (
+            (decision, ("Owner decision: AUTHORIZE_FABLE_TAKEOVER", "Execution owner: Fable5.1",
+                        "Scope: SLURP_V2_BASE_PROGRAM", "Per-flight gates: required")),
+            (receipt, ("Takeover status: ACKNOWLEDGED", "Takeover ID: TAKEOVER-FABLE51-001",
+                       "Execution owner: Fable5.1", "Per-flight gates: required")),
+        ):
+            valid = path.read_text(encoding="utf-8")
+            for marker in markers:
+                for replacement in ("", marker + "\n" + marker, marker + " wrong"):
+                    with self.subTest(path=path.name, marker=marker, replacement=replacement):
+                        path.write_text(valid.replace(marker, replacement), encoding="utf-8")
+                        self.assertEqual(self.cli_report()[0], 1)
+            path.write_text(valid, encoding="utf-8")
+        receipt.unlink()
+        self.assertEqual(self.cli_report()[0], 1)
+
+    def test_fable_takeover_refuses_codex_owner_launch_and_stale_generation(self):
+        self.fable_takeover()
+        for field, value in (
+            ("coordinator", "Codex"), ("execution_owner", "Codex"), ("launch_allowed", True),
+            ("response_status", "awaiting_reply"), ("generation", 1),
+            ("takeover_receipt_path", self.state["owner_decision_path"]),
+        ):
+            with self.subTest(field=field):
+                previous = self.state[field]
+                self.state[field] = value
+                self.write_state()
+                self.assertEqual(self.cli_report()[0], 1)
+                self.state[field] = previous
+        self.write_state()
+        self.assertEqual(self.cli_report()[0], 0)
+
     def test_explicit_continuation_is_recorded_without_granting_launch(self):
         self.owner_continuation()
         report = self.inspect()

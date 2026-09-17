@@ -17,3 +17,13 @@ quality remains unread. Use [the reply template](TAKEOVER-TEMPLATE-v2.md) to ack
 
 Service state in the operating snapshot is timestamped metadata, not perpetual liveness.
 Revalidate once at actual takeover. Do not execute old next-action paragraphs.
+
+## 2026-09-17 takeover (Fable 5.1)
+
+Takeover ACKNOWLEDGED: [TAKEOVER-FABLE51-20260917T010325Z](TAKEOVER-FABLE51-20260917T010325Z.md)
+under the owner decision
+[OWNER-FABLE-TAKEOVER-2026-09-16](../../superpowers/plans/experiment-handoff/OWNER-FABLE-TAKEOVER-2026-09-16.md).
+The four-row proof is declined for now; the TRAIN A direct score is released as the direct anchor
+([release note](../../results/2026-09-17-slurp-train-a-direct-anchor-release.md)); the next stage is
+the [SLURP v2 base program](../../superpowers/specs/2026-09-16-slurp-v2-base-program-design.md).
+The v4 files above stay as the historical handoff record.
