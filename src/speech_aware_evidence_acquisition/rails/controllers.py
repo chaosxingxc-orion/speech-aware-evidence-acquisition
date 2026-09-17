@@ -1919,6 +1919,19 @@ def register_response_formats_v1() -> None:
             "saea-review-findings-v1",
             review_findings_response_format,
         )
+    # E8b (2026-09-17, Node Context Policy level L2): the closed output
+    # contract one context-cleaning contact answers under. It is the schema
+    # rails.node_context_policy.validate_cleaning_document checks, so a
+    # response generated under this format satisfies the schema half of that
+    # validation by construction. Registering the id changes no phase; a
+    # boundary's cleaning block binds it.
+    if "ncp-review-issues-v1" not in registered:
+        from .node_context_policy import ncp_review_issues_response_format
+
+        RESPONSE_FORMATS.register(
+            "ncp-review-issues-v1",
+            ncp_review_issues_response_format,
+        )
 
 
 register_response_formats_v1()

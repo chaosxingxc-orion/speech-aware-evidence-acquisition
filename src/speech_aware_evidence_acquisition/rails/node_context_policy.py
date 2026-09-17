@@ -1,5 +1,5 @@
-"""E8a: the Node Context Policy (NCP) -- one declared handling policy per node
-boundary, levels L0 (``raw``) and L1 (``structured``).
+"""E8a/E8b: the Node Context Policy (NCP) -- one declared handling policy per
+node boundary, levels L0 (``raw``), L1 (``structured``) and L2 (``cleaned``).
 
 Design: ``docs/superpowers/specs/2026-09-17-node-context-policy-design.md``
 (sections 3-5, 9, 10). Evidence base:
@@ -25,9 +25,27 @@ module's SLURP defaults use), ``FALLBACK-OMIT`` (implemented, never a default)
 or ``FALLBACK-REFUSE`` (``plan-action`` only, where the harness already
 refuses).
 
-L2 (``cleaned``) is E8b and is NOT implemented here. Its config surface, its
-receipt fields and its value validation are: a ``cleaned`` boundary is refused
-at load time with :data:`CLEANED_LEVEL_REFUSAL`.
+L2 (``cleaned``, E8b) is L1 first and then ONE additional contact to the same
+frozen core in the same resident session and geometry, composed by the same
+``role_input`` / ``speech_binding`` path as every other contact, so it is
+metered, budget-gated, exposure-bound, traced and costed identically and is
+refused past ``config.max_contacts``. That contact's phase declares
+``knowledge: "none"`` (no evidence blocks) and its own ``response_format_id``;
+its instruction is a committed, hash-pinned template file carrying the cleaning
+contract and the L1 material; its output is validated against the closed schema
+:data:`CLEANING_SCHEMA` and against the rule that a cleaning contact MAY NOT
+INTRODUCE CONTENT (every content token of an accepted output, outside the
+schema's own fixed words, occurs in the L1 material it was handed). On ANY
+validation failure the boundary falls back to its L1 rendering and the receipt
+records ``validation: "rejected"`` with the reason: one attempt, one fallback,
+no retry.
+
+At most ONE cleaning contact is made per consumer contact per boundary. A
+contact whose exposed history carries several states of one boundary (the
+Planner at revision 2 sees both Reviewer outputs) cleans the LAST of them --
+the one the design names "the review the Planner reads" -- and renders the
+earlier ones at L1 with ``validation: "skipped"``. That is what makes the
+contact-ceiling arithmetic of design section 7 exact.
 """
 
 from __future__ import annotations
@@ -63,10 +81,64 @@ NODE_CONTEXT_COMPILATION_SCHEMA = "saea-node-context-policy-compilation-v1"
 NODE_CONTEXT_TEMPLATE_SCHEMA = "saea-node-context-template-v1"
 
 #: The three levels. ``raw`` is L0 and the OFF arm; ``structured`` is L1;
-#: ``cleaned`` is L2 and belongs to E8b.
+#: ``cleaned`` is L2.
 LEVELS = ("raw", "structured", "cleaned")
-#: The message every ``cleaned`` declaration is refused with until E8b lands.
-CLEANED_LEVEL_REFUSAL = "E8b not implemented"
+#: The ``cleaning`` block's declared fields (design section 5), exactly.
+CLEANING_KEYS = frozenset({
+    "phase_id", "instruction_template", "response_format_id", "on_invalid",
+})
+#: The only admitted ``on_invalid`` rule: fall back to the L1 rendering.
+CLEANING_FALLBACK_L1 = "fallback-l1"
+CLEANING_INVALID_RULES = (CLEANING_FALLBACK_L1,)
+#: Every validation status a ``cleaning_contact`` receipt block may carry.
+CLEANING_ACCEPTED = "accepted"
+CLEANING_REJECTED = "rejected"
+CLEANING_SKIPPED = "skipped"
+#: The reason a boundary state that is not the contact's LAST at that boundary
+#: carries: it takes its L1 rendering and spends no contact.
+CLEANING_SUPERSEDED_REASON = "superseded by a later source at this boundary"
+
+#: The cleaning contact's closed output vocabulary (design section 4).
+CLEANING_VERDICTS = ("draft_is_supported", "draft_has_issues")
+CLEANING_ISSUE_FIELDS = (
+    "scenario", "action", "entity_type", "entity_filler", "none",
+)
+CLEANING_MAX_ISSUES = 5
+CLEANING_PROBLEM_MAX_CHARS = 140
+
+#: The closed JSON schema a cleaning response is validated against, verbatim
+#: from design section 4. The additional rules the schema cannot state (a
+#: ``problem`` that is blank, and the "introduces no content" property) live in
+#: :func:`validate_cleaning_document`, the same division
+#: ``rails.review_findings.parse_review_findings`` already uses.
+CLEANING_SCHEMA: Mapping[str, object] = {
+    "type": "object", "additionalProperties": False,
+    "required": ["verdict", "issues"],
+    "properties": {
+        "verdict": {"enum": list(CLEANING_VERDICTS)},
+        "issues": {
+            "type": "array", "maxItems": CLEANING_MAX_ISSUES,
+            "items": {
+                "type": "object", "additionalProperties": False,
+                "required": ["field", "problem"],
+                "properties": {
+                    "field": {"enum": list(CLEANING_ISSUE_FIELDS)},
+                    "problem": {
+                        "type": "string", "maxLength": CLEANING_PROBLEM_MAX_CHARS,
+                    },
+                },
+            },
+        },
+    },
+}
+#: The registered ``core.base.RESPONSE_FORMATS`` id the cleaning phase declares.
+CLEANING_RESPONSE_FORMAT_ID = "ncp-review-issues-v1"
+#: The words the closed schema itself fixes. Everything else an accepted
+#: cleaning output carries must occur in the L1 material it was handed.
+CLEANING_FIXED_WORDS: tuple[str, ...] = (
+    *CLEANING_VERDICTS, *CLEANING_ISSUE_FIELDS, "verdict", "issues", "field",
+    "problem",
+)
 
 #: Declared malformed rules (design section 3, L1 step 4).
 FALLBACK_RAW = "raw"
@@ -115,6 +187,22 @@ SLURP_BOUNDARY_TEMPLATES: Mapping[tuple[str, str], str] = {
     ("solver", "tool-observation"): "probes/ncp_slurp_tool_observation_v1.txt",
     ("reviewer", "tool-observation"): "probes/ncp_slurp_tool_observation_v1.txt",
     ("planner", "tool-observation"): "probes/ncp_slurp_tool_observation_v1.txt",
+}
+
+#: E8b: the committed template each cleaning-capable SEMANTIC CLASS renders an
+#: ACCEPTED cleaning output through. The key is the semantic class, not the
+#: boundary, so both ``review-finding`` consumers (Planner and revising Solver)
+#: clean identically; a class with no entry may not be declared ``cleaned``.
+CLEANING_RENDER_TEMPLATES: Mapping[str, str] = {
+    "review-finding": "probes/ncp_slurp_cleaned_review_v1.txt",
+}
+
+#: E8b: the committed instruction template each cleaning-capable semantic class
+#: defaults to. A boundary's ``cleaning.instruction_template`` may name it
+#: explicitly; it may not name a template written for another class, because
+#: the renderer key is checked when the template is loaded.
+CLEANING_INSTRUCTION_TEMPLATES: Mapping[str, str] = {
+    "review-finding": "probes/ncp_slurp_cleaning_review_v1.txt",
 }
 
 #: The default malformed rule per boundary. ``FALLBACK-RAW`` everywhere the
@@ -214,6 +302,19 @@ RENDERER_SECTIONS: Mapping[str, Mapping[str, tuple[str, ...]]] = {
         "footer": ("revisions_remaining", "available_actions"),
     },
     "tool-observation": {"reference": ("tool_id",)},
+    # E8b. ``cleaning-review`` is the INSTRUCTION the cleaning contact reads;
+    # ``cleaned-review-finding`` is how an ACCEPTED cleaning output is rendered
+    # into the consumer's context. Both are ordinary committed templates, so
+    # both are hash-pinned in the receipt and both are refused at load time
+    # when a section or a placeholder is missing.
+    "cleaning-review": {"instruction": (), "material": ("structured_material",)},
+    "cleaned-review-finding": {
+        "header": (),
+        "body": ("verdict",),
+        "item": ("field", "problem"),
+        "items_empty": (),
+        "footer": (),
+    },
 }
 
 # -- the closed vocabulary a rendering may introduce ------------------------
@@ -455,6 +556,11 @@ PROVENANCE_INVENTORY = "legal-inventory"
 PROVENANCE_VOCABULARY = "closed-vocabulary"
 PROVENANCE_COUNT = "count"
 PROVENANCE_LIMIT = "episode-limit"
+#: E8b: a value one accepted cleaning contact produced. It is not a free value:
+#: :func:`validate_cleaning_document` has already proved that every one of its
+#: content tokens occurs in the L1 material that contact was handed, or is one
+#: of the closed schema's own fixed words.
+PROVENANCE_CLEANED = "cleaning-contact"
 PROVENANCES = (
     PROVENANCE_SOURCE,
     PROVENANCE_COMPOSED,
@@ -462,6 +568,7 @@ PROVENANCES = (
     PROVENANCE_VOCABULARY,
     PROVENANCE_COUNT,
     PROVENANCE_LIMIT,
+    PROVENANCE_CLEANED,
 )
 
 
@@ -620,6 +727,206 @@ def parse_draft(text: str, *, validator: Draft202012Validator) -> ParsedDraft:
 
 
 # ---------------------------------------------------------------------------
+# E8b: the cleaning contact
+# ---------------------------------------------------------------------------
+
+
+_CONTENT_TOKEN_PATTERN = re.compile(r"[A-Za-z0-9_]+")
+
+_CLEANING_VALIDATOR = Draft202012Validator(CLEANING_SCHEMA)
+#: The hash of the closed schema itself, pinned in every cleaning receipt.
+CLEANING_SCHEMA_SHA256 = _sha256_text(_canonical_json(CLEANING_SCHEMA))
+
+
+class NodeContextCleaningRejected(NodeContextPolicyError):
+    """One cleaning response failed validation, so its boundary falls back to
+    its L1 rendering. Carries a bounded, content-free machine reason: a reason
+    never quotes the response, because a receipt is not a place for model text
+    the run has not otherwise sealed."""
+
+
+def ncp_review_issues_response_format(
+    _lock: object = None, _root: object = None, **params: object,
+) -> dict[str, object]:
+    """The ``core.base.RESPONSE_FORMATS`` entry
+    :data:`CLEANING_RESPONSE_FORMAT_ID`.
+
+    It renders :data:`CLEANING_SCHEMA` itself, so a response generated under
+    this format satisfies the schema half of
+    :func:`validate_cleaning_document` by construction and the validator stays
+    the authority on what the schema cannot say (a blank ``problem``, and the
+    "introduces no content" property).
+    """
+
+    if params:
+        raise NodeContextPolicyError(
+            "the node-context cleaning response format takes no parameters"
+        )
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "ncp_review_issues_v1",
+            "strict": True,
+            "schema": json.loads(_canonical_json(CLEANING_SCHEMA)),
+        },
+    }
+
+
+def content_tokens(text: str) -> frozenset[str]:
+    """The case-folded content tokens of one text. Case is not content, so the
+    containment rule below folds it; everything else is compared literally."""
+
+    return frozenset(
+        token.casefold() for token in _CONTENT_TOKEN_PATTERN.findall(text)
+    )
+
+
+@dataclass(frozen=True)
+class CleanedReview:
+    """One accepted cleaning output: a closed verdict and at most five issues,
+    each naming a closed field and a bounded problem statement."""
+
+    verdict: str
+    issues: tuple[tuple[str, str], ...]
+
+
+def validate_cleaning_document(text: str, *, source_material: str) -> CleanedReview:
+    """Validate one cleaning response, or refuse it with a bounded reason.
+
+    Three gates, in order, each fail-closed: strict JSON (no duplicate keys, no
+    nonfinite constants, no text repair); the closed schema
+    :data:`CLEANING_SCHEMA`; and the rule that a cleaning contact MAY NOT
+    INTRODUCE CONTENT -- every content token the response carries is either one
+    of the schema's own fixed words (:data:`CLEANING_FIXED_WORDS`) or occurs in
+    ``source_material``, the exact L1 rendering that contact was handed.
+    """
+
+    if not isinstance(text, str) or not text.strip():
+        raise NodeContextCleaningRejected("cleaning response is empty")
+    if len(text) > 16384:
+        raise NodeContextCleaningRejected("cleaning response is unbounded")
+    try:
+        document = _strict_json(text)
+    except NodeContextPolicyError:
+        raise NodeContextCleaningRejected(
+            "cleaning response is not strict JSON"
+        ) from None
+    try:
+        _CLEANING_VALIDATOR.validate(document)
+    except ValidationError:
+        raise NodeContextCleaningRejected(
+            "cleaning response does not match the closed cleaning schema"
+        ) from None
+    issues = tuple(
+        (issue["field"], issue["problem"]) for issue in document["issues"]
+    )
+    for _field_name, problem in issues:
+        if not problem.strip():
+            raise NodeContextCleaningRejected("cleaning response states a blank problem")
+    allowed = content_tokens(source_material) | content_tokens(
+        " ".join(CLEANING_FIXED_WORDS)
+    )
+    for field_name, problem in issues:
+        if not content_tokens(f"{field_name} {problem}") <= allowed:
+            raise NodeContextCleaningRejected(
+                "cleaning response introduces content the L1 material does not carry"
+            )
+    if document["verdict"] not in CLEANING_VERDICTS:  # pragma: no cover -- schema
+        raise NodeContextCleaningRejected("cleaning response states no closed verdict")
+    return CleanedReview(verdict=document["verdict"], issues=issues)
+
+
+@dataclass(frozen=True)
+class CleaningContactRequest:
+    """What the policy asks the runner to contact the frozen core with.
+
+    The policy composes the instruction and validates the answer; the runner
+    owns metering, budget, exposure, tracing and cost. Neither reaches into the
+    other, which is what lets every rule in
+    :func:`validate_cleaning_document` be proved with a fake invoker and no
+    model.
+    """
+
+    boundary_id: str
+    consumer_role_kind: str
+    semantic_class: str
+    phase_id: str
+    response_format_id: str
+    knowledge: str
+    instruction: str
+    instruction_sha256: str
+    source_state_id: str
+
+
+@dataclass(frozen=True)
+class CleaningContactOutcome:
+    """The runner's answer: one ordinary contact's identity, digests and text."""
+
+    agent_contact_id: str
+    request_id: str
+    request_sha256: str
+    response_sha256: str
+    response_text_sha256: str
+    text: str
+
+    def __post_init__(self) -> None:
+        for name in (
+            "agent_contact_id", "request_id", "request_sha256", "response_sha256",
+            "response_text_sha256",
+        ):
+            value = getattr(self, name)
+            if not isinstance(value, str) or not value:
+                raise NodeContextPolicyError(
+                    f"a cleaning contact outcome requires {name}"
+                )
+        if not isinstance(self.text, str):
+            raise NodeContextPolicyError("a cleaning contact outcome requires text")
+
+
+@dataclass(frozen=True)
+class NodeContextCleaningPolicy:
+    """One boundary's declared cleaning contact (design section 5)."""
+
+    phase_id: str
+    instruction_template: NodeContextTemplate
+    render_template: NodeContextTemplate
+    response_format_id: str
+    on_invalid: str
+
+    #: The cleaning contact's phase declares no knowledge: its request carries
+    #: the system contract, the speech packet and its own instruction, and no
+    #: evidence block at all.
+    knowledge: str = "none"
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "phase_id": self.phase_id,
+            "knowledge": self.knowledge,
+            "response_format_id": self.response_format_id,
+            "on_invalid": self.on_invalid,
+            "instruction_template_id": self.instruction_template.template_id,
+            "instruction_template_sha256": self.instruction_template.sha256,
+            "render_template_id": self.render_template.template_id,
+            "render_template_sha256": self.render_template.sha256,
+            "schema_sha256": CLEANING_SCHEMA_SHA256,
+        }
+
+    def instruction(self, l1_material: str) -> str:
+        """The exact bytes the cleaning contact reads: the committed contract,
+        then the L1 material, and nothing else -- never the task, never the
+        answer schema, never a request for a new judgment."""
+
+        block = _Block(self.instruction_template)
+        block.add("instruction")
+        block.add("material", {
+            "structured_material": Substitution(
+                "structured_material", l1_material, PROVENANCE_SOURCE,
+            ),
+        })
+        return block.finish({}).text
+
+
+# ---------------------------------------------------------------------------
 # The policy object
 # ---------------------------------------------------------------------------
 
@@ -634,6 +941,9 @@ class NodeContextBoundaryPolicy:
     level: str
     template: NodeContextTemplate | None
     on_parse_failure: str
+    #: E8b: the declared cleaning contact, present exactly when the level is
+    #: ``cleaned`` and ``None`` at every other level.
+    cleaning: NodeContextCleaningPolicy | None = None
 
     @property
     def boundary_id(self) -> str:
@@ -649,6 +959,7 @@ class NodeContextBoundaryPolicy:
             "template_id": None if self.template is None else self.template.template_id,
             "template_sha256": None if self.template is None else self.template.sha256,
             "on_parse_failure": self.on_parse_failure,
+            "cleaning": None if self.cleaning is None else self.cleaning.as_json(),
         }
 
 
@@ -702,7 +1013,7 @@ class SlurpNodeContextPolicy:
     ) -> None:
         if not isinstance(policy_id, str) or not policy_id.strip():
             raise NodeContextPolicyError("node context policy_id must be text")
-        if not any(entry.level == "structured" for entry in boundaries.values()):
+        if not any(entry.level != "raw" for entry in boundaries.values()):
             # An ALL-RAW policy parses nothing and renders nothing, so it needs
             # no candidate inventory, no draft contract and no template. It
             # still compiles: every state passes through untouched and every
@@ -779,11 +1090,18 @@ class SlurpNodeContextPolicy:
         task_instruction: str = "",
         episode_limits: Mapping[str, object] | None = None,
         actions: Sequence[str] = (),
+        cleaning_invoker: object = None,
     ) -> NodeContextCompilation:
         """Return one contact's exposed states and its per-boundary receipt.
 
         The returned tuple has exactly the length and order of ``states``: this
         transform never adds, drops, merges or reorders a state.
+
+        ``cleaning_invoker`` (E8b) is the runner's metered contact hook, a
+        ``CleaningContactRequest -> CleaningContactOutcome`` callable. It is
+        REQUIRED when any declared boundary is ``cleaned`` and unused
+        otherwise: a policy that would clean but was handed no invoker fails
+        the contact rather than silently degrading to L1.
         """
 
         if role_kind not in ROLE_KINDS:
@@ -816,6 +1134,23 @@ class SlurpNodeContextPolicy:
         classes = [self._classify(state, phases=phases) for state in state_list]
         candidates = self._episode_candidates(state_list, classes, sample_id=sample_id)
         drafts = self._episode_drafts(state_list, classes)
+        # E8b: at most ONE cleaning contact per consumer contact per boundary.
+        # The LAST state of a cleaned boundary in this contact's exposed
+        # history is the one that spends the contact -- for the Planner at
+        # revision 2 that is the review it is actually deciding about -- and
+        # every earlier one takes its L1 rendering. That bound is what makes
+        # the contact-ceiling arithmetic of design section 7 exact.
+        cleaning_targets: dict[str, int] = {}
+        for position, (state, semantic_class) in enumerate(
+            zip(state_list, classes, strict=True)
+        ):
+            if semantic_class is None or state.state_id in tool_sources:
+                continue
+            if semantic_class == "tool-observation" and state.state_id in local:
+                continue
+            entry = self.boundary_policy(role_kind, semantic_class)
+            if entry is not None and entry.level == "cleaned":
+                cleaning_targets[semantic_class] = position
 
         rendered_states: list[AgentStateArtifact] = []
         rows: list[Mapping[str, object]] = []
@@ -862,6 +1197,16 @@ class SlurpNodeContextPolicy:
                     derived_fields={},
                 ))
                 continue
+            cleaning_contact = None
+            if policy.level == "cleaned":
+                block, cleaning_contact = self._clean_boundary(
+                    policy,
+                    l1_block=block,
+                    state=state,
+                    role_kind=role_kind,
+                    is_target=cleaning_targets.get(policy.semantic_class) == position,
+                    invoker=cleaning_invoker,
+                )
             derived = self._derived_state(
                 source=state, role_kind=role_kind,
                 semantic_class=policy.semantic_class, sample_id=sample_id,
@@ -873,6 +1218,7 @@ class SlurpNodeContextPolicy:
                 state, position=position, role_kind=role_kind, policy=policy,
                 parse_status=parse_status, fallback=fallback, rendered=derived,
                 derived_fields=block.derived_fields,
+                cleaning_contact=cleaning_contact,
             ))
         receipt = {
             "schema": NODE_CONTEXT_COMPILATION_SCHEMA,
@@ -1278,6 +1624,120 @@ class SlurpNodeContextPolicy:
             "citation_availability": availability,
         })
 
+    # -- E8b: the cleaning contact -----------------------------------------
+
+    def _clean_boundary(
+        self,
+        policy: NodeContextBoundaryPolicy,
+        *,
+        l1_block: RenderedBlock,
+        state: AgentStateArtifact,
+        role_kind: str,
+        is_target: bool,
+        invoker: object,
+    ) -> tuple[RenderedBlock, Mapping[str, object]]:
+        """L1 first, then at most one cleaning contact, then the accepted
+        rendering or the L1 fallback. Returns ``(block, cleaning_receipt)``."""
+
+        cleaning = policy.cleaning
+        if cleaning is None:  # pragma: no cover -- resolution refuses this
+            raise NodeContextPolicyError(
+                f"{policy.boundary_id} declares level 'cleaned' without a cleaning block"
+            )
+        if not is_target:
+            return l1_block, self._cleaning_row(
+                cleaning, validation=CLEANING_SKIPPED,
+                reason=CLEANING_SUPERSEDED_REASON,
+            )
+        if not callable(invoker):
+            raise NodeContextPolicyError(
+                f"{policy.boundary_id} declares a cleaning contact, but this "
+                "compilation was handed no metered cleaning invoker"
+            )
+        instruction = cleaning.instruction(l1_block.text)
+        outcome = invoker(CleaningContactRequest(
+            boundary_id=policy.boundary_id,
+            consumer_role_kind=role_kind,
+            semantic_class=policy.semantic_class,
+            phase_id=cleaning.phase_id,
+            response_format_id=cleaning.response_format_id,
+            knowledge=cleaning.knowledge,
+            instruction=instruction,
+            instruction_sha256=_sha256_text(instruction),
+            source_state_id=state.state_id,
+        ))
+        if not isinstance(outcome, CleaningContactOutcome):
+            raise NodeContextPolicyError(
+                "a cleaning invoker must return one CleaningContactOutcome"
+            )
+        try:
+            cleaned = validate_cleaning_document(
+                outcome.text, source_material=l1_block.text,
+            )
+        except NodeContextCleaningRejected as error:
+            # One attempt, one fallback: the boundary renders exactly what L1
+            # already produced and the receipt says why (design section 3, L2).
+            return l1_block, self._cleaning_row(
+                cleaning, validation=CLEANING_REJECTED, reason=str(error),
+                outcome=outcome, instruction_sha256=_sha256_text(instruction),
+            )
+        return self._render_cleaned(policy, cleaned=cleaned), self._cleaning_row(
+            cleaning, validation=CLEANING_ACCEPTED, reason=None, outcome=outcome,
+            instruction_sha256=_sha256_text(instruction),
+        )
+
+    def _render_cleaned(
+        self, policy: NodeContextBoundaryPolicy, *, cleaned: CleanedReview,
+    ) -> RenderedBlock:
+        template = policy.cleaning.render_template
+        block = _Block(template)
+        block.add("header")
+        block.add("body", {
+            "verdict": Substitution(
+                "verdict", cleaned.verdict, PROVENANCE_CLEANED,
+            ),
+        })
+        if not cleaned.issues:
+            block.add("items_empty")
+        for field_name, problem in cleaned.issues:
+            block.add("item", {
+                "field": Substitution("field", field_name, PROVENANCE_CLEANED),
+                "problem": Substitution("problem", problem, PROVENANCE_CLEANED),
+            })
+        block.add("footer")
+        return block.finish({
+            "verdict": cleaned.verdict,
+            "issue_count": len(cleaned.issues),
+            "issue_fields": [field_name for field_name, _problem in cleaned.issues],
+        })
+
+    @staticmethod
+    def _cleaning_row(
+        cleaning: NodeContextCleaningPolicy,
+        *,
+        validation: str,
+        reason: str | None,
+        outcome: CleaningContactOutcome | None = None,
+        instruction_sha256: str | None = None,
+    ) -> Mapping[str, object]:
+        """The ``cleaning_contact`` block of one receipt row (design section
+        9), extended with the contact's phase, its declared knowledge and the
+        two committed templates it is pinned to."""
+
+        return {
+            **cleaning.as_json(),
+            "instruction_sha256": instruction_sha256,
+            "agent_contact_id": None if outcome is None else outcome.agent_contact_id,
+            "request_id": None if outcome is None else outcome.request_id,
+            "request_sha256": None if outcome is None else outcome.request_sha256,
+            "response_sha256": None if outcome is None else outcome.response_sha256,
+            "response_text_sha256": (
+                None if outcome is None else outcome.response_text_sha256
+            ),
+            "validation": validation,
+            "rejected_reason": reason,
+        }
+
     def _render_plan(
         self,
         policy: NodeContextBoundaryPolicy,
@@ -1474,6 +1934,7 @@ class SlurpNodeContextPolicy:
         fallback: str | None,
         rendered: AgentStateArtifact,
         derived_fields: Mapping[str, object],
+        cleaning_contact: Mapping[str, object] | None = None,
     ) -> Mapping[str, object]:
         template = policy.template
         return self._finish_row({
@@ -1496,8 +1957,72 @@ class SlurpNodeContextPolicy:
             "rendered_sha256": _sha256_text(rendered.content),
             "rendered_chars": len(rendered.content),
             "derived_fields": dict(derived_fields),
-            "cleaning_contact": None,
+            "cleaning_contact": (
+                None if cleaning_contact is None else dict(cleaning_contact)
+            ),
         })
+
+
+def _resolve_cleaning(
+    entry: object, *, key: tuple[str, str], spelling: str, repo_root: Path,
+) -> NodeContextCleaningPolicy:
+    """Resolve one boundary's declared ``cleaning`` block, or refuse it.
+
+    Fail-closed on every axis: the block is required, its fields are exactly
+    the design's four, the semantic class must have registered cleaning assets,
+    and both committed templates must declare the renderer their position
+    requires -- so a cleaning contact can never reach the model half-composed.
+    """
+
+    semantic_class = key[1]
+    if semantic_class not in CLEANING_RENDER_TEMPLATES:
+        raise NodeContextPolicyError(
+            f"boundary {spelling!r} cannot be cleaned: this carrier registers a "
+            f"cleaning renderer only for {sorted(CLEANING_RENDER_TEMPLATES)}"
+        )
+    if not isinstance(entry, Mapping) or set(entry) != CLEANING_KEYS:
+        raise NodeContextPolicyError(
+            f"boundary {spelling!r} at level 'cleaned' requires a cleaning block "
+            f"declaring exactly {sorted(CLEANING_KEYS)}"
+        )
+    phase_id = entry["phase_id"]
+    if not isinstance(phase_id, str) or not phase_id.strip():
+        raise NodeContextPolicyError(
+            f"boundary {spelling!r} cleaning phase_id must be text"
+        )
+    response_format_id = entry["response_format_id"]
+    if not isinstance(response_format_id, str) or not response_format_id.strip():
+        raise NodeContextPolicyError(
+            f"boundary {spelling!r} cleaning response_format_id must be text"
+        )
+    on_invalid = entry["on_invalid"]
+    if on_invalid not in CLEANING_INVALID_RULES:
+        raise NodeContextPolicyError(
+            f"boundary {spelling!r} cleaning on_invalid must be one of "
+            f"{list(CLEANING_INVALID_RULES)}"
+        )
+    instruction = load_node_context_template(
+        repo_root, entry["instruction_template"],
+    )
+    if instruction.renderer != "cleaning-review":
+        raise NodeContextPolicyError(
+            f"boundary {spelling!r} requires a 'cleaning-review' instruction "
+            f"template; it declares {instruction.renderer!r}"
+        )
+    render = load_node_context_template(
+        repo_root, CLEANING_RENDER_TEMPLATES[semantic_class],
+    )
+    if render.renderer != f"cleaned-{semantic_class}":
+        raise NodeContextPolicyError(  # pragma: no cover -- committed asset
+            f"boundary {spelling!r} cleaning renderer is {render.renderer!r}"
+        )
+    return NodeContextCleaningPolicy(
+        phase_id=phase_id,
+        instruction_template=instruction,
+        render_template=render,
+        response_format_id=response_format_id,
+        on_invalid=on_invalid,
+    )
 
 
 def build_slurp_node_context_policy(
@@ -1519,8 +2044,6 @@ def build_slurp_node_context_policy(
 
     if level not in LEVELS:
         raise NodeContextPolicyError(f"node context level must be one of {list(LEVELS)}")
-    if level == "cleaned":
-        raise NodeContextPolicyError(CLEANED_LEVEL_REFUSAL)
     resolved: dict[tuple[str, str], NodeContextBoundaryPolicy] = {}
     for key in sorted(SLURP_BOUNDARY_IDS):
         spelling = f"{key[0]}:{key[1]}"
@@ -1530,18 +2053,24 @@ def build_slurp_node_context_policy(
             raise NodeContextPolicyError(
                 f"boundary {spelling!r} level must be one of {list(LEVELS)}"
             )
-        if entry_level == "cleaned":
-            raise NodeContextPolicyError(
-                f"boundary {spelling!r}: {CLEANED_LEVEL_REFUSAL}"
-            )
         rule = entry.get("on_parse_failure", SLURP_BOUNDARY_PARSE_FAILURE[key])
         if rule not in PARSE_FAILURE_RULES:
             raise NodeContextPolicyError(
                 f"boundary {spelling!r} on_parse_failure must be one of "
                 f"{list(PARSE_FAILURE_RULES)}"
             )
+        if entry_level == "cleaned" and key[1] not in CLEANING_RENDER_TEMPLATES:
+            # Checked before the L1 template is loaded, so a boundary that may
+            # not be cleaned says so rather than complaining about a template.
+            raise NodeContextPolicyError(
+                f"boundary {spelling!r} cannot be cleaned: this carrier registers a "
+                f"cleaning renderer only for {sorted(CLEANING_RENDER_TEMPLATES)}"
+            )
         template = None
-        if entry_level == "structured":
+        if entry_level in {"structured", "cleaned"}:
+            # E8b: a cleaned boundary is L1 FIRST, so it resolves the same L1
+            # template a structured one does -- that rendering is both what the
+            # cleaning contact is handed and what the boundary falls back to.
             relpath = entry.get("template", SLURP_BOUNDARY_TEMPLATES[key])
             template = load_node_context_template(repo_root, relpath)
             if template.renderer != RENDERER_KEYS[key]:
@@ -1549,12 +2078,23 @@ def build_slurp_node_context_policy(
                     f"boundary {spelling!r} requires a {RENDERER_KEYS[key]!r} "
                     f"template; {relpath!r} declares {template.renderer!r}"
                 )
+        cleaning = None
+        if entry_level == "cleaned":
+            cleaning = _resolve_cleaning(
+                entry.get("cleaning"), key=key, spelling=spelling,
+                repo_root=repo_root,
+            )
+        elif "cleaning" in entry:
+            raise NodeContextPolicyError(
+                f"boundary {spelling!r} declares a cleaning contact at level "
+                f"{entry_level!r}; only a 'cleaned' boundary may declare one"
+            )
         resolved[key] = NodeContextBoundaryPolicy(
             consumer_role_kind=key[0], semantic_class=key[1], level=entry_level,
-            template=template, on_parse_failure=rule,
+            template=template, on_parse_failure=rule, cleaning=cleaning,
         )
     if params is None:
-        if any(entry.level == "structured" for entry in resolved.values()):
+        if any(entry.level != "raw" for entry in resolved.values()):
             raise NodeContextPolicyError(
                 "a structured node context policy requires params"
             )
@@ -1577,7 +2117,23 @@ __all__ = [
     "CHECK_NO",
     "CHECK_NO_INVENTORY",
     "CHECK_YES",
-    "CLEANED_LEVEL_REFUSAL",
+    "CLEANING_ACCEPTED",
+    "CLEANING_FALLBACK_L1",
+    "CLEANING_FIXED_WORDS",
+    "CLEANING_INSTRUCTION_TEMPLATES",
+    "CLEANING_INVALID_RULES",
+    "CLEANING_ISSUE_FIELDS",
+    "CLEANING_KEYS",
+    "CLEANING_MAX_ISSUES",
+    "CLEANING_PROBLEM_MAX_CHARS",
+    "CLEANING_REJECTED",
+    "CLEANING_RENDER_TEMPLATES",
+    "CLEANING_RESPONSE_FORMAT_ID",
+    "CLEANING_SCHEMA",
+    "CLEANING_SCHEMA_SHA256",
+    "CLEANING_SKIPPED",
+    "CLEANING_SUPERSEDED_REASON",
+    "CLEANING_VERDICTS",
     "CLOSED_VOCABULARY",
     "EVIDENCE_AVAILABLE",
     "EVIDENCE_UNAVAILABLE",
@@ -1599,7 +2155,12 @@ __all__ = [
     "SLURP_BOUNDARY_IDS",
     "SLURP_BOUNDARY_PARSE_FAILURE",
     "SLURP_BOUNDARY_TEMPLATES",
+    "CleanedReview",
+    "CleaningContactOutcome",
+    "CleaningContactRequest",
     "NodeContextBoundaryPolicy",
+    "NodeContextCleaningPolicy",
+    "NodeContextCleaningRejected",
     "NodeContextCompilation",
     "NodeContextPolicyError",
     "NodeContextTemplate",
@@ -1608,10 +2169,13 @@ __all__ = [
     "SlurpNodeContextPolicy",
     "Substitution",
     "build_slurp_node_context_policy",
+    "content_tokens",
     "known_tool_call_sources",
     "load_node_context_template",
+    "ncp_review_issues_response_format",
     "parse_draft",
     "parse_node_context_template",
     "parse_plan_action",
     "parse_tool_observation",
+    "validate_cleaning_document",
 ]
