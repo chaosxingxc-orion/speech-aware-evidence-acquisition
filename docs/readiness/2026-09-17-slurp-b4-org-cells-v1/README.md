@@ -372,3 +372,44 @@ Nothing else in this package depends on the merge.
 8. **No `wire-check` stage** on any cell, for the reason in section 6.
 9. **Registered hashes are pre-flip.** Section 1. The coordinator recomputes after appending the
    decision requirement and flipping readiness, exactly as B0 and B1 did.
+
+## 9. Postscript: master moved while this package was being prepared
+
+This registration is based on `6c5c9ab7`. While it was being prepared, master advanced to
+`2b960418` and two facts landed that the coordinator needs before launching anything here.
+
+**1. The cell B0 verdict exists, and it is HARMFUL -- on width, not on a loss.**
+`docs/results/2026-09-17-slurp-b0-review-off-verdict.md` records
+`SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1` as **HARMFUL by the preregistered intent clause**:
+pooled SLU +0.13 [-1.15, +1.45], intent -0.37 [-1.53, +0.82]. The intent CI95 lower bound of -1.53
+sits below the -0.92 null margin, so the rule fires -- but the point estimate is nil and every
+saves/harms table is a tie (intent 22 / 26 / 1,032, p = 0.67). The verdict itself calls it *a width
+failure with a nil point estimate* and registers a same-roster own-null replicate, cell B0r, with a
+re-decision rule (`docs/readiness/2026-09-17-slurp-b0-replicate-v1-preregistration.md`). B0's sealed
+digests are score `51f37e6c5a78751f2d000ac370cff6f0fff18745cd18d1fc81a2cd145ce960ae` and run
+manifest `8b6f3f783f1933c4009c46cdc01472e240c547a496f7553c07e5efe301cdfe32`; those are the two
+`PENDING_B0_FINALIZE` values the checklist asks for.
+
+**What that means for these three cells.** Section 0's re-basing clause is now live but not yet
+settled: the base decision belongs to the B0r re-decision, not to the raw HARMFUL label. Do not
+re-base reflexively. If the re-decision leaves cell B0 usable as the base, this package flies
+exactly as registered. If it does not, rebuild the five baseline fragments on the sealed anchor,
+re-prepare all five phase supplies, and recompute every composed hash, protocol hash, plan hash and
+ledger note here -- the preparation is otherwise unaffected, because the moved ORG channels are
+identical on either base.
+
+**2. The registered hashes survive the merge; the prepared supplies do not.** Master's
+`6c5c9ab7..2b960418` range touches `src/.../core/config.py` and `src/.../rails/knowledge_stores.py`
+(the E3b candidate-and-phase-supply router fix that unblocks cell B1). Verified on this tree by
+composing these five fragments against **master's** `core.config`: all five composed hashes and all
+five protocol hashes reproduce unchanged, and master's new
+`assert_preparation_source_receipts_are_well_formed` accepts every one of the five fragments (they
+inherit the review-off base's `"root": "data"` pins, not the `"root": "repo"` spelling that check
+was written to catch). But `rails.knowledge_stores` is one of the five module files whose SHA-256
+the prepared phase-supply artifact identity pins, so **all five prepared supplies must be
+re-prepared and re-pinned after the merge**: section 7 is a requirement here, not a contingency.
+The `output` blocks to reproduce are `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f`
+(full cells) and `512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733` (smokes).
+
+Nothing else in this package depends on the merge, and the five `check` receipts still describe the
+configs, plans and ledger rows exactly as committed at `c622334e`.

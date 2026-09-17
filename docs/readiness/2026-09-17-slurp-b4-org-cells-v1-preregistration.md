@@ -381,3 +381,28 @@ native episode whose transport is not the real shared speech renderer, and `wire
 text transport double. The stored refusal is the stage-permission refusal that follows from not
 declaring the stage. The row-for-row request-channel proof of section 3.1 is the contact-free
 substitute and is stronger per row.
+
+## 14. Postscript: the cell B0 verdict landed during preparation
+
+Master advanced from `6c5c9ab7` to `2b960418` while this was being prepared, and
+`docs/results/2026-09-17-slurp-b0-review-off-verdict.md` now records cell B0 as **HARMFUL by the
+preregistered intent clause**: pooled SLU +0.13 [-1.15, +1.45], intent -0.37 [-1.53, +0.82], with
+the intent CI95 lower bound below the -0.92 margin. The verdict calls it a width failure with a nil
+point estimate -- every saves/harms table is a tie -- and registers a same-roster own-null
+replicate, cell B0r, with a re-decision rule. Cell B0's sealed digests are score
+`51f37e6c5a78751f2d000ac370cff6f0fff18745cd18d1fc81a2cd145ce960ae` and run manifest
+`8b6f3f783f1933c4009c46cdc01472e240c547a496f7553c07e5efe301cdfe32`.
+
+Section 0's re-basing clause is therefore live but unsettled: the base decision for these three
+cells belongs to the B0r re-decision, not to the raw label. This preregistration is unchanged by
+either outcome except for which sealed comparator is primary and which base the five baseline
+fragments extend; the moved ORG channels, the decision rules, the metrics, the diagnostics and the
+claim boundary are identical on either base. Re-basing would require rebuilding the five baseline
+fragments, re-preparing the five phase supplies and recomputing every hash in this package, and it
+must happen before any contact.
+
+Independently of that decision, master's range touches `rails.knowledge_stores`, which the prepared
+phase-supply artifact identity pins, so all five supplies must be re-prepared and re-pinned after
+the merge. The registered composed and protocol hashes were verified to reproduce unchanged under
+master's `core.config`, and master's new `preparation_source_receipts` validator accepts all five
+fragments.
