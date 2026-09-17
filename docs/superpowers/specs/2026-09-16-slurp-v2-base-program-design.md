@@ -29,7 +29,7 @@ and only then open Stage 3 (training-free optimisation of its exposed decisions)
 | M0 | Review-off native episode | USE | `run`: `native_episode.max_revisions 0` + reviewer/planner `max_iterations 0` (policy `phase-native-candidates-solve-v1`) | sealed anchor |
 | M1 | Exemplar-grounded Solver | SUPPLY | `knowledge_views`: `phase_supply.solver` = annotated TRAIN exemplars keyed by sealed speech vectors | within-scenario derangement of the speech vectors (token-matched) |
 | M2 | Sample-and-aggregate commit | USE | `judges`: `roles.solver.samples N` + `decoding_overrides` + commit policy `saea-commit-plurality-support-v1` | N greedy repeats aggregated identically |
-| M3 | USE projection v3 (support filter + surface normalisation) | USE | scorer `slurp-slu-official-projected-v3[-train]` and the runtime judge of the same rule | unprojected |
+| M3 | USE projection v3 (label rule R_action then legal-label v2; filler normalisation P2: case, whitespace, punctuation, meridiem, numeric words; NO support filter, rejected by A1) | USE | scorer `slurp-slu-official-projected-v3[-train]` and the runtime judge of the same rule | unprojected; official, symmetric-normalised and rung numbers always reported together |
 | M4a | `general_quirky` fallback candidate + qa/general contrast card | ORG | `knowledge_views`: Perception fill `fallback_candidate` + store version | base without it |
 | M4b | Date/time slot-contract revision | ORG | `knowledge_views`: slot store version pin | base store |
 
@@ -46,7 +46,7 @@ direct-anchor release (`docs/results/2026-09-17-slurp-train-a-direct-anchor-rele
 
 **Phase A (CPU, zero model contacts; parallel agents):**
 
-- A1 USE projection audit on the sealed TRAIN A anchor and DEV1000 replication outputs:
+- A1 USE projection audit (DONE 2026-09-17, `docs/results/2026-09-17-slurp-a1-use-projection-audit-v1.md`: P2 +3.46 / +3.73 pp official with no scenario harm, about three quarters of it case alignment that the symmetric scorer scores at zero; support filter REJECTED; illegal-label rule R_action +1.39 pp intent) on the sealed TRAIN A anchor and DEV1000 replication outputs:
   support filter (type never under the delivered intent in the 402 TRAIN bindings; variant < 1 %
   of that intent's mentions), spoken-form normalisation for time (digits to words, am/pm),
   scored with the official scorer on projected copies; decision rule fixed: >= +1.0 pp SLU on
@@ -83,8 +83,11 @@ direct-anchor release (`docs/results/2026-09-17-slurp-train-a-direct-anchor-rele
     containment preflight with the no-example task-contract projection if needed; twin =
     derangement of the query vectors within the sealed anchor's delivered scenario (gold-free,
     token-matched by construction); prompt-fit estimate; tests.
-  - E4: `score_slurp_outputs_official_projected_v3[_train]` mirroring v2, plus the runtime judge
-    form; a test proving scorer and judge agree byte-for-byte on sealed rows.
+  - E4: `score_slurp_outputs_official_projected_v3[_train]` in `core/scorers.py` mirroring v2's
+    registration pattern (label rule R_action, then the v2 fallback; filler normalisation P2 with
+    its four rungs; no support filter), plus the runtime commit judge form of the same function;
+    tests proving scorer and judge agree byte-for-byte on sealed rows and that v3 reproduces the
+    A1 numbers (TRAIN A 51.995 / 79.352, DEV1000 agent 54.031 / 76.5-76.6 as A1 records).
   - E5: Perception fill option `fallback_candidate: general_quirky` (appended when absent, never
     displacing model candidates) and a qa_factoid/general_quirky contrast card; date and time
     slot-contract revisions from construction data only, as a new pinned slot store version.
@@ -96,7 +99,7 @@ direct-anchor release (`docs/results/2026-09-17-slurp-train-a-direct-anchor-rele
 | B0 | M0 | anchor minus review loop | sealed anchor | 2 | ~1.4 |
 | B1 | M1, plain top-20 speech-keyed exemplars | B0 (anchor if B0 harmful) | derangement twin + B0 | 2 | ~2 |
 | B2 | M2, N=5, T=0.7 | B0 | 5 greedy repeats aggregated identically + B0 | 6 | ~4 |
-| B3 | M3 | scorer-side | unprojected | 0 | 0 |
+| B3 | M3 (A1-decided: R_action + v2 labels, P2 fillers; +3.5 SLU official, about +0.2 symmetric, +1.4 intent) | scorer-side | unprojected | 0 | 0 |
 | B4a | M4a | best admitted base | that base | 2 | ~1.4 |
 | B4b | M4b | best admitted base | that base | 2 | ~1.4 |
 | B5 | admitted set ("v2 candidate") | -- | anchor, released direct | 6-7 | ~4-5 |

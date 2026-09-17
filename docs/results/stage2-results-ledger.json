@@ -3598,6 +3598,43 @@
         "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1",
         "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1"
       ]
+    },
+    {
+      "date": "2026-09-17",
+      "cell_id": "SLURP-A1-USE-PROJECTION-AUDIT-V1",
+      "status": "AUDIT_COMPLETE_P2_RECOMMENDED_SUPPORT_FILTER_REJECTED",
+      "source": "docs/results/2026-09-17-slurp-a1-use-projection-audit-v1.md",
+      "source_sha256": "4743f3835e9164bab1b43fc9c74766a0bccdbb69f127f3d5e22e4dbcedec3e85",
+      "meaning": "Model-free projection audit on sealed outputs (42 official evaluate.py runs on projected copies, zero model contacts): filler surface normalisation P2 gives +3.461 pp official pooled SLU on TRAIN A (CI95 [+2.781, +4.180]) and +3.733 on DEV1000 agent with no scenario harm and intent unchanged, but about three quarters of it is case alignment scored at zero by the symmetric normalised scorer; the intent/type support filter is rejected (DEV1000 negative, cooking/recommendation harm); illegal-label rule R_action reaches 15/20 rows (+1.389 pp intent) versus 10/20 for the prefix rule and the registered v2. Module M3 = R_action then v2 labels plus P2 fillers, no support filter.",
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+        "SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-BASE-REPLICATION-V1",
+        "SAEA-SLURP-DIRECT-MAX512-DEV1000-BASE-REPLICATION-V1"
+      ]
+    },
+    {
+      "date": "2026-09-17",
+      "cell_id": "SLURP-A2-EXEMPLAR-HEADROOM-AUDIT-V1",
+      "status": "AUDIT_COMPLETE_B1_PLAIN_TOP20",
+      "source": "docs/results/2026-09-17-slurp-a2-exemplar-headroom-audit-v1.md",
+      "source_sha256": "9420235374550772997ddf5a3fbfc3a24c1bf66ed1442f088aa97c9f3e4e051c",
+      "meaning": "Zero-contact retrieval audit with the sealed Nemotron speech keys over the 9,354-utterance construction pool: plain top-20 exemplars raise candidate-union coverage on TRAIN A from 0.868 to 0.972 (general 0.433 to 0.917), gold slot-type recall 0.960, filler recall 0.566, exact-text-neighbour rate below 0.002; neighbour plurality agrees with the delivered intent on 0.867 of correct rows and 0.225 of wrong rows. Cell B1 registers plain top-20 with the sealed speech key and no intent diversification (the per-facet fuse policy equals plain top-k).",
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1"
+      ]
+    },
+    {
+      "date": "2026-09-17",
+      "cell_id": "SLURP-A3-COVERAGE-CONFUSION-AUDIT-V1",
+      "status": "AUDIT_COMPLETE_SIX_NAMED_FIXES",
+      "source": "docs/results/2026-09-17-slurp-a3-coverage-confusion-audit-v1.md",
+      "source_sha256": "f64b9d129d957a0762ccb88dce8bbfe938fa7df7bafbd82f73e6b01c4f9d38b9",
+      "meaning": "Zero-contact confusion audit of the sealed TRAIN A anchor: 34 of the 143 missing rows are gold general_quirky with no own card ever supplied (25 with no general_* candidate; 28 persistent across three arms); 20 delivered ids fall outside the legal 60 by a duplicated scenario prefix; date is omission (81/135 rows) and time is representation (46/72); six named fixes bound cells B3, B4a and B4b.",
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+        "SAEA-SLURP-NATIVE-CANDIDATE-FIVE-TRAIN-FOLD-A-V1",
+        "SAEA-SLURP-NATIVE-BROAD-FACTORED-TRAIN-FOLD-A-V1"
+      ]
     }
   ]
 }
