@@ -156,9 +156,9 @@ All under `$DATA/coordination/slurp-b0-replicate-v1/`:
 | `request-envelope-digests-b0-asflown-v1.json` | `b1b8ba98ca257fd9cc5fe813f9d8ae158bbff42ecbe984afcf2bcc0156131534` | the same for cell B0 **as flown**, rendered from the `5d0d694d` worktree, which reproduces B0's registered `45fe779f` / `c445394b` |
 | `plan-hashes-v1.txt` | `05d47505b9e709c995915bca406444a1301d0f5fec7891de4f731ed5d18bc079` | the SHA-256 of every plan and protocol document in this directory |
 | `ledger-parse-v1.json` | `0dde3f137b40f46973e4c34546d5b0eadf576608a9301b9449aa1896c54574c9` | `contracts._parse_ledger_tables` sees both rows exactly once, each `consumed = no` |
-| `check-v1.json` | `CHECK_SHA` | `core.flight.cli check` passes: gate, exposure row, clean tree, attempt free, prompt budget ALLOW for every phase |
+| `check-v1.json` | `df09ac5be6557781ef2030377189207039abbc0a4070ca1d8f67786fa1c75858` | `core.flight.cli check` passes: gate, exposure row, clean tree, attempt free, prompt budget ALLOW for every phase |
 
-The `check` receipt was produced at commit `CHECK_COMMIT`, the registration commit that carries
+The `check` receipt was produced at commit `43ede91c33e349eaba9e982c5a012300a5c7288f`, the registration commit that carries
 every config, plan and ledger row this cell flies; the documentation commit that follows it changes
 no config, no plan and no ledger row.
 
