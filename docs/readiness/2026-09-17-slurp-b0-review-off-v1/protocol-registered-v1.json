@@ -1,0 +1,236 @@
+{
+  "accounting": {
+    "full": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 8640,
+      "generation_calls_cap": 2160,
+      "gpu_hours_fit_inclusive": 2.0,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 6170
+    },
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 32,
+      "generation_calls_cap": 8,
+      "gpu_hours_fit_inclusive": 0.2,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 25
+    }
+  },
+  "authority": {
+    "cell": "B0 (section 4 Phase B table, module M0)",
+    "design": "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md",
+    "owner_decisions": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md"
+  },
+  "comparator": {
+    "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+    "contacts": 5417,
+    "kind": "sealed bytes; never a re-flown control",
+    "official_aggregate": {
+      "action_accuracy": 79.26,
+      "intent_scenario_plus_action": 77.96,
+      "pooled_slu_f1": 48.53,
+      "pooled_span_f1": 29.5,
+      "scenario_accuracy": 84.81
+    },
+    "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+    "run_manifest_sha256": "049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152",
+    "score_sha256": "7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47"
+  },
+  "configurations": {
+    "full": {
+      "attempt_id": "attempt-slurp-native-review-off-train-fold-a-generation-v1",
+      "campaign_plan": "configs/campaign/slurp-native-review-off-train-fold-a-v1.json",
+      "cell": "slurp-native-review-off-train-fold-a-v1",
+      "composed_config_hash": "33a2f250ffaa5df45327a8da9f739de1b6d15fa1ee80680260b719d5538bc619",
+      "execution_plan_protocol_hash": "63e22a64788185f141b365981a1590d457f132726f0218a04d9e59aec92e9f7f",
+      "experiment": "slurp-native-review-off-train-fold-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-review-off-train-fold-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-FIT-V1",
+      "fragments": {
+        "baseline": "slurp-native-dual-store-train-fold-a-review-off-v1",
+        "dataset": "slurp-speech-native-evo-fold-a-1080",
+        "experiment": "slurp-native-review-off-train-fold-a-v1",
+        "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1/phase-supply-v1.json",
+        "sha256": "14ec428cb03eb16364d084e685340992d5330c0e24a3b48da071c6ddbee7ff3e"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-review-off-smoke-4-generation-v1",
+      "cell": "slurp-native-review-off-smoke-4-v1",
+      "composed_config_hash": "84d8edf317975b035848306fd8d8bae2f015487f89d73999792f3d9381efb785",
+      "execution_plan_protocol_hash": "92dbc194b0589c747196cedb4a076392c52e8732fcd12a32eddc4730155c80cc",
+      "experiment": "slurp-native-review-off-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-review-off-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-SMOKE-4-FIT-V1",
+      "fragments": {
+        "baseline": "slurp-native-review-off-smoke-4-v1",
+        "dataset": "slurp-speech-native-evo-fold-a-1080",
+        "experiment": "slurp-native-review-off-smoke-4-v1",
+        "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
+      },
+      "ordered_sample_ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ],
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "77b15ab3631ae834365a44c815ec9e22c6182ed99f7677d74d2d7bbc545a91af"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-SMOKE-4-V1",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    }
+  },
+  "contact_free_evidence": {
+    "receipts": [
+      "check-full-v1.json, check-smoke-v1.json -- core.flight.cli check: preflight, gate, exposure row, clean-tree assertion, attempt availability and the model-free prompt budget over the widest request each phase renders across the whole roster",
+      "request-envelope-comparison-v1.json and request-envelope-digests-v1.json -- the row-for-row rendered-envelope comparison against the anchor configuration",
+      "phase-supply-vs-anchor-v1.json -- the prepared Perception supply equals the anchor's selection on every row",
+      "composed-hashes-v1.json, plan-hashes-v1.txt, ledger-parse-v1.json"
+    ],
+    "root": "SPEECHRL_DATA_DIR/coordination/slurp-b0-review-off-v1 (outside the repository, so no receipt can dirty the tree the scoring gate reads)",
+    "wire_check_unavailable": "core.flight.cli wire-check cannot run for any native-episode cell: FlightRuntime._dispatch_phase_program refuses a native episode whose transport is not the real shared speech renderer, and wire_check installs a text transport double. The sealed anchor cell declares the same four stages for the same reason. The rendered envelope comparison above is the contact-free substitute and is stronger per row."
+  },
+  "cost_reporting": [
+    "actual generation contacts (expected 2 per row, 2,160 total)",
+    "actual repeated speech seconds (expected 2 x 3,084.528 = 6,169.06)",
+    "actual FIT endpoints (expected 4 per realized contact, 8,640 total)",
+    "GPU hours from the serving monitor for the lease window, not a wall-clock guess",
+    "mean latency, slot occupancy and duty cycle from the same monitor",
+    "contacts saved against the anchor's 5,417"
+  ],
+  "decision_rule": {
+    "null_margins_pp": {
+      "action": 0.98,
+      "intent": 0.92,
+      "scenario": 0.83,
+      "slu_micro": 1.18
+    },
+    "primary": "official pooled SLU micro F1 (slurp-slu-official-train), natural mixture",
+    "resampling": {
+      "draws": 10000,
+      "intervals": [
+        "CI95 for advancement",
+        "CI90 for diagnostics"
+      ],
+      "primary": "paired whole-speaker cluster bootstrap",
+      "seed": 20260915,
+      "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed",
+      "tables": [
+        "natural mixture",
+        "equal-scenario weighting"
+      ]
+    },
+    "secondaries": [
+      "intent (joint scenario+action) accuracy",
+      "scenario accuracy",
+      "action accuracy",
+      "official pooled span F1"
+    ],
+    "verdict": {
+      "ADMITTED_AS_GAIN": "the CI95 lower bound of the pooled SLU delta is greater than 0, with intent non-inferior at its own margin.",
+      "HARMFUL": "either CI95 lower bound falls at or below its margin. Later cells then build on the anchor and the loop stays.",
+      "NEUTRAL": "both the SLU and the intent delta are non-inferior within their own-null half-widths, i.e. the CI95 lower bound of delta (review-off minus anchor) is greater than -1.18 pp for pooled SLU and greater than -0.92 pp for intent. The review loop then leaves the default plan and every later cell builds on B0.",
+      "no_repeat_to_pass": true
+    }
+  },
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster/role-graph/prompt/geometry/cap change or silent recovery. At most one root-diagnosed recovery re-registration; a second failure closes this flight and the fix must be proven on a four-row dry run first.",
+  "fit": {
+    "arithmetic": "1,080 rows * 2 native contacts * (1 speech packet + 3 endpoints) = 8,640",
+    "contact_cap": 8640,
+    "exact_fit": "Every realized immutable request is fitted against the resident tokenizer before it is transmitted; branches that never execute have no body and receive no receipt.",
+    "mode": "native_contact_fit",
+    "not_claimed": "A static all-branches full-roster capacity guarantee."
+  },
+  "not_authorized": [
+    "a second attempt of either run id without a new registered recovery",
+    "re-scoring or re-flying the sealed anchor comparator",
+    "reading Fold B, DEV-1000 or the test split",
+    "starting, stopping or switching the resident serving profile",
+    "any ASR, encoder or paid-API contact",
+    "merging this branch into master"
+  ],
+  "not_claimed": [
+    "any superiority, generalization or paper-scale conclusion",
+    "any component-causal attribution beyond the one moved channel",
+    "anything about Fold B, DEV or the test split",
+    "that a NEUTRAL verdict proves the review loop is useless in other configurations",
+    "that the saved contacts are themselves an effectiveness result"
+  ],
+  "one_factor": {
+    "channel": "the native episode role graph",
+    "held_identical": [
+      "roster docs/receipts/rosters/slurp-evo-fold-a-v2.json and split identity 61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+      "model fragment, resident geometry (np4, slot 24576, max 512, mmproj absent) and promoted speech packets",
+      "both knowledge stores, their release/snapshot hashes and the candidate supply contract (max 3 candidates, 28 values, 16 values per candidate)",
+      "every phase_material instruction template and the task instruction template",
+      "the anchor phase_tools block, kept verbatim and inert: no Reviewer node exists in the review-off graph, so the declared task-contract authority is unreachable, and the tool block of every request stays the anchor's",
+      "the prepared first-phase Perception supply: the review-off preparation selects the identical facets and values as the anchor preparation for all 1,080 rows",
+      "scorers slurp-slu-official-train and cost"
+    ],
+    "known_request_difference": "Two, both the module's own channel. (1) Rendered envelope: on all 1,080 rows and all four declared phases the rendered request differs from the anchor's by exactly one substitution -- the phase-program id inside the '[agent control <program>:<phase>:<sample>]' marker, phase-native-candidates-review-revise-v1 -> phase-native-candidates-solve-v1, worth 8 bytes. Applying that substitution to the anchor envelope reproduces the review-off envelope byte for byte on 1080/1080 rows (receipt request-envelope-comparison-v1.json). The system message, speech-feature part, knowledge blocks and the whole instruction body are byte-identical. (2) At dispatch the episode runner appends a 'Native episode limits' epilogue to the Solver's per-turn instruction whose max_revisions reads 0 instead of 1 and whose available_planner_actions reads [ACCEPT] instead of [ACCEPT, REVISE]; everything before that message, including the exposed Perception agent state, is byte-identical (tests/unit/test_native_episode_runner.py::test_review_loop_off_solver_history_matches_the_review_loop_on_shape).",
+    "moved": [
+      "native_episode.max_revisions 1 -> 0",
+      "native_episode.roles.reviewer.max_iterations 3 -> 0",
+      "native_episode.roles.planner.max_iterations 1 -> 0",
+      "policy phase-native-candidates-review-revise-v1 -> phase-native-candidates-solve-v1 (same four declared phases, max_contacts 11 -> 2)",
+      "native_contact_fit resized to the 2-contact ceiling and given its own run/attempt id",
+      "speech_feature_key_representation_id / speech_feature_matcher_policy_id renamed to this arm (WAVE R7 cell identity; provenance only, never model-visible)"
+    ]
+  },
+  "population": {
+    "construction": "Both folds were excluded from the fixed intent and slot knowledge construction.",
+    "count": 1080,
+    "fold_b": "Fold B stays untouched; no Fold B or test attempt is admitted here.",
+    "name": "TRAIN Fold A",
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    },
+    "split_id": "SLURP-EVO-FOLD-A-V2",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery"
+  },
+  "preparation_base_commit": "fe140d4fcc01a8efa3fa660dad698d73c6c997bd",
+  "protocol_id": "SAEA-SLURP-B0-REVIEW-OFF-PROTOCOL-V1",
+  "purpose": "Answer one question: does removing the Reviewer/Planner review loop from the retained native dual-store agent change task quality on TRAIN Fold A 1,080? The review loop spends 60 % of the anchor contacts, saves no intent and harms about one row per thousand, and the Planner ACCEPTs 1,075 of 1,080 rows. If B0 is NEUTRAL under the SLURP own-null half-widths the loop leaves the default plan and its budget is re-spent on sampling and exemplar grounding.",
+  "quality_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The comparator is the sealed anchor score artifact; it is never re-flown and never re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, fit receipts and seal, with no answer, reference or quality interpretation.",
+  "registered_at_utc": "2026-09-17T02:45:57.224109+00:00",
+  "schema": "saea-slurp-b0-review-off-protocol-v1",
+  "scoring": {
+    "complete_jobs": 1,
+    "include_per_sample": true,
+    "no_sharding": true,
+    "official_scorer": "Pinned SLURP official evaluate.py (slurp-official-8eb16545) through core.scoring_batch",
+    "scheduled_by": "the campaign finalize step, once, over the complete manifest",
+    "scorers": [
+      "slurp-slu-official-train",
+      "cost"
+    ]
+  },
+  "service": {
+    "attach_only": true,
+    "feature_packets": "Reuse the promoted packets; zero encoding contacts.",
+    "max_output_tokens": 512,
+    "mmproj": "absent",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "slot_tokens": 24576,
+    "slots": 4,
+    "total_context": 98304
+  },
+  "source_worktree": "/home/chao/saea-worktrees/fable-b0-prep",
+  "status": "PREREGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP"
+}

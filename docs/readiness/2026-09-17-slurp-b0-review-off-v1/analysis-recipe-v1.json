@@ -1,0 +1,152 @@
+{
+  "schema": "saea-paired-analysis-recipe-v1",
+  "recipe_id": "SAEA-SLURP-B0-REVIEW-OFF-PAIRED-ANALYSIS-V1",
+  "title": "SLURP TRAIN A: review-loop-off cell B0 versus the sealed dual-store anchor",
+  "authority": {
+    "preregistration": "docs/readiness/2026-09-17-slurp-b0-review-off-v1-preregistration.md",
+    "protocol": "docs/readiness/2026-09-17-slurp-b0-review-off-v1/protocol-registered-v1.json",
+    "design": "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md"
+  },
+  "execution_profile": "model-free-check",
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "asr": 0,
+    "scorer": 0,
+    "server": 0
+  },
+  "delta_convention": "delta = review-off minus anchor, in percentage points; negative is worse",
+  "arms": {
+    "left_anchor": {
+      "role": "comparator, sealed bytes, never re-flown or re-scored",
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+      "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1.scores.json",
+      "scores_sha256": "7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47",
+      "run_manifest_sha256": "049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152",
+      "official_aggregate": {
+        "pooled_slu_f1": 48.53,
+        "intent_scenario_plus_action": 77.96,
+        "scenario_accuracy": 84.81,
+        "action_accuracy": 79.26,
+        "pooled_span_f1": 29.5
+      },
+      "contacts": 5417
+    },
+    "right_treatment": {
+      "role": "cell B0, the review-loop-off ablation",
+      "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1",
+      "attempt_id": "attempt-slurp-native-review-off-train-fold-a-generation-v1",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1/attempt-slurp-native-review-off-train-fold-a-generation-v1/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1.scores.json",
+      "scores_sha256": "PENDING_FIRST_OFFICIAL_SCORE",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "expected_contacts": 2160
+    }
+  },
+  "population": {
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+      "roster_id": "SLURP-EVO-FOLD-A-V2"
+    },
+    "roster_metadata": {
+      "relpath": "analysis/SAEA-SLURP-TRAIN-A-DIRECT-ANCHOR-RELEASE-PAIRED-ANALYSIS-V1/roster-metadata.json",
+      "sha256": "07f4cd83b83d83d65500a328e0a38421ede575195c63ae118def0d1006c14e34",
+      "carries": "sample_id -> scenario, speaker, headset, utterance_id; no text, transcript or gold filler",
+      "speaker_key": "spk:<usrid> from the governed SLURP release metadata, the 2026-09-09 own-null convention"
+    },
+    "rows": 1080,
+    "speaker_clusters": 125,
+    "scenario_strata": 18,
+    "rows_per_scenario": 60,
+    "headset_rows": 523,
+    "far_field_rows": 557,
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery"
+  },
+  "scorer": {
+    "id": "slurp-slu-official-train",
+    "evaluator": "slurp-official-8eb16545",
+    "evaluator_commit": "8eb16545762be97ace75334109d73824217311f1",
+    "runs": "once per complete manifest through core.scoring_batch, never sharded; this read invokes no scorer"
+  },
+  "estimators": {
+    "row_reader": "analysis.null_calibration_cli.rows_for",
+    "pooled_micro_f1": "analysis.null_calibration.pooled_f1",
+    "bootstrap_pooled": "analysis.paired.resampled_statistic",
+    "paired_per_row": "analysis.paired.paired_contrast",
+    "percentiles": "analysis.bootstrap._percentile over the retained BootstrapResult.replicates",
+    "not_used": "analysis.score_compare_cli as the runner: it hard-codes ci_level 0.90 and DEV population names"
+  },
+  "resampling": {
+    "primary": "paired whole-speaker cluster bootstrap",
+    "draws": 10000,
+    "seed": 20260915,
+    "intervals": ["CI95", "CI90"],
+    "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed, each scenario resampled to its own size",
+    "seed_advance": "paired_contrast advances the seed by the metric index; pooled metrics use the base seed"
+  },
+  "metrics": [
+    {
+      "id": "pooled_slu_f1",
+      "role": "primary",
+      "estimand": "pooled count F1",
+      "counts": "tp = [slu_f1_word_tp, slu_f1_char_tp], fp and fn likewise",
+      "null_half_width_pp": 1.18
+    },
+    {
+      "id": "intent_accuracy",
+      "role": "secondary gate",
+      "estimand": "per-row mean of joint scenario+action correctness",
+      "null_half_width_pp": 0.92
+    },
+    {
+      "id": "scenario_accuracy",
+      "role": "secondary diagnostic",
+      "estimand": "per-row mean",
+      "null_half_width_pp": 0.83
+    },
+    {
+      "id": "action_accuracy",
+      "role": "secondary diagnostic",
+      "estimand": "per-row mean",
+      "null_half_width_pp": 0.98
+    },
+    {
+      "id": "pooled_span_f1",
+      "role": "secondary diagnostic",
+      "estimand": "pooled count F1 from slot_f1_exact_tp/fp/fn",
+      "null_half_width_pp": null
+    },
+    {
+      "id": "slu_f1_per_row_mean",
+      "role": "report only",
+      "estimand": "per-row mean"
+    },
+    {
+      "id": "exact_slot_f1_per_row_mean",
+      "role": "report only",
+      "estimand": "per-row mean"
+    }
+  ],
+  "tables_required": [
+    "headline: anchor, review-off, delta, speaker CI95, speaker CI90, scenario-stratified CI90, equal-scenario delta",
+    "saves / harms / ties with the exact two-sided McNemar p for every per-row metric",
+    "per-scenario table, all 18 scenarios, natural mixture and equal weighting",
+    "cost table: contacts, contacts per row, repeated speech seconds, FIT endpoints, GPU hours from the serving monitor, mean latency, duty cycle"
+  ],
+  "decision_rule": {
+    "NEUTRAL": "CI95 lower bound of the pooled SLU delta > -1.18 pp AND of the intent delta > -0.92 pp",
+    "HARMFUL": "either CI95 lower bound <= its margin",
+    "ADMITTED_AS_GAIN": "CI95 lower bound of the pooled SLU delta > 0 with intent non-inferior at its margin",
+    "read_once": true,
+    "no_repeat_to_pass": true
+  },
+  "claim_boundary": "Descriptive paired read on historically exposed TRAIN Fold A discovery rows. No superiority, generalization, component-causal or confirmatory claim; nothing about Fold B, DEV-1000 or the test split.",
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-B0-REVIEW-OFF-PAIRED-ANALYSIS-V1",
+    "files": ["score-contrasts.json", "README.md"],
+    "verdict_document": "docs/results/2026-09-17-slurp-b0-review-off-verdict.md"
+  }
+}
