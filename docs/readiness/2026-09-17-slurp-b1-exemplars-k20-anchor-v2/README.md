@@ -388,4 +388,9 @@ requirement pinned, no decision requirement yet):
 | `…-smoke-4-recovery-v2` | `2f1c299aaf5c2778b392c36c5551e88f45b6237054f1d3938c9820b46aa55659` | `e38285952e00de7022e52771dfeac20e729fd3aef3f4e92ad889ba2cde04853a` | `26a4f0167b91d3a1776f56e966fc18d9f0a1d05f8f603e22a1374ff08d003078` |
 
 Both prepared artifacts reproduce the sealed anchor's Perception `output` byte-for-byte:
-`ba5e1faa…` on 1,080 / 1,080 and `512583ec…` on 4 / 4.
+`ba5e1faa…` on 1,080 / 1,080 and `512583ec…` on 4 / 4. Pre-contact receipts live under
+`$DATA/coordination/slurp-b1-exemplars-k20-anchor-recovery-v2/` and are listed with their SHA-256 in
+section 9 of the recovery note; the runtime `check` for both cells returns readiness `held`,
+`generation_authorized false` and prompt budget ALLOW on all four phases, and the whole-roster
+pre-flight render is byte-identical to the aborted attempt's own on every phase
+(`request-envelope-comparison-v1.json`, `5ee60cdf5395f7aea63a98e128381391b65eda5e37a9ab275f504d8012d907bb`).

@@ -110,6 +110,8 @@ once on **both** Solver requests, no `[key …]` block appears on either, and th
 holds the supply's value ids exactly once each. Value **content** is synthetic in this proof; only
 the value **ids** are real, and no utterance text or gold enters it.
 
+All five scenarios pass. On the pre-fix tree this route is exactly what died.
+
 ## 4. Why nothing else changes
 
 The failure is a **runner/controller** defect on a re-entered phase. It is not a roster, prompt,
@@ -215,10 +217,21 @@ recovery arm is compared against:
    recovery cell's four per-phase digests are compared against the aborted attempt's own sealed
    pre-flight receipt.
 
-**The honest limit:** the recovery arm has not flown, so its own post-Perception requests cannot be
-re-derived model-free — they depend on the frozen core's answers. What is proved here is that no
-configuration byte that reaches a request moved, and what is pinned is the table the recovery flight
-will be checked against.
+**Measured.** 57 composed-config keys are byte-identical and ten differ, all bookkeeping: the five
+baseline keys named above and the experiment fragment's own `cells`, `experiment_id`,
+`fragment_kind`, `failure_policy` and `purpose`. All twelve identity strings — both run ids, both
+attempt ids and both speech-feature ids of each registration — return **0 hits across all 420 sealed
+payloads**, on every field, on every row and phase. The whole-roster pre-flight render is
+**byte-identical on all four phases**: `perception 2576cb36…`, `reviewer 164d4327…`,
+`planner 5150f014…`, `solver 7ad717e2…`, each equal to the aborted attempt's own sealed pre-flight
+`payload_sha256`, with the same required-window token counts (19,184 / 19,047 / 18,987 / 21,012) and
+ALLOW on every phase.
+
+**The honest limit:** the recovery arm has not flown, so its own realized post-Perception requests
+cannot be re-derived model-free — they depend on the frozen core's answers, and greedy decoding at
+`temperature 0` is not bitwise reproducible across batch compositions. What is proved here is that no
+configuration byte that reaches a request moved and that the whole-roster render is identical per
+phase; what is pinned is the per-row per-phase table the recovery flight is checked against.
 
 ## 7. Launch
 
@@ -263,16 +276,17 @@ stops the recovery on the same terms.
 All under `SPEECHRL_DATA_DIR/coordination/slurp-b1-exemplars-k20-anchor-recovery-v2/`, outside the
 repository so no receipt can dirty the tree the manifest reads at finalize.
 
-| receipt | what it proves |
-| --- | --- |
-| `prepared-supply-and-hashes-v1.json` | the two prepared artifacts pinned, their Perception `output` identical to the sealed anchor's on 1,080 / 1,080 and 4 / 4, the composed and protocol hashes, the implementation-pin comparison against the aborted arm's own artifact, and the anchor method check |
-| `prepare-supply-*.json` | the two raw model-free `prepare-supply` receipts |
-| `revise-path-proof-v1.json` | five real-id REVISE episodes through the real role graph; the E3c test node ids and their pinned pre-change digests |
-| `request-envelope-comparison-v1.json` | the config diff, the 420-payload identity search, the per-row per-phase payload digests, and the whole-roster pre-flight render comparison |
-| `check-slurp-native-exemplars-k20-anchor-smoke-4-recovery-v2-v1.json` | the runtime `check` receipt for the smoke cell |
-| `check-slurp-native-exemplars-k20-anchor-train-fold-a-recovery-v2-v1.json` | the runtime `check` receipt for the arm cell |
-| `ledger-parse-v1.json` | `contracts._parse_ledger_tables` sees the four new rows exactly once at `consumed = no` and the two aborted rows exactly once at `consumed = yes` |
-| `plan-hashes-v1.txt` | the SHA-256 of every document in the recovery readiness directory and of this note |
+| receipt | SHA-256 | what it proves |
+| --- | --- | --- |
+| `prepared-supply-and-hashes-v1.json` | `eb2e9b3f66eab78fba75631d40b765231f1448d838d9dfa7d72e1a76371feecd` | the two prepared artifacts pinned, their Perception `output` identical to the sealed anchor's on 1,080 / 1,080 and 4 / 4, the composed and protocol hashes, the implementation-pin comparison against the aborted arm's own artifact, and the anchor method check (the same command on the anchor's fragments returns `2527b527…`) |
+| `prepare-supply-…-train-fold-a-recovery-v2-v1.json` | `076594e50abd4a29df5adf5f498ddb6c38f0d3e0f1c374c70a9f95cf6f0cf0fa` | the raw model-free `prepare-supply` receipt for the arm |
+| `prepare-supply-…-smoke-4-recovery-v2-v1.json` | `6c18e4c7ced8c8b4064427c75527f324e12f7ecd9dc801877315841e6c495a82` | the raw model-free `prepare-supply` receipt for the smoke |
+| `revise-path-proof-v1.json` | `078dd94ff6b79f02a9bdd5ef104b7be847c42a9ca908d099bfc03a0d4ad38e5c` | five real-id REVISE episodes through the real role graph, all passing; the four E3c test node ids and their pinned pre-change request and transition digests |
+| `request-envelope-comparison-v1.json` | `5ee60cdf5395f7aea63a98e128381391b65eda5e37a9ab275f504d8012d907bb` | the composed-config diff (57 keys identical, 10 bookkeeping keys differ), the 420-payload identity search (0 hits on all twelve strings), the per-row per-phase model-facing payload digests, and the whole-roster pre-flight render comparison (identical on all four phases) |
+| `check-…-smoke-4-recovery-v2-v1.json` | `b0229f77cd934fd1e11693fda10eab4d8fd8dc0dbaccd05427619278f408ee79` | runtime `check` at study commit `49002dbc`: config `2f1c299a…`, 4 samples, readiness `held`, `generation_authorized false`, prompt budget ALLOW on all four phases (Solver 21,012 required, margin 3,564) |
+| `check-…-train-fold-a-recovery-v2-v1.json` | `8b79424619e6de4fb68527579f08278a4e517a0e46467ddce51cd9116f01e8f5` | runtime `check` at study commit `49002dbc`: config `b15374a9…`, 1,080 samples, readiness `held`, `generation_authorized false`, prompt budget ALLOW on all four phases |
+| `ledger-parse-v1.json` | `2ab007e5b0eda92b280ae53abf6be49b554c1e5673802314e170d71bad465e62` | `contracts._parse_ledger_tables` sees each of the four new rows exactly once at `consumed = no`, the two aborted rows exactly once at `consumed = yes`, and the twin row still once at `consumed = no` |
+| `plan-hashes-v1.txt` | see the file | the SHA-256 of this note, of every document in the recovery readiness directory and of the five config fragments |
 
 `core.flight.cli wire-check` remains unavailable for any native-episode cell, for the reason the v2
 package records: `FlightRuntime._dispatch_phase_program` refuses a native episode whose transport is
