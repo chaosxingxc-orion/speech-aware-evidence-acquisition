@@ -1,0 +1,43 @@
+{
+  "cell": "slurp-native-ncp-l1-anchor-train-fold-a-v1",
+  "composed_config_hash": "208e5dba419a8d20b2b83667d700620a77c639303ca08b439b1154d7eb204542",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-ncp-l1-anchor-train-fold-a-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 47520,
+    "planned_speech_audio_seconds": 33930,
+    "protocol_hash": "f90dd1b2d370795ff438bc53db593057cef98a3bf4336e3d62f905d7b5ed735d",
+    "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realized native request inside the same campaign, under the same lease.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-ncp-l1-anchor-train-fold-a-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "preparation_base_commit": "ff6685477bc0b94fd5b31d6b65f02ebbea3c2928",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-17-slurp-b7a-ncp-l1-anchor-v1/protocol-registered-v1.json",
+    "sha256": "58cdcb281f74acb0790a364a07781703e25c8aa69ee5eceaae7c1d43dd4b7014"
+  },
+  "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The comparators are the sealed dual-store anchor score artifact (primary) and the released direct anchor score artifact (secondary); neither is ever re-flown or re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, the policy's rendered blocks and its receipt rows, fit receipts and seal, with no answer, reference or quality interpretation.",
+  "registered_at_utc": "2026-09-17T18:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_worktree": "/home/chao/saea-worktrees/fable-b7a",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}
