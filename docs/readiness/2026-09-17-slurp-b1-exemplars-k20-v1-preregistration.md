@@ -268,7 +268,7 @@ receipt can dirty the tree the scoring gate reads.
 
 | receipt | SHA-256 | what it proves |
 | --- | --- | --- |
-| `store-router-blocker-v1.json` | `7f97cdc41733e96097029ca65c172317227579ecfa1e9c57808bf5b7cb207ebf` | the blocking gate, its inheritance from E3, the diagnosed sufficient change and what is still unproven |
+| `store-router-blocker-v1.json` | `a4a215493b5a43a7dd869b10b2cd38de390d43ce11f87ba34889a0c361e9a27e` | the blocking gate, its inheritance from E3, the diagnosed sufficient change and what is still unproven |
 | `store-router-blocker-v1.log` | — | the raw refusals for all three B1 cells |
 | `composed-hashes-v1.json` | `86b7e9637bc6f3b634c3c52f1b869d359cdbe380e303ba4b2d32bbd90b48f236` | the composed and protocol hashes, the anchor method check, and the cell B0 hash drift on master |
 | `containment-v1.json` | — | 0 collisions between the 9,354 exemplar values and every composed instruction text |

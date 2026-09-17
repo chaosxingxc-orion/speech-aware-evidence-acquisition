@@ -328,7 +328,7 @@ All under `$DATA/coordination/slurp-b1-exemplars-k20-v1/`:
 
 | file | SHA-256 | what it proves |
 | --- | --- | --- |
-| `store-router-blocker-v1.json` | `7f97cdc41733e96097029ca65c172317227579ecfa1e9c57808bf5b7cb207ebf` | the blocking gate, its inheritance from E3, the diagnosed sufficient change, and what the engineering item still owes |
+| `store-router-blocker-v1.json` | `a4a215493b5a43a7dd869b10b2cd38de390d43ce11f87ba34889a0c361e9a27e` | the blocking gate, its inheritance from E3, the diagnosed sufficient change, and what the engineering item still owes |
 | `store-router-blocker-v1.log` | — | the raw refusal for each of the three B1 cells |
 | `composed-hashes-v1.json` | `86b7e9637bc6f3b634c3c52f1b869d359cdbe380e303ba4b2d32bbd90b48f236` | the composed and protocol hashes for all three cells, the anchor method check, and the explained cell B0 hash drift on master |
 | `containment-v1.json` | — | 0 collisions between the 9,354 rendered exemplar values and every composed instruction text; no no-example projection needed |
