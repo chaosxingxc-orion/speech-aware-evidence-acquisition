@@ -191,7 +191,10 @@ Shared harness (`EvidenceAgentController`, `FlightRuntime`, OpenJiuwen native ep
 `docs/receipts/rosters/slurp-evo-fold-a-v2.json`; resident session geometry of
 `configs/model/q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1.json`
 (attach, never spawn); primary `slurp-slu-official-train`, one score per complete manifest through
-`core.scoring_batch`; paired whole-speaker bootstrap, 10,000 draws, seed 20260915, CI95 for
+`core.scoring_batch`, with the symmetric-normalised sibling
+`slurp-slu-f1-normalized-v1-train` (owner decision 14 of 2026-09-17; same implementation, same
+TRAIN gold resolution, gold and prediction normalised alike) reported beside every official
+TRAIN number as owner decision 7 requires; paired whole-speaker bootstrap, 10,000 draws, seed 20260915, CI95 for
 advancement, CI90 for diagnostics, natural-mixture and equal-scenario tables; comparators are
 sealed bytes, never re-flown controls; preregistration + ledger row + ExecutionPlan
 (`bounded-discovery-probe`, discovery role) before the first contact; contact-free wire check and

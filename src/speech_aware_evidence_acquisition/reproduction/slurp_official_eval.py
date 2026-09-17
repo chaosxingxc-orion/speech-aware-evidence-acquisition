@@ -1310,6 +1310,64 @@ def score_slurp_outputs_slu_normalized(
     return document
 
 
+def score_slurp_outputs_slu_normalized_train(
+    outputs_path: Path,
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    allow_heldout: bool = False,
+    per_rule: bool = True,
+) -> dict[str, object]:
+    """:func:`score_slurp_outputs_slu_normalized` against the TRAIN gold -- the
+    registered ``"slurp-slu-f1-normalized-v1-train"`` scorer
+    (``core/scorers.py``), owner decision 14 of 2026-09-17,
+    ``docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md``.
+
+    The same thin keyword binding :func:`score_slurp_outputs_official_train`
+    is, differing from its DEV sibling in exactly one argument:
+    ``split_id="train"``. The parse, the port, the official ``evaluate.py``
+    subprocess at the pinned commit, the identity check that licenses the
+    symmetric column at all, the slot normalizer itself (mined from TRAIN and
+    only from TRAIN whichever split is being scored -- see
+    :func:`reproduction.slurp_slot_normalizer.load_slot_normalizer_inventory`)
+    and the returned document's schema are the exact same code path, so the
+    two siblings can never drift apart.
+
+    WHY IT EXISTS. Owner decision 7 of 2026-09-17 requires the
+    symmetric-normalised number beside every official number, and the DEV
+    binding resolves gold from ``devel`` and therefore refuses a TRAIN
+    prediction outright ("outputs sample_id ... is not part of SLURP split
+    'devel'"). That refusal is correct and stays -- a devel read must never
+    silently score against another split's gold, and this sibling refuses a
+    devel id in exactly the same way, naming ``'train'``. Every TRAIN A cell
+    of the SLURP v2 base program is scored on the construction fold's own
+    rows, so decision 7 was not evaluable there (cells B0r and B4b record it
+    as such); this is the same scorer pointed at the split those rows came
+    from, declared as its own registered id so a run manifest or an offline
+    re-read names which gold it was scored against
+    (``aggregate["split_id"]``).
+
+    What makes the normalized column a metric rather than a mechanism is
+    untouched: the normalizer is applied SYMMETRICALLY to the gold and to the
+    predicted filler, so an arm cannot gain under it by writing its answers
+    differently from the corpus, only by saying what the corpus says.
+
+    ``allow_heldout`` is accepted for signature uniformity and is meaningless
+    here, exactly as in :func:`score_slurp_outputs_official_train`:
+    ``split_id`` is fixed to ``"train"`` and the held-out refusal keys on the
+    sample ids themselves.
+    """
+
+    return score_slurp_outputs_slu_normalized(
+        outputs_path,
+        lock,
+        root,
+        split_id="train",
+        allow_heldout=allow_heldout,
+        per_rule=per_rule,
+    )
+
+
 def score_slurp_outputs_official_aligned(
     outputs_path: Path,
     lock: Mapping[str, object],
@@ -1404,6 +1462,7 @@ __all__ = [
     "score_slurp_outputs_official_projected_v3",
     "score_slurp_outputs_official_aligned",
     "score_slurp_outputs_slu_normalized",
+    "score_slurp_outputs_slu_normalized_train",
     "score_slurp_outputs_slu_normalized_view",
     "write_official_inputs",
 ]
