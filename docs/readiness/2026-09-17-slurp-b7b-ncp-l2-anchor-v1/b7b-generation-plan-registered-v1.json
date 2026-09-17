@@ -1,0 +1,43 @@
+{
+  "cell": "slurp-native-ncp-l2-review-clean-anchor-train-fold-a-v1",
+  "composed_config_hash": "3b238087723534381b05854ae6ae519348c1d66c4c3e8f2fd2f109591d94df8d",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-ncp-l2-review-clean-anchor-train-fold-a-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 14040,
+    "planned_speech_audio_seconds": 40099,
+    "protocol_hash": "a0193790dfc2267c2e9442940d7cb14916ecad0369eb306eb945d2e62602d096",
+    "run_id": "SAEA-SLURP-NATIVE-NCP-L2-REVIEW-CLEAN-ANCHOR-TRAIN-FOLD-A-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan configs/campaign/slurp-native-ncp-l2-review-clean-anchor-train-fold-a-v1.json; the campaign acquires its own GenerationLease against the resident session and schedules the one official score at finalize.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-ncp-l2-review-clean-anchor-train-fold-a-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 56160,
+    "generation_calls_cap": 14040,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 40099
+  },
+  "preparation_base_commit": "b4cb9ae9fa67e7f8055e204d290a63838c14251d",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-17-slurp-b7b-ncp-l2-anchor-v1/protocol-registered-v1.json",
+    "sha256": "ee0c84def1b40ae775f9ec5ad92c057246776274723bae319358e54be8756717"
+  },
+  "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The PRIMARY comparator is cell B7a's sealed score artifact (run SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V1, not yet flown) and the secondary is the released TRAIN A direct anchor; neither is ever re-flown or re-scored, and this cell does not open until B7a has sealed with an ADMITTED or NEUTRAL verdict. The four-row smoke is structural only: one cleaning contact per Planner contact, the evidence-free cleaning request and its committed template bytes, the validation field and its reason, which render the Planner's review block carries, contact counts against the 13-contact ceiling, fit receipts and seal, with no answer, reference or quality interpretation.",
+  "registered_at_utc": "2026-09-17T21:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_worktree": "/home/chao/saea-worktrees/fable-b7b",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_B7A_VERDICT_AND_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

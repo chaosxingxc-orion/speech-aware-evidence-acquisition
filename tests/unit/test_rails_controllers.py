@@ -69,6 +69,12 @@ _EXPECTED_PROGRAM_SHAPES = {
     "phase-native-candidates-review-revise-samples5-v1": (
         ("perception", "reviewer", "planner", "solver"), 19, "native-role-episode"
     ),
+    # Cell B7b on the sealed anchor, 2026-09-17 (M5 / NCP level L2): the
+    # review-revise program with ONE declared cleaning boundary, so the
+    # ceiling is 1 + (1+1)*(1 + 3 + 1 + 1) = 13.
+    "phase-native-candidates-review-revise-clean1-v1": (
+        ("perception", "reviewer", "planner", "solver"), 13, "native-role-episode"
+    ),
     "phase-native-candidates-review-refresh-v1": (
         ("perception", "reviewer", "planner", "solver"), 12, "native-role-episode"
     ),
