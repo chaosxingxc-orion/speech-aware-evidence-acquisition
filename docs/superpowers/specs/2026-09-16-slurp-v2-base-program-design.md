@@ -52,7 +52,7 @@ direct-anchor release (`docs/results/2026-09-17-slurp-train-a-direct-anchor-rele
   scored with the official scorer on projected copies; decision rule fixed: >= +1.0 pp SLU on
   TRAIN A, DEV1000 same sign, no scenario harm beyond the null margin, normalised scorer same
   sign -> M3 admitted.
-- A2 exemplar-retrieval headroom: sealed Fold A speech vectors
+- A2 exemplar-retrieval headroom (DONE 2026-09-17, `docs/results/2026-09-17-slurp-a2-exemplar-headroom-audit-v1.md`: plain k=20 union coverage 0.972, type recall 0.960, filler recall 0.566, no memorisation channel): sealed Fold A speech vectors
   (`vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl`,
   encoder identity verified against the Nemotron `query:` protocol) against the construction-pool
   subset of `vectors/slurp-kus3/facet-vectors.jsonl`; k in {5, 8, 12, 20}: gold intent among
@@ -60,7 +60,7 @@ direct-anchor release (`docs/results/2026-09-17-slurp-train-a-direct-anchor-rele
   recall, echo versus the sealed draft, exact-text-neighbour rate, token cost. Decision: the
   (k, c/m/top_l) maximising union coverage and filler recall under +600 Solver tokens; if
   filler+type recall < 50 % at k <= 12 and union coverage < 92 %, M1 is downgraded and reported.
-- A3 coverage confusion audit: pair tables for the 143 missing and 95 covered-wrong rows,
+- A3 coverage confusion audit (DONE 2026-09-17, `docs/results/2026-09-17-slurp-a3-coverage-confusion-audit-v1.md`; FIX-3 illegal-id repair joins M3): pair tables for the 143 missing and 95 covered-wrong rows,
   scenario-level recall, share of the 100 persistent misses recovered by A2 neighbours.
 - A4 cost pricing from the maximum-five receipts (3.46 GPU-h / 5,417 contacts).
 - Engineering E1-E5 (worktrees off master, one agent per item, no installs, PYTHONPATH armour,
@@ -77,9 +77,12 @@ direct-anchor release (`docs/results/2026-09-17-slurp-train-a-direct-anchor-rele
     offline re-aggregation CLI over sealed samples; tests.
   - E3: KB view `annotated-exemplars` (utterance | intent | type=filler pairs; facet ids
     unchanged so sealed key vectors bind); `phase_supply.solver` through the E6 `acquire`
-    transition with `saea-fuse-associated-values-v1` diversification; containment preflight
-    with the no-example task-contract projection if needed; derangement twin generator;
-    prompt-fit estimate; tests.
+    transition, key = the sealed speech vector, plain top-k with k = 20 (A2 decision of
+    2026-09-17; k = 12 if the prompt-fit receipt refuses 20); no intent diversification
+    (`saea-fuse-associated-values-v1` groups per facet and equals plain top-k here);
+    containment preflight with the no-example task-contract projection if needed; twin =
+    derangement of the query vectors within the sealed anchor's delivered scenario (gold-free,
+    token-matched by construction); prompt-fit estimate; tests.
   - E4: `score_slurp_outputs_official_projected_v3[_train]` mirroring v2, plus the runtime judge
     form; a test proving scorer and judge agree byte-for-byte on sealed rows.
   - E5: Perception fill option `fallback_candidate: general_quirky` (appended when absent, never
@@ -91,7 +94,7 @@ direct-anchor release (`docs/results/2026-09-17-slurp-train-a-direct-anchor-rele
 | Cell | Module | Base | Control | Contacts/row | GPU-h |
 | --- | --- | --- | --- | ---: | ---: |
 | B0 | M0 | anchor minus review loop | sealed anchor | 2 | ~1.4 |
-| B1 | M1 | B0 (anchor if B0 harmful) | derangement twin + B0 | 2 | ~2 |
+| B1 | M1, plain top-20 speech-keyed exemplars | B0 (anchor if B0 harmful) | derangement twin + B0 | 2 | ~2 |
 | B2 | M2, N=5, T=0.7 | B0 | 5 greedy repeats aggregated identically + B0 | 6 | ~4 |
 | B3 | M3 | scorer-side | unprojected | 0 | 0 |
 | B4a | M4a | best admitted base | that base | 2 | ~1.4 |
