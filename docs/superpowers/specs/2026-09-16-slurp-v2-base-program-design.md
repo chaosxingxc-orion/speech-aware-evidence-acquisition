@@ -32,6 +32,7 @@ and only then open Stage 3 (training-free optimisation of its exposed decisions)
 | M3 | USE projection v3 (label rule R_action then legal-label v2; filler normalisation P2: case, whitespace, punctuation, meridiem, numeric words; NO support filter, rejected by A1) | USE | scorer `slurp-slu-official-projected-v3[-train]` and the runtime judge of the same rule | unprojected; official, symmetric-normalised and rung numbers always reported together |
 | M4a | `general_quirky` fallback candidate + qa/general contrast card | ORG | `knowledge_views`: Perception fill `fallback_candidate` + store version | base without it |
 | M4b | Date/time slot-contract revision | ORG | `knowledge_views`: slot store version pin | base store |
+| M5 | Node Context Policy, L1 `structured` (E8a, 2026-09-17) | USE | `episode`: `native_episode.context_policy` (OFF = absent / `"raw"` / raw at every boundary) | the anchor; L1 derangement twin only on a positive CI95 |
 
 Boundary for M1: exemplar text and gold annotations come only from the construction pool
 (TRAIN minus every utterance with a recording in TRAIN A, TRAIN B or DEV-1000, the 2026-09-13
@@ -47,6 +48,22 @@ record, all N in the visit's one `action_alternatives` wave, and their seeds, de
 parse status and parsed answers in the sealed `solver_group` receipt that
 `analysis.native_commit_replay` re-aggregates offline. A Planner `REVISE` re-samples the whole group
 and re-commits; the contact-ceiling formula is unchanged.
+
+E8a (2026-09-17, owner directive of 2026-09-17 on node context): **M5, the Node Context Policy**, one
+declared handling policy per node boundary, where a boundary is the pair
+`(consumer_role_kind, semantic_class)`. Axis USE. Config switch: `episode` class, third and last key
+of the closed allowlist, `native_episode.context_policy`. OFF arm: level L0 — the key absent, the
+literal `"raw"`, or an object that is `raw` at every boundary — which renders request bytes identical
+to the pre-key baseline (pinned in `tests/unit/test_node_context_policy_runner.py`). ON arm: level L1
+`structured`, a deterministic zero-contact parse → declared malformed rule → committed hash-pinned
+template under `configs/probes/ncp_slurp_*.txt`. Twin: the L1 derangement control of the design's
+section 10, which flies only if the cell shows a positive CI95. Level L2 (`cleaned`, one extra
+context-cleaning contact) is E8b and is refused at load time until it lands. The existing optional
+`native_episode.role_context` block is folded under the new key — its `policy_id`/`params` pair IS
+the structured level's implementation — and a fragment carrying both is refused. Design and cells
+(B7a, B7b): `docs/superpowers/specs/2026-09-17-node-context-policy-design.md`; evidence base:
+`docs/results/2026-09-17-slurp-node-context-audit-v1.md`. E8a is the engineering only: no cell, no
+config commit, no exposure row and no model contact are authorised by it.
 
 E3c (2026-09-17, cell B1 abort): when the Planner routes REVISE the Solver is re-entered and the
 prepared M1 supply returns the same twenty values, so `rails.controllers.restrict_repeat_visit_supply`
