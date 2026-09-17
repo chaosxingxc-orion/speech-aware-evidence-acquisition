@@ -1,8 +1,22 @@
 """Bundle verification: outputs.jsonl / raw-trace parsing and the outputs<->trace
-cross-checks (I7).
+cross-checks (I7, and for a grouped-Solver row I7g).
 
 Split out of the former monolithic ``core/bundle.py`` (R0 repair refactor
 stage 1, pure move, no behaviour change).
+
+E2d (2026-09-17, SLURP v2 base program M2): module M2 lets ONE Solver visit
+make N metered contacts and deliver a registered, deterministic COMMIT
+policy's aggregate of the N structured answers (``rails.commit_policies``,
+``reproduction.ojw.native_group_solver``). The delivered text is then a
+deterministic function of the N raw response texts and equals none of them in
+general, which I7's "the delivered text IS one model response's bytes"
+reading cannot express. I7 is right and stays exactly as it is for every row
+WITHOUT a ``solver_group`` receipt. A row WITH one is additionally held to
+I7g -- a strictly stronger custody form, not a relaxation: every raw sample's
+own response bytes must still be in the trace under that sample's own contact
+id, the named commit policy must be registered in
+``core.base.COMMIT_POLICIES`` and reproduce itself, and re-running it over the
+row's own recorded samples must reproduce the delivered bytes exactly.
 """
 
 from __future__ import annotations
@@ -10,7 +24,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
-from typing import Mapping
+from typing import Mapping, Sequence
 
 from ...contracts import BoundaryViolation, TraceContractError, TraceRecord
 from . import BundleError
@@ -97,6 +111,286 @@ def _minimum_model_calls_from_trace(
                 f"tool-derived output {request_id!r} source artifact hash drifted"
             )
     return model_requests
+
+
+#: The invariant code a grouped-Solver custody refusal names, so a failed
+#: seal is never confused with I7's single-response identity check.
+SOLVER_GROUP_INVARIANT = "I7g"
+
+
+def _row_label(row: Mapping[str, object]) -> str:
+    return f"outputs row {row.get('sample_id')!r} (request {row.get('request_id')!r})"
+
+
+def _committed_text(row: Mapping[str, object]) -> str:
+    """The exact bytes a grouped row's COMMIT policy delivered.
+
+    ``core.flight.runtime._canonical_output_rows`` writes the committed
+    rendering into ``text``. When the E4 SLURP projection-v3 delivery
+    transform is also on, that same stage keeps the committed rendering
+    verbatim under ``pre_projection_text`` and puts the projected bytes into
+    ``text``. So the commit recomputation targets ``pre_projection_text``
+    whenever the row records one and ``text`` otherwise -- in both cases
+    exactly the bytes the runner wrote as the commit policy's own output.
+    """
+
+    if "pre_projection_text" in row:
+        committed = row["pre_projection_text"]
+        if not isinstance(committed, str):
+            raise BundleError(
+                f"{_row_label(row)}: 'pre_projection_text' must be a string "
+                f"({SOLVER_GROUP_INVARIANT})"
+            )
+        return committed
+    return str(row["text"])
+
+
+def _first_difference(recomputed: str, recorded: str) -> str:
+    """Name WHERE two texts differ without reprinting either of them: a
+    delivered SLURP answer carries slot fillers taken from speech, and a
+    refusal message is not a place to re-emit them."""
+
+    limit = min(len(recomputed), len(recorded))
+    offset = next(
+        (index for index in range(limit) if recomputed[index] != recorded[index]),
+        limit,
+    )
+    return (
+        f"first difference at character offset {offset} "
+        f"(recomputed length {len(recomputed)}, recorded length {len(recorded)})"
+    )
+
+
+def _verify_grouped_commit(row: Mapping[str, object]) -> None:
+    """I7g: re-derive a grouped Solver row's delivered text from its own
+    recorded raw samples, and refuse the row when it does not reproduce.
+
+    Three things must hold for such a row; this function checks the last two
+    (the first -- every sample's response hash against the trace's own
+    MODEL_RESPONSE bytes -- needs the trace and lives in
+    :func:`_verify_grouped_solver_trace_binding`):
+
+    2. ``solver_group.commit_policy_id`` resolves in
+       ``core.base.COMMIT_POLICIES`` and is deterministic (re-applied twice
+       over the same recorded votes it must return the same answer).
+    3. re-running that policy over the row's own recorded samples, through
+       ``analysis.native_commit_replay.replay_row`` -- the same code the
+       offline sensitivity table runs -- reproduces the delivered bytes
+       (:func:`_committed_text`) byte for byte.
+
+    A grouped row is refused, never silently accepted, when it does not carry
+    the parameters the policy was applied with: without them the delivered
+    text cannot be re-derived at all, and a bundle carries no composed
+    configuration to recover them from.
+    """
+
+    label = _row_label(row)
+    solver_group = row.get("solver_group")
+    if not isinstance(solver_group, Mapping):
+        raise BundleError(
+            f"{label}: 'solver_group' must be a JSON object "
+            f"({SOLVER_GROUP_INVARIANT})"
+        )
+    if "commit_params" not in solver_group:
+        raise BundleError(
+            f"{label}: its grouped Solver receipt names commit policy "
+            f"{solver_group.get('commit_policy_id')!r} but records no "
+            "'commit_params', so the delivered text cannot be re-derived from the "
+            f"recorded samples ({SOLVER_GROUP_INVARIANT})"
+        )
+    records = solver_group.get("samples")
+    if (
+        not isinstance(records, Sequence)
+        or isinstance(records, (str, bytes))
+        or not records
+    ):
+        raise BundleError(
+            f"{label}: solver_group carries no sample records "
+            f"({SOLVER_GROUP_INVARIANT})"
+        )
+    from ...rails.native_episode_receipt import (  # noqa: PLC0415
+        validate_solver_group_receipt,
+    )
+
+    try:
+        validate_solver_group_receipt(
+            solver_group, samples=len(records), error_type=BundleError
+        )
+    except BundleError as error:
+        raise BundleError(
+            f"{label}: grouped Solver custody is malformed: {error} "
+            f"({SOLVER_GROUP_INVARIANT})"
+        ) from error
+
+    from ...analysis.native_commit_replay import (  # noqa: PLC0415
+        NativeCommitReplayError,
+        replay_row,
+    )
+    from ..base import COMMIT_POLICIES, CoreError  # noqa: PLC0415
+
+    # Function-local: importing rails.commit_policies is what POPULATES
+    # core.base.COMMIT_POLICIES (the same registration discipline every other
+    # caller of this registry follows).
+    from ...rails import commit_policies as _commit_policies  # noqa: PLC0415, F401
+
+    policy_id = str(solver_group["commit_policy_id"])
+    commit_params = dict(solver_group["commit_params"])
+    try:
+        policy = COMMIT_POLICIES.resolve(policy_id)
+    except CoreError as error:
+        raise BundleError(
+            f"{label}: commit policy {policy_id!r} is not registered in "
+            "core.base.COMMIT_POLICIES -- a grouped row's delivered text is custody "
+            "only when a registered, deterministic policy can re-derive it "
+            f"({SOLVER_GROUP_INVARIANT})"
+        ) from error
+    try:
+        replayed = replay_row(row, policy=policy, commit_params=commit_params)
+        again = replay_row(row, policy=policy, commit_params=commit_params)
+    except (NativeCommitReplayError, ValueError, TypeError, KeyError) as error:
+        raise BundleError(
+            f"{label}: re-running commit policy {policy_id!r} over the recorded "
+            f"samples failed: {error} ({SOLVER_GROUP_INVARIANT})"
+        ) from error
+    if replayed != again:
+        raise BundleError(
+            f"{label}: commit policy {policy_id!r} did not reproduce itself over the "
+            "same recorded samples -- a COMMIT policy must be deterministic "
+            f"({SOLVER_GROUP_INVARIANT})"
+        )
+    recomputed = replayed["final_response_text"]
+    recorded = _committed_text(row)
+    if recomputed != recorded:
+        raise BundleError(
+            f"{label}: the delivered text is not what commit policy {policy_id!r} "
+            "produces from this row's own recorded samples -- recomputed sha256 "
+            f"{hashlib.sha256(recomputed.encode('utf-8')).hexdigest()[:12]}..., "
+            f"recorded {hashlib.sha256(recorded.encode('utf-8')).hexdigest()[:12]}...; "
+            f"{_first_difference(recomputed, recorded)} ({SOLVER_GROUP_INVARIANT})"
+        )
+
+
+def _verify_grouped_solver_trace_binding(
+    row: Mapping[str, object],
+    solver_group: Mapping[str, object],
+    trace_records: Mapping[str, Mapping[str, object]],
+) -> None:
+    """I7g custody: every RAW sample of a grouped Solver visit must appear in
+    the trace under its own contact id, carrying exactly the response bytes the
+    ``solver_group`` receipt records for it -- and the row's own transport
+    identity must be that group's LAST sample contact.
+
+    This is what stops a grouped row from being a free-floating aggregate: the
+    delivered text is re-derived from the recorded samples
+    (:func:`_verify_grouped_commit`), and the recorded samples are pinned here
+    to real model responses in this same bundle's trace.
+    """
+
+    label = _row_label(row)
+    if not isinstance(solver_group, Mapping):
+        raise BundleError(
+            f"{label}: 'solver_group' must be a JSON object "
+            f"({SOLVER_GROUP_INVARIANT})"
+        )
+    records = solver_group.get("samples")
+    if (
+        not isinstance(records, Sequence)
+        or isinstance(records, (str, bytes))
+        or not records
+    ):
+        raise BundleError(
+            f"{label}: solver_group carries no sample records "
+            f"({SOLVER_GROUP_INVARIANT})"
+        )
+    last: Mapping[str, object] | None = None
+    for record in records:
+        if not isinstance(record, Mapping):
+            raise BundleError(
+                f"{label}: a solver_group sample record must be a JSON object "
+                f"({SOLVER_GROUP_INVARIANT})"
+            )
+        index = record.get("sample_index")
+        contacts = record.get("contacts")
+        if (
+            not isinstance(contacts, Sequence)
+            or isinstance(contacts, (str, bytes))
+            or not contacts
+        ):
+            raise BundleError(
+                f"{label}: solver_group sample {index!r} records no contact "
+                f"({SOLVER_GROUP_INVARIANT})"
+            )
+        for contact in contacts:
+            if not isinstance(contact, Mapping):
+                raise BundleError(
+                    f"{label}: a solver_group contact must be a JSON object "
+                    f"({SOLVER_GROUP_INVARIANT})"
+                )
+            contact_request_id = contact.get("request_id")
+            if not isinstance(contact_request_id, str) or not contact_request_id:
+                raise BundleError(
+                    f"{label}: solver_group sample {index!r} has a contact without a "
+                    f"request id ({SOLVER_GROUP_INVARIANT})"
+                )
+            request_record_id = f"{contact_request_id}/request"
+            response_record_id = f"{contact_request_id}/response"
+            absent = [
+                record_id
+                for record_id in (request_record_id, response_record_id)
+                if record_id not in trace_records
+            ]
+            if absent:
+                raise BundleError(
+                    f"{label}: solver_group sample {index!r} contact "
+                    f"{contact_request_id!r} has no trace record {absent[0]!r} -- every "
+                    "raw sample of a grouped Solver visit must stay in the trace "
+                    f"({SOLVER_GROUP_INVARIANT})"
+                )
+            payload = trace_records[response_record_id]
+            text = payload.get("text")
+            recorded_text_sha256 = contact.get("response_text_sha256")
+            if (
+                not isinstance(text, str)
+                or hashlib.sha256(text.encode("utf-8")).hexdigest()
+                != recorded_text_sha256
+            ):
+                raise BundleError(
+                    f"{label}: solver_group sample {index!r} contact "
+                    f"{contact_request_id!r} records a response_text_sha256 that does "
+                    "not match the trace's own recorded model response bytes "
+                    f"({SOLVER_GROUP_INVARIANT})"
+                )
+            for field, value in (
+                ("response_text_sha256", recorded_text_sha256),
+                ("response_sha256", contact.get("response_sha256")),
+            ):
+                if payload.get(field) != value:
+                    raise BundleError(
+                        f"{label}: solver_group sample {index!r} contact "
+                        f"{contact_request_id!r} {field} disagrees with the trace "
+                        f"record {response_record_id!r} ({SOLVER_GROUP_INVARIANT})"
+                    )
+            if trace_records[request_record_id].get("payload_sha256") != contact.get(
+                "request_sha256"
+            ):
+                raise BundleError(
+                    f"{label}: solver_group sample {index!r} contact "
+                    f"{contact_request_id!r} request_sha256 disagrees with the trace "
+                    f"record {request_record_id!r} ({SOLVER_GROUP_INVARIANT})"
+                )
+            last = contact
+    if (
+        last is None
+        or row.get("request_id") != last.get("request_id")
+        or row.get("request_sha256") != last.get("request_sha256")
+        or row.get("response_sha256") != last.get("response_sha256")
+    ):
+        raise BundleError(
+            f"{label}: a grouped row's own request/response identity must be its "
+            "group's LAST raw sample contact -- the delivered text is the commit "
+            "policy's aggregate, but the row's transport identity is still one real "
+            f"contact ({SOLVER_GROUP_INVARIANT})"
+        )
 
 
 def _split_jsonl(text: str) -> list[str]:
@@ -191,6 +485,12 @@ def _verify_outputs(
                 "text does not match its recorded response_text_sha256 -- the text was "
                 "mutated after the model response was recorded (I7)"
             )
+        # E2d: a grouped-Solver row satisfies I7 above exactly like every other
+        # row (``core.flight.runtime`` hashes the DELIVERED bytes for it), and
+        # must ADDITIONALLY re-derive those bytes from its own recorded raw
+        # samples. A row without a solver_group receipt is untouched by this.
+        if "solver_group" in row:
+            _verify_grouped_commit(row)
         sample_id = row["sample_id"]
         if not isinstance(sample_id, str):
             raise BundleError(f"outputs line {number} field 'sample_id' must be a string")
@@ -302,7 +602,22 @@ def _verify_outputs_trace_binding(
                 f"{response_record_id!r} (I7: every outputs request_id must appear in the trace)"
             )
         payload = trace_records[response_record_id]
-        for field in ("text", "response_sha256", "response_text_sha256"):
+        # E2d (I7g): a grouped Solver row's ``text`` is the COMMIT policy's
+        # aggregate over N raw samples and its ``response_text_sha256``
+        # describes those delivered bytes, so neither can equal the ONE trace
+        # response record its request_id names. What still binds to THIS record
+        # is the raw transport envelope hash; the delivered bytes are re-derived
+        # from the recorded samples (``_verify_grouped_commit``) and those
+        # samples are pinned to real trace responses by
+        # ``_verify_grouped_solver_trace_binding`` below. Every row without a
+        # solver_group receipt keeps all three comparisons.
+        solver_group = row.get("solver_group")
+        bound_fields = (
+            ("response_sha256",)
+            if solver_group is not None
+            else ("text", "response_sha256", "response_text_sha256")
+        )
+        for field in bound_fields:
             if payload.get(field) != row.get(field):
                 raise BundleError(
                     f"outputs {field} for request {request_id!r} disagrees with the trace "
@@ -326,3 +641,5 @@ def _verify_outputs_trace_binding(
                 f"outputs request_sha256 for request {request_id!r} disagrees with the trace "
                 f"record {request_record_id!r}"
             )
+        if solver_group is not None:
+            _verify_grouped_solver_trace_binding(row, solver_group, trace_records)

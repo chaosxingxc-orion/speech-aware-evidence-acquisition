@@ -7,6 +7,11 @@ from types import SimpleNamespace
 
 import pytest
 
+from speech_aware_evidence_acquisition.core.bundle import BundleError
+from speech_aware_evidence_acquisition.core.bundle.outputs import (
+    _verify_outputs,
+    _verify_outputs_trace_binding,
+)
 from speech_aware_evidence_acquisition.core.flight import runtime as flight_module
 from speech_aware_evidence_acquisition.core.flight.runtime import (
     FlightRuntime,
@@ -22,6 +27,13 @@ from speech_aware_evidence_acquisition.rails.phase_review import (
 from speech_aware_evidence_acquisition.rails.phase_runner import run_continuous_program
 
 from test_native_episode_runner import _ActualEpisodeHarness
+from test_native_episode_runner_grouped_solver import (
+    ANSWERS,
+    COMMIT,
+    DECODING_OVERRIDES,
+    _grouped_output,
+    _grouped_review_loop_config,
+)
 from test_role_context_runner import _configure_typed_context
 from test_llama_server_transport import _spawn_live_matching_process  # noqa: F401
 from test_rails_runner import _knowledge_snapshot
@@ -342,3 +354,160 @@ def test_canonical_outputs_accept_an_opted_in_terminal_solver_delivery(
         refreshed_terminal = runtime._canonical_output_rows(harness.client)
         assert refreshed_terminal[0]["request_id"] == terminal["request_id"]
         assert refreshed_terminal[0]["text"] == row["final_response_text"]
+
+
+def test_grouped_solver_seals_a_row_the_bundle_verifier_accepts(tmp_path, monkeypatch):
+    """E2d (SLURP v2 base program M2): what ``_canonical_output_rows`` seals
+    for a samples-N Solver visit, and that ``core.bundle`` accepts it.
+
+    Cell B2 v3's four-row smoke generated every contact and then failed AT THE
+    SEAL: the pre-E2d runner bound a grouped row's ``response_text_sha256`` to
+    the LAST RAW sample's response text while ``text`` carried the COMMIT
+    policy's aggregate, so I7 ("the text was mutated after the model response
+    was recorded") refused it. Both halves of the repair are proved here on
+    one real dispatch: the sealed row now hashes the DELIVERED bytes and
+    records the commit parameters, and the bundle verifier re-derives those
+    bytes from the row's own recorded samples (I7g), whose response hashes it
+    pins to this run's own trace records.
+    """
+
+    samples = 3
+    max_contacts = 1 + samples + 1 + 1  # perception + group + reviewer + planner
+    harness = _ActualEpisodeHarness(
+        tmp_path,
+        sample_count=1,
+        max_revisions=0,
+        max_contacts=max_contacts,
+        planner_actions=("ACCEPT",),
+        arm="speech-feature-query",
+    )
+    harness.config = _grouped_review_loop_config(
+        max_contacts=max_contacts,
+        samples=samples,
+        decoding_overrides=DECODING_OVERRIDES,
+        commit=COMMIT,
+    )
+    harness._output = _grouped_output
+    values = {
+        "native_episode": {
+            "schema": "saea-native-episode-config-v1",
+            "episode_id": harness.config.episode_id,
+            "max_revisions": 0,
+            "actions": dict(zip(("accept", "revise", "acquire"), harness.config.actions)),
+            "roles": {
+                role.role_kind: {
+                    "phase_id": role.phase_id,
+                    "max_iterations": role.max_iterations,
+                    **(
+                        {
+                            "samples": role.samples,
+                            "decoding_overrides": dict(role.decoding_overrides),
+                            "commit": dict(role.commit),
+                        }
+                        if role.role_kind == "solver"
+                        else {}
+                    ),
+                }
+                for role in harness.config.roles
+            },
+        },
+        "native_contact_fit": {
+            "run_id": "SAEA-NATIVE-GROUPED-SEAL-FIT",
+            "attempt_id": "attempt-native-grouped-seal-fit",
+            "contact_cap": 8 * max_contacts,
+        },
+    }
+    runtime = object.__new__(FlightRuntime)
+    runtime._composed = SimpleNamespace(values=values)
+    runtime._model = runtime._dataset = runtime._baseline = {}
+    runtime._adapter = harness.adapter
+    runtime._data_root = harness.world.data_root
+    runtime._split_id = "all"
+    runtime._transport = harness.transport
+    runtime._arm = lambda: harness.client.arm
+    runtime._plan = harness.plan
+    runtime._phase_program_material = {
+        "knowledge_snapshot": _knowledge_snapshot(),
+        "speech_packet_bindings": harness.speech_bindings,
+        "material_for_phase": harness.material_for_phase,
+        "trace_sink": harness.trace,
+    }
+    runtime._continuous_phase_runner = run_continuous_program
+    runtime._phase_planner_specs = lambda _policy: {}
+    runtime._phase_decoding_params = lambda: {"temperature": 0, "max_tokens": 64}
+    runtime._fit_base_plan = lambda plan: plan
+    runtime._build_phase_tool_dispatcher = lambda *args, **kwargs: None
+
+    def capacity_identity_only(request):
+        harness.request_gate(request)
+        capacity_identity_only.receipts.append({"capacity_verified": False})
+
+    capacity_identity_only.receipts = []
+    monkeypatch.setattr(
+        flight_module, "default_phase_program", lambda _policy: harness.program
+    )
+    monkeypatch.setattr(
+        preparation_fit,
+        "build_native_contact_fit_gate",
+        lambda *_args: capacity_identity_only,
+    )
+    try:
+        rows, contacts, _kind, _dispatch, _phases = runtime._dispatch_phase_program(
+            harness.client, harness.plan, harness.program.program_id,
+        )
+    finally:
+        harness.close()
+
+    assert contacts == max_contacts
+    runtime._output_rows = rows
+    canonical = runtime._canonical_output_rows(harness.client)
+    assert len(canonical) == 1
+    row = canonical[0]
+
+    group = row["solver_group"]
+    # (1) The receipt now records the parameters the policy was applied with,
+    # so a post-seal reader can re-run the exact commit this visit made.
+    assert group["commit_policy_id"] == COMMIT["policy"]
+    assert group["commit_params"] == {
+        "min_support": COMMIT["min_support"],
+        "similarity_threshold": COMMIT["similarity_threshold"],
+    }
+    assert [record["sample_index"] for record in group["samples"]] == list(range(samples))
+
+    # (2) The delivered text equals NO raw sample's text -- the fact that broke
+    # the old seal -- and the row's own hash now describes those delivered
+    # bytes, not the last raw contact's.
+    raw_texts = [json.dumps(answer, ensure_ascii=False, sort_keys=True) for answer in ANSWERS]
+    assert row["text"] not in raw_texts
+    assert hashlib.sha256(row["text"].encode()).hexdigest() == row["response_text_sha256"]
+    last_contact = group["samples"][-1]["contacts"][-1]
+    assert row["response_text_sha256"] != last_contact["response_text_sha256"]
+    # ...while the row's transport identity is still that one real contact.
+    assert row["request_id"] == last_contact["request_id"]
+    assert row["response_sha256"] == last_contact["response_sha256"]
+
+    # (3) The bundle verifier accepts it, against this run's own trace.
+    trace_records = {}
+    for line in (
+        (harness.world.run_dir / f"{harness.plan.run_id}.trace.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+    ):
+        document = json.loads(line)
+        trace_records[document["record_id"]] = document["payload"]
+    raw = (json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n").encode("utf-8")
+    verified = _verify_outputs(
+        raw, frozenset({row["sample_id"]}), row["carrier_lock_key"], row["arm"],
+    )
+    _verify_outputs_trace_binding(verified, trace_records)
+
+    # ...and refuses the same row once its delivered text is rewritten, with
+    # its own hash recomputed so that I7 alone would not notice.
+    forged = dict(row)
+    forged["text"] = row["text"] + " "
+    forged["response_text_sha256"] = hashlib.sha256(forged["text"].encode()).hexdigest()
+    forged_raw = (json.dumps(forged, ensure_ascii=False, sort_keys=True) + "\n").encode("utf-8")
+    with pytest.raises(BundleError, match="I7g"):
+        _verify_outputs(
+            forged_raw, frozenset({row["sample_id"]}), row["carrier_lock_key"], row["arm"],
+        )
