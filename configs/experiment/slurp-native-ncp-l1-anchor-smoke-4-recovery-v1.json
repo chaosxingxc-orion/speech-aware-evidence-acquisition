@@ -1,0 +1,78 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-ncp-l1-anchor-smoke-4-generation-recovery-v1",
+      "baseline_fragment": "slurp-native-anchor-ncp-l1-smoke-4-recovery-v1",
+      "cell_id": "slurp-native-ncp-l1-anchor-smoke-4-recovery-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Registered before contact by the B7a recovery registration agent on the E8c-fixed base (commit 2af5955a, merged 5bbd54a2). It stays held until the coordinator flips it immediately before the standalone-worker smoke launch. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "Model-free first-phase Perception supply prepared by the B7a recovery registration agent on the E8c-fixed base from the same sealed speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed dual-store anchor used; zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed anchor preparation output block on every row and to the aborted v1 registration's own artifact, so the Perception selection channel does not move in this recovery. Receipt coordination/slurp-b7a-ncp-l1-anchor-recovery-v1/prepared-supply-and-hashes-v1.json.",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-RECOVERY-V1/phase-supply-v1.json",
+            "sha256": "a3a07acdc44eb082717684376209624f72e960189ba77e0676c81b49422ca270"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-RECOVERY-V1"
+    }
+  ],
+  "date": "2026-09-17",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-RECOVERY-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops its cell until the fix is proven on this same four-row roster, and this cell is already the one root-diagnosed recovery its preregistration allows.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-native-ncp-l1-anchor-smoke-4-recovery-v1",
+  "generation_budget": {
+    "cap": 44,
+    "definition": "The unchanged maximum eleven-contact native program for each of the four already-exposed TRAIN A engineering rows: 4 x 11 = 44 is the exact program maximum. The nominal cost is about 5 contacts per row.",
+    "target": 20
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The four already-exposed TRAIN A engineering rows this repository reuses for every four-row form smoke; no quality-based selection.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row standalone-worker form smoke of cell B7a on the anchor base before it flies. Structural evidence only: the review loop runs as the anchor runs it, the episode receipt role visits and planner routes are well formed, every post-Perception request carries the policy rendered blocks, the saea-node-context-policy-v1 receipt rows bind every boundary to its template and source, one native contact fit receipt exists per realized contact, and the worker seals. No official scoring and no task-quality claim. This fragment is the recovery smoke: it re-proves the form on the E8c-fixed commit and cannot reach the illegal-action path, which is proved model-free instead (recovery note section 3).",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2"
+}
