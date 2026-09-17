@@ -429,7 +429,12 @@ def test_the_rebuild_succeeds_with_every_contact_primitive_disabled(
 
     for name in (
         "FrozenCoreClient",
-        "TRANSPORTS",
+        # Was "TRANSPORTS" until commit a29950c2 ("feat: wire prepared cache
+        # guard into transports") replaced the direct "from ..base import
+        # TRANSPORTS" with build_configured_transport, so TRANSPORTS is no
+        # longer an attribute of this module; build_configured_transport is the
+        # current name that could construct a live transport here.
+        "build_configured_transport",
         "attach_session",
         "start_session",
         "stop_session",
