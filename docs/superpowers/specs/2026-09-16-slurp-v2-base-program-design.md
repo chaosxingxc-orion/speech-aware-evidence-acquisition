@@ -97,21 +97,25 @@ direct-anchor release (`docs/results/2026-09-17-slurp-train-a-direct-anchor-rele
 | Cell | Module | Base | Control | Contacts/row | GPU-h |
 | --- | --- | --- | --- | ---: | ---: |
 | B0 | M0 | anchor minus review loop | sealed anchor | 2 | ~1.4 |
-| B1 | M1, plain top-20 speech-keyed exemplars | B0 (anchor if B0 harmful) | derangement twin + B0 | 2 | ~2 |
-| B2 | M2, N=5, T=0.7 | B0 | 5 greedy repeats aggregated identically + B0 | 6 | ~4 |
+| B1 | M1, plain top-20 speech-keyed exemplars | anchor (B0 harmful) | derangement twin + anchor | 5 | ~3.4 |
+| B2 | M2, N=5, T=0.7 | anchor (B0 harmful) | 5 greedy repeats aggregated identically + anchor | 10 | ~5-6 |
 | B3 | M3 (A1-decided: R_action + v2 labels, P2 fillers; +3.5 SLU official, about +0.2 symmetric, +1.4 intent) | scorer-side | unprojected | 0 | 0 |
-| B4a | M4a | best admitted base | that base | 2 | ~1.4 |
-| B4b | M4b | best admitted base | that base | 2 | ~1.4 |
+| B4a | M4a | anchor | anchor | 5 | ~3.4 |
+| B4b | M4b | anchor | anchor | 5 | ~3.4 |
 | B5 | admitted set ("v2 candidate") | -- | anchor, released direct | 6-7 | ~4-5 |
 | B5r | replication of B5 | -- | B5 | 6-7 | ~4-5 |
 | B6 | DEV1000 confirmation | -- | sealed DEV1000 direct 35.68 / agent 50.30 | 6-7 | ~4 |
 
-Order (owner decision 8, 2026-09-17): B0 -> B0r (own-null re-decision) -> B1 -> B2 -> B4b -> B4a -> B4c only if B4a admits -> B5 -> B5r -> B6; a twin flies only after its arm shows a positive CI95 against the base. B3 (projection v3) is adopted as the fixed post-processing of every official number (owner decision 7), reported beside the symmetric-normalised number.
+Order (owner decision 8, 2026-09-17): B0 -> B0r (own-null re-decision) -> B1 -> B2 -> B4b -> B4a -> B4c only if B4a admits -> B5 -> B5r -> B6; a twin flies only after its arm shows a positive CI95 against the base. B3 (projection v3)
+
+Outcome 2026-09-17 (B0 and B0r flown): module M0 is HARMFUL under the TRAIN A own null (docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md); the review loop is retained and recorded NEUTRAL in the harness-admission table with the SLURP default plan configs/baseline/slurp-native-dual-store-train-fold-a-default-plan-v1.json; cells B1, B2 and B4 re-register on the anchor as v2 packages (the review-off v1 packages are superseded before contact). Every later cell carries the anchor's nominal 5 contacts per row (B2: 10) at about 3.4 GPU hours (B2: about 5 to 6). The measured own null of this roster and geometry, half-widths pooled SLU 1.1218 pp and intent 1.0051 pp, replaces the imported DEV1000 margins in every later TRAIN A rule. B3 (projection v3) is adopted as the fixed post-processing of every official number (owner decision 7), reported beside the symmetric-normalised number.
 
 Decision rules, fixed before each flight and copied into its preregistration:
 
 - B0 NEUTRAL if SLU and intent are non-inferior within the null margins (intent 0.92, SLU micro
   1.18); then the loop leaves the default plan. If HARMFUL, later cells build on the anchor.
+  Outcome: HARMFUL on the first pass (imported margin) and HARMFUL on the own-null re-decision;
+  later cells build on the anchor.
 - B1, B2, B4 ADMITTED if primary SLU CI95 lower bound > 0 against the base and (B1) the twin,
   intent non-inferior at the null margin, normalised scorer agreeing in sign, and no scenario
   losing intent beyond the null band. Otherwise NEUTRAL (enters the plan only if it lowers cost)

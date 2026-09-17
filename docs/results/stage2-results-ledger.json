@@ -3647,6 +3647,17 @@
         "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1",
         "SAEA-SLURP-NATIVE-REVIEW-OFF-SMOKE-4-V1"
       ]
+    },
+    {
+      "date": "2026-09-17",
+      "cell_id": "SLURP-B0-REVIEW-OFF-REDECISION-V2",
+      "status": "HARMFUL_UNDER_OWN_NULL_LOOP_RETAINED_LATER_CELLS_REBASED_ON_ANCHOR",
+      "source": "docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md",
+      "source_sha256": "cb04d406c520073e3a63ce3de4ea1996a2ace28fd26068eca8cad6338876f1ce",
+      "meaning": "Module M0 (Reviewer/Planner loop off) re-decided under the TRAIN A own null measured by the byte-identical replicate B0r: half-widths pooled SLU 1.1218 pp, intent 1.0051 pp (77 of 1,080 rows change delivered intent between two greedy passes). The preregistered rule needs both passes non-inferior to the anchor at those margins; the intent clause fails on both (CI95 lower bounds -1.527 and -1.313) and the SLU clause fails once (-1.150) and passes once (-1.043). Status HARMFUL; the review loop stays in the default plan (recorded NEUTRAL in the harness-admission table: its ON-minus-OFF deltas +0.37 / +0.28 pp intent and -0.13 / -0.10 pp SLU sit inside the own null), and cells B1, B2 and B4 re-register on the anchor. Caveat on record: both anchor legs share the anchor's single realisation. Projection v3 beside: anchor 51.99 / 79.35, B0 52.16 / 79.07, B0r 51.91 / 79.44 (SLU / intent).",
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1"
+      ]
     }
   ]
 }

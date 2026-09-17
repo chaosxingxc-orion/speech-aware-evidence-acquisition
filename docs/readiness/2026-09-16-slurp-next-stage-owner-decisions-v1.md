@@ -42,3 +42,4 @@ exposed development rosters, twice. It is not a test-split or paper claim.
 | 9 | B4a's fallback candidate pulls up to 16 slot cards (median +7 values). | B4c (intent store v2 alone) flies only if B4a admits, to separate the store revision from the fallback hypothesis. |
 | 10 | Codex's untracked leftovers in the main checkout and its worktrees. | Remove after merging: the three untracked files move to an archive outside the repository with a receipt; worktrees whose commits are reachable from a branch are pruned with a tombstone receipt; flight worktrees stay until their flights finalize. |
 
+Outcome of decision 6 (2026-09-17, after the B0r read): HARMFUL under the own null (intent clause fails on both passes; SLU clause fails once by 0.028 pp). The review loop is retained; B1, B2 and B4 re-register on the anchor as v2 packages. Record: `docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md`.

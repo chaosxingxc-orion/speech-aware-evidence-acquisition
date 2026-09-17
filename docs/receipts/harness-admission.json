@@ -17,9 +17,17 @@
         "cross-call dispatcher (obs_prefetch_depth 1)"
       ],
       "note": "the sealed comparator plus the one NEUTRAL scheduling module; the KC-E1f repair stays out until its replication is met. The fragment differs from the comparator's own configs/baseline/e21-buf90-zero-locked-scored4.json in exactly one key, obs_prefetch_depth, which is what makes it the comparator plus one module rather than a second baseline."
+    },
+    {
+      "carrier": "slurp",
+      "config": "configs/baseline/slurp-native-dual-store-train-fold-a-default-plan-v1.json",
+      "modules": [
+        "review loop (Reviewer x3 + Planner + at most one Solver revision after the initial draft; Perception -> Solver -> Reviewer -> Planner -> deliver)"
+      ],
+      "note": "the sealed dual-store TRAIN Fold A anchor plus the one NEUTRAL module this table decides for SLURP, the review loop, armed by native_episode.review_loop 'on'. The fragment differs from the comparator's own configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json in exactly that configuration key (and in its own what_this_is description), which is what makes it the comparator plus one module rather than a second baseline. The SLURP v2 base program's later modules (exemplar supply, grouped sampling, the ORG store revisions) enter this plan only through their own decided entries."
     }
   ],
-  "default_plans_note": "ONE plan, for Earnings-21, added 2026-09-08 on merge. It carries exactly one decided module: the cross-call dispatcher, whose verdict (docs/readiness/2026-09-08-e21-dispatcher-admission-v1-verdict.md) states 'NEUTRAL -- ADMITTED TO THE DEFAULT PLAN AS A NO-HARM MODULE' and licenses turning it on for Earnings-21 cells at this geometry. The other entry below is ADMITTED but PROVISIONAL with its replication UNMET, and its own verdict note fixed the consequence before the verdict was known: 'until then NO candidate freeze, NO citation of this as an admitted effect and NO entry into the default plan'. So it may not enter this plan, and scripts/checks/harness_admission_check.py is what keeps that true: it refuses a HARMFUL module in any default plan, refuses a module whose provisional obligation is UNMET in any default plan, and requires every other ADMITTED or NEUTRAL module to appear in at least one default plan for its carrier.",
+  "default_plans_note": "ONE plan, for Earnings-21, added 2026-09-08 on merge. It carries exactly one decided module: the cross-call dispatcher, whose verdict (docs/readiness/2026-09-08-e21-dispatcher-admission-v1-verdict.md) states 'NEUTRAL -- ADMITTED TO THE DEFAULT PLAN AS A NO-HARM MODULE' and licenses turning it on for Earnings-21 cells at this geometry. The other entry below is ADMITTED but PROVISIONAL with its replication UNMET, and its own verdict note fixed the consequence before the verdict was known: 'until then NO candidate freeze, NO citation of this as an admitted effect and NO entry into the default plan'. So it may not enter this plan, and scripts/checks/harness_admission_check.py is what keeps that true: it refuses a HARMFUL module in any default plan, refuses a module whose provisional obligation is UNMET in any default plan, and requires every other ADMITTED or NEUTRAL module to appear in at least one default plan for its carrier. EXTENDED 2026-09-17: a second plan, for SLURP, added by docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md. It carries exactly one decided module, the review loop, whose entry is NEUTRAL under the TRAIN A own null (it may stay; its removal failed non-inferiority twice). The plan fragment is the sealed anchor plus the loop's validated marker.",
   "status_values": {
     "ADMITTED": "a gain on the carrier's primary metric, disjoint from the carrier's own null, with every gating guard non-inferior at the measured margin",
     "HARMFUL": "a gating guard fails; stays in the record as a documented negative and never enters a plan",
@@ -268,6 +276,81 @@
         "any other carrier. The named Earnings-21 follow-up -- window-level and PERSON-span confidence, where a flag has a span to point at rather than only a row to triage -- is NAMED AND NOT REGISTERED in section 10 of the preregistration and needs its own preregistration and owner decision. There is no cross-carrier verdict",
         "the noise-floor measurement of section 7, which stays priced and unregistered: a second 1,000-contact pass asking whether confidence separates the rows that flip from the rows that do not. The preregistration said it becomes the first thing worth buying IF the primary result is ADMITTED. It is not"
       ]
+    },
+    {
+      "carrier": "slurp",
+      "comparator": {
+        "off_arms": [
+          {
+            "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1",
+            "attempt_id": "attempt-slurp-native-review-off-train-fold-a-generation-v1",
+            "study_commit": "5d0d694d"
+          },
+          {
+            "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1",
+            "attempt_id": "attempt-slurp-native-review-off-train-fold-a-replicate-generation-v1",
+            "study_commit": "f38d3c33"
+          }
+        ],
+        "on_arm": {
+          "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+          "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1"
+        },
+        "note": "the module is the loop, so its ON arm is the sealed anchor and its OFF arms are the two review-off cells; the contrast the rule reads is OFF minus ON, twice, at the margins the two OFF arms measure against each other"
+      },
+      "date": "2026-09-17",
+      "module": "review loop (Reviewer x3 + Planner + at most one Solver revision after the initial draft; Perception -> Solver -> Reviewer -> Planner -> deliver)",
+      "row": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1",
+      "status": "NEUTRAL",
+      "status_basis": "NEUTRAL is this table's status for a module with no harm and no gain, and that is what the two-pass read says about the loop itself: ON minus OFF is +0.37 / +0.28 pp intent and -0.13 / -0.10 pp SLU, every interval spanning zero and every point estimate inside the own null the two OFF arms measure (half-widths intent 1.0051, pooled SLU 1.1218 pp). The module may therefore stay in the default plan. It may NOT leave it: the preregistered re-decision rule for REMOVING it (docs/readiness/2026-09-17-slurp-b0-replicate-v1-preregistration.md section 6) needed both OFF passes non-inferior to the anchor at those margins, and the intent clause failed on both (CI95 lower bounds -1.527 and -1.313 against -1.005) while the SLU clause failed once (-1.150 against -1.122) and passed once (-1.043). That removal verdict is HARMFUL and is recorded as such in docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md; the first-pass verdict under the imported margin (docs/results/2026-09-17-slurp-b0-review-off-verdict.md) stays on record beside it. Both anchor legs share the anchor's single realisation; the rule does not adjust for that and none is applied.",
+      "evidence": {
+        "arm": {
+          "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1",
+          "attempt_id": "attempt-slurp-native-review-off-train-fold-a-replicate-generation-v1"
+        },
+        "first_pass": {
+          "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1",
+          "attempt_id": "attempt-slurp-native-review-off-train-fold-a-generation-v1"
+        },
+        "smoke": {
+          "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-SMOKE-4-V1",
+          "attempt_id": "attempt-slurp-native-review-off-smoke-4-generation-v1",
+          "note": "the four-row structural smoke of the OFF form; B0r registered no smoke because its request bytes are B0's on 1,080/1,080 rows"
+        },
+        "primary": "official pooled SLU-F1, 1,080 paired TRAIN A rows, 125 speaker clusters, 10,000 draws, seed 20260915. OFF minus ON: first pass +0.13 pp CI95 [-1.15, +1.45]; second pass +0.10 pp CI95 [-1.04, +1.19]",
+        "guards": "intent (scenario+action) OFF minus ON: first pass -0.37 pp CI95 [-1.53, +0.82]; second pass -0.28 pp CI95 [-1.31, +0.73]; saves / harms 22 / 26 and 22 / 25; the removal clause (lower bound > -1.005) fails on both passes",
+        "own_null": "B0r minus B0, the same request bytes under two batch compositions: pooled SLU -0.04 pp CI95 [-1.22, +1.02] (half-width 1.1218), intent +0.09 pp CI95 [-0.91, +1.10] (half-width 1.0051), scenario +0.37, action +0.28, pooled span F1 +0.32; 77 of 1,080 rows (7.13 %) deliver a different intent",
+        "secondary": "against the released direct anchor the OFF arms keep the dual-store gain: pooled SLU +14.78 and +14.74 pp, intent +3.89 and +3.98 pp. Projection v3 beside every official number: anchor 51.99 / 79.35, B0 52.16 / 79.07, B0r 51.91 / 79.44 (SLU / intent); the symmetric-normalised scorer has no TRAIN sibling, so that number is not available on this roster",
+        "margins_from": {
+          "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1",
+          "attempt_id": "attempt-slurp-native-review-off-train-fold-a-replicate-generation-v1",
+          "note": "MEASURED on this roster, geometry and episode form as the CI95 half-widths of the replicate minus the first pass; they replace the imported DEV1000 CI90 margins (0.92 / 1.18) for every later TRAIN A verdict"
+        },
+        "cost": "the loop is 3.26 contacts per row (5,417 against 2,160 per 1,080 rows), 2.33 GPU hours (3.388 against 1.054 / 1.059), 9,290 repeated speech seconds and 32.7 M prompt tokens for at most two changed delivered intents; the cost is recorded, it is not a gate",
+        "diagnostic": "the anchor's initial Solver intent equals its delivered intent on 1,078 of 1,080 rows; the roughly 77-78 disagreements between any two arms are temperature-zero batch-composition nondeterminism, at most one row is the loop's revision channel",
+        "receipt": "docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md",
+        "verdict_note": "docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md"
+      },
+      "not_admitted_for": [
+        "any claim that the loop helps: the point estimates are nil, the loop touched at most two delivered intents, and NEUTRAL licenses only its retention in the plan it already occupies",
+        "any claim that the loop is free: 3.26 contacts and 2.33 GPU hours per 1,080 rows are the recorded price; the owner's contact-budget question stays open",
+        "removal from the default plan: the removal verdict is HARMFUL under the own null on both passes and a third pass is not registered",
+        "any other roster or carrier; DEV1000, Fold B and the test split are untouched by these rows"
+      ],
+      "caveats": [
+        "the two OFF arms are compared with ONE realisation of the ON arm; the consistent sign of the intent deltas is one reading of the anchor's own draw",
+        "the first-pass verdict under the imported margin stays on record beside this entry, as the KC-E1f v1/v2 pair does"
+      ],
+      "switch": {
+        "added_by": "docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md; class 'episode' of harness-admission v3 (E6, 2026-09-16)",
+        "table": "episode",
+        "key": "native_episode.review_loop",
+        "on": "on",
+        "off": "off",
+        "proof": "tests/unit/test_config_table_module_switches.py::test_review_loop_off_is_one_episode_class_key_once_derived_leaves_are_set_aside",
+        "what_flew": "The ON arm flew configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json WITHOUT the marker (the marker did not exist when the anchor sealed; the loader reads the loop leaves max_revisions 1 / reviewer 3 / planner 1 as the loop ON). The first OFF arm flew the review-off fragment at 5d0d694d WITHOUT the marker (leaves 0 / 0 / 0, policy phase-native-candidates-solve-v1); the second OFF arm flew the same fragment at f38d3c33 WITH the marker 'off', which the envelope receipt proves renders no request byte. The SLURP default plan configs/baseline/slurp-native-dual-store-train-fold-a-default-plan-v1.json is the anchor fragment plus the marker 'on' and its own what_this_is description, nothing else; it is never a cell of its own.",
+        "why_this_table": "the module changes the native episode's role graph (which roles run after the Solver draft), not a per-phase request table entry; harness-admission v3 names that class 'episode' and admits this key on its closed allowlist"
+      }
     }
   ],
   "switch_classes": [
