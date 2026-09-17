@@ -760,6 +760,7 @@ from ..reproduction.slurp_official_eval import (  # noqa: E402
     score_slurp_outputs_official_projected_v3_train,
     score_slurp_outputs_official_train,
     score_slurp_outputs_slu_normalized,
+    score_slurp_outputs_slu_normalized_train,
 )
 
 SCORERS.register("slurp-slu", score_slurp_outputs_official)
@@ -887,6 +888,23 @@ SCORERS.register(
 # ---------------------------------------------------------------------------
 
 SCORERS.register("slurp-slu-f1-normalized-v1", score_slurp_outputs_slu_normalized)
+
+# The SAME symmetric scorer against TRAIN gold -- owner decision 14 of
+# 2026-09-17 (``docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md``).
+#
+# Decision 7 requires the symmetric-normalised number BESIDE every official
+# number. The DEV binding above resolves gold from ``devel`` and refuses a
+# TRAIN prediction outright, so on the SLURP v2 base program's TRAIN A roster
+# that number was simply not evaluable -- cells B0r and B4b record the refusal
+# in their own verdicts. This id is the same function pointed at the split the
+# construction fold's rows came from, registered exactly as
+# ``slurp-slu-official-train`` is registered beside ``slurp-slu-official``:
+# a keyword binding of the SAME implementation, never a second one, so the
+# gold a number was computed against is named by the scorer id in the manifest
+# instead of hidden in a call site.
+SCORERS.register(
+    "slurp-slu-f1-normalized-v1-train", score_slurp_outputs_slu_normalized_train
+)
 
 # One registered callable owns the aligned projected-v2 primary and raw-label
 # normalized secondary. Keeping both views inside this result lets
