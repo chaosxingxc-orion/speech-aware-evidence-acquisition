@@ -302,3 +302,151 @@ def test_final_report_policy_is_opt_in_and_requires_a_report_turn():
         load_native_episode_config(values, program())
     values["native_episode"]["roles"]["reviewer"]["max_iterations"] = 3
     assert load_native_episode_config(values, program(ceiling=6)).reserve_final_report
+
+
+# ---------------------------------------------------------------------------
+# E2 (SLURP v2 base program M2): grouped Solver sampling
+# (docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md
+# section 4, item M2).
+# ---------------------------------------------------------------------------
+
+VALID_OVERRIDES = {"temperature": 0.7, "seed_offset": 0}
+VALID_COMMIT = {
+    "policy": "saea-commit-plurality-support-v1",
+    "min_support": 3,
+    "similarity_threshold": 0.8,
+}
+
+
+def test_solver_samples_defaults_to_one_and_carries_no_sampling_fields():
+    parsed = load_native_episode_config(config(), program())
+    solver = parsed.role("solver")
+    assert solver.samples == 1
+    assert solver.decoding_overrides is None
+    assert solver.commit is None
+
+
+def test_anchor_config_ceiling_is_unchanged_by_the_new_field():
+    """The exact anchor config from ``config()`` must still validate at the
+    historical ceiling -- samples 1 is byte-identical to today's behaviour."""
+
+    values = config()
+    values["native_episode"]["max_revisions"] = 2
+    values["native_episode"]["roles"]["reviewer"]["max_iterations"] = 3
+    values["phase_tools"] = {"reviewer": {
+        "mode": "native-tools", "source_authority_role": "reviewer",
+        "allowed_tools": ["analyze"],
+    }}
+    parsed = load_native_episode_config(values, program(ceiling=16))
+    assert parsed.max_contacts == 16
+
+
+def test_grouped_solver_ceiling_multiplies_only_the_solver_contribution():
+    values = config()
+    values["native_episode"]["roles"]["solver"]["samples"] = 5
+    values["native_episode"]["roles"]["solver"]["decoding_overrides"] = VALID_OVERRIDES
+    values["native_episode"]["roles"]["solver"]["commit"] = VALID_COMMIT
+    # perception 1 + (0 + 1) * (reviewer 1 + planner 1 + solver 1 * 5) = 8
+    parsed = load_native_episode_config(values, program(ceiling=8))
+    assert parsed.max_contacts == 8
+    assert parsed.role("solver").samples == 5
+    assert parsed.role("solver").decoding_overrides == VALID_OVERRIDES
+    assert parsed.role("solver").commit == VALID_COMMIT
+    with pytest.raises(ValueError, match="ceiling"):
+        load_native_episode_config(values, program(ceiling=7))
+
+
+def test_grouped_solver_ceiling_multiplies_across_every_revision():
+    values = config()
+    values["native_episode"]["max_revisions"] = 2
+    values["native_episode"]["roles"]["solver"]["samples"] = 3
+    values["native_episode"]["roles"]["solver"]["decoding_overrides"] = {
+        "temperature": 1.0, "seed_offset": 7,
+    }
+    values["native_episode"]["roles"]["solver"]["commit"] = {
+        "policy": "saea-commit-plurality-support-v1", "min_support": 2, "similarity_threshold": 0.8,
+    }
+    # perception 1 + (2 + 1) * (reviewer 1 + planner 1 + solver 1 * 3) = 1 + 15 = 16
+    parsed = load_native_episode_config(values, program(ceiling=16))
+    assert parsed.max_contacts == 16
+
+
+def test_only_solver_role_may_declare_grouped_sampling_fields():
+    values = config()
+    values["native_episode"]["roles"]["reviewer"]["samples"] = 2
+    with pytest.raises(ValueError, match="phase_id and max_iterations"):
+        load_native_episode_config(values, program())
+
+
+@pytest.mark.parametrize("samples", [0, -1, 9, True, 1.5, "5"])
+def test_solver_samples_must_be_a_bounded_integer(samples):
+    values = config()
+    values["native_episode"]["roles"]["solver"]["samples"] = samples
+    values["native_episode"]["roles"]["solver"]["decoding_overrides"] = VALID_OVERRIDES
+    values["native_episode"]["roles"]["solver"]["commit"] = VALID_COMMIT
+    with pytest.raises(ValueError):
+        load_native_episode_config(values, program(ceiling=100))
+
+
+def test_decoding_overrides_requires_samples_at_least_two():
+    values = config()
+    values["native_episode"]["roles"]["solver"]["decoding_overrides"] = VALID_OVERRIDES
+    with pytest.raises(ValueError, match="samples >= 2"):
+        load_native_episode_config(values, program())
+
+
+def test_commit_is_forbidden_when_samples_is_one():
+    values = config()
+    values["native_episode"]["roles"]["solver"]["commit"] = VALID_COMMIT
+    with pytest.raises(ValueError, match="samples == 1"):
+        load_native_episode_config(values, program())
+
+
+def test_samples_at_least_two_requires_decoding_overrides_and_commit():
+    values = config()
+    values["native_episode"]["roles"]["solver"]["samples"] = 5
+    with pytest.raises(ValueError, match="decoding_overrides"):
+        load_native_episode_config(values, program(ceiling=100))
+    values["native_episode"]["roles"]["solver"]["decoding_overrides"] = VALID_OVERRIDES
+    with pytest.raises(ValueError, match="commit"):
+        load_native_episode_config(values, program(ceiling=100))
+
+
+@pytest.mark.parametrize("overrides", [
+    {"temperature": 0.7},
+    {"seed_offset": 0},
+    {"temperature": 0.7, "seed_offset": 0, "extra": 1},
+    {"temperature": 0, "seed_offset": 0},
+    {"temperature": 2.1, "seed_offset": 0},
+    {"temperature": True, "seed_offset": 0},
+    {"temperature": 0.7, "seed_offset": -1},
+    {"temperature": 0.7, "seed_offset": True},
+    {"temperature": 0.7, "seed_offset": 1.0},
+])
+def test_decoding_overrides_shape_and_ranges_are_enforced(overrides):
+    values = config()
+    values["native_episode"]["roles"]["solver"]["samples"] = 5
+    values["native_episode"]["roles"]["solver"]["decoding_overrides"] = overrides
+    values["native_episode"]["roles"]["solver"]["commit"] = VALID_COMMIT
+    with pytest.raises(ValueError, match="decoding_overrides"):
+        load_native_episode_config(values, program(ceiling=100))
+
+
+@pytest.mark.parametrize("commit", [
+    {"policy": "saea-commit-plurality-support-v1", "min_support": 3},
+    {"policy": "saea-commit-plurality-support-v1", "min_support": 3, "similarity_threshold": 0.8, "extra": 1},
+    {"policy": "", "min_support": 3, "similarity_threshold": 0.8},
+    {"policy": "saea-commit-plurality-support-v1", "min_support": 0, "similarity_threshold": 0.8},
+    {"policy": "saea-commit-plurality-support-v1", "min_support": 6, "similarity_threshold": 0.8},
+    {"policy": "saea-commit-plurality-support-v1", "min_support": True, "similarity_threshold": 0.8},
+    {"policy": "saea-commit-plurality-support-v1", "min_support": 3, "similarity_threshold": 0.0},
+    {"policy": "saea-commit-plurality-support-v1", "min_support": 3, "similarity_threshold": 1.1},
+    {"policy": "unknown-commit-policy", "min_support": 3, "similarity_threshold": 0.8},
+])
+def test_commit_shape_and_ranges_are_enforced(commit):
+    values = config()
+    values["native_episode"]["roles"]["solver"]["samples"] = 5
+    values["native_episode"]["roles"]["solver"]["decoding_overrides"] = VALID_OVERRIDES
+    values["native_episode"]["roles"]["solver"]["commit"] = commit
+    with pytest.raises(ValueError):
+        load_native_episode_config(values, program(ceiling=100))

@@ -134,6 +134,18 @@ ROLE_CONTEXT_COMPILERS = Registry("role context compiler")
 # only after the framework history has been validated. Config names the
 # projection explicitly; absent means the historical request bytes.
 NATIVE_EVIDENCE_PROJECTIONS = Registry("native evidence projection")
+# E2 (2026-09-16, SLURP v2 base program M2, ``docs/superpowers/specs/
+# 2026-09-16-slurp-v2-base-program-design.md`` section 4): named deterministic
+# policies that aggregate the N raw structured answers of one grouped Solver
+# visit (temperature > 0, distinct pinned seeds, every raw response kept in
+# custody) into the ONE delivered answer. An entry is a pure callable
+# ``(votes: Sequence[rails.commit_policies.SolverSampleVote], *, min_support,
+# similarity_threshold) -> rails.commit_policies.CommitOutcome`` -- same
+# one-Registry discipline as every other seam above, so
+# ``native_episode.roles.solver.commit.policy`` resolves here exactly like
+# every other config-declared component id. Populated from
+# ``rails/commit_policies.py``, the canonical registration site.
+COMMIT_POLICIES = Registry("commit policy")
 
 
 # ---------------------------------------------------------------------------

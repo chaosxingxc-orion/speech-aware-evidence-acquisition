@@ -549,3 +549,111 @@ def test_the_run_switch_class_is_a_closed_allowlist():
     with pytest.raises(ConfigTableError, match="is dotted"):
         resolve_run_switch_key("run.obs_prefetch_depth")
 
+
+# ---------------------------------------------------------------------------
+# 9. grouped-Solver sampling (E2, SLURP v2 base program M2) -- documented as
+# NEITHER a per-phase table entry NOR a ``run``-class flat key.
+#
+# The M2 design row (docs/superpowers/specs/2026-09-16-slurp-v2-base-
+# program-design.md section 3) names the switch class "judges", but the
+# judges table's own entries are `{judges, on_flag, params}` -- the
+# Reviewer's SCORE-and-FLAG seat (owner Decision 11-C: "the Reviewer SCORES
+# and FLAGS and never proposes a revision"). Grouped sampling changes what
+# the SOLVER decodes (temperature, seed) and how its N answers are combined
+# into the delivered draft, which is a different seat's decision, not a
+# Reviewer judgment. Forcing it into `judges.<phase>.{judges,on_flag,params}`
+# would either not fit at all (there is no judge id for "sample N times")
+# or misrepresent a Solver-side decoding/aggregation module as a Reviewer
+# verdict. It also fails the ``run`` class's own admission test: ``run`` is
+# reserved for a module whose OWN falsifier proves the request never moves a
+# byte (``rails.config_tables.resolve_run_switch_key``'s docstring, and the
+# cross-call dispatcher's own falsifier above); grouped sampling deliberately
+# DOES move request bytes (temperature, seed), so it is explicitly excluded
+# from ``run`` by that same rule ("a module that changes the request the
+# core sees belongs in a config table, not here").
+#
+# What IS true, and what this test proves with the same ``switch_key``
+# machine check every module above uses: the whole module is ONE nested
+# object at ``native_episode.roles.solver`` (``samples``,
+# ``decoding_overrides``, ``commit``), sitting inside the ALREADY-EXISTING
+# per-run ``native_episode`` configuration block (validated by
+# ``rails.native_episode_config.load_native_episode_config``, gated on the
+# ``native-role-episode`` stop rule) rather than one of the four per-phase
+# tables. Its OFF arm (the key absent, ``samples`` defaulting to 1) is
+# provably a config-hash twin of today's behaviour
+# (``test_native_episode_config.py::
+# test_anchor_config_ceiling_is_unchanged_by_the_new_field`` and
+# ``test_native_request_grouped_solver.py::
+# test_samples_one_ungrouped_adapter_is_unaffected``). This is recorded here
+# as an open decision for the coordinator/owner: either register a sixth
+# switch class for a per-run, non-``run``-class object (a schema bump, v3,
+# to ``docs/receipts/harness-admission.json``, not made by this change), or
+# accept ``native_episode.roles.solver`` as this module's one-key home
+# without adding it to ``rails.config_tables.CONFIG_TABLE_NAMES``.
+# ---------------------------------------------------------------------------
+
+
+def _native_episode_experiment(solver_extra=None):
+    roles = {
+        name: {"phase_id": name, "max_iterations": 1}
+        for name in ("perception", "solver", "reviewer", "planner")
+    }
+    if solver_extra:
+        roles["solver"] = {**roles["solver"], **solver_extra}
+    return {
+        "native_episode": {
+            "schema": "saea-native-episode-config-v1",
+            "episode_id": "e2-grouped-solver-proof",
+            "max_revisions": 0,
+            "actions": {"accept": "ACCEPT", "revise": "REVISE", "acquire": "ACQUIRE"},
+            "roles": roles,
+        },
+    }
+
+
+def _e2_program(max_contacts):
+    from speech_aware_evidence_acquisition.rails.controllers import PhaseProgram, PhaseSpec
+
+    return PhaseProgram(
+        program_id="phase-e2-grouped-solver-proof",
+        phases=tuple(
+            PhaseSpec(name, name, "none", None, False)
+            for name in ("perception", "solver", "reviewer", "planner")
+        ),
+        max_contacts=max_contacts,
+        stop_rule="native-role-episode",
+    ).validate()
+
+
+def test_grouped_solver_sampling_is_one_native_episode_roles_solver_key(tmp_path):
+    from speech_aware_evidence_acquisition.rails.native_episode_config import (
+        load_native_episode_config,
+    )
+
+    off = _compose_arm(tmp_path, "off", {}, experiment=_native_episode_experiment())
+    on = _compose_arm(
+        tmp_path, "on", {},
+        experiment=_native_episode_experiment({
+            "samples": 5,
+            "decoding_overrides": {"temperature": 0.7, "seed_offset": 0},
+            "commit": {
+                "policy": "saea-commit-plurality-support-v1",
+                "min_support": 3,
+                "similarity_threshold": 0.8,
+            },
+        }),
+    )
+    assert on.config_hash != off.config_hash
+    assert switch_key(on.values, off.values) == "native_episode.roles.solver"
+
+    # perception 1 + (0 + 1) * (reviewer 1 + planner 1 + solver 1) = 4, the
+    # historical ceiling, unchanged by this module's OFF arm.
+    off_parsed = load_native_episode_config(off.values, _e2_program(4))
+    assert off_parsed.max_contacts == 4
+    assert off_parsed.role("solver").samples == 1
+
+    # perception 1 + (0 + 1) * (reviewer 1 + planner 1 + solver 1 * 5) = 8.
+    on_parsed = load_native_episode_config(on.values, _e2_program(8))
+    assert on_parsed.max_contacts == 8
+    assert on_parsed.role("solver").samples == 5
+

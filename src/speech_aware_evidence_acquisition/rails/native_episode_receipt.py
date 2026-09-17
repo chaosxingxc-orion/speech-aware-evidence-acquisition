@@ -478,8 +478,123 @@ def validate_native_episode_finite_path(
             _raise(error_type, "finite path has an unsupported Planner continuation")
 
 
+_SOLVER_GROUP_FIELDS = frozenset({"commit_policy_id", "samples", "delivered"})
+_SOLVER_GROUP_SAMPLE_FIELDS = frozenset(
+    {"sample_index", "seed", "temperature", "parse_status", "parsed_answer", "contacts"}
+)
+_SOLVER_GROUP_DELIVERED_FIELDS = frozenset(
+    {
+        "intent_support", "intent_member_sample_indices",
+        "intent_tie_break_sample_index", "entities",
+    }
+)
+_SOLVER_GROUP_ENTITY_FIELDS = frozenset(
+    {"type", "filler", "support", "member_sample_indices", "tie_break_sample_index"}
+)
+
+
+def _nonneg_int(value, label, *, error_type):
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        _raise(error_type, f"{label} must be a nonnegative integer")
+    return value
+
+
+def validate_solver_group_receipt(
+    solver_group: Mapping[str, object],
+    *,
+    samples: int,
+    error_type: type[Exception] = ValueError,
+) -> None:
+    """Validate the custody a grouped Solver visit keeps (E2, SLURP v2 base
+    program M2, ``reproduction.ojw.native_group_solver.
+    run_grouped_solver_samples``'s ``solver_group`` output): every raw
+    sample of one Solver visit -- its pinned seed, decoding temperature,
+    parse status and parsed answer -- plus the registered commit policy's
+    support/tie-break provenance for the ONE delivered answer.
+
+    This is additional custody beside the role's ordinary
+    ``execution_receipt`` (:func:`_receipt` above), which
+    ``reproduction.ojw.native_episode``'s ``_execution_receipt`` already
+    validates and which stays exactly the concatenation, in sample order, of
+    every sample's own contacts.
+    """
+
+    if isinstance(samples, bool) or not isinstance(samples, int) or samples < 1:
+        _raise(error_type, "solver group receipt requires a positive registered sample count")
+    if not isinstance(solver_group, Mapping) or set(solver_group) != _SOLVER_GROUP_FIELDS:
+        _raise(error_type, "solver group receipt has an invalid shape")
+    if not isinstance(solver_group["commit_policy_id"], str) or not solver_group["commit_policy_id"]:
+        _raise(error_type, "solver group receipt names no commit policy")
+    records = _sequence(solver_group["samples"], "solver group samples", error_type=error_type)
+    if len(records) != samples:
+        _raise(error_type, "solver group receipt does not carry every registered sample")
+    seen_seeds: set[int] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping) or set(record) != _SOLVER_GROUP_SAMPLE_FIELDS:
+            _raise(error_type, "solver group sample record has an invalid shape")
+        if record.get("sample_index") != index:
+            _raise(error_type, "solver group samples must be ordered by ascending sample_index")
+        seed = record.get("seed")
+        if isinstance(seed, bool) or not isinstance(seed, int):
+            _raise(error_type, "solver group sample seed must be an integer")
+        if seed in seen_seeds:
+            _raise(error_type, "solver group samples must carry distinct pinned seeds")
+        seen_seeds.add(seed)
+        if record.get("parse_status") not in {"ok", "malformed"}:
+            _raise(error_type, "solver group sample parse_status is invalid")
+        if (record["parse_status"] == "ok") == (record.get("parsed_answer") is None):
+            _raise(error_type, "solver group sample parse_status disagrees with parsed_answer")
+        contacts = _sequence(
+            record.get("contacts"), "solver group sample contacts", error_type=error_type
+        )
+        if not contacts or not all(isinstance(contact, Mapping) for contact in contacts):
+            _raise(error_type, "solver group sample requires at least one raw contact")
+    delivered = solver_group["delivered"]
+    if not isinstance(delivered, Mapping) or set(delivered) != _SOLVER_GROUP_DELIVERED_FIELDS:
+        _raise(error_type, "solver group delivered provenance has an invalid shape")
+    support = _nonneg_int(
+        delivered.get("intent_support"), "solver group delivered intent_support", error_type=error_type
+    )
+    intent_members = _sequence(
+        delivered.get("intent_member_sample_indices"),
+        "solver group delivered intent_member_sample_indices",
+        error_type=error_type,
+    )
+    if len(intent_members) != support:
+        _raise(error_type, "solver group delivered intent_support disagrees with its member indices")
+    tie_break = delivered.get("intent_tie_break_sample_index")
+    if tie_break is not None:
+        _nonneg_int(tie_break, "solver group delivered intent_tie_break_sample_index", error_type=error_type)
+    entities = _sequence(
+        delivered.get("entities"), "solver group delivered entities", error_type=error_type
+    )
+    for entity in entities:
+        if not isinstance(entity, Mapping) or set(entity) != _SOLVER_GROUP_ENTITY_FIELDS:
+            _raise(error_type, "solver group delivered entity has an invalid shape")
+        if not isinstance(entity.get("type"), str) or not entity["type"]:
+            _raise(error_type, "solver group delivered entity requires a nonempty type")
+        if not isinstance(entity.get("filler"), str):
+            _raise(error_type, "solver group delivered entity requires a filler string")
+        entity_support = _nonneg_int(
+            entity.get("support"), "solver group delivered entity support", error_type=error_type
+        )
+        members = _sequence(
+            entity.get("member_sample_indices"),
+            "solver group delivered entity member_sample_indices",
+            error_type=error_type,
+        )
+        if len(members) != entity_support:
+            _raise(error_type, "solver group delivered entity support disagrees with its member indices")
+        entity_tie_break = entity.get("tie_break_sample_index")
+        if entity_tie_break is not None:
+            _nonneg_int(
+                entity_tie_break, "solver group delivered entity tie_break_sample_index",
+                error_type=error_type,
+            )
+
+
 __all__ = [
     "NativeEpisodeDelivery", "validate_native_episode_delivery_receipt",
     "validate_native_candidate_refresh_receipt", "validate_native_episode_terminal_policy",
-    "validate_native_episode_finite_path",
+    "validate_native_episode_finite_path", "validate_solver_group_receipt",
 ]
