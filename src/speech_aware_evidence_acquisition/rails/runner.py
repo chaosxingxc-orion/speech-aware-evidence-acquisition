@@ -1713,6 +1713,22 @@ async def _invoke_native_role_episode(
     solver_fragment_seed = (
         _solver_fragment_seed(program.program_id) if solver_group_samples > 1 else None
     )
+    # E2c (SLURP v2 base program M2): the phase whose visits register ONE
+    # committed state instead of one state per contact, or None -- for every
+    # samples-1 Solver and every non-M2 config -- in which case none of the
+    # E2c branches below is reachable at all.
+    grouped_solver_phase_id = (
+        solver_role_config.phase_id if solver_group_samples > 1 else None
+    )
+    # One grouped Solver visit's committed answer, handed over by the grouped
+    # node the moment its commit policy has run and consumed by the ``settle``
+    # of that visit's LAST sample. At most one is ever in flight: the graph
+    # visits the Solver node once per round.
+    solver_commit: dict[str, object] = {}
+    # The ``(plan, completion, slot_id)`` of the grouped Solver samples of the
+    # visit in flight, in sample order, so the visit's ONE wave can name every
+    # one of its N contacts. Emptied when that wave is recorded.
+    solver_group_contacts: list[tuple[AgentContactPlan, object, int]] = []
     pending = {}
     visits = {}
     completed = {}
@@ -1743,6 +1759,66 @@ async def _invoke_native_role_episode(
         )
         if completion.tool_calls and tool_step is None and not rejected_steps:
             raise RailsRunnerError("native tool request has no source-bound observation")
+        # E2c (SLURP v2 base program M2): module M2 is sample-and-aggregate
+        # COMMIT, so the committed answer IS the Solver's draft. One grouped
+        # Solver visit therefore takes ONE step -- one organize transition
+        # registering ONE phase state, the committed (aggregated) answer, in
+        # the SAME wire form a samples-1 (anchor) Solver state has -- and the
+        # Reviewer and the Planner read one draft exactly as they do on the
+        # anchor. The N raw samples stay in custody: each is its own
+        # AgentContactRecord, its own MODEL_REQUEST/MODEL_RESPONSE/COST trace
+        # record and its own metered cost, all N appear in the visit's ONE
+        # wave as an ``action_alternatives`` batch with their own response
+        # digests, and their seeds, decoding parameters and parsed answers
+        # travel the delivered role result's ``solver_group``. Because the
+        # group takes no step between its samples, the N sibling requests
+        # also see the SAME QueryState and the SAME exposed history -- they
+        # are independent draws of one draft, not a chain. The committed
+        # state is sealed as a VIEW of the group's last sample
+        # (``seal_phase_response_state``'s own state_content /
+        # raw_response_text seam), so ``source_response_sha256`` still binds
+        # real model bytes from the same contact its state id is namespaced
+        # by. With ``samples`` absent or 1, ``grouped_solver_phase_id`` is
+        # None and none of this is reachable.
+        contact_record, response_record, slot_ids = plan, completion.text, (slot_id,)
+        if pending["phase_id"] == grouped_solver_phase_id:
+            sample_index = pending["sample_index"]
+            if (
+                isinstance(sample_index, bool)
+                or not isinstance(sample_index, int)
+                or not 0 <= sample_index < solver_group_samples
+                or sample_index != len(solver_group_contacts)
+            ):
+                raise RailsRunnerError(
+                    "grouped Solver samples settled out of their registered order"
+                )
+            if tool_step is not None or rejected_steps:
+                raise RailsRunnerError("a grouped Solver contact cannot execute a tool")
+            solver_group_contacts.append((plan, completion, slot_id))
+            if sample_index < solver_group_samples - 1:
+                pending.clear()
+                return
+            committed = solver_commit.pop("actor_output", None)
+            if not isinstance(committed, str) or not committed:
+                raise RailsRunnerError(
+                    "grouped Solver visit settled without its committed answer"
+                )
+            source = seal_phase_response_state(
+                phase_name=pending["phase_id"], sample_id=before.sample_id,
+                state_content=committed, raw_response_text=completion.text,
+                source_query_state_sha256=before.query_state.content_hash(),
+                producer_policy_id=program.program_id,
+                state_namespace=plan.contact_id,
+            )
+            contact_record = AgentContactBatch(
+                batch_id=f"{solver_group_contacts[0][0].contact_id}:group",
+                query_state_sha256=before.query_state.content_hash(),
+                contacts=tuple(item[0] for item in solver_group_contacts),
+                fanout_semantics="action_alternatives",
+            ).validate()
+            response_record = tuple(item[1].text for item in solver_group_contacts)
+            slot_ids = tuple(item[2] for item in solver_group_contacts)
+            solver_group_contacts.clear()
         staged = replace(
             before, agent_states=before.agent_states + (source,),
             prior_response_sha256s=before.prior_response_sha256s + (completion.response_text_sha256,),
@@ -1787,8 +1863,9 @@ async def _invoke_native_role_episode(
             existing_state_ids=set(state.state_store),
         )
         state.waves.append(_agent_wave_record(
-            wave_index=len(state.waves), contact=plan, response=completion.text,
-            slot_ids=(slot_id,), query_state=before.query_state, advance=advance,
+            wave_index=len(state.waves), contact=contact_record,
+            response=response_record, slot_ids=slot_ids,
+            query_state=before.query_state, advance=advance,
         ))
         state.transitions.append(transition)
         state.state_store.update((artifact.state_id, artifact) for artifact in added)
@@ -2006,6 +2083,11 @@ async def _invoke_native_role_episode(
         pending.update(
             completion=completion, source=source, context=before, plan=plan,
             slot_id=slot_id, phase_id=request.role_id,
+            # E2c: which sample of a grouped Solver visit this contact is
+            # (None for every ungrouped contact), so ``settle`` can tell the
+            # group's last sample -- the one that registers the committed
+            # state -- from the ones that register none.
+            sample_index=request.context.sample_index,
         )
         if (binding.review_for_phase is not None and not completion.tool_calls
                 and completion.finish_reason == "stop"):
@@ -2034,6 +2116,28 @@ async def _invoke_native_role_episode(
                         "use_phase_judgments": [verdict.as_json() for verdict in verdicts],
                     },
                 )
+
+    def record_solver_commit(role_result):
+        """E2c: take one grouped Solver visit's committed answer in custody.
+
+        Called by ``GroupedSolverRoleNode`` immediately after its registered
+        commit policy has aggregated the visit's N samples and BEFORE the
+        graph advances, so the visit's last sample is still ``pending`` and
+        the next ``settle`` -- the Reviewer's ``role_input``, or the terminal
+        one in a review-off episode -- registers this exact text as the
+        visit's one Solver phase state.
+        """
+
+        actor_output = (
+            role_result.get("actor_output") if isinstance(role_result, Mapping) else None
+        )
+        if not isinstance(actor_output, str) or not actor_output:
+            raise RailsRunnerError("grouped Solver visit produced no committed answer")
+        if solver_commit:
+            raise RailsRunnerError(
+                "a grouped Solver visit's committed answer was never registered"
+            )
+        solver_commit["actor_output"] = actor_output
 
     adapter_request = MeteredNativeSpeechRequest(
         client=core_client, binding_provider=speech_binding,
@@ -2201,6 +2305,8 @@ async def _invoke_native_role_episode(
                     fragment_seed=solver_fragment_seed,
                     decoding_overrides=role.decoding_overrides, commit=role.commit,
                     delivery_allowed=role_delivery_allowed,
+                    # E2c: the committed answer is the reviewed draft.
+                    on_commit=record_solver_commit,
                 )
             else:
                 nodes[role.role_kind] = solver_node

@@ -50,6 +50,16 @@ graph instead of the plain node. Every sample is a REAL
 an ungrouped Solver visit uses, so contact counting, budget/FIT gates,
 exposure and cost accounting all see every one of the N contacts as an
 ordinary contact -- no separate accounting path exists or is needed.
+
+E2c (2026-09-17): module M2 is sample-and-aggregate COMMIT, so the committed
+answer IS the Solver's draft. The ``on_commit`` seam below hands the
+committed role result to the caller before the graph advances;
+``rails.runner._invoke_native_role_episode`` uses it to register exactly ONE
+``phase:<solver>`` agent state per Solver visit, carrying that committed
+answer, so the Reviewer and the Planner read one draft exactly as they do on
+a samples-1 (anchor) visit. The N raw samples stay in custody -- in
+``solver_group`` and in each sample's own contact, wave, trace and cost
+records -- and this module's own aggregation is unchanged.
 """
 
 from __future__ import annotations
@@ -266,6 +276,14 @@ class GroupedSolverRoleNode(WorkflowComponent):
     drives :func:`run_grouped_solver_samples` over ``samples`` sequential
     ``inner.invoke_direct(query)`` calls instead of a single one.
 
+    ``on_commit`` (E2c) is called with the committed role result the moment
+    the commit policy has run and BEFORE this node returns, so the caller
+    can register the committed answer as this visit's ONE Solver phase
+    state while the visit's last sample is still its pending contact
+    (``rails.runner._invoke_native_role_episode.record_solver_commit``).
+    ``None`` -- the default, and every caller written before E2c -- leaves
+    the node's behaviour byte-identical.
+
     Placed by ``rails.runner._invoke_native_role_episode`` in place of a
     plain ``NativeRoleNode`` whenever the Solver role's registered
     ``samples >= 2``; never constructed for a samples-1 role, so that path
@@ -285,6 +303,7 @@ class GroupedSolverRoleNode(WorkflowComponent):
         decoding_overrides: Mapping[str, object],
         commit: Mapping[str, object],
         delivery_allowed: Callable[[str, str], bool] = _default_delivery_allowed,
+        on_commit: Callable[[Mapping[str, Any]], None] | None = None,
     ) -> None:
         super().__init__()
         if not isinstance(inner, NativeRoleNode) or inner.spec.role_kind != "solver":
@@ -293,12 +312,15 @@ class GroupedSolverRoleNode(WorkflowComponent):
             )
         if not callable(delivery_allowed):
             raise GroupedSolverError("delivery_allowed must be callable")
+        if on_commit is not None and not callable(on_commit):
+            raise GroupedSolverError("on_commit must be callable")
         self._inner = inner
         self._samples = samples
         self._fragment_seed = fragment_seed
         self._decoding_overrides = dict(decoding_overrides)
         self._commit = dict(commit)
         self._delivery_allowed = delivery_allowed
+        self._on_commit = on_commit
 
     @property
     def spec(self) -> NativeRoleNodeSpec:
@@ -315,7 +337,7 @@ class GroupedSolverRoleNode(WorkflowComponent):
         async def invoke_sample(_sample_index: int) -> dict[str, object]:
             return await inner.invoke_direct(query)
 
-        return await run_grouped_solver_samples(
+        result = await run_grouped_solver_samples(
             invoke_sample,
             samples=self._samples,
             fragment_seed=self._fragment_seed,
@@ -323,6 +345,13 @@ class GroupedSolverRoleNode(WorkflowComponent):
             commit=self._commit,
             delivery_allowed=self._delivery_allowed,
         )
+        # E2c: hand the committed answer to the caller BEFORE the graph
+        # advances, while this visit's last sample is still the caller's
+        # pending contact -- that is what lets the episode register ONE
+        # Solver phase state per visit carrying this exact text.
+        if self._on_commit is not None:
+            self._on_commit(result)
+        return result
 
     async def close(self) -> None:
         await self._inner.close()

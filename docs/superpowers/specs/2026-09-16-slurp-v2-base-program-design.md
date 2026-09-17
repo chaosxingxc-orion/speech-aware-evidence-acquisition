@@ -38,6 +38,16 @@ Boundary for M1: exemplar text and gold annotations come only from the construct
 exclusion), reach the model only as typed content blocks, and never as instruction text. The
 exact-text-neighbour rate is reported as a sensitivity subset; no gold-derived runtime mask.
 
+Boundary for M2 (item E2c, 2026-09-17): **the committed answer is the reviewed draft; raw samples in
+custody.** One grouped Solver visit takes ONE step and registers exactly ONE `phase:<solver>` agent
+state, holding the commit policy's aggregated answer in the same wire form a samples-1 (anchor)
+Solver state has, so the Reviewer and the Planner read one draft exactly as they do on the anchor and
+the cell stays one-factor. The N raw samples stay in custody — each its own contact, trace and cost
+record, all N in the visit's one `action_alternatives` wave, and their seeds, decoding parameters,
+parse status and parsed answers in the sealed `solver_group` receipt that
+`analysis.native_commit_replay` re-aggregates offline. A Planner `REVISE` re-samples the whole group
+and re-commits; the contact-ceiling formula is unchanged.
+
 ## 4. Phases
 
 **Phase 0 (done or in progress, zero contacts):** takeover receipt, owner decision record,
