@@ -1,0 +1,50 @@
+{
+  "cell": "slurp-native-exemplars-k20-anchor-train-fold-a-recovery-v2",
+  "composed_config_hash": "b15374a9c89b8f9e089e38ea3a408fe02fcf16999e0ab21f721a46b8eaa7521a",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 11880,
+    "planned_speech_audio_seconds": 33930,
+    "protocol_hash": "7ff82128599de2441f11483af07d04a78386294eba73e6eba90b3ad192810c0e",
+    "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan configs/campaign/slurp-native-exemplars-k20-anchor-train-fold-a-recovery-v2.json; the campaign acquires its own GenerationLease against the resident session and schedules the one official score at finalize.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-exemplars-k20-anchor-train-fold-a-recovery-v2",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "preparation_base_commit": "cfbb5f8b3afc01ee2027eb42752fe29c4740c7e2",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-17-slurp-b1-exemplars-k20-anchor-v2-recovery-v1/protocol-registered-v1.json",
+    "sha256": "cf5c0fcc5665e544179e34e814eb144fffabb33cccd826a12d2f844fece71e96"
+  },
+  "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The comparators are the sealed anchor score artifact (primary) and the released direct anchor (secondary); neither is re-flown and neither is re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, the train-exemplars typed content blocks, fit receipts and seal, with no answer, reference or quality interpretation.",
+  "recovery": {
+    "fix": "rails.controllers.restrict_repeat_visit_supply (commit f2595f4c, merged cfbb5f8b): a phase this trajectory has already answered -- proved by its own sealed state_kind='phase:<name>' artifact -- has its decision restricted to the values not yet in QueryState.retrieved_value_ids; a revisit that acquires nothing emits no acquire transition, and the FIRST visit of every phase returns the caller's own decision object so its request bytes and transition identities are unchanged.",
+    "note": "docs/readiness/2026-09-17-slurp-b1-exemplars-k20-anchor-v2-recovery-v1.md",
+    "of_run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-V2",
+    "one_recovery_only": "The preregistration section 11 allows exactly one root-diagnosed recovery re-registration per run. This is it; a second failure closes the flight.",
+    "root_cause": "Run SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-V2 (flight commit ecc6ecea) ABORTED at 2026-09-17T09:52:35Z on the first row whose Planner routed REVISE. The re-entered Solver re-ran its prepared phase supply, the decision re-selected the same twenty train-exemplars values, and rails.controllers.EvidenceAgentController._acquired_ids refused them: NativeEpisodeError: native episode node failed: [100054] component 'solver_1_input' execute 'invoke' error, reason='phase supply selected values already visible in this trajectory'. Spend preserved: 420 generation calls, 911.865938 repeated speech seconds, 420 request-fit receipts (1,680 FIT endpoints) on 84 complete rows; attempt ABORTED, run directory and trace read-only."
+  },
+  "registered_at_utc": "2026-09-17T11:45:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_worktree": "/home/chao/saea-worktrees/fable-b1-recovery",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

@@ -322,3 +322,70 @@ per-request authority remains the `native_contact_fit` gate.
    row ran perception 1 / solver 1 / reviewer 2 / planner 1 and routed ACCEPT; 20 contacts, 52.98
    repeated speech seconds, 4 task-contract tool calls, 170,939 prompt tokens. The verdict states
    this channel; the twin shares it exactly.
+
+## 11. The arm aborted on the REVISE route; the one allowed recovery is registered
+
+**2026-09-17T09:52:35Z.** The arm `SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-V2` (flight
+commit `ecc6ecea`, root decision `slurp-b1-exemplars-k20-anchor-admission-v1`) **ABORTED** on the
+first row whose Planner routed `REVISE`. The re-entered Solver re-ran its prepared phase supply, the
+decision re-selected the same twenty `train-exemplars` values, and
+`rails.controllers.EvidenceAgentController._acquired_ids` refused them: *"phase supply selected
+values already visible in this trajectory"* (`NativeEpisodeError` `[100054]`, component
+`solver_1_input`). 84 rows were complete; **420 generation calls, 911.865938 repeated speech seconds
+and 420 request-fit receipts** are durably spent, preserved read-only, and never scored. The
+four-row smoke of section 9 item 10 could not have caught it: all four rows routed `ACCEPT`, and
+deviation 2 of this README was about prompt volume, not about re-acquisition.
+
+**The fix** is `rails.controllers.restrict_repeat_visit_supply` (commit `f2595f4c`, merged
+`cfbb5f8b`, item E3c) with `tests/unit/test_phase_supply_repeat_visit.py`: a phase this trajectory
+has already answered acquires only what its `QueryState` does not already hold, and every FIRST
+visit is returned unchanged, request bytes and transition identities included.
+
+**What this means for this package.**
+
+1. The **preregistration is not edited** — its bytes are pinned by the sealed root decision. The
+   addendum is
+   [`../2026-09-17-slurp-b1-exemplars-k20-anchor-v2-recovery-v1.md`](../2026-09-17-slurp-b1-exemplars-k20-anchor-v2-recovery-v1.md),
+   which carries the root cause, the spend, the fix and its proofs, the recovery cells and their
+   launch commands. Section 11 of the preregistration allows exactly one root-diagnosed recovery
+   re-registration per run; that note **is** it.
+2. The arm's two exposure rows are closed (`consumed = yes`) with the abort, the root cause and the
+   recovery run ids. Four new rows are registered at `consumed = no`:
+   `SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2`, `…-TRAIN-FOLD-A-FIT-RECOVERY-V2`,
+   `…-SMOKE-4-RECOVERY-V2` and `…-SMOKE-4-FIT-RECOVERY-V2`.
+3. The **recovery package lives in its own directory**,
+   `docs/readiness/2026-09-17-slurp-b1-exemplars-k20-anchor-v2-recovery-v1/` (recovery protocol
+   document, recovery analysis recipe, four prospective and four `-registered` plans), so **every
+   file of this v2 directory keeps the bytes and hashes the sealed decision and the closed ledger
+   rows quote**. Launch with `--readiness-dir` pointing at the recovery directory.
+4. The sections of this README that describe the *science* — the store, the twin, the metrics, the
+   containment proof, the prompt fit, the analysis recipe and the post-flight procedure — are
+   unchanged and remain in force. Only the names change: the recovery cells are
+   `slurp-native-exemplars-k20-anchor-{train-fold-a,smoke-4}-recovery-v2` on baselines
+   `slurp-native-anchor-exemplars-k20-{train-fold-a,smoke-4}-recovery-v2`, through campaign plan
+   `configs/campaign/slurp-native-exemplars-k20-anchor-train-fold-a-recovery-v2.json`.
+5. **The twin cell stays registered exactly as it is** —
+   `SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2`, unflown, `consumed = no`, readiness
+   `held`, its v2 baseline, experiment and campaign fragments untouched. It never contacted the
+   model, so nothing about it needs re-registering. **It flies on the fixed code** (`cfbb5f8b` or
+   later), and still only after the arm's paired read shows a positive CI95 against the base (owner
+   decision 8 of 2026-09-17).
+6. The smoke re-proof on the fixed commit (`SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-RECOVERY-V2`)
+   is a **structural form re-proof only**. It cannot reach the REVISE path — the same four rows
+   routed `ACCEPT` at study commit `0dbd0d1d` — and the registration says so in its own
+   `what_this_is`, in its `failure_policy` and in its ledger note. The REVISE path is proved
+   model-free instead, by the four E3c tests and by
+   `coordination/slurp-b1-exemplars-k20-anchor-recovery-v2/revise-path-proof-v1.json` (five episodes
+   through the real role graph over the aborted attempt's own twenty value ids and the four real
+   prepared smoke selections).
+
+Recovery identities, composed and protocol hashes as committed (readiness `held`, preparation
+requirement pinned, no decision requirement yet):
+
+| cell | composed config | protocol | prepared supply SHA-256 |
+| --- | --- | --- | --- |
+| `…-train-fold-a-recovery-v2` | `b15374a9c89b8f9e089e38ea3a408fe02fcf16999e0ab21f721a46b8eaa7521a` | `7ff82128599de2441f11483af07d04a78386294eba73e6eba90b3ad192810c0e` | `ae9feef8152da8333d3b8bc992037d5776bd3a32c225c9105d879d3398925595` |
+| `…-smoke-4-recovery-v2` | `2f1c299aaf5c2778b392c36c5551e88f45b6237054f1d3938c9820b46aa55659` | `e38285952e00de7022e52771dfeac20e729fd3aef3f4e92ad889ba2cde04853a` | `26a4f0167b91d3a1776f56e966fc18d9f0a1d05f8f603e22a1374ff08d003078` |
+
+Both prepared artifacts reproduce the sealed anchor's Perception `output` byte-for-byte:
+`ba5e1faa…` on 1,080 / 1,080 and `512583ec…` on 4 / 4.
