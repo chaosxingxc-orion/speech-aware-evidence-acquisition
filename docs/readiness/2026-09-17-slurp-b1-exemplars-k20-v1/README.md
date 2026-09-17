@@ -83,9 +83,9 @@ refusals in `store-router-blocker-v1.log`.
 | smoke cell | experiment and cell `slurp-native-exemplars-k20-smoke-4-v1`, run `SAEA-SLURP-NATIVE-EXEMPLARS-K20-SMOKE-4-V1`, attempt `attempt-slurp-native-exemplars-k20-smoke-4-generation-v1` |
 | smoke FIT | `SAEA-SLURP-NATIVE-EXEMPLARS-K20-SMOKE-4-FIT-V1` / `attempt-slurp-native-exemplars-k20-smoke-4-fit-v1`, 32 endpoints |
 | campaign plans | `configs/campaign/slurp-native-exemplars-k20-train-fold-a-v1.json`, `configs/campaign/slurp-native-exemplars-k20-twin-train-fold-a-v1.json` |
-| composed / protocol (arm) | `4bc39f445f4d0c4b656a140752a8acaccc0112b84f6c9f20a12514252c4894a7` / `0c8b2f3fcf271d1857eb05378d86270f01c60baf1d8c91f2c2dcf9694ee73a7e` |
-| composed / protocol (twin) | `c7536e43adce02b5e1e045994c4d94edc474fadf4710076fe57f35a5d3317e80` / `be56e6356491d2132a306271ab00c2e0158fa4760552846f7bd421c1617ad896` |
-| composed / protocol (smoke) | `9ab567171d195b83e77a571205e1ffb97400684df86d813c06a77b65e76054c3` / `fd818c2ad2c8990a51d5c066c642144c15a83de0a92fad5660353a4c6509b6e6` |
+| composed / protocol (arm) | `39ce13ecae402b31bbd062acb459534b17bf2c57b0041f723304bdd720bdc7f7` / `2ccd722e0319a2daf831bfc01a00aa2cf993ec97a5d7545e9493a97a54cd91c3` |
+| composed / protocol (twin) | `94df17ed9d6379f5f0152cad750182b7c95b7b07c9ee89f00c817a85567c7a32` / `4735f4b7949c6b2e587d97e5d4df2050b43a1e0ee466689021bf2b435a84bb4d` |
+| composed / protocol (smoke) | `e967065c01ec49146bd3d923b3297e28af742698290100c8693fafce97f4dd51` / `80673120409682e019c7fe303ca2de85bfe9911a8abd8ab609490fd1ad37e1a2` |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |
 | readiness | all three cells are `held` with an empty requirement list; the coordinator adds the decision requirement, adds the preparation requirement after step 3 of section 0, and flips |
 
