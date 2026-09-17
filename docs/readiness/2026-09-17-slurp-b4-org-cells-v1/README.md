@@ -413,3 +413,36 @@ The `output` blocks to reproduce are `ba5e1faab9550fcae700f649a0ec6674327ffefe97
 
 Nothing else in this package depends on the merge, and the five `check` receipts still describe the
 configs, plans and ledger rows exactly as committed at `c622334e`.
+
+## 10. Superseded before contact
+
+**This package is SUPERSEDED BEFORE CONTACT, on 2026-09-17, and must not be flown.** It never flew:
+all ten of its exposure-ledger rows stay `consumed = no`, and each now carries a supersession note.
+
+Section 0's re-basing clause fired. Module M0 (the review loop off) was re-decided **HARMFUL** under
+the TRAIN A own null measured by the replicate cell B0r -- h_SLU 1.1218 pp and h_intent 1.0051 pp at
+CI95, with the intent clause failing on both passes (owner decision 6 of 2026-09-17). The
+Reviewer/Planner loop therefore stays in the default plan, cell B0 is not a usable base, and all
+three ORG cells were rebuilt on the sealed dual-store anchor
+`configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json`.
+
+The successor package is:
+
+- preregistration `docs/readiness/2026-09-17-slurp-b4-org-cells-anchor-v2-preregistration.md`;
+- runbook `docs/readiness/2026-09-17-slurp-b4-org-cells-anchor-v2/README.md`;
+- five baseline fragments `configs/baseline/slurp-native-anchor-*-v2.json`, five experiment fragments
+  `configs/experiment/slurp-native-*-anchor-*-v2.json`, three campaign plans
+  `configs/campaign/slurp-native-*-anchor-train-fold-a-v2.json`;
+- ten new exposure rows, all `consumed = no`;
+- pre-contact evidence under
+  `SPEECHRL_DATA_DIR/coordination/slurp-b4-org-cells-anchor-v2/`.
+
+The moved ORG channels, the questions, the metrics, the diagnostics and the claim boundary are
+identical on either base. What changed is the base, the comparators (the sealed anchor primary, the
+released direct anchor secondary), the margins (the TRAIN A own null rather than the imported DEV-1000
+margins), the budgets (eleven contacts per row), and every composed, protocol, plan and ledger hash.
+The successor's section 14 lists every deviation, including two corrections to this document: the
+appended fallback's fixed distinction text reaches no request, and its realized slot-card supply delta
+is far larger than this document's reachable-ceiling framing suggested.
+
+Nothing in this directory is edited otherwise; it stays on file as the superseded record.
