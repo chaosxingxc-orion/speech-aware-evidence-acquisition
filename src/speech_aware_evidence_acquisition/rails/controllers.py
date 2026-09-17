@@ -1318,6 +1318,20 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-native-candidates-solve-samples5-v1": (
         "phase-native-candidates-solve-samples5-v1.json"
     ),
+    # Cell B2 on the sealed dual-store ANCHOR, 2026-09-17 (module M2 re-based
+    # after the B0 re-decision returned module M0 HARMFUL under the TRAIN A
+    # own null): the SAME four phases and the SAME episode_id as
+    # "phase-native-candidates-review-revise-v1" -- the review loop ON,
+    # reviewer 3 / planner 1 / max_revisions 1 -- with the grouped Solver
+    # ceiling. rails.native_episode_config multiplies the Solver's own
+    # contribution by its registered samples, so the bounded graph ceiling is
+    # 1 + (1+1)*(5*1 + 3 + 1) = 19 when the Solver role declares samples 5.
+    # A separate program id, never a flag on the review-revise program, for
+    # the reason the two comments above state: two program ids must never
+    # resolve to the same object when their contact ceilings differ.
+    "phase-native-candidates-review-revise-samples5-v1": (
+        "phase-native-candidates-review-revise-samples5-v1.json"
+    ),
     "phase-native-candidates-review-refresh-v1": "phase-native-candidates-review-refresh-v1.json",
     "native-answer-or-one-tool-v1": "native-answer-or-one-tool-v1.json",
     "native-answer-or-tool-v1": "native-answer-or-tool-v1.json",
@@ -1455,6 +1469,13 @@ def register_phase_programs_v1() -> None:
             "phase-native-candidates-solve-samples5-v1",
             default_controller_factory(
                 default_phase_program("phase-native-candidates-solve-samples5-v1")
+            ),
+        )
+    if "phase-native-candidates-review-revise-samples5-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-candidates-review-revise-samples5-v1",
+            default_controller_factory(
+                default_phase_program("phase-native-candidates-review-revise-samples5-v1")
             ),
         )
     if "phase-native-review-revise-json-v1" not in registered:
