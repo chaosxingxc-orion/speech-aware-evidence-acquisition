@@ -77,10 +77,10 @@
     }
   },
   "native_contact_fit": {
-    "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-review-off-fit-v1",
+    "attempt_id": "attempt-slurp-native-review-off-train-fold-a-fit-v1",
     "contact_cap": 8640,
     "max_speech_packets": 1,
-    "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-REVIEW-OFF-FIT-V1"
+    "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-FIT-V1"
   },
   "native_episode": {
     "actions": {
@@ -157,6 +157,18 @@
       "state_fill": null
     }
   },
+  "phase_tools": {
+    "reviewer": {
+      "allowed_tools": [
+        "saea-tool-task-contract-v1"
+      ],
+      "knowledge_views": [
+        "text"
+      ],
+      "mode": "native-tools",
+      "source_authority_role": "reviewer"
+    }
+  },
   "policy": "phase-native-candidates-solve-v1",
   "preparation_source_receipts": [
     {
@@ -190,6 +202,10 @@
       "sha256": "c1aaf37a678240633078a8fcca455f949a5c4b2b18d37356129976006c9dc138"
     }
   ],
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1/phase-supply-v1.json",
+    "sha256": "14ec428cb03eb16364d084e685340992d5330c0e24a3b48da071c6ddbee7ff3e"
+  },
   "scorers": [
     "slurp-slu-official-train",
     "cost"
@@ -203,9 +219,5 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "M0 (docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md section 3/4, item E1): the review-off ablation of the anchor configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json. It is the SAME harness, roster, knowledge stores, phase material, speech-feature identity path, four-candidate contract, resident geometry and promoted packets as the anchor; the only channel that moves is the native episode's own role graph: Reviewer and Planner both declare max_iterations 0, max_revisions is 0, phase_tools carries no Reviewer tool authority (none is exercised because Reviewer never runs), and native_contact_fit.contact_cap is resized to the 2-contact-per-row ceiling (rails.native_episode_config.load_native_episode_config: 1 + 1*(0+0+1) = 2). Every prompt byte the Solver receives up to and including Perception's candidates is unchanged from the anchor's own first Solver contact -- no review findings exist at that point in either config. Fold B is absent. The separate generation and native fit identities do not authorize contact; preparation receipt binding and root admission remain pending.",
-  "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-PREPARE-V1-R2/phase-supply.json",
-    "sha256": "c5b0b51c23ef22feb1284559cd9e37286922d4cefc2e3cfcf7feafb23e3b595e"
-  }
+  "what_this_is": "M0 (docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md section 3/4, item E1): the review-off ablation of the anchor configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json. It is the SAME harness, roster, knowledge stores, phase material, speech-feature identity path, four-candidate contract, resident geometry and promoted packets as the anchor; the only channel that moves is the native episode's own role graph: Reviewer and Planner both declare max_iterations 0, max_revisions is 0, native_contact_fit.contact_cap is resized to the 2-contact-per-row ceiling (rails.native_episode_config.load_native_episode_config: 1 + 1*(0+0+1) = 2). Every prompt byte the Solver receives up to and including Perception's candidates is unchanged from the anchor's own first Solver contact -- no review findings exist at that point in either config. Fold B is absent. The separate generation and native fit identities do not authorize contact; preparation receipt binding and root admission remain pending. The anchor phase_tools block is retained verbatim and is inert: the review-off role graph builds no Reviewer node, so no tool action can ever be taken. It is kept because the arm speech-feature-query-native-tools declares tool_schemas and the shared client refuses to be built without a schema source, and because keeping it holds the tool block of every request identical to the anchor."
 }
