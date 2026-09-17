@@ -95,3 +95,5 @@ TRAIN roster), so the symmetric number is not available on this roster until one
    DEV1000 margins.
 4. The cost fact stands: the loop is 3.26 contacts per row and 2.33 GPU hours per 1,080 rows for
    at most two changed delivered intents.
+
+Addendum (2026-09-17, owner decision 14): the TRAIN symmetric re-read `docs/results/2026-09-17-slurp-train-symmetric-reread-v1.md` gives B0 minus anchor +0.08 [-1.40, +1.62] and B0r minus anchor -0.20 [-1.48, +1.04] symmetric SLU; the symmetric own null (B0r minus B0) has half-width 1.310 pp, wider than the official 1.122, so the program keeps the official margins; the normaliser touches no intent label, so this re-decision (which turned on intent) is structurally unaffected.

@@ -300,3 +300,5 @@ consequences follow, and the coordinator should register them explicitly:
    module its own null and turn "ADMITTED" into "ADMITTED and replicated", as KC-E1f's second pass did
    on 2026-09-09. Nothing downstream should freeze the v2 slot store into a paper-facing claim before
    that, and the default-plan entry should carry the provisional marker until it lands.
+
+Addendum (2026-09-17, owner decision 14): the TRAIN sibling of the symmetric-normalised scorer now exists (`slurp-slu-f1-normalized-v1-train`); the offline re-read `docs/results/2026-09-17-slurp-train-symmetric-reread-v1.md` gives B4b minus anchor **+2.17 pp CI95 [+0.62, +3.68]** symmetric (official +2.55), same sign, so the admission survives normalisation; about 15 % of the official gain is representation alignment; the datetime and alarm scenario gains are mostly surface. The status above is unchanged.
