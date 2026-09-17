@@ -58,6 +58,17 @@ _EXPECTED_PROGRAM_SHAPES = {
     "phase-native-candidates-solve-v1": (
         ("perception", "reviewer", "planner", "solver"), 2, "native-role-episode"
     ),
+    # E2b, 2026-09-16 (M2 on the review-off base): the review-off program with
+    # a grouped Solver visit, so the ceiling is 1 + 1*(0 + 0 + 1*5) = 6.
+    "phase-native-candidates-solve-samples5-v1": (
+        ("perception", "reviewer", "planner", "solver"), 6, "native-role-episode"
+    ),
+    # Cell B2 on the sealed anchor, 2026-09-17 (M2 on the review-loop-ON base):
+    # the review-revise program with a grouped Solver visit, so the ceiling is
+    # 1 + (1+1)*(1*5 + 3 + 1) = 19.
+    "phase-native-candidates-review-revise-samples5-v1": (
+        ("perception", "reviewer", "planner", "solver"), 19, "native-role-episode"
+    ),
     "phase-native-candidates-review-refresh-v1": (
         ("perception", "reviewer", "planner", "solver"), 12, "native-role-episode"
     ),

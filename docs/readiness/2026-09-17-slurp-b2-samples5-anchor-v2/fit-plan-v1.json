@@ -1,0 +1,43 @@
+{
+  "cell": "slurp-native-samples5-anchor-train-fold-a-v2",
+  "composed_config_hash": "e7af643d1d6c171ad895171e29d2ca6b28aa463261d389e2f008c879a487c004",
+  "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realized native request -- all five Solver samples of every visit included -- inside the same campaign, under the same lease.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-samples5-anchor-train-fold-a-v2",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 82080,
+    "generation_calls_cap": 20520,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 58607
+  },
+  "preparation_base_commit": "bd04f4b9",
+  "prospective_execution_plan": {
+    "attempt_id": "attempt-slurp-native-samples5-anchor-train-fold-a-fit-v2",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 82080,
+    "planned_speech_audio_seconds": 58607,
+    "protocol_hash": "dfd1cde52a4943a7f1dc7f824acaad8c2766cb176e2d1ce7a937b92a33bd696f",
+    "run_id": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-TRAIN-FOLD-A-FIT-V2",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-17-slurp-b2-samples5-anchor-v2/protocol-registered-v1.json",
+    "sha256": "5b65be20c15f9f3b00d2c5c50c113449ac63d1d078ea0ed803e7d57f5cafb987"
+  },
+  "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs each carrying its solver_group custody of all five raw samples of its DELIVERED Solver visit, the native phase summary and the single successful complete official TRAIN score all exist. The primary comparator is the sealed anchor's score artifact and the secondary is the released direct anchor's; neither is re-flown or re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, solver_group custody, the offline commit replay, fit receipts and seal, with no answer, reference or quality interpretation. The offline s in {2,3,4} sensitivity table is reported and never used for the verdict.",
+  "root_registration_required": true,
+  "schema": "saea-generation-execution-plan-preparation-v1",
+  "source_worktree": "/home/chao/saea-worktrees/fable-b2-anchor-prep",
+  "status": "PREPARED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

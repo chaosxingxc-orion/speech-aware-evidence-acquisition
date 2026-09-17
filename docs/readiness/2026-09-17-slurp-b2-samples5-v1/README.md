@@ -426,3 +426,20 @@ verdict).
 3. Whether the twin flies immediately after the arm or after the arm's paired read. The
    preregistration requires both before the verdict, and one cell in flight at a time; the order
    inside that constraint is the coordinator's.
+
+
+## 12. Superseded before contact (2026-09-17)
+
+**This package is superseded and must not be flown.** Cell B0 (module M0, the review loop off) was
+re-decided **HARMFUL** under the TRAIN A own null — the first-pass verdict
+`docs/results/2026-09-17-slurp-b0-review-off-verdict.md` and the B0r own-null re-decision read
+`analysis/SAEA-SLURP-B0-REPLICATE-PAIRED-ANALYSIS-V1/README.md`, under owner decision 6 of
+2026-09-17 — so cell B2 builds on the sealed dual-store anchor, not on cell B0. The replacement
+registration is
+[`../2026-09-17-slurp-b2-samples5-anchor-v2-preregistration.md`](../2026-09-17-slurp-b2-samples5-anchor-v2-preregistration.md)
+with its runbook [`../2026-09-17-slurp-b2-samples5-anchor-v2/README.md`](../2026-09-17-slurp-b2-samples5-anchor-v2/README.md).
+
+The three cells registered here never flew. Their six exposure rows stay `consumed = no` and each
+now carries a supersession note. The configs, plans and protocol of this package are left in place
+unchanged as the audit record of what was registered on the review-off base; nothing in it is
+edited, and the open decision 1 of section 11 above is answered by the re-decision.
