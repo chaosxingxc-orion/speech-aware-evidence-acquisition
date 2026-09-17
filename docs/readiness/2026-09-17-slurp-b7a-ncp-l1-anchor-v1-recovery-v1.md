@@ -259,8 +259,12 @@ compared against:
    must reproduce these digests on every row and phase it covers.
 5. **The whole-roster render agrees.** `core.flight.cli check`'s pre-flight prompt budget renders
    the widest request each phase produces across all 1,080 rows and hashes it (`payload_sha256`).
-   The recovery cell's four per-phase digests are compared against the aborted attempt's own sealed
-   pre-flight receipt in this package's two check receipts (section 9).
+   On the clean tree at commit `45abba9e` the recovery arm's four per-phase entries are **byte-
+   identical** to the aborted registration's own sealed pre-flight receipt -- not only the digest
+   but the whole entry, decision, breakdown and margin: `perception 2576cb36…`,
+   `reviewer 164d4327…`, `planner 5150f014…`, `solver 3308edb1…`, with
+   required-window token counts 19184 / 19047 / 18987 / 19227 and ALLOW on every phase. The
+   four-row smoke agrees on every phase too. Receipt `preflight-render-comparison-v1.json`.
 
 **The honest limit:** the recovery arm has not flown, so its own realized post-Perception requests
 cannot be re-derived model-free -- they depend on the frozen core's answers, and greedy decoding at
@@ -335,11 +339,13 @@ repository so no receipt can dirty the tree the manifest reads at finalize.
 | `prepare-supply-train-fold-a-recovery-v1-v1.json` | `78b1ade2d2005f3ff8762bf10bde0383a8ce8d0221084a7fa79f67af729ba0ed` | the raw model-free `prepare-supply` receipt for the arm |
 | `prepare-supply-smoke-4-recovery-v1-v1.json` | `5f8d7cea1e96d83d06c9d5444c73c94c1ce9af4abf36c2df05f5dca5372118f3` | the raw model-free `prepare-supply` receipt for the smoke |
 | `illegal-action-proof-v1.json` | `cdd9f64149f890bd49ca3dcbe507f274526e8ec37a2ab7904486437b76fd3459` | four dispatches on the real smoke row ids through the real role graph, all passing; the two committed E8c test node ids |
-| `request-envelope-comparison-v1.json` | `b612c5450528a09d54a1305c812b9e26ab068f659c84f4a87dea3c4f0ac38098` | the composed-config diff (56 keys identical, 10 bookkeeping keys differ, every model-facing key identical), the 3,278-payload identity search (0 hits on all twelve strings), and the program-derived identity check (3,278 of 3,278) |
+| `request-envelope-comparison-v1.json` | `1813e2b961858f8b63f70c2147a15d089796b1f2c2cd06e966aa2ae873b24841` | the composed-config diff (56 keys identical, 10 bookkeeping keys differ, every model-facing key identical), the 3,278-payload identity search (0 hits on all twelve strings), and the program-derived identity check (3,278 of 3,278) |
 | `request-envelope-per-row-digests-v1.json` | `a59993550cd49ce43c702368503ad55a3b4ee555aee9f0ad35d82b8d87ae6479` | the per-row per-phase model-facing payload digests the recovery flight is checked against |
-| `check-train-fold-a-recovery-v1-v1.json` | `recorded on the clean tree; see the next commit` | runtime `check` on the clean tree: gate, exposure row, attempt free, readiness `held`, `generation_authorized false`, prompt budget ALLOW on every phase, runtime hashes equal to the registered ones |
-| `check-smoke-4-recovery-v1-v1.json` | `recorded on the clean tree; see the next commit` | the same for the four-row smoke |
+| `check-train-fold-a-recovery-v1-v1.json` | `18423f5207d21def61eaf69ff34530a700b30822440ba4047b0dd5e4a48bdf09` | runtime `check` on the clean tree: gate, exposure row, attempt free, readiness `held`, `generation_authorized false`, prompt budget ALLOW on every phase, runtime hashes equal to the registered ones |
+| `check-smoke-4-recovery-v1-v1.json` | `6f0c6d4378b43da56810ba176dc2917fc93814ecc27dc439fe616c27ec13ffab` | the same for the four-row smoke |
 | `ledger-parse-v1.json` | `1cb0732081304ebe7aee42761b8fa80fe8a6c9667fa81178f3e5950591bbb858` | `contracts._parse_ledger_tables` sees each of the four new rows exactly once at `consumed = no`, and the two aborted arm rows exactly once at `consumed = yes` |
+| `preflight-render-comparison-v1.json` | `f077aa8ec605015ed19fe7c72bd307bf52762bb4f95a18a086e48ff20efc1b48` | the whole-roster pre-flight render of both recovery cells, entry for entry identical to the aborted registration's own sealed receipts on all four phases |
+| `INDEX-v1.json` | see the file | the index of this directory, naming every receipt above with its size and SHA-256 |
 | `plan-hashes-v1.txt` | see the file | the SHA-256 of this note, of every document in the recovery readiness directory and of the five config fragments |
 
 `core.flight.cli wire-check` remains unavailable for any native-episode cell, for the reason the v1
