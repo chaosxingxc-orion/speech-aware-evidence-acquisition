@@ -366,6 +366,41 @@ def _protected_knowledge_material(snapshot: KnowledgeSnapshot) -> tuple[str, ...
     )
 
 
+def node_context_cleaning_messages(
+    base_messages: Sequence[Mapping[str, object]],
+) -> tuple[Mapping[str, object], Mapping[str, object]]:
+    """E8b: the messages ONE context-cleaning contact is composed from.
+
+    ``knowledge: "none"`` is what the cleaning contact's declared phase says, so
+    this is where it is made true: the system contract stays, the speech part
+    this harness attaches to every contact stays, and every knowledge key/value
+    block the supply path put on the consumer's user turn is dropped. A
+    cleaning contact restates text it was handed; it is not an evidence
+    consumer, and the material it restates rides its instruction.
+
+    Fail-closed: an evidence part that survives the filter, or a user turn that
+    is not the shared speech content list, refuses the contact rather than
+    sending a request whose knowledge exposure is not what its phase declares.
+    """
+
+    if len(base_messages) != 2:
+        raise RailsRunnerError("node context cleaning requires the shared two messages")
+    user = dict(base_messages[1])
+    content = user.get("content")
+    if not isinstance(content, list) or not content:
+        raise RailsRunnerError("node context cleaning requires the shared speech turn")
+    kept = [
+        part for part in content
+        if not (isinstance(part, Mapping) and isinstance(part.get("evidence_id"), str))
+    ]
+    if not kept or any(
+        isinstance(part, Mapping) and "evidence_id" in part for part in kept
+    ):
+        raise RailsRunnerError("node context cleaning request carries evidence")
+    user["content"] = kept
+    return (dict(base_messages[0]), user)
+
+
 def _assert_agent_control_excludes_knowledge_payloads(
     contact: AgentContact,
     protected_material: tuple[str, ...],
@@ -2275,20 +2310,9 @@ async def _invoke_native_role_episode(
         )
         if contact_id in state.seen_contact_ids:
             raise RailsRunnerError("native graph repeated a contact identity")
-        # ``knowledge: "none"``: the system contract and the speech packet stay,
-        # every knowledge key/value block the supply path put on the consumer's
-        # request is dropped. A cleaning contact restates text it was handed; it
-        # is not an evidence consumer.
-        user = dict(base[1])
-        user["content"] = [
-            part for part in user["content"]
-            if not (isinstance(part, Mapping) and "evidence_id" in part)
-        ]
-        if any(
-            isinstance(part, Mapping) and "evidence_id" in part
-            for part in user["content"]
-        ):  # pragma: no cover -- defensive
-            raise RailsRunnerError("node context cleaning request carries evidence")
+        # ``knowledge: "none"`` -- the shared contract and the speech packet,
+        # with every evidence block of the consumer's turn dropped.
+        system, user = node_context_cleaning_messages(base)
         decoding = dict(base_decoding_params or {})
         response_format = RESPONSE_FORMATS.resolve(request.response_format_id)()
         if not isinstance(response_format, Mapping) or not response_format:
@@ -2311,7 +2335,7 @@ async def _invoke_native_role_episode(
         )
         cleaning_bindings[contact_id] = NativeRoleSpeechBinding(
             role_id=request.phase_id, sample_id=ctx.sample_id,
-            role_query=request.instruction, base_messages=(base[0], user),
+            role_query=request.instruction, base_messages=(system, user),
             core_kwargs={
                 "decoding_params": {**decoding, "id_slot": visit["slot_id"]},
                 **({
@@ -2334,9 +2358,7 @@ async def _invoke_native_role_episode(
                 evidence_pins={"knowledge_snapshot": snapshot_sha256},
                 budget_id=run_id,
             ),
-            messages=(
-                dict(base[0]), {"role": "user", "content": request.instruction},
-            ),
+            messages=(system, {"role": "user", "content": request.instruction}),
             tool_schemas=(), visible_tool_names=(), decoding_controls={},
         )
         trace = TraceBuffer(run_id)

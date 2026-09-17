@@ -388,7 +388,9 @@ def test_the_cleaning_request_carries_no_evidence_and_the_committed_instruction(
         assert "DECISION BRIEF" not in serialized
         assert "HARNESS CHECKS" not in serialized
         # knowledge: "none" -- no evidence block at all, while the speech part
-        # this harness attaches to every contact is still there.
+        # this harness attaches to every contact is still there. (This fixture
+        # supplies no evidence to ANY contact, so the filter's own falsifier is
+        # the direct test below, over a turn that does carry some.)
         assert _evidence_ids(rendered) == []
         assert serialized.count('"type": "input_speech_features"') == 1
         # No agent-state history: the material is IN the instruction.
@@ -396,6 +398,40 @@ def test_the_cleaning_request_carries_no_evidence_and_the_committed_instruction(
     # The cleaning contact rides the consumer's own pinned slot.
     slots = {harness.prepared[key]["slot_id"] for key in harness.prepared}
     assert len(slots) == 1
+
+
+def test_the_cleaning_messages_drop_every_evidence_block_of_the_consumers_turn():
+    """The episode fixture above carries no supplied evidence at all, so the
+    request-level check there cannot fail. This drives the production filter
+    directly, over a user turn that DOES carry evidence: ``knowledge: "none"``
+    means the speech part survives and every knowledge block does not."""
+
+    from speech_aware_evidence_acquisition.rails.runner import (
+        RailsRunnerError,
+        node_context_cleaning_messages,
+    )
+
+    speech = {
+        "type": "input_speech_features",
+        "speech_features": {"packet_id": "p", "sha256": "a" * 64, "role": "query"},
+    }
+    supplied = [
+        {"type": "text", "text": "connected-device control", "evidence_id": "key:domain",
+         "source_uri": "knowledge-snapshot://x/domain", "knowledge_role": "key"},
+        {"type": "text", "text": "dim the light", "evidence_id": "value:dim",
+         "source_uri": "knowledge-snapshot://x/value", "knowledge_role": "value"},
+    ]
+    system = {"role": "system", "content": "the shared task contract"}
+    user = {"role": "user", "content": [speech, *supplied]}
+    cleaned_system, cleaned_user = node_context_cleaning_messages((system, user))
+    assert cleaned_system == system
+    assert cleaned_user["content"] == [speech]
+    # The consumer's own messages are never mutated in place.
+    assert user["content"] == [speech, *supplied]
+    with pytest.raises(RailsRunnerError, match="shared speech turn"):
+        node_context_cleaning_messages((system, {"role": "user", "content": []}))
+    with pytest.raises(RailsRunnerError, match="shared two messages"):
+        node_context_cleaning_messages((system,))
 
 
 def _without_remaining_contacts(rendered):
