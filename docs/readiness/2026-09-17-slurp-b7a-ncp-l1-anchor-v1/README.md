@@ -31,7 +31,7 @@ derangement twin flies only on a positive CI95.
 | baselines | `configs/baseline/slurp-native-anchor-ncp-l1-train-fold-a-v1.json`, `configs/baseline/slurp-native-anchor-ncp-l1-smoke-4-v1.json` |
 | campaign plan | `configs/campaign/slurp-native-ncp-l1-anchor-train-fold-a-v1.json` |
 | composed / protocol (B7a) | `208e5dba419a8d20b2b83667d700620a77c639303ca08b439b1154d7eb204542` / `f90dd1b2d370795ff438bc53db593057cef98a3bf4336e3d62f905d7b5ed735d` |
-| composed / protocol (B7a smoke) | `9db2eb613665d00fc487f3f6bb257b140f1e22ecceaa33152eb628b125cc0dd8` / `0a6b27d873f9096f7817512a496bf0bab3f3433e69ae63788ac6e5388cef395b` |
+| composed / protocol (B7a smoke) | `0fbb9f0001f8d11fbd8459b0a7dfd55f85833f75e4db38895bf1b028f095a8a2` / `deeeba71ceb627efaaeaf46ace94e4eeefebeed5876eb98ae826ca712a814f1b` |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |
 | readiness | both cells are `held` with the preparation requirement pinned; the coordinator appends the decision requirement and flips |
 | budgets | full: 11,880 generation / 47,520 FIT / 33,930 repeated speech seconds / 12.0 GPU-h / 6,480 task-contract calls / 1 official score. Smoke: 44 / 176 / 117 / 1.0 / 24 / 0 |

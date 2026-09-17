@@ -109,11 +109,11 @@
       "attempt_id": "attempt-slurp-native-ncp-l1-anchor-smoke-4-generation-v1",
       "baseline_fragment": "slurp-native-anchor-ncp-l1-smoke-4-v1",
       "cell": "slurp-native-ncp-l1-anchor-smoke-4-v1",
-      "composed_config_hash": "9db2eb613665d00fc487f3f6bb257b140f1e22ecceaa33152eb628b125cc0dd8",
+      "composed_config_hash": "0fbb9f0001f8d11fbd8459b0a7dfd55f85833f75e4db38895bf1b028f095a8a2",
       "experiment": "slurp-native-ncp-l1-anchor-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-ncp-l1-anchor-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-FIT-V1",
-      "protocol_hash": "0a6b27d873f9096f7817512a496bf0bab3f3433e69ae63788ac6e5388cef395b",
+      "protocol_hash": "deeeba71ceb627efaaeaf46ace94e4eeefebeed5876eb98ae826ca712a814f1b",
       "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-V1",
       "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
     },
