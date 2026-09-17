@@ -277,6 +277,10 @@ class _ActualEpisodeHarness:
             exhaustion_policy=exhaustion_policy,
         )
         self.planner_actions = planner_actions
+        # E8a: the repository root a declared node-context policy reads its
+        # committed templates from. None -- every episode proof written before
+        # E8a -- binds exactly as before.
+        self.repo_root = None
         self.material_visits = Counter()
         self.markers = {}
         self.prepared = {}
@@ -490,6 +494,7 @@ class _ActualEpisodeHarness:
             render_request=self.transport.render_request,
             request_gate=self.request_gate,
             tools_for_phase=self.tools_for_phase,
+            repo_root=self.repo_root,
         )
         source_kwargs = (
             {}

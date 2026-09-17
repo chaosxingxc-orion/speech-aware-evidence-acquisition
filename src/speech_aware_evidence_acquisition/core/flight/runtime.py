@@ -4983,6 +4983,13 @@ class FlightRuntime:
                 render_request=render_request, request_gate=native_fit_gate,
                 tools_for_phase=tool_dispatcher, supply_for_phase=supply_for_phase,
                 review_for_phase=review_for_phase,
+                # E8a: where a declared node-context policy reads its
+                # committed, hash-pinned templates from. Unused, and
+                # byte-identical to before, when none is declared -- which is
+                # also why a dispatch-level test double that carries no
+                # repository root still binds (the runner refuses only when a
+                # policy is declared AND no root was handed over).
+                repo_root=getattr(self, "_repo_root", None),
             )
         facet_seed, value_seed = self._phase_supply_seeds(
             program, binding, supply_specs, plan

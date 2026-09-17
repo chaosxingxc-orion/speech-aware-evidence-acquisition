@@ -274,6 +274,12 @@ class NativeEpisodeConfig:
     finite_completion_policy: str = "raise"
     planner_output_format: str = "exact-text"
     role_context_json: str | None = None
+    # E8a (2026-09-17, Node Context Policy): the canonical text of a
+    # ``native_episode.context_policy`` whose effective level is NOT raw.
+    # An absent key, the literal ``"raw"`` and an all-raw object are ONE
+    # thing here -- ``None`` -- so the OFF arm reaches the runtime as no
+    # policy at all and renders the pre-policy request bytes.
+    context_policy_json: str | None = None
 
     @property
     def terminal_actions(self) -> tuple[str, ...]:
@@ -305,6 +311,11 @@ class NativeEpisodeRunBinding:
     tools_for_phase: object = None
     supply_for_phase: Callable | None = None
     review_for_phase: Callable | None = None
+    # E8a: the repository root a declared ``context_policy`` reads its
+    # committed, hash-pinned templates from (``configs/probes/ncp_*.txt``).
+    # Required exactly when ``config.context_policy_json`` is not None;
+    # every other binding leaves it None, byte-identically to before.
+    repo_root: object = None
 
 
 def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig | None:
@@ -329,6 +340,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         "planner_output_format",
         "role_context",
         "review_loop",
+        "context_policy",
     }
     if (
         not isinstance(raw, Mapping)
@@ -491,6 +503,19 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         raise ValueError(
             "json-action-v1 requires the registered Planner phase response format"
         )
+    # E8a (2026-09-17): ONE key, not two. ``native_episode.role_context`` is
+    # folded under ``native_episode.context_policy`` -- its policy_id/params
+    # pair IS the structured level's implementation -- so a fragment carrying
+    # both is refused rather than silently letting two compilers write the
+    # same ``agent_state`` slot. A fragment carrying only ``role_context``
+    # keeps working unchanged, which is what lets the 2026-09-16 aborted
+    # typed-context flight's configs still be read.
+    if "role_context" in raw and "context_policy" in raw:
+        raise ValueError(
+            "native_episode declares both role_context and context_policy; the "
+            "role_context block is folded under context_policy (E8a), so exactly "
+            "one of them may be present"
+        )
     role_context_json = None
     if "role_context" in raw:
         from .role_context_binding import (
@@ -503,6 +528,50 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         perception = next(role for role in roles if role.role_kind == "perception")
         if program.phase(perception.phase_id).response_format_id != role_context_source_format_id(role_context_json):
             raise ValueError("role context requires the registered Perception phase format")
+    context_policy_json = None
+    if "context_policy" in raw:
+        from .node_context_binding import (
+            is_node_context_null_arm,
+            node_context_producer_formats,
+            node_context_source_format_id,
+            validate_node_context_policy_config,
+        )
+
+        # A DECLARED policy always reaches the runtime, including its OFF arm:
+        # an all-raw policy renders every state untouched -- the request bytes
+        # are the pre-policy bytes -- and still emits one ``level: "raw"``
+        # receipt row per boundary per contact, which is what makes L0's byte
+        # identity a checked statement (design section 9). The key's ABSENCE
+        # remains the arm that composes to the pre-key config hash.
+        context_policy_json = validate_node_context_policy_config(
+            raw["context_policy"]
+        )
+        if not is_node_context_null_arm(raw["context_policy"]):
+            # A boundary policy and a history filter are two ways to answer
+            # the same question; composing them silently would make neither
+            # auditable. Inherited verbatim from the role_context rule above.
+            if any(role.history_scope != "full" for role in roles):
+                raise ValueError(
+                    "node context policy cannot combine with a history filter"
+                )
+            perception = next(role for role in roles if role.role_kind == "perception")
+            if program.phase(perception.phase_id).response_format_id != (
+                node_context_source_format_id(context_policy_json)
+            ):
+                raise ValueError(
+                    "node context policy requires the registered Perception phase format"
+                )
+            by_kind = {role.role_kind: role for role in roles}
+            for role_kind, format_id in node_context_producer_formats(
+                context_policy_json
+            ).items():
+                phase = program.phase(by_kind[role_kind].phase_id)
+                if phase.response_format_id != format_id:
+                    raise ValueError(
+                        f"node context policy declares response_format_id "
+                        f"{format_id!r} for the {role_kind} producer, but its phase "
+                        f"declares {phase.response_format_id!r}"
+                    )
     if any(phase.barrier for phase in program.phases):
         raise ValueError("conditional native episodes cannot declare whole-roster phase barriers")
     if refresh_action is not None:
@@ -549,4 +618,5 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         finite_completion_policy,
         planner_output_format,
         role_context_json,
+        context_policy_json,
     )
