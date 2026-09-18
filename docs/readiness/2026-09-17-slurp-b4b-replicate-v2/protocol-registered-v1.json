@@ -89,8 +89,8 @@
     "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2",
     "campaign_plan": "configs/campaign/slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2.json",
     "cell": "slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2",
-    "composed_config_hash": "7462a00e1261ed1fb12b5764059c3269066ed6b4f30c77e2e0b8dc8ffadaf1b2",
-    "execution_plan_protocol_hash": "bf24d2654449e61c05263e151136ab9ff5ffbb807a3e4af44fa348edd6f12187",
+    "composed_config_hash": "658c568f335b77ed0612348cc4a79b7dbfa1fee5354deafb999af117f290dbe1",
+    "execution_plan_protocol_hash": "b8143a5d9511591cf55da817cc3648c6a644cae309a7c4cf51041fcb035243b2",
     "experiment": "slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2",
     "fit_attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-fit-replicate-v2",
     "fit_run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-REPLICATE-V2",
@@ -104,8 +104,8 @@
     "method_verification": "The same compose()/protocol_hash() call reproduces cell B4b's own registered and as-flown 8d207b33fa7643b7e5acc4ccbd03354fe9c09df09563544c4879c4bb97ee6a4d / 567a87ad234bb4f17c4735f94219a82b05b25a19d81fdf1ee32bb93b6eda346a, and the sealed anchor's registered protocol hash d1c61c09102dcb8801ea134d763fca0b5b60054d6ef80a3a38752642c107c87d, on this same checkout.",
     "prepared_phase_supply": {
       "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
-      "relpath": "prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/phase-supply-v1.json",
-      "sha256": "0ea4efcfdcca33ff6f31f2c212a769fafbbb00903d0b14d86ada420dcb2ca8a1"
+      "relpath": "prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/phase-supply-v2.json",
+      "sha256": "06e52a88b856e4d60b7d4ed9cda99490d61e5acdb26105e77722489abfe29150"
     },
     "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2"
   },

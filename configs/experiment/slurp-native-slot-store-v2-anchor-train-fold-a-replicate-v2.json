@@ -16,13 +16,20 @@
         "reason": "Registered before contact by the B4b replicate registration agent under owner decision 13 of 2026-09-17, which orders the request-identical replicate that turns module M4b's provisional admission into a replicated one. It stays HELD: the coordinator pins the root decision receipt and flips the state with scripts/flights/repin_cell.py, which re-pins the rebuilt prepared supply and every dependent hash in the same cycle. No smoke is registered -- the request bytes are cell B4b's own and B4b's four-row smoke SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-SMOKE-4-V2 already sealed the form. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. One experiment in flight at a time.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b4b-replicate-admission-v1",
+            "relpath": "coordination/slurp-b4b-replicate-v2/root-admission-v1.json",
+            "sha256": "75edd7591a9d79ad49aae339064eaaedbc6470caeb6424fd3ebd9fba2f9f0eeb",
+            "reason": "Decision slurp-b4b-replicate-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "Model-free first-phase Perception supply prepared for cell B4b-rep from the same sealed speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors cell B4b and the sealed dual-store anchor used; zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to cell B4b's prepared artifact and to the sealed anchor preparation's on all 1,080 rows (output SHA-256 ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f), so the Perception selection channel does not move. Receipt coordination/slurp-b4b-replicate-v2/phase-supply-vs-b4b-and-anchor-v1.json.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/phase-supply-v1.json",
-            "sha256": "0ea4efcfdcca33ff6f31f2c212a769fafbbb00903d0b14d86ada420dcb2ca8a1"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/phase-supply-v2.json",
+            "sha256": "06e52a88b856e4d60b7d4ed9cda99490d61e5acdb26105e77722489abfe29150"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2"
     }

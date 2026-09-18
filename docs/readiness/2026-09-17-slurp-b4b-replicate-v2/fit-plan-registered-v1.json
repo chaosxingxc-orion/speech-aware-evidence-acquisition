@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2",
-  "composed_config_hash": "7462a00e1261ed1fb12b5764059c3269066ed6b4f30c77e2e0b8dc8ffadaf1b2",
+  "composed_config_hash": "658c568f335b77ed0612348cc4a79b7dbfa1fee5354deafb999af117f290dbe1",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-fit-replicate-v2",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 47520,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "bf24d2654449e61c05263e151136ab9ff5ffbb807a3e4af44fa348edd6f12187",
+    "protocol_hash": "b8143a5d9511591cf55da817cc3648c6a644cae309a7c4cf51041fcb035243b2",
     "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-REPLICATE-V2",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -32,7 +32,7 @@
   "preparation_base_commit": "b4cb9ae9fa67e7f8055e204d290a63838c14251d",
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-17-slurp-b4b-replicate-v2/protocol-registered-v1.json",
-    "sha256": "3bd17a30ddf39136027fb675ae84ef0e425ca4f6d190004751e26b161115f5ff"
+    "sha256": "d50dcf1a71ec30cd825567285361d844eed33f2f0ee50052707eba570200d0d3"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The comparators are sealed bytes and none is re-flown or re-scored: the dual-store anchor SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1 (primary, the clause leg), cell B4b SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V2 (the own-null leg) and the released direct anchor SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1 (secondary). No four-row smoke is registered and none is needed: the request bytes are cell B4b's own, proved row for row before contact, and B4b's own smoke SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-SMOKE-4-V2 sealed the structural form of this episode.",
   "registered_at_utc": "2026-09-17T20:00:00.000000+00:00",

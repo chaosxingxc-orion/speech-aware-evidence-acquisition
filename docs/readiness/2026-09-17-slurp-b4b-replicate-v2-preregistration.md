@@ -65,8 +65,8 @@ recorded as a second entry and the first entry stayed. This cell is the SLURP ve
 | dataset fragment | `slurp-speech-native-evo-fold-a-1080` |
 | baseline fragment | `slurp-native-anchor-slot-store-v2-train-fold-a-replicate-v2` |
 | campaign plan | `configs/campaign/slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2.json` |
-| composed config / protocol | `7462a00e1261ed1fb12b5764059c3269066ed6b4f30c77e2e0b8dc8ffadaf1b2` / `bf24d2654449e61c05263e151136ab9ff5ffbb807a3e4af44fa348edd6f12187` |
-| prepared phase supply | `prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/phase-supply-v1.json`, SHA-256 `0ea4efcfdcca33ff6f31f2c212a769fafbbb00903d0b14d86ada420dcb2ca8a1`, **output** SHA-256 `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` |
+| composed config / protocol | `658c568f335b77ed0612348cc4a79b7dbfa1fee5354deafb999af117f290dbe1` / `b8143a5d9511591cf55da817cc3648c6a644cae309a7c4cf51041fcb035243b2` |
+| prepared phase supply | `prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/phase-supply-v2.json`, SHA-256 `06e52a88b856e4d60b7d4ed9cda99490d61e5acdb26105e77722489abfe29150`, **output** SHA-256 `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` |
 | budgets | 11,880 generation calls, 47,520 FIT endpoints, 33,930 repeated speech seconds, 12.0 fit-inclusive GPU hours, 6,480 native task-contract calls, one official complete score — **cell B4b's own ceilings, unchanged** |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |
 | readiness | `held`, carrying the preparation requirement only; the coordinator pins the decision receipt and flips it |
@@ -153,7 +153,7 @@ sealed anchor preparation's:
 
 | artifact | file SHA-256 | output SHA-256 |
 | --- | --- | --- |
-| B4b-rep | `0ea4efcfdcca33ff6f31f2c212a769fafbbb00903d0b14d86ada420dcb2ca8a1` | `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` |
+| B4b-rep | `06e52a88b856e4d60b7d4ed9cda99490d61e5acdb26105e77722489abfe29150` | `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` |
 | B4b | `13d0a8c91e7b5a35cdda6691ee383b18cc3a025d38bf9f3d149ae0ece859f685` | `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` |
 | anchor | `c5b0b51c23ef22feb1284559cd9e37286922d4cefc2e3cfcf7feafb23e3b595e` | `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` |
 
@@ -178,7 +178,7 @@ The composed config hash of a replicate **necessarily** moves, because the run a
 inside it. What must not move is the behaviour, and section 3.1 is what proves that. Before the first
 contact the coordinator re-runs `core.flight.cli check` and confirms the runtime-derived protocol
 hash equals the hash registered at that moment (the pre-flip value is
-`bf24d2654449e61c05263e151136ab9ff5ffbb807a3e4af44fa348edd6f12187`; the re-pin cycle of the runbook
+`b8143a5d9511591cf55da817cc3648c6a644cae309a7c4cf51041fcb035243b2`; the re-pin cycle of the runbook
 replaces it in one place and rewrites every document that quotes it). If it differs by one character,
 the flight stops and reports.
 
