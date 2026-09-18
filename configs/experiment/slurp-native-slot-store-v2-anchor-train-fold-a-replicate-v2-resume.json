@@ -19,14 +19,14 @@
             "kind": "decision",
             "expected_decision_id": "slurp-b4b-replicate-resume-admission-v1",
             "relpath": "coordination/slurp-b4b-replicate-v2/root-admission-resume-v1.json",
-            "sha256": "18d44fe8b20d7958dd745c6b3f5ff2d0de03c04335c60a025b554855946056a9",
+            "sha256": "1099c34adc63d57fc0fb6d4bd65dcf030e912011195ba71f41a0662277d64898",
             "reason": "Decision slurp-b4b-replicate-resume-admission-v1 pinned by scripts/flights/repin_cell.py."
           },
           {
             "kind": "preparation",
             "reason": "Inherited verbatim from the aborted cell: the model-free first-phase Perception supply of run SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2, built from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors cell B4b and the sealed dual-store anchor used, with zero model, tokenizer, encoder, scorer or server contacts; its output block is byte-identical to cell B4b's prepared artifact and to the sealed anchor preparation's on all 1,080 rows (output SHA-256 ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f), so the Perception selection channel does not move. core.preparation.artifact_inputs binds the composed values, the cell and attempt identities included, so this inherited pin will NOT verify against the resume cell's composed digest. That is expected and is handled by the launch step, not by this registration: core.flight.repin.ensure_artifact_pinned detects exactly that mismatch, rebuilds the artifact model-free into prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/phase-supply-v3.json, asserts its output equals the previous artifact's, and re-pins it into this requirement and into the baseline fragment in the same cycle. --allow-output-change must never be given: an output that moved would mean the knowledge channel moved and the resume would no longer be a resume.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/phase-supply-v3.json",
-            "sha256": "66f34fcb6ef61d4ae7a63fb009960fc3dda2d956966a94add9dcdeabed2f105a"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/phase-supply-v4.json",
+            "sha256": "ac501ceef5cd31047ec239843afdb3834f774c72c5f686d8786b90ede184da00"
           }
         ],
         "state": "ready"

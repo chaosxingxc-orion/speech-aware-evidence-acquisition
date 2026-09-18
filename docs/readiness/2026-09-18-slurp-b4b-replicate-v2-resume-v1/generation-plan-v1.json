@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2-resume",
-  "composed_config_hash": "c68afd983ab08bd9bed88c70f23fd9de8834dd4396e111687a9f6cce9071e255",
+  "composed_config_hash": "a2d986c893923e25472e0ec775ebf3ffce905cb4edb1935c44efab13b40a7950",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume2",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "717c97466ad09ed305fe0302e680dc4562e4b450077d451be002ee59f1537431",
+    "protocol_hash": "df67e8e1192aefa3a9ff7292625b7fa6bfbaa754aa4bcb2737466b4eb435ef0c",
     "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -32,7 +32,7 @@
   "preparation_base_commit": "7effe8193d25d881fd9c97b66c5e78b8f4d0bbc0",
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-18-slurp-b4b-replicate-v2-resume-v1/protocol-registered-v1.json",
-    "sha256": "09007bc9a7dbb5f4e1f0db805bcb066d5c978b2d1c6fe10c1bc2d61e5481025f"
+    "sha256": "280cb23105d5414e5eff2065863ce52b2e3a44a871112032517ec4b308a372ce"
   },
   "quality_read_gate": "No task-quality read before the complete merged sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The predecessor attempt's 2,922 contacts were never scored and never read, and no partial read is permitted; the 580 rows it completed reach a number only through the merged manifest. The comparators are sealed bytes and none is re-flown or re-scored: the dual-store anchor SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1 (primary, the clause leg), cell B4b SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V2 (the own-null leg) and the released direct anchor SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1 (secondary).",
   "registered_at_utc": "2026-09-18T18:00:00.000000+00:00",
@@ -43,8 +43,8 @@
   "plan_kind": "generation",
   "prepared_phase_supply": {
     "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
-    "relpath": "prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/phase-supply-v3.json",
-    "sha256": "66f34fcb6ef61d4ae7a63fb009960fc3dda2d956966a94add9dcdeabed2f105a"
+    "relpath": "prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/phase-supply-v4.json",
+    "sha256": "ac501ceef5cd31047ec239843afdb3834f774c72c5f686d8786b90ede184da00"
   },
   "source_tree": "studies/speech-aware-evidence-acquisition (main checkout, master)",
   "resume": {
