@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2-resume",
-  "composed_config_hash": "c41e5a7932cde51f7b0fbeef2d7f5601865248ddcdd6332ba26b0fd1011033d6",
+  "composed_config_hash": "c68afd983ab08bd9bed88c70f23fd9de8834dd4396e111687a9f6cce9071e255",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-fit-replicate-v2-resume2",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 47520,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "bd8248f4701923e811db14edb754678e3573c1c8289e8080cdcccf67cf76f6de",
+    "protocol_hash": "717c97466ad09ed305fe0302e680dc4562e4b450077d451be002ee59f1537431",
     "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-REPLICATE-V2",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",

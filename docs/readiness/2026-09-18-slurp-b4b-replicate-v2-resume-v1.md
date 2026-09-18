@@ -276,7 +276,7 @@ code and request bytes unchanged, and a full re-fly otherwise.
 | dataset fragment | `slurp-speech-native-evo-fold-a-1080` (**unchanged**) |
 | baseline fragment | `slurp-native-anchor-slot-store-v2-train-fold-a-replicate-v2-resume` |
 | campaign plan | `configs/campaign/slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2-resume.json` |
-| composed config / protocol | `c41e5a7932cde51f7b0fbeef2d7f5601865248ddcdd6332ba26b0fd1011033d6` / `bd8248f4701923e811db14edb754678e3573c1c8289e8080cdcccf67cf76f6de` |
+| composed config / protocol | `c68afd983ab08bd9bed88c70f23fd9de8834dd4396e111687a9f6cce9071e255` / `717c97466ad09ed305fe0302e680dc4562e4b450077d451be002ee59f1537431` |
 | prepared phase supply | inherited pin `prepared/SAEA-…-REPLICATE-V2/phase-supply-v2.json`, SHA-256 `66f34fcb6ef61d4ae7a63fb009960fc3dda2d956966a94add9dcdeabed2f105a`, **output** SHA-256 `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f`; the re-pin cycle rebuilds it as `phase-supply-v3.json` (see below) |
 | budgets | 11,880 generation calls (**run-cumulative**), 47,520 FIT endpoints, 33,930 repeated speech seconds, 12.0 fit-inclusive GPU hours, 6,480 native task-contract calls, one official complete score — cell B4b's own ceilings, unchanged |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |

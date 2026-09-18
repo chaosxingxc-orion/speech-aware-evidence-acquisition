@@ -42,7 +42,7 @@ use**.
 | baseline | `configs/baseline/slurp-native-anchor-slot-store-v2-train-fold-a-replicate-v2-resume.json` |
 | experiment | `configs/experiment/slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2-resume.json` |
 | campaign plan | `configs/campaign/slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2-resume.json` |
-| composed / protocol (pre-flip) | `c41e5a7932cde51f7b0fbeef2d7f5601865248ddcdd6332ba26b0fd1011033d6` / `bd8248f4701923e811db14edb754678e3573c1c8289e8080cdcccf67cf76f6de` |
+| composed / protocol (pre-flip) | `c68afd983ab08bd9bed88c70f23fd9de8834dd4396e111687a9f6cce9071e255` / `717c97466ad09ed305fe0302e680dc4562e4b450077d451be002ee59f1537431` |
 | readiness | `held`, `preparation` requirement only; the coordinator pins the decision receipt and flips |
 | decision | `slurp-b4b-replicate-resume-admission-v1`, receipt `coordination/slurp-b4b-replicate-v2/root-admission-resume-v1.json` — **the coordinator mints it** |
 | rows kept / flown | 580 / 500 (496 never started, 4 partial) |
