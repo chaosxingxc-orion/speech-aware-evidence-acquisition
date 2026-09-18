@@ -41,7 +41,7 @@ B5e. A second failure closes the cell.
 | baseline | `configs/baseline/slurp-native-anchor-b5e-exemplars-k20-slot-store-v2-train-fold-a-recovery-v1.json` |
 | experiment | `configs/experiment/slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-recovery-v1.json` |
 | campaign plan | `configs/campaign/slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-recovery-v1.json` |
-| composed / protocol | `737582f97cf721db79b059c83722f8acda8586048373d94ca47aa6ec477bc828` / `d94facb4b8c92d34042123c7d33c1ef9c09417962d62db453b2464da06566e38` |
+| composed / protocol | `50ae44a67e1d6e897e266f9ebadb4eead62df091d4f4fbc72b9a8100b1f28ae1` / `b5d14e1fe060ee9f2b7ccc6d174b4e16cd82b5b07a9d9850808d2656ecfee4c0` |
 | prepared supply | `prepared/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1/phase-supply-v1.json`, SHA-256 `5bfc6bcdeda7438ca01725072267fe53086ffdb6395d813b3a6c897be4bfef0a`, **output** SHA-256 `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` |
 | budgets | 11,880 generation calls, 47,520 FIT endpoints, 33,930 repeated speech seconds, 12.0 fit-inclusive GPU hours, 6,480 native task-contract calls, one official complete score — **the aborted arm's own ceilings, unchanged** |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |

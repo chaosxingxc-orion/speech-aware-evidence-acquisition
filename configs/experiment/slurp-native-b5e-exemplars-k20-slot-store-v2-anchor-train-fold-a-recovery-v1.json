@@ -16,13 +16,20 @@
         "reason": "Registered before contact by the B5e recovery registration agent at study commit 835ecf10. This is the ONE root-diagnosed recovery re-registration the preregistration (sections 7 and 11) allows for cell B5e: run SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V1 aborted at 2026-09-18T14:40:20Z after 25 contacts when the task-owned resident server died mid-request because all three SAEA scheduled tasks carried the default stop-on-battery condition and the coordinator changed the power scheme with powercfg. Infrastructure failure, coordinator-caused; code, configuration and request bytes unchanged; the tasks are re-registered with the battery and idle conditions disabled and no execution time limit. It stays HELD: the coordinator mints the root decision receipt coordination/slurp-b5e-combination-v1/root-admission-recovery-v1.json (decision id slurp-b5e-combination-recovery-admission-v1) and flips the state with scripts/flights/repin_cell.py, which re-verifies the prepared supply and recomputes every dependent hash in the same cycle. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. One experiment in flight at a time.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b5e-combination-recovery-admission-v1",
+            "relpath": "coordination/slurp-b5e-combination-v1/root-admission-recovery-v1.json",
+            "sha256": "8fc3a119e05adf6973c2bb6acce30ed91406dfcc532e58d7b62cf4648192c4a9",
+            "reason": "Decision slurp-b5e-combination-recovery-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "relpath": "prepared/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1/phase-supply-v1.json",
             "sha256": "5bfc6bcdeda7438ca01725072267fe53086ffdb6395d813b3a6c897be4bfef0a",
             "reason": "Model-free first-phase Perception supply prepared for the B5e recovery cell at one worker from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed dual-store anchor, cell B1, cell B4b and the aborted B5e arm used; zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to all of them on 1,080 of 1,080 rows (output SHA-256 ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f), so the Perception selection channel does not move. Receipt coordination/slurp-b5e-combination-v1/recovery-prepared-supply-and-hashes-v1.json."
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1"
     }

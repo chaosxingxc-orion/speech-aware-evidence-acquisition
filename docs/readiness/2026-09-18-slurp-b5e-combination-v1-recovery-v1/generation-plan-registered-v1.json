@@ -1,7 +1,7 @@
 {
   "campaign_plan": "configs/campaign/slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-recovery-v1.json",
   "cell": "slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-recovery-v1",
-  "composed_config_hash": "737582f97cf721db79b059c83722f8acda8586048373d94ca47aa6ec477bc828",
+  "composed_config_hash": "50ae44a67e1d6e897e266f9ebadb4eead62df091d4f4fbc72b9a8100b1f28ae1",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-generation-recovery-v1",
     "carrier_lock_key": "slurp",
@@ -9,7 +9,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "d94facb4b8c92d34042123c7d33c1ef9c09417962d62db453b2464da06566e38",
+    "protocol_hash": "b5d14e1fe060ee9f2b7ccc6d174b4e16cd82b5b07a9d9850808d2656ecfee4c0",
     "run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -44,7 +44,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-18-slurp-b5e-combination-v1-recovery-v1/protocol-registered-v1.json",
-    "sha256": "96cd1bab56444b947d13da0b78aab0fcb9c08690ef50dd016644703d0f413095"
+    "sha256": "e26f8fb4e4ee19e9a76da9512cb49e142618e6a36d762860333962e5511130cc"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The aborted attempt's 25 complete contacts were never scored and never read, and no partial read is permitted. Comparators are sealed bytes and none is re-flown or re-scored: the dual-store anchor, cell B1's recovery arm (the M1 leg), cell B4b (the M4b leg), the released TRAIN A direct anchor, and the B4b request-identical replicate only if it is sealed before this cell's first contact.",
   "registered_at_utc": "2026-09-18T16:00:00.000000+00:00",
