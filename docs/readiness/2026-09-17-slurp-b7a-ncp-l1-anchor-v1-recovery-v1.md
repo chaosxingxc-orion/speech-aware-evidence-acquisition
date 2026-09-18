@@ -366,3 +366,19 @@ not the real shared speech renderer. The request-envelope comparison stands in i
 - No claim that the recovery run's realized requests equal the aborted run's: greedy decoding at
   `temperature 0` is not bitwise reproducible across batch compositions. What is pinned is the
   configuration and the request-construction surface.
+
+## Outcome of the recovery smoke (2026-09-18, coordinator)
+
+`SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-RECOVERY-V1` flew at 2026-09-18T00:58Z through the
+standalone worker attached to the resident session, at study commit `d1cb9d4d` (the E8c-fixed
+code). Actuals: 20 calls, 52.98 audio seconds, 4 task-contract tool calls, 20/20 request fits
+(minimum margin 10,303 tokens); manifest COMPLETED with the seal stage present. Every row shows the
+five nominal contacts (Perception 1, Solver 1, Reviewer 2, Planner 1 ACCEPT, no revision) and a
+receipt carrying `node_context_policy_compilations` per contact (`context_policy_config_sha256`,
+`perception_response_format_sha256`, `template_sha256s`). The Solver request carries the L1
+node-context block, each Reviewer request four, and the Planner brief carries the REVIEW OF THE
+CURRENT DRAFT, DECISION BRIEF and HARNESS CHECKS blocks with both Reviewer outputs in their UNPARSED
+L1 state (the Reviewer response format is cell B7r's factor). No illegal Planner action occurred on
+the four rows, so the E8c retained-row path was not exercised in flight; its proof remains the
+fake-model test landed with item E8c. **Structural PASS; no quality read.** The arm re-pins before
+its launch and, under owner decision 19 of 2026-09-18, flies after cell B5e.
