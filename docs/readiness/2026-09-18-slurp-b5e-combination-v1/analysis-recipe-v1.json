@@ -1,0 +1,311 @@
+{
+  "arms": {
+    "left_base": {
+      "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+      "contacts": 5417,
+      "official_aggregate": {
+        "action_accuracy": 79.26,
+        "intent_scenario_plus_action": 77.96,
+        "pooled_slu_f1": 48.53,
+        "pooled_span_f1": 29.5,
+        "scenario_accuracy": 84.81
+      },
+      "projection_v3_aggregate": {
+        "action_accuracy": 80.65,
+        "intent_scenario_plus_action": 79.35,
+        "pooled_slu_f1": 51.99,
+        "pooled_span_f1": 40.3,
+        "scenario_accuracy": 85.46
+      },
+      "role": "the sealed dual-store anchor; the base leg of the additivity report and of the direct comparison. Sealed bytes, never re-flown or re-scored.",
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+      "run_manifest_sha256": "049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1.scores.json",
+      "scores_sha256": "7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47"
+    },
+    "left_direct_secondary": {
+      "attempt_id": "attempt-slurp-direct-max512-train-fold-a-source-recovery-generation-v1",
+      "contacts": 1080,
+      "official_aggregate": {
+        "action_accuracy": 75.09,
+        "intent_scenario_plus_action": 73.7,
+        "pooled_slu_f1": 33.89,
+        "pooled_span_f1": 21.1,
+        "scenario_accuracy": 82.69
+      },
+      "projection_v3_aggregate": {
+        "action_accuracy": 75.93,
+        "intent_scenario_plus_action": 75.37,
+        "pooled_slu_f1": 34.31,
+        "pooled_span_f1": 23.24,
+        "scenario_accuracy": 84.17
+      },
+      "role": "the released TRAIN A direct anchor; SECONDARY comparator, the system-versus-direct column only. Sealed bytes.",
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1",
+      "run_manifest_sha256": "546109055a373b358c43d36878c532b95784ee5d73d07f011c5fa3ea3d7ce11e",
+      "scores_relpath": "runs/SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1/attempt-slurp-direct-max512-train-fold-a-source-recovery-generation-v1/SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1.scores.json",
+      "scores_sha256": "7840a959fe4f43928fda0e0cacfe8c0ee4200116bfcd269bfe3451b59da29c38"
+    },
+    "left_m1": {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2",
+      "contacts": 5425,
+      "official_aggregate": {
+        "action_accuracy": 81.39,
+        "intent_scenario_plus_action": 80.19,
+        "pooled_slu_f1": 61.14,
+        "pooled_span_f1": 48.43,
+        "scenario_accuracy": 86.39
+      },
+      "projection_v3_aggregate": {
+        "action_accuracy": 82.96,
+        "intent_scenario_plus_action": 81.76,
+        "pooled_slu_f1": 62.67,
+        "pooled_span_f1": 52.65,
+        "scenario_accuracy": 87.13
+      },
+      "role": "cell B1's recovery arm (module M1 alone); the GATING leg of clause 2. Sealed bytes.",
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2",
+      "run_manifest_sha256": "b07ed553ff9f78b8e3ead6797bb66fb92a1820793b8aa5061576c6f66aa1a8ad",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2/attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2.scores.json",
+      "scores_sha256": "a7105b328509a8bd00c4678fd076e9be4d242b6189bb82bbd290bd596e3c9078",
+      "study_commit": "a35630c081827cb2d038a4ef314305b69b867627"
+    },
+    "left_m4b": {
+      "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-generation-v2",
+      "contacts": 5407,
+      "official_aggregate": {
+        "action_accuracy": 79.63,
+        "intent_scenario_plus_action": 78.52,
+        "pooled_slu_f1": 51.09,
+        "pooled_span_f1": 32.4,
+        "scenario_accuracy": 85.09
+      },
+      "projection_v3_aggregate": {
+        "action_accuracy": 80.83,
+        "intent_scenario_plus_action": 79.72,
+        "pooled_slu_f1": 54.05,
+        "pooled_span_f1": 41.85,
+        "scenario_accuracy": 85.93
+      },
+      "role": "cell B4b (module M4b alone); the REPORTED, non-gating leg of clause 2. Sealed bytes.",
+      "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V2",
+      "run_manifest_sha256": "b3f7e7ac0babd5ae3e764ad93948203cc40192d72ac3a156b4a479cc69c256ea",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V2/attempt-slurp-native-slot-store-v2-anchor-train-fold-a-generation-v2/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V2.scores.json",
+      "scores_sha256": "751c529806e7cd03db13cfba58d583bf7b9d7f14b5b62b6b26e676a5acb308a1",
+      "study_commit": "19ad05b4202622f48c8d604b0cabc5fb6a6b6b83"
+    },
+    "left_m4b_replicate_conditional": {
+      "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2",
+      "role": "the B4b request-identical replicate. CONDITIONAL: it enters this read ONLY IF its manifest is sealed and officially scored before cell B5e's first contact. If it is not, this arm and its contrast are dropped and the verdict says so. It never gates.",
+      "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2.scores.json",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "right_b5e": {
+      "attempt_id": "attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-generation-v1",
+      "expected_contacts_nominal": 5430,
+      "registered_contact_ceiling": 11880,
+      "role": "cell B5e, the early combination of modules M1 and M4b",
+      "run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V1/attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-generation-v1/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V1.scores.json",
+      "scores_sha256": "PENDING_FIRST_OFFICIAL_SCORE"
+    }
+  },
+  "authority": {
+    "design": "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md sections 4-6",
+    "m1_verdicts": [
+      "docs/results/2026-09-17-slurp-b1-exemplars-k20-verdict.md",
+      "docs/results/2026-09-18-slurp-b1-twin-verdict.md"
+    ],
+    "m4b_verdict": "docs/results/2026-09-17-slurp-b4b-slot-store-v2-verdict.md",
+    "own_null": "docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md; the TRAIN A own null h_SLU 1.1218 pp and h_intent 1.0051 pp at CI95",
+    "owner_decisions": "decisions 1, 7, 15, 17 and 18-21 of docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "preregistration": "docs/readiness/2026-09-18-slurp-b5e-combination-v1-preregistration.md",
+    "protocol": "docs/readiness/2026-09-18-slurp-b5e-combination-v1/protocol-registered-v1.json",
+    "symmetric_train_sibling": "docs/results/2026-09-17-slurp-train-symmetric-reread-v1.md"
+  },
+  "claim_boundary": "Descriptive paired read on historically exposed TRAIN Fold A discovery rows. No superiority, generalization, component-causal or confirmatory claim; nothing about Fold B, DEV-1000 or the test split. Meeting the bar on this pass is not 'replicated'; B5er is what replication means here. This read does not discharge module M4b's provisional obligation, which belongs to the B4b request-identical replicate.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "contrasts": [
+    {
+      "id": "b5e_minus_m1",
+      "left": "left_m1",
+      "right": "right_b5e",
+      "role": "THE GATING CONTRAST -- clause 2 (M4b's contribution inside the combination) and clause 3 (the HARMFUL trigger)"
+    },
+    {
+      "id": "b5e_minus_m4b",
+      "left": "left_m4b",
+      "right": "right_b5e",
+      "role": "M1's contribution inside the combination; the same three clauses are evaluated and REPORTED, never gating"
+    },
+    {
+      "id": "b5e_minus_anchor",
+      "left": "left_base",
+      "right": "right_b5e",
+      "role": "the additivity report: compared against the sum of the single-module deltas, +12.61 + 2.55 = +15.16 pp official and +10.67 + 2.06 = +12.73 pp in v3"
+    },
+    {
+      "id": "b5e_minus_direct",
+      "left": "left_direct_secondary",
+      "right": "right_b5e",
+      "role": "secondary, the system-versus-direct column; reported only"
+    },
+    {
+      "id": "m1_minus_anchor_recomputed",
+      "left": "left_base",
+      "right": "left_m1",
+      "role": "STOP CONDITION -- must reproduce +10.54 (pooled SLU) and +0.74 (intent) CI95 lower bounds to the digit"
+    },
+    {
+      "id": "m4b_minus_anchor_recomputed",
+      "left": "left_base",
+      "right": "left_m4b",
+      "role": "STOP CONDITION -- must reproduce +1.1294 (pooled SLU) and -0.7117 (intent) CI95 lower bounds to the digit"
+    },
+    {
+      "id": "b5e_minus_m4b_replicate",
+      "left": "left_m4b_replicate_conditional",
+      "right": "right_b5e",
+      "role": "CONDITIONAL and reported only; included solely if the B4b replicate is sealed before cell B5e's first contact"
+    }
+  ],
+  "decision_rule": {
+    "bar_scorer": "slurp-slu-official-projected-v3-train (owner decisions 1 and 7)",
+    "clause_1_bar": {
+      "MEETS THE BAR": "v3-projected pooled SLU-F1 >= 64.00 AND v3-projected intent >= 78.00",
+      "beside": "the unprojected official and symmetric numbers; the verdict states whether the unprojected pooled SLU also clears 64.00",
+      "on_meeting": "register B5er, a request-identical replicate, immediately",
+      "on_missing": "the bar is NOT lowered (owner decision 20); decision 15's order resumes and B5b reads against the same bar"
+    },
+    "clause_2_combination": {
+      "ADMITTED": "CI95 lower bound of (B5e - B1) pooled official SLU > 0 AND (B5e - B1) intent CI95 lower bound > -1.0051 AND no scenario's paired intent CI95 upper bound against B1 lies below zero",
+      "NEUTRAL": "otherwise",
+      "additivity": "(B5e - anchor) CI95 against +15.16 pp official (+12.73 pp v3); the verdict states inside / above (sub-additive) / below (super-additive)",
+      "reported_not_gating": "(B5e - B4b) under the same three clauses, as M1's contribution inside the combination"
+    },
+    "clause_3_harmful": {
+      "HARMFUL": "(B5e - B1) pooled SLU CI95 UPPER bound < -1.1218, or (B5e - B1) intent CI95 LOWER bound < -1.0051",
+      "consequence": "the v2 candidate falls back to B1 alone, B5er is NOT registered, and the owner is told"
+    },
+    "no_repeat_to_pass": true,
+    "null_margins_pp": {
+      "h_intent": 1.0051,
+      "h_slu": 1.1218
+    },
+    "primary": "official pooled SLU micro F1 (slurp-slu-official-train), natural mixture",
+    "read_once": true,
+    "stop_condition": "All four sealed comparators must reproduce their registered official and projection-v3 aggregates to the hundredth of a point, and the recomputed (B1 - anchor) and (B4b - anchor) contrasts must reproduce +10.54 / +0.74 and +1.1294 / -0.7117 CI95 lower bounds to the digit, before any table of this cell is read.",
+    "symmetric_scorer": "slurp-slu-f1-normalized-v1-train (owner decision 14); reported beside every official number, never a gate"
+  },
+  "delta_convention": "delta = right minus left, in percentage points; negative is worse",
+  "diagnostics_required": [
+    "saves / harms / ties with the exact two-sided McNemar p for intent, scenario, action, row exact slot F1 and row SLU-F1, on every contrast",
+    "net harmed rows per scenario, flagging any scenario with five or more (owner decision 17), on every contrast",
+    "the M1 diagnostics recomputed on cell B5e's own sealed outputs: realized candidate-union coverage against A2's 0.9722 and against cell B1's own value; the Solver escape-to-neighbour-intent rate; exemplar token volume actually rendered per row; revision counts and review-loop dispositions against the anchor's 5, cell B1's 7 and the twin's 9",
+    "the B4b per-type slot decomposition (date, time, media_type, transport_type, business_type, order_type, relation, event_name false negatives and false positives, plus the omission / all-exact / partial / exact-mention / spurious-mention table) recomputed on cell B5e's own sealed outputs with the official scorer's own matching, read against cell B4b's first-pass numbers",
+    "cost and duty cycle: contacts, contacts per row, repeated speech seconds, FIT endpoints, task-contract calls, GPU hours from the serving monitor, mean latency, slot occupancy, utilisation, parked fraction, prompt/completion tokens, the minimum FIT margin and the widest realised request against the registered static bound of 17,983 tokens"
+  ],
+  "estimators": {
+    "bootstrap_pooled": "analysis.paired.resampled_statistic",
+    "not_used": "analysis.score_compare_cli as the runner: it hard-codes ci_level 0.90 and DEV population names",
+    "paired_per_row": "analysis.paired.paired_contrast",
+    "percentiles": "analysis.bootstrap._percentile over the retained BootstrapResult.replicates",
+    "pooled_micro_f1": "analysis.null_calibration.pooled_f1",
+    "row_reader": "analysis.null_calibration_cli.rows_for"
+  },
+  "execution_profile": "model-free-check",
+  "metrics": [
+    {
+      "counts": "tp = [slu_f1_word_tp, slu_f1_char_tp], fp and fn likewise",
+      "estimand": "pooled count F1",
+      "id": "pooled_slu_f1",
+      "role": "primary"
+    },
+    {
+      "clause_margin_pp": 1.0051,
+      "estimand": "per-row mean of joint scenario+action correctness",
+      "id": "intent_accuracy",
+      "role": "secondary gate"
+    },
+    {
+      "estimand": "per-row mean",
+      "id": "scenario_accuracy",
+      "role": "secondary diagnostic"
+    },
+    {
+      "estimand": "per-row mean",
+      "id": "action_accuracy",
+      "role": "secondary diagnostic"
+    },
+    {
+      "estimand": "pooled count F1",
+      "id": "pooled_span_f1",
+      "role": "secondary diagnostic"
+    },
+    {
+      "estimand": "per-row mean official SLU-F1",
+      "id": "row_slu_f1",
+      "role": "diagnostic"
+    },
+    {
+      "estimand": "per-row mean exact slot F1",
+      "id": "row_exact_slot_f1",
+      "role": "diagnostic"
+    }
+  ],
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-B5E-COMBINATION-PAIRED-ANALYSIS-V1",
+    "files": [
+      "score-contrasts.json",
+      "per-scenario-tables.json",
+      "README.md"
+    ],
+    "harness_admission": "On ADMITTED, the combination is recorded against the two module entries of docs/receipts/harness-admission.json; it does not by itself discharge M4b's provisional obligation, which belongs to the B4b request-identical replicate.",
+    "on_meeting_the_bar": "register B5er, the request-identical replicate, before any lock is claimed",
+    "verdict_document": "docs/results/2026-09-18-slurp-b5e-combination-verdict.md"
+  },
+  "population": {
+    "far_field_rows": 557,
+    "headset_rows": 523,
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "roster_id": "SLURP-EVO-FOLD-A-V2",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    },
+    "roster_metadata": {
+      "carries": "sample_id -> scenario, speaker, headset, utterance_id; no text, transcript or gold filler",
+      "relpath": "analysis/SAEA-SLURP-TRAIN-A-DIRECT-ANCHOR-RELEASE-PAIRED-ANALYSIS-V1/roster-metadata.json",
+      "sha256": "07f4cd83b83d83d65500a328e0a38421ede575195c63ae118def0d1006c14e34",
+      "speaker_key": "spk:<usrid> from the governed SLURP release metadata"
+    },
+    "rows": 1080,
+    "rows_per_scenario": 60,
+    "scenario_strata": 18,
+    "speaker_clusters": 125
+  },
+  "resampling": {
+    "draws": 10000,
+    "intervals": [
+      "CI95 for the clauses",
+      "CI90 for diagnostics"
+    ],
+    "primary": "paired whole-speaker cluster bootstrap",
+    "seed": 20260915,
+    "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed",
+    "tables": [
+      "natural mixture",
+      "equal-scenario weighting"
+    ]
+  },
+  "schema": "saea-paired-analysis-recipe-v1"
+}

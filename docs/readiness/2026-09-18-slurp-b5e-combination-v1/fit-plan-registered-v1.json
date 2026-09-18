@@ -1,0 +1,55 @@
+{
+  "campaign_plan": "configs/campaign/slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-v1.json",
+  "cell": "slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-v1",
+  "composed_config_hash": "f9bd8878d98cab4fa58ba2a26f3107753df954d4797058080b0cb48cbfa6fc37",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 47520,
+    "planned_speech_audio_seconds": 33930,
+    "protocol_hash": "d1996f26ca86cb2e47bd4285d6bb7a2bd3c9035038c14c517bf991384f66d91c",
+    "run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realized native request inside the same campaign or worker, under the same lease.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "modules": {
+    "combination": "cell B5e, the B5 form restricted to the modules admitted at registration time (owner decision 19)",
+    "m1": "speech-keyed exemplar supply (train-exemplars store), admitted by cell B1 and its twin",
+    "m4b": "slot store v2 (slot-contracts release/snapshot re-pin), admitted by cell B4b, provisional until replicated"
+  },
+  "plan_kind": "native contact fit",
+  "preparation_base_commit": "9bfd39e0f400baea6c5903ac88228572c9ba6850",
+  "prepared_phase_supply": {
+    "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "relpath": "prepared/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v1.json",
+    "sha256": "eabae1321fbe49a7962efb54b130982d192040937d17c7c13c23cf0568223728"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-18-slurp-b5e-combination-v1/protocol-registered-v1.json",
+    "sha256": "debf0b3928aec501952c6bdea3050cae063c4c1b1e437730ae578d95e12d5e7c"
+  },
+  "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. Comparators are sealed bytes and none is re-flown or re-scored: the dual-store anchor, cell B1's recovery arm (the M1 leg), cell B4b (the M4b leg), the released TRAIN A direct anchor, and the B4b request-identical replicate only if it is sealed before this cell's first contact. The four-row smoke is structural only -- contact counts, episode receipt fields, the train-exemplars typed content blocks, the slot store v2 cards in the Solver evidence, fit receipts and seal, with no answer, reference or quality interpretation.",
+  "registered_at_utc": "2026-09-18T02:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition (main checkout, master)",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}
