@@ -15,13 +15,20 @@
         "reason": "Registered before contact by the B5e registration agent under owner decisions 18-21 of 2026-09-18: decision 19 orders cell B5e, the early combination of the modules admitted so far, to fly after the B4b replicate and before the rest of decision 15's order. It stays HELD: the coordinator mints the root decision receipt coordination/slurp-b5e-combination-v1/root-admission-v1.json (decision id slurp-b5e-combination-admission-v1) and flips the state with scripts/flights/repin_cell.py, which re-pins the prepared supply and every dependent hash in the same cycle. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. One experiment in flight at a time.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b5e-combination-admission-v1",
+            "relpath": "coordination/slurp-b5e-combination-v1/root-admission-v1.json",
+            "sha256": "f156de21c109231422c8c032ec0a4245416db74eb26ce95cbf0ae4268a878677",
+            "reason": "Decision slurp-b5e-combination-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "relpath": "prepared/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-SMOKE-4-V1/phase-supply-v1.json",
             "sha256": "6126432fff193fb1b7d63150f40dcff95a1c47ff8ff1ebf6e175e818e138d413",
             "reason": "Model-free first-phase Perception supply prepared for cell B5e from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed dual-store anchor, cell B1 and cell B4b used; zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to all three on 4 of 4 rows (output SHA-256 512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733), so the Perception selection channel does not move. Receipt coordination/slurp-b5e-combination-v1/prepared-supply-comparison-v1.json."
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-SMOKE-4-V1"
     }

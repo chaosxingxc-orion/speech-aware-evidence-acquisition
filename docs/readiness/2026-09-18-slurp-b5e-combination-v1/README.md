@@ -33,7 +33,7 @@ That arithmetic is an extrapolation. **This cell measures the combination once a
 | experiments | `configs/experiment/slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-v1.json`, `configs/experiment/slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-smoke-4-v1.json` |
 | campaign plan | `configs/campaign/slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-v1.json` |
 | composed / protocol (arm) | `f9bd8878d98cab4fa58ba2a26f3107753df954d4797058080b0cb48cbfa6fc37` / `d1996f26ca86cb2e47bd4285d6bb7a2bd3c9035038c14c517bf991384f66d91c` |
-| composed / protocol (smoke) | `72acfb6b33098a61bb3957a2b059d69b008a2d9c24a1e3eba816bf062ac585cd` / `787b74974e6b41c4ff87891da141b6c8a5bbca7ec87bf1b965e2128b98dc2baf` |
+| composed / protocol (smoke) | `9c5d3c4beec5f5c120a2593a5eaa648c5e76d78d138f3f506508b195f7e45c9f` / `c5cbfa6ae93319bb25531087040dfaa741713b2eefb67c7c30be2fe25e99d61b` |
 | prepared supply (arm) | `prepared/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v1.json`, SHA-256 `eabae1321fbe49a7962efb54b130982d192040937d17c7c13c23cf0568223728`, **output** SHA-256 `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` |
 | prepared supply (smoke) | `prepared/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-SMOKE-4-V1/phase-supply-v1.json`, SHA-256 `6126432fff193fb1b7d63150f40dcff95a1c47ff8ff1ebf6e175e818e138d413`, **output** SHA-256 `512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733` |
 | budgets (arm) | 11,880 generation calls, 47,520 FIT endpoints, 33,930 repeated speech seconds, 12.0 fit-inclusive GPU hours, 6,480 native task-contract calls, one official complete score — **cell B1's own ceilings, unchanged** |

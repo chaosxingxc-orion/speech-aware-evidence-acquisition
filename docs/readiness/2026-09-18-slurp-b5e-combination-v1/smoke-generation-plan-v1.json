@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-smoke-4-v1",
-  "composed_config_hash": "72acfb6b33098a61bb3957a2b059d69b008a2d9c24a1e3eba816bf062ac585cd",
+  "composed_config_hash": "9c5d3c4beec5f5c120a2593a5eaa648c5e76d78d138f3f506508b195f7e45c9f",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-smoke-4-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 44,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "787b74974e6b41c4ff87891da141b6c8a5bbca7ec87bf1b965e2128b98dc2baf",
+    "protocol_hash": "c5cbfa6ae93319bb25531087040dfaa741713b2eefb67c7c30be2fe25e99d61b",
     "run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -43,7 +43,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-18-slurp-b5e-combination-v1/protocol-registered-v1.json",
-    "sha256": "debf0b3928aec501952c6bdea3050cae063c4c1b1e437730ae578d95e12d5e7c"
+    "sha256": "314c4a4a6e0224ca9bf49d8bcdc613b1c6c9eb758980e92614b80710bc8823ee"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. Comparators are sealed bytes and none is re-flown or re-scored: the dual-store anchor, cell B1's recovery arm (the M1 leg), cell B4b (the M4b leg), the released TRAIN A direct anchor, and the B4b request-identical replicate only if it is sealed before this cell's first contact. The four-row smoke is structural only -- contact counts, episode receipt fields, the train-exemplars typed content blocks, the slot store v2 cards in the Solver evidence, fit receipts and seal, with no answer, reference or quality interpretation.",
   "registered_at_utc": "2026-09-18T02:00:00.000000+00:00",
