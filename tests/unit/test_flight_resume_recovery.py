@@ -106,6 +106,9 @@ def _skeleton(harness, monkeypatch) -> FlightRuntime:
     runtime._build_phase_tool_dispatcher = lambda *args, **kwargs: None
     runtime._resume = None
     runtime._resume_flown_sample_ids = ()
+    # E10b: the same starting state FlightRuntime.__init__ gives a flight that
+    # is not a recovery -- no prepared-artifact identity is widened.
+    runtime._identity_packet_bindings = None
     runtime._artifact_result_binding = None
     runtime._artifact_content_validator = None
     monkeypatch.setattr(
@@ -530,3 +533,211 @@ def test_resume_filtered_binding_narrows_the_flown_roster(tmp_path, monkeypatch)
     runtime._resume_flown_sample_ids = ("s2", "s9")
     with pytest.raises(FlightRuntimeError, match="no packet"):
         runtime._resume_filtered_binding(binding)
+# ---------------------------------------------------------------------------
+# E10b (2026-09-18): a prepared artifact is verified over the WHOLE roster.
+# ---------------------------------------------------------------------------
+
+
+def _supplied_skeleton(harness, monkeypatch):
+    """The same skeleton, for a cell whose FIRST phase carries phase supply.
+
+    The cell shape the first resume-recovery flight actually aborted on: a
+    ``prepared_phase_supply`` pin plus the frozen source receipts every
+    prepared artifact's identity embeds.
+    """
+
+    import hashlib
+
+    runtime = _skeleton(harness, monkeypatch)
+    runtime._repo_root = harness.world.data_root
+    receipt = harness.world.data_root / "e10b-frozen-source.json"
+    receipt.parent.mkdir(parents=True, exist_ok=True)
+    receipt.write_bytes(b"E10b frozen source receipt")
+    runtime._composed.values["preparation_source_receipts"] = [
+        {
+            "root": "data",
+            "relpath": receipt.name,
+            "sha256": hashlib.sha256(receipt.read_bytes()).hexdigest(),
+        }
+    ]
+    spec = SimpleNamespace(
+        phase=harness.program.phase_names()[0],
+        query_source={},
+        as_json=lambda: {"provider": "kb-facet-v1", "k": 1},
+    )
+    runtime._phase_program_material = {
+        **runtime._phase_program_material,
+        "supply_specs": {spec.phase: spec},
+    }
+    return runtime, spec
+
+
+_PREPARED_RELPATH = "prepared/phase-supply-v1.json"
+
+
+def _prepare_supply_artifact(runtime, spec):
+    """Prepare the first-phase selection over the WHOLE roster and pin it.
+
+    This is what ``core.flight.repin`` does for a real cell: the artifact is
+    produced, and later re-verified, over every row of the cell's roster --
+    never over the subset one attempt happens to fly.
+    """
+
+    from speech_aware_evidence_acquisition.core.preparation import prepare_artifact
+
+    binding = runtime._phase_program_material
+    roster = sorted(binding["speech_packet_bindings"])
+    path = runtime._data_root / _PREPARED_RELPATH
+    path.parent.mkdir(parents=True, exist_ok=True)
+    inputs = runtime._phase_seed_inputs(
+        binding, spec, runtime._plan.split_identity_hash
+    )
+    selection = {
+        "facets": {spec.phase: {sample_id: ["operation:dim"] for sample_id in roster}},
+        "values": {
+            spec.phase: {sample_id: ["value:dim-light"] for sample_id in roster}
+        },
+    }
+    receipt = prepare_artifact(
+        path, kind="phase-supply", inputs=inputs, producer=lambda: selection
+    )
+    runtime._composed.values["prepared_phase_supply"] = {
+        "relpath": _PREPARED_RELPATH,
+        "sha256": receipt["sha256"],
+    }
+    return receipt
+
+
+def test_a_resume_loads_a_prepared_supply_prepared_over_the_whole_roster(
+    tmp_path, monkeypatch
+):
+    """E10b, the defect this fix exists for.
+
+    The first resume-recovery flight (2026-09-18) passed preflight, preprocess
+    and serve and then died in ``run_phases`` with ZERO contacts:
+    ``core.preparation.load_artifact`` refused with "prepared artifact
+    identity mismatch", because the resume narrowing had already replaced the
+    binding's 1,080-row packet map with the 500 rows the recovery was to fly,
+    and the prepared artifact's identity embeds the packet map of the roster
+    it was prepared over.
+
+    Here the artifact is prepared over BOTH rows, the aborted attempt covers
+    one of them, and the recovery must load the artifact unchanged, seed only
+    the row it flies, and seal a kept row byte identical to the uninterrupted
+    one.
+    """
+
+    roster = ("s1", "s2")
+    source = _harness(tmp_path, "full", roster)
+    source_runtime, source_spec = _supplied_skeleton(source, monkeypatch)
+    source_receipt = _prepare_supply_artifact(source_runtime, source_spec)
+    try:
+        rows, *_ = source_runtime._dispatch_phase_program(
+            source.client, source.plan, source.program.program_id
+        )
+    finally:
+        source.close()
+    source_runtime._output_rows = rows
+    canonical = source_runtime._canonical_output_rows(source.client)
+    full_rows = {row["sample_id"]: row for row in canonical}
+    assert set(full_rows) == set(roster)
+    trace_path = source.world.run_dir / f"{source.plan.run_id}.trace.jsonl"
+
+    predecessor = _write_predecessor(
+        _trace_lines(trace_path), tmp_path / "aborted", source.plan.run_id,
+        keep={"s1"}, truncate={"s2"},
+    )
+    scan = _scan(predecessor, source)
+    assert scan.complete_sample_ids == ("s1",)
+
+    # The recovery attempt carries the SAME cell -- same roster, same prepared
+    # artifact bytes -- and flies only the row the predecessor did not finish.
+    recovery = _harness(tmp_path, "recovery", roster)
+    recovery_runtime, recovery_spec = _supplied_skeleton(recovery, monkeypatch)
+    recovery_receipt = _prepare_supply_artifact(recovery_runtime, recovery_spec)
+    assert recovery_receipt["sha256"] == source_receipt["sha256"]
+    recovery_runtime._samples = tuple(
+        SimpleNamespace(sample_id=sample_id) for sample_id in roster
+    )
+    recovery_runtime._resume = scan
+    recovery_runtime._resume_flown_sample_ids = ("s2",)
+    # The SPLIT the runner reads comes from ``adapter.load_split``, and E10
+    # narrows only the packet map: ``rails.runner`` then refuses with
+    # "speech_packet_bindings must materialize every query sample exactly
+    # once". That gap is the separate E10c follow-up (the runtime must hand
+    # the runner the flown split, not the whole one); it is narrowed here so
+    # the E10b identity property can be proved on the real dispatch path.
+    recovery_runtime._adapter = type(recovery.adapter)(
+        samples=tuple(
+            sample for sample in recovery.samples if sample.sample_id == "s2"
+        )
+    )
+    try:
+        rows, *_ = recovery_runtime._dispatch_phase_program(
+            recovery.client, recovery.plan, recovery.program.program_id
+        )
+    finally:
+        recovery.close()
+    recovery_runtime._output_rows = rows
+    recovery_runtime._client = recovery.client
+
+    # The dispatch flew ONLY the unfinished row, while the artifact was
+    # verified against the whole roster it was prepared over.
+    assert [row["sample_id"] for row in rows] == ["s2"]
+    assert set(recovery_runtime._identity_packet_bindings) == set(roster)
+
+    # And the seed the recovery actually handed the runner is narrowed to the
+    # flown row: rails.runner._per_sample_bootstrap refuses a seed that names
+    # a sample outside the flown split, so a wide seed would have aborted the
+    # flight above.
+    narrowed = recovery_runtime._resume_filtered_binding(
+        recovery_runtime._phase_program_material
+    )
+    facet_seed, value_seed = recovery_runtime._phase_supply_seeds(
+        recovery.program, narrowed, {recovery_spec.phase: recovery_spec},
+        recovery.plan,
+    )
+    assert set(value_seed[recovery_spec.phase]) == {"s2"}
+    assert set(facet_seed[recovery_spec.phase]) == {"s2"}
+    assert value_seed[recovery_spec.phase]["s2"] == ("value:dim-light",)
+
+    merged, block = recovery_runtime._merged_canonical_rows()
+    assert [row["sample_id"] for row in merged] == list(roster)
+    assert json.dumps(merged[0], sort_keys=True) == json.dumps(
+        full_rows["s1"], sort_keys=True
+    )
+    assert merged[1]["text"] == full_rows["s2"]["text"]
+    assert block["counts"] == {"kept": 1, "flown": 1, "partial": 1}
+
+
+def test_phase_seed_inputs_are_invariant_under_a_resume(tmp_path, monkeypatch):
+    """E10b rule 1, stated as an assertion: identity never moves.
+
+    The resume narrowing applies to what is DISPATCHED, never to what is
+    VERIFIED. So one binding yields one set of prepared-artifact inputs
+    whether or not this attempt is a recovery, and the narrowed binding is
+    verified against the whole roster rather than against itself.
+    """
+
+    harness = _harness(tmp_path, "full", ("s1", "s2"))
+    runtime, spec = _supplied_skeleton(harness, monkeypatch)
+    harness.close()
+    binding = runtime._phase_program_material
+    identity = harness.plan.split_identity_hash
+    ordinary = runtime._phase_seed_inputs(binding, spec, identity)
+    assert ordinary["sources"]["packets"] == dict(harness.speech_bindings)
+    assert runtime._identity_packet_bindings is None
+
+    runtime._resume = object()
+    runtime._resume_flown_sample_ids = ("s2",)
+    narrowed = runtime._resume_filtered_binding(binding)
+    assert set(narrowed["speech_packet_bindings"]) == {"s2"}
+
+    # (a) An ordinary cell's identity does not move because a resume exists.
+    assert runtime._phase_seed_inputs(binding, spec, identity) == ordinary
+    # (b) The narrowed dispatch binding is verified over the whole roster.
+    assert runtime._phase_seed_inputs(narrowed, spec, identity) == ordinary
+    # Not vacuous: the packet map is what the two bindings disagree about.
+    assert set(narrowed["speech_packet_bindings"]) != set(
+        binding["speech_packet_bindings"]
+    )

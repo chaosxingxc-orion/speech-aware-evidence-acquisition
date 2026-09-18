@@ -1200,6 +1200,11 @@ class FlightRuntime:
             )
         self._resume: PredecessorAttempt | None = None
         self._resume_flown_sample_ids: tuple[str, ...] = ()
+        # E10b (2026-09-18): the FULL-roster packet map a prepared artifact's
+        # identity is computed over, recorded by _resume_filtered_binding when
+        # -- and only when -- it narrows. ``None`` for every ordinary flight,
+        # which is what keeps an uninterrupted flight byte for byte unchanged.
+        self._identity_packet_bindings: Mapping[str, Mapping[str, object]] | None = None
 
         self.receipts = FlightReceipts(run_id=run_id, attempt_id=attempt_id)
         self._composed = None
@@ -1475,6 +1480,10 @@ class FlightRuntime:
                 f"{len(missing)} row(s) this recovery must fly have no packet "
                 f"binding, e.g. {missing[:5]}"
             )
+        # E10b: keep the roster this cell's prepared artifacts were prepared
+        # over. Narrowing decides what is DISPATCHED; :meth:`_identity_binding`
+        # decides what is VERIFIED, and the two are not the same roster.
+        self._identity_packet_bindings = dict(bindings)
         return {
             **binding,
             "speech_packet_bindings": {
@@ -1483,6 +1492,77 @@ class FlightRuntime:
                 if sample_id in flying
             },
         }
+
+    def _identity_binding(
+        self, binding: Mapping[str, object]
+    ) -> Mapping[str, object]:
+        """The binding a PREPARED ARTIFACT's identity is computed against.
+
+        E10b (2026-09-18). A prepared artifact -- ``prepared/<run>/phase-
+        supply-v<N>.json`` and its recall twin -- is produced, and re-verified
+        by ``core.flight.repin``, over the cell's WHOLE roster. Its identity
+        therefore embeds the whole roster's packet map
+        (:meth:`_phase_seed_inputs`, ``sources["packets"]``). A
+        resume-recovery narrows ``speech_packet_bindings`` to the rows it
+        re-flies, so computing the identity from the dispatch binding compared
+        a 500-row map against a 1,080-row artifact and refused with "prepared
+        artifact identity mismatch" -- with ZERO contacts, but only after
+        preflight, preprocess and serve had been paid for (2026-09-18, the
+        first resume-recovery flight of the B4b replicate).
+
+        The rule this method carries: identity is a property of the CELL, not
+        of how much of it one attempt happens to fly. The resume narrowing
+        applies to what is dispatched, never to what is verified.
+
+        Returns ``binding`` itself for every ordinary flight, so no identity
+        moves and no uninterrupted flight changes by a byte.
+
+        Narrowed-binding consumers, audited 2026-09-18 (E10b):
+
+        * :meth:`_phase_seed_inputs` -- IDENTITY. Widened here, which covers
+          all four of its callers (:meth:`prepare_phase_supply`,
+          :meth:`prepare_phase_recall`, :meth:`_load_phase_supply_seed`,
+          :meth:`_load_phase_recall`).
+        * :meth:`_load_phase_supply_seed` -- IDENTITY plus a roster check.
+          Verifies against the full roster, then restricts the loaded
+          selections to the dispatched rows, because
+          ``rails.runner._per_sample_bootstrap`` refuses a seed naming a
+          sample outside the flown split.
+        * :meth:`_load_phase_recall` -- IDENTITY plus a roster check. Reached
+          only from :meth:`_resolve_phase_supply`, which runs while the
+          binding is BUILT and therefore always sees the full roster; widened
+          here anyway so the invariant does not depend on call order.
+        * ``build_bootstrap_selection`` / ``bootstrap_first_phase`` (the
+          un-prepared seed routes) -- no identity. Both are per-row pure
+          functions over a sorted roster, so the narrowed map computes exactly
+          the flown rows' own bytes and nothing else. Left narrowed on
+          purpose: a recovery must not pay to re-select rows it will not fly.
+        * :meth:`_build_phase_tool_dispatcher` -- reads the snapshot, supply
+          and store bindings, never the packet map. No roster, no identity.
+        * The ``native_episode`` binding, ``source_options``, the trace sink
+          and the review/supply objects -- roster free.
+        * ``dispatch["parent_sample_count"]`` -- execution-unit receipts only,
+          and :meth:`_load_resume_predecessor` refuses an execution-unit
+          roster outright, so a resume never reaches it.
+        * ``initial_feedback_states`` -- carried whole, and ``rails.runner``
+          demands it bind every active sample exactly once. Unreachable under
+          a resume by construction: a resume requires a ``native_episode``
+          dispatch and :meth:`_prepared_feedback_binding` refuses the
+          ``native-role-episode`` stop rule.
+        * The live request-fit gate, :meth:`_verify_prepared_request_fit`,
+          ``validate_speech_packet_set`` and :meth:`_merged_canonical_rows` --
+          all outside the narrowing: the first takes its active roster from
+          :meth:`_flight_roster_sample_ids` (which rows fly, correctly
+          resume-aware), the middle two run in preflight/preprocess before any
+          narrowing exists, and the seal merges against ``self._samples``.
+        """
+
+        # ``getattr``: several dispatch proofs drive an
+        # ``object.__new__(FlightRuntime)`` skeleton that never ran __init__.
+        full = getattr(self, "_identity_packet_bindings", None)
+        if full is None:
+            return binding
+        return {**binding, "speech_packet_bindings": dict(full)}
 
     def _require_prior_stages(self, stage: str) -> None:
         index = FLIGHT_STAGES.index(stage)
@@ -6080,10 +6160,17 @@ class FlightRuntime:
         return source_audio_bindings
 
     def _phase_seed_inputs(self, binding, spec, split_identity_hash):
-        """Bind prepared selections to the same frozen inputs used by dispatch."""
+        """Bind prepared selections to the same frozen inputs used by dispatch.
+
+        E10b: over the FULL roster always -- see :meth:`_identity_binding` for
+        the rule and for the audited list of narrowed-binding consumers. This
+        method is therefore invariant under a resume: one binding yields one
+        set of inputs whether or not this attempt is a recovery.
+        """
         from ..preparation import artifact_inputs, verify_source_receipts
         from ...rails import kb_policy, knowledge_provider, phase_supply
 
+        binding = self._identity_binding(binding)
         sources = {
             "frozen_source_receipts": verify_source_receipts(
                 self._composed.values.get("preparation_source_receipts"),
@@ -6225,9 +6312,20 @@ class FlightRuntime:
         return prepare_artifact(path, kind="phase-recall", inputs=inputs, producer=produce)
 
     def _load_phase_supply_seed(self, pin, binding, spec, split_identity_hash):
+        """Load the prepared first-phase selection for the rows being flown.
+
+        E10b: the artifact is VERIFIED against the whole roster it was
+        prepared over (:meth:`_identity_binding`) and the selections are then
+        RESTRICTED to the rows this attempt dispatches. Identical to the old
+        single-roster behaviour for every ordinary flight, where the two
+        rosters are the same mapping.
+        """
+
         from ..preparation import PreparationError, load_artifact
         from ..model.paths import _normalized_relative_path, _resolve_confined
 
+        identity_binding = self._identity_binding(binding)
+        dispatched_rows = set(binding["speech_packet_bindings"])
         if not isinstance(pin, Mapping) or set(pin) != {"relpath", "sha256"}:
             raise PreparationError("prepared_phase_supply requires relpath and sha256")
         relative = _normalized_relative_path(pin["relpath"], "prepared phase supply")
@@ -6235,11 +6333,11 @@ class FlightRuntime:
                                  "prepared phase supply", strict=True)
         output = load_artifact(
             path, expected_sha256=pin["sha256"], kind="phase-supply",
-            inputs=self._phase_seed_inputs(binding, spec, split_identity_hash),
+            inputs=self._phase_seed_inputs(identity_binding, spec, split_identity_hash),
         )
         if not isinstance(output, dict) or set(output) != {"facets", "values"}:
             raise PreparationError("prepared phase selection shape mismatch")
-        allowed_rows = set(binding["speech_packet_bindings"])
+        allowed_rows = set(identity_binding["speech_packet_bindings"])
         snapshot = binding["knowledge_snapshot"]
         results = []
         for name, allowed in (
@@ -6258,14 +6356,29 @@ class FlightRuntime:
                     if (not isinstance(ids, list) or any(not isinstance(i, str) for i in ids)
                             or len(ids) != len(set(ids)) or set(ids) - allowed):
                         raise PreparationError("prepared phase selection contains unknown IDs")
-                    decoded[phase][sid] = tuple(ids)
+                    # E10b: verified over the whole roster, seeded only for the
+                    # rows this attempt flies. rails.runner refuses a seed that
+                    # names a sample outside the flown split
+                    # (_per_sample_bootstrap), and a recovery must not seed one.
+                    if sid in dispatched_rows:
+                        decoded[phase][sid] = tuple(ids)
             results.append(decoded)
         return tuple(results)
 
     def _load_phase_recall(self, pin, binding, spec, split_identity_hash):
+        """Load the prepared multidimensional recall for one supplied phase.
+
+        E10b: verified over the whole roster, like every prepared artifact
+        (:meth:`_identity_binding`). Reached only from
+        :meth:`_resolve_phase_supply`, which builds its own full-roster
+        binding while the dispatch binding is still being assembled, so this
+        is a belt-and-braces restatement of an invariant that already held.
+        """
+
         from ..preparation import PreparationError, load_artifact
         from ..model.paths import _normalized_relative_path, _resolve_confined
 
+        binding = self._identity_binding(binding)
         if not isinstance(pin, Mapping) or set(pin) != {"relpath", "sha256"}:
             raise PreparationError("prepared_phase_recall requires relpath and sha256")
         relative = _normalized_relative_path(pin["relpath"], "prepared phase recall")

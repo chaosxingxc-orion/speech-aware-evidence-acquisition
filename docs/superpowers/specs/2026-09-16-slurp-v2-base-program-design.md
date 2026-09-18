@@ -154,6 +154,15 @@ must cover the remaining rows plus the partial ones. The sibling note
 `docs/superpowers/specs/2026-09-18-resume-modes-comparison.md` records why this mode was chosen
 over incremental checkpoints, chunked sub-attempts and streaming appends (owner decision 24).
 
+E10b (2026-09-18): the narrowing applies to what is DISPATCHED, never to what is VERIFIED — a
+prepared artifact (`prepared/<run>/phase-supply-v<N>.json` and its recall twin) is produced, and
+re-verified by `core.flight.repin`, over the cell's WHOLE roster, so its identity is computed
+from the full-roster packet map (`FlightRuntime._identity_binding`) and the loaded selections are
+restricted to the flown rows afterwards; the first resume-recovery flight aborted in `run_phases`
+with zero contacts on `PreparationError("prepared artifact identity mismatch")` because the
+narrowed 500-row map was compared against a 1,080-row artifact, and the audited list of every
+other narrowed-binding consumer lives in that method's docstring.
+
 
 ## 4. Phases
 
