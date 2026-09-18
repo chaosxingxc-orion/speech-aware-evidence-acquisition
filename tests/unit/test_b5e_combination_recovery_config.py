@@ -149,11 +149,14 @@ def test_recovery_experiment_carries_new_identities_and_stays_held():
     assert cell["dataset_fragment"] == DATASET_FRAGMENT
     assert cell["model_fragment"] == MODEL_FRAGMENT
 
+    # Readiness is a lifecycle field: `held` with the preparation requirement as registered, or
+    # `ready` once the coordinator's re-pin tool has pinned the root decision receipt beside it.
     readiness = cell["readiness"]
-    assert readiness["state"] == "held"
-    kinds = [requirement["kind"] for requirement in readiness["requirements"]]
-    assert kinds == ["preparation"]
-    assert readiness["requirements"][0]["relpath"] == f"prepared/{RECOVERY_RUN}/phase-supply-v1.json"
+    assert readiness["state"] in {"held", "ready"}
+    kinds = sorted(requirement["kind"] for requirement in readiness["requirements"])
+    assert kinds == (["preparation"] if readiness["state"] == "held" else ["decision", "preparation"])
+    preparation = [r for r in readiness["requirements"] if r["kind"] == "preparation"][0]
+    assert preparation["relpath"] == f"prepared/{RECOVERY_RUN}/phase-supply-v1.json"
 
     # The closed identities are named in the recovery prose but never reused as
     # this cell's own run or attempt id.
