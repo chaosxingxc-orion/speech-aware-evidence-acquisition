@@ -1,0 +1,462 @@
+{
+  "accounting": {
+    "full": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 47520,
+      "generation_calls_cap": 11880,
+      "gpu_hours_fit_inclusive": 12.0,
+      "native_task_contract_calls_cap": 6480,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 33930
+    }
+  },
+  "authority": {
+    "bar_decisions": "owner decisions 1 (the bar), 7 (projection v3 as fixed post-processing, now a reported diagnostic) and 23 (the bar reads the OFFICIAL unprojected number)",
+    "cell": "B5e (the B5 form restricted to the modules admitted at registration time)",
+    "design": "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md",
+    "harm_diagnostic_decision": "owner decision 17 of 2026-09-17 (net harmed rows per scenario, flag at five)",
+    "m1_admission": "docs/results/2026-09-18-slurp-b1-twin-verdict.md (owner decision 18 branch A)",
+    "m4b_admission": "docs/results/2026-09-17-slurp-b4b-slot-store-v2-verdict.md (provisional until replicated)",
+    "ordering_decision": "owner decision 19 of 2026-09-18, with decision 21 placing the B4b replicate first",
+    "owner_decisions": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "preregistration": "docs/readiness/2026-09-18-slurp-b5e-combination-v1-preregistration.md",
+    "amendment": "docs/readiness/2026-09-18-slurp-b5e-combination-v1-amendment-decision-23.md",
+    "recovery_authority": "the preregistration's own failure rule (sections 7 and 11): at most one root-diagnosed recovery re-registration per run",
+    "resume_decision": "owner decision 22 of 2026-09-18 (every future experiment must support checkpoint resume; item E10 not merged at registration time)",
+    "recovery_note": "docs/readiness/2026-09-18-slurp-b5e-combination-v1-recovery-v1.md"
+  },
+  "comparators": {
+    "b4b_replicate_conditional": {
+      "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2",
+      "kind": "SECONDARY AND CONDITIONAL: the B4b request-identical replicate enters this read ONLY IF its manifest is sealed and officially scored before cell B5e's first contact. If it is not, it is named and left out and the verdict says so. It never gates.",
+      "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2",
+      "run_manifest_sha256": "PENDING_SEAL_AT_REGISTRATION_TIME",
+      "score_sha256": "PENDING_SEAL_AT_REGISTRATION_TIME"
+    },
+    "base": {
+      "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+      "contacts": 5417,
+      "kind": "sealed bytes; the base every Phase B cell moves against; never a re-flown control",
+      "official_aggregate": {
+        "action_accuracy": 79.26,
+        "intent_scenario_plus_action": 77.96,
+        "pooled_slu_f1": 48.53,
+        "pooled_span_f1": 29.5,
+        "scenario_accuracy": 84.81
+      },
+      "projection_v3_aggregate": {
+        "action_accuracy": 80.65,
+        "intent_scenario_plus_action": 79.35,
+        "pooled_slu_f1": 51.99,
+        "pooled_span_f1": 40.3,
+        "scenario_accuracy": 85.46
+      },
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+      "run_manifest_sha256": "049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152",
+      "score_sha256": "7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47"
+    },
+    "direct": {
+      "attempt_id": "attempt-slurp-direct-max512-train-fold-a-source-recovery-generation-v1",
+      "contacts": 1080,
+      "kind": "sealed bytes; the released TRAIN A direct anchor, the system-versus-direct column only",
+      "official_aggregate": {
+        "action_accuracy": 75.09,
+        "intent_scenario_plus_action": 73.7,
+        "pooled_slu_f1": 33.89,
+        "pooled_span_f1": 21.1,
+        "scenario_accuracy": 82.69
+      },
+      "projection_v3_aggregate": {
+        "action_accuracy": 75.93,
+        "intent_scenario_plus_action": 75.37,
+        "pooled_slu_f1": 34.31,
+        "pooled_span_f1": 23.24,
+        "scenario_accuracy": 84.17
+      },
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1",
+      "run_manifest_sha256": "546109055a373b358c43d36878c532b95784ee5d73d07f011c5fa3ea3d7ce11e",
+      "score_sha256": "7840a959fe4f43928fda0e0cacfe8c0ee4200116bfcd269bfe3451b59da29c38"
+    },
+    "m1_leg": {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2",
+      "contacts": 5425,
+      "kind": "sealed bytes; cell B1's recovery arm, the module M1 leg of the combination clause",
+      "official_aggregate": {
+        "action_accuracy": 81.39,
+        "intent_scenario_plus_action": 80.19,
+        "pooled_slu_f1": 61.14,
+        "pooled_span_f1": 48.43,
+        "scenario_accuracy": 86.39
+      },
+      "projection_v3_aggregate": {
+        "action_accuracy": 82.96,
+        "intent_scenario_plus_action": 81.76,
+        "pooled_slu_f1": 62.67,
+        "pooled_span_f1": 52.65,
+        "scenario_accuracy": 87.13
+      },
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2",
+      "run_manifest_sha256": "b07ed553ff9f78b8e3ead6797bb66fb92a1820793b8aa5061576c6f66aa1a8ad",
+      "score_sha256": "a7105b328509a8bd00c4678fd076e9be4d242b6189bb82bbd290bd596e3c9078"
+    },
+    "m4b_leg": {
+      "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-generation-v2",
+      "contacts": 5407,
+      "kind": "sealed bytes; cell B4b, the module M4b leg of the reported contribution contrast",
+      "official_aggregate": {
+        "action_accuracy": 79.63,
+        "intent_scenario_plus_action": 78.52,
+        "pooled_slu_f1": 51.09,
+        "pooled_span_f1": 32.4,
+        "scenario_accuracy": 85.09
+      },
+      "projection_v3_aggregate": {
+        "action_accuracy": 80.83,
+        "intent_scenario_plus_action": 79.72,
+        "pooled_slu_f1": 54.05,
+        "pooled_span_f1": 41.85,
+        "scenario_accuracy": 85.93
+      },
+      "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V2",
+      "run_manifest_sha256": "b3f7e7ac0babd5ae3e764ad93948203cc40192d72ac3a156b4a479cc69c256ea",
+      "score_sha256": "751c529806e7cd03db13cfba58d583bf7b9d7f14b5b62b6b26e676a5acb308a1"
+    }
+  },
+  "configurations": {
+    "full": {
+      "attempt_id": "attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-generation-recovery-v1",
+      "campaign_plan": "configs/campaign/slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-recovery-v1.json",
+      "cell": "slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-recovery-v1",
+      "composed_config_hash": "737582f97cf721db79b059c83722f8acda8586048373d94ca47aa6ec477bc828",
+      "execution_plan_protocol_hash": "d94facb4b8c92d34042123c7d33c1ef9c09417962d62db453b2464da06566e38",
+      "experiment": "slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-recovery-v1",
+      "fit_attempt_id": "attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-fit-recovery-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-RECOVERY-V1",
+      "fragments": {
+        "baseline": "slurp-native-anchor-b5e-exemplars-k20-slot-store-v2-train-fold-a-recovery-v1",
+        "dataset": "slurp-speech-native-evo-fold-a-1080",
+        "experiment": "slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-recovery-v1",
+        "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
+      },
+      "prepared_phase_supply": {
+        "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+        "relpath": "prepared/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1/phase-supply-v1.json",
+        "sha256": "5bfc6bcdeda7438ca01725072267fe53086ffdb6395d813b3a6c897be4bfef0a"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+      "hashes_are_pre_flip": "These are the four fragments exactly as committed: readiness held, the preparation requirement pinned, prepared_phase_supply pinned, NO decision requirement. compose() hashes the complete merged fragment set, so adding the decision requirement and flipping readiness each change both hashes. scripts/flights/repin_cell.py recomputes them and rewrites every document that quotes them; do not edit them by hand."
+    },
+    "sealed_smoke_not_reflown": {
+      "run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-smoke-4-generation-v1",
+      "state": "SEALED, structural PASS at study commit 878dd5c6",
+      "composed_config_hash": "9c5d3c4beec5f5c120a2593a5eaa648c5e76d78d138f3f506508b195f7e45c9f",
+      "execution_plan_protocol_hash": "c5cbfa6ae93319bb25531087040dfaa741713b2eefb67c7c30be2fe25e99d61b",
+      "role": "Already flown and closed. No new smoke is registered for this recovery: the form is proved by this sealed smoke and by the aborted arm's own 25 sealed contacts on the full roster."
+    }
+  },
+  "contact_free_evidence": {
+    "root": "SPEECHRL_DATA_DIR/coordination/slurp-b5e-combination-v1 (outside the repository, so no receipt can dirty the tree the manifest reads at finalize)",
+    "receipts": [
+      "recovery-prepared-supply-and-hashes-v1.json",
+      "recovery-prepare-supply-v1.json",
+      "recovery-request-envelope-comparison-v1.json",
+      "recovery-ledger-parse-v1.json",
+      "recovery-plan-hashes-v1.txt",
+      "flight-lock-reconciliation-20260918T144332Z.json",
+      "flight-lock-preserved-20260918T144332Z.json",
+      "prompt-fit-v1.json (the aborted registration's, unchanged and still authoritative)"
+    ],
+    "no_check_receipt": "core.flight.cli check is NOT on file, deliberately. FlightRuntime.preflight asserts a clean study tree and reserves the attempt in the durable AttemptStore, so a registration agent cannot run it before its own files are committed. The composed and protocol hashes were computed directly through core.config.compose / core.config.protocol_hash -- the same functions check uses -- and the method was verified against four sealed registered values (the anchor's d1c61c09 and 2527b527, cell B1's c66d507d and cell B4b's 567a87ad). The coordinator's re-pin cycle runs check on the clean registration commit and asserts the runtime-derived hashes agree.",
+    "wire_check_unavailable": "core.flight.cli wire-check cannot run for any native-episode cell: FlightRuntime._dispatch_phase_program refuses a native episode whose transport is not the real shared speech renderer, and wire_check installs a text transport double. The composed-key diff, the store-by-store equality proofs of composed-hashes-v1.json and the 25-payload identity search of recovery-request-envelope-comparison-v1.json stand in its place."
+  },
+  "containment": {
+    "carried_over_from": "coordination/slurp-b1-exemplars-k20-anchor-v2/containment-v1.json",
+    "no_example_projection_needed": true,
+    "total_collisions": 0,
+    "why_it_carries": "Cell B5e changes no instruction text: phase_material, phase_tools, task_instruction_template, task_instruction_fill and every template path compose byte-identical to the anchor's and to cell B1's, and the exemplar value pool is the same release, snapshot and 9,354 facets. M4b changes the slot-contracts store's CONTENT, not any instruction text, and cell B4b flew that content on this base with the runtime rule live and without a containment refusal."
+  },
+  "cost_reporting": [
+    "actual generation contacts and contacts per row, against 5,417 / 5,407 / 5,425 / 5,429",
+    "actual repeated speech seconds, against 15,459.76 / 15,432.81 / 15,494.60",
+    "actual FIT endpoints and the minimum fit margin, against B1's 8,600 and B4b's 8,242",
+    "actual native task-contract tool calls, against 1,082 / 1,075 / 1,084",
+    "prompt and completion tokens, against the anchor's 45,998,267 / 255,153 and B1's 49,388,949 / 255,524",
+    "GPU hours from the serving monitor over each lease window, never a wall-clock guess",
+    "mean latency, slot occupancy, utilisation and parked fraction from the same monitor",
+    "generation wall seconds, preprocess wall time and workers, official scoring wall time"
+  ],
+  "decision_rule": {
+    "bar_reading": "slurp-slu-official-train, unprojected (owner decision 23); slurp-slu-official-projected-v3-train is reported beside it as a diagnostic (owner decision 7)",
+    "clause_1_bar": {
+      "requirement": "OFFICIAL UNPROJECTED pooled SLU-F1 >= 64.00 AND official intent (scenario+action) >= 78.00, read once from the single official score of the complete manifest (owner decisions 1 and 23)",
+      "reported_beside": "the v3-projected numbers and the TRAIN symmetric numbers, as diagnostics; the verdict states whether the v3 number would have cleared 64.00",
+      "on_meeting": "register B5er, a request-identical replicate, immediately; 'replicated' is B5er's job (owner decision 1)",
+      "on_missing": "the bar is NOT lowered (owner decision 20); decision 15's order resumes and B5b reads against the same bar",
+      "amendment": "docs/readiness/2026-09-18-slurp-b5e-combination-v1-amendment-decision-23.md (owner decision 23, recorded before any B5e number existed)"
+    },
+    "clause_2_combination": {
+      "additivity_reported": "(B5e minus anchor) with its CI95 against the sum of the two single-module deltas, +12.61 + 2.55 = +15.16 pp official (+10.67 + 2.06 = +12.73 pp in v3 terms); the verdict states whether that sum lies inside the interval, above it (sub-additive) or below it (super-additive)",
+      "reported_not_gating": "(B5e minus B4b) is reported as module M1's contribution inside the combination, with the same three clauses evaluated and reported",
+      "verdict_admitted": "the CI95 lower bound of (B5e minus B1) pooled official SLU-F1 is > 0 AND the (B5e minus B1) intent delta is non-inferior at -h_intent (CI95 lower bound > -1.0051) AND no scenario's paired intent CI95 upper bound against B1 lies below zero",
+      "verdict_neutral": "otherwise"
+    },
+    "clause_3_harmful": {
+      "consequence": "the combination is HARMFUL: the v2 candidate falls back to B1 alone, B5er is NOT registered, and the owner is told",
+      "trigger": "the (B5e minus B1) pooled SLU CI95 UPPER bound lies below -1.1218, or its intent CI95 LOWER bound lies below -1.0051"
+    },
+    "no_repeat_to_pass": true,
+    "null_margins_pp": {
+      "intent": 1.0051,
+      "slu_micro": 1.1218,
+      "source": "the TRAIN A own null measured by cell B0r (B0r minus B0, CI95 half-widths); the imported DEV-1000 margins gate nothing here"
+    },
+    "primary": "official pooled SLU micro F1 (slurp-slu-official-train), natural mixture",
+    "read_once": true,
+    "resampling": {
+      "draws": 10000,
+      "intervals": [
+        "CI95 for advancement",
+        "CI90 for diagnostics"
+      ],
+      "primary": "paired whole-speaker cluster bootstrap",
+      "seed": 20260915,
+      "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed",
+      "tables": [
+        "natural mixture",
+        "equal-scenario weighting"
+      ]
+    },
+    "stop_condition": "Before any table of this cell is read, all four sealed comparators must reproduce their registered official and projection-v3 aggregates to the hundredth of a point, and the recomputed (B1 minus anchor) and (B4b minus anchor) contrasts must reproduce +10.54 / +0.74 and +1.1294 / -0.7117 CI95 lower bounds (pooled SLU / intent) to the digit.",
+    "symmetric_reading": "slurp-slu-f1-normalized-v1-train (owner decision 14; reported, never a gate)"
+  },
+  "expected_cost": {
+    "contacts_expected": 5430,
+    "contacts_per_row_expected": 5.03,
+    "gpu_hours_expected": 3.7,
+    "note": "The ceiling 11,880 is the exact eleven-contact program maximum, not a target. Four sealed realisations on this geometry: anchor 5,417 / 3.388 GPU-h, B4b 5,407 / 3.465, B1 arm 5,425 / 3.682, B1 twin 5,429 / 3.637. Both modules add prompt tokens, never contacts."
+  },
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, geometry or cap change, and no silent recovery. THIS RUN IS the one root-diagnosed recovery re-registration the preregistration allows for cell B5e: a second failure closes this cell and the fix must be proven on a four-row dry run before another mechanism is admitted. A partial manifest is never scored and never read. One experiment in flight at a time.",
+  "fit": {
+    "arithmetic": "1,080 rows * 11 native contacts * (1 speech packet + 3 endpoints) = 47,520",
+    "contact_cap": 47520,
+    "exact_fit": "Every realized immutable request is fitted against the resident tokenizer before it is transmitted; a request that would not fit stops the flight rather than being truncated.",
+    "mode": "native_contact_fit",
+    "not_claimed": "A static all-branches full-roster capacity guarantee.",
+    "smoke_arithmetic": "4 rows * 11 native contacts * (1 speech packet + 3 endpoints) = 176",
+    "smoke_contact_cap": 176
+  },
+  "metrics": {
+    "diagnostics_required": [
+      "the M1 diagnostics recomputed on this cell's own sealed outputs: realized candidate-union coverage against A2's 0.9722 and against cell B1's own value; the Solver escape-to-neighbour-intent rate; exemplar token volume actually rendered per row; revision counts and review-loop dispositions against the anchor's 5, cell B1's 7 and the twin's 9",
+      "the B4b slot-matching diagnostic recomputed on this cell's own sealed outputs with the official scorer's own matching: the per-type date / time / media_type / transport_type / business_type / order_type / relation / event_name false-negative and false-positive decomposition and the omission / all-exact / partial / exact-mention / spurious-mention table, read against cell B4b's own first-pass numbers",
+      "owner decision 17's net harmed rows per scenario, flagging any scenario at five or more, on every contrast",
+      "cost and duty cycle"
+    ],
+    "primary": "official pooled SLU micro F1 (slurp-slu-official-train), natural mixture",
+    "projection_v3": "Owner decision 7 of 2026-09-17: projection v3 is the fixed post-processing of every official number. Here it is ALSO the bar reading of clause 1, because owner decision 19's arithmetic is stated in v3 terms; the unprojected and symmetric numbers are reported beside it.",
+    "secondaries": [
+      "intent (joint scenario+action) accuracy",
+      "scenario accuracy",
+      "action accuracy",
+      "official pooled span F1",
+      "per-row mean official SLU-F1",
+      "per-row mean exact slot F1",
+      "saves / harms / ties with the exact two-sided McNemar p"
+    ]
+  },
+  "not_authorized": [
+    "any contact before the coordinator pins the root decision receipt and flips readiness",
+    "spawning, stopping or reconfiguring the resident service; attach only",
+    "a second official scoring job, a re-score of any comparator, or a sharded score",
+    "any DEV-1000, Fold B or test-split read",
+    "any tuning of k, tau, thresholds, fuse policy, release or snapshot pins",
+    "admitting a third module into this cell",
+    "claiming replication from this pass"
+  ],
+  "not_claimed": [
+    "no superiority, generalization, paper-scale or held-out claim; TRAIN Fold A is an exposed discovery roster",
+    "meeting the bar on this pass is not 'replicated'; B5er is what replication means here",
+    "the 62.67 + 2.06 = 64.73 arithmetic is an extrapolation this cell tests, not a prediction it assumes",
+    "no component-causal attribution below the two stores",
+    "no new claim about either module's own effect size; the B1 and B4b verdicts stand unchanged beside this one",
+    "nothing about the review loop, which is the anchor's here and is not ablated",
+    "M4b's provisional status is NOT discharged here; decision 13's replication branch is the B4b replicate",
+    "a structural smoke result is never a quality result",
+    "No claim that the recovery run's realized requests equal the aborted run's: greedy decoding at temperature 0 is not bitwise reproducible across batch compositions, so trajectories may differ row by row. What is pinned is the configuration and the request-construction surface.",
+    "Nothing about task quality from the aborted attempt: its 25 contacts were never scored and never read, and no partial read is permitted."
+  ],
+  "population": {
+    "construction": "The exemplar construction pool excludes every utterance with a recording in TRAIN Fold A, TRAIN Fold B or DEV-1000; the slot store v2 cards were revised from construction data only.",
+    "count": 1080,
+    "fold_b": "Fold B stays untouched; no Fold B or test attempt is admitted here.",
+    "name": "TRAIN Fold A",
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    },
+    "split_id": "SLURP-EVO-FOLD-A-V2",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery"
+  },
+  "preparation_base_commit": "835ecf10abcb931a75e4504666b8780c018f03b4",
+  "prompt_fit": {
+    "anchor_widest_required_tokens": 15382,
+    "authority": "core.preparation_fit.build_native_contact_fit_gate, per request, before dispatch",
+    "b1_arm_widest_required_tokens": 15976,
+    "b1_twin_widest_required_tokens": 16869,
+    "b4b_widest_required_tokens": 16334,
+    "every_request_fits_in_every_sealed_cell": true,
+    "expected_widest_high_count_visit": 16360,
+    "m1_largest_high_count_increment": 939,
+    "m4b_largest_high_count_increment": 384,
+    "m4b_largest_increment_any_visit": 965,
+    "realised_cross_check_required_tokens": 17834,
+    "receipt": "coordination/slurp-b5e-combination-v1/prompt-fit-v1.json",
+    "registered_static_bound_arithmetic": "15382 + 1636 + 965 = 17983",
+    "registered_static_bound_margin": 6593,
+    "registered_static_bound_required_tokens": 17983,
+    "sealed_receipts_scanned": 21678,
+    "serving_slot_tokens": 24576,
+    "why_static_not_realised_sum": "The B1 preregistration's realised-sum bound of 16,465 was exceeded by its own twin at 16,869 (still under B1's static bound of 17,018), and B4b's model-free proxy of 15,867 was exceeded by its realised 16,334. The static bound is registered; the realised sum is a cross-check only."
+  },
+  "protocol_id": "SAEA-SLURP-B5E-COMBINATION-RECOVERY-PROTOCOL-V1",
+  "purpose": "Answer two questions with one official score of one complete manifest: does the combination of the two admitted modules M1 (speech-keyed exemplar supply) and M4b (slot store v2) on the sealed dual-store anchor base meet the program bar (under owner decision 23 the OFFICIAL unprojected pooled SLU-F1 >= 64.00 and official intent >= 78.00), and does M4b's contribution survive inside the combination when measured against cell B1 alone? This registration is the one root-diagnosed recovery of that cell after an infrastructure abort at 25 contacts.",
+  "quality_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The aborted attempt's 25 complete contacts were never scored and never read, and no partial read is permitted. Comparators are sealed bytes and none is re-flown or re-scored: the dual-store anchor, cell B1's recovery arm (the M1 leg), cell B4b (the M4b leg), the released TRAIN A direct anchor, and the B4b request-identical replicate only if it is sealed before this cell's first contact.",
+  "registered_at_utc": "2026-09-18T16:00:00.000000+00:00",
+  "schema": "saea-slurp-b5e-combination-recovery-protocol-v1",
+  "scoring": {
+    "complete_jobs": 1,
+    "include_per_sample": true,
+    "no_sharding": true,
+    "official_scorer": "Pinned SLURP official evaluate.py (slurp-official-8eb16545) through core.scoring_batch",
+    "reported_beside": [
+      "slurp-slu-official-projected-v3-train",
+      "slurp-slu-f1-normalized-v1-train"
+    ],
+    "scheduled_by": "the campaign finalize step, once, over the complete manifest",
+    "scorers": [
+      "slurp-slu-official-train",
+      "cost"
+    ]
+  },
+  "service": {
+    "attach_only": true,
+    "feature_packets": "Reuse the promoted EVO-FOLDS-V2 packets; zero encoding contacts.",
+    "max_output_tokens": 512,
+    "mmproj": "absent",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "slot_tokens": 24576,
+    "slots": 4,
+    "total_context": 98304
+  },
+  "source_tree": "studies/speech-aware-evidence-acquisition (main checkout, master)",
+  "status": "RECOVERY_REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "two_factors": {
+    "bookkeeping_that_moves": [
+      "native_contact_fit (this cell's own FIT run and attempt at the unchanged 47,520-endpoint ceiling)",
+      "the two speech-feature identity ids (provenance only)",
+      "preparation_source_receipts (the slot-contracts-v2 rows verbatim from cell B4b, plus the exemplar release receipt row)",
+      "prepared_phase_supply",
+      "the two free-English notes and the experiment fragment's own identity and prose keys"
+    ],
+    "channel": "knowledge_stores (the SUPPLY axis), in exactly two store ids",
+    "held_identical": [
+      "the anchor role graph: perception 1, solver 1, reviewer 3, planner 1, max_revisions 1, policy phase-native-candidates-review-revise-v1, program ceiling 11 contacts per row",
+      "the roster, split and split identity",
+      "the model fragment and the resident np4 / 24,576-token geometry",
+      "the promoted EVO-FOLDS-V2 speech packets",
+      "the Perception retrieval geometry and the intent-boundaries store",
+      "the four-candidate K8 / max 3 / 16 per candidate / 28 total supply contract",
+      "every instruction template and the phase_tools Reviewer task-contract authority",
+      "the scorers; Fold B is absent"
+    ],
+    "m1": "knowledge_stores gains the named store train-exemplars, byte-for-byte the block the B1 recovery arm flew: release 171aa4a8..., snapshot 4c498dc0..., plain top-k k = 20, saea-fuse-supplyfilter-v1 at m = c = top_l = 20, saea-rank-wcos-prior-agree-v1 with w_cos = 1, tau 0.0, keyed by the row's own sealed Fold A full-utterance speech vector in the content dimension",
+    "m4b": "knowledge_stores['slot-contracts'] release and snapshot re-pinned from v1 to v2 (release f8e42d4f..., snapshot d5992bd1...), byte-for-byte the block cell B4b flew; candidate_supply, store_role and every other leaf are the anchor's",
+    "proof": "tests/unit/test_b5e_combination_config.py (six model-free tests) and coordination/slurp-b5e-combination-v1/composed-hashes-v1.json: 48 composed keys identical to the sealed anchor pair and 19 differing with knowledge_stores the only model-facing one; 52 / 15 against cell B1; 51 / 16 against cell B4b; exactly train-exemplars added; exactly slot-contracts moved, in exactly the release and snapshot leaves; intent-boundaries identical; train-exemplars identical to cell B1's; slot-contracts identical to cell B4b's; both modules off reconstructs the anchor's knowledge_stores block exactly."
+  },
+  "failure": {
+    "aborted_run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V1",
+    "aborted_attempt_id": "attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-generation-v1",
+    "aborted_fit_run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-V1",
+    "flight_worktree_study_commit": "325d67c664bb9f0c54b7dd727f65e4880e03d6e1",
+    "launched_at_utc": "2026-09-18T14:35Z",
+    "launch_mechanism": "Windows Scheduled Task SAEA-Campaign-B5e",
+    "aborted_at_utc": "2026-09-18T14:40:20Z",
+    "state": "ABORTED",
+    "actual_calls": 25,
+    "actual_rows_completed": 5,
+    "actual_repeated_speech_seconds": 63.72893749999999,
+    "sealed_model_requests": 25,
+    "sealed_fit_receipts": 25,
+    "failure_reason": "generation failed during run_phases or seal: NativeEpisodeError: native episode node failed: [100054] component 'solver_0_role' execute 'invoke' error, reason='llama.cpp prompt-audit request failed: [Errno 32] Broken pipe'",
+    "root_cause": "INFRASTRUCTURE, coordinator-caused. All three SAEA Windows Scheduled Tasks stopped the instant the coordinator changed the power scheme with powercfg, because schtasks-created tasks carry the default stop-on-battery condition; the task-owned resident llama-server died mid-request and the campaign saw 'Remote end closed connection without response' / a broken pipe. Host memory was 45.6 GB free, there was no OOM, and there was no harness or config error. Code, configuration and request bytes are unchanged.",
+    "fix": "Outside this repository: the three scheduled tasks were re-registered with the battery and idle conditions disabled and no execution time limit, and the resident session was restarted under the same session id with unchanged identity fields.",
+    "earlier_launch": "A launch of 2026-09-18T03:32Z died with the machine shutdown of 03:36Z before opening any attempt; it carries no exposure.",
+    "flight_lock_reconciliation": {
+      "relpath": "coordination/slurp-b5e-combination-v1/flight-lock-reconciliation-20260918T144332Z.json",
+      "sha256": "b63d00003824aa7ab5138d912bd9993bb71eafb800ec409fa08def59d6283c81"
+    },
+    "preserved_flight_lock": {
+      "relpath": "coordination/slurp-b5e-combination-v1/flight-lock-preserved-20260918T144332Z.json",
+      "sha256": "cc46fadcb7d6f7ea9d054d442feeda1d22394823182ac0619bd0622d298f79c9"
+    },
+    "exposure_rows_closed": "The aborted generation row and its FIT row are consumed = yes and carry the abort, the root cause and this recovery's run ids in their notes. Neither run id nor either attempt id is ever reused."
+  },
+  "recovery": {
+    "kind": "full re-fly of all 1,080 rows under a new run id",
+    "authority": "The preregistration allows AT MOST ONE root-diagnosed recovery re-registration per run (sections 7 and 11). This is it. A second failure closes cell B5e and the fix must be proven on a four-row dry run before another mechanism is admitted.",
+    "why_not_a_resume": "Owner decision 22 of 2026-09-18 requires every future experiment to support checkpoint resume, but item E10 (resume-recovery) is not merged. Resuming would recover 25 contacts of an 11,880-contact ceiling, so it does not pay here. If E10 lands before this recovery flies, the coordinator MAY convert this registration to a resume-recovery under owner decision 22; the conversion changes no question, roster, factor, comparator, decision rule or cap, and it must re-check the run-cumulative budget because a resumed attempt and its predecessor share one run id.",
+    "no_smoke": "No new four-row smoke is registered. The form is already proved twice on this exact configuration: the four-row smoke SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-SMOKE-4-V1 sealed with a structural PASS at study commit 878dd5c6 (20 calls, 5 contacts per row, both stores present in every phase record, 20/20 request fits, minimum margin 9,562 tokens), and the aborted arm's own 25 sealed contacts across 8 rows realized the same form on the full roster before the server died. The failure was not a form failure.",
+    "what_is_re_registered": [
+      "the generation run id and attempt id",
+      "the native contact FIT run id and attempt id, at the unchanged 47,520-endpoint ceiling",
+      "the cell id, the experiment fragment, the baseline fragment and the campaign plan",
+      "this cell's own two speech-feature identity ids (provenance only)",
+      "this cell's own prepared Perception supply artifact"
+    ],
+    "what_is_unchanged": [
+      "the question, both clauses of the combination read and the HARMFUL trigger",
+      "the roster, the split and the split identity hash",
+      "both admitted modules, byte-for-byte the blocks their own cells flew",
+      "the role graph, every instruction template and the phase_tools Reviewer authority",
+      "the Perception retrieval geometry and the prepared Perception selection",
+      "the model fragment, the resident np4 / 24,576-token geometry and the promoted packets",
+      "the scorers, the comparators, the estimators, the seed and the own-null margins",
+      "every registered ceiling"
+    ],
+    "budget_accounting": "The 25 contacts and 63.72893749999999 repeated speech seconds the aborted attempt durably spent are charged to the CLOSED run id SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V1 and its consumed exposure rows, not to this recovery run. This run's own plan covers its own full worst case (11,880 contacts = 1,080 rows x the 11-contact program ceiling), and because the failure rule allows this run no second attempt, the run-cumulative enforcement across every attempt of this run id is satisfied by the single full re-fly.",
+    "request_envelope": {
+      "receipt": "coordination/slurp-b5e-combination-v1/recovery-request-envelope-comparison-v1.json",
+      "sha256": "4ec576839d1d0cc56526cf0bf0408ac50169c415c07b59a9c7eedfb29c12d5e7",
+      "payloads_searched": 25,
+      "rows_touched": 8,
+      "identity_string_hits": 0,
+      "identity_strings_searched": 12,
+      "note": "The payload's own key_representation_id and matcher_policy_id are program-derived (phase-native-candidates-review-revise-v1[:<phase>]), so the one identity pair this registration deliberately makes unique reaches no request byte."
+    },
+    "composed_key_diff_vs_aborted_arm": {
+      "identical": 56,
+      "differing": 11,
+      "differing_keys": [
+        "cells",
+        "experiment_id",
+        "failure_policy",
+        "fragment_kind",
+        "generation_budget",
+        "native_contact_fit",
+        "prepared_phase_supply",
+        "purpose",
+        "speech_feature_key_representation_id",
+        "speech_feature_matcher_policy_id",
+        "what_this_is"
+      ],
+      "model_facing_keys_differing": 0,
+      "note": "All eleven are bookkeeping. generation_budget differs only in its free-English definition; its cap (11,880) and target are unchanged. The committed proof is tests/unit/test_b5e_combination_recovery_config.py."
+    }
+  }
+}

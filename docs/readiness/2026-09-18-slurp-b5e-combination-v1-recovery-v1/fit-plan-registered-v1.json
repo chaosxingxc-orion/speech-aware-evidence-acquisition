@@ -1,0 +1,63 @@
+{
+  "campaign_plan": "configs/campaign/slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-recovery-v1.json",
+  "cell": "slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-recovery-v1",
+  "composed_config_hash": "737582f97cf721db79b059c83722f8acda8586048373d94ca47aa6ec477bc828",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-fit-recovery-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 47520,
+    "planned_speech_audio_seconds": 33930,
+    "protocol_hash": "d94facb4b8c92d34042123c7d33c1ef9c09417962d62db453b2464da06566e38",
+    "run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-RECOVERY-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realized native request inside the same campaign or worker, under the same lease.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-recovery-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "modules": {
+    "combination": "cell B5e, the B5 form restricted to the modules admitted at registration time (owner decision 19)",
+    "m1": "speech-keyed exemplar supply (train-exemplars store), admitted by cell B1 and its twin",
+    "m4b": "slot store v2 (slot-contracts release/snapshot re-pin), admitted by cell B4b, provisional until replicated"
+  },
+  "plan_kind": "native contact fit",
+  "preparation_base_commit": "835ecf10abcb931a75e4504666b8780c018f03b4",
+  "prepared_phase_supply": {
+    "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "relpath": "prepared/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1/phase-supply-v1.json",
+    "sha256": "5bfc6bcdeda7438ca01725072267fe53086ffdb6395d813b3a6c897be4bfef0a"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-18-slurp-b5e-combination-v1-recovery-v1/protocol-registered-v1.json",
+    "sha256": "96cd1bab56444b947d13da0b78aab0fcb9c08690ef50dd016644703d0f413095"
+  },
+  "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The aborted attempt's 25 complete contacts were never scored and never read, and no partial read is permitted. Comparators are sealed bytes and none is re-flown or re-scored: the dual-store anchor, cell B1's recovery arm (the M1 leg), cell B4b (the M4b leg), the released TRAIN A direct anchor, and the B4b request-identical replicate only if it is sealed before this cell's first contact.",
+  "registered_at_utc": "2026-09-18T16:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition (main checkout, master)",
+  "status": "RECOVERY_REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true,
+  "recovery": {
+    "supersedes_run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-V1",
+    "supersedes_attempt_id": "attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-fit-v1",
+    "reason": "Infrastructure abort at 25 contacts on 2026-09-18T14:40:20Z: all three SAEA Windows Scheduled Tasks carried the default stop-on-battery condition and stopped when the coordinator changed the power scheme with powercfg, killing the task-owned resident server mid-request. Code, configuration and request bytes unchanged.",
+    "kind": "full re-fly of all 1,080 rows; no rows are filtered and none is reused",
+    "one_recovery_only": "This is the one root-diagnosed recovery re-registration the preregistration allows. A second failure closes cell B5e.",
+    "note": "docs/readiness/2026-09-18-slurp-b5e-combination-v1-recovery-v1.md"
+  }
+}
