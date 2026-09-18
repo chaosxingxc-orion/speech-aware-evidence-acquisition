@@ -79,5 +79,18 @@ read when these decisions were taken.
 Naming: B5e and B5er are the B5/B5r form restricted to the modules admitted at the time of
 registration; B5b is the later full combination. None of them is a new mechanism.
 
+## Owner decision 22 of 2026-09-18 (after the B4b replicate aborted on the death of the resident server)
+
+Context: the B4b request-identical replicate aborted at 2,922 of about 5,400 contacts at
+2026-09-18T02:40Z when the inherited resident llama-server and its serving wrapper died with the
+ChatGPT session that owned them (owner-confirmed; stop receipt ALREADY_EXITED, no OOM, no harness
+error). The aborted attempt's trace holds 577 complete rows and 7 partial rows; 496 rows never
+started. The owner asked not to re-fly from scratch but to resume from the checkpoint
+("你不要重新开始跑吧，看下是否可以断点续推？"). The harness had no resume capability.
+
+| # | Question | Decision |
+| --- | --- | --- |
+| 22 | May a flight that died of an infrastructure failure be completed by a resume-recovery instead of a full re-fly, and what is the rule? | Agreed ("决策22同意"). A resume-recovery is a recovery re-registration (one per flight, root-diagnosed) that applies ONLY when code and request bytes are unchanged (infrastructure failure, never a harness or config defect): every complete row of the aborted attempt is kept without selection, every partial or unstarted row is flown by the recovery attempt under the same run id, the merged manifest declares the predecessor attempt (trace hash, kept-row list and its hash) and scores once; the bundle verifies kept rows against the predecessor trace byte for byte. Item E10 builds it; the B4b replicate is its first use. **Standing rule (owner, same message): every experiment registered from now on must support checkpoint resume** ("我们后期所有的实验都要支持断点续推的能力"); the fixed protocol and every new preregistration's failure rule carry the resume-recovery clause. |
+
 Outcome of decision 18 (2026-09-18, after the twin read): branch A. (B1 minus twin) reads +7.83 pp official pooled SLU with a CI95 of [+5.85, +9.75]; cell B1 is ADMITTED and module M1 is admitted as speech-keyed exemplar supply. The twin alone reads +4.77 pp [+3.20, +6.36] over the anchor with nil intent, recorded as a decomposition fact; module M1p is not registered. Record: `docs/results/2026-09-18-slurp-b1-twin-verdict.md`. Cell B5e therefore combines M1 (the arm's form) with M4b.
 
