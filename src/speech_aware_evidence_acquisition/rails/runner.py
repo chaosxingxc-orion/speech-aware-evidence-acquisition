@@ -1153,6 +1153,58 @@ def _per_sample_bootstrap(
     return values
 
 
+def _restricted_split_samples(
+    samples: tuple[object, ...],
+    flown_sample_ids: object,
+    *,
+    split_id: str,
+    execution_units: object,
+) -> tuple[object, ...]:
+    """The split restricted to an explicitly named subset, in split order.
+
+    E10c (2026-09-18). A resume-recovery flies only the rows its predecessor
+    did not finish (``core.flight.resume``), but the roster every runner entry
+    point derives is ``adapter.load_split(split_id)`` -- the WHOLE split. The
+    flight narrows the packet map instead, so the two disagreed and the loop
+    refused with "speech_packet_bindings must materialize every query sample
+    exactly once" after preflight, preprocess and serve had been paid for.
+
+    The restriction is explicit and declarative: the caller names the rows,
+    this function refuses any name the split does not carry, and the order is
+    the SPLIT's own -- never the caller's -- so a recovery dispatches exactly
+    the bytes an uninterrupted flight would have dispatched for those rows.
+    It is not a selection mechanism: nothing here can widen a roster, and the
+    only caller that supplies it is ``core.flight.runtime`` under a scanned
+    predecessor attempt.
+    """
+
+    if isinstance(flown_sample_ids, (str, bytes)) or not isinstance(
+        flown_sample_ids, Sequence
+    ):
+        raise RailsRunnerError(
+            "flown_sample_ids must be a sequence of sample ids, or None"
+        )
+    if execution_units is not None:
+        raise RailsRunnerError(
+            "flown_sample_ids restricts a per-sample roster; an execution-unit "
+            "roster is addressed by request key and cannot be restricted by it"
+        )
+    flown = tuple(str(sample_id) for sample_id in flown_sample_ids)
+    if not flown:
+        raise RailsRunnerError("flown_sample_ids must name at least one sample")
+    if len(set(flown)) != len(flown):
+        raise RailsRunnerError("flown_sample_ids contains duplicate sample ids")
+    available = {sample.sample_id for sample in samples}
+    unknown = sorted(set(flown) - available)
+    if unknown:
+        raise RailsRunnerError(
+            f"flown_sample_ids names {len(unknown)} sample(s) outside split "
+            f"{split_id!r}: {unknown[:5]}"
+        )
+    keep = set(flown)
+    return tuple(sample for sample in samples if sample.sample_id in keep)
+
+
 def _validated_bootstrap_value_ids(
     snapshot: KnowledgeSnapshot,
     values: Sequence[str],
@@ -3551,6 +3603,10 @@ def run_speech_native_agent_loop(
     result_kind: str = TASK_ANSWER_RESULT_KIND,
     native_episode_binding: NativeEpisodeRunBinding | None = None,
     initial_feedback_states: Mapping[str, object] | None = None,
+    # E10c: the OPTIONAL roster restriction a resume-recovery hands this loop
+    # (see _restricted_split_samples). ``None`` -- every other caller -- runs
+    # the whole split exactly as before.
+    flown_sample_ids: Sequence[str] | None = None,
 ) -> AgentLoopSummary:
     """Run a bounded, batched, speech-native AgentLoop over one DEV split.
 
@@ -3577,6 +3633,13 @@ def run_speech_native_agent_loop(
     binding entries carry the adapter-bound original media path and hash, or a
     slice already registered with the shared client. The historical default
     remains ``speech_features``.
+
+    ``flown_sample_ids`` (E10c, 2026-09-18) is the resume-recovery seam: when
+    given, the split is restricted to exactly those rows, in the split's own
+    order, and EVERY roster-sized property of this call follows the restricted
+    set -- the packet-binding assertion, the TRAIN-overlap check, the
+    per-sample bootstrap seeds and ``planned_ceiling``. When absent the loop
+    is byte-for-byte what it was before the keyword existed.
     """
 
     if native_episode_binding is not None:
@@ -3745,6 +3808,16 @@ def run_speech_native_agent_loop(
     sample_ids = tuple(sample.sample_id for sample in samples)
     if len(set(sample_ids)) != len(sample_ids):
         raise RailsRunnerError("AgentLoop split contains duplicate sample ids")
+    if flown_sample_ids is not None:
+        # E10c: the duplicate check above deliberately runs on the WHOLE
+        # split, so a duplicate outside the restricted set still refuses.
+        samples = _restricted_split_samples(
+            samples,
+            flown_sample_ids,
+            split_id=split_id,
+            execution_units=execution_units,
+        )
+        sample_ids = tuple(sample.sample_id for sample in samples)
     if (
         (execution_units is None or speech_packet_bindings)
         and set(speech_packet_bindings) != set(sample_ids)

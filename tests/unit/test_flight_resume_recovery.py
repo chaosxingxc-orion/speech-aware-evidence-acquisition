@@ -35,8 +35,10 @@ from speech_aware_evidence_acquisition.core.flight.runtime import (
     FlightRuntime,
     FlightRuntimeError,
 )
+from speech_aware_evidence_acquisition.rails.runner import RailsRunnerError
 
 from test_native_episode_runner import _ActualEpisodeHarness
+from test_rails_frozen_core_client import _plan
 from test_rails_runner import _knowledge_snapshot
 # The module-scoped fixture the harness's transport identity needs: it copies
 # the python interpreter to a llama-server-shaped path and has it hold an
@@ -203,17 +205,34 @@ def _scan(path: Path, harness, *, attempt_id="attempt-aborted", expected=None):
     )
 
 
-def _harness(tmp_path, name, sample_ids, *, max_revisions=0):
-    """One roster's worth of the actual episode, in its own directory."""
+def _harness(tmp_path, name, sample_ids, *, max_revisions=0, planned_model_calls=None):
+    """One roster's worth of the actual episode, in its own directory.
 
+    ``planned_model_calls`` overrides the harness default (whole roster x
+    ``max_contacts``) so a recovery can carry a plan sized to the rows IT
+    flies -- the budget shape E10c is about.
+    """
+
+    max_contacts = 4 + 3 * max_revisions
     return _ActualEpisodeHarness(
         tmp_path / name,
         sample_count=len(sample_ids),
         sample_ids=tuple(sample_ids),
         max_revisions=max_revisions,
-        max_contacts=4 + 3 * max_revisions,
+        max_contacts=max_contacts,
         planner_actions=("ACCEPT",) if max_revisions == 0 else ("REVISE", "ACCEPT"),
         arm="speech-feature-query",
+        **(
+            {}
+            if planned_model_calls is None
+            else {
+                "execution_plan": _plan(
+                    run_id="SAEA-E-native-role-runner-proof",
+                    attempt_id="attempt-native-role-runner-proof",
+                    planned_model_calls=planned_model_calls,
+                )
+            }
+        ),
     )
 
 
@@ -625,6 +644,14 @@ def test_a_resume_loads_a_prepared_supply_prepared_over_the_whole_roster(
     one of them, and the recovery must load the artifact unchanged, seed only
     the row it flies, and seal a kept row byte identical to the uninterrupted
     one.
+
+    E10c (2026-09-18) makes this the whole real path: no roster is narrowed
+    inside the test any more. The recovery's adapter carries the cell's whole
+    split, ``FlightRuntime._dispatch_phase_program`` hands the runner the
+    flown roster explicitly, and the run therefore exercises every roster
+    assertion between the dispatch and the seal -- the packet-binding
+    assertion, the contact ceiling against a plan sized to the flown rows,
+    and the merged seal over the whole roster.
     """
 
     roster = ("s1", "s2")
@@ -652,7 +679,15 @@ def test_a_resume_loads_a_prepared_supply_prepared_over_the_whole_roster(
 
     # The recovery attempt carries the SAME cell -- same roster, same prepared
     # artifact bytes -- and flies only the row the predecessor did not finish.
-    recovery = _harness(tmp_path, "recovery", roster)
+    # Its plan is sized to the rows IT flies (E10c): one row at the program's
+    # contact ceiling, which is exactly half of what the whole roster would
+    # need. That is what makes this test a ceiling proof -- a dispatch that
+    # took its roster from ``adapter.load_split`` would compute
+    # ``planned_ceiling = 2 x max_contacts`` and refuse against this budget.
+    recovery = _harness(
+        tmp_path, "recovery", roster,
+        planned_model_calls=source.program.max_contacts,
+    )
     recovery_runtime, recovery_spec = _supplied_skeleton(recovery, monkeypatch)
     recovery_receipt = _prepare_supply_artifact(recovery_runtime, recovery_spec)
     assert recovery_receipt["sha256"] == source_receipt["sha256"]
@@ -661,17 +696,13 @@ def test_a_resume_loads_a_prepared_supply_prepared_over_the_whole_roster(
     )
     recovery_runtime._resume = scan
     recovery_runtime._resume_flown_sample_ids = ("s2",)
-    # The SPLIT the runner reads comes from ``adapter.load_split``, and E10
-    # narrows only the packet map: ``rails.runner`` then refuses with
-    # "speech_packet_bindings must materialize every query sample exactly
-    # once". That gap is the separate E10c follow-up (the runtime must hand
-    # the runner the flown split, not the whole one); it is narrowed here so
-    # the E10b identity property can be proved on the real dispatch path.
-    recovery_runtime._adapter = type(recovery.adapter)(
-        samples=tuple(
-            sample for sample in recovery.samples if sample.sample_id == "s2"
-        )
-    )
+    # E10c: the adapter stays WHOLE. The flown roster reaches the runner as an
+    # explicit restriction instead, so the split it loads, the packet map it
+    # asserts over and the ceiling it charges are one roster -- and the
+    # prepared artifact is still verified over the cell's whole roster.
+    assert recovery_runtime._adapter is recovery.adapter
+    assert len(recovery.adapter.load_split("all")) == len(roster)
+    assert recovery_runtime._resume_dispatch_roster() == ("s2",)
     try:
         rows, *_ = recovery_runtime._dispatch_phase_program(
             recovery.client, recovery.plan, recovery.program.program_id
@@ -685,6 +716,11 @@ def test_a_resume_loads_a_prepared_supply_prepared_over_the_whole_roster(
     # verified against the whole roster it was prepared over.
     assert [row["sample_id"] for row in rows] == ["s2"]
     assert set(recovery_runtime._identity_packet_bindings) == set(roster)
+    # E10c, the ceiling: the flight ran under a plan that covers exactly one
+    # row at the program's contact ceiling, and every contact it spent was
+    # charged against it.
+    assert recovery.plan.planned_model_calls == 1 * recovery.program.max_contacts
+    assert 0 < len(recovery.client.timings) <= recovery.plan.planned_model_calls
 
     # And the seed the recovery actually handed the runner is narrowed to the
     # flown row: rails.runner._per_sample_bootstrap refuses a seed that names
@@ -741,3 +777,116 @@ def test_phase_seed_inputs_are_invariant_under_a_resume(tmp_path, monkeypatch):
     assert set(narrowed["speech_packet_bindings"]) != set(
         binding["speech_packet_bindings"]
     )
+
+
+# ---------------------------------------------------------------------------
+# E10c (2026-09-18): the runner's own roster is the flown one.
+# ---------------------------------------------------------------------------
+
+
+def test_the_runner_refuses_a_flown_row_that_the_split_does_not_carry(
+    tmp_path, monkeypatch
+):
+    """A flown id outside the split refuses BY NAME, with zero contacts.
+
+    The restriction can only ever narrow: a row the adapter's split does not
+    carry is not something a recovery may fly, and saying so here -- rather
+    than letting the packet assertion report a count mismatch -- is what
+    keeps a mis-declared resume readable.
+    """
+
+    recovery = _harness(tmp_path, "recovery", ("s1", "s2"))
+    runtime = _skeleton(recovery, monkeypatch)
+    runtime._samples = tuple(
+        SimpleNamespace(sample_id=sample_id) for sample_id in ("s1", "s2")
+    )
+    runtime._resume = object()
+    runtime._resume_flown_sample_ids = ("s2",)
+    # The cell's split lost the row this recovery says it must fly.
+    runtime._adapter = type(recovery.adapter)(
+        samples=tuple(
+            sample for sample in recovery.samples if sample.sample_id == "s1"
+        )
+    )
+    try:
+        with pytest.raises(RailsRunnerError, match="outside split"):
+            runtime._dispatch_phase_program(
+                recovery.client, recovery.plan, recovery.program.program_id
+            )
+    finally:
+        recovery.close()
+    assert recovery.client.timings == ()
+
+
+def test_the_runner_restriction_is_absent_without_a_resume(tmp_path, monkeypatch):
+    """Rule 1's other half: an ordinary flight hands the runner nothing.
+
+    ``flown_sample_ids`` is optional and the ordinary path never sets it, so
+    an uninterrupted flight loads the whole split exactly as it did before
+    this seam existed.
+    """
+
+    harness = _harness(tmp_path, "full", ("s1", "s2"))
+    runtime = _skeleton(harness, monkeypatch)
+    assert runtime._resume_dispatch_roster() is None
+    seen = {}
+
+    def spy(**kwargs):
+        seen.update(kwargs)
+        raise RuntimeError("stop before any contact")
+
+    runtime._continuous_phase_runner = spy
+    try:
+        with pytest.raises(RuntimeError, match="stop before any contact"):
+            runtime._dispatch_phase_program(
+                harness.client, harness.plan, harness.program.program_id
+            )
+    finally:
+        harness.close()
+    assert "flown_sample_ids" not in seen
+    assert set(seen["speech_packet_bindings"]) == {"s1", "s2"}
+    assert seen["adapter"] is harness.adapter
+    assert harness.client.timings == ()
+
+
+def test_the_phase_runner_refuses_a_roster_that_differs_from_its_packet_map(tmp_path):
+    """One dispatch flies one roster.
+
+    ``rails.phase_runner`` validates its results against
+    ``speech_packet_bindings`` while ``rails.runner`` validates the split
+    against ``flown_sample_ids``; letting the two disagree would reintroduce
+    exactly the defect E10c fixes, so the disagreement refuses before the
+    loop is entered.
+    """
+
+    from speech_aware_evidence_acquisition.rails.phase_runner import (
+        PhaseRunnerError,
+        run_continuous_program,
+    )
+
+    harness = _harness(tmp_path, "full", ("s1", "s2"))
+    # ``solo`` is the plain one-phase form: this proof is about the roster
+    # arguments, not about the native episode's own custody.
+    program = harness.program.solo(harness.program.phase_names()[0])
+    try:
+        with pytest.raises(PhaseRunnerError, match="same rows"):
+            run_continuous_program(
+                program=program,
+                adapter=harness.adapter,
+                plan=harness.plan,
+                data_root=harness.world.data_root,
+                core_client=harness.client,
+                split_id="all",
+                knowledge_snapshot=_knowledge_snapshot(),
+                speech_packet_bindings=dict(harness.speech_bindings),
+                trace_sink=harness.trace,
+                decoding_params={"temperature": 0, "max_tokens": 64},
+                material_for_phase=harness.material_for_phase,
+                flown_sample_ids=("s2",),
+                agent_runner=lambda **_kwargs: pytest.fail(
+                    "the loop must not be entered"
+                ),
+            )
+    finally:
+        harness.close()
+    assert harness.client.timings == ()

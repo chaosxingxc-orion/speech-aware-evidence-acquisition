@@ -163,6 +163,15 @@ with zero contacts on `PreparationError("prepared artifact identity mismatch")` 
 narrowed 500-row map was compared against a 1,080-row artifact, and the audited list of every
 other narrowed-binding consumer lives in that method's docstring.
 
+E10c (2026-09-18): the flown roster also reaches `rails.runner` explicitly — the loop derives its
+roster from `adapter.load_split(split_id)`, so narrowing only the packet map left the two
+disagreeing and a recovery refused with `speech_packet_bindings must materialize every query sample
+exactly once`; `_dispatch_phase_program` now passes the flown ids as `flown_sample_ids` (optional,
+absent for every ordinary flight, honoured by `rails.phase_runner.run_continuous_program` and
+`rails.runner.run_speech_native_agent_loop`), which restricts the split in its own order, refuses a
+flown id the split does not carry, and derives `planned_ceiling` from the flown rows alone, while
+the adapter, the prepared-artifact identity and the merged seal keep the cell's whole roster.
+
 
 ## 4. Phases
 

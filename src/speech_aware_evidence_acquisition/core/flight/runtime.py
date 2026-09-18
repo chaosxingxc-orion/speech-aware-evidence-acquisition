@@ -1341,6 +1341,28 @@ class FlightRuntime:
             return tuple(sample.sample_id for sample in self._samples)
         return self._resume_flown_sample_ids
 
+    def _resume_dispatch_roster(self) -> tuple[str, ...] | None:
+        """The roster restriction this attempt hands the RUNNER, or ``None``.
+
+        E10c (2026-09-18). ``rails.runner.run_speech_native_agent_loop`` takes
+        its roster from ``adapter.load_split(split_id)`` and refuses a packet
+        map that does not materialize every sample of it; the resume narrowing
+        (E10) touches only the packet map, so the loop refused a recovery with
+        "speech_packet_bindings must materialize every query sample exactly
+        once" -- with zero contacts, but only after preflight, preprocess and
+        serve. Handing the same flown roster to the runner explicitly is what
+        makes the split, the packet map and the contact ceiling one roster.
+
+        ``None`` for every ordinary flight, which then loads the whole split
+        exactly as it always did.
+        """
+
+        # ``getattr``: several dispatch proofs drive an
+        # ``object.__new__(FlightRuntime)`` skeleton that never ran __init__.
+        if getattr(self, "_resume", None) is None:
+            return None
+        return tuple(self._resume_flown_sample_ids)
+
     def _load_resume_predecessor(
         self, values: Mapping[str, object], sample_ids: Sequence[str]
     ) -> Mapping[str, object]:
@@ -1453,13 +1475,16 @@ class FlightRuntime:
     ) -> Mapping[str, object]:
         """The phase-program binding restricted to the rows this attempt flies.
 
-        ``rails.phase_runner.run_agent_phase`` takes its roster from
+        ``rails.phase_runner`` takes its roster from
         ``speech_packet_bindings`` ("for the whole roster in
-        speech_packet_bindings"), so narrowing that one mapping is what makes
-        a recovery attempt fly only the rows the predecessor did not finish.
-        Nothing else about the binding changes: same material, same supply,
-        same review, same knowledge snapshot -- a resumed row must see the
-        bytes it would have seen.
+        speech_packet_bindings"), so narrowing that one mapping is half of
+        what makes a recovery attempt fly only the rows the predecessor did
+        not finish. The other half is E10c: ``rails.runner`` derives its own
+        roster from ``adapter.load_split`` and must be told the same flown
+        set explicitly (:meth:`_resume_dispatch_roster`), or the two disagree
+        and the loop refuses. Nothing else about the binding changes: same
+        material, same supply, same review, same knowledge snapshot -- a
+        resumed row must see the bytes it would have seen.
         """
 
         # ``getattr`` rather than attribute access: several proofs in this
@@ -1555,6 +1580,12 @@ class FlightRuntime:
           :meth:`_flight_roster_sample_ids` (which rows fly, correctly
           resume-aware), the middle two run in preflight/preprocess before any
           narrowing exists, and the seal merges against ``self._samples``.
+        * ``rails.runner``'s own split, ``adapter.load_split(split_id)`` --
+          NOT reached by the narrowing at all, which is the E10c defect. The
+          adapter stays whole and the flown roster is handed to the runner
+          explicitly instead (:meth:`_resume_dispatch_roster`), so identity
+          and the seal keep reading the cell's whole roster while the loop
+          flies the recovery's own.
         """
 
         # ``getattr``: several dispatch proofs drive an
@@ -5317,11 +5348,29 @@ class FlightRuntime:
             or tool_dispatcher is not None
             or bool(set(supply_specs) - {program.phase_names()[0]})
         )
+        # E10c: the runner derives its roster from ``adapter.load_split`` and
+        # asserts that the packet map materializes every query sample exactly
+        # once, so narrowing the packet map alone made the two disagree. The
+        # SAME flown roster is therefore handed to the runner explicitly: it
+        # restricts the split it loads, the packet assertion it makes and the
+        # ``planned_ceiling`` it charges against the plan. The adapter itself
+        # stays whole -- identity and the seal are properties of the cell
+        # (E10b), not of what one attempt flies.
+        flown_sample_ids = self._resume_dispatch_roster()
+        if flown_sample_ids is not None and not continuous:
+            raise FlightRuntimeError(
+                "a resume-recovery dispatches one continuous trajectory per "
+                "sample; the per-phase whole-roster form cannot receive a "
+                "narrowed roster and would re-fly the rows its predecessor "
+                "completed"
+            )
         live_options = (
             {"whole_roster_wave_barrier": True, "request_batch_gate": live_fit_gate}
             if whole_roster
             else {}
         )
+        if flown_sample_ids is not None:
+            live_options["flown_sample_ids"] = flown_sample_ids
         if binding.get("initial_feedback_states") is not None:
             live_options["initial_feedback_states"] = binding["initial_feedback_states"]
         if native_binding is not None:

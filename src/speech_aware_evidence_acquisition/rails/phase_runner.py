@@ -49,7 +49,7 @@ either shape (module docstring in ``rails.controllers``).
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Callable, Mapping
+from typing import Callable, Mapping, Sequence
 
 from ..contracts import ExecutionPlan
 from ..core.base import Registry
@@ -525,6 +525,7 @@ def run_continuous_program(
     result_kind: str = "task-answer",
     native_episode_binding: object = None,
     initial_feedback_states: Mapping[str, object] | None = None,
+    flown_sample_ids: Sequence[str] | None = None,
 ) -> AgentLoopSummary:
     """Run the WHOLE program as ONE continuous per-sample trajectory (E6).
 
@@ -548,6 +549,14 @@ def run_continuous_program(
     Returns ONE ``AgentLoopSummary`` for the whole program (one result per
     sample, ``len(program.phases)`` contacts each unless the program's stop
     rule ended a trajectory early).
+
+    ``flown_sample_ids`` (E10c) is the resume-recovery seam and is forwarded
+    to ``rails.runner.run_speech_native_agent_loop``, which restricts the
+    split it loads to exactly those rows. Because this function's own roster
+    is ``speech_packet_bindings`` -- which ``core.flight.runtime`` narrows to
+    the same set -- the two must name the same rows, and a disagreement
+    refuses here rather than after the contacts are spent. ``None`` -- every
+    other caller -- passes nothing on and changes no byte.
     """
 
     program.validate()
@@ -669,6 +678,24 @@ def run_continuous_program(
         wave_index += 1
 
     runner_options = {}
+    if flown_sample_ids is not None:
+        if isinstance(flown_sample_ids, (str, bytes)) or not isinstance(
+            flown_sample_ids, Sequence
+        ):
+            raise PhaseRunnerError(
+                "flown_sample_ids must be a sequence of sample ids, or None"
+            )
+        if execution_units is not None:
+            raise PhaseRunnerError(
+                "flown_sample_ids restricts a per-sample roster and cannot be "
+                "combined with an execution-unit roster"
+            )
+        if set(flown_sample_ids) != set(speech_packet_bindings):
+            raise PhaseRunnerError(
+                "flown_sample_ids and speech_packet_bindings must name the same "
+                "rows: one dispatch flies one roster"
+            )
+        runner_options["flown_sample_ids"] = tuple(flown_sample_ids)
     if initial_feedback_states is not None:
         runner_options["initial_feedback_states"] = initial_feedback_states
     if native_episode_binding is not None:
