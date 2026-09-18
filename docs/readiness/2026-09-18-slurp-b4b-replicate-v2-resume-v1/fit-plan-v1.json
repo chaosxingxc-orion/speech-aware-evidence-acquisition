@@ -1,0 +1,107 @@
+{
+  "cell": "slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2-resume",
+  "composed_config_hash": "c5a259c35888817e760a33b19f51794fb52ae20141aa3a5b86072882802f5b55",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-fit-replicate-v2-resume",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 47520,
+    "planned_speech_audio_seconds": 33930,
+    "protocol_hash": "ef3f799de9f71013e87975e1e9a07db28aeb787020ad34f182be75c5799622d5",
+    "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-REPLICATE-V2",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realized native request inside the same campaign, under the same lease. Only the 500 flown rows realize contacts, so only they are fitted; the 580 kept rows are replayed from the predecessor trace and contact nothing.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2-resume",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "preparation_base_commit": "7effe8193d25d881fd9c97b66c5e78b8f4d0bbc0",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-18-slurp-b4b-replicate-v2-resume-v1/protocol-registered-v1.json",
+    "sha256": "7ddb9becebd693ca177a8dfb4227b06c1b20a4bb91da89ca6cb2dab8f8e64e86"
+  },
+  "quality_read_gate": "No task-quality read before the complete merged sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The predecessor attempt's 2,922 contacts were never scored and never read, and no partial read is permitted; the 580 rows it completed reach a number only through the merged manifest. The comparators are sealed bytes and none is re-flown or re-scored: the dual-store anchor SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1 (primary, the clause leg), cell B4b SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V2 (the own-null leg) and the released direct anchor SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1 (secondary).",
+  "registered_at_utc": "2026-09-18T18:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "RESUME_RECOVERY_REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true,
+  "campaign_plan": "configs/campaign/slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2-resume.json",
+  "plan_kind": "native contact fit",
+  "prepared_phase_supply": {
+    "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "relpath": "prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/phase-supply-v2.json",
+    "sha256": "06e52a88b856e4d60b7d4ed9cda99490d61e5acdb26105e77722489abfe29150"
+  },
+  "source_tree": "studies/speech-aware-evidence-acquisition (main checkout, master)",
+  "resume": {
+    "mode": "A -- trace replay plus seal-time merge (core.flight.resume; docs/superpowers/specs/2026-09-18-resume-modes-comparison.md)",
+    "authority": "Owner decision 22 of 2026-09-18 (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md) and the failure rule of section 10 of the preregistration: at most one root-diagnosed recovery re-registration per run. This is it, in its resume-recovery form. Harness item E10, merged at f79eaf7969c0456fb0cd9f2a96bbd339d74a7e22; this is E10's first use.",
+    "predecessor_run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2",
+    "predecessor_attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2",
+    "predecessor_state": "ABORTED",
+    "predecessor_aborted_at_utc": "2026-09-18T02:40:20Z",
+    "predecessor_actual_calls": 2922,
+    "predecessor_actual_speech_audio_seconds": 7895.544875000081,
+    "predecessor_trace_relpath": "runs/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2.trace.jsonl",
+    "predecessor_trace_sha256": "ad7a78c77c26b8c7255e31fa897678b23609c9578933425b679594831e17c897",
+    "predecessor_trace_bytes": 202733292,
+    "predecessor_trace_records": 16338,
+    "root_cause": "Infrastructure: the inherited resident llama-server and its serving wrapper died with the session that owned them (owner-confirmed; stop receipt ALREADY_EXITED, no OOM). Recorded failure at a Reviewer contact: 'Remote end closed connection without response'. No harness error, no configuration error, and the request bytes already transmitted were the registered ones. The flight worktree stood at study commit 2fdede26910f181a4b96aa955871e9ad646682f3.",
+    "replay": {
+      "started_rows": 584,
+      "complete_rows_kept": 580,
+      "incomplete_rows_reflown": 4,
+      "never_started_rows_reflown": 496,
+      "flown_rows": 500,
+      "roster_rows": 1080,
+      "kept_sample_ids_sha256": "45e9eeb3a80c2b448cd7eb3922de4c000e22c2f188448c786de6f0a076916049",
+      "partial_sample_ids": [
+        "slurp:train:008363:audio-1502300356-headset",
+        "slurp:train:008450:audio-1490199694",
+        "slurp:train:008472:audio-1499690693",
+        "slurp:train:008505:audio-1490195977"
+      ],
+      "partial_reason": "the episode emitted no terminal receipt",
+      "selection": "None is possible: the kept set is exactly the predecessor's COMPLETE rows and the flown set is exactly the rest of the registered roster. core.flight.resume refuses a request for any other partition.",
+      "completeness_authority": "The episode's own terminal receipt in the trace (rails.native_episode_receipt.validate_native_episode_delivery_receipt in its post-seal reader mode), never a contact count -- a request-count read alone suggests 577/7."
+    },
+    "budget_arithmetic": {
+      "predecessor_calls": 2922,
+      "resume_worst_case_contacts": 5500,
+      "worst_case_formula": "500 flown rows x 11 contacts (the program ceiling) = 5,500",
+      "run_cumulative_worst_case": 8422,
+      "registered_planned_model_calls": 11880,
+      "headroom": 3458,
+      "enforcement": "core.attempts.AttemptStore.prior_actual_usage sums the actual calls and audio seconds of every attempt file under the run id; the gate holds the sum against planned_model_calls (invariants I3/I6). FlightRuntime.preflight additionally reports the same 5,500 as resume.worst_case_contacts.",
+      "expected_realized": "About 2,500 contacts and about 7,500 repeated speech seconds: cell B4b realized 5,407 contacts on 1,080 rows (5.006 per row)."
+    },
+    "fit_identity": {
+      "fit_run_id_unchanged": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-REPLICATE-V2",
+      "predecessor_fit_attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-fit-replicate-v2",
+      "resume_fit_attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-fit-replicate-v2-resume",
+      "contact_cap_unchanged": 47520,
+      "why": "Required by the runtime. core.preparation_fit.build_native_contact_fit_gate writes one request-fit receipt per realized contact into prepared/<fit run>/<fit attempt>/ under the SHA-256 of {sample_id, agent_contact_id} and refuses a path that already exists; agent_contact_id is the deterministic <program>:<phase>:<iteration>:<sample id>. All four partial rows already carry perception:0 and solver:0 receipts under the predecessor fit attempt (verified read-only on disk), so re-flying them under that attempt would refuse at the first contact. The fit root is namespaced by run AND attempt, so a fresh attempt id under the unchanged fit run id is the minimum change that clears it -- and it keeps the run's exposure accounting on its existing two ledger rows.",
+      "cap_is_roster_derived": "47,520 = 1,080 registered rows x 11 contacts x (1 speech packet + 3 endpoints). The gate derives the required cap from the whole registered roster, not from the flown subset, so the cap does not move for a resume."
+    },
+    "exposure_rows_reopened": [
+      "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2",
+      "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-REPLICATE-V2"
+    ],
+    "one_recovery_only": "This IS the one root-diagnosed recovery re-registration the preregistration allows for this run. A second failure closes cell B4b-rep: no third registration, no second resume, no row filtering, and the fix must be proven on a four-row dry run before another mechanism is admitted.",
+    "note": "docs/readiness/2026-09-18-slurp-b4b-replicate-v2-resume-v1.md"
+  }
+}
