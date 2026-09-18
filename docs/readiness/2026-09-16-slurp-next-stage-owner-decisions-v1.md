@@ -61,3 +61,21 @@ Outcome of decision 6 (2026-09-17, after the B0r read): HARMFUL under the own nu
 | 16 | The "Reviewer reads the five raw samples" form that cell B2 v2 registered by accident. | Dropped. It returns only if B2 v3 shows the review loop adds nothing over the committed draft. |
 | 17 | The per-scenario intent band pins at zero when at most three rows are harmed in a 60-row scenario. | Registered rules stay as written; every paired read additionally reports net harmed rows per scenario and flags any scenario with five or more; new preregistrations carry that diagnostic. |
 
+## Owner decisions 18-21 of 2026-09-18 (after the B1 twin sealed and before its read; "agree with the recommendations, execute 18 to 21 as recommended")
+
+Context that opened these decisions: cell B1 read +12.61 pp official pooled SLU against the anchor
+(61.14 / intent 80.19; projection v3 62.67 / 81.76), which leaves the v3 SLU bar 1.33 pp away with
+intent already above its bar, while module M4b (slot store v2) adds about +2.06 pp v3. The twin
+sealed at 2026-09-18T00:3xZ (5,429 contacts, 3.637 GPU hours, one official score) and had not been
+read when these decisions were taken.
+
+| # | Question | Decision |
+| --- | --- | --- |
+| 18 | The B1 preregistration's twin clause covers only "the CI95 lower bound of (B1 minus twin) > 0"; the case where the twin itself beats the anchor while B1 and the twin tie is not covered. Fixed before the twin read. | If (B1 minus twin) has a positive CI95 lower bound, M1 is ADMITTED as speech-keyed exemplar supply under the registered rule. If the (B1 minus twin) CI95 includes zero or is negative while (twin minus anchor) has a positive CI95 lower bound, B1 is NOT ADMITTED under the registered rule; the twin's sealed bytes are registered without any new flight as the arm of a new module "M1p: delivered-scenario annotated-exemplar presence", ADMITTED provisional, whose replication the B5/B5r combination flights carry. If neither contrast is positive, M1 reads NEUTRAL or HARMFUL by the registered guards. The registered rule is never edited after the fact. |
+| 19 | Bar-first ordering: decision 15 puts B2 v3, B7a, B4a, B4c, B7r, B7c and B7b (about 25 GPU hours) before the first combination read, although B1 plus M4b already sits at the bar arithmetically. | After the twin closure: the two pending four-row smokes (B2 v3 recovery on the E2d fix, B7a recovery on the E8c fix) fly in GPU gaps to close their proofs; then the B4b replicate; then cell B5e, the early combination of M1 (or M1p) with M4b, one official score, read against the sealed anchor and the released direct anchor with the same rule form as B5. If B5e meets the bar (SLU >= 64 and intent >= 78), B5er replicates it on the same roster; two passes lock "SLURP base v2.0" (manifest hash, scorer id, module list) and B6 confirms on DEV1000 against its sealed direct/agent pair. B2 v3, B7a, B4a, B4c (conditional), B7r, B7c and B7b then admit one at a time on the locked base as "v2.1" modules, in decision 15's relative order. If B5e misses the bar, decision 15's order resumes without change. |
+| 20 | Pre-authorisation for B5e landing between 62 and 64 (or otherwise missing the bar), so the program does not wait a round trip. | The bar is not lowered. Admission continues in decision 15's order (B2 v3, B7a, B4a, ...) and B5b, the combination of every module admitted by then, is read against the same bar. Only if B5b also misses does the owner re-decide between a lower bar and a core-swap study. |
+| 21 | Decision 13 places the B4b replicate after the B2 v3 arm; decision 19 places it right after the twin closure. | Decision 19 governs: the B4b replicate flies after the twin closure and before the B2 v3 arm. Decision 13's content (request-identical replicate, own null of the admitted configuration) is unchanged. |
+
+Naming: B5e and B5er are the B5/B5r form restricted to the modules admitted at the time of
+registration; B5b is the later full combination. None of them is a new mechanism.
+
