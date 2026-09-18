@@ -3694,6 +3694,19 @@
       "run_ids": [
         "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2"
       ]
+    },
+    {
+      "date": "2026-09-18",
+      "cell_id": "SLURP-B5E-COMBINATION-RECOVERY-V1",
+      "status": "BAR_NOT_MET_ON_THE_OFFICIAL_NUMBER_COMBINATION_HARMFUL",
+      "source": "docs/results/2026-09-18-slurp-b5e-combination-verdict.md",
+      "source_sha256": "5e2ba383341f2c5544df044d5145b2064b5d5251f5981a27e1a56a6a00e54b6f",
+      "meaning": "Cell B5e (the early combination of M1 speech-keyed exemplars and M4b slot store v2 on the sealed anchor; the run's one recovery after a 25-contact infrastructure abort) on TRAIN A 1,080: official pooled SLU-F1 62.34 / intent 80.09 (v3 63.78 / 81.85; symmetric 64.18): the intent bar clears by 2.09 pp, the SLU bar is missed by 1.66 pp (owner decision 23: the bar reads the official unprojected number; v3 would not have cleared 64 either). B5e minus anchor +13.80 [+11.77, +15.80]; minus B1 +1.20 [-0.11, +2.48] with intent -0.09 [-1.51, +1.38] (26 saves / 27 harms); minus B4b +11.25 [+9.26, +13.23]; minus direct +28.45; interaction B5e-B1-B4b+anchor -1.36 [-3.29, +0.56] (sub-additivity consistent, not proven). Clause 2 fails (2a lower bound -0.11; 2b intent lower bound -1.51 < -1.0051) and clause 3 fires on the same intent bound, so the combination reads HARMFUL by the registered rule although the point estimate is a one-row tie: the verdict records the trigger as interval width (the own-null margin was calibrated on a request-identical replicate, narrower than any one-factor contrast can produce) and recommends the program decide whether clause 3 should require a negative point estimate. B5er not registered; owner decision 20 path: keep admitting B2 v3 (flying), B7a, B4a; read B5b. M4b's date/time work survives inside the combination (time omissions 15 -> 8 vs B1) but is too small at roster scale. Widest request 18,533 tokens, 550 above the registered static bound, every request fits. No decision-17 flag on any gating contrast.",
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1",
+        "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V1",
+        "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-SMOKE-4-V1"
+      ]
     }
   ]
 }
