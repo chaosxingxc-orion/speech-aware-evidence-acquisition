@@ -43,7 +43,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-18-slurp-b5e-combination-v1/protocol-registered-v1.json",
-    "sha256": "314c4a4a6e0224ca9bf49d8bcdc613b1c6c9eb758980e92614b80710bc8823ee"
+    "sha256": "aa502094481d3dd931a8d6e3c88248b17775854bfa77f243b87df8250af86657"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. Comparators are sealed bytes and none is re-flown or re-scored: the dual-store anchor, cell B1's recovery arm (the M1 leg), cell B4b (the M4b leg), the released TRAIN A direct anchor, and the B4b request-identical replicate only if it is sealed before this cell's first contact. The four-row smoke is structural only -- contact counts, episode receipt fields, the train-exemplars typed content blocks, the slot store v2 cards in the Solver evidence, fit receipts and seal, with no answer, reference or quality interpretation.",
   "registered_at_utc": "2026-09-18T02:00:00.000000+00:00",

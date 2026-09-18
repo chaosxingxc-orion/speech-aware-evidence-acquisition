@@ -1,7 +1,7 @@
 {
   "campaign_plan": "configs/campaign/slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-v1.json",
   "cell": "slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-v1",
-  "composed_config_hash": "f9bd8878d98cab4fa58ba2a26f3107753df954d4797058080b0cb48cbfa6fc37",
+  "composed_config_hash": "220a5ac4381090071d3da31798496a4486de486525c591d2d39e63d4eb0beb9e",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-generation-v1",
     "carrier_lock_key": "slurp",
@@ -9,7 +9,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "d1996f26ca86cb2e47bd4285d6bb7a2bd3c9035038c14c517bf991384f66d91c",
+    "protocol_hash": "d33b86abf7be171887262144ad3799e7ed79cde5f4dd3a2aaf42a0e71023b638",
     "run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -44,7 +44,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-18-slurp-b5e-combination-v1/protocol-registered-v1.json",
-    "sha256": "314c4a4a6e0224ca9bf49d8bcdc613b1c6c9eb758980e92614b80710bc8823ee"
+    "sha256": "aa502094481d3dd931a8d6e3c88248b17775854bfa77f243b87df8250af86657"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. Comparators are sealed bytes and none is re-flown or re-scored: the dual-store anchor, cell B1's recovery arm (the M1 leg), cell B4b (the M4b leg), the released TRAIN A direct anchor, and the B4b request-identical replicate only if it is sealed before this cell's first contact. The four-row smoke is structural only -- contact counts, episode receipt fields, the train-exemplars typed content blocks, the slot store v2 cards in the Solver evidence, fit receipts and seal, with no answer, reference or quality interpretation.",
   "registered_at_utc": "2026-09-18T02:00:00.000000+00:00",
