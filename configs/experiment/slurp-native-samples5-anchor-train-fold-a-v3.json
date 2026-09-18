@@ -16,13 +16,20 @@
         "reason": "Registered before contact by the cell B2 v3 registration agent on the sealed dual-store ANCHOR under E2c (owner decision 6 of 2026-09-17 re-decided module M0 HARMFUL under the TRAIN A own null; E2c, merged at 59db0f9b, makes the committed grouped-Solver answer the one draft the Reviewer and the Planner read). This v3 package supersedes the v2 package before contact; the v2 cells never flew. Readiness is HELD: the coordinator adds the root decision requirement and flips this state itself, through scripts/flights/repin_cell.py so the composed and protocol hashes are re-pinned in the same step. Exclusive resident attachment to serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b2-samples5-anchor-v3-admission-v1",
+            "relpath": "coordination/slurp-b2-samples5-anchor-v3/root-admission-v1.json",
+            "sha256": "4f9e54ebf645dc38d76fc9dd6c35659c09572b82c2a719b80f84a24f7e3246fa",
+            "reason": "Decision slurp-b2-samples5-anchor-v3-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "Model-free first-phase Perception supply prepared by the cell B2 v3 registration agent from the same sealed vectors and knowledge-store snapshots the sealed anchor used; zero model, tokenizer, encoder, ASR, scorer and server contact. Its output block is byte-identical to the sealed anchor's own prepared artifact output (SHA-256 ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f) on all 1,080 rows.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-TRAIN-FOLD-A-V3/phase-supply-v1.json",
-            "sha256": "e94496d771a6eda721a7d936273deacef56b0bdd695080e7fde4984cbf9437eb"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-TRAIN-FOLD-A-V3/phase-supply-v2.json",
+            "sha256": "f686a1cd3801e04b6ac2fde52edd2b25509cd073a48d9624074239873ea5616d"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-TRAIN-FOLD-A-V3"
     }

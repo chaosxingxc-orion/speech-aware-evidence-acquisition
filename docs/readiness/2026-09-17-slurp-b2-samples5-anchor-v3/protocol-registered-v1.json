@@ -107,8 +107,8 @@
       "attempt_id": "attempt-slurp-native-samples5-anchor-train-fold-a-generation-v3",
       "campaign_plan": "configs/campaign/slurp-native-samples5-anchor-train-fold-a-v3.json",
       "cell": "slurp-native-samples5-anchor-train-fold-a-v3",
-      "composed_config_hash": "ea4b551b422e7e22dc58dd7a394e4c1123a36dc65ff9750e1b77b4abbde81b1d",
-      "execution_plan_protocol_hash": "97fafdffbd474a026109af08eb5e6a5b8d0cd799c7f407da253d587960da1be0",
+      "composed_config_hash": "9688e0c9e6e93e30d200469b6ecafd28f865a37f0b0a3d694a879f7749f426a3",
+      "execution_plan_protocol_hash": "4e5acfad5219ef6920b881dec240ead02d06f53aaf91895e92674579f0ee0a3e",
       "experiment": "slurp-native-samples5-anchor-train-fold-a-v3",
       "fit_attempt_id": "attempt-slurp-native-samples5-anchor-train-fold-a-fit-v3",
       "fit_run_id": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-TRAIN-FOLD-A-FIT-V3",
@@ -119,8 +119,8 @@
         "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
       },
       "prepared_phase_supply": {
-        "relpath": "prepared/SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-TRAIN-FOLD-A-V3/phase-supply-v1.json",
-        "sha256": "e94496d771a6eda721a7d936273deacef56b0bdd695080e7fde4984cbf9437eb"
+        "relpath": "prepared/SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-TRAIN-FOLD-A-V3/phase-supply-v2.json",
+        "sha256": "f686a1cd3801e04b6ac2fde52edd2b25509cd073a48d9624074239873ea5616d"
       },
       "run_id": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-TRAIN-FOLD-A-V3"
     },

@@ -32,7 +32,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-17-slurp-b2-samples5-anchor-v3/protocol-registered-v1.json",
-    "sha256": "93829f87b4c56e6ff7e976ac017547ee1a0bb847eac825004752716060e025c0"
+    "sha256": "348ab17d10d49f943745a43c8065660f87d171ccc0bf1398d739ba77c2af0cfd"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs each carrying its solver_group custody of all five raw samples of its DELIVERED Solver visit, the native phase summary and the single successful complete official TRAIN score all exist. The primary comparator is the sealed anchor's score artifact and the secondary is the released direct anchor's; neither is re-flown or re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, solver_group custody, the offline commit replay, fit receipts and seal, with no answer, reference or quality interpretation. The offline s in {2,3,4} sensitivity table is reported and never used for the verdict.",
   "root_registration_required": true,
