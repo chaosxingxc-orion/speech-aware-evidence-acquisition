@@ -79,3 +79,5 @@ read when these decisions were taken.
 Naming: B5e and B5er are the B5/B5r form restricted to the modules admitted at the time of
 registration; B5b is the later full combination. None of them is a new mechanism.
 
+Outcome of decision 18 (2026-09-18, after the twin read): branch A. (B1 minus twin) reads +7.83 pp official pooled SLU with a CI95 of [+5.85, +9.75]; cell B1 is ADMITTED and module M1 is admitted as speech-keyed exemplar supply. The twin alone reads +4.77 pp [+3.20, +6.36] over the anchor with nil intent, recorded as a decomposition fact; module M1p is not registered. Record: `docs/results/2026-09-18-slurp-b1-twin-verdict.md`. Cell B5e therefore combines M1 (the arm's form) with M4b.
+

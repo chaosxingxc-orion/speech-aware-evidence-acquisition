@@ -3683,6 +3683,17 @@
         "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-RECOVERY-V2",
         "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-V2"
       ]
+    },
+    {
+      "date": "2026-09-18",
+      "cell_id": "SLURP-B1-EXEMPLARS-K20-ANCHOR-TWIN-V2",
+      "status": "ADMITTED_OWNER_DECISION_18_BRANCH_A",
+      "source": "docs/results/2026-09-18-slurp-b1-twin-verdict.md",
+      "source_sha256": "fb841eb30b30ee5229d9d590be39bae5dd0e734cea42037a718fcdf5202672f6",
+      "meaning": "The derangement twin of cell B1 (the same twenty-exemplar supply keyed by another Fold A row's sealed speech vector, token-matched on the wire at -0.25 % prompt tokens) on TRAIN A 1,080: B1 minus twin official pooled SLU-F1 53.30 -> 61.14, +7.83 pp CI95 [+5.85, +9.75], so clause 1b of the preregistered rule passes and cell B1 is ADMITTED, module M1 as speech-keyed exemplar supply; intent +2.04 [+0.49, +3.78]. The twin alone beats the anchor by +4.77 pp SLU [+3.20, +6.36] with nil intent (+0.19 [-1.03, +1.39]): exemplar presence buys 38 % of the SLU gain, the speech key 62 % and nearly all of the intent gain. Twin minus direct +19.42. Projection v3 55.76 / 80.09, symmetric 55.90. No scenario breaches the band on any gating contrast. Cost 5,429 contacts, 3.637 GPU hours. Module M1p (exemplar presence) is NOT registered: owner decision 18 branch B did not occur. Harness-admission entry M1 written (stores null form, key knowledge_stores.train-exemplars), provisional until the B5e/B5er combination replicates.",
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2"
+      ]
     }
   ]
 }

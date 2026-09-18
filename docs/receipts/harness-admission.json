@@ -428,6 +428,117 @@
         "what_flew": "The ON arm flew configs/baseline/slurp-native-anchor-slot-store-v2-train-fold-a-v2.json at 19ad05b4: the sealed anchor fragment with knowledge_stores.slot-contracts re-pinned from the v1 release/snapshot to v2 and nothing else (the request-channel receipt shows Perception byte-identical on 1,080/1,080 rows and the Solver/Reviewer/Planner evidence differing only on the eight revised slot cards). The OFF arm is the sealed anchor itself, which carries the v1 pins.",
         "why_this_table": "the module is a revision of a named knowledge store's content, switched by that store's release and snapshot pins; the stores class names the store's whole block, and the re-pin form records that OFF is the prior pin rather than the store's absence"
       }
+    },
+    {
+      "carrier": "slurp",
+      "comparator": {
+        "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+        "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+        "note": "the sealed dual-store anchor, which carries no train-exemplars store; never re-flown or re-scored"
+      },
+      "date": "2026-09-18",
+      "module": "speech-keyed exemplar supply to the Solver (the train-exemplars store: twenty plain top-20 annotated TRAIN exemplars keyed by the row's own sealed full-utterance speech vector, rendered as typed content reaching the Solver, Reviewer and Planner requests)",
+      "row": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2",
+      "status": "ADMITTED",
+      "status_basis": "ADMITTED is this table's status for a gain on the carrier's primary metric disjoint from the carrier's own null with every gating guard non-inferior at the measured margin, and all clauses of the preregistered rule pass (docs/readiness/2026-09-17-slurp-b1-exemplars-k20-anchor-v2-preregistration.md section 7), the twin clause included: official pooled SLU-F1 48.53 -> 61.14, +12.61 pp CI95 [+10.54, +14.60] against the sealed anchor and +7.83 pp CI95 [+5.85, +9.75] against the derangement twin (both lower bounds above zero and above the 1.1218 pp own-null half-width); intent +2.22 pp CI95 [+0.74, +3.71] against the anchor and +2.04 [+0.49, +3.78] against the twin, lower bounds above the -1.0051 margin; the TRAIN symmetric scorer agrees in sign (+10.89 and +7.07); no scenario's intent CI95 upper bound below zero on either contrast. The twin decomposes the gain: twenty unrelated real exemplars alone buy +4.77 pp SLU [+3.20, +6.36] with nil intent (+0.19 [-1.03, +1.39]); the speech key buys the remaining 62 % of the SLU gain and nearly all of the intent gain. Owner decision 18 of 2026-09-18, branch A. The status is provisional on the replication obligation below.",
+      "evidence": {
+        "arm": {
+          "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2",
+          "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2",
+          "study_commit": "a35630c0"
+        },
+        "smoke": {
+          "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-RECOVERY-V2",
+          "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-smoke-4-generation-recovery-v2"
+        },
+        "twin": {
+          "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2",
+          "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-twin-train-fold-a-generation-v2",
+          "study_commit": "a7ce8f4c",
+          "note": "token-matched retrieval-key control: the same store, k, fuse policy and rendering keyed by another Fold A row's sealed speech vector through the seeded within-delivered-scenario derangement (0 fixed points on 1,080 rows; on 1,080/1,080 rows the twin's twenty values are exactly the twenty the arm supplied to the key's source row); prompt tokens -0.25 % against the arm"
+        },
+        "primary": "official pooled SLU-F1, 1,080 paired TRAIN A rows, 125 speaker clusters, 10,000 draws, seed 20260915: arm minus anchor 48.53 -> 61.14, +12.61 pp, CI95 [+10.54, +14.60]; arm minus twin 53.30 -> 61.14, +7.83 pp, CI95 [+5.85, +9.75]; twin minus anchor +4.77 pp, CI95 [+3.20, +6.36]; equal-scenario +12.13 (arm minus anchor)",
+        "guards": "intent (scenario+action) 77.96 -> 80.19 against the anchor, +2.22 pp CI95 [+0.74, +3.71], and +2.04 [+0.49, +3.78] against the twin, both against the -1.0051 margin: pass; twin minus anchor intent +0.19 [-1.03, +1.39] (nil); no scenario breaches the intent band on arm minus anchor, arm minus twin or twin minus anchor (0 of 18 each); owner decision 17's net-harmed diagnostic fires on no scenario of any gating contrast",
+        "secondary": "against the released direct anchor: arm +27.25 pp SLU CI95 [+23.82, +30.70], intent +6.48; twin +19.42 [+16.31, +22.58], intent +4.44. Projection v3 beside every official number: anchor 51.99 / 79.35, twin 55.76 / 80.09, arm 62.67 / 81.76, direct 34.31 / 75.37 (SLU / intent); TRAIN symmetric pooled SLU: anchor 52.09, twin 55.90, arm 62.97, direct 34.46",
+        "margins_from": {
+          "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1",
+          "attempt_id": "attempt-slurp-native-review-off-train-fold-a-replicate-generation-v1",
+          "note": "MEASURED on this roster and geometry (B0r minus B0): pooled SLU half-width 1.1218 pp, intent 1.0051 pp at CI95; the own null of a different configuration of the same harness"
+        },
+        "cost": "arm 5,425 contacts, 3.68 GPU hours, +7.4 % prompt tokens against the anchor for the rendered exemplar block (mean 1,874 characters per row); twin 5,429 contacts, 15,492.58 repeated speech seconds, 1,082 task-contract tool calls, 3.637 GPU hours, wall 13,800.7 s, slot occupancy 0.881, utilisation 90.3 %, parked 0.051; zero added contacts per row against the anchor's five nominal",
+        "diagnostic": "M1 diagnostics reproduced from the sealed traces: escape-to-neighbour-intent 6 rows (0.56 %) on the arm, 3 on the twin; candidate-union coverage realised in the delivered answer 0.9046 on the twin; exemplar-filler echo 0.500 on the arm against the anchor base rate 0.29 and 0.194 on the twin against a 0.098 base rate (convention transfer needs the key); revisions 7 (arm) / 9 (twin); date omissions 81 -> 48 on the arm; the twin's widest realised request needed 16,869 tokens, 404 above the preregistration's realised upper bound and below its static bound and the 24,576-token slot (every request fits)",
+        "receipt": "docs/results/2026-09-18-slurp-b1-twin-verdict.md",
+        "verdict_note": "docs/results/2026-09-17-slurp-b1-exemplars-k20-verdict.md"
+      },
+      "not_admitted_for": [
+        "any default plan before the replication obligation is met: the entry is provisional and the SLURP default plan does not carry the train-exemplars store until then",
+        "any claim about exemplar presence as a separate module: the twin's +4.77 pp is a measured decomposition fact, and module M1p is not registered (owner decision 18 branch B did not occur)",
+        "any claim about k, the fuse policy, the rank weights or the derangement seed beyond the flown values; no sweep was run",
+        "any other roster or carrier; DEV1000, Fold B and the test split are untouched",
+        "any paper-scale or generalisation claim; TRAIN A is a discovery roster"
+      ],
+      "provisional": {
+        "state": "UNMET",
+        "reason": "one realisation of the arm against one realisation of the anchor and one of the twin, under margins measured on a different configuration of the same harness; the twin is the attribution control, not a replicate",
+        "requirement": "replicate on the same roster before the default plan carries the store: the B5e / B5er combination pair (owner decision 19 of 2026-09-18) both showing the module's contribution within the own null, or a request-identical replicate of this cell (about 3.7 GPU hours); a second entry records the replication and this entry stays"
+      },
+      "switch": {
+        "added_by": "docs/results/2026-09-17-slurp-b1-exemplars-k20-verdict.md (proposed) and docs/results/2026-09-18-slurp-b1-twin-verdict.md (completed); the stores null form of harness-admission v3",
+        "table": "stores",
+        "key": "knowledge_stores.train-exemplars",
+        "off": null,
+        "on": {
+          "phase_supply": {
+            "solver": {
+              "dimensions": [
+                "content"
+              ],
+              "expose_facets": false,
+              "facet_source": {
+                "embedded_signal": "text: Omni-Embed-Nemotron-3B over the 11,514 governed SLURP TRAIN utterance texts, prompt 'passage: ', mean-pooled and L2-normalised; one vector per content facet id facet:content:<slurp_id>. The KEY side is knowledge text by construction and is unconstrained by the owner's 2026-09-06 query-signal rule.",
+                "kind": "sealed-vectors",
+                "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+                "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+                "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+              },
+              "fuse_coverage": {
+                "c": 20,
+                "m": 20,
+                "top_l": 20
+              },
+              "fuse_policy": "saea-fuse-supplyfilter-v1",
+              "k": 20,
+              "provider": "kb-facet-v1",
+              "query_source": {
+                "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by the sealed full-utterance speech vector of the row's own recording, in the content retrieval dimension; flattened from the sealed intent-boundary full-utterance SEGMENT vectors (docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json's sibling provenance vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.provenance.json -- one segment per row, dimension renamed intent-boundary to content, every float byte-identical to the parent) because docs/results/2026-09-17-slurp-a2-exemplar-headroom-audit-v1.md establishes intent-boundary as an alias of the content embedding space; no flattening of MEANING, re-encoding, transcript, answer or future turn enters this query.",
+                "kind": "sealed-vectors",
+                "relpath": "vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl",
+                "sha256": "d0f06ed21c6a576d8118d5a914e34807c24a3d3523d89e7b30d90575d24104ff",
+                "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+              },
+              "rank_policy": "saea-rank-wcos-prior-agree-v1",
+              "rank_weights": {
+                "w_agree": 0.0,
+                "w_cos": 1.0,
+                "w_prior": 0.0
+              },
+              "tau": 0.0
+            }
+          },
+          "release": {
+            "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/release.json",
+            "sha256": "171aa4a82c2b15fff2c72e907ea80298be8d72309cca0d7367eb50debb042129"
+          },
+          "snapshot": {
+            "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/snapshot.json",
+            "sha256": "4c498dc0282055b9fe036ed7e950af519bd48b5f26e76876d0250727196a72e9"
+          },
+          "store_role": "train-exemplars"
+        },
+        "proof": "tests/unit/test_config_table_module_switches.py::test_exemplar_supply_store_is_the_only_key_moved_on_the_committed_fragments",
+        "what_flew": "The ON arm flew configs/baseline/slurp-native-anchor-exemplars-k20-train-fold-a-recovery-v2.json at a35630c0: the sealed anchor fragment plus the train-exemplars store block (release 171aa4a8..., snapshot 4c498dc0..., phase_supply.solver keyed by the sealed Fold A speech vectors, k = 20, saea-fuse-supplyfilter-v1 at m = c = top_l = 20, saea-rank-wcos-prior-agree-v1 with w_cos = 1, tau 0.0) and nothing else. The OFF arm is the sealed anchor itself, whose knowledge_stores mapping has no train-exemplars entry. The twin flew configs/baseline/slurp-native-anchor-exemplars-k20-twin-train-fold-a-v2.json at a7ce8f4c, the same block keyed by the deranged vectors.",
+        "why_this_table": "the module ADDS a named knowledge store whose supply reaches the Solver phase; the stores class names the store's whole block, and the null form records that OFF is the store's absence"
+      }
     }
   ],
   "switch_classes": [
