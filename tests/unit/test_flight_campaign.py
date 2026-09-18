@@ -554,3 +554,46 @@ def test_speech_source_export_requires_explicit_stage():
     undeclared = cell()
     with pytest.raises(CampaignError, match="explicitly permit"):
         undeclared.assert_mode("prepare-speech-observation-sources")
+
+
+# ---------------------------------------------------------------------------
+# E10 (owner decision 22, 2026-09-18): a recovery cell declares the aborted
+# attempt it resumes in its COMMITTED experiment fragment, pinned by that
+# attempt's trace sha256. There is no command-line flag: which rows a run
+# keeps is registered, not typed at launch.
+# ---------------------------------------------------------------------------
+
+
+def test_a_recovery_cell_carries_its_resume_declaration():
+    document = dict(cell().document)
+    document["attempt_id"] = "attempt-serving-recovery"
+    document["resume_from"] = {
+        "attempt_id": "attempt-serving", "trace_sha256": "b" * 64,
+    }
+    recovery = CampaignCell.from_document(document)
+    assert recovery.resume_from == {
+        "attempt_id": "attempt-serving", "trace_sha256": "b" * 64,
+    }
+    assert cell().resume_from is None
+
+
+def test_a_malformed_resume_declaration_refuses_at_cell_load():
+    for resume in (
+        {"attempt_id": "attempt-serving"},
+        {"attempt_id": "attempt-serving", "trace_sha256": "not-a-hash"},
+        {"attempt_id": "", "trace_sha256": "b" * 64},
+    ):
+        document = dict(cell().document)
+        document["attempt_id"] = "attempt-serving-recovery"
+        document["resume_from"] = resume
+        with pytest.raises(CampaignError, match="resume_from"):
+            CampaignCell.from_document(document)
+
+
+def test_a_cell_may_not_declare_itself_as_its_own_predecessor():
+    document = dict(cell().document)
+    document["resume_from"] = {
+        "attempt_id": document["attempt_id"], "trace_sha256": "b" * 64,
+    }
+    with pytest.raises(CampaignError, match="ABORTED attempt"):
+        CampaignCell.from_document(document)

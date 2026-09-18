@@ -2904,3 +2904,285 @@ def test_artifact_finalizer_rejects_syntactic_relabel_without_frozen_binding(
             repo_root=repo_root,
             ledger_cells=_HUMAN_LEDGER_CELLS,
         )
+
+
+# ---------------------------------------------------------------------------
+# E10 (owner decision 22, 2026-09-18): resume-recovery custody across a
+# predecessor attempt's trace. A merged manifest declares the aborted attempt
+# whose COMPLETE rows it kept; verify_bundle re-derives that declaration from
+# the bytes on disk and holds every kept row against THAT trace, byte for
+# byte, exactly as I7 holds every other row against this attempt's own.
+# ---------------------------------------------------------------------------
+
+
+def _kept_ids_sha256(sample_ids) -> str:
+    return hashlib.sha256(
+        json.dumps(sorted(sample_ids), ensure_ascii=False, separators=(",", ":")).encode(
+            "utf-8"
+        )
+    ).hexdigest()
+
+
+def _split_bundle_for_resume(
+    manifest_path: Path, tmp_path: Path, *, kept: tuple[str, ...], also_recovery=(),
+) -> Path:
+    """Turn a legitimate COMPLETED bundle into a resumed one, in place.
+
+    Every record of a ``kept`` sample moves out of this attempt's trace and
+    into a predecessor attempt's trace file; the outputs rows are untouched,
+    which is the point -- a kept row is the SAME row, verified against the
+    other trace. ``also_recovery`` names samples whose records are left in
+    BOTH traces, the defect the custody rule must refuse.
+    """
+
+    manifest = _read_manifest(manifest_path)
+    run_id = manifest["run_id"]
+    trace_path = Path(manifest["raw_trace"]["path"])
+    records = [json.loads(line) for line in _read_jsonl_lines(trace_path)]
+    request_sample = {
+        record["record_id"][: -len("/request")]: record["payload"]["payload"]["sample_id"]
+        for record in records
+        if record["record_id"].endswith("/request")
+        and isinstance(record["payload"].get("payload"), dict)
+    }
+
+    def owner(record) -> str | None:
+        head = record["record_id"].split("/")[0]
+        return request_sample.get(head)
+
+    predecessor_dir = tmp_path / "predecessor-attempt"
+    predecessor_dir.mkdir(parents=True, exist_ok=True)
+    predecessor_path = predecessor_dir / f"{run_id}.trace.jsonl"
+    moved = [record for record in records if owner(record) in kept]
+    stayed = [
+        record
+        for record in records
+        if owner(record) not in kept or owner(record) in set(also_recovery)
+    ]
+    _write_jsonl_lines(
+        predecessor_path,
+        [json.dumps(record, ensure_ascii=False, sort_keys=True) for record in moved],
+    )
+    _write_jsonl_lines(
+        trace_path,
+        [json.dumps(record, ensure_ascii=False, sort_keys=True) for record in stayed],
+    )
+    trace_manifest_path = Path(manifest["trace_manifest"]["path"])
+    trace_manifest = _read_manifest(trace_manifest_path)
+    trace_manifest["records"] = {
+        record["record_id"]: trace_manifest["records"][record["record_id"]]
+        for record in stayed
+    }
+    write_json_artifact(trace_manifest_path, trace_manifest)
+
+    manifest["predecessor_attempt"] = {
+        "schema": "saea-resume-predecessor-attempt-v1",
+        "run_id": run_id,
+        "attempt_id": "attempt-bundle-aborted",
+        "trace_path": str(predecessor_path),
+        "trace_sha256": sha256_file(predecessor_path),
+        "kept_sample_ids": sorted(kept),
+        "kept_sample_ids_sha256": _kept_ids_sha256(kept),
+        "counts": {
+            "kept": len(kept),
+            "flown": len(manifest["split"]["ids"]) - len(kept),
+            "partial": 0,
+        },
+    }
+    write_json_artifact(manifest_path, manifest)
+    _rehash_manifest_entry(manifest_path, "raw_trace")
+    _rehash_manifest_entry(manifest_path, "trace_manifest")
+    return predecessor_path
+
+
+def test_verify_bundle_accepts_a_resumed_bundle_whose_kept_rows_live_in_the_predecessor(
+    synthetic_world, bundled_repo, tmp_path
+):
+    manifest_path, _composed, _plan, _lock = _run_completed(
+        synthetic_world, bundled_repo, tmp_path
+    )
+    _split_bundle_for_resume(manifest_path, tmp_path, kept=("4000001",))
+
+    verified = verify_bundle(manifest_path)
+
+    # The kept row is still sealed, still one row per split id, and its own
+    # request record no longer exists in THIS attempt's trace at all.
+    assert {row["sample_id"] for row in verified.outputs_rows} == set(
+        _read_manifest(manifest_path)["split"]["ids"]
+    )
+    kept_row = next(
+        row for row in verified.outputs_rows if row["sample_id"] == "4000001"
+    )
+    assert f"{kept_row['request_id']}/request" not in verified.trace_records
+
+
+def test_verify_bundle_refuses_a_predecessor_trace_whose_hash_does_not_match(
+    synthetic_world, bundled_repo, tmp_path
+):
+    manifest_path, _composed, _plan, _lock = _run_completed(
+        synthetic_world, bundled_repo, tmp_path
+    )
+    _split_bundle_for_resume(manifest_path, tmp_path, kept=("4000001",))
+    manifest = _read_manifest(manifest_path)
+    manifest["predecessor_attempt"]["trace_sha256"] = "0" * 64
+    write_json_artifact(manifest_path, manifest)
+
+    with pytest.raises(BundleError, match="hashes to"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_refuses_a_predecessor_trace_edited_after_it_was_declared(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """The other direction of the same pin: the declaration is untouched and
+    the trace file itself is edited."""
+
+    manifest_path, _composed, _plan, _lock = _run_completed(
+        synthetic_world, bundled_repo, tmp_path
+    )
+    predecessor_path = _split_bundle_for_resume(manifest_path, tmp_path, kept=("4000001",))
+    lines = _read_jsonl_lines(predecessor_path)
+    _write_jsonl_lines(predecessor_path, lines[:-1])
+
+    with pytest.raises(BundleError, match="changed after it was declared"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_refuses_a_tampered_kept_row_list(
+    synthetic_world, bundled_repo, tmp_path
+):
+    manifest_path, _composed, _plan, _lock = _run_completed(
+        synthetic_world, bundled_repo, tmp_path
+    )
+    _split_bundle_for_resume(manifest_path, tmp_path, kept=("4000001",))
+    manifest = _read_manifest(manifest_path)
+    # A row quietly added to the kept list (its hash left stale) -- the exact
+    # shape a selection would take.
+    manifest["predecessor_attempt"]["kept_sample_ids"] = ["4000001", "4000002"]
+    manifest["predecessor_attempt"]["counts"]["kept"] = 2
+    write_json_artifact(manifest_path, manifest)
+
+    with pytest.raises(BundleError, match="kept_sample_ids_sha256"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_refuses_a_kept_row_list_rehashed_to_match_its_edit(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """Recomputing the hash does not help: the added row's contacts are in
+    THIS attempt's trace, so declaring it kept claims two custodies for one
+    row -- which is exactly what a selection would need."""
+
+    manifest_path, _composed, _plan, _lock = _run_completed(
+        synthetic_world, bundled_repo, tmp_path
+    )
+    _split_bundle_for_resume(manifest_path, tmp_path, kept=("4000001",))
+    manifest = _read_manifest(manifest_path)
+    kept = ["4000001", "4000002"]
+    manifest["predecessor_attempt"]["kept_sample_ids"] = kept
+    manifest["predecessor_attempt"]["kept_sample_ids_sha256"] = _kept_ids_sha256(kept)
+    manifest["predecessor_attempt"]["counts"]["kept"] = 2
+    write_json_artifact(manifest_path, manifest)
+
+    with pytest.raises(BundleError, match="never both"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_refuses_a_kept_row_absent_from_the_predecessor_trace(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """A row claimed as kept whose contacts are in neither trace: it was
+    flown by nobody, so nothing can verify it."""
+
+    manifest_path, _composed, _plan, _lock = _run_completed(
+        synthetic_world, bundled_repo, tmp_path
+    )
+    predecessor_path = _split_bundle_for_resume(
+        manifest_path, tmp_path, kept=("4000001", "4000003"),
+    )
+    keep = [
+        line
+        for line in _read_jsonl_lines(predecessor_path)
+        if "4000003" not in line
+    ]
+    _write_jsonl_lines(predecessor_path, keep)
+    manifest = _read_manifest(manifest_path)
+    # Re-pin the trace hash so the declaration stays self-consistent and the
+    # refusal below is about custody, not about the pin.
+    manifest["predecessor_attempt"]["trace_sha256"] = sha256_file(predecessor_path)
+    write_json_artifact(manifest_path, manifest)
+
+    with pytest.raises(BundleError, match="no request in the predecessor trace"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_refuses_a_kept_row_that_was_also_flown_again(
+    synthetic_world, bundled_repo, tmp_path
+):
+    manifest_path, _composed, _plan, _lock = _run_completed(
+        synthetic_world, bundled_repo, tmp_path
+    )
+    _split_bundle_for_resume(
+        manifest_path, tmp_path, kept=("4000001",), also_recovery=("4000001",),
+    )
+
+    with pytest.raises(BundleError, match="never both"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_refuses_a_predecessor_block_that_is_not_this_run(
+    synthetic_world, bundled_repo, tmp_path
+):
+    manifest_path, _composed, _plan, _lock = _run_completed(
+        synthetic_world, bundled_repo, tmp_path
+    )
+    _split_bundle_for_resume(manifest_path, tmp_path, kept=("4000001",))
+    manifest = _read_manifest(manifest_path)
+    manifest["predecessor_attempt"]["run_id"] = "SAEA-E-000-some-other-run"
+    write_json_artifact(manifest_path, manifest)
+
+    with pytest.raises(BundleError, match="must be this manifest's own run id"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_refuses_a_predecessor_attempt_that_is_this_attempt(
+    synthetic_world, bundled_repo, tmp_path
+):
+    manifest_path, _composed, _plan, _lock = _run_completed(
+        synthetic_world, bundled_repo, tmp_path
+    )
+    _split_bundle_for_resume(manifest_path, tmp_path, kept=("4000001",))
+    manifest = _read_manifest(manifest_path)
+    manifest["predecessor_attempt"]["attempt_id"] = manifest["attempt"]["attempt_id"]
+    write_json_artifact(manifest_path, manifest)
+
+    with pytest.raises(BundleError, match="different, non-empty attempt"):
+        verify_bundle(manifest_path)
+
+
+def test_build_manifest_refuses_a_predecessor_declaration_on_an_aborted_manifest(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """Only a COMPLETED manifest keeps rows: an ABORTED attempt sealed none,
+    so a predecessor declaration on one is a defect, refused before the
+    manifest is written."""
+
+    lock, repo_root = bundled_repo
+    _ids, split_hash, _role = load_split(
+        repo_root, "discovery", lock, synthetic_world.data_root
+    )
+    with pytest.raises(BundleError, match="only a COMPLETED manifest"):
+        build_manifest(
+            repo_root=repo_root,
+            data_root=synthetic_world.data_root,
+            composed=_composed(),
+            plan=_plan(split_hash),
+            verified_split=load_verified_split(
+                repo_root, "discovery", lock, synthetic_world.data_root
+            ),
+            session_receipt_path=None,
+            run_dir=tmp_path / "manifest-run",
+            status=STATUS_ABORTED,
+            failure_reason="probe",
+            predecessor_attempt={"schema": "saea-resume-predecessor-attempt-v1"},
+        )

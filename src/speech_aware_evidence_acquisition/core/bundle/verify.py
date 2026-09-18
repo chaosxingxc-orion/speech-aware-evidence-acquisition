@@ -27,6 +27,7 @@ from .outputs import (
     _verify_outputs,
     _verify_outputs_trace_binding,
     _verify_raw_trace,
+    verify_predecessor_attempt,
 )
 from .verify_header import _verify_manifest_header
 
@@ -193,7 +194,28 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
                 raise
             raise BundleError(f"typed artifact content is invalid: {error}") from error
     trace_records = _verify_raw_trace(raw_trace_raw, trace_manifest_raw)
-    _verify_outputs_trace_binding(outputs_rows, trace_records)
+    # E10 (owner decision 22, 2026-09-18): a resume-recovery's manifest
+    # declares the aborted attempt whose COMPLETE rows it kept. The
+    # predecessor trace is re-hashed against the declared sha256 and the
+    # kept-row list against its own declared hash, exactly as every other
+    # number in this function is re-derived rather than believed; a manifest
+    # that declares none keeps byte-identical behaviour.
+    attempt_binding = manifest.get("attempt")
+    predecessor_records, kept_sample_ids = verify_predecessor_attempt(
+        manifest,
+        split_ids=split_ids,
+        attempt_id=(
+            attempt_binding.get("attempt_id")
+            if isinstance(attempt_binding, Mapping)
+            else None
+        ),
+    )
+    _verify_outputs_trace_binding(
+        outputs_rows,
+        trace_records,
+        predecessor_records=predecessor_records if kept_sample_ids else None,
+        kept_sample_ids=kept_sample_ids,
+    )
 
     # ------------------------------------------------------------------
     # I-1 fix: the plan block is RE-VALIDATED as a genuine

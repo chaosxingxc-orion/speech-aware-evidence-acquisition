@@ -110,6 +110,13 @@ from ..session.serving import merge_server_args as _merge_server_args
 from ..split_receipt import VerifiedSplit
 from .lease import WorkerExecutionPolicy
 from .receipts import FLIGHT_STAGES, FlightReceipts, require_mandatory_throughput_fields
+from .resume import (
+    RESUME_PREDECESSOR_SCHEMA,
+    PredecessorAttempt,
+    ResumeDeclaration,
+    ResumeRecoveryError,
+    read_predecessor_attempt,
+)
 
 # ``core.driver.speech_native`` is imported lazily (function-local, inside
 # the one method that needs it) rather than at module scope: ``core.driver``
@@ -1107,6 +1114,7 @@ class FlightRuntime:
         campaign_active: bool = False,
         speech_tokens_per_second: float = 14.4,
         execution_policy: WorkerExecutionPolicy | None = None,
+        resume_from: Mapping[str, object] | None = None,
     ) -> None:
         if not isinstance(run_id, str) or not run_id:
             raise FlightRuntimeError("run_id must be a non-empty string")
@@ -1173,6 +1181,25 @@ class FlightRuntime:
         self._request_id_prefix = request_id_prefix
         self._campaign_active = bool(campaign_active)
         self._speech_tokens_per_second = float(speech_tokens_per_second)
+        # E10 (owner decision 22, 2026-09-18): a resume-recovery declaration
+        # -- the aborted attempt id under THIS run id plus its pinned trace
+        # sha256. Validated here (a malformed declaration must never reach a
+        # server), read in preflight(), and never a way to select rows: the
+        # predecessor's COMPLETE rows are ALL kept and everything else is
+        # re-flown. See core.flight.resume.
+        self._resume_declaration = (
+            None if resume_from is None else ResumeDeclaration.from_document(resume_from)
+        )
+        if (
+            self._resume_declaration is not None
+            and self._resume_declaration.attempt_id == attempt_id
+        ):
+            raise FlightRuntimeError(
+                "a resume-recovery must run under its own new attempt id; "
+                f"resume_from.attempt_id {attempt_id!r} is this attempt"
+            )
+        self._resume: PredecessorAttempt | None = None
+        self._resume_flown_sample_ids: tuple[str, ...] = ()
 
         self.receipts = FlightReceipts(run_id=run_id, attempt_id=attempt_id)
         self._composed = None
@@ -1276,6 +1303,186 @@ class FlightRuntime:
         if self._explicit_run_dir is not None:
             return self._explicit_run_dir
         return self._data_root / "runs" / self._run_id / self._attempt_id
+
+    # -- E10: resume-recovery of an aborted attempt ------------------------
+
+    def _predecessor_attempt_dir(self, attempt_id: str) -> Path:
+        """Where the aborted attempt of THIS run id wrote its own trace.
+
+        Sibling of this attempt's own directory, by the one layout
+        :meth:`_run_dir` already defines -- an explicit ``run_dir`` (tests,
+        probes) keeps its parent, everything else is
+        ``<data_root>/runs/<run_id>/<attempt_id>``.
+        """
+
+        if self._explicit_run_dir is not None:
+            return Path(self._explicit_run_dir).parent / attempt_id
+        return self._data_root / "runs" / self._run_id / attempt_id
+
+    @property
+    def resume_predecessor(self) -> PredecessorAttempt | None:
+        """The scanned predecessor attempt, or ``None`` for an ordinary flight."""
+
+        return self._resume
+
+    def _flight_roster_sample_ids(self) -> tuple[str, ...]:
+        """The sample ids THIS attempt actually flies, in roster order.
+
+        The whole roster for an ordinary flight; for a resume-recovery, the
+        roster minus the predecessor's COMPLETE rows.
+        """
+
+        if getattr(self, "_resume", None) is None:
+            return tuple(sample.sample_id for sample in self._samples)
+        return self._resume_flown_sample_ids
+
+    def _load_resume_predecessor(
+        self, values: Mapping[str, object], sample_ids: Sequence[str]
+    ) -> Mapping[str, object]:
+        """Scan the declared predecessor attempt and fix the flown roster.
+
+        Model-free, and BEFORE any server exists: a resume whose predecessor
+        trace is missing, re-hashed, flown against a different roster, or
+        produced by a dispatch this replay cannot reconstruct must refuse
+        here, not after the recovery has spent contacts.
+
+        No selection is possible anywhere in this path: the kept set is
+        exactly the predecessor's COMPLETE rows and the flown set is exactly
+        the rest of this flight's own roster.
+        """
+
+        declaration = self._resume_declaration
+        policy = values.get("policy")
+        if (
+            not isinstance(policy, str)
+            or policy == "fixed"
+            or policy in self._obs_policy_names()
+            or not isinstance(values.get("native_episode"), Mapping)
+        ):
+            raise FlightRuntimeError(
+                "resume-recovery replays the native role episode's own terminal "
+                f"receipt, and policy {policy!r} does not produce one; teach "
+                "core.flight.resume that dispatch's terminal custody before "
+                "declaring resume_from for it"
+            )
+        if self.execution_unit_roster() is not None:
+            raise FlightRuntimeError(
+                "resume-recovery is defined per sample; an execution-unit roster "
+                "seals one row per unit and is not replayable by sample id"
+            )
+        if self._result_kind() == "artifact":
+            raise FlightRuntimeError(
+                "resume-recovery does not cover artifact-result flights"
+            )
+        attempt_dir = self._predecessor_attempt_dir(declaration.attempt_id)
+        program = default_phase_program(policy)
+        try:
+            predecessor = read_predecessor_attempt(
+                run_id=self._run_id,
+                attempt_id=declaration.attempt_id,
+                attempt_dir=attempt_dir,
+                expected_trace_sha256=declaration.trace_sha256,
+                program_id=program.program_id,
+            )
+        except ResumeRecoveryError as error:
+            raise FlightRuntimeError(str(error)) from error
+        roster = tuple(str(sample_id) for sample_id in sample_ids)
+        outside = sorted(set(predecessor.started_sample_ids) - set(roster))
+        if outside:
+            raise FlightRuntimeError(
+                f"predecessor attempt {declaration.attempt_id!r} flew "
+                f"{len(outside)} sample(s) outside this flight's roster, e.g. "
+                f"{outside[:5]}; a resume-recovery requires the SAME split and the "
+                "same request bytes, never a re-scoped roster"
+            )
+        kept = set(predecessor.complete_sample_ids)
+        self._resume = predecessor
+        self._resume_flown_sample_ids = tuple(
+            sample_id for sample_id in roster if sample_id not in kept
+        )
+        if not self._resume_flown_sample_ids:
+            raise FlightRuntimeError(
+                f"predecessor attempt {declaration.attempt_id!r} is COMPLETE for "
+                f"every one of this flight's {len(roster)} sample(s); there is "
+                "nothing for a recovery attempt to fly"
+            )
+        partial = tuple(
+            sample_id
+            for sample_id in self._resume_flown_sample_ids
+            if sample_id in predecessor.incomplete
+        )
+        return {
+            "schema": RESUME_PREDECESSOR_SCHEMA,
+            "run_id": self._run_id,
+            "attempt_id": predecessor.attempt_id,
+            "trace_path": str(predecessor.trace_path),
+            "trace_sha256": predecessor.trace_sha256,
+            "trace_record_count": predecessor.record_count,
+            "predecessor_contacts": predecessor.contact_count(),
+            "counts": {
+                "roster": len(roster),
+                "kept": len(kept),
+                "flown": len(self._resume_flown_sample_ids),
+                "partial": len(partial),
+                "unstarted": len(self._resume_flown_sample_ids) - len(partial),
+            },
+            # Exposure accounting is run-cumulative across attempts, so the
+            # recovery's own declared plan must still cover this: every row
+            # it flies -- the partial ones in full -- at the program's
+            # contact ceiling. Reported, never silently reconciled: the
+            # number the plan declares is the owner's, not this stage's.
+            "worst_case_contacts": (
+                len(self._resume_flown_sample_ids) * int(program.max_contacts)
+            ),
+            # Why each started-but-not-kept row is being re-flown, by id --
+            # the audit surface a "which rows did the recovery pay for again"
+            # question needs. Reasons carry no response text by construction.
+            "partial_sample_ids": list(partial),
+            "partial_reasons": {
+                sample_id: predecessor.incomplete[sample_id] for sample_id in partial
+            },
+        }
+
+    def _resume_filtered_binding(
+        self, binding: Mapping[str, object]
+    ) -> Mapping[str, object]:
+        """The phase-program binding restricted to the rows this attempt flies.
+
+        ``rails.phase_runner.run_agent_phase`` takes its roster from
+        ``speech_packet_bindings`` ("for the whole roster in
+        speech_packet_bindings"), so narrowing that one mapping is what makes
+        a recovery attempt fly only the rows the predecessor did not finish.
+        Nothing else about the binding changes: same material, same supply,
+        same review, same knowledge snapshot -- a resumed row must see the
+        bytes it would have seen.
+        """
+
+        # ``getattr`` rather than attribute access: several proofs in this
+        # suite drive the dispatch on an ``object.__new__(FlightRuntime)``
+        # skeleton that never ran ``__init__``, and a flight with no resume
+        # must behave exactly as it did before this seam existed.
+        if getattr(self, "_resume", None) is None:
+            return binding
+        flying = set(self._resume_flown_sample_ids)
+        bindings = binding.get("speech_packet_bindings")
+        if not isinstance(bindings, Mapping) or not bindings:
+            raise FlightRuntimeError(
+                "resume-recovery requires a per-sample speech packet roster to narrow"
+            )
+        missing = sorted(flying - set(bindings))
+        if missing:
+            raise FlightRuntimeError(
+                f"{len(missing)} row(s) this recovery must fly have no packet "
+                f"binding, e.g. {missing[:5]}"
+            )
+        return {
+            **binding,
+            "speech_packet_bindings": {
+                sample_id: value
+                for sample_id, value in bindings.items()
+                if sample_id in flying
+            },
+        }
 
     def _require_prior_stages(self, stage: str) -> None:
         index = FLIGHT_STAGES.index(stage)
@@ -2715,6 +2922,19 @@ class FlightRuntime:
         phase_prompt_fit = self._verify_phase_prompt_fit()
         prompt_budget = self._assess_prompt_budget(samples)
 
+        # E10 (owner decision 22): AFTER the plan, the gate, the exposure row
+        # and the clean-tree assertion -- a resume-recovery is still a flight
+        # and earns no exemption from any of them -- and BEFORE preprocess,
+        # serve or any contact, so a declaration that cannot be honoured
+        # refuses while it is still free.
+        resume_receipt = (
+            None
+            if self._resume_declaration is None
+            else self._load_resume_predecessor(
+                values, tuple(sample.sample_id for sample in samples)
+            )
+        )
+
         payload = {
             "run_id": plan.run_id,
             "attempt_id": plan.attempt_id,
@@ -2729,6 +2949,7 @@ class FlightRuntime:
             "attempt_reservation": "deferred to core.model.adapter.FrozenCoreAdapter",
             "prompt_budget": prompt_budget,
             "phase_prompt_fit": phase_prompt_fit,
+            **({"resume": resume_receipt} if resume_receipt is not None else {}),
         }
         return self.receipts.record("preflight", payload)
 
@@ -4882,6 +5103,12 @@ class FlightRuntime:
             # bind_phase_program_material(...) remains the explicit override
             # and, when it was called, wins outright.
             binding = self._default_phase_program_binding(program, client)
+        # E10: a resume-recovery flies ONLY the rows its predecessor did not
+        # finish. The narrowing happens on the roster mapping the phase
+        # runner reads, so every other part of this dispatch -- material,
+        # supply, review, fit gates, tools -- is the same code on the same
+        # bytes it would be for an uninterrupted flight.
+        binding = self._resume_filtered_binding(binding)
         source_options = {
             key: binding[key] for key in ("query_source", "execution_units")
             if binding.get(key) is not None
@@ -4935,7 +5162,7 @@ class FlightRuntime:
             else:
                 fit_options = {}
                 if planner is not None:
-                    expected_ids = tuple(sample.sample_id for sample in self._samples)
+                    expected_ids = self._flight_roster_sample_ids()
                     fit_options["active_roster"] = lambda phase: (
                         planner.active_sample_ids(
                             phase, program.phase_names(), expected_ids
@@ -6351,6 +6578,22 @@ class FlightRuntime:
             "tokens_per_second": tokens_per_second_estimate,
             "tokens_per_second_basis": "contacts_per_second_times_completion_token_ceiling_upper_bound_estimate",
             "response_arrival": self.response_arrival_counts(client),
+            # E10: which rows this dispatch actually flew, when it is a
+            # resume-recovery. Every throughput number above describes the
+            # RECOVERY's own window and its own contacts, never the
+            # predecessor's -- the kept rows cost this attempt nothing.
+            **(
+                {
+                    "resume": {
+                        "predecessor_attempt_id": self._resume.attempt_id,
+                        "predecessor_trace_sha256": self._resume.trace_sha256,
+                        "kept": len(self._resume.complete_sample_ids),
+                        "flown": len(self._resume_flown_sample_ids),
+                    }
+                }
+                if self._resume is not None
+                else {}
+            ),
             "dispatch": dispatch,
             "serving_slots": slots,
             "occupancy_slots": occupancy_slots,
@@ -7781,6 +8024,75 @@ class FlightRuntime:
             )
         return rows
 
+    def _merged_canonical_rows(self) -> tuple[list[Mapping[str, object]], Mapping[str, object] | None]:
+        """The rows to seal, and the ``predecessor_attempt`` block, if any.
+
+        For an ordinary flight this is exactly what it always was: the live
+        client's rows through :meth:`_canonical_output_rows`.
+
+        For a resume-recovery (E10, owner decision 22) the sealed rows are the
+        UNION of the predecessor's replayed COMPLETE rows and this attempt's
+        own live rows -- every complete row kept, nothing selected. Both
+        halves are rendered by the SAME :meth:`_canonical_output_rows` stage:
+        the replay supplies the phase results and the
+        ``rails.core_client.RequestTiming`` records the live dispatch would
+        have supplied (``core.flight.resume``), so a kept row is byte
+        identical to the row the aborted attempt would have sealed.
+
+        The merged rows are emitted in this flight's own roster order, so the
+        sealed file does not advertise which half a row came from; the
+        manifest block and the trace custody do.
+        """
+
+        live_rows = self._canonical_output_rows(self._client)
+        if getattr(self, "_resume", None) is None:
+            return list(live_rows), None
+        kept_ids = self._resume.complete_sample_ids
+        summaries, timings = self._resume.replay(
+            kept_ids,
+            controller_policy_id=str(self._composed.values.get("policy", "")) or None,
+        )
+        replayed_rows = self._rows_from_phase_summaries(
+            summaries, policy=str(self._composed.values.get("policy", ""))
+        )
+        kept_rows = self._canonical_output_rows(
+            self._client,
+            output_rows=replayed_rows,
+            timings=timings,
+            phase_summaries=summaries,
+        )
+        by_sample: dict[str, Mapping[str, object]] = {}
+        for row in list(kept_rows) + list(live_rows):
+            sample_id = str(row.get("sample_id"))
+            if sample_id in by_sample:
+                raise FlightRuntimeError(
+                    f"sample {sample_id!r} is sealed twice by a resume-recovery: a "
+                    "kept row and a flown row cannot describe the same sample"
+                )
+            by_sample[sample_id] = row
+        roster = tuple(sample.sample_id for sample in self._samples)
+        missing = [sample_id for sample_id in roster if sample_id not in by_sample]
+        if missing:
+            raise FlightRuntimeError(
+                f"{len(missing)} roster sample(s) have neither a kept nor a flown "
+                f"row, e.g. {missing[:5]}"
+            )
+        extra = sorted(set(by_sample) - set(roster))
+        if extra:
+            raise FlightRuntimeError(
+                f"{len(extra)} sealed row(s) are outside this flight's roster, e.g. "
+                f"{extra[:5]}"
+            )
+        partial = [
+            sample_id
+            for sample_id in self._resume_flown_sample_ids
+            if sample_id in self._resume.incomplete
+        ]
+        block = self._resume.manifest_block(
+            kept_ids, flown=len(self._resume_flown_sample_ids), partial=len(partial),
+        )
+        return [by_sample[sample_id] for sample_id in roster], block
+
     def _close_live_speech_provider(
         self, *, finalize: bool, reason: str | None = None
     ) -> Mapping[str, object] | None:
@@ -7879,7 +8191,7 @@ class FlightRuntime:
         # and refuses any other name. Writing the bare name made official
         # scoring fail AFTER every contact had been spent.
         outputs_path = run_dir / f"{self._plan.run_id}.outputs.jsonl"
-        canonical_rows = self._canonical_output_rows(self._client)
+        canonical_rows, predecessor_block = self._merged_canonical_rows()
         self._trace_execution_unit_deliveries(self._client, canonical_rows)
         with outputs_path.open("w", encoding="utf-8") as handle:
             for row in canonical_rows:
@@ -7970,6 +8282,14 @@ class FlightRuntime:
             run_dir=run_dir,
             status="COMPLETED",
             result=result,
+            # E10: passed ONLY by a resume-recovery, so an ordinary flight's
+            # manifest -- and every manifest_builder seam that predates this
+            # -- keeps its exact call signature and its exact bytes.
+            **(
+                {"predecessor_attempt": predecessor_block}
+                if predecessor_block is not None
+                else {}
+            ),
         )
         verified = self._bundle_verifier(manifest_path)
         merged_ledger_cells = self._default_ledger_cells(self._plan)
@@ -8076,6 +8396,16 @@ class FlightRuntime:
             "verified_attempt_state": getattr(verified, "attempt_state", None),
             "outputs_path": str(outputs_path),
             "outputs_row_count": len(self._output_rows),
+            **(
+                {
+                    "resume": {
+                        **predecessor_block,
+                        "sealed_row_count": len(canonical_rows),
+                    }
+                }
+                if predecessor_block is not None
+                else {}
+            ),
             "phases_path": str(phases_path) if phases_path is not None else None,
             "phases_sha256": (
                 _sha256_file(phases_path) if phases_path is not None else None

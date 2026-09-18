@@ -117,6 +117,184 @@ def _minimum_model_calls_from_trace(
 #: seal is never confused with I7's single-response identity check.
 SOLVER_GROUP_INVARIANT = "I7g"
 
+#: E10 (owner decision 22, 2026-09-18): the invariant code a resume-recovery
+#: custody refusal names. I7 is unchanged and still decides every row; this
+#: says only WHICH trace a row is held against.
+RESUME_PREDECESSOR_INVARIANT = "I7r"
+
+#: The only ``predecessor_attempt`` block shape a manifest may declare.
+#: Restated here rather than imported from ``core.flight.resume`` so bundle
+#: verification keeps no runtime import (the same discipline
+#: ``rails.native_episode_receipt`` follows).
+RESUME_PREDECESSOR_SCHEMA = "saea-resume-predecessor-attempt-v1"
+
+_PREDECESSOR_FIELDS = frozenset(
+    {
+        "schema",
+        "run_id",
+        "attempt_id",
+        "trace_path",
+        "trace_sha256",
+        "kept_sample_ids",
+        "kept_sample_ids_sha256",
+        "counts",
+    }
+)
+
+
+def _kept_sample_ids_sha256(sample_ids: Sequence[str]) -> str:
+    """The kept-row list hash, byte for byte as ``core.flight.resume`` mints it."""
+
+    ordered = sorted(str(sample_id) for sample_id in sample_ids)
+    return hashlib.sha256(
+        json.dumps(ordered, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
+def _validate_predecessor_block(
+    block: object, *, run_id: object, attempt_id: object
+) -> Mapping[str, object]:
+    """Shape and self-consistency of a ``predecessor_attempt`` block.
+
+    Shared by ``core.bundle.manifest.build_manifest`` (refuse before writing)
+    and :func:`verify_predecessor_attempt` (refuse before trusting), so the
+    two can never drift into disagreeing about what a resumed manifest is.
+    """
+
+    if not isinstance(block, Mapping) or set(block) != _PREDECESSOR_FIELDS:
+        raise BundleError(
+            "run manifest predecessor_attempt must be an object with exactly "
+            f"{sorted(_PREDECESSOR_FIELDS)} ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    if block.get("schema") != RESUME_PREDECESSOR_SCHEMA:
+        raise BundleError(
+            f"predecessor_attempt.schema must be {RESUME_PREDECESSOR_SCHEMA!r} "
+            f"({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    if block.get("run_id") != run_id:
+        raise BundleError(
+            "predecessor_attempt.run_id must be this manifest's own run id -- a "
+            "resume-recovery continues ONE run, under a new attempt id "
+            f"({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    predecessor_attempt_id = block.get("attempt_id")
+    if (
+        not isinstance(predecessor_attempt_id, str)
+        or not predecessor_attempt_id.strip()
+        or predecessor_attempt_id == attempt_id
+    ):
+        raise BundleError(
+            "predecessor_attempt.attempt_id must be a different, non-empty attempt "
+            f"of this run ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    trace_path = block.get("trace_path")
+    if not isinstance(trace_path, str) or not trace_path.strip():
+        raise BundleError(
+            f"predecessor_attempt.trace_path must be a path ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    # ``core.tracing.TraceSink`` writes exactly one file name per run, so a
+    # predecessor trace that is not named after this run is not a trace of
+    # this run -- refused before its bytes are ever read.
+    if Path(trace_path).name != f"{run_id}.trace.jsonl":
+        raise BundleError(
+            f"predecessor_attempt.trace_path must name {run_id!r}'s own trace file "
+            f"({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    if not _is_sha256(block.get("trace_sha256")):
+        raise BundleError(
+            "predecessor_attempt.trace_sha256 must be a 64-hex SHA-256 "
+            f"({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    kept = block.get("kept_sample_ids")
+    if (
+        not isinstance(kept, list)
+        or not kept
+        or any(not isinstance(sample_id, str) or not sample_id for sample_id in kept)
+        or len(set(kept)) != len(kept)
+        or kept != sorted(kept)
+    ):
+        raise BundleError(
+            "predecessor_attempt.kept_sample_ids must be a sorted, unique, non-empty "
+            f"list of sample ids ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    if block.get("kept_sample_ids_sha256") != _kept_sample_ids_sha256(kept):
+        raise BundleError(
+            "predecessor_attempt.kept_sample_ids_sha256 does not match a fresh hash "
+            "of kept_sample_ids -- the kept-row list was edited after it was "
+            f"declared ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    counts = block.get("counts")
+    if (
+        not isinstance(counts, Mapping)
+        or set(counts) != {"kept", "flown", "partial"}
+        or any(
+            isinstance(value, bool) or not isinstance(value, int) or value < 0
+            for value in counts.values()
+        )
+    ):
+        raise BundleError(
+            "predecessor_attempt.counts must carry non-negative kept/flown/partial "
+            f"integers ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    if counts["kept"] != len(kept):
+        raise BundleError(
+            f"predecessor_attempt.counts.kept {counts['kept']!r} does not match "
+            f"len(kept_sample_ids) {len(kept)} ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    if counts["partial"] > counts["flown"]:
+        raise BundleError(
+            "predecessor_attempt.counts.partial cannot exceed counts.flown "
+            f"({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    return dict(block)
+
+
+def verify_predecessor_attempt(
+    manifest: Mapping[str, object],
+    *,
+    split_ids: frozenset,
+    attempt_id: object,
+) -> tuple[Mapping[str, Mapping[str, object]], frozenset]:
+    """Re-derive a declared predecessor attempt from the bytes on disk.
+
+    Returns ``(trace_records, kept_sample_ids)`` -- empty for a manifest that
+    declares no predecessor, which is every manifest this repository sealed
+    before E10 and every ordinary flight after it.
+
+    Trusts nothing the block asserts: the trace file is re-hashed against the
+    declared sha256, the kept-row list is re-hashed against its own declared
+    hash, and every kept id must belong to the frozen split.
+    """
+
+    block = manifest.get("predecessor_attempt")
+    if block is None:
+        return {}, frozenset()
+    block = _validate_predecessor_block(
+        block, run_id=manifest.get("run_id"), attempt_id=attempt_id
+    )
+    kept = frozenset(str(sample_id) for sample_id in block["kept_sample_ids"])
+    outside = sorted(kept - split_ids)
+    if outside:
+        raise BundleError(
+            f"predecessor_attempt keeps {len(outside)} sample(s) outside the frozen "
+            f"split, e.g. {outside[:5]} ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    trace_path = Path(str(block["trace_path"]))
+    if not trace_path.is_file():
+        raise BundleError(
+            f"predecessor_attempt trace {trace_path} does not exist; a kept row's "
+            f"custody cannot be verified without it ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    raw = trace_path.read_bytes()
+    actual = hashlib.sha256(raw).hexdigest()
+    if actual != block["trace_sha256"]:
+        raise BundleError(
+            f"predecessor_attempt trace {trace_path} hashes to {actual}, but the "
+            f"manifest declares {block['trace_sha256']} -- the predecessor trace "
+            f"changed after it was declared ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    return _verify_raw_trace(raw, None), kept
+
 
 def _row_label(row: Mapping[str, object]) -> str:
     return f"outputs row {row.get('sample_id')!r} (request {row.get('request_id')!r})"
@@ -575,8 +753,95 @@ def _verify_raw_trace(
     return records
 
 
+def _request_record_sample_id(payload: Mapping[str, object]) -> object:
+    """The sample id a MODEL_REQUEST record carries inside its own payload."""
+
+    inner = payload.get("payload")
+    return inner.get("sample_id") if isinstance(inner, Mapping) else None
+
+
+def _verify_resume_custody(
+    outputs_rows: tuple[Mapping[str, object], ...],
+    trace_records: Mapping[str, Mapping[str, object]],
+    predecessor_records: Mapping[str, Mapping[str, object]],
+    kept_sample_ids: frozenset,
+) -> None:
+    """I7r: each row of a resumed bundle binds to EXACTLY one trace.
+
+    Request ids are attempt-scoped (``rails.core_client`` mints them from a
+    per-client counter), so the recovery attempt's own ``flight-0007`` and the
+    predecessor's ``flight-0007`` are different contacts of, in general,
+    different samples. Custody is therefore decided by SAMPLE id, and this
+    function is what makes that decision safe:
+
+    * every kept sample must be absent from the recovery attempt's own
+      requests -- a kept row that was ALSO re-flown would have two candidate
+      custodies and the merge would be a selection;
+    * every flown sample must be present in them;
+    * the request record a row names must itself carry that row's sample id,
+      in the trace the row is held against, so a row can never be verified by
+      another sample's contact that happens to share a request id.
+    """
+
+    if not outputs_rows:
+        return
+    predecessor_samples: dict[str, object] = {}
+    for record_id, payload in predecessor_records.items():
+        if record_id.endswith("/request"):
+            sample_id = _request_record_sample_id(payload)
+            if isinstance(sample_id, str):
+                predecessor_samples[sample_id] = record_id
+    recovery_samples: dict[str, object] = {}
+    for record_id, payload in trace_records.items():
+        if record_id.endswith("/request"):
+            sample_id = _request_record_sample_id(payload)
+            if isinstance(sample_id, str):
+                recovery_samples[sample_id] = record_id
+    re_flown = sorted(kept_sample_ids & set(recovery_samples))
+    if re_flown:
+        raise BundleError(
+            f"{len(re_flown)} kept sample(s) were also flown by the recovery attempt, "
+            f"e.g. {re_flown[:5]} -- a resume keeps a complete row OR re-flies it, "
+            f"never both ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    for row in outputs_rows:
+        sample_id = str(row.get("sample_id"))
+        kept = sample_id in kept_sample_ids
+        source = predecessor_records if kept else trace_records
+        label = "predecessor" if kept else "recovery"
+        if not kept and sample_id not in recovery_samples:
+            raise BundleError(
+                f"outputs row {sample_id!r} is not kept from the predecessor attempt "
+                "and has no request of its own in this attempt's trace "
+                f"({RESUME_PREDECESSOR_INVARIANT})"
+            )
+        if kept and sample_id not in predecessor_samples:
+            raise BundleError(
+                f"outputs row {sample_id!r} is declared kept but has no request in "
+                f"the predecessor trace ({RESUME_PREDECESSOR_INVARIANT})"
+            )
+        request_record_id = f"{row['request_id']}/request"
+        payload = source.get(request_record_id)
+        if payload is None:
+            raise BundleError(
+                f"outputs row {sample_id!r} names request {row['request_id']!r}, "
+                f"which is absent from the {label} trace it is held against "
+                f"({RESUME_PREDECESSOR_INVARIANT})"
+            )
+        recorded = _request_record_sample_id(payload)
+        if recorded != sample_id:
+            raise BundleError(
+                f"outputs row {sample_id!r} names request {row['request_id']!r}, but "
+                f"the {label} trace records that request for sample {recorded!r} "
+                f"({RESUME_PREDECESSOR_INVARIANT})"
+            )
+
+
 def _verify_outputs_trace_binding(
-    outputs_rows: tuple[Mapping[str, object], ...], trace_records: Mapping[str, Mapping[str, object]]
+    outputs_rows: tuple[Mapping[str, object], ...],
+    trace_records: Mapping[str, Mapping[str, object]],
+    predecessor_records: Mapping[str, Mapping[str, object]] | None = None,
+    kept_sample_ids: frozenset = frozenset(),
 ) -> None:
     # CRITICAL fix (T6 fix round): the ORIGINAL code also returned early when
     # trace_records was empty -- "there are no trace records to bind against"
@@ -593,15 +858,29 @@ def _verify_outputs_trace_binding(
     # artifact exists at all) has nothing to bind.
     if not outputs_rows:
         return
+    # E10 (I7r): a resumed bundle holds each row against exactly one trace --
+    # a kept row against the declared PREDECESSOR attempt's trace, every other
+    # row against this attempt's own. The rules below are byte for byte the
+    # same either way; only the record source differs.
+    if predecessor_records is not None:
+        _verify_resume_custody(
+            outputs_rows, trace_records, predecessor_records, kept_sample_ids
+        )
     for row in outputs_rows:
+        records = (
+            predecessor_records
+            if predecessor_records is not None
+            and str(row.get("sample_id")) in kept_sample_ids
+            else trace_records
+        )
         request_id = row["request_id"]
         response_record_id = f"{request_id}/response"
-        if response_record_id not in trace_records:
+        if response_record_id not in records:
             raise BundleError(
                 f"outputs request_id {request_id!r} has no matching trace record "
                 f"{response_record_id!r} (I7: every outputs request_id must appear in the trace)"
             )
-        payload = trace_records[response_record_id]
+        payload = records[response_record_id]
         # E2d (I7g): a grouped Solver row's ``text`` is the COMMIT policy's
         # aggregate over N raw samples and its ``response_text_sha256``
         # describes those delivered bytes, so neither can equal the ONE trace
@@ -630,16 +909,16 @@ def _verify_outputs_trace_binding(
         # SAME "must exist" discipline the /response check above already
         # enforces unconditionally, now applied here too.
         request_record_id = f"{request_id}/request"
-        if request_record_id not in trace_records:
+        if request_record_id not in records:
             raise BundleError(
                 f"outputs request_id {request_id!r} has no matching trace record "
                 f"{request_record_id!r} (I7: every outputs request_id must appear in the trace)"
             )
-        request_payload = trace_records[request_record_id]
+        request_payload = records[request_record_id]
         if request_payload.get("payload_sha256") != row.get("request_sha256"):
             raise BundleError(
                 f"outputs request_sha256 for request {request_id!r} disagrees with the trace "
                 f"record {request_record_id!r}"
             )
         if solver_group is not None:
-            _verify_grouped_solver_trace_binding(row, solver_group, trace_records)
+            _verify_grouped_solver_trace_binding(row, solver_group, records)

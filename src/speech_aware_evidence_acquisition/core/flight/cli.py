@@ -122,6 +122,12 @@ def main(argv=None) -> int:
             experiment=experiment, run_id=cell.run_id, attempt_id=cell.attempt_id,
             runtime_root=Path(args.runtime_root), lock_path=Path(args.lock_path),
             execution_policy=policy,
+            # E10 (owner decision 22): a recovery cell declares the aborted
+            # attempt it resumes in the COMMITTED experiment fragment, pinned
+            # by that attempt's trace sha256. There is deliberately no command
+            # line flag for it: which rows a run keeps is registered, not
+            # typed at launch.
+            **({"resume_from": cell.resume_from} if cell.resume_from is not None else {}),
         )
         for experiment, cell in selected
     ]
