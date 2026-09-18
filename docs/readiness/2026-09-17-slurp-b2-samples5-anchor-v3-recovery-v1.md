@@ -360,3 +360,16 @@ precisely the surface that was *not* the problem here, which section 1 states pl
   sampling and aggregation help — that is what the arm measures, under the unchanged preregistered
   rule.
 - The prompt-cache assumption behind the arm's 12.0 GPU-hour ceiling is still stated, not proven.
+
+## Outcome (2026-09-18, coordinator)
+
+The recovery smoke `SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-RECOVERY-V3` flew at 2026-09-18T00:42Z
+through the standalone worker attached to the resident session, at study commit `fdad9af0` (the
+ready package was re-pinned from `7c97b963`, which lacks the E8c fix, before contact; the re-pin tool
+rewrote no hash: composed `187cd0ec...`, protocol `0e3a0d3e...` unchanged). Actuals: 36 calls, 95.36
+audio seconds, 4 task-contract tool calls, 36/36 request fits (minimum margin 11,188 tokens). The
+manifest reads COMPLETED with the seal stage present, so the E2d custody form is proved on the four
+grouped rows; every row shows 9 contacts (Perception 1, Solver 5 samples at temperature 0.7 under the
+five pinned seeds, Reviewer 2, Planner 1 ACCEPT) and a `solver_group` block carrying
+`commit_params`, `commit_policy_id`, `delivered` and `samples`. **Structural PASS; no quality read.**
+The arm re-pins before its launch and, under owner decision 19 of 2026-09-18, flies after cell B5e.
