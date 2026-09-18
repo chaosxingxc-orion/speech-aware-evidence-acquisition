@@ -71,13 +71,13 @@
       "study_commit": "19ad05b4202622f48c8d604b0cabc5fb6a6b6b83"
     },
     "right_replicate": {
-      "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume",
+      "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume2",
       "expected_contacts_nominal": 2500,
       "registered_contact_ceiling": 11880,
       "role": "cell B4b-rep, the request-identical replicate, completed by the resume-recovery attempt: 580 rows replayed from the predecessor attempt's trace and 500 rows flown, merged and scored once",
       "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2",
       "run_manifest_sha256": "PENDING_SEAL",
-      "scores_relpath": "runs/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2.scores.json",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume2/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2.scores.json",
       "scores_sha256": "PENDING_FIRST_OFFICIAL_SCORE",
       "resume": {
         "predecessor_attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2",

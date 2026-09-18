@@ -36,7 +36,7 @@ use**.
 | --- | --- |
 | experiment / cell | `slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2-resume` |
 | run id | `SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2` — **unchanged; this is what a resume is** |
-| generation attempt | `attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume` |
+| generation attempt | `attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume2` |
 | fit run / attempt | `SAEA-…-FIT-REPLICATE-V2` (unchanged) / `attempt-…-fit-replicate-v2-resume` |
 | `resume_from` | `{"attempt_id": "attempt-…-replicate-generation-v2", "trace_sha256": "ad7a78c7…"}` |
 | baseline | `configs/baseline/slurp-native-anchor-slot-store-v2-train-fold-a-replicate-v2-resume.json` |

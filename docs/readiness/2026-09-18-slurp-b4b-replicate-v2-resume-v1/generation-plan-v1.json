@@ -2,7 +2,7 @@
   "cell": "slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2-resume",
   "composed_config_hash": "c41e5a7932cde51f7b0fbeef2d7f5601865248ddcdd6332ba26b0fd1011033d6",
   "execution_plan": {
-    "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume",
+    "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume2",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 12.0,
@@ -92,7 +92,7 @@
     "fit_identity": {
       "fit_run_id_unchanged": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-REPLICATE-V2",
       "predecessor_fit_attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-fit-replicate-v2",
-      "resume_fit_attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-fit-replicate-v2-resume",
+      "resume_fit_attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-fit-replicate-v2-resume2",
       "contact_cap_unchanged": 47520,
       "why": "Required by the runtime. core.preparation_fit.build_native_contact_fit_gate writes one request-fit receipt per realized contact into prepared/<fit run>/<fit attempt>/ under the SHA-256 of {sample_id, agent_contact_id} and refuses a path that already exists; agent_contact_id is the deterministic <program>:<phase>:<iteration>:<sample id>. All four partial rows already carry perception:0 and solver:0 receipts under the predecessor fit attempt (verified read-only on disk), so re-flying them under that attempt would refuse at the first contact. The fit root is namespaced by run AND attempt, so a fresh attempt id under the unchanged fit run id is the minimum change that clears it -- and it keeps the run's exposure accounting on its existing two ledger rows.",
       "cap_is_roster_derived": "47,520 = 1,080 registered rows x 11 contacts x (1 speech packet + 3 endpoints). The gate derives the required cap from the whole registered roster, not from the flown subset, so the cap does not move for a resume."

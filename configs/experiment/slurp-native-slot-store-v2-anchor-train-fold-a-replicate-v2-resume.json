@@ -7,7 +7,7 @@
         "worker",
         "campaign"
       ],
-      "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume",
+      "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume2",
       "baseline_fragment": "slurp-native-anchor-slot-store-v2-train-fold-a-replicate-v2-resume",
       "cell_id": "slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2-resume",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",

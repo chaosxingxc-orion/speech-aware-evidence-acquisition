@@ -174,7 +174,7 @@ are byte-identical. The committed proof is `tests/unit/test_b4b_replicate_resume
 ### 4.1 The one runtime-forced identity: a fresh native-fit ATTEMPT
 
 `native_contact_fit.attempt_id` moves to
-`attempt-slurp-native-slot-store-v2-anchor-train-fold-a-fit-replicate-v2-resume`. The **FIT run id
+`attempt-slurp-native-slot-store-v2-anchor-train-fold-a-fit-replicate-v2-resume2`. The **FIT run id
 does not move**, and neither does `contact_cap`.
 
 This is required by the runtime, not chosen. `core.preparation_fit.build_native_contact_fit_gate`
@@ -270,8 +270,8 @@ code and request bytes unchanged, and a full re-fly otherwise.
 | item | value |
 | --- | --- |
 | cell / experiment fragment | `slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2-resume` |
-| generation run / attempt | `SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2` (**unchanged**) / `attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume` |
-| native fit run / attempt | `SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-REPLICATE-V2` (**unchanged**) / `attempt-slurp-native-slot-store-v2-anchor-train-fold-a-fit-replicate-v2-resume` |
+| generation run / attempt | `SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2` (**unchanged**) / `attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume2` |
+| native fit run / attempt | `SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-REPLICATE-V2` (**unchanged**) / `attempt-slurp-native-slot-store-v2-anchor-train-fold-a-fit-replicate-v2-resume2` |
 | model fragment | `q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1` (**unchanged**) |
 | dataset fragment | `slurp-speech-native-evo-fold-a-1080` (**unchanged**) |
 | baseline fragment | `slurp-native-anchor-slot-store-v2-train-fold-a-replicate-v2-resume` |
@@ -386,3 +386,17 @@ entitled to the second. The composed and protocol hashes were computed directly 
 and the method was verified twice against sealed, registered values. The coordinator's re-pin cycle
 runs `check` on the clean registration commit and **asserts the runtime-derived hashes equal the ones
 it has just written**; if they differ by one character, the launch stops.
+
+## Second attempt id (2026-09-18, coordinator)
+
+The first resume attempt, `attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume`, passed preflight (resume block: kept 580, flown 500,
+partial 4, unstarted 496, worst case 5,500 contacts), preprocess and serve, and aborted in
+`run_phases` with ZERO contacts on `PreparationError: prepared artifact identity mismatch`: the
+phase-supply artifact identity embeds the full-roster packet map and E10 narrowed the map to the
+flown rows before the identity was computed. Fixed by E10b (identities over the whole roster,
+selections restricted after the load) and E10c (the runner takes an explicit `flown_sample_ids`
+roster; `planned_ceiling` = 500 x 11), merged at `b6f1b045` with a fake-model test that drives the
+real dispatch path. The zero-contact attempt consumed nothing; its flight lock was reconciled with a
+quiescence receipt under `coordination/slurp-b4b-replicate-v2/`. This package now registers the
+second attempt ids `attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume2` and `attempt-slurp-native-slot-store-v2-anchor-train-fold-a-fit-replicate-v2-resume2`; everything else is unchanged. The
+run-cumulative budget stays 2,922 + 5,500 = 8,422 within 11,880.
