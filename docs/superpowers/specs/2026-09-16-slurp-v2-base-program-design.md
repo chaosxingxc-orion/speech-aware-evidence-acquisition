@@ -154,6 +154,24 @@ must cover the remaining rows plus the partial ones. The sibling note
 `docs/superpowers/specs/2026-09-18-resume-modes-comparison.md` records why this mode was chosen
 over incremental checkpoints, chunked sub-attempts and streaming appends (owner decision 24).
 
+E10b (2026-09-18): the narrowing applies to what is DISPATCHED, never to what is VERIFIED — a
+prepared artifact (`prepared/<run>/phase-supply-v<N>.json` and its recall twin) is produced, and
+re-verified by `core.flight.repin`, over the cell's WHOLE roster, so its identity is computed
+from the full-roster packet map (`FlightRuntime._identity_binding`) and the loaded selections are
+restricted to the flown rows afterwards; the first resume-recovery flight aborted in `run_phases`
+with zero contacts on `PreparationError("prepared artifact identity mismatch")` because the
+narrowed 500-row map was compared against a 1,080-row artifact, and the audited list of every
+other narrowed-binding consumer lives in that method's docstring.
+
+E10c (2026-09-18): the flown roster also reaches `rails.runner` explicitly — the loop derives its
+roster from `adapter.load_split(split_id)`, so narrowing only the packet map left the two
+disagreeing and a recovery refused with `speech_packet_bindings must materialize every query sample
+exactly once`; `_dispatch_phase_program` now passes the flown ids as `flown_sample_ids` (optional,
+absent for every ordinary flight, honoured by `rails.phase_runner.run_continuous_program` and
+`rails.runner.run_speech_native_agent_loop`), which restricts the split in its own order, refuses a
+flown id the split does not carry, and derives `planned_ceiling` from the flown rows alone, while
+the adapter, the prepared-artifact identity and the merged seal keep the cell's whole roster.
+
 
 ## 4. Phases
 
