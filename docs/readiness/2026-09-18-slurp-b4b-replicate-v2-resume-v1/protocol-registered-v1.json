@@ -89,8 +89,8 @@
     "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume",
     "campaign_plan": "configs/campaign/slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2-resume.json",
     "cell": "slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2-resume",
-    "composed_config_hash": "c5a259c35888817e760a33b19f51794fb52ae20141aa3a5b86072882802f5b55",
-    "execution_plan_protocol_hash": "ef3f799de9f71013e87975e1e9a07db28aeb787020ad34f182be75c5799622d5",
+    "composed_config_hash": "c41e5a7932cde51f7b0fbeef2d7f5601865248ddcdd6332ba26b0fd1011033d6",
+    "execution_plan_protocol_hash": "bd8248f4701923e811db14edb754678e3573c1c8289e8080cdcccf67cf76f6de",
     "experiment": "slurp-native-slot-store-v2-anchor-train-fold-a-replicate-v2-resume",
     "fit_attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-fit-replicate-v2-resume",
     "fit_run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-REPLICATE-V2",
@@ -105,8 +105,8 @@
     "prepared_phase_supply": {
       "note": "Inherited from the aborted cell. core.preparation.artifact_inputs binds the composed values including the cell and attempt identities, so this pin will not verify against this cell's digest; core.flight.repin.ensure_artifact_pinned rebuilds it model-free into prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/phase-supply-v3.json, asserts the output is unchanged and re-pins it. --allow-output-change must never be given.",
       "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
-      "relpath": "prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/phase-supply-v2.json",
-      "sha256": "06e52a88b856e4d60b7d4ed9cda99490d61e5acdb26105e77722489abfe29150"
+      "relpath": "prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/phase-supply-v3.json",
+      "sha256": "66f34fcb6ef61d4ae7a63fb009960fc3dda2d956966a94add9dcdeabed2f105a"
     },
     "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2",
     "identity_that_moves": "Against the aborted cell, exactly two committed fields move and neither reaches a rendered request byte: the generation attempt id (a resume must run under its own new attempt id; the campaign cell refuses a cell that names itself as its own predecessor) and the native-fit ATTEMPT id (the fit receipt root is prepared/<fit run>/<fit attempt>/ and the gate refuses an existing receipt path, which all four re-flown partial rows would hit). The run id, the FIT RUN id, the model and dataset fragments, both knowledge stores, the policy, the native episode, every instruction template, the scorers, the resident geometry, the roster, the split identity and BOTH WAVE R7 speech-feature identity strings are held at the aborted attempt's values."

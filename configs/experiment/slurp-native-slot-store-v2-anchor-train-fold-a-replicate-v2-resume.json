@@ -16,13 +16,20 @@
         "reason": "Registered before contact by the B4b replicate resume-recovery registration agent in the main checkout at study commit 7effe819, which carries harness item E10 (merged at f79eaf79). This is the ONE root-diagnosed recovery re-registration section 10 of docs/readiness/2026-09-17-slurp-b4b-replicate-v2-preregistration.md allows for this run, taken in the resume-recovery form owner decision 22 of 2026-09-18 requires. Run SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2, attempt attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2, ABORTED at 2026-09-18T02:40:20Z after 2,922 contacts and 7,895.544875000081 repeated speech seconds when the inherited resident llama-server and its serving wrapper died with the session that owned them (owner-confirmed; stop receipt ALREADY_EXITED, no OOM, no harness and no configuration error). resume_from pins that attempt and the SHA-256 of its 202,733,292-byte trace; core.flight.resume replays it model-free as 580 COMPLETE and 4 INCOMPLETE of 584 started rows, so 580 rows are kept without selection and 500 are flown. It stays HELD: the coordinator mints the root decision receipt coordination/slurp-b4b-replicate-v2/root-admission-resume-v1.json (decision id slurp-b4b-replicate-resume-admission-v1) and flips the state with scripts/flights/repin_cell.py, which re-verifies the prepared supply and recomputes every dependent hash in the same cycle. Both exposure rows of this run -- SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2 and SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-REPLICATE-V2 -- were REOPENED to consumed = no by this registration and must still read no at launch; core.flight.repin.assert_rows_available and FlightRuntime._require_exposure_row_unconsumed both refuse otherwise. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. One experiment in flight at a time.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b4b-replicate-resume-admission-v1",
+            "relpath": "coordination/slurp-b4b-replicate-v2/root-admission-resume-v1.json",
+            "sha256": "18d44fe8b20d7958dd745c6b3f5ff2d0de03c04335c60a025b554855946056a9",
+            "reason": "Decision slurp-b4b-replicate-resume-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "Inherited verbatim from the aborted cell: the model-free first-phase Perception supply of run SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2, built from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors cell B4b and the sealed dual-store anchor used, with zero model, tokenizer, encoder, scorer or server contacts; its output block is byte-identical to cell B4b's prepared artifact and to the sealed anchor preparation's on all 1,080 rows (output SHA-256 ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f), so the Perception selection channel does not move. core.preparation.artifact_inputs binds the composed values, the cell and attempt identities included, so this inherited pin will NOT verify against the resume cell's composed digest. That is expected and is handled by the launch step, not by this registration: core.flight.repin.ensure_artifact_pinned detects exactly that mismatch, rebuilds the artifact model-free into prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/phase-supply-v3.json, asserts its output equals the previous artifact's, and re-pins it into this requirement and into the baseline fragment in the same cycle. --allow-output-change must never be given: an output that moved would mean the knowledge channel moved and the resume would no longer be a resume.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/phase-supply-v2.json",
-            "sha256": "06e52a88b856e4d60b7d4ed9cda99490d61e5acdb26105e77722489abfe29150"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2/phase-supply-v3.json",
+            "sha256": "66f34fcb6ef61d4ae7a63fb009960fc3dda2d956966a94add9dcdeabed2f105a"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "resume_from": {
         "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2",
