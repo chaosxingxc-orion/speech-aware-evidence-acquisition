@@ -133,6 +133,27 @@ cell whose count is not ~0 is reporting on a different population than its compa
 `docs/superpowers/specs/2026-09-17-node-context-policy-design.md` section 6 for the mechanism and
 the proofs.
 
+E10 (2026-09-18): **resume-recovery of an aborted attempt.** Owner decision 22 makes this a
+standing program rule: every experiment registered from now on must support checkpoint resume. A
+resume-recovery is a recovery re-registration (one per flight, root-diagnosed) that applies ONLY
+when the code and the request bytes are unchanged — an infrastructure failure, never a harness or
+config defect. Under that precondition every COMPLETE row of the aborted attempt is kept, without
+selection; every partial or unstarted row is flown by the recovery attempt under the SAME run id
+and its own new attempt id; the merged manifest declares the predecessor attempt (trace sha256, the
+sorted kept sample ids and their hash, the kept/flown/partial counts) and scores once; and the
+bundle verifies every kept row against the predecessor trace, byte for byte. It is a capability of
+the shared campaign path, not of one cell: a recovery cell declares `resume_from`
+(`{"attempt_id", "trace_sha256"}`) in its committed experiment fragment, `FlightRuntime.preflight`
+scans that attempt's trace model-free and fixes the flown roster before any contact,
+`_dispatch_phase_program` narrows the roster to the rows that are not COMPLETE, and the seal merges
+the predecessor's replayed rows with this attempt's live ones through the one
+`_canonical_output_rows` stage (`core.flight.resume`; `core.bundle.outputs` invariant I7r).
+Completeness is decided by the episode's own terminal receipt in the trace, never by counting
+contacts. Exposure accounting stays run-cumulative across attempts: the recovery plan's worst case
+must cover the remaining rows plus the partial ones. The sibling note
+`docs/superpowers/specs/2026-09-18-resume-modes-comparison.md` records why this mode was chosen
+over incremental checkpoints, chunked sub-attempts and streaming appends (owner decision 24).
+
 
 ## 4. Phases
 
@@ -250,6 +271,9 @@ sealed bytes, never re-flown controls; preregistration + ledger row + ExecutionP
 a 4-row smoke for each new module form; first failure stops a cell, one recovery
 re-registration at most; harness-admission entry per module; default plan = admitted or neutral
 modules only; no transcript tokens, no second answering model, no gold in runtime.
+Every new preregistration's failure rule carries the resume-recovery clause (section 3, E10; owner
+decision 22): its one recovery re-registration is a `resume_from` resume when the abort was an
+infrastructure failure with code and request bytes unchanged, and a full re-fly otherwise.
 
 ## 6. Verification
 

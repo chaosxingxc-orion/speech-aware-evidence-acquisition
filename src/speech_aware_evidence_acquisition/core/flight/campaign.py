@@ -20,6 +20,7 @@ from ..session.serving import assert_identity_matches, find_resident_session
 from .lease import GenerationLease, WorkerExecutionPolicy
 from .queue import FlightDependency, FlightQueue, FlightReadiness
 from .receipts import persist_flight_receipts
+from .resume import ResumeDeclaration, ResumeRecoveryError
 from .runtime import FlightRuntime
 
 
@@ -65,6 +66,21 @@ class CampaignCell:
             or len(stages) != len(set(stages)) or not set(stages) <= EXECUTION_STAGES
         ):
             raise CampaignError("allowed execution stages must be unique known modes")
+        # E10 (owner decision 22, 2026-09-18): a recovery cell may declare the
+        # aborted attempt of its OWN run id whose complete rows it resumes.
+        # Validated here so a malformed declaration refuses at cell load --
+        # before a runtime, a lease or a session exists.
+        resume = document.get("resume_from")
+        if resume is not None:
+            try:
+                declaration = ResumeDeclaration.from_document(resume)
+            except ResumeRecoveryError as error:
+                raise CampaignError(f"cell resume_from is invalid: {error}") from error
+            if declaration.attempt_id == document["attempt_id"]:
+                raise CampaignError(
+                    "cell resume_from.attempt_id must be the ABORTED attempt, not "
+                    "this recovery attempt"
+                )
         return cls(dict(document))
 
     def assert_mode(self, mode: str) -> None:
@@ -87,6 +103,13 @@ class CampaignCell:
     @property
     def attempt_id(self) -> str:
         return str(self.document["attempt_id"])
+
+    @property
+    def resume_from(self) -> Mapping[str, object] | None:
+        """The aborted attempt this recovery cell resumes, or ``None``."""
+
+        resume = self.document.get("resume_from")
+        return None if resume is None else dict(resume)
 
     def dependencies(self) -> tuple[FlightDependency, ...]:
         return tuple(

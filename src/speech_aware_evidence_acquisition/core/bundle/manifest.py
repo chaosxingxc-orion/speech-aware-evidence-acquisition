@@ -16,7 +16,7 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Mapping
 
 from ...contracts import STUDY_SLUG, ExecutionPlan
 from ...e0.artifacts import sha256_file, write_json_artifact
@@ -54,6 +54,7 @@ def _manifest_document(
     failure_reason: str | None,
     result: RunResult | None,
     now: Callable[[], datetime],
+    predecessor_attempt: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
     if status not in _VALID_STATUSES:
         raise BundleError(
@@ -74,6 +75,23 @@ def _manifest_document(
         raise BundleError(
             "a run manifest requires a plan with a non-empty attempt_id (R0 repair T4/T6)"
         )
+    # E10 (owner decision 22, 2026-09-18): a resume-recovery declares the
+    # aborted attempt whose COMPLETE rows this manifest keeps. Shape-checked
+    # here so a malformed block never reaches disk; the CONTENT (the trace
+    # bytes, the kept-row hash, each kept row's custody) is re-derived from
+    # disk by core.bundle.verify_bundle, which trusts none of it.
+    if predecessor_attempt is not None:
+        from .outputs import RESUME_PREDECESSOR_SCHEMA, _validate_predecessor_block
+
+        if status != STATUS_COMPLETED:
+            raise BundleError(
+                f"only a {STATUS_COMPLETED} manifest declares a predecessor attempt"
+            )
+        predecessor_attempt = _validate_predecessor_block(
+            predecessor_attempt, run_id=plan.run_id, attempt_id=attempt_id
+        )
+        if predecessor_attempt["schema"] != RESUME_PREDECESSOR_SCHEMA:
+            raise BundleError("predecessor attempt block has the wrong schema")
     run_id = plan.run_id
     run_dir = Path(run_dir).resolve()
 
@@ -232,6 +250,11 @@ def _manifest_document(
             "count": len(verified_split.ids),
             "ids": sorted(verified_split.ids),
         },
+        **(
+            {"predecessor_attempt": dict(predecessor_attempt)}
+            if predecessor_attempt is not None
+            else {}
+        ),
         "session_receipt": session_meta,
         "outputs": outputs_meta,
         "raw_trace": raw_trace_meta,
@@ -273,8 +296,14 @@ def build_manifest(
     failure_reason: str | None = None,
     result: RunResult | None = None,
     now: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
+    predecessor_attempt: Mapping[str, object] | None = None,
 ) -> Path:
-    """Build and durably write one attempt's run manifest; return its path."""
+    """Build and durably write one attempt's run manifest; return its path.
+
+    ``predecessor_attempt`` is passed only by a resume-recovery (E10, owner
+    decision 22): the aborted attempt of this same run id whose COMPLETE rows
+    this manifest keeps, with its trace sha256 and the sorted kept-row list.
+    """
 
     # Repo confinement FIRST (IMPORTANT fix, T6 fix round): the cheapest,
     # dependency-free check, before touching git or the filesystem for
@@ -295,6 +324,7 @@ def build_manifest(
         failure_reason=failure_reason,
         result=result,
         now=now,
+        predecessor_attempt=predecessor_attempt,
     )
     manifest_path = _confine_child_path(
         run_dir, f"{plan.run_id}.run-manifest.json", "run manifest path"
