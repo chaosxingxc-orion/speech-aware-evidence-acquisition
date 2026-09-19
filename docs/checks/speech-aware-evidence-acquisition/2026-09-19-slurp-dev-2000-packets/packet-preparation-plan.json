@@ -1,0 +1,38 @@
+{
+  "authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md owner decision 34 of 2026-09-19",
+  "binding": {
+    "model_fragment": "configs/model/q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1.json",
+    "roster": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+    "runtime_view": "configs/dataset/slurp-speech-native-dev2000-added.json",
+    "runtime_view_sha256": "6968a0564699968f1615bb98b45d2f0ccf179dd0a04351b2871bc096a9052477",
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67"
+  },
+  "generator": "scripts/build_dev2000_added_runtime_view.py",
+  "plan_sha256": "378f6ed3130a069057a07ba8123795a52759464ec647e96b74566a8eedc36668",
+  "rows_needing_encode": 1000,
+  "rows_promotable_with_zero_contacts": 0,
+  "schema": "saea-dev2000-added-packet-plan-v1",
+  "state": "PREREQUISITES COMPLETE; ENCODE AND PROMOTE NOT RUN",
+  "study": "speech-aware-evidence-acquisition",
+  "target_packet_root": {
+    "path": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+    "promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-2000-ADDED-promotion.json",
+    "write_mode": "ADDITIVE ONLY: new per-row packet directories under slurp/devel/<id>/ and one new promotion receipt. No file the resident session already serves is read-modified-written, and no existing promotion receipt is touched. If the coordinator prefers full isolation from the live session, the same promotion writes to a NEW root (for example /home/chao/feat-cache/slurp-dev2000-added-packets-04ccc72a) and the model fragment's LLAMA_SPEECH_FEATURE_ROOT changes with the next session, which costs a service restart."
+  },
+  "what_remains": [
+    {
+      "contacts": 1000,
+      "detail": "CPU llama-server sidecar on port 8081 (-ngl 0 --no-mmproj-offload, receipts/runtime-q4km-preprocess.json), one contact per cold row at max_tokens 1, under its own session and stop receipts. GPU stays free.",
+      "name": "ENCODE",
+      "speech_seconds": 2983.527,
+      "step": 1
+    },
+    {
+      "contacts": 0,
+      "detail": "core.model.speech_features.materialize_legacy_cached_speech_feature_packets over the runtime view's packet ids, workers <= 8, writing DEV-2000-ADDED-promotion.json beside the existing per-set receipts.",
+      "name": "PROMOTE",
+      "step": 2
+    }
+  ],
+  "why_not_run": "A speech packet in this repository is an ENCODER product. The pipeline (scripts/slurp_evo_fold_preprocess.py, precedent SAEA-SN-DEV1000-PREPROCESS) first drives a CPU llama-server sidecar carrying the decoder and the bf16 mmproj with one contact per row at max_tokens 1 to warm the legacy feature cache, and only then promotes the warm entries. That first phase is a model contact under a structured ExecutionPlan, which a model-free mission may not make. Everything that does not need the encoder is done and committed."
+}

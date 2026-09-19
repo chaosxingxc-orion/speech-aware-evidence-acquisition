@@ -1,0 +1,52 @@
+{
+  "authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md owner decision 34 of 2026-09-19",
+  "counts": {
+    "audio_seconds_total": 2983.52725,
+    "distinct_utterances": 913,
+    "recordings": 1000,
+    "sample_rates_hz": [
+      16000
+    ],
+    "total_bytes": 56878956
+  },
+  "cpu_pipeline": {
+    "cache_key_files_per_second": 872.283,
+    "cache_key_wall_seconds": 1.146,
+    "decoder": "soundfile header probe for duration and rate; bytes hashed with SHA-256. ffmpeg is absent by design and no media byte is rewritten -- the librosa fallback stays the pinned decode path for every later consumer.",
+    "media_inventory_audio_seconds_per_wall_second": 1833.288,
+    "media_inventory_files_per_second": 614.47,
+    "media_inventory_mib_per_second": 33.331,
+    "media_inventory_wall_seconds": 1.627,
+    "workers": 8
+  },
+  "d1_closure": {
+    "covered_items": 1000,
+    "relpath": "docs/receipts/artifacts/d1-identity.json",
+    "supplement_required": false
+  },
+  "generator": "scripts/build_dev2000_added_runtime_view.py",
+  "inventory_sha256": "3a97a26a5e15c5cde2ec8e1fd57d4096267b141e9e7ad31c684143d19b88d804",
+  "legacy_feature_cache": {
+    "available": true,
+    "cold_rows": 1000,
+    "dir": "/home/chao/feat-cache/slurp-q4km",
+    "key_convention": "core.model.speech_features.legacy_audio_feature_cache_key -- FNV-1a over the encoded media bytes, so warmth is a property of the file, not of a prompt",
+    "warm_rows": 0
+  },
+  "offline_guard": {
+    "attempted_targets": [],
+    "outbound_connection_attempts": 0
+  },
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+    "roster_id": "SLURP-DEV-2000-ADDED-V1",
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67"
+  },
+  "runtime_view": {
+    "per_file_sha256": "one audio_sha256 per row inside the runtime view; the inventory does not duplicate 1,000 digests",
+    "relpath": "configs/dataset/slurp-speech-native-dev2000-added.json",
+    "runtime_view_sha256": "6968a0564699968f1615bb98b45d2f0ccf179dd0a04351b2871bc096a9052477"
+  },
+  "schema": "saea-dev2000-added-media-inventory-v1",
+  "study": "speech-aware-evidence-acquisition"
+}
