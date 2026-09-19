@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-v1",
-  "composed_config_hash": "54c0df632e54bba7259121d6ad6212d7a2ca11ab3bf8a73df0ba4c177ad018d5",
+  "composed_config_hash": "097e94c094459dcbf14b0ae01067b418124bd334acbe2047f34ac870bc909139",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 176,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "326deddb64fc7ee5ebc9c565653119a2e59f25ae4924a75cc28d4ae8348d87ed",
+    "protocol_hash": "6673658fb37f7e562bd31976a869b51e4365ba26332a09262024144fd2035a83",
     "run_id": "SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -40,12 +40,12 @@
   "prepared_phase_supply": {
     "note": "INHERITED from cell B7r and reused byte for byte; core.flight.repin rebuilds it into this run's own prepared directory on the launch commit and refuses the rebuild unless the Perception output is byte-identical. --allow-output-change must never be passed.",
     "output_sha256": "512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733",
-    "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1/phase-supply-v1.json",
-    "sha256": "2ae41cd030d635824616fffac046f640a2d1f878fb1d900a127c6a5559dd861e"
+    "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1/phase-supply-v2.json",
+    "sha256": "7c9d1e17d2637e18378225ff768e929badbf5c82cbe9a19b7ffbf4e52cb1c1f9"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-19-slurp-b8b-reviewer-audit-v1/protocol-registered-v1.json",
-    "sha256": "5b83d6ba0f179ddb91542178b68fe1989c68b8aa3ecc021cc82d817c3b785b02"
+    "sha256": "002ec145f2bc9bb892415d5c9a7ed7afc04f569b71f620dce8d8de6cca507d3b"
   },
   "quality_read_gate": "The four-row smoke is STRUCTURAL ONLY and is never scored: contact counts, the saea-reviewer-slot-audit-v1 receipt on every Reviewer contact of 4 of 4 rows, the block-is-an-addition check against block_sha256 / block_chars, no slot_audit block on any other boundary, the Perception request byte-identical to cell B7r's own sealed four-row smoke, the request-fit receipts, any retained finite_completion row reported rather than treated as an error, and a clean seal -- with no answer, reference or quality interpretation and no scorer. It opens only after cell B7r's own four-row smoke has sealed.",
   "registered_at_utc": "2026-09-19T04:00:00.000000+00:00",

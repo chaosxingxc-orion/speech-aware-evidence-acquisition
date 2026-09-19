@@ -166,7 +166,7 @@ the scored manifest**; every retained row is scored as delivered.
 | --- | --- |
 | **arm** | `SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1` / `attempt-slurp-native-ncp-l1-reviewer-audit-anchor-train-fold-a-generation-v1`, cell `slurp-native-ncp-l1-reviewer-audit-anchor-train-fold-a-v1`, composed `c8599381f789c332597bbfc8008e64943fd7c3c3cd64c3abf49c4860ead58c6b`, protocol `4997c665acc71869843dd31f0c920ceaacc18384d21db92cf809c57617f3cbae` |
 | **arm FIT** | `SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-FIT-V1` / `attempt-slurp-native-ncp-l1-reviewer-audit-anchor-train-fold-a-fit-v1`, 47,520 endpoints, inside the same campaign |
-| **smoke** | `SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1` / `attempt-slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-generation-v1r`, cell `slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-v1`, composed `54c0df632e54bba7259121d6ad6212d7a2ca11ab3bf8a73df0ba4c177ad018d5`, protocol `326deddb64fc7ee5ebc9c565653119a2e59f25ae4924a75cc28d4ae8348d87ed` |
+| **smoke** | `SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1` / `attempt-slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-generation-v1r`, cell `slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-v1`, composed `097e94c094459dcbf14b0ae01067b418124bd334acbe2047f34ac870bc909139`, protocol `6673658fb37f7e562bd31976a869b51e4365ba26332a09262024144fd2035a83` |
 | **smoke FIT** | `SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-FIT-V1` / `attempt-slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-fit-v1`, 176 endpoints, inside the same worker |
 | **comparator, primary** | **cell B7r's sealed bytes**, run `SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1`, composed `c17c661c…`, protocol `2d3b2a86…`. **B7r has not flown.** Its score, outputs and manifest SHA-256 are `PENDING_B7R_SEAL` in the analysis recipe and are filled in from its own seal. |
 | **comparator, secondary** | cell B7a's sealed bytes, run `SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1` (in flight at this registration), `PENDING_B7A_SEAL`. It gates nothing; it exists so the verdict can decompose the delta over anchor → B7a → B7r → B8b. |
@@ -221,7 +221,7 @@ read-only:
 | cell | prepared artifact | SHA-256 | Perception `output` SHA-256 |
 | --- | --- | --- | --- |
 | arm | `prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v2.json` | `391177e18797854db0f41648a4de23a3ff100288e653032bb4c2dae09d8d44cd` | `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` (1,080 of 1,080 rows — the sealed anchor preparation's own output) |
-| smoke | `prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1/phase-supply-v1.json` | `2ae41cd030d635824616fffac046f640a2d1f878fb1d900a127c6a5559dd861e` | `512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733` (4 of 4 rows — the four-row reference every form smoke of this roster shares) |
+| smoke | `prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1/phase-supply-v2.json` | `7c9d1e17d2637e18378225ff768e929badbf5c82cbe9a19b7ffbf4e52cb1c1f9` | `512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733` (4 of 4 rows — the four-row reference every form smoke of this roster shares) |
 
 **A rebuild is expected, and it is the enforcement.** `core.preparation.artifact_inputs` pins the
 cell's **whole composed configuration**, and this cell's differs from B7r's by its two declared keys.

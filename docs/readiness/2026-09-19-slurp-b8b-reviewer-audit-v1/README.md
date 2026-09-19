@@ -34,10 +34,10 @@ One experiment in flight at a time.
 | smoke cell | experiment and cell `slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-v1` |
 | smoke run / attempt | `SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1` / `attempt-slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-generation-v1r` |
 | smoke FIT | `SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-FIT-V1` / `attempt-slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-fit-v1`, 176 endpoints, inside the same worker |
-| smoke composed / protocol | `54c0df632e54bba7259121d6ad6212d7a2ca11ab3bf8a73df0ba4c177ad018d5` / `326deddb64fc7ee5ebc9c565653119a2e59f25ae4924a75cc28d4ae8348d87ed` |
+| smoke composed / protocol | `097e94c094459dcbf14b0ae01067b418124bd334acbe2047f34ac870bc909139` / `6673658fb37f7e562bd31976a869b51e4365ba26332a09262024144fd2035a83` |
 | baselines | `configs/baseline/slurp-native-anchor-ncp-l1-reviewer-audit-{train-fold-a,smoke-4}-v1.json` |
 | experiments | `configs/experiment/slurp-native-ncp-l1-reviewer-audit-anchor-{train-fold-a,smoke-4}-v1.json` |
-| prepared supply (inherited pins, to be rebuilt by the re-pin tool) | arm `prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v2.json`, SHA-256 `391177e18797854db0f41648a4de23a3ff100288e653032bb4c2dae09d8d44cd`, **output** `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f`; smoke `prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1/phase-supply-v1.json`, SHA-256 `2ae41cd030d635824616fffac046f640a2d1f878fb1d900a127c6a5559dd861e`, **output** `512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733` |
+| prepared supply (inherited pins, to be rebuilt by the re-pin tool) | arm `prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v2.json`, SHA-256 `391177e18797854db0f41648a4de23a3ff100288e653032bb4c2dae09d8d44cd`, **output** `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f`; smoke `prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1/phase-supply-v2.json`, SHA-256 `7c9d1e17d2637e18378225ff768e929badbf5c82cbe9a19b7ffbf4e52cb1c1f9`, **output** `512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733` |
 | budgets (arm) | 11,880 generation contacts, 47,520 FIT endpoints, 33,930 repeated speech seconds, 12.0 fit-inclusive GPU hours, 6,480 native task-contract calls, **1 official complete score** |
 | budgets (smoke) | 44 generation contacts, 176 FIT endpoints, 117 repeated speech seconds, 1.0 fit-inclusive GPU hour, 24 native task-contract calls, **zero scoring jobs** |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |
@@ -151,7 +151,7 @@ they drop out):
 | cell | old values that will still be found | in |
 | --- | --- | --- |
 | arm | `prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v2.json`, `391177e18797854db0f41648a4de23a3ff100288e653032bb4c2dae09d8d44cd` | `configs/baseline/slurp-native-anchor-ncp-l1-reviewer-format-train-fold-a-v1.json`, `configs/experiment/slurp-native-ncp-l1-reviewer-format-anchor-train-fold-a-v1.json` |
-| smoke | `prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1/phase-supply-v1.json`, `2ae41cd030d635824616fffac046f640a2d1f878fb1d900a127c6a5559dd861e` | `configs/baseline/slurp-native-anchor-ncp-l1-reviewer-format-smoke-4-v1.json`, `configs/experiment/slurp-native-ncp-l1-reviewer-format-anchor-smoke-4-v1.json` |
+| smoke | `prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1/phase-supply-v2.json`, `7c9d1e17d2637e18378225ff768e929badbf5c82cbe9a19b7ffbf4e52cb1c1f9` | `configs/baseline/slurp-native-anchor-ncp-l1-reviewer-format-smoke-4-v1.json`, `configs/experiment/slurp-native-ncp-l1-reviewer-format-anchor-smoke-4-v1.json` |
 
 **Preferred remedy — the shape every earlier cell used, including B8a.** At the launch commit, build
 each cell's *own* prepared artifact with the model-free `prepare-supply` step first, assert its
@@ -165,7 +165,7 @@ $PY -B -m speech_aware_evidence_acquisition.core.flight.cli prepare-supply \
   --cell slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-v1
 # then, before pinning it, assert the Perception output has NOT moved:
 $PY -B -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d["output_sha256"])' \
-  "$DATA/prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1/phase-supply-v1.json"
+  "$DATA/prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1/phase-supply-v2.json"
 # must print 512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733
 # (arm: ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f)
 ```
