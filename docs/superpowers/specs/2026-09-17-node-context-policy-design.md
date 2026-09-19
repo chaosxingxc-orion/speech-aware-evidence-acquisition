@@ -1139,3 +1139,152 @@ block, appended to different text, and only the block's own bytes are shared. An
 about the Solver hints of E14, which keep the L1 requirement: their block is an addition to the
 candidate **list** rendering, which at raw is a projected Perception JSON the hints were never
 designed to follow.
+## 20. E20 (2026-09-19): an over-long request degrades into a retained row
+
+Owner decision 45, and the measured analysis
+`docs/results/2026-09-19-slurp-serving-geometry-and-degradation-v1.md` part B. Before this item a
+request wider than the live serving slot ended the **flight**, in three places at once:
+
+* **Preflight.** `core.flight.runtime.FlightRuntime._assess_prompt_budget` raised
+  `FlightRuntimeError` on anything but `ALLOW`, and its own comment said why — "A pre-flight
+  estimate has no live compaction mechanism to apply, so `COMPACT_REQUIRED` is just as fail-closed
+  here as `REFUSE`". The rail's own "this is fixable by dropping context" verdict aborted the
+  flight before a single contact.
+* **Dispatch.** `rails.context_budget.assess_context_budget` was called from exactly one place —
+  that preflight. No realised request was ever budgeted against the live slot, and the rail's
+  `MAX_COMPACTION_PASSES = 2` and its `agent-state:` / `facet:` / `value:` droppable-identifier
+  validation had no caller at all.
+* **The wire.** The built fork answers a prompt at or above the slot width with HTTP 400 and
+  `error.type == "exceed_context_size_error"` (`tools/server/server-common.cpp:59-62`), and
+  `core/model/transport.py` turned every `HTTPError` into one `FrozenCoreError`. The row died, and
+  with it every row after it. WSL 2 makes the alternative impossible: unified-memory
+  oversubscription cannot work on this host (part B section 3.1), so the harness has to degrade.
+
+`native_episode.context_fit_policy` is the **tenth** episode-level switch key
+(`rails.config_tables.EPISODE_LEVEL_SWITCH_KEYS`) and the **second failure-mode** key, after E13's
+`finite_completion_policy`. Values: `"raise"` (the pre-E20 behaviour; the null arm is the key's
+absence or this literal) and `"compact-or-abstain"`.
+
+### 20.1 The mechanism
+
+**At preflight**, under `compact-or-abstain`, a `COMPACT_REQUIRED` representative no longer
+raises: the decision is recorded in the `prompt_budget` receipt exactly as an `ALLOW` is, and the
+flight proceeds — because from E20 there *is* a live compaction mechanism. What still aborts, on
+**both** arms, is a **negative physical margin**: the required window exceeds the physical slot
+itself, not merely the operational reserve. That is what "REFUSE" means at this seam; the rail's
+literal `REFUSE` is unreachable here by its own rule (it is returned only at `compaction_pass ==
+MAX_COMPACTION_PASSES`, and a preflight candidate is always at pass 0). No compaction can repair a
+prompt that does not fit the hardware, because the undroppable part is already inside that window.
+
+**At dispatch** (`rails.runner._invoke_native_role_episode.fit_contact_to_slot`), every realised
+request is budgeted against the live slot immediately before it is sent — the seam
+`rails.context_budget`'s own module docstring reserved ("receipt-bound exact counts for an already
+rendered payload immediately before each model contact") and nothing had ever wired. The budget is
+`rails.native_episode_config.ContextFitBudget`: the live per-slot limit E17 already binds the
+preflight to, minus the live-slot operational reserve, the completion ceiling and the registered
+special-token reserve. A request that does not fit has droppable blocks removed in the declared
+order, at most two passes, and is sent with a `context_compaction` record. Re-composition goes
+through the SAME `MeteredNativeSpeechRequest.prepare` over a narrowed binding
+(`binding_override`), never through the binding provider a second time: that provider settles
+episode state and may spend a cleaning contact, so calling it twice for one contact is a defect.
+
+**At the wire**, `FrozenCoreContextSizeError` (a `FrozenCoreError` subclass) is raised for that one
+error class only, classified from the PARSED body — never from a substring of a free-text message —
+so a schema error is never mistaken for an overflow. Every other status, and every other 400,
+raises exactly the `FrozenCoreError` it always did.
+
+### 20.2 The declared drop order
+
+Deterministic, declared, never a heuristic; lowest authority first
+(`rails.context_fit.DROP_ORDER`):
+
+| # | block | addressed as | within the block |
+| --- | --- | --- | --- |
+| 1 | `exemplar-supply` | `value:<value_id>` | tail first |
+| 2 | `candidate-cards` | `facet:<facet_id>` | tail first |
+| 3 | `scenario-hints` | `facet:native-episode-scenario-hints` | the whole block |
+| 4 | `reviewer-audit` | `facet:native-episode-reviewer-audit` | the whole block |
+| 5 | `agent-states` | `agent-state:<state_id>` | oldest first |
+
+**Never droppable, byte for byte:** the instruction text and task contract (the system message),
+the speech packet reference, the current draft (the newest Solver state, and the role query the
+request carries) and the tools array. They are the request's identity.
+
+Two passes, each with its own allowance. Pass 1 spends each block's **surplus**: the exemplar and
+candidate tails beyond `k // 2`, the two whole attachment blocks, and every agent state but the
+newest. Pass 2 spends what is left, down to each block's hard floor (nothing for the two evidence
+blocks; the newest state for the history). Within a pass the walk stops at the first view that
+fits, so a request one item over loses exactly one item.
+
+Blocks 3 and 4 are the one piece of new plumbing the analysis called for. They are not separate
+message parts: `rails.node_context_policy` **appends** them to a rendered state as
+`f"{rendered}\n{block}"`. The contact's own compilation receipt records each appended block's
+`block_sha256` and `block_chars` (never its text), which is exactly enough to remove it by exact
+trailing bytes — and to refuse to remove anything on a digest mismatch, in which case the block is
+simply not a droppable item for that contact and the walk moves on down the order.
+
+### 20.3 Receipts
+
+Per contact: `native_episode_receipt.context_fit.contacts[i].context_compaction`, or `null` for a
+request that fitted, so the receipt says the check ran on every contact rather than only on the
+ones that moved. The record names the schema, the pass count, the blocks and identifiers dropped
+with their item counts, tokens before and after, the limit, and the never-droppable list.
+
+Per row: a request that cannot be made to fit takes a `terminal_disposition` with
+`reason: "context_compaction"`, modelled on E13's finite-completion row — `role_id`, `stage`,
+`revision_count`, `planner_accepted: false`, the compaction pass, the dropped identifiers, the
+token counts, the `source` (`dispatch-budget` or `server-refusal`) and the server's own message
+when the server is the one that refused. The row is **retained and scored**: the latest
+delivery-eligible Solver draft is delivered, or, with none, the row abstains through a derivation
+bound to its own disposition (`core.delivery.native_context_abstention_records`) rather than to a
+source contact, because there is none. `rails.native_episode_receipt._context_fit_delivery`
+validates the shape and returns delivery kinds `context-fit` / `context-abstention`;
+`validate_native_episode_terminal_policy` accepts either only under a **declared**
+`context_fit_policy`, so a row can never degrade under a policy inferred from its own failure.
+
+Per run: `run_phases` now carries `native_episode_dispositions` with
+`planner_action_illegal_rows`, `finite_completion_rows`, `context_compaction_rows` and
+`context_compaction_contacts`, read off the rows' own sealed receipts. The last two are different
+numbers: most compacted contacts belong to rows that go on to deliver normally.
+
+### 20.4 What is not claimed
+
+E20 is engineering. It is **not** a result, and it does not license spending the np4 margin — part
+B's own conclusion is that the read is guaranteed by geometry **plus** this policy, not by this
+policy alone. It makes no claim that a compacted request answers as well as an uncompacted one:
+dropping exemplars and history is a loss, and a cell that arms the key must report
+`context_compaction_contacts` and `context_compaction_rows` as diagnostics beside its primary
+number. It does not bound the test split's prompt tail — that is part B step 1, a separate
+model-free pass, and no geometry may be chosen for a split whose tail nobody has seen. It changes
+no request byte on a row that fits (proved by pinned request hashes, as E17 and E18 were), and it
+arms nothing: every committed fragment still composes `"raise"`.
+
+### 20.5 Two limits of this implementation, stated
+
+**The cleaning contact is not covered.** `rails.runner`'s metered cleaning path
+(`run_cleaning_contact`, used only by a `level: "cleaned"` boundary) still prepares and dispatches
+without a fit check, and a `FrozenCoreContextSizeError` there still ends the flight. No committed
+fragment declares a cleaned boundary, and level L2 is unflown (section 19), so this is a gap rather
+than an exposure; it belongs to the item that flies L2.
+
+**A context abstention on the FIRST contact cannot be sealed.** A row whose very first request is
+refused for width has no recorded timing at all, and `seal()` refuses it with its existing message
+("no per-request record for sample ..."): an outputs row cannot carry response identity hashes for
+a request no core ever answered. Every other context abstention -- refused after at least one
+completed contact -- seals on the sample's own last recorded timing, with its delivered identity
+derived from the disposition. This is fail-closed rather than silent, and it is the honest
+boundary: a row that never reached the core produced nothing to score.
+
+**`monitor.jsonl`'s `requests_total` undercounts, and the fix is not a one-liner.** Part B section
+1.2 measured it: over the B4a v2 arm the counter advances 4,466 where the server completed 5,409
+requests and the seal records 5,412 contacts. The cause is in
+`scripts/serving_monitor.py:116-127` (`count_new_requests`) driven from the poll loop at
+`scripts/serving_monitor.py:206`: it counts a `/slots` task-id CHANGE per poll, so two requests
+that share one slot between two polls count once. Its own docstring already says so — "a LOWER
+BOUND at the sampling interval". The exact counter exists (`llamacpp:requests_processed` on
+`GET /metrics`, which `read_metrics` already parses), but the pinned fragments deliberately do not
+pass `--metrics`, because that flag changes the argv and therefore the serving identity every
+flight compares. So the repair is a serving-identity change with its own receipt, not a code fix,
+and this item leaves it as a finding: **every throughput number must be counted from `server.log`
+release records, and `monitor.jsonl` used only for utilisation, power, busy slots and VRAM, which
+it samples directly.**

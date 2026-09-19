@@ -57,6 +57,68 @@ class FrozenCoreRoleModelError(RuntimeError):
     """The bridge refuses an invalid callback result or native call envelope."""
 
 
+class FrozenCoreRoleContextFitError(FrozenCoreRoleModelError):
+    """E20 (2026-09-19): this role's request does not fit the live slot.
+
+    Raised INSTEAD of dispatching (the harness's own live-slot budget
+    refused the realised request after the declared compaction passes) or
+    instead of propagating the fork's HTTP 400
+    ``exceed_context_size_error``. It carries NO completion, because there
+    is none: the request was never answered. What it carries is why --
+    which blocks were dropped, how many tokens before and after, which seam
+    refused, and the server's own sentence when the server is the one that
+    refused.
+
+    ``role_id`` and ``execution_receipt`` are filled by
+    :meth:`NativeRoleNode._run`, exactly as they are for a finite
+    completion, so the episode's terminal outcome can bind the interrupted
+    role to the contacts it had already made. ``execution_receipt`` is
+    ``None`` when this was the role's FIRST contact, which a finite
+    completion can never be.
+    """
+
+    def __init__(
+        self,
+        *,
+        source: str,
+        compaction_pass: int,
+        dropped_identifiers: Sequence[str] = (),
+        tokens_before: int = 0,
+        tokens_after: int = 0,
+        limit_tokens: int = 0,
+        server_message: str | None = None,
+    ) -> None:
+        super().__init__(
+            "metered request does not fit the live serving slot "
+            f"({tokens_after} required, {limit_tokens} available, refused at "
+            f"{source})"
+        )
+        self.source = source
+        self.compaction_pass = compaction_pass
+        self.dropped_identifiers = tuple(dropped_identifiers)
+        self.tokens_before = tokens_before
+        self.tokens_after = tokens_after
+        self.limit_tokens = limit_tokens
+        self.server_message = server_message
+        self.role_id: str | None = None
+        self.execution_receipt: Mapping[str, object] | None = None
+
+    def __deepcopy__(self, memo):
+        cloned = type(self)(
+            source=self.source,
+            compaction_pass=self.compaction_pass,
+            dropped_identifiers=self.dropped_identifiers,
+            tokens_before=self.tokens_before,
+            tokens_after=self.tokens_after,
+            limit_tokens=self.limit_tokens,
+            server_message=self.server_message,
+        )
+        memo[id(self)] = cloned
+        cloned.role_id = self.role_id
+        cloned.execution_receipt = copy.deepcopy(self.execution_receipt, memo)
+        return cloned
+
+
 class FrozenCoreRoleFiniteCompletionError(FrozenCoreRoleModelError):
     """A valid source-bound completion ended before authoritative delivery."""
 
@@ -812,6 +874,19 @@ class NativeRoleNode(WorkflowComponent):
                     ),
                 },
             )
+        except FrozenCoreRoleContextFitError as error:
+            # E20: the request never reached the wire (or the wire refused
+            # it), so there is no completion to bind -- only the contacts
+            # this role had already completed, which may be none.
+            error.role_id = self.spec.role_id
+            error.execution_receipt = (
+                None if not receipt_contacts
+                else {
+                    "contacts": [dict(contact) for contact in receipt_contacts],
+                    "final_contact": dict(receipt_contacts[-1]),
+                }
+            )
+            raise
         except FrozenCoreRoleFiniteCompletionError as error:
             if not receipt_contacts or receipt_contacts[-1] != _contact_receipt(error.completion):
                 raise FrozenCoreRoleModelError(
@@ -926,6 +1001,7 @@ def build_native_role_workflow(
 
 __all__ = [
     "ContactContextProvider",
+    "FrozenCoreRoleContextFitError",
     "FrozenCoreRoleFiniteCompletionError",
     "FrozenCoreRoleModel",
     "FrozenCoreRoleModelError",

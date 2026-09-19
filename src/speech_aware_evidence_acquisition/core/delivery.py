@@ -268,6 +268,65 @@ def terminal_response_saturated(
     return completion_tokens >= max_tokens
 
 
+def native_context_abstention_records(
+    *, sample_id: str, disposition: Mapping[str, object],
+) -> tuple[str, dict[str, object], dict[str, object]]:
+    """E20 (2026-09-19): derive empty delivery for a row refused for width.
+
+    The finite abstention above derives its identity from the quarantined
+    SOURCE CONTACT. A context-fit abstention has none: the request that
+    would have been the Solver's first was refused before it was answered
+    (or the server refused it), so the only custody the row owns is its own
+    terminal disposition. That disposition -- the refusing seam, the
+    compaction pass, the identifiers dropped and the token counts -- is
+    what this derivation is bound to, and it is deterministic: the same
+    disposition always derives the same record.
+
+    No model call, no new bytes on the wire, and the delivered text is the
+    same normalized empty answer the finite abstention delivers.
+    """
+
+    if not isinstance(sample_id, str) or not sample_id:
+        raise ValueError("native abstention requires a sample identity")
+    if (
+        not isinstance(disposition, Mapping)
+        or disposition.get("reason") != "context_compaction"
+        or disposition.get("source") not in ("dispatch-budget", "server-refusal")
+    ):
+        raise ValueError("context abstention requires its context-fit disposition")
+
+    def digest(value):
+        return hashlib.sha256(json.dumps(
+            value, ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+            allow_nan=False,
+        ).encode("utf-8")).hexdigest()
+
+    disposition_sha256 = digest(dict(disposition))
+    request_id = f"{sample_id}/{disposition_sha256}/delivery/native-context-abstention-v1"
+    request = {
+        "tool_id": "native-context-abstention-v1",
+        "sample_id": sample_id,
+        "source": {
+            "source_request_id": None,
+            "terminal_disposition_sha256": disposition_sha256,
+            "refusal_source": disposition["source"],
+        },
+        "reason": "context_compaction",
+        "policy": "compact-or-abstain",
+        "disposition": "no-completed-solver",
+    }
+    request["payload_sha256"] = digest(request)
+    response = {
+        "text": normalize_terminal_response(None, skipped=True),
+        "source_request_id": None,
+        "delivery_kind": "abstention",
+        "request_sha256": request["payload_sha256"],
+    }
+    response["response_sha256"] = digest(response)
+    response["response_text_sha256"] = hashlib.sha256(b"").hexdigest()
+    return request_id, request, response
+
+
 def native_abstention_records(
     *, sample_id: str, source_contact: Mapping[str, object], finish_reason: str,
 ) -> tuple[str, dict[str, object], dict[str, object]]:

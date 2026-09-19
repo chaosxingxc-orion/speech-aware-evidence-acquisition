@@ -147,6 +147,14 @@ def validate_native_episode_delivery_receipt(
     )
     disposition = receipt.get("terminal_disposition")
     if (
+        isinstance(disposition, Mapping)
+        and disposition.get("reason") == CONTEXT_COMPACTION_DISPOSITION
+    ):
+        # E20: checked BEFORE the finite branch, because a context-fit row
+        # carries the same ``interrupted_role``/``abstention_receipt``
+        # marks and would otherwise be read as a malformed finite row.
+        return _context_fit_delivery(receipt, role_visits, error_type=error_type)
+    if (
         isinstance(disposition, Mapping) and disposition.get("reason") == "finite_completion"
         or receipt.get("abstention_receipt") is not None
         or receipt.get("interrupted_role") is not None
@@ -415,8 +423,142 @@ def _finite_delivery(receipt, visits, *, error_type):
     return NativeEpisodeDelivery("abstention", None, rejected, disposition, None)
 
 
+#: E20 (2026-09-19): the ``terminal_disposition.reason`` of a row whose
+#: next request did not fit the live serving slot. Restated here for the
+#: same reason :data:`PLANNER_ACTION_ILLEGAL_DISPOSITION` is: this module
+#: keeps no runtime import.
+CONTEXT_COMPACTION_DISPOSITION = "context_compaction"
+
+#: The exact field set of that disposition.
+_CONTEXT_DISPOSITION_FIELDS = frozenset({
+    "reason", "role_id", "stage", "revision_count", "planner_accepted",
+    "compaction_pass", "dropped_identifiers", "tokens_before", "tokens_after",
+    "limit_tokens", "source", "server_message",
+})
+
+#: The two seams that may refuse a request for width.
+_CONTEXT_REFUSAL_SOURCES = ("dispatch-budget", "server-refusal")
+
+#: The identifier prefixes a compaction may drop, restated from
+#: ``rails.context_budget._DROPPABLE_IDENTIFIER_PREFIXES``.
+_CONTEXT_DROPPABLE_PREFIXES = ("agent-state:", "facet:", "value:")
+
+
+def _context_fit_delivery(receipt, visits, *, error_type):
+    """E20: validate a retained row whose next request was too wide.
+
+    Built to the E13 contract with one forced difference: there is NO
+    rejected contact, because the refused request was never answered. The
+    interrupted role therefore carries an execution receipt only when the
+    role had already completed a contact of its own.
+    """
+
+    disposition = receipt.get("terminal_disposition")
+    if (
+        not isinstance(disposition, Mapping)
+        or set(disposition) != _CONTEXT_DISPOSITION_FIELDS
+    ):
+        _raise(error_type, "context-fit terminal disposition is malformed")
+    if (
+        disposition["reason"] != CONTEXT_COMPACTION_DISPOSITION
+        or disposition["stage"] not in (
+            "perception", "solver", "review", "planner", "acquisition"
+        )
+        or not isinstance(disposition["role_id"], str) or not disposition["role_id"]
+        or isinstance(disposition["revision_count"], bool)
+        or not isinstance(disposition["revision_count"], int)
+        or disposition["revision_count"] < 0
+        or disposition["planner_accepted"] is not False
+        or isinstance(disposition["compaction_pass"], bool)
+        or not isinstance(disposition["compaction_pass"], int)
+        or not 0 <= disposition["compaction_pass"] <= 2
+        or disposition["source"] not in _CONTEXT_REFUSAL_SOURCES
+        or receipt.get("accepted_solver_receipt") is not None
+    ):
+        _raise(error_type, "context-fit terminal disposition has invalid authority")
+    for field in ("tokens_before", "tokens_after", "limit_tokens"):
+        _nonneg_int(disposition[field], f"context-fit {field}", error_type=error_type)
+    dropped = _sequence(
+        disposition["dropped_identifiers"],
+        "context-fit dropped_identifiers",
+        error_type=error_type,
+    )
+    seen = set()
+    for identifier in dropped:
+        if (
+            not isinstance(identifier, str)
+            or not identifier.startswith(_CONTEXT_DROPPABLE_PREFIXES)
+            or identifier.endswith(":")
+            or identifier in seen
+        ):
+            _raise(error_type, "context-fit dropped identifiers are malformed")
+        seen.add(identifier)
+    message = disposition["server_message"]
+    if message is not None and (not isinstance(message, str) or not message):
+        _raise(error_type, "context-fit server message must be text or null")
+    if disposition["source"] == "server-refusal" and message is None:
+        _raise(error_type, "a server refusal must record the server's own message")
+    interrupted = receipt.get("interrupted_role")
+    if (
+        not isinstance(interrupted, Mapping)
+        or interrupted.get("role_id") != disposition["role_id"]
+        or interrupted.get("stage") != disposition["stage"]
+        or set(interrupted) - {"role_id", "stage", "execution_receipt"}
+    ):
+        _raise(error_type, "context-fit disposition differs from its interrupted role")
+    used = set()
+    solvers = []
+    for visit in visits:
+        if not isinstance(visit, Mapping):
+            _raise(error_type, "context-fit episode role visit must be a mapping")
+        prior = _receipt(
+            visit.get("execution_receipt"), "completed role", error_type=error_type
+        )
+        for contact in prior["contacts"]:
+            _checked_contact(contact, error_type=error_type)
+            pair = contact["agent_contact_id"], contact["request_id"]
+            if pair in used:
+                _raise(error_type, "context-fit episode duplicates completed contacts")
+            used.add(pair)
+        if visit.get("stage") == "solver":
+            solvers.append(prior)
+    if "execution_receipt" in interrupted:
+        execution = _receipt(
+            interrupted["execution_receipt"], "interrupted role", error_type=error_type
+        )
+        for contact in execution["contacts"]:
+            _checked_contact(contact, error_type=error_type)
+            pair = contact["agent_contact_id"], contact["request_id"]
+            if pair in used:
+                _raise(error_type, "interrupted role repeats a completed contact")
+            used.add(pair)
+    terminal = receipt.get("terminal_solver_receipt")
+    abstention = receipt.get("abstention_receipt")
+    if solvers:
+        if terminal != solvers[-1] or abstention is not None:
+            _raise(
+                error_type,
+                "context-fit delivery must retain the last completed Solver",
+            )
+        return NativeEpisodeDelivery(
+            "context-fit", terminal, terminal["final_contact"], disposition, None
+        )
+    expected_abstention = {
+        "source_contact": None,
+        "reason": CONTEXT_COMPACTION_DISPOSITION,
+        "source": disposition["source"],
+    }
+    if terminal is not None or abstention != expected_abstention:
+        _raise(
+            error_type,
+            "context-fit episode without a Solver requires its bound abstention",
+        )
+    return NativeEpisodeDelivery("context-abstention", None, {}, disposition, None)
+
+
 def validate_native_episode_terminal_policy(
     delivery, *, exhaustion_policy, finite_completion_policy, max_revisions,
+    context_fit_policy="raise",
     error_type=ValueError,
 ):
     """Require prospective configuration for either kind of terminal delivery."""
@@ -437,6 +579,15 @@ def validate_native_episode_terminal_policy(
             or not 0 <= disposition["revision_count"] <= max_revisions
         ):
             _raise(error_type, "finite delivery differs from its configured policy")
+    elif delivery.kind in {"context-fit", "context-abstention"}:
+        # E20: the same prospective-configuration rule the finite kinds
+        # take -- a row may only degrade under a policy declared before the
+        # flight, never under one inferred from the failure.
+        if (
+            context_fit_policy != "compact-or-abstain"
+            or not 0 <= disposition["revision_count"] <= max_revisions
+        ):
+            _raise(error_type, "context-fit delivery differs from its configured policy")
     else:
         _raise(error_type, "unknown native delivery kind")
 
@@ -449,7 +600,12 @@ def validate_native_episode_finite_path(
 ):
     """Validate a completed graph prefix and its exact next interrupted role."""
     delivery = validate_native_episode_delivery_receipt(receipt, error_type=error_type)
-    if delivery.kind not in {"finite", "abstention"}:
+    # E20: a context-fit row stops the graph at exactly the same place a
+    # finite completion does -- after a completed prefix, at one named role
+    # -- so the same walker proves its prefix too.
+    if delivery.kind not in {
+        "finite", "abstention", "context-fit", "context-abstention",
+    }:
         _raise(error_type, "finite path requires a finite delivery")
     if isinstance(max_revisions, bool) or not isinstance(max_revisions, int) or max_revisions < 0:
         _raise(error_type, "invalid finite path revision allowance")

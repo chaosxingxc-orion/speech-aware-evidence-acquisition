@@ -252,6 +252,13 @@ class PreparedNativeRoleContact:
     # differ from the ones it may call. None for every ``per-role`` contact,
     # which is every contact written before E17.
     rendered_tool_names: tuple[str, ...] | None = None
+    # E20 (2026-09-19): the exact binding this contact was composed from,
+    # so a dispatch-time context-fit check can narrow it and re-prepare
+    # WITHOUT re-running the caller's binding provider -- which settles
+    # episode state, may spend a cleaning contact, and is not idempotent.
+    # Excluded from equality and repr: it is the same object the provider
+    # already returned, carried for reuse rather than as new custody.
+    binding: object = field(default=None, repr=False, compare=False)
 
     @property
     def role_request(self) -> NativeRoleModelRequest:
@@ -311,8 +318,28 @@ class MeteredNativeSpeechRequest:
         self._solver_role_id = solver_role_id
         self._solver_sampling = solver_sampling
 
-    def prepare(self, request: NativeRoleModelRequest) -> PreparedNativeRoleContact:
-        binding = self._binding_provider(request)
+    def prepare(
+        self,
+        request: NativeRoleModelRequest,
+        *,
+        binding_override: "NativeRoleSpeechBinding | None" = None,
+    ) -> PreparedNativeRoleContact:
+        """Compose one immutable request from this caller's task state.
+
+        ``binding_override`` (E20, 2026-09-19) re-composes a contact from an
+        ALREADY OBTAINED binding instead of asking the provider again. It
+        exists for exactly one caller -- the dispatch-time context-fit
+        check, which narrows a binding's evidence blocks and needs the same
+        request built again over fewer of them. The provider is not
+        idempotent (it settles episode state and may spend a cleaning
+        contact), so calling it twice for one contact is a defect, not an
+        option.
+        """
+
+        binding = (
+            self._binding_provider(request) if binding_override is None
+            else binding_override
+        )
         if not isinstance(binding, NativeRoleSpeechBinding):
             raise NativeSpeechRequestError("binding provider returned no speech binding")
         if (
@@ -434,7 +461,7 @@ class MeteredNativeSpeechRequest:
         })
         return PreparedNativeRoleContact(
             prepared, role_bytes, _bytes(body), self._owner, sample_index,
-            binding.rendered_tool_names,
+            binding.rendered_tool_names, binding,
         )
 
     def dispatch(self, prepared: PreparedNativeRoleContact) -> CoreCompletion:

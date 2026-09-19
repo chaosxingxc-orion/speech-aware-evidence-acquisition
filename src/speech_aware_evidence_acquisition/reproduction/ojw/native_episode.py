@@ -27,8 +27,13 @@ from openjiuwen.core.workflow import (
     create_workflow_session,
 )
 
+from ...rails.context_fit import (
+    CONTEXT_COMPACTION_DISPOSITION,
+    terminal_context_disposition,
+)
 from .native_group_solver import GroupedSolverRoleNode
 from .native_roles import (
+    FrozenCoreRoleContextFitError,
     FrozenCoreRoleFiniteCompletionError,
     FrozenCoreRoleModelError,
     NativeRoleNode,
@@ -139,6 +144,16 @@ class NativeEpisodeSpec:
     # an ACQUIRE spends a revision, so a budget larger than the revision
     # allowance is a budget that can never be spent.
     max_acquisitions: int = 0
+    # E20 (2026-09-19, owner decision 45): what an OVER-LONG request does.
+    # ``"raise"`` -- every spec written before E20 -- kills the flight.
+    # ``"compact-or-abstain"`` retains the row: the dispatch seam compacts
+    # in the declared order and, when even that does not fit, this graph
+    # delivers the latest delivery-eligible Solver draft (or abstains)
+    # under a ``context_compaction`` terminal disposition. The switch
+    # renders no request byte. Declared LAST for exactly the reason
+    # ``max_acquisitions`` was: every positional construction written
+    # before E20 composes the spec it always did.
+    context_fit_policy: str = "raise"
 
     def __post_init__(self) -> None:
         if not isinstance(self.episode_id, str) or not self.episode_id:
@@ -179,6 +194,11 @@ class NativeEpisodeSpec:
             not in {"raise", "deliver-latest-or-abstain"}
         ):
             raise ValueError("finite_completion_policy is invalid")
+        if (
+            not isinstance(self.context_fit_policy, str)
+            or self.context_fit_policy not in {"raise", "compact-or-abstain"}
+        ):
+            raise ValueError("context_fit_policy is invalid")
         if self.refresh_action == PLANNER_ACTION_ILLEGAL:
             # E8c: the illegal-output routing value is reserved.
             raise ValueError("candidate refresh must not use the reserved illegal action")
@@ -869,6 +889,113 @@ def _finite_terminal_outcome(
     return {"state": state, "delivery": delivery}
 
 
+def _context_fit_error_in_chain(
+    error: BaseException,
+) -> FrozenCoreRoleContextFitError | None:
+    """E20: the context-fit refusal inside a framework error chain, if any.
+
+    Mirrors :func:`_finite_error_in_chain`, including its stop rule: a
+    plain :class:`FrozenCoreRoleModelError` that is NOT a context-fit
+    refusal ends the walk, so an ordinary bridge refusal is never rewritten
+    into a retained row.
+    """
+
+    cause: BaseException | None = error
+    seen: set[int] = set()
+    while cause is not None and id(cause) not in seen:
+        if isinstance(cause, FrozenCoreRoleContextFitError):
+            return cause
+        if isinstance(cause, FrozenCoreRoleModelError):
+            return None
+        seen.add(id(cause))
+        cause = cause.__cause__ or cause.__context__
+    return None
+
+
+def _context_fit_terminal_outcome(
+    error: FrozenCoreRoleContextFitError,
+    checkpoint: _RoleCheckpoint,
+) -> dict[str, object]:
+    """E20: retain the row whose next request would not fit the slot.
+
+    Built to the E13 contract (:func:`_finite_terminal_outcome`) with one
+    difference that is forced by the facts: there is no rejected contact,
+    because the refused request produced no completion. The latest
+    delivery-eligible Solver draft is delivered; with none, the row
+    abstains, and its abstention receipt names the refusing seam rather
+    than a contact that does not exist.
+    """
+
+    if (
+        checkpoint.state is None
+        or checkpoint.role_id is None
+        or checkpoint.stage is None
+    ):
+        raise NativeEpisodeError(
+            "context-fit refusal has no invocation-local role checkpoint"
+        )
+    error_role_id = getattr(error, "role_id", None)
+    if error_role_id != checkpoint.role_id:
+        raise NativeEpisodeError(
+            "context-fit refusal role does not match its role checkpoint"
+        )
+    state = copy.deepcopy(checkpoint.state)
+    revision_count = state.get("revision_count")
+    if isinstance(revision_count, bool) or not isinstance(revision_count, int):
+        raise NativeEpisodeError(
+            "context-fit checkpoint has invalid revision count"
+        )
+    state.pop("accepted_solver_receipt", None)
+    interrupted_receipt = getattr(error, "execution_receipt", None)
+    interrupted: dict[str, object] = {
+        "role_id": checkpoint.role_id,
+        "stage": checkpoint.stage,
+    }
+    if isinstance(interrupted_receipt, Mapping):
+        normalized = _execution_receipt(
+            {"execution_receipt": interrupted_receipt}
+        )
+        interrupted["execution_receipt"] = normalized
+    state["interrupted_role"] = interrupted
+    state["terminal_disposition"] = terminal_context_disposition(
+        role_id=checkpoint.role_id,
+        stage=checkpoint.stage,
+        revision_count=revision_count,
+        compaction_pass=error.compaction_pass,
+        dropped_identifiers=error.dropped_identifiers,
+        tokens_before=error.tokens_before,
+        tokens_after=error.tokens_after,
+        limit_tokens=error.limit_tokens,
+        source=error.source,
+        server_message=error.server_message,
+    )
+
+    solver = state.get("latest_solver")
+    if isinstance(solver, Mapping) and solver.get("delivery_eligible") is True:
+        _execution_receipt(solver)
+        exact_receipt = solver.get("execution_receipt")
+        if not isinstance(exact_receipt, Mapping):
+            raise NativeEpisodeError(
+                "context-fit refusal latest Solver has no execution receipt"
+            )
+        state.pop("abstention_receipt", None)
+        state["terminal_solver_receipt"] = copy.deepcopy(dict(exact_receipt))
+        delivery = copy.deepcopy(dict(solver))
+    else:
+        state.pop("terminal_solver_receipt", None)
+        state["abstention_receipt"] = {
+            "source_contact": None,
+            "reason": CONTEXT_COMPACTION_DISPOSITION,
+            "source": error.source,
+        }
+        delivery = {
+            "actor_output": "",
+            "result_type": "abstention",
+            "delivery_eligible": False,
+        }
+    return {"state": state, "delivery": delivery}
+
+
 def _first_available_state(component_ids: Sequence[str]):
     ids = tuple(component_ids)
 
@@ -1260,6 +1387,15 @@ class NativeEpisodeWorkflow:
                 ),
             )
         except Exception as error:
+            context_error = _context_fit_error_in_chain(error)
+            if (
+                context_error is not None
+                and self.spec.context_fit_policy == "compact-or-abstain"
+            ):
+                try:
+                    return _context_fit_terminal_outcome(context_error, checkpoint)
+                except NativeEpisodeError as terminal_error:
+                    raise NativeEpisodeError(str(terminal_error)) from error
             finite_error = _finite_error_in_chain(error)
             if (
                 finite_error is not None

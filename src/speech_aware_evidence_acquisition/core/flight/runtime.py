@@ -2397,17 +2397,89 @@ class FlightRuntime:
                 serving_slot_limit_tokens=live_slot_limit_tokens,
             )
             if decision.decision.value != "ALLOW":
-                # A pre-flight estimate has no live compaction mechanism to
-                # apply, so COMPACT_REQUIRED is just as fail-closed here as
-                # REFUSE: anything short of a clean ALLOW at compaction_pass
-                # 0 means the estimate does not clear operational headroom.
-                raise FlightRuntimeError(
-                    f"prompt budget {decision.decision.value} (not ALLOW) for phase "
-                    f"{phase_name!r}, representative sample "
-                    f"{representative.sample_id!r}: {decision.to_dict()}"
-                )
+                # Before E20 the comment here read: "A pre-flight estimate
+                # has no live compaction mechanism to apply, so
+                # COMPACT_REQUIRED is just as fail-closed here as REFUSE."
+                # E20 (2026-09-19, owner decision 45) builds that mechanism:
+                # under ``native_episode.context_fit_policy ==
+                # "compact-or-abstain"`` every realised request is budgeted
+                # against the live slot immediately before it is sent and
+                # droppable blocks are removed in the declared order, so the
+                # rail's own COMPACT_REQUIRED verdict -- "this is fixable by
+                # dropping context" -- is no longer a reason to abort a
+                # flight before its first contact. It is RECORDED and the
+                # flight proceeds.
+                #
+                # REFUSE still aborts, on both arms. It means the required
+                # window exceeds the physical slot even after every
+                # droppable block is gone, and no compaction can repair
+                # that: a flight whose widest representative request cannot
+                # fit is a geometry error, not a row-level event.
+                # What "REFUSE" means HERE. The rail returns its literal
+                # ``REFUSE`` only at ``compaction_pass ==
+                # MAX_COMPACTION_PASSES``, and a preflight candidate is
+                # always at pass 0, so the literal verdict is unreachable
+                # at this seam by the rail's own rule. The fact it stands
+                # for is reachable and is tested instead: a NEGATIVE
+                # PHYSICAL MARGIN -- the required window exceeds the
+                # physical slot itself, not merely the operational reserve.
+                # No compaction can repair that, because the undroppable
+                # part of the request (instruction, task contract, speech
+                # packet, draft, tools) is already inside that window; it
+                # is a geometry error, and it aborts on BOTH arms.
+                if not (
+                    decision.decision.value == "COMPACT_REQUIRED"
+                    and decision.physical_margin_tokens >= 0
+                    and self._context_fit_policy() == "compact-or-abstain"
+                ):
+                    raise FlightRuntimeError(
+                        f"prompt budget {decision.decision.value} (not ALLOW) for phase "
+                        f"{phase_name!r}, representative sample "
+                        f"{representative.sample_id!r}: {decision.to_dict()}"
+                    )
             receipts.append({"phase": phase_name, **decision.to_dict()})
         return tuple(receipts)
+
+    def _context_fit_policy(self) -> str:
+        """The composed ``native_episode.context_fit_policy`` (E20).
+
+        ``"raise"`` -- the key absent, written out loud, or declared on a
+        non-native cell -- is the pre-E20 behaviour everywhere this is read.
+        """
+
+        raw = self._composed.values.get("native_episode")
+        if not isinstance(raw, Mapping):
+            return "raise"
+        from ...rails.context_fit import parse_context_fit_policy  # noqa: PLC0415
+
+        return parse_context_fit_policy(raw.get("context_fit_policy"))
+
+    def _context_fit_budget(self):
+        """E20: the live serving budget a dispatch-time fit check measures against.
+
+        ``None`` on the unarmed arm, which is every cell written before
+        E20. Armed, it binds the LIVE per-slot limit (the same number E17
+        bound the preflight budget to), the live-slot operational reserve
+        and this cell's completion ceiling to the flight's own token
+        counter -- the resident server's exact tokenizer in a real flight,
+        the injected counter in a test.
+        """
+
+        if self._context_fit_policy() != "compact-or-abstain":
+            return None
+        from ...rails.context_budget import (  # noqa: PLC0415
+            REGISTERED_SPECIAL_TOKEN_RESERVE, serving_bound_reserve_tokens,
+        )
+        from ...rails.native_episode_config import ContextFitBudget  # noqa: PLC0415
+
+        slot_tokens = int(self._adapter.serving_geometry()["slot_tokens"])
+        return ContextFitBudget(
+            slot_tokens=slot_tokens,
+            reserve_tokens=serving_bound_reserve_tokens(slot_tokens),
+            completion_ceiling=self._completion_token_ceiling(),
+            token_counter=self._token_counter,
+            special_token_reserve=REGISTERED_SPECIAL_TOKEN_RESERVE,
+        )
 
     def _prepare(self) -> tuple[Mapping[str, object], str, str, str]:
         """Compose the four fragments, build the adapter, load and
@@ -5399,6 +5471,11 @@ class FlightRuntime:
                 # RELEASED scenario-hints view from. Unused, and
                 # byte-identical to before, when none is declared.
                 data_root=getattr(self, "_data_root", None),
+                # E20: the live serving budget the dispatch-time context-fit
+                # check measures each realised request against. None -- and
+                # therefore no check at all -- unless
+                # ``native_episode.context_fit_policy`` is armed.
+                context_fit_budget=self._context_fit_budget(),
             )
         facet_seed, value_seed = self._phase_supply_seeds(
             program, binding, supply_specs, plan
@@ -7046,11 +7123,61 @@ class FlightRuntime:
             "serving_slots": slots,
             "occupancy_slots": occupancy_slots,
             "client_initialization_seconds": client_initialization_seconds,
+            # E8c/E13/E20: the row-level DISPOSITIONS this dispatch took --
+            # the counts a verdict must report whether or not they are zero.
+            # Computed from the rows' own sealed episode receipts, so they
+            # are a read of what happened rather than a second tally kept
+            # alongside it.
+            "native_episode_dispositions": self._episode_disposition_counts(),
         }
         require_mandatory_throughput_fields(
             "run_phases", payload, ("contacts_per_second", "tokens_per_second")
         )
         return self.receipts.record("run_phases", payload)
+
+    def _episode_disposition_counts(self) -> Mapping[str, int]:
+        """Row-level native-episode dispositions of this dispatch.
+
+        ``planner_action_illegal_rows`` (E8c), ``finite_completion_rows``
+        (E13) and, from E20, ``context_compaction_rows`` plus
+        ``context_compaction_contacts`` -- the number of rows that degraded
+        under ``context_fit_policy`` and the number of individual contacts
+        that were compacted to fit the live slot (which is NOT the same
+        number: most compacted contacts belong to rows that went on to
+        deliver normally).
+
+        Every count is zero for a dispatch with no native episodes at all,
+        so a fixed-policy direct arm's receipt gains four zeros and nothing
+        else.
+        """
+
+        counts = {
+            "planner_action_illegal_rows": 0,
+            "finite_completion_rows": 0,
+            "context_compaction_rows": 0,
+            "context_compaction_contacts": 0,
+        }
+        for row in self._output_rows or ():
+            if not isinstance(row, Mapping):
+                continue
+            receipt = row.get("native_episode_receipt")
+            if not isinstance(receipt, Mapping):
+                continue
+            if receipt.get("planner_action_illegal") is not None:
+                counts["planner_action_illegal_rows"] += 1
+            disposition = receipt.get("terminal_disposition")
+            if isinstance(disposition, Mapping):
+                reason = disposition.get("reason")
+                if reason == "finite_completion":
+                    counts["finite_completion_rows"] += 1
+                elif reason == "context_compaction":
+                    counts["context_compaction_rows"] += 1
+            context_fit = receipt.get("context_fit")
+            if isinstance(context_fit, Mapping):
+                compacted = context_fit.get("compacted_contacts")
+                if isinstance(compacted, int) and not isinstance(compacted, bool):
+                    counts["context_compaction_contacts"] += compacted
+        return counts
 
     def _run_obs_phases(self, policy: str) -> Mapping[str, object]:
         """``run_phases`` for the Earnings carrier: the obs driver's run,
@@ -7136,6 +7263,10 @@ class FlightRuntime:
             "obs_saturated_slice_count": cost.get("saturated_slice_count"),
             "obs_skipped_slice_count": cost.get("skipped_slice_count"),
             "obs_trace_manifest_hash": result.trace_manifest_hash,
+            # E8c/E13/E20: the obs carrier runs no native episode, so every
+            # count here is zero -- stated rather than omitted, so one
+            # receipt shape answers the question for every carrier.
+            "native_episode_dispositions": self._episode_disposition_counts(),
         }
         require_mandatory_throughput_fields(
             "run_phases", payload, ("contacts_per_second", "tokens_per_second")
@@ -8277,10 +8408,20 @@ class FlightRuntime:
                     delivery,
                     exhaustion_policy=raw_native.get("exhaustion_policy", "raise"),
                     finite_completion_policy=raw_native.get("finite_completion_policy", "raise"),
+                    # E20: the same prospective-configuration rule, read
+                    # from the composed fragment rather than from the row.
+                    context_fit_policy=raw_native.get("context_fit_policy", "raise"),
                     max_revisions=raw_native.get("max_revisions"),
                     error_type=FlightRuntimeError,
                 )
-                if delivery.kind in {"finite", "abstention"}:
+                # E20 (2026-09-19): a context-fit row stops the graph where
+                # a finite completion does, so the same prefix walker proves
+                # it -- but it quarantines NO completion, so the interrupted
+                # role carries an execution receipt only when that role had
+                # already completed a contact of its own, and there is no
+                # rejected contact to bind to a timing.
+                context_degraded = delivery.kind in {"context-fit", "context-abstention"}
+                if delivery.kind in {"finite", "abstention"} or context_degraded:
                     if not isinstance(raw_actions, Mapping):
                         raise FlightRuntimeError("finite delivery lacks configured Planner actions")
                     refresh = raw_native.get("candidate_refresh") or {}
@@ -8290,36 +8431,55 @@ class FlightRuntime:
                         refresh_action=refresh.get("action"), max_refreshes=refresh.get("max_refreshes", 0),
                         error_type=FlightRuntimeError,
                     )
-                    interrupted = episode_receipt["interrupted_role"]["execution_receipt"]
-                    for raw_contact in interrupted["contacts"]:
-                        recorded = timing_by_request.get(raw_contact["request_id"])
+                    interrupted = episode_receipt["interrupted_role"].get(
+                        "execution_receipt"
+                    )
+                    if interrupted is None and not context_degraded:
+                        raise FlightRuntimeError(
+                            "finite delivery has no interrupted execution receipt"
+                        )
+                    if interrupted is not None:
+                        for raw_contact in interrupted["contacts"]:
+                            recorded = timing_by_request.get(raw_contact["request_id"])
+                            if (
+                                recorded is None or recorded.sample_id != sample_id
+                                or any(getattr(recorded, key, None) != raw_contact.get(key) for key in (
+                                    "request_sha256", "response_sha256", "response_text_sha256",
+                                ))
+                            ):
+                                raise FlightRuntimeError("finite interrupted contact differs from actual timing")
                         if (
-                            recorded is None or recorded.sample_id != sample_id
-                            or any(getattr(recorded, key, None) != raw_contact.get(key) for key in (
-                                "request_sha256", "response_sha256", "response_text_sha256",
-                            ))
+                            timing_by_sample[sample_id].request_id
+                            != interrupted["final_contact"]["request_id"]
                         ):
-                            raise FlightRuntimeError("finite interrupted contact differs from actual timing")
+                            raise FlightRuntimeError("finite source is not the last actual sample contact")
+                if delivery.kind == "context-abstention":
+                    # E20: no contact was answered at all, so there is
+                    # nothing to bind the delivered text to. The row keeps
+                    # the sample's own last recorded timing -- a row that
+                    # never reached the core has none, and fails closed
+                    # below on exactly that.
+                    if sources[0].final_response_text != "":
+                        raise FlightRuntimeError(
+                            "native context abstention must deliver empty text"
+                        )
+                    contact = {}
+                else:
+                    contact = delivery.final_contact
+                    timing = timing_by_request.get(contact.get("request_id"))
                     if (
-                        timing_by_sample[sample_id].request_id
-                        != interrupted["final_contact"]["request_id"]
+                        timing is None or timing.sample_id != sample_id
+                        or (delivery.kind != "abstention"
+                            and getattr(timing, "native_tool_calls", None) not in (None, 0))
+                        or any(getattr(timing, key, None) != contact.get(key) for key in (
+                            "request_sha256", "response_sha256", "response_text_sha256",
+                        ))
+                        or (delivery.kind != "abstention" and solver_group is None
+                            and deliver_normaliser is None
+                            and hashlib.sha256(sources[0].final_response_text.encode("utf-8")).hexdigest()
+                            != contact.get("response_text_sha256"))
                     ):
-                        raise FlightRuntimeError("finite source is not the last actual sample contact")
-                contact = delivery.final_contact
-                timing = timing_by_request.get(contact.get("request_id"))
-                if (
-                    timing is None or timing.sample_id != sample_id
-                    or (delivery.kind != "abstention"
-                        and getattr(timing, "native_tool_calls", None) not in (None, 0))
-                    or any(getattr(timing, key, None) != contact.get(key) for key in (
-                        "request_sha256", "response_sha256", "response_text_sha256",
-                    ))
-                    or (delivery.kind != "abstention" and solver_group is None
-                        and deliver_normaliser is None
-                        and hashlib.sha256(sources[0].final_response_text.encode("utf-8")).hexdigest()
-                        != contact.get("response_text_sha256"))
-                ):
-                    raise FlightRuntimeError("native source differs from the recorded model response")
+                        raise FlightRuntimeError("native source differs from the recorded model response")
                 if deliver_normaliser is not None:
                     # E11: what a normalised row owes INSTEAD of the equality
                     # relaxed just above -- the node's recorded INPUT must be
@@ -8375,6 +8535,23 @@ class FlightRuntime:
                     derived_id, request_document, response_document = native_abstention_records(
                         sample_id=sample_id, source_contact=contact,
                         finish_reason=delivery.terminal_disposition["finish_reason"],
+                    )
+                    derived_output_fields = {
+                        "request_id": derived_id,
+                        "request_sha256": request_document["payload_sha256"],
+                        "response_sha256": response_document["response_sha256"],
+                        "response_text_sha256": response_document["response_text_sha256"],
+                    }
+                elif delivery.kind == "context-abstention":
+                    # E20: the same derivation from the only custody this
+                    # row owns -- its own terminal disposition.
+                    from ..delivery import native_context_abstention_records
+
+                    derived_id, request_document, response_document = (
+                        native_context_abstention_records(
+                            sample_id=sample_id,
+                            disposition=delivery.terminal_disposition,
+                        )
                     )
                     derived_output_fields = {
                         "request_id": derived_id,

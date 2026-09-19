@@ -1150,9 +1150,14 @@ def test_node_context_policy_is_one_episode_class_key():
     # The ninth, native_episode.acquisition, was admitted by E18 (2026-09-19,
     # owner decisions 43 and 44) and is the first that adds a NODE to the
     # graph -- the sixth, Acquisition -- rather than a mode of an existing
-    # one; its proof is tests/unit/test_e18_acquisition_node.py.
+    # one; its proof is tests/unit/test_e18_acquisition_node.py. The tenth,
+    # native_episode.context_fit_policy, was admitted by E20 (2026-09-19,
+    # owner decision 45) and is the SECOND failure-mode key, after E13's:
+    # it decides what an over-long request does. Its proof is
+    # tests/unit/test_e20_context_fit_policy.py.
     assert sorted(EPISODE_LEVEL_SWITCH_KEYS) == [
         "native_episode.acquisition",
+        "native_episode.context_fit_policy",
         "native_episode.context_policy",
         "native_episode.deliver_normaliser",
         "native_episode.finite_completion_policy",

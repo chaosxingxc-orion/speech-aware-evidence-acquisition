@@ -81,7 +81,7 @@ from ..session import (
     assert_session_alive,
     require_loopback,
 )
-from . import FrozenCoreError
+from . import FrozenCoreContextSizeError, FrozenCoreError
 from . import native_evidence_projection as _native_evidence_projection_registration  # noqa: F401
 from . import native_slot_binding_view as _native_slot_binding_view_registration  # noqa: F401
 from .native_history import project_native_history
@@ -309,6 +309,32 @@ def _speech_history_texts(history: object) -> list[str]:
             f"history[{index}] role must be 'agent_state' or 'control'"
         )
     return rendered
+
+
+def _exceed_context_message(status: int, detail: str) -> str | None:
+    """The server's own message when a 400 is the context-size refusal.
+
+    ``None`` for every other status and every other 400, including a body
+    this cannot parse: a transport that guessed "probably a context
+    overflow" from unparsed bytes would degrade rows on schema errors too.
+    E20 (2026-09-19).
+    """
+
+    if status != 400:
+        return None
+    try:
+        document = json.loads(detail)
+    except (TypeError, ValueError):
+        return None
+    if not isinstance(document, Mapping):
+        return None
+    error = document.get("error")
+    if not isinstance(error, Mapping):
+        return None
+    if error.get("type") != FrozenCoreContextSizeError.WIRE_ERROR_TYPE:
+        return None
+    message = error.get("message")
+    return message if isinstance(message, str) and message else "exceed_context_size_error"
 
 
 def _default_post(timeout_seconds: float) -> Callable[[str, bytes], bytes]:
@@ -1181,6 +1207,22 @@ class LlamaServerTransport:
                 detail = error.read()[:2048].decode("utf-8", "replace")
             except OSError:
                 detail = "<unreadable body>"
+            # E20 (2026-09-19): ONE error class degrades. The built fork
+            # answers a prompt at or above the slot width with HTTP 400 and
+            # ``error.type == "exceed_context_size_error"``
+            # (``tools/server/server-common.cpp:59-62``); that -- and only
+            # that -- becomes FrozenCoreContextSizeError, so an episode
+            # running ``context_fit_policy == "compact-or-abstain"`` can
+            # retain the row. Every other status, and every other 400,
+            # raises exactly the FrozenCoreError it always did. The
+            # classification reads the parsed body, never a substring of a
+            # free-text message.
+            context_message = _exceed_context_message(error.code, detail)
+            if context_message is not None:
+                raise FrozenCoreContextSizeError(
+                    f"server returned HTTP {error.code} {error.reason}: {detail}",
+                    server_message=context_message,
+                ) from error
             raise FrozenCoreError(
                 f"server returned HTTP {error.code} {error.reason}: {detail}"
             ) from error
