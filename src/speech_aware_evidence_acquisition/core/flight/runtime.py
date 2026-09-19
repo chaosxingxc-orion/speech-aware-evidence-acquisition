@@ -5328,6 +5328,10 @@ class FlightRuntime:
                 # repository root still binds (the runner refuses only when a
                 # policy is declared AND no root was handed over).
                 repo_root=getattr(self, "_repo_root", None),
+                # E14: where a declared ``solver_hints`` block reads its
+                # RELEASED scenario-hints view from. Unused, and
+                # byte-identical to before, when none is declared.
+                data_root=getattr(self, "_data_root", None),
             )
         facet_seed, value_seed = self._phase_supply_seeds(
             program, binding, supply_specs, plan

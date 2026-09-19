@@ -2020,6 +2020,11 @@ async def _invoke_native_role_episode(
                 # E12: the armed Reviewer slot-audit block, or None -- in
                 # which case this call is byte-identical to its pre-E12 self.
                 config.reviewer_audit_json,
+                # E14: the armed Solver scenario-hints block and the data
+                # root its released view is read from; both None leaves this
+                # call byte-identical to its pre-E14 self.
+                config.solver_hints_json,
+                binding.data_root,
             )
             if node_context_binding is not None and (
                 node_context_binding.source_format_sha256

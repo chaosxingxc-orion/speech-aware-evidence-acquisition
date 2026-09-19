@@ -29,9 +29,19 @@ from .node_context_policy import (
     PARSE_FAILURE_RULES,
     SLOT_AUDIT_BOUNDARY,
     SLURP_BOUNDARY_IDS,
+    SOLVER_HINTS_BOUNDARY,
     NodeContextPolicyError,
     build_slurp_node_context_policy,
     resolve_slot_audit_binding,
+    resolve_solver_hints_binding,
+)
+from .scenario_hints import (
+    SCENARIO_HINTS_BOUND_KEYS,
+    SCENARIO_HINTS_VIEW_ID,
+    ScenarioHintsError,
+    load_scenario_hints_table,
+    scenario_hints_bounds,
+    validate_scenario_hints_pin,
 )
 from .slot_audit import (
     SLOT_AUDIT_VIEW_ID,
@@ -73,6 +83,16 @@ REVIEW_FINDINGS_RESPONSE_FORMAT_ID = "saea-review-findings-v1"
 #: defaults.
 _REVIEWER_AUDIT_REQUIRED_KEYS = frozenset({"view", "release", "snapshot"})
 _REVIEWER_AUDIT_OPTIONAL_KEYS = frozenset({"thresholds", "template"})
+
+#: E14 (2026-09-19, owner directive 26, cell B8c): the fields
+#: ``native_episode.solver_hints`` declares. ``view``, ``release`` and
+#: ``snapshot`` are required -- a view with no pinned bytes is not a view --
+#: and the two render bounds plus ``template`` fall back to the registered
+#: defaults of ``rails.scenario_hints``.
+_SOLVER_HINTS_REQUIRED_KEYS = frozenset({"view", "release", "snapshot"})
+_SOLVER_HINTS_OPTIONAL_KEYS = frozenset(
+    {"template", *SCENARIO_HINTS_BOUND_KEYS}
+)
 
 _TOP_LEVEL_KEYS = frozenset({"level", "policy_id", "params", "boundaries", "producers"})
 _BOUNDARY_KEYS = frozenset({"level", "template", "on_parse_failure", "cleaning"})
@@ -441,24 +461,27 @@ def validate_reviewer_audit_config(document: object) -> str:
     return _bytes(dict(document)).decode()
 
 
-def reviewer_audit_requires_structured_boundary(context_policy_json: str | None) -> None:
-    """Refuse an armed audit whose boundary is not at L1.
+def _requires_structured_boundary(
+    context_policy_json: str | None, *, key: str, boundary: tuple[str, str],
+) -> None:
+    """Refuse an armed context block whose boundary is not at L1.
 
-    The block is an ADDITION to the ``reviewer:current-draft`` L1 rendering,
-    so it has nothing to attach to at ``raw`` and would be cleaned away at
+    Shared by E12's Reviewer slot audit and E14's Solver scenario hints:
+    both are ADDITIONS to a boundary's own L1 rendering, so both have
+    nothing to attach to at ``raw`` and would be cleaned away at
     ``cleaned``. Checked before contact, by name.
     """
 
-    spelling = f"{SLOT_AUDIT_BOUNDARY[0]}:{SLOT_AUDIT_BOUNDARY[1]}"
+    spelling = f"{boundary[0]}:{boundary[1]}"
     if context_policy_json is None:
         raise ValueError(
-            "native_episode.reviewer_audit requires a declared "
+            f"{key} requires a declared "
             f"native_episode.context_policy with {spelling} at level 'structured'"
         )
     spec = json.loads(context_policy_json)
     if isinstance(spec, str) or not isinstance(spec, Mapping):
         raise ValueError(
-            f"native_episode.reviewer_audit requires {spelling} at level 'structured'"
+            f"{key} requires {spelling} at level 'structured'"
         )
     default_level = spec.get("level", "raw")
     entry = (spec.get("boundaries") or {}).get(spelling)
@@ -469,9 +492,95 @@ def reviewer_audit_requires_structured_boundary(context_policy_json: str | None)
     )
     if level != "structured":
         raise ValueError(
-            f"native_episode.reviewer_audit requires the {spelling} boundary at level "
+            f"{key} requires the {spelling} boundary at level "
             f"'structured'; the declared policy puts it at {level!r}"
         )
+
+
+def reviewer_audit_requires_structured_boundary(context_policy_json: str | None) -> None:
+    """Refuse an armed audit whose boundary is not at L1 (E12)."""
+
+    _requires_structured_boundary(
+        context_policy_json,
+        key="native_episode.reviewer_audit",
+        boundary=SLOT_AUDIT_BOUNDARY,
+    )
+
+
+def solver_hints_requires_structured_boundary(
+    context_policy_json: str | None,
+) -> None:
+    """Refuse an armed scenario-hints block whose boundary is not at L1 (E14)."""
+
+    _requires_structured_boundary(
+        context_policy_json,
+        key="native_episode.solver_hints",
+        boundary=SOLVER_HINTS_BOUNDARY,
+    )
+
+
+def is_solver_hints_null_arm(document: object) -> bool:
+    """E14: whether a ``native_episode.solver_hints`` value is the key's own
+    OFF form. The node is ABSENT or it is armed -- there is no third shape,
+    exactly as ``native_episode.reviewer_audit``'s is."""
+
+    return document is None
+
+
+def validate_solver_hints_config(document: object) -> str:
+    """Return the immutable canonical config text for the armed hints block.
+
+    SHAPE ONLY, and deliberately: no file is opened here, exactly as
+    :func:`validate_reviewer_audit_config` opens none. The released bytes are
+    read, hashed and cross-checked once, in
+    :func:`build_node_context_policy_binding`, so a config can be validated
+    (and its hash composed) on a machine that carries no materialised data
+    root.
+    """
+
+    if not isinstance(document, Mapping):
+        raise ValueError(
+            "native_episode.solver_hints must be an object declaring "
+            f"{sorted(_SOLVER_HINTS_REQUIRED_KEYS)}"
+        )
+    unknown = sorted(
+        set(document) - _SOLVER_HINTS_REQUIRED_KEYS - _SOLVER_HINTS_OPTIONAL_KEYS
+    )
+    if unknown or not _SOLVER_HINTS_REQUIRED_KEYS <= set(document):
+        raise ValueError(
+            "native_episode.solver_hints has unknown or missing fields; it "
+            f"declares {sorted(_SOLVER_HINTS_REQUIRED_KEYS)} and may add "
+            f"{sorted(_SOLVER_HINTS_OPTIONAL_KEYS)}"
+        )
+    if document["view"] != SCENARIO_HINTS_VIEW_ID:
+        raise ValueError(
+            f"native_episode.solver_hints.view must be {SCENARIO_HINTS_VIEW_ID!r}; "
+            "this carrier registers no other scenario-hints view"
+        )
+    for field_name in ("release", "snapshot"):
+        try:
+            validate_scenario_hints_pin(
+                document[field_name], field_name=f"solver_hints.{field_name}",
+            )
+        except ScenarioHintsError as error:
+            raise ValueError(str(error)) from error
+    template = document.get("template")
+    if template is not None and (
+        not isinstance(template, str) or not template.startswith("probes/")
+    ):
+        raise ValueError(
+            "native_episode.solver_hints.template must be a 'probes/<name>.txt' "
+            "path under configs/"
+        )
+    try:
+        scenario_hints_bounds({
+            name: document[name]
+            for name in SCENARIO_HINTS_BOUND_KEYS
+            if name in document
+        })
+    except ScenarioHintsError as error:
+        raise ValueError(str(error)) from error
+    return _bytes(dict(document)).decode()
 
 
 @dataclass(frozen=True)
@@ -488,7 +597,7 @@ class NodeContextPolicyBinding:
 def build_slurp_node_context_policy_compiler(
     *, perception_response_format: Mapping[str, object], params: Mapping[str, object],
     repo_root: Path, level: str, boundaries: Mapping[str, Mapping[str, object]],
-    policy_id: str, slot_audit: object = None,
+    policy_id: str, slot_audit: object = None, solver_hints: object = None,
 ):
     """Derive legal candidate IDs from the actual bound Perception schema.
 
@@ -520,7 +629,7 @@ def build_slurp_node_context_policy_compiler(
         return build_slurp_node_context_policy(
             repo_root=repo_root, policy_id=policy_id, level=level,
             boundaries=boundaries, legal_intent_ids=tuple(legal), params=params,
-            slot_audit=slot_audit,
+            slot_audit=slot_audit, solver_hints=solver_hints,
         )
     except NodeContextPolicyError as error:
         raise ValueError(str(error)) from error
@@ -616,9 +725,46 @@ def build_slot_audit_binding(reviewer_audit_json: str, repo_root: Path):
         raise ValueError(str(error)) from error
 
 
+def build_solver_hints_binding(
+    solver_hints_json: str, repo_root: Path, data_root: Path,
+):
+    """E14: resolve the canonical ``solver_hints`` text into a live binding.
+
+    This is where the two released files under the controlled data root are
+    read, hashed against their declared pins and cross-checked, and where
+    the committed hints template is loaded -- one place, fail-closed, before
+    any contact.
+    """
+
+    spec = json.loads(solver_hints_json)
+    if validate_solver_hints_config(spec) != solver_hints_json:
+        raise ValueError(
+            "solver hints config is not its canonical bound representation"
+        )
+    try:
+        table = load_scenario_hints_table(
+            data_root,
+            release=spec["release"],
+            snapshot=spec["snapshot"],
+            view_id=spec["view"],
+        )
+        bounds = scenario_hints_bounds({
+            name: spec[name] for name in SCENARIO_HINTS_BOUND_KEYS if name in spec
+        })
+    except ScenarioHintsError as error:
+        raise ValueError(str(error)) from error
+    try:
+        return resolve_solver_hints_binding(
+            repo_root, table=table, bounds=bounds, template=spec.get("template"),
+        )
+    except NodeContextPolicyError as error:
+        raise ValueError(str(error)) from error
+
+
 def build_node_context_policy_binding(
     config_json: str, perception_response_format: Mapping[str, object],
     repo_root: Path, reviewer_audit_json: str | None = None,
+    solver_hints_json: str | None = None, data_root: Path | None = None,
 ) -> NodeContextPolicyBinding:
     """Resolve the canonical config text into a live, template-bound policy.
 
@@ -635,6 +781,17 @@ def build_node_context_policy_binding(
     if reviewer_audit_json is not None:
         reviewer_audit_requires_structured_boundary(config_json)
         slot_audit = build_slot_audit_binding(reviewer_audit_json, repo_root)
+    solver_hints = None
+    if solver_hints_json is not None:
+        solver_hints_requires_structured_boundary(config_json)
+        if data_root is None:
+            raise ValueError(
+                "native_episode.solver_hints requires the controlled data root "
+                "its released scenario-hints view is read from"
+            )
+        solver_hints = build_solver_hints_binding(
+            solver_hints_json, repo_root, Path(data_root),
+        )
     if is_node_context_null_arm(spec):
         # The DECLARED OFF arm. It parses nothing and renders nothing, so it
         # needs neither the Perception schema nor a template -- but it still
@@ -673,6 +830,7 @@ def build_node_context_policy_binding(
         boundaries=spec.get("boundaries", {}),
         policy_id=spec["policy_id"],
         slot_audit=slot_audit,
+        solver_hints=solver_hints,
     )
     templates: dict[str, str] = {}
     if slot_audit is not None:
@@ -684,6 +842,19 @@ def build_node_context_policy_binding(
         templates[f"{spelling}:slot-audit"] = slot_audit.template.sha256
         templates[f"{spelling}:slot-audit-release"] = slot_audit.table.release_sha256
         templates[f"{spelling}:slot-audit-snapshot"] = slot_audit.table.snapshot_sha256
+    if solver_hints is not None:
+        # E14: the hints block pins THREE assets beside the boundary's own L1
+        # template -- its rendering template and the two released files of
+        # the construction table -- so a receipt names every byte the block
+        # was composed from.
+        spelling = f"{SOLVER_HINTS_BOUNDARY[0]}:{SOLVER_HINTS_BOUNDARY[1]}"
+        templates[f"{spelling}:scenario-hints"] = solver_hints.template.sha256
+        templates[f"{spelling}:scenario-hints-release"] = (
+            solver_hints.table.release_sha256
+        )
+        templates[f"{spelling}:scenario-hints-snapshot"] = (
+            solver_hints.table.snapshot_sha256
+        )
     for entry in policy.declared_boundaries():
         if entry["template_sha256"] is not None:
             templates[entry["boundary"]] = entry["template_sha256"]
@@ -719,12 +890,16 @@ __all__ = [
     "build_node_context_policy_binding",
     "build_slot_audit_binding",
     "build_slurp_node_context_policy_compiler",
+    "build_solver_hints_binding",
     "is_node_context_null_arm",
     "is_reviewer_audit_null_arm",
+    "is_solver_hints_null_arm",
     "node_context_cleaning_boundaries",
     "node_context_producer_formats",
     "node_context_source_format_id",
     "reviewer_audit_requires_structured_boundary",
+    "solver_hints_requires_structured_boundary",
     "validate_node_context_policy_config",
     "validate_reviewer_audit_config",
+    "validate_solver_hints_config",
 ]

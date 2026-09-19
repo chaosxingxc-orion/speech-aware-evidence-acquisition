@@ -1,0 +1,14 @@
+# saea-node-context-template-v1 renderer=scenario-hints
+[header]
+SCENARIO HINTS ({view_id}; TRAIN construction neighbours of the candidates above, not gold and not this recording)
+[candidate]
+  {intent_id} ({intent_rows} construction rows)
+[neighbour]
+    confusable with {neighbour_id} -- {leakage}; cues for {intent_id}: {cues}
+[neighbour_empty]
+    {reason}
+[candidate_empty]
+  no candidate above carries a construction profile in the table
+[footer]
+These are construction neighbours and construction word frequencies, not a verdict and not
+evidence that anything was said. Decide from the speech you were given.

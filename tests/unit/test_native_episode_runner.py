@@ -500,6 +500,12 @@ class _ActualEpisodeHarness:
             request_gate=self.request_gate,
             tools_for_phase=self.tools_for_phase,
             repo_root=self.repo_root,
+            # E14: the controlled data root a declared
+            # ``native_episode.solver_hints`` block reads its RELEASED
+            # scenario-hints view from. None -- every harness written
+            # before E14 and every OFF arm -- leaves this binding
+            # byte-identical to its pre-E14 self.
+            data_root=getattr(self, "solver_hints_data_root", None),
         )
         source_kwargs = (
             {}

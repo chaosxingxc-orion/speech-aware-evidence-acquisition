@@ -1983,6 +1983,144 @@ def load_slurp_intent_row_profiles(
     )
 
 
+#: Identity of the per-utterance CONSTRUCTION TEXT pool
+#: :func:`load_slurp_construction_utterances` mines (E14, 2026-09-19, owner
+#: directive 26). Distinct from :data:`SLURP_INTENT_ROW_PROFILE_ID` because the
+#: SHAPE differs: that reader returns per-intent aggregates, this one returns
+#: one row per construction utterance, carrying its own tokens -- which is what
+#: a neighbour-and-cue builder needs and what an aggregate cannot supply.
+SLURP_CONSTRUCTION_TEXT_POOL_ID = "slurp-construction-text-pool-v1"
+
+
+@dataclass(frozen=True)
+class SlurpConstructionUtterance:
+    """One construction utterance: its identity, its intent and its tokens.
+
+    ``tokens`` are the governed annotation's own token surfaces, in the
+    annotation's own ``id`` order, lower-cased and otherwise untouched -- no
+    stemming, no stopword filtering and no de-duplication happen here. A row
+    whose ``tokens`` block is unusable keeps an empty tuple rather than
+    disappearing, exactly as :func:`load_slurp_intent_row_profiles` still
+    counts it toward its intent's rows.
+    """
+
+    utterance_id: str
+    slurp_id: int
+    intent: str
+    tokens: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class SlurpConstructionTextPool:
+    """Every retained construction utterance plus the identity of the pool."""
+
+    pool_id: str
+    source_split: str
+    source_identity_hash: str
+    utterance_count: int
+    #: Sorted by ``utterance_id``, so the pool is a deterministic sequence.
+    utterances: tuple[SlurpConstructionUtterance, ...]
+    excluded_train_utterance_ids: tuple[str, ...] = ()
+
+    @property
+    def utterance_ids(self) -> tuple[str, ...]:
+        return tuple(row.utterance_id for row in self.utterances)
+
+    @property
+    def intent_ids(self) -> tuple[str, ...]:
+        return tuple(sorted({row.intent for row in self.utterances}))
+
+
+def load_slurp_construction_utterances(
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    excluded_train_utterance_ids: Sequence[str] | None = None,
+) -> SlurpConstructionTextPool:
+    """Mine the per-utterance construction TEXT pool from ``train.jsonl`` alone.
+
+    Split discipline, determinism and exclusion semantics are exactly
+    :func:`load_slurp_intent_row_profiles`'s -- the split file is named by a
+    module constant, there is no ``split`` parameter and no caller-supplied
+    path, exclusions are canonical utterance IDs validated before TRAIN is read
+    and refused when unknown -- and the identity hash is computed over the same
+    retained id set, so a table built from this pool and a table built from
+    that one bind the SAME ``source_identity_hash`` and can be cross-checked.
+
+    It carries SENTENCE TOKENS, which is why it lives beside
+    :func:`load_slurp_train_construction_rows` under the same one-reader
+    discipline: a devel or test row cannot be reached through this entry point
+    at all. It carries no entity annotation, no filler, no recording and no
+    media fact -- a neighbour-and-cue builder needs the words and the label,
+    and nothing else.
+    """
+
+    exclusions = normalize_slurp_train_utterance_exclusions(
+        excluded_train_utterance_ids
+    )
+    exclusion_set = frozenset(exclusions)
+    split_id = _ROSTER_SPLITS_LEGAL[0]
+    _, _, metadata_dir = _governed_roots(lock, root)
+    metadata_path = metadata_dir / _SPLIT_FILES[split_id]
+    if not metadata_path.is_file():
+        raise LoaderError(f"SLURP split metadata file missing: {metadata_path}")
+
+    available_utterance_ids: set[str] = set()
+    retained: dict[str, SlurpConstructionUtterance] = {}
+    for line_no, raw in enumerate(_read_jsonl(metadata_path), start=1):
+        context = f"SLURP {split_id}.jsonl line {line_no}"
+        scenario = raw.get("scenario")
+        action = raw.get("action")
+        if not isinstance(scenario, str) or not scenario:
+            continue
+        if not isinstance(action, str) or not action:
+            continue
+        utterance_id = _train_utterance_id(raw, context)
+        available_utterance_ids.add(utterance_id)
+        if utterance_id in exclusion_set:
+            continue
+        if utterance_id in retained:
+            raise LoaderError(
+                f"{context}: SLURP TRAIN repeats utterance {utterance_id}"
+            )
+        try:
+            tokens_by_id = _tokens_by_id(raw.get("tokens"), context)
+        except LoaderError:
+            tokens_by_id = {}
+        tokens = tuple(
+            str(tokens_by_id[token_id]).lower() for token_id in sorted(tokens_by_id)
+        )
+        retained[utterance_id] = SlurpConstructionUtterance(
+            utterance_id=utterance_id,
+            slurp_id=int(utterance_id.rsplit(":", 1)[1]),
+            intent=f"{scenario}_{action}",
+            tokens=tokens,
+        )
+
+    unknown_exclusions = sorted(exclusion_set - available_utterance_ids)
+    if unknown_exclusions:
+        raise LoaderError(
+            "excluded_train_utterance_ids contains ID absent from governed TRAIN "
+            f"metadata: {unknown_exclusions[0]}"
+        )
+    if not retained:
+        raise LoaderError(
+            f"SLURP {split_id} metadata {metadata_path} yielded no labelled utterance; "
+            "refusing to build an empty construction text pool"
+        )
+    identity_hash = hashlib.sha256(
+        "\n".join(sorted(retained)).encode("utf-8")
+    ).hexdigest()
+    return SlurpConstructionTextPool(
+        pool_id=SLURP_CONSTRUCTION_TEXT_POOL_ID,
+        source_split=split_id,
+        source_identity_hash=identity_hash,
+        utterance_count=len(retained),
+        utterances=tuple(retained[key] for key in sorted(retained)),
+        excluded_train_utterance_ids=exclusions,
+    )
+
+
 def load_slurp_train_construction_rows(
     lock: Mapping[str, object],
     root: Path,
@@ -2112,11 +2250,14 @@ def load_slurp_train_construction_rows(
 
 
 __all__ = [
+    "SLURP_CONSTRUCTION_TEXT_POOL_ID",
     "SLURP_INTENT_ROW_PROFILE_ID",
     "SLURP_INTENT_SLOT_DECONTAMINATION_RECEIPTS",
     "SLURP_INTENT_SLOT_SCHEMA_ID",
     "SLURP_INTENT_SLOT_SCHEMA_RECEIPT_SCHEMA",
     "SLURP_LOCK_KEY",
+    "SlurpConstructionTextPool",
+    "SlurpConstructionUtterance",
     "SlurpIntentRowProfile",
     "SlurpIntentRowProfiles",
     "SlurpIntentSlotSchema",
@@ -2125,6 +2266,7 @@ __all__ = [
     "SlurpRecord",
     "SlurpTrainMaterial",
     "SlurpTrainRecording",
+    "load_slurp_construction_utterances",
     "load_slurp_intent_row_profiles",
     "load_slurp_intent_slot_schema",
     "load_slurp_train_utterance_ids",

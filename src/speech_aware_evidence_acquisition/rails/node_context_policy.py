@@ -63,6 +63,17 @@ from ..reproduction.slurp_scoring import parse_slu_response
 from .knowledge import AgentStateArtifact, RailsError
 from .review_findings import ReviewFindingsError, parse_review_findings
 from .role_context import validate_role_context_draft_schema
+from .scenario_hints import (
+    NO_CUES,
+    NO_NEIGHBOUR,
+    SCENARIO_HINTS_RECEIPT_SCHEMA,
+    ScenarioHintsBounds,
+    ScenarioHintsTable,
+    hint_counts,
+    render_cues,
+    render_leakage,
+    scenario_hints,
+)
 from .slot_audit import (
     SLOT_AUDIT_RECEIPT_SCHEMA,
     SlotAuditTable,
@@ -225,6 +236,19 @@ SLOT_AUDIT_BOUNDARY: tuple[str, str] = ("reviewer", "current-draft")
 SLOT_AUDIT_TEMPLATE = "probes/ncp_slurp_slot_audit_reviewer_v1.txt"
 SLOT_AUDIT_RENDERER = "slot-audit"
 
+#: E14 (2026-09-19, owner directive 26, cell B8c): the ONE boundary the
+#: Solver scenario-hints block is appended at, and the committed template it
+#: is rendered through. Like the E12 audit block it is an ADDITION to that
+#: boundary's own L1 rendering, never a replacement: the candidate list above
+#: it is produced by the same code and the same template as on the base,
+#: which is what keeps the cell one factor and makes "everything outside this
+#: boundary is byte identical" a checkable statement. The REVIEWER's own
+#: candidate-hypothesis boundary is deliberately NOT this one: the hints are
+#: for the node that CHOOSES between the candidates.
+SOLVER_HINTS_BOUNDARY: tuple[str, str] = ("solver", "candidate-hypothesis")
+SOLVER_HINTS_TEMPLATE = "probes/ncp_slurp_scenario_hints_solver_v1.txt"
+SOLVER_HINTS_RENDERER = "scenario-hints"
+
 #: The default malformed rule per boundary. ``FALLBACK-RAW`` everywhere the
 #: design proposes to fly; ``plan-action`` refuses, because the harness already
 #: fails a row whose Planner emitted an unregistered action token.
@@ -347,6 +371,18 @@ RENDERER_SECTIONS: Mapping[str, Mapping[str, tuple[str, ...]]] = {
         "flags_empty": (),
         "footer": (),
     },
+    # E14. The Solver scenario-hints block: each Perception candidate's
+    # construction confusion neighbours and the construction cue words that
+    # discriminate the candidate from each neighbour, appended after the
+    # candidate list at ``solver:candidate-hypothesis``.
+    SOLVER_HINTS_RENDERER: {
+        "header": ("view_id",),
+        "candidate": ("intent_id", "intent_rows"),
+        "neighbour": ("intent_id", "neighbour_id", "leakage", "cues"),
+        "neighbour_empty": ("reason",),
+        "candidate_empty": (),
+        "footer": (),
+    },
 }
 
 # -- the closed vocabulary a rendering may introduce ------------------------
@@ -375,6 +411,10 @@ CLOSED_VOCABULARY: tuple[str, ...] = (
     CHECK_NO,
     CHECK_NA,
     CHECK_NO_INVENTORY,
+    # E14: the scenario-hints block's own two closed phrases, declared in
+    # ``rails.scenario_hints`` beside the rule that emits them.
+    NO_CUES,
+    NO_NEIGHBOUR,
 )
 
 #: The tool whose result the ``tool-observation`` boundary may reference rather
@@ -599,6 +639,13 @@ PROVENANCE_CLEANED = "cleaning-contact"
 #: the construction pool alone and carrying no filler, no sentence and no gold
 #: of any evaluated row (``rails.slot_audit``).
 PROVENANCE_AUDIT = "slot-audit-table"
+#: E14: a value read off the PINNED scenario-hints table -- a construction
+#: row count, a construction k-NN leakage rate, or a construction cue word.
+#: It is not a free value either: the table is two hash-pinned released
+#: files, mined from the construction pool alone and carrying no utterance
+#: id, no recording and no gold of any evaluated row
+#: (``rails.scenario_hints``).
+PROVENANCE_HINTS = "scenario-hints-table"
 PROVENANCES = (
     PROVENANCE_SOURCE,
     PROVENANCE_COMPOSED,
@@ -608,6 +655,7 @@ PROVENANCES = (
     PROVENANCE_LIMIT,
     PROVENANCE_CLEANED,
     PROVENANCE_AUDIT,
+    PROVENANCE_HINTS,
 )
 
 
@@ -1050,6 +1098,52 @@ class SlotAuditBinding:
 
 
 @dataclass(frozen=True)
+class SolverHintsBinding:
+    """E14: the armed Solver scenario-hints block -- table, bounds, template.
+
+    Present exactly when ``native_episode.solver_hints`` is armed; ``None``
+    on every other flight, where the boundary renders the pre-E14 bytes.
+    """
+
+    table: ScenarioHintsTable
+    bounds: ScenarioHintsBounds
+    template: NodeContextTemplate
+
+    def receipt(
+        self,
+        *,
+        applied: bool,
+        candidate_ids: Sequence[str] = (),
+        hints: Sequence[object] = (),
+        block_text: str | None = None,
+        reason: str | None = None,
+    ) -> dict[str, object]:
+        """The per-contact hints receipt block, the same shape whether the
+        block was rendered or not."""
+
+        return {
+            "schema": SCENARIO_HINTS_RECEIPT_SCHEMA,
+            "view_id": self.table.view_id,
+            "release_sha256": self.table.release_sha256,
+            "snapshot_sha256": self.table.snapshot_sha256,
+            "table_content_hash": self.table.content_hash(),
+            "template_id": self.template.template_id,
+            "template_sha256": self.template.sha256,
+            "bounds": self.bounds.as_json(),
+            "applied": applied,
+            "reason": reason,
+            "candidate_ids": [str(candidate) for candidate in candidate_ids],
+            "covered_intent_ids": [hint.intent for hint in hints],
+            "block_sha256": (
+                None if block_text is None else _sha256_text(block_text)
+            ),
+            "block_chars": None if block_text is None else len(block_text),
+            "counts": hint_counts(list(hints)),
+            "hints": [hint.as_json() for hint in hints],
+        }
+
+
+@dataclass(frozen=True)
 class NodeContextCompilation:
     """The exposed states one contact actually receives, and its receipt."""
 
@@ -1097,6 +1191,7 @@ class SlurpNodeContextPolicy:
         draft_response_schema: Mapping[str, object] | None = None,
         legal_entity_types: Sequence[str] = (),
         slot_audit: SlotAuditBinding | None = None,
+        solver_hints: SolverHintsBinding | None = None,
     ) -> None:
         if not isinstance(policy_id, str) or not policy_id.strip():
             raise NodeContextPolicyError("node context policy_id must be text")
@@ -1109,6 +1204,16 @@ class SlurpNodeContextPolicy:
                     f"{SLOT_AUDIT_BOUNDARY[0]}:{SLOT_AUDIT_BOUNDARY[1]} boundary at "
                     "level 'structured'; it is an addition to that boundary's own L1 "
                     "rendering, not a level of its own"
+                )
+        self.solver_hints = solver_hints
+        if solver_hints is not None:
+            entry = boundaries.get(SOLVER_HINTS_BOUNDARY)
+            if entry is None or entry.level != "structured":
+                raise NodeContextPolicyError(
+                    "the solver scenario-hints block requires the "
+                    f"{SOLVER_HINTS_BOUNDARY[0]}:{SOLVER_HINTS_BOUNDARY[1]} boundary "
+                    "at level 'structured'; it is an addition to that boundary's own "
+                    "L1 rendering, not a level of its own"
                 )
         if not any(entry.level != "raw" for entry in boundaries.values()):
             # An ALL-RAW policy parses nothing and renders nothing, so it needs
@@ -1295,6 +1400,9 @@ class SlurpNodeContextPolicy:
                     slot_audit=self._slot_audit_row(
                         role_kind, policy, None, reason="boundary-rendered-raw",
                     ),
+                    solver_hints=self._solver_hints_row(
+                        role_kind, policy, None, reason="boundary-rendered-raw",
+                    ),
                 ))
                 continue
             cleaning_contact = None
@@ -1312,6 +1420,10 @@ class SlurpNodeContextPolicy:
                 role_kind, policy, derived_fields.pop("slot_audit", None),
                 reason="draft-unparsed",
             )
+            hints_row = self._solver_hints_row(
+                role_kind, policy, derived_fields.pop("solver_hints", None),
+                reason="candidates-unparsed",
+            )
             derived = self._derived_state(
                 source=state, role_kind=role_kind,
                 semantic_class=policy.semantic_class, sample_id=sample_id,
@@ -1325,6 +1437,7 @@ class SlurpNodeContextPolicy:
                 derived_fields=derived_fields,
                 cleaning_contact=cleaning_contact,
                 slot_audit=audit_row,
+                solver_hints=hints_row,
             ))
         receipt = {
             "schema": NODE_CONTEXT_COMPILATION_SCHEMA,
@@ -1539,10 +1652,19 @@ class SlurpNodeContextPolicy:
                 ),
             })
         block.add("footer")
-        return block.finish({
+        rendered = block.finish({
             "candidate_count": len(rows),
             "intent_ids": [row["intent_id"] for row in rows],
         })
+        if (
+            self.solver_hints is None
+            or (policy.consumer_role_kind, policy.semantic_class)
+            != SOLVER_HINTS_BOUNDARY
+        ):
+            return rendered
+        return self._append_solver_hints(
+            rendered, candidate_ids=[row["intent_id"] for row in rows],
+        )
 
     def _render_draft(
         self,
@@ -1688,6 +1810,82 @@ class SlurpNodeContextPolicy:
         return RenderedBlock(
             text=f"{rendered.text}\n{audit_block.text}",
             substitutions=rendered.substitutions + audit_block.substitutions,
+            derived_fields=derived,
+        )
+
+    # -- E14: the Solver scenario-hints block -------------------------------
+
+    def _append_solver_hints(
+        self, rendered: RenderedBlock, *, candidate_ids: Sequence[str],
+    ) -> RenderedBlock:
+        """Append the scenario-hints block to one Solver candidate rendering.
+
+        An ADDITION, never a rewrite: ``rendered.text`` is the same L1 block
+        the base renders, byte for byte, and the hints follow it after one
+        newline. Zero contacts; every substituted value is a construction row
+        count, a construction leakage rate, a construction cue word, a legal
+        intent id the consumer already holds in the list above, or one of the
+        module's two closed phrases.
+        """
+
+        hints = self.solver_hints
+        selected = scenario_hints(
+            candidate_ids=candidate_ids, table=hints.table, bounds=hints.bounds,
+        )
+        block = _Block(hints.template)
+        block.add("header", {
+            "view_id": Substitution(
+                "view_id", hints.table.view_id, PROVENANCE_HINTS
+            ),
+        })
+        if not selected:
+            block.add("candidate_empty")
+        for hint in selected:
+            block.add("candidate", {
+                "intent_id": Substitution(
+                    "intent_id", hint.intent, PROVENANCE_INVENTORY
+                ),
+                "intent_rows": Substitution(
+                    "intent_rows", str(hint.rows), PROVENANCE_HINTS
+                ),
+            })
+            if not hint.lines:
+                block.add("neighbour_empty", {
+                    "reason": Substitution(
+                        "reason", NO_NEIGHBOUR, PROVENANCE_VOCABULARY
+                    ),
+                })
+            for line in hint.lines:
+                block.add("neighbour", {
+                    "intent_id": Substitution(
+                        "intent_id", line.intent, PROVENANCE_INVENTORY
+                    ),
+                    "neighbour_id": Substitution(
+                        "neighbour_id", line.neighbour, PROVENANCE_INVENTORY
+                    ),
+                    "leakage": Substitution(
+                        "leakage",
+                        render_leakage(line.leaked, line.of_neighbours),
+                        PROVENANCE_HINTS,
+                    ),
+                    "cues": Substitution(
+                        "cues",
+                        render_cues(line.cues),
+                        PROVENANCE_HINTS if line.cues else PROVENANCE_VOCABULARY,
+                    ),
+                })
+        block.add("footer")
+        hints_block = block.finish({})
+        derived = dict(rendered.derived_fields)
+        derived["solver_hints"] = hints.receipt(
+            applied=True,
+            candidate_ids=candidate_ids,
+            hints=selected,
+            block_text=hints_block.text,
+        )
+        return RenderedBlock(
+            text=f"{rendered.text}\n{hints_block.text}",
+            substitutions=rendered.substitutions + hints_block.substitutions,
             derived_fields=derived,
         )
 
@@ -2077,6 +2275,31 @@ class SlurpNodeContextPolicy:
             return rendered_row
         return self.slot_audit.receipt(applied=False, reason=reason)
 
+    def _solver_hints_row(
+        self,
+        role_kind: str,
+        policy: NodeContextBoundaryPolicy,
+        rendered_row: Mapping[str, object] | None,
+        *,
+        reason: str,
+    ) -> Mapping[str, object] | None:
+        """E14: the hints receipt block for one boundary row.
+
+        ``None`` on every boundary but the armed one, and on every flight
+        that arms no hints -- so a pre-E14 receipt keeps exactly its pre-E14
+        fields. On the armed boundary it is always present: rendered, or
+        explicitly ``applied: false`` with the reason, because a silent
+        absence and a deliberate skip must not look alike in the receipt.
+        """
+
+        if self.solver_hints is None:
+            return None
+        if (role_kind, policy.semantic_class) != SOLVER_HINTS_BOUNDARY:
+            return None
+        if rendered_row is not None:
+            return rendered_row
+        return self.solver_hints.receipt(applied=False, reason=reason)
+
     def _source_binding(
         self, source: AgentStateArtifact, position: int,
     ) -> dict[str, object]:
@@ -2149,6 +2372,7 @@ class SlurpNodeContextPolicy:
         derived_fields: Mapping[str, object],
         cleaning_contact: Mapping[str, object] | None = None,
         slot_audit: Mapping[str, object] | None = None,
+        solver_hints: Mapping[str, object] | None = None,
     ) -> Mapping[str, object]:
         template = policy.template
         row = self._finish_row({
@@ -2181,6 +2405,14 @@ class SlurpNodeContextPolicy:
             # function of exactly its pre-E12 fields and only an ARMED audit
             # moves it.
             row["slot_audit"] = dict(slot_audit)
+            row.pop("receipt_sha256")
+            self._finish_row(row)
+        if solver_hints is not None:
+            # E14, the same discipline: added AFTER the row digest was
+            # computed, then re-digested, so a pre-E14 row's
+            # ``receipt_sha256`` is a function of exactly its pre-E14 fields
+            # and only ARMED hints move it.
+            row["solver_hints"] = dict(solver_hints)
             row.pop("receipt_sha256")
             self._finish_row(row)
         return row
@@ -2268,6 +2500,26 @@ def resolve_slot_audit_binding(
     return SlotAuditBinding(table=table, thresholds=thresholds, template=resolved)
 
 
+def resolve_solver_hints_binding(
+    repo_root: Path,
+    *,
+    table: ScenarioHintsTable,
+    bounds: ScenarioHintsBounds,
+    template: str | None = None,
+) -> SolverHintsBinding:
+    """E14: load and check the committed template the scenario-hints block
+    renders through, and bind it to the pinned table and declared bounds."""
+
+    relpath = SOLVER_HINTS_TEMPLATE if template is None else template
+    resolved = load_node_context_template(repo_root, relpath)
+    if resolved.renderer != SOLVER_HINTS_RENDERER:
+        raise NodeContextPolicyError(
+            f"the solver scenario-hints block requires a {SOLVER_HINTS_RENDERER!r} "
+            f"template; {relpath!r} declares {resolved.renderer!r}"
+        )
+    return SolverHintsBinding(table=table, bounds=bounds, template=resolved)
+
+
 def build_slurp_node_context_policy(
     *,
     repo_root: Path,
@@ -2277,6 +2529,7 @@ def build_slurp_node_context_policy(
     legal_intent_ids: Iterable[str] = (),
     params: Mapping[str, object] | None = None,
     slot_audit: SlotAuditBinding | None = None,
+    solver_hints: SolverHintsBinding | None = None,
 ) -> SlurpNodeContextPolicy:
     """Resolve one validated ``context_policy`` block into a live policy.
 
@@ -2344,6 +2597,7 @@ def build_slurp_node_context_policy(
             )
         return SlurpNodeContextPolicy(
             policy_id=policy_id, boundaries=resolved, slot_audit=slot_audit,
+            solver_hints=solver_hints,
         )
     return SlurpNodeContextPolicy(
         policy_id=policy_id,
@@ -2354,6 +2608,7 @@ def build_slurp_node_context_policy(
         draft_response_schema=params["draft_response_schema"],
         legal_entity_types=tuple(params.get("legal_entity_types", ())),
         slot_audit=slot_audit,
+        solver_hints=solver_hints,
     )
 
 
@@ -2402,6 +2657,9 @@ __all__ = [
     "SLOT_AUDIT_BOUNDARY",
     "SLOT_AUDIT_RENDERER",
     "SLOT_AUDIT_TEMPLATE",
+    "SOLVER_HINTS_BOUNDARY",
+    "SOLVER_HINTS_RENDERER",
+    "SOLVER_HINTS_TEMPLATE",
     "SLURP_BOUNDARY_IDS",
     "SLURP_BOUNDARY_PARSE_FAILURE",
     "SLURP_BOUNDARY_TEMPLATES",
@@ -2417,6 +2675,7 @@ __all__ = [
     "ParsedDraft",
     "RenderedBlock",
     "SlotAuditBinding",
+    "SolverHintsBinding",
     "SlurpNodeContextPolicy",
     "Substitution",
     "build_slurp_node_context_policy",
@@ -2429,5 +2688,6 @@ __all__ = [
     "parse_plan_action",
     "parse_tool_observation",
     "resolve_slot_audit_binding",
+    "resolve_solver_hints_binding",
     "validate_cleaning_document",
 ]

@@ -720,7 +720,7 @@ the shared harness, each keeps its own comparator, and none of them is admitted 
 | --- | --- | --- | --- |
 | B8a | A1's USE projection v3 (`R_action` + legal-label v2, filler normalisation P2) | a delivery-time node, applied once to the accepted answer before delivery | E11, 2026-09-18 -- built, tested, `held` |
 | B8b | the A3 coverage-confusion and slot-loss audits | a Reviewer-side slot-audit context block: what the audit says about THIS row's delivered slot types, rendered as typed content at the reviewer boundary | E12, 2026-09-19 -- built, tested, `held` |
-| B8c | the A3 per-scenario confusion pairs | Solver-side scenario hints: the neighbours a scenario is actually confused with, as typed content at the solver boundary | not built |
+| B8c | the A3 per-scenario confusion pairs | Solver-side scenario hints: the neighbours a scenario is actually confused with, as typed content at the solver boundary | E14, 2026-09-19 -- built, tested, NOT registered |
 
 B8a is the write-side instance and is the one this program has built: it is a transform of what the
 episode DELIVERS, so it owes custody rather than context handling (`core.bundle.outputs` invariant
@@ -820,3 +820,101 @@ armed, and the loader refuses the wrong carrier and a non-L1 boundary).
 **What it does not authorise.** No owner decision, no preregistration, no exposure row and no
 contact. Cell B8b's fragments are `held`; it flies only after cell B7r seals and is not HARMFUL,
 behind its own four-row smoke.
+### 16.2 B8c as built (E14, 2026-09-19, branch `fable/e14`)
+
+**The boundary.** `solver:candidate-hypothesis` (`B-CAND-SOL`), and no other. The scenario-hints
+block is an ADDITION to that boundary's own L1 rendering, appended after the candidate list with
+one newline between them; the candidate list itself is produced by the same code and the same
+template as on the base, byte for byte. The Reviewer's own `candidate-hypothesis` boundary is
+deliberately NOT included: the hints are for the node that CHOOSES between the candidates, and
+keeping them out of the Reviewer is what makes "Perception, Reviewer and Planner requests are
+byte-identical with the key on and off" a checkable statement rather than an intention. For the
+same reason section 16.1 gives, the block requires its boundary at level `structured`: it has
+nothing to attach to at `raw` and would be replaced at `cleaned`, and both are refused by name
+before contact.
+
+**The analysis, and where it may come from.** A released construction view,
+`$SPEECHRL_DATA_DIR/knowledge/slurp/semantic/scenario-hints-v1/` (`release.json` +
+`snapshot.json` + `completion.json`, built by `scripts/build_slurp_scenario_hints_view.py`,
+registered under `rails.scenario_hints.SCENARIO_HINTS_VIEW_ID`). A3's own confusion pairs are
+NOT read: they were computed on the evaluated rows' gold, so they are a diagnostic ceiling and
+they stay one. The table re-derives its neighbours from the construction pool alone -- the
+governed TRAIN split minus every utterance with a recording in TRAIN Fold A, Fold B or DEV-1000,
+the 2026-09-13 exclusion, 9,354 utterances, exactly the pool `scripts/build_slurp_slot_audit_view.py`
+and `scripts/build_slurp_exemplar_pool_assets.py` pin, proved disjoint by the builder's own
+`refuse_evaluated_rows` and, additionally, checked identical to the identity hash the E12
+slot-audit receipt records for the same exclusion.
+
+**The derivation rule**, fixed in `rails.scenario_hints`, mirrored into the snapshot and refused
+by the loader when a snapshot declares another:
+
+| Step | Rule |
+| --- | --- |
+| neighbours | for each construction utterance of intent `i`, its `k = 10` nearest pool neighbours by cosine over the sealed content facet vectors (`vectors/slurp-kus3/facet-vectors.jsonl`, sha256 `5dfe7523…`, tool row `SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1`), leave-one-out; `leaked(i, j)` counts the neighbours carrying `j != i`, out of `rows(i) * k` |
+| neighbour floor | the top 3 `j` whose leakage share is at least 5 %, most leaked first, ties by intent id |
+| cues | per kept `(i, j)` pair, the content words with the highest `+1`-prior log-odds of DOCUMENT frequency in `i` against `j`, stopwords removed (a closed English function-word list committed in the module), minimum 3 documents in `i`, top 3 kept, ties by word |
+
+The vectors are READ, never recomputed: the pass that produced them is already paid for, and the
+builder hashes the file against the pin every committed exemplar fragment carries. Cosine is
+normalisation-invariant, so the build takes a local unit-norm copy and alters no released number.
+Every row's neighbour order is a FULL stable sort of its own similarity vector, so ties break by
+ascending pool index and the table does not depend on the chunk size the similarities were
+measured in.
+
+**What the released table carries.** 60 intents; 44 of them carry at least one neighbour (16 carry
+none, 18 one, 15 two, 11 three); 81 `(intent, neighbour)` pairs; 231 cue rows over 130 distinct
+cue words. Construction counts, construction leakage rates and construction WORDS -- no utterance
+id, no sentence, no recording, no entity filler and no gold of any evaluated row. Unlike the E12
+slot-audit table, which carries counts and shares only and is therefore committed, this one carries
+construction text, which in this program lives under the controlled data root; its pin is a
+declared sha256 checked on every binding, and `docs/receipts/knowledge/slurp-scenario-hints-v1.json`
+carries the same hashes into the repository.
+
+**Zero contacts, and the receipt that says so.** The block makes no model, tokenizer, encoder,
+scorer, tool, server or network contact, so the bounded ceiling of section 7 is unmoved. The
+boundary's own `saea-node-context-policy-v1` row gains a `solver_hints` block
+(`saea-solver-scenario-hints-v1`) carrying the view id, the release and snapshot sha256s, the
+table's content hash, the template id and hash, the bounds, `applied` / `reason`, the candidate ids
+the block was handed, the candidates it covered, the rendered block's sha256 and character count,
+the three counts (candidates, neighbours, cues) and the hints themselves. An unparsed Perception
+output renders no block and records `applied: false`, `reason: "candidates-unparsed"`. The
+compilation record's `template_sha256s` gains the three assets the block was composed from. Every
+row of every other boundary keeps exactly its pre-E14 fields and digest.
+
+**The switch.** One `episode`-class key, `native_episode.solver_hints`
+(`rails.config_tables.EPISODE_LEVEL_SWITCH_KEYS`, the seventh), OFF = the key's absence, ON = the
+view id, the two pins and the two optional render bounds `max_neighbours` / `max_cues`, which may
+only NARROW the released table. It is a SECOND key beside `native_episode.reviewer_audit` for the
+reason section 16.1 gives for that one: a cell that moves the Solver's hints must stay
+distinguishable from a cell that moves the Reviewer's audit. The armed key also requires the
+controlled data root, carried into the episode binding as the new optional
+`NativeEpisodeRunBinding.data_root`; every binding that arms no hints leaves it `None` and is
+byte-identical to its pre-E14 self.
+
+**Prompt fit.** The block is bounded at 3 candidates x 3 neighbours x 3 cues. Measured on the
+released table through the production render path: 578 characters when the three candidates carry
+no neighbour at all, 788 at the median candidate, 1,608 in the widest case the table admits --
+roughly 145, 197 and 402 tokens at the 4-characters-per-token convention section 16.1 used, against
+the 9,708 tokens of headroom section 8 measured at the worst observed contact.
+
+**Proofs.** `tests/unit/test_slurp_scenario_hints_view.py` (the builder's three falsifiers, the
+agreement with the E12 pool receipt, the leave-one-out and chunk-independence of the leakage
+measurement, the document-scoped cue frequencies, the log-odds formula, the loader's refusals over
+synthetic tables, and the released table's own content audit);
+`tests/unit/test_solver_scenario_hints_block.py` (the block is an addition and the L1 candidate
+list is byte-identical, no other boundary and no other role moves, byte-stable rendering, the
+bounds, the receipt, the "adds no information" property test, and the config refusals);
+`tests/unit/test_native_episode_runner_solver_hints.py` (the production render path: exactly the
+two Solver contacts move, the block appears once per Solver contact and nowhere else, the receipt
+and the asset pins reach the sealed episode receipt, and the OFF arm is the key's absence down to
+the byte); `tests/unit/test_b8c_solver_hints_config.py` (the key is one episode-class factor, the
+loaded OFF arm is the key's absence, and the loader refuses the wrong carrier, a non-L1 boundary
+and an armed block with no data root). Gates `engineering_base_check`, `harness_admission_check`,
+`tool_catalog_check`, `results_ledger_check` and `finite_completion_policy_check` PASS.
+
+**What it does not authorise, and what is NOT claimed.** No owner decision, no preregistration, no
+exposure row, no readiness package, no committed arm and no contact. Cell B8c is NOT registered by
+E14: there is no admission, no cell and no flight. No claim is made that the block helps, or that
+the construction neighbours reproduce A3's gold-derived pairs -- that comparison is one of the
+questions the cell would answer, not a premise of building it. The comparator will be the sealed
+B7r arm or the B7a v2 arm, decided at registration, on that arm's own roster and budgets.

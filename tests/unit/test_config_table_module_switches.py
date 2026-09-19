@@ -1138,9 +1138,11 @@ def test_node_context_policy_is_one_episode_class_key():
     # key is a code change with a test, never a receipt edit. The fourth,
     # native_episode.deliver_normaliser, was admitted by E11 (owner directive
     # 26, 2026-09-18), the fifth, native_episode.reviewer_audit, by E12
-    # (the same directive, 2026-09-19) and the sixth,
+    # (the same directive, 2026-09-19), the sixth,
     # native_episode.finite_completion_policy, by E13 (2026-09-19, the B7a
-    # abort); all three have their own proof below.
+    # abort) and the seventh, native_episode.solver_hints, by E14 (owner
+    # directive 26 again, 2026-09-19); all four have their own proof, the
+    # seventh in tests/unit/test_b8c_solver_hints_config.py.
     assert sorted(EPISODE_LEVEL_SWITCH_KEYS) == [
         "native_episode.context_policy",
         "native_episode.deliver_normaliser",
@@ -1148,6 +1150,7 @@ def test_node_context_policy_is_one_episode_class_key():
         "native_episode.review_loop",
         "native_episode.reviewer_audit",
         "native_episode.roles.solver",
+        "native_episode.solver_hints",
     ]
     assert resolve_episode_switch_key(key) == key
 

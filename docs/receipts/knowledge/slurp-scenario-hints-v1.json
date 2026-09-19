@@ -1,0 +1,113 @@
+{
+  "authority": "docs/superpowers/specs/2026-09-17-node-context-policy-design.md sections 16 and 16.2 (cell B8c); docs/results/2026-09-17-slurp-a3-coverage-confusion-audit-v1.md",
+  "builder_policy_id": "saea-scenario-hints-construction-confusion-v1",
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "tool": 0
+  },
+  "decontamination": {
+    "excluded_rosters": [
+      {
+        "file_sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+        "new_exclusions": 1080,
+        "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+        "roster_id": "SLURP-EVO-FOLD-A-V2",
+        "sample_count": 1080,
+        "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+        "train_utterance_count": 1080
+      },
+      {
+        "file_sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+        "new_exclusions": 1080,
+        "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+        "roster_id": "SLURP-EVO-FOLD-B-V2",
+        "sample_count": 1080,
+        "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+        "train_utterance_count": 1080
+      },
+      {
+        "file_sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b",
+        "new_exclusions": 0,
+        "relpath": "docs/receipts/probe-samples/DEV-1000.json",
+        "roster_id": null,
+        "sample_count": 1000,
+        "split_identity_hash": "9fb44e3384b8ad8e0d8f825b88eb0a3051c218b699975051d8a0481aabc0243b",
+        "train_utterance_count": 0
+      }
+    ],
+    "excluded_train_utterance_count": 2160,
+    "exclusion_authority": "docs/readiness/2026-09-13-slurp-semantic-authoring-registration-v1.json",
+    "statement": "Authored from the governed SLURP TRAIN split alone, through data.slurp.load_slurp_construction_utterances, whose split is a module constant with no split parameter and no caller-supplied path. Every utterance with a recording in TRAIN Fold A, TRAIN Fold B or DEV-1000 was removed before a single neighbour was read, the retained pool was checked disjoint from that exclusion, and its identity hash was checked equal to the one the E12 slot-audit receipt pins for the same exclusion. The A3 audit's own confusion pairs were not read: they were computed on the evaluated rows' gold and remain a diagnostic ceiling. The table carries construction counts, construction leakage rates and construction cue WORDS: no utterance id, no sentence, no recording, no entity filler, and no gold of any evaluated row.",
+    "verdict": "clean"
+  },
+  "execution_profile": "model-free-check",
+  "exposure_ledger_row": "SAEA-SLURP-E14-SCENARIO-HINTS-VIEW-V1",
+  "generator": "scripts/build_slurp_scenario_hints_view.py",
+  "inputs": {
+    "construction_pool_receipt": {
+      "exposure_ledger_row": "SAEA-SLURP-E12-SLOT-AUDIT-VIEW-V1",
+      "relpath": "docs/receipts/knowledge/slurp-slot-audit-v1.json",
+      "root": "repo",
+      "sha256": "54346a8832ef8120ba439d10b87629e6f614fe2fcca89f9859a65132fe9ac434"
+    },
+    "sealed_facet_vectors": {
+      "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+      "root": "data",
+      "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+      "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+    }
+  },
+  "neighbour_policy": {
+    "cue_min_rows": 3,
+    "cue_prior": 1,
+    "k": 10,
+    "leave_one_out": true,
+    "max_cues": 3,
+    "max_neighbours": 3,
+    "min_leakage_share": 0.05,
+    "similarity": "cosine",
+    "vector_source": {
+      "dimension": 2048,
+      "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+      "root": "data",
+      "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+      "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+    }
+  },
+  "outputs": {
+    "completion": {
+      "relpath": "knowledge/slurp/semantic/scenario-hints-v1/completion.json",
+      "root": "data",
+      "sha256": "e8024fe43113eb306d7be24d30886fbbe825a4f2d429cf6e00dfc4145ed9bc7b"
+    },
+    "release": {
+      "relpath": "knowledge/slurp/semantic/scenario-hints-v1/release.json",
+      "root": "data",
+      "sha256": "44716de634c788f72886f31762077052e5f109f479194e524f8dcef89f98103e"
+    },
+    "snapshot": {
+      "relpath": "knowledge/slurp/semantic/scenario-hints-v1/snapshot.json",
+      "root": "data",
+      "sha256": "079b2bf49404b5b5ee525c0f201faa8b022ae9f63781797ad4708da7826c98a1"
+    }
+  },
+  "schema": "saea-scenario-hints-build-receipt-v1",
+  "source_split_identity_hash": "67e53fb5f712c40b21b8b54b74e867e6da209f057c68cd40dd987aaa99b19875",
+  "timing_seconds": {
+    "compose": 0.019,
+    "load_pool": 0.672,
+    "load_vectors": 17.659,
+    "measure_neighbours": 8.648
+  },
+  "totals": {
+    "construction_utterances": 9354,
+    "cue_rows": 231,
+    "distinct_cue_words": 130,
+    "intents": 60,
+    "intents_with_neighbour": 44,
+    "neighbour_pairs": 81
+  },
+  "view_id": "scenario-hints-v1"
+}

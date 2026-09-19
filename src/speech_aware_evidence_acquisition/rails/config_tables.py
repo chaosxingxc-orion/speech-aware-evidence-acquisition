@@ -346,6 +346,18 @@ NATIVE_EPISODE_TOP_LEVEL_KEY = "native_episode"
 #: byte (it is consulted only where a completion has already come back), which
 #: ``tests/unit/test_slurp_finite_completion_row.py`` proves by flying both
 #: arms; that makes its ON arm free to be the default of every new cell.
+#: ``native_episode.solver_hints`` (E14, 2026-09-19, owner directive 26) is
+#: the SEVENTH, and the third admitted by that directive. It is the second
+#: READ-side instance of "analyses into nodes": a deterministic,
+#: zero-contact SCENARIO HINTS block, authored from construction data alone,
+#: rendered into the SOLVER's exposed context beside the candidate list it
+#: is choosing between. It belongs here rather than in ``run`` for exactly
+#: the reason ``native_episode.reviewer_audit`` does -- it MOVES REQUEST
+#: BYTES at one boundary by design -- and it is a key of its own beside the
+#: audit because a cell that moves the Solver's hints must stay
+#: distinguishable from a cell that moves the Reviewer's audit. See
+#: ``rails.scenario_hints`` and
+#: ``rails.node_context_policy.SOLVER_HINTS_BOUNDARY``.
 EPISODE_LEVEL_SWITCH_KEYS = frozenset({
     "native_episode.roles.solver",
     "native_episode.review_loop",
@@ -353,6 +365,7 @@ EPISODE_LEVEL_SWITCH_KEYS = frozenset({
     "native_episode.deliver_normaliser",
     "native_episode.reviewer_audit",
     "native_episode.finite_completion_policy",
+    "native_episode.solver_hints",
 })
 
 #: The top-level key every ``stores``-class switch key names one child of.
@@ -1192,7 +1205,9 @@ def is_episode_null_arm(key: str, value: object) -> bool:
     ``native_episode.deliver_normaliser``'s OFF is the key's absence, because
     a delivery node is either absent or armed (E11);
     ``native_episode.reviewer_audit``'s OFF is the key's absence for the same
-    reason (E12);
+    reason (E12), and ``native_episode.solver_hints``'s for that same reason
+    (E14), leaving the ``solver:candidate-hypothesis`` boundary at its
+    pre-E14 bytes;
     ``native_episode.finite_completion_policy``'s OFF is the key's absence OR
     its explicit default ``"raise"`` (E13), because the parser reads the two
     the same way -- a context block is either absent or rendered, and with it
@@ -1244,6 +1259,16 @@ def is_episode_null_arm(key: str, value: object) -> bool:
         )
 
         return is_reviewer_audit_null_arm(value)
+    if key == "native_episode.solver_hints":
+        # E14: the same OFF semantics as the audit's -- the block is ABSENT
+        # or it is rendered, and with the key absent the
+        # solver:candidate-hypothesis boundary renders exactly its pre-E14
+        # bytes.
+        from .node_context_binding import (  # noqa: PLC0415
+            is_solver_hints_null_arm,
+        )
+
+        return is_solver_hints_null_arm(value)
     raise ConfigTableError(f"unknown episode switch key {key!r}")
 
 
