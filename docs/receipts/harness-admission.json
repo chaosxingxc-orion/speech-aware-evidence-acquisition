@@ -22,9 +22,11 @@
       "carrier": "slurp",
       "config": "configs/baseline/slurp-native-dual-store-train-fold-a-default-plan-v1.json",
       "modules": [
-        "review loop (Reviewer x3 + Planner + at most one Solver revision after the initial draft; Perception -> Solver -> Reviewer -> Planner -> deliver)"
+        "review loop (Reviewer x3 + Planner + at most one Solver revision after the initial draft; Perception -> Solver -> Reviewer -> Planner -> deliver)",
+        "date/time slot-contract revision (slot store v2 re-pinned in place of release v1; module M4b, ADMITTED, replication MET 2026-09-19)",
+        "delivery-time normaliser node saea-deliver-normalise-v3 (module M3, ADMITTED 2026-09-19 by the model-free read plus the four-row smoke; native_episode.deliver_normaliser)"
       ],
-      "note": "the sealed dual-store TRAIN Fold A anchor plus the one NEUTRAL module this table decides for SLURP, the review loop, armed by native_episode.review_loop 'on'. The fragment differs from the comparator's own configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json in exactly that configuration key (and in its own what_this_is description), which is what makes it the comparator plus one module rather than a second baseline. The SLURP v2 base program's later modules (exemplar supply, grouped sampling, the ORG store revisions) enter this plan only through their own decided entries."
+      "note": "the sealed dual-store TRAIN Fold A anchor plus the one NEUTRAL module this table decides for SLURP, the review loop, armed by native_episode.review_loop 'on'. Since 2026-09-19 the fragment also pins knowledge_stores.slot-contracts at the slot store v2 release and snapshot bytes (module M4b, ADMITTED, replicated). The fragment differs from the comparator's own configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json in exactly those two decided switches (and in its own what_this_is description), which is what makes it the comparator plus its admitted-or-neutral modules rather than a second baseline. The SLURP v2 base program's later modules (exemplar supply, grouped sampling, the ORG store revisions) enter this plan only through their own decided entries. Since 2026-09-19 the fragment also arms native_episode.deliver_normaliser = {\"normaliser\": \"saea-deliver-normalise-v3\"} (module M3, ADMITTED): every official SLURP number reported from here on comes from a system that contains the node."
     }
   ],
   "default_plans_note": "ONE plan, for Earnings-21, added 2026-09-08 on merge. It carries exactly one decided module: the cross-call dispatcher, whose verdict (docs/readiness/2026-09-08-e21-dispatcher-admission-v1-verdict.md) states 'NEUTRAL -- ADMITTED TO THE DEFAULT PLAN AS A NO-HARM MODULE' and licenses turning it on for Earnings-21 cells at this geometry. The other entry below is ADMITTED but PROVISIONAL with its replication UNMET, and its own verdict note fixed the consequence before the verdict was known: 'until then NO candidate freeze, NO citation of this as an admitted effect and NO entry into the default plan'. So it may not enter this plan, and scripts/checks/harness_admission_check.py is what keeps that true: it refuses a HARMFUL module in any default plan, refuses a module whose provisional obligation is UNMET in any default plan, and requires every other ADMITTED or NEUTRAL module to appear in at least one default plan for its carrier. EXTENDED 2026-09-17: a second plan, for SLURP, added by docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md. It carries exactly one decided module, the review loop, whose entry is NEUTRAL under the TRAIN A own null (it may stay; its removal failed non-inferiority twice). The plan fragment is the sealed anchor plus the loop's validated marker.",
@@ -363,7 +365,7 @@
       "module": "date/time slot-contract revision (slot store v2: eight revised slot cards authored from construction data only; the same store id re-pinned from release v1 to v2)",
       "row": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V2",
       "status": "ADMITTED",
-      "status_basis": "ADMITTED is this table's status for a gain on the carrier's primary metric disjoint from the carrier's own null with every gating guard non-inferior at the measured margin, and all four preregistered clauses pass (docs/readiness/2026-09-17-slurp-b4-org-cells-anchor-v2-preregistration.md section 6): official pooled SLU-F1 48.53 -> 51.09, +2.55 pp CI95 [+1.13, +3.98] (lower bound above zero and above the 1.1218 pp own-null half-width); intent +0.56 pp CI95 [-0.71, +1.82], lower bound above the -1.0051 margin; projection v3 +2.06 pp CI95 [+0.53, +3.51] agreeing in sign (54.05 / 79.72); no scenario's intent CI95 upper bound below zero. The gain is content-driven in the direction the store revision names: time-slot false-negative mass -32.9, filler-distance mass -28 %, date omissions 81 -> 77, exact mentions 272 -> 302 on the roster. The status is provisional on the replication obligation below, as the KC-E1f entry was.",
+      "status_basis": "ADMITTED is this table's status for a gain on the carrier's primary metric disjoint from the carrier's own null with every gating guard non-inferior at the measured margin, and all four preregistered clauses pass (docs/readiness/2026-09-17-slurp-b4-org-cells-anchor-v2-preregistration.md section 6): official pooled SLU-F1 48.53 -> 51.09, +2.55 pp CI95 [+1.13, +3.98] (lower bound above zero and above the 1.1218 pp own-null half-width); intent +0.56 pp CI95 [-0.71, +1.82], lower bound above the -1.0051 margin; projection v3 +2.06 pp CI95 [+0.53, +3.51] agreeing in sign (54.05 / 79.72); no scenario's intent CI95 upper bound below zero. The gain is content-driven in the direction the store revision names: time-slot false-negative mass -32.9, filler-distance mass -28 %, date omissions 81 -> 77, exact mentions 272 -> 302 on the roster. The status is provisional on the replication obligation below, as the KC-E1f entry was. Replication MET on 2026-09-19 (see 'replication'): +1.54 pp CI95 [+0.30, +2.93] on a request-identical second realisation; the entry is no longer provisional.",
       "evidence": {
         "arm": {
           "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V2",
@@ -388,16 +390,46 @@
         "verdict_note": "docs/results/2026-09-17-slurp-b4b-slot-store-v2-verdict.md"
       },
       "not_admitted_for": [
-        "any default plan before the replication obligation is met: the entry is provisional and the SLURP default plan keeps the v1 pins until then",
+        "any default plan carrying v2 pins that differ from the ON arm's release and snapshot bytes; the default plan re-pinned on 2026-09-19 carries exactly the ON arm's pins (the obligation that barred the plan until then was met by the replicate read)",
         "any claim about the fallback candidate or the intent store v2 (cells B4a / B4c), which are separate modules",
         "any claim that the non-revised slot types' movements are caused by the revision; they are recorded as unattributed",
         "any other roster or carrier; DEV1000, Fold B and the test split are untouched",
         "any paper-scale or generalisation claim; TRAIN A is a discovery roster"
       ],
       "provisional": {
-        "state": "UNMET",
-        "reason": "one realisation of the arm against one realisation of the anchor, under margins measured on a different configuration of the same harness; no twin was registered for this module",
-        "requirement": "replicate on the same roster before the default plan carries the v2 pins: either a request-identical replicate of this cell (about 3.5 GPU hours) or the B5 / B5r combination pair both showing the module's contribution within the own null; a second entry records the replication and this entry stays"
+        "state": "MET",
+        "discharged_by": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2 (attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume2), 2026-09-19, docs/results/2026-09-19-slurp-b4b-replicate-verdict.md",
+        "note": "the replication obligation is discharged: the effect may be cited as replicated and the SLURP default plan now carries the slot-contracts v2 pins (default plan fragment re-pinned 2026-09-19 in the same change)",
+        "supersedes": {
+          "state": "UNMET",
+          "reason": "one realisation of the arm against one realisation of the anchor, under margins measured on a different configuration of the same harness; no twin was registered for this module",
+          "requirement": "replicate on the same roster before the default plan carries the v2 pins: either a request-identical replicate of this cell (about 3.5 GPU hours) or the B5 / B5r combination pair both showing the module's contribution within the own null; a second entry records the replication and this entry stays"
+        }
+      },
+      "replication": {
+        "state": "MET",
+        "date": "2026-09-19",
+        "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2",
+        "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume2",
+        "study_commit": "f2a2cb21de01e582311391675fb14555bb58604d",
+        "form": "request-identical replicate of the cell on the same 1,080-row roster, flown as an E10 resume-recovery (owner decision 22): 580 rows kept from the aborted predecessor attempt attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2 under I7r custody (every kept delivered text hash-identical to the predecessor's), 500 rows flown fresh; officially scored once on the merged manifest",
+        "verdict": {
+          "path": "docs/results/2026-09-19-slurp-b4b-replicate-verdict.md",
+          "sha256": "8a7bfcdddb9188150c7095bfb5f56613e40ccc9cba18307e2b87089697c30f0b"
+        },
+        "primary": "official pooled SLU-F1 48.5336 -> 50.0740, +1.5403 pp CI95 [+0.2992, +2.9287] (CI90 [+0.49, +2.69]; equal-scenario +1.68); the gain replicates in sign and clears zero, with less room than the first pass (+2.55 [+1.13, +3.98])",
+        "guards": "intent 77.9630 -> 78.6111, +0.6481 pp CI95 [-0.6228, +1.8734] against the -1.0051 margin: passes; projection v3 +0.8463 same sign; scenario -0.19, action +0.65 inside the null; no scenario breaches the intent band (0 of 18); no decision-17 net-harmed flag on the replicate contrast",
+        "own_null": {
+          "note": "MEASURED on the admitted configuration itself (B4b-rep minus B4b, request-identical, 1,080 rows, 125 speaker clusters, 10,000 draws, seed 20260915): the margins that replace the borrowed B0r-minus-B0 values for any later contrast against a B4b-based arm",
+          "pooled_slu_half_width": 1.3222,
+          "intent_half_width": 1.0682,
+          "scenario_half_width": 0.8962,
+          "action_half_width": 0.9979,
+          "row_agreement": "792 of 1,080 delivered answers byte-identical (73.33 %), 56 intent flips (5.19 %)"
+        },
+        "mechanism": "date omissions 81 -> 77 -> 76 and exact date mentions 28 -> 33 -> 37 of 138 across anchor -> B4b -> B4b-rep; roster filler-distance mass 814.46 -> 750.76 -> 749.37 (the surface gain replicates almost exactly); the time cell is weaker on the second pass (exact time mentions 8 -> 22 -> 14), which is why the pooled gain is +1.54 rather than +2.55",
+        "cost": "resume attempt 2,501 contacts, 7,592.04 repeated speech seconds, 1.7430 GPU hours (utilisation 90.08 %, parked 0.018); run-cumulative 5,423 calls / 15,487.59 s; 1.72 GPU hours saved against a full re-fly",
+        "caveat": "the kept-versus-flown split is scenario-confounded by construction (the roster order is scenario-blocked), so its -2.08 pp [-4.78, +0.59] kept-minus-flown difference is a scenario-composition contrast and is reported, not read"
       },
       "switch": {
         "added_by": "docs/results/2026-09-17-slurp-b4b-slot-store-v2-verdict.md; the stores re-pin form of harness-admission v3 (E9, 2026-09-17)",
@@ -613,6 +645,61 @@
         "state": "UNMET",
         "reason": "NEUTRAL at 1.81x the contacts per row and 1.10x the GPU hours: the program spec's rule lets a no-harm module enter a plan only if it lowers cost, and this form does not; the greedy twin never flew (not due), so nothing separates sampling at temperature 0.7 from five greedy repeats",
         "requirement": "a cost-neutral form (fewer samples, or a cheaper commit that keeps the false-positive suppression without the omissions) read on this roster with a positive pooled SLU CI95 lower bound, or a positive arm read that makes the twin due; until then the module enters no plan, and the SLURP default plan keeps the samples-1 Solver role"
+      }
+    },
+    {
+      "carrier": "slurp",
+      "comparator": {
+        "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+        "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+        "note": "the sealed dual-store anchor (gating base 1); the second gating base is the sealed B1 recovery arm SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2; the sealed B5e recovery arm is the reported third base; none re-flown or re-scored, the node was applied to copies"
+      },
+      "date": "2026-09-19",
+      "module": "delivery-time normaliser node (module M3 executed inside the agent: SLURP USE projection v3 -- R_action, then legal-label projection v2, then filler normalisation P2 -- applied once to the accepted answer by rails.runner between the Planner's ACCEPT and delivery; registered in core.base.DELIVERY_NORMALISERS as saea-deliver-normalise-v3; item E11, owner directive 26)",
+      "row": "SAEA-SLURP-B8A-DELIVER-NORMALISE-MODEL-FREE-READ-V1",
+      "status": "ADMITTED",
+      "status_basis": "ADMITTED is this table's status for a gain on the carrier's primary metric disjoint from the carrier's own null with every gating guard non-inferior at the measured margin; here under the registered model-free rule (docs/readiness/2026-09-19-slurp-b8a-deliver-normalise-v1-preregistration.md sections 3-6): node ON minus OFF on the OFFICIAL unprojected pooled SLU-F1, paired whole-speaker bootstrap 10,000 draws seed 20260915, on BOTH gating bases -- anchor 48.5336 -> 51.9946, +3.4609 pp CI95 [+2.7814, +4.1797], intent +1.3889 [+0.7128, +2.0409]; B1 61.1394 -> 62.6672, +1.5278 pp CI95 [+1.0537, +2.0282], intent +1.5741 [+0.7821, +2.4575]; reported B5e 62.3351 -> 63.7757, +1.4406 [+1.0004, +1.9154], intent +1.7593 -- every CI95 lower bound above zero, intent superior rather than merely non-inferior at -1.0051, intent harmed on zero rows of any arm, 0 of 18 scenarios breach the band on all three contrasts, no decision-17 flag; triple equality (official-with-node == v3 scorer == replay) 0 mismatches on 1,073 / 1,076 / 1,079 parsed rows; STOP 27 checks passed. The four-row smoke (SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-V1) passed structurally (node receipt on 4 of 4 rows, I7n sealed, 24 of 24 fits; closed at e79ce296). The TRAIN symmetric number moves +0.16 / +0.02 / +0.00 beside the official gain: the node is a surface-convention repair of the official scorer's reading, not new content, and is admitted as such (owner decisions 7 and 23: the official number is the bar).",
+      "evidence": {
+        "read": {
+          "run_id": "SAEA-SLURP-B8A-DELIVER-NORMALISE-MODEL-FREE-READ-V1",
+          "model_free": true,
+          "analysis_dir": "SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-B8A-DELIVERY-NODE-READ-V1",
+          "score_contrasts_sha256": "af79e7b5886f9de878c0a3fe42ac5c94da63c72e658ac0dc61f32bf2cef1c35a",
+          "driver": "src/speech_aware_evidence_acquisition/analysis/b8a_delivery_node_read.py"
+        },
+        "smoke": {
+          "run_id": "SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-V1",
+          "attempt_id": "attempt-slurp-native-b8a-deliver-normalise-v3-exemplars-k20-smoke-4-generation-v1",
+          "study_commit": "d5378d07",
+          "closed_at": "e79ce296"
+        },
+        "verdict": {
+          "path": "docs/results/2026-09-19-slurp-b8a-deliver-normalise-verdict.md",
+          "sha256": "959a4ee0e84c7a483ad97f44c70627eae8bae14dfa1bc2b2526e24c876ccea41"
+        },
+        "primary": "official pooled SLU-F1 node ON minus OFF: anchor +3.4609 [+2.7814, +4.1797]; B1 +1.5278 [+1.0537, +2.0282]; B5e +1.4406 [+1.0004, +1.9154] (reported)",
+        "guards": "intent +1.3889 / +1.5741 / +1.7593, all CI95 lower bounds above zero; intent saves / harms 15/0, 17/0, 19/0; span F1 +10.81 / +4.22 / +3.74; per-scenario: the intent gain is one scenario, play (+25.00 / +23.33 / +26.67, the R_action rule); only negative cells social pooled SLU -0.23 (B1) and -0.21 (B5e), inside the null",
+        "mechanism": "repairs 191 / 103 / 102 rows (labels 20 / 24 / 31; fillers 174 / 82 / 75 rows), FN and FP mass fall together (-150.32 / -53.83 / -49.94), exact mentions +100 / +41 / +36, no slot type worse anywhere; time and place_name dominate, date stays the residual; idempotent on 1,079 / 1,080 / 1,080 rows",
+        "cost": "zero contacts: the node is pure and deterministic; the smoke added no contact per row (five contacts per row as on its base) and its request bytes were identical to the base's",
+        "consequence": "from this entry on every official SLURP number this program reports is produced by a system containing the node; a later cell registered against a sealed arm that pre-dates the node compares a node-carrying arm against a node-free one and its verdict must say so (preregistration section 4)"
+      },
+      "not_admitted_for": [
+        "any claim of new content: the symmetric-normalised TRAIN scorer moves at most +0.16 pp, so the gain is the official scorer's reading of surface conventions repaired at delivery",
+        "any scorer-side use of projection v3 as a bar: the v3 scorer keeps its diagnostic role beside the official number (owner decision 23) and equals the official-with-node number by construction",
+        "any other roster or carrier; DEV1000, Fold B and the test split are untouched",
+        "any paper-scale or generalisation claim; TRAIN A is a discovery roster"
+      ],
+      "switch": {
+        "added_by": "docs/results/2026-09-19-slurp-b8a-deliver-normalise-verdict.md; class 'episode' of harness-admission v3 (E6, 2026-09-16); the key was added to the episode allowlist by item E11 (6bd8506a)",
+        "table": "episode",
+        "key": "native_episode.deliver_normaliser",
+        "off": null,
+        "on": {
+          "normaliser": "saea-deliver-normalise-v3"
+        },
+        "proof": "tests/unit/test_config_table_module_switches.py::test_deliver_normaliser_is_one_episode_class_key",
+        "what_flew": "The ON arm of the read is each sealed OFF arm's own delivered bytes after one offline application of saea-deliver-normalise-v3 through analysis.deliver_normaliser_replay (byte-equal to what rails.runner delivers with the key armed, proven by the smoke's 4 of 4 node receipts and the triple equality). The OFF arm is each sealed arm itself, whose native_episode block has no deliver_normaliser key.",
+        "why_this_table": "it is a NODE of the episode, declared beside the roles it runs after and applied by rails.runner between the Planner's ACCEPT and the delivered answer -- not a per-phase request-table entry and not a scorer; the episode class names one dotted path on its closed allowlist whose null arm is the key's absence (rails.config_tables.is_episode_null_arm)"
       }
     }
   ],

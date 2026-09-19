@@ -66,12 +66,12 @@
         }
       },
       "release": {
-        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
-        "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v2/release.json",
+        "sha256": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b"
       },
       "snapshot": {
-        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/snapshot.json",
-        "sha256": "11c246e4b815a4f966e8cf8785f06b70515755eca71658862c6f98e9914044e6"
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v2/snapshot.json",
+        "sha256": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec"
       },
       "store_role": "slot-contracts"
     }
@@ -110,7 +110,10 @@
       }
     },
     "schema": "saea-native-episode-config-v1",
-    "review_loop": "on"
+    "review_loop": "on",
+    "deliver_normaliser": {
+      "normaliser": "saea-deliver-normalise-v3"
+    }
   },
   "phase_material": {
     "perception": {
@@ -216,7 +219,7 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "The SLURP default plan of the harness-admission receipt (docs/receipts/harness-admission.json, added 2026-09-17 by docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md): the sealed dual-store TRAIN Fold A anchor configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json plus exactly one key, native_episode.review_loop 'on', the validated marker of the one module the table decides for this carrier (the Reviewer/Planner loop, NEUTRAL under the TRAIN A own null). The marker is inert: rails.native_episode_config validates it against the loop leaves (max_revisions 1, reviewer 3, planner 1) and renders no request byte. This fragment is never a cell of its own; it is the comparator plus the module list the gate reads, exactly as the Earnings-21 plan is.",
+  "what_this_is": "The SLURP default plan of the harness-admission receipt (docs/receipts/harness-admission.json, added 2026-09-17 by docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md): the sealed dual-store TRAIN Fold A anchor configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json plus the decided switches of that receipt: native_episode.review_loop 'on', the validated marker of the review-loop module the table decides for this carrier, and (since 2026-09-19, module M4b replicated) knowledge_stores.slot-contracts re-pinned at the slot store v2 release and snapshot bytes, and (since 2026-09-19, module M3 admitted) native_episode.deliver_normaliser armed with saea-deliver-normalise-v3, the delivery-time normaliser node (the Reviewer/Planner loop, NEUTRAL under the TRAIN A own null). The marker is inert: rails.native_episode_config validates it against the loop leaves (max_revisions 1, reviewer 3, planner 1) and renders no request byte. This fragment is never a cell of its own; it is the comparator plus the module list the gate reads, exactly as the Earnings-21 plan is.",
   "prepared_phase_supply": {
     "relpath": "prepared/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-PREPARE-V1-R2/phase-supply.json",
     "sha256": "c5b0b51c23ef22feb1284559cd9e37286922d4cefc2e3cfcf7feafb23e3b595e"

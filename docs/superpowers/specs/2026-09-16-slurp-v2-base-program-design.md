@@ -403,9 +403,9 @@ direct-anchor release (`docs/results/2026-09-17-slurp-train-a-direct-anchor-rele
 | B0 | M0 | anchor minus review loop | sealed anchor | 2 | ~1.4 |
 | B1 | M1, plain top-20 speech-keyed exemplars | anchor (B0 harmful) | derangement twin + anchor | 5 | ~3.4 | ADMITTED 2026-09-18 (twin read, decision 18 branch A): SLU +12.61 [+10.54, +14.60] vs anchor, +7.83 [+5.85, +9.75] vs twin; twin alone +4.77 with nil intent; intent +2.22, v3 62.67 |
 | B2 | M2, N=5, T=0.7 | anchor (B0 harmful) | 5 greedy repeats aggregated identically + anchor | 10 | ~5-6 | NEUTRAL 2026-09-19: SLU +0.06 [-1.46, +1.60], intent +0.83 [-0.30, +1.88]; FP suppressed, omissions up; twin not due; M2 enters no plan (switch class episode, key native_episode.roles.solver). |
-| B3 | M3 (A1-decided: R_action + v2 labels, P2 fillers; +3.5 SLU official, about +0.2 symmetric, +1.4 intent) | scorer-side | unprojected | 0 | 0 |
+| B3 | M3 (A1-decided: R_action + v2 labels, P2 fillers; +3.5 SLU official, about +0.2 symmetric, +1.4 intent) | scorer-side | unprojected | 0 | 0 | B8a (2026-09-19, directive 26): M3 as the delivery-time node saea-deliver-normalise-v3, model-free read ADMITTED (anchor +3.46 [+2.78, +4.18], B1 +1.53 [+1.05, +2.03] official; intent up, zero rows harmed), smoke structural PASS; default plan carries the node |
 | B4a | M4a | anchor | anchor | 5 | ~3.4 |
-| B4b | M4b | anchor | anchor | 5 | ~3.4 | ADMITTED 2026-09-17: SLU +2.55 [+1.13, +3.98], intent +0.56, v3 +2.06; provisional until replicated |
+| B4b | M4b | anchor | anchor | 5 | ~3.4 | ADMITTED 2026-09-17: SLU +2.55 [+1.13, +3.98], intent +0.56, v3 +2.06; REPLICATED 2026-09-19 (resume-recovery flight): SLU +1.54 [+0.30, +2.93], intent +0.65, v3 +0.85; own null h_SLU 1.32 / h_intent 1.07; obligation MET, default plan pins v2 |
 | B5 | admitted set ("v2 candidate") | -- | anchor, released direct | 6-7 | ~4-5 | B5e (early combination M1+M4b, recovery flight, 2026-09-18): official 62.34 / 80.09, BAR NOT MET (SLU -1.66); vs B1 +1.20 [-0.11, +2.48], intent -0.09 [-1.51, +1.38]; combination HARMFUL by clause 3 (interval width); decision 20 path. |
 | B5r | replication of B5 | -- | B5 | 6-7 | ~4-5 |
 | B6 | DEV1000 confirmation | -- | sealed DEV1000 direct 35.68 / agent 50.30 | 6-7 | ~4 |

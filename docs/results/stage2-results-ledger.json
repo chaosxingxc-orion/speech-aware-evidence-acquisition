@@ -3730,6 +3730,30 @@
         "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-TRAIN-FOLD-A-V3",
         "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-RECOVERY-V3"
       ]
+    },
+    {
+      "date": "2026-09-19",
+      "cell_id": "SLURP-B4B-SLOT-STORE-V2-REPLICATE-V2",
+      "status": "REPLICATED_MODULE_M4B_ADMITTED_OBLIGATION_MET",
+      "source": "docs/results/2026-09-19-slurp-b4b-replicate-verdict.md",
+      "source_sha256": "8a7bfcdddb9188150c7095bfb5f56613e40ccc9cba18307e2b87089697c30f0b",
+      "meaning": "Request-identical replicate of cell B4b (slot store v2 on the sealed anchor) on TRAIN A 1,080, flown as the first E10 resume-recovery under owner decision 22 (580 rows kept from the attempt aborted by the 2026-09-18 serving-session death, 500 flown; I7r custody verified): official pooled SLU-F1 48.53 -> 50.07, +1.54 pp CI95 [+0.30, +2.93]; intent +0.65 [-0.62, +1.87] against the -1.0051 margin; v3 +0.85 same sign; no scenario breaches the band. REPLICATED: all three registered clauses pass, with less room than the first pass (+2.55 [+1.13, +3.98]). Own null of the admitted configuration measured: h_SLU 1.3222, h_intent 1.0682 (wider than the borrowed 1.1218 / 1.0051). Module M4b's provisional obligation is MET; the SLURP default plan now pins slot store v2. Cost: 2,501 contacts and 1.743 GPU hours this attempt, run-cumulative 5,423 calls; 1.72 GPU hours saved by the resume.",
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2",
+        "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-REPLICATE-V2"
+      ]
+    },
+    {
+      "date": "2026-09-19",
+      "cell_id": "SLURP-B8A-DELIVER-NORMALISE-NODE-V1",
+      "status": "ADMITTED_MODEL_FREE_READ_PLUS_STRUCTURAL_SMOKE_MODULE_M3_ENTERS_THE_DEFAULT_PLAN",
+      "source": "docs/results/2026-09-19-slurp-b8a-deliver-normalise-verdict.md",
+      "source_sha256": "959a4ee0e84c7a483ad97f44c70627eae8bae14dfa1bc2b2526e24c876ccea41",
+      "meaning": "Cell B8a (owner directive 26: the A1 USE projection v3 becomes a delivery-time node inside the agent, item E11): model-free read over copies of three sealed arms, node ON minus OFF on the official unprojected pooled SLU-F1: anchor +3.46 [+2.78, +4.18] (intent +1.39), B1 +1.53 [+1.05, +2.03] (intent +1.57), B5e +1.44 [+1.00, +1.92] (intent +1.76); intent harmed on zero rows; 0 of 18 scenarios breach; triple equality 0 mismatches; the four-row smoke passed structurally (node receipt 4/4, I7n, 24/24 fits). ADMITTED: module M3 enters the SLURP default plan as native_episode.deliver_normaliser and every later official SLURP number is produced by a system containing the node. With the node the sealed arms read anchor 51.99 / 79.35, B1 62.67 / 81.76, B5e 63.78 / 81.85 (official). The TRAIN symmetric number moves at most +0.16: the gain is the official scorer's reading of surface conventions, admitted as such.",
+      "run_ids": [
+        "SAEA-SLURP-B8A-DELIVER-NORMALISE-MODEL-FREE-READ-V1",
+        "SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-V1"
+      ]
     }
   ]
 }
