@@ -1,0 +1,319 @@
+{
+  "accounting": {
+    "anchor_realized": {
+      "contacts": 5417,
+      "contacts_per_row": 5.016,
+      "gpu_hours": 3.388,
+      "repeated_speech_seconds": 15459.76
+    },
+    "full_cell": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 47520,
+      "generation_calls_cap": 11880,
+      "gpu_hours_fit_inclusive": 12.0,
+      "native_task_contract_calls_cap": 6480,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 33930
+    },
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 117
+    }
+  },
+  "authority": {
+    "coordinator_resolution": "Fable 5.1, 2026-09-17: cell B7a is level 'structured' on exactly the eight model-output boundaries with on_parse_failure raw (refuse for plan-action), the four tool-observation boundaries declared raw, and NO Reviewer producer response format. Fable 5.1, 2026-09-19 (v2): the v1 flight is CLOSED after its second failure -- the one allowed recovery arm aborted at 1,451 contacts when a single Reviewer completion hit the 512-token cap and the episode's default finite-completion policy 'raise' propagated the error out of the campaign. v2 is a NEW registration with new run ids. Only the harness-robustness key native_episode.finite_completion_policy moves, from its absent default 'raise' to 'deliver-latest-or-abstain'; the question, the arms, the metrics, the resampling and the decision rule are the preregistration's, unchanged.",
+    "design": "docs/superpowers/specs/2026-09-17-node-context-policy-design.md",
+    "engineering_item": "E8a, merged at ff668547 (the cell's own module); E8c, commit 2af5955a merged 5bbd54a2 (an illegal Planner action is a retained row disposition, never a flight failure); the finite-completion path itself is already committed harness -- reproduction.ojw.native_episode._finite_terminal_outcome, rails.native_episode_receipt, rails.runner and core.flight.runtime -- and needs no new code, only the configuration key",
+    "evidence_base": "docs/results/2026-09-17-slurp-node-context-audit-v1.md",
+    "not_a_cell_authority": "E8a is engineering only; this package is the cell registration and it grants no model contact until the coordinator flips readiness",
+    "own_null": "docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md and analysis/SAEA-SLURP-B0-REPLICATE-PAIRED-ANALYSIS-V1/README.md; the TRAIN A own null of this roster and geometry, h_SLU 1.1218 pp and h_intent 1.0051 pp at CI95",
+    "preregistration": "docs/readiness/2026-09-19-slurp-b7a-ncp-l1-anchor-v2-preregistration.md",
+    "program": "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md",
+    "v1_preregistration": "docs/readiness/2026-09-17-slurp-b7a-ncp-l1-anchor-v1-preregistration.md -- the question, arms, metrics, resampling and decision rule this registration inherits unchanged",
+    "closure_record": "docs/results/2026-09-19-slurp-b7a-v1-closure.md",
+    "v1_recovery_addendum": "docs/readiness/2026-09-17-slurp-b7a-ncp-l1-anchor-v1-recovery-v1.md -- the closed v1 recovery, whose section 8 closure rule this registration obeys"
+  },
+  "base": {
+    "baseline_fragment": "configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json",
+    "contact_ceiling_per_row": 11,
+    "policy": "phase-native-candidates-review-revise-v1",
+    "roster": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+    "roster_sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+    "split_id": "SLURP-EVO-FOLD-A-V2",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery"
+  },
+  "comparators": {
+    "primary": {
+      "note": "sealed bytes; never re-flown or re-scored",
+      "official_aggregate": {
+        "action_accuracy": 79.26,
+        "intent_scenario_plus_action": 77.96,
+        "pooled_slu_f1": 48.53,
+        "pooled_span_f1": 29.5,
+        "scenario_accuracy": 84.81
+      },
+      "projection_v3_aggregate": {
+        "action_accuracy": 80.65,
+        "intent_scenario_plus_action": 79.35,
+        "pooled_slu_f1": 51.99,
+        "pooled_span_f1": 40.3,
+        "scenario_accuracy": 85.46
+      },
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+      "run_manifest_sha256": "049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152",
+      "scores_sha256": "7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47"
+    },
+    "secondary": {
+      "note": "sealed bytes; the system-versus-direct column only",
+      "official_aggregate": {
+        "action_accuracy": 75.09,
+        "intent_scenario_plus_action": 73.7,
+        "pooled_slu_f1": 33.89,
+        "pooled_span_f1": 21.1,
+        "scenario_accuracy": 82.69
+      },
+      "projection_v3_aggregate": {
+        "action_accuracy": 75.93,
+        "intent_scenario_plus_action": 75.37,
+        "pooled_slu_f1": 34.31,
+        "pooled_span_f1": 23.24,
+        "scenario_accuracy": 84.17
+      },
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1",
+      "run_manifest_sha256": "546109055a373b358c43d36878c532b95784ee5d73d07f011c5fa3ea3d7ce11e",
+      "scores_sha256": "7840a959fe4f43928fda0e0cacfe8c0ee4200116bfcd269bfe3451b59da29c38"
+    },
+    "twin": "the L1 derangement control of design section 10 flies ONLY if B7a shows a positive CI95 against the anchor; it is not registered here"
+  },
+  "conditional_order": "One experiment in flight. B7b (L2) flies only if B7a is ADMITTED or NEUTRAL; the L1 derangement twin flies only on a positive CI95; B7r and B7c are separate later one-factor cells and neither is registered here.",
+  "configurations": {
+    "b7a": {
+      "attempt_id": "attempt-slurp-native-ncp-l1-anchor-train-fold-a-generation-v2",
+      "baseline_fragment": "configs/baseline/slurp-native-anchor-ncp-l1-train-fold-a-v2.json",
+      "campaign_plan": "configs/campaign/slurp-native-ncp-l1-anchor-train-fold-a-v2.json",
+      "cell_id": "slurp-native-ncp-l1-anchor-train-fold-a-v2",
+      "composed_config_hash": "0555ab4ca2dc95e9a93bc4ed4c236e8e6270bfe519470f537c11655dd23bf123",
+      "experiment_fragment": "configs/experiment/slurp-native-ncp-l1-anchor-train-fold-a-v2.json",
+      "fit_attempt_id": "attempt-slurp-native-ncp-l1-anchor-train-fold-a-fit-v2",
+      "fit_run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-FIT-V2",
+      "protocol_hash": "f91519ac5db69ad5577676a8e0824d22d805a01b84144f692c90418928954ccc",
+      "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V2",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "b7a_smoke": {
+      "attempt_id": "attempt-slurp-native-ncp-l1-anchor-smoke-4-generation-v2",
+      "baseline_fragment": "configs/baseline/slurp-native-anchor-ncp-l1-smoke-4-v2.json",
+      "cell_id": "slurp-native-ncp-l1-anchor-smoke-4-v2",
+      "composed_config_hash": "7810b7ea885dc8b7b0c71fc015ba1c08aeb7f2aa7417f577caffdc116b3297e6",
+      "experiment_fragment": "configs/experiment/slurp-native-ncp-l1-anchor-smoke-4-v2.json",
+      "fit_attempt_id": "attempt-slurp-native-ncp-l1-anchor-smoke-4-fit-v2",
+      "fit_run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-FIT-V2",
+      "protocol_hash": "4e7c358498f6896c6ec4ce9d0fe4356f2806d71f246ff8ead643f5977b8163e6",
+      "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-V2",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    },
+    "moved_factor": {
+      "key": "native_episode.context_policy",
+      "not_moved": [
+        "no producer response format: the Reviewer stays prose (cell B7r)",
+        "no tool-observation rewrite: the duplicated task-contract reference line is cell B7c",
+        "no cleaning contact: level cleaned is E8b and is refused at load time (cell B7b)",
+        "no knowledge, supply, store, roster, geometry, instruction-template or scorer change",
+        "native_episode.finite_completion_policy is a harness-robustness key, not a factor: it renders no request byte and the four-row smoke proves that in flight by reproducing the sealed v1 recovery smoke's MODEL_REQUEST digests exactly"
+      ],
+      "off": "the key absent (the sealed anchor), the literal \"raw\", or raw at every boundary",
+      "on": "the structured block: level structured, policy_id typed-slurp-node-context-v1, params (max_candidates 3, projection_policy bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1, the closed draft_response_schema, legal_entity_types = the 55 SLURP ontology entity types the anchor's own slurp-label-inventory fill renders), the eight model-output boundaries at structured with on_parse_failure raw (solver:plan-action refuse) and the four tool-observation boundaries at raw",
+      "switch_class": "episode"
+    },
+    "harness_robustness_key": {
+      "key": "native_episode.finite_completion_policy",
+      "off": "the key absent, which is the parser default 'raise' -- what every closed v1 cell flew",
+      "on": "deliver-latest-or-abstain",
+      "switch_class": "NOT a switch-class key and NOT a factor",
+      "why_not_a_factor": "It renders no request byte. It is consumed only by rails.runner's NativeEpisodeSpec and decides whether a finite completion aborts the flight or retains the row. The same statement is already pinned by tests/unit/test_config_table_module_switches.py::test_the_two_b8b_fragments_arm_the_block_and_nothing_else, which sets the key aside by name on cell B8b's fragments so it cannot be confused with that cell's factor. The A2T and E21 native baselines set it explicitly too.",
+      "behaviour": "reproduction.ojw.native_episode._finite_terminal_outcome retains the row with terminal_disposition = {reason: finite_completion, finish_reason, role_id, stage, revision_count, planner_accepted: false, rejected_contact}, records the truncated contact under interrupted_role, and delivers the latest delivery-eligible Solver draft (terminal_solver_receipt) or, when no Solver completed, an abstention with empty actor_output bound to the rejected contact. rails.native_episode_receipt.validate_native_episode_terminal_policy refuses that delivery unless the configured policy is exactly deliver-latest-or-abstain, and rails.runner refuses a disposition that differs from its actual quarantined completion.",
+      "diagnostic": "Rows whose terminal_disposition.reason is finite_completion are RETAINED and scored as delivered -- the latest delivery-eligible Solver draft, or an abstention with empty output when no Solver completed -- and are never filtered out of the paired read. Their count, their sample ids and the by-role / by-stage / by-finish-reason breakdown that analysis.native_episode_diagnostics emits as finite_stops are a MANDATORY diagnostic in the verdict. A high count is a finding about the role's output length on this base; it is reported, not repaired inside this cell."
+    }
+  },
+  "contact_free_evidence": {
+    "root": "SPEECHRL_DATA_DIR/coordination/slurp-b7a-ncp-l1-anchor-v2",
+    "decision_receipt": "root-admission-v2.json",
+    "v1_package_evidence_still_stands": "SPEECHRL_DATA_DIR/coordination/slurp-b7a-ncp-l1-anchor-v1 and slurp-b7a-ncp-l1-anchor-recovery-v1 -- the request-channel proof over all 5,417 sealed anchor requests, the prompt-fit bound, the containment proof, the request-envelope comparison over the aborted v1 arm's 3,278 sealed payloads and the preflight render comparison all describe the POLICY and the request-construction surface, which v2 does not touch. They are not re-derived here."
+  },
+  "cost_reporting": [
+    "actual generation contacts against the anchor's realized 5,417 and the ceiling 11,880",
+    "contacts per row against the anchor's 5.016 -- this module adds prompt volume, not contacts",
+    "actual repeated speech seconds against the anchor's 15,459.76 and the ceiling 33,930",
+    "actual FIT endpoints, expected 4 per realized contact, ceiling 47,520",
+    "actual native task-contract tool calls, ceiling 6,480",
+    "GPU hours, mean latency, slot occupancy and duty cycle from the serving monitor over the lease window, never a wall-clock guess, against the anchor's measured 3.388",
+    "the prompt-token delta against the anchor from the cell's own sealed native contact-fit receipts",
+    "the node-context receipt aggregate: rows, parsed, fallback counts and median rendered chars per boundary"
+  ],
+  "decision_rules": {
+    "b7a": {
+      "quoted_from": "docs/superpowers/specs/2026-09-17-node-context-policy-design.md section 11, B7a decision rule, verbatim",
+      "text": "ADMITTED iff the primary official SLU CI95 lower bound is > 0 against the anchor, intent is non-inferior at the own null margin 1.0051 pp, the symmetric-normalised scorer agrees in sign, and no scenario loses intent beyond the null band. NEUTRAL iff both primary metrics are non-inferior within the own null margins (SLU 1.1218, intent 1.0051); a NEUTRAL L1 still enters the SLURP default plan, because it removes a named defect class at no measured cost -- the seven malformed drafts that reached the Planner unflagged and the 2,167 unstructured reviews now carry a declared, receipted disposition. HARMFUL otherwise, and then L2 is not flown."
+    },
+    "operationalised": {
+      "harmful_consequence": "L2 (cell B7b) is not flown",
+      "intent_guard_pp": 1.0051,
+      "neutral_enters_the_plan": "yes, and this is the one place B7a differs from every other cell in this program: the design fixes that a NEUTRAL L1 still enters the SLURP default plan because it removes a named defect class at no measured cost",
+      "no_repeat_to_pass": true,
+      "primary": "official pooled SLU micro F1 delta against the sealed anchor, CI95 lower bound > 0",
+      "read_once": true,
+      "scenario_band": "a scenario loses intent beyond the null band when the CI95 upper bound of that scenario's own paired intent delta is below zero",
+      "slu_null_half_width_pp": 1.1218
+    },
+    "resampling": {
+      "draws": 10000,
+      "intervals": [
+        "CI95 for advancement",
+        "CI90 for diagnostics"
+      ],
+      "primary": "paired whole-speaker cluster bootstrap",
+      "seed": 20260915,
+      "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed",
+      "tables": [
+        "natural mixture",
+        "equal-scenario weighting"
+      ]
+    }
+  },
+  "failure_policy": "Stop and preserve on the first failure. Do not automatically restart, replay, filter rows, change the roster, role graph, prompts, geometry or caps. This registration carries its own single root-diagnosed recovery allowance, and under owner decision 22 of 2026-09-18 that recovery takes the RESUME-RECOVERY form: its own experiment fragment declaring resume_from {attempt_id, trace_sha256}, the same run id, replayed model-free by core.flight.resume so COMPLETE rows are kept without selection and only the rest are flown. A second failure closes this flight: no third registration, no replay, no row filtering, and the fix must be proven on a four-row dry run before another mechanism is admitted. A failed four-row smoke stops v2 on the same terms.",
+  "fit": {
+    "decision": "ALLOW",
+    "live": "every flight fits each realized request itself through build_native_contact_fit_gate; coordinate-fit is not run",
+    "method": "the anchor's own 5,417 sealed per-contact required_tokens plus this cell's measured per-contact word delta under analysis.slurp_slot_vocabulary.TOKEN_PROXY_FACTOR 1.3",
+    "minimum_bound_margin_tokens": 8983,
+    "receipt": "coordination/slurp-b7a-ncp-l1-anchor-v1/prompt-fit-v1.json",
+    "slot_tokens": 24576
+  },
+  "hash_caveat": "Every composed and protocol hash in this package is the value of the five recovery config fragments exactly as committed: readiness held, the preparation requirement pinned, prepared_phase_supply pinned, and no decision requirement. Flipping readiness and appending the coordinator's decision requirement each change the composed hash and therefore the protocol hash; use scripts/flights/repin_cell.py, never a hand edit.",
+  "metrics": {
+    "agreement_reading": "projection v3 (slurp-slu-official-projected-v3-train) reported beside every official number, owner decision 7 of 2026-09-17",
+    "diagnostics_required": [
+      "FALLBACK-RAW rate per boundary in the flight's own saea-node-context-policy-v1 receipt rows, against this package's contact-free expectation (7 malformed Solver drafts at planner:current-draft, 14 at reviewer:current-draft, 100 % malformed at planner:review-finding and solver:review-finding)",
+      "rewritten states per role against this package's measured 1,100 solver / 4,344 reviewer / 2,180 planner",
+      "the per-contact prompt-token delta from the cell's own sealed native contact-fit receipts",
+      "per-scenario intent table over all 18 scenarios in both weightings",
+      "the flight's own finite_completion count from analysis.native_episode_diagnostics' finite_stops block: count, solver_delivery_count, by_finish_reason, by_role, by_stage, plus the sample ids that carry the disposition; those rows are retained and scored, never filtered"
+    ],
+    "guard": "intent (joint scenario+action) accuracy, non-inferior within 1.0051 pp",
+    "primary": "official pooled SLU micro F1 (slurp-slu-official-train), natural mixture",
+    "secondaries": [
+      "intent accuracy",
+      "scenario accuracy",
+      "action accuracy",
+      "official pooled span F1",
+      "per-row mean official SLU-F1",
+      "per-row mean exact slot F1",
+      "saves/harms/ties with exact two-sided McNemar p"
+    ],
+    "symmetric_scorer": "slurp-slu-f1-normalized-v1 resolves gold from the SLURP devel split and refuses TRAIN sample ids, so the design rule's symmetric-sign clause is not evaluable on this roster; it is recorded as a deviation, projection v3 is the agreement reading, and the coordinator may register a TRAIN sibling before launch"
+  },
+  "not_authorized": [
+    "no readiness flip: this package leaves both cells held",
+    "no model, tokenizer, encoder, ASR, scorer or server contact",
+    "no paid API spend",
+    "no wire-check stage: FlightRuntime._dispatch_phase_program refuses a native episode whose transport is not the real shared speech renderer",
+    "no coordinate-fit: the native gate fits every request inside the flight",
+    "no default-plan edit and no harness-admission entry: the admission entry is written from the sealed verdict, not from this registration",
+    "no reuse, filtering, scoring or reading of any row of either closed v1 attempt",
+    "no third registration of cell B7a if this flight fails twice",
+    "no --allow-output-change on the re-pin tool"
+  ],
+  "not_claimed": [
+    "no superiority, generalization, paper-scale or held-out claim: TRAIN Fold A is an exposed discovery roster",
+    "nothing about Fold B, DEV-1000 or the test split",
+    "no claim that any particular boundary carried a gain: eight boundaries move together in this cell",
+    "no claim about the Reviewer's output contract, the duplicated task-contract tool message or a cleaning contact; those are B7r, B7c and B7b",
+    "a structural smoke result is never a quality result",
+    "No claim that the recovery run's realized requests equal the aborted run's: greedy decoding at temperature 0 is not bitwise reproducible across batch compositions, so trajectories may differ row by row. What is pinned is the configuration and the request-construction surface.",
+    "Nothing about task quality from either closed v1 attempt: the 618 rows the v1 arm contacted and the roughly 290 rows the v1 recovery completed were never scored and never read, and no partial read is permitted.",
+    "No claim that the finite-completion policy improves anything. It decides what happens to a truncated row; it is a harness-robustness key, not a factor, and the cell's question is unchanged.",
+    "No claim about WHY a Reviewer completion reached the 512-token cap, nor that v2 will meet none. The count is a diagnostic to report, not a hypothesis this cell tests."
+  ],
+  "preparation_base_commit": "25a7f3251c51b75061931ab435d0668c9648f350",
+  "registered_at_utc": "2026-09-19T12:00:00.000000+00:00",
+  "schema": "saea-b7a-ncp-l1-anchor-v2-protocol-v1",
+  "session": {
+    "attach_only": true,
+    "geometry": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "session_id": "serving-slurp-native-candidate-five-train-a-np4-v1"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/fable-b7a2",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "wire_check": {
+    "stage_unavailable": "core.flight.cli wire-check remains unavailable for any native-episode cell: FlightRuntime._dispatch_phase_program refuses a native episode whose transport is not the real shared speech renderer.",
+    "only_configuration_difference": "The ONLY configuration difference between this registration and the closed v1 recovery is the episode key native_episode.finite_completion_policy, plus the bookkeeping identity every new registration carries: what_this_is, the native_contact_fit run and attempt ids at unchanged endpoint ceilings, the two speech-feature identity ids, and the experiment fragment's own cell/run/attempt/experiment/fragment-kind ids, date, purpose, failure_policy, generation_budget definition and readiness block. Every model-facing key -- policy, native_episode.context_policy and the rest of the episode block, phase_material, phase_tools, knowledge_stores, task_instruction_template, task_instruction_fill, task_instruction_template_active, serving_slot_tokens, serving_slots, arm, evidence_source, evidence_mismatch, scorers, population, populations, split_id, service_session and both speech-packet promotion keys -- is byte-identical to the v1 recovery's.",
+    "request_bytes_identical": "REQUEST BYTES ARE IDENTICAL. finite_completion_policy is read by rails.runner when it builds NativeEpisodeSpec and is never serialised into a payload; the v1 recovery's request-envelope comparison already proved over 3,278 sealed MODEL_REQUEST payloads that neither registration's run, attempt or speech-feature identity strings appear in any payload byte and that each payload's own key_representation_id and matcher_policy_id are derived from the policy id, not from the baseline.",
+    "in_flight_proof": "The four-row smoke proves it in flight: every MODEL_REQUEST record of SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-V2 must carry a request_sha256 equal to the corresponding record of the sealed v1 recovery smoke SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-RECOVERY-V1, whose trace is under SPEECHRL_DATA_DIR/runs/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-RECOVERY-V1/. That trace is READ-ONLY: it is never modified, and no answer, reference or quality field of it is read. The comparison is over the four rows' Perception and Solver requests and over every Reviewer and Planner request whose row took the same trajectory; a request whose predecessor response differs is reported, not silently excused, because greedy decoding at temperature 0 is not bitwise reproducible across batch compositions."
+  },
+  "resume_recovery": {
+    "required_by": "owner decision 22 of 2026-09-18",
+    "supported": true,
+    "mechanism": "core.flight.resume replays the predecessor attempt's trace model-free and partitions the registered roster into COMPLETE rows, which are kept without selection, and the rest, which are flown; the seal merges them. The recovery is registered as its OWN experiment fragment carrying resume_from {attempt_id, trace_sha256} under the SAME run id and a new attempt id, and the run-cumulative budget already covers predecessor plus worst case because core.attempts.AttemptStore.prior_actual_usage sums every attempt of the run id.",
+    "not_registered_here": "No resume_from is declared by this registration: v2 is a fresh 1,080-row flight from row one. The clause records that the one recovery this flight is allowed will take that form."
+  },
+  "v1_closure": {
+    "record": "docs/results/2026-09-19-slurp-b7a-v1-closure.md",
+    "first_failure": {
+      "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V1",
+      "attempt_id": "attempt-slurp-native-ncp-l1-anchor-train-fold-a-generation-v1",
+      "when_utc": "2026-09-17T21:00Z (approximately)",
+      "reason": "NativeEpisodeError: Planner output names no registered action",
+      "actuals": {
+        "calls": 3278,
+        "repeated_speech_audio_seconds": 8973.15006250008,
+        "rows_contacted": 618,
+        "rows_sealed": 616
+      },
+      "fix": "item E8c, commit 2af5955a merged 5bbd54a2: an illegal Planner action becomes a row disposition; its four-row smoke passed on 2026-09-18"
+    },
+    "second_failure": {
+      "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1",
+      "attempt_id": "attempt-slurp-native-ncp-l1-anchor-train-fold-a-generation-recovery-v1",
+      "when_utc": "2026-09-19T03:35Z (approximately)",
+      "reason": "NativeEpisodeError: native episode node failed: [100054] component 'reviewer_1_role' execute 'invoke' error, reason='metered completion is non-authoritative because finish_reason is 'length''",
+      "actuals": {
+        "calls": 1451,
+        "request_fit_receipts": 1451,
+        "repeated_speech_audio_seconds": 3830.12,
+        "rows_complete_approximately": 290,
+        "official_scoring_jobs": 0,
+        "task_quality_reads": 0
+      },
+      "completion_cap_evidence": "exactly one contact in the trace reached 512 completion tokens, the max512 cap of the serving geometry; every other contact stayed below 400",
+      "attempt_state": "ABORTED",
+      "flight_lock": "preserved and reconciled; receipts flight-lock-preserved-20260919T034122Z.json and flight-lock-reconciliation-20260919T034122Z.json under SPEECHRL_DATA_DIR/coordination/slurp-b7a-ncp-l1-anchor-v1/",
+      "flight_commit": "2f039fa6"
+    },
+    "root_cause": "The SLURP native baselines omit native_episode.finite_completion_policy and rails.native_episode_config.load_native_episode_config defaults it to 'raise' (raw.get(\"finite_completion_policy\", \"raise\")), so one truncated completion aborts the whole campaign. The alternative 'deliver-latest-or-abstain' is already implemented and tested in the harness.",
+    "closure_rule": "Section 8 of docs/readiness/2026-09-17-slurp-b7a-ncp-l1-anchor-v1-recovery-v1.md and the owner iteration rule of the study CLAUDE.md -- at most one recovery re-registration per flight; a second failure stops the flight and the fix is proven on a 4-row dry run -- close the v1 flight. v2 is a NEW registration with new run ids, a four-row dry run of its fix before the arm, and its own single recovery allowance."
+  },
+  "supersedes": {
+    "closes": "docs/results/2026-09-19-slurp-b7a-v1-closure.md",
+    "closed_runs": [
+      "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V1",
+      "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1"
+    ],
+    "closed_packages": [
+      "docs/readiness/2026-09-17-slurp-b7a-ncp-l1-anchor-v1",
+      "docs/readiness/2026-09-17-slurp-b7a-ncp-l1-anchor-v1-recovery-v1"
+    ],
+    "rule": "Section 8 of docs/readiness/2026-09-17-slurp-b7a-ncp-l1-anchor-v1-recovery-v1.md and the owner iteration rule of the study CLAUDE.md -- at most one recovery re-registration per flight; a second failure stops the flight and the fix is proven on a 4-row dry run -- close the v1 flight. v2 is a NEW registration with new run ids, a four-row dry run of its fix before the arm, and its own single recovery allowance.",
+    "no_row_reuse": "Neither aborted attempt's rows are reused, filtered or read; their spend is charged to their own closed run ids and nothing is charged to v2."
+  },
+  "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. Neither closed v1 run -- SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V1 nor SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1 -- is ever scored or read, in whole or in part. The comparators are the sealed dual-store anchor score artifact (primary) and the released direct anchor score artifact (secondary); neither is ever re-flown or re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, the policy's rendered blocks and its receipt rows, the per-request MODEL_REQUEST sha256 comparison against the sealed v1 recovery smoke, fit receipts and seal, with no answer, reference or quality interpretation."
+}
