@@ -449,10 +449,12 @@ def test_a_live_slot_of_the_registered_size_is_byte_identical_to_the_default() -
 
 
 def test_the_live_slurp_slot_budgets_against_24576_not_32768() -> None:
-    """The defect, repaired. 24,576 - 8,192 = 16,384 tokens of budget, not
-    the 32,768 - 8,192 = 24,576 the same request used to be granted."""
+    """The defect, repaired. 24,576 - 3,072 = 21,504 tokens of budget (one
+    eighth of the live slot reserved), not the 32,768 - 8,192 = 24,576 the
+    same request used to be granted -- and not 16,384, which refused prompts
+    the physical slot holds (the EFF-1 re-pin of 2026-09-19)."""
 
-    required = 20_000
+    required = 22_000
     legacy = assess_context_budget(_candidate(required))
     serving = assess_context_budget(
         _candidate(required), serving_slot_limit_tokens=24_576
@@ -461,17 +463,20 @@ def test_the_live_slurp_slot_budgets_against_24576_not_32768() -> None:
     assert legacy.slot_limit_tokens == 32_768
     assert legacy.decision is ContextBudgetDecision.ALLOW
     assert serving.slot_limit_tokens == 24_576
-    assert serving.operational_reserve_tokens == 8_192
-    assert serving.physical_margin_tokens == 4_576
-    assert serving.operational_margin_tokens == -3_616
+    assert serving.operational_reserve_tokens == 3_072
+    assert serving.physical_margin_tokens == 2_576
+    assert serving.operational_margin_tokens == -496
     assert serving.decision is ContextBudgetDecision.COMPACT_REQUIRED
-    # And a request that does fit the real slot still passes.
+    # The real Perception requirement of the sealed SLURP cells (19,183
+    # tokens, physical margin +5,393) fits, as it did under the legacy gate.
     assert (
         assess_context_budget(
-            _candidate(16_384), serving_slot_limit_tokens=24_576
+            _candidate(19_183), serving_slot_limit_tokens=24_576
         ).decision
         is ContextBudgetDecision.ALLOW
     )
+    # An 8,192-token np8 slot reserves one eighth, never the absolute reserve.
+    assert serving_bound_reserve_tokens(8_192) == 1_024
 
 
 def test_the_live_slot_never_raises_an_undeclared_budget() -> None:
@@ -493,10 +498,10 @@ def test_a_narrow_live_slot_keeps_a_proportionate_reserve() -> None:
     the slot and never more."""
 
     assert serving_bound_reserve_tokens(32_768) == 8_192
-    assert serving_bound_reserve_tokens(24_576) == 8_192
-    assert serving_bound_reserve_tokens(16_384) == 8_192
-    assert serving_bound_reserve_tokens(8_192) == 4_096
-    assert serving_bound_reserve_tokens(4_096) == 2_048
+    assert serving_bound_reserve_tokens(24_576) == 3_072
+    assert serving_bound_reserve_tokens(16_384) == 2_048
+    assert serving_bound_reserve_tokens(8_192) == 1_024
+    assert serving_bound_reserve_tokens(4_096) == 512
 
     receipt = assess_context_budget(_candidate(3_050), serving_slot_limit_tokens=8_192)
     assert receipt.slot_limit_tokens == 8_192

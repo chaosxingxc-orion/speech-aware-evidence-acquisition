@@ -27,7 +27,7 @@ OPERATIONAL_RESERVE_TOKENS = 8_192
 #: slots at or under 16,384 tokens, where an absolute 8,192-token reserve
 #: would refuse geometries this study has actually flown (the np8 sessions run
 #: 8,192-token slots).
-MAX_RESERVE_SHARE_DENOMINATOR = 2
+MAX_RESERVE_SHARE_DENOMINATOR = 8
 REGISTERED_SPECIAL_TOKEN_RESERVE = 2
 MAX_COMPACTION_PASSES = 2
 MAX_ACCOUNTED_TOKENS = (1 << 63) - 1
@@ -130,16 +130,24 @@ class ContextBudgetLimits:
 def serving_bound_reserve_tokens(slot_limit_tokens: int) -> int:
     """The operational reserve for a budget bound to the live serving slot.
 
-    The registered :data:`OPERATIONAL_RESERVE_TOKENS`, except that it never
-    takes more than half the slot
-    (:data:`MAX_RESERVE_SHARE_DENOMINATOR`). At the registered
-    :data:`PER_SLOT_LIMIT_TOKENS`, and at the 24,576-token SLURP np4 slot,
-    the clamp is inert and the answer is the registered reserve itself; it
-    binds only on slots at or under 16,384 tokens, where an absolute
-    8,192-token reserve would leave a flown geometry no budget at all.
+    At or above the registered :data:`PER_SLOT_LIMIT_TOKENS` the answer is the
+    registered :data:`OPERATIONAL_RESERVE_TOKENS` itself, so the registered
+    geometry's receipt stays byte-identical to the legacy one. Below it the
+    reserve is one eighth of the live slot
+    (:data:`MAX_RESERVE_SHARE_DENOMINATOR`), never more than the registered
+    reserve: 3,072 tokens on the 24,576-token SLURP np4 slot, 1,024 on an
+    8,192-token np8 slot. E17 first clamped at half the slot, which kept the
+    absolute 8,192-token reserve on the 24,576 slot and refused prompts the
+    physical slot holds with thousands of tokens to spare (the EFF-1 re-pin
+    of 2026-09-19: 19,183 required, physical margin +5,393, refused at
+    -2,799); the legacy gate had granted exactly the physical slot, so a
+    reserve of one eighth is the smallest that leaves real headroom beyond
+    the 512-token completion ceiling without refusing any sealed cell.
     """
 
     slot_limit = _positive_integer(slot_limit_tokens, field="serving geometry slot limit")
+    if slot_limit >= PER_SLOT_LIMIT_TOKENS:
+        return OPERATIONAL_RESERVE_TOKENS
     return min(OPERATIONAL_RESERVE_TOKENS, slot_limit // MAX_RESERVE_SHARE_DENOMINATOR)
 
 
