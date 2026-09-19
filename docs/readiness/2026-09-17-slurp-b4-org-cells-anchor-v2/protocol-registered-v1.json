@@ -99,8 +99,8 @@
       "attempt_id": "attempt-slurp-native-fallback-quirky-intent-v2-anchor-train-fold-a-generation-v2",
       "campaign_plan": "configs/campaign/slurp-native-fallback-quirky-intent-v2-anchor-train-fold-a-v2.json",
       "cell": "slurp-native-fallback-quirky-intent-v2-anchor-train-fold-a-v2",
-      "composed_config_hash": "245873378bb9721a18ef31cf9b18c4ffcd864a44cc8718ed1d5bbfd657775392",
-      "execution_plan_protocol_hash": "d850874b5f32c250ba59d3a7c26322881188300815191d3da13fcc875383702b",
+      "composed_config_hash": "a07e895cf893bf2a8ba348449e949f3b0db18808d4435a3670ef49fa37f452d2",
+      "execution_plan_protocol_hash": "2577e3c90ab1ac7b90819926ae931fb008dc92f0aaaa26e44917dd55135702ee",
       "experiment": "slurp-native-fallback-quirky-intent-v2-anchor-train-fold-a-v2",
       "fit_attempt_id": "attempt-slurp-native-fallback-quirky-intent-v2-anchor-train-fold-a-fit-v2",
       "fit_run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-FIT-V2",
@@ -111,8 +111,8 @@
         "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
       },
       "prepared_phase_supply": {
-        "relpath": "prepared/SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-V2/phase-supply-v2.json",
-        "sha256": "b8263ad5603bcec3249b715806e5b62bf2fb41b285158df2b8634314014700b5"
+        "relpath": "prepared/SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-V2/phase-supply-v3.json",
+        "sha256": "2aa10a634a2172a2117398f51612100212c278753398ca686a4e789456512627"
       },
       "run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-V2",
       "smoke": {

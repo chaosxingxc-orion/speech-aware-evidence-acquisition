@@ -25,11 +25,11 @@
           {
             "kind": "preparation",
             "reason": "Model-free first-phase Perception supply prepared by the B4 re-base agent at commit bd04f4b9 from the same sealed speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed dual-store anchor used; zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed anchor preparation's on every row, so the Perception selection channel does not move in this cell. Receipt coordination/slurp-b4-org-cells-anchor-v2/phase-supply-vs-anchor-v1.json.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-V2/phase-supply-v2.json",
-            "sha256": "b8263ad5603bcec3249b715806e5b62bf2fb41b285158df2b8634314014700b5"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-V2/phase-supply-v3.json",
+            "sha256": "2aa10a634a2172a2117398f51612100212c278753398ca686a4e789456512627"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-V2"
     }

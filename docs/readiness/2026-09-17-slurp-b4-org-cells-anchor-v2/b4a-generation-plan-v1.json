@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-fallback-quirky-intent-v2-anchor-train-fold-a-v2",
-  "composed_config_hash": "245873378bb9721a18ef31cf9b18c4ffcd864a44cc8718ed1d5bbfd657775392",
+  "composed_config_hash": "a07e895cf893bf2a8ba348449e949f3b0db18808d4435a3670ef49fa37f452d2",
   "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan; the campaign acquires its own GenerationLease against the resident session and schedules the one official score at finalize.",
   "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "experiment": "slurp-native-fallback-quirky-intent-v2-anchor-train-fold-a-v2",
@@ -23,7 +23,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "d850874b5f32c250ba59d3a7c26322881188300815191d3da13fcc875383702b",
+    "protocol_hash": "2577e3c90ab1ac7b90819926ae931fb008dc92f0aaaa26e44917dd55135702ee",
     "run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-V2",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -32,7 +32,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-17-slurp-b4-org-cells-anchor-v2/protocol-registered-v1.json",
-    "sha256": "764ae518c8c48eeda3568642c39e49eb9648977dc42e8e14aef7f4f38623bb10"
+    "sha256": "41c74cf05b9d8169adad82f4ad730f0c630ee3a9b78d7c6e99844c459eab9031"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The comparators are the sealed dual-store anchor score artifact (primary) and the released direct anchor score artifact (secondary); neither is ever re-flown or re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, the module's own request channel, fit receipts and seal, with no answer, reference or quality interpretation.",
   "root_registration_required": true,
