@@ -250,7 +250,7 @@ degradation[]
 ```
 
 plus the row-level `distinct_system_message_sha256` — **1 is the constancy claim**, exactly as E17's
-`distinct_tool_schemas_sha256== 1` is. A citation resolves by **membership** in the index (or in this
+`distinct_tool_schemas_sha256 == 1` is. A citation resolves by **membership** in the index (or in this
 contact's own pointer/expansion ids), never by parsing, so a hallucinated id is detectable.
 Digests and counts only: no rendered text, no card, no exemplar, no draft. The OFF arm seals **no
 block**, as E11/E12/E14/E17/E18's OFF arms seal none.
@@ -373,6 +373,20 @@ Until it lands, an armed key cannot fly: `rails/runner.py` refuses a native epis
 `config.knowledge_index_json` is set while `binding.knowledge_index` is `None`, by name. A config hash
 that claims an index the request bytes do not carry is the one failure this item is unwilling to make
 possible.
+
+Three things the cell's wiring must close, named here so they are not discovered late:
+
+* **evidence provenance.** `apply_to_payload` rewrites `supplied_evidence` and leaves
+  `evidence_provenance` alone; the render proof is unaffected (provenance renders no byte) but a live
+  flight composes provenance from its own supply and must emit it for the pointer and expansion
+  blocks, whose `source_uri` scheme this item writes as `knowledge-index://<view>/<id>`.
+* **the row selector.** `RowSelection` is the typed input the assembly takes; deriving it in flight
+  from the Perception state, the retrieved exemplars' own construction intents and the candidate
+  projection's bound types is the binding's job. The render proof derives it from the sealed request
+  and the sealed Perception state, which is the same information a live row has.
+* **the exemplar retrieval RANK.** Today's rendering is in lexicographic evidence-id order and
+  carries no rank at all (M1 analysis section 4.2); under the key the order is the retrieval rank.
+  The sealed arm does not record that rank, so the proof uses the sealed render order and says so.
 
 ---
 
