@@ -61,6 +61,11 @@ SMOKE_EXPERIMENT = "slurp-native-reviewer-audit-anchor-smoke-4-v1"
 REVIEWER_AUDIT_KEY = "reviewer_audit"
 FINITE_COMPLETION_KEY = "finite_completion_policy"
 FINITE_COMPLETION_VALUE = "deliver-latest-or-abstain"
+#: Item E22 (the ReAct-exhaustion disposition, not the Earnings-22 carrier): the
+#: second failure-mode declaration, armed 2026-09-19 after the arm aborted on a
+#: Reviewer ReAct loop that exhausted its iterations by tool calls.
+REACT_EXHAUSTION_KEY = "react_exhaustion_policy"
+REACT_EXHAUSTION_VALUE = "continue-without-answer"
 
 #: Bookkeeping-only top-level keys: run/attempt identity, the provenance-only
 #: speech-feature ids and free-English notes. None shapes a rendered request.
@@ -102,6 +107,9 @@ def test_the_smoke_baseline_is_the_arm_baseline_plus_bookkeeping_only():
     assert arm["native_episode"][FINITE_COMPLETION_KEY] == (
         smoke["native_episode"][FINITE_COMPLETION_KEY]
     ) == FINITE_COMPLETION_VALUE
+    assert arm["native_episode"][REACT_EXHAUSTION_KEY] == (
+        smoke["native_episode"][REACT_EXHAUSTION_KEY]
+    ) == REACT_EXHAUSTION_VALUE
     # Each cell carries its OWN prepared artifact, under its own run id.
     for name, baseline in (("TRAIN-FOLD-A", arm), ("SMOKE-4", smoke)):
         relpath = baseline["prepared_phase_supply"]["relpath"]
@@ -112,7 +120,7 @@ def test_the_smoke_baseline_is_the_arm_baseline_plus_bookkeeping_only():
 
 
 @pytest.mark.parametrize("on_name", [ARM, SMOKE_BASELINE], ids=["arm", "smoke"])
-def test_the_only_keys_that_move_against_the_anchor_are_the_two_episode_keys(on_name):
+def test_the_only_keys_that_move_against_the_anchor_are_the_factor_and_the_two_failure_mode_declarations(on_name):
     off = _load_baseline(ANCHOR)
     on = _load_baseline(on_name)
     comparable = (set(off) | set(on)) - BOOKKEEPING_KEYS
@@ -144,9 +152,11 @@ def test_the_only_keys_that_move_against_the_anchor_are_the_two_episode_keys(on_
         for key in set(off["native_episode"]) | set(on["native_episode"])
         if off["native_episode"].get(key) != on["native_episode"].get(key)
     )
-    assert moved == [FINITE_COMPLETION_KEY, REVIEWER_AUDIT_KEY]
+    assert moved == [FINITE_COMPLETION_KEY, REACT_EXHAUSTION_KEY, REVIEWER_AUDIT_KEY]
     assert on["native_episode"][FINITE_COMPLETION_KEY] == FINITE_COMPLETION_VALUE
+    assert on["native_episode"][REACT_EXHAUSTION_KEY] == REACT_EXHAUSTION_VALUE
     assert FINITE_COMPLETION_KEY not in off["native_episode"]
+    assert REACT_EXHAUSTION_KEY not in off["native_episode"]
     assert REVIEWER_AUDIT_KEY not in off["native_episode"]
 
 
@@ -161,12 +171,13 @@ def test_no_fragment_of_this_cell_declares_a_node_context_policy(name):
     assert "role_context" not in _load_baseline(name)["native_episode"]
 
 
-def test_dropping_the_two_keys_reconstructs_the_anchors_episode_block():
+def test_dropping_the_factor_and_the_two_declarations_reconstructs_the_anchors_episode_block():
     off = _load_baseline(ANCHOR)["native_episode"]
     for name in (ARM, SMOKE_BASELINE):
         on = copy.deepcopy(_load_baseline(name)["native_episode"])
         on.pop(REVIEWER_AUDIT_KEY)
         on.pop(FINITE_COMPLETION_KEY)
+        on.pop(REACT_EXHAUSTION_KEY)
         assert on == off, name
 
 
