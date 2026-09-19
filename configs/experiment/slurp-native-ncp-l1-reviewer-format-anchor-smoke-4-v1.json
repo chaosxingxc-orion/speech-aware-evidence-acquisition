@@ -12,7 +12,7 @@
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Registered before contact by the B7r/B7c registration agent on cell B7a's configuration. It stays held until the coordinator flips it immediately before the standalone-worker smoke launch, which is itself after cell B7a seals and is not HARMFUL. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory.",
+        "reason": "Registered before contact by the B7r/B7c registration agent on cell B7a's configuration. It stays held until the coordinator flips it immediately before the standalone-worker smoke launch, which is itself after cell B7a seals and is not HARMFUL. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. SUPERSEDED 2026-09-19 (owner decision 32 after the B7a v2 HARMFUL read, docs/results/2026-09-19-slurp-b7a-ncp-l1-anchor-v2-verdict.md): the L1 base read HARMFUL, so no cell flies on it; closed unflown, zero contacts. cell B7r smoke (flown 2026-09-19, structural PASS; the cell closes with its base).",
         "requirements": [
           {
             "kind": "decision",
@@ -28,7 +28,7 @@
             "sha256": "7037a456d4d7b9dae1f846e60537e5cf0f08e0a8d4e6359464420953b228549a"
           }
         ],
-        "state": "ready"
+        "state": "superseded"
       },
       "run_id": "SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-SMOKE-4-V1"
     }
