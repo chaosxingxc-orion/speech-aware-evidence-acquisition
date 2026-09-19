@@ -2667,6 +2667,21 @@ async def _invoke_native_role_episode(
             "context_fit_policy 'compact-or-abstain' requires a live serving "
             "budget on the episode binding"
         )
+    # Item E21 (the knowledge index, not the Earnings-21 carrier), 2026-09-19,
+    # owner decisions 48 and 50: the knowledge INDEX is
+    # armed in the config and RENDERED from a flight-owned binding, exactly
+    # as E14's solver hints and E18's acquisition re-query are. The binding
+    # is not built yet -- that is the index cell's own step -- so an armed
+    # key must STOP the flight here rather than let a row fly whose config
+    # hash claims an index its request bytes do not carry. Fail-closed, by
+    # name, and unreachable for every config that does not arm the key.
+    if config.knowledge_index_json is not None and binding.knowledge_index is None:
+        raise RailsRunnerError(
+            "native_episode.knowledge_index is armed but the episode binding "
+            "carries no knowledge-index binding; an armed key with no renderer "
+            "would compose a config hash that claims an index the request bytes "
+            "do not carry"
+        )
     #: One row per contact, in contact order: the contact it describes and
     #: either its compaction record or ``None`` for a request that fitted.
     context_fit_records: list[dict[str, object]] = []

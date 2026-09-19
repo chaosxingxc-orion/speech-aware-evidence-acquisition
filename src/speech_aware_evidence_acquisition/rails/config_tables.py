@@ -284,10 +284,15 @@ RUN_NULL_ARMS: tuple[object, ...] = (None, 0)
 #: spelling, not ``"run.<key>"``.
 NATIVE_EPISODE_TOP_LEVEL_KEY = "native_episode"
 
-#: The closed allowlist of ``episode``-class switch keys. All three are dotted
-#: paths under :data:`NATIVE_EPISODE_TOP_LEVEL_KEY`; admitting a fourth is a
-#: code change with a test, not a receipt edit (see the class docstring
-#: above).
+#: The closed allowlist of ``episode``-class switch keys. Every member is a
+#: dotted path under :data:`NATIVE_EPISODE_TOP_LEVEL_KEY`; admitting one more
+#: is a code change with a test, not a receipt edit (see the class docstring
+#: above). There are ELEVEN today, and the notes below name them in admission
+#: order. (Base-lock finding F-18, repaired here: this docstring said "All
+#: three" over seven and then nine members, and "admitting a fourth" over the
+#: same -- a count that has to be edited on every admission is a count that
+#: will be wrong, so it is now stated once, as a rule, and the per-key notes
+#: carry the ordinals.)
 #:
 #: ``native_episode.context_policy`` (E8a, 2026-09-17,
 #: ``docs/superpowers/specs/2026-09-17-node-context-policy-design.md``
@@ -395,6 +400,40 @@ NATIVE_EPISODE_TOP_LEVEL_KEY = "native_episode"
 #: or is supplied with before its contact, and this is what a NODE brings in
 #: mid-episode, after a draft has been reviewed. See ``rails.acquisition``
 #: and ``rails.node_context_policy.ACQUIRED_EVIDENCE_BOUNDARY``.
+#: ``native_episode.context_fit_policy`` (E20, 2026-09-19, owner decision 45)
+#: is the TENTH, and the second FAILURE MODE after E13's. It decides what an
+#: OVER-LONG request does: ``"raise"`` -- the key absent or written out loud --
+#: aborts at preflight or is killed at dispatch by the server's
+#: ``exceed_context_size_error``; ``"compact-or-abstain"`` drops droppable
+#: blocks in the declared order (``rails.context_fit.DROP_ORDER``) and, when
+#: even that is not enough, retains the row under a ``context_compaction``
+#: terminal disposition. Like E13's it renders NO request byte on a row that
+#: fits, so its ON arm is free to be the default of every new cell. See
+#: ``rails.context_fit``.
+#: ``native_episode.knowledge_index`` (item E21 -- the knowledge index, not the
+#: Earnings-21 carrier -- 2026-09-19, owner decisions 48 and 50) is the
+#: ELEVENTH. It arms the knowledge INDEX -- a stable, addressable,
+#: ordered catalogue of the task's knowledge space rendered into the CONSTANT
+#: prefix at a declared granularity -- together with the per-row POINTER block
+#: and BOUNDED EXPANSION that replace today's "render the full text of
+#: everything retrieved". It is ONE key and not two on two measured grounds:
+#: an index-only arm adds about 3,526 tokens to every contact and forecloses
+#: the np5/np6 serving geometries, while a pointer-only arm removes the card
+#: text while the model has no index to resolve the pointers against. The
+#: prefix and the pointers are two halves of one mechanism -- the index is the
+#: referent and the pointer is the reference -- and one key keeps the cell
+#: one-factor. It belongs here rather than in ``run`` because it MOVES REQUEST
+#: BYTES (the system message gains the index, the evidence block becomes
+#: pointers plus a budgeted expansion), so no ``request-bytes-identical``
+#: falsifier can exist for it; rather than in the ``knowledge_views`` table
+#: because it changes how a phase's supply is RENDERED, not what is selected;
+#: and rather than folded into ``native_episode.solver_hints`` or
+#: ``reviewer_audit`` because those are per-row blocks at one boundary and
+#: this is the prefix every contact of every row carries. The paired
+#: ``native_episode.roles.<role>.knowledge_index_budget`` override table is
+#: part of the same module and is refused without it, exactly as E18's
+#: ``roles.acquisition`` is. See ``rails.knowledge_index`` and
+#: ``core.base.KNOWLEDGE_INDEX_ORDERINGS``.
 EPISODE_LEVEL_SWITCH_KEYS = frozenset({
     "native_episode.roles.solver",
     "native_episode.review_loop",
@@ -406,6 +445,7 @@ EPISODE_LEVEL_SWITCH_KEYS = frozenset({
     "native_episode.solver_hints",
     "native_episode.tool_schema_rendering",
     "native_episode.acquisition",
+    "native_episode.knowledge_index",
 })
 
 #: The top-level key every ``stores``-class switch key names one child of.
@@ -1252,9 +1292,15 @@ def is_episode_null_arm(key: str, value: object) -> bool:
     its explicit default ``"raise"`` (E13), because the parser reads the two
     the same way -- a context block is either absent or rendered, and with it
     absent the ``reviewer:current-draft`` boundary renders exactly its
-    pre-E12 bytes; and ``native_episode.tool_schema_rendering``'s OFF is the
+    pre-E12 bytes; ``native_episode.tool_schema_rendering``'s OFF is the
     key's absence OR its explicit default ``"per-role"`` (E17), for the same
-    reason.
+    reason; ``native_episode.context_fit_policy``'s OFF is the key's absence
+    OR its explicit default ``"raise"`` (E20), which the parser reads
+    identically; and ``native_episode.knowledge_index``'s OFF is the key's
+    ABSENCE (E21), because an index is either rendered into the constant
+    prefix or it is not -- with the key absent the system message carries its
+    pre-E21 contract fill and the evidence block the selected values' own
+    full text.
     """
 
     if key == "native_episode.context_policy":
@@ -1336,6 +1382,15 @@ def is_episode_null_arm(key: str, value: object) -> bool:
         # the Planner's ACQUIRE names no registered action, which is exactly
         # the E15 retained-row disposition the OFF arm must reproduce.
         return value is None
+    if key == "native_episode.knowledge_index":
+        # E21: the index is ABSENT or it is rendered -- there is no third
+        # shape. With the key absent the system message carries exactly its
+        # pre-E21 contract fill, the evidence block carries exactly the
+        # selected values' full text, and the receipt carries no block, which
+        # is the byte-identity falsifier E11/E12/E14/E17/E18 all carry.
+        from .knowledge_index import is_knowledge_index_null_arm  # noqa: PLC0415
+
+        return is_knowledge_index_null_arm(value)
     raise ConfigTableError(f"unknown episode switch key {key!r}")
 
 

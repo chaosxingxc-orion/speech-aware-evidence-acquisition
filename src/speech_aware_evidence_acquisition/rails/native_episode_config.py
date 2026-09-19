@@ -387,6 +387,16 @@ class NativeEpisodeConfig:
     # positional construction written before E20 -- here and in the tests --
     # composes exactly the config it always did.
     context_fit_policy: str = "raise"
+    # Item E21 (the knowledge index, not the Earnings-21 carrier), 2026-09-19,
+    # owner decisions 48 and 50: the canonical text of an
+    # armed ``native_episode.knowledge_index``, or None when the key is
+    # absent -- which is every config written before E21 and every OFF arm,
+    # so the system message then carries exactly its pre-E21 contract fill
+    # and the evidence block exactly the selected values' own full text.
+    # Armed, the episode renders the released index into the CONSTANT prefix
+    # and replaces the per-row value rendering with a pointer block plus a
+    # bounded expansion. Declared LAST, for the same reason E20's field is.
+    knowledge_index_json: str | None = None
 
     @property
     def acquisition_enabled(self) -> bool:
@@ -486,6 +496,17 @@ class NativeEpisodeRunBinding:
     # ``"compact-or-abstain"``; every other binding leaves it None and the
     # dispatch path is byte-identical to its pre-E20 self.
     context_fit_budget: "ContextFitBudget | None" = None
+    # E21 (2026-09-19, owner decisions 48 and 50): the flight-owned
+    # knowledge-INDEX binding -- the loaded, hash-verified
+    # ``rails.knowledge_index.KnowledgeIndexTable``, its resolved
+    # ``IndexPlan`` and the row selector that turns one row's own Perception
+    # candidates, retrieved exemplars and bound slot types into a
+    # ``RowSelection``. The same seam ``supply_for_phase`` and
+    # ``acquisition_requery`` are, and for the same reason: the runner never
+    # reaches for a store of its own. Required exactly when
+    # ``config.knowledge_index_json`` is not None; every other binding leaves
+    # it None, byte-identically to before.
+    knowledge_index: object = None
 
 
 @dataclass(frozen=True)
@@ -597,6 +618,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         "solver_hints",
         "tool_schema_rendering",
         "acquisition",
+        "knowledge_index",
     }
     if (
         not isinstance(raw, Mapping)
@@ -694,9 +716,18 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
     if not isinstance(tool_specs, Mapping):
         raise ValueError("phase_tools must be a mapping")
     iterations_by_kind: dict[str, int] = {}
+    # E21 (2026-09-19): the per-role pointer/expansion override table. It is
+    # part of the ``native_episode.knowledge_index`` MODULE and is refused
+    # without it, exactly as E18's ``roles.acquisition`` is refused without
+    # ``native_episode.acquisition`` -- a node with no policy and a policy
+    # with no node are both half-armed, and so is a budget override with no
+    # index to budget.
+    knowledge_index_armed = "knowledge_index" in raw
     for kind in kinds:
         row = raw_roles[kind]
-        base_fields = {"phase_id", "max_iterations", "history_scope"}
+        base_fields = {
+            "phase_id", "max_iterations", "history_scope", "knowledge_index_budget",
+        }
         # Only the Solver row may carry grouped-sampling fields (E2, SLURP v2
         # base program M2); every other role keeps the historical shape.
         solver_fields = (
@@ -710,6 +741,12 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
             raise ValueError("each native role requires phase_id and max_iterations")
         if row["phase_id"] not in program.phase_names():
             raise ValueError("native role references an unknown program phase")
+        if "knowledge_index_budget" in row and not knowledge_index_armed:
+            raise ValueError(
+                "native_episode.knowledge_index and "
+                "roles.<role>.knowledge_index_budget are one module: declare both "
+                "or neither"
+            )
         iterations = row["max_iterations"]
         # 0 is provisionally accepted here (Reviewer/Planner only, when the
         # review loop is off); the paired cross-role check below is what
@@ -1085,6 +1122,18 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         # replaced at 'cleaned', so both are refused by name rather than
         # silently rendering nothing.
         solver_hints_requires_structured_boundary(context_policy_json)
+    # E21 (2026-09-19, owner decisions 48 and 50): the knowledge INDEX and
+    # index-based context assembly. ONE key, validated fail-closed HERE --
+    # before any contact -- under the eight refusals of design section 6.4.
+    knowledge_index_json = None
+    if knowledge_index_armed:
+        knowledge_index_json = _load_knowledge_index(
+            raw["knowledge_index"],
+            values=values,
+            raw_roles=raw_roles,
+            kinds=kinds,
+            tool_schema_rendering=tool_schema_rendering,
+        )
     # E11 (2026-09-18, owner directive 26): the delivery-time normaliser
     # node. ONE key, validated fail-closed HERE -- before any contact -- so a
     # fragment can never arm a carrier-specific delivery rule on the wrong
@@ -1206,4 +1255,173 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         acquisition_policy_id,
         acquisition_budget,
         context_fit_policy,
+        knowledge_index_json,
     )
+
+
+def _load_knowledge_index(
+    block, *, values: Mapping, raw_roles: Mapping, kinds, tool_schema_rendering: str,
+) -> str:
+    """E21: validate ``native_episode.knowledge_index``, fail-closed.
+
+    The eight refusals of design section 6.4, in order, each raising by name
+    before any contact is made:
+
+    1. an unreleased or hash-mismatched ``view`` -- the id here, the BYTES
+       at :func:`rails.knowledge_index.load_knowledge_index_table`, which is
+       the same two-stage split ``solver_hints`` uses so a fragment can be
+       validated on a machine with no data root;
+    2. a ``granularity`` naming an entry kind the view does not carry (the
+       ``exemplar`` kind is pointer-and-expansion only);
+    3. ``expansion_budget.exemplar > 0`` with no exemplar store armed on any
+       phase;
+    4. ``pointer_budget.intent > candidate_supply.max_candidates`` -- the
+       pointer block may never name more candidates than the projection
+       produced;
+    5. ``expansion_budget.slot_card > candidate_supply.max_total_values``;
+    6. an ``ordering`` id not registered in ``core.base``;
+    7. the key armed with ``tool_schema_rendering`` absent or ``"per-role"``
+       -- the economic premise of the design is the CONSTANT prefix, and an
+       arm that does not have it is measuring something else. This is the one
+       that will be argued about; it is deliberate, and it makes the ordering
+       of the cells (EFF-1 before the index cell) a machine fact rather than
+       a plan;
+    8. the key armed on a carrier whose descriptor declares no
+       ``knowledge_layer`` (today: both Earnings descriptors, base-lock
+       finding F-1).
+    """
+
+    from .knowledge_index import (  # noqa: PLC0415
+        EXEMPLAR_STORE_ROLE,
+        KNOWLEDGE_INDEX_CARRIER,
+        KnowledgeIndexError,
+        parse_knowledge_index_config,
+        parse_role_budget_override,
+        validate_knowledge_index_config,
+    )
+
+    # Refusal 8 first: it is the cheapest, and a carrier with no knowledge
+    # layer has no index to declare a granularity over.
+    declared_carrier = values.get("carrier_lock_key")
+    if not isinstance(declared_carrier, str) or not declared_carrier:
+        raise ValueError(
+            "native_episode.knowledge_index requires a declared carrier_lock_key "
+            "whose descriptor names a knowledge layer"
+        )
+    from ..data.carriers import get_carrier_descriptor  # noqa: PLC0415
+
+    try:
+        descriptor = get_carrier_descriptor(declared_carrier)
+    except Exception as error:  # noqa: BLE001 - the loader's own error type
+        raise ValueError(
+            f"native_episode.knowledge_index names carrier {declared_carrier!r}: "
+            f"{error}"
+        ) from error
+    task = getattr(descriptor, "task", None)
+    if task is None or not getattr(task, "knowledge_layer", None):
+        raise ValueError(
+            f"native_episode.knowledge_index is armed on carrier "
+            f"{declared_carrier!r}, whose descriptor declares no knowledge_layer; "
+            "an index is a catalogue of a knowledge layer and there is none to "
+            "catalogue"
+        )
+    if declared_carrier != KNOWLEDGE_INDEX_CARRIER:
+        raise ValueError(
+            f"the released knowledge index is defined for carrier "
+            f"{KNOWLEDGE_INDEX_CARRIER!r}, but this config declares carrier_lock_key "
+            f"{declared_carrier!r}"
+        )
+    if not isinstance(block, Mapping):
+        raise ValueError("native_episode.knowledge_index must be an object")
+    if "roles" in block:
+        # Two spellings of one override is how a cell ends up with two
+        # identities: the per-role table is declared ON THE ROLE ROW, beside
+        # the role it budgets, exactly as E18's acquisition seat is.
+        raise ValueError(
+            "native_episode.knowledge_index.roles and "
+            "native_episode.roles.<role>.knowledge_index_budget are two spellings "
+            "of one override; declare it on the role row"
+        )
+    overrides = {
+        kind: raw_roles[kind]["knowledge_index_budget"]
+        for kind in kinds
+        if isinstance(raw_roles.get(kind), Mapping)
+        and "knowledge_index_budget" in raw_roles[kind]
+    }
+    composed = dict(block)
+    try:
+        if overrides:
+            composed["roles"] = {
+                role: parse_role_budget_override(value, role=role)
+                for role, value in overrides.items()
+            }
+        plan = parse_knowledge_index_config(composed)
+        canonical = validate_knowledge_index_config(composed)
+    except KnowledgeIndexError as error:
+        raise ValueError(f"native_episode.knowledge_index is invalid: {error}") from error
+    # Refusal 7.
+    if tool_schema_rendering != "constant":
+        raise ValueError(
+            "native_episode.knowledge_index requires "
+            "native_episode.tool_schema_rendering 'constant': the index is free only "
+            "while the prefix is constant, and an arm whose system message toggles "
+            "twice per row is measuring something else"
+        )
+    stores = values.get("knowledge_stores") or {}
+    if not isinstance(stores, Mapping):
+        raise ValueError("knowledge_stores must be a mapping")
+    exemplar_armed = False
+    candidate_supplies: list[tuple[str, str, Mapping]] = []
+    for store_id, store in stores.items():
+        if not isinstance(store, Mapping):
+            raise ValueError("a knowledge store must be a mapping")
+        supplies = store.get("phase_supply") or {}
+        if store.get("store_role") == EXEMPLAR_STORE_ROLE and supplies:
+            exemplar_armed = True
+        candidates = store.get("candidate_supply") or {}
+        if not isinstance(candidates, Mapping):
+            raise ValueError("candidate_supply must be a mapping")
+        for phase_id, spec in candidates.items():
+            if not isinstance(spec, Mapping):
+                raise ValueError("a candidate supply must be a mapping")
+            candidate_supplies.append((str(store_id), str(phase_id), spec))
+    # Refusal 3.
+    for role_budget in (plan.budget, *plan.role_budgets.values()):
+        if role_budget.expansion["exemplar"] > 0 and not exemplar_armed:
+            raise ValueError(
+                "native_episode.knowledge_index.expansion_budget.exemplar is positive "
+                f"but no store of role {EXEMPLAR_STORE_ROLE!r} is armed on any phase; "
+                "the expansion block would name exemplars this row never retrieved"
+            )
+    # Refusals 4 and 5: a pointer may never name more candidates than the
+    # projection produced, and an expansion may never read more cards than
+    # the candidate supply selected.
+    for role_budget in (plan.budget, *plan.role_budgets.values()):
+        for store_id, phase_id, spec in candidate_supplies:
+            max_candidates = spec.get("max_candidates")
+            if isinstance(max_candidates, int) and not isinstance(max_candidates, bool):
+                if role_budget.pointer["intent"] > max_candidates:
+                    raise ValueError(
+                        "native_episode.knowledge_index.pointer_budget.intent "
+                        f"({role_budget.pointer['intent']}) exceeds "
+                        f"{store_id}.candidate_supply.{phase_id}.max_candidates "
+                        f"({max_candidates})"
+                    )
+            max_total = spec.get("max_total_values")
+            if isinstance(max_total, int) and not isinstance(max_total, bool):
+                if role_budget.expansion["slot_card"] > max_total:
+                    raise ValueError(
+                        "native_episode.knowledge_index.expansion_budget.slot_card "
+                        f"({role_budget.expansion['slot_card']}) exceeds "
+                        f"{store_id}.candidate_supply.{phase_id}.max_total_values "
+                        f"({max_total})"
+                    )
+        if (
+            role_budget.expansion["slot_card"] > 0 or role_budget.pointer["slot"] > 0
+        ) and not candidate_supplies:
+            raise ValueError(
+                "native_episode.knowledge_index budgets slot pointers or slot cards "
+                "but no store declares a candidate_supply; there is no projection to "
+                "bind slot types to the candidates"
+            )
+    return canonical
