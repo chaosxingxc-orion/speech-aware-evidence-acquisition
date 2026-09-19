@@ -3,7 +3,13 @@
 Model-free compression analysis of cell B1's speech-keyed TRAIN exemplar supply (module M1) over
 the sealed arms, under **owner decision 46** of 2026-09-19, extended by **decision 47** (sections
 6-8) and **decision 49** (sections 9-11)
-(`docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md`).
+(`docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md`), and reconciled against the
+**decision-48 knowledge-index design** (`docs/superpowers/specs/2026-09-19-knowledge-index-and-
+context-assembly-design.md`, merged at `12835d94`) in **sections 13-16**, which also extend the
+analysis to the candidate slot-contract cards and carry the **final ranking**.
+
+**Read sections 13-16 before acting on sections 5 or 11.** The reconciliation is clean, but the
+post-E17 cache model retires the cell those two sections rank first and replaces it.
 
 **Zero contacts.** No model, tokenizer, encoder, ASR, tool, scorer, server or network was reached.
 Every number is read from sealed bytes already on disk: the flown traces' `MODEL_REQUEST` payloads,
@@ -28,9 +34,11 @@ Committed receipt: `docs/receipts/slurp-m1-exemplar-compression-analysis-v1.json
 1. **The premise needs correcting.** The twenty-line exemplar block is **not** the largest
    prompt-token contributor. It costs **737 tokens** per Solver contact -- **7.8 %** of that
    contact's prompt and **8.9 %** of the row's GPU prefill. The `slot-contracts` block in the same
-   request is **26,010 characters, roughly 5,070 tokens, about seven times larger**. Lever L3's
-   "22-item block" is the *whole* supplied-evidence block, of which the exemplars are the smallest
-   third.
+   request is **24,906 characters mean, roughly 4,855 tokens, about six and a half times larger**,
+   and **90.6 % of its characters are cards for slot types that neither the frozen core nor the
+   annotation used** (section 14.2). Lever L3's "22-item block" is the *whole* supplied-evidence
+   block, of which the exemplars are the smallest third. This reproduces the decision-48 index
+   design's finding F-1 on the full roster (section 13).
 2. **What M1 actually buys is slot fillers, not intents.** Of the 277 rows where B1 beat the sealed
    anchor on SLU-F1, **213 (76.9 %) changed only the slots**, 2 changed only the intent. Of the 154
    saves that gained a newly correct filler, **133 (86.4 %) have that exact filler surface printed
@@ -359,13 +367,14 @@ The retrieval produces a rank and the renderer throws it away. Two consequences.
 
 ---
 
-## 5. Ranked proposal under decision 46's own menu
+## 5. Ranked proposal under decision 46's own menu (superseded by section 16)
 
 Ranking by saving per unit of risk to the measured mechanism (section 3.2), restricted to the
 decision-46 menu. Section 11 gives the final ranking across all three decisions.
 
-1. **Compact rendering + rank ordering + k = 12** combined: about **385 tokens** per Solver contact,
-   **1,540 per row**, 47 % of the block; gold intent 0.9278, save-filler retention 0.887.
+1. **Compact rendering + rank ordering + k = 12** combined: **352 tokens** saved per Solver contact,
+   **1,408 per row** (1,056 prefilled), 48 % of the block; gold intent 0.9278, save-filler
+   retention 0.887.
 2. **Compact rendering alone** (k unchanged): 105 tokens per contact, 418 per row, **zero** coverage
    change -- the only strictly free item on the menu.
 3. **k = 12 alone**: 287 per contact, 1,148 per row, -1.48 pp intent, -4.17 pp filler recall.
@@ -611,10 +620,11 @@ prefix does not survive between them.
 
 **The owner's instinct is right about the repetition and understates it.** Confining the raw block
 to the Solver alone -- rendering an intent and slot-type summary to the Planner and Reviewer instead
--- would save about **1,553 prefilled tokens per row, 67 % of the block's prefill cost**, with **no
-change at all to what the Solver sees**, and therefore with a strong prior of exact neutrality on
-the official number. That is a larger saving than k = 12 (1,148 client tokens, about 575 prefilled)
-and it touches no coverage curve in this report.
+-- would save about **1,385 prefilled tokens per row, 60 % of the block's prefill cost**, net of the
+roughly 90-token summary that replaces it (1,553 tokens and 67 % if the replacement were free),
+with **no change at all to what the Solver sees**, and therefore with a strong prior of exact
+neutrality on the official number. That is a larger saving than k = 12 (1,148 client tokens, about
+861 prefilled) and it touches no coverage curve in this report.
 
 One caveat before that is called free: the Reviewer's job includes checking the Solver's answer
 against its evidence, and it cites value ids. A Reviewer that no longer sees the lines it is asked
@@ -667,7 +677,7 @@ as the proxy for the key share that survives:
 | --- | ---: | ---: | ---: | ---: |
 | as flown, k = 20 | 732 | 1.00 | 1.00 | +12.61 (measured) |
 | compact rendering only | 627 | 1.00 | 1.00 | **+12.6, free** |
-| rank top-12, compact | 385 | 1.00 | 0.89 | about +11.7 |
+| rank top-12, compact | 380 | 1.00 | 0.89 | about +11.7 |
 | vote (m = 5) + 3 lines | 153 | ~0.85 | ~0.33 | about **+6.7** |
 | vote (m = 5) only | 71 | ~0.30 | 0.00 | about **+1.4** |
 
@@ -676,20 +686,25 @@ reason this form must not be registered as a "free saving".
 
 ---
 
-## 11. Final ranking and the one cell to register first
+## 11. Ranking across decisions 46, 47 and 49 (superseded by section 16)
+
+**Superseded.** Section 16 carries the reconciled ranking after the decision-48 measurement and the
+post-E17 cache model. The cell ranked first below is worth about 1,500 prefilled tokens per row
+today and approximately **zero** after E17 (section 15.1), so it must not be registered. What
+survives from it are its three free riders, which section 16.1 folds into the index cell.
 
 Criterion: tokens saved per unit of *measured* risk to the mechanism section 3.2 identified.
 
 | rank | form | client tokens saved / row | prefill saved / row | risk to the measured mechanism | evidence class |
 | ---: | --- | ---: | ---: | --- | --- |
-| **1** | **Confine the raw block to the Solver; summary to Planner and Reviewer; compact store alias; rank order** | **~2,300** | **~1,800** | **none to the Solver's own input** | measured |
-| 2 | Compact rendering alone (store alias + compact slots) | 430 | ~340 | **zero, provably** | measured |
-| 3 | Rank top-12 + compact + rank order | 1,540 | ~1,200 | -1.5 pp intent, -4.2 pp filler, 1/42 saves | measured curves |
+| **1** | **Confine the raw block to the Solver; summary to Planner and Reviewer; compact store alias; rank order** | **~2,030** | **~1,500** | **none to the Solver's own input** | measured |
+| 2 | Compact rendering alone (store alias + compact slots) | 430 | ~325 | **zero, provably** | measured |
+| 3 | Rank top-12 + compact + rank order | ~1,408 | ~1,056 | -1.5 pp intent, -4.2 pp filler, 1/42 saves | measured curves |
 | 4 | Intent cards into the constant prefix | prefill only | ~2,370 | deletes the OBS-to-ORG narrowing; KV budget | estimated |
-| 5 | Vote (m = 5) + 2-3 few-shot lines (owner's form) | ~2,320 | ~1,800 | **-24 pp filler recall**; predicted -5 to -6 pp SLU | predicted |
+| 5 | Vote (m = 5) + 2-3 few-shot lines (owner's form) | ~2,316 | ~1,737 | **-24 pp filler recall**; predicted -5 to -6 pp SLU | predicted |
 | 6 | Staged draft-then-acquire (E18) | ~0 | ~0 | -14.1 pp gold-intent availability if keyed on the draft | estimated |
-| 7 | Per-intent cap | ~1,800 | ~1,400 | best intent/token, worst filler/token | measured |
-| 8 | Score-gap truncation | ~2,000 | ~1,600 | unstable k; -11 pp intent | measured |
+| 7 | Per-intent cap | ~1,776 | ~1,332 | best intent/token, worst filler/token | measured |
+| 8 | Score-gap truncation | ~1,956 | ~1,467 | unstable k; -11 pp intent | measured |
 
 ### 11.1 The cell to register first
 
@@ -710,9 +725,10 @@ queue.
   lexicographic order.
 * k stays at **20**. Nothing about the Solver's coverage curves moves.
 
-**Predicted saving.** About 2,300 client tokens and about 1,800 prefilled tokens per row -- roughly
-7 % of the row's prefill, about **0.16 GPU hours per 1,080 rows** at the measured 2,048 tokens per
-second, and proportionally more after L1.
+**Predicted saving.** About **2,030 client tokens** and about **1,500 prefilled tokens per row** --
+**5.8 %** of the row's prefill -- which is about **0.22 GPU hours per 1,080 rows** at the measured
+2,048 tokens per second, and proportionally more after L1. Components: Planner 732 -> ~90, the
+Reviewer pair 1,464 -> ~180, the Solver 732 -> 625 from the store alias alone.
 
 **Config keys** -- a new rendering mode on the exemplar supply, knobs only:
 
@@ -775,7 +791,7 @@ anchor rather than +12.6.
 
 ---
 
-## 12. What I could not verify
+## 12. What I could not verify (sections 1-11; section 16.2 adds the rest)
 
 * **Token counts for text that never flew.** There is no tokenizer contact, so every simulated
   form's token count is characters divided by the 3.634 chars/token measured on the sealed block.
@@ -799,3 +815,272 @@ anchor rather than +12.6.
 * **Greedy decoding is not bitwise reproducible** across batch compositions on this server, so every
   cross-arm row-level comparison in section 3 is against *sealed outputs*, never re-decoded.
 * The **EFF-1** campaign was in flight throughout; its run directory was not opened.
+
+---
+
+## 13. Reconciliation with the decision-48 index design
+
+The knowledge-index design draft
+(`docs/superpowers/specs/2026-09-19-knowledge-index-and-context-assembly-design.md`, merged at
+`12835d94`) measured the same sealed B1 arm independently and asked to be reconciled. It is
+reconciled here by reproducing its own window.
+
+Solver contact, rendered characters -- the same rendering contract, the same arm, three windows:
+
+| window | `slot-contracts` | cards/row | `intent-boundaries` | `train-exemplars` |
+| --- | ---: | ---: | ---: | ---: |
+| index design, first 20 rows, median | 24,057 | 11.5 | 6,057 | 2,474 |
+| **this analysis, first 20 rows, median** | **24,045** | **11.5** | **6,049** | **2,454** |
+| this analysis, first 60 rows, median | 23,116 | 11.0 | 6,012 | 2,425 |
+| **this analysis, all 1,080 rows, median** | **25,995** | **12.0** | **6,022** | **2,595** |
+| **this analysis, all 1,080 rows, mean** | **24,906** | **11.97** | **6,070** | **2,661** |
+
+**Both are right; they measure different windows.** On the index design's own 20-row window this
+analysis reproduces its three figures to within 0.05 %, 0.13 % and 0.81 % -- the residual is
+integer-median tie-breaking, nothing else. Over the full roster the blocks are larger: the exemplar
+block is **2,595 median / 2,660.8 mean**, not 2,474, and the slot block is **25,995 median /
+24,906 mean**, not 24,057. The per-store **shares** are unchanged, which is what finding F-1 turns
+on:
+
+| store | index design, 20 rows | this analysis, 1,080 rows (mean) |
+| --- | ---: | ---: |
+| `slot-contracts` | 73.8 % | **74.0 %** |
+| `intent-boundaries` | 18.6 % | **18.0 %** |
+| `train-exemplars` | 7.6 % | **7.9 %** |
+
+**Finding F-1 holds on the full roster.** The decision-46 premise is wrong, and section 0 of this
+report already says so from its own independent measurement -- the paired token difference of
+section 1, which the index design did not have. The two analyses converge: the exemplar block costs
+**737 measured prompt tokens** (this analysis, exact paired difference on 816 matched rows) while
+the slot-contract block costs about **4,855** (both analyses, derived from characters).
+
+Two places where this analysis is the more careful measurement, as section 9.2 of that design
+anticipated:
+
+* Its exemplar token figure is derived at a **4.60 chars/token** role median; the block's **own**
+  measured density is **3.634** (section 1.1), because exemplar lines are natural speech text and
+  are the densest part of the request. At 4.60 the block reads 538 tokens; measured, it is 737. The
+  design's finding F-1 is therefore *conservative* -- the exemplar block is bigger than it said,
+  and still only 7.4 % of the post-E17 row.
+* Its finding F-7 (the vote's concentration, "median 3 distinct intents, top-1 15 of 20 over 60
+  sealed rows") reads **median 3 distinct intents, top-1 14.26 of 20 mean over all 1,080 rows**
+  here (section 2.3). It reproduces.
+
+---
+
+## 14. The slot-contract cards: what the 74 % is
+
+### 14.1 How many cards, and why
+
+The Solver's `slot-contracts` supply is the `candidate_supply.solver` decision of the
+`slot-contracts` store: provider `slurp-candidate-semantic-v1`, projection
+`bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1`, with
+`max_candidates: 3`, `max_values_per_candidate: 16` and `max_total_values: 28`. It expands
+Perception's at most three intent hypotheses into the union of the slot types those intents can
+carry, and renders **one full card per type**.
+
+| quantity | value |
+| --- | ---: |
+| cards per row, mean / median | **11.97 / 12** |
+| cards per row, min / p10 / p90 / max | 2 / 6 / 17 / 24 |
+| distinct cards ever used | 54 of the store's 54 |
+| card raw characters, mean / median / p90 / max | 2,028.6 / 1,925 / 3,201 / 3,370 |
+| block rendered characters, mean / median | **24,906 / 25,995** |
+| block tokens at the measured 5.13 chars/token | **~4,855** |
+
+The observed 11.97 is the **value expansion**, not the candidate count: three intent hypotheses,
+each contributing up to 16 slot types, deduplicated by first occurrence and capped at 28. The cap
+binds on almost no row -- the maximum observed is 24 -- so the block size is set by how many
+distinct slot types the three hypotheses happen to span, which is why it runs from 2 to 24.
+
+### 14.2 Which cards the delivered answer actually used
+
+Offline gold join, diagnostic only. A card "is used" when its slot type appears in the answer.
+
+| quantity | value |
+| --- | ---: |
+| cards offered across 1,080 rows | 12,930 |
+| of which the type appears in the **delivered** answer | 961 (**7.43 %**) |
+| of which the type appears in the **gold** answer | 870 (6.73 %) |
+| of which either | 1,178 (**9.11 %**) |
+| **card characters serving a type neither the model nor the gold used** | **23,760,001 of 26,229,783 = 90.6 %** |
+| rows where every delivered type has its card | 1,072 / 1,080 (99.3 %) |
+| rows where every gold type has its card | 636 / 666 (95.5 %) |
+
+**Finding.** The card block is a near-complete cover of what the answer needs (99.3 % of rows) and
+**90.6 % of its characters are cards for slot types that nobody -- neither the frozen core nor the
+annotation -- put in the answer.** That is 4,400 of the 4,855 tokens, about 44 % of the post-E17
+row, spent on options not taken. It is the single largest identified waste in the SLURP prompt, and
+it is nineteen times the entire exemplar block.
+
+### 14.3 The repeated card sections
+
+Both card stores carry sections that are byte-identical across their cards. Measured over the
+sealed snapshots:
+
+| store | section | distinct values | most common on | chars | section total | share of store |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| `intent-boundaries` (60) | `Limitations` | 15 | 46 cards | 175 | 12,362 | 29.3 % |
+| `intent-boundaries` | **`Uncertainty behavior`** | **1** | **60 cards** | **199** | **11,940** | **28.3 %** |
+| `intent-boundaries` | `Confusable exclusions` | 60 | 1 | 109 | 7,301 | 17.3 % |
+| `intent-boundaries` | `Activation boundary` | 60 | 1 | 67 | 4,244 | 10.1 % |
+| `slot-contracts` (54) | `Intent bindings and semantic roles` | 54 | 1 | 187 | 24,877 | 31.1 % |
+| `slot-contracts` | `Limitations` | 54 | 1 | 286 | 16,725 | 20.9 % |
+| `slot-contracts` | `Extraction cues` | 54 | 1 | 202 | 10,762 | 13.4 % |
+| `slot-contracts` | **`Missing behavior`** | **1** | **54 cards** | **141** | **7,614** | **9.5 %** |
+| `slot-contracts` | `Ambiguity behavior` | 54 | 1 | 89 | 6,997 | 8.7 % |
+| `slot-contracts` | `Admissible formats` | 54 | 1 | 91 | 5,115 | 6.4 % |
+
+This confirms and extends the index design's finding F-5. The **199-character
+`Uncertainty behavior`** string is identical on all 60 intent-boundary cards, and there is a second
+one the design's table does not carry: the **141-character `Missing behavior`** string is identical
+on all 54 slot-contract cards.
+
+Per row that is `8 x 199 = 1,592` characters of boundary repeat and `11.97 x 141 = 1,688`
+characters of slot repeat -- **3,280 characters, about 540 tokens, stated once per row and
+restated on every card**. `intent-boundaries-factored-v1` already collapses the first of these
+(-57.0 % per card by the design's measurement) and is unused; nothing collapses the second.
+
+---
+
+## 15. Simulations on the cards, and on the exemplars after them
+
+### 15.1 The cache model these are priced under
+
+Post-E17 (`native_episode.tool_schema_rendering: "constant"`, which cell EFF-1 is admitting), two
+measured facts change the arithmetic of everything above.
+
+* The row prefills **9,906 tokens** (decision-45 analysis, measured), not 25,933.
+* The supplied-evidence block is **byte-identical across the Solver, both Reviewer and the Planner
+  contacts of one row** (index design F-4), and with the `tools` toggle gone the prefix is stable,
+  so the block is prefilled **once per row**, not three times.
+* A constant prefix is prefilled **once per slot per flight**, so N prefix tokens cost
+  `4N / 1,080` per row -- 13.1 tokens per row at N = 3,526 (index design F-8).
+
+Post-E17 the row's prefill decomposes as:
+
+| part | tokens | share of the 9,906-token row |
+| --- | ---: | ---: |
+| `slot-contracts` block | ~4,855 | **49.0 %** |
+| `intent-boundaries` block | ~806 | 8.1 % |
+| **`train-exemplars` block** | **737** | **7.4 %** |
+| everything else (agent states, contract replay, role queries, speech) | ~3,508 | 35.4 % |
+
+**This retires the section 9 / section 11.1 proposal as an efficiency cell.** Confining the raw
+exemplar block to the Solver is worth about 1,500 prefilled tokens per row **today**, because the
+tools toggle forces three re-prefills; **after E17 it is worth approximately zero prefill**, because
+the block is already prefilled once. It still removes about 2,030 client prompt tokens per row, but
+client tokens are not the cost -- prefill is. EFF-1 is in flight now, so that cell would be obsolete
+before it could be read.
+
+### 15.2 The card simulations
+
+| # | form | prefill saved / row | share of the post-E17 row | coverage effect | risk class |
+| --- | --- | ---: | ---: | --- | --- |
+| **S-2** | **slot-card INDEX in the constant prefix + per-row POINTERS** | **~4,784** | **48.3 %** | **relocation, not truncation, for every pointered card** | the index's own compression |
+| S-1 | hoist the two constant card sections to the prefix | ~540 | 5.5 % | **none, byte-for-byte** | none |
+| S-3a | cap the card expansion at 10 | ~1,176 | 11.9 % | delivered-type cover 99.3 % -> **87.5 %** | measured loss |
+| S-3b | cap the card expansion at 8 | ~1,796 | 18.1 % | delivered-type cover 99.3 % -> **77.3 %** | measured loss |
+| S-3c | cap the card expansion at 5 | ~2,829 | 28.6 % | delivered-type cover 99.3 % -> **61.3 %** | large measured loss |
+
+S-2's arithmetic: remove 4,855, add about 58 for a twelve-pointer line (12 ids x ~25 characters),
+add 13.1 for the amortised index. Coverage is untouched *for the text the pointer resolves to*,
+because the card body moves rather than disappears.
+
+**One thing S-2 cannot do verbatim.** Putting the 54 cards into the prefix unchanged costs
+**82,932 rendered characters, about 16,166 tokens**. The post-L1 maximum prompt is 14,524 tokens
+(decision-45 analysis); minus the removed block and plus a verbatim card prefix that is
+`14,524 - 4,855 + 58 + 16,166 = 25,893` tokens, against **21,504 usable** at np4. **Refused.** The
+design's compressed 3,526-token index gives `14,524 - 4,855 + 58 + 3,526 = 13,253`, which fits np4
+with 8,251 to spare and fits **np6** (14,336 usable) with 1,083 to spare -- exactly the geometry the
+decision-45 analysis says is today refused by 188 tokens. So the index must be a **compression** of
+the card text, 82,932 characters down to about 16,200, and that compression is a content change the
+index design owns and must measure. Section 14.2 is the evidence that it is the right shape:
+90.6 % of the card characters serve types nobody used.
+
+### 15.3 The exemplar forms on top of the index
+
+After S-2 the row prefills about **5,122 tokens**. The exemplar block is then **14.4 %** of it --
+double its share today -- and the section 4, 7 and 10 forms reprice as:
+
+| form | prefill saved / row | share of the post-index row | filler recall | predicted SLU delta vs anchor |
+| --- | ---: | ---: | ---: | ---: |
+| as flown, k = 20 | -- | -- | 0.5719 | +12.61 (measured) |
+| compact rendering only (alias + slots) | 105 | 2.0 % | 0.5719 | **+12.6, free** |
+| rank top-12 + compact | 352 | 6.9 % | 0.5302 | about +11.7 |
+| vote (m = 5) + 2 few-shot lines | 599 | 11.7 % | 0.3023 | about +6.7 |
+| vote (m = 5) only | 661 | 12.9 % | 0.0000 | about +1.4 |
+
+Even the most aggressive exemplar form saves **661 tokens against the index's 4,784** -- a factor of
+7.2. That is the plain statement owner decision 49 asked for: **the token saving available from any
+exemplar form is bounded by the block's 7.4 % share of the post-E17 row, so an exemplar cell can
+only be worth flying first if it also gains effectiveness** -- and section 10.2 predicts the
+aggregated form *loses* about 5 to 6 pp of SLU-F1 rather than gaining.
+
+---
+
+## 16. Reconciled ranking, and the one cell to register first
+
+Ranked by prefilled tokens saved per row **after E17**, with the measured risk beside it:
+
+| rank | cell | prefill saved / row | share of post-E17 row | measured risk | owner |
+| ---: | --- | ---: | ---: | --- | --- |
+| **1** | **Slot-card index in the constant prefix + per-row pointers (decision 48)** | **~4,784** | **48.3 %** | the index's own compression of the card text; 90.6 % of that text serves types nobody used | decision 48 |
+| 2 | Hoist the two constant card sections (`Uncertainty behavior` 199 x 60, `Missing behavior` 141 x 54) | ~540 | 5.5 % | **none, byte-for-byte**; `intent-boundaries-factored-v1` already exists and is unused | free rider |
+| 3 | Exemplar vote (m = 5) + 2-3 few-shot lines (decision 49) | ~599 | 6.0 % | **-24 pp filler recall**, predicted -5 to -6 pp SLU | decision 49 |
+| 4 | Exemplar rank top-12 + compact rendering | ~352 | 3.6 % | -1.5 pp intent, -4.2 pp filler | decision 46 |
+| 5 | Exemplar compact rendering + rank ordering alone | ~105 | 1.1 % | **zero, provably** | decision 46 |
+| 6 | Cap the card expansion (no index) | 1,176-2,829 | 11.9-28.6 % | -11.8 to -38.0 pp delivered-type cover | dominated by rank 1 |
+| 7 | Confine the raw exemplar block to the Solver | ~0 after E17 | 0 % | none | obsoleted by E17 |
+| 8 | Intent cards to the prefix as raw cards | n/a | n/a | does not fit the slot (section 15.2) | superseded by rank 1 |
+
+### 16.1 The one cell to register first
+
+**The decision-48 index and pointer cell, on the slot-contract cards, after EFF-1 seals.** It is not
+an M1 cell. Owner decision 46 asked whether the k = 20 exemplar supply can be compressed to save
+tokens; the measured answer is **yes, but it is not where the tokens are**: the block is 737 tokens,
+7.4 % of the post-E17 row, while the slot-contract cards are 4,855 tokens, 49.0 %, and 90.6 % of
+their characters serve slot types neither the model nor the annotation used.
+
+**What rides along with it, at no cost and no risk.** Three items that change no content and need no
+cell of their own, and which should be folded into the index cell's own configuration rather than
+flown separately:
+
+* the exemplar store alias `tex:<slurp_id>` -- 105 tokens per row, provably zero coverage change;
+* **most-relevant-first ordering of the exemplar block** -- zero tokens, and today the block is
+  rendered in lexicographic id order carrying no rank information at all (section 4.2), so this is a
+  defect repair as much as a preparation for decision 45's `COMPACT` disposition;
+* the two constant card sections hoisted into the same prefix the index occupies -- 540 tokens per
+  row, byte-for-byte identical content.
+
+Together those three are **645 tokens per row, free**, which is more than any risky exemplar
+truncation in this report buys.
+
+**What the M1 family should be, then.** Not an efficiency cell. If the owner wants the aggregated
+vote form of decision 49, it should fly as an **effectiveness** cell with its own hypothesis and its
+own bar, with the vote-only arm as its floor, read against the sealed B1 arm under B1r's own-null
+margins -- and section 10.2 predicts it reads around +6.7 pp rather than +12.6. `M1-K12-1` (rank
+top-12 plus compact rendering) remains a real 352-token saving with a real -1.5 pp / -4.2 pp
+coverage cost and should queue behind the index cell, not ahead of it.
+
+**Order.** EFF-1 (in flight) -> B1r (supplies the margins every SLURP cell now reads against) ->
+B8b-anchor -> **the decision-48 index cell with the three free riders** -> `M1-K12-1` or the
+decision-49 effectiveness cell, whichever the owner prefers.
+
+### 16.2 Additional caveats from this extension
+
+* The slot-card token figure (~4,855) and every saving derived from it are **character-derived at a
+  least-squares density of 5.13 chars/token**, not a paired measurement: no sealed TRAIN Fold A arm
+  omits the `slot-contracts` store at the Solver, so the paired method that pinned the exemplar
+  block at 737 cannot be applied to it. The index design derives the same quantity at 4.60
+  chars/token and gets about 5,230. Both are estimates; they bracket 4,855-5,230.
+* The post-E17 row of 9,906 prefilled tokens is the decision-45 analysis's measurement of a
+  different configuration; this report assumes the per-store decomposition carries over unchanged.
+  It has not been demonstrated on a sealed post-E17 SLURP flight.
+* The claim that the exemplar block is prefilled once rather than three times after E17 follows from
+  index-design finding F-4 plus the removal of the toggle. It is an inference from two measurements,
+  not a third measurement.
+* The index's own compression ratio -- 82,932 characters of card text into about 3,526 tokens --
+  is the decision-48 design's to justify and measure. This report contributes only the evidence that
+  90.6 % of those characters are never used by an answer, which says the compression is plausible,
+  not that any particular index preserves what matters.
