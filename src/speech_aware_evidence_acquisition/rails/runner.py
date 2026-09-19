@@ -1831,6 +1831,15 @@ async def _invoke_native_role_episode(
     # ever touched.
     node_context_binding = None
     node_context_compilations = {}
+    # E19 (2026-09-19, owner decision 32): the node-context transform also
+    # runs for a config that declares NO policy but DOES arm the Reviewer
+    # slot audit. The composed policy is then the key's own bare "raw" arm,
+    # so every boundary but the audited draft still emits a row whose
+    # rendered bytes ARE the sealed bytes.
+    node_context_declared = (
+        config.context_policy_json is not None
+        or config.reviewer_audit_json is not None
+    )
     # E8b (Node Context Policy level L2): one cleaning contact's binding,
     # handed to the SECOND MeteredNativeSpeechRequest below by contact id, and
     # the per-phase invocation counter its contact identity is namespaced by.
@@ -2018,10 +2027,7 @@ async def _invoke_native_role_episode(
             ):
                 raise RailsRunnerError("role context source schema changed inside the episode")
             context_binding = prepared_context
-        if (
-            config.context_policy_json is not None
-            and phase_id == config.role("perception").phase_id
-        ):
+        if node_context_declared and phase_id == config.role("perception").phase_id:
             from .node_context_binding import build_node_context_policy_binding
 
             if binding.repo_root is None:
@@ -2197,7 +2203,7 @@ async def _invoke_native_role_episode(
             existing = context_compilations.setdefault(plan.contact_id, record)
             if existing != record:
                 raise RailsRunnerError("one native contact has conflicting context compilations")
-        if config.context_policy_json is not None:
+        if node_context_declared:
             if node_context_binding is None:
                 raise RailsRunnerError(
                     "node context policy lacks its bound Perception schema"
@@ -2273,7 +2279,7 @@ async def _invoke_native_role_episode(
                 request_sha256=completion.request_sha256,
                 response_sha256=completion.response_sha256,
             )
-        if config.context_policy_json is not None:
+        if node_context_declared:
             node_context_compilations[plan.contact_id].update(
                 request_sha256=completion.request_sha256,
                 response_sha256=completion.response_sha256,
@@ -2910,7 +2916,7 @@ async def _invoke_native_role_episode(
             }
         if config.role_context_json is not None:
             compact_receipt["role_context_compilations"] = list(context_compilations.values())
-        if config.context_policy_json is not None:
+        if node_context_declared:
             compact_receipt["node_context_policy_compilations"] = list(
                 node_context_compilations.values()
             )

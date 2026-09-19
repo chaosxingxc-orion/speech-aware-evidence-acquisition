@@ -1277,6 +1277,14 @@ def test_the_two_b8a_fragments_arm_the_node_and_nothing_else():
 #      26) -- the 'episode' class's FIFTH key,
 #      native_episode.reviewer_audit.
 #
+# E19 (2026-09-19, owner decision 32) re-based the block off the Node Context
+# Policy L1 stack after cell B7a v2 read it HARMFUL. The KEY'S ADMISSIBLE
+# SHAPE DID NOT CHANGE -- same fields, same OFF form, same closed allowlist --
+# only what the block is appended to: an L1 rendering where a policy declares
+# one, the sealed draft bytes where none is declared. That is why this ratchet
+# is unchanged by E19 and why the key's proof moved to
+# tests/unit/test_b8b_anchor_reviewer_audit_config.py beside the E12 one.
+#
 # It is an episode key rather than a run-level one because it MOVES REQUEST
 # BYTES at one boundary by design, so no request-bytes-identical falsifier can
 # exist for it; and it is not one of the four per-phase tables because it is

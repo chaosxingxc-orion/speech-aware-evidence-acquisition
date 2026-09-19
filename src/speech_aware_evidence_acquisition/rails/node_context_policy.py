@@ -76,6 +76,7 @@ from .scenario_hints import (
 )
 from .slot_audit import (
     SLOT_AUDIT_RECEIPT_SCHEMA,
+    SlotAuditFlag,
     SlotAuditTable,
     SlotAuditThresholds,
     flag_counts,
@@ -233,6 +234,19 @@ CLEANING_INSTRUCTION_TEMPLATES: Mapping[str, str] = {
 #: cell one factor and makes "everything outside this boundary is byte
 #: identical" a checkable statement.
 SLOT_AUDIT_BOUNDARY: tuple[str, str] = ("reviewer", "current-draft")
+
+#: E19 (2026-09-19): the two ways an armed audit block attaches to that
+#: boundary. It is an ADDITION either way -- what differs is the ONE thing
+#: it is added to. ``l1-rendering`` is E12's own: the block follows the
+#: boundary's structured rendering. ``sealed-draft`` is E19's: the boundary
+#: stays at ``raw``, the sealed Solver bytes go out exactly as they are, and
+#: the block follows them -- which is what lets a cell move the audit ALONE
+#: on a base that declares no node-context policy at all.
+SLOT_AUDIT_ATTACHMENT_L1 = "l1-rendering"
+SLOT_AUDIT_ATTACHMENT_RAW = "sealed-draft"
+SLOT_AUDIT_ATTACHMENTS: tuple[str, ...] = (
+    SLOT_AUDIT_ATTACHMENT_L1, SLOT_AUDIT_ATTACHMENT_RAW,
+)
 SLOT_AUDIT_TEMPLATE = "probes/ncp_slurp_slot_audit_reviewer_v1.txt"
 SLOT_AUDIT_RENDERER = "slot-audit"
 
@@ -789,6 +803,39 @@ class ParsedDraft:
         return f"{self.scenario}_{self.action}"
 
 
+#: E19: the carrier's own closed draft contract, exactly as
+#: ``rails.role_context.validate_role_context_draft_schema`` requires it --
+#: an object, closed, with exactly ``scenario`` / ``action`` / ``entities``,
+#: each entity exactly ``type`` / ``filler``. Every structured config
+#: declares these same bytes in
+#: ``context_policy.params.draft_response_schema``; this constant is what an
+#: audit attached to the SEALED draft binds instead, so the two attachments
+#: read a draft under one contract rather than two.
+#: ``tests/unit/test_reviewer_slot_audit_block.py`` proves that equality
+#: against the committed L1 fragment.
+SLURP_CLOSED_DRAFT_SCHEMA: Mapping[str, object] = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["scenario", "action", "entities"],
+    "properties": {
+        "scenario": {"type": "string"},
+        "action": {"type": "string"},
+        "entities": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["type", "filler"],
+                "properties": {
+                    "type": {"type": "string"},
+                    "filler": {"type": "string"},
+                },
+            },
+        },
+    },
+}
+
+
 def parse_draft(text: str, *, validator: Draft202012Validator) -> ParsedDraft:
     """The Solver draft under the same closed contract the typed role context
     already applies (``rails.role_context._draft_view``): strict JSON, the
@@ -1196,15 +1243,29 @@ class SlurpNodeContextPolicy:
         if not isinstance(policy_id, str) or not policy_id.strip():
             raise NodeContextPolicyError("node context policy_id must be text")
         self.slot_audit = slot_audit
+        #: E19: which of :data:`SLOT_AUDIT_ATTACHMENTS` an armed audit takes,
+        #: and ``None`` when none is armed.
+        self.slot_audit_attachment: str | None = None
         if slot_audit is not None:
             entry = boundaries.get(SLOT_AUDIT_BOUNDARY)
-            if entry is None or entry.level != "structured":
+            audit_level = "raw" if entry is None else entry.level
+            if audit_level == "cleaned":
                 raise NodeContextPolicyError(
-                    "the reviewer slot-audit block requires the "
+                    "the reviewer slot-audit block cannot attach to the "
                     f"{SLOT_AUDIT_BOUNDARY[0]}:{SLOT_AUDIT_BOUNDARY[1]} boundary at "
-                    "level 'structured'; it is an addition to that boundary's own L1 "
-                    "rendering, not a level of its own"
+                    "level 'cleaned'; a cleaning contact rewrites the rendering "
+                    "the block is appended to, so the block would be cleaned away"
                 )
+            # E19 (owner decision 32): E12 required 'structured' here, because
+            # the block was an addition to that boundary's L1 rendering and had
+            # nothing to attach to at raw. Cell B7a v2 read the L1 policy
+            # HARMFUL, so the block is re-based: at raw it is appended to the
+            # SEALED draft bytes, which is an addition to exactly the one thing
+            # the Reviewer would otherwise have received.
+            self.slot_audit_attachment = (
+                SLOT_AUDIT_ATTACHMENT_L1 if audit_level == "structured"
+                else SLOT_AUDIT_ATTACHMENT_RAW
+            )
         self.solver_hints = solver_hints
         if solver_hints is not None:
             entry = boundaries.get(SOLVER_HINTS_BOUNDARY)
@@ -1228,7 +1289,18 @@ class SlurpNodeContextPolicy:
             self.max_candidates = 0
             self.projection_policy = None
             self.legal_entity_types = ()
-            self._validator = None
+            # E19: an all-raw policy parses nothing OF ITS OWN. An audit
+            # attached to the sealed draft still has to read the draft it is
+            # auditing, so the carrier's closed draft contract is bound HERE
+            # and used for nothing else -- every other boundary still passes
+            # its state through untouched.
+            self._validator = (
+                None if slot_audit is None
+                else validate_role_context_draft_schema(
+                    SLURP_CLOSED_DRAFT_SCHEMA if draft_response_schema is None
+                    else draft_response_schema
+                )
+            )
             return
         legal = tuple(legal_intent_ids)
         if (
@@ -1372,6 +1444,26 @@ class SlurpNodeContextPolicy:
                 if policy is None:
                     raw_reason = "boundary-not-declared"
             if policy is None or policy.level == "raw":
+                if (
+                    self.slot_audit is not None
+                    and self.slot_audit_attachment == SLOT_AUDIT_ATTACHMENT_RAW
+                    and (role_kind, semantic_class) == SLOT_AUDIT_BOUNDARY
+                    and raw_reason in {None, "boundary-not-declared"}
+                ):
+                    # E19: the audited raw boundary, and the ONLY place this
+                    # transform moves a byte under an all-raw policy. The
+                    # sealed draft goes out exactly as it is and the block
+                    # follows it. The two excluded raw reasons are the two the
+                    # framework owns: a native tool-call source and a live tool
+                    # chain both require the sealed bytes THEMSELVES.
+                    audited_state, audited_row = self._audit_sealed_draft(
+                        state, drafts=drafts, role_kind=role_kind,
+                        semantic_class=semantic_class, sample_id=sample_id,
+                        position=position, raw_reason=raw_reason,
+                    )
+                    rendered_states.append(audited_state)
+                    rows.append(audited_row)
+                    continue
                 rendered_states.append(state)
                 rows.append(self._raw_row(
                     state, position=position, role_kind=role_kind,
@@ -1751,6 +1843,30 @@ class SlurpNodeContextPolicy:
         flag name or an entity type the draft or the table already carries.
         """
 
+        audit_block, flags = self._slot_audit_block(draft)
+        derived = dict(rendered.derived_fields)
+        derived["slot_audit"] = self.slot_audit.receipt(
+            applied=True,
+            intent_id=draft.intent_id,
+            flags=flags,
+            block_text=audit_block.text,
+        )
+        return RenderedBlock(
+            text=f"{rendered.text}\n{audit_block.text}",
+            substitutions=rendered.substitutions + audit_block.substitutions,
+            derived_fields=derived,
+        )
+
+    def _slot_audit_block(
+        self, draft: ParsedDraft,
+    ) -> tuple[RenderedBlock, tuple[SlotAuditFlag, ...]]:
+        """Render the audit block for one draft, and the flags it carries.
+
+        The block ALONE: what it is appended to -- an L1 rendering (E12) or
+        the sealed draft bytes (E19) -- is the caller's business, so the two
+        attachments render one block through one template rather than two.
+        """
+
         audit = self.slot_audit
         flags = slot_audit_flags(
             intent_id=draft.intent_id,
@@ -1799,18 +1915,54 @@ class SlurpNodeContextPolicy:
                 "detail": Substitution("detail", flag.detail, PROVENANCE_AUDIT),
             })
         block.add("footer")
-        audit_block = block.finish({})
-        derived = dict(rendered.derived_fields)
-        derived["slot_audit"] = audit.receipt(
-            applied=True,
-            intent_id=draft.intent_id,
-            flags=flags,
-            block_text=audit_block.text,
+        return block.finish({}), tuple(flags)
+
+    def _audit_sealed_draft(
+        self,
+        state: AgentStateArtifact,
+        *,
+        drafts: Mapping[str, ParsedDraft | None],
+        role_kind: str,
+        semantic_class: str,
+        sample_id: str,
+        position: int,
+        raw_reason: str | None,
+    ) -> tuple[AgentStateArtifact, Mapping[str, object]]:
+        """E19: one raw Reviewer draft boundary with the audit appended.
+
+        An ADDITION, never a rewrite: ``state.content`` is the sealed Solver
+        response byte for byte and the audit follows it after one newline. A
+        draft that does not parse under the closed contract takes the
+        untouched state and an ``applied: false`` receipt, so a skip and a
+        silent absence never look alike.
+        """
+
+        draft = drafts.get(state.state_id)
+        if draft is None:
+            return state, self._raw_row(
+                state, position=position, role_kind=role_kind,
+                semantic_class=semantic_class, raw_reason=raw_reason,
+                slot_audit=self.slot_audit.receipt(
+                    applied=False, reason="draft-unparsed",
+                ),
+            )
+        audit_block, flags = self._slot_audit_block(draft)
+        derived_state = self._derived_state(
+            source=state, role_kind=role_kind, semantic_class=semantic_class,
+            sample_id=sample_id,
+            rendered=f"{state.content}\n{audit_block.text}",
+            preserve_identity=False,
         )
-        return RenderedBlock(
-            text=f"{rendered.text}\n{audit_block.text}",
-            substitutions=rendered.substitutions + audit_block.substitutions,
-            derived_fields=derived,
+        return derived_state, self._raw_row(
+            state, position=position, role_kind=role_kind,
+            semantic_class=semantic_class, raw_reason=raw_reason,
+            rendered=derived_state,
+            slot_audit=self.slot_audit.receipt(
+                applied=True,
+                intent_id=draft.intent_id,
+                flags=flags,
+                block_text=audit_block.text,
+            ),
         )
 
     # -- E14: the Solver scenario-hints block -------------------------------
@@ -2326,12 +2478,21 @@ class SlurpNodeContextPolicy:
         role_kind: str,
         semantic_class: str | None,
         raw_reason: str | None,
+        rendered: AgentStateArtifact | None = None,
+        slot_audit: Mapping[str, object] | None = None,
     ) -> Mapping[str, object]:
         """A ``level: "raw"`` row. Its ``rendered_sha256`` equals the source's
         ``content_sha256`` -- that equality is what makes L0's claim of byte
-        identity a checked statement rather than a comment."""
+        identity a checked statement rather than a comment.
 
-        return self._finish_row({
+        E19 opens exactly ONE exception: the audited draft boundary, where
+        ``rendered`` is the sealed state followed by the appended audit
+        block. That row always carries a ``slot_audit`` receipt naming the
+        block, so the inequality can never be silent -- no ``slot_audit``,
+        no inequality."""
+
+        exposed = state if rendered is None else rendered
+        row = self._finish_row({
             "schema": NODE_CONTEXT_RECEIPT_SCHEMA,
             "policy_id": self.policy_id,
             "boundary": {
@@ -2352,12 +2513,20 @@ class SlurpNodeContextPolicy:
             "raw_reason": raw_reason,
             "template_id": None,
             "template_sha256": None,
-            "rendered_state_id": state.state_id,
-            "rendered_sha256": _sha256_text(state.content),
-            "rendered_chars": len(state.content),
+            "rendered_state_id": exposed.state_id,
+            "rendered_sha256": _sha256_text(exposed.content),
+            "rendered_chars": len(exposed.content),
             "derived_fields": {},
             "cleaning_contact": None,
         })
+        if slot_audit is not None:
+            # E12's discipline, on the raw row: added AFTER ``_finish_row``
+            # computed the digest, then re-digested, so a pre-E19 raw row's
+            # ``receipt_sha256`` is a function of exactly its pre-E19 fields.
+            row["slot_audit"] = dict(slot_audit)
+            row.pop("receipt_sha256")
+            self._finish_row(row)
+        return row
 
     def _row(
         self,
@@ -2598,6 +2767,11 @@ def build_slurp_node_context_policy(
         return SlurpNodeContextPolicy(
             policy_id=policy_id, boundaries=resolved, slot_audit=slot_audit,
             solver_hints=solver_hints,
+            # E19: an all-raw policy declares no params, so an audit attached
+            # to the sealed draft binds the carrier's own closed contract.
+            draft_response_schema=(
+                None if slot_audit is None else SLURP_CLOSED_DRAFT_SCHEMA
+            ),
         )
     return SlurpNodeContextPolicy(
         policy_id=policy_id,
@@ -2654,9 +2828,13 @@ __all__ = [
     "RENDERER_SECTIONS",
     "ROLE_KINDS",
     "SEMANTIC_CLASSES",
+    "SLOT_AUDIT_ATTACHMENTS",
+    "SLOT_AUDIT_ATTACHMENT_L1",
+    "SLOT_AUDIT_ATTACHMENT_RAW",
     "SLOT_AUDIT_BOUNDARY",
     "SLOT_AUDIT_RENDERER",
     "SLOT_AUDIT_TEMPLATE",
+    "SLURP_CLOSED_DRAFT_SCHEMA",
     "SOLVER_HINTS_BOUNDARY",
     "SOLVER_HINTS_RENDERER",
     "SOLVER_HINTS_TEMPLATE",

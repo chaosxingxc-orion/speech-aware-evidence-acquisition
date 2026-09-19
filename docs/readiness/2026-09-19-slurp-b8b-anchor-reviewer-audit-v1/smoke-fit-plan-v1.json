@@ -1,0 +1,56 @@
+{
+  "cell": "slurp-native-reviewer-audit-anchor-smoke-4-v1",
+  "composed_config_hash": "9edba0ad68d10428f9b418c6b6ec6c6a22f7d2938c76a164fd168fa72b0dae18",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-reviewer-audit-anchor-smoke-4-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 176,
+    "planned_speech_audio_seconds": 117,
+    "protocol_hash": "97dbb138440762fd2265d04733e986d44571eb8643e69b41c801fcb331b6e8db",
+    "run_id": "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realized native request inside the same standalone worker, under the same lease. coordinate-fit must NOT be run, or this row is double-charged.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-reviewer-audit-anchor-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "modules": {
+    "base": "the SEALED dual-store TRAIN Fold A anchor, run SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1. It declares NO native_episode.context_policy: every boundary raw. Nothing of it moves.",
+    "factor": "the Reviewer slot-audit context block: one episode-class key, native_episode.reviewer_audit, armed as {\"view\": \"slot-audit-v1\", \"release\": {...}, \"snapshot\": {...}, \"thresholds\": {...}}. The released construction view knowledge/slurp/semantic/slot-audit-v1/ is rendered through the committed template probes/ncp_slurp_slot_audit_reviewer_v1.txt as a deterministic, zero-contact block APPENDED after the SEALED Solver draft the Reviewer already receives (item E19's sealed-draft attachment), carrying the intent's construction slot profile and the four harness-computed flags TYPE-UNSEEN, EMPTY-DRAFT, MISSING-COMMON and REPRESENTATION. OFF is the key's absence, which is the anchor's configuration.",
+    "second_declared_key_not_a_factor": "A harness-robustness declaration admitted by item E13 after the cell B7a v1 recovery arm aborted at 1,451 contacts on a Reviewer completion that hit the 512-token cap under the module default 'raise'. It renders NO request byte -- rails.runner reads it once into core NativeEpisodeSpec -- and only decides whether a finite completion aborts the flight or is RETAINED with a terminal_disposition reason 'finite_completion'. tests/unit/test_slurp_finite_completion_row.py flies both arms and proves the request bytes do not move. Its count is a mandatory diagnostic; no row is ever filtered.",
+    "zero_added_contacts": "Exactly the appended block, on the Reviewer contacts. The fragment declares NO native_episode.context_policy, so the composed policy is the key's own bare 'raw' arm: nothing is rendered at any boundary and every boundary emits a level: raw receipt row whose rendered bytes ARE its source's -- except the audited Reviewer draft rows, which carry the appended block and a slot_audit receipt naming it. The Perception, Solver and Planner requests are byte-identical to the anchor's."
+  },
+  "plan_kind": "native contact fit",
+  "preparation_base_commit": "f9b12cec",
+  "prepared_phase_supply": {
+    "note": "This cell's OWN artifact, derived by the model-free core.flight.cli prepare-supply step under this cell's own run id. Its OUTPUT is byte-identical to the sealed anchor's, which is the model-free proof that neither declared key moves a knowledge-selection byte. --allow-output-change must never be passed.",
+    "output_sha256": "512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733",
+    "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "b89ec1caad20d5750932cd8fc441fb4d69fe704781a606d494f2e3bfaf91d233"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-19-slurp-b8b-anchor-reviewer-audit-v1/protocol-registered-v1.json",
+    "sha256": "65b8ec7d36e230a22d00313cc923810a4ec2415e432521833d26909e05333cb2"
+  },
+  "quality_read_gate": "The four-row smoke is STRUCTURAL ONLY and is never scored: contact counts, the saea-reviewer-slot-audit-v1 receipt on every Reviewer contact of 4 of 4 rows, the block-is-an-addition check against block_sha256 / block_chars over the SEALED draft, no slot_audit block on any other boundary, every other boundary row raw with rendered_sha256 equal to its source's content_sha256, the request-fit receipts, any retained finite_completion row reported rather than treated as an error, and a clean seal -- with no answer, reference or quality interpretation and no scorer.",
+  "registered_at_utc": "2026-09-19T18:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, branch fable/e19 (item E19)",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

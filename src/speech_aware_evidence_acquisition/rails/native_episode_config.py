@@ -711,12 +711,14 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
     # E12 (2026-09-19, owner directive 26): the Reviewer slot-audit context
     # block. ONE key, validated fail-closed HERE -- before any contact -- so a
     # fragment can never arm it on a carrier with no registered view, on a
-    # boundary that is not at L1, or against pins whose bytes are not the
-    # released construction table.
+    # boundary whose rendering it would be cleaned out of, or against pins
+    # whose bytes are not the released construction table. E19 re-based the
+    # block off the L1 policy, so a fragment may now arm it with no
+    # ``context_policy`` at all.
     reviewer_audit_json = None
     if "reviewer_audit" in raw:
         from .node_context_binding import (
-            reviewer_audit_requires_structured_boundary,
+            reviewer_audit_boundary_attachment,
             validate_reviewer_audit_config,
         )
 
@@ -727,11 +729,13 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
                 f"this config declares carrier_lock_key {declared_carrier!r}"
             )
         reviewer_audit_json = validate_reviewer_audit_config(raw["reviewer_audit"])
-        # The block is an ADDITION to the reviewer:current-draft L1 rendering.
-        # It has nothing to attach to at 'raw' and would be replaced at
-        # 'cleaned', so both are refused by name rather than silently
-        # rendering nothing.
-        reviewer_audit_requires_structured_boundary(context_policy_json)
+        # E19 (owner decision 32): the block is an ADDITION to the ONE thing
+        # the Reviewer would otherwise receive at reviewer:current-draft --
+        # the boundary's L1 rendering where a policy declares one (E12), the
+        # SEALED draft bytes where the boundary is at raw or no policy is
+        # declared at all. Only 'cleaned' is refused, by name: a cleaning
+        # contact rewrites the rendering the block is appended to.
+        reviewer_audit_boundary_attachment(context_policy_json)
     # E14 (2026-09-19, owner directive 26): the Solver scenario-hints
     # context block. ONE key, validated fail-closed HERE -- before any
     # contact -- so a fragment can never arm it on a carrier with no

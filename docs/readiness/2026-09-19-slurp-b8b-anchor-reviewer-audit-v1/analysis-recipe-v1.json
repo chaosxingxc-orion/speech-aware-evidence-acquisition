@@ -1,0 +1,152 @@
+{
+  "arms": {
+    "left_comparator": {
+      "role": "the sealed dual-store TRAIN Fold A anchor; its score artifact and per-row outputs are read, never re-flown or re-scored",
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1"
+    },
+    "right_treatment": {
+      "composed_config_hash": "f00ac5d1d53c2e86a15a84981c89dc389d8d650fb6cda797b1966cbdc2e2efa0",
+      "protocol_hash": "a1e378154714fd924d7560297046fecd62df15609c8d65c989c63b0b719e5699",
+      "role": "the audit ON arm",
+      "run_id": "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1"
+    }
+  },
+  "authority": {
+    "design": "docs/superpowers/specs/2026-09-17-node-context-policy-design.md sections 16 and 19",
+    "owner_decisions": "26, 27, 30, 32, 38, and 25 (Method B)",
+    "package": "docs/readiness/2026-09-19-slurp-b8b-anchor-reviewer-audit-v1/protocol-registered-v1.json"
+  },
+  "claim_boundary": "One factor on an exposed discovery roster against the sealed anchor; both arms node-free; no DEV-1000, Fold B, test-split or paper-scale claim; nothing claimed about the retired Node Context Policy L1 stack.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "note": "the read is model-free over two sealed score artifacts",
+    "paid_api": 0,
+    "tokenizer": 0
+  },
+  "decision_rule": {
+    "admitted": "ADMITTED if and only if all four hold against the SEALED ANCHOR's score artifact: (1) the CI95 LOWER bound of the paired official pooled SLU-F1 delta is greater than 0; (2) intent is non-inferior at the own-null margin -- its CI95 lower bound exceeds -1.0051; (3) the TRAIN symmetric scorer slurp-slu-f1-normalized-v1-train agrees in sign with the unprojected primary; and (4) no scenario loses intent beyond the null band -- no scenario's paired intent CI95 upper bound lies below zero.",
+    "harmful_first": "HARMFUL is read FIRST (owner decision 25, Method B): only by a MEASURED loss -- a point estimate of the official pooled SLU-F1 delta or of the intent delta below -h (-1.1218 / -1.0051), or a CI95 UPPER bound below zero. An interval that straddles zero with the point estimate inside the margin is NOT harmful; it reads NEUTRAL with 'non-inferiority not proven' stated in those words.",
+    "neutral": "NEUTRAL otherwise. Under owner decision 30 a NEUTRAL or HARMFUL one-factor read advances the headroom-exhausted streak; a beneficial but not CI95-proven movement is RECORDED as such (owner decision 25) and never claimed as an admission.",
+    "no_repeat_to_pass": true,
+    "null_margin_source": "cell B0r's own null on this exact TRAIN A roster and geometry (docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md). Owner decision 38: a contrast involving a configuration uses that configuration's own request-identical replicate; the sealed anchor has none, so B0r's own null is the registered fallback. The retired imported DEV-1000 half-widths are never used.",
+    "null_margins_pp": {
+      "h_SLU": 1.1218,
+      "h_intent": 1.0051
+    },
+    "read_exactly_once": true,
+    "stop_condition": "STOP and write the verdict as soon as the primary and its guard are computed once. No re-scoring, no second estimator, no re-weighting after seeing a number, no row filtering.",
+    "twin_rule": "No twin is registered here. A derangement or token-matched control flies only if this cell shows a positive CI95 lower bound against the anchor, by the program's twin rule (owner ruling 2026-09-06: lock a score against a token-matched control, not against a token count)."
+  },
+  "delta_convention": "treatment (audit ON) minus comparator (the sealed anchor)",
+  "diagnostics_required": [
+    "The four slot-audit flag counts (TYPE-UNSEEN, EMPTY-DRAFT, MISSING-COMMON, REPRESENTATION) over every Reviewer contact, including the zeros, with the applied / not-applied split and, for every not-applied contact, its machine reason (the only reason this attachment can emit is 'draft-unparsed').",
+    "The count of Reviewer contacts whose slot_audit row carries applied: true and whose boundary row's rendered_sha256 therefore differs from its source's content_sha256 -- the block-rendered receipt, and the only place in the whole flight where a level: raw row's rendered bytes are not its source's.",
+    "The per-boundary saea-node-context-policy-v1 aggregate: rows, level, raw_reason distribution, and the count of rows whose rendered_sha256 equals their source's content_sha256. Under the composed all-raw policy that count must be every row except the applied-true Reviewer draft rows.",
+    "The before/after table of the four flags against the delivered answer, as a diagnostic only: the flags move together and no single flag is separately admitted.",
+    "planner_action_illegal: the count of Planner outputs that are not an exact declared action token, with the roles and revision indices. The harness raises on one (it closed the cell B7a v1 arm), so a non-zero count is a flight failure, not a metric.",
+    "The count of rows whose terminal_disposition.reason is 'finite_completion', with the interrupted role's breakdown. Such rows are RETAINED and scored as delivered, never filtered, and counted in the verdict. The sealed anchor flew without the key and its exposure receipt records zero such rows, so the asymmetry between the two arms is measured rather than assumed.",
+    "Reviewer parse rate under the repository's registered findings parser, reported for continuity with the retired L1 stack's diagnostics and gating nothing: this cell declares no producer response format.",
+    "Native task-contract tool-call count, per role, against the declared ceiling.",
+    "Contacts per row and the revision-route distribution (ACCEPT / REVISE / ACQUIRE), beside the sealed anchor's own.",
+    "Prompt tokens per ROLE beside the anchor's, and the whole-run prompt-token and GPU-hour deltas. The block adds tokens to the Reviewer contacts only; the efficiency note of the verdict states the per-role figure, never a whole-run figure alone.",
+    "Per-scenario tables for every reported metric, and net harmed rows per scenario."
+  ],
+  "estimators": {
+    "bootstrap_pooled": "analysis.paired.resampled_statistic",
+    "not_used": "analysis.score_compare_cli as the runner: it hard-codes ci_level 0.90 and DEV population names",
+    "paired_per_row": "analysis.paired.paired_contrast",
+    "percentiles": "analysis.bootstrap._percentile over the retained BootstrapResult.replicates",
+    "pooled_micro_f1": "analysis.null_calibration.pooled_f1",
+    "row_reader": "analysis.null_calibration_cli.rows_for"
+  },
+  "execution_profile": "model-free-check",
+  "metrics": [
+    {
+      "estimand": "paired delta, treatment minus comparator",
+      "id": "official_pooled_slu_f1",
+      "null_half_width_pp": 1.1218,
+      "role": "primary"
+    },
+    {
+      "estimand": "paired delta, treatment minus comparator",
+      "id": "intent_accuracy",
+      "null_half_width_pp": 1.0051,
+      "role": "guard"
+    },
+    {
+      "estimand": "paired delta",
+      "id": "scenario_accuracy",
+      "role": "secondary"
+    },
+    {
+      "estimand": "paired delta",
+      "id": "action_accuracy",
+      "role": "secondary"
+    },
+    {
+      "estimand": "paired delta",
+      "id": "official_pooled_span_f1",
+      "role": "secondary"
+    },
+    {
+      "estimand": "paired delta",
+      "id": "per_row_mean_official_slu_f1",
+      "role": "secondary"
+    },
+    {
+      "estimand": "paired delta",
+      "id": "per_row_exact_slot_f1",
+      "role": "secondary"
+    },
+    {
+      "estimand": "counts with the exact two-sided McNemar p",
+      "id": "saves_harms_ties",
+      "role": "secondary"
+    }
+  ],
+  "output": {
+    "files": [
+      "paired-v1.json",
+      "per-scenario-v1.json",
+      "diagnostics-v1.json"
+    ],
+    "harness_admission": "docs/receipts/harness-admission.json, written by the coordinator after the sealed verdict",
+    "prints_only_aggregates": true,
+    "root": "DATA/analysis/SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1",
+    "verdict_document": "docs/results/2026-09-19-slurp-b8b-anchor-reviewer-audit-verdict.md"
+  },
+  "population": {
+    "count": 1080,
+    "roster": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+  },
+  "recipe_id": "slurp-b8b-anchor-reviewer-audit-v1",
+  "registered_at_utc": "2026-09-19T18:00:00.000000+00:00",
+  "resampling": {
+    "draws": 10000,
+    "pairing_note": "rows are paired by recording id over the 1,080 shared rows; no row is dropped, including retained finite-completion rows",
+    "seed": 20260919,
+    "seed_advance": "per metric, in the registered metric order",
+    "sensitivity": "per-scenario paired bootstrap at the same draws and seed"
+  },
+  "schema": "saea-analysis-recipe-v1",
+  "scorer": {
+    "evaluator": "the pinned official SLURP evaluate.py",
+    "evaluator_commit": "slurp-official-8eb16545",
+    "id": "slurp-slu-official-train",
+    "projection_v3_companion": "slurp-slu-official-projected-v3-train",
+    "runs": "one complete score per manifest through core.scoring_batch",
+    "symmetric_normalised_companion": "slurp-slu-f1-normalized-v1-train"
+  },
+  "tables_required": [
+    "natural-mixture and equal-stratum weightings, side by side",
+    "per-scenario paired intent and SLU deltas with CI95",
+    "net harmed rows per scenario",
+    "the four flag counts and the applied / not-applied split",
+    "prompt tokens per role, treatment beside comparator",
+    "contacts per row and the revision-route distribution"
+  ],
+  "title": "Cell B8b-anchor: the Reviewer slot-audit context block on the sealed dual-store anchor, paired read"
+}

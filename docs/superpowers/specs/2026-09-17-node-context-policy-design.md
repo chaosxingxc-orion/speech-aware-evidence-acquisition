@@ -1060,3 +1060,82 @@ exists, worker proceeding when every artifact verifies, `check` exiting 1 with `
 
 **Zero contacts.** No model, tool, server or network contact; no config key, no cell, no
 registration, no claim.
+
+## 19. E19 (2026-09-19): the Reviewer slot-audit block, re-based off L1
+
+Cell B7a v2 read level L1 **HARMFUL** on 2026-09-19
+(`docs/results/2026-09-19-slurp-b7a-ncp-l1-anchor-v2-verdict.md`: official pooled SLU
+−0.3100 pp [−1.8072, +1.1211], intent −0.6481 pp [−2.1849, +0.8688], +11.6 % GPU hours for no
+gain). Owner decision 32 was pre-authorised for exactly that outcome: cells B7r and B7c close
+unflown, level L2 stays unflown, and **cell B8b is re-based on the anchor and re-registered**,
+because — in the decision's own words — "the audit block attaches to the L1 structured Reviewer
+boundary".
+
+That attachment was the only thing L1 was giving it. Section 16.1's block is an **addition**: it
+needs somewhere to be appended, not something to read. The B7a v2 rendering diagnostics make the
+point exactly: *0 parsed of 1,243 structured review-finding rows — FALLBACK-RAW on 100 % of them*.
+The Reviewer stayed prose on that base and the audit never saw a parsed Reviewer output. What E12
+coupled to L1 was the **rendering slot** of the `reviewer:current-draft` boundary, and a rendering
+slot is not a level.
+
+### 19.1 The mechanism: a second attachment
+
+`native_episode.reviewer_audit` now resolves an **attachment** rather than demanding a level
+(`rails.node_context_binding.reviewer_audit_boundary_attachment`,
+`rails.node_context_policy.SLOT_AUDIT_ATTACHMENTS`):
+
+| the boundary's declared level | attachment | what the block follows |
+| --- | --- | --- |
+| `structured` | `l1-rendering` (E12, unchanged) | the boundary's own L1 rendering |
+| `raw`, or no `context_policy` declared at all | `sealed-draft` (E19) | the **sealed Solver response**, byte for byte |
+| `cleaned` | refused by name | a cleaning contact rewrites what the block is appended to |
+
+At `sealed-draft` the transform appends the block to `state.content` after one newline and derives
+the exposed state from it; everything else passes through untouched. The block itself is rendered
+by one function through one template for both attachments
+(`SlurpNodeContextPolicy._slot_audit_block`), so the two modes cannot drift apart.
+
+Three consequences follow, and they are what make the cell one-factor on the anchor:
+
+1. **The ON arm needs no policy.** A fragment that arms the audit and declares no `context_policy`
+   composes the key's own bare `"raw"` arm (`IMPLICIT_RAW_CONTEXT_POLICY`), so the node-context
+   transform still runs and still emits one `level: "raw"` receipt row per boundary per contact.
+   L0's byte identity therefore stays a **checked statement** at every boundary, exactly as section
+   9 requires.
+2. **The only byte that moves is the block.** Perception, Solver and Planner requests are
+   byte-identical to the anchor's. Proved over the production render path in
+   `tests/unit/test_native_episode_runner_reviewer_audit.py`
+   (`test_on_the_anchor_shape_the_block_moves_only_the_reviewer_contacts`), which flies both arms
+   through the real role graph, the real runner and the real request renderer over the shared fake
+   transport.
+3. **The inequality is never silent.** `_raw_row` gains exactly one exception to
+   `rendered_sha256 == source.content_sha256`, and that row always carries a
+   `saea-reviewer-slot-audit-v1` receipt naming the block by `block_sha256` and `block_chars`. No
+   `slot_audit` block, no inequality — which is the diagnostic the verdict reports.
+
+An all-raw policy parses nothing of its own, so the sealed-draft attachment binds the carrier's own
+closed draft contract (`SLURP_CLOSED_DRAFT_SCHEMA`) to read the draft it is auditing. A test pins
+those bytes against the committed L1 fragment's `params.draft_response_schema`, so a draft parses
+identically under either attachment; a draft that does not parse takes the untouched state and an
+`applied: false` / `reason: "draft-unparsed"` receipt.
+
+### 19.2 Why not a minimal per-boundary L1 declaration
+
+The alternative was a `context_policy` restricted to `reviewer:current-draft` at `structured` with
+every other boundary raw. It was rejected on the cell's own criterion. That declaration replaces
+the sealed draft JSON with the L1 draft rendering **and** appends the block, so the ON-vs-OFF
+Reviewer diff would carry two changes, not one, and the cell would no longer be a one-factor read
+of the audit. The sealed-draft attachment adds the block to exactly the one thing the Reviewer
+would otherwise have received.
+
+### 19.3 What is not claimed
+
+E19 is engineering plus a registration; it is not a result. It does not revive level L1 — B7a v2's
+HARMFUL read stands and cells B7r and B7c stay closed. It does not claim the audit is useful: cell
+B8b-anchor (`docs/readiness/2026-09-19-slurp-b8b-anchor-reviewer-audit-v1/`) is registered `held`
+and measures that once, against the sealed anchor, under a rule fixed before any number is seen. It
+does not claim the two attachments render the same block on the same row — they render the same
+block, appended to different text, and only the block's own bytes are shared. And it makes no claim
+about the Solver hints of E14, which keep the L1 requirement: their block is an addition to the
+candidate **list** rendering, which at raw is a projected Perception JSON the hints were never
+designed to follow.

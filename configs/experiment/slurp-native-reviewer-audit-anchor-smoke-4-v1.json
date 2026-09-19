@@ -1,0 +1,78 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-reviewer-audit-anchor-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-anchor-reviewer-audit-smoke-4-v1",
+      "cell_id": "slurp-native-reviewer-audit-anchor-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Registered before contact by the item E19 agent (package docs/readiness/2026-09-19-slurp-b8b-anchor-reviewer-audit-v1) under owner decision 32 of 2026-09-16 (pre-authorised: if cell B7a v2 reads HARMFUL, cells B7r and B7c close unflown and cell B8b is RE-BASED on the anchor and re-registered), owner directive 26 of 2026-09-18 (analyses into nodes), owner decision 27 of 2026-09-19 (the order and the use of GPU idle time) and owner decision 15 (no cell flies on a HARMFUL base). The L1-based registration (docs/readiness/2026-09-19-slurp-b8b-reviewer-audit-v1) is superseded and closed unflown. It stays HELD: the coordinator mints the root decision receipt coordination/slurp-b8b-anchor-reviewer-audit-v1/root-admission-v1.json (decision id slurp-b8b-anchor-reviewer-audit-admission-v1) and flips the state with scripts/flights/repin_cell.py, which re-pins the prepared supply, applies the decision requirement and recomputes every dependent hash in the same cycle. Beside the one factor (native_episode.reviewer_audit) this baseline also declares native_episode.finite_completion_policy = \"deliver-latest-or-abstain\". That key renders NO request byte -- it is consumed only by rails.runner's NativeEpisodeSpec -- and only decides whether a finite completion aborts the flight or is retained with a terminal_disposition reason \"finite_completion\"; it is a harness-robustness declaration, never a factor, and the count of such rows is a mandatory diagnostic of the read. The sealed anchor flew WITHOUT the key and its exposure receipt records zero finite completions, so the two arms are comparable on this axis by measurement rather than by assumption. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. One experiment in flight at a time.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "This cell's OWN prepared Perception artifact for the four-row engineering roster, produced by the model-free core.flight.cli prepare-supply step under this cell's own run id. Zero model, tokenizer, encoder, scorer or server contacts. The slot-audit block is a consumer-side context addition at the reviewer:current-draft boundary and moves no supply, no retrieval and no evidence block, so the artifact's OUTPUT must equal the sealed anchor's on 4 of 4 rows -- which is the model-free proof that neither declared key moves a knowledge-selection byte. --allow-output-change must never be passed.",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "b89ec1caad20d5750932cd8fc441fb4d69fe704781a606d494f2e3bfaf91d233"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-19",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops its cell until the fix is proven on this same four-row roster.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-native-reviewer-audit-anchor-smoke-4-v1",
+  "generation_budget": {
+    "cap": 44,
+    "definition": "The unchanged maximum eleven-contact native program for each of the four already-exposed TRAIN A engineering rows: 4 x 11 = 44 is the exact program maximum. The nominal cost is about 5 contacts per row.",
+    "target": 20
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The four already-exposed TRAIN A engineering rows this repository reuses for every four-row form smoke; no quality-based selection.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row standalone-worker form smoke of cell B8b-anchor before it flies. Structural evidence only: the review loop runs as the anchor runs it, one saea-node-context-policy-compilation-v1 receipt per contact under the composed all-raw policy, every boundary row at level raw with rendered bytes equal to its source's, and the reviewer:current-draft row additionally carrying its saea-reviewer-slot-audit-v1 block with the table pins, the template hash and the flag counts. Never scored.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2"
+}

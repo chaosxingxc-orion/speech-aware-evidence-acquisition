@@ -7,11 +7,15 @@ no tokenizer, no server, no run directory, and -- the point of the module --
 no contact of any kind added by the block.
 
 The request-channel falsifier: with the audit armed, every contact of every
-role BUT the Reviewer renders bytes identical to cell B7r's own L1 pins, and
+role BUT the Reviewer renders bytes identical to the base's own pins, and
 every Reviewer contact differs in exactly the appended block.
 
+E19 (2026-09-19, owner decision 32) adds the second half of the module:
+the same falsifier with NO ``context_policy`` declared at all, which is the
+sealed anchor's own shape and the base cell B8b-anchor flies on.
+
 Design: ``docs/superpowers/specs/2026-09-17-node-context-policy-design.md``
-section 16 (cell B8b).
+sections 16 (cell B8b) and 19 (E19).
 """
 
 from __future__ import annotations
@@ -91,7 +95,12 @@ def _episode(tmp_path, *, policy, reviewer_audit=None):
     harness.repo_root = REPO_ROOT
     harness.config = replace(
         harness.config,
-        context_policy_json=validate_node_context_policy_config(policy),
+        # E19: ``policy=None`` is the anchor's own shape -- the fragment
+        # declares no ``context_policy`` key at all.
+        context_policy_json=(
+            None if policy is None
+            else validate_node_context_policy_config(policy)
+        ),
         reviewer_audit_json=(
             None if reviewer_audit is None
             else validate_reviewer_audit_config(reviewer_audit)
@@ -204,6 +213,102 @@ def test_the_block_pins_its_three_assets_in_every_compilation_record(tmp_path):
         assert pins[f"{spelling}:slot-audit-release"] == _pin(RELEASE_RELPATH)["sha256"]
         assert pins[f"{spelling}:slot-audit-snapshot"] == _pin(SNAPSHOT_RELPATH)["sha256"]
         assert f"{spelling}:slot-audit" in pins
+
+
+# ---------------------------------------------------------------------------
+# E19: the same block on a base that declares no policy at all
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_on_the_anchor_shape_the_block_moves_only_the_reviewer_contacts(tmp_path):
+    """Cell B8b-anchor's whole request-channel claim, in one assertion.
+
+    OFF is the anchor itself: no ``context_policy``, no ``reviewer_audit``,
+    so the node-context transform never runs. ON adds the audit key and
+    nothing else. Perception, Solver and Planner requests must be
+    byte-identical across the two arms.
+    """
+
+    off_harness, off_summary = _episode(tmp_path / "off", policy=None)
+    on_harness, on_summary = _episode(
+        tmp_path / "on", policy=None, reviewer_audit=_reviewer_audit_document(),
+    )
+    off_digests = _request_digests(off_harness)
+    on_digests = _request_digests(on_harness)
+    assert set(off_digests) == set(on_digests)
+    moved = sorted(key for key in off_digests if off_digests[key] != on_digests[key])
+    assert moved == sorted(REVIEWER_KEYS)
+    assert len(on_summary.results[0].contacts) == len(
+        off_summary.results[0].contacts
+    )
+    # The OFF arm records no node-context compilation at all: the key's
+    # absence composes the pre-E12 tree exactly.
+    assert "node_context_policy_compilations" not in (
+        off_summary.results[0].native_episode_receipt
+    )
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_on_the_anchor_shape_the_reviewer_gains_exactly_the_block(tmp_path):
+    """The sealed draft goes out unchanged and the block follows it; every
+    other boundary emits a raw row whose rendered bytes ARE its source's."""
+
+    off_harness, _off = _episode(tmp_path / "off", policy=None)
+    on_harness, on_summary = _episode(
+        tmp_path / "on", policy=None, reviewer_audit=_reviewer_audit_document(),
+    )
+
+    def wire(harness, key):
+        return json.dumps(
+            harness.prepared[key]["rendered"], sort_keys=True, ensure_ascii=False
+        )
+
+    key = ("s1", "reviewer", 1, 2)
+    off_text = wire(off_harness, key)
+    on_text = wire(on_harness, key)
+    assert "SLOT AUDIT" not in off_text
+    assert f"SLOT AUDIT ({SLOT_AUDIT_VIEW_ID};" in on_text
+    assert len(on_text) > len(off_text)
+
+    receipt = on_summary.results[0].native_episode_receipt
+    rows = [
+        row
+        for record in receipt["node_context_policy_compilations"]
+        for row in record["compilation"]["boundaries"]
+    ]
+    assert rows
+    audited = [row for row in rows if "slot_audit" in row]
+    assert audited
+    for row in rows:
+        # E19: the composed policy is the key's own bare "raw" arm, so
+        # every row is raw and renders no template.
+        assert row["level"] == "raw"
+        assert row["template_id"] is None
+        if "slot_audit" not in row:
+            assert row["rendered_sha256"] == row["source"]["content_sha256"]
+            continue
+        assert row["boundary"]["consumer_role_kind"] == SLOT_AUDIT_BOUNDARY[0]
+        assert row["boundary"]["semantic_class"] == SLOT_AUDIT_BOUNDARY[1]
+        audit = row["slot_audit"]
+        assert audit["schema"] == SLOT_AUDIT_RECEIPT_SCHEMA
+        assert audit["view_id"] == SLOT_AUDIT_VIEW_ID
+        assert audit["template_id"] == SLOT_AUDIT_TEMPLATE
+        assert set(audit["flag_counts"]) == set(SLOT_AUDIT_FLAGS)
+        if audit["applied"]:
+            assert audit["block_chars"] > 0
+            assert row["rendered_sha256"] != row["source"]["content_sha256"]
+        else:
+            assert audit["reason"] == "draft-unparsed"
+            assert row["rendered_sha256"] == row["source"]["content_sha256"]
+    spelling = f"{SLOT_AUDIT_BOUNDARY[0]}:{SLOT_AUDIT_BOUNDARY[1]}"
+    for record in receipt["node_context_policy_compilations"]:
+        pins = record["template_sha256s"]
+        assert sorted(pins) == sorted((
+            f"{spelling}:slot-audit",
+            f"{spelling}:slot-audit-release",
+            f"{spelling}:slot-audit-snapshot",
+        ))
 
 
 @pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
