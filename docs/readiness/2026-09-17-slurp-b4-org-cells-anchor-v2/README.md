@@ -39,7 +39,7 @@ Two owner conditions bind the launch order: **B1 -> B2 -> B4b -> B4a -> B4c** (d
 | composed / protocol (B4a smoke) | `b10c5577be705a6dfed00ef4314bb2ae5301e74575806a9af695233559dcc2a4` / `fc87c024b668fe01f3b90f4342f6a933add7e002dfa2723dfe8e5b97fa678549` |
 | composed / protocol (B4b) | `8d207b33fa7643b7e5acc4ccbd03354fe9c09df09563544c4879c4bb97ee6a4d` / `567a87ad234bb4f17c4735f94219a82b05b25a19d81fdf1ee32bb93b6eda346a` |
 | composed / protocol (B4b smoke) | `c0572352a9b4758a61654f46d06812819da42d3c7cf9611b24a383882b279661` / `f13ba493375d75a524884f771a6c5d9b410425951b15cccf9d59d1fe76f3cd9c` |
-| composed / protocol (B4c) | `1f658831f9ecfe157a5addab416406d68cdab0923ec9ff2d69560c82a6f73934` / `0a3cc5d53dd022c36f976112efa4bcaaaf8eb03dbbee59285af40239ae297c7b` |
+| composed / protocol (B4c) | `bdbe70349eb324d43b270d05a344386bf5089894ea354fad88009c67774b0e3c` / `7bf967c3f914acc1fb1dd4a3366c863eb6ed1056ef3fec105f4a96efabb4ad9a` |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |
 | readiness | all five cells are `held` with the preparation requirement pinned; the coordinator appends the decision requirement and flips |
 
