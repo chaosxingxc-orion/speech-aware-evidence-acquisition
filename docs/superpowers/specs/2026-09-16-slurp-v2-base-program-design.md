@@ -489,3 +489,13 @@ flight and 20 idle. Budget about 25-30 GPU-h, three to four weeks wall clock.
 
 ASR or transcript states, core swap, E21/Audio2Tool flights, N/K sweeps, reuse of any ABORTED
 attempt, the four-row slot-view proof, paper-scale claims, Fold B or test reads before the lock.
+
+## Owner decisions 29-35 (2026-09-19)
+
+Recorded in docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md. Consequences for this program: the
+v2.0 lock fires on 64 / 78 replicated OR on three consecutive NEUTRAL / HARMFUL one-factor cells (30); B5b is
+composed per node, never by stacking modules on one node, with competing placements flown as paired cells (31);
+an L1 HARMFUL read closes B7r / B7c and re-bases B8b (32); an agent base lock document (node graph, per-boundary
+context contract, knowledge stores and their construction, optimisable space per node) precedes any Stage-3
+framework analysis (33); B6 reads on DEV-2000 (34); the one-shot test-split protocol is drafted now and frozen at
+the lock (29).
