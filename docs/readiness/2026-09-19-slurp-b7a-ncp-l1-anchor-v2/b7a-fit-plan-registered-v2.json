@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-ncp-l1-anchor-train-fold-a-v2",
-  "composed_config_hash": "0555ab4ca2dc95e9a93bc4ed4c236e8e6270bfe519470f537c11655dd23bf123",
+  "composed_config_hash": "73a817ffda56b02501002685db0cd695516425644544fa040464efb17849d494",
   "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realized native request inside the same campaign, under the same lease.",
   "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "experiment": "slurp-native-ncp-l1-anchor-train-fold-a-v2",
@@ -23,7 +23,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 47520,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "f91519ac5db69ad5577676a8e0824d22d805a01b84144f692c90418928954ccc",
+    "protocol_hash": "f5a6733f39952cfba2fc418d233c8acf1ff3a3758f16765737de47cc2fbceb31",
     "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-FIT-V2",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",

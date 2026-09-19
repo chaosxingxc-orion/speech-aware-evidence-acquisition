@@ -102,11 +102,11 @@
       "baseline_fragment": "configs/baseline/slurp-native-anchor-ncp-l1-train-fold-a-v2.json",
       "campaign_plan": "configs/campaign/slurp-native-ncp-l1-anchor-train-fold-a-v2.json",
       "cell_id": "slurp-native-ncp-l1-anchor-train-fold-a-v2",
-      "composed_config_hash": "0555ab4ca2dc95e9a93bc4ed4c236e8e6270bfe519470f537c11655dd23bf123",
+      "composed_config_hash": "73a817ffda56b02501002685db0cd695516425644544fa040464efb17849d494",
       "experiment_fragment": "configs/experiment/slurp-native-ncp-l1-anchor-train-fold-a-v2.json",
       "fit_attempt_id": "attempt-slurp-native-ncp-l1-anchor-train-fold-a-fit-v2",
       "fit_run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-FIT-V2",
-      "protocol_hash": "f91519ac5db69ad5577676a8e0824d22d805a01b84144f692c90418928954ccc",
+      "protocol_hash": "f5a6733f39952cfba2fc418d233c8acf1ff3a3758f16765737de47cc2fbceb31",
       "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V2",
       "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
     },

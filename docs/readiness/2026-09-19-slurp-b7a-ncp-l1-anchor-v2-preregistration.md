@@ -151,7 +151,7 @@ is not the real shared speech renderer. What stands in its place:
 | baselines | `configs/baseline/slurp-native-anchor-ncp-l1-train-fold-a-v2.json`, `configs/baseline/slurp-native-anchor-ncp-l1-smoke-4-v2.json` |
 | experiments | `configs/experiment/slurp-native-ncp-l1-anchor-train-fold-a-v2.json`, `configs/experiment/slurp-native-ncp-l1-anchor-smoke-4-v2.json` |
 | campaign plan | `configs/campaign/slurp-native-ncp-l1-anchor-train-fold-a-v2.json` |
-| composed / protocol (arm) | `0555ab4ca2dc95e9a93bc4ed4c236e8e6270bfe519470f537c11655dd23bf123` / `f91519ac5db69ad5577676a8e0824d22d805a01b84144f692c90418928954ccc` |
+| composed / protocol (arm) | `73a817ffda56b02501002685db0cd695516425644544fa040464efb17849d494` / `f5a6733f39952cfba2fc418d233c8acf1ff3a3758f16765737de47cc2fbceb31` |
 | composed / protocol (smoke) | `fbe7556e225a4f6ab53f466b09f3b8fcd1efba45404e55a566d0f081b16e8880` / `1f3bdd15ece682b449d0706301a633af09a747f5ef38fa3b93aacc65ae0e52e5` |
 | plans | `docs/readiness/2026-09-19-slurp-b7a-ncp-l1-anchor-v2/` -- four prospective and four `-registered` plans, the protocol document and the analysis recipe |
 | readiness | both cells `held` with the inherited `preparation` requirement; the coordinator adds the `decision` requirement, rebuilds the prepared supply and flips with `scripts/flights/repin_cell.py` |

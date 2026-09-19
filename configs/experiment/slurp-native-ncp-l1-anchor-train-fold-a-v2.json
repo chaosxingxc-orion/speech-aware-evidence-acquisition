@@ -16,13 +16,20 @@
         "reason": "Registered before contact by the B7a v2 registration agent in worktree /home/chao/saea-worktrees/fable-b7a2, branch fable/b7a2, base commit 25a7f325. The v1 flight is CLOSED. Its arm SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V1 aborted on 2026-09-17 on a Planner output naming no registered action (fixed by item E8c), and the one root-diagnosed recovery the preregistration allows, SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1, ABORTED again on 2026-09-19 at about 03:35Z after 1,451 model contacts, 1,451 request-fit receipts and 3,830.12 repeated speech seconds (roughly 290 complete rows) with NativeEpisodeError: native episode node failed: [100054] component 'reviewer_1_role' execute 'invoke' error, reason='metered completion is non-authoritative because finish_reason is 'length''. Section 8 of the recovery note and the owner iteration rule (study CLAUDE.md: at most one recovery re-registration per flight; a second failure stops the flight and the fix is proven on a 4-row dry run) close that flight: no third registration under v1, no replay, no row filtering. This is a NEW registration with new run ids and its own single recovery allowance, carrying the named fix native_episode.finite_completion_policy = deliver-latest-or-abstain and nothing else that a model can see. It stays HELD: the coordinator mints the root decision receipt coordination/slurp-b7a-ncp-l1-anchor-v2/root-admission-v2.json (decision id slurp-b7a-ncp-l1-anchor-admission-v2) and flips the state with scripts/flights/repin_cell.py, which re-verifies and rebuilds the prepared supply and recomputes every dependent hash in the same cycle, after the four-row smoke seals. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. One experiment in flight at a time.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b7a-ncp-l1-anchor-admission-v2",
+            "relpath": "coordination/slurp-b7a-ncp-l1-anchor-v2/root-admission-v2.json",
+            "sha256": "369d56e0862dafb475662d6718fdac9cd9c3bd0b8afc7075847c771eb9dae7a1",
+            "reason": "Decision slurp-b7a-ncp-l1-anchor-admission-v2 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "INHERITED VERBATIM from the closed v1 recovery cell: the model-free first-phase Perception supply prepared/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1/phase-supply-v2.json, built from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed dual-store anchor used, with zero model, tokenizer, encoder, scorer or server contacts; its output block is byte-identical to the sealed anchor preparation's on all 1,080 rows (output SHA-256 ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f), so the Perception selection channel does not move. core.preparation.artifact_inputs binds the composed values -- this cell's own identity ids and its new episode key included -- so this inherited pin will NOT verify against the v2 cell's composed digest. That is expected and is handled by the launch step, not by this registration: core.flight.repin.ensure_artifact_pinned re-verifies the pin, finds the mismatch, derives a fresh artifact under prepared/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V2/ and ASSERTS its output block equals the inherited artifact's before writing the new pin into this requirement and the baseline fragment. Never pass --allow-output-change: part of the one-factor claim is that the Perception selection does not move.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1/phase-supply-v2.json",
-            "sha256": "115e76498232450a83c5c70bf8ee33eac232138e44596ca9691fe37725fb4926"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V2/phase-supply-v1.json",
+            "sha256": "a2f976093c6931b926f5187f0687d4a54601254ed6244212b1d6c9f2e734b810"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V2"
     }
