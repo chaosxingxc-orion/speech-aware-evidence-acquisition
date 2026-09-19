@@ -1,0 +1,58 @@
+{
+  "cell": "slurp-native-exemplars-k20-anchor-replicate-smoke-4-v1",
+  "composed_config_hash": "12f242bc92d8c20fe8b44bb12850f351a775e9c5a14b9168afae37d2e85f3008",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-replicate-smoke-4-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 176,
+    "planned_speech_audio_seconds": 117,
+    "protocol_hash": "8cfbccae71095c9cff1e63162a30354cf619b56b5bf7780e6b834254ff3efdbf",
+    "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-REPLICATE-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realized native request inside the same standalone worker. coordinate-fit must NOT be run.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-exemplars-k20-anchor-replicate-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "modules": {
+    "base": "the SEALED dual-store ANCHOR configuration plus the train-exemplars store, exactly as cell B1's recovery arm flew it (configs/baseline/slurp-native-anchor-exemplars-k20-train-fold-a-recovery-v2.json at study commit a35630c0): the complete native episode with the review loop on, the shared controller and FlightRuntime path, Reviewer-only task-contract tool authority, Solver-only answer authority, the three-candidate contract, the max512 resident geometry, the sealed Fold A speech-query segment vectors and the EVO-FOLDS-V2 promoted packets. Nothing of it moves. No node: no context_policy, no deliver_normaliser, no reviewer_audit.",
+    "factor": "NONE. This is a REPLICATE: every model-facing key is cell B1's, byte for byte, so the only thing that moves between the two passes is BATCH COMPOSITION UNDER GREEDY DECODING. llama-server at temperature 0 does not return bytes independent of how requests batch across slots, so a cell that changes nothing still produces a non-zero delta; measuring that delta on THIS configuration is the second purpose of the cell.",
+    "per_role_rendering_held": "native_episode.tool_schema_rendering is NOT armed. Request identity with cell B1 requires the anchor's PER-ROLE rendering, so cell B1r is a PER-ROLE cell and its result is unaffected by efficiency cell EFF-1's outcome, whichever way that cell falls. If EFF-1 is NEUTRAL and the constant rendering enters the SLURP default plan, this cell's numbers remain the per-role numbers and every later reader is told so.",
+    "purpose_is_replication": "PRIMARY DELIVERABLE is the replication verdict on module M1: the three clauses cell B1 passed, applied unchanged against the same sealed anchor. SECOND DELIVERABLE is the OWN NULL of the admitted configuration, h_SLU_M1 and h_intent_M1 = the CI95 half-widths of (B1r minus B1), which owner decision 38 makes the margin regime for every later contrast involving an exemplar-supplied arm. They are OUTPUTS, never inputs.",
+    "second_declared_key_not_a_factor": "native_episode.finite_completion_policy = \"deliver-latest-or-abstain\", required of every live SLURP native cell by scripts/checks/finite_completion_policy_check.py (item E13). It renders NO request byte and only decides whether a finite completion aborts the flight or the row is RETAINED with a terminal_disposition reason \"finite_completion\". The comparator side is provably unaffected: docs/receipts/slurp-finite-completion-exposure-v1.json proves zero finite completions on cell B1's own arm and on the sealed anchor.",
+    "zero_added_contacts": "nothing moves, so the bounded ceiling stays 11 contacts per row and every ceiling is cell B1's own registered ceiling, unchanged"
+  },
+  "plan_kind": "native contact fit",
+  "preparation_base_commit": "0989edb1",
+  "prepared_phase_supply": {
+    "note": "THIS CELL'S OWN artifact, built model-free under its own run id by core.flight.cli prepare-supply in this registration (item E16: a prepared artifact is evidence only for the implementation that produced it, so nothing is inherited from cell B1). Its Perception output was asserted by hand against the sealed cell B1 preparation's own output and matched exactly, which is the model-free proof that this cell's fresh identities and the declared finite-completion key move no knowledge-selection byte. core.flight.repin will find this pin VALID and rebuild nothing. --allow-output-change must never be passed.",
+    "output_sha256": "512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733",
+    "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-REPLICATE-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "78aa0622394f37287878116beab4b229dd2c5afbb28b08d8210e798e21ed0f83"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-19-slurp-b1-replicate-v1/protocol-registered-v1.json",
+    "sha256": "3ba8165d0e7297c51418a27df871e8c81cc25392c9ce1a960148f1512c158163"
+  },
+  "quality_read_gate": "The four-row smoke is STRUCTURAL ONLY and is never scored: delivery and contact counts, the eleven-contact anchor role graph, the train-exemplars typed content blocks present in the Solver request, the request-fit receipts, any retained finite_completion row reported rather than treated as an error, the per-role authority refusals reported, and a clean seal. No scorer, no answer, reference or quality interpretation and no task-quality claim.",
+  "registered_at_utc": "2026-09-19T18:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-b1r, branch fable/b1r",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

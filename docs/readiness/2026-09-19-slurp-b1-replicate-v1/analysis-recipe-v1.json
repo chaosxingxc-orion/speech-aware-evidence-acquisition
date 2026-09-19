@@ -1,0 +1,217 @@
+{
+  "arms": {
+    "left_base": {
+      "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+      "never": "never re-flown, never re-scored, never opened for writing",
+      "official_intent": 77.96,
+      "official_slu": 48.53,
+      "outputs_sha256": "d87d71e8fa0fe93b45d5c6817ba125b016d8d91f44a14309171dd0f3a64270d8",
+      "projection_v3_intent": 79.35,
+      "projection_v3_slu": 51.99,
+      "role": "the clause comparator",
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+      "run_manifest_sha256": "049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152",
+      "scores_sha256": "7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47"
+    },
+    "left_direct_secondary": {
+      "official_intent": 73.7,
+      "official_slu": 33.89,
+      "role": "secondary system-versus-direct column, reported not gated",
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1"
+    },
+    "left_first_pass": {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2",
+      "composed_config_hash": "114b791752e160ed0f409fedf12d034b3cc05a8789b4423d1700cc6cb7df000c",
+      "never": "never re-flown, never re-scored, never opened for writing",
+      "official_intent": 80.19,
+      "official_slu": 61.14,
+      "outputs_sha256": "db9cd6329b0837d8f120f153556c951a68969da167d245d695eb35916237deca",
+      "projection_v3_intent": 81.76,
+      "projection_v3_slu": 62.67,
+      "protocol_hash": "c66d507d1ae03c081d04a72dda7b5be28c29d7d5d22e4f196c38e5912211da2d",
+      "realized_audio_seconds": 15494.6,
+      "realized_contacts": 5425,
+      "realized_gpu_hours": 3.6819,
+      "role": "the own-null comparator; the cell being replicated",
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2",
+      "run_manifest_sha256": "b07ed553ff9f78b8e3ead6797bb66fb92a1820793b8aa5061576c6f66aa1a8ad",
+      "scores_sha256": "a7105b328509a8bd00c4678fd076e9be4d242b6189bb82bbd290bd596e3c9078",
+      "study_commit": "a35630c081827cb2d038a4ef314305b69b867627"
+    },
+    "left_twin_reported": {
+      "note": "the derangement twin decomposed cell B1's gain (twin minus anchor +4.77 SLU with nil intent). This cell does NOT re-fly the twin and registers no twin clause: the twin is an attribution control, not a replicate, and owner decision 37 asked for a replicate",
+      "official_slu": 53.3,
+      "role": "reported context only, never a gate on this cell",
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2"
+    },
+    "right_replicate": {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-replicate-train-fold-a-generation-v1",
+      "composed_config_hash": "a1cec1e65066108a88873803be5535c7fc8f8f166a1dad856953e541f954ba45",
+      "protocol_hash": "2792c1beb3c37d3617bf2c340dceeef062184cb8dd137405ac9b94698db9d8b1",
+      "role": "this cell",
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-REPLICATE-V1"
+    }
+  },
+  "authority": {
+    "first_pass_preregistration": "docs/readiness/2026-09-17-slurp-b1-exemplars-k20-anchor-v2-preregistration.md",
+    "first_pass_recipe": "docs/readiness/2026-09-17-slurp-b1-exemplars-k20-anchor-v2-recovery-v1/analysis-recipe-v1.json",
+    "first_pass_recovery_note": "docs/readiness/2026-09-17-slurp-b1-exemplars-k20-anchor-v2-recovery-v1.md",
+    "first_pass_twin_verdict": "docs/results/2026-09-18-slurp-b1-twin-verdict.md",
+    "first_pass_verdict": "docs/results/2026-09-17-slurp-b1-exemplars-k20-verdict.md",
+    "harness_admission_entry": "docs/receipts/harness-admission.json, row SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2, provisional.state UNMET, whose requirement names exactly this form",
+    "owner_decision_17": "2026-09-17: net harmed rows per scenario, flagged at five, in every paired read",
+    "owner_decision_22": "2026-09-18: the resume-recovery clause every new registration carries, and the requirement that every future experiment supports checkpoint resume",
+    "owner_decision_23": "2026-09-18: the bar and every final evaluation read the OFFICIAL, unprojected slurp-slu-official-train number",
+    "owner_decision_25": "2026-09-18: HARMFUL requires a MEASURED LOSS (Method B)",
+    "owner_decision_28": "development numbers",
+    "owner_decision_37": "2026-09-19, docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md, 'Owner decisions 36-41': a request-identical replicate of cell B1 (about 3.7 GPU hours) flies before the lock closes; module M1 enters the default plan only if it replicates",
+    "owner_decision_38": "margins: a contrast involving a configuration uses the margins of THAT configuration's own request-identical replicate; cell B0r's own null (h_SLU 1.1218, h_intent 1.0051) is the registered fallback where none exists; the retired imported DEV-1000 half-widths are never used again",
+    "owner_decision_41": "2026-09-19: throughput reporting. This cell reports its contacts, GPU hours, slot occupancy, utilisation and prefilled/cached token split beside cell B1's realized cost",
+    "owner_decisions_7_and_14": "projection v3 as the fixed post-processing diagnostic; the TRAIN symmetric sibling slurp-slu-f1-normalized-v1-train reported beside every official number",
+    "precedent": "the B4b replicate, docs/readiness/2026-09-17-slurp-b4b-replicate-v2-preregistration.md section 6 and docs/results/2026-09-19-slurp-b4b-replicate-verdict.md; this recipe is that one with cell B1's own registered values substituted",
+    "preregistration": "docs/readiness/2026-09-19-slurp-b1-replicate-v1-preregistration.md",
+    "protocol": "docs/readiness/2026-09-19-slurp-b1-replicate-v1/protocol-registered-v1.json"
+  },
+  "cell_kind": "REPLICATE",
+  "claim_boundary": "Descriptive paired read on historically exposed TRAIN Fold A discovery rows. No superiority, generalization, component-causal or confirmatory claim; no DEV1000, Fold B or test-split claim; no cross-carrier claim; no geometry claim; no claim about k, the fuse policy, the rank weights or the derangement seed beyond the flown values. Meeting clause 1 admits module M1 into the SLURP default plan; it is not a paper claim, which belongs to a separately admitted Stage-3 repository.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "contrasts": [
+    {
+      "delta": "B1r minus the sealed anchor",
+      "id": "clause",
+      "interval": "CI95",
+      "use": "the three registered replication clauses"
+    },
+    {
+      "delta": "B1r minus the sealed cell B1 recovery arm",
+      "id": "own-null",
+      "interval": "CI95",
+      "use": "the OUTPUT half-widths h_SLU_M1 and h_intent_M1 of the admitted configuration; owner decision 38's margin regime for every later contrast against an exemplar-supplied arm"
+    },
+    {
+      "delta": "cell B1 minus the sealed anchor, recomputed",
+      "id": "first-pass-reproduction",
+      "interval": "CI95",
+      "use": "the STOP condition; never a clause"
+    },
+    {
+      "delta": "B1r minus the released direct anchor",
+      "id": "direct-secondary",
+      "interval": "CI95",
+      "use": "reported system-versus-direct column; never a gate"
+    }
+  ],
+  "decision_rule": {
+    "agreement_scorer": "projection v3 (slurp-slu-official-projected-v3-train)",
+    "clause_1a": "the CI95 lower bound of the official pooled SLU micro F1 delta (B1r minus the sealed anchor) is GREATER THAN 0",
+    "clause_1b": "intent is NON-INFERIOR WITHIN 1.0051 pp: the CI95 lower bound of the intent delta (B1r minus the sealed anchor) exceeds -1.0051",
+    "clause_1c": "the projection-v3 reading of the pooled SLU delta AGREES IN SIGN with the unprojected one",
+    "no_repeat_to_pass": true,
+    "no_third_pass": true,
+    "not_a_new_bar": "clause 1 is cell B1's own rule, not a new one: the conjuncts, the -1.0051 margin, the estimator, the draws and the seed are copied from docs/readiness/2026-09-17-slurp-b1-exemplars-k20-anchor-v2-preregistration.md section 7. A replication that moved the bar would not be a replication. Cell B1's twin clause and its per-scenario band are REPORTED, not gated, because owner decision 37 asked for a request-identical replicate and no twin is re-flown",
+    "own_null_outputs": {
+      "h_SLU_M1": "CI95 half-width of (B1r minus B1) for pooled SLU -- an OUTPUT",
+      "h_intent_M1": "CI95 half-width of (B1r minus B1) for intent -- an OUTPUT",
+      "note": "no value for either appears anywhere in this registration and neither may be chosen after the fact. They are reported beside cell B0r's 1.1218 and 1.0051, which are the review-off configuration's half-widths cell B1 had to borrow"
+    },
+    "primary": "official pooled SLU micro F1 (slurp-slu-official-train), natural mixture",
+    "read_once": true,
+    "secondary_gate": "intent (joint scenario+action) accuracy",
+    "stop_condition": "before any table of this cell is read, the recomputed (cell B1 minus the sealed anchor) contrast must reproduce the first pass's registered CI95 lower bounds +10.54 (pooled SLU) and +0.74 (intent) to the two decimals the verdict publishes, and both comparators must reproduce their registered official and projection-v3 aggregates (anchor 48.53 / 77.96 / 84.81 / 79.26 / 29.50 and 51.99 / 79.35; cell B1 61.14 / 80.19 / 86.39 / 81.39 / 48.43 and 62.67 / 81.76). If they do not, the read stops: the same sealed bytes under the same estimator and seed cannot give two answers",
+    "symmetric_scorer": "the TRAIN sibling registered on 2026-09-17 is reported beside every official number (cell B1's values: anchor 52.09, arm 62.97, direct 34.46). It is never a gate here",
+    "verdict": {
+      "NOT_REPLICATED": "any clause fails",
+      "REPLICATED": "all three clauses hold",
+      "consequence_not_replicated": "the entry STAYS PROVISIONAL with its obligation UNMET, module M1 stays OUT of the SLURP default plan, and THE OWNER IS TOLD",
+      "consequence_replicated": "the provisional obligation of the M1 harness-admission entry is MET: a SECOND entry records the replication, the first entry stays (as the KC-E1f v1/v2 and M4b pairs do), and the SLURP default plan MAY carry the train-exemplars store -- the whole knowledge_stores.train-exemplars block the M1 entry's switch.on records, with release 171aa4a8... and snapshot 4c498dc0..."
+    }
+  },
+  "delta_convention": "delta = right minus left, in percentage points; negative is worse",
+  "diagnostics_required": [
+    "finite-completion rows with their sample ids and the delivered/abstained split; the expected count is zero and no row is ever filtered out",
+    "planner_action_illegal with sample ids, action character counts and SHA-256 values",
+    "FIRST-REQUEST BYTE IDENTITY against cell B1 on EVERY row: the rendered request of every declared phase is expected to be byte-identical to cell B1's on the same sample id, and any differing row is reported with its phase and byte delta rather than explained away",
+    "the EXEMPLAR-BLOCK IDENTITY per row: the twenty train-exemplars values this cell supplies to the Solver are expected to be exactly the twenty cell B1 supplied on the same row, which the shared prepared-supply output digest already proves for Perception and the sealed trace proves for the Solver",
+    "saves / harms / ties with the exact two-sided McNemar p on both contrasts, and the count of rows whose delivered (scenario, action) pair differs between the two passes",
+    "row agreement: the number and share of delivered answers byte-identical between B1r and B1, as the M4b replicate reported (792 of 1,080, 73.33 %)",
+    "the per-type date / time / media_type / transport_type / business_type / order_type / relation / event_name false-negative and false-positive decomposition, recomputed on this cell's own sealed outputs with the official scorer's own matching",
+    "exemplar-filler echo rate against cell B1's 0.500 and the anchor base rate 0.29",
+    "revisions executed, escape-to-neighbour-intent rows, and the widest realized request in tokens",
+    "row accounting 1,080 in / 1,080 out on both sides"
+  ],
+  "estimators": {
+    "bootstrap_pooled": "analysis.paired.resampled_statistic",
+    "not_used": "analysis.score_compare_cli as the runner: it hard-codes ci_level 0.90 and DEV population names",
+    "paired_per_row": "analysis.paired.paired_contrast",
+    "percentiles": "analysis.bootstrap._percentile over the retained BootstrapResult.replicates",
+    "pooled_micro_f1": "analysis.null_calibration.pooled_f1",
+    "row_reader": "analysis.null_calibration_cli.rows_for"
+  },
+  "execution_profile": "model-free-check",
+  "metrics": [
+    "official pooled SLU micro F1 (primary)",
+    "intent (joint scenario+action) accuracy (secondary gate)",
+    "projection v3 pooled SLU and intent (agreement reading)",
+    "TRAIN symmetric pooled SLU (reported beside every official number)",
+    "scenario accuracy, action accuracy, official pooled span F1",
+    "per-row mean official SLU-F1 and per-row mean exact slot F1",
+    "saves / harms / ties with the exact two-sided McNemar p",
+    "the count of rows whose delivered (scenario, action) pair differs between the two passes"
+  ],
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-B1-REPLICATE-OWN-NULL-PAIRED-ANALYSIS-V1",
+    "harness_admission": "on REPLICATED a SECOND entry records the replication in docs/receipts/harness-admission.json and the first entry stays; the default plan fragment gains the train-exemplars store in the same change",
+    "verdict_document": "docs/results/2026-09-19-slurp-b1-replicate-verdict.md"
+  },
+  "population": {
+    "fold_b_contact_authorized": false,
+    "roster": "TRAIN Fold A, docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+    "roster_metadata": {
+      "relpath": "analysis/SAEA-SLURP-TRAIN-A-DIRECT-ANCHOR-RELEASE-PAIRED-ANALYSIS-V1/roster-metadata.json",
+      "sha256": "07f4cd83b83d83d65500a328e0a38421ede575195c63ae118def0d1006c14e34"
+    },
+    "rows": 1080,
+    "rows_per_scenario": 60,
+    "scenario_strata": 18,
+    "speaker_clusters": 125,
+    "split_id": "SLURP-EVO-FOLD-A-V2",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+  },
+  "recipe_id": "slurp-b1-replicate-own-null-v1",
+  "registered_at_utc": "2026-09-19T18:00:00.000000+00:00",
+  "resampling": {
+    "draws": 10000,
+    "intervals": {
+      "clauses": "CI95",
+      "diagnostics": "CI90",
+      "method": "percentile pairs of the same retained replicate sequence"
+    },
+    "primary": "paired whole-speaker cluster bootstrap",
+    "seed": 20260915,
+    "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed",
+    "tables": "every table in both the natural-mixture and the equal-scenario weighting"
+  },
+  "schema": "saea-paired-analysis-recipe-v1",
+  "scorer": {
+    "batching": "one complete score per manifest through core.scoring_batch, never sharded",
+    "official": "slurp-slu-official-train (pinned official evaluate.py, slurp-official-8eb16545)",
+    "projection": "slurp-slu-official-projected-v3-train",
+    "symmetric_train_sibling": "slurp-slu-f1-normalized-v1-train"
+  },
+  "tables_required": [
+    "the full 18-scenario table in the natural-mixture weighting, for (B1r - anchor) and (B1r - B1)",
+    "the same table in the equal-scenario weighting",
+    "owner decision 17: net harmed rows per scenario, any scenario at five or more flagged, for both contrasts",
+    "the TRAIN symmetric number beside every official number",
+    "the projection-v3 number beside every official number",
+    "the cost block against cell B1's realized 5,425 contacts, 15,494.60 audio seconds and 3.6819 GPU hours"
+  ],
+  "title": "Cell B1r: the request-identical replicate of cell B1 (module M1, speech-keyed exemplar supply k = 20) against the sealed anchor, and the own null of the admitted configuration"
+}
