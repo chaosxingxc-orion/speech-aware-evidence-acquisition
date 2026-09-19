@@ -2752,6 +2752,37 @@ async def _invoke_native_role_episode(
             else result["delivery"]["actor_output"] if solver_group is not None
             else completion.text
         )
+        # E11 (2026-09-18, owner directive 26): the DELIVERY-TIME normaliser
+        # node. It runs exactly ONCE per row, HERE -- after the Planner has
+        # already ACCEPTed (or after the terminal delivery of the last
+        # revision), after every guard above has bound the delivered answer
+        # to its actual source response, and before that answer becomes the
+        # row's delivered text. It makes no contact of any kind, so every
+        # MODEL_REQUEST byte of the episode is already spent and unchanged;
+        # it only rewrites what is delivered, and records the custody that
+        # lets the seal and the bundle re-derive the delivered bytes from the
+        # recorded response.
+        #
+        # An ABSTENTION is never normalised: it delivers empty text whose
+        # identity is a DERIVED record (core.delivery.native_abstention_records),
+        # there is no answer to project, and a normalisation receipt on such a
+        # row would claim custody of bytes that came from no model response.
+        deliver_normaliser_receipt = None
+        if config.deliver_normaliser_id is not None and delivery.kind != "abstention":
+            from ..core.base import DELIVERY_NORMALISERS  # noqa: PLC0415
+            from . import delivery_normalisers as _delivery_normalisers  # noqa: PLC0415, F401
+
+            normalisation = DELIVERY_NORMALISERS.resolve(config.deliver_normaliser_id)(
+                final_text
+            )
+            if normalisation.receipt.get("input_sha256") != hashlib.sha256(
+                final_text.encode("utf-8")
+            ).hexdigest():
+                raise RailsRunnerError(
+                    "delivery normaliser receipt does not bind its own input"
+                )
+            deliver_normaliser_receipt = dict(normalisation.receipt)
+            final_text = normalisation.text
         stop_transition = AgentStepTransition(
             snapshot_sha256=snapshot_sha256,
             prior_query_state_sha256=state.query_state.content_hash(),
@@ -2794,6 +2825,12 @@ async def _invoke_native_role_episode(
                 "reviewer_phase_id": config.role("reviewer").phase_id,
                 "planner_phase_id": config.role("planner").phase_id,
             }
+        if deliver_normaliser_receipt is not None:
+            # E11: one block per row, naming the rule, its version, its
+            # input/output digests and the counts of changed labels and
+            # fillers. Never the text: a delivered SLURP answer carries slot
+            # fillers taken from speech.
+            compact_receipt["deliver_normaliser"] = deliver_normaliser_receipt
         if config.role_context_json is not None:
             compact_receipt["role_context_compilations"] = list(context_compilations.values())
         if config.context_policy_json is not None:

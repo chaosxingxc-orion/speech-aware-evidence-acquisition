@@ -173,6 +173,98 @@ flown id the split does not carry, and derives `planned_ceiling` from the flown 
 the adapter, the prepared-artifact identity and the merged seal keep the cell's whole roster.
 
 
+E11 (2026-09-18, owner directive 26): **the delivery-time normaliser node.** Owner directive 26
+rules that this program's offline analyses belong INSIDE agent nodes rather than only in reports,
+and owner decision 23 makes the bar and every final evaluation the OFFICIAL, unprojected
+`slurp-slu-official-train` number. Together they move module M3 out of the scorer. Projection v3
+(label rule `R_action`, then the registered legal-label projection v2, then filler normalisation
+P2 -- case, whitespace, punctuation, meridiem, numeric words, no support filter) has lived since E4
+as scorer-side post-processing (`slurp-slu-official-projected-v3[-train]`, cell B3); it lifts cell
+B1 from 61.14 to 62.67 and cell B5e from 62.34 to 63.78 official-equivalent pooled SLU on TRAIN A,
+and the official scorer credits none of it while it lives there. E11 applies the SAME rule inside
+the episode, so the official scorer reads an answer the system itself delivered.
+
+*What it is.* One registry-resolved entry, `saea-deliver-normalise-v3`, in the NEW
+`core.base.DELIVERY_NORMALISERS` registry, implemented by calling
+`rails.slurp_projection_v3.apply_slurp_projection_v3_delivery` -- the same two functions the v3
+scorer applies -- never a second implementation. It is pure and deterministic, needs no gold, no
+roster and no model contact, and declares the one carrier it is defined for. It is NOT a
+`core.base.JUDGES` entry and cannot be one: owner Decision 11-C makes the Reviewer seat
+criticism-only and `core.base.JudgeRegistry` refuses at the door anything that could return
+replacement text, while this node's whole job is to rewrite the delivered answer. The registry it
+does live in is the seam `COMMIT_POLICIES` already is -- a registered, deterministic function whose
+output IS delivered bytes, resolved by id from one config key and re-derivable offline from
+custody -- and it checks its own door the way `JudgeRegistry` checks that one.
+
+*The switch.* One `episode`-class key, `native_episode.deliver_normaliser`, the fourth and last of
+that class's closed allowlist, armed as `{"normaliser": "saea-deliver-normalise-v3"}`. Its OFF arm
+is the key's absence: a delivery node is either absent or armed. `rails.runner` applies it exactly
+once per row, after the Planner ACCEPTs (or after the terminal delivery of the last revision),
+after every guard that binds the accepted answer to its actual source response, and before that
+answer becomes the delivered text; an abstention is never normalised. The loader validates it
+fail-closed before any contact: an unregistered rule, a rule declared for another carrier, the E4
+run-level key `slurp_projection_v3_delivery` declared beside it (two spellings of one rule), and
+the grouped-Solver combination (`roles.solver.samples >= 2`, whose delivered text is already the
+COMMIT policy's aggregate) are each refused by name. Harness-admission entry form: `switch.table`
+`"episode"`, `switch.key` `"native_episode.deliver_normaliser"`, `switch.off` `null`, `switch.on`
+`{"normaliser": "saea-deliver-normalise-v3"}`, `switch.proof`
+`tests/unit/test_config_table_module_switches.py::test_deliver_normaliser_is_one_episode_class_key`.
+It is an `episode` entry rather than a `run` one because it is a node of the episode declared
+beside the roles it runs after, and rather than a `judges` TABLE entry because that table wraps a
+phase's `phase_review` block, i.e. the criticism-only Reviewer seat.
+
+*One factor, down to the byte.* The node makes no contact, so every MODEL_REQUEST byte is identical
+with and without it (pinned end to end in
+`tests/unit/test_native_episode_runner_deliver_normaliser.py`, which runs the real episode twice
+through the shared fake transport and compares all four rendered requests). It also delivers the
+accepted answer VERBATIM whenever the rule repairs neither a label nor a filler, rather than
+re-rendering it in canonical JSON: on the sealed B1 arm the re-render alone would have changed
+1,076 of 1,080 rows against 24 repaired labels and 82 repaired filler rows, which is a difference no
+verdict could read. With the suppression the ON arm differs from its comparator on 103 rows, and
+`changed` means "the rule repaired this row".
+
+*Custody.* The bundle's I7 binds a row's delivered text to a recorded model response, and a
+normalised row's delivered text is not those bytes. I7 is untouched. Following the E2d precedent
+exactly, such a row is held to the new invariant **I7n**: the trace's own MODEL_RESPONSE bytes for
+the row's request id must be the rule's recorded input, the named rule must resolve in
+`core.base.DELIVERY_NORMALISERS` and be deterministic, and re-running it over those bytes must
+reproduce the delivered bytes byte for byte; a row carrying both a `solver_group` and a
+`deliver_normaliser` receipt is refused; a refusal names the invariant and the first differing
+character offset, never the text. The seal (`core.flight.runtime._canonical_output_rows`) binds a
+normalised row's `response_text_sha256` to the DELIVERED bytes, exactly as it does for a grouped
+row, and checks the receipt's input digest against the accepted contact's own recorded response
+text. The per-row receipt is `native_episode_receipt.deliver_normaliser`: schema, rule id, version,
+`rule_id`, carrier, `applied`, `changed`, `rendering_suppressed`, `input_sha256`, `output_sha256`,
+`labels_changed`, `label_branch`, `fillers_changed`. Ordinary rows are unchanged in every respect.
+
+*The reading rule.* Because the node is deterministic and zero-contact, its admission can be read
+MODEL-FREE from sealed arms. `analysis.deliver_normaliser_replay` (function and CLI, the delivery
+sibling of `analysis.native_commit_replay`) re-applies the registered rule to a sealed
+`outputs.jsonl` under a fresh output directory, never opening the input for writing, and reports
+`model_calls: 0` beside the changed-row counts. On the sealed B1 recovery arm it reports 1,080 rows,
+103 changed, 24 label repairs, 82 filler-repaired rows (90 entities), 4 unparsed rows left
+byte-identical. Stronger still, and what the tests actually assert: on every one of those 1,080 rows
+the prediction triple parsed back out of the node's delivered text is byte-identical to the triple
+the v3 SCORER builds from the same row, so the official number of the in-agent cell IS the
+v3-projected number of the sealed arm -- identically, not to two decimal places -- and no scorer run
+or gold read is needed to establish it. What the flight still owes is therefore only the proof that
+the node executed IN the agent: a four-row smoke on the armed fragment, showing the receipt present,
+the request bytes unchanged against the comparator's, and the delivered bytes equal to the replay's
+for those four rows. Config fragments for both arms of cell B8a are committed with readiness `held`
+(`configs/baseline/slurp-native-dual-store-train-fold-a-anchor-deliver-normalise-v3-v1.json` and
+`configs/baseline/slurp-native-anchor-exemplars-k20-deliver-normalise-v3-train-fold-a-v1.json`,
+with the matching `configs/experiment/slurp-native-b8a-deliver-normalise-v3-*.json`); E11 is
+engineering only and authorises no owner decision, no preregistration, no exposure row and no
+contact.
+
+*One gap recorded, not closed.* The E4 SEAL-time form of this rule (run key
+`slurp_projection_v3_delivery`, `core.flight.runtime._canonical_output_rows`) rewrites `text` and
+`response_text_sha256` on an ordinary row while `core.bundle.outputs` still binds both to the trace
+record, so a cell flown with that key would be refused at bundle verification. Both fragments that
+declare it are `held` and it has never flown. E11 does not change that path; a cell that wants it
+must either close it the way I7n closes the node's or use the node instead.
+
+
 ## 4. Phases
 
 **Phase 0 (done or in progress, zero contacts):** takeover receipt, owner decision record,

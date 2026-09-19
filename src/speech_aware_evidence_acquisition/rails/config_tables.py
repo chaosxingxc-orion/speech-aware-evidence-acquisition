@@ -301,10 +301,25 @@ NATIVE_EPISODE_TOP_LEVEL_KEY = "native_episode"
 #: The pre-existing optional ``native_episode.role_context`` block is folded
 #: under it (``rails.node_context_binding``); a fragment carrying both is
 #: refused by ``rails.native_episode_config.load_native_episode_config``.
+#:
+#: ``native_episode.deliver_normaliser`` (E11, 2026-09-18, owner directive 26)
+#: is the FOURTH, and the first admitted by a directive rather than by a
+#: module design. It belongs here rather than in the ``run`` class -- whose
+#: other two members also move no request byte -- because it is not a
+#: per-run driver knob at all: it is a NODE of the episode, declared inside
+#: the ``native_episode`` block beside the roles it runs after, applied once
+#: by ``rails.runner`` between the Planner's ACCEPT (or the terminal
+#: delivery) and the delivered answer, and sealed with its own custody
+#: receipt. It belongs here rather than in the ``judges`` TABLE because that
+#: table wraps a phase's ``phase_review`` entry -- the Reviewer seat, whose
+#: entries owner Decision 11-C makes criticism-only
+#: (``core.base.JudgeRegistry``) -- and a node that rewrites the delivered
+#: answer can never be one of those. See ``core.base.DELIVERY_NORMALISERS``.
 EPISODE_LEVEL_SWITCH_KEYS = frozenset({
     "native_episode.roles.solver",
     "native_episode.review_loop",
     "native_episode.context_policy",
+    "native_episode.deliver_normaliser",
 })
 
 #: The top-level key every ``stores``-class switch key names one child of.
@@ -1140,7 +1155,9 @@ def is_episode_null_arm(key: str, value: object) -> bool:
     literal ``"raw"``, or an object whose effective level is ``raw`` at every
     boundary (``rails.node_context_binding.is_node_context_null_arm``, which
     ``load_native_episode_config`` applies too, so an all-raw declaration
-    reaches the runtime as no policy at all and renders the pre-policy bytes).
+    reaches the runtime as no policy at all and renders the pre-policy bytes);
+    ``native_episode.deliver_normaliser``'s OFF is the key's absence, because
+    a delivery node is either absent or armed (E11).
     """
 
     if key == "native_episode.context_policy":
@@ -1163,6 +1180,12 @@ def is_episode_null_arm(key: str, value: object) -> bool:
         )
     if key == "native_episode.review_loop":
         return value is None or value == "off"
+    if key == "native_episode.deliver_normaliser":
+        # E11: the node is ABSENT or it is armed -- there is no third shape.
+        # The OFF arm therefore renders exactly the pre-key delivered bytes
+        # (and, request-side, exactly the pre-key request bytes, since the
+        # node runs after every contact of the episode is already made).
+        return value is None
     raise ConfigTableError(f"unknown episode switch key {key!r}")
 
 

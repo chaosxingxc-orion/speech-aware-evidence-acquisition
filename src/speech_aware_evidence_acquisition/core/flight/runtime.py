@@ -7915,6 +7915,18 @@ class FlightRuntime:
             # see the response_text_sha256 branch below (E2d), which hashes
             # the delivered bytes rather than the last raw contact's.
             solver_group = row.get("solver_group")
+            # E11 (2026-09-18, owner directive 26): present exactly when this
+            # row's episode ran the delivery-time normaliser node. The
+            # delivered final_response_text is then that node's output over
+            # the accepted answer, so -- exactly as for a grouped row -- the
+            # accepted contact's own text hash does not describe it, and the
+            # row's response_text_sha256 is bound to the DELIVERED bytes
+            # below. The node's input is bound to that contact's recorded
+            # response text through the receipt's own input_sha256.
+            deliver_normaliser = (
+                episode_receipt.get("deliver_normaliser")
+                if isinstance(episode_receipt, Mapping) else None
+            )
             if episode_receipt is not None:
                 # The delivery Solver can precede Reviewer/Planner contacts.
                 # Bind the existing response, without deriving or rewriting text.
@@ -8017,10 +8029,41 @@ class FlightRuntime:
                         "request_sha256", "response_sha256", "response_text_sha256",
                     ))
                     or (delivery.kind != "abstention" and solver_group is None
+                        and deliver_normaliser is None
                         and hashlib.sha256(sources[0].final_response_text.encode("utf-8")).hexdigest()
                         != contact.get("response_text_sha256"))
                 ):
                     raise FlightRuntimeError("native source differs from the recorded model response")
+                if deliver_normaliser is not None:
+                    # E11: what a normalised row owes INSTEAD of the equality
+                    # relaxed just above -- the node's recorded INPUT must be
+                    # this contact's own recorded response text. The delivered
+                    # bytes are then re-derivable from that response by the
+                    # named rule, which is what the bundle's I7n re-runs.
+                    if not isinstance(deliver_normaliser, Mapping):
+                        raise FlightRuntimeError(
+                            "native delivery normalisation lacks a structured receipt"
+                        )
+                    if solver_group is not None:
+                        raise FlightRuntimeError(
+                            "a grouped Solver row cannot also carry a delivery "
+                            "normalisation receipt"
+                        )
+                    if (
+                        deliver_normaliser.get("input_sha256")
+                        != contact.get("response_text_sha256")
+                    ):
+                        raise FlightRuntimeError(
+                            "native delivery normalisation did not run on the recorded "
+                            "model response"
+                        )
+                    if deliver_normaliser.get("output_sha256") != hashlib.sha256(
+                        sources[0].final_response_text.encode("utf-8")
+                    ).hexdigest():
+                        raise FlightRuntimeError(
+                            "native delivery normalisation output differs from the "
+                            "delivered text"
+                        )
                 if solver_group is not None:
                     from ...rails.native_episode_receipt import (  # noqa: PLC0415
                         validate_solver_group_receipt,
@@ -8100,9 +8143,13 @@ class FlightRuntime:
             # verifier re-derives the delivered bytes from exactly those
             # (I7g). Confined to grouped rows: a samples-1 row still seals
             # the recorded response text hash byte for byte.
+            # E11 joins E2d here for the same reason: a normalised row's
+            # delivered text is a deterministic, re-derivable function of the
+            # recorded response rather than its bytes, so the row's own
+            # self-consistency (I7) is kept by hashing what is DELIVERED.
             response_text_sha256 = (
                 hashlib.sha256(text.encode("utf-8")).hexdigest()
-                if solver_group is not None
+                if solver_group is not None or deliver_normaliser is not None
                 else timing.response_text_sha256
             )
             projection_v3_fields: dict[str, object] = {}

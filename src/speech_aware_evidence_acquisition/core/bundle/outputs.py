@@ -17,6 +17,18 @@ own response bytes must still be in the trace under that sample's own contact
 id, the named commit policy must be registered in
 ``core.base.COMMIT_POLICIES`` and reproduce itself, and re-running it over the
 row's own recorded samples must reproduce the delivered bytes exactly.
+
+E11 (2026-09-18, owner directive 26): the delivery-time normaliser node does
+the same thing one step later. A row whose episode ran a registered
+``core.base.DELIVERY_NORMALISERS`` entry carries a ``deliver_normaliser``
+block inside its ``native_episode_receipt``, and its delivered text is that
+rule's output over the accepted answer rather than the accepted answer's own
+bytes. I7 is again untouched and still binds the row's ``text`` to its own
+``response_text_sha256``; such a row is additionally held to I7n, which is
+again strictly stronger custody: the recorded model response for the row's
+own request id must be exactly the rule's recorded INPUT, the named rule must
+be registered and deterministic, and re-running it over those response bytes
+must reproduce the delivered bytes byte for byte.
 """
 
 from __future__ import annotations
@@ -116,6 +128,11 @@ def _minimum_model_calls_from_trace(
 #: The invariant code a grouped-Solver custody refusal names, so a failed
 #: seal is never confused with I7's single-response identity check.
 SOLVER_GROUP_INVARIANT = "I7g"
+
+#: E11 (owner directive 26, 2026-09-18): the invariant code a delivery-time
+#: normalisation custody refusal names, so it is never confused with I7's
+#: single-response identity check or with I7g's grouped-commit re-derivation.
+DELIVER_NORMALISER_INVARIANT = "I7n"
 
 #: E10 (owner decision 22, 2026-09-18): the invariant code a resume-recovery
 #: custody refusal names. I7 is unchanged and still decides every row; this
@@ -448,6 +465,137 @@ def _verify_grouped_commit(row: Mapping[str, object]) -> None:
         )
 
 
+def _delivery_normalisation_receipt(
+    row: Mapping[str, object],
+) -> Mapping[str, object] | None:
+    """The row's ``deliver_normaliser`` custody block, or ``None``.
+
+    It rides INSIDE the row's ``native_episode_receipt`` rather than beside
+    it, because it is a fact about how the EPISODE delivered: the node is a
+    node of the episode, applied once between the Planner's ACCEPT and the
+    delivered answer, and every other episode-level fact (role visits,
+    Planner routes, the accepted Solver receipt) is already sealed there.
+    """
+
+    receipt = row.get("native_episode_receipt")
+    if not isinstance(receipt, Mapping):
+        return None
+    block = receipt.get("deliver_normaliser")
+    if block is None:
+        return None
+    if not isinstance(block, Mapping):
+        raise BundleError(
+            f"{_row_label(row)}: 'native_episode_receipt.deliver_normaliser' must "
+            f"be a JSON object ({DELIVER_NORMALISER_INVARIANT})"
+        )
+    return block
+
+
+def _verify_delivery_normalisation(
+    row: Mapping[str, object],
+    block: Mapping[str, object],
+    response_payload: Mapping[str, object],
+) -> None:
+    """I7n: re-derive a normalised row's delivered text from the recorded
+    model response, and refuse the row when it does not reproduce.
+
+    Four things must hold:
+
+    1. the row carries no ``solver_group`` receipt -- a grouped commit and a
+       delivery normalisation would make the delivered bytes a function of
+       two rules with only one of them in custody, which is why
+       ``rails.native_episode_config`` refuses the combination before any
+       contact and why the bundle refuses it again here;
+    2. the trace's own MODEL_RESPONSE bytes for this row's request id are
+       exactly the rule's recorded INPUT (``input_sha256``) -- this is what
+       replaces I7's relaxed ``text`` / ``response_text_sha256`` equality and
+       keeps the delivered answer anchored to a real model response;
+    3. the named rule resolves in ``core.base.DELIVERY_NORMALISERS`` and is
+       deterministic (applied twice to the same input it returns the same
+       bytes);
+    4. re-running it over those response bytes reproduces the row's delivered
+       ``text`` byte for byte, and the rule's own recorded ``output_sha256``
+       agrees.
+
+    A refusal names the invariant and the first differing character offset,
+    never the text: a delivered SLURP answer carries slot fillers taken from
+    speech.
+    """
+
+    label = _row_label(row)
+    if "solver_group" in row:
+        raise BundleError(
+            f"{label}: a grouped Solver row cannot also carry a delivery "
+            f"normalisation receipt ({DELIVER_NORMALISER_INVARIANT})"
+        )
+    missing = sorted({"normaliser_id", "input_sha256", "output_sha256"} - set(block))
+    if missing:
+        raise BundleError(
+            f"{label}: its delivery normalisation receipt is missing {missing}, so "
+            "the delivered text cannot be re-derived from the recorded response "
+            f"({DELIVER_NORMALISER_INVARIANT})"
+        )
+    source_text = response_payload.get("text")
+    if not isinstance(source_text, str):
+        raise BundleError(
+            f"{label}: its trace response record carries no text to re-derive the "
+            f"delivered answer from ({DELIVER_NORMALISER_INVARIANT})"
+        )
+    source_sha256 = hashlib.sha256(source_text.encode("utf-8")).hexdigest()
+    if source_sha256 != block["input_sha256"]:
+        raise BundleError(
+            f"{label}: the delivery normaliser recorded input "
+            f"{str(block['input_sha256'])[:12]}..., but the trace's own response "
+            f"bytes hash to {source_sha256[:12]}... -- a normalised row's delivered "
+            "text is custody only when the rule ran on the recorded model response "
+            f"({DELIVER_NORMALISER_INVARIANT})"
+        )
+    from ...rails import delivery_normalisers as _normalisers  # noqa: PLC0415, F401
+    from ..base import DELIVERY_NORMALISERS, CoreError  # noqa: PLC0415
+
+    normaliser_id = str(block["normaliser_id"])
+    try:
+        normaliser = DELIVERY_NORMALISERS.resolve(normaliser_id)
+    except CoreError as error:
+        raise BundleError(
+            f"{label}: delivery normaliser {normaliser_id!r} is not registered in "
+            "core.base.DELIVERY_NORMALISERS -- a normalised row's delivered text is "
+            "custody only when a registered, deterministic rule can re-derive it "
+            f"({DELIVER_NORMALISER_INVARIANT})"
+        ) from error
+    try:
+        replayed = normaliser(source_text)
+        again = normaliser(source_text)
+    except Exception as error:  # noqa: BLE001 - any rule failure is a refusal
+        raise BundleError(
+            f"{label}: re-running delivery normaliser {normaliser_id!r} over the "
+            f"recorded response failed: {type(error).__name__} "
+            f"({DELIVER_NORMALISER_INVARIANT})"
+        ) from error
+    if replayed.text != again.text:
+        raise BundleError(
+            f"{label}: delivery normaliser {normaliser_id!r} did not reproduce "
+            "itself over the same recorded response -- a delivery normaliser must "
+            f"be deterministic ({DELIVER_NORMALISER_INVARIANT})"
+        )
+    recorded = str(row["text"])
+    if replayed.text != recorded:
+        raise BundleError(
+            f"{label}: the delivered text is not what delivery normaliser "
+            f"{normaliser_id!r} produces from this row's own recorded response -- "
+            "recomputed sha256 "
+            f"{hashlib.sha256(replayed.text.encode('utf-8')).hexdigest()[:12]}..., "
+            f"recorded {hashlib.sha256(recorded.encode('utf-8')).hexdigest()[:12]}"
+            f"...; {_first_difference(replayed.text, recorded)} "
+            f"({DELIVER_NORMALISER_INVARIANT})"
+        )
+    if block["output_sha256"] != hashlib.sha256(recorded.encode("utf-8")).hexdigest():
+        raise BundleError(
+            f"{label}: its delivery normalisation receipt records an output digest "
+            f"that is not the delivered text's own ({DELIVER_NORMALISER_INVARIANT})"
+        )
+
+
 def _verify_grouped_solver_trace_binding(
     row: Mapping[str, object],
     solver_group: Mapping[str, object],
@@ -667,6 +815,18 @@ def _verify_outputs(
         # row (``core.flight.runtime`` hashes the DELIVERED bytes for it), and
         # must ADDITIONALLY re-derive those bytes from its own recorded raw
         # samples. A row without a solver_group receipt is untouched by this.
+        # E11 (I7n): the combination is refused HERE, at the row stage, so
+        # the refusal names the invariant that forbids it rather than
+        # whichever of the two re-derivations happens to fail first. It is
+        # also refused before any contact, by
+        # ``rails.native_episode_config.load_native_episode_config``.
+        if _delivery_normalisation_receipt(row) is not None and "solver_group" in row:
+            raise BundleError(
+                f"{_row_label(row)}: a grouped Solver row cannot also carry a "
+                "delivery normalisation receipt -- the delivered bytes would be a "
+                "function of two rules with only one of them in custody "
+                f"({DELIVER_NORMALISER_INVARIANT})"
+            )
         if "solver_group" in row:
             _verify_grouped_commit(row)
         sample_id = row["sample_id"]
@@ -891,9 +1051,16 @@ def _verify_outputs_trace_binding(
         # ``_verify_grouped_solver_trace_binding`` below. Every row without a
         # solver_group receipt keeps all three comparisons.
         solver_group = row.get("solver_group")
+        # E11 (I7n): a normalised row's ``text`` is the registered delivery
+        # rule's output over this very record's bytes, so those two fields
+        # cannot equal the trace record either. What still binds directly is
+        # the raw transport envelope hash; the delivered bytes are re-derived
+        # from this record's own response text by
+        # ``_verify_delivery_normalisation`` below.
+        deliver_normaliser = _delivery_normalisation_receipt(row)
         bound_fields = (
             ("response_sha256",)
-            if solver_group is not None
+            if solver_group is not None or deliver_normaliser is not None
             else ("text", "response_sha256", "response_text_sha256")
         )
         for field in bound_fields:
@@ -920,5 +1087,7 @@ def _verify_outputs_trace_binding(
                 f"outputs request_sha256 for request {request_id!r} disagrees with the trace "
                 f"record {request_record_id!r}"
             )
+        if deliver_normaliser is not None:
+            _verify_delivery_normalisation(row, deliver_normaliser, payload)
         if solver_group is not None:
             _verify_grouped_solver_trace_binding(row, solver_group, records)
