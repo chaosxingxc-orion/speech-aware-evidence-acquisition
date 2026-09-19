@@ -17,7 +17,7 @@
       "dataset_fragment": "slurp-speech-native-dev1000",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Root admitted this prospective complete-system comparison after named predecessor root causes and the bounded-Perception engineering proof; frozen preparation and exact-fit launch conditions remain mandatory.",
+        "reason": "Root admitted this prospective complete-system comparison after named predecessor root causes and the bounded-Perception engineering proof; frozen preparation and exact-fit launch conditions remain mandatory. Superseded 2026-09-19 by the ledger-hygiene pass (item E13 follow-up): this cell never flew and made zero model contacts, its exposure-ledger row is now closed, and it is superseded by the sole same-method reboot recovery SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-REBOOT-RECOVERY-V1.",
         "requirements": [
           {
             "expected_decision_id": "slurp-direct-vs-native-dual-store-dev1000-admission-v1",
@@ -33,7 +33,7 @@
             "sha256": "8f44dc4e2d9a51202d7618b89bec47a5b34f6484187302fea7e80f751a1df029"
           }
         ],
-        "state": "ready"
+        "state": "superseded"
       },
       "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-V1"
     }

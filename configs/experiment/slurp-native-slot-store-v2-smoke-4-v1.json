@@ -12,7 +12,7 @@
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Registered before contact by the B4 preparation agent. It stays held until the coordinator flips it immediately before the standalone-worker smoke launch, and never before the cell B0 verdict is in. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory.",
+        "reason": "Registered before contact by the B4 preparation agent. It stays held until the coordinator flips it immediately before the standalone-worker smoke launch, and never before the cell B0 verdict is in. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. Superseded 2026-09-19 by the ledger-hygiene pass (item E13 follow-up): this cell never flew and made zero model contacts, its exposure-ledger row is now closed, and it is superseded by the anchor-base cell B4 v2 registration (docs/readiness/2026-09-17-slurp-b4-org-cells-anchor-v2-preregistration.md).",
         "requirements": [
           {
             "kind": "preparation",
@@ -21,7 +21,7 @@
             "sha256": "0e03cae253aa4808e5e14e113cc2a3e5903238f205b028c2a3fce05cf6fa6dc0"
           }
         ],
-        "state": "held"
+        "state": "superseded"
       },
       "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-SMOKE-4-V1"
     }

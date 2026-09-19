@@ -13,7 +13,7 @@
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Registered before contact by the cell B2 v3 registration agent on the sealed dual-store ANCHOR under E2c (owner decision 6 of 2026-09-17 re-decided module M0 HARMFUL under the TRAIN A own null; E2c, merged at 59db0f9b, makes the committed grouped-Solver answer the one draft the Reviewer and the Planner read). This v3 package supersedes the v2 package before contact; the v2 cells never flew. Readiness is HELD: the coordinator adds the root decision requirement and flips this state itself, through scripts/flights/repin_cell.py so the composed and protocol hashes are re-pinned in the same step. Exclusive resident attachment to serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory.",
+        "reason": "Registered before contact by the cell B2 v3 registration agent on the sealed dual-store ANCHOR under E2c (owner decision 6 of 2026-09-17 re-decided module M0 HARMFUL under the TRAIN A own null; E2c, merged at 59db0f9b, makes the committed grouped-Solver answer the one draft the Reviewer and the Planner read). This v3 package supersedes the v2 package before contact; the v2 cells never flew. Readiness is HELD: the coordinator adds the root decision requirement and flips this state itself, through scripts/flights/repin_cell.py so the composed and protocol hashes are re-pinned in the same step. Exclusive resident attachment to serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. Superseded 2026-09-19 by the ledger-hygiene pass (item E13 follow-up): this cell never flew and made zero model contacts, its exposure-ledger row is now closed, and it is superseded by owner decisions 8/15, under which this greedy-repeat twin is not due because the cell B2 v3 arm's pooled SLU CI95 lower bound is negative.",
         "requirements": [
           {
             "kind": "preparation",
@@ -22,7 +22,7 @@
             "sha256": "43854c81092c49ce99db6f099f775380023beaced3bb11c47500da1411157ff5"
           }
         ],
-        "state": "held"
+        "state": "superseded"
       },
       "run_id": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-GREEDY-TWIN-TRAIN-FOLD-A-V3"
     }
