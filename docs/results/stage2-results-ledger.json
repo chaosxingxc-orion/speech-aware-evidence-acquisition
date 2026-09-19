@@ -3754,6 +3754,18 @@
         "SAEA-SLURP-B8A-DELIVER-NORMALISE-MODEL-FREE-READ-V1",
         "SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-V1"
       ]
+    },
+    {
+      "date": "2026-09-19",
+      "cell_id": "SLURP-B7A-NCP-L1-ANCHOR-V2",
+      "status": "HARMFUL_BY_THE_REGISTERED_RULE_INTERVAL_WIDTH_NOT_MEASURED_LOSS_L1_FAMILY_CLOSED",
+      "source": "docs/results/2026-09-19-slurp-b7a-ncp-l1-anchor-v2-verdict.md",
+      "source_sha256": "98111be61c428cc82fc618371dcb251b0797fc38126baff85b7ebfe998873660",
+      "meaning": "Cell B7a v2 (Node Context Policy L1 on the sealed anchor, flown with the finite-completion policy armed after v1 aborted twice) on TRAIN A 1,080: official pooled SLU-F1 48.53 -> 48.22, -0.31 pp CI95 [-1.81, +1.12]; intent -0.65 [-2.18, +0.87] against the -1.0051 margin; v3 -0.50 and TRAIN symmetric -0.68 same sign; 0 of 18 scenarios breach. HARMFUL under the registered NEUTRAL test (both guards fail on the CI95 lower bound; point estimates inside the margins, so interval width, not a measured loss). The module costs more for nothing: 5.21 contacts per row, 3.78 GPU hours (+11.6 %), +7.8 % prompt tokens, 59 revisions vs 6, and the structured review-finding boundaries fell back to raw on 100 % of rows. Diagnostics: 3 finite-completion rows retained (the policy let the flight finish), 2 illegal Planner actions retained, first request identical to the anchor's on 1,080 of 1,080 rows. Owner decision 32 fires: B7r and B7c close unflown, B8b is re-based on the anchor, L2 stays unflown.",
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V2",
+        "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-V2"
+      ]
     }
   ]
 }

@@ -755,6 +755,212 @@
         "what_flew": "NOTHING flew for this entry, and nothing is owed: the module changes no request byte and no delivered byte of any sealed row, which is what the exposure receipt proves over all 69,987 sealed native contacts. The OFF arm's behaviour is nonetheless on the record in the most expensive form available -- the ABORTED B7a recovery attempt, 1,451 contacts lost to one 512-token Reviewer completion -- and the ON arm's behaviour is proved against the fake model on the REAL anchor fragment's native_episode block, parsed by rails.native_episode_config.load_native_episode_config with the key added and nothing else moved. The SLURP default plan configs/baseline/slurp-native-dual-store-train-fold-a-default-plan-v1.json is the anchor fragment plus the review-loop marker 'on' and this key, and its own what_this_is description; it is never a cell of its own.",
         "why_this_table": "the module changes how the native episode handles one of its own role's completions -- whether the graph terminates with a retained row or raises -- and is declared inside the native_episode block beside the roles it governs, so it is neither a mode of any of the four per-phase tables nor a per-run driver knob. It does NOT claim the 'run' class's licence even though it renders no request byte: that class exists for a scheduler outside the tables, and a key read inside the role chain is an episode key whose ON arm is composed rather than proved absent by a falsifier receipt."
       }
+    },
+    {
+      "carrier": "slurp",
+      "comparator": {
+        "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+        "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+        "note": "the sealed dual-store anchor; never re-flown or re-scored; both arms node-free; the anchor flew without the finite-completion policy (zero finite completions proven), the arm with it (3 finite-completion rows retained)"
+      },
+      "date": "2026-09-19",
+      "module": "Node Context Policy at level L1: one declared handling policy per (consumer role, semantic class) boundary, structured on the eight model-output boundaries (solver/reviewer candidate-hypothesis, reviewer/planner/solver current-draft, planner/solver review-finding, solver plan-action), raw on the four tool-observation boundaries, no producer response format (items E8a-E8c; cells B7a v1 closed after two aborts, B7a v2 flown with the finite-completion policy armed)",
+      "row": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V2",
+      "status": "HARMFUL",
+      "status_basis": "HARMFUL is this table's status for a gating guard that fails. Registered rule (docs/readiness/2026-09-19-slurp-b7a-ncp-l1-anchor-v2-preregistration.md, inherited from v1): NEUTRAL needs official pooled SLU-F1 and intent non-inferior against the sealed anchor at the B0r own-null margins (1.1218 / 1.0051). Read: official pooled SLU-F1 48.5336 -> 48.2236, -0.3100 pp CI95 [-1.8072, +1.1211]; intent 77.9630 -> 77.3148, -0.6481 pp CI95 [-2.1849, +0.8688]; projection v3 -0.5029 and TRAIN symmetric -0.6752 agree in sign; 0 of 18 scenarios breach the band; one decision-17 flag (play, net +5 harmed). Both point estimates sit inside the margins and the cell's own half-widths (1.4641 / 1.5269) are 30.5 % and 51.9 % wider than the imported ones, so the status is fixed by interval width, not by a measured loss; owner decision 25 scopes the measured-loss reading to combination cells, so the single-factor rule reads as written. Independently of the label the module buys nothing and costs more: 5.205 contacts per row (anchor 5.016), 3.7809 GPU hours (anchor 3.3880), +7.80 % prompt tokens, 59 executed revisions against the anchor's 6, and the structured review-finding boundaries rendered FALLBACK-RAW on 100 % of 1,243 rows because the Reviewer stays prose. Per-row exact slot F1 +1.33 [+0.15, +2.58] and per-row mean SLU-F1 +1.98 [+0.88, +3.15] move up while the pooled count F1 moves down (reported, not interpreted).",
+      "evidence": {
+        "arm": {
+          "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V2",
+          "attempt_id": "attempt-slurp-native-ncp-l1-anchor-train-fold-a-generation-v2",
+          "study_commit": "83d6b1b2"
+        },
+        "smoke": {
+          "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-V2",
+          "attempt_id": "attempt-slurp-native-ncp-l1-anchor-smoke-4-generation-v2",
+          "study_commit": "3ced28ea"
+        },
+        "verdict": {
+          "path": "docs/results/2026-09-19-slurp-b7a-ncp-l1-anchor-v2-verdict.md",
+          "sha256": "98111be61c428cc82fc618371dcb251b0797fc38126baff85b7ebfe998873660"
+        },
+        "analysis_dir": "SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-B7A-NCP-L1-ANCHOR-V2-PAIRED-ANALYSIS-V1",
+        "primary": "official pooled SLU-F1 -0.3100 pp CI95 [-1.8072, +1.1211] (1,080 paired TRAIN A rows, 125 speaker clusters, 10,000 draws, seed 20260915)",
+        "guards": "intent -0.6481 [-2.1849, +0.8688] against -1.0051: fails; scenario -0.28, action -0.65, pooled span -0.12, all straddle zero; 0 of 18 scenario band breaches",
+        "diagnostics": "finite_completion rows 3 of 1,080 (all Reviewer, finish_reason length, latest Solver draft delivered, 0 abstentions; excluding them moves the primary to -0.3144); planner_action_illegal 2 (retained); 1,133 Planner routes: 1,072 ACCEPT / 59 REVISE / 2 illegal, 3 revision-limit stops; NCP rendering 14,727 boundary rows, 8,334 structured / 6,393 raw, Reviewer parse 0 of 1,243 (100 % FALLBACK-RAW); first model-facing request identical to the anchor's on 1,080 of 1,080 rows and to the v1 recovery's on 276 of 276 comparable rows",
+        "cost": "5,621 contacts, 16,098.67 repeated speech seconds, 49,586,447 prompt / 293,789 completion tokens, 1,136 tool calls, 3.7809 GPU hours, wall 13,930.9 s, occupancy 0.911, utilisation 90.09 %, parked 0.022, 5,621 of 5,621 requests fit (minimum margin 6,703 tokens)",
+        "secondary": "against the released direct anchor: pooled SLU +14.34 [+11.31, +17.33], intent +3.61 [+1.47, +5.75]"
+      },
+      "not_admitted_for": [
+        "any default plan (HARMFUL never enters a plan)",
+        "level L2 (cell B7b): not flown on a HARMFUL L1 base (owner decision 15; B7b superseded)",
+        "cells B7r and B7c, registered on the L1 base: closed unflown under owner decision 32; cell B8b (the Reviewer slot-audit block, attached to the L1 structured Reviewer boundary) is re-based on the anchor and re-registered",
+        "any claim about the per-row gains: pooled count F1 is the registered primary",
+        "any other roster or carrier; DEV-1000, Fold B and the test split are untouched"
+      ],
+      "switch": {
+        "added_by": "docs/results/2026-09-19-slurp-b7a-ncp-l1-anchor-v2-verdict.md; class 'episode' of harness-admission v3 (E6, 2026-09-16); the key was added to the episode allowlist by item E8a (2026-09-17)",
+        "table": "episode",
+        "key": "native_episode.context_policy",
+        "off": null,
+        "on": {
+          "level": "structured",
+          "policy_id": "typed-slurp-node-context-v1",
+          "params": {
+            "draft_response_schema": {
+              "additionalProperties": false,
+              "properties": {
+                "action": {
+                  "type": "string"
+                },
+                "entities": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "filler": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "filler"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "scenario": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "scenario",
+                "action",
+                "entities"
+              ],
+              "type": "object"
+            },
+            "legal_entity_types": [
+              "alarm_type",
+              "app_name",
+              "artist_name",
+              "audiobook_author",
+              "audiobook_name",
+              "business_name",
+              "business_type",
+              "change_amount",
+              "coffee_type",
+              "color_type",
+              "cooking_type",
+              "currency_name",
+              "date",
+              "definition_word",
+              "device_type",
+              "drink_type",
+              "email_address",
+              "email_folder",
+              "event_name",
+              "food_type",
+              "game_name",
+              "game_type",
+              "general_frequency",
+              "house_place",
+              "ingredient",
+              "joke_type",
+              "list_name",
+              "meal_type",
+              "media_type",
+              "movie_name",
+              "movie_type",
+              "music_album",
+              "music_descriptor",
+              "music_genre",
+              "news_topic",
+              "order_type",
+              "person",
+              "personal_info",
+              "place_name",
+              "player_setting",
+              "playlist_name",
+              "podcast_descriptor",
+              "podcast_name",
+              "radio_name",
+              "relation",
+              "song_name",
+              "sport_type",
+              "time",
+              "time_zone",
+              "timeofday",
+              "transport_agency",
+              "transport_descriptor",
+              "transport_name",
+              "transport_type",
+              "weather_descriptor"
+            ],
+            "max_candidates": 3,
+            "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1"
+          },
+          "boundaries": {
+            "solver:candidate-hypothesis": {
+              "level": "structured",
+              "template": "probes/ncp_slurp_candidate_hypothesis_v1.txt",
+              "on_parse_failure": "raw"
+            },
+            "reviewer:candidate-hypothesis": {
+              "level": "structured",
+              "template": "probes/ncp_slurp_candidate_hypothesis_v1.txt",
+              "on_parse_failure": "raw"
+            },
+            "reviewer:current-draft": {
+              "level": "structured",
+              "template": "probes/ncp_slurp_current_draft_reviewer_v1.txt",
+              "on_parse_failure": "raw"
+            },
+            "planner:current-draft": {
+              "level": "structured",
+              "template": "probes/ncp_slurp_planner_brief_v1.txt",
+              "on_parse_failure": "raw"
+            },
+            "solver:current-draft": {
+              "level": "structured",
+              "template": "probes/ncp_slurp_current_draft_solver_v1.txt",
+              "on_parse_failure": "raw"
+            },
+            "planner:review-finding": {
+              "level": "structured",
+              "template": "probes/ncp_slurp_review_finding_v1.txt",
+              "on_parse_failure": "raw"
+            },
+            "solver:review-finding": {
+              "level": "structured",
+              "template": "probes/ncp_slurp_review_finding_v1.txt",
+              "on_parse_failure": "raw"
+            },
+            "solver:plan-action": {
+              "level": "structured",
+              "template": "probes/ncp_slurp_plan_action_v1.txt",
+              "on_parse_failure": "refuse"
+            },
+            "perception:tool-observation": {
+              "level": "raw"
+            },
+            "solver:tool-observation": {
+              "level": "raw"
+            },
+            "reviewer:tool-observation": {
+              "level": "raw"
+            },
+            "planner:tool-observation": {
+              "level": "raw"
+            }
+          }
+        },
+        "proof": "tests/unit/test_config_table_module_switches.py::test_node_context_policy_is_one_episode_class_key",
+        "what_flew": "The ON arm flew configs/baseline/slurp-native-anchor-ncp-l1-train-fold-a-v2.json at 83d6b1b2: the sealed anchor fragment with native_episode.context_policy at level structured on the eight model-output boundaries plus native_episode.finite_completion_policy deliver-latest-or-abstain (a harness declaration, not a factor). The OFF arm is the sealed anchor itself, whose native_episode block has no context_policy key.",
+        "why_this_table": "the module changes how every node boundary renders another node's output (a declared handling policy per boundary) and is switched by one dotted path on the closed episode allowlist whose null arm is the key's absence (an absent key, the literal 'raw' and an all-raw object are one null arm, E8a note 4)"
+      }
     }
   ],
   "switch_classes": [
