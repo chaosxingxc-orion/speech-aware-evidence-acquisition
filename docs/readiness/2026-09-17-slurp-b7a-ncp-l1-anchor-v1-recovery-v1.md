@@ -181,9 +181,9 @@ plan covers its own worst case at the unchanged program ceiling.
 | baselines | `configs/baseline/slurp-native-anchor-ncp-l1-train-fold-a-recovery-v1.json`, `configs/baseline/slurp-native-anchor-ncp-l1-smoke-4-recovery-v1.json` |
 | experiments | `configs/experiment/slurp-native-ncp-l1-anchor-train-fold-a-recovery-v1.json`, `configs/experiment/slurp-native-ncp-l1-anchor-smoke-4-recovery-v1.json` |
 | campaign plan | `configs/campaign/slurp-native-ncp-l1-anchor-train-fold-a-recovery-v1.json` |
-| composed / protocol (arm) | `03a6c3b596675b64ea4754c004cca6bc0f7898c68fc8461424c751d2b307aa03` / `426e661c24713eac73257710074ac6a2cf96d2c4dc3a2802fccb4030594505de` |
+| composed / protocol (arm) | `55c658cf3191edf4cd45df0396abe2fd4eaf6cac05ca18c27a9b982bda03406e` / `938990b7dba691fc656eaa30e1ef67848a7fcc812ec9f2eba0ec584ce1400ad8` |
 | composed / protocol (smoke) | `097d1b9d445b4a959c2654cf6fb45fd8d2f6e81b29873cd5d7f54a95a01e10d3` / `4585fd4dc66618a9448667fd202d67a12d9426098140f4e153a8ea22da094bb0` |
-| prepared supply (arm) | `prepared/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1/phase-supply-v1.json`, SHA-256 `647f88394479acb2c7898ed7e10a45f248022a73a80e5452137f09d2ca4b6587` |
+| prepared supply (arm) | `prepared/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1/phase-supply-v2.json`, SHA-256 `115e76498232450a83c5c70bf8ee33eac232138e44596ca9691fe37725fb4926` |
 | prepared supply (smoke) | `prepared/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-RECOVERY-V1/phase-supply-v1.json`, SHA-256 `a3a07acdc44eb082717684376209624f72e960189ba77e0676c81b49422ca270` |
 | plans | `docs/readiness/2026-09-17-slurp-b7a-ncp-l1-anchor-v1-recovery-v1/` -- four prospective and four `-registered` plans, the recovery protocol document and the recovery analysis recipe |
 | readiness | both cells `held` with the `preparation` requirement pinned; the coordinator adds the `decision` requirement and flips with `scripts/flights/repin_cell.py` |

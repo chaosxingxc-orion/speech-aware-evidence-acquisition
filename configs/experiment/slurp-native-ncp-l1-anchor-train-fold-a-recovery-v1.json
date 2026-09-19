@@ -16,13 +16,20 @@
         "reason": "Registered before contact by the B7a recovery registration agent on the E8c-fixed base (reproduction.ojw.native_episode._planner_action returns PLANNER_ACTION_ILLEGAL and the episode graph retains the row, commit 2af5955a, merged 5bbd54a2), after run SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V1 ABORTED at 3,278 contacts and 618 rows on a Planner output naming no registered action. This is the ONE root-diagnosed recovery re-registration the preregistration's section 10 allows for this run; a second failure closes the flight. It stays held: the coordinator appends the root decision requirement and flips the state after the four-row smoke seals. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. One experiment in flight at a time.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b7a-ncp-l1-anchor-recovery-admission-v1",
+            "relpath": "coordination/slurp-b7a-ncp-l1-anchor-v1/root-admission-recovery-v1.json",
+            "sha256": "165b406ef4a1c2ac91f282128f8d28826413a3c54afb7f44083f39afe241d6fc",
+            "reason": "Decision slurp-b7a-ncp-l1-anchor-recovery-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "Model-free first-phase Perception supply prepared by the B7a recovery registration agent on the E8c-fixed base from the same sealed speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed dual-store anchor used; zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed anchor preparation output block on every row and to the aborted v1 registration's own artifact, so the Perception selection channel does not move in this recovery. Receipt coordination/slurp-b7a-ncp-l1-anchor-recovery-v1/prepared-supply-and-hashes-v1.json.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1/phase-supply-v1.json",
-            "sha256": "647f88394479acb2c7898ed7e10a45f248022a73a80e5452137f09d2ca4b6587"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1/phase-supply-v2.json",
+            "sha256": "115e76498232450a83c5c70bf8ee33eac232138e44596ca9691fe37725fb4926"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1"
     }

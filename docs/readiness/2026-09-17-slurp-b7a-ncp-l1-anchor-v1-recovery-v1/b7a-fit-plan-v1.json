@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-ncp-l1-anchor-train-fold-a-recovery-v1",
-  "composed_config_hash": "03a6c3b596675b64ea4754c004cca6bc0f7898c68fc8461424c751d2b307aa03",
+  "composed_config_hash": "55c658cf3191edf4cd45df0396abe2fd4eaf6cac05ca18c27a9b982bda03406e",
   "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realized native request inside the same campaign, under the same lease.",
   "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "experiment": "slurp-native-ncp-l1-anchor-train-fold-a-recovery-v1",
@@ -23,7 +23,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 47520,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "426e661c24713eac73257710074ac6a2cf96d2c4dc3a2802fccb4030594505de",
+    "protocol_hash": "938990b7dba691fc656eaa30e1ef67848a7fcc812ec9f2eba0ec584ce1400ad8",
     "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-FIT-RECOVERY-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -32,7 +32,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-17-slurp-b7a-ncp-l1-anchor-v1-recovery-v1/protocol-registered-v1.json",
-    "sha256": "4577ed663b61d5e2f6702be5cf0622a6e3f4632d8a6365f36c39bf6fbcafb09f"
+    "sha256": "bccbb35b4643a4bd8fc84b0f4bf08817f65ba2788b207ca4d2ab9018e544915b"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The aborted run SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V1 is never scored and never read, in whole or in part. The comparators are the sealed dual-store anchor score artifact (primary) and the released direct anchor score artifact (secondary); neither is ever re-flown or re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, the policy's rendered blocks and its receipt rows, fit receipts and seal, with no answer, reference or quality interpretation.",
   "recovery_of": {
