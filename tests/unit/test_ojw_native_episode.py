@@ -661,7 +661,7 @@ def test_exhausted_revision_and_invalid_solver_never_deliver():
         asyncio.run(invalid.invoke_direct("query", ()))
 
 
-def test_opt_in_terminal_delivery_still_refuses_invalid_solver_and_early_acquire():
+def test_opt_in_terminal_delivery_still_refuses_an_invalid_solver_draft():
     bad_solver, _ = _node("bad-solver", "solver", ["not validated"])
     reviewer, _ = _node("reviewer", "reviewer", ["review"])
     planner, _ = _node("planner", "planner", ["REVISE"])
@@ -675,18 +675,166 @@ def test_opt_in_terminal_delivery_still_refuses_invalid_solver_and_early_acquire
     with pytest.raises(NativeEpisodeError, match="valid Solver"):
         asyncio.run(invalid.invoke_direct("query", ()))
 
-    solver, _ = _node("solver-2", "solver", ["draft one"], valid=True)
-    reviewer2, _ = _node("reviewer-2", "reviewer", ["review"])
-    planner2, _ = _node("planner-2", "planner", ["ACQUIRE"])
-    early_acquire, _, _ = _episode(
+
+def test_the_acquire_unavailable_branch_still_refuses_loudly_when_forced():
+    """E15.  The router keeps its "episode has no configured analytical
+    acquisition role" refusal as defence in depth, and after E15 no episode
+    built without an acquisition node can reach it: ACQUIRE is not in the
+    graph's legal Planner action set, so such a token takes the retained-row
+    disposition instead.  The only way left to reach the branch is to force
+    ACQUIRE back into that set, and it must still refuse LOUDLY -- a graph
+    that answered with no route to the action it took would be the worse
+    failure.  This is what the early-ACQUIRE half of the pre-E15
+    ``..._still_refuses_invalid_solver_and_early_acquire`` proof asserted on a
+    real Planner output.
+    """
+
+    solver, _ = _node("solver", "solver", ["draft one"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["review"])
+    planner, _ = _node("planner", "planner", ["ACQUIRE"])
+    forced, _, _ = _episode(
         solver=solver,
-        reviewer=reviewer2,
-        planner=planner2,
+        reviewer=reviewer,
+        planner=planner,
         max_revisions=1,
         exhaustion_policy="deliver-latest-solver",
     )
+    forced._planner_actions.add("ACQUIRE")
     with pytest.raises(NativeEpisodeError, match="no configured analytical acquisition"):
-        asyncio.run(early_acquire.invoke_direct("query", ()))
+        asyncio.run(forced.invoke_direct("query", ()))
+
+
+# ---------------------------------------------------------------------------
+# E15 (2026-09-19).  Finding I-1 of the SLURP agent base-lock draft: under the
+# flown ``exact-text`` format ACQUIRE was legal at the parser on EVERY
+# episode, but an episode built with no acquisition node has no route that can
+# execute it, so the token reached the unavailable-acquisition refusal and
+# RAISED -- a whole flight died on one Planner word, exactly the failure class
+# E8c removed for unregistered tokens.  After E15 the graph's own action set is
+# the authority under both output formats, so ACQUIRE on such an episode is an
+# illegal Planner output and its row is RETAINED.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "planner_output_format, planner_output",
+    [("exact-text", "ACQUIRE"), ("json-action-v1", '{"action":"ACQUIRE"}')],
+    ids=["exact-text", "json-action-v1"],
+)
+@pytest.mark.parametrize(
+    "max_revisions, exhaustion_policy",
+    [(1, "raise"), (0, "deliver-latest-solver")],
+    ids=["first-revision", "terminal-revision"],
+)
+def test_acquire_without_an_acquisition_node_is_a_retained_row_not_a_flight_abort(
+    planner_output_format, planner_output, max_revisions, exhaustion_policy
+):
+    """E15.  A SLURP-shaped episode -- no acquisition node -- whose Planner
+    answers with the configured ACQUIRE token keeps its row: the committed
+    Solver draft is delivered unchanged, no further role is contacted, no
+    revision is spent, and the E8c disposition names what happened.  The
+    episode does not raise, at the first revision or at the terminal one.
+    """
+
+    solver, solver_script = _node("solver", "solver", ["draft one"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["review one"])
+    planner, planner_script = _node("planner", "planner", [planner_output])
+    workflow, _, _ = _episode(
+        solver=solver,
+        reviewer=reviewer,
+        planner=planner,
+        max_revisions=max_revisions,
+        exhaustion_policy=exhaustion_policy,
+        planner_output_format=planner_output_format,
+    )
+
+    result = asyncio.run(workflow.invoke_direct("query", ()))
+
+    state = result["state"]
+    digest = hashlib.sha256(b"ACQUIRE").hexdigest()
+    assert result["delivery"]["actor_output"] == "draft one"
+    assert state["latest_solver"]["actor_output"] == "draft one"
+    assert state["plan"] == planner_output
+    assert "planner_control" not in state
+    assert "terminal_disposition" not in state
+    assert state["revision_count"] == 0
+    assert [visit["stage"] for visit in state["role_visits"]] == [
+        "perception",
+        "solver",
+        "review",
+        "planner",
+    ]
+    assert len(solver_script.requests) == len(planner_script.requests) == 1
+    route = state["planner_routes"][-1]
+    assert is_illegal_planner_route(route)
+    assert route["action"] == "ACQUIRE"
+    assert route["action_sha256"] == digest
+    assert route["action_chars"] == len("ACQUIRE")
+    assert state[PLANNER_ACTION_ILLEGAL_DISPOSITION] == {
+        "schema": PLANNER_ACTION_ILLEGAL_SCHEMA,
+        "count": 1,
+        "action_sha256": [digest],
+    }
+    assert validate_native_episode_delivery_receipt(
+        state, error_type=NativeEpisodeError
+    ).kind == "accepted"
+
+
+@pytest.mark.parametrize(
+    "planner_output_format, acquire_output, accept_output",
+    [
+        ("exact-text", "ACQUIRE", "ACCEPT"),
+        ("json-action-v1", '{"action":"ACQUIRE"}', '{"action":"ACCEPT"}'),
+    ],
+    ids=["exact-text", "json-action-v1"],
+)
+def test_acquire_with_an_acquisition_node_still_routes_to_acquisition(
+    planner_output_format, acquire_output, accept_output
+):
+    """E15 changes nothing for an episode that CAN acquire: ACQUIRE stays in
+    the legal set, the analytical role is contacted, the revision advances and
+    the route is an ordinary legal route carrying no disposition.
+    """
+
+    solver, _ = _node("solver", "solver", ["draft one", "draft two"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["review one", "review two"])
+    planner, _ = _node("planner", "planner", [acquire_output, accept_output])
+    acquisition, acquisition_script = _node("analyst", "reviewer", ["acquired fact"])
+    workflow, _, _ = _episode(
+        solver=solver,
+        reviewer=reviewer,
+        planner=planner,
+        acquisition=acquisition,
+        planner_output_format=planner_output_format,
+    )
+
+    result = asyncio.run(workflow.invoke_direct("query", ("candidate",)))
+
+    state = result["state"]
+    assert result["delivery"]["actor_output"] == "draft two"
+    assert state["acquisition"] == "acquired fact"
+    assert len(acquisition_script.requests) == 1
+    assert [visit["stage"] for visit in state["role_visits"]] == [
+        "perception",
+        "solver",
+        "review",
+        "planner",
+        "acquisition",
+        "solver",
+        "review",
+        "planner",
+    ]
+    assert [route["action"] for route in state["planner_routes"]] == [
+        "ACQUIRE",
+        "ACCEPT",
+    ]
+    assert not any(
+        is_illegal_planner_route(route) for route in state["planner_routes"]
+    )
+    assert PLANNER_ACTION_ILLEGAL_DISPOSITION not in state
+    assert validate_native_episode_delivery_receipt(
+        state, error_type=NativeEpisodeError
+    ).kind == "accepted"
 
 
 @pytest.mark.parametrize("planner_action", ("REVISE", "ACQUIRE"))
@@ -696,10 +844,16 @@ def test_terminal_exhaustion_delivery_is_opt_in_and_records_actual_planner_actio
     solver, _ = _node("solver", "solver", ["draft one"], valid=True)
     reviewer, _ = _node("reviewer", "reviewer", ["review one"])
     planner, _ = _node("planner", "planner", [planner_action])
+    # E15: ACQUIRE is a legal Planner action only on an episode that CAN
+    # acquire, so this proof supplies the acquisition node its Planner names.
+    # The node is never contacted: at the terminal revision the router sends
+    # ACQUIRE straight to the terminal delivery, exactly as it sends REVISE.
+    acquisition, acquisition_script = _node("analyst", "reviewer", [])
     workflow, _, _ = _episode(
         solver=solver,
         reviewer=reviewer,
         planner=planner,
+        acquisition=acquisition,
         max_revisions=0,
         exhaustion_policy="deliver-latest-solver",
     )
@@ -718,6 +872,7 @@ def test_terminal_exhaustion_delivery_is_opt_in_and_records_actual_planner_actio
         "revision_count": 0,
         "planner_accepted": False,
     }
+    assert acquisition_script.requests == []
     assert state["planner_routes"] == [
         {"role_visit_index": 3, "revision_count": 0, "action": planner_action}
     ]
@@ -729,10 +884,14 @@ def test_opt_in_terminal_delivery_binds_the_last_revision_solver():
     )
     reviewer, _ = _node("reviewer", "reviewer", ["review one", "review two"])
     planner, _ = _node("planner", "planner", ["REVISE", "ACQUIRE"])
+    # E15: see the note in the parametrized proof above -- a terminal ACQUIRE
+    # needs an episode that can acquire, and the node is never contacted.
+    acquisition, acquisition_script = _node("analyst", "reviewer", [])
     workflow, _, _ = _episode(
         solver=solver,
         reviewer=reviewer,
         planner=planner,
+        acquisition=acquisition,
         max_revisions=1,
         exhaustion_policy="deliver-latest-solver",
     )
@@ -740,6 +899,7 @@ def test_opt_in_terminal_delivery_binds_the_last_revision_solver():
     result = asyncio.run(workflow.invoke_direct("query", ()))
 
     state = result["state"]
+    assert acquisition_script.requests == []
     assert result["delivery"]["actor_output"] == "draft two"
     assert state["terminal_solver_receipt"] == _execution_receipt(
         text="draft two", contact_id="solver-contact-2", serial=5

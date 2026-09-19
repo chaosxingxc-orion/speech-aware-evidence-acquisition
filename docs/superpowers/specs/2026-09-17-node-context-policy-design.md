@@ -918,3 +918,69 @@ E14: there is no admission, no cell and no flight. No claim is made that the blo
 the construction neighbours reproduce A3's gold-derived pairs -- that comparison is one of the
 questions the cell would answer, not a premise of building it. The comparator will be the sealed
 B7r arm or the B7a v2 arm, decided at registration, on that arm's own roster and budgets.
+
+---
+
+## 17. E15 (2026-09-19): a Planner `ACQUIRE` with no acquisition node is a disposition
+
+**The defect.** Finding I-1 of `docs/superpowers/specs/2026-09-19-slurp-agent-base-lock-v1-draft.md`.
+Under the flown `planner_output_format: "exact-text"`, `reproduction/ojw/native_episode.py` built the
+Planner's legal action set from the configured actions alone -- `{ACCEPT, REVISE, ACQUIRE}` -- for
+every episode, while the graph's own action set (`NativeEpisodeWorkflow._planner_actions`, which
+already drops `ACQUIRE` when no acquisition node was supplied) reached the node only under
+`json-action-v1`. So an `ACQUIRE` token was *not* the E8c illegal-output disposition: at a
+non-terminal revision it routed into `_Exhausted("episode has no configured analytical acquisition
+role")`, which **raises** and takes the whole flight with it, and at the terminal revision it was
+sealed as a `revision_limit` terminal delivery. One Planner word meant "the campaign dies" or "the
+row is retained" depending only on when it arrived. That is the failure class item E8c removed for
+unregistered Planner tokens, still open on one action. No SLURP cell -- the anchor, B1, B4b, B5e,
+B7a v2, B7r, B8b, B4a, B8c -- has an acquisition node; in fact `rails/native_episode_config.py`
+admits exactly the `perception`, `solver`, `reviewer` and `planner` roles, so **no** configuration
+this runner accepts can build one.
+
+**The fix.** The graph's own action set is now the authority for every Planner visit, under both
+output formats: `NativeEpisodeWorkflow._add_role` hands `self._planner_actions` to the Planner's
+`_ApplyRole` whenever `kind == "planner"`, instead of only under `json-action-v1`. Nothing else
+moved. For an episode built without an acquisition node `ACQUIRE` is therefore an output that names
+no registered action, and `_planner_action` returns `PLANNER_ACTION_ILLEGAL` exactly as it does for
+`REJECT`: the row is **retained** through the E8c path -- the committed Solver draft is delivered
+unchanged, no further role is contacted, no revision is spent, `planner_routes[-1]` carries
+`legal: false`, `disposition: "planner_action_illegal"`, `action_sha256` and `action_chars`, and the
+receipt's `planner_action_illegal` mark counts it. A cell verdict reads that count exactly as
+section 2.4 of the base-lock draft already requires. For an episode that *does* carry an acquisition
+node, `ACQUIRE` stays in the set and every byte of its behaviour is unchanged.
+
+The router's `acquire_unavailable_<revision>` branch keeps its `_Exhausted` refusal. After E15 it is
+unreachable by construction; it stays as defence in depth, so that a future caller that made
+`ACQUIRE` legal without wiring a node would still be refused loudly rather than answer with no route.
+
+**Alternative rejected.** Keeping `ACQUIRE` legal and routing `acquire_unavailable_<revision>` to a
+new terminal disposition `acquire_unavailable` would have needed a new component, a new reason, a
+new receipt field and matching validator, diagnostics and ledger updates -- and it would have kept
+the untruth that an action the episode cannot execute is legal. The chosen fix is one expression.
+
+**What changed for a real row.** Two behaviours, both on episodes with no acquisition node: an
+`ACQUIRE` at a non-terminal revision no longer aborts the flight, and an `ACQUIRE` at the terminal
+revision is now sealed as the illegal-output disposition (explicit-accept seal plus the route record
+and the receipt mark) instead of as a `revision_limit` terminal delivery. The delivered text is the
+same latest committed draft either way, and the row makes exactly the same contacts. No request byte
+of any cell moves: `ACQUIRE` is never advertised in a Planner prompt
+(`rails/runner.py` sets `available_planner_actions` from `ACCEPT`/`REVISE`/refresh only), and the
+prompt builders are untouched.
+
+**Proofs.** `tests/unit/test_ojw_native_episode.py::test_acquire_without_an_acquisition_node_is_a_retained_row_not_a_flight_abort`
+(both output formats x first/terminal revision: no raise, the draft delivered, one Planner contact,
+zero revisions spent, the route record, the receipt mark and an `accepted` delivery receipt);
+`::test_acquire_with_an_acquisition_node_still_routes_to_acquisition` (unchanged behaviour when the
+node exists, both formats); `::test_the_acquire_unavailable_branch_still_refuses_loudly_when_forced`
+(the defensive branch still raises when `ACQUIRE` is forced back into the set);
+`tests/unit/test_native_episode_runner.py::test_e15_actual_terminal_acquire_is_a_retained_row_not_a_terminal_delivery`
+(the production runner: same contact count, accepted seal, no terminal disposition);
+`tests/unit/test_node_context_policy_runner.py::test_e15_an_acquire_planner_output_keeps_the_anchor_request_bytes`
+(byte identity: the anchor episode with the Planner answering `ACQUIRE` renders the first five
+requests -- Perception, Solver, Reviewer x2, Planner -- at exactly the `ANCHOR_REQUEST_SHA256`
+digests pinned from the pre-change tree, and the row is retained). The E8c proofs are unchanged and
+still green.
+
+**Zero contacts.** No model, tool, server or network contact; no config key, no cell, no
+registration, no claim.
