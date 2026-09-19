@@ -3718,6 +3718,18 @@
       "run_ids": [
         "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1"
       ]
+    },
+    {
+      "date": "2026-09-19",
+      "cell_id": "SLURP-B2-SAMPLES5-ANCHOR-V3",
+      "status": "NEUTRAL_ON_THE_OFFICIAL_NUMBER_NON_INFERIORITY_ON_POOLED_SLU_NOT_PROVEN",
+      "source": "docs/results/2026-09-19-slurp-b2-samples5-verdict.md",
+      "source_sha256": "4fe97086c07bb80a955622aa03390fa3c76268d192273c71612ec3452d387df2",
+      "meaning": "Module M2 (grouped Solver sampling N=5 at temperature 0.7, deterministic commit, E2c/E2d) on TRAIN A 1,080 against the sealed anchor: official pooled SLU-F1 48.53 -> 48.60, +0.06 pp CI95 [-1.46, +1.60]; intent +0.83 [-0.30, +1.88]; v3 -0.00, symmetric -0.23; no scenario breaches the band. NEUTRAL: false positives suppressed as predicted (spurious mentions 362 -> 303, FP mass -152) but omissions +29 and exact mentions -12 cancel it. The greedy twin is not due (negative CI95 lower bound) and the cell closes; M2 enters no plan (9.08 contacts per row for no gain). Sample agreement is a free confidence signal (unanimous rows 81.4 % correct intent vs 39.7 %); the prompt-cache assumption held (1.81x contacts for 1.096x GPU hours). Harness-admission entry M2 NEUTRAL (episode class, key native_episode.roles.solver).",
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-TRAIN-FOLD-A-V3",
+        "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-RECOVERY-V3"
+      ]
     }
   ]
 }

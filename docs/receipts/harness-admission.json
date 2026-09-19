@@ -539,6 +539,76 @@
         "what_flew": "The ON arm flew configs/baseline/slurp-native-anchor-exemplars-k20-train-fold-a-recovery-v2.json at a35630c0: the sealed anchor fragment plus the train-exemplars store block (release 171aa4a8..., snapshot 4c498dc0..., phase_supply.solver keyed by the sealed Fold A speech vectors, k = 20, saea-fuse-supplyfilter-v1 at m = c = top_l = 20, saea-rank-wcos-prior-agree-v1 with w_cos = 1, tau 0.0) and nothing else. The OFF arm is the sealed anchor itself, whose knowledge_stores mapping has no train-exemplars entry. The twin flew configs/baseline/slurp-native-anchor-exemplars-k20-twin-train-fold-a-v2.json at a7ce8f4c, the same block keyed by the deranged vectors.",
         "why_this_table": "the module ADDS a named knowledge store whose supply reaches the Solver phase; the stores class names the store's whole block, and the null form records that OFF is the store's absence"
       }
+    },
+    {
+      "carrier": "slurp",
+      "comparator": {
+        "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+        "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+        "note": "the sealed dual-store anchor, whose Solver role is the samples-1 (greedy) form; never re-flown or re-scored"
+      },
+      "date": "2026-09-19",
+      "module": "grouped Solver sampling with a deterministic commit (module M2: five Solver samples at temperature 0.7 on five pinned seeds, committed by saea-commit-plurality-support-v1 with min_support 3 and similarity 0.8, the committed answer reviewed as the one draft (E2c) with seal-time custody of the samples (E2d))",
+      "row": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-TRAIN-FOLD-A-V3",
+      "status": "NEUTRAL",
+      "status_basis": "NEUTRAL is this table's status for a module that shows neither the gain the admission clause requires nor a measured loss: against the sealed anchor on the same 1,080 rows the official pooled SLU-F1 delta is +0.06 pp CI95 [-1.46, +1.60] (clause a fails: the lower bound is below zero), intent +0.83 pp CI95 [-0.30, +1.88] (non-inferior at the -1.0051 margin), scenario +1.02, action +0.74, pooled span F1 -0.00; no scenario's intent CI95 upper bound below zero (0 of 18); the registered HARMFUL clause does not fire. The three scorings agree on a null effect (official +0.06, v3 -0.00, symmetric -0.23). Mechanism as predicted on false positives and paid on omissions: spurious mentions 362 -> 303, FP mass -152.3, empty-gold rows emitting entities 184 -> 161, against 29 more omissions and 12 fewer exact mentions; labels up, entities down, the pooled metric is their sum. The greedy twin is not due (owner decisions 8/15: the arm's CI95 lower bound is negative), so the arm-versus-twin clause is not reached and the cell closes.",
+      "evidence": {
+        "arm": {
+          "run_id": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-TRAIN-FOLD-A-V3",
+          "attempt_id": "attempt-slurp-native-samples5-anchor-train-fold-a-generation-v3",
+          "study_commit": "b97260ed"
+        },
+        "smoke": {
+          "run_id": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-RECOVERY-V3",
+          "attempt_id": "attempt-slurp-native-samples5-anchor-smoke-4-generation-recovery-v3",
+          "note": "the recovery smoke on the E2d fix; the first smoke (36 contacts) failed at the seal on the pre-E2d row form"
+        },
+        "primary": "official pooled SLU-F1, 1,080 paired TRAIN A rows, 125 speaker clusters, 10,000 draws, seed 20260915: 48.53 -> 48.60, +0.06 pp, CI95 [-1.46, +1.60]; intent 77.96 -> 78.80, +0.83 [-0.30, +1.88]; secondary against the released direct anchor +14.71 pp SLU CI95 [+11.80, +17.62], intent +5.09",
+        "guards": "intent non-inferior at -1.0051 (lower bound -0.30); no scenario breaches the intent band (0 of 18); owner decision 17's diagnostic fires on no scenario against the anchor; against the direct anchor (secondary) `general` flags (net harmed +9)",
+        "secondary": "projection v3 beside: arm 51.99 / 79.91 against the anchor's 51.99 / 79.35 (delta -0.00 SLU); TRAIN symmetric 51.86 against 52.09 (-0.23); offline sensitivity (reported, never gating): pooled SLU s=2 46.52, s=3 48.60 (registered), s=4 46.22, intent identical at every s; sample agreement: 1,012 unanimous rows deliver a correct intent 81.4 % of the time against 39.7 % on the 68 non-unanimous rows (a free confidence signal for later modules)",
+        "margins_from": {
+          "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1",
+          "attempt_id": "attempt-slurp-native-review-off-train-fold-a-replicate-generation-v1",
+          "note": "MEASURED on this roster and geometry (B0r minus B0): pooled SLU half-width 1.1218 pp, intent 1.0051 pp at CI95"
+        },
+        "cost": "9,807 contacts (9.08 per row against the anchor's 5.02), 28,047.72 repeated speech seconds, 1,090 task-contract tool calls, 3.714 GPU hours (1.096x the anchor's 3.388 for 1.81x the contacts and 1.84x the prompt tokens: the prompt-cache assumption of the preregistration measured and held), wall 13,754 s, slot occupancy 0.863, utilisation 87.5 %, parked 0.027",
+        "diagnostic": "official-scorer matching reconstructed on the sealed outputs: spurious mentions 362 -> 303, FP mass -152.32, entity-emitting empty-gold rows 184 -> 161, omissions +29, exact mentions -12; 1,080/1,080 rows parsed (the anchor delivered 7 unparseable rows); revisions and dispositions per the verdict",
+        "receipt": "docs/results/2026-09-19-slurp-b2-samples5-verdict.md",
+        "verdict_note": "docs/results/2026-09-19-slurp-b2-samples5-verdict.md"
+      },
+      "not_admitted_for": [
+        "any default plan: NEUTRAL with 1.81x the contacts per row lowers no cost, so the module enters no plan",
+        "any claim that sampling at temperature 0.7 differs from five greedy repeats: the twin never flew (not due)",
+        "any claim about other commit thresholds: the sensitivity table is reported, never gating",
+        "any other roster or carrier; DEV1000, Fold B and the test split are untouched",
+        "any paper-scale or generalisation claim; TRAIN A is a discovery roster"
+      ],
+      "switch": {
+        "added_by": "docs/results/2026-09-19-slurp-b2-samples5-verdict.md; class 'episode' of harness-admission v3 (E6, 2026-09-16); the program spec's M2 row named the judges class before the episode class existed and is corrected by this entry",
+        "table": "episode",
+        "key": "native_episode.roles.solver",
+        "off": {
+          "max_iterations": 1,
+          "phase_id": "solver"
+        },
+        "on": {
+          "commit": {
+            "min_support": 3,
+            "policy": "saea-commit-plurality-support-v1",
+            "similarity_threshold": 0.8
+          },
+          "decoding_overrides": {
+            "seed_offset": 0,
+            "temperature": 0.7
+          },
+          "max_iterations": 1,
+          "phase_id": "solver",
+          "samples": 5
+        },
+        "proof": "tests/unit/test_config_table_module_switches.py::test_exemplar_supply_store_key_resolves_in_the_stores_class",
+        "what_flew": "The ON arm flew configs/baseline/slurp-native-anchor-samples5-train-fold-a-v3.json at b97260ed: the sealed anchor fragment with the Solver role carrying samples 5, decoding_overrides {temperature 0.7, seed_offset 0} and commit {policy saea-commit-plurality-support-v1, min_support 3, similarity_threshold 0.8}, nothing else. The OFF arm is the sealed anchor itself, whose Solver role is the samples-1 form (max_iterations 1, phase_id solver).",
+        "why_this_table": "the module changes how one native-episode role is visited (five sampled contacts committed to one draft) and is switched by that role's own block under native_episode; the episode class names one dotted path on its closed allowlist whose null arm is the historical role"
+      }
     }
   ],
   "switch_classes": [
