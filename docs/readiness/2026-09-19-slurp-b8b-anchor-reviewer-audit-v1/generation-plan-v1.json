@@ -45,7 +45,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-19-slurp-b8b-anchor-reviewer-audit-v1/protocol-registered-v1.json",
-    "sha256": "65b8ec7d36e230a22d00313cc923810a4ec2415e432521833d26909e05333cb2"
+    "sha256": "781991c31d80ff703d6cb41723ee531a8268c956c6a2ce559af4fe29b05c7248"
   },
   "quality_read_gate": "The arm's official pooled SLU-F1 is read ONCE against the sealed anchor's score artifact under the decision rule of docs/readiness/2026-09-19-slurp-b8b-anchor-reviewer-audit-v1-preregistration.md section 6, fixed before any number is seen: HARMFUL only by a measured loss (Method B, owner decision 25); ADMITTED only on a positive CI95 lower bound with intent non-inferior at -1.0051, the symmetric scorer agreeing in sign and no scenario band breach; NEUTRAL otherwise. No re-scoring, no second estimator, no row filtering. The comparator is never re-flown.",
   "registered_at_utc": "2026-09-19T18:00:00.000000+00:00",

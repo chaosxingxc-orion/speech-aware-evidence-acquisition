@@ -41,7 +41,7 @@ exactly the block, on the Reviewer contacts.
 | smoke run | `SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1` |
 | smoke attempt | `attempt-slurp-native-reviewer-audit-anchor-smoke-4-generation-v1` |
 | smoke FIT run / attempt | `SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-SMOKE-4-FIT-V1` / `attempt-slurp-native-reviewer-audit-anchor-smoke-4-fit-v1` |
-| smoke composed / protocol | `9edba0ad68d10428f9b418c6b6ec6c6a22f7d2938c76a164fd168fa72b0dae18` / `97dbb138440762fd2265d04733e986d44571eb8643e69b41c801fcb331b6e8db` |
+| smoke composed / protocol | `b27a7ecdc32565e2d5d26735ce4d0076e7bc0df6cbe35092572905c2cfebffd3` / `07cd8bb07b14119b96b8c3ce352534f79cac1a26bca57b017a3096ea913b956c` |
 | smoke fragments | `configs/baseline/slurp-native-anchor-reviewer-audit-smoke-4-v1.json`, `configs/experiment/slurp-native-reviewer-audit-anchor-smoke-4-v1.json` |
 | smoke prepared supply | `prepared/SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1/phase-supply-v1.json`, file `b89ec1ca…`, output `512583ec…` |
 | the one factor | `native_episode.reviewer_audit` = the released view `slot-audit-v1` (release `eaa2dd0d…`, snapshot `0cc3f96c…`, table content hash `d4cd4bf3…`, template `probes/ncp_slurp_slot_audit_reviewer_v1.txt` `88cc927d…`; 60 intents, 54 entity types, 9,354 construction utterances) |

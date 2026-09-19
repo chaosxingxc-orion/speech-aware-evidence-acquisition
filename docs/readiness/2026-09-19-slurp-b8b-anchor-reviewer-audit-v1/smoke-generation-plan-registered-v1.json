@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-reviewer-audit-anchor-smoke-4-v1",
-  "composed_config_hash": "9edba0ad68d10428f9b418c6b6ec6c6a22f7d2938c76a164fd168fa72b0dae18",
+  "composed_config_hash": "b27a7ecdc32565e2d5d26735ce4d0076e7bc0df6cbe35092572905c2cfebffd3",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-reviewer-audit-anchor-smoke-4-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 44,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "97dbb138440762fd2265d04733e986d44571eb8643e69b41c801fcb331b6e8db",
+    "protocol_hash": "07cd8bb07b14119b96b8c3ce352534f79cac1a26bca57b017a3096ea913b956c",
     "run_id": "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -45,7 +45,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-19-slurp-b8b-anchor-reviewer-audit-v1/protocol-registered-v1.json",
-    "sha256": "65b8ec7d36e230a22d00313cc923810a4ec2415e432521833d26909e05333cb2"
+    "sha256": "781991c31d80ff703d6cb41723ee531a8268c956c6a2ce559af4fe29b05c7248"
   },
   "quality_read_gate": "The four-row smoke is STRUCTURAL ONLY and is never scored: contact counts, the saea-reviewer-slot-audit-v1 receipt on every Reviewer contact of 4 of 4 rows, the block-is-an-addition check against block_sha256 / block_chars over the SEALED draft, no slot_audit block on any other boundary, every other boundary row raw with rendered_sha256 equal to its source's content_sha256, the request-fit receipts, any retained finite_completion row reported rather than treated as an error, and a clean seal -- with no answer, reference or quality interpretation and no scorer.",
   "registered_at_utc": "2026-09-19T18:00:00.000000+00:00",
