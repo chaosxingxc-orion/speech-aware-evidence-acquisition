@@ -2,6 +2,7 @@
 import hashlib
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -238,7 +239,12 @@ def test_campaign_cli_exit_reflects_generation_failure(tmp_path, monkeypatch, st
     repo.mkdir()
     monkeypatch.setattr(cli, "__file__", str(repo / "src/package/core/flight/cli.py"))
     monkeypatch.setattr(cli, "load_campaign_cells", lambda *args: (cell(),))
-    monkeypatch.setattr(cli, "build_flight_runtime", lambda *args, **kwargs: object())
+    monkeypatch.setattr(
+        cli, "build_flight_runtime",
+        # E16: a campaign launch verifies every prepared artifact before it
+        # opens anything, so even a stub runtime answers that question.
+        lambda *args, **kwargs: SimpleNamespace(verify_prepared_artifacts=lambda: ()),
+    )
     monkeypatch.setattr(
         cli, "run_campaign",
         lambda *args, **kwargs: {
@@ -410,10 +416,12 @@ def test_cli_routes_shared_modes_and_leaves_worker_scoring_to_root(tmp_path, mon
         def _record(self, stage):
             self.receipts.record(stage, {"test": stage})
 
-        def preflight(self):
+        def preflight(self, *, enforce_prepared_artifacts=True):
             calls.append("preflight")
             self._record("preflight")
             return {}
+        def verify_prepared_artifacts(self):
+            return ()
         def wire_check(self, **kwargs):
             assert kwargs == {"seal_and_score": False}
             calls.append("wire")

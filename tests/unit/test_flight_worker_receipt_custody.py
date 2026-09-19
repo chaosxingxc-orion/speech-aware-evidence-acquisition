@@ -32,7 +32,11 @@ class Runtime:
         if self.failure_stage == stage:
             raise RuntimeError(f"{stage} failed after genuine receipt")
 
-    def preflight(self):
+    def verify_prepared_artifacts(self):
+        # E16: nothing pinned, so the launch guard has nothing to refuse.
+        return ()
+
+    def preflight(self, *, enforce_prepared_artifacts=True):
         self._record("preflight")
 
     def preprocess(self):

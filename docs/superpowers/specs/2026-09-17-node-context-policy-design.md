@@ -984,3 +984,79 @@ still green.
 
 **Zero contacts.** No model, tool, server or network contact; no config key, no cell, no
 registration, no claim.
+
+## 18. E16 (2026-09-19): a prepared artifact is evidence only for the implementation that produced it
+
+**The rule.** A prepared artifact is evidence only for the implementation that produced it. `check`
+verifies that identity. The flip and the flight commit are the same commit.
+
+**The defect.** Two four-row smokes (B8b, B4a v2) were re-pinned at `7f97e0cf` / `60e01de3`, passed
+`core.flight.cli check` at `1a617563` -- the registered composed and protocol hashes matched -- and
+then flew from worktrees at `1a617563`. Each **opened an attempt** (`SPEECHRL_DATA_DIR/attempts/
+<run>/<attempt>.json`, state `OPENED`, zero calls) and died in `FlightRuntime.run_phases ->
+_dispatch_phase_program -> _phase_supply_seeds -> _load_phase_supply_seed ->
+core.preparation.load_artifact` with `PreparationError("prepared artifact identity mismatch")`. The
+coordinator voided both attempts with `AttemptStore.abort_if_opened` and re-pinned.
+
+The cause is not the hashes `check` measured. `core.preparation.artifact_inputs` binds three things
+into a prepared artifact: `config_sha256`, `split_identity_hash` and `sources` -- and for the
+phase-supply artifact `sources["implementation"]` carries the SHA-256 of `core/flight/runtime.py`
+plus `rails.kb_policy`, `rails.knowledge_provider`, `rails.phase_supply` and (when a named store is
+bound) `rails.knowledge_stores`. The E14 and E15 merges moved those files, so every artifact
+prepared before them was stale by construction. `check` never loaded the artifact, so it could not
+see that: it measured the composed config and protocol hashes, which the artifact's identity
+deliberately does **not** depend on (`_RECEIPT_KEYS` strips `prepared_phase_supply` and the cells'
+`readiness` blocks precisely so a re-pin does not invalidate what it pins). A green `check` and a
+dead flight were therefore consistent, which is the property this item removes.
+
+**The fix, in three places that share one identity computation.**
+
+`FlightRuntime.phase_supply_artifact_identity()` is now the single derivation of the phase-supply
+artifact's identity: it builds the phase-program binding from config
+(`_prepared_phase_program_binding`, which also loads every pinned `prepared_phase_recall` artifact
+through the ordinary `_resolve_phase_supply`), selects the program's first supplied phase, and
+returns the `_phase_seed_inputs(...)` document. `prepare_phase_supply` produces the artifact through
+it, `core.flight.repin.ensure_artifact_pinned` verifies a pin by re-running that producer on the
+existing path, and `_load_phase_supply_seed` binds it at dispatch through the same
+`_phase_seed_inputs`. `check`, `repin` and the flight therefore cannot disagree about what makes an
+artifact stale.
+
+`FlightRuntime.verify_prepared_artifacts()` recomputes that identity read-only -- it never builds,
+writes or raises -- and returns one report per prepared artifact this flight would load in
+`run_phases`: `{key, relpath, sha256, identity_ok, reason, difference}`. `difference` is the first
+differing key path of the two `inputs` documents, walked in sorted order by
+`core.preparation.first_input_difference`, so the stale B8b/B4a artifacts would have named
+`sources.implementation.runtime` rather than an undifferentiated "identity mismatch". A cell that
+pins no prepared artifact, and a policy that never loads one (`fixed` and the obs policies dispatch
+outside `_dispatch_phase_program`), verify nothing and pay nothing. The verdict is memoized on the
+runtime, so the launch guard and the preflight behind it compute it once.
+
+`FlightRuntime.preflight()` runs the verification **before** `preprocess`, `serve`, the client and
+therefore before `core.model.adapter.FrozenCoreAdapter` calls `AttemptStore.open_attempt`, and
+refuses with a `PreparationError` naming every stale artifact and its cause. Its receipt carries
+`prepared_artifacts` and `prepared_artifacts_ok`. `core.flight.cli check` is the one caller that
+passes `enforce_prepared_artifacts=False`: a check exists to print the verdict, so it reports
+instead of raising, adds a `blockers` entry per stale artifact, leaves
+`scientific_readiness.state` exactly as the registration declares it, and **exits non-zero**.
+`core.flight.cli` additionally calls `assert_prepared_artifacts_current(flights)` for `worker` and
+`campaign` before anything else runs, so the refusal is visible at the launch boundary and not only
+inside a queue's `preflight-failed` state.
+
+**What a stale artifact now costs.** Zero model contacts, zero attempt records, one non-zero exit
+and one message naming the artifact and the first input that moved. The remedy is unchanged:
+re-pin the package with `core.flight.repin` on the launch commit and fly from that commit.
+
+**Proofs.** `tests/unit/test_flight_prepared_artifact_preflight.py` -- the diff-namer on a moved
+implementation source, a config edit, both together and a key present on one side only; a real
+prepared phase-supply artifact that verifies, and the same artifact with its embedded
+`inputs.sources.implementation.runtime` rewritten (identity refused, `difference ==
+"sources.implementation.runtime"`); a moved file hash; an absent artifact; the memoized verdict;
+`prepare_phase_supply` naming the difference on a warm mismatch (the path `repin` uses);
+`preflight` recording the verdict, refusing a stale artifact with no `attempts/` directory created
+and no `preflight` receipt recorded, and reporting instead of refusing under
+`enforce_prepared_artifacts=False`; and `core.flight.cli` worker refusing before the attempt file
+exists, worker proceeding when every artifact verifies, `check` exiting 1 with `blockers` and
+`preflight.prepared_artifacts_ok: false`, and `check` exiting 0 otherwise.
+
+**Zero contacts.** No model, tool, server or network contact; no config key, no cell, no
+registration, no claim.
