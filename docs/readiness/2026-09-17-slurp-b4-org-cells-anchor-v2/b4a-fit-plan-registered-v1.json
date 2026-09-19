@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-fallback-quirky-intent-v2-anchor-train-fold-a-v2",
-  "composed_config_hash": "a3af83555b14a19ef8192493b7dc31eb18dd4433d3cb3db58e191d8d9d66b662",
+  "composed_config_hash": "c6df430624e02bb5f88006eae4f1bc83bc09ade3f88bdb6458c6a913edefb531",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-fallback-quirky-intent-v2-anchor-train-fold-a-fit-v2",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 47520,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "c42a87591753b78d39dbf523efa718014bf7f3a127bd18aa9d0954f34e815939",
+    "protocol_hash": "5f22eba908fb55d49932e8d7582c99115d7f3059a095463a7310d2ea455dd725",
     "run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-FIT-V2",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
