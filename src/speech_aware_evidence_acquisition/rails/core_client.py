@@ -1219,6 +1219,37 @@ def _typed_supply_part(part: Mapping[str, object]) -> dict[str, str | None]:
             "knowledge_role": knowledge_role}
 
 
+#: Item E21 (the knowledge INDEX, not the Earnings-21 carrier), 2026-09-19:
+#: the ``source_uri`` scheme a pointer or expansion block carries
+#: (``rails.knowledge_index.IndexAssembly.evidence_items``). A part whose
+#: source is the released view gets its provenance from the VIEW rather
+#: than from the rails message that rendered it; every other part keeps
+#: exactly the ``rails-supply`` provenance it has always had, so an episode
+#: that does not arm the key composes byte-identical provenance.
+KNOWLEDGE_INDEX_SOURCE_SCHEME = "knowledge-index://"
+
+
+def _supply_provenance(
+    part: Mapping[str, object] | None, text: str, *, request_id: str, index: int,
+) -> dict[str, str]:
+    """One ``evidence_provenance`` row for one rendered supply part."""
+
+    source_uri = None if part is None else part.get("source_uri")
+    if isinstance(source_uri, str) and source_uri.startswith(
+        KNOWLEDGE_INDEX_SOURCE_SCHEME
+    ):
+        return {
+            "lock_key": "knowledge-index",
+            "relpath": source_uri[len(KNOWLEDGE_INDEX_SOURCE_SCHEME):],
+            "sha256": _content_sha256(text),
+        }
+    return {
+        "lock_key": "rails-supply",
+        "relpath": f"rails-message/{request_id}/{index}",
+        "sha256": _content_sha256(text),
+    }
+
+
 def _parse_speech_feature_messages(
     messages: Sequence[Mapping[str, object]],
 ) -> tuple[str, list[dict[str, str | None]], list[dict[str, str]]]:
@@ -2343,11 +2374,10 @@ class FrozenCoreClient:
             for index, text in enumerate(supply_texts)
         ]
         evidence_provenance = [
-            {
-                "lock_key": "rails-supply",
-                "relpath": f"rails-message/{request_id}/{index}",
-                "sha256": _content_sha256(text),
-            }
+            _supply_provenance(
+                None if speech_supply_parts is None else speech_supply_parts[index],
+                text, request_id=request_id, index=index,
+            )
             for index, text in enumerate(supply_texts)
         ]
         payload: dict[str, object] = {

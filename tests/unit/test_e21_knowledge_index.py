@@ -894,3 +894,636 @@ def test_the_index_and_its_estimate_are_derived_never_tokenized(table, plan):
     text = ki.render_constant_index(table, plan)
     assert ki.estimated_tokens(len(text)) == int(round(len(text) / ki.CHARS_PER_TOKEN))
     assert ki.CHARS_PER_TOKEN == 4.60
+# ---------------------------------------------------------------------------
+# 11. Item E21w: the LIVE runner wiring.
+#
+# Every proof below is model-free and offline: the view is the same synthetic
+# store, the "flight" is ``rails.runner._agent_messages`` driven directly, and
+# no transport, tokenizer, encoder or server is imported anywhere.
+# ---------------------------------------------------------------------------
+
+from speech_aware_evidence_acquisition.rails import runner as rails_runner
+from speech_aware_evidence_acquisition.rails.context_fit import (
+    CompactableRequest, apply_drops, droppable_items,
+)
+from speech_aware_evidence_acquisition.rails.core_client import _supply_provenance
+from speech_aware_evidence_acquisition.rails.knowledge import (
+    KeyFacet, KnowledgeSnapshot, QueryState, ValueBundle,
+)
+
+EXEMPLARS = tuple(
+    (f"train-exemplars::value:{10000 + index}",
+     f"utterance {index} | play_music | type=song_name; ...")
+    for index in range(8)
+)
+SLOT_ITEMS = tuple(
+    (f"slot-contracts::slot-contract:{name}", f"card for {name}")
+    for name in ("song_name", "artist_name", "date")
+)
+INTENT_ITEMS = (
+    ("intent-boundaries::intent-boundary:play_music", "card for play_music"),
+    ("intent-boundaries::intent-boundary:play_radio", "card for play_radio"),
+)
+PERCEPTION_STATE = {
+    "state_id": "state-perception-1",
+    "state_kind": "phase:perception",
+    "content": json.dumps(
+        {"candidates": [
+            {"intent_id": "play_music"}, {"intent_id": "play_radio"},
+            {"intent_id": "email_query"},
+        ]}
+    ),
+}
+
+
+def _evidence_items():
+    return [
+        {"evidence_id": value_id, "content": content, "knowledge_role": "value"}
+        for value_id, content in INTENT_ITEMS + SLOT_ITEMS + EXEMPLARS
+    ]
+
+
+def _released_view(tmp_path):
+    """Write the synthetic view as a RELEASED, hash-pinned pair on disk."""
+
+    document = synthetic_snapshot()
+    raw = ki.canonical_json(document).encode("utf-8")
+    directory = tmp_path / "knowledge/slurp/semantic" / ki.KNOWLEDGE_INDEX_VIEW_ID
+    directory.mkdir(parents=True, exist_ok=True)
+    (directory / "snapshot.json").write_bytes(raw)
+    snapshot_sha = hashlib.sha256(raw).hexdigest()
+    release = {
+        "schema": ki.KNOWLEDGE_INDEX_RELEASE_SCHEMA,
+        "view_id": ki.KNOWLEDGE_INDEX_VIEW_ID,
+        "builder_policy_id": ki.KNOWLEDGE_INDEX_BUILDER_POLICY_ID,
+        "snapshot_sha256": snapshot_sha,
+        "source_split_identity_hash": document["source_split_identity_hash"],
+    }
+    release_raw = ki.canonical_json(release).encode("utf-8")
+    (directory / "release.json").write_bytes(release_raw)
+    base = f"knowledge/slurp/semantic/{ki.KNOWLEDGE_INDEX_VIEW_ID}"
+    pins = {
+        "view": ki.KNOWLEDGE_INDEX_VIEW_ID,
+        "release": {
+            "relpath": f"{base}/release.json", "root": "data",
+            "sha256": hashlib.sha256(release_raw).hexdigest(),
+        },
+        "snapshot": {
+            "relpath": f"{base}/snapshot.json", "root": "data",
+            "sha256": snapshot_sha,
+        },
+    }
+    return pins, directory
+
+
+def _binding(tmp_path, overrides=None, **kwargs):
+    pins, _directory = _released_view(tmp_path)
+    document = ki.parse_knowledge_index_config({**pins, **(overrides or {})}).as_json()
+    return ki.build_knowledge_index_binding(
+        knowledge_index_json=ki.canonical_json(document),
+        data_root=tmp_path, **kwargs,
+    )
+
+
+class _Adapter:
+    def __init__(self, system_text):
+        self._system_text = system_text
+
+    def assemble_prompt(self, _sample, _selection):
+        return (
+            {"role": "system", "content": self._system_text},
+            {"role": "user", "content": []},
+        )
+
+
+class _State:
+    def __init__(self, document):
+        self._document = document
+        self.state_kind = document["state_kind"]
+        self.content = document["content"]
+
+    def as_json(self):
+        return dict(self._document)
+
+
+SYSTEM_TEXT = "Contract fill."
+
+
+def _seam(index=None, role_kind=None, states=(), sink=None):
+    """ONE contact through the production seam, offline."""
+
+    items = _evidence_items()
+    snapshot = KnowledgeSnapshot(
+        snapshot_id="wire", source_split_identity_hash="0" * 64,
+        source_sample_ids=("train-0",), builder_policy_id="wire",
+        facets=(
+            KeyFacet(
+                facet_id="facet:content:1", dimension="content",
+                representation_kind="text", representation="a key",
+                source_sample_ids=("train-0",),
+            ),
+        ),
+        values=tuple(
+            ValueBundle(
+                value_id=item["evidence_id"], content=item["content"],
+                associated_facet_ids=("facet:content:1",),
+                source_sample_ids=("train-0",), provenance_refs=("wire",),
+            )
+            for item in items
+        ),
+    )
+    query_state = QueryState(
+        query_id="q", query_sample_id="sample-1", speech_packet_id="packet-1",
+        speech_packet_sha256="1" * 64, use_split_identity_hash="0" * 64,
+        visible_facet_ids=("facet:content:1",),
+        retrieved_value_ids=tuple(item["evidence_id"] for item in items),
+    )
+    return rails_runner._agent_messages(
+        adapter=_Adapter(SYSTEM_TEXT), sample=None, task_contract=SYSTEM_TEXT,
+        snapshot=snapshot, snapshot_sha256="2" * 64, query_state=query_state,
+        agent_states=tuple(_State(row) for row in states),
+        knowledge_value_renderer=lambda _s, _q, _a: [
+            {
+                "type": "text", "text": item["content"],
+                "evidence_id": item["evidence_id"],
+                "source_uri": f"knowledge-snapshot://{'2' * 64}/{item['evidence_id']}",
+                "knowledge_role": "value",
+            }
+            for item in items
+        ],
+        knowledge_index=index, index_role_kind=role_kind, index_sink=sink,
+    )
+
+
+# -- A. the binding ---------------------------------------------------------
+
+
+def test_the_binding_loads_the_released_view_and_renders_the_index_once(tmp_path):
+    binding = _binding(tmp_path)
+    assert binding.table.view_id == ki.KNOWLEDGE_INDEX_VIEW_ID
+    assert binding.index_text == ki.render_constant_index(binding.table, binding.plan)
+    assert binding.suffix() == f"\n\n{binding.index_text}"
+    # The snapshot's FILE digest and the view's own content hash are one
+    # number: the loader re-types nothing.
+    assert binding.table.content_hash() == binding.plan.snapshot["sha256"]
+
+
+def test_the_binding_refuses_a_missing_root_a_moved_byte_and_a_wrong_content_hash(
+    tmp_path,
+):
+    pins, directory = _released_view(tmp_path)
+    document = ki.canonical_json(ki.parse_knowledge_index_config(pins).as_json())
+    with pytest.raises(ki.KnowledgeIndexError, match="no controlled data root"):
+        ki.build_knowledge_index_binding(
+            knowledge_index_json=document, data_root=None
+        )
+    with pytest.raises(ki.KnowledgeIndexError, match="names no file"):
+        ki.build_knowledge_index_binding(
+            knowledge_index_json=document, data_root=tmp_path / "elsewhere"
+        )
+    # One byte moved under the pin: refused by DIGEST, not by shape.
+    snapshot_path = directory / "snapshot.json"
+    raw = snapshot_path.read_bytes()
+    snapshot_path.write_bytes(raw + b" ")
+    with pytest.raises(ki.KnowledgeIndexError, match="hashes to"):
+        ki.build_knowledge_index_binding(
+            knowledge_index_json=document, data_root=tmp_path
+        )
+    snapshot_path.write_bytes(raw)
+    # A released snapshot whose FILE digest is not its own content hash: the
+    # same document, written non-canonically. Both pins are re-pinned to the
+    # new bytes so the loader's byte check passes and ONLY the content-hash
+    # identity is left to fail -- which is the whole point of pinning the
+    # release by file bytes and the snapshot by content hash.
+    loose = json.dumps(
+        json.loads(raw.decode("utf-8")), ensure_ascii=False, indent=1,
+    ).encode("utf-8")
+    snapshot_path.write_bytes(loose)
+    moved = hashlib.sha256(loose).hexdigest()
+    assert moved != hashlib.sha256(raw).hexdigest()
+    release = json.loads((directory / "release.json").read_text(encoding="utf-8"))
+    release["snapshot_sha256"] = moved
+    release_raw = ki.canonical_json(release).encode("utf-8")
+    (directory / "release.json").write_bytes(release_raw)
+    broken = dict(ki.parse_knowledge_index_config(pins).as_json())
+    broken["snapshot"] = {**pins["snapshot"], "sha256": moved}
+    broken["release"] = {
+        **pins["release"], "sha256": hashlib.sha256(release_raw).hexdigest(),
+    }
+    assert ki.table_from_snapshot(
+        json.loads(loose.decode("utf-8"))
+    ).content_hash() != moved
+    with pytest.raises(ki.KnowledgeIndexError, match="one number"):
+        ki.build_knowledge_index_binding(
+            knowledge_index_json=ki.canonical_json(broken), data_root=tmp_path
+        )
+
+
+# -- B. the row selector ----------------------------------------------------
+
+
+def test_the_selector_reads_the_perception_state_the_exemplars_and_the_slots(table):
+    selection, provenance = ki.derive_row_selection(
+        evidence_items=_evidence_items(), agent_states=[PERCEPTION_STATE],
+        table=table,
+    )
+    assert provenance["candidate_source"] == "perception-state"
+    # ``email_query`` is a well-formed name the synthetic view does not
+    # carry: dropped and COUNTED, never rendered.
+    assert selection.candidates == ("play_music", "play_radio")
+    assert provenance["refused_candidates"] == ["email_query"]
+    assert selection.slot_types == ("song_name", "artist_name", "date")
+    assert selection.exemplar_votes == (("play_music", 8),)
+    assert [key for key, _text in selection.exemplars] == [
+        str(10000 + index) for index in range(8)
+    ]
+    assert provenance["exemplar_order"] == "supplied-order"
+
+
+def test_the_selector_falls_back_to_the_retrieval_order_before_perception(table):
+    selection, provenance = ki.derive_row_selection(
+        evidence_items=_evidence_items(), agent_states=(), table=table,
+    )
+    assert provenance["candidate_source"] == "retrieval-order"
+    assert selection.candidates == ("play_music", "play_radio")
+    selection, provenance = ki.derive_row_selection(
+        evidence_items=[], agent_states=(), table=table,
+    )
+    assert provenance["candidate_source"] == "none"
+    assert selection.candidates == ()
+
+
+def test_the_selector_is_deterministic(table):
+    first = ki.derive_row_selection(
+        evidence_items=_evidence_items(), agent_states=[PERCEPTION_STATE],
+        table=table,
+    )
+    second = ki.derive_row_selection(
+        evidence_items=_evidence_items(), agent_states=[PERCEPTION_STATE],
+        table=table,
+    )
+    assert first == second
+
+
+def test_a_malformed_perception_state_never_kills_the_row(table):
+    for content in ("not json", json.dumps({"candidates": "x"}), ""):
+        selection, provenance = ki.derive_row_selection(
+            evidence_items=_evidence_items(),
+            agent_states=[{**PERCEPTION_STATE, "content": content}], table=table,
+        )
+        assert provenance["candidate_source"] == "retrieval-order"
+        assert selection.candidates == ("play_music", "play_radio")
+
+
+# -- C. the retrieval rank --------------------------------------------------
+
+
+class _Ranked:
+    def __init__(self, facet_id, score):
+        self.facet_id, self.score = facet_id, score
+
+
+class _RankResult:
+    ranking_policy_id = "saea-rank-wcos-prior-agree-v1"
+
+    def __init__(self, candidates):
+        self.candidates = candidates
+
+    def content_hash(self):
+        return "3" * 64
+
+
+class _Fusion:
+    fusion_policy_id = "saea-fuse-supplyfilter-v1"
+
+    def __init__(self, supporting, selected):
+        self.supporting_facet_ids = supporting
+        self.selected_value_ids = selected
+
+
+class _Value:
+    def __init__(self, value_id, facets):
+        self.value_id, self.associated_facet_ids = value_id, facets
+
+
+def test_the_retrieval_rank_is_recorded_and_names_its_similarity():
+    rank_result = _RankResult(
+        (_Ranked("f:a", 0.9), _Ranked("f:b", 0.5), _Ranked("f:c", 0.1))
+    )
+    fusion = _Fusion(
+        ("f:a", "f:b", "f:c"),
+        # The lexicographic order the supply returns today, which carries no
+        # rank at all (M1 analysis section 4.2).
+        ("train-exemplars::value:10000", "train-exemplars::value:10001",
+         "train-exemplars::value:10002"),
+    )
+    values = [
+        _Value("train-exemplars::value:10000", ("f:c",)),
+        _Value("train-exemplars::value:10001", ("f:a",)),
+        _Value("train-exemplars::value:10002", ("f:b",)),
+    ]
+    ranks = ki.value_retrieval_ranks(
+        rank_result=rank_result, fusion_decision=fusion, values=values,
+    )
+    assert [
+        value_id for value_id, row in sorted(
+            ranks.items(), key=lambda item: item[1]["rank"]
+        )
+    ] == [
+        "train-exemplars::value:10001",
+        "train-exemplars::value:10002",
+        "train-exemplars::value:10000",
+    ]
+    assert ranks["train-exemplars::value:10001"] == {
+        "rank": 1, "score": 0.9, "supporting_facet_id": "f:a",
+    }
+    similarity = ki.retrieval_similarity(
+        rank_result=rank_result, fusion_decision=fusion,
+    )
+    assert similarity["schema"] == ki.RETRIEVAL_RANK_SCHEMA
+    assert similarity["ranking_policy_id"] == "saea-rank-wcos-prior-agree-v1"
+    assert similarity["fusion_policy_id"] == "saea-fuse-supplyfilter-v1"
+
+
+def test_a_recorded_rank_reorders_the_expansion_block(table):
+    items = [
+        {"evidence_id": value_id, "content": content, "knowledge_role": "value"}
+        for value_id, content in EXEMPLARS
+    ]
+    ranks = {
+        "train-exemplars::value:10007": {"rank": 1, "score": 0.9},
+        "train-exemplars::value:10003": {"rank": 2, "score": 0.8},
+    }
+    selection, provenance = ki.derive_row_selection(
+        evidence_items=items, agent_states=(), table=table, exemplar_ranks=ranks,
+    )
+    assert provenance["exemplar_order"] == "retrieval-rank"
+    assert [key for key, _text in selection.exemplars][:2] == ["10007", "10003"]
+
+
+def test_the_supply_arms_its_rank_record_only_when_a_caller_asks():
+    """``rails.phase_supply`` records the rank ONLY into a dict a caller
+    handed over; with the attribute left at None nothing is computed and no
+    supply byte moves."""
+
+    from speech_aware_evidence_acquisition.rails import phase_supply
+
+    source = Path(phase_supply.__file__).read_text(encoding="utf-8")
+    assert "supply_for_phase.retrieval_ranks = None" in source
+    assert 'ranks = getattr(supply_for_phase, "retrieval_ranks", None)' in source
+
+
+# -- D/E. the seam swap, the absent key and the per-role budgets ------------
+
+
+def test_the_seam_appends_the_index_and_replaces_the_value_blocks(tmp_path):
+    binding = _binding(tmp_path)
+    off = _seam()
+    record = {}
+    on = _seam(
+        index=binding, role_kind="solver", states=[PERCEPTION_STATE],
+        sink=lambda assembly, selection, provenance: record.update(
+            assembly=assembly, provenance=provenance
+        ),
+    )
+    assert on[0]["content"] == f"{SYSTEM_TEXT}{binding.suffix()}"
+    assert on[0]["content"].startswith(off[0]["content"])
+    ids = [
+        part["evidence_id"] for part in on[1]["content"]
+        if part.get("type") == "text"
+    ]
+    assert ids[0] == "key:facet:content:1"
+    assert ids[1] == ki.POINTER_BLOCK_EVIDENCE_ID
+    assert ids[2:] == list(record["assembly"].expanded_ids)
+    assert not any(value.startswith("train-exemplars::") for value in ids)
+    # The speech packet reference is untouched and still first.
+    assert on[1]["content"][0]["type"] == "input_speech_features"
+
+
+def test_the_absent_key_moves_no_seam_byte(tmp_path):
+    binding = _binding(tmp_path)
+    off = _seam()
+    again = _seam(index=None, role_kind="solver", states=[PERCEPTION_STATE])
+    assert off == again
+    on = _seam(index=binding, role_kind="solver", sink=lambda *a: None)
+    assert on != off
+
+
+def test_the_per_role_budget_override_is_honoured_at_request_composition(tmp_path):
+    binding = _binding(
+        tmp_path,
+        overrides={
+            "roles": {
+                "planner": {
+                    "expansion_budget": {
+                        "exemplar": 0, "slot_card": 0, "intent_card": 0,
+                    }
+                }
+            }
+        },
+    )
+    seen = {}
+    for role_kind in ("solver", "planner"):
+        _seam(
+            index=binding, role_kind=role_kind, states=[PERCEPTION_STATE],
+            sink=lambda assembly, _s, _p, role=role_kind: seen.__setitem__(
+                role, assembly
+            ),
+        )
+    assert seen["solver"].expanded_ids
+    # OFF by default everywhere else: the Planner's override is the only one
+    # declared, and it is the only role whose block changes.
+    assert seen["planner"].expanded_ids == ()
+    assert seen["planner"].pointer_ids == seen["solver"].pointer_ids
+
+
+def test_the_pointer_and_expansion_parts_carry_index_provenance(tmp_path):
+    binding = _binding(tmp_path)
+    record = {}
+    on = _seam(
+        index=binding, role_kind="solver", states=[PERCEPTION_STATE],
+        sink=lambda assembly, _s, _p: record.update(assembly=assembly),
+    )
+    parts = [part for part in on[1]["content"] if part.get("type") == "text"]
+    index_parts = [
+        part for part in parts
+        if str(part["source_uri"]).startswith("knowledge-index://")
+    ]
+    assert len(index_parts) == len(record["assembly"].expansions) + 1
+    rows = [
+        _supply_provenance(part, part["text"], request_id="r-0001", index=index)
+        for index, part in enumerate(parts)
+    ]
+    assert rows[0]["lock_key"] == "rails-supply"
+    for part, row in zip(parts[1:], rows[1:], strict=True):
+        assert row["lock_key"] == "knowledge-index"
+        assert row["relpath"] == (
+            f"{ki.KNOWLEDGE_INDEX_VIEW_ID}/{part['evidence_id']}"
+        )
+
+
+def test_the_framework_envelope_is_rewritten_and_rehashed(table, plan):
+    from speech_aware_evidence_acquisition.core.model.native_framework_history import (
+        validate_native_framework_contact,
+    )
+
+    envelope = {
+        "schema": "saea-native-framework-contact-v1",
+        "role_id": "solver", "sample_id": "s1", "contact_id": "c1",
+        "messages": [
+            {"role": "system", "content": "Contract fill."},
+            {"role": "user", "content": "query"},
+        ],
+        "local_tool_result_ids": [],
+    }
+    content = json.dumps(
+        envelope, ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+    )
+    payload = {
+        "sample_id": "s1",
+        "task_instruction": "Contract fill.",
+        "supplied_evidence": [],
+        "history": [
+            {"role": "control", "contact_id": "c1", "content": content,
+             "content_sha256": ki.sha256_text(content)},
+        ],
+    }
+    assert validate_native_framework_contact(payload) is not None
+    index_text = ki.render_constant_index(table, plan)
+    armed = ki.apply_to_payload(
+        payload, index_text=index_text,
+        assembly=ki.assemble(table, plan, _selection(), role_id="solver"),
+    )
+    # The envelope's own system message moved with the payload's, and its
+    # digest was recomputed rather than left stale.
+    control = armed["history"][-1]
+    assert json.loads(control["content"])["messages"][0]["content"] == (
+        armed["task_instruction"]
+    )
+    assert control["content_sha256"] == ki.sha256_text(control["content"])
+    assert validate_native_framework_contact(armed) is not None
+
+
+# -- F. the ladder, through E20's own apply_drops ---------------------------
+
+
+def test_the_index_ladder_drives_e20s_apply_drops(tmp_path):
+    binding = _binding(tmp_path)
+    record = {}
+    on = _seam(
+        index=binding, role_kind="solver", states=[PERCEPTION_STATE],
+        sink=lambda assembly, _s, _p: record.update(assembly=assembly),
+    )
+    assembly = record["assembly"]
+    view = CompactableRequest(
+        content=tuple(on[1]["content"]), agent_states=(),
+        index_assembly=assembly,
+    )
+    items = droppable_items(view)
+    index_items = [
+        item for item in items
+        if item.block in (ki.INDEX_EXPANSION_BLOCK, ki.INDEX_POINTER_BLOCK)
+    ]
+    # The declared order: every expansion from the TAIL, then the pointer
+    # block -- and never before it.
+    assert [item.block for item in index_items] == (
+        [ki.INDEX_EXPANSION_BLOCK] * len(assembly.expansions)
+        + [ki.INDEX_POINTER_BLOCK]
+    )
+    assert [item.identifier for item in index_items[:-1]] == [
+        f"value:{item.entry_id}" for item in reversed(assembly.expansions)
+    ]
+    assert index_items[-1].tranche == 2
+    # The L1 -> L0 granularity step is NOT executed at this seam: it
+    # re-renders the constant prefix, which the dispatch view may not touch.
+    assert all(item.block != ki.INDEX_GRANULARITY_BLOCK for item in items)
+    narrowed = apply_drops(view, index_items[:2])
+    assert len(narrowed.content) == len(view.content) - 2
+    kept = [
+        part["evidence_id"] for part in narrowed.content
+        if part.get("type") == "text"
+    ]
+    assert kept[-1] == assembly.expansions[-3].entry_id
+    # E20's own ladder is unchanged with no armed index.
+    plain = CompactableRequest(content=tuple(on[1]["content"]), agent_states=())
+    assert all(
+        item.block not in (ki.INDEX_EXPANSION_BLOCK, ki.INDEX_POINTER_BLOCK)
+        for item in droppable_items(plain)
+    )
+
+
+def test_a_narrowed_assembly_names_what_was_actually_sent(table, plan):
+    assembly = ki.assemble(table, plan, _selection(), role_id="solver")
+    dropped = (f"value:{assembly.expansions[-1].entry_id}",)
+    narrowed = ki.narrow_assembly(assembly, dropped)
+    assert narrowed.expanded_ids == assembly.expanded_ids[:-1]
+    assert narrowed.pointer_block == assembly.pointer_block
+    gone = ki.narrow_assembly(
+        assembly, dropped + (f"value:{ki.POINTER_BLOCK_EVIDENCE_ID}",)
+    )
+    assert gone.pointer_block == ""
+    assert gone.pointer_ids == ()
+
+
+# -- G. the receipt ---------------------------------------------------------
+
+
+def test_the_binding_receipt_carries_the_view_the_budgets_and_the_rank_source(
+    tmp_path,
+):
+    binding = _binding(tmp_path)
+    record = {}
+    _seam(
+        index=binding, role_kind="solver", states=[PERCEPTION_STATE],
+        sink=lambda assembly, selection, provenance: record.update(
+            assembly=assembly, provenance=provenance
+        ),
+    )
+    row = ki.contact_receipt(
+        contact_id="c1", role_id="solver", assembly=record["assembly"],
+        system_message=f"{SYSTEM_TEXT}{binding.suffix()}",
+        index_text=binding.index_text, cited_ids=("I/play_music", "I/email_query"),
+        table=binding.table,
+    )
+    receipt = binding.receipt([row])
+    assert receipt["schema"] == ki.KNOWLEDGE_INDEX_RECEIPT_SCHEMA
+    assert receipt["view"]["snapshot_sha256"] == binding.plan.snapshot["sha256"]
+    assert receipt["view"]["content_hash"] == binding.table.content_hash()
+    assert receipt["distinct_system_message_sha256"] == 1
+    assert receipt["citations_resolved"] == 1
+    assert receipt["citations_unresolved"] == 1
+    # The rank source is NAMED, never implied: this binding recorded none.
+    assert receipt["retrieval_rank"] == {"recorded": False}
+    serialised = json.dumps(receipt)
+    assert binding.index_text not in serialised
+    assert record["assembly"].pointer_block not in serialised
+
+
+def test_the_receipt_names_the_similarity_once_the_supply_records_one(tmp_path):
+    similarity = {}
+    binding = _binding(tmp_path, similarity=similarity)
+    assert binding.receipt([])["retrieval_rank"] == {"recorded": False}
+    # The supply fills the record DURING the flight; the binding carries it
+    # by reference, so the receipt sees it.
+    similarity.update(
+        ki.retrieval_similarity(
+            rank_result=_RankResult((_Ranked("f:a", 0.9),)),
+            fusion_decision=_Fusion(("f:a",), ("v1",)),
+        )
+    )
+    document = binding.receipt([])["retrieval_rank"]
+    assert document["recorded"] is True
+    assert document["schema"] == ki.RETRIEVAL_RANK_SCHEMA
+    assert document["fusion_policy_id"] == "saea-fuse-supplyfilter-v1"
+
+
+def test_the_runner_refuses_a_binding_with_no_armed_key():
+    """The other half of the item note's fail-closed guard: an index the
+    config hash does not claim would move request bytes outside the cell
+    identity."""
+
+    source = Path(rails_runner.__file__).read_text(encoding="utf-8")
+    assert (
+        "the episode binding carries a knowledge-index binding but" in source
+    )
+    assert "native_episode.knowledge_index is armed but the episode binding" in source

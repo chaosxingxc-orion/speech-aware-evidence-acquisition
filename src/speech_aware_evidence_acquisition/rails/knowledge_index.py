@@ -1958,92 +1958,597 @@ def apply_to_payload(
     return composed
 
 
+# ---------------------------------------------------------------------------
+# 12. Item E21w: the LIVE wiring -- the binding, the in-flight row selector,
+#     the retrieval rank and the seam swap a running episode performs.
+# ---------------------------------------------------------------------------
+#
+# Section 7 of the item note names the three gaps this section closes:
+# evidence PROVENANCE for the pointer/expansion blocks, the in-flight row
+# SELECTOR, and the exemplar retrieval RANK the sealed arm never recorded.
+# Everything here is still pure and model-free: no transport, no tokenizer,
+# no encoder, no store reach -- the caller hands in what the row already
+# carries and this module decides what the request says.
+
+#: The evidence-id prefixes the three SLURP stores render into a live
+#: request. They are the STORE-and-namespace prefixes finding F-13 measures
+#: at about 1,360 characters per row, and the ids the index replaces.
+INTENT_EVIDENCE_PREFIX = "intent-boundaries::intent-boundary:"
+SLOT_EVIDENCE_PREFIX = "slot-contracts::slot-contract:"
+EXEMPLAR_EVIDENCE_PREFIX = "train-exemplars::value:"
+
+#: The Perception node's sealed state kind. Its own content is the row's
+#: ranked candidate hypotheses -- MODEL STATE, never a label.
+PERCEPTION_STATE_KIND = "phase:perception"
+
+#: How a retrieved construction exemplar states its own construction intent
+#: in the text the request already carries:
+#: ``<utterance> | <scenario>_<action> | <slots>``.
+EXEMPLAR_FIELD_SEPARATOR = "|"
+
+#: What a selection's provenance record may say about where each half of a
+#: :class:`RowSelection` came from. Recorded per contact so a receipt reader
+#: never has to infer it.
+CANDIDATE_SOURCES: tuple[str, ...] = ("perception-state", "retrieval-order", "none")
+EXEMPLAR_ORDERS: tuple[str, ...] = ("retrieval-rank", "supplied-order")
+
+#: The schema of the supply-side rank record the index binding carries. The
+#: sealed arms record NO rank at all (M1 analysis section 4.2): today's
+#: exemplar block renders in lexicographic evidence-id order, because
+#: ``rails.kb_policy._fuse_supply_filter`` returns
+#: ``tuple(sorted(set(selected_value_ids)))`` and the order dies there.
+RETRIEVAL_RANK_SCHEMA = "saea-knowledge-index-retrieval-rank-v1"
+
+
+def _evidence_pairs(items: Sequence[object]) -> tuple[tuple[str, str], ...]:
+    """``(evidence_id, text)`` for every evidence-bearing item handed in.
+
+    Accepts both shapes the repository uses for one evidence block: a
+    payload item (``content``) and a user-message content part (``text``),
+    because the live seam sees the part and the falsifier sees the payload.
+    """
+
+    pairs: list[tuple[str, str]] = []
+    for item in items or ():
+        if not isinstance(item, Mapping):
+            continue
+        evidence_id = item.get("evidence_id")
+        if not isinstance(evidence_id, str) or not evidence_id:
+            continue
+        text = item.get("content")
+        if not isinstance(text, str):
+            text = item.get("text")
+        pairs.append((evidence_id, text if isinstance(text, str) else ""))
+    return tuple(pairs)
+
+
+def _perception_candidates(agent_states: Sequence[object]) -> tuple[str, ...]:
+    """The LATEST Perception state's own ranked candidate intents, in its
+    own order.
+
+    Model state, never a label: this reads the node's own sealed answer and
+    nothing else. A state that is not this row's Perception state, is not
+    JSON, or names no candidate list contributes nothing rather than
+    raising -- a Perception answer is model output and a flight may not die
+    on its shape (the row simply falls back to the retrieval order, which is
+    recorded).
+    """
+
+    latest: tuple[str, ...] = ()
+    for state in agent_states or ():
+        kind = (
+            state.get("state_kind") if isinstance(state, Mapping)
+            else getattr(state, "state_kind", None)
+        )
+        if kind != PERCEPTION_STATE_KIND:
+            continue
+        content = (
+            state.get("content") if isinstance(state, Mapping)
+            else getattr(state, "content", None)
+        )
+        if not isinstance(content, str) or not content:
+            continue
+        try:
+            document = json.loads(content)
+        except ValueError:
+            continue
+        if not isinstance(document, Mapping):
+            continue
+        rows = document.get("candidates")
+        if not isinstance(rows, Sequence) or isinstance(rows, (str, bytes)):
+            continue
+        names: list[str] = []
+        for row in rows:
+            if not isinstance(row, Mapping):
+                continue
+            value = row.get("intent_id")
+            if isinstance(value, str) and value:
+                names.append(value)
+        latest = tuple(names)
+    return latest
+
+
+def _legal_names(names: Sequence[str], *, kind: str, table: "KnowledgeIndexTable | None"):
+    """Keep the names the closed inventory legalises; count what it refused.
+
+    A candidate is the Perception node's OWN output, so it can name a
+    spelling the closed inventory does not carry. Refusing the row would
+    kill a flight on model noise; rendering the spelling would put a second
+    label into a closed list. The third option is the honest one: drop it
+    and COUNT it, so the receipt says how often the node left the index.
+    """
+
+    kept: list[str] = []
+    refused: list[str] = []
+    builder = intent_id if kind == "intent" else slot_id
+    for name in names:
+        try:
+            entry_id = builder(name)
+        except KnowledgeIndexError:
+            refused.append(str(name))
+            continue
+        if table is not None and not table.resolves(entry_id):
+            refused.append(str(name))
+            continue
+        if name not in kept:
+            kept.append(name)
+    return tuple(kept), tuple(refused)
+
+
+def _rank_key(rank: object) -> tuple[int, int]:
+    """Sort key placing a recorded rank ahead of an unranked exemplar."""
+
+    if isinstance(rank, Mapping):
+        value = rank.get("rank")
+    elif isinstance(rank, (tuple, list)) and rank:
+        value = rank[0]
+    else:
+        value = rank
+    if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+        return (1, 0)
+    return (0, value)
+
+
+def derive_row_selection(
+    *,
+    evidence_items: Sequence[object],
+    agent_states: Sequence[object] = (),
+    table: "KnowledgeIndexTable | None" = None,
+    exemplar_ranks: Mapping[str, object] | None = None,
+) -> tuple[RowSelection, dict[str, object]]:
+    """This contact's own :class:`RowSelection`, and where each half came from.
+
+    THE INFORMATION BOUNDARY (design section 4.5), restated as code:
+
+    * ``candidates`` are the Perception node's own hypotheses, in its own
+      order -- model state. Before Perception has answered (its own contact)
+      there is no such state, so the intent-boundary RETRIEVAL order stands
+      in: that is exactly the order the node is choosing between, and it is
+      what the sealed request already carries at that position;
+    * ``exemplar_votes`` aggregate the retrieved construction exemplars'
+      OWN construction intents, read from the text the request already
+      renders;
+    * ``slot_types`` are the types the candidate projection bound, in supply
+      order;
+    * ``exemplars`` are the retrieved construction utterances, ordered by
+      RETRIEVAL RANK when the supply recorded one and by supply order when
+      it did not -- and the provenance record says which.
+
+    No gold, no reference transcript, no future turn and no drafted answer
+    enters here; the only model-derived input is the Perception state, which
+    the design names as model state.
+    """
+
+    pairs = _evidence_pairs(evidence_items)
+    retrieved_intents: list[str] = []
+    slot_types: list[str] = []
+    exemplars: list[tuple[str, str]] = []
+    votes: dict[str, int] = {}
+    for evidence_id, text in pairs:
+        if evidence_id.startswith(INTENT_EVIDENCE_PREFIX):
+            retrieved_intents.append(evidence_id[len(INTENT_EVIDENCE_PREFIX):])
+        elif evidence_id.startswith(SLOT_EVIDENCE_PREFIX):
+            slot_types.append(evidence_id[len(SLOT_EVIDENCE_PREFIX):])
+        elif evidence_id.startswith(EXEMPLAR_EVIDENCE_PREFIX):
+            key = evidence_id[len(EXEMPLAR_EVIDENCE_PREFIX):]
+            exemplars.append((key, text))
+            fields = [part.strip() for part in text.split(EXEMPLAR_FIELD_SEPARATOR)]
+            if len(fields) >= 2 and fields[1]:
+                votes[fields[1]] = votes.get(fields[1], 0) + 1
+    perception = _perception_candidates(agent_states)
+    raw_candidates = perception or tuple(retrieved_intents)
+    candidate_source = (
+        "perception-state" if perception
+        else ("retrieval-order" if retrieved_intents else "none")
+    )
+    candidates, refused_candidates = _legal_names(
+        raw_candidates, kind="intent", table=table
+    )
+    bound_slots, refused_slots = _legal_names(slot_types, kind="slot", table=table)
+    voted, refused_votes = _legal_names(tuple(votes), kind="intent", table=table)
+    exemplar_order = "supplied-order"
+    if exemplar_ranks:
+        ranked = [
+            (row, exemplar_ranks.get(f"{EXEMPLAR_EVIDENCE_PREFIX}{row[0]}"))
+            for row in exemplars
+        ]
+        if any(rank is not None for _row, rank in ranked):
+            exemplars = [
+                row for row, _rank in sorted(
+                    ranked, key=lambda item: (_rank_key(item[1]), item[0][0])
+                )
+            ]
+            exemplar_order = "retrieval-rank"
+    selection = RowSelection(
+        candidates=candidates,
+        exemplar_votes=tuple(
+            sorted(
+                ((name, votes[name]) for name in voted),
+                key=lambda row: (-row[1], row[0]),
+            )
+        ),
+        slot_types=bound_slots,
+        exemplars=tuple(exemplars),
+    )
+    provenance = {
+        "candidate_source": candidate_source,
+        "exemplar_order": exemplar_order,
+        "vote_source": "exemplar-construction-intent",
+        "evidence_items": len(pairs),
+        "refused_candidates": list(refused_candidates),
+        "refused_slot_types": list(refused_slots),
+        "refused_votes": list(refused_votes),
+    }
+    return selection, provenance
+
+
+def value_retrieval_ranks(
+    *, rank_result: object, fusion_decision: object, values: Sequence[object],
+) -> dict[str, dict[str, object]]:
+    """The retrieval RANK and SCORE of each selected value, by value id.
+
+    The number the supply already computed and then threw away:
+    ``rails.kb_policy._fuse_supply_filter`` tags every candidate value with
+    the score of its best admitted supporting facet, selects on it, and then
+    returns ``tuple(sorted(set(selected_value_ids)))`` -- which is why
+    today's exemplar block renders in lexicographic id order and carries no
+    rank at all (M1 analysis section 4.2).
+
+    This function re-derives it from the two artifacts an ``acquire``
+    transition already carries, so the rank is REPRODUCIBLE from the sealed
+    vectors and the store: the ``RankResult`` is a pure function of the
+    pinned query vectors and the frozen snapshot, and the value-to-facet
+    association is the snapshot's own. Nothing is retrieved, scored or
+    embedded here.
+    """
+
+    candidates = getattr(rank_result, "candidates", ()) or ()
+    facet_score = {
+        getattr(row, "facet_id", None): float(getattr(row, "score", 0.0))
+        for row in candidates
+    }
+    supporting = set(getattr(fusion_decision, "supporting_facet_ids", ()) or ())
+    selected = tuple(getattr(fusion_decision, "selected_value_ids", ()) or ())
+    if not selected:
+        return {}
+    by_id = {getattr(value, "value_id", None): value for value in values or ()}
+    scored: list[tuple[float, str, str]] = []
+    for value_id in selected:
+        value = by_id.get(value_id)
+        associated = set(getattr(value, "associated_facet_ids", ()) or ())
+        admitted = (associated & supporting) or associated
+        best = max(
+            (facet for facet in admitted if facet in facet_score),
+            key=lambda facet: (facet_score[facet], facet),
+            default=None,
+        )
+        scored.append(
+            (
+                facet_score.get(best, 0.0) if best is not None else 0.0,
+                value_id,
+                best or "",
+            )
+        )
+    scored.sort(key=lambda row: (-row[0], row[1]))
+    return {
+        value_id: {"rank": position, "score": score, "supporting_facet_id": facet}
+        for position, (score, value_id, facet) in enumerate(scored, start=1)
+    }
+
+
+def retrieval_similarity(
+    *, rank_result: object, fusion_decision: object,
+) -> dict[str, object]:
+    """WHICH similarity the recorded rank is. Named, never implied."""
+
+    return {
+        "schema": RETRIEVAL_RANK_SCHEMA,
+        "ranking_policy_id": getattr(rank_result, "ranking_policy_id", None),
+        "fusion_policy_id": getattr(fusion_decision, "fusion_policy_id", None),
+        "rank_result_sha256": (
+            rank_result.content_hash()
+            if hasattr(rank_result, "content_hash") else None
+        ),
+        "statistic": (
+            "best admitted supporting facet score, descending, ties by value id"
+        ),
+    }
+
+
+@dataclass(frozen=True)
+class KnowledgeIndexBinding:
+    """The flight-owned knowledge-INDEX binding
+    (``NativeEpisodeRunBinding.knowledge_index``).
+
+    The same seam ``supply_for_phase`` and ``acquisition_requery`` are, and
+    for the same reason: the runner never reaches for a store of its own.
+    The table is already loaded and hash-verified, the plan already
+    resolved, and the constant index already rendered ONCE -- the index is a
+    pure function of the view and the granularity, so re-rendering it per
+    contact would produce the same bytes at 195 entries of cost.
+    """
+
+    table: KnowledgeIndexTable
+    plan: IndexPlan
+    index_text: str
+    #: ``(sample_id) -> {evidence_id: {"rank": int, "score": float}}`` or
+    #: None when the supply recorded no rank (every sealed arm).
+    exemplar_ranks: object = None
+    #: What that rank IS, for the receipt. Empty when no rank is recorded.
+    similarity: Mapping[str, object] = ()
+
+    def suffix(self) -> str:
+        """The exact pure SUFFIX appended to the rendered contract fill."""
+
+        return f"\n\n{self.index_text}"
+
+    def ranks_for(self, sample_id: object) -> Mapping[str, object]:
+        provider = self.exemplar_ranks
+        if provider is None:
+            return {}
+        try:
+            table = (
+                provider(sample_id) if callable(provider) else provider.get(sample_id)
+            )
+        except Exception:  # noqa: BLE001 - a rank table never stops a flight
+            return {}
+        return table if isinstance(table, Mapping) else {}
+
+    def select(
+        self, *, evidence_items, agent_states=(), sample_id=None,
+    ) -> tuple[RowSelection, dict[str, object]]:
+        return derive_row_selection(
+            evidence_items=evidence_items,
+            agent_states=agent_states,
+            table=self.table,
+            exemplar_ranks=self.ranks_for(sample_id),
+        )
+
+    def assemble_for(self, selection: RowSelection, *, role_id=None) -> IndexAssembly:
+        return assemble(self.table, self.plan, selection, role_id=role_id)
+
+    def receipt(self, contacts: Sequence[Mapping[str, object]]) -> dict[str, object]:
+        document = knowledge_index_receipt(
+            plan=self.plan, table=self.table, index_text=self.index_text,
+            contacts=contacts,
+        )
+        document["retrieval_rank"] = {
+            "recorded": bool(self.similarity),
+            **({} if not self.similarity else dict(self.similarity)),
+        }
+        return document
+
+
+def build_knowledge_index_binding(
+    *,
+    knowledge_index_json: str,
+    data_root: object,
+    exemplar_ranks: object = None,
+    similarity: Mapping[str, object] | None = None,
+) -> KnowledgeIndexBinding:
+    """Load the RELEASED, hash-pinned view and resolve the plan, fail-closed.
+
+    Refusal 1 of design section 6.4 in its BYTE form, plus the one check the
+    two pin conventions make possible and the item note names: the release is
+    pinned by FILE BYTES and the snapshot by CONTENT HASH, and the snapshot's
+    file digest must equal :meth:`KnowledgeIndexTable.content_hash` -- the
+    loader re-types nothing, so the released bytes and the receipt's
+    ``content_hash`` are ONE number, and a view whose two are not is refused
+    by name before any contact.
+    """
+
+    if not isinstance(knowledge_index_json, str) or not knowledge_index_json:
+        raise KnowledgeIndexError(
+            "a knowledge-index binding needs the config's canonical text"
+        )
+    if data_root is None:
+        raise KnowledgeIndexError(
+            "native_episode.knowledge_index is armed but this flight bound no "
+            "controlled data root; the released view lives under it"
+        )
+    try:
+        document = json.loads(knowledge_index_json)
+    except ValueError as error:
+        raise KnowledgeIndexError(
+            f"the knowledge-index config text is not JSON: {error}"
+        ) from error
+    plan = parse_knowledge_index_config(document)
+    table = load_knowledge_index_table(
+        Path(data_root), release=plan.release, snapshot=plan.snapshot,
+        view_id=plan.view_id,
+    )
+    if table.content_hash() != plan.snapshot["sha256"]:
+        raise KnowledgeIndexError(
+            "knowledge_index.snapshot pins "
+            f"{plan.snapshot['sha256']} but the loaded view's content hash is "
+            f"{table.content_hash()}; the released bytes and the view's own "
+            "content hash must be one number"
+        )
+    index_text = render_constant_index(table, plan)
+    if not index_text:
+        raise KnowledgeIndexError("the released view renders an empty index")
+    return KnowledgeIndexBinding(
+        table=table, plan=plan, index_text=index_text,
+        exemplar_ranks=exemplar_ranks,
+        # Carried by REFERENCE, never copied: the supply fills its rank
+        # record during the flight, after the binding is built and before
+        # the first contact that reads it, and a snapshot taken here would
+        # freeze an empty one.
+        similarity=() if similarity is None else similarity,
+    )
+
+
+def index_evidence_provenance(
+    assembly: IndexAssembly, view_id: str,
+) -> list[dict[str, object]]:
+    """One ``evidence_provenance`` entry per pointer/expansion part.
+
+    Gap 1 of the item note's section 7: ``apply_to_payload`` rewrites
+    ``supplied_evidence`` and leaves provenance alone, which is harmless for
+    a render proof (provenance renders no byte) and wrong for a live flight,
+    which composes provenance from its own supply. The scheme is the one the
+    item wrote: ``knowledge-index://<view>/<id>``.
+    """
+
+    rows: list[dict[str, object]] = []
+    for part in assembly.content_parts():
+        text = str(part["text"])
+        rows.append(
+            {
+                "lock_key": "knowledge-index",
+                "relpath": f"{view_id}/{part['evidence_id']}",
+                "sha256": sha256_text(text),
+            }
+        )
+    return rows
+
+
+def narrow_assembly(
+    assembly: IndexAssembly, dropped_identifiers: Sequence[str],
+) -> IndexAssembly:
+    """The assembly a COMPACTED contact actually sent.
+
+    ``rails.context_fit.apply_drops`` removes content parts; this removes
+    the same parts from the assembly so the receipt's ``expanded_ids`` name
+    what was sent rather than what was composed. The degradation steps
+    beside it name what went.
+    """
+
+    dropped = set(dropped_identifiers or ())
+    expansions = tuple(
+        item for item in assembly.expansions
+        if f"value:{item.entry_id}" not in dropped
+    )
+    pointer_dropped = f"value:{POINTER_BLOCK_EVIDENCE_ID}" in dropped
+    return IndexAssembly(
+        pointer_block="" if pointer_dropped else assembly.pointer_block,
+        pointer_ids=() if pointer_dropped else assembly.pointer_ids,
+        expansions=expansions,
+        degradation=assembly.degradation,
+    )
+
+
 __all__ = [
+    "apply_to_payload",
+    "assemble",
+    "build_knowledge_index_binding",
+    "CANDIDATE_SOURCES",
+    "canonical_json",
+    "CardSection",
     "CHARS_PER_TOKEN",
     "CONSTANT_INDEX_KINDS",
+    "contact_receipt",
     "DEFAULT_EXPANSION_BUDGET",
     "DEFAULT_GRANULARITY",
     "DEFAULT_L1_SECTIONS",
     "DEFAULT_POINTER_BUDGET",
     "DEFAULT_SOLVER_CITATION",
+    "degradation_step",
+    "derive_row_selection",
+    "display_name",
+    "edge_id",
+    "entry_from_json",
     "ENTRY_KINDS",
+    "estimated_tokens",
+    "EXEMPLAR_EVIDENCE_PREFIX",
+    "EXEMPLAR_FIELD_SEPARATOR",
+    "exemplar_id",
+    "EXEMPLAR_ORDERS",
     "EXEMPLAR_STORE_ROLE",
     "EXPANSION_BUDGET_KEYS",
+    "ExpansionItem",
+    "extract_citations",
     "GRANULARITY_LEVELS",
+    "hoist_sections",
     "HOISTED_SECTIONS",
+    "HoistedSection",
     "INDEX_DROP_ORDER",
+    "index_droppable_items",
+    "index_evidence_provenance",
     "INDEX_EXPANSION_BLOCK",
     "INDEX_GRANULARITY_BLOCK",
     "INDEX_NEVER_DROPPABLE",
     "INDEX_POINTER_BLOCK",
+    "index_suffix",
+    "IndexAssembly",
+    "IndexBudget",
+    "IndexEntry",
+    "IndexPlan",
+    "INTENT_EVIDENCE_PREFIX",
+    "intent_id",
+    "is_index_id",
+    "is_knowledge_index_null_arm",
     "KIND_SIGILS",
     "KNOWLEDGE_INDEX_BUILDER_POLICY_ID",
     "KNOWLEDGE_INDEX_CARRIER",
     "KNOWLEDGE_INDEX_COMPLETION_SCHEMA",
+    "knowledge_index_receipt",
     "KNOWLEDGE_INDEX_RECEIPT_SCHEMA",
     "KNOWLEDGE_INDEX_RELEASE_SCHEMA",
     "KNOWLEDGE_INDEX_VIEW_ID",
     "KNOWLEDGE_INDEX_VIEW_SCHEMA",
+    "KnowledgeIndexBinding",
+    "KnowledgeIndexError",
+    "KnowledgeIndexTable",
     "L1_SECTION_CHOICES",
+    "labelled_bullets",
+    "load_knowledge_index_table",
     "MAX_HOISTED_DISTINCT",
+    "narrow_assembly",
     "NO_CANDIDATES",
     "NO_SLOT_TYPES",
     "NO_VOTE",
     "OVERRIDABLE_ROLES",
+    "parse_card_sections",
+    "parse_index_id",
+    "parse_knowledge_index_config",
+    "parse_role_budget_override",
+    "PERCEPTION_STATE_KIND",
     "PIN_NAMESPACE",
     "PIN_ROOT",
     "POINTER_BLOCK_EVIDENCE_ID",
     "POINTER_BUDGET_KEYS",
     "POINTER_VOCABULARY",
-    "ROLE_BUDGET_KEY",
-    "SOLVER_CITATION_MODES",
-    "TAXONOMY_FREQUENCY_ORDERING",
-    "CardSection",
-    "ExpansionItem",
-    "HoistedSection",
-    "IndexAssembly",
-    "IndexBudget",
-    "IndexEntry",
-    "IndexPlan",
-    "KnowledgeIndexError",
-    "KnowledgeIndexTable",
-    "RowSelection",
-    "SharedSection",
-    "apply_to_payload",
-    "assemble",
-    "canonical_json",
-    "contact_receipt",
-    "degradation_step",
-    "display_name",
-    "edge_id",
-    "entry_from_json",
-    "estimated_tokens",
-    "exemplar_id",
-    "extract_citations",
-    "hoist_sections",
-    "index_droppable_items",
-    "index_suffix",
-    "intent_id",
-    "is_index_id",
-    "is_knowledge_index_null_arm",
-    "knowledge_index_receipt",
-    "labelled_bullets",
-    "load_knowledge_index_table",
-    "parse_card_sections",
-    "parse_index_id",
-    "parse_knowledge_index_config",
-    "parse_role_budget_override",
     "registered_orderings",
     "render_constant_index",
     "render_expansions",
     "render_pointer_block",
     "resolve_ordering",
     "restore_card",
+    "RETRIEVAL_RANK_SCHEMA",
+    "retrieval_similarity",
+    "ROLE_BUDGET_KEY",
+    "RowSelection",
     "section_body",
     "sha256_text",
+    "SharedSection",
+    "SLOT_EVIDENCE_PREFIX",
     "slot_id",
+    "SOLVER_CITATION_MODES",
     "table_from_snapshot",
     "taxonomy_frequency_order",
+    "TAXONOMY_FREQUENCY_ORDERING",
     "validate_knowledge_index_config",
     "validate_knowledge_index_pin",
+    "value_retrieval_ranks",
 ]

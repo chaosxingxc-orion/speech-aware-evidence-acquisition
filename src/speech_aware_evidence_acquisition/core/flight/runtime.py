@@ -2481,6 +2481,44 @@ class FlightRuntime:
             special_token_reserve=REGISTERED_SPECIAL_TOKEN_RESERVE,
         )
 
+    def _knowledge_index_binding(self, native_config, supply_for_phase):
+        """E21: the flight-owned knowledge-INDEX binding, or None.
+
+        ``None`` on the unarmed arm, which is every cell written before E21
+        and every cell that does not declare
+        ``native_episode.knowledge_index``; the runner then never reaches a
+        line of the index seam. Armed, this loads the RELEASED view from
+        the controlled data root under its two declared pins -- the release
+        by file bytes, the snapshot by content hash -- and refuses by name
+        before any contact if either moved.
+
+        It also arms the supply's own retrieval-rank record (item E21w gap
+        3): the dict is filled by ``rails.phase_supply``'s decision and
+        read by the binding's row selector, which is why it is handed over
+        by reference rather than copied.
+        """
+
+        if native_config is None or native_config.knowledge_index_json is None:
+            return None
+        from ...rails.knowledge_index import (  # noqa: PLC0415
+            build_knowledge_index_binding,
+        )
+
+        ranks: dict[str, dict] = {}
+        similarity: dict[str, object] = {}
+        if supply_for_phase is not None:
+            try:
+                supply_for_phase.retrieval_ranks = ranks
+                supply_for_phase.retrieval_similarity = similarity
+            except AttributeError:
+                ranks, similarity = {}, {}
+        return build_knowledge_index_binding(
+            knowledge_index_json=native_config.knowledge_index_json,
+            data_root=self._data_root,
+            exemplar_ranks=lambda sample_id: ranks.get(sample_id, {}),
+            similarity=similarity,
+        )
+
     def _prepare(self) -> tuple[Mapping[str, object], str, str, str]:
         """Compose the four fragments, build the adapter, load and
         identity-hash the split.
@@ -5476,6 +5514,14 @@ class FlightRuntime:
                 # therefore no check at all -- unless
                 # ``native_episode.context_fit_policy`` is armed.
                 context_fit_budget=self._context_fit_budget(),
+                # Item E21 (the knowledge INDEX, not the Earnings-21
+                # carrier), owner decisions 48 and 50: the loaded,
+                # hash-verified released view, its resolved plan and the
+                # row selector. None -- and therefore byte-identical to the
+                # pre-E21 tree -- unless the key is armed.
+                knowledge_index=self._knowledge_index_binding(
+                    native_config, supply_for_phase
+                ),
             )
         facet_seed, value_seed = self._phase_supply_seeds(
             program, binding, supply_specs, plan
@@ -7157,6 +7203,20 @@ class FlightRuntime:
             "context_compaction_rows": 0,
             "context_compaction_contacts": 0,
         }
+        # Item E21 (the knowledge index, not the Earnings-21 carrier): how
+        # many rows rendered the index at all, how many contacts carried a
+        # pointer/expansion block, how many index degradation steps the
+        # dispatch spent, and how many cited ids did not resolve in the
+        # view. These four are ADDED only when at least one row sealed the
+        # block, so a dispatch that does not arm the key still reports
+        # exactly the four E20 counters and its manifest is byte-identical
+        # to its pre-E21 self.
+        index_counts = {
+            "knowledge_index_rows": 0,
+            "knowledge_index_contacts": 0,
+            "knowledge_index_degradation_steps": 0,
+            "knowledge_index_citations_unresolved": 0,
+        }
         for row in self._output_rows or ():
             if not isinstance(row, Mapping):
                 continue
@@ -7177,6 +7237,21 @@ class FlightRuntime:
                 compacted = context_fit.get("compacted_contacts")
                 if isinstance(compacted, int) and not isinstance(compacted, bool):
                     counts["context_compaction_contacts"] += compacted
+            index = receipt.get("knowledge_index")
+            if isinstance(index, Mapping):
+                index_counts["knowledge_index_rows"] += 1
+                contacts = index.get("contacts")
+                if isinstance(contacts, list):
+                    index_counts["knowledge_index_contacts"] += len(contacts)
+                for name, key in (
+                    ("knowledge_index_degradation_steps", "degradation_steps"),
+                    ("knowledge_index_citations_unresolved", "citations_unresolved"),
+                ):
+                    value = index.get(key)
+                    if isinstance(value, int) and not isinstance(value, bool):
+                        index_counts[name] += value
+        if index_counts["knowledge_index_rows"]:
+            counts.update(index_counts)
         return counts
 
     def _run_obs_phases(self, policy: str) -> Mapping[str, object]:

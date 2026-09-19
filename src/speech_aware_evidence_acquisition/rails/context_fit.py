@@ -236,6 +236,16 @@ class CompactableRequest:
     content: tuple[Mapping[str, object], ...]
     agent_states: tuple[Mapping[str, object], ...]
     attachments: tuple[BlockAttachment, ...] = ()
+    #: E21w (item E21, the knowledge index): the ``rails.knowledge_index.
+    #: IndexAssembly`` this request's pointer/expansion parts were composed
+    #: from, or ``None`` -- which is every request written before E21 and
+    #: every episode that does not arm ``native_episode.knowledge_index``.
+    #: Set, the index's OWN ladder replaces the ``exemplar-supply`` ladder
+    #: for exactly the parts the index authored, so ONE caller drives both
+    #: ladders through this module's own :func:`apply_drops`. Declared last,
+    #: excluded from :meth:`document`: it names no byte of the request and
+    #: the measurement basis must not move.
+    index_assembly: object = None
 
     def __post_init__(self) -> None:
         if not isinstance(self.content, tuple) or not isinstance(
@@ -256,6 +266,16 @@ class CompactableRequest:
         for attachment in self.attachments:
             if not isinstance(attachment, BlockAttachment):
                 raise ContextFitError("attachments must be BlockAttachment")
+        if self.index_assembly is not None and not hasattr(
+            self.index_assembly, "expansions"
+        ):
+            # Duck-typed on purpose: ``rails.knowledge_index`` imports THIS
+            # module for :class:`DroppableItem`, so naming its type here
+            # would be a cycle. The one attribute the ladder needs is the
+            # one checked.
+            raise ContextFitError(
+                "index_assembly must be a rails.knowledge_index.IndexAssembly"
+            )
 
     def document(self) -> dict[str, object]:
         """A JSON-safe view, used only for measurement and for tests."""
@@ -310,6 +330,18 @@ def droppable_items(request: CompactableRequest) -> tuple[DroppableItem, ...]:
             values.append((index, identifier))
         elif identifier.startswith("facet:"):
             keys.append((index, identifier))
+    # E21w: the index owns its own parts. Under an armed
+    # ``native_episode.knowledge_index`` the pointer block and every
+    # expansion are ``value:`` parts, so E20's own tail-first
+    # ``exemplar-supply`` ladder would spend them in the wrong order -- it
+    # keeps the first half of a block, and the index's rule is "the
+    # expansion tail first, the pointer block only once every expansion is
+    # gone". The parts the index authored are therefore REMOVED from the
+    # exemplar ladder and re-added in the index's declared order.
+    index_items = index_ladder(request, {identifier for _i, identifier in values})
+    if index_items:
+        owned = {item.identifier for item in index_items}
+        values = [entry for entry in values if entry[1] not in owned]
 
     by_state = {
         str(state.get("state_id")): index
@@ -380,11 +412,65 @@ def droppable_items(request: CompactableRequest) -> tuple[DroppableItem, ...]:
     }
     ordered: list[DroppableItem] = []
     for tranche in (1, 2):
+        # E21w: the index's own tranche, ahead of every other block of the
+        # same tranche -- the index is the cheapest context this request
+        # carries and the one whose loss the design bounded. With no armed
+        # index this list is empty and the loop is exactly its pre-E21 self.
+        ordered.extend(item for item in index_items if item.tranche == tranche)
         for block in DROP_ORDER:
             ordered.extend(
                 item for item in per_block[block] if item.tranche == tranche
             )
     return tuple(ordered)
+
+
+def index_ladder(
+    request: CompactableRequest, value_identifiers: set,
+) -> tuple[DroppableItem, ...]:
+    """E21w: the knowledge index's own ladder, bound to THIS request's parts.
+
+    ``rails.knowledge_index.index_droppable_items`` produces the declared
+    order -- expansions from the tail, then the pointer block, then the L1
+    index falling back to L0 -- addressed by identifier, with the index
+    positions of the assembly rather than of the rendered content list.
+    This binds each item to the content index the part actually occupies,
+    drops an item whose part is no longer in the request, and REFUSES the
+    granularity step by name:
+
+    the L1 -> L0 step re-renders the CONSTANT PREFIX, which lives in the
+    system message. :class:`CompactableRequest` deliberately excludes the
+    system message ("nothing here may touch it"), and re-rendering it on one
+    contact would break the constant-prefix property the whole key exists
+    for -- the per-slot KV prefix would stop being shared by the row. So the
+    step is not executed here; an index-armed row that still does not fit
+    after the two content tranches takes E20's terminal
+    ``context_compaction`` disposition, exactly as an unarmed one does, and
+    the refusal is recorded rather than silent
+    (:data:`rails.knowledge_index.INDEX_GRANULARITY_BLOCK`).
+    """
+
+    assembly = request.index_assembly
+    if assembly is None:
+        return ()
+    from .knowledge_index import (  # noqa: PLC0415 - cycle guard
+        INDEX_GRANULARITY_BLOCK, index_droppable_items,
+    )
+
+    position_of = {
+        identifier: index
+        for index, part in enumerate(request.content)
+        for identifier in (_identifier(part),)
+        if identifier is not None
+    }
+    bound: list[DroppableItem] = []
+    for item in index_droppable_items(assembly):
+        if item.block == INDEX_GRANULARITY_BLOCK:
+            continue
+        index = position_of.get(item.identifier)
+        if index is None or item.identifier not in value_identifiers:
+            continue
+        bound.append(replace(item, location="content", index=index))
+    return tuple(bound)
 
 
 def apply_drops(
@@ -630,6 +716,7 @@ __all__ = [
     "canonical_bytes",
     "compact_to_fit",
     "droppable_items",
+    "index_ladder",
     "is_context_fit_null_arm",
     "parse_context_fit_policy",
     "terminal_context_disposition",
