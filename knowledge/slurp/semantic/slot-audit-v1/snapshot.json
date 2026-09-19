@@ -1,0 +1,2455 @@
+{
+  "builder_policy_id": "saea-slot-audit-construction-profile-v1",
+  "construction_utterance_count": 9354,
+  "conventions": [
+    {
+      "entity_type": "date",
+      "forbidden_characters": "0123456789:/",
+      "rule_id": "saea-spoken-form-v1",
+      "statement": "Retain the spoken calendar expression; do not resolve it to an ISO date or invent a year."
+    },
+    {
+      "entity_type": "time",
+      "forbidden_characters": "0123456789:/",
+      "rule_id": "saea-spoken-form-v1",
+      "statement": "The filler is the words as spoken: number words with am or pm spelled as spoken words, never digits and never a colon. Attested construction forms include seven am, three pm, five thirty am, six o clock and four hundred and thirty pm."
+    }
+  ],
+  "excluded_train_utterance_count": 2160,
+  "intents": [
+    {
+      "intent": "alarm_query",
+      "rows": 85,
+      "rows_with_entity": 36,
+      "types": [
+        {
+          "entity_type": "date",
+          "row_share": 0.235294,
+          "rows": 20
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.129412,
+          "rows": 11
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.094118,
+          "rows": 8
+        },
+        {
+          "entity_type": "alarm_type",
+          "row_share": 0.023529,
+          "rows": 2
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.023529,
+          "rows": 2
+        },
+        {
+          "entity_type": "device_type",
+          "row_share": 0.011765,
+          "rows": 1
+        },
+        {
+          "entity_type": "house_place",
+          "row_share": 0.011765,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "alarm_remove",
+      "rows": 55,
+      "rows_with_entity": 37,
+      "types": [
+        {
+          "entity_type": "date",
+          "row_share": 0.309091,
+          "rows": 17
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.290909,
+          "rows": 16
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.127273,
+          "rows": 7
+        },
+        {
+          "entity_type": "alarm_type",
+          "row_share": 0.090909,
+          "rows": 5
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.018182,
+          "rows": 1
+        },
+        {
+          "entity_type": "relation",
+          "row_share": 0.018182,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "alarm_set",
+      "rows": 130,
+      "rows_with_entity": 108,
+      "types": [
+        {
+          "entity_type": "time",
+          "row_share": 0.730769,
+          "rows": 95
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.3,
+          "rows": 39
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.146154,
+          "rows": 19
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.138462,
+          "rows": 18
+        },
+        {
+          "entity_type": "alarm_type",
+          "row_share": 0.015385,
+          "rows": 2
+        },
+        {
+          "entity_type": "general_frequency",
+          "row_share": 0.015385,
+          "rows": 2
+        },
+        {
+          "entity_type": "relation",
+          "row_share": 0.015385,
+          "rows": 2
+        },
+        {
+          "entity_type": "order_type",
+          "row_share": 0.007692,
+          "rows": 1
+        },
+        {
+          "entity_type": "time_zone",
+          "row_share": 0.007692,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "audio_volume_down",
+      "rows": 33,
+      "rows_with_entity": 6,
+      "types": [
+        {
+          "entity_type": "change_amount",
+          "row_share": 0.151515,
+          "rows": 5
+        },
+        {
+          "entity_type": "device_type",
+          "row_share": 0.030303,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "audio_volume_mute",
+      "rows": 60,
+      "rows_with_entity": 9,
+      "types": [
+        {
+          "entity_type": "time",
+          "row_share": 0.1,
+          "rows": 6
+        },
+        {
+          "entity_type": "change_amount",
+          "row_share": 0.033333,
+          "rows": 2
+        },
+        {
+          "entity_type": "device_type",
+          "row_share": 0.016667,
+          "rows": 1
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.016667,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "audio_volume_other",
+      "rows": 12,
+      "rows_with_entity": 1,
+      "types": [
+        {
+          "entity_type": "change_amount",
+          "row_share": 0.083333,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "audio_volume_up",
+      "rows": 65,
+      "rows_with_entity": 14,
+      "types": [
+        {
+          "entity_type": "change_amount",
+          "row_share": 0.2,
+          "rows": 13
+        },
+        {
+          "entity_type": "device_type",
+          "row_share": 0.092308,
+          "rows": 6
+        }
+      ]
+    },
+    {
+      "intent": "calendar_query",
+      "rows": 511,
+      "rows_with_entity": 392,
+      "types": [
+        {
+          "entity_type": "date",
+          "row_share": 0.518591,
+          "rows": 265
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.381605,
+          "rows": 195
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.11546,
+          "rows": 59
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.050881,
+          "rows": 26
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.039139,
+          "rows": 20
+        },
+        {
+          "entity_type": "relation",
+          "row_share": 0.023483,
+          "rows": 12
+        },
+        {
+          "entity_type": "place_name",
+          "row_share": 0.015656,
+          "rows": 8
+        },
+        {
+          "entity_type": "meal_type",
+          "row_share": 0.007828,
+          "rows": 4
+        },
+        {
+          "entity_type": "sport_type",
+          "row_share": 0.007828,
+          "rows": 4
+        },
+        {
+          "entity_type": "general_frequency",
+          "row_share": 0.003914,
+          "rows": 2
+        },
+        {
+          "entity_type": "list_name",
+          "row_share": 0.003914,
+          "rows": 2
+        },
+        {
+          "entity_type": "business_name",
+          "row_share": 0.001957,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "calendar_remove",
+      "rows": 293,
+      "rows_with_entity": 155,
+      "types": [
+        {
+          "entity_type": "date",
+          "row_share": 0.341297,
+          "rows": 100
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.331058,
+          "rows": 97
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.081911,
+          "rows": 24
+        },
+        {
+          "entity_type": "meal_type",
+          "row_share": 0.030717,
+          "rows": 9
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.027304,
+          "rows": 8
+        },
+        {
+          "entity_type": "place_name",
+          "row_share": 0.006826,
+          "rows": 2
+        },
+        {
+          "entity_type": "app_name",
+          "row_share": 0.003413,
+          "rows": 1
+        },
+        {
+          "entity_type": "general_frequency",
+          "row_share": 0.003413,
+          "rows": 1
+        },
+        {
+          "entity_type": "list_name",
+          "row_share": 0.003413,
+          "rows": 1
+        },
+        {
+          "entity_type": "relation",
+          "row_share": 0.003413,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "calendar_set",
+      "rows": 764,
+      "rows_with_entity": 638,
+      "types": [
+        {
+          "entity_type": "event_name",
+          "row_share": 0.641361,
+          "rows": 490
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.51178,
+          "rows": 391
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.318063,
+          "rows": 243
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.176702,
+          "rows": 135
+        },
+        {
+          "entity_type": "general_frequency",
+          "row_share": 0.086387,
+          "rows": 66
+        },
+        {
+          "entity_type": "relation",
+          "row_share": 0.081152,
+          "rows": 62
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.064136,
+          "rows": 49
+        },
+        {
+          "entity_type": "place_name",
+          "row_share": 0.061518,
+          "rows": 47
+        },
+        {
+          "entity_type": "meal_type",
+          "row_share": 0.024869,
+          "rows": 19
+        },
+        {
+          "entity_type": "business_name",
+          "row_share": 0.003927,
+          "rows": 3
+        },
+        {
+          "entity_type": "media_type",
+          "row_share": 0.003927,
+          "rows": 3
+        },
+        {
+          "entity_type": "house_place",
+          "row_share": 0.001309,
+          "rows": 1
+        },
+        {
+          "entity_type": "personal_info",
+          "row_share": 0.001309,
+          "rows": 1
+        },
+        {
+          "entity_type": "sport_type",
+          "row_share": 0.001309,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "cooking_query",
+      "rows": 3,
+      "rows_with_entity": 1,
+      "types": [
+        {
+          "entity_type": "food_type",
+          "row_share": 0.333333,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "cooking_recipe",
+      "rows": 88,
+      "rows_with_entity": 77,
+      "types": [
+        {
+          "entity_type": "food_type",
+          "row_share": 0.795455,
+          "rows": 70
+        },
+        {
+          "entity_type": "cooking_type",
+          "row_share": 0.125,
+          "rows": 11
+        },
+        {
+          "entity_type": "ingredient",
+          "row_share": 0.079545,
+          "rows": 7
+        },
+        {
+          "entity_type": "drink_type",
+          "row_share": 0.022727,
+          "rows": 2
+        },
+        {
+          "entity_type": "app_name",
+          "row_share": 0.011364,
+          "rows": 1
+        },
+        {
+          "entity_type": "business_name",
+          "row_share": 0.011364,
+          "rows": 1
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.011364,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "datetime_convert",
+      "rows": 38,
+      "rows_with_entity": 35,
+      "types": [
+        {
+          "entity_type": "place_name",
+          "row_share": 0.605263,
+          "rows": 23
+        },
+        {
+          "entity_type": "time_zone",
+          "row_share": 0.368421,
+          "rows": 14
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.289474,
+          "rows": 11
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.026316,
+          "rows": 1
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.026316,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "datetime_query",
+      "rows": 244,
+      "rows_with_entity": 196,
+      "types": [
+        {
+          "entity_type": "place_name",
+          "row_share": 0.385246,
+          "rows": 94
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.315574,
+          "rows": 77
+        },
+        {
+          "entity_type": "time_zone",
+          "row_share": 0.069672,
+          "rows": 17
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.040984,
+          "rows": 10
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.028689,
+          "rows": 7
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.004098,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "email_addcontact",
+      "rows": 44,
+      "rows_with_entity": 21,
+      "types": [
+        {
+          "entity_type": "email_address",
+          "row_share": 0.272727,
+          "rows": 12
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.227273,
+          "rows": 10
+        },
+        {
+          "entity_type": "personal_info",
+          "row_share": 0.068182,
+          "rows": 3
+        },
+        {
+          "entity_type": "list_name",
+          "row_share": 0.022727,
+          "rows": 1
+        },
+        {
+          "entity_type": "relation",
+          "row_share": 0.022727,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "email_query",
+      "rows": 360,
+      "rows_with_entity": 201,
+      "types": [
+        {
+          "entity_type": "person",
+          "row_share": 0.3,
+          "rows": 108
+        },
+        {
+          "entity_type": "relation",
+          "row_share": 0.083333,
+          "rows": 30
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.080556,
+          "rows": 29
+        },
+        {
+          "entity_type": "email_folder",
+          "row_share": 0.080556,
+          "rows": 29
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.058333,
+          "rows": 21
+        },
+        {
+          "entity_type": "business_name",
+          "row_share": 0.011111,
+          "rows": 4
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.011111,
+          "rows": 4
+        },
+        {
+          "entity_type": "personal_info",
+          "row_share": 0.005556,
+          "rows": 2
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.005556,
+          "rows": 2
+        }
+      ]
+    },
+    {
+      "intent": "email_querycontact",
+      "rows": 115,
+      "rows_with_entity": 98,
+      "types": [
+        {
+          "entity_type": "person",
+          "row_share": 0.713043,
+          "rows": 82
+        },
+        {
+          "entity_type": "personal_info",
+          "row_share": 0.478261,
+          "rows": 55
+        },
+        {
+          "entity_type": "relation",
+          "row_share": 0.104348,
+          "rows": 12
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.026087,
+          "rows": 3
+        },
+        {
+          "entity_type": "place_name",
+          "row_share": 0.017391,
+          "rows": 2
+        },
+        {
+          "entity_type": "device_type",
+          "row_share": 0.008696,
+          "rows": 1
+        },
+        {
+          "entity_type": "list_name",
+          "row_share": 0.008696,
+          "rows": 1
+        },
+        {
+          "entity_type": "media_type",
+          "row_share": 0.008696,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "email_sendemail",
+      "rows": 314,
+      "rows_with_entity": 243,
+      "types": [
+        {
+          "entity_type": "person",
+          "row_share": 0.468153,
+          "rows": 147
+        },
+        {
+          "entity_type": "relation",
+          "row_share": 0.251592,
+          "rows": 79
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.111465,
+          "rows": 35
+        },
+        {
+          "entity_type": "email_address",
+          "row_share": 0.05414,
+          "rows": 17
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.047771,
+          "rows": 15
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.028662,
+          "rows": 9
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.025478,
+          "rows": 8
+        },
+        {
+          "entity_type": "meal_type",
+          "row_share": 0.022293,
+          "rows": 7
+        },
+        {
+          "entity_type": "place_name",
+          "row_share": 0.009554,
+          "rows": 3
+        },
+        {
+          "entity_type": "general_frequency",
+          "row_share": 0.006369,
+          "rows": 2
+        },
+        {
+          "entity_type": "artist_name",
+          "row_share": 0.003185,
+          "rows": 1
+        },
+        {
+          "entity_type": "business_name",
+          "row_share": 0.003185,
+          "rows": 1
+        },
+        {
+          "entity_type": "email_folder",
+          "row_share": 0.003185,
+          "rows": 1
+        },
+        {
+          "entity_type": "personal_info",
+          "row_share": 0.003185,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "general_greet",
+      "rows": 18,
+      "rows_with_entity": 2,
+      "types": [
+        {
+          "entity_type": "date",
+          "row_share": 0.111111,
+          "rows": 2
+        }
+      ]
+    },
+    {
+      "intent": "general_joke",
+      "rows": 58,
+      "rows_with_entity": 31,
+      "types": [
+        {
+          "entity_type": "joke_type",
+          "row_share": 0.465517,
+          "rows": 27
+        },
+        {
+          "entity_type": "relation",
+          "row_share": 0.051724,
+          "rows": 3
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.034483,
+          "rows": 2
+        },
+        {
+          "entity_type": "business_type",
+          "row_share": 0.017241,
+          "rows": 1
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.017241,
+          "rows": 1
+        },
+        {
+          "entity_type": "food_type",
+          "row_share": 0.017241,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "general_quirky",
+      "rows": 456,
+      "rows_with_entity": 127,
+      "types": [
+        {
+          "entity_type": "date",
+          "row_share": 0.175439,
+          "rows": 80
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.035088,
+          "rows": 16
+        },
+        {
+          "entity_type": "place_name",
+          "row_share": 0.017544,
+          "rows": 8
+        },
+        {
+          "entity_type": "relation",
+          "row_share": 0.017544,
+          "rows": 8
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.015351,
+          "rows": 7
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.015351,
+          "rows": 7
+        },
+        {
+          "entity_type": "meal_type",
+          "row_share": 0.013158,
+          "rows": 6
+        },
+        {
+          "entity_type": "food_type",
+          "row_share": 0.006579,
+          "rows": 3
+        },
+        {
+          "entity_type": "artist_name",
+          "row_share": 0.004386,
+          "rows": 2
+        },
+        {
+          "entity_type": "business_type",
+          "row_share": 0.004386,
+          "rows": 2
+        },
+        {
+          "entity_type": "device_type",
+          "row_share": 0.004386,
+          "rows": 2
+        },
+        {
+          "entity_type": "drink_type",
+          "row_share": 0.002193,
+          "rows": 1
+        },
+        {
+          "entity_type": "media_type",
+          "row_share": 0.002193,
+          "rows": 1
+        },
+        {
+          "entity_type": "movie_name",
+          "row_share": 0.002193,
+          "rows": 1
+        },
+        {
+          "entity_type": "news_topic",
+          "row_share": 0.002193,
+          "rows": 1
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.002193,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "iot_cleaning",
+      "rows": 80,
+      "rows_with_entity": 71,
+      "types": [
+        {
+          "entity_type": "device_type",
+          "row_share": 0.7875,
+          "rows": 63
+        },
+        {
+          "entity_type": "house_place",
+          "row_share": 0.1875,
+          "rows": 15
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.0375,
+          "rows": 3
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.0125,
+          "rows": 1
+        },
+        {
+          "entity_type": "place_name",
+          "row_share": 0.0125,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "iot_coffee",
+      "rows": 108,
+      "rows_with_entity": 41,
+      "types": [
+        {
+          "entity_type": "coffee_type",
+          "row_share": 0.166667,
+          "rows": 18
+        },
+        {
+          "entity_type": "device_type",
+          "row_share": 0.138889,
+          "rows": 15
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.092593,
+          "rows": 10
+        },
+        {
+          "entity_type": "business_type",
+          "row_share": 0.027778,
+          "rows": 3
+        },
+        {
+          "entity_type": "business_name",
+          "row_share": 0.018519,
+          "rows": 2
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.018519,
+          "rows": 2
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.009259,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "iot_hue_lightchange",
+      "rows": 102,
+      "rows_with_entity": 83,
+      "types": [
+        {
+          "entity_type": "color_type",
+          "row_share": 0.72549,
+          "rows": 74
+        },
+        {
+          "entity_type": "house_place",
+          "row_share": 0.303922,
+          "rows": 31
+        },
+        {
+          "entity_type": "change_amount",
+          "row_share": 0.039216,
+          "rows": 4
+        },
+        {
+          "entity_type": "player_setting",
+          "row_share": 0.009804,
+          "rows": 1
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.009804,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "iot_hue_lightdim",
+      "rows": 63,
+      "rows_with_entity": 23,
+      "types": [
+        {
+          "entity_type": "house_place",
+          "row_share": 0.238095,
+          "rows": 15
+        },
+        {
+          "entity_type": "change_amount",
+          "row_share": 0.126984,
+          "rows": 8
+        },
+        {
+          "entity_type": "color_type",
+          "row_share": 0.015873,
+          "rows": 1
+        },
+        {
+          "entity_type": "device_type",
+          "row_share": 0.015873,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "iot_hue_lightoff",
+      "rows": 128,
+      "rows_with_entity": 89,
+      "types": [
+        {
+          "entity_type": "house_place",
+          "row_share": 0.601562,
+          "rows": 77
+        },
+        {
+          "entity_type": "device_type",
+          "row_share": 0.132812,
+          "rows": 17
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.023438,
+          "rows": 3
+        },
+        {
+          "entity_type": "color_type",
+          "row_share": 0.007812,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "iot_hue_lighton",
+      "rows": 16,
+      "rows_with_entity": 6,
+      "types": [
+        {
+          "entity_type": "device_type",
+          "row_share": 0.1875,
+          "rows": 3
+        },
+        {
+          "entity_type": "house_place",
+          "row_share": 0.1875,
+          "rows": 3
+        }
+      ]
+    },
+    {
+      "intent": "iot_hue_lightup",
+      "rows": 67,
+      "rows_with_entity": 21,
+      "types": [
+        {
+          "entity_type": "house_place",
+          "row_share": 0.208955,
+          "rows": 14
+        },
+        {
+          "entity_type": "change_amount",
+          "row_share": 0.104478,
+          "rows": 7
+        }
+      ]
+    },
+    {
+      "intent": "iot_wemo_off",
+      "rows": 46,
+      "rows_with_entity": 38,
+      "types": [
+        {
+          "entity_type": "device_type",
+          "row_share": 0.826087,
+          "rows": 38
+        },
+        {
+          "entity_type": "house_place",
+          "row_share": 0.043478,
+          "rows": 2
+        }
+      ]
+    },
+    {
+      "intent": "iot_wemo_on",
+      "rows": 39,
+      "rows_with_entity": 28,
+      "types": [
+        {
+          "entity_type": "device_type",
+          "row_share": 0.666667,
+          "rows": 26
+        },
+        {
+          "entity_type": "house_place",
+          "row_share": 0.076923,
+          "rows": 3
+        }
+      ]
+    },
+    {
+      "intent": "lists_createoradd",
+      "rows": 134,
+      "rows_with_entity": 56,
+      "types": [
+        {
+          "entity_type": "list_name",
+          "row_share": 0.395522,
+          "rows": 53
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.037313,
+          "rows": 5
+        },
+        {
+          "entity_type": "drink_type",
+          "row_share": 0.014925,
+          "rows": 2
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.014925,
+          "rows": 2
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.014925,
+          "rows": 2
+        },
+        {
+          "entity_type": "place_name",
+          "row_share": 0.007463,
+          "rows": 1
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.007463,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "lists_query",
+      "rows": 152,
+      "rows_with_entity": 47,
+      "types": [
+        {
+          "entity_type": "list_name",
+          "row_share": 0.217105,
+          "rows": 33
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.105263,
+          "rows": 16
+        },
+        {
+          "entity_type": "business_name",
+          "row_share": 0.006579,
+          "rows": 1
+        },
+        {
+          "entity_type": "device_type",
+          "row_share": 0.006579,
+          "rows": 1
+        },
+        {
+          "entity_type": "music_genre",
+          "row_share": 0.006579,
+          "rows": 1
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.006579,
+          "rows": 1
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.006579,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "lists_remove",
+      "rows": 133,
+      "rows_with_entity": 67,
+      "types": [
+        {
+          "entity_type": "list_name",
+          "row_share": 0.428571,
+          "rows": 57
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.045113,
+          "rows": 6
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.045113,
+          "rows": 6
+        },
+        {
+          "entity_type": "relation",
+          "row_share": 0.015038,
+          "rows": 2
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.007519,
+          "rows": 1
+        },
+        {
+          "entity_type": "meal_type",
+          "row_share": 0.007519,
+          "rows": 1
+        },
+        {
+          "entity_type": "place_name",
+          "row_share": 0.007519,
+          "rows": 1
+        },
+        {
+          "entity_type": "song_name",
+          "row_share": 0.007519,
+          "rows": 1
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.007519,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "music_dislikeness",
+      "rows": 7,
+      "rows_with_entity": 1,
+      "types": [
+        {
+          "entity_type": "music_descriptor",
+          "row_share": 0.142857,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "music_likeness",
+      "rows": 76,
+      "rows_with_entity": 16,
+      "types": [
+        {
+          "entity_type": "music_genre",
+          "row_share": 0.078947,
+          "rows": 6
+        },
+        {
+          "entity_type": "artist_name",
+          "row_share": 0.052632,
+          "rows": 4
+        },
+        {
+          "entity_type": "music_descriptor",
+          "row_share": 0.026316,
+          "rows": 2
+        },
+        {
+          "entity_type": "player_setting",
+          "row_share": 0.026316,
+          "rows": 2
+        },
+        {
+          "entity_type": "app_name",
+          "row_share": 0.013158,
+          "rows": 1
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.013158,
+          "rows": 1
+        },
+        {
+          "entity_type": "playlist_name",
+          "row_share": 0.013158,
+          "rows": 1
+        },
+        {
+          "entity_type": "song_name",
+          "row_share": 0.013158,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "music_query",
+      "rows": 97,
+      "rows_with_entity": 16,
+      "types": [
+        {
+          "entity_type": "artist_name",
+          "row_share": 0.082474,
+          "rows": 8
+        },
+        {
+          "entity_type": "music_genre",
+          "row_share": 0.041237,
+          "rows": 4
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.030928,
+          "rows": 3
+        },
+        {
+          "entity_type": "song_name",
+          "row_share": 0.020619,
+          "rows": 2
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.010309,
+          "rows": 1
+        },
+        {
+          "entity_type": "player_setting",
+          "row_share": 0.010309,
+          "rows": 1
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.010309,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "music_settings",
+      "rows": 32,
+      "rows_with_entity": 29,
+      "types": [
+        {
+          "entity_type": "player_setting",
+          "row_share": 0.875,
+          "rows": 28
+        },
+        {
+          "entity_type": "artist_name",
+          "row_share": 0.0625,
+          "rows": 2
+        },
+        {
+          "entity_type": "device_type",
+          "row_share": 0.0625,
+          "rows": 2
+        },
+        {
+          "entity_type": "song_name",
+          "row_share": 0.0625,
+          "rows": 2
+        },
+        {
+          "entity_type": "app_name",
+          "row_share": 0.03125,
+          "rows": 1
+        },
+        {
+          "entity_type": "media_type",
+          "row_share": 0.03125,
+          "rows": 1
+        },
+        {
+          "entity_type": "music_descriptor",
+          "row_share": 0.03125,
+          "rows": 1
+        },
+        {
+          "entity_type": "music_genre",
+          "row_share": 0.03125,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "news_query",
+      "rows": 383,
+      "rows_with_entity": 311,
+      "types": [
+        {
+          "entity_type": "news_topic",
+          "row_share": 0.365535,
+          "rows": 140
+        },
+        {
+          "entity_type": "media_type",
+          "row_share": 0.263708,
+          "rows": 101
+        },
+        {
+          "entity_type": "place_name",
+          "row_share": 0.143603,
+          "rows": 55
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.122715,
+          "rows": 47
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.033943,
+          "rows": 13
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.015666,
+          "rows": 6
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.005222,
+          "rows": 2
+        },
+        {
+          "entity_type": "general_frequency",
+          "row_share": 0.002611,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "play_audiobook",
+      "rows": 134,
+      "rows_with_entity": 119,
+      "types": [
+        {
+          "entity_type": "player_setting",
+          "row_share": 0.529851,
+          "rows": 71
+        },
+        {
+          "entity_type": "audiobook_name",
+          "row_share": 0.485075,
+          "rows": 65
+        },
+        {
+          "entity_type": "media_type",
+          "row_share": 0.343284,
+          "rows": 46
+        },
+        {
+          "entity_type": "artist_name",
+          "row_share": 0.044776,
+          "rows": 6
+        },
+        {
+          "entity_type": "audiobook_author",
+          "row_share": 0.044776,
+          "rows": 6
+        },
+        {
+          "entity_type": "app_name",
+          "row_share": 0.037313,
+          "rows": 5
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.029851,
+          "rows": 4
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.014925,
+          "rows": 2
+        }
+      ]
+    },
+    {
+      "intent": "play_game",
+      "rows": 101,
+      "rows_with_entity": 78,
+      "types": [
+        {
+          "entity_type": "game_name",
+          "row_share": 0.762376,
+          "rows": 77
+        },
+        {
+          "entity_type": "device_type",
+          "row_share": 0.009901,
+          "rows": 1
+        },
+        {
+          "entity_type": "game_type",
+          "row_share": 0.009901,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "play_music",
+      "rows": 590,
+      "rows_with_entity": 460,
+      "types": [
+        {
+          "entity_type": "artist_name",
+          "row_share": 0.288136,
+          "rows": 170
+        },
+        {
+          "entity_type": "music_genre",
+          "row_share": 0.228814,
+          "rows": 135
+        },
+        {
+          "entity_type": "song_name",
+          "row_share": 0.184746,
+          "rows": 109
+        },
+        {
+          "entity_type": "playlist_name",
+          "row_share": 0.1,
+          "rows": 59
+        },
+        {
+          "entity_type": "music_descriptor",
+          "row_share": 0.055932,
+          "rows": 33
+        },
+        {
+          "entity_type": "player_setting",
+          "row_share": 0.025424,
+          "rows": 15
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.022034,
+          "rows": 13
+        },
+        {
+          "entity_type": "app_name",
+          "row_share": 0.011864,
+          "rows": 7
+        },
+        {
+          "entity_type": "media_type",
+          "row_share": 0.010169,
+          "rows": 6
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.008475,
+          "rows": 5
+        },
+        {
+          "entity_type": "movie_name",
+          "row_share": 0.00678,
+          "rows": 4
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.005085,
+          "rows": 3
+        },
+        {
+          "entity_type": "device_type",
+          "row_share": 0.001695,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "play_podcasts",
+      "rows": 175,
+      "rows_with_entity": 121,
+      "types": [
+        {
+          "entity_type": "podcast_descriptor",
+          "row_share": 0.354286,
+          "rows": 62
+        },
+        {
+          "entity_type": "podcast_name",
+          "row_share": 0.285714,
+          "rows": 50
+        },
+        {
+          "entity_type": "player_setting",
+          "row_share": 0.097143,
+          "rows": 17
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.034286,
+          "rows": 6
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.022857,
+          "rows": 4
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.011429,
+          "rows": 2
+        },
+        {
+          "entity_type": "transport_type",
+          "row_share": 0.011429,
+          "rows": 2
+        },
+        {
+          "entity_type": "place_name",
+          "row_share": 0.005714,
+          "rows": 1
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.005714,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "play_radio",
+      "rows": 257,
+      "rows_with_entity": 164,
+      "types": [
+        {
+          "entity_type": "radio_name",
+          "row_share": 0.44358,
+          "rows": 114
+        },
+        {
+          "entity_type": "app_name",
+          "row_share": 0.097276,
+          "rows": 25
+        },
+        {
+          "entity_type": "music_genre",
+          "row_share": 0.046693,
+          "rows": 12
+        },
+        {
+          "entity_type": "device_type",
+          "row_share": 0.031128,
+          "rows": 8
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.027237,
+          "rows": 7
+        },
+        {
+          "entity_type": "house_place",
+          "row_share": 0.015564,
+          "rows": 4
+        },
+        {
+          "entity_type": "media_type",
+          "row_share": 0.015564,
+          "rows": 4
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.007782,
+          "rows": 2
+        },
+        {
+          "entity_type": "music_descriptor",
+          "row_share": 0.003891,
+          "rows": 1
+        },
+        {
+          "entity_type": "relation",
+          "row_share": 0.003891,
+          "rows": 1
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.003891,
+          "rows": 1
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.003891,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "qa_currency",
+      "rows": 130,
+      "rows_with_entity": 108,
+      "types": [
+        {
+          "entity_type": "currency_name",
+          "row_share": 0.815385,
+          "rows": 106
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.030769,
+          "rows": 4
+        },
+        {
+          "entity_type": "place_name",
+          "row_share": 0.015385,
+          "rows": 2
+        }
+      ]
+    },
+    {
+      "intent": "qa_definition",
+      "rows": 246,
+      "rows_with_entity": 208,
+      "types": [
+        {
+          "entity_type": "definition_word",
+          "row_share": 0.845528,
+          "rows": 208
+        }
+      ]
+    },
+    {
+      "intent": "qa_factoid",
+      "rows": 484,
+      "rows_with_entity": 310,
+      "types": [
+        {
+          "entity_type": "person",
+          "row_share": 0.349174,
+          "rows": 169
+        },
+        {
+          "entity_type": "place_name",
+          "row_share": 0.243802,
+          "rows": 118
+        },
+        {
+          "entity_type": "artist_name",
+          "row_share": 0.033058,
+          "rows": 16
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.020661,
+          "rows": 10
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.010331,
+          "rows": 5
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.004132,
+          "rows": 2
+        },
+        {
+          "entity_type": "food_type",
+          "row_share": 0.002066,
+          "rows": 1
+        },
+        {
+          "entity_type": "movie_name",
+          "row_share": 0.002066,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "qa_maths",
+      "rows": 68,
+      "rows_with_entity": 1,
+      "types": [
+        {
+          "entity_type": "date",
+          "row_share": 0.014706,
+          "rows": 1
+        },
+        {
+          "entity_type": "general_frequency",
+          "row_share": 0.014706,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "qa_stock",
+      "rows": 135,
+      "rows_with_entity": 111,
+      "types": [
+        {
+          "entity_type": "business_name",
+          "row_share": 0.733333,
+          "rows": 99
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.125926,
+          "rows": 17
+        },
+        {
+          "entity_type": "news_topic",
+          "row_share": 0.02963,
+          "rows": 4
+        },
+        {
+          "entity_type": "currency_name",
+          "row_share": 0.014815,
+          "rows": 2
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.007407,
+          "rows": 1
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.007407,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "recommendation_events",
+      "rows": 134,
+      "rows_with_entity": 86,
+      "types": [
+        {
+          "entity_type": "place_name",
+          "row_share": 0.41791,
+          "rows": 56
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.261194,
+          "rows": 35
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.216418,
+          "rows": 29
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.074627,
+          "rows": 10
+        },
+        {
+          "entity_type": "business_type",
+          "row_share": 0.044776,
+          "rows": 6
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.014925,
+          "rows": 2
+        },
+        {
+          "entity_type": "business_name",
+          "row_share": 0.007463,
+          "rows": 1
+        },
+        {
+          "entity_type": "meal_type",
+          "row_share": 0.007463,
+          "rows": 1
+        },
+        {
+          "entity_type": "movie_type",
+          "row_share": 0.007463,
+          "rows": 1
+        },
+        {
+          "entity_type": "personal_info",
+          "row_share": 0.007463,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "recommendation_locations",
+      "rows": 128,
+      "rows_with_entity": 110,
+      "types": [
+        {
+          "entity_type": "business_type",
+          "row_share": 0.710938,
+          "rows": 91
+        },
+        {
+          "entity_type": "place_name",
+          "row_share": 0.257812,
+          "rows": 33
+        },
+        {
+          "entity_type": "food_type",
+          "row_share": 0.132812,
+          "rows": 17
+        },
+        {
+          "entity_type": "business_name",
+          "row_share": 0.023438,
+          "rows": 3
+        },
+        {
+          "entity_type": "meal_type",
+          "row_share": 0.023438,
+          "rows": 3
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.015625,
+          "rows": 2
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.015625,
+          "rows": 2
+        },
+        {
+          "entity_type": "drink_type",
+          "row_share": 0.007812,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "recommendation_movies",
+      "rows": 51,
+      "rows_with_entity": 33,
+      "types": [
+        {
+          "entity_type": "place_name",
+          "row_share": 0.196078,
+          "rows": 10
+        },
+        {
+          "entity_type": "movie_type",
+          "row_share": 0.176471,
+          "rows": 9
+        },
+        {
+          "entity_type": "movie_name",
+          "row_share": 0.156863,
+          "rows": 8
+        },
+        {
+          "entity_type": "business_type",
+          "row_share": 0.117647,
+          "rows": 6
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.078431,
+          "rows": 4
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.078431,
+          "rows": 4
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.058824,
+          "rows": 3
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.039216,
+          "rows": 2
+        },
+        {
+          "entity_type": "media_type",
+          "row_share": 0.019608,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "social_post",
+      "rows": 197,
+      "rows_with_entity": 175,
+      "types": [
+        {
+          "entity_type": "media_type",
+          "row_share": 0.730964,
+          "rows": 144
+        },
+        {
+          "entity_type": "business_name",
+          "row_share": 0.522843,
+          "rows": 103
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.020305,
+          "rows": 4
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.015228,
+          "rows": 3
+        },
+        {
+          "entity_type": "personal_info",
+          "row_share": 0.015228,
+          "rows": 3
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.010152,
+          "rows": 2
+        },
+        {
+          "entity_type": "relation",
+          "row_share": 0.010152,
+          "rows": 2
+        },
+        {
+          "entity_type": "business_type",
+          "row_share": 0.005076,
+          "rows": 1
+        },
+        {
+          "entity_type": "device_type",
+          "row_share": 0.005076,
+          "rows": 1
+        },
+        {
+          "entity_type": "place_name",
+          "row_share": 0.005076,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "social_query",
+      "rows": 74,
+      "rows_with_entity": 54,
+      "types": [
+        {
+          "entity_type": "media_type",
+          "row_share": 0.648649,
+          "rows": 48
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.162162,
+          "rows": 12
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.121622,
+          "rows": 9
+        },
+        {
+          "entity_type": "relation",
+          "row_share": 0.054054,
+          "rows": 4
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.027027,
+          "rows": 2
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.027027,
+          "rows": 2
+        },
+        {
+          "entity_type": "news_topic",
+          "row_share": 0.013514,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "takeaway_order",
+      "rows": 75,
+      "rows_with_entity": 68,
+      "types": [
+        {
+          "entity_type": "food_type",
+          "row_share": 0.653333,
+          "rows": 49
+        },
+        {
+          "entity_type": "business_name",
+          "row_share": 0.453333,
+          "rows": 34
+        },
+        {
+          "entity_type": "order_type",
+          "row_share": 0.28,
+          "rows": 21
+        },
+        {
+          "entity_type": "business_type",
+          "row_share": 0.106667,
+          "rows": 8
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.053333,
+          "rows": 4
+        },
+        {
+          "entity_type": "app_name",
+          "row_share": 0.04,
+          "rows": 3
+        },
+        {
+          "entity_type": "meal_type",
+          "row_share": 0.04,
+          "rows": 3
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.013333,
+          "rows": 1
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.013333,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "takeaway_query",
+      "rows": 62,
+      "rows_with_entity": 52,
+      "types": [
+        {
+          "entity_type": "order_type",
+          "row_share": 0.612903,
+          "rows": 38
+        },
+        {
+          "entity_type": "business_name",
+          "row_share": 0.322581,
+          "rows": 20
+        },
+        {
+          "entity_type": "business_type",
+          "row_share": 0.258065,
+          "rows": 16
+        },
+        {
+          "entity_type": "food_type",
+          "row_share": 0.225806,
+          "rows": 14
+        }
+      ]
+    },
+    {
+      "intent": "transport_query",
+      "rows": 177,
+      "rows_with_entity": 161,
+      "types": [
+        {
+          "entity_type": "place_name",
+          "row_share": 0.666667,
+          "rows": 118
+        },
+        {
+          "entity_type": "transport_type",
+          "row_share": 0.60452,
+          "rows": 107
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.135593,
+          "rows": 24
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.073446,
+          "rows": 13
+        },
+        {
+          "entity_type": "business_name",
+          "row_share": 0.033898,
+          "rows": 6
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.033898,
+          "rows": 6
+        },
+        {
+          "entity_type": "business_type",
+          "row_share": 0.016949,
+          "rows": 3
+        },
+        {
+          "entity_type": "transport_name",
+          "row_share": 0.016949,
+          "rows": 3
+        },
+        {
+          "entity_type": "app_name",
+          "row_share": 0.00565,
+          "rows": 1
+        },
+        {
+          "entity_type": "food_type",
+          "row_share": 0.00565,
+          "rows": 1
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.00565,
+          "rows": 1
+        },
+        {
+          "entity_type": "relation",
+          "row_share": 0.00565,
+          "rows": 1
+        },
+        {
+          "entity_type": "transport_descriptor",
+          "row_share": 0.00565,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "transport_taxi",
+      "rows": 78,
+      "rows_with_entity": 76,
+      "types": [
+        {
+          "entity_type": "transport_type",
+          "row_share": 0.641026,
+          "rows": 50
+        },
+        {
+          "entity_type": "transport_agency",
+          "row_share": 0.397436,
+          "rows": 31
+        },
+        {
+          "entity_type": "place_name",
+          "row_share": 0.269231,
+          "rows": 21
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.192308,
+          "rows": 15
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.089744,
+          "rows": 7
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.064103,
+          "rows": 5
+        },
+        {
+          "entity_type": "business_type",
+          "row_share": 0.025641,
+          "rows": 2
+        },
+        {
+          "entity_type": "app_name",
+          "row_share": 0.012821,
+          "rows": 1
+        },
+        {
+          "entity_type": "business_name",
+          "row_share": 0.012821,
+          "rows": 1
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.012821,
+          "rows": 1
+        },
+        {
+          "entity_type": "person",
+          "row_share": 0.012821,
+          "rows": 1
+        },
+        {
+          "entity_type": "transport_name",
+          "row_share": 0.012821,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "transport_ticket",
+      "rows": 97,
+      "rows_with_entity": 91,
+      "types": [
+        {
+          "entity_type": "transport_type",
+          "row_share": 0.85567,
+          "rows": 83
+        },
+        {
+          "entity_type": "place_name",
+          "row_share": 0.639175,
+          "rows": 62
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.298969,
+          "rows": 29
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.061856,
+          "rows": 6
+        },
+        {
+          "entity_type": "transport_descriptor",
+          "row_share": 0.061856,
+          "rows": 6
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.051546,
+          "rows": 5
+        },
+        {
+          "entity_type": "relation",
+          "row_share": 0.020619,
+          "rows": 2
+        },
+        {
+          "entity_type": "transport_name",
+          "row_share": 0.020619,
+          "rows": 2
+        },
+        {
+          "entity_type": "currency_name",
+          "row_share": 0.010309,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "transport_traffic",
+      "rows": 99,
+      "rows_with_entity": 46,
+      "types": [
+        {
+          "entity_type": "place_name",
+          "row_share": 0.393939,
+          "rows": 39
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.040404,
+          "rows": 4
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.040404,
+          "rows": 4
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.020202,
+          "rows": 2
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.010101,
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "intent": "weather_query",
+      "rows": 453,
+      "rows_with_entity": 402,
+      "types": [
+        {
+          "entity_type": "weather_descriptor",
+          "row_share": 0.543046,
+          "rows": 246
+        },
+        {
+          "entity_type": "date",
+          "row_share": 0.463576,
+          "rows": 210
+        },
+        {
+          "entity_type": "place_name",
+          "row_share": 0.220751,
+          "rows": 100
+        },
+        {
+          "entity_type": "timeofday",
+          "row_share": 0.07064,
+          "rows": 32
+        },
+        {
+          "entity_type": "time",
+          "row_share": 0.057395,
+          "rows": 26
+        },
+        {
+          "entity_type": "event_name",
+          "row_share": 0.006623,
+          "rows": 3
+        },
+        {
+          "entity_type": "general_frequency",
+          "row_share": 0.002208,
+          "rows": 1
+        },
+        {
+          "entity_type": "meal_type",
+          "row_share": 0.002208,
+          "rows": 1
+        }
+      ]
+    }
+  ],
+  "schema": "saea-slot-audit-view-v1",
+  "source_split": "train",
+  "source_split_identity_hash": "67e53fb5f712c40b21b8b54b74e867e6da209f057c68cd40dd987aaa99b19875",
+  "view_id": "slot-audit-v1"
+}

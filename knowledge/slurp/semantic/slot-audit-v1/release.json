@@ -1,0 +1,28 @@
+{
+  "builder_policy_id": "saea-slot-audit-construction-profile-v1",
+  "representation_source": {
+    "relpath": "knowledge/slurp/semantic/slot-contracts-v2/snapshot.json",
+    "root": "data",
+    "sha256": "a48ed83eb7878e9eaedfe4dbdf4ea747e3e582e08899ff1f0edfdfe438ae8904"
+  },
+  "schema": "saea-slot-audit-release-v1",
+  "snapshot": {
+    "relpath": "knowledge/slurp/semantic/slot-audit-v1/snapshot.json",
+    "root": "repo"
+  },
+  "snapshot_sha256": "0cc3f96c98addad37fb564483f051dbe1a11145ac554a85918312c388573406c",
+  "source": {
+    "carrier": "slurp",
+    "construction_utterance_count": 9354,
+    "excluded_train_utterance_count": 2160,
+    "exclusion_authority": "docs/readiness/2026-09-13-slurp-semantic-authoring-registration-v1.json",
+    "forbidden_rosters": [
+      "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "docs/receipts/probe-samples/DEV-1000.json"
+    ],
+    "split": "train"
+  },
+  "source_split_identity_hash": "67e53fb5f712c40b21b8b54b74e867e6da209f057c68cd40dd987aaa99b19875",
+  "view_id": "slot-audit-v1"
+}

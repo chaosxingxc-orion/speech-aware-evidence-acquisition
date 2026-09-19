@@ -719,7 +719,7 @@ the shared harness, each keeps its own comparator, and none of them is admitted 
 | Cell | Analysis placed | Where it lands | Engineering |
 | --- | --- | --- | --- |
 | B8a | A1's USE projection v3 (`R_action` + legal-label v2, filler normalisation P2) | a delivery-time node, applied once to the accepted answer before delivery | E11, 2026-09-18 -- built, tested, `held` |
-| B8b | the A3 coverage-confusion and slot-loss audits | a Reviewer-side slot-audit context block: what the audit says about THIS row's delivered slot types, rendered as typed content at the reviewer boundary | not built |
+| B8b | the A3 coverage-confusion and slot-loss audits | a Reviewer-side slot-audit context block: what the audit says about THIS row's delivered slot types, rendered as typed content at the reviewer boundary | E12, 2026-09-19 -- built, tested, `held` |
 | B8c | the A3 per-scenario confusion pairs | Solver-side scenario hints: the neighbours a scenario is actually confused with, as typed content at the solver boundary | not built |
 
 B8a is the write-side instance and is the one this program has built: it is a transform of what the
@@ -738,3 +738,85 @@ gold is a diagnostic ceiling and stays a diagnostic ceiling: A1's own `R_action`
 against gold after the fact, which is exactly why E4 preregistered it as a RULE to be confirmed
 prospectively rather than tuned, and why the node applies it to every row unconditionally rather
 than where it helps. The same test applies to B8b and B8c before either is built.
+
+### 16.1 B8b as built (E12, 2026-09-19, branch `fable/e12`)
+
+**The boundary.** `reviewer:current-draft` (`B-DRAFT-REV`), and no other. The slot-audit block is
+an ADDITION to that boundary's own L1 rendering, appended after the draft block with one newline
+between them; the draft block itself is produced by the same code and the same template as on the
+base, byte for byte. That is what keeps rule 1 of section 15's E8a notes intact -- the policy is a
+per-state transform, it adds no state, drops none and reorders none -- and it is why the block
+requires that boundary at level `structured`: it has nothing to attach to at `raw` and would be
+replaced at `cleaned`, and both are refused by name before contact.
+
+**The analysis, and where it may come from.** A released construction view,
+`knowledge/slurp/semantic/slot-audit-v1/` (`release.json` + `snapshot.json`, built by
+`scripts/build_slurp_slot_audit_view.py`, registered under
+`rails.slot_audit.SLOT_AUDIT_VIEW_ID`). Per intent: every entity type attested with it in the
+construction pool and the share of that intent's construction rows carrying it, the share of its
+rows carrying no entity at all, and the `date` / `time` representation conventions quoted verbatim
+from the released slot store v2 cards. 60 intents, 54 entity types, 9,354 construction utterances
+-- the governed TRAIN split minus every utterance with a recording in TRAIN Fold A, Fold B or
+DEV-1000, exactly the pool `scripts/build_slurp_exemplar_pool_assets.py` pins for module M1, proved
+disjoint by the builder's own `refuse_evaluated_rows` and bound to that pool's identity hash. The
+table carries COUNTS and SHARES only: no filler, no sentence, no utterance id, no recording, and no
+gold of any evaluated row. It is a committed repository artifact rather than a
+`SPEECHRL_DATA_DIR` store for exactly that reason -- its pin is a git blob hash an auditor can
+check offline.
+
+**The flags**, all four computed by the harness and none by a model
+(`rails.slot_audit.slot_audit_flags`, rendered through
+`configs/probes/ncp_slurp_slot_audit_reviewer_v1.txt`):
+
+| Flag | Fires when | Reads |
+| --- | --- | --- |
+| `TYPE-UNSEEN` | a draft entity type is not attested with this intent anywhere in the construction pool | the draft's types, the table |
+| `EMPTY-DRAFT` | the draft declares no entity while at least `empty_draft_min_entity_row_share` (default 0.5) of this intent's construction rows carry one | the draft, the table |
+| `MISSING-COMMON` | a type above `missing_common_min_row_share` (default 0.5) of this intent's construction rows is absent from the draft; `date` and `time` are named like any other type | the draft's types, the table |
+| `REPRESENTATION` | a `date` or `time` filler breaks the released spoken-form convention `saea-spoken-form-v1` -- no ASCII digit, no colon, no slash | the draft's fillers, the table's conventions |
+
+A fifth number, `profile_min_row_share` (default 0.05), bounds how many types the profile LISTS; it
+gates no flag. The draft's fillers are read only by the `REPRESENTATION` predicate and never reach
+a rendered line: a flag names a TYPE and its counts. An intent the table does not carry renders the
+"no construction rows" line and is still `REPRESENTATION`-checked, because a convention is a
+property of the type, not of the intent.
+
+**Zero contacts, and the receipt that says so.** The block makes no model, tokenizer, encoder,
+scorer, tool, server or network contact, so the bounded ceiling of section 7 is unmoved (11 stays
+11) and cell B8b carries cell B7r's budgets unchanged. The boundary's own
+`saea-node-context-policy-v1` row gains a `slot_audit` block (`saea-reviewer-slot-audit-v1`)
+carrying the view id, the release and snapshot sha256s, the table's content hash, the template id
+and hash, the thresholds, `applied` / `reason`, the intent and whether the table carries it, the
+rendered block's sha256 and character count, the count of each of the four flags and the flag list
+itself. A malformed draft renders no block and records `applied: false`, `reason:
+"draft-unparsed"`. The compilation record's `template_sha256s` gains the three assets the block was
+composed from. Every row of every other boundary keeps exactly its pre-E12 fields and digest.
+
+**The switch.** One `episode`-class key, `native_episode.reviewer_audit`
+(`rails.config_tables.EPISODE_LEVEL_SWITCH_KEYS`, the fifth), OFF = the key's absence, ON = the
+armed object, proof `tests/unit/test_config_table_module_switches.py::
+test_reviewer_audit_is_one_episode_class_key`. It is a SECOND key beside
+`native_episode.context_policy` rather than a field inside it because a cell that moves the audit
+must stay distinguishable from a cell that moves the policy.
+
+**Prompt fit.** 687-787 characters on the released table, roughly 170-200 tokens, against the 9,708
+tokens of headroom section 8 measured at the worst observed contact. The largest single line is a
+`REPRESENTATION` detail, which quotes the slot store v2 `time` card's admissible-format sentence
+verbatim, attested construction forms included -- verbatim because this program quotes a released
+card rather than paraphrasing it.
+
+**Proofs.** `tests/unit/test_slurp_slot_audit_view.py` (the builder's refusals, the released
+table's shape and pins, the "no filler, no sentence, no utterance id" content audit, the
+spoken-form predicate, each flag firing and staying silent, and the committed view reproducing from
+the construction pool); `tests/unit/test_reviewer_slot_audit_block.py` (the block is an addition and
+the L1 draft block is byte-identical, no other boundary moves, byte-stable rendering, the receipt,
+the "adds no information" property test, and the config refusals);
+`tests/unit/test_native_episode_runner_reviewer_audit.py` (the production render path: exactly the
+three Reviewer contacts move, the receipt and the asset pins reach the sealed episode receipt, and
+the OFF arm is the key's absence down to the byte); `tests/unit/test_b8b_reviewer_audit_config.py`
+(the two committed fragments are one factor on B7r, the composed configuration loads with the block
+armed, and the loader refuses the wrong carrier and a non-L1 boundary).
+
+**What it does not authorise.** No owner decision, no preregistration, no exposure row and no
+contact. Cell B8b's fragments are `held`; it flies only after cell B7r seals and is not HARMFUL,
+behind its own four-row smoke.

@@ -2017,6 +2017,9 @@ async def _invoke_native_role_episode(
                 )
             prepared_policy = build_node_context_policy_binding(
                 config.context_policy_json, material.response_format, binding.repo_root,
+                # E12: the armed Reviewer slot-audit block, or None -- in
+                # which case this call is byte-identical to its pre-E12 self.
+                config.reviewer_audit_json,
             )
             if node_context_binding is not None and (
                 node_context_binding.source_format_sha256

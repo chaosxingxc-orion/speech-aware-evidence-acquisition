@@ -27,9 +27,17 @@ from .node_context_policy import (
     CLEANING_RENDER_TEMPLATES,
     LEVELS,
     PARSE_FAILURE_RULES,
+    SLOT_AUDIT_BOUNDARY,
     SLURP_BOUNDARY_IDS,
     NodeContextPolicyError,
     build_slurp_node_context_policy,
+    resolve_slot_audit_binding,
+)
+from .slot_audit import (
+    SLOT_AUDIT_VIEW_ID,
+    SlotAuditError,
+    load_slot_audit_table,
+    slot_audit_thresholds,
 )
 
 #: The policy id an OFF-arm declaration that names none carries in its
@@ -57,6 +65,14 @@ PRODUCER_FORMAT_CLASSES = ("review-finding",)
 #: exactly ``rails.review_findings``'s own registered contract, so a Reviewer
 #: generated under it parses under ``parse_review_findings`` by construction.
 REVIEW_FINDINGS_RESPONSE_FORMAT_ID = "saea-review-findings-v1"
+
+#: E12 (2026-09-19, owner directive 26, cell B8b): the fields
+#: ``native_episode.reviewer_audit`` declares. ``view``, ``release`` and
+#: ``snapshot`` are required -- a view with no pinned bytes is not a view --
+#: and ``thresholds`` / ``template`` fall back to the module's registered
+#: defaults.
+_REVIEWER_AUDIT_REQUIRED_KEYS = frozenset({"view", "release", "snapshot"})
+_REVIEWER_AUDIT_OPTIONAL_KEYS = frozenset({"thresholds", "template"})
 
 _TOP_LEVEL_KEYS = frozenset({"level", "policy_id", "params", "boundaries", "producers"})
 _BOUNDARY_KEYS = frozenset({"level", "template", "on_parse_failure", "cleaning"})
@@ -358,6 +374,106 @@ def validate_node_context_policy_config(document: object) -> str:
     return _bytes(dict(document)).decode()
 
 
+def is_reviewer_audit_null_arm(document: object) -> bool:
+    """E12: whether a ``native_episode.reviewer_audit`` value is the key's own
+    OFF form. The node is ABSENT or it is armed -- there is no third shape,
+    exactly as ``native_episode.deliver_normaliser``'s is."""
+
+    return document is None
+
+
+def validate_reviewer_audit_config(document: object) -> str:
+    """Return the immutable canonical config text for the armed audit block.
+
+    SHAPE ONLY, and deliberately: no file is opened here, exactly as
+    :func:`validate_node_context_policy_config` opens no template. The pinned
+    bytes are read, hashed and cross-checked once, in
+    :func:`build_node_context_policy_binding`, at the same point the templates
+    are loaded -- so a config can be validated (and its hash composed) on a
+    machine that carries no repository checkout of the released view.
+    """
+
+    if not isinstance(document, Mapping):
+        raise ValueError(
+            "native_episode.reviewer_audit must be an object declaring "
+            f"{sorted(_REVIEWER_AUDIT_REQUIRED_KEYS)}"
+        )
+    unknown = sorted(
+        set(document) - _REVIEWER_AUDIT_REQUIRED_KEYS - _REVIEWER_AUDIT_OPTIONAL_KEYS
+    )
+    if unknown or not _REVIEWER_AUDIT_REQUIRED_KEYS <= set(document):
+        raise ValueError(
+            "native_episode.reviewer_audit has unknown or missing fields; it "
+            f"declares {sorted(_REVIEWER_AUDIT_REQUIRED_KEYS)} and may add "
+            f"{sorted(_REVIEWER_AUDIT_OPTIONAL_KEYS)}"
+        )
+    if document["view"] != SLOT_AUDIT_VIEW_ID:
+        raise ValueError(
+            f"native_episode.reviewer_audit.view must be {SLOT_AUDIT_VIEW_ID!r}; this "
+            "carrier registers no other slot-audit view"
+        )
+    for field_name in ("release", "snapshot"):
+        pin = document[field_name]
+        if (
+            not isinstance(pin, Mapping)
+            or set(pin) != {"relpath", "sha256"}
+            or not isinstance(pin["relpath"], str)
+            or not pin["relpath"].startswith("knowledge/slurp/semantic/")
+            or not isinstance(pin["sha256"], str)
+            or len(pin["sha256"]) != 64
+        ):
+            raise ValueError(
+                f"native_episode.reviewer_audit.{field_name} must pin a committed "
+                "knowledge/slurp/semantic/... file by relpath and sha256"
+            )
+    template = document.get("template")
+    if template is not None and (
+        not isinstance(template, str) or not template.startswith("probes/")
+    ):
+        raise ValueError(
+            "native_episode.reviewer_audit.template must be a 'probes/<name>.txt' "
+            "path under configs/"
+        )
+    try:
+        slot_audit_thresholds(document.get("thresholds"))
+    except SlotAuditError as error:
+        raise ValueError(str(error)) from error
+    return _bytes(dict(document)).decode()
+
+
+def reviewer_audit_requires_structured_boundary(context_policy_json: str | None) -> None:
+    """Refuse an armed audit whose boundary is not at L1.
+
+    The block is an ADDITION to the ``reviewer:current-draft`` L1 rendering,
+    so it has nothing to attach to at ``raw`` and would be cleaned away at
+    ``cleaned``. Checked before contact, by name.
+    """
+
+    spelling = f"{SLOT_AUDIT_BOUNDARY[0]}:{SLOT_AUDIT_BOUNDARY[1]}"
+    if context_policy_json is None:
+        raise ValueError(
+            "native_episode.reviewer_audit requires a declared "
+            f"native_episode.context_policy with {spelling} at level 'structured'"
+        )
+    spec = json.loads(context_policy_json)
+    if isinstance(spec, str) or not isinstance(spec, Mapping):
+        raise ValueError(
+            f"native_episode.reviewer_audit requires {spelling} at level 'structured'"
+        )
+    default_level = spec.get("level", "raw")
+    entry = (spec.get("boundaries") or {}).get(spelling)
+    level = (
+        entry.get("level", default_level)
+        if isinstance(entry, Mapping)
+        else default_level
+    )
+    if level != "structured":
+        raise ValueError(
+            f"native_episode.reviewer_audit requires the {spelling} boundary at level "
+            f"'structured'; the declared policy puts it at {level!r}"
+        )
+
+
 @dataclass(frozen=True)
 class NodeContextPolicyBinding:
     """One flight's live policy, bound to the actual Perception contract."""
@@ -372,7 +488,7 @@ class NodeContextPolicyBinding:
 def build_slurp_node_context_policy_compiler(
     *, perception_response_format: Mapping[str, object], params: Mapping[str, object],
     repo_root: Path, level: str, boundaries: Mapping[str, Mapping[str, object]],
-    policy_id: str,
+    policy_id: str, slot_audit: object = None,
 ):
     """Derive legal candidate IDs from the actual bound Perception schema.
 
@@ -404,6 +520,7 @@ def build_slurp_node_context_policy_compiler(
         return build_slurp_node_context_policy(
             repo_root=repo_root, policy_id=policy_id, level=level,
             boundaries=boundaries, legal_intent_ids=tuple(legal), params=params,
+            slot_audit=slot_audit,
         )
     except NodeContextPolicyError as error:
         raise ValueError(str(error)) from error
@@ -467,15 +584,57 @@ def node_context_producer_formats(config_json: str) -> Mapping[str, str]:
     }
 
 
+def build_slot_audit_binding(reviewer_audit_json: str, repo_root: Path):
+    """E12: resolve the canonical ``reviewer_audit`` text into a live binding.
+
+    This is where the two pinned committed files are read, hashed against
+    their declared pins and cross-checked, and where the committed audit
+    template is loaded -- one place, fail-closed, before any contact.
+    """
+
+    spec = json.loads(reviewer_audit_json)
+    if validate_reviewer_audit_config(spec) != reviewer_audit_json:
+        raise ValueError(
+            "reviewer audit config is not its canonical bound representation"
+        )
+    try:
+        table = load_slot_audit_table(
+            repo_root,
+            release=spec["release"],
+            snapshot=spec["snapshot"],
+            view_id=spec["view"],
+        )
+        thresholds = slot_audit_thresholds(spec.get("thresholds"))
+    except SlotAuditError as error:
+        raise ValueError(str(error)) from error
+    try:
+        return resolve_slot_audit_binding(
+            repo_root, table=table, thresholds=thresholds,
+            template=spec.get("template"),
+        )
+    except NodeContextPolicyError as error:
+        raise ValueError(str(error)) from error
+
+
 def build_node_context_policy_binding(
     config_json: str, perception_response_format: Mapping[str, object],
-    repo_root: Path,
+    repo_root: Path, reviewer_audit_json: str | None = None,
 ) -> NodeContextPolicyBinding:
-    """Resolve the canonical config text into a live, template-bound policy."""
+    """Resolve the canonical config text into a live, template-bound policy.
+
+    ``reviewer_audit_json`` (E12) is the canonical text of an armed
+    ``native_episode.reviewer_audit``; ``None`` -- every flight before E12 and
+    every OFF arm -- leaves the policy exactly as it was and the
+    ``reviewer:current-draft`` boundary renders the pre-E12 bytes.
+    """
 
     spec = json.loads(config_json)
     if validate_node_context_policy_config(spec) != config_json:
         raise ValueError("node context config is not its canonical bound representation")
+    slot_audit = None
+    if reviewer_audit_json is not None:
+        reviewer_audit_requires_structured_boundary(config_json)
+        slot_audit = build_slot_audit_binding(reviewer_audit_json, repo_root)
     if is_node_context_null_arm(spec):
         # The DECLARED OFF arm. It parses nothing and renders nothing, so it
         # needs neither the Perception schema nor a template -- but it still
@@ -513,8 +672,18 @@ def build_node_context_policy_binding(
         level=spec["level"],
         boundaries=spec.get("boundaries", {}),
         policy_id=spec["policy_id"],
+        slot_audit=slot_audit,
     )
     templates: dict[str, str] = {}
+    if slot_audit is not None:
+        # E12: the audit pins THREE assets beside the boundary's own L1
+        # template -- its rendering template and the two released files of the
+        # construction table -- so a receipt names every byte the block was
+        # composed from.
+        spelling = f"{SLOT_AUDIT_BOUNDARY[0]}:{SLOT_AUDIT_BOUNDARY[1]}"
+        templates[f"{spelling}:slot-audit"] = slot_audit.template.sha256
+        templates[f"{spelling}:slot-audit-release"] = slot_audit.table.release_sha256
+        templates[f"{spelling}:slot-audit-snapshot"] = slot_audit.table.snapshot_sha256
     for entry in policy.declared_boundaries():
         if entry["template_sha256"] is not None:
             templates[entry["boundary"]] = entry["template_sha256"]
@@ -548,10 +717,14 @@ __all__ = [
     "REVIEW_FINDINGS_RESPONSE_FORMAT_ID",
     "NodeContextPolicyBinding",
     "build_node_context_policy_binding",
+    "build_slot_audit_binding",
     "build_slurp_node_context_policy_compiler",
     "is_node_context_null_arm",
+    "is_reviewer_audit_null_arm",
     "node_context_cleaning_boundaries",
     "node_context_producer_formats",
     "node_context_source_format_id",
+    "reviewer_audit_requires_structured_boundary",
     "validate_node_context_policy_config",
+    "validate_reviewer_audit_config",
 ]
