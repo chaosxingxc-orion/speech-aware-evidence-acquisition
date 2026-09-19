@@ -1,0 +1,78 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-tool-constant-anchor-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-anchor-tool-constant-smoke-4-v1",
+      "cell_id": "slurp-native-tool-constant-anchor-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "EFFICIENCY CELL EFF-1. One factor against the sealed dual-store ANCHOR base: native_episode.tool_schema_rendering, \"per-role\" (the key's absence, which IS the anchor's configuration) -> \"constant\". Item E17, merged at d6fade1e; lever L1 of docs/results/2026-09-19-slurp-throughput-root-cause-v1.md. Armed, every role contact of a row renders the SAME native tools array -- the union of the tool schemas any role of the episode may call, which for this episode IS the Reviewer's single saea-tool-task-contract-v1 array -- so the Qwen3-Omni chat template's system message never changes inside a row and the pinned per-sample slot's KV prefix survives the role handover. AUTHORITY IS NOT WIDENED: every role's tool_names is unchanged, a role with no authority still sends tool_choice \"none\", the framework advertises it no ability, and reproduction.ojw.native_roles._RoleAuthorityRail still refuses a call it emits anyway. THE PURPOSE OF THIS CELL IS THROUGHPUT, not effect: the primary deliverables are prefilled prompt tokens per row, contacts per row, GPU hours per 1,080 rows, slot occupancy, utilisation, the per-position cache table and distinct_tool_schemas_sha256 == 1 on every row. THE ADMISSION RULE IS NEUTRAL on the official number: official pooled SLU micro F1 and intent (scenario_action) must be NON-INFERIOR against the sealed anchor SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1 at the B0r own-null margins (h_SLU 1.1218, h_intent 1.0051; owner decision 38's fallback), with the CI95 lower bound above -h and no scenario band breach as the decision-17 diagnostic. HARMFUL if either guard fails with a MEASURED LOSS (owner decision 25). The efficiency numbers are reported whatever the verdict. AN EFFICIENCY CELL DOES NOT COUNT TOWARD OWNER DECISION 30's HEADROOM TRIGGER. SECOND DECLARED KEY, NOT A FACTOR: native_episode.finite_completion_policy = \"deliver-latest-or-abstain\", required of every SLURP native baseline by scripts/checks/finite_completion_policy_check.py (item E13). It renders no request byte and only decides whether a finite completion aborts the flight or the row is RETAINED; the anchor flew without it and docs/receipts/slurp-finite-completion-exposure-v1.json proves zero finite completions on it, so the comparator side is unaffected. This cell stays HELD until the coordinator mints coordination/slurp-eff1-tool-constant-v1/root-admission-v1.json (decision id slurp-eff1-tool-constant-admission-v1) and flips it with scripts/flights/repin_cell.py. Registered before contact by the EFF-1 registration agent in worktree /home/chao/saea-worktrees/fable-eff1, branch fable/eff1, base commit 6851acdc.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed dual-store anchor used, with zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed anchor preparation's on all 4 rows (output SHA-256 512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733, the four-row reference every form smoke of this roster shares), asserted by hand in this registration -- the model-free proof that neither declared key moves a knowledge-selection byte. The pin is this cell's own rather than the anchor's precisely so that core.flight.repin finds it valid, rebuilds nothing, and adds nothing to assert_no_residue's scan. --allow-output-change must never be passed; if that output SHA-256 stops matching, a merge changed the knowledge channel -- stop and report.",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "b46ce333c2636bbe94d067b40f976cd0ba80723096187bd60d1a2bfb7c1a844a"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-19",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-SMOKE-4-V1",
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, geometry or cap change, and no silent recovery. AT MOST ONE root-diagnosed recovery re-registration per flight; a second failure closes the flight and the fix is proven on a four-row dry run before the key is proposed again. A failed four-row smoke stops cell EFF-1 until the fix is proven on that same four-row roster. One experiment in flight at a time. RESUME-RECOVERY CLAUSE (owner decision 22 of 2026-09-18): if an attempt dies of an INFRASTRUCTURE failure with code and request bytes unchanged -- never a harness or config defect -- the one allowed recovery may be a resume-recovery under item E10 instead of a re-fly, keeping every complete row without selection, flying every partial or unstarted row under the same run id and declaring the predecessor attempt with its trace hash and kept-row list. It changes no question, roster, factor, comparator, decision rule or cap, and the run-cumulative budget is re-checked because a resumed attempt and its predecessor share one run id. A completion that hits the 512-token cap is NOT a failure here: the declared finite-completion policy retains the row and the count is a mandatory diagnostic.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-native-tool-constant-anchor-smoke-4-v1",
+  "generation_budget": {
+    "cap": 44,
+    "definition": "The unchanged maximum eleven-contact native program for each of the four already-exposed TRAIN A engineering rows: 4 x 11 = 44 is the exact program maximum. The nominal cost is five contacts per row, i.e. 20.",
+    "target": 20
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The four already-exposed TRAIN A engineering rows this repository reuses for every four-row form smoke; no quality-based selection.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row standalone-worker form smoke of efficiency cell EFF-1 before the arm flies. It proves IN FLIGHT that the armed key does what the model-free render proof says it does: 4 of 4 rows delivered, five contacts per row, tool_schema_rendering.distinct_tool_schemas_sha256 == 1 on every row, every Reviewer request byte-identical to the sealed anchor's request on the same sample id and the other roles' requests differing from the anchor's in exactly the added tools key, every request fitting -- and, the point of the smoke, the server-reported cached-token share per position showing that the first-Reviewer and Planner contacts no longer re-prefill the packet. Structural and efficiency evidence only: no official scoring, no answer, reference or quality interpretation and no task-quality claim.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2"
+}
