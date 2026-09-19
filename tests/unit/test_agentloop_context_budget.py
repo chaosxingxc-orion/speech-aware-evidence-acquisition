@@ -21,6 +21,7 @@ from speech_aware_evidence_acquisition.rails.context_budget import (
     ContextBudgetLimits,
     ContextBudgetRefusal,
     assess_context_budget,
+    serving_bound_reserve_tokens,
 )
 
 
@@ -414,3 +415,126 @@ def test_invalid_configured_context_budget_limits_refuse(
             config,
             serving_slot_limit_tokens=serving_slot_limit_tokens,
         )
+
+
+# ---------------------------------------------------------------------------
+# E17 (2026-09-19): the live-slot fit gate.
+#
+# Before E17, a caller with no declared ``context_budget_limits`` block was
+# budgeted against PER_SLOT_LIMIT_TOKENS whatever the served geometry really
+# was. Every committed SLURP fragment is such a caller and every one of them
+# serves 24,576-token slots, so the preflight gate reasoned against a slot
+# 33 % wider than the one it guards
+# (docs/results/2026-09-19-slurp-throughput-root-cause-v1.md section 4).
+# ---------------------------------------------------------------------------
+
+
+def test_a_live_slot_of_the_registered_size_is_byte_identical_to_the_default() -> None:
+    """The bit-for-bit clause: at a 32,768-token live slot the serving-bound
+    receipt is the legacy receipt, down to its pinned digest."""
+
+    legacy = assess_context_budget(_candidate(15_090))
+    serving = assess_context_budget(
+        _candidate(15_090), serving_slot_limit_tokens=PER_SLOT_LIMIT_TOKENS
+    )
+
+    assert serving.to_dict() == legacy.to_dict()
+    assert serving.receipt_sha256() == legacy.receipt_sha256()
+    assert serving.receipt_sha256() == (
+        "1507f91e6938b9b3852cd618ecd4a2fd0bf6f4302b30a91464a556abe9fa0daf"
+    )
+    assert serving.slot_limit_tokens == 32_768
+    assert serving.operational_reserve_tokens == 8_192
+    assert serving.decision is ContextBudgetDecision.ALLOW
+
+
+def test_the_live_slurp_slot_budgets_against_24576_not_32768() -> None:
+    """The defect, repaired. 24,576 - 8,192 = 16,384 tokens of budget, not
+    the 32,768 - 8,192 = 24,576 the same request used to be granted."""
+
+    required = 20_000
+    legacy = assess_context_budget(_candidate(required))
+    serving = assess_context_budget(
+        _candidate(required), serving_slot_limit_tokens=24_576
+    )
+
+    assert legacy.slot_limit_tokens == 32_768
+    assert legacy.decision is ContextBudgetDecision.ALLOW
+    assert serving.slot_limit_tokens == 24_576
+    assert serving.operational_reserve_tokens == 8_192
+    assert serving.physical_margin_tokens == 4_576
+    assert serving.operational_margin_tokens == -3_616
+    assert serving.decision is ContextBudgetDecision.COMPACT_REQUIRED
+    # And a request that does fit the real slot still passes.
+    assert (
+        assess_context_budget(
+            _candidate(16_384), serving_slot_limit_tokens=24_576
+        ).decision
+        is ContextBudgetDecision.ALLOW
+    )
+
+
+def test_the_live_slot_never_raises_an_undeclared_budget() -> None:
+    """A wider live slot is not a licence: the registered per-slot limit stays
+    the ceiling on an UNDECLARED budget, because raising it is exactly what the
+    explicit context_budget_limits block (and its extra three-quarter
+    occupancy rule) exists for."""
+
+    serving = assess_context_budget(_candidate(15_090), serving_slot_limit_tokens=49_152)
+
+    assert serving.slot_limit_tokens == PER_SLOT_LIMIT_TOKENS
+    assert serving.to_dict() == assess_context_budget(_candidate(15_090)).to_dict()
+
+
+def test_a_narrow_live_slot_keeps_a_proportionate_reserve() -> None:
+    """The registered 8,192-token reserve is a quarter of the registered slot.
+    On the np8 geometry this study has actually flown (8,192-token slots) an
+    absolute reserve would leave no budget at all, so it is clamped to half
+    the slot and never more."""
+
+    assert serving_bound_reserve_tokens(32_768) == 8_192
+    assert serving_bound_reserve_tokens(24_576) == 8_192
+    assert serving_bound_reserve_tokens(16_384) == 8_192
+    assert serving_bound_reserve_tokens(8_192) == 4_096
+    assert serving_bound_reserve_tokens(4_096) == 2_048
+
+    receipt = assess_context_budget(_candidate(3_050), serving_slot_limit_tokens=8_192)
+    assert receipt.slot_limit_tokens == 8_192
+    assert receipt.operational_reserve_tokens == 4_096
+    assert receipt.decision is ContextBudgetDecision.ALLOW
+
+
+def test_a_declared_block_must_agree_with_the_live_slot() -> None:
+    limits = ContextBudgetLimits.from_config(
+        {"slot_limit_tokens": 49_152, "operational_reserve_tokens": 8_192},
+        serving_slot_limit_tokens=49_152,
+    )
+
+    # Agreeing: the declared block wins, three-quarter rule and all.
+    agreed = assess_context_budget(
+        _candidate(34_868), limits=limits, serving_slot_limit_tokens=49_152
+    )
+    assert agreed.to_dict() == assess_context_budget(
+        _candidate(34_868), limits=limits
+    ).to_dict()
+
+    with pytest.raises(ContextBudgetRefusal, match="live serving geometry"):
+        assess_context_budget(
+            _candidate(34_868), limits=limits, serving_slot_limit_tokens=24_576
+        )
+
+
+@pytest.mark.parametrize("value", [0, -1, True, "24576", 1.0])
+def test_an_invalid_live_slot_limit_refuses(value: object) -> None:
+    with pytest.raises(ContextBudgetRefusal, match="serving geometry slot limit"):
+        assess_context_budget(_candidate(15_090), serving_slot_limit_tokens=value)
+
+
+def test_a_forged_serving_bound_receipt_refuses() -> None:
+    receipt = assess_context_budget(_candidate(15_090), serving_slot_limit_tokens=24_576)
+
+    assert receipt.slot_limit_tokens == 24_576
+    with pytest.raises(ContextBudgetRefusal, match="live-slot reserve"):
+        replace(receipt, operational_reserve_tokens=4_096)
+    with pytest.raises(ContextBudgetRefusal, match="registered per-slot limit"):
+        replace(receipt, slot_limit_tokens=49_152)
