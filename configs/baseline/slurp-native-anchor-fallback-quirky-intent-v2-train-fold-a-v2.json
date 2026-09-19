@@ -93,6 +93,7 @@
     },
     "episode_id": "slurp-native-dual-store-dev1000-v1",
     "exhaustion_policy": "deliver-latest-solver",
+    "finite_completion_policy": "deliver-latest-or-abstain",
     "max_revisions": 1,
     "roles": {
       "perception": {
