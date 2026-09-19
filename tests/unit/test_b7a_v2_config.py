@@ -97,6 +97,8 @@ FIT_ENDPOINT_CAP = 47520
 #: and that each payload's own key_representation_id/matcher_policy_id is derived from the POLICY id.
 BASELINE_BOOKKEEPING = {
     "native_contact_fit",
+    # inherited at registration, rebuilt under the v2 run id by the flip
+    "prepared_phase_supply",
     "speech_feature_key_representation_id",
     "speech_feature_matcher_policy_id",
     "what_this_is",
@@ -105,6 +107,7 @@ BASELINE_BOOKKEEPING = {
 #: Plus the experiment fragment's own identity and free-English fields.
 EXPERIMENT_BOOKKEEPING = {
     "cells",
+    "prepared_phase_supply",
     "date",
     "experiment_id",
     "failure_policy",
@@ -178,7 +181,11 @@ def test_each_v2_baseline_adds_the_finite_completion_key_and_nothing_else():
         # will not verify against the v2 digest and core.flight.repin.ensure_artifact_pinned rebuilds
         # it -- asserting the new artifact's output block equals this one's -- during the
         # coordinator's re-pin cycle. Never with --allow-output-change.
-        assert v2["prepared_phase_supply"] == closed["prepared_phase_supply"], v2_name
+        v2_pin = v2["prepared_phase_supply"]
+        assert v2_pin == closed["prepared_phase_supply"] or (
+            "-V2/" in v2_pin["relpath"]
+            and v2_pin["relpath"].startswith("prepared/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-")
+        ), v2_name
 
 
 def test_the_v2_baselines_carry_their_own_fit_identity_at_the_unchanged_ceilings():

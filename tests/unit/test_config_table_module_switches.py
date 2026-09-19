@@ -1323,6 +1323,10 @@ def test_the_two_b8b_fragments_arm_the_block_and_nothing_else():
 
     bookkeeping = {
         "native_contact_fit",
+        # the coordinator's re-pin rebuilds the prepared supply under the
+        # cell's own run id (output asserted byte-identical by the tool), so
+        # the pin is per-cell bookkeeping once a cell is flipped
+        "prepared_phase_supply",
         "scorers",
         "speech_feature_key_representation_id",
         "speech_feature_matcher_policy_id",

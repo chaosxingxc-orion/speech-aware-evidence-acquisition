@@ -72,6 +72,9 @@ FINITE_COMPLETION_VALUE = "deliver-latest-or-abstain"
 #: speech-feature ids and free-English notes. None shapes a rendered request.
 BOOKKEEPING_KEYS = frozenset({
     "native_contact_fit",
+    # re-pinned per cell by the coordinator's flip (the tool rebuilds the
+    # prepared supply under the cell's own run id, output byte-identical)
+    "prepared_phase_supply",
     "speech_feature_key_representation_id",
     "speech_feature_matcher_policy_id",
     "what_this_is",
@@ -99,8 +102,10 @@ def test_the_smoke_baseline_is_the_arm_baseline_plus_bookkeeping_only():
     differing = sorted(
         key for key in non_bookkeeping if arm.get(key) != smoke.get(key)
     )
-    # The two differ only in the prepared-supply pin their own roster needs.
-    assert differing == ["prepared_phase_supply"]
+    # The two differ only in the prepared-supply pin their own roster needs
+    # (bookkeeping above); every substantive key is shared.
+    assert differing == []
+    assert smoke["prepared_phase_supply"]["relpath"].startswith("prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-")
     assert smoke["native_contact_fit"]["contact_cap"] == 176
     assert arm["native_contact_fit"]["contact_cap"] == 47520
     assert arm["native_episode"][REVIEWER_AUDIT_KEY] == (
@@ -132,7 +137,6 @@ def test_the_only_keys_that_move_against_b7r_are_the_audit_and_the_finite_policy
         "phase_material",
         "phase_tools",
         "policy",
-        "prepared_phase_supply",
         "scorers",
         "serving_slot_tokens",
         "serving_slots",
@@ -271,11 +275,13 @@ def test_the_loader_refuses_the_block_on_another_carrier_and_off_l1():
 def test_both_experiment_fragments_are_registered_held(name, run_id, stages):
     experiment = _load_experiment(name)
     (cell,) = experiment["cells"]
-    assert cell["readiness"]["state"] == "held"
-    # No decision requirement yet: a registration agent appends and pins it.
-    assert [entry["kind"] for entry in cell["readiness"]["requirements"]] == [
-        "preparation"
-    ]
+    state = cell["readiness"]["state"]
+    assert state in {"held", "ready"}
+    # Held: no decision requirement yet. Ready: the coordinator's re-pin
+    # appended and pinned the root decision receipt.
+    assert [entry["kind"] for entry in cell["readiness"]["requirements"]] == (
+        ["preparation"] if state == "held" else ["decision", "preparation"]
+    )
     assert cell["run_id"] == run_id
     assert cell["allowed_execution_stages"] == stages
     assert experiment["execution_profile"] == "bounded-discovery-probe"
