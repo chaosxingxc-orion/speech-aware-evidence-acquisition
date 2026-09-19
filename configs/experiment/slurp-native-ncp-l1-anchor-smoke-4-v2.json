@@ -1,0 +1,78 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-ncp-l1-anchor-smoke-4-generation-v2",
+      "baseline_fragment": "slurp-native-anchor-ncp-l1-smoke-4-v2",
+      "cell_id": "slurp-native-ncp-l1-anchor-smoke-4-v2",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Registered before contact by the B7a v2 registration agent in worktree /home/chao/saea-worktrees/fable-b7a2, branch fable/b7a2, base commit 25a7f325, after the v1 flight closed on its second failure (the recovery arm aborted at 1,451 contacts on a Reviewer completion that hit the 512-token cap). It is the four-row dry run the owner iteration rule requires before the v2 arm flies. It stays held until the coordinator flips it immediately before the standalone-worker smoke launch. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "INHERITED VERBATIM from the closed v1 recovery cell: the model-free first-phase Perception supply prepared/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-RECOVERY-V1/phase-supply-v1.json, built from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed dual-store anchor used, with zero model, tokenizer, encoder, scorer or server contacts; its output block is byte-identical to the sealed anchor preparation's on all 4 rows (output SHA-256 512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733), so the Perception selection channel does not move. core.preparation.artifact_inputs binds the composed values -- this cell's own identity ids and its new episode key included -- so this inherited pin will NOT verify against the v2 cell's composed digest. That is expected and is handled by the launch step, not by this registration: core.flight.repin.ensure_artifact_pinned re-verifies the pin, finds the mismatch, derives a fresh artifact under prepared/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-V2/ and ASSERTS its output block equals the inherited artifact's before writing the new pin into this requirement and the baseline fragment. Never pass --allow-output-change: part of the one-factor claim is that the Perception selection does not move.",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-RECOVERY-V1/phase-supply-v1.json",
+            "sha256": "a3a07acdc44eb082717684376209624f72e960189ba77e0676c81b49422ca270"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-V2"
+    }
+  ],
+  "date": "2026-09-19",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-V2",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops cell B7a v2 until the fix is proven on this same four-row roster. This smoke IS the four-row dry run the owner iteration rule requires after the v1 flight's second failure; the arm does not fly until it seals and its request digests match the v1 recovery smoke's.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-native-ncp-l1-anchor-smoke-4-v2",
+  "generation_budget": {
+    "cap": 44,
+    "definition": "The unchanged maximum eleven-contact native program for each of the four already-exposed TRAIN A engineering rows: 4 x 11 = 44 is the exact program maximum. The nominal cost is about 5 contacts per row.",
+    "target": 20
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The four already-exposed TRAIN A engineering rows this repository reuses for every four-row form smoke; no quality-based selection.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row standalone-worker form smoke of cell B7a v2 before the arm flies. It is the four-row dry run the owner iteration rule requires after a flight's second failure, and it carries one extra obligation: every MODEL_REQUEST sha256 must equal the corresponding request of the sealed v1 recovery smoke SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-RECOVERY-V1, proving in flight that native_episode.finite_completion_policy renders no request byte. Structural evidence only: the review loop runs as the anchor runs it, the episode receipt role visits and planner routes are well formed, every post-Perception request carries the policy's rendered blocks, the saea-node-context-policy-v1 receipt rows bind every boundary to its template and source, one native contact fit receipt exists per realized contact, and the worker seals. No official scoring and no task-quality claim. A four-row roster cannot by itself reach the finite-completion path; that path is proved by the harness's own committed tests.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2"
+}
