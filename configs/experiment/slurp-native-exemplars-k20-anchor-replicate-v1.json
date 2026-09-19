@@ -16,13 +16,20 @@
         "reason": "Cell B1r, the REQUEST-IDENTICAL REPLICATE of cell B1, registered before contact under OWNER DECISION 37 of 2026-09-19: 'follow your recommendation' -- a request-identical replicate of cell B1 (about 3.7 GPU hours) flies before the base lock closes, and module M1 enters the default plan only if it replicates. It discharges the UNMET provisional obligation of the M1 harness-admission entry (docs/receipts/harness-admission.json, row SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2), whose requirement names exactly this form. NO FACTOR MOVES: the baseline is the sealed B1 recovery arm's baseline byte for byte in every model-facing key; what moves is this cell's own run, attempt, native-fit and speech-feature identities, its own prepared supply pin and the harness declaration native_episode.finite_completion_policy = deliver-latest-or-abstain, which renders no request byte and is required of every live SLURP native cell by scripts/checks/finite_completion_policy_check.py (item E13). THIS CELL KEEPS PER-ROLE TOOL SCHEMA RENDERING: native_episode.tool_schema_rendering is NOT armed, because request identity with cell B1 requires the anchor's per-role rendering; B1r is therefore a per-role cell and is unaffected by efficiency cell EFF-1's outcome. It stays held: the coordinator pins the root decision receipt coordination/slurp-b1-replicate-v1/root-admission-v1.json (decision id slurp-b1-replicate-admission-v1) and flips the state with scripts/flights/repin_cell.py. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. Registered by the B1r registration agent in worktree /home/chao/saea-worktrees/fable-b1r, branch fable/b1r, base commit 0989edb1.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b1-replicate-admission-v1",
+            "relpath": "coordination/slurp-b1-replicate-v1/root-admission-v1.json",
+            "sha256": "b1a2e938d9edc43c10442e67cc2015acd848d36475fe229ce54e66be5160d30f",
+            "reason": "Decision slurp-b1-replicate-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors cell B1 and the sealed dual-store anchor used, with zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed cell B1 preparation's on all 1,080 rows (output SHA-256 ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f), asserted by hand in this registration -- the model-free proof that this replicate's own identities and the declared finite-completion key move no knowledge-selection byte. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting cell B1's, which is also why core.flight.repin finds it valid, rebuilds nothing and adds nothing to assert_no_residue's scan. --allow-output-change must never be passed; if that output SHA-256 stops matching, a merge changed the knowledge channel -- stop and report.",
             "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-REPLICATE-V1/phase-supply-v1.json",
             "sha256": "7f2c82d982df64641b3b0c7b2a06650a6fd2248e8450fa8ee7778f568b0326ef"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-REPLICATE-V1"
     }

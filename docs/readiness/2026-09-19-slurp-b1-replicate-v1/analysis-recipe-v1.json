@@ -46,8 +46,8 @@
     },
     "right_replicate": {
       "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-replicate-train-fold-a-generation-v1",
-      "composed_config_hash": "a1cec1e65066108a88873803be5535c7fc8f8f166a1dad856953e541f954ba45",
-      "protocol_hash": "2792c1beb3c37d3617bf2c340dceeef062184cb8dd137405ac9b94698db9d8b1",
+      "composed_config_hash": "130a72f658a3d30d549d06745db4ef7cd1bacafbb9dc378f81be2246fe776150",
+      "protocol_hash": "9c17b1723917f8ea67b8b454967d4ef15e8cd7b6fbb45d149e60a537723a1cd7",
       "role": "this cell",
       "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-REPLICATE-V1"
     }

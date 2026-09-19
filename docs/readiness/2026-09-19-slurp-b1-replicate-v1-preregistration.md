@@ -57,7 +57,7 @@ configuration's half-widths. This cell measures the right ones.
 | model fragment | `q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1` (**cell B1's**) |
 | dataset fragment | `slurp-speech-native-evo-fold-a-1080` (**cell B1's**) |
 | campaign plan | `configs/campaign/slurp-native-exemplars-k20-anchor-replicate-v1.json` |
-| composed config / protocol (arm, **pre-flip**) | `a1cec1e65066108a88873803be5535c7fc8f8f166a1dad856953e541f954ba45` / `2792c1beb3c37d3617bf2c340dceeef062184cb8dd137405ac9b94698db9d8b1` |
+| composed config / protocol (arm, **pre-flip**) | `130a72f658a3d30d549d06745db4ef7cd1bacafbb9dc378f81be2246fe776150` / `9c17b1723917f8ea67b8b454967d4ef15e8cd7b6fbb45d149e60a537723a1cd7` |
 | composed config / protocol (smoke, **pre-flip**) | `188ac3fc02b1b66cda23c2a88ed1b0791284698f59f5611044ab387a38076d68` / `47a32c78a98698789b2ccd9e9377194b30f54f10edf2e40bb5693283a58b2714` |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |
 | readiness | `held` with this cell's own `preparation` requirement pinned and **no decision requirement** |
@@ -346,7 +346,7 @@ tables, the mandatory diagnostics and the output paths, and it is registered bef
 
 | evidence | where |
 | --- | --- |
-| protocol document | `docs/readiness/2026-09-19-slurp-b1-replicate-v1/protocol-registered-v1.json`, SHA-256 `5ca1c3097bb436369dadf340eb7443013ea2bbcb7f7692f95999f28d04166047` |
+| protocol document | `docs/readiness/2026-09-19-slurp-b1-replicate-v1/protocol-registered-v1.json`, SHA-256 `f9c7bffa95ddd7f4c923b585a5ac1ba8e5940f91ea254e95b3206f6f59c8372e` |
 | generation plan | `…/generation-plan-registered-v1.json`, SHA-256 `c4b6ca5ff489d5940d81b8529e658538d2d41e8f9ba9fc7bf940c5c5c17a83d7` |
 | FIT plan | `…/fit-plan-registered-v1.json`, SHA-256 `1d60df6210bccdc2f7234c947cd76446bc9e6fc41ef1bfcb6f948795dd55c97e` |
 | smoke generation plan | `…/smoke-generation-plan-registered-v1.json`, SHA-256 `243f0bb7e0d931ef735ee25784ebed2b68f8af9359b02dcb9411f448736d8697` |

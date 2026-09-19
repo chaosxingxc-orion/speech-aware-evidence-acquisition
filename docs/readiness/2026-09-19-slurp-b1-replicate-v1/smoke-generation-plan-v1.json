@@ -47,7 +47,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-19-slurp-b1-replicate-v1/protocol-registered-v1.json",
-    "sha256": "5ca1c3097bb436369dadf340eb7443013ea2bbcb7f7692f95999f28d04166047"
+    "sha256": "f9c7bffa95ddd7f4c923b585a5ac1ba8e5940f91ea254e95b3206f6f59c8372e"
   },
   "quality_read_gate": "The four-row smoke is STRUCTURAL ONLY and is never scored: delivery and contact counts, the eleven-contact anchor role graph, the train-exemplars typed content blocks present in the Solver request, the request-fit receipts, any retained finite_completion row reported rather than treated as an error, the per-role authority refusals reported, and a clean seal. No scorer, no answer, reference or quality interpretation and no task-quality claim.",
   "registered_at_utc": "2026-09-19T18:00:00.000000+00:00",

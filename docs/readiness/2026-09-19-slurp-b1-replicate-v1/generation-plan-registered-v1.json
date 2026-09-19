@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-exemplars-k20-anchor-replicate-v1",
-  "composed_config_hash": "a1cec1e65066108a88873803be5535c7fc8f8f166a1dad856953e541f954ba45",
+  "composed_config_hash": "130a72f658a3d30d549d06745db4ef7cd1bacafbb9dc378f81be2246fe776150",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-replicate-train-fold-a-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "2792c1beb3c37d3617bf2c340dceeef062184cb8dd137405ac9b94698db9d8b1",
+    "protocol_hash": "9c17b1723917f8ea67b8b454967d4ef15e8cd7b6fbb45d149e60a537723a1cd7",
     "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-REPLICATE-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -47,7 +47,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-19-slurp-b1-replicate-v1/protocol-registered-v1.json",
-    "sha256": "5ca1c3097bb436369dadf340eb7443013ea2bbcb7f7692f95999f28d04166047"
+    "sha256": "f9c7bffa95ddd7f4c923b585a5ac1ba8e5940f91ea254e95b3206f6f59c8372e"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist, and not before the registered STOP condition passes. The gating comparator for the replication clauses is the sealed dual-store anchor SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1; the own-null contrast is against the sealed cell B1 recovery arm SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2. Neither is ever re-flown or re-scored. The verdict word is REPLICATED or NOT REPLICATED. Read once; the decision rule is fixed in the protocol document and is not edited after a number is seen. No third pass is registered or authorized either way. This arm does not open before this cell's own four-row smoke seals.",
   "registered_at_utc": "2026-09-19T18:00:00.000000+00:00",
