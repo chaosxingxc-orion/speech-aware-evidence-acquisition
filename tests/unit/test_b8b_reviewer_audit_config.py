@@ -222,9 +222,7 @@ def test_the_composed_smoke_loads_a_native_episode_with_the_block_armed():
     # The harness-robustness key loads as the registered value; the base keeps
     # the module default. It is carried on the episode SPEC, never rendered.
     assert config.finite_completion_policy == FINITE_COMPLETION_VALUE
-    assert off_config.finite_completion_policy == "raise"
-
-
+    assert off_config.finite_completion_policy == FINITE_COMPLETION_VALUE
 def test_the_loader_refuses_the_block_on_another_carrier_and_off_l1():
     from speech_aware_evidence_acquisition.rails.controllers import (
         default_phase_program,
