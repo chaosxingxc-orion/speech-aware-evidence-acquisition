@@ -3707,6 +3707,17 @@
         "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V1",
         "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-SMOKE-4-V1"
       ]
+    },
+    {
+      "date": "2026-09-18",
+      "cell_id": "SLURP-B5E-COMBINATION-RECOVERY-V1-ADDENDUM-DECISION-25",
+      "status": "ADDENDUM_POST_READ_COMBINATION_NEUTRAL",
+      "source": "docs/results/2026-09-18-slurp-b5e-combination-verdict-addendum-decision-25.md",
+      "source_sha256": "f7d970c00329c1975891d79adfb14fe605e6e474ac51336fda26361f9bb445a8",
+      "meaning": "Owner decision 25 (2026-09-18): for combination cells the HARMFUL trigger requires a measured loss (point estimate below -h or CI95 upper bound below zero); the B5e combination status is re-read as NEUTRAL with non-inferiority not proven at the request-identical margin (M4b inside the combination +1.20 pp SLU [-0.11, +2.48] over B1, intent tie), the beneficial gain recorded; the sealed verdict is not edited; the bar outcome (NOT MET on the official number), the decision-20 path and the non-registration of B5er are unchanged.",
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1"
+      ]
     }
   ]
 }
