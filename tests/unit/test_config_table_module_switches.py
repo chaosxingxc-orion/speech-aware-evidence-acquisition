@@ -1159,7 +1159,12 @@ def test_node_context_policy_is_one_episode_class_key():
     # decisions 48 and 50): it arms the knowledge INDEX in the constant
     # prefix together with the per-row pointer block and bounded expansion
     # that replace today's total rendering of everything retrieved. Its
-    # proof is tests/unit/test_e21_knowledge_index.py.
+    # proof is tests/unit/test_e21_knowledge_index.py. The twelfth,
+    # native_episode.react_exhaustion_policy, was admitted by item E22
+    # (2026-09-19, the ReAct-exhaustion disposition, not the Earnings-22
+    # carrier, after the B8b-anchor abort) and is the THIRD failure-mode
+    # key: it decides what a tool role's exhausted ReAct loop does. Its
+    # proof is tests/unit/test_e22_react_exhaustion.py.
     assert sorted(EPISODE_LEVEL_SWITCH_KEYS) == [
         "native_episode.acquisition",
         "native_episode.context_fit_policy",
@@ -1167,6 +1172,7 @@ def test_node_context_policy_is_one_episode_class_key():
         "native_episode.deliver_normaliser",
         "native_episode.finite_completion_policy",
         "native_episode.knowledge_index",
+        "native_episode.react_exhaustion_policy",
         "native_episode.review_loop",
         "native_episode.reviewer_audit",
         "native_episode.roles.solver",

@@ -65,6 +65,27 @@ PLANNER_ACTION_ILLEGAL_SCHEMA = "saea-native-planner-action-illegal-v1"
 #: draft, which the route record is not a place for.
 PLANNER_ACTION_RECORD_CHARS = 32
 
+#: Item E22 (the ReAct-exhaustion disposition, not the Earnings-22 carrier),
+#: 2026-09-19: the receipt-mark name a row carries once one of its tool
+#: roles spent its whole ReAct iteration budget on tool calls without ever
+#: returning an answer.  It is a VISIT-level disposition, not a terminal
+#: one: the visit ends with no finding, the row goes on through the Planner
+#: and delivers exactly as it would have, so the row's
+#: ``terminal_disposition`` is untouched.
+REACT_EXHAUSTION_DISPOSITION = "react_exhaustion"
+
+#: The receipt-mark schema the episode state carries once a visit took it.
+REACT_EXHAUSTION_SCHEMA = "saea-native-react-exhaustion-v1"
+
+#: The stages whose exhausted visit may end with NO finding.  Only the
+#: Reviewer's: a Solver visit owes a DRAFT (an empty one is not delivery
+#: eligible and the row would have nothing to deliver) and a Planner visit
+#: owes a ROUTE (with no action the conditional graph has no branch to
+#: take), so for those two an exhausted visit keeps exactly its pre-E22
+#: raise.  Perception carries no tool authority at all and cannot reach
+#: this class.
+REACT_EXHAUSTION_STAGES = frozenset({"review"})
+
 #: E18 (2026-09-19, owner decisions 43 and 44): the stage name one
 #: :class:`AcquisitionNode` visit registers in ``role_visits``.  It is the
 #: name the finite-path and refresh receipt validators already tolerate
@@ -154,6 +175,15 @@ class NativeEpisodeSpec:
     # ``max_acquisitions`` was: every positional construction written
     # before E20 composes the spec it always did.
     context_fit_policy: str = "raise"
+    # Item E22 (the ReAct-exhaustion disposition, not the Earnings-22
+    # carrier), 2026-09-19: what a TOOL role's exhausted ReAct loop does.
+    # ``"raise"`` -- every spec written before E22 -- is the pre-E22
+    # behaviour: :class:`_ApplyRole` refuses the non-answer and the flight
+    # dies at that row. ``"continue-without-answer"`` ends that visit with
+    # NO finding and lets the row continue: nothing is retried, no extra
+    # contact is spent, and no request byte of any other contact moves.
+    # Declared LAST, for the same reason ``context_fit_policy`` was.
+    react_exhaustion_policy: str = "raise"
 
     def __post_init__(self) -> None:
         if not isinstance(self.episode_id, str) or not self.episode_id:
@@ -199,6 +229,12 @@ class NativeEpisodeSpec:
             or self.context_fit_policy not in {"raise", "compact-or-abstain"}
         ):
             raise ValueError("context_fit_policy is invalid")
+        if (
+            not isinstance(self.react_exhaustion_policy, str)
+            or self.react_exhaustion_policy
+            not in {"raise", "continue-without-answer"}
+        ):
+            raise ValueError("react_exhaustion_policy is invalid")
         if self.refresh_action == PLANNER_ACTION_ILLEGAL:
             # E8c: the illegal-output routing value is reserved.
             raise ValueError("candidate refresh must not use the reserved illegal action")
@@ -442,6 +478,7 @@ class _ApplyRole(WorkflowComponent):
         refresh_action: str | None = None,
         planner_output_format: str = "exact-text",
         planner_actions: set[str] | None = None,
+        react_exhaustion_policy: str = "raise",
     ) -> None:
         super().__init__()
         self._kind = kind
@@ -449,14 +486,131 @@ class _ApplyRole(WorkflowComponent):
         self._refresh_action = refresh_action
         self._planner_output_format = planner_output_format
         self._planner_actions = planner_actions
+        self._react_exhaustion_policy = react_exhaustion_policy
+
+    def _react_exhaustion(self, role: Mapping[str, object]) -> Mapping[str, object] | None:
+        """E22: this visit's exhaustion evidence when the armed policy admits
+        it, else ``None`` (and the caller raises exactly as before E22).
+
+        Four conditions, all required: the policy is armed, the stage is one
+        whose finding the graph can do without
+        (:data:`REACT_EXHAUSTION_STAGES`), the role node reported the class
+        itself, and the block it reported is the shape this module seals.
+        The node is the only place that can tell a ReAct exhaustion from any
+        other non-answer, so this never re-derives that judgement from the
+        output text.
+        """
+
+        if (
+            self._react_exhaustion_policy != "continue-without-answer"
+            or self._kind not in REACT_EXHAUSTION_STAGES
+        ):
+            return None
+        block = role.get(REACT_EXHAUSTION_DISPOSITION)
+        if not isinstance(block, Mapping):
+            return None
+        calls = block.get("calls")
+        if (
+            not isinstance(calls, Sequence)
+            or isinstance(calls, (str, bytes))
+            or not calls
+            or not all(
+                isinstance(call, Mapping)
+                and isinstance(call.get("tool_id"), str)
+                and call["tool_id"]
+                and isinstance(call.get("arguments_sha256"), str)
+                for call in calls
+            )
+        ):
+            raise NativeEpisodeError(
+                f"{self._kind} node reported a malformed ReAct exhaustion"
+            )
+        return block
+
+    def _retained_exhaustion(
+        self,
+        state: Mapping[str, object],
+        role: Mapping[str, object],
+        block: Mapping[str, object],
+    ) -> Output:
+        """E22: end this visit with NO finding and let the row continue.
+
+        Everything the visit actually spent stays in custody: its contacts
+        are appended to ``role_visits`` exactly as an answering visit's are,
+        because they were made, metered and traced. What does NOT happen is
+        the finding: ``state[<stage>]`` becomes the empty string -- the same
+        state the graph would hold if the role had reviewed and found
+        nothing -- so the Planner's next query renders an empty findings
+        block and routes on its own. Nothing is retried and no contact is
+        spent here.
+        """
+
+        role_id = role.get("role_id")
+        if not isinstance(role_id, str) or not role_id:
+            raise NativeEpisodeError(f"{self._kind} node returned no role id")
+        receipt = _execution_receipt(role)
+        updated = dict(state)
+        visits = updated.get("role_visits")
+        if not isinstance(visits, Sequence) or isinstance(visits, (str, bytes)):
+            raise NativeEpisodeError("episode state has invalid ordered role visits")
+        revision_count = updated.get("revision_count")
+        if isinstance(revision_count, bool) or not isinstance(revision_count, int):
+            raise NativeEpisodeError("episode state has invalid revision count")
+        updated_visits = [copy.deepcopy(visit) for visit in visits]
+        updated_visits.append(
+            {
+                "role_id": role_id,
+                "stage": self._kind,
+                "execution_receipt": copy.deepcopy(receipt),
+            }
+        )
+        updated["role_visits"] = updated_visits
+        updated[self._kind] = ""
+        record = {
+            "role_id": role_id,
+            "stage": self._kind,
+            "role_visit_index": len(updated_visits) - 1,
+            "revision_count": revision_count,
+            "iterations_used": block.get("iterations_used"),
+            "max_iterations": block.get("max_iterations"),
+            "identical_calls": bool(block.get("identical_calls")),
+            "calls": [
+                {
+                    "tool_id": call["tool_id"],
+                    "arguments_sha256": call["arguments_sha256"],
+                }
+                for call in block["calls"]
+            ],
+            "last_observation_sha256": block.get("last_observation_sha256"),
+        }
+        prior: list[object] = []
+        mark = updated.get(REACT_EXHAUSTION_DISPOSITION)
+        if isinstance(mark, Mapping):
+            seen = mark.get("visits")
+            if isinstance(seen, Sequence) and not isinstance(seen, (str, bytes)):
+                prior = [copy.deepcopy(item) for item in seen]
+        updated[REACT_EXHAUSTION_DISPOSITION] = {
+            "schema": REACT_EXHAUSTION_SCHEMA,
+            "count": len(prior) + 1,
+            "visits": [*prior, record],
+        }
+        return {"state": updated}
 
     async def invoke(
         self, inputs: Input, session: Session, context: ModelContext
     ) -> Output:
         state = _state(inputs)
         role = inputs.get("role")
-        if not isinstance(role, Mapping) or role.get("result_type") != "answer":
+        if not isinstance(role, Mapping):
             raise NativeEpisodeError(f"{self._kind} node did not return an answer")
+        exhausted = None
+        if role.get("result_type") != "answer":
+            exhausted = self._react_exhaustion(role)
+            if exhausted is None:
+                raise NativeEpisodeError(
+                    f"{self._kind} node did not return an answer"
+                )
+            return self._retained_exhaustion(state, role, exhausted)
         output = role.get("actor_output")
         if not isinstance(output, str) or not output:
             raise NativeEpisodeError(f"{self._kind} node returned no actor output")
@@ -1099,6 +1253,10 @@ class NativeEpisodeWorkflow:
                 # episode that does carry an acquisition node keeps ACQUIRE in
                 # this set and every byte of its behaviour.
                 self._planner_actions if kind == "planner" else None,
+                # E22: the spec's own key, handed to every stage. Only the
+                # stages in REACT_EXHAUSTION_STAGES can act on it, and with
+                # the key at its default ``"raise"`` no stage can.
+                self.spec.react_exhaustion_policy,
             ),
             inputs_schema={
                 "state": "${" + query_id + ".state}",
@@ -1511,6 +1669,9 @@ __all__ = [
     "PLANNER_ACTION_ILLEGAL_DISPOSITION",
     "PLANNER_ACTION_ILLEGAL_SCHEMA",
     "PLANNER_ACTION_RECORD_CHARS",
+    "REACT_EXHAUSTION_DISPOSITION",
+    "REACT_EXHAUSTION_SCHEMA",
+    "REACT_EXHAUSTION_STAGES",
     "NativeEpisodeActions",
     "NativeEpisodeError",
     "NativeEpisodeNodes",

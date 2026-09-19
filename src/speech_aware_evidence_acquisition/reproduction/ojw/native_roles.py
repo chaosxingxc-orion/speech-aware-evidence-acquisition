@@ -18,8 +18,10 @@ from __future__ import annotations
 
 import asyncio
 import copy
+import hashlib
 import inspect
 import itertools
+import json
 import uuid
 from collections.abc import Callable, Mapping, Sequence
 from contextvars import ContextVar, Token
@@ -51,6 +53,40 @@ FROZEN_CORE_CALLBACK_MODEL = "frozen-core-metered-callback"
 RoleKind = Literal["perception", "reviewer", "planner", "solver"]
 _ANALYTICAL_ROLE_KINDS = frozenset({"reviewer", "planner"})
 _TOOL_FREE_ROLE_KINDS = frozenset({"perception", "solver"})
+
+#: Item E22 (the ReAct-exhaustion disposition, not the Earnings-22 carrier),
+#: 2026-09-19. The EXACT output the pinned framework returns when a ReAct
+#: loop spends its whole iteration budget without ever producing an answer
+#: (``openjiuwen.core.single_agent.agents.react_agent``, the ``else:`` branch
+#: of the iteration ``for``). It is a framework literal, not a model response:
+#: the loop never reached a completion with no tool call, so it has no answer
+#: to return and says so. Matched EXACTLY -- ``result_type`` ``"error"`` also
+#: carries genuine failures (``"No query provided"``, ``str(exception)``),
+#: and those are NOT this class.
+REACT_EXHAUSTION_OUTPUT = "Max iterations reached without completion"
+
+
+def _canonical_sha256(value: object) -> str:
+    """The sha256 of one tool argument set or one observation, never its text.
+
+    A string is hashed as its own UTF-8 bytes (that is what the wire carried);
+    anything else is hashed through canonical JSON, so the same arguments
+    produce the same digest whatever order the framework handed them in. A
+    value JSON cannot represent falls back to ``repr``, which is still a
+    stable identity for the one thing this digest is for: telling "the same
+    call again" from "a different call".
+    """
+
+    if isinstance(value, str):
+        payload = value
+    else:
+        try:
+            payload = json.dumps(
+                value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+            )
+        except (TypeError, ValueError):
+            payload = repr(value)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
 class FrozenCoreRoleModelError(RuntimeError):
@@ -725,19 +761,44 @@ class _RoleAuthorityRail(AgentRail):
 
 
 class _InstanceOwnedAbility(Tool):
-    """Bind one caller ability to this role node without mutating its card."""
+    """Bind one caller ability to this role node without mutating its card.
 
-    def __init__(self, ability: Tool) -> None:
+    E22: it is also the node's own record of what this role actually called.
+    ``record`` is the node's invocation-local recorder (``None`` outside an
+    invocation, which is the state of every direct construction in the
+    tests); it is handed the tool id and the arguments BEFORE the call and
+    the observation after, so a call that raises still leaves its identity
+    in the log. Recording changes no argument, no result and no request
+    byte -- it only remembers digests.
+    """
+
+    def __init__(self, ability: Tool, record=None) -> None:
         card = ability.card.model_copy(deep=True, update={"stateless": False})
         super().__init__(card)
         self._ability = ability
+        self._record = record
+        self._tool_id = card.name
+
+    def _begin(self, inputs):
+        if self._record is None:
+            return None
+        return self._record(self._tool_id, inputs)
 
     async def invoke(self, inputs, **kwargs):
-        return await self._ability.invoke(inputs, **kwargs)
+        entry = self._begin(inputs)
+        result = await self._ability.invoke(inputs, **kwargs)
+        if entry is not None:
+            entry["observation_sha256"] = _canonical_sha256(result)
+        return result
 
     async def stream(self, inputs, **kwargs):
+        entry = self._begin(inputs)
+        last = None
         async for item in self._ability.stream(inputs, **kwargs):
+            last = item
             yield item
+        if entry is not None and last is not None:
+            entry["observation_sha256"] = _canonical_sha256(last)
 
 
 class NativeRoleNode(WorkflowComponent):
@@ -757,6 +818,16 @@ class NativeRoleNode(WorkflowComponent):
     ) -> None:
         super().__init__()
         self.spec = spec
+        # E22: the invocation-local log of what this role's ReAct loop
+        # actually called, in order. Built exactly as
+        # ``FrozenCoreRoleModel._receipt_contacts`` is -- a ContextVar whose
+        # list object the framework's own tasks append to by reference -- so
+        # two concurrent invocations of the same node never see each other's
+        # calls. ``None`` outside an invocation, which is when nothing
+        # records.
+        self._tool_calls: ContextVar[list[dict[str, object]] | None] = ContextVar(
+            f"native_role_tool_calls_{uuid.uuid4().hex}", default=None
+        )
         self._delivery_allowed = delivery_allowed or (
             lambda _role, _output: False
         )
@@ -799,7 +870,7 @@ class NativeRoleNode(WorkflowComponent):
             names.append(name)
             if not isinstance(ability, Tool):
                 raise ValueError("every ability must be an OpenJiuwen Tool")
-            owned_ability = _InstanceOwnedAbility(ability)
+            owned_ability = _InstanceOwnedAbility(ability, self._record_tool_call)
             added = self._agent.ability_manager.add_ability(
                 owned_ability.card, owned_ability
             )
@@ -824,6 +895,37 @@ class NativeRoleNode(WorkflowComponent):
         self._tools_closed = False
         self._resources_closed = False
         self._invocation_serial = itertools.count(1)
+
+    def _record_tool_call(self, tool_id: str, arguments: object):
+        """E22: remember one attempted tool call of the live invocation.
+
+        Returns the mutable entry the ability fills with the observation
+        digest, or ``None`` when no invocation is capturing -- which is the
+        only way this can fail, and it fails by remembering nothing rather
+        than by raising into a tool call.
+        """
+
+        log = self._tool_calls.get()
+        if log is None:
+            return None
+        entry: dict[str, object] = {
+            "tool_id": tool_id,
+            "arguments_sha256": _canonical_sha256(arguments),
+            "observation_sha256": None,
+        }
+        log.append(entry)
+        return entry
+
+    def _begin_tool_capture(
+        self,
+    ) -> tuple[Token[list[dict[str, object]] | None], list[dict[str, object]]]:
+        calls: list[dict[str, object]] = []
+        return self._tool_calls.set(calls), calls
+
+    def _end_tool_capture(
+        self, token: Token[list[dict[str, object]] | None]
+    ) -> None:
+        self._tool_calls.reset(token)
 
     async def _ensure_rail(self) -> None:
         if self._close_requested:
@@ -864,6 +966,7 @@ class NativeRoleNode(WorkflowComponent):
         if not isinstance(query, str) or not query:
             raise ValueError("native role query must be non-empty text")
         receipt_token, receipt_contacts = self._model._begin_receipt_capture()
+        tool_token, tool_calls = self._begin_tool_capture()
         try:
             result = await self._agent.invoke(
                 {
@@ -900,6 +1003,7 @@ class NativeRoleNode(WorkflowComponent):
             raise
         finally:
             self._model._end_receipt_capture(receipt_token)
+            self._end_tool_capture(tool_token)
         actor_output = result.get("output")
         result_type = result.get("result_type")
         if not isinstance(actor_output, str) or not isinstance(result_type, str):
@@ -915,7 +1019,7 @@ class NativeRoleNode(WorkflowComponent):
             and result_type == "answer"
             and self._delivery_allowed(self.spec.role_id, actor_output)
         )
-        return {
+        role_result: dict[str, object] = {
             "role_id": self.spec.role_id,
             "actor_output": actor_output,
             "result_type": result_type,
@@ -924,6 +1028,69 @@ class NativeRoleNode(WorkflowComponent):
                 "contacts": [dict(contact) for contact in receipt_contacts],
                 "final_contact": dict(receipt_contacts[-1]),
             },
+        }
+        exhaustion = self._react_exhaustion(
+            result_type, actor_output, receipt_contacts, tool_calls
+        )
+        if exhaustion is not None:
+            # E22: present ONLY on this one framework outcome, so every other
+            # role result is the exact dict it has always been. It carries no
+            # text -- tool ids and digests only.
+            role_result["react_exhaustion"] = exhaustion
+        return role_result
+
+    def _react_exhaustion(
+        self,
+        result_type: str,
+        actor_output: str,
+        receipt_contacts: Sequence[Mapping[str, str]],
+        tool_calls: Sequence[Mapping[str, object]],
+    ) -> dict[str, object] | None:
+        """E22: this invocation's ReAct-exhaustion evidence, or ``None``.
+
+        The class is recognised by ALL of: a tool-bearing role (a role with
+        no advertised ability cannot spend its iterations on tool calls), the
+        framework's exact exhaustion literal
+        (:data:`REACT_EXHAUSTION_OUTPUT`) under ``result_type`` ``"error"``,
+        at least one recorded call, and an iteration budget actually spent to
+        the end. Any one of them missing leaves the result exactly as it was
+        before E22 -- a non-answer the graph refuses.
+        """
+
+        if (
+            result_type != "error"
+            or actor_output != REACT_EXHAUSTION_OUTPUT
+            or not self._advertised_names
+            or not tool_calls
+            or len(receipt_contacts) != self.spec.max_iterations
+        ):
+            return None
+        calls = [
+            {
+                "tool_id": call["tool_id"],
+                "arguments_sha256": call["arguments_sha256"],
+            }
+            for call in tool_calls
+        ]
+        signatures = {(call["tool_id"], call["arguments_sha256"]) for call in calls}
+        observations = [
+            call["observation_sha256"]
+            for call in tool_calls
+            if call["observation_sha256"] is not None
+        ]
+        return {
+            "role_id": self.spec.role_id,
+            "role_kind": self.spec.role_kind,
+            "iterations_used": len(receipt_contacts),
+            "max_iterations": self.spec.max_iterations,
+            "calls": calls,
+            # Every call of this loop had the same tool id and the same
+            # arguments digest -- the shape the flown failure took (413 of
+            # 413 executions of one tool with ``{}``). Vacuously true for a
+            # single call, which is what "all of them were the same" means
+            # when there is one.
+            "identical_calls": len(signatures) == 1,
+            "last_observation_sha256": observations[-1] if observations else None,
         }
 
     async def invoke_direct(self, query: str) -> dict[str, object]:
@@ -1011,6 +1178,7 @@ __all__ = [
     "NativeRoleNode",
     "NativeRoleNodeSpec",
     "NativeRoleWorkflow",
+    "REACT_EXHAUSTION_OUTPUT",
     "build_native_role_workflow",
     "project_native_assistant_message",
     "restore_native_assistant_wire_message",

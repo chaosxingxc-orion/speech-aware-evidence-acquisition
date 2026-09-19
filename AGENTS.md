@@ -82,8 +82,11 @@ build commit plus per-file GGUF SHA-256. Record every model or tool contact in
   `experiment_handoff_check.py`, `openjiuwen_native_reuse_check.py`,
   `derived_media_confinement_check.py`, and
   `finite_completion_policy_check.py` -- every live, unflown native cell must declare
-  `native_episode.finite_completion_policy` as `"deliver-latest-or-abstain"` (item E13;
-  the B7a recovery arm lost 1,451 contacts to the parser default `"raise"`).
+  BOTH `native_episode.finite_completion_policy` as `"deliver-latest-or-abstain"` (item E13;
+  the B7a recovery arm lost 1,451 contacts to the parser default `"raise"`) and
+  `native_episode.react_exhaustion_policy` as `"continue-without-answer"` (item E22, the
+  ReAct-exhaustion disposition, not the Earnings-22 carrier; the B8b-anchor arm lost 2,016
+  contacts to the same default).
 - Inference: llama.cpp llama-server. Reproduction entry point: `bash scripts/reproduce.sh`
   (active from R0 onward).
 - This repository currently declares no `speechrl_common` dependency; first consumption must pin

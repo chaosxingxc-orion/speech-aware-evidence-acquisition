@@ -1,9 +1,14 @@
-"""The finite-completion policy gate, on a synthetic repository.
+"""The native-episode failure-mode policy gate, on a synthetic repository.
 
 Item E13 (2026-09-19). ``scripts/checks/finite_completion_policy_check.py``
 demands ``native_episode.finite_completion_policy ==
 "deliver-latest-or-abstain"`` of every LIVE, UNFLOWN native cell -- the rule
-the B7a recovery arm's 1,451-contact abort bought. These tests build a whole
+the B7a recovery arm's 1,451-contact abort bought. Item E22 (2026-09-19, the
+ReAct-exhaustion disposition, not the Earnings-22 carrier) added the second
+key ``native_episode.react_exhaustion_policy ==
+"continue-without-answer"`` under exactly the same scope rule, after the
+B8b-anchor arm's 2,016-contact abort. These fixtures therefore arm BOTH keys
+by default and vary one at a time. These tests build a whole
 miniature repository (exposure ledger, experiment fragment, baseline fragment,
 readiness package) per case, so the scope rule is exercised on both sides of
 each of its three conditions rather than on whatever the real tree happens to
@@ -64,7 +69,7 @@ def _ledger(rows: list[dict[str, str]]) -> str:
     return "\n".join(lines) + "\n"
 
 
-def _episode(policy: str | None) -> dict:
+def _episode(policy: str | None, react_policy: str | None) -> dict:
     block = {
         "schema": "saea-native-episode-config-v1",
         "episode_id": "e13-proof-v1",
@@ -77,6 +82,8 @@ def _episode(policy: str | None) -> dict:
     }
     if policy is not None:
         block["finite_completion_policy"] = policy
+    if react_policy is not None:
+        block["react_exhaustion_policy"] = react_policy
     return block
 
 
@@ -84,6 +91,7 @@ def _build(
     root: Path,
     *,
     policy: str | None,
+    react_policy: str | None = gate.REQUIRED_REACT_POLICY,
     consumed: str = "no",
     readiness_state: str | None = "ready",
     with_ledger_row: bool = True,
@@ -97,7 +105,7 @@ def _build(
 
     baseline: dict = {"arm": "e13-proof", "policy": "phase-native-e13-proof-v1"}
     if native:
-        baseline["native_episode"] = _episode(policy)
+        baseline["native_episode"] = _episode(policy, react_policy)
     (root / "configs" / "baseline" / f"{BASELINE}.json").write_text(
         json.dumps(baseline, indent=2, sort_keys=True), encoding="utf-8"
     )

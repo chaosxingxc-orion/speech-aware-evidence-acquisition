@@ -434,6 +434,25 @@ NATIVE_EPISODE_TOP_LEVEL_KEY = "native_episode"
 #: part of the same module and is refused without it, exactly as E18's
 #: ``roles.acquisition`` is. See ``rails.knowledge_index`` and
 #: ``core.base.KNOWLEDGE_INDEX_ORDERINGS``.
+#: ``native_episode.react_exhaustion_policy`` (item E22 -- the ReAct-exhaustion
+#: disposition, not the Earnings-22 carrier -- 2026-09-19) is the TWELFTH, and
+#: the THIRD FAILURE MODE after E13's and E20's. It decides what a TOOL role's
+#: ReAct loop does when it spends its whole iteration budget on tool calls and
+#: never produces an answer: ``"raise"`` -- the key absent or written out loud
+#: -- is the pre-E22 behaviour, ``reproduction.ojw.native_episode._ApplyRole``
+#: refusing the non-answer with ``NativeEpisodeError: <stage> node did not
+#: return an answer`` and taking the flight with it (the B8b-anchor arm,
+#: 2 of 410 Reviewer visits, 2,016 contacts lost);
+#: ``"continue-without-answer"`` ends that visit with NO finding -- the row
+#: continues through the Planner and delivers exactly as it would have -- and
+#: records a ``react_exhaustion`` VISIT disposition naming the role, the
+#: iterations it spent, every call's tool id and argument digest, whether
+#: those calls were identical, and the last observation's digest. Like E13's
+#: and E20's it renders NO request byte on a row whose roles answer (nothing
+#: is retried and no extra contact is made), so its ON arm is free to be the
+#: default of every new cell. See
+#: ``reproduction.ojw.native_roles.REACT_EXHAUSTION_OUTPUT`` and
+#: ``scripts/checks/finite_completion_policy_check.py``.
 EPISODE_LEVEL_SWITCH_KEYS = frozenset({
     "native_episode.roles.solver",
     "native_episode.review_loop",
@@ -446,6 +465,7 @@ EPISODE_LEVEL_SWITCH_KEYS = frozenset({
     "native_episode.tool_schema_rendering",
     "native_episode.acquisition",
     "native_episode.knowledge_index",
+    "native_episode.react_exhaustion_policy",
 })
 
 #: The top-level key every ``stores``-class switch key names one child of.
@@ -1300,7 +1320,10 @@ def is_episode_null_arm(key: str, value: object) -> bool:
     ABSENCE (E21), because an index is either rendered into the constant
     prefix or it is not -- with the key absent the system message carries its
     pre-E21 contract fill and the evidence block the selected values' own
-    full text.
+    full text; and ``native_episode.react_exhaustion_policy``'s OFF is the
+    key's absence OR its explicit default ``"raise"`` (item E22 -- the
+    ReAct-exhaustion disposition, not the Earnings-22 carrier), for exactly
+    the reason E13's and E20's are.
     """
 
     if key == "native_episode.context_policy":
@@ -1391,6 +1414,15 @@ def is_episode_null_arm(key: str, value: object) -> bool:
         from .knowledge_index import is_knowledge_index_null_arm  # noqa: PLC0415
 
         return is_knowledge_index_null_arm(value)
+    if key == "native_episode.react_exhaustion_policy":
+        # Item E22 (the ReAct-exhaustion disposition, not the Earnings-22
+        # carrier): the same OFF semantics E13's and E20's keys have -- the
+        # key's ABSENCE or its explicit default ``"raise"``, which
+        # ``rails.native_episode_config.load_native_episode_config`` reads
+        # identically, so a fragment that writes the abort default out loud
+        # composes the same episode as one that omits it.
+        # ``"continue-without-answer"`` is the one armed value.
+        return value is None or value == "raise"
     raise ConfigTableError(f"unknown episode switch key {key!r}")
 
 

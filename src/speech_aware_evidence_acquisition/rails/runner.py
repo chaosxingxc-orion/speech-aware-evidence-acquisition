@@ -3433,6 +3433,8 @@ async def _invoke_native_role_episode(
                 # E20: keyword, because the spec's own field is last and
                 # every positional argument above is the pre-E20 order.
                 context_fit_policy=config.context_fit_policy,
+                # E22: keyword for the same reason.
+                react_exhaustion_policy=config.react_exhaustion_policy,
             ),
             nodes=NativeEpisodeNodes(**nodes),
             role_input_builder=role_input,
@@ -3497,6 +3499,9 @@ async def _invoke_native_role_episode(
             delivery, exhaustion_policy=config.exhaustion_policy,
             finite_completion_policy=config.finite_completion_policy,
             context_fit_policy=config.context_fit_policy,
+            # E22: the same prospective-configuration rule, read from the
+            # composed fragment rather than from the row.
+            react_exhaustion_policy=config.react_exhaustion_policy,
             max_revisions=config.max_revisions, error_type=RailsRunnerError,
         )
         if finite or context_degraded:
@@ -3625,6 +3630,15 @@ async def _invoke_native_role_episode(
             # registered action -- the row is retained and sealed, and
             # this is the count plus sha256 that says so.
             "planner_action_illegal",
+            # E22: present exactly when a tool role of this row spent its
+            # whole ReAct iteration budget on tool calls without an answer.
+            # One record per exhausted VISIT -- the role, the visit index,
+            # the iterations, every call's tool id and argument digest,
+            # whether those calls were identical, and the last observation's
+            # digest. Never an argument value and never an observation's
+            # text. Absent on every unarmed row, so such a row's receipt is
+            # byte-identical to its pre-E22 self.
+            "react_exhaustion",
         ) if key in receipt}
         if not config.review_loop_enabled:
             # Configuration, not failure: record which phases never ran
