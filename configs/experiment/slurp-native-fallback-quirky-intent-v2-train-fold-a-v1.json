@@ -13,7 +13,7 @@
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Registered before contact by the B4 preparation agent. It stays held: this cell may not fly until the cell B0 verdict is in, because cell B0 is its primary comparator and its base. The coordinator appends the root decision requirement and flips the state after the four-row smoke seals; if cell B0 is HARMFUL the coordinator re-bases this cell on the sealed anchor before launch and recomputes every hash in the registration package. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. One experiment in flight at a time.",
+        "reason": "Registered before contact by the B4 preparation agent. It stays held: this cell may not fly until the cell B0 verdict is in, because cell B0 is its primary comparator and its base. The coordinator appends the root decision requirement and flips the state after the four-row smoke seals; if cell B0 is HARMFUL the coordinator re-bases this cell on the sealed anchor before launch and recomputes every hash in the registration package. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. One experiment in flight at a time. Superseded 2026-09-19 by the ledger-hygiene pass (item E13 follow-up): this cell never flew and made zero model contacts, its exposure-ledger row is now closed, and it is superseded by the anchor-base cell B4 v2 registration (docs/readiness/2026-09-17-slurp-b4-org-cells-anchor-v2-preregistration.md).",
         "requirements": [
           {
             "kind": "preparation",
@@ -22,7 +22,7 @@
             "sha256": "5d1cd609d99b745cc2ca8de774eabb821f4cd744559cdb5cf7cd4e10ecf27089"
           }
         ],
-        "state": "held"
+        "state": "superseded"
       },
       "run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-TRAIN-FOLD-A-V1"
     }

@@ -11,8 +11,8 @@
         "check"
       ],
       "readiness": {
-        "state": "held",
-        "reason": "Closed after the original zero-contact initialization failure and its sole recovery failed before model, tokenizer or tool contact. Preserve execution checkout 657ce3a3 and registered protocol bytes. The successor template is model-free compatibility work only; no further recovery of this flight is authorized. See docs/readiness/2026-09-13-slurp-native-knowledge-proof-closure-v1.md."
+        "state": "superseded",
+        "reason": "Closed after the original zero-contact initialization failure and its sole recovery failed before model, tokenizer or tool contact. Preserve execution checkout 657ce3a3 and registered protocol bytes. The successor template is model-free compatibility work only; no further recovery of this flight is authorized. See docs/readiness/2026-09-13-slurp-native-knowledge-proof-closure-v1.md. Superseded 2026-09-19 by the ledger-hygiene pass (item E13 follow-up): this cell never flew and made zero model contacts, its exposure-ledger row is now closed, and it is superseded by the anchor-based SLURP v2 program."
       }
     }
   ],

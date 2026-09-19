@@ -13,7 +13,7 @@
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Registered before contact by the B7b registration agent on the B7a base, after E8b (the Node Context Policy at level L2, one declared cleaning contact) landed. It stays held for TWO reasons: the coordinator appends the root decision requirement and flips the state after the four-row smoke seals, AND cell B7b flies only after cell B7a (run SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V1, not yet flown) has sealed and its verdict is ADMITTED or NEUTRAL; a HARMFUL B7a closes this cell unflown. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. One experiment in flight at a time.",
+        "reason": "Registered before contact by the B7b registration agent on the B7a base, after E8b (the Node Context Policy at level L2, one declared cleaning contact) landed. It stays held for TWO reasons: the coordinator appends the root decision requirement and flips the state after the four-row smoke seals, AND cell B7b flies only after cell B7a (run SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V1, not yet flown) has sealed and its verdict is ADMITTED or NEUTRAL; a HARMFUL B7a closes this cell unflown. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. One experiment in flight at a time. Superseded 2026-09-19 by the ledger-hygiene pass (item E13 follow-up): this cell never flew and made zero model contacts, its exposure-ledger row is now closed, and it is superseded by cell B7a v2 (docs/readiness/2026-09-19-slurp-b7a-ncp-l1-anchor-v2), this registration's own primary comparator, cell B7a v1, having been closed unsealed after its second failure.",
         "requirements": [
           {
             "kind": "preparation",
@@ -22,7 +22,7 @@
             "sha256": "7bf71ba4cb3aec553e8f2466bd939a8865e378c024f1b25538541e576f45ccb3"
           }
         ],
-        "state": "held"
+        "state": "superseded"
       },
       "run_id": "SAEA-SLURP-NATIVE-NCP-L2-REVIEW-CLEAN-ANCHOR-TRAIN-FOLD-A-V1"
     }

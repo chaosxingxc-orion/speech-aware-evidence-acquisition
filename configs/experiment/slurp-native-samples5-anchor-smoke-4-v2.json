@@ -12,7 +12,7 @@
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Registered before contact by the cell B2 re-base agent on the sealed dual-store ANCHOR. Readiness is HELD: the coordinator adds the root decision requirement and flips this state itself, through scripts/flights/repin_cell.py, immediately before the standalone-worker smoke launch. Exclusive resident attachment to serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory.",
+        "reason": "Registered before contact by the cell B2 re-base agent on the sealed dual-store ANCHOR. Readiness is HELD: the coordinator adds the root decision requirement and flips this state itself, through scripts/flights/repin_cell.py, immediately before the standalone-worker smoke launch. Exclusive resident attachment to serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. Superseded 2026-09-19 by the ledger-hygiene pass (item E13 follow-up): this cell never flew and made zero model contacts, its exposure-ledger row is now closed, and it is superseded by the cell B2 v3 registration after E2c (docs/readiness/2026-09-17-slurp-b2-samples5-anchor-v3-preregistration.md).",
         "requirements": [
           {
             "kind": "preparation",
@@ -21,7 +21,7 @@
             "sha256": "82d4b92344a3e62c4d317d50585787eaab57fff5c482d29ed384ec3de2c7fa49"
           }
         ],
-        "state": "held"
+        "state": "superseded"
       },
       "run_id": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-V2"
     }
