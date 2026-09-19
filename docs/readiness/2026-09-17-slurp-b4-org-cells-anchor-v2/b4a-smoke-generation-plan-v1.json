@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-v2",
-  "composed_config_hash": "b772dda9bd53bfff07344f5d734b4f396456a42a666a795e9580da42316a93de",
+  "composed_config_hash": "052dcea6928cf6c66003be0a4c10a9afb39ac132de0424ed849bd2628c5d864a",
   "execution_route": "Standalone core.flight.cli worker attached to the resident session; no campaign, no scorer.",
   "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "experiment": "slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-v2",
@@ -23,7 +23,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 44,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "36d8dd765c45803343b744201eac24f0bfe3eb2087ad02a69c745a918a58fee0",
+    "protocol_hash": "db3148ee4c2f9d8344f9c6a7d2adc88aefd915d9d1611936873d47bf131d805c",
     "run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-V2",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
