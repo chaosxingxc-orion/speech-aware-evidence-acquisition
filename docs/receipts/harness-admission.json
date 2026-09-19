@@ -961,6 +961,77 @@
         "what_flew": "The ON arm flew configs/baseline/slurp-native-anchor-ncp-l1-train-fold-a-v2.json at 83d6b1b2: the sealed anchor fragment with native_episode.context_policy at level structured on the eight model-output boundaries plus native_episode.finite_completion_policy deliver-latest-or-abstain (a harness declaration, not a factor). The OFF arm is the sealed anchor itself, whose native_episode block has no context_policy key.",
         "why_this_table": "the module changes how every node boundary renders another node's output (a declared handling policy per boundary) and is switched by one dotted path on the closed episode allowlist whose null arm is the key's absence (an absent key, the literal 'raw' and an all-raw object are one null arm, E8a note 4)"
       }
+    },
+    {
+      "carrier": "slurp",
+      "comparator": {
+        "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+        "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+        "note": "the sealed dual-store anchor; never re-flown or re-scored; both arms node-free and per-role; the arm carries the finite-completion policy (a harness declaration; zero finite completions on either arm)"
+      },
+      "date": "2026-09-19",
+      "module": "standing general_quirky fallback candidate (A3 FIX-1, appended to the Perception candidate fill and to the Solver candidate supply when absent) together with the intent-boundaries store v2 carrying the one-directional qa/general contrast card (A3 FIX-2); item E5a; cell B4a v2 on the anchor base",
+      "row": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-V2",
+      "status": "HARMFUL",
+      "status_basis": "HARMFUL is this table's status for a gating guard that fails. Registered rule (docs/readiness/2026-09-17-slurp-b4-org-cells-anchor-v2-preregistration.md, B4a): (a) intent (the cell's primary) CI95 lower bound above zero, (b) pooled SLU non-inferior within the 1.1218 own-null margin, (c) v3 same sign, (d) no scenario band breach. Read: intent 77.9630 -> 78.7037, +0.7407 pp CI95 [-0.3031, +1.7544] (fails a); official pooled SLU-F1 48.5336 -> 47.8287, -0.7049 pp CI95 [-2.2930, +0.8861] (the HARMFUL clause: lower bound at or below -1.1218); v3 +0.2778 and TRAIN symmetric +0.7407 agree in sign; 0 of 18 scenarios breach; 0 decision-17 flags. Interval width rather than measured loss (the SLU point estimate sits inside the margin; the cell's own half-width is 1.5895 against the borrowed 1.1218). The mechanism landed and was ignored: the fallback was appended on 1,052 of 1,080 rows, lifted gold-general_quirky candidate coverage 24.44 % -> 100 % and general-scenario coverage 43.33 % -> 100 %, and was selected on zero rows; general intent 36.67 % on both arms, qa intent 75.00 % on both arms with zero saves and zero harms; general_quirky -> qa_* confusion 11 -> 10, the reverse 0 -> 1. Cost: +29.96 % prompt tokens (11,045 vs 8,491 per contact), +39.35 % GPU hours (4.7210 vs 3.388), +40.4 % newly prefilled tokens, for five fewer contacts; pooled span F1 -2.00, per-row exact slot F1 -1.91 [-3.27, -0.54] (60 harms / 35 saves, p 0.013).",
+      "evidence": {
+        "arm": {
+          "run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-V2",
+          "attempt_id": "attempt-slurp-native-fallback-quirky-intent-v2-anchor-train-fold-a-generation-v2",
+          "study_commit": "682ee52d"
+        },
+        "smoke": {
+          "run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-V2",
+          "attempt_id": "attempt-slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-generation-v2r",
+          "study_commit": "f0b6ebb1"
+        },
+        "verdict": {
+          "path": "docs/results/2026-09-19-slurp-b4a-fallback-quirky-anchor-v2-verdict.md",
+          "sha256": "1c09c0fb38f628be33c464f40cd1d827a63f7858f0a02c270721c294d4d0e976"
+        },
+        "analysis_dir": "SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-B4A-ANCHOR-V2-PAIRED-ANALYSIS-V1",
+        "primary": "intent +0.7407 pp CI95 [-0.3031, +1.7544]; official pooled SLU-F1 -0.7049 pp CI95 [-2.2930, +0.8861] (1,080 paired TRAIN A rows, 125 speaker clusters, 10,000 draws, seed 20260915)",
+        "guards": "scenario +0.65, action +0.83, pooled span F1 -2.00, per-row exact slot F1 -1.91 [-3.27, -0.54]; 0 of 18 scenario band breaches; intent saves 30 / harms 22 (McNemar p 0.332)",
+        "diagnostics": "finite_completion 0; planner_action_illegal 0; 4 revisions vs the anchor's 6; median 20 slot values supplied (12 model + 8 fallback), 0 rows at the 28-value cap; first model-facing request identical on 701 rows and different on 379 (the registered request-channel proof), evidence_id lists identical on 1,080",
+        "cost": "5,412 contacts (5.011 per row), 15,456.80 repeated speech seconds, 59,777,211 prompt / 251,599 completion tokens, 1,080 tool calls, 4.7210 GPU hours, wall 17,250.2 s, occupancy 0.943, utilisation 91.77 %, parked 0.014, 5,412 of 5,412 requests fit (minimum margin 6,690)",
+        "secondary": "against the released direct anchor: pooled SLU +13.94, intent +5.00"
+      },
+      "not_admitted_for": [
+        "any default plan (HARMFUL never enters a plan)",
+        "cell B4c (intent store v2 alone): closed unflown under owner decision 9 (it flew only if B4a admitted)",
+        "any claim that a fallback candidate helps: it raised coverage to 100 % and was never chosen; the general and qa holes need a different mechanism (index-based assembly, decisions 48-50)",
+        "any other roster or carrier; DEV-1000, Fold B and the test split are untouched"
+      ],
+      "switch": {
+        "added_by": "docs/results/2026-09-19-slurp-b4a-fallback-quirky-anchor-v2-verdict.md; the stores re-pin form of harness-admission v3 (E9, 2026-09-17). This cell moved TWO stores-class keys; the entry records the re-pin of knowledge_stores.intent-boundaries as its switch and the second key beside it, because cell B4c (the store alone) is closed and no second entry is owed",
+        "table": "stores",
+        "key": "knowledge_stores.intent-boundaries",
+        "form": "repin",
+        "off": {
+          "release": {
+            "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+            "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+          },
+          "snapshot": {
+            "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json",
+            "sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe"
+          }
+        },
+        "on": {
+          "release": {
+            "relpath": "knowledge/slurp/semantic/intent-boundaries-v2/release.json",
+            "sha256": "31eb595b54088a21e45daf1acfe790d545e8a4d5330acb3ee4e19f6e1607bc95"
+          },
+          "snapshot": {
+            "relpath": "knowledge/slurp/semantic/intent-boundaries-v2/snapshot.json",
+            "sha256": "8a27424a84d5b419e033391b9bba00f30952de520c993237ea0219a9978c07c5"
+          }
+        },
+        "second_moved_key": "knowledge_stores.slot-contracts.candidate_supply.solver.fallback_candidates = [\"general_quirky\"] (absent on the anchor), mirrored by phase_material.perception.fill_params.fallback_candidates at its own consumption site; release and snapshot pins of slot-contracts unchanged (v1 on both arms)",
+        "proof": "tests/unit/test_config_table_module_switches.py::test_fallback_candidate_is_one_key_in_the_knowledge_views_table",
+        "what_flew": "The ON arm flew configs/baseline/slurp-native-anchor-fallback-quirky-intent-v2-train-fold-a-v2.json at 682ee52d (composed a07e895cf893bf2a8ba348449e949f3b0db18808d4435a3670ef49fa37f452d2): the sealed anchor fragment with intent-boundaries re-pinned to v2 and the fallback candidate leaf on the Solver candidate supply and the Perception fill, plus the finite-completion policy (a harness declaration). The OFF arm is the sealed anchor itself (intent-boundaries v1, no fallback leaf).",
+        "why_this_table": "a whole named knowledge store is one knowledge_stores.<store_id> switch; the re-pin form records the incumbent's pins as the OFF arm and the successor's pins as the ON arm"
+      }
     }
   ],
   "switch_classes": [

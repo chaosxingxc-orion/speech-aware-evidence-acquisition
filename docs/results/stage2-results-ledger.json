@@ -3766,6 +3766,18 @@
         "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V2",
         "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-V2"
       ]
+    },
+    {
+      "date": "2026-09-19",
+      "cell_id": "SLURP-B4A-FALLBACK-QUIRKY-ANCHOR-V2",
+      "status": "HARMFUL_BY_THE_REGISTERED_RULE_FALLBACK_NEVER_CHOSEN_B4C_CLOSED",
+      "source": "docs/results/2026-09-19-slurp-b4a-fallback-quirky-anchor-v2-verdict.md",
+      "source_sha256": "1c09c0fb38f628be33c464f40cd1d827a63f7858f0a02c270721c294d4d0e976",
+      "meaning": "Cell B4a v2 (standing general_quirky fallback candidate + intent-boundaries v2 with the qa/general contrast card, on the sealed anchor) on TRAIN A 1,080: intent +0.74 pp CI95 [-0.30, +1.75] (primary, fails the lower-bound-above-zero clause); official pooled SLU-F1 -0.70 [-2.29, +0.89] (the HARMFUL clause: lower bound below -1.1218); v3 and symmetric agree in sign; 0 of 18 scenarios breach. Interval width, not measured loss -- but the mechanism was ignored by the core: appended on 1,052 rows, coverage 24 % -> 100 %, selected on zero rows; general intent 36.67 % on both arms; cost +30 % prompt tokens, +39 % GPU hours. Owner decision 9: B4c (intent store v2 alone) closes unflown. Decision-30 streak of one-factor NEUTRAL/HARMFUL cells: two (B7a v2, B4a v2).",
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-V2",
+        "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-V2"
+      ]
     }
   ]
 }
