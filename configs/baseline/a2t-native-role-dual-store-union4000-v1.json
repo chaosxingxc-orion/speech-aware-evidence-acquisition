@@ -91,6 +91,7 @@
     "episode_id": "a2t-native-role-dual-store-union4000-v1",
     "exhaustion_policy": "deliver-latest-solver",
     "finite_completion_policy": "deliver-latest-or-abstain",
+    "react_exhaustion_policy": "continue-without-answer",
     "max_revisions": 1,
     "roles": {
       "perception": {

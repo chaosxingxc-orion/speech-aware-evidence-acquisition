@@ -127,7 +127,8 @@
     },
     "schema": "saea-native-episode-config-v1",
     "tool_iteration_policy": "reserve-final-report",
-    "finite_completion_policy": "deliver-latest-or-abstain"
+    "finite_completion_policy": "deliver-latest-or-abstain",
+    "react_exhaustion_policy": "continue-without-answer"
   },
   "phase_material": {
     "perception": {
