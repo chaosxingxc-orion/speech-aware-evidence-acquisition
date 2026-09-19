@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-tool-constant-anchor-train-fold-a-v1",
-  "composed_config_hash": "1668d74070bb8ca60d5fe45905badb0e1562cc474aa29c3e5f5afa62190e283e",
+  "composed_config_hash": "02b13593d920d6dd93977cf608da8812cb86ddaae3a1222b0287fe50f7507602",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-tool-constant-anchor-train-fold-a-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "5c481ad5597eb3e5409a2f442cbf040df8327a7ebf875fc3b5cfab7f5672ca4a",
+    "protocol_hash": "dc357b14d608d1fd19ea1a879c3fde59809e0af01a0726c2131eabd513af54ab",
     "run_id": "SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-TRAIN-FOLD-A-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -47,7 +47,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-19-slurp-eff1-tool-constant-v1/protocol-registered-v1.json",
-    "sha256": "60007272ee07e25e86cf805b830edd197e5b86b5b753ebfd2bf571e4ebcbba30"
+    "sha256": "6ef936762b024d812b4045db163dd0a3f6bd45c084af5e514cae6d6c1287b1cb"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist, and not before the registered STOP condition passes. The ONLY gating comparator is the sealed dual-store anchor SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1, which is never re-flown and never re-scored. The verdict word is NEUTRAL or HARMFUL; there is no ADMITTED-on-a-gain clause, because this cell makes no effectiveness claim. The efficiency deliverables are read and reported whatever that word is. Read once; the decision rule is fixed in the protocol document and is not edited after a number is seen. This arm does not open before this cell's own four-row smoke seals.",
   "registered_at_utc": "2026-09-19T06:00:00.000000+00:00",

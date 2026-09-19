@@ -47,7 +47,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-19-slurp-eff1-tool-constant-v1/protocol-registered-v1.json",
-    "sha256": "60007272ee07e25e86cf805b830edd197e5b86b5b753ebfd2bf571e4ebcbba30"
+    "sha256": "6ef936762b024d812b4045db163dd0a3f6bd45c084af5e514cae6d6c1287b1cb"
   },
   "quality_read_gate": "The four-row smoke is STRUCTURAL AND EFFICIENCY ONLY and is never scored: delivery and contact counts, the saea-native-tool-schema-rendering-v1 receipt with distinct_tool_schemas_sha256 == 1 on every row, the Reviewer requests byte-identical to the sealed anchor's on the same four sample ids, the other roles' payloads differing in exactly the tools key, the request-fit receipts, any retained finite_completion row reported rather than treated as an error, the per-role authority refusals reported, and -- the point of the smoke -- the server-reported cached-token share per position showing the first-Reviewer and Planner contacts no longer re-prefilling the packet. No scorer, no answer, reference or quality interpretation and no task-quality claim.",
   "registered_at_utc": "2026-09-19T06:00:00.000000+00:00",

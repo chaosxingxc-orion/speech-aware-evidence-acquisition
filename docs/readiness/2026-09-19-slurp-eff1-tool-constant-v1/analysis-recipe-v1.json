@@ -44,10 +44,10 @@
     },
     "right_treatment": {
       "attempt_id": "attempt-slurp-native-tool-constant-anchor-train-fold-a-generation-v1",
-      "composed_config_hash": "1668d74070bb8ca60d5fe45905badb0e1562cc474aa29c3e5f5afa62190e283e",
+      "composed_config_hash": "02b13593d920d6dd93977cf608da8812cb86ddaae3a1222b0287fe50f7507602",
       "expected_contacts_nominal": 5420,
       "outputs_sha256": "PENDING_EFF1_SEAL",
-      "registered_protocol_hash": "5c481ad5597eb3e5409a2f442cbf040df8327a7ebf875fc3b5cfab7f5672ca4a",
+      "registered_protocol_hash": "dc357b14d608d1fd19ea1a879c3fde59809e0af01a0726c2131eabd513af54ab",
       "role": "efficiency cell EFF-1: the anchor plus native_episode.tool_schema_rendering = \"constant\" and the mandatory finite-completion declaration, and nothing else",
       "run_id": "SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-TRAIN-FOLD-A-V1",
       "run_manifest_sha256": "PENDING_EFF1_SEAL",
@@ -61,7 +61,7 @@
     "owner_decisions": "41 (throughput root cause and the 12 GPU-hour target), 38 (margins), 30 (efficiency cells and the headroom trigger), 28, 25, 23, 22, 17, 14 and 7 -- all in docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
     "preregistration": "docs/readiness/2026-09-19-slurp-eff1-tool-constant-v1-preregistration.md",
     "protocol": "docs/readiness/2026-09-19-slurp-eff1-tool-constant-v1/protocol-registered-v1.json",
-    "protocol_sha256": "60007272ee07e25e86cf805b830edd197e5b86b5b753ebfd2bf571e4ebcbba30"
+    "protocol_sha256": "6ef936762b024d812b4045db163dd0a3f6bd45c084af5e514cae6d6c1287b1cb"
   },
   "cell_kind": "EFFICIENCY -- the efficiency tables are the deliverable; the paired score read is a non-inferiority guard",
   "claim_boundary": "Descriptive paired read on historically exposed TRAIN Fold A discovery rows, plus a cost measurement of the same flight. No superiority, generalization, component-causal, bar or confirmatory claim; no cross-carrier claim; no geometry claim.",

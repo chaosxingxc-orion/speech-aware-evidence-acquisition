@@ -149,7 +149,7 @@ diagnostic (section 7), the expected count is zero, and the comparator side is p
 
 | role | identity |
 | --- | --- |
-| **arm** | `SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-TRAIN-FOLD-A-V1` / `attempt-slurp-native-tool-constant-anchor-train-fold-a-generation-v1`, cell `slurp-native-tool-constant-anchor-train-fold-a-v1`, composed `1668d74070bb8ca60d5fe45905badb0e1562cc474aa29c3e5f5afa62190e283e`, protocol `5c481ad5597eb3e5409a2f442cbf040df8327a7ebf875fc3b5cfab7f5672ca4a` |
+| **arm** | `SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-TRAIN-FOLD-A-V1` / `attempt-slurp-native-tool-constant-anchor-train-fold-a-generation-v1`, cell `slurp-native-tool-constant-anchor-train-fold-a-v1`, composed `02b13593d920d6dd93977cf608da8812cb86ddaae3a1222b0287fe50f7507602`, protocol `dc357b14d608d1fd19ea1a879c3fde59809e0af01a0726c2131eabd513af54ab` |
 | **arm FIT** | `SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-TRAIN-FOLD-A-FIT-V1` / `attempt-slurp-native-tool-constant-anchor-train-fold-a-fit-v1`, 47,520 endpoints, inside the same campaign |
 | **smoke** | `SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-SMOKE-4-V1` / `attempt-slurp-native-tool-constant-anchor-smoke-4-generation-v1`, cell `slurp-native-tool-constant-anchor-smoke-4-v1`, composed `a007c30b35856a411afcf921d62a618a2a853ec4f044e38f108d2440ed42fc01`, protocol `67746f3211e5e62f330fd2f658c0a60673506725d847b9f1ce166ce989d17fcc` |
 | **smoke FIT** | `SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-SMOKE-4-FIT-V1` / `attempt-slurp-native-tool-constant-anchor-smoke-4-fit-v1`, 176 endpoints, inside the same worker |
@@ -529,7 +529,7 @@ model-free:
 | file | what it carries | SHA-256 |
 | --- | --- | --- |
 | `README.md` | the launch runbook | (rewritten by the re-pin tool) |
-| `protocol-registered-v1.json` | the frozen protocol | `60007272ee07e25e86cf805b830edd197e5b86b5b753ebfd2bf571e4ebcbba30` |
+| `protocol-registered-v1.json` | the frozen protocol | `6ef936762b024d812b4045db163dd0a3f6bd45c084af5e514cae6d6c1287b1cb` |
 | `generation-plan-v1.json` / `-registered-v1.json` | the 1,080-row arm's plan | `04fd70c68b179b236b106ed9cf310d7b46b7cf671ca5572cf13791af6d015704` |
 | `fit-plan-v1.json` / `-registered-v1.json` | the arm's native contact-fit plan | `82f72d71b270b627e8d3b0c15fc2bc43b575283e01696dd3d76481b9a4f1f354` |
 | `smoke-generation-plan-v1.json` / `-registered-v1.json` | the four-row smoke's plan | `d241965ffece2d58aee659bb4e199e4f9341d706142413192a67daf1bf0f75af` |

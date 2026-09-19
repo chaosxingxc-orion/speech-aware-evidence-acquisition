@@ -206,9 +206,9 @@ so.
 
 | item | value |
 | --- | --- |
-| arm composed / protocol | `1668d74070bb8ca60d5fe45905badb0e1562cc474aa29c3e5f5afa62190e283e` / `5c481ad5597eb3e5409a2f442cbf040df8327a7ebf875fc3b5cfab7f5672ca4a` |
+| arm composed / protocol | `02b13593d920d6dd93977cf608da8812cb86ddaae3a1222b0287fe50f7507602` / `dc357b14d608d1fd19ea1a879c3fde59809e0af01a0726c2131eabd513af54ab` |
 | smoke composed / protocol | `a007c30b35856a411afcf921d62a618a2a853ec4f044e38f108d2440ed42fc01` / `67746f3211e5e62f330fd2f658c0a60673506725d847b9f1ce166ce989d17fcc` |
-| `protocol-registered-v1.json` | `60007272ee07e25e86cf805b830edd197e5b86b5b753ebfd2bf571e4ebcbba30` |
+| `protocol-registered-v1.json` | `6ef936762b024d812b4045db163dd0a3f6bd45c084af5e514cae6d6c1287b1cb` |
 | `generation-plan-registered-v1.json` | `04fd70c68b179b236b106ed9cf310d7b46b7cf671ca5572cf13791af6d015704` |
 | `fit-plan-registered-v1.json` | `82f72d71b270b627e8d3b0c15fc2bc43b575283e01696dd3d76481b9a4f1f354` |
 | `smoke-generation-plan-registered-v1.json` | `d241965ffece2d58aee659bb4e199e4f9341d706142413192a67daf1bf0f75af` |
