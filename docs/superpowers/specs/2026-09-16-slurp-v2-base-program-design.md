@@ -12,6 +12,12 @@ Raise the SLURP agent from the retained dual-store base (official pooled SLU-F1 
 >= 78, replicated on the same roster** (owner decision 1). Lock that system as "SLURP base v2"
 and only then open Stage 3 (training-free optimisation of its exposed decisions).
 
+Owner decision 28 (2026-09-19): the bar above is a DEVELOPMENT bar on a roster drawn from the training data
+that the program has optimised on; the published baselines it was derived from are test-set numbers and are
+never compared with it, and no conclusion read on TRAIN A, Fold B or DEV-1000 extends to the test split. The
+comparison with published systems happens once, on the test split, after Stage 3 (training-free RL,
+Pareto-optimal policies); until then the program optimises freely on train and dev.
+
 ## 2. Diagnosis the design answers
 
 | Fact (sealed evidence) | Consequence |
