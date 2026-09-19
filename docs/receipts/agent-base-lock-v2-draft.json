@@ -1,0 +1,3385 @@
+{
+ "authorises": {
+  "carrier_admission": false,
+  "cell": false,
+  "config_change": false,
+  "exposure_row": false,
+  "model_contact": false,
+  "module_promotion": false,
+  "owner_decision": false,
+  "preregistration": false,
+  "stage3_specification": false
+ },
+ "authority": {
+  "owner_decisions": [
+   36,
+   39,
+   40
+  ],
+  "record": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+  "rulings": {
+   "36": "the base lock is re-drafted as a CROSS-TASK document: node responsibilities stated once for every carrier, the cooperative edges between nodes, and the SLURP v1 tables kept as one instance beside the contextual-ASR and Audio2Tool instances",
+   "39": "define the primitives of every node with enough generality to abstract all kinds of speech tasks, each with its signature, instantiated per carrier; the Stage-3 action space is the set of exposed knobs",
+   "40": "Perception v3, Solver v2, Planner v1 and the task contract v3 are frozen for Stage 2"
+  },
+  "section": "Owner decisions 36-41 of 2026-09-19"
+ },
+ "branch": "fable/base-lock-v2",
+ "carriers": [
+  "slurp",
+  "earnings21-original",
+  "audio2tool"
+ ],
+ "contacts": {
+  "encoder": 0,
+  "model": 0,
+  "scorer": 0,
+  "server": 0,
+  "tokenizer": 0,
+  "tool": 0
+ },
+ "counts": {
+  "edges": 22,
+  "findings": 20,
+  "knob_status": {
+   "FREEZE": 37,
+   "OPEN": 39,
+   "UNEXPLORED": 28
+  },
+  "knobs": 104,
+  "nodes": 6,
+  "owner_questions": 12,
+  "primitives": 27,
+  "stores": 19,
+  "vector_pins": 7
+ },
+ "derived_from": [
+  {
+   "relpath": "AGENTS.md",
+   "sha256": "e09b786487e37d8a01bff7456d032ac80527cd7fd130b8b4483510cad9eff404"
+  },
+  {
+   "relpath": "CLAUDE.md",
+   "sha256": "afeee9727ba4fed9b03b0830cad5c7729e8e086c2d0823ce876a4ce37b1e27eb"
+  },
+  {
+   "relpath": "configs/baseline/a2t-kc-a1-contrast-notes.json",
+   "sha256": "e0a7204e33b143f22e4e26ed8e7aeeef33b5f43d4e3a21d22760d244dadf7092"
+  },
+  {
+   "relpath": "configs/baseline/a2t-kc-a1c-category-only.json",
+   "sha256": "c6bd3bcb993ba8b473d315864f8abb99e596b14b5413c8f125889a03bd8d9c24"
+  },
+  {
+   "relpath": "configs/baseline/a2t-native-role-direct-union4000-v1.json",
+   "sha256": "b4debd5a55ad3d6c2ffb9a64392bda8127d8292c60cf431f353a548bc9b082c9"
+  },
+  {
+   "relpath": "configs/baseline/a2t-native-role-dual-store-union4000-v1.json",
+   "sha256": "ab66487fb7752df3265c23133f2090ecf27271a7fd7ec3f507f8734863e28072"
+  },
+  {
+   "relpath": "configs/baseline/a2t-native-role-scope-tools-union4000-v1.json",
+   "sha256": "a539e407df81b125457cefe6aead04be877203a266973793d386563ef54e96c0"
+  },
+  {
+   "relpath": "configs/baseline/a2t-org1-domain-grouped.json",
+   "sha256": "144c64de4a1862711c47ed24491e9ad8d37d59e4a6fb56f7bb158ad77e06ee82"
+  },
+  {
+   "relpath": "configs/baseline/e21-buf90-zero-locked-scored4-prefetch1.json",
+   "sha256": "5ce51256c1ea3a869b6d7761a79e017c3f41f08a52a61e188e25437089c3bbc6"
+  },
+  {
+   "relpath": "configs/baseline/e21-buf90-zero-locked-scored4.json",
+   "sha256": "09fd7977027d9e1ef083ef6eb09bb5e2854c674df87126b824833297034c21c3"
+  },
+  {
+   "relpath": "configs/baseline/e21-kc-e1f-brief-repair.json",
+   "sha256": "b0d1d964ac672a98c3df1f14da75a4b958aadc8acf25bb35b756833a886ae5f3"
+  },
+  {
+   "relpath": "configs/baseline/e21-native-window-context-tools-full44-v1.json",
+   "sha256": "2fc59cff44fe07c981beeb5927b9157bfb76243d29ad3dab1f4355aabb4568e3"
+  },
+  {
+   "relpath": "configs/baseline/e21-native-window-direct-full44-v1.json",
+   "sha256": "22f82fe43024fac92ee3569a7d93da01730dd4ddfd6f509c5c9dec0b7bfae08c"
+  },
+  {
+   "relpath": "configs/baseline/e21-units-obse1-scored7.json",
+   "sha256": "35459a28863cb04bb2feefda6fedf0f146ca3850d7d0ae913994beaffa4ad642"
+  },
+  {
+   "relpath": "configs/baseline/slurp-native-anchor-b5e-exemplars-k20-slot-store-v2-train-fold-a-recovery-v1.json",
+   "sha256": "6fbde425b592f07509d3b71806208d0983f8c698bdf2005176919e55a8fa85c5"
+  },
+  {
+   "relpath": "configs/baseline/slurp-native-anchor-exemplars-k20-deliver-normalise-v3-train-fold-a-v1.json",
+   "sha256": "51634b9edc5251d0802818e5b083268cffa3d8e30a8e036e87c35ca2aaa02997"
+  },
+  {
+   "relpath": "configs/baseline/slurp-native-anchor-exemplars-k20-train-fold-a-recovery-v2.json",
+   "sha256": "2c7c168043f5ee13185e39a81e9d896554fa9b48d2fc7d10cb0f52757460898d"
+  },
+  {
+   "relpath": "configs/baseline/slurp-native-anchor-exemplars-k20-twin-train-fold-a-v2.json",
+   "sha256": "1b021b7dc24b93050e2e409005d741c6abc19271892343de79a7a50a8ca72f37"
+  },
+  {
+   "relpath": "configs/baseline/slurp-native-anchor-fallback-quirky-intent-v2-train-fold-a-v2.json",
+   "sha256": "1b1a9a7b40f8d64e964eb01a8e24792e966b3d186266eba336cb5d3a5f1a0921"
+  },
+  {
+   "relpath": "configs/baseline/slurp-native-anchor-intent-store-v2-train-fold-a-v2.json",
+   "sha256": "80aaca7db8743092404f709666d70a5b207d89a4d1151280f4bc2cc467fe9d2b"
+  },
+  {
+   "relpath": "configs/baseline/slurp-native-anchor-ncp-l1-reviewer-audit-train-fold-a-v1.json",
+   "sha256": "3fb855ff492030fe57a1c952dfc8811f086c668eea05351360535446462220cb"
+  },
+  {
+   "relpath": "configs/baseline/slurp-native-anchor-ncp-l1-reviewer-format-train-fold-a-v1.json",
+   "sha256": "9b96488b638805c9ac72e404ba951c9cc47bb4dab09d7e1ad64f49660ec66b10"
+  },
+  {
+   "relpath": "configs/baseline/slurp-native-anchor-ncp-l1-tool-obs-train-fold-a-v1.json",
+   "sha256": "a3dab524f8da80dc4cef7ed53f8bc89ade1be639385516dde63716acb825e875"
+  },
+  {
+   "relpath": "configs/baseline/slurp-native-anchor-ncp-l1-train-fold-a-v2.json",
+   "sha256": "6687da9a95da77237d051117aaa0090f277bd24c200ff1539bc55363502fb203"
+  },
+  {
+   "relpath": "configs/baseline/slurp-native-anchor-ncp-l2-review-clean-train-fold-a-v1.json",
+   "sha256": "66d16f9df392c2565094b521f9920a5d906af02af5d58dd9a69e189a3fe6dbcc"
+  },
+  {
+   "relpath": "configs/baseline/slurp-native-anchor-samples5-train-fold-a-v3.json",
+   "sha256": "2a962eedcb0666a4446c09e10beab94dc7731dcb0cab944dab49685066e52d7f"
+  },
+  {
+   "relpath": "configs/baseline/slurp-native-anchor-slot-store-v2-train-fold-a-replicate-v2-resume.json",
+   "sha256": "91f31ca6618fa2d0c9822c25f56535e58c9daf03acc8a7d13d0fa8a3fea9f649"
+  },
+  {
+   "relpath": "configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json",
+   "sha256": "b77a31d369f18567ccda362bbfdb019ce77c96c344ab726020e8ee4e82bf2b3a"
+  },
+  {
+   "relpath": "configs/baseline/slurp-native-dual-store-train-fold-a-default-plan-v1.json",
+   "sha256": "40d20b16599de6fd2999db8c7a8d9778633980a1f1fbb5ae6be86fa3697ec13d"
+  },
+  {
+   "relpath": "configs/knowledge/a2t-evo-a1/loop-v1.json",
+   "sha256": "4c88f5469d9863fe5851779276d41b2879112ce420412cdac7f7c9f795e9ec13"
+  },
+  {
+   "relpath": "configs/knowledge/a2t-kc-a1/category-only-v1.json",
+   "sha256": "ef99c956b274717975a84e7276554b04c9c1656646f692a9a17d66b46ce075f6"
+  },
+  {
+   "relpath": "configs/knowledge/a2t-kc-a1/contrast-notes-v1.json",
+   "sha256": "b99da99e43c813050e6df9a11bf1910e6168c744f363dae6c1b7f64df0a1763f"
+  },
+  {
+   "relpath": "configs/model/q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1.json",
+   "sha256": "d1a644d80646de9e0e6b5799fb98e2151de7e03b1b14c5f260d16f77f8a77f09"
+  },
+  {
+   "relpath": "configs/policy/phase-audio2tool-native-candidate-recovery-tools-v1.json",
+   "sha256": "0498832d81eec24c3d07e743f944ec3e940c1d63f7006c7573b138ba6d448f32"
+  },
+  {
+   "relpath": "configs/policy/phase-audio2tool-native-candidates-review-revise-json-v1.json",
+   "sha256": "d79964fd885add8a00aed85ebdd15d1a13254f9207859eb814842fdaec26a00b"
+  },
+  {
+   "relpath": "configs/policy/phase-audio2tool-native-candidates-review-revise-v1.json",
+   "sha256": "6d5fae1a7107ee05780c00ef230945eea738a5e71b5e7dd9b3cbd491c65043f3"
+  },
+  {
+   "relpath": "configs/policy/phase-direct-only-v1.json",
+   "sha256": "912a396fe397f668e770a0d6bcbbf825f6abc88292c12e7d649bc4f9f1e85093"
+  },
+  {
+   "relpath": "configs/policy/phase-native-candidates-review-revise-clean1-v1.json",
+   "sha256": "dadb67961d19336f196d7441b960c67f09f24e535e312d32b12c9e292fc1054b"
+  },
+  {
+   "relpath": "configs/policy/phase-native-candidates-review-revise-findings-v1.json",
+   "sha256": "582e3b2ae81527503c7dc634917e846b4a3cbd47724962a67447a8ce908f4efe"
+  },
+  {
+   "relpath": "configs/policy/phase-native-candidates-review-revise-samples5-v1.json",
+   "sha256": "2d48ad00352fc057abe8c2c17d65d72dbc71cd235e86c8d9e33c46c6d13b95c7"
+  },
+  {
+   "relpath": "configs/policy/phase-native-candidates-review-revise-v1.json",
+   "sha256": "0941a53f3cd943ec6560ed8e755df940a3b752c5ff1341baff9a3b914bc40101"
+  },
+  {
+   "relpath": "configs/policy/phase-native-candidates-solve-v1.json",
+   "sha256": "d044b94bc16da70c6da137381fd7ef3e98c887898b6bd01faee1a4ccff746025"
+  },
+  {
+   "relpath": "configs/policy/phase-native-review-revise-json-v1.json",
+   "sha256": "6070494fd9df67ba95003444316b92af050a7487dc7811bd1212563baecd7c7b"
+  },
+  {
+   "relpath": "configs/policy/phase-native-review-revise-v1.json",
+   "sha256": "d8987536c299862a6555832cf8adc77afdb06440e4be5547847b8e861898738a"
+  },
+  {
+   "relpath": "configs/preparation/a2t-parameter-meaning-store-v1.json",
+   "sha256": "b9effbddecb0a18bb48847fa0aca9c05aa31d07b4a052e713dad23362ef79924"
+  },
+  {
+   "relpath": "configs/preparation/a2t-tool-activation-scope-store-v1.json",
+   "sha256": "9abe8857cb203bf773a4102d27557beecd5465bc98fcd1fb4f6d9cc026be757b"
+  },
+  {
+   "relpath": "configs/preparation/a2t-tool-activation-store-v1.json",
+   "sha256": "efbd713cb06b933297d0b4d40bd05e940a4455d7d008b5993d5f4b7986953bd7"
+  },
+  {
+   "relpath": "configs/preparation/e21-governed-document-lexicon-v1.json",
+   "sha256": "12c981eae48edfea19d262a7c8d5ee0c202b8c860e778353bbd9613d1fa23e73"
+  },
+  {
+   "relpath": "configs/preparation/e21-governed-participant-roster-v1.json",
+   "sha256": "d85036c347613f45f937a8a5e6a26b8219214c612a0f4da783c79d3bf5031687"
+  },
+  {
+   "relpath": "configs/probes/ncp_slurp_candidate_hypothesis_v1.txt",
+   "sha256": "5a6f80cfb53ef201f30d7a139a5b6fcf047eff1cc5bd2200c578d28eff36cea0"
+  },
+  {
+   "relpath": "configs/probes/ncp_slurp_cleaned_review_v1.txt",
+   "sha256": "b901628473e405b7ef823b68c00e4d39b38d08783d9c9db93f5da969acdbd5ee"
+  },
+  {
+   "relpath": "configs/probes/ncp_slurp_cleaning_review_v1.txt",
+   "sha256": "8231061e0a01e3a5d8fde0e1a4e153c2b731d0c2f90aac9beda585d066f4d96a"
+  },
+  {
+   "relpath": "configs/probes/ncp_slurp_current_draft_reviewer_v1.txt",
+   "sha256": "67c6251f9cb8d8ac71243b44284b8b0e6a05052105aa487b8d7e920bf61a51af"
+  },
+  {
+   "relpath": "configs/probes/ncp_slurp_current_draft_solver_v1.txt",
+   "sha256": "21d855dc3f55361046fc878896786d8161595b48508b55bb31f5ab2bf33f7bbc"
+  },
+  {
+   "relpath": "configs/probes/ncp_slurp_plan_action_v1.txt",
+   "sha256": "c0b0aeb7e10528c210701ba9dbe129dc36684e99f171369dae613b7748e71fba"
+  },
+  {
+   "relpath": "configs/probes/ncp_slurp_planner_brief_v1.txt",
+   "sha256": "a49c0de210c2a013faecf53550127fa1617fe4ebde3b0a09565bec37bfef9877"
+  },
+  {
+   "relpath": "configs/probes/ncp_slurp_review_finding_v1.txt",
+   "sha256": "d71d486863f1d38bffbc35bdd98ba3186db23c1fc50991596349bcad7fa1e8d5"
+  },
+  {
+   "relpath": "configs/probes/ncp_slurp_scenario_hints_solver_v1.txt",
+   "sha256": "0055dfc488edf9810f3949abd18cdfe17b01a54930b599fbf65f4f7142afc6b7"
+  },
+  {
+   "relpath": "configs/probes/ncp_slurp_slot_audit_reviewer_v1.txt",
+   "sha256": "88cc927d901a45ac2496f92453521184cb5b8d39cbf98aa881872b9116d24d0a"
+  },
+  {
+   "relpath": "configs/probes/ncp_slurp_tool_observation_v1.txt",
+   "sha256": "2d15045653a1f3d310202ddc5af12f6421e4f64bc6a51fd93f1adc6f5adf9c74"
+  },
+  {
+   "relpath": "configs/probes/slurp_native_role_context_v3.txt",
+   "sha256": "46e251173ed15591c8e0f1cbc8709c8da20a463624e430031ceba7c46f576190"
+  },
+  {
+   "relpath": "configs/probes/slurp_native_role_perception_v3.txt",
+   "sha256": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2"
+  },
+  {
+   "relpath": "configs/probes/slurp_native_role_planner_v1.txt",
+   "sha256": "074bd27fe1ea6005d7b096be875f662e91cfe503a22ea78918bd1f5f876ded51"
+  },
+  {
+   "relpath": "configs/probes/slurp_native_role_reviewer_v1.txt",
+   "sha256": "dce206a20d361b221ea146dc4ff274ba5e08ce4ab1bfbfece662dc7da5012417"
+  },
+  {
+   "relpath": "configs/probes/slurp_native_role_solver_v2.txt",
+   "sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+  },
+  {
+   "relpath": "docs/readiness/2026-09-04-a2t-official-protocol-replication-v1-verdict.md",
+   "sha256": "0860b368305baab44e346c366877b970286d867ea0192bab2e3f7ab6601a2627"
+  },
+  {
+   "relpath": "docs/readiness/2026-09-04-e21-full44-direct-baseline-v1-verdict.md",
+   "sha256": "48f67d691a6b50538469bccc34e43c0d0331aa6eeef8bfc55e7acd9b2279ca5b"
+  },
+  {
+   "relpath": "docs/readiness/2026-09-05-a2t-kc-a1-contrast-notes-v1-verdict.md",
+   "sha256": "51070ba699eb36e9e7258c8f8a21adc3e9ce6a5750c3d0dcc8551298eb39a294"
+  },
+  {
+   "relpath": "docs/readiness/2026-09-05-a2t-org1-domain-grouped-registry-v1-verdict.md",
+   "sha256": "1cfed55615714888363250e25814e7c407889dbef9b4993d5b0160dd63bdfc8a"
+  },
+  {
+   "relpath": "docs/readiness/2026-09-07-e21-full44-tail2s-v1-verdict.md",
+   "sha256": "c2bb17efdb2a39f67775e929f1283059013666395226aa42137def409c3ee9ce"
+  },
+  {
+   "relpath": "docs/readiness/2026-09-07-e21-kc-e1-pre-meeting-brief-v1-verdict.md",
+   "sha256": "1081fe1efeeb9ce7371c5766429bb71e4dc28099ea35cf83c600ddf5f3554516"
+  },
+  {
+   "relpath": "docs/readiness/2026-09-08-e21-dispatcher-admission-v1-verdict.md",
+   "sha256": "2521b5507eeb060bc951a2fe52d84f2079d222dfc247190dc46f38bb865e5b28"
+  },
+  {
+   "relpath": "docs/readiness/2026-09-08-e21-kc-e1f-repair-pass-v1-verdict.md",
+   "sha256": "59df5008fd0b915f4f4806c18828bad633d35c1a2410b28374507d445ec77e6e"
+  },
+  {
+   "relpath": "docs/readiness/2026-09-08-e21-kc-e1f-repair-pass-v2-redecision.md",
+   "sha256": "c25ab5082390d3e019ba06ed23b5e6850124a516cd39b6b10982ea3463b7b07c"
+  },
+  {
+   "relpath": "docs/readiness/2026-09-08-e21-kc-e1f-replication-v1-verdict.md",
+   "sha256": "cf8550bd3cf60d8aff741a6df2cf4c4c891704d761a4772c9ec1909e8f76feef"
+  },
+  {
+   "relpath": "docs/readiness/2026-09-08-e21-obs-speaker-turn-units-v1-verdict.md",
+   "sha256": "6d51499493702d744ea976618e1b406b7146e45add4ed301e5fd16ebfc246aec"
+  },
+  {
+   "relpath": "docs/readiness/2026-09-08-e21-own-null-replicate-v1-verdict.md",
+   "sha256": "d486ab96ec1bc955fe29ea113f30cfe51a4831161616724f5a75fad11a179d78"
+  },
+  {
+   "relpath": "docs/readiness/2026-09-11-earnings-native-task-alignment.md",
+   "sha256": "e7d7b1c9ff2ddcb120009f947fa2d28c6e276bf206ada09f272758c1b16caec0"
+  },
+  {
+   "relpath": "docs/readiness/2026-09-13-slurp-semantic-store-release-pins-v1.json",
+   "sha256": "ad38deb34c4a198f0b3f4e23f29069688fcdbbffec38460bc3658d6c8b6d0ed2"
+  },
+  {
+   "relpath": "docs/readiness/2026-09-14-a2t-e21-native-role-transfer-readiness-v1.md",
+   "sha256": "cf90c8f9133edc2e787dfaa02c90c28261f6cd008a1acf7f243a1713b7a73762"
+  },
+  {
+   "relpath": "docs/readiness/2026-09-15-e21-native-window-integration-contract-v1.md",
+   "sha256": "67275286a80064c6f4791e1a5726e94afc86277980e44943fc4b04994fbc8017"
+  },
+  {
+   "relpath": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+   "sha256": "04405457043de2c6a5116801df148ece359d287ff77b044a277a4cf24e88f0de"
+  },
+  {
+   "relpath": "docs/receipts/harness-admission.json",
+   "sha256": "1bc40ea17d7881a568287620e3446dac39cc71274d5988d990fef033027fadc2"
+  },
+  {
+   "relpath": "docs/receipts/knowledge/a2t-kb-lexical-ceiling.json",
+   "sha256": "98884b55c2cde54690adff5654c07c6e1694284b2bea8be7d22c6ee419b1d232"
+  },
+  {
+   "relpath": "docs/receipts/knowledge/a2t-kb-size-full.json",
+   "sha256": "1b9d908574fdc275dcdcc83936f8dd4b31695a6347f149eeab959ea59df8a713"
+  },
+  {
+   "relpath": "docs/receipts/knowledge/a2t-partition-proposal.json",
+   "sha256": "3ed758c758476c563837972ac87928244dcaa0b0da203afb58ce25495b9dfea9"
+  },
+  {
+   "relpath": "docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json",
+   "sha256": "48d0f34cf536ebf9806d55b5dcced1b607080bec3c68ca7dea27cdb01478cc72"
+  },
+  {
+   "relpath": "docs/receipts/knowledge/slurp-scenario-hints-v1.json",
+   "sha256": "40800442baf5587ac8fb3c2095d54945a438dd60f576b78c6779bd9b1c88173b"
+  },
+  {
+   "relpath": "docs/receipts/knowledge/slurp-slot-audit-v1.json",
+   "sha256": "54346a8832ef8120ba439d10b87629e6f614fe2fcca89f9859a65132fe9ac434"
+  },
+  {
+   "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+   "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+  },
+  {
+   "relpath": "docs/receipts/slurp-agent-base-lock-v1-draft.json",
+   "sha256": "1802e492de9949436cfde427651d0474db55ba47f5db0ed3b5d2236216a4f0bc"
+  },
+  {
+   "relpath": "docs/results/2026-09-15-a2t-native-role-base-full4000.md",
+   "sha256": "82c8b6e7a8166d456d9c0da92a4de01ca6c525b5717f858907c4d05a218b673a"
+  },
+  {
+   "relpath": "docs/results/2026-09-15-a2t-native-role-engineering-proof-v1.md",
+   "sha256": "1075d159ac7df9a9e66d8b11b5f7ac68b92121096a813a8caaf922015c1c6745"
+  },
+  {
+   "relpath": "docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md",
+   "sha256": "04c95d74657eec3512409a869fa407f399eca6aca187caa3cc321ff1334f6c1d"
+  },
+  {
+   "relpath": "docs/results/2026-09-17-slurp-b1-exemplars-k20-verdict.md",
+   "sha256": "79a3daa754db36b1d460e4cba04b5e385836b1a8cee40866dad865f7b668d5f1"
+  },
+  {
+   "relpath": "docs/results/2026-09-17-slurp-b4b-slot-store-v2-verdict.md",
+   "sha256": "15b9eb98a244cba91e7c06e960c9db84f8c74dfa7ce233a17d92fece1e55c5f7"
+  },
+  {
+   "relpath": "docs/results/2026-09-17-slurp-node-context-audit-v1.md",
+   "sha256": "627d2b7a7766de36ba552fc69b5a246db492d2b1506f81185143c3122065ba57"
+  },
+  {
+   "relpath": "docs/results/2026-09-18-slurp-b1-twin-verdict.md",
+   "sha256": "fb841eb30b30ee5229d9d590be39bae5dd0e734cea42037a718fcdf5202672f6"
+  },
+  {
+   "relpath": "docs/results/2026-09-18-slurp-b5e-combination-verdict-addendum-decision-25.md",
+   "sha256": "f7d970c00329c1975891d79adfb14fe605e6e474ac51336fda26361f9bb445a8"
+  },
+  {
+   "relpath": "docs/results/2026-09-18-slurp-b5e-combination-verdict.md",
+   "sha256": "5e2ba383341f2c5544df044d5145b2064b5d5251f5981a27e1a56a6a00e54b6f"
+  },
+  {
+   "relpath": "docs/results/2026-09-19-slurp-b2-samples5-verdict.md",
+   "sha256": "4fe97086c07bb80a955622aa03390fa3c76268d192273c71612ec3452d387df2"
+  },
+  {
+   "relpath": "docs/results/2026-09-19-slurp-b4b-replicate-verdict.md",
+   "sha256": "8a7bfcdddb9188150c7095bfb5f56613e40ccc9cba18307e2b87089697c30f0b"
+  },
+  {
+   "relpath": "docs/results/2026-09-19-slurp-b7a-v1-closure.md",
+   "sha256": "bacecebcefbfd8ff5f1ca9565c13594690ef7f72cfc8b4ff43fc7af55b4f4a2d"
+  },
+  {
+   "relpath": "docs/results/2026-09-19-slurp-b8a-deliver-normalise-verdict.md",
+   "sha256": "959a4ee0e84c7a483ad97f44c70627eae8bae14dfa1bc2b2526e24c876ccea41"
+  },
+  {
+   "relpath": "docs/results/2026-09-19-slurp-finite-completion-exposure-v1.md",
+   "sha256": "cc0a9f312d044df68b74a58e0679e7f799f6b41eb2adfcc28e4c294f7aaa29bf"
+  },
+  {
+   "relpath": "docs/results/stage2-results-ledger.md",
+   "sha256": "8f631b99f460939c7d336cc36ec623fccbe1ea3c980ee94914c5a475d7b3b15e"
+  },
+  {
+   "relpath": "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md",
+   "sha256": "d70e15265afd3401f3f2908e52acead65c26391edf96a27601caff36450caa0e"
+  },
+  {
+   "relpath": "docs/superpowers/specs/2026-09-17-node-context-policy-design.md",
+   "sha256": "eb569bf690e7b8018ba475bb58a63fdde7e92d5337acc1b27fcd42d9e630dbe1"
+  },
+  {
+   "relpath": "docs/superpowers/specs/2026-09-19-slurp-agent-base-lock-v1-draft.md",
+   "sha256": "3906376a0427ee913731d295b0517d2d01944701caa81228b45d99f741407467"
+  },
+  {
+   "relpath": "knowledge/slurp/semantic/slot-audit-v1/release.json",
+   "sha256": "eaa2dd0db4d089f9bf1687d353f129ffcf062766f84150b0b93463617fdee7f9"
+  },
+  {
+   "relpath": "knowledge/slurp/semantic/slot-audit-v1/snapshot.json",
+   "sha256": "0cc3f96c98addad37fb564483f051dbe1a11145ac554a85918312c388573406c"
+  },
+  {
+   "relpath": "scripts/build_slurp_exemplar_pool_assets.py",
+   "sha256": "f0162e96674e10aa99daebbbe2f67cc3ebbd3bb509ea6a027155893bfa7d5050"
+  },
+  {
+   "relpath": "scripts/build_slurp_exemplar_twin_vectors.py",
+   "sha256": "feab3bc3d6db94e336f1c3631e1045660e7d823f13e2b5b344df5604628aee13"
+  },
+  {
+   "relpath": "scripts/build_slurp_scenario_hints_view.py",
+   "sha256": "52564b948a3c4705b97f0d3024aefe015352b7a884d2754689cdac1e6b108645"
+  },
+  {
+   "relpath": "scripts/build_slurp_slot_audit_view.py",
+   "sha256": "fceb2574fda3af51c5df0ad2df1969cf96f4ab95fbb32eb8d01ac01985145890"
+  },
+  {
+   "relpath": "scripts/checks/engineering_base_check.py",
+   "sha256": "cde6f930e3a74c034f7947dddd9f2bc62cafe6396504a46f3af27f255cf8e33d"
+  },
+  {
+   "relpath": "scripts/checks/harness_admission_check.py",
+   "sha256": "9788f225e7faf5ed00c1b9bd2bb049143cda5309c4fd71e566b874f854186f3d"
+  },
+  {
+   "relpath": "scripts/checks/results_ledger_check.py",
+   "sha256": "c4e630ceb308cebd5f745a068b6cb2f6ff749a13aab5dcb8ef4009e87cf5935c"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/core/base.py",
+   "sha256": "0a077768384348c16785367d2026e35ffd72eb20d5e490f3639f622e232541ca"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/core/bias_lists.py",
+   "sha256": "1931a87d16a828d400f06758f0173e511d977844a4a5dfbd8834dc68f30d6c66"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/core/carriers.py",
+   "sha256": "d311182842ff5cd06899d1d6744a9c0ae98f4790812dfbc953c9e6f4da450ac0"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/core/evidence.py",
+   "sha256": "c90a5edb9a0249510062afdeda6e4e73180d49d1ca3256b011db7262b9e6a80b"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/core/flight/runtime.py",
+   "sha256": "f895230d2903206d704f68facdc3ec397d79d854cd3e9169be41369582fcfbf3"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/core/governed_context_preparation.py",
+   "sha256": "cc54b43f26a619eddc61e69f51b715953024531a4c396bbeb96d7fb2df8330b9"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/core/policies.py",
+   "sha256": "a89f7b7c0f4ac3ad871ef138d886532632f3fe55d9145cf7db452d89255b8f02"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/core/preparation_fit.py",
+   "sha256": "d5b6abec2307d0ab8fceb57dc49da607dc0664d7e66a6c05e783479883871826"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/core/scorers.py",
+   "sha256": "7eaed94ff938eaa91d74ae787328a9187ad54356f81f0d90cea2c4fa009301b1"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/data/carriers.py",
+   "sha256": "95c6d83f19eab25cddf71765f1e050c3ea422c18f9efca1338e9564b28b17a14"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/data/slurp.py",
+   "sha256": "2c77045a4be88bbe81b030db1ff3182d5a0f50c281de40021675650a797a810e"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/adapters/audio2tool.py",
+   "sha256": "1eb2748b1ec2fd8c325282d4ac361de55a6512a096a0c160ff23ccfc811dc6f9"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/adapters/audio2tool_runtime.py",
+   "sha256": "633ca1321f88438b1435cc540e3c0f740d86b136e18d43b30357cf7872b4a5b1"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/adapters/earnings.py",
+   "sha256": "e132ca453150398534d5e59664796414edf424d16e3094ce5e671f92374867dd"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/adapters/earnings_runtime.py",
+   "sha256": "e4b174cf08ee1403db1739ff21954d11ba47000ed390a5663c927c2074beef91"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/adapters/runtime_view.py",
+   "sha256": "d69ce4a3a1022129a869d1b883477119e6df6b5844b5d2aa5a371faa1f0675d0"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/adapters/slurp.py",
+   "sha256": "a885add02cc95431a7232c95a4714326da61a0db4189f691cefa9e58bc60deaa"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/adapters/slurp_runtime.py",
+   "sha256": "2cc9331fc510cdd68c7b73737dd71c7ea55ea6f9b016cfc2e6d3ad08cf3bbaed"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/candidate_semantic_supply.py",
+   "sha256": "627f21ad7a6d378d58f0f6ca024375046943c77b109f93f53184c91a96972b3a"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/config_tables.py",
+   "sha256": "3f555713bc80ab987eae86a3fcabf70d6f168eb434029366edd1e0bdab5c6af3"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/controllers.py",
+   "sha256": "e0ad623e11812ee6ae741f5c05f372d3f2320d9892b89711212d40bbb7aa8718"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/delivery_normalisers.py",
+   "sha256": "0a4f7f4b6cf1a5d336272e1e5a1bc77d01b03c1bf2aa1b218edddc97b0ae7893"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/governed_context_build.py",
+   "sha256": "3027639e9a00964c9e8f9aae892176584d65cc3371282b6ca3901ebc80f68613"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/governed_context_supply.py",
+   "sha256": "e7b8e74a6b6c48bacd15e9ae9d4e34ca5b025bcb155a360a8354f4ed793eb570"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/group_relative_feedback.py",
+   "sha256": "99c76e9206b529860e6492818a0b4cba76ab4a349476c9359ef9d8b260fd2e3a"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_provider.py",
+   "sha256": "f399bbd1be8e10dc96fd72975e152e4b1350c7d73baad3af1ebffec6c42c4f00"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_stores.py",
+   "sha256": "11c6fc246bb05811064903dcabd693a70360e4761b4ff34256fa8d25eb969e21"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/live_speech_observation.py",
+   "sha256": "ab12a9fd4ff8a7507d1bb451563f2ddff4926f1ae0818db17c0d0b616cf2542c"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/native_episode_config.py",
+   "sha256": "97671bc24e0b988281fa81767ca8f24cc0958fe5beda0a26fe4aa9aa0846ca6a"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/node_context_binding.py",
+   "sha256": "1ad714608a4472eb70186a6f4ea4d28a8fbb0548a7035ec33b749fa493d95c4c"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/node_context_policy.py",
+   "sha256": "7aed9c6d98d4a8022c95a813085bc6818a1eac522df0ea4e26290a628c69190f"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/obs.py",
+   "sha256": "fcb99fc55911587baf9e07cca0b93f93e60aee567e9cb975a6fbd59705bc2241"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/observe.py",
+   "sha256": "331ccbeb5be7fc66c6aedd2114c56160df0bfc2dcb713eae787a2d658eb1e4a0"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/phase_material.py",
+   "sha256": "6659094ab964f6b486f57661535feb92b0bd8b9bd473ef28835870ef41dbd618"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/phase_planner.py",
+   "sha256": "cd5aa49be6f069037d5afc11659334cc625550a21f2da8e7af125c967a5be599"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/phase_review.py",
+   "sha256": "e31ed74a73fec9669b71a9095253e27940680d41e7d3e0c42a98974df1015c45"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/phase_supply.py",
+   "sha256": "a8c4784e2f3f84c2525349d5bb0f900bce6c90fb8dea9f447f05e8a5ce57bb4e"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/phase_tools.py",
+   "sha256": "cd8109f29cf0fc390d2748755cd2c1e5bc1f2f17b3dea93ebee67cc0e8afd717"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/reward_links.py",
+   "sha256": "5887a1c7bff6e687b3342cd8bb6a8103e82fa56c055b97f82f765ac77991ced1"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/runner.py",
+   "sha256": "8e5b0b6ce7cfed6d034dbf2d5f7a3bac91964cc62f905e43440330208f628ddf"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/scenario_hints.py",
+   "sha256": "7cf05606260ef0fe735d6aa28e82c212084e00e8e99aa1630ea4f14db60dc709"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/semantic_knowledge_build.py",
+   "sha256": "f76f185c7f5a35497fae90dd59d401c233cd4bcd0c6c486e2bae5bcb9833e668"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/slot_audit.py",
+   "sha256": "4a9e70ceb46b7ff98876f0b793ec22665aebc60c29049bb0ac040a1be9064207"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/speech_observation.py",
+   "sha256": "79ca6fd7bb81c96a839a04fa3c377414f04e1d77ebb9cff58c1f53d564616bd5"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/task_adapter.py",
+   "sha256": "55404da4254d393fb59494fea1fbde2011c08e6f73766750c8263e9f6616358f"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/rails/tools.py",
+   "sha256": "50d750d7ca2f82eedfcc27de941b8d2fdecd8503be03968d5779cc2c4c4b2ab0"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/native_episode.py",
+   "sha256": "e8fa321735e9883c706ec18f7b1953d35381bb0234effa4f6cfe741f3cff3030"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/native_request.py",
+   "sha256": "16462b9fd9a0790c1f9a2071fadd48a42e9110f7d7b1ded88e6baae1c1ba2589"
+  },
+  {
+   "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/native_roles.py",
+   "sha256": "3e1e769727465110c199bcd4a5fc35cfb3101012da94f7cb309e95edc44a51e2"
+  }
+ ],
+ "derived_from_count": 167,
+ "document": "docs/superpowers/specs/2026-09-19-agent-base-lock-v2-draft.md",
+ "edges": [
+  {
+   "back_edge": false,
+   "consumer": "Perception",
+   "id": "E1",
+   "invariant": "the delivered media sha256 and duration equal the frozen runtime view; derived media stays under the carrier root",
+   "level_today": "typed (hash-pinned packet or raw slice)",
+   "measured_by": "E21 OBS-E1 (speaker-turn units, REJECTED as HARM), E21 tail2s (NOT ADMITTED), SLURP tail2s (HARMFUL)",
+   "producer": "units `U`",
+   "request_slot": "speech part",
+   "semantic_class": "speech-observation"
+  },
+  {
+   "back_edge": false,
+   "consumer": "Perception",
+   "id": "E2",
+   "invariant": "query is speech or speech+state, never text; the facet and query vectors are sealed files read by hash; no evaluated row is in the pool",
+   "level_today": "typed (`[evidence <id>] <content>`)",
+   "measured_by": "SLURP anchor (in the default plan); A2T `tool-activation` k 8",
+   "producer": "knowledge plane",
+   "request_slot": "`supplied_evidence`",
+   "semantic_class": "supplied-evidence"
+  },
+  {
+   "back_edge": false,
+   "consumer": "Solver",
+   "id": "E3",
+   "invariant": "the list is bounded and every id is legal in the contract; no gold, no other row",
+   "level_today": "**raw** (L1 registered in B7a v2, not flown)",
+   "measured_by": "SLURP B7a v2 (registered), B8c (hints appended at this edge, built)",
+   "producer": "Perception",
+   "request_slot": "agent state",
+   "semantic_class": "candidate-hypothesis"
+  },
+  {
+   "back_edge": false,
+   "consumer": "knowledge plane → Solver",
+   "id": "E4",
+   "invariant": "the projection is deterministic and bounded; a malformed Perception output fails the row rather than being silently dropped",
+   "level_today": "**typed** — the only parsed model-output edge in the program",
+   "measured_by": "SLURP anchor (1,080/1,080 parsed); A2T `parameter-meaning` candidate supply",
+   "producer": "Perception",
+   "request_slot": "`supplied_evidence`",
+   "semantic_class": "candidate-semantic"
+  },
+  {
+   "back_edge": false,
+   "consumer": "Reviewer",
+   "id": "E5",
+   "invariant": "as E3",
+   "level_today": "**raw**",
+   "measured_by": "SLURP B7a v2 (registered)",
+   "producer": "Perception",
+   "request_slot": "agent state",
+   "semantic_class": "candidate-hypothesis"
+  },
+  {
+   "back_edge": false,
+   "consumer": "Solver",
+   "id": "E6",
+   "invariant": "as E2; a repeat visit restricts the prepared supply to what the trajectory does not already hold, and every first visit stays byte-identical",
+   "level_today": "typed",
+   "measured_by": "SLURP B1 exemplars (**ADMITTED**, +12.61 [+10.54, +14.60] vs anchor, +7.83 [+5.85, +9.75] vs the derangement twin); B4b slot store v2 (**ADMITTED, REPLICATED** +1.54 [+0.30, +2.93]); E21 `context_supply` (`document-lexicon`, `participant-roster`, registered, unflown)",
+   "producer": "knowledge plane",
+   "request_slot": "`supplied_evidence`",
+   "semantic_class": "supplied-evidence"
+  },
+  {
+   "back_edge": false,
+   "consumer": "Reviewer",
+   "id": "E7",
+   "invariant": "the Reviewer may read the draft and may not replace it",
+   "level_today": "**raw**",
+   "measured_by": "SLURP B7a v2 (registered); B8b slot audit appended here (held)",
+   "producer": "Solver",
+   "request_slot": "agent state",
+   "semantic_class": "current-draft"
+  },
+  {
+   "back_edge": false,
+   "consumer": "Planner",
+   "id": "E8",
+   "invariant": "as E7; the deterministic `HARNESS CHECKS` block, if armed, is computed only from material the Planner already has",
+   "level_today": "**raw**",
+   "measured_by": "SLURP B7a v2 (registered, owner decision 12(2))",
+   "producer": "Solver",
+   "request_slot": "agent state",
+   "semantic_class": "current-draft"
+  },
+  {
+   "back_edge": false,
+   "consumer": "Planner",
+   "id": "E9",
+   "invariant": "the finding is criticism only; it can never carry replacement text",
+   "level_today": "**raw**; the only edge any cell declares `cleaned` (B7b)",
+   "measured_by": "SLURP B0/B0r review-off (**HARMFUL** twice: imported margin, then own null h_SLU 1.12 / h_intent 1.01); B7b (held); B7r producer format (registered)",
+   "producer": "Reviewer",
+   "request_slot": "agent state",
+   "semantic_class": "review-finding"
+  },
+  {
+   "back_edge": false,
+   "consumer": "Reviewer",
+   "id": "E10",
+   "invariant": "a live tool chain is left verbatim; the replayed assistant turn is verified against `source_authority.original_assistant_message`",
+   "level_today": "**raw**, `raw_reason \"live-tool-chain\"`",
+   "measured_by": "SLURP B7c (held); A2T scope-tools (`knowledge-target-lookup`); E21 native window (`live-speech-span`)",
+   "producer": "tool chain",
+   "request_slot": "framework replay",
+   "semantic_class": "tool-observation"
+  },
+  {
+   "back_edge": false,
+   "consumer": "Planner",
+   "id": "E11",
+   "invariant": "a later role's replay may be rendered by reference only when the contract is provably a substring of that request's own system message",
+   "level_today": "**raw**",
+   "measured_by": "SLURP B7c (held)",
+   "producer": "tool chain",
+   "request_slot": "framework replay",
+   "semantic_class": "tool-observation"
+  },
+  {
+   "back_edge": false,
+   "consumer": "Perception",
+   "id": "E12",
+   "invariant": "as E10",
+   "level_today": "**raw**",
+   "measured_by": "SLURP B7c (held); no carrier arms Perception tools today",
+   "producer": "tool chain",
+   "request_slot": "framework replay",
+   "semantic_class": "tool-observation"
+  },
+  {
+   "back_edge": false,
+   "consumer": "Solver",
+   "id": "E13",
+   "invariant": "as E10; the Solver may never hold a tool, so this edge can only carry a replay",
+   "level_today": "**raw**",
+   "measured_by": "SLURP B7c (held)",
+   "producer": "tool chain",
+   "request_slot": "framework replay",
+   "semantic_class": "tool-observation"
+  },
+  {
+   "back_edge": true,
+   "consumer": "Solver (back)",
+   "id": "E14",
+   "invariant": "the token is matched byte for byte against the graph's own action set; an unregistered token is a retained-row disposition, never a flight abort (E8c + E15)",
+   "level_today": "**raw**; parse failure `refuse`",
+   "measured_by": "SLURP B7a v2 (registered); reachable only after a `REVISE` (6 of 1,085 on the anchor)",
+   "producer": "Planner",
+   "request_slot": "agent state",
+   "semantic_class": "plan-action"
+  },
+  {
+   "back_edge": true,
+   "consumer": "Solver (back)",
+   "id": "E15",
+   "invariant": "as E9; on a revision the Solver sees the finding but is given no diff and no constraint on what may change (F-14)",
+   "level_today": "**raw**",
+   "measured_by": "SLURP B7a v2 (registered)",
+   "producer": "Reviewer",
+   "request_slot": "agent state",
+   "semantic_class": "review-finding"
+  },
+  {
+   "back_edge": true,
+   "consumer": "Solver (back)",
+   "id": "E16",
+   "invariant": "a grouped Solver visit seals **one committed draft**, not N raw samples (E2c)",
+   "level_today": "**raw**",
+   "measured_by": "SLURP B2 v3 samples5 (**NEUTRAL**, +0.06 SLU [-1.46, +1.60])",
+   "producer": "Solver",
+   "request_slot": "agent state",
+   "semantic_class": "current-draft"
+  },
+  {
+   "back_edge": true,
+   "consumer": "Acquisition (back)",
+   "id": "E17",
+   "invariant": "an action the episode cannot execute is not legal (E15); the defensive `_Exhausted` branch stays as defence in depth",
+   "level_today": "n/a — **unbuildable**",
+   "measured_by": "none; no carrier can build the node",
+   "producer": "Planner",
+   "request_slot": "routing",
+   "semantic_class": "acquire-action"
+  },
+  {
+   "back_edge": false,
+   "consumer": "Solver",
+   "id": "E18",
+   "invariant": "would have to bind the acquired evidence into the successor `QueryState` under the same custody as E2/E6",
+   "level_today": "n/a — **not built**",
+   "measured_by": "none",
+   "producer": "Acquisition",
+   "request_slot": "`supplied_evidence`",
+   "semantic_class": "acquired-evidence"
+  },
+  {
+   "back_edge": true,
+   "consumer": "Perception (back)",
+   "id": "E19",
+   "invariant": "the refresh action must be distinct from accept/revise/acquire and from the reserved illegal token; it requires `candidate_state_selection \"latest\"`",
+   "level_today": "typed (a distinct action token, `1 <= max_refreshes <= max_revisions`)",
+   "measured_by": "A2T scope-tools family (`REFRESH_CANDIDATES`, `max_refreshes 1`); never flown on SLURP or E21",
+   "producer": "Planner",
+   "request_slot": "routing",
+   "semantic_class": "refresh-action"
+  },
+  {
+   "back_edge": false,
+   "consumer": "Planner",
+   "id": "E20",
+   "invariant": "a judge scores and flags; it never proposes a revision, and without a configured stop policy its flags change no transition",
+   "level_today": "typed (`core.base.JudgeVerdict`)",
+   "measured_by": "E21 `e21-substitution-alignment-flag-v1` (the KC-E1f canonical switch form); SLURP `replay-logprob-flag-v1` (**HARMFUL**: AUROC 0.69, 51 % precision)",
+   "producer": "judges",
+   "request_slot": "control, zero request bytes",
+   "semantic_class": "verdict-flags"
+  },
+  {
+   "back_edge": true,
+   "consumer": "observe → units (back)",
+   "id": "E21",
+   "invariant": "a span may not leave its own media; a cutter that produced no derivation is refused; re-listens per sample are capped",
+   "level_today": "typed (`SpeechPacketDerivation` naming parent packet, derived packet and the parameter hash)",
+   "measured_by": "E21 LOOP-1 (preregistered; judges flag 600 of 1,593 windows, near-miss judge 53 % window precision); DR-1 draft-then-refresh (prep)",
+   "producer": "Reviewer flags",
+   "request_slot": "speech part",
+   "semantic_class": "derived-observation"
+  },
+  {
+   "back_edge": false,
+   "consumer": "Delivery → manifest",
+   "id": "E22",
+   "invariant": "the rule reads only the answer text and the closed legal inventory the contract already renders; an abstention is never normalised; the carrier lock key must match",
+   "level_today": "typed, **zero contacts**",
+   "measured_by": "SLURP B8a (**ADMITTED**: anchor +3.46 [+2.78, +4.18], B1 +1.53 [+1.05, +2.03], 0 rows harmed)",
+   "producer": "Solver (accepted)",
+   "request_slot": "delivery",
+   "semantic_class": "accepted-answer / delivered-text"
+  }
+ ],
+ "findings": [
+  {
+   "evidence": "`data/carriers.py` `EARNINGS21_ORIGINAL`, `EARNINGS22_ORIGINAL` vs `SLURP`, `AUDIO2TOOL`",
+   "id": "F-1",
+   "responsibility_or_impact": "the task abstraction (section 2) is not machine-readable for one of three carriers",
+   "summary": "Both Earnings descriptors declare `task=None`, so the carrier registry cannot state the contextual-ASR carrier's task kind, official scorer, knowledge layer or stratum key; SLURP and Audio2Tool both declare a `TaskLayout`"
+  },
+  {
+   "evidence": "`docs/receipts/harness-admission.json` (10 entries: 2 earnings, 8 slurp; 2 default plans)",
+   "id": "F-2",
+   "responsibility_or_impact": "every A2T fragment is a standalone experiment rather than \"the comparator plus its decided modules\"",
+   "summary": "Audio2Tool has **zero** harness-admission entries and **no default plan**, although eleven `a2t-native-role-*` fragments and a complete 4,000-row system read exist"
+  },
+  {
+   "evidence": "`configs/baseline/e21-native-window-context-tools-full44-v1.json` `phase_material.perception`",
+   "id": "F-3",
+   "responsibility_or_impact": "Perception owns \"which candidates exist\", but on one carrier its output is untyped and unprojectable",
+   "summary": "E21 Perception declares no `response_format_id`; SLURP and A2T both do"
+  },
+  {
+   "evidence": "node-context audit section 6",
+   "id": "F-4",
+   "responsibility_or_impact": "Reviewer owns the findings, but nothing downstream can read them as findings",
+   "summary": "2,167 of 2,167 SLURP Reviewer outputs fail `rails.review_findings.parse_review_findings`; the prompt asks for prose and the phase declares no format"
+  },
+  {
+   "evidence": "`configs/policy/phase-native-review-revise-json-v1.json`; harness-admission entry `SAEA-E21-KC-E1F-VERDICT-V2` (`switch.table \"judges\"`)",
+   "id": "F-5",
+   "responsibility_or_impact": "one responsibility, two incompatible instantiations, only one of which has a verdict",
+   "summary": "The contextual-ASR carrier realises the Reviewer seat **twice** and differently: as a phase-graph role in the native-window fragment, and as deterministic judges through `phase_review` in the flown OBS-loop cells"
+  },
+  {
+   "evidence": "node-context audit section 4 and section 7",
+   "id": "F-6",
+   "responsibility_or_impact": "the routing node is supplied as if it were the answering node",
+   "summary": "The SLURP Planner receives the entire episode unfiltered — 25.02 % of the run's prompt budget, median 10,800 prompt tokens — to emit a median of 2 tokens, 1,079 of 1,085 of them the literal `ACCEPT`"
+  },
+  {
+   "evidence": "`configs/baseline/a2t-native-role-scope-tools-union4000-v1.json`",
+   "id": "F-7",
+   "responsibility_or_impact": "the routing node holds an acquisition-shaped action; routing and acquiring are the same seat",
+   "summary": "In the A2T scope-tools family the **Planner** carries `phase_tools` (`saea-tool-knowledge-target-lookup-v1`) and the refresh action"
+  },
+  {
+   "evidence": "`rails/delivery_normalisers.py` (one registration, `carrier_lock_key \"slurp\"`)",
+   "id": "F-8",
+   "responsibility_or_impact": "one node kind, one carrier",
+   "summary": "Delivery exists as a registered node on SLURP only. Contextual ASR has a real delivery responsibility (window-to-call stitching) with no registered normaliser; Audio2Tool has none at all"
+  },
+  {
+   "evidence": "node-context audit section 6",
+   "id": "F-9",
+   "responsibility_or_impact": "no node owns \"the draft is well formed\"; the review loop is not a malformed-output filter and was never asked to be one",
+   "summary": "Seven malformed SLURP Solver drafts reached the Reviewer and the Planner verbatim; all seven Planners answered `ACCEPT` and all seven were delivered"
+  },
+  {
+   "evidence": "`docs/readiness/2026-09-08-e21-kc-e1f-*`; `rails/adapters/earnings_runtime.py::_validate_execution_route`",
+   "id": "F-10",
+   "responsibility_or_impact": "the base this lock describes has never produced a scored contextual-ASR number",
+   "summary": "The whole admitted contextual-ASR history — the KC-E1f repair (ADMITTED, REPLICATED) and the dispatcher (NEUTRAL) — was produced **outside** the node graph, by `obs-agent-loop` / `obs-repair-loop` programs that have no Perception, Reviewer, Planner or Delivery node"
+  },
+  {
+   "evidence": "`docs/receipts/harness-admission.json` entry 0, its own note",
+   "id": "F-11",
+   "responsibility_or_impact": "the admission table records a canonical form that was not the flown form",
+   "summary": "Harness-admission entry `SAEA-E21-KC-E1F-VERDICT-V2` records the switch as `judges.<phase>.judges`, while the sealed arm flew `obs-repair-loop` plus `response_postprocessor \"e21-entity-repair-substitutions-v1\"`"
+  },
+  {
+   "evidence": "`rails/adapters/earnings_runtime.py:22-52` vs `docs/readiness/2026-09-14-a2t-e21-native-role-transfer-readiness-v1.md`",
+   "id": "F-12",
+   "responsibility_or_impact": "a released readiness limitation is stale and would misroute the next E21 decision",
+   "summary": "The 2026-09-14 transfer readiness states that `Earnings21RuntimeAdapter` \"rejects the registered native role policy\". At `4dd7ef41` `_validate_execution_route` explicitly admits `stop_rule == \"native-role-episode\"`"
+  },
+  {
+   "evidence": "`rails/node_context_policy.py:181-330`; NCP design section 12 (which already drafts the other two carriers' classes and calls their templates \"to be drafted with its cell\")",
+   "id": "F-13",
+   "responsibility_or_impact": "the edge set of section 4 is base-level, but only one carrier can declare a level on any edge; the policy id would have to be renamed the moment a second carrier adopts one",
+   "summary": "The node-context policy is carrier-independent in its machinery and **SLURP-bound in its content**: `SLURP_BOUNDARY_IDS`, `SLURP_BOUNDARY_TEMPLATES` and `PARSER_IDS` are SLURP parsers and SLURP templates, and the registered policy id is literally `typed-slurp-node-context-v1`. No contextual-ASR or Audio2Tool boundary map or template exists"
+  },
+  {
+   "evidence": "node-context audit section 8; `probes/slurp_native_role_solver_v2.txt`",
+   "id": "F-14",
+   "responsibility_or_impact": "the owner ruling of 2026-09-08 (\"revise needs new information + constrained edits + core answer authority\") is unimplemented at edges E14/E15/E16 on every carrier",
+   "summary": "On a `REVISE` the Solver receives the finding, the Planner's token and its own previous draft, and is given **no diff, no statement of what was objected to, and no constraint on what may change**. The revise instruction differs from the first visit by 11 characters, all of them the limits JSON"
+  },
+  {
+   "evidence": "`rails/live_speech_observation.py`; 2026-09-14 transfer readiness",
+   "id": "F-15",
+   "responsibility_or_impact": "AC-2 `relisten` and RE-4 `call_tool` cannot be composed on the one carrier whose task most needs them",
+   "summary": "The on-demand live speech tool accepts only `full-utterance` ASR and caps its hash-pinned raw source at **30 seconds**, while the proven contextual-ASR unit is a **90-second** window; it has no current-window or span binding with exact audio and frame custody"
+  },
+  {
+   "evidence": "`rails/reward_links.py:43-52`; `rails/group_relative_feedback.py:54-84`",
+   "id": "F-16",
+   "responsibility_or_impact": "Stage 3 cannot consume Audio2Tool outcomes at all, and can consume contextual-ASR outcomes only as a single scalar — not the separate PERSON / WER / non-entity / numeric / insertion vector the owner's own reporting rule requires",
+   "summary": "The reward/feedback plane is carrier-incomplete. `rails.reward_links._NATIVE_PROJECTIONS` registers projections for `asr-wer`, `asr-wer-whisper` and the three SLURP scorers, and **none for Audio2Tool**; `rails.group_relative_feedback._native_quality` returns the full SLURP sufficient statistics but collapses the whole contextual-ASR carrier to `{\"negative_wer\": -wer}`"
+  },
+  {
+   "evidence": "`docs/results/` vs `docs/readiness/` listings; `results_ledger_check` findings",
+   "id": "F-17",
+   "responsibility_or_impact": "a cross-task lock cannot cite \"the carrier's verdicts\" by one rule, and `results_ledger_check` cross-check C already reports rows it cannot pair",
+   "summary": "Verdict records are placed asymmetrically: SLURP verdicts live in `docs/results/`, while the contextual-ASR and Audio2Tool verdicts live in `docs/readiness/` (`docs/results/` holds one E21 file and no E22 file at all)"
+  },
+  {
+   "evidence": "`rails/config_tables.py:286-290`, `:361-369`, `:1195`",
+   "id": "F-18",
+   "responsibility_or_impact": "(v1 finding I-4, still reproducing) the episode switch class is the class the lock's Tier B uses to say what a carrier may arm; its own allowlist is described wrongly in three places",
+   "summary": "`EPISODE_LEVEL_SWITCH_KEYS` holds **seven** members; its own docstring says *\"All three are dotted paths … admitting a fourth is a code change\"*, and `is_episode_null_arm`'s docstring repeats *\"the three today\"* before enumerating six. The program spec repeats the staleness (\"the fourth and last\", \"the FIFTH and last\")"
+  },
+  {
+   "evidence": "`rails/native_episode_config.py:277-282` vs `:574-584`; `rails/config_tables.py:1204`",
+   "id": "F-19",
+   "responsibility_or_impact": "(v1 finding I-5, still reproducing) the lock will be read by whoever implements a second carrier's policy, and the comment tells them the wrong thing",
+   "summary": "`NativeEpisodeConfig.context_policy_json`'s field comment says an absent key, the literal `\"raw\"` and an all-raw object are \"ONE thing here — `None`\". The loader assigns the field for **any** declared `context_policy`, including an all-raw one — deliberately, so a declared all-raw arm emits `level: \"raw\"` receipt rows. The behaviour is right; two docstrings describe the opposite"
+  },
+  {
+   "evidence": "`rails/knowledge_stores.py:29`, `:470-505`",
+   "id": "F-20",
+   "responsibility_or_impact": "KN-4 `materialize` has three config shapes; a Stage-3 optimiser told only about `phase_supply` would search a third of the supply surface",
+   "summary": "There are **three** supply channels — `phase_supply`, `candidate_supply`, `context_supply` — and no document names all three. `context_supply` exists for exactly one carrier (contextual ASR), requires a later supplied phase and the source-scoped provider, and has never flown"
+  }
+ ],
+ "forbidden_at_every_node": [
+  "gold of an evaluated row, at any node, at any level",
+  "a transcript or ASR state as a retrieval key (speech or speech+state only)",
+  "a future turn",
+  "a reference transcript",
+  "another evaluated row's content",
+  "a second answering model",
+  "replacement text from the Reviewer seat (criticism only)",
+  "the node-context policy touching anything but agent_state entries",
+  "derived media outside its carrier root"
+ ],
+ "knobs": [
+  {
+   "admissible": "int >= 1 (owner CPU baseline: 20 idle, 8 in flight)",
+   "key": "`preprocess_plan.workers`",
+   "node": "N1 Perception",
+   "proposed_status": "FREEZE",
+   "values": {
+    "audio2tool": "8",
+    "earnings21-original": "20",
+    "slurp": "8"
+   }
+  },
+  {
+   "admissible": "int >= 1",
+   "key": "`runtime_view_workers`",
+   "node": "N1 Perception",
+   "proposed_status": "FREEZE",
+   "values": {
+    "audio2tool": "8",
+    "earnings21-original": "8",
+    "slurp": "8"
+   }
+  },
+  {
+   "admissible": "hash-pinned path",
+   "key": "speech packet / feature root pin",
+   "node": "N1 Perception",
+   "proposed_status": "FREEZE",
+   "values": {
+    "audio2tool": "featcache packets",
+    "earnings21-original": "`SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1`",
+    "slurp": "`slurp-q4km-packets-04ccc72a`"
+   }
+  },
+  {
+   "admissible": "positive number",
+   "key": "`obs_buffer_seconds`",
+   "node": "N1 Perception",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "**90**",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "positive numbers, min <= max",
+   "key": "`obs_min_advance_seconds` / `obs_max_advance_seconds`",
+   "node": "N1 Perception",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "20 / 55",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "`fixed` | speaker-turn units via `saea-tool-speaker-turn-units-v2`",
+   "key": "`obs_boundary_mode`",
+   "node": "N1 Perception",
+   "proposed_status": "OPEN (speaker-turn units read REJECTED as HARM: WER −1.05 but PERSON +2.09)",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "`fixed`",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "number >= 0",
+   "key": "`obs_silence_snap_seconds`",
+   "node": "N1 Perception",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "2.0",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "positive number",
+   "key": "`obs_fallback_advance_seconds`",
+   "node": "N1 Perception",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "50",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "registered VAD id / number >= 0",
+   "key": "`obs_vad` / `obs_vad_trim_min_seconds`",
+   "node": "N1 Perception",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "`energy` / 0",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "number >= 0",
+   "key": "`obs_slice_tail_silence_seconds`",
+   "node": "N1 Perception",
+   "proposed_status": "**FREEZE at 0** — NOT ADMITTED on E21 (gain traced to an insertion collapse), HARMFUL on SLURP",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "2.0 in the tail arm",
+    "slurp": "2.0 in the tail arm"
+   }
+  },
+  {
+   "admissible": "int >= 0",
+   "key": "`obs_condition_tail_chars`",
+   "node": "N1 Perception",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "0",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "int >= 0",
+   "key": "`obs_slice_retry_max` / `obs_slice_skip_max`",
+   "node": "N1 Perception",
+   "proposed_status": "FREEZE",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "1 / 1",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "int >= 1",
+   "key": "`obs_batch_samples` / `obs_batch_slices`",
+   "node": "N1 Perception",
+   "proposed_status": "OPEN (throughput only)",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "1 / 8",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "int >= 1",
+   "key": "`roles.perception.max_iterations`",
+   "node": "N1 Perception",
+   "proposed_status": "FREEZE",
+   "values": {
+    "audio2tool": "1",
+    "earnings21-original": "1",
+    "slurp": "1"
+   }
+  },
+  {
+   "admissible": "committed probe file",
+   "key": "`phase_material.perception.instruction_template`",
+   "node": "N1 Perception",
+   "proposed_status": "FREEZE (decision 40)",
+   "values": {
+    "audio2tool": "A2T perception template",
+    "earnings21-original": "`e21_native_window_perception_v1.txt`",
+    "slurp": "`slurp_native_role_perception_v3.txt`"
+   }
+  },
+  {
+   "admissible": "registered format id, or absent",
+   "key": "`phase_material.perception.response_format_id`",
+   "node": "N1 Perception",
+   "proposed_status": "OPEN **for contextual ASR only** (F-3); FREEZE where declared",
+   "values": {
+    "audio2tool": "`audio2tool-perception-state-v1`",
+    "earnings21-original": "**absent**",
+    "slurp": "`slurp-intent-hypotheses-v1`"
+   }
+  },
+  {
+   "admissible": "int",
+   "key": "`fill_params.max_candidates`",
+   "node": "N1 Perception",
+   "proposed_status": "FREEZE at 3 (SLURP); OPEN (A2T)",
+   "values": {
+    "audio2tool": "`max_actions` 8",
+    "earnings21-original": "—",
+    "slurp": "3 (> 3 refused)"
+   }
+  },
+  {
+   "admissible": "int",
+   "key": "`fill_params.min_candidates`",
+   "node": "N1 Perception",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "1"
+   }
+  },
+  {
+   "admissible": "int",
+   "key": "`fill_params.max_distinction_chars`",
+   "node": "N1 Perception",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "128"
+   }
+  },
+  {
+   "admissible": "int",
+   "key": "`fill_params.max_evidence_refs` / `max_unresolved_fields`",
+   "node": "N1 Perception",
+   "proposed_status": "FREEZE",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "0 / 0"
+   }
+  },
+  {
+   "admissible": "<= `MAX_FALLBACK_CANDIDATES` legal ids",
+   "key": "`fill_params.fallback_candidates`",
+   "node": "N1 Perception",
+   "proposed_status": "OPEN (pending B4a)",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "absent (`[\"general_quirky\"]` in B4a)"
+   }
+  },
+  {
+   "admissible": "registry id",
+   "key": "`projection_policy`",
+   "node": "N1 Perception",
+   "proposed_status": "FREEZE",
+   "values": {
+    "audio2tool": "ordered action state",
+    "earnings21-original": "—",
+    "slurp": "`bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1`"
+   }
+  },
+  {
+   "admissible": "int >= 1",
+   "key": "`phase_supply.perception.k`",
+   "node": "N1 Perception",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "8",
+    "earnings21-original": "—",
+    "slurp": "8"
+   }
+  },
+  {
+   "admissible": "registry id; three floats",
+   "key": "`phase_supply.perception.rank_policy` / `rank_weights`",
+   "node": "N1 Perception",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "same",
+    "earnings21-original": "—",
+    "slurp": "`saea-rank-wcos-prior-agree-v1`, `{1.0, 0.0, 0.0}`"
+   }
+  },
+  {
+   "admissible": "registry id; three ints",
+   "key": "`phase_supply.perception.fuse_policy` / `fuse_coverage`",
+   "node": "N1 Perception",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "`saea-fuse-supplyfilter-v1`",
+    "earnings21-original": "—",
+    "slurp": "`saea-fuse-associated-values-v1`, `{c 1, m 8, top_l 8}`"
+   }
+  },
+  {
+   "admissible": "float",
+   "key": "`phase_supply.perception.tau`",
+   "node": "N1 Perception",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "0.0",
+    "earnings21-original": "—",
+    "slurp": "0.0"
+   }
+  },
+  {
+   "admissible": "`speech` | `speech+state`, never text",
+   "key": "`phase_supply.perception.query_source` modality",
+   "node": "N1 Perception",
+   "proposed_status": "FREEZE (owner ruling 2026-09-06; `speech+state` needs its own sealed vectors and a cell)",
+   "values": {
+    "audio2tool": "`speech`",
+    "earnings21-original": "—",
+    "slurp": "`speech`"
+   }
+  },
+  {
+   "admissible": "`{release, snapshot}` re-pin",
+   "key": "perception store `release` / `snapshot` pins",
+   "node": "N1 Perception",
+   "proposed_status": "OPEN (SLURP pending B4a/B4c)",
+   "values": {
+    "audio2tool": "`tool-activation-v1`",
+    "earnings21-original": "—",
+    "slurp": "`intent-boundaries-v1`"
+   }
+  },
+  {
+   "admissible": "int >= 1",
+   "key": "`roles.solver.max_iterations`",
+   "node": "N2 Solver",
+   "proposed_status": "FREEZE",
+   "values": {
+    "audio2tool": "1",
+    "earnings21-original": "1",
+    "slurp": "1"
+   }
+  },
+  {
+   "admissible": "int 1–8; >= 2 requires `decoding_overrides` **and** `commit`",
+   "key": "`roles.solver.samples`",
+   "node": "N2 Solver",
+   "proposed_status": "**OPEN** — the rollout mechanism a training-free method needs (decision 39), never a default (B2 v3 NEUTRAL: +0.06 SLU [−1.46, +1.60])",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "1 (5 in B2 v3)"
+   }
+  },
+  {
+   "admissible": "float in (0, 2]; 0 only for an explicit `greedy-repeat` twin",
+   "key": "`decoding_overrides.temperature`",
+   "node": "N2 Solver",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "0.7 in B2 v3"
+   }
+  },
+  {
+   "admissible": "int >= 0; seed = fragment seed + offset + sample index",
+   "key": "`decoding_overrides.seed_offset`",
+   "node": "N2 Solver",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "0"
+   }
+  },
+  {
+   "admissible": "`greedy-repeat` or absent",
+   "key": "`roles.solver.twin`",
+   "node": "N2 Solver",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "absent"
+   }
+  },
+  {
+   "admissible": "resolves in `core.base.COMMIT_POLICIES`",
+   "key": "`commit.policy`",
+   "node": "N2 Solver",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "`saea-commit-plurality-support-v1`"
+   }
+  },
+  {
+   "admissible": "int 1..samples",
+   "key": "`commit.min_support`",
+   "node": "N2 Solver",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "3"
+   }
+  },
+  {
+   "admissible": "float in (0, 1]",
+   "key": "`commit.similarity_threshold`",
+   "node": "N2 Solver",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "0.8"
+   }
+  },
+  {
+   "admissible": "int",
+   "key": "`candidate_supply.solver.max_candidates`",
+   "node": "N2 Solver",
+   "proposed_status": "FREEZE at 3 (SLURP); OPEN (A2T)",
+   "values": {
+    "audio2tool": "`max_candidates_per_action` 4",
+    "earnings21-original": "—",
+    "slurp": "3"
+   }
+  },
+  {
+   "admissible": "positive int",
+   "key": "`candidate_supply.solver.max_values_per_candidate`",
+   "node": "N2 Solver",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "16"
+   }
+  },
+  {
+   "admissible": "positive int <= candidates x per-candidate",
+   "key": "`candidate_supply.solver.max_total_values`",
+   "node": "N2 Solver",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "32",
+    "earnings21-original": "—",
+    "slurp": "28"
+   }
+  },
+  {
+   "admissible": "positive int",
+   "key": "`candidate_supply.solver.max_actions`",
+   "node": "N2 Solver",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "8",
+    "earnings21-original": "—",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "registry id",
+   "key": "`candidate_supply.solver.projection_policy`",
+   "node": "N2 Solver",
+   "proposed_status": "FREEZE",
+   "values": {
+    "audio2tool": "A2T projection",
+    "earnings21-original": "—",
+    "slurp": "`bounded-first-occurrence-…-v1`"
+   }
+  },
+  {
+   "admissible": "registry ids",
+   "key": "`candidate_supply.solver.rank_policy` / `fuse_policy`",
+   "node": "N2 Solver",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "same pair",
+    "earnings21-original": "—",
+    "slurp": "`saea-ranked-candidate-round-robin-v1` / `saea-candidate-semantic-passthrough-v1`"
+   }
+  },
+  {
+   "admissible": "int >= 1",
+   "key": "`phase_supply.solver.k` (exemplars)",
+   "node": "N2 Solver",
+   "proposed_status": "**OPEN — the single largest measured lever** (B1 ADMITTED +12.61 [+10.54, +14.60] vs anchor, +7.83 [+5.85, +9.75] vs the derangement twin)",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "absent (**20** in B1)"
+   }
+  },
+  {
+   "admissible": "registry id; ints",
+   "key": "`phase_supply.solver.fuse_policy` / `fuse_coverage`",
+   "node": "N2 Solver",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "`saea-fuse-supplyfilter-v1`, `{20, 20, 20}`"
+   }
+  },
+  {
+   "admissible": "three floats / float",
+   "key": "`phase_supply.solver.rank_weights` / `tau`",
+   "node": "N2 Solver",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "`{1.0, 0.0, 0.0}` / 0.0"
+   }
+  },
+  {
+   "admissible": "registry id; requires a later supplied phase",
+   "key": "`context_supply.solver.provider`",
+   "node": "N2 Solver",
+   "proposed_status": "OPEN (registered, never flown)",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "`source-scoped-context-v1` (`document-lexicon`, `participant-roster`)",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "int 1..3 each (may only narrow the released table)",
+   "key": "`native_episode.solver_hints.max_neighbours` / `max_cues`",
+   "node": "N2 Solver",
+   "proposed_status": "UNEXPLORED (B8c built, unregistered)",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "absent"
+   }
+  },
+  {
+   "admissible": "committed probe file",
+   "key": "`phase_material.solver.instruction_template`",
+   "node": "N2 Solver",
+   "proposed_status": "FREEZE (decision 40)",
+   "values": {
+    "audio2tool": "A2T solver template",
+    "earnings21-original": "`e21_native_window_solver_v1.txt`",
+    "slurp": "`slurp_native_role_solver_v2.txt`"
+   }
+  },
+  {
+   "admissible": "registered id or null",
+   "key": "`phase_material.solver.response_format_id`",
+   "node": "N2 Solver",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "null",
+    "earnings21-original": "null",
+    "slurp": "null"
+   }
+  },
+  {
+   "admissible": "`none` | `append-sealed-state` | `sealed-manifest`",
+   "key": "`phase_material.solver.predecessor_binding`",
+   "node": "N2 Solver",
+   "proposed_status": "UNEXPLORED — a second verbatim channel no carrier uses",
+   "values": {
+    "audio2tool": "`none`",
+    "earnings21-original": "`none`",
+    "slurp": "`none`"
+   }
+  },
+  {
+   "admissible": "registered fill id or null",
+   "key": "`phase_material.solver.instruction_fill` / `state_fill`",
+   "node": "N2 Solver",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "null / null",
+    "earnings21-original": "null / null",
+    "slurp": "null / null"
+   }
+  },
+  {
+   "admissible": "int >= 1, or 0 only with planner 0 and `max_revisions` 0",
+   "key": "`roles.reviewer.max_iterations`",
+   "node": "N3 Reviewer",
+   "proposed_status": "FREEZE (the loop stays: review-off is HARMFUL under the own null)",
+   "values": {
+    "audio2tool": "3",
+    "earnings21-original": "3",
+    "slurp": "3"
+   }
+  },
+  {
+   "admissible": "`full` | `latest-solver-and-local-tools` (Reviewer only; refuses to combine with `role_context` or a non-raw `context_policy`)",
+   "key": "`roles.reviewer.history_scope`",
+   "node": "N3 Reviewer",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "`full`",
+    "earnings21-original": "`full`",
+    "slurp": "`full`"
+   }
+  },
+  {
+   "admissible": "registered format id",
+   "key": "`phase_material.reviewer.response_format_id`",
+   "node": "N3 Reviewer",
+   "proposed_status": "OPEN (B7r registered; 0 of 2,167 outputs parse today)",
+   "values": {
+    "audio2tool": "null",
+    "earnings21-original": "null",
+    "slurp": "null"
+   }
+  },
+  {
+   "admissible": "committed probe file",
+   "key": "`phase_material.reviewer.instruction_template`",
+   "node": "N3 Reviewer",
+   "proposed_status": "OPEN only as B7r's paired change; otherwise FREEZE (decision 40)",
+   "values": {
+    "audio2tool": "A2T reviewer template",
+    "earnings21-original": "`e21_native_window_reviewer_v1.txt`",
+    "slurp": "`slurp_native_role_reviewer_v1.txt`"
+   }
+  },
+  {
+   "admissible": "ids from `ACTION_TOOLS`; Reviewer and Planner only",
+   "key": "`phase_tools.reviewer.allowed_tools`",
+   "node": "N3 Reviewer",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "`[\"saea-tool-task-contract-v1\"]` (+ `knowledge-target-lookup` in scope-tools)",
+    "earnings21-original": "`[\"saea-tool-live-speech-span-v1\"]`",
+    "slurp": "`[\"saea-tool-task-contract-v1\"]`"
+   }
+  },
+  {
+   "admissible": "`fixed` | `core-choice` | `native-tools`",
+   "key": "`phase_tools.reviewer.mode`",
+   "node": "N3 Reviewer",
+   "proposed_status": "FREEZE",
+   "values": {
+    "audio2tool": "`native-tools`",
+    "earnings21-original": "`native-tools`",
+    "slurp": "`native-tools`"
+   }
+  },
+  {
+   "admissible": "subset of `{text, speech, paired}`",
+   "key": "`phase_tools.reviewer.knowledge_views`",
+   "node": "N3 Reviewer",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "`[\"text\"]`",
+    "earnings21-original": "`[\"text\"]`",
+    "slurp": "`[\"text\"]`"
+   }
+  },
+  {
+   "admissible": "store ids; positive ints",
+   "key": "`phase_tools.reviewer.knowledge_store_ids` / `candidate_limit` / `knowledge_value_limit`",
+   "node": "N3 Reviewer",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "`[\"tool-activation\",\"parameter-meaning\"]` / 4 / 4",
+    "earnings21-original": "—",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "registered policy",
+   "key": "`tool_iteration_policy`",
+   "node": "N3 Reviewer",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "`reserve-final-report`",
+    "earnings21-original": "`reserve-final-report`",
+    "slurp": "absent"
+   }
+  },
+  {
+   "admissible": "positive int / registered mode",
+   "key": "`local_tool_execution.max_workers` / `.mode`",
+   "node": "N3 Reviewer",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "1 / `yield-model-slot`",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "registered view id; carrier-gated to `slurp`",
+   "key": "`reviewer_audit.view`",
+   "node": "N3 Reviewer",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "absent (`slot-audit-v1` in B8b)"
+   }
+  },
+  {
+   "admissible": "float in [0, 1]",
+   "key": "`reviewer_audit.thresholds.empty_draft_min_entity_row_share`",
+   "node": "N3 Reviewer",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "0.5"
+   }
+  },
+  {
+   "admissible": "float in [0, 1]",
+   "key": "`reviewer_audit.thresholds.missing_common_min_row_share`",
+   "node": "N3 Reviewer",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "0.5"
+   }
+  },
+  {
+   "admissible": "float in [0, 1]",
+   "key": "`reviewer_audit.thresholds.profile_min_row_share`",
+   "node": "N3 Reviewer",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "0.05"
+   }
+  },
+  {
+   "admissible": "ids resolving in `core.base.JUDGES`",
+   "key": "`phase_review.<phase>.judges`",
+   "node": "N3 Reviewer",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "absent (`a2t-hard-validity-v1` registered)",
+    "earnings21-original": "`[\"e21-substitution-alignment-flag-v1\"]` (canonical switch of the one ADMITTED, REPLICATED E21 module)",
+    "slurp": "absent"
+   }
+  },
+  {
+   "admissible": "`record` (the only admitted value today)",
+   "key": "`phase_review.<phase>.on_flag`",
+   "node": "N3 Reviewer",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "`record`",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "mapping",
+   "key": "`phase_review.<phase>.params`",
+   "node": "N3 Reviewer",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "per-judge params (e.g. `max_span_tokens`)",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "int >= 1",
+   "key": "`roles.planner.max_iterations`",
+   "node": "N4 Planner",
+   "proposed_status": "FREEZE at 1; the A2T value 2 is UNEXPLORED",
+   "values": {
+    "audio2tool": "1 (dual-store), **2** (scope-tools)",
+    "earnings21-original": "1",
+    "slurp": "1"
+   }
+  },
+  {
+   "admissible": "int >= 0; a refresh allowance must be <= it",
+   "key": "`native_episode.max_revisions`",
+   "node": "N4 Planner",
+   "proposed_status": "FREEZE",
+   "values": {
+    "audio2tool": "1",
+    "earnings21-original": "1",
+    "slurp": "1"
+   }
+  },
+  {
+   "admissible": "`exact-text` | `json-action-v1`",
+   "key": "`planner_output_format`",
+   "node": "N4 Planner",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "both families exist",
+    "earnings21-original": "`json-action-v1`",
+    "slurp": "`exact-text`"
+   }
+  },
+  {
+   "admissible": "three distinct non-empty strings, never the reserved illegal token",
+   "key": "`actions {accept, revise, acquire}`",
+   "node": "N4 Planner",
+   "proposed_status": "FREEZE (E15 made an unroutable action a retained-row disposition)",
+   "values": {
+    "audio2tool": "same",
+    "earnings21-original": "same",
+    "slurp": "`ACCEPT`/`REVISE`/`ACQUIRE`"
+   }
+  },
+  {
+   "admissible": "subset of the registered actions",
+   "key": "`fill_params.actions` (advertised set)",
+   "node": "N4 Planner",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "`[\"ACCEPT\",\"REVISE\"]` or `+[\"REFRESH_CANDIDATES\"]`",
+    "earnings21-original": "`[\"ACCEPT\",\"REVISE\"]`",
+    "slurp": "`[ACCEPT] + [REVISE]` while revisions remain"
+   }
+  },
+  {
+   "admissible": "distinct action; 1 <= refreshes <= `max_revisions`; requires `candidate_state_selection \"latest\"`",
+   "key": "`candidate_refresh.action` / `.max_refreshes`",
+   "node": "N4 Planner",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "`REFRESH_CANDIDATES` / 1",
+    "earnings21-original": "absent",
+    "slurp": "absent"
+   }
+  },
+  {
+   "admissible": "`raise` | `deliver-latest-solver`",
+   "key": "`exhaustion_policy`",
+   "node": "N4 Planner",
+   "proposed_status": "FREEZE",
+   "values": {
+    "audio2tool": "`deliver-latest-solver`",
+    "earnings21-original": "`deliver-latest-solver`",
+    "slurp": "`deliver-latest-solver`"
+   }
+  },
+  {
+   "admissible": "committed probe file",
+   "key": "`phase_material.planner.instruction_template`",
+   "node": "N4 Planner",
+   "proposed_status": "FREEZE (decision 40)",
+   "values": {
+    "audio2tool": "A2T planner template",
+    "earnings21-original": "`e21_native_window_planner_v1.txt`",
+    "slurp": "`slurp_native_role_planner_v1.txt` (193 bytes)"
+   }
+  },
+  {
+   "admissible": "registered id or null",
+   "key": "`phase_material.planner.response_format_id`",
+   "node": "N4 Planner",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "null or `saea-native-planner-action-v1`",
+    "earnings21-original": "`saea-native-planner-action-v1`",
+    "slurp": "null"
+   }
+  },
+  {
+   "admissible": "part of `ncp_slurp_planner_brief_v1.txt`",
+   "key": "Planner brief `HARNESS CHECKS` block",
+   "node": "N4 Planner",
+   "proposed_status": "OPEN (pending B7a, owner decision 12(2))",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "absent (present at L1 in B7a)"
+   }
+  },
+  {
+   "admissible": "registered planner policy; judge ids; one of `info`/`warn`/`block`",
+   "key": "`phase_planner.planner_policy_id` / `.judges` / `.minimum_severity`",
+   "node": "N4 Planner",
+   "proposed_status": "UNEXPLORED — the typed-flag routing seat no carrier arms",
+   "values": {
+    "audio2tool": "absent",
+    "earnings21-original": "absent",
+    "slurp": "absent"
+   }
+  },
+  {
+   "admissible": "finite number >= 0",
+   "key": "`observe.context_margin_seconds`",
+   "node": "N5 Acquisition + N6 Delivery",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "configured in the LOOP-1 family",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "int >= 1",
+   "key": "`observe.max_relistens_per_sample`",
+   "node": "N5 Acquisition + N6 Delivery",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "configured in the LOOP-1 family",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "registered derivation kind",
+   "key": "`observe.derivation_kind`",
+   "node": "N5 Acquisition + N6 Delivery",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "`recut-span`",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "a `DELIVERY_NORMALISERS` id declared for this carrier; refused beside the run-level projection key and beside a grouped Solver",
+   "key": "`native_episode.deliver_normaliser`",
+   "node": "N5 Acquisition + N6 Delivery",
+   "proposed_status": "**FREEZE armed** (SLURP); OPEN for the other two only once a carrier-bound rule exists",
+   "values": {
+    "audio2tool": "absent",
+    "earnings21-original": "absent",
+    "slurp": "`{\"normaliser\": \"saea-deliver-normalise-v3\"}`"
+   }
+  },
+  {
+   "admissible": "`raise` | `deliver-latest-or-abstain`",
+   "key": "`native_episode.finite_completion_policy`",
+   "node": "N5 Acquisition + N6 Delivery",
+   "proposed_status": "FREEZE armed, and required in every new fragment (v1 finding I-3)",
+   "values": {
+    "audio2tool": "`deliver-latest-or-abstain`",
+    "earnings21-original": "`deliver-latest-or-abstain`",
+    "slurp": "`deliver-latest-or-abstain`"
+   }
+  },
+  {
+   "admissible": "absent | `\"raw\"` | object",
+   "key": "`native_episode.context_policy` presence",
+   "node": "node-context policy",
+   "proposed_status": "OPEN (SLURP); MISSING elsewhere (F-13)",
+   "values": {
+    "audio2tool": "**no boundary map exists**",
+    "earnings21-original": "**no boundary map exists**",
+    "slurp": "**absent** (L0 everywhere); declared in B7a v2"
+   }
+  },
+  {
+   "admissible": "`raw` | `structured` (a bare `\"cleaned\"` default is refused)",
+   "key": "`context_policy.level`",
+   "node": "node-context policy",
+   "proposed_status": "OPEN",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "`structured` in B7a v2"
+   }
+  },
+  {
+   "admissible": "string",
+   "key": "`context_policy.policy_id`",
+   "node": "node-context policy",
+   "proposed_status": "FREEZE — and it must be renamed if a second carrier adopts one (F-13)",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "`typed-slurp-node-context-v1`"
+   }
+  },
+  {
+   "admissible": "`raw` | `structured` | `cleaned`",
+   "key": "per-edge `level` (x12 on SLURP)",
+   "node": "node-context policy",
+   "proposed_status": "**OPEN — this is the per-node composition surface decision 31 names**",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "`structured` x8, `raw` x4 in B7a v2"
+   }
+  },
+  {
+   "admissible": "`raw` | `omit` | `refuse`",
+   "key": "per-edge `on_parse_failure`",
+   "node": "node-context policy",
+   "proposed_status": "FREEZE at `raw` / `refuse` (`omit` would delete the review from the Planner's context on 100 % of rows)",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "`raw` everywhere except `refuse` at `solver:plan-action`"
+   }
+  },
+  {
+   "admissible": "must match the edge's renderer key; hash-pinned in every receipt",
+   "key": "per-edge `template`",
+   "node": "node-context policy",
+   "proposed_status": "FREEZE (the set); OPEN (which edges use one)",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "the committed `probes/ncp_slurp_*.txt` set"
+   }
+  },
+  {
+   "admissible": "string; a registered response format",
+   "key": "`cleaning.phase_id` / `.response_format_id`",
+   "node": "node-context policy",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "`context_clean_review` / `ncp-review-issues-v1` (B7b)"
+   }
+  },
+  {
+   "admissible": "the only admissible value",
+   "key": "`cleaning.on_invalid`",
+   "node": "node-context policy",
+   "proposed_status": "FREEZE",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "`fallback-l1`"
+   }
+  },
+  {
+   "admissible": "must equal the producer phase's declared format",
+   "key": "`producers.<class>.response_format_id`",
+   "node": "node-context policy",
+   "proposed_status": "OPEN (pending B7r)",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "`saea-review-findings-v1` (B7r)"
+   }
+  },
+  {
+   "admissible": "committed probe file",
+   "key": "`task_instruction_template` / `task_instruction_active`",
+   "node": "contract, serving, run, scoring",
+   "proposed_status": "FREEZE (decision 40)",
+   "values": {
+    "audio2tool": "`r1_audio2tool_official.txt`, active",
+    "earnings21-original": "the transcription contract",
+    "slurp": "`slurp_native_role_context_v3.txt`, active"
+   }
+  },
+  {
+   "admissible": "registered fill id",
+   "key": "`task_instruction_fill`",
+   "node": "contract, serving, run, scoring",
+   "proposed_status": "FREEZE — the A2T `…-grouped` alternative read **HARMFUL** −3.23 pp",
+   "values": {
+    "audio2tool": "`audio2tool-registry-compact`",
+    "earnings21-original": "—",
+    "slurp": "`slurp-label-inventory`"
+   }
+  },
+  {
+   "admissible": "id resolving in `core.base.EVIDENCE_SOURCES`",
+   "key": "`evidence_source`",
+   "node": "contract, serving, run, scoring",
+   "proposed_status": "OPEN (contextual ASR)",
+   "values": {
+    "audio2tool": "`none`",
+    "earnings21-original": "`none` in both named fragments; `conec-*` sources registered",
+    "slurp": "`none`"
+   }
+  },
+  {
+   "admissible": "ints matching the resident geometry; `server_args -np` and `-c` are re-derived and refused on mismatch",
+   "key": "`serving_slots` / `serving_slot_tokens`",
+   "node": "contract, serving, run, scoring",
+   "proposed_status": "FREEZE",
+   "values": {
+    "audio2tool": "3 / 32,768 (np2 variant 2 / 49,152)",
+    "earnings21-original": "4 / 24,576",
+    "slurp": "4 / 24,576"
+   }
+  },
+  {
+   "admissible": "int",
+   "key": "`decoding_params.max_tokens`",
+   "node": "contract, serving, run, scoring",
+   "proposed_status": "FREEZE",
+   "values": {
+    "audio2tool": "2,048",
+    "earnings21-original": "512",
+    "slurp": "512"
+   }
+  },
+  {
+   "admissible": "float / int",
+   "key": "`decoding_params.temperature` / `seed`",
+   "node": "contract, serving, run, scoring",
+   "proposed_status": "FREEZE (greedy is not bitwise reproducible across batch compositions; comparators are sealed bytes, never re-flown)",
+   "values": {
+    "audio2tool": "0 / pinned",
+    "earnings21-original": "0 / pinned",
+    "slurp": "0 / 20260913"
+   }
+  },
+  {
+   "admissible": "positive ints",
+   "key": "`context_budget_limits.operational_reserve_tokens` / `.slot_limit_tokens`",
+   "node": "contract, serving, run, scoring",
+   "proposed_status": "UNEXPLORED",
+   "values": {
+    "audio2tool": "8,192 / 49,152 (np2 feasibility)",
+    "earnings21-original": "—",
+    "slurp": "—"
+   }
+  },
+  {
+   "admissible": "int; must be reserved from the actual unit inventory, never parents x per-unit cap",
+   "key": "`native_contact_fit.contact_cap` / `max_speech_packets`",
+   "node": "contract, serving, run, scoring",
+   "proposed_status": "FREEZE",
+   "values": {
+    "audio2tool": "176,000 (224,000 scope-tools)",
+    "earnings21-original": "reserved from the 1,593-unit inventory x the program ceiling",
+    "slurp": "47,520 / 1"
+   }
+  },
+  {
+   "admissible": "absent | int",
+   "key": "`obs_prefetch_depth`",
+   "node": "contract, serving, run, scoring",
+   "proposed_status": "FREEZE at 1 for contextual ASR (NEUTRAL, +16.96 % windows/min, zero-slot 17.55 % → 3.75 %); depth >= 2 UNEXPLORED",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "**1** (in the default plan)",
+    "slurp": "absent"
+   }
+  },
+  {
+   "admissible": "`on` | `off`; validated against the three loop leaves, renders no request byte",
+   "key": "`native_episode.review_loop`",
+   "node": "contract, serving, run, scoring",
+   "proposed_status": "FREEZE",
+   "values": {
+    "audio2tool": "—",
+    "earnings21-original": "—",
+    "slurp": "`on`"
+   }
+  },
+  {
+   "admissible": "registry ids; one score per complete manifest",
+   "key": "`scorers`",
+   "node": "contract, serving, run, scoring",
+   "proposed_status": "FREEZE",
+   "values": {
+    "audio2tool": "`[\"a2t-toolcall-official\",\"a2t-toolcall-v2\",\"a2t-toolcall\",\"cost\"]`",
+    "earnings21-original": "`[\"asr-wer-whisper\",\"conec-entity-wer-official\",\"numeric-value-accuracy-v1\",\"semantic-high-impact-error-rate-v1\",\"cost\"]`",
+    "slurp": "`[\"slurp-slu-official-train\",\"cost\"]`"
+   }
+  }
+ ],
+ "knowledge_space": {
+  "construction_rules": [
+   {
+    "carrier": "SLURP",
+    "exclusion": "2,160 excluded, **9,354 retained**; the three rosters pinned by file hash inside every build receipt",
+    "identity": "split identity `67e53fb5…`",
+    "pool": "governed TRAIN minus every utterance with a recording in TRAIN Fold A, Fold B or DEV-1000"
+   },
+   {
+    "carrier": "Contextual ASR",
+    "exclusion": "`source_partition_role \"external-governed\"`; `scope_sample_ids` pinned to the same 44 call ids; the D1 evidence supplement is hash-pinned",
+    "identity": "store `source_split_identity_hash` per release",
+    "pool": "the 44 governed Earnings-21 discovery calls' own **external governed** sources (participant rosters, company documents)"
+   },
+   {
+    "carrier": "Audio2Tool",
+    "exclusion": "**3,207 construction units / 1,689 blocks**; 13,631 reserved-exposed; the 5,279-identity evaluation exposure union held out (`SAEA-SN-MF-A2T-KB-EXPOSURE-UNION-V3`); the evaluation tier was RETIRED by owner decision 2026-09-05",
+    "identity": "snapshot `a2t-kb-toolshaped-ceea0a62b7a0279c`",
+    "pool": "the block partition `saea-a2t-block-partition-v1` (seed 20260807) over 16,838 units"
+   }
+  ],
+  "stores": [
+   {
+    "builder": "`rails.semantic_knowledge_build.build_intent_boundary_snapshot`",
+    "carrier": "SLURP",
+    "consumer_edge": "E2 (Perception `phase_supply`)",
+    "counts": "60 values / 60 facets / 2,037 recordings",
+    "record": "one intent's boundary card (`content`, `associated_facet_ids`, `source_sample_ids`)",
+    "root": "data",
+    "status": "**in the default plan**",
+    "store": "`intent-boundaries-v1`"
+   },
+   {
+    "builder": "same builder, registration v3",
+    "carrier": "SLURP",
+    "consumer_edge": "E2",
+    "counts": "60 / 60 / 2,037",
+    "record": "re-authored cards, same shape",
+    "root": "data",
+    "status": "held (B4a, B4c)",
+    "store": "`intent-boundaries-v2`"
+   },
+   {
+    "builder": "`build_factored_intent_boundary_snapshot`",
+    "carrier": "SLURP",
+    "consumer_edge": "none",
+    "counts": "61 / 60",
+    "record": "same plus one shared-guidance value",
+    "root": "data",
+    "status": "superseded / unused",
+    "store": "`intent-boundaries-factored-v1`"
+   },
+   {
+    "builder": "`build_slot_contract_snapshot`",
+    "carrier": "SLURP",
+    "consumer_edge": "E4 (Solver `candidate_supply`)",
+    "counts": "54 / 54 / 3,162",
+    "record": "one entity type's contract card",
+    "root": "data",
+    "status": "superseded by v2",
+    "store": "`slot-contracts-v1`"
+   },
+   {
+    "builder": "same builder, registration v2",
+    "carrier": "SLURP",
+    "consumer_edge": "E4",
+    "counts": "54 / 54 / 3,162",
+    "record": "eight revised date/time cards from construction data only",
+    "root": "data",
+    "status": "**ADMITTED and REPLICATED** (M4b, +1.54 [+0.30, +2.93]); in the default plan",
+    "store": "`slot-contracts-v2`"
+   },
+   {
+    "builder": "`scripts/build_slurp_exemplar_pool_assets.py` (seed 20260823)",
+    "carrier": "SLURP",
+    "consumer_edge": "E6 (Solver `phase_supply`, M1)",
+    "counts": "**9,354** values / 9,354 facets / 37,407 source ids",
+    "record": "one construction utterance as an annotated exemplar (`content`, `task_target`, `prior_score`)",
+    "root": "data",
+    "status": "**ADMITTED** (+12.61); replication obligation discharged by decision 37's B1 replicate; not yet in the default plan",
+    "store": "`train-exemplars` (`size-pool-annotated-exemplars`)"
+   },
+   {
+    "builder": "`scripts/build_slurp_slot_audit_view.py`",
+    "carrier": "SLURP",
+    "consumer_edge": "E7 (Reviewer addition, B8b)",
+    "counts": "60 intents / 54 types / 402 rows / 2 conventions",
+    "record": "per intent: attested entity types and row shares, no-entity share, two date/time conventions — counts and shares only",
+    "root": "**repo**",
+    "status": "held",
+    "store": "`slot-audit-v1`"
+   },
+   {
+    "builder": "`scripts/build_slurp_scenario_hints_view.py`",
+    "carrier": "SLURP",
+    "consumer_edge": "E3 (Solver addition, B8c)",
+    "counts": "60 intents / 81 pairs / 231 cue rows / 130 words",
+    "record": "per intent: construction neighbours and the top cue words distinguishing it from each",
+    "root": "data",
+    "status": "built, unregistered",
+    "store": "`scenario-hints-v1`"
+   },
+   {
+    "builder": "`scripts/slurp_kus4_prep.py`",
+    "carrier": "SLURP",
+    "consumer_edge": "none",
+    "counts": "60 / 60 / 50,628 source ids",
+    "record": "intent-candidate values over the **full** governed TRAIN split",
+    "root": "data",
+    "status": "**quarantine candidate** — built without the 2026-09-13 exclusion (v1 finding I-8, OQ-10)",
+    "store": "`saea-slurp-intent-candidates-v1`"
+   },
+   {
+    "builder": "`rails.governed_context_build` (`saea-governed-context-store-v1`)",
+    "carrier": "contextual ASR",
+    "consumer_edge": "E6 (Solver `context_supply`)",
+    "counts": "per release",
+    "record": "governed document lexicon values scoped to the 44 discovery calls, `lexical_limit 128`",
+    "root": "**data root only**",
+    "status": "registered, **never flown**",
+    "store": "`document-lexicon-v1`"
+   },
+   {
+    "builder": "same builder",
+    "carrier": "contextual ASR",
+    "consumer_edge": "E6 (Solver `context_supply`)",
+    "counts": "per release",
+    "record": "participant names scoped to the same 44 calls; pins the D1 evidence supplement `313da4c4…`",
+    "root": "**data root only**",
+    "status": "registered, **never flown**",
+    "store": "`participant-roster-v1`"
+   },
+   {
+    "builder": "`core.evidence` registrations; `core.bias_lists` (deterministic extraction with `_assert_no_oracle_overlap`)",
+    "carrier": "contextual ASR",
+    "consumer_edge": "E2/E6 via `evidence_source`",
+    "counts": "per call",
+    "record": "contexts, participant names, bias lists, bias phrases, class lists, and their placebo / distractor-only twins",
+    "root": "data (`conec` lock key)",
+    "status": "registered; `evidence_source \"none\"` in both named fragments; KC-E1 whole-prompt brief **REJECTED (HARMFUL)**, KC-E1f repair **ADMITTED, REPLICATED**",
+    "store": "ConEC evidence sources"
+   },
+   {
+    "builder": "`core.metadata_brief`",
+    "carrier": "contextual ASR",
+    "consumer_edge": "E2/E6",
+    "counts": "per call",
+    "record": "per-call metadata brief and its derangement control",
+    "root": "data",
+    "status": "registered",
+    "store": "`e22-metadata-brief` (+ deranged twin)"
+   },
+   {
+    "builder": "`SAEA-A2T-TOOL-ACTIVATION-STORE-V1` registration",
+    "carrier": "Audio2Tool",
+    "consumer_edge": "E2 (Perception `phase_supply`, k 8)",
+    "counts": "per compilation",
+    "record": "tool-activation values keyed by a text tool key",
+    "root": "data root",
+    "status": "flown in the 4,000-row read, not admitted",
+    "store": "`tool-activation-v1`"
+   },
+   {
+    "builder": "`SAEA-A2T-ACTIVATION-SCOPE-STORE-V1`",
+    "carrier": "Audio2Tool",
+    "consumer_edge": "E10/E11 (`saea-tool-knowledge-target-lookup-v1`)",
+    "counts": "per compilation",
+    "record": "the same shape, reachable **only** through a native tool",
+    "root": "data root",
+    "status": "held (scope-tools family)",
+    "store": "`tool-activation-scope-v1`"
+   },
+   {
+    "builder": "`SAEA-A2T-PARAMETER-MEANING-STORE-V1`",
+    "carrier": "Audio2Tool",
+    "consumer_edge": "E4 (Solver `candidate_supply`, `max_actions` 8)",
+    "counts": "per compilation",
+    "record": "one action's parameter semantics",
+    "root": "data root",
+    "status": "flown, not admitted",
+    "store": "`parameter-meaning-v1`"
+   },
+   {
+    "builder": "`scripts/build_a2t_contrast_notes.py`",
+    "carrier": "Audio2Tool",
+    "consumer_edge": "contract fill (`evolved-artifact-v1`)",
+    "counts": "8 tools",
+    "record": "eight lighting-tool descriptions with an appended disambiguating clause; the twin carries matched filler text with no content",
+    "root": "repo (`configs/knowledge/`)",
+    "status": "**NULL** — total +0.42 [−0.12, +0.97], content +0.17 [−0.38, +0.70], not credited",
+    "store": "A2T contrast notes (`a2t-kc-a1/contrast-notes-v1`) + form twin"
+   },
+   {
+    "builder": "`scripts/a2t_org1_domain_grouped_analysis.py`",
+    "carrier": "Audio2Tool",
+    "consumer_edge": "contract fill (`audio2tool-registry-grouped`)",
+    "counts": "152",
+    "record": "the same 152 rows re-rendered under `## DOMAIN` headers",
+    "root": "repo",
+    "status": "**HARMFUL** −3.23 [−4.15, −2.33]",
+    "store": "A2T domain-grouped registry"
+   },
+   {
+    "builder": "`configs/knowledge/a2t-evo-a1/loop-v1.json`",
+    "carrier": "Audio2Tool",
+    "consumer_edge": "proposer arm (zero-scorer contacts, scored only by `cost`)",
+    "counts": "5 targets / 19 tools relaxed",
+    "record": "5 MF-1 targets, 8 exemplars per tool, 10,000 replicates, `tool_correct` reward",
+    "root": "repo config + data",
+    "status": "**capacity wall**: strict 3 targets / 67 of 235 addressable misses / +1.68 pp arithmetic ceiling",
+    "store": "A2T EVO-A1 construction loop"
+   }
+  ],
+  "vector_pins": [
+   {
+    "carrier": "SLURP",
+    "pin": "`prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl` (`76e8d16a…`)",
+    "rows": "60",
+    "used_by": "E2 key side"
+   },
+   {
+    "carrier": "SLURP",
+    "pin": "`vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl` (`e7a5b226…`)",
+    "rows": "1,080",
+    "used_by": "E2 query (speech) side"
+   },
+   {
+    "carrier": "SLURP",
+    "pin": "`vectors/slurp-kus3/facet-vectors.jsonl` (`5dfe7523…`)",
+    "rows": "11,514 (dim 2048)",
+    "used_by": "exemplar facet side; scenario-hint neighbour measurement"
+   },
+   {
+    "carrier": "SLURP",
+    "pin": "`vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl` (`d0f06ed2…`)",
+    "rows": "1,080",
+    "used_by": "E6 exemplar query side"
+   },
+   {
+    "carrier": "SLURP",
+    "pin": "`vectors/slurp-exemplars-twin/query-vectors-speech-segments-deranged-v1.jsonl` (`92e7f72e…`)",
+    "rows": "1,080",
+    "used_by": "the B1 derangement twin (Sattolo, seed 20260917, 0 fixed points, `gold_read: false`)"
+   },
+   {
+    "carrier": "Audio2Tool",
+    "pin": "A2T content-facet vectors (Qwen3-Embedding-0.6B-Q8_0 GGUF, llama.cpp-featcache `04ccc72a`)",
+    "rows": "12,601 (dim 1024)",
+    "used_by": "E2 tool-activation facet side; `label` / `prior` facets deliberately not embedded"
+   },
+   {
+    "carrier": "Audio2Tool",
+    "pin": "A2T speech segment query vectors (Omni-Embed-Nemotron-3B)",
+    "rows": "per roster",
+    "used_by": "E2 query side"
+   }
+  ]
+ },
+ "lock_tiers": {
+  "A_base": [
+   "the task abstraction",
+   "the six node kinds and their responsibility division",
+   "the edge set and every edge's direction",
+   "the primitive signatures",
+   "the four seams",
+   "the one base, thin derivations rule and its gate",
+   "the forbidden-at-every-node list",
+   "the scoring contract: one official score per complete manifest"
+  ],
+  "B_carrier_instance": [
+   "role program",
+   "serving geometry",
+   "store pins",
+   "construction-pool exclusion",
+   "default plan",
+   "scorer list"
+  ],
+  "C_stage3_action_space": "every knob whose proposed_status is OPEN"
+ },
+ "nodes": [
+  {
+   "axis_primary": "OBS",
+   "axis_secondary": "ORG",
+   "carriers": {
+    "audio2tool": "roles.perception max_iterations 1; response_format_id audio2tool-perception-state-v1; phase_supply tool-activation k 8",
+    "earnings21-original": "native-window fragment only; no response_format_id (F-3); absent from every cell with a verdict",
+    "slurp": "roles.perception max_iterations 1; response_format_id slurp-intent-hypotheses-v1; fill_params.max_candidates 3; phase_supply kb-facet-v1 k 8"
+   },
+   "cost_unit": "perception.max_iterations contacts per row, plus max_candidate_refreshes more",
+   "id": "N1",
+   "inputs": [
+    "speech-observation",
+    "task-contract",
+    "supplied-evidence"
+   ],
+   "must_not": [
+    "answer the task",
+    "deliver",
+    "route",
+    "read gold",
+    "retrieve outside its declared phase_supply",
+    "see another row's content"
+   ],
+   "name": "Perception",
+   "outputs": [
+    "candidate-hypothesis (response_format_id)",
+    "sealed AgentStateArtifact"
+   ],
+   "owns": "which candidates exist for this row",
+   "receipts": [
+    "role_visits[]",
+    "phase_supply receipt",
+    "COST",
+    "projection selection audit"
+   ],
+   "responsibility": "Turn this row's speech into a bounded, typed hypothesis state the rest of the episode may choose among"
+  },
+  {
+   "axis_primary": "USE",
+   "axis_secondary": null,
+   "carriers": {
+    "audio2tool": "max_iterations 1, sole answer authority, never carries phase_tools; ordered call list",
+    "earnings21-original": "implicit in the OBS loop (one contact per 90 s window, the response is the transcript); explicit role in the native fragment",
+    "slurp": "max_iterations 1, samples 1 in the default plan; free text parsed post hoc; grouped form samples 5 NEUTRAL"
+   },
+   "cost_unit": "solver.max_iterations x solver.samples contacts per revision",
+   "id": "N2",
+   "inputs": [
+    "task-contract",
+    "speech-observation",
+    "supplied-evidence",
+    "candidate-hypothesis",
+    "review-finding",
+    "plan-action",
+    "current-draft"
+   ],
+   "must_not": [
+    "route the episode",
+    "judge its own draft",
+    "acquire evidence",
+    "carry phase_tools",
+    "deliver directly"
+   ],
+   "name": "Solver",
+   "outputs": [
+    "current-draft",
+    "committed draft on a grouped visit"
+   ],
+   "owns": "the answer; only a Solver completion may become delivered text",
+   "receipts": [
+    "terminal_solver_receipt",
+    "accepted_solver_receipt",
+    "grouped-sample custody (E2d)",
+    "commit-policy record",
+    "COST"
+   ],
+   "responsibility": "Produce the task answer under the contract"
+  },
+  {
+   "axis_primary": "USE",
+   "axis_secondary": "SUPPLY",
+   "carriers": {
+    "audio2tool": "max_iterations 3; task-contract tool, plus knowledge-target lookup in the scope-tools family",
+    "earnings21-original": "phase-graph role in the native fragment (tools = saea-tool-live-speech-span-v1); in the flown OBS loop the seat is deterministic judges through phase_review (F-5)",
+    "slurp": "max_iterations 3, prose, no response format; 2167/2167 outputs fail the registered findings parser (F-4); tools = saea-tool-task-contract-v1"
+   },
+   "cost_unit": "reviewer.max_iterations contacts per revision",
+   "id": "N3",
+   "inputs": [
+    "current-draft",
+    "candidate-hypothesis",
+    "task-contract",
+    "tool-observation"
+   ],
+   "must_not": [
+    "return replacement text or a corrected answer",
+    "route",
+    "deliver"
+   ],
+   "name": "Reviewer",
+   "outputs": [
+    "review-finding",
+    "tool-call turns replayed under source-authority hashes"
+   ],
+   "owns": "the findings",
+   "receipts": [
+    "review_verdicts (JudgeVerdict)",
+    "phase_review record",
+    "native tool source_authority hashes",
+    "COST"
+   ],
+   "responsibility": "Verify the draft against the contract and report criticism"
+  },
+  {
+   "axis_primary": "USE",
+   "axis_secondary": "OBS",
+   "carriers": {
+    "audio2tool": "max_iterations 1 (dual-store) or 2 (scope-tools); the only carrier arming candidate_refresh and phase_tools on the Planner (F-7)",
+    "earnings21-original": "native fragment only; json-action-v1; fill_params.actions [ACCEPT, REVISE]",
+    "slurp": "max_iterations 1, exact-text, 1079 of 1085 outputs are literal ACCEPT for 25.02 % of the prompt budget (F-6)"
+   },
+   "cost_unit": "planner.max_iterations contacts per revision",
+   "id": "N4",
+   "inputs": [
+    "current-draft",
+    "review-finding",
+    "harness checks",
+    "budget",
+    "advertised actions"
+   ],
+   "must_not": [
+    "write an answer",
+    "deliver",
+    "acquire evidence of its own",
+    "spend a contact outside planner.max_iterations"
+   ],
+   "name": "Planner",
+   "outputs": [
+    "plan-action (one token, byte-matched)"
+   ],
+   "owns": "the transition (accept / revise / acquire / refresh)",
+   "receipts": [
+    "planner_routes[i] (legal, disposition, action_sha256, action_chars)",
+    "native_episode_receipt.planner_action_illegal",
+    "terminal_disposition",
+    "COST"
+   ],
+   "responsibility": "Choose the episode's next transition inside the declared budget"
+  },
+  {
+   "axis_primary": "SUPPLY",
+   "axis_secondary": "OBS",
+   "carriers": {
+    "audio2tool": "MISSING",
+    "earnings21-original": "MISSING",
+    "slurp": "MISSING"
+   },
+   "cost_unit": "one contact per acquisition visit; today zero",
+   "id": "N5",
+   "inputs": [
+    "plan-action (acquire)",
+    "QueryState"
+   ],
+   "must_not": [
+    "answer",
+    "route",
+    "deliver"
+   ],
+   "name": "Acquisition",
+   "not_buildable_because": [
+    "rails.native_episode_config.load_native_episode_config admits exactly perception, solver, reviewer, planner",
+    "reproduction.ojw.native_episode.build_native_episode requires acquisition.spec.role_kind in {reviewer, planner}"
+   ],
+   "outputs": [
+    "acquired-evidence bound into the successor QueryState"
+   ],
+   "owns": "nothing today; no carrier builds this node",
+   "receipts": [
+    "would be a role_visits[] entry of kind acquisition"
+   ],
+   "responsibility": "Bring new evidence, or a new observation, into the trajectory on demand",
+   "substitutes": [
+    {
+     "carriers": [
+      "slurp",
+      "earnings21-original",
+      "audio2tool"
+     ],
+     "kind": "pre-contact supply",
+     "where": "phase_supply / candidate_supply / context_supply"
+    },
+    {
+     "carriers": [
+      "slurp",
+      "earnings21-original",
+      "audio2tool"
+     ],
+     "kind": "in-band tool actions",
+     "where": "rails.phase_tools ACTION_TOOLS in the Reviewer or Planner seat"
+    },
+    {
+     "carriers": [
+      "earnings21-original"
+     ],
+     "kind": "between-wave re-listen",
+     "where": "rails.observe.ObserveStep"
+    },
+    {
+     "carriers": [
+      "audio2tool"
+     ],
+     "kind": "candidate refresh",
+     "where": "native_episode.candidate_refresh"
+    }
+   ]
+  },
+  {
+   "axis_primary": "USE",
+   "axis_secondary": null,
+   "carriers": {
+    "audio2tool": "absent; deliver-latest-solver plus deliver-latest-or-abstain only",
+    "earnings21-original": "absent as a node; the real delivery operation is the chronological window-to-call stitch (F-8)",
+    "slurp": "saea-deliver-normalise-v3 armed in the default plan (module M3, B8a ADMITTED: anchor +3.46 [+2.78, +4.18])"
+   },
+   "cost_unit": "zero contacts, zero request bytes",
+   "id": "N6",
+   "inputs": [
+    "accepted answer text",
+    "carrier-bound deterministic rule",
+    "closed legal inventory"
+   ],
+   "must_not": [
+    "be a judge",
+    "make any model, tool, encoder or network contact",
+    "read gold",
+    "normalise an abstention",
+    "be armed on a carrier it was not written for"
+   ],
+   "name": "Delivery",
+   "outputs": [
+    "delivered text",
+    "core.base.DeliveryNormalisation"
+   ],
+   "owns": "the delivered text",
+   "receipts": [
+    "native_episode_receipt.deliver_normaliser (rule_id, carrier_lock_key, applied, changed, input_sha256, output_sha256, labels_changed, label_branch, fillers_changed, rendering_suppressed, reason)"
+   ],
+   "responsibility": "Turn the accepted answer into the delivered bytes"
+  }
+ ],
+ "owner_questions": [
+  {
+   "blocking": true,
+   "context": "section 1.3, blocking).",
+   "id": "OQ-1",
+   "question": "Accept the three-tier lock — Tier A the base (task abstraction, six"
+  },
+  {
+   "blocking": true,
+   "context": "section 3, blocking).",
+   "id": "OQ-2",
+   "question": "Must every carrier instantiate all six nodes, or may a carrier declare"
+  },
+  {
+   "blocking": true,
+   "context": "AC-1, blocking for Stage 3).",
+   "id": "OQ-3",
+   "question": "Options: (a) accept that acquisition is discharged by"
+  },
+  {
+   "blocking": false,
+   "context": "E9 vs E20).",
+   "id": "OQ-4",
+   "question": "Criticism crosses the graph twice: E9 as model text, E20 as a typed"
+  },
+  {
+   "blocking": false,
+   "context": "Stage-3 order).",
+   "id": "OQ-5",
+   "question": "Given that upstream model text is **2.17 %** of the wire, that a context"
+  },
+  {
+   "blocking": false,
+   "context": "the B5b node map).",
+   "id": "OQ-6",
+   "question": "Section 6 proposes: Perception = candidate supply + store pin + fallback;"
+  },
+  {
+   "blocking": false,
+   "context": "cross-carrier promotion).",
+   "id": "OQ-7",
+   "question": "May an ADMITTED mechanism on one carrier be carried to another **as"
+  },
+  {
+   "blocking": false,
+   "context": "F-13).",
+   "id": "OQ-8",
+   "question": "Generalise and rename the node-context policy (`typed-node-context-v1`, per-carrier"
+  },
+  {
+   "blocking": false,
+   "context": "v1 Q2).",
+   "id": "OQ-9",
+   "question": "Is `native_episode.finite_completion_policy: \"deliver-latest-or-abstain\"` mandatory"
+  },
+  {
+   "blocking": false,
+   "context": "v1 Q6).",
+   "id": "OQ-10",
+   "question": "`saea-slurp-intent-candidates-v1` — the one store built without the 2026-09-13"
+  },
+  {
+   "blocking": false,
+   "context": "v1 Q7, widened).",
+   "id": "OQ-11",
+   "question": "Supersede `docs/readiness/2026-09-13-slurp-semantic-store-release-pins-v1.json`"
+  },
+  {
+   "blocking": false,
+   "context": "v1 Q10).",
+   "id": "OQ-12",
+   "question": "Should the companion receipt, once approved, become a checked gate —"
+  }
+ ],
+ "primitives": [
+  {
+   "cost_unit": "0 contacts (offline)",
+   "exposed_knobs": [
+    "preprocess_plan.workers",
+    "runtime_view_workers",
+    "the speech-feature pins"
+   ],
+   "id": "PR-1",
+   "name": "observe",
+   "node": "N1 Perception",
+   "receipts": "runtime-view hash verification; packet promotion receipt",
+   "side_effects": "binds the row's speech identity for every later contact",
+   "signature": "`(sample, unit_policy) -> ObsPacket{audio_ref, spans, first_pass}`",
+   "status": {
+    "audio2tool": "**IMPL** (one wav per request)",
+    "earnings21-original": "**IMPL** (`raw-speech-windows`, `workers 20`)",
+    "slurp": "**IMPL** (utterance, `workers 8`)"
+   }
+  },
+  {
+   "cost_unit": "0 contacts, CPU workers",
+   "exposed_knobs": [
+    "the nine `obs_*` geometry keys"
+   ],
+   "id": "PR-2",
+   "name": "segment",
+   "node": "N1 Perception",
+   "receipts": "window inventory (`unit_count`, `split_identity_hash`); derived-media confinement",
+   "side_effects": "creates the execution-unit roster; each unit owns its own contact budget and history",
+   "signature": "`(parent_media, window_policy) -> units[]`",
+   "status": {
+    "audio2tool": "**MISS**",
+    "earnings21-original": "**IMPL** (90 s fixed, 1,593 windows over 44 calls; speaker-turn variant flown, REJECTED as HARM)",
+    "slurp": "**MISS** (one utterance is one unit)"
+   }
+  },
+  {
+   "cost_unit": "1 contact x `perception.max_iterations`",
+   "exposed_knobs": [
+    "roles.perception.max_iterations",
+    "the instruction template",
+    "response_format_id"
+   ],
+   "id": "PR-3",
+   "name": "hypothesise",
+   "node": "N1 Perception",
+   "receipts": "`role_visits[]`, COST, response-format validation",
+   "side_effects": "one model contact; seals an `AgentStateArtifact`",
+   "signature": "`(observation, C, supplied_evidence, k) -> response under response_format_id`",
+   "status": {
+    "audio2tool": "**PART** (`audio2tool-perception-state-v1`, flown, not admitted)",
+    "earnings21-original": "**PART** (native fragment only, no format, unflown)",
+    "slurp": "**IMPL** (`slurp-intent-hypotheses-v1`, 1,080/1,080)"
+   }
+  },
+  {
+   "cost_unit": "0 contacts",
+   "exposed_knobs": [
+    "fill_params.*",
+    "projection_policy"
+   ],
+   "id": "PR-4",
+   "name": "project",
+   "node": "N1 Perception",
+   "receipts": "selection audit; candidate-contract source hash",
+   "side_effects": "fixes the candidate set every later node chooses among",
+   "signature": "`(response, projection_policy, bounds) -> bounded typed candidate list`",
+   "status": {
+    "audio2tool": "**IMPL** (ordered action state; target-in-union coverage 72.05 %)",
+    "earnings21-original": "**MISS** (no candidate concept for ASR)",
+    "slurp": "**IMPL** (cap 3)"
+   }
+  },
+  {
+   "cost_unit": "1 contact",
+   "exposed_knobs": [
+    "roles.solver.max_iterations",
+    "the instruction template",
+    "response_format_id"
+   ],
+   "id": "SO-1",
+   "name": "draft",
+   "node": "N2 Solver",
+   "receipts": "`role_visits[]`, COST, `terminal_solver_receipt`",
+   "side_effects": "one model contact; seals the draft state",
+   "signature": "`(C, observation, supplied_evidence, agent_states) -> answer in A`",
+   "status": {
+    "audio2tool": "**IMPL** (ordered call list, two output contracts)",
+    "earnings21-original": "**IMPL** (the response *is* the transcript)",
+    "slurp": "**IMPL** (free text, parsed post hoc)"
+   }
+  },
+  {
+   "cost_unit": "n contacts",
+   "exposed_knobs": [
+    "roles.solver.samples",
+    "decoding_overrides.*",
+    "twin"
+   ],
+   "id": "SO-2",
+   "name": "sample",
+   "node": "N2 Solver",
+   "receipts": "grouped-sample custody (E2d); per-sample COST",
+   "side_effects": "n contacts on n pinned seeds; seal-time custody of every sample",
+   "signature": "`(draft_context, n, temperature, seed_offset) -> answers[n]`",
+   "status": {
+    "audio2tool": "**MISS**",
+    "earnings21-original": "**MISS**",
+    "slurp": "**IMPL** (5 at 0.7, NEUTRAL)"
+   }
+  },
+  {
+   "cost_unit": "0 contacts",
+   "exposed_knobs": [
+    "commit.policy",
+    ".min_support",
+    ".similarity_threshold"
+   ],
+   "id": "SO-3",
+   "name": "commit",
+   "node": "N2 Solver",
+   "receipts": "commit-policy record",
+   "side_effects": "seals exactly one committed draft; downstream sees one draft, not n (E2c)",
+   "signature": "`(answers[], policy, min_support, similarity_threshold) -> one answer`",
+   "status": {
+    "audio2tool": "**MISS**",
+    "earnings21-original": "**MISS**",
+    "slurp": "**IMPL** (`plurality-support-v1`, 3 of 5, 0.8)"
+   }
+  },
+  {
+   "cost_unit": "1 contact per revision",
+   "exposed_knobs": [
+    "inherits SO-1's knobs; **no revise-specific template exists on any carrier** (F-14)"
+   ],
+   "id": "SO-4",
+   "name": "revise",
+   "node": "N2 Solver",
+   "receipts": "`accepted_solver_receipt`; acquire-transition absence record",
+   "side_effects": "one contact; a repeat visit restricts prepared supply to what the trajectory lacks",
+   "signature": "`(previous_answer, findings, plan_action) -> answer`",
+   "status": {
+    "audio2tool": "**PART** (configured, never attributed)",
+    "earnings21-original": "**PART** (`obs-repair-loop` is a second-pass repair outside the episode; KC-E1f ADMITTED, REPLICATED)",
+    "slurp": "**IMPL** but rare (6 of 1,085)"
+   }
+  },
+  {
+   "cost_unit": "`reviewer.max_iterations` contacts",
+   "exposed_knobs": [
+    "roles.reviewer.max_iterations",
+    ".history_scope",
+    "the Reviewer `response_format_id` and template"
+   ],
+   "id": "RE-1",
+   "name": "verify",
+   "node": "N3 Reviewer",
+   "receipts": "`role_visits[]`, COST; producer format validation when declared",
+   "side_effects": "one model contact per iteration",
+   "signature": "`(draft, C, candidates, response_format?) -> findings`",
+   "status": {
+    "audio2tool": "**IMPL** (3 iterations, flown)",
+    "earnings21-original": "**PART** (native fragment only)",
+    "slurp": "**IMPL** (3 iterations, prose, 0 of 2,167 parse — F-4)"
+   }
+  },
+  {
+   "cost_unit": "0 contacts; prompt characters only",
+   "exposed_knobs": [
+    "reviewer_audit.view",
+    ".thresholds.*"
+   ],
+   "id": "RE-2",
+   "name": "audit",
+   "node": "N3 Reviewer",
+   "receipts": "`reviewer_audit` receipt with the view's pins and flag counts",
+   "side_effects": "**zero contacts**; appends a block to an edge's rendering, never replacing it",
+   "signature": "`(draft, construction_view, thresholds) -> deterministic flags appended to an edge`",
+   "status": {
+    "audio2tool": "**MISS**",
+    "earnings21-original": "**MISS**",
+    "slurp": "**PART** (`slot-audit-v1`, B8b held)"
+   }
+  },
+  {
+   "cost_unit": "0 contacts",
+   "exposed_knobs": [
+    "phase_review.<phase>.judges",
+    ".on_flag",
+    ".params"
+   ],
+   "id": "RE-3",
+   "name": "judge",
+   "node": "N3 Reviewer",
+   "receipts": "`phase_review` record; `review_verdicts`",
+   "side_effects": "**zero contacts**, strictly post-response; records criticism and changes no transition without a stop policy",
+   "signature": "`(sealed_response, judge_ids, params) -> JudgeVerdict[]`",
+   "status": {
+    "audio2tool": "**PART** (`a2t-hard-validity-v1` registered, unarmed)",
+    "earnings21-original": "**IMPL** (`e21-substitution-alignment-flag-v1` is the canonical switch of the one ADMITTED, REPLICATED module)",
+    "slurp": "**PART** (three judges registered; the logprob judge is HARMFUL; none in a plan)"
+   }
+  },
+  {
+   "cost_unit": "1 contact per tool turn, inside `max_iterations`",
+   "exposed_knobs": [
+    "phase_tools.<phase>.*",
+    "tool_iteration_policy",
+    "local_tool_execution.*"
+   ],
+   "id": "RE-4",
+   "name": "call_tool",
+   "node": "N3 Reviewer",
+   "receipts": "pinned tool manifest hash; `source_authority` binding",
+   "side_effects": "one model-callable action; the assistant turn and tool result replay verbatim into later contexts",
+   "signature": "`(tool_id in ACTION_TOOLS, args) -> observation`",
+   "status": {
+    "audio2tool": "**PART** (`knowledge-target-lookup`, held)",
+    "earnings21-original": "**PART** (`live-speech-span` configured, unflown; the live tool caps its source at 30 s against a 90 s unit — F-15)",
+    "slurp": "**IMPL** (task contract only; 3 of 1,080 Reviewers skipped their own mandatory call)"
+   }
+  },
+  {
+   "cost_unit": "`planner.max_iterations` contacts",
+   "exposed_knobs": [
+    "roles.planner.max_iterations",
+    "planner_output_format",
+    "actions{…}",
+    "fill_params.actions",
+    "the Planner template"
+   ],
+   "id": "PL-1",
+   "name": "route",
+   "node": "N4 Planner",
+   "receipts": "`planner_routes[i]` (`legal`, `disposition`, `action_sha256`, `action_chars`, truncated token); `planner_action_illegal` count",
+   "side_effects": "selects the successor component; a token naming no registered action seals the row through the explicit-accept path",
+   "signature": "`(draft, findings, budget, advertised_actions) -> one action token`",
+   "status": {
+    "audio2tool": "**IMPL** (both formats across families)",
+    "earnings21-original": "**PART** (`json-action-v1`, unflown)",
+    "slurp": "**IMPL** (`exact-text`, 1,079/1,085 `ACCEPT`)"
+   }
+  },
+  {
+   "cost_unit": "0 contacts; ~110–170 prompt tokens",
+   "exposed_knobs": [
+    "the checks section of the planner-brief template"
+   ],
+   "id": "PL-2",
+   "name": "check",
+   "node": "N4 Planner",
+   "receipts": "part of the `planner-brief` renderer receipt",
+   "side_effects": "**zero contacts**; computed only from material the Planner already receives",
+   "signature": "`(draft, candidates, C) -> deterministic check list rendered into the Planner brief`",
+   "status": {
+    "audio2tool": "**MISS**",
+    "earnings21-original": "**MISS**",
+    "slurp": "**PART** (inside B7a v2, unflown)"
+   }
+  },
+  {
+   "cost_unit": "`max_candidate_refreshes` x `perception.max_iterations`",
+   "exposed_knobs": [
+    "candidate_refresh.action",
+    ".max_refreshes"
+   ],
+   "id": "PL-3",
+   "name": "refresh",
+   "node": "N4 Planner",
+   "receipts": "refresh route record",
+   "side_effects": "spends one refresh allowance and one Perception contact; requires `candidate_state_selection \"latest\"`",
+   "signature": "`() -> re-enter Perception once`",
+   "status": {
+    "audio2tool": "**PART** (`REFRESH_CANDIDATES`, 1, held)",
+    "earnings21-original": "**MISS**",
+    "slurp": "**MISS** (fragment exists, never flown)"
+   }
+  },
+  {
+   "cost_unit": "0 contacts",
+   "exposed_knobs": [
+    "max_revisions",
+    "exhaustion_policy",
+    "finite_completion_policy",
+    "native_contact_fit.contact_cap"
+   ],
+   "id": "PL-4",
+   "name": "stop",
+   "node": "N4 Planner",
+   "receipts": "`terminal_disposition.reason`, `terminal_solver_receipt`, `abstention_receipt`",
+   "side_effects": "ends the episode; decides whether an exhausted or interrupted row is retained or aborts the flight",
+   "signature": "`(budget, exhaustion_policy, finite_completion_policy) -> terminal disposition`",
+   "status": {
+    "audio2tool": "**IMPL** (both keys in every fragment)",
+    "earnings21-original": "**PART** (declared in the native fragment; the OBS loop has its own stop rule)",
+    "slurp": "**IMPL** (both keys in the default plan)"
+   }
+  },
+  {
+   "cost_unit": "1 contact per visit",
+   "exposed_knobs": [],
+   "id": "AC-1",
+   "name": "acquire",
+   "node": "N5 Acquisition",
+   "receipts": "would be a `role_visits[]` entry of kind `acquisition`",
+   "side_effects": "would add evidence mid-episode under the same custody as pre-contact supply",
+   "signature": "`(acquire_action, QueryState) -> evidence bound into the successor QueryState`",
+   "status": {
+    "audio2tool": "MISS**",
+    "earnings21-original": "MISS",
+    "slurp": "**MISS"
+   }
+  },
+  {
+   "cost_unit": "0 contacts for the cut; the re-decode is a normal contact",
+   "exposed_knobs": [
+    "observe.context_margin_seconds",
+    ".max_relistens_per_sample",
+    ".derivation_kind"
+   ],
+   "id": "AC-2",
+   "name": "relisten",
+   "node": "N5 Acquisition",
+   "receipts": "derivation record; derived-media confinement; re-listen count",
+   "side_effects": "cuts a new packet from the parent media; binds a `SpeechPacketDerivation` (parent, output, parameter hash)",
+   "signature": "`(flagged_span, context_margin, cap) -> derived speech packet`",
+   "status": {
+    "audio2tool": "**MISS**",
+    "earnings21-original": "**PART** (`ObserveStep` implemented; LOOP-1 preregistered, no verdict)",
+    "slurp": "**MISS** (no sub-span under today's unit policy)"
+   }
+  },
+  {
+   "cost_unit": "0 contacts, 0 request bytes",
+   "exposed_knobs": [
+    "native_episode.deliver_normaliser.normaliser"
+   ],
+   "id": "DE-1",
+   "name": "normalise",
+   "node": "N6 Delivery",
+   "receipts": "`deliver_normaliser` receipt (`applied`, `changed`, `input_sha256`, `output_sha256`, `labels_changed`, `label_branch`, `fillers_changed`, `rendering_suppressed`, `reason`)",
+   "side_effects": "rewrites the answer once, after every guard binding it to its source response, before it becomes delivered text",
+   "signature": "`(accepted_answer, rule_id, legal_inventory) -> delivered text`",
+   "status": {
+    "audio2tool": "**MISS**",
+    "earnings21-original": "**MISS**",
+    "slurp": "**IMPL** (`saea-deliver-normalise-v3`, in the plan)"
+   }
+  },
+  {
+   "cost_unit": "0 contacts",
+   "exposed_knobs": [],
+   "id": "DE-2",
+   "name": "stitch",
+   "node": "N6 Delivery",
+   "receipts": "delivery-integrity count (0 violations on 1,593 windows)",
+   "side_effects": "validates complete unit coverage, unique windows, parent association and order before official scoring",
+   "signature": "`(unit answers[], order) -> exactly one answer per parent`",
+   "status": {
+    "audio2tool": "**MISS**",
+    "earnings21-original": "**IMPL** (1,593 windows to 44 transcripts)",
+    "slurp": "**MISS** (one unit is one row)"
+   }
+  },
+  {
+   "cost_unit": "0 contacts",
+   "exposed_knobs": [
+    "finite_completion_policy` (shared with PL-4)"
+   ],
+   "id": "DE-3",
+   "name": "abstain",
+   "node": "N6 Delivery",
+   "receipts": "`abstention_receipt`; derived identity record",
+   "side_effects": "a row with no delivery-eligible draft is retained as an abstention and is **never** normalised",
+   "signature": "`() -> empty delivered text`",
+   "status": {
+    "audio2tool": "**IMPL** (declared everywhere)",
+    "earnings21-original": "**PART** (native fragment only)",
+    "slurp": "**IMPL** (armed; no sealed native contact has met a finite completion)"
+   }
+  },
+  {
+   "cost_unit": "0 contacts; CPU",
+   "exposed_knobs": [
+    "knowledge_stores.<id>.release",
+    ".snapshot"
+   ],
+   "id": "KN-1",
+   "name": "build",
+   "node": "knowledge plane",
+   "receipts": "`release.json`, `snapshot.json`, `completion.json`, `docs/receipts/knowledge/*`; `source_split_identity_hash`",
+   "side_effects": "offline, TRAIN-only, model-free; produces a release + snapshot + completion triple",
+   "signature": "`(source_rows from the construction pool, policy_id) -> frozen snapshot`",
+   "status": {
+    "audio2tool": "**IMPL** (3 compiled stores)",
+    "earnings21-original": "**IMPL** (2 governed stores + ConEC sources)",
+    "slurp": "**IMPL** (9 stores, 5 vector pins)"
+   }
+  },
+  {
+   "cost_unit": "0 contacts (an in-flight encoder contact is a named refusal)",
+   "exposed_knobs": [
+    "phase_supply.<phase>.k",
+    ".rank_policy",
+    ".rank_weights",
+    ".tau",
+    ".dimensions",
+    ".query_source",
+    ".facet_source"
+   ],
+   "id": "KN-2",
+   "name": "candidates",
+   "node": "knowledge plane",
+   "receipts": "`Ranking.content_hash`; query/facet relpath + sha256 + ledger row",
+   "side_effects": "ranks the frozen snapshot against a **sealed** query vector; never re-encodes",
+   "signature": "`(query, k) -> Ranking`",
+   "status": {
+    "audio2tool": "**IMPL** (`dense-centroid-v1` + speech-keyed activation)",
+    "earnings21-original": "**PART** (`source-scoped-context-v1`, unflown)",
+    "slurp": "**IMPL** (`kb-facet-v1`)"
+   }
+  },
+  {
+   "cost_unit": "0 contacts",
+   "exposed_knobs": [
+    "phase_supply.<phase>.fuse_policy",
+    ".fuse_coverage",
+    ".alpha",
+    ".expose_facets"
+   ],
+   "id": "KN-3",
+   "name": "fuse",
+   "node": "knowledge plane",
+   "receipts": "fuse policy id and coverage in the supply receipt",
+   "side_effects": "combines rankings into the selection the consumer will see",
+   "signature": "`(rankings[], k, policy_id) -> selection`",
+   "status": {
+    "audio2tool": "**IMPL** (incl. RRF)",
+    "earnings21-original": "**PART** (registered, unflown)",
+    "slurp": "**IMPL**"
+   }
+  },
+  {
+   "cost_unit": "0 contacts; prompt tokens",
+   "exposed_knobs": [
+    "candidate_supply.<phase>.*",
+    "context_supply.<phase>.provider"
+   ],
+   "id": "KN-4",
+   "name": "materialize",
+   "node": "knowledge plane",
+   "receipts": "`prepared_phase_supply` pin; consumption trace (USE / COPY / IGNORE)",
+   "side_effects": "renders typed content into `supplied_evidence`; emits an acquire transition and a successor `QueryState` carrying the selected value ids",
+   "signature": "`(selection, query_state) -> SupplyPacket`",
+   "status": {
+    "audio2tool": "**IMPL** (both)",
+    "earnings21-original": "**PART** (`context_supply` exists only here, unflown — F-20)",
+    "slurp": "**IMPL** (`phase_supply` + `candidate_supply`)"
+   }
+  },
+  {
+   "cost_unit": "0 contacts",
+   "exposed_knobs": [],
+   "id": "KN-5",
+   "name": "decontaminate",
+   "node": "knowledge plane",
+   "receipts": "the exclusion rule, retained/excluded counts and the roster file hashes inside each build receipt",
+   "side_effects": "refuses a pool intersecting any evaluated roster; re-checked at build time",
+   "signature": "`(pool, excluded_rosters) -> pool`",
+   "status": {
+    "audio2tool": "**IMPL** (3,207 construction units, 13,631 reserved-exposed)",
+    "earnings21-original": "**IMPL** (`external-governed`, 44 scoped calls)",
+    "slurp": "**IMPL** (9,354 retained, 2,160 excluded)"
+   }
+  },
+  {
+   "cost_unit": "0 contacts at L1; `(max_revisions+1) x consumer.max_iterations` extra at L2",
+   "exposed_knobs": [
+    "context_policy.*` (presence",
+    "level",
+    "policy id",
+    "per-edge level",
+    "parse-failure rule",
+    "template",
+    "cleaning",
+    "producer formats)"
+   ],
+   "id": "KN-6",
+   "name": "render",
+   "node": "knowledge plane",
+   "receipts": "per-edge, per-contact receipt row with `level`, `parser_id`, `rendered_sha256`, template hash, cleaning block at L2",
+   "side_effects": "replaces the content of one `agent_state` entry at one declared edge; never adds, drops, merges or reorders a state",
+   "signature": "`(edge, level, template, parse_failure_rule) -> typed context`",
+   "status": {
+    "audio2tool": "**MISS** (no map)",
+    "earnings21-original": "**MISS** (no map)",
+    "slurp": "**PART** (12 edges, B7a v2 registered, no plan declares the key)"
+   }
+  }
+ ],
+ "schema": "saea-agent-base-lock-v2-draft-v1",
+ "status": "DRAFT -- proposes, decides nothing",
+ "supersedes": {
+  "document": "docs/superpowers/specs/2026-09-19-slurp-agent-base-lock-v1-draft.md",
+  "what": "SCOPE only -- v1's SLURP tables are carried as the SLURP instance; v1 finding I-1 is closed by E15; I-4 and I-5 are restated as F-18 and F-19"
+ },
+ "task_abstraction": {
+  "axes": {
+   "OBS": "N1",
+   "ORG": "knowledge plane",
+   "SUPPLY": "N5",
+   "USE": "N2, N3, N4, N6"
+  },
+  "seams": {
+   "phase_material": "what a node says",
+   "phase_review": "what the harness makes of what a node answered",
+   "phase_supply": "what a node sees",
+   "phase_tools": "what a node may do"
+  },
+  "surface": "rails.task_adapter.TaskAdapter (load_split, build_task_contract, assemble_prompt, score, extract_consumption; instruction, gold, score_response; strata_of, serving_geometry, preprocess_plan)",
+  "tuple": [
+   "U observation units",
+   "C task contract",
+   "K knowledge space",
+   "A answer space",
+   "S scorer"
+  ]
+ },
+ "tree_commit": "4dd7ef41f33b273241d78f1bfaa8e55fe18d7b72"
+}
