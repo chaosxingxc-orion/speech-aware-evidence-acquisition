@@ -32,7 +32,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-17-slurp-b4-org-cells-anchor-v2/protocol-registered-v1.json",
-    "sha256": "a8f921814814342f133d4b299b538b2039a22b7ff0bfe1e3ddf310f6f4853426"
+    "sha256": "994e7d78b6153237e2cd20b180d614f2c7d6526e5dc7f5e220fa6b450461d4be"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The comparators are the sealed dual-store anchor score artifact (primary) and the released direct anchor score artifact (secondary); neither is ever re-flown or re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, the module's own request channel, fit receipts and seal, with no answer, reference or quality interpretation.",
   "root_registration_required": true,

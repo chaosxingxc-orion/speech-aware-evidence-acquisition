@@ -118,13 +118,13 @@
       "smoke": {
         "attempt_id": "attempt-slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-generation-v2",
         "cell": "slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-v2",
-        "composed_config_hash": "de9e9994ea561c55a320e9b53c8a69f8c2cbfd47d9fcc0ee87d824d4631a5ebb",
-        "execution_plan_protocol_hash": "bb90854a6443df2037d5f1cffaf33c8e837a36df0f9dd50bb2c133573a5e4bc8",
+        "composed_config_hash": "b772dda9bd53bfff07344f5d734b4f396456a42a666a795e9580da42316a93de",
+        "execution_plan_protocol_hash": "36d8dd765c45803343b744201eac24f0bfe3eb2087ad02a69c745a918a58fee0",
         "fit_attempt_id": "attempt-slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-fit-v2",
         "fit_run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-FIT-V2",
         "prepared_phase_supply": {
-          "relpath": "prepared/SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-V2/phase-supply-v1.json",
-          "sha256": "486807f8215c9dd13d272c4f7489fde5a069d0ff94a614ae39e716af2b58e70d"
+          "relpath": "prepared/SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-V2/phase-supply-v2.json",
+          "sha256": "e617961a96cc867890521972c632cebe6bbe724f9fb292f72cb37e60e66a662a"
         },
         "run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-V2"
       }

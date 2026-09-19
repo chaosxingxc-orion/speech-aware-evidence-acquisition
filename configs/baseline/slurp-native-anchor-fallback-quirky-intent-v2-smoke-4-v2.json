@@ -208,10 +208,6 @@
       "sha256": "c1aaf37a678240633078a8fcca455f949a5c4b2b18d37356129976006c9dc138"
     }
   ],
-  "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-V2/phase-supply-v1.json",
-    "sha256": "486807f8215c9dd13d272c4f7489fde5a069d0ff94a614ae39e716af2b58e70d"
-  },
   "scorers": [
     "slurp-slu-official-train",
     "cost"
@@ -225,5 +221,9 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "Four-row engineering smoke of cell B4a on the sealed dual-store anchor base (M4a: the general_quirky standing fallback candidate plus intent-boundary store v2). Byte-for-byte the full-cell baseline configs/baseline/slurp-native-anchor-fallback-quirky-intent-v2-train-fold-a-v2.json except its own native_contact_fit identity, the 4 x 11 x (1 + 3) = 176 endpoint ceiling the four-row roster resizes, and its own prepared phase supply. It exists only so the full cell's FIT and generation accounting is never charged smoke contacts. No official scoring job and no task-quality read is admitted here. Reachable fallback declaration sites in this fragment: knowledge_stores.slot-contracts.candidate_supply.solver.fallback_candidates; phase_material.perception.fill_params.fallback_candidates."
+  "what_this_is": "Four-row engineering smoke of cell B4a on the sealed dual-store anchor base (M4a: the general_quirky standing fallback candidate plus intent-boundary store v2). Byte-for-byte the full-cell baseline configs/baseline/slurp-native-anchor-fallback-quirky-intent-v2-train-fold-a-v2.json except its own native_contact_fit identity, the 4 x 11 x (1 + 3) = 176 endpoint ceiling the four-row roster resizes, and its own prepared phase supply. It exists only so the full cell's FIT and generation accounting is never charged smoke contacts. No official scoring job and no task-quality read is admitted here. Reachable fallback declaration sites in this fragment: knowledge_stores.slot-contracts.candidate_supply.solver.fallback_candidates; phase_material.perception.fill_params.fallback_candidates.",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-V2/phase-supply-v2.json",
+    "sha256": "e617961a96cc867890521972c632cebe6bbe724f9fb292f72cb37e60e66a662a"
+  }
 }

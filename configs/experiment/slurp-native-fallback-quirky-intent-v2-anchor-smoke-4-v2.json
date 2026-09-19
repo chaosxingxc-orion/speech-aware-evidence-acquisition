@@ -15,13 +15,20 @@
         "reason": "Registered before contact by the B4 re-base agent on the sealed dual-store anchor. It stays held until the coordinator flips it immediately before the standalone-worker smoke launch. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b4-org-cells-anchor-admission-v1",
+            "relpath": "coordination/slurp-b4-org-cells-anchor-v2/root-admission-v1.json",
+            "sha256": "48e1a294167fec10dd71f84052c6f045022771b77cbb2bb650a3c383cbfe9c5e",
+            "reason": "Decision slurp-b4-org-cells-anchor-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "Model-free first-phase Perception supply prepared by the B4 re-base agent at commit bd04f4b9 from the same sealed speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed dual-store anchor used; zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed anchor preparation's on every row, so the Perception selection channel does not move in this cell. Receipt coordination/slurp-b4-org-cells-anchor-v2/phase-supply-vs-anchor-v1.json.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-V2/phase-supply-v1.json",
-            "sha256": "486807f8215c9dd13d272c4f7489fde5a069d0ff94a614ae39e716af2b58e70d"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-V2/phase-supply-v2.json",
+            "sha256": "e617961a96cc867890521972c632cebe6bbe724f9fb292f72cb37e60e66a662a"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-V2"
     }
