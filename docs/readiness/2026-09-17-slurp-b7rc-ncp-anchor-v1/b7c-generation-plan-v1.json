@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-ncp-l1-tool-obs-anchor-train-fold-a-v1",
-  "composed_config_hash": "72b698add591bda0789b8a4411cfc4bf75af5d85ca4650379595b9da1711cb8b",
+  "composed_config_hash": "5c0466b89f8675086825cbb7ea255d94f146b91ead4e373a66e5792c30fa817a",
   "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan; the campaign acquires its own GenerationLease against the resident session and schedules the one official score at finalize.",
   "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "experiment": "slurp-native-ncp-l1-tool-obs-anchor-train-fold-a-v1",
@@ -23,7 +23,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "f40d098f5b33aeeb3b9b29632ccc72f9fc39b1170a34fa5e3a2985673d6664cd",
+    "protocol_hash": "bfb4ddcf1a0d5c50d25d086a989627dbed810a2c3e8274760103e04fece2084c",
     "run_id": "SAEA-SLURP-NATIVE-NCP-L1-TOOL-OBS-ANCHOR-TRAIN-FOLD-A-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -32,7 +32,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-17-slurp-b7rc-ncp-anchor-v1/protocol-registered-v1.json",
-    "sha256": "7aaad751e9114b33f666fb5ee7d68f955f5cb605979382d103135d359313a698"
+    "sha256": "e22f41d5ac8cc1f2ca48cb9eadbe9d5705e92674e7bb17f93245aed391751eb4"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The primary comparator is cell B7a's sealed score artifact and the released TRAIN A direct anchor is the secondary; neither is ever re-flown or re-scored, and neither cell opens before B7a seals and is read not HARMFUL. The four-row smoke is structural only: contact counts, episode receipt fields, the policy's rendered blocks and its receipt rows, fit receipts and seal, with no answer, reference or quality interpretation.",
   "root_registration_required": true,
