@@ -276,12 +276,16 @@ def test_both_experiment_fragments_are_registered_held(name, run_id, stages):
     experiment = _load_experiment(name)
     (cell,) = experiment["cells"]
     state = cell["readiness"]["state"]
-    assert state in {"held", "ready"}
     # Held: no decision requirement yet. Ready: the coordinator's re-pin
-    # appended and pinned the root decision receipt.
-    assert [entry["kind"] for entry in cell["readiness"]["requirements"]] == (
-        ["preparation"] if state == "held" else ["decision", "preparation"]
-    )
+    # appended and pinned the root decision receipt. Superseded (owner
+    # decision 32, 2026-09-19): the L1 base read HARMFUL, so this
+    # registration closed and the block returns on the anchor base through
+    # a new package; the requirements stay as they were at closure.
+    assert state in {"held", "ready", "superseded"}
+    kinds = [entry["kind"] for entry in cell["readiness"]["requirements"]]
+    assert "preparation" in kinds and set(kinds) <= {"decision", "preparation"}
+    if state == "held":
+        assert kinds == ["preparation"]
     assert cell["run_id"] == run_id
     assert cell["allowed_execution_stages"] == stages
     assert experiment["execution_profile"] == "bounded-discovery-probe"
