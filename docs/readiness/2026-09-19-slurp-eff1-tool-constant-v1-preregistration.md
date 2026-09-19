@@ -151,7 +151,7 @@ diagnostic (section 7), the expected count is zero, and the comparator side is p
 | --- | --- |
 | **arm** | `SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-TRAIN-FOLD-A-V1` / `attempt-slurp-native-tool-constant-anchor-train-fold-a-generation-v1`, cell `slurp-native-tool-constant-anchor-train-fold-a-v1`, composed `1668d74070bb8ca60d5fe45905badb0e1562cc474aa29c3e5f5afa62190e283e`, protocol `5c481ad5597eb3e5409a2f442cbf040df8327a7ebf875fc3b5cfab7f5672ca4a` |
 | **arm FIT** | `SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-TRAIN-FOLD-A-FIT-V1` / `attempt-slurp-native-tool-constant-anchor-train-fold-a-fit-v1`, 47,520 endpoints, inside the same campaign |
-| **smoke** | `SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-SMOKE-4-V1` / `attempt-slurp-native-tool-constant-anchor-smoke-4-generation-v1`, cell `slurp-native-tool-constant-anchor-smoke-4-v1`, composed `96aff88fa39fe6799dca239a351e46e52cd87909d2714f655208023ebc8a9db1`, protocol `7e89bde338a38dd85bda69587c833c10a8f4392d8105cd6094188cefa7c0d077` |
+| **smoke** | `SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-SMOKE-4-V1` / `attempt-slurp-native-tool-constant-anchor-smoke-4-generation-v1`, cell `slurp-native-tool-constant-anchor-smoke-4-v1`, composed `a007c30b35856a411afcf921d62a618a2a853ec4f044e38f108d2440ed42fc01`, protocol `67746f3211e5e62f330fd2f658c0a60673506725d847b9f1ce166ce989d17fcc` |
 | **smoke FIT** | `SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-SMOKE-4-FIT-V1` / `attempt-slurp-native-tool-constant-anchor-smoke-4-fit-v1`, 176 endpoints, inside the same worker |
 | **comparator, the only one that gates** | the **sealed dual-store anchor**, run `SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1`, attempt `attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1`. Scores `7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47`, outputs `d87d71e8fa0fe93b45d5c6817ba125b016d8d91f44a14309171dd0f3a64270d8`, run manifest `049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152`; official **48.53 / 77.96**. **Never re-flown, never re-scored, never opened for writing.** |
 | **efficiency reference, not an arm** | the **B4b replicate**'s per-position prefill profile, measured in the throughput report's sections 3.1 / 5.2 / 5.3 |
@@ -529,7 +529,7 @@ model-free:
 | file | what it carries | SHA-256 |
 | --- | --- | --- |
 | `README.md` | the launch runbook | (rewritten by the re-pin tool) |
-| `protocol-registered-v1.json` | the frozen protocol | `6b0339258e24585c9cd5840b7bbb787287714b7e1e0820a1afddfcea8bc74970` |
+| `protocol-registered-v1.json` | the frozen protocol | `60007272ee07e25e86cf805b830edd197e5b86b5b753ebfd2bf571e4ebcbba30` |
 | `generation-plan-v1.json` / `-registered-v1.json` | the 1,080-row arm's plan | `04fd70c68b179b236b106ed9cf310d7b46b7cf671ca5572cf13791af6d015704` |
 | `fit-plan-v1.json` / `-registered-v1.json` | the arm's native contact-fit plan | `82f72d71b270b627e8d3b0c15fc2bc43b575283e01696dd3d76481b9a4f1f354` |
 | `smoke-generation-plan-v1.json` / `-registered-v1.json` | the four-row smoke's plan | `d241965ffece2d58aee659bb4e199e4f9341d706142413192a67daf1bf0f75af` |

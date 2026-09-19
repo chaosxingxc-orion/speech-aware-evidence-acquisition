@@ -47,7 +47,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-19-slurp-eff1-tool-constant-v1/protocol-registered-v1.json",
-    "sha256": "6b0339258e24585c9cd5840b7bbb787287714b7e1e0820a1afddfcea8bc74970"
+    "sha256": "60007272ee07e25e86cf805b830edd197e5b86b5b753ebfd2bf571e4ebcbba30"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist, and not before the registered STOP condition passes. The ONLY gating comparator is the sealed dual-store anchor SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1, which is never re-flown and never re-scored. The verdict word is NEUTRAL or HARMFUL; there is no ADMITTED-on-a-gain clause, because this cell makes no effectiveness claim. The efficiency deliverables are read and reported whatever that word is. Read once; the decision rule is fixed in the protocol document and is not edited after a number is seen. This arm does not open before this cell's own four-row smoke seals.",
   "registered_at_utc": "2026-09-19T06:00:00.000000+00:00",

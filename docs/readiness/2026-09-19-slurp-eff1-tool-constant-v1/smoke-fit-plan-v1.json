@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-tool-constant-anchor-smoke-4-v1",
-  "composed_config_hash": "96aff88fa39fe6799dca239a351e46e52cd87909d2714f655208023ebc8a9db1",
+  "composed_config_hash": "a007c30b35856a411afcf921d62a618a2a853ec4f044e38f108d2440ed42fc01",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-tool-constant-anchor-smoke-4-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 176,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "7e89bde338a38dd85bda69587c833c10a8f4392d8105cd6094188cefa7c0d077",
+    "protocol_hash": "67746f3211e5e62f330fd2f658c0a60673506725d847b9f1ce166ce989d17fcc",
     "run_id": "SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-SMOKE-4-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -47,7 +47,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-19-slurp-eff1-tool-constant-v1/protocol-registered-v1.json",
-    "sha256": "6b0339258e24585c9cd5840b7bbb787287714b7e1e0820a1afddfcea8bc74970"
+    "sha256": "60007272ee07e25e86cf805b830edd197e5b86b5b753ebfd2bf571e4ebcbba30"
   },
   "quality_read_gate": "The four-row smoke is STRUCTURAL AND EFFICIENCY ONLY and is never scored: delivery and contact counts, the saea-native-tool-schema-rendering-v1 receipt with distinct_tool_schemas_sha256 == 1 on every row, the Reviewer requests byte-identical to the sealed anchor's on the same four sample ids, the other roles' payloads differing in exactly the tools key, the request-fit receipts, any retained finite_completion row reported rather than treated as an error, the per-role authority refusals reported, and -- the point of the smoke -- the server-reported cached-token share per position showing the first-Reviewer and Planner contacts no longer re-prefilling the packet. No scorer, no answer, reference or quality interpretation and no task-quality claim.",
   "registered_at_utc": "2026-09-19T06:00:00.000000+00:00",

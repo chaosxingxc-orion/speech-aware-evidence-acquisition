@@ -61,7 +61,7 @@
     "owner_decisions": "41 (throughput root cause and the 12 GPU-hour target), 38 (margins), 30 (efficiency cells and the headroom trigger), 28, 25, 23, 22, 17, 14 and 7 -- all in docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
     "preregistration": "docs/readiness/2026-09-19-slurp-eff1-tool-constant-v1-preregistration.md",
     "protocol": "docs/readiness/2026-09-19-slurp-eff1-tool-constant-v1/protocol-registered-v1.json",
-    "protocol_sha256": "6b0339258e24585c9cd5840b7bbb787287714b7e1e0820a1afddfcea8bc74970"
+    "protocol_sha256": "60007272ee07e25e86cf805b830edd197e5b86b5b753ebfd2bf571e4ebcbba30"
   },
   "cell_kind": "EFFICIENCY -- the efficiency tables are the deliverable; the paired score read is a non-inferiority guard",
   "claim_boundary": "Descriptive paired read on historically exposed TRAIN Fold A discovery rows, plus a cost measurement of the same flight. No superiority, generalization, component-causal, bar or confirmatory claim; no cross-carrier claim; no geometry claim.",
