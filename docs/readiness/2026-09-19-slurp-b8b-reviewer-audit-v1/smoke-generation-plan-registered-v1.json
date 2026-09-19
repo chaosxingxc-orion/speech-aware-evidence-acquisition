@@ -2,7 +2,7 @@
   "cell": "slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-v1",
   "composed_config_hash": "b75426c5e4bf4ebdb921fb081b09662bf485823adfa6d3f7d883411acb99df36",
   "execution_plan": {
-    "attempt_id": "attempt-slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-generation-v1",
+    "attempt_id": "attempt-slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-generation-v1r",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 1.0,

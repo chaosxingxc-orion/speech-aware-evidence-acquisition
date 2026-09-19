@@ -32,7 +32,7 @@ One experiment in flight at a time.
 | arm composed / protocol | `c8599381f789c332597bbfc8008e64943fd7c3c3cd64c3abf49c4860ead58c6b` / `4997c665acc71869843dd31f0c920ceaacc18384d21db92cf809c57617f3cbae` |
 | arm campaign plan | `configs/campaign/slurp-native-ncp-l1-reviewer-audit-anchor-train-fold-a-v1.json` (one cell) |
 | smoke cell | experiment and cell `slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-v1` |
-| smoke run / attempt | `SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1` / `attempt-slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-generation-v1` |
+| smoke run / attempt | `SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1` / `attempt-slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-generation-v1r` |
 | smoke FIT | `SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-FIT-V1` / `attempt-slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-fit-v1`, 176 endpoints, inside the same worker |
 | smoke composed / protocol | `b75426c5e4bf4ebdb921fb081b09662bf485823adfa6d3f7d883411acb99df36` / `66deb117849b16560c9b54f33b52a889bcc4a87f5075ff7f35b6d06d00164dae` |
 | baselines | `configs/baseline/slurp-native-anchor-ncp-l1-reviewer-audit-{train-fold-a,smoke-4}-v1.json` |

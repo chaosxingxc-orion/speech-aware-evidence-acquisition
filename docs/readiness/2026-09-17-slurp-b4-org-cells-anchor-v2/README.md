@@ -25,7 +25,7 @@ Two owner conditions bind the launch order: **B1 -> B2 -> B4b -> B4a -> B4c** (d
 | --- | --- |
 | B4a cell | experiment and cell `slurp-native-fallback-quirky-intent-v2-anchor-train-fold-a-v2`, run `SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-V2`, attempt `attempt-slurp-native-fallback-quirky-intent-v2-anchor-train-fold-a-generation-v2` |
 | B4a FIT | `SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-FIT-V2` / `attempt-slurp-native-fallback-quirky-intent-v2-anchor-train-fold-a-fit-v2`, 47,520 endpoints, inside the same campaign |
-| B4a smoke | experiment and cell `slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-v2`, run `SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-V2`, attempt `attempt-slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-generation-v2` |
+| B4a smoke | experiment and cell `slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-v2`, run `SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-V2`, attempt `attempt-slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-generation-v2r` |
 | B4a smoke FIT | `SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-FIT-V2` / `attempt-slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-fit-v2`, 176 endpoints |
 | B4b cell | experiment and cell `slurp-native-slot-store-v2-anchor-train-fold-a-v2`, run `SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V2`, attempt `attempt-slurp-native-slot-store-v2-anchor-train-fold-a-generation-v2` |
 | B4b FIT | `SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-V2` / `attempt-slurp-native-slot-store-v2-anchor-train-fold-a-fit-v2`, 47,520 endpoints |

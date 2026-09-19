@@ -6,7 +6,7 @@
         "prepare-supply",
         "worker"
       ],
-      "attempt_id": "attempt-slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-generation-v2",
+      "attempt_id": "attempt-slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-generation-v2r",
       "baseline_fragment": "slurp-native-anchor-fallback-quirky-intent-v2-smoke-4-v2",
       "cell_id": "slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-v2",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",

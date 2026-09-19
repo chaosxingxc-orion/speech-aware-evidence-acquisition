@@ -78,7 +78,7 @@
       "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
     },
     "smoke": {
-      "attempt_id": "attempt-slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-generation-v1",
+      "attempt_id": "attempt-slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-generation-v1r",
       "baseline_fragment": "configs/baseline/slurp-native-anchor-ncp-l1-reviewer-audit-smoke-4-v1.json",
       "cell": "slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-v1",
       "composed_config_hash": "b75426c5e4bf4ebdb921fb081b09662bf485823adfa6d3f7d883411acb99df36",

@@ -17,7 +17,7 @@
   },
   "preparation_base_commit": "bd04f4b970a605d5a6eba6de7f07d775216f8dc4",
   "prospective_execution_plan": {
-    "attempt_id": "attempt-slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-generation-v2",
+    "attempt_id": "attempt-slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-generation-v2r",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 1.0,

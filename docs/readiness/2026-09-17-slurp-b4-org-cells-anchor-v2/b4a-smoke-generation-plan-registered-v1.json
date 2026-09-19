@@ -2,7 +2,7 @@
   "cell": "slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-v2",
   "composed_config_hash": "b10c5577be705a6dfed00ef4314bb2ae5301e74575806a9af695233559dcc2a4",
   "execution_plan": {
-    "attempt_id": "attempt-slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-generation-v2",
+    "attempt_id": "attempt-slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-generation-v2r",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 1.0,
