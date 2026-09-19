@@ -1147,7 +1147,12 @@ def test_node_context_policy_is_one_episode_class_key():
     # throughput lever L1) and is the first admitted for EFFICIENCY rather
     # than for a capability; its proof is
     # tests/unit/test_e17_constant_tool_rendering.py plus section 12d below.
+    # The ninth, native_episode.acquisition, was admitted by E18 (2026-09-19,
+    # owner decisions 43 and 44) and is the first that adds a NODE to the
+    # graph -- the sixth, Acquisition -- rather than a mode of an existing
+    # one; its proof is tests/unit/test_e18_acquisition_node.py.
     assert sorted(EPISODE_LEVEL_SWITCH_KEYS) == [
+        "native_episode.acquisition",
         "native_episode.context_policy",
         "native_episode.deliver_normaliser",
         "native_episode.finite_completion_policy",

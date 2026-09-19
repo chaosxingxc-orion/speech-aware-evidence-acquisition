@@ -149,6 +149,30 @@ COMMIT_POLICIES = Registry("commit policy")
 
 
 # ---------------------------------------------------------------------------
+# Acquisition policies: the SIXTH node of the agent base (E18, 2026-09-19,
+# owner decisions 43 and 44).
+#
+# The ``acquire`` primitive of the base-lock draft --
+# ``(acquire_action, trajectory state) -> typed evidence bound into the
+# successor state`` -- is the only primitive of that document MISSING on every
+# carrier, and the one the research object names first (SUPPLY: "selection,
+# amount, order and timing"). Owner decision 43 makes all six nodes mandatory
+# per carrier and decision 44 rules that Acquisition is a component of
+# everyday inference, not a research extra, so it is built now.
+#
+# An entry is one ``rails.acquisition.AcquisitionPolicy``: a frozen record
+# carrying its own ``kind`` (one of ``rails.acquisition.ACQUISITION_KINDS``),
+# its ``contacts_per_acquisition`` (0 for a model-free kind, 1 for a kind that
+# spends a model contact) and its ``cost_unit``, callable as
+# ``await policy(request) -> rails.acquisition.AcquiredEvidence``. Same
+# one-Registry discipline as every other seam above, so
+# ``native_episode.acquisition.policy`` resolves here exactly like every other
+# config-declared component id. Populated from ``rails/acquisition.py``, the
+# canonical registration site.
+ACQUISITION_POLICIES = Registry("acquisition policy")
+
+
+# ---------------------------------------------------------------------------
 # Judges: the Reviewer seat of the four-agent loop (owner Decision 11-B/11-C,
 # 2026-09-08; ``docs/readiness/2026-09-08-openjiuwen-implementation-assessment
 # -v1.md`` change #1, and the design note's section 2 Reviewer row).

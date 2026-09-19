@@ -60,6 +60,37 @@ PLANNER_ACTION_ILLEGAL_SCHEMA = "saea-native-planner-action-illegal-v1"
 #: draft, which the route record is not a place for.
 PLANNER_ACTION_RECORD_CHARS = 32
 
+#: E18 (2026-09-19, owner decisions 43 and 44): the stage name one
+#: :class:`AcquisitionNode` visit registers in ``role_visits``.  It is the
+#: name the finite-path and refresh receipt validators already tolerate
+#: (:mod:`rails.native_episode_receipt`), so the sixth node's visits read
+#: beside the other five rather than beneath them.
+ACQUISITION_STAGE = "acquisition"
+
+#: The keys one acquisition record must carry, exactly.  The record is
+#: produced by ``rails.acquisition`` and validated again HERE, at the graph
+#: boundary, because the graph is what writes it into episode state: a node
+#: that returned something else must stop its own row rather than seal a
+#: malformed receipt.
+ACQUISITION_RECORD_KEYS = frozenset({
+    "schema",
+    "kind",
+    "policy_id",
+    "provenance_ids",
+    "item_count",
+    "contacts_used",
+    "cost",
+    "cost_unit",
+    "inputs_sha256",
+    "evidence_sha256",
+    "evidence_chars",
+    "visit_index",
+    "revision_count",
+    "planner_route_index",
+    "planner_action",
+    "state_filters",
+})
+
 
 class RoleInputBuilder(Protocol):
     """Render one role query from a detached snapshot of episode state."""
@@ -99,6 +130,15 @@ class NativeEpisodeSpec:
     finite_completion_policy: str = "raise"
     planner_output_format: str = "exact-text"
     review_loop_enabled: bool = True
+    # E18: how many ACQUIRE routes of this episode may reach an acquisition
+    # node.  0 -- every spec written before E18, and every episode with no
+    # acquisition node -- builds no acquisition branch at all and leaves the
+    # graph byte-identical to its pre-E18 self.  A positive value is the
+    # configuration's ``max_acquisitions_per_row`` and is bounded by
+    # ``max_revisions`` for the same reason ``max_candidate_refreshes`` is:
+    # an ACQUIRE spends a revision, so a budget larger than the revision
+    # allowance is a budget that can never be spent.
+    max_acquisitions: int = 0
 
     def __post_init__(self) -> None:
         if not isinstance(self.episode_id, str) or not self.episode_id:
@@ -148,6 +188,77 @@ class NativeEpisodeSpec:
             raise ValueError("review_loop_enabled must be a boolean")
         if not self.review_loop_enabled and self.max_revisions != 0:
             raise ValueError("review loop off requires max_revisions 0")
+        if (
+            isinstance(self.max_acquisitions, bool)
+            or not isinstance(self.max_acquisitions, int)
+            or not 0 <= self.max_acquisitions <= self.max_revisions
+        ):
+            # E18: an ACQUIRE spends a revision, exactly as a REVISE and a
+            # candidate refresh do, so the acquisition allowance is bounded
+            # by the revision allowance.
+            raise ValueError("max_acquisitions must be bounded by max_revisions")
+
+
+@dataclass(frozen=True)
+class AcquisitionNodeSpec:
+    """Configuration-bound identity of the episode's Acquisition node (E18)."""
+
+    node_id: str
+    policy_id: str
+    kind: str
+
+    def __post_init__(self) -> None:
+        for name in ("node_id", "policy_id", "kind"):
+            value = getattr(self, name)
+            if not isinstance(value, str) or not value.strip():
+                raise ValueError(f"acquisition {name} must be non-empty text")
+
+
+class AcquisitionNode:
+    """The episode's SIXTH node: ``acquire(action -> typed evidence)`` (E18).
+
+    It is deliberately NOT a ``NativeRoleNode``.  A role node is a model
+    contact wearing a graph position; the acquire primitive is the opposite
+    -- one of its three registered kinds (``knowledge-requery``) makes NO
+    contact at all, and the one that does (``speech-reobserve``) spends a
+    Perception contact rather than a contact of its own seat.  What the graph
+    needs from this node is therefore not a completion but a typed RECORD,
+    and that is exactly what :meth:`acquire` returns.
+
+    ``execute`` is the flight-owned callback ``rails.runner`` binds: it
+    resolves the registered ``rails.acquisition.AcquisitionPolicy``, hands it
+    the trajectory's own state plus whichever acquisition callback its kind
+    requires, and seals the result into the episode's custody.  This class
+    owns the graph contract and nothing else -- no store, no packet, no
+    server, no scorer.
+
+    The pre-E18 shape survives beside it: an acquisition node supplied as an
+    ANALYTICAL ``NativeRoleNode`` still routes exactly as it always did
+    (:meth:`NativeEpisodeWorkflow._build`), because that path is what the
+    graph's own proofs pin and no configuration has ever been able to reach
+    either one.
+    """
+
+    def __init__(self, *, spec: AcquisitionNodeSpec, execute) -> None:
+        if not isinstance(spec, AcquisitionNodeSpec):
+            raise ValueError("spec must be AcquisitionNodeSpec")
+        if not callable(execute):
+            raise ValueError("acquisition execute must be callable")
+        self.spec = spec
+        self._execute = execute
+
+    async def acquire(self, state: Mapping[str, object]) -> Mapping[str, object]:
+        result = await self._execute(copy.deepcopy(dict(state)))
+        if not isinstance(result, Mapping):
+            raise NativeEpisodeError("acquisition node did not return a record")
+        return dict(result)
+
+    async def close(self) -> None:
+        """Symmetry with ``NativeRoleNode.close``; this node owns no
+        framework resource, so closing it is a no-op the runner may call
+        unconditionally."""
+
+        return None
 
 
 @dataclass(frozen=True)
@@ -168,7 +279,10 @@ class NativeEpisodeNodes:
     solver: NativeRoleNode | GroupedSolverRoleNode
     reviewer: NativeRoleNode | None = None
     planner: NativeRoleNode | None = None
-    acquisition: NativeRoleNode | None = None
+    # E18: an ``AcquisitionNode`` -- the node a configuration can now build --
+    # or the pre-E18 analytical ``NativeRoleNode``, or None (every episode
+    # with no acquisition node, which is every episode before E18).
+    acquisition: NativeRoleNode | AcquisitionNode | None = None
 
 
 class _InitialState(WorkflowComponent):
@@ -441,6 +555,84 @@ class _AdvanceCandidateRefresh(WorkflowComponent):
         updated = dict(state)
         updated["revision_count"] = int(updated["revision_count"]) + 1
         updated["candidate_refresh_count"] = count + 1
+        return {"state": updated}
+
+
+class _Acquire(WorkflowComponent):
+    """E18: run the Acquisition node once and bind its record into state.
+
+    One visit registers exactly one ``role_visits`` entry of stage
+    ``acquisition`` carrying the acquisition receipt (and, for a kind that
+    spent a contact, that contact's own execution receipt), appends the
+    record to ``acquisitions`` in visit order, and leaves ``acquisition``
+    holding the latest record -- the shape the pre-E18 analytical path also
+    wrote to, so a reader of episode state finds the sixth node's output
+    where it has always looked for it.
+    """
+
+    def __init__(self, node: AcquisitionNode, checkpoint: _RoleCheckpoint) -> None:
+        super().__init__()
+        self._node = node
+        self._checkpoint = checkpoint
+
+    async def invoke(
+        self, inputs: Input, session: Session, context: ModelContext
+    ) -> Output:
+        state = _state(inputs)
+        # A contact-spending acquisition kind makes its contact inside this
+        # component, so the invocation-local checkpoint a finite completion
+        # is resolved against must name THIS node, exactly as
+        # ``_RoleQuery`` names the role whose contact it is about to make.
+        self._checkpoint.capture(
+            state=state,
+            role_id=self._node.spec.node_id,
+            stage=ACQUISITION_STAGE,
+        )
+        record = await self._node.acquire(state)
+        receipt = {
+            key: value for key, value in record.items()
+            if key != "execution_receipt"
+        }
+        if set(receipt) != ACQUISITION_RECORD_KEYS:
+            raise NativeEpisodeError("acquisition record has unknown or missing fields")
+        if receipt["policy_id"] != self._node.spec.policy_id:
+            raise NativeEpisodeError("acquisition record names a different policy")
+        if receipt["kind"] != self._node.spec.kind:
+            raise NativeEpisodeError("acquisition record names a different kind")
+        contacts = receipt["contacts_used"]
+        if isinstance(contacts, bool) or not isinstance(contacts, int) or contacts < 0:
+            raise NativeEpisodeError("acquisition record has invalid contacts_used")
+        updated = dict(state)
+        visits = updated.get("role_visits")
+        if not isinstance(visits, Sequence) or isinstance(visits, (str, bytes)):
+            raise NativeEpisodeError("episode state has invalid ordered role visits")
+        visit: dict[str, object] = {
+            "role_id": self._node.spec.node_id,
+            "stage": ACQUISITION_STAGE,
+            "acquisition_receipt": copy.deepcopy(receipt),
+        }
+        if contacts:
+            # A contact-spending kind must name the contact it spent, through
+            # the SAME normalisation every role visit's receipt takes, so an
+            # auditor binds it to a real request/response pair exactly as it
+            # binds a Solver's.
+            visit["execution_receipt"] = _execution_receipt(record)
+        elif "execution_receipt" in record:
+            raise NativeEpisodeError(
+                "a zero-contact acquisition cannot carry an execution receipt"
+            )
+        updated["role_visits"] = [
+            copy.deepcopy(entry) for entry in visits
+        ] + [visit]
+        history = updated.get("acquisitions")
+        if history is None:
+            history = []
+        elif not isinstance(history, Sequence) or isinstance(history, (str, bytes)):
+            raise NativeEpisodeError("episode state has invalid acquisition history")
+        updated["acquisitions"] = [
+            copy.deepcopy(entry) for entry in history
+        ] + [copy.deepcopy(receipt)]
+        updated["acquisition"] = copy.deepcopy(receipt)
         return {"state": updated}
 
 
@@ -982,6 +1174,29 @@ class NativeEpisodeWorkflow:
                     + json.dumps(self.spec.actions.acquire),
                     acquire_id,
                 )
+            elif (
+                isinstance(self.nodes.acquisition, AcquisitionNode)
+                and revision >= self.spec.max_acquisitions
+            ):
+                # E18: the acquisition budget is spent for this row.  The
+                # route stays defence in depth, exactly as the unwired branch
+                # above is: `role_input`'s advertised action set stops
+                # offering ACQUIRE at these revisions and, under
+                # `json-action-v1`, the Planner's own response schema cannot
+                # even spell it -- so reaching here means a caller made
+                # ACQUIRE legal past its declared budget, and the graph must
+                # refuse loudly rather than acquire off the books.
+                acquire_id = f"acquire_over_budget_{revision}"
+                workflow.add_workflow_comp(
+                    acquire_id,
+                    _Exhausted("episode acquisition budget is exhausted"),
+                    inputs_schema={"state": "${" + planner + ".state}"},
+                )
+                router.add_branch(
+                    "${" + planner + ".action} == "
+                    + json.dumps(self.spec.actions.acquire),
+                    acquire_id,
+                )
             else:
                 acquire_advance = f"acquire_{revision}"
                 workflow.add_workflow_comp(
@@ -994,14 +1209,28 @@ class NativeEpisodeWorkflow:
                     + json.dumps(self.spec.actions.acquire),
                     acquire_advance,
                 )
-                acquired = self._add_role(
-                    workflow,
-                    checkpoint,
-                    stage_id=f"acquisition_{revision}",
-                    node=self.nodes.acquisition,
-                    predecessors=(acquire_advance,),
-                    kind="acquisition",
-                )
+                if isinstance(self.nodes.acquisition, AcquisitionNode):
+                    # E18: the sixth node.  It makes no contact of its own
+                    # seat, so it needs no `_RoleQuery`/`_ApplyRole` triple:
+                    # one component runs the registered acquisition policy and
+                    # binds its typed record into the state the next Solver
+                    # revision reads.
+                    acquired = f"acquisition_{revision}"
+                    workflow.add_workflow_comp(
+                        acquired,
+                        _Acquire(self.nodes.acquisition, checkpoint),
+                        inputs_schema={"state": "${" + acquire_advance + ".state}"},
+                    )
+                    workflow.add_connection(acquire_advance, acquired)
+                else:
+                    acquired = self._add_role(
+                        workflow,
+                        checkpoint,
+                        stage_id=f"acquisition_{revision}",
+                        node=self.nodes.acquisition,
+                        predecessors=(acquire_advance,),
+                        kind="acquisition",
+                    )
                 next_predecessors.append(acquired)
             workflow.add_conditional_connection(planner, router)
             solver_predecessors = tuple(next_predecessors)
@@ -1100,20 +1329,36 @@ def build_native_episode(
             continue
         if not isinstance(node, NativeRoleNode) or node.spec.role_kind != kind:
             raise ValueError(f"{field} must be a {kind} NativeRoleNode")
-    if nodes.acquisition is not None and (
-        not isinstance(nodes.acquisition, NativeRoleNode)
-        or nodes.acquisition.spec.role_kind not in {"reviewer", "planner"}
+    if nodes.acquisition is not None and not isinstance(
+        nodes.acquisition, (NativeRoleNode, AcquisitionNode)
+    ):
+        raise ValueError(
+            "acquisition must be an AcquisitionNode or an analytical NativeRoleNode"
+        )
+    if isinstance(nodes.acquisition, NativeRoleNode) and (
+        nodes.acquisition.spec.role_kind not in {"reviewer", "planner"}
     ):
         raise ValueError("acquisition must be an analytical NativeRoleNode")
     if not spec.review_loop_enabled and nodes.acquisition is not None:
         raise ValueError("acquisition requires the review loop to be enabled")
+    if spec.max_acquisitions and not isinstance(nodes.acquisition, AcquisitionNode):
+        # E18: a positive acquisition budget is the configuration's promise
+        # that ACQUIRE reaches a node that can execute it.  The pre-E18
+        # analytical path has no budget of its own and keeps 0.
+        raise ValueError("an acquisition budget requires an AcquisitionNode")
+    if isinstance(nodes.acquisition, AcquisitionNode) and not spec.max_acquisitions:
+        raise ValueError("an AcquisitionNode requires a positive acquisition budget")
     role_ids = [
         getattr(nodes, field).spec.role_id
         for field in expected
         if getattr(nodes, field) is not None
     ]
     if nodes.acquisition is not None:
-        role_ids.append(nodes.acquisition.spec.role_id)
+        role_ids.append(
+            nodes.acquisition.spec.node_id
+            if isinstance(nodes.acquisition, AcquisitionNode)
+            else nodes.acquisition.spec.role_id
+        )
     if len(set(role_ids)) != len(role_ids):
         raise ValueError("episode role ids must be unique")
     return NativeEpisodeWorkflow(
@@ -1122,6 +1367,10 @@ def build_native_episode(
 
 
 __all__ = [
+    "ACQUISITION_RECORD_KEYS",
+    "ACQUISITION_STAGE",
+    "AcquisitionNode",
+    "AcquisitionNodeSpec",
     "PLANNER_ACTION_ILLEGAL",
     "PLANNER_ACTION_ILLEGAL_DISPOSITION",
     "PLANNER_ACTION_ILLEGAL_SCHEMA",

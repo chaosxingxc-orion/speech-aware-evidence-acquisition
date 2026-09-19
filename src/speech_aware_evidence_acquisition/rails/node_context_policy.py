@@ -167,12 +167,30 @@ FALLBACK_REFUSE = "refuse"
 PARSE_FAILURE_RULES = (FALLBACK_RAW, FALLBACK_OMIT, FALLBACK_REFUSE)
 
 ROLE_KINDS = ("perception", "solver", "reviewer", "planner")
+
+#: E18 (2026-09-19, owner decisions 43-44): the sixth node's own role kind.
+#: It is NOT in :data:`ROLE_KINDS` because that tuple is the set of CONSUMER
+#: role kinds a boundary policy may be declared for, and no node consumes
+#: context from the Acquisition node's seat -- the Acquisition node is a
+#: PRODUCER only. Its phase id reaches :meth:`SlurpNodeContextPolicy.compile`
+#: through the optional ``"acquisition"`` entry of ``phase_ids``.
+ACQUISITION_ROLE_KIND = "acquisition"
+
 SEMANTIC_CLASSES = (
     "candidate-hypothesis",
     "current-draft",
     "review-finding",
     "plan-action",
     "tool-observation",
+    # E18: what the Acquisition node puts into the trajectory. It is a
+    # semantic class of its own rather than a second spelling of
+    # ``supplied-evidence`` because the consumer must be able to tell
+    # pre-contact supply (chosen before the row's first contact, by the
+    # supply policy) from evidence acquired ON DEMAND mid-episode, by a node,
+    # after a draft was reviewed -- those are different SUPPLY decisions and
+    # a cell that moves one must stay distinguishable from a cell that moves
+    # the other.
+    "acquired-evidence",
 )
 
 #: The SLURP native episode's boundaries, with the design's own ids: the eight
@@ -248,6 +266,27 @@ SLOT_AUDIT_RENDERER = "slot-audit"
 SOLVER_HINTS_BOUNDARY: tuple[str, str] = ("solver", "candidate-hypothesis")
 SOLVER_HINTS_TEMPLATE = "probes/ncp_slurp_scenario_hints_solver_v1.txt"
 SOLVER_HINTS_RENDERER = "scenario-hints"
+
+#: E18 (2026-09-19, owner decisions 43-44): the NEW boundary the Acquisition
+#: node produces at, ``acquisition -> solver``, carrying the semantic class
+#: ``acquired-evidence``. It is declared here, beside the twelve boundaries of
+#: :data:`SLURP_BOUNDARY_IDS`, and deliberately NOT added to that mapping: the
+#: boundaries of that map are the pairs a declared ``native_episode.
+#: context_policy`` resolves an entry for on EVERY episode, and an unarmed
+#: episode has no acquisition node at all, so a thirteenth always-resolved
+#: entry would put a boundary into every policy object that no state can ever
+#: reach. The Acquisition node renders its own block through this committed
+#: template instead, exactly as the E12 audit and the E14 hints render theirs,
+#: and the rendered state is then classified ``acquired-evidence`` for any
+#: consumer whose ``phase_ids`` names the acquisition phase.
+ACQUIRED_EVIDENCE_BOUNDARY: tuple[str, str] = ("solver", "acquired-evidence")
+ACQUIRED_EVIDENCE_BOUNDARY_ID = "B-ACQ-SOL"
+ACQUIRED_EVIDENCE_TEMPLATE = "probes/ncp_acquired_evidence_solver_v1.txt"
+ACQUIRED_EVIDENCE_RENDERER = "acquired-evidence"
+
+#: The closed phrase an acquisition that returned nothing renders instead of
+#: an item list. Part of the block's closed vocabulary.
+NO_ACQUIRED_EVIDENCE = "nothing new was acquired for this row"
 
 #: The default malformed rule per boundary. ``FALLBACK-RAW`` everywhere the
 #: design proposes to fly; ``plan-action`` refuses, because the harness already
@@ -381,6 +420,17 @@ RENDERER_SECTIONS: Mapping[str, Mapping[str, tuple[str, ...]]] = {
         "neighbour": ("intent_id", "neighbour_id", "leakage", "cues"),
         "neighbour_empty": ("reason",),
         "candidate_empty": (),
+        "footer": (),
+    },
+    # E18. The Acquisition node's own block: what the ``acquire`` primitive
+    # brought into the trajectory, rendered once at the ``acquisition ->
+    # solver`` boundary. ``content`` is the acquired item's own typed text
+    # (a knowledge value, or one re-observation's candidate hypotheses);
+    # ``evidence_id``/``source_id`` are its provenance.
+    ACQUIRED_EVIDENCE_RENDERER: {
+        "header": ("count", "kind", "policy_id"),
+        "item": ("position", "evidence_id", "source_id", "content"),
+        "items_empty": ("reason",),
         "footer": (),
     },
 }
@@ -646,6 +696,13 @@ PROVENANCE_AUDIT = "slot-audit-table"
 #: id, no recording and no gold of any evaluated row
 #: (``rails.scenario_hints``).
 PROVENANCE_HINTS = "scenario-hints-table"
+#: E18: a value the Acquisition node's registered policy acquired -- one
+#: frozen-store knowledge value's own content, or one re-observation's own
+#: model bytes -- carried with the provenance id the acquisition receipt
+#: names. It is not a free value either: a policy may only return material a
+#: bound acquisition callback handed it, and the receipt binds that material
+#: by hash (``rails.acquisition``).
+PROVENANCE_ACQUIRED = "acquired-evidence"
 PROVENANCES = (
     PROVENANCE_SOURCE,
     PROVENANCE_COMPOSED,
@@ -656,6 +713,7 @@ PROVENANCES = (
     PROVENANCE_CLEANED,
     PROVENANCE_AUDIT,
     PROVENANCE_HINTS,
+    PROVENANCE_ACQUIRED,
 )
 
 
@@ -723,6 +781,73 @@ def _text(value: object, *, field_name: str) -> str:
     if not isinstance(value, str):
         raise NodeContextPolicyError(f"node context {field_name} must be text")
     return value
+
+
+def render_acquired_evidence(
+    template: NodeContextTemplate,
+    *,
+    kind: str,
+    policy_id: str,
+    items: Sequence[Mapping[str, str]],
+    reason: str = NO_ACQUIRED_EVIDENCE,
+) -> RenderedBlock:
+    """Render the ``acquisition -> solver`` block (E18).
+
+    The block is produced by the Acquisition node itself rather than by a
+    boundary policy, because there is no upstream MODEL TEXT to re-render: the
+    node's output is already typed, and this template is what turns the typed
+    record into the one text form every consumer reads. Zero contacts; every
+    substituted value is either the acquisition's own record (kind, policy id,
+    item count), one acquired item's provenance ids and content, or the
+    module's one closed phrase.
+
+    ``items`` entries carry exactly ``evidence_id``, ``source_id`` and
+    ``content``; the position is the renderer's own 1-based counter.
+    """
+
+    if template.renderer != ACQUIRED_EVIDENCE_RENDERER:
+        raise NodeContextPolicyError(
+            f"the acquired-evidence block requires a {ACQUIRED_EVIDENCE_RENDERER!r} "
+            f"template; {template.template_id!r} declares {template.renderer!r}"
+        )
+    rows = list(items)
+    block = _Block(template)
+    block.add("header", {
+        "count": Substitution("count", str(len(rows)), PROVENANCE_COUNT),
+        "kind": Substitution("kind", kind, PROVENANCE_VOCABULARY),
+        "policy_id": Substitution("policy_id", policy_id, PROVENANCE_VOCABULARY),
+    })
+    if not rows:
+        block.add("items_empty", {
+            "reason": Substitution("reason", reason, PROVENANCE_VOCABULARY),
+        })
+    for position, row in enumerate(rows, start=1):
+        missing = {"evidence_id", "source_id", "content"} - set(row)
+        if missing or set(row) - {"evidence_id", "source_id", "content"}:
+            raise NodeContextPolicyError(
+                "an acquired-evidence item must carry exactly evidence_id, "
+                "source_id and content"
+            )
+        block.add("item", {
+            "position": Substitution("position", str(position), PROVENANCE_COUNT),
+            "evidence_id": Substitution(
+                "evidence_id",
+                _text(row["evidence_id"], field_name="acquired evidence_id"),
+                PROVENANCE_ACQUIRED,
+            ),
+            "source_id": Substitution(
+                "source_id",
+                _text(row["source_id"], field_name="acquired source_id"),
+                PROVENANCE_ACQUIRED,
+            ),
+            "content": Substitution(
+                "content",
+                _text(row["content"], field_name="acquired content"),
+                PROVENANCE_ACQUIRED,
+            ),
+        })
+    block.add("footer")
+    return block.finish({})
 
 
 # ---------------------------------------------------------------------------
@@ -1316,6 +1441,17 @@ class SlurpNodeContextPolicy:
             raise NodeContextPolicyError(
                 "phase_ids must map exactly the four native role kinds"
             ) from error
+        # E18: one OPTIONAL fifth entry, the acquisition phase of an armed
+        # episode. Absent -- every pre-E18 caller and every unarmed episode --
+        # ``phases`` is exactly the four-entry mapping it always was and an
+        # acquisition state could not exist to classify anyway.
+        acquisition_phase = phase_ids.get(ACQUISITION_ROLE_KIND)
+        if acquisition_phase is not None:
+            if not isinstance(acquisition_phase, str) or not acquisition_phase.strip():
+                raise NodeContextPolicyError(
+                    "phase_ids acquisition entry must be a non-empty phase id"
+                )
+            phases[ACQUISITION_ROLE_KIND] = acquisition_phase
         state_list = list(states)
         for state in state_list:
             if not isinstance(state, AgentStateArtifact):
@@ -1464,7 +1600,14 @@ class SlurpNodeContextPolicy:
             ("solver", "current-draft"),
             ("reviewer", "review-finding"),
             ("planner", "plan-action"),
+            # E18: present only when the caller's ``phase_ids`` names an
+            # acquisition phase, which no pre-E18 caller does and no unarmed
+            # episode has -- so on every other episode this loop iterates
+            # exactly the four pairs it always did.
+            (ACQUISITION_ROLE_KIND, "acquired-evidence"),
         ):
+            if role_kind not in phases:
+                continue
             if state.state_kind == f"phase:{phases[role_kind]}":
                 return semantic_class
         return None
@@ -2339,6 +2482,11 @@ class SlurpNodeContextPolicy:
                 "semantic_class": semantic_class,
                 "boundary_id": (
                     "B-NONE" if semantic_class is None
+                    # E18: the acquisition boundary is declared beside
+                    # SLURP_BOUNDARY_IDS rather than in it, so name it
+                    # explicitly instead of calling it undeclared.
+                    else ACQUIRED_EVIDENCE_BOUNDARY_ID
+                    if (role_kind, semantic_class) == ACQUIRED_EVIDENCE_BOUNDARY
                     else SLURP_BOUNDARY_IDS.get(
                         (role_kind, semantic_class), "B-UNDECLARED"
                     )
@@ -2613,6 +2761,11 @@ def build_slurp_node_context_policy(
 
 
 __all__ = [
+    "ACQUIRED_EVIDENCE_BOUNDARY",
+    "ACQUIRED_EVIDENCE_BOUNDARY_ID",
+    "ACQUIRED_EVIDENCE_RENDERER",
+    "ACQUIRED_EVIDENCE_TEMPLATE",
+    "ACQUISITION_ROLE_KIND",
     "AMONG_CANDIDATES",
     "CANDIDATES_UNAVAILABLE",
     "CHECK_NA",
@@ -2648,8 +2801,10 @@ __all__ = [
     "NODE_CONTEXT_RECEIPT_SCHEMA",
     "NODE_CONTEXT_TEMPLATE_SCHEMA",
     "NOT_AMONG_CANDIDATES",
+    "NO_ACQUIRED_EVIDENCE",
     "PARSER_IDS",
     "PARSE_FAILURE_RULES",
+    "PROVENANCE_ACQUIRED",
     "RENDERER_KEYS",
     "RENDERER_SECTIONS",
     "ROLE_KINDS",
@@ -2680,6 +2835,7 @@ __all__ = [
     "Substitution",
     "build_slurp_node_context_policy",
     "content_tokens",
+    "render_acquired_evidence",
     "known_tool_call_sources",
     "load_node_context_template",
     "ncp_review_issues_response_format",

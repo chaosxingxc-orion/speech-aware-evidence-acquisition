@@ -1821,6 +1821,52 @@ async def _invoke_native_role_episode(
     visits = {}
     completed = {}
     role_configs = {role.phase_id: role for role in config.roles}
+    # E18 (2026-09-19, owner decisions 43-44): the SIXTH node. Everything
+    # below stays None/empty for every config that declares no
+    # ``native_episode.acquisition`` -- which is every config written before
+    # E18 and every OFF arm -- so an unarmed episode reaches the graph with
+    # no acquisition node, ACQUIRE names no registered action, and the E15
+    # retained-row disposition is byte-identically what it was.
+    acquisition_policy = None
+    acquisition_template = None
+    acquisition_budget = None
+    acquisition_role_config = config.acquisition_role
+    #: The typed acquisition states waiting for the settle of the contact that
+    #: AUTHORISED them (the Planner's ACQUIRE). At most one is ever in flight:
+    #: the graph visits the Acquisition node once per ACQUIRE route.
+    acquired_states: list[object] = []
+    #: One record per acquisition visit, in visit order, for the receipt.
+    acquisition_records: list[dict[str, object]] = []
+    #: The model contacts this row's acquisitions have already spent.
+    acquisition_contacts = 0
+    #: Nodes this episode owns that are not one of the graph's six positions
+    #: (today: the re-observation Perception node an acquisition kind (b)
+    #: drives). Closed with the rest in the ``finally`` below.
+    extra_nodes: list[object] = []
+    if acquisition_role_config is not None:
+        from .acquisition import (
+            AcquisitionBudget,
+            AcquisitionError,
+            acquired_evidence_template,
+            resolve_acquisition_policy,
+        )
+
+        if binding.repo_root is None:
+            raise RailsRunnerError(
+                "the acquisition node requires the repository root its committed "
+                "evidence template is read from"
+            )
+        try:
+            acquisition_policy = resolve_acquisition_policy(
+                config.acquisition_policy_id
+            )
+            acquisition_budget = AcquisitionBudget(
+                config.max_acquisitions_per_row, config.acquisition_contact_budget,
+            ).validate()
+        except AcquisitionError as error:
+            raise RailsRunnerError(f"acquisition node is invalid: {error}") from error
+        acquisition_template = acquired_evidence_template(binding.repo_root)
+        role_configs[acquisition_role_config.phase_id] = acquisition_role_config
     context_binding = None
     context_compilations = {}
     # E8a (2026-09-17, Node Context Policy): the same two-object shape the
@@ -1956,6 +2002,15 @@ async def _invoke_native_role_episode(
             raise RailsRunnerError("rejected batch cannot execute a tool or introduce supply")
         added = (source,) + (() if tool_step is None else (tool_step.state,))
         added += tuple(step.state for step in rejected_steps)
+        if acquired_states:
+            # E18: a model-free acquisition makes no contact of its own, so
+            # its typed state rides the settle of the contact that AUTHORISED
+            # it -- the Planner's ACQUIRE -- exactly as a tool observation
+            # rides the settle of the contact that called the tool. It was
+            # sealed against this very context, so every binding
+            # ``_validate_new_agent_states`` checks holds by construction.
+            added += tuple(acquired_states)
+            acquired_states.clear()
         next_state, transition = advance_phase_response_state(
             context=before, added_states=added,
             action_target_ref=f"{program.program_id}:{pending['phase_id']}:{plan.contact_id}",
@@ -2067,6 +2122,22 @@ async def _invoke_native_role_episode(
             limits["remaining_candidate_refreshes"] = remaining_refreshes
             if remaining_refreshes > 0 and revision_index < config.max_revisions:
                 limits["available_planner_actions"].append(config.refresh_action)
+        # E18: ACQUIRE is advertised exactly while it can be EXECUTED -- an
+        # acquisition node exists, the row's acquisition allowance is not
+        # spent, and a revision remains for the ACQUIRE to consume. Unarmed,
+        # this block is skipped entirely and the advertised set is its
+        # pre-E18 self.
+        remaining_acquisitions = 0
+        if acquisition_policy is not None:
+            remaining_acquisitions = (
+                config.max_acquisitions_per_row - len(acquisition_records)
+            )
+            limits["remaining_acquisitions"] = remaining_acquisitions
+            limits["remaining_acquisition_contacts"] = (
+                config.acquisition_contact_budget - acquisition_contacts
+            )
+            if remaining_acquisitions > 0 and revision_index < config.max_revisions:
+                limits["available_planner_actions"].append(config.actions[2])
         if (
             config.planner_output_format == "json-action-v1"
             and role_configs[phase_id].role_kind == "planner"
@@ -2085,6 +2156,10 @@ async def _invoke_native_role_episode(
                 legal_actions = [config.actions[0], config.actions[1]]
                 if config.refresh_action is not None:
                     legal_actions.append(config.refresh_action)
+                if acquisition_policy is not None:
+                    # E18: an armed episode's Planner schema must be able to
+                    # spell the action its graph can execute.
+                    legal_actions.append(config.actions[2])
                 if (
                     not isinstance(configured_actions, list)
                     or not configured_actions
@@ -2101,10 +2176,14 @@ async def _invoke_native_role_episode(
                 route_actions.append(config.actions[1])
                 if config.refresh_action is not None and remaining_refreshes > 0:
                     route_actions.append(config.refresh_action)
+                if acquisition_policy is not None and remaining_acquisitions > 0:
+                    route_actions.append(config.actions[2])
             elif config.exhaustion_policy == "deliver-latest-solver":
                 route_actions.append(config.actions[1])
                 if config.refresh_action is not None:
                     route_actions.append(config.refresh_action)
+                if acquisition_policy is not None:
+                    route_actions.append(config.actions[2])
             available_actions = (
                 route_actions
                 if configured_actions is None
@@ -2209,7 +2288,17 @@ async def _invoke_native_role_episode(
             )
             compiled_policy = node_context_binding.policy.compile(
                 role_kind=role.role_kind,
-                phase_ids={item.role_kind: item.phase_id for item in config.roles},
+                # E18: the OPTIONAL fifth entry names the acquisition phase,
+                # so a state the Acquisition node sealed is classified
+                # ``acquired-evidence`` instead of "not a role state". Absent
+                # on every unarmed episode, where no such state can exist.
+                phase_ids={
+                    item.role_kind: item.phase_id for item in config.roles
+                } | (
+                    {}
+                    if acquisition_role_config is None
+                    else {"acquisition": acquisition_role_config.phase_id}
+                ),
                 sample_id=ctx.sample_id,
                 states=exposed_states,
                 local_tool_result_ids=tuple(visit["local_ids"]),
@@ -2709,6 +2798,216 @@ async def _invoke_native_role_episode(
                 )
             else:
                 nodes[role.role_kind] = solver_node
+        if acquisition_policy is not None:
+            from ..reproduction.ojw.native_episode import (
+                AcquisitionNode, AcquisitionNodeSpec,
+            )
+            from .acquisition import (
+                AcquiredItem, AcquisitionError, AcquisitionRequest,
+                derive_state_filters, supplied_value_ids,
+            )
+
+            acquisition_phase_id = acquisition_role_config.phase_id
+
+            def acquisition_contact_context(index):
+                return NativeRoleContactContext(
+                    sample_id=state.prepared.sample.sample_id,
+                    agent_contact_id=scoped_execution_contact_id(
+                        f"{program.program_id}:{acquisition_phase_id}:{index}:"
+                        f"{state.prepared.sample.sample_id}",
+                        state.prepared.execution_unit_id,
+                    ),
+                    evidence_pins={"knowledge_snapshot": snapshot_sha256},
+                    budget_id=run_id,
+                )
+
+            reobserve_node = None
+            if acquisition_role_config.max_iterations:
+                # E18 kind (b): the re-observation seat. It is a PERCEPTION
+                # role node -- same node class, same metered path, same
+                # authority rails, and (by the fragment's own
+                # ``phase_material``) the same never-varied Perception
+                # instruction template -- placed at the acquisition phase so
+                # its contact is budgeted, traced and sealed as that phase's.
+                # No new prompt text is introduced anywhere by E18.
+                reobserve_node = NativeRoleNode(
+                    spec=NativeRoleNodeSpec(
+                        role_id=acquisition_phase_id, role_kind="perception",
+                        prompt=prompt,
+                        max_iterations=acquisition_role_config.max_iterations,
+                    ),
+                    metered_request=metered,
+                    contact_context_provider=acquisition_contact_context,
+                    delivery_allowed=(
+                        lambda _role, output: isinstance(output, str)
+                        and bool(output.strip())
+                    ),
+                )
+                extra_nodes.append(reobserve_node)
+
+            def acquisition_requery(*, filters, exclude_value_ids, scope):
+                """Kind (a): the flight's own model-free knowledge re-query.
+
+                Flight-owned exactly as ``supply_for_phase`` and
+                ``tools_for_phase`` are: this runner never reaches for a
+                store of its own, and an episode that arms the knowledge kind
+                without binding the callback is refused here by name rather
+                than acquiring nothing and calling it an acquisition.
+                """
+
+                requery = getattr(binding, "acquisition_requery", None)
+                if requery is None:
+                    raise RailsRunnerError(
+                        "the knowledge re-query acquisition requires an "
+                        "acquisition_requery binding"
+                    )
+                return requery(
+                    phase_id=config.role("solver").phase_id,
+                    filters=tuple(filters),
+                    exclude_value_ids=frozenset(exclude_value_ids),
+                    scope=dict(scope),
+                    context=context(),
+                )
+
+            async def acquisition_reobserve(*, scope):
+                """Kind (b): ONE re-scoped Perception contact at this seat."""
+
+                if reobserve_node is None:
+                    raise RailsRunnerError(
+                        "a contact-spending acquisition has no re-observation node"
+                    )
+                query = role_input(acquisition_phase_id, acquisition_state)
+                result = await reobserve_node.invoke_direct(query)
+                if (
+                    not isinstance(result, Mapping)
+                    or result.get("result_type") != "answer"
+                    or not isinstance(result.get("actor_output"), str)
+                    or not result["actor_output"].strip()
+                ):
+                    raise RailsRunnerError(
+                        "the re-observation acquisition returned no observation"
+                    )
+                acquisition_results.append(result)
+                return AcquiredItem(
+                    evidence_id=pending["plan"].contact_id,
+                    source_id=acquisition_phase_id,
+                    content=result["actor_output"],
+                )
+
+            acquisition_state: dict[str, object] = {}
+            acquisition_results: list[Mapping[str, object]] = []
+
+            async def run_acquisition(episode_state):
+                nonlocal acquisition_contacts
+
+                acquisition_state.clear()
+                acquisition_state.update(episode_state)
+                acquisition_results.clear()
+                routes = episode_state.get("planner_routes") or []
+                request = AcquisitionRequest(
+                    policy_id=acquisition_policy.policy_id,
+                    kind=acquisition_policy.kind,
+                    sample_id=state.prepared.sample.sample_id,
+                    visit_index=len(acquisition_records),
+                    revision_count=int(episode_state["revision_count"]),
+                    planner_route_index=max(len(routes) - 1, 0),
+                    planner_action=config.actions[2],
+                    state_filters=derive_state_filters(episode_state),
+                    # The dedupe set: exactly the knowledge values this
+                    # trajectory has already been supplied. An acquisition
+                    # that returned one of them would spend a revision to
+                    # change nothing.
+                    supplied_value_ids=supplied_value_ids({
+                        "supplied_value_ids": list(
+                            state.query_state.retrieved_value_ids
+                        ),
+                    }),
+                    budget=acquisition_budget,
+                    contacts_used=acquisition_contacts,
+                    scope=dict(acquisition_scope),
+                    requery=acquisition_requery,
+                    reobserve=acquisition_reobserve,
+                )
+                try:
+                    evidence = await acquisition_policy(
+                        request, template=acquisition_template,
+                    )
+                except AcquisitionError as error:
+                    raise RailsRunnerError(f"acquisition refused: {error}") from error
+                if not pending:
+                    raise RailsRunnerError(
+                        "an acquisition lost the contact that authorised it"
+                    )
+                before, completion, plan = (
+                    pending["context"], pending["completion"], pending["plan"],
+                )
+                if evidence.contacts_used:
+                    # Kind (b): the acquisition's OWN contact is the pending
+                    # one. Re-seal its state as a VIEW of the re-observation
+                    # -- the typed block as content, the model's own bytes as
+                    # the source -- through the same
+                    # ``seal_phase_response_state`` seam a grouped Solver
+                    # visit uses, so the state the Solver reads is typed and
+                    # the response it binds is real.
+                    acquisition_contacts += evidence.contacts_used
+                    pending["source"] = seal_phase_response_state(
+                        phase_name=acquisition_phase_id,
+                        sample_id=before.sample_id,
+                        state_content=evidence.content,
+                        raw_response_text=completion.text,
+                        source_query_state_sha256=before.query_state.content_hash(),
+                        producer_policy_id=program.program_id,
+                        state_namespace=plan.contact_id,
+                    )
+                else:
+                    # Kind (a) and kind (c): zero contacts, so the typed state
+                    # is bound to the Planner completion that authorised it
+                    # and rides that contact's settle.
+                    acquired_states.append(seal_phase_response_state(
+                        phase_name=acquisition_phase_id,
+                        sample_id=before.sample_id,
+                        state_content=evidence.content,
+                        raw_response_text=completion.text,
+                        source_query_state_sha256=before.query_state.content_hash(),
+                        producer_policy_id=program.program_id,
+                        state_namespace=(
+                            f"{plan.contact_id}:acquisition:{len(acquisition_records)}"
+                        ),
+                    ))
+                record = evidence.receipt(
+                    visit_index=request.visit_index,
+                    revision_count=request.revision_count,
+                    planner_route_index=request.planner_route_index,
+                    planner_action=request.planner_action,
+                    state_filters=list(request.state_filters),
+                )
+                acquisition_records.append(dict(record))
+                if acquisition_results:
+                    record = dict(record)
+                    record["execution_receipt"] = acquisition_results[0][
+                        "execution_receipt"
+                    ]
+                return record
+
+            # The declared re-scope of this node. E18 introduces NO prompt
+            # text: a kind (b) re-observation is re-scoped through the
+            # acquisition phase's OWN ``phase_material`` (the never-varied
+            # Perception template plus that phase's ``fill_params``), so what
+            # travels in the request here is the node's identity and the
+            # kinds it may execute -- enough to make ``inputs_sha256``
+            # re-derivable, and nothing a policy could mistake for content.
+            acquisition_scope = {
+                "phase_id": acquisition_phase_id,
+                "kinds": list(acquisition_role_config.acquisition_kinds),
+            }
+            nodes["acquisition"] = AcquisitionNode(
+                spec=AcquisitionNodeSpec(
+                    node_id=acquisition_phase_id,
+                    policy_id=acquisition_policy.policy_id,
+                    kind=acquisition_policy.kind,
+                ),
+                execute=run_acquisition,
+            )
         workflow = build_native_episode(
             spec=NativeEpisodeSpec(
                 config.episode_id,
@@ -2720,6 +3019,7 @@ async def _invoke_native_role_episode(
                 config.finite_completion_policy,
                 config.planner_output_format,
                 config.review_loop_enabled,
+                config.max_acquisitions_per_row,
             ),
             nodes=NativeEpisodeNodes(**nodes),
             role_input_builder=role_input,
@@ -2777,7 +3077,14 @@ async def _invoke_native_role_episode(
             validate_native_episode_finite_path(
                 receipt, max_revisions=config.max_revisions, accept_action=config.actions[0],
                 revise_action=config.actions[1], refresh_action=config.refresh_action,
-                max_refreshes=config.max_candidate_refreshes, error_type=RailsRunnerError,
+                max_refreshes=config.max_candidate_refreshes,
+                # E18: None/0 unarmed, which reduces the walker to exactly
+                # its pre-E18 self.
+                acquire_action=(
+                    None if acquisition_policy is None else config.actions[2]
+                ),
+                max_acquisitions=config.max_acquisitions_per_row,
+                error_type=RailsRunnerError,
             )
         accepted = delivery.final_contact
         completion = completed.get(accepted.get("agent_contact_id"))
@@ -2892,6 +3199,24 @@ async def _invoke_native_role_episode(
             # fillers. Never the text: a delivered SLURP answer carries slot
             # fillers taken from speech.
             compact_receipt["deliver_normaliser"] = deliver_normaliser_receipt
+        if acquisition_policy is not None:
+            # E18: one block per row, naming the node, its registered policy
+            # and budget, and one row per acquisition visit -- kind, policy,
+            # what it brought in, what it cost, the Planner route that
+            # triggered it, and the two digests that bind the question and
+            # the answer. Never the acquired TEXT.
+            from .acquisition import ACQUISITION_RECEIPT_SCHEMA  # noqa: PLC0415
+
+            compact_receipt["acquisition"] = {
+                "schema": ACQUISITION_RECEIPT_SCHEMA,
+                "node_phase_id": acquisition_role_config.phase_id,
+                "policy_id": acquisition_policy.policy_id,
+                "kind": acquisition_policy.kind,
+                "declared_kinds": list(acquisition_role_config.acquisition_kinds),
+                "budget": acquisition_budget.as_json(),
+                "acquisitions": [dict(row) for row in acquisition_records],
+                "contacts_used": acquisition_contacts,
+            }
         if constant_tool_names is not None:
             # E17: one block per row, naming the rendering mode, the one
             # array every contact carried, and the per-contact digest of
@@ -2969,7 +3294,9 @@ async def _invoke_native_role_episode(
 
         original_error = sys.exception()
         cleanup_errors = []
-        for node in nodes.values():
+        # E18: ``extra_nodes`` is empty unless an acquisition kind that
+        # spends a contact built its own re-observation seat.
+        for node in [*nodes.values(), *extra_nodes]:
             try:
                 await node.close()
             except BaseException as error:

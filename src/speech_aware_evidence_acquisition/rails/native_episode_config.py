@@ -20,6 +20,13 @@ SOLVER_DECODING_OVERRIDE_KEYS = frozenset({"temperature", "seed_offset"})
 SOLVER_COMMIT_KEYS = frozenset({"policy", "min_support", "similarity_threshold"})
 
 
+#: E18 (2026-09-19, owner decisions 43-44): the SIXTH node's role kind. It is
+#: kept out of the four-role tuple every ceiling and coverage check iterates
+#: because it is OPTIONAL: a config that does not declare it composes exactly
+#: the episode it composed before E18, down to the contact ceiling.
+ACQUISITION_ROLE_KIND = "acquisition"
+
+
 @dataclass(frozen=True)
 class NativeEpisodeRole:
     phase_id: str
@@ -47,8 +54,50 @@ class NativeEpisodeRole:
     # its N pinned seeds are recorded custody, never a source of
     # diversity at temperature 0.
     twin: str | None = None
+    # E18 (2026-09-19, owner decisions 43-44): the acquisition KINDS this node
+    # may execute, as registered in ``rails.acquisition.ACQUISITION_KINDS``.
+    # Declared LAST so every positional construction written before E18 --
+    # and there are several, here and in the tests -- composes exactly the
+    # role it always did. Empty for every role but ``acquisition``.
+    acquisition_kinds: tuple[str, ...] = ()
 
     def __post_init__(self):
+        if self.role_kind == ACQUISITION_ROLE_KIND:
+            # The sixth node's seat. It answers nothing, routes nothing and
+            # carries no analytical tool, so every knob of the four model
+            # roles is refused here by name rather than silently ignored.
+            if self.tool_names or self.samples != 1 or self.twin is not None:
+                raise ValueError("the acquisition role carries no role knobs")
+            if self.decoding_overrides is not None or self.commit is not None:
+                raise ValueError("the acquisition role carries no role knobs")
+            if self.history_scope != "full":
+                raise ValueError("the acquisition role cannot restrict history")
+            if (
+                isinstance(self.max_iterations, bool)
+                or not isinstance(self.max_iterations, int)
+                or not 0 <= self.max_iterations <= 1
+            ):
+                raise ValueError(
+                    "the acquisition role spends 0 or 1 model contacts per visit"
+                )
+            if not isinstance(self.acquisition_kinds, tuple) or not self.acquisition_kinds:
+                raise ValueError("the acquisition role must declare its kinds")
+            if len(set(self.acquisition_kinds)) != len(self.acquisition_kinds):
+                raise ValueError("acquisition kinds must be unique")
+            # Function-local for the same reason ``commit.policy``'s import
+            # is: importing rails.acquisition is what POPULATES
+            # core.base.ACQUISITION_POLICIES, and this module keeps its
+            # registration imports function-local.
+            from .acquisition import ACQUISITION_KINDS  # noqa: PLC0415
+
+            unknown = [
+                kind for kind in self.acquisition_kinds if kind not in ACQUISITION_KINDS
+            ]
+            if unknown:
+                raise ValueError(f"unknown acquisition kinds {sorted(unknown)}")
+            return
+        if self.acquisition_kinds:
+            raise ValueError("only the acquisition role may declare acquisition kinds")
         if not isinstance(self.history_scope, str) or self.history_scope not in {
             "full", "latest-solver-and-local-tools",
         }:
@@ -316,6 +365,39 @@ class NativeEpisodeConfig:
     # ``reproduction.ojw.native_roles._RoleAuthorityRail`` if it emits a
     # call.
     tool_schema_rendering: str = "per-role"
+    # E18 (2026-09-19, owner decisions 43-44): the sixth node. ``None`` --
+    # every config written before E18 and every OFF arm -- means the key
+    # ``native_episode.acquisition`` is ABSENT, no acquisition role is
+    # declared, no acquisition node is built and the Planner's ACQUIRE names
+    # no registered action, which is exactly the E15 retained-row behaviour.
+    # Armed, the three carry the node's seat, its registered policy id and
+    # its per-row budget.
+    acquisition_role: NativeEpisodeRole | None = None
+    acquisition_policy_id: str | None = None
+    acquisition_budget: Mapping[str, int] | None = None
+
+    @property
+    def acquisition_enabled(self) -> bool:
+        """Whether this episode builds the sixth node (E18)."""
+
+        return self.acquisition_role is not None
+
+    @property
+    def max_acquisitions_per_row(self) -> int:
+        """The acquisition VISIT allowance of one row; 0 when unarmed."""
+
+        if self.acquisition_budget is None:
+            return 0
+        return int(self.acquisition_budget["max_acquisitions_per_row"])
+
+    @property
+    def acquisition_contact_budget(self) -> int:
+        """The model CONTACTS one row's acquisitions may spend; 0 when unarmed
+        and 0 for every model-free acquisition kind."""
+
+        if self.acquisition_budget is None:
+            return 0
+        return int(self.acquisition_budget["contact_budget"])
 
     @property
     def constant_tool_names(self) -> tuple[str, ...] | None:
@@ -377,10 +459,44 @@ class NativeEpisodeRunBinding:
     # ``config.solver_hints_json`` is not None; every other binding leaves
     # it None, byte-identically to before.
     data_root: object = None
+    # E18: the flight-owned, model-free knowledge re-query one
+    # ``knowledge-requery`` acquisition runs -- the same seam
+    # ``supply_for_phase`` is, and for the same reason: the runner never
+    # reaches for a store of its own. Called as
+    # ``(phase_id, filters, exclude_value_ids, scope, context) ->
+    # Sequence[rails.acquisition.AcquiredItem]``. Required exactly when that
+    # kind is the armed acquisition policy; every other binding leaves it
+    # None, byte-identically to before.
+    acquisition_requery: Callable | None = None
 
 
 def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig | None:
-    """Require explicit role limits, role-local tool authority and a graph ceiling."""
+    """Require explicit role limits, role-local tool authority and a graph ceiling.
+
+    THE CONTACT CEILING, stated once (E1's formula, extended by E2, E8b and
+    E18; ``program.max_contacts`` must equal it exactly)::
+
+        ceiling = perception.max_iterations
+                + (max_revisions + 1) * per_revision
+                + max_candidate_refreshes * perception.max_iterations
+                + max_acquisitions_per_row * acquisition.max_iterations
+
+        per_revision = solver.max_iterations * solver.samples
+                     + reviewer.max_iterations
+                     + planner.max_iterations
+                     + cleaning contacts per revision
+
+    Term by term: Perception runs once at the head of the row (E1); each of
+    the ``max_revisions + 1`` rounds spends one Solver visit -- ``samples``
+    contacts when the visit is grouped (E2) -- plus the Reviewer's and the
+    Planner's iterations, plus one cleaning contact per contact of each
+    ``cleaned`` boundary's consumer role (E8b); each candidate refresh
+    re-enters Perception once; and -- E18 -- each acquisition VISIT spends
+    the acquisition role's own contact allowance, which is 0 for every
+    model-free kind (``knowledge-requery``, ``tool-acquire``) and 1 for the
+    kind that re-observes (``speech-reobserve``). With no acquisition key the
+    last term is 0 and the formula is exactly its pre-E18 self.
+    """
     raw = values.get("native_episode")
     active = program.stop_rule == "native-role-episode"
     if raw is None:
@@ -406,6 +522,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         "reviewer_audit",
         "solver_hints",
         "tool_schema_rendering",
+        "acquisition",
     }
     if (
         not isinstance(raw, Mapping)
@@ -482,8 +599,20 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         raise ValueError("tool_iteration_policy must be reserve-final-report")
     raw_roles = raw["roles"]
     kinds = ("perception", "solver", "reviewer", "planner")
-    if not isinstance(raw_roles, Mapping) or set(raw_roles) != set(kinds):
+    # E18: the fifth role is OPTIONAL and is the ONLY key ``roles`` may carry
+    # beyond the four. It is present exactly when ``native_episode.
+    # acquisition`` is, checked below: a node with no policy and a policy
+    # with no node are both refused rather than half-armed.
+    acquisition_armed = "acquisition" in raw
+    if not isinstance(raw_roles, Mapping) or set(raw_roles) != set(kinds) | (
+        {ACQUISITION_ROLE_KIND} if ACQUISITION_ROLE_KIND in raw_roles else set()
+    ):
         raise ValueError("native episode requires exactly perception, solver, reviewer and planner")
+    if (ACQUISITION_ROLE_KIND in raw_roles) != acquisition_armed:
+        raise ValueError(
+            "native_episode.acquisition and roles.acquisition are one module: "
+            "declare both or neither"
+        )
     tool_specs = values.get("phase_tools") or {}
     if not isinstance(tool_specs, Mapping):
         raise ValueError("phase_tools must be a mapping")
@@ -593,11 +722,130 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
                 "so the constant array is each of their own arrays and no role's "
                 "rendered scope exceeds its authority"
             )
-    phase_ids = tuple(role.phase_id for role in roles)
-    if len(set(phase_ids)) != 4 or set(phase_ids) != set(program.phase_names()):
+    # E18: the sixth node's seat, parsed HERE -- before any contact -- so a
+    # fragment can never name an unregistered policy, arm a kind its node may
+    # not execute, or declare a contact budget its own arithmetic refuses.
+    acquisition_role = None
+    acquisition_policy_id = None
+    acquisition_budget = None
+    if acquisition_armed:
+        row = raw_roles[ACQUISITION_ROLE_KIND]
+        if (
+            not isinstance(row, Mapping)
+            or set(row) != {"phase_id", "max_iterations", "kinds"}
+        ):
+            raise ValueError(
+                "the acquisition role requires exactly phase_id, max_iterations "
+                "and kinds"
+            )
+        if row["phase_id"] not in program.phase_names():
+            raise ValueError("native role references an unknown program phase")
+        declared_kinds = row["kinds"]
+        if (
+            not isinstance(declared_kinds, list)
+            or not declared_kinds
+            or any(not isinstance(item, str) or not item for item in declared_kinds)
+        ):
+            raise ValueError("the acquisition role must declare its kinds")
+        acquisition_role = NativeEpisodeRole(
+            row["phase_id"], ACQUISITION_ROLE_KIND, row["max_iterations"], (),
+            "full", 1, None, None, None, tuple(declared_kinds),
+        )
+        block = raw["acquisition"]
+        if not isinstance(block, Mapping) or set(block) != {"policy", "budget"}:
+            raise ValueError(
+                "native_episode.acquisition must be an object with exactly a "
+                "'policy' id and a 'budget'"
+            )
+        acquisition_policy_id = block["policy"]
+        if not isinstance(acquisition_policy_id, str) or not acquisition_policy_id.strip():
+            raise ValueError("acquisition.policy must be a non-empty string")
+        # Function-local: importing rails.acquisition is what POPULATES
+        # core.base.ACQUISITION_POLICIES, the same registration discipline
+        # commit.policy and deliver_normaliser follow above.
+        from .acquisition import (  # noqa: PLC0415
+            AcquisitionBudget,
+            AcquisitionError,
+            resolve_acquisition_policy,
+        )
+
+        try:
+            policy = resolve_acquisition_policy(acquisition_policy_id)
+        except AcquisitionError as error:
+            raise ValueError(f"acquisition.policy is invalid: {error}") from error
+        if policy.kind not in acquisition_role.acquisition_kinds:
+            raise ValueError(
+                f"acquisition.policy {acquisition_policy_id!r} is of kind "
+                f"{policy.kind!r}, which roles.acquisition.kinds does not admit"
+            )
+        if acquisition_role.max_iterations != policy.contacts_per_acquisition:
+            raise ValueError(
+                "roles.acquisition.max_iterations must equal the policy's own "
+                "contacts per acquisition"
+            )
+        budget_block = block["budget"]
+        if not isinstance(budget_block, Mapping) or set(budget_block) != {
+            "max_acquisitions_per_row", "contact_budget",
+        }:
+            raise ValueError(
+                "acquisition.budget requires exactly max_acquisitions_per_row "
+                "and contact_budget"
+            )
+        try:
+            budget = AcquisitionBudget(
+                budget_block["max_acquisitions_per_row"],
+                budget_block["contact_budget"],
+            ).validate()
+        except AcquisitionError as error:
+            raise ValueError(f"acquisition.budget is invalid: {error}") from error
+        if not 1 <= budget.max_acquisitions_per_row <= revisions:
+            # An ACQUIRE spends a revision, exactly as a REVISE and a
+            # candidate refresh do, so an allowance larger than the revision
+            # allowance is one that can never be spent.
+            raise ValueError(
+                "acquisition.budget.max_acquisitions_per_row must be bounded by "
+                "max_revisions"
+            )
+        expected_contacts = (
+            budget.max_acquisitions_per_row * acquisition_role.max_iterations
+        )
+        if budget.contact_budget != expected_contacts:
+            # A redundant, CHECKED declaration, exactly as ``review_loop`` is:
+            # the fragment writes what it believes it will spend and the
+            # parser refuses the moment that disagrees with its own node.
+            raise ValueError(
+                "acquisition.budget.contact_budget must equal "
+                "max_acquisitions_per_row x roles.acquisition.max_iterations"
+            )
+        acquisition_budget = budget.as_json()
+        if refresh_action is not None:
+            # Two back-edges into the same revision budget, whose receipts
+            # are validated by two different stage walkers
+            # (``rails.native_episode_receipt``). The combination is a
+            # question for the cell that needs it, not a default: refuse it
+            # by name rather than let one validator silently mis-read the
+            # other's visits.
+            raise ValueError(
+                "native_episode.acquisition and candidate_refresh both consume "
+                "the revision allowance; declare one of them"
+            )
+    phase_ids = tuple(role.phase_id for role in roles) + (
+        () if acquisition_role is None else (acquisition_role.phase_id,)
+    )
+    expected_phase_count = 4 + (0 if acquisition_role is None else 1)
+    if (
+        len(set(phase_ids)) != expected_phase_count
+        or set(phase_ids) != set(program.phase_names())
+    ):
         raise ValueError("native roles must cover the program once each")
     if set(tool_specs) - set(phase_ids):
         raise ValueError("native tool phase is outside the episode")
+    if acquisition_role is not None and acquisition_role.phase_id in tool_specs:
+        # The Acquisition node is not one of the two seats owner decision 11
+        # allows a model-callable action; its own tool kind is the registered
+        # ``tool-acquire`` policy, executed by the node, not a native tool the
+        # core may call.
+        raise ValueError("the acquisition role may not expose analytical tools")
     planner_phase = program.phase(next(role.phase_id for role in roles if role.role_kind == "planner"))
     if (
         planner_output_format == "json-action-v1"
@@ -843,6 +1091,15 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
     per_revision += cleaning_contacts_per_revision
     ceiling = roles[0].max_iterations + (revisions + 1) * per_revision
     ceiling += refreshes * roles[0].max_iterations
+    # E18 (2026-09-19, owner decisions 43-44): plus the contacts the
+    # Acquisition node's own visits may spend. Zero for every model-free kind
+    # and for every config that declares no acquisition at all, which reduces
+    # this to exactly the pre-E18 formula.
+    if acquisition_role is not None:
+        ceiling += (
+            acquisition_budget["max_acquisitions_per_row"]
+            * acquisition_role.max_iterations
+        )
     if program.max_contacts != ceiling:
         raise ValueError("program contact ceiling must equal the bounded native graph ceiling")
     return NativeEpisodeConfig(
@@ -864,4 +1121,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         reviewer_audit_json,
         solver_hints_json,
         tool_schema_rendering,
+        acquisition_role,
+        acquisition_policy_id,
+        acquisition_budget,
     )
