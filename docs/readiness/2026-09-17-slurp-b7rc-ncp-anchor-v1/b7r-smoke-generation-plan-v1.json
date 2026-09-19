@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-ncp-l1-reviewer-format-anchor-smoke-4-v1",
-  "composed_config_hash": "cdd3a27d1348acae809670be778461e18ad1398aac0d1cf2742426cc520b5c92",
+  "composed_config_hash": "c4306c4c7d9f36446715a32daa360455cc7e4f0b94e18b22a638107851c886c4",
   "execution_route": "Standalone core.flight.cli worker attached to the resident session; no campaign, no scorer.",
   "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "experiment": "slurp-native-ncp-l1-reviewer-format-anchor-smoke-4-v1",
@@ -23,7 +23,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 44,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "442dba1a168fc77c61e6ec3f92a474fe1598569c0c3b019b349d8a81344ceaad",
+    "protocol_hash": "28af23a50b1dcf1f8f8469c39f377d657a8810c7aeefa9d94ed5bffd2f50ed29",
     "run_id": "SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -32,7 +32,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-17-slurp-b7rc-ncp-anchor-v1/protocol-registered-v1.json",
-    "sha256": "900f1f4b5b7c8734168a06487b878d75b346f9bd53c88cf1245c38db52537108"
+    "sha256": "8d21a31e0eb0da76e0001c9077baade04eaad48a075e4add558182f5ad8785b6"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The primary comparator is cell B7a's sealed score artifact and the released TRAIN A direct anchor is the secondary; neither is ever re-flown or re-scored, and neither cell opens before B7a seals and is read not HARMFUL. The four-row smoke is structural only: contact counts, episode receipt fields, the policy's rendered blocks and its receipt rows, fit receipts and seal, with no answer, reference or quality interpretation.",
   "root_registration_required": true,

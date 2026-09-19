@@ -45,7 +45,7 @@ registered here.**
 | phase program (B7r only) | `configs/policy/phase-native-candidates-review-revise-findings-v1.json`, registered in `rails.controllers` and shaped in `tests/unit/test_rails_controllers.py::_EXPECTED_PROGRAM_SHAPES` |
 | campaign plans | `configs/campaign/slurp-native-ncp-l1-{reviewer-format,tool-obs}-anchor-train-fold-a-v1.json` |
 | composed / protocol (B7r) | `c17c661c0514951ec1ad5ec683f1e236ce269b9eceedf4bf376a9cf87fe03eeb` / `2d3b2a864a9528b2c69f58e58ff195b69bb8811538b880418dec8175c4e30257` |
-| composed / protocol (B7r smoke) | `cdd3a27d1348acae809670be778461e18ad1398aac0d1cf2742426cc520b5c92` / `442dba1a168fc77c61e6ec3f92a474fe1598569c0c3b019b349d8a81344ceaad` |
+| composed / protocol (B7r smoke) | `c4306c4c7d9f36446715a32daa360455cc7e4f0b94e18b22a638107851c886c4` / `28af23a50b1dcf1f8f8469c39f377d657a8810c7aeefa9d94ed5bffd2f50ed29` |
 | composed / protocol (B7c) | `6b76f22cc75fe4c0f99fece7fb99dab84746ccd337d7e0caae007a53de49c735` / `8b2fb2bc1f894e052a527c0872ea6ab765450685fb9e9c346285c938a9292c0a` |
 | composed / protocol (B7c smoke) | `3448723716e57d35ce111d1617509b58047c122d926765b71d58b7d3844eb1f6` / `e51dda7863f73076c3716000b6d7813659475eee59ef1e615473aba9cf315ca7` |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |
