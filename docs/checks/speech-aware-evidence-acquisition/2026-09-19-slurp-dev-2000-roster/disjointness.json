@@ -1,0 +1,193 @@
+{
+  "authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md owner decision 34 of 2026-09-19",
+  "candidate_pool": {
+    "blocked_sources": [
+      {
+        "relpath": "docs/receipts/probe-samples/DEV-1000.json",
+        "utterances": 1000
+      },
+      {
+        "relpath": "docs/receipts/probe-samples/FINAL60.json",
+        "utterances": 60
+      },
+      {
+        "relpath": "configs/probes/g0-binding/pslu-sample-devel-n60.json",
+        "utterances": 60
+      }
+    ],
+    "blocked_utterances": 1120,
+    "devel_mixture_by_scenario": {
+      "alarm": 64,
+      "audio": 35,
+      "calendar": 280,
+      "cooking": 43,
+      "datetime": 73,
+      "email": 157,
+      "general": 122,
+      "iot": 118,
+      "lists": 112,
+      "music": 56,
+      "news": 82,
+      "play": 260,
+      "qa": 214,
+      "recommendation": 69,
+      "social": 68,
+      "takeaway": 44,
+      "transport": 110,
+      "weather": 126
+    },
+    "devel_recordings": 8690,
+    "devel_utterances": 2033,
+    "eligible_recordings": 3846,
+    "eligible_utterances": 913,
+    "eligible_utterances_by_scenario": {
+      "calendar": 207,
+      "datetime": 5,
+      "email": 88,
+      "general": 56,
+      "iot": 51,
+      "lists": 47,
+      "news": 16,
+      "play": 190,
+      "qa": 146,
+      "recommendation": 3,
+      "social": 2,
+      "transport": 43,
+      "weather": 59
+    }
+  },
+  "composition": {
+    "distinct_added_utterances": 913,
+    "stage_1_dev500b_verbatim": 500,
+    "stage_2_remaining_utterances": 413,
+    "stage_3_second_recordings": 87
+  },
+  "construction_rosters_checked": [
+    {
+      "items": 1080,
+      "receipt_file_sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "shared_with_added": 0
+    },
+    {
+      "items": 1080,
+      "receipt_file_sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "shared_with_added": 0
+    },
+    {
+      "items": 430,
+      "receipt_file_sha256": "0d57df6c711e494af148745db4bd3082719fd2c1d5f7e0a340075887e4fddf05",
+      "relpath": "docs/receipts/rosters/slurp-evo-exemplars-v2.json",
+      "shared_with_added": 0
+    },
+    {
+      "items": 540,
+      "receipt_file_sha256": "ed330bdfe520517a4ef060aa288e33ca848cd9ee43c738e382571fd43d6cf0ee",
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v1.json",
+      "shared_with_added": 0
+    },
+    {
+      "items": 540,
+      "receipt_file_sha256": "b94371b00ef58e71742dc68f2da21c5f613ea81cd4779314d1139784f67650e1",
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v1.json",
+      "shared_with_added": 0
+    },
+    {
+      "items": 432,
+      "receipt_file_sha256": "4400e362e3664451aa3aeb73f84dcb617a7dacbff04a04fc4da253d65326d83d",
+      "relpath": "docs/receipts/rosters/slurp-evo-exemplars-v1.json",
+      "shared_with_added": 0
+    },
+    {
+      "items": 54,
+      "receipt_file_sha256": "f9d3be07309778938466db83179d903b969a448d771454e399a363a2e95e261a",
+      "relpath": "docs/receipts/rosters/slurp-evo-s1-proposer-r01.json",
+      "shared_with_added": 0
+    },
+    {
+      "items": 4,
+      "receipt_file_sha256": "78abd5c328987149c64e15c15a8f3d2873c465578cc23b971bc01d28d50c1087",
+      "relpath": "docs/receipts/rosters/slurp-native-tools-engineering-4-v1.json",
+      "shared_with_added": 0
+    }
+  ],
+  "deviations": [
+    {
+      "id": "DEV2000-D1",
+      "owner_action": "acknowledge or redirect before the comparator flights fly",
+      "statement": "SLURP-DEV-500-B-V1, frozen 2026-09-05 as a RESERVED and UNOPENED rung-3 replication roster, is absorbed whole into the added half; its 500 exact recordings are taken verbatim, so it survives as an exact sub-table of DEV-2000 and its 500-row read stays recoverable, but it stops being reserved the moment the DEV-2000 comparators fly.",
+      "why_unavoidable": "Only 913 devel utterances survive the DEV-1000 / FINAL60 / probe-60 exclusions, and 413 of them (9 of 18 scenarios) remain if DEV-500-B is held back -- too few for 1,000 rows and too narrow for a per-stratum table."
+    },
+    {
+      "id": "DEV2000-D2",
+      "owner_action": "accept 1,000 rows over 913 utterances, or accept a 913-row addition (DEV-1913) instead",
+      "statement": "87 of the 913 added utterances contribute a SECOND recording, because 913 < 1,000. No utterance contributes three, and paired analyses must cluster by utterance_id.",
+      "why_unavoidable": "Arithmetic: the devel remainder is 913 utterances."
+    },
+    {
+      "id": "DEV2000-D3",
+      "owner_action": "report every DEV-2000 verdict under both natural-mixture and equal-stratum weighting, per the 2026-09-03 reporting rule",
+      "statement": "The added half cannot reproduce DEV-1000's equal-per-scenario allocation: the ladder already drained alarm, audio, cooking, datetime, music, news, recommendation, social and takeaway. Stage 2 takes the whole remainder, so no quota choice is made, and stage 3 apportions its 87 seats against the full devel mixture.",
+      "why_unavoidable": "Capacity, not choice; see eligible_utterances_by_scenario."
+    }
+  ],
+  "disjointness_proof": {
+    "added_utterances_with_two_recordings": 87,
+    "max_recordings_per_added_utterance": 2,
+    "non_devel_ids_added": 0,
+    "shared_with_dev1000_recordings": 0,
+    "shared_with_dev1000_utterances": 0,
+    "shared_with_final60_utterances": 0,
+    "shared_with_probe60_utterances": 0,
+    "shared_with_test_recordings": 0,
+    "shared_with_train_construction_recordings": 0
+  },
+  "generator": "scripts/build_slurp_dev2000_roster.py",
+  "offline_guard": {
+    "attempted_targets": [],
+    "outbound_connection_attempts": 0
+  },
+  "proof_sha256": "6cc28719cb6f2f5c06ec5c0d2caf660b4c2a9bec18750d0d3a5310154ad4957e",
+  "rosters": {
+    "SLURP-DEV-2000-ADDED-V1": {
+      "receipt_file_sha256": "f78dd8ad2894b1fd02bfe6050e39e3fb2c5d178a649e5d20e85ea4ecf4b8dc58",
+      "relpath": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+      "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67"
+    },
+    "SLURP-DEV-2000-V1": {
+      "receipt_file_sha256": "c7d196e80b7dab34e2fb9f89803d66c80cd8d5cb702a54aa9c66b8b9a81cc0ad",
+      "relpath": "docs/receipts/rosters/slurp-dev-2000-v1.json",
+      "split_identity_hash": "c4cc1cda7cc1ee50cf959fa3c26cef3d848475dba8cde4e301e59ff89225e3fd"
+    }
+  },
+  "schema": "saea-dev2000-roster-disjointness-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "text_disjointness": {
+    "added": {
+      "distinct_sentence_digests": 913,
+      "exact_sentence_matches_in_train_construction_pool": 1,
+      "gram_digest_set_sha256": "2ec9eaade9a4bc0d925ae37ee641afa6b758e1ec2220a50852159f9e135a4a4d",
+      "sentence_digest_set_sha256": "70ac4bdcaa695cc62c1627a0bfb92c3373acfdb2a516c8bdc1b107b4b4b51b17",
+      "utterances_read": 913,
+      "utterances_sharing_a_train_6gram": 113
+    },
+    "dev1000_baseline": {
+      "distinct_sentence_digests": 1000,
+      "exact_sentence_matches_in_train_construction_pool": 1,
+      "gram_digest_set_sha256": "7f96a02026b0b828aa7a6688028160a07a8ea60be0268dcd06f6e5aac366d0b7",
+      "sentence_digest_set_sha256": "8c6d85c2d680ba2b6212164e051a895faf8df6a3be8baacc52f4934ce38c1c29",
+      "utterances_read": 1000,
+      "utterances_sharing_a_train_6gram": 111
+    },
+    "method": "Digest only, after scripts/build_slurp_evo_decontamination.py: sentences are read inside one generator, compared as whole-sentence SHA-256 digests and as word 6-gram digests (rails.proposer.word_ngrams / ngram_digest), and only counts and digest-set hashes are written. No sentence and no gram is written anywhere.",
+    "reading": "Construction pools are TRAIN-only by loader construction, so the id-level proof is structural; these counts say how much of the added half's TEXT a TRAIN-built knowledge store could already contain, measured against the sealed DEV-1000 half under the identical method.",
+    "train_construction_pool": {
+      "gram_digests": 25475,
+      "pool_id": "slurp-construction-text-pool-v1",
+      "sentence_digests": 11483,
+      "source_identity_hash": "545847bb95a9423005c71bdcc3fa74af55a3a1b6ae91409ba4070fd35bf92fef",
+      "utterance_count": 11514
+    }
+  }
+}
