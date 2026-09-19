@@ -115,7 +115,7 @@ role's output contract or output length on this base; it is reported, not repair
 | item | value |
 | --- | --- |
 | arm composed / protocol | `0555ab4ca2dc95e9a93bc4ed4c236e8e6270bfe519470f537c11655dd23bf123` / `f91519ac5db69ad5577676a8e0824d22d805a01b84144f692c90418928954ccc` |
-| smoke composed / protocol | `7810b7ea885dc8b7b0c71fc015ba1c08aeb7f2aa7417f577caffdc116b3297e6` / `4e7c358498f6896c6ec4ce9d0fe4356f2806d71f246ff8ead643f5977b8163e6` |
+| smoke composed / protocol | `fbe7556e225a4f6ab53f466b09f3b8fcd1efba45404e55a566d0f081b16e8880` / `1f3bdd15ece682b449d0706301a633af09a747f5ef38fa3b93aacc65ae0e52e5` |
 | `protocol-registered-v2.json` | `c2239f5857aa12b40d8a36e7ccbb547e41a75ce66a5f0dcad6e99753fcc68cbb` |
 | `b7a-generation-plan-registered-v2.json` | `f6ff30b626d7c59f8360b97967d44a287dbc767fdd9f516b80fe2a4e15abf356` |
 | `b7a-fit-plan-registered-v2.json` | `2da8e07384dcb137fb76049584a66d4fa1e579c09e47a4845ee632d177d3d625` |
