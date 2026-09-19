@@ -1,0 +1,58 @@
+{
+  "cell": "slurp-native-tool-constant-anchor-smoke-4-v1",
+  "composed_config_hash": "96aff88fa39fe6799dca239a351e46e52cd87909d2714f655208023ebc8a9db1",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-tool-constant-anchor-smoke-4-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 176,
+    "planned_speech_audio_seconds": 117,
+    "protocol_hash": "7e89bde338a38dd85bda69587c833c10a8f4392d8105cd6094188cefa7c0d077",
+    "run_id": "SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realized native request inside the same standalone worker. coordinate-fit must NOT be run.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-tool-constant-anchor-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "modules": {
+    "base": "the SEALED dual-store ANCHOR configuration (configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json): the complete native episode, the shared controller and FlightRuntime path, Reviewer-only task-contract tool authority, Solver-only answer authority, the three-candidate contract, the max512 resident geometry, the sealed Fold A speech-query segment vectors and the EVO-FOLDS-V2 promoted packets. Nothing of it moves. No node: no context_policy, no deliver_normaliser, no reviewer_audit.",
+    "factor": "native_episode.tool_schema_rendering, \"per-role\" (the key's ABSENCE, which IS the anchor's configuration) -> \"constant\". Item E17. Armed, every role contact of a row renders the same tools array -- the union of the schemas any role may call, which for this episode IS the Reviewer's own single saea-tool-task-contract-v1 array -- so the Reviewer's request bytes do not move and perception, solver and planner gain exactly one key, tools, with tool_choice still \"none\". AUTHORITY IS NOT WIDENED.",
+    "purpose_is_throughput": "PRIMARY DELIVERABLES are efficiency measurements -- prefilled prompt tokens per row, contacts per row, GPU hours per 1,080 rows, slot occupancy, utilisation, the per-position cache table and distinct_tool_schemas_sha256 == 1 on every row -- read from the sealed receipts, trace and server log. The official number is a NON-INFERIORITY GUARD, not a gain.",
+    "second_declared_key_not_a_factor": "native_episode.finite_completion_policy = \"deliver-latest-or-abstain\", required of every live SLURP native cell by scripts/checks/finite_completion_policy_check.py (item E13). It renders NO request byte and only decides whether a finite completion aborts the flight or the row is RETAINED with a terminal_disposition reason \"finite_completion\". The comparator side is provably unaffected: docs/receipts/slurp-finite-completion-exposure-v1.json proves zero finite completions on the sealed anchor.",
+    "zero_added_contacts": "the key changes what three of the five contacts render, never how many there are, so the bounded ceiling stays 11 and every ceiling is the anchor's registered ceiling, unchanged"
+  },
+  "plan_kind": "native contact fit",
+  "preparation_base_commit": "6851acdc",
+  "prepared_phase_supply": {
+    "note": "THIS CELL'S OWN artifact, built model-free under its own run id by core.flight.cli prepare-supply in this registration. Its Perception output was asserted by hand against the sealed anchor preparation's own output and matched exactly, which is the model-free proof that neither declared key moves a knowledge-selection byte. core.flight.repin will find this pin VALID and rebuild nothing. --allow-output-change must never be passed.",
+    "output_sha256": "512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733",
+    "prepared_identity_config_sha256": "a115b6758af1b1c336c9f36acf955820977a4908b846e159c9d641c03954873f",
+    "relpath": "prepared/SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "b46ce333c2636bbe94d067b40f976cd0ba80723096187bd60d1a2bfb7c1a844a"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-19-slurp-eff1-tool-constant-v1/protocol-registered-v1.json",
+    "sha256": "6b0339258e24585c9cd5840b7bbb787287714b7e1e0820a1afddfcea8bc74970"
+  },
+  "quality_read_gate": "The four-row smoke is STRUCTURAL AND EFFICIENCY ONLY and is never scored: delivery and contact counts, the saea-native-tool-schema-rendering-v1 receipt with distinct_tool_schemas_sha256 == 1 on every row, the Reviewer requests byte-identical to the sealed anchor's on the same four sample ids, the other roles' payloads differing in exactly the tools key, the request-fit receipts, any retained finite_completion row reported rather than treated as an error, the per-role authority refusals reported, and -- the point of the smoke -- the server-reported cached-token share per position showing the first-Reviewer and Planner contacts no longer re-prefilling the packet. No scorer, no answer, reference or quality interpretation and no task-quality claim.",
+  "registered_at_utc": "2026-09-19T06:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-eff1, branch fable/eff1",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}
