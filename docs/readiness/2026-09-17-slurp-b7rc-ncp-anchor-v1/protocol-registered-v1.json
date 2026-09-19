@@ -114,11 +114,11 @@
       "attempt_id": "attempt-slurp-native-ncp-l1-tool-obs-anchor-smoke-4-generation-v1",
       "baseline_fragment": "slurp-native-anchor-ncp-l1-tool-obs-smoke-4-v1",
       "cell": "slurp-native-ncp-l1-tool-obs-anchor-smoke-4-v1",
-      "composed_config_hash": "ff1f1163d9a8378c1635182fc2d9b26cc9915cbfa580cf4b26313aa0aa9e7dc9",
+      "composed_config_hash": "46e3dd74c39b13deda4953bb7e09f04f25efa0dbcf9ae2c489afe1500780ae79",
       "experiment": "slurp-native-ncp-l1-tool-obs-anchor-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-ncp-l1-tool-obs-anchor-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-NATIVE-NCP-L1-TOOL-OBS-ANCHOR-SMOKE-4-FIT-V1",
-      "protocol_hash": "47367a97dd98536b794440a3bad89eb73c19c8bc1e3eeed02d43d720c176fdb6",
+      "protocol_hash": "bfa9dc7a4cf68b6d83e5df1774e50cdaf765ef94e09c2e6591403d5aaff05292",
       "run_id": "SAEA-SLURP-NATIVE-NCP-L1-TOOL-OBS-ANCHOR-SMOKE-4-V1",
       "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
     },

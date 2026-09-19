@@ -381,7 +381,7 @@
   "task_instruction_template_active": true,
   "what_this_is": "Four-row engineering smoke of cell B7c on cell B7a's configuration (the Node Context Policy at level L1 plus the four tool-observation boundaries at level structured). Byte for byte the full-cell baseline configs/baseline/slurp-native-anchor-ncp-l1-tool-obs-train-fold-a-v1.json apart from its own native contact fit identity and its own prepared Perception supply. Structural evidence only: no replayed tool observation carries the task contract's own text and each carries the reference block. No official scoring and no task-quality claim.",
   "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-TOOL-OBS-ANCHOR-SMOKE-4-V1/phase-supply-v1.json",
-    "sha256": "5dc6547049359a12281face608384ae37b7a800e54c4dbbaef88351a55d6a3e7"
+    "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-TOOL-OBS-ANCHOR-SMOKE-4-V1/phase-supply-v2.json",
+    "sha256": "2d10f0c83585d8f2b791ab429fe291bc2d3bf62e605ec984acc344ba83d62d79"
   }
 }

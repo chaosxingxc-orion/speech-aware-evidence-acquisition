@@ -32,7 +32,7 @@
   "preparation_base_commit": "b4cb9ae9fa67e7f8055e204d290a63838c14251d",
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-17-slurp-b7rc-ncp-anchor-v1/protocol-registered-v1.json",
-    "sha256": "a916dd37c0fc254b941ac25245ea64888b16e625321ee85fc5f714eeb53a5fa2"
+    "sha256": "7aaad751e9114b33f666fb5ee7d68f955f5cb605979382d103135d359313a698"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The primary comparator is cell B7a's sealed score artifact and the released TRAIN A direct anchor is the secondary; neither is ever re-flown or re-scored, and neither cell opens before B7a seals and is read not HARMFUL. The four-row smoke is structural only: contact counts, episode receipt fields, the policy's rendered blocks and its receipt rows, fit receipts and seal, with no answer, reference or quality interpretation.",
   "registered_at_utc": "2026-09-17T21:00:00.000000+00:00",

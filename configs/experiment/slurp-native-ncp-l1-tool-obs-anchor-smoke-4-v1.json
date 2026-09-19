@@ -15,10 +15,17 @@
         "reason": "Registered before contact by the B7r/B7c registration agent on cell B7a's configuration. It stays held until the coordinator flips it immediately before the standalone-worker smoke launch, which is itself after cell B7a seals and is not HARMFUL. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b7rc-ncp-anchor-admission-v1",
+            "relpath": "coordination/slurp-b7rc-ncp-anchor-v1/root-admission-v1.json",
+            "sha256": "918618f1dc146105948b428835c664409fe89e04a40f008787abc38beac7df8b",
+            "reason": "Decision slurp-b7rc-ncp-anchor-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "Model-free first-phase Perception supply prepared by the B7r/B7c registration agent from the same sealed speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed dual-store anchor and cell B7a used; zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed anchor preparation output block on every row, so the Perception selection channel does not move in this cell. Receipt coordination/slurp-b7rc-ncp-anchor-v1/phase-supply-vs-anchor-v1.json.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-TOOL-OBS-ANCHOR-SMOKE-4-V1/phase-supply-v1.json",
-            "sha256": "5dc6547049359a12281face608384ae37b7a800e54c4dbbaef88351a55d6a3e7"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-TOOL-OBS-ANCHOR-SMOKE-4-V1/phase-supply-v2.json",
+            "sha256": "2d10f0c83585d8f2b791ab429fe291bc2d3bf62e605ec984acc344ba83d62d79"
           }
         ],
         "state": "held"
