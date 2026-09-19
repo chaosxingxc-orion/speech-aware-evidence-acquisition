@@ -15,13 +15,20 @@
         "reason": "Registered before contact by the B8b registration agent (package docs/readiness/2026-09-19-slurp-b8b-reviewer-audit-v1) under owner directive 26 of 2026-09-18 (\"analyses into nodes\"), owner decision 27 of 2026-09-19 (the order, which places cell B8b after cell B7r), owner decision 15 of 2026-09-17 (a cell does not fly on a HARMFUL predecessor's base) and owner decisions 17, 22, 23 and 25. It stays HELD: the coordinator mints the root decision receipt coordination/slurp-b8b-reviewer-audit-v1/root-admission-v1.json (decision id slurp-b8b-reviewer-audit-admission-v1) and flips the state with scripts/flights/repin_cell.py, which rebuilds and re-pins the prepared supply -- asserting its Perception output is byte-identical to cell B7r's own artifact -- applies the decision requirement and recomputes every dependent hash in the same cycle. ORDER, and it is part of the registration: this four-row smoke opens only after cell B7r's own four-row smoke has sealed, so the two form smokes are never in flight together. Beside the one factor (native_episode.reviewer_audit) this baseline also declares native_episode.finite_completion_policy = \"deliver-latest-or-abstain\" (coordinator, 2026-09-19, after the B7a recovery arm aborted at 1,451 contacts on a Reviewer completion that hit the 512-token cap under the module default \"raise\"). That key renders NO request byte -- it is consumed only by rails.runner's NativeEpisodeSpec -- and only decides whether a finite completion aborts the flight or is retained with a terminal_disposition reason \"finite_completion\"; it is a harness-robustness declaration, never a factor, and the count of such rows is a mandatory diagnostic of the read. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. One experiment in flight at a time.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b8b-reviewer-audit-admission-v1",
+            "relpath": "coordination/slurp-b8b-reviewer-audit-v1/root-admission-v1.json",
+            "sha256": "9d7ce8e2cf1e6b4c2a4ae48f2b42362b72a7938b695cb9ded1dbca9b89463a82",
+            "reason": "Decision slurp-b8b-reviewer-audit-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "INHERITED PIN, to be replaced by scripts/flights/repin_cell.py on the launch commit. It is cell B7r's OWN prepared Perception artifact for this roster, reused byte for byte: the slot-audit block is a consumer-side context addition at the reviewer:current-draft boundary and moves no supply, no retrieval and no evidence block, so this cell owes no new preparation (program spec section 3, item E12). Zero model, tokenizer, encoder, scorer or server contacts. The prepared artifact's identity digest (core.preparation.artifact_inputs) pins the cell's WHOLE composed configuration and this cell's differs from cell B7r's by its two declared keys (e3d880e111917fee4fb4b7654bde0c00f773d6f9574ce1a2501c93b29be85f68 -> fcd664ae1a9d4e156844321441787ead77c1642cc2ad558c50d8c4830babc17f), so core.flight.repin WILL derive a fresh artifact into prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1/ and core.preparation._compare_artifact_output will REFUSE that rebuild unless its Perception output SHA-256 is still 512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733 on 4 of 4 rows -- which is the model-free proof that neither declared key moves a knowledge-selection byte. --allow-output-change must never be passed.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-SMOKE-4-V1/phase-supply-v3.json",
-            "sha256": "7037a456d4d7b9dae1f846e60537e5cf0f08e0a8d4e6359464420953b228549a"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "2ae41cd030d635824616fffac046f640a2d1f878fb1d900a127c6a5559dd861e"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1"
     }

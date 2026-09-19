@@ -81,14 +81,14 @@
       "attempt_id": "attempt-slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-generation-v1",
       "baseline_fragment": "configs/baseline/slurp-native-anchor-ncp-l1-reviewer-audit-smoke-4-v1.json",
       "cell": "slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-v1",
-      "composed_config_hash": "9ebb423539193a08cccad88d23e6a69bd7b03ff94e478d3d7ce7c58be9b1dde8",
+      "composed_config_hash": "b75426c5e4bf4ebdb921fb081b09662bf485823adfa6d3f7d883411acb99df36",
       "execution_route": "Shared core.flight.lease_cli worker lease plus a standalone core.flight.cli worker attached to the resident session, optionally launched as a Windows Scheduled Task with the battery and idle conditions disabled (owner decision 24). No campaign, no scorer.",
       "experiment": "slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-v1",
       "experiment_fragment": "configs/experiment/slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-v1.json",
       "fit_attempt_id": "attempt-slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-FIT-V1",
       "order_constraint": "opens only after cell B7r's own four-row smoke has sealed; the two form smokes are never in flight together",
-      "protocol_hash": "32729808f7b0267b5c0cfac62de44df7385522683f2fa70a3625df77d4510956",
+      "protocol_hash": "66deb117849b16560c9b54f33b52a889bcc4a87f5075ff7f35b6d06d00164dae",
       "readiness": "held; no decision requirement; the inherited preparation pin",
       "rows": 4,
       "run_id": "SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1",
@@ -153,9 +153,9 @@
       "smoke": {
         "note": "the four-row reference artifact every four-row form smoke of this roster shares",
         "output_sha256": "512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733",
-        "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-SMOKE-4-V1/phase-supply-v3.json",
+        "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1/phase-supply-v1.json",
         "rows": 4,
-        "sha256": "7037a456d4d7b9dae1f846e60537e5cf0f08e0a8d4e6359464420953b228549a"
+        "sha256": "2ae41cd030d635824616fffac046f640a2d1f878fb1d900a127c6a5559dd861e"
       },
       "statement": "cell B7r's prepared Perception supply is inherited BYTE FOR BYTE and no new preparation is owed (program spec item E12). Both pins were verified in this registration by hashing the files under SPEECHRL_DATA_DIR, read-only."
     },

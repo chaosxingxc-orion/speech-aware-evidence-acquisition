@@ -45,7 +45,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-19-slurp-b8b-reviewer-audit-v1/protocol-registered-v1.json",
-    "sha256": "2a78383e62ed2944420ace4094585682ed2e14fbb9d8d03f9072f893e6574293"
+    "sha256": "5b83d6ba0f179ddb91542178b68fe1989c68b8aa3ecc021cc82d817c3b785b02"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist, and not before the registered STOP condition passes. The PRIMARY comparator is cell B7r's sealed score artifact (run SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1), the secondary is cell B7a's (SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1), and the sealed dual-store anchor and the released TRAIN A direct anchor are context only; none is ever re-flown or re-scored. This arm does not open before cell B7r seals and is read NOT HARMFUL (owner decision 15 of 2026-09-17), and not before this cell's own four-row smoke seals. Read once; the decision rule is fixed in the protocol document and is not edited after a number is seen.",
   "registered_at_utc": "2026-09-19T04:00:00.000000+00:00",
