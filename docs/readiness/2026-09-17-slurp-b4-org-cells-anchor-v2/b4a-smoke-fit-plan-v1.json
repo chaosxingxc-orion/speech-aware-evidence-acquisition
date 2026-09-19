@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-v2",
-  "composed_config_hash": "052dcea6928cf6c66003be0a4c10a9afb39ac132de0424ed849bd2628c5d864a",
+  "composed_config_hash": "b10c5577be705a6dfed00ef4314bb2ae5301e74575806a9af695233559dcc2a4",
   "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realized native request inside the same standalone worker, under the same lease.",
   "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "experiment": "slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-v2",
@@ -23,7 +23,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 176,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "db3148ee4c2f9d8344f9c6a7d2adc88aefd915d9d1611936873d47bf131d805c",
+    "protocol_hash": "fc87c024b668fe01f3b90f4342f6a933add7e002dfa2723dfe8e5b97fa678549",
     "run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-FIT-V2",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -32,7 +32,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-17-slurp-b4-org-cells-anchor-v2/protocol-registered-v1.json",
-    "sha256": "994e7d78b6153237e2cd20b180d614f2c7d6526e5dc7f5e220fa6b450461d4be"
+    "sha256": "0ba4f6e867562869864a898ed2408a78f1c565f2fcb2a2d828cdc4c3dedd75c0"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The comparators are the sealed dual-store anchor score artifact (primary) and the released direct anchor score artifact (secondary); neither is ever re-flown or re-scored. The four-row smoke is structural only: contact counts, episode receipt fields, the module's own request channel, fit receipts and seal, with no answer, reference or quality interpretation.",
   "root_registration_required": true,
