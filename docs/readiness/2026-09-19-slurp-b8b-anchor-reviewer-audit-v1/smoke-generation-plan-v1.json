@@ -45,7 +45,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-19-slurp-b8b-anchor-reviewer-audit-v1/protocol-registered-v1.json",
-    "sha256": "781991c31d80ff703d6cb41723ee531a8268c956c6a2ce559af4fe29b05c7248"
+    "sha256": "03a862d95597240afde36b9753ebb6df2d678f2382cd4e884cfecf6b7f24bcaa"
   },
   "quality_read_gate": "The four-row smoke is STRUCTURAL ONLY and is never scored: contact counts, the saea-reviewer-slot-audit-v1 receipt on every Reviewer contact of 4 of 4 rows, the block-is-an-addition check against block_sha256 / block_chars over the SEALED draft, no slot_audit block on any other boundary, every other boundary row raw with rendered_sha256 equal to its source's content_sha256, the request-fit receipts, any retained finite_completion row reported rather than treated as an error, and a clean seal -- with no answer, reference or quality interpretation and no scorer.",
   "registered_at_utc": "2026-09-19T18:00:00.000000+00:00",

@@ -35,7 +35,7 @@ exactly the block, on the Reviewer contacts.
 | arm run | `SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1` |
 | arm attempt | `attempt-slurp-native-reviewer-audit-anchor-train-fold-a-generation-v1` |
 | arm FIT run / attempt | `SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-FIT-V1` / `attempt-slurp-native-reviewer-audit-anchor-train-fold-a-fit-v1` |
-| arm composed / protocol | `f00ac5d1d53c2e86a15a84981c89dc389d8d650fb6cda797b1966cbdc2e2efa0` / `a1e378154714fd924d7560297046fecd62df15609c8d65c989c63b0b719e5699` |
+| arm composed / protocol | `04592f9515a24cc3f34f57787202209d3391f04f363e4d863e1ce6c3cc6f0ae2` / `8b339a25d25e6a53a1d7efff57ad46861f8ba0a84d7f29f2257919cf496b7e13` |
 | arm fragments | `configs/baseline/slurp-native-anchor-reviewer-audit-train-fold-a-v1.json`, `configs/experiment/slurp-native-reviewer-audit-anchor-train-fold-a-v1.json`, `configs/campaign/slurp-native-reviewer-audit-anchor-train-fold-a-v1.json` |
 | arm prepared supply | `prepared/SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v1.json`, file `4d3233fd…`, **output `ba5e1faa…` = the sealed anchor's own** |
 | smoke run | `SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1` |

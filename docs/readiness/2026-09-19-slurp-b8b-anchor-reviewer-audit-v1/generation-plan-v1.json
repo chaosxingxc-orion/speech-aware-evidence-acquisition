@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-reviewer-audit-anchor-train-fold-a-v1",
-  "composed_config_hash": "f00ac5d1d53c2e86a15a84981c89dc389d8d650fb6cda797b1966cbdc2e2efa0",
+  "composed_config_hash": "04592f9515a24cc3f34f57787202209d3391f04f363e4d863e1ce6c3cc6f0ae2",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-reviewer-audit-anchor-train-fold-a-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "a1e378154714fd924d7560297046fecd62df15609c8d65c989c63b0b719e5699",
+    "protocol_hash": "8b339a25d25e6a53a1d7efff57ad46861f8ba0a84d7f29f2257919cf496b7e13",
     "run_id": "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -45,7 +45,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-19-slurp-b8b-anchor-reviewer-audit-v1/protocol-registered-v1.json",
-    "sha256": "781991c31d80ff703d6cb41723ee531a8268c956c6a2ce559af4fe29b05c7248"
+    "sha256": "03a862d95597240afde36b9753ebb6df2d678f2382cd4e884cfecf6b7f24bcaa"
   },
   "quality_read_gate": "The arm's official pooled SLU-F1 is read ONCE against the sealed anchor's score artifact under the decision rule of docs/readiness/2026-09-19-slurp-b8b-anchor-reviewer-audit-v1-preregistration.md section 6, fixed before any number is seen: HARMFUL only by a measured loss (Method B, owner decision 25); ADMITTED only on a positive CI95 lower bound with intent non-inferior at -1.0051, the symmetric scorer agreeing in sign and no scenario band breach; NEUTRAL otherwise. No re-scoring, no second estimator, no row filtering. The comparator is never re-flown.",
   "registered_at_utc": "2026-09-19T18:00:00.000000+00:00",

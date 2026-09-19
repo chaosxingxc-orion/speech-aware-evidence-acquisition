@@ -16,13 +16,20 @@
         "reason": "Registered before contact by the item E19 agent (package docs/readiness/2026-09-19-slurp-b8b-anchor-reviewer-audit-v1) under owner decision 32 of 2026-09-16 (pre-authorised: if cell B7a v2 reads HARMFUL, cells B7r and B7c close unflown and cell B8b is RE-BASED on the anchor and re-registered), owner directive 26 of 2026-09-18 (analyses into nodes), owner decision 27 of 2026-09-19 (the order and the use of GPU idle time) and owner decision 15 (no cell flies on a HARMFUL base). The L1-based registration (docs/readiness/2026-09-19-slurp-b8b-reviewer-audit-v1) is superseded and closed unflown. It stays HELD: the coordinator mints the root decision receipt coordination/slurp-b8b-anchor-reviewer-audit-v1/root-admission-v1.json (decision id slurp-b8b-anchor-reviewer-audit-admission-v1) and flips the state with scripts/flights/repin_cell.py, which re-pins the prepared supply, applies the decision requirement and recomputes every dependent hash in the same cycle. Beside the one factor (native_episode.reviewer_audit) this baseline also declares native_episode.finite_completion_policy = \"deliver-latest-or-abstain\". That key renders NO request byte -- it is consumed only by rails.runner's NativeEpisodeSpec -- and only decides whether a finite completion aborts the flight or is retained with a terminal_disposition reason \"finite_completion\"; it is a harness-robustness declaration, never a factor, and the count of such rows is a mandatory diagnostic of the read. The sealed anchor flew WITHOUT the key and its exposure receipt records zero finite completions, so the two arms are comparable on this axis by measurement rather than by assumption. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. One experiment in flight at a time.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b8b-anchor-reviewer-audit-admission-v1",
+            "relpath": "coordination/slurp-b8b-anchor-reviewer-audit-v1/root-admission-v1.json",
+            "sha256": "4891f994b8d499d79d2d8f2654b0e8325afca9eaa3758a86559b2c306da833a7",
+            "reason": "Decision slurp-b8b-anchor-reviewer-audit-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "This cell's OWN prepared Perception artifact for the TRAIN Fold A roster, produced by the model-free core.flight.cli prepare-supply step under this cell's own run id. Zero model, tokenizer, encoder, scorer or server contacts. The slot-audit block is a consumer-side context addition at the reviewer:current-draft boundary and moves no supply, no retrieval and no evidence block, so the artifact's OUTPUT must equal the sealed anchor's on 1,080 of 1,080 rows -- which is the model-free proof that neither declared key moves a knowledge-selection byte. --allow-output-change must never be passed.",
             "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v1.json",
             "sha256": "4d3233fd71b2ffa2ffa2e7b1b50d944f238c0729203647460f26fe6986b1f82c"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1"
     }
