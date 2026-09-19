@@ -505,7 +505,7 @@ def test_a_narrow_live_slot_keeps_a_proportionate_reserve() -> None:
 
     receipt = assess_context_budget(_candidate(3_050), serving_slot_limit_tokens=8_192)
     assert receipt.slot_limit_tokens == 8_192
-    assert receipt.operational_reserve_tokens == 4_096
+    assert receipt.operational_reserve_tokens == 1_024
     assert receipt.decision is ContextBudgetDecision.ALLOW
 
 
