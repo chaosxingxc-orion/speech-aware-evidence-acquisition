@@ -1137,11 +1137,14 @@ def test_node_context_policy_is_one_episode_class_key():
     # The allowlist is CLOSED and this enumeration is its ratchet: admitting a
     # key is a code change with a test, never a receipt edit. The fourth,
     # native_episode.deliver_normaliser, was admitted by E11 (owner directive
-    # 26, 2026-09-18) and the fifth, native_episode.reviewer_audit, by E12
-    # (the same directive, 2026-09-19); both have their own proof below.
+    # 26, 2026-09-18), the fifth, native_episode.reviewer_audit, by E12
+    # (the same directive, 2026-09-19) and the sixth,
+    # native_episode.finite_completion_policy, by E13 (2026-09-19, the B7a
+    # abort); all three have their own proof below.
     assert sorted(EPISODE_LEVEL_SWITCH_KEYS) == [
         "native_episode.context_policy",
         "native_episode.deliver_normaliser",
+        "native_episode.finite_completion_policy",
         "native_episode.review_loop",
         "native_episode.reviewer_audit",
         "native_episode.roles.solver",
@@ -1490,3 +1493,52 @@ def test_the_stores_repin_form_is_one_key():
             "snapshot": {"relpath": "/absolute/b.json", "sha256": on["snapshot"]["sha256"]},
         }
     ) is False
+
+
+def test_finite_completion_policy_is_one_episode_class_key():
+    """E13 (2026-09-19): the finite-completion switch, and its two OFF spellings.
+
+    The B7a recovery arm aborted because one Reviewer completion came back with
+    ``finish_reason`` ``length`` and the SLURP baselines never declared this
+    key, so the parser's default ``"raise"`` turned a retained row into a
+    flight abort. Admitting the key here is what lets the harness-admission
+    receipt record the switch, and what lets
+    ``scripts/checks/finite_completion_policy_check.py`` demand it of every
+    unflown native cell.
+
+    The key is an ``episode``-class key, never a ``run``-class one, although it
+    renders no request byte: it is read inside the episode's own role chain,
+    is declared inside the ``native_episode`` block, and its ON arm is
+    therefore composed -- not proved absent by a falsifier receipt.
+    """
+
+    from speech_aware_evidence_acquisition.rails.config_tables import (
+        EPISODE_LEVEL_SWITCH_KEYS,
+    )
+
+    key = "native_episode.finite_completion_policy"
+    assert key in EPISODE_LEVEL_SWITCH_KEYS
+    assert resolve_episode_switch_key(key) == key
+
+    # OFF: the key absent, or its explicit default written out loud. The
+    # parser reads the two identically, so both compose the pre-E13 episode.
+    assert is_episode_null_arm(key, None) is True
+    assert is_episode_null_arm(key, "raise") is True
+    # ON: the one armed value the parser accepts.
+    assert is_episode_null_arm(key, "deliver-latest-or-abstain") is False
+
+    # One key, one leaf: the arms differ in exactly ``native_episode.
+    # finite_completion_policy`` and in nothing else.
+    off = {
+        "schema": "saea-native-episode-config-v1",
+        "episode_id": "e13-proof-v1",
+        "max_revisions": 1,
+        "actions": {"accept": "ACCEPT", "revise": "REVISE", "acquire": "ACQUIRE"},
+        "roles": {
+            kind: {"phase_id": kind, "max_iterations": 3 if kind == "reviewer" else 1}
+            for kind in ("perception", "solver", "reviewer", "planner")
+        },
+    }
+    on = {**off, "finite_completion_policy": "deliver-latest-or-abstain"}
+    assert set(on) - set(off) == {"finite_completion_policy"}
+    assert {k: v for k, v in on.items() if k != "finite_completion_policy"} == off
