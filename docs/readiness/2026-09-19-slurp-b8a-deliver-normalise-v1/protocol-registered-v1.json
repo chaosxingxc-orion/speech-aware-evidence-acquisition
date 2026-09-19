@@ -34,11 +34,11 @@
       "attempt_id": "attempt-slurp-native-b8a-deliver-normalise-v3-exemplars-k20-smoke-4-generation-v1",
       "baseline_fragment": "slurp-native-anchor-exemplars-k20-deliver-normalise-v3-smoke-4-v1",
       "cell": "slurp-native-b8a-deliver-normalise-v3-exemplars-k20-smoke-4-v1",
-      "composed_config_hash": "3dcc5e960d34f03a9fae71f41723ebaf6cca5ed027c4d9c53bc3ff72daa1eee3",
+      "composed_config_hash": "c281111fa1f79d03cedf741614c6941544a8f0ee4ffca43a8796ee2e4ab2fc74",
       "experiment": "slurp-native-b8a-deliver-normalise-v3-exemplars-k20-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-b8a-deliver-normalise-v3-exemplars-k20-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-FIT-V1",
-      "protocol_hash": "507bfc0413819ce5f5e0fe5ce14512dc45b7a69d3d5cd3e31877f2ac64924bfd",
+      "protocol_hash": "2095bbfd11767a497d16b880b62e34325cd60af8a47a503961ae92bbc0015e5e",
       "rows": 4,
       "run_id": "SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-V1",
       "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
@@ -110,8 +110,8 @@
     "prepared_phase_supply": {
       "note": "inherited from cell B1's recovery SMOKE; E11 changed core/flight/runtime.py so core.flight.repin will rebuild it, and _compare_artifact_output will refuse the rebuild unless the new Perception selection is byte-identical to this one. --allow-output-change must never be passed.",
       "output_sha256": "512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733",
-      "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-RECOVERY-V2/phase-supply-v1.json",
-      "sha256": "26a4f0167b91d3a1776f56e966fc18d9f0a1d05f8f603e22a1374ff08d003078"
+      "relpath": "prepared/SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "eca235e6719888cc629b6e4efbdb4a31666637aca656538fac3c76ce78899e0f"
     }
   },
   "cost_reporting": [

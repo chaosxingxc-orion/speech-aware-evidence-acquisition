@@ -215,7 +215,7 @@ cell B8a asks for.
 | FIT run / attempt | `SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-FIT-V1` / `attempt-slurp-native-b8a-deliver-normalise-v3-exemplars-k20-smoke-4-fit-v1`, 176 endpoints, inside the same worker |
 | baseline fragment | `configs/baseline/slurp-native-anchor-exemplars-k20-deliver-normalise-v3-smoke-4-v1.json` |
 | experiment fragment | `configs/experiment/slurp-native-b8a-deliver-normalise-v3-exemplars-k20-smoke-4-v1.json` |
-| composed config / protocol | `3dcc5e960d34f03a9fae71f41723ebaf6cca5ed027c4d9c53bc3ff72daa1eee3` / `507bfc0413819ce5f5e0fe5ce14512dc45b7a69d3d5cd3e31877f2ac64924bfd` |
+| composed config / protocol | `c281111fa1f79d03cedf741614c6941544a8f0ee4ffca43a8796ee2e4ab2fc74` / `2095bbfd11767a497d16b880b62e34325cd60af8a47a503961ae92bbc0015e5e` |
 | roster | the four already-exposed TRAIN A engineering rows this repository reuses for every four-row form smoke, split identity `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 | budgets | 44 generation contacts, 176 FIT endpoints, 117 repeated speech seconds, 1.0 fit-inclusive GPU hour, 24 native task-contract calls, **zero official scoring jobs** — cell B5e's smoke ceilings, unchanged |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |
@@ -232,8 +232,8 @@ else.
 
 **The prepared Perception supply does not move, and the re-pin tool proves it.** The smoke baseline
 inherits cell B1's own recovery-smoke prepared pin
-(`prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-RECOVERY-V2/phase-supply-v1.json`,
-SHA-256 `26a4f0167b91d3a1776f56e966fc18d9f0a1d05f8f603e22a1374ff08d003078`, Perception output
+(`prepared/SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-V1/phase-supply-v1.json`,
+SHA-256 `eca235e6719888cc629b6e4efbdb4a31666637aca656538fac3c76ce78899e0f`, Perception output
 SHA-256 `512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733` on 4 of 4 rows — the same
 output cell B5e's smoke carries). Item E11 changed `core/flight/runtime.py`, so the prepared
 artifact's identity no longer matches and `core.flight.repin` **will** rebuild it into this run's

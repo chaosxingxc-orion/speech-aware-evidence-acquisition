@@ -15,13 +15,20 @@
         "reason": "Registered before contact by the B8a registration agent under owner decision 27 of 2026-09-19 (which names cell B8a and puts it after the B4b replicate resume) together with owner directive 26 and owner decision 23 of 2026-09-18. It stays HELD: the coordinator mints the root decision receipt coordination/slurp-b8a-deliver-normalise-v1/root-admission-v1.json (decision id slurp-b8a-deliver-normalise-admission-v1) and flips the state with scripts/flights/repin_cell.py, which rebuilds and re-pins the prepared supply -- asserting its Perception output is byte-identical to cell B1's smoke artifact -- applies the decision requirement and recomputes every dependent hash in the same cycle. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. One experiment in flight at a time. This smoke is the ONLY contact cell B8a asks for: its admission read is model-free from sealed arms.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b8a-deliver-normalise-admission-v1",
+            "relpath": "coordination/slurp-b8a-deliver-normalise-v1/root-admission-v1.json",
+            "sha256": "86a53da48b677f1badeac7a395324f6f513f736f1c180d12645e8cdd58119561",
+            "reason": "Decision slurp-b8a-deliver-normalise-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "INHERITED PIN, to be replaced by scripts/flights/repin_cell.py on the launch commit. It is cell B1's own recovery SMOKE prepared artifact, over the same four TRAIN A engineering rows, the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors; its Perception output SHA-256 is 512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733 on 4 of 4 rows, the same value cell B1's and cell B5e's smokes carry. Item E11 changed core/flight/runtime.py, so core.preparation.load_artifact refuses this artifact's identity for this cell and core.flight.repin rebuilds it into prepared/SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-V1/ -- and _compare_artifact_output then REFUSES the rebuild unless the new selection is byte-identical to this one, which is the model-free proof that the delivery node moves no knowledge-selection byte. Zero model, tokenizer, encoder, scorer and server contacts.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-RECOVERY-V2/phase-supply-v1.json",
-            "sha256": "26a4f0167b91d3a1776f56e966fc18d9f0a1d05f8f603e22a1374ff08d003078"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "eca235e6719888cc629b6e4efbdb4a31666637aca656538fac3c76ce78899e0f"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-V1"
     }
