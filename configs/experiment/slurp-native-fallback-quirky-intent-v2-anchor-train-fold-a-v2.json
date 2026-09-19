@@ -16,10 +16,17 @@
         "reason": "Registered before contact by the B4 re-base agent on the sealed dual-store anchor, after the 2026-09-17 re-decision of module M0 as HARMFUL under the TRAIN A own null (owner decision 6). It stays held: the coordinator appends the root decision requirement and flips the state after the four-row smoke seals. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. One experiment in flight at a time.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b4-org-cells-anchor-admission-v1",
+            "relpath": "coordination/slurp-b4-org-cells-anchor-v2/root-admission-v1.json",
+            "sha256": "48e1a294167fec10dd71f84052c6f045022771b77cbb2bb650a3c383cbfe9c5e",
+            "reason": "Decision slurp-b4-org-cells-anchor-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "Model-free first-phase Perception supply prepared by the B4 re-base agent at commit bd04f4b9 from the same sealed speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed dual-store anchor used; zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed anchor preparation's on every row, so the Perception selection channel does not move in this cell. Receipt coordination/slurp-b4-org-cells-anchor-v2/phase-supply-vs-anchor-v1.json.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-V2/phase-supply-v1.json",
-            "sha256": "a1e272e19b5ef5f7bbf721bba0e13f39def1c7213e251d3c8620790cbec469d3"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-V2/phase-supply-v2.json",
+            "sha256": "b8263ad5603bcec3249b715806e5b62bf2fb41b285158df2b8634314014700b5"
           }
         ],
         "state": "held"
