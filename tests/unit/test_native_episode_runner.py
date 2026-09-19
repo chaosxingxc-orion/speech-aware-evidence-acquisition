@@ -486,7 +486,12 @@ class _ActualEpisodeHarness:
             }
             self.events.append(("fit", key))
 
-    def run(self):
+    def run(self, *, decoding_params=None):
+        # E13 (2026-09-19): an OPTIONAL override of this fixture's decoding
+        # params, so a proof that needs the carrier's real output cap (the
+        # 512-token SLURP geometry a finite completion stops at) can say so.
+        # Omitted -- every caller written before E13 -- the historical
+        # {"temperature": 0, "max_tokens": 64} is used, byte-identically.
         binding = NativeEpisodeRunBinding(
             config=self.config,
             program=self.program,
@@ -519,7 +524,7 @@ class _ActualEpisodeHarness:
             queue_depth=len(self.samples),
             trace_sink=self.trace,
             agent_executor_id="openjiuwen-workflow-v1",
-            decoding_params={"temperature": 0, "max_tokens": 64},
+            decoding_params=decoding_params or {"temperature": 0, "max_tokens": 64},
             native_episode_binding=binding,
         )
 

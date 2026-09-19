@@ -330,12 +330,29 @@ NATIVE_EPISODE_TOP_LEVEL_KEY = "native_episode"
 #: in would make a cell that moves the audit indistinguishable from a cell
 #: that moves the policy. See ``rails.slot_audit`` and
 #: ``rails.node_context_policy.SLOT_AUDIT_BOUNDARY``.
+#: ``native_episode.finite_completion_policy`` (E13, 2026-09-19) is the SIXTH,
+#: and the only one of the six that is a FAILURE MODE rather than a factor.
+#: It decides what an episode does with a valid, source-bound completion the
+#: core ended before authoritative delivery (``finish_reason`` ``length`` or
+#: ``content_filter``): ``"raise"``, the parser's default, aborts the flight;
+#: ``"deliver-latest-or-abstain"`` retains the row, delivering the latest
+#: delivery-eligible Solver draft (or an abstention) under a
+#: ``finite_completion`` terminal disposition that names the interrupted role.
+#: It belongs here rather than in the ``run`` class because it is read inside
+#: the episode's own role chain and is declared inside the ``native_episode``
+#: block; and rather than in any of the four per-phase tables because it is a
+#: mode of none of them -- not what a phase observes, is supplied with, is
+#: judged by or may call. Like ``deliver_normaliser`` it renders NO request
+#: byte (it is consulted only where a completion has already come back), which
+#: ``tests/unit/test_slurp_finite_completion_row.py`` proves by flying both
+#: arms; that makes its ON arm free to be the default of every new cell.
 EPISODE_LEVEL_SWITCH_KEYS = frozenset({
     "native_episode.roles.solver",
     "native_episode.review_loop",
     "native_episode.context_policy",
     "native_episode.deliver_normaliser",
     "native_episode.reviewer_audit",
+    "native_episode.finite_completion_policy",
 })
 
 #: The top-level key every ``stores``-class switch key names one child of.
@@ -1175,7 +1192,10 @@ def is_episode_null_arm(key: str, value: object) -> bool:
     ``native_episode.deliver_normaliser``'s OFF is the key's absence, because
     a delivery node is either absent or armed (E11);
     ``native_episode.reviewer_audit``'s OFF is the key's absence for the same
-    reason (E12) -- a context block is either absent or rendered, and with it
+    reason (E12);
+    ``native_episode.finite_completion_policy``'s OFF is the key's absence OR
+    its explicit default ``"raise"`` (E13), because the parser reads the two
+    the same way -- a context block is either absent or rendered, and with it
     absent the ``reviewer:current-draft`` boundary renders exactly its
     pre-E12 bytes.
     """
@@ -1206,6 +1226,14 @@ def is_episode_null_arm(key: str, value: object) -> bool:
         # (and, request-side, exactly the pre-key request bytes, since the
         # node runs after every contact of the episode is already made).
         return value is None
+    if key == "native_episode.finite_completion_policy":
+        # E13: the OFF arm is the key's ABSENCE or its explicit default
+        # ``"raise"`` -- the two spellings of the pre-E13 behaviour, which
+        # ``rails.native_episode_config.load_native_episode_config`` reads
+        # identically, so a fragment that writes the default out loud composes
+        # the same episode as one that omits it. Any other value is the armed
+        # arm.
+        return value is None or value == "raise"
     if key == "native_episode.reviewer_audit":
         # E12: the block is ABSENT or it is rendered. Function-local for the
         # same reason the context_policy branch is: rails.node_context_binding

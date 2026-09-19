@@ -1,0 +1,5036 @@
+{
+  "control_attempts": [
+    {
+      "attempt_id": "attempt-slurp-native-ncp-l1-anchor-train-fold-a-generation-recovery-v1",
+      "configured_max_tokens": {
+        "512": 1451
+      },
+      "contacts": 1451,
+      "control": true,
+      "finish_reason_counts": {
+        "length": 1,
+        "stop": 1156,
+        "tool_calls": 294
+      },
+      "finite_contacts": [
+        {
+          "completion_tokens": 512,
+          "finish_reason": "length",
+          "request_id": "flight-1360",
+          "role": "reviewer"
+        }
+      ],
+      "malformed_records": 0,
+      "manifest": null,
+      "manifest_status": null,
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 276,
+          "finish_reason_counts": {
+            "stop": 276
+          },
+          "max_completion_tokens": 161,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 293,
+          "finish_reason_counts": {
+            "stop": 293
+          },
+          "max_completion_tokens": 3,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 1,
+          "at_or_above_near_cap": 1,
+          "at_output_cap": 1,
+          "contacts": 588,
+          "finish_reason_counts": {
+            "length": 1,
+            "stop": 293,
+            "tool_calls": 294
+          },
+          "max_completion_tokens": 512,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 294,
+          "finish_reason_counts": {
+            "stop": 294
+          },
+          "max_completion_tokens": 76,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 1451,
+      "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1",
+      "trace": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1.trace.jsonl",
+      "trace_bytes": 126121710,
+      "wire_records": 1451
+    },
+    {
+      "attempt_id": "attempt-slurp-native-ncp-l1-anchor-train-fold-a-generation-v1",
+      "configured_max_tokens": {
+        "512": 3278
+      },
+      "contacts": 3278,
+      "control": true,
+      "finish_reason_counts": {
+        "stop": 2613,
+        "tool_calls": 665
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": null,
+      "manifest_status": null,
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 618,
+          "finish_reason_counts": {
+            "stop": 618
+          },
+          "max_completion_tokens": 163,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 665,
+          "finish_reason_counts": {
+            "stop": 665
+          },
+          "max_completion_tokens": 22,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1330,
+          "finish_reason_counts": {
+            "stop": 665,
+            "tool_calls": 665
+          },
+          "max_completion_tokens": 315,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 665,
+          "finish_reason_counts": {
+            "stop": 665
+          },
+          "max_completion_tokens": 77,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 3278,
+      "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V1",
+      "trace": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V1.trace.jsonl",
+      "trace_bytes": 293134661,
+      "wire_records": 3278
+    }
+  ],
+  "control_totals": {
+    "at_configured_cap": 1,
+    "at_or_above_near_cap": 1,
+    "at_output_cap": 1,
+    "attempts": 2,
+    "contacts": 4729,
+    "finish_reason_counts": {
+      "length": 1,
+      "stop": 3769,
+      "tool_calls": 959
+    },
+    "finite_contacts": 1,
+    "native_at_configured_cap": 1,
+    "native_finish_reason_counts": {
+      "length": 1,
+      "stop": 3769,
+      "tool_calls": 959
+    },
+    "native_finite_contacts": 1,
+    "native_role_contacts": 4729,
+    "unknown_configured_cap": 0
+  },
+  "created_at_utc": "2026-09-19T04:25:40.641044+00:00",
+  "data_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+  "encoder_calls": 0,
+  "finite_finish_reasons": [
+    "length",
+    "content_filter"
+  ],
+  "model_calls": 0,
+  "near_cap_tokens": 448,
+  "output_cap_tokens": 512,
+  "run_prefix": "SAEA-SLURP-",
+  "schema": "saea-finite-completion-exposure-scan-v1",
+  "scorer_invocations": 0,
+  "sealed_attempts": [
+    {
+      "attempt_id": "attempt-20260905T055850Z-113b8d",
+      "configured_max_tokens": {
+        "64": 4
+      },
+      "contacts": 4,
+      "finish_reason_counts": {
+        "<no wire record>": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-SMOKE-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "<no wire record>": 4
+          },
+          "max_completion_tokens": 48,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-SMOKE-V1",
+      "trace": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-SMOKE-V1.trace.jsonl",
+      "trace_bytes": 40549,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260905T060424Z-2c5596",
+      "configured_max_tokens": {
+        "64": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "<no wire record>": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.legal-label-projection-relock.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 4,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "<no wire record>": 1000
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1",
+      "trace": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.trace.jsonl",
+      "trace_bytes": 10102796,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260909T051251Z-1f2c58",
+      "configured_max_tokens": {
+        "64": 4
+      },
+      "contacts": 4,
+      "finish_reason_counts": {
+        "<no wire record>": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-SMOKE-4-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "<no wire record>": 4
+          },
+          "max_completion_tokens": 48,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-SMOKE-4-V1",
+      "trace": "SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-SMOKE-4-V1.trace.jsonl",
+      "trace_bytes": 120570,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260909T052142Z-07ca9c",
+      "configured_max_tokens": {
+        "64": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "<no wire record>": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1.logprob-judge-probe-v1-read.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 4,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "<no wire record>": 1000
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1",
+      "trace": "SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1.trace.jsonl",
+      "trace_bytes": 23308319,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260909T034421Z-f00629",
+      "configured_max_tokens": {
+        "64": 4
+      },
+      "contacts": 4,
+      "finish_reason_counts": {
+        "<no wire record>": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "<no wire record>": 4
+          },
+          "max_completion_tokens": 48,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1",
+      "trace": "SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1.trace.jsonl",
+      "trace_bytes": 40589,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260909T035340Z-95296f",
+      "configured_max_tokens": {
+        "64": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "<no wire record>": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 4,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "<no wire record>": 1000
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-V1",
+      "trace": "SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-V1.trace.jsonl",
+      "trace_bytes": 10123507,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260909T043847Z-f4306e",
+      "configured_max_tokens": {
+        "64": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "<no wire record>": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-DEV1000-NULL-REPLICATE-V1.own-null-replicate-v1-read.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 5,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "<no wire record>": 1000
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-DEV1000-NULL-REPLICATE-V1",
+      "trace": "SAEA-SLURP-DEV1000-NULL-REPLICATE-V1.trace.jsonl",
+      "trace_bytes": 10102992,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-slurp-direct-max512-dev1000-generation-base-replication-v1",
+      "configured_max_tokens": {
+        "512": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "stop": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-DIRECT-MAX512-DEV1000-BASE-REPLICATION-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "stop": 1000
+          },
+          "max_completion_tokens": 80,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-BASE-REPLICATION-V1",
+      "trace": "SAEA-SLURP-DIRECT-MAX512-DEV1000-BASE-REPLICATION-V1.trace.jsonl",
+      "trace_bytes": 18630280,
+      "wire_records": 1000
+    },
+    {
+      "attempt_id": "attempt-slurp-direct-max512-dev1000-generation-reboot-recovery-v1",
+      "configured_max_tokens": {
+        "512": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "stop": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-DIRECT-MAX512-DEV1000-REBOOT-RECOVERY-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "stop": 1000
+          },
+          "max_completion_tokens": 79,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-REBOOT-RECOVERY-V1",
+      "trace": "SAEA-SLURP-DIRECT-MAX512-DEV1000-REBOOT-RECOVERY-V1.trace.jsonl",
+      "trace_bytes": 18628928,
+      "wire_records": 1000
+    },
+    {
+      "attempt_id": "attempt-slurp-direct-max512-train-fold-a-source-recovery-generation-v1",
+      "configured_max_tokens": {
+        "512": 1080
+      },
+      "contacts": 1080,
+      "finish_reason_counts": {
+        "stop": 1080
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "stop": 1080
+          },
+          "max_completion_tokens": 93,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1",
+      "trace": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-SOURCE-RECOVERY-V1.trace.jsonl",
+      "trace_bytes": 20124506,
+      "wire_records": 1080
+    },
+    {
+      "attempt_id": "attempt-slurp-direct-vs-native-direct-generation-replication-v1",
+      "configured_max_tokens": {
+        "256": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "stop": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-REPLICATION-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "stop": 1000
+          },
+          "max_completion_tokens": 80,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-REPLICATION-V1",
+      "trace": "SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-REPLICATION-V1.trace.jsonl",
+      "trace_bytes": 18639781,
+      "wire_records": 1000
+    },
+    {
+      "attempt_id": "attempt-slurp-direct-vs-native-direct-generation-v1",
+      "configured_max_tokens": {
+        "256": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "stop": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "stop": 1000
+          },
+          "max_completion_tokens": 77,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-V1",
+      "trace": "SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-V1.trace.jsonl",
+      "trace_bytes": 18618487,
+      "wire_records": 1000
+    },
+    {
+      "attempt_id": "attempt-slurp-direct-vs-native-system-generation-v1",
+      "configured_max_tokens": {
+        "256": 5020
+      },
+      "contacts": 5020,
+      "finish_reason_counts": {
+        "stop": 4015,
+        "tool_calls": 1005
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "stop": 1000
+          },
+          "max_completion_tokens": 211,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1005,
+          "finish_reason_counts": {
+            "stop": 1005
+          },
+          "max_completion_tokens": 3,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2010,
+          "finish_reason_counts": {
+            "stop": 1005,
+            "tool_calls": 1005
+          },
+          "max_completion_tokens": 234,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1005,
+          "finish_reason_counts": {
+            "stop": 1005
+          },
+          "max_completion_tokens": 111,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 5020,
+      "run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-V1",
+      "trace": "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-V1.trace.jsonl",
+      "trace_bytes": 362890968,
+      "wire_records": 5020
+    },
+    {
+      "attempt_id": "attempt-discriminative-value-historical-generation-v1",
+      "configured_max_tokens": {
+        "256": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "stop": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-DISCRIMINATIVE-VALUE-HISTORICAL-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "stop": 1000
+          },
+          "max_completion_tokens": 67,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-DISCRIMINATIVE-VALUE-HISTORICAL-V1",
+      "trace": "SAEA-SLURP-DISCRIMINATIVE-VALUE-HISTORICAL-V1.trace.jsonl",
+      "trace_bytes": 32193732,
+      "wire_records": 1000
+    },
+    {
+      "attempt_id": "attempt-discriminative-value-span-generation-v1",
+      "configured_max_tokens": {
+        "256": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "stop": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-DISCRIMINATIVE-VALUE-SPAN-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "stop": 1000
+          },
+          "max_completion_tokens": 80,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-DISCRIMINATIVE-VALUE-SPAN-V1",
+      "trace": "SAEA-SLURP-DISCRIMINATIVE-VALUE-SPAN-V1.trace.jsonl",
+      "trace_bytes": 37276672,
+      "wire_records": 1000
+    },
+    {
+      "attempt_id": "attempt-slurp-distinct-closed-joint-recovery-generation-v1",
+      "configured_max_tokens": {
+        "256": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "stop": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "stop": 1000
+          },
+          "max_completion_tokens": 95,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1",
+      "trace": "SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1.trace.jsonl",
+      "trace_bytes": 25462934,
+      "wire_records": 1000
+    },
+    {
+      "attempt_id": "attempt-slurp-distinct-hard-first-recovery-generation-v1",
+      "configured_max_tokens": {
+        "256": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "stop": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "stop": 1000
+          },
+          "max_completion_tokens": 95,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1",
+      "trace": "SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1.trace.jsonl",
+      "trace_bytes": 25480902,
+      "wire_records": 1000
+    },
+    {
+      "attempt_id": "attempt-r1-c1",
+      "configured_max_tokens": {
+        "64": 1080
+      },
+      "contacts": 1080,
+      "finish_reason_counts": {
+        "<no wire record>": 1080
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-EVO-S1-FOLD-A-V2.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 5,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "<no wire record>": 1080
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
+      "trace": "SAEA-SLURP-EVO-S1-FOLD-A-V2.trace.jsonl",
+      "trace_bytes": 24118765,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-r1-c2",
+      "configured_max_tokens": {
+        "64": 1080
+      },
+      "contacts": 1080,
+      "finish_reason_counts": {
+        "<no wire record>": 1080
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-EVO-S1-FOLD-A-V2.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 4,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "<no wire record>": 1080
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
+      "trace": "SAEA-SLURP-EVO-S1-FOLD-A-V2.trace.jsonl",
+      "trace_bytes": 24130168,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-r1-c3",
+      "configured_max_tokens": {
+        "64": 1080
+      },
+      "contacts": 1080,
+      "finish_reason_counts": {
+        "<no wire record>": 1080
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-EVO-S1-FOLD-A-V2.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 5,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "<no wire record>": 1080
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
+      "trace": "SAEA-SLURP-EVO-S1-FOLD-A-V2.trace.jsonl",
+      "trace_bytes": 24120816,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-r1-c4",
+      "configured_max_tokens": {
+        "64": 1080
+      },
+      "contacts": 1080,
+      "finish_reason_counts": {
+        "<no wire record>": 1080
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-EVO-S1-FOLD-A-V2.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 3,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "<no wire record>": 1080
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
+      "trace": "SAEA-SLURP-EVO-S1-FOLD-A-V2.trace.jsonl",
+      "trace_bytes": 23810431,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-r1-c5",
+      "configured_max_tokens": {
+        "64": 1080
+      },
+      "contacts": 1080,
+      "finish_reason_counts": {
+        "<no wire record>": 1080
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-EVO-S1-FOLD-A-V2.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 4,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "<no wire record>": 1080
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
+      "trace": "SAEA-SLURP-EVO-S1-FOLD-A-V2.trace.jsonl",
+      "trace_bytes": 24116517,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-r1-i",
+      "configured_max_tokens": {
+        "64": 1080
+      },
+      "contacts": 1080,
+      "finish_reason_counts": {
+        "<no wire record>": 1080
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-EVO-S1-FOLD-A-V2.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 4,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "<no wire record>": 1080
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-A-V2",
+      "trace": "SAEA-SLURP-EVO-S1-FOLD-A-V2.trace.jsonl",
+      "trace_bytes": 24129970,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-r1-a2",
+      "configured_max_tokens": {
+        "64": 1080
+      },
+      "contacts": 1080,
+      "finish_reason_counts": {
+        "<no wire record>": 1080
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-EVO-S1-FOLD-B-V2.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 12,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "<no wire record>": 1080
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-B-V2",
+      "trace": "SAEA-SLURP-EVO-S1-FOLD-B-V2.trace.jsonl",
+      "trace_bytes": 24290397,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-r1-i",
+      "configured_max_tokens": {
+        "64": 1080
+      },
+      "contacts": 1080,
+      "finish_reason_counts": {
+        "<no wire record>": 1080
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-EVO-S1-FOLD-B-V2.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 11,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "<no wire record>": 1080
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-B-V2",
+      "trace": "SAEA-SLURP-EVO-S1-FOLD-B-V2.trace.jsonl",
+      "trace_bytes": 24293409,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-intent-a",
+      "configured_max_tokens": {
+        "64": 1080
+      },
+      "contacts": 1080,
+      "finish_reason_counts": {
+        "<no wire record>": 1080
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 4,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "<no wire record>": 1080
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2",
+      "trace": "SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2.trace.jsonl",
+      "trace_bytes": 10905471,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-intent-b",
+      "configured_max_tokens": {
+        "64": 1080
+      },
+      "contacts": 1080,
+      "finish_reason_counts": {
+        "<no wire record>": 1080
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 10,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "<no wire record>": 1080
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2",
+      "trace": "SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2.trace.jsonl",
+      "trace_bytes": 10907669,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-r1-p3",
+      "configured_max_tokens": {},
+      "contacts": 54,
+      "finish_reason_counts": {
+        "<no wire record>": 54
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-EVO-S1-PROPOSER-V2.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 11,
+          "at_output_cap": 0,
+          "contacts": 54,
+          "finish_reason_counts": {
+            "<no wire record>": 54
+          },
+          "max_completion_tokens": 722,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 54
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2",
+      "trace": "SAEA-SLURP-EVO-S1-PROPOSER-V2.trace.jsonl",
+      "trace_bytes": 418210,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-smoke-c1",
+      "configured_max_tokens": {
+        "64": 4
+      },
+      "contacts": 4,
+      "finish_reason_counts": {
+        "<no wire record>": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-EVO-S1-SMOKE-4-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "<no wire record>": 4
+          },
+          "max_completion_tokens": 34,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-EVO-S1-SMOKE-4-V1",
+      "trace": "SAEA-SLURP-EVO-S1-SMOKE-4-V1.trace.jsonl",
+      "trace_bytes": 86598,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-smoke-incumbent",
+      "configured_max_tokens": {
+        "64": 4
+      },
+      "contacts": 4,
+      "finish_reason_counts": {
+        "<no wire record>": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-EVO-S1-SMOKE-4-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "<no wire record>": 4
+          },
+          "max_completion_tokens": 34,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-EVO-S1-SMOKE-4-V1",
+      "trace": "SAEA-SLURP-EVO-S1-SMOKE-4-V1.trace.jsonl",
+      "trace_bytes": 86600,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-slurp-intent-hypothesis-source-engineering-generation-v1",
+      "configured_max_tokens": {
+        "512": 4
+      },
+      "contacts": 4,
+      "finish_reason_counts": {
+        "stop": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-ENGINEERING-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 147,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-ENGINEERING-V1",
+      "trace": "SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-ENGINEERING-V1.trace.jsonl",
+      "trace_bytes": 94724,
+      "wire_records": 4
+    },
+    {
+      "attempt_id": "attempt-20260906T022437Z-7034d2",
+      "configured_max_tokens": {
+        "64": 4
+      },
+      "contacts": 4,
+      "finish_reason_counts": {
+        "<no wire record>": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KC-S1-SMOKE-4-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "<no wire record>": 4
+          },
+          "max_completion_tokens": 47,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KC-S1-SMOKE-4-V1",
+      "trace": "SAEA-SLURP-KC-S1-SMOKE-4-V1.trace.jsonl",
+      "trace_bytes": 78356,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260906T022710Z-b4b30a",
+      "configured_max_tokens": {
+        "64": 4
+      },
+      "contacts": 4,
+      "finish_reason_counts": {
+        "<no wire record>": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KC-S1-SMOKE-4-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "<no wire record>": 4
+          },
+          "max_completion_tokens": 49,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KC-S1-SMOKE-4-V1",
+      "trace": "SAEA-SLURP-KC-S1-SMOKE-4-V1.trace.jsonl",
+      "trace_bytes": 88919,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260906T023017Z-38c20a",
+      "configured_max_tokens": {
+        "64": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "<no wire record>": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1.legal-label-projection-relock.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 3,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "<no wire record>": 1000
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1",
+      "trace": "SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1.trace.jsonl",
+      "trace_bytes": 19478469,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260909T135929Z-cd0731",
+      "configured_max_tokens": {
+        "64": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "<no wire record>": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 4,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "<no wire record>": 1000
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1",
+      "trace": "SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1.trace.jsonl",
+      "trace_bytes": 25461912,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260906T025102Z-af6b04",
+      "configured_max_tokens": {
+        "64": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "<no wire record>": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1.legal-label-projection-relock.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 4,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "<no wire record>": 1000
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1",
+      "trace": "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1.trace.jsonl",
+      "trace_bytes": 25461400,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260906T042946Z-44720f",
+      "configured_max_tokens": {
+        "64": 2000
+      },
+      "contacts": 2000,
+      "finish_reason_counts": {
+        "<no wire record>": 2000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KU-S1C-DRAFT-REVISE-DEV1000-V1.legal-label-projection-relock.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 7,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2000,
+          "finish_reason_counts": {
+            "<no wire record>": 2000
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KU-S1C-DRAFT-REVISE-DEV1000-V1",
+      "trace": "SAEA-SLURP-KU-S1C-DRAFT-REVISE-DEV1000-V1.trace.jsonl",
+      "trace_bytes": 35509392,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260906T042625Z-26425d",
+      "configured_max_tokens": {
+        "64": 8
+      },
+      "contacts": 8,
+      "finish_reason_counts": {
+        "<no wire record>": 8
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KU-S1C-SMOKE-4-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 8,
+          "finish_reason_counts": {
+            "<no wire record>": 8
+          },
+          "max_completion_tokens": 47,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KU-S1C-SMOKE-4-V1",
+      "trace": "SAEA-SLURP-KU-S1C-SMOKE-4-V1.trace.jsonl",
+      "trace_bytes": 142003,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260909T233650Z-4328b7",
+      "configured_max_tokens": {
+        "256": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "length": 1,
+        "stop": 999
+      },
+      "finite_contacts": [
+        {
+          "completion_tokens": 256,
+          "finish_reason": "length",
+          "request_id": "flight-0469",
+          "role": "unassigned"
+        }
+      ],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-RECOVERY-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 1,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "length": 1,
+            "stop": 999
+          },
+          "max_completion_tokens": 256,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-RECOVERY-V1",
+      "trace": "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-RECOVERY-V1.trace.jsonl",
+      "trace_bytes": 26832609,
+      "wire_records": 1000
+    },
+    {
+      "attempt_id": "attempt-20260909T164321Z-a9c5ef",
+      "configured_max_tokens": {
+        "256": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "stop": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "stop": 1000
+          },
+          "max_completion_tokens": 79,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-V1",
+      "trace": "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-V1.trace.jsonl",
+      "trace_bytes": 26805714,
+      "wire_records": 1000
+    },
+    {
+      "attempt_id": "attempt-20260909T233650Z-792913",
+      "configured_max_tokens": {
+        "256": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "stop": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KU-S3A-G1-MAX256-RECOVERY-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "stop": 1000
+          },
+          "max_completion_tokens": 72,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KU-S3A-G1-MAX256-RECOVERY-V1",
+      "trace": "SAEA-SLURP-KU-S3A-G1-MAX256-RECOVERY-V1.trace.jsonl",
+      "trace_bytes": 30117405,
+      "wire_records": 1000
+    },
+    {
+      "attempt_id": "attempt-independent-s3a-repeat-v1",
+      "configured_max_tokens": {
+        "256": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "stop": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "stop": 1000
+          },
+          "max_completion_tokens": 80,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-V1",
+      "trace": "SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-V1.trace.jsonl",
+      "trace_bytes": 30133260,
+      "wire_records": 1000
+    },
+    {
+      "attempt_id": "attempt-20260909T233650Z-5a5e19",
+      "configured_max_tokens": {
+        "256": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "stop": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-RECOVERY-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "stop": 1000
+          },
+          "max_completion_tokens": 79,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-RECOVERY-V1",
+      "trace": "SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-RECOVERY-V1.trace.jsonl",
+      "trace_bytes": 30128017,
+      "wire_records": 1000
+    },
+    {
+      "attempt_id": "attempt-20260910T020504Z-938cd3",
+      "configured_max_tokens": {
+        "64": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "<no wire record>": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "<no wire record>": 1000
+          },
+          "max_completion_tokens": 63,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3",
+      "trace": "SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3.trace.jsonl",
+      "trace_bytes": 23063722,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260910T021118Z-503e47",
+      "configured_max_tokens": {
+        "64": 4
+      },
+      "contacts": 4,
+      "finish_reason_counts": {
+        "<no wire record>": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KUS4N-CANDIDATES-SMOKE-ALIGNED-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "<no wire record>": 4
+          },
+          "max_completion_tokens": 36,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KUS4N-CANDIDATES-SMOKE-ALIGNED-V1",
+      "trace": "SAEA-SLURP-KUS4N-CANDIDATES-SMOKE-ALIGNED-V1.trace.jsonl",
+      "trace_bytes": 95792,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260910T020504Z-a556a2",
+      "configured_max_tokens": {
+        "64": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "<no wire record>": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 3,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "<no wire record>": 1000
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3",
+      "trace": "SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3.trace.jsonl",
+      "trace_bytes": 23094986,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260910T021118Z-447c8c",
+      "configured_max_tokens": {
+        "64": 4
+      },
+      "contacts": 4,
+      "finish_reason_counts": {
+        "<no wire record>": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KUS4N-CANDIDATES-TWIN-SMOKE-ALIGNED-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "<no wire record>": 4
+          },
+          "max_completion_tokens": 47,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KUS4N-CANDIDATES-TWIN-SMOKE-ALIGNED-V1",
+      "trace": "SAEA-SLURP-KUS4N-CANDIDATES-TWIN-SMOKE-ALIGNED-V1.trace.jsonl",
+      "trace_bytes": 96001,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260909T062500Z-74bfac",
+      "configured_max_tokens": {
+        "64": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "<no wire record>": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 3,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "<no wire record>": 1000
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1",
+      "trace": "SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1.trace.jsonl",
+      "trace_bytes": 23313355,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260909T074825Z-0d2278",
+      "configured_max_tokens": {
+        "64": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "<no wire record>": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 4,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "<no wire record>": 1000
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1",
+      "trace": "SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1.trace.jsonl",
+      "trace_bytes": 28526933,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260909T081235Z-583048",
+      "configured_max_tokens": {
+        "64": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "<no wire record>": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 3,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "<no wire record>": 1000
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1",
+      "trace": "SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1.trace.jsonl",
+      "trace_bytes": 28534624,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260909T064623Z-2a0ef7",
+      "configured_max_tokens": {
+        "64": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "<no wire record>": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KV2-CARDS-DEV1000-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 3,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "<no wire record>": 1000
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KV2-CARDS-DEV1000-V1",
+      "trace": "SAEA-SLURP-KV2-CARDS-DEV1000-V1.trace.jsonl",
+      "trace_bytes": 40298423,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260909T071753Z-548ca4",
+      "configured_max_tokens": {
+        "64": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "<no wire record>": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 4,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "<no wire record>": 1000
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1",
+      "trace": "SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1.trace.jsonl",
+      "trace_bytes": 38470034,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260909T083938Z-401fca",
+      "configured_max_tokens": {
+        "64": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "<no wire record>": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 4,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "<no wire record>": 1000
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1",
+      "trace": "SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1.trace.jsonl",
+      "trace_bytes": 25145521,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-20260909T090318Z-b9657d",
+      "configured_max_tokens": {
+        "64": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "<no wire record>": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 3,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "<no wire record>": 1000
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1",
+      "trace": "SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1.trace.jsonl",
+      "trace_bytes": 25024663,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-live-intent-slots-control-recovery-generation-v1",
+      "configured_max_tokens": {
+        "256": 2000
+      },
+      "contacts": 2000,
+      "finish_reason_counts": {
+        "stop": 2000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-LIVE-INTENT-SLOTS-CONTROL-RECOVERY-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2000,
+          "finish_reason_counts": {
+            "stop": 2000
+          },
+          "max_completion_tokens": 78,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-LIVE-INTENT-SLOTS-CONTROL-RECOVERY-V1",
+      "trace": "SAEA-SLURP-LIVE-INTENT-SLOTS-CONTROL-RECOVERY-V1.trace.jsonl",
+      "trace_bytes": 44293982,
+      "wire_records": 2000
+    },
+    {
+      "attempt_id": "attempt-live-intent-slots-speech-generation-v1",
+      "configured_max_tokens": {
+        "256": 2000
+      },
+      "contacts": 2000,
+      "finish_reason_counts": {
+        "stop": 2000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-LIVE-INTENT-SLOTS-SPEECH-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2000,
+          "finish_reason_counts": {
+            "stop": 2000
+          },
+          "max_completion_tokens": 78,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-LIVE-INTENT-SLOTS-SPEECH-V1",
+      "trace": "SAEA-SLURP-LIVE-INTENT-SLOTS-SPEECH-V1.trace.jsonl",
+      "trace_bytes": 49695671,
+      "wire_records": 2000
+    },
+    {
+      "attempt_id": "attempt-live-program-matched-control-generation-v1",
+      "configured_max_tokens": {
+        "256": 2000
+      },
+      "contacts": 2000,
+      "finish_reason_counts": {
+        "stop": 2000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2000,
+          "finish_reason_counts": {
+            "stop": 2000
+          },
+          "max_completion_tokens": 78,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1",
+      "trace": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1.trace.jsonl",
+      "trace_bytes": 45412975,
+      "wire_records": 2000
+    },
+    {
+      "attempt_id": "attempt-live-program-matched-speech-generation-v1",
+      "configured_max_tokens": {
+        "256": 2000
+      },
+      "contacts": 2000,
+      "finish_reason_counts": {
+        "stop": 2000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-SPEECH-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2000,
+          "finish_reason_counts": {
+            "stop": 2000
+          },
+          "max_completion_tokens": 91,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-SPEECH-V1",
+      "trace": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-SPEECH-V1.trace.jsonl",
+      "trace_bytes": 49775545,
+      "wire_records": 2000
+    },
+    {
+      "attempt_id": "attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-smoke-4-generation-v1",
+      "configured_max_tokens": {
+        "512": 20
+      },
+      "contacts": 20,
+      "finish_reason_counts": {
+        "stop": 16,
+        "tool_calls": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-SMOKE-4-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 149,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 2,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 8,
+          "finish_reason_counts": {
+            "stop": 4,
+            "tool_calls": 4
+          },
+          "max_completion_tokens": 86,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 26,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 20,
+      "run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-SMOKE-4-V1",
+      "trace": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-SMOKE-4-V1.trace.jsonl",
+      "trace_bytes": 1914215,
+      "wire_records": 20
+    },
+    {
+      "attempt_id": "attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-generation-recovery-v1",
+      "configured_max_tokens": {
+        "512": 5415
+      },
+      "contacts": 5415,
+      "finish_reason_counts": {
+        "stop": 4341,
+        "tool_calls": 1074
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "stop": 1080
+          },
+          "max_completion_tokens": 166,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1087,
+          "finish_reason_counts": {
+            "stop": 1087
+          },
+          "max_completion_tokens": 3,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2161,
+          "finish_reason_counts": {
+            "stop": 1087,
+            "tool_calls": 1074
+          },
+          "max_completion_tokens": 245,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1087,
+          "finish_reason_counts": {
+            "stop": 1087
+          },
+          "max_completion_tokens": 58,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 5415,
+      "run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1",
+      "trace": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1.trace.jsonl",
+      "trace_bytes": 537918909,
+      "wire_records": 5415
+    },
+    {
+      "attempt_id": "attempt-slurp-native-b8a-deliver-normalise-v3-exemplars-k20-smoke-4-generation-v1",
+      "configured_max_tokens": {
+        "512": 24
+      },
+      "contacts": 24,
+      "finish_reason_counts": {
+        "stop": 19,
+        "tool_calls": 5
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 149,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 5,
+          "finish_reason_counts": {
+            "stop": 5
+          },
+          "max_completion_tokens": 3,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 10,
+          "finish_reason_counts": {
+            "stop": 5,
+            "tool_calls": 5
+          },
+          "max_completion_tokens": 121,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 5,
+          "finish_reason_counts": {
+            "stop": 5
+          },
+          "max_completion_tokens": 26,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 24,
+      "run_id": "SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-V1",
+      "trace": "SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-V1.trace.jsonl",
+      "trace_bytes": 2328727,
+      "wire_records": 24
+    },
+    {
+      "attempt_id": "attempt-slurp-native-bounded-perception-proof-generation-v1",
+      "configured_max_tokens": {
+        "512": 20
+      },
+      "contacts": 20,
+      "finish_reason_counts": {
+        "stop": 16,
+        "tool_calls": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-BOUNDED-PERCEPTION-PROOF-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 147,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 2,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 8,
+          "finish_reason_counts": {
+            "stop": 4,
+            "tool_calls": 4
+          },
+          "max_completion_tokens": 148,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 36,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 20,
+      "run_id": "SAEA-SLURP-NATIVE-BOUNDED-PERCEPTION-PROOF-V1",
+      "trace": "SAEA-SLURP-NATIVE-BOUNDED-PERCEPTION-PROOF-V1.trace.jsonl",
+      "trace_bytes": 1389941,
+      "wire_records": 20
+    },
+    {
+      "attempt_id": "attempt-slurp-native-broad-factored-train-fold-a-generation-v1",
+      "configured_max_tokens": {
+        "512": 5407
+      },
+      "contacts": 5407,
+      "finish_reason_counts": {
+        "stop": 4326,
+        "tool_calls": 1081
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-BROAD-FACTORED-TRAIN-FOLD-A-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "stop": 1080
+          },
+          "max_completion_tokens": 160,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1082,
+          "finish_reason_counts": {
+            "stop": 1082
+          },
+          "max_completion_tokens": 3,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2163,
+          "finish_reason_counts": {
+            "stop": 1082,
+            "tool_calls": 1081
+          },
+          "max_completion_tokens": 217,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1082,
+          "finish_reason_counts": {
+            "stop": 1082
+          },
+          "max_completion_tokens": 148,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 5407,
+      "run_id": "SAEA-SLURP-NATIVE-BROAD-FACTORED-TRAIN-FOLD-A-V1",
+      "trace": "SAEA-SLURP-NATIVE-BROAD-FACTORED-TRAIN-FOLD-A-V1.trace.jsonl",
+      "trace_bytes": 676215855,
+      "wire_records": 5407
+    },
+    {
+      "attempt_id": "attempt-slurp-native-candidate-five-train-fold-a-generation-v1",
+      "configured_max_tokens": {
+        "512": 5421
+      },
+      "contacts": 5421,
+      "finish_reason_counts": {
+        "stop": 4341,
+        "tool_calls": 1080
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-CANDIDATE-FIVE-TRAIN-FOLD-A-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "stop": 1080
+          },
+          "max_completion_tokens": 258,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1087,
+          "finish_reason_counts": {
+            "stop": 1087
+          },
+          "max_completion_tokens": 3,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2167,
+          "finish_reason_counts": {
+            "stop": 1087,
+            "tool_calls": 1080
+          },
+          "max_completion_tokens": 225,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1087,
+          "finish_reason_counts": {
+            "stop": 1087
+          },
+          "max_completion_tokens": 84,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 5421,
+      "run_id": "SAEA-SLURP-NATIVE-CANDIDATE-FIVE-TRAIN-FOLD-A-V1",
+      "trace": "SAEA-SLURP-NATIVE-CANDIDATE-FIVE-TRAIN-FOLD-A-V1.trace.jsonl",
+      "trace_bytes": 504261239,
+      "wire_records": 5421
+    },
+    {
+      "attempt_id": "attempt-slurp-native-candidate-source-direct-generation-v1",
+      "configured_max_tokens": {
+        "256": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "stop": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-CANDIDATE-SOURCE-DIRECT-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "stop": 1000
+          },
+          "max_completion_tokens": 81,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-NATIVE-CANDIDATE-SOURCE-DIRECT-V1",
+      "trace": "SAEA-SLURP-NATIVE-CANDIDATE-SOURCE-DIRECT-V1.trace.jsonl",
+      "trace_bytes": 18616487,
+      "wire_records": 1000
+    },
+    {
+      "attempt_id": "attempt-slurp-native-candidate-source-lookup-generation-v1",
+      "configured_max_tokens": {
+        "256": 1042
+      },
+      "contacts": 1042,
+      "finish_reason_counts": {
+        "stop": 1000,
+        "tool_calls": 42
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-CANDIDATE-SOURCE-LOOKUP-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1042,
+          "finish_reason_counts": {
+            "stop": 1000,
+            "tool_calls": 42
+          },
+          "max_completion_tokens": 81,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-NATIVE-CANDIDATE-SOURCE-LOOKUP-V1",
+      "trace": "SAEA-SLURP-NATIVE-CANDIDATE-SOURCE-LOOKUP-V1.trace.jsonl",
+      "trace_bytes": 24192158,
+      "wire_records": 1042
+    },
+    {
+      "attempt_id": "attempt-slurp-native-dual-store-dev1000-generation-base-replication-v1",
+      "configured_max_tokens": {
+        "512": 5040
+      },
+      "contacts": 5040,
+      "finish_reason_counts": {
+        "stop": 4033,
+        "tool_calls": 1007
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-BASE-REPLICATION-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "stop": 1000
+          },
+          "max_completion_tokens": 163,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1011,
+          "finish_reason_counts": {
+            "stop": 1011
+          },
+          "max_completion_tokens": 3,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2018,
+          "finish_reason_counts": {
+            "stop": 1011,
+            "tool_calls": 1007
+          },
+          "max_completion_tokens": 353,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1011,
+          "finish_reason_counts": {
+            "stop": 1011
+          },
+          "max_completion_tokens": 195,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 5040,
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-BASE-REPLICATION-V1",
+      "trace": "SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-BASE-REPLICATION-V1.trace.jsonl",
+      "trace_bytes": 447425417,
+      "wire_records": 5040
+    },
+    {
+      "attempt_id": "attempt-slurp-native-dual-store-dev1000-generation-reboot-recovery-v1",
+      "configured_max_tokens": {
+        "512": 5046
+      },
+      "contacts": 5046,
+      "finish_reason_counts": {
+        "stop": 4036,
+        "tool_calls": 1010
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-REBOOT-RECOVERY-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "stop": 1000
+          },
+          "max_completion_tokens": 167,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1012,
+          "finish_reason_counts": {
+            "stop": 1012
+          },
+          "max_completion_tokens": 3,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2022,
+          "finish_reason_counts": {
+            "stop": 1012,
+            "tool_calls": 1010
+          },
+          "max_completion_tokens": 187,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1012,
+          "finish_reason_counts": {
+            "stop": 1012
+          },
+          "max_completion_tokens": 111,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 5046,
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-REBOOT-RECOVERY-V1",
+      "trace": "SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-REBOOT-RECOVERY-V1.trace.jsonl",
+      "trace_bytes": 449152590,
+      "wire_records": 5046
+    },
+    {
+      "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+      "configured_max_tokens": {
+        "512": 5417
+      },
+      "contacts": 5417,
+      "finish_reason_counts": {
+        "stop": 4335,
+        "tool_calls": 1082
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "stop": 1080
+          },
+          "max_completion_tokens": 163,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1085,
+          "finish_reason_counts": {
+            "stop": 1085
+          },
+          "max_completion_tokens": 3,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2167,
+          "finish_reason_counts": {
+            "stop": 1085,
+            "tool_calls": 1082
+          },
+          "max_completion_tokens": 402,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1085,
+          "finish_reason_counts": {
+            "stop": 1085
+          },
+          "max_completion_tokens": 97,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 5417,
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+      "trace": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1.trace.jsonl",
+      "trace_bytes": 479702285,
+      "wire_records": 5417
+    },
+    {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-smoke-4-generation-recovery-v2",
+      "configured_max_tokens": {
+        "512": 20
+      },
+      "contacts": 20,
+      "finish_reason_counts": {
+        "stop": 16,
+        "tool_calls": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-RECOVERY-V2.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 147,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 2,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 8,
+          "finish_reason_counts": {
+            "stop": 4,
+            "tool_calls": 4
+          },
+          "max_completion_tokens": 78,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 26,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 20,
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-RECOVERY-V2",
+      "trace": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-RECOVERY-V2.trace.jsonl",
+      "trace_bytes": 1867846,
+      "wire_records": 20
+    },
+    {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-smoke-4-generation-v2",
+      "configured_max_tokens": {
+        "512": 20
+      },
+      "contacts": 20,
+      "finish_reason_counts": {
+        "stop": 16,
+        "tool_calls": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-V2.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 147,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 2,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 8,
+          "finish_reason_counts": {
+            "stop": 4,
+            "tool_calls": 4
+          },
+          "max_completion_tokens": 78,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 26,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 20,
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-V2",
+      "trace": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-V2.trace.jsonl",
+      "trace_bytes": 1867754,
+      "wire_records": 20
+    },
+    {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2",
+      "configured_max_tokens": {
+        "512": 5425
+      },
+      "contacts": 5425,
+      "finish_reason_counts": {
+        "stop": 4341,
+        "tool_calls": 1084
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "stop": 1080
+          },
+          "max_completion_tokens": 166,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1087,
+          "finish_reason_counts": {
+            "stop": 1087
+          },
+          "max_completion_tokens": 3,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2171,
+          "finish_reason_counts": {
+            "stop": 1087,
+            "tool_calls": 1084
+          },
+          "max_completion_tokens": 251,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1087,
+          "finish_reason_counts": {
+            "stop": 1087
+          },
+          "max_completion_tokens": 60,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 5425,
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2",
+      "trace": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2.trace.jsonl",
+      "trace_bytes": 531068294,
+      "wire_records": 5425
+    },
+    {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-twin-train-fold-a-generation-v2",
+      "configured_max_tokens": {
+        "512": 5429
+      },
+      "contacts": 5429,
+      "finish_reason_counts": {
+        "stop": 4347,
+        "tool_calls": 1082
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "stop": 1080
+          },
+          "max_completion_tokens": 158,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1089,
+          "finish_reason_counts": {
+            "stop": 1089
+          },
+          "max_completion_tokens": 3,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2171,
+          "finish_reason_counts": {
+            "stop": 1089,
+            "tool_calls": 1082
+          },
+          "max_completion_tokens": 152,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1089,
+          "finish_reason_counts": {
+            "stop": 1089
+          },
+          "max_completion_tokens": 71,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 5429,
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2",
+      "trace": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2.trace.jsonl",
+      "trace_bytes": 530124590,
+      "wire_records": 5429
+    },
+    {
+      "attempt_id": "attempt-slurp-native-knowledge-fix-dry-run-generation-v1",
+      "configured_max_tokens": {
+        "256": 20
+      },
+      "contacts": 20,
+      "finish_reason_counts": {
+        "stop": 16,
+        "tool_calls": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-KNOWLEDGE-FIX-DRY-RUN-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 184,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 2,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 8,
+          "finish_reason_counts": {
+            "stop": 4,
+            "tool_calls": 4
+          },
+          "max_completion_tokens": 145,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 37,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 20,
+      "run_id": "SAEA-SLURP-NATIVE-KNOWLEDGE-FIX-DRY-RUN-V1",
+      "trace": "SAEA-SLURP-NATIVE-KNOWLEDGE-FIX-DRY-RUN-V1.trace.jsonl",
+      "trace_bytes": 1356905,
+      "wire_records": 20
+    },
+    {
+      "attempt_id": "attempt-slurp-native-ncp-l1-anchor-smoke-4-generation-recovery-v1",
+      "configured_max_tokens": {
+        "512": 20
+      },
+      "contacts": 20,
+      "finish_reason_counts": {
+        "stop": 16,
+        "tool_calls": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-RECOVERY-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 147,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 2,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 8,
+          "finish_reason_counts": {
+            "stop": 4,
+            "tool_calls": 4
+          },
+          "max_completion_tokens": 113,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 26,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 20,
+      "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-RECOVERY-V1",
+      "trace": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-RECOVERY-V1.trace.jsonl",
+      "trace_bytes": 2080678,
+      "wire_records": 20
+    },
+    {
+      "attempt_id": "attempt-slurp-native-ncp-l1-anchor-smoke-4-generation-v1",
+      "configured_max_tokens": {
+        "512": 24
+      },
+      "contacts": 24,
+      "finish_reason_counts": {
+        "stop": 19,
+        "tool_calls": 5
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 147,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 5,
+          "finish_reason_counts": {
+            "stop": 5
+          },
+          "max_completion_tokens": 3,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 10,
+          "finish_reason_counts": {
+            "stop": 5,
+            "tool_calls": 5
+          },
+          "max_completion_tokens": 134,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 5,
+          "finish_reason_counts": {
+            "stop": 5
+          },
+          "max_completion_tokens": 26,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 24,
+      "run_id": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-V1",
+      "trace": "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-V1.trace.jsonl",
+      "trace_bytes": 2527672,
+      "wire_records": 24
+    },
+    {
+      "attempt_id": "attempt-slurp-native-review-off-smoke-4-generation-v1",
+      "configured_max_tokens": {
+        "512": 8
+      },
+      "contacts": 8,
+      "finish_reason_counts": {
+        "stop": 8
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-REVIEW-OFF-SMOKE-4-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 149,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 26,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 8,
+      "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-SMOKE-4-V1",
+      "trace": "SAEA-SLURP-NATIVE-REVIEW-OFF-SMOKE-4-V1.trace.jsonl",
+      "trace_bytes": 625371,
+      "wire_records": 8
+    },
+    {
+      "attempt_id": "attempt-slurp-native-review-off-train-fold-a-replicate-generation-v1",
+      "configured_max_tokens": {
+        "512": 2160
+      },
+      "contacts": 2160,
+      "finish_reason_counts": {
+        "stop": 2160
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "stop": 1080
+          },
+          "max_completion_tokens": 163,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "stop": 1080
+          },
+          "max_completion_tokens": 98,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 2160,
+      "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1",
+      "trace": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1.trace.jsonl",
+      "trace_bytes": 178171404,
+      "wire_records": 2160
+    },
+    {
+      "attempt_id": "attempt-slurp-native-review-off-train-fold-a-generation-v1",
+      "configured_max_tokens": {
+        "512": 2160
+      },
+      "contacts": 2160,
+      "finish_reason_counts": {
+        "stop": 2160
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "stop": 1080
+          },
+          "max_completion_tokens": 163,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "stop": 1080
+          },
+          "max_completion_tokens": 116,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 2160,
+      "run_id": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1",
+      "trace": "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1.trace.jsonl",
+      "trace_bytes": 177779387,
+      "wire_records": 2160
+    },
+    {
+      "attempt_id": "attempt-slurp-native-role-gpu-proof-generation-v1",
+      "configured_max_tokens": {
+        "256": 20
+      },
+      "contacts": 20,
+      "finish_reason_counts": {
+        "stop": 16,
+        "tool_calls": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-ROLE-GPU-PROOF-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 163,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 2,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 8,
+          "finish_reason_counts": {
+            "stop": 4,
+            "tool_calls": 4
+          },
+          "max_completion_tokens": 72,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 34,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 20,
+      "run_id": "SAEA-SLURP-NATIVE-ROLE-GPU-PROOF-V1",
+      "trace": "SAEA-SLURP-NATIVE-ROLE-GPU-PROOF-V1.trace.jsonl",
+      "trace_bytes": 901132,
+      "wire_records": 20
+    },
+    {
+      "attempt_id": "attempt-slurp-native-samples5-anchor-smoke-4-generation-recovery-v3",
+      "configured_max_tokens": {
+        "512": 36
+      },
+      "contacts": 36,
+      "finish_reason_counts": {
+        "stop": 32,
+        "tool_calls": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-RECOVERY-V3.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 147,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 2,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 8,
+          "finish_reason_counts": {
+            "stop": 4,
+            "tool_calls": 4
+          },
+          "max_completion_tokens": 128,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 20,
+          "finish_reason_counts": {
+            "stop": 20
+          },
+          "max_completion_tokens": 36,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 36,
+      "run_id": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-RECOVERY-V3",
+      "trace": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-RECOVERY-V3.trace.jsonl",
+      "trace_bytes": 2751001,
+      "wire_records": 36
+    },
+    {
+      "attempt_id": "attempt-slurp-native-samples5-anchor-smoke-4-generation-v3",
+      "configured_max_tokens": {
+        "512": 36
+      },
+      "contacts": 36,
+      "finish_reason_counts": {
+        "stop": 32,
+        "tool_calls": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-V3.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 149,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 2,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 8,
+          "finish_reason_counts": {
+            "stop": 4,
+            "tool_calls": 4
+          },
+          "max_completion_tokens": 119,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 20,
+          "finish_reason_counts": {
+            "stop": 20
+          },
+          "max_completion_tokens": 26,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 36,
+      "run_id": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-V3",
+      "trace": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-SMOKE-4-V3.trace.jsonl",
+      "trace_bytes": 2736445,
+      "wire_records": 36
+    },
+    {
+      "attempt_id": "attempt-slurp-native-samples5-anchor-train-fold-a-generation-v3",
+      "configured_max_tokens": {
+        "512": 9807
+      },
+      "contacts": 9807,
+      "finish_reason_counts": {
+        "stop": 8717,
+        "tool_calls": 1090
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-TRAIN-FOLD-A-V3.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "stop": 1080
+          },
+          "max_completion_tokens": 161,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1091,
+          "finish_reason_counts": {
+            "stop": 1091
+          },
+          "max_completion_tokens": 3,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2181,
+          "finish_reason_counts": {
+            "stop": 1091,
+            "tool_calls": 1090
+          },
+          "max_completion_tokens": 241,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 5455,
+          "finish_reason_counts": {
+            "stop": 5455
+          },
+          "max_completion_tokens": 120,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 9807,
+      "run_id": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-TRAIN-FOLD-A-V3",
+      "trace": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-TRAIN-FOLD-A-V3.trace.jsonl",
+      "trace_bytes": 785682744,
+      "wire_records": 9807
+    },
+    {
+      "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-smoke-4-generation-v2",
+      "configured_max_tokens": {
+        "512": 20
+      },
+      "contacts": 20,
+      "finish_reason_counts": {
+        "stop": 16,
+        "tool_calls": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-SMOKE-4-V2.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 147,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 2,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 8,
+          "finish_reason_counts": {
+            "stop": 4,
+            "tool_calls": 4
+          },
+          "max_completion_tokens": 87,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 26,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 20,
+      "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-SMOKE-4-V2",
+      "trace": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-SMOKE-4-V2.trace.jsonl",
+      "trace_bytes": 1709891,
+      "wire_records": 20
+    },
+    {
+      "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume2",
+      "configured_max_tokens": {
+        "512": 2501
+      },
+      "contacts": 2501,
+      "finish_reason_counts": {
+        "stop": 2006,
+        "tool_calls": 495
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 500,
+          "finish_reason_counts": {
+            "stop": 500
+          },
+          "max_completion_tokens": 152,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 502,
+          "finish_reason_counts": {
+            "stop": 502
+          },
+          "max_completion_tokens": 3,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 997,
+          "finish_reason_counts": {
+            "stop": 502,
+            "tool_calls": 495
+          },
+          "max_completion_tokens": 177,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 502,
+          "finish_reason_counts": {
+            "stop": 502
+          },
+          "max_completion_tokens": 57,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 2501,
+      "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2",
+      "trace": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2.trace.jsonl",
+      "trace_bytes": 234008069,
+      "wire_records": 2501
+    },
+    {
+      "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-generation-v2",
+      "configured_max_tokens": {
+        "512": 5407
+      },
+      "contacts": 5407,
+      "finish_reason_counts": {
+        "stop": 4332,
+        "tool_calls": 1075
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V2.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1080,
+          "finish_reason_counts": {
+            "stop": 1080
+          },
+          "max_completion_tokens": 163,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1084,
+          "finish_reason_counts": {
+            "stop": 1084
+          },
+          "max_completion_tokens": 3,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2159,
+          "finish_reason_counts": {
+            "stop": 1084,
+            "tool_calls": 1075
+          },
+          "max_completion_tokens": 177,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1084,
+          "finish_reason_counts": {
+            "stop": 1084
+          },
+          "max_completion_tokens": 70,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 5407,
+      "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V2",
+      "trace": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V2.trace.jsonl",
+      "trace_bytes": 486853838,
+      "wire_records": 5407
+    },
+    {
+      "attempt_id": "attempt-slurp-native-tools-engineering-recovery-generation-v1",
+      "configured_max_tokens": {
+        "256": 8
+      },
+      "contacts": 8,
+      "finish_reason_counts": {
+        "stop": 4,
+        "tool_calls": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-RECOVERY-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 8,
+          "finish_reason_counts": {
+            "stop": 4,
+            "tool_calls": 4
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-RECOVERY-V1",
+      "trace": "SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-RECOVERY-V1.trace.jsonl",
+      "trace_bytes": 238198,
+      "wire_records": 8
+    },
+    {
+      "attempt_id": "attempt-slurp-native-tools-engineering-generation-v1",
+      "configured_max_tokens": {
+        "256": 12
+      },
+      "contacts": 12,
+      "finish_reason_counts": {
+        "stop": 4,
+        "tool_calls": 8
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 12,
+          "finish_reason_counts": {
+            "stop": 4,
+            "tool_calls": 8
+          },
+          "max_completion_tokens": 52,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-V1",
+      "trace": "SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-V1.trace.jsonl",
+      "trace_bytes": 380008,
+      "wire_records": 12
+    },
+    {
+      "attempt_id": "attempt-slurp-native-typed-context-tool-rejection-proof4-generation-v1",
+      "configured_max_tokens": {
+        "512": 44
+      },
+      "contacts": 44,
+      "finish_reason_counts": {
+        "stop": 28,
+        "tool_calls": 16
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-NATIVE-TYPED-CONTEXT-TOOL-REJECTION-PROOF4-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "perception": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 149,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "planner": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 8,
+          "finish_reason_counts": {
+            "stop": 8
+          },
+          "max_completion_tokens": 3,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "reviewer": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 24,
+          "finish_reason_counts": {
+            "stop": 8,
+            "tool_calls": 16
+          },
+          "max_completion_tokens": 125,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        },
+        "solver": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 8,
+          "finish_reason_counts": {
+            "stop": 8
+          },
+          "max_completion_tokens": 27,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 44,
+      "run_id": "SAEA-SLURP-NATIVE-TYPED-CONTEXT-TOOL-REJECTION-PROOF4-V1",
+      "trace": "SAEA-SLURP-NATIVE-TYPED-CONTEXT-TOOL-REJECTION-PROOF4-V1.trace.jsonl",
+      "trace_bytes": 5647940,
+      "wire_records": 44
+    },
+    {
+      "attempt_id": "attempt-20260909T152055Z-8f8f56",
+      "configured_max_tokens": {
+        "256": 4
+      },
+      "contacts": 4,
+      "finish_reason_counts": {
+        "stop": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX256-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 79,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX256-V1",
+      "trace": "SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX256-V1.trace.jsonl",
+      "trace_bytes": 252838,
+      "wire_records": 4
+    },
+    {
+      "attempt_id": "attempt-20260909T152049Z-7e7a4d",
+      "configured_max_tokens": {
+        "64": 4
+      },
+      "contacts": 4,
+      "finish_reason_counts": {
+        "length": 2,
+        "stop": 2
+      },
+      "finite_contacts": [
+        {
+          "completion_tokens": 64,
+          "finish_reason": "length",
+          "request_id": "flight-0001",
+          "role": "unassigned"
+        },
+        {
+          "completion_tokens": 64,
+          "finish_reason": "length",
+          "request_id": "flight-0003",
+          "role": "unassigned"
+        }
+      ],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX64-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 2,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "length": 2,
+            "stop": 2
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX64-V1",
+      "trace": "SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX64-V1.trace.jsonl",
+      "trace_bytes": 252666,
+      "wire_records": 4
+    },
+    {
+      "attempt_id": "attempt-20260906T011230Z-472a22",
+      "configured_max_tokens": {
+        "64": 4
+      },
+      "contacts": 4,
+      "finish_reason_counts": {
+        "<no wire record>": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-PHASE-SMOKE-4-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "<no wire record>": 4
+          },
+          "max_completion_tokens": 47,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-PHASE-SMOKE-4-V1",
+      "trace": "SAEA-SLURP-PHASE-SMOKE-4-V1.trace.jsonl",
+      "trace_bytes": 68683,
+      "wire_records": 0
+    },
+    {
+      "attempt_id": "attempt-slurp-role-coverage-control-generation-v1",
+      "configured_max_tokens": {
+        "256": 2000
+      },
+      "contacts": 2000,
+      "finish_reason_counts": {
+        "stop": 2000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-ROLE-COVERAGE-CONTROL-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2000,
+          "finish_reason_counts": {
+            "stop": 2000
+          },
+          "max_completion_tokens": 121,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-ROLE-COVERAGE-CONTROL-V1",
+      "trace": "SAEA-SLURP-ROLE-COVERAGE-CONTROL-V1.trace.jsonl",
+      "trace_bytes": 45490195,
+      "wire_records": 2000
+    },
+    {
+      "attempt_id": "attempt-slurp-role-coverage-treatment-generation-v1",
+      "configured_max_tokens": {
+        "256": 2000
+      },
+      "contacts": 2000,
+      "finish_reason_counts": {
+        "stop": 2000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-ROLE-COVERAGE-TREATMENT-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2000,
+          "finish_reason_counts": {
+            "stop": 2000
+          },
+          "max_completion_tokens": 77,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-ROLE-COVERAGE-TREATMENT-V1",
+      "trace": "SAEA-SLURP-ROLE-COVERAGE-TREATMENT-V1.trace.jsonl",
+      "trace_bytes": 50162950,
+      "wire_records": 2000
+    },
+    {
+      "attempt_id": "attempt-slurp-speech-observation-control-generation-v1",
+      "configured_max_tokens": {
+        "256": 3000
+      },
+      "contacts": 3000,
+      "finish_reason_counts": {
+        "stop": 3000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 3000,
+          "finish_reason_counts": {
+            "stop": 3000
+          },
+          "max_completion_tokens": 121,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1",
+      "trace": "SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1.trace.jsonl",
+      "trace_bytes": 68032152,
+      "wire_records": 3000
+    },
+    {
+      "attempt_id": "attempt-slurp-speech-observation-whisper-transport-recovery-generation-v1",
+      "configured_max_tokens": {
+        "256": 3000
+      },
+      "contacts": 3000,
+      "finish_reason_counts": {
+        "stop": 3000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 3000,
+          "finish_reason_counts": {
+            "stop": 3000
+          },
+          "max_completion_tokens": 121,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1",
+      "trace": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1.trace.jsonl",
+      "trace_bytes": 77549138,
+      "wire_records": 3000
+    },
+    {
+      "attempt_id": "attempt-slurp-task-agent-direct-replication-generation-v1",
+      "configured_max_tokens": {
+        "256": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "stop": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-TASK-AGENT-DIRECT-REPLICATION-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "stop": 1000
+          },
+          "max_completion_tokens": 77,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-TASK-AGENT-DIRECT-REPLICATION-V1",
+      "trace": "SAEA-SLURP-TASK-AGENT-DIRECT-REPLICATION-V1.trace.jsonl",
+      "trace_bytes": 18614034,
+      "wire_records": 1000
+    },
+    {
+      "attempt_id": "attempt-slurp-task-agent-direct-generation-v1",
+      "configured_max_tokens": {
+        "256": 1000
+      },
+      "contacts": 1000,
+      "finish_reason_counts": {
+        "stop": 1000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-TASK-AGENT-DIRECT-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 1000,
+          "finish_reason_counts": {
+            "stop": 1000
+          },
+          "max_completion_tokens": 77,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-TASK-AGENT-DIRECT-V1",
+      "trace": "SAEA-SLURP-TASK-AGENT-DIRECT-V1.trace.jsonl",
+      "trace_bytes": 18588643,
+      "wire_records": 1000
+    },
+    {
+      "attempt_id": "attempt-slurp-task-agent-frame-replication-recovery-generation-v1",
+      "configured_max_tokens": {
+        "256": 2000
+      },
+      "contacts": 2000,
+      "finish_reason_counts": {
+        "stop": 2000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-TASK-AGENT-FRAME-REPLICATION-RECOVERY-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2000,
+          "finish_reason_counts": {
+            "stop": 2000
+          },
+          "max_completion_tokens": 121,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-TASK-AGENT-FRAME-REPLICATION-RECOVERY-V1",
+      "trace": "SAEA-SLURP-TASK-AGENT-FRAME-REPLICATION-RECOVERY-V1.trace.jsonl",
+      "trace_bytes": 45517526,
+      "wire_records": 2000
+    },
+    {
+      "attempt_id": "attempt-slurp-task-agent-frame-generation-v1",
+      "configured_max_tokens": {
+        "256": 2000
+      },
+      "contacts": 2000,
+      "finish_reason_counts": {
+        "stop": 2000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-TASK-AGENT-FRAME-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2000,
+          "finish_reason_counts": {
+            "stop": 2000
+          },
+          "max_completion_tokens": 121,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-TASK-AGENT-FRAME-V1",
+      "trace": "SAEA-SLURP-TASK-AGENT-FRAME-V1.trace.jsonl",
+      "trace_bytes": 45474170,
+      "wire_records": 2000
+    },
+    {
+      "attempt_id": "attempt-slurp-task-agent-knowledge-generation-v1",
+      "configured_max_tokens": {
+        "256": 2000
+      },
+      "contacts": 2000,
+      "finish_reason_counts": {
+        "stop": 2000
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-TASK-AGENT-KNOWLEDGE-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 2000,
+          "finish_reason_counts": {
+            "stop": 2000
+          },
+          "max_completion_tokens": 81,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-TASK-AGENT-KNOWLEDGE-V1",
+      "trace": "SAEA-SLURP-TASK-AGENT-KNOWLEDGE-V1.trace.jsonl",
+      "trace_bytes": 45282354,
+      "wire_records": 2000
+    },
+    {
+      "attempt_id": "attempt-slurp-top3-closed-joint-engineering-generation-v1",
+      "configured_max_tokens": {
+        "256": 4
+      },
+      "contacts": 4,
+      "finish_reason_counts": {
+        "stop": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-TOP3-CLOSED-JOINT-ENGINEERING-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 50,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-TOP3-CLOSED-JOINT-ENGINEERING-V1",
+      "trace": "SAEA-SLURP-TOP3-CLOSED-JOINT-ENGINEERING-V1.trace.jsonl",
+      "trace_bytes": 109563,
+      "wire_records": 4
+    },
+    {
+      "attempt_id": "attempt-slurp-top3-hard-first-engineering-generation-v1",
+      "configured_max_tokens": {
+        "256": 4
+      },
+      "contacts": 4,
+      "finish_reason_counts": {
+        "stop": 4
+      },
+      "finite_contacts": [],
+      "malformed_records": 0,
+      "manifest": "SAEA-SLURP-TOP3-HARD-FIRST-ENGINEERING-V1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "per_role": {
+        "unassigned": {
+          "at_configured_cap": 0,
+          "at_or_above_near_cap": 0,
+          "at_output_cap": 0,
+          "contacts": 4,
+          "finish_reason_counts": {
+            "stop": 4
+          },
+          "max_completion_tokens": 64,
+          "unknown_completion_tokens": 0,
+          "unknown_configured_cap": 0
+        }
+      },
+      "role_labelled_contacts": 0,
+      "run_id": "SAEA-SLURP-TOP3-HARD-FIRST-ENGINEERING-V1",
+      "trace": "SAEA-SLURP-TOP3-HARD-FIRST-ENGINEERING-V1.trace.jsonl",
+      "trace_bytes": 109724,
+      "wire_records": 4
+    }
+  ],
+  "sealed_status": "COMPLETED",
+  "sealed_totals": {
+    "at_configured_cap": 127,
+    "at_or_above_near_cap": 11,
+    "at_output_cap": 0,
+    "attempts": 103,
+    "contacts": 141051,
+    "finish_reason_counts": {
+      "<no wire record>": 28902,
+      "length": 3,
+      "stop": 99861,
+      "tool_calls": 12285
+    },
+    "finite_contacts": 3,
+    "native_at_configured_cap": 0,
+    "native_finish_reason_counts": {
+      "stop": 57756,
+      "tool_calls": 12231
+    },
+    "native_finite_contacts": 0,
+    "native_role_contacts": 69987,
+    "unknown_configured_cap": 54
+  },
+  "semantics": "Counters only. No response text, transcript or gold label is read, printed or persisted; the preserved base64 wire body is never decoded. A contact with no MODEL_WIRE_RESPONSE record is counted under '<no wire record>' rather than assumed to have stopped normally.",
+  "skipped": [
+    {
+      "attempt_id": "attempt-slurp-candidate-slot-view-proof4-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-CANDIDATE-SLOT-VIEW-PROOF4-V1",
+      "trace": "SAEA-SLURP-CANDIDATE-SLOT-VIEW-PROOF4-V1.trace.jsonl"
+    },
+    {
+      "attempt_id": "silence-tail-read-score-batch",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "own-null-read-score-batch",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-DEV1000-NULL-REPLICATE-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-slurp-direct-max512-dev1000-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-slurp-direct-max512-train-fold-a-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-slurp-direct-vs-native-system-generation-replication-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-REPLICATION-V1",
+      "trace": "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-REPLICATION-V1.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-packets-fold-a",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-EVO-FOLD-PACKETS-V2",
+      "trace": "SAEA-SLURP-EVO-FOLD-PACKETS-V2.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-packets-fold-b",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-EVO-FOLD-PACKETS-V2",
+      "trace": "SAEA-SLURP-EVO-FOLD-PACKETS-V2.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-packets-fold-b2",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-EVO-FOLD-PACKETS-V2",
+      "trace": "SAEA-SLURP-EVO-FOLD-PACKETS-V2.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-r1-a",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-EVO-S1-FOLD-B-V2",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-20260906T202423Z-evos1promptfit",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-EVO-S1-PROMPT-FIT-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-20260906T212254Z-evos1tokenizer",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-EVO-S1-PROMPT-FIT-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-20260906T221506Z-evos1tokenizer",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-EVO-S1-PROMPT-FIT-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-20260906T222113Z-evos1tokenizer",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-EVO-S1-PROMPT-FIT-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-r1-p",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2",
+      "trace": "SAEA-SLURP-EVO-S1-PROPOSER-V2.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-r1-p2",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-EVO-S1-PROPOSER-V2",
+      "trace": "SAEA-SLURP-EVO-S1-PROPOSER-V2.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-slurp-intent-hypothesis-source-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-V1",
+      "trace": "SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-V1.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-20260906T022131Z-slurpkcs1promptfit",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-KC-S1-PROMPT-FIT-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-20260906T022329Z-slurpkcs1promptfit",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-KC-S1-PROMPT-FIT-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-20260906T024148Z-af6b04",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-20260906T070705Z-kus1qemb-preflight",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-KU-S1-QUERY-EMBEDDING-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-20260906T070727Z-kus1qemb",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-KU-S1-QUERY-EMBEDDING-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-20260906T041821Z-slurpkus1cpromptfit",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-KU-S1C-PROMPT-FIT-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-20260906T042408Z-slurpkus1cpromptfit",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-KU-S1C-PROMPT-FIT-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "derived-inherited-intent-slots-v1",
+      "manifest": "SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-V1--delivery-inherited-intent-slots-v1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "derived-live-intent-slots-control-recovery-delivery-v1",
+      "manifest": "SAEA-SLURP-LIVE-INTENT-SLOTS-CONTROL-RECOVERY-V1--delivery-live-intent-slots-control-recovery-delivery-v1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-LIVE-INTENT-SLOTS-CONTROL-RECOVERY-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-live-intent-slots-control-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-LIVE-INTENT-SLOTS-CONTROL-V1",
+      "trace": "SAEA-SLURP-LIVE-INTENT-SLOTS-CONTROL-V1.trace.jsonl"
+    },
+    {
+      "attempt_id": "derived-live-intent-slots-speech-delivery-v1",
+      "manifest": "SAEA-SLURP-LIVE-INTENT-SLOTS-SPEECH-V1--delivery-live-intent-slots-speech-delivery-v1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-LIVE-INTENT-SLOTS-SPEECH-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "derived-live-program-matched-control-delivery-v1",
+      "manifest": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1--delivery-live-program-matched-control-delivery-v1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "derived-live-program-matched-speech-delivery-v1",
+      "manifest": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-SPEECH-V1--delivery-live-program-matched-speech-delivery-v1.run-manifest.json",
+      "manifest_status": "COMPLETED",
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-SPEECH-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "score-batch",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-MF-LEGAL-LABEL-PROJECTION-RELOCK-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "score-batch",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-MF-LEGAL-LABEL-PROJECTION-V2-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "score-batch-decompose",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-MF9-SLOT-GAP-AUDIT-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V1",
+      "trace": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V1.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-bounded-evidence-train-fold-a-recovery-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-NATIVE-BOUNDED-EVIDENCE-TRAIN-FOLD-A-RECOVERY-V1",
+      "trace": "SAEA-SLURP-NATIVE-BOUNDED-EVIDENCE-TRAIN-FOLD-A-RECOVERY-V1.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-bounded-evidence-train-fold-a-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-NATIVE-BOUNDED-EVIDENCE-TRAIN-FOLD-A-V1",
+      "trace": "SAEA-SLURP-NATIVE-BOUNDED-EVIDENCE-TRAIN-FOLD-A-V1.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-candidate-refresh-tools-train-fold-a-generation-recovery-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-NATIVE-CANDIDATE-REFRESH-TOOLS-TRAIN-FOLD-A-RECOVERY-V1",
+      "trace": "SAEA-SLURP-NATIVE-CANDIDATE-REFRESH-TOOLS-TRAIN-FOLD-A-RECOVERY-V1.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-candidate-refresh-tools-train-fold-a-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-NATIVE-CANDIDATE-REFRESH-TOOLS-TRAIN-FOLD-A-V1",
+      "trace": "SAEA-SLURP-NATIVE-CANDIDATE-REFRESH-TOOLS-TRAIN-FOLD-A-V1.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-V1",
+      "trace": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-V1.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-v2",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-V2",
+      "trace": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-V2.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-knowledge-proof-recovery-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-NATIVE-KNOWLEDGE-PROOF-RECOVERY-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-slurp-native-knowledge-proof-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-NATIVE-KNOWLEDGE-PROOF-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2",
+      "trace": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-slot-store-v2-anchor-train-fold-a-replicate-generation-v2-resume",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-slurp-native-terminal-system-generation-recovery-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-NATIVE-TERMINAL-SYSTEM-DEV1000-RECOVERY-V1",
+      "trace": "SAEA-SLURP-NATIVE-TERMINAL-SYSTEM-DEV1000-RECOVERY-V1.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-typed-role-context-train-fold-a-recovery-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-RECOVERY-V1",
+      "trace": "SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-RECOVERY-V1.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-typed-role-context-train-fold-a-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-V1",
+      "trace": "SAEA-SLURP-NATIVE-TYPED-ROLE-CONTEXT-TRAIN-FOLD-A-V1.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-slurp-speech-observation-whisper-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "manifest status None is not COMPLETED",
+      "run_id": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-V1",
+      "trace": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-V1.trace.jsonl"
+    },
+    {
+      "attempt_id": "attempt-slurp-task-agent-frame-replication-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-TASK-AGENT-FRAME-REPLICATION-V1",
+      "trace": null
+    },
+    {
+      "attempt_id": "attempt-slurp-train-a-incumbent-reward-source-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "reason": "no trace file",
+      "run_id": "SAEA-SLURP-TRAIN-A-INCUMBENT-REWARD-SOURCE-V1",
+      "trace": null
+    }
+  ],
+  "tokenizer_calls": 0,
+  "zero_finite_completions_on_every_sealed_attempt": false,
+  "zero_finite_completions_on_every_sealed_native_role_contact": true
+}

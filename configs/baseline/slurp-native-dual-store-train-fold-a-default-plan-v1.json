@@ -113,7 +113,8 @@
     "review_loop": "on",
     "deliver_normaliser": {
       "normaliser": "saea-deliver-normalise-v3"
-    }
+    },
+    "finite_completion_policy": "deliver-latest-or-abstain"
   },
   "phase_material": {
     "perception": {
@@ -219,7 +220,7 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "The SLURP default plan of the harness-admission receipt (docs/receipts/harness-admission.json, added 2026-09-17 by docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md): the sealed dual-store TRAIN Fold A anchor configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json plus the decided switches of that receipt: native_episode.review_loop 'on', the validated marker of the review-loop module the table decides for this carrier, and (since 2026-09-19, module M4b replicated) knowledge_stores.slot-contracts re-pinned at the slot store v2 release and snapshot bytes, and (since 2026-09-19, module M3 admitted) native_episode.deliver_normaliser armed with saea-deliver-normalise-v3, the delivery-time normaliser node (the Reviewer/Planner loop, NEUTRAL under the TRAIN A own null). The marker is inert: rails.native_episode_config validates it against the loop leaves (max_revisions 1, reviewer 3, planner 1) and renders no request byte. This fragment is never a cell of its own; it is the comparator plus the module list the gate reads, exactly as the Earnings-21 plan is.",
+  "what_this_is": "The SLURP default plan of the harness-admission receipt (docs/receipts/harness-admission.json, added 2026-09-17 by docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md): the sealed dual-store TRAIN Fold A anchor configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json plus the decided switches of that receipt: native_episode.review_loop 'on', the validated marker of the review-loop module the table decides for this carrier, and (since 2026-09-19, module M4b replicated) knowledge_stores.slot-contracts re-pinned at the slot store v2 release and snapshot bytes, and (since 2026-09-19, module M3 admitted) native_episode.deliver_normaliser armed with saea-deliver-normalise-v3, the delivery-time normaliser node (the Reviewer/Planner loop, NEUTRAL under the TRAIN A own null). The marker is inert: rails.native_episode_config validates it against the loop leaves (max_revisions 1, reviewer 3, planner 1) and renders no request byte. This fragment is never a cell of its own; it is the comparator plus the module list the gate reads, exactly as the Earnings-21 plan is. EXTENDED 2026-09-19 (item E13): the plan also arms native_episode.finite_completion_policy as 'deliver-latest-or-abstain', the NEUTRAL failure-mode key whose OFF arm is the parser default 'raise'. It renders no request byte (tests/unit/test_slurp_finite_completion_row.py) and no sealed SLURP native-episode contact ever met a finite completion (docs/results/2026-09-19-slurp-finite-completion-exposure-v1.md), so the plan composes the same requests and the same delivered bytes as before it; what it changes is that a future 512-token completion retains its row instead of aborting the flight, as the B7a recovery arm's did not.",
   "prepared_phase_supply": {
     "relpath": "prepared/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-PREPARE-V1-R2/phase-supply.json",
     "sha256": "c5b0b51c23ef22feb1284559cd9e37286922d4cefc2e3cfcf7feafb23e3b595e"
