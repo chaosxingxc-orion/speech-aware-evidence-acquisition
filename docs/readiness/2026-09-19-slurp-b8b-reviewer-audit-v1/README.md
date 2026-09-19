@@ -34,7 +34,7 @@ One experiment in flight at a time.
 | smoke cell | experiment and cell `slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-v1` |
 | smoke run / attempt | `SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1` / `attempt-slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-generation-v1r` |
 | smoke FIT | `SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-FIT-V1` / `attempt-slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-fit-v1`, 176 endpoints, inside the same worker |
-| smoke composed / protocol | `b75426c5e4bf4ebdb921fb081b09662bf485823adfa6d3f7d883411acb99df36` / `66deb117849b16560c9b54f33b52a889bcc4a87f5075ff7f35b6d06d00164dae` |
+| smoke composed / protocol | `54c0df632e54bba7259121d6ad6212d7a2ca11ab3bf8a73df0ba4c177ad018d5` / `326deddb64fc7ee5ebc9c565653119a2e59f25ae4924a75cc28d4ae8348d87ed` |
 | baselines | `configs/baseline/slurp-native-anchor-ncp-l1-reviewer-audit-{train-fold-a,smoke-4}-v1.json` |
 | experiments | `configs/experiment/slurp-native-ncp-l1-reviewer-audit-anchor-{train-fold-a,smoke-4}-v1.json` |
 | prepared supply (inherited pins, to be rebuilt by the re-pin tool) | arm `prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v2.json`, SHA-256 `391177e18797854db0f41648a4de23a3ff100288e653032bb4c2dae09d8d44cd`, **output** `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f`; smoke `prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1/phase-supply-v1.json`, SHA-256 `2ae41cd030d635824616fffac046f640a2d1f878fb1d900a127c6a5559dd861e`, **output** `512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733` |

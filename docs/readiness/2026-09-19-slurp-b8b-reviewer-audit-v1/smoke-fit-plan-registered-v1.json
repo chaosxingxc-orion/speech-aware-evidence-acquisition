@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-v1",
-  "composed_config_hash": "b75426c5e4bf4ebdb921fb081b09662bf485823adfa6d3f7d883411acb99df36",
+  "composed_config_hash": "54c0df632e54bba7259121d6ad6212d7a2ca11ab3bf8a73df0ba4c177ad018d5",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 176,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "66deb117849b16560c9b54f33b52a889bcc4a87f5075ff7f35b6d06d00164dae",
+    "protocol_hash": "326deddb64fc7ee5ebc9c565653119a2e59f25ae4924a75cc28d4ae8348d87ed",
     "run_id": "SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-SMOKE-4-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
