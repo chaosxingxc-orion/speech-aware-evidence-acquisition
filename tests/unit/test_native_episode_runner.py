@@ -28,6 +28,9 @@ from speech_aware_evidence_acquisition.rails.native_episode_config import (
     NativeEpisodeRole,
     NativeEpisodeRunBinding,
 )
+from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
+    is_illegal_planner_route,
+)
 from speech_aware_evidence_acquisition.rails.candidate_experience_memory import (
     LoadedCandidateExperienceMemory,
 )
@@ -854,12 +857,72 @@ def test_actual_native_episode_contact_cap_refusal_preserves_completed_contacts(
 
 @pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
 @pytest.mark.parametrize(
+    ("max_revisions", "planner_actions", "solver_visit"),
+    (
+        (0, ("ACQUIRE",), 1),
+        (1, ("REVISE", "ACQUIRE"), 2),
+    ),
+)
+def test_e15_actual_terminal_acquire_is_a_retained_row_not_a_terminal_delivery(
+    tmp_path, max_revisions, planner_actions, solver_visit
+):
+    """E15 (finding I-1 of the 2026-09-19 base-lock draft).
+
+    No configuration this runner accepts can build an acquisition node --
+    ``rails.native_episode_config`` admits exactly the perception, solver,
+    reviewer and planner roles -- so ACQUIRE is an action no production
+    episode can execute.  Before E15 the same Planner word meant two
+    different things depending on WHEN it arrived: at a non-terminal revision
+    it raised inside the graph and killed the flight, and at the terminal
+    revision it was recorded as a ``revision_limit`` terminal delivery.  After
+    E15 it means one thing everywhere: the E8c retained-row disposition.
+
+    These two shapes are the terminal-revision cases this proof's sibling
+    above used to carry.  The episode makes exactly the same contacts it made
+    before; only its seal changed.
+    """
+
+    harness = _ActualEpisodeHarness(
+        tmp_path,
+        sample_count=1,
+        max_revisions=max_revisions,
+        max_contacts=4 + 3 * max_revisions,
+        planner_actions=planner_actions,
+        exhaustion_policy="deliver-latest-solver",
+    )
+    try:
+        summary = harness.run()
+    finally:
+        close_summary = harness.close()
+
+    result = summary.results[0]
+    receipt = result.native_episode_receipt
+    assert close_summary["request_count"] == len(result.contacts) == 4 + 3 * max_revisions
+    assert result.final_response_text == f"solver-answer:s1:visit:{solver_visit}"
+    assert "terminal_solver_receipt" not in receipt
+    assert "terminal_disposition" not in receipt
+    accepted = receipt["accepted_solver_receipt"]["final_contact"]
+    assert accepted == harness.traced_contact(accepted["agent_contact_id"])
+    assert accepted["response_text_sha256"] == harness.dispatched[
+        ("s1", "solver", solver_visit, 1)
+    ]["response_text_sha256"]
+    route = receipt["planner_routes"][-1]
+    assert is_illegal_planner_route(route)
+    assert route["action"] == "ACQUIRE"
+    assert route["revision_count"] == max_revisions
+    assert receipt["planner_action_illegal"] == {
+        "schema": "saea-native-planner-action-illegal-v1",
+        "count": 1,
+        "action_sha256": [hashlib.sha256(b"ACQUIRE").hexdigest()],
+    }
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+@pytest.mark.parametrize(
     ("max_revisions", "planner_actions", "solver_visit", "terminal_action"),
     (
         (0, ("REVISE",), 1, "REVISE"),
-        (0, ("ACQUIRE",), 1, "ACQUIRE"),
         (1, ("REVISE", "REVISE"), 2, "REVISE"),
-        (1, ("REVISE", "ACQUIRE"), 2, "ACQUIRE"),
     ),
 )
 def test_actual_opt_in_terminal_delivery_preserves_last_solver_trace(

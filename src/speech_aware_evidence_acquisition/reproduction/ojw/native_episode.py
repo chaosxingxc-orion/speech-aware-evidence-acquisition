@@ -349,6 +349,11 @@ class _ApplyRole(WorkflowComponent):
                 raise NativeEpisodeError("episode has no valid Solver draft")
             updated["latest_solver"] = dict(role)
         elif self._kind == "planner":
+            # E15: NativeEpisodeWorkflow always supplies `planner_actions` for
+            # a Planner node, and that graph-derived set is the authority.
+            # The literal set below survives only for a node constructed
+            # directly, outside a workflow, which cannot know whether an
+            # acquisition node exists.
             legal = {
                 self._actions.accept,
                 self._actions.revise,
@@ -711,6 +716,11 @@ class NativeEpisodeWorkflow:
         self.spec = spec
         self.nodes = nodes
         self._role_input_builder = role_input_builder
+        # E15 (finding I-1 of the 2026-09-19 SLURP agent base-lock draft):
+        # this set is THE legal Planner action set for every episode this
+        # workflow builds, under both output formats.  ACQUIRE is in it only
+        # when an acquisition node was actually supplied, because an episode
+        # built without one has no route that can execute an ACQUIRE.
         self._planner_actions = {spec.actions.accept, spec.actions.revise}
         if nodes.acquisition is not None:
             self._planner_actions.add(spec.actions.acquire)
@@ -756,12 +766,20 @@ class NativeEpisodeWorkflow:
                 self.spec.actions,
                 self.spec.refresh_action,
                 self.spec.planner_output_format,
-                (
-                    self._planner_actions
-                    if kind == "planner"
-                    and self.spec.planner_output_format == "json-action-v1"
-                    else None
-                ),
+                # E15.  Before E15 this set reached _ApplyRole only under
+                # `json-action-v1`; under the flown `exact-text` the node fell
+                # back to {accept, revise, acquire} and called ACQUIRE legal
+                # even on an episode with no acquisition node.  Such a token
+                # then routed into
+                # `_Exhausted("episode has no configured analytical
+                # acquisition role")`, which RAISES and takes the whole flight
+                # with it -- exactly the failure class E8c removed for
+                # unregistered Planner tokens.  Passing the graph's own set
+                # under both formats makes an ACQUIRE on such an episode an
+                # illegal Planner output, so the E8c path RETAINS the row.  An
+                # episode that does carry an acquisition node keeps ACQUIRE in
+                # this set and every byte of its behaviour.
+                self._planner_actions if kind == "planner" else None,
             ),
             inputs_schema={
                 "state": "${" + query_id + ".state}",
@@ -945,6 +963,14 @@ class NativeEpisodeWorkflow:
                 )
                 next_predecessors.append(refreshed)
             if self.nodes.acquisition is None:
+                # E15: unreachable by construction.  `_planner_actions` holds
+                # no ACQUIRE for an episode built without an acquisition node,
+                # so `_ApplyRole` classifies such a token as an illegal
+                # Planner output and the router's PLANNER_ACTION_ILLEGAL
+                # branch above seals the row.  The branch stays as defence in
+                # depth: if some future caller ever makes ACQUIRE legal
+                # without wiring a node, the graph must refuse loudly rather
+                # than silently deliver.
                 acquire_id = f"acquire_unavailable_{revision}"
                 workflow.add_workflow_comp(
                     acquire_id,

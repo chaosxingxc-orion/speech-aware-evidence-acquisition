@@ -25,6 +25,9 @@ from speech_aware_evidence_acquisition.rails.config_tables import (
     is_episode_null_arm,
     resolve_episode_switch_key,
 )
+from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
+    is_illegal_planner_route,
+)
 from speech_aware_evidence_acquisition.rails.node_context_binding import (
     validate_node_context_policy_config,
 )
@@ -294,6 +297,62 @@ def test_l0_declared_raw_renders_the_same_bytes_and_adds_only_receipt_rows(
         if channel == "ORG" and record_id.endswith("/node-context-policy")
     ]
     assert org == rows
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_e15_an_acquire_planner_output_keeps_the_anchor_request_bytes(tmp_path):
+    """E15 (finding I-1 of the 2026-09-19 base-lock draft), through the
+    PRODUCTION render path.
+
+    The anchor episode above, with one word changed in the Planner's own
+    RESPONSE: ``ACQUIRE`` instead of ``REVISE``.  No SLURP episode is built
+    with an acquisition node, so before E15 that word raised
+    ``NativeEpisodeError`` inside the graph and took the flight with it.  Two
+    claims here:
+
+    * every request the harness admitted up to and including that Planner
+      contact is byte-identical to the pins captured on the pre-change tree --
+      E15 moves no request byte, and the Planner prompt (which never
+      advertised ``ACQUIRE``) is untouched;
+    * the row is RETAINED: it delivers the committed first draft, its final
+      route carries the E8c disposition, and the receipt counts it.
+    """
+
+    harness = _ActualEpisodeHarness(
+        tmp_path,
+        sample_count=1,
+        max_revisions=1,
+        max_contacts=9,
+        planner_actions=("ACQUIRE",),
+        reviewer_task_tool=True,
+    )
+    harness._output = _anchor_outputs(harness)
+    try:
+        summary = harness.run()
+    finally:
+        harness.close()
+
+    # The episode stops at the first Planner, so it makes the anchor's first
+    # five requests and no more -- each one byte-for-byte the pinned bytes.
+    prefix = ("perception/1/1", "solver/1/1", "reviewer/1/1", "reviewer/1/2",
+              "planner/1/1")
+    assert _request_digests(harness) == {
+        key: ANCHOR_REQUEST_SHA256[key] for key in prefix
+    }
+
+    result = summary.results[0]
+    assert result.final_response_text == FIRST_DRAFT
+    receipt = result.native_episode_receipt
+    route = receipt["planner_routes"][-1]
+    assert is_illegal_planner_route(route)
+    assert route["action"] == "ACQUIRE"
+    assert route["revision_count"] == 0
+    assert receipt["planner_action_illegal"]["count"] == 1
+    assert receipt["planner_action_illegal"]["action_sha256"] == [
+        hashlib.sha256(b"ACQUIRE").hexdigest()
+    ]
+    assert "accepted_solver_receipt" in receipt
+    assert "terminal_disposition" not in receipt
 
 
 @pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
