@@ -220,7 +220,7 @@ provisional with the obligation `UNMET`, and **the owner is told**. No third pas
 | cell | composed config | protocol |
 | --- | --- | --- |
 | arm `slurp-native-exemplars-k20-anchor-replicate-v1` | `a1cec1e65066108a88873803be5535c7fc8f8f166a1dad856953e541f954ba45` | `2792c1beb3c37d3617bf2c340dceeef062184cb8dd137405ac9b94698db9d8b1` |
-| smoke `slurp-native-exemplars-k20-anchor-replicate-smoke-4-v1` | `12f242bc92d8c20fe8b44bb12850f351a775e9c5a14b9168afae37d2e85f3008` | `8cfbccae71095c9cff1e63162a30354cf619b56b5bf7780e6b834254ff3efdbf` |
+| smoke `slurp-native-exemplars-k20-anchor-replicate-smoke-4-v1` | `188ac3fc02b1b66cda23c2a88ed1b0791284698f59f5611044ab387a38076d68` | `47a32c78a98698789b2ccd9e9377194b30f54f10edf2e40bb5693283a58b2714` |
 
 These are the values of the five fragments **exactly as committed** — readiness `held`, this cell's
 own `preparation` requirement pinned, **no** `decision` requirement. Re-pinning, adding the decision

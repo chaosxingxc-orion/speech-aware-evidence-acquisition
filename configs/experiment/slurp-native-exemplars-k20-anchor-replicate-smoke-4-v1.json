@@ -15,13 +15,20 @@
         "reason": "Four-row form smoke of cell B1r, registered before contact under OWNER DECISION 37 of 2026-09-19 alongside the arm. Structural evidence only; no official scoring job and no task-quality read. It stays held: the coordinator pins the root decision receipt coordination/slurp-b1-replicate-v1/root-admission-v1.json (decision id slurp-b1-replicate-admission-v1) and flips the state with scripts/flights/repin_cell.py. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. Registered by the B1r registration agent in worktree /home/chao/saea-worktrees/fable-b1r, branch fable/b1r, base commit 0989edb1.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b1-replicate-admission-v1",
+            "relpath": "coordination/slurp-b1-replicate-v1/root-admission-v1.json",
+            "sha256": "b1a2e938d9edc43c10442e67cc2015acd848d36475fe229ce54e66be5160d30f",
+            "reason": "Decision slurp-b1-replicate-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors cell B1 and the sealed dual-store anchor used, with zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed cell B1 preparation's on all 4 rows (output SHA-256 512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733), asserted by hand in this registration -- the model-free proof that this replicate's own identities and the declared finite-completion key move no knowledge-selection byte. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting cell B1's, which is also why core.flight.repin finds it valid, rebuilds nothing and adds nothing to assert_no_residue's scan. --allow-output-change must never be passed; if that output SHA-256 stops matching, a merge changed the knowledge channel -- stop and report.",
             "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-REPLICATE-SMOKE-4-V1/phase-supply-v1.json",
             "sha256": "78aa0622394f37287878116beab4b229dd2c5afbb28b08d8210e798e21ed0f83"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-REPLICATE-SMOKE-4-V1"
     }

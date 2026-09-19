@@ -47,7 +47,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-19-slurp-b1-replicate-v1/protocol-registered-v1.json",
-    "sha256": "3ba8165d0e7297c51418a27df871e8c81cc25392c9ce1a960148f1512c158163"
+    "sha256": "5ca1c3097bb436369dadf340eb7443013ea2bbcb7f7692f95999f28d04166047"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist, and not before the registered STOP condition passes. The gating comparator for the replication clauses is the sealed dual-store anchor SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1; the own-null contrast is against the sealed cell B1 recovery arm SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2. Neither is ever re-flown or re-scored. The verdict word is REPLICATED or NOT REPLICATED. Read once; the decision rule is fixed in the protocol document and is not edited after a number is seen. No third pass is registered or authorized either way. This arm does not open before this cell's own four-row smoke seals.",
   "registered_at_utc": "2026-09-19T18:00:00.000000+00:00",

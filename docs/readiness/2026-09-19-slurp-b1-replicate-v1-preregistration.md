@@ -58,7 +58,7 @@ configuration's half-widths. This cell measures the right ones.
 | dataset fragment | `slurp-speech-native-evo-fold-a-1080` (**cell B1's**) |
 | campaign plan | `configs/campaign/slurp-native-exemplars-k20-anchor-replicate-v1.json` |
 | composed config / protocol (arm, **pre-flip**) | `a1cec1e65066108a88873803be5535c7fc8f8f166a1dad856953e541f954ba45` / `2792c1beb3c37d3617bf2c340dceeef062184cb8dd137405ac9b94698db9d8b1` |
-| composed config / protocol (smoke, **pre-flip**) | `12f242bc92d8c20fe8b44bb12850f351a775e9c5a14b9168afae37d2e85f3008` / `8cfbccae71095c9cff1e63162a30354cf619b56b5bf7780e6b834254ff3efdbf` |
+| composed config / protocol (smoke, **pre-flip**) | `188ac3fc02b1b66cda23c2a88ed1b0791284698f59f5611044ab387a38076d68` / `47a32c78a98698789b2ccd9e9377194b30f54f10edf2e40bb5693283a58b2714` |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |
 | readiness | `held` with this cell's own `preparation` requirement pinned and **no decision requirement** |
 | decision | id `slurp-b1-replicate-admission-v1`, receipt `coordination/slurp-b1-replicate-v1/root-admission-v1.json` |
@@ -346,7 +346,7 @@ tables, the mandatory diagnostics and the output paths, and it is registered bef
 
 | evidence | where |
 | --- | --- |
-| protocol document | `docs/readiness/2026-09-19-slurp-b1-replicate-v1/protocol-registered-v1.json`, SHA-256 `3ba8165d0e7297c51418a27df871e8c81cc25392c9ce1a960148f1512c158163` |
+| protocol document | `docs/readiness/2026-09-19-slurp-b1-replicate-v1/protocol-registered-v1.json`, SHA-256 `5ca1c3097bb436369dadf340eb7443013ea2bbcb7f7692f95999f28d04166047` |
 | generation plan | `…/generation-plan-registered-v1.json`, SHA-256 `c4b6ca5ff489d5940d81b8529e658538d2d41e8f9ba9fc7bf940c5c5c17a83d7` |
 | FIT plan | `…/fit-plan-registered-v1.json`, SHA-256 `1d60df6210bccdc2f7234c947cd76446bc9e6fc41ef1bfcb6f948795dd55c97e` |
 | smoke generation plan | `…/smoke-generation-plan-registered-v1.json`, SHA-256 `243f0bb7e0d931ef735ee25784ebed2b68f8af9359b02dcb9411f448736d8697` |
