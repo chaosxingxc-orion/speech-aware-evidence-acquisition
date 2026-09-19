@@ -74,6 +74,54 @@
         "sha256": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec"
       },
       "store_role": "slot-contracts"
+    },
+    "train-exemplars": {
+      "phase_supply": {
+        "solver": {
+          "dimensions": [
+            "content"
+          ],
+          "expose_facets": false,
+          "facet_source": {
+            "embedded_signal": "text: Omni-Embed-Nemotron-3B over the 11,514 governed SLURP TRAIN utterance texts, prompt 'passage: ', mean-pooled and L2-normalised; one vector per content facet id facet:content:<slurp_id>. The KEY side is knowledge text by construction and is unconstrained by the owner's 2026-09-06 query-signal rule.",
+            "kind": "sealed-vectors",
+            "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+            "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+            "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+          },
+          "fuse_coverage": {
+            "c": 20,
+            "m": 20,
+            "top_l": 20
+          },
+          "fuse_policy": "saea-fuse-supplyfilter-v1",
+          "k": 20,
+          "provider": "kb-facet-v1",
+          "query_source": {
+            "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by the sealed full-utterance speech vector of the row's own recording, in the content retrieval dimension; flattened from the sealed intent-boundary full-utterance SEGMENT vectors (docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json's sibling provenance vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.provenance.json -- one segment per row, dimension renamed intent-boundary to content, every float byte-identical to the parent) because docs/results/2026-09-17-slurp-a2-exemplar-headroom-audit-v1.md establishes intent-boundary as an alias of the content embedding space; no flattening of MEANING, re-encoding, transcript, answer or future turn enters this query.",
+            "kind": "sealed-vectors",
+            "relpath": "vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl",
+            "sha256": "d0f06ed21c6a576d8118d5a914e34807c24a3d3523d89e7b30d90575d24104ff",
+            "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+          },
+          "rank_policy": "saea-rank-wcos-prior-agree-v1",
+          "rank_weights": {
+            "w_agree": 0.0,
+            "w_cos": 1.0,
+            "w_prior": 0.0
+          },
+          "tau": 0.0
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/release.json",
+        "sha256": "171aa4a82c2b15fff2c72e907ea80298be8d72309cca0d7367eb50debb042129"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/snapshot.json",
+        "sha256": "4c498dc0282055b9fe036ed7e950af519bd48b5f26e76876d0250727196a72e9"
+      },
+      "store_role": "train-exemplars"
     }
   },
   "native_contact_fit": {
@@ -88,9 +136,14 @@
       "acquire": "ACQUIRE",
       "revise": "REVISE"
     },
+    "deliver_normaliser": {
+      "normaliser": "saea-deliver-normalise-v3"
+    },
     "episode_id": "slurp-native-dual-store-dev1000-v1",
     "exhaustion_policy": "deliver-latest-solver",
+    "finite_completion_policy": "deliver-latest-or-abstain",
     "max_revisions": 1,
+    "review_loop": "on",
     "roles": {
       "perception": {
         "max_iterations": 1,
@@ -109,12 +162,7 @@
         "phase_id": "solver"
       }
     },
-    "schema": "saea-native-episode-config-v1",
-    "review_loop": "on",
-    "deliver_normaliser": {
-      "normaliser": "saea-deliver-normalise-v3"
-    },
-    "finite_completion_policy": "deliver-latest-or-abstain"
+    "schema": "saea-native-episode-config-v1"
   },
   "phase_material": {
     "perception": {
@@ -207,6 +255,10 @@
       "sha256": "c1aaf37a678240633078a8fcca455f949a5c4b2b18d37356129976006c9dc138"
     }
   ],
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-PREPARE-V1-R2/phase-supply.json",
+    "sha256": "c5b0b51c23ef22feb1284559cd9e37286922d4cefc2e3cfcf7feafb23e3b595e"
+  },
   "scorers": [
     "slurp-slu-official-train",
     "cost"
@@ -220,9 +272,6 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "The SLURP default plan of the harness-admission receipt (docs/receipts/harness-admission.json, added 2026-09-17 by docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md): the sealed dual-store TRAIN Fold A anchor configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json plus the decided switches of that receipt: native_episode.review_loop 'on', the validated marker of the review-loop module the table decides for this carrier, and (since 2026-09-19, module M4b replicated) knowledge_stores.slot-contracts re-pinned at the slot store v2 release and snapshot bytes, and (since 2026-09-19, module M3 admitted) native_episode.deliver_normaliser armed with saea-deliver-normalise-v3, the delivery-time normaliser node (the Reviewer/Planner loop, NEUTRAL under the TRAIN A own null). The marker is inert: rails.native_episode_config validates it against the loop leaves (max_revisions 1, reviewer 3, planner 1) and renders no request byte. This fragment is never a cell of its own; it is the comparator plus the module list the gate reads, exactly as the Earnings-21 plan is. EXTENDED 2026-09-19 (item E13): the plan also arms native_episode.finite_completion_policy as 'deliver-latest-or-abstain', the NEUTRAL failure-mode key whose OFF arm is the parser default 'raise'. It renders no request byte (tests/unit/test_slurp_finite_completion_row.py) and no sealed SLURP native-episode contact ever met a finite completion (docs/results/2026-09-19-slurp-finite-completion-exposure-v1.md), so the plan composes the same requests and the same delivered bytes as before it; what it changes is that a future 512-token completion retains its row instead of aborting the flight, as the B7a recovery arm's did not.",
-  "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-PREPARE-V1-R2/phase-supply.json",
-    "sha256": "c5b0b51c23ef22feb1284559cd9e37286922d4cefc2e3cfcf7feafb23e3b595e"
-  }
+  "what_the_train_exemplars_store_is": "SLURP v2 base program module M1 / cell B1 (docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md section 3-4; A2 decision docs/results/2026-09-17-slurp-a2-exemplar-headroom-audit-v1.md): the top-20 TRAIN construction-pool exemplars (excluding every utterance with a recording in TRAIN Fold A, Fold B or DEV-1000; 9,354-facet pool) recalled by cosine against this row's OWN sealed Fold A speech vector, ranked by saea-rank-wcos-prior-agree-v1 (identity on cosine: w_cos=1, w_prior=0, w_agree=0) and passed through saea-fuse-supplyfilter-v1 with m=c=top_l=20 -- twenty in, twenty out on every row, the same 'no coverage reshaping' discipline cell KU-S3 established. Each value renders as '<utterance> | <scenario>_<action> | type=filler; ...' (KB view annotated-exemplars, scripts/build_knowledge_snapshot.py). The decision is delivered to the SOLVER phase (the program's LAST phase) through the E6 acquire transition -- NOT the bootstrap seam intent-boundaries uses, because solver is not the first phase -- as typed content blocks (evidence_id/source_uri/knowledge_role='value', store-prefixed 'train-exemplars::...'); the Solver's instruction bytes are byte-identical to the unmodified anchor's. The composed acquire transition also carries the slot-contracts store's own candidate_supply.solver decision on the same wave; both compose into one PhaseSupply via rails.knowledge_stores._compose_supplies.",
+  "what_this_is": "The SLURP default plan of the harness-admission receipt (docs/receipts/harness-admission.json, added 2026-09-17 by docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md): the sealed dual-store TRAIN Fold A anchor configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json plus the decided switches of that receipt: native_episode.review_loop 'on', the validated marker of the review-loop module the table decides for this carrier, and (since 2026-09-19, module M4b replicated) knowledge_stores.slot-contracts re-pinned at the slot store v2 release and snapshot bytes, and (since 2026-09-19, module M3 admitted) native_episode.deliver_normaliser armed with saea-deliver-normalise-v3, the delivery-time normaliser node (the Reviewer/Planner loop, NEUTRAL under the TRAIN A own null). The marker is inert: rails.native_episode_config validates it against the loop leaves (max_revisions 1, reviewer 3, planner 1) and renders no request byte. This fragment is never a cell of its own; it is the comparator plus the module list the gate reads, exactly as the Earnings-21 plan is. EXTENDED 2026-09-19 (item E13): the plan also arms native_episode.finite_completion_policy as 'deliver-latest-or-abstain', the NEUTRAL failure-mode key whose OFF arm is the parser default 'raise'. It renders no request byte (tests/unit/test_slurp_finite_completion_row.py) and no sealed SLURP native-episode contact ever met a finite completion (docs/results/2026-09-19-slurp-finite-completion-exposure-v1.md), so the plan composes the same requests and the same delivered bytes as before it; what it changes is that a future 512-token completion retains its row instead of aborting the flight, as the B7a recovery arm's did not. Since 2026-09-19 (cell B1r, replication MET) the plan also carries the knowledge_stores.train-exemplars block of module M1, byte for byte the block the flown B1 fragment carries."
 }

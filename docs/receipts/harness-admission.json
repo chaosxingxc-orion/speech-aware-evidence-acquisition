@@ -24,9 +24,10 @@
       "modules": [
         "review loop (Reviewer x3 + Planner + at most one Solver revision after the initial draft; Perception -> Solver -> Reviewer -> Planner -> deliver)",
         "date/time slot-contract revision (slot store v2 re-pinned in place of release v1; module M4b, ADMITTED, replication MET 2026-09-19)",
-        "delivery-time normaliser node saea-deliver-normalise-v3 (module M3, ADMITTED 2026-09-19 by the model-free read plus the four-row smoke; native_episode.deliver_normaliser)"
+        "delivery-time normaliser node saea-deliver-normalise-v3 (module M3, ADMITTED 2026-09-19 by the model-free read plus the four-row smoke; native_episode.deliver_normaliser)",
+        "speech-keyed exemplar supply to the Solver (the train-exemplars store at k = 20; module M1, ADMITTED 2026-09-18 after the twin read, replication MET 2026-09-19 by the request-identical replicate B1r; knowledge_stores.train-exemplars)"
       ],
-      "note": "the sealed dual-store TRAIN Fold A anchor plus the one NEUTRAL module this table decides for SLURP, the review loop, armed by native_episode.review_loop 'on'. Since 2026-09-19 the fragment also pins knowledge_stores.slot-contracts at the slot store v2 release and snapshot bytes (module M4b, ADMITTED, replicated). The fragment differs from the comparator's own configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json in exactly those two decided switches (and in its own what_this_is description), which is what makes it the comparator plus its admitted-or-neutral modules rather than a second baseline. The SLURP v2 base program's later modules (exemplar supply, grouped sampling, the ORG store revisions) enter this plan only through their own decided entries. Since 2026-09-19 the fragment also arms native_episode.deliver_normaliser = {\"normaliser\": \"saea-deliver-normalise-v3\"} (module M3, ADMITTED): every official SLURP number reported from here on comes from a system that contains the node."
+      "note": "the sealed dual-store TRAIN Fold A anchor plus the one NEUTRAL module this table decides for SLURP, the review loop, armed by native_episode.review_loop 'on'. Since 2026-09-19 the fragment also pins knowledge_stores.slot-contracts at the slot store v2 release and snapshot bytes (module M4b, ADMITTED, replicated). The fragment differs from the comparator's own configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json in exactly those two decided switches (and in its own what_this_is description), which is what makes it the comparator plus its admitted-or-neutral modules rather than a second baseline. The SLURP v2 base program's later modules (exemplar supply, grouped sampling, the ORG store revisions) enter this plan only through their own decided entries. Since 2026-09-19 the fragment also arms native_episode.deliver_normaliser = {\"normaliser\": \"saea-deliver-normalise-v3\"} (module M3, ADMITTED): every official SLURP number reported from here on comes from a system that contains the node. Since 2026-09-19 (the B1r read) the fragment also carries the whole knowledge_stores.train-exemplars block the M1 entry's switch.on records (release 171aa4a8..., snapshot 4c498dc0..., phase_supply.solver at k = 20), copied byte for byte from the flown B1 fragment; the plan now differs from the anchor in the review-loop marker, the slot-contracts v2 pins, the delivery normaliser node, the finite-completion policy declaration and the train-exemplars store."
     }
   ],
   "default_plans_note": "ONE plan, for Earnings-21, added 2026-09-08 on merge. It carries exactly one decided module: the cross-call dispatcher, whose verdict (docs/readiness/2026-09-08-e21-dispatcher-admission-v1-verdict.md) states 'NEUTRAL -- ADMITTED TO THE DEFAULT PLAN AS A NO-HARM MODULE' and licenses turning it on for Earnings-21 cells at this geometry. The other entry below is ADMITTED but PROVISIONAL with its replication UNMET, and its own verdict note fixed the consequence before the verdict was known: 'until then NO candidate freeze, NO citation of this as an admitted effect and NO entry into the default plan'. So it may not enter this plan, and scripts/checks/harness_admission_check.py is what keeps that true: it refuses a HARMFUL module in any default plan, refuses a module whose provisional obligation is UNMET in any default plan, and requires every other ADMITTED or NEUTRAL module to appear in at least one default plan for its carrier. EXTENDED 2026-09-17: a second plan, for SLURP, added by docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md. It carries exactly one decided module, the review loop, whose entry is NEUTRAL under the TRAIN A own null (it may stay; its removal failed non-inferiority twice). The plan fragment is the sealed anchor plus the loop's validated marker. EXTENDED 2026-09-19 (item E13): the SLURP plan gains a second decided module, native_episode.finite_completion_policy 'deliver-latest-or-abstain'. It is NEUTRAL with no provisional obligation, so the gate's rule 2 requires it to reach a plan; it may do so at zero risk to any sealed number because the exposure receipt shows the two arms are byte-identical on all 69,987 sealed native contacts, and at zero risk to any request because the key renders none.",
@@ -510,9 +511,14 @@
         "any paper-scale or generalisation claim; TRAIN A is a discovery roster"
       ],
       "provisional": {
-        "state": "UNMET",
-        "reason": "one realisation of the arm against one realisation of the anchor and one of the twin, under margins measured on a different configuration of the same harness; the twin is the attribution control, not a replicate",
-        "requirement": "replicate on the same roster before the default plan carries the store: the B5e / B5er combination pair (owner decision 19 of 2026-09-18) both showing the module's contribution within the own null, or a request-identical replicate of this cell (about 3.7 GPU hours); a second entry records the replication and this entry stays"
+        "state": "MET",
+        "discharged_by": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-REPLICATE-V1 (attempt-slurp-native-exemplars-k20-anchor-replicate-train-fold-a-generation-v1), 2026-09-19, docs/results/2026-09-19-slurp-b1-replicate-verdict.md",
+        "note": "the replication obligation is discharged by the request-identical replicate (owner decisions 37 and 38): the effect may be cited as replicated and the SLURP default plan now carries the whole knowledge_stores.train-exemplars block this entry's switch.on records (default plan fragment re-pinned 2026-09-19 in the same change); the margins every later B1-based comparator reads against are this configuration's own null, h_SLU_M1 1.2350 / h_intent_M1 1.2212",
+        "supersedes": {
+          "state": "UNMET",
+          "reason": "one realisation of the arm against one realisation of the anchor and one of the twin, under margins measured on a different configuration of the same harness; the twin is the attribution control, not a replicate",
+          "requirement": "replicate on the same roster before the default plan carries the store: the B5e / B5er combination pair (owner decision 19 of 2026-09-18) both showing the module's contribution within the own null, or a request-identical replicate of this cell (about 3.7 GPU hours); a second entry records the replication and this entry stays"
+        }
       },
       "switch": {
         "added_by": "docs/results/2026-09-17-slurp-b1-exemplars-k20-verdict.md (proposed) and docs/results/2026-09-18-slurp-b1-twin-verdict.md (completed); the stores null form of harness-admission v3",
@@ -570,6 +576,29 @@
         "proof": "tests/unit/test_config_table_module_switches.py::test_exemplar_supply_store_is_the_only_key_moved_on_the_committed_fragments",
         "what_flew": "The ON arm flew configs/baseline/slurp-native-anchor-exemplars-k20-train-fold-a-recovery-v2.json at a35630c0: the sealed anchor fragment plus the train-exemplars store block (release 171aa4a8..., snapshot 4c498dc0..., phase_supply.solver keyed by the sealed Fold A speech vectors, k = 20, saea-fuse-supplyfilter-v1 at m = c = top_l = 20, saea-rank-wcos-prior-agree-v1 with w_cos = 1, tau 0.0) and nothing else. The OFF arm is the sealed anchor itself, whose knowledge_stores mapping has no train-exemplars entry. The twin flew configs/baseline/slurp-native-anchor-exemplars-k20-twin-train-fold-a-v2.json at a7ce8f4c, the same block keyed by the deranged vectors.",
         "why_this_table": "the module ADDS a named knowledge store whose supply reaches the Solver phase; the stores class names the store's whole block, and the null form records that OFF is the store's absence"
+      },
+      "replication": {
+        "state": "MET",
+        "date": "2026-09-19",
+        "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-REPLICATE-V1",
+        "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-replicate-train-fold-a-generation-v1",
+        "study_commit": "c905ddf01dbb6e9c2e62cf154a413add3bf0c506",
+        "form": "request-identical replicate of the cell on the same 1,080-row roster (the first model-facing request byte-identical to cell B1's on 1,080 of 1,080 rows; train-exemplars evidence-id lists identical in order on 1,080 of 1,080; Perception prompt tokens 3,884,813 on both arms); flown once, officially scored once; no derangement twin re-flown (the twin is the attribution control, not a replicate; cell B1's twin decomposition is quoted, not re-measured)",
+        "verdict": {
+          "path": "docs/results/2026-09-19-slurp-b1-replicate-verdict.md",
+          "sha256": "ee45b7b54d91dc2e6bcd05c9d87a0033d84a1eecc8b633c2d49751063383c47c"
+        },
+        "primary": "official pooled SLU-F1 48.5336 -> 62.23, +13.6987 pp CI95 [+11.6386, +15.7263] (clause a: lower bound above zero); intent 77.9630 -> 80.09, +2.1296 pp CI95 [+0.8064, +3.3784] (clause b: lower bound above -1.0051); projection v3 51.99 -> 63.97, +11.9751 pp CI95 [+9.87, +14.05] (clause c: same sign); TRAIN symmetric +12.26; against the released direct anchor SLU +28.35 [+24.99, +31.76]",
+        "guards": "0 of 18 scenarios breach the intent band on either gating contrast; no decision-17 net-harmed flag; the second pass reads +1.09 SLU [-0.10, +2.37] and -0.09 intent [-1.31, +1.13] against the first (saves 28 / harms 29 / ties 1,023 on intent, McNemar p 1.000)",
+        "own_null": {
+          "note": "MEASURED on the admitted configuration itself (B1r minus B1, request-identical, 1,080 rows, 125 speaker clusters, 10,000 draws, seed 20260915): the margins that replace the borrowed B0r-minus-B0 values (1.1218 / 1.0051) for any later contrast against a B1-based arm (owner decision 38); the borrowed intent margin was about 22 % too narrow for this configuration",
+          "pooled_slu_half_width": 1.235,
+          "intent_half_width": 1.2212,
+          "row_agreement": "803 of 1,080 delivered answers byte-identical (74.35 %), 80 intent-pair flips (7.41 %), identical entity set on 864 (80.00 %)"
+        },
+        "diagnostics": "one finite_completion disposition (reviewer, finish_reason length, delivered the latest Solver draft, parsed and scored; the flight would have aborted without item E13); planner_action_illegal 0; 12 REVISE tokens / 12 executed revisions (B1 8/7, anchor 6/5); 0 Solver completions tool-call-shaped as text; unparseable rows 2 (B1 4, anchor 7)",
+        "cost": "5,443 contacts (5.040 per row), 15,542.42 repeated speech seconds, 49,678,439 prompt / 257,424 completion tokens, 1,088 tool calls, 3.8507 GPU hours, wall 14,437.7 s, occupancy 0.868, utilisation 87.09 %, parked 0.039, 5,443 of 5,443 requests fit (minimum margin 8,254); 23.10 contacts per minute from server.log release records (per-role rendering)",
+        "analysis_dir": "SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-B1-REPLICATE-OWN-NULL-PAIRED-ANALYSIS-V1"
       }
     },
     {
