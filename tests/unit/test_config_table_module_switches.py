@@ -1349,8 +1349,11 @@ def test_the_two_b8b_fragments_arm_the_block_and_nothing_else():
         on_episode = dict(on["native_episode"])
         armed = on_episode.pop("reviewer_audit")
         assert armed["view"] == "slot-audit-v1"
+        # Since 0011fdee (2026-09-19) the B7r base carries the same
+        # finite-completion policy as every queued SLURP native cell, so the
+        # key is not part of the B8b factor: both sides arm it identically.
         assert on_episode.pop("finite_completion_policy") == "deliver-latest-or-abstain"
-        assert "finite_completion_policy" not in off_episode
+        assert off_episode.pop("finite_completion_policy") == "deliver-latest-or-abstain"
         assert on_episode == off_episode
         assert is_episode_null_arm(
             "native_episode.reviewer_audit", off_episode.get("reviewer_audit")

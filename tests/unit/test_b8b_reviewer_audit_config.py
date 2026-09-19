@@ -148,17 +148,17 @@ def test_the_only_keys_that_move_against_b7r_are_the_audit_and_the_finite_policy
         key
         for key in set(off_episode) | set(on_episode)
         if off_episode.get(key) != on_episode.get(key)
-    ) == [FINITE_COMPLETION_KEY, REVIEWER_AUDIT_KEY]
+    ) == [REVIEWER_AUDIT_KEY]
     assert REVIEWER_AUDIT_KEY not in off_episode
 
-    # The harness-robustness key is the registered non-default value, and the
-    # base leaves it at the module default 'raise' by omitting it.
+    # The harness-robustness key is the registered non-default value on BOTH
+    # sides: since 0011fdee (2026-09-19) the B7r base arms it too, so it is
+    # not part of the factor and the diff is the audit block alone.
     assert on_episode[FINITE_COMPLETION_KEY] == FINITE_COMPLETION_VALUE
-    assert FINITE_COMPLETION_KEY not in off_episode
+    assert off_episode[FINITE_COMPLETION_KEY] == FINITE_COMPLETION_VALUE
 
     stripped = copy.deepcopy(on_episode)
     stripped.pop(REVIEWER_AUDIT_KEY)
-    stripped.pop(FINITE_COMPLETION_KEY)
     assert stripped == off_episode
 
 
