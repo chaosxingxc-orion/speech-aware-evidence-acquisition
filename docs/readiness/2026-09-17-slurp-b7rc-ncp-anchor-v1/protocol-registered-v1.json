@@ -103,11 +103,11 @@
       "attempt_id": "attempt-slurp-native-ncp-l1-tool-obs-anchor-train-fold-a-generation-v1",
       "baseline_fragment": "slurp-native-anchor-ncp-l1-tool-obs-train-fold-a-v1",
       "cell": "slurp-native-ncp-l1-tool-obs-anchor-train-fold-a-v1",
-      "composed_config_hash": "6b76f22cc75fe4c0f99fece7fb99dab84746ccd337d7e0caae007a53de49c735",
+      "composed_config_hash": "72b698add591bda0789b8a4411cfc4bf75af5d85ca4650379595b9da1711cb8b",
       "experiment": "slurp-native-ncp-l1-tool-obs-anchor-train-fold-a-v1",
       "fit_attempt_id": "attempt-slurp-native-ncp-l1-tool-obs-anchor-train-fold-a-fit-v1",
       "fit_run_id": "SAEA-SLURP-NATIVE-NCP-L1-TOOL-OBS-ANCHOR-TRAIN-FOLD-A-FIT-V1",
-      "protocol_hash": "8b2fb2bc1f894e052a527c0872ea6ab765450685fb9e9c346285c938a9292c0a",
+      "protocol_hash": "f40d098f5b33aeeb3b9b29632ccc72f9fc39b1170a34fa5e3a2985673d6664cd",
       "run_id": "SAEA-SLURP-NATIVE-NCP-L1-TOOL-OBS-ANCHOR-TRAIN-FOLD-A-V1"
     },
     "b7c_smoke": {

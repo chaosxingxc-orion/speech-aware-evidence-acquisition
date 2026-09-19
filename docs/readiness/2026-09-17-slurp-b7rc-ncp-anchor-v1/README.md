@@ -46,7 +46,7 @@ registered here.**
 | campaign plans | `configs/campaign/slurp-native-ncp-l1-{reviewer-format,tool-obs}-anchor-train-fold-a-v1.json` |
 | composed / protocol (B7r) | `6f4305068a65de7a591fcdc08e7182ebfdafec43ff0efa240afbb23784119cf1` / `ea40fd649a62313d4dcaa038925c15e994a14173010b501f165e7b387d8cd076` |
 | composed / protocol (B7r smoke) | `bf8da2447697ce7ed7d89f4e70d47fb24335848a801c3cd36c569e9de37e1276` / `1511e4e529b874c336750b0401902ed698d0696065835d7e100e764a8e59e9f1` |
-| composed / protocol (B7c) | `6b76f22cc75fe4c0f99fece7fb99dab84746ccd337d7e0caae007a53de49c735` / `8b2fb2bc1f894e052a527c0872ea6ab765450685fb9e9c346285c938a9292c0a` |
+| composed / protocol (B7c) | `72b698add591bda0789b8a4411cfc4bf75af5d85ca4650379595b9da1711cb8b` / `f40d098f5b33aeeb3b9b29632ccc72f9fc39b1170a34fa5e3a2985673d6664cd` |
 | composed / protocol (B7c smoke) | `46e3dd74c39b13deda4953bb7e09f04f25efa0dbcf9ae2c489afe1500780ae79` / `bfa9dc7a4cf68b6d83e5df1774e50cdaf765ef94e09c2e6591403d5aaff05292` |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |
 | readiness | all four cells are `held` with the preparation requirement pinned; the coordinator appends the decision requirement and flips |
