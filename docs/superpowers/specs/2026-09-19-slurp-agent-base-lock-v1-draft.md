@@ -482,6 +482,7 @@ E8c was written to remove. At the terminal revision the same token routes to `_T
 the row is retained. The prompt never advertises `ACQUIRE` (`rails/runner.py:2044-2047`) and the
 sealed anchor's 1,085 Planner responses never produced it, but neither did they ever produce `REJECT`
 before B7a v1 died on one.
+**Status: fixed by E15 (commit 6d9ef288); see section 17 of `docs/superpowers/specs/2026-09-17-node-context-policy-design.md`.**
 
 **I-2 — the L2 fragment is not one factor against its own comparator.**
 `configs/baseline/slurp-native-anchor-ncp-l2-review-clean-train-fold-a-v1.json` differs from its
