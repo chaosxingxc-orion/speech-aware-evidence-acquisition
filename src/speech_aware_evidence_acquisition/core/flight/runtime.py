@@ -1237,6 +1237,12 @@ class FlightRuntime:
         self._obs_result: RunResult | None = None
         self._phase_program_material: Mapping[str, object] | None = None
         self._phase_material_receipt: Mapping[str, object] | None = None
+        # E16 (2026-09-19): the prepared-artifact identity verdict, memoized so
+        # a launch guard and the preflight that follows it recompute nothing.
+        # One process observes one working tree, so the verdict cannot change
+        # under it -- and if the tree did move, the clean-tree assertion and
+        # the flight's own dispatch-time load both still refuse.
+        self._prepared_artifact_reports: tuple[Mapping[str, object], ...] | None = None
         # E6: what the baseline fragment's ``phase_supply`` resolved to --
         # the identity record (never the vectors), and the injection seam
         # for a provider this harness cannot construct from the frozen
@@ -2874,7 +2880,9 @@ class FlightRuntime:
             raise FlightRuntimeError("live_phase_fit_audio_seconds_cap must be a positive integer")
         return replace(plan, planned_speech_audio_seconds=cap).validate()
 
-    def preflight(self) -> Mapping[str, object]:
+    def preflight(
+        self, *, enforce_prepared_artifacts: bool = True
+    ) -> Mapping[str, object]:
         """Compose the four config fragments, load and identity-hash the
         split, build and validate the :class:`~contracts.ExecutionPlan`,
         open the gate (``gate_factory(...)`` then
@@ -2883,11 +2891,20 @@ class FlightRuntime:
         (``core.bundle.git_commit.require_clean_study_repo``), reserve this
         attempt in the durable :class:`~core.attempts.store.AttemptStore`,
         verify a pinned phase prompt-fit receipt when the fragment declares
-        one (:meth:`_verify_phase_prompt_fit`), and pre-assess the prompt
+        one (:meth:`_verify_phase_prompt_fit`), verify every prepared artifact
+        this flight would load in ``run_phases``
+        (:meth:`verify_prepared_artifacts`, E16), and pre-assess the prompt
         budget -- for a phase program, over the WIDEST request each phase
         renders across the whole roster; for ``policy == "fixed"``, over one
         representative request. Fails closed and records nothing on any
         failure.
+
+        ``enforce_prepared_artifacts=False`` REPORTS a stale prepared artifact
+        in the receipt (``prepared_artifacts`` / ``prepared_artifacts_ok``)
+        instead of refusing; ``core.flight.cli check`` is the only caller that
+        passes it, because a check exists to print the verdict. Every launch
+        path -- worker, campaign queue, driver CLI -- keeps the default and
+        refuses before an attempt can be opened.
         """
 
         self._require_prior_stages("preflight")
@@ -3030,6 +3047,35 @@ class FlightRuntime:
                 "a retry must mint a fresh attempt_id"
             )
 
+        # E16 (2026-09-19): a prepared artifact is evidence only for the
+        # implementation that produced it. Verify every one this flight would
+        # load in run_phases HERE -- before preprocess, serve, the client, and
+        # therefore before core.model.adapter.FrozenCoreAdapter opens the
+        # attempt -- so a stale artifact costs zero contacts and leaves no
+        # attempt record behind. ``check`` reports instead of refusing
+        # (``enforce_prepared_artifacts=False``) so its receipt can carry the
+        # per-artifact verdict.
+        prepared_artifacts = self.verify_prepared_artifacts()
+        prepared_artifacts_ok = all(
+            report["identity_ok"] for report in prepared_artifacts
+        )
+        if not prepared_artifacts_ok and enforce_prepared_artifacts:
+            from ..preparation import PreparationError
+
+            stale = [
+                report for report in prepared_artifacts if not report["identity_ok"]
+            ]
+            raise PreparationError(
+                "refusing to open an attempt: "
+                f"{len(stale)} prepared artifact(s) no longer match this "
+                "implementation and config; re-pin the package on the launch "
+                "commit (core.flight.repin). "
+                + "; ".join(
+                    f"{report['key']} ({report['relpath']}): {report['reason']}"
+                    for report in stale
+                )
+            )
+
         phase_prompt_fit = self._verify_phase_prompt_fit()
         prompt_budget = self._assess_prompt_budget(samples)
 
@@ -3060,6 +3106,8 @@ class FlightRuntime:
             "attempt_reservation": "deferred to core.model.adapter.FrozenCoreAdapter",
             "prompt_budget": prompt_budget,
             "phase_prompt_fit": phase_prompt_fit,
+            "prepared_artifacts": [dict(report) for report in prepared_artifacts],
+            "prepared_artifacts_ok": prepared_artifacts_ok,
             **({"resume": resume_receipt} if resume_receipt is not None else {}),
         }
         return self.receipts.record("preflight", payload)
@@ -6260,25 +6308,223 @@ class FlightRuntime:
             sources=sources,
         )
 
-    def prepare_phase_supply(self, path: Path, *, max_workers: int = 1) -> Mapping[str, object]:
-        """Persist the real first-phase selection offline for reuse at dispatch.
+    def _prepared_phase_program_binding(self):
+        """``(program, binding, split identity)`` from config alone.
 
-        No server, tokenizer, gate, attempt, or inference contact is opened.
-        Existing vector/snapshot bindings are verified by the normal resolver.
+        Never cached into ``_phase_program_material``: this is the same
+        derivation :meth:`_dispatch_phase_program` performs, run here so that
+        an identity can be recomputed (and every pinned prepared phase-recall
+        artifact loaded through ``_resolve_phase_supply``) before a flight
+        opens anything.
         """
-        from types import SimpleNamespace
-        from ..preparation import PreparationError, prepare_artifact
 
         values, _carrier, _split, identity = self._prepare()
         program = default_phase_program(str(values["policy"]))
         binding = self._phase_program_material
         if binding is None:
             binding = self._default_phase_program_binding(program, None)
+        return program, binding, identity
+
+    def verify_prepared_artifacts(self) -> tuple[Mapping[str, object], ...]:
+        """Verify every prepared artifact this flight would load in
+        ``run_phases``, read-only, before anything is opened (E16, 2026-09-19).
+
+        A prepared artifact is evidence only for the implementation that
+        produced it: ``core.preparation.artifact_inputs`` binds the composed
+        config, the split identity and ``sources`` -- including the SHA-256 of
+        ``core/flight/runtime.py`` and the rails modules. A merge that moves any
+        of those files makes every artifact prepared before it stale, and the
+        flight used to discover that only at dispatch, after the attempt had
+        been opened. This recomputes the identity exactly as the dispatch will
+        (:meth:`phase_supply_artifact_identity`) and reports, per artifact,
+        ``{key, relpath, sha256, identity_ok, reason, difference}``.
+
+        Nothing is reported for a cell that pins no prepared artifact, and
+        nothing for a policy that never loads one (``fixed`` and the obs
+        policies dispatch outside ``_dispatch_phase_program``), so this costs
+        exactly the cells it protects.
+
+        A pinned phase-recall artifact is loaded by ``_resolve_phase_supply``
+        while the phase-program binding is built, so its report carries the
+        outcome of that build rather than a second, divergent load.
+        """
+
+        from ..preparation import PreparationError, verify_artifact_identity
+        from ..model.paths import _normalized_relative_path, _resolve_confined
+
+        memoized = getattr(self, "_prepared_artifact_reports", None)
+        if memoized is not None:
+            return memoized
+        composed = getattr(self, "_composed", None)
+        # Compose alone when nothing is resolved yet: a cell that pins no
+        # prepared artifact must not pay for an adapter and a split load here,
+        # and one that does resolves them properly through ``_prepare`` below.
+        values = (
+            composed.values
+            if composed is not None
+            else compose(
+                self._repo_root,
+                self._model,
+                self._dataset,
+                self._baseline,
+                self._experiment,
+            ).values
+        )
+        supply_pin = values.get("prepared_phase_supply")
+        recall_pins = values.get("prepared_phase_recall")
+        policy = values.get("policy")
+        if (
+            (supply_pin is None and recall_pins is None)
+            or not isinstance(policy, str)
+            or policy == "fixed"
+            or policy in self._obs_policy_names()
+        ):
+            self._prepared_artifact_reports = ()
+            return self._prepared_artifact_reports
+
+        inputs: Mapping[str, object] | None = None
+        failure: str | None = None
+        try:
+            program, binding, identity = self._prepared_phase_program_binding()
+            if supply_pin is not None:
+                specs = binding.get("supply_specs") or {}
+                first = program.phase_names()[0]
+                if first not in specs:
+                    raise PreparationError(
+                        "program has no supplied first phase to prepare"
+                    )
+                inputs = self._phase_seed_inputs(binding, specs[first], identity)
+        except Exception as error:  # noqa: BLE001 -- any failure is a refusal
+            failure = (
+                "cannot recompute the prepared-artifact identity: "
+                f"{type(error).__name__}: {error}"
+            )
+
+        reports: list[Mapping[str, object]] = []
+        if recall_pins is not None:
+            items = (
+                sorted(recall_pins.items())
+                if isinstance(recall_pins, Mapping)
+                else [("<malformed>", recall_pins)]
+            )
+            for phase, pin in items:
+                reports.append(
+                    {
+                        "key": f"prepared_phase_recall.{phase}",
+                        "relpath": (
+                            str(pin["relpath"])
+                            if isinstance(pin, Mapping) and "relpath" in pin
+                            else None
+                        ),
+                        "sha256": (
+                            str(pin["sha256"])
+                            if isinstance(pin, Mapping) and "sha256" in pin
+                            else None
+                        ),
+                        "identity_ok": failure is None,
+                        "reason": failure,
+                        "difference": None,
+                    }
+                )
+        if supply_pin is not None:
+            report: dict[str, object] = {
+                "key": "prepared_phase_supply",
+                "relpath": None,
+                "sha256": None,
+                "identity_ok": False,
+                "reason": failure,
+                "difference": None,
+            }
+            if not isinstance(supply_pin, Mapping) or set(supply_pin) != {
+                "relpath",
+                "sha256",
+            }:
+                report["reason"] = "prepared_phase_supply requires relpath and sha256"
+                reports.append(report)
+                self._prepared_artifact_reports = tuple(reports)
+                return self._prepared_artifact_reports
+            report["relpath"] = str(supply_pin["relpath"])
+            if failure is None:
+                try:
+                    path = _resolve_confined(
+                        self._data_root,
+                        _normalized_relative_path(
+                            supply_pin["relpath"], "prepared phase supply"
+                        ),
+                        self._data_root,
+                        "prepared phase supply",
+                        strict=False,
+                    )
+                except Exception as error:  # noqa: BLE001 -- confinement refusal
+                    report["reason"] = (
+                        "prepared phase supply path is not confined beneath the "
+                        f"data root: {type(error).__name__}: {error}"
+                    )
+                else:
+                    report.update(
+                        verify_artifact_identity(
+                            path,
+                            expected_sha256=str(supply_pin["sha256"]),
+                            kind="phase-supply",
+                            inputs=inputs,
+                        )
+                    )
+            reports.append(report)
+        self._prepared_artifact_reports = tuple(reports)
+        return self._prepared_artifact_reports
+
+    def phase_supply_artifact_identity(self):
+        """``(program, binding, specs, first phase, split identity, inputs)``
+        for the prepared first-phase supply artifact.
+
+        E16 (2026-09-19). THE single identity computation for that artifact.
+        :meth:`prepare_phase_supply` produces it, ``core.flight.repin`` verifies
+        a pin by re-running that producer on the existing path,
+        :meth:`verify_prepared_artifacts` verifies it read-only at pre-flight,
+        and :meth:`_load_phase_supply_seed` binds it at dispatch -- all four
+        through this method and the :meth:`_phase_seed_inputs` it returns, so
+        ``check``, ``repin`` and the flight cannot disagree about what makes an
+        artifact stale.
+        """
+
+        from ..preparation import PreparationError
+
+        program, binding, identity = self._prepared_phase_program_binding()
         specs = binding.get("supply_specs") or {}
         first = program.phase_names()[0]
         if first not in specs:
             raise PreparationError("program has no supplied first phase to prepare")
-        inputs = self._phase_seed_inputs(binding, specs[first], identity)
+        return (
+            program,
+            binding,
+            specs,
+            first,
+            identity,
+            self._phase_seed_inputs(binding, specs[first], identity),
+        )
+
+    def prepare_phase_supply(self, path: Path, *, max_workers: int = 1) -> Mapping[str, object]:
+        """Persist the real first-phase selection offline for reuse at dispatch.
+
+        No server, tokenizer, gate, attempt, or inference contact is opened.
+        Existing vector/snapshot bindings are verified by the normal resolver.
+
+        Called with an EXISTING ``path`` this is a pure identity check (the
+        warm-artifact branch of :func:`~core.preparation.prepare_artifact`
+        never invokes the producer); a mismatch is re-raised with the first
+        differing identity key named, so the caller learns WHICH input moved.
+        """
+        from types import SimpleNamespace
+        from ..preparation import (
+            PreparationError,
+            first_input_difference,
+            prepare_artifact,
+            read_artifact_inputs,
+        )
+
+        program, binding, specs, first, identity, inputs = (
+            self.phase_supply_artifact_identity()
+        )
 
         def produce():
             facets, selected = self._phase_supply_seeds(
@@ -6287,7 +6533,24 @@ class FlightRuntime:
             )
             return {"facets": facets, "values": selected}
 
-        return prepare_artifact(path, kind="phase-supply", inputs=inputs, producer=produce)
+        try:
+            return prepare_artifact(
+                path, kind="phase-supply", inputs=inputs, producer=produce
+            )
+        except PreparationError as error:
+            if not Path(path).is_file():
+                raise
+            try:
+                difference = first_input_difference(
+                    inputs, read_artifact_inputs(Path(path))
+                )
+            except PreparationError:
+                difference = None
+            if difference is None:
+                raise
+            raise PreparationError(
+                f"{error}; first differing identity key: {difference}"
+            ) from error
 
     def prepare_phase_recall(self, path: Path, *, phase: str, max_workers: int = 1) -> Mapping[str, object]:
         """Persist model-free multidimensional recall for one configured phase.

@@ -141,6 +141,130 @@ def load_artifact(
         raise PreparationError(f"cannot load prepared artifact: {error}") from error
 
 
+def read_artifact_inputs(path: Path) -> Mapping[str, object]:
+    """Return the ``inputs`` document one prepared artifact was built with.
+
+    Read-only and independent of :func:`load_artifact`: it is what an identity
+    refusal is DIFFED against, so it must stay readable exactly when
+    :func:`load_artifact` has already refused the file.
+    """
+
+    try:
+        document = json.loads(Path(path).read_bytes())
+    except (OSError, UnicodeError, json.JSONDecodeError, TypeError) as error:
+        raise PreparationError(
+            f"cannot read prepared artifact inputs: {error}"
+        ) from error
+    if not isinstance(document, dict) or not isinstance(document.get("inputs"), dict):
+        raise PreparationError("prepared artifact carries no inputs document")
+    return document["inputs"]
+
+
+def _canonical_value(value: object) -> object:
+    try:
+        return json.loads(canonical_bytes(value))
+    except (TypeError, ValueError, OverflowError) as error:
+        raise PreparationError(
+            f"identity document is not canonically serializable: {error}"
+        ) from error
+
+
+def _first_difference(expected: object, actual: object, prefix: str) -> str | None:
+    if isinstance(expected, Mapping) and isinstance(actual, Mapping):
+        for key in sorted(set(expected) | set(actual)):
+            here = f"{prefix}{key}"
+            if key not in expected:
+                return f"{here} (absent from the recomputed identity)"
+            if key not in actual:
+                return f"{here} (absent from the prepared artifact)"
+            found = _first_difference(expected[key], actual[key], here + ".")
+            if found is not None:
+                return found
+        return None
+    if expected == actual:
+        return None
+    return prefix[:-1] if prefix else "<root>"
+
+
+def first_input_difference(expected: object, actual: object) -> str | None:
+    """Dotted key path of the FIRST difference between two ``inputs`` documents.
+
+    ``expected`` is the identity recomputed from the current implementation and
+    config; ``actual`` is what the prepared artifact carries. Keys are walked in
+    sorted order, so a stale artifact always names the same key path -- e.g.
+    ``config_sha256`` after a config edit, or ``sources.implementation.runtime``
+    after a merge moved ``core/flight/runtime.py``. ``None`` means the two
+    documents are identical.
+    """
+
+    return _first_difference(_canonical_value(expected), _canonical_value(actual), "")
+
+
+def verify_artifact_identity(
+    path: Path, *, expected_sha256: str, kind: str, inputs: Mapping[str, object]
+) -> dict[str, object]:
+    """Verify one prepared artifact WITHOUT building, writing or raising.
+
+    The same three facts :func:`load_artifact` enforces -- the file exists, its
+    bytes hash to the pinned digest, and its embedded identity equals the one
+    recomputed here -- reported as data so one caller can list every artifact
+    (``core.flight.cli check``) while another refuses on the first failure
+    (``FlightRuntime.preflight``). A failure additionally names the first
+    differing identity key (:func:`first_input_difference`).
+    """
+
+    path = Path(path)
+    if not path.is_file():
+        return {
+            "sha256": None,
+            "identity_ok": False,
+            "reason": f"prepared artifact is absent on disk: {path}",
+            "difference": None,
+        }
+    try:
+        measured = hashlib.sha256(path.read_bytes()).hexdigest()
+    except OSError as error:
+        return {
+            "sha256": None,
+            "identity_ok": False,
+            "reason": f"cannot read prepared artifact {path}: {error}",
+            "difference": None,
+        }
+    if measured != expected_sha256:
+        return {
+            "sha256": measured,
+            "identity_ok": False,
+            "reason": (
+                f"prepared artifact {path} hashes to {measured}, not the pinned "
+                f"{expected_sha256}"
+            ),
+            "difference": None,
+        }
+    try:
+        load_artifact(path, expected_sha256=measured, kind=kind, inputs=inputs)
+    except PreparationError as error:
+        difference = None
+        try:
+            difference = first_input_difference(inputs, read_artifact_inputs(path))
+        except PreparationError:
+            difference = None
+        reason = str(error)
+        if difference is not None:
+            reason = f"{reason}; first differing identity key: {difference}"
+        return {
+            "sha256": measured,
+            "identity_ok": False,
+            "reason": reason,
+            "difference": difference,
+        }
+    return {
+        "sha256": measured,
+        "identity_ok": True,
+        "reason": None,
+        "difference": None,
+    }
+
+
 def _acquire_artifact_locks(entries) -> list[int]:
     """Acquire every unique producer lock without waiting, in path order."""
 

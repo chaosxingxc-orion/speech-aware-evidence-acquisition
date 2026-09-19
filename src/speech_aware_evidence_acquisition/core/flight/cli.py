@@ -42,6 +42,54 @@ def load_campaign_plan(repo: Path, path: Path):
     return tuple(selected)
 
 
+def assert_prepared_artifacts_current(flights) -> None:
+    """Refuse a worker/campaign launch whose prepared artifacts went stale.
+
+    E16 (2026-09-19). Runs BEFORE any lease is used, any service is touched and
+    -- decisively -- before ``core.model.adapter.FrozenCoreAdapter`` calls
+    ``AttemptStore.open_attempt``, so a stale artifact costs zero contacts and
+    leaves no OPENED attempt record behind. The reports are memoized on each
+    runtime, so ``FlightRuntime.preflight`` reuses this verdict rather than
+    recomputing the identity a second time.
+    """
+
+    from ..preparation import PreparationError
+
+    stale: list[str] = []
+    for runtime in flights:
+        for report in runtime.verify_prepared_artifacts():
+            if not report["identity_ok"]:
+                stale.append(
+                    f"{runtime.run_id}/{runtime.attempt_id} {report['key']} "
+                    f"({report['relpath']}): {report['reason']}"
+                )
+    if stale:
+        raise PreparationError(
+            "refusing to launch: "
+            f"{len(stale)} prepared artifact(s) no longer match this "
+            "implementation and config; re-pin the package on the launch commit "
+            "(core.flight.repin) and fly from that commit. " + "; ".join(stale)
+        )
+
+
+def prepared_artifact_blockers(preflight) -> list[str]:
+    """One blocker string per prepared artifact whose identity no longer holds.
+
+    E16 (2026-09-19). Empty when ``preflight`` reports no prepared artifact or
+    every one of them verified, so ``check`` exits zero exactly as before for
+    every package that is actually current.
+    """
+
+    if not isinstance(preflight, dict) or preflight.get("prepared_artifacts_ok") is not False:
+        return []
+    return [
+        "prepared artifact identity mismatch: "
+        f"{report.get('key')} ({report.get('relpath')}): {report.get('reason')}"
+        for report in preflight.get("prepared_artifacts", ())
+        if isinstance(report, dict) and not report.get("identity_ok")
+    ] or ["prepared artifact identity mismatch (no per-artifact detail reported)"]
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=[
@@ -131,6 +179,8 @@ def main(argv=None) -> int:
         )
         for experiment, cell in selected
     ]
+    if args.mode in {"worker", "campaign"}:
+        assert_prepared_artifacts_current(flights)
     if args.mode == "campaign":
         result = run_campaign(
             flights, cells=cells, repo_root=repo, data_root=root,
@@ -152,11 +202,18 @@ def main(argv=None) -> int:
                 contact_cap=args.contact_cap, model_fragment=cells[0].document["model_fragment"],
             )
         elif args.mode == "check":
+            # E16: report, never refuse -- a check exists to PRINT the verdict.
+            # Every launch path keeps the enforcing default, so a stale
+            # prepared artifact refuses before an attempt can be opened.
+            preflight = runtime.preflight(enforce_prepared_artifacts=False)
             result = {
-                "preflight": runtime.preflight(),
+                "preflight": preflight,
                 "scientific_readiness": {"state": state.state, "reason": state.reason},
                 "generation_authorized": False,
             }
+            blockers = prepared_artifact_blockers(preflight)
+            if blockers:
+                result["blockers"] = blockers
         elif args.mode == "wire-check":
             result = runtime.wire_check(seal_and_score=False)
         elif args.mode == "prepare-phase-recall":
@@ -213,6 +270,8 @@ def main(argv=None) -> int:
             if receipt_reference is not None:
                 result["flight_receipts"] = {runtime.run_id: receipt_reference}
     print(json.dumps(result, sort_keys=True, default=str))
+    if args.mode == "check" and isinstance(result, dict) and result.get("blockers"):
+        return 1
     if args.mode == "campaign" and isinstance(result, dict):
         states = result.get("states", {})
         if any(
