@@ -1032,6 +1032,59 @@
         "what_flew": "The ON arm flew configs/baseline/slurp-native-anchor-fallback-quirky-intent-v2-train-fold-a-v2.json at 682ee52d (composed a07e895cf893bf2a8ba348449e949f3b0db18808d4435a3670ef49fa37f452d2): the sealed anchor fragment with intent-boundaries re-pinned to v2 and the fallback candidate leaf on the Solver candidate supply and the Perception fill, plus the finite-completion policy (a harness declaration). The OFF arm is the sealed anchor itself (intent-boundaries v1, no fallback leaf).",
         "why_this_table": "a whole named knowledge store is one knowledge_stores.<store_id> switch; the re-pin form records the incumbent's pins as the OFF arm and the successor's pins as the ON arm"
       }
+    },
+    {
+      "carrier": "slurp",
+      "comparator": {
+        "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+        "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+        "note": "the sealed dual-store anchor; never re-flown or re-scored; both arms node-free; the anchor flew per-role rendering (the Reviewer alone carries the tools array), the arm the same requests with the array rendered on every role at tool_choice none for the tool-free roles; the arm carries the finite-completion policy (a harness declaration; zero finite completions on either arm)"
+      },
+      "date": "2026-09-19",
+      "module": "constant native tool-schema rendering (item E17, lever L1 of the throughput root cause: the Reviewer's task-contract tool schema rendered into every role's system message so the per-slot KV prefix survives the Reviewer-on / Planner-off toggle); efficiency cell EFF-1 on the anchor base",
+      "row": "SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-TRAIN-FOLD-A-V1",
+      "status": "HARMFUL",
+      "status_basis": "HARMFUL is this table's status for a gating guard that fails with a measured loss (owner decision 25). Registered rule (docs/readiness/2026-09-19-slurp-eff1-tool-constant-v1-preregistration.md): NEUTRAL iff official pooled SLU-F1 and intent are non-inferior against the sealed anchor at the B0r own-null margins (h_SLU 1.1218 / h_intent 1.0051) with CI95 lower bounds above -h and no scenario band breach; HARMFUL iff a guard fails with a measured loss. Read: official pooled SLU-F1 48.5336 -> 44.1407, -4.3929 pp CI95 [-6.6889, -2.1735]; intent 77.9630 -> 68.7963, -9.1667 pp CI95 [-11.6404, -6.7887]; both point estimates below -h and both CI95 upper bounds below zero; 9 of 18 scenarios breach the band, 12 decision-17 flags, none gains; v3 -4.94 / -9.81 and TRAIN symmetric -4.96 agree in sign. Root cause named to a component: the Solver's delivery shape. With the tools array in its system message the Solver answered 145 of 1,092 contacts with a tool-call-shaped string (a <tool_call> block naming saea-tool-task-contract-v1; the anchor 0 of 1,085); nothing parses it (tool_choice none installs no grammar and no parser), the Reviewer then ran once with no task-contract call, and the string was delivered verbatim: 137 rows the official scorer cannot parse (anchor 7), every one scoring zero on every metric. On the 938 rows both arms parsed (diagnostic only, never a decision quantity) the delta is +0.030 SLU [-1.644, +1.632] and +0.213 intent [-1.091, +1.467]. Authority never moved: tool_choice none / none / auto / none identical to the anchor, zero tool calls from unauthorized roles, distinct_tool_schemas_sha256 == 1 on every row. The efficiency result stands regardless of the verdict: prefilled tokens per row 26,197 (B4b reference) -> 10,127 (-61.3 %), cached share 42.9 % -> 75.2 %, packet re-decodes about 3.0 -> 1.0 per row, first-Reviewer prefill -96.9 %, Planner -80.8 %, GPU hours per 1,080 rows 3.388 -> 1.843 (-45.6 %), contacts per minute 26.06 -> 45.94 (whole flight; 52.70 in the first 600 s), projected 13,078-row read 41.0 h -> 22.3 h.",
+      "evidence": {
+        "arm": {
+          "run_id": "SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-TRAIN-FOLD-A-V1",
+          "attempt_id": "attempt-slurp-native-tool-constant-anchor-train-fold-a-generation-v1",
+          "study_commit": "711bc6c4"
+        },
+        "smoke": {
+          "run_id": "SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-SMOKE-4-V1",
+          "attempt_id": "attempt-slurp-native-tool-constant-anchor-smoke-4-generation-v1",
+          "study_commit": "711bc6c4"
+        },
+        "verdict": {
+          "path": "docs/results/2026-09-19-slurp-eff1-tool-constant-verdict.md",
+          "sha256": "89e7f8e0b97e81cbe359be6a98acaf82cd9216d0cd3e76bb8b13aa6182fe3e42"
+        },
+        "analysis_dir": "SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-EFF1-TOOL-CONSTANT-ANCHOR-V1-PAIRED-ANALYSIS-V1",
+        "primary": "official pooled SLU-F1 -4.3929 pp CI95 [-6.6889, -2.1735]; intent -9.1667 pp CI95 [-11.6404, -6.7887] (1,080 paired TRAIN A rows, 125 speaker clusters, 10,000 draws, seed 20260915)",
+        "guards": "scenario 84.81 -> 74.26, action 79.26 -> 70.00, span F1 29.50 -> 25.41; 9 of 18 scenario band breaches, 12 decision-17 flags, none gains; intent saves 27 / harms 126 / ties 927 (McNemar p 1.7e-16)",
+        "diagnostics": "finite_completion 0; planner_action_illegal 1 (count and digest only); contacts-per-row histogram 3:2, 4:135, 5:931, 7:7, 8:2, 9:3 against the anchor's 4:3, 5:1,072, 9:5; 137 rows with a single Reviewer contact (anchor 3); 939 task-contract tool calls (anchor 1,082); Reviewer request byte-identity to the anchor is not evaluable because the factor changes the Perception request and therefore every downstream request (the registered clause is unsatisfiable by construction); every Perception request identical to the anchor's minus tool_schemas on 1,080 of 1,080 rows",
+        "cost": "5,293 contacts (4.901 per row), 15,111.57 repeated speech seconds, 44,100,253 prompt / 233,956 completion tokens, 939 tool calls, 1.8433 GPU hours, wall 6,913.6 s, occupancy 0.891, utilisation 85.06 %, parked 0.038, 5,293 of 5,293 requests fit (minimum margin 9,087, maximum required 15,489 of 24,576); server-log join exact on 5,293 of 5,293 contacts; the comparator has no flight-receipts.json (its GPU hours come from its session-attach monitor, 12,196.65 s)",
+        "secondary": "against the released direct anchor: pooled SLU +10.26, intent -4.91"
+      },
+      "not_admitted_for": [
+        "any default plan (HARMFUL never enters a plan); per-role rendering remains the SLURP default and every later cell and the test read register against it",
+        "lever L2 (drop the Planner) or any later efficiency cell measured on the per-role base: L1's gain is measured here and must not be credited to them",
+        "any claim that constant rendering changes the answer where delivery survives: the 938-row restricted contrast is a diagnostic that licenses the root-cause statement, not a verdict",
+        "either candidate repair -- a decode-time constraint on the tool-free roles' output shape with the array kept constant, or withdrawing the Reviewer's task-contract tool so no role renders a tool paragraph -- each is a new cell with its own registration and, for the withdrawal, an owner decision on what the Reviewer reads and may do",
+        "the decision-30 headroom trigger: an efficiency cell does not count toward it (the streak stays at two)",
+        "any other roster or carrier; DEV-1000, Fold B and the test split are untouched"
+      ],
+      "switch": {
+        "added_by": "docs/results/2026-09-19-slurp-eff1-tool-constant-verdict.md; class 'episode' of harness-admission v3 (E6, 2026-09-16)",
+        "table": "episode",
+        "key": "native_episode.tool_schema_rendering",
+        "on": "constant",
+        "off": "per-role",
+        "proof": "tests/unit/test_config_table_module_switches.py::test_tool_schema_rendering_is_one_episode_class_key",
+        "what_flew": "The ON arm flew configs/baseline/slurp-native-anchor-tool-constant-train-fold-a-v1.json at 711bc6c4: the sealed anchor fragment plus native_episode.tool_schema_rendering 'constant' and the finite-completion policy (a harness declaration); the E17 receipt saea-native-tool-schema-rendering-v1 carries mode constant, one rendered tool schema on every contact and authority_tool_names [] on perception / solver / planner against [saea-tool-task-contract-v1] on the Reviewer. The OFF arm is the sealed anchor itself (per-role rendering; the key did not exist when it sealed).",
+        "why_this_table": "the rendering of the native tool schemas across the episode's roles is one episode-level switch on the closed allowlist rails.config_tables.EPISODE_LEVEL_SWITCH_KEYS; the null arm is the key's absence or 'per-role'; the OFF value 'per-role' is the key's own null form (rails.config_tables.is_episode_null_arm), which the sealed anchor realises by the key's absence"
+      }
     }
   ],
   "switch_classes": [
