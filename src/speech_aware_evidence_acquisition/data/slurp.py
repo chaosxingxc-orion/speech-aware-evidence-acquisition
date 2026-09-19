@@ -1759,6 +1759,230 @@ def slurp_intent_slot_schema_receipt(
         },
     }
 
+#: Identity of the ROW-level per-intent profile :func:`load_slurp_intent_row_profiles`
+#: mines (E12, 2026-09-19, owner directive 26). Distinct from
+#: :data:`SLURP_INTENT_SLOT_SCHEMA_ID` because the unit differs: that schema
+#: counts entity MENTIONS, this one counts UTTERANCES (rows).
+SLURP_INTENT_ROW_PROFILE_ID = "slurp-intent-row-profile-v1"
+
+
+@dataclass(frozen=True)
+class SlurpIntentRowProfile:
+    """One intent's ROW-level construction profile.
+
+    ``rows`` is how many construction utterances carry this intent;
+    ``rows_with_entity`` how many of them carry at least one annotated entity
+    of any type; ``type_rows`` maps an entity type to the number of this
+    intent's rows carrying AT LEAST ONE mention of it. A type's row share is
+    therefore ``type_rows[t] / rows`` and the shares do NOT partition one --
+    a row carrying a ``date`` and a ``time`` counts once under each. That is
+    the right unit for the two questions the Reviewer slot-audit block asks
+    ("how often does a row of this intent carry this type at all?" and "how
+    often does a row of this intent carry no entity at all?"), which the
+    mention-unit table of :class:`SlurpIntentSlots` cannot answer.
+    """
+
+    intent: str
+    rows: int
+    rows_with_entity: int
+    type_rows: Mapping[str, int] = MappingProxyType({})
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "intent": self.intent,
+            "rows": self.rows,
+            "rows_with_entity": self.rows_with_entity,
+            "type_rows": [
+                {"entity_type": entity_type, "rows": self.type_rows[entity_type]}
+                for entity_type in sorted(
+                    self.type_rows,
+                    key=lambda name: (-self.type_rows[name], name),
+                )
+            ],
+        }
+
+
+@dataclass(frozen=True)
+class SlurpIntentRowProfiles:
+    """Every intent's row-level profile plus the identity of what was read."""
+
+    profile_id: str
+    source_split: str
+    source_identity_hash: str
+    utterance_count: int
+    intents: Mapping[str, SlurpIntentRowProfile]
+    excluded_train_utterance_ids: tuple[str, ...] = ()
+
+    @property
+    def intent_ids(self) -> tuple[str, ...]:
+        return tuple(sorted(self.intents))
+
+    def as_json(self) -> dict[str, object]:
+        document: dict[str, object] = {
+            "profile_id": self.profile_id,
+            "source_split": self.source_split,
+            "source_identity_hash": self.source_identity_hash,
+            "utterance_count": self.utterance_count,
+            "intents": [self.intents[intent].as_json() for intent in self.intent_ids],
+        }
+        if self.excluded_train_utterance_ids:
+            document["excluded_train_utterance_ids"] = list(
+                self.excluded_train_utterance_ids
+            )
+        return document
+
+    def content_hash(self) -> str:
+        return _canonical_sha256(self.as_json())
+
+
+def load_slurp_train_utterance_ids(
+    lock: Mapping[str, object], root: Path,
+) -> tuple[str, ...]:
+    """Every labelled governed TRAIN utterance id, sorted.
+
+    The same split discipline as :func:`load_slurp_intent_slot_schema`: the one
+    metadata file opened is named by a module constant, there is no ``split``
+    parameter and no caller-supplied path. It exists so a construction builder
+    can PROVE its retained pool is disjoint from a forbidden roster rather than
+    assert it, without carrying any label, filler or media fact out of TRAIN.
+    """
+
+    split_id = _ROSTER_SPLITS_LEGAL[0]
+    _, _, metadata_dir = _governed_roots(lock, root)
+    metadata_path = metadata_dir / _SPLIT_FILES[split_id]
+    if not metadata_path.is_file():
+        raise LoaderError(f"SLURP split metadata file missing: {metadata_path}")
+    utterance_ids: set[str] = set()
+    for line_no, raw in enumerate(_read_jsonl(metadata_path), start=1):
+        context = f"SLURP {split_id}.jsonl line {line_no}"
+        scenario = raw.get("scenario")
+        action = raw.get("action")
+        if not isinstance(scenario, str) or not scenario:
+            continue
+        if not isinstance(action, str) or not action:
+            continue
+        utterance_ids.add(_train_utterance_id(raw, context))
+    if not utterance_ids:
+        raise LoaderError(
+            f"SLURP {split_id} metadata {metadata_path} yielded no labelled utterance"
+        )
+    return tuple(sorted(utterance_ids))
+
+
+def load_slurp_intent_row_profiles(
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    excluded_train_utterance_ids: Sequence[str] | None = None,
+) -> SlurpIntentRowProfiles:
+    """Mine the ROW-level per-intent profile from ``train.jsonl`` alone.
+
+    Split discipline, determinism and exclusion semantics are exactly
+    :func:`load_slurp_intent_slot_schema`'s -- the split file is named by a
+    module constant, there is no ``split`` parameter and no caller-supplied
+    path, exclusions are canonical utterance IDs validated before TRAIN is
+    read and refused when unknown, and a row with an unusable ``tokens``
+    block or a malformed entity still counts toward its intent's ``rows``.
+
+    What differs is only the UNIT: this function counts utterances, so it can
+    answer "what share of this intent's construction rows carry a ``date`` at
+    all?" and "what share carry no entity at all?". The mention-unit table of
+    :func:`load_slurp_intent_slot_schema` answers neither.
+    """
+
+    exclusions = normalize_slurp_train_utterance_exclusions(
+        excluded_train_utterance_ids
+    )
+    exclusion_set = frozenset(exclusions)
+    split_id = _ROSTER_SPLITS_LEGAL[0]
+    _, _, metadata_dir = _governed_roots(lock, root)
+    metadata_path = metadata_dir / _SPLIT_FILES[split_id]
+    if not metadata_path.is_file():
+        raise LoaderError(f"SLURP split metadata file missing: {metadata_path}")
+
+    available_utterance_ids: set[str] = set()
+    utterance_ids: set[str] = set()
+    legal_intents: set[str] = set()
+    rows_by_intent: dict[str, int] = {}
+    rows_with_entity_by_intent: dict[str, int] = {}
+    type_rows_by_intent: dict[str, dict[str, int]] = {}
+    for line_no, raw in enumerate(_read_jsonl(metadata_path), start=1):
+        context = f"SLURP {split_id}.jsonl line {line_no}"
+        scenario = raw.get("scenario")
+        action = raw.get("action")
+        if not isinstance(scenario, str) or not scenario:
+            continue
+        if not isinstance(action, str) or not action:
+            continue
+        utterance_id = _train_utterance_id(raw, context)
+        intent = f"{scenario}_{action}"
+        available_utterance_ids.add(utterance_id)
+        legal_intents.add(intent)
+        if utterance_id in exclusion_set:
+            continue
+        utterance_ids.add(utterance_id)
+        rows_by_intent[intent] = rows_by_intent.get(intent, 0) + 1
+        rows_with_entity_by_intent.setdefault(intent, 0)
+        type_rows_by_intent.setdefault(intent, {})
+        try:
+            tokens_by_id = _tokens_by_id(raw.get("tokens"), context)
+        except LoaderError:
+            continue
+        raw_entities = raw.get("entities")
+        if not isinstance(raw_entities, list):
+            continue
+        present: set[str] = set()
+        for entity in raw_entities:
+            if not isinstance(entity, Mapping):
+                continue
+            entity_type = entity.get("type")
+            if not isinstance(entity_type, str) or not entity_type:
+                continue
+            try:
+                _entity_filler(tokens_by_id, entity.get("span"), context)
+            except LoaderError:
+                continue
+            present.add(entity_type)
+        if not present:
+            continue
+        rows_with_entity_by_intent[intent] += 1
+        counts = type_rows_by_intent[intent]
+        for entity_type in present:
+            counts[entity_type] = counts.get(entity_type, 0) + 1
+
+    unknown_exclusions = sorted(exclusion_set - available_utterance_ids)
+    if unknown_exclusions:
+        raise LoaderError(
+            "excluded_train_utterance_ids contains ID absent from governed TRAIN "
+            f"metadata: {unknown_exclusions[0]}"
+        )
+    if not utterance_ids:
+        raise LoaderError(
+            f"SLURP {split_id} metadata {metadata_path} yielded no labelled utterance; "
+            "refusing to build an empty row profile"
+        )
+    profiles = {
+        intent: SlurpIntentRowProfile(
+            intent=intent,
+            rows=rows_by_intent.get(intent, 0),
+            rows_with_entity=rows_with_entity_by_intent.get(intent, 0),
+            type_rows=MappingProxyType(dict(type_rows_by_intent.get(intent, {}))),
+        )
+        for intent in sorted(legal_intents)
+    }
+    identity_hash = hashlib.sha256(
+        "\n".join(sorted(utterance_ids)).encode("utf-8")
+    ).hexdigest()
+    return SlurpIntentRowProfiles(
+        profile_id=SLURP_INTENT_ROW_PROFILE_ID,
+        source_split=split_id,
+        source_identity_hash=identity_hash,
+        utterance_count=len(utterance_ids),
+        intents=MappingProxyType(profiles),
+        excluded_train_utterance_ids=exclusions,
+    )
+
+
 def load_slurp_train_construction_rows(
     lock: Mapping[str, object],
     root: Path,
@@ -1888,17 +2112,22 @@ def load_slurp_train_construction_rows(
 
 
 __all__ = [
+    "SLURP_INTENT_ROW_PROFILE_ID",
     "SLURP_INTENT_SLOT_DECONTAMINATION_RECEIPTS",
     "SLURP_INTENT_SLOT_SCHEMA_ID",
     "SLURP_INTENT_SLOT_SCHEMA_RECEIPT_SCHEMA",
     "SLURP_LOCK_KEY",
+    "SlurpIntentRowProfile",
+    "SlurpIntentRowProfiles",
     "SlurpIntentSlotSchema",
     "SlurpIntentSlots",
     "SlurpOntology",
     "SlurpRecord",
     "SlurpTrainMaterial",
     "SlurpTrainRecording",
+    "load_slurp_intent_row_profiles",
     "load_slurp_intent_slot_schema",
+    "load_slurp_train_utterance_ids",
     "load_slurp_ontology",
     "load_slurp_split",
     "load_slurp_train_construction_rows",

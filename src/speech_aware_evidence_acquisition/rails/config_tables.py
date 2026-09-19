@@ -315,11 +315,27 @@ NATIVE_EPISODE_TOP_LEVEL_KEY = "native_episode"
 #: entries owner Decision 11-C makes criticism-only
 #: (``core.base.JudgeRegistry``) -- and a node that rewrites the delivered
 #: answer can never be one of those. See ``core.base.DELIVERY_NORMALISERS``.
+#: ``native_episode.reviewer_audit`` (E12, 2026-09-19, owner directive 26) is
+#: the FIFTH, and the second admitted by a directive rather than by a module
+#: design. It is the READ-side instance of "analyses into nodes": a
+#: deterministic, zero-contact SLOT AUDIT block, authored from construction
+#: data alone, rendered into the Reviewer's exposed context beside the draft
+#: it is checking. It belongs here rather than in ``run`` because it MOVES
+#: REQUEST BYTES -- at one boundary, by design -- so no
+#: ``request-bytes-identical`` falsifier can exist for it; rather than in the
+#: ``knowledge_views`` table because it is not a phase's material or supply,
+#: makes no retrieval and adds no evidence block; and rather than folded into
+#: ``native_episode.context_policy`` because an audit is a second, separately
+#: switchable factor on a boundary that policy already declares -- folding it
+#: in would make a cell that moves the audit indistinguishable from a cell
+#: that moves the policy. See ``rails.slot_audit`` and
+#: ``rails.node_context_policy.SLOT_AUDIT_BOUNDARY``.
 EPISODE_LEVEL_SWITCH_KEYS = frozenset({
     "native_episode.roles.solver",
     "native_episode.review_loop",
     "native_episode.context_policy",
     "native_episode.deliver_normaliser",
+    "native_episode.reviewer_audit",
 })
 
 #: The top-level key every ``stores``-class switch key names one child of.
@@ -1157,7 +1173,11 @@ def is_episode_null_arm(key: str, value: object) -> bool:
     ``load_native_episode_config`` applies too, so an all-raw declaration
     reaches the runtime as no policy at all and renders the pre-policy bytes);
     ``native_episode.deliver_normaliser``'s OFF is the key's absence, because
-    a delivery node is either absent or armed (E11).
+    a delivery node is either absent or armed (E11);
+    ``native_episode.reviewer_audit``'s OFF is the key's absence for the same
+    reason (E12) -- a context block is either absent or rendered, and with it
+    absent the ``reviewer:current-draft`` boundary renders exactly its
+    pre-E12 bytes.
     """
 
     if key == "native_episode.context_policy":
@@ -1186,6 +1206,16 @@ def is_episode_null_arm(key: str, value: object) -> bool:
         # (and, request-side, exactly the pre-key request bytes, since the
         # node runs after every contact of the episode is already made).
         return value is None
+    if key == "native_episode.reviewer_audit":
+        # E12: the block is ABSENT or it is rendered. Function-local for the
+        # same reason the context_policy branch is: rails.node_context_binding
+        # imports core.base and the policy module, and this table module is
+        # imported by everything.
+        from .node_context_binding import (  # noqa: PLC0415
+            is_reviewer_audit_null_arm,
+        )
+
+        return is_reviewer_audit_null_arm(value)
     raise ConfigTableError(f"unknown episode switch key {key!r}")
 
 

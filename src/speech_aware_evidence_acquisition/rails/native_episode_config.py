@@ -286,6 +286,12 @@ class NativeEpisodeConfig:
     # every config written before E11 and every OFF arm, so the delivered
     # bytes are then exactly the accepted Solver response's own.
     deliver_normaliser_id: str | None = None
+    # E12 (2026-09-19, owner directive 26): the canonical text of an armed
+    # ``native_episode.reviewer_audit``, or None when the key is absent --
+    # which is every config written before E12 and every OFF arm, so the
+    # ``reviewer:current-draft`` boundary then renders exactly its pre-E12
+    # bytes and no other boundary is reachable by this key at all.
+    reviewer_audit_json: str | None = None
 
     @property
     def terminal_actions(self) -> tuple[str, ...]:
@@ -348,6 +354,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         "review_loop",
         "context_policy",
         "deliver_normaliser",
+        "reviewer_audit",
     }
     if (
         not isinstance(raw, Mapping)
@@ -612,6 +619,30 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
                         "node context cleaning phase_id cannot be one of the "
                         "episode's own program phases"
                     )
+    # E12 (2026-09-19, owner directive 26): the Reviewer slot-audit context
+    # block. ONE key, validated fail-closed HERE -- before any contact -- so a
+    # fragment can never arm it on a carrier with no registered view, on a
+    # boundary that is not at L1, or against pins whose bytes are not the
+    # released construction table.
+    reviewer_audit_json = None
+    if "reviewer_audit" in raw:
+        from .node_context_binding import (
+            reviewer_audit_requires_structured_boundary,
+            validate_reviewer_audit_config,
+        )
+
+        declared_carrier = values.get("carrier_lock_key")
+        if declared_carrier != "slurp":
+            raise ValueError(
+                "native_episode.reviewer_audit is defined for carrier 'slurp', but "
+                f"this config declares carrier_lock_key {declared_carrier!r}"
+            )
+        reviewer_audit_json = validate_reviewer_audit_config(raw["reviewer_audit"])
+        # The block is an ADDITION to the reviewer:current-draft L1 rendering.
+        # It has nothing to attach to at 'raw' and would be replaced at
+        # 'cleaned', so both are refused by name rather than silently
+        # rendering nothing.
+        reviewer_audit_requires_structured_boundary(context_policy_json)
     # E11 (2026-09-18, owner directive 26): the delivery-time normaliser
     # node. ONE key, validated fail-closed HERE -- before any contact -- so a
     # fragment can never arm a carrier-specific delivery rule on the wrong
@@ -717,4 +748,5 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         role_context_json,
         context_policy_json,
         deliver_normaliser_id,
+        reviewer_audit_json,
     )

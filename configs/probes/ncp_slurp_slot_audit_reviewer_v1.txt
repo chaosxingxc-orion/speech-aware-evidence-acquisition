@@ -1,0 +1,16 @@
+# saea-node-context-template-v1 renderer=slot-audit
+[header]
+SLOT AUDIT ({view_id}; TRAIN construction rows for {intent_id}, not gold and not this recording)
+[profile_header]
+  rows with this intent: {intent_rows}; rows carrying no entity at all: {empty_share}
+[profile_item]
+  {entity_type}: {type_share}
+[profile_empty]
+  this intent has no construction rows in the table; only the representation rules below apply
+[flag]
+  {flag}: {detail}
+[flags_empty]
+  no audit flag fires on this draft
+[footer]
+These are construction frequencies and deterministic checks, not a verdict and not evidence
+that anything was said. Decide from the speech you were given.

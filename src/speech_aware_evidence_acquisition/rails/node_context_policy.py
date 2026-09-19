@@ -63,6 +63,15 @@ from ..reproduction.slurp_scoring import parse_slu_response
 from .knowledge import AgentStateArtifact, RailsError
 from .review_findings import ReviewFindingsError, parse_review_findings
 from .role_context import validate_role_context_draft_schema
+from .slot_audit import (
+    SLOT_AUDIT_RECEIPT_SCHEMA,
+    SlotAuditTable,
+    SlotAuditThresholds,
+    flag_counts,
+    profile_rows,
+    render_share,
+    slot_audit_flags,
+)
 from .slurp_intent_hypotheses import (
     BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_IDS,
     CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
@@ -205,6 +214,17 @@ CLEANING_INSTRUCTION_TEMPLATES: Mapping[str, str] = {
     "review-finding": "probes/ncp_slurp_cleaning_review_v1.txt",
 }
 
+#: E12 (2026-09-19, owner directive 26, cell B8b): the ONE boundary the
+#: Reviewer slot-audit block is appended at, and the committed template it is
+#: rendered through. The block is an ADDITION to that boundary's own L1
+#: rendering, never a replacement: the draft block above it is produced by the
+#: same code and the same template as on the base, which is what keeps the
+#: cell one factor and makes "everything outside this boundary is byte
+#: identical" a checkable statement.
+SLOT_AUDIT_BOUNDARY: tuple[str, str] = ("reviewer", "current-draft")
+SLOT_AUDIT_TEMPLATE = "probes/ncp_slurp_slot_audit_reviewer_v1.txt"
+SLOT_AUDIT_RENDERER = "slot-audit"
+
 #: The default malformed rule per boundary. ``FALLBACK-RAW`` everywhere the
 #: design proposes to fly; ``plan-action`` refuses, because the harness already
 #: fails a row whose Planner emitted an unregistered action token.
@@ -313,6 +333,18 @@ RENDERER_SECTIONS: Mapping[str, Mapping[str, tuple[str, ...]]] = {
         "body": ("verdict",),
         "item": ("field", "problem"),
         "items_empty": (),
+        "footer": (),
+    },
+    # E12. The Reviewer slot-audit block: the intent's construction profile
+    # and the deterministic flags, appended after the draft block at
+    # ``reviewer:current-draft``.
+    SLOT_AUDIT_RENDERER: {
+        "header": ("view_id", "intent_id"),
+        "profile_header": ("intent_rows", "empty_share"),
+        "profile_item": ("entity_type", "type_share"),
+        "profile_empty": (),
+        "flag": ("flag", "detail"),
+        "flags_empty": (),
         "footer": (),
     },
 }
@@ -561,6 +593,12 @@ PROVENANCE_LIMIT = "episode-limit"
 #: content tokens occurs in the L1 material that contact was handed, or is one
 #: of the closed schema's own fixed words.
 PROVENANCE_CLEANED = "cleaning-contact"
+#: E12: a value read off the PINNED slot-audit table -- a construction count,
+#: a construction share, or a released representation sentence. It is not a
+#: free value either: the table is two hash-pinned committed files, mined from
+#: the construction pool alone and carrying no filler, no sentence and no gold
+#: of any evaluated row (``rails.slot_audit``).
+PROVENANCE_AUDIT = "slot-audit-table"
 PROVENANCES = (
     PROVENANCE_SOURCE,
     PROVENANCE_COMPOSED,
@@ -569,6 +607,7 @@ PROVENANCES = (
     PROVENANCE_COUNT,
     PROVENANCE_LIMIT,
     PROVENANCE_CLEANED,
+    PROVENANCE_AUDIT,
 )
 
 
@@ -964,6 +1003,53 @@ class NodeContextBoundaryPolicy:
 
 
 @dataclass(frozen=True)
+class SlotAuditBinding:
+    """E12: the armed Reviewer slot-audit block -- table, thresholds, template.
+
+    Present exactly when ``native_episode.reviewer_audit`` is armed; ``None``
+    on every other flight, where the boundary renders the pre-E12 bytes.
+    """
+
+    table: SlotAuditTable
+    thresholds: SlotAuditThresholds
+    template: NodeContextTemplate
+
+    def receipt(
+        self,
+        *,
+        applied: bool,
+        intent_id: str | None = None,
+        flags: Sequence[object] = (),
+        block_text: str | None = None,
+        reason: str | None = None,
+    ) -> dict[str, object]:
+        """The per-contact audit receipt block, the same shape whether the
+        block was rendered or not."""
+
+        document: dict[str, object] = {
+            "schema": SLOT_AUDIT_RECEIPT_SCHEMA,
+            "view_id": self.table.view_id,
+            "release_sha256": self.table.release_sha256,
+            "snapshot_sha256": self.table.snapshot_sha256,
+            "table_content_hash": self.table.content_hash(),
+            "template_id": self.template.template_id,
+            "template_sha256": self.template.sha256,
+            "thresholds": self.thresholds.as_json(),
+            "applied": applied,
+            "reason": reason,
+            "intent_id": intent_id,
+            "intent_in_table": (
+                None if intent_id is None else intent_id in self.table.intents
+            ),
+            "block_sha256": None if block_text is None else _sha256_text(block_text),
+            "block_chars": None if block_text is None else len(block_text),
+            "flag_counts": flag_counts(list(flags)),
+            "flags": [flag.as_json() for flag in flags],
+        }
+        return document
+
+
+@dataclass(frozen=True)
 class NodeContextCompilation:
     """The exposed states one contact actually receives, and its receipt."""
 
@@ -1010,9 +1096,20 @@ class SlurpNodeContextPolicy:
         projection_policy: str | None = None,
         draft_response_schema: Mapping[str, object] | None = None,
         legal_entity_types: Sequence[str] = (),
+        slot_audit: SlotAuditBinding | None = None,
     ) -> None:
         if not isinstance(policy_id, str) or not policy_id.strip():
             raise NodeContextPolicyError("node context policy_id must be text")
+        self.slot_audit = slot_audit
+        if slot_audit is not None:
+            entry = boundaries.get(SLOT_AUDIT_BOUNDARY)
+            if entry is None or entry.level != "structured":
+                raise NodeContextPolicyError(
+                    "the reviewer slot-audit block requires the "
+                    f"{SLOT_AUDIT_BOUNDARY[0]}:{SLOT_AUDIT_BOUNDARY[1]} boundary at "
+                    "level 'structured'; it is an addition to that boundary's own L1 "
+                    "rendering, not a level of its own"
+                )
         if not any(entry.level != "raw" for entry in boundaries.values()):
             # An ALL-RAW policy parses nothing and renders nothing, so it needs
             # no candidate inventory, no draft contract and no template. It
@@ -1195,6 +1292,9 @@ class SlurpNodeContextPolicy:
                     state, position=position, role_kind=role_kind, policy=policy,
                     parse_status=parse_status, fallback=fallback, rendered=state,
                     derived_fields={},
+                    slot_audit=self._slot_audit_row(
+                        role_kind, policy, None, reason="boundary-rendered-raw",
+                    ),
                 ))
                 continue
             cleaning_contact = None
@@ -1207,6 +1307,11 @@ class SlurpNodeContextPolicy:
                     is_target=cleaning_targets.get(policy.semantic_class) == position,
                     invoker=cleaning_invoker,
                 )
+            derived_fields = dict(block.derived_fields)
+            audit_row = self._slot_audit_row(
+                role_kind, policy, derived_fields.pop("slot_audit", None),
+                reason="draft-unparsed",
+            )
             derived = self._derived_state(
                 source=state, role_kind=role_kind,
                 semantic_class=policy.semantic_class, sample_id=sample_id,
@@ -1217,8 +1322,9 @@ class SlurpNodeContextPolicy:
             rows.append(self._row(
                 state, position=position, role_kind=role_kind, policy=policy,
                 parse_status=parse_status, fallback=fallback, rendered=derived,
-                derived_fields=block.derived_fields,
+                derived_fields=derived_fields,
                 cleaning_contact=cleaning_contact,
+                slot_audit=audit_row,
             ))
         receipt = {
             "schema": NODE_CONTEXT_COMPILATION_SCHEMA,
@@ -1501,7 +1607,89 @@ class SlurpNodeContextPolicy:
             block.add("checks", check_values)
             derived["harness_checks"] = checks
         block.add("footer")
-        return block.finish(derived)
+        rendered = block.finish(derived)
+        if (
+            self.slot_audit is None
+            or (policy.consumer_role_kind, policy.semantic_class) != SLOT_AUDIT_BOUNDARY
+        ):
+            return rendered
+        return self._append_slot_audit(rendered, draft=draft)
+
+    # -- E12: the Reviewer slot-audit block ---------------------------------
+
+    def _append_slot_audit(
+        self, rendered: RenderedBlock, *, draft: ParsedDraft,
+    ) -> RenderedBlock:
+        """Append the slot-audit block to one Reviewer draft rendering.
+
+        An ADDITION, never a rewrite: ``rendered.text`` is the same L1 block
+        the base renders, byte for byte, and the audit follows it after one
+        newline. Zero contacts; every substituted value is a construction
+        count, a construction share, a released convention sentence, a closed
+        flag name or an entity type the draft or the table already carries.
+        """
+
+        audit = self.slot_audit
+        flags = slot_audit_flags(
+            intent_id=draft.intent_id,
+            entities=draft.entities,
+            table=audit.table,
+            thresholds=audit.thresholds,
+        )
+        profile = audit.table.profile(draft.intent_id)
+        block = _Block(audit.template)
+        block.add("header", {
+            "view_id": Substitution(
+                "view_id", audit.table.view_id, PROVENANCE_AUDIT
+            ),
+            "intent_id": Substitution(
+                "intent_id", draft.intent_id, PROVENANCE_COMPOSED
+            ),
+        })
+        listed = profile_rows(profile, audit.thresholds)
+        if profile is None or profile.rows <= 0:
+            block.add("profile_empty")
+        else:
+            block.add("profile_header", {
+                "intent_rows": Substitution(
+                    "intent_rows", str(profile.rows), PROVENANCE_AUDIT
+                ),
+                "empty_share": Substitution(
+                    "empty_share",
+                    render_share(profile.rows_without_entity, profile.rows),
+                    PROVENANCE_AUDIT,
+                ),
+            })
+            for entity_type, rows, of_rows in listed:
+                block.add("profile_item", {
+                    "entity_type": Substitution(
+                        "entity_type", entity_type, PROVENANCE_AUDIT
+                    ),
+                    "type_share": Substitution(
+                        "type_share", render_share(rows, of_rows), PROVENANCE_AUDIT
+                    ),
+                })
+        if not flags:
+            block.add("flags_empty")
+        for flag in flags:
+            block.add("flag", {
+                "flag": Substitution("flag", flag.flag, PROVENANCE_VOCABULARY),
+                "detail": Substitution("detail", flag.detail, PROVENANCE_AUDIT),
+            })
+        block.add("footer")
+        audit_block = block.finish({})
+        derived = dict(rendered.derived_fields)
+        derived["slot_audit"] = audit.receipt(
+            applied=True,
+            intent_id=draft.intent_id,
+            flags=flags,
+            block_text=audit_block.text,
+        )
+        return RenderedBlock(
+            text=f"{rendered.text}\n{audit_block.text}",
+            substitutions=rendered.substitutions + audit_block.substitutions,
+            derived_fields=derived,
+        )
 
     def harness_checks(
         self, *, draft: ParsedDraft | None, candidate_ids: Sequence[str] | None,
@@ -1864,6 +2052,31 @@ class SlurpNodeContextPolicy:
             cited_value_ids=source.cited_value_ids,
         ).validate()
 
+    def _slot_audit_row(
+        self,
+        role_kind: str,
+        policy: NodeContextBoundaryPolicy,
+        rendered_row: Mapping[str, object] | None,
+        *,
+        reason: str,
+    ) -> Mapping[str, object] | None:
+        """The audit receipt block for one boundary row.
+
+        ``None`` on every boundary but the armed one, and on every flight that
+        arms no audit -- so a pre-E12 receipt keeps exactly its pre-E12 fields.
+        On the armed boundary it is always present: rendered, or explicitly
+        ``applied: false`` with the reason, because a silent absence and a
+        deliberate skip must not look alike in the receipt.
+        """
+
+        if self.slot_audit is None:
+            return None
+        if (role_kind, policy.semantic_class) != SLOT_AUDIT_BOUNDARY:
+            return None
+        if rendered_row is not None:
+            return rendered_row
+        return self.slot_audit.receipt(applied=False, reason=reason)
+
     def _source_binding(
         self, source: AgentStateArtifact, position: int,
     ) -> dict[str, object]:
@@ -1935,9 +2148,10 @@ class SlurpNodeContextPolicy:
         rendered: AgentStateArtifact,
         derived_fields: Mapping[str, object],
         cleaning_contact: Mapping[str, object] | None = None,
+        slot_audit: Mapping[str, object] | None = None,
     ) -> Mapping[str, object]:
         template = policy.template
-        return self._finish_row({
+        row = self._finish_row({
             "schema": NODE_CONTEXT_RECEIPT_SCHEMA,
             "policy_id": self.policy_id,
             "boundary": {
@@ -1961,6 +2175,15 @@ class SlurpNodeContextPolicy:
                 None if cleaning_contact is None else dict(cleaning_contact)
             ),
         })
+        if slot_audit is not None:
+            # E12. Added AFTER ``_finish_row`` computed the row digest, and
+            # then re-digested, so a pre-E12 row's ``receipt_sha256`` is a
+            # function of exactly its pre-E12 fields and only an ARMED audit
+            # moves it.
+            row["slot_audit"] = dict(slot_audit)
+            row.pop("receipt_sha256")
+            self._finish_row(row)
+        return row
 
 
 def _resolve_cleaning(
@@ -2025,6 +2248,26 @@ def _resolve_cleaning(
     )
 
 
+def resolve_slot_audit_binding(
+    repo_root: Path,
+    *,
+    table: SlotAuditTable,
+    thresholds: SlotAuditThresholds,
+    template: str | None = None,
+) -> SlotAuditBinding:
+    """E12: load and check the committed template the audit block renders
+    through, and bind it to the pinned table and the declared thresholds."""
+
+    relpath = SLOT_AUDIT_TEMPLATE if template is None else template
+    resolved = load_node_context_template(repo_root, relpath)
+    if resolved.renderer != SLOT_AUDIT_RENDERER:
+        raise NodeContextPolicyError(
+            f"the reviewer slot-audit block requires a {SLOT_AUDIT_RENDERER!r} "
+            f"template; {relpath!r} declares {resolved.renderer!r}"
+        )
+    return SlotAuditBinding(table=table, thresholds=thresholds, template=resolved)
+
+
 def build_slurp_node_context_policy(
     *,
     repo_root: Path,
@@ -2033,6 +2276,7 @@ def build_slurp_node_context_policy(
     boundaries: Mapping[str, Mapping[str, object]],
     legal_intent_ids: Iterable[str] = (),
     params: Mapping[str, object] | None = None,
+    slot_audit: SlotAuditBinding | None = None,
 ) -> SlurpNodeContextPolicy:
     """Resolve one validated ``context_policy`` block into a live policy.
 
@@ -2098,7 +2342,9 @@ def build_slurp_node_context_policy(
             raise NodeContextPolicyError(
                 "a structured node context policy requires params"
             )
-        return SlurpNodeContextPolicy(policy_id=policy_id, boundaries=resolved)
+        return SlurpNodeContextPolicy(
+            policy_id=policy_id, boundaries=resolved, slot_audit=slot_audit,
+        )
     return SlurpNodeContextPolicy(
         policy_id=policy_id,
         boundaries=resolved,
@@ -2107,6 +2353,7 @@ def build_slurp_node_context_policy(
         projection_policy=params["projection_policy"],
         draft_response_schema=params["draft_response_schema"],
         legal_entity_types=tuple(params.get("legal_entity_types", ())),
+        slot_audit=slot_audit,
     )
 
 
@@ -2152,6 +2399,9 @@ __all__ = [
     "RENDERER_SECTIONS",
     "ROLE_KINDS",
     "SEMANTIC_CLASSES",
+    "SLOT_AUDIT_BOUNDARY",
+    "SLOT_AUDIT_RENDERER",
+    "SLOT_AUDIT_TEMPLATE",
     "SLURP_BOUNDARY_IDS",
     "SLURP_BOUNDARY_PARSE_FAILURE",
     "SLURP_BOUNDARY_TEMPLATES",
@@ -2166,6 +2416,7 @@ __all__ = [
     "NodeContextTemplate",
     "ParsedDraft",
     "RenderedBlock",
+    "SlotAuditBinding",
     "SlurpNodeContextPolicy",
     "Substitution",
     "build_slurp_node_context_policy",
@@ -2177,5 +2428,6 @@ __all__ = [
     "parse_node_context_template",
     "parse_plan_action",
     "parse_tool_observation",
+    "resolve_slot_audit_binding",
     "validate_cleaning_document",
 ]

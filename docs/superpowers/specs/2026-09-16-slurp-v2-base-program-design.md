@@ -265,6 +265,83 @@ declare it are `held` and it has never flown. E11 does not change that path; a c
 must either close it the way I7n closes the node's or use the node instead.
 
 
+E12 (2026-09-19, owner directive 26): **the Reviewer slot-audit context block.** E11 is the
+directive's WRITE-side instance -- an analysis placed as a transform of what the episode delivers.
+E12 is its READ-side instance: the A3 coverage / slot-loss audits placed as declared context at the
+Reviewer boundary, so the node that is supposed to criticise a draft finally has something
+deterministic to criticise it against. The evidence it comes from is
+`docs/results/2026-09-17-slurp-a3-coverage-confusion-audit-v1.md` T5/T6 (81 of 135 gold-`date` rows
+emit no date at all; 46 of 72 `time` rows emit a non-exact filler) and
+`docs/results/2026-09-14-slurp-train-a-entity-loss-attribution-v1.md` (184 of the 414 empty-gold
+rows emit an entity anyway). Today the Reviewer is handed the draft and nothing else, and cell B7r
+only fixes the shape of what it WRITES.
+
+*What it is.* Two pieces. First, a released construction view,
+`knowledge/slurp/semantic/slot-audit-v1/` (`release.json` + `snapshot.json`, the same two-file
+pinned form the other SLURP semantic stores use, built by
+`scripts/build_slurp_slot_audit_view.py`): per intent, every entity type attested with it in the
+construction pool and the share of that intent's construction rows carrying it, the share of its
+rows carrying no entity at all, and the `date` / `time` representation conventions quoted verbatim
+from the released slot store v2 card. 60 intents, 54 entity types, 9,354 construction utterances --
+the governed TRAIN split minus every utterance with a recording in TRAIN Fold A, Fold B or DEV-1000
+(the 2026-09-13 exclusion), the SAME pool `scripts/build_slurp_exemplar_pool_assets.py` pins for
+module M1. It is committed rather than kept under `SPEECHRL_DATA_DIR` because it carries counts and
+shares only -- no filler, no sentence, no utterance id, no recording -- so its pin is a git blob
+hash an auditor can check offline. Second, `rails.slot_audit` plus one committed template
+(`configs/probes/ncp_slurp_slot_audit_reviewer_v1.txt`) render that table, for the draft under
+review, as a block APPENDED after the `reviewer:current-draft` L1 rendering, carrying the intent's
+expected slot profile and four flags the HARNESS computes, never the model:
+
+| Flag | Fires when |
+| --- | --- |
+| `TYPE-UNSEEN` | a draft entity type is not attested with this intent anywhere in the construction pool |
+| `EMPTY-DRAFT` | the draft declares no entity while at least `empty_draft_min_entity_row_share` (0.5) of this intent's construction rows carry one |
+| `MISSING-COMMON` | a type above `missing_common_min_row_share` (0.5) of this intent's construction rows is absent from the draft (`date` and `time` are named like any other type) |
+| `REPRESENTATION` | a `date` or `time` filler breaks the released spoken-form convention -- `saea-spoken-form-v1`: no ASCII digit, no colon, no slash |
+
+*The switch.* One `episode`-class key, `native_episode.reviewer_audit`, the FIFTH and last of that
+class's closed allowlist, armed as `{"view": "slot-audit-v1", "release": {...}, "snapshot": {...},
+"thresholds": {...}}`. Its OFF arm is the key's absence: a context block is either absent or
+rendered. The loader validates it fail-closed before any contact -- another carrier, another view
+id, a pin outside `knowledge/slurp/semantic/`, an unknown threshold, a threshold outside `[0, 1]`,
+and a `reviewer:current-draft` boundary that is not at level `structured` are each refused by name
+-- and the binding then reads both pinned files, hashes them against their pins and cross-checks
+the release against the snapshot before the first request is composed. Harness-admission entry
+form: `switch.table` `"episode"`, `switch.key` `"native_episode.reviewer_audit"`, `switch.off`
+`null`, `switch.on` the armed object, `switch.proof`
+`tests/unit/test_config_table_module_switches.py::test_reviewer_audit_is_one_episode_class_key`.
+It is an `episode` entry rather than a `run` one because it MOVES REQUEST BYTES at one boundary by
+design, so no `request-bytes-identical` falsifier can exist for it; rather than a
+`knowledge_views` TABLE entry because it is not a phase's material or supply, performs no
+retrieval and adds no evidence block; and it is a second key rather than a field of
+`native_episode.context_policy` because a cell that moves the audit must stay distinguishable from
+a cell that moves the policy.
+
+*One factor, down to the byte.* The block is an ADDITION, never a rewrite: the L1 draft block above
+it is produced by the same code and the same template as on the base, and the audit follows it after
+one newline. `tests/unit/test_native_episode_runner_reviewer_audit.py` runs the real episode twice
+through the shared fake transport and shows that with the block armed exactly the three Reviewer
+contacts move and every Perception, Solver and Planner contact renders byte-identical bytes. The
+block makes no contact of any kind, so the bounded ceiling stays 11 and every budget stays cell
+B7r's; a malformed draft renders no block at all and records `applied: false` with its reason.
+Measured size on the released table: 687-787 characters, roughly 170-200 tokens, against the 9,708
+tokens of headroom the NCP design measured at the worst observed contact.
+
+*Receipts.* The boundary's own `saea-node-context-policy-v1` row gains a `slot_audit` block
+(`saea-reviewer-slot-audit-v1`): the view id, the release and snapshot sha256s, the table's content
+hash, the template id and hash, the thresholds, `applied` / `reason`, the intent and whether the
+table carries it, the rendered block's sha256 and character count, the count of each of the four
+flags, and the flag list itself -- each flag naming a TYPE and its counts, never a filler. The
+compilation record's `template_sha256s` gains the three assets the block was composed from. A row
+of any other boundary keeps exactly its pre-E12 fields and its pre-E12 digest.
+
+*Config fragments.* Both arms of cell B8b are committed with readiness `held`:
+`configs/baseline/slurp-native-anchor-ncp-l1-reviewer-audit-{train-fold-a,smoke-4}-v1.json` with
+the matching `configs/experiment/slurp-native-ncp-l1-reviewer-audit-anchor-{train-fold-a,smoke-4}-v1.json`,
+on cell B7r's base, its roster, its budgets and its prepared Perception supply reused byte for byte.
+E12 is engineering only: it authorises no owner decision, no preregistration, no exposure row and no
+contact, and cell B8b flies only after B7r seals and is not HARMFUL.
+
 ## 4. Phases
 
 **Phase 0 (done or in progress, zero contacts):** takeover receipt, owner decision record,

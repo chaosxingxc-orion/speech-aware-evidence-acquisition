@@ -1137,11 +1137,13 @@ def test_node_context_policy_is_one_episode_class_key():
     # The allowlist is CLOSED and this enumeration is its ratchet: admitting a
     # key is a code change with a test, never a receipt edit. The fourth,
     # native_episode.deliver_normaliser, was admitted by E11 (owner directive
-    # 26, 2026-09-18) and has its own proof below.
+    # 26, 2026-09-18) and the fifth, native_episode.reviewer_audit, by E12
+    # (the same directive, 2026-09-19); both have their own proof below.
     assert sorted(EPISODE_LEVEL_SWITCH_KEYS) == [
         "native_episode.context_policy",
         "native_episode.deliver_normaliser",
         "native_episode.review_loop",
+        "native_episode.reviewer_audit",
         "native_episode.roles.solver",
     ]
     assert resolve_episode_switch_key(key) == key
@@ -1257,6 +1259,107 @@ def test_the_two_b8a_fragments_arm_the_node_and_nothing_else():
         ) is True
         # The node adds no contact, so neither fragment's ceiling moves.
         assert "slurp_projection_v3_delivery" not in on
+
+
+# ---------------------------------------------------------------------------
+# 11c. The Reviewer slot-audit context block (E12, 2026-09-19, owner directive
+#      26) -- the 'episode' class's FIFTH key,
+#      native_episode.reviewer_audit.
+#
+# It is an episode key rather than a run-level one because it MOVES REQUEST
+# BYTES at one boundary by design, so no request-bytes-identical falsifier can
+# exist for it; and it is not one of the four per-phase tables because it is
+# not what a phase observes, is supplied with, is judged by or may call -- it
+# is an analysis rendered into the context an EARLIER node's output is read
+# in. It is a second key rather than a field of native_episode.context_policy
+# because a cell that moves the audit must be distinguishable from a cell that
+# moves the policy.
+# ---------------------------------------------------------------------------
+
+
+def test_reviewer_audit_is_one_episode_class_key():
+    key = "native_episode.reviewer_audit"
+    assert resolve_episode_switch_key(key) == key
+
+    # OFF: the key absent. There is no third shape.
+    assert is_episode_null_arm(key, None) is True
+    # ON: the declared view, its two pins and its optional thresholds.
+    armed = {
+        "view": "slot-audit-v1",
+        "release": {
+            "relpath": "knowledge/slurp/semantic/slot-audit-v1/release.json",
+            "sha256": SHA,
+        },
+        "snapshot": {
+            "relpath": "knowledge/slurp/semantic/slot-audit-v1/snapshot.json",
+            "sha256": SHA,
+        },
+    }
+    assert is_episode_null_arm(key, armed) is False
+    assert is_episode_null_arm(key, {**armed, "thresholds": {}}) is False
+
+    # A dotted path under native_episode, never a flat run-level key.
+    with pytest.raises(ConfigTableError, match="is dotted"):
+        resolve_run_switch_key(key)
+    with pytest.raises(ConfigTableError, match="does not start with"):
+        resolve_episode_switch_key("reviewer_audit")
+
+
+def test_the_two_b8b_fragments_arm_the_block_and_nothing_else():
+    """Cell B8b is one factor: each committed ON fragment differs from cell
+    B7r's base in native_episode.reviewer_audit alone, plus the bookkeeping
+    identities every derived fragment carries."""
+
+    bookkeeping = {
+        "native_contact_fit",
+        "scorers",
+        "speech_feature_key_representation_id",
+        "speech_feature_matcher_policy_id",
+        "what_this_is",
+    }
+    pairs = (
+        (
+            "slurp-native-anchor-ncp-l1-reviewer-format-train-fold-a-v1",
+            "slurp-native-anchor-ncp-l1-reviewer-audit-train-fold-a-v1",
+        ),
+        (
+            "slurp-native-anchor-ncp-l1-reviewer-format-smoke-4-v1",
+            "slurp-native-anchor-ncp-l1-reviewer-audit-smoke-4-v1",
+        ),
+    )
+    for off_name, on_name in pairs:
+        off = _load_baseline_json(f"{off_name}.json")
+        on = _load_baseline_json(f"{on_name}.json")
+        differing = sorted(
+            key
+            for key in (set(off) | set(on)) - bookkeeping
+            if off.get(key) != on.get(key)
+        )
+        assert differing == ["native_episode"], (off_name, differing)
+
+        off_episode = dict(off["native_episode"])
+        on_episode = dict(on["native_episode"])
+        armed = on_episode.pop("reviewer_audit")
+        assert armed["view"] == "slot-audit-v1"
+        assert on_episode == off_episode
+        assert is_episode_null_arm(
+            "native_episode.reviewer_audit", off_episode.get("reviewer_audit")
+        ) is True
+        # The block makes no contact, so neither fragment's ceiling moves, and
+        # the boundary it attaches to is the one the base already declares at
+        # level 'structured'.
+        assert off_episode["context_policy"]["boundaries"][
+            "reviewer:current-draft"
+        ]["level"] == "structured"
+
+        # Both pins name real committed bytes, and their hashes are the bytes'.
+        for field_name in ("release", "snapshot"):
+            pin = armed[field_name]
+            path = REPO_ROOT / pin["relpath"]
+            assert path.is_file(), pin["relpath"]
+            import hashlib
+
+            assert hashlib.sha256(path.read_bytes()).hexdigest() == pin["sha256"]
 
 
 def _slurp_boundaries():
