@@ -145,17 +145,17 @@
       "arm": {
         "note": "the sealed anchor preparation's own Perception output, which the B7r package records on 1,080 of 1,080 rows",
         "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
-        "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v1.json",
+        "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v2.json",
         "rows": 1080,
-        "sha256": "b7a1e1ab7f4f48057bcb1aea1e6e56d9fe8653097f3d3e0a491668e6d56f4fd4"
+        "sha256": "391177e18797854db0f41648a4de23a3ff100288e653032bb4c2dae09d8d44cd"
       },
       "rebuild_is_expected_and_it_proves_something": "core.preparation.artifact_inputs pins the cell's WHOLE composed configuration, and this cell's differs from cell B7r's by its two declared keys: 757dfc5b4f4d2127ab041ad3b57d4772c2e921fcf6471ee0b1356bf8c1f3f990 -> 7799e57ac7ae47419ac8e5349c5dd49045eb6a570f65c22ea6c5d950a723952d for the arm and e3d880e111917fee4fb4b7654bde0c00f773d6f9574ce1a2501c93b29be85f68 -> fcd664ae1a9d4e156844321441787ead77c1642cc2ad558c50d8c4830babc17f for the smoke. Both were computed model-free in this registration, and the two B7r values REPRODUCE the ones stored inside B7r's own prepared artifacts, which is what makes this a checked statement rather than an inference. core.flight.repin will therefore derive a fresh artifact into this run's own prepared directory, and core.preparation._compare_artifact_output will REFUSE that rebuild unless its Perception output is byte-identical to the inherited one. That refusal is the model-free proof that the audit block moves no knowledge-selection byte. --allow-output-change must NEVER be passed.",
       "smoke": {
         "note": "the four-row reference artifact every four-row form smoke of this roster shares",
         "output_sha256": "512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733",
-        "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-SMOKE-4-V1/phase-supply-v2.json",
+        "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-SMOKE-4-V1/phase-supply-v3.json",
         "rows": 4,
-        "sha256": "d41c049fbe4746289e5629d322074645542b7d1cbce75e001c697c2a2b306a02"
+        "sha256": "7037a456d4d7b9dae1f846e60537e5cf0f08e0a8d4e6359464420953b228549a"
       },
       "statement": "cell B7r's prepared Perception supply is inherited BYTE FOR BYTE and no new preparation is owed (program spec item E12). Both pins were verified in this registration by hashing the files under SPEECHRL_DATA_DIR, read-only."
     },

@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-ncp-l1-reviewer-format-anchor-train-fold-a-v1",
-  "composed_config_hash": "aadb7fa47724159ff719dc5f83b364d09df4422bb583e858ed82dc0b9b78e005",
+  "composed_config_hash": "6f4305068a65de7a591fcdc08e7182ebfdafec43ff0efa240afbb23784119cf1",
   "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan; the campaign acquires its own GenerationLease against the resident session and schedules the one official score at finalize.",
   "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "experiment": "slurp-native-ncp-l1-reviewer-format-anchor-train-fold-a-v1",
@@ -23,7 +23,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "996a507e02efa7835c30dc2ca611a0fce8c7588733e7155835302da36e9374b7",
+    "protocol_hash": "ea40fd649a62313d4dcaa038925c15e994a14173010b501f165e7b387d8cd076",
     "run_id": "SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -32,7 +32,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-17-slurp-b7rc-ncp-anchor-v1/protocol-registered-v1.json",
-    "sha256": "cb5ad068ee99ed8950ddb75cd41e3b17f3737eea9a05fd57fe6e449b24d75af5"
+    "sha256": "a916dd37c0fc254b941ac25245ea64888b16e625321ee85fc5f714eeb53a5fa2"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The primary comparator is cell B7a's sealed score artifact and the released TRAIN A direct anchor is the secondary; neither is ever re-flown or re-scored, and neither cell opens before B7a seals and is read not HARMFUL. The four-row smoke is structural only: contact counts, episode receipt fields, the policy's rendered blocks and its receipt rows, fit receipts and seal, with no answer, reference or quality interpretation.",
   "root_registration_required": true,

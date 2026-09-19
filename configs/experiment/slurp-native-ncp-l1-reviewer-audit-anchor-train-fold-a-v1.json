@@ -18,8 +18,8 @@
           {
             "kind": "preparation",
             "reason": "INHERITED PIN, to be replaced by scripts/flights/repin_cell.py on the launch commit. It is cell B7r's OWN prepared Perception artifact for this roster, reused byte for byte: the slot-audit block is a consumer-side context addition at the reviewer:current-draft boundary and moves no supply, no retrieval and no evidence block, so this cell owes no new preparation (program spec section 3, item E12). Zero model, tokenizer, encoder, scorer or server contacts. The prepared artifact's identity digest (core.preparation.artifact_inputs) pins the cell's WHOLE composed configuration and this cell's differs from cell B7r's by its two declared keys (757dfc5b4f4d2127ab041ad3b57d4772c2e921fcf6471ee0b1356bf8c1f3f990 -> 7799e57ac7ae47419ac8e5349c5dd49045eb6a570f65c22ea6c5d950a723952d), so core.flight.repin WILL derive a fresh artifact into prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1/ and core.preparation._compare_artifact_output will REFUSE that rebuild unless its Perception output SHA-256 is still ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f on 1,080 of 1,080 rows -- which is the model-free proof that neither declared key moves a knowledge-selection byte. --allow-output-change must never be passed.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v1.json",
-            "sha256": "b7a1e1ab7f4f48057bcb1aea1e6e56d9fe8653097f3d3e0a491668e6d56f4fd4"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v2.json",
+            "sha256": "391177e18797854db0f41648a4de23a3ff100288e653032bb4c2dae09d8d44cd"
           }
         ],
         "state": "held"

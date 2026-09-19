@@ -16,10 +16,17 @@
         "reason": "Registered before contact by the B7r/B7c registration agent on cell B7a's configuration, after E8a merged at ff668547 and after the B7a package registered at 2c39a957. It stays held: the coordinator appends the root decision requirement and flips the state after cell B7a seals and is not HARMFUL and after this cell's four-row smoke seals. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. One experiment in flight at a time.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b7rc-ncp-anchor-admission-v1",
+            "relpath": "coordination/slurp-b7rc-ncp-anchor-v1/root-admission-v1.json",
+            "sha256": "918618f1dc146105948b428835c664409fe89e04a40f008787abc38beac7df8b",
+            "reason": "Decision slurp-b7rc-ncp-anchor-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "Model-free first-phase Perception supply prepared by the B7r/B7c registration agent from the same sealed speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed dual-store anchor and cell B7a used; zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed anchor preparation output block on every row, so the Perception selection channel does not move in this cell. Receipt coordination/slurp-b7rc-ncp-anchor-v1/phase-supply-vs-anchor-v1.json.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v1.json",
-            "sha256": "b7a1e1ab7f4f48057bcb1aea1e6e56d9fe8653097f3d3e0a491668e6d56f4fd4"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v2.json",
+            "sha256": "391177e18797854db0f41648a4de23a3ff100288e653032bb4c2dae09d8d44cd"
           }
         ],
         "state": "held"

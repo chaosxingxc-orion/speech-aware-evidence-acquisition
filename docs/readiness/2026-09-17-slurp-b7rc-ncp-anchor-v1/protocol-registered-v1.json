@@ -126,11 +126,11 @@
       "attempt_id": "attempt-slurp-native-ncp-l1-reviewer-format-anchor-train-fold-a-generation-v1",
       "baseline_fragment": "slurp-native-anchor-ncp-l1-reviewer-format-train-fold-a-v1",
       "cell": "slurp-native-ncp-l1-reviewer-format-anchor-train-fold-a-v1",
-      "composed_config_hash": "aadb7fa47724159ff719dc5f83b364d09df4422bb583e858ed82dc0b9b78e005",
+      "composed_config_hash": "6f4305068a65de7a591fcdc08e7182ebfdafec43ff0efa240afbb23784119cf1",
       "experiment": "slurp-native-ncp-l1-reviewer-format-anchor-train-fold-a-v1",
       "fit_attempt_id": "attempt-slurp-native-ncp-l1-reviewer-format-anchor-train-fold-a-fit-v1",
       "fit_run_id": "SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-FIT-V1",
-      "protocol_hash": "996a507e02efa7835c30dc2ca611a0fce8c7588733e7155835302da36e9374b7",
+      "protocol_hash": "ea40fd649a62313d4dcaa038925c15e994a14173010b501f165e7b387d8cd076",
       "run_id": "SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1"
     },
     "b7r_smoke": {

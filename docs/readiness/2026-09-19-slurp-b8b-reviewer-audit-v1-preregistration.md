@@ -220,8 +220,8 @@ read-only:
 
 | cell | prepared artifact | SHA-256 | Perception `output` SHA-256 |
 | --- | --- | --- | --- |
-| arm | `prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v1.json` | `b7a1e1ab7f4f48057bcb1aea1e6e56d9fe8653097f3d3e0a491668e6d56f4fd4` | `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` (1,080 of 1,080 rows — the sealed anchor preparation's own output) |
-| smoke | `prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-SMOKE-4-V1/phase-supply-v2.json` | `d41c049fbe4746289e5629d322074645542b7d1cbce75e001c697c2a2b306a02` | `512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733` (4 of 4 rows — the four-row reference every form smoke of this roster shares) |
+| arm | `prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v2.json` | `391177e18797854db0f41648a4de23a3ff100288e653032bb4c2dae09d8d44cd` | `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` (1,080 of 1,080 rows — the sealed anchor preparation's own output) |
+| smoke | `prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-SMOKE-4-V1/phase-supply-v3.json` | `7037a456d4d7b9dae1f846e60537e5cf0f08e0a8d4e6359464420953b228549a` | `512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733` (4 of 4 rows — the four-row reference every form smoke of this roster shares) |
 
 **A rebuild is expected, and it is the enforcement.** `core.preparation.artifact_inputs` pins the
 cell's **whole composed configuration**, and this cell's differs from B7r's by its two declared keys.

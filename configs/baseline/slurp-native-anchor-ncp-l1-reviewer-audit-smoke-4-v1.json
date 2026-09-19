@@ -380,8 +380,8 @@
     }
   ],
   "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-SMOKE-4-V1/phase-supply-v2.json",
-    "sha256": "d41c049fbe4746289e5629d322074645542b7d1cbce75e001c697c2a2b306a02"
+    "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-SMOKE-4-V1/phase-supply-v3.json",
+    "sha256": "7037a456d4d7b9dae1f846e60537e5cf0f08e0a8d4e6359464420953b228549a"
   },
   "scorers": [
     "slurp-slu-official-train",

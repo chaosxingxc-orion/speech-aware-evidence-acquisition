@@ -40,8 +40,8 @@
   "prepared_phase_supply": {
     "note": "INHERITED from cell B7r and reused byte for byte; core.flight.repin rebuilds it into this run's own prepared directory on the launch commit and refuses the rebuild unless the Perception output is byte-identical. --allow-output-change must never be passed.",
     "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
-    "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v1.json",
-    "sha256": "b7a1e1ab7f4f48057bcb1aea1e6e56d9fe8653097f3d3e0a491668e6d56f4fd4"
+    "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v2.json",
+    "sha256": "391177e18797854db0f41648a4de23a3ff100288e653032bb4c2dae09d8d44cd"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-19-slurp-b8b-reviewer-audit-v1/protocol-registered-v1.json",
