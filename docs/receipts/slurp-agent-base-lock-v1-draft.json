@@ -1,0 +1,2137 @@
+{
+  "authorises": {
+    "cell": false,
+    "config_change": false,
+    "exposure_row": false,
+    "model_contact": false,
+    "owner_decision": false,
+    "preregistration": false,
+    "stage3_specification": false
+  },
+  "authority": {
+    "decision_date": "2026-09-19",
+    "owner_decision": 33,
+    "record": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "ruling": "First lock the agent engineering base, and the context between every node and the optimisable space, including the knowledge-construction method and content; only then discuss the training-free RL framework."
+  },
+  "boundaries": [
+    {
+      "admission_status": "REGISTERED_NOT_FLOWN",
+      "boundary_id": "B-CAND-SOL",
+      "consumer_role_kind": "solver",
+      "introduced_by_cell": "B7a-v2",
+      "l1_template": "probes/ncp_slurp_candidate_hypothesis_v1.txt",
+      "level_in_default_plan": "raw",
+      "note": "carries the B8c scenario-hints block as an appended addition when armed",
+      "on_parse_failure": "raw",
+      "parser_id": "rails.slurp_intent_hypotheses.project_bounded_slurp_intent_hypotheses",
+      "producer": "perception",
+      "reads": "the bounded intent hypotheses (<=3, id plus distinction <=128 chars)",
+      "semantic_class": "candidate-hypothesis"
+    },
+    {
+      "admission_status": "REGISTERED_NOT_FLOWN",
+      "boundary_id": "B-CAND-REV",
+      "consumer_role_kind": "reviewer",
+      "introduced_by_cell": "B7a-v2",
+      "l1_template": "probes/ncp_slurp_candidate_hypothesis_v1.txt",
+      "level_in_default_plan": "raw",
+      "on_parse_failure": "raw",
+      "parser_id": "rails.slurp_intent_hypotheses.project_bounded_slurp_intent_hypotheses",
+      "producer": "perception",
+      "reads": "the same bounded intent hypotheses",
+      "semantic_class": "candidate-hypothesis"
+    },
+    {
+      "admission_status": "REGISTERED_NOT_FLOWN",
+      "boundary_id": "B-DRAFT-REV",
+      "consumer_role_kind": "reviewer",
+      "introduced_by_cell": "B7a-v2",
+      "l1_template": "probes/ncp_slurp_current_draft_reviewer_v1.txt",
+      "level_in_default_plan": "raw",
+      "note": "carries the B8b slot-audit block as an appended addition when armed",
+      "on_parse_failure": "raw",
+      "parser_id": "reproduction.slurp_scoring.parse_slu_response",
+      "producer": "solver",
+      "reads": "scenario, action, intent, entity type=filler pairs, candidate-membership flag",
+      "semantic_class": "current-draft"
+    },
+    {
+      "admission_status": "REGISTERED_NOT_FLOWN",
+      "boundary_id": "B-DRAFT-PLAN",
+      "consumer_role_kind": "planner",
+      "introduced_by_cell": "B7a-v2",
+      "l1_template": "probes/ncp_slurp_planner_brief_v1.txt",
+      "level_in_default_plan": "raw",
+      "on_parse_failure": "raw",
+      "parser_id": "reproduction.slurp_scoring.parse_slu_response",
+      "producer": "solver",
+      "reads": "the draft fields plus the deterministic HARNESS CHECKS block",
+      "semantic_class": "current-draft"
+    },
+    {
+      "admission_status": "REGISTERED_NOT_FLOWN",
+      "boundary_id": "B-DRAFT-SOL",
+      "consumer_role_kind": "solver",
+      "introduced_by_cell": "B7a-v2",
+      "l1_template": "probes/ncp_slurp_current_draft_solver_v1.txt",
+      "level_in_default_plan": "raw",
+      "note": "E2c: a grouped Solver visit seals one committed draft, never the N raw samples",
+      "on_parse_failure": "raw",
+      "parser_id": "reproduction.slurp_scoring.parse_slu_response",
+      "producer": "solver (previous visit)",
+      "reads": "the revising Solver's own previous answer with its revision index",
+      "semantic_class": "current-draft"
+    },
+    {
+      "admission_status": "REGISTERED_NOT_FLOWN",
+      "boundary_id": "B-REVIEW-PLAN",
+      "consumer_role_kind": "planner",
+      "introduced_by_cell": "B7a-v2",
+      "l1_template": "probes/ncp_slurp_review_finding_v1.txt",
+      "level_in_default_plan": "raw",
+      "note": "the only boundary cell B7b declares cleaned (L2)",
+      "on_parse_failure": "raw",
+      "parser_id": "rails.review_findings.parse_review_findings",
+      "producer": "reviewer",
+      "reads": "verdict, issues, cited evidence availability",
+      "semantic_class": "review-finding"
+    },
+    {
+      "admission_status": "REGISTERED_NOT_FLOWN",
+      "boundary_id": "B-REVIEW-SOL",
+      "consumer_role_kind": "solver",
+      "introduced_by_cell": "B7a-v2",
+      "l1_template": "probes/ncp_slurp_review_finding_v1.txt",
+      "level_in_default_plan": "raw",
+      "on_parse_failure": "raw",
+      "parser_id": "rails.review_findings.parse_review_findings",
+      "producer": "reviewer",
+      "reads": "the same review",
+      "semantic_class": "review-finding"
+    },
+    {
+      "admission_status": "REGISTERED_NOT_FLOWN",
+      "boundary_id": "B-PLAN-SOL",
+      "consumer_role_kind": "solver",
+      "introduced_by_cell": "B7a-v2",
+      "l1_template": "probes/ncp_slurp_plan_action_v1.txt",
+      "level_in_default_plan": "raw",
+      "note": "reached only after a REVISE, so effectively unreachable since E8c",
+      "on_parse_failure": "refuse",
+      "parser_id": "rails.node_context_policy.parse_plan_action",
+      "producer": "planner",
+      "reads": "the Planner action token, revisions remaining, actions still available",
+      "semantic_class": "plan-action"
+    },
+    {
+      "admission_status": "HELD",
+      "boundary_id": "B-TOOL-PERCEPTION",
+      "consumer_role_kind": "perception",
+      "introduced_by_cell": "B7c",
+      "l1_template": "probes/ncp_slurp_tool_observation_v1.txt",
+      "level_in_default_plan": "raw",
+      "on_parse_failure": "raw",
+      "parser_id": "rails.node_context_policy.parse_tool_observation",
+      "producer": "own tool chain",
+      "reads": "replayed task-contract observation",
+      "semantic_class": "tool-observation"
+    },
+    {
+      "admission_status": "HELD",
+      "boundary_id": "B-TOOL-SOLVER",
+      "consumer_role_kind": "solver",
+      "introduced_by_cell": "B7c",
+      "l1_template": "probes/ncp_slurp_tool_observation_v1.txt",
+      "level_in_default_plan": "raw",
+      "on_parse_failure": "raw",
+      "parser_id": "rails.node_context_policy.parse_tool_observation",
+      "producer": "own tool chain",
+      "reads": "replayed task-contract observation",
+      "semantic_class": "tool-observation"
+    },
+    {
+      "admission_status": "HELD",
+      "boundary_id": "B-TOOL-REVIEWER",
+      "consumer_role_kind": "reviewer",
+      "introduced_by_cell": "B7c",
+      "l1_template": "probes/ncp_slurp_tool_observation_v1.txt",
+      "level_in_default_plan": "raw",
+      "on_parse_failure": "raw",
+      "parser_id": "rails.node_context_policy.parse_tool_observation",
+      "producer": "saea-tool-task-contract-v1",
+      "reads": "a live tool chain is left verbatim (raw_reason live-tool-chain)",
+      "semantic_class": "tool-observation"
+    },
+    {
+      "admission_status": "HELD",
+      "boundary_id": "B-TOOL-PLANNER",
+      "consumer_role_kind": "planner",
+      "introduced_by_cell": "B7c",
+      "l1_template": "probes/ncp_slurp_tool_observation_v1.txt",
+      "level_in_default_plan": "raw",
+      "on_parse_failure": "raw",
+      "parser_id": "rails.node_context_policy.parse_tool_observation",
+      "producer": "saea-tool-task-contract-v1",
+      "reads": "a later role's replay may be rendered by reference when the contract is provably a substring of that request's own system message",
+      "semantic_class": "tool-observation"
+    }
+  ],
+  "branch": "fable/base-lock",
+  "carrier": "slurp",
+  "construction_pool": {
+    "excluded_rosters": [
+      {
+        "file_sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+        "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+        "train_utterance_count": 1080
+      },
+      {
+        "file_sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+        "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+        "train_utterance_count": 1080
+      },
+      {
+        "file_sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b",
+        "relpath": "docs/receipts/probe-samples/DEV-1000.json",
+        "train_utterance_count": 0
+      }
+    ],
+    "excluded_train_utterances": 2160,
+    "retained_utterances": 9354,
+    "rule": "governed SLURP TRAIN minus every utterance with a recording in TRAIN Fold A, TRAIN Fold B or DEV-1000 (the 2026-09-13 exclusion)",
+    "source_split_identity_hash": "67e53fb5f712c40b21b8b54b74e867e6da209f057c68cd40dd987aaa99b19875"
+  },
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0,
+    "tool": 0
+  },
+  "derived_from": [
+    {
+      "relpath": "CLAUDE.md",
+      "sha256": "afeee9727ba4fed9b03b0830cad5c7729e8e086c2d0823ce876a4ce37b1e27eb"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-anchor-b5e-exemplars-k20-slot-store-v2-train-fold-a-recovery-v1.json",
+      "sha256": "6fbde425b592f07509d3b71806208d0983f8c698bdf2005176919e55a8fa85c5"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-anchor-exemplars-k20-deliver-normalise-v3-train-fold-a-v1.json",
+      "sha256": "51634b9edc5251d0802818e5b083268cffa3d8e30a8e036e87c35ca2aaa02997"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-anchor-exemplars-k20-train-fold-a-recovery-v2.json",
+      "sha256": "2c7c168043f5ee13185e39a81e9d896554fa9b48d2fc7d10cb0f52757460898d"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-anchor-exemplars-k20-twin-train-fold-a-v2.json",
+      "sha256": "1b021b7dc24b93050e2e409005d741c6abc19271892343de79a7a50a8ca72f37"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-anchor-fallback-quirky-intent-v2-train-fold-a-v2.json",
+      "sha256": "1b1a9a7b40f8d64e964eb01a8e24792e966b3d186266eba336cb5d3a5f1a0921"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-anchor-intent-store-v2-train-fold-a-v2.json",
+      "sha256": "80aaca7db8743092404f709666d70a5b207d89a4d1151280f4bc2cc467fe9d2b"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-anchor-ncp-l1-reviewer-audit-train-fold-a-v1.json",
+      "sha256": "3fb855ff492030fe57a1c952dfc8811f086c668eea05351360535446462220cb"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-anchor-ncp-l1-reviewer-format-train-fold-a-v1.json",
+      "sha256": "9b96488b638805c9ac72e404ba951c9cc47bb4dab09d7e1ad64f49660ec66b10"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-anchor-ncp-l1-tool-obs-train-fold-a-v1.json",
+      "sha256": "a3dab524f8da80dc4cef7ed53f8bc89ade1be639385516dde63716acb825e875"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-anchor-ncp-l1-train-fold-a-v2.json",
+      "sha256": "6687da9a95da77237d051117aaa0090f277bd24c200ff1539bc55363502fb203"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-anchor-ncp-l2-review-clean-train-fold-a-v1.json",
+      "sha256": "66d16f9df392c2565094b521f9920a5d906af02af5d58dd9a69e189a3fe6dbcc"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-anchor-samples5-train-fold-a-v3.json",
+      "sha256": "2a962eedcb0666a4446c09e10beab94dc7731dcb0cab944dab49685066e52d7f"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-anchor-slot-store-v2-train-fold-a-replicate-v2-resume.json",
+      "sha256": "91f31ca6618fa2d0c9822c25f56535e58c9daf03acc8a7d13d0fa8a3fea9f649"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json",
+      "sha256": "b77a31d369f18567ccda362bbfdb019ce77c96c344ab726020e8ee4e82bf2b3a"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-dual-store-train-fold-a-default-plan-v1.json",
+      "sha256": "40d20b16599de6fd2999db8c7a8d9778633980a1f1fbb5ae6be86fa3697ec13d"
+    },
+    {
+      "relpath": "configs/model/q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1.json",
+      "sha256": "d1a644d80646de9e0e6b5799fb98e2151de7e03b1b14c5f260d16f77f8a77f09"
+    },
+    {
+      "relpath": "configs/policy/phase-native-candidates-review-revise-clean1-v1.json",
+      "sha256": "dadb67961d19336f196d7441b960c67f09f24e535e312d32b12c9e292fc1054b"
+    },
+    {
+      "relpath": "configs/policy/phase-native-candidates-review-revise-findings-v1.json",
+      "sha256": "582e3b2ae81527503c7dc634917e846b4a3cbd47724962a67447a8ce908f4efe"
+    },
+    {
+      "relpath": "configs/policy/phase-native-candidates-review-revise-samples5-v1.json",
+      "sha256": "2d48ad00352fc057abe8c2c17d65d72dbc71cd235e86c8d9e33c46c6d13b95c7"
+    },
+    {
+      "relpath": "configs/policy/phase-native-candidates-review-revise-v1.json",
+      "sha256": "0941a53f3cd943ec6560ed8e755df940a3b752c5ff1341baff9a3b914bc40101"
+    },
+    {
+      "relpath": "configs/policy/phase-native-candidates-solve-v1.json",
+      "sha256": "d044b94bc16da70c6da137381fd7ef3e98c887898b6bd01faee1a4ccff746025"
+    },
+    {
+      "relpath": "configs/probes/ncp_slurp_candidate_hypothesis_v1.txt",
+      "sha256": "5a6f80cfb53ef201f30d7a139a5b6fcf047eff1cc5bd2200c578d28eff36cea0"
+    },
+    {
+      "relpath": "configs/probes/ncp_slurp_cleaned_review_v1.txt",
+      "sha256": "b901628473e405b7ef823b68c00e4d39b38d08783d9c9db93f5da969acdbd5ee"
+    },
+    {
+      "relpath": "configs/probes/ncp_slurp_cleaning_review_v1.txt",
+      "sha256": "8231061e0a01e3a5d8fde0e1a4e153c2b731d0c2f90aac9beda585d066f4d96a"
+    },
+    {
+      "relpath": "configs/probes/ncp_slurp_current_draft_reviewer_v1.txt",
+      "sha256": "67c6251f9cb8d8ac71243b44284b8b0e6a05052105aa487b8d7e920bf61a51af"
+    },
+    {
+      "relpath": "configs/probes/ncp_slurp_current_draft_solver_v1.txt",
+      "sha256": "21d855dc3f55361046fc878896786d8161595b48508b55bb31f5ab2bf33f7bbc"
+    },
+    {
+      "relpath": "configs/probes/ncp_slurp_plan_action_v1.txt",
+      "sha256": "c0b0aeb7e10528c210701ba9dbe129dc36684e99f171369dae613b7748e71fba"
+    },
+    {
+      "relpath": "configs/probes/ncp_slurp_planner_brief_v1.txt",
+      "sha256": "a49c0de210c2a013faecf53550127fa1617fe4ebde3b0a09565bec37bfef9877"
+    },
+    {
+      "relpath": "configs/probes/ncp_slurp_review_finding_v1.txt",
+      "sha256": "d71d486863f1d38bffbc35bdd98ba3186db23c1fc50991596349bcad7fa1e8d5"
+    },
+    {
+      "relpath": "configs/probes/ncp_slurp_scenario_hints_solver_v1.txt",
+      "sha256": "0055dfc488edf9810f3949abd18cdfe17b01a54930b599fbf65f4f7142afc6b7"
+    },
+    {
+      "relpath": "configs/probes/ncp_slurp_slot_audit_reviewer_v1.txt",
+      "sha256": "88cc927d901a45ac2496f92453521184cb5b8d39cbf98aa881872b9116d24d0a"
+    },
+    {
+      "relpath": "configs/probes/ncp_slurp_tool_observation_v1.txt",
+      "sha256": "2d15045653a1f3d310202ddc5af12f6421e4f64bc6a51fd93f1adc6f5adf9c74"
+    },
+    {
+      "relpath": "configs/probes/slurp_native_role_context_v3.txt",
+      "sha256": "46e251173ed15591c8e0f1cbc8709c8da20a463624e430031ceba7c46f576190"
+    },
+    {
+      "relpath": "configs/probes/slurp_native_role_perception_v3.txt",
+      "sha256": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2"
+    },
+    {
+      "relpath": "configs/probes/slurp_native_role_planner_v1.txt",
+      "sha256": "074bd27fe1ea6005d7b096be875f662e91cfe503a22ea78918bd1f5f876ded51"
+    },
+    {
+      "relpath": "configs/probes/slurp_native_role_reviewer_v1.txt",
+      "sha256": "dce206a20d361b221ea146dc4ff274ba5e08ce4ab1bfbfece662dc7da5012417"
+    },
+    {
+      "relpath": "configs/probes/slurp_native_role_solver_v2.txt",
+      "sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+    },
+    {
+      "relpath": "docs/readiness/2026-09-13-slurp-semantic-store-release-pins-v1.json",
+      "sha256": "ad38deb34c4a198f0b3f4e23f29069688fcdbbffec38460bc3658d6c8b6d0ed2"
+    },
+    {
+      "relpath": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "9c704fab5b86b1c56522f347c408c3bf95d4f4ecce0b1b5614d61fe73a7ecdf9"
+    },
+    {
+      "relpath": "docs/receipts/harness-admission.json",
+      "sha256": "1bc40ea17d7881a568287620e3446dac39cc71274d5988d990fef033027fadc2"
+    },
+    {
+      "relpath": "docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json",
+      "sha256": "48d0f34cf536ebf9806d55b5dcced1b607080bec3c68ca7dea27cdb01478cc72"
+    },
+    {
+      "relpath": "docs/receipts/knowledge/slurp-scenario-hints-v1.json",
+      "sha256": "40800442baf5587ac8fb3c2095d54945a438dd60f576b78c6779bd9b1c88173b"
+    },
+    {
+      "relpath": "docs/receipts/knowledge/slurp-slot-audit-v1.json",
+      "sha256": "54346a8832ef8120ba439d10b87629e6f614fe2fcca89f9859a65132fe9ac434"
+    },
+    {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    },
+    {
+      "relpath": "docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md",
+      "sha256": "04c95d74657eec3512409a869fa407f399eca6aca187caa3cc321ff1334f6c1d"
+    },
+    {
+      "relpath": "docs/results/2026-09-17-slurp-b1-exemplars-k20-verdict.md",
+      "sha256": "79a3daa754db36b1d460e4cba04b5e385836b1a8cee40866dad865f7b668d5f1"
+    },
+    {
+      "relpath": "docs/results/2026-09-17-slurp-b4b-slot-store-v2-verdict.md",
+      "sha256": "15b9eb98a244cba91e7c06e960c9db84f8c74dfa7ce233a17d92fece1e55c5f7"
+    },
+    {
+      "relpath": "docs/results/2026-09-18-slurp-b1-twin-verdict.md",
+      "sha256": "fb841eb30b30ee5229d9d590be39bae5dd0e734cea42037a718fcdf5202672f6"
+    },
+    {
+      "relpath": "docs/results/2026-09-18-slurp-b5e-combination-verdict-addendum-decision-25.md",
+      "sha256": "f7d970c00329c1975891d79adfb14fe605e6e474ac51336fda26361f9bb445a8"
+    },
+    {
+      "relpath": "docs/results/2026-09-18-slurp-b5e-combination-verdict.md",
+      "sha256": "5e2ba383341f2c5544df044d5145b2064b5d5251f5981a27e1a56a6a00e54b6f"
+    },
+    {
+      "relpath": "docs/results/2026-09-19-slurp-b2-samples5-verdict.md",
+      "sha256": "4fe97086c07bb80a955622aa03390fa3c76268d192273c71612ec3452d387df2"
+    },
+    {
+      "relpath": "docs/results/2026-09-19-slurp-b4b-replicate-verdict.md",
+      "sha256": "8a7bfcdddb9188150c7095bfb5f56613e40ccc9cba18307e2b87089697c30f0b"
+    },
+    {
+      "relpath": "docs/results/2026-09-19-slurp-b7a-v1-closure.md",
+      "sha256": "bacecebcefbfd8ff5f1ca9565c13594690ef7f72cfc8b4ff43fc7af55b4f4a2d"
+    },
+    {
+      "relpath": "docs/results/2026-09-19-slurp-b8a-deliver-normalise-verdict.md",
+      "sha256": "959a4ee0e84c7a483ad97f44c70627eae8bae14dfa1bc2b2526e24c876ccea41"
+    },
+    {
+      "relpath": "docs/results/2026-09-19-slurp-finite-completion-exposure-v1.md",
+      "sha256": "cc0a9f312d044df68b74a58e0679e7f799f6b41eb2adfcc28e4c294f7aaa29bf"
+    },
+    {
+      "relpath": "docs/results/stage2-results-ledger.md",
+      "sha256": "8f631b99f460939c7d336cc36ec623fccbe1ea3c980ee94914c5a475d7b3b15e"
+    },
+    {
+      "relpath": "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md",
+      "sha256": "d70e15265afd3401f3f2908e52acead65c26391edf96a27601caff36450caa0e"
+    },
+    {
+      "relpath": "docs/superpowers/specs/2026-09-17-node-context-policy-design.md",
+      "sha256": "1ea9c59bf6e799d88359c9287e346fc9c41cdcba128f72ea3c62b6420c71578f"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/slot-audit-v1/release.json",
+      "sha256": "eaa2dd0db4d089f9bf1687d353f129ffcf062766f84150b0b93463617fdee7f9"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/slot-audit-v1/snapshot.json",
+      "sha256": "0cc3f96c98addad37fb564483f051dbe1a11145ac554a85918312c388573406c"
+    },
+    {
+      "relpath": "scripts/build_slurp_exemplar_pool_assets.py",
+      "sha256": "f0162e96674e10aa99daebbbe2f67cc3ebbd3bb509ea6a027155893bfa7d5050"
+    },
+    {
+      "relpath": "scripts/build_slurp_exemplar_twin_vectors.py",
+      "sha256": "feab3bc3d6db94e336f1c3631e1045660e7d823f13e2b5b344df5604628aee13"
+    },
+    {
+      "relpath": "scripts/build_slurp_scenario_hints_view.py",
+      "sha256": "52564b948a3c4705b97f0d3024aefe015352b7a884d2754689cdac1e6b108645"
+    },
+    {
+      "relpath": "scripts/build_slurp_slot_audit_view.py",
+      "sha256": "fceb2574fda3af51c5df0ad2df1969cf96f4ab95fbb32eb8d01ac01985145890"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/base.py",
+      "sha256": "0a077768384348c16785367d2026e35ffd72eb20d5e490f3639f622e232541ca"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/flight/runtime.py",
+      "sha256": "f895230d2903206d704f68facdc3ec397d79d854cd3e9169be41369582fcfbf3"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/preparation_fit.py",
+      "sha256": "d5b6abec2307d0ab8fceb57dc49da607dc0664d7e66a6c05e783479883871826"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/data/slurp.py",
+      "sha256": "2c77045a4be88bbe81b030db1ff3182d5a0f50c281de40021675650a797a810e"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/candidate_semantic_supply.py",
+      "sha256": "627f21ad7a6d378d58f0f6ca024375046943c77b109f93f53184c91a96972b3a"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/config_tables.py",
+      "sha256": "3f555713bc80ab987eae86a3fcabf70d6f168eb434029366edd1e0bdab5c6af3"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/controllers.py",
+      "sha256": "e0ad623e11812ee6ae741f5c05f372d3f2320d9892b89711212d40bbb7aa8718"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/native_episode_config.py",
+      "sha256": "97671bc24e0b988281fa81767ca8f24cc0958fe5beda0a26fe4aa9aa0846ca6a"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/node_context_binding.py",
+      "sha256": "1ad714608a4472eb70186a6f4ea4d28a8fbb0548a7035ec33b749fa493d95c4c"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/node_context_policy.py",
+      "sha256": "7aed9c6d98d4a8022c95a813085bc6818a1eac522df0ea4e26290a628c69190f"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/phase_supply.py",
+      "sha256": "a8c4784e2f3f84c2525349d5bb0f900bce6c90fb8dea9f447f05e8a5ce57bb4e"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/runner.py",
+      "sha256": "8e5b0b6ce7cfed6d034dbf2d5f7a3bac91964cc62f905e43440330208f628ddf"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/scenario_hints.py",
+      "sha256": "7cf05606260ef0fe735d6aa28e82c212084e00e8e99aa1630ea4f14db60dc709"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/semantic_knowledge_build.py",
+      "sha256": "f76f185c7f5a35497fae90dd59d401c233cd4bcd0c6c486e2bae5bcb9833e668"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/slot_audit.py",
+      "sha256": "4a9e70ceb46b7ff98876f0b793ec22665aebc60c29049bb0ac040a1be9064207"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/native_episode.py",
+      "sha256": "329bc4a6a247df0c105be47f52324453a5ef274459647485c26f38bd5c2772f5"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/native_request.py",
+      "sha256": "16462b9fd9a0790c1f9a2071fadd48a42e9110f7d7b1ded88e6baae1c1ba2589"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/native_roles.py",
+      "sha256": "3e1e769727465110c199bcd4a5fc35cfb3101012da94f7cb309e95edc44a51e2"
+    }
+  ],
+  "derived_from_count": 83,
+  "document": "docs/superpowers/specs/2026-09-19-slurp-agent-base-lock-v1-draft.md",
+  "forbidden_at_every_node": [
+    "gold of any evaluated row",
+    "reference transcripts and any ASR or transcript state",
+    "future turns",
+    "any other evaluated row's content",
+    "a second answering model (the frozen core keeps final answer authority)",
+    "replacement text from the Reviewer seat (core.base.JudgeRegistry refuses it at the door)",
+    "text-only retrieval queries (rails.phase_supply.QUERY_SIGNAL_MODALITIES)",
+    "knowledge, evidence, speech-packet and system-message bytes (the policy touches only agent_state)"
+  ],
+  "inconsistencies": [
+    {
+      "evidence": [
+        "src/speech_aware_evidence_acquisition/reproduction/ojw/native_episode.py:352-358",
+        "src/speech_aware_evidence_acquisition/reproduction/ojw/native_episode.py:947-958",
+        "src/speech_aware_evidence_acquisition/reproduction/ojw/native_episode.py:455-463",
+        "src/speech_aware_evidence_acquisition/rails/runner.py:2044-2047"
+      ],
+      "id": "I-1",
+      "owner_question": "Q1",
+      "severity": "blocking",
+      "summary": "ACQUIRE is a legal Planner action with no route at revision 0 and _Exhausted raises, aborting the flight"
+    },
+    {
+      "evidence": [
+        "configs/baseline/slurp-native-anchor-ncp-l2-review-clean-train-fold-a-v1.json",
+        "configs/baseline/slurp-native-anchor-ncp-l1-train-fold-a-v2.json",
+        "docs/superpowers/specs/2026-09-17-node-context-policy-design.md:606-616"
+      ],
+      "id": "I-2",
+      "owner_question": "Q2",
+      "severity": "blocking-for-B7b",
+      "summary": "the L2 fragment differs from its declared base in two episode keys, not one: the cleaning block and the absent finite_completion_policy"
+    },
+    {
+      "evidence": [
+        "configs/baseline/slurp-native-anchor-ncp-l2-review-clean-train-fold-a-v1.json",
+        "configs/baseline/slurp-native-anchor-ncp-l2-review-clean-smoke-4-v1.json",
+        "docs/results/2026-09-19-slurp-b7a-v1-closure.md"
+      ],
+      "id": "I-3",
+      "owner_question": "Q2",
+      "severity": "high",
+      "summary": "forward-queue fragments disagree about native_episode.finite_completion_policy; only the two L2 arms omit it"
+    },
+    {
+      "evidence": [
+        "src/speech_aware_evidence_acquisition/rails/config_tables.py:287-290",
+        "src/speech_aware_evidence_acquisition/rails/config_tables.py:361-369",
+        "src/speech_aware_evidence_acquisition/rails/config_tables.py:1195",
+        "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md:205",
+        "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md:308"
+      ],
+      "id": "I-4",
+      "severity": "documentation",
+      "summary": "EPISODE_LEVEL_SWITCH_KEYS holds seven keys and three docstrings still say three, four and five"
+    },
+    {
+      "evidence": [
+        "src/speech_aware_evidence_acquisition/rails/native_episode_config.py:277-282",
+        "src/speech_aware_evidence_acquisition/rails/native_episode_config.py:578-580",
+        "src/speech_aware_evidence_acquisition/rails/config_tables.py:1204"
+      ],
+      "id": "I-5",
+      "severity": "documentation",
+      "summary": "NativeEpisodeConfig.context_policy_json's comment and is_episode_null_arm's docstring both claim an all-raw declared policy reaches the runtime as None; the loader assigns it deliberately, as E8a note 4 requires"
+    },
+    {
+      "evidence": [
+        "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md:35-40",
+        "docs/receipts/harness-admission.json",
+        "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md:411"
+      ],
+      "id": "I-6",
+      "severity": "documentation",
+      "summary": "the program spec's module table names the wrong switch classes for M0, M1, M2, M4a and M4b"
+    },
+    {
+      "evidence": [
+        "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md:39",
+        "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md:401",
+        "configs/baseline/slurp-native-anchor-fallback-quirky-intent-v2-train-fold-a-v2.json"
+      ],
+      "id": "I-7",
+      "severity": "documentation",
+      "summary": "the spec writes fallback_candidate; the config key is fallback_candidates"
+    },
+    {
+      "evidence": [
+        "knowledge/slurp/saea-slurp-intent-candidates-v1/snapshot.json (data root)",
+        "scripts/slurp_kus4_prep.py"
+      ],
+      "id": "I-8",
+      "owner_question": "Q6",
+      "severity": "high",
+      "summary": "saea-slurp-intent-candidates-v1 was built on the full governed TRAIN split without the 2026-09-13 exclusion and has no release, completion or receipt"
+    },
+    {
+      "evidence": [
+        "docs/readiness/2026-09-13-slurp-semantic-store-release-pins-v1.json"
+      ],
+      "id": "I-9",
+      "owner_question": "Q7",
+      "severity": "medium",
+      "summary": "the release-pins file covers two of ten stores and no vector pin"
+    },
+    {
+      "evidence": [
+        "src/speech_aware_evidence_acquisition/core/semantic_knowledge_preparation.py:640-646",
+        "knowledge/slurp/semantic/slot-audit-v1/release.json"
+      ],
+      "id": "I-10",
+      "owner_question": "Q7",
+      "severity": "medium",
+      "summary": "two incompatible snapshot_sha256 conventions: canonical content hash for the authored family, raw file bytes for the view family"
+    },
+    {
+      "evidence": [
+        "configs/baseline/slurp-native-dual-store-train-fold-a-default-plan-v1.json"
+      ],
+      "id": "I-11",
+      "severity": "low",
+      "summary": "the default plan re-pins slot-contracts to v2 but its preparation_source_receipts still name slot-contracts-v1"
+    },
+    {
+      "evidence": [
+        "docs/receipts/harness-admission.json",
+        "configs/baseline/slurp-native-dual-store-train-fold-a-default-plan-v1.json"
+      ],
+      "id": "I-12",
+      "severity": "documentation",
+      "summary": "the default plan arms four modules and default_plans[1].modules names three"
+    },
+    {
+      "evidence": [
+        "docs/superpowers/specs/2026-09-17-node-context-policy-design.md:597",
+        "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md:427",
+        "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md:38"
+      ],
+      "id": "I-13",
+      "severity": "documentation",
+      "summary": "two design statements superseded by owner decision 23 and item E11 were never amended"
+    },
+    {
+      "evidence": [
+        "docs/superpowers/specs/2026-09-17-node-context-policy-design.md:60-72",
+        "src/speech_aware_evidence_acquisition/rails/node_context_policy.py:181-194"
+      ],
+      "id": "I-14",
+      "severity": "documentation",
+      "summary": "the NCP design's boundary table lists nine rows for the twelve boundaries the code enumerates"
+    },
+    {
+      "evidence": [
+        "scripts/build_slurp_exemplar_pool_assets.py"
+      ],
+      "id": "I-15",
+      "severity": "low",
+      "summary": "a builder docstring names an exemplar query-vector file that does not exist"
+    }
+  ],
+  "knobs": [
+    {
+      "admissible": ">= 1",
+      "cost_effect": "+1 contact per row per unit",
+      "evidence": "never varied",
+      "key": "native_episode.roles.perception.max_iterations",
+      "node": "perception",
+      "proposed_status": "FREEZE",
+      "type": "int",
+      "value_in_best_arm": 1,
+      "value_in_default_plan": 1
+    },
+    {
+      "admissible": ">= 1",
+      "cost_effect": "prompt tokens",
+      "evidence": "never varied",
+      "key": "knowledge_stores.intent-boundaries.phase_supply.perception.k",
+      "node": "perception",
+      "proposed_status": "OPEN",
+      "type": "int",
+      "value_in_best_arm": 8,
+      "value_in_default_plan": 8
+    },
+    {
+      "admissible": "core.base knowledge fuser",
+      "cost_effect": "none",
+      "evidence": "never varied",
+      "key": "knowledge_stores.intent-boundaries.phase_supply.perception.fuse_policy",
+      "node": "perception",
+      "proposed_status": "OPEN",
+      "type": "registry-id",
+      "value_in_best_arm": "saea-fuse-associated-values-v1",
+      "value_in_default_plan": "saea-fuse-associated-values-v1"
+    },
+    {
+      "admissible": "three positive ints",
+      "cost_effect": "prompt tokens",
+      "evidence": "never varied",
+      "key": "knowledge_stores.intent-boundaries.phase_supply.perception.fuse_coverage",
+      "node": "perception",
+      "proposed_status": "OPEN",
+      "type": "object",
+      "value_in_best_arm": {
+        "c": 1,
+        "m": 8,
+        "top_l": 8
+      },
+      "value_in_default_plan": {
+        "c": 1,
+        "m": 8,
+        "top_l": 8
+      }
+    },
+    {
+      "admissible": "core.base knowledge ranker",
+      "cost_effect": "none",
+      "evidence": "never varied",
+      "key": "knowledge_stores.intent-boundaries.phase_supply.perception.rank_policy",
+      "node": "perception",
+      "proposed_status": "OPEN",
+      "type": "registry-id",
+      "value_in_best_arm": "saea-rank-wcos-prior-agree-v1",
+      "value_in_default_plan": "saea-rank-wcos-prior-agree-v1"
+    },
+    {
+      "admissible": "three floats",
+      "cost_effect": "none",
+      "evidence": "never varied",
+      "key": "knowledge_stores.intent-boundaries.phase_supply.perception.rank_weights",
+      "node": "perception",
+      "proposed_status": "OPEN",
+      "type": "object",
+      "value_in_best_arm": {
+        "w_agree": 0.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "value_in_default_plan": {
+        "w_agree": 0.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      }
+    },
+    {
+      "admissible": "[0, 1]",
+      "cost_effect": "none",
+      "evidence": "never varied",
+      "key": "knowledge_stores.intent-boundaries.phase_supply.perception.tau",
+      "node": "perception",
+      "proposed_status": "OPEN",
+      "type": "float",
+      "value_in_best_arm": 0.0,
+      "value_in_default_plan": 0.0
+    },
+    {
+      "admissible": "speech | speech+state",
+      "cost_effect": "a new modality needs its own sealed vectors",
+      "evidence": "owner ruling 2026-09-06",
+      "key": "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.embedded_signal",
+      "node": "perception",
+      "proposed_status": "FREEZE",
+      "type": "enum",
+      "value_in_best_arm": "speech",
+      "value_in_default_plan": "speech"
+    },
+    {
+      "admissible": "<= 3 for SLURP (candidate_semantic_supply.py:171)",
+      "cost_effect": "candidate-union size and Solver prompt",
+      "evidence": "the five-candidate arm read NOT_ADVANCED (2026-09-16)",
+      "key": "phase_material.perception.fill_params.max_candidates",
+      "node": "perception",
+      "proposed_status": "FREEZE",
+      "type": "int",
+      "value_in_best_arm": 3,
+      "value_in_default_plan": 3
+    },
+    {
+      "admissible": ">= 1",
+      "cost_effect": "none",
+      "evidence": "never varied",
+      "key": "phase_material.perception.fill_params.min_candidates",
+      "node": "perception",
+      "proposed_status": "UNEXPLORED",
+      "type": "int",
+      "value_in_best_arm": 1,
+      "value_in_default_plan": 1
+    },
+    {
+      "admissible": "> 0",
+      "cost_effect": "prompt tokens",
+      "evidence": "never varied",
+      "key": "phase_material.perception.fill_params.max_distinction_chars",
+      "node": "perception",
+      "proposed_status": "UNEXPLORED",
+      "type": "int",
+      "value_in_best_arm": 128,
+      "value_in_default_plan": 128
+    },
+    {
+      "admissible": "0",
+      "cost_effect": "none",
+      "evidence": "never varied",
+      "key": "phase_material.perception.fill_params.max_evidence_refs",
+      "node": "perception",
+      "proposed_status": "FREEZE",
+      "type": "int",
+      "value_in_best_arm": 0,
+      "value_in_default_plan": 0
+    },
+    {
+      "admissible": "0",
+      "cost_effect": "none",
+      "evidence": "never varied",
+      "key": "phase_material.perception.fill_params.max_unresolved_fields",
+      "node": "perception",
+      "proposed_status": "FREEZE",
+      "type": "int",
+      "value_in_best_arm": 0,
+      "value_in_default_plan": 0
+    },
+    {
+      "admissible": "<= MAX_FALLBACK_CANDIDATES unique legal ids; SLURP only",
+      "cost_effect": "appended when absent, never displacing a model candidate",
+      "evidence": "cell B4a registered, not flown",
+      "key": "phase_material.perception.fill_params.fallback_candidates",
+      "node": "perception",
+      "proposed_status": "OPEN",
+      "type": "list",
+      "value_in_best_arm": [
+        "general_quirky"
+      ],
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "{relpath, sha256} repin",
+      "cost_effect": "one-factor cell",
+      "evidence": "cells B4a and B4c (B4c only if B4a admits)",
+      "key": "knowledge_stores.intent-boundaries.release/snapshot",
+      "node": "perception",
+      "proposed_status": "OPEN",
+      "type": "pin",
+      "value_in_best_arm": "intent-boundaries-v2",
+      "value_in_default_plan": "intent-boundaries-v1"
+    },
+    {
+      "admissible": ">= 1",
+      "cost_effect": "+1 contact per row per unit, multiplied by samples",
+      "evidence": "never varied",
+      "key": "native_episode.roles.solver.max_iterations",
+      "node": "solver",
+      "proposed_status": "FREEZE",
+      "type": "int",
+      "value_in_best_arm": 1,
+      "value_in_default_plan": 1
+    },
+    {
+      "admissible": "1..8; >= 2 requires decoding_overrides and commit",
+      "cost_effect": "N=5 costs 1.81x contacts and takes the ceiling 11 -> 19",
+      "evidence": "B2 v3 NEUTRAL: SLU +0.06 [-1.46, +1.60], intent +0.83 [-0.30, +1.88]",
+      "key": "native_episode.roles.solver.samples",
+      "node": "solver",
+      "proposed_status": "OPEN",
+      "type": "int",
+      "value_in_best_arm": 1,
+      "value_in_default_plan": 1
+    },
+    {
+      "admissible": "(0, 2]; 0 only for twin greedy-repeat",
+      "cost_effect": "none",
+      "evidence": "B2 v3",
+      "key": "native_episode.roles.solver.decoding_overrides.temperature",
+      "node": "solver",
+      "proposed_status": "OPEN",
+      "type": "float",
+      "value_in_best_arm": 0.7,
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": ">= 0; seed = fragment_seed + seed_offset + sample_index",
+      "cost_effect": "none",
+      "evidence": "B2 v3",
+      "key": "native_episode.roles.solver.decoding_overrides.seed_offset",
+      "node": "solver",
+      "proposed_status": "OPEN",
+      "type": "int",
+      "value_in_best_arm": 0,
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "core.base.COMMIT_POLICIES",
+      "cost_effect": "none",
+      "evidence": "B2 v3",
+      "key": "native_episode.roles.solver.commit.policy",
+      "node": "solver",
+      "proposed_status": "OPEN",
+      "type": "registry-id",
+      "value_in_best_arm": "saea-commit-plurality-support-v1",
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "1..samples",
+      "cost_effect": "none",
+      "evidence": "preregistered s = 3 of 5; the offline sensitivity table over s in {2,3,4} was never used for a verdict",
+      "key": "native_episode.roles.solver.commit.min_support",
+      "node": "solver",
+      "proposed_status": "OPEN",
+      "type": "int",
+      "value_in_best_arm": 3,
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "(0, 1]",
+      "cost_effect": "none",
+      "evidence": "preregistered char-F1 >= 0.8",
+      "key": "native_episode.roles.solver.commit.similarity_threshold",
+      "node": "solver",
+      "proposed_status": "OPEN",
+      "type": "float",
+      "value_in_best_arm": 0.8,
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "<= 3 for SLURP",
+      "cost_effect": "Solver prompt",
+      "evidence": "tied to the Perception cap",
+      "key": "knowledge_stores.slot-contracts.candidate_supply.solver.max_candidates",
+      "node": "solver",
+      "proposed_status": "FREEZE",
+      "type": "int",
+      "value_in_best_arm": 3,
+      "value_in_default_plan": 3
+    },
+    {
+      "admissible": "> 0",
+      "cost_effect": "Solver prompt",
+      "evidence": "never varied",
+      "key": "knowledge_stores.slot-contracts.candidate_supply.solver.max_values_per_candidate",
+      "node": "solver",
+      "proposed_status": "OPEN",
+      "type": "int",
+      "value_in_best_arm": 16,
+      "value_in_default_plan": 16
+    },
+    {
+      "admissible": "<= max_candidates * max_values_per_candidate",
+      "cost_effect": "Solver prompt",
+      "evidence": "never varied",
+      "key": "knowledge_stores.slot-contracts.candidate_supply.solver.max_total_values",
+      "node": "solver",
+      "proposed_status": "OPEN",
+      "type": "int",
+      "value_in_best_arm": 28,
+      "value_in_default_plan": 28
+    },
+    {
+      "admissible": "registered projection policy",
+      "cost_effect": "none",
+      "evidence": "never varied",
+      "key": "knowledge_stores.slot-contracts.candidate_supply.solver.projection_policy",
+      "node": "solver",
+      "proposed_status": "FREEZE",
+      "type": "registry-id",
+      "value_in_best_arm": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+      "value_in_default_plan": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1"
+    },
+    {
+      "admissible": "registered rank policy",
+      "cost_effect": "none",
+      "evidence": "never varied",
+      "key": "knowledge_stores.slot-contracts.candidate_supply.solver.rank_policy",
+      "node": "solver",
+      "proposed_status": "OPEN",
+      "type": "registry-id",
+      "value_in_best_arm": "saea-ranked-candidate-round-robin-v1",
+      "value_in_default_plan": "saea-ranked-candidate-round-robin-v1"
+    },
+    {
+      "admissible": "registered fuse policy",
+      "cost_effect": "none",
+      "evidence": "never varied",
+      "key": "knowledge_stores.slot-contracts.candidate_supply.solver.fuse_policy",
+      "node": "solver",
+      "proposed_status": "OPEN",
+      "type": "registry-id",
+      "value_in_best_arm": "saea-candidate-semantic-passthrough-v1",
+      "value_in_default_plan": "saea-candidate-semantic-passthrough-v1"
+    },
+    {
+      "admissible": ">= 1",
+      "cost_effect": "+7.37 % prompt tokens and +8 contacts at k=20",
+      "evidence": "A2 chose 20 over {5, 8, 12}; B1 ADMITTED +12.61 [+10.54, +14.60] vs anchor and +7.83 [+5.85, +9.75] vs the derangement twin",
+      "key": "knowledge_stores.train-exemplars.phase_supply.solver.k",
+      "node": "solver",
+      "proposed_status": "OPEN",
+      "type": "int",
+      "value_in_best_arm": 20,
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "registered fuse policy",
+      "cost_effect": "prompt tokens",
+      "evidence": "B1",
+      "key": "knowledge_stores.train-exemplars.phase_supply.solver.fuse_policy",
+      "node": "solver",
+      "proposed_status": "OPEN",
+      "type": "registry-id",
+      "value_in_best_arm": "saea-fuse-supplyfilter-v1",
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "three positive ints",
+      "cost_effect": "prompt tokens",
+      "evidence": "B1",
+      "key": "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage",
+      "node": "solver",
+      "proposed_status": "OPEN",
+      "type": "object",
+      "value_in_best_arm": {
+        "c": 20,
+        "m": 20,
+        "top_l": 20
+      },
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "three floats",
+      "cost_effect": "none",
+      "evidence": "B1; A2 found no memorisation channel",
+      "key": "knowledge_stores.train-exemplars.phase_supply.solver.rank_weights",
+      "node": "solver",
+      "proposed_status": "OPEN",
+      "type": "object",
+      "value_in_best_arm": {
+        "w_agree": 0.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "[0, 1]",
+      "cost_effect": "none",
+      "evidence": "B1",
+      "key": "knowledge_stores.train-exemplars.phase_supply.solver.tau",
+      "node": "solver",
+      "proposed_status": "OPEN",
+      "type": "float",
+      "value_in_best_arm": 0.0,
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "1..3; may only narrow the released table",
+      "cost_effect": "578-1608 characters (about 145-402 tokens); zero contacts",
+      "evidence": "B8c built, unregistered",
+      "key": "native_episode.solver_hints.max_neighbours",
+      "node": "solver",
+      "proposed_status": "UNEXPLORED",
+      "type": "int",
+      "value_in_best_arm": null,
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "1..3; may only narrow the released table",
+      "cost_effect": "included above",
+      "evidence": "B8c built, unregistered",
+      "key": "native_episode.solver_hints.max_cues",
+      "node": "solver",
+      "proposed_status": "UNEXPLORED",
+      "type": "int",
+      "value_in_best_arm": null,
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "any committed probe file",
+      "cost_effect": "prompt tokens",
+      "evidence": "never varied as a cell",
+      "key": "phase_material.solver.instruction_template",
+      "node": "solver",
+      "proposed_status": "FREEZE",
+      "type": "committed-probe",
+      "value_in_best_arm": "probes/slurp_native_role_solver_v2.txt",
+      "value_in_default_plan": "probes/slurp_native_role_solver_v2.txt"
+    },
+    {
+      "admissible": ">= 1, or 0 only with planner 0 and max_revisions 0",
+      "cost_effect": "3 of the 11 ceiling",
+      "evidence": "M0 (loop off) HARMFUL under the own null; the loop is retained",
+      "key": "native_episode.roles.reviewer.max_iterations",
+      "node": "reviewer",
+      "proposed_status": "FREEZE",
+      "type": "int",
+      "value_in_best_arm": 3,
+      "value_in_default_plan": 3
+    },
+    {
+      "admissible": "full | latest-solver-and-local-tools (Reviewer only)",
+      "cost_effect": "fewer prompt tokens",
+      "evidence": "refuses to combine with role_context or a non-raw context_policy",
+      "key": "native_episode.roles.reviewer.history_scope",
+      "node": "reviewer",
+      "proposed_status": "UNEXPLORED",
+      "type": "enum",
+      "value_in_best_arm": "full",
+      "value_in_default_plan": "full"
+    },
+    {
+      "admissible": "registered response format",
+      "cost_effect": "none",
+      "evidence": "0 of 2,167 anchor Reviewer outputs parse; cell B7r registered, not flown",
+      "key": "phase_material.reviewer.response_format_id",
+      "node": "reviewer",
+      "proposed_status": "OPEN",
+      "type": "registry-id",
+      "value_in_best_arm": "saea-review-findings-v1",
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "registered tool ids; Reviewer and Planner only",
+      "cost_effect": "the replayed contract echo is about 5,424 characters",
+      "evidence": "cell B7c held",
+      "key": "phase_tools.reviewer.allowed_tools",
+      "node": "reviewer",
+      "proposed_status": "OPEN",
+      "type": "list",
+      "value_in_best_arm": [
+        "saea-tool-task-contract-v1"
+      ],
+      "value_in_default_plan": [
+        "saea-tool-task-contract-v1"
+      ]
+    },
+    {
+      "admissible": "the registered view id only",
+      "cost_effect": "687-787 characters (about 170-200 tokens); zero contacts, ceiling unmoved",
+      "evidence": "cell B8b held; requires reviewer:current-draft at structured",
+      "key": "native_episode.reviewer_audit.view",
+      "node": "reviewer",
+      "proposed_status": "UNEXPLORED",
+      "type": "view-id",
+      "value_in_best_arm": "slot-audit-v1",
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "[0, 1]",
+      "cost_effect": "none",
+      "evidence": "default, never varied",
+      "key": "native_episode.reviewer_audit.thresholds.empty_draft_min_entity_row_share",
+      "node": "reviewer",
+      "proposed_status": "UNEXPLORED",
+      "type": "float",
+      "value_in_best_arm": 0.5,
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "[0, 1]",
+      "cost_effect": "none",
+      "evidence": "default, never varied",
+      "key": "native_episode.reviewer_audit.thresholds.missing_common_min_row_share",
+      "node": "reviewer",
+      "proposed_status": "UNEXPLORED",
+      "type": "float",
+      "value_in_best_arm": 0.5,
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "[0, 1]; bounds what the profile lists and gates no flag",
+      "cost_effect": "prompt length",
+      "evidence": "default, never varied",
+      "key": "native_episode.reviewer_audit.thresholds.profile_min_row_share",
+      "node": "reviewer",
+      "proposed_status": "UNEXPLORED",
+      "type": "float",
+      "value_in_best_arm": 0.05,
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "any committed probe file",
+      "cost_effect": "prompt tokens",
+      "evidence": "cell B7r",
+      "key": "phase_material.reviewer.instruction_template",
+      "node": "reviewer",
+      "proposed_status": "OPEN",
+      "type": "committed-probe",
+      "value_in_best_arm": "probes/slurp_native_role_reviewer_findings_v1.txt",
+      "value_in_default_plan": "probes/slurp_native_role_reviewer_v1.txt"
+    },
+    {
+      "admissible": ">= 1 (0 only with reviewer 0 and revisions 0)",
+      "cost_effect": "1 of the 11 ceiling",
+      "evidence": "Planner ACCEPTs 1,075/1,080 and spends 25.0 % of the prompt budget for a median of two tokens",
+      "key": "native_episode.roles.planner.max_iterations",
+      "node": "planner",
+      "proposed_status": "FREEZE",
+      "type": "int",
+      "value_in_best_arm": 1,
+      "value_in_default_plan": 1
+    },
+    {
+      "admissible": ">= 0; a refresh allowance must be <= it",
+      "cost_effect": "(revisions + 1) multiplies the per-revision sum",
+      "evidence": "never varied except by M0",
+      "key": "native_episode.max_revisions",
+      "node": "planner",
+      "proposed_status": "FREEZE",
+      "type": "int",
+      "value_in_best_arm": 1,
+      "value_in_default_plan": 1
+    },
+    {
+      "admissible": "exact-text | json-action-v1 (the latter requires the registered Planner phase format)",
+      "cost_effect": "none",
+      "evidence": "never flown on SLURP",
+      "key": "native_episode.planner_output_format",
+      "node": "planner",
+      "proposed_status": "UNEXPLORED",
+      "type": "enum",
+      "value_in_best_arm": "exact-text",
+      "value_in_default_plan": "exact-text"
+    },
+    {
+      "admissible": "three distinct non-empty strings, never the reserved illegal token",
+      "cost_effect": "none",
+      "evidence": "see defect I-1",
+      "key": "native_episode.actions",
+      "node": "planner",
+      "proposed_status": "FREEZE",
+      "type": "object",
+      "value_in_best_arm": {
+        "accept": "ACCEPT",
+        "acquire": "ACQUIRE",
+        "revise": "REVISE"
+      },
+      "value_in_default_plan": {
+        "accept": "ACCEPT",
+        "acquire": "ACQUIRE",
+        "revise": "REVISE"
+      }
+    },
+    {
+      "admissible": "{action, max_refreshes}; 1 <= refreshes <= max_revisions; requires candidate_state_selection latest",
+      "cost_effect": "+max_refreshes x Perception contacts",
+      "evidence": "never flown on this base",
+      "key": "native_episode.candidate_refresh",
+      "node": "planner",
+      "proposed_status": "UNEXPLORED",
+      "type": "object",
+      "value_in_best_arm": null,
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "raise | deliver-latest-solver",
+      "cost_effect": "none",
+      "evidence": "retains the row at the revision limit",
+      "key": "native_episode.exhaustion_policy",
+      "node": "planner",
+      "proposed_status": "FREEZE",
+      "type": "enum",
+      "value_in_best_arm": "deliver-latest-solver",
+      "value_in_default_plan": "deliver-latest-solver"
+    },
+    {
+      "admissible": "any committed probe file",
+      "cost_effect": "prompt tokens",
+      "evidence": "never varied",
+      "key": "phase_material.planner.instruction_template",
+      "node": "planner",
+      "proposed_status": "FREEZE",
+      "type": "committed-probe",
+      "value_in_best_arm": "probes/slurp_native_role_planner_v1.txt",
+      "value_in_default_plan": "probes/slurp_native_role_planner_v1.txt"
+    },
+    {
+      "admissible": "absent | 'raw' | object with level, policy_id, params, boundaries, producers",
+      "cost_effect": "absent composes to the pre-key config hash",
+      "evidence": "B7a v2 registered, not flown; B7a v1 closed without a result",
+      "key": "native_episode.context_policy",
+      "node": "node-context-policy",
+      "proposed_status": "OPEN",
+      "type": "object",
+      "value_in_best_arm": "declared",
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "raw | structured (a bare 'cleaned' default is refused)",
+      "cost_effect": "none",
+      "evidence": "B7a v2",
+      "key": "native_episode.context_policy.level",
+      "node": "node-context-policy",
+      "proposed_status": "OPEN",
+      "type": "enum",
+      "value_in_best_arm": "structured",
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "registered policy id",
+      "cost_effect": "none",
+      "evidence": "B7a v2",
+      "key": "native_episode.context_policy.policy_id",
+      "node": "node-context-policy",
+      "proposed_status": "FREEZE",
+      "type": "string",
+      "value_in_best_arm": "typed-slurp-node-context-v1",
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "raw | structured | cleaned",
+      "cost_effect": "L1 adds about 400-600 characters worst case; cleaned adds (max_revisions + 1) x consumer.max_iterations contacts",
+      "evidence": "B7a (8 boundaries), B7c (the 4 tool ones), B7b (planner:review-finding cleaned)",
+      "key": "native_episode.context_policy.boundaries.<boundary>.level",
+      "node": "node-context-policy",
+      "proposed_status": "OPEN",
+      "type": "enum",
+      "value_in_best_arm": "structured on the 8 model-text boundaries, raw on the 4 tool-observation ones",
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "raw | omit | refuse",
+      "cost_effect": "none",
+      "evidence": "omit would delete the review from the Planner's context on 100 % of rows, which B0 already measured as harmful; it is not admitted for any SLURP boundary",
+      "key": "native_episode.context_policy.boundaries.<boundary>.on_parse_failure",
+      "node": "node-context-policy",
+      "proposed_status": "FREEZE",
+      "type": "enum",
+      "value_in_best_arm": "raw everywhere except refuse at solver:plan-action",
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "must match the boundary's renderer key; hash-pinned in every receipt",
+      "cost_effect": "prompt tokens",
+      "evidence": "B7a v2",
+      "key": "native_episode.context_policy.boundaries.<boundary>.template",
+      "node": "node-context-policy",
+      "proposed_status": "FREEZE",
+      "type": "committed-probe",
+      "value_in_best_arm": "the committed probes/ncp_slurp_*.txt defaults",
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "never a program phase name",
+      "cost_effect": "identity only; the contact itself costs (max_revisions + 1)",
+      "evidence": "cell B7b held",
+      "key": "native_episode.context_policy.boundaries.planner:review-finding.cleaning.phase_id",
+      "node": "node-context-policy",
+      "proposed_status": "UNEXPLORED",
+      "type": "string",
+      "value_in_best_arm": "context_clean_review",
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "core.base.RESPONSE_FORMATS",
+      "cost_effect": "none",
+      "evidence": "cell B7b held",
+      "key": "native_episode.context_policy.boundaries.planner:review-finding.cleaning.response_format_id",
+      "node": "node-context-policy",
+      "proposed_status": "UNEXPLORED",
+      "type": "registry-id",
+      "value_in_best_arm": "ncp-review-issues-v1",
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "fallback-l1 only",
+      "cost_effect": "none",
+      "evidence": "one attempt, no retry (the program's one-shot attempt semantics)",
+      "key": "native_episode.context_policy.boundaries.planner:review-finding.cleaning.on_invalid",
+      "node": "node-context-policy",
+      "proposed_status": "FREEZE",
+      "type": "enum",
+      "value_in_best_arm": "fallback-l1",
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "must equal the producer phase's declared format",
+      "cost_effect": "none",
+      "evidence": "cell B7r",
+      "key": "native_episode.context_policy.producers.review-finding.response_format_id",
+      "node": "node-context-policy",
+      "proposed_status": "OPEN",
+      "type": "registry-id",
+      "value_in_best_arm": "saea-review-findings-v1",
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "absent, or a registered DELIVERY_NORMALISERS id declared for this carrier; refused beside slurp_projection_v3_delivery and beside a grouped Solver",
+      "cost_effect": "zero contacts, zero request bytes",
+      "evidence": "ADMITTED (module M3, cell B8a): anchor +3.46 [+2.78, +4.18], B1 +1.53 [+1.05, +2.03], intent up on every base, 0 rows harmed, 103 of 1,080 rows changed",
+      "key": "native_episode.deliver_normaliser",
+      "node": "delivery",
+      "proposed_status": "FREEZE",
+      "type": "object",
+      "value_in_best_arm": {
+        "normaliser": "saea-deliver-normalise-v3"
+      },
+      "value_in_default_plan": {
+        "normaliser": "saea-deliver-normalise-v3"
+      }
+    },
+    {
+      "admissible": "raise | deliver-latest-or-abstain",
+      "cost_effect": "zero request bytes",
+      "evidence": "NEUTRAL; no sealed SLURP native contact ever met a finite completion, and the B7a v1 recovery died because the key was absent",
+      "key": "native_episode.finite_completion_policy",
+      "node": "episode",
+      "proposed_status": "FREEZE",
+      "type": "enum",
+      "value_in_best_arm": "deliver-latest-or-abstain",
+      "value_in_default_plan": "deliver-latest-or-abstain"
+    },
+    {
+      "admissible": "on | off; validated against the three loop leaves",
+      "cost_effect": "renders no request byte",
+      "evidence": "NEUTRAL marker; the loop itself is retained because M0 is HARMFUL",
+      "key": "native_episode.review_loop",
+      "node": "episode",
+      "proposed_status": "FREEZE",
+      "type": "enum",
+      "value_in_best_arm": "on",
+      "value_in_default_plan": "on"
+    },
+    {
+      "admissible": "must match the resident geometry",
+      "cost_effect": "the geometry a flight may attach to",
+      "evidence": "the program's own geometry",
+      "key": "serving_slots",
+      "node": "serving",
+      "proposed_status": "FREEZE",
+      "type": "int",
+      "value_in_best_arm": 4,
+      "value_in_default_plan": 4
+    },
+    {
+      "admissible": "must match the resident geometry",
+      "cost_effect": "9,708 tokens of headroom at the worst contact",
+      "evidence": "measured on the anchor",
+      "key": "serving_slot_tokens",
+      "node": "serving",
+      "proposed_status": "FREEZE",
+      "type": "int",
+      "value_in_best_arm": 24576,
+      "value_in_default_plan": 24576
+    },
+    {
+      "admissible": "> 0",
+      "cost_effect": "output length; a 512-token Reviewer completion is what E13 retains",
+      "evidence": "the max512 geometry is the program's own",
+      "key": "decoding_params.max_tokens",
+      "node": "serving",
+      "proposed_status": "FREEZE",
+      "type": "int",
+      "value_in_best_arm": 512,
+      "value_in_default_plan": 512
+    },
+    {
+      "admissible": "[0, 2]",
+      "cost_effect": "none",
+      "evidence": "greedy is not bitwise reproducible across batch compositions; comparators are sealed bytes, never re-flown",
+      "key": "decoding_params.temperature",
+      "node": "serving",
+      "proposed_status": "FREEZE",
+      "type": "float",
+      "value_in_best_arm": 0,
+      "value_in_default_plan": 0
+    },
+    {
+      "admissible": "any int",
+      "cost_effect": "none",
+      "evidence": "pinned with the geometry",
+      "key": "decoding_params.seed",
+      "node": "serving",
+      "proposed_status": "FREEZE",
+      "type": "int",
+      "value_in_best_arm": 20260913,
+      "value_in_default_plan": 20260913
+    },
+    {
+      "admissible": "absent | int",
+      "cost_effect": "+17 % throughput at depth 1 on Earnings",
+      "evidence": "NEUTRAL on E21; depth >= 2 unreceipted; never flown on SLURP",
+      "key": "obs_prefetch_depth",
+      "node": "run",
+      "proposed_status": "UNEXPLORED",
+      "type": "int",
+      "value_in_best_arm": null,
+      "value_in_default_plan": null
+    },
+    {
+      "admissible": "registered scorer ids",
+      "cost_effect": "one score per complete manifest",
+      "evidence": "owner decision 23: the official unprojected number is the bar",
+      "key": "scorers",
+      "node": "run",
+      "proposed_status": "FREEZE",
+      "type": "list",
+      "value_in_best_arm": [
+        "slurp-slu-official-train",
+        "cost"
+      ],
+      "value_in_default_plan": [
+        "slurp-slu-official-train",
+        "cost"
+      ]
+    }
+  ],
+  "knowledge_stores": [
+    {
+      "builder": "rails.semantic_knowledge_build.build_intent_boundary_snapshot",
+      "builder_cli": "saea-driver prepare-semantic-knowledge",
+      "change_cost": "stores-class repin arm plus a one-factor cell and a replication obligation",
+      "completion_sha256": "ebd60aca7e16e647c750a59370fce8010d55f3b57375d202817a4a08da1f4a5e",
+      "consumer_boundary": "perception phase_supply",
+      "counts": {
+        "content_words": 5740,
+        "facets": 60,
+        "source_recordings": 2037,
+        "values": 60
+      },
+      "record": "value = one intent's boundary card; facet = one intent-boundary text key",
+      "registration": "docs/readiness/2026-09-13-slurp-intent-boundaries-preparation-registration-v2.json",
+      "release_sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4",
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1",
+      "root": "data",
+      "snapshot_file_sha256": "4579079c949e7da71125047c8d57027a55f0b90c3fc6db5704ba3c9322e6afd3",
+      "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+      "snapshot_sha256_convention": "canonical-content-hash",
+      "status": "IN_DEFAULT_PLAN",
+      "store_id": "intent-boundaries",
+      "version": "intent-boundaries-v1"
+    },
+    {
+      "builder": "rails.semantic_knowledge_build.build_intent_boundary_snapshot",
+      "change_cost": "one-factor cell; B4c flies only if B4a admits (owner decision 9)",
+      "consumer_boundary": "perception phase_supply",
+      "counts": {
+        "facets": 60,
+        "source_recordings": 2037,
+        "values": 60
+      },
+      "record": "same shape, re-authored cards",
+      "registration": "docs/readiness/2026-09-17-slurp-intent-boundaries-preparation-registration-v3.json",
+      "release_sha256": "31eb595b54088a21e45daf1acfe790d545e8a4d5330acb3ee4e19f6e1607bc95",
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v2",
+      "root": "data",
+      "snapshot_file_sha256": "69c3cef660d1b45f263067797b02eb7bd4a393ff8a9edb91426e9a858e79bfc7",
+      "snapshot_sha256": "8a27424a84d5b419e033391b9bba00f30952de520c993237ea0219a9978c07c5",
+      "snapshot_sha256_convention": "canonical-content-hash",
+      "status": "HELD_CELLS_B4A_B4C",
+      "store_id": "intent-boundaries",
+      "version": "intent-boundaries-v2"
+    },
+    {
+      "builder": "rails.semantic_knowledge_build.build_factored_intent_boundary_snapshot",
+      "change_cost": "none; no config references it",
+      "consumer_boundary": null,
+      "counts": {
+        "facets": 60,
+        "source_recordings": 2037,
+        "values": 61
+      },
+      "record": "same shape plus one shared-guidance value",
+      "release_sha256": "1aa06765731be4b9af20cf43cf57b999055b242ba3a3beb5fabb67874c380cff",
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-factored-v1",
+      "root": "data",
+      "snapshot_sha256": "2f51a962bda72dfbb5469a2d31e1ad99030ecb5634d1e25fc0f9f093d759758b",
+      "snapshot_sha256_convention": "canonical-content-hash",
+      "status": "UNUSED",
+      "store_id": "intent-boundaries",
+      "version": "intent-boundaries-factored-v1"
+    },
+    {
+      "builder": "rails.semantic_knowledge_build.build_slot_contract_snapshot",
+      "change_cost": "it is the OFF arm of the M4b repin; it stays pinned as that arm",
+      "completion_sha256": "7acb644871b037f7123adec0c8fd7283ab9215d67c12fc0a32748a67a0f9dc51",
+      "consumer_boundary": "solver candidate_supply",
+      "counts": {
+        "content_words": 11647,
+        "facets": 54,
+        "source_recordings": 3162,
+        "values": 54
+      },
+      "record": "value = one entity type's contract card",
+      "registration": "docs/readiness/2026-09-13-slurp-slot-contracts-preparation-registration-v1.json",
+      "release_sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e",
+      "relpath": "knowledge/slurp/semantic/slot-contracts-v1",
+      "root": "data",
+      "snapshot_file_sha256": "0de5418caaf8642bfabc402a64d228d77ae76d57b23c0d23caf24164fcf0d37a",
+      "snapshot_sha256": "11c246e4b815a4f966e8cf8785f06b70515755eca71658862c6f98e9914044e6",
+      "snapshot_sha256_convention": "canonical-content-hash",
+      "status": "SUPERSEDED_BY_V2",
+      "store_id": "slot-contracts",
+      "version": "slot-contracts-v1"
+    },
+    {
+      "builder": "rails.semantic_knowledge_build.build_slot_contract_snapshot",
+      "change_cost": "a v3 would be a new repin arm, a one-factor cell and a replication",
+      "consumer_boundary": "solver candidate_supply",
+      "counts": {
+        "facets": 54,
+        "source_recordings": 3162,
+        "values": 54
+      },
+      "module": "M4b",
+      "record": "value = one entity type's contract card; eight revised date/time cards",
+      "registration": "docs/readiness/2026-09-17-slurp-slot-contracts-preparation-registration-v2.json",
+      "release_sha256": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b",
+      "relpath": "knowledge/slurp/semantic/slot-contracts-v2",
+      "root": "data",
+      "snapshot_file_sha256": "a48ed83eb7878e9eaedfe4dbdf4ea747e3e582e08899ff1f0edfdfe438ae8904",
+      "snapshot_sha256": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec",
+      "snapshot_sha256_convention": "canonical-content-hash",
+      "status": "ADMITTED_AND_REPLICATED_IN_DEFAULT_PLAN",
+      "store_id": "slot-contracts",
+      "version": "slot-contracts-v2"
+    },
+    {
+      "builder": "scripts/build_slurp_exemplar_pool_assets.py",
+      "builder_seed": 20260823,
+      "change_cost": "prepared-artifact rebuild over the whole roster, new phase-supply pin, wire check, four-row smoke, prompt-fit receipt and a twin",
+      "consumer_boundary": "solver phase_supply",
+      "counts": {
+        "facets": 9354,
+        "source_sample_ids": 37407,
+        "values": 9354
+      },
+      "module": "M1",
+      "receipt": "docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json",
+      "record": "value = one construction utterance rendered as an annotated exemplar (content, task_target = intent, prior_score); facet dimension content",
+      "release_sha256": "171aa4a82c2b15fff2c72e907ea80298be8d72309cca0d7367eb50debb042129",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars",
+      "root": "data",
+      "snapshot_file_sha256": "fcb5506c63653abe996dea15fdccd7c81a84a837b6377ca13f5b35d73283d6b2",
+      "snapshot_sha256": "4c498dc0282055b9fe036ed7e950af519bd48b5f26e76876d0250727196a72e9",
+      "snapshot_sha256_convention": "canonical-content-hash",
+      "status": "ADMITTED_PROVISIONAL_UNMET_NOT_IN_PLAN",
+      "store_id": "train-exemplars",
+      "version": "size-pool-annotated-exemplars"
+    },
+    {
+      "builder": "scripts/build_slurp_slot_audit_view.py",
+      "change_cost": "model-free rebuild plus a git blob hash move; the config pin and the build receipt must be updated together",
+      "consumer_boundary": "B-DRAFT-REV (appended addition)",
+      "counts": {
+        "construction_utterances": 9354,
+        "conventions": 2,
+        "distinct_entity_types": 54,
+        "intents": 60,
+        "listed_type_rows": 402
+      },
+      "exposure_ledger_row": "SAEA-SLURP-E12-SLOT-AUDIT-VIEW-V1",
+      "receipt": "docs/receipts/knowledge/slurp-slot-audit-v1.json",
+      "record": "per intent: every attested entity type with its row share, the share of rows carrying no entity, and two verbatim date/time convention statements; counts and shares only",
+      "release_sha256": "eaa2dd0db4d089f9bf1687d353f129ffcf062766f84150b0b93463617fdee7f9",
+      "relpath": "knowledge/slurp/semantic/slot-audit-v1",
+      "root": "repo",
+      "snapshot_sha256": "0cc3f96c98addad37fb564483f051dbe1a11145ac554a85918312c388573406c",
+      "snapshot_sha256_convention": "raw-file-bytes",
+      "status": "HELD_CELL_B8B",
+      "store_id": "slot-audit-v1",
+      "version": "slot-audit-v1"
+    },
+    {
+      "builder": "scripts/build_slurp_scenario_hints_view.py",
+      "builder_policy": {
+        "cue_min_rows": 3,
+        "cue_prior": 1,
+        "k": 10,
+        "leave_one_out": true,
+        "max_cues": 3,
+        "max_neighbours": 3,
+        "min_leakage_share": 0.05,
+        "similarity": "cosine"
+      },
+      "change_cost": "model-free rebuild; a committed arm, a preregistration and a cell before it can fly",
+      "completion_sha256": "e8024fe43113eb306d7be24d30886fbbe825a4f2d429cf6e00dfc4145ed9bc7b",
+      "consumer_boundary": "B-CAND-SOL (appended addition)",
+      "counts": {
+        "construction_utterances": 9354,
+        "cue_rows": 231,
+        "distinct_cue_words": 130,
+        "intents": 60,
+        "intents_with_neighbour": 44,
+        "neighbour_pairs": 81
+      },
+      "exposure_ledger_row": "SAEA-SLURP-E14-SCENARIO-HINTS-VIEW-V1",
+      "receipt": "docs/receipts/knowledge/slurp-scenario-hints-v1.json",
+      "record": "per intent: its construction neighbours (id, leakage share, counts) and the top cue words distinguishing it from each; construction counts and words only",
+      "release_sha256": "44716de634c788f72886f31762077052e5f109f479194e524f8dcef89f98103e",
+      "relpath": "knowledge/slurp/semantic/scenario-hints-v1",
+      "root": "data",
+      "snapshot_sha256": "079b2bf49404b5b5ee525c0f201faa8b022ae9f63781797ad4708da7826c98a1",
+      "snapshot_sha256_convention": "raw-file-bytes",
+      "status": "BUILT_UNREGISTERED_NO_COMMITTED_ARM",
+      "store_id": "scenario-hints-v1",
+      "version": "scenario-hints-v1"
+    },
+    {
+      "builder": "scripts/slurp_kus4_prep.py",
+      "change_cost": "no release.json, no completion.json, no build receipt; owner question Q6",
+      "consumer_boundary": null,
+      "counts": {
+        "facets": 60,
+        "source_sample_ids": 50628,
+        "values": 60
+      },
+      "defect": "I-8",
+      "record": "intent-candidate values over the full governed TRAIN split",
+      "relpath": "knowledge/slurp/saea-slurp-intent-candidates-v1",
+      "root": "data",
+      "source_split_identity_hash": "6a6677e97a64063b8672b2d175bd6378bcf9b644346fa2d249cc2d80343b252c",
+      "status": "QUARANTINE_CANDIDATE_NO_EXCLUSION_APPLIED",
+      "store_id": "saea-slurp-intent-candidates-v1",
+      "version": "v1"
+    }
+  ],
+  "node_graph": {
+    "delivery_node": {
+      "applied_at": "after Planner ACCEPT or terminal delivery, before the delivered text",
+      "contacts": 0,
+      "custody_invariant": "I7n",
+      "kind": "delivery_normaliser",
+      "registry": "core.base.DELIVERY_NORMALISERS",
+      "rule_id": "saea-deliver-normalise-v3"
+    },
+    "dispositions": [
+      {
+        "id": "planner_action_illegal",
+        "receipt": "native_episode_receipt.planner_action_illegal",
+        "row": "retained and scored",
+        "source_item": "E8c"
+      },
+      {
+        "id": "finite_completion",
+        "receipt": "terminal_disposition.reason",
+        "row": "retained under deliver-latest-or-abstain; flight aborts under raise",
+        "source_item": "E13"
+      },
+      {
+        "id": "revision_limit",
+        "receipt": "terminal_solver_receipt",
+        "row": "latest draft delivered, planner_accepted false",
+        "source_item": "exhaustion_policy deliver-latest-solver"
+      },
+      {
+        "id": "abstention",
+        "receipt": "abstention_receipt",
+        "row": "empty delivered text, never normalised",
+        "source_item": "core.delivery.native_abstention_records"
+      }
+    ],
+    "episode_id": "slurp-native-dual-store-dev1000-v1",
+    "episode_order": [
+      "perception",
+      "solver",
+      "reviewer",
+      "planner",
+      "delivery_normaliser"
+    ],
+    "fit_gate": {
+      "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-fit-v1",
+      "contact_cap": 47520,
+      "key": "native_contact_fit",
+      "max_speech_packets": 1,
+      "mutually_exclusive_with": [
+        "live_phase_fit",
+        "prepared_request_fit",
+        "prompt_fit_receipt",
+        "whole_roster_wave_barrier"
+      ],
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-FIT-V1"
+    },
+    "max_contacts": 11,
+    "max_revisions": 1,
+    "measured_contacts_per_row": 5.0157,
+    "program_fragment": "configs/policy/phase-native-candidates-review-revise-v1.json",
+    "program_id": "phase-native-candidates-review-revise-v1",
+    "roles": [
+      {
+        "history_scope": "full",
+        "instruction_template": "probes/slurp_native_role_perception_v3.txt",
+        "max_iterations": 1,
+        "phase_id": "perception",
+        "response_format_id": "slurp-intent-hypotheses-v1",
+        "role_kind": "perception",
+        "tools": []
+      },
+      {
+        "history_scope": "full",
+        "instruction_template": "probes/slurp_native_role_solver_v2.txt",
+        "max_iterations": 1,
+        "phase_id": "solver",
+        "response_format_id": null,
+        "role_kind": "solver",
+        "samples": 1,
+        "tools": []
+      },
+      {
+        "history_scope": "full",
+        "instruction_template": "probes/slurp_native_role_reviewer_v1.txt",
+        "max_iterations": 3,
+        "phase_id": "reviewer",
+        "response_format_id": null,
+        "role_kind": "reviewer",
+        "tools": [
+          "saea-tool-task-contract-v1"
+        ]
+      },
+      {
+        "history_scope": "full",
+        "instruction_template": "probes/slurp_native_role_planner_v1.txt",
+        "max_iterations": 1,
+        "phase_id": "planner",
+        "response_format_id": null,
+        "role_kind": "planner",
+        "tools": []
+      }
+    ],
+    "roster": {
+      "id": "SLURP-EVO-FOLD-A-V2",
+      "receipt": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "role": "development",
+      "rows": 1080,
+      "split": "train"
+    },
+    "routing": {
+      "actions": {
+        "accept": "ACCEPT",
+        "acquire": "ACQUIRE",
+        "revise": "REVISE"
+      },
+      "advertised_actions": [
+        "ACCEPT",
+        "REVISE (while revision_index < max_revisions)"
+      ],
+      "branches": [
+        {
+          "action": "ACCEPT",
+          "at_revision_0": "_Accept -> end",
+          "at_terminal_revision": "_Accept -> end"
+        },
+        {
+          "action": "REVISE",
+          "at_revision_0": "_AdvanceRevision -> Solver re-entered",
+          "at_terminal_revision": "_TerminalDelivery (revision_limit)"
+        },
+        {
+          "action": "ACQUIRE",
+          "at_revision_0": "_Exhausted -> RAISES (no acquisition node is built for SLURP)",
+          "at_terminal_revision": "_TerminalDelivery (revision_limit)",
+          "defect": "I-1"
+        },
+        {
+          "action": "<unregistered>",
+          "at_revision_0": "PLANNER_ACTION_ILLEGAL -> _Accept",
+          "at_terminal_revision": "PLANNER_ACTION_ILLEGAL -> _Accept"
+        }
+      ],
+      "planner_output_format": "exact-text"
+    },
+    "scoring": {
+      "batch_entry_point": "core.scoring_batch",
+      "diagnostics": [
+        "slurp-slu-official-projected-v3-train",
+        "slurp-slu-f1-normalized-v1-train"
+      ],
+      "one_score_per_complete_manifest": true,
+      "primary_scorer": "slurp-slu-official-train"
+    },
+    "serving_geometry": {
+      "attach_only": true,
+      "context": 98304,
+      "fragment": "configs/model/q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1.json",
+      "headroom_tokens": 9708,
+      "max_tokens": 512,
+      "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+      "np": 4,
+      "seed": 20260913,
+      "serving_slot_tokens": 24576,
+      "serving_slots": 4,
+      "temperature": 0,
+      "transport": "llama-server",
+      "worst_observed_prompt_tokens": 14868
+    },
+    "stop_rule": "native-role-episode",
+    "task_contract": {
+      "fill": "slurp-label-inventory",
+      "legal_entity_types": 54,
+      "legal_intents": 60,
+      "template": "probes/slurp_native_role_context_v3.txt"
+    }
+  },
+  "owner_questions": [
+    {
+      "blocking": true,
+      "id": "Q1",
+      "question": "Remove ACQUIRE from the SLURP action triple, or seal an unrouted-but-registered action like an illegal one instead of raising?"
+    },
+    {
+      "blocking": true,
+      "id": "Q2",
+      "question": "Is native_episode.finite_completion_policy 'deliver-latest-or-abstain' mandatory in every fragment registered from now on, and must the L2 fragments be re-pinned before B7b flies?"
+    },
+    {
+      "blocking": false,
+      "id": "Q3",
+      "question": "Does the owner accept section 5's per-node map as the B5b node map (owner decision 31), with the two competing pairs flown as paired placement cells?"
+    },
+    {
+      "blocking": true,
+      "id": "Q4",
+      "question": "Module M1's replication obligation is UNMET and its named route (B5e/B5er) is gone. Carry M1 as admitted-but-unreplicated and keep it out of the default plan until B5b, or authorise a request-identical B1 replicate first?"
+    },
+    {
+      "blocking": false,
+      "id": "Q5",
+      "question": "Fix the margin rule: a configuration's own request-identical replicate supplies the margins for contrasts involving it, with B0r's as the fallback?"
+    },
+    {
+      "blocking": false,
+      "id": "Q6",
+      "question": "Delete, rebuild under the 2026-09-13 exclusion, or quarantine saea-slurp-intent-candidates-v1?"
+    },
+    {
+      "blocking": false,
+      "id": "Q7",
+      "question": "Supersede the 2026-09-13 release-pins file with one pins document covering all ten stores and every vector, recording each store's hash convention?"
+    },
+    {
+      "blocking": true,
+      "id": "Q8",
+      "question": "Does the owner accept the FREEZE / OPEN / UNEXPLORED partition as the definition of the Stage-3 action space, in particular grouped Solver sampling staying OPEN although B2 v3 read NEUTRAL as a standalone module?"
+    },
+    {
+      "blocking": false,
+      "id": "Q9",
+      "question": "Are the three never-varied role instruction templates and the shared task contract frozen, or part of the optimisable space?"
+    },
+    {
+      "blocking": false,
+      "id": "Q10",
+      "question": "Should this companion become a checked receipt behind scripts/checks/agent_base_lock_check.py once approved?"
+    }
+  ],
+  "reference_scores": {
+    "b1_exemplars": {
+      "intent": 80.1852,
+      "slu_f1": 61.1394
+    },
+    "b1_twin": {
+      "intent": 78.15,
+      "slu_f1": 53.3
+    },
+    "b2_samples5": {
+      "intent": 78.7963,
+      "slu_f1": 48.5977
+    },
+    "b4b_replicate": {
+      "intent": 78.6111,
+      "slu_f1": 50.074
+    },
+    "b4b_slot_store_v2": {
+      "intent": 78.52,
+      "slu_f1": 51.09
+    },
+    "b5e_combination": {
+      "intent": 80.0926,
+      "slu_f1": 62.3351
+    },
+    "development_bar": {
+      "intent": 78.0,
+      "replicated": true,
+      "slu_f1": 64.0
+    },
+    "metric": "official unprojected slurp-slu-official-train",
+    "note": "DEVELOPMENT numbers on TRAIN Fold A (owner decision 28); never compared with a published test-set baseline",
+    "own_null_half_widths": {
+      "b0r_ci95": {
+        "intent": 1.0051,
+        "slu": 1.1218
+      },
+      "b4b_replicate_ci95": {
+        "intent": 1.0682,
+        "slu": 1.3222
+      },
+      "imported_dev1000_ci90_retired": {
+        "intent": 0.9195,
+        "slu": 1.1804
+      }
+    },
+    "released_direct_anchor": {
+      "intent": 73.7,
+      "slu_f1": 33.885
+    },
+    "sealed_agent_anchor": {
+      "intent": 77.963,
+      "slu_f1": 48.5336
+    },
+    "with_delivery_node": {
+      "anchor": {
+        "intent": 79.35,
+        "slu_f1": 51.9946
+      },
+      "b1": {
+        "intent": 81.76,
+        "slu_f1": 62.6672
+      },
+      "b5e": {
+        "intent": 81.85,
+        "slu_f1": 63.7757
+      }
+    }
+  },
+  "schema": "saea-agent-base-lock-draft-v1",
+  "status": "DRAFT_FOR_OWNER_REVIEW",
+  "supply_paths": [
+    {
+      "consumer": "perception",
+      "id": "perception-candidate-supply",
+      "key": "knowledge_stores.intent-boundaries.phase_supply.perception",
+      "status": "IN_DEFAULT_PLAN"
+    },
+    {
+      "consumer": "solver",
+      "id": "solver-candidate-semantic-supply",
+      "key": "knowledge_stores.slot-contracts.candidate_supply.solver",
+      "status": "IN_DEFAULT_PLAN"
+    },
+    {
+      "consumer": "solver",
+      "id": "solver-exemplar-supply",
+      "key": "knowledge_stores.train-exemplars.phase_supply.solver",
+      "status": "ADMITTED_REPLICATION_UNMET_NOT_IN_PLAN"
+    },
+    {
+      "consumer": "reviewer",
+      "id": "reviewer-slot-audit",
+      "key": "native_episode.reviewer_audit",
+      "status": "HELD"
+    },
+    {
+      "consumer": "solver",
+      "id": "solver-scenario-hints",
+      "key": "native_episode.solver_hints",
+      "status": "BUILT_NO_COMMITTED_ARM"
+    },
+    {
+      "consumer": "delivery",
+      "id": "delivery-normaliser",
+      "key": "native_episode.deliver_normaliser",
+      "status": "IN_DEFAULT_PLAN"
+    }
+  ],
+  "tree_commit": "9418c69c",
+  "vector_pins": [
+    {
+      "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+      "root": "data",
+      "rows": 60,
+      "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+      "used_by": "perception facet (key) side"
+    },
+    {
+      "relpath": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+      "root": "data",
+      "rows": 1080,
+      "sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b",
+      "used_by": "perception query (speech) side"
+    },
+    {
+      "dimension": 2048,
+      "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+      "root": "data",
+      "rows": 11514,
+      "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+      "used_by": "exemplar facet side; scenario-hints neighbour measurement"
+    },
+    {
+      "relpath": "vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl",
+      "root": "data",
+      "rows": 1080,
+      "sha256": "d0f06ed21c6a576d8118d5a914e34807c24a3d3523d89e7b30d90575d24104ff",
+      "used_by": "M1 exemplar query side"
+    },
+    {
+      "relpath": "vectors/slurp-exemplars-twin/query-vectors-speech-segments-deranged-v1.jsonl",
+      "root": "data",
+      "rows": 1080,
+      "sha256": "92e7f72e5566aa8dad2ed75b8ddc3df58dd107ef2de57dc0e1aab66e2ad616c5",
+      "used_by": "the B1 derangement twin (Sattolo, seed 20260917, 0 fixed points)"
+    }
+  ]
+}
