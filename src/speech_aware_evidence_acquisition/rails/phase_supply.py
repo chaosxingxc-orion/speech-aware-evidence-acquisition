@@ -1059,6 +1059,40 @@ def build_supply_for_phase(
                 f"provider {spec.provider!r} produced no RankResult for phase "
                 f"{phase_name!r}; an acquire transition cannot be traced without one"
             )
+        # Item E21w (the knowledge INDEX, not the Earnings-21 carrier):
+        # the exemplar retrieval RANK, recorded where it is computed and
+        # nowhere else. ``rails.kb_policy._fuse_supply_filter`` tags every
+        # candidate value with the score of its best admitted supporting
+        # facet and then returns ``tuple(sorted(set(...)))``, so today's
+        # exemplar block renders in lexicographic evidence-id order and
+        # carries no rank at all (M1 analysis section 4.2). This records the
+        # number the decision already made; it changes no selection, no
+        # order and no request byte, and it runs ONLY when a caller has
+        # armed the record by setting the attribute to a dict -- which is
+        # exactly when ``native_episode.knowledge_index`` is armed.
+        ranks = getattr(supply_for_phase, "retrieval_ranks", None)
+        if ranks is not None:
+            from .knowledge_index import (  # noqa: PLC0415
+                retrieval_similarity, value_retrieval_ranks,
+            )
+
+            recorded = value_retrieval_ranks(
+                rank_result=rank_result,
+                fusion_decision=fusion_decision,
+                values=snapshot.values,
+            )
+            if recorded:
+                ranks.setdefault(sample_id, {}).update(recorded)
+                similarity = getattr(
+                    supply_for_phase, "retrieval_similarity", None
+                )
+                if similarity is not None and not similarity:
+                    similarity.update(
+                        retrieval_similarity(
+                            rank_result=rank_result,
+                            fusion_decision=fusion_decision,
+                        )
+                    )
         if not fusion_decision.selected_value_ids and not (
             spec.expose_facets and fusion_decision.supporting_facet_ids
         ):
@@ -1118,6 +1152,10 @@ def build_supply_for_phase(
     # ``snapshot_sha256`` is the caller's already-computed hash of the same
     # frozen snapshot; recorded here so a binding built against one snapshot
     # can never be handed a different one later.
+    # E21w: ``None`` -- and therefore no rank recording at all -- unless a
+    # caller arms it with a dict before the first contact.
+    supply_for_phase.retrieval_ranks = None  # type: ignore[attr-defined]
+    supply_for_phase.retrieval_similarity = None  # type: ignore[attr-defined]
     supply_for_phase.snapshot_sha256 = snapshot_sha256  # type: ignore[attr-defined]
     supply_for_phase.provider_factories = provider_factories  # type: ignore[attr-defined]
     supply_for_phase.query_tables = query_tables  # type: ignore[attr-defined]

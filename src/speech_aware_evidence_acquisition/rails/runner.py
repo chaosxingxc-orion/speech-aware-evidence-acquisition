@@ -1318,7 +1318,24 @@ def _agent_messages(
     query_state: QueryState,
     agent_states: Sequence[AgentStateArtifact] = (),
     knowledge_value_renderer: object = None,
+    knowledge_index: object = None,
+    index_role_kind: str | None = None,
+    index_sink: object = None,
 ) -> tuple[Mapping[str, object], ...]:
+    """The two messages one contact is composed from.
+
+    Item E21 (the knowledge INDEX, not the Earnings-21 carrier), 2026-09-19,
+    owner decisions 48 and 50: with ``knowledge_index`` bound -- which
+    happens exactly when ``native_episode.knowledge_index`` is armed, and
+    never otherwise -- the released index is appended as a PURE SUFFIX of
+    the rendered contract fill and the row's ``value:`` evidence blocks are
+    replaced by the pointer block plus the bounded expansion. Both halves
+    move together (``rails.knowledge_index.apply_to_payload`` refuses one
+    without the other by name), and with the key absent every byte below is
+    exactly its pre-E21 self: ``knowledge_index`` is ``None``, the two
+    branches are unreachable and the returned messages are byte-identical.
+    """
+
     base_messages = tuple(adapter.assemble_prompt(sample, None))
     if len(base_messages) != 2:
         raise RailsRunnerError(
@@ -1332,6 +1349,12 @@ def _agent_messages(
         raise RailsRunnerError("TaskAdapter system content must be a non-empty string")
     if task_contract not in system_text:
         system_text = f"{system_text}\n\nTask contract:\n{task_contract}"
+    if knowledge_index is not None:
+        # E21 layout rule 4.1: the index is a pure SUFFIX of the fill, so
+        # the frozen template is untouched and the whole system message
+        # stays CONSTANT across every contact of the row -- which is the
+        # entire economic premise (E17 refusal 7).
+        system_text = f"{system_text}{knowledge_index.suffix()}"
 
     if query_state.query_source == "speech_audio":
         content: list[Mapping[str, object]] = [
@@ -1371,10 +1394,89 @@ def _agent_messages(
         )
     else:
         content.extend(knowledge_value_renderer(snapshot, query_state, agent_states))
+    if knowledge_index is not None:
+        content = _index_content(
+            content,
+            index=knowledge_index,
+            agent_states=agent_states,
+            role_kind=index_role_kind,
+            sample_id=query_state.query_sample_id,
+            sink=index_sink,
+        )
     return (
         {"role": "system", "content": system_text},
         {"role": "user", "content": content},
     )
+
+
+def _index_content(
+    content: Sequence[Mapping[str, object]],
+    *,
+    index: object,
+    agent_states: Sequence[object],
+    role_kind: str | None,
+    sample_id: object,
+    sink: object,
+) -> list[Mapping[str, object]]:
+    """E21: the row's ``value:`` blocks, replaced by pointers and expansions.
+
+    The selection is derived from what THIS contact already has -- the
+    Perception node's own sealed candidates, the retrieved exemplars' own
+    construction intents and the candidate projection's bound slot types --
+    and never from gold, a reference transcript or a future turn. Before
+    Perception has answered there is no Perception state, so the retrieval
+    order stands in and the provenance record says so.
+
+    ``key`` blocks (the stable knowledge prefix) and the speech packet
+    reference are untouched: the index replaces the per-row VALUE rendering
+    and nothing else.
+    """
+
+    from .knowledge_index import KnowledgeIndexError  # noqa: PLC0415
+
+    evidence = [
+        part for part in content
+        if isinstance(part, Mapping) and part.get("type") == "text"
+    ]
+    states = [
+        state.as_json() if hasattr(state, "as_json") else state
+        for state in agent_states or ()
+    ]
+    try:
+        selection, provenance = index.select(
+            evidence_items=evidence, agent_states=states, sample_id=sample_id,
+        )
+        assembly = index.assemble_for(selection, role_id=role_kind)
+    except KnowledgeIndexError as error:
+        raise RailsRunnerError(
+            f"the knowledge index could not assemble this contact: {error}"
+        ) from error
+    kept = [
+        part for part in content
+        if not (
+            isinstance(part, Mapping)
+            and part.get("type") == "text"
+            and part.get("knowledge_role") == "value"
+        )
+    ]
+    composed = list(kept)
+    composed.extend(
+        {
+            "type": "text",
+            "text": item["content"],
+            "evidence_id": item["evidence_id"],
+            # E21 gap 1: the pointer and expansion blocks carry their OWN
+            # source, so the payload's ``evidence_provenance`` names the
+            # released view rather than the rails message that rendered it
+            # (``rails.core_client`` derives one provenance row per part).
+            "source_uri": item["source_uri"],
+            "knowledge_role": "value",
+        }
+        for item in assembly.evidence_items()
+    )
+    if sink is not None:
+        sink(assembly, selection, provenance)
+    return composed
 
 
 def _runtime_context(
@@ -1921,12 +2023,17 @@ async def _invoke_native_role_episode(
             response_sha256s=state.response_sha256s, contact_index=len(state.contacts),
         )
 
-    def base_messages(ctx):
+    def base_messages(ctx, *, index_role_kind=None, index_sink=None):
         return _agent_messages(
             adapter=adapter, sample=state.prepared.sample,
             task_contract=state.prepared.task_contract, snapshot=snapshot,
             snapshot_sha256=snapshot_sha256, query_state=ctx.query_state,
             agent_states=ctx.agent_states, knowledge_value_renderer=knowledge_value_renderer,
+            # E21: None for every episode that does not arm
+            # ``native_episode.knowledge_index``, which makes every line of
+            # the index seam unreachable and the messages byte-identical.
+            knowledge_index=knowledge_index,
+            index_role_kind=index_role_kind, index_sink=index_sink,
         )
 
     def settle(*, tool_step=None, rejected_steps=(), next_phase=None):
@@ -2258,7 +2365,31 @@ async def _invoke_native_role_episode(
         ).validate()
         _assert_agent_control_excludes_knowledge_payloads(plan, protected_material)
         state.current_context, state.current_contact = ctx, plan
-        messages = base_messages(ctx)
+        if knowledge_index is None:
+            messages = base_messages(ctx)
+        else:
+            # E21w: the per-role budget is resolved HERE, at request
+            # composition, from the role's own kind -- which is the key the
+            # config's ``roles.<role>.knowledge_index_budget`` overrides are
+            # declared under. With no override every role receives the same
+            # block the Solver receives (Q12's default, OFF).
+            def _record_index(assembly, selection, provenance, plan=plan, role=role):
+                index_contacts[plan.contact_id] = {
+                    "assembly": assembly,
+                    "selection": selection,
+                    "provenance": provenance,
+                    "role_kind": role.role_kind,
+                }
+
+            messages = base_messages(
+                ctx, index_role_kind=role.role_kind, index_sink=_record_index,
+            )
+            record = index_contacts.get(plan.contact_id)
+            if record is None:
+                raise RailsRunnerError(
+                    "an armed knowledge index composed no assembly for this contact"
+                )
+            record["system_message"] = messages[0]["content"]
         exposed_states = select_native_role_history(
             role=role, solver_phase_id=config.role("solver").phase_id,
             states=ctx.agent_states, local_tool_result_ids=tuple(visit["local_ids"]),
@@ -2402,6 +2533,38 @@ async def _invoke_native_role_episode(
                 "rendered_tool_names": list(constant_tool_names),
                 "tool_schemas_sha256": completion.tool_schemas_sha256,
             })
+        if knowledge_index is not None:
+            # E21w: one receipt row per contact, sealed exactly where E17's
+            # ``tool_schema_rendering`` rows are. Digests, ids and counts
+            # only -- the expansion block carries released card text and
+            # construction utterances, and a receipt is not a place to copy
+            # them to. Citations resolve by MEMBERSHIP, so a hallucinated id
+            # is detectable rather than merely unparsed.
+            from .knowledge_index import (  # noqa: PLC0415
+                contact_receipt, extract_citations,
+            )
+
+            record = index_contacts.get(plan.contact_id)
+            if record is None:
+                raise RailsRunnerError(
+                    "an armed knowledge index sealed no assembly for this contact"
+                )
+            row = contact_receipt(
+                contact_id=plan.contact_id,
+                role_id=request.role_id,
+                assembly=record["assembly"],
+                system_message=record["system_message"],
+                index_text=knowledge_index.index_text,
+                cited_ids=extract_citations(completion.text),
+                table=knowledge_index.table,
+                degradation=index_degradation.get(plan.contact_id, ()),
+            )
+            row["role_kind"] = record["role_kind"]
+            row["selection"] = dict(record["provenance"])
+            row["budget"] = knowledge_index.plan.budget_for(
+                record["role_kind"]
+            ).as_json()
+            knowledge_index_records.append(row)
         slot_id = visits[request.role_id]["slot_id"]
         visits[request.role_id]["model_contacts"] += 1
         state.contacts.append(AgentContactRecord(
@@ -2682,6 +2845,24 @@ async def _invoke_native_role_episode(
             "would compose a config hash that claims an index the request bytes "
             "do not carry"
         )
+    # E21w: and the other direction. A binding with no armed key would render
+    # an index no config hash claims, which is the same defect seen from the
+    # other side; both are refused by name before any contact.
+    if config.knowledge_index_json is None and binding.knowledge_index is not None:
+        raise RailsRunnerError(
+            "the episode binding carries a knowledge-index binding but "
+            "native_episode.knowledge_index is not armed; an index no config "
+            "hash claims would move request bytes outside the cell identity"
+        )
+    knowledge_index = binding.knowledge_index
+    #: E21w, per contact: the assembly this contact was composed from, the
+    #: system message it carried, and where the row's selection came from.
+    index_contacts: dict[str, dict] = {}
+    #: E21w, per contact: the index degradation steps a dispatch-time
+    #: compaction spent, in the order it spent them. Never silent.
+    index_degradation: dict[str, list] = {}
+    #: E21w: one receipt row per contact, in contact order.
+    knowledge_index_records: list[dict] = []
     #: One row per contact, in contact order: the contact it describes and
     #: either its compaction record or ``None`` for a request that fitted.
     context_fit_records: list[dict[str, object]] = []
@@ -2726,15 +2907,21 @@ async def _invoke_native_role_episode(
                 ))
         return tuple(attachments)
 
-    def _context_view(speech_binding_value, attachments):
+    def _context_view(speech_binding_value, attachments, contact_id=None):
         messages = speech_binding_value.messages()
         kwargs = speech_binding_value.kwargs()
         content = messages[1].get("content")
         states = kwargs.get("agent_state")
+        record = index_contacts.get(contact_id) if contact_id else None
         return CompactableRequest(
             content=tuple(content if isinstance(content, list) else ()),
             agent_states=tuple(states if isinstance(states, list) else ()),
             attachments=attachments,
+            # E21w: the index's own ladder replaces E20's ``exemplar-supply``
+            # ladder for exactly the parts the index authored, so ONE caller
+            # drives both through ``rails.context_fit.apply_drops``. None --
+            # and therefore E20's pre-E21 behaviour -- on every unarmed row.
+            index_assembly=None if record is None else record["assembly"],
         )
 
     def _narrowed_binding(speech_binding_value, view):
@@ -2762,7 +2949,9 @@ async def _invoke_native_role_episode(
         if not isinstance(source_binding, NativeRoleSpeechBinding):
             raise RailsRunnerError("a context-fit check needs its prepared binding")
         attachments = _context_attachments(request.context.agent_contact_id)
-        base_view = _context_view(source_binding, attachments)
+        base_view = _context_view(
+            source_binding, attachments, request.context.agent_contact_id,
+        )
         limit = context_fit_budget.prompt_limit_tokens
         cache: dict[bytes, tuple[object, int]] = {}
 
@@ -2797,7 +2986,35 @@ async def _invoke_native_role_episode(
             )
         if outcome.passes == 0:
             return prepared, None
+        _record_index_degradation(request.context.agent_contact_id, outcome)
         return cache[key(outcome.request)][0], outcome
+
+    def _record_index_degradation(contact_id, outcome):
+        """E21w: every index step a compaction spent, recorded, never silent.
+
+        The honesty requirement owner decision 45 states for the serving
+        side: an index block that left the request is a row disposition, not
+        an invisible saving. The assembly is narrowed to what was actually
+        sent so the receipt's ``expanded_ids`` name the bytes the model read.
+        """
+
+        record = index_contacts.get(contact_id)
+        if record is None:
+            return
+        from .knowledge_index import (  # noqa: PLC0415
+            INDEX_DROP_ORDER, degradation_step, narrow_assembly,
+        )
+
+        steps = [
+            degradation_step(item, pass_index=outcome.passes)
+            for item in outcome.dropped if item.block in INDEX_DROP_ORDER
+        ]
+        if not steps:
+            return
+        index_degradation.setdefault(contact_id, []).extend(steps)
+        record["assembly"] = narrow_assembly(
+            record["assembly"], outcome.dropped_identifiers()
+        )
 
     async def metered(request):
         def contact(slot_id):
@@ -3458,6 +3675,16 @@ async def _invoke_native_role_episode(
                 "contacts": [dict(row) for row in tool_rendering_records],
                 "distinct_tool_schemas_sha256": len(set(digests)),
             }
+        if knowledge_index is not None:
+            # E21: one block per row, naming the released view and its three
+            # digests, the granularity, the ordering, the budgets and any
+            # per-role override, and one row per contact.
+            # ``distinct_system_message_sha256`` is the verdict-facing
+            # number: 1 means the constant prefix never toggled inside this
+            # row, exactly as E17's ``distinct_tool_schemas_sha256`` does.
+            compact_receipt["knowledge_index"] = knowledge_index.receipt(
+                knowledge_index_records
+            )
         if context_fit_budget is not None:
             # E20: one block per row, naming the policy, the live budget it
             # was measured against, and one row per contact carrying that

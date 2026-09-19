@@ -390,6 +390,119 @@ Three things the cell's wiring must close, named here so they are not discovered
 
 ---
 
+### 7.1 What item E21w wired (2026-09-19), and what it measured
+
+Item **E21w**, branch `fable/e21w` from `f7acb0aa`. Model-free: zero model, tool,
+tokenizer, encoder, scorer, server and network contacts. Nothing was written under
+`SPEECHRL_DATA_DIR`; the view was rebuilt into this session's scratch and reproduced the
+same three digests (`release.json` `bcfc220b…`, `snapshot.json` `f6d61056…`,
+`completion.json` `50efd295…`).
+
+The three gaps section 7 named are closed, and the rest of the live seam with them:
+
+| gap / seam | where it now lives |
+|---|---|
+| the **binding** | `rails.knowledge_index.build_knowledge_index_binding` + `KnowledgeIndexBinding`, built by `core.flight.FlightRuntime._knowledge_index_binding` at run start and carried on `NativeEpisodeRunBinding.knowledge_index`. It loads the released view under its two declared pins — the release by FILE BYTES, the snapshot by CONTENT HASH — and refuses by name when the snapshot's file digest is not `KnowledgeIndexTable.content_hash()` |
+| the **row selector** | `rails.knowledge_index.derive_row_selection`, from the Perception state's own ranked candidates, the retrieved exemplars' own construction intents and the candidate projection's bound slot types; it returns a PROVENANCE record naming where each half came from |
+| the **retrieval rank** | `rails.knowledge_index.value_retrieval_ranks` / `retrieval_similarity`, recorded in `rails.phase_supply.build_supply_for_phase` beside the decision that makes it |
+| the **seam swap** | `rails.runner._agent_messages` + its `_index_content`: the index is a pure suffix of the contract fill and the row's `value:` blocks become the pointer block plus the bounded expansion |
+| **provenance** | the pointer/expansion parts carry `source_uri` `knowledge-index://<view>/<id>`, and `rails.core_client._supply_provenance` turns each into a `knowledge-index` provenance row instead of a `rails-supply` one |
+| **per-role budgets** | resolved at request composition from the role's own kind, OFF by default |
+| the **ladder** | `rails.context_fit.index_ladder` binds `index_droppable_items` to the request's own content indices, so ONE caller drives both ladders through E20's own `apply_drops` |
+| the **receipt** | `compact_receipt["knowledge_index"]`, sealed exactly where E17's `tool_schema_rendering` block is, plus four run-level counters beside E20's `native_episode_dispositions` |
+
+**The wire check** — `scripts/knowledge_index_wire_check.py`, the E17 Probe A form one level
+deeper than section 6.1: it drives the PRODUCTION runner seam (not the rail) over the same 20
+sealed B1 rows, read-only and hashes only, ON and OFF, and then over the four engineering smoke
+rows of `SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-V2`. Receipt (this session's scratch,
+not a repository or data-root path): `…/scratchpad/e21w/out/wire-check.json`.
+
+| property | 20 sealed B1 rows (100 contacts) | 4 smoke rows (20 contacts) |
+|---|---|---|
+| **W1** OFF: the seam re-composes the sealed messages byte for byte | **100 / 100** | **20 / 20** |
+| **W1** OFF: the rail re-composes the sealed `payload_sha256` | **100 / 100** | **20 / 20** |
+| **W2** ON: distinct rendered system-message sha256 | **1** | **1** |
+| **W3** ON-vs-OFF differing payload keys | `task_instruction`, `history`, `supplied_evidence` | same |
+| **W5** provenance rows / of them naming the view | 820 / **820** | 164 / **164** |
+| **W6** truncation violations at `slot_card = 0` | **0** | **0** |
+| **W7** `validate_native_framework_contact` after the envelope rewrite | **100 / 100** | **20 / 20** |
+| **W7** receipt rows populated | **100 / 100** | **20 / 20** |
+| findings | **0** | **0** |
+
+`evidence_provenance` is NOT in the W3 key set, and that is not an omission: `apply_to_payload`
+composes no provenance (section 7's first gap), so the payload-level diff cannot show it. W5
+proves it instead, through the production composer over the seam's own parts — one row per
+pointer/expansion part, `lock_key` `knowledge-index`, `relpath` `<view>/<id>`. This arm carries
+no `key:` parts at all, which is why all 820 provenance rows are index rows.
+
+**The per-position table, DERIVED with E17's own estimator and no tokenizer** (medians over the
+100 contacts, beside section 6.1's render-proof numbers):
+
+| position | E21w predicted prompt | E21w predicted prefilled | render-proof predicted prefilled |
+|---|---:|---:|---:|
+| perception | 5,955 | **378** | 2,387 |
+| solver | 8,002 | **2,343** | 423 |
+| reviewer #1 | 7,903 | **184** | 184 |
+| reviewer #2 | 9,261 | **1,357** | 1,357 |
+| planner | 9,321 | **1,541** | 1,541 |
+| **row** | | **5,803** | **5,892** |
+
+The row total moves by **−1.5 %**; what moved is the split between the Perception and Solver
+positions, and it moved for a reason worth recording. The render proof derived ONE selection per
+row (from the Solver contact's sealed payload) and applied it to all five contacts. A LIVE row
+cannot: at the Perception contact there is no Perception state and, on this arm, no candidate
+projection either, so that contact's pointer/expansion block is smaller and the Solver shares less
+prefix with it. The live numbers are the causal ones; section 6.1's P2 figure of 423 assumed a
+Perception request that had already read the Solver's own selection.
+
+The smoke arm reads 5,956 / 7,749 / 7,656 / 9,013 / 9,058 predicted prompt and 5,956 / 2,100 /
+188 / 1,358 / 1,535 predicted prefilled, row **11,137** — the Perception figure is the whole
+prompt because with four rows over four slots every row's first contact is the first request on
+its slot and has no predecessor to share a prefix with.
+
+**The ladder (W8).** On a Solver contact the armed request has 11 content parts and
+`rails.context_fit.droppable_items` returns **10** index items: the 9 expansions from the TAIL in
+tranche 1, then the pointer block in tranche 2 — never before it — and `apply_drops` removes
+exactly one part per item. E20's own ladder is unchanged with the key absent (its 19 tests pass
+untouched).
+
+**Design decisions this item had to make, and why.**
+
+1. **The selection is per CONTACT, not per row.** A live Perception contact cannot read its own
+   future answer. When no Perception state exists the retrieval order stands in, and the receipt's
+   `selection.candidate_source` says `retrieval-order` rather than `perception-state`.
+2. **The L1 → L0 granularity step is NOT executed at the dispatch seam**, and is refused there by
+   name. It re-renders the CONSTANT PREFIX, which lives in the system message;
+   `CompactableRequest` deliberately excludes the system message, and re-rendering it on one
+   contact would break the very prefix constancy the key exists for. A row that still does not fit
+   after the two content tranches takes E20's terminal `context_compaction` disposition, exactly
+   as an unarmed one does.
+3. **A candidate the closed inventory does not carry is dropped and COUNTED**, not raised on. A
+   candidate is the Perception node's own output; refusing the row would kill a flight on model
+   noise and rendering the spelling would put a second label into a closed list. The receipt's
+   `selection.refused_candidates` is the honest third option.
+4. **The rank is re-derived, not re-plumbed.** `rails.kb_policy._fuse_supply_filter` computes each
+   value's best-admitted-supporting-facet score and then returns `tuple(sorted(set(...)))`;
+   `value_retrieval_ranks` re-derives exactly that number from the `RankResult` and the snapshot's
+   own value-to-facet association, so it is reproducible from the sealed vectors and the store.
+   It is recorded ONLY into a dict a caller hands over, which is only when the key is armed.
+   `saea-phase-supply-v2` is deliberately NOT extended: that receipt is hashed by cells that do not
+   arm this key, and the similarity is named on the index receipt's own `retrieval_rank` block
+   instead (`{"recorded": false}` when the supply recorded none — never implied).
+5. **The four run-level counters are ADDED only when a row sealed the block**, so an unarmed
+   dispatch still reports exactly E20's four counters and its manifest is byte-identical.
+6. **The binding and the key are refused in BOTH directions**: an armed key with no binding, and a
+   binding with no armed key. The second is new here and is the same defect seen from the other
+   side — an index no config hash claims.
+
+**What section 7.1 does not authorise.** No view RELEASE (nothing was written under
+`SPEECHRL_DATA_DIR` and no release-pins registration file exists). No cell, no preregistration, no
+exposure-ledger row, no `contracts.ExecutionPlan`, no readiness package, no armed baseline. **No
+contact of any kind was made**, and no number above is a task measurement: every prefill figure is
+DERIVED with E17's estimator, and nothing here claims anything about SLU F1, intent accuracy or
+ordering quality.
+
+
 ## 8. What this does not authorise
 
 No owner decision is recorded. **No view release** (the builder writes nothing under
