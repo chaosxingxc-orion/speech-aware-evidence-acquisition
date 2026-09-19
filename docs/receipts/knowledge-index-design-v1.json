@@ -1,0 +1,230 @@
+{
+  "schema": "saea-knowledge-index-design-v1",
+  "document": "docs/superpowers/specs/2026-09-19-knowledge-index-and-context-assembly-design.md",
+  "date": "2026-09-19",
+  "author": "Claude Fable 5.1, root coordinator",
+  "tree": "fable/index from 4aa47a42",
+  "status": "DRAFT for owner review; nothing decided, registered, admitted or authorised",
+  "authority": {
+    "owner_decision": 48,
+    "record": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md#owner-decision-48-of-2026-09-19"
+  },
+  "contacts": {
+    "model": 0,
+    "tool": 0,
+    "scorer": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "server": 0,
+    "network": 0,
+    "speechrl_data_dir_access": "read-only",
+    "utterance_text_or_gold_in_this_receipt": false
+  },
+  "sources": {
+    "sealed_arm": {
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2",
+      "attempt": "attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2",
+      "records": {"MODEL_REQUEST": 5425, "MODEL_RESPONSE": 5425, "COST": 5425, "USE": 10833, "ORG": 1080, "SUPPLY": 1080},
+      "rows_total": 1080,
+      "rows_measured_anatomy": 20,
+      "rows_measured_vote": 60,
+      "contacts_measured": 100
+    },
+    "released_stores": [
+      "knowledge/slurp/semantic/intent-boundaries-v1",
+      "knowledge/slurp/semantic/intent-boundaries-v2",
+      "knowledge/slurp/semantic/intent-boundaries-factored-v1",
+      "knowledge/slurp/semantic/slot-contracts-v1",
+      "knowledge/slurp/semantic/slot-contracts-v2",
+      "knowledge/slurp/semantic/scenario-hints-v1",
+      "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars"
+    ],
+    "companion_reports": {
+      "decision_41_throughput": "docs/results/2026-09-19-slurp-throughput-root-cause-v1.md",
+      "decision_45_geometry": {
+        "path": "docs/results/2026-09-19-slurp-serving-geometry-and-degradation-v1.md",
+        "branch": "fable/geometry",
+        "commit": "1eb753ff",
+        "available": true
+      },
+      "decision_46_47_m1_compression": {
+        "path": "docs/results/2026-09-19-slurp-m1-exemplar-compression-analysis-v1.md",
+        "branch": "fable/m1compress",
+        "branch_head_at_seal": "1b607e7a",
+        "available": false,
+        "note": "not yet written; the exemplar figures here were measured independently and must be reconciled when it lands"
+      }
+    }
+  },
+  "chars_per_token_anchors": {
+    "contract_and_inventory_text": 3.67,
+    "whole_prompt_median_over_roles": 4.60,
+    "per_role": {"perception": 4.29, "solver": 4.63, "reviewer": 4.57, "planner": 4.80},
+    "method": "derived from sealed usage.prompt_tokens and character counts; nothing re-tokenised"
+  },
+  "prompt_anatomy_medians_chars": {
+    "perception": {"task_instruction": 8118, "tools": 0, "speech_packet_ref": 149, "evidence_intent_boundaries": 6057, "evidence_slot_contracts": 0, "evidence_train_exemplars": 0, "state_perception": 0, "state_solver": 0, "state_reviewer": 0, "state_tool_result": 0, "role_query": 1135, "total": 15460, "prompt_tokens": 3600, "completion_tokens": 118},
+    "solver": {"task_instruction": 8118, "tools": 0, "speech_packet_ref": 149, "evidence_intent_boundaries": 6057, "evidence_slot_contracts": 24057, "evidence_train_exemplars": 2474, "state_perception": 626, "state_solver": 0, "state_reviewer": 0, "state_tool_result": 0, "role_query": 1304, "total": 43545, "prompt_tokens": 9396, "completion_tokens": 19},
+    "reviewer": {"task_instruction": 8118, "tools": 221, "speech_packet_ref": 149, "evidence_intent_boundaries": 6057, "evidence_slot_contracts": 24057, "evidence_train_exemplars": 2474, "state_perception": 626, "state_solver": 229, "state_reviewer": 106, "state_tool_result": 5256, "role_query": 609, "total": 46082, "prompt_tokens": 10082, "completion_tokens": 34},
+    "planner": {"task_instruction": 8118, "tools": 0, "speech_packet_ref": 149, "evidence_intent_boundaries": 6057, "evidence_slot_contracts": 24057, "evidence_train_exemplars": 2474, "state_perception": 626, "state_solver": 229, "state_reviewer": 684, "state_tool_result": 10512, "role_query": 367, "total": 54026, "prompt_tokens": 11251, "completion_tokens": 2},
+    "row_5_contacts": {"rendered_chars": 205194, "prompt_tokens": 44412}
+  },
+  "constancy": {
+    "task_instruction_distinct_sha256_over_run": 1,
+    "task_instruction_chars": 8118,
+    "tools_array_chars": 221,
+    "tools_array_roles": ["reviewer"],
+    "role_query_distinct_per_role": 1,
+    "role_query_chars_per_row": 3415,
+    "evidence_block_distinct_within_a_row": 1,
+    "knowledge_role_value_items": 182233,
+    "knowledge_role_value_items_total": 182233,
+    "stable_text_parts_populated": false
+  },
+  "evidence_block_composition_solver": {
+    "total_chars": 32588,
+    "slot_contracts": {"items": 11.5, "chars": 24057, "share_of_block": 0.738, "share_of_prompt": 0.552},
+    "intent_boundaries": {"items": 8, "chars": 6057, "share_of_block": 0.186, "share_of_prompt": 0.139},
+    "train_exemplars": {"items": 20, "chars": 2474, "share_of_block": 0.076, "share_of_prompt": 0.057}
+  },
+  "store_measurements": {
+    "intent-boundaries-v1": {"values": 60, "facets": 60, "content_chars_total": 42133, "content_chars_mean": 702.2, "lines_per_card_mean": 8.2,
+      "sections": {"Activation boundary": {"rows": 60, "distinct": 60, "chars": 4244, "mean": 70.7},
+                   "Confusable exclusions": {"rows": 60, "distinct": 60, "chars": 7301, "mean": 121.7},
+                   "Uncertainty behavior": {"rows": 60, "distinct": 1, "chars": 11940, "mean": 199.0},
+                   "Limitations": {"rows": 60, "distinct": 15, "chars": 12362, "mean": 206.0}}},
+    "intent-boundaries-v2": {"values": 60, "content_chars_total": 44109},
+    "intent-boundaries-factored-v1": {"values": 61, "content_chars_total": 18127, "content_chars_mean": 297.2, "reduction_vs_v1": 0.570, "status": "superseded / unused"},
+    "slot-contracts-v2": {"values": 54, "facets": 54, "content_chars_total": 83351, "content_chars_mean": 1543.5, "lines_per_card_mean": 19.6,
+      "sections": {"Admissible formats": {"rows": 54, "distinct": 54, "chars": 5352, "mean": 99.1},
+                   "Extraction cues": {"rows": 54, "distinct": 54, "chars": 12928, "mean": 239.4},
+                   "Intent bindings and semantic roles": {"rows": 54, "distinct": 54, "chars": 24877, "mean": 460.7},
+                   "Ambiguity behavior": {"rows": 54, "distinct": 54, "chars": 6997, "mean": 129.6},
+                   "Missing behavior": {"rows": 54, "distinct": 8, "chars": 8513, "mean": 157.6},
+                   "Limitations": {"rows": 54, "distinct": 54, "chars": 16725, "mean": 309.7}}},
+    "scenario-hints-v1": {"intents": 60, "intents_with_neighbours": 44, "pairs": 81, "cue_rows": 231, "construction_utterances": 9354, "excluded": 2160},
+    "size-pool-annotated-exemplars": {"values": 9354, "content_chars_total": 704078, "content_chars_mean": 75.3, "content_chars_median": 69, "task_target_chars_mean": 12.9}
+  },
+  "contract_composition": {
+    "rendered_system_message_chars": 8118,
+    "template_chars": 872,
+    "ontology_prose_chars": 5424,
+    "label_inventory_chars": 1834,
+    "label_inventory_lines": 21,
+    "scenarios": 18,
+    "intent_pairs": 60,
+    "entity_types": 55,
+    "intent_name_chars_total": 826,
+    "slot_name_chars_total": 615
+  },
+  "index_sizes_chars": {
+    "L0_intent_already_rendered": 1029,
+    "L0_slot_already_rendered": 805,
+    "L0_total_already_paid": 1834,
+    "L1_intent_activation_boundary": 5249,
+    "L1_intent_confusable_exclusions": 8306,
+    "L1_intent_both": 13615,
+    "L1_slot_admissible_formats": 6128,
+    "L1_slot_extraction_cues": 13704,
+    "L1_slot_intent_bindings": 25653,
+    "L0_edges_ids_only": 2610,
+    "L1_edges_with_cues": 4366,
+    "L2_intent_cards_all": 42133,
+    "L2_slot_cards_all": 83351,
+    "proposed_composite": 16221,
+    "proposed_composite_tokens_at_4_60": 3526,
+    "proposed_composite_tokens_at_3_67": 4426,
+    "delta_over_today_chars": 14387,
+    "new_system_message_chars": 22505
+  },
+  "cache_economics": {
+    "perception_cached_share": 0.618,
+    "perception_cached_tokens": 2224,
+    "interpretation": "the system message survives on the pinned slot between rows; the constant prefix is prefilled once per slot",
+    "slots": 4,
+    "rows": 1080,
+    "index_prefill_tokens_per_flight": 14104,
+    "index_prefill_tokens_per_row": 13.1,
+    "index_gpu_seconds_per_flight_at_2048_tok_s": 6.9
+  },
+  "neighbour_vote": {
+    "rows": 60,
+    "k": 20,
+    "distinct_intents_median": 3,
+    "distinct_intents_mean": 3.7,
+    "distinct_intents_min": 1,
+    "distinct_intents_max": 12,
+    "top1_votes_median": 15,
+    "top1_votes_mean": 14.2,
+    "top3_cumulative_median": 20
+  },
+  "per_row_budget": {
+    "step0_b1_as_flown": {"prefilled_tokens": 25933, "gpu_h_per_1080": 3.860, "test_read_h": 46.5, "kind": "measured"},
+    "step1_after_e17": {"prefilled_tokens": 9906, "rows_per_min": 9.97, "gpu_h_per_1080": 1.79, "test_read_h": 21.7, "kind": "measured", "source": "decision-45 analysis"},
+    "step2_index_expansion_0": {"prefilled_tokens": 4676, "rows_per_min_range": [10.1, 16.2], "gpu_h_per_1080_range": [1.11, 1.78], "test_read_h_range": [13.4, 21.5], "kind": "derived"},
+    "step2b_index_expansion_4": {"prefilled_tokens": 6010, "kind": "derived"},
+    "step3_np6_unlocked": {"decode_only_rows_per_min": 24.0, "kind": "derived", "precondition": "max prompt about 12,820 against np6 usable 14,336"},
+    "prompt_tokens_per_row": {"today": 44412, "with_index_and_pointers": 41122, "with_r5_exemplars": 39510}
+  },
+  "fit_constraints": {
+    "reserve_rule": "min(8192, slot // 8) below 32768",
+    "np4_slot": 24576, "np4_usable": 21504,
+    "np5_usable": 17024, "np6_usable": 14336, "np8_usable": 10752,
+    "post_l1_max_prompt": 14524,
+    "np6_shortfall_today_tokens": 188,
+    "index_only_max_prompt": 18050,
+    "index_plus_pointers_max_prompt": 12820
+  },
+  "config_surface": {
+    "existing_keys_reused": [
+      "knowledge_stores.<id>.phase_supply.<phase>.{k,tau,rank_policy,rank_weights,fuse_policy,fuse_coverage,dimensions,query_source,facet_source,expose_facets}",
+      "knowledge_stores.<id>.candidate_supply.<phase>.{max_candidates,max_values_per_candidate,max_total_values,projection_policy,rank_policy,fuse_policy,candidate_state_phase,compact_source_phase}",
+      "native_episode.solver_hints",
+      "native_episode.reviewer_audit",
+      "native_episode.deliver_normaliser",
+      "native_episode.acquisition",
+      "native_episode.tool_schema_rendering",
+      "task_instruction_template",
+      "task_instruction_fill"
+    ],
+    "proposed_new_key": "native_episode.knowledge_index",
+    "proposed_fields": ["view", "granularity", "ordering", "pointer_budget", "expansion_budget"],
+    "null_arm": "the key's absence",
+    "episode_switch_keys_today": 9,
+    "proposed_ordinal": "tenth or eleventh, depending on native_episode.context_fit_policy",
+    "refusals": 8
+  },
+  "cells_proposed_not_registered": [
+    {"id": "render-proof", "kind": "model-free", "contacts": 0, "rows": 20, "claims": "none"},
+    {"id": "index-prefix-and-pointer-block", "comparator": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2", "n": 1080,
+     "margins": "B1 own null from SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-REPLICATE-V1 (registered, unflown)",
+     "read": "NEUTRAL is a pass (efficiency); ADMITTED if it gains", "twin": "derangement of the L1 lines across ids, token-matched",
+     "preconditions": ["EFF-1 sealed NEUTRAL", "B1r flown", "four-row smoke", "prompt-fit receipt"]},
+    {"id": "staged-acquisition", "kind": "E18 kind (a) knowledge-requery", "key": "speech + drafted index id", "contacts_per_acquisition": 0, "ceiling": 7}
+  ],
+  "cross_carrier": {
+    "slurp": {"L0": "present in the contract", "L1": "absent", "pointers": "absent"},
+    "contextual_asr": {"L0": "absent; no closed inventory by owner position", "stores_registered_never_flown": ["document-lexicon-v1", "participant-roster-v1"], "units": 1593, "calls": 44, "blockers": ["Earnings descriptors declare task=None", "no scored cell inside the node graph"]},
+    "audio2tool": {"L0_L1": "present: the 152-row registry in the constant prefix", "ordering_experiment": {"cell": "ORG-1", "delta_pp": -3.23, "ci90": [-4.15, -2.33], "verdict": "HARMFUL"}, "pointers": "absent", "blockers": ["zero harness-admission entries", "no default plan", "no reward projection"]}
+  },
+  "findings": [
+    {"id": "F-1", "statement": "the k=20 exemplar block is 2,474 chars = 7.6% of the solver evidence block and 5.7% of its prompt; the candidate slot-contract cards are 24,057 chars = 73.8%"},
+    {"id": "F-2", "statement": "the role query is byte-identical across rows per role (3,415 chars/row) and is rendered last, where the prefix cache cannot reach it"},
+    {"id": "F-3", "statement": "all 182,233 supplied evidence items are knowledge_role value, so stable_text_parts is empty and the transport's cacheable key side holds nothing"},
+    {"id": "F-4", "statement": "the evidence block is byte-identical across the solver, both reviewer and the planner contacts of a row; its whole cost is the solver's first render"},
+    {"id": "F-5", "statement": "intent-boundaries-v1 repeats one identical 199-char Uncertainty behavior string on all 60 cards (28.3% of the store); intent-boundaries-factored-v1 already collapses the per-card content by 57.0% and is unused"},
+    {"id": "F-6", "statement": "the 60 intent ids are the taxonomy and the contract already renders them grouped: L0 exists and costs 1,834 chars already paid"},
+    {"id": "F-7", "statement": "the k=20 retrieved exemplars carry a median of 3 distinct construction intents; top-1 holds 15 of 20 and top-3 cover 20 of 20"},
+    {"id": "F-8", "statement": "the constant prefix is prefilled once per slot, not per row (perception caches 61.8% = 2,224 tokens = the system message); a 3,526-token index costs 13.1 tokens per row"},
+    {"id": "F-9", "statement": "the tools array is 221 chars and its toggle costs 63.5% of the row's prefill"},
+    {"id": "F-10", "statement": "the planner carries a 10,512-char replay of the contract its own system message already holds verbatim, 19.5% of its prompt, to emit a median of 2 tokens"},
+    {"id": "F-11", "statement": "an index-only arm fits np4 but forecloses np5 and np6; index plus pointers takes the maximum prompt to about 12,820 and makes np6 (refused today by 188 tokens) admissible"},
+    {"id": "F-12", "statement": "no carrier has an index; the closest objects are E12's reviewer slot-audit block (687-787 chars) and E14's solver scenario hints (578/788/1,608 chars), both per-row and both unregistered"},
+    {"id": "F-13", "statement": "evidence ids carry a 34-char store-and-namespace prefix the model cannot act on, about 1,360 chars per row"},
+    {"id": "F-14", "statement": "re-rendering an unchanged 152-row registry under domain headers cost Audio2Tool -3.23 pp [-4.15, -2.33] with every domain losing; ordering is a mechanism with its own sign"},
+    {"id": "F-15", "statement": "the post-L1 row is measured at 9,906 prefilled tokens, 24% better than E17's derived 13,065, and the flight is now co-bound, so further prefill cuts convert into time at less than one for one"},
+    {"id": "F-16", "statement": "rails.context_budget's runtime seam has never been wired; there is no dispatch-time budget check, so the degradation order has nothing to execute it until context_fit_policy lands"}
+  ],
+  "owner_questions": 13,
+  "authorises": []
+}
