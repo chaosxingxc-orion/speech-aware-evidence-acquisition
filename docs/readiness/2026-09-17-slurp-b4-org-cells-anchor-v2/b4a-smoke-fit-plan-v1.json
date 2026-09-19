@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-v2",
-  "composed_config_hash": "b10c5577be705a6dfed00ef4314bb2ae5301e74575806a9af695233559dcc2a4",
+  "composed_config_hash": "8596776af092fc9d0ba2d8f63fdfbac155989b3aaaaa381d378595f3dc58a2d9",
   "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realized native request inside the same standalone worker, under the same lease.",
   "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "experiment": "slurp-native-fallback-quirky-intent-v2-anchor-smoke-4-v2",
@@ -23,7 +23,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 176,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "fc87c024b668fe01f3b90f4342f6a933add7e002dfa2723dfe8e5b97fa678549",
+    "protocol_hash": "cd3c62182cf487346444044c0b96031f305e954d494763f124d91d43f943a040",
     "run_id": "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-FIT-V2",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
