@@ -605,9 +605,14 @@
           "phase_id": "solver",
           "samples": 5
         },
-        "proof": "tests/unit/test_config_table_module_switches.py::test_exemplar_supply_store_key_resolves_in_the_stores_class",
+        "proof": "tests/unit/test_config_table_module_switches.py::test_grouped_solver_sampling_is_one_native_episode_roles_solver_key",
         "what_flew": "The ON arm flew configs/baseline/slurp-native-anchor-samples5-train-fold-a-v3.json at b97260ed: the sealed anchor fragment with the Solver role carrying samples 5, decoding_overrides {temperature 0.7, seed_offset 0} and commit {policy saea-commit-plurality-support-v1, min_support 3, similarity_threshold 0.8}, nothing else. The OFF arm is the sealed anchor itself, whose Solver role is the samples-1 form (max_iterations 1, phase_id solver).",
         "why_this_table": "the module changes how one native-episode role is visited (five sampled contacts committed to one draft) and is switched by that role's own block under native_episode; the episode class names one dotted path on its closed allowlist whose null arm is the historical role"
+      },
+      "provisional": {
+        "state": "UNMET",
+        "reason": "NEUTRAL at 1.81x the contacts per row and 1.10x the GPU hours: the program spec's rule lets a no-harm module enter a plan only if it lowers cost, and this form does not; the greedy twin never flew (not due), so nothing separates sampling at temperature 0.7 from five greedy repeats",
+        "requirement": "a cost-neutral form (fewer samples, or a cheaper commit that keeps the false-positive suppression without the omissions) read on this roster with a positive pooled SLU CI95 lower bound, or a positive arm read that makes the twin due; until then the module enters no plan, and the SLURP default plan keeps the samples-1 Solver role"
       }
     }
   ],
