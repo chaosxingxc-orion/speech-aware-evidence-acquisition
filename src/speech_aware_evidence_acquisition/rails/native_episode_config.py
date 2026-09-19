@@ -397,6 +397,18 @@ class NativeEpisodeConfig:
     # and replaces the per-row value rendering with a pointer block plus a
     # bounded expansion. Declared LAST, for the same reason E20's field is.
     knowledge_index_json: str | None = None
+    # Item E22 (the ReAct-exhaustion disposition, not the Earnings-22
+    # carrier), 2026-09-19: what a TOOL role's EXHAUSTED ReAct loop does.
+    # ``"raise"`` -- every config written before E22 and every OFF arm -- is
+    # the pre-E22 behaviour: the role returned no answer, the graph refuses
+    # it and the flight dies at that row, which is exactly how the
+    # B8b-anchor arm lost 2,016 contacts on 2026-09-19.
+    # ``"continue-without-answer"`` ends that visit with NO finding and lets
+    # the row continue through the Planner and deliver as usual, recording a
+    # ``react_exhaustion`` VISIT disposition. It renders NO request byte on a
+    # row whose roles answer. Declared LAST, for the same reason E20's and
+    # E21's fields are.
+    react_exhaustion_policy: str = "raise"
 
     @property
     def acquisition_enabled(self) -> bool:
@@ -609,6 +621,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         "tool_iteration_policy",
         "finite_completion_policy",
         "context_fit_policy",
+        "react_exhaustion_policy",
         "planner_output_format",
         "role_context",
         "review_loop",
@@ -647,6 +660,16 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
     # E20 (2026-09-19, owner decision 45). Parsed by the rail that owns the
     # mechanism, so the config surface and the runtime read one definition.
     context_fit_policy = parse_context_fit_policy(raw.get("context_fit_policy"))
+    # Item E22 (the ReAct-exhaustion disposition, not the Earnings-22
+    # carrier), 2026-09-19: read exactly as E13's key is -- absent means the
+    # default ``"raise"``, and a third value is refused here rather than
+    # reaching the graph.
+    react_exhaustion_policy = raw.get("react_exhaustion_policy", "raise")
+    if (
+        not isinstance(react_exhaustion_policy, str)
+        or react_exhaustion_policy not in {"raise", "continue-without-answer"}
+    ):
+        raise ValueError("native episode react exhaustion policy is invalid")
     planner_output_format = raw.get("planner_output_format", "exact-text")
     if planner_output_format not in {"exact-text", "json-action-v1"}:
         raise ValueError("native episode Planner output format is invalid")
@@ -1256,6 +1279,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         acquisition_budget,
         context_fit_policy,
         knowledge_index_json,
+        react_exhaustion_policy,
     )
 
 

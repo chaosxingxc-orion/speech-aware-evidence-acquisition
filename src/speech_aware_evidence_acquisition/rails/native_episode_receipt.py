@@ -8,6 +8,7 @@ both sealing and post-seal readers apply the same receipt shape checks.
 
 from __future__ import annotations
 
+import dataclasses
 import hashlib
 import json
 from collections.abc import Mapping, Sequence
@@ -23,6 +24,15 @@ class NativeEpisodeDelivery:
     final_contact: Mapping[str, object]
     terminal_disposition: Mapping[str, object] | None
     planner_route: Mapping[str, object] | None
+    # Item E22 (the ReAct-exhaustion disposition, not the Earnings-22
+    # carrier), 2026-09-19: the row's ``react_exhaustion`` block, or ``None``
+    # when no visit of this row exhausted its ReAct loop -- which is every
+    # row sealed before E22 and every row on the null arm. It is a VISIT
+    # disposition and NOT a delivery kind: a row that carries it still
+    # delivers through whichever of the five kinds above it took. Declared
+    # LAST and defaulted so every positional construction in this module,
+    # and every reader written before E22, composes exactly what it did.
+    react_exhaustion: Mapping[str, object] | None = None
 
 
 def _raise(error_type: type[Exception], message: str) -> None:
@@ -71,6 +81,144 @@ def is_illegal_planner_route(route: object) -> bool:
         and route.get("legal") is False
         and route.get("disposition") == PLANNER_ACTION_ILLEGAL_DISPOSITION
     )
+
+
+#: Item E22 (the ReAct-exhaustion disposition, not the Earnings-22 carrier):
+#: the receipt key and schema of a row one of whose tool roles spent its
+#: whole ReAct iteration budget on tool calls without producing an answer.
+#: Restated here for the same reason
+#: :data:`PLANNER_ACTION_ILLEGAL_DISPOSITION` is: this module keeps no
+#: runtime import.
+REACT_EXHAUSTION_DISPOSITION = "react_exhaustion"
+REACT_EXHAUSTION_SCHEMA = "saea-native-react-exhaustion-v1"
+
+#: The exact field set of one exhausted VISIT record.
+_REACT_EXHAUSTION_VISIT_FIELDS = frozenset({
+    "role_id", "stage", "role_visit_index", "revision_count",
+    "iterations_used", "max_iterations", "identical_calls", "calls",
+    "last_observation_sha256",
+})
+
+#: The exact field set of one recorded call.
+_REACT_EXHAUSTION_CALL_FIELDS = frozenset({"tool_id", "arguments_sha256"})
+
+#: The stages an exhausted visit may belong to, restated from
+#: ``reproduction.ojw.native_episode.REACT_EXHAUSTION_STAGES``.
+_REACT_EXHAUSTION_STAGES = ("review",)
+
+
+def _sha256_text(value: object, label: str, *, error_type) -> str:
+    if (
+        not isinstance(value, str)
+        or len(value) != 64
+        or any(character not in "0123456789abcdef" for character in value)
+    ):
+        _raise(error_type, f"{label} must be a lowercase 64-hex SHA-256")
+    return value
+
+
+def _validate_react_exhaustion(receipt, visits, *, error_type):
+    """E22: the row's exhausted-visit block, validated and bound, or ``None``.
+
+    A row without the key is every row sealed before E22 and every row on
+    the null arm, and returns ``None`` without reading anything else. A row
+    WITH it must name real visits of this row: each record's
+    ``role_visit_index`` must address a ``role_visits`` entry whose
+    ``stage`` and ``role_id`` are the record's own, so an exhaustion can
+    never be claimed for a visit that did not happen.
+    """
+
+    block = receipt.get(REACT_EXHAUSTION_DISPOSITION)
+    if block is None:
+        return None
+    if (
+        not isinstance(block, Mapping)
+        or set(block) != {"schema", "count", "visits"}
+        or block["schema"] != REACT_EXHAUSTION_SCHEMA
+    ):
+        _raise(error_type, "ReAct exhaustion block is malformed")
+    records = _sequence(
+        block["visits"], "ReAct exhaustion visits", error_type=error_type
+    )
+    count = block["count"]
+    if (
+        isinstance(count, bool)
+        or not isinstance(count, int)
+        or count != len(records)
+        or not records
+    ):
+        _raise(error_type, "ReAct exhaustion count differs from its visits")
+    seen_indices: set[int] = set()
+    for record in records:
+        if (
+            not isinstance(record, Mapping)
+            or set(record) != _REACT_EXHAUSTION_VISIT_FIELDS
+        ):
+            _raise(error_type, "ReAct exhaustion visit is malformed")
+        index = record["role_visit_index"]
+        if (
+            isinstance(index, bool)
+            or not isinstance(index, int)
+            or not 0 <= index < len(visits)
+            or index in seen_indices
+            or not isinstance(visits[index], Mapping)
+            or visits[index].get("stage") != record["stage"]
+            or visits[index].get("role_id") != record["role_id"]
+        ):
+            _raise(
+                error_type,
+                "ReAct exhaustion visit does not bind an actual role visit",
+            )
+        seen_indices.add(index)
+        if record["stage"] not in _REACT_EXHAUSTION_STAGES:
+            _raise(error_type, "ReAct exhaustion names an inadmissible stage")
+        if not isinstance(record["role_id"], str) or not record["role_id"]:
+            _raise(error_type, "ReAct exhaustion visit has no role id")
+        if record["identical_calls"] not in (True, False):
+            _raise(error_type, "ReAct exhaustion identical_calls must be a boolean")
+        _nonneg_int(
+            record["revision_count"], "ReAct exhaustion revision_count",
+            error_type=error_type,
+        )
+        used, ceiling = record["iterations_used"], record["max_iterations"]
+        _nonneg_int(used, "ReAct exhaustion iterations_used", error_type=error_type)
+        _nonneg_int(ceiling, "ReAct exhaustion max_iterations", error_type=error_type)
+        if used != ceiling or ceiling < 1:
+            _raise(
+                error_type,
+                "ReAct exhaustion must spend its whole declared iteration budget",
+            )
+        calls = _sequence(
+            record["calls"], "ReAct exhaustion calls", error_type=error_type
+        )
+        if not calls:
+            _raise(error_type, "ReAct exhaustion records no tool call")
+        signatures = set()
+        for call in calls:
+            if (
+                not isinstance(call, Mapping)
+                or set(call) != _REACT_EXHAUSTION_CALL_FIELDS
+                or not isinstance(call["tool_id"], str)
+                or not call["tool_id"]
+            ):
+                _raise(error_type, "ReAct exhaustion call is malformed")
+            digest = _sha256_text(
+                call["arguments_sha256"], "ReAct exhaustion arguments_sha256",
+                error_type=error_type,
+            )
+            signatures.add((call["tool_id"], digest))
+        if record["identical_calls"] is not (len(signatures) == 1):
+            _raise(
+                error_type,
+                "ReAct exhaustion identical_calls differs from its own calls",
+            )
+        observation = record["last_observation_sha256"]
+        if observation is not None:
+            _sha256_text(
+                observation, "ReAct exhaustion last_observation_sha256",
+                error_type=error_type,
+            )
+    return block
 
 
 def _validate_planner_control(receipt, visits, routes, *, error_type):
@@ -145,6 +293,19 @@ def validate_native_episode_delivery_receipt(
     _validate_planner_control(
         receipt, role_visits, planner_routes, error_type=error_type
     )
+    # E22: a VISIT-level disposition, so it is read here -- once, for every
+    # delivery kind -- and carried beside whichever kind the row took. A row
+    # without the key reads ``None`` and composes exactly its pre-E22
+    # delivery.
+    exhaustion = _validate_react_exhaustion(
+        receipt, role_visits, error_type=error_type
+    )
+
+    def _with_exhaustion(delivery: NativeEpisodeDelivery) -> NativeEpisodeDelivery:
+        if exhaustion is None:
+            return delivery
+        return dataclasses.replace(delivery, react_exhaustion=exhaustion)
+
     disposition = receipt.get("terminal_disposition")
     if (
         isinstance(disposition, Mapping)
@@ -153,13 +314,17 @@ def validate_native_episode_delivery_receipt(
         # E20: checked BEFORE the finite branch, because a context-fit row
         # carries the same ``interrupted_role``/``abstention_receipt``
         # marks and would otherwise be read as a malformed finite row.
-        return _context_fit_delivery(receipt, role_visits, error_type=error_type)
+        return _with_exhaustion(
+            _context_fit_delivery(receipt, role_visits, error_type=error_type)
+        )
     if (
         isinstance(disposition, Mapping) and disposition.get("reason") == "finite_completion"
         or receipt.get("abstention_receipt") is not None
         or receipt.get("interrupted_role") is not None
     ):
-        return _finite_delivery(receipt, role_visits, error_type=error_type)
+        return _with_exhaustion(
+            _finite_delivery(receipt, role_visits, error_type=error_type)
+        )
     accepted_present = receipt.get("accepted_solver_receipt") is not None
     terminal_present = receipt.get("terminal_solver_receipt") is not None
     if accepted_present == terminal_present:
@@ -189,12 +354,14 @@ def validate_native_episode_delivery_receipt(
         )
         if accepted != latest_solver:
             _raise(error_type, "accepted Solver receipt is not the exact last Solver visit")
-        return NativeEpisodeDelivery(
-            kind="accepted",
-            solver_receipt=accepted,
-            final_contact=accepted["final_contact"],
-            terminal_disposition=None,
-            planner_route=None,
+        return _with_exhaustion(
+            NativeEpisodeDelivery(
+                kind="accepted",
+                solver_receipt=accepted,
+                final_contact=accepted["final_contact"],
+                terminal_disposition=None,
+                planner_route=None,
+            )
         )
 
     terminal = _receipt(
@@ -256,12 +423,14 @@ def validate_native_episode_delivery_receipt(
     elif action == "ACCEPT":
         _raise(error_type, "terminal Planner action must not be ACCEPT")
 
-    return NativeEpisodeDelivery(
-        kind="terminal",
-        solver_receipt=terminal,
-        final_contact=terminal["final_contact"],
-        terminal_disposition=disposition,
-        planner_route=route,
+    return _with_exhaustion(
+        NativeEpisodeDelivery(
+            kind="terminal",
+            solver_receipt=terminal,
+            final_contact=terminal["final_contact"],
+            terminal_disposition=disposition,
+            planner_route=route,
+        )
     )
 
 
@@ -559,9 +728,24 @@ def _context_fit_delivery(receipt, visits, *, error_type):
 def validate_native_episode_terminal_policy(
     delivery, *, exhaustion_policy, finite_completion_policy, max_revisions,
     context_fit_policy="raise",
+    react_exhaustion_policy="raise",
     error_type=ValueError,
 ):
     """Require prospective configuration for either kind of terminal delivery."""
+    # E22: checked FIRST and for EVERY delivery kind, because the exhausted
+    # visit is not a terminal disposition -- an accepted row can carry one
+    # and still be an ordinary ACCEPT. The rule is the same prospective one
+    # E13 and E20 take: a visit may only end without a finding under a
+    # policy declared BEFORE the flight, never under one inferred from its
+    # own failure. The default ``"raise"`` therefore refuses the block, and
+    # every row sealed before E22 carries none and passes untouched.
+    if getattr(delivery, "react_exhaustion", None) is not None and (
+        react_exhaustion_policy != "continue-without-answer"
+    ):
+        _raise(
+            error_type,
+            "ReAct exhaustion recorded without its declared policy",
+        )
     if delivery.kind == "accepted":
         return
     disposition = delivery.terminal_disposition

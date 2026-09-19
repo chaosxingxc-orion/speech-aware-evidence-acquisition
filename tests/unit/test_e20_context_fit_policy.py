@@ -174,9 +174,15 @@ def test_the_episode_config_and_spec_default_to_raise():
     with pytest.raises(ValueError, match="context_fit_policy"):
         load_native_episode_config(bad, program)
 
-    # The episode spec's own field is LAST, so every positional construction
-    # written before E20 composes the spec it always did.
-    assert list(NativeEpisodeSpec.__dataclass_fields__)[-1] == "context_fit_policy"
+    # The episode spec's own field is APPENDED, so every positional
+    # construction written before E20 composes the spec it always did. Item
+    # E22 (the ReAct-exhaustion disposition, not the Earnings-22 carrier)
+    # appended its own key after it under exactly the same rule, which
+    # leaves E20's position untouched.
+    assert list(NativeEpisodeSpec.__dataclass_fields__)[-2:] == [
+        "context_fit_policy",
+        "react_exhaustion_policy",
+    ]
 
 
 # ---------------------------------------------------------------------------

@@ -7195,6 +7195,12 @@ class FlightRuntime:
         Every count is zero for a dispatch with no native episodes at all,
         so a fixed-policy direct arm's receipt gains four zeros and nothing
         else.
+
+        Item E22 (the ReAct-exhaustion disposition, not the Earnings-22
+        carrier) adds ``react_exhaustion_rows`` / ``react_exhaustion_visits``
+        the way E21w added its own: only when at least one row actually
+        sealed the block, so an unarmed dispatch reports exactly the four
+        counters it reported before E22.
         """
 
         counts = {
@@ -7216,6 +7222,17 @@ class FlightRuntime:
             "knowledge_index_contacts": 0,
             "knowledge_index_degradation_steps": 0,
             "knowledge_index_citations_unresolved": 0,
+        }
+        # Item E22 (the ReAct-exhaustion disposition, not the Earnings-22
+        # carrier): how many rows had at least one tool role exhaust its
+        # ReAct loop, and how many such VISITS there were in total -- which
+        # is not the same number, because one row may exhaust more than one
+        # visit. ADDED only when at least one row sealed the block, exactly
+        # as E21w's four are, so a dispatch that does not arm the key still
+        # reports exactly the four E20 counters.
+        react_counts = {
+            "react_exhaustion_rows": 0,
+            "react_exhaustion_visits": 0,
         }
         for row in self._output_rows or ():
             if not isinstance(row, Mapping):
@@ -7250,8 +7267,16 @@ class FlightRuntime:
                     value = index.get(key)
                     if isinstance(value, int) and not isinstance(value, bool):
                         index_counts[name] += value
+            exhaustion = receipt.get("react_exhaustion")
+            if isinstance(exhaustion, Mapping):
+                react_counts["react_exhaustion_rows"] += 1
+                visits = exhaustion.get("visits")
+                if isinstance(visits, list):
+                    react_counts["react_exhaustion_visits"] += len(visits)
         if index_counts["knowledge_index_rows"]:
             counts.update(index_counts)
+        if react_counts["react_exhaustion_rows"]:
+            counts.update(react_counts)
         return counts
 
     def _run_obs_phases(self, policy: str) -> Mapping[str, object]:
@@ -8486,6 +8511,12 @@ class FlightRuntime:
                     # E20: the same prospective-configuration rule, read
                     # from the composed fragment rather than from the row.
                     context_fit_policy=raw_native.get("context_fit_policy", "raise"),
+                    # E22: and again for the exhausted-visit disposition, so
+                    # the seal refuses a ``react_exhaustion`` block on a row
+                    # whose fragment never declared the policy.
+                    react_exhaustion_policy=raw_native.get(
+                        "react_exhaustion_policy", "raise"
+                    ),
                     max_revisions=raw_native.get("max_revisions"),
                     error_type=FlightRuntimeError,
                 )

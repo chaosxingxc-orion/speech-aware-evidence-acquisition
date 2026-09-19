@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Model-free gate: every unflown native cell declares its finite-completion policy.
+"""Model-free gate: every unflown native cell declares its failure-mode policies.
+
+Two keys, one rule, one script: ``native_episode.finite_completion_policy``
+(item E13) and ``native_episode.react_exhaustion_policy`` (item E22 -- the
+ReAct-exhaustion disposition, not the Earnings-22 carrier). Both are
+FAILURE MODES of the same native episode, both default to ``"raise"``, both
+lost a campaign to that default, and both must be armed before a cell flies,
+so they are enforced together rather than by two scripts that would drift.
 
 Item E13 (2026-09-19). On 2026-09-18 the B7a recovery arm
 (``SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1``, attempt
@@ -21,12 +28,30 @@ disposition naming the interrupted role. The A2T and Earnings native
 baselines declare the key. The SLURP ones never did, so a 1,451-contact flight
 was spent proving that a default nobody chose was still the default.
 
+Item E22 (2026-09-19). On 2026-09-19 the B8b-anchor arm
+(``SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1``, attempt
+``attempt-slurp-native-reviewer-audit-anchor-train-fold-a-generation-v1``,
+study commit ``c905ddf0``) died after 2,016 charged contacts with
+
+    NativeEpisodeError: review node did not return an answer
+
+raised at component ``reviewer_1_state``. Nothing was broken there either:
+the Reviewer's ReAct loop (``max_iterations`` 3) called
+``saea-tool-task-contract-v1`` with ``{}`` on iterations 1/3, 2/3 and 3/3,
+the pinned framework returned its own ``"Max iterations reached without
+completion"`` under ``result_type`` ``"error"``, and
+``reproduction.ojw.native_episode._ApplyRole`` refused the non-answer. Two
+Reviewer visits of 410 reached 3/3; both took the whole flight with them.
+``native_episode.react_exhaustion_policy`` ``"continue-without-answer"``
+ends such a visit with NO finding and lets the row deliver, recording a
+``react_exhaustion`` visit disposition. The key defaults to ``"raise"``.
+
 A rule that lives only in a verdict note is not a rule. This script is the
 rule.
 
 **Enforced (a failure exits 1).**
 
-1. **Every LIVE, UNFLOWN native cell arms the key.** For each generation plan
+1. **Every LIVE, UNFLOWN native cell arms BOTH keys.** For each generation plan
    under ``docs/readiness/<package>/`` (``*generation-plan*.json``) this reads
    the plan's run id, looks that run id up in ``docs/exposure-ledger.md`` --
    with the repository's own table parser,
@@ -42,7 +67,10 @@ rule.
 
    Each in-scope cell's baseline config, if it carries a ``native_episode``
    block, must declare ``finite_completion_policy`` as
-   ``"deliver-latest-or-abstain"``.
+   ``"deliver-latest-or-abstain"`` AND ``react_exhaustion_policy`` as
+   ``"continue-without-answer"``. Each missing or wrong key is its own
+   finding, named by key, so a cell that arms one and not the other is told
+   which one is missing.
 
    Everything else is OUT OF SCOPE and counted in the summary. A plan with no
    ledger row has no registration to enforce against. A consumed row names
@@ -57,11 +85,13 @@ rule.
 2. **No baseline anywhere declares a third value.** Independently of scope,
    every ``configs/baseline/*.json`` whose ``native_episode`` block carries
    ``finite_completion_policy`` must carry it as
-   ``"deliver-latest-or-abstain"``. The parser also accepts the literal
-   ``"raise"``; writing the abort default out loud is legal to the loader and
-   refused here, because a cell that means to abort on a finite completion
-   should say so in its preregistration, not in a config leaf that reads like
-   an oversight.
+   ``"deliver-latest-or-abstain"``, and one that carries
+   ``react_exhaustion_policy`` must carry it as
+   ``"continue-without-answer"``. The parser also accepts the literal
+   ``"raise"`` for either; writing the abort default out loud is legal to the
+   loader and refused here, because a cell that means to abort on one of
+   these failure modes should say so in its preregistration, not in a config
+   leaf that reads like an oversight.
 
 This gate never edits a config. A violation is repaired by the coordinator
 re-pinning the cell (``scripts/flights/repin_cell.py``), which is the only
@@ -92,10 +122,32 @@ BASELINE_DIR = Path("configs/baseline")
 #: because a readiness PACKAGE is a directory and a loose note is not a plan.
 PLAN_GLOB = "*/*generation-plan*.json"
 
-#: The one leaf, and the one value a cell that has not yet flown must give it.
+#: The leaves, and the one value a cell that has not yet flown must give each.
 EPISODE_BLOCK = "native_episode"
 POLICY_KEY = "finite_completion_policy"
 REQUIRED_POLICY = "deliver-latest-or-abstain"
+
+#: Item E22 (the ReAct-exhaustion disposition, not the Earnings-22 carrier):
+#: the second leaf, enforced under exactly the same scope rule.
+REACT_POLICY_KEY = "react_exhaustion_policy"
+REQUIRED_REACT_POLICY = "continue-without-answer"
+
+#: The two, in the order the findings report them: ``(key, required value,
+#: what the parser's default does when the key is absent)``.
+REQUIRED_POLICIES = (
+    (
+        POLICY_KEY,
+        REQUIRED_POLICY,
+        "the parser default 'raise', which aborts the flight on a finite "
+        "completion",
+    ),
+    (
+        REACT_POLICY_KEY,
+        REQUIRED_REACT_POLICY,
+        "the parser default 'raise', which aborts the flight when a tool "
+        "role's ReAct loop ends without an answer",
+    ),
+)
 
 #: The readiness states of a cell that is still on the queue. The vocabulary
 #: seen in ``configs/experiment/*.json`` at 2026-09-19 is ``ready`` (141
@@ -250,13 +302,13 @@ def _cells_of(fragment: dict[str, Any], run_id: str) -> list[dict[str, Any]]:
     return [cell for cell in cells if cell.get("run_id") == run_id] or cells
 
 
-def _policy_of(baseline: dict[str, Any]) -> tuple[bool, Any]:
+def _policy_of(baseline: dict[str, Any], key: str = POLICY_KEY) -> tuple[bool, Any]:
     """``(carries a native_episode block, the declared policy or None)``."""
 
     episode = baseline.get(EPISODE_BLOCK)
     if not isinstance(episode, dict):
         return False, None
-    return True, episode.get(POLICY_KEY)
+    return True, episode.get(key)
 
 
 def evaluate(repo_root: Path, ledger: Path = EXPOSURE_LEDGER) -> dict[str, Any]:
@@ -400,63 +452,70 @@ def evaluate(repo_root: Path, ledger: Path = EXPOSURE_LEDGER) -> dict[str, Any]:
                     )
                     continue
                 checked_baselines.add(name)
-                native, policy = _policy_of(baseline)
-                if not native or policy == REQUIRED_POLICY:
-                    continue
-                violations.append(
-                    {
-                        "kind": "missing-policy" if policy is None else "wrong-policy",
-                        "plan": relpath,
-                        "run_id": run_id,
-                        "experiment": stem,
-                        "baseline": name,
-                        "readiness_state": state,
-                        "declared": policy,
-                        "message": (
-                            f"{relpath}: run id {run_id} is registered, unconsumed and "
-                            f"{state}, and its baseline {name} declares native_episode."
-                            f"{POLICY_KEY} as "
-                            + (
-                                "ABSENT (the parser default 'raise', which aborts the "
-                                "flight on a finite completion)"
-                                if policy is None
-                                else f"{policy!r}"
-                            )
-                            + f"; a live unflown native cell must declare "
-                            f"{REQUIRED_POLICY!r}"
-                        ),
-                    }
-                )
+                for key, required, absent_means in REQUIRED_POLICIES:
+                    native, policy = _policy_of(baseline, key)
+                    if not native or policy == required:
+                        continue
+                    violations.append(
+                        {
+                            "kind": "missing-policy" if policy is None else "wrong-policy",
+                            "key": key,
+                            "plan": relpath,
+                            "run_id": run_id,
+                            "experiment": stem,
+                            "baseline": name,
+                            "readiness_state": state,
+                            "declared": policy,
+                            "message": (
+                                f"{relpath}: run id {run_id} is registered, unconsumed and "
+                                f"{state}, and its baseline {name} declares native_episode."
+                                f"{key} as "
+                                + (
+                                    f"ABSENT ({absent_means})"
+                                    if policy is None
+                                    else f"{policy!r}"
+                                )
+                                + f"; a live unflown native cell must declare "
+                                f"{required!r}"
+                            ),
+                        }
+                    )
 
     # Rule 2: repository-wide, a declared policy is never a third value.
     for path in sorted((repo_root / BASELINE_DIR).glob("*.json")):
         baseline = _read_json(path, path.name)
         if not isinstance(baseline, dict):
             continue
-        native, policy = _policy_of(baseline)
-        if not native or policy is None or policy == REQUIRED_POLICY:
-            continue
-        violations.append(
-            {
-                "kind": "declared-third-value",
-                "plan": None,
-                "run_id": None,
-                "baseline": path.stem,
-                "declared": policy,
-                "message": (
-                    f"{BASELINE_DIR.as_posix()}/{path.name}: native_episode."
-                    f"{POLICY_KEY} is {policy!r}; the only value a committed baseline "
-                    f"may declare is {REQUIRED_POLICY!r}"
-                ),
-            }
-        )
+        for key, required, _absent_means in REQUIRED_POLICIES:
+            native, policy = _policy_of(baseline, key)
+            if not native or policy is None or policy == required:
+                continue
+            violations.append(
+                {
+                    "kind": "declared-third-value",
+                    "key": key,
+                    "plan": None,
+                    "run_id": None,
+                    "baseline": path.stem,
+                    "declared": policy,
+                    "message": (
+                        f"{BASELINE_DIR.as_posix()}/{path.name}: native_episode."
+                        f"{key} is {policy!r}; the only value a committed baseline "
+                        f"may declare is {required!r}"
+                    ),
+                }
+            )
 
     state_counts = Counter(row["state"] for row in not_live)
     return {
-        "schema": "saea-finite-completion-policy-check-v1",
+        # E22 widened the gate from one key to two. The schema name is the
+        # contract a reader binds to, so it moves with the shape.
+        "schema": "saea-finite-completion-policy-check-v2",
         "repo_root": str(repo_root),
         "ledger": ledger.as_posix(),
         "required_policy": REQUIRED_POLICY,
+        "required_react_exhaustion_policy": REQUIRED_REACT_POLICY,
+        "required_policies": {key: value for key, value, _ in REQUIRED_POLICIES},
         "live_readiness_states": list(LIVE_READINESS_STATES),
         "in_scope_plan_cells": in_scope,
         "in_scope_plans": sorted({row["plan"] for row in in_scope}),
@@ -486,7 +545,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         data = evaluate(args.repo_root.resolve(), args.ledger)
     except FiniteCompletionPolicyCheckError as error:
-        print(f"finite completion policy check: FAIL: {error}", file=sys.stderr)
+        print(f"native episode failure-mode policy check: FAIL: {error}", file=sys.stderr)
         return 1
 
     if args.json:
@@ -494,9 +553,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0 if data["passed"] else 1
 
     for problem in data["unreadable_plans"]:
-        print(f"finite completion policy check: FAIL: {problem}")
+        print(f"native episode failure-mode policy check: FAIL: {problem}")
     for violation in data["violations"]:
-        print(f"finite completion policy check: FAIL: {violation['message']}")
+        print(f"native episode failure-mode policy check: FAIL: {violation['message']}")
 
     out_of_scope = data["out_of_scope"]
     states = ", ".join(
@@ -504,6 +563,8 @@ def main(argv: list[str] | None = None) -> int:
         for state, count in out_of_scope["not_live_state_counts"].items()
     )
     summary = (
+        f"native_episode.{POLICY_KEY}={REQUIRED_POLICY!r} and "
+        f"native_episode.{REACT_POLICY_KEY}={REQUIRED_REACT_POLICY!r}; "
         f"{len(data['in_scope_plans'])} in-scope plan(s), "
         f"{len(data['checked_baselines'])} baseline(s) read; out of scope: "
         f"{len(out_of_scope['no_ledger_row'])} with no ledger row, "
@@ -513,10 +574,10 @@ def main(argv: list[str] | None = None) -> int:
         + (f" [{states}]" if states else "")
     )
     if data["passed"]:
-        print(f"finite completion policy check: PASS ({summary})")
+        print(f"native episode failure-mode policy check: PASS ({summary})")
         return 0
     print(
-        "finite completion policy check: FAIL "
+        "native episode failure-mode policy check: FAIL "
         f"({len(data['violations']) + len(data['unreadable_plans'])} finding(s); "
         f"{summary})"
     )
