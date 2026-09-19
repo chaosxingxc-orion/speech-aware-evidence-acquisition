@@ -19,6 +19,15 @@ SERVER_WIDE_CONTEXT_TOKENS = 65_536
 REQUEST_SLOT_COUNT = 2
 PER_SLOT_LIMIT_TOKENS = 32_768
 OPERATIONAL_RESERVE_TOKENS = 8_192
+#: E17 (2026-09-19): the largest share of a per-slot budget the operational
+#: reserve may take when the budget is bound to the LIVE serving geometry
+#: rather than to :data:`PER_SLOT_LIMIT_TOKENS`. The registered reserve is a
+#: quarter of the registered slot, so at 32,768 tokens this bound is inert and
+#: the live-slot budget is byte-identical to the legacy one; it binds only on
+#: slots at or under 16,384 tokens, where an absolute 8,192-token reserve
+#: would refuse geometries this study has actually flown (the np8 sessions run
+#: 8,192-token slots).
+MAX_RESERVE_SHARE_DENOMINATOR = 2
 REGISTERED_SPECIAL_TOKEN_RESERVE = 2
 MAX_COMPACTION_PASSES = 2
 MAX_ACCOUNTED_TOKENS = (1 << 63) - 1
@@ -116,6 +125,22 @@ class ContextBudgetLimits:
                 "slot limit"
             )
         return limits
+
+
+def serving_bound_reserve_tokens(slot_limit_tokens: int) -> int:
+    """The operational reserve for a budget bound to the live serving slot.
+
+    The registered :data:`OPERATIONAL_RESERVE_TOKENS`, except that it never
+    takes more than half the slot
+    (:data:`MAX_RESERVE_SHARE_DENOMINATOR`). At the registered
+    :data:`PER_SLOT_LIMIT_TOKENS`, and at the 24,576-token SLURP np4 slot,
+    the clamp is inert and the answer is the registered reserve itself; it
+    binds only on slots at or under 16,384 tokens, where an absolute
+    8,192-token reserve would leave a flown geometry no budget at all.
+    """
+
+    slot_limit = _positive_integer(slot_limit_tokens, field="serving geometry slot limit")
+    return min(OPERATIONAL_RESERVE_TOKENS, slot_limit // MAX_RESERVE_SHARE_DENOMINATOR)
 
 
 def _validate_sha256(value: object, *, field: str) -> str:
@@ -333,6 +358,20 @@ class ContextBudgetDecisionReceipt:
     slot_limit_tokens: int = PER_SLOT_LIMIT_TOKENS
     operational_reserve_tokens: int = OPERATIONAL_RESERVE_TOKENS
     _configuration_bound: bool = False
+    # E17 (2026-09-19): this receipt was budgeted against the LIVE serving
+    # geometry's per-slot limit rather than against the module-level
+    # :data:`PER_SLOT_LIMIT_TOKENS` default, but WITHOUT the extra
+    # three-quarter occupancy rule an explicit ``context_budget_limits``
+    # block opts into. It exists because the two facts were conflated
+    # before: a caller with no declared limits got 32,768 tokens of budget
+    # whatever the session's slots really were, which on the SLURP np4
+    # ctx24k geometry was 33 % permissive
+    # (``docs/results/2026-09-19-slurp-throughput-root-cause-v1.md``
+    # section 4). Mutually exclusive with ``_configuration_bound``; at a
+    # live slot of exactly :data:`PER_SLOT_LIMIT_TOKENS` the two numbers
+    # below are the registered defaults and this receipt is byte-identical
+    # to the unbound one it replaces.
+    _serving_bound: bool = False
 
     def __post_init__(self) -> None:
         _validate_sha256(self.payload_sha256, field="payload_sha256")
@@ -343,11 +382,37 @@ class ContextBudgetDecisionReceipt:
         _validate_compaction(self.compaction_pass, self.dropped_identifiers)
         if type(self._configuration_bound) is not bool:
             raise ContextBudgetRefusal("configuration-bound marker must be boolean")
+        if type(self._serving_bound) is not bool:
+            raise ContextBudgetRefusal("serving-bound marker must be boolean")
+        if self._configuration_bound and self._serving_bound:
+            raise ContextBudgetRefusal(
+                "a receipt is bound to a declared context budget or to the live "
+                "serving geometry, never to both"
+            )
         if self._configuration_bound:
             ContextBudgetLimits(
                 slot_limit_tokens=self.slot_limit_tokens,
                 operational_reserve_tokens=self.operational_reserve_tokens,
             )
+        elif self._serving_bound:
+            # E17: a live-slot budget is not a declared one. Its slot limit
+            # is whatever the served geometry actually is (never above the
+            # registered default, which stays the ceiling on an UNDECLARED
+            # budget), and its reserve is the registered reserve clamped by
+            # :func:`serving_bound_reserve_tokens`.
+            slot_limit = _positive_integer(
+                self.slot_limit_tokens, field="slot_limit_tokens"
+            )
+            if slot_limit > PER_SLOT_LIMIT_TOKENS:
+                raise ContextBudgetRefusal(
+                    "an undeclared budget never exceeds the registered per-slot "
+                    "limit; raising it requires an explicit context_budget_limits "
+                    "block"
+                )
+            if self.operational_reserve_tokens != serving_bound_reserve_tokens(slot_limit):
+                raise ContextBudgetRefusal(
+                    "operational_reserve_tokens drifted from the live-slot reserve"
+                )
         else:
             if self.slot_limit_tokens != PER_SLOT_LIMIT_TOKENS:
                 raise ContextBudgetRefusal(
@@ -407,21 +472,60 @@ def assess_context_budget(
     candidate: ContextBudgetInput,
     *,
     limits: ContextBudgetLimits | None = None,
+    serving_slot_limit_tokens: int | None = None,
 ) -> ContextBudgetDecisionReceipt:
-    """Apply legacy limits or an explicit serving-geometry-bound limit."""
+    """Apply legacy limits, a live-slot limit, or the registered default.
+
+    Three budgets, in decreasing order of specificity:
+
+    ``limits`` -- an explicit, validated ``context_budget_limits`` block,
+    already bound to the serving geometry by
+    :meth:`ContextBudgetLimits.from_config`. Unchanged: it carries its own
+    operational reserve and opts into the extra three-quarter occupancy
+    rule.
+
+    ``serving_slot_limit_tokens`` (E17, 2026-09-19) -- no declared block, but
+    the LIVE per-slot token limit of the session this flight will run on.
+    Before this argument existed such a caller silently got
+    :data:`PER_SLOT_LIMIT_TOKENS`: a fixed 32,768 whatever the geometry, so
+    the SLURP np4 ctx24k sessions (24,576-token slots) were budgeted 33 %
+    permissively
+    (``docs/results/2026-09-19-slurp-throughput-root-cause-v1.md`` section
+    4). The live slot LOWERS the budget and never raises it -- the
+    registered default stays the ceiling on an undeclared budget, because
+    raising it is what the explicit block is for -- and the reserve is
+    :func:`serving_bound_reserve_tokens`. The decision rule is the legacy
+    one; only the limit moves. At a live slot of exactly
+    :data:`PER_SLOT_LIMIT_TOKENS` this path therefore produces a receipt
+    byte-identical to the default one below, down to
+    :meth:`ContextBudgetDecisionReceipt.receipt_sha256`.
+
+    Neither -- the module's registered default, unchanged.
+    """
 
     if not isinstance(candidate, ContextBudgetInput):
         raise ContextBudgetRefusal("candidate must be a ContextBudgetInput")
     if limits is not None and not isinstance(limits, ContextBudgetLimits):
         raise ContextBudgetRefusal("limits must be ContextBudgetLimits or None")
-    slot_limit = (
-        PER_SLOT_LIMIT_TOKENS if limits is None else limits.slot_limit_tokens
-    )
-    reserve = (
-        OPERATIONAL_RESERVE_TOKENS
-        if limits is None
-        else limits.operational_reserve_tokens
-    )
+    if serving_slot_limit_tokens is not None:
+        live_limit = _positive_integer(
+            serving_slot_limit_tokens, field="serving geometry slot limit"
+        )
+        if limits is not None and limits.slot_limit_tokens != live_limit:
+            raise ContextBudgetRefusal(
+                "declared context budget slot_limit_tokens must equal the live "
+                "serving geometry slot limit"
+            )
+    serving_bound = limits is None and serving_slot_limit_tokens is not None
+    if limits is not None:
+        slot_limit = limits.slot_limit_tokens
+        reserve = limits.operational_reserve_tokens
+    elif serving_bound:
+        slot_limit = min(live_limit, PER_SLOT_LIMIT_TOKENS)
+        reserve = serving_bound_reserve_tokens(slot_limit)
+    else:
+        slot_limit = PER_SLOT_LIMIT_TOKENS
+        reserve = OPERATIONAL_RESERVE_TOKENS
     physical_margin = slot_limit - candidate.breakdown.required_window_tokens
     operational_margin = physical_margin - reserve
     decision = _expected_decision(
@@ -444,4 +548,5 @@ def assess_context_budget(
         slot_limit_tokens=slot_limit,
         operational_reserve_tokens=reserve,
         _configuration_bound=limits is not None,
+        _serving_bound=serving_bound,
     )

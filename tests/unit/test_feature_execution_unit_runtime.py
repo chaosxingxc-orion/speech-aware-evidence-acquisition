@@ -214,9 +214,13 @@ def test_preflight_estimate_visits_every_window_and_uses_window_duration(tmp_pat
         rendered.append(kwargs)
         return original_render(**kwargs)
 
-    def assess(candidate):
+    def assess(candidate, **kwargs):
+        # E17 (2026-09-19): forward whatever keywords the runtime passes.
+        # Before E17 this wrapper took the candidate alone, so it raised
+        # TypeError the moment the runtime started naming ``limits=`` -- a
+        # pre-existing defect in this proof, not in the runtime.
         budgets.append(candidate)
-        return original_assess(candidate)
+        return original_assess(candidate, **kwargs)
 
     monkeypatch.setattr(runtime_module, "render_phase_prompt_envelopes", render)
     monkeypatch.setattr(runtime_module, "assess_context_budget", assess)

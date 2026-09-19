@@ -2344,15 +2344,27 @@ class FlightRuntime:
         payload_bytes = json.dumps(
             list(messages), ensure_ascii=False, sort_keys=True
         ).encode("utf-8")
+        # E17 (2026-09-19): the LIVE per-slot token limit, read from the
+        # composed model/baseline fragments through the adapter's own
+        # serving geometry -- the same number ``serve()`` turns into ``-c``
+        # and ``-np``. Before E17 this was read ONLY when a fragment
+        # declared ``context_budget_limits``, and every other flight was
+        # budgeted against the module default of 32,768 tokens: on the SLURP
+        # np4 ctx24k geometry (24,576-token slots, which no committed SLURP
+        # fragment declares limits for) that is a gate 33 % more permissive
+        # than the slot it guards
+        # (``docs/results/2026-09-19-slurp-throughput-root-cause-v1.md``
+        # section 4, "one latent inconsistency"). Nothing was harmed -- the
+        # widest observed prompt was 18,110 tokens -- but a gate that
+        # budgets against a slot the session does not have is not a gate.
+        live_slot_limit_tokens = int(self._adapter.serving_geometry()["slot_tokens"])
         configured_limits = baseline_values.get("context_budget_limits")
         limits = (
             None
             if configured_limits is None
             else ContextBudgetLimits.from_config(
                 configured_limits,
-                serving_slot_limit_tokens=int(
-                    self._adapter.serving_geometry()["slot_tokens"]
-                ),
+                serving_slot_limit_tokens=live_slot_limit_tokens,
             )
         )
         receipts: list[Mapping[str, object]] = []
@@ -2370,7 +2382,14 @@ class FlightRuntime:
                 ),
             )
             candidate = ContextBudgetInput.from_payload(phase_bytes, breakdown=breakdown)
-            decision = assess_context_budget(candidate, limits=limits)
+            decision = assess_context_budget(
+                candidate,
+                limits=limits,
+                # E17: cross-checked against ``limits`` when a fragment
+                # declares one; otherwise this is what the budget is measured
+                # against, in place of the 32,768-token module default.
+                serving_slot_limit_tokens=live_slot_limit_tokens,
+            )
             if decision.decision.value != "ALLOW":
                 # A pre-flight estimate has no live compaction mechanism to
                 # apply, so COMPACT_REQUIRED is just as fail-closed here as

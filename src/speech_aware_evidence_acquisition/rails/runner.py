@@ -1837,6 +1837,20 @@ async def _invoke_native_role_episode(
     # Both stay empty unless a declared boundary is ``cleaned``.
     cleaning_bindings: dict[str, object] = {}
     cleaning_contact_counts: dict[str, int] = {}
+    # E17 (2026-09-19, throughput lever L1): the ordered tool names EVERY
+    # contact of this row renders, or None under the default ``per-role``
+    # rendering. ``NativeEpisodeConfig.constant_tool_names`` is already
+    # validated to be each tool-bearing role's own array, so an armed episode
+    # only ever WIDENS the tool-free roles.
+    constant_tool_names = config.constant_tool_names
+    # One record per contact, in contact order, so a verdict can prove the
+    # constancy claim from the sealed receipt alone: the role, the names it
+    # may call, the names it rendered, and the sha256 of the rendered
+    # ``tool_schemas`` array as the request actually carried it. Collected
+    # only when the key is armed -- the OFF arm's receipt must stay
+    # byte-identical to the pre-E17 tree's, and the per-role digests are
+    # already sealed per request in ``rails.core_client.RequestTiming``.
+    tool_rendering_records: list[dict[str, object]] = []
 
     def context():
         return _runtime_context(
@@ -2242,6 +2256,12 @@ async def _invoke_native_role_episode(
             },
             tool_names=names, local_tool_result_ids=tuple(visit["local_ids"]),
             query_source=ctx.query_state.query_source,
+            # E17: authority (``tool_names``, and the ``tool_choice`` derived
+            # from it above) is untouched; only what is RENDERED widens, and
+            # only when the episode declares ``tool_schema_rendering``
+            # ``"constant"``. None -- the default -- renders exactly
+            # ``names``, byte-identically to the pre-E17 tree.
+            rendered_tool_names=constant_tool_names,
         )
 
     def capture_completion(request, completion):
@@ -2267,6 +2287,19 @@ async def _invoke_native_role_episode(
             producer_policy_id=program.program_id,
             state_namespace=plan.contact_id,
         )
+        if constant_tool_names is not None:
+            # E17: the constancy evidence. ``tool_schemas_sha256`` is the
+            # digest of the ``tool_schemas`` array this very request carried
+            # (``rails.core_client.FrozenCoreClient._completion_metadata``),
+            # so one distinct value across the whole list IS the proof that
+            # the rendered tools block never toggled inside the row.
+            tool_rendering_records.append({
+                "contact_id": plan.contact_id,
+                "role_id": request.role_id,
+                "authority_tool_names": list(request.visible_tool_names),
+                "rendered_tool_names": list(constant_tool_names),
+                "tool_schemas_sha256": completion.tool_schemas_sha256,
+            })
         slot_id = visits[request.role_id]["slot_id"]
         visits[request.role_id]["model_contacts"] += 1
         state.contacts.append(AgentContactRecord(
@@ -2339,7 +2372,21 @@ async def _invoke_native_role_episode(
         ``capture_completion`` -- which would seal a phase state, overwrite the
         pending role completion and route the episode graph on text that is
         not a role's answer.
+
+        E17 adds the ONE thing it does record: this contact's rendered
+        tools-array digest, because it is a contact on the row's own slot and
+        the constancy claim has to cover it. That is a receipt append, not a
+        state registration -- nothing above changes.
         """
+
+        if constant_tool_names is not None:
+            tool_rendering_records.append({
+                "contact_id": _request.context.agent_contact_id,
+                "role_id": _request.role_id,
+                "authority_tool_names": list(_request.visible_tool_names),
+                "rendered_tool_names": list(constant_tool_names),
+                "tool_schemas_sha256": _completion.tool_schemas_sha256,
+            })
 
     def run_cleaning_contact(request, *, ctx, visit, base):
         """E8b: make ONE metered cleaning contact for a cleaned boundary.
@@ -2409,6 +2456,12 @@ async def _invoke_native_role_episode(
             },
             tool_names=(), local_tool_result_ids=(),
             query_source=ctx.query_state.query_source,
+            # E17: a cleaning contact runs on the CONSUMER's own pinned slot,
+            # between two role contacts of the same row, so it has to render
+            # the same constant array or it re-introduces exactly the toggle
+            # this key removes. It calls nothing, as before: its authority
+            # stays empty and its tool_choice stays 'none'.
+            rendered_tool_names=constant_tool_names,
         )
         role_request = NativeRoleModelRequest(
             role_id=request.phase_id,
@@ -2839,6 +2892,22 @@ async def _invoke_native_role_episode(
             # fillers. Never the text: a delivered SLURP answer carries slot
             # fillers taken from speech.
             compact_receipt["deliver_normaliser"] = deliver_normaliser_receipt
+        if constant_tool_names is not None:
+            # E17: one block per row, naming the rendering mode, the one
+            # array every contact carried, and the per-contact digest of
+            # what was actually rendered. ``distinct_tool_schemas_sha256``
+            # is the verdict-facing number: 1 means the tools block was
+            # constant across every contact of this row.
+            digests = [
+                row["tool_schemas_sha256"] for row in tool_rendering_records
+            ]
+            compact_receipt["tool_schema_rendering"] = {
+                "schema": "saea-native-tool-schema-rendering-v1",
+                "mode": config.tool_schema_rendering,
+                "rendered_tool_names": list(constant_tool_names),
+                "contacts": [dict(row) for row in tool_rendering_records],
+                "distinct_tool_schemas_sha256": len(set(digests)),
+            }
         if config.role_context_json is not None:
             compact_receipt["role_context_compilations"] = list(context_compilations.values())
         if config.context_policy_json is not None:

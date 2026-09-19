@@ -298,6 +298,44 @@ class NativeEpisodeConfig:
     # ``solver:candidate-hypothesis`` boundary then renders exactly its
     # pre-E14 bytes and no other boundary is reachable by this key at all.
     solver_hints_json: str | None = None
+    # E17 (2026-09-19, throughput lever L1): how the native ``tools`` array
+    # is RENDERED across the contacts of one row. ``"per-role"`` -- the
+    # default, every config written before E17 and every OFF arm -- sends
+    # each role exactly the schemas of the tools it may call, so a
+    # tool-bearing role's request carries the array and every other role's
+    # does not. ``"constant"`` sends EVERY role the same array (the union of
+    # the tool schemas any role of this episode may call, in one fixed
+    # order), so the rendered system message -- which is where the
+    # Qwen3-Omni chat template puts the tools block -- stops toggling inside
+    # a row and the pinned slot's KV prefix survives the role handover.
+    #
+    # Rendering is not authority. ``"constant"`` changes no role's
+    # ``tool_names``, no role's ``tool_choice`` and no rail: a role with no
+    # authority still sends ``tool_choice`` ``"none"``, is advertised no
+    # ability by the framework, and is still refused by
+    # ``reproduction.ojw.native_roles._RoleAuthorityRail`` if it emits a
+    # call.
+    tool_schema_rendering: str = "per-role"
+
+    @property
+    def constant_tool_names(self) -> tuple[str, ...] | None:
+        """The one ordered tool-name array every role renders under
+        ``tool_schema_rendering`` ``"constant"``, or ``None`` under
+        ``"per-role"``.
+
+        :func:`load_native_episode_config` refuses a ``"constant"`` episode
+        whose tool-bearing roles do not all declare the SAME ordered
+        ``tool_names``, so the first tool-bearing role's array IS the union,
+        and a role that already carries tools renders byte-identically to
+        the ``"per-role"`` arm. Only the tool-free roles gain the block.
+        """
+
+        if self.tool_schema_rendering != "constant":
+            return None
+        for role in self.roles:
+            if role.tool_names:
+                return role.tool_names
+        return None
 
     @property
     def terminal_actions(self) -> tuple[str, ...]:
@@ -367,6 +405,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         "deliver_normaliser",
         "reviewer_audit",
         "solver_hints",
+        "tool_schema_rendering",
     }
     if (
         not isinstance(raw, Mapping)
@@ -395,6 +434,17 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
     planner_output_format = raw.get("planner_output_format", "exact-text")
     if planner_output_format not in {"exact-text", "json-action-v1"}:
         raise ValueError("native episode Planner output format is invalid")
+    # E17 (2026-09-19, throughput lever L1). Parsed here, cross-checked
+    # against the composed roles below -- the shape check is cheap and the
+    # authority check needs the roles.
+    tool_schema_rendering = raw.get("tool_schema_rendering", "per-role")
+    if (
+        not isinstance(tool_schema_rendering, str)
+        or tool_schema_rendering not in {"per-role", "constant"}
+    ):
+        raise ValueError(
+            "native episode tool_schema_rendering must be 'per-role' or 'constant'"
+        )
     actions = raw["actions"]
     if not isinstance(actions, Mapping) or set(actions) != {"accept", "revise", "acquire"}:
         raise ValueError("native actions must name accept, revise and acquire")
@@ -516,6 +566,33 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
             row.get("samples", 1), row.get("decoding_overrides"), row.get("commit"),
             row.get("twin"),
         ))
+    # E17: ``constant`` rendering is admitted only where it leaves every
+    # tool-bearing role's request array exactly as ``per-role`` renders it.
+    # Two reasons, both fail-closed:
+    #   * custody -- ``rails.native_tool_authority.select_completion_tool_
+    #     schemas`` re-derives the request's schema array from the names the
+    #     model actually called and compares its digest to the request's own
+    #     ``tool_schemas_sha256``, which only holds when a caller's array is
+    #     exactly its own authority;
+    #   * honesty -- widening one role's rendered array beyond its authority
+    #     would make "authority unchanged" false for that role.
+    # With every tool-bearing role declaring the SAME ordered names, the
+    # union IS each of their arrays, and only the tool-free roles change.
+    if tool_schema_rendering == "constant":
+        bearing = [role.tool_names for role in roles if role.tool_names]
+        if not bearing:
+            raise ValueError(
+                "native_episode.tool_schema_rendering 'constant' requires at least "
+                "one role with tool authority; with no tools at all it is a second "
+                "spelling of 'per-role'"
+            )
+        if any(names != bearing[0] for names in bearing[1:]):
+            raise ValueError(
+                "native_episode.tool_schema_rendering 'constant' requires every "
+                "role with tool authority to declare the same ordered tool names, "
+                "so the constant array is each of their own arrays and no role's "
+                "rendered scope exceeds its authority"
+            )
     phase_ids = tuple(role.phase_id for role in roles)
     if len(set(phase_ids)) != 4 or set(phase_ids) != set(program.phase_names()):
         raise ValueError("native roles must cover the program once each")
@@ -786,4 +863,5 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         deliver_normaliser_id,
         reviewer_audit_json,
         solver_hints_json,
+        tool_schema_rendering,
     )

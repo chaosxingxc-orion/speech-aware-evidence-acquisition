@@ -1142,7 +1142,11 @@ def test_node_context_policy_is_one_episode_class_key():
     # native_episode.finite_completion_policy, by E13 (2026-09-19, the B7a
     # abort) and the seventh, native_episode.solver_hints, by E14 (owner
     # directive 26 again, 2026-09-19); all four have their own proof, the
-    # seventh in tests/unit/test_b8c_solver_hints_config.py.
+    # seventh in tests/unit/test_b8c_solver_hints_config.py. The eighth,
+    # native_episode.tool_schema_rendering, was admitted by E17 (2026-09-19,
+    # throughput lever L1) and is the first admitted for EFFICIENCY rather
+    # than for a capability; its proof is
+    # tests/unit/test_e17_constant_tool_rendering.py plus section 12d below.
     assert sorted(EPISODE_LEVEL_SWITCH_KEYS) == [
         "native_episode.context_policy",
         "native_episode.deliver_normaliser",
@@ -1151,6 +1155,7 @@ def test_node_context_policy_is_one_episode_class_key():
         "native_episode.reviewer_audit",
         "native_episode.roles.solver",
         "native_episode.solver_hints",
+        "native_episode.tool_schema_rendering",
     ]
     assert resolve_episode_switch_key(key) == key
 
@@ -1562,3 +1567,55 @@ def test_finite_completion_policy_is_one_episode_class_key():
     on = {**off, "finite_completion_policy": "deliver-latest-or-abstain"}
     assert set(on) - set(off) == {"finite_completion_policy"}
     assert {k: v for k, v in on.items() if k != "finite_completion_policy"} == off
+
+
+# ---------------------------------------------------------------------------
+# 12d. Constant native tool-schema rendering (E17, 2026-09-19, throughput
+#      lever L1) -- the 'episode' class's EIGHTH key,
+#      native_episode.tool_schema_rendering, and the first admitted for
+#      EFFICIENCY rather than for a capability.
+#
+# It is an episode key rather than a run-level one because it MOVES REQUEST
+# BYTES on the tool-free roles by design, so no request-bytes-identical
+# falsifier can exist for it; and it is not the phase_tools table because that
+# table is what a phase MAY CALL -- tool AUTHORITY, which this key leaves
+# exactly as it is. Rendering is not authority.
+#
+# The module proof (loader, request builder, production render path, the
+# refusal path and the receipt) is
+# tests/unit/test_e17_constant_tool_rendering.py.
+# ---------------------------------------------------------------------------
+
+
+def test_tool_schema_rendering_is_one_episode_class_key():
+    key = "native_episode.tool_schema_rendering"
+    assert resolve_episode_switch_key(key) == key
+
+    # OFF: the key absent, or its explicit default written out loud. The
+    # parser reads the two identically, so both compose the pre-E17 episode.
+    assert is_episode_null_arm(key, None) is True
+    assert is_episode_null_arm(key, "per-role") is True
+    # ON: the one armed value the parser accepts.
+    assert is_episode_null_arm(key, "constant") is False
+
+    # A dotted path under native_episode, never a flat run-level key.
+    with pytest.raises(ConfigTableError, match="is dotted"):
+        resolve_run_switch_key(key)
+    with pytest.raises(ConfigTableError, match="does not start with"):
+        resolve_episode_switch_key("tool_schema_rendering")
+
+
+def test_the_tool_schema_rendering_arms_differ_in_exactly_one_leaf():
+    off = {
+        "schema": "saea-native-episode-config-v1",
+        "episode_id": "e17-proof-v1",
+        "max_revisions": 1,
+        "actions": {"accept": "ACCEPT", "revise": "REVISE", "acquire": "ACQUIRE"},
+        "roles": {
+            kind: {"phase_id": kind, "max_iterations": 3 if kind == "reviewer" else 1}
+            for kind in ("perception", "solver", "reviewer", "planner")
+        },
+    }
+    on = {**off, "tool_schema_rendering": "constant"}
+    assert set(on) - set(off) == {"tool_schema_rendering"}
+    assert {k: v for k, v in on.items() if k != "tool_schema_rendering"} == off

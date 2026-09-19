@@ -104,6 +104,59 @@ def _model_messages(messages: Sequence[Mapping[str, object]]) -> list[dict[str, 
     return normalized
 
 
+def _assert_framework_schemas(
+    visible_schemas: Sequence[Mapping[str, object]],
+    selected: Sequence[Mapping[str, object]],
+    *,
+    constant_rendering: bool,
+) -> None:
+    """Check the framework's visible schemas against the rendered array.
+
+    ``per-role`` (``constant_rendering`` False, every contact written before
+    E17) is the historical rule, unchanged: the two arrays must be the same
+    length and pair up exactly, in order.
+
+    ``constant`` (E17) renders a superset, so the rule becomes containment:
+    every schema the framework advertised to THIS role must appear in the
+    rendered array under the same name, with the same description and the
+    same parameters. A rendered array that does not cover the framework's
+    own scope is still refused -- rendering may only ever be wider.
+    """
+
+    if not constant_rendering:
+        if len(visible_schemas) != len(selected):
+            raise NativeSpeechRequestError("framework schemas do not match the selected scope")
+        pairs = list(zip(visible_schemas, selected, strict=True))
+    else:
+        by_name: dict[str, Mapping[str, object]] = {}
+        for schema in selected:
+            if not isinstance(schema, Mapping) or not isinstance(schema.get("function"), Mapping):
+                raise NativeSpeechRequestError("framework tool schema is malformed")
+            name = schema["function"].get("name")
+            if not isinstance(name, str) or not name or name in by_name:
+                raise NativeSpeechRequestError("rendered tool schemas are not uniquely named")
+            by_name[name] = schema
+        pairs = []
+        for visible in visible_schemas:
+            if not isinstance(visible, Mapping):
+                raise NativeSpeechRequestError("framework tool schema is malformed")
+            schema = by_name.get(visible.get("name"))
+            if schema is None:
+                raise NativeSpeechRequestError(
+                    "framework schemas do not match the selected scope"
+                )
+            pairs.append((visible, schema))
+    for visible, schema in pairs:
+        if (
+            not isinstance(visible, Mapping) or not isinstance(schema, Mapping)
+            or not isinstance(schema.get("function"), Mapping)
+        ):
+            raise NativeSpeechRequestError("framework tool schema is malformed")
+        function = schema["function"]
+        if any(visible.get(key) != function.get(key) for key in ("name", "description", "parameters")):
+            raise NativeSpeechRequestError("framework tool schema differs from the registered tool")
+
+
 @dataclass(frozen=True)
 class NativeRoleSpeechBinding:
     """One caller-owned task state, rendered through the existing TaskAdapter."""
@@ -116,6 +169,16 @@ class NativeRoleSpeechBinding:
     tool_names: tuple[str, ...]
     local_tool_result_ids: tuple[str, ...] = ()
     query_source: str = "speech_features"
+    # E17 (2026-09-19, throughput lever L1): the ordered tool names this
+    # contact RENDERS, when that differs from the ordered tool names this
+    # contact may CALL. ``None`` -- every binding written before E17 and
+    # every ``tool_schema_rendering`` ``"per-role"`` episode -- renders
+    # exactly ``tool_names``, byte-identically to before this field existed.
+    # Set, it must CONTAIN ``tool_names``: rendering may only ever be wider
+    # than authority, never narrower, and authority is enforced entirely
+    # elsewhere (``native_roles._RoleAuthorityRail``, plus the
+    # ``tool_choice`` this binding still derives from ``tool_names`` alone).
+    rendered_tool_names: tuple[str, ...] | None = None
     _messages_bytes: bytes = field(init=False, repr=False)
     _kwargs_bytes: bytes = field(init=False, repr=False)
 
@@ -131,6 +194,21 @@ class NativeRoleSpeechBinding:
                 raise NativeSpeechRequestError("tool and local result IDs must be ordered unique tuples")
         if self.query_source not in {"speech_features", "speech_audio"}:
             raise NativeSpeechRequestError("unsupported speech query source")
+        if self.rendered_tool_names is not None:
+            rendered = self.rendered_tool_names
+            if (
+                not isinstance(rendered, tuple)
+                or not rendered
+                or len(set(rendered)) != len(rendered)
+                or any(not isinstance(name, str) or not name for name in rendered)
+            ):
+                raise NativeSpeechRequestError(
+                    "rendered tool names must be a nonempty ordered unique tuple"
+                )
+            if not set(self.tool_names) <= set(rendered):
+                raise NativeSpeechRequestError(
+                    "rendered tool names must contain every tool this role may call"
+                )
         kwargs = dict(self.core_kwargs)
         reserved = {
             "agent_contact_id", "contact_instruction", "tool_names", "prepare_only",
@@ -170,6 +248,10 @@ class PreparedNativeRoleContact:
     # directly (not only inside role_request_bytes) so a caller can attach
     # it to custody without decoding JSON.
     sample_index: int | None = None
+    # E17: the ordered tool names this contact actually RENDERED, when they
+    # differ from the ones it may call. None for every ``per-role`` contact,
+    # which is every contact written before E17.
+    rendered_tool_names: tuple[str, ...] | None = None
 
     @property
     def role_request(self) -> NativeRoleModelRequest:
@@ -303,28 +385,36 @@ class MeteredNativeSpeechRequest:
             if binding.query_source == "speech_features"
             else {"raw_agent_sample_id": binding.sample_id}
         )
+        # E17: WHAT IS RENDERED versus WHAT MAY BE CALLED. ``rendered_names``
+        # below is the rendering scope handed to the client's registered
+        # superset selector; ``binding.tool_names`` remains the authority
+        # scope, and it alone decides the ``tool_choice`` checked above. The
+        # two are the same object for every ``per-role`` contact, so nothing
+        # here moves a byte without a ``constant`` episode.
+        if binding.rendered_tool_names is not None and not native_arm:
+            raise NativeSpeechRequestError(
+                "constant tool rendering requires a native tool-calling arm"
+            )
+        rendered_names = (
+            binding.tool_names if binding.rendered_tool_names is None
+            else binding.rendered_tool_names
+        )
         prepared = self._client.prepare_request(
             messages, **kwargs, **source_selector,
             agent_contact_id=request.context.agent_contact_id,
             contact_instruction=instruction,
             tool_names=(
                 None if not native_arm
-                else binding.tool_names
+                else rendered_names
             ),
         )
         payload = prepared.as_payload()
         selected = payload.get("tool_schemas", [])
-        if len(request.tool_schemas) != len(selected):
-            raise NativeSpeechRequestError("framework schemas do not match the selected scope")
-        for visible, schema in zip(request.tool_schemas, selected, strict=True):
-            if (
-                not isinstance(visible, Mapping) or not isinstance(schema, Mapping)
-                or not isinstance(schema.get("function"), Mapping)
-            ):
-                raise NativeSpeechRequestError("framework tool schema is malformed")
-            function = schema["function"]
-            if any(visible.get(key) != function.get(key) for key in ("name", "description", "parameters")):
-                raise NativeSpeechRequestError("framework tool schema differs from the registered tool")
+        _assert_framework_schemas(
+            request.tool_schemas,
+            selected,
+            constant_rendering=binding.rendered_tool_names is not None,
+        )
         # The authoritative transport validates and renders the SAME object
         # that dispatch consumes; capacity checks can inspect this body.
         body = self._render_request(prepared.payload_bytes)
@@ -344,6 +434,7 @@ class MeteredNativeSpeechRequest:
         })
         return PreparedNativeRoleContact(
             prepared, role_bytes, _bytes(body), self._owner, sample_index,
+            binding.rendered_tool_names,
         )
 
     def dispatch(self, prepared: PreparedNativeRoleContact) -> CoreCompletion:

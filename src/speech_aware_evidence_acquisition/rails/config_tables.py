@@ -358,6 +358,22 @@ NATIVE_EPISODE_TOP_LEVEL_KEY = "native_episode"
 #: distinguishable from a cell that moves the Reviewer's audit. See
 #: ``rails.scenario_hints`` and
 #: ``rails.node_context_policy.SOLVER_HINTS_BOUNDARY``.
+#: ``native_episode.tool_schema_rendering`` (E17, 2026-09-19, lever L1 of
+#: ``docs/results/2026-09-19-slurp-throughput-root-cause-v1.md``) is the
+#: EIGHTH, and the first admitted for EFFICIENCY rather than for a capability.
+#: It decides whether the native ``tools`` array is rendered PER ROLE (today:
+#: only the tool-bearing role carries it) or held CONSTANT across every
+#: contact of a row. The Qwen3-Omni chat template renders that array INSIDE
+#: the system message, so a per-role array toggles the prefix twice per row
+#: and invalidates the pinned slot's whole KV prefix -- speech packet
+#: included -- on 63.5 % of measured prefill work. It belongs here rather
+#: than in ``run`` because it MOVES REQUEST BYTES (three roles gain a
+#: constant block), so no ``request-bytes-identical`` falsifier can exist for
+#: it; and rather than in the ``phase_tools`` table because that table is
+#: what a phase MAY CALL -- tool AUTHORITY, which this key leaves exactly as
+#: it is. Rendering is not authority: a role without authority still carries
+#: ``tool_choice`` ``"none"`` and is still refused by
+#: ``reproduction.ojw.native_roles._RoleAuthorityRail`` if it emits a call.
 EPISODE_LEVEL_SWITCH_KEYS = frozenset({
     "native_episode.roles.solver",
     "native_episode.review_loop",
@@ -366,6 +382,7 @@ EPISODE_LEVEL_SWITCH_KEYS = frozenset({
     "native_episode.reviewer_audit",
     "native_episode.finite_completion_policy",
     "native_episode.solver_hints",
+    "native_episode.tool_schema_rendering",
 })
 
 #: The top-level key every ``stores``-class switch key names one child of.
@@ -1212,7 +1229,9 @@ def is_episode_null_arm(key: str, value: object) -> bool:
     its explicit default ``"raise"`` (E13), because the parser reads the two
     the same way -- a context block is either absent or rendered, and with it
     absent the ``reviewer:current-draft`` boundary renders exactly its
-    pre-E12 bytes.
+    pre-E12 bytes; and ``native_episode.tool_schema_rendering``'s OFF is the
+    key's absence OR its explicit default ``"per-role"`` (E17), for the same
+    reason.
     """
 
     if key == "native_episode.context_policy":
@@ -1269,6 +1288,14 @@ def is_episode_null_arm(key: str, value: object) -> bool:
         )
 
         return is_solver_hints_null_arm(value)
+    if key == "native_episode.tool_schema_rendering":
+        # E17: the OFF arm is the key's ABSENCE or its explicit default
+        # ``"per-role"`` -- the two spellings of the pre-E17 rendering, which
+        # ``rails.native_episode_config.load_native_episode_config`` reads
+        # identically, so a fragment that writes the default out loud
+        # composes the same episode as one that omits it. ``"constant"`` is
+        # the one armed value.
+        return value is None or value == "per-role"
     raise ConfigTableError(f"unknown episode switch key {key!r}")
 
 
