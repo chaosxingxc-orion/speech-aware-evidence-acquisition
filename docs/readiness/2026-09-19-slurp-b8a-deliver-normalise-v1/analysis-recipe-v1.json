@@ -1,0 +1,308 @@
+{
+  "arms": {
+    "anchor": {
+      "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+      "idempotence": "1079 / 1080; one date filler is not a fixed point of P2 and converges at the second application",
+      "manifest_status": "COMPLETED",
+      "official_aggregate": {
+        "intent": 77.96,
+        "pooled_slu_f1": 48.53
+      },
+      "outputs_relpath": "runs/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1.outputs.jsonl",
+      "outputs_sha256": "d87d71e8fa0fe93b45d5c6817ba125b016d8d91f44a14309171dd0f3a64270d8",
+      "projection_v3_aggregate": {
+        "intent": 79.35,
+        "pooled_slu_f1": 51.99
+      },
+      "replay_counts": {
+        "entities_filler_changed": 195,
+        "rows": 1080,
+        "rows_changed": 191,
+        "rows_filler_changed": 174,
+        "rows_label_changed": 20,
+        "rows_unparsed": 7
+      },
+      "role": "base 1: the sealed dual-store anchor. GATING.",
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+      "run_manifest_relpath": "runs/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1.run-manifest.json",
+      "run_manifest_sha256": "049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1.scores.json",
+      "scores_sha256": "7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+      "split_role": "discovery",
+      "train_symmetric_aggregate": {
+        "pooled_slu_f1": 52.09
+      },
+      "triple_equality": {
+        "mismatches": 0,
+        "parsed_rows_compared": 1073
+      }
+    },
+    "b1": {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2",
+      "idempotence": "1080 / 1080",
+      "manifest_status": "COMPLETED",
+      "official_aggregate": {
+        "intent": 80.19,
+        "pooled_slu_f1": 61.14
+      },
+      "outputs_relpath": "runs/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2/attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2.outputs.jsonl",
+      "outputs_sha256": "db9cd6329b0837d8f120f153556c951a68969da167d245d695eb35916237deca",
+      "projection_v3_aggregate": {
+        "intent": 81.76,
+        "pooled_slu_f1": 62.67
+      },
+      "replay_counts": {
+        "entities_filler_changed": 90,
+        "rows": 1080,
+        "rows_changed": 103,
+        "rows_filler_changed": 82,
+        "rows_label_changed": 24,
+        "rows_unparsed": 4
+      },
+      "role": "base 2: cell B1's recovery arm (module M1, speech-keyed exemplar supply). GATING.",
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2",
+      "run_manifest_relpath": "runs/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2/attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2.run-manifest.json",
+      "run_manifest_sha256": "b07ed553ff9f78b8e3ead6797bb66fb92a1820793b8aa5061576c6f66aa1a8ad",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2/attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2.scores.json",
+      "scores_sha256": "a7105b328509a8bd00c4678fd076e9be4d242b6189bb82bbd290bd596e3c9078",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+      "split_role": "discovery",
+      "train_symmetric_aggregate": {
+        "pooled_slu_f1": 62.97
+      },
+      "triple_equality": {
+        "mismatches": 0,
+        "parsed_rows_compared": 1076
+      }
+    },
+    "b5e": {
+      "attempt_id": "attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-generation-recovery-v1",
+      "idempotence": "1080 / 1080",
+      "manifest_status": "COMPLETED",
+      "official_aggregate": {
+        "intent": 80.09,
+        "pooled_slu_f1": 62.34
+      },
+      "outputs_relpath": "runs/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1/attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-generation-recovery-v1/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1.outputs.jsonl",
+      "outputs_sha256": "3d861012bfbbf267d47023d069e5ccfe0442a3212cb3bd855e100eb8475751a6",
+      "projection_v3_aggregate": {
+        "intent": 81.85,
+        "pooled_slu_f1": 63.78
+      },
+      "replay_counts": {
+        "entities_filler_changed": 80,
+        "rows": 1080,
+        "rows_changed": 102,
+        "rows_filler_changed": 75,
+        "rows_label_changed": 31,
+        "rows_unparsed": 1
+      },
+      "role": "base 3: cell B5e's recovery arm (M1 + M4b). REPORTED, never gating.",
+      "run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1",
+      "run_manifest_relpath": "runs/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1/attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-generation-recovery-v1/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1.run-manifest.json",
+      "run_manifest_sha256": "1d827e31bd26e65e1327ec8c81dc96ebb55cd470692b339ab5323fcea1c86808",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1/attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-generation-recovery-v1/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1.scores.json",
+      "scores_sha256": "aeed7ad9b7fe44e74c4b9e65470e0d96429637ccaa4655c9185515568a70d7b9",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+      "split_role": "discovery",
+      "train_symmetric_aggregate": {
+        "pooled_slu_f1": 64.18
+      },
+      "triple_equality": {
+        "mismatches": 0,
+        "parsed_rows_compared": 1079
+      }
+    }
+  },
+  "authority": {
+    "a1_audit": "docs/results/2026-09-17-slurp-a1-use-projection-audit-v1.md",
+    "design": "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md section 3 item E11; docs/superpowers/specs/2026-09-17-node-context-policy-design.md section 16",
+    "own_null": "docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md",
+    "owner_decisions": "decision 27 of 2026-09-19; directive 26 and decisions 23 and 25 of 2026-09-18; decisions 7, 14, 17 and 22 -- all in docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "preregistration": "docs/readiness/2026-09-19-slurp-b8a-deliver-normalise-v1-preregistration.md",
+    "protocol": "docs/readiness/2026-09-19-slurp-b8a-deliver-normalise-v1/protocol-registered-v1.json",
+    "symmetric_train_sibling": "docs/results/2026-09-17-slurp-train-symmetric-reread-v1.md"
+  },
+  "claim_boundary": "Descriptive paired read on historically exposed TRAIN Fold A discovery rows, over sealed bytes only. No superiority, generalization, component-causal, bar or confirmatory claim; nothing about Fold B, DEV-1000 or the test split, which stay unread; no claim that the node adds capability, only that it moves who performs a representation alignment the official scorer charges for.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "paid_api": 0,
+    "scorer": "the pinned official evaluate.py over read-only COPIES of sealed outputs, as the A1 audit and the TRAIN symmetric re-read did; never a model contact",
+    "server": 0,
+    "tokenizer": 0
+  },
+  "contrasts": [
+    {
+      "base": "anchor",
+      "id": "node_on_minus_off_anchor",
+      "role": "GATING clause 1-3"
+    },
+    {
+      "base": "b1",
+      "id": "node_on_minus_off_b1",
+      "role": "GATING clause 1-3"
+    },
+    {
+      "base": "b5e",
+      "id": "node_on_minus_off_b5e",
+      "role": "REPORTED, never gating"
+    }
+  ],
+  "decision_rule": {
+    "ADMITTED": "on the anchor base AND on the cell B1 base: (1) CI95 lower bound of the paired official pooled SLU-F1 delta > 0; (2) paired intent CI95 lower bound > -1.0051; (3) no scenario's paired intent CI95 upper bound below zero; (4) owner decision 17's net-harmed-rows-per-scenario diagnostic reported",
+    "HARMFUL": "owner decision 25 Method B: only by a measured loss -- an official pooled SLU or intent POINT ESTIMATE below -h (-1.1218 / -1.0051), or a CI95 upper bound below zero, on either gating base",
+    "NEUTRAL": "otherwise, with 'non-inferiority not proven' stated where an interval straddles zero",
+    "b5e_is_reported": "the cell B5e base is read under the same clauses and does not gate",
+    "no_repeat_to_pass": true,
+    "null_margins_pp": {
+      "h_intent": 1.0051,
+      "h_slu": 1.1218
+    },
+    "read_once": true,
+    "stop_condition": "(1) the three sealed OFF arms reproduce 48.53/77.96, 61.14/80.19 and 62.34/80.09 to the hundredth; (2) the three node-ON arms reproduce 51.99/79.35, 62.67/81.76 and 63.78/81.85 to the hundredth; (3) 1,080 rows in and 1,080 out per arm. Any failure stops the read.",
+    "symmetric_is_not_a_gate": "slurp-slu-f1-normalized-v1-train is reported beside every official number; the verdict states the symmetric delta and what share of the official gain it represents"
+  },
+  "diagnostics_required": [
+    "owner decision 17's net harmed rows per scenario, flagging any scenario with five or more, on every contrast",
+    "saves / harms / ties with the exact two-sided McNemar p for intent, scenario, action, row exact slot F1 and row SLU-F1",
+    "the per-half decomposition: rows whose label the rule repaired and rows whose filler it repaired, against the registered counts of this recipe's arms block",
+    "the number of rows the rule left byte-identical because the parser refused them",
+    "the TRAIN symmetric delta beside every official delta, with the share of the official gain it represents"
+  ],
+  "driver": {
+    "contract": [
+      "1. verify every sealed SHA-256 in this recipe by hashing the file before reading it",
+      "2. copy each sealed outputs.jsonl to a caller-named working directory",
+      "3. replay saea-deliver-normalise-v3 over each copy via analysis.deliver_normaliser_replay.replay, asserting model_calls 0 and 1,080 rows in and out",
+      "4. score OFF (the sealed scores, re-verified by hash) and ON (the replayed copy) with slurp-slu-official-train, and both with slurp-slu-f1-normalized-v1-train, through core.scoring_batch over byte-identical COPIES of the sealed bundle -- never the sealed directory",
+      "5. assert the STOP condition of decision_rule.stop_condition before any contrast is computed",
+      "6. emit paired contrasts, per-scenario tables and the decision-17 diagnostic to the output root, in both weightings",
+      "7. print aggregates only"
+    ],
+    "discipline": "follows analysis.deliver_normaliser_replay: copy in, never open a sealed input for writing, refuse to overwrite an existing output directory, report contact counts of zero, and never print or persist utterance text, fillers or gold",
+    "entry_points": [
+      "replay_and_read(...)",
+      "python -m speech_aware_evidence_acquisition.analysis.b8a_delivery_node_read"
+    ],
+    "module": "speech_aware_evidence_acquisition.analysis.b8a_delivery_node_read",
+    "path": "src/speech_aware_evidence_acquisition/analysis/b8a_delivery_node_read.py",
+    "status": "TO BE WRITTEN"
+  },
+  "estimators": {
+    "bootstrap_pooled": "analysis.paired.resampled_statistic",
+    "not_used": "analysis.score_compare_cli as the runner: it hard-codes ci_level 0.90 and DEV population names",
+    "paired_per_row": "analysis.paired.paired_contrast",
+    "percentiles": "analysis.bootstrap._percentile over the retained BootstrapResult.replicates",
+    "pooled_micro_f1": "analysis.null_calibration.pooled_f1",
+    "replay": "analysis.deliver_normaliser_replay.replay",
+    "row_reader": "analysis.null_calibration_cli.rows_for"
+  },
+  "execution_profile": "model-free-check",
+  "metrics": [
+    {
+      "counts": "tp = [slu_f1_word_tp, slu_f1_char_tp], fp and fn likewise",
+      "estimand": "pooled count F1",
+      "id": "pooled_slu_f1",
+      "role": "primary",
+      "scorer": "slurp-slu-official-train"
+    },
+    {
+      "estimand": "joint scenario+action accuracy",
+      "id": "intent",
+      "role": "gating guard",
+      "scorer": "slurp-slu-official-train"
+    },
+    {
+      "id": "scenario",
+      "role": "secondary",
+      "scorer": "slurp-slu-official-train"
+    },
+    {
+      "id": "action",
+      "role": "secondary",
+      "scorer": "slurp-slu-official-train"
+    },
+    {
+      "id": "pooled_span_f1",
+      "role": "secondary",
+      "scorer": "slurp-slu-official-train"
+    },
+    {
+      "id": "row_mean_slu_f1",
+      "role": "secondary",
+      "scorer": "slurp-slu-official-train"
+    },
+    {
+      "id": "row_mean_exact_slot_f1",
+      "role": "secondary",
+      "scorer": "slurp-slu-official-train"
+    },
+    {
+      "id": "pooled_slu_f1_symmetric",
+      "role": "reported, never gating",
+      "scorer": "slurp-slu-f1-normalized-v1-train"
+    }
+  ],
+  "module": {
+    "id": "M3",
+    "name": "delivery-time normaliser node (saea-deliver-normalise-v3)",
+    "off": "the key absent",
+    "on": {
+      "native_episode.deliver_normaliser": {
+        "normaliser": "saea-deliver-normalise-v3"
+      }
+    },
+    "why_model_free": "the node is pure, deterministic and makes no contact, so for any sealed OFF arm the ON arm is that arm's own bytes after one offline transform; the prediction triple parsed back out of the node's delivered text is byte-identical to the triple the v3 SCORER builds from the same row on every row of all three arms (0 mismatches), so the official number of the ON arm IS the v3-projected number of the sealed arm"
+  },
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-B8A-DELIVER-NORMALISE-PAIRED-ANALYSIS-V1",
+    "files": [
+      "score-contrasts.json",
+      "per-scenario-tables.json",
+      "replay-provenance.json",
+      "README.md"
+    ],
+    "harness_admission": "on ADMITTED or NEUTRAL the coordinator writes the harness-admission entry in the form the preregistration section 3 fixes and adds the key to the SLURP default plan; on HARMFUL the module never enters a plan and the negative stays on the record. The read never writes that table itself.",
+    "verdict_document": "docs/results/2026-09-19-slurp-b8a-deliver-normalise-verdict.md"
+  },
+  "population": {
+    "far_field_rows": 557,
+    "headset_rows": 523,
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "roster_id": "SLURP-EVO-FOLD-A-V2",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    },
+    "roster_metadata": {
+      "carries": "sample_id -> scenario, speaker, headset, utterance_id; no text, transcript or gold filler",
+      "relpath": "analysis/SAEA-SLURP-TRAIN-A-DIRECT-ANCHOR-RELEASE-PAIRED-ANALYSIS-V1/roster-metadata.json",
+      "sha256": "07f4cd83b83d83d65500a328e0a38421ede575195c63ae118def0d1006c14e34",
+      "speaker_key": "spk:<usrid> from the governed SLURP release metadata"
+    },
+    "rows": 1080,
+    "rows_per_scenario": 60,
+    "scenario_strata": 18,
+    "speaker_clusters": 125
+  },
+  "recipe_id": "SAEA-SLURP-B8A-DELIVER-NORMALISE-MODEL-FREE-READ-V1",
+  "registered_at_utc": "2026-09-19T00:00:00.000000+00:00",
+  "resampling": {
+    "draws": 10000,
+    "intervals": [
+      "CI95 for the clauses",
+      "CI90 for diagnostics"
+    ],
+    "pairing_note": "the ON and OFF arms are the same sealed rows one deterministic transform apart, so the interval carries no decoding noise -- only the row-to-row variation of the rule's effect. The own-null margins are conservative here and the verdict must say so.",
+    "primary": "paired whole-speaker cluster bootstrap",
+    "seed": 20260915,
+    "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed",
+    "tables": [
+      "natural mixture",
+      "equal-scenario weighting"
+    ]
+  },
+  "schema": "saea-paired-analysis-recipe-v1"
+}

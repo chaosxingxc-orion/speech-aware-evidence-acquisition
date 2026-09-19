@@ -1,0 +1,354 @@
+{
+  "accounting": {
+    "exposure_rows": [
+      "SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-V1",
+      "SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-FIT-V1",
+      "SAEA-SLURP-B8A-DELIVER-NORMALISE-MODEL-FREE-READ-V1"
+    ],
+    "family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 117
+    },
+    "plan_budget_is_run_cumulative": true,
+    "unused_budget_is_not_attempt_authority": true
+  },
+  "analysis_recipe": "docs/readiness/2026-09-19-slurp-b8a-deliver-normalise-v1/analysis-recipe-v1.json",
+  "authority": {
+    "a1_audit": "docs/results/2026-09-17-slurp-a1-use-projection-audit-v1.md",
+    "engineering": "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md section 3 item E11; docs/superpowers/specs/2026-09-17-node-context-policy-design.md section 16 (family B8)",
+    "own_null": "docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md; the TRAIN A own null h_SLU 1.1218 pp and h_intent 1.0051 pp at CI95",
+    "owner_decisions": "decision 27 of 2026-09-19 (order; names cell B8a), directive 26 and decisions 23 and 25 of 2026-09-18, decisions 7, 14, 17 and 22, all in docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "preregistration": "docs/readiness/2026-09-19-slurp-b8a-deliver-normalise-v1-preregistration.md",
+    "symmetric_train_sibling": "docs/results/2026-09-17-slurp-train-symmetric-reread-v1.md"
+  },
+  "cells": {
+    "no_full_roster_arm": "None is registered and none is needed. The E11 fragments configs/experiment/slurp-native-b8a-deliver-normalise-v3-{anchor,exemplars-k20}-train-fold-a-v1.json stay readiness held and are not part of this package.",
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-b8a-deliver-normalise-v3-exemplars-k20-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-anchor-exemplars-k20-deliver-normalise-v3-smoke-4-v1",
+      "cell": "slurp-native-b8a-deliver-normalise-v3-exemplars-k20-smoke-4-v1",
+      "composed_config_hash": "3dcc5e960d34f03a9fae71f41723ebaf6cca5ed027c4d9c53bc3ff72daa1eee3",
+      "experiment": "slurp-native-b8a-deliver-normalise-v3-exemplars-k20-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-b8a-deliver-normalise-v3-exemplars-k20-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-FIT-V1",
+      "protocol_hash": "507bfc0413819ce5f5e0fe5ce14512dc45b7a69d3d5cd3e31877f2ac64924bfd",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-V1",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    }
+  },
+  "comparators": {
+    "anchor": {
+      "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+      "official": {
+        "intent": 77.96,
+        "pooled_slu_f1": 48.53
+      },
+      "outputs_sha256": "d87d71e8fa0fe93b45d5c6817ba125b016d8d91f44a14309171dd0f3a64270d8",
+      "projection_v3": {
+        "intent": 79.35,
+        "pooled_slu_f1": 51.99
+      },
+      "role": "base 1, GATING",
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+      "run_manifest_sha256": "049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152",
+      "scores_sha256": "7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47",
+      "train_symmetric": {
+        "pooled_slu_f1": 52.09
+      }
+    },
+    "b1": {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2",
+      "official": {
+        "intent": 80.19,
+        "pooled_slu_f1": 61.14
+      },
+      "outputs_sha256": "db9cd6329b0837d8f120f153556c951a68969da167d245d695eb35916237deca",
+      "projection_v3": {
+        "intent": 81.76,
+        "pooled_slu_f1": 62.67
+      },
+      "role": "base 2, GATING",
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2",
+      "run_manifest_sha256": "b07ed553ff9f78b8e3ead6797bb66fb92a1820793b8aa5061576c6f66aa1a8ad",
+      "scores_sha256": "a7105b328509a8bd00c4678fd076e9be4d242b6189bb82bbd290bd596e3c9078",
+      "train_symmetric": {
+        "pooled_slu_f1": 62.97
+      }
+    },
+    "b5e": {
+      "attempt_id": "attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-generation-recovery-v1",
+      "official": {
+        "intent": 80.09,
+        "pooled_slu_f1": 62.34
+      },
+      "outputs_sha256": "3d861012bfbbf267d47023d069e5ccfe0442a3212cb3bd855e100eb8475751a6",
+      "projection_v3": {
+        "intent": 81.85,
+        "pooled_slu_f1": 63.78
+      },
+      "role": "base 3, REPORTED, does not gate",
+      "run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1",
+      "run_manifest_sha256": "1d827e31bd26e65e1327ec8c81dc96ebb55cd470692b339ab5323fcea1c86808",
+      "scores_sha256": "aeed7ad9b7fe44e74c4b9e65470e0d96429637ccaa4655c9185515568a70d7b9",
+      "train_symmetric": {
+        "pooled_slu_f1": 64.18
+      }
+    },
+    "note": "Every comparator is SEALED BYTES. Nothing is re-flown and nothing is re-scored from the sealed directory; the read works on read-only copies."
+  },
+  "contact_free_evidence": {
+    "check_receipt": "deliberately absent: FlightRuntime.preflight asserts a clean study tree and reserves the attempt, so the composed and protocol hashes were computed directly through core.config.compose / core.config.protocol_hash and the METHOD was verified against sealed registered values -- the anchor recovery's protocol 2527b52714789cf6b3fc090ea77aca2fc1fe7657806f4a082aab04d6e4e7158c and cell B1's recovery arm's composed 114b791752e160ed0f409fedf12d034b3cc05a8789b4423d1700cc6cb7df000c / protocol c66d507d1ae03c081d04a72dda7b5be28c29d7d5d22e4f196c38e5912211da2d. The coordinator's re-pin cycle runs check on the clean registration commit and asserts the runtime-derived hashes agree.",
+    "hashes_are_pre_flip": "the composed and protocol hashes here describe the fragments exactly as committed: readiness held, the inherited preparation requirement pinned, NO decision requirement, the inherited prepared pin. Re-pinning, adding the decision requirement and flipping readiness each change them; the re-pin tool does all three in one cycle and rewrites every dependent hash.",
+    "prepared_phase_supply": {
+      "note": "inherited from cell B1's recovery SMOKE; E11 changed core/flight/runtime.py so core.flight.repin will rebuild it, and _compare_artifact_output will refuse the rebuild unless the new Perception selection is byte-identical to this one. --allow-output-change must never be passed.",
+      "output_sha256": "512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733",
+      "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-RECOVERY-V2/phase-supply-v1.json",
+      "sha256": "26a4f0167b91d3a1776f56e966fc18d9f0a1d05f8f603e22a1374ff08d003078"
+    }
+  },
+  "cost_reporting": [
+    "actual generation contacts and contacts per row",
+    "actual repeated speech seconds",
+    "actual FIT endpoints and the minimum fit margin",
+    "actual native task-contract calls",
+    "prompt and completion tokens",
+    "GPU hours, mean latency, slot occupancy, utilisation and parked fraction read from the serving monitor over the lease window, never a wall-clock guess"
+  ],
+  "custody": {
+    "abstention": "an abstention is never normalised",
+    "invariant": "I7n (core.bundle.outputs)",
+    "receipt": "native_episode_receipt.deliver_normaliser: schema saea-deliver-normaliser-v1, normaliser_id, version, rule_id, carrier_lock_key, applied, changed, rendering_suppressed, input_sha256, output_sha256, labels_changed, label_branch, fillers_changed -- never the text",
+    "rule": "the trace's own MODEL_RESPONSE bytes for the row's request id must be the rule's recorded input, the named rule must resolve in core.base.DELIVERY_NORMALISERS and be deterministic, and re-running it over those bytes must reproduce the delivered bytes byte for byte; I7 is untouched; a row carrying both a solver_group and a deliver_normaliser receipt is refused, and the grouped-Solver combination is refused before any contact by rails.native_episode_config"
+  },
+  "decision_rule": {
+    "ADMITTED": "on the anchor base AND on the cell B1 base: (1) the CI95 lower bound of the paired official pooled SLU-F1 delta is > 0; (2) the paired intent delta is non-inferior at -h_intent, i.e. its CI95 lower bound exceeds -1.0051; (3) no scenario's paired intent CI95 upper bound lies below zero; and (4) owner decision 17's net-harmed-rows-per-scenario diagnostic is reported",
+    "HARMFUL": "owner decision 25's Method B form -- only by a MEASURED LOSS: a point estimate of official pooled SLU or of intent below -h (-1.1218 / -1.0051), or a CI95 upper bound below zero, on either gating base",
+    "NEUTRAL": "otherwise; an interval that straddles zero with the point estimate inside the margin reads NEUTRAL with 'non-inferiority not proven' stated",
+    "gating_bases": [
+      "anchor",
+      "b1"
+    ],
+    "no_repeat_to_pass": true,
+    "not_a_bar_attempt": "cell B8a is a one-factor module admission. The verdict states the official pooled SLU each base reaches with the node and whether any of them clears 64.00, as a fact and not as a claim; 'replicated on the same roster' (owner decision 1) is not claimed.",
+    "null_margins_pp": {
+      "h_intent": 1.0051,
+      "h_slu": 1.1218
+    },
+    "read_once": true,
+    "reported_base": "b5e",
+    "stop_condition": "Before any table is read: (1) the three sealed comparators reproduce their registered OFFICIAL aggregates -- 48.53/77.96, 61.14/80.19, 62.34/80.09 -- to the hundredth of a point; (2) the node-ON side of each arm reproduces that arm's registered PROJECTION V3 aggregates -- 51.99/79.35, 62.67/81.76, 63.78/81.85 -- to the hundredth, which the triple-equality property predicts exactly; (3) every row is accounted for, 1,080 in and 1,080 out, per arm. If any clause fails, the read STOPS and is reported.",
+    "symmetric_is_not_a_gate": "owner decision 7 states that about 2.5 pp of the 64-point bar is representation alignment rather than capability; owner decisions 23 and 26 make the OFFICIAL number the metric and this node the legitimate carrier of that alignment. The TRAIN symmetric number is REPORTED beside and gates nothing for this module."
+  },
+  "expected_cost": {
+    "read": "zero contacts of any kind; CPU only; may run in parallel with a GPU flight (owner decision 27)",
+    "smoke": "about 20 generation contacts (5 per row), up to 176 FIT endpoints, about 53 repeated speech seconds, a few minutes of wall clock, no scorer"
+  },
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, geometry or cap change, and no silent recovery. At most one root-diagnosed recovery re-registration; a second failure closes cell B8a and the fix must be proven on a four-row dry run before the node is proposed again. A partial manifest is never scored and never read. One experiment in flight at a time. Resume-recovery clause (owner decision 22 of 2026-09-18): an INFRASTRUCTURE death with code and request bytes unchanged may be recovered as a resume-recovery under item E10 instead of a re-fly, keeping every complete row without selection, re-flying every partial or unstarted row under the same run id, declaring the predecessor attempt with its trace hash and kept-row list in the merged manifest, changing no question, roster, factor, comparator, decision rule or cap, and re-checking the run-cumulative budget.",
+  "fit": {
+    "ceiling": "4 rows * 11 native contacts * (1 speech packet + 3 endpoints) = 176",
+    "route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realized native request inside the same worker, under the same lease. Do NOT run coordinate-fit or the FIT row is double-charged."
+  },
+  "harness_admission_entry_form": {
+    "carrier": "slurp",
+    "default_plan_consequence": "harness_admission_check requires every ADMITTED or NEUTRAL module to appear in at least one default plan for its carrier, so admission adds the key to configs/baseline/slurp-native-dual-store-train-fold-a-default-plan-v1.json and every later official SLURP number this program reports is produced by a system containing the node. A HARMFUL module never enters any plan.",
+    "module": "delivery-time normaliser node (module M3 executed inside the agent: SLURP USE projection v3 applied once to the accepted answer immediately before delivery)",
+    "switch": {
+      "key": "native_episode.deliver_normaliser",
+      "off": null,
+      "on": {
+        "normaliser": "saea-deliver-normalise-v3"
+      },
+      "proof": "tests/unit/test_config_table_module_switches.py::test_deliver_normaliser_is_one_episode_class_key",
+      "table": "episode",
+      "why_this_table": "a NODE of the episode, declared beside the roles it runs after and applied by rails.runner between the Planner's ACCEPT and the delivered answer; not a per-phase request-table entry, and it does not claim the run class's zero-request-byte licence even though it moves no request byte"
+    },
+    "written_by": "the coordinator, never this preregistration and never the read; scripts/checks/harness_admission_check.py is the oracle"
+  },
+  "metrics": {
+    "delta_convention": "delta = node ON minus node OFF, in percentage points; negative is worse",
+    "primary": "official pooled SLU micro F1 (slurp-slu-official-train), natural mixture",
+    "reported_never_gating": [
+      "slurp-slu-f1-normalized-v1-train (the TRAIN symmetric sibling, owner decision 14): the verdict states the symmetric delta and what share of the official gain it represents",
+      "projection v3 aggregates, which the ON side reproduces by construction",
+      "owner decision 17's net harmed rows per scenario, flagging any scenario with five or more",
+      "the per-half counts: label repairs and filler repairs"
+    ],
+    "secondaries": [
+      "intent (joint scenario+action) accuracy",
+      "scenario accuracy",
+      "action accuracy",
+      "official pooled span F1",
+      "per-row mean official SLU-F1",
+      "per-row mean exact slot F1",
+      "saves / harms / ties with the exact two-sided McNemar p"
+    ]
+  },
+  "modules": {
+    "base": "cell B1's recovery arm configuration (module M1, speech-keyed exemplar supply) with the node ON and nothing else moved",
+    "m3": "the delivery-time normaliser node: SLURP USE projection v3 (label rule R_action, then the registered legal-label projection v2, then filler normalisation P2 -- case, whitespace, punctuation, meridiem, numeric words, NO support filter) applied once to the accepted answer immediately before delivery, by the SAME rails.slurp_projection_v3 functions the v3 scorer applies",
+    "switch": "one episode-class key, native_episode.deliver_normaliser, armed as {\"normaliser\": \"saea-deliver-normalise-v3\"}; OFF is the key absence"
+  },
+  "not_authorized": [
+    "any full-roster B8a arm, in the agent or otherwise",
+    "any use of the E4 seal-time key slurp_projection_v3_delivery",
+    "any DEV-1000, Fold B or test-split read",
+    "any re-scoring, re-flight or re-read of a sealed comparator",
+    "any write under SPEECHRL_DATA_DIR/runs",
+    "any change to projection v3's content, including re-opening the support filter A1 rejected",
+    "any harness-admission row or default-plan edit before the verdict"
+  ],
+  "not_claimed": [
+    "no superiority, generalization, paper-scale or held-out claim; TRAIN Fold A is an exposed discovery roster",
+    "not a bar attempt, and nothing here is 'replicated on the same roster'",
+    "no claim that the node adds capability: it moves WHO performs a representation alignment the official scorer charges for and the symmetric scorer scores at zero",
+    "no claim about the rule itself; projection v3's content was decided by A1 and fixed by E4",
+    "no component attribution below the rule; the label half and the filler half move together",
+    "no claim of idempotence as a general property",
+    "a structural smoke result is never a quality result",
+    "no claim about any later cell's comparator, beyond fixing the default-plan consequence"
+  ],
+  "one_factor": {
+    "bookkeeping_that_must_differ": [
+      "native_contact_fit (this cell's own FIT run and attempt at the 176-endpoint ceiling)",
+      "prepared_phase_supply (inherited from cell B1's recovery smoke, rebuilt by core.flight.repin)",
+      "speech_feature_key_representation_id and speech_feature_matcher_policy_id (provenance only, absent from every rendered request byte)",
+      "what_this_is"
+    ],
+    "held_identical": "the anchor role graph (perception 1, solver 1, reviewer 3, planner 1, max_revisions 1, policy phase-native-candidates-review-revise-v1, program ceiling 11 contacts per row), the roster and split, the model fragment and the resident np4 / 24,576-token geometry, the promoted EVO-FOLDS-V2 speech packets, the Perception retrieval geometry, the train-exemplars store byte-for-byte as cell B1 flew it, every instruction template, the phase_tools Reviewer task-contract authority block and Solver-only answer authority",
+    "moved": "exactly one composed key against cell B1's recovery arm baseline: native_episode.deliver_normaliser. The declared scorer list additionally names slurp-slu-official-projected-v3-train, which is a READ-side declaration and no request byte; it is expected to be a NO-OP on this cell's own outputs.",
+    "proof": "tests/unit/test_b8a_deliver_normalise_smoke_config.py",
+    "request_byte_identity": "the node makes no contact and runs after every contact of the episode is already spent, so every MODEL_REQUEST byte is identical with and without it; pinned end to end by tests/unit/test_native_episode_runner_deliver_normaliser.py, which runs the real episode twice through the shared fake transport and compares all four rendered requests"
+  },
+  "population": {
+    "far_field_rows": 557,
+    "headset_rows": 523,
+    "read_rows": 1080,
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    },
+    "roster_metadata": {
+      "relpath": "analysis/SAEA-SLURP-TRAIN-A-DIRECT-ANCHOR-RELEASE-PAIRED-ANALYSIS-V1/roster-metadata.json",
+      "sha256": "07f4cd83b83d83d65500a328e0a38421ede575195c63ae118def0d1006c14e34"
+    },
+    "rows_per_scenario": 60,
+    "scenario_strata": 18,
+    "smoke_rows": 4,
+    "smoke_split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "speaker_clusters": 125,
+    "split_id": "SLURP-EVO-FOLD-A-V2",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+  },
+  "pre_contact_measurements": {
+    "four_smoke_rows_on_the_b1_bytes": "applied true, changed false, rendering_suppressed true on 4 of 4 rows",
+    "idempotence": {
+      "anchor": "1079 / 1080. On ONE row a date filler is not a fixed point of P2: the first application removes punctuation and converts one numeric token to words, which changes the token boundaries so a second application converts a remaining digit as well; the third application is a fixed point. I7n requires DETERMINISM, not idempotence, and the read is unaffected because the scorer applies P2 exactly once and so does the node. Recorded as an engineering finding: rails/delivery_normalisers.py's unqualified 'idempotent by construction' is proved on cell B1's rows and is not a general property.",
+      "b1": "1080 / 1080 rows unchanged on a second application",
+      "b5e": "1080 / 1080 rows unchanged on a second application"
+    },
+    "note": "measured in this registration over read-only COPIES of the sealed outputs; zero model, tokenizer, encoder, ASR, scorer, server and paid-API contacts",
+    "replay": {
+      "anchor": {
+        "entities_filler_changed": 195,
+        "rows": 1080,
+        "rows_changed": 191,
+        "rows_filler_changed": 174,
+        "rows_label_changed": 20,
+        "rows_unparsed": 7
+      },
+      "b1": {
+        "entities_filler_changed": 90,
+        "rows": 1080,
+        "rows_changed": 103,
+        "rows_filler_changed": 82,
+        "rows_label_changed": 24,
+        "rows_unparsed": 4
+      },
+      "b5e": {
+        "entities_filler_changed": 80,
+        "rows": 1080,
+        "rows_changed": 102,
+        "rows_filler_changed": 75,
+        "rows_label_changed": 31,
+        "rows_unparsed": 1
+      }
+    },
+    "triple_equality": {
+      "anchor": {
+        "mismatches": 0,
+        "parsed_rows_compared": 1073,
+        "unparsed_delivered_byte_identical": 7
+      },
+      "b1": {
+        "mismatches": 0,
+        "parsed_rows_compared": 1076,
+        "unparsed_delivered_byte_identical": 4
+      },
+      "b5e": {
+        "mismatches": 0,
+        "parsed_rows_compared": 1079,
+        "unparsed_delivered_byte_identical": 1
+      },
+      "consequence": "the official SLU number of a set of rows is a pure function of the per-row prediction triple and the fixed gold, so the official number of the node-ON arm IS the v3-projected number of the sealed arm -- identically, not to two decimal places"
+    }
+  },
+  "preparation_base_commit": "6bd8506a",
+  "prompt_fit": {
+    "basis": "cell B1's own registered STATIC bound for this base (the anchor's widest realised role visit plus the conservative static exemplar-supply bound). The node adds ZERO prompt tokens: it runs after every contact is already spent and renders into no request. The FIT gate remains the per-request authority and stops the flight rather than truncating.",
+    "registered_static_upper_bound": 17018,
+    "slot_tokens": 24576
+  },
+  "protocol_id": "SAEA-SLURP-B8A-DELIVER-NORMALISE-PROTOCOL-V1",
+  "purpose": "Decide module M3 -- the SLURP USE projection v3 executed INSIDE the agent as a deterministic, zero-contact delivery node -- with (a) a four-row smoke proving the node executed in the agent and changed nothing else, and (b) a MODEL-FREE admission read over three sealed arms, because a deterministic zero-contact node's ON arm is computable from any sealed OFF arm's own bytes.",
+  "quality_gate": "The four-row smoke is STRUCTURAL ONLY and is never scored: contact counts, the native_episode_receipt.deliver_normaliser block on 4 of 4 rows, request-fit receipts, the offline replay reproducing the delivered bytes on 4 of 4 rows, invariant I7n at the seal, and a clean seal -- with no answer, reference or quality interpretation. Cell B8a's task-quality read is MODEL-FREE and is not this run's: it re-applies the registered rule to read-only copies of three sealed arms (the dual-store anchor recovery, cell B1's recovery arm and cell B5e's recovery arm), scores OFF and ON with the pinned official scorer, and may not be read before its STOP condition passes -- the three OFF arms reproducing 48.53/77.96, 61.14/80.19 and 62.34/80.09 and the three ON arms reproducing 51.99/79.35, 62.67/81.76 and 63.78/81.85, each to the hundredth of a point. No comparator is ever re-flown or re-scored from the sealed directory.",
+  "registered_at_utc": "2026-09-19T00:00:00.000000+00:00",
+  "resampling": {
+    "draws": 10000,
+    "intervals": [
+      "CI95 for the clauses",
+      "CI90 for diagnostics"
+    ],
+    "pairing_note": "the ON and OFF arms are the SAME sealed rows one deterministic transform apart, so the paired bootstrap carries no decoding noise at all -- only the row-to-row variation of the rule's own effect. The own-null margins were calibrated on a request-identical replicate whose two passes DO differ by decoding noise, so they are conservative here, and the verdict says so rather than treating a narrow interval as extra evidence.",
+    "primary": "paired whole-speaker cluster bootstrap",
+    "seed": 20260915,
+    "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed",
+    "tables": [
+      "natural mixture",
+      "equal-scenario weighting"
+    ]
+  },
+  "schema": "saea-slurp-b8a-deliver-normalise-protocol-v1",
+  "scoring": {
+    "read": "slurp-slu-official-train (pinned official evaluate.py, slurp-official-8eb16545) over byte-identical copies of the sealed bundle, once per arm side, never sharded; slurp-slu-f1-normalized-v1-train beside it as the reported symmetric column",
+    "smoke": "none"
+  },
+  "service": {
+    "attach_only": true,
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "never_spawn_or_stop": true,
+    "scheduled_task_conditions": "owner decision 24: battery and idle conditions disabled, no execution time limit, and no powercfg change while the task runs"
+  },
+  "smoke_acceptance": {
+    "criteria": [
+      "five contacts per row on the B1 arm's own trajectory statistics; no row exceeds the 11-contact program ceiling; Perception, Solver, Reviewer and Planner contacts present",
+      "the twenty train-exemplars typed content blocks present on the Solver request, and one *.request-fit.json per realized contact with every_request_fits true and every required-token count below 24,576",
+      "the native_episode_receipt.deliver_normaliser block present on 4 of 4 rows with schema saea-deliver-normaliser-v1, normaliser_id saea-deliver-normalise-v3, version 1, carrier_lock_key slurp and applied true",
+      "analysis.deliver_normaliser_replay over a COPY of the smoke's sealed outputs reproduces each row's delivered text on 4 of 4 rows, and the prediction triple parsed out of each delivered answer equals the v3 scorer's own triple",
+      "invariant I7n verified at the seal and a clean seal"
+    ],
+    "expected_but_not_required": "on the sealed B1 arm's own bytes the rule repairs NOTHING on all four of these rows (applied true, changed false, rendering_suppressed true, 4 of 4). Greedy decoding at temperature 0 is not bitwise reproducible across batch compositions, so a repair may occur; acceptance does not require one. The repair path is proved by the 1,080-row sealed replay on three arms and by the E11 unit tests.",
+    "never": "no answer, reference or quality interpretation, and no scorer",
+    "structural_only": true
+  },
+  "source_tree": "studies/speech-aware-evidence-acquisition (main checkout, master)",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "verdict_document": "docs/results/2026-09-19-slurp-b8a-deliver-normalise-verdict.md"
+}

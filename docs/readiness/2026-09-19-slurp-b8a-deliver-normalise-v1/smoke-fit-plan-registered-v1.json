@@ -1,0 +1,54 @@
+{
+  "cell": "slurp-native-b8a-deliver-normalise-v3-exemplars-k20-smoke-4-v1",
+  "composed_config_hash": "3dcc5e960d34f03a9fae71f41723ebaf6cca5ed027c4d9c53bc3ff72daa1eee3",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-b8a-deliver-normalise-v3-exemplars-k20-smoke-4-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 176,
+    "planned_speech_audio_seconds": 117,
+    "protocol_hash": "507bfc0413819ce5f5e0fe5ce14512dc45b7a69d3d5cd3e31877f2ac64924bfd",
+    "run_id": "SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realized native request inside the same worker, under the same lease.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-b8a-deliver-normalise-v3-exemplars-k20-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "modules": {
+    "base": "cell B1's recovery arm configuration (module M1, speech-keyed exemplar supply) with the node ON and nothing else moved",
+    "m3": "the delivery-time normaliser node: SLURP USE projection v3 (label rule R_action, then the registered legal-label projection v2, then filler normalisation P2 -- case, whitespace, punctuation, meridiem, numeric words, NO support filter) applied once to the accepted answer immediately before delivery, by the SAME rails.slurp_projection_v3 functions the v3 scorer applies",
+    "switch": "one episode-class key, native_episode.deliver_normaliser, armed as {\"normaliser\": \"saea-deliver-normalise-v3\"}; OFF is the key absence"
+  },
+  "plan_kind": "native contact fit",
+  "preparation_base_commit": "6bd8506a",
+  "prepared_phase_supply": {
+    "output_sha256": "512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733",
+    "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-RECOVERY-V2/phase-supply-v1.json",
+    "sha256": "26a4f0167b91d3a1776f56e966fc18d9f0a1d05f8f603e22a1374ff08d003078"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-19-slurp-b8a-deliver-normalise-v1/protocol-registered-v1.json",
+    "sha256": "4ed09b41885b6c514c4aea57554f7a9a6f1860a76b9169866a6d02b8cd873c4e"
+  },
+  "quality_read_gate": "The four-row smoke is STRUCTURAL ONLY and is never scored: contact counts, the native_episode_receipt.deliver_normaliser block on 4 of 4 rows, request-fit receipts, the offline replay reproducing the delivered bytes on 4 of 4 rows, invariant I7n at the seal, and a clean seal -- with no answer, reference or quality interpretation. Cell B8a's task-quality read is MODEL-FREE and is not this run's: it re-applies the registered rule to read-only copies of three sealed arms (the dual-store anchor recovery, cell B1's recovery arm and cell B5e's recovery arm), scores OFF and ON with the pinned official scorer, and may not be read before its STOP condition passes -- the three OFF arms reproducing 48.53/77.96, 61.14/80.19 and 62.34/80.09 and the three ON arms reproducing 51.99/79.35, 62.67/81.76 and 63.78/81.85, each to the hundredth of a point. No comparator is ever re-flown or re-scored from the sealed directory.",
+  "registered_at_utc": "2026-09-19T00:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition (main checkout, master)",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

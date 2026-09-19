@@ -1,0 +1,172 @@
+{
+  "arms": {
+    "anchor": {
+      "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+      "idempotence": "1079 / 1080; one date filler is not a fixed point of P2 and converges at the second application",
+      "manifest_status": "COMPLETED",
+      "official_aggregate": {
+        "intent": 77.96,
+        "pooled_slu_f1": 48.53
+      },
+      "outputs_relpath": "runs/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1.outputs.jsonl",
+      "outputs_sha256": "d87d71e8fa0fe93b45d5c6817ba125b016d8d91f44a14309171dd0f3a64270d8",
+      "projection_v3_aggregate": {
+        "intent": 79.35,
+        "pooled_slu_f1": 51.99
+      },
+      "replay_counts": {
+        "entities_filler_changed": 195,
+        "rows": 1080,
+        "rows_changed": 191,
+        "rows_filler_changed": 174,
+        "rows_label_changed": 20,
+        "rows_unparsed": 7
+      },
+      "role": "base 1: the sealed dual-store anchor. GATING.",
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+      "run_manifest_relpath": "runs/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1.run-manifest.json",
+      "run_manifest_sha256": "049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1.scores.json",
+      "scores_sha256": "7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+      "split_role": "discovery",
+      "train_symmetric_aggregate": {
+        "pooled_slu_f1": 52.09
+      },
+      "triple_equality": {
+        "mismatches": 0,
+        "parsed_rows_compared": 1073
+      }
+    },
+    "b1": {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2",
+      "idempotence": "1080 / 1080",
+      "manifest_status": "COMPLETED",
+      "official_aggregate": {
+        "intent": 80.19,
+        "pooled_slu_f1": 61.14
+      },
+      "outputs_relpath": "runs/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2/attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2.outputs.jsonl",
+      "outputs_sha256": "db9cd6329b0837d8f120f153556c951a68969da167d245d695eb35916237deca",
+      "projection_v3_aggregate": {
+        "intent": 81.76,
+        "pooled_slu_f1": 62.67
+      },
+      "replay_counts": {
+        "entities_filler_changed": 90,
+        "rows": 1080,
+        "rows_changed": 103,
+        "rows_filler_changed": 82,
+        "rows_label_changed": 24,
+        "rows_unparsed": 4
+      },
+      "role": "base 2: cell B1's recovery arm (module M1, speech-keyed exemplar supply). GATING.",
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2",
+      "run_manifest_relpath": "runs/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2/attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2.run-manifest.json",
+      "run_manifest_sha256": "b07ed553ff9f78b8e3ead6797bb66fb92a1820793b8aa5061576c6f66aa1a8ad",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2/attempt-slurp-native-exemplars-k20-anchor-train-fold-a-generation-recovery-v2/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2.scores.json",
+      "scores_sha256": "a7105b328509a8bd00c4678fd076e9be4d242b6189bb82bbd290bd596e3c9078",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+      "split_role": "discovery",
+      "train_symmetric_aggregate": {
+        "pooled_slu_f1": 62.97
+      },
+      "triple_equality": {
+        "mismatches": 0,
+        "parsed_rows_compared": 1076
+      }
+    },
+    "b5e": {
+      "attempt_id": "attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-generation-recovery-v1",
+      "idempotence": "1080 / 1080",
+      "manifest_status": "COMPLETED",
+      "official_aggregate": {
+        "intent": 80.09,
+        "pooled_slu_f1": 62.34
+      },
+      "outputs_relpath": "runs/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1/attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-generation-recovery-v1/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1.outputs.jsonl",
+      "outputs_sha256": "3d861012bfbbf267d47023d069e5ccfe0442a3212cb3bd855e100eb8475751a6",
+      "projection_v3_aggregate": {
+        "intent": 81.85,
+        "pooled_slu_f1": 63.78
+      },
+      "replay_counts": {
+        "entities_filler_changed": 80,
+        "rows": 1080,
+        "rows_changed": 102,
+        "rows_filler_changed": 75,
+        "rows_label_changed": 31,
+        "rows_unparsed": 1
+      },
+      "role": "base 3: cell B5e's recovery arm (M1 + M4b). REPORTED, never gating.",
+      "run_id": "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1",
+      "run_manifest_relpath": "runs/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1/attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-generation-recovery-v1/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1.run-manifest.json",
+      "run_manifest_sha256": "1d827e31bd26e65e1327ec8c81dc96ebb55cd470692b339ab5323fcea1c86808",
+      "scores_relpath": "runs/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1/attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-generation-recovery-v1/SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1.scores.json",
+      "scores_sha256": "aeed7ad9b7fe44e74c4b9e65470e0d96429637ccaa4655c9185515568a70d7b9",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+      "split_role": "discovery",
+      "train_symmetric_aggregate": {
+        "pooled_slu_f1": 64.18
+      },
+      "triple_equality": {
+        "mismatches": 0,
+        "parsed_rows_compared": 1079
+      }
+    }
+  },
+  "data_root_env": "SPEECHRL_DATA_DIR",
+  "engineering_finding": {
+    "idempotence": "re-applying the node to its own output changes nothing on 1,080 / 1,080 rows of cell B1 and of cell B5e, and on 1,079 / 1,080 rows of the anchor. On one anchor row a date filler is not a fixed point of P2: the first application removes punctuation and converts one numeric token to words, which changes the token boundaries so a second application converts a remaining digit as well; the third application is a fixed point. I7n requires DETERMINISM, not idempotence, and the read is unaffected because the scorer applies P2 exactly once and so does the node. rails/delivery_normalisers.py's unqualified 'idempotent by construction' is therefore proved on cell B1's rows and is not a general property, and a future ON arm's idempotence witness may legitimately report a changed row. No code was changed by this registration."
+  },
+  "expected_reproduction": {
+    "basis": "triple equality: on every parsed row of all three arms the prediction triple parsed back out of the node's delivered text is byte-identical to the triple the v3 scorer builds from the same row (1,073 / 1,076 / 1,079 rows, 0 mismatches), and every unparsed row is delivered byte-identically",
+    "off_official": {
+      "anchor": {
+        "intent": 77.96,
+        "pooled_slu_f1": 48.53
+      },
+      "b1": {
+        "intent": 80.19,
+        "pooled_slu_f1": 61.14
+      },
+      "b5e": {
+        "intent": 80.09,
+        "pooled_slu_f1": 62.34
+      }
+    },
+    "on_official_equals_registered_projection_v3": {
+      "anchor": {
+        "intent": 79.35,
+        "pooled_slu_f1": 51.99
+      },
+      "b1": {
+        "intent": 81.76,
+        "pooled_slu_f1": 62.67
+      },
+      "b5e": {
+        "intent": 81.85,
+        "pooled_slu_f1": 63.78
+      }
+    },
+    "tolerance": "to the hundredth of a point"
+  },
+  "four_smoke_rows": {
+    "ids": [
+      "slurp:train:000007:audio--1504197557",
+      "slurp:train:000009:audio-1497557594-headset",
+      "slurp:train:000015:audio-1488524781",
+      "slurp:train:000023:audio-1490956038"
+    ],
+    "on_the_sealed_b1_bytes": "applied true, changed false, rendering_suppressed true, label_branch already-legal, labels_changed 0, fillers_changed 0 on 4 of 4 rows -- the rule repairs nothing on these four rows, so the smoke proves the node RAN, not that it repairs. Acceptance does not require a repair.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "note": "The three sealed arms this registration hash-verified by HASHING THE FILE, the model-free replay counts measured over read-only copies of them, and the values the read's STOP condition must reproduce. Zero model, tokenizer, encoder, ASR, server and paid-API contacts; no sealed file was opened for writing and no run directory was written.",
+  "registered_at_utc": "2026-09-19T00:00:00.000000+00:00",
+  "schema": "saea-b8a-sealed-inputs-v1",
+  "train_symmetric_off": {
+    "anchor": 52.09,
+    "b1": 62.97,
+    "b5e": 64.18
+  }
+}

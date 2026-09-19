@@ -1,0 +1,73 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-b8a-deliver-normalise-v3-exemplars-k20-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-anchor-exemplars-k20-deliver-normalise-v3-smoke-4-v1",
+      "cell_id": "slurp-native-b8a-deliver-normalise-v3-exemplars-k20-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Registered before contact by the B8a registration agent under owner decision 27 of 2026-09-19 (which names cell B8a and puts it after the B4b replicate resume) together with owner directive 26 and owner decision 23 of 2026-09-18. It stays HELD: the coordinator mints the root decision receipt coordination/slurp-b8a-deliver-normalise-v1/root-admission-v1.json (decision id slurp-b8a-deliver-normalise-admission-v1) and flips the state with scripts/flights/repin_cell.py, which rebuilds and re-pins the prepared supply -- asserting its Perception output is byte-identical to cell B1's smoke artifact -- applies the decision requirement and recomputes every dependent hash in the same cycle. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. One experiment in flight at a time. This smoke is the ONLY contact cell B8a asks for: its admission read is model-free from sealed arms.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "INHERITED PIN, to be replaced by scripts/flights/repin_cell.py on the launch commit. It is cell B1's own recovery SMOKE prepared artifact, over the same four TRAIN A engineering rows, the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors; its Perception output SHA-256 is 512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733 on 4 of 4 rows, the same value cell B1's and cell B5e's smokes carry. Item E11 changed core/flight/runtime.py, so core.preparation.load_artifact refuses this artifact's identity for this cell and core.flight.repin rebuilds it into prepared/SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-V1/ -- and _compare_artifact_output then REFUSES the rebuild unless the new selection is byte-identical to this one, which is the model-free proof that the delivery node moves no knowledge-selection byte. Zero model, tokenizer, encoder, scorer and server contacts.",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-RECOVERY-V2/phase-supply-v1.json",
+            "sha256": "26a4f0167b91d3a1776f56e966fc18d9f0a1d05f8f603e22a1374ff08d003078"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-19",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-NATIVE-B8A-DELIVER-NORMALISE-V3-EXEMPLARS-K20-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read, no row filtering and no roster, role-graph, prompt, geometry or cap change. At most ONE root-diagnosed recovery re-registration; a second failure closes cell B8a and the fix must be proven on this same four-row roster before the node is proposed again. RESUME-RECOVERY CLAUSE (owner decision 22 of 2026-09-18): if this attempt dies of an INFRASTRUCTURE failure with code and request bytes unchanged, the recovery may be a resume-recovery under item E10 -- every complete row kept without selection, every partial or unstarted row re-flown under the same run id, the merged manifest declaring the predecessor attempt, its trace hash and the kept-row list -- changing no question, roster, factor, comparator, decision rule or cap, and re-checking the run-cumulative budget because a resumed attempt and its predecessor share one run id.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-native-b8a-deliver-normalise-v3-exemplars-k20-smoke-4-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The four already-exposed TRAIN A engineering rows this repository reuses for every four-row form smoke, the same four the cell B0 smoke used; no quality-based selection.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row standalone-worker form smoke of cell B8a, the delivery-time normaliser node (module M3 executed INSIDE the agent), on the sealed cell B1 recovery-arm base. It is the one thing cell B8a's admission owes a flight: proof that the node executed IN the agent and changed nothing else. Structural evidence only -- five contacts per row on the B1 arm's own trajectory statistics (11 is the program ceiling), every MODEL_REQUEST byte identical to what the OFF base would send because the node makes no contact and runs after every contact is already spent, the native_episode_receipt.deliver_normaliser block present on 4 of 4 rows, the delivered text equal to analysis.deliver_normaliser_replay's output over the row's own accepted answer on 4 of 4 rows, the prediction triple parsed back out of the delivered text equal to the v3 scorer's own triple on 4 of 4 rows, invariant I7n verified at the seal, one native contact fit receipt per realized contact with every_request_fits true, and a clean seal. No official scoring and no task-quality claim. The four rows are expected to route ACCEPT, as they have on every prior smoke of this roster, so the node is exercised on the Planner-ACCEPT path; the terminal-delivery path and the never-normalise-an-abstention rule are proved model-free by tests/unit/test_native_episode_runner_deliver_normaliser.py.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2"
+}
