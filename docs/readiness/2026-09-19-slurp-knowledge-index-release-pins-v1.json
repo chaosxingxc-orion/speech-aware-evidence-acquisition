@@ -1,0 +1,70 @@
+{
+ "schema": "saea-reviewed-semantic-store-release-pins-v1",
+ "status": "released",
+ "released_on": "2026-09-19",
+ "authority": "docs/superpowers/specs/2026-09-19-knowledge-index-and-context-assembly-design.md sections 3-4 (owner decisions 48 and 50); docs/superpowers/specs/2026-09-19-e21-knowledge-index-design.md; the release job is exposure-ledger row SAEA-SLURP-E21-KNOWLEDGE-INDEX-VIEW-V1",
+ "contacts": {
+  "model": 0,
+  "encoder": 0,
+  "tokenizer": 0,
+  "scorer": 0,
+  "tool": 0
+ },
+ "generator": "scripts/build_slurp_knowledge_index_view.py --out-root $SPEECHRL_DATA_DIR (verified with --check)",
+ "pin_conventions": {
+  "release": "file bytes",
+  "snapshot": "KnowledgeSnapshot content_hash (equals the file sha256 for this view)",
+  "completion": "file bytes"
+ },
+ "views": {
+  "slurp-knowledge-index-v1": {
+   "view_role": "knowledge-index",
+   "carrier": "slurp",
+   "builder_policy_id": "saea-knowledge-index-construction-v1",
+   "ordering": "taxonomy-frequency-v1",
+   "entry_counts": {
+    "intent": 60,
+    "slot": 54,
+    "edge": 81,
+    "shared_sections": 9,
+    "legal_intents": 60,
+    "legal_slot_types": 55
+   },
+   "release": {
+    "relpath": "knowledge/slurp/semantic/slurp-knowledge-index-v1/release.json",
+    "sha256": "bcfc220b11672169f81e9a9f941e6c1bee05e9a5e3ac7aa3bd6dc448017235d2"
+   },
+   "snapshot": {
+    "relpath": "knowledge/slurp/semantic/slurp-knowledge-index-v1/snapshot.json",
+    "sha256": "f6d61056165a41d91e604a55d80a0aef08491a8052dc713e95eae66cfeb2cd4c"
+   },
+   "completion": {
+    "relpath": "knowledge/slurp/semantic/slurp-knowledge-index-v1/completion.json",
+    "sha256": "50efd295f99784168edd0aad72782ea62d8c0af4f9232524b9021d97089f6ac2"
+   },
+   "source_split_identity_hash": "67e53fb5f712c40b21b8b54b74e867e6da209f057c68cd40dd987aaa99b19875",
+   "source_stores": {
+    "intent-boundaries": {
+     "release": "knowledge/slurp/semantic/intent-boundaries-v1/release.json@2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4",
+     "snapshot_content_hash": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe"
+    },
+    "slot-contracts": {
+     "release": "knowledge/slurp/semantic/slot-contracts-v2/release.json@f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b",
+     "snapshot_content_hash": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec"
+    },
+    "scenario-hints": {
+     "release": "knowledge/slurp/semantic/scenario-hints-v1/release.json@44716de634c788f72886f31762077052e5f109f479194e524f8dcef89f98103e",
+     "snapshot": "knowledge/slurp/semantic/scenario-hints-v1/snapshot.json@079b2bf49404b5b5ee525c0f201faa8b022ae9f63781797ad4708da7826c98a1"
+    }
+   },
+   "rendered_index_at_defaults": {
+    "chars": 17265,
+    "tokens_at_4_60_chars_per_token": 3753,
+    "note": "E21 render proof, derived, no tokenizer contact"
+   },
+   "exemplar_kind": "not built into the view (pointer and expansion only)",
+   "consumed_by": []
+  }
+ },
+ "note": "No cell arms native_episode.knowledge_index yet; consumption enters only through a registered cell whose readiness package pins these bytes."
+}
