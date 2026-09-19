@@ -36,7 +36,7 @@ Two owner conditions bind the launch order: **B1 -> B2 -> B4b -> B4a -> B4c** (d
 | B4c smoke | **none** -- it shares B4a's store, Perception geometry and prepared-supply inputs, so B4a's smoke evidence is reusable |
 | campaign plans | `configs/campaign/slurp-native-fallback-quirky-intent-v2-anchor-train-fold-a-v2.json`, `…/slurp-native-slot-store-v2-anchor-train-fold-a-v2.json`, `…/slurp-native-intent-store-v2-anchor-train-fold-a-v2.json` |
 | composed / protocol (B4a) | `245873378bb9721a18ef31cf9b18c4ffcd864a44cc8718ed1d5bbfd657775392` / `d850874b5f32c250ba59d3a7c26322881188300815191d3da13fcc875383702b` |
-| composed / protocol (B4a smoke) | `8596776af092fc9d0ba2d8f63fdfbac155989b3aaaaa381d378595f3dc58a2d9` / `cd3c62182cf487346444044c0b96031f305e954d494763f124d91d43f943a040` |
+| composed / protocol (B4a smoke) | `352a97fa4a2f79b80c558381a5483ecd73543a810e40733da5e3ba1498e34d27` / `e6828a497645f2ec469d22f9d5f05ab50f20bfebf600d1e49a0ba9fdf8f0a8d6` |
 | composed / protocol (B4b) | `8d207b33fa7643b7e5acc4ccbd03354fe9c09df09563544c4879c4bb97ee6a4d` / `567a87ad234bb4f17c4735f94219a82b05b25a19d81fdf1ee32bb93b6eda346a` |
 | composed / protocol (B4b smoke) | `c0572352a9b4758a61654f46d06812819da42d3c7cf9611b24a383882b279661` / `f13ba493375d75a524884f771a6c5d9b410425951b15cccf9d59d1fe76f3cd9c` |
 | composed / protocol (B4c) | `bdbe70349eb324d43b270d05a344386bf5089894ea354fad88009c67774b0e3c` / `7bf967c3f914acc1fb1dd4a3366c863eb6ed1056ef3fec105f4a96efabb4ad9a` |

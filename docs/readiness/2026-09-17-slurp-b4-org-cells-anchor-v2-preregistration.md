@@ -69,8 +69,8 @@ spawn).
 Cells B4a and B4b each have a four-row smoke on the four already-exposed TRAIN A engineering rows
 (split identity `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb`): B4a
 `SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-V2` (composed
-`8596776af092fc9d0ba2d8f63fdfbac155989b3aaaaa381d378595f3dc58a2d9`, protocol
-`cd3c62182cf487346444044c0b96031f305e954d494763f124d91d43f943a040`) and B4b
+`352a97fa4a2f79b80c558381a5483ecd73543a810e40733da5e3ba1498e34d27`, protocol
+`e6828a497645f2ec469d22f9d5f05ab50f20bfebf600d1e49a0ba9fdf8f0a8d6`) and B4b
 `SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-SMOKE-4-V2` (composed
 `c0572352a9b4758a61654f46d06812819da42d3c7cf9611b24a383882b279661`, protocol
 `f13ba493375d75a524884f771a6c5d9b410425951b15cccf9d59d1fe76f3cd9c`). **Cell B4c has no smoke of its
