@@ -1,0 +1,73 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-exemplars-k20-anchor-replicate-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-anchor-exemplars-k20-replicate-smoke-4-v1",
+      "cell_id": "slurp-native-exemplars-k20-anchor-replicate-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Four-row form smoke of cell B1r, registered before contact under OWNER DECISION 37 of 2026-09-19 alongside the arm. Structural evidence only; no official scoring job and no task-quality read. It stays held: the coordinator pins the root decision receipt coordination/slurp-b1-replicate-v1/root-admission-v1.json (decision id slurp-b1-replicate-admission-v1) and flips the state with scripts/flights/repin_cell.py. Exclusive attach-only use of serving-slurp-native-candidate-five-train-a-np4-v1 and exact realized-request fitting remain mandatory. Registered by the B1r registration agent in worktree /home/chao/saea-worktrees/fable-b1r, branch fable/b1r, base commit 0989edb1.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors cell B1 and the sealed dual-store anchor used, with zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed cell B1 preparation's on all 4 rows (output SHA-256 512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733), asserted by hand in this registration -- the model-free proof that this replicate's own identities and the declared finite-completion key move no knowledge-selection byte. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting cell B1's, which is also why core.flight.repin finds it valid, rebuilds nothing and adds nothing to assert_no_residue's scan. --allow-output-change must never be passed; if that output SHA-256 stops matching, a merge changed the knowledge channel -- stop and report.",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-REPLICATE-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "78aa0622394f37287878116beab4b229dd2c5afbb28b08d8210e798e21ed0f83"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-REPLICATE-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-19",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-REPLICATE-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops cell B1r and the arm does not open. The resume-recovery clause of owner decision 22 applies to the arm, not to a four-row form smoke, which is re-flown whole if it is re-flown at all.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-native-exemplars-k20-anchor-replicate-smoke-4-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The four already-exposed TRAIN A engineering rows this repository reuses for every four-row form smoke, the same four the cell B0 smoke used; no quality-based selection.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row standalone-worker form smoke of cell B1r before the replicate arm flies. Structural evidence only: the eleven-contact anchor role graph, the train-exemplars typed content blocks present in the Solver request, one native contact fit receipt per realized contact, a clean seal, and any retained finite_completion row reported rather than treated as an error. No official scoring and no task-quality claim; a structural smoke result is never a quality result.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2"
+}
