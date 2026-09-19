@@ -27,6 +27,8 @@ from .node_context_policy import (
     CLEANING_RENDER_TEMPLATES,
     LEVELS,
     PARSE_FAILURE_RULES,
+    SLOT_AUDIT_ATTACHMENT_L1,
+    SLOT_AUDIT_ATTACHMENT_RAW,
     SLOT_AUDIT_BOUNDARY,
     SLURP_BOUNDARY_IDS,
     SOLVER_HINTS_BOUNDARY,
@@ -53,6 +55,14 @@ from .slot_audit import (
 #: The policy id an OFF-arm declaration that names none carries in its
 #: receipts, so a ``level: "raw"`` row still says which policy decided it.
 RAW_NODE_CONTEXT_POLICY_ID = "raw-node-context-v1"
+
+#: E19 (2026-09-19, owner decision 32): the ``context_policy`` value an
+#: armed ``native_episode.reviewer_audit`` composes when the fragment
+#: declares NO policy at all -- the key's own bare OFF arm. It renders
+#: every state untouched and still emits one ``level: "raw"`` receipt row
+#: per boundary per contact, which is what turns "only the Reviewer's
+#: draft boundary moved" from a claim into a checked statement.
+IMPLICIT_RAW_CONTEXT_POLICY = "raw"
 
 #: The producing role of each semantic class, for the ``producers`` block.
 PRODUCER_ROLE_KINDS: Mapping[str, str] = {
@@ -461,15 +471,43 @@ def validate_reviewer_audit_config(document: object) -> str:
     return _bytes(dict(document)).decode()
 
 
+def _declared_boundary_level(
+    context_policy_json: str | None, *, boundary: tuple[str, str],
+) -> str:
+    """The effective level one boundary takes under a declared policy.
+
+    ``raw`` for a config that declares no ``context_policy`` at all and for
+    the key's bare ``"raw"`` arm: both put exactly the sealed bytes on the
+    wire, which is what an E19 attachment adds to.
+    """
+
+    if context_policy_json is None:
+        return "raw"
+    spec = json.loads(context_policy_json)
+    if isinstance(spec, str):
+        return spec
+    if not isinstance(spec, Mapping):
+        return "raw"
+    spelling = f"{boundary[0]}:{boundary[1]}"
+    default_level = spec.get("level", "raw")
+    entry = (spec.get("boundaries") or {}).get(spelling)
+    return (
+        entry.get("level", default_level)
+        if isinstance(entry, Mapping)
+        else default_level
+    )
+
+
 def _requires_structured_boundary(
     context_policy_json: str | None, *, key: str, boundary: tuple[str, str],
 ) -> None:
     """Refuse an armed context block whose boundary is not at L1.
 
-    Shared by E12's Reviewer slot audit and E14's Solver scenario hints:
-    both are ADDITIONS to a boundary's own L1 rendering, so both have
-    nothing to attach to at ``raw`` and would be cleaned away at
-    ``cleaned``. Checked before contact, by name.
+    E14's Solver scenario hints: the block is an ADDITION to that
+    boundary's own L1 rendering, so it has nothing to attach to at ``raw``
+    and would be cleaned away at ``cleaned``. Checked before contact, by
+    name. (E12's Reviewer audit shared this rule until E19 re-based it on
+    the sealed draft -- see :func:`reviewer_audit_boundary_attachment`.)
     """
 
     spelling = f"{boundary[0]}:{boundary[1]}"
@@ -483,13 +521,7 @@ def _requires_structured_boundary(
         raise ValueError(
             f"{key} requires {spelling} at level 'structured'"
         )
-    default_level = spec.get("level", "raw")
-    entry = (spec.get("boundaries") or {}).get(spelling)
-    level = (
-        entry.get("level", default_level)
-        if isinstance(entry, Mapping)
-        else default_level
-    )
+    level = _declared_boundary_level(context_policy_json, boundary=boundary)
     if level != "structured":
         raise ValueError(
             f"{key} requires the {spelling} boundary at level "
@@ -497,13 +529,34 @@ def _requires_structured_boundary(
         )
 
 
-def reviewer_audit_requires_structured_boundary(context_policy_json: str | None) -> None:
-    """Refuse an armed audit whose boundary is not at L1 (E12)."""
+def reviewer_audit_boundary_attachment(context_policy_json: str | None) -> str:
+    """E19: which attachment an armed audit takes, or refuse it by name.
 
-    _requires_structured_boundary(
-        context_policy_json,
-        key="native_episode.reviewer_audit",
-        boundary=SLOT_AUDIT_BOUNDARY,
+    E12 required the boundary at ``structured``, because the block was an
+    addition to that boundary's L1 rendering and had nothing to attach to
+    at raw. Cell B7a v2 read the L1 policy HARMFUL
+    (``docs/results/2026-09-19-slurp-b7a-ncp-l1-anchor-v2-verdict.md``) and
+    owner decision 32 closed every cell registered on it, so the block is
+    re-based rather than retired: at ``raw`` -- including the case of no
+    declared policy at all -- it is appended to the SEALED draft bytes,
+    which is an addition to exactly the one thing the Reviewer would
+    otherwise have received at this boundary.
+
+    ``cleaned`` stays refused by name: a cleaning contact REWRITES the
+    rendering the block is appended to, so the block would be cleaned away.
+    """
+
+    spelling = f"{SLOT_AUDIT_BOUNDARY[0]}:{SLOT_AUDIT_BOUNDARY[1]}"
+    level = _declared_boundary_level(context_policy_json, boundary=SLOT_AUDIT_BOUNDARY)
+    if level == "cleaned":
+        raise ValueError(
+            f"native_episode.reviewer_audit cannot attach to the {spelling} "
+            "boundary at level 'cleaned'; a cleaning contact rewrites the "
+            "rendering the block is appended to"
+        )
+    return (
+        SLOT_AUDIT_ATTACHMENT_L1 if level == "structured"
+        else SLOT_AUDIT_ATTACHMENT_RAW
     )
 
 
@@ -761,8 +814,24 @@ def build_solver_hints_binding(
         raise ValueError(str(error)) from error
 
 
+def _slot_audit_template_sha256s(slot_audit: object) -> dict[str, str]:
+    """E12: the THREE assets the audit pins beside the boundary's own L1
+    template -- its rendering template and the two released files of the
+    construction table -- so a receipt names every byte the block was
+    composed from. Empty when no audit is armed."""
+
+    if slot_audit is None:
+        return {}
+    spelling = f"{SLOT_AUDIT_BOUNDARY[0]}:{SLOT_AUDIT_BOUNDARY[1]}"
+    return {
+        f"{spelling}:slot-audit": slot_audit.template.sha256,
+        f"{spelling}:slot-audit-release": slot_audit.table.release_sha256,
+        f"{spelling}:slot-audit-snapshot": slot_audit.table.snapshot_sha256,
+    }
+
+
 def build_node_context_policy_binding(
-    config_json: str, perception_response_format: Mapping[str, object],
+    config_json: str | None, perception_response_format: Mapping[str, object],
     repo_root: Path, reviewer_audit_json: str | None = None,
     solver_hints_json: str | None = None, data_root: Path | None = None,
 ) -> NodeContextPolicyBinding:
@@ -772,14 +841,30 @@ def build_node_context_policy_binding(
     ``native_episode.reviewer_audit``; ``None`` -- every flight before E12 and
     every OFF arm -- leaves the policy exactly as it was and the
     ``reviewer:current-draft`` boundary renders the pre-E12 bytes.
+
+    ``config_json`` is ``None`` when the fragment declares no
+    ``context_policy`` at all. That is legal only with an armed audit (E19),
+    and it composes the key's own bare ``"raw"`` arm: nothing is rendered,
+    every boundary emits its ``level: "raw"`` row, and the audited draft
+    boundary is the single place a byte moves.
     """
 
+    if config_json is None:
+        if reviewer_audit_json is None:
+            raise ValueError(
+                "a node context binding with no declared "
+                "native_episode.context_policy requires an armed "
+                "native_episode.reviewer_audit"
+            )
+        config_json = validate_node_context_policy_config(
+            IMPLICIT_RAW_CONTEXT_POLICY
+        )
     spec = json.loads(config_json)
     if validate_node_context_policy_config(spec) != config_json:
         raise ValueError("node context config is not its canonical bound representation")
     slot_audit = None
     if reviewer_audit_json is not None:
-        reviewer_audit_requires_structured_boundary(config_json)
+        reviewer_audit_boundary_attachment(config_json)
         slot_audit = build_slot_audit_binding(reviewer_audit_json, repo_root)
     solver_hints = None
     if solver_hints_json is not None:
@@ -811,6 +896,10 @@ def build_node_context_policy_binding(
                 spelling: dict(entry, level="raw")
                 for spelling, entry in boundaries.items()
             },
+            # E19: an armed audit attaches to the SEALED draft bytes here.
+            # The OFF arm stays exactly what it was -- ``slot_audit`` is
+            # None on every flight that arms none.
+            slot_audit=slot_audit,
         )
         return NodeContextPolicyBinding(
             policy=policy,
@@ -819,7 +908,7 @@ def build_node_context_policy_binding(
                 _bytes(perception_response_format)
             ).hexdigest(),
             config_sha256=hashlib.sha256(config_json.encode()).hexdigest(),
-            template_sha256s={},
+            template_sha256s=_slot_audit_template_sha256s(slot_audit),
         )
     factory = ROLE_CONTEXT_COMPILERS.resolve(spec["policy_id"])
     policy = factory(
@@ -832,16 +921,7 @@ def build_node_context_policy_binding(
         slot_audit=slot_audit,
         solver_hints=solver_hints,
     )
-    templates: dict[str, str] = {}
-    if slot_audit is not None:
-        # E12: the audit pins THREE assets beside the boundary's own L1
-        # template -- its rendering template and the two released files of the
-        # construction table -- so a receipt names every byte the block was
-        # composed from.
-        spelling = f"{SLOT_AUDIT_BOUNDARY[0]}:{SLOT_AUDIT_BOUNDARY[1]}"
-        templates[f"{spelling}:slot-audit"] = slot_audit.template.sha256
-        templates[f"{spelling}:slot-audit-release"] = slot_audit.table.release_sha256
-        templates[f"{spelling}:slot-audit-snapshot"] = slot_audit.table.snapshot_sha256
+    templates: dict[str, str] = dict(_slot_audit_template_sha256s(slot_audit))
     if solver_hints is not None:
         # E14: the hints block pins THREE assets beside the boundary's own L1
         # template -- its rendering template and the two released files of
@@ -883,6 +963,7 @@ def build_node_context_policy_binding(
 
 __all__ = [
     "PRODUCER_FORMAT_CLASSES",
+    "IMPLICIT_RAW_CONTEXT_POLICY",
     "RAW_NODE_CONTEXT_POLICY_ID",
     "PRODUCER_ROLE_KINDS",
     "REVIEW_FINDINGS_RESPONSE_FORMAT_ID",
@@ -897,7 +978,7 @@ __all__ = [
     "node_context_cleaning_boundaries",
     "node_context_producer_formats",
     "node_context_source_format_id",
-    "reviewer_audit_requires_structured_boundary",
+    "reviewer_audit_boundary_attachment",
     "solver_hints_requires_structured_boundary",
     "validate_node_context_policy_config",
     "validate_reviewer_audit_config",

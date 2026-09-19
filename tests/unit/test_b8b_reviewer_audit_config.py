@@ -24,8 +24,12 @@ configuration:
 3. the armed pins name real committed bytes and hash to them;
 4. dropping the one key reconstructs B7r's own ``native_episode`` block;
 5. the composed configuration loads with the block armed, and the loader
-   refuses it by name on the wrong carrier and on a boundary that is not at
-   level ``structured``;
+   refuses it by name on the wrong carrier. Item E19 (2026-09-19, owner
+   decision 32) re-based the block off this L1 stack, so the boundary level
+   is no longer a refusal: it RESOLVES an attachment. These sealed L1 bytes
+   still parse and still take the ``l1-rendering`` attachment, which is the
+   no-regression half of E19; the ``sealed-draft`` half is proved in
+   ``tests/unit/test_b8b_anchor_reviewer_audit_config.py``;
 6. both experiment fragments are registered ``held`` with no decision
    requirement, at B7r's own roster and budgets.
 
@@ -227,7 +231,7 @@ def test_the_composed_smoke_loads_a_native_episode_with_the_block_armed():
     # the module default. It is carried on the episode SPEC, never rendered.
     assert config.finite_completion_policy == FINITE_COMPLETION_VALUE
     assert off_config.finite_completion_policy == FINITE_COMPLETION_VALUE
-def test_the_loader_refuses_the_block_on_another_carrier_and_off_l1():
+def test_the_loader_refuses_the_block_on_another_carrier_and_resolves_its_attachment():
     from speech_aware_evidence_acquisition.rails.controllers import (
         default_phase_program,
     )
@@ -243,17 +247,39 @@ def test_the_loader_refuses_the_block_on_another_carrier_and_off_l1():
     with pytest.raises(ValueError, match="defined for carrier 'slurp'"):
         load_native_episode_config(wrong_carrier, program)
 
+    # E19: what used to be two refusals is now the attachment resolution.
+    # These committed L1 bytes keep the E12 attachment; the same key on a
+    # raw boundary, or with no policy declared at all, takes the sealed-draft
+    # attachment instead of being refused.
+    from speech_aware_evidence_acquisition.rails.node_context_binding import (
+        reviewer_audit_boundary_attachment,
+    )
+    from speech_aware_evidence_acquisition.rails.node_context_policy import (
+        SLOT_AUDIT_ATTACHMENT_L1,
+        SLOT_AUDIT_ATTACHMENT_RAW,
+    )
+
+    config = load_native_episode_config(copy.deepcopy(dict(values)), program)
+    assert reviewer_audit_boundary_attachment(config.context_policy_json) == (
+        SLOT_AUDIT_ATTACHMENT_L1
+    )
+
     raw_boundary = copy.deepcopy(dict(values))
     raw_boundary["native_episode"]["context_policy"]["boundaries"][
         "reviewer:current-draft"
     ] = {"level": "raw"}
-    with pytest.raises(ValueError, match="at level 'structured'"):
-        load_native_episode_config(raw_boundary, program)
+    raw_config = load_native_episode_config(raw_boundary, program)
+    assert raw_config.reviewer_audit_json is not None
+    assert reviewer_audit_boundary_attachment(
+        raw_config.context_policy_json
+    ) == SLOT_AUDIT_ATTACHMENT_RAW
 
     no_policy = copy.deepcopy(dict(values))
     no_policy["native_episode"].pop("context_policy")
-    with pytest.raises(ValueError, match="requires a declared"):
-        load_native_episode_config(no_policy, program)
+    bare = load_native_episode_config(no_policy, program)
+    assert bare.context_policy_json is None
+    assert bare.reviewer_audit_json is not None
+    assert reviewer_audit_boundary_attachment(None) == SLOT_AUDIT_ATTACHMENT_RAW
 
 
 @pytest.mark.parametrize(

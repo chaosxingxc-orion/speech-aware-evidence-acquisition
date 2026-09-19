@@ -23,16 +23,20 @@ from speech_aware_evidence_acquisition.rails.config_tables import (
     is_episode_null_arm,
 )
 from speech_aware_evidence_acquisition.rails.node_context_binding import (
+    RAW_NODE_CONTEXT_POLICY_ID,
     build_slot_audit_binding,
     is_reviewer_audit_null_arm,
-    reviewer_audit_requires_structured_boundary,
+    reviewer_audit_boundary_attachment,
     validate_node_context_policy_config,
     validate_reviewer_audit_config,
 )
 from speech_aware_evidence_acquisition.rails.node_context_policy import (
+    SLOT_AUDIT_ATTACHMENT_L1,
+    SLOT_AUDIT_ATTACHMENT_RAW,
     SLOT_AUDIT_BOUNDARY,
     SLOT_AUDIT_RENDERER,
     SLOT_AUDIT_TEMPLATE,
+    SLURP_CLOSED_DRAFT_SCHEMA,
     NodeContextPolicyError,
     build_slurp_node_context_policy,
     load_node_context_template,
@@ -118,6 +122,20 @@ def _audited_policy(tmp_path: Path, **kwargs):
         params=PARAMS,
         slot_audit=binding,
         **kwargs,
+    )
+
+
+def _raw_audited_policy(tmp_path: Path):
+    """E19: the audit armed on the key's own bare ``raw`` arm -- no
+    params, no template, nothing rendered at any boundary."""
+
+    binding, _release, _snapshot = _binding(tmp_path)
+    return build_slurp_node_context_policy(
+        repo_root=REPO_ROOT,
+        policy_id=RAW_NODE_CONTEXT_POLICY_ID,
+        level="raw",
+        boundaries={},
+        slot_audit=binding,
     )
 
 
@@ -453,34 +471,165 @@ def test_the_switch_config_is_validated_fail_closed(tmp_path):
         validate_reviewer_audit_config("slot-audit-v1")
 
 
-def test_the_switch_requires_the_reviewer_draft_boundary_at_l1(tmp_path):
+def test_the_switch_resolves_the_boundary_attachment(tmp_path):
+    """E19 (owner decision 32): the switch no longer REQUIRES L1. It
+    resolves which of the two things the block is appended to, and
+    refuses only the level whose rendering would clean it away."""
+
     spelling = f"{SLOT_AUDIT_BOUNDARY[0]}:{SLOT_AUDIT_BOUNDARY[1]}"
     structured = validate_node_context_policy_config({
         "level": "structured",
         "policy_id": "typed-slurp-node-context-v1",
         "params": json.loads(json.dumps(PARAMS)),
     })
-    reviewer_audit_requires_structured_boundary(structured)
-
-    with pytest.raises(ValueError, match="requires a declared"):
-        reviewer_audit_requires_structured_boundary(None)
+    assert reviewer_audit_boundary_attachment(structured) == (
+        SLOT_AUDIT_ATTACHMENT_L1
+    )
+    # No declared policy at all -- the anchor's own shape.
+    assert reviewer_audit_boundary_attachment(None) == SLOT_AUDIT_ATTACHMENT_RAW
     raw = validate_node_context_policy_config("raw")
-    with pytest.raises(ValueError, match="at level 'structured'"):
-        reviewer_audit_requires_structured_boundary(raw)
+    assert reviewer_audit_boundary_attachment(raw) == SLOT_AUDIT_ATTACHMENT_RAW
     overridden = validate_node_context_policy_config({
         "level": "structured",
         "policy_id": "typed-slurp-node-context-v1",
         "params": json.loads(json.dumps(PARAMS)),
         "boundaries": {spelling: {"level": "raw"}},
     })
-    with pytest.raises(ValueError, match="puts it at 'raw'"):
-        reviewer_audit_requires_structured_boundary(overridden)
+    assert reviewer_audit_boundary_attachment(overridden) == (
+        SLOT_AUDIT_ATTACHMENT_RAW
+    )
+    # The third level never reaches the attachment: this carrier
+    # registers a cleaning renderer only for review-finding, so a
+    # cleaned reviewer:current-draft is refused before an audit is read.
+    with pytest.raises(ValueError, match="cannot be cleaned"):
+        validate_node_context_policy_config({
+            "level": "structured",
+            "policy_id": "typed-slurp-node-context-v1",
+            "params": json.loads(json.dumps(PARAMS)),
+            "boundaries": {spelling: {
+                "level": "cleaned",
+                "cleaning": {
+                    "phase_id": "context_clean_draft",
+                    "instruction_template": (
+                        "probes/ncp_slurp_cleaning_review_v1.txt"
+                    ),
+                    "response_format_id": "ncp-review-issues-v1",
+                    "on_invalid": "fallback-l1",
+                },
+            }},
+        })
 
 
-def test_the_policy_refuses_an_audit_on_a_raw_boundary(tmp_path):
+def test_the_policy_attaches_an_audit_at_raw(tmp_path):
     spelling = f"{SLOT_AUDIT_BOUNDARY[0]}:{SLOT_AUDIT_BOUNDARY[1]}"
-    with pytest.raises(NodeContextPolicyError, match="level 'structured'"):
-        _audited_policy(tmp_path, boundaries={spelling: {"level": "raw"}})
+    at_raw = _audited_policy(tmp_path, boundaries={spelling: {"level": "raw"}})
+    assert at_raw.slot_audit_attachment == SLOT_AUDIT_ATTACHMENT_RAW
+    assert _audited_policy(tmp_path).slot_audit_attachment == (
+        SLOT_AUDIT_ATTACHMENT_L1
+    )
+    assert _raw_audited_policy(tmp_path).slot_audit_attachment == (
+        SLOT_AUDIT_ATTACHMENT_RAW
+    )
+
+
+# ---------------------------------------------------------------------------
+# (e) E19: the same block, appended to the SEALED draft
+# ---------------------------------------------------------------------------
+
+
+def test_the_closed_draft_contract_is_the_one_the_l1_fragments_declare():
+    """One contract, two attachments. The committed L1 baseline declares
+    the draft schema in its params; the sealed-draft attachment binds
+    :data:`SLURP_CLOSED_DRAFT_SCHEMA` instead, and they are the same
+    bytes -- so a draft parses identically either way."""
+
+    fragment = json.loads(
+        (
+            REPO_ROOT / "configs" / "baseline"
+            / "slurp-native-anchor-ncp-l1-reviewer-audit-train-fold-a-v1.json"
+        ).read_text(encoding="utf-8")
+    )
+    declared = fragment["native_episode"]["context_policy"]["params"][
+        "draft_response_schema"
+    ]
+    assert json.dumps(declared, sort_keys=True) == json.dumps(
+        SLURP_CLOSED_DRAFT_SCHEMA, sort_keys=True
+    )
+
+
+def test_the_audit_appends_to_the_sealed_draft_under_an_all_raw_policy(tmp_path):
+    """E19: the block's bytes are the L1 arm's bytes; what changes is the
+    ONE thing they follow -- here the sealed Solver response itself."""
+
+    states = _states(DRAFT_IN_TABLE)
+    raw_armed = _compile(_raw_audited_policy(tmp_path), "reviewer", states)
+    l1_armed = _compile(_audited_policy(tmp_path), "reviewer", states)
+    sealed = states[1].content
+    exposed = raw_armed.states[1].content
+    assert exposed.startswith(sealed + "\n")
+    block = exposed[len(sealed) + 1:]
+    l1_text = l1_armed.states[1].content
+    assert l1_text.endswith("\n" + block)
+    # Every OTHER state passes through byte for byte.
+    assert raw_armed.states[0].content == states[0].content
+
+
+def test_the_sealed_draft_row_is_raw_and_names_the_block_it_added(tmp_path):
+    compilation = _compile(
+        _raw_audited_policy(tmp_path), "reviewer", _states(DRAFT_IN_TABLE)
+    )
+    row = _draft_row(compilation)
+    assert row["level"] == "raw"
+    assert row["template_id"] is None
+    audit = row["slot_audit"]
+    assert audit["applied"] is True
+    assert audit["intent_id"] == "alarm_set"
+    assert audit["block_chars"] > 0
+    sealed = _states(DRAFT_IN_TABLE)[1].content
+    block = compilation.states[1].content[len(sealed) + 1:]
+    assert audit["block_sha256"] == hashlib.sha256(block.encode()).hexdigest()
+    # The one place a raw row's rendered bytes are not its source's, and
+    # it is never silent: no ``slot_audit``, no inequality.
+    assert row["rendered_sha256"] != row["source"]["content_sha256"]
+    others = [
+        other for other in compilation.receipt["boundaries"] if other is not row
+    ]
+    assert others
+    for other in others:
+        assert "slot_audit" not in other
+        assert other["rendered_sha256"] == other["source"]["content_sha256"]
+
+
+def test_an_unparsed_draft_under_the_raw_attachment_keeps_the_sealed_bytes(
+    tmp_path,
+):
+    states = _states(MALFORMED_DRAFT)
+    compilation = _compile(_raw_audited_policy(tmp_path), "reviewer", states)
+    assert compilation.states[1].content == states[1].content
+    row = _draft_row(compilation)
+    assert row["rendered_sha256"] == row["source"]["content_sha256"]
+    assert row["slot_audit"]["applied"] is False
+    assert row["slot_audit"]["reason"] == "draft-unparsed"
+
+
+def test_an_all_raw_policy_with_no_audit_is_untouched_by_e19(tmp_path):
+    """The OFF arm of the OFF arm: no audit, no derived state, no
+    ``slot_audit`` key anywhere in the receipt."""
+
+    policy = build_slurp_node_context_policy(
+        repo_root=REPO_ROOT,
+        policy_id=RAW_NODE_CONTEXT_POLICY_ID,
+        level="raw",
+        boundaries={},
+    )
+    states = _states(DRAFT_IN_TABLE)
+    compilation = _compile(policy, "reviewer", states)
+    assert [state.content for state in compilation.states] == [
+        state.content for state in states
+    ]
+    for row in compilation.receipt["boundaries"]:
+        assert "slot_audit" not in row
+        assert row["rendered_sha256"] == row["source"]["content_sha256"]
 
 
 def test_building_the_binding_reads_and_checks_the_pinned_bytes(tmp_path):

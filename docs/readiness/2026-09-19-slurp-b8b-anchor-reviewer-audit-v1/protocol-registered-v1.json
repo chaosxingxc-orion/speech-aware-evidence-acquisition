@@ -1,0 +1,320 @@
+{
+  "accounting": {
+    "arm": {
+      "expected_contacts": 5420,
+      "expected_gpu_hours": 3.6,
+      "fit_endpoint_calls_cap": 47520,
+      "generation_calls_cap": 11880,
+      "gpu_hours_fit_inclusive_cap": 12.0,
+      "native_task_contract_calls_cap": 6480,
+      "official_complete_score_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 33930
+    },
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "exposure_rows": [
+      "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1",
+      "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-SMOKE-4-FIT-V1",
+      "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1",
+      "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-FIT-V1"
+    ],
+    "paid_api_calls": 0,
+    "smoke": {
+      "expected_contacts": 20,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive_cap": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_score_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 117
+    }
+  },
+  "analysis_recipe": "analysis-recipe-v1.json",
+  "authority": {
+    "design": "docs/superpowers/specs/2026-09-17-node-context-policy-design.md sections 16 (cell B8b) and 19 (item E19).",
+    "owner_decision_27": "2026-09-19: the order, and non-GPU work in parallel.",
+    "owner_decision_30": "This is an EFFECTIVENESS cell: its NEUTRAL or HARMFUL read advances the headroom-exhausted streak toward the v2.0 lock.",
+    "owner_decision_32": "2026-09-16 owner decisions document, decision 32: 'HARMFUL: cells B7r and B7c close unflown; B8b is re-based on the anchor (an E12 follow-up, because the audit block attaches to the L1 structured Reviewer boundary) and re-registered; no cell flies on a HARMFUL base (decision 15).' Pre-authorised; the outcome record of 2026-09-19 confirms it fired.",
+    "owner_decision_38": "Margin regime: B0r's own null is the fallback where the configuration has no request-identical replicate of its own.",
+    "owner_directive_26": "2026-09-18: analyses into nodes; family B8, with B8b named as the Reviewer slot-audit block."
+  },
+  "cells": {
+    "arm": {
+      "baseline_fragment": "slurp-native-anchor-reviewer-audit-train-fold-a-v1",
+      "campaign_plan": "configs/campaign/slurp-native-reviewer-audit-anchor-train-fold-a-v1.json",
+      "cell_id": "slurp-native-reviewer-audit-anchor-train-fold-a-v1",
+      "composed_config_hash": "f00ac5d1d53c2e86a15a84981c89dc389d8d650fb6cda797b1966cbdc2e2efa0",
+      "experiment_fragment": "slurp-native-reviewer-audit-anchor-train-fold-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-reviewer-audit-anchor-train-fold-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-FIT-V1",
+      "generation_attempt_id": "attempt-slurp-native-reviewer-audit-anchor-train-fold-a-generation-v1",
+      "order": "opens after the smoke seals",
+      "protocol_hash": "a1e378154714fd924d7560297046fecd62df15609c8d65c989c63b0b719e5699",
+      "readiness": "held",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "smoke": {
+      "baseline_fragment": "slurp-native-anchor-reviewer-audit-smoke-4-v1",
+      "cell_id": "slurp-native-reviewer-audit-anchor-smoke-4-v1",
+      "composed_config_hash": "9edba0ad68d10428f9b418c6b6ec6c6a22f7d2938c76a164fd168fa72b0dae18",
+      "experiment_fragment": "slurp-native-reviewer-audit-anchor-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-reviewer-audit-anchor-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-SMOKE-4-FIT-V1",
+      "generation_attempt_id": "attempt-slurp-native-reviewer-audit-anchor-smoke-4-generation-v1",
+      "order": "flies first; the arm opens only after it seals",
+      "protocol_hash": "97dbb138440762fd2265d04733e986d44571eb8643e69b41c801fcb331b6e8db",
+      "readiness": "held",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    }
+  },
+  "comparators": {
+    "node_free": "Both arms are node-free: neither carries the delivery-time normaliser node (module M3, cell B8a), which the verdict must state.",
+    "primary": {
+      "never_reflown": true,
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+      "what": "the SEALED dual-store TRAIN Fold A anchor, 1,080 rows, 5,417 model calls, official pooled SLU micro F1 48.53363 and intent accuracy 77.96296 (842/1080) (docs/results/2026-09-14-slurp-native-train-a-anchor.md)"
+    },
+    "retired": "The Node Context Policy L1 stack (cells B7a v1/v2, B7r, B7c) is NOT a comparator. B7a v2 read HARMFUL; B7r and B7c closed unflown."
+  },
+  "contact_free_evidence": {
+    "hash_provenance": "Composed and protocol hashes derived by core.flight.repin.compute_cell_identity over the same four composed fragments core.flight.cli composes; prepared-artifact hashes read from the artifacts this registration produced.",
+    "this_registration": "Zero model, tokenizer, encoder, ASR, scorer, server and paid-API contacts. The resident service was never started, stopped or queried; no run directory was read or written; no flight lock was touched; and no utterance text, filler or gold is printed or persisted anywhere in this package. The only writes outside the repository are the two model-free prepare-supply artifacts under prepared/ and the root decision receipt under coordination/.",
+    "wire_check": "core.flight.cli wire-check remains unavailable for any native-episode cell; the substitute is tests/unit/test_native_episode_runner_reviewer_audit.py."
+  },
+  "cost_reporting": [
+    "contacts and GPU hours for the arm beside the sealed anchor's 5,417 contacts and 3.3880 GPU hours",
+    "prompt tokens per role, and the whole-run prompt-token delta",
+    "wall-clock and the realized contacts-per-row distribution"
+  ],
+  "decision_rule": {
+    "admitted": "ADMITTED if and only if all four hold against the SEALED ANCHOR's score artifact: (1) the CI95 LOWER bound of the paired official pooled SLU-F1 delta is greater than 0; (2) intent is non-inferior at the own-null margin -- its CI95 lower bound exceeds -1.0051; (3) the TRAIN symmetric scorer slurp-slu-f1-normalized-v1-train agrees in sign with the unprojected primary; and (4) no scenario loses intent beyond the null band -- no scenario's paired intent CI95 upper bound lies below zero.",
+    "harmful_first": "HARMFUL is read FIRST (owner decision 25, Method B): only by a MEASURED loss -- a point estimate of the official pooled SLU-F1 delta or of the intent delta below -h (-1.1218 / -1.0051), or a CI95 UPPER bound below zero. An interval that straddles zero with the point estimate inside the margin is NOT harmful; it reads NEUTRAL with 'non-inferiority not proven' stated in those words.",
+    "neutral": "NEUTRAL otherwise. Under owner decision 30 a NEUTRAL or HARMFUL one-factor read advances the headroom-exhausted streak; a beneficial but not CI95-proven movement is RECORDED as such (owner decision 25) and never claimed as an admission.",
+    "no_repeat_to_pass": true,
+    "null_margin_source": "cell B0r's own null on this exact TRAIN A roster and geometry (docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md). Owner decision 38: a contrast involving a configuration uses that configuration's own request-identical replicate; the sealed anchor has none, so B0r's own null is the registered fallback. The retired imported DEV-1000 half-widths are never used.",
+    "null_margins_pp": {
+      "h_SLU": 1.1218,
+      "h_intent": 1.0051
+    },
+    "read_exactly_once": true,
+    "stop_condition": "STOP and write the verdict as soon as the primary and its guard are computed once. No re-scoring, no second estimator, no re-weighting after seeing a number, no row filtering.",
+    "twin_rule": "No twin is registered here. A derangement or token-matched control flies only if this cell shows a positive CI95 lower bound against the anchor, by the program's twin rule (owner ruling 2026-09-06: lock a score against a token-matched control, not against a token count)."
+  },
+  "diagnostics_required": [
+    "The four slot-audit flag counts (TYPE-UNSEEN, EMPTY-DRAFT, MISSING-COMMON, REPRESENTATION) over every Reviewer contact, including the zeros, with the applied / not-applied split and, for every not-applied contact, its machine reason (the only reason this attachment can emit is 'draft-unparsed').",
+    "The count of Reviewer contacts whose slot_audit row carries applied: true and whose boundary row's rendered_sha256 therefore differs from its source's content_sha256 -- the block-rendered receipt, and the only place in the whole flight where a level: raw row's rendered bytes are not its source's.",
+    "The per-boundary saea-node-context-policy-v1 aggregate: rows, level, raw_reason distribution, and the count of rows whose rendered_sha256 equals their source's content_sha256. Under the composed all-raw policy that count must be every row except the applied-true Reviewer draft rows.",
+    "The before/after table of the four flags against the delivered answer, as a diagnostic only: the flags move together and no single flag is separately admitted.",
+    "planner_action_illegal: the count of Planner outputs that are not an exact declared action token, with the roles and revision indices. The harness raises on one (it closed the cell B7a v1 arm), so a non-zero count is a flight failure, not a metric.",
+    "The count of rows whose terminal_disposition.reason is 'finite_completion', with the interrupted role's breakdown. Such rows are RETAINED and scored as delivered, never filtered, and counted in the verdict. The sealed anchor flew without the key and its exposure receipt records zero such rows, so the asymmetry between the two arms is measured rather than assumed.",
+    "Reviewer parse rate under the repository's registered findings parser, reported for continuity with the retired L1 stack's diagnostics and gating nothing: this cell declares no producer response format.",
+    "Native task-contract tool-call count, per role, against the declared ceiling.",
+    "Contacts per row and the revision-route distribution (ACCEPT / REVISE / ACQUIRE), beside the sealed anchor's own.",
+    "Prompt tokens per ROLE beside the anchor's, and the whole-run prompt-token and GPU-hour deltas. The block adds tokens to the Reviewer contacts only; the efficiency note of the verdict states the per-role figure, never a whole-run figure alone.",
+    "Per-scenario tables for every reported metric, and net harmed rows per scenario."
+  ],
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, no replay, no row filtering, no change to the roster, role graph, prompts, geometry or caps. At most ONE root-diagnosed recovery re-registration (a resume-recovery under owner decision 22 for an infrastructure failure with code and request bytes unchanged); a second failure closes the flight and the fix is proven on the four-row roster first.",
+  "fit": {
+    "arm_arithmetic": "1080 rows * 11 native contacts * (1 speech packet + 3 endpoints) = 47520",
+    "route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realized native request inside the same worker (smoke) or campaign (arm), under the same lease. coordinate-fit must NOT be run, or the FIT rows are double-charged.",
+    "smoke_arithmetic": "4 rows * 11 native contacts * (1 speech packet + 3 endpoints) = 176"
+  },
+  "harness_admission_entry_form": {
+    "carrier": "slurp",
+    "module": "M5 (the Reviewer slot-audit context block)",
+    "switch": {
+      "key": "native_episode.reviewer_audit",
+      "off": "the key's absence",
+      "on": "the released view id with its two pins and the thresholds",
+      "proof": [
+        "tests/unit/test_native_episode_runner_reviewer_audit.py::test_on_the_anchor_shape_the_block_moves_only_the_reviewer_contacts",
+        "tests/unit/test_native_episode_runner_reviewer_audit.py::test_on_the_anchor_shape_the_reviewer_gains_exactly_the_block",
+        "tests/unit/test_reviewer_slot_audit_block.py::test_the_audit_appends_to_the_sealed_draft_under_an_all_raw_policy",
+        "tests/unit/test_b8b_anchor_reviewer_audit_config.py"
+      ],
+      "table": "episode",
+      "why_this_table": "the key MOVES REQUEST BYTES at one boundary by design, so no request-bytes-identical falsifier can exist for it; and it is not one of the four per-phase tables because it is not what a phase observes, is supplied with, is judged by or may call"
+    },
+    "written_by": "the coordinator, after the sealed verdict, never before"
+  },
+  "metrics": {
+    "delta_convention": "treatment (audit ON) minus comparator (the sealed anchor)",
+    "guard": "intent (joint scenario+action) accuracy",
+    "primary": "official pooled SLU micro F1 from slurp-slu-official-train (the pinned official evaluate.py, slurp-official-8eb16545), natural mixture, one complete score per manifest through core.scoring_batch, never sharded",
+    "reported_never_gating": [
+      "projection v3 (slurp-slu-official-projected-v3-train)",
+      "the TRAIN symmetric sibling (slurp-slu-f1-normalized-v1-train)",
+      "equal-stratum weighting beside the natural mixture"
+    ],
+    "secondaries": [
+      "intent, scenario and action accuracy",
+      "official pooled span F1",
+      "per-row mean official SLU-F1",
+      "per-row mean exact slot F1",
+      "saves / harms / ties with the exact two-sided McNemar p"
+    ]
+  },
+  "not_authorized": [
+    "any arm flight before this cell's own four-row smoke has sealed",
+    "any flight on the retired Node Context Policy L1 base",
+    "any ASR, transcript, encoder or paid-API contact",
+    "re-flying or re-scoring any comparator, including the sealed anchor",
+    "--allow-output-change on the re-pin tool",
+    "coordinate-fit",
+    "any default-plan edit or harness-admission entry before the sealed verdict",
+    "any DEV-1000, Fold B or test-split contact"
+  ],
+  "not_claimed": [
+    "No superiority, generalization, paper-scale or held-out claim. TRAIN Fold A is an exposed discovery roster and every claim of this cell stops at it. Fold B, DEV-1000 and the test split stay untouched and unread.",
+    "No gold of an evaluated row enters the block, at build time or at runtime. The only text of an evaluated row that can appear is the draft's own entity TYPE names, which the consumer already holds in the sealed draft immediately above.",
+    "Nothing about the retired Node Context Policy L1 stack. Cell B7a v2 read HARMFUL and cells B7r and B7c closed unflown; no number in this package is evidence for or against any of them, and the superseded L1-based B8b registration is not a comparator.",
+    "No claim that the Reviewer ACTS on the block. The cell measures whether the loop's outcome moves; whether the Reviewer's criticism changes because of the audit, or for some other reason, is not separable here.",
+    "No attribution to one flag. The four move together; the per-flag table is a diagnostic, not four separate admissions.",
+    "No claim about the A3 audit's own counts. They bound what the block can touch; they are never a predicted gain.",
+    "No claim that a larger or differently thresholded table would do better. The thresholds are the registered defaults and are not tuned here; changing one is a new cell.",
+    "No claim that the retained finite-completion rows are comparable to the anchor's. The anchor flew without the key; its receipt records zero such rows, and any non-zero count on this side is reported, never reconciled.",
+    "No claim that the block's token cost is free. It is reported per role beside the anchor's.",
+    "A structural smoke result is never a quality result, and this is not a bar attempt. The verdict states the official pooled SLU the arm reaches and whether it clears 64.00 as a FACT, never as a claim."
+  ],
+  "one_factor": {
+    "bookkeeping_that_must_differ": [
+      "native_contact_fit.run_id and .attempt_id",
+      "native_contact_fit.contact_cap (the smoke cell's roster is four rows)",
+      "prepared_phase_supply (this cell's own artifact, whose OUTPUT equals the anchor's -- see preparation_proof)",
+      "speech_feature_matcher_policy_id and speech_feature_key_representation_id (the per-cell feature-cache identity)",
+      "what_this_is"
+    ],
+    "held_identical": "policy phase-native-candidates-review-revise-v1, both knowledge stores and their phase/candidate supply, every phase_material instruction template and response format (the Reviewer's stays null), phase_tools, the roster, the model fragment and the serving geometry, and the role graph's eleven-contact ceiling.",
+    "moved": "native_episode.reviewer_audit",
+    "off": "the key's absence -- the sealed dual-store anchor's own configuration",
+    "on": "the released construction view slot-audit-v1 with its two committed pins and the three registered thresholds",
+    "proof": [
+      "tests/unit/test_native_episode_runner_reviewer_audit.py::test_on_the_anchor_shape_the_block_moves_only_the_reviewer_contacts",
+      "tests/unit/test_native_episode_runner_reviewer_audit.py::test_on_the_anchor_shape_the_reviewer_gains_exactly_the_block",
+      "tests/unit/test_reviewer_slot_audit_block.py::test_the_audit_appends_to_the_sealed_draft_under_an_all_raw_policy",
+      "tests/unit/test_b8b_anchor_reviewer_audit_config.py"
+    ],
+    "request_byte_movement": "Exactly the appended block, on the Reviewer contacts. The fragment declares NO native_episode.context_policy, so the composed policy is the key's own bare 'raw' arm: nothing is rendered at any boundary and every boundary emits a level: raw receipt row whose rendered bytes ARE its source's -- except the audited Reviewer draft rows, which carry the appended block and a slot_audit receipt naming it. The Perception, Solver and Planner requests are byte-identical to the anchor's.",
+    "second_declared_key_not_a_factor": {
+      "asymmetry": "The sealed anchor flew WITHOUT the key. Its exposure receipt records zero finite completions, so on the comparator side the key would have changed nothing; the asymmetry is measured rather than assumed, and the verdict states it.",
+      "key": "native_episode.finite_completion_policy",
+      "value": "deliver-latest-or-abstain",
+      "why": "A harness-robustness declaration admitted by item E13 after the cell B7a v1 recovery arm aborted at 1,451 contacts on a Reviewer completion that hit the 512-token cap under the module default 'raise'. It renders NO request byte -- rails.runner reads it once into core NativeEpisodeSpec -- and only decides whether a finite completion aborts the flight or is RETAINED with a terminal_disposition reason 'finite_completion'. tests/unit/test_slurp_finite_completion_row.py flies both arms and proves the request bytes do not move. Its count is a mandatory diagnostic; no row is ever filtered."
+    }
+  },
+  "preparation_proof": {
+    "arm": {
+      "artifact": "prepared/SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v1.json",
+      "equals": "the sealed anchor's own prepared Perception output (prepared/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/phase-supply.json and its PREPARE-V1-R2 predecessor), on 1,080 of 1,080 rows",
+      "file_sha256": "4d3233fd71b2ffa2ffa2e7b1b50d944f238c0729203647460f26fe6986b1f82c",
+      "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f"
+    },
+    "smoke": {
+      "artifact": "prepared/SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1/phase-supply-v1.json",
+      "equals": "the four-row Perception output the superseded L1-based B8b smoke prepared, on 4 of 4 rows",
+      "file_sha256": "b89ec1caad20d5750932cd8fc441fb4d69fe704781a606d494f2e3bfaf91d233",
+      "output_sha256": "512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733"
+    },
+    "what_it_proves": "Neither declared key moves a knowledge-selection byte. The artifact's identity digest pins the cell's WHOLE composed configuration and this cell's differs from the anchor's, so a fresh artifact was derived under this cell's own run id by the model-free core.flight.cli prepare-supply step; its OUTPUT is byte-identical to the anchor's. Zero model, tokenizer, encoder, scorer or server contacts."
+  },
+  "prompt_fit": {
+    "basis": "the block is bounded by construction: one header line, at most one profile line per entity type above profile_min_row_share for the drafted intent, at most four flag lines, one footer. The released table's widest intent profile bounds the block.",
+    "decision": "The block adds tokens to the REVIEWER contacts only; Perception, Solver and Planner requests are byte-identical to the anchor's. The verdict reports prompt tokens PER ROLE beside the anchor's.",
+    "known_preflight_condition": "On this np4/ctx24k geometry the E17-tightened preflight prompt budget (core.flight.runtime._assess_prompt_budget, measured against the live 24,576-token slot with an 8,192-token operational reserve instead of the retired 32,768-token module default) returns COMPACT_REQUIRED for the PERCEPTION phase on the sealed anchor's own configuration: rendered_text_tokens 18,640, required_window_tokens 19,183, physical margin +5,393, operational margin -2,799. It is reproduced byte for byte with and without this cell's two declared keys (same payload_sha256 1315b387d21c24feaa6af03e918ef4f0ba4fc14fc51c18373dc01ca9b4ceab46), so it is a pre-existing condition of every SLURP native cell on this geometry after E17, not a property of this cell. It must be resolved by the coordinator -- a declared context_budget_limits block, a wider slot, or a revisited operational reserve -- before any cell on this geometry can pass core.flight.cli check. The composed and protocol hashes in this package were therefore derived model-free, through core.flight.repin.compute_cell_identity, which composes the same four fragments the CLI composes."
+  },
+  "protocol_id": "slurp-b8b-anchor-reviewer-audit-v1",
+  "purpose": "Cell B8b-anchor. Owner directive 26 of 2026-09-18 asks that an analysis this program trusts be placed INSIDE an agent node; item E12 built the read-side instance, the A3 coverage / slot-loss audits rendered as declared context at the Reviewer boundary. That cell was registered on the Node Context Policy L1 stack. Cell B7a v2 read that stack HARMFUL on 2026-09-19 and owner decision 32 fired: cells B7r and B7c close unflown and cell B8b is RE-BASED on the sealed dual-store anchor and re-registered. The block never depended on the L1 policy -- the B7a v2 rendering diagnostics show the structured review-finding boundaries falling back to raw on 100 % of rows, so the audit read no parsed Reviewer output, only the structured RENDERING SLOT of the Reviewer's draft boundary. Item E19 gives it a second attachment: with the boundary at raw, the block is appended to the SEALED draft bytes the Reviewer already receives. This cell measures, on the official number, whether a deterministic, zero-contact audit of the draft the Reviewer is about to criticise moves the loop's outcome.",
+  "quality_gate": "The four-row smoke is structural only and is never scored. The arm's official number is read exactly once, under the decision rule fixed above before any number is seen.",
+  "registered_at_utc": "2026-09-19T18:00:00.000000+00:00",
+  "resampling": {
+    "draws": 10000,
+    "intervals": [
+      "CI95"
+    ],
+    "primary": "paired per-row bootstrap over the 1,080 shared rows",
+    "seed": 20260919,
+    "sensitivity": "per-scenario paired bootstrap at the same draws and seed",
+    "tables": [
+      "natural mixture",
+      "equal stratum",
+      "per scenario"
+    ]
+  },
+  "schema": "saea-flight-protocol-v1",
+  "scoring": {
+    "companions": [
+      "slurp-slu-official-projected-v3-train",
+      "slurp-slu-f1-normalized-v1-train"
+    ],
+    "complete_jobs": 1,
+    "primary_scorer": "slurp-slu-official-train",
+    "scheduled_by": "the campaign at finalize, never sharded",
+    "smoke": "no scorer runs for the four-row smoke"
+  },
+  "service": {
+    "attach_only": true,
+    "decoder_only": true,
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "mmproj": "absent",
+    "slot_tokens": 24576,
+    "slots": 4,
+    "total_context": 98304
+  },
+  "smoke_acceptance": {
+    "criteria": [
+      "about five contacts per row plus revisions, with no row above the eleven-contact ceiling, and 4 of 4 rows delivered",
+      "the slot_audit receipt on every Reviewer contact of 4 of 4 rows, with schema saea-reviewer-slot-audit-v1, the registered view id, the two pins, the table content hash, the template id and hash, the three thresholds and all four flag counts including the zeros; at least one Reviewer contact of every row carries applied: true",
+      "the block proved an ADDITION: the last block_chars characters of the exposed reviewer:current-draft text hash to block_sha256, the text before them is the SEALED Solver response byte for byte, and no other boundary row carries a slot_audit block",
+      "every boundary row at level raw; every row without a slot_audit block has rendered_sha256 equal to its source's content_sha256; the compilation record's template_sha256s carries exactly the block's three assets",
+      "the request-fit receipts: every realized request fits",
+      "any row whose terminal_disposition.reason is finite_completion is RETAINED and reported, not an error; an abort on finish_reason length is a failure, because it would mean the declared finite_completion_policy did not reach the runtime"
+    ],
+    "expected_but_not_required": "the Perception request byte-identical to the anchor's own four-row bytes. Solver, Reviewer and Planner requests may legitimately differ where their upstream responses do: greedy decoding is not bitwise reproducible across batch compositions, which is why the request-byte claim is proved in tests/unit/test_native_episode_runner_reviewer_audit.py over a deterministic fake transport rather than on the wire.",
+    "never": "scored, interpreted for quality, or reported as a result",
+    "structural_only": true
+  },
+  "source_tree": "studies/speech-aware-evidence-acquisition, branch fable/e19 (item E19)",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "the_analysis_and_its_boundary": {
+    "attachment": "sealed-draft (item E19). The block is appended after the sealed Solver response, separated by one newline. Every flag is computed by the HARNESS from the parsed draft and the pinned table; every substituted value is a construction count, a construction share, a released convention sentence, a closed flag name, or an entity TYPE the draft or the table already carries.",
+    "construction_pool": "the governed SLURP TRAIN split MINUS every utterance with a recording in TRAIN Fold A, TRAIN Fold B or DEV-1000, and the 2026-09-13 exclusion: 9,354 utterances. The released table carries counts and shares only -- no filler, no sentence, no utterance id, no recording and no gold of any evaluated row -- which is why it is committed rather than kept under SPEECHRL_DATA_DIR.",
+    "flags": {
+      "EMPTY-DRAFT": "an entity-free draft for an intent whose construction rows carry an entity at least as often as empty_draft_min_entity_row_share",
+      "MISSING-COMMON": "an entity type attested with the drafted intent on at least missing_common_min_row_share of its construction rows and absent from the draft",
+      "REPRESENTATION": "a filler that violates saea-spoken-form-v1 (no ASCII digit, no colon, no slash) for a type whose released convention is spoken",
+      "TYPE-UNSEEN": "an entity TYPE in the draft that the construction table never attests with the drafted intent"
+    },
+    "thresholds": {
+      "empty_draft_min_entity_row_share": 0.5,
+      "missing_common_min_row_share": 0.5,
+      "profile_min_row_share": 0.05
+    },
+    "view": {
+      "construction_utterances": 9354,
+      "entity_types": 54,
+      "intents": 60,
+      "release": {
+        "relpath": "knowledge/slurp/semantic/slot-audit-v1/release.json",
+        "sha256": "eaa2dd0db4d089f9bf1687d353f129ffcf062766f84150b0b93463617fdee7f9"
+      },
+      "representation_convention_types": 2,
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/slot-audit-v1/snapshot.json",
+        "sha256": "0cc3f96c98addad37fb564483f051dbe1a11145ac554a85918312c388573406c"
+      },
+      "table_content_hash": "d4cd4bf3fd9bf44725f860257800c415164faf14a8dcce19bd3ab2339fee01de",
+      "template": {
+        "relpath": "configs/probes/ncp_slurp_slot_audit_reviewer_v1.txt",
+        "sha256": "88cc927d901a45ac2496f92453521184cb5b8d39cbf98aa881872b9116d24d0a"
+      },
+      "view_id": "slot-audit-v1"
+    },
+    "zero_contacts": "the block makes no model, tokenizer, encoder, scorer, tool, server or network contact, so the bounded contact ceiling stays 11 and every budget is the anchor's, unchanged"
+  },
+  "verdict_document": "docs/results/2026-09-19-slurp-b8b-anchor-reviewer-audit-verdict.md"
+}

@@ -328,8 +328,14 @@ NATIVE_EPISODE_TOP_LEVEL_KEY = "native_episode"
 #: ``native_episode.context_policy`` because an audit is a second, separately
 #: switchable factor on a boundary that policy already declares -- folding it
 #: in would make a cell that moves the audit indistinguishable from a cell
-#: that moves the policy. See ``rails.slot_audit`` and
-#: ``rails.node_context_policy.SLOT_AUDIT_BOUNDARY``.
+#: that moves the policy. E19 (2026-09-19, owner decision 32, after cell
+#: B7a v2 read the L1 policy HARMFUL) made that separation complete: the
+#: block resolves an ATTACHMENT rather than requiring a level, so with the
+#: boundary at raw -- or with no ``context_policy`` declared at all -- it is
+#: appended to the SEALED draft bytes instead of to an L1 rendering, and a
+#: cell can move the audit ALONE on a base that declares no policy. See
+#: ``rails.slot_audit``, ``rails.node_context_policy.SLOT_AUDIT_BOUNDARY``
+#: and ``rails.node_context_policy.SLOT_AUDIT_ATTACHMENTS``.
 #: ``native_episode.finite_completion_policy`` (E13, 2026-09-19) is the SIXTH,
 #: and the only one of the six that is a FAILURE MODE rather than a factor.
 #: It decides what an episode does with a valid, source-bound completion the
