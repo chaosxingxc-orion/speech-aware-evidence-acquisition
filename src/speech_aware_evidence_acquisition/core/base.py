@@ -504,6 +504,126 @@ class JudgeRegistry(Registry):
 JUDGES = JudgeRegistry("judge")
 
 
+# ---------------------------------------------------------------------------
+# Delivery normalisers: the DELIVERY-TIME node of the native episode (E11,
+# 2026-09-18, owner directive 26 "analyses into nodes"; SLURP v2 base program
+# module M3's runtime form).
+#
+# WHY THIS IS NOT A JUDGE. Owner Decision 11-C, enforced a few lines above,
+# makes every ``core.base.JUDGES`` entry CRITICISM ONLY: a judge returns a
+# :class:`JudgeVerdict` and may not emit replacement text, and
+# :func:`assert_criticism_only` refuses a verdict type that could carry one.
+# A delivery normaliser REWRITES the delivered answer, so registering it in
+# JUDGES would either be refused at the door or would reopen 11-C by
+# accident. It is instead the same seam :data:`COMMIT_POLICIES` is: a
+# registered, deterministic, pure function whose output IS delivered bytes,
+# resolved by id from one config key and re-derivable offline from custody.
+#
+# WHAT AN ENTRY IS. A callable ``(text: str) -> DeliveryNormalisation`` that
+# is pure and deterministic (same text, same result, in this process and the
+# next), makes no model, tool, network or corpus-gold lookup of the row it is
+# rewriting, and declares three attributes: ``id`` (equal to its registry
+# name), ``version`` (what a preregistration and an admission receipt quote)
+# and ``carrier_lock_key`` (the ONE carrier whose answers it is defined for,
+# checked fail-closed by ``rails.native_episode_config`` against the composed
+# config, so a fragment can never arm a SLURP rule on an Earnings run).
+# Populated from ``rails/delivery_normalisers.py``, the canonical
+# registration site, exactly as COMMIT_POLICIES is populated from
+# ``rails/commit_policies.py``.
+# ---------------------------------------------------------------------------
+
+
+class DeliveryNormaliserError(CoreError):
+    """A delivery normaliser, its registration or its result is malformed."""
+
+
+@dataclass(frozen=True)
+class DeliveryNormalisation:
+    """What one delivery normaliser returns for one delivered answer.
+
+    ``text`` is always a value the caller may deliver: the rewritten answer
+    when ``changed`` is true, and BYTE-IDENTICAL to the input otherwise.
+    ``receipt`` is the custody record the episode seals beside the row
+    (``native_episode_receipt.deliver_normaliser``); it carries the rule's
+    identity and the input/output digests that let the bundle verifier
+    re-derive the delivered bytes from the recorded model response, and it
+    never carries the answer text itself -- a delivered SLURP answer holds
+    slot fillers taken from speech, and a receipt is not a place to copy
+    them.
+    """
+
+    text: str
+    changed: bool
+    receipt: Mapping[str, object]
+
+    def validate(self) -> "DeliveryNormalisation":
+        if not isinstance(self.text, str):
+            raise DeliveryNormaliserError(
+                "DeliveryNormalisation.text must be a string"
+            )
+        if not isinstance(self.changed, bool):
+            raise DeliveryNormaliserError(
+                "DeliveryNormalisation.changed must be a bool"
+            )
+        if not isinstance(self.receipt, Mapping) or not self.receipt:
+            raise DeliveryNormaliserError(
+                "DeliveryNormalisation.receipt must be a non-empty mapping"
+            )
+        return self
+
+
+@runtime_checkable
+class DeliveryNormaliser(Protocol):
+    """The delivery node's one shape (module comment above)."""
+
+    id: str
+    version: str
+    carrier_lock_key: str
+
+    def __call__(self, text: str) -> DeliveryNormalisation: ...
+
+
+def assert_delivery_normaliser(entry: object, *, name: str) -> object:
+    """Refuse anything that is not a callable, identified, carrier-scoped
+    delivery normaliser. Checked at REGISTRATION, for the same reason
+    :class:`JudgeRegistry` checks its own door: the rule is about what a
+    registered entry may do, and the door is the cheapest place to hold it.
+    """
+
+    if not callable(entry):
+        raise DeliveryNormaliserError(f"delivery normaliser {name!r} must be callable")
+    for attribute in ("id", "version", "carrier_lock_key"):
+        value = getattr(entry, attribute, None)
+        if not isinstance(value, str) or not value.strip():
+            raise DeliveryNormaliserError(
+                f"delivery normaliser {name!r}.{attribute} must be non-empty text, "
+                f"got {value!r}"
+            )
+    if getattr(entry, "id") != name:
+        raise DeliveryNormaliserError(
+            f"delivery normaliser registered as {name!r} declares id "
+            f"{getattr(entry, 'id')!r}; the registry name and the entry's own id "
+            "are one identity"
+        )
+    return entry
+
+
+class DeliveryNormaliserRegistry(Registry):
+    """Checks its entries at registration (see :func:`assert_delivery_normaliser`)."""
+
+    def register(self, name: str, entry: object) -> object:
+        assert_delivery_normaliser(entry, name=name)
+        return super().register(name, entry)
+
+
+#: The delivery node's registry (E11). A
+#: ``native_episode.deliver_normaliser.normaliser`` value in ``configs/``
+#: resolves here exactly as ``native_episode.roles.solver.commit.policy``
+#: resolves in :data:`COMMIT_POLICIES`. Populated from
+#: ``rails/delivery_normalisers.py``.
+DELIVERY_NORMALISERS = DeliveryNormaliserRegistry("delivery normaliser")
+
+
 class RepairAlignmentError(CoreError):
     """A substitution-only delivery rule refuses.
 

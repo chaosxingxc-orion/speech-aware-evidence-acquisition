@@ -1134,8 +1134,13 @@ def test_node_context_policy_is_one_episode_class_key():
 
     key = "native_episode.context_policy"
     assert key in EPISODE_LEVEL_SWITCH_KEYS
+    # The allowlist is CLOSED and this enumeration is its ratchet: admitting a
+    # key is a code change with a test, never a receipt edit. The fourth,
+    # native_episode.deliver_normaliser, was admitted by E11 (owner directive
+    # 26, 2026-09-18) and has its own proof below.
     assert sorted(EPISODE_LEVEL_SWITCH_KEYS) == [
         "native_episode.context_policy",
+        "native_episode.deliver_normaliser",
         "native_episode.review_loop",
         "native_episode.roles.solver",
     ]
@@ -1171,6 +1176,87 @@ def test_node_context_policy_is_one_episode_class_key():
         resolve_run_switch_key(key)
     with pytest.raises(ConfigTableError, match="does not start with"):
         resolve_episode_switch_key("context_policy")
+
+
+# ---------------------------------------------------------------------------
+# 11b. The delivery-time normaliser node (E11, 2026-09-18, owner directive
+#      26) -- the 'episode' class's FOURTH key,
+#      native_episode.deliver_normaliser.
+#
+# It is an episode key rather than a run-level one because it is a NODE of the
+# episode, declared inside the native_episode block beside the roles it runs
+# after, and it is not a 'judges' TABLE entry because that table wraps a
+# phase's phase_review block -- the Reviewer seat, which owner Decision 11-C
+# makes criticism-only, and a node that rewrites the delivered answer can
+# never be criticism-only. Its OFF arm is simply the key's absence: a delivery
+# node is either absent or armed, and the OFF arm renders exactly the pre-key
+# delivered bytes (and the pre-key request bytes, since the node runs after
+# every contact of the episode is already spent -- pinned in
+# tests/unit/test_native_episode_runner_deliver_normaliser.py).
+# ---------------------------------------------------------------------------
+
+
+def test_deliver_normaliser_is_one_episode_class_key():
+    key = "native_episode.deliver_normaliser"
+    assert resolve_episode_switch_key(key) == key
+
+    # OFF: the key absent. There is no third shape.
+    assert is_episode_null_arm(key, None) is True
+    # ON: a declared normaliser id.
+    assert is_episode_null_arm(key, {"normaliser": "saea-deliver-normalise-v3"}) is False
+
+    # A dotted path under native_episode, never a flat run-level key -- and
+    # never the E4 seal-time key, which is the same RULE at a different place.
+    with pytest.raises(ConfigTableError, match="is dotted"):
+        resolve_run_switch_key(key)
+    with pytest.raises(ConfigTableError, match="does not start with"):
+        resolve_episode_switch_key("deliver_normaliser")
+
+
+def test_the_two_b8a_fragments_arm_the_node_and_nothing_else():
+    """Cell B8a is one factor: each committed ON fragment differs from the
+    base it derives from in native_episode.deliver_normaliser alone, plus the
+    bookkeeping identities every derived fragment carries."""
+
+    bookkeeping = {
+        "native_contact_fit",
+        "scorers",
+        "speech_feature_key_representation_id",
+        "speech_feature_matcher_policy_id",
+        "what_this_is",
+    }
+    pairs = (
+        (
+            "slurp-native-dual-store-train-fold-a-anchor-v1",
+            "slurp-native-dual-store-train-fold-a-anchor-deliver-normalise-v3-v1",
+        ),
+        (
+            "slurp-native-anchor-exemplars-k20-train-fold-a-recovery-v2",
+            "slurp-native-anchor-exemplars-k20-deliver-normalise-v3-train-fold-a-v1",
+        ),
+    )
+    for off_name, on_name in pairs:
+        off = _load_baseline_json(f"{off_name}.json")
+        on = _load_baseline_json(f"{on_name}.json")
+        differing = sorted(
+            key
+            for key in (set(off) | set(on)) - bookkeeping
+            if off.get(key) != on.get(key)
+        )
+        assert differing == ["native_episode"], (off_name, differing)
+
+        off_episode = dict(off["native_episode"])
+        on_episode = dict(on["native_episode"])
+        assert on_episode.pop("deliver_normaliser") == {
+            "normaliser": "saea-deliver-normalise-v3"
+        }
+        assert on_episode == off_episode
+        assert is_episode_null_arm(
+            "native_episode.deliver_normaliser",
+            off_episode.get("deliver_normaliser"),
+        ) is True
+        # The node adds no contact, so neither fragment's ceiling moves.
+        assert "slurp_projection_v3_delivery" not in on
 
 
 def _slurp_boundaries():

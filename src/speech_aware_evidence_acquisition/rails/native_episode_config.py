@@ -280,6 +280,12 @@ class NativeEpisodeConfig:
     # thing here -- ``None`` -- so the OFF arm reaches the runtime as no
     # policy at all and renders the pre-policy request bytes.
     context_policy_json: str | None = None
+    # E11 (2026-09-18, owner directive 26): the registered
+    # ``core.base.DELIVERY_NORMALISERS`` id of the delivery-time node, or
+    # None when ``native_episode.deliver_normaliser`` is absent -- which is
+    # every config written before E11 and every OFF arm, so the delivered
+    # bytes are then exactly the accepted Solver response's own.
+    deliver_normaliser_id: str | None = None
 
     @property
     def terminal_actions(self) -> tuple[str, ...]:
@@ -341,6 +347,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         "role_context",
         "review_loop",
         "context_policy",
+        "deliver_normaliser",
     }
     if (
         not isinstance(raw, Mapping)
@@ -605,6 +612,59 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
                         "node context cleaning phase_id cannot be one of the "
                         "episode's own program phases"
                     )
+    # E11 (2026-09-18, owner directive 26): the delivery-time normaliser
+    # node. ONE key, validated fail-closed HERE -- before any contact -- so a
+    # fragment can never arm a carrier-specific delivery rule on the wrong
+    # carrier, name an unregistered rule, or reach delivery in a shape whose
+    # custody the seal cannot re-derive.
+    deliver_normaliser_id = None
+    if "deliver_normaliser" in raw:
+        block = raw["deliver_normaliser"]
+        if not isinstance(block, Mapping) or set(block) != {"normaliser"}:
+            raise ValueError(
+                "native_episode.deliver_normaliser must be an object with exactly "
+                "a 'normaliser' id"
+            )
+        deliver_normaliser_id = block["normaliser"]
+        if not isinstance(deliver_normaliser_id, str) or not deliver_normaliser_id.strip():
+            raise ValueError("deliver_normaliser.normaliser must be a non-empty string")
+        # Function-local: importing rails.delivery_normalisers is what
+        # POPULATES core.base.DELIVERY_NORMALISERS, the same registration
+        # discipline commit.policy follows above.
+        from . import delivery_normalisers as _delivery_normalisers  # noqa: PLC0415, F401
+        from ..core.base import DELIVERY_NORMALISERS, CoreError  # noqa: PLC0415
+
+        try:
+            normaliser = DELIVERY_NORMALISERS.resolve(deliver_normaliser_id)
+        except CoreError as error:
+            raise ValueError(f"deliver_normaliser.normaliser is invalid: {error}") from error
+        declared_carrier = values.get("carrier_lock_key")
+        if getattr(normaliser, "carrier_lock_key", None) != declared_carrier:
+            raise ValueError(
+                f"deliver_normaliser {deliver_normaliser_id!r} is defined for carrier "
+                f"{getattr(normaliser, 'carrier_lock_key', None)!r}, but this config "
+                f"declares carrier_lock_key {declared_carrier!r}"
+            )
+        # Two spellings of one rule is how a cell ends up with two
+        # identities: the E4 run-level key applies the SAME projection at the
+        # SEAL, outside the agent. A fragment declares one or the other.
+        if values.get("slurp_projection_v3_delivery"):
+            raise ValueError(
+                "native_episode.deliver_normaliser and the run-level "
+                "slurp_projection_v3_delivery key apply the same rule at two "
+                "different places; declare exactly one of them"
+            )
+        # Custody, not taste: a grouped Solver row's delivered text is already
+        # the COMMIT policy's aggregate (E2d, invariant I7g), which the bundle
+        # re-derives from the row's own recorded samples. Normalising on top
+        # of it would make the delivered bytes a function of BOTH rules with
+        # only one of them in custody, so the combination is refused until a
+        # cell needs it and its custody form is designed.
+        if any(role.role_kind == "solver" and role.samples > 1 for role in roles):
+            raise ValueError(
+                "native_episode.deliver_normaliser cannot combine with a grouped "
+                "Solver visit (roles.solver.samples >= 2)"
+            )
     if any(phase.barrier for phase in program.phases):
         raise ValueError("conditional native episodes cannot declare whole-roster phase barriers")
     if refresh_action is not None:
@@ -656,4 +716,5 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         planner_output_format,
         role_context_json,
         context_policy_json,
+        deliver_normaliser_id,
     )

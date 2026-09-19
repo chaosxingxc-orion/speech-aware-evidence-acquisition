@@ -701,3 +701,40 @@ the cell in question registers.
    `scripts/checks/derived_media_confinement_check.py` rewriting its own receipt is a defect filed for
    repair outside any flight window and the gate is not run while a campaign flies.
 
+
+## 16. Analyses as node context (owner directive 26)
+
+Owner directive 26 of 2026-09-18 extends this document's own premise. Sections 1-15 ask what a node
+may READ: one declared handling policy per `(consumer_role_kind, semantic_class)` boundary, so no
+node is ever handed another node's raw output. Directive 26 asks the same question of the
+program's own OFFLINE ANALYSES: an analysis this program trusts enough to quote in a verdict is
+knowledge the system should be ACTING on, not a paragraph in a report. Where an analysis has
+produced a rule, that rule belongs in a node -- on the read side as declared context, or on the
+write side as a deterministic transform of what a node produces -- and the number the owner reads
+then measures the system that contains it.
+
+Family **B8** collects the cells that place an existing analysis into a node. Each is one factor on
+the shared harness, each keeps its own comparator, and none of them is admitted by this section:
+
+| Cell | Analysis placed | Where it lands | Engineering |
+| --- | --- | --- | --- |
+| B8a | A1's USE projection v3 (`R_action` + legal-label v2, filler normalisation P2) | a delivery-time node, applied once to the accepted answer before delivery | E11, 2026-09-18 -- built, tested, `held` |
+| B8b | the A3 coverage-confusion and slot-loss audits | a Reviewer-side slot-audit context block: what the audit says about THIS row's delivered slot types, rendered as typed content at the reviewer boundary | not built |
+| B8c | the A3 per-scenario confusion pairs | Solver-side scenario hints: the neighbours a scenario is actually confused with, as typed content at the solver boundary | not built |
+
+B8a is the write-side instance and is the one this program has built: it is a transform of what the
+episode DELIVERS, so it owes custody rather than context handling (`core.bundle.outputs` invariant
+I7n; program spec section 3, item E11). B8b and B8c are read-side instances and are ordinary
+boundaries of this document's own policy object -- they render typed content into a node's exposed
+context and are governed by sections 3, 4 and 9 exactly as any other boundary is.
+
+**The boundary that makes this legal.** Every B8 node is authored from CONSTRUCTION data only --
+the TRAIN pool minus every utterance with a recording in TRAIN A, TRAIN B or DEV-1000 (the
+2026-09-13 exclusion), plus closed lists such as the 60-id legal intent inventory that the task
+contract already renders into the prompt. No B8 node may be authored from, keyed on, or
+conditioned by the gold of a row it is evaluated on, and no B8 node may read a future turn or a
+reference transcript. An analysis that only exists because it was fitted to the evaluated rows'
+gold is a diagnostic ceiling and stays a diagnostic ceiling: A1's own `R_action` was identified
+against gold after the fact, which is exactly why E4 preregistered it as a RULE to be confirmed
+prospectively rather than tuned, and why the node applies it to every row unconditionally rather
+than where it helps. The same test applies to B8b and B8c before either is built.
