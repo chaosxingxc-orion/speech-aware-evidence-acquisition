@@ -509,6 +509,11 @@ class _ActualEpisodeHarness:
             # before E14 and every OFF arm -- leaves this binding
             # byte-identical to its pre-E14 self.
             data_root=getattr(self, "solver_hints_data_root", None),
+            # E18: the flight-owned knowledge re-query a ``knowledge-requery``
+            # acquisition runs. None -- every harness written before E18 and
+            # every unarmed episode -- leaves this binding byte-identical to
+            # its pre-E18 self.
+            acquisition_requery=getattr(self, "acquisition_requery", None),
         )
         source_kwargs = (
             {}

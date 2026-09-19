@@ -374,6 +374,21 @@ NATIVE_EPISODE_TOP_LEVEL_KEY = "native_episode"
 #: it is. Rendering is not authority: a role without authority still carries
 #: ``tool_choice`` ``"none"`` and is still refused by
 #: ``reproduction.ojw.native_roles._RoleAuthorityRail`` if it emits a call.
+#: ``native_episode.acquisition`` (E18, 2026-09-19, owner decisions 43 and
+#: 44) is the NINTH, and the first that adds a NODE to the graph rather than a
+#: mode of an existing one. It arms the sixth node of the agent base -- the
+#: ``acquire`` primitive -- by naming its registered policy and its per-row
+#: budget; the paired ``native_episode.roles.acquisition`` block is part of
+#: the same module and is refused without it. It belongs here rather than in
+#: ``run`` because it is declared inside the ``native_episode`` block beside
+#: the roles it runs between, and it MOVES REQUEST BYTES (the next Solver
+#: revision gains the ``acquired-evidence`` block) as well as, for one of its
+#: three kinds, spending a contact -- so no ``request-bytes-identical``
+#: falsifier can exist for it. It is a key of its own rather than a member of
+#: the ``knowledge_views`` table because that table is what a PHASE observes
+#: or is supplied with before its contact, and this is what a NODE brings in
+#: mid-episode, after a draft has been reviewed. See ``rails.acquisition``
+#: and ``rails.node_context_policy.ACQUIRED_EVIDENCE_BOUNDARY``.
 EPISODE_LEVEL_SWITCH_KEYS = frozenset({
     "native_episode.roles.solver",
     "native_episode.review_loop",
@@ -383,6 +398,7 @@ EPISODE_LEVEL_SWITCH_KEYS = frozenset({
     "native_episode.finite_completion_policy",
     "native_episode.solver_hints",
     "native_episode.tool_schema_rendering",
+    "native_episode.acquisition",
 })
 
 #: The top-level key every ``stores``-class switch key names one child of.
@@ -1296,6 +1312,13 @@ def is_episode_null_arm(key: str, value: object) -> bool:
         # composes the same episode as one that omits it. ``"constant"`` is
         # the one armed value.
         return value is None or value == "per-role"
+    if key == "native_episode.acquisition":
+        # E18: the node is ABSENT or it is armed -- there is no third shape.
+        # With the key absent no acquisition role may be declared
+        # (``rails.native_episode_config``), no acquisition node is built and
+        # the Planner's ACQUIRE names no registered action, which is exactly
+        # the E15 retained-row disposition the OFF arm must reproduce.
+        return value is None
     raise ConfigTableError(f"unknown episode switch key {key!r}")
 
 

@@ -443,7 +443,9 @@ def validate_native_episode_terminal_policy(
 
 def validate_native_episode_finite_path(
     receipt, *, max_revisions, accept_action, revise_action,
-    refresh_action=None, max_refreshes=0, error_type=ValueError,
+    refresh_action=None, max_refreshes=0,
+    acquire_action=None, max_acquisitions=0,
+    error_type=ValueError,
 ):
     """Validate a completed graph prefix and its exact next interrupted role."""
     delivery = validate_native_episode_delivery_receipt(receipt, error_type=error_type)
@@ -455,6 +457,9 @@ def validate_native_episode_finite_path(
     routes = _sequence(receipt["planner_routes"], "finite Planner routes", error_type=error_type)
     terminal = delivery.terminal_disposition
     cursor = route_index = revision = refreshes = 0
+    # E18: the acquisition visits already walked, so an ACQUIRE continuation
+    # is checked against its own declared allowance exactly as a refresh is.
+    acquisitions = 0
 
     def stopped(stage):
         if (
@@ -503,6 +508,16 @@ def validate_native_episode_finite_path(
                 return stopped("perception")
             consume("perception")
             refreshes += 1
+        elif acquire_action is not None and action == acquire_action:
+            # E18: an ACQUIRE continuation registers exactly one acquisition
+            # visit between the Planner that routed it and the Solver that
+            # reads what it brought in.
+            if acquisitions >= max_acquisitions:
+                _raise(error_type, "finite path exceeds its acquisition allowance")
+            if cursor == len(visits):
+                return stopped("acquisition")
+            consume("acquisition")
+            acquisitions += 1
         elif action != revise_action:
             _raise(error_type, "finite path has an unsupported Planner continuation")
 

@@ -1,0 +1,11 @@
+# saea-node-context-template-v1 renderer=acquired-evidence
+[header]
+ACQUIRED EVIDENCE ({count} item(s); acquisition kind {kind}, policy {policy_id})
+[item]
+  {position}. [{evidence_id} from {source_id}] {content}
+[items_empty]
+  {reason}
+[footer]
+This was acquired on demand after your previous answer was reviewed. It is material to
+consider, not a verdict and not proof that anything was said. Decide from the speech you
+were given.

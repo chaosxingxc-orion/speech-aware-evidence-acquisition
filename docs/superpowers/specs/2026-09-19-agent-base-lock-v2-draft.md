@@ -182,7 +182,7 @@ it makes no contact, registers no agent state and routes no step.
 | N2 | **Solver** | Produce the task answer under the contract | **The answer.** Only a Solver completion may become delivered text | `solver.max_iterations x solver.samples` contacts per revision |
 | N3 | **Reviewer** | Verify the draft against the contract and report criticism | **The findings.** The only node whose output is admitted as criticism | `reviewer.max_iterations` contacts per revision |
 | N4 | **Planner** | Choose the episode's next transition inside the declared budget | **The transition** (accept / revise / acquire / refresh) | `planner.max_iterations` contacts per revision |
-| N5 | **Acquisition** | Bring new evidence, or a new observation, into the trajectory on demand | **New evidence admitted mid-episode** — *no carrier owns this today* | one contact per acquisition visit; today zero |
+| N5 | **Acquisition** | Bring new evidence, or a new observation, into the trajectory on demand | **New evidence admitted mid-episode** — **BUILT by E18** (owner decisions 43–44): IMPLEMENTED for SLURP kind (a) `knowledge-requery`, PARTIAL for kind (b) `speech-reobserve`, STUB for kind (c) `tool-acquire`; no cell registered, nothing admitted | 0 contacts for kinds (a)/(c), 1 per visit for kind (b); `max_acquisitions_per_row` visits |
 | N6 | **Delivery** | Turn the accepted answer into the delivered bytes | **The delivered text** | zero contacts, zero request bytes |
 
 The responsibility statement is one sentence per node; everything below is derived from it, and any
@@ -502,15 +502,19 @@ a carrier's two regimes), `MISS` = no code path a config can reach.
 
 | Id | Signature | Side effects | Receipts | Cost unit | Exposed knobs | SLURP / ASR / A2T |
 | --- | --- | --- | --- | --- | --- | --- |
-| **AC-1** `acquire` | `(acquire_action, QueryState) -> evidence bound into the successor QueryState` | would add evidence mid-episode under the same custody as pre-contact supply | would be a `role_visits[]` entry of kind `acquisition` | 1 contact per visit | **none — no config can declare the node** | **MISS / MISS / MISS** |
+| **AC-1** `acquire` | `(acquire_action, trajectory state) -> AcquiredEvidence bound into the successor state` — **BUILT by E18** (`rails.acquisition`; design `docs/superpowers/specs/2026-09-19-e18-acquisition-node-design.md`) | adds evidence mid-episode under the same custody as pre-contact supply: one `phase:<acquisition>` state at the new `acquisition -> solver` boundary | `role_visits[]` entry of stage `acquisition` with `acquisition_receipt` (kind, policy, provenance ids, cost, `inputs_sha256`, `evidence_sha256`), plus the row's `acquisition` receipt block | 0 contacts (`knowledge-requery`, `tool-acquire`), 1 per visit (`speech-reobserve`) | `native_episode.acquisition.policy`, `.budget.max_acquisitions_per_row`, `.budget.contact_budget`, `roles.acquisition.kinds`, `roles.acquisition.max_iterations` | **IMPL kind (a), PART kind (b), STUB kind (c)** / **PART (primitive available, carrier re-scope undeclared)** / **PART (kind (c) stub awaits the registry)** |
 | **AC-2** `relisten` | `(flagged_span, context_margin, cap) -> derived speech packet` | cuts a new packet from the parent media; binds a `SpeechPacketDerivation` (parent, output, parameter hash) | derivation record; derived-media confinement; re-listen count | 0 contacts for the cut; the re-decode is a normal contact | `observe.context_margin_seconds`, `.max_relistens_per_sample`, `.derivation_kind` | **MISS** (no sub-span under today's unit policy) / **PART** (`ObserveStep` implemented; LOOP-1 preregistered, no verdict) / **MISS** |
 | **DE-1** `normalise` | `(accepted_answer, rule_id, legal_inventory) -> delivered text` | rewrites the answer once, after every guard binding it to its source response, before it becomes delivered text | `deliver_normaliser` receipt (`applied`, `changed`, `input_sha256`, `output_sha256`, `labels_changed`, `label_branch`, `fillers_changed`, `rendering_suppressed`, `reason`) | 0 contacts, 0 request bytes | `native_episode.deliver_normaliser.normaliser` | **IMPL** (`saea-deliver-normalise-v3`, in the plan) / **MISS** / **MISS** |
 | **DE-2** `stitch` | `(unit answers[], order) -> exactly one answer per parent` | validates complete unit coverage, unique windows, parent association and order before official scoring | delivery-integrity count (0 violations on 1,593 windows) | 0 contacts | none today — the order is deterministic and fixed | **MISS** (one unit is one row) / **IMPL** (1,593 windows to 44 transcripts) / **MISS** |
 | **DE-3** `abstain` | `() -> empty delivered text` | a row with no delivery-eligible draft is retained as an abstention and is **never** normalised | `abstention_receipt`; derived identity record | 0 contacts | `finite_completion_policy` (shared with PL-4) | **IMPL** (armed; no sealed native contact has met a finite completion) / **PART** (native fragment only) / **IMPL** (declared everywhere) |
 
-**AC-1 is the only primitive MISSING on every carrier**, and also the one the research object names
-first (`SUPPLY` — "selection, amount, order and timing"); today the responsibility is discharged before
-the episode starts or inside another node's seat (OQ-3).
+**AC-1 was the only primitive MISSING on every carrier**, and also the one the research object names
+first (`SUPPLY` — "selection, amount, order and timing"): the responsibility was discharged before the
+episode started or inside another node's seat (OQ-3). **Owner decisions 43 and 44 of 2026-09-19
+closed that**, and E18 built it: `native_episode.acquisition` now arms a real node, a config can
+declare it, and the Planner's `ACQUIRE` reaches it. No cell is registered and nothing is admitted;
+the first admission cell is proposed as SLURP **B9a: acquisition on demand, kind (a)** on the best
+not-HARMFUL base.
 
 ### 5.7 Knowledge-plane primitives (ORG + SUPPLY; they serve every node)
 
