@@ -378,7 +378,7 @@
   "task_instruction_template_active": true,
   "what_this_is": "Four-row engineering smoke of cell B7r on cell B7a's configuration (the Node Context Policy at level L1 plus the review-finding producer response format saea-review-findings-v1). Byte for byte the full-cell baseline configs/baseline/slurp-native-anchor-ncp-l1-reviewer-format-train-fold-a-v1.json apart from its own native contact fit identity and its own prepared Perception supply. Structural evidence only: the Reviewer's output parses under rails.review_findings.parse_review_findings, the Planner's review block reads parsed where it does and FALLBACK-RAW where it does not, and the rejection rate is recorded. No official scoring and no task-quality claim.",
   "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-SMOKE-4-V1/phase-supply-v2.json",
-    "sha256": "d41c049fbe4746289e5629d322074645542b7d1cbce75e001c697c2a2b306a02"
+    "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-SMOKE-4-V1/phase-supply-v3.json",
+    "sha256": "7037a456d4d7b9dae1f846e60537e5cf0f08e0a8d4e6359464420953b228549a"
   }
 }

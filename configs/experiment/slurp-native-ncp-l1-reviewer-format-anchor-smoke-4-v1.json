@@ -24,8 +24,8 @@
           {
             "kind": "preparation",
             "reason": "Model-free first-phase Perception supply prepared by the B7r/B7c registration agent from the same sealed speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed dual-store anchor and cell B7a used; zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed anchor preparation output block on every row, so the Perception selection channel does not move in this cell. Receipt coordination/slurp-b7rc-ncp-anchor-v1/phase-supply-vs-anchor-v1.json.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-SMOKE-4-V1/phase-supply-v2.json",
-            "sha256": "d41c049fbe4746289e5629d322074645542b7d1cbce75e001c697c2a2b306a02"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-SMOKE-4-V1/phase-supply-v3.json",
+            "sha256": "7037a456d4d7b9dae1f846e60537e5cf0f08e0a8d4e6359464420953b228549a"
           }
         ],
         "state": "ready"

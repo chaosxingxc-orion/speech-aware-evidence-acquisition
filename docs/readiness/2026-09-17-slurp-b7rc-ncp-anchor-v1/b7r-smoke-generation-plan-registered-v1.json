@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-ncp-l1-reviewer-format-anchor-smoke-4-v1",
-  "composed_config_hash": "c4306c4c7d9f36446715a32daa360455cc7e4f0b94e18b22a638107851c886c4",
+  "composed_config_hash": "bf8da2447697ce7ed7d89f4e70d47fb24335848a801c3cd36c569e9de37e1276",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-ncp-l1-reviewer-format-anchor-smoke-4-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 44,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "28af23a50b1dcf1f8f8469c39f377d657a8810c7aeefa9d94ed5bffd2f50ed29",
+    "protocol_hash": "1511e4e529b874c336750b0401902ed698d0696065835d7e100e764a8e59e9f1",
     "run_id": "SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -32,7 +32,7 @@
   "preparation_base_commit": "b4cb9ae9fa67e7f8055e204d290a63838c14251d",
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-17-slurp-b7rc-ncp-anchor-v1/protocol-registered-v1.json",
-    "sha256": "8d21a31e0eb0da76e0001c9077baade04eaad48a075e4add558182f5ad8785b6"
+    "sha256": "cb5ad068ee99ed8950ddb75cd41e3b17f3737eea9a05fd57fe6e449b24d75af5"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist. The primary comparator is cell B7a's sealed score artifact and the released TRAIN A direct anchor is the secondary; neither is ever re-flown or re-scored, and neither cell opens before B7a seals and is read not HARMFUL. The four-row smoke is structural only: contact counts, episode receipt fields, the policy's rendered blocks and its receipt rows, fit receipts and seal, with no answer, reference or quality interpretation.",
   "registered_at_utc": "2026-09-17T21:00:00.000000+00:00",
