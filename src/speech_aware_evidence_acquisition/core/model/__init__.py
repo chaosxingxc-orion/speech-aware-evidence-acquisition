@@ -30,6 +30,33 @@ class FrozenCoreError(RuntimeError):
     payload<->plan<->split value mismatch (I3), or media confinement (I4)."""
 
 
+class FrozenCoreContextSizeError(FrozenCoreError):
+    """E20 (2026-09-19): the SERVER refused this request as too wide.
+
+    Exactly one error class of the built fork:
+    ``ERROR_TYPE_EXCEED_CONTEXT_SIZE``, which
+    ``tools/server/server-common.cpp:59-62`` renders as HTTP 400 with
+    ``error.type == "exceed_context_size_error"``. Every other HTTP status,
+    and every other 400, still raises the plain :class:`FrozenCoreError`
+    the transport has always raised -- this subclass exists only so an
+    episode running ``native_episode.context_fit_policy ==
+    "compact-or-abstain"`` can turn that one fact into a retained row
+    instead of losing the rest of the flight.
+
+    ``server_message`` is the fork's own diagnostic sentence ("request (%d
+    tokens) exceeds the available context size (%d tokens), try increasing
+    it"), recorded verbatim in the row's terminal disposition.
+    """
+
+    #: The ``error.type`` the fork returns for this refusal, and the ONLY
+    #: value this class is raised for.
+    WIRE_ERROR_TYPE = "exceed_context_size_error"
+
+    def __init__(self, message: str, *, server_message: str | None = None) -> None:
+        super().__init__(message)
+        self.server_message = server_message
+
+
 from .paths import (  # noqa: E402
     _DRIVE_PREFIX,
     _normalized_relative_path,
@@ -88,6 +115,7 @@ __all__ = [
     "CoreResponse",
     "WireResponseMetadataError",
     "FrozenCoreAdapter",
+    "FrozenCoreContextSizeError",
     "FrozenCoreError",
     "PreparedFeatureCacheError",
     "PreparedFeatureCacheGuard",

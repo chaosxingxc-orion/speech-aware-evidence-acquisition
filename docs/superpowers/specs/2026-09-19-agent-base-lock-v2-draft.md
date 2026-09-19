@@ -675,6 +675,7 @@ which for several keys is a meaningful OFF.
 | `observe.derivation_kind` | — | `recut-span` | — | registered derivation kind | UNEXPLORED |
 | `native_episode.deliver_normaliser` | `{"normaliser": "saea-deliver-normalise-v3"}` | absent | absent | a `DELIVERY_NORMALISERS` id declared for this carrier; refused beside the run-level projection key and beside a grouped Solver | **FREEZE armed** (SLURP); OPEN for the other two only once a carrier-bound rule exists |
 | `native_episode.finite_completion_policy` | `deliver-latest-or-abstain` | `deliver-latest-or-abstain` | `deliver-latest-or-abstain` | `raise` \| `deliver-latest-or-abstain` | FREEZE armed, and required in every new fragment (v1 finding I-3) |
+| `native_episode.context_fit_policy` | absent (`raise`) | absent (`raise`) | absent (`raise`) | `raise` \| `compact-or-abstain` | E20 (2026-09-19, owner decision 45): the SECOND failure-mode key. Armed, an over-long request is compacted in the declared order (`rails.context_fit.DROP_ORDER`) and, failing that, degrades into a retained `context_compaction` row instead of killing the flight; it renders no request byte on a row that fits. UNFLOWN — propose FREEZE armed in every new fragment on the same I-3 reasoning, once one cell has flown it |
 
 ### 6.7 Node context policy (KN-6, cross-node)
 

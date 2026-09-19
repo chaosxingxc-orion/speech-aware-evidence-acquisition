@@ -514,6 +514,11 @@ class _ActualEpisodeHarness:
             # every unarmed episode -- leaves this binding byte-identical to
             # its pre-E18 self.
             acquisition_requery=getattr(self, "acquisition_requery", None),
+            # E20: the live serving budget a dispatch-time context-fit check
+            # measures each realised request against. None -- every harness
+            # written before E20 and every unarmed episode -- leaves this
+            # binding byte-identical to its pre-E20 self.
+            context_fit_budget=getattr(self, "context_fit_budget", None),
         )
         source_kwargs = (
             {}

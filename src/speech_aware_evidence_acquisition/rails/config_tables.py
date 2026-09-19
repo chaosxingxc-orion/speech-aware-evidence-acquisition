@@ -402,6 +402,7 @@ EPISODE_LEVEL_SWITCH_KEYS = frozenset({
     "native_episode.deliver_normaliser",
     "native_episode.reviewer_audit",
     "native_episode.finite_completion_policy",
+    "native_episode.context_fit_policy",
     "native_episode.solver_hints",
     "native_episode.tool_schema_rendering",
     "native_episode.acquisition",
@@ -1290,6 +1291,16 @@ def is_episode_null_arm(key: str, value: object) -> bool:
         # the same episode as one that omits it. Any other value is the armed
         # arm.
         return value is None or value == "raise"
+    if key == "native_episode.context_fit_policy":
+        # E20 (2026-09-19): the same OFF semantics E13's key has -- the
+        # key's ABSENCE or its explicit default ``"raise"``, which
+        # ``rails.native_episode_config.load_native_episode_config`` reads
+        # identically. Like E13's it renders NO request byte on a row that
+        # fits, so its ON arm moves nothing until a request is actually
+        # wider than the live slot.
+        from .context_fit import is_context_fit_null_arm  # noqa: PLC0415
+
+        return is_context_fit_null_arm(value)
     if key == "native_episode.reviewer_audit":
         # E12: the block is ABSENT or it is rendered. Function-local for the
         # same reason the context_policy branch is: rails.node_context_binding

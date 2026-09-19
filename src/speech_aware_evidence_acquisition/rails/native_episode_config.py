@@ -6,6 +6,7 @@ import json
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 
+from .context_fit import parse_context_fit_policy
 from .native_tool_authority import (
     NativeToolAuthorityError,
     validate_native_call_rejection,
@@ -375,6 +376,17 @@ class NativeEpisodeConfig:
     acquisition_role: NativeEpisodeRole | None = None
     acquisition_policy_id: str | None = None
     acquisition_budget: Mapping[str, int] | None = None
+    # E20 (2026-09-19, owner decision 45): what an OVER-LONG request does.
+    # ``"raise"`` -- every config written before E20 and every OFF arm --
+    # is the pre-E20 behaviour: a request wider than the live slot aborts
+    # the flight at preflight or kills it at dispatch.
+    # ``"compact-or-abstain"`` drops droppable blocks in the declared order
+    # (``rails.context_fit.DROP_ORDER``) and, when even that is not enough,
+    # retains the row under a ``context_compaction`` terminal disposition.
+    # It renders NO request byte on a row that fits. Declared LAST so every
+    # positional construction written before E20 -- here and in the tests --
+    # composes exactly the config it always did.
+    context_fit_policy: str = "raise"
 
     @property
     def acquisition_enabled(self) -> bool:
@@ -468,6 +480,67 @@ class NativeEpisodeRunBinding:
     # kind is the armed acquisition policy; every other binding leaves it
     # None, byte-identically to before.
     acquisition_requery: Callable | None = None
+    # E20 (2026-09-19, owner decision 45): the live serving budget a
+    # dispatch-time context-fit check measures each REALISED request
+    # against. Required exactly when ``config.context_fit_policy`` is
+    # ``"compact-or-abstain"``; every other binding leaves it None and the
+    # dispatch path is byte-identical to its pre-E20 self.
+    context_fit_budget: "ContextFitBudget | None" = None
+
+
+@dataclass(frozen=True)
+class ContextFitBudget:
+    """E20: what the live slot allows one realised request, and how to count it.
+
+    ``slot_tokens`` is the LIVE per-slot token limit of the session this
+    flight runs on -- the same number ``serve()`` turns into ``-c`` divided
+    by ``-np``, and the same one E17 bound the preflight budget to.
+    ``reserve_tokens`` is the operational reserve
+    (``rails.context_budget.serving_bound_reserve_tokens``) and
+    ``completion_ceiling`` the generation cap this cell sends; together they
+    are what a prompt may NOT use.
+
+    ``token_counter`` maps exact request bytes to exact tokens. A real
+    flight binds the resident server's own tokenizer; a test binds a
+    deterministic counter. This rail never tokenizes anything itself.
+    """
+
+    slot_tokens: int
+    reserve_tokens: int
+    completion_ceiling: int
+    token_counter: Callable
+    special_token_reserve: int = 2
+
+    def __post_init__(self) -> None:
+        for name in (
+            "slot_tokens", "reserve_tokens", "completion_ceiling",
+            "special_token_reserve",
+        ):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+                raise ValueError(f"context fit {name} must be a nonnegative integer")
+        if self.slot_tokens <= 0:
+            raise ValueError("context fit slot_tokens must be positive")
+        if not callable(self.token_counter):
+            raise ValueError("context fit token_counter must be callable")
+
+    @property
+    def prompt_limit_tokens(self) -> int:
+        """What one request's PROMPT may occupy, in tokens.
+
+        The live slot minus the operational reserve, the completion ceiling
+        and the registered special-token reserve. Never below 1: a budget
+        whose arithmetic leaves no room at all would refuse every request,
+        including ones the physical slot holds.
+        """
+
+        return max(
+            1,
+            self.slot_tokens
+            - self.reserve_tokens
+            - self.completion_ceiling
+            - self.special_token_reserve,
+        )
 
 
 def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig | None:
@@ -514,6 +587,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         "local_tool_execution",
         "tool_iteration_policy",
         "finite_completion_policy",
+        "context_fit_policy",
         "planner_output_format",
         "role_context",
         "review_loop",
@@ -548,6 +622,9 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         or finite_completion_policy not in {"raise", "deliver-latest-or-abstain"}
     ):
         raise ValueError("native episode finite completion policy is invalid")
+    # E20 (2026-09-19, owner decision 45). Parsed by the rail that owns the
+    # mechanism, so the config surface and the runtime read one definition.
+    context_fit_policy = parse_context_fit_policy(raw.get("context_fit_policy"))
     planner_output_format = raw.get("planner_output_format", "exact-text")
     if planner_output_format not in {"exact-text", "json-action-v1"}:
         raise ValueError("native episode Planner output format is invalid")
@@ -1128,4 +1205,5 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         acquisition_role,
         acquisition_policy_id,
         acquisition_budget,
+        context_fit_policy,
     )

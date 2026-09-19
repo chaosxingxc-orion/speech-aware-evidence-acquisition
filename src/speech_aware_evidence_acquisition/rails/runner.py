@@ -1778,8 +1778,15 @@ async def _invoke_native_role_episode(
         MeteredNativeSpeechRequest, NativeRoleSpeechBinding,
     )
     from ..reproduction.ojw.native_roles import (
+        FrozenCoreRoleContextFitError,
         NativeRoleContactContext, NativeRoleModelRequest, NativeRoleNode,
         NativeRoleNodeSpec, NativeSourceFunction,
+    )
+    from ..core.model import FrozenCoreContextSizeError
+    from .context_fit import (
+        BlockAttachment, CONTEXT_COMPACTION_DISPOSITION, CompactableRequest,
+        REVIEWER_AUDIT_BLOCK, SCENARIO_HINTS_BLOCK, canonical_bytes,
+        compact_to_fit,
     )
     from .controllers import (
         advance_phase_response_state, native_planner_action_response_format,
@@ -2647,6 +2654,136 @@ async def _invoke_native_role_episode(
         completion_sink=capture_cleaning_completion,
     )
 
+    # E20 (2026-09-19, owner decision 45): the dispatch-time context-fit
+    # seam. ``None`` under ``context_fit_policy == "raise"`` -- every cell
+    # written before E20 -- and then every line below is skipped and the
+    # dispatch path is byte-identical to its pre-E20 self.
+    context_fit_budget = (
+        binding.context_fit_budget
+        if config.context_fit_policy == "compact-or-abstain" else None
+    )
+    if config.context_fit_policy == "compact-or-abstain" and context_fit_budget is None:
+        raise RailsRunnerError(
+            "context_fit_policy 'compact-or-abstain' requires a live serving "
+            "budget on the episode binding"
+        )
+    #: One row per contact, in contact order: the contact it describes and
+    #: either its compaction record or ``None`` for a request that fitted.
+    context_fit_records: list[dict[str, object]] = []
+
+    def _context_attachments(contact_id):
+        """The addressable scenario-hints / reviewer-audit blocks of ONE contact.
+
+        Read from this contact's own node-context compilation receipt,
+        which records each appended block's sha256 and character count (the
+        policy never records its text). That is exactly enough to remove the
+        block byte for byte and to refuse to remove anything else.
+        """
+
+        record = node_context_compilations.get(contact_id)
+        if record is None:
+            return ()
+        rows = record.get("compilation", {}).get("boundaries", ())
+        attachments = []
+        for row in rows:
+            if not isinstance(row, Mapping):
+                continue
+            state_id = row.get("rendered_state_id")
+            if not isinstance(state_id, str) or not state_id:
+                continue
+            for key, block in (
+                ("solver_hints", SCENARIO_HINTS_BLOCK),
+                ("slot_audit", REVIEWER_AUDIT_BLOCK),
+            ):
+                entry = row.get(key)
+                if (
+                    not isinstance(entry, Mapping)
+                    or entry.get("applied") is not True
+                    or not isinstance(entry.get("block_sha256"), str)
+                    or not isinstance(entry.get("block_chars"), int)
+                    or isinstance(entry.get("block_chars"), bool)
+                    or entry["block_chars"] <= 0
+                ):
+                    continue
+                attachments.append(BlockAttachment(
+                    state_id=state_id, block=block,
+                    chars=entry["block_chars"], sha256=entry["block_sha256"],
+                ))
+        return tuple(attachments)
+
+    def _context_view(speech_binding_value, attachments):
+        messages = speech_binding_value.messages()
+        kwargs = speech_binding_value.kwargs()
+        content = messages[1].get("content")
+        states = kwargs.get("agent_state")
+        return CompactableRequest(
+            content=tuple(content if isinstance(content, list) else ()),
+            agent_states=tuple(states if isinstance(states, list) else ()),
+            attachments=attachments,
+        )
+
+    def _narrowed_binding(speech_binding_value, view):
+        messages = speech_binding_value.messages()
+        messages[1] = {**messages[1], "content": [dict(part) for part in view.content]}
+        kwargs = speech_binding_value.kwargs()
+        kwargs["agent_state"] = [dict(entry) for entry in view.agent_states]
+        return replace(
+            speech_binding_value, base_messages=tuple(messages), core_kwargs=kwargs
+        )
+
+    def fit_contact_to_slot(request, prepared):
+        """Budget the REALISED request against the LIVE slot before sending it.
+
+        Returns the contact to dispatch -- the one handed in when it already
+        fits, or a re-prepared one composed over the same binding with the
+        declared droppable blocks removed. Raises
+        :class:`FrozenCoreRoleContextFitError` when two compaction passes
+        are not enough, which the episode graph turns into a retained row.
+        """
+
+        if context_fit_budget is None:
+            return prepared, None
+        source_binding = prepared.binding
+        if not isinstance(source_binding, NativeRoleSpeechBinding):
+            raise RailsRunnerError("a context-fit check needs its prepared binding")
+        attachments = _context_attachments(request.context.agent_contact_id)
+        base_view = _context_view(source_binding, attachments)
+        limit = context_fit_budget.prompt_limit_tokens
+        cache: dict[bytes, tuple[object, int]] = {}
+
+        def key(view):
+            return canonical_bytes(view.document())
+
+        cache[key(base_view)] = (
+            prepared, int(context_fit_budget.token_counter(prepared.body_bytes))
+        )
+
+        def measure(view):
+            view_key = key(view)
+            if view_key not in cache:
+                candidate = adapter_request.prepare(
+                    request, binding_override=_narrowed_binding(source_binding, view)
+                )
+                cache[view_key] = (
+                    candidate,
+                    int(context_fit_budget.token_counter(candidate.body_bytes)),
+                )
+            return cache[view_key][1]
+
+        outcome = compact_to_fit(base_view, measure=measure, limit_tokens=limit)
+        if not outcome.fitted:
+            raise FrozenCoreRoleContextFitError(
+                source="dispatch-budget",
+                compaction_pass=outcome.passes,
+                dropped_identifiers=outcome.dropped_identifiers(),
+                tokens_before=outcome.tokens_before,
+                tokens_after=outcome.tokens_after,
+                limit_tokens=limit,
+            )
+        if outcome.passes == 0:
+            return prepared, None
+        return cache[key(outcome.request)][0], outcome
+
     async def metered(request):
         def contact(slot_id):
             if state.scheduled_contacts >= config.max_contacts:
@@ -2661,8 +2798,43 @@ async def _invoke_native_role_episode(
             set_current_trace_buffer(trace)
             try:
                 prepared = adapter_request.prepare(request)
+                prepared, compaction = fit_contact_to_slot(request, prepared)
+                if context_fit_budget is not None:
+                    context_fit_records.append({
+                        "contact_id": request.context.agent_contact_id,
+                        "role_id": request.role_id,
+                        "context_compaction": (
+                            None if compaction is None else compaction.record()
+                        ),
+                    })
                 binding.request_gate(prepared.request)
-                completion = adapter_request.dispatch(prepared)
+                try:
+                    completion = adapter_request.dispatch(prepared)
+                except FrozenCoreContextSizeError as error:
+                    # E20: the fork refused the request for width after the
+                    # harness budgeted it as fitting. Under the armed policy
+                    # this is the SAME retained-row disposition; under
+                    # ``"raise"`` it propagates exactly as it always did.
+                    if context_fit_budget is None:
+                        raise
+                    raise FrozenCoreRoleContextFitError(
+                        source="server-refusal",
+                        compaction_pass=0 if compaction is None else compaction.passes,
+                        dropped_identifiers=(
+                            () if compaction is None
+                            else compaction.dropped_identifiers()
+                        ),
+                        tokens_before=(
+                            0 if compaction is None else compaction.tokens_before
+                        ),
+                        tokens_after=(
+                            0 if compaction is None else compaction.tokens_after
+                        ),
+                        limit_tokens=context_fit_budget.prompt_limit_tokens,
+                        server_message=(
+                            error.server_message or "exceed_context_size_error"
+                        ),
+                    ) from error
                 trace.emit("USE", f"{completion.request_id}/native-role-contact", {
                     "use_role_id": request.role_id,
                     "use_request_sha256": completion.request_sha256,
@@ -3026,6 +3198,9 @@ async def _invoke_native_role_episode(
                 config.planner_output_format,
                 config.review_loop_enabled,
                 config.max_acquisitions_per_row,
+                # E20: keyword, because the spec's own field is last and
+                # every positional argument above is the pre-E20 order.
+                context_fit_policy=config.context_fit_policy,
             ),
             nodes=NativeEpisodeNodes(**nodes),
             role_input_builder=role_input,
@@ -3041,6 +3216,18 @@ async def _invoke_native_role_episode(
             isinstance(raw_disposition, Mapping)
             and raw_disposition.get("reason") == "finite_completion"
         )
+        # E20: a context-fit row quarantines NO completion -- the refused
+        # request never reached the wire, or the wire refused it -- so it
+        # takes neither the finite branch's custody check nor its wave
+        # record. It settles exactly as an ordinary row does.
+        context_degraded = (
+            isinstance(raw_disposition, Mapping)
+            and raw_disposition.get("reason") == CONTEXT_COMPACTION_DISPOSITION
+        )
+        if context_degraded and config.context_fit_policy != "compact-or-abstain":
+            raise RailsRunnerError(
+                "context-fit disposition without its declared policy"
+            )
         if finite:
             if not pending:
                 raise RailsRunnerError("finite episode lost its quarantined model completion")
@@ -3077,9 +3264,10 @@ async def _invoke_native_role_episode(
         validate_native_episode_terminal_policy(
             delivery, exhaustion_policy=config.exhaustion_policy,
             finite_completion_policy=config.finite_completion_policy,
+            context_fit_policy=config.context_fit_policy,
             max_revisions=config.max_revisions, error_type=RailsRunnerError,
         )
-        if finite:
+        if finite or context_degraded:
             validate_native_episode_finite_path(
                 receipt, max_revisions=config.max_revisions, accept_action=config.actions[0],
                 revise_action=config.actions[1], refresh_action=config.refresh_action,
@@ -3093,6 +3281,11 @@ async def _invoke_native_role_episode(
                 error_type=RailsRunnerError,
             )
         accepted = delivery.final_contact
+        # E20: a context-fit ABSTENTION has no delivered contact at all --
+        # no Solver ever completed and no request was answered -- so there
+        # is nothing to bind the delivered text to, and the block below is
+        # skipped rather than satisfied with a placeholder.
+        context_abstention = delivery.kind == "context-abstention"
         completion = completed.get(accepted.get("agent_contact_id"))
         # E2b: a grouped Solver visit's delivered actor_output is the commit
         # policy's AGGREGATED answer, not the last raw sample's response
@@ -3100,9 +3293,18 @@ async def _invoke_native_role_episode(
         # ordinary (samples-1) delivery, whose actor_output/completion.text
         # equality below is unchanged.
         solver_group = (
-            None if delivery.kind == "abstention" else result["delivery"].get("solver_group")
+            None if delivery.kind in ("abstention", "context-abstention")
+            else result["delivery"].get("solver_group")
         )
-        if (
+        if context_abstention:
+            if result["delivery"] != {
+                "actor_output": "", "result_type": "abstention",
+                "delivery_eligible": False,
+            }:
+                raise RailsRunnerError(
+                    "context-fit abstention delivered something other than nothing"
+                )
+        elif (
             completion is None or completion.request_sha256 != accepted["request_sha256"]
             or completion.response_sha256 != accepted["response_sha256"]
             or completion.response_text_sha256 != accepted["response_text_sha256"]
@@ -3122,7 +3324,7 @@ async def _invoke_native_role_episode(
                 solver_group, samples=solver_role_config.samples, error_type=RailsRunnerError,
             )
         final_text = (
-            "" if delivery.kind == "abstention"
+            "" if delivery.kind in ("abstention", "context-abstention")
             else result["delivery"]["actor_output"] if solver_group is not None
             else completion.text
         )
@@ -3142,7 +3344,9 @@ async def _invoke_native_role_episode(
         # there is no answer to project, and a normalisation receipt on such a
         # row would claim custody of bytes that came from no model response.
         deliver_normaliser_receipt = None
-        if config.deliver_normaliser_id is not None and delivery.kind != "abstention":
+        if config.deliver_normaliser_id is not None and delivery.kind not in (
+            "abstention", "context-abstention",
+        ):
             from ..core.base import DELIVERY_NORMALISERS  # noqa: PLC0415
             from . import delivery_normalisers as _delivery_normalisers  # noqa: PLC0415, F401
 
@@ -3239,6 +3443,23 @@ async def _invoke_native_role_episode(
                 "contacts": [dict(row) for row in tool_rendering_records],
                 "distinct_tool_schemas_sha256": len(set(digests)),
             }
+        if context_fit_budget is not None:
+            # E20: one block per row, naming the policy, the live budget it
+            # was measured against, and one row per contact carrying that
+            # contact's compaction record or null. Present ONLY on the armed
+            # arm, so an unarmed row's receipt is byte-identical to its
+            # pre-E20 self.
+            compact_receipt["context_fit"] = {
+                "schema": "saea-native-context-fit-v1",
+                "policy": config.context_fit_policy,
+                "slot_tokens": context_fit_budget.slot_tokens,
+                "prompt_limit_tokens": context_fit_budget.prompt_limit_tokens,
+                "contacts": [dict(row) for row in context_fit_records],
+                "compacted_contacts": sum(
+                    1 for row in context_fit_records
+                    if row["context_compaction"] is not None
+                ),
+            }
         if config.role_context_json is not None:
             compact_receipt["role_context_compilations"] = list(context_compilations.values())
         if node_context_declared:
@@ -3265,6 +3486,20 @@ async def _invoke_native_role_episode(
                 sample_id=state.prepared.sample.sample_id,
                 source_contact=delivery.final_contact,
                 finish_reason=terminal_disposition["finish_reason"],
+            )
+            trace.emit("TOOL", f"{derived_id}/request", derived_request)
+            trace.emit("TOOL", f"{derived_id}/response", derived_response)
+        elif delivery.kind == "context-abstention":
+            # E20: the same derivation, from the only custody this row has
+            # -- its own disposition. No source contact exists: the refused
+            # request was never answered.
+            from ..core.delivery import native_context_abstention_records
+
+            derived_id, derived_request, derived_response = (
+                native_context_abstention_records(
+                    sample_id=state.prepared.sample.sample_id,
+                    disposition=terminal_disposition,
+                )
             )
             trace.emit("TOOL", f"{derived_id}/request", derived_request)
             trace.emit("TOOL", f"{derived_id}/response", derived_response)
