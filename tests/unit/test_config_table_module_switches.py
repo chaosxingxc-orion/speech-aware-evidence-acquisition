@@ -1154,13 +1154,19 @@ def test_node_context_policy_is_one_episode_class_key():
     # native_episode.context_fit_policy, was admitted by E20 (2026-09-19,
     # owner decision 45) and is the SECOND failure-mode key, after E13's:
     # it decides what an over-long request does. Its proof is
-    # tests/unit/test_e20_context_fit_policy.py.
+    # tests/unit/test_e20_context_fit_policy.py. The eleventh,
+    # native_episode.knowledge_index, was admitted by E21 (2026-09-19, owner
+    # decisions 48 and 50): it arms the knowledge INDEX in the constant
+    # prefix together with the per-row pointer block and bounded expansion
+    # that replace today's total rendering of everything retrieved. Its
+    # proof is tests/unit/test_e21_knowledge_index.py.
     assert sorted(EPISODE_LEVEL_SWITCH_KEYS) == [
         "native_episode.acquisition",
         "native_episode.context_fit_policy",
         "native_episode.context_policy",
         "native_episode.deliver_normaliser",
         "native_episode.finite_completion_policy",
+        "native_episode.knowledge_index",
         "native_episode.review_loop",
         "native_episode.reviewer_audit",
         "native_episode.roles.solver",

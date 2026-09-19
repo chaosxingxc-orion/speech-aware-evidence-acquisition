@@ -1,0 +1,32 @@
+{
+  "what_this_is": "Item E21 (the knowledge index, not the Earnings-21 carrier), 2026-09-19, owner decisions 48 and 50: a SAMPLE native_episode.knowledge_index block, at the recommended defaults, for the future index cell. It is a documentation fragment: NO baseline references it, no cell is registered, no exposure row is opened and nothing here has been flown. Composing it into a baseline is a separate, owner-authorised step. The pins below are placeholder zeros on purpose -- the released view's own sha256 values are filled in by the release job that registers knowledge/slurp/semantic/slurp-knowledge-index-v1/, which has not run.",
+  "what_the_key_arms": "ONE key arming BOTH halves of one mechanism: the constant INDEX in the system-message prefix (the referent) and the per-row POINTER block plus bounded EXPANSION that replace today's total rendering of every selected value (the reference). Section 6.3 of the design refuses the two-key split on two measured grounds: an index-only arm forecloses the np5/np6 serving geometries, and a pointer-only arm removes the card text while the model has no index to resolve the pointers against.",
+  "preconditions": "native_episode.tool_schema_rendering MUST be 'constant' (E17): the index is nearly free only while the prefix is constant, and refusal 7 of rails.native_episode_config makes the cell ordering (EFF-1 before the index cell) a machine fact rather than a plan. The carrier's descriptor must declare a knowledge_layer (refusal 8). The pointer and expansion budgets are bounded by the candidate supply's own max_candidates and max_total_values (refusals 4 and 5), and a positive exemplar expansion requires an armed train-exemplars store (refusal 3).",
+  "native_episode": {
+    "tool_schema_rendering": "constant",
+    "knowledge_index": {
+      "view": "slurp-knowledge-index-v1",
+      "release": {
+        "relpath": "knowledge/slurp/semantic/slurp-knowledge-index-v1/release.json",
+        "root": "data",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/slurp-knowledge-index-v1/snapshot.json",
+        "root": "data",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "granularity": {
+        "intent": {"level": "L1", "section": "Activation boundary"},
+        "slot": {"level": "L1", "section": "Admissible formats"},
+        "edge": {"level": "L0", "section": "Confusable exclusions"}
+      },
+      "ordering": "taxonomy-frequency-v1",
+      "pointer_budget": {"intent": 3, "slot": 8, "exemplar_vote": 3},
+      "expansion_budget": {"exemplar": 5, "slot_card": 4, "intent_card": 0},
+      "solver_citation": "permitted"
+    }
+  },
+  "what_the_per_role_override_would_look_like": "The Planner-L0-only and Reviewer-cited-only reads of design section 4.2 are owner decisions still OPEN (question Q12), so they are expressible and OFF by default: with no override every role receives the same block the Solver receives, which is today's byte-identical-evidence shape (finding F-4). An override is declared on the ROLE ROW, beside the role it budgets: native_episode.roles.planner.knowledge_index_budget = {\"pointer_budget\": {...}, \"expansion_budget\": {...}}. Declaring it inside the knowledge_index block instead is refused by name (two spellings of one override).",
+  "what_this_does_not_authorise": "No cell, no preregistration, no exposure-ledger row, no ExecutionPlan, no readiness package, no view release, no model contact. Every number in the item's design note is derived or model-free."
+}

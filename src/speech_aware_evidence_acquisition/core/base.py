@@ -173,6 +173,37 @@ ACQUISITION_POLICIES = Registry("acquisition policy")
 
 
 # ---------------------------------------------------------------------------
+# The knowledge INDEX (item E21 -- the knowledge index, not the Earnings-21
+# carrier -- 2026-09-19, owner decisions 48 and 50).
+#
+# An index is a stable, addressable, ordered catalogue of the task's knowledge
+# space, rendered into the CONSTANT prefix of every request at a declared
+# granularity, with short ids the model can cite. Three ids of it are
+# component identities a config fragment names, so all three register here,
+# beside every other config-declared component id:
+#
+# * ``KNOWLEDGE_INDEX_ORDERINGS`` -- an ORDERING is a pure, total
+#   ``Sequence[IndexEntry] -> tuple[IndexEntry, ...]``. The order is declared,
+#   never emergent, and it IS the degradation order, so a fragment naming an
+#   unregistered ordering is refused before any contact (refusal 6 of the
+#   design's section 6.4). Ordering is a mechanism with its own sign: the one
+#   time this program re-rendered an unchanged registry under new headers
+#   (Audio2Tool ORG-1) the official number fell 3.23 points, which is why the
+#   rule is a registered object rather than a rendering convention.
+# * ``KNOWLEDGE_INDEX_VIEWS`` -- a released, hash-pinned construction VIEW id
+#   and the builder policy that produced it.
+# * ``KNOWLEDGE_INDEX_RECEIPTS`` -- the per-row receipt schema id and the view
+#   it belongs to, so a receipt reader resolves a block's schema the same way
+#   every other component id resolves.
+#
+# Populated from ``rails/knowledge_index.py``, the canonical registration
+# site, exactly as the acquisition and commit policies above are.
+KNOWLEDGE_INDEX_ORDERINGS = Registry("knowledge index ordering")
+KNOWLEDGE_INDEX_VIEWS = Registry("knowledge index view")
+KNOWLEDGE_INDEX_RECEIPTS = Registry("knowledge index receipt")
+
+
+# ---------------------------------------------------------------------------
 # Judges: the Reviewer seat of the four-agent loop (owner Decision 11-B/11-C,
 # 2026-09-08; ``docs/readiness/2026-09-08-openjiuwen-implementation-assessment
 # -v1.md`` change #1, and the design note's section 2 Reviewer row).
