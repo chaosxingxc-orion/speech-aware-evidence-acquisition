@@ -1308,7 +1308,15 @@ def test_reviewer_audit_is_one_episode_class_key():
 def test_the_two_b8b_fragments_arm_the_block_and_nothing_else():
     """Cell B8b is one factor: each committed ON fragment differs from cell
     B7r's base in native_episode.reviewer_audit alone, plus the bookkeeping
-    identities every derived fragment carries."""
+    identities every derived fragment carries and one harness-robustness key.
+
+    native_episode.finite_completion_policy (coordinator, 2026-09-19, after the
+    B7a recovery arm aborted on a Reviewer completion that hit the 512-token
+    cap) is NOT a switch-class key and NOT a factor: it renders no request
+    byte, is consumed only by rails.runner's NativeEpisodeSpec, and only
+    decides whether a finite completion aborts the flight or retains the row.
+    It is asserted here by name so it cannot be confused with the factor.
+    """
 
     bookkeeping = {
         "native_contact_fit",
@@ -1341,6 +1349,8 @@ def test_the_two_b8b_fragments_arm_the_block_and_nothing_else():
         on_episode = dict(on["native_episode"])
         armed = on_episode.pop("reviewer_audit")
         assert armed["view"] == "slot-audit-v1"
+        assert on_episode.pop("finite_completion_policy") == "deliver-latest-or-abstain"
+        assert "finite_completion_policy" not in off_episode
         assert on_episode == off_episode
         assert is_episode_null_arm(
             "native_episode.reviewer_audit", off_episode.get("reviewer_audit")

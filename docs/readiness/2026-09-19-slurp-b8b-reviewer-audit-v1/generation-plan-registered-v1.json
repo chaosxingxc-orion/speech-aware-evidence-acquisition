@@ -1,0 +1,56 @@
+{
+  "cell": "slurp-native-ncp-l1-reviewer-audit-anchor-train-fold-a-v1",
+  "composed_config_hash": "c8599381f789c332597bbfc8008e64943fd7c3c3cd64c3abf49c4860ead58c6b",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-ncp-l1-reviewer-audit-anchor-train-fold-a-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 11880,
+    "planned_speech_audio_seconds": 33930,
+    "protocol_hash": "4997c665acc71869843dd31f0c920ceaacc18384d21db92cf809c57617f3cbae",
+    "run_id": "SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan configs/campaign/slurp-native-ncp-l1-reviewer-audit-anchor-train-fold-a-v1.json; the campaign acquires its own GenerationLease against the resident session and schedules the one official score at finalize.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-ncp-l1-reviewer-audit-anchor-train-fold-a-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "modules": {
+    "base": "cell B7r's configuration: the Node Context Policy at level L1 (typed-slurp-node-context-v1) with the review-finding producer response format saea-review-findings-v1 and the phase program phase-native-candidates-review-revise-findings-v1, on cell B7a's NCP L1 base over the sealed dual-store anchor. Nothing of it moves.",
+    "factor": "the Reviewer slot-audit context block: one episode-class key, native_episode.reviewer_audit, armed as {\"view\": \"slot-audit-v1\", \"release\": {...}, \"snapshot\": {...}, \"thresholds\": {...}}. The released construction view knowledge/slurp/semantic/slot-audit-v1/ (60 intents, 54 entity types, 9,354 construction utterances) is rendered through the committed template probes/ncp_slurp_slot_audit_reviewer_v1.txt as a deterministic, zero-contact block APPENDED after the reviewer:current-draft L1 rendering, carrying the intent's construction slot profile and the four harness-computed flags TYPE-UNSEEN, EMPTY-DRAFT, MISSING-COMMON and REPRESENTATION. OFF is the key's absence, which is cell B7r's configuration.",
+    "second_declared_key_not_a_factor": "native_episode.finite_completion_policy = \"deliver-latest-or-abstain\" (coordinator, 2026-09-19, after cell B7a's recovery arm aborted at 1,451 contacts on a Reviewer completion that hit the 512-token cap under the module default \"raise\"). It renders NO request byte -- rails.runner reads it once into core NativeEpisodeSpec -- and only decides whether a finite completion aborts the flight or is RETAINED with a terminal_disposition reason \"finite_completion\" (latest delivery-eligible Solver draft delivered, or abstention). The count of such rows is a mandatory diagnostic; no row is ever filtered out.",
+    "zero_added_contacts": "the block makes no model, tokenizer, encoder, scorer, tool, server or network contact, so the bounded ceiling stays 11 and every budget is cell B7r's, unchanged"
+  },
+  "plan_kind": "generation",
+  "preparation_base_commit": "25a7f325",
+  "prepared_phase_supply": {
+    "note": "INHERITED from cell B7r and reused byte for byte; core.flight.repin rebuilds it into this run's own prepared directory on the launch commit and refuses the rebuild unless the Perception output is byte-identical. --allow-output-change must never be passed.",
+    "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "relpath": "prepared/SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v1.json",
+    "sha256": "b7a1e1ab7f4f48057bcb1aea1e6e56d9fe8653097f3d3e0a491668e6d56f4fd4"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-19-slurp-b8b-reviewer-audit-v1/protocol-registered-v1.json",
+    "sha256": "2a78383e62ed2944420ace4094585682ed2e14fbb9d8d03f9072f893e6574293"
+  },
+  "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist, and not before the registered STOP condition passes. The PRIMARY comparator is cell B7r's sealed score artifact (run SAEA-SLURP-NATIVE-NCP-L1-REVIEWER-FORMAT-ANCHOR-TRAIN-FOLD-A-V1), the secondary is cell B7a's (SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1), and the sealed dual-store anchor and the released TRAIN A direct anchor are context only; none is ever re-flown or re-scored. This arm does not open before cell B7r seals and is read NOT HARMFUL (owner decision 15 of 2026-09-17), and not before this cell's own four-row smoke seals. Read once; the decision rule is fixed in the protocol document and is not edited after a number is seen.",
+  "registered_at_utc": "2026-09-19T04:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition (main checkout, master)",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

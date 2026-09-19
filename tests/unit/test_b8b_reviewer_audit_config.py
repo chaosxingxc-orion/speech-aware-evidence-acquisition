@@ -13,8 +13,14 @@ configuration:
 1. the four-row smoke baseline is the B8b arm baseline apart from its own FIT
    identity (the 4 x 11 x 4 = 176 endpoint ceiling) and its note;
 2. against cell B7r's baselines, the only key that moves is
-   ``native_episode``, and inside it the only key that moves is
-   ``reviewer_audit``;
+   ``native_episode``, and inside it the only keys that move are
+   ``reviewer_audit`` -- the factor -- and ``finite_completion_policy``, the
+   harness-robustness key the coordinator added on 2026-09-19 after the B7a
+   recovery arm aborted on a Reviewer completion that hit the 512-token cap.
+   The second key is NOT a factor: it renders no request byte and only decides
+   what the harness does when a completion comes back with ``finish_reason``
+   ``length`` -- ``raise`` aborts the flight, ``deliver-latest-or-abstain``
+   retains the row with a ``finite_completion`` terminal disposition;
 3. the armed pins name real committed bytes and hash to them;
 4. dropping the one key reconstructs B7r's own ``native_episode`` block;
 5. the composed configuration loads with the block armed, and the loader
@@ -56,6 +62,12 @@ B8B_SMOKE_EXPERIMENT = "slurp-native-ncp-l1-reviewer-audit-anchor-smoke-4-v1"
 
 REVIEWER_AUDIT_KEY = "reviewer_audit"
 
+#: The harness-robustness key added beside the factor (coordinator, 2026-09-19).
+#: It is consumed only by ``rails.runner``'s ``NativeEpisodeSpec`` and reaches
+#: no template, no prompt and no request.
+FINITE_COMPLETION_KEY = "finite_completion_policy"
+FINITE_COMPLETION_VALUE = "deliver-latest-or-abstain"
+
 #: Bookkeeping-only top-level keys: run/attempt identity, the provenance-only
 #: speech-feature ids and free-English notes. None shapes a rendered request.
 BOOKKEEPING_KEYS = frozenset({
@@ -94,6 +106,9 @@ def test_the_smoke_baseline_is_the_arm_baseline_plus_bookkeeping_only():
     assert arm["native_episode"][REVIEWER_AUDIT_KEY] == (
         smoke["native_episode"][REVIEWER_AUDIT_KEY]
     )
+    assert arm["native_episode"][FINITE_COMPLETION_KEY] == (
+        smoke["native_episode"][FINITE_COMPLETION_KEY]
+    ) == FINITE_COMPLETION_VALUE
 
 
 @pytest.mark.parametrize(
@@ -101,7 +116,9 @@ def test_the_smoke_baseline_is_the_arm_baseline_plus_bookkeeping_only():
     [(B7R_ARM, B8B_ARM), (B7R_SMOKE_BASELINE, B8B_SMOKE_BASELINE)],
     ids=["arm", "smoke"],
 )
-def test_the_only_key_that_moves_against_b7r_is_the_audit(off_name, on_name):
+def test_the_only_keys_that_move_against_b7r_are_the_audit_and_the_finite_policy(
+    off_name, on_name
+):
     off = _load_baseline(off_name)
     on = _load_baseline(on_name)
     comparable = (set(off) | set(on)) - BOOKKEEPING_KEYS
@@ -131,11 +148,17 @@ def test_the_only_key_that_moves_against_b7r_is_the_audit(off_name, on_name):
         key
         for key in set(off_episode) | set(on_episode)
         if off_episode.get(key) != on_episode.get(key)
-    ) == [REVIEWER_AUDIT_KEY]
+    ) == [FINITE_COMPLETION_KEY, REVIEWER_AUDIT_KEY]
     assert REVIEWER_AUDIT_KEY not in off_episode
+
+    # The harness-robustness key is the registered non-default value, and the
+    # base leaves it at the module default 'raise' by omitting it.
+    assert on_episode[FINITE_COMPLETION_KEY] == FINITE_COMPLETION_VALUE
+    assert FINITE_COMPLETION_KEY not in off_episode
 
     stripped = copy.deepcopy(on_episode)
     stripped.pop(REVIEWER_AUDIT_KEY)
+    stripped.pop(FINITE_COMPLETION_KEY)
     assert stripped == off_episode
 
 
@@ -196,6 +219,10 @@ def test_the_composed_smoke_loads_a_native_episode_with_the_block_armed():
     assert config.max_contacts == off_config.max_contacts == 11
     assert config.episode_id == off_config.episode_id
     assert config.context_policy_json == off_config.context_policy_json
+    # The harness-robustness key loads as the registered value; the base keeps
+    # the module default. It is carried on the episode SPEC, never rendered.
+    assert config.finite_completion_policy == FINITE_COMPLETION_VALUE
+    assert off_config.finite_completion_policy == "raise"
 
 
 def test_the_loader_refuses_the_block_on_another_carrier_and_off_l1():
