@@ -47,7 +47,7 @@ registered here.**
 | composed / protocol (B7r) | `6f4305068a65de7a591fcdc08e7182ebfdafec43ff0efa240afbb23784119cf1` / `ea40fd649a62313d4dcaa038925c15e994a14173010b501f165e7b387d8cd076` |
 | composed / protocol (B7r smoke) | `bf8da2447697ce7ed7d89f4e70d47fb24335848a801c3cd36c569e9de37e1276` / `1511e4e529b874c336750b0401902ed698d0696065835d7e100e764a8e59e9f1` |
 | composed / protocol (B7c) | `6b76f22cc75fe4c0f99fece7fb99dab84746ccd337d7e0caae007a53de49c735` / `8b2fb2bc1f894e052a527c0872ea6ab765450685fb9e9c346285c938a9292c0a` |
-| composed / protocol (B7c smoke) | `3448723716e57d35ce111d1617509b58047c122d926765b71d58b7d3844eb1f6` / `e51dda7863f73076c3716000b6d7813659475eee59ef1e615473aba9cf315ca7` |
+| composed / protocol (B7c smoke) | `ff1f1163d9a8378c1635182fc2d9b26cc9915cbfa580cf4b26313aa0aa9e7dc9` / `47367a97dd98536b794440a3bad89eb73c19c8bc1e3eeed02d43d720c176fdb6` |
 | session | `serving-slurp-native-candidate-five-train-a-np4-v1`, attach only, never spawn |
 | readiness | all four cells are `held` with the preparation requirement pinned; the coordinator appends the decision requirement and flips |
 | budgets (per cell) | full: 11,880 generation / 47,520 FIT / 33,930 repeated speech seconds / 12.0 GPU-h / 6,480 task-contract calls / 1 official score. Smoke: 44 / 176 / 117 / 1.0 / 24 / 0 |
