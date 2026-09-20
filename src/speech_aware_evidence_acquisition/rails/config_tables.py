@@ -240,14 +240,32 @@ RUN_SWITCH_CLASS = "run"
 EPISODE_SWITCH_CLASS = "episode"
 STORES_SWITCH_CLASS = "stores"
 
+#: The EIGHTH switch class, added 2026-09-20 by item E25 for cell B1-notool
+#: (repair form 0-B, owner decisions 55 and 56): ONE ROLE'S TOOLKIT, the
+#: ``phase_tools.<phase>`` mapping that grants a role tool AUTHORITY (what it
+#: may call, with which knowledge views and which source-authority role).
+#: It is not the ``toolkits`` table, whose entry is a TASK TYPE's catalogue
+#: selection (``toolkits.task_type`` / ``toolkits.roles``), and not the
+#: ``episode`` class, because ``native_episode.tool_schema_rendering`` (E17)
+#: decides how a granted toolkit is RENDERED and leaves authority alone. The
+#: class exists so that a module which WITHDRAWS a role's toolkit can be
+#: written as the retirement of the toolkit it withdraws -- ON is the
+#: mapping the comparator carried, OFF is its null arm (``None``, ``{}`` or
+#: the role absent from ``phase_tools``, all of which the runtime reads as
+#: "no tool authority": ``core.flight.runtime.tool_free_native_arm``) --
+#: rather than being forced to call the absence of a mapping an ON arm.
+PHASE_TOOLS_SWITCH_CLASS = "phase_tools"
+
 #: Every switch class a ``docs/receipts/harness-admission.json`` entry may
-#: name: the four config tables, plus ``run``, ``episode`` and ``stores``.
+#: name: the four config tables, plus ``run``, ``episode``, ``stores`` and
+#: ``phase_tools``.
 #: NOT the same tuple as :data:`CONFIG_TABLE_NAMES`, which is the hashing
 #: rule's own list and must keep naming exactly the four tables.
 SWITCH_CLASS_NAMES = CONFIG_TABLE_NAMES + (
     RUN_SWITCH_CLASS,
     EPISODE_SWITCH_CLASS,
     STORES_SWITCH_CLASS,
+    PHASE_TOOLS_SWITCH_CLASS,
 )
 
 #: The per-run driver keys the ``run`` class admits.
@@ -1458,6 +1476,56 @@ def is_stores_null_arm(value: object) -> bool:
     return value is None
 
 
+def resolve_phase_tools_switch_key(key: str) -> str:
+    """The ``phase_tools``-class switch key a ``switch.key`` declaration names,
+    or a refusal: exactly ``phase_tools.<phase>``, where ``<phase>`` is the
+    literal phase id whose toolkit the module grants or withdraws.
+
+    The key is the literal spelling the fragment carries (``phase_tools`` is
+    a flat top-level mapping keyed by phase id), exactly as a ``stores``-class
+    key is the literal ``knowledge_stores.<store_id>``. No ``<phase>``
+    placeholder is accepted here, because a toolkit's admission IS about one
+    role: the Reviewer's task-contract tool and a Planner toolkit are two
+    modules, not one module in two phases.
+    """
+
+    if not isinstance(key, str) or not key.strip():
+        raise ConfigTableError("a phase_tools switch key must be a non-empty string")
+    prefix = f"{PHASE_TOOLS_SWITCH_CLASS}."
+    if not key.startswith(prefix):
+        raise ConfigTableError(
+            f"phase_tools switch key {key!r} must be 'phase_tools.<phase>'; the class "
+            "names ONE role's toolkit mapping, which the fragment carries flat under "
+            "phase_tools keyed by phase id"
+        )
+    phase = key[len(prefix):]
+    if not phase or "." in phase or phase != phase.strip() or phase == "<phase>":
+        raise ConfigTableError(
+            f"phase_tools switch key {key!r} must name exactly one literal phase id "
+            "after 'phase_tools.' (no placeholder, no deeper path)"
+        )
+    return key
+
+
+def is_phase_tools_null_arm(value: object) -> bool:
+    """A role's toolkit null arm: ``None`` or ``{}`` (the role absent from
+    ``phase_tools``, or ``phase_tools`` itself absent, both read by the
+    runtime as no tool authority for that role)."""
+
+    return value is None or (isinstance(value, Mapping) and len(value) == 0)
+
+
+def phase_tools_role_armed(fragment: Mapping[str, object], key: str) -> bool:
+    """Whether ``fragment`` grants the role named by the ``phase_tools.<phase>``
+    key a non-null toolkit mapping."""
+
+    phase = resolve_phase_tools_switch_key(key).split(".", 1)[1]
+    block = fragment.get(PHASE_TOOLS_SWITCH_CLASS)
+    if not isinstance(block, Mapping):
+        return False
+    return not is_phase_tools_null_arm(block.get(phase))
+
+
 def is_stores_repin_arm(value: object) -> bool:
     """Whether ``value`` is a ``stores``-class RE-PIN arm.
 
@@ -1576,6 +1644,7 @@ __all__ = [
     "NATIVE_EPISODE_TOP_LEVEL_KEY",
     "NULL_ARMS",
     "OBSERVE_TABLE",
+    "PHASE_TOOLS_SWITCH_CLASS",
     "RUN_LEVEL_SWITCH_KEYS",
     "RUN_NULL_ARMS",
     "RUN_SWITCH_CLASS",
@@ -1603,10 +1672,13 @@ __all__ = [
     "load_toolkits_table",
     "is_episode_null_arm",
     "is_run_null_arm",
+    "is_phase_tools_null_arm",
     "is_stores_null_arm",
     "is_stores_repin_arm",
     "resolve_episode_switch_key",
     "resolve_run_switch_key",
+    "phase_tools_role_armed",
+    "resolve_phase_tools_switch_key",
     "resolve_stores_switch_key",
     "resolve_switch_key",
     "stores_arm_matches",

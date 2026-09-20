@@ -1649,3 +1649,64 @@ def test_the_tool_schema_rendering_arms_differ_in_exactly_one_leaf():
     on = {**off, "tool_schema_rendering": "constant"}
     assert set(on) - set(off) == {"tool_schema_rendering"}
     assert {k: v for k, v in on.items() if k != "tool_schema_rendering"} == off
+
+
+# ---------------------------------------------------------------------------
+# Item E25 (2026-09-20): the 'phase_tools' switch class -- one role's toolkit.
+#
+# Cell B1-notool's module is the WITHDRAWAL of the Reviewer's task-contract
+# tool. This is the entry's own named proof: the key resolves in the class,
+# its OFF arm is the role's null arm, its ON arm is the toolkit mapping, and
+# the two committed fragments (B1r's, which carried the toolkit, and the flown
+# tool-free one) differ in phase_tools alone once the fit receipt, the
+# prepared-supply binding, the what_this_is prose and the E22 failure-mode
+# declaration -- armed on every cell registered after 2026-09-19 -- are set
+# aside as bookkeeping and derived keys.
+# ---------------------------------------------------------------------------
+
+_E25_ON = "slurp-native-anchor-exemplars-k20-replicate-v1.json"
+_E25_OFF = "slurp-native-anchor-exemplars-k20-notool-v1.json"
+_E25_BOOKKEEPING_KEYS = frozenset({
+    "native_contact_fit",
+    "prepared_phase_supply",
+    "what_this_is",
+})
+_E25_DERIVED_EPISODE_KEYS = frozenset({"react_exhaustion_policy"})
+
+
+def test_the_reviewer_toolkit_withdrawal_is_one_phase_tools_key():
+    from speech_aware_evidence_acquisition.rails.config_tables import (
+        PHASE_TOOLS_SWITCH_CLASS,
+        SWITCH_CLASS_NAMES,
+        is_phase_tools_null_arm,
+        phase_tools_role_armed,
+        resolve_phase_tools_switch_key,
+    )
+
+    assert PHASE_TOOLS_SWITCH_CLASS == "phase_tools"
+    assert SWITCH_CLASS_NAMES[-1] == PHASE_TOOLS_SWITCH_CLASS
+    assert resolve_phase_tools_switch_key("phase_tools.reviewer") == "phase_tools.reviewer"
+    for bad in ("phase_tools", "phase_tools.", "phase_tools.<phase>", "toolkits.reviewer",
+                "phase_tools.reviewer.mode", "", None):
+        with pytest.raises(ConfigTableError):
+            resolve_phase_tools_switch_key(bad)
+    assert is_phase_tools_null_arm(None) is True
+    assert is_phase_tools_null_arm({}) is True
+    assert is_phase_tools_null_arm({"mode": "native-tools"}) is False
+    assert is_phase_tools_null_arm("none") is False
+
+    on = _load_baseline_json(_E25_ON)
+    off = _load_baseline_json(_E25_OFF)
+    assert phase_tools_role_armed(on, "phase_tools.reviewer") is True
+    assert phase_tools_role_armed(off, "phase_tools.reviewer") is False
+    assert "phase_tools" not in off
+    assert on["phase_tools"]["reviewer"]["allowed_tools"] == ["saea-tool-task-contract-v1"]
+
+    non_bookkeeping = (set(on) | set(off)) - _E25_BOOKKEEPING_KEYS
+    differing = sorted(key for key in non_bookkeeping if on.get(key) != off.get(key))
+    assert differing == ["native_episode", "phase_tools"]
+    episode_on = {k: v for k, v in on["native_episode"].items() if k not in _E25_DERIVED_EPISODE_KEYS}
+    episode_off = {k: v for k, v in off["native_episode"].items() if k not in _E25_DERIVED_EPISODE_KEYS}
+    assert episode_on == episode_off
+    assert off["native_episode"]["react_exhaustion_policy"] == "continue-without-answer"
+    assert "react_exhaustion_policy" not in on["native_episode"]

@@ -819,6 +819,7 @@ def test_the_v3_schema_still_validates_every_existing_entry():
     assert _committed()["schema"] == "saea-harness-admission-v3"
     assert set(_committed()["switch_classes"]) == {
         "judges", "knowledge_views", "observe", "toolkits", "run", "episode", "stores",
+        "phase_tools",
     }
     result = hac.evaluate(REPO_ROOT)
     assert result["failures"] == []
@@ -1069,3 +1070,199 @@ def test_the_stores_null_form_still_validates_exactly_as_before(tmp_path):
         tmp_path, _receipt([_stores_entry(tmp_path, off={"store_role": "x"})])
     )
     assert any("must be null" in failure for failure in refused["failures"])
+
+
+# ---------------------------------------------------------------------------
+# Rule 7: the phase_tools switch class -- one role's toolkit -- and the
+# RETIRED status. Added 2026-09-20 by item E25 for cell B1-notool, whose
+# module WITHDRAWS the Reviewer's task-contract tool: ON is the toolkit the
+# comparator carried, OFF is its null arm, the plan carries OFF. Every case
+# runs against a SYNTHETIC repo root; the committed receipt is never mutated.
+# ---------------------------------------------------------------------------
+
+PHASE_TOOLS_PROOF = (
+    "tests/unit/test_config_table_module_switches.py"
+    "::test_the_reviewer_toolkit_withdrawal_is_one_phase_tools_key"
+)
+
+REVIEWER_TOOLKIT = {
+    "reviewer": {
+        "allowed_tools": ["saea-tool-task-contract-v1"],
+        "knowledge_views": ["text"],
+        "mode": "native-tools",
+        "source_authority_role": "reviewer",
+    }
+}
+
+
+def _phase_tools_entry(tmp_path, status="RETIRED", **switch_overrides):
+    switch = {
+        "key": "phase_tools.reviewer",
+        "off": None,
+        "on": REVIEWER_TOOLKIT,
+        "proof": PHASE_TOOLS_PROOF,
+        "table": "phase_tools",
+    }
+    switch.update(switch_overrides)
+    proof_relpath, _, proof_name = PHASE_TOOLS_PROOF.partition("::")
+    proof = tmp_path / proof_relpath
+    proof.parent.mkdir(parents=True, exist_ok=True)
+    if not proof.exists():
+        proof.write_text(f"def {proof_name}():\n    pass\n", encoding="utf-8")
+    return _entry(module="the Reviewer's task-contract toolkit", status=status, switch=switch)
+
+
+def _phase_tools_plan(tmp_path, fragment, relpath="configs/baseline/phase-tools-plan.json"):
+    path = tmp_path / relpath
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(fragment), encoding="utf-8")
+    return relpath
+
+
+def _retired_receipt(entries, plans):
+    document = _receipt(entries, plans)
+    document["status_values"]["RETIRED"] = "the ON arm was withdrawn; the plan carries OFF"
+    return document
+
+
+def test_a_retired_toolkit_whose_plan_carries_the_off_arm_passes(tmp_path):
+    plan = _phase_tools_plan(tmp_path, {"arm": "speech-feature-query-native-tools"})
+    result = _evaluate(
+        tmp_path,
+        _retired_receipt([_phase_tools_entry(tmp_path)], [{"carrier": "slurp", "config": plan}]),
+    )
+    assert result["failures"] == []
+    row = result["entries"][0]
+    assert row["table"] == "phase_tools"
+    assert row["switch_key"] == "phase_tools.reviewer"
+    assert row["blocked"] is True
+    assert "RETIRED" in row["blocked_reason"]
+    assert row["in_default_plans"] == []
+
+
+def test_a_plan_with_an_empty_or_null_role_mapping_carries_the_off_arm(tmp_path):
+    for phase_tools in (None, {}, {"reviewer": None}, {"reviewer": {}}):
+        plan = _phase_tools_plan(tmp_path, {"phase_tools": phase_tools})
+        result = _evaluate(
+            tmp_path,
+            _retired_receipt(
+                [_phase_tools_entry(tmp_path)], [{"carrier": "slurp", "config": plan}]
+            ),
+        )
+        assert result["failures"] == [], phase_tools
+
+
+def test_a_retired_toolkit_still_armed_in_a_plan_fails(tmp_path):
+    plan = _phase_tools_plan(tmp_path, {"phase_tools": REVIEWER_TOOLKIT})
+    result = _evaluate(
+        tmp_path,
+        _retired_receipt([_phase_tools_entry(tmp_path)], [{"carrier": "slurp", "config": plan}]),
+    )
+    assert any(
+        "status RETIRED" in failure and "armed in default plan(s)" in failure
+        for failure in result["failures"]
+    )
+
+
+def test_a_retired_toolkit_with_no_plan_for_its_carrier_fails(tmp_path):
+    plan = _phase_tools_plan(tmp_path, {"phase_tools": None})
+    result = _evaluate(
+        tmp_path,
+        _retired_receipt(
+            [_phase_tools_entry(tmp_path)], [{"carrier": "earnings21-original", "config": plan}]
+        ),
+    )
+    assert any("no default plan exists for 'slurp'" in failure for failure in result["failures"])
+
+
+def test_a_plan_arming_a_different_role_does_not_arm_the_retired_one(tmp_path):
+    plan = _phase_tools_plan(
+        tmp_path, {"phase_tools": {"planner": REVIEWER_TOOLKIT["reviewer"]}}
+    )
+    result = _evaluate(
+        tmp_path,
+        _retired_receipt([_phase_tools_entry(tmp_path)], [{"carrier": "slurp", "config": plan}]),
+    )
+    assert result["failures"] == []
+
+
+def test_a_new_toolkit_admitted_the_ordinary_way_must_reach_a_plan(tmp_path):
+    armed = _phase_tools_plan(tmp_path, {"phase_tools": REVIEWER_TOOLKIT})
+    result = _evaluate(
+        tmp_path,
+        _receipt(
+            [_phase_tools_entry(tmp_path, status="ADMITTED")],
+            [{"carrier": "slurp", "config": armed}],
+        ),
+    )
+    assert result["failures"] == []
+    assert result["entries"][0]["in_default_plans"] == [armed]
+    unarmed = _phase_tools_plan(tmp_path, {"phase_tools": None}, "configs/baseline/off.json")
+    result = _evaluate(
+        tmp_path,
+        _receipt(
+            [_phase_tools_entry(tmp_path, status="ADMITTED")],
+            [{"carrier": "slurp", "config": unarmed}],
+        ),
+    )
+    assert any("no default plan for 'slurp' arms" in failure for failure in result["failures"])
+
+
+def test_a_phase_tools_key_with_the_wrong_shape_fails(tmp_path):
+    plan = _phase_tools_plan(tmp_path, {"phase_tools": None})
+    for key in ("phase_tools", "phase_tools.<phase>", "toolkits.reviewer", "phase_tools.reviewer.mode"):
+        result = _evaluate(
+            tmp_path,
+            _retired_receipt(
+                [_phase_tools_entry(tmp_path, key=key)], [{"carrier": "slurp", "config": plan}]
+            ),
+        )
+        assert any(".switch.key:" in failure for failure in result["failures"]), key
+
+
+def test_a_phase_tools_off_arm_that_is_not_null_fails(tmp_path):
+    plan = _phase_tools_plan(tmp_path, {"phase_tools": None})
+    result = _evaluate(
+        tmp_path,
+        _retired_receipt(
+            [_phase_tools_entry(tmp_path, off=REVIEWER_TOOLKIT)],
+            [{"carrier": "slurp", "config": plan}],
+        ),
+    )
+    assert any(".switch.off is" in failure for failure in result["failures"])
+
+
+def test_a_phase_tools_on_arm_that_is_the_null_arm_fails(tmp_path):
+    plan = _phase_tools_plan(tmp_path, {"phase_tools": None})
+    for on in (None, {}):
+        result = _evaluate(
+            tmp_path,
+            _retired_receipt(
+                [_phase_tools_entry(tmp_path, on=on)], [{"carrier": "slurp", "config": plan}]
+            ),
+        )
+        assert any(".switch.on is" in failure for failure in result["failures"]), on
+
+
+def test_status_values_naming_a_status_the_check_cannot_enforce_fails(tmp_path):
+    document = _receipt([_entry()], [])
+    document["status_values"]["VIBES"] = "unenforced"
+    result = _evaluate(tmp_path, document)
+    assert any("'status_values' names ['VIBES']" in failure for failure in result["failures"])
+
+
+def test_the_committed_receipt_retires_the_reviewer_toolkit_out_of_every_plan():
+    """The B1-notool row: RETIRED, blocked, and the SLURP plan carries no
+    phase_tools mapping at all."""
+
+    result = hac.evaluate(REPO_ROOT)
+    rows = [row for row in result["entries"] if row["switch_key"] == "phase_tools.reviewer"]
+    assert len(rows) == 1
+    assert rows[0]["status"] == "RETIRED"
+    assert rows[0]["blocked"] is True
+    assert rows[0]["in_default_plans"] == []
+    plan = next(
+        plan for plan in _committed()["default_plans"] if plan["carrier"] == "slurp"
+    )
+    fragment = json.loads((REPO_ROOT / plan["config"]).read_text(encoding="utf-8"))
+    assert "phase_tools" not in fragment

@@ -76,6 +76,32 @@ checked:
    OFF arm silently allowed to be anything at all is the loosening the null
    form exists to prevent.
 
+7. **One role's toolkit is one ``phase_tools.<phase>`` key, and a module
+   that WITHDRAWS it is that toolkit's RETIREMENT.** Added 2026-09-20 by
+   item E25 for cell B1-notool (repair form 0-B, owner decisions 55 and
+   56), whose module is the removal of the Reviewer's task-contract tool.
+   The seven classes above can only say that a module ADDS something, so
+   the withdrawal had no honest encoding: an entry whose ON arm was the
+   absence of a mapping. Such an entry now declares ``switch.table``
+   ``"phase_tools"``, its key resolves as
+   ``rails.config_tables.resolve_phase_tools_switch_key`` requires (a
+   literal phase id, no placeholder), its OFF arm is the role's null arm
+   (``rails.config_tables.is_phase_tools_null_arm``: ``null`` or ``{}``,
+   which the runtime reads as no tool authority) and its ON arm is the
+   toolkit mapping the comparator carried. The entry's status is
+   ``RETIRED``: the OFF arm read NEUTRAL or better against the ON arm and
+   lowered cost, so the default plan carries the OFF arm. ``RETIRED``
+   BLOCKS the module from every plan exactly as HARMFUL does -- the plan
+   rule then proves the withdrawal was acted on -- and, unlike HARMFUL, a
+   retirement with NO default plan for its carrier is refused, because a
+   retirement nobody's plan reflects is as unacted-on as an admission
+   nobody's plan carries. A module granting a NEW toolkit uses the same
+   class the ordinary way (ADMITTED / NEUTRAL, armed in a plan).
+
+   ``status_values`` is validated against the statuses this check knows
+   (``KNOWN_STATUSES``) for the same reason ``switch_classes`` is: a
+   receipt naming a status nobody enforces is a receipt nobody is checking.
+
 A "default plan" is a committed config fragment the receipt itself names in
 ``default_plans`` -- declared, never inferred, because an experimental ON arm
 is a config fragment carrying a table too and reading those as default plans
@@ -103,6 +129,7 @@ from speech_aware_evidence_acquisition.rails.config_tables import (  # noqa: E40
     EPISODE_SWITCH_CLASS,
     KNOWLEDGE_STORES_TABLE,
     NULL_ARMS,
+    PHASE_TOOLS_SWITCH_CLASS,
     RUN_NULL_ARMS,
     RUN_SWITCH_CLASS,
     STORES_PIN_FIELDS,
@@ -111,10 +138,13 @@ from speech_aware_evidence_acquisition.rails.config_tables import (  # noqa: E40
     SWITCH_CLASS_NAMES,
     ConfigTableError,
     is_episode_null_arm,
+    is_phase_tools_null_arm,
     is_run_null_arm,
     is_stores_null_arm,
     is_stores_repin_arm,
+    phase_tools_role_armed,
     resolve_episode_switch_key,
+    resolve_phase_tools_switch_key,
     resolve_run_switch_key,
     resolve_stores_switch_key,
     resolve_switch_key,
@@ -124,11 +154,18 @@ from speech_aware_evidence_acquisition.rails.config_tables import (  # noqa: E40
 RECEIPT_RELPATH = "docs/receipts/harness-admission.json"
 EXPECTED_SCHEMA = "saea-harness-admission-v3"
 
-#: The statuses whose modules belong in a default plan, and the one that
-#: never does. ``PENDING`` is neither: a registered, undecided module has
-#: nothing to enforce yet.
+#: The statuses whose modules belong in a default plan, and the two that
+#: never do. ``PENDING`` is neither: a registered, undecided module has
+#: nothing to enforce yet. ``RETIRED`` (item E25, 2026-09-20) is the status
+#: of a module whose ON arm was WITHDRAWN by a measured cell: its OFF arm
+#: read NEUTRAL or better and lowered cost, so the plan carries the OFF arm
+#: and the module is barred from every plan exactly as a HARMFUL one is --
+#: but a retirement additionally owes a default plan for its carrier, so
+#: that the bar is a statement about a plan that exists.
 PLAN_STATUSES = ("ADMITTED", "NEUTRAL")
 FORBIDDEN_STATUS = "HARMFUL"
+RETIRED_STATUS = "RETIRED"
+KNOWN_STATUSES = ("ADMITTED", "HARMFUL", "NEUTRAL", "PENDING", RETIRED_STATUS)
 
 REQUIRED_TOP_LEVEL = (
     "default_plans",
@@ -170,6 +207,8 @@ def _is_blocked(entry: Mapping[str, Any]) -> tuple[bool, str]:
 
     if entry.get("status") == FORBIDDEN_STATUS:
         return True, "status HARMFUL"
+    if entry.get("status") == RETIRED_STATUS:
+        return True, "status RETIRED (the ON arm was withdrawn; the plan carries the OFF arm)"
     provisional = entry.get("provisional")
     if isinstance(provisional, Mapping) and provisional.get("state") == "UNMET":
         return True, "provisional obligation UNMET"
@@ -201,6 +240,8 @@ def _switch_present(
         return entry_key in fragment and not is_run_null_arm(fragment.get(entry_key))
     if table == EPISODE_SWITCH_CLASS:
         return _episode_key_present(fragment, entry_key)
+    if table == PHASE_TOOLS_SWITCH_CLASS:
+        return phase_tools_role_armed(fragment, entry_key)
     if table == STORES_SWITCH_CLASS:
         store_id = entry_key.split(".", 1)[1]
         if isinstance(switch, Mapping) and switch.get("form") == STORES_REPIN_FORM:
@@ -252,6 +293,8 @@ def _check_switch(entry: Mapping[str, Any], repo_root: Path, where: str) -> list
         return _check_episode_switch(switch, repo_root, where)
     if table == STORES_SWITCH_CLASS:
         return _check_stores_switch(switch, repo_root, where)
+    if table == PHASE_TOOLS_SWITCH_CLASS:
+        return _check_phase_tools_switch(switch, repo_root, where)
     if table not in CONFIG_TABLE_NAMES:
         failures.append(
             f"{where}.switch.table is {table!r}; the switch classes are "
@@ -330,6 +373,35 @@ def _check_episode_switch(switch: Mapping[str, Any], repo_root: Path, where: str
         )
     if is_episode_null_arm(key, switch["on"]):
         failures.append(f"{where}.switch.on is the null arm; an ON arm must arm something")
+    failures.extend(_check_proof(switch["proof"], repo_root, where))
+    return failures
+
+
+def _check_phase_tools_switch(
+    switch: Mapping[str, Any], repo_root: Path, where: str
+) -> list[str]:
+    """Rule 7: one role's toolkit -- ``phase_tools.<phase>`` -- whose OFF arm is
+    the role's null arm and whose ON arm is a non-empty toolkit mapping."""
+
+    failures: list[str] = []
+    try:
+        resolve_phase_tools_switch_key(switch["key"])
+    except ConfigTableError as error:
+        failures.append(f"{where}.switch.key: {error}")
+    if not is_phase_tools_null_arm(switch["off"]):
+        failures.append(
+            f"{where}.switch.off is {switch['off']!r}; the OFF arm of a 'phase_tools' "
+            "module must be the role's null arm (null or {}: no tool authority), so "
+            "that OFF is a twin of the tool-free episode rather than a third cell "
+            "identity"
+        )
+    on = switch["on"]
+    if is_phase_tools_null_arm(on) or not isinstance(on, Mapping):
+        failures.append(
+            f"{where}.switch.on is {on!r}; the ON arm of a 'phase_tools' module must "
+            "be the role's non-empty toolkit mapping -- a toolkit is what this class "
+            "grants or withdraws, and the absence of one is never an ON arm"
+        )
     failures.extend(_check_proof(switch["proof"], repo_root, where))
     return failures
 
@@ -583,6 +655,12 @@ def evaluate(repo_root: Path, receipt_path: Path | None = None) -> dict[str, Any
         )
     statuses = document.get("status_values")
     known_statuses = set(statuses) if isinstance(statuses, Mapping) else set()
+    unenforced = sorted(known_statuses - set(KNOWN_STATUSES))
+    if unenforced:
+        failures.append(
+            f"'status_values' names {unenforced}, which this check does not enforce; "
+            f"the statuses it knows are {list(KNOWN_STATUSES)}"
+        )
 
     plan_failures, plans = _load_plans(document, repo_root)
     failures.extend(plan_failures)
@@ -628,6 +706,8 @@ def evaluate(repo_root: Path, receipt_path: Path | None = None) -> dict[str, Any
             entry_key = resolve_episode_switch_key(entry["switch"]["key"])
         elif not switch_failures and table == STORES_SWITCH_CLASS:
             entry_key = resolve_stores_switch_key(entry["switch"]["key"])
+        elif not switch_failures and table == PHASE_TOOLS_SWITCH_CLASS:
+            entry_key = resolve_phase_tools_switch_key(entry["switch"]["key"])
 
         carrying = (
             [
@@ -645,6 +725,14 @@ def evaluate(repo_root: Path, receipt_path: Path | None = None) -> dict[str, Any
             failures.append(
                 f"{where}: {reason}, but it is armed in default plan(s) {carrying}; a "
                 "module in this state never enters a plan"
+            )
+        if status == RETIRED_STATUS and not any(
+            plan["carrier"] == carrier for plan in plans
+        ):
+            failures.append(
+                f"{where}: status RETIRED, but no default plan exists for {carrier!r}; "
+                "a retirement is a statement that the plan carries the OFF arm, and "
+                "there is no plan to carry it"
             )
         if not blocked and status in PLAN_STATUSES and not carrying:
             failures.append(
