@@ -1,0 +1,324 @@
+{
+  "accounting": {
+    "arm_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 47520,
+      "generation_calls_cap": 11880,
+      "gpu_hours_fit_inclusive": 12.0,
+      "native_task_contract_calls_cap": 6480,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 33930
+    },
+    "ceiling_arithmetic": "11,880 = 1,080 rows x the exact eleven-contact program maximum; 47,520 = 11,880 x (1 speech packet + 3 endpoints); 33,930 repeated speech seconds and 12.0 fit-inclusive GPU hours are the registered SLURP ceilings this roster has carried since cell B4b; the smoke is the same arithmetic on four rows (44 / 176 / 117 / 1.0). None is a target.",
+    "expected_cost": {
+      "arm_contacts_expected": 5420,
+      "arm_contacts_per_row_expected": 5.02,
+      "arm_gpu_hours_expected": 1.9,
+      "arm_gpu_hours_if_the_lever_does_nothing": 3.4,
+      "note": "the sealed anchor realized 5,417 contacts (5.016 per row), 15,459.76 repeated speech seconds and 3.388 GPU hours at this geometry. This cell expects the SAME contact count and the SAME audio seconds at roughly HALF the GPU hours. The 12-hour ceiling is the registered ceiling, not a forecast.",
+      "smoke_contacts_expected": 20
+    },
+    "exposure_rows": [
+      "SAEA-SLURP-NATIVE-EXEMPLARS-K20-INDEX-V1 (generation)",
+      "SAEA-SLURP-NATIVE-EXEMPLARS-K20-INDEX-FIT-V1 (native contact fit)",
+      "SAEA-SLURP-NATIVE-EXEMPLARS-K20-INDEX-SMOKE-4-V1 (generation)",
+      "SAEA-SLURP-NATIVE-EXEMPLARS-K20-INDEX-SMOKE-4-FIT-V1 (native contact fit)"
+    ],
+    "plan_budget_is_run_cumulative": true,
+    "smoke_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 117
+    },
+    "unused_budget_is_not_attempt_authority": true
+  },
+  "analysis_recipe": "docs/readiness/2026-09-20-slurp-b1-index-v1/analysis-recipe-v1.json",
+  "authority": {
+    "owner_decisions": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md: 48 (index-centred knowledge organisation), 50 (a rendering form enters only as a one-factor cell on the effect-cost front, read on the official number at own-null margins, NEUTRAL-or-better), 51 (the six-node READS table is the design column of base lock v3; Planner L0-only and Reviewer cited-only are separate cells), 52 (the thirteen index answers are provisional working defaults), 53 (the index cell and its twin on the 0-B base, after the repair), 57 (the efficiency line before the combination arm), 58 (script-derived registrations), 38 (margins = the configuration's own replicate, here B1r's as the fallback), 25 (HARMFUL needs a measured loss), 28 (development numbers)",
+    "evidence_base": "docs/superpowers/specs/2026-09-19-e21-knowledge-index-design.md and docs/superpowers/specs/2026-09-19-knowledge-index-and-context-assembly-design.md (the index design; section 4.2 READS table; section 7.2 the derangement twin), docs/superpowers/specs/2026-09-20-e24-knowledge-index-twin-design.md (the twin), docs/results/2026-09-19-slurp-efficiency-pareto-consolidation-v1.md (the M1 compression analysis: slot-contract cards about 49 % of the post-prefix row, 90.6 % of their characters unused), docs/results/2026-09-20-slurp-b1-notool-verdict.md (the base: 62.13 / 80.00, 8,020 prefilled tokens per row, 1.611 GPU hours), docs/results/2026-09-19-slurp-b1-replicate-verdict.md (the margins), docs/checks/speech-aware-evidence-acquisition/2026-09-20-index-proofs-b1-notool/ (the model-free render proof and wire check on 20 sealed B1-notool rows)",
+    "engineering": "src/speech_aware_evidence_acquisition/rails/knowledge_index.py (item E21: the loader with eight refusals; refusal 7 accepts 'no role holds tool authority' as the constant prefix, 28cdfb28) and the E21w live wiring (binding, per-contact selection, scripts/knowledge_index_wire_check.py); scripts/build_slurp_knowledge_index_view.py (the view builder; --twin-seed builds the derangement twin, item E24); pins docs/readiness/2026-09-19-slurp-knowledge-index-release-pins-v1.json; ledger rows SAEA-SLURP-E21-KNOWLEDGE-INDEX-VIEW-V1 and SAEA-SLURP-E24-KNOWLEDGE-INDEX-TWIN-VIEW-V1 (zero-contact view releases)"
+  },
+  "cell_kind": "one-factor knowledge-index cell on the B1-notool base; efficiency-bearing; NEUTRAL-or-better admits",
+  "cells": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-index-train-fold-a-generation-v1",
+      "baseline_fragment": "configs/baseline/slurp-native-anchor-exemplars-k20-index-v1.json",
+      "campaign_plan": "configs/campaign/slurp-native-exemplars-k20-index-v1.json",
+      "cell": "slurp-native-exemplars-k20-index-v1",
+      "composed_config_hash": "abdf14e7df2cb1619c74f6328c96c31e78fc62843279846bbecdf31f71366382",
+      "execution_route": "core.flight.cli campaign over the committed single-cell campaign plan; the campaign acquires its own GenerationLease against the resident session and schedules the one official score at finalize",
+      "experiment": "slurp-native-exemplars-k20-index-v1",
+      "experiment_fragment": "configs/experiment/slurp-native-exemplars-k20-index-v1.json",
+      "fit_attempt_id": "attempt-slurp-native-exemplars-k20-index-train-fold-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-INDEX-FIT-V1",
+      "order_constraint": "opens only after this cell's own four-row smoke has sealed and its acceptance list passes. One experiment in flight at a time",
+      "protocol_hash": "743313686772b96d0e07603188b3437990660538706a3c4cd7a1e8c66029e8b8",
+      "readiness": "held; NO decision requirement; this cell's OWN preparation pin",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-INDEX-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-exemplars-k20-index-smoke-4-generation-v1",
+      "baseline_fragment": "configs/baseline/slurp-native-anchor-exemplars-k20-index-smoke-4-v1.json",
+      "cell": "slurp-native-exemplars-k20-index-smoke-4-v1",
+      "composed_config_hash": "45d5dddd942ce840f988880319f4f7b12b01a8f8caf01a63f040df22c6668716",
+      "execution_route": "shared core.flight.lease_cli worker lease plus a standalone core.flight.cli worker attached to the resident session, optionally launched as a Windows Scheduled Task with the battery and idle conditions disabled and no execution time limit (owner decision 24). No campaign, no scorer",
+      "experiment": "slurp-native-exemplars-k20-index-smoke-4-v1",
+      "experiment_fragment": "configs/experiment/slurp-native-exemplars-k20-index-smoke-4-v1.json",
+      "fit_attempt_id": "attempt-slurp-native-exemplars-k20-index-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-INDEX-SMOKE-4-FIT-V1",
+      "order_constraint": "opens when the GPU is free and no other form smoke is in flight",
+      "protocol_hash": "77b8d52eeffc26d52a108f44e68b7b52b2de0350bd379d194e59f0a81e9be874",
+      "readiness": "held; NO decision requirement; this cell's OWN preparation pin",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-INDEX-SMOKE-4-V1",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    }
+  },
+  "comparator": {
+    "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-NOTOOL-V1",
+    "attempt_id": "attempt-slurp-native-exemplars-k20-notool-train-fold-a-generation-v1",
+    "official": "official pooled SLU-F1 62.1295 / intent 80.0000 (the sealed B1-notool arm; docs/results/2026-09-20-slurp-b1-notool-verdict.md; NEUTRAL under decision 25, recorded as the RETIREMENT of the Reviewer's toolkit)",
+    "margins": {
+      "h_slu": 1.235,
+      "h_intent": 1.2212,
+      "source": "decision-38 fallback: B1's own null (cell B1r); the B1-notool configuration has no replicate of its own"
+    },
+    "beside": [
+      "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2 (B1)",
+      "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-REPLICATE-V1 (B1r)",
+      "SAEA-SLURP-NATIVE-EXEMPLARS-K20-INDEX-TWIN-V1 (the twin)"
+    ],
+    "never_reflown": true
+  },
+  "contact_free_evidence": {
+    "render_proof": "docs/checks/speech-aware-evidence-acquisition/2026-09-20-index-proofs-b1-notool/render-proof-notool.json (20 sealed B1-notool rows: one system-message sha, predicted row prefill 3,096, no byte before the expansion block moves, OFF byte identity 80/80)",
+    "wire_check": "docs/checks/speech-aware-evidence-acquisition/2026-09-20-index-proofs-b1-notool/wire-check-notool.json (0 findings; ON differs from OFF in exactly history / supplied_evidence / task_instruction)"
+  },
+  "cost_reporting": [
+    "actual generation contacts against the anchor's realized 5,417 and against the 11,880 ceiling",
+    "contacts per row (this cell adds none)",
+    "actual repeated speech seconds against the anchor's realized 15,459.764875",
+    "actual FIT endpoints against 47,520",
+    "actual native task-contract calls against the anchor's realized 1,082 and against 6,480",
+    "GPU hours read from the serving monitor over the lease window, never a wall-clock guess, against the anchor's 3.388",
+    "mean latency, slot occupancy and duty cycle",
+    "prefilled tokens per row, cached share per position and the speech-packet re-decode share -- the cell's own reason for existing"
+  ],
+  "decision_rule": {
+    "comparator": "the sealed B1-notool arm SAEA-SLURP-NATIVE-EXEMPLARS-K20-NOTOOL-V1, and nothing else, for every gating clause; the twin is read beside, never as a gate of this cell",
+    "NEUTRAL": "BOTH guards non-inferior at B1's own-null margins: the CI95 LOWER bound of the paired official pooled SLU-F1 delta exceeds -1.2350 AND the CI95 LOWER bound of the paired intent delta exceeds -1.2212; where an interval straddles zero the verdict says 'non-inferiority proven, superiority not claimed'. NEUTRAL-or-better admits the index into the SLURP default plan only once the twin has sealed and the content effect (IDX minus IDXT) is reported, and only if the measured cost is lower than the base's (decision 50); a NEUTRAL index that does not lower cost stays out.",
+    "ADMITTED": "NEUTRAL and, in addition, the pooled SLU CI95 lower bound above zero: reported as a gain, entered as ADMITTED.",
+    "HARMFUL": "owner decision 25's form: a MEASURED LOSS on either guard -- a point estimate below -h or a CI95 UPPER bound below zero. Then the form is closed at these defaults; a different granularity, ordering or budget is a new one-factor registration and the owner decides (decision 52's defaults are provisional).",
+    "efficiency_is_reported_regardless": "every efficiency deliverable is reported whatever the verdict",
+    "scenario_diagnostic": "the decision-17 net-harmed flag per scenario (five or more) is reported; a breach is a diagnostic beside the verdict, never a gate",
+    "twin": "cell IDXT (the derangement twin) flies as its own registration; content effect = IDX minus IDXT, form effect = IDXT minus the base; both reported in the IDX verdict once the twin seals"
+  },
+  "diagnostics_required": [
+    "FINITE COMPLETIONS. The count of rows whose terminal_disposition.reason is \"finite_completion\", the affected sample ids, the delivered-draft versus abstention split, and -- only if the count is non-zero -- the primary official metric recomputed with those rows excluded BESIDE the registered all-rows number, which stays the number the decision rule reads. No row is ever filtered out of the scored manifest. Expected zero; the anchor side is provably zero (docs/receipts/slurp-finite-completion-exposure-v1.json).",
+    "planner_action_illegal. The flight's own count, the sample ids that carry it, and their action character counts and SHA-256 values (the form inherited from the B7a recovery note's section 8). This is the failure item E8c repaired; it is reported whether or not it is zero.",
+    "FIRST-REQUEST BYTE IDENTITY, stated honestly before contact. The first request of a row is the Perception request, and under this factor it is NOT byte-identical to the base's: the system message carries the constant L0+L1 index as a suffix of the contract fill, and the row's pointer block plus budgeted expansions replace the per-row slot-contract cards and the raw exemplar block. What IS claimed, and what the smoke proves, is (a) ONE system-message sha256 over every contact of every row (the index is constant), (b) no byte before the expansion block moves relative to the render proof's prediction, (c) the index receipt (view id, release and snapshot pins, per-contact selected ids) is present on every contact, and (d) no request carries a tools array. A second system-message sha, a missing receipt or a tools array is a FAILURE. A differing Solver, Reviewer or Planner request whose upstream model response differs is reported, not silently excused: greedy decoding at temperature 0 is not bitwise reproducible across batch compositions.",
+    "THE CONSTANCY TABLE per row from the sealed receipt: mode, rendered_tool_names, the five contact rows with authority_tool_names beside rendered_tool_names, and distinct_tool_schemas_sha256 == 1.",
+    "NATIVE TASK-CONTRACT CALL COUNT against the anchor's realized 1,082, and the count of tool calls emitted by a role that holds no authority (expected zero; a non-zero count is not a failure of the flight -- the rail refuses the call and the episode continues -- but it is the single most interesting behavioural consequence of showing three more roles the tool definitions, and it is reported per role).",
+    "PER-SCENARIO intent and SLU tables over all 18 scenarios, in BOTH the natural-mixture and the equal-scenario weighting, plus net harmed rows per scenario with any scenario of five or more flagged (owner decision 17) -- a diagnostic the verdict must carry, not an additional gate.",
+    "ROW ACCOUNTING: 1,080 in, 1,080 out on both sides, no row dropped and no sample_id invented.",
+    "COST: actual generation contacts against the anchor's realized 5,417 and the 11,880 ceiling; actual repeated speech seconds against the anchor's realized 15,459.76; actual FIT endpoints; GPU hours read from the serving monitor over the lease window."
+  ],
+  "efficiency_measurement_method": {
+    "derived": {
+      "cached": "prompt length minus prefilled -- what the slot's KV prefix supplied for free",
+      "prefilled": "the 'prompt eval time' token count -- what the GPU actually evaluated",
+      "prompt_length": "n_tokens at slot release minus generated tokens"
+    },
+    "join": "server.log records are aligned to client contacts PER SLOT: the config pins decoding_params.id_slot = \"per-sample\", so one row owns one slot for its whole trajectory and the per-slot request sequences match one for one. The throughput report verified that n_tokens - generated + 1 equals the client's usage.prompt_tokens on 100.00 % of contacts in all four sealed native runs; the verdict repeats that verification on this flight and reports the agreement rate before quoting any per-role figure.",
+    "read_only": "the resident session's log and monitor are read read-only; the session is attached, never spawned, stopped or queried",
+    "sources": [
+      "runs/<run>/<attempt>/<run>.trace.jsonl -- per contact: role, COST (prompt/completion tokens, latency, audio seconds), MODEL_REQUEST payload and decoding_params.id_slot",
+      "runs/<run>/<attempt>/flight-receipts.json -- run_phases (wall seconds, contact count, slot occupancy, contacts per second), preprocess, score, seal.serving_monitor_summary",
+      "serving/serving-slurp-native-candidate-five-train-a-np4-v1/server.log and monitor.jsonl -- per request prompt eval tokens and rates; GPU power, utilisation, busy slots, parked fraction",
+      "the sealed native-episode receipt's knowledge_index block (view id, pins, per-contact selected and expanded ids)"
+    ]
+  },
+  "failure_policy": "stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, geometry or cap change. AT MOST ONE root-diagnosed recovery re-registration per flight; a second failure closes the flight and the fix is proven on a four-row dry run first. A failed four-row smoke stops cell IDX until the fix is proven on that same four-row roster. One experiment in flight at a time.",
+  "fit": {
+    "arithmetic": "1,080 rows x 11 native contacts x (1 speech packet + 3 endpoints) = 47,520",
+    "contact_cap": 47520,
+    "coordinate_fit": "must NOT be run, or the FIT rows are double-charged",
+    "mode": "native_contact_fit",
+    "smoke_contact_cap": 176
+  },
+  "harness_admission_entry_form": {
+    "carrier": "slurp",
+    "module": "the knowledge index: native_episode.knowledge_index on view slurp-knowledge-index-v1 at decision 52's provisional defaults (intent L1 Activation boundary / slot L1 Admissible formats / edge L0; ordering taxonomy-frequency-v1; pointers 3/8/3; expansions exemplar 5 / slot_card 4 / intent_card 0; Solver citation permitted), rendered once per slot as a constant suffix of the contract fill, on the tool-free B1 base",
+    "switch": {
+      "class": "episode",
+      "key": "native_episode.knowledge_index",
+      "off": "the key's absence (rails.config_tables.is_episode_null_arm; the system message carries its pre-E21 contract fill and the evidence block the selected values' full text)",
+      "on": "{\"view\": \"slurp-knowledge-index-v1\", \"release\": {\"relpath\": \"knowledge/slurp/semantic/slurp-knowledge-index-v1/release.json\", \"root\": \"data\", \"sha256\": \"bcfc220b11672169f81e9a9f941e6c1bee05e9a5e3ac7aa3bd6dc448017235d2\"}, \"snapshot\": {\"relpath\": \"knowledge/slurp/semantic/slurp-knowledge-index-v1/snapshot.json\", \"root\": \"data\", \"sha256\": \"f6d61056165a41d91e604a55d80a0aef08491a8052dc713e95eae66cfeb2cd4c\"}, \"granularity\": {\"intent\": {\"level\": \"L1\", \"section\": \"Activation boundary\"}, \"slot\": {\"level\": \"L1\", \"section\": \"Admissible formats\"}, \"edge\": {\"level\": \"L0\", \"section\": \"Confusable exclusions\"}}, \"ordering\": \"taxonomy-frequency-v1\", \"pointer_budget\": {\"intent\": 3, \"slot\": 8, \"exemplar_vote\": 3}, \"expansion_budget\": {\"exemplar\": 5, \"slot_card\": 4, \"intent_card\": 0}, \"solver_citation\": \"permitted\"}"
+    },
+    "default_plan_consequence": "harness_admission_check requires every ADMITTED or NEUTRAL module to appear in at least one default plan for its carrier. A NEUTRAL IDX therefore enters the SLURP default plan only on a measured cost saving (decision 50: a NEUTRAL form enters only if it lowers cost) and only after the twin has sealed and the content effect is reported; otherwise the entry carries a provisional UNMET obligation and stays out.",
+    "written_by": "the coordinator, from the sealed verdict, never from this preregistration"
+  },
+  "metrics": {
+    "delta_convention": "delta = IDX minus the sealed anchor, in percentage points; a negative delta means the arm is worse",
+    "guard": "intent (joint scenario+action) accuracy, also as a non-inferiority guard",
+    "primary_for_admission": "official pooled SLU micro F1 (slurp-slu-official-train, pinned official evaluate.py slurp-official-8eb16545), natural mixture, one complete score per manifest through core.scoring_batch, never sharded -- used as a NON-INFERIORITY guard, not as a gain",
+    "reported_never_gating": [
+      "slurp-slu-official-projected-v3-train (owner decision 7: projection v3 beside every official number)",
+      "slurp-slu-f1-normalized-v1-train (owner decision 14: the TRAIN symmetric sibling)"
+    ],
+    "secondaries": [
+      "intent accuracy",
+      "scenario accuracy",
+      "action accuracy",
+      "official pooled span F1",
+      "per-row mean official SLU-F1",
+      "per-row mean exact slot F1",
+      "saves / harms / ties with the exact two-sided McNemar p"
+    ]
+  },
+  "not_authorized": [
+    "no readiness flip -- both cells stay held until the coordinator mints the root decision receipt and runs scripts/flights/repin_cell.py",
+    "no model, tokenizer, encoder, ASR, scorer, server or paid-API contact",
+    "no default-plan edit and no harness-admission entry -- the entry for the module 'the knowledge index (native_episode.knowledge_index)' is written from the sealed IDX verdict once the twin has sealed, never from this registration",
+    "no re-flying or re-scoring of the sealed anchor comparator, and no opening of its run directory for writing",
+    "--allow-output-change on the re-pin tool",
+    "coordinate-fit (the FIT gate runs inside the same campaign; a standalone fit run would double-charge the FIT row)",
+    "no paper-scale profile, no confirmatory split, no DEV-1000, Fold B or test-split contact"
+  ],
+  "not_claimed": [
+    "NO CONTENT CLAIM WITHOUT THE TWIN. A NEUTRAL or ADMITTED read of this cell alone does not show that the index's CONTENT (the id-to-line correspondence) did anything; the content effect is IDX minus IDXT and is reported only once the twin has sealed.",
+    "NO SUPERIORITY, GENERALIZATION, PAPER-SCALE OR HELD-OUT CLAIM. TRAIN Fold A is an exposed discovery roster and every claim of this cell stops at it. Fold B, DEV-1000 and the test split stay untouched and unread (decision 28).",
+    "NO CLAIM ABOUT OTHER CARRIERS. The measurement is SLURP native, np4, ctx24k, id_slot per-sample. Earnings and Audio2Tool are not addressed, and a saving measured here is not a saving claimed there.",
+    "NO CLAIM THAT THE PREDICTED 3,096 PREFILLED TOKENS PER ROW IS THE REALIZED NUMBER. The prediction comes from 20 sealed B1-notool rows re-rendered model-free; the realized token-level number, the cached share and the GPU hours are what this cell measures.",
+    "NO CLAIM ABOUT THE DEFAULTS. Decision 52's granularity, ordering and budgets are provisional working defaults; a different setting is a different one-factor cell, and nothing here ranks settings.",
+    "NO CLAIM ABOUT THE NODE-READ CELLS. Planner L0-only and Reviewer cited-only (decision 51) are separate NEUTRAL-bar cells that follow this one.",
+    "NO GEOMETRY CLAIM. np6 (Probe G2) is a serving-geometry probe scheduled after this cell, not part of it (decisions 54 and 60: host power and settings untouched).",
+    "NOTHING ABOUT ANY IN-FLIGHT CELL. Cells registered against the anchor or against another base are unaffected by this registration and no number here is evidence about them."
+  ],
+  "one_factor": {
+    "key": "native_episode.knowledge_index (class episode; null arm = the key's absence)",
+    "off": "the sealed B1-notool fragment (no knowledge_index key)",
+    "on": "{\"view\": \"slurp-knowledge-index-v1\", \"release\": {\"relpath\": \"knowledge/slurp/semantic/slurp-knowledge-index-v1/release.json\", \"root\": \"data\", \"sha256\": \"bcfc220b11672169f81e9a9f941e6c1bee05e9a5e3ac7aa3bd6dc448017235d2\"}, \"snapshot\": {\"relpath\": \"knowledge/slurp/semantic/slurp-knowledge-index-v1/snapshot.json\", \"root\": \"data\", \"sha256\": \"f6d61056165a41d91e604a55d80a0aef08491a8052dc713e95eae66cfeb2cd4c\"}, \"granularity\": {\"intent\": {\"level\": \"L1\", \"section\": \"Activation boundary\"}, \"slot\": {\"level\": \"L1\", \"section\": \"Admissible formats\"}, \"edge\": {\"level\": \"L0\", \"section\": \"Confusable exclusions\"}}, \"ordering\": \"taxonomy-frequency-v1\", \"pointer_budget\": {\"intent\": 3, \"slot\": 8, \"exemplar_vote\": 3}, \"expansion_budget\": {\"exemplar\": 5, \"slot_card\": 4, \"intent_card\": 0}, \"solver_citation\": \"permitted\"}",
+    "why": "owner decisions 48 (index-centred knowledge organisation), 50 (how a node reads is optimised under efficiency, effectiveness and cost, one one-factor cell per form), 52 (provisional defaults), 53 (the index cell and its twin follow the 0-B repair on its base, which is now the sealed B1-notool arm)"
+  },
+  "population": {
+    "far_field_rows": 557,
+    "fold_b": "Fold B, DEV-1000 and the test split stay untouched and unread",
+    "headset_rows": 523,
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    },
+    "rows": 1080,
+    "rows_per_scenario": 60,
+    "scenario_strata": 18,
+    "smoke_note": "the four already-exposed TRAIN A engineering rows this repository reuses for every four-row form smoke; no quality-based selection; all four are members of the 1,080-row roster, which is what makes the anchor's own sealed trace their byte comparator",
+    "smoke_rows": 4,
+    "smoke_split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "speaker_clusters": 125,
+    "split_id": "SLURP-EVO-FOLD-A-V2",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery"
+  },
+  "preparation_base_commit": "6851acdc",
+  "prepared_phase_supply": {
+    "arm": {
+      "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+      "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-INDEX-V1/phase-supply-v2.json",
+      "sha256": "5f4fb4cce2d57916be8c66ec6c4baa618e03d9d67b729e8de3b98055edd1d47b"
+    },
+    "identity_proof": "arm output ba5e1faa... on 1,080 of 1,080 rows and smoke output 512583ec... on 4 of 4 rows, each byte-identical to the sealed cell B1 preparation's own output block; the arm value is also the sealed anchor preparation's, which is why the knowledge channel is provably unmoved",
+    "note": "THIS CELL'S OWN artifact, built model-free under its own run id by core.flight.cli prepare-supply in this registration (item E16: a prepared artifact is evidence only for the implementation that produced it, so nothing is inherited from cell B1). Its Perception output was asserted by hand against the sealed cell B1 preparation's own output and matched exactly, which is the model-free proof that this cell's fresh identities and the declared finite-completion key move no knowledge-selection byte. core.flight.repin will find this pin VALID and rebuild nothing. --allow-output-change must never be passed.",
+    "smoke": {
+      "output_sha256": "512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733",
+      "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-INDEX-SMOKE-4-V1/phase-supply-v3.json",
+      "sha256": "a5099c9c7b7e8038580cb67b90025ba39a1e82144ea626c074f8672d71146708"
+    }
+  },
+  "primary_deliverables": [
+    "the NEUTRAL / ADMITTED / HARMFUL read at 1.2350 / 1.2212 against the sealed B1-notool arm",
+    "prefilled tokens per row (server.log join) beside the render proof's prediction; cached share; packet re-decodes",
+    "GPU hours per 1,080 rows, wall, occupancy, utilisation, parked fraction; contacts per minute from server.log release records; projected 13,078-row read hours",
+    "one system-message sha256 per row and over all rows; pointer / expanded ids per contact; citations resolved / unresolved; degradation steps",
+    "the twin decomposition when both cells have sealed"
+  ],
+  "prompt_fit": {
+    "basis": "the sealed B1-notool arm's own realized prompt distribution over this exact roster (8,020 prefilled tokens per row over four contacts; no request near the 24,576-token slot) with the constant L0+L1 index (about 3,753 tokens, rendered once per slot) replacing the per-row slot-contract cards and the raw exemplar block; the render proof on 20 sealed rows predicts about 3,096 prefilled tokens per row and no request near the slot",
+    "decision": "ALLOW for every phase of both cells, subject to the live fit gate, which is the authority in flight",
+    "slot_tokens": 24576,
+    "the_authority_in_flight": "core.preparation_fit.build_native_contact_fit_gate fits every realized immutable request against the resident tokenizer before it is transmitted and STOPS the flight rather than truncating. No static bound in this package replaces it."
+  },
+  "protocol_id": "slurp-b1-index-protocol-v1",
+  "purpose": "PRIMARY DELIVERABLES: (1) the official read against the sealed B1-notool arm at the decision-38 fallback margins (h_SLU 1.2350 / h_intent 1.2212, B1's own null; the B1-notool configuration has no replicate of its own, stated in the verdict): NEUTRAL iff both CI95 lower bounds exceed -h; ADMITTED if NEUTRAL and the SLU lower bound is above zero; HARMFUL iff a guard fails with a measured loss (decision 25); (2) the efficiency read: prefilled tokens per row from the server.log join beside the render proof's prediction (about 3,100 for the index on this base), cached share, GPU hours per 1,080 rows, contacts per minute, projected 13,078-row read; (3) the structural read: one system-message sha256 per row and over rows, pointer and expanded ids per contact, Solver citations resolved / unresolved, degradation steps (expected 0). The twin (cell IDXT) is read beside this cell: the index's content effect is IDX minus IDXT, its form effect IDXT minus the base.",
+  "quality_gate": "no task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist, and not before the registered STOP condition passes. The efficiency read may proceed from the sealed receipts, trace and server log as soon as the manifest seals, because it touches no answer, reference or quality field.",
+  "registered_at_utc": "2026-09-20T22:00:00.000000+00:00",
+  "resampling": {
+    "clusters": "125 speaker clusters, 18 scenarios of 60 rows, 523 headset and 557 far-field rows, from the released roster metadata",
+    "draws": 10000,
+    "interval_form": "percentile pairs of the same retained replicate sequence",
+    "intervals": [
+      "CI95 for the decision clauses",
+      "CI90 for diagnostics"
+    ],
+    "pairing_note": "both sides of this contrast are decoded runs, so the paired interval carries real decoding noise; the own-null margins are the calibration for exactly that. A NON-INFERIORITY read is the correct shape here precisely because the expected true effect is zero.",
+    "primary": "paired whole-speaker cluster bootstrap",
+    "seed": 20260915,
+    "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed",
+    "tables": [
+      "natural mixture",
+      "equal-scenario weighting"
+    ]
+  },
+  "resume_recovery_clause": "owner decision 22 of 2026-09-18. If an attempt dies of an INFRASTRUCTURE failure with code and request bytes unchanged -- never a harness or config defect -- the one allowed recovery may be a RESUME-RECOVERY under item E10 instead of a re-fly: every complete row of the aborted attempt is kept without selection, every partial or unstarted row is flown under the same run id, and the merged manifest declares the predecessor attempt with its trace hash, kept-row list and that list's hash. It changes no question, roster, factor, comparator, decision rule or cap, and the run-cumulative budget must be re-checked because a resumed attempt and its predecessor share one run id. A resumed EFFICIENCY read must additionally state the split of its GPU hours and prefilled tokens across attempts, because a merged manifest's cost is the sum of two lease windows and a per-row rate computed over the merged manifest alone would be wrong.",
+  "schema": "saea-slurp-eff1-tool-constant-protocol-v1",
+  "scoring": {
+    "complete_jobs": 1,
+    "include_per_sample": true,
+    "no_sharding": true,
+    "official_scorer": "pinned SLURP official evaluate.py (slurp-official-8eb16545) through core.scoring_batch",
+    "reported_beside": [
+      "slurp-slu-official-projected-v3-train",
+      "slurp-slu-f1-normalized-v1-train"
+    ],
+    "scheduled_by": "the campaign finalize step, once, over the complete manifest",
+    "scorers": [
+      "slurp-slu-official-train",
+      "cost"
+    ],
+    "smoke": "none -- zero official scoring jobs"
+  },
+  "second_declared_key_not_a_factor": "native_episode.react_exhaustion_policy = continue-without-answer (item E22) beside finite_completion_policy = deliver-latest-or-abstain (item E13): failure-mode declarations the base already carries and that move no request byte; not factors of this cell",
+  "service": {
+    "decoder_only": true,
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "mmproj": "absent",
+    "no_child_start_stop": true,
+    "note": "attach only, never spawn or stop. The geometry is cell B1's and is NOT a factor; a geometry change would end the request identity this cell exists to hold",
+    "slot_tokens": 24576,
+    "slots": 4,
+    "total_context": 98304
+  },
+  "smoke_acceptance": {
+    "rows_delivered": 4,
+    "contacts_per_row": "4 (at most 9 with one revision)",
+    "system_message": "ONE distinct system-message sha256 over all contacts of all four rows (the constant index)",
+    "receipts": "saea-native-knowledge-index-v1 block on every contact with pointer_ids and expanded_ids",
+    "fits": "every request fits",
+    "tools": "no tools array on any request; 0 tool calls (the base is tool-free)",
+    "dispositions": "finite_completion / react_exhaustion / degradation counted (0 expected); no abort"
+  },
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-eff1, branch fable/eff1",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "verdict_document": "docs/results/<date>-slurp-b1-index-verdict.md",
+  "native_tool_calls_cap": 0
+}
