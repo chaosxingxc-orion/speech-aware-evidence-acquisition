@@ -39,3 +39,22 @@ def test_the_b1_notool_baselines_are_tool_free_on_their_own_arm():
         assert d["arm"] == "speech-feature-query-native-tools"
         assert "phase_tools" not in d
         assert tool_free_native_arm(d["arm"], d)
+
+
+def test_the_core_client_accepts_the_explicit_empty_tuple_and_nothing_else():
+    """Item E23b: the empty tuple is the tool-free contract; None and lists are not."""
+    import pytest
+    from speech_aware_evidence_acquisition.rails.core_client import (
+        FrozenCoreClientError,
+        _tool_schemas_sha256,
+        _validate_tool_schemas,
+        tool_free_native_schemas,
+    )
+
+    assert tool_free_native_schemas(())
+    assert not tool_free_native_schemas(None)
+    assert not tool_free_native_schemas([])
+    assert not tool_free_native_schemas(({"type": "function", "function": {"name": "x"}},))
+    with pytest.raises(FrozenCoreClientError, match="non-empty tool_schemas"):
+        _validate_tool_schemas(())
+    assert isinstance(_tool_schemas_sha256(()), str) and len(_tool_schemas_sha256(())) == 64

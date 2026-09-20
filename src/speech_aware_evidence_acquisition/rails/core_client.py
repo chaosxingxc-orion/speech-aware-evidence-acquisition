@@ -501,6 +501,14 @@ def _validate_construction_targets(
     return tuple(validated)
 
 
+def tool_free_native_schemas(tool_schemas: object) -> bool:
+    """True for the explicit EMPTY tuple a tool-free native arm hands the
+    client (item E23b): the arm keeps its native request contract while no
+    role holds tool authority. ``None`` and non-empty sequences are not
+    tool-free and go through :func:`_validate_tool_schemas` as before."""
+    return isinstance(tool_schemas, tuple) and len(tool_schemas) == 0
+
+
 def _validate_tool_schemas(
     tool_schemas: Sequence[Mapping[str, object]] | None,
 ) -> tuple[dict[str, object], ...]:
@@ -1638,7 +1646,17 @@ class FrozenCoreClient:
         self._tool_schemas: tuple[dict[str, object], ...] | None = None
         self._tool_schemas_sha256: str | None = None
         self._tool_schemas_by_name: dict[str, dict[str, object]] = {}
-        if self._is_native_tools_arm:
+        if self._is_native_tools_arm and tool_free_native_schemas(tool_schemas):
+            # Item E23b (2026-09-20, repair form 0-B of owner decision 55): a
+            # native-tools arm whose baseline declares NO phase_tools hands the
+            # client an EMPTY tuple on purpose -- no role holds tool authority,
+            # so every request goes out with tool_choice none and no tools
+            # array. The invariant below (a non-empty schema sequence) stays
+            # for every arm that names a tool.
+            self._tool_schemas = ()
+            self._tool_schemas_sha256 = _tool_schemas_sha256(())
+            self._tool_schemas_by_name = {}
+        elif self._is_native_tools_arm:
             self._tool_schemas = _validate_tool_schemas(tool_schemas)
             self._tool_schemas_sha256 = _tool_schemas_sha256(self._tool_schemas)
             self._tool_schemas_by_name = {
