@@ -67,14 +67,14 @@
       "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
     },
     "smoke": {
-      "attempt_id": "attempt-slurp-native-exemplars-k20-notool-smoke-4-generation-v1",
+      "attempt_id": "attempt-slurp-native-exemplars-k20-notool-smoke-4-generation-v1r",
       "baseline_fragment": "configs/baseline/slurp-native-anchor-exemplars-k20-notool-smoke-4-v1.json",
       "cell": "slurp-native-exemplars-k20-notool-smoke-4-v1",
       "composed_config_hash": "7bc3d3ed01c92830ca7bcf79cbe7cc4a316d040ca26473ea0eaed23d31a4055a",
       "execution_route": "shared core.flight.lease_cli worker lease plus a standalone core.flight.cli worker attached to the resident session, optionally launched as a Windows Scheduled Task with the battery and idle conditions disabled and no execution time limit (owner decision 24). No campaign, no scorer",
       "experiment": "slurp-native-exemplars-k20-notool-smoke-4-v1",
       "experiment_fragment": "configs/experiment/slurp-native-exemplars-k20-notool-smoke-4-v1.json",
-      "fit_attempt_id": "attempt-slurp-native-exemplars-k20-notool-smoke-4-fit-v1",
+      "fit_attempt_id": "attempt-slurp-native-exemplars-k20-notool-smoke-4-fit-v1r",
       "fit_run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-NOTOOL-SMOKE-4-FIT-V1",
       "order_constraint": "opens when the GPU is free and no other form smoke is in flight",
       "protocol_hash": "2da25cebb5da0ba71c0bac5afaae1661c51bb927dfbc08ed20c485c694148798",
