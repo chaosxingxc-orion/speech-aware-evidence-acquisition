@@ -46,7 +46,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-19-slurp-b8b-anchor-reviewer-audit-v1-resume-v1/protocol-registered-v1.json",
-    "sha256": "ec2d49bfab694a4f1c8a45fd979dc2563ca1abc449ac0d12e932e243769fdecc"
+    "sha256": "019ceb6e6d5b91e5c29a49c7f293ac1c2e1d6abd0133f64e2d87e3d95e24932f"
   },
   "quality_read_gate": "The arm's official pooled SLU-F1 is read ONCE, from the single official score of the COMPLETE merged 1,080-row manifest, against the sealed anchor's score artifact under the decision rule of docs/readiness/2026-09-19-slurp-b8b-anchor-reviewer-audit-v1-preregistration.md section 6, fixed before any number is seen: HARMFUL only by a measured loss (Method B, owner decision 25); ADMITTED only on a positive CI95 lower bound with intent non-inferior at -1.0051, the symmetric scorer agreeing in sign and no scenario band breach; NEUTRAL otherwise. No re-scoring, no second estimator, no row filtering, and no partial read of the aborted attempt -- its 2,016 contacts were never scored and never read. Kept and flown rows are never split or compared. The comparator is never re-flown. Recipe: docs/readiness/2026-09-19-slurp-b8b-anchor-reviewer-audit-v1-resume-v1/analysis-recipe-v1.json.",
   "readiness": "held -- the preparation requirement is pinned and there is NO decision requirement; the coordinator mints the decision receipt, adds the requirement and flips with scripts/flights/repin_cell.py, which recomputes both hashes in the same cycle",
