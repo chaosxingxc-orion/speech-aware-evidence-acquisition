@@ -64,6 +64,57 @@
    },
    "exemplar_kind": "not built into the view (pointer and expansion only)",
    "consumed_by": []
+  },
+  "slurp-knowledge-index-twin-v1": {
+   "view_role": "knowledge-index-twin",
+   "carrier": "slurp",
+   "twin_of": {
+    "snapshot_content_hash": "f6d61056165a41d91e604a55d80a0aef08491a8052dc713e95eae66cfeb2cd4c",
+    "view_id": "slurp-knowledge-index-v1"
+   },
+   "derangement": {
+    "algorithm": "sattolo-cycle-sha256-stream-v1",
+    "fixed_points": 0,
+    "held_fields": [
+     "id",
+     "kind",
+     "group",
+     "rank"
+    ],
+    "kinds": {
+     "edge": 81,
+     "intent": 60,
+     "slot": 54
+    },
+    "moved_fields": [
+     "l1",
+     "residue",
+     "hoisted"
+    ],
+    "permutation_sha256": "908044534f734676aca1a60aa61475691124d55880e18268f3b96664849dff97",
+    "seed": 20260920
+   },
+   "gold_read": false,
+   "release": {
+    "relpath": "knowledge/slurp/semantic/slurp-knowledge-index-twin-v1/release.json",
+    "sha256": "c77021cb642940b6b65612c8e35561b6a107768be6d556c9a16db5496329eb27"
+   },
+   "snapshot": {
+    "relpath": "knowledge/slurp/semantic/slurp-knowledge-index-twin-v1/snapshot.json",
+    "sha256": "9620a595b11e760fd0aeca78641fd8e4230c002d7e51fb9ebc3811827c53ba1b"
+   },
+   "completion": {
+    "relpath": "knowledge/slurp/semantic/slurp-knowledge-index-twin-v1/completion.json",
+    "sha256": "0c56cf9e7af3c6d11e25eed2385988262600a03ef265a58691f42532097c87c9"
+   },
+   "released_on": "2026-09-20",
+   "authority": "docs/superpowers/specs/2026-09-20-e24-knowledge-index-twin-design.md (item E24); knowledge-index design section 7.2; owner decisions 48, 50, 53; the release job is exposure-ledger row SAEA-SLURP-E24-KNOWLEDGE-INDEX-TWIN-VIEW-V1",
+   "rendered_index_at_defaults": {
+    "chars": 17265,
+    "lines": 227,
+    "note": "byte-length equal to the source in total; per-line lengths move within a kind"
+   },
+   "consumed_by": []
   }
  },
  "note": "No cell arms native_episode.knowledge_index yet; consumption enters only through a registered cell whose readiness package pins these bytes."
