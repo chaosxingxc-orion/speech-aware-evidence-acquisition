@@ -109,6 +109,19 @@ from speech_aware_evidence_acquisition.rails.knowledge_index import (  # noqa: E
 PROMPT_ORDER = "speech-query-prefix-v2"
 ROLE_POSITIONS = ("perception", "solver", "reviewer-1", "reviewer-2", "planner")
 ROLE_KINDS = ("perception", "solver", "reviewer", "reviewer", "planner")
+ROLE_POSITIONS_4 = ("perception", "solver", "reviewer", "planner")
+ROLE_KINDS_4 = ("perception", "solver", "reviewer", "planner")
+CONTACTS_PER_ROW = 5
+
+
+def set_contacts_per_row(count: int) -> None:
+    """Select the five-contact (tool-bearing) or four-contact (tool-free, repair form 0-B) row shape."""
+    global CONTACTS_PER_ROW, ROLE_POSITIONS, ROLE_KINDS
+    if count == 4:
+        ROLE_POSITIONS, ROLE_KINDS = ROLE_POSITIONS_4, ROLE_KINDS_4
+    elif count != 5:
+        raise WireCheckError(f"unsupported contacts per row: {count}")
+    CONTACTS_PER_ROW = count
 
 #: The two sealed arms this check reads, both READ-ONLY and hashes only.
 B1_RUN = "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2"
@@ -149,8 +162,8 @@ def read_rows(trace_path: Path, *, rows: int) -> "OrderedDict[str, list[dict]]":
             envelope = record["payload"]
             payload = envelope["payload"]
             sample_id = payload["sample_id"]
-            if sample_id not in by_sample and len(by_sample) >= rows:
-                continue
+            if sample_id not in by_sample and len(by_sample) >= 4 * rows:
+                continue  # scan past incomplete rows (finite completions, revisions) up to 4x rows
             by_sample.setdefault(sample_id, []).append(
                 {
                     "record_id": record["record_id"],
@@ -158,18 +171,16 @@ def read_rows(trace_path: Path, *, rows: int) -> "OrderedDict[str, list[dict]]":
                     "payload_sha256": envelope["payload_sha256"],
                 }
             )
-            if len(by_sample) >= rows and all(
-                len(items) >= 5 for items in by_sample.values()
-            ):
+            if sum(1 for items in by_sample.values() if len(items) >= CONTACTS_PER_ROW) >= rows and len(by_sample) >= 4 * rows:
                 break
     complete = OrderedDict(
-        (sample_id, contacts[:5])
+        (sample_id, contacts[:CONTACTS_PER_ROW])
         for sample_id, contacts in by_sample.items()
-        if len(contacts) >= 5
+        if len(contacts) >= CONTACTS_PER_ROW
     )
     if len(complete) < rows:
         raise WireCheckError(
-            f"REFUSED: only {len(complete)} complete 5-contact rows were found in "
+            f"REFUSED: only {len(complete)} complete {CONTACTS_PER_ROW}-contact rows were found in "
             f"{trace_path}; this check needs {rows}"
         )
     return OrderedDict(list(complete.items())[:rows])
@@ -774,6 +785,11 @@ def main() -> int:
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--rows", type=int, default=20)
     parser.add_argument("--data-root", type=Path, default=None)
+    parser.add_argument("--run-id", default=None, help="a sealed arm to check instead of the B1 arm")
+    parser.add_argument("--attempt", default=None)
+    parser.add_argument("--label", default=None)
+    parser.add_argument("--contacts-per-row", type=int, default=5)
+    parser.add_argument("--no-smoke", action="store_true", help="skip the engineering-smoke arm")
     args = parser.parse_args()
 
     if args.data_root is not None:
@@ -807,11 +823,12 @@ def main() -> int:
         data_root=args.view_root,
     )
 
+    set_contacts_per_row(args.contacts_per_row)
+    targets = [(args.label or f"{args.run_id}-{args.rows}-rows", args.run_id, args.attempt, args.rows)] if args.run_id else [("b1-sealed-20-rows", B1_RUN, B1_ATTEMPT, args.rows)]
+    if not args.no_smoke:
+        targets.append(("engineering-smoke-4-rows", SMOKE_RUN, SMOKE_ATTEMPT, 4))
     arms = []
-    for label, run_id, attempt, count in (
-        ("b1-sealed-20-rows", B1_RUN, B1_ATTEMPT, args.rows),
-        ("engineering-smoke-4-rows", SMOKE_RUN, SMOKE_ATTEMPT, 4),
-    ):
+    for label, run_id, attempt, count in targets:
         trace = root / "runs" / run_id / attempt / f"{run_id}.trace.jsonl"
         if not trace.is_file():
             raise WireCheckError(f"REFUSED: the sealed trace {trace} is not readable")

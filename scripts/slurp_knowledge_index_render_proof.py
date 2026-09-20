@@ -119,6 +119,23 @@ DEFAULT_ATTEMPT = (
 PROMPT_ORDER = "speech-query-prefix-v2"
 ROLE_POSITIONS = ("perception", "solver", "reviewer-1", "reviewer-2", "planner")
 ROLE_IDS = ("perception", "solver", "reviewer", "reviewer", "planner")
+#: The tool-free base (repair form 0-B, cell B1-notool): the Reviewer answers on its
+#: first contact, so a row is four contacts. Selected by ``--contacts-per-row 4``.
+ROLE_POSITIONS_4 = ("perception", "solver", "reviewer", "planner")
+ROLE_IDS_4 = ("perception", "solver", "reviewer", "planner")
+CONTACTS_PER_ROW = 5
+#: On the four-contact base the single Reviewer contact is compared with E17's first Reviewer position.
+E17_REFERENCE_POSITION = {"reviewer": "reviewer-1"}
+
+
+def set_contacts_per_row(count: int) -> None:
+    """Select the five-contact (tool-bearing) or four-contact (tool-free) row shape."""
+    global CONTACTS_PER_ROW, ROLE_POSITIONS, ROLE_IDS
+    if count == 4:
+        ROLE_POSITIONS, ROLE_IDS = ROLE_POSITIONS_4, ROLE_IDS_4
+    elif count != 5:
+        raise ProofError(f"unsupported contacts per row: {count}")
+    CONTACTS_PER_ROW = count
 
 #: E17's own measured per-position numbers, quoted here so the proof's table
 #: can stand beside them (design section 2.5 / E17 design section 1).
@@ -156,8 +173,8 @@ def read_rows(trace_path: Path, *, rows: int) -> "OrderedDict[str, list[dict]]":
             envelope = record["payload"]
             payload = envelope["payload"]
             sample_id = payload["sample_id"]
-            if sample_id not in by_sample and len(by_sample) >= rows:
-                continue
+            if sample_id not in by_sample and len(by_sample) >= 4 * rows:
+                continue  # scan past incomplete rows (finite completions, revisions) up to 4x rows
             contacts = by_sample.setdefault(sample_id, [])
             contacts.append(
                 {
@@ -166,18 +183,16 @@ def read_rows(trace_path: Path, *, rows: int) -> "OrderedDict[str, list[dict]]":
                     "payload_sha256": envelope["payload_sha256"],
                 }
             )
-            if len(by_sample) >= rows and all(
-                len(items) >= 5 for items in by_sample.values()
-            ):
+            if sum(1 for items in by_sample.values() if len(items) == CONTACTS_PER_ROW) >= rows and len(by_sample) >= 4 * rows:
                 break
     complete = OrderedDict(
         (sample_id, contacts)
         for sample_id, contacts in by_sample.items()
-        if len(contacts) == 5
+        if len(contacts) == CONTACTS_PER_ROW
     )
     if len(complete) < rows:
         raise ProofError(
-            f"REFUSED: only {len(complete)} complete 5-contact rows were found in the "
+            f"REFUSED: only {len(complete)} complete {CONTACTS_PER_ROW}-contact rows were found in the "
             f"sealed trace; the proof form needs {rows}"
         )
     return OrderedDict(list(complete.items())[:rows])
@@ -407,8 +422,8 @@ def run_arm(rows, table, plan, *, label: str) -> dict:
                 "predicted_prefilled_tokens_median": _median(
                     [row["predicted_prefilled_tokens"] for row in entries]
                 ),
-                "e17_measured_prompt_tokens": E17_MEASURED[name]["prompt"],
-                "e17_measured_prefilled_tokens": E17_MEASURED[name]["prefilled"],
+                "e17_measured_prompt_tokens": E17_MEASURED[E17_REFERENCE_POSITION.get(name, name)]["prompt"],
+                "e17_measured_prefilled_tokens": E17_MEASURED[E17_REFERENCE_POSITION.get(name, name)]["prefilled"],
             }
         )
     receipt = knowledge_index_receipt(
@@ -590,6 +605,7 @@ def main() -> int:
     parser.add_argument("--data-root", type=Path, default=None)
     parser.add_argument("--run-id", default=DEFAULT_RUN_ID)
     parser.add_argument("--attempt", default=DEFAULT_ATTEMPT)
+    parser.add_argument("--contacts-per-row", type=int, default=5, help="5 (tool-bearing base) or 4 (tool-free base, repair form 0-B)")
     args = parser.parse_args()
 
     if args.data_root is not None:
@@ -622,6 +638,7 @@ def main() -> int:
         {**pins, "expansion_budget": {"slot_card": 0}}
     )
 
+    set_contacts_per_row(args.contacts_per_row)
     rows = read_rows(trace, rows=args.rows)
     full = run_arm(rows, table, plan, label="armed-defaults")
     reduced = run_arm(rows, table, reduced_plan, label="armed-slot-card-0")

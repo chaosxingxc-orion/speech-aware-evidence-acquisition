@@ -1,0 +1,208 @@
+{
+ "arms": [
+  {
+   "W1_off_payload_sha256_identical": 80,
+   "W1_off_seam_byte_identical": 80,
+   "W2_distinct_system_message_sha256": 1,
+   "W3_armed_key_sets": [
+    [
+     "history",
+     "supplied_evidence",
+     "task_instruction"
+    ]
+   ],
+   "W3_expected_armed_keys": [
+    "evidence_provenance",
+    "history",
+    "supplied_evidence",
+    "task_instruction"
+   ],
+   "W5_provenance_index_rows": 620,
+   "W5_provenance_rows": 620,
+   "W6_truncation_violations": [],
+   "W7_framework_envelope_ok": 80,
+   "W7_receipt_rows_populated": 80,
+   "W8_ladder": [
+    {
+     "contact": "flight-0005/request",
+     "droppable_items": 10,
+     "expansions_before_pointer": true,
+     "index_items": [
+      {
+       "block": "index-expansion",
+       "identifier": "value:S/person",
+       "tranche": 1
+      },
+      {
+       "block": "index-expansion",
+       "identifier": "value:S/device_type",
+       "tranche": 1
+      },
+      {
+       "block": "index-expansion",
+       "identifier": "value:S/app_name",
+       "tranche": 1
+      },
+      {
+       "block": "index-expansion",
+       "identifier": "value:S/date",
+       "tranche": 1
+      },
+      {
+       "block": "index-expansion",
+       "identifier": "value:X/3249",
+       "tranche": 1
+      },
+      {
+       "block": "index-expansion",
+       "identifier": "value:X/2854",
+       "tranche": 1
+      },
+      {
+       "block": "index-expansion",
+       "identifier": "value:X/2828",
+       "tranche": 1
+      },
+      {
+       "block": "index-expansion",
+       "identifier": "value:X/2580",
+       "tranche": 1
+      },
+      {
+       "block": "index-expansion",
+       "identifier": "value:X/1086",
+       "tranche": 1
+      },
+      {
+       "block": "index-pointer",
+       "identifier": "value:index-pointers",
+       "tranche": 2
+      }
+     ],
+     "parts_after_one_drop": 10,
+     "parts_before_one_drop": 11,
+     "tail_first": true
+    }
+   ],
+   "attempt_id": "attempt-slurp-native-exemplars-k20-notool-train-fold-a-generation-v1",
+   "contacts": 80,
+   "findings": [],
+   "index_chars": 17265,
+   "index_sha256": "b279dcc016d8fea5bc22f942a404dbcd87c36294780e9b977a4b2da6238d4438",
+   "index_tokens_at_4_60": 3753,
+   "label": "b1-notool-sealed-20-rows",
+   "passes": true,
+   "per_position": [
+    {
+     "contacts": 20,
+     "position": "perception",
+     "predicted_prefilled_tokens_median": 379,
+     "predicted_prompt_tokens_median": 5908
+    },
+    {
+     "contacts": 20,
+     "position": "solver",
+     "predicted_prefilled_tokens_median": 2244,
+     "predicted_prompt_tokens_median": 7864
+    },
+    {
+     "contacts": 20,
+     "position": "reviewer",
+     "predicted_prefilled_tokens_median": 187,
+     "predicted_prompt_tokens_median": 7761
+    },
+    {
+     "contacts": 20,
+     "position": "planner",
+     "predicted_prefilled_tokens_median": 195,
+     "predicted_prompt_tokens_median": 7825
+    }
+   ],
+   "predicted_prefilled_tokens_per_row": 3005,
+   "read": "read-only",
+   "receipt": {
+    "citations_resolved": 0,
+    "citations_unresolved": 0,
+    "degradation_steps": 0,
+    "distinct_system_message_sha256": 1,
+    "entry_counts": {
+     "edge": 81,
+     "intent": 60,
+     "slot": 54
+    },
+    "expansion_budget": {
+     "exemplar": 5,
+     "intent_card": 0,
+     "slot_card": 4
+    },
+    "granularity": {
+     "edge": {
+      "level": "L0",
+      "section": "Confusable exclusions"
+     },
+     "intent": {
+      "level": "L1",
+      "section": "Activation boundary"
+     },
+     "slot": {
+      "level": "L1",
+      "section": "Admissible formats"
+     }
+    },
+    "index_chars": 17265,
+    "index_sha256": "b279dcc016d8fea5bc22f942a404dbcd87c36294780e9b977a4b2da6238d4438",
+    "ordering": "taxonomy-frequency-v1",
+    "pointer_budget": {
+     "exemplar_vote": 3,
+     "intent": 3,
+     "slot": 8
+    },
+    "retrieval_rank": {
+     "recorded": false
+    },
+    "role_budgets": {},
+    "schema": "saea-native-knowledge-index-v1",
+    "solver_citation": "permitted",
+    "view": {
+     "content_hash": "f6d61056165a41d91e604a55d80a0aef08491a8052dc713e95eae66cfeb2cd4c",
+     "release_sha256": "bcfc220b11672169f81e9a9f941e6c1bee05e9a5e3ac7aa3bd6dc448017235d2",
+     "snapshot_sha256": "f6d61056165a41d91e604a55d80a0aef08491a8052dc713e95eae66cfeb2cd4c",
+     "view_id": "slurp-knowledge-index-v1"
+    }
+   },
+   "rows": 20,
+   "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-NOTOOL-V1"
+  }
+ ],
+ "contacts": {
+  "encoder": 0,
+  "model": 0,
+  "network": 0,
+  "scorer": 0,
+  "server": 0,
+  "tokenizer": 0,
+  "tool": 0
+ },
+ "estimator": {
+  "chars_per_token": 4.6,
+  "derived": true,
+  "rule": "llama.cpp common-prefix rule over character-level longest common prefixes on the pinned per-slot stream",
+  "source": "E17 design section 5 / throughput report section 8 Probe A; no tokenizer was contacted"
+ },
+ "execution_profile": "model-free-check",
+ "generator": "scripts/knowledge_index_wire_check.py",
+ "item": "E21w (the knowledge index's live runner wiring)",
+ "passes": true,
+ "schema": "saea-knowledge-index-wire-check-v1",
+ "view": {
+  "content_hash": "f6d61056165a41d91e604a55d80a0aef08491a8052dc713e95eae66cfeb2cd4c",
+  "entry_counts": {
+   "edge": 81,
+   "intent": 60,
+   "slot": 54
+  },
+  "release_sha256": "bcfc220b11672169f81e9a9f941e6c1bee05e9a5e3ac7aa3bd6dc448017235d2",
+  "snapshot_sha256": "f6d61056165a41d91e604a55d80a0aef08491a8052dc713e95eae66cfeb2cd4c",
+  "view_id": "slurp-knowledge-index-v1"
+ }
+}
