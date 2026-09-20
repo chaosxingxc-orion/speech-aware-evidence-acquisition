@@ -18,8 +18,8 @@
           {
             "kind": "preparation",
             "reason": "Inherited verbatim from the aborted attempt: the model-free first-phase Perception supply of run SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1, produced by the core.flight.cli prepare-supply step under this run's own id with zero model, tokenizer, encoder, scorer or server contacts, and the artifact the 2,016 flown contacts were served from (its identity was verified at that attempt's preflight, identity_ok true). Its OUTPUT digest is ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f, the sealed dual-store anchor's own, on 1,080 of 1,080 rows -- the model-free proof that no declared key moves a knowledge-selection byte. EXPECT THIS PIN TO BE REBUILT rather than to verify as it stands: core.preparation.artifact_inputs binds the whole composed configuration, cell and attempt identities included, so the resume cell's digest differs from the aborted cell's. core.flight.repin.ensure_artifact_pinned detects exactly that, rebuilds the artifact model-free into the next phase-supply version under the same run id, ASSERTS its output equals the previous artifact's and re-pins it in the same cycle. --allow-output-change must never be passed: an output that moved would mean the knowledge channel moved, and the resume would no longer be a resume.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v1.json",
-            "sha256": "4d3233fd71b2ffa2ffa2e7b1b50d944f238c0729203647460f26fe6986b1f82c"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1/phase-supply-v2.json",
+            "sha256": "6fdbb074b131144bab8c91b20fff368b64e6aeadeba93e12806ef07087620310"
           }
         ],
         "state": "held"
