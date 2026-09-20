@@ -24,8 +24,8 @@
           {
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors cell B1 and the sealed dual-store anchor used, with zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed cell B1 preparation's on all 4 rows (output SHA-256 512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733), asserted by hand in this registration -- the model-free proof that this cell's own identities and the two declared failure-mode keys move no knowledge-selection byte. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting cell B1's, which is also why core.flight.repin finds it valid, rebuilds nothing and adds nothing to assert_no_residue's scan. --allow-output-change must never be passed; if that output SHA-256 stops matching, a merge changed the knowledge channel -- stop and report.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-NOTOOL-SMOKE-4-V1/phase-supply-v1.json",
-            "sha256": "2e98f15bce7441a1c3b745cb7bc51d5a5cd2afe73ce46cc3554ee0b3d0f1c354"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-NOTOOL-SMOKE-4-V1/phase-supply-v2.json",
+            "sha256": "2f3c816f715b5cd052712910f4b910db302efc98f78958752fd1790f27f7a594"
           }
         ],
         "state": "ready"

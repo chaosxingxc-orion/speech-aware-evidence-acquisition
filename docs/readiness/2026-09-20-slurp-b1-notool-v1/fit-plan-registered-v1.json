@@ -47,7 +47,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-20-slurp-b1-notool-v1/protocol-registered-v1.json",
-    "sha256": "70bd64bab1ce44324a1748816308051058db18d0f59bd413af6c85783ed1b032"
+    "sha256": "61b729ea013bd3236e1352a92e50435431541a67378445a34582765248ce9f7c"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist, and not before the registered STOP condition passes (the comparator aggregates of the sealed B1 arm SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2 and of cell B1r reproduce to the hundredth). The gating comparator is the sealed B1 arm; the margins are B1r's own null.",
   "registered_at_utc": "2026-09-20T18:00:00.000000+00:00",
