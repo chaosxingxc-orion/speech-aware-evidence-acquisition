@@ -5,6 +5,5 @@
       "experiment": "slurp-native-exemplars-k20-notool-v1"
     }
   ],
-  "schema": "saea-campaign-plan-v1",
-  "date": null
+  "schema": "saea-campaign-plan-v1"
 }
