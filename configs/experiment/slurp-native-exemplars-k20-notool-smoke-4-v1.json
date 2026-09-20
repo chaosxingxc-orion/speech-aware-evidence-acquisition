@@ -1,0 +1,80 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-exemplars-k20-notool-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-anchor-exemplars-k20-notool-smoke-4-v1",
+      "cell_id": "slurp-native-exemplars-k20-notool-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Cell B1-notool (repair form 0-B on the B1 base; owner decisions 55, 56 option a, 57, 58) registered before contact on 2026-09-20 from the sealed B1r fragments by script: one factor (phase_tools removed), E13 and E22 declared, comparator the sealed B1 arm SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2 at B1r's own-null margins. Held until the coordinator mints coordination/slurp-b1-notool-v1/root-admission-v1.json (decision id slurp-b1-notool-admission-v1) and flips the state with scripts/flights/repin_cell.py.",
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-b1-notool-admission-v1",
+            "relpath": "coordination/slurp-b1-notool-v1/root-admission-v1.json",
+            "sha256": "b1a2e938d9edc43c10442e67cc2015acd848d36475fe229ce54e66be5160d30f",
+            "reason": "Decision slurp-b1-notool-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors cell B1 and the sealed dual-store anchor used, with zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed cell B1 preparation's on all 4 rows (output SHA-256 512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733), asserted by hand in this registration -- the model-free proof that this cell's own identities and the two declared failure-mode keys move no knowledge-selection byte. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting cell B1's, which is also why core.flight.repin finds it valid, rebuilds nothing and adds nothing to assert_no_residue's scan. --allow-output-change must never be passed; if that output SHA-256 stops matching, a merge changed the knowledge channel -- stop and report.",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-EXEMPLARS-K20-NOTOOL-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "78aa0622394f37287878116beab4b229dd2c5afbb28b08d8210e798e21ed0f83"
+          }
+        ],
+        "state": "ready"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-NOTOOL-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-20",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-NOTOOL-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops cell B1-notool and the arm does not open. The resume-recovery clause of owner decision 22 applies to the arm, not to a four-row form smoke, which is re-flown whole if it is re-flown at all.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-native-exemplars-k20-notool-smoke-4-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The same unchanged TRAIN Fold A roster the sealed anchor, cell B1 and cell B1r flew; every row is preserved so the paired contrast against the sealed B1 arm covers the whole roster.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Cell B1-notool: the ONE-factor tool-withdrawal cell on the B1 base (repair form 0-B, owner decisions 55-57): the flown B1 fragment with `phase_tools` removed, so the Reviewer holds no task-contract tool and no role renders a tools array; 1,080 TRAIN Fold A rows against the sealed B1 arm at its own-null margins (1.2350 / 1.2212); NEUTRAL-or-better admits the form into the plan, HARMFUL with a measured loss registers 0-A as the fallback (decision 55). Efficiency read mandatory (prefilled tokens per row, cached share, GPU hours per 1,080 rows, contacts per minute, all from server.log release records). (Four-row smoke: structural acceptance only.)",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2"
+}
