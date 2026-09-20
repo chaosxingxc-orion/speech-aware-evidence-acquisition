@@ -6,7 +6,7 @@
     },
     "right_treatment": {
       "attempt_id": "attempt-slurp-native-reviewer-audit-anchor-train-fold-a-generation-v1-resume",
-      "composed_config_hash": "9db309babd96945932bfc6ea8e385bd15470976b3826dcc939ab9f03275a9289",
+      "composed_config_hash": "1170659f0fcda16ee5f051b5be85fda869e2e986dc150a478dfc26bbcafe2ead",
       "protocol_hash": "eea79d5597229a3dc332f6e302f59ccfd59dd22c9aff1dc070874b067b4cc863",
       "resume_note": "Unchanged run id: this manifest is the RESUME-RECOVERY seal of the same run. 378 of its 1,080 rows are I7r-custodied predecessor rows, replayed byte for byte from the aborted attempt's trace (SHA-256 d495661dc7904eebb51818d4b35996a175de37af08d07ae56e904528fd6a84e3, kept-ids SHA-256 19b8b9e059d8a67bd83b8d7c72f86dc3d319617ea6fb123d32340faa91cfaccf) and rendered through the same _canonical_output_rows stage as the 702 rows this attempt flew. The read is of ONE complete 1,080-row manifest and its single official score. Kept and flown rows are never split, compared or reported as strata.",
       "role": "the audit ON arm",
