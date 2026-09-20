@@ -71,10 +71,42 @@ CONSTRUCTION DATA ONLY. Three guards, none of them a comment:
    entry id must be a MEMBER of it, which is checked per entry rather than
    assumed.
 
+THE DERANGEMENT TWIN (item E24, 2026-09-20; design section 7.2, owner
+decisions 48, 50 and 53). ``--twin-seed <int>`` builds
+``slurp-knowledge-index-twin-v1`` instead: the SAME entries, ids, groups,
+construction ranks, shared sections and ordering as the source view, with
+ONLY the per-entry L1 lines and their L2 cards permuted ACROSS IDS WITHIN
+EACH KIND by a Sattolo derangement seeded by that integer -- an intent line
+among intents, a slot line among slots, an edge line among edges, zero fixed
+points. The L1 lines and the L2 card move TOGETHER, so an expansion of id X
+shows the deranged entry's card consistently with the line X carries in the
+prefix. The twin's ``release.json`` records ``twin_of`` (the source view id
+and its snapshot content hash), ``derangement`` (the seed, the deranged
+kinds, the permutation sha256 and ``fixed_points: 0``) and
+``gold_read: false``.
+
+Before it writes a byte, the twin build PROVES the three properties the
+control rests on, and refuses on any of them:
+
+* **T1** zero fixed points -- by CONTENT, not only by position;
+* **T2** the per-kind multiset of L1 lines and L2 cards is unchanged;
+* **T3** the rendered index, at the recommended defaults, has the SAME
+  character count as the source's.
+
+T3 holds because the rendered header states the SOURCE view's id on both
+arms (``rails.knowledge_index.KnowledgeIndexTable.header_view_id``): a
+form-matched control whose own prefix announces "twin" is readable by the
+model and is therefore not a control. Which arm flew is a fact of the
+release, the pins and the receipt, never of the token stream.
+
 Usage::
 
     python scripts/build_slurp_knowledge_index_view.py --out-root <dir>
     python scripts/build_slurp_knowledge_index_view.py --out-root <dir> --check
+    python scripts/build_slurp_knowledge_index_view.py --out-root <dir> \\
+        --twin-seed 20260920
+    python scripts/build_slurp_knowledge_index_view.py --out-root <dir> \\
+        --twin-seed 20260920 --check
 """
 
 from __future__ import annotations
@@ -104,20 +136,26 @@ from speech_aware_evidence_acquisition.rails.knowledge_index import (  # noqa: E
     KNOWLEDGE_INDEX_CARRIER,
     KNOWLEDGE_INDEX_COMPLETION_SCHEMA,
     KNOWLEDGE_INDEX_RELEASE_SCHEMA,
+    KNOWLEDGE_INDEX_TWIN_VIEW_ID,
     KNOWLEDGE_INDEX_VIEW_ID,
     KNOWLEDGE_INDEX_VIEW_SCHEMA,
     MAX_HOISTED_DISTINCT,
     TAXONOMY_FREQUENCY_ORDERING,
     IndexEntry,
     SharedSection,
+    default_index_plan,
+    derange_snapshot,
     edge_id,
     hoist_sections,
     intent_id,
     labelled_bullets,
     parse_card_sections,
+    render_constant_index,
     restore_card,
     section_body,
     slot_id,
+    table_from_snapshot,
+    twin_line_multisets,
 )
 
 GENERATOR = "scripts/build_slurp_knowledge_index_view.py"
@@ -127,11 +165,33 @@ AUTHORITY = (
     "docs/superpowers/specs/2026-09-19-e21-knowledge-index-design.md"
 )
 LEDGER_ROW = "SAEA-SLURP-E21-KNOWLEDGE-INDEX-VIEW-V1"
+TWIN_AUTHORITY = (
+    "docs/superpowers/specs/2026-09-19-knowledge-index-and-context-assembly-design.md "
+    "section 7.2 (owner decisions 48, 50 and 53); "
+    "docs/superpowers/specs/2026-09-20-e24-knowledge-index-twin-design.md"
+)
 
 NAMESPACE = f"knowledge/slurp/semantic/{KNOWLEDGE_INDEX_VIEW_ID}"
 SNAPSHOT_RELPATH = f"{NAMESPACE}/snapshot.json"
 RELEASE_RELPATH = f"{NAMESPACE}/release.json"
 COMPLETION_RELPATH = f"{NAMESPACE}/completion.json"
+
+#: The E24 twin writes the same three files under its OWN namespace, beside
+#: the source view: it is a released view in its own right, pinned the same
+#: way, and a cell arms it by changing one config field.
+TWIN_NAMESPACE = f"knowledge/slurp/semantic/{KNOWLEDGE_INDEX_TWIN_VIEW_ID}"
+TWIN_LEDGER_ROW = "SAEA-SLURP-E24-KNOWLEDGE-INDEX-TWIN-V1"
+
+
+def relpaths(view_id: str) -> dict[str, str]:
+    """The three released relpaths of one view id."""
+
+    namespace = f"knowledge/slurp/semantic/{view_id}"
+    return {
+        "snapshot": f"{namespace}/snapshot.json",
+        "release": f"{namespace}/release.json",
+        "completion": f"{namespace}/completion.json",
+    }
 
 #: The three released source stores and the pins every committed B1/B5e
 #: baseline fragment already carries for them. Read here, never rebuilt.
@@ -522,14 +582,17 @@ def build_documents(root: Path, lock_path: Path) -> dict[str, object]:
     }
 
 
-def release_document(snapshot_sha256: str, snapshot: dict) -> dict[str, object]:
-    return {
+def release_document(
+    snapshot_sha256: str, snapshot: dict, *, twin: dict | None = None,
+) -> dict[str, object]:
+    view_id = str(snapshot["view_id"])
+    document = {
         "schema": KNOWLEDGE_INDEX_RELEASE_SCHEMA,
-        "view_id": KNOWLEDGE_INDEX_VIEW_ID,
+        "view_id": view_id,
         "builder_policy_id": KNOWLEDGE_INDEX_BUILDER_POLICY_ID,
         "carrier": snapshot["carrier"],
         "ordering": snapshot["ordering"],
-        "snapshot": {"relpath": SNAPSHOT_RELPATH, "root": "data"},
+        "snapshot": {"relpath": relpaths(view_id)["snapshot"], "root": "data"},
         "snapshot_sha256": snapshot_sha256,
         "source": {
             "carrier": snapshot["carrier"],
@@ -539,36 +602,65 @@ def release_document(snapshot_sha256: str, snapshot: dict) -> dict[str, object]:
         },
         "source_split_identity_hash": snapshot["source_split_identity_hash"],
     }
+    if twin is not None:
+        # Item E24. The three fields ``rails.knowledge_index`` refuses a twin
+        # without, in both directions: a twin view id whose release declares
+        # no derangement is an unproven control, and a source view id whose
+        # release declares one is a twin wearing the source's name.
+        document["twin_of"] = dict(twin["twin_of"])
+        document["derangement"] = dict(twin["derangement"])
+        document["gold_read"] = False
+    return document
 
 
 def completion_document(
-    snapshot_sha256: str, release_sha256: str, snapshot: dict,
+    snapshot_sha256: str, release_sha256: str, snapshot: dict, *,
+    twin: dict | None = None,
 ) -> dict[str, object]:
-    return {
+    view_id = str(snapshot["view_id"])
+    paths = relpaths(view_id)
+    statement = (
+        "Authored from three RELEASED construction stores, each read through its "
+        "own declared sha256 pin, plus the closed contract inventory mined from "
+        "train.jsonl alone. The ordering statistics are the construction row "
+        "counts and leakage counts of the 9,354-utterance pool (governed TRAIN "
+        "minus every utterance with a recording in TRAIN Fold A, Fold B or "
+        "DEV-1000). The exemplar kind is not built at all. No gold of any "
+        "evaluated row is read, keyed on or conditioned upon; no utterance id, "
+        "no recording and no entity filler of an evaluated row appears."
+    )
+    document = {
         "schema": KNOWLEDGE_INDEX_COMPLETION_SCHEMA,
-        "view_id": KNOWLEDGE_INDEX_VIEW_ID,
-        "generator": GENERATOR,
-        "authority": AUTHORITY,
-        "exposure_ledger_row": LEDGER_ROW,
+        "view_id": view_id,
+        "generator": GENERATOR if twin is None else f"{GENERATOR} --twin-seed",
+        "authority": AUTHORITY if twin is None else TWIN_AUTHORITY,
+        "exposure_ledger_row": LEDGER_ROW if twin is None else TWIN_LEDGER_ROW,
         "execution_profile": "model-free-check",
         "contacts": {"model": 0, "tool": 0, "scorer": 0, "encoder": 0, "tokenizer": 0},
-        "release": {"relpath": RELEASE_RELPATH, "root": "data", "sha256": release_sha256},
+        "release": {
+            "relpath": paths["release"], "root": "data", "sha256": release_sha256,
+        },
         "snapshot": {
-            "relpath": SNAPSHOT_RELPATH, "root": "data", "sha256": snapshot_sha256,
+            "relpath": paths["snapshot"], "root": "data", "sha256": snapshot_sha256,
         },
         "entry_counts": totals(snapshot),
         "source_split_identity_hash": snapshot["source_split_identity_hash"],
-        "statement": (
-            "Authored from three RELEASED construction stores, each read through its "
-            "own declared sha256 pin, plus the closed contract inventory mined from "
-            "train.jsonl alone. The ordering statistics are the construction row "
-            "counts and leakage counts of the 9,354-utterance pool (governed TRAIN "
-            "minus every utterance with a recording in TRAIN Fold A, Fold B or "
-            "DEV-1000). The exemplar kind is not built at all. No gold of any "
-            "evaluated row is read, keyed on or conditioned upon; no utterance id, "
-            "no recording and no entity filler of an evaluated row appears."
+        "statement": statement if twin is None else (
+            statement + " This view is the DERANGEMENT TWIN of "
+            f"{twin['twin_of']['view_id']}: the same entries, ids, groups, "
+            "construction ranks, shared sections and rendered length, with the L1 "
+            "lines and their L2 cards permuted across ids within each kind by a "
+            "Sattolo derangement of the recorded seed (zero fixed points). It "
+            "reads no gold and adds no knowledge: it destroys correspondence and "
+            "holds form."
         ),
     }
+    if twin is not None:
+        document["twin_of"] = dict(twin["twin_of"])
+        document["derangement"] = dict(twin["derangement"])
+        document["gold_read"] = False
+        document["form_match"] = dict(twin["form_match"])
+    return document
 
 
 def totals(snapshot: dict) -> dict[str, int]:
@@ -579,6 +671,94 @@ def totals(snapshot: dict) -> dict[str, int]:
     counts["legal_intents"] = len(snapshot["legal_intents"])
     counts["legal_slot_types"] = len(snapshot["legal_slot_types"])
     return counts
+
+
+def rendered_index(snapshot: dict, *, render_label: str = "") -> str:
+    """The snapshot rendered at the RECOMMENDED DEFAULTS, model-free.
+
+    The same renderer a flight uses, over a table built from the snapshot
+    document alone -- no pin, no data root, no contact of any kind.
+    """
+
+    view_id = str(snapshot["view_id"])
+    table = table_from_snapshot(snapshot, render_label=render_label)
+    return render_constant_index(table, default_index_plan(view_id))
+
+
+def build_twin(source_snapshot: dict, *, seed: int) -> dict[str, object]:
+    """The twin snapshot and its proofs, or a refusal. Writes nothing.
+
+    T1 (zero fixed points) is proved inside :func:`derange_snapshot`, which
+    refuses on a single one and checks by CONTENT rather than by position.
+    T2 and T3 are proved here, and every one of them before a byte is
+    written -- the source view's own hoist check sets that precedent.
+    """
+
+    twin_snapshot, derangement = derange_snapshot(source_snapshot, seed=seed)
+
+    before = twin_line_multisets(source_snapshot)
+    after = twin_line_multisets(twin_snapshot)
+    if before != after:
+        raise SystemExit(
+            "REFUSED: the derangement changed a kind's multiset of L1 lines or L2 "
+            "cards; a twin is a RE-ASSIGNMENT of the source's own lines, never a "
+            "rewrite of them"
+        )
+    for field in ("id", "kind", "group", "rank"):
+        if [row[field] for row in source_snapshot["entries"]] != [
+            row[field] for row in twin_snapshot["entries"]
+        ]:
+            raise SystemExit(
+                f"REFUSED: the derangement moved the entries' {field!r}; the ids, "
+                "the taxonomy groups and the construction ranks are the ORDERING "
+                "and must be held byte for byte"
+            )
+    if source_snapshot["shared_sections"] != twin_snapshot["shared_sections"]:
+        raise SystemExit(
+            "REFUSED: the derangement moved the hoisted shared sections; they are "
+            "the index's own header and are shared by every entry"
+        )
+
+    source_text = rendered_index(source_snapshot)
+    twin_text = rendered_index(
+        twin_snapshot, render_label=str(source_snapshot["view_id"])
+    )
+    if len(source_text) != len(twin_text):
+        raise SystemExit(
+            f"REFUSED: the twin renders {len(twin_text)} characters against the "
+            f"source's {len(source_text)}; a control that is not form-matched "
+            "measures form, which is the very thing it exists to hold"
+        )
+    if source_text == twin_text:
+        raise SystemExit(
+            "REFUSED: the twin renders the SOURCE's text; nothing was deranged"
+        )
+    source_lines = source_text.split("\n")
+    twin_lines = twin_text.split("\n")
+    if len(source_lines) != len(twin_lines):
+        raise SystemExit("REFUSED: the twin renders a different number of lines")
+    moved = sum(
+        1 for left, right in zip(source_lines, twin_lines) if left != right
+    )
+    return {
+        "snapshot": twin_snapshot,
+        "twin_of": {
+            "view_id": str(source_snapshot["view_id"]),
+            "snapshot_content_hash": _canonical_sha256(source_snapshot),
+        },
+        "derangement": derangement,
+        "form_match": {
+            "rendered_chars": len(twin_text),
+            "source_rendered_chars": len(source_text),
+            "rendered_lines": len(twin_lines),
+            "reassigned_lines": moved,
+            "rendered_sha256": hashlib.sha256(twin_text.encode("utf-8")).hexdigest(),
+            "source_rendered_sha256": hashlib.sha256(
+                source_text.encode("utf-8")
+            ).hexdigest(),
+            "granularity": "the recommended defaults (intent L1 / slot L1 / edge L0)",
+        },
+    }
 
 
 def _write(path: Path, document: object) -> str:
@@ -599,6 +779,14 @@ def main() -> int:
         "--check", action="store_true",
         help="verify the files under --out-root reproduce; write nothing",
     )
+    parser.add_argument(
+        "--twin-seed", type=int, default=None,
+        help="build the E24 DERANGEMENT TWIN (slurp-knowledge-index-twin-v1) "
+             "instead: the same entries, ids, ordering statistics, shared sections "
+             "and rendered length, with only the L1 lines and their L2 cards "
+             "permuted across ids within each kind by a Sattolo derangement of "
+             "this seed (zero fixed points)",
+    )
     parser.add_argument("--repo-root", type=Path, default=REPO_ROOT)
     parser.add_argument(
         "--lock", type=Path, default=None,
@@ -615,11 +803,19 @@ def main() -> int:
     out_root = Path(args.out_root).resolve()
     built = build_documents(root, lock_path)
     snapshot = built["snapshot"]
+    twin: dict | None = None
+    if args.twin_seed is not None:
+        # The twin is deranged from the SOURCE snapshot this build just
+        # produced in memory -- never from a file on disk, so a twin can
+        # never be a derangement of bytes nobody verified.
+        twin = build_twin(snapshot, seed=int(args.twin_seed))
+        snapshot = twin["snapshot"]
     counts = totals(snapshot)
 
-    snapshot_path = out_root / SNAPSHOT_RELPATH
-    release_path = out_root / RELEASE_RELPATH
-    completion_path = out_root / COMPLETION_RELPATH
+    paths = relpaths(str(snapshot["view_id"]))
+    snapshot_path = out_root / paths["snapshot"]
+    release_path = out_root / paths["release"]
+    completion_path = out_root / paths["completion"]
 
     if args.check:
         for path in (snapshot_path, release_path, completion_path):
@@ -631,33 +827,58 @@ def main() -> int:
             return 1
         snapshot_sha256 = _sha256_path(snapshot_path)
         if json.loads(release_path.read_text(encoding="utf-8")) != release_document(
-            snapshot_sha256, snapshot
+            snapshot_sha256, snapshot, twin=twin
         ):
             print("DIFFERS: the released release is not what this build produces")
             return 1
         release_sha256 = _sha256_path(release_path)
         if json.loads(
             completion_path.read_text(encoding="utf-8")
-        ) != completion_document(snapshot_sha256, release_sha256, snapshot):
+        ) != completion_document(
+            snapshot_sha256, release_sha256, snapshot, twin=twin
+        ):
             print("DIFFERS: the released completion is not what this build produces")
             return 1
         print(
             f"OK  entries={counts}  snapshot_sha256={snapshot_sha256[:16]}..."
         )
+        if twin is not None:
+            print(
+                f"OK  twin seed={twin['derangement']['seed']} "
+                f"fixed_points={twin['derangement']['fixed_points']} "
+                f"permutation_sha256={twin['derangement']['permutation_sha256'][:16]}..."
+            )
         return 0
 
     snapshot_sha256 = _write(snapshot_path, snapshot)
-    release_sha256 = _write(release_path, release_document(snapshot_sha256, snapshot))
+    release_sha256 = _write(
+        release_path, release_document(snapshot_sha256, snapshot, twin=twin)
+    )
     completion_sha256 = _write(
         completion_path,
-        completion_document(snapshot_sha256, release_sha256, snapshot),
+        completion_document(snapshot_sha256, release_sha256, snapshot, twin=twin),
     )
-    print(f"wrote {SNAPSHOT_RELPATH}  sha256={snapshot_sha256}")
-    print(f"wrote {RELEASE_RELPATH}  sha256={release_sha256}")
-    print(f"wrote {COMPLETION_RELPATH}  sha256={completion_sha256}")
+    print(f"wrote {paths['snapshot']}  sha256={snapshot_sha256}")
+    print(f"wrote {paths['release']}  sha256={release_sha256}")
+    print(f"wrote {paths['completion']}  sha256={completion_sha256}")
     print(f"  content_hash={_canonical_sha256(snapshot)}")
     print(f"  entries={counts}")
     print(f"  timing_seconds={built['timing_seconds']}")
+    if twin is not None:
+        record = twin["derangement"]
+        form = twin["form_match"]
+        print(f"  twin_of={twin['twin_of']['view_id']}"
+              f"@{twin['twin_of']['snapshot_content_hash']}")
+        print(f"  derangement seed={record['seed']} kinds={record['kinds']} "
+              f"fixed_points={record['fixed_points']}")
+        print(f"  permutation_sha256={record['permutation_sha256']}")
+        print(f"  T1 fixed points 0; T2 per-kind multiset of L1 lines and L2 cards "
+              f"unchanged; T3 rendered {form['rendered_chars']} chars against the "
+              f"source's {form['source_rendered_chars']}")
+        print(f"  rendered_sha256={form['rendered_sha256']}  "
+              f"source_rendered_sha256={form['source_rendered_sha256']}")
+        print(f"  reassigned_lines={form['reassigned_lines']} of "
+              f"{form['rendered_lines']}")
     print(
         "  NOTE: no release-pins registration file was written; registering the "
         "release is a separate, zero-contact job."

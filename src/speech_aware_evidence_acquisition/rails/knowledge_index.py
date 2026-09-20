@@ -54,6 +54,19 @@ text is shared across a kind's cards (``Uncertainty behavior``: one identical
 values over 54 slot cards), the builder lifts them into the index's own
 section headers, and :func:`restore_card` splices them back byte-for-byte.
 No released store is touched and nothing is re-pinned.
+
+Item **E24** (2026-09-20, design section 7.2; owner decisions 48, 50 and 53)
+adds the DERANGEMENT TWIN of this view and nothing else. The twin
+(:data:`KNOWLEDGE_INDEX_TWIN_VIEW_ID`) carries the SAME entries, ids, groups,
+ranks, ordering statistics and shared sections as the released source view;
+only the CORRESPONDENCE between an id and its contract line is destroyed, by
+a Sattolo derangement WITHIN EACH KIND (:func:`sattolo_derangement`,
+:func:`derange_snapshot`), so every id carries another entry of its own kind.
+The rendered header states the SOURCE view's id on both arms
+(:attr:`KnowledgeIndexTable.header_view_id`) -- a form-matched control whose
+own prefix announces "twin" is not form-matched, because the model can read
+it; the twin's identity lives in its release, its pins and its receipt, never
+in the token stream.
 """
 
 from __future__ import annotations
@@ -74,6 +87,19 @@ from .context_fit import DroppableItem
 #: The registered identity of the first instance of this schema; the value a
 #: fragment's ``native_episode.knowledge_index.view`` must carry.
 KNOWLEDGE_INDEX_VIEW_ID = "slurp-knowledge-index-v1"
+
+#: Item E24, design section 7.2: the DERANGEMENT TWIN of the view above. Same
+#: entries, same ids, same ordering statistics, same shared sections, same
+#: rendered length -- only the correspondence between an id and its contract
+#: line is destroyed. It is a released view in its own right, pinned and
+#: loaded exactly like the source, and a cell that arms it is the SAME cell
+#: shape with one field changed.
+KNOWLEDGE_INDEX_TWIN_VIEW_ID = "slurp-knowledge-index-twin-v1"
+
+#: Every released knowledge-index view id a config may name (refusal 1).
+KNOWLEDGE_INDEX_VIEW_IDS: tuple[str, ...] = (
+    KNOWLEDGE_INDEX_VIEW_ID, KNOWLEDGE_INDEX_TWIN_VIEW_ID,
+)
 
 #: The builder that produces the released view
 #: (``scripts/build_slurp_knowledge_index_view.py``).
@@ -738,6 +764,16 @@ class KnowledgeIndexTable:
     store_pins: Mapping[str, object]
     release_sha256: str = ""
     snapshot_sha256: str = ""
+    #: Item E24. ``None`` for the source view; for a derangement twin, the
+    #: source view's id and snapshot content hash, read from the TWIN's own
+    #: release document. Deliberately NOT in :meth:`as_json`: the snapshot's
+    #: file sha256 and :meth:`content_hash` are one number, and a field the
+    #: release carries may never move the snapshot's bytes.
+    twin_of: Mapping[str, str] | None = None
+    #: The view id the rendered header STATES. Empty means "this view's own".
+    #: A twin states the source's, so the two arms are byte-matched and the
+    #: model cannot read which arm it is on.
+    render_label: str = ""
 
     def __post_init__(self) -> None:
         ids = [entry.entry_id for entry in self.entries]
@@ -747,6 +783,16 @@ class KnowledgeIndexTable:
     @property
     def entry_ids(self) -> frozenset[str]:
         return frozenset(entry.entry_id for entry in self.entries)
+
+    @property
+    def header_view_id(self) -> str:
+        """The id :func:`render_constant_index` prints in the header."""
+
+        return self.render_label or self.view_id
+
+    @property
+    def is_twin(self) -> bool:
+        return self.twin_of is not None
 
     @property
     def kinds(self) -> frozenset[str]:
@@ -802,7 +848,12 @@ class KnowledgeIndexTable:
 
 
 def table_from_snapshot(
-    document: object, *, release_sha256: str = "", snapshot_sha256: str = "",
+    document: object,
+    *,
+    release_sha256: str = "",
+    snapshot_sha256: str = "",
+    twin_of: Mapping[str, str] | None = None,
+    render_label: str = "",
 ) -> KnowledgeIndexTable:
     """Build the table from one released snapshot document, fail-closed."""
 
@@ -861,7 +912,261 @@ def table_from_snapshot(
         store_pins=json.loads(json.dumps(document["store_pins"])),
         release_sha256=release_sha256,
         snapshot_sha256=snapshot_sha256,
+        twin_of=None if twin_of is None else dict(twin_of),
+        render_label=render_label,
     )
+
+
+# ---------------------------------------------------------------------------
+# 4b. The DERANGEMENT TWIN (item E24, design section 7.2).
+#
+# A cell that arms the index changes two things at once in the eyes of a
+# critic: the prefix now CONTAINS 60 intent and 54 slot contracts that used to
+# appear only when retrieved, and it now OMITS the retrieved cards' full text.
+# A NEUTRAL or positive read then has three explanations -- the index's
+# CONTENT helps, its mere PRESENCE and SHAPE help, or dropping 24,000
+# characters of card text helps by removing distraction. The twin separates
+# them: every byte of form is held, and only the id -> contract-line
+# correspondence is destroyed. The precedent is measured, not hypothetical --
+# Audio2Tool ORG-1 re-rendered 152 unchanged registry rows under domain
+# headers, moved no store byte, and read -3.23 pp [-4.15, -2.33].
+#
+# Three properties define the twin, and every one of them is checked rather
+# than asserted (the builder refuses before it writes, and the unit suite
+# re-proves each on a synthetic view):
+#
+#   T1  zero fixed points -- no id keeps its own line, per kind and by
+#       CONTENT, not merely by position;
+#   T2  the per-kind MULTISET of L1 lines (and of L2 cards) is unchanged, so
+#       the twin is a re-assignment and never a rewrite;
+#   T3  the rendered index has the same length as the source's, because the
+#       header, the section headers, the ids, the ordering and the multiset
+#       of lines are all held.
+#
+# The permutation is drawn from a sha256 COUNTER STREAM rather than from
+# ``random``: a released control has to reproduce from its recorded seed for
+# as long as the cell it controls is cited, and that must not depend on a
+# standard-library generator's internals.
+# ---------------------------------------------------------------------------
+
+#: The fields a twin's ``release.json`` adds to the source's release shape.
+TWIN_RELEASE_KEYS: tuple[str, ...] = ("twin_of", "derangement", "gold_read")
+
+#: The entry kinds deranged, each within itself: an intent line among
+#: intents, a slot line among slots, an edge line among edges. Deranging
+#: ACROSS kinds would move a slot's ``Admissible formats`` line onto an
+#: intent id and change every rendered line's length.
+TWIN_DERANGED_KINDS: tuple[str, ...] = CONSTANT_INDEX_KINDS
+
+#: The per-entry fields the derangement MOVES: the L1 lines and the L2 card
+#: (its residue and the hoisted-section table that splices it back). Moving
+#: them together is what makes "the same permutation on L1 and L2" true by
+#: construction rather than by a second draw.
+TWIN_MOVED_FIELDS: tuple[str, ...] = ("l1", "residue", "hoisted")
+
+#: The per-entry fields the derangement HOLDS: the id, its kind, its taxonomy
+#: group and its construction rank -- so the ordering, the grouping and the
+#: ordering statistics are identical on the two arms.
+TWIN_HELD_FIELDS: tuple[str, ...] = ("id", "kind", "group", "rank")
+
+
+def _draw_below(stream: str, *, counter: int, bound: int) -> int:
+    """A uniform integer in ``[0, bound)`` from a sha256 counter stream.
+
+    Rejection sampling on the top ``bound - 1``.bit_length() bits, so the
+    draw is uniform and depends on nothing but the stream key, the counter
+    and sha256 itself.
+    """
+
+    if not isinstance(bound, int) or isinstance(bound, bool) or bound < 1:
+        raise KnowledgeIndexError("a derangement draw needs a positive bound")
+    bits = (bound - 1).bit_length()
+    if bits == 0:
+        return 0
+    width = (bits + 7) // 8
+    attempt = 0
+    while True:
+        digest = hashlib.sha256(
+            f"{stream}:{counter}:{attempt}".encode("utf-8")
+        ).digest()
+        value = int.from_bytes(digest[:width], "big") >> (width * 8 - bits)
+        if value < bound:
+            return value
+        attempt += 1
+
+
+def sattolo_derangement(count: int, *, stream: str) -> tuple[int, ...]:
+    """A Sattolo cycle over ``count`` positions: a derangement, always.
+
+    Returns ``order`` where ``order[i]`` is the SOURCE position whose content
+    lands at position ``i``. Sattolo's algorithm draws ``j`` strictly BELOW
+    ``i`` (this is the one line that separates it from Fisher-Yates), which
+    makes the result a single cycle of length ``count``; a cycle of length
+    ``count > 1`` has no fixed point, so zero fixed points is a property of
+    the algorithm and not of the seed. ``count < 2`` has no derangement and
+    is refused rather than silently returning the identity.
+    """
+
+    if not isinstance(count, int) or isinstance(count, bool) or count < 2:
+        raise KnowledgeIndexError(
+            f"a derangement needs at least two entries; {count!r} has none"
+        )
+    order = list(range(count))
+    for position in range(count - 1, 0, -1):
+        other = _draw_below(stream, counter=position, bound=position)
+        order[position], order[other] = order[other], order[position]
+    return tuple(order)
+
+
+def _twin_stream(seed: int, kind: str) -> str:
+    return f"saea-knowledge-index-twin:{seed}:{kind}"
+
+
+def derange_snapshot(
+    snapshot: Mapping[str, object], *, seed: int, view_id: str = KNOWLEDGE_INDEX_TWIN_VIEW_ID,
+) -> tuple[dict[str, object], dict[str, object]]:
+    """The twin snapshot document and its derangement record.
+
+    Pure, and a pure function of ``(snapshot bytes, seed)``: the same seed
+    over the same released source snapshot reproduces the same twin bytes,
+    which is what ``--check`` verifies.
+    """
+
+    if not isinstance(seed, int) or isinstance(seed, bool):
+        raise KnowledgeIndexError("a twin seed must be an integer")
+    if not isinstance(snapshot, Mapping) or "entries" not in snapshot:
+        raise KnowledgeIndexError("a twin is deranged from a released index snapshot")
+    entries = [json.loads(json.dumps(row)) for row in snapshot["entries"]]
+    positions: dict[str, list[int]] = {}
+    for index, row in enumerate(entries):
+        positions.setdefault(str(row["kind"]), []).append(index)
+    unknown = sorted(set(positions) - set(TWIN_DERANGED_KINDS))
+    if unknown:
+        raise KnowledgeIndexError(
+            f"the source view carries kinds this twin cannot derange: {unknown}"
+        )
+    kinds: dict[str, int] = {}
+    pairs: list[list[str]] = []
+    deranged = [dict(row) for row in entries]
+    for kind in TWIN_DERANGED_KINDS:
+        members = positions.get(kind, [])
+        if not members:
+            continue
+        order = sattolo_derangement(len(members), stream=_twin_stream(seed, kind))
+        kinds[kind] = len(members)
+        for slot, donor in enumerate(order):
+            target, source = members[slot], members[donor]
+            for field in TWIN_MOVED_FIELDS:
+                deranged[target][field] = json.loads(
+                    json.dumps(entries[source][field])
+                )
+            pairs.append([str(entries[target]["id"]), str(entries[source]["id"])])
+    fixed = [
+        pair[0] for pair in pairs if pair[0] == pair[1]
+    ] + [
+        str(row["id"])
+        for row, before in zip(deranged, entries)
+        if all(row[field] == before[field] for field in TWIN_MOVED_FIELDS)
+    ]
+    if fixed:
+        # T1, checked by CONTENT and not only by position: two entries whose
+        # released lines happen to be identical would leave an id carrying
+        # its own contract even under a position-derangement, and that is a
+        # broken control rather than an unlucky draw.
+        raise KnowledgeIndexError(
+            f"the derangement leaves {len(fixed)} fixed point(s): {sorted(set(fixed))[:5]}"
+        )
+    twin = {
+        key: json.loads(json.dumps(value))
+        for key, value in snapshot.items()
+        if key != "entries"
+    }
+    twin["view_id"] = view_id
+    twin["entries"] = deranged
+    record = {
+        "algorithm": "sattolo-cycle-sha256-stream-v1",
+        "seed": int(seed),
+        "kinds": dict(sorted(kinds.items())),
+        "permutation_sha256": _sha256_bytes(
+            canonical_json({"seed": int(seed), "pairs": pairs}).encode("utf-8")
+        ),
+        "fixed_points": 0,
+        "moved_fields": list(TWIN_MOVED_FIELDS),
+        "held_fields": list(TWIN_HELD_FIELDS),
+    }
+    return twin, record
+
+
+def twin_line_multisets(
+    snapshot: Mapping[str, object],
+) -> dict[str, dict[str, int]]:
+    """Per kind, the multiset of an entry's MOVED content, as counts.
+
+    T2's oracle, used by the builder before it writes and by the unit suite:
+    a re-assignment leaves this table identical, a rewrite does not.
+    """
+
+    tables: dict[str, dict[str, int]] = {}
+    for row in snapshot["entries"]:
+        kind = str(row["kind"])
+        key = canonical_json({field: row[field] for field in TWIN_MOVED_FIELDS})
+        bucket = tables.setdefault(kind, {})
+        bucket[key] = bucket.get(key, 0) + 1
+    return tables
+
+
+def validate_twin_release(
+    release: Mapping[str, object], *, view_id: str,
+) -> Mapping[str, str] | None:
+    """The twin half of refusal 1, in BOTH directions.
+
+    A twin view id whose release declares no derangement is an unproven
+    control; a source view id whose release declares one is a twin wearing
+    the source's name. Both stop the load before any contact.
+    """
+
+    declared = release.get("twin_of")
+    if view_id != KNOWLEDGE_INDEX_TWIN_VIEW_ID:
+        if declared is not None or any(key in release for key in TWIN_RELEASE_KEYS):
+            raise KnowledgeIndexError(
+                f"{view_id!r} is not a derangement twin but its release declares "
+                f"{sorted(set(TWIN_RELEASE_KEYS) & set(release))}"
+            )
+        return None
+    if (
+        not isinstance(declared, Mapping)
+        or set(declared) != {"view_id", "snapshot_content_hash"}
+        or declared["view_id"] != KNOWLEDGE_INDEX_VIEW_ID
+        or not isinstance(declared["snapshot_content_hash"], str)
+        or len(str(declared["snapshot_content_hash"])) != 64
+    ):
+        raise KnowledgeIndexError(
+            "a derangement twin's release must declare twin_of as the SOURCE view's "
+            "id and snapshot content hash"
+        )
+    if release.get("gold_read") is not False:
+        raise KnowledgeIndexError(
+            "a derangement twin's release must state gold_read: false"
+        )
+    record = release.get("derangement")
+    if (
+        not isinstance(record, Mapping)
+        or not isinstance(record.get("seed"), int)
+        or isinstance(record.get("seed"), bool)
+        or not isinstance(record.get("kinds"), Mapping)
+        or not record["kinds"]
+        or record.get("fixed_points") != 0
+        or not isinstance(record.get("permutation_sha256"), str)
+        or len(str(record["permutation_sha256"])) != 64
+    ):
+        raise KnowledgeIndexError(
+            "a derangement twin's release must record the seed, the deranged kinds, "
+            "the permutation sha256 and fixed_points 0"
+        )
+    return {
+        "view_id": str(declared["view_id"]),
+        "snapshot_content_hash": str(declared["snapshot_content_hash"]),
+    }
 
 
 def validate_knowledge_index_pin(value: object, *, field_name: str) -> Mapping[str, str]:
@@ -967,10 +1272,16 @@ def load_knowledge_index_table(
         raise KnowledgeIndexError(
             "knowledge_index release and snapshot disagree on the construction identity"
         )
+    twin_of = validate_twin_release(release_document, view_id=view_id)
     return table_from_snapshot(
         snapshot_document,
         release_sha256=release_pin["sha256"],
         snapshot_sha256=snapshot_pin["sha256"],
+        twin_of=twin_of,
+        # The twin renders the SOURCE's id in its header: the two arms differ
+        # by no rendered byte, and which arm flew is a fact of the release,
+        # the pins and the receipt rather than of the prompt.
+        render_label="" if twin_of is None else twin_of["view_id"],
     )
 
 
@@ -1041,6 +1352,11 @@ def _register_orderings() -> None:
     for registry, name, entry in (
         (KNOWLEDGE_INDEX_ORDERINGS, TAXONOMY_FREQUENCY_ORDERING, taxonomy_frequency_order),
         (KNOWLEDGE_INDEX_VIEWS, KNOWLEDGE_INDEX_VIEW_ID, KNOWLEDGE_INDEX_BUILDER_POLICY_ID),
+        (
+            KNOWLEDGE_INDEX_VIEWS,
+            KNOWLEDGE_INDEX_TWIN_VIEW_ID,
+            KNOWLEDGE_INDEX_BUILDER_POLICY_ID,
+        ),
         (KNOWLEDGE_INDEX_RECEIPTS, KNOWLEDGE_INDEX_RECEIPT_SCHEMA, KNOWLEDGE_INDEX_VIEW_ID),
     ):
         try:
@@ -1230,11 +1546,15 @@ def parse_knowledge_index_config(document: object) -> IndexPlan:
             f"declares {sorted(_REQUIRED_KEYS)} and may add {sorted(_OPTIONAL_KEYS)}"
         )
     view_id = document["view"]
-    if view_id != KNOWLEDGE_INDEX_VIEW_ID:
+    if view_id not in KNOWLEDGE_INDEX_VIEW_IDS:
         # Refusal 1, in its config form: only a RELEASED view id is admitted.
+        # The E24 derangement twin is one of them -- it is a released,
+        # hash-pinned view, and a twin arm is the same cell shape with this
+        # one field changed rather than a second code path.
         raise KnowledgeIndexError(
-            f"native_episode.knowledge_index.view must be {KNOWLEDGE_INDEX_VIEW_ID!r}; "
-            f"{view_id!r} is not a released knowledge-index view"
+            "native_episode.knowledge_index.view must be one of "
+            f"{list(KNOWLEDGE_INDEX_VIEW_IDS)}; {view_id!r} is not a released "
+            "knowledge-index view"
         )
     release = validate_knowledge_index_pin(
         document["release"], field_name="knowledge_index.release"
@@ -1332,6 +1652,33 @@ def validate_knowledge_index_config(document: object) -> str:
     return canonical_json(parse_knowledge_index_config(document).as_json())
 
 
+def default_index_plan(view_id: str = KNOWLEDGE_INDEX_VIEW_ID) -> IndexPlan:
+    """The plan at the recommended defaults, with no pin and no data root.
+
+    Item E24's proof needs to RENDER two views on a machine that has not
+    released either of them, and the E21 defaults are already stated once in
+    this module; restating them in the builder or in a test would be a second
+    spelling of the recommended arm.
+    """
+
+    if view_id not in KNOWLEDGE_INDEX_VIEW_IDS:
+        raise KnowledgeIndexError(f"{view_id!r} is not a released knowledge-index view")
+    return IndexPlan(
+        view_id=view_id,
+        release={},
+        snapshot={},
+        granularity=dict(DEFAULT_GRANULARITY),
+        l1_sections=dict(DEFAULT_L1_SECTIONS),
+        ordering=TAXONOMY_FREQUENCY_ORDERING,
+        budget=IndexBudget(
+            pointer=dict(DEFAULT_POINTER_BUDGET),
+            expansion=dict(DEFAULT_EXPANSION_BUDGET),
+        ),
+        solver_citation=DEFAULT_SOLVER_CITATION,
+        role_budgets={},
+    )
+
+
 def is_knowledge_index_null_arm(value: object) -> bool:
     """The key's OFF arm: its ABSENCE. There is no third shape.
 
@@ -1406,7 +1753,11 @@ def render_constant_index(table: KnowledgeIndexTable, plan: IndexPlan) -> str:
     for row in table.shared_sections:
         shared_by_kind.setdefault(row.kind, []).append(row)
     lines: list[str] = [
-        INDEX_HEADER.format(view_id=table.view_id, ordering=table.ordering)
+        # ``header_view_id``, not ``view_id``: the E24 derangement twin states
+        # the SOURCE view's id here so the two arms are byte-matched. A
+        # control whose own prefix says "twin" is readable by the model and
+        # is therefore not a control.
+        INDEX_HEADER.format(view_id=table.header_view_id, ordering=table.ordering)
     ]
     counts = table.counts()
     for kind in ("intent", "slot"):
@@ -1519,6 +1870,10 @@ class IndexAssembly:
     pointer_ids: tuple[str, ...]
     expansions: tuple[ExpansionItem, ...]
     degradation: tuple[Mapping[str, object], ...] = ()
+    #: Which released view these parts came from, for the ``source_uri``
+    #: PROVENANCE scheme only -- provenance renders no byte, so a twin names
+    #: itself here honestly while its rendered text stays byte-matched.
+    view_id: str = KNOWLEDGE_INDEX_VIEW_ID
 
     @property
     def expanded_ids(self) -> tuple[str, ...]:
@@ -1571,7 +1926,7 @@ class IndexAssembly:
                 "evidence_id": part["evidence_id"],
                 "content": part["text"],
                 "knowledge_role": "value",
-                "source_uri": f"knowledge-index://{KNOWLEDGE_INDEX_VIEW_ID}/"
+                "source_uri": f"knowledge-index://{self.view_id}/"
                               f"{part['evidence_id']}",
             }
             for part in self.content_parts()
@@ -1685,6 +2040,7 @@ def assemble(
         pointer_block=pointer_block,
         pointer_ids=pointer_ids,
         expansions=render_expansions(table, selection, budget),
+        view_id=table.view_id,
     )
 
 
@@ -1824,14 +2180,22 @@ def knowledge_index_receipt(
     """The per-row block, sealed where E17's ``tool_schema_rendering`` is."""
 
     rows = [dict(row) for row in contacts]
+    view: dict[str, object] = {
+        "view_id": table.view_id,
+        "release_sha256": table.release_sha256,
+        "snapshot_sha256": table.snapshot_sha256,
+        "content_hash": table.content_hash(),
+    }
+    if table.twin_of is not None:
+        # Item E24. Present ONLY on a twin arm, so a source arm's receipt
+        # keeps the bytes it has today, and a reader never has to infer which
+        # arm flew from the absence of a field: on a twin it is stated, and
+        # ``view_id`` is the twin's own id while the rendered prefix is the
+        # source's byte for byte.
+        view["twin_of"] = dict(table.twin_of)
     return {
         "schema": KNOWLEDGE_INDEX_RECEIPT_SCHEMA,
-        "view": {
-            "view_id": table.view_id,
-            "release_sha256": table.release_sha256,
-            "snapshot_sha256": table.snapshot_sha256,
-            "content_hash": table.content_hash(),
-        },
+        "view": view,
         "granularity": {
             kind: {"level": plan.granularity[kind], "section": plan.l1_sections[kind]}
             for kind in sorted(plan.granularity)
@@ -2445,6 +2809,7 @@ def narrow_assembly(
         pointer_ids=() if pointer_dropped else assembly.pointer_ids,
         expansions=expansions,
         degradation=assembly.degradation,
+        view_id=assembly.view_id,
     )
 
 
@@ -2457,6 +2822,7 @@ __all__ = [
     "CardSection",
     "CHARS_PER_TOKEN",
     "CONSTANT_INDEX_KINDS",
+    "default_index_plan",
     "contact_receipt",
     "DEFAULT_EXPANSION_BUDGET",
     "DEFAULT_GRANULARITY",
@@ -2464,6 +2830,7 @@ __all__ = [
     "DEFAULT_POINTER_BUDGET",
     "DEFAULT_SOLVER_CITATION",
     "degradation_step",
+    "derange_snapshot",
     "derive_row_selection",
     "display_name",
     "edge_id",
@@ -2505,7 +2872,9 @@ __all__ = [
     "knowledge_index_receipt",
     "KNOWLEDGE_INDEX_RECEIPT_SCHEMA",
     "KNOWLEDGE_INDEX_RELEASE_SCHEMA",
+    "KNOWLEDGE_INDEX_TWIN_VIEW_ID",
     "KNOWLEDGE_INDEX_VIEW_ID",
+    "KNOWLEDGE_INDEX_VIEW_IDS",
     "KNOWLEDGE_INDEX_VIEW_SCHEMA",
     "KnowledgeIndexBinding",
     "KnowledgeIndexError",
@@ -2539,6 +2908,7 @@ __all__ = [
     "retrieval_similarity",
     "ROLE_BUDGET_KEY",
     "RowSelection",
+    "sattolo_derangement",
     "section_body",
     "sha256_text",
     "SharedSection",
@@ -2546,9 +2916,15 @@ __all__ = [
     "slot_id",
     "SOLVER_CITATION_MODES",
     "table_from_snapshot",
+    "TWIN_DERANGED_KINDS",
+    "TWIN_HELD_FIELDS",
+    "TWIN_MOVED_FIELDS",
+    "twin_line_multisets",
+    "TWIN_RELEASE_KEYS",
     "taxonomy_frequency_order",
     "TAXONOMY_FREQUENCY_ORDERING",
     "validate_knowledge_index_config",
     "validate_knowledge_index_pin",
+    "validate_twin_release",
     "value_retrieval_ranks",
 ]
