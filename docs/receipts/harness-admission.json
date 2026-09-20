@@ -1114,6 +1114,64 @@
         "what_flew": "The ON arm flew configs/baseline/slurp-native-anchor-tool-constant-train-fold-a-v1.json at 711bc6c4: the sealed anchor fragment plus native_episode.tool_schema_rendering 'constant' and the finite-completion policy (a harness declaration); the E17 receipt saea-native-tool-schema-rendering-v1 carries mode constant, one rendered tool schema on every contact and authority_tool_names [] on perception / solver / planner against [saea-tool-task-contract-v1] on the Reviewer. The OFF arm is the sealed anchor itself (per-role rendering; the key did not exist when it sealed).",
         "why_this_table": "the rendering of the native tool schemas across the episode's roles is one episode-level switch on the closed allowlist rails.config_tables.EPISODE_LEVEL_SWITCH_KEYS; the null arm is the key's absence or 'per-role'; the OFF value 'per-role' is the key's own null form (rails.config_tables.is_episode_null_arm), which the sealed anchor realises by the key's absence"
       }
+    },
+    {
+      "carrier": "slurp",
+      "comparator": {
+        "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+        "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1",
+        "note": "the sealed dual-store anchor; never re-flown or re-scored; both arms node-free and per-role; the arm carries the E13 and E22 declarations (6 finite_completion rows, 1 react_exhaustion visit, all retained; the anchor 0 / 0)"
+      },
+      "date": "2026-09-20",
+      "module": "Reviewer slot-audit context block (item E12, re-based by item E19 as the sealed-draft attachment; native_episode.reviewer_audit = slot-audit-v1): the per-row audit of the current draft against the slot contracts (TYPE-UNSEEN / EMPTY-DRAFT / MISSING-COMMON / REPRESENTATION flags) attached to the Reviewer's request; cell B8b-anchor on the anchor base, sealed as an E10 mode-A resume-recovery (378 rows kept under I7r custody, 702 flown)",
+      "row": "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1",
+      "status": "NEUTRAL",
+      "status_basis": "NEUTRAL is this table's status when the gating guards hold but the admission clause does not. Registered rule (docs/readiness/2026-09-19-slurp-b8b-anchor-reviewer-audit-v1-preregistration.md): ADMITTED iff (1) the CI95 lower bound of the paired official pooled SLU-F1 delta is above zero, (2) intent non-inferior at -1.0051, (3) v3 and the TRAIN symmetric sibling agree in sign, (4) no scenario band breach; HARMFUL iff a guard fails with a measured loss (decision 25). Read (paired per-row bootstrap, 10,000 draws, seed 20260919, the recipe's estimator): official pooled SLU-F1 48.5336 -> 49.4034, +0.8698 pp CI95 [-0.6341, +2.3654] (clause 1 fails); intent 77.9630 -> 79.1667, +1.2037 pp CI95 [-0.1852, +2.5926] (clause 2 holds); v3 +1.1276 and symmetric +1.0559 same sign; 0 of 18 scenarios breach (transport at the band exactly); action +1.39 [+0.09, +2.69]; every metric positive and saves exceed harms on all five per-row metrics: a beneficial but not CI95-proven movement, recorded under owner decision 25. Not HARMFUL: no measured loss anywhere. Cost: +7.14 % contacts per row (5.374 vs 5.016; 101 executed revisions vs 5), Reviewer prompt tokens +4.62 %, GPU hours 3.8464 run-cumulative (2.6253 sealed resume + 1.2211 reconstructed aborted window) vs 3.3880 (+13.5 %). The module raises cost without a proven gain, so NEUTRAL does not carry it into the default plan (the B7c/EFF-1 rule admits a NEUTRAL module only when it lowers cost). Resume custody: 378 of 378 kept rows byte-identical to the predecessor's delivered text and receipts, verify_bundle PASS (I7r), the two exhausted predecessor rows re-flown without exhausting.",
+      "evidence": {
+        "arm": {
+          "run_id": "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1",
+          "attempt_id": "attempt-slurp-native-reviewer-audit-anchor-train-fold-a-generation-v1-resume",
+          "study_commit": "2f185b13",
+          "predecessor_attempt": "attempt-slurp-native-reviewer-audit-anchor-train-fold-a-generation-v1 (ABORTED at 2,016 contacts on the ReAct-exhaustion class repaired by item E22; trace sha256 d495661d...)"
+        },
+        "smoke": {
+          "run_id": "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-SMOKE-4-V1",
+          "attempt_id": "attempt-slurp-native-reviewer-audit-anchor-smoke-4-generation-v1",
+          "study_commit": "c905ddf0"
+        },
+        "verdict": {
+          "path": "docs/results/2026-09-19-slurp-b8b-anchor-reviewer-audit-verdict.md",
+          "sha256": "57fbcbaee2578f30a5b179128f0c5b4a4d544e29a07e33b5abfe0d4ab9628422"
+        },
+        "analysis_dir": "SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1",
+        "primary": "official pooled SLU-F1 +0.8698 pp CI95 [-0.6341, +2.3654]; intent +1.2037 pp CI95 [-0.1852, +2.5926] (1,080 paired TRAIN A rows, per-row bootstrap, 10,000 draws, seed 20260919)",
+        "guards": "scenario +0.74, action +1.39 [+0.09, +2.69], span F1 +0.56, per-row SLU-F1 +1.01, per-row slot F1 +0.51; 0 of 18 scenario band breaches; saves exceed harms on every per-row metric",
+        "diagnostics": "react_exhaustion 1 visit / 1 row (identical_calls true, retained, delivered); finite_completion 6 rows (Reviewer length cap, latest draft delivered); planner_action_illegal 0; Reviewer ReAct depth 1/3: 7, 2/3: 1,176, 3/3: 1 (anchor 3 / 1,082 / 0); Perception requests identical to the anchor's on 1,080 of 1,080; later requests differ on every row (the audit block plus this cell's own prepared-supply provenance; 306 rows still differ once provenance and history are excluded, not attributable without printing request bytes); Reviewer findings parse 0 of 2,362 (anchor 0 of 2,167)",
+        "cost": "5,804 contacts on the delivered manifest (5.374 per row); run-cumulative 5,822 contacts / 16,591.81 repeated speech seconds against the 11,880 / 33,930 ceilings; GPU hours 3.8464 run-cumulative; utilisation 90.82 %, parked 0.021, occupancy 0.931, resume wall 9,658.8 s; 23.66 contacts per minute; 5,822 request-fit receipts, every request fits (minimum margin 7,449); one official score job",
+        "secondary": "none claimed"
+      },
+      "not_admitted_for": [
+        "the SLURP default plan: NEUTRAL with a higher cost (+13.5 % GPU hours, +7 % contacts) enters no plan",
+        "any claim of a proven gain: every point estimate is positive but the SLU CI95 straddles zero (decision 25: beneficial but not CI95-proven, recorded)",
+        "any twin: the twin rule fires only on a positive CI95 lower bound",
+        "any claim that the audit block should stay a per-row attachment: under decisions 48-53 the slot audit is one of the objects the knowledge index renders once in the prefix (index design F-12), so its next test is inside the index cell, not as a second B8b cell",
+        "any other roster or carrier; DEV-1000, Fold B and the test split are untouched"
+      ],
+      "switch": {
+        "added_by": "docs/results/2026-09-19-slurp-b8b-anchor-reviewer-audit-verdict.md; class 'episode' of harness-admission v3 (E6, 2026-09-16)",
+        "table": "episode",
+        "key": "native_episode.reviewer_audit",
+        "on": "slot-audit-v1",
+        "off": null,
+        "proof": "tests/unit/test_b8b_anchor_reviewer_audit_config.py::test_the_only_keys_that_move_against_the_anchor_are_the_factor_and_the_two_failure_mode_declarations",
+        "what_flew": "The ON arm flew configs/baseline/slurp-native-anchor-reviewer-audit-train-fold-a-v1.json at c905ddf0 (the aborted attempt, 378 kept rows) and its resume fragment at 2f185b13 (the 702 flown rows; the same request bytes plus the E22 declaration): the sealed anchor fragment plus native_episode.reviewer_audit slot-audit-v1 and the failure-mode declarations. The OFF arm is the sealed anchor itself.",
+        "why_this_table": "the audit attachment is one episode-level switch on the closed allowlist rails.config_tables.EPISODE_LEVEL_SWITCH_KEYS; the null arm is the key's absence"
+      },
+      "provisional": {
+        "state": "UNMET",
+        "reason": "NEUTRAL by interval width with every metric positive (decision 25: beneficial but not CI95-proven) at +13.5 % GPU hours; a per-row attachment that raises cost enters no plan",
+        "requirement": "the slot audit is one of the objects the knowledge index renders ONCE in the constant prefix (index design F-12; owner decisions 48-53): its next and only test is inside the knowledge-index cell on the 0-B base; this entry stays NEUTRAL until that cell reads, and the per-row attachment form is not registered again"
+      }
     }
   ],
   "switch_classes": [
