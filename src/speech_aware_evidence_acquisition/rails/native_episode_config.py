@@ -1156,6 +1156,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
             raw_roles=raw_roles,
             kinds=kinds,
             tool_schema_rendering=tool_schema_rendering,
+            tool_authority_present=any(role.tool_names for role in roles),
         )
     # E11 (2026-09-18, owner directive 26): the delivery-time normaliser
     # node. ONE key, validated fail-closed HERE -- before any contact -- so a
@@ -1285,6 +1286,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
 
 def _load_knowledge_index(
     block, *, values: Mapping, raw_roles: Mapping, kinds, tool_schema_rendering: str,
+    tool_authority_present: bool = True,
 ) -> str:
     """E21: validate ``native_episode.knowledge_index``, fail-closed.
 
@@ -1304,12 +1306,14 @@ def _load_knowledge_index(
        produced;
     5. ``expansion_budget.slot_card > candidate_supply.max_total_values``;
     6. an ``ordering`` id not registered in ``core.base``;
-    7. the key armed with ``tool_schema_rendering`` absent or ``"per-role"``
-       -- the economic premise of the design is the CONSTANT prefix, and an
-       arm that does not have it is measuring something else. This is the one
-       that will be argued about; it is deliberate, and it makes the ordering
-       of the cells (EFF-1 before the index cell) a machine fact rather than
-       a plan;
+    7. the key armed without a constant prefix -- ``tool_schema_rendering``
+       absent or ``"per-role"`` WHILE some role holds tool authority. The
+       economic premise of the design is the CONSTANT prefix, and an arm whose
+       system message toggles per role is measuring something else. Owner
+       decision 53 (2026-09-20, after EFF-1 read HARMFUL and repair form 0-B
+       withdrew the Reviewer's tool): an episode in which NO role holds tool
+       authority renders no tools array anywhere, so its prefix is constant by
+       construction and the key is admitted under per-role rendering;
     8. the key armed on a carrier whose descriptor declares no
        ``knowledge_layer`` (today: both Earnings descriptors, base-lock
        finding F-1).
@@ -1383,13 +1387,13 @@ def _load_knowledge_index(
         canonical = validate_knowledge_index_config(composed)
     except KnowledgeIndexError as error:
         raise ValueError(f"native_episode.knowledge_index is invalid: {error}") from error
-    # Refusal 7.
-    if tool_schema_rendering != "constant":
+    # Refusal 7 (owner decision 53: a tool-free episode is constant by construction).
+    if tool_schema_rendering != "constant" and tool_authority_present:
         raise ValueError(
             "native_episode.knowledge_index requires "
-            "native_episode.tool_schema_rendering 'constant': the index is free only "
-            "while the prefix is constant, and an arm whose system message toggles "
-            "twice per row is measuring something else"
+            "native_episode.tool_schema_rendering 'constant' while a role holds tool "
+            "authority: the index is free only while the prefix is constant, and an "
+            "arm whose system message toggles twice per row is measuring something else"
         )
     stores = values.get("knowledge_stores") or {}
     if not isinstance(stores, Mapping):

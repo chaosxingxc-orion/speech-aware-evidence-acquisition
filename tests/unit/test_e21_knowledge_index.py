@@ -662,6 +662,18 @@ def test_refusal_7_the_key_requires_constant_tool_rendering():
             load_native_episode_config(values, _episode_program())
 
 
+def test_refusal_7_is_lifted_when_no_role_holds_tool_authority():
+    """Owner decision 53 (2026-09-20): with no tools array anywhere the prefix is
+    constant by construction, so the key loads under per-role rendering."""
+    for rendering in ("per-role", None):
+        values = _armed_values(tool_schema_rendering="per-role")
+        values.pop("phase_tools")
+        if rendering is None:
+            values["native_episode"].pop("tool_schema_rendering")
+        config = load_native_episode_config(values, _episode_program())
+        assert config is not None and config.knowledge_index_json is not None
+
+
 def test_refusal_8_a_carrier_with_no_knowledge_layer():
     with pytest.raises(ValueError, match="declares no knowledge_layer"):
         load_native_episode_config(
