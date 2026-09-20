@@ -48,7 +48,7 @@
       "generation_attempt_id": "attempt-slurp-native-reviewer-audit-anchor-train-fold-a-generation-v1-resume",
       "hashes_are_pre_flip": "The composed and protocol hashes are the values of the four fragments exactly as committed: readiness held, the preparation requirement pinned, the inherited prepared supply, NO decision requirement. compose() hashes the complete merged fragment set, so adding the decision requirement and flipping readiness each move both. scripts/flights/repin_cell.py recomputes them and rewrites every document that quotes them; nobody edits them by hand.",
       "order": "the only cell of this package; it opens as soon as the coordinator flips it and the GPU is free",
-      "protocol_hash": "eea79d5597229a3dc332f6e302f59ccfd59dd22c9aff1dc070874b067b4cc863",
+      "protocol_hash": "ffb4595b210aa3db754bb356f9573e9efc3830ab85c80d39ad4dea438ac325db",
       "readiness": "held",
       "resume_from": {
         "attempt_id": "attempt-slurp-native-reviewer-audit-anchor-train-fold-a-generation-v1",

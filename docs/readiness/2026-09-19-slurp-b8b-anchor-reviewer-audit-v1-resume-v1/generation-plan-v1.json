@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "eea79d5597229a3dc332f6e302f59ccfd59dd22c9aff1dc070874b067b4cc863",
+    "protocol_hash": "ffb4595b210aa3db754bb356f9573e9efc3830ab85c80d39ad4dea438ac325db",
     "run_id": "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",

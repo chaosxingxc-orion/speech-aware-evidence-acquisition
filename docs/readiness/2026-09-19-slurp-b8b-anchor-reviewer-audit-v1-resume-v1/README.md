@@ -47,7 +47,7 @@ without selection, 702 rows are flown under the **same run id** and a new attemp
 | baseline | `configs/baseline/slurp-native-anchor-reviewer-audit-train-fold-a-v1-resume.json` |
 | experiment | `configs/experiment/slurp-native-reviewer-audit-anchor-train-fold-a-v1-resume.json` |
 | campaign plan | `configs/campaign/slurp-native-reviewer-audit-anchor-train-fold-a-v1-resume.json` |
-| composed / protocol (pre-flip) | `1170659f0fcda16ee5f051b5be85fda869e2e986dc150a478dfc26bbcafe2ead` / `eea79d5597229a3dc332f6e302f59ccfd59dd22c9aff1dc070874b067b4cc863` |
+| composed / protocol (pre-flip) | `1170659f0fcda16ee5f051b5be85fda869e2e986dc150a478dfc26bbcafe2ead` / `ffb4595b210aa3db754bb356f9573e9efc3830ab85c80d39ad4dea438ac325db` |
 | readiness | `held`, `preparation` requirement only; the coordinator pins the decision receipt and flips |
 | decision | `slurp-b8b-anchor-reviewer-audit-resume-admission-v1`, receipt `coordination/slurp-b8b-anchor-reviewer-audit-v1/root-admission-resume-v1.json` — **the coordinator mints it** |
 | rows kept / flown | 378 / 702 (700 never started, 2 partial) |
