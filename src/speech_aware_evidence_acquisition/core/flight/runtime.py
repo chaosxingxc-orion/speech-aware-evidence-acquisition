@@ -198,6 +198,22 @@ REQUIRED_EXECUTION_PLAN_FIELDS = (
 )
 
 #: The one ``ARM_VISIBLE_FIELDS`` entry that distinguishes the
+#: Native-tools arms whose baseline may legitimately declare NO ``phase_tools``:
+#: no role then holds tool authority and the request contract carries an empty
+#: schema tuple (item E23, 2026-09-20, repair form 0-B of owner decision 55).
+TOOL_FREE_NATIVE_ARMS = frozenset({
+    "raw-speech-agent-native-tools",
+    "speech-feature-query-native-tools",
+})
+
+
+def tool_free_native_arm(arm: object, baseline_values) -> bool:
+    """True when ``arm`` is a native-tools arm and the baseline declares no
+    ``phase_tools``: the episode has no role with tool authority, so the
+    tool-schema resolver seam is not required and the schema tuple is empty."""
+    return arm in TOOL_FREE_NATIVE_ARMS and not baseline_values.get("phase_tools")
+
+
 #: speech-feature-packet audio path (``speech-feature-query`` and
 #: ``speech-feature-query-native-tools``) from the raw-audio one
 #: (``bare-core``, ``bare-core-native-tools``, ``fixed-legal-context``, ...).
@@ -4327,7 +4343,11 @@ class FlightRuntime:
                 if not callable(schemas):
                     raise FlightRuntimeError("native dispatcher does not expose tool schemas")
                 kwargs["tool_schemas"] = tuple(schemas())
-            elif arm == "raw-speech-agent-native-tools" and not baseline_values.get("phase_tools"):
+            elif tool_free_native_arm(arm, baseline_values):
+                # Item E23 (owner decision 55, repair form 0-B): a native arm whose
+                # baseline declares NO phase_tools has no role with tool authority,
+                # so its request contract carries an empty schema tuple and every
+                # request goes out with tool_choice none and no tools array.
                 kwargs["tool_schemas"] = ()
             else:
                 fill_name = baseline_values.get("tool_schema_fill")
