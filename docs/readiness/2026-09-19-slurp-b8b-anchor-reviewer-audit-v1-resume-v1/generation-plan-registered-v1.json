@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-reviewer-audit-anchor-train-fold-a-v1-resume",
-  "composed_config_hash": "ccbe24fea6651f8003e05a16b7d3980669b30bf07f3c73b065effd52a27542f2",
+  "composed_config_hash": "9db309babd96945932bfc6ea8e385bd15470976b3826dcc939ab9f03275a9289",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-reviewer-audit-anchor-train-fold-a-generation-v1-resume",
     "carrier_lock_key": "slurp",
@@ -46,7 +46,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-19-slurp-b8b-anchor-reviewer-audit-v1-resume-v1/protocol-registered-v1.json",
-    "sha256": "6504f70558db01ac930341f167881378d9e708d96fcd9cc53d0e591575b71e76"
+    "sha256": "ab0ce772e6f0daec673ffb5e8a8969864be14637dcbeace3e1d0f214a840c0c1"
   },
   "quality_read_gate": "The arm's official pooled SLU-F1 is read ONCE, from the single official score of the COMPLETE merged 1,080-row manifest, against the sealed anchor's score artifact under the decision rule of docs/readiness/2026-09-19-slurp-b8b-anchor-reviewer-audit-v1-preregistration.md section 6, fixed before any number is seen: HARMFUL only by a measured loss (Method B, owner decision 25); ADMITTED only on a positive CI95 lower bound with intent non-inferior at -1.0051, the symmetric scorer agreeing in sign and no scenario band breach; NEUTRAL otherwise. No re-scoring, no second estimator, no row filtering, and no partial read of the aborted attempt -- its 2,016 contacts were never scored and never read. Kept and flown rows are never split or compared. The comparator is never re-flown. Recipe: docs/readiness/2026-09-19-slurp-b8b-anchor-reviewer-audit-v1-resume-v1/analysis-recipe-v1.json.",
   "readiness": "held -- the preparation requirement is pinned and there is NO decision requirement; the coordinator mints the decision receipt, adds the requirement and flips with scripts/flights/repin_cell.py, which recomputes both hashes in the same cycle",

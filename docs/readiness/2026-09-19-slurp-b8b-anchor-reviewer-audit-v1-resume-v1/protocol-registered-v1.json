@@ -41,7 +41,7 @@
       "baseline_fragment": "slurp-native-anchor-reviewer-audit-train-fold-a-v1-resume",
       "campaign_plan": "configs/campaign/slurp-native-reviewer-audit-anchor-train-fold-a-v1-resume.json",
       "cell_id": "slurp-native-reviewer-audit-anchor-train-fold-a-v1-resume",
-      "composed_config_hash": "ccbe24fea6651f8003e05a16b7d3980669b30bf07f3c73b065effd52a27542f2",
+      "composed_config_hash": "9db309babd96945932bfc6ea8e385bd15470976b3826dcc939ab9f03275a9289",
       "experiment_fragment": "slurp-native-reviewer-audit-anchor-train-fold-a-v1-resume",
       "fit_attempt_id": "attempt-slurp-native-reviewer-audit-anchor-train-fold-a-fit-v1-resume",
       "fit_run_id": "SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-FIT-V1",
