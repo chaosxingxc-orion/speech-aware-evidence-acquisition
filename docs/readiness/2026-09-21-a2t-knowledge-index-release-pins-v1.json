@@ -1,0 +1,147 @@
+{
+ "schema": "saea-reviewed-semantic-store-release-pins-v1",
+ "status": "released",
+ "released_on": "2026-09-21",
+ "authority": "docs/superpowers/specs/2026-09-21-a2t-engineering-base-index-design.md sections 3-4 (item E28); the release job is exposure-ledger row SAEA-A2T-E28-KNOWLEDGE-INDEX-VIEW-V1 / SAEA-A2T-E28-KNOWLEDGE-INDEX-TWIN-V1",
+ "contacts": {
+  "model": 0,
+  "encoder": 0,
+  "tokenizer": 0,
+  "scorer": 0,
+  "tool": 0
+ },
+ "generator": "scripts/build_a2t_knowledge_index_view.py --out-root $SPEECHRL_DATA_DIR (verified with --check)",
+ "pin_conventions": {
+  "release": "file bytes",
+  "snapshot": "file bytes (canonical JSON written by this builder)",
+  "completion": "file bytes"
+ },
+ "edge_rule": {
+  "gold_free": true,
+  "min_shared_tokens": 3,
+  "min_token_length": 4,
+  "rule_id": "a2t-registry-structure-edge-v1",
+  "statement": "Two tools of the SAME domain form an edge when (a) their signatures share at least one argument name, OR (b) their descriptions share at least MIN_SHARED_TOKENS content tokens (lowercased, alphabetic only, length >= MIN_TOKEN_LENGTH, stopwords removed). Exactly one edge per unordered pair; the lexicographically smaller tool_name is the edge's source. Authored from the registry structure alone -- no evaluation roster, no gold tool call, ever enters this rule."
+ },
+ "builder": {
+  "relpath": "scripts/build_a2t_knowledge_index_view.py",
+  "sha256": "a209840b8c8f0d8307c64e237798c952eafc83567f6f8e84ed879e44763c9a2d"
+ },
+ "views": {
+  "a2t-knowledge-index-v1": {
+   "view_role": "knowledge-index",
+   "carrier": "audio2tool",
+   "builder_policy_id": "saea-a2t-knowledge-index-construction-v1",
+   "ordering": "domain-alphabetical-v1",
+   "entry_counts": {
+    "domain": 3,
+    "edge": 1040,
+    "tool": 152
+   },
+   "release": {
+    "relpath": "knowledge/audio2tool/semantic/a2t-knowledge-index-v1/release.json",
+    "sha256": "a964c69c67fe035e47264d5faaa02b6130965f6f2458b4e07067fe109ee7995d"
+   },
+   "snapshot": {
+    "relpath": "knowledge/audio2tool/semantic/a2t-knowledge-index-v1/snapshot.json",
+    "sha256": "8942b8d8ad1ec02a2a776b5471904070e2429732955a81b3c5a57b56c549653b"
+   },
+   "completion": {
+    "relpath": "knowledge/audio2tool/semantic/a2t-knowledge-index-v1/completion.json",
+    "sha256": "fc2819a70fd1f5622b1148969c6e5e14058a7b94fce5f3c3348dc42bf610b1d8"
+   },
+   "source_split_identity_hash": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4",
+   "source_stores": {
+    "tools_registry": {
+     "relpath": "datasets/audio2tool/tools_registry.csv",
+     "sha256": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4"
+    },
+    "tool-activation-scope-v1": {
+     "release": {
+      "relpath": "knowledge/audio2tool/tool-activation-scope-v1/release.json",
+      "root": "data",
+      "sha256": "fb6b6298921f843fe55400d9f9f72627516f95b08da189563a6ef5942c17aaef"
+     },
+     "snapshot": {
+      "relpath": "prepared/SAEA-A2T-ACTIVATION-SCOPE-KNOWLEDGE-V1/knowledge-snapshot.json",
+      "root": "data",
+      "sha256": "dc10e235d99893fdbfb9f1e9e09bdb5b04346ccccd088901ad81ecde3ea48fae"
+     },
+     "snapshot_content_hash": "17d22d2f77e0916527f4662d93c335d191e0f87504e68d1e735b0f79f5934f73",
+     "store_role": "tool-activation"
+    },
+    "parameter-meaning-v1": {
+     "release": {
+      "relpath": "knowledge/audio2tool/parameter-meaning-v1/release.json",
+      "root": "data",
+      "sha256": "7bafef2137bbbf9b44baebf0beb70570422d496729f7846ea99a22b6708a4373"
+     },
+     "snapshot": {
+      "relpath": "prepared/SAEA-A2T-PARAMETER-MEANING-KNOWLEDGE-V1/knowledge-snapshot.json",
+      "root": "data",
+      "sha256": "eaee6a2bc4c71a410bcccbfb128bdb58b18a5854bc3e833ad2b631995c650d67"
+     },
+     "snapshot_content_hash": "7084f9c56b361ab8f38d2e0a6864ccb2d05bcc053dc70441de263b410ca6041f",
+     "store_role": "parameter-meaning"
+    }
+   },
+   "rendered_index_at_defaults": {
+    "chars": 73652,
+    "note": "E28 render proof (this builder's own rendering, not rails.knowledge_index.render_constant_index), derived, no tokenizer contact"
+   },
+   "exemplar_kind": "not built into the view (owner decision 66; pointer and expansion only)",
+   "consumed_by": []
+  },
+  "a2t-knowledge-index-twin-v1": {
+   "view_role": "knowledge-index-twin",
+   "carrier": "audio2tool",
+   "twin_of": {
+    "snapshot_content_hash": "8942b8d8ad1ec02a2a776b5471904070e2429732955a81b3c5a57b56c549653b",
+    "view_id": "a2t-knowledge-index-v1"
+   },
+   "derangement": {
+    "algorithm": "sattolo-cycle-sha256-stream-v1",
+    "fixed_points": 0,
+    "held_fields": [
+     "id",
+     "kind",
+     "group",
+     "rank"
+    ],
+    "kinds": {
+     "domain": 3,
+     "edge": 1040,
+     "tool": 152
+    },
+    "moved_fields": [
+     "l1",
+     "residue",
+     "hoisted"
+    ],
+    "permutation_sha256": "c94a43cdabd75a39a0bb663d82fea5d2f59e9c43e4d9d996d5279fac98b93ef9",
+    "seed": 20260921
+   },
+   "gold_read": false,
+   "release": {
+    "relpath": "knowledge/audio2tool/semantic/a2t-knowledge-index-twin-v1/release.json",
+    "sha256": "5ae7ba8ef310a4c5ec2ee9dff201ce8aaa5b3e4c0c1b2f321dc80cdee6842e7e"
+   },
+   "snapshot": {
+    "relpath": "knowledge/audio2tool/semantic/a2t-knowledge-index-twin-v1/snapshot.json",
+    "sha256": "2c50962799e889b56c867e2bf1b7a590acaefacc30839355ce39a4a00283d811"
+   },
+   "completion": {
+    "relpath": "knowledge/audio2tool/semantic/a2t-knowledge-index-twin-v1/completion.json",
+    "sha256": "5be3e0ef58bdaf8aa40047f0d71ce9ac7348e6f100e2224ddd16ba379e0c219a"
+   },
+   "released_on": "2026-09-21",
+   "authority": "docs/superpowers/specs/2026-09-21-a2t-engineering-base-index-design.md (item E28); knowledge-index design section 7.2 precedent (item E24)",
+   "rendered_index_at_defaults": {
+    "chars": 73652,
+    "note": "byte-length equal to the source in total; per-line lengths move within a kind"
+   },
+   "consumed_by": []
+  }
+ },
+ "note": "No cell arms native_episode.knowledge_index for the audio2tool carrier yet; consumption enters only through a registered cell whose readiness package pins these bytes (items E29/E30)."
+}

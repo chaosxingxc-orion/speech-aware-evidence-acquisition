@@ -341,17 +341,36 @@ def slot_id(name: object) -> str:
     return f"{KIND_SIGILS['slot']}/{_name(name, field='slot name')}"
 
 
+#: The edge kind is shared across every carrier profile (item E28): a SLURP
+#: edge joins two lower-snake intent names, an Audio2Tool edge joins two
+#: camelCase tool names. This pattern is the union of both -- any plain
+#: identifier, first character a letter or underscore -- so :func:`edge_id`
+#: and the edge branch of :func:`parse_index_id` accept either without
+#: inventing a third, edge-specific grammar.
+_EDGE_PART_PATTERN = re.compile(r"^[A-Za-z_]\w*$")
+
+
+def _edge_part(value: object, *, field: str) -> str:
+    if not isinstance(value, str) or _EDGE_PART_PATTERN.fullmatch(value) is None:
+        raise KnowledgeIndexError(
+            f"{field} must be a plain identifier (letters, digits, underscore, "
+            f"not starting with a digit), got {value!r}"
+        )
+    return value
+
+
 def edge_id(source: object, neighbour: object) -> str:
-    """``E/play_music~play_radio`` -- one construction confusion pair.
+    """``E/play_music~play_radio`` or ``E/setZoneTemperature~setFanSpeed`` --
+    one confusion pair, SLURP intents or Audio2Tool tools alike (item E28).
 
     The pair is ORDERED: ``E/a~b`` is "what separates a from b as stated on
     a's card", which is not the same sentence as ``E/b~a``.
     """
 
-    left = _name(source, field="edge source")
-    right = _name(neighbour, field="edge neighbour")
+    left = _edge_part(source, field="edge source")
+    right = _edge_part(neighbour, field="edge neighbour")
     if left == right:
-        raise KnowledgeIndexError("an edge joins two DIFFERENT intents")
+        raise KnowledgeIndexError("an edge joins two DIFFERENT entries")
     return f"{KIND_SIGILS['edge']}/{left}~{right}"
 
 
@@ -370,29 +389,97 @@ def exemplar_id(value: object) -> str:
     return f"{KIND_SIGILS['exemplar']}/{text}"
 
 
-def parse_index_id(value: object) -> tuple[str, tuple[str, ...]]:
+#: Item E28: the Audio2Tool tool-registry NAME pattern. Registry tool names
+#: are camelCase (``setZoneTemperature``), not the lower-snake the closed
+#: SLURP contract inventory legalises, so a tool id needs its own name
+#: validator rather than reusing :func:`_name`.
+_TOOL_NAME_PATTERN = re.compile(r"^[A-Za-z_]\w*$")
+
+
+def _tool_name(value: object, *, field: str) -> str:
+    if not isinstance(value, str) or _TOOL_NAME_PATTERN.fullmatch(value) is None:
+        raise KnowledgeIndexError(
+            f"{field} must be a tools_registry.csv tool_name, got {value!r}"
+        )
+    return value
+
+
+def domain_id(name: object) -> str:
+    """``D/smart_car`` -- one Audio2Tool tool-registry domain (item E28)."""
+
+    return f"{_A2T_PROFILE.kind_sigils['domain']}/{_name(name, field='domain name')}"
+
+
+def tool_id(name: object) -> str:
+    """``T/setZoneTemperature`` -- one Audio2Tool registry tool (item E28)."""
+
+    return f"{_A2T_PROFILE.kind_sigils['tool']}/{_tool_name(name, field='tool name')}"
+
+
+def _sigil_to_kind(
+    profile: "KnowledgeIndexCarrierProfile | None",
+) -> dict[str, str]:
+    """``sigil -> kind`` for one carrier profile, or the UNION over every
+    registered profile when ``profile`` is ``None`` (item E28).
+
+    The union is what lets :func:`parse_index_id`, :func:`is_index_id`,
+    :func:`extract_citations` and :class:`IndexEntry` construction stay
+    carrier-agnostic (a caller that does not yet know which carrier an id
+    belongs to can still parse it), while a caller that DOES know its carrier
+    -- a table load, a cross-carrier refusal test -- passes ``profile`` and
+    gets that carrier's grammar alone, so a SLURP id under the ``audio2tool``
+    profile and an Audio2Tool id under the ``slurp`` profile are both
+    refused.
+    """
+
+    if profile is not None:
+        return {sigil: kind for kind, sigil in profile.kind_sigils.items()}
+    merged: dict[str, str] = {}
+    for candidate in KNOWLEDGE_INDEX_CARRIER_PROFILES.values():
+        for kind, sigil in candidate.kind_sigils.items():
+            merged.setdefault(sigil, kind)
+    return merged
+
+
+def parse_index_id(
+    value: object, *, profile: "KnowledgeIndexCarrierProfile | None" = None,
+) -> tuple[str, tuple[str, ...]]:
     """``("edge", ("play_music", "play_radio"))`` for ``E/play_music~play_radio``.
 
     Refuses anything outside the grammar. This is the one parser; a citation
     check is :meth:`KnowledgeIndexTable.resolves`, which is MEMBERSHIP, not
     parsing.
+
+    ``profile`` (item E28) scopes the grammar to one carrier profile's own
+    ``kind_sigils``; the default (``None``) parses the UNION of every
+    registered profile's sigils, which is what every SLURP-only call site
+    written before E28 still gets (the ``slurp`` profile has never shared a
+    sigil letter with any other registered profile) and what lets
+    :class:`IndexEntry` validate an entry of ANY registered carrier without
+    itself knowing which carrier it belongs to.
     """
 
     if not isinstance(value, str) or "/" not in value:
         raise KnowledgeIndexError(f"{value!r} is not an index id")
     sigil, _, rest = value.partition("/")
-    kind = SIGIL_KINDS.get(sigil)
+    kind = _sigil_to_kind(profile).get(sigil)
     if kind is None or not rest:
-        raise KnowledgeIndexError(f"{value!r} names no registered entry kind")
+        scope = f" under the {profile.carrier!r} carrier profile" if profile is not None else ""
+        raise KnowledgeIndexError(f"{value!r} names no registered entry kind{scope}")
     if kind == "edge":
         left, sep, right = rest.partition("~")
         if not sep:
             raise KnowledgeIndexError(f"edge id {value!r} names no pair")
-        return kind, (_name(left, field="edge source"), _name(right, field="edge neighbour"))
+        return kind, (
+            _edge_part(left, field="edge source"),
+            _edge_part(right, field="edge neighbour"),
+        )
     if kind == "exemplar":
         if _EXEMPLAR_PATTERN.fullmatch(rest) is None:
             raise KnowledgeIndexError(f"exemplar id {value!r} is malformed")
         return kind, (rest,)
+    if kind == "tool":
+        return kind, (_tool_name(rest, field="tool name"),)
     return kind, (_name(rest, field=f"{kind} name"),)
 
 
@@ -408,8 +495,12 @@ def is_index_id(value: object) -> bool:
 
 #: Ids a model may emit inside free text. Bounded on both sides so a citation
 #: inside a sentence is found without swallowing neighbouring punctuation.
+#: Item E28 widened the sigil class from ``ISEX`` to include the Audio2Tool
+#: ``domain``/``tool`` sigils ``D``/``T`` beside the SLURP ones, so a citation
+#: scan finds either carrier's ids; :func:`extract_citations` still validates
+#: every candidate through :func:`is_index_id` before accepting it.
 _CITATION_PATTERN = re.compile(
-    r"(?<![0-9A-Za-z_/~])([ISEX])/([A-Za-z0-9][A-Za-z0-9._~-]*)"
+    r"(?<![0-9A-Za-z_/~])([ISEXDT])/([A-Za-z0-9][A-Za-z0-9._~-]*)"
 )
 
 
@@ -678,7 +769,15 @@ class IndexEntry:
             raise KnowledgeIndexError(
                 f"entry {self.entry_id!r} declares kind {self.kind!r}"
             )
-        if self.kind not in CONSTANT_INDEX_KINDS:
+        # Item E28: the admissible kind set is the UNION of every registered
+        # carrier profile's constant_index_kinds, so a ``domain``/``tool``
+        # entry (audio2tool) validates beside an ``intent``/``slot``/``edge``
+        # entry (slurp) without this dataclass needing to know its own
+        # carrier -- that is :class:`KnowledgeIndexTable`'s job.
+        allowed_kinds = set(CONSTANT_INDEX_KINDS)
+        for profile in KNOWLEDGE_INDEX_CARRIER_PROFILES.values():
+            allowed_kinds.update(profile.constant_index_kinds)
+        if self.kind not in allowed_kinds:
             raise KnowledgeIndexError(
                 f"kind {self.kind!r} is pointer-and-expansion only and may not be "
                 "an index entry"
@@ -1045,13 +1144,22 @@ def _twin_stream(seed: int, kind: str) -> str:
 
 
 def derange_snapshot(
-    snapshot: Mapping[str, object], *, seed: int, view_id: str = KNOWLEDGE_INDEX_TWIN_VIEW_ID,
+    snapshot: Mapping[str, object],
+    *,
+    seed: int,
+    view_id: str = KNOWLEDGE_INDEX_TWIN_VIEW_ID,
+    deranged_kinds: Sequence[str] = TWIN_DERANGED_KINDS,
 ) -> tuple[dict[str, object], dict[str, object]]:
     """The twin snapshot document and its derangement record.
 
     Pure, and a pure function of ``(snapshot bytes, seed)``: the same seed
     over the same released source snapshot reproduces the same twin bytes,
     which is what ``--check`` verifies.
+
+    ``deranged_kinds`` (item E28) defaults to :data:`TWIN_DERANGED_KINDS`
+    (the slurp constant-index kinds), unchanged for every pre-E28 caller;
+    the Audio2Tool builder passes its own profile's ``constant_index_kinds``
+    (``domain``/``tool``/``edge``) instead.
     """
 
     if not isinstance(seed, int) or isinstance(seed, bool):
@@ -1062,7 +1170,8 @@ def derange_snapshot(
     positions: dict[str, list[int]] = {}
     for index, row in enumerate(entries):
         positions.setdefault(str(row["kind"]), []).append(index)
-    unknown = sorted(set(positions) - set(TWIN_DERANGED_KINDS))
+    deranged_kinds = tuple(deranged_kinds)
+    unknown = sorted(set(positions) - set(deranged_kinds))
     if unknown:
         raise KnowledgeIndexError(
             f"the source view carries kinds this twin cannot derange: {unknown}"
@@ -1070,7 +1179,7 @@ def derange_snapshot(
     kinds: dict[str, int] = {}
     pairs: list[list[str]] = []
     deranged = [dict(row) for row in entries]
-    for kind in TWIN_DERANGED_KINDS:
+    for kind in deranged_kinds:
         members = positions.get(kind, [])
         if not members:
             continue
@@ -1328,6 +1437,13 @@ def taxonomy_frequency_order(entries: Sequence[IndexEntry]) -> tuple[IndexEntry,
     the same id, so the rendered index is a pure function of the view.
     """
 
+    unknown_kinds = sorted({entry.kind for entry in entries} - {"intent", "slot", "edge"})
+    if unknown_kinds:
+        raise NotImplementedError(
+            f"taxonomy_frequency_order orders the slurp kind set (intent/slot/edge) "
+            f"only; kind(s) {unknown_kinds} belong to domain_alphabetical_order or a "
+            "new ordering, not this one (item E28 leaves this function slurp-only)"
+        )
     intents = [entry for entry in entries if entry.kind == "intent"]
     slots = [entry for entry in entries if entry.kind == "slot"]
     edges_by_source: dict[str, list[IndexEntry]] = {}
@@ -1767,8 +1883,22 @@ def render_constant_index(table: KnowledgeIndexTable, plan: IndexPlan) -> str:
     The template ``probes/slurp_native_role_context_v3.txt`` is NOT touched:
     the index extends the FILL, exactly as the closed inventory once extended
     the ontology (design section 3.7).
+
+    SLURP-only (item E28 design section 4): the prose below names ``intent``
+    and ``slot`` sections directly, which is exactly the kind of Audio2Tool
+    semantics this item declines to invent. A table carrying any other kind
+    (``domain``/``tool``) raises ``NotImplementedError`` naming the item that
+    owns that renderer instead of silently mis-rendering it.
     """
 
+    unknown_kinds = set(table.kinds) - set(CONSTANT_INDEX_KINDS)
+    if unknown_kinds:
+        raise NotImplementedError(
+            f"render_constant_index renders the slurp carrier profile's kinds "
+            f"{CONSTANT_INDEX_KINDS} only; carrier {table.carrier!r} entries of "
+            f"kind {sorted(unknown_kinds)} need the Audio2Tool renderer of item "
+            "E29/E30, not E28"
+        )
     if table.ordering != plan.ordering:
         raise KnowledgeIndexError(
             f"the released view is ordered {table.ordering!r} but the config declares "
@@ -1966,8 +2096,20 @@ def render_pointer_block(selection: RowSelection, budget: IndexBudget) -> tuple[
     Ordered by rank (or vote count), highest first, so a COMPACT disposition
     truncating the tail removes the least-supported pointer deterministically
     (design section 3.4(d)).
+
+    SLURP-only (item E28): the pointer vocabulary below is "candidate
+    intents"/"slot types", the slurp profile's own pointer budget keys. A
+    budget missing them (e.g. the audio2tool ``tool``/``domain`` pointer
+    budget) needs a renderer this item does not build.
     """
 
+    missing = {"intent", "slot", "exemplar_vote"} - set(budget.pointer)
+    if missing:
+        raise NotImplementedError(
+            f"render_pointer_block renders the slurp pointer budget only; a "
+            f"budget missing {sorted(missing)} needs the Audio2Tool pointer-block "
+            "renderer of item E29/E30, not E28"
+        )
     candidates = tuple(
         dict.fromkeys(selection.candidates)
     )[: max(int(budget.pointer["intent"]), 0)]
@@ -2011,8 +2153,20 @@ def render_expansions(
     cards, then intent cards -- so truncating from the TAIL spends the
     intent cards before the slot cards and the slot cards before the
     exemplars, which is the declared order and not a heuristic.
+
+    SLURP-only (item E28): the expansion classes below are ``slot_card`` and
+    ``intent_card``, the slurp profile's own expansion budget keys. A budget
+    missing them (e.g. the audio2tool ``tool_card``/``domain_card`` expansion
+    budget) needs a renderer this item does not build.
     """
 
+    missing = {"exemplar", "slot_card", "intent_card"} - set(budget.expansion)
+    if missing:
+        raise NotImplementedError(
+            f"render_expansions renders the slurp expansion budget only; a "
+            f"budget missing {sorted(missing)} needs the Audio2Tool expansion "
+            "renderer of item E29/E30, not E28"
+        )
     shared = table.shared()
     items: list[ExpansionItem] = []
     for key, content in selection.exemplars[: max(int(budget.expansion["exemplar"]), 0)]:
@@ -2528,8 +2682,21 @@ def derive_row_selection(
     No gold, no reference transcript, no future turn and no drafted answer
     enters here; the only model-derived input is the Perception state, which
     the design names as model state.
+
+    SLURP-only (item E28): the evidence-prefix scan below reads
+    ``INTENT_EVIDENCE_PREFIX``/``SLOT_EVIDENCE_PREFIX``/``EXEMPLAR_EVIDENCE_PREFIX``
+    and the slurp ``_perception_candidates`` reader directly. A table of
+    another carrier needs that carrier's own row-selection semantics, which
+    is item E29/E30, not this one.
     """
 
+    if table is not None and table.carrier != KNOWLEDGE_INDEX_CARRIER:
+        raise NotImplementedError(
+            f"derive_row_selection reads the {KNOWLEDGE_INDEX_CARRIER!r} evidence "
+            f"prefixes and Perception-candidate shape only; carrier "
+            f"{table.carrier!r} needs the Audio2Tool row-selection reader of item "
+            "E29/E30, not E28"
+        )
     pairs = _evidence_pairs(evidence_items)
     retrieved_intents: list[str] = []
     slot_types: list[str] = []
@@ -3084,6 +3251,7 @@ __all__ = [
     "derive_row_selection",
     "display_name",
     "domain_alphabetical_order",
+    "domain_id",
     "DOMAIN_ALPHABETICAL_ORDERING",
     "edge_id",
     "entry_from_json",
@@ -3171,6 +3339,7 @@ __all__ = [
     "slot_id",
     "SOLVER_CITATION_MODES",
     "table_from_snapshot",
+    "tool_id",
     "TWIN_DERANGED_KINDS",
     "TWIN_HELD_FIELDS",
     "TWIN_MOVED_FIELDS",
