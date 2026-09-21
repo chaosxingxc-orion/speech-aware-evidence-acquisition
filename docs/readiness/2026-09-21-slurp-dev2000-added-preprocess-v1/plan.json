@@ -1,0 +1,76 @@
+{
+  "schema": "saea-dev2000-added-preprocess-plan-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "authority": "owner decisions 34, 35, 76a, 78 and 79 (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md); precedent SAEA-SN-DEV1000-PREPROCESS (2026-08-24)",
+  "run_id": "SAEA-SN-DEV2000-ADDED-PREPROCESS",
+  "execution_profile": "bounded-discovery-probe",
+  "composed_config": {
+    "fragments": {
+      "model": "q4km-preprocess-featcache-cpu-sidecar",
+      "dataset": "slurp-speech-native-dev2000-added",
+      "baseline": "speech-native-preprocess",
+      "experiment": "slurp-dev2000-added-preprocess"
+    },
+    "config_hash": "0be0d987139895bd4bcb0f72914718b8c624cf35c02ea52b5ba4d840050121eb",
+    "arm": "bare-core",
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
+    "protocol_hash": "a4498f5c21d5bf6adf99287167508e269c3ad002e7a1ba7a83b8e457777dd135",
+    "computed_via": "core.config.compose(repo_root, model, dataset, baseline, experiment) then core.config.protocol_hash(config_hash, arm, split_identity_hash), run on this worktree at commit 51c7ec4dcabbc592ac86476c430f9279cb5a8bd9, zero model/tokenizer/encoder/network/GPU contact"
+  },
+  "roster": {
+    "roster_id": "SLURP-DEV-2000-ADDED-V1",
+    "relpath": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67"
+  },
+  "runtime_view": {
+    "relpath": "configs/dataset/slurp-speech-native-dev2000-added.json",
+    "runtime_view_sha256": "6968a0564699968f1615bb98b45d2f0ccf179dd0a04351b2871bc096a9052477"
+  },
+  "media_inventory": {
+    "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-19-slurp-dev-2000-packets/media-inventory.json",
+    "sha256": "3a97a26a5e15c5cde2ec8e1fd57d4096267b141e9e7ad31c684143d19b88d804"
+  },
+  "packet_preparation_plan": {
+    "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-19-slurp-dev-2000-packets/packet-preparation-plan.json",
+    "plan_sha256": "378f6ed3130a069057a07ba8123795a52759464ec647e96b74566a8eedc36668"
+  },
+  "steps": [
+    {
+      "step": 1,
+      "name": "ENCODE",
+      "contacts": 1000,
+      "speech_seconds": 2983.527,
+      "detail": "CPU llama-server sidecar on port 8081 (-ngl 0 --no-mmproj-offload, receipts/runtime-q4km-preprocess.json), one contact per row at max_tokens 1, task instruction identical to SAEA-SN-DEV1000-PREPROCESS ('Observe the complete speech signal for deterministic feature preprocessing. Respond with OK.'). Own GPU offload zero; the resident decoder-only service on port 8080 is never stopped, reloaded or contacted. Workers <= 8 during a campaign per the packet-preparation-plan.",
+      "planned_model_calls": 1000,
+      "planned_speech_audio_seconds": 2984,
+      "planned_gpu_hours": 1.0
+    },
+    {
+      "step": 2,
+      "name": "PROMOTE",
+      "contacts": 0,
+      "detail": "core.model.speech_features.materialize_legacy_cached_speech_feature_packets over the runtime view's 1,000 packet ids, workers <= 8, ADDITIVE ONLY write to the existing served root /home/chao/feat-cache/slurp-q4km-packets-04ccc72a (new slurp/devel/<id>/ directories plus a new DEV-2000-ADDED-promotion.json). Refuse-on-conflict against any byte already served. Runs only after a verified normal sidecar stop.",
+      "planned_model_calls": 0,
+      "planned_speech_audio_seconds": 0,
+      "planned_gpu_hours": 0.0
+    }
+  ],
+  "write_mode": "ADDITIVE ONLY: new per-row packet directories under slurp/devel/<id>/ and one new promotion receipt DEV-2000-ADDED-promotion.json. No file the resident session already serves is read-modified-written, and no existing promotion receipt (DEV-1000-promotion.json, etc.) is touched.",
+  "target_packet_root": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+  "promotion_receipt_path": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-2000-ADDED-promotion.json",
+  "promotion_receipt_required_fields": [
+    "promoted_count (must equal 1000/1000)",
+    "runtime_view_sha256 (must equal 6968a0564699968f1615bb98b45d2f0ccf179dd0a04351b2871bc096a9052477, binding the committed DEV-2000-ADDED runtime view)",
+    "per-row packet_id -> audio_sha256 binding, hash-validated against the runtime view",
+    "sidecar stop receipt reference with forced=false",
+    "zero-conflict assertion against every packet already served by the resident root (refuse-on-conflict, no existing byte modified)",
+    "legacy feature-cache warm-row count before/after the sidecar window"
+  ],
+  "exposure_ledger_row": {
+    "run_id": "SAEA-SN-DEV2000-ADDED-PREPROCESS",
+    "combines_encode_and_promote_in_one_row": true,
+    "precedent_note": "SAEA-SN-DEV1000-PREPROCESS registered ENCODE and PROMOTE under a single ledger row (encode contacts plus the zero-contact promotion folded into the same row's evidence/notes cells); no separate zero-contact PROMOTE row was appended. This package follows the same convention: one row, appended before any contact, consumed=no.",
+    "consumed": "no"
+  },
+  "not_authorized": "This plan registers ENCODE and PROMOTE only. It does not authorize cell B6's bare-core or locked-plan arms, any scoring read, or any answer read."
+}

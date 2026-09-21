@@ -1,0 +1,31 @@
+{
+  "answer_authority": "No answers are generated; these are frozen retrieval-tool query vectors.",
+  "boundary_policy": "fixed-stride-complete-final-tail-v1",
+  "cache_relpath": "prepared/slurp-dev2000-added-speech-query-span-cache-v1",
+  "contact_policy": "One lazy local frozen encoder load, one speech input per forward, no jitter, retry, fallback, or automatic restart.",
+  "cpu_workers": 4,
+  "dimension": 2048,
+  "encoder": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-speech-query-encoder-inventory-v2.json",
+    "sha256": "1548387ba91209921fd747e9eff981027be618c618b732efe20ca7d43680bb31"
+  },
+  "expected_unique_spans": 1000,
+  "input_order": "source-id-then-original-frame",
+  "isolation": "Read only the registered devel-split speech carried by SLURP-DEV-2000-ADDED-V1. Do not read reference transcripts, task labels, intent/slot annotations, prior answers, feedback from the sealed DEV-1000 half, or future turns.",
+  "max_audio_samples": 1920000,
+  "max_seconds": 120.0,
+  "max_sequence_tokens": 8192,
+  "monitor_interval_seconds": 10,
+  "output_relpath": "prepared/SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1/index.json",
+  "overlap_seconds": 8.0,
+  "query_prompt": "query: ",
+  "query_rows_relpath": "prepared/SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1/queries.jsonl",
+  "roster_sha256": "f78dd8ad2894b1fd02bfe6050e39e3fb2c5d178a649e5d20e85ea4ecf4b8dc58",
+  "schema": "saea-speech-query-encoding-protocol-v1",
+  "sources": {
+    "path": "configs/dataset/slurp-speech-native-dev2000-added.json",
+    "sha256": "6968a0564699968f1615bb98b45d2f0ccf179dd0a04351b2871bc096a9052477",
+    "sha256_note": "canonical runtime_view_sha256 as published in docs/readiness/2026-09-19-slurp-dev-2000-roster-v1.md and docs/checks/.../2026-09-19-slurp-dev-2000-packets/media-inventory.json, not a raw sha256sum of the committed file bytes",
+    "deviation_from_fold_ab_precedent": "Fold A/B built a bespoke external coordination/*-speech-query-source-inventory-v3.json because those TRAIN folds were freshly drawn and had no committed runtime view. DEV-2000-ADDED already has a committed, hashed, in-repo runtime view (configs/dataset/slurp-speech-native-dev2000-added.json) and roster receipt (docs/receipts/rosters/slurp-dev-2000-added-v1.json), so this protocol points directly at them instead of building a new external source-preparation artifact."
+  }
+}
