@@ -35,7 +35,7 @@
         "planned_gpu_hours": 2.0,
         "planned_model_calls": 1000,
         "planned_speech_audio_seconds": 2984,
-        "protocol_hash": "dbf0d6c43a683fc9ec4212d273893bda3973ee415ef17c3877427033e892b722",
+        "protocol_hash": "cb2d3b1e3ff1201577790d495724ea8a2a9a91d6931e059382349d72b759b402",
         "run_id": "SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1",
         "schema": "saea-execution-plan-v1",
         "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
@@ -57,12 +57,12 @@
         "2.0",
         "Historical DEV-2000 roster (model-free) and this package's own DEV2000-ADDED-PREPROCESS packet row carried forward; this row adds only the pinned retrieval-encoder contacts",
         "docs/readiness/2026-09-21-slurp-dev2000-added-speech-query-encoding-v1/registration-v1.json",
-        "REGISTERED BEFORE CONTACT. Protocol SHA256 dbf0d6c43a683fc9ec4212d273893bda3973ee415ef17c3877427033e892b722. One encode-v1 attempt; no retry, fallback, scorer, answer read, or cross-split feedback. Bind the external runtime study_head to the final clean registration commit."
+        "REGISTERED BEFORE CONTACT. Protocol SHA256 cb2d3b1e3ff1201577790d495724ea8a2a9a91d6931e059382349d72b759b402. One encode-v1 attempt; no retry, fallback, scorer, answer read, or cross-split feedback. Bind the external runtime study_head to the final clean registration commit."
       ],
       "output_relpath": "prepared/SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1/index.json",
       "protocol": {
         "path": "configs/preparation/slurp-dev2000-added-speech-query-encoding-protocol-v1.json",
-        "sha256": "dbf0d6c43a683fc9ec4212d273893bda3973ee415ef17c3877427033e892b722"
+        "sha256": "cb2d3b1e3ff1201577790d495724ea8a2a9a91d6931e059382349d72b759b402"
       },
       "query_rows_relpath": "prepared/SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1/queries.jsonl",
       "roster_receipt": {
@@ -77,7 +77,7 @@
           "planned_gpu_hours": 2.0,
           "planned_model_calls": 1000,
           "planned_speech_audio_seconds": 2984,
-          "protocol_hash": "dbf0d6c43a683fc9ec4212d273893bda3973ee415ef17c3877427033e892b722",
+          "protocol_hash": "cb2d3b1e3ff1201577790d495724ea8a2a9a91d6931e059382349d72b759b402",
           "run_id": "SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1",
           "schema": "saea-execution-plan-v1",
           "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
@@ -86,7 +86,7 @@
         },
         "protocol": {
           "path": "configs/preparation/slurp-dev2000-added-speech-query-encoding-protocol-v1.json",
-          "sha256": "dbf0d6c43a683fc9ec4212d273893bda3973ee415ef17c3877427033e892b722"
+          "sha256": "cb2d3b1e3ff1201577790d495724ea8a2a9a91d6931e059382349d72b759b402"
         },
         "session_id": "local-nemotron-slurp-dev2000-added-query-v1",
         "study_head": "SET_TO_THE_FINAL_CLEAN_REGISTRATION_COMMIT",

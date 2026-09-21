@@ -23,10 +23,21 @@
   "roster_sha256": "f78dd8ad2894b1fd02bfe6050e39e3fb2c5d178a649e5d20e85ea4ecf4b8dc58",
   "schema": "saea-speech-query-encoding-protocol-v1",
   "sources": {
-    "path": "configs/dataset/slurp-speech-native-dev2000-added.json",
-    "sha256": "75e58a76ef217fc30c2888383c80eab6602928cbc17a44bebb68bbd2595b0088",
-    "sha256_note": "RAW sha256 of the committed file bytes, which core.speech_preparation_runtime.pinned_json verifies; the canonical runtime_view_sha256 (content hash) is kept beside it as canonical_runtime_view_sha256. Corrected 2026-09-21 before any contact: the first launch was refused with 'preparation binding hash changed'.",
-    "deviation_from_fold_ab_precedent": "Fold A/B built a bespoke external coordination/*-speech-query-source-inventory-v3.json because those TRAIN folds were freshly drawn and had no committed runtime view. DEV-2000-ADDED already has a committed, hashed, in-repo runtime view (configs/dataset/slurp-speech-native-dev2000-added.json) and roster receipt (docs/receipts/rosters/slurp-dev-2000-added-v1.json), so this protocol points directly at them instead of building a new external source-preparation artifact.",
-    "canonical_runtime_view_sha256": "6968a0564699968f1615bb98b45d2f0ccf179dd0a04351b2871bc096a9052477"
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-dev2000-added-speech-query-source-inventory-v1.json",
+    "sha256": "c0bc03c4909edaeb98de4c4a30444c1550619f678701466fc48c13813e894035",
+    "schema": "saea-speech-query-source-inventory-v1",
+    "built_by": "scripts/build_speech_query_source_inventory.py (model-free: byte hashes + audio header geometry; no decode, encoder, tokenizer or network)",
+    "derived_from": {
+      "runtime_view": {
+        "path": "configs/dataset/slurp-speech-native-dev2000-added.json",
+        "raw_sha256": "75e58a76ef217fc30c2888383c80eab6602928cbc17a44bebb68bbd2595b0088",
+        "canonical_runtime_view_sha256": "6968a0564699968f1615bb98b45d2f0ccf179dd0a04351b2871bc096a9052477"
+      },
+      "roster_receipt": {
+        "path": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+        "sha256": "f78dd8ad2894b1fd02bfe6050e39e3fb2c5d178a649e5d20e85ea4ecf4b8dc58"
+      }
+    },
+    "correction_note": "Corrected 2026-09-21 before any contact (second correction): the registration first pointed sources at the runtime view, which carries seconds rather than frames and no roster_sha256, so the second launch was refused with KeyError 'roster_sha256' after the first was refused on the hash form. The Fold A/B inventory precedent is followed from here on."
   }
 }
