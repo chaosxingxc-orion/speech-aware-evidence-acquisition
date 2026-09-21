@@ -1468,6 +1468,28 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-native-candidates-review-revise-clean1-v1": (
         "phase-native-candidates-review-revise-clean1-v1.json"
     ),
+    # E32, 2026-09-21 (item E18 wired to cell B9a, owner decisions 43/44/78):
+    # the SAME four phases, the SAME episode_id and the SAME role graph as
+    # "phase-native-candidates-review-revise-v1" -- reviewer 3 / planner 1 /
+    # max_revisions 1 -- PLUS the fifth, optional Acquisition phase E18
+    # built (rails.native_episode_config.ACQUISITION_ROLE_KIND). A separate
+    # program id, never a flag on the review-revise program, because its
+    # PHASE LIST differs from that program's even though the ceiling does
+    # not move for a zero-contact acquisition kind: rails.native_episode_
+    # config's own formula adds max_acquisitions_per_row * roles.acquisition.
+    # max_iterations, which is 0 for the registered "knowledge-requery" and
+    # "tool-acquire" kinds, so this program's bounded ceiling is still
+    # 1 + (1+1)*(1+3+1) + 1*0 = 11 -- the same 11 as the four-phase program,
+    # by construction rather than by coincidence. Composing this program id
+    # WITHOUT native_episode.acquisition/roles.acquisition is refused
+    # (rails.native_episode_config: the fifth phase would have no role
+    # covering it, "native roles must cover the program once each"); the
+    # OFF arm of cell B9a therefore stays on
+    # "phase-native-candidates-review-revise-v1", the program the sealed
+    # PLAN arm already flies, never on this one.
+    "phase-native-candidates-review-revise-acquire-v1": (
+        "phase-native-candidates-review-revise-acquire-v1.json"
+    ),
     "phase-native-candidates-review-refresh-v1": "phase-native-candidates-review-refresh-v1.json",
     "native-answer-or-one-tool-v1": "native-answer-or-one-tool-v1.json",
     "native-answer-or-tool-v1": "native-answer-or-tool-v1.json",
@@ -1628,6 +1650,13 @@ def register_phase_programs_v1() -> None:
             "phase-native-candidates-review-revise-clean1-v1",
             default_controller_factory(
                 default_phase_program("phase-native-candidates-review-revise-clean1-v1")
+            ),
+        )
+    if "phase-native-candidates-review-revise-acquire-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-candidates-review-revise-acquire-v1",
+            default_controller_factory(
+                default_phase_program("phase-native-candidates-review-revise-acquire-v1")
             ),
         )
     if "phase-native-review-revise-json-v1" not in registered:
