@@ -81,6 +81,16 @@ _EXPECTED_PROGRAM_SHAPES = {
     "phase-native-candidates-review-revise-clean1-v1": (
         ("perception", "reviewer", "planner", "solver"), 13, "native-role-episode"
     ),
+    # E32, 2026-09-21: the review-revise program plus the fifth, optional
+    # Acquisition phase E18 built. Same ceiling 11 as the four-phase program
+    # -- the registered zero-contact acquisition kinds add nothing to it --
+    # by construction, not by coincidence (rails.controllers._PROGRAM_CONFIG_
+    # FILENAMES comment beside the registration).
+    "phase-native-candidates-review-revise-acquire-v1": (
+        ("perception", "reviewer", "planner", "solver", "acquisition"),
+        11,
+        "native-role-episode",
+    ),
     "phase-native-candidates-review-refresh-v1": (
         ("perception", "reviewer", "planner", "solver"), 12, "native-role-episode"
     ),

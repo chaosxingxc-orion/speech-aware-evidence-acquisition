@@ -882,6 +882,54 @@ class PhaseMaterialSpec:
         }
 
 
+def _zero_contact_acquisition_phase(values: Mapping[str, object]) -> str | None:
+    """The name of THIS fragment's armed Acquisition phase (E18/E32), but
+    ONLY when its armed kind spends zero contacts -- the registered
+    ``knowledge-requery`` and ``tool-acquire`` policies, never the
+    contact-spending ``speech-reobserve`` one.
+
+    ``rails.controllers.EvidenceAgentController``/``NativeEpisodeRunBinding``
+    never dispatch a model contact at that seat for a zero-contact kind
+    (``reproduction.ojw.native_episode._Acquire`` runs the registered
+    ``rails.acquisition`` policy directly), so no baseline fragment can
+    honestly declare an ``instruction_template`` for it -- E18's own design
+    states this module introduces no prompt text at all for kind (a). The
+    name is read from the SAME ``native_episode.roles.acquisition.phase_id``
+    key ``rails.native_episode_config.load_native_episode_config`` binds the
+    role to, never from a second guess, so the two loaders can never
+    disagree about which phase (if any) is exempt. Anything malformed here
+    returns ``None`` and falls through to the ordinary required-material
+    path below, whose own error message is the clearer one to raise.
+    """
+
+    native_episode = values.get("native_episode")
+    if not isinstance(native_episode, Mapping):
+        return None
+    block = native_episode.get("acquisition")
+    roles = native_episode.get("roles")
+    if not isinstance(block, Mapping) or not isinstance(roles, Mapping):
+        return None
+    role = roles.get("acquisition")
+    if not isinstance(role, Mapping):
+        return None
+    phase_id = role.get("phase_id")
+    policy_id = block.get("policy")
+    if (
+        not isinstance(phase_id, str) or not phase_id.strip()
+        or not isinstance(policy_id, str) or not policy_id.strip()
+    ):
+        return None
+    from .acquisition import AcquisitionError, resolve_acquisition_policy  # noqa: PLC0415 (cycle guard)
+
+    try:
+        policy = resolve_acquisition_policy(policy_id)
+    except AcquisitionError:
+        return None
+    if policy.contacts_per_acquisition != 0:
+        return None
+    return phase_id
+
+
 def load_phase_material_specs(
     values: Mapping[str, object], program: PhaseProgram
 ) -> Mapping[str, PhaseMaterialSpec]:
@@ -895,11 +943,20 @@ def load_phase_material_specs(
     present and equal, or both absent, nothing in between (the same rule
     ``EvidenceAgentController._dispatch`` enforces at contact time, moved
     forward to config-load time where it is free).
+
+    E32: the ONE exception is a zero-contact Acquisition phase
+    (:func:`_zero_contact_acquisition_phase`) -- it may be declared with
+    ordinary material (refused the same way every other phase's would be if
+    malformed) but is never REQUIRED to be, because no contact is ever
+    dispatched there for kind (a)/(c).
     """
 
     program.validate()
+    exempt_phase = _zero_contact_acquisition_phase(values)
     declared = values.get("phase_material")
-    if not isinstance(declared, Mapping) or not declared:
+    if declared is None and exempt_phase is not None:
+        declared = {}
+    if not isinstance(declared, Mapping) or (not declared and exempt_phase is None):
         raise PhaseMaterialError(
             f"policy {program.program_id!r} is a phase program; its baseline fragment "
             "must declare a non-empty 'phase_material' object keyed by phase name "
@@ -913,7 +970,8 @@ def load_phase_material_specs(
             f"{program.program_id!r} does not declare; its phases are "
             f"{sorted(known)}"
         )
-    missing = sorted(known - set(declared))
+    required = known - ({exempt_phase} if exempt_phase is not None else set())
+    missing = sorted(required - set(declared))
     if missing:
         raise PhaseMaterialError(
             f"phase_material has no entry for program {program.program_id!r} phase(s) "
@@ -922,6 +980,11 @@ def load_phase_material_specs(
 
     specs: dict[str, PhaseMaterialSpec] = {}
     for phase in program.phases:
+        if phase.name == exempt_phase and phase.name not in declared:
+            # No contact is ever dispatched here for the armed zero-contact
+            # kind; there is nothing to render and no honest template to
+            # name, so this phase carries no PhaseMaterialSpec at all.
+            continue
         entry = declared[phase.name]
         if not isinstance(entry, Mapping):
             raise PhaseMaterialError(
