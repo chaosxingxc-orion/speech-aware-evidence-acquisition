@@ -1,6 +1,6 @@
 # Audio2Tool engineering base: the registry index on the shared native-episode harness (design)
 
-Author: the coordinator (Fable 5.1). Date: 2026-09-21. Status: DESIGN, awaiting owner decisions 65-69
+Author: the coordinator (Fable 5.1). Date: 2026-09-21. Status: DESIGN, owner decisions 65-71 taken 2026-09-21
 (section 7). Owner mandate: decisions 36, 39, 43, 48 (the Audio2Tool instance of the index is "the
 domain-grouped tool registry in the constant prefix at L0/L1 with a per-row pointer block"), 50, 59 and
 63 (D6: "the Audio2Tool engineering base is built in CPU time during the SLURP flights, never on the
@@ -156,12 +156,29 @@ twin released and pinned; ledger rows SAEA-A2T-E28-KNOWLEDGE-INDEX-VIEW-V1 / -TW
 findings change the plan before any A2T cell: (1) the v1 edge rule admits 1,040 edges (67 % of the
 smart_home pairs) because generic argument names (`state`, `action`, `enabled`) are shared by most
 tools of a domain; (2) the rendered constant index is 73,652 characters, about 4.3x the SLURP index
-and roughly 18k tokens -- too large for a constant prefix on the np2/np3 slots. Edge rule v2 (generic
-argument names excluded; two specific shared arguments or five shared content tokens; edges rendered
-POINTER-ONLY, never in the constant index) and a measured constant-index size under about 25,000
-characters are prerequisites of the first A2T index cell; the v1 views stay as the released record.
+and roughly 18k tokens -- too large for a constant prefix on the np2/np3 slots. Owner decision 70 (2026-09-21) settles the form: NOT a hand-tuned
+threshold rule. The constant prefix carries the minimal L0 index only (3 domain lines + 152 tool
+signature lines); every L1 line, L2 card and edge is per-row material entering through the pointer
+block and VALUE RETRIEVAL keyed by the Perception state and the speech key, under a budget; and WHICH
+material deserves the prefix or a pointer, at what granularity and budget, is the context-engineering
+action space of training-free RL on this carrier (section 3a). The v1 views stay the released record;
+no v2 view is hand-released.
+
+## 3a. Index content by best discriminability (owner decision 70)
+
+| element | value |
+| --- | --- |
+| state | the Perception state (`actions[].candidate_tools`), the speech key, the pointer block |
+| actions | per tool: include its activation line / argument line in the constant prefix (yes/no); per pointed tool: expand L1 / L2 (level); per confusable pair: render the edge (yes/no); expansion budget; ordering |
+| reward | discriminability = tool accuracy on construction-pool rollouts plus a same-domain confusion term (a wrong tool from the same domain is the failure ORG-1 amplified), minus a prefill-token cost term |
+| rollouts | the construction-800 roster only (never union-4000 rows or their gold); grouped rollouts per state from the E2 sampler with pinned seeds |
+| update | the adapted Training-Free GRPO experience operator (2026-09-11 audit), the same operator Stage 3 uses on SLURP |
+| controls | the minimal L0 index (no learned content), the full hand-authored v1 view (E28), the derangement twin of whatever the search selects |
+| first cell | flies BEFORE the search: the minimal L0 constant index with retrieval-supplied expansions at a fixed budget, read against the tool-free base at the A2T own null |
 
 ## 7. Owner decisions requested
+
+65-69 decided 2026-09-21 (record rows 65-69); 70 (index content by discriminability, training-free RL) and 71 (tier-stratified 50-per-tier paired subset, seed 20260921) decided 2026-09-21. Retained below as the record of what was asked.
 
 65. Base for the A2T index: the sealed dual-store union-4000 fragment made tool-free (E29,
     recommended) or the unflown scope-tools np2 form (adds candidate refresh and Planner tools; not
