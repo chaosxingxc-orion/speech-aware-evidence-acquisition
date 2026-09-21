@@ -70,14 +70,14 @@
       "attempt_id": "attempt-slurp-native-plan-acquisition-b9a-smoke-4-generation-v1",
       "baseline_fragment": "configs/baseline/slurp-native-plan-acquisition-b9a-smoke-4-baseline-v1.json",
       "cell": "slurp-native-plan-acquisition-b9a-smoke-4-v1",
-      "composed_config_hash": "b9e38188d1d13652dc613322006c5af2d937192d74c0caeca02080c0c03478bf",
+      "composed_config_hash": "f340cd870564d0ca52bdd4ede92f1bcd2b75b0cf5d920f0e28db28a33c75efc4",
       "execution_route": "shared core.flight.lease_cli worker lease plus a standalone core.flight.cli worker attached to the resident session, optionally launched as a Windows Scheduled Task with the battery and idle conditions disabled and no execution time limit (owner decision 24). No campaign, no scorer",
       "experiment": "slurp-native-plan-acquisition-b9a-smoke-4-v1",
       "experiment_fragment": "configs/experiment/slurp-native-plan-acquisition-b9a-smoke-4-v1.json",
       "fit_attempt_id": "attempt-slurp-native-plan-acquisition-b9a-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-SMOKE-4-FIT-V1",
       "order_constraint": "opens when the GPU is free and no other form smoke is in flight",
-      "protocol_hash": "d07721ff458e3c7737f833b0edbf1e603e40c9dbec40189c2c92d5c3047b685b",
+      "protocol_hash": "559aa13e965e862da1bcbe5ea900231cb1fc4848eaaf1c2e510a33ce87bf14fa",
       "readiness": "held; NO decision requirement; this cell's OWN preparation pin",
       "rows": 4,
       "run_id": "SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-SMOKE-4-V1",
@@ -234,8 +234,8 @@
     "note": "THIS CELL'S OWN artifact, built model-free under its own run id by core.flight.cli prepare-supply in this registration (item E16: a prepared artifact is evidence only for the implementation that produced it, so nothing is inherited from cell B1). Its Perception output was asserted by hand against the sealed cell B1 preparation's own output and matched exactly, which is the model-free proof that this cell's fresh identities and the declared finite-completion key move no knowledge-selection byte. core.flight.repin will find this pin VALID and rebuild nothing. --allow-output-change must never be passed.",
     "smoke": {
       "output_sha256": "512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733",
-      "relpath": "prepared/SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-SMOKE-4-V1/phase-supply-v1.json",
-      "sha256": "e683207d26197a73bda547c787fe68fbadd2dd0675fb301c1f896f733cd375af"
+      "relpath": "prepared/SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-SMOKE-4-V1/phase-supply-v2.json",
+      "sha256": "8c7b1bbf417f451df07361f85f09087bc5e96a4ec93b9a950a35071e15b2c261"
     }
   },
   "primary_deliverables": [
