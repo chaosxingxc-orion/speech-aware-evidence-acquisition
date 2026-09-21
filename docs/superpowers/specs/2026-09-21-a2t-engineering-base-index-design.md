@@ -147,6 +147,20 @@ twin on the tool-free base), each with the index-consumption read (decision 64) 
   paired read at the own-null margins, per-tier table (natural and equal-tier weighting), the
   index-consumption statement.
 
+## 6a. Status after E27 and E28 (2026-09-21)
+
+E27 merged (2385efa3): the rail is a carrier profile; SLURP renders byte for byte (released view sha
+`b279dcc0...`, render proof on 20 sealed rows identical). E28 merged (0b50e98c): views
+`a2t-knowledge-index-v1` (3 domain / 152 tool / 1,040 edge entries; release `a964c69c...`) and its
+twin released and pinned; ledger rows SAEA-A2T-E28-KNOWLEDGE-INDEX-VIEW-V1 / -TWIN-VIEW-V1. Two
+findings change the plan before any A2T cell: (1) the v1 edge rule admits 1,040 edges (67 % of the
+smart_home pairs) because generic argument names (`state`, `action`, `enabled`) are shared by most
+tools of a domain; (2) the rendered constant index is 73,652 characters, about 4.3x the SLURP index
+and roughly 18k tokens -- too large for a constant prefix on the np2/np3 slots. Edge rule v2 (generic
+argument names excluded; two specific shared arguments or five shared content tokens; edges rendered
+POINTER-ONLY, never in the constant index) and a measured constant-index size under about 25,000
+characters are prerequisites of the first A2T index cell; the v1 views stay as the released record.
+
 ## 7. Owner decisions requested
 
 65. Base for the A2T index: the sealed dual-store union-4000 fragment made tool-free (E29,
