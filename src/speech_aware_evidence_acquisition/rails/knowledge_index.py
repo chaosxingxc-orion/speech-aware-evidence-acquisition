@@ -67,6 +67,23 @@ The rendered header states the SOURCE view's id on both arms
 own prefix announces "twin" is not form-matched, because the model can read
 it; the twin's identity lives in its release, its pins and its receipt, never
 in the token stream.
+
+Item **E27** (2026-09-21, design section 4 of
+``docs/superpowers/specs/2026-09-21-a2t-engineering-base-index-design.md``)
+factors every SLURP-specific constant and callable this module was written
+against -- the carrier literal, the view ids, the entry kinds and sigils,
+the L1 section choices and hoisted sections, the default granularity and
+budgets, the exemplar store role, the evidence-id prefixes, the
+Perception-candidate extractor and the one ordering -- into one
+:class:`KnowledgeIndexCarrierProfile`, registered by ``carrier_lock_key`` in
+:data:`KNOWLEDGE_INDEX_CARRIER_PROFILES` and resolved by
+:func:`knowledge_index_profile`. The ``slurp`` profile changes not one
+rendered byte: every module-level name this module exported before E27
+(``KNOWLEDGE_INDEX_CARRIER``, ``PIN_NAMESPACE``, ``ENTRY_KINDS``, ...) is the
+corresponding field of that profile, the same object. The ``audio2tool``
+profile alongside it is DATA ONLY -- no renderer here dispatches on it yet,
+because the A2T view builder and the ``domain``/``tool`` entries it will
+carry are item E28, not this one.
 """
 
 from __future__ import annotations
@@ -74,7 +91,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -118,6 +135,11 @@ KNOWLEDGE_INDEX_RECEIPT_SCHEMA = "saea-native-knowledge-index-v1"
 #: (scenario), then construction frequency within the scenario, with an
 #: intent's confusion edges on the line after it.
 TAXONOMY_FREQUENCY_ORDERING = "taxonomy-frequency-v1"
+
+#: Item E27, design section 3: ORG-1's own form for the Audio2Tool profile --
+#: sorted domain, then sorted tool name within it. Registered beside
+#: :data:`TAXONOMY_FREQUENCY_ORDERING`.
+DOMAIN_ALPHABETICAL_ORDERING = "domain-alphabetical-v1"
 
 #: The carrier this first instance is defined for.
 KNOWLEDGE_INDEX_CARRIER = "slurp"
@@ -1351,6 +1373,11 @@ def _register_orderings() -> None:
 
     for registry, name, entry in (
         (KNOWLEDGE_INDEX_ORDERINGS, TAXONOMY_FREQUENCY_ORDERING, taxonomy_frequency_order),
+        (
+            KNOWLEDGE_INDEX_ORDERINGS,
+            DOMAIN_ALPHABETICAL_ORDERING,
+            domain_alphabetical_order,
+        ),
         (KNOWLEDGE_INDEX_VIEWS, KNOWLEDGE_INDEX_VIEW_ID, KNOWLEDGE_INDEX_BUILDER_POLICY_ID),
         (
             KNOWLEDGE_INDEX_VIEWS,
@@ -2813,6 +2840,229 @@ def narrow_assembly(
     )
 
 
+# ---------------------------------------------------------------------------
+# 13. Carrier profiles (item E27, design section 4).
+# ---------------------------------------------------------------------------
+
+
+def _slurp_perception_candidates(document: object) -> tuple[str, ...]:
+    """The SLURP carrier profile's Perception-candidate reading.
+
+    The document-level half of what :func:`_perception_candidates` reads at
+    runtime (it additionally selects the LATEST ``phase:perception`` state
+    out of a row's whole agent-state sequence, which is a concern this
+    profile field does not carry): ``document["candidates"][].intent_id``,
+    in order. A new, additive function rather than a refactor of
+    :func:`_perception_candidates` -- that function's fallback semantics on a
+    malformed LATER state (keep the previous valid reading) are a property
+    the render-proof and E21 unit suite already pin, and this profile field
+    has no such history to preserve.
+    """
+
+    if not isinstance(document, Mapping):
+        return ()
+    rows = document.get("candidates")
+    if not isinstance(rows, Sequence) or isinstance(rows, (str, bytes)):
+        return ()
+    names: list[str] = []
+    for row in rows:
+        if not isinstance(row, Mapping):
+            continue
+        value = row.get("intent_id")
+        if isinstance(value, str) and value:
+            names.append(value)
+    return tuple(names)
+
+
+def _a2t_perception_candidates(document: object) -> tuple[str, ...]:
+    """The Audio2Tool carrier profile's Perception-candidate reading.
+
+    ``document["actions"][].candidate_tools``, flattened across every action
+    and deduplicated in first-seen order -- the shape
+    ``rails.a2t_perception_state.parse_audio2tool_perception_state`` parses
+    and binds no answer authority to (design section 4, item E27).
+    """
+
+    if not isinstance(document, Mapping):
+        return ()
+    actions = document.get("actions")
+    if not isinstance(actions, Sequence) or isinstance(actions, (str, bytes)):
+        return ()
+    names: list[str] = []
+    for action in actions:
+        if not isinstance(action, Mapping):
+            continue
+        tools = action.get("candidate_tools")
+        if not isinstance(tools, Sequence) or isinstance(tools, (str, bytes)):
+            continue
+        for name in tools:
+            if isinstance(name, str) and name and name not in names:
+                names.append(name)
+    return tuple(names)
+
+
+def domain_alphabetical_order(entries: Sequence[IndexEntry]) -> tuple[IndexEntry, ...]:
+    """ORG-1's own form (design section 3): sorted domain, then sorted tool
+    name within it -- ``data.audio2tool_tools.render_registry_grouped``'s
+    upstream order, verbatim::
+
+        for domain, domain_tools in sorted(domains.items()):
+            ...
+            for tool in sorted(domain_tools, key=lambda x: x['name']):
+
+    Generic over ``group`` and ``entry_id`` rather than over a fixed kind
+    name: every id of one kind shares the same sigil and separator, so
+    sorting by the id sorts by the name it embeds. This is what lets one
+    function serve the ``tool`` entries item E28 will build AND a synthetic
+    registry built from entries this module can already construct (the unit
+    proof for this item).
+    """
+
+    return tuple(sorted(entries, key=lambda entry: (entry.group, entry.entry_id)))
+
+
+@dataclass(frozen=True)
+class KnowledgeIndexCarrierProfile:
+    """One carrier's knowledge-INDEX identity, keyed by ``carrier_lock_key``.
+
+    Item E27, design section 4: every constant and callable sections 1-5 and
+    12 above define FOR SLURP, packaged so a second carrier can declare its
+    own without touching a SLURP byte. The ``slurp`` profile
+    (:data:`_SLURP_PROFILE`) holds exactly the module-level values this
+    module defined for items E21/E24; every historic module-level name
+    (``KNOWLEDGE_INDEX_CARRIER``, ``PIN_NAMESPACE``, ``ENTRY_KINDS``,
+    ``CONSTANT_INDEX_KINDS``, ``KIND_SIGILS``, ``DEFAULT_L1_SECTIONS``,
+    ``L1_SECTION_CHOICES``, ``HOISTED_SECTIONS``, ``DEFAULT_GRANULARITY``,
+    ``DEFAULT_POINTER_BUDGET``, ``DEFAULT_EXPANSION_BUDGET``,
+    ``EXEMPLAR_STORE_ROLE``, ``KNOWLEDGE_INDEX_VIEW_ID``,
+    ``KNOWLEDGE_INDEX_TWIN_VIEW_ID``, ``KNOWLEDGE_INDEX_VIEW_IDS``) equals the
+    corresponding field of this profile -- the same object, not a copy -- so
+    a caller reading either spelling reads one value.
+
+    The ``audio2tool`` profile (:data:`_A2T_PROFILE`) is DATA ONLY: no
+    renderer in this module (:func:`render_constant_index`,
+    :func:`render_pointer_block`, :func:`render_expansions`, the id grammar
+    of section 2, :func:`derive_row_selection`) dispatches on a profile at
+    all today, and the ``domain``/``tool`` entries its table describes
+    cannot yet be constructed as an :class:`IndexEntry` -- the id grammar's
+    sigils (:data:`SIGIL_KINDS`) are still ``slurp``'s alone. Building the
+    A2T view, extending the id grammar to its sigils, and wiring a renderer
+    to read a profile at all are item E28, not this one; a caller that
+    reaches for A2T rendering ahead of E28 hits a plain ``AttributeError`` or
+    ``KnowledgeIndexError`` from the untouched SLURP-only code, which is the
+    honest failure this item leaves in place rather than a silently
+    SLURP-shaped render.
+    """
+
+    carrier: str
+    #: Every released view id this carrier may name, mapped to the id of the
+    #: SOURCE view it is a derangement twin of (``None`` for a source view).
+    view_ids: Mapping[str, str | None]
+    pin_namespace: str
+    entry_kinds: tuple[str, ...]
+    constant_index_kinds: tuple[str, ...]
+    kind_sigils: Mapping[str, str]
+    l1_section_choices: Mapping[str, tuple[str, ...]]
+    default_l1_sections: Mapping[str, str]
+    hoisted_sections: Mapping[str, tuple[str, ...]]
+    default_granularity: Mapping[str, str]
+    default_pointer_budget: Mapping[str, int]
+    default_expansion_budget: Mapping[str, int]
+    exemplar_store_role: str
+    #: ``kind -> evidence-id prefix``: the store-and-namespace prefixes a
+    #: live request renders before the index replaces them with a pointer.
+    evidence_prefixes: Mapping[str, str]
+    #: ``(perception-state document) -> candidate ids, in order``.
+    perception_candidates: Callable[[object], tuple[str, ...]]
+    #: ``ordering id -> callable``, the orderings this carrier's views admit.
+    orderings: Mapping[str, Callable[[Sequence[IndexEntry]], tuple[IndexEntry, ...]]]
+
+
+#: The SLURP profile: every field equals the module-level constant or
+#: function of the same meaning, by identity.
+_SLURP_PROFILE = KnowledgeIndexCarrierProfile(
+    carrier=KNOWLEDGE_INDEX_CARRIER,
+    view_ids={
+        KNOWLEDGE_INDEX_VIEW_ID: None,
+        KNOWLEDGE_INDEX_TWIN_VIEW_ID: KNOWLEDGE_INDEX_VIEW_ID,
+    },
+    pin_namespace=PIN_NAMESPACE,
+    entry_kinds=ENTRY_KINDS,
+    constant_index_kinds=CONSTANT_INDEX_KINDS,
+    kind_sigils=KIND_SIGILS,
+    l1_section_choices=L1_SECTION_CHOICES,
+    default_l1_sections=DEFAULT_L1_SECTIONS,
+    hoisted_sections=HOISTED_SECTIONS,
+    default_granularity=DEFAULT_GRANULARITY,
+    default_pointer_budget=DEFAULT_POINTER_BUDGET,
+    default_expansion_budget=DEFAULT_EXPANSION_BUDGET,
+    exemplar_store_role=EXEMPLAR_STORE_ROLE,
+    evidence_prefixes={
+        "intent": INTENT_EVIDENCE_PREFIX,
+        "slot": SLOT_EVIDENCE_PREFIX,
+        "exemplar": EXEMPLAR_EVIDENCE_PREFIX,
+    },
+    perception_candidates=_slurp_perception_candidates,
+    orderings={TAXONOMY_FREQUENCY_ORDERING: taxonomy_frequency_order},
+)
+
+#: The Audio2Tool profile (design section 3): the domain-grouped tool
+#: registry as a knowledge INDEX. DATA ONLY -- see the class docstring.
+_A2T_PROFILE = KnowledgeIndexCarrierProfile(
+    carrier="audio2tool",
+    view_ids={
+        "a2t-knowledge-index-v1": None,
+        "a2t-knowledge-index-twin-v1": "a2t-knowledge-index-v1",
+    },
+    pin_namespace="knowledge/audio2tool/semantic/",
+    entry_kinds=("domain", "tool", "edge", "exemplar"),
+    constant_index_kinds=("domain", "tool", "edge"),
+    kind_sigils={"domain": "D", "tool": "T", "edge": "E", "exemplar": "X"},
+    l1_section_choices={
+        "tool": (
+            "Activation boundary", "Admissible arguments", "Confusable exclusions",
+        ),
+    },
+    default_l1_sections={"tool": "Activation boundary"},
+    hoisted_sections={},
+    default_granularity={"tool": "L1", "domain": "L0", "edge": "L0"},
+    default_pointer_budget={"tool": 8, "domain": 3, "edge": 4, "exemplar_vote": 0},
+    default_expansion_budget={"exemplar": 0, "tool_card": 4, "domain_card": 0},
+    exemplar_store_role="construction-exemplars",
+    evidence_prefixes={
+        "tool": "tool-activation::tool:",
+        "edge": "tool-edges::edge:",
+        "exemplar": "construction-exemplars::value:",
+    },
+    perception_candidates=_a2t_perception_candidates,
+    orderings={DOMAIN_ALPHABETICAL_ORDERING: domain_alphabetical_order},
+)
+
+#: Every registered carrier profile, keyed by ``carrier_lock_key``.
+KNOWLEDGE_INDEX_CARRIER_PROFILES: Mapping[str, KnowledgeIndexCarrierProfile] = {
+    _SLURP_PROFILE.carrier: _SLURP_PROFILE,
+    _A2T_PROFILE.carrier: _A2T_PROFILE,
+}
+
+
+def knowledge_index_profile(carrier: object) -> KnowledgeIndexCarrierProfile:
+    """The registered profile for ``carrier``, or a clear ``ValueError``.
+
+    ``rails.native_episode_config._load_knowledge_index`` resolves the
+    loader's carrier refusal through this lookup instead of an equality test
+    against one literal (item E27).
+    """
+
+    if isinstance(carrier, str):
+        profile = KNOWLEDGE_INDEX_CARRIER_PROFILES.get(carrier)
+        if profile is not None:
+            return profile
+    raise ValueError(
+        f"{carrier!r} has no registered knowledge-index carrier profile; the known "
+        f"carriers are {sorted(KNOWLEDGE_INDEX_CARRIER_PROFILES)}"
+    )
+
+
 __all__ = [
     "apply_to_payload",
     "assemble",
@@ -2833,6 +3083,8 @@ __all__ = [
     "derange_snapshot",
     "derive_row_selection",
     "display_name",
+    "domain_alphabetical_order",
+    "DOMAIN_ALPHABETICAL_ORDERING",
     "edge_id",
     "entry_from_json",
     "ENTRY_KINDS",
@@ -2868,7 +3120,9 @@ __all__ = [
     "KIND_SIGILS",
     "KNOWLEDGE_INDEX_BUILDER_POLICY_ID",
     "KNOWLEDGE_INDEX_CARRIER",
+    "KNOWLEDGE_INDEX_CARRIER_PROFILES",
     "KNOWLEDGE_INDEX_COMPLETION_SCHEMA",
+    "knowledge_index_profile",
     "knowledge_index_receipt",
     "KNOWLEDGE_INDEX_RECEIPT_SCHEMA",
     "KNOWLEDGE_INDEX_RELEASE_SCHEMA",
@@ -2877,6 +3131,7 @@ __all__ = [
     "KNOWLEDGE_INDEX_VIEW_IDS",
     "KNOWLEDGE_INDEX_VIEW_SCHEMA",
     "KnowledgeIndexBinding",
+    "KnowledgeIndexCarrierProfile",
     "KnowledgeIndexError",
     "KnowledgeIndexTable",
     "L1_SECTION_CHOICES",
