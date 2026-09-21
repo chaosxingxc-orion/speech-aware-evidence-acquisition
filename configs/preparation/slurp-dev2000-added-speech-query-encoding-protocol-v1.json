@@ -24,8 +24,9 @@
   "schema": "saea-speech-query-encoding-protocol-v1",
   "sources": {
     "path": "configs/dataset/slurp-speech-native-dev2000-added.json",
-    "sha256": "6968a0564699968f1615bb98b45d2f0ccf179dd0a04351b2871bc096a9052477",
-    "sha256_note": "canonical runtime_view_sha256 as published in docs/readiness/2026-09-19-slurp-dev-2000-roster-v1.md and docs/checks/.../2026-09-19-slurp-dev-2000-packets/media-inventory.json, not a raw sha256sum of the committed file bytes",
-    "deviation_from_fold_ab_precedent": "Fold A/B built a bespoke external coordination/*-speech-query-source-inventory-v3.json because those TRAIN folds were freshly drawn and had no committed runtime view. DEV-2000-ADDED already has a committed, hashed, in-repo runtime view (configs/dataset/slurp-speech-native-dev2000-added.json) and roster receipt (docs/receipts/rosters/slurp-dev-2000-added-v1.json), so this protocol points directly at them instead of building a new external source-preparation artifact."
+    "sha256": "75e58a76ef217fc30c2888383c80eab6602928cbc17a44bebb68bbd2595b0088",
+    "sha256_note": "RAW sha256 of the committed file bytes, which core.speech_preparation_runtime.pinned_json verifies; the canonical runtime_view_sha256 (content hash) is kept beside it as canonical_runtime_view_sha256. Corrected 2026-09-21 before any contact: the first launch was refused with 'preparation binding hash changed'.",
+    "deviation_from_fold_ab_precedent": "Fold A/B built a bespoke external coordination/*-speech-query-source-inventory-v3.json because those TRAIN folds were freshly drawn and had no committed runtime view. DEV-2000-ADDED already has a committed, hashed, in-repo runtime view (configs/dataset/slurp-speech-native-dev2000-added.json) and roster receipt (docs/receipts/rosters/slurp-dev-2000-added-v1.json), so this protocol points directly at them instead of building a new external source-preparation artifact.",
+    "canonical_runtime_view_sha256": "6968a0564699968f1615bb98b45d2f0ccf179dd0a04351b2871bc096a9052477"
   }
 }

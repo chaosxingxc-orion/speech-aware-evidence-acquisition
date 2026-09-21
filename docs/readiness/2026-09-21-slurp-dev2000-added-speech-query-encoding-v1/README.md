@@ -21,7 +21,7 @@ contact was made while drafting it.
   sha256 `1548387ba91209921fd747e9eff981027be618c618b732efe20ca7d43680bb31`, reverified without
   loading the model.
 - Protocol: `configs/preparation/slurp-dev2000-added-speech-query-encoding-protocol-v1.json`, sha256
-  `58cda34a14595fe469889b6f19a52e3fc917712aa8912d9e63a5231e46bea5a5`. Preserves the shipped literal
+  `dbf0d6c43a683fc9ec4212d273893bda3973ee415ef17c3877427033e892b722`. Preserves the shipped literal
   `query: ` prompt, complete audio, 2,048 dimensions, masked mean pooling, L2 normalization, batch
   size one, 120-second windows, 8-second overlap, an 8,192-token bound, a 1,920,000-sample bound,
   four CPU prefetch workers, ten-second monitoring, and the `fixed-stride-complete-final-tail-v1`
