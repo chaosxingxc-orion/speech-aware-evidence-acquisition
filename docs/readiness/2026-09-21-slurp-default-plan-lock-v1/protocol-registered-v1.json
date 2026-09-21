@@ -70,14 +70,14 @@
       "attempt_id": "attempt-slurp-native-default-plan-lock-smoke-4-generation-v1",
       "baseline_fragment": "configs/baseline/slurp-native-default-plan-lock-smoke-4-baseline-v1.json",
       "cell": "slurp-native-default-plan-lock-smoke-4-v1",
-      "composed_config_hash": "ca5037d9000ad99eaa82cd0526fc85cc4dec8c1b11a70c42805bccea1210f7ba",
+      "composed_config_hash": "732bf81f874677e33abfd992300171555dd1aa283884a92a6c40b74ac85afcb5",
       "execution_route": "shared core.flight.lease_cli worker lease plus a standalone core.flight.cli worker attached to the resident session, optionally launched as a Windows Scheduled Task with the battery and idle conditions disabled and no execution time limit (owner decision 24). No campaign, no scorer",
       "experiment": "slurp-native-default-plan-lock-smoke-4-v1",
       "experiment_fragment": "configs/experiment/slurp-native-default-plan-lock-smoke-4-v1.json",
       "fit_attempt_id": "attempt-slurp-native-default-plan-lock-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-SMOKE-4-FIT-V1",
       "order_constraint": "opens when the GPU is free and no other form smoke is in flight",
-      "protocol_hash": "88a01268623e49f645a89b72d773bd22736a2da8f4891d354a76ca3320912d0d",
+      "protocol_hash": "a984c8913605d7fc720d8662da5e2b683abeef55043d3ab997aa82ff5185750a",
       "readiness": "held; NO decision requirement; this cell's OWN preparation pin",
       "rows": 4,
       "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-SMOKE-4-V1",
@@ -228,8 +228,8 @@
     "note": "THIS CELL'S OWN artifact, built model-free under its own run id by core.flight.cli prepare-supply in this registration (item E16: a prepared artifact is evidence only for the implementation that produced it, so nothing is inherited from cell B1). Its Perception output was asserted by hand against the sealed cell B1 preparation's own output and matched exactly, which is the model-free proof that this cell's fresh identities and the declared finite-completion key move no knowledge-selection byte. core.flight.repin will find this pin VALID and rebuild nothing. --allow-output-change must never be passed.",
     "smoke": {
       "output_sha256": "512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733",
-      "relpath": "prepared/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-SMOKE-4-V1/phase-supply-v1.json",
-      "sha256": "0018a75ebc6d5608b2666aac4dbe8ff3cf45113f794acdc9880f914df8cfd29d"
+      "relpath": "prepared/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-SMOKE-4-V1/phase-supply-v2.json",
+      "sha256": "1702f71f96feb13b340d33c9333a955085200693cb74b0c9c38e8427e8b61c1c"
     }
   },
   "primary_deliverables": [
