@@ -1,0 +1,80 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-default-plan-lock-replicate-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-default-plan-lock-replicate-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-default-plan-lock-replicate-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Cell PLANr: the request-identical replicate of the default-plan arm (the plan's own null; the v2.0 lock replication) (owner decisions 30, 38, 57, 75, 78) registered before contact on 2026-09-21 from the sealed cell B1-notool registration by script (decision 58): the request-identical replicate of cell PLAN; comparator the sealed B1-notool arm at B1r's own-null margins; nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-default-plan-lock-replicate-admission-v1",
+            "relpath": "coordination/slurp-default-plan-lock-replicate-v1/root-admission-v1.json",
+            "sha256": "6a7d2cd45bb0ccb1935a918dd893875e88ed7eb676159fd8cae0c7cb9bb7e992",
+            "reason": "Decision slurp-default-plan-lock-replicate-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors cell B1 and the sealed dual-store anchor used, with zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed cell B1 preparation's on all 4 rows (output SHA-256 512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733), asserted by hand in this registration -- the model-free proof that this cell's own identities and the two declared failure-mode keys move no knowledge-selection byte. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting cell B1's, which is also why core.flight.repin finds it valid, rebuilds nothing and adds nothing to assert_no_residue's scan. --allow-output-change must never be passed; if that output SHA-256 stops matching, a merge changed the knowledge channel -- stop and report.",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-REPLICATE-SMOKE-4-V1/phase-supply-v3.json",
+            "sha256": "a5099c9c7b7e8038580cb67b90025ba39a1e82144ea626c074f8672d71146708"
+          }
+        ],
+        "state": "ready"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-REPLICATE-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-20",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-REPLICATE-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops cell PLANr and the arm does not open. The resume-recovery clause of owner decision 22 applies to the arm, not to a four-row form smoke, which is re-flown whole if it is re-flown at all.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-native-default-plan-lock-replicate-smoke-4-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The same unchanged TRAIN Fold A roster the sealed anchor, cell B1 and cell B1r flew; every row is preserved so the paired contrast against the sealed B1 arm covers the whole roster.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Cell PLANr: the request-identical replicate of the default-plan arm (the plan's own null; the v2.0 lock replication): PRIMARY DELIVERABLES: (1) the plan's own null: the paired half-widths of official SLU-F1 and intent between PLANr and the sealed PLAN arm (the margins every later plan-based cell reads at; decision 38); (2) the replication read: PLANr against PLAN within those half-widths on every gating metric (decision 30's 'replicated on the same roster'); (3) the request-identity check (the first request of every row byte-identical to PLAN's; every later request identical where the upstream responses are identical); (4) the frontier row and the standard tables.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2"
+}
