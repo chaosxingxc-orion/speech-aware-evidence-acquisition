@@ -18,14 +18,14 @@
             "kind": "decision",
             "expected_decision_id": "slurp-default-plan-lock-admission-v1",
             "relpath": "coordination/slurp-default-plan-lock-v1/root-admission-v1.json",
-            "sha256": "6a7d2cd45bb0ccb1935a918dd893875e88ed7eb676159fd8cae0c7cb9bb7e992",
+            "sha256": "5626ee785c255e66255578291342e076e14347fdd7fd290f701873511dde1426",
             "reason": "Decision slurp-default-plan-lock-admission-v1 pinned by scripts/flights/repin_cell.py."
           },
           {
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors cell B1 and the sealed dual-store anchor used, with zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed cell B1 preparation's on all 4 rows (output SHA-256 512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733), asserted by hand in this registration -- the model-free proof that this cell's own identities and the two declared failure-mode keys move no knowledge-selection byte. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting cell B1's, which is also why core.flight.repin finds it valid, rebuilds nothing and adds nothing to assert_no_residue's scan. --allow-output-change must never be passed; if that output SHA-256 stops matching, a merge changed the knowledge channel -- stop and report.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-SMOKE-4-V1/phase-supply-v3.json",
-            "sha256": "a5099c9c7b7e8038580cb67b90025ba39a1e82144ea626c074f8672d71146708"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "0018a75ebc6d5608b2666aac4dbe8ff3cf45113f794acdc9880f914df8cfd29d"
           }
         ],
         "state": "ready"
