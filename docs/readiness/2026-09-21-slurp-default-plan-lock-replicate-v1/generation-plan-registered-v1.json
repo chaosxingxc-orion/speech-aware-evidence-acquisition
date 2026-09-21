@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-default-plan-lock-replicate-v1",
-  "composed_config_hash": "abdf14e7df2cb1619c74f6328c96c31e78fc62843279846bbecdf31f71366382",
+  "composed_config_hash": "a2ad7d2cdc4618d66af6f5e5a0ca59028462dd29dcde0ed92088aab4ec7d6ad4",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-default-plan-lock-replicate-train-fold-a-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "743313686772b96d0e07603188b3437990660538706a3c4cd7a1e8c66029e8b8",
+    "protocol_hash": "616f6d5a0d3c7b13def3f536e90bec0d511010741f9b2aa94b09b994d0003b72",
     "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-REPLICATE-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
