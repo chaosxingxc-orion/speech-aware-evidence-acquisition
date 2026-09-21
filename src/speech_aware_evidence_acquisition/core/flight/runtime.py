@@ -889,6 +889,18 @@ def render_phase_prompt_envelopes(
     supply_blocks = dict(supply_blocks_by_phase or {})
     envelopes: dict[str, tuple[Mapping[str, object], ...]] = {}
     for phase in phase_names:
+        if phase not in specs:
+            # Item E32b (2026-09-21): an armed ZERO-CONTACT acquisition phase
+            # (E18 kind (a) knowledge-requery / kind (c) tool-acquire) has no
+            # phase material by design -- rails.phase_material exempts it --
+            # and renders no prompt envelope, because it never sends a
+            # request. Any other phase without a material spec is still the
+            # configuration error it always was.
+            if phase == "acquisition":
+                continue
+            raise FlightRuntimeError(
+                f"phase {phase!r} of program {program_id!r} has no phase material spec"
+            )
         spec = specs[phase]
         instruction = static_text_by_phase[phase]
         binding = getattr(spec, "predecessor_binding", "none")
