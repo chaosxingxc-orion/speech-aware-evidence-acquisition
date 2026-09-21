@@ -506,6 +506,51 @@ def test_second_run_after_the_fix_lands_changes_nothing(tmp_path):
 # --------------------------------------------------------------------------
 
 
+def test_a_sealed_sibling_row_carrying_the_old_hash_is_neither_rewritten_nor_residue(tmp_path):
+    """Item E26: a package DERIVED from a sealed one carries the parent's hashes
+    until it is re-pinned. The parent's CLOSED row must keep them (it flew
+    under them), the re-pin must not count them as residue, and only the
+    package's own row and prose move."""
+    pkg = build_package(tmp_path)
+    ledger = pkg["ledger_path"]
+    text = ledger.read_text(encoding="utf-8")
+    parent_row = (
+        f"| 2025-12-31 | PARENT-SEALED-RUN | yes | docs/readiness/parent-pkg/generation-plan-registered-v1.json | "
+        f"Closed: sealed under runtime protocol {pkg['old_protocol_hash']}; composed config {pkg['old_config_hash']}; "
+        f"protocol document {pkg['old_doc_sha']}. |\n"
+    )
+    ledger.write_text(text + parent_row, encoding="utf-8")
+    _git(pkg["repo"], "add", "-A")
+    _git(pkg["repo"], "commit", "-q", "-m", "the sealed parent row carries the hashes the derived package inherited")
+
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+    summary = run(pkg, fake)
+
+    new_config = summary["cells"][0]["new"]["config_hash"]
+    after = ledger.read_text(encoding="utf-8")
+    parent_line = next(line for line in after.splitlines() if "PARENT-SEALED-RUN" in line)
+    own_line = next(line for line in after.splitlines() if f"| {RUN_ID} |" in line)
+    assert pkg["old_config_hash"] in parent_line and pkg["old_protocol_hash"] in parent_line
+    assert pkg["old_doc_sha"] in parent_line
+    assert new_config not in parent_line
+    assert new_config in own_line and pkg["old_config_hash"] not in own_line
+    # outside the ledger the old hashes are gone, exactly as before
+    assert pkg["old_config_hash"] not in (pkg["repo"] / "docs/readiness/test-pkg-preregistration.md").read_text(encoding="utf-8")
+
+
+def test_the_foreign_row_mask_flags_only_other_rows():
+    from speech_aware_evidence_acquisition.core.flight.repin import _foreign_ledger_row_mask
+    text = (
+        "prose with a hash\n"
+        "| date | run/experiment id | consumed | notes |\n"
+        "| --- | --- | --- | --- |\n"
+        "| d | RUN-A | yes | closed |\n"
+        "| d | RUN-B | no | open |\n"
+        "trailing prose\n"
+    )
+    assert _foreign_ledger_row_mask(text, {"RUN-B"}) == [False, False, False, True, False, False]
+
+
 def test_rewrite_ledger_notes_touches_only_the_matched_rows_notes_cell():
     text = (
         "| date | run/experiment id | consumed | notes |\n"

@@ -729,22 +729,61 @@ def rewrite_ledger_notes(text: str, *, run_ids: set[str], mapping: Mapping[str, 
     return "".join(out), changed
 
 
+def _foreign_ledger_row_mask(text: str, run_ids: set[str]) -> list[bool]:
+    """One flag per line of ``text``: True when the line is a contract-table
+    ROW whose run id is NOT in ``run_ids`` -- a row this re-pin must never
+    touch, whatever hash it carries."""
+
+    lines = text.splitlines(keepends=True)
+    mask = [False] * len(lines)
+    header: list[str] | None = None
+    i = 0
+    while i < len(lines):
+        cells = _split_row_cells(lines[i])
+        if cells is not None:
+            next_cells = _split_row_cells(lines[i + 1]) if i + 1 < len(lines) else None
+            if next_cells is not None and _is_separator_row(next_cells):
+                lowered = [cell.lower() for cell in cells]
+                header = lowered if _LEDGER_HEADER_RUN in lowered else None
+                i += 2
+                continue
+            if header is not None and len(cells) == len(header):
+                run_col = header.index(_LEDGER_HEADER_RUN)
+                if cells[run_col] not in run_ids:
+                    mask[i] = True
+        i += 1
+    return mask
+
+
 def apply_mapping_to_ledger(ledger_path: Path, run_ids: set[str], mapping: Mapping[str, str]) -> int:
-    """Rewrite the package's registration hashes across the whole ledger file.
+    """Rewrite the package's registration hashes in the ledger -- in its OWN
+    rows and in the prose that introduces them, never in another row.
 
     A registration package writes its composed/protocol/plan hashes into the
     notes cells of its rows AND into the prose section that introduces them.
     Both are pre-contact registration text of an unflown package (the caller
-    has already refused if any package row is consumed), so the rewrite covers
-    the entire file; the notes-only pass runs first so its per-row change
-    count is still reported.
+    has already refused if any package row is consumed). A package DERIVED
+    from a sealed package carries the parent's hashes until it is re-pinned,
+    so a whole-file replace would also rewrite the PARENT's closed rows: that
+    is exactly what happened to the B1r, B1-notool and B2 v3 rows before
+    2026-09-21 (repaired at 35c4cc18). The second pass therefore skips every
+    contract-table row whose run id is outside ``run_ids``; the notes-only
+    pass runs first so its per-row change count is still reported.
     """
     text = ledger_path.read_text(encoding="utf-8")
     updated, changed = rewrite_ledger_notes(text, run_ids=run_ids, mapping=mapping)
-    for old, new in mapping.items():
-        if old and old != new and old in updated:
-            changed += updated.count(old)
-            updated = updated.replace(old, new)
+    lines = updated.splitlines(keepends=True)
+    foreign = _foreign_ledger_row_mask(updated, run_ids)
+    for index, line in enumerate(lines):
+        if foreign[index]:
+            continue
+        new_line = line
+        for old, new in mapping.items():
+            if old and old != new and old in new_line:
+                changed += new_line.count(old)
+                new_line = new_line.replace(old, new)
+        lines[index] = new_line
+    updated = "".join(lines)
     if updated != text:
         ledger_path.write_text(updated, encoding="utf-8", newline="\n")
     return changed
@@ -855,13 +894,26 @@ def rewrite_dependent_hashes(
     return rewritten
 
 
-def assert_no_residue(repo_root: Path, old_values: Iterable[str]) -> None:
+def assert_no_residue(
+    repo_root: Path,
+    old_values: Iterable[str],
+    *,
+    exposure_ledger_path: Path | None = None,
+    run_ids: set[str] | None = None,
+) -> None:
     """Refuse if any OLD hash string remains anywhere under ``docs/`` or
-    ``configs/`` after rewriting."""
+    ``configs/`` after rewriting.
+
+    An OLD hash that lives in an exposure-ledger row OUTSIDE ``run_ids`` is
+    not residue: it is another package's own registration (the sealed parent
+    this package was derived from), and this re-pin neither rewrites it
+    (:func:`apply_mapping_to_ledger`) nor may it demand that it disappear.
+    """
 
     values = sorted({value for value in old_values if value})
     if not values:
         return
+    ledger_resolved = Path(exposure_ledger_path).resolve() if exposure_ledger_path else None
     hits: list[str] = []
     for root_name in ("docs", "configs"):
         base = Path(repo_root) / root_name
@@ -874,6 +926,10 @@ def assert_no_residue(repo_root: Path, old_values: Iterable[str]) -> None:
                 text = path.read_text(encoding="utf-8")
             except (OSError, UnicodeDecodeError):
                 continue
+            if ledger_resolved is not None and run_ids is not None and path.resolve() == ledger_resolved:
+                lines = text.splitlines(keepends=True)
+                foreign = _foreign_ledger_row_mask(text, run_ids)
+                text = "".join(line for index, line in enumerate(lines) if not foreign[index])
             for value in values:
                 if value in text:
                     hits.append(f"{path}: {value}")
@@ -1124,7 +1180,12 @@ def repin_package(
         run_ids=run_ids,
         mapping=mapping,
     )
-    assert_no_residue(repo_root, all_old_values)
+    assert_no_residue(
+        repo_root,
+        all_old_values,
+        exposure_ledger_path=exposure_ledger_path,
+        run_ids=run_ids,
+    )
 
     check_reports = []
     if run_check_fn is not None:
