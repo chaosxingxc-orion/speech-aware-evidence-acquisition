@@ -19,14 +19,14 @@
             "kind": "decision",
             "expected_decision_id": "slurp-default-plan-lock-replicate-admission-v1",
             "relpath": "coordination/slurp-default-plan-lock-replicate-v1/root-admission-v1.json",
-            "sha256": "6a7d2cd45bb0ccb1935a918dd893875e88ed7eb676159fd8cae0c7cb9bb7e992",
+            "sha256": "14a7b676d07a1d3bd70317b6390700cc3e8d8f7f002ad15dbd647427780b24f8",
             "reason": "Decision slurp-default-plan-lock-replicate-admission-v1 pinned by scripts/flights/repin_cell.py."
           },
           {
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors cell B1 and the sealed dual-store anchor used, with zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed cell B1 preparation's on all 1,080 rows (output SHA-256 ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f), asserted by hand in this registration -- the model-free proof that this cell's own identities and the two declared failure-mode keys move no knowledge-selection byte. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting cell B1's, which is also why core.flight.repin finds it valid, rebuilds nothing and adds nothing to assert_no_residue's scan. --allow-output-change must never be passed; if that output SHA-256 stops matching, a merge changed the knowledge channel -- stop and report.",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-REPLICATE-V1/phase-supply-v2.json",
-            "sha256": "5f4fb4cce2d57916be8c66ec6c4baa618e03d9d67b729e8de3b98055edd1d47b"
+            "relpath": "prepared/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-REPLICATE-V1/phase-supply-v1.json",
+            "sha256": "36020643cb5105f363147dc864fbedd438aeeb0d591cebf8b348f02a192c0a28"
           }
         ],
         "state": "ready"

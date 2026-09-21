@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-default-plan-lock-replicate-v1",
-  "composed_config_hash": "a2ad7d2cdc4618d66af6f5e5a0ca59028462dd29dcde0ed92088aab4ec7d6ad4",
+  "composed_config_hash": "03c5d88965f866e1aa9928c4ddc6e59e84aaf3d708bd9beef74cdd91655d92f6",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-default-plan-lock-replicate-train-fold-a-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "616f6d5a0d3c7b13def3f536e90bec0d511010741f9b2aa94b09b994d0003b72",
+    "protocol_hash": "3ba051fe191033ea4dc2521e838e8038feb5bbe66891f3521229d292079fc99d",
     "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-REPLICATE-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -42,12 +42,12 @@
   "prepared_phase_supply": {
     "note": "THIS CELL'S OWN artifact, built model-free under its own run id by core.flight.cli prepare-supply in this registration (item E16: a prepared artifact is evidence only for the implementation that produced it, so nothing is inherited from cell B1). Its Perception output was asserted by hand against the sealed cell B1 preparation's own output and matched exactly, which is the model-free proof that this cell's fresh identities and the declared finite-completion key move no knowledge-selection byte. core.flight.repin will find this pin VALID and rebuild nothing. --allow-output-change must never be passed.",
     "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
-    "relpath": "prepared/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-REPLICATE-V1/phase-supply-v2.json",
-    "sha256": "5f4fb4cce2d57916be8c66ec6c4baa618e03d9d67b729e8de3b98055edd1d47b"
+    "relpath": "prepared/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-REPLICATE-V1/phase-supply-v1.json",
+    "sha256": "36020643cb5105f363147dc864fbedd438aeeb0d591cebf8b348f02a192c0a28"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-21-slurp-default-plan-lock-replicate-v1/protocol-registered-v1.json",
-    "sha256": "01f28af2b4603db628496e86056ada6e89f039dc07219403c56f8a2f63b5de5d"
+    "sha256": "2e16b7c1ff67b16f6c5f6e817361149ffec359167556ff67ee08177ba97e7519"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist, and not before the registered STOP condition passes (the comparator aggregates of the sealed B1 arm SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2 and of cell B1r reproduce to the hundredth). The gating comparator is the sealed B1 arm; the margins are B1r's own null.",
   "registered_at_utc": "2026-09-21T12:00:00.000000+00:00",
