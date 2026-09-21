@@ -1,35 +1,60 @@
 #!/usr/bin/env python3
-"""Receipt-bound EVO-S1 fold speech-feature preprocessing and packet promotion.
+"""Receipt-bound speech-feature packet preprocessing and promotion.
 
-Exposure row ``SAEA-SLURP-EVO-FOLD-PACKETS-V2`` (contracts
-``configs/experiment/slurp-evo-fold-{a,b}-preprocess.json``), preregistration
-section 13 item 3. SLURP sibling of ``scripts/a2t_g1_preprocess.py``, following
-``SAEA-SN-DEV1000-PREPROCESS`` (2026-08-24), which is the precedent the row names.
+Exposure rows ``SAEA-SLURP-EVO-FOLD-PACKETS-V2`` (contracts
+``configs/experiment/slurp-evo-fold-{a,b}-preprocess.json``, preregistration
+section 13 item 3) and ``SAEA-SN-DEV2000-ADDED-PREPROCESS`` (contract
+``configs/experiment/slurp-dev2000-added-preprocess.json``, item E33,
+``docs/readiness/2026-09-21-slurp-dev2000-added-preprocess-v1/``). SLURP
+sibling of ``scripts/a2t_g1_preprocess.py``, following
+``SAEA-SN-DEV1000-PREPROCESS`` (2026-08-24), which is the precedent the EVO
+fold row names and which this DEV-2000-ADDED registration copies again.
 
-Two phases in one invocation, per fold:
+Two phases in one invocation, per roster:
 
 1. ENCODE -- a CPU-only llama-server sidecar on port 8081 (``-ngl 0
    --no-mmproj-offload``, ``receipts/runtime-q4km-preprocess.json``: decoder AND
    bf16 mmproj) is spawned under its own session receipt, driven with one contact
-   per fold row at ``max_tokens: 1``, and stopped with its own stop receipt. The
+   per roster row at ``max_tokens: 1``, and stopped with its own stop receipt. The
    prompt is a fixed minimal instruction: the legacy feature-cache key is the
    FNV-1a hash of the media bytes ALONE, so the prompt cannot affect the cached
    features. No response is read semantically and no gold is ever opened.
 2. PROMOTE -- ``core.model.speech_features.
    materialize_legacy_cached_speech_feature_packets`` promotes the warm entries
    into audited packets under the resident ``04ccc72a`` packet root and writes the
-   fold's own promotion receipt. Zero contacts, and only after a verified normal
-   stop.
+   roster's own promotion receipt. Zero contacts, and only after a verified normal
+   stop. Promotion is additive and refuse-on-conflict by construction: a packet
+   id that already exists under the resident root is re-verified byte-for-byte
+   (``materialize_speech_feature_packet``, ``core/model/speech_features.py``) and
+   any mismatch raises before anything is written, and this driver separately
+   refuses to run a roster whose own promotion receipt file already exists (see
+   the "promotion receipt already exists" guard below), so a roster can never be
+   silently re-promoted or made to overwrite a sibling roster's packets.
 
-Label-free by construction: samples are built from the fold's frozen
+Label-free by construction: samples are built from a roster's frozen
 ``saea-speech-native-runtime-view-v1`` dataset fragment, which carries media
-identity and nothing else, and every media file is re-hashed against the view's own
-record before it can become a sample. `-ngl 0` means this pass leaves the GPU free.
+identity and nothing else, and every media file is re-hashed against the view's
+own record before it can become a sample. `-ngl 0` means this pass leaves the GPU
+free.
+
+Rosters (``PREPROCESS_ROSTERS``):
+
+- ``fold-a`` / ``fold-b`` -- the two disjoint SLURP EVO-S1 TRAIN folds
+  (``slurp:train:...`` rows, ``split_role="discovery"``). ``--fold a`` and
+  ``--fold b`` are deprecated aliases for ``--roster fold-a`` / ``--roster
+  fold-b``, kept so the two already-sealed fold runs stay reproducible byte for
+  byte.
+- ``dev2000-added`` -- item E33, the DEV-2000-ADDED preparation
+  (``slurp:devel:...`` rows, ``split_role="dev"``, 1,000 rows / 2,984 speech
+  seconds). Promotes additively into the SAME resident packet root the two
+  folds use, under its own ``DEV-2000-ADDED-promotion.json`` receipt.
 
 Modes::
 
-    python scripts/slurp_evo_fold_preprocess.py --fold a --preflight-only
-    python scripts/slurp_evo_fold_preprocess.py --fold a --run
+    python scripts/slurp_evo_fold_preprocess.py --roster fold-a --preflight-only
+    python scripts/slurp_evo_fold_preprocess.py --fold a --run  # deprecated alias
+    python scripts/slurp_evo_fold_preprocess.py --roster dev2000-added --preflight-only
+    python scripts/slurp_evo_fold_preprocess.py --roster dev2000-added --run
 """
 
 from __future__ import annotations
@@ -43,11 +68,15 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Mapping, Sequence
+from typing import Mapping, NamedTuple, Sequence
 
-REPO = Path(
-    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition"
-)
+# Derived from this file's own location (not a hardcoded literal), exactly as
+# the sibling script scripts/slurp_dev1000_ts2_preprocess.py already does, so
+# the module's own package-identity self-check below (and any test that
+# imports this file via importlib, e.g. tests/unit/test_slurp_dev1000_ts2_
+# preprocess.py's pattern) is portable to a git worktree checkout of this
+# study and not pinned to one literal absolute path.
+REPO = Path(__file__).resolve().parent.parent
 if os.environ.get("PYTHONDONTWRITEBYTECODE") != "1":
     raise SystemExit("PYTHONDONTWRITEBYTECODE=1 is required")
 if str(REPO / "src") not in os.environ.get("PYTHONPATH", "").split(":"):
@@ -75,7 +104,6 @@ from speech_aware_evidence_acquisition.rails.adapters.slurp import SlurpSample  
 from speech_aware_evidence_acquisition.rails.obs import AudioRef  # noqa: E402
 
 RUNTIME_ROOT = Path("/home/chao")
-RUN_ID = "SAEA-SLURP-EVO-FOLD-PACKETS-V2"
 MODEL_FRAGMENT = "q4km-preprocess-featcache-cpu-sidecar"
 BASELINE_FRAGMENT = "speech-native-preprocess"
 RUNTIME_RECEIPT_RELPATH = "receipts/runtime-q4km-preprocess.json"
@@ -86,14 +114,83 @@ PREPROCESS_INSTRUCTION = (
     "Observe the complete speech signal for deterministic feature preprocessing. Respond with OK."
 )
 DECODING_PARAMS = {"temperature": 0, "seed": 20260803, "max_tokens": 1}
-# A plan's budget is metered run-CUMULATIVELY across every attempt of a run id
-# (``core.model.adapter`` re-reads the attempt store's prior actuals on every
-# request), so a SUCCESSOR session must declare prior durable spend PLUS its own
-# worst case -- not its own fold's arithmetic alone. These defaults are the FIRST
-# session of each fold; ``--plan-calls`` / ``--plan-speech-seconds`` are how a
-# successor states the cumulative figure, and the registered ceilings
-# (2,200 calls / 6,300 speech seconds / 2.0 GPU-h) bound both.
-PLAN_BY_FOLD = {"a": (1090, 3085, 1.0), "b": (1090, 3155, 1.0)}
+
+# The resident packet root and legacy feature-cache directory every roster in
+# PREPROCESS_ROSTERS promotes into/reads from BY DEFAULT. The two EVO fold
+# experiment fragments already carry their own "feature_root" /
+# "legacy_cache_dir" keys equal to these same literal paths (checked below via
+# values.get(..., DEFAULT_*)), so this is not a behavior change for --fold;
+# it is what lets a roster whose composed config does not declare these keys
+# (dev2000-added, by design: the same resident root, additive) still resolve
+# them.
+DEFAULT_FEATURE_ROOT = Path("/home/chao/feat-cache/slurp-q4km-packets-04ccc72a")
+DEFAULT_LEGACY_CACHE_DIR = Path("/home/chao/feat-cache/slurp-q4km")
+
+
+class RosterSpec(NamedTuple):
+    """One preprocessing roster: which rows, which receipt, which plan.
+
+    ``promotion_receipt_name`` is used only when the composed config does not
+    itself carry a ``promotion_receipt`` key (the EVO fold experiment
+    fragments do; the DEV-2000-ADDED one does not, by design -- see
+    DEFAULT_FEATURE_ROOT above). When used, the final path is
+    ``DEFAULT_FEATURE_ROOT / promotion_receipt_name``.
+    """
+
+    run_id: str
+    dataset_fragment: str
+    experiment_fragment: str
+    sample_id_prefix: str
+    split_role: str
+    promotion_receipt_name: str | None
+    default_attempt_id: str
+    # A plan's budget is metered run-CUMULATIVELY across every attempt of a
+    # run id (``core.model.adapter`` re-reads the attempt store's prior
+    # actuals on every request), so a SUCCESSOR session must declare prior
+    # durable spend PLUS its own worst case -- not its own roster's
+    # arithmetic alone. These are the FIRST session of each roster;
+    # ``--plan-calls`` / ``--plan-speech-seconds`` are how a successor states
+    # the cumulative figure.
+    plan_calls: int
+    plan_speech_seconds: int
+    plan_gpu_hours: float
+
+
+PREPROCESS_ROSTERS: dict[str, RosterSpec] = {
+    "fold-a": RosterSpec(
+        run_id="SAEA-SLURP-EVO-FOLD-PACKETS-V2",
+        dataset_fragment="slurp-speech-native-evo-fold-a-1080",
+        experiment_fragment="slurp-evo-fold-a-preprocess",
+        sample_id_prefix="slurp:train:",
+        split_role="discovery",
+        promotion_receipt_name=None,
+        default_attempt_id="attempt-packets-fold-a",
+        plan_calls=1090, plan_speech_seconds=3085, plan_gpu_hours=1.0,
+    ),
+    "fold-b": RosterSpec(
+        run_id="SAEA-SLURP-EVO-FOLD-PACKETS-V2",
+        dataset_fragment="slurp-speech-native-evo-fold-b-1080",
+        experiment_fragment="slurp-evo-fold-b-preprocess",
+        sample_id_prefix="slurp:train:",
+        split_role="discovery",
+        promotion_receipt_name=None,
+        default_attempt_id="attempt-packets-fold-b",
+        plan_calls=1090, plan_speech_seconds=3155, plan_gpu_hours=1.0,
+    ),
+    "dev2000-added": RosterSpec(
+        run_id="SAEA-SN-DEV2000-ADDED-PREPROCESS",
+        dataset_fragment="slurp-speech-native-dev2000-added",
+        experiment_fragment="slurp-dev2000-added-preprocess",
+        sample_id_prefix="slurp:devel:",
+        split_role="dev",
+        promotion_receipt_name="DEV-2000-ADDED-promotion.json",
+        default_attempt_id="attempt-packets-dev2000-added-v1",
+        plan_calls=1000, plan_speech_seconds=2984, plan_gpu_hours=1.0,
+    ),
+}
+
+# The two EVO-S1 TRAIN folds, in the fixed order the union receipt merges them.
+FOLD_ROSTER_KEYS: tuple[str, ...] = ("fold-a", "fold-b")
 
 
 def log(message: str) -> None:
@@ -114,7 +211,10 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def roster_samples(values: Mapping[str, object], root: Path, workers: int) -> tuple[SlurpSample, ...]:
+def roster_samples(
+    values: Mapping[str, object], root: Path, workers: int,
+    sample_id_prefix: str, roster_key: str,
+) -> tuple[SlurpSample, ...]:
     """Label-free samples from the frozen runtime view, each file re-hashed."""
 
     items = values.get("items")
@@ -125,8 +225,10 @@ def roster_samples(values: Mapping[str, object], root: Path, workers: int) -> tu
 
     def build(item: Mapping[str, object]) -> SlurpSample:
         sample_id = str(item["sample_id"])
-        if not sample_id.startswith("slurp:train:"):
-            raise SystemExit("the EVO-S1 folds are TRAIN rosters; %r is not" % sample_id)
+        if not sample_id.startswith(sample_id_prefix):
+            raise SystemExit(
+                "roster %r rows must start with %r; %r does not" % (roster_key, sample_id_prefix, sample_id)
+            )
         measured = sha256_file(root / str(item["media_relpath"]))
         if measured != str(item["audio_sha256"]):
             raise SystemExit("media %s hashes to %s" % (item["media_relpath"], measured))
@@ -141,20 +243,35 @@ def roster_samples(values: Mapping[str, object], root: Path, workers: int) -> tu
     return tuple(sorted(samples, key=lambda sample: sample.sample_id))
 
 
+def _resolve_promotion_receipt(
+    values: Mapping[str, object], spec: RosterSpec, packet_root: Path, roster_key: str,
+) -> Path:
+    if "promotion_receipt" in values:
+        return Path(str(values["promotion_receipt"]))
+    if spec.promotion_receipt_name is None:
+        raise SystemExit(
+            "roster %r has neither a config promotion_receipt key nor a default receipt name" % roster_key
+        )
+    return packet_root / spec.promotion_receipt_name
+
+
 def _write_union_receipt(args) -> int:
-    """One promotion receipt over both folds, from the two the sessions wrote.
+    """One promotion receipt over both TRAIN folds, from the two the sessions wrote.
 
     Zero contacts, no server, no encoder: a deterministic merge of two committed
     documents whose parents are recorded by sha256, so a reader can rebuild it or
     refuse it. It exists because a candidate portfolio has ONE artifact and TWO
     fold fragment variants copied from ONE base, and a base can name one receipt.
+    Covers only ``FOLD_ROSTER_KEYS``; the DEV-2000-ADDED roster is a separate
+    preparation with its own receipt and is never folded into this union.
     """
 
     root = data_root()
     parents, packets, seen = [], [], set()
-    for fold in sorted(PLAN_BY_FOLD):
-        values = compose(REPO, MODEL_FRAGMENT, f"slurp-speech-native-evo-fold-{fold}-1080",
-                         BASELINE_FRAGMENT, f"slurp-evo-fold-{fold}-preprocess").values
+    for roster_key in FOLD_ROSTER_KEYS:
+        spec = PREPROCESS_ROSTERS[roster_key]
+        values = compose(REPO, MODEL_FRAGMENT, spec.dataset_fragment,
+                         BASELINE_FRAGMENT, spec.experiment_fragment).values
         path = Path(str(values["promotion_receipt"]))
         document = json.loads(path.read_text(encoding="utf-8"))
         parents.append({"fold": str(values["fold"]), "path": str(path),
@@ -207,7 +324,11 @@ def _write_union_receipt(args) -> int:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--fold", default=None, choices=sorted(PLAN_BY_FOLD))
+    parser.add_argument(
+        "--fold", default=None, choices=("a", "b"),
+        help="deprecated alias for --roster fold-a / --roster fold-b (kept for the sealed folds)",
+    )
+    parser.add_argument("--roster", default=None, choices=sorted(PREPROCESS_ROSTERS))
     parser.add_argument("--workers", type=int, default=4, help="encode concurrency; the sidecar serves -np 4")
     parser.add_argument("--promote-workers", type=int, default=8)
     parser.add_argument("--output", type=Path, default=None)
@@ -226,7 +347,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             "2,160 rows. rails.evolution.write_candidate_fragments copies ONE base fragment "
             "into a fold-a and a fold-b variant, so the base can name only one promotion "
             "receipt and it has to cover both folds; the per-fold receipts stay exactly as "
-            "the two sessions wrote them and this one records their sha256s as its parents"
+            "the two sessions wrote them and this one records their sha256s as its parents. "
+            "The DEV-2000-ADDED roster is never part of this union."
         ),
     )
     args = parser.parse_args(argv)
@@ -234,22 +356,32 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.union_receipt:
         return _write_union_receipt(args)
 
-    if args.fold is None:
-        raise SystemExit("--fold is required for --preflight-only and --run")
-    dataset = f"slurp-speech-native-evo-fold-{args.fold}-1080"
-    experiment = f"slurp-evo-fold-{args.fold}-preprocess"
+    if args.fold is not None and args.roster is not None:
+        raise SystemExit("--fold and --roster are mutually exclusive; --fold is only a deprecated alias")
+    roster_key = args.roster if args.roster is not None else (
+        "fold-%s" % args.fold if args.fold is not None else None
+    )
+    if roster_key is None:
+        raise SystemExit("--roster (or the deprecated --fold a|b) is required for --preflight-only and --run")
+    spec = PREPROCESS_ROSTERS[roster_key]
+
     lock, root = load_lock(umbrella_lock_path()), data_root()
-    composed = compose(REPO, MODEL_FRAGMENT, dataset, BASELINE_FRAGMENT, experiment)
+    composed = compose(REPO, MODEL_FRAGMENT, spec.dataset_fragment, BASELINE_FRAGMENT, spec.experiment_fragment)
     values = composed.values
-    if str(values["experiment_id"]) != RUN_ID:
+    if str(values["experiment_id"]) != spec.run_id:
         raise SystemExit("experiment fragment names a different run id")
-    packet_root = Path(str(values["feature_root"]))
-    legacy_cache = Path(str(values["legacy_cache_dir"]))
-    promotion_receipt = Path(str(values["promotion_receipt"]))
-    samples = roster_samples(values, root, args.promote_workers)
+    if values.get("split_role") != spec.split_role:
+        raise SystemExit(
+            "roster %r expects dataset split_role %r, fragment carries %r"
+            % (roster_key, spec.split_role, values.get("split_role"))
+        )
+    packet_root = Path(str(values.get("feature_root", DEFAULT_FEATURE_ROOT)))
+    legacy_cache = Path(str(values.get("legacy_cache_dir", DEFAULT_LEGACY_CACHE_DIR)))
+    promotion_receipt = _resolve_promotion_receipt(values, spec, packet_root, roster_key)
+    samples = roster_samples(values, root, args.promote_workers, spec.sample_id_prefix, roster_key)
     audio_seconds = sum(float(sample.audio_seconds) for sample in samples)
-    log("fold %s: %d samples, %.6f audio-s, config %s"
-        % (args.fold, len(samples), audio_seconds, composed.config_hash[:16]))
+    log("roster %s: %d samples, %.6f audio-s, config %s"
+        % (roster_key, len(samples), audio_seconds, composed.config_hash[:16]))
 
     warm = sum(
         1 for sample in samples
@@ -288,13 +420,13 @@ def main(argv: Sequence[str] | None = None) -> int:
             pass
     log("preflight: %d free (the GPU inference port %d is not touched)" % (SIDECAR_PORT, INFERENCE_PORT))
 
-    calls, speech, gpu_hours = PLAN_BY_FOLD[args.fold]
+    calls, speech, gpu_hours = spec.plan_calls, spec.plan_speech_seconds, spec.plan_gpu_hours
     calls = args.plan_calls if args.plan_calls is not None else calls
     speech = args.plan_speech_seconds if args.plan_speech_seconds is not None else speech
-    attempt_id = args.attempt_id or ("attempt-packets-fold-%s" % args.fold)
+    attempt_id = args.attempt_id or spec.default_attempt_id
     plan = ExecutionPlan(
-        run_id=RUN_ID, execution_profile=str(values["execution_profile"]),
-        carrier_lock_key=SLURP_LOCK_KEY, split_role="discovery",
+        run_id=spec.run_id, execution_profile=str(values["execution_profile"]),
+        carrier_lock_key=SLURP_LOCK_KEY, split_role=spec.split_role,
         split_identity_hash=str(values["split_identity_hash"]),
         planned_model_calls=calls, planned_gpu_hours=gpu_hours,
         planned_speech_audio_seconds=speech, protocol_hash=composed.config_hash,
@@ -304,12 +436,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     runtime_receipt = load_runtime_receipt(REPO / "docs" / RUNTIME_RECEIPT_RELPATH)
     if runtime_receipt.get("role") != "preprocess":
         raise SystemExit("runtime receipt role must be preprocess")
-    run_dir = root / "runs" / RUN_ID / attempt_id
+    run_dir = root / "runs" / spec.run_id / attempt_id
     run_dir.mkdir(parents=True, exist_ok=True)
     log("spawning the CPU-only preprocessing sidecar on %d" % SIDECAR_PORT)
     session = start_session(
         runtime_root=RUNTIME_ROOT, data_root=root, runtime_receipt=runtime_receipt,
-        host="127.0.0.1", port=SIDECAR_PORT, session_id="%s-%s-cpu-sidecar" % (RUN_ID, attempt_id),
+        host="127.0.0.1", port=SIDECAR_PORT, session_id="%s-%s-cpu-sidecar" % (spec.run_id, attempt_id),
         extra_argv=list(values["server_args"]), extra_env=dict(values["server_env"]),
         receipt_path=run_dir / "session-preprocess.receipt.json",
         server_log_path=run_dir / "session-preprocess.server.log",
@@ -403,9 +535,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         "schema": "saea-slurp-evo-fold-preprocess-receipt-v1",
         "study": "speech-aware-evidence-acquisition",
         "generated_at": datetime.now(tz=timezone.utc).isoformat(),
-        "run_id": RUN_ID, "attempt_id": attempt_id, "fold": str(values["fold"]),
-        "config_fragments": {"model": MODEL_FRAGMENT, "dataset": dataset,
-                             "baseline": BASELINE_FRAGMENT, "experiment": experiment},
+        "run_id": spec.run_id, "attempt_id": attempt_id, "roster": roster_key,
+        "fold": str(values["fold"]) if "fold" in values else None,
+        "config_fragments": {"model": MODEL_FRAGMENT, "dataset": spec.dataset_fragment,
+                             "baseline": BASELINE_FRAGMENT, "experiment": spec.experiment_fragment},
         "config_hash": composed.config_hash,
         "split_identity_hash": str(values["split_identity_hash"]),
         "rows": len(samples), "audio_seconds": round(audio_seconds, 6),
