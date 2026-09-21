@@ -70,8 +70,11 @@ Entry kinds for the carrier profile: `domain`, `tool`, `edge`, `exemplar` (const
 examples from `a2t-construction-800-v1`, keyed by speech vectors exactly as SLURP's
 train-exemplars; OFF in the first cell). `parameter` is a SECTION of the tool card, not a kind
 (decision 66, recommended): a parameter is never selected on its own, it is read with its tool.
-Edges come from the ORG-1 same-domain twin-miss table (898 misses on the sealed direct run): the
-pairs the frozen core actually confuses, authored from construction data only.
+Edges (v1) come from the registry STRUCTURE alone, gold-free: two tools of the same domain whose
+signatures share argument names or whose descriptions share content tokens above a fixed threshold
+(the builder's rule is pinned in the release receipt). The ORG-1 same-domain twin-miss table is an
+EVALUATION-roster statistic (union-4000 gold) and must not author knowledge (the construction
+exclusion of 2026-09-13); data-derived edges, if ever, come from the construction-800 roster only.
 
 Ordering: `domain-alphabetical-v1` (ORG-1's own form: sorted domain, sorted tool name) registered in
 `core.base` beside `taxonomy-frequency-v1`. Because ORG-1 lost 3.23 pp by re-ordering alone, the
@@ -90,8 +93,9 @@ system-message sha over 1,080 rows) and the render proof on 20 sealed B1-notool 
 byte for byte after the refactor; the loader's carrier test becomes a lookup of the view's declared
 carrier. `native_episode_config.py` refusals 7 and 8 are unchanged in meaning.
 
-E28 -- the A2T view builder `scripts/build_a2t_knowledge_index_view.py` (modelled on the SLURP
-builder): sources pinned by sha256, `knowledge/audio2tool/semantic/a2t-knowledge-index-v1/{snapshot,
+E28 -- the A2T id grammar (sigils D / T beside I / S / E / X in `parse_index_id`, `IndexEntry`
+construction for `domain` / `tool` / `edge`) and the A2T view builder
+`scripts/build_a2t_knowledge_index_view.py` (modelled on the SLURP builder): sources pinned by sha256, `knowledge/audio2tool/semantic/a2t-knowledge-index-v1/{snapshot,
 release,completion}.json`, `--twin-seed` for `a2t-knowledge-index-twin-v1`, pins document
 `docs/readiness/<date>-a2t-knowledge-index-release-pins-v1.json`, two zero-contact ledger rows.
 Model-free render proof and wire check on 20 sealed rows of the A2T base (the existing scripts,
