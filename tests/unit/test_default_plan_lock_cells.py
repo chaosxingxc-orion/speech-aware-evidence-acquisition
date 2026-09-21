@@ -100,7 +100,8 @@ def test_b9a_moves_exactly_the_e18_module_against_the_plan():
     ``native_episode.acquisition`` and ``native_episode.roles.acquisition`` -- and nothing else outside the
     bookkeeping; the contact ceiling is unchanged because kind (a) costs no contact."""
     flown, b9a = _load(FLOWN), _load(B9A)
-    assert _non_bookkeeping_diff(flown, b9a) == ["native_episode"]
+    assert _non_bookkeeping_diff(flown, b9a) == ["native_episode", "policy"]
+    assert b9a["policy"] == "phase-native-candidates-review-revise-acquire-v1"  # item E32: the program with the acquisition phase, ceiling 11
     ne_plan, ne_b9a = flown["native_episode"], b9a["native_episode"]
     episode_diff = sorted(key for key in set(ne_plan) | set(ne_b9a) if ne_plan.get(key) != ne_b9a.get(key))
     assert episode_diff == ["acquisition", "roles"]
@@ -110,5 +111,5 @@ def test_b9a_moves_exactly_the_e18_module_against_the_plan():
     assert ne_b9a["roles"]["acquisition"] == {"phase_id": "acquisition", "max_iterations": 0, "kinds": ["knowledge-requery"]}
     assert ne_b9a["max_revisions"] == 1
     if B9A_SMOKE.exists():
-        assert _non_bookkeeping_diff(_load(FLOWN_SMOKE), _load(B9A_SMOKE)) == ["native_episode"]
+        assert _non_bookkeeping_diff(_load(FLOWN_SMOKE), _load(B9A_SMOKE)) == ["native_episode", "policy"]
 
