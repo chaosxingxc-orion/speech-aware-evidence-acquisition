@@ -1239,6 +1239,107 @@
         "what_flew": "The OFF arm flew configs/baseline/slurp-native-anchor-exemplars-k20-notool-v1.json at 23f011dd: the B1r fragment (configs/baseline/slurp-native-anchor-exemplars-k20-replicate-v1.json) with the phase_tools mapping removed; native_episode.tool_schema_rendering absent; roles.reviewer.max_iterations 3 (bound by the program ceiling); the E22 react_exhaustion_policy declaration armed as on every cell registered after 2026-09-19 (E13 was already on B1r). The ON arm is the sealed B1 arm (the flown B1 fragment, whose Reviewer held the task-contract tool), never re-flown. The proof test reads the two committed fragments and shows them differing in phase_tools alone once the fit receipt, the prepared-supply binding, the what_this_is prose and the E22 failure-mode declaration are set aside as bookkeeping and derived keys.",
         "why_this_class": "the module is one role's tool authority, which the toolkits table (a task type's catalogue selection) and the episode class (rendering of a granted toolkit, E17) do not name; and the module is a WITHDRAWAL, which only a class whose ON arm is the toolkit itself can state without calling an absence an ON arm"
       }
+    },
+    {
+      "carrier": "slurp",
+      "comparator": {
+        "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-NOTOOL-V1",
+        "attempt_id": "attempt-slurp-native-exemplars-k20-notool-train-fold-a-generation-v1",
+        "note": "the sealed tool-free B1 arm (cell B1-notool, 62.1295 / 80.0000), never re-flown; margins B1r's own null (h_SLU 1.2350 / h_intent 1.2212, decision 38 fallback: the B1-notool configuration has no replicate of its own)"
+      },
+      "date": "2026-09-21",
+      "module": "the knowledge index: native_episode.knowledge_index armed on the released view slurp-knowledge-index-v1 at owner decision 52's provisional defaults (intent L1 Activation boundary / slot L1 Admissible formats / edge L0; ordering taxonomy-frequency-v1; pointers intent 3 / slot 8 / exemplar vote 3; expansions exemplar 5 / slot_card 4 / intent_card 0; Solver citation permitted) -- the constant L0+L1 index rendered once per slot as a suffix of the contract fill, a per-row pointer block and budgeted expansions replacing the per-row slot-contract cards and the raw exemplar block; cell IDX on the tool-free B1 base, with its derangement twin IDXT (view slurp-knowledge-index-twin-v1, seed 20260920) as the form-matched control",
+      "row": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-INDEX-V1",
+      "status": "HARMFUL",
+      "status_basis": "HARMFUL is this table's status for a gating guard that fails with a measured loss (owner decision 25). Registered rule (docs/readiness/2026-09-20-slurp-b1-index-v1-preregistration.md section 3): NEUTRAL iff both CI95 lower bounds exceed -h (1.2350 / 1.2212); HARMFUL iff a guard fails with a measured loss. Read (paired whole-speaker cluster bootstrap, 125 clusters, 10,000 draws, seed 20260915), both guards a measured loss: official pooled SLU-F1 62.1295 -> 54.7576, -7.3719 pp CI95 [-9.7248, -4.7967]; intent 80.0000 -> 77.5926, -2.4074 pp CI95 [-4.5554, -0.3188]; each point estimate below -h and each CI95 upper bound below zero. Twin decomposition (decision 62): FORM (IDXT minus base) SLU -9.9697 [-12.46, -7.32], intent +0.1852 [-2.00, +2.31]; CONTENT (IDX minus IDXT) SLU +2.5978 [+0.80, +4.49], intent -2.5926 [-4.33, -0.86]; additivity exact. The loss is the FORM: replacing the per-row slot-contract cards and the raw exemplar block by a constant index plus pointers and four expansion cards costs about ten SLU points, and restoring the id-to-line correspondence buys back about a quarter of it -- an upper bound, because the IDX expansion block is about 3,000 characters longer per row than the twin's (1,055 of 1,080 rows; loss deepest in the top length quartile). Index-consumption read (decision 64): MISLEADING TERSENESS in the IDX verdict (the core reads the block -- delivered slot types inside the pointed set 86.28 % vs 71.77 % for the base against the same pointer blocks; expanded-stratum recall 0.764 -> 0.859 -- but what the terse line carries is wrong: expanded-stratum precision 0.671 -> 0.516 with +45 % delivered instances, intent-pointer adherence 95.35 % -> 91.76 %, citations near zero and higher on the deranged twin); the twin verdict reads the same evidence as undecided with NON-CONSUMPTION the better-supported branch (the twin equals or beats IDX on pointer adherence: the pointer block supplies a label vocabulary, not content that is read). Either way the contingency fixed by decision 64 is the same for what follows: the richer-granularity route is contraindicated (more terse text is not the remedy) and the form is CLOSED at decision 52's defaults; the owner decides the next form (decision 72). Efficiency, measured whatever the verdict: prefilled tokens per row 8,019.8 -> 3,379.1 (render proof predicted 3,096; +9.1 %), GPU hours per 1,080 rows 1.6108 -> 1.3340 (0.828x), contacts per minute 42.91 -> 53.41, cache share 89.99 %, projected 13,078-row read 19.51 h -> 16.15 h; cost fell and the score fell more, so decision 50's 'lowers cost and loses nothing' fails on its second clause. Scenario diagnostic: play intent 63.33 -> 21.67 (28 harms / 3 saves) carries -2.31 pp of the -2.41 pp intent loss; the base's music breach does not deepen (-3.33 [-12.96, +5.56]).",
+      "evidence": {
+        "arm": {
+          "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-INDEX-V1",
+          "attempt_id": "attempt-slurp-native-exemplars-k20-index-train-fold-a-generation-v1",
+          "study_commit": "38984e80"
+        },
+        "twin": {
+          "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-INDEX-TWIN-V1",
+          "attempt_id": "attempt-slurp-native-exemplars-k20-index-twin-train-fold-a-generation-v1",
+          "study_commit": "9f2997d0",
+          "note": "the form-matched control (HARMFUL as a control reading: SLU -9.9697 [-12.46, -7.32] against the base); enters no plan; its own verdict is docs/results/2026-09-21-slurp-idxt-knowledge-index-twin-verdict.md"
+        },
+        "smoke": {
+          "run_id": "SAEA-SLURP-NATIVE-EXEMPLARS-K20-INDEX-SMOKE-4-V1",
+          "attempt_id": "attempt-slurp-native-exemplars-k20-index-smoke-4-generation-v1",
+          "study_commit": "38984e80"
+        },
+        "verdict": {
+          "path": "docs/results/2026-09-21-slurp-idx-knowledge-index-verdict.md",
+          "sha256": "e05df2be64534475d1da8a1a6c96266d74b037191882b25a59943b6b4dde9d2f"
+        },
+        "twin_verdict": {
+          "path": "docs/results/2026-09-21-slurp-idxt-knowledge-index-twin-verdict.md",
+          "sha256": "7fc3be1b9c17edd5f1d1063985ee07d550365f7e67587d1e5d4a829f53345786"
+        },
+        "analysis_dir": "SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-B1-INDEX-PAIRED-ANALYSIS-V1 (driver index_cell_read.py, every table regenerable by stage) and SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-B1-INDEX-TWIN-PAIRED-ANALYSIS-V1 (driver twin_cell_read.py)",
+        "primary": "official pooled SLU-F1 -7.3719 pp CI95 [-9.7248, -4.7967]; intent -2.4074 pp CI95 [-4.5554, -0.3188] against 1.2350 / 1.2212 (1,080 paired TRAIN A rows, 125 speaker clusters, 10,000 draws, seed 20260915); v3 and the TRAIN symmetric sibling agree in sign",
+        "guards": "both gating guards fail with a measured loss; 16 of 18 scenarios lose SLU on the twin; play intent -41.67 pp on IDX (decision-17 flag); music -3.33 (not flagged)",
+        "diagnostics": "one system-message sha256 over all 4,516 contacts and 1,080 rows; index receipt on every contact; degradation steps 0; 0 tools arrays, tool_choice none everywhere, 0 tool calls; contacts per row 4.182 (3:19 / 4:989 / 6:1 / 7:71) vs base 4.104; the Perception request differs from the base's in exactly {task_instruction, supplied_evidence, history, evidence_provenance_content} on 1,080 of 1,080 rows; finite_completion 20 (base 8), react_exhaustion 0, planner_action_illegal 1 (base 0), revision_limit 9 (base 3), REVISE on 72 rows (base 40); Reviewer completion median 139 / p90 218 tokens (base 90 / 171), 20 contacts at the 512 cap",
+        "consumption": "IDX verdict: MISLEADING TERSENESS (block read, content wrong); twin verdict: undecided, NON-CONSUMPTION better supported (pointer adherence twin 97.69 % vs IDX 91.76 % vs base-on-the-same-blocks 95.35 %; slot-type instances pointed twin 83.32 % vs IDX 86.04 % vs base 69.41 %; citations 24 rows on IDX vs 42 on the twin); format compliance flat (98.16 % vs 98.47 % vs twin 99.01 %; only 4-6 of 54 slot types machine-decidable); expanded-bucket precision 0.675 (base) -> 0.515 (IDX) / 0.488 (twin) with recall up",
+        "cost": "4,516 contacts (4.182 per row), 12,853.98 repeated speech seconds, 36,449,992 prompt / 339,457 completion tokens, 0 tool calls, 1.334 GPU hours, wall 5,302.4 s, occupancy 0.729, utilisation 75.0 %, parked 0.093, 4,516 of 4,516 requests fit (18,064 endpoints, min margin 14,379), one official score job; twin 4,559 contacts, 1.247 GPU hours",
+        "efficiency": "prefilled tokens per row 3,379.1 (base 8,019.8; render proof 3,096); GPU-h per 1,080 rows 1.334 (base 1.611); contacts per minute 53.41 (base 42.91); cache share 89.99 %; packet re-decodes per row 0.996; projected 13,078-row read 16.15 h (base 19.51 h); twin 2,795.7 tokens per row, 1.247 GPU-h, 56.84 contacts per minute, 15.10 h",
+        "secondary": "length difference IDX minus twin expansion block: mean +3,025.9 characters, median +3,040, p90 +5,021, IDX longer on 1,055 of 1,080 rows; Pearson 0.074 / Spearman 0.096 with the per-row SLU difference; quartile means +0.81 / +0.77 / +2.86 / +4.47 pp"
+      },
+      "not_admitted_for": [
+        "any default plan (HARMFUL never enters a plan)",
+        "the richer-granularity variant (expansion_budget.intent_card > 0 or a larger slot_card budget): contraindicated by the MISLEADING TERSENESS / NON-CONSUMPTION reading (decision 64's contingency routes there only on NON-CONSUMPTION with flat diagnostics; here the terse lines were read and misled)",
+        "any claim about the content effect beyond an upper bound: IDX minus IDXT is confounded with about 3,000 characters per row of extra expansion text (decision 62)",
+        "any other roster or carrier; DEV-1000, Fold B and the test split are untouched; the Audio2Tool index (item E28 views) is a separate object under owner decision 70"
+      ],
+      "switch": {
+        "added_by": "docs/results/2026-09-21-slurp-idx-knowledge-index-verdict.md; class 'episode' of harness-admission v3 (native_episode.knowledge_index admitted to the allowlist by item E21)",
+        "table": "episode",
+        "key": "native_episode.knowledge_index",
+        "off": null,
+        "on": {
+          "view": "slurp-knowledge-index-v1",
+          "release": {
+            "relpath": "knowledge/slurp/semantic/slurp-knowledge-index-v1/release.json",
+            "root": "data",
+            "sha256": "bcfc220b11672169f81e9a9f941e6c1bee05e9a5e3ac7aa3bd6dc448017235d2"
+          },
+          "snapshot": {
+            "relpath": "knowledge/slurp/semantic/slurp-knowledge-index-v1/snapshot.json",
+            "root": "data",
+            "sha256": "f6d61056165a41d91e604a55d80a0aef08491a8052dc713e95eae66cfeb2cd4c"
+          },
+          "granularity": {
+            "intent": {
+              "level": "L1",
+              "section": "Activation boundary"
+            },
+            "slot": {
+              "level": "L1",
+              "section": "Admissible formats"
+            },
+            "edge": {
+              "level": "L0",
+              "section": "Confusable exclusions"
+            }
+          },
+          "ordering": "taxonomy-frequency-v1",
+          "pointer_budget": {
+            "intent": 3,
+            "slot": 8,
+            "exemplar_vote": 3
+          },
+          "expansion_budget": {
+            "exemplar": 5,
+            "slot_card": 4,
+            "intent_card": 0
+          },
+          "solver_citation": "permitted"
+        },
+        "proof": "tests/unit/test_e21_knowledge_index.py::test_the_key_resolves_in_the_episode_class_and_its_off_arm_is_its_absence",
+        "what_flew": "The ON arm flew configs/baseline/slurp-native-anchor-exemplars-k20-index-v1.json at 38984e80: the sealed B1-notool fragment plus this one key (the E13 / E22 declarations already on the base). The OFF arm is the sealed B1-notool arm itself (no knowledge_index key). The twin flew configs/baseline/slurp-native-anchor-exemplars-k20-index-twin-v1.json at 9f2997d0: the same block with the view pins of slurp-knowledge-index-twin-v1.",
+        "why_this_table": "the module changes how the Solver, Reviewer and Planner are supplied inside the native episode (a constant index suffix plus a per-row pointer block and expansions) and is declared under native_episode; it moves request bytes, so it is not run-class, and it is not one phase's knowledge_views entry"
+      }
     }
   ],
   "switch_classes": [
