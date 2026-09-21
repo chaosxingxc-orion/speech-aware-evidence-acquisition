@@ -1321,8 +1321,8 @@ def _load_knowledge_index(
 
     from .knowledge_index import (  # noqa: PLC0415
         EXEMPLAR_STORE_ROLE,
-        KNOWLEDGE_INDEX_CARRIER,
         KnowledgeIndexError,
+        knowledge_index_profile,
         parse_knowledge_index_config,
         parse_role_budget_override,
         validate_knowledge_index_config,
@@ -1353,14 +1353,28 @@ def _load_knowledge_index(
             "an index is a catalogue of a knowledge layer and there is none to "
             "catalogue"
         )
-    if declared_carrier != KNOWLEDGE_INDEX_CARRIER:
+    # Item E27: the carrier equality test against one literal becomes a
+    # profile lookup, and the view check becomes membership in that
+    # profile's released view ids -- the same two facts refusal 1 already
+    # states, now read from a table keyed by carrier rather than from a
+    # constant defined for one carrier alone. Refusals 7 and 8 are unchanged
+    # in meaning and position.
+    try:
+        profile = knowledge_index_profile(declared_carrier)
+    except ValueError as error:
         raise ValueError(
-            f"the released knowledge index is defined for carrier "
-            f"{KNOWLEDGE_INDEX_CARRIER!r}, but this config declares carrier_lock_key "
-            f"{declared_carrier!r}"
-        )
+            f"native_episode.knowledge_index names carrier {declared_carrier!r}: "
+            f"{error}"
+        ) from error
     if not isinstance(block, Mapping):
         raise ValueError("native_episode.knowledge_index must be an object")
+    declared_view = block.get("view")
+    if declared_view not in profile.view_ids:
+        raise ValueError(
+            f"the knowledge-index carrier profile for {profile.carrier!r} names "
+            f"released view id(s) {sorted(profile.view_ids)}, but this config "
+            f"declares knowledge_index.view {declared_view!r}"
+        )
     if "roles" in block:
         # Two spellings of one override is how a cell ends up with two
         # identities: the per-role table is declared ON THE ROLE ROW, beside

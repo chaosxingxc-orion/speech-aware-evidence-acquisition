@@ -585,7 +585,10 @@ def test_the_armed_key_composes_and_carries_its_canonical_text():
 
 
 def test_refusal_1_an_unreleased_view():
-    with pytest.raises(ValueError, match="not a released knowledge-index view"):
+    # Item E27: the loader now names the carrier profile before it names the
+    # view (the same fact -- an unreleased view id -- stated one lookup
+    # earlier than the config parser's own view check).
+    with pytest.raises(ValueError, match="names released view id"):
         load_native_episode_config(
             _armed_values(_pins(view="slurp-knowledge-index-v2")), _episode_program()
         )
