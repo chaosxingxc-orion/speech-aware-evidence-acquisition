@@ -1,0 +1,118 @@
+{
+  "schema": "saea-prospective-tool-registration-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "status": "REGISTERED_BEFORE_CONTACT",
+  "purpose": "Prepare SLURP DEV-2000-ADDED speech retrieval-query vectors for cell B6's bound preparations (owner decisions 34, 35, 76a, 78, 79).",
+  "root_authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md owner decisions 34/35/76a/78/79; precedent docs/readiness/2026-09-12-slurp-training-query-embedding-preparation-v1.md and docs/readiness/2026-09-12-slurp-training-query-embedding-registration-v1.json (fold A/B).",
+  "runtime_class": "speech_aware_evidence_acquisition.core.speech_preparation_runtime.NemotronSpeechEncoder",
+  "runtime_entry": "python -m speech_aware_evidence_acquisition.core.speech_preparation_runtime",
+  "service": {
+    "endpoint": null,
+    "kind": "exclusive in-process local frozen retrieval tool",
+    "resident_server": false
+  },
+  "encoder": {
+    "encoder_id": "omni-embed-nemotron-3b",
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-speech-query-encoder-inventory-v2.json",
+    "sha256": "1548387ba91209921fd747e9eff981027be618c618b732efe20ca7d43680bb31"
+  },
+  "historical_exposure_inheritance": [
+    "SAEA-SN-MF-SLURP-DEV-2000-ROSTER-V1 (or the coordinator-appended zero-contact roster row named in docs/readiness/2026-09-19-slurp-dev-2000-roster-v1.md item 3)",
+    "SAEA-SN-DEV2000-ADDED-PREPROCESS (this package's sibling packet-preparation row; the vectors and the packets read the same media bytes but are independent artifacts)"
+  ],
+  "plans": [
+    {
+      "run": "dev2000-added",
+      "actual_source_audio_seconds": 2983.527,
+      "dataset_config": {
+        "path": "configs/dataset/slurp-speech-native-dev2000-added.json",
+        "sha256": "6968a0564699968f1615bb98b45d2f0ccf179dd0a04351b2871bc096a9052477"
+      },
+      "execution_plan": {
+        "attempt_id": "encode-v1",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 2.0,
+        "planned_model_calls": 1000,
+        "planned_speech_audio_seconds": 2984,
+        "protocol_hash": "58cda34a14595fe469889b6f19a52e3fc917712aa8912d9e63a5231e46bea5a5",
+        "run_id": "SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "ledger_row_cells": [
+        "2026-09-21",
+        "SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1",
+        "bounded-discovery-probe",
+        "Prospective complete-speech retrieval-query encoding for SLURP DEV-2000-ADDED (owner decisions 34, 35, 76a, 78, 79); no answers or scoring; feeds cell B6's bound vectors only",
+        "Frozen local Omni-Embed-Nemotron-3B retrieval tool; no answering core",
+        "slurp SLURP-DEV-2000-ADDED-V1 devel discovery",
+        "discovery",
+        "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
+        "no",
+        "1000",
+        "2984",
+        "2.0",
+        "Historical DEV-2000 roster (model-free) and this package's own DEV2000-ADDED-PREPROCESS packet row carried forward; this row adds only the pinned retrieval-encoder contacts",
+        "docs/readiness/2026-09-21-slurp-dev2000-added-speech-query-encoding-v1/registration-v1.json",
+        "REGISTERED BEFORE CONTACT. Protocol SHA256 58cda34a14595fe469889b6f19a52e3fc917712aa8912d9e63a5231e46bea5a5. One encode-v1 attempt; no retry, fallback, scorer, answer read, or cross-split feedback. Bind the external runtime study_head to the final clean registration commit."
+      ],
+      "output_relpath": "prepared/SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1/index.json",
+      "protocol": {
+        "path": "configs/preparation/slurp-dev2000-added-speech-query-encoding-protocol-v1.json",
+        "sha256": "58cda34a14595fe469889b6f19a52e3fc917712aa8912d9e63a5231e46bea5a5"
+      },
+      "query_rows_relpath": "prepared/SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1/queries.jsonl",
+      "roster_receipt": {
+        "path": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+        "sha256": "f78dd8ad2894b1fd02bfe6050e39e3fb2c5d178a649e5d20e85ea4ecf4b8dc58"
+      },
+      "runtime_config_shape": {
+        "plan": {
+          "attempt_id": "encode-v1",
+          "carrier_lock_key": "slurp",
+          "execution_profile": "bounded-discovery-probe",
+          "planned_gpu_hours": 2.0,
+          "planned_model_calls": 1000,
+          "planned_speech_audio_seconds": 2984,
+          "protocol_hash": "58cda34a14595fe469889b6f19a52e3fc917712aa8912d9e63a5231e46bea5a5",
+          "run_id": "SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1",
+          "schema": "saea-execution-plan-v1",
+          "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
+          "split_role": "discovery",
+          "study": "speech-aware-evidence-acquisition"
+        },
+        "protocol": {
+          "path": "configs/preparation/slurp-dev2000-added-speech-query-encoding-protocol-v1.json",
+          "sha256": "58cda34a14595fe469889b6f19a52e3fc917712aa8912d9e63a5231e46bea5a5"
+        },
+        "session_id": "local-nemotron-slurp-dev2000-added-query-v1",
+        "study_head": "SET_TO_THE_FINAL_CLEAN_REGISTRATION_COMMIT",
+        "umbrella_lock": {
+          "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+          "sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+        }
+      },
+      "session_id": "local-nemotron-slurp-dev2000-added-query-v1"
+    }
+  ],
+  "registration_requirements": [
+    "Commit the protocol and one valid 15-cell exposure-ledger row before any contact.",
+    "Set the external runtime config study_head to that clean registration commit and pin the final protocol hash.",
+    "Keep consumed=no until the exact attempt is admitted; never replay an interrupted contact.",
+    "Acquire the shared GenerationLease and exclusive GPU custody; do not coexist with an answering server.",
+    "After the vectors are sealed, produce a zero-contact alias receipt at vectors/slurp-dev2000-added-v1/query-vectors-speech-segments.jsonl following the Fold A/B precedent (docs/readiness/2026-09-14-slurp-native-dual-store-train-source-folds-held-v1.md) before cell B6 binds it; that alias step is NOT registered by this package and carries its own zero-contact receipt."
+  ],
+  "expected_unique_spans": {
+    "value": 1000,
+    "formula": "One span per DEV-2000-ADDED recording: mean duration 2983.527s / 1000 rows = 2.984s, far under the 120.0s max_seconds window, so the fixed-stride-complete-final-tail-v1 boundary policy yields exactly one complete-tail window per recording (matches the Fold A/B precedent, where expected_unique_spans equaled the source utterance count for the same reason)."
+  },
+  "registered_at_utc": "2026-09-21T00:00:00Z",
+  "scheduling": "Run after the DEV2000-ADDED-PREPROCESS packet ENCODE+PROMOTE pass closes and the resident answering session is not competing for GPU/CPU; own Windows Scheduled Task per owner decision 77.",
+  "umbrella_lock": {
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+    "sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+  }
+}
