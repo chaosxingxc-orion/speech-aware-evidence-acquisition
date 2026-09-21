@@ -63,8 +63,11 @@ def test_the_smoke_baseline_carries_the_same_decided_keys():
 
 
 def test_the_flown_baseline_moves_exactly_the_plans_decided_keys_against_the_tool_free_base():
-    """Against the sealed B1-notool fragment the arm differs in the slot-contract pins, the normaliser node and
-    the review-loop marker, and in nothing else outside the bookkeeping."""
+    """Against the sealed B1-notool fragment the arm differs in the slot-contract pins, the normaliser node, the
+    review-loop marker and the E20 context-fit declaration (compact-or-abstain: the plan's widest Solver request
+    exceeds the np4 slot's operational reserve by about 300 tokens with a positive physical margin, so the live fit
+    gate compacts only the rows that do not fit and receipts every drop), and in nothing else outside the
+    bookkeeping."""
     base, flown = _load(BASE), _load(FLOWN)
     diff = _non_bookkeeping_diff(base, flown)
     assert diff == ["knowledge_stores", "native_episode"]
@@ -77,7 +80,8 @@ def test_the_flown_baseline_moves_exactly_the_plans_decided_keys_against_the_too
         key for key in set(base["native_episode"]) | set(flown["native_episode"])
         if base["native_episode"].get(key) != flown["native_episode"].get(key)
     )
-    assert episode_diff == ["deliver_normaliser", "review_loop"]
+    assert episode_diff == ["context_fit_policy", "deliver_normaliser", "review_loop"]
+    assert flown["native_episode"]["context_fit_policy"] == "compact-or-abstain"
 
 
 @pytest.mark.skipif(not REPLICATE.exists(), reason="cell PLANr is not registered yet")

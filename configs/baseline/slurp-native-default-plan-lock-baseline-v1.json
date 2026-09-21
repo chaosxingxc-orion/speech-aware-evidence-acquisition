@@ -142,6 +142,7 @@
     },
     "exhaustion_policy": "deliver-latest-solver",
     "finite_completion_policy": "deliver-latest-or-abstain",
+    "context_fit_policy": "compact-or-abstain",
     "react_exhaustion_policy": "continue-without-answer",
     "max_revisions": 1,
     "review_loop": "on",
