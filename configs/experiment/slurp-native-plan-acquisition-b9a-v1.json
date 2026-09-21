@@ -19,14 +19,14 @@
             "kind": "decision",
             "expected_decision_id": "slurp-plan-acquisition-b9a-admission-v1",
             "relpath": "coordination/slurp-plan-acquisition-b9a-v1/root-admission-v1.json",
-            "sha256": "5626ee785c255e66255578291342e076e14347fdd7fd290f701873511dde1426",
+            "sha256": "9788869df099c0b26b2fe96429616830f7e9a997daf3eda04d7f270e48fde174",
             "reason": "Decision slurp-plan-acquisition-b9a-admission-v1 pinned by scripts/flights/repin_cell.py."
           },
           {
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors cell B1 and the sealed dual-store anchor used, with zero model, tokenizer, encoder, scorer or server contacts. Its output block is byte-identical to the sealed cell B1 preparation's on all 1,080 rows (output SHA-256 ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f), asserted by hand in this registration -- the model-free proof that this cell's own identities and the two declared failure-mode keys move no knowledge-selection byte. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting cell B1's, which is also why core.flight.repin finds it valid, rebuilds nothing and adds nothing to assert_no_residue's scan. --allow-output-change must never be passed; if that output SHA-256 stops matching, a merge changed the knowledge channel -- stop and report.",
             "relpath": "prepared/SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-V1/phase-supply-v1.json",
-            "sha256": "50da0c7bdaa756fb47abffefdaaa8f920f654b79f60905ca06a911067e6301c6"
+            "sha256": "97c2e93a1a2564a0373e7ec342c9c9e3940651a01895f89031281dd75c53af14"
           }
         ],
         "state": "ready"

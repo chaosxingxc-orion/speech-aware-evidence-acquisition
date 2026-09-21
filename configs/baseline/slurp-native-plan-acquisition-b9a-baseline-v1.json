@@ -281,6 +281,6 @@
   "what_this_is": "Cell B9a: acquisition on demand, kind (a) knowledge-requery (item E18), on the locked default-plan base: the locked default-plan fragment (cell PLAN: the tool-free B1 fragment + slot-contracts v2 + the delivery normaliser node + the review-loop marker + E13 / E20 / E22 declarations) plus exactly the E18 module: native_episode.acquisition (saea-acquire-knowledge-requery-v1; max_acquisitions_per_row 1; contact_budget 0) and roles.acquisition (max_iterations 0; kinds [knowledge-requery]). Contact ceiling unchanged at 11. The proof test shows this fragment equal to the PLAN fragment on every key except the two E18 keys and the per-flight bookkeeping. Policy program phase-native-candidates-review-revise-acquire-v1 (item E32): the same four phases plus the acquisition phase, ceiling 11.",
   "prepared_phase_supply": {
     "relpath": "prepared/SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-V1/phase-supply-v1.json",
-    "sha256": "50da0c7bdaa756fb47abffefdaaa8f920f654b79f60905ca06a911067e6301c6"
+    "sha256": "97c2e93a1a2564a0373e7ec342c9c9e3940651a01895f89031281dd75c53af14"
   }
 }

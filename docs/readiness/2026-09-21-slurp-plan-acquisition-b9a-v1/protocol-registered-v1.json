@@ -53,14 +53,14 @@
       "baseline_fragment": "configs/baseline/slurp-native-plan-acquisition-b9a-baseline-v1.json",
       "campaign_plan": "configs/campaign/slurp-native-plan-acquisition-b9a-v1.json",
       "cell": "slurp-native-plan-acquisition-b9a-v1",
-      "composed_config_hash": "5320a148392cfd55640258657af4f4a70625cac13a9a2f1a83d45809793bf7a4",
+      "composed_config_hash": "a4158d565fa31c594ac7f97a8b2adaa2f5aa0a74bc873790d0a43fb3ac24f8e5",
       "execution_route": "core.flight.cli campaign over the committed single-cell campaign plan; the campaign acquires its own GenerationLease against the resident session and schedules the one official score at finalize",
       "experiment": "slurp-native-plan-acquisition-b9a-v1",
       "experiment_fragment": "configs/experiment/slurp-native-plan-acquisition-b9a-v1.json",
       "fit_attempt_id": "attempt-slurp-native-plan-acquisition-b9a-train-fold-a-fit-v1",
       "fit_run_id": "SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-FIT-V1",
       "order_constraint": "opens only after this cell's own four-row smoke has sealed and its acceptance list passes. One experiment in flight at a time",
-      "protocol_hash": "b34f85c1832838b0b7a072844982f0e0d3cd43a796844018dea44c80aadf981d",
+      "protocol_hash": "40c9bc36d13168aa38e0e1d6a04c1a31414c571958bbf983eb3de3191f11320f",
       "readiness": "held; NO decision requirement; this cell's OWN preparation pin",
       "rows": 1080,
       "run_id": "SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-V1",
@@ -228,7 +228,7 @@
     "arm": {
       "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
       "relpath": "prepared/SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-V1/phase-supply-v1.json",
-      "sha256": "50da0c7bdaa756fb47abffefdaaa8f920f654b79f60905ca06a911067e6301c6"
+      "sha256": "97c2e93a1a2564a0373e7ec342c9c9e3940651a01895f89031281dd75c53af14"
     },
     "identity_proof": "arm output ba5e1faa... on 1,080 of 1,080 rows and smoke output 512583ec... on 4 of 4 rows, each byte-identical to the sealed cell B1 preparation's own output block; the arm value is also the sealed anchor preparation's, which is why the knowledge channel is provably unmoved",
     "note": "THIS CELL'S OWN artifact, built model-free under its own run id by core.flight.cli prepare-supply in this registration (item E16: a prepared artifact is evidence only for the implementation that produced it, so nothing is inherited from cell B1). Its Perception output was asserted by hand against the sealed cell B1 preparation's own output and matched exactly, which is the model-free proof that this cell's fresh identities and the declared finite-completion key move no knowledge-selection byte. core.flight.repin will find this pin VALID and rebuild nothing. --allow-output-change must never be passed.",
