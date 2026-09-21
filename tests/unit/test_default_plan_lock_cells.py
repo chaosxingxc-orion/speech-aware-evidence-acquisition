@@ -22,6 +22,8 @@ FLOWN = BASELINES / "slurp-native-default-plan-lock-baseline-v1.json"
 FLOWN_SMOKE = BASELINES / "slurp-native-default-plan-lock-smoke-4-baseline-v1.json"
 REPLICATE = BASELINES / "slurp-native-default-plan-lock-replicate-baseline-v1.json"
 REPLICATE_SMOKE = BASELINES / "slurp-native-default-plan-lock-replicate-smoke-4-baseline-v1.json"
+B9A = BASELINES / "slurp-native-plan-acquisition-b9a-baseline-v1.json"
+B9A_SMOKE = BASELINES / "slurp-native-plan-acquisition-b9a-smoke-4-baseline-v1.json"
 BASE = BASELINES / "slurp-native-anchor-exemplars-k20-notool-v1.json"
 
 #: Per-flight bookkeeping: the fit receipt, the prepared supply and its provenance, the speech-feature identity ids
@@ -90,3 +92,23 @@ def test_the_replicate_is_the_plan_arm_byte_for_byte_outside_its_bookkeeping():
     assert _non_bookkeeping_diff(flown, rep) == []
     if REPLICATE_SMOKE.exists():
         assert _non_bookkeeping_diff(_load(FLOWN_SMOKE), _load(REPLICATE_SMOKE)) == []
+
+
+@pytest.mark.skipif(not B9A.exists(), reason="cell B9a is not registered yet")
+def test_b9a_moves_exactly_the_e18_module_against_the_plan():
+    """Cell B9a (item E18, decisions 43 / 44 / 78): the locked default plan plus exactly the acquisition module --
+    ``native_episode.acquisition`` and ``native_episode.roles.acquisition`` -- and nothing else outside the
+    bookkeeping; the contact ceiling is unchanged because kind (a) costs no contact."""
+    flown, b9a = _load(FLOWN), _load(B9A)
+    assert _non_bookkeeping_diff(flown, b9a) == ["native_episode"]
+    ne_plan, ne_b9a = flown["native_episode"], b9a["native_episode"]
+    episode_diff = sorted(key for key in set(ne_plan) | set(ne_b9a) if ne_plan.get(key) != ne_b9a.get(key))
+    assert episode_diff == ["acquisition", "roles"]
+    assert ne_b9a["acquisition"] == {"policy": "saea-acquire-knowledge-requery-v1", "budget": {"max_acquisitions_per_row": 1, "contact_budget": 0}}
+    roles_diff = sorted(r for r in set(ne_plan["roles"]) | set(ne_b9a["roles"]) if ne_plan["roles"].get(r) != ne_b9a["roles"].get(r))
+    assert roles_diff == ["acquisition"]
+    assert ne_b9a["roles"]["acquisition"] == {"phase_id": "acquisition", "max_iterations": 0, "kinds": ["knowledge-requery"]}
+    assert ne_b9a["max_revisions"] == 1
+    if B9A_SMOKE.exists():
+        assert _non_bookkeeping_diff(_load(FLOWN_SMOKE), _load(B9A_SMOKE)) == ["native_episode"]
+

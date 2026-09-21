@@ -1,0 +1,59 @@
+{
+  "cell": "slurp-native-plan-acquisition-b9a-smoke-4-v1",
+  "composed_config_hash": "732bf81f874677e33abfd992300171555dd1aa283884a92a6c40b74ac85afcb5",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-plan-acquisition-b9a-smoke-4-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 176,
+    "planned_speech_audio_seconds": 117,
+    "protocol_hash": "a984c8913605d7fc720d8662da5e2b683abeef55043d3ab997aa82ff5185750a",
+    "run_id": "SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realized native request inside the same standalone worker. coordinate-fit must NOT be run.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-plan-acquisition-b9a-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "modules": {
+    "base": "the SEALED dual-store ANCHOR configuration plus the train-exemplars store, exactly as cell B1's recovery arm flew it (configs/baseline/slurp-native-anchor-exemplars-k20-train-fold-a-recovery-v2.json at study commit a35630c0): the complete native episode with the review loop on, the shared controller and FlightRuntime path, Reviewer-only task-contract tool authority, Solver-only answer authority, the three-candidate contract, the max512 resident geometry, the sealed Fold A speech-query segment vectors and the EVO-FOLDS-V2 promoted packets. Nothing of it moves. No node: no context_policy, no deliver_normaliser, no reviewer_audit.",
+    "factor": "ONE factor: native_episode.acquisition armed with policy saea-acquire-knowledge-requery-v1 (kind (a): a model-free re-query of the released stores keyed by the Reviewer's findings, zero contacts) at budget max_acquisitions_per_row 1 / contact_budget 0, together with the optional fifth role roles.acquisition {phase_id acquisition, max_iterations 0, kinds [knowledge-requery]} that item E18 declares as one module (the loader refuses either half alone). The Planner may now route ACQUIRE once per row before its single revision; the contact ceiling stays 11 (the kind costs no contact). Everything else is the locked default plan byte for byte (cell PLAN's fragment).",
+    "per_role_rendering_held": "native_episode.tool_schema_rendering is NOT armed.",
+    "second_declared_key_not_a_factor": "native_episode.finite_completion_policy = \"deliver-latest-or-abstain\", required of every live SLURP native cell by scripts/checks/finite_completion_policy_check.py (item E13). It renders NO request byte and only decides whether a finite completion aborts the flight or the row is RETAINED with a terminal_disposition reason \"finite_completion\". The comparator side is provably unaffected: docs/receipts/slurp-finite-completion-exposure-v1.json proves zero finite completions on cell B1's own arm and on the sealed anchor.",
+    "zero_added_contacts": "nothing moves, so the bounded ceiling stays 11 contacts per row and every ceiling is cell B1's own registered ceiling, unchanged",
+    "purpose": "PRIMARY DELIVERABLES: (1) the official read against the sealed PLAN arm at the plan's own null (h_SLU / h_intent from cell PLANr; the decision-38 fallback 1.2350 / 1.2212 only if PLANr has not read when this cell does, and then stated); (2) the acquisition read: rows on which the Planner routed ACQUIRE, items acquired per acquisition (kind, provenance ids, dedupe drops), the revision that followed and its outcome per row (saves / harms on official SLU and intent restricted to the acquired rows, beside the unacquired rows), the acquisition receipts' custody; (3) the frontier row (decision 75); (4) dispositions incl. E20 compactions, per-scenario tables in both weightings. NEUTRAL-or-better instantiates the Acquisition node in the base (decision 43: every carrier instantiates all six nodes); HARMFUL with a measured loss is reported to the owner, who decides between the OFF null arm and a re-scoped kind (decision 43 forbids a registered absence)."
+  },
+  "plan_kind": "native contact fit",
+  "preparation_base_commit": "0989edb1",
+  "prepared_phase_supply": {
+    "note": "THIS CELL'S OWN artifact, built model-free under its own run id by core.flight.cli prepare-supply in this registration (item E16: a prepared artifact is evidence only for the implementation that produced it, so nothing is inherited from cell B1). Its Perception output was asserted by hand against the sealed cell B1 preparation's own output and matched exactly, which is the model-free proof that this cell's fresh identities and the declared finite-completion key move no knowledge-selection byte. core.flight.repin will find this pin VALID and rebuild nothing. --allow-output-change must never be passed.",
+    "output_sha256": "512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733",
+    "relpath": "prepared/SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-SMOKE-4-V1/phase-supply-v2.json",
+    "sha256": "1702f71f96feb13b340d33c9333a955085200693cb74b0c9c38e8427e8b61c1c"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-21-slurp-plan-acquisition-b9a-v1/protocol-registered-v1.json",
+    "sha256": "9e70605cf6d859ac4e8233ebd1d65ff73bfcfef9644e6b875ecf23767b1e7a2d"
+  },
+  "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist, and not before the registered STOP condition passes (the comparator aggregates of the sealed B1 arm SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2 and of cell B1r reproduce to the hundredth). The gating comparator is the sealed B1 arm; the margins are B1r's own null.",
+  "registered_at_utc": "2026-09-21T16:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-b1r, branch fable/b1r",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true,
+  "purpose": "PRIMARY DELIVERABLES: (1) the official read against the sealed PLAN arm at the plan's own null (h_SLU / h_intent from cell PLANr; the decision-38 fallback 1.2350 / 1.2212 only if PLANr has not read when this cell does, and then stated); (2) the acquisition read: rows on which the Planner routed ACQUIRE, items acquired per acquisition (kind, provenance ids, dedupe drops), the revision that followed and its outcome per row (saves / harms on official SLU and intent restricted to the acquired rows, beside the unacquired rows), the acquisition receipts' custody; (3) the frontier row (decision 75); (4) dispositions incl. E20 compactions, per-scenario tables in both weightings. NEUTRAL-or-better instantiates the Acquisition node in the base (decision 43: every carrier instantiates all six nodes); HARMFUL with a measured loss is reported to the owner, who decides between the OFF null arm and a re-scoped kind (decision 43 forbids a registered absence)."
+}
