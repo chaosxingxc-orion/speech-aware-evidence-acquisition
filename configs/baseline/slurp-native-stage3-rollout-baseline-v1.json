@@ -300,7 +300,7 @@
     },
     {
       "path": "knowledge_stores.train-exemplars.phase_supply.solver.query_source.relpath",
-      "note": "requires only a MODEL-FREE alias/subset export of the pool-side content vectors already sealed for every TRAIN utterance (vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl parent); no encoder contact, unlike the intent-boundary pin above."
+      "note": "CORRECTED 2026-09-22 (preparation note section 4.1): the pool-side content vectors vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl hold only the 1,080 TRAIN Fold A rows (0 rows of R01), so this pin is NOT a model-free alias of sealed vectors; it is the model-free derivative (scripts/build_slurp_query_content_derivative.py, run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1) of preparation 2's own encoder output (SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1), sequenced after it. Original (wrong) note: requires only a MODEL-FREE alias/subset export of the pool-side content vectors already sealed for every TRAIN utterance (vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl parent); no encoder contact, unlike the intent-boundary pin above."
     },
     {
       "path": "knowledge_stores.train-exemplars.phase_supply.solver.query_source.sha256",
