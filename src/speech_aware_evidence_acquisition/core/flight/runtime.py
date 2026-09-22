@@ -2547,6 +2547,120 @@ class FlightRuntime:
             similarity=similarity,
         )
 
+    def _acquisition_requery_binding(self, native_config, supply_for_phase, snapshot):
+        """E36: the flight-owned, model-free knowledge re-query the
+        ``knowledge-requery`` acquisition (E18 kind (a)) runs.
+
+        ``None`` on the unarmed arm and on an armed arm whose policy is not
+        the knowledge-requery kind: kind (b) reaches Perception directly
+        through the acquisition seat's own re-observation node and needs no
+        store access at all, and kind (c) fails closed by name inside
+        ``rails.acquisition`` itself with no registry bound. Armed, this
+        RE-RUNS the exact ``supply_for_phase`` callable the Solver's own
+        supply already is -- same specs, same pinned vector files, same
+        provider factories, same rank/fuse policy -- against the CURRENT
+        trajectory state, then RESTRICTS the result to the caller's state
+        tokens and drops anything the row already holds. Zero model
+        contacts and zero network: every byte comes from the snapshot(s)
+        this runtime already loaded and hash-verified before the flight.
+
+        Item E36 (the B9a arm abort, 2026-09-21): this is the seam
+        ``rails.runner``'s own ``acquisition_requery`` closure looks up on
+        the flight binding by name
+        (``NativeEpisodeRunBinding.acquisition_requery``) and, until this
+        item, found absent on every real flight -- the E18/E32 proofs alone
+        supplied it, through the test harness.
+        """
+
+        if native_config is None or native_config.acquisition_policy_id is None:
+            return None
+        from ...rails.acquisition import (  # noqa: PLC0415
+            KIND_KNOWLEDGE_REQUERY, resolve_acquisition_policy,
+        )
+
+        policy = resolve_acquisition_policy(native_config.acquisition_policy_id)
+        if policy.kind != KIND_KNOWLEDGE_REQUERY:
+            return None
+        from ...rails.acquisition import AcquiredItem  # noqa: PLC0415
+
+        if supply_for_phase is None:
+            # No phase declares any supply at all: the re-query can only
+            # ever find nothing, which is a legal (empty) acquisition.
+            def acquisition_requery(*, phase_id, filters, exclude_value_ids, scope, context):
+                return ()
+
+            return acquisition_requery
+
+        store_binding = getattr(self, "_knowledge_store_binding", None)
+        if store_binding is not None:
+            from ...rails.knowledge_stores import STORE_SEPARATOR  # noqa: PLC0415
+
+            values_by_id = {
+                value.value_id: value
+                for value in store_binding.composite_snapshot.values
+            }
+            store_ids = store_binding.store_ids
+        else:
+            values_by_id = {
+                value.value_id: value
+                for value in (() if snapshot is None else snapshot.values)
+            }
+            store_ids = ()
+            STORE_SEPARATOR = None
+
+        def _source_id(value_id: str) -> str:
+            for candidate in store_ids:
+                if value_id.startswith(f"{candidate}{STORE_SEPARATOR}"):
+                    return candidate
+            return f"phase-supply:{policy.policy_id}"
+
+        def _matches_filters(value, tokens: frozenset) -> bool:
+            if not tokens:
+                return True
+            haystacks = [value.content.casefold()]
+            haystacks.extend(
+                facet_id.casefold() for facet_id in value.associated_facet_ids
+            )
+            return any(
+                token in haystack for token in tokens for haystack in haystacks
+            )
+
+        def acquisition_requery(*, phase_id, filters, exclude_value_ids, scope, context):
+            kinds = scope.get("kinds") if scope else None
+            if kinds is not None and KIND_KNOWLEDGE_REQUERY not in tuple(kinds):
+                raise FlightRuntimeError(
+                    "acquisition_requery was called for a scope that does "
+                    "not admit the knowledge-requery kind"
+                )
+            supply = supply_for_phase(phase_id, context)
+            if supply is None:
+                return ()
+            excluded = frozenset(exclude_value_ids)
+            tokens = frozenset(str(token) for token in filters)
+            items: list = []
+            for value_id in supply.fusion_decision.selected_value_ids:
+                if value_id in excluded:
+                    continue
+                value = values_by_id.get(value_id)
+                if value is None:
+                    # Defensive only: every selected id is already asserted
+                    # to resolve inside a bound snapshot before this seam
+                    # ever runs (rails.knowledge_stores.qualify_supply /
+                    # rails.candidate_semantic_supply's own qualification).
+                    continue
+                if not _matches_filters(value, tokens):
+                    continue
+                items.append(
+                    AcquiredItem(
+                        evidence_id=value_id,
+                        source_id=_source_id(value_id),
+                        content=value.content,
+                    )
+                )
+            return items
+
+        return acquisition_requery
+
     def _prepare(self) -> tuple[Mapping[str, object], str, str, str]:
         """Compose the four fragments, build the adapter, load and
         identity-hash the split.
@@ -5553,6 +5667,17 @@ class FlightRuntime:
                 # pre-E21 tree -- unless the key is armed.
                 knowledge_index=self._knowledge_index_binding(
                     native_config, supply_for_phase
+                ),
+                # Item E36 (the B9a arm abort, 2026-09-21): the
+                # LIVE binding of the E18 kind (a) knowledge
+                # re-query, model-free and built from the same
+                # released, pinned stores the phase supply above
+                # already reads. None -- and therefore byte-
+                # identical to the pre-E36 tree -- unless the
+                # armed acquisition policy is knowledge-requery.
+                acquisition_requery=self._acquisition_requery_binding(
+                    native_config, supply_for_phase,
+                    binding.get("knowledge_snapshot"),
                 ),
             )
         facet_seed, value_seed = self._phase_supply_seeds(
