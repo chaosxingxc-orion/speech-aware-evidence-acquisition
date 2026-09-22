@@ -1,0 +1,150 @@
+{
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 5,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "coverage_by_stratum": {
+    "alarm": {
+      "disagreeing_rows": 29,
+      "disagreement_rate": 0.48333333333333334,
+      "mean_disagreement": 0.17170715650480625,
+      "rows": 60
+    },
+    "audio": {
+      "disagreeing_rows": 6,
+      "disagreement_rate": 0.1,
+      "mean_disagreement": 0.04159023408624886,
+      "rows": 60
+    },
+    "calendar": {
+      "disagreeing_rows": 24,
+      "disagreement_rate": 0.4,
+      "mean_disagreement": 0.15098407156203072,
+      "rows": 60
+    },
+    "cooking": {
+      "disagreeing_rows": 13,
+      "disagreement_rate": 0.21666666666666667,
+      "mean_disagreement": 0.06593636861503735,
+      "rows": 60
+    },
+    "datetime": {
+      "disagreeing_rows": 27,
+      "disagreement_rate": 0.45,
+      "mean_disagreement": 0.21177080112801977,
+      "rows": 60
+    },
+    "email": {
+      "disagreeing_rows": 24,
+      "disagreement_rate": 0.4,
+      "mean_disagreement": 0.19466909388513154,
+      "rows": 60
+    },
+    "general": {
+      "disagreeing_rows": 4,
+      "disagreement_rate": 0.06666666666666667,
+      "mean_disagreement": 0.029716520039100684,
+      "rows": 60
+    },
+    "iot": {
+      "disagreeing_rows": 11,
+      "disagreement_rate": 0.18333333333333332,
+      "mean_disagreement": 0.09229585442269617,
+      "rows": 60
+    },
+    "lists": {
+      "disagreeing_rows": 14,
+      "disagreement_rate": 0.23333333333333334,
+      "mean_disagreement": 0.10875744914114814,
+      "rows": 60
+    },
+    "music": {
+      "disagreeing_rows": 5,
+      "disagreement_rate": 0.08333333333333333,
+      "mean_disagreement": 0.020884176906987725,
+      "rows": 60
+    },
+    "news": {
+      "disagreeing_rows": 16,
+      "disagreement_rate": 0.26666666666666666,
+      "mean_disagreement": 0.13637719045648528,
+      "rows": 60
+    },
+    "play": {
+      "disagreeing_rows": 23,
+      "disagreement_rate": 0.38333333333333336,
+      "mean_disagreement": 0.17881650707359517,
+      "rows": 60
+    },
+    "qa": {
+      "disagreeing_rows": 20,
+      "disagreement_rate": 0.3333333333333333,
+      "mean_disagreement": 0.10909105140513696,
+      "rows": 60
+    },
+    "recommendation": {
+      "disagreeing_rows": 22,
+      "disagreement_rate": 0.36666666666666664,
+      "mean_disagreement": 0.162271666922959,
+      "rows": 60
+    },
+    "social": {
+      "disagreeing_rows": 31,
+      "disagreement_rate": 0.5166666666666667,
+      "mean_disagreement": 0.2066071014120975,
+      "rows": 60
+    },
+    "takeaway": {
+      "disagreeing_rows": 37,
+      "disagreement_rate": 0.6166666666666667,
+      "mean_disagreement": 0.23063606814829846,
+      "rows": 60
+    },
+    "transport": {
+      "disagreeing_rows": 36,
+      "disagreement_rate": 0.6,
+      "mean_disagreement": 0.32365996367417904,
+      "rows": 60
+    },
+    "weather": {
+      "disagreeing_rows": 25,
+      "disagreement_rate": 0.4166666666666667,
+      "mean_disagreement": 0.2247795653043484,
+      "rows": 60
+    }
+  },
+  "disagreement_pair_rate": 0.3398,
+  "disagreement_pairs": 367,
+  "durable_copy": {
+    "analysis_root": "$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-STAGE3-S3-3-DRY-RUN-B2V3-V1",
+    "sha256": {
+      "pairs.json": "eb3e0e39facc2b1f3e9c5591677d6edbb4b6b5bb56a7d06f4154ab6a6a9d197d",
+      "per_row.json": "ae1b090e4da11f6241aa58461f1cbb925a0b1c786f1a6c16b89ce8fd2d70a825",
+      "render-manifest.json": "95cf94f85ebf32047f9c4ba3d2b228974609756a1df734894e428df654f15112",
+      "score-summary.json": "c7187cff6f1925f4e4211b4368cce3ed9aa98efe17c8a985040e504d1acf1f0f"
+    }
+  },
+  "malformed_samples": 29,
+  "note": "Counts and ids only; the per-row file carries official per-sample metrics, never utterance text or gold. The dry run proves the S3-3 CLI end to end (render -> score x5 -> pairs) before ROLL-1 exists; ROLL-1's own S3-3 read re-runs it on the ROLL-1 seal.",
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+    "rows": 1080,
+    "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+  },
+  "rows": 1080,
+  "rows_with_a_malformed_sample": 13,
+  "samples": 5,
+  "schema": "saea-stage3-s3-3-dry-run-receipt-v1",
+  "scorer_id": "slurp-slu-official-train",
+  "sealed_source": {
+    "attempt_id": "attempt-slurp-native-samples5-anchor-train-fold-a-generation-v3",
+    "run_id": "SAEA-SLURP-NATIVE-SAMPLES5-ANCHOR-TRAIN-FOLD-A-V3"
+  },
+  "stage": "S3-3 dry run on the sealed B2 v3 grouped-Solver samples (model-free; scoring copies of sealed outputs)"
+}
