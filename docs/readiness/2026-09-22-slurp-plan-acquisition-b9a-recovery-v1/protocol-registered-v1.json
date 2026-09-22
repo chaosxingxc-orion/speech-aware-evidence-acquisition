@@ -70,14 +70,14 @@
       "attempt_id": "attempt-slurp-native-plan-acquisition-b9a-recovery-smoke-4-generation-v1",
       "baseline_fragment": "configs/baseline/slurp-native-plan-acquisition-b9a-recovery-smoke-4-baseline-v1.json",
       "cell": "slurp-native-plan-acquisition-b9a-recovery-smoke-4-v1",
-      "composed_config_hash": "f340cd870564d0ca52bdd4ede92f1bcd2b75b0cf5d920f0e28db28a33c75efc4",
+      "composed_config_hash": "0aed6d34e08da942e083131239d0eb15991e1e9caf8cab7c86c79c04f50952e5",
       "execution_route": "shared core.flight.lease_cli worker lease plus a standalone core.flight.cli worker attached to the resident session, optionally launched as a Windows Scheduled Task with the battery and idle conditions disabled and no execution time limit (owner decision 24). No campaign, no scorer",
       "experiment": "slurp-native-plan-acquisition-b9a-recovery-smoke-4-v1",
       "experiment_fragment": "configs/experiment/slurp-native-plan-acquisition-b9a-recovery-smoke-4-v1.json",
       "fit_attempt_id": "attempt-slurp-native-plan-acquisition-b9a-recovery-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-RECOVERY-SMOKE-4-FIT-V1",
       "order_constraint": "opens when the GPU is free and no other form smoke is in flight",
-      "protocol_hash": "559aa13e965e862da1bcbe5ea900231cb1fc4848eaaf1c2e510a33ce87bf14fa",
+      "protocol_hash": "016864dbe4e6475c346d5cb39e1f13109eb44c198db69d490606166db57f57ab",
       "readiness": "held; NO decision requirement; this cell's OWN preparation pin",
       "rows": 4,
       "run_id": "SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-RECOVERY-SMOKE-4-V1",
@@ -235,7 +235,7 @@
     "smoke": {
       "output_sha256": "512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733",
       "relpath": "prepared/SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-RECOVERY-SMOKE-4-V1/phase-supply-v2.json",
-      "sha256": "8c7b1bbf417f451df07361f85f09087bc5e96a4ec93b9a950a35071e15b2c261"
+      "sha256": "43227edb62dad711711befd66f437019a955050219db902a88ecb3eff454814e"
     }
   },
   "primary_deliverables": [
