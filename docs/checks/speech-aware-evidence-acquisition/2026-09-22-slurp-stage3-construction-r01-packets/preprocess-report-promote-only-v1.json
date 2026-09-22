@@ -1,0 +1,102 @@
+{
+  "attempt_id": "attempt-packets-stage3-construction-r01-promote-v1",
+  "audio_seconds": 3491.426125,
+  "config_fragments": {
+    "baseline": "speech-native-preprocess",
+    "dataset": "slurp-speech-native-stage3-construction-r01",
+    "experiment": "slurp-stage3-construction-r01-preprocess-recovery-v1",
+    "model": "q4km-preprocess-featcache-cpu-sidecar"
+  },
+  "config_hash": "123d6b63c471b9913dbdbcf137e79ff2c87124b31d7dd0ad66b5d8adab993964",
+  "contacts": 0,
+  "declared_plan": {
+    "basis": "promote-only: zero model contacts, therefore no ExecutionPlan is validated and no attempt budget is reserved; the plan validator and the attempt store both refuse a zero declaration by design and neither is weakened",
+    "calls": 0,
+    "gpu_hours": 0.0,
+    "speech_audio_seconds": 0
+  },
+  "execution_profile": "model-free-check",
+  "failures": [],
+  "fold": null,
+  "generated_at": "2026-09-22T23:11:33.655117+00:00",
+  "gpu_offload": "no server is started: this mode leaves the GPU and both ports untouched",
+  "legacy_cache_warm_before": 800,
+  "mode": "promote-only",
+  "packet_tokens": {
+    "max": 208,
+    "min": 26,
+    "total": 50375
+  },
+  "promote_packets_per_second": 54.1722,
+  "promote_seconds": 14.768,
+  "promote_workers": 8,
+  "promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/STAGE3-CONSTRUCTION-R01-promotion.json",
+  "promotion_receipt_sha256": "a1664e34742dcd2d59c226da701395edf41d150bbbf8db4acc0cdae9c3c0250f",
+  "roster": "stage3-construction-r01-recovery",
+  "rows": 800,
+  "run_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS-RECOVERY-V1/attempt-packets-stage3-construction-r01-promote-v1",
+  "run_id": "SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS-RECOVERY-V1",
+  "schema": "saea-slurp-evo-fold-preprocess-receipt-v1",
+  "session": null,
+  "shared_packet_count": 8,
+  "shared_packets": [
+    {
+      "chunk_count": 1,
+      "existing_encoder_receipt_sha256": "e80c635d7344a9b4181a2b2d81330e35b626a6191fd499f95ac61b15d17d808b",
+      "existing_packet_sha256": "c3febdf5123f3453447c02d0f33be0dcbfb1d316c4f9095a46ba1d705f3fe070",
+      "packet_id": "slurp/train/000260/audio-1488549919",
+      "verified_against_encoder_receipt_sha256": "e5c4a135eef1f2066cd2098f6375ec5d4ab7aea86b12133f8eac8a8ddb5bbf49"
+    },
+    {
+      "chunk_count": 1,
+      "existing_encoder_receipt_sha256": "e80c635d7344a9b4181a2b2d81330e35b626a6191fd499f95ac61b15d17d808b",
+      "existing_packet_sha256": "5d8e58ddd27384fb61afd5c85f411e5c8f8e7d8ee061623ef8025f3e9dcea061",
+      "packet_id": "slurp/train/005769/audio-1499265461",
+      "verified_against_encoder_receipt_sha256": "e5c4a135eef1f2066cd2098f6375ec5d4ab7aea86b12133f8eac8a8ddb5bbf49"
+    },
+    {
+      "chunk_count": 1,
+      "existing_encoder_receipt_sha256": "e80c635d7344a9b4181a2b2d81330e35b626a6191fd499f95ac61b15d17d808b",
+      "existing_packet_sha256": "70a632f3d4b2db2121905da44e4e34b85a82d3d0363a48c2eefda114908cb8ae",
+      "packet_id": "slurp/train/005842/audio-1499688434",
+      "verified_against_encoder_receipt_sha256": "e5c4a135eef1f2066cd2098f6375ec5d4ab7aea86b12133f8eac8a8ddb5bbf49"
+    },
+    {
+      "chunk_count": 1,
+      "existing_encoder_receipt_sha256": "e80c635d7344a9b4181a2b2d81330e35b626a6191fd499f95ac61b15d17d808b",
+      "existing_packet_sha256": "eaee4af13456c08c4dd98468d349feb436364d4156cbb1cc26a3c2e9d71083a3",
+      "packet_id": "slurp/train/010001/audio-1489672906",
+      "verified_against_encoder_receipt_sha256": "e5c4a135eef1f2066cd2098f6375ec5d4ab7aea86b12133f8eac8a8ddb5bbf49"
+    },
+    {
+      "chunk_count": 1,
+      "existing_encoder_receipt_sha256": "e80c635d7344a9b4181a2b2d81330e35b626a6191fd499f95ac61b15d17d808b",
+      "existing_packet_sha256": "e9d40ee3c673114a142db297c3278e937ec25d9fd9f9c05bdab9608d51ab2694",
+      "packet_id": "slurp/train/010852/audio-1490110915",
+      "verified_against_encoder_receipt_sha256": "e5c4a135eef1f2066cd2098f6375ec5d4ab7aea86b12133f8eac8a8ddb5bbf49"
+    },
+    {
+      "chunk_count": 1,
+      "existing_encoder_receipt_sha256": "e80c635d7344a9b4181a2b2d81330e35b626a6191fd499f95ac61b15d17d808b",
+      "existing_packet_sha256": "0caa091d858e187d2ddf03bcdd57aeab65f75a84cd5981b541075f44d75f982b",
+      "packet_id": "slurp/train/013213/audio-1488974550",
+      "verified_against_encoder_receipt_sha256": "e5c4a135eef1f2066cd2098f6375ec5d4ab7aea86b12133f8eac8a8ddb5bbf49"
+    },
+    {
+      "chunk_count": 1,
+      "existing_encoder_receipt_sha256": "e80c635d7344a9b4181a2b2d81330e35b626a6191fd499f95ac61b15d17d808b",
+      "existing_packet_sha256": "09749ea83b0a0e8e32bc78e59dc0adede52d76fb86be85060926d272c588497f",
+      "packet_id": "slurp/train/014931/audio-1490290759",
+      "verified_against_encoder_receipt_sha256": "e5c4a135eef1f2066cd2098f6375ec5d4ab7aea86b12133f8eac8a8ddb5bbf49"
+    },
+    {
+      "chunk_count": 1,
+      "existing_encoder_receipt_sha256": "e80c635d7344a9b4181a2b2d81330e35b626a6191fd499f95ac61b15d17d808b",
+      "existing_packet_sha256": "ceadfbc1700e3b5f62c2d9644b743fbd3d90a67be02f5b3774d5dfd8e0e9af20",
+      "packet_id": "slurp/train/015194/audio-1490007136",
+      "verified_against_encoder_receipt_sha256": "e5c4a135eef1f2066cd2098f6375ec5d4ab7aea86b12133f8eac8a8ddb5bbf49"
+    }
+  ],
+  "split_identity_hash": "2ece5e51ff781fdec89bef8e7448d8ba88249030d3c8a6478dba5e7c1e621dac",
+  "study": "speech-aware-evidence-acquisition"
+}
