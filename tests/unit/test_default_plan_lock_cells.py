@@ -113,3 +113,17 @@ def test_b9a_moves_exactly_the_e18_module_against_the_plan():
     if B9A_SMOKE.exists():
         assert _non_bookkeeping_diff(_load(FLOWN_SMOKE), _load(B9A_SMOKE)) == ["native_episode", "policy"]
 
+
+
+B9A_REC = BASELINES / "slurp-native-plan-acquisition-b9a-recovery-baseline-v1.json"
+B9A_REC_SMOKE = BASELINES / "slurp-native-plan-acquisition-b9a-recovery-smoke-4-baseline-v1.json"
+
+
+def test_the_b9a_recovery_is_the_b9a_arm_byte_for_byte_outside_its_bookkeeping():
+    """The one recovery re-registration of cell B9a (item E36 fixed the runtime binding, not the cell): new ids only."""
+    assert _non_bookkeeping_diff(_load(B9A), _load(B9A_REC)) == []
+    assert _non_bookkeeping_diff(_load(B9A_SMOKE), _load(B9A_REC_SMOKE)) == []
+    rec = _load(B9A_REC)
+    assert rec["policy"] == "phase-native-candidates-review-revise-acquire-v1"
+    assert rec["native_episode"]["acquisition"]["policy"] == "saea-acquire-knowledge-requery-v1"
+    assert "RECOVERY (2026-09-22)" in rec["what_this_is"]
