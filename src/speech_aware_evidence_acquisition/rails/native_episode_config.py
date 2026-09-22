@@ -409,6 +409,24 @@ class NativeEpisodeConfig:
     # row whose roles answer. Declared LAST, for the same reason E20's and
     # E21's fields are.
     react_exhaustion_policy: str = "raise"
+    # Item E36b (2026-09-22, owner decisions 90 and 70): the findings-keyed
+    # requery repair. ``None`` -- every config written before E36b, and every
+    # armed acquisition that does not declare
+    # ``acquisition.budget.max_items_per_acquisition`` -- means the key is
+    # ABSENT, so ``FlightRuntime._acquisition_requery_binding`` keeps running
+    # the pre-E36b re-query (re-filter the Solver's own already-supplied
+    # selection; the flown B9a-rec fragment's exact, byte-reproducible
+    # behaviour). Present, this is the validated
+    # ``rails.acquisition.RetrievalPolicy.as_json()`` document, and its
+    # ``budget.max_items_per_acquisition`` sibling is a positive integer: the
+    # runtime then searches the WHOLE released composite snapshot instead of
+    # the Solver's own already-supplied selection, scored by inverse document
+    # frequency over that snapshot. The two keys are one module --
+    # ``acquisition.retrieval`` present requires
+    # ``acquisition.budget.max_items_per_acquisition`` present and vice
+    # versa -- so a half-armed declaration is refused before any contact.
+    # Declared LAST, for the same reason E20's and E21's fields are.
+    acquisition_retrieval: Mapping[str, object] | None = None
 
     @property
     def acquisition_enabled(self) -> bool:
@@ -432,6 +450,18 @@ class NativeEpisodeConfig:
         if self.acquisition_budget is None:
             return 0
         return int(self.acquisition_budget["contact_budget"])
+
+    @property
+    def max_items_per_acquisition(self) -> int | None:
+        """Item E36b: the most items a findings-keyed re-query may return, or
+        ``None`` when the key is absent (the pre-E36b re-query, unbounded by
+        this knob -- it is bounded by ``rails.acquisition.MAX_ACQUIRED_ITEMS``
+        the same way every acquisition kind already is)."""
+
+        if self.acquisition_budget is None:
+            return None
+        value = self.acquisition_budget.get("max_items_per_acquisition")
+        return None if value is None else int(value)
 
     @property
     def constant_tool_names(self) -> tuple[str, ...] | None:
@@ -602,6 +632,29 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
     model-free kind (``knowledge-requery``, ``tool-acquire``) and 1 for the
     kind that re-observes (``speech-reobserve``). With no acquisition key the
     last term is 0 and the formula is exactly its pre-E18 self.
+
+    ITEM E36b (2026-09-22, owner decisions 90 and 70): two OPTIONAL keys
+    inside an armed ``native_episode.acquisition`` block, spending no
+    contact and moving no term of the ceiling above.
+
+    * ``acquisition.budget.max_items_per_acquisition`` (int, >= 1, bounded by
+      ``rails.acquisition.MAX_ACQUIRED_ITEMS``) -- the most items one
+      ``knowledge-requery`` visit may return.
+    * ``acquisition.retrieval`` -- ``{"policy": <a registered id in
+      rails.acquisition.RETRIEVAL_POLICY_IDS>, "min_token_chars": <int, >=
+      1>, "max_document_frequency": <float in (0, 1]>,
+      "exclude_visible_tokens": <bool>}`` -- the findings-keyed search rule
+      the requery ranks by.
+
+    Both keys are ONE module: declaring either without the other is refused.
+    Absent (both keys), the requery keeps its pre-E36b behaviour byte for
+    byte -- re-running the Solver's own already-prepared supply and
+    restricting it to the state tokens, which the 2026-09-22 B9a-rec read
+    found is empty by construction on every row (the exclusion set and the
+    selection set are the same ids). Present, ``core.flight.runtime.
+    FlightRuntime._acquisition_requery_binding`` instead searches the WHOLE
+    released composite snapshot the flight bound, scored by inverse document
+    frequency over that snapshot's tokens, zero model contacts either way.
     """
     raw = values.get("native_episode")
     active = program.stop_rule == "native-role-episode"
@@ -865,6 +918,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
     acquisition_role = None
     acquisition_policy_id = None
     acquisition_budget = None
+    acquisition_retrieval = None
     if acquisition_armed:
         row = raw_roles[ACQUISITION_ROLE_KIND]
         if (
@@ -889,10 +943,12 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
             "full", 1, None, None, None, tuple(declared_kinds),
         )
         block = raw["acquisition"]
-        if not isinstance(block, Mapping) or set(block) != {"policy", "budget"}:
+        if not isinstance(block, Mapping) or not {"policy", "budget"} <= set(block) <= {
+            "policy", "budget", "retrieval",
+        }:
             raise ValueError(
                 "native_episode.acquisition must be an object with exactly a "
-                "'policy' id and a 'budget'"
+                "'policy' id, a 'budget' and an optional 'retrieval' (item E36b)"
             )
         acquisition_policy_id = block["policy"]
         if not isinstance(acquisition_policy_id, str) or not acquisition_policy_id.strip():
@@ -903,6 +959,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         from .acquisition import (  # noqa: PLC0415
             AcquisitionBudget,
             AcquisitionError,
+            RetrievalPolicy,
             resolve_acquisition_policy,
         )
 
@@ -921,20 +978,54 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
                 "contacts per acquisition"
             )
         budget_block = block["budget"]
-        if not isinstance(budget_block, Mapping) or set(budget_block) != {
+        if not isinstance(budget_block, Mapping) or not {
             "max_acquisitions_per_row", "contact_budget",
+        } <= set(budget_block) <= {
+            "max_acquisitions_per_row", "contact_budget", "max_items_per_acquisition",
         }:
             raise ValueError(
-                "acquisition.budget requires exactly max_acquisitions_per_row "
-                "and contact_budget"
+                "acquisition.budget requires exactly max_acquisitions_per_row, "
+                "contact_budget and an optional max_items_per_acquisition (item E36b)"
+            )
+        # Item E36b: the findings-keyed requery repair is ONE module, not two
+        # independently-armable keys -- a budget cap with no ranking rule, or
+        # a ranking rule with no cap, is a half-armed declaration refused
+        # before any contact, exactly as ``knowledge_index_budget`` requires
+        # its own armed index above.
+        if ("max_items_per_acquisition" in budget_block) != ("retrieval" in block):
+            raise ValueError(
+                "acquisition.budget.max_items_per_acquisition and "
+                "acquisition.retrieval are one module: declare both or neither"
             )
         try:
             budget = AcquisitionBudget(
                 budget_block["max_acquisitions_per_row"],
                 budget_block["contact_budget"],
+                budget_block.get("max_items_per_acquisition"),
             ).validate()
         except AcquisitionError as error:
             raise ValueError(f"acquisition.budget is invalid: {error}") from error
+        if "retrieval" in block:
+            retrieval_block = block["retrieval"]
+            if not isinstance(retrieval_block, Mapping) or set(retrieval_block) != {
+                "policy", "min_token_chars", "max_document_frequency",
+                "exclude_visible_tokens",
+            }:
+                raise ValueError(
+                    "acquisition.retrieval requires exactly policy, "
+                    "min_token_chars, max_document_frequency and "
+                    "exclude_visible_tokens"
+                )
+            try:
+                retrieval_policy = RetrievalPolicy(
+                    retrieval_block["policy"],
+                    retrieval_block["min_token_chars"],
+                    retrieval_block["max_document_frequency"],
+                    retrieval_block["exclude_visible_tokens"],
+                ).validate()
+            except AcquisitionError as error:
+                raise ValueError(f"acquisition.retrieval is invalid: {error}") from error
+            acquisition_retrieval = retrieval_policy.as_json()
         if not 1 <= budget.max_acquisitions_per_row <= revisions:
             # An ACQUIRE spends a revision, exactly as a REVISE and a
             # candidate refresh do, so an allowance larger than the revision
@@ -1281,6 +1372,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         context_fit_policy,
         knowledge_index_json,
         react_exhaustion_policy,
+        acquisition_retrieval,
     )
 
 

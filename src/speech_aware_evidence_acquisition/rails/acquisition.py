@@ -164,10 +164,25 @@ class AcquisitionBudget:
     and ``rails.native_episode_config`` refuses a declaration whose
     ``contact_budget`` is not exactly the arithmetic of its own policy, role
     and revision allowance.
+
+    ``max_items_per_acquisition`` (item E36b, 2026-09-22) is the OPTIONAL
+    third knob: the most items one ``knowledge-requery`` visit may return
+    when it searches the WHOLE released composite snapshot instead of
+    filtering the Solver's own already-supplied selection (the E36 root
+    cause: filtering a phase's own supply against its own exclusion set is
+    empty by construction). ``None`` -- every budget declared before E36b and
+    every OFF arm -- means the key is ABSENT and ``as_json`` renders exactly
+    the two legacy keys, so a config that never mentions it composes and
+    hashes byte-identically to the pre-E36b tree. Present, it must be a
+    positive integer; ``core.flight.runtime.FlightRuntime.
+    _acquisition_requery_binding`` reads it (through
+    ``NativeEpisodeConfig.max_items_per_acquisition``) to decide which of the
+    two re-query implementations to build.
     """
 
     max_acquisitions_per_row: int
     contact_budget: int
+    max_items_per_acquisition: int | None = None
 
     def validate(self) -> "AcquisitionBudget":
         for name in ("max_acquisitions_per_row", "contact_budget"):
@@ -181,13 +196,99 @@ class AcquisitionBudget:
                 "acquisition budget max_acquisitions_per_row must be at least 1; "
                 "an armed acquisition node that may never acquire is the absent key"
             )
+        if self.max_items_per_acquisition is not None:
+            value = self.max_items_per_acquisition
+            if (
+                isinstance(value, bool)
+                or not isinstance(value, int)
+                or value < 1
+                or value > MAX_ACQUIRED_ITEMS
+            ):
+                raise AcquisitionError(
+                    "acquisition budget max_items_per_acquisition must be an "
+                    f"integer between 1 and {MAX_ACQUIRED_ITEMS}"
+                )
         return self
 
     def as_json(self) -> dict[str, int]:
         self.validate()
-        return {
+        document: dict[str, int] = {
             "max_acquisitions_per_row": self.max_acquisitions_per_row,
             "contact_budget": self.contact_budget,
+        }
+        if self.max_items_per_acquisition is not None:
+            document["max_items_per_acquisition"] = self.max_items_per_acquisition
+        return document
+
+
+#: The one registered E36b retrieval policy id. A retrieval block names it
+#: explicitly (rather than leaving it implicit) for the same reason every
+#: other policy id in this module is spelled out: a future second retrieval
+#: rule must not silently change what an existing config runs.
+KNOWLEDGE_REQUERY_RETRIEVAL_POLICY_ID = "saea-requery-idf-v1"
+
+#: Every retrieval policy id ``native_episode.acquisition.retrieval.policy``
+#: may name.
+RETRIEVAL_POLICY_IDS: tuple[str, ...] = (KNOWLEDGE_REQUERY_RETRIEVAL_POLICY_ID,)
+
+
+@dataclass(frozen=True)
+class RetrievalPolicy:
+    """The E36b findings-keyed search rule, and its own tunable parameters.
+
+    Read directly off ``native_episode.acquisition.retrieval`` by
+    ``rails.native_episode_config``; ``core.flight.runtime.
+    FlightRuntime._acquisition_requery_binding`` is the only reader of the
+    validated object. ``min_token_chars`` drops short, low-information query
+    tokens; ``max_document_frequency`` drops query tokens that occur in more
+    than that SHARE of the composite snapshot's values (too common to
+    discriminate); ``exclude_visible_tokens`` drops a query token already
+    present in a value the row already holds, so the search cannot merely
+    re-find what the Solver's own context already covers by type -- exactly
+    the failure mode the 2026-09-22 replay diagnosed in the un-weighted E36
+    predicate (generic slot-contract cards at the top of every row's match
+    list).
+    """
+
+    policy_id: str
+    min_token_chars: int
+    max_document_frequency: float
+    exclude_visible_tokens: bool
+
+    def validate(self) -> "RetrievalPolicy":
+        if self.policy_id not in RETRIEVAL_POLICY_IDS:
+            raise AcquisitionError(
+                f"acquisition retrieval policy {self.policy_id!r} is not registered"
+            )
+        if (
+            isinstance(self.min_token_chars, bool)
+            or not isinstance(self.min_token_chars, int)
+            or self.min_token_chars < 1
+        ):
+            raise AcquisitionError(
+                "acquisition retrieval min_token_chars must be a positive integer"
+            )
+        if (
+            isinstance(self.max_document_frequency, bool)
+            or not isinstance(self.max_document_frequency, (int, float))
+            or not 0.0 < float(self.max_document_frequency) <= 1.0
+        ):
+            raise AcquisitionError(
+                "acquisition retrieval max_document_frequency must be in (0, 1]"
+            )
+        if not isinstance(self.exclude_visible_tokens, bool):
+            raise AcquisitionError(
+                "acquisition retrieval exclude_visible_tokens must be a boolean"
+            )
+        return self
+
+    def as_json(self) -> dict[str, object]:
+        self.validate()
+        return {
+            "policy": self.policy_id,
+            "min_token_chars": self.min_token_chars,
+            "max_document_frequency": float(self.max_document_frequency),
+            "exclude_visible_tokens": self.exclude_visible_tokens,
         }
 
 
@@ -706,8 +807,11 @@ __all__ = [
     "KIND_SPEECH_REOBSERVE",
     "KIND_TOOL_ACQUIRE",
     "KNOWLEDGE_REQUERY_POLICY_ID",
+    "KNOWLEDGE_REQUERY_RETRIEVAL_POLICY_ID",
     "MAX_ACQUIRED_ITEMS",
     "MAX_STATE_FILTERS",
+    "RETRIEVAL_POLICY_IDS",
+    "RetrievalPolicy",
     "SPEECH_REOBSERVE_POLICY_ID",
     "TOOL_ACQUIRE_POLICY_ID",
     "acquired_evidence_template",

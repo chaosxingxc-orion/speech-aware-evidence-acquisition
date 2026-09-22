@@ -1,0 +1,66 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-plan-acquisition-b9a-v2-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-plan-acquisition-b9a-v2-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-plan-acquisition-b9a-v2-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Cell B9a v2 (item E36b, owner decisions 90 and 70): root-registered scaffolding for the findings-keyed acquisition repair, awaiting the owner's admission decision. The design note's own recommendation (docs/superpowers/specs/2026-09-22-e36b-findings-keyed-requery-design.md section 6) is to keep the Acquisition node off the locked plan for the Stage-2 seal and carry this cell into Stage 3; this fragment exists so a later owner GO needs no new config authoring, only a decision file, a prepared first-phase supply and a readiness flip (core.flight.repin), exactly as cell B9a-rec's own admission was granted.",
+        "requirements": [],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-V2-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-20",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-V2-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops cell PLAN and the arm does not open. The resume-recovery clause of owner decision 22 applies to the arm, not to a four-row form smoke, which is re-flown whole if it is re-flown at all.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "slurp-native-plan-acquisition-b9a-v2-smoke-4-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The same unchanged TRAIN Fold A roster the sealed anchor, cell B1 and cell B1r flew; every row is preserved so the paired contrast against the sealed B1 arm covers the whole roster.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Cell B9a-rec: acquisition on demand, kind (a) knowledge-requery (item E18), on the locked default-plan base: PRIMARY DELIVERABLES: (1) the official read against the sealed PLAN arm at the plan's own null (h_SLU / h_intent from cell PLANr; the decision-38 fallback 1.2350 / 1.2212 only if PLANr has not read when this cell does, and then stated); (2) the acquisition read: rows on which the Planner routed ACQUIRE, items acquired per acquisition (kind, provenance ids, dedupe drops), the revision that followed and its outcome per row (saves / harms on official SLU and intent restricted to the acquired rows, beside the unacquired rows), the acquisition receipts' custody; (3) the frontier row (decision 75); (4) dispositions incl. E20 compactions, per-scenario tables in both weightings. NEUTRAL-or-better instantiates the Acquisition node in the base (decision 43: every carrier instantiates all six nodes); HARMFUL with a measured loss is reported to the owner, who decides between the OFF null arm and a re-scoped kind (decision 43 forbids a registered absence). RECOVERY (2026-09-22): run SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-V1 ABORTED at 327 contacts on the first row whose Planner routed ACQUIRE -- the runtime never bound the kind (a) re-query (acquisition_requery), which the E18 / E32 proofs supplied through the test harness only; fixed by item E36 (merged fef4341e: FlightRuntime._acquisition_requery_binding, 14 unit tests incl. two wire proofs re-running the real E32 ACQUIRE->ACCEPT episode with the production binding; unarmed request bytes pinned unchanged). This is the ONE recovery re-registration: new run, attempt, cell and package ids, the whole roster from row one, every cap, roster, prompt, store, geometry and decision rule unchanged; the aborted attempt and its trace are preserved and never reused; the aborted rows were consumed and carry the root cause.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2"
+}
