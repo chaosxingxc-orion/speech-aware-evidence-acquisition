@@ -52,6 +52,9 @@ from pathlib import Path
 from ..config import compose, protocol_hash as compute_protocol_hash
 from .campaign import CampaignCell, CampaignError, load_campaign_cells
 
+#: The preparation runtime's own message for a program without a supplied first phase (item E38).
+NO_SUPPLIED_PHASE_MESSAGE = "program has no supplied first phase to prepare"
+
 SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 _VERSION_PATTERN = re.compile(r"^phase-supply-v(\d+)\.json$")
 _PROTOCOL_DOCUMENT_SHA_PATTERN = re.compile(
@@ -519,8 +522,19 @@ def ensure_artifact_pinned(
             attempt_id=identity.attempt_id,
             output_path=new_absolute,
         )
-    except Exception:
+    except Exception as error:  # noqa: BLE001 -- the baseline is restored verbatim on every failure
         baseline_path.write_text(original_baseline_text, encoding="utf-8", newline="\n")
+        if current_pin is None and NO_SUPPLIED_PHASE_MESSAGE in str(error):
+            # Item E38: a program with no supplied first phase (the direct-only
+            # comparators) has nothing to prepare and nothing to pin. The cell
+            # is flipped on its decision requirement alone; no artifact, no
+            # 'preparation' readiness requirement, no baseline change.
+            return {
+                "rebuilt": False,
+                "pin": None,
+                "skipped": NO_SUPPLIED_PHASE_MESSAGE,
+                "reason": "the program declares no supplied phase, so no prepared artifact exists for this cell",
+            }
         raise
     new_sha256 = receipt.get("sha256") if isinstance(receipt, Mapping) else None
     if not isinstance(new_sha256, str) or SHA256_PATTERN.fullmatch(new_sha256) is None:

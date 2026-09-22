@@ -581,3 +581,69 @@ def test_a_missing_preparation_requirement_is_created_on_first_pin(tmp_path):
     doc = json.loads(exp.read_text(encoding="utf-8"))
     assert len(doc["cells"][0]["readiness"]["requirements"]) == 1
     assert doc["cells"][0]["readiness"]["requirements"][0]["sha256"] == "b" * 64
+
+
+# --------------------------------------------------------------------------
+# Item E38: a direct-only cell (no supplied first phase) flips without a pin.
+# --------------------------------------------------------------------------
+
+
+class FakeNoSupply(Fake):
+    """A ``prepare_supply_fn`` that behaves like the real one on a program
+    without a supplied first phase: it raises the preparation runtime's own
+    message and writes nothing."""
+
+    def __call__(self, *, run_id, output_path, **kwargs):
+        self.calls.append({"run_id": run_id, "output_path": str(output_path), **kwargs})
+        raise RuntimeError("PreparationError: program has no supplied first phase to prepare")
+
+
+def _make_direct_only(pkg: dict) -> None:
+    """Turn the synthetic package into a direct-only cell: no baseline pin, no
+    'preparation' readiness requirement, no protocol-document pin, and every
+    registered hash rewritten to the pin-free identity -- committed clean."""
+    repo = pkg["repo"]
+    baseline = repo / "configs/baseline/baseline-1.json"
+    document = json.loads(baseline.read_text(encoding="utf-8"))
+    document.pop("prepared_phase_supply")
+    _write(baseline, document)
+    experiment_path = repo / "configs/experiment" / f"{EXPERIMENT_ID}.json"
+    experiment = json.loads(experiment_path.read_text(encoding="utf-8"))
+    readiness = experiment["cells"][0]["readiness"]
+    readiness["requirements"] = [r for r in readiness["requirements"] if r.get("kind") != "preparation"]
+    _write(experiment_path, experiment)
+    protocol = json.loads(pkg["protocol_document_path"].read_text(encoding="utf-8"))
+    protocol["cell"].pop("prepared_phase_supply", None)
+    _write(pkg["protocol_document_path"], protocol)
+    composed = compose(repo, "model-1", "dataset-1", "baseline-1", EXPERIMENT_ID)
+    new_config = composed.config_hash
+    new_protocol = protocol_hash(new_config, "test-arm", split_identity_hash(prefixed(CARRIER_LOCK_KEY, IDS)))
+    targets = [p for p in pkg["readiness_dir"].glob("*") if p.is_file()] + [pkg["preregistration_path"], pkg["ledger_path"]]
+    for path in targets:
+        text = path.read_text(encoding="utf-8")
+        text = text.replace(pkg["old_config_hash"], new_config).replace(pkg["old_protocol_hash"], new_protocol)
+        path.write_text(text, encoding="utf-8", newline="\n")
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-q", "-m", "a direct-only cell: no supplied phase, no pin")
+
+
+def test_a_cell_without_a_supplied_phase_flips_on_its_decision_alone(tmp_path):
+    pkg = build_package(tmp_path)
+    _make_direct_only(pkg)
+    baseline = pkg["repo"] / "configs/baseline/baseline-1.json"
+    decision_path = pkg["data"] / "coordination/decision.json"
+    _write(decision_path, {"decision_id": "decision-1", "eligible_run_ids": [RUN_ID]})
+    fake = FakeNoSupply()
+    summary = run(pkg, fake, decision=("coordination/decision.json", "decision-1"), set_ready=True)
+    assert fake.calls and fake.calls[0]["run_id"] == RUN_ID
+    report = summary["cells"][0]["artifact"]
+    assert report["rebuilt"] is False and report["pin"] is None
+    assert report["skipped"] == "program has no supplied first phase to prepare"
+    after = json.loads(baseline.read_text(encoding="utf-8"))
+    assert "prepared_phase_supply" not in after
+    experiment = json.loads((pkg["repo"] / f"configs/experiment/{EXPERIMENT_ID}.json").read_text(encoding="utf-8"))
+    readiness = experiment["cells"][0]["readiness"]
+    assert readiness["state"] == "ready"
+    kinds = [entry["kind"] for entry in readiness["requirements"]]
+    assert "decision" in kinds and "preparation" not in kinds
+    assert not list((pkg["data"] / "prepared" / RUN_ID).glob("phase-supply-v2.json"))
