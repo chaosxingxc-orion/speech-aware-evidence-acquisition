@@ -122,6 +122,14 @@ ALLOWLIST: dict[str, tuple[str, str]] = {
         "The four-row smoke of the cell above, pinned by the same package "
         "(smoke-generation-plan-registered-v1.json) and the same ledger rows.",
     ),
+    "slurp-stage3-construction-r01-preprocess-recovery-v1": (
+        "none",
+        "The one recovery of the S3-1 packet promotion (run "
+        "SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS-RECOVERY-V1), registered in the "
+        "exposure ledger and IN FLIGHT from study commit c2df0d40 when decision 101's "
+        "label landed; its composed hash is recorded by the run's own receipt, so the "
+        "fragment is not edited. Label is prose in the preparations note (section 7).",
+    ),
     "slurp-stage3-construction-r01-preprocess": (
         "none",
         "The S3-1 packet-promotion preparation (SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS). "

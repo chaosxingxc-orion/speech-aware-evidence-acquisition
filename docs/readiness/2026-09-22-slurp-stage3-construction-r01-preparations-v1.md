@@ -334,7 +334,7 @@ it. Encode 72 ok / 728 failed; the driver refused to promote a partial cache; no
 scoped to `--port 8080` in both entry scripts. The one recovery is `SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS-RECOVERY-V1`
 (roster key `stage3-construction-r01-recovery`, own run id because the plan budget is cumulative per run id; identical
 form and target receipt), registered in the ledger before its first contact. Rule for the recovery: no serving task start or
-stop while the sidecar runs.
+stop while the sidecar runs. Stage-3 algorithm label (decision 101): `none`, as for the original registration; the recovery fragment is allowlisted in `scripts/checks/stage3_algorithm_label_check.py` because it was in flight when the label landed.
 
 ## Stage-3 algorithm label (owner decision 101)
 
