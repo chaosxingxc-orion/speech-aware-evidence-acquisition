@@ -13,19 +13,19 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "Registered 2026-09-22 by the coordinator as pruning cell P0 (owner decisions 85 and 97; base = cell R-PRIM, decision 97): review-off: native_episode.roles.reviewer.max_iterations 3 -> 0, roles.planner.max_iterations 1 -> 0, max_revisions 1 -> 0 (the item-E1 / cell-B0 form: Perception -> Solver -> Delivery; everything else byte-identical to the base). Derived from configs/experiment/slurp-native-review-primitives-smoke-4-v1.json by scripts/flights/batch/derive_pruning_cells.py; readiness flips only through scripts/flights/repin_cell.py after the decision receipt is minted. Stage-3 algorithm label (decision 101): none -- a pruning cell on the locked plan carries no training-free RL operator.",
-        "state": "held",
+        "state": "ready",
         "requirements": [
           {
             "kind": "decision",
             "expected_decision_id": "slurp-prune-review-off-admission-v1",
             "relpath": "coordination/slurp-prune-review-off-v1/root-admission-v1.json",
-            "sha256": "ee91590b2814ba8f05acae9e5a2657a63bf839c934eae118864e94384cb7cbec",
+            "sha256": "e40c755427be89ceb80a122d38f225efc6937b5b9d5d876715289cd2b49a5d86",
             "reason": "Decision slurp-prune-review-off-admission-v1 pinned by scripts/flights/repin_cell.py."
           },
           {
             "kind": "preparation",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-PRUNE-REVIEW-OFF-SMOKE-4-V1/phase-supply-v1.json",
-            "sha256": "b551ed25b1214ec9d68cae0be7833a24f943a01b0a9a6053abfff47c1575f1cb",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-PRUNE-REVIEW-OFF-SMOKE-4-V1/phase-supply-v2.json",
+            "sha256": "3a80e313867a59e93d08ec7eef8f195bc7fbdf5bdcf1e33034244d7120448026",
             "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
           }
         ]
