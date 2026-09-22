@@ -9,39 +9,29 @@ mass." :func:`select_stage3_delta_values` is exactly that rule, as a pure,
 fully tested function over already-loaded delta rows -- no store I/O, no
 model contact, no knowledge-store binding.
 
-A DOCUMENTED SCOPE DECISION: the spec's own prose names ``context_supply``
-as the field, but ``rails.knowledge_stores.build_knowledge_store_supply``
-hard-codes ``context_supply`` to accept EXACTLY one provider today
-(``rails.governed_context_supply.SOURCE_SCOPED_CONTEXT_PROVIDER_ID``, a
-source-scoped mechanism with no candidate-binding and no cap at all --
-``set(raw_spec) != {"provider"}`` refuses any other shape outright). The
-mechanism that actually IS candidate-bound and capped in this codebase is
-``candidate_supply`` (the slot-contracts store's own routing, which the
-spec's prose also names: "the same candidate-bound routing the slot-
-contracts store uses") -- but ``rails.candidate_semantic_supply.
-load_candidate_semantic_supply_specs`` hard-codes ``candidate_supply`` to
-exactly two store roles (``slot-contracts``, ``parameter-meaning``), and its
-selection algorithm is per-candidate round-robin, not a flat top-N by
-``prior_score``.
-
-Extending either hard-coded dispatcher to a third, not-yet-released store
-role is real surgery to shared code two other admitted stores route
-through today (``rails/knowledge_stores.py``, ``rails/
-candidate_semantic_supply.py``), and this package cannot integration-test
-that surgery against a live flight (flying is out of scope here, and this
-store's own release does not exist yet -- config pins below are all
-``PENDING_``). Rather than land an unverified change to code a live
-campaign depends on, this module delivers the SELECTION ALGORITHM itself,
-fully tested on synthetic fixtures. A real, registered
-``rails.knowledge_provider.KnowledgeProvider`` (``Stage3DeltaCandidateProvider``,
-registered under :data:`STAGE3_DELTA_CONTEXT_PROVIDER_ID` in
-``core.base.KNOWLEDGE_PROVIDERS`` from ``rails/knowledge_provider.py``, the
-canonical registration site) wraps this algorithm so a config fragment's
-``"provider": "stage3-delta-candidate-bound-v1"`` resolves honestly; what
-remains a named root follow-up is ONLY the dispatcher recognizing that
-provider id inside ``build_knowledge_store_supply``'s ``context_supply``
-branch (or a new ``candidate_supply`` role branch) -- see the S3-6 readiness
-package README.
+ROOT WIRING (S3-6w, 2026-09-22): ``rails.knowledge_stores.
+build_knowledge_store_supply``'s ``context_supply`` dispatcher now
+recognises a ``store_role: "stage3-deltas"`` store declaring
+``{"provider": STAGE3_DELTA_CONTEXT_PROVIDER_ID, "candidate_state_phase",
+"cap", "rank_by": "prior_score"}`` -- the SAME field the spec's own prose
+names, and the same shape the delta-cell baseline fragments
+(``configs/baseline/slurp-native-stage3-delta-cell-*-v1.json``) already
+carried. The pre-existing ``context_supply`` shape (the source-scoped
+provider, ``set(raw_spec) == {"provider"}``) is completely unchanged; the
+router now branches on ``raw_spec["provider"]`` instead of hard-coding one
+provider id. The router's own collision guard (rule 1, module comment in
+``rails/knowledge_stores.py``) is narrowed the same way: a stage3-deltas
+store's context_supply may now coexist with a DIFFERENT store's
+candidate_supply on the same phase -- this program's anchor case,
+``stage3-deltas`` ``context_supply.solver`` alongside ``slot-contracts``
+``candidate_supply.solver`` -- while the source-scoped provider keeps
+refusing that overlap exactly as before. See
+``rails.knowledge_stores._stage3_delta_local_supply`` (the glue that reads
+the row's Perception candidate intents, then routes them through
+:class:`~.knowledge_provider.Stage3DeltaCandidateProvider`) and
+``tests/unit/test_stage3_delta_supply_router.py``. What remains PENDING is
+only the store's own release (S3-5) and a root admission decision to fly
+it -- never the routing.
 """
 
 from __future__ import annotations
@@ -52,6 +42,10 @@ from typing import Mapping, Sequence
 from .errors import RailsError
 
 STAGE3_DELTA_CONTEXT_PROVIDER_ID = "stage3-delta-candidate-bound-v1"
+#: The named knowledge store role this provider is scoped to (S3-6 root
+#: wiring: rails.knowledge_stores.build_knowledge_store_supply refuses
+#: this provider id on any other store_role).
+STAGE3_DELTA_STORE_ROLE = "stage3-deltas"
 DEFAULT_STAGE3_DELTA_CAP = 8
 
 
@@ -140,6 +134,7 @@ def stage3_delta_selection_receipt(
 __all__ = [
     "DEFAULT_STAGE3_DELTA_CAP",
     "STAGE3_DELTA_CONTEXT_PROVIDER_ID",
+    "STAGE3_DELTA_STORE_ROLE",
     "DeltaCandidate",
     "Stage3DeltaSupplyError",
     "select_stage3_delta_values",

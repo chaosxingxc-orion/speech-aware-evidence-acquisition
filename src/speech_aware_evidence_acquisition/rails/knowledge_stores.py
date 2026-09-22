@@ -13,7 +13,7 @@ from typing import Mapping
 from ..core.base import KNOWLEDGE_FUSERS, KNOWLEDGE_RANKERS
 
 from .controllers import PhaseSupply
-from .knowledge import FusionDecision, RankResult
+from .knowledge import AgentStateArtifact, FusionDecision, RankedFacet, RankResult
 from .errors import RailsError
 from .hashing import content_hash
 from .knowledge import KnowledgeSnapshot
@@ -430,6 +430,15 @@ def build_knowledge_store_supply(
 
     from .knowledge_provider import resolve_provider
 
+    from .stage3_delta_supply import (
+        STAGE3_DELTA_CONTEXT_PROVIDER_ID,
+        STAGE3_DELTA_STORE_ROLE,
+    )
+    from .slurp_intent_hypotheses import (
+        SlurpIntentHypothesisError,
+        parse_slurp_intent_hypothesis_state,
+    )
+
     if isinstance(on_demand_store_ids, (str, bytes)):
         raise KnowledgeStoreError("on-demand stores must be an explicit sequence of store IDs")
     requested = tuple(on_demand_store_ids)
@@ -465,28 +474,165 @@ def build_knowledge_store_supply(
         candidate_inventory_authority=candidate_inventory_authority,
     )
     first_phase = program.phase_names()[0]
+
+    def _build_stage3_delta_provider(store):
+        """Resolve and build the registered Stage3DeltaCandidateProvider
+        over one store released delta pool. Re-derived per call, never
+        cached on the router, mirroring the source-scoped provider own
+        re-resolve-per-call precedent just below."""
+
+        provider = resolve_provider(STAGE3_DELTA_CONTEXT_PROVIDER_ID)
+        provider.build(
+            [value.as_json() for value in store.snapshot.values],
+            policy_id=store.snapshot.builder_policy_id,
+        )
+        return provider
+
+    def _validate_stage3_delta_context_spec(raw_spec, *, store, phase):
+        phases = program.phase_names()
+        candidate_state_phase = raw_spec.get("candidate_state_phase")
+        cap = raw_spec.get("cap")
+        if (
+            store.store_role != STAGE3_DELTA_STORE_ROLE
+            or set(raw_spec) != {"provider", "candidate_state_phase", "cap", "rank_by"}
+            or raw_spec.get("rank_by") != "prior_score"
+            or not isinstance(candidate_state_phase, str)
+            or candidate_state_phase not in phases
+            or phase not in phases
+            or phase == first_phase
+            or program.phase(phase).knowledge != "supplied"
+            or phases.index(candidate_state_phase) >= phases.index(phase)
+            or isinstance(cap, bool)
+            or not isinstance(cap, int)
+            or cap < 1
+        ):
+            raise KnowledgeStoreError(
+                "stage3-deltas context_supply requires a candidate-bound, capped, "
+                "prior_score-ranked spec on a later supplied phase"
+            )
+
+    def _stage3_delta_local_supply(store, raw_spec, context):
+        """Candidate-bound, prior_score-capped Solver supply for one
+        stage3-deltas store (S3-6): read the row Perception candidate
+        intents off the configured candidate_state_phase state, then
+        route them through the registered Stage3DeltaCandidateProvider
+        (rails.stage3_delta_supply.select_stage3_delta_values does the
+        actual selection)."""
+
+        candidate_state_phase = raw_spec["candidate_state_phase"]
+        cap = raw_spec["cap"]
+        query_state = getattr(context, "query_state", None)
+        if query_state is None:
+            raise KnowledgeStoreError("stage3-deltas context_supply requires a QueryState")
+        sample_id = getattr(context, "sample_id", None)
+        states = getattr(context, "agent_states", ())
+        expected_kind = f"phase:{candidate_state_phase}"
+        matches = tuple(
+            state for state in states
+            if isinstance(state, AgentStateArtifact) and state.state_kind == expected_kind
+        )
+        if len(matches) != 1:
+            raise KnowledgeStoreError(
+                f"stage3-deltas context_supply requires exactly one source-bound "
+                f"{candidate_state_phase!r} state, got {len(matches)}"
+            )
+        legal = tuple(legal_candidate_ids or ())
+        if not legal:
+            raise KnowledgeStoreError(
+                "stage3-deltas context_supply requires the task adapter authoritative "
+                "legal candidate inventory"
+            )
+        try:
+            hypothesis_state = parse_slurp_intent_hypothesis_state(
+                matches[0],
+                expected_sample_id=str(sample_id),
+                legal_intent_ids=legal,
+                max_candidates=len(frozenset(legal)),
+            )
+        except SlurpIntentHypothesisError as error:
+            raise KnowledgeStoreError(str(error)) from error
+        candidate_facet_ids = tuple(item.intent_id for item in hypothesis_state.candidates)
+
+        provider = _build_stage3_delta_provider(store)
+        ranking = provider.candidates(candidate_facet_ids, k=cap)
+        selected_ids = tuple(entry.entry_id for entry in ranking.entries)
+        by_id = {value.value_id: value for value in store.snapshot.values}
+        supporting: dict[str, None] = {}
+        for value_id in selected_ids:
+            for facet_id in by_id[value_id].associated_facet_ids:
+                supporting.setdefault(facet_id, None)
+        supporting_facet_ids = tuple(supporting)
+        query_hash = query_state.content_hash()
+        rank_result = RankResult(
+            snapshot_sha256=store.snapshot.content_hash(),
+            query_state_sha256=query_hash,
+            ranking_policy_id=STAGE3_DELTA_CONTEXT_PROVIDER_ID,
+            candidates=tuple(
+                RankedFacet(facet_id=facet_id, score=float(len(supporting_facet_ids) - index))
+                for index, facet_id in enumerate(supporting_facet_ids)
+            ),
+        ).validate()
+        fusion_decision = FusionDecision(
+            snapshot_sha256=store.snapshot.content_hash(),
+            query_state_sha256=query_hash,
+            rank_result_sha256=rank_result.content_hash(),
+            fusion_policy_id=STAGE3_DELTA_CONTEXT_PROVIDER_ID,
+            supporting_facet_ids=supporting_facet_ids,
+            selected_value_ids=selected_ids,
+        ).validate()
+        return PhaseSupply(
+            rank_result=rank_result,
+            fusion_decision=fusion_decision,
+            action_target_ref=f"{STAGE3_DELTA_CONTEXT_PROVIDER_ID}:cap={cap}",
+        ).validate()
+
     for store_id in binding.store_ids:
         store = binding.store(store_id)
         for phase, raw_spec in store.context_supply.items():
-            if (
-                not isinstance(phase, str)
-                or not isinstance(raw_spec, Mapping)
-                or set(raw_spec) != {"provider"}
-                or raw_spec["provider"] != SOURCE_SCOPED_CONTEXT_PROVIDER_ID
-                or phase not in program.phase_names()
-                or phase == first_phase
-                or program.phase(phase).knowledge != "supplied"
-            ):
+            if not isinstance(phase, str) or not isinstance(raw_spec, Mapping):
                 raise KnowledgeStoreError(
-                    "context_supply requires a later supplied phase and the source-scoped provider"
+                    "context_supply requires a later supplied phase and a recognised provider"
+                )
+            provider_id = raw_spec.get("provider")
+            if provider_id == SOURCE_SCOPED_CONTEXT_PROVIDER_ID:
+                if (
+                    set(raw_spec) != {"provider"}
+                    or phase not in program.phase_names()
+                    or phase == first_phase
+                    or program.phase(phase).knowledge != "supplied"
+                ):
+                    raise KnowledgeStoreError(
+                        "context_supply requires a later supplied phase and the source-scoped provider"
+                    )
+            elif provider_id == STAGE3_DELTA_CONTEXT_PROVIDER_ID:
+                _validate_stage3_delta_context_spec(raw_spec, store=store, phase=phase)
+            else:
+                raise KnowledgeStoreError(
+                    f"context_supply names an unrecognised provider {provider_id!r}"
                 )
             context_specs[(store_id, phase)] = raw_spec
         if store.context_supply:
-            # Prove scope/provenance compatibility before any runtime contact.
-            resolve_provider(
-                SOURCE_SCOPED_CONTEXT_PROVIDER_ID,
-                snapshot=store.snapshot, value_id_namespace=store_id,
-            )
+            providers_used = {raw["provider"] for raw in store.context_supply.values()}
+            if SOURCE_SCOPED_CONTEXT_PROVIDER_ID in providers_used:
+                # Prove scope/provenance compatibility before any runtime contact.
+                resolve_provider(
+                    SOURCE_SCOPED_CONTEXT_PROVIDER_ID,
+                    snapshot=store.snapshot, value_id_namespace=store_id,
+                )
+            if STAGE3_DELTA_CONTEXT_PROVIDER_ID in providers_used:
+                # Prove the delta pool builds cleanly before any runtime contact.
+                _build_stage3_delta_provider(store)
+    if (
+        legal_candidate_ids is None
+        and any(
+            raw_spec["provider"] == STAGE3_DELTA_CONTEXT_PROVIDER_ID
+            for raw_spec in context_specs.values()
+        )
+    ):
+        raise KnowledgeStoreError(
+            "stage3-deltas context_supply requires the task adapter authoritative "
+            "legal candidate inventory"
+        )
     for store_id in binding.store_ids:
         store = binding.store(store_id)
         scoped_phases = {phase for (owner, phase) in context_specs if owner == store_id}
@@ -524,7 +670,21 @@ def build_knowledge_store_supply(
         # The ONLY new admission: this store's own explicit phase_supply on
         # a LATER phase may now coexist with a DIFFERENT store's candidate
         # supply on that same phase.
-        collisions = scoped_phases.intersection(candidate_specs)
+        #
+        # S3-6 (2026-09-22) ONE MORE admission, deliberately narrow: a
+        # stage3-deltas store's OWN context_supply (the new candidate-bound,
+        # prior_score-capped route) may ALSO coexist with a DIFFERENT
+        # store's candidate_supply on the same phase -- this program's
+        # anchor case, stage3-deltas context_supply.solver alongside
+        # slot-contracts candidate_supply.solver. The source-scoped
+        # context_supply provider keeps refusing that overlap exactly as
+        # before; only phases the CURRENT store routes through the
+        # stage3-delta provider are excused from rule 1.
+        stage3_delta_scoped_phases = {
+            phase for phase in scoped_phases
+            if context_specs[(store_id, phase)]["provider"] == STAGE3_DELTA_CONTEXT_PROVIDER_ID
+        }
+        collisions = (scoped_phases - stage3_delta_scoped_phases).intersection(candidate_specs)
         if first_phase in specs and first_phase in candidate_specs:
             collisions.add(first_phase)
         for phase in specs:
@@ -631,6 +791,9 @@ def build_knowledge_store_supply(
     def route(store_id, phase, context):
         if (store_id, phase) in context_specs:
             store = binding.store(store_id)
+            raw_spec = context_specs[(store_id, phase)]
+            if raw_spec["provider"] == STAGE3_DELTA_CONTEXT_PROVIDER_ID:
+                return _stage3_delta_local_supply(store, raw_spec, context)
             query_state = getattr(context, "query_state", None)
             provider = resolve_provider(
                 SOURCE_SCOPED_CONTEXT_PROVIDER_ID,
