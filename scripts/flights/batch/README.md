@@ -12,6 +12,8 @@ session restart wiped it mid-campaign; from now on they live here and every sche
 | `gpu_ramp_test.sh` | the non-model GPU preflight (fp16 matmul burst; refuse below 30 TFLOP/s) |
 | `batch_driver_task.sh`, `batch_chain_*.sh` | scheduled-task entry points: pin the batch flight worktree at a flight commit, write the queue, run the driver |
 | `serving_task_entry*.sh`, `serving_monitor_start*.sh`, `serving_switch_to_e21.sh`, `e21_wait_ready.sh` | the resident serving sessions per geometry (SLURP np4; E21 cddb000c np4 max1024) and their monitors |
+| `serving_switch_to_slurp.sh`, `slurp_wait_ready.sh` | the reverse geometry switch after the E35 seal (stop the E21 session, then the SLURP tasks restart from Windows) and its readiness wait |
+| `repin_cell_generic.sh`, `rprim_repin_smoke.sh`, `rprim_repin_arm.sh`, `rprim_flip_both.sh`, `batch_chain_rprim.sh` | the per-cell re-pin flip (environment-parameterised) with the R-PRIM callers, and the R-PRIM queue chain (smoke, then the 1,080-row arm) |
 | `lease_reconcile_e35.sh` | the flight-lock quiescence receipt + move-aside after an abort (never deletes `generation.guard`) |
 | `repin_loop_generic.sh`, `b1_check_summary.py` | the readiness flip loop around `scripts/flights/repin_cell.py` |
 | `e35_check.sh`, `e35_rehash.py`, `e35_done_wait.sh`, `b6_read.sh`, `b9arec_read.sh`, `b9arec_acquisition_read.py`, `e36b_replay.py` | the model-free registration re-hash, flight checks and stage reads used in the 2026-09-22 seal flights |
