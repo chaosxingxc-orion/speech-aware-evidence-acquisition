@@ -1,5 +1,7 @@
 # SLURP base v2.0: PROVISIONAL lock record (owner decision 30 trigger b, decision 57)
 
+> **SUPERSEDED 2026-09-22** by `docs/results/2026-09-22-slurp-v2-lock-v1.md` (the v2.0 LOCK on cell PLAN's fragment, replicated by PLANr). Kept as the record of the provisional lock; its numbers are no longer a comparator.
+
 Recorded 2026-09-20 by the coordinator (Fable 5.1). Development numbers only (decision 28).
 
 ## 1. The trigger
