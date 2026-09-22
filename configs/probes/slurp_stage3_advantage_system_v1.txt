@@ -1,0 +1,1 @@
+You are reviewing two candidate answers to one spoken-language-understanding request, produced by the same policy under independent sampling. You will be shown the two answers and the correct answer, and asked to state, in a fixed three-line form, what distinguished the better answer from the worse one. Answer for this one row only, and answer exactly once.

@@ -1513,9 +1513,11 @@ from .semantic_knowledge_build import (  # noqa: E402
     FACTORED_INTENT_BOUNDARY_BUILD_POLICY_ID,
     INTENT_BOUNDARY_BUILD_POLICY_ID,
     SLOT_CONTRACT_BUILD_POLICY_ID,
+    STAGE3_DELTA_BUILD_POLICY_ID,
     build_factored_intent_boundary_snapshot,
     build_intent_boundary_snapshot,
     build_slot_contract_snapshot,
+    build_stage3_delta_snapshot,
 )
 
 KNOWLEDGE_BUILDERS.register(
@@ -1528,14 +1530,23 @@ KNOWLEDGE_BUILDERS.register(
 KNOWLEDGE_BUILDERS.register(
     SLOT_CONTRACT_BUILD_POLICY_ID, build_slot_contract_snapshot
 )
+# Stage-3 S3-5 (2026-09-22): the append-only delta store's builder,
+# registered the same way its two authored siblings above are -- the
+# canonical registration site stays here even though the compiler itself
+# lives beside the shared knowledge contracts in semantic_knowledge_build.py.
+KNOWLEDGE_BUILDERS.register(
+    STAGE3_DELTA_BUILD_POLICY_ID, build_stage3_delta_snapshot
+)
 
 __all__ += [
     "FACTORED_INTENT_BOUNDARY_BUILD_POLICY_ID",
     "INTENT_BOUNDARY_BUILD_POLICY_ID",
     "SLOT_CONTRACT_BUILD_POLICY_ID",
+    "STAGE3_DELTA_BUILD_POLICY_ID",
     "build_factored_intent_boundary_snapshot",
     "build_intent_boundary_snapshot",
     "build_slot_contract_snapshot",
+    "build_stage3_delta_snapshot",
 ]
 
 

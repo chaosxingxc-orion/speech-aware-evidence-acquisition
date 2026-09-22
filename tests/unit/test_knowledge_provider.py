@@ -457,6 +457,13 @@ def test_knowledge_providers_registry_resolves_every_registered_provider():
         "slurp-candidate-semantic-v1",
         "audio2tool-candidate-semantic-v1",
         "source-scoped-context-v1",
+        # Stage-3 S3-6 (2026-09-22): the stage3-deltas store's candidate-bound,
+        # prior_score-capped selector. Registered so a baseline fragment's
+        # "provider": "stage3-delta-candidate-bound-v1" resolves honestly; NOT
+        # YET reachable from a live flight (rails/stage3_delta_supply.py module
+        # docstring: build_knowledge_store_supply does not recognize this
+        # provider id in its context_supply/candidate_supply dispatch yet).
+        "stage3-delta-candidate-bound-v1",
     }
 
 

@@ -19,6 +19,15 @@ from .knowledge import (
 INTENT_BOUNDARY_BUILD_POLICY_ID = "saea-authored-intent-boundaries-v1"
 FACTORED_INTENT_BOUNDARY_BUILD_POLICY_ID = "saea-authored-intent-boundaries-factored-v1"
 SLOT_CONTRACT_BUILD_POLICY_ID = "saea-authored-slot-contracts-v1"
+#: Stage-3 S3-5 (2026-09-22): the append-only, provenance-tagged delta store
+#: (ACE grow-and-refine). Its authored rows are ALREADY the exact
+#: ValueBundle fields (S3-5's curator -- ``scripts/build_slurp_stage3_
+#: delta_store.py``, not this module -- computes ``value_id``,
+#: ``associated_facet_ids``, ``source_sample_ids``, ``provenance_refs``,
+#: ``task_target`` and ``prior_score`` before this builder ever sees them),
+#: so this builder compiles rather than derives, unlike every builder above.
+STAGE3_DELTA_BUILD_POLICY_ID = "saea-authored-stage3-deltas-v1"
+STAGE3_DELTA_DIMENSION = "stage3-delta-target"
 SHARED_INTENT_GUIDANCE_VALUE_ID = "intent-boundary:shared-guidance"
 _SHARED_INTENT_GUIDANCE_SCOPE = (
     "Shared guidance for all intent-boundary values in this store."
@@ -35,6 +44,11 @@ _SLOT_KEYS = {
     "slot_id", "intent_bindings", "extraction_cues", "admissible_formats",
     "missing_behavior", "ambiguity_behavior", "limitations", "source_support",
 }
+_STAGE3_DELTA_KEYS = {
+    "value_id", "content", "associated_facet_ids", "source_sample_ids",
+    "provenance_refs", "task_target", "prior_score",
+}
+_DELTA_VALUE_ID = re.compile(r"delta:[0-9]+:[0-9a-f]{12}")
 
 
 @dataclass(frozen=True)
@@ -410,13 +424,137 @@ def build_slot_contract_snapshot(
     )
 
 
+def build_stage3_delta_snapshot(
+    spec: AuthoredSemanticKnowledgeSpec,
+    *,
+    rows: Sequence[Mapping[str, object]],
+    forbidden_sample_ids: frozenset[str] = frozenset(),
+) -> KnowledgeSnapshot:
+    """Compile S3-5's curated, append-only authored delta rows.
+
+    Unlike :func:`build_intent_boundary_snapshot`/
+    :func:`build_slot_contract_snapshot` (which derive ONE self-minted
+    facet and ONE value per row and require ``source_sample_ids`` to equal
+    the permitted roster exactly), a stage3-deltas row is pre-authored by
+    S3-5's curator: ``value_id``, ``associated_facet_ids``,
+    ``source_sample_ids``, ``provenance_refs``, ``task_target`` and
+    ``prior_score`` are already the exact :class:`~.knowledge.ValueBundle`
+    fields (spec section S3-5; ``rails.stage3_advantage`` module
+    docstring), and only a SUBSET of the permitted construction roster is
+    ever used -- only disagreeing rows survive S3-3's selection and S3-5's
+    dedup -- so this builder requires ``used_sources.issubset(permitted)``,
+    never equality.
+
+    One :class:`~.knowledge.KeyFacet` is minted per DISTINCT
+    ``associated_facet_ids`` entry seen across every row (dimension
+    :data:`STAGE3_DELTA_DIMENSION`), so a release is self-contained: every
+    facet a value names exists in the same snapshot. ``value_id`` must
+    match ``delta:<iteration>:<12-hex>`` (the spec's own id form).
+    """
+
+    if not isinstance(spec, AuthoredSemanticKnowledgeSpec):
+        raise RailsError("stage3 delta builder requires AuthoredSemanticKnowledgeSpec")
+    spec.validate()
+    if not isinstance(rows, Sequence) or isinstance(rows, (str, bytes)) or not rows:
+        raise RailsError("stage3 delta builder requires non-empty authored rows")
+
+    values: list[ValueBundle] = []
+    facet_sources: dict[str, set[str]] = {}
+    seen_ids: set[str] = set()
+    used_sources: set[str] = set()
+    source_rows: list[Mapping[str, object]] = []
+    for index, raw in enumerate(rows):
+        row = _object(raw, f"rows[{index}]", _STAGE3_DELTA_KEYS)
+        value_id = _text(row["value_id"], f"rows[{index}].value_id")
+        if _DELTA_VALUE_ID.fullmatch(value_id) is None:
+            raise RailsError(
+                f"rows[{index}].value_id must match 'delta:<iteration>:<12-hex>', "
+                f"got {value_id!r}"
+            )
+        if value_id in seen_ids:
+            raise RailsError(f"duplicate value_id {value_id!r}")
+        seen_ids.add(value_id)
+        associated = _texts(row["associated_facet_ids"], f"rows[{index}].associated_facet_ids")
+        source_ids = _texts(row["source_sample_ids"], f"rows[{index}].source_sample_ids")
+        provenance = tuple(
+            sorted(_texts(row["provenance_refs"], f"rows[{index}].provenance_refs"))
+        )
+        task_target = _text(row["task_target"], f"rows[{index}].task_target")
+        prior_score = row["prior_score"]
+        if isinstance(prior_score, bool) or not isinstance(prior_score, (int, float)):
+            raise RailsError(f"rows[{index}].prior_score must be a number")
+        used_sources.update(source_ids)
+        for facet_id in associated:
+            facet_sources.setdefault(facet_id, set()).update(source_ids)
+        values.append(
+            ValueBundle(
+                value_id=value_id,
+                content=_text(row["content"], f"rows[{index}].content"),
+                associated_facet_ids=associated,
+                source_sample_ids=source_ids,
+                provenance_refs=provenance,
+                task_target=task_target,
+                prior_score=float(prior_score),
+            ).validate()
+        )
+        source_rows.append(dict(row))
+
+    permitted = set(spec.permitted_source_sample_ids)
+    if not used_sources.issubset(permitted):
+        raise RailsError(
+            "authored delta source_sample_ids must be a subset of the permitted "
+            "construction roster"
+        )
+    overlap = used_sources & frozenset(forbidden_sample_ids)
+    if overlap:
+        raise RailsError(
+            f"stage3 delta source intersects forbidden sample IDs: {sorted(overlap)[:5]}"
+        )
+
+    facets = tuple(
+        KeyFacet(
+            facet_id=facet_id,
+            dimension=STAGE3_DELTA_DIMENSION,
+            representation_kind="text",
+            representation=facet_id.split(":", 1)[-1],
+            source_sample_ids=tuple(sorted(source_ids)),
+        ).validate()
+        for facet_id, source_ids in sorted(facet_sources.items())
+    )
+    order = sorted(range(len(values)), key=lambda item: values[item].value_id)
+    values = tuple(values[item] for item in order)
+    identity = content_hash(
+        {
+            "schema": "saea-authored-semantic-knowledge-build-v1",
+            "carrier_lock_key": spec.carrier_lock_key,
+            "source_partition_role": spec.source_partition_role,
+            "source_split_identity_hash": spec.source_split_identity_hash,
+            "source_sample_ids": sorted(used_sources),
+            "builder_policy_id": STAGE3_DELTA_BUILD_POLICY_ID,
+            "rows": sorted(source_rows, key=lambda row: str(row["value_id"])),
+        }
+    )
+    return KnowledgeSnapshot(
+        snapshot_id=f"{STAGE3_DELTA_BUILD_POLICY_ID}:{identity[:16]}",
+        source_split_identity_hash=spec.source_split_identity_hash,
+        source_sample_ids=tuple(sorted(used_sources)),
+        source_partition_role=spec.source_partition_role,
+        builder_policy_id=STAGE3_DELTA_BUILD_POLICY_ID,
+        facets=facets,
+        values=values,
+    ).validate()
+
+
 __all__ = [
     "FACTORED_INTENT_BOUNDARY_BUILD_POLICY_ID",
     "INTENT_BOUNDARY_BUILD_POLICY_ID",
     "SHARED_INTENT_GUIDANCE_VALUE_ID",
     "SLOT_CONTRACT_BUILD_POLICY_ID",
+    "STAGE3_DELTA_BUILD_POLICY_ID",
+    "STAGE3_DELTA_DIMENSION",
     "AuthoredSemanticKnowledgeSpec",
     "build_factored_intent_boundary_snapshot",
     "build_intent_boundary_snapshot",
     "build_slot_contract_snapshot",
+    "build_stage3_delta_snapshot",
 ]

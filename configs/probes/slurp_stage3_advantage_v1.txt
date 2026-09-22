@@ -1,0 +1,16 @@
+This row was answered twice under the same rollout policy. Here are the two answers and the correct answer for this row.
+
+ANSWER A (better, by the official score):
+{best_answer}
+
+ANSWER B (worse, by the official score):
+{worst_answer}
+
+CORRECT ANSWER:
+{gold}
+
+State what distinguished the better answer from the worse one, in exactly this three-line form and nothing else:
+
+DELTA-KIND: <one of: intent-boundary | slot-contract | exemplar-note>
+TARGET: <the scenario_action or slot type this statement is about>
+STATEMENT: <one sentence, at most 40 words, stating what made the better answer better>
