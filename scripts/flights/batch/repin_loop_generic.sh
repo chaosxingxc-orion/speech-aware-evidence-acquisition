@@ -1,0 +1,42 @@
+#!/bin/bash
+# Usage: repin_loop_generic.sh <repin-script> <readiness-dir> <cell> <plan-prefix: smoke-generation|generation> <commit-msg-file>
+MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+PY=/home/chao/.venvs/speechrl/bin/python
+SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SCRIPT=$1; RD=$2; CELL=$3; PLAN=$4; MSG=$5
+cd $MAIN || exit 1
+for pass in 1 2 3 4 5; do
+  echo "######## $CELL pass $pass HEAD $(git rev-parse --short HEAD)"
+  bash $SCRIPT 2>&1 | grep -v "^{'run_id'\|^On branch\|^Your branch\|^  (use\|^nothing to commit\|^COMMIT FAILED" | cut -c1-180
+  ERR=$(ls -t /home/chao/*-repin-*.err 2>/dev/null | head -1)
+  if grep -q "neither its freshly composed config_hash" "$ERR"; then
+    $PY - "$RD" "$PLAN" "$CELL" "$ERR" <<'PY'
+import io, json, re, sys, glob
+rd, plan, cell, errf = sys.argv[1:5]
+err = io.open(errf, encoding="utf-8").read()
+m = re.search(r"config_hash \(([0-9a-f]{64})\) nor protocol_hash \(([0-9a-f]{64})\)", err); new_c, new_p = m.group(1), m.group(2)
+reg = json.load(io.open(f"{rd}/{plan}-plan-registered-v1.json", encoding="utf-8"))
+assert reg["cell"] == cell, (reg["cell"], cell)
+old_c = reg["composed_config_hash"]; old_p = reg["execution_plan"]["protocol_hash"]
+files = sorted(glob.glob(f"{rd}/*")) + [f"{rd}-preregistration.md"]; total = 0
+for f in files:
+    s = io.open(f, encoding="utf-8", newline="").read(); n = s.count(old_c) + s.count(old_p)
+    if n: io.open(f, "w", encoding="utf-8", newline="").write(s.replace(old_c, new_c).replace(old_p, new_p)); total += n
+# the ledger: ONLY the rows whose artifacts column points into this package (item E26: never another cell's row)
+L = "docs/exposure-ledger.md"; led = io.open(L, encoding="utf-8", newline="").read(); out = []
+for ln in led.split("\n"):
+    if ln.startswith("|") and ln.count("|") > 12 and (rd + "/") in ln:
+        n = ln.count(old_c) + ln.count(old_p)
+        if n: ln = ln.replace(old_c, new_c).replace(old_p, new_p); total += n
+    out.append(ln)
+io.open(L, "w", encoding="utf-8", newline="").write("\n".join(out))
+print("rewrote registered -> fresh:", total, "|", old_c[:8], "->", new_c[:8], "|", old_p[:8], "->", new_p[:8])
+PY
+    git add "$RD" "$RD-preregistration.md" docs/exposure-ledger.md && git commit -q -F "$MSG" && echo "committed $(git rev-parse --short HEAD)"
+    continue
+  fi
+  if grep -q "has uncommitted changes" "$ERR"; then continue; fi
+  if [ -s "$ERR" ] && grep -q '"error"' "$ERR"; then echo "REFUSAL:"; $PY -c "import json,io; print(json.load(io.open('$ERR'))['error'][:500])"; exit 4; fi
+  echo "satisfied at $(git rev-parse HEAD)"; exit 0
+done
+echo "did not converge"; exit 5
