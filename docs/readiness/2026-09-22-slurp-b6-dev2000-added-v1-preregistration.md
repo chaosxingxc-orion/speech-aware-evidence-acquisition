@@ -17,7 +17,7 @@ and TRAIN Fold A.
 * **Direct** (`SAEA-SLURP-DIRECT-MAX512-DEV2000-ADDED-V1`): the sealed `slurp-direct-max512` form, unmodified, flown on
   DEV-2000-ADDED. Composed config hash `48cd20439824cb1d7febf9fb5b8b206c609a90bbb3ff14ce068294414c96a529`, protocol hash `80ec3a3ea2f149fb48821e9e52f6ea83142b94228283d42f50d0770ed697c9bc`.
 * **Plan** (`SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1`): the locked v2.0 default plan (cell PLAN's fragment), unmodified, flown on
-  DEV-2000-ADDED. Composed config hash `53da17191db1d00a0551c12a839fd580171305018c1a17c8e5457be3331a9552`, protocol hash `76ec1bb3ffb63347afc81d5946cafbd0e9b4d6577c4493684308627e0bddc89b`.
+  DEV-2000-ADDED. Composed config hash `b88f7b8285c9771a515ea378d6d8e53a5393694fedaae7fb6d9df8b4760d16bf`, protocol hash `e5e2ba6868f02a9b62ccfcd54ffe46a8e38f0bca5c4699f440bf95abbb40e93e`.
 
 ## Bindings
 

@@ -31,7 +31,7 @@
   "plan_kind": "fit",
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-22-slurp-b6-dev2000-added-v1/protocol-registered-v1.json",
-    "sha256": "374f425b3c7e0d311c97ace20e8bf7a10b6085ed2184b22a907e39df377a6652"
+    "sha256": "17df0590fee05a125230292de52315ade2697419b6a11098e8dc8b41e521cabc"
   },
   "purpose": "Read the sealed slurp-direct-max512 form against the sealed default-plan system arm (cell B6 plan arm, this same package) on the identical fresh DEV-2000-ADDED roster: a paired, report-only generalisation read of the locked v2.0 plan against the bare frozen core, not a new admission decision.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest and the single successful complete official score exist on BOTH arms of this package.",

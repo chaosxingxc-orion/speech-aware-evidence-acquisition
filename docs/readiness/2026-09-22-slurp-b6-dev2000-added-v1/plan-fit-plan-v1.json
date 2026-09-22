@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-default-plan-dev2000-added-v1",
-  "composed_config_hash": "53da17191db1d00a0551c12a839fd580171305018c1a17c8e5457be3331a9552",
+  "composed_config_hash": "b88f7b8285c9771a515ea378d6d8e53a5393694fedaae7fb6d9df8b4760d16bf",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-default-plan-dev2000-added-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 44000,
     "planned_speech_audio_seconds": 32819,
-    "protocol_hash": "76ec1bb3ffb63347afc81d5946cafbd0e9b4d6577c4493684308627e0bddc89b",
+    "protocol_hash": "e5e2ba6868f02a9b62ccfcd54ffe46a8e38f0bca5c4699f440bf95abbb40e93e",
     "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
@@ -32,7 +32,7 @@
   "plan_kind": "fit",
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-22-slurp-b6-dev2000-added-v1/protocol-registered-v1.json",
-    "sha256": "374f425b3c7e0d311c97ace20e8bf7a10b6085ed2184b22a907e39df377a6652"
+    "sha256": "17df0590fee05a125230292de52315ade2697419b6a11098e8dc8b41e521cabc"
   },
   "purpose": "Cell B6 plan arm: read the locked v2.0 default plan against the sealed direct arm (cell B6 direct arm, this same package) on the identical fresh DEV-2000-ADDED roster: a paired, report-only generalisation read of the locked plan against the bare frozen core, not a new admission decision (owner decisions 34, 35, 78, 79, 86, 88).",
   "quality_read_gate": "No task-quality read before the complete sealed manifest and the single successful complete official score exist on BOTH arms of this package.",
