@@ -5,6 +5,14 @@ plus the stage3-deltas store) -- it does not authorize a flight, a readiness fli
 entry. Source spec: `docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md` section
 S3-6.
 
+Stage-3 algorithm (owner decision 101): **`tfgrpo-semantic-advantage-v1`** (Training-Free GRPO,
+arXiv:2510.08191), operators `update` + `context_application` -- the experiential deltas of S3-5 applied
+candidate-bound to the Solver. The GEPA and ACE arms (`gepa-reflective-pareto-v1`, `ace-grow-refine-v1`)
+reuse this package's store and supply route with a different curation operator; see the engineering spec's
+"Algorithm labels, decision 101" section. Declared as `stage3_algorithm` in
+`configs/experiment/slurp-native-stage3-delta-cell-r01-v1.json` and checked by
+`scripts/checks/stage3_algorithm_label_check.py`.
+
 ## What this cell is
 
 The locked PLAN fragment (`configs/baseline/slurp-native-default-plan-lock-baseline-v1.json`) plus

@@ -2,6 +2,9 @@
 
 Preregistration: [`../2026-09-22-slurp-stage3-rollout-r01-v1-preregistration.md`](../2026-09-22-slurp-stage3-rollout-r01-v1-preregistration.md).
 Engineering spec: `docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md` section S3-2.
+Stage-3 algorithm (owner decision 101): **`shared-rollout`**, operator `rollout` -- the algorithm-neutral
+rollout every layer-A family (Training-Free GRPO, GEPA, ACE) consumes. Declared in both experiment fragments
+as `stage3_algorithm` and checked by `scripts/checks/stage3_algorithm_label_check.py`.
 
 ## 0. In one paragraph
 

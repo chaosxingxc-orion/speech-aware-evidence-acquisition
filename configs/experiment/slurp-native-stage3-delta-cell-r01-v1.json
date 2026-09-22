@@ -165,5 +165,13 @@
   },
   "purpose": "Stage-3 S3-6 CELL-1: the locked plan plus the stage3-deltas store (S3-5's append-only delta store, version 1) as ONE factor on TRAIN A, comparator the sealed PLAN arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943), twin arm (derangement of associated_facet_ids) as the form control. PRIMARY DELIVERABLES per decision 75/83: (1) the official read against PLAN; (2) the per-scenario effect x prefilled-token frontier table, in both natural-mixture and equal-stratum weightings, deciding which deltas survive into version 2; (3) the delta-consumption read (item E34-style per-cell registered facts): which deltas were supplied, per scenario, and the saves/harms on the rows that received each delta.",
   "service_session": "PENDING_ROOT_SELECTION",
-  "split_id": "SLURP-EVO-FOLD-A-V2"
+  "split_id": "SLURP-EVO-FOLD-A-V2",
+  "stage3_algorithm": {
+    "id": "tfgrpo-semantic-advantage-v1",
+    "operators_used": [
+      "update",
+      "context_application"
+    ],
+    "note": "CELL-1 exercises Training-Free GRPO's experiential-delta update and its application: S3-5's append-only stage3-deltas store (version 1) supplied candidate-bound to the Solver as ONE factor on the locked plan, with the derangement twin as the form control."
+  }
 }

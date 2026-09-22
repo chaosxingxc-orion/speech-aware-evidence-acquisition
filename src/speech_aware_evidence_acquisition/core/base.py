@@ -204,6 +204,26 @@ KNOWLEDGE_INDEX_RECEIPTS = Registry("knowledge index receipt")
 
 
 # ---------------------------------------------------------------------------
+# Stage-3 training-free RL algorithms (owner decision 101, 2026-09-22).
+#
+# "In the Stage-3 experiment set-up, different experiments must explicitly mark
+# which training-free RL they use; you may explore several groups of
+# training-free RL algorithms." An entry is one
+# ``core.stage3_algorithms.Stage3Algorithm`` -- a frozen record carrying the
+# algorithm's family, display name, citation, the loop OPERATORS it defines
+# (rollout / scoring / credit assignment / update / selection / context
+# application), its status and one sentence of what it changes. Same
+# one-Registry discipline as every other seam above, so a Stage-3 experiment
+# fragment's ``stage3_algorithm.id`` resolves here exactly like every other
+# config-declared component id, and
+# ``scripts/checks/stage3_algorithm_label_check.py`` refuses a Stage-3 cell
+# whose label is absent, unregistered, or claims an operator its algorithm
+# does not define. Populated from ``core/stage3_algorithms.py``, the canonical
+# registration site.
+STAGE3_ALGORITHMS = Registry("Stage-3 training-free RL algorithm")
+
+
+# ---------------------------------------------------------------------------
 # Judges: the Reviewer seat of the four-agent loop (owner Decision 11-B/11-C,
 # 2026-09-08; ``docs/readiness/2026-09-08-openjiuwen-implementation-assessment
 # -v1.md`` change #1, and the design note's section 2 Reviewer row).

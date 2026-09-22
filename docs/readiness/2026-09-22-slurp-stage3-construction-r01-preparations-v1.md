@@ -335,3 +335,12 @@ scoped to `--port 8080` in both entry scripts. The one recovery is `SAEA-SN-STAG
 (roster key `stage3-construction-r01-recovery`, own run id because the plan budget is cumulative per run id; identical
 form and target receipt), registered in the ledger before its first contact. Rule for the recovery: no serving task start or
 stop while the sidecar runs.
+
+## Stage-3 algorithm label (owner decision 101)
+
+**`none`** -- the three preparations registered here are model-free / preparation cells of Stage-3 item
+S3-1 and carry no training-free RL operator; the rollout they feed (ROLL-1) is labelled `shared-rollout`
+and the cells that consume its samples are labelled `tfgrpo-semantic-advantage-v1`. The label lives here
+as prose rather than in `configs/experiment/slurp-stage3-construction-r01-preprocess.json` because that
+fragment's composed config hash is pinned in this note and carried by its DRAFT ledger rows;
+`scripts/checks/stage3_algorithm_label_check.py` allowlists it with that reason.

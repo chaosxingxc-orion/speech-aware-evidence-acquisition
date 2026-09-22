@@ -4,7 +4,15 @@ Importing this package registers all built-in components (carriers, evidence
 sources, transports, policies, scorers).
 """
 
-from . import carriers, evidence, instructions, model, policies, scorers  # noqa: F401 (registration)
+from . import (  # noqa: F401 (registration)
+    carriers,
+    evidence,
+    instructions,
+    model,
+    policies,
+    scorers,
+    stage3_algorithms,
+)
 from .base import (
     AGENT_CONTROLLERS,
     CARRIERS,
