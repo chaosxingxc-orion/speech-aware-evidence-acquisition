@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-prune-reviewer1-smoke-4-v1",
-  "composed_config_hash": "33c7263eabbb92682f84079eb8650de8fed398c323d2e3ccf5bfef693a9b7067",
+  "composed_config_hash": "96c458a8468a2826dbe6a61952376f5bcfac8a21b6e5fafaf08aa1de1c360dd7",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-prune-reviewer1-smoke-4-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 176,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "ebba4165ea0f7077787c7a081019739d33f7e65ddbb5a274b43cb84ffb38c9d5",
+    "protocol_hash": "46082b3f100442f942cde8df631c2cb7d2f7c85554bef51be8615ac039b4f276",
     "run_id": "SAEA-SLURP-NATIVE-PRUNE-REVIEWER1-SMOKE-4-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -47,7 +47,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-22-slurp-prune-reviewer1-v1/protocol-registered-v1.json",
-    "sha256": "9e70605cf6d859ac4e8233ebd1d65ff73bfcfef9644e6b875ecf23767b1e7a2d"
+    "sha256": "b520b1310bcd21bf196d1bbe444f0f0fb679f181f0e718a3a99038176f39036d"
   },
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist, and not before the registered STOP condition passes (the comparator aggregates of the sealed B1 arm SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2 and of cell B1r reproduce to the hundredth). The gating comparator is the sealed B1 arm; the margins are B1r's own null.",
   "registered_at_utc": "2026-09-22T12:00:00.000000+00:00",
