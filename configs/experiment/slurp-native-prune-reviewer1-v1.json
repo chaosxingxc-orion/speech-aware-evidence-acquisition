@@ -13,19 +13,19 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "Registered 2026-09-22 by the coordinator as pruning cell P1 (owner decisions 85 and 97; base = cell R-PRIM, decision 97): native_episode.roles.reviewer.max_iterations: 3 -> 1 (one Reviewer visit per revision round; everything else byte-identical to the base). Derived from configs/experiment/slurp-native-review-primitives-v1.json by scripts/flights/batch/derive_pruning_cells.py; readiness flips only through scripts/flights/repin_cell.py after the decision receipt is minted. Stage-3 algorithm label (decision 101): none -- a pruning cell on the locked plan carries no training-free RL operator.",
-        "state": "held",
+        "state": "ready",
         "requirements": [
           {
             "kind": "decision",
             "expected_decision_id": "slurp-prune-reviewer1-admission-v1",
             "relpath": "coordination/slurp-prune-reviewer1-v1/root-admission-v1.json",
-            "sha256": "ee91590b2814ba8f05acae9e5a2657a63bf839c934eae118864e94384cb7cbec",
+            "sha256": "0c54114e096db8632a7ef5a2c13e305e302d2a35db66cab3426620cd22a28559",
             "reason": "Decision slurp-prune-reviewer1-admission-v1 pinned by scripts/flights/repin_cell.py."
           },
           {
             "kind": "preparation",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-PRUNE-REVIEWER1-V1/phase-supply-v1.json",
-            "sha256": "6e0b751a971ac474acf5a1984b6d08f51b5261ef74eb629fc2cb61801ae1d0c7",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-PRUNE-REVIEWER1-V1/phase-supply-v2.json",
+            "sha256": "36c44a6889151d1b272dcd1824198069358256f774d2981588369f1154dbe939",
             "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
           }
         ]
