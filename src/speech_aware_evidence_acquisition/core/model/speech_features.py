@@ -16,7 +16,8 @@ import struct
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Mapping, Sequence
+from threading import Lock
+from typing import Callable, Mapping, Sequence
 
 from . import FrozenCoreError
 from .paths import _normalized_relative_path, _resolve_confined
@@ -26,6 +27,18 @@ SPEECH_PACKET_PROMOTION_RECEIPT_SCHEMA = (
     "saea-speech-packet-promotion-receipt-v1"
 )
 PACKET_MANIFEST_NAME = "packet.json"
+# Item E40. A promotion pass either encoded its own cache entries first or
+# promoted an already-warm cache with zero contacts; the receipt says which. A
+# receipt written before item E40 carries no "mode" key and is read as the
+# historical ENCODE + PROMOTE pass.
+PROMOTION_MODE_ENCODE_AND_PROMOTE = "encode-and-promote"
+PROMOTION_MODE_PROMOTE_ONLY = "promote-only"
+PROMOTION_MODES = frozenset(
+    {PROMOTION_MODE_ENCODE_AND_PROMOTE, PROMOTION_MODE_PROMOTE_ONLY}
+)
+PROMOTION_RECEIPT_OPTIONAL_KEYS = frozenset(
+    {"mode", "encode_contacts", "shared_packets", "shared_packet_count"}
+)
 _SHA256_LENGTH = 64
 _LEGACY_FEAT_HEADER = struct.Struct("<QQ")
 _MAX_PACKET_I32 = (1 << 31) - 1
@@ -269,6 +282,38 @@ class SpeechFeaturePacketV1:
         return self
 
 
+@dataclass(frozen=True)
+class SharedSpeechFeaturePacketRecord:
+    """One already-materialized packet accepted under a different encoder receipt.
+
+    Item E40. The packet bytes are the evidence authority. When an existing
+    packet disagrees with the expected identity in exactly
+    ``encoder_receipt_sha256`` -- the hash of the RECEIPT DOCUMENT describing
+    the encoder, not of anything the encoder produced -- and the chunk count
+    and every chunk hash still agree, the packet is shared between the two
+    provenances. The difference is recorded here rather than refused (which
+    would strand a byte-identical packet) or overwritten (which would destroy
+    the earlier promotion's evidence).
+    """
+
+    packet_id: str
+    existing_encoder_receipt_sha256: str
+    verified_against_encoder_receipt_sha256: str
+    existing_packet_sha256: str
+    chunk_count: int
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "packet_id": self.packet_id,
+            "existing_encoder_receipt_sha256": self.existing_encoder_receipt_sha256,
+            "verified_against_encoder_receipt_sha256": (
+                self.verified_against_encoder_receipt_sha256
+            ),
+            "existing_packet_sha256": self.existing_packet_sha256,
+            "chunk_count": self.chunk_count,
+        }
+
+
 def _chunk_from_json(document: object) -> SpeechFeatureChunkV1:
     required = {
         "ordinal",
@@ -453,6 +498,82 @@ def load_speech_feature_packet_ids(
         return tuple(pool.map(load_one, normalized))
 
 
+def _validate_shared_packet_rows(
+    document: Mapping[str, object], promoted_ids: set[str]
+) -> None:
+    """Validate the item E40 shared-packet ledger of a promotion receipt.
+
+    A shared row records an already-materialized packet that this promotion
+    accepted unchanged because its identity differed from the expected one in
+    exactly ``encoder_receipt_sha256``. The row is provenance, never authority:
+    the packet's own ``packet_sha256`` still appears in ``packets``, so
+    re-verifying the receipt against the feature root is unchanged.
+    """
+
+    rows = document.get("shared_packets")
+    declared = document.get("shared_packet_count")
+    if rows is None and declared is None:
+        return
+    if not isinstance(rows, list):
+        raise FrozenCoreError("speech packet promotion shared_packets must be a list")
+    if (
+        isinstance(declared, bool)
+        or not isinstance(declared, int)
+        or declared != len(rows)
+    ):
+        raise FrozenCoreError(
+            "speech packet promotion shared_packet_count disagrees with shared_packets"
+        )
+    keys = {
+        "packet_id",
+        "existing_encoder_receipt_sha256",
+        "verified_against_encoder_receipt_sha256",
+        "existing_packet_sha256",
+        "chunk_count",
+    }
+    seen: set[str] = set()
+    for index, row in enumerate(rows):
+        if not isinstance(row, Mapping) or set(row) != keys:
+            raise FrozenCoreError(
+                f"speech packet promotion shared item {index} must have exact "
+                f"keys {sorted(keys)}"
+            )
+        packet_id = _normalized_relative_path(
+            row["packet_id"], f"speech packet promotion shared item {index} packet_id"
+        )
+        if packet_id in seen:
+            raise FrozenCoreError(
+                f"duplicate speech packet promotion shared item {packet_id!r}"
+            )
+        seen.add(packet_id)
+        if packet_id not in promoted_ids:
+            raise FrozenCoreError(
+                f"speech packet promotion shared item {packet_id!r} is not promoted"
+            )
+        for field in (
+            "existing_encoder_receipt_sha256",
+            "verified_against_encoder_receipt_sha256",
+            "existing_packet_sha256",
+        ):
+            _require_sha256(
+                row[field], f"speech packet promotion shared item {index} {field}"
+            )
+        if (
+            row["existing_encoder_receipt_sha256"]
+            == row["verified_against_encoder_receipt_sha256"]
+        ):
+            raise FrozenCoreError(
+                f"speech packet promotion shared item {packet_id!r} records no "
+                "encoder receipt difference"
+            )
+        count = row["chunk_count"]
+        if isinstance(count, bool) or not isinstance(count, int) or count <= 0:
+            raise FrozenCoreError(
+                f"speech packet promotion shared item {index} chunk_count must "
+                "be a positive integer"
+            )
+
+
 def load_speech_packet_promotion_receipt(
     receipt_path: Path,
     *,
@@ -495,27 +616,61 @@ def load_speech_packet_promotion_receipt(
         "count",
         "packets",
     }
-    if not isinstance(document, Mapping) or set(document) != required:
+    if (
+        not isinstance(document, Mapping)
+        or not required.issubset(document)
+        or set(document) - required - PROMOTION_RECEIPT_OPTIONAL_KEYS
+    ):
         raise FrozenCoreError(
             f"speech packet promotion receipt must have exact keys {sorted(required)}"
+            f" plus at most {sorted(PROMOTION_RECEIPT_OPTIONAL_KEYS)}"
         )
     if (
         document["schema"] != SPEECH_PACKET_PROMOTION_RECEIPT_SCHEMA
         or document["study"] != "speech-aware-evidence-acquisition"
     ):
         raise FrozenCoreError("speech packet promotion receipt identity is invalid")
+    mode = document.get("mode", PROMOTION_MODE_ENCODE_AND_PROMOTE)
+    if mode not in PROMOTION_MODES:
+        raise FrozenCoreError(
+            f"speech packet promotion receipt mode must be one of {sorted(PROMOTION_MODES)}"
+        )
     if (
         not isinstance(document["preprocess_session_id"], str)
         or not document["preprocess_session_id"]
     ):
         raise FrozenCoreError("preprocess_session_id must be a non-empty string")
-    for field in (
-        "dataset_runtime_view_sha256",
+    session_fields = (
         "preprocess_session_receipt_sha256",
         "preprocess_stop_receipt_sha256",
-        "runtime_receipt_sha256",
-    ):
+    )
+    if mode == PROMOTION_MODE_PROMOTE_ONLY:
+        # Item E40. A promote-only pass opens no preprocessing server, so there
+        # is no session or stop receipt to hash: both fields are null rather
+        # than a fabricated digest. Encoder identity still comes from
+        # ``runtime_receipt_sha256``, and every packet identity is re-verified
+        # against the packet manifests independently of this document.
+        if any(document[field] is not None for field in session_fields):
+            raise FrozenCoreError(
+                "a promote-only speech packet promotion receipt must carry null "
+                "session and stop receipt hashes"
+            )
+    else:
+        for field in session_fields:
+            _require_sha256(document[field], field)
+    for field in ("dataset_runtime_view_sha256", "runtime_receipt_sha256"):
         _require_sha256(document[field], field)
+    contacts = document.get("encode_contacts")
+    if contacts is not None and (
+        isinstance(contacts, bool) or not isinstance(contacts, int) or contacts < 0
+    ):
+        raise FrozenCoreError(
+            "speech packet promotion encode_contacts must be a non-negative integer"
+        )
+    if mode == PROMOTION_MODE_PROMOTE_ONLY and contacts not in (None, 0):
+        raise FrozenCoreError(
+            "a promote-only speech packet promotion receipt must declare zero contacts"
+        )
     if document["dataset_runtime_view_sha256"] != _require_sha256(
         expected_dataset_runtime_view_sha256,
         "expected dataset runtime view sha256",
@@ -573,6 +728,7 @@ def load_speech_packet_promotion_receipt(
             "mmproj_sha256",
         ):
             _require_sha256(packet[field], f"speech packet promotion item {index} {field}")
+    _validate_shared_packet_rows(document, seen)
     return document
 
 
@@ -587,12 +743,18 @@ def materialize_speech_feature_packet(
     position_mode: str,
     causal_attention: bool,
     chunks: Sequence[SpeechFeatureChunkData],
+    on_shared: Callable[[SharedSpeechFeaturePacketRecord], None] | None = None,
 ) -> SpeechFeaturePacketV1:
     """Atomically materialize one packet using the fixed packet layout.
 
     The caller is the preprocessing stage. Existing materializations are
-    accepted only when their fully re-verified packet identity is identical;
-    a conflicting packet id is never overwritten.
+    accepted when their fully re-verified packet identity is identical, and --
+    item E40 -- when it differs in exactly ``encoder_receipt_sha256`` while the
+    chunk count and every chunk hash still agree: that is a provenance-only
+    difference over byte-identical evidence, so the packet is SHARED between
+    the two promotions. It is reported through ``on_shared`` (never silently),
+    not one byte of the feature root is written, and any other difference keeps
+    the historical refusal. A conflicting packet id is never overwritten.
     """
 
     feature_root = Path(feature_root)
@@ -612,7 +774,15 @@ def materialize_speech_feature_packet(
         actual_identity = {
             field: getattr(existing, field) for field in expected_identity
         }
-        if actual_identity != expected_identity:
+        differing = {
+            field
+            for field, value in expected_identity.items()
+            if actual_identity[field] != value
+        }
+        # Item E40: ONLY the encoder receipt document hash may differ, and only
+        # once the chunk comparison below has proved the bytes identical. Every
+        # other identity difference keeps the historical refusal unchanged.
+        if differing - {"encoder_receipt_sha256"}:
             raise FrozenCoreError(
                 "existing speech feature packet id is bound to different source/model metadata"
             )
@@ -640,6 +810,18 @@ def materialize_speech_feature_packet(
                 raise FrozenCoreError(
                     "existing speech feature packet id has different chunk bytes or shape"
                 )
+        if differing:
+            shared = SharedSpeechFeaturePacketRecord(
+                packet_id=existing.packet_id,
+                existing_encoder_receipt_sha256=existing.encoder_receipt_sha256,
+                verified_against_encoder_receipt_sha256=_require_sha256(
+                    encoder_receipt_sha256, "encoder_receipt_sha256"
+                ),
+                existing_packet_sha256=existing.packet_sha256,
+                chunk_count=len(existing.chunks),
+            )
+            if on_shared is not None:
+                on_shared(shared)
         return existing
     validated = tuple(chunk.validate() for chunk in chunks)
     if not validated:
@@ -889,6 +1071,7 @@ def materialize_legacy_cached_speech_feature_packet(
     mmproj_sha256: str,
     expected_n_embd: int,
     causal_attention: bool,
+    on_shared: Callable[[SharedSpeechFeaturePacketRecord], None] | None = None,
 ) -> SpeechFeaturePacketV1:
     """Promote an existing legacy ``.feat`` entry into an auditable packet.
 
@@ -913,6 +1096,7 @@ def materialize_legacy_cached_speech_feature_packet(
         position_mode="mrope_1d",
         causal_attention=causal_attention,
         chunks=chunks,
+        on_shared=on_shared,
     )
 
 
@@ -947,6 +1131,7 @@ def materialize_legacy_cached_speech_feature_packets(
     expected_n_embd: int,
     causal_attention: bool,
     workers: int = 8,
+    on_shared: Callable[[SharedSpeechFeaturePacketRecord], None] | None = None,
 ) -> tuple[SpeechFeaturePacketV1, ...]:
     """Promote independent warm-cache entries concurrently in input order.
 
@@ -954,6 +1139,12 @@ def materialize_legacy_cached_speech_feature_packets(
     cache validation is completed for the whole batch before packet writing
     starts, so a missing or malformed cache entry cannot leave a partially
     promoted batch. Both phases run concurrently and preserve input order.
+
+    Item E40: a binding whose packet already exists and differs from this
+    promotion in exactly ``encoder_receipt_sha256``, with identical chunks, is
+    accepted unchanged and reported through ``on_shared``. The callback is
+    invoked AFTER the concurrent phase, once per shared packet, in input order,
+    so a receipt writer never has to serialize worker threads itself.
     """
 
     if isinstance(workers, bool) or not isinstance(workers, int) or not 1 <= workers <= 64:
@@ -991,6 +1182,13 @@ def materialize_legacy_cached_speech_feature_packets(
         )
         return packet_id, audio_sha256, chunks
 
+    shared_records: dict[str, SharedSpeechFeaturePacketRecord] = {}
+    shared_lock = Lock()
+
+    def collect_shared(record: SharedSpeechFeaturePacketRecord) -> None:
+        with shared_lock:
+            shared_records[record.packet_id] = record
+
     def materialize_one(
         prepared: tuple[str, str, tuple[SpeechFeatureChunkData, ...]],
     ) -> SpeechFeaturePacketV1:
@@ -1005,15 +1203,28 @@ def materialize_legacy_cached_speech_feature_packets(
             position_mode="mrope_1d",
             causal_attention=causal_attention,
             chunks=chunks,
+            on_shared=collect_shared,
         )
+
+    def report_shared() -> None:
+        if on_shared is None:
+            return
+        for packet_id, _ in normalized:
+            record = shared_records.get(packet_id)
+            if record is not None:
+                on_shared(record)
 
     worker_count = min(workers, len(normalized))
     if worker_count == 1:
         prepared = tuple(prepare_one(binding) for binding in normalized)
-        return tuple(materialize_one(item) for item in prepared)
+        packets = tuple(materialize_one(item) for item in prepared)
+        report_shared()
+        return packets
     with ThreadPoolExecutor(
         max_workers=worker_count,
         thread_name_prefix="saea-speech-promote",
     ) as pool:
         prepared = tuple(pool.map(prepare_one, normalized))
-        return tuple(pool.map(materialize_one, prepared))
+        packets = tuple(pool.map(materialize_one, prepared))
+    report_shared()
+    return packets
