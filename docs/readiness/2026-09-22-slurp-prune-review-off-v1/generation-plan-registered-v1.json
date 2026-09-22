@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-prune-review-off-v1",
-  "composed_config_hash": "463bf2ad2a41e499e78592c1da75e22b333de89f6224c7f964fcfa7ecfa6b7cd",
+  "composed_config_hash": "a03088fe2c2d79c92b9f171634fa2f7592e8d76fb58b9c98c5dc8004ba608999",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-prune-review-off-train-fold-a-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 2160,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "7ecf17201a5a43873a188841bbb469fce3da26f5dee4449226fb8e0154336422",
+    "protocol_hash": "d49cc18b80e44c6d2a4f34efe10c71bbccf5c80fec2f8a4b5e1aebd186b90e6b",
     "run_id": "SAEA-SLURP-NATIVE-PRUNE-REVIEW-OFF-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
