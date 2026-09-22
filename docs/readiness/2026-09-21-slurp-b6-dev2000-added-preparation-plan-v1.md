@@ -53,3 +53,13 @@ independently stoppable and resumable, rather than as one long-lived process.
 Cell B6's own registration, any model/tokenizer/encoder/GPU/network contact, any scoring read, and
 any answer read. Both preparation packages are REGISTERED-BEFORE-CONTACT drafts; each still needs
 its exposure-ledger row committed at a clean tree before the corresponding step may fly.
+
+## Completion record (2026-09-22, Fable 5.1)
+
+| Step | Outcome |
+| --- | --- |
+| ENCODE + PROMOTE | closed 2026-09-21 (`SAEA-SN-DEV2000-ADDED-PREPROCESS`, promotion receipt `DEV-2000-ADDED-promotion.json`, rc 0). |
+| Speech-query encoding | `SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1` attempt `encode-v1` FINALIZED at study commit `c8cd2442`: 1,000 encoder contacts, 2,983.527 speech seconds, 273 s wall, zero frozen-core contacts; `prepared/.../index.json` sha256 `4c7ed11f...`, `queries.jsonl` sha256 `44e41b93602b7281f0309323b52408171efd278d892d789b38aa27cf99c5cc87`. Two pre-contact registration corrections were needed (protocol sources pinned by the raw file sha256; sources bound to a `saea-speech-query-source-inventory-v1` built by `scripts/build_speech_query_source_inventory.py`), and the stale B9a `flight.lock` was reconciled with a quiescence receipt first; all recorded on the ledger row. |
+| Alias (zero contact) | config `configs/preparation/slurp-dev2000-added-query-alias-v1.json` (sha256 `18900c765bd3a58d1014b16663236f5b639f10885502a1c5d135a2a376dd29ca`) through `core.preparation_vectors` on the main checkout: export `vectors/slurp-dev2000-added-v1/query-vectors-speech-segments.jsonl` sha256 `e2a5fd046dac7c87fcf53830955e41e69d20402a2305a02ebf2bfc1a33001b9d` (1,000 rows / 1,000 segments, width 2,048, `content` -> `intent-boundary`, max absolute delta 0.0, values unchanged); receipt `prepared/SAEA-SLURP-DEV2000-ADDED-ALIAS-V1/query-dimension-alias.json` sha256 `9d41262d18b7dc524807e36fb1d97b859f43920524a6dfe85f1bead2b07a5768`; encoder / model / tokenizer contacts 0. Source receipts pinned: the encoding receipt, the committed runtime view (raw sha256) and the roster receipt. |
+
+Cell B6's two arms (decision 88) bind these three artifacts and are registered in their own package.
