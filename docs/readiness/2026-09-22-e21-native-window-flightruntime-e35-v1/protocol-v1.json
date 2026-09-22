@@ -1,0 +1,65 @@
+{
+  "schema": "saea-e35-registration-protocol-v1",
+  "item": "E35",
+  "owner_decision": "89 (2026-09-21)",
+  "question": "Does the Earnings21+ConEC carrier (earnings21-original) compose and load the SAME six-node native episode SLURP flies, through the SAME shared harness (rails.controllers.EvidenceAgentController, core.flight.FlightRuntime, the OpenJiuwen executor)?",
+  "claim_surface": "Engineering connectivity only. No score, comparison, decision, effectiveness or generalization claim may be made from either registered cell.",
+  "code_and_config_bound": [
+    {"relpath": "src/speech_aware_evidence_acquisition/data/carriers.py", "role": "adds EARNINGS21_ORIGINAL.task (TaskLayout)"},
+    {"relpath": "src/speech_aware_evidence_acquisition/rails/delivery_normalisers.py", "role": "adds EarningsTextDeliveryNormaliser (saea-deliver-earnings-text-v1)"},
+    {"relpath": "src/speech_aware_evidence_acquisition/rails/controllers.py", "role": "registers phase-native-review-revise-acquire-v1"},
+    {"relpath": "configs/policy/phase-native-review-revise-acquire-v1.json", "sha256": "0ae0840561dc1fa1868ecc71c1adc1909378af00213eadd0cf5d9c41575b2e34"},
+    {"relpath": "configs/dataset/e21-native-window-four-row-v1.json", "sha256": "a08b875adba7834270608b1784fdffd4af14f3613a27898ba2312f2dcd4255cf"},
+    {"relpath": "configs/dataset/e21-native-window-sub10-v1.json", "sha256": "525f93ef12bb5c5935d6481d22c50bbbac10561ac36d1f4b9340348d4889919c"},
+    {"relpath": "configs/baseline/e21-native-window-direct-four-row-v1.json", "sha256": "e7f1fed21ecbb1ff3330afb70941417ca581ae9ee539dff3a173d5f58f0d97d5"},
+    {"relpath": "configs/baseline/e21-native-window-system-four-row-v1.json", "sha256": "cc37c01a8225fd46655c8f717312fb8b32f60ed9a9caaef949d48613c505d2be"},
+    {"relpath": "configs/baseline/e21-native-window-direct-sub10-v1.json", "sha256": "0a60b9587e7a6b7d33d7dd003258f073c5c48d65487b0f3afdfe5621a2f50398"},
+    {"relpath": "configs/baseline/e21-native-window-system-sub10-v1.json", "sha256": "13ec22dfccbb22a0a842ea197632b3bd699c0101adc4d171811754bfbd921e8a"},
+    {"relpath": "configs/experiment/e21-native-window-four-row-direct-vs-system-v1.json", "sha256": "e88d49da0f1dd5a9009e496598c71b5a2a5e4f0132898175e4dc2a67b2b8a54c"},
+    {"relpath": "configs/experiment/e21-native-window-sub10-direct-vs-system-v1.json", "sha256": "30fb8a472e930e9ab53339c38b0cf579c06971130a6306b141c2d5e01fe80db7"},
+    {"relpath": "configs/probes/e21_native_window_system_perception_v1.txt", "sha256": "a1a46c22e1fdf6b87450d9eefb97a869f47e83d3ba4f8b2a2cb1e17cf8f19581"},
+    {"relpath": "configs/probes/e21_native_window_system_reviewer_v1.txt", "sha256": "0f1936a57d4e2ec63e326ed9cae7296d621135c0bb0cb8b1703476422500be36"},
+    {"relpath": "configs/probes/e21_native_window_system_planner_v1.txt", "sha256": "974be9effa2c9982b7ec870a10eceb3218f58cdc08ab460348bbdece0d17cfea"},
+    {"relpath": "scripts/build_e21_native_window_unit_subset.py", "sha256": "0b3d9dbac3be281edaf0afe82311991b40d63d63d8d83977cc55b72c04da63f3"}
+  ],
+  "derived_artifacts_pending_materialization": [
+    {
+      "relpath": "analysis/SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1/window-inventory.json",
+      "expected_sha256": "e5f3cfbcbc407fbb3a7b59469b86ab9d405f7b43963cb2d18b655790c5f4a32b",
+      "unit_count": 4,
+      "materialize_with": "scripts/build_e21_native_window_unit_subset.py --batch-name SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1 --sample-id 4320211 --per-call-limit 4"
+    },
+    {
+      "relpath": "analysis/SAEA-E21-NATIVE-WINDOW-SUB10-V1/window-inventory.json",
+      "expected_sha256": "57ee023e4c1e38a79f99418c9e9dd5e4f87233a2162eac213ac070a73a31bba5",
+      "unit_count": 342,
+      "materialize_with": "scripts/build_e21_native_window_unit_subset.py --batch-name SAEA-E21-NATIVE-WINDOW-SUB10-V1 --sample-id 4330115 --sample-id 4365024 --sample-id 4365948 --sample-id 4366429 --sample-id 4366522 --sample-id 4384964 --sample-id 4385072 --sample-id 4387383 --sample-id 4389907 --sample-id 4397829"
+    }
+  ],
+  "rosters": [
+    {
+      "cell_scale": "four-row",
+      "roster_receipt": "docs/receipts/probe-samples/e21-current-executor-four-row-proof-v1.json",
+      "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992"
+    },
+    {
+      "cell_scale": "sub10",
+      "roster_receipt": "docs/receipts/probe-samples/r4-e21-sub10-sample.json",
+      "split_identity_hash": "744c4b2e2d2eece3b05c68089c02000e38c96d5c62db8055d9c421fd509a8f61"
+    }
+  ],
+  "model_free_proofs": [
+    "tests/unit/test_e35_earnings_delivery_normaliser.py",
+    "tests/unit/test_e35_native_review_revise_acquire_program.py",
+    "tests/unit/test_e35_earnings_native_window_configs.py",
+    "tests/unit/test_e35_earnings_native_episode_wire.py"
+  ],
+  "gates": [
+    "scripts/checks/engineering_base_check.py",
+    "scripts/checks/finite_completion_policy_check.py",
+    "scripts/checks/derived_media_confinement_check.py",
+    "scripts/checks/harness_admission_check.py",
+    "scripts/checks/results_ledger_check.py",
+    "scripts/checks/tool_catalog_check.py"
+  ]
+}

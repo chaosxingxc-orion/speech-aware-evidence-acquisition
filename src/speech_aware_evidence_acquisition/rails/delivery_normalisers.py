@@ -42,9 +42,10 @@ sealed bytes (``analysis.deliver_normaliser_replay``).
 from __future__ import annotations
 
 import hashlib
+import re
 from typing import TYPE_CHECKING
 
-from ..core.base import DELIVERY_NORMALISERS, DeliveryNormalisation
+from ..core.base import DELIVERY_NORMALISERS, DeliveryNormalisation, DeliveryNormaliserError
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from ..reproduction.slurp_scoring import LegalIntentInventory
@@ -63,6 +64,16 @@ DELIVER_NORMALISE_V3 = "saea-deliver-normalise-v3"
 #: Bumped when the RULE changes, never when this file is merely edited: an
 #: admission receipt and a preregistration quote it.
 DELIVER_NORMALISE_V3_VERSION = "1"
+
+#: Item E35 (owner decision 89, 2026-09-21): the Earnings21+ConEC delivery
+#: normaliser this module registers alongside the SLURP one. A
+#: ``native_episode.deliver_normaliser.normaliser`` value of this id resolves
+#: here in ``core.base.DELIVERY_NORMALISERS``.
+DELIVER_NORMALISE_EARNINGS_TEXT_V1 = "saea-deliver-earnings-text-v1"
+
+#: Bumped when the HYGIENE RULE changes, never when this file is merely
+#: edited: an admission receipt and a preregistration quote it.
+DELIVER_NORMALISE_EARNINGS_TEXT_V1_VERSION = "1"
 
 
 def _sha256(text: str) -> str:
@@ -176,8 +187,99 @@ class SlurpProjectionV3DeliveryNormaliser:
         ).validate()
 
 
+class EarningsTextDeliveryNormaliser:
+    """``saea-deliver-earnings-text-v1``: deterministic Earnings21+ConEC
+    delivery hygiene, applied once to the delivered transcript text,
+    immediately before delivery.
+
+    Item E35 (owner decision 89, 2026-09-21): the Earnings21+ConEC carrier's
+    own delivery-time node, so it can fly the same six-node native episode
+    SLURP flies through the shared harness. Unlike the SLURP v3 rule, this
+    normaliser applies NO scoring-adjacent transform at all: the standard
+    Earnings scorer (``asr-wer-whisper``) already owns Whisper text
+    normalisation, and no entity or numeric rewriting belongs in an agent
+    node (study CLAUDE.md's OBS/ORG/SUPPLY/USE separation). It removes only
+    deterministic, documented TEXT HYGIENE the episode's own role-graph
+    markup may have added around the Solver's final transcript, IN ORDER:
+
+    1. strip one leading role/label wrapper the episode's own instruction
+       vocabulary might add (``"Transcript:"``, ``"Answer:"``, ``"Final:"``,
+       case-insensitive, at most once, only at the very start);
+    2. strip one surrounding pair of XML-ish tags, if the WHOLE remaining
+       text is wrapped (``<transcript>...</transcript>``,
+       ``<answer>...</answer>``, case-insensitive);
+    3. strip one surrounding pair of Markdown code fences, if the WHOLE
+       remaining text is wrapped (```` ```...``` ````, with or without a
+       language tag on the opening fence);
+    4. collapse every run of ASCII whitespace (spaces, tabs, newlines) to a
+       single space and strip leading/trailing whitespace.
+
+    Byte-identical passthrough when none of the above matches anything: the
+    delivered text equals the input exactly, and ``changed`` is false.
+
+    E13 (``deliver-latest-or-abstain``): if the hygiene above leaves nothing
+    (the input was empty, or contained only wrapper markup and whitespace),
+    this normaliser REFUSES rather than deliver a blank transcript as if it
+    were content -- the episode's own finite-completion policy is the layer
+    authorized to decide an abstain outcome, not this node inventing one.
+    """
+
+    id = DELIVER_NORMALISE_EARNINGS_TEXT_V1
+    version = DELIVER_NORMALISE_EARNINGS_TEXT_V1_VERSION
+    #: The ONE carrier this rule is defined for. ``rails.native_episode_config``
+    #: refuses a fragment that arms it on any other carrier, before contact.
+    carrier_lock_key = "earnings21-original"
+
+    _LABEL_PREFIX = re.compile(
+        r"^\s*(transcript|answer|final)\s*:\s*", re.IGNORECASE
+    )
+    _TAG_WRAPPER = re.compile(
+        r"^\s*<(transcript|answer)>(.*)</" r"\1" r">\s*$",
+        re.IGNORECASE | re.DOTALL,
+    )
+    _FENCE_WRAPPER = re.compile(
+        r"^\s*```(?:[A-Za-z0-9_-]*" "\n" r")?(.*?)```\s*$", re.DOTALL
+    )
+    _WHITESPACE_RUN = re.compile(r"\s+")
+
+    def __call__(self, text: str) -> DeliveryNormalisation:
+        if not isinstance(text, str):
+            raise TypeError("a delivery normaliser takes the delivered answer text")
+        hygiened = self._LABEL_PREFIX.sub("", text, count=1)
+        tag_match = self._TAG_WRAPPER.match(hygiened)
+        if tag_match is not None:
+            hygiened = tag_match.group(2)
+        fence_match = self._FENCE_WRAPPER.match(hygiened)
+        if fence_match is not None:
+            hygiened = fence_match.group(1)
+        hygiened = self._WHITESPACE_RUN.sub(" ", hygiened).strip()
+        if not hygiened:
+            raise DeliveryNormaliserError(
+                f"{self.id}: delivered text is empty after hygiene; abstain "
+                "(E13 deliver-latest-or-abstain) rather than deliver a blank "
+                "transcript"
+            )
+        changed = hygiened != text
+        receipt: dict[str, object] = {
+            "schema": DELIVER_NORMALISER_RECEIPT_SCHEMA,
+            "normaliser_id": self.id,
+            "version": self.version,
+            "rule_id": "earnings-text-hygiene-v1",
+            "carrier_lock_key": self.carrier_lock_key,
+            "applied": changed,
+            "changed": changed,
+            "input_sha256": _sha256(text),
+            "output_sha256": _sha256(hygiened),
+            "reason": None,
+        }
+        return DeliveryNormalisation(text=hygiened, changed=changed, receipt=receipt).validate()
+
+
 DELIVERY_NORMALISERS.register(
     DELIVER_NORMALISE_V3, SlurpProjectionV3DeliveryNormaliser()
+)
+DELIVERY_NORMALISERS.register(
+    DELIVER_NORMALISE_EARNINGS_TEXT_V1, EarningsTextDeliveryNormaliser()
 )
 
 
@@ -185,5 +287,8 @@ __all__ = [
     "DELIVER_NORMALISER_RECEIPT_SCHEMA",
     "DELIVER_NORMALISE_V3",
     "DELIVER_NORMALISE_V3_VERSION",
+    "DELIVER_NORMALISE_EARNINGS_TEXT_V1",
+    "DELIVER_NORMALISE_EARNINGS_TEXT_V1_VERSION",
     "SlurpProjectionV3DeliveryNormaliser",
+    "EarningsTextDeliveryNormaliser",
 ]

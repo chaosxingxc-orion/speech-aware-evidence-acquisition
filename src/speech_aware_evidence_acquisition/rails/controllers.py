@@ -1490,6 +1490,14 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-native-candidates-review-revise-acquire-v1": (
         "phase-native-candidates-review-revise-acquire-v1.json"
     ),
+    # Item E35 (owner decision 89, 2026-09-21): a CARRIER-NEUTRAL twin of the
+    # program above -- the same five phases, the same contact ceiling and
+    # the same stop rule, but with the Perception phase's
+    # response_format_id null instead of SLURP's "slurp-intent-hypotheses-v1"
+    # -- so the Earnings21+ConEC carrier can fly the same six-node native
+    # episode SLURP flies through the shared harness
+    # (rails.controllers.EvidenceAgentController, core.flight.FlightRuntime).
+    "phase-native-review-revise-acquire-v1": "phase-native-review-revise-acquire-v1.json",
     "phase-native-candidates-review-refresh-v1": "phase-native-candidates-review-refresh-v1.json",
     "native-answer-or-one-tool-v1": "native-answer-or-one-tool-v1.json",
     "native-answer-or-tool-v1": "native-answer-or-tool-v1.json",
@@ -1657,6 +1665,13 @@ def register_phase_programs_v1() -> None:
             "phase-native-candidates-review-revise-acquire-v1",
             default_controller_factory(
                 default_phase_program("phase-native-candidates-review-revise-acquire-v1")
+            ),
+        )
+    if "phase-native-review-revise-acquire-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-review-revise-acquire-v1",
+            default_controller_factory(
+                default_phase_program("phase-native-review-revise-acquire-v1")
             ),
         )
     if "phase-native-review-revise-json-v1" not in registered:

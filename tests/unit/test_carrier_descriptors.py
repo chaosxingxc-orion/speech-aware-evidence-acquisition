@@ -415,19 +415,33 @@ def test_slurp_task_layout_is_the_official_scorer_binding():
     )
 
 
-def test_task_scoped_carrier_lock_keys_is_exactly_audio2tool_and_slurp():
-    assert task_scoped_carrier_lock_keys() == frozenset({AUDIO2TOOL_LOCK_KEY, SLURP_LOCK_KEY})
+def test_task_scoped_carrier_lock_keys_is_exactly_audio2tool_slurp_and_earnings21():
+    # Item E35 (owner decision 89, 2026-09-21) adds earnings21-original's
+    # contextual-asr TaskLayout; earnings22-original still declares none.
+    assert task_scoped_carrier_lock_keys() == frozenset(
+        {AUDIO2TOOL_LOCK_KEY, SLURP_LOCK_KEY, "earnings21-original"}
+    )
 
 
-def test_task_scoped_carrier_lock_keys_excludes_both_earnings_carriers():
+def test_task_scoped_carrier_lock_keys_excludes_earnings22_only():
     scoped = task_scoped_carrier_lock_keys()
-    assert "earnings21-original" not in scoped
+    assert "earnings21-original" in scoped
     assert "earnings22-original" not in scoped
+
+
+def test_earnings21_task_layout_is_the_contextual_asr_binding():
+    layout = carrier_task_layout("earnings21-original")
+    assert layout == TaskLayout(
+        task_kind="contextual-asr",
+        official_scorer_id="asr-wer-whisper",
+        knowledge_layer="conec-contexts",
+        stratum_key="file_id",
+    )
 
 
 def test_carrier_task_layout_refuses_a_carrier_with_no_task_layer():
     with pytest.raises(CarrierDescriptorError, match="declares no task layer"):
-        carrier_task_layout("earnings21-original")
+        carrier_task_layout("earnings22-original")
 
 
 def test_carrier_task_layout_refuses_an_unregistered_carrier():
@@ -435,9 +449,12 @@ def test_carrier_task_layout_refuses_an_unregistered_carrier():
         carrier_task_layout("never-registered-carrier")
 
 
-def test_earnings_descriptors_declare_no_task_layer():
-    assert get_carrier_descriptor("earnings21-original").task is None
+def test_earnings22_descriptor_declares_no_task_layer():
     assert get_carrier_descriptor("earnings22-original").task is None
+
+
+def test_earnings21_descriptor_declares_a_task_layer():
+    assert get_carrier_descriptor("earnings21-original").task is not None
 
 
 # ---------------------------------------------------------------------------
@@ -448,6 +465,10 @@ def test_earnings_descriptors_declare_no_task_layer():
 
 
 def test_earnings21_original_descriptor_fields_are_unchanged():
+    # Item E35 (owner decision 89, 2026-09-21) adds ONLY the ``task`` field
+    # (a TaskLayout) -- every other field is byte-identical to the pre-E35
+    # descriptor; see test_earnings21_task_layout_is_the_contextual_asr_
+    # binding above for the task field's own dedicated assertion.
     descriptor = get_carrier_descriptor("earnings21-original")
     assert descriptor == CarrierDescriptor(
         lock_key="earnings21-original",
@@ -468,7 +489,12 @@ def test_earnings21_original_descriptor_fields_are_unchanged():
         ),
         media_identity_aliases=frozenset({"conec"}),
         entity=EntityLayout(subdir="transcripts/wer_tags", extension=".wer_tag.json"),
-        task=None,
+        task=TaskLayout(
+            task_kind="contextual-asr",
+            official_scorer_id="asr-wer-whisper",
+            knowledge_layer="conec-contexts",
+            stratum_key="file_id",
+        ),
     )
 
 

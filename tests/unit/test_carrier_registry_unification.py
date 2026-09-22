@@ -46,7 +46,12 @@ def test_all_four_descriptors_are_registered():
 
 
 def test_task_scoped_carrier_lock_keys_matches_the_receipt_governed_pair():
-    assert task_scoped_carrier_lock_keys() == frozenset({AUDIO2TOOL_LOCK_KEY, SLURP_LOCK_KEY})
+    # Item E35 (owner decision 89, 2026-09-21) adds earnings21-original's
+    # own TaskLayout (contextual-asr); see test_carrier_descriptors.py for
+    # the full binding assertion.
+    assert task_scoped_carrier_lock_keys() == frozenset(
+        {AUDIO2TOOL_LOCK_KEY, SLURP_LOCK_KEY, _EARNINGS21}
+    )
 
 
 def test_carrier_task_layout_audio2tool_official_scorer_id():

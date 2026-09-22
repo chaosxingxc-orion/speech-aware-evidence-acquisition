@@ -1,0 +1,12 @@
+{
+  "carrier_lock_key": "earnings21-original",
+  "split_name": "r4-e21-sub10-sample",
+  "d1_evidence_supplement": "receipts/artifacts/d1-e21-participant-names.json",
+  "d1_evidence_supplement_sha256": "313da4c48acf7403207e2a45c28f90262a94adfaa42873a0c9f251fc9d6bfd83",
+  "e21_runtime_subset": {
+    "receipt_split_name": "r4-e21-sub10-sample",
+    "parent_split": "discovery",
+    "subset_role": "construction"
+  },
+  "dataset_note": "Item E35 (owner decision 89, 2026-09-21): the SAME already-authorized seeded 10-of-44 discovery subset (docs/receipts/probe-samples/r4-e21-sub10-sample.json, probe R4-context-dose, seed 20260807), re-bound here to the native-window execution-unit mechanism (the shared window inventory's own complete window set for these ten calls, 342 rows) for the paired direct-vs-system engineering read. No new sample authority: this dataset fragment names no id the discovery split does not already contain. n=342 rows is far below CLAUDE.md's n>=400 effectiveness bar by construction -- this pairing is an engineering read, never an effectiveness claim."
+}

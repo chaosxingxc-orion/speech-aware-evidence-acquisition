@@ -91,6 +91,16 @@ _EXPECTED_PROGRAM_SHAPES = {
         11,
         "native-role-episode",
     ),
+    # Item E35, 2026-09-21 (owner decision 89): a CARRIER-NEUTRAL twin of the
+    # program above -- same five phases, same ceiling 11, same stop rule --
+    # with the Perception phase's response_format_id null instead of SLURP's
+    # "slurp-intent-hypotheses-v1", so the Earnings21+ConEC carrier can fly
+    # the same six-node native episode through the same shared harness.
+    "phase-native-review-revise-acquire-v1": (
+        ("perception", "reviewer", "planner", "solver", "acquisition"),
+        11,
+        "native-role-episode",
+    ),
     "phase-native-candidates-review-refresh-v1": (
         ("perception", "reviewer", "planner", "solver"), 12, "native-role-episode"
     ),
