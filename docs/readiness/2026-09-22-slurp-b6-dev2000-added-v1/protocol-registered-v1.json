@@ -1,0 +1,119 @@
+{
+  "accounting": {
+    "ceilings_are_not_targets": true,
+    "direct_family_budget": {
+      "fit_endpoint_calls_cap": 3001,
+      "generation_calls_cap": 1000,
+      "gpu_hours_fit_inclusive": 1.0,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 3500
+    },
+    "plan_budget_is_run_cumulative": true,
+    "plan_family_budget": {
+      "fit_endpoint_calls_cap": 44000,
+      "generation_calls_cap": 11000,
+      "gpu_hours_fit_inclusive": 12.0,
+      "native_task_contract_calls_cap": 6000,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 32819
+    },
+    "unused_budget_is_not_attempt_authority": true
+  },
+  "authority": {
+    "engineering": "tests/unit/test_slurp_b6_dev2000_cells.py proves the direct arm baseline/experiment differ from the DEV-1000 precedent, and the plan arm baseline/experiment differ from cell PLAN's, only in the enumerated roster-bound keys; no code change",
+    "evidence_base": "docs/readiness/2026-09-13-slurp-direct-vs-native-system-dev1000-replication-v1/ (the sealed direct max512 form), docs/readiness/2026-09-21-slurp-default-plan-lock-v1/ (cell PLAN, the locked v2.0 default plan)",
+    "owner_decisions": "34, 35 (B6 scoped and admitted), 78 (the seal path names B6 after the plan lock), 79 (D2 cluster on utterance id, D3 both weightings), 86 (development numbers carry no bar), 88 (this exact derivation of both arms from their sealed precedents)"
+  },
+  "cell_kind": "paired report-only generalisation read of the locked v2.0 default plan against the bare frozen core, on a fresh DEV-2000-ADDED roster neither arm has flown before",
+  "cells": {
+    "direct": {
+      "attempt_id": "attempt-slurp-direct-max512-dev2000-added-generation-v1",
+      "baseline_fragment": "configs/baseline/slurp-direct-max512-dev2000-added-v1.json",
+      "cell": "slurp-direct-max512-dev2000-added-v1",
+      "composed_config_hash": "48cd20439824cb1d7febf9fb5b8b206c609a90bbb3ff14ce068294414c96a529",
+      "experiment_fragment": "configs/experiment/slurp-direct-max512-dev2000-added-v1.json",
+      "fit_attempt_id": "attempt-slurp-direct-max512-dev2000-added-fit-v1",
+      "fit_run_id": "SAEA-SLURP-DIRECT-MAX512-DEV2000-ADDED-FIT-V1",
+      "protocol_hash": "80ec3a3ea2f149fb48821e9e52f6ea83142b94228283d42f50d0770ed697c9bc",
+      "readiness": "held; decision requirement placeholder; no preparation pin (direct arm needs none)",
+      "rows": 1000,
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV2000-ADDED-V1",
+      "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67"
+    },
+    "plan": {
+      "attempt_id": "attempt-slurp-native-default-plan-dev2000-added-generation-v1",
+      "baseline_fragment": "configs/baseline/slurp-native-default-plan-dev2000-added-baseline-v1.json",
+      "cell": "slurp-native-default-plan-dev2000-added-v1",
+      "composed_config_hash": "53da17191db1d00a0551c12a839fd580171305018c1a17c8e5457be3331a9552",
+      "experiment_fragment": "configs/experiment/slurp-native-default-plan-dev2000-added-v1.json",
+      "fit_attempt_id": "attempt-slurp-native-default-plan-dev2000-added-fit-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-FIT-V1",
+      "protocol_hash": "76ec1bb3ffb63347afc81d5946cafbd0e9b4d6577c4493684308627e0bddc89b",
+      "readiness": "held; decision requirement placeholder; NO preparation pin -- scripts/flights/repin_cell.py builds this cell's own prepared_phase_supply model-free at flip time",
+      "rows": 1000,
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1",
+      "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67"
+    }
+  },
+  "comparator": {
+    "kind": "paired, within this package: plan arm minus direct arm on the same 1,000 rows",
+    "never_reflown": true
+  },
+  "decision_rule": {
+    "kind": "report only",
+    "statement": "No admission verdict is read from this cell: it is the fresh-roster generalisation read of the already-locked v2.0 plan against the bare frozen core, not a new module decision. The paired deltas and their CI95 are reported per owner decision 86 (development numbers carry no bar) and decision 79 D3 (both weightings reported)."
+  },
+  "failure_policy": "Stop and preserve on the first failure in either arm. At most one root-diagnosed recovery re-registration per flight. RESUME-RECOVERY CLAUSE (owner decision 22 of 2026-09-18, copied unchanged from cell PLAN's failure policy): an infrastructure death with code and request bytes unchanged may be recovered as a resume-recovery under item E10, keeping every complete row without selection under invariant I7r, re-flying every partial or unstarted row under the same run id, changing no question, roster, comparator, decision rule or cap, and re-checking the run-cumulative budget. A partial manifest is never scored and never read.",
+  "metrics": {
+    "delta_convention": "delta = plan arm minus direct arm, in percentage points",
+    "primary": "official pooled SLU micro F1 (slurp-slu-official, devel gold scorer)",
+    "reported_beside": [
+      "per-scenario table (natural mixture and equal-scenario weighting)"
+    ],
+    "secondaries": [
+      "intent accuracy",
+      "scenario accuracy",
+      "action accuracy"
+    ]
+  },
+  "not_authorized": [
+    "no readiness flip -- both cells stay held until the coordinator mints coordination/slurp-b6-dev2000-added-v1/root-admission-v1.json and runs scripts/flights/repin_cell.py",
+    "no model, tokenizer, encoder, ASR, scorer, server or paid-API contact",
+    "no smoke flight -- both forms are already sealed and flown elsewhere",
+    "no admission verdict -- this is a report-only fresh-roster generalisation read"
+  ],
+  "not_claimed": [
+    "NO ADMISSION OR SUPERIORITY VERDICT.",
+    "NO GENERALIZATION OR PAPER-SCALE CLAIM: DEV-2000-ADDED is a development roster (decision 28).",
+    "NO CLAIM ABOUT OTHER CARRIERS."
+  ],
+  "population": {
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+      "sha256": "f78dd8ad2894b1fd02bfe6050e39e3fb2c5d178a649e5d20e85ea4ecf4b8dc58"
+    },
+    "rows": 1000,
+    "split_id": "DEV-2000-ADDED",
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
+    "split_role": "dev",
+    "total_audio_seconds": 2983.527
+  },
+  "protocol_id": "slurp-b6-dev2000-added-protocol-v1",
+  "registered_at_utc": "2026-09-22T12:00:00.000000+00:00",
+  "resampling": {
+    "draws": 10000,
+    "intervals": [
+      "CI95"
+    ],
+    "primary": "paired bootstrap over utterance id (87 utterances carry two recordings; clustered on the utterance id per owner decision 79 D2, never on the recording id)",
+    "seed": 20260915,
+    "tables": [
+      "natural mixture",
+      "equal-scenario weighting"
+    ]
+  },
+  "schema": "saea-slurp-b6-dev2000-added-protocol-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-b6, branch fable/b6",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "why_no_smoke": "Both forms are already sealed and flown: the direct max512 form on DEV-1000 and TRAIN Fold A, and the locked plan form on TRAIN Fold A (cell PLAN). Neither form raises a new structural question a four-row smoke would answer; only the roster-bound bindings moved, and those are proven by tests/unit/test_slurp_b6_dev2000_cells.py rather than by a smoke flight."
+}

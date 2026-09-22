@@ -1,0 +1,44 @@
+{
+  "cell": "slurp-native-default-plan-dev2000-added-v1",
+  "composed_config_hash": "53da17191db1d00a0551c12a839fd580171305018c1a17c8e5457be3331a9552",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-default-plan-dev2000-added-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 11000,
+    "planned_speech_audio_seconds": 32819,
+    "protocol_hash": "76ec1bb3ffb63347afc81d5946cafbd0e9b4d6577c4493684308627e0bddc89b",
+    "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over a committed single-cell campaign plan; the campaign acquires its own GenerationLease against the resident session and schedules the one official score at finalize. coordinate-fit must NOT be run.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-default-plan-dev2000-added-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 44000,
+    "generation_calls_cap": 11000,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6000,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 32819
+  },
+  "plan_kind": "generation",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-22-slurp-b6-dev2000-added-v1/protocol-registered-v1.json",
+    "sha256": "374f425b3c7e0d311c97ace20e8bf7a10b6085ed2184b22a907e39df377a6652"
+  },
+  "purpose": "Cell B6 plan arm: read the locked v2.0 default plan against the sealed direct arm (cell B6 direct arm, this same package) on the identical fresh DEV-2000-ADDED roster: a paired, report-only generalisation read of the locked plan against the bare frozen core, not a new admission decision (owner decisions 34, 35, 78, 79, 86, 88).",
+  "quality_read_gate": "No task-quality read before the complete sealed manifest and the single successful complete official score exist on BOTH arms of this package.",
+  "registered_at_utc": "2026-09-22T12:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-b6, branch fable/b6",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

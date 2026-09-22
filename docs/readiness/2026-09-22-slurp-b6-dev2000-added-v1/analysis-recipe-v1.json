@@ -1,0 +1,65 @@
+{
+  "arms": {
+    "direct": "SAEA-SLURP-DIRECT-MAX512-DEV2000-ADDED-V1",
+    "plan": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1"
+  },
+  "decision_rule": {
+    "kind": "report only",
+    "statement": "No admission verdict is read from this cell: it is the fresh-roster generalisation read of the already-locked v2.0 plan against the bare frozen core, not a new module decision. The paired deltas and their CI95 are reported per owner decision 86 (development numbers carry no bar) and decision 79 D3 (both weightings reported)."
+  },
+  "metrics": {
+    "delta_convention": "delta = plan arm minus direct arm, in percentage points",
+    "primary": "official pooled SLU micro F1 (slurp-slu-official, devel gold scorer)",
+    "reported_beside": [
+      "per-scenario table (natural mixture and equal-scenario weighting)"
+    ],
+    "secondaries": [
+      "intent accuracy",
+      "scenario accuracy",
+      "action accuracy"
+    ]
+  },
+  "not_claimed": [
+    "NO ADMISSION OR SUPERIORITY VERDICT.",
+    "NO GENERALIZATION OR PAPER-SCALE CLAIM: DEV-2000-ADDED is a development roster (decision 28).",
+    "NO CLAIM ABOUT OTHER CARRIERS."
+  ],
+  "population": {
+    "roster_relpath": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+    "roster_sha256": "f78dd8ad2894b1fd02bfe6050e39e3fb2c5d178a649e5d20e85ea4ecf4b8dc58",
+    "rows": 1000,
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
+    "split_name": "DEV-2000-ADDED",
+    "split_role": "dev"
+  },
+  "question": "On the fresh DEV-2000-ADDED roster (1,000 rows), does the locked v2.0 default plan (cell B6 plan arm) differ from the bare frozen core (cell B6 direct arm) in official pooled SLU micro F1, intent, scenario and action accuracy? Report only -- no admission verdict.",
+  "read_by": "script (owner decision 58)",
+  "resampling": {
+    "draws": 10000,
+    "intervals": [
+      "CI95"
+    ],
+    "primary": "paired bootstrap over utterance id (87 utterances carry two recordings; clustered on the utterance id per owner decision 79 D2, never on the recording id)",
+    "seed": 20260915,
+    "tables": [
+      "natural mixture",
+      "equal-scenario weighting"
+    ]
+  },
+  "schema": "saea-slurp-b6-dev2000-added-paired-analysis-recipe-v1",
+  "scoring": {
+    "complete_jobs": 2,
+    "no_sharding": true,
+    "official_scorer": "pinned SLURP official evaluate.py through core.scoring_batch",
+    "scorers_direct": [
+      "slurp-slu-official",
+      "slurp-slu",
+      "cost"
+    ],
+    "scorers_plan": [
+      "slurp-slu-official",
+      "cost"
+    ]
+  },
+  "why_no_smoke": "Both forms are already sealed and flown: the direct max512 form on DEV-1000 and TRAIN Fold A, and the locked plan form on TRAIN Fold A (cell PLAN). Neither form raises a new structural question a four-row smoke would answer; only the roster-bound bindings moved, and those are proven by tests/unit/test_slurp_b6_dev2000_cells.py rather than by a smoke flight."
+}
