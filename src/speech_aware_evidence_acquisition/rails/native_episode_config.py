@@ -61,6 +61,19 @@ class NativeEpisodeRole:
     # and there are several, here and in the tests -- composes exactly the
     # role it always did. Empty for every role but ``acquisition``.
     acquisition_kinds: tuple[str, ...] = ()
+    # Item E39 (2026-09-22): this role's own completion cap, composed into
+    # ``decoding_params.max_tokens`` for its contacts only, at request time
+    # (``reproduction.ojw.native_request.MeteredNativeSpeechRequest.prepare``)
+    # and nowhere else -- the same seam item E2's Solver ``decoding_overrides``
+    # are composed at, so the model fragment and the serving-session identity
+    # never move. ``None`` -- every role of every config written before E39 --
+    # leaves the request's own ``max_tokens`` exactly as the fragment declares
+    # it, byte for byte. The loader refuses a cap wider than the serving
+    # geometry's own output cap, because a role may only ever ask for LESS
+    # than the geometry allows. Declared LAST so every positional construction
+    # written before E39 -- here and in the tests -- composes exactly the role
+    # it always did.
+    max_completion_tokens: int | None = None
 
     def __post_init__(self):
         if self.role_kind == ACQUISITION_ROLE_KIND:
@@ -70,6 +83,11 @@ class NativeEpisodeRole:
             if self.tool_names or self.samples != 1 or self.twin is not None:
                 raise ValueError("the acquisition role carries no role knobs")
             if self.decoding_overrides is not None or self.commit is not None:
+                raise ValueError("the acquisition role carries no role knobs")
+            if self.max_completion_tokens is not None:
+                # Item E39: the sixth node answers nothing and, on every kind
+                # registered today, spends no model contact at all, so it has
+                # no completion to cap.
                 raise ValueError("the acquisition role carries no role knobs")
             if self.history_scope != "full":
                 raise ValueError("the acquisition role cannot restrict history")
@@ -99,6 +117,15 @@ class NativeEpisodeRole:
             return
         if self.acquisition_kinds:
             raise ValueError("only the acquisition role may declare acquisition kinds")
+        if self.max_completion_tokens is not None and (
+            isinstance(self.max_completion_tokens, bool)
+            or not isinstance(self.max_completion_tokens, int)
+            or self.max_completion_tokens < 1
+        ):
+            # Item E39. The geometry bound is checked by the loader, which is
+            # the only place that can see the serving geometry; the shape is
+            # checked here, so a directly constructed role is refused too.
+            raise ValueError("max_completion_tokens must be a positive integer or None")
         if not isinstance(self.history_scope, str) or self.history_scope not in {
             "full", "latest-solver-and-local-tools",
         }:
@@ -437,6 +464,37 @@ class NativeEpisodeConfig:
     # refused below when it names anything else. Declared LAST, for the same
     # reason E22's field is.
     reviewer_verdict_vocabulary: str | None = None
+    # Item E39 (2026-09-22), after the E35 sub10 read: WHICH node's truncated
+    # completion ends the episode under item E13's
+    # ``finite_completion_policy``. ``"episode"`` -- every config written
+    # before E39 and every sealed cell -- is the pre-E39 behaviour: ANY role's
+    # truncated completion ends the row, so a truncated Perception note voids
+    # a window the Solver had not yet answered (75 of 342 windows on the E35
+    # sub10 system arm, 95.6 % of its extra error mass).
+    # ``"answering-node"`` scopes the rule to the node that answers: a
+    # ``length`` truncation on Perception, Reviewer, Planner or Acquisition
+    # keeps the truncated text as that role's output and the episode
+    # continues, and only the Solver's own truncation -- or a truncation that
+    # leaves no Solver draft at all -- takes the E13 disposition. It renders
+    # NO request byte on a row whose roles finish. Declared LAST, for the same
+    # reason E20's, E21's and E22's fields are.
+    finite_completion_scope: str = "episode"
+
+    @property
+    def role_completion_caps(self) -> dict[str, int]:
+        """Item E39: ``{role phase id: max_completion_tokens}`` for the roles
+        that declare one.
+
+        Empty for every config written before E39, which is what makes the
+        request-time composition unreachable and the decoding block
+        byte-identical for every sealed cell.
+        """
+
+        return {
+            role.phase_id: int(role.max_completion_tokens)
+            for role in self.roles
+            if role.max_completion_tokens is not None
+        }
 
     @property
     def acquisition_enabled(self) -> bool:
@@ -616,6 +674,33 @@ class ContextFitBudget:
         )
 
 
+#: Item E39 (2026-09-22): the two scopes ``native_episode.
+#: finite_completion_scope`` may name. ``"episode"`` is the default and the
+#: pre-E39 behaviour.
+FINITE_COMPLETION_SCOPES = ("episode", "answering-node")
+
+
+def _serving_geometry_max_tokens(values: Mapping) -> int | None:
+    """Item E39: the composed configuration's own completion cap, or ``None``.
+
+    ``serving_geometry.max_tokens`` is the model fragment's declaration and is
+    what a per-role cap is bounded by. Some fragments (the Earnings hbmfree
+    family, for one) declare no ``serving_geometry`` block at all, and there
+    the request's own ``decoding_params.max_tokens`` IS the cap, so it is read
+    as the fallback. ``None`` when neither is a positive integer, which is
+    refused only for a configuration that declares a per-role cap at all --
+    every config written before E39 never reaches that refusal.
+    """
+
+    for block in ("serving_geometry", "decoding_params"):
+        holder = values.get(block)
+        if isinstance(holder, Mapping):
+            value = holder.get("max_tokens")
+            if not isinstance(value, bool) and isinstance(value, int) and value > 0:
+                return value
+    return None
+
+
 def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig | None:
     """Require explicit role limits, role-local tool authority and a graph ceiling.
 
@@ -685,6 +770,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         "finite_completion_policy",
         "context_fit_policy",
         "react_exhaustion_policy",
+        "finite_completion_scope",
         "planner_output_format",
         "role_context",
         "review_loop",
@@ -721,6 +807,15 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         or finite_completion_policy not in {"raise", "deliver-latest-or-abstain"}
     ):
         raise ValueError("native episode finite completion policy is invalid")
+    # Item E39 (2026-09-22): read exactly as E13's own key is -- absent means
+    # the default ``"episode"`` (the pre-E39 whole-episode scope), and a third
+    # value is refused here rather than reaching the graph.
+    finite_completion_scope = raw.get("finite_completion_scope", "episode")
+    if (
+        not isinstance(finite_completion_scope, str)
+        or finite_completion_scope not in FINITE_COMPLETION_SCOPES
+    ):
+        raise ValueError("native episode finite completion scope is invalid")
     # E20 (2026-09-19, owner decision 45). Parsed by the rail that owns the
     # mechanism, so the config surface and the runtime read one definition.
     context_fit_policy = parse_context_fit_policy(raw.get("context_fit_policy"))
@@ -826,6 +921,10 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
     if not isinstance(tool_specs, Mapping):
         raise ValueError("phase_tools must be a mapping")
     iterations_by_kind: dict[str, int] = {}
+    # Item E39 (2026-09-22): the per-role completion caps, read in the same
+    # pass the iterations are and bounded by the composed serving geometry.
+    completion_caps_by_kind: dict[str, int | None] = {}
+    geometry_max_tokens = _serving_geometry_max_tokens(values)
     # E21 (2026-09-19): the per-role pointer/expansion override table. It is
     # part of the ``native_episode.knowledge_index`` MODULE and is refused
     # without it, exactly as E18's ``roles.acquisition`` is refused without
@@ -837,6 +936,8 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         row = raw_roles[kind]
         base_fields = {
             "phase_id", "max_iterations", "history_scope", "knowledge_index_budget",
+            # Item E39 (2026-09-22): this role's own completion cap.
+            "max_completion_tokens",
         }
         # Only the Solver row may carry grouped-sampling fields (E2, SLURP v2
         # base program M2); every other role keeps the historical shape.
@@ -857,6 +958,27 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
                 "roles.<role>.knowledge_index_budget are one module: declare both "
                 "or neither"
             )
+        cap = row.get("max_completion_tokens")
+        if cap is not None:
+            # Item E39: shape here, and the GEOMETRY bound here too -- this is
+            # the only place that can see the composed serving geometry, and a
+            # cap wider than the geometry's own output cap is a cap that can
+            # never bind. Refused before any contact, by name.
+            if isinstance(cap, bool) or not isinstance(cap, int) or cap < 1:
+                raise ValueError(
+                    "roles.<role>.max_completion_tokens must be a positive integer"
+                )
+            if geometry_max_tokens is None:
+                raise ValueError(
+                    "roles.<role>.max_completion_tokens requires a declared "
+                    "serving_geometry.max_tokens or decoding_params.max_tokens"
+                )
+            if cap > geometry_max_tokens:
+                raise ValueError(
+                    "roles.<role>.max_completion_tokens must not exceed the serving "
+                    f"geometry's own max_tokens ({geometry_max_tokens})"
+                )
+        completion_caps_by_kind[kind] = cap
         iterations = row["max_iterations"]
         # 0 is provisionally accepted here (Reviewer/Planner only, when the
         # review loop is off); the paired cross-role check below is what
@@ -918,6 +1040,9 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
             phase_id, kind, iterations, tools, row.get("history_scope", "full"),
             row.get("samples", 1), row.get("decoding_overrides"), row.get("commit"),
             row.get("twin"),
+            # Item E39: keyword, because the role's own field is last and
+            # every positional argument above is the pre-E39 order.
+            max_completion_tokens=completion_caps_by_kind[kind],
         ))
     # E17: ``constant`` rendering is admitted only where it leaves every
     # tool-bearing role's request array exactly as ``per-role`` renders it.
@@ -1408,6 +1533,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         react_exhaustion_policy,
         acquisition_retrieval,
         reviewer_verdict_vocabulary,
+        finite_completion_scope,
     )
 
 

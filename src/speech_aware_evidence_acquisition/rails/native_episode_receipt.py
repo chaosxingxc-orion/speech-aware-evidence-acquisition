@@ -531,15 +531,30 @@ def _checked_contact(value, *, error_type):
     return value
 
 
+#: The exact field set of an item E13 finite disposition.
+_FINITE_DISPOSITION_FIELDS = frozenset({
+    "reason", "finish_reason", "role_id", "stage", "revision_count",
+    "planner_accepted", "rejected_contact",
+})
+
+#: Item E39 (2026-09-22): the ONE further key such a disposition may carry --
+#: which scope rule ended the row. Absent on every row sealed before E39 and
+#: on every ``finite_completion_scope`` ``"episode"`` row, so those receipts
+#: validate byte-identically to before this key existed.
+_FINITE_DISPOSITION_SCOPES = ("episode", "answering-node")
+
+
 def _finite_delivery(receipt, visits, *, error_type):
     disposition = receipt.get("terminal_disposition")
-    if not isinstance(disposition, Mapping) or set(disposition) != {
-        "reason", "finish_reason", "role_id", "stage", "revision_count",
-        "planner_accepted", "rejected_contact",
-    }:
+    if not isinstance(disposition, Mapping) or not (
+        _FINITE_DISPOSITION_FIELDS
+        <= set(disposition)
+        <= _FINITE_DISPOSITION_FIELDS | {"scope"}
+    ):
         _raise(error_type, "finite terminal disposition is malformed")
     if (
-        disposition["reason"] != "finite_completion"
+        disposition.get("scope", "episode") not in _FINITE_DISPOSITION_SCOPES
+        or disposition["reason"] != "finite_completion"
         or disposition["finish_reason"] not in ("length", "content_filter")
         or disposition["stage"] not in ("perception", "solver", "review", "planner", "acquisition")
         or not isinstance(disposition["role_id"], str) or not disposition["role_id"]
@@ -774,6 +789,113 @@ def validate_native_episode_terminal_policy(
             _raise(error_type, "context-fit delivery differs from its configured policy")
     else:
         _raise(error_type, "unknown native delivery kind")
+
+
+#: Item E39 (2026-09-22): the receipt key a row's tolerated ``length``
+#: truncations are collected under, its schema, and the exact field set of one
+#: event. Restated here for the same reason
+#: :data:`CONTEXT_COMPACTION_DISPOSITION` is: this module keeps no runtime
+#: import.
+TRUNCATION_EVENTS = "truncation_events"
+TRUNCATION_EVENTS_SCHEMA = "saea-native-length-truncation-v1"
+_TRUNCATION_EVENT_FIELDS = frozenset({
+    "role_id", "stage", "role_visit_index", "revision_count", "finish_reason",
+    "contact",
+})
+
+#: Item E39: the stages whose truncation may be tolerated. The answering
+#: stage (``solver``) is deliberately absent: its truncation is item E13's own
+#: case under every scope.
+_TRUNCATION_STAGES = frozenset({"perception", "review", "planner", "acquisition"})
+
+
+def validate_native_episode_truncation_scope(
+    receipt, *, finite_completion_scope, error_type=ValueError,
+):
+    """Item E39: this row's tolerated truncations, bound and scope-checked.
+
+    A row without the key -- every row sealed before E39 and every row of an
+    ``"episode"`` scope cell -- returns ``()`` without reading anything else.
+    A row WITH it takes the same prospective-configuration rule items E13,
+    E20 and E22 take: a row may only survive a truncation under a scope
+    declared BEFORE the flight, never under one inferred from its own
+    failure, so the default ``"episode"`` refuses the block outright. Each
+    event must name a real visit of THIS row -- its ``role_visit_index``
+    addressing a ``role_visits`` entry whose ``stage`` and ``role_id`` are the
+    event's own and which carries ``truncated`` true -- so a truncation can
+    never be claimed for a visit that did not happen, and the answering stage
+    can never claim one at all.
+    """
+
+    block = receipt.get(TRUNCATION_EVENTS)
+    if block is None:
+        return ()
+    if finite_completion_scope != "answering-node":
+        _raise(
+            error_type,
+            "tolerated length truncation recorded without its declared scope",
+        )
+    visits = _sequence(
+        receipt.get("role_visits"), "native role visits", error_type=error_type
+    )
+    if (
+        not isinstance(block, Mapping)
+        or set(block) != {"schema", "count", "events"}
+        or block["schema"] != TRUNCATION_EVENTS_SCHEMA
+    ):
+        _raise(error_type, "length truncation block is malformed")
+    events = _sequence(
+        block["events"], "length truncation events", error_type=error_type
+    )
+    count = block["count"]
+    if (
+        isinstance(count, bool)
+        or not isinstance(count, int)
+        or count != len(events)
+        or not events
+    ):
+        _raise(error_type, "length truncation count differs from its events")
+    seen_indices: set[int] = set()
+    for event in events:
+        if not isinstance(event, Mapping) or set(event) != _TRUNCATION_EVENT_FIELDS:
+            _raise(error_type, "length truncation event is malformed")
+        index = event["role_visit_index"]
+        if (
+            isinstance(index, bool)
+            or not isinstance(index, int)
+            or not 0 <= index < len(visits)
+            or index in seen_indices
+            or not isinstance(visits[index], Mapping)
+            or visits[index].get("stage") != event["stage"]
+            or visits[index].get("role_id") != event["role_id"]
+            or visits[index].get("truncated") is not True
+        ):
+            _raise(
+                error_type,
+                "length truncation event does not bind an actual role visit",
+            )
+        seen_indices.add(index)
+        if event["stage"] not in _TRUNCATION_STAGES:
+            _raise(error_type, "length truncation names an inadmissible stage")
+        if not isinstance(event["role_id"], str) or not event["role_id"]:
+            _raise(error_type, "length truncation event has no role id")
+        if event["finish_reason"] != "length":
+            _raise(error_type, "length truncation event has an invalid finish reason")
+        _nonneg_int(
+            event["revision_count"], "length truncation revision_count",
+            error_type=error_type,
+        )
+        _checked_contact(event["contact"], error_type=error_type)
+    marked = sum(
+        1 for visit in visits
+        if isinstance(visit, Mapping) and visit.get("truncated") is True
+    )
+    if marked != len(events):
+        _raise(
+            error_type,
+            "a truncated role visit has no length truncation event of its own",
+        )
+    return tuple(events)
 
 
 def validate_native_episode_finite_path(

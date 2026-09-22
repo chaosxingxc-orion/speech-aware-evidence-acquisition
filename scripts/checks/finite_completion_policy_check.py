@@ -93,6 +93,21 @@ rule.
    these failure modes should say so in its preregistration, not in a config
    leaf that reads like an oversight.
 
+**Reported, never enforced (item E39, 2026-09-22).** Beside the two policies,
+each in-scope cell's ``native_episode.finite_completion_scope`` (item E39 --
+``"episode"``, the default and every pre-E39 cell's behaviour, or
+``"answering-node"``, which keeps a truncated auxiliary node's text and lets
+the Solver still answer) and any per-role
+``native_episode.roles.<role>.max_completion_tokens`` are printed as a report
+line, so the queue's truncation posture is visible without opening a config.
+No value of either is required: the E35 sub10 read (docs/results/
+2026-09-22-e21-native-window-e35-sub10-diagnosis.md) found the whole-episode
+scope cost 95.6 % of that arm's extra error mass, but which scope a cell wants
+is the coordinator's registration, not this gate's. The ONE refusal item E39
+adds is a scope value outside the enum, under exactly rule 2's reasoning: a
+third value reads like an oversight and the loader would refuse it at the
+flight, later and more expensively.
+
 This gate never edits a config. A violation is repaired by the coordinator
 re-pinning the cell (``scripts/flights/repin_cell.py``), which is the only
 path that recomputes the package's dependent hashes in the same cycle.
@@ -148,6 +163,13 @@ REQUIRED_POLICIES = (
         "role's ReAct loop ends without an answer",
     ),
 )
+
+#: Item E39 (2026-09-22): the episode-level scope leaf and the two values it
+#: may take, and the per-role leaf whose declared caps are reported beside it.
+#: Neither is REQUIRED of any cell; a scope outside the enum is refused.
+SCOPE_KEY = "finite_completion_scope"
+SCOPE_VALUES = ("episode", "answering-node")
+ROLE_CAP_KEY = "max_completion_tokens"
 
 #: The readiness states of a cell that is still on the queue. The vocabulary
 #: seen in ``configs/experiment/*.json`` at 2026-09-19 is ``ready`` (141
@@ -311,6 +333,36 @@ def _policy_of(baseline: dict[str, Any], key: str = POLICY_KEY) -> tuple[bool, A
     return True, episode.get(key)
 
 
+def _scope_of(baseline: dict[str, Any]) -> tuple[bool, Any]:
+    """Item E39: ``(carries a native_episode block, the declared scope)``.
+
+    An absent key reads as the loader's own default, ``"episode"``, because
+    that is what the flight would compose -- the report tells the reader what
+    the cell DOES, not which bytes it spells.
+    """
+
+    episode = baseline.get(EPISODE_BLOCK)
+    if not isinstance(episode, dict):
+        return False, None
+    return True, episode.get(SCOPE_KEY, SCOPE_VALUES[0])
+
+
+def _role_caps_of(baseline: dict[str, Any]) -> dict[str, Any]:
+    """Item E39: ``{role: max_completion_tokens}`` for the roles declaring one."""
+
+    episode = baseline.get(EPISODE_BLOCK)
+    if not isinstance(episode, dict):
+        return {}
+    roles = episode.get("roles")
+    if not isinstance(roles, dict):
+        return {}
+    caps: dict[str, Any] = {}
+    for role, row in sorted(roles.items()):
+        if isinstance(row, dict) and row.get(ROLE_CAP_KEY) is not None:
+            caps[role] = row[ROLE_CAP_KEY]
+    return caps
+
+
 def evaluate(repo_root: Path, ledger: Path = EXPOSURE_LEDGER) -> dict[str, Any]:
     rows = _parse_exposure_ledger(repo_root, ledger)
     index = _experiment_index(repo_root)
@@ -323,6 +375,9 @@ def evaluate(repo_root: Path, ledger: Path = EXPOSURE_LEDGER) -> dict[str, Any]:
     no_run_id: list[str] = []
     not_live: list[dict[str, str]] = []
     checked_baselines: set[str] = set()
+    # Item E39 (2026-09-22): the truncation posture of every in-scope cell,
+    # reported and never enforced.
+    scope_report: dict[str, dict[str, Any]] = {}
 
     for path in sorted((repo_root / READINESS).glob(PLAN_GLOB)):
         relpath = path.relative_to(repo_root).as_posix()
@@ -452,6 +507,14 @@ def evaluate(repo_root: Path, ledger: Path = EXPOSURE_LEDGER) -> dict[str, Any]:
                     )
                     continue
                 checked_baselines.add(name)
+                native_block, scope = _scope_of(baseline)
+                if native_block:
+                    scope_report[name] = {
+                        "baseline": name,
+                        "run_id": run_id,
+                        SCOPE_KEY: scope,
+                        "role_completion_caps": _role_caps_of(baseline),
+                    }
                 for key, required, absent_means in REQUIRED_POLICIES:
                     native, policy = _policy_of(baseline, key)
                     if not native or policy == required:
@@ -506,6 +569,34 @@ def evaluate(repo_root: Path, ledger: Path = EXPOSURE_LEDGER) -> dict[str, Any]:
                 }
             )
 
+    # Item E39 rule 3: repository-wide, a DECLARED scope is one of the two.
+    # An absent key is the loader's default and is never a finding.
+    for path in sorted((repo_root / BASELINE_DIR).glob("*.json")):
+        baseline = _read_json(path, path.name)
+        if not isinstance(baseline, dict):
+            continue
+        episode = baseline.get(EPISODE_BLOCK)
+        if not isinstance(episode, dict) or SCOPE_KEY not in episode:
+            continue
+        declared = episode[SCOPE_KEY]
+        if declared in SCOPE_VALUES:
+            continue
+        violations.append(
+            {
+                "kind": "invalid-scope",
+                "key": SCOPE_KEY,
+                "plan": None,
+                "run_id": None,
+                "baseline": path.stem,
+                "declared": declared,
+                "message": (
+                    f"{BASELINE_DIR.as_posix()}/{path.name}: native_episode."
+                    f"{SCOPE_KEY} is {declared!r}; the only values are "
+                    f"{SCOPE_VALUES[0]!r} and {SCOPE_VALUES[1]!r}"
+                ),
+            }
+        )
+
     state_counts = Counter(row["state"] for row in not_live)
     return {
         # E22 widened the gate from one key to two. The schema name is the
@@ -516,6 +607,9 @@ def evaluate(repo_root: Path, ledger: Path = EXPOSURE_LEDGER) -> dict[str, Any]:
         "required_policy": REQUIRED_POLICY,
         "required_react_exhaustion_policy": REQUIRED_REACT_POLICY,
         "required_policies": {key: value for key, value, _ in REQUIRED_POLICIES},
+        # Item E39: reported, not required.
+        "finite_completion_scopes": list(SCOPE_VALUES),
+        "scope_report": [scope_report[name] for name in sorted(scope_report)],
         "live_readiness_states": list(LIVE_READINESS_STATES),
         "in_scope_plan_cells": in_scope,
         "in_scope_plans": sorted({row["plan"] for row in in_scope}),
@@ -556,6 +650,18 @@ def main(argv: list[str] | None = None) -> int:
         print(f"native episode failure-mode policy check: FAIL: {problem}")
     for violation in data["violations"]:
         print(f"native episode failure-mode policy check: FAIL: {violation['message']}")
+
+    for row in data["scope_report"]:
+        caps = row["role_completion_caps"]
+        rendered = (
+            ", ".join(f"{role}={cap}" for role, cap in caps.items())
+            if caps else "none"
+        )
+        print(
+            f"native episode failure-mode policy check: scope: {row['baseline']} "
+            f"({row['run_id']}): {SCOPE_KEY}={row[SCOPE_KEY]!r}; per-role "
+            f"completion caps: {rendered}"
+        )
 
     out_of_scope = data["out_of_scope"]
     states = ", ".join(
