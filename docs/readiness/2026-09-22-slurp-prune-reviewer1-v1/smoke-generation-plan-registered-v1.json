@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-prune-reviewer1-smoke-4-v1",
-  "composed_config_hash": "2cae928d0449853d0fee85c36014ff15d387fcfd4ccaf5baf109b7cd2948d4a5",
+  "composed_config_hash": "e94c79cb065f39458fb4736ab838a2e72e5fd0fc5ea1a20b334fd8e6dbfb1310",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-prune-reviewer1-smoke-4-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 28,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "41a4f921ff0ca8e15f33775d3021f7eac849515123129249dc99053b1a8f2e59",
+    "protocol_hash": "b2a774ece54856a69f2780e18b348b21bae5c433d392e9aa2b780c6023cd6cff",
     "run_id": "SAEA-SLURP-NATIVE-PRUNE-REVIEWER1-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
