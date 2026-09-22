@@ -40,7 +40,7 @@
     },
     "unused_budget_is_not_attempt_authority": true
   },
-  "analysis_recipe": "docs/readiness/2026-09-22-slurp-plan-acquisition-b9a-recovery-recovery-v1/analysis-recipe-v1.json",
+  "analysis_recipe": "docs/readiness/2026-09-22-slurp-plan-acquisition-b9a-recovery-v1/analysis-recipe-v1.json",
   "authority": {
     "owner_decisions": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md: 43 (all six nodes on every carrier), 44 (build acquisition now, kind (a) first on SLURP), 78 (B9a is a seal flight), 38, 58, 75, 25, 28",
     "evidence_base": "docs/superpowers/specs/2026-09-19-e18-acquisition-node-design.md (the primitive, the three kinds, the ceiling, the proofs), docs/superpowers/specs/2026-09-19-agent-base-lock-v2-draft.md section on B9a, the PLAN / PLANr verdicts (pending)",
