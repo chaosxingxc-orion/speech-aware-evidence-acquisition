@@ -6,7 +6,7 @@
         "worker",
         "campaign"
       ],
-      "attempt_id": "attempt-slurp-native-prune-reviewer1-smoke-4-generation-v1",
+      "attempt_id": "attempt-slurp-native-prune-reviewer1-smoke-4-generation-recovery-v1",
       "baseline_fragment": "slurp-native-prune-reviewer1-smoke-4-baseline-v1",
       "cell_id": "slurp-native-prune-reviewer1-smoke-4-v1",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",

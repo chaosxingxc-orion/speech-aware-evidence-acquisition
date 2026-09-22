@@ -63,7 +63,7 @@
       "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
     },
     "smoke": {
-      "attempt_id": "attempt-slurp-native-prune-reviewer1-smoke-4-generation-v1",
+      "attempt_id": "attempt-slurp-native-prune-reviewer1-smoke-4-generation-recovery-v1",
       "baseline_fragment": "configs/baseline/slurp-native-prune-reviewer1-smoke-4-baseline-v1.json",
       "cell": "slurp-native-prune-reviewer1-smoke-4-v1",
       "composed_config_hash": "fbe443dbaf07913abda16e1da513e07d76e4295ff48cc79de58a989c89d4672e",

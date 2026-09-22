@@ -2,7 +2,7 @@
   "cell": "slurp-native-prune-reviewer1-smoke-4-v1",
   "composed_config_hash": "fbe443dbaf07913abda16e1da513e07d76e4295ff48cc79de58a989c89d4672e",
   "execution_plan": {
-    "attempt_id": "attempt-slurp-native-prune-reviewer1-smoke-4-generation-v1",
+    "attempt_id": "attempt-slurp-native-prune-reviewer1-smoke-4-generation-recovery-v1",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 1.0,

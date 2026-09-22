@@ -14,16 +14,16 @@ echo "$COMMIT" > /home/chao/batch-flight-commit.txt
 for f in /home/chao/batch-status.jsonl /home/chao/batch-done /home/chao/batch-STOP; do [ -e "$f" ] && mv "$f" "$f.$(date -u +%Y%m%dT%H%M%SZ).bak"; done
 /home/chao/.venvs/speechrl/bin/python - <<'PY'
 import json
-def step(order, short, name, tag, cpr, ceil):
+def step(order, short, name, tag, cpr, ceil, smoke_attempt=None):
     return {"order":order,"short":short,"kind":"cell",
         "experiment":f"slurp-native-{name}-v1","cell":f"slurp-native-{name}-v1",
         "smoke_experiment":f"slurp-native-{name}-smoke-4-v1","smoke_cell":f"slurp-native-{name}-smoke-4-v1",
         "campaign_plan":f"configs/campaign/slurp-native-{name}-v1.json",
         "run_id":f"SAEA-SLURP-NATIVE-{tag}-V1","fit_run_id":f"SAEA-SLURP-NATIVE-{tag}-FIT-V1",
         "gen_attempt_id":f"attempt-slurp-native-{name}-train-fold-a-generation-v1",
-        "smoke_run_id":f"SAEA-SLURP-NATIVE-{tag}-SMOKE-4-V1","smoke_attempt_id":f"attempt-slurp-native-{name}-smoke-4-generation-v1",
+        "smoke_run_id":f"SAEA-SLURP-NATIVE-{tag}-SMOKE-4-V1","smoke_attempt_id":smoke_attempt or f"attempt-slurp-native-{name}-smoke-4-generation-v1",
         "expected_rows":1080,"contacts_per_row":cpr,"ceiling_per_row":ceil,"notool":True,"owner":f"root-slurp-native-{name}-v1"}
-steps=[step(1,"p1","prune-reviewer1","PRUNE-REVIEWER1",4,11), step(2,"p0","prune-review-off","PRUNE-REVIEW-OFF",2,2)]
+steps=[step(1,"p1","prune-reviewer1","PRUNE-REVIEWER1",4,7,"attempt-slurp-native-prune-reviewer1-smoke-4-generation-recovery-v1"), step(2,"p0","prune-review-off","PRUNE-REVIEW-OFF",2,2)]
 json.dump(steps, open("/home/chao/batch-queue.json","w"), indent=1)
 PY
 echo "queue [p1 p0] written; starting driver $(date -u +%FT%TZ)" >> $LOG
