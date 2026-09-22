@@ -1,0 +1,43 @@
+{
+  "cell": "slurp-direct-max512-dev2000-added-v1",
+  "composed_config_hash": "48cd20439824cb1d7febf9fb5b8b206c609a90bbb3ff14ce068294414c96a529",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-direct-max512-dev2000-added-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 3001,
+    "planned_speech_audio_seconds": 2984,
+    "protocol_hash": "80ec3a3ea2f149fb48821e9e52f6ea83142b94228283d42f50d0770ed697c9bc",
+    "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV2000-ADDED-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Live-phase fit inside the same campaign and lease as the generation cell; coordinate-fit is not run.",
+  "expected_session_id": "serving-slurp-dual-store-base-replication-np4-v1",
+  "experiment": "slurp-direct-max512-dev2000-added-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 3001,
+    "generation_calls_cap": 1000,
+    "gpu_hours_fit_inclusive": 1.0,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 3500
+  },
+  "plan_kind": "fit",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-22-slurp-b6-dev2000-added-v1/protocol-registered-v1.json",
+    "sha256": "374f425b3c7e0d311c97ace20e8bf7a10b6085ed2184b22a907e39df377a6652"
+  },
+  "purpose": "Read the sealed slurp-direct-max512 form against the sealed default-plan system arm (cell B6 plan arm, this same package) on the identical fresh DEV-2000-ADDED roster: a paired, report-only generalisation read of the locked v2.0 plan against the bare frozen core, not a new admission decision.",
+  "quality_read_gate": "No task-quality read before the complete sealed manifest and the single successful complete official score exist on BOTH arms of this package.",
+  "registered_at_utc": "2026-09-22T12:00:00.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-b6, branch fable/b6",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

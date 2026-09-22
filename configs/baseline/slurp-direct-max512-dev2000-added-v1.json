@@ -1,0 +1,38 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame/snapshot.json",
+  "knowledge_snapshot_sha256": "609854e4211891614b621e6431ccf23706c2aa3a3bc9133dae9d9765628c88b8",
+  "live_phase_fit": {
+    "attempt_id": "attempt-slurp-direct-max512-dev2000-added-fit-v1",
+    "contact_cap": 3001,
+    "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV2000-ADDED-FIT-V1"
+  },
+  "live_phase_fit_audio_seconds_cap": 3500,
+  "phase_material": {
+    "direct": {
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_phase_direct.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null
+    }
+  },
+  "policy": "phase-direct-only-v1",
+  "scorers": [
+    "slurp-slu-official",
+    "slurp-slu",
+    "cost"
+  ],
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-2000-ADDED-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "978fc63888b99fa73ec5ca51ebb03676cb853f052125212f48326e213cf35091",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_template_active": true,
+  "what_this_is": "Cell B6 direct arm (owner decisions 34, 35, 78, 79, 86, 88): the sealed slurp-direct-max512 form, unmodified in method, flown on the fresh DEV-2000-ADDED roster (1,000 rows, split identity ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67) instead of DEV-1000. Send one direct-only task request per existing DEV-2000-ADDED sample through the shared controller, FlightRuntime and OpenJiuwen executor, retaining all 60 legal labels and the same max512 geometry, frozen weights, promoted speech packets and prompts as the sealed DEV-1000 and TRAIN Fold A direct forms. No retrieved knowledge, intermediate candidate state or analytical tools enter this direct arm. This is a fresh-roster generalisation read of an already-sealed method, not a new form: no smoke is registered because the form has already been flown twice (DEV-1000 and TRAIN Fold A) and left no open form question. Any second failure closes this generation flight.",
+  "whole_roster_wave_barrier": true
+}
