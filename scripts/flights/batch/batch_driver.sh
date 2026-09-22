@@ -38,7 +38,7 @@ field() { $PY -c "import json,sys;d=json.load(open('$QUEUE'))[$1];v=d.get('$2');
 prelaunch() {
   [ -e "$DATA/locks/flight.lock" ] && stop "flight.lock present before step $1"
   [ -z "$(pgrep -af 'core.flight.cli|lease_cli' | grep -v pgrep)" ] || stop "a flight or lease process is alive before step $1"
-  local ok; ok=$(cd "$MAIN" && bash scripts/serving_session.sh status --session-id $SESSION 2>/dev/null | $PY -c "import json,sys;d=json.load(sys.stdin);print(d.get('server_ok'), d.get('slots',{}).get('busy'), d.get('session_id'))" 2>/dev/null)
+  local ok; ok=$(cd "$MAIN" && bash scripts/serving_session.sh status --session-id $SESSION 2>/dev/null | $PY -c "import json,sys;d=json.load(sys.stdin);m=d.get('last_monitor_sample') or {};print(m.get('server_ok'), (m.get('slots') or {}).get('busy'), (d.get('session') or {}).get('session_id'))" 2>/dev/null)
   case "$ok" in "True 0 $SESSION") ;; *) stop "serving session not idle/healthy before step $1: $ok";; esac
   local ramp; ramp=$(bash $SP/gpu_ramp_test.sh 2>/dev/null | grep -o "[0-9.]* TFLOP/s" | grep -o "^[0-9.]*")
   [ -n "$ramp" ] && [ "$($PY -c "print(int(float('$ramp') >= 30))")" = "1" ] || stop "GPU ramp preflight failed before step $1 (${ramp:-none} TFLOP/s)"
