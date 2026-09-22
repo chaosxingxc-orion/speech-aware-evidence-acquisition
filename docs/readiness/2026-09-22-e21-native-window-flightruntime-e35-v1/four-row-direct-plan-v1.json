@@ -19,7 +19,7 @@
     "planned_model_calls": 4,
     "planned_gpu_hours": 0.1,
     "planned_speech_audio_seconds": 360,
-    "protocol_hash": "8e031d5e123544cf5f942099d5fbc91e38d8a34af4681ffd3fa2f1cc515586fd"
+    "protocol_hash": "14eaef74eb9390d81f8e11c5daf1312eed4037ccd44e382773560099256ebc9e"
   },
   "scoring": "One complete official score after seal (asr-wer-whisper, conec-entity-wer-official, numeric-value-accuracy-v1, semantic-high-impact-error-rate-v1, cost), run once through core.scoring_batch.",
   "execution_location": "Shared direct-only controller (phase-direct-only-v1) and the OpenJiuwen executor.",
@@ -27,7 +27,7 @@
     "Materialize analysis/SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1/window-inventory.json via scripts/build_e21_native_window_unit_subset.py (expected file_sha256 e5f3cfbcbc407fbb3a7b59469b86ab9d405f7b43963cb2d18b655790c5f4a32b, unit_count 4)."
   ],
   "registration_state": "REGISTERED by root before contact on 2026-09-22 (owner decision 91): decision receipt coordination/e21-native-window-flightruntime-e35-v1/root-admission-v1.json (e21-native-window-flightruntime-e35-admission-v1); fresh unconsumed exposure-ledger rows; readiness flipped through core.flight.repin.apply_decision_and_readiness (no supply to prepare: item E38 path).",
-  "composed_config_hash": "66d2ab3154836c807d0c8e2c84b5c85541500923f6ac9aeb89a59b0e25725521",
+  "composed_config_hash": "1921501f1e82699c42d93d8a2b5a6ec4b5322fa9159c76d23af9566d5b5e1874",
   "registered_at_utc": "2026-09-22T12:00:00.000000+00:00",
   "expected_session_id": "serving-e21-native-window-flightruntime-np4-max1024-v1"
 }
