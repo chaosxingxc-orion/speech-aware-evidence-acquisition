@@ -87,8 +87,8 @@
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 13.5,
     "planned_model_calls": 4104,
-    "planned_speech_audio_seconds": 30407,
+    "planned_speech_audio_seconds": 364884,
     "split_role": "discovery"
   },
-  "execution_plan_note": "Pair totals (direct + system arms; ceilings, not targets), enforced run-cumulatively per run id by the runtime; the per-arm expectations are in the readiness plans."
+  "execution_plan_note": "Pair totals (direct + system arms; ceilings, not targets), enforced run-cumulatively per run id by the runtime; the per-arm expectations are in the readiness plans. Speech seconds are REPEATED seconds: every native-episode contact re-sends the window audio, so the system arm's ceiling is windows x 11 x window seconds (four-row 3,960; sub10 334,477) plus the direct arm's one pass."
 }

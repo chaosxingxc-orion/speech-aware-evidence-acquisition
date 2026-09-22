@@ -18,8 +18,8 @@
     "split_identity_hash": "744c4b2e2d2eece3b05c68089c02000e38c96d5c62db8055d9c421fd509a8f61",
     "planned_model_calls": 342,
     "planned_gpu_hours": 1.5,
-    "planned_speech_audio_seconds": 30407,
-    "protocol_hash": "a48bb36c06e7ae4b4d7b92ad9c8e91e6a3935daa27a8dd6e3d441de89fd17a87"
+    "planned_speech_audio_seconds": 364884,
+    "protocol_hash": "5a273dcb469ae75b3ec63f8cc3914364a3caed9c54ee64ca2bfc2eecc617a681"
   },
   "scoring": "One complete official score after seal (asr-wer-whisper, conec-entity-wer-official, numeric-value-accuracy-v1, semantic-high-impact-error-rate-v1, cost), run once through core.scoring_batch.",
   "execution_location": "Shared direct-only controller (phase-direct-only-v1) and the OpenJiuwen executor.",
@@ -28,7 +28,7 @@
   ],
   "claim_surface": "Engineering-only: n=342 rows is below CLAUDE.md's n>=400 effectiveness bar by construction; this cell supports no effectiveness or comparison claim.",
   "registration_state": "REGISTERED by root before contact on 2026-09-22 (owner decision 91): decision receipt coordination/e21-native-window-flightruntime-e35-v1/root-admission-v1.json (e21-native-window-flightruntime-e35-admission-v1); fresh unconsumed exposure-ledger rows; readiness flipped through core.flight.repin.apply_decision_and_readiness (no supply to prepare: item E38 path).",
-  "composed_config_hash": "af6e889eda202f2c9a61b7a0137c2ccc8920ef9d2ab1d42ca2db75f4c2dcbdbb",
+  "composed_config_hash": "5c2d8fe650f36d263f3c70a0e81a42c4296224ff3b65df201d221d49b1b410b6",
   "registered_at_utc": "2026-09-22T12:00:00.000000+00:00",
   "expected_session_id": "serving-e21-native-window-flightruntime-np4-max1024-v1"
 }
