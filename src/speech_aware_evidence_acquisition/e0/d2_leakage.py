@@ -125,6 +125,39 @@ ARM_VISIBLE_FIELDS: dict[str, tuple[str, ...]] = {
         "decoding_params",
         "construction_targets",
     ),
+    # "construction-advantage-text" (Stage-3 S3-4, 2026-09-22): bare-core's
+    # own ten fields plus "construction_targets", byte-identical in SHAPE to
+    # "construction-proposer-text" above and admitted for the same reason
+    # (owner decision 82: the frozen core may see CONSTRUCTION gold, never
+    # evaluation gold). This is a SECOND, independent arm rather than a
+    # second use of the proposer arm's name because its material and its
+    # output contract both differ: the proposer arm asks for a rewritten
+    # artifact over a target's tool description; this arm asks the core to
+    # STATE, in a fixed three-line form (DELTA-KIND / TARGET / STATEMENT),
+    # what distinguished a Stage-3 rollout's best sample from its worst on
+    # one disagreeing construction row (Training-Free GRPO's group-relative
+    # semantic advantage). "construction_targets" here carries this row's
+    # own construction-gold target (the same field name and field-set
+    # discipline `_construction_visibility` enforces below: every arm this
+    # dict declares as construction-visible must be bare-core's ten fields
+    # plus exactly this one), never the best/worst SAMPLE ANSWERS -- those
+    # are rendered ONLY into the instruction text at flight time
+    # (`rails.stage3_advantage`), the same "artifact never receipted"
+    # discipline `construction_draws` documents at
+    # core/flight/runtime.py's wire-check receipt.
+    "construction-advantage-text": (
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "construction_targets",
+    ),
     "fixed-legal-context": (
         "request_id",
         "carrier_lock_key",

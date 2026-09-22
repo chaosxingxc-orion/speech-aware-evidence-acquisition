@@ -1504,6 +1504,17 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-task-tools-then-solve-v1": "phase-task-tools-then-solve-v1.json",
     "phase-task-tools-solve-revise-v1": "phase-task-tools-solve-revise-v1.json",
     "phase-direct-only-v1": "phase-direct-only-v1.json",
+    # Stage-3 S3-4 (2026-09-22): one phase ("advantage"), one contact, the
+    # SAME one-phase shape ``phase-direct-only-v1`` uses. What differs is
+    # what the fragment binds it to: the "construction-advantage-text" arm
+    # (bare-core plus this row's own construction gold, `e0.d2_leakage
+    # .ARM_VISIBLE_FIELDS`) and the ``stage3-advantage-statement-v1``
+    # response format (`rails.stage3_advantage`). The program object itself
+    # carries no knowledge of the best/worst sample-answer material -- that
+    # is rendered into the phase's instruction by a caller-supplied
+    # ``material_for_phase`` at flight time (`rails.stage3_advantage`
+    # module docstring), never by this program.
+    "phase-stage3-advantage-v1": "phase-stage3-advantage-v1.json",
     "phase-training-feedback-proposal-v1": "phase-training-feedback-proposal-v1.json",
     "phase-intent-hypotheses-only-v1": "phase-intent-hypotheses-only-v1.json",
     "phase-direct-then-slots-v1": "phase-direct-then-slots-v1.json",
@@ -1698,6 +1709,11 @@ def register_phase_programs_v1() -> None:
         AGENT_CONTROLLERS.register(
             "phase-direct-only-v1",
             default_controller_factory(default_phase_program("phase-direct-only-v1")),
+        )
+    if "phase-stage3-advantage-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-stage3-advantage-v1",
+            default_controller_factory(default_phase_program("phase-stage3-advantage-v1")),
         )
     if "phase-training-feedback-proposal-v1" not in registered:
         AGENT_CONTROLLERS.register(
@@ -2020,6 +2036,18 @@ def register_response_formats_v1() -> None:
         RESPONSE_FORMATS.register(
             "ncp-review-issues-v1",
             ncp_review_issues_response_format,
+        )
+    # Stage-3 S3-4 (2026-09-22): the ADV-t contact's structured-output
+    # contract, beside the parser of record
+    # (`rails.stage3_advantage.parse_advantage_statement`) in the same
+    # module. Registering the id changes no phase; the advantage program's
+    # own fragment (configs/policy/phase-stage3-advantage-v1.json) binds it.
+    if "stage3-advantage-statement-v1" not in registered:
+        from .stage3_advantage import stage3_advantage_response_format_v1
+
+        RESPONSE_FORMATS.register(
+            "stage3-advantage-statement-v1",
+            stage3_advantage_response_format_v1,
         )
 
 

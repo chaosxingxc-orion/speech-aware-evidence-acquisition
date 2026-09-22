@@ -483,6 +483,12 @@
     "slurp_phase_evidence.txt": {
       "sha256": "f7af111e48468b89c3549a27bd07a0b76fa377be06b0a9c6fbfc0dabaa560224"
     },
+    "slurp_stage3_advantage_system_v1.txt": {
+      "sha256": "e2d8ae4368ff35f23c433cffb18f5c6e86bb721cc587041b7c9f4c515e79844f"
+    },
+    "slurp_stage3_advantage_v1.txt": {
+      "sha256": "a047ff8c8a35f3139b9ed2570f9b70e7117a6450f3d74382410b61e1c29da7fc"
+    },
     "slurp_phase_revise.txt": {
       "sha256": "236d1ee5a31300912b3e2404a4baf24b47a2c01f190f701467417e0c047cc518"
     },

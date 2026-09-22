@@ -90,6 +90,12 @@ from .slurp_intent_hypotheses import (
     validate_fallback_candidate_ids,
     validate_fallback_distinction,
 )
+from .stage3_delta_supply import (
+    STAGE3_DELTA_CONTEXT_PROVIDER_ID,
+    DEFAULT_STAGE3_DELTA_CAP,
+    DeltaCandidate,
+    select_stage3_delta_values,
+)
 from .supply import SupplyDose, SupplyForm, SupplyItem, SupplyPacket
 
 _SHA256_HEX = re.compile(r"[0-9a-f]{64}")
@@ -1977,6 +1983,85 @@ def _named_context_fuse(knobs=None):
     return _composite_context_fuse(knobs)
 
 
+class Stage3DeltaCandidateProvider(KnowledgeProvider):
+    """Stage-3 S3-6: the stage3-deltas store's candidate-bound,
+    ``prior_score``-capped selector (``rails.stage3_delta_supply.
+    select_stage3_delta_values`` does the actual selection; this class is
+    the thin ``KnowledgeProvider`` wrapper the shared registry, and this
+    check's registered-name discipline, both require).
+
+    NOT YET reachable from a live flight: ``rails.knowledge_stores.
+    build_knowledge_store_supply``'s ``context_supply``/``candidate_supply``
+    dispatchers do not recognize :data:`~.stage3_delta_supply.
+    STAGE3_DELTA_CONTEXT_PROVIDER_ID` yet (a documented root follow-up, see
+    ``rails/stage3_delta_supply.py`` module docstring and the S3-6
+    readiness package). Registering the class here, complete and tested on
+    its own terms, is what lets a config fragment's ``"provider":
+    "stage3-delta-candidate-bound-v1"`` resolve honestly today rather than
+    naming a component that does not exist at all.
+    """
+
+    def __init__(self, *, provider_id: str = STAGE3_DELTA_CONTEXT_PROVIDER_ID) -> None:
+        super().__init__(provider_id=provider_id)
+
+    def build(self, source_rows: Sequence[Mapping[str, object]], *, policy_id: str) -> tuple[DeltaCandidate, ...]:
+        candidates = tuple(
+            DeltaCandidate(
+                value_id=row["value_id"],
+                associated_facet_ids=tuple(row["associated_facet_ids"]),
+                prior_score=float(row["prior_score"]),
+            ).validate()
+            for row in source_rows
+        )
+        self._record_build(
+            candidates, policy_id=policy_id, source_ids=tuple(c.value_id for c in candidates)
+        )
+        self._index_sha256 = hashlib.sha256(
+            "\n".join(sorted(c.value_id for c in candidates)).encode("utf-8")
+        ).hexdigest()
+        return candidates
+
+    def candidates(self, query: Sequence[str], *, k: int) -> Ranking:
+        if self._built is None:
+            raise RailsError("Stage3DeltaCandidateProvider.candidates requires build() first")
+        facet_ids = tuple(query)
+        selected_ids = select_stage3_delta_values(facet_ids, self._built, cap=k)
+        by_id = {candidate.value_id: candidate for candidate in self._built}
+        entries = tuple(
+            RankedEntry(entry_id=value_id, score=by_id[value_id].prior_score, provenance={})
+            for value_id in selected_ids
+        )
+        query_sha256 = hashlib.sha256(
+            "\n".join(sorted(facet_ids)).encode("utf-8")
+        ).hexdigest()
+        return Ranking(
+            entries=entries,
+            index_sha256=self._index_sha256,
+            query_sha256=query_sha256,
+            source=self.provider_id,
+        ).validate()
+
+    def fuse(self, rankings: Sequence[Ranking], *, k: int, policy_id: str) -> Ranking:
+        merged: dict[str, RankedEntry] = {}
+        for ranking in rankings:
+            for entry in ranking.entries:
+                existing = merged.get(entry.entry_id)
+                if existing is None or entry.score > existing.score:
+                    merged[entry.entry_id] = entry
+        ordered = sorted(merged.values(), key=lambda entry: (-entry.score, entry.entry_id))[:k]
+        base = rankings[0] if rankings else None
+        return Ranking(
+            entries=tuple(ordered),
+            index_sha256=base.index_sha256 if base is not None else getattr(self, "_index_sha256", "0" * 64),
+            query_sha256=base.query_sha256 if base is not None else "0" * 64,
+            source=self.provider_id,
+        ).validate()
+
+
+def _stage3_delta_candidate_provider(**kwargs: object) -> Stage3DeltaCandidateProvider:
+    return Stage3DeltaCandidateProvider(**kwargs)
+
+
 # Keep all provider/rank/fuse registration at the canonical shared site.
 # Lazy construction avoids circular imports between providers and named stores.
 if "source-scoped-context-v1" not in KNOWLEDGE_PROVIDERS.names():
@@ -1989,6 +2074,10 @@ if "saea-named-context-composite-rank-v1" not in KNOWLEDGE_RANKERS.names():
     KNOWLEDGE_RANKERS.register("saea-named-context-composite-rank-v1", _named_context_rank)
 if "saea-named-context-composite-fuse-v1" not in KNOWLEDGE_FUSERS.names():
     KNOWLEDGE_FUSERS.register("saea-named-context-composite-fuse-v1", _named_context_fuse)
+if STAGE3_DELTA_CONTEXT_PROVIDER_ID not in KNOWLEDGE_PROVIDERS.names():
+    KNOWLEDGE_PROVIDERS.register(
+        STAGE3_DELTA_CONTEXT_PROVIDER_ID, _stage3_delta_candidate_provider
+    )
 
 
 def resolve_provider(provider_id: str, **kwargs: object) -> KnowledgeProvider:

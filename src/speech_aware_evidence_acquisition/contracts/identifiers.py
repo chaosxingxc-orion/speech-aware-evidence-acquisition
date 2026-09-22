@@ -50,4 +50,14 @@ SCORING_PACKAGE_RELPATH = "src/speech_aware_evidence_acquisition/scoring"
 # gate, the D2 generator and the payload builders share one definition
 # instead of three drifting copies.
 CONSTRUCTION_VISIBLE_FIELD = "construction_targets"
-CONSTRUCTION_VISIBLE_ARMS = frozenset({"construction-proposer-text"})
+# Stage-3 S3-4 (2026-09-22, owner decision 82): "construction-advantage-text"
+# is a SECOND construction-visible arm beside the proposer arm -- the
+# semantic-advantage contact, which may also see one construction row's gold
+# (never an evaluation row's). Adding a name here is what makes
+# ``e0.d2_leakage._construction_visibility`` require the SAME arm to declare
+# ``construction_targets`` and nothing else beyond bare-core's fields, and
+# what makes ``contracts.gate_exposure._require_construction_role_for_visible_targets``
+# refuse the touch for any plan not bound to a committed construction roster.
+CONSTRUCTION_VISIBLE_ARMS = frozenset(
+    {"construction-proposer-text", "construction-advantage-text"}
+)

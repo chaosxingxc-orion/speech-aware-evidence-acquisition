@@ -120,6 +120,10 @@ _EXPECTED_PROGRAM_SHAPES = {
         "always-run-full-program",
     ),
     "phase-direct-only-v1": (("direct",), 1, "always-run-full-program"),
+    # Stage-3 S3-4 (2026-09-22): one phase, one contact, the same shape as
+    # phase-direct-only-v1; bound to the construction-advantage-text arm and
+    # the stage3-advantage-statement-v1 response format instead.
+    "phase-stage3-advantage-v1": (("advantage",), 1, "always-run-full-program"),
     "phase-training-feedback-proposal-v1": (
         ("proposal",),
         1,

@@ -1,0 +1,28 @@
+{
+  "arm": "construction-advantage-text",
+  "policy": "phase-stage3-advantage-v1",
+  "evidence_source": "none",
+  "scorers": [
+    "cost"
+  ],
+  "task_instruction_template": "probes/slurp_stage3_advantage_system_v1.txt",
+  "task_instruction_fill": null,
+  "phase_material": {
+    "advantage": {
+      "instruction_template": "probes/slurp_stage3_advantage_v1.txt",
+      "instruction_fill": null,
+      "response_format_id": "stage3-advantage-statement-v1",
+      "predecessor_binding": "none"
+    }
+  },
+  "advantage_pairs": {
+    "relpath": "PENDING_S3_3_PAIRS_JSON_RELPATH",
+    "sha256": "PENDING_S3_3_PAIRS_JSON_SHA256",
+    "rollout_run_id": "PENDING_S3_2_ROLLOUT_RUN_ID"
+  },
+  "roster_note": "The disagreeing-row roster IS S3-3's pairs.json (rails.stage3_advantage.load_advantage_pairs), a subset of the S3-1 construction roster (docs/receipts/rosters/slurp-stage3-construction-r01.json, not yet committed by the sibling S3-1/S3-2/S3-3 deliverable). split_identity_hash, the roster receipt relpath/sha256 and the pairs.json relpath/sha256 are declared PENDING_ above and must be re-pinned by root once S3-1/S3-2/S3-3 land, exactly like every other pre-roster Stage-3 fragment in this package.",
+  "modality_note": "TEXT ONLY, exactly like construction-proposer-text: the D2 freeze binds construction-advantage-text to bare-core's ten identity/text fields plus construction_targets and nothing else (e0.d2_leakage.ARM_VISIBLE_FIELDS, contracts.CONSTRUCTION_VISIBLE_ARMS), so core.model.transport forces text_only for this arm regardless of media_relpath/speech_ref (the same identity-bookkeeping fields bare-core carries) and no audio part or speech-feature packet is ever opened. This is a deliberate, documented reading of the engineering spec's own prose (\"the contact sees the row's speech\") down to the VERIFIED interface it names beside it (\"the same gating as the proposer arm\", which is text-only by the D2 invariant): a speech-carrying construction-visible arm would need a THIRD field-set shape and a change to e0.d2_leakage._construction_visibility's strict bare-core-plus-one-field equality, which this package does not attempt.",
+  "instruction_note": "construction_targets carries this row's own construction-gold TARGET (the same field, same discipline construction-proposer-text uses), never the best/worst rollout SAMPLE ANSWERS. Those two answers are rendered ONLY into the phase's own instruction text at flight time, by a caller-supplied rails.core.flight.FlightRuntime.bind_phase_program_material override built from rails.stage3_advantage.build_advantage_instruction_for_row over S3-3's pairs.json and S3-2's sealed rollout outputs -- never written to a receipt (rails.stage3_advantage module docstring). Wiring that override into an actual launcher is a root follow-up once S3-1/S3-2/S3-3 land; this fragment fixes the program, the templates and the response format, which do not depend on that wiring.",
+  "scoring_note": "Only the 'cost' scorer, exactly as construction-proposer-text's own fragment documents: an advantage statement is an ARTIFACT curated by S3-5 into the stage3-deltas store, never an answer to a scored row, so SLURP's own scorers would be scoring the wrong thing and would need gold this contact's OWN row already legally carries but no other row may.",
+  "what_this_is": "Stage-3 S3-4 (docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md section S3-4): the ADV-t semantic-advantage contact, ONE phase-stage3-advantage-v1 contact per S3-3-selected disagreeing construction row. Readiness held: every PENDING_ field above names a sibling deliverable (S3-1 roster, S3-2 rollout, S3-3 pairs.json) that does not exist in this worktree yet."
+}
