@@ -105,7 +105,10 @@ def test_plan_arm_baseline_differs_from_cell_plan_only_in_the_enumerated_binding
     assert plan["serving_slot_tokens"] == new["serving_slot_tokens"]
     assert plan["serving_slots"] == new["serving_slots"]
     assert new["scorers"] == ["slurp-slu-official", "cost"]
-    assert "prepared_phase_supply" not in new
+    # Registered without a pin; the re-pin flip (item E38 era, 9bc4e087) prepares the supply model-free
+    # under this cell's OWN run id, so once flipped the pin must point there and nowhere else.
+    pin = new.get("prepared_phase_supply")
+    assert pin is None or pin["relpath"].startswith("prepared/SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1/")
 
 
 def test_direct_arm_baseline_differs_from_dev1000_only_in_the_enumerated_bindings():
