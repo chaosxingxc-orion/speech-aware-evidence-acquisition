@@ -127,3 +127,58 @@ def test_the_b9a_recovery_is_the_b9a_arm_byte_for_byte_outside_its_bookkeeping()
     assert rec["policy"] == "phase-native-candidates-review-revise-acquire-v1"
     assert rec["native_episode"]["acquisition"]["policy"] == "saea-acquire-knowledge-requery-v1"
     assert "RECOVERY (2026-09-22)" in rec["what_this_is"]
+
+
+B9A_V2 = BASELINES / "slurp-native-plan-acquisition-b9a-v2-baseline-v1.json"
+B9A_V2_SMOKE = BASELINES / "slurp-native-plan-acquisition-b9a-v2-smoke-4-baseline-v1.json"
+
+
+def test_the_b9a_v2_baseline_moves_exactly_the_two_e36b_keys_against_the_recovery_baseline():
+    """Item E36b (owner decisions 90 and 70): cell B9a v2 is the sealed B9a-rec baseline plus
+    EXACTLY the two new acquisition keys (``acquisition.budget.max_items_per_acquisition`` and
+    ``acquisition.retrieval``) -- nothing else moves, including every other acquisition key."""
+
+    rec, v2 = _load(B9A_REC), _load(B9A_V2)
+    assert _non_bookkeeping_diff(rec, v2) == ["native_episode"]
+    episode_diff = sorted(
+        key for key in set(rec["native_episode"]) | set(v2["native_episode"])
+        if rec["native_episode"].get(key) != v2["native_episode"].get(key)
+    )
+    assert episode_diff == ["acquisition"]
+    rec_acquisition = rec["native_episode"]["acquisition"]
+    v2_acquisition = v2["native_episode"]["acquisition"]
+    assert rec_acquisition["policy"] == v2_acquisition["policy"]
+    assert v2_acquisition["budget"] == {
+        "max_acquisitions_per_row": 1, "contact_budget": 0, "max_items_per_acquisition": 5,
+    }
+    assert rec_acquisition["budget"] == {
+        "max_acquisitions_per_row": 1, "contact_budget": 0,
+    }
+    assert v2_acquisition["retrieval"] == {
+        "policy": "saea-requery-idf-v1",
+        "min_token_chars": 4,
+        "max_document_frequency": 0.05,
+        "exclude_visible_tokens": True,
+    }
+    assert "retrieval" not in rec_acquisition
+    if B9A_V2_SMOKE.exists() and B9A_REC_SMOKE.exists():
+        smoke_diff = _non_bookkeeping_diff(_load(B9A_REC_SMOKE), _load(B9A_V2_SMOKE))
+        assert smoke_diff == ["native_episode"]
+
+
+def test_the_b9a_v2_experiment_cell_is_held_with_the_e36b_baseline_pinned():
+    exp_path = REPO_ROOT / "configs" / "experiment" / "slurp-native-plan-acquisition-b9a-v2-v1.json"
+    document = json.loads(exp_path.read_text(encoding="utf-8"))
+    [cell] = document["cells"]
+    assert cell["readiness"]["state"] == "held"
+    assert cell["baseline_fragment"] == "slurp-native-plan-acquisition-b9a-v2-baseline-v1"
+    assert cell["allowed_execution_stages"] == ["check", "worker", "campaign"]
+    assert cell["run_id"] == "SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-V2-V1"
+
+    smoke_path = (
+        REPO_ROOT / "configs" / "experiment" / "slurp-native-plan-acquisition-b9a-v2-smoke-4-v1.json"
+    )
+    smoke_document = json.loads(smoke_path.read_text(encoding="utf-8"))
+    [smoke_cell] = smoke_document["cells"]
+    assert smoke_cell["readiness"]["state"] == "held"
+    assert smoke_cell["baseline_fragment"] == "slurp-native-plan-acquisition-b9a-v2-smoke-4-baseline-v1"

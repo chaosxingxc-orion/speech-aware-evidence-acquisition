@@ -28,6 +28,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import re
 import threading
 import time
 from dataclasses import replace
@@ -140,6 +141,17 @@ def _default_delivery_settler(*args: object, **kwargs: object) -> object:
     from ..bundle.settlement import settle_phase_delivery_attempt
 
     return settle_phase_delivery_attempt(*args, **kwargs)
+
+#: Item E36b: the tokenizer the findings-keyed re-query shares between a
+#: knowledge value's own text (content plus associated facet ids) and the
+#: caller's query tokens (the Reviewer-finding-derived state filters) -- the
+#: SAME token space on both sides is what lets a query token's precomputed
+#: document frequency be looked up directly. Lowercase letters and digits,
+#: split on everything else (punctuation, whitespace, underscores), so
+#: ``"place_name"`` tokenises the same way whichever side of the match it is
+#: on.
+_E36B_TOKEN = re.compile(r"[a-z0-9]+")
+
 
 class FlightRuntimeError(RuntimeError):
     """A :class:`FlightRuntime` input is invalid, or a stage cannot run."""
@@ -2548,26 +2560,49 @@ class FlightRuntime:
         )
 
     def _acquisition_requery_binding(self, native_config, supply_for_phase, snapshot):
-        """E36: the flight-owned, model-free knowledge re-query the
+        """E36 / E36b: the flight-owned, model-free knowledge re-query the
         ``knowledge-requery`` acquisition (E18 kind (a)) runs.
 
         ``None`` on the unarmed arm and on an armed arm whose policy is not
         the knowledge-requery kind: kind (b) reaches Perception directly
         through the acquisition seat's own re-observation node and needs no
         store access at all, and kind (c) fails closed by name inside
-        ``rails.acquisition`` itself with no registry bound. Armed, this
-        RE-RUNS the exact ``supply_for_phase`` callable the Solver's own
-        supply already is -- same specs, same pinned vector files, same
-        provider factories, same rank/fuse policy -- against the CURRENT
-        trajectory state, then RESTRICTS the result to the caller's state
-        tokens and drops anything the row already holds. Zero model
-        contacts and zero network: every byte comes from the snapshot(s)
-        this runtime already loaded and hash-verified before the flight.
+        ``rails.acquisition`` itself with no registry bound.
+
+        Armed, this builds ONE of two callables, chosen by whether
+        ``native_config`` declares ``acquisition.budget.
+        max_items_per_acquisition`` (item E36b, 2026-09-22, owner decisions
+        90 and 70):
+
+        * ABSENT (every config written before E36b, including the flown
+          B9a-rec fragment): the pre-E36b re-query, byte for byte. RE-RUNS
+          the exact ``supply_for_phase`` callable the Solver's own supply
+          already is -- same specs, same pinned vector files, same provider
+          factories, same rank/fuse policy -- against the CURRENT trajectory
+          state, then RESTRICTS the result to the caller's state tokens and
+          drops anything the row already holds. The 2026-09-22 B9a-rec read
+          found this EMPTY BY CONSTRUCTION on every row: the selection this
+          re-runs and the exclusion set the caller passes are the same ids,
+          so the intersection is always empty
+          (docs/superpowers/specs/2026-09-22-e36b-findings-keyed-requery-
+          design.md section 2).
+        * PRESENT: searches the WHOLE released composite snapshot instead of
+          the Solver's own selection -- values NOT in the caller's exclusion
+          set whose content or facet ids share a token with the caller's
+          state filters -- ranked by an inverse-document-frequency score
+          over that snapshot's own token vocabulary
+          (``rails.acquisition.RetrievalPolicy``; design note section 3),
+          ties broken by value id for determinism, capped at
+          ``max_items_per_acquisition``.
+
+        Both forms spend zero model contacts and zero network: every byte
+        comes from the snapshot(s) this runtime already loaded and
+        hash-verified before the flight.
 
         Item E36 (the B9a arm abort, 2026-09-21): this is the seam
         ``rails.runner``'s own ``acquisition_requery`` closure looks up on
         the flight binding by name
-        (``NativeEpisodeRunBinding.acquisition_requery``) and, until this
+        (``NativeEpisodeRunBinding.acquisition_requery``) and, until that
         item, found absent on every real flight -- the E18/E32 proofs alone
         supplied it, through the test harness.
         """
@@ -2614,16 +2649,78 @@ class FlightRuntime:
                     return candidate
             return f"phase-supply:{policy.policy_id}"
 
-        def _matches_filters(value, tokens: frozenset) -> bool:
-            if not tokens:
-                return True
-            haystacks = [value.content.casefold()]
-            haystacks.extend(
-                facet_id.casefold() for facet_id in value.associated_facet_ids
-            )
-            return any(
-                token in haystack for token in tokens for haystack in haystacks
-            )
+        # Item E36b: OFF (the key is absent -- or ``native_config`` is a test
+        # double carrying no such attribute at all, which every pre-E36b
+        # test double in this tree is) keeps the exact pre-E36b closure
+        # below, byte for byte.
+        max_items = getattr(native_config, "max_items_per_acquisition", None)
+        if max_items is None:
+
+            def _matches_filters(value, tokens: frozenset) -> bool:
+                if not tokens:
+                    return True
+                haystacks = [value.content.casefold()]
+                haystacks.extend(
+                    facet_id.casefold() for facet_id in value.associated_facet_ids
+                )
+                return any(
+                    token in haystack for token in tokens for haystack in haystacks
+                )
+
+            def acquisition_requery(*, phase_id, filters, exclude_value_ids, scope, context):
+                kinds = scope.get("kinds") if scope else None
+                if kinds is not None and KIND_KNOWLEDGE_REQUERY not in tuple(kinds):
+                    raise FlightRuntimeError(
+                        "acquisition_requery was called for a scope that does "
+                        "not admit the knowledge-requery kind"
+                    )
+                supply = supply_for_phase(phase_id, context)
+                if supply is None:
+                    return ()
+                excluded = frozenset(exclude_value_ids)
+                tokens = frozenset(str(token) for token in filters)
+                items: list = []
+                for value_id in supply.fusion_decision.selected_value_ids:
+                    if value_id in excluded:
+                        continue
+                    value = values_by_id.get(value_id)
+                    if value is None:
+                        # Defensive only: every selected id is already asserted
+                        # to resolve inside a bound snapshot before this seam
+                        # ever runs (rails.knowledge_stores.qualify_supply /
+                        # rails.candidate_semantic_supply's own qualification).
+                        continue
+                    if not _matches_filters(value, tokens):
+                        continue
+                    items.append(
+                        AcquiredItem(
+                            evidence_id=value_id,
+                            source_id=_source_id(value_id),
+                            content=value.content,
+                        )
+                    )
+                return items
+
+            return acquisition_requery
+
+        # Item E36b: ON. Precompute the whole snapshot's token vocabulary and
+        # per-token document frequency ONCE PER BINDING (this method runs
+        # once per flight), not once per row, so a flight's per-row visits
+        # pay no repeated tokenisation cost.
+        retrieval = native_config.acquisition_retrieval
+        min_token_chars = int(retrieval["min_token_chars"])
+        max_document_frequency = float(retrieval["max_document_frequency"])
+        exclude_visible_tokens = bool(retrieval["exclude_visible_tokens"])
+
+        total_values = len(values_by_id)
+        value_tokens: dict[str, frozenset] = {}
+        token_document_count: dict[str, int] = {}
+        for value_id, value in values_by_id.items():
+            text = value.content + " " + " ".join(value.associated_facet_ids)
+            tokens = frozenset(_E36B_TOKEN.findall(text.casefold()))
+            value_tokens[value_id] = tokens
+            for token in tokens:
+                token_document_count[token] = token_document_count.get(token, 0) + 1
 
         def acquisition_requery(*, phase_id, filters, exclude_value_ids, scope, context):
             kinds = scope.get("kinds") if scope else None
@@ -2632,24 +2729,49 @@ class FlightRuntime:
                     "acquisition_requery was called for a scope that does "
                     "not admit the knowledge-requery kind"
                 )
-            supply = supply_for_phase(phase_id, context)
-            if supply is None:
-                return ()
             excluded = frozenset(exclude_value_ids)
-            tokens = frozenset(str(token) for token in filters)
-            items: list = []
-            for value_id in supply.fusion_decision.selected_value_ids:
+            query_text = " ".join(str(token) for token in filters)
+            query_tokens = frozenset(_E36B_TOKEN.findall(query_text.casefold()))
+            visible_tokens: frozenset = frozenset()
+            if exclude_visible_tokens:
+                for value_id in excluded:
+                    visible_tokens |= value_tokens.get(value_id, frozenset())
+            usable_tokens = []
+            for token in sorted(query_tokens):
+                if len(token) < min_token_chars:
+                    continue
+                document_frequency = token_document_count.get(token, 0)
+                if document_frequency == 0:
+                    # Never occurs in any value of the snapshot: it can never
+                    # match a candidate, so it is dropped here rather than
+                    # risk a division by zero below.
+                    continue
+                if (
+                    total_values
+                    and document_frequency / total_values > max_document_frequency
+                ):
+                    continue
+                if exclude_visible_tokens and token in visible_tokens:
+                    continue
+                usable_tokens.append(token)
+            if not usable_tokens:
+                return ()
+            weights = {
+                token: math.log(total_values / token_document_count[token])
+                for token in usable_tokens
+            }
+            scored: list[tuple[str, float]] = []
+            for value_id, tokens in value_tokens.items():
                 if value_id in excluded:
                     continue
-                value = values_by_id.get(value_id)
-                if value is None:
-                    # Defensive only: every selected id is already asserted
-                    # to resolve inside a bound snapshot before this seam
-                    # ever runs (rails.knowledge_stores.qualify_supply /
-                    # rails.candidate_semantic_supply's own qualification).
+                matched = [token for token in usable_tokens if token in tokens]
+                if not matched:
                     continue
-                if not _matches_filters(value, tokens):
-                    continue
+                scored.append((value_id, sum(weights[token] for token in matched)))
+            scored.sort(key=lambda pair: (-pair[1], pair[0]))
+            items = []
+            for value_id, _score in scored[:max_items]:
+                value = values_by_id[value_id]
                 items.append(
                     AcquiredItem(
                         evidence_id=value_id,
