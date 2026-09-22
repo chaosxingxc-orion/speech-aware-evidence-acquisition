@@ -275,8 +275,8 @@
   "serving_slots": 4,
   "speech_feature_key_representation_id": "saea-slurp-task-agent-anchor-exemplars-k20-replicate-v1:query-speech",
   "speech_feature_matcher_policy_id": "saea-slurp-task-agent-anchor-exemplars-k20-replicate-v1",
-  "speech_packet_promotion_receipt": "PENDING_STAGE3_CONSTRUCTION_R01_SPEECH_PACKET_PROMOTION_RECEIPT_PATH",
-  "speech_packet_promotion_receipt_sha256": "PENDING_STAGE3_CONSTRUCTION_R01_SPEECH_PACKET_PROMOTION_RECEIPT_SHA256",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/STAGE3-CONSTRUCTION-R01-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "a1664e34742dcd2d59c226da701395edf41d150bbbf8db4acc0cdae9c3c0250f",
   "stage3_pending_placeholders": [
     {
       "path": "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.embedded_signal",
@@ -323,14 +323,6 @@
       "note": "per-flight bookkeeping; minted at flip time."
     },
     {
-      "path": "speech_packet_promotion_receipt",
-      "note": "the S3-1 construction roster's promoted featcache packet root, analogous to DEV-2000-ADDED-promotion.json; does not exist until root runs the ENCODE + PROMOTE steps S3-1's own docstring describes."
-    },
-    {
-      "path": "speech_packet_promotion_receipt_sha256",
-      "note": "sha256 of the pending promotion receipt above."
-    },
-    {
       "path": "preparation_source_receipts[6].sha256",
       "note": "sha256 of docs/receipts/rosters/slurp-stage3-construction-r01.json AS COMMITTED (the S3-1 receipt itself exists and is committed; this placeholder is filled by re-hashing the committed file, a model-free step root or this generation's own follow-up can do without contact)."
     },
@@ -359,5 +351,17 @@
   "prepared_phase_supply": {
     "relpath": "PENDING_STAGE3_CONSTRUCTION_R01_SMOKE_4_PREPARED_PHASE_SUPPLY_RELPATH",
     "sha256": "PENDING_STAGE3_CONSTRUCTION_R01_SMOKE_4_PREPARED_PHASE_SUPPLY_SHA256"
-  }
+  },
+  "stage3_placeholders_filled": [
+    {
+      "path": "speech_packet_promotion_receipt",
+      "filled": "2026-09-22",
+      "by": "promote-only attempt attempt-packets-stage3-construction-r01-promote-v1 under run SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS-RECOVERY-V1 (800 packets, 8 shared; ledger row closed)"
+    },
+    {
+      "path": "speech_packet_promotion_receipt_sha256",
+      "filled": "2026-09-22",
+      "by": "same"
+    }
+  ]
 }
