@@ -21,12 +21,14 @@ SLURP TRAIN recordings, 18 scenario strata of 44 or 45, farthest-point draw seed
 `roster_role: construction`, `split_role: discovery`, split identity hash
 `2ece5e51ff781fdec89bef8e7448d8ba88249030d3c8a6478dba5e7c1e621dac`. Runtime view
 `configs/dataset/slurp-speech-native-stage3-construction-r01.json` (raw sha256
-`3b4cd48e3a4f077c1b6f14392d8acadd5da50d5bb51ed548f6d763471d7fb338`, canonical
-`runtime_view_sha256` `1a4d0d62dec254255c6726757af7fbab7074b4413a38c0bcffc870b261d14055`).
+`b3c1239d92ea95c03ec371cc010db47c8f0ea4312a8e3e38d4efc4dbd6dbf0b5`, canonical
+`runtime_view_sha256` `d3503d5861943b975b213ec2804e094e084e63206f31cb0b1b5715e815338bdd`).
 **Audio: 3,491.426125 seconds total** (58.19 minutes; 800 recordings, mean 4.364 s, min 1.216 s,
 max 15.294 s), read from the roster receipt's `items[].audio_seconds` and confirmed against the
 runtime view's `audio_seconds_total`. The declared ceiling everywhere below is `3492`
 (`ceil(3491.426125)`), the form the DEV-2000-ADDED plan used.
+
+**Re-pinned 2026-09-22 after decision 93 (the D1 media supplement pinned the dataset fragment; runtime view, fragment raw sha, composed config and protocol hashes moved; the preprocess ledger row was re-pinned in the same commit).**
 
 ## 1. Coverage finding: how many R01 rows already have featcache packets
 
@@ -89,8 +91,8 @@ was deliberately **not** measured here because it requires hashing every media f
   `0e6c22eb5c45d19ac3da7b19cf7823e4a9d5c91cfce6b25b7f861dea8c37b7de`). Composed config
   `q4km-preprocess-featcache-cpu-sidecar` / `slurp-speech-native-stage3-construction-r01` /
   `speech-native-preprocess` / `slurp-stage3-construction-r01-preprocess`, **config hash**
-  `10ae35155bc2a1006763bcf148d103b832a789ea8c90739919b4eb8a15d079ff`, arm `bare-core`, **protocol
-  hash** `3d60603a7134b9efaa73cb5e6189c48355f6203496dcd75e9330c890bb201221` (computed here through
+  `aa1806f36afd529fbcede5d0715f41fabfdb9cbe125cfd752cc9c6e6209b7057`, arm `bare-core`, **protocol
+  hash** `d3d3ccd4c1580745a7e0e8bf148defac1ac2d4a27698b84e3e27e6b2099c4725` (computed here through
   `core.config.compose` / `core.config.protocol_hash`, never hand-typed).
 
 Command line to run (not run by this package; it is a tool contact and needs its ledger row
