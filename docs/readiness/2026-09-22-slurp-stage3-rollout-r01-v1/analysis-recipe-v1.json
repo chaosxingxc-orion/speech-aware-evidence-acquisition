@@ -1,0 +1,41 @@
+{
+  "authority": "docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md section S3-3",
+  "cell_kind": "ROLLOUT -- raw grouped-Solver samples for downstream curation (S3-3 scoring, S3-4 semantic advantage); no admission verdict is read from this cell",
+  "claim_boundary": "No superiority, generalisation, component-causal, bar or confirmatory claim of any kind. This cell exists to produce five custodied Solver samples per row; S3-6's eventual TRAIN A delta-store cell carries the only gating claim in the loop.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "decision_rule": {
+    "rule": "NONE -- this cell has no gating decision rule (preregistration section 4). Its output is read by scripts/analysis/stage3_rollout_score.py, not by a plan_cell_read.py admission read."
+  },
+  "downstream_read": {
+    "cli": "scripts/analysis/stage3_rollout_score.py",
+    "stages": {
+      "render": "one outputs copy per Solver sample index (0..4), the row's own solver_group.samples[index].parsed_answer rendered through the canonical analysis.native_commit_replay.replay_row form; a copy is written once and read back on every later invocation.",
+      "score": "each of the five copies scored ONCE through the registered scorer named in --scorer-id (default slurp-slu-official-projected-v3-train, the v3-projected sibling of this cell's own online scorer slurp-slu-official-train -- the delivered text here carries no deliver_normaliser, so the projection this cell's Solver samples would otherwise lack is applied OFFLINE at this step); never core.scoring_batch, which scores a bundle-verified run directory and every side here is a derived copy with no manifest and no bundle.",
+      "pairs": "per row: best/worst sample by (slu_f1_f1, scenario_action_exact) with a deterministic ascending-sample_index tie-break, disagreement = best - worst; rows with disagreement > 0 become S3-4's advantage-contact roster; a per-scenario coverage table from the roster's own stratum field; the delivered (committed) answer's own official score is read from the sealed <run_id>.scores.json, never rescored."
+    },
+    "output": "analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1/ under $SPEECHRL_DATA_DIR: per_row.json, pairs.json, per-copy outputs jsonl and score jsonl, all sha256-pinned; contacts block {model:0,...,scorer:5}."
+  },
+  "execution_profile": "model-free-check (the downstream read); bounded-discovery-probe (this cell's own flight)",
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01.json",
+    "roster_id": "SLURP-STAGE3-CONSTRUCTION-R01",
+    "roster_role": "construction",
+    "rows": 800
+  },
+  "row_accounting_required": "800 in, 800 out on the roster side; every row's solver_group carries exactly 5 samples in custody (I7g); the commit replay of the registered plurality-support policy over the raw samples reproduces the sealed delivered answer's own official counts (the same licence proof scripts/analysis/slurp_verifier_measurement.py's stage_rollouts uses for the B2 v3 precedent).",
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-ROLLOUT-R01-V1",
+    "fit": "SAEA-SLURP-STAGE3-ROLLOUT-R01-FIT-V1",
+    "smoke": "SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-V1",
+    "smoke_fit": "SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-FIT-V1"
+  },
+  "schema": "saea-stage3-rollout-analysis-recipe-v1",
+  "what_is_not_here": "No generation-plan / fit-plan / protocol-registered JSON siblings: those bind a REAL prepared phase supply and a REAL promoted-packet identity, neither of which exists while the roster-bound PENDING placeholders (configs/baseline/slurp-native-stage3-rollout-baseline-v1.json's stage3_pending_placeholders block) are open. Root mints them once the placeholders resolve."
+}
