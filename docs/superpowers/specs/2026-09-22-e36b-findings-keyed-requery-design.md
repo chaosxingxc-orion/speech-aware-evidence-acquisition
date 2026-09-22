@@ -1,6 +1,6 @@
 # Item E36b: the kind (a) knowledge re-query must SEARCH the released stores by the Reviewer's findings (design)
 
-Author: the coordinator (Fable 5.1). Date: 2026-09-22. Status: DESIGN, awaiting the owner's decision after the B9a-rec read.
+Author: the coordinator (Fable 5.1). Date: 2026-09-22. Status: IMPLEMENTED 2026-09-22 (merged 289e4d51, decision 90: a Stage-3 cell). Rule as built: idf-weighted token search over the whole composite snapshot (`saea-requery-idf-v1`: min 4 chars, document-frequency share <= 0.05, visible tokens excluded, top k by score then value id); replay on the 18 sealed ACQUIRE rows: 18/18 get 5 items (store mix slot-contracts 45 / train-exemplars 42 / intent-boundaries 3; 22-697 candidates per row; median 4 tokens kept). B9a v2 cells are registered held (`configs/experiment/slurp-native-plan-acquisition-b9a-v2-v1.json`) for Stage 3.
 Provenance: the B9a-rec acquisition read (`analysis/SAEA-SLURP-PLAN-ACQUISITION-B9A-RECOVERY-PAIRED-ANALYSIS-V1/acquisition-read.json`,
 sha256 63548923...) and a read of `core/flight/runtime.py` `_acquisition_requery_binding` (item E36, fef4341e) and
 `rails/runner.py` (the `acquisition_requery` closure).
