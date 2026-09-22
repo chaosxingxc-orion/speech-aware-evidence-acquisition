@@ -44,8 +44,13 @@ from speech_aware_evidence_acquisition.core.model.speech_features import (  # no
 )
 
 
-def test_roster_table_has_exactly_the_three_registered_rosters() -> None:
-    assert set(module.PREPROCESS_ROSTERS) == {"fold-a", "fold-b", "dev2000-added"}
+def test_roster_table_has_exactly_the_registered_rosters() -> None:
+    # The two sealed EVO-S1 folds, item E33's dev2000-added roster, and the
+    # Stage-3 S3-1 construction roster. The union receipt still covers the two
+    # folds only.
+    assert set(module.PREPROCESS_ROSTERS) == {
+        "fold-a", "fold-b", "dev2000-added", "stage3-construction-r01",
+    }
     assert module.FOLD_ROSTER_KEYS == ("fold-a", "fold-b")
 
 

@@ -48,6 +48,15 @@ Rosters (``PREPROCESS_ROSTERS``):
   (``slurp:devel:...`` rows, ``split_role="dev"``, 1,000 rows / 2,984 speech
   seconds). Promotes additively into the SAME resident packet root the two
   folds use, under its own ``DEV-2000-ADDED-promotion.json`` receipt.
+- ``stage3-construction-r01`` -- Stage-3 item S3-1, the SLURP-STAGE3-
+  CONSTRUCTION-R01 preparation (``slurp:train:...`` rows,
+  ``split_role="discovery"``, 800 rows / 3,491.426125 speech seconds).
+  Promotes additively into the same resident packet root under its own
+  ``STAGE3-CONSTRUCTION-R01-promotion.json`` receipt. 8 of its 800 rows are
+  already promoted by the August TRAIN90 / GATE18 / GATE-C36 / OPT-A36 /
+  EFFECT-C108 / EVIDENCE-E108 / FACTOR-D108 receipts, which the additive
+  refuse-on-conflict promotion re-verifies byte for byte instead of
+  rewriting; the remaining 792 are new.
 
 Modes::
 
@@ -55,6 +64,8 @@ Modes::
     python scripts/slurp_evo_fold_preprocess.py --fold a --run  # deprecated alias
     python scripts/slurp_evo_fold_preprocess.py --roster dev2000-added --preflight-only
     python scripts/slurp_evo_fold_preprocess.py --roster dev2000-added --run
+    python scripts/slurp_evo_fold_preprocess.py --roster stage3-construction-r01 --preflight-only
+    python scripts/slurp_evo_fold_preprocess.py --roster stage3-construction-r01 --run
 """
 
 from __future__ import annotations
@@ -187,9 +198,21 @@ PREPROCESS_ROSTERS: dict[str, RosterSpec] = {
         default_attempt_id="attempt-packets-dev2000-added-v1",
         plan_calls=1000, plan_speech_seconds=2984, plan_gpu_hours=1.0,
     ),
+    "stage3-construction-r01": RosterSpec(
+        run_id="SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS",
+        dataset_fragment="slurp-speech-native-stage3-construction-r01",
+        experiment_fragment="slurp-stage3-construction-r01-preprocess",
+        sample_id_prefix="slurp:train:",
+        split_role="discovery",
+        promotion_receipt_name="STAGE3-CONSTRUCTION-R01-promotion.json",
+        default_attempt_id="attempt-packets-stage3-construction-r01-v1",
+        plan_calls=800, plan_speech_seconds=3492, plan_gpu_hours=1.0,
+    ),
 }
 
 # The two EVO-S1 TRAIN folds, in the fixed order the union receipt merges them.
+# ``stage3-construction-r01`` is a separate preparation with its own receipt and
+# is never folded into this union, exactly as ``dev2000-added`` is not.
 FOLD_ROSTER_KEYS: tuple[str, ...] = ("fold-a", "fold-b")
 
 

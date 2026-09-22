@@ -1,0 +1,324 @@
+# SLURP-STAGE3-CONSTRUCTION-R01 preparation plan, v1
+
+Stage-3 item S3-1 (`docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md`). This
+document states what cell ROLL-1 (`configs/experiment/slurp-native-stage3-rollout-r01-v1.json`,
+package `docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1/`) needs before it can fly, and how
+each of the 18 `PENDING_STAGE3_CONSTRUCTION_R01_*` entries of the `stage3_pending_placeholders`
+block of `configs/baseline/slurp-native-stage3-rollout-baseline-v1.json` is filled. It registers no
+cell, authorises no contact and flips no readiness state. Every number below was measured
+model-free in worktree `/home/chao/saea-worktrees/fable-s3p` (branch `fable/s3p`) at study commit
+`803c1ca8`: zero model, tokenizer, encoder, embedder, scorer, GPU and network contacts, and no
+audio sample was decoded.
+
+Precedent throughout: the DEV-2000-ADDED preparation chain of cell B6
+(`docs/readiness/2026-09-21-slurp-b6-dev2000-added-preparation-plan-v1.md`).
+
+## 0. The roster in one paragraph
+
+`SLURP-STAGE3-CONSTRUCTION-R01` (`docs/receipts/rosters/slurp-stage3-construction-r01.json`, raw
+sha256 `fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0`): 800 construction-pool
+SLURP TRAIN recordings, 18 scenario strata of 44 or 45, farthest-point draw seeded 20260922,
+`roster_role: construction`, `split_role: discovery`, split identity hash
+`2ece5e51ff781fdec89bef8e7448d8ba88249030d3c8a6478dba5e7c1e621dac`. Runtime view
+`configs/dataset/slurp-speech-native-stage3-construction-r01.json` (raw sha256
+`3b4cd48e3a4f077c1b6f14392d8acadd5da50d5bb51ed548f6d763471d7fb338`, canonical
+`runtime_view_sha256` `1a4d0d62dec254255c6726757af7fbab7074b4413a38c0bcffc870b261d14055`).
+**Audio: 3,491.426125 seconds total** (58.19 minutes; 800 recordings, mean 4.364 s, min 1.216 s,
+max 15.294 s), read from the roster receipt's `items[].audio_seconds` and confirmed against the
+runtime view's `audio_seconds_total`. The declared ceiling everywhere below is `3492`
+(`ceil(3491.426125)`), the form the DEV-2000-ADDED plan used.
+
+## 1. Coverage finding: how many R01 rows already have featcache packets
+
+**8 of 800 rows are already promoted; 792 need ENCODE.**
+
+Method (id-level only; no packet byte, no audio sample and no `.feat` file was read): every
+`saea-speech-packet-promotion-receipt-v1` document under the resident packet root
+`/home/chao/feat-cache/slurp-q4km-packets-04ccc72a` was parsed for its `packets[].packet_id` set and
+intersected with the 800 roster `packet_id`s (`sample_id` with `:` replaced by `/`); the result was
+then confirmed against the on-disk leaf directories `slurp/train/<utterance>/<recording>` under the
+same root.
+
+| Promotion receipt inspected | packets | R01 rows covered |
+| --- | ---: | ---: |
+| `DEV-100-promotion.json` | 100 | 0 |
+| `DEV-500-promotion.json` | 500 | 0 |
+| `DEV-1000-promotion.json` | 1,000 | 0 |
+| `DEV-2000-ADDED-promotion.json` | 1,000 | 0 |
+| `EVO-FOLD-A-V2-promotion.json` | 1,080 | 0 |
+| `EVO-FOLD-B-V2-promotion.json` | 1,080 | 0 |
+| `EVO-FOLDS-V2-promotion.json` (union of the two folds) | 2,160 | 0 |
+| `SLURP-KNOWLEDGE63-promotion.json` | 63 | 0 |
+| `KEY18` / `OPT-B18` / `ENG-GATE8-promotion.json` | 18 / 18 / 8 | 0 |
+| `TRAIN90-promotion.json` | 90 | 2 |
+| `GATE18-promotion.json` | 18 | 1 (also in TRAIN90) |
+| `OPT-A36-promotion.json` | 36 | 1 (also in TRAIN90) |
+| `GATE-C36-promotion.json` | 36 | 2 |
+| `EFFECT-C108-promotion.json` | 108 | 2 |
+| `EVIDENCE-E108-promotion.json` | 108 | 1 |
+| `FACTOR-D108-promotion.json` | 108 | 1 |
+| **union of all 18 receipts** | **4,673** | **8** |
+| on-disk `slurp/train/**` leaf packet directories under the same root | 2,673 | 8 (the same 8) |
+
+This is exactly what the S3-1 draw predicts: `scripts/build_slurp_stage3_construction_roster.py`
+excluded TRAIN Fold A, TRAIN Fold B, DEV-1000, DEV-2000 and DEV-2000-ADDED, so the four large
+rosters contribute nothing, while the six small August engineering rosters (TRAIN90 and the
+18/36/108-row gate, option, effect, evidence and factor sets) were never part of that exclusion
+list and therefore overlap the pool by 8 recordings.
+
+**Consequence for preparation 1.** The ENCODE step still contacts **all 800 rows**:
+`scripts/slurp_evo_fold_preprocess.py` drives one contact per roster row and does not skip warm rows
+(the legacy feature-cache key is the FNV-1a hash of the media bytes alone, so a warm row is cheap
+but still a contact). The PROMOTE step is additive and refuse-on-conflict by construction
+(`core.model.speech_features.materialize_speech_feature_packet`): those 8 packet ids are re-verified
+byte for byte against what the resident root already serves and are **never rewritten**; a mismatch
+raises before anything is written. The driver's `--preflight-only` mode prints the
+`legacy cache entries warm` count for the roster; that count is the model-free way to learn how many
+of the 792 are already warm in `/home/chao/feat-cache/slurp-q4km` before the sidecar starts, and it
+was deliberately **not** measured here because it requires hashing every media file's bytes.
+
+## 2. Preparation 1 of 3 -- speech packet promotion (ENCODE + PROMOTE)
+
+* **Precedent artifact**: `/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-2000-ADDED-promotion.json`
+  (1,000 packets), written by run `SAEA-SN-DEV2000-ADDED-PREPROCESS`, package
+  `docs/readiness/2026-09-21-slurp-dev2000-added-preprocess-v1/`.
+* **Producing command (precedent)**: `python scripts/slurp_evo_fold_preprocess.py --roster dev2000-added --run`.
+* **Registered for R01 by this change**: roster key `stage3-construction-r01` in that script's
+  `PREPROCESS_ROSTERS` table, plus the experiment fragment
+  `configs/experiment/slurp-stage3-construction-r01-preprocess.json` (raw sha256
+  `0e6c22eb5c45d19ac3da7b19cf7823e4a9d5c91cfce6b25b7f861dea8c37b7de`). Composed config
+  `q4km-preprocess-featcache-cpu-sidecar` / `slurp-speech-native-stage3-construction-r01` /
+  `speech-native-preprocess` / `slurp-stage3-construction-r01-preprocess`, **config hash**
+  `10ae35155bc2a1006763bcf148d103b832a789ea8c90739919b4eb8a15d079ff`, arm `bare-core`, **protocol
+  hash** `3d60603a7134b9efaa73cb5e6189c48355f6203496dcd75e9330c890bb201221` (computed here through
+  `core.config.compose` / `core.config.protocol_hash`, never hand-typed).
+
+Command line to run (not run by this package; it is a tool contact and needs its ledger row
+countersigned first):
+
+```bash
+cd /home/chao/saea-worktrees/fable-s3p   # or the main checkout, at a clean tree
+export PYTHONDONTWRITEBYTECODE=1
+export PYTHONPATH="$PWD:$PWD/src"
+export SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+source ~/.venvs/speechrl/bin/activate
+
+# 1a. zero-contact preflight: D1 media identity for all 800 rows + the warm-cache count
+python scripts/slurp_evo_fold_preprocess.py --roster stage3-construction-r01 --preflight-only
+
+# 1b. ENCODE (800 contacts on the CPU-only sidecar, port 8081) + PROMOTE (0 contacts)
+python scripts/slurp_evo_fold_preprocess.py --roster stage3-construction-r01 --run \
+    --workers 4 --promote-workers 8 \
+    --output docs/checks/speech-aware-evidence-acquisition/2026-09-22-slurp-stage3-construction-r01-packets/preprocess-report.json
+```
+
+* **Run id**: `SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS`, attempt
+  `attempt-packets-stage3-construction-r01-v1`.
+* **Receipt paths**: `/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/STAGE3-CONSTRUCTION-R01-promotion.json`
+  (schema `saea-speech-packet-promotion-receipt-v1`, 800 packets, `dataset_runtime_view_sha256`
+  `1a4d0d62...`, the sidecar session + stop receipt hashes with `forced=false`); the driver's own
+  `saea-slurp-evo-fold-preprocess-receipt-v1` report at the `--output` path above; the run directory
+  `$SPEECHRL_DATA_DIR/runs/SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS/attempt-packets-stage3-construction-r01-v1/`.
+* **Ledger row**: `SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS` (drafted in `docs/exposure-ledger.md`,
+  `consumed = no`).
+* **Expected counts**: 800 frozen-core contacts at `max_tokens: 1`; 3,491.426125 speech seconds
+  (declared 3,492); 800 promoted packets of which 8 are re-verifications and 792 are new.
+* **Expected GPU hours**: **0.0 actually consumed** -- the sidecar runs `-ngl 0
+  --no-mmproj-offload` and leaves the GPU free for the resident serving session. The declared plan
+  ceiling is `1.0`, the precedent's value. Expected **wall clock about 75 minutes**: the
+  DEV-2000-ADDED ENCODE window ran 2026-09-21T16:44:20Z to 17:48:01Z = 63.7 minutes for 2,983.527
+  audio seconds, and encoding cost tracks audio length, so 63.7 x (3491.426 / 2983.527) = 74.5
+  minutes at the same `--workers 4`.
+* **ROLL-1 placeholders filled**: `speech_packet_promotion_receipt` and
+  `speech_packet_promotion_receipt_sha256`.
+
+## 3. Preparation 2 of 3 -- intent-boundary speech query vectors (an encoder contact)
+
+* **Precedent artifacts**: `vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl`
+  (1,080 rows, sha256 `e7a5b226...`, the pin cell PLAN's `intent-boundaries` Perception
+  `query_source` carries) and its DEV-2000-ADDED sibling
+  `vectors/slurp-dev2000-added-v1/query-vectors-speech-segments.jsonl` (1,000 rows, sha256
+  `e2a5fd04...`). Ledger rows `SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1` and
+  `SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1`.
+* **Producing commands (precedent)**: three steps, of which only the middle one is a contact.
+  1. `scripts/build_speech_query_source_inventory.py` -- model-free
+     `saea-speech-query-source-inventory-v1` (byte hashes plus audio HEADER geometry, no decode).
+  2. `python -m speech_aware_evidence_acquisition.core.speech_preparation_runtime --config <runtime
+     config> --config-sha256 <sha> --data-root <root> --source-root <checkout>` with a
+     `saea-speech-query-encoding-protocol-v1` protocol -- the frozen Omni-Embed-Nemotron-3B
+     retrieval tool, prompt `query: `, dimension 2048, one contact per recording.
+  3. `python -m speech_aware_evidence_acquisition.core.preparation_vectors --config <alias config>
+     --config-sha256 <sha> --repo-root <checkout> --data-root <root>` -- the zero-contact
+     `saea-sealed-segment-vector-dimension-alias-v1` rename `content` -> `intent-boundary`.
+
+Command lines to run for R01 (none of them run by this package):
+
+```bash
+cd /home/chao/saea-worktrees/fable-s3p     # steps 2a/2c may run from any clean checkout
+export PYTHONDONTWRITEBYTECODE=1
+export PYTHONPATH="$PWD:$PWD/src"
+export SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+source ~/.venvs/speechrl/bin/activate
+
+# 2a. MODEL-FREE source inventory (prints the sha256 to pin under protocol.sources.sha256)
+python scripts/build_speech_query_source_inventory.py \
+    --runtime-view configs/dataset/slurp-speech-native-stage3-construction-r01.json \
+    --roster-receipt docs/receipts/rosters/slurp-stage3-construction-r01.json \
+    --data-root "$SPEECHRL_DATA_DIR" \
+    --source-root "$PWD" \
+    --out "$SPEECHRL_DATA_DIR/coordination/slurp-stage3-construction-r01-speech-query-source-inventory-v1.json"
+
+# 2b. THE CONTACT: 800 frozen retrieval-encoder forwards.
+#     configs/preparation/slurp-stage3-construction-r01-speech-query-encoding-protocol-v1.json is a
+#     copy of the DEV-2000-ADDED protocol with expected_unique_spans 800, roster_sha256
+#     fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0, the cache/output/query_rows
+#     relpaths renamed to this roster, and sources.{path,sha256} taken from step 2a's printed hash.
+python -m speech_aware_evidence_acquisition.core.speech_preparation_runtime \
+    --config "$SPEECHRL_DATA_DIR/coordination/slurp-stage3-construction-r01-query-encoding-v1/runtime-config-v1.json" \
+    --config-sha256 SHA256_OF_THAT_RUNTIME_CONFIG_AS_WRITTEN \
+    --data-root "$SPEECHRL_DATA_DIR" \
+    --source-root "$PWD"
+
+# 2c. ZERO-CONTACT dimension alias: content -> intent-boundary
+python -m speech_aware_evidence_acquisition.core.preparation_vectors \
+    --config configs/preparation/slurp-stage3-construction-r01-query-alias-v1.json \
+    --config-sha256 SHA256_OF_THAT_ALIAS_CONFIG_AS_WRITTEN \
+    --repo-root "$PWD" \
+    --data-root "$SPEECHRL_DATA_DIR"
+```
+
+The two `SHA256_OF_..._AS_WRITTEN` values cannot be stated here: both configs pin a hash that does
+not exist yet (the runtime config pins the step-2a inventory's sha256, the alias config pins step
+2b's `queries.jsonl` sha256), so each file is written, hashed and then passed to its own runner --
+the same two-correction sequence the DEV-2000-ADDED protocol records in its `correction_note`.
+
+* **Run id**: `SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1`, attempt `encode-v1`.
+* **Receipt paths**: `preparation-runs/SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json`
+  (schema `saea-speech-query-preparation-receipt-v1`) beside `events.jsonl` / `monitor.jsonl`;
+  outputs `prepared/SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1/{index.json,queries.jsonl}`;
+  alias receipt `prepared/SAEA-SLURP-STAGE3-CONSTRUCTION-R01-ALIAS-V1/query-dimension-alias.json`;
+  alias export `vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-segments.jsonl`.
+* **Ledger row**: `SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1` (drafted,
+  `consumed = no`). The alias step rides under the same row, as the DEV-2000-ADDED alias did.
+* **Expected counts**: **800 encoder contacts** (`logical_encoder_contacts`, one per recording;
+  0 of this roster's rows are covered by any existing query-vector file -- see section 4.1) and
+  3,491.426125 speech seconds (declared 3,492). Zero frozen-core contacts, zero answers, zero
+  scoring.
+* **Expected GPU hours**: about **0.09** -- the DEV-2000-ADDED receipt records
+  `elapsed_seconds 273.14` for 1,000 contacts / 2,983.527 speech seconds, so
+  273.14 x (3491.426 / 2983.527) = 320 s = 5.3 minutes. The declared plan ceiling is `2.0`, the
+  precedent's value.
+* **ROLL-1 placeholders filled**: the four `knowledge_stores.intent-boundaries.phase_supply.perception.query_source`
+  entries (`embedded_signal`, `relpath`, `sha256`, `tool_contact_ledger_row`) and
+  `preparation_source_receipts[7]` (the encoding receipt's relpath + sha256).
+
+## 4. Preparation 3 of 3 -- the train-exemplars content query vectors (model-free)
+
+* **Precedent artifacts**: cell PLAN binds `knowledge_stores.train-exemplars.phase_supply.solver.query_source`
+  to `vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl` (kind `sealed-vectors`,
+  dimension `content`, sha256 `d0f06ed2...`, ledger row
+  `SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1`), built by
+  `scripts/build_slurp_exemplar_pool_assets.py` as a zero-contact flatten of the Fold A **segment**
+  vectors. Cell B6 repeats the transform for a fresh roster with the generalised CLI
+  `scripts/build_slurp_query_content_derivative.py`, producing
+  `vectors/slurp-dev2000-added-v1/query-vectors-speech-content-v1.jsonl` (sha256 `7d4ebdce...`).
+
+```bash
+# 3. ZERO-CONTACT flatten of preparation 2's alias export into the content dimension
+python scripts/build_slurp_query_content_derivative.py \
+    --source-relpath vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-segments.jsonl \
+    --source-sha256 SHA256_PRINTED_BY_STEP_2C \
+    --out-dir vectors/slurp-stage3-construction-r01-v1 \
+    --out-name query-vectors-speech-content-v1.jsonl \
+    --ledger-row SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1
+```
+
+* **Run id**: `SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1`.
+* **Receipt paths**: `vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-content-v1.jsonl`
+  plus its sibling `...provenance.json` (schema
+  `saea-slurp-exemplar-query-vectors-provenance-v1`, `execution_profile: model-free-check`,
+  `parent_relpath` = the segment file, `transform` = flatten + dimension rename, every float
+  byte-identical to the parent).
+* **Ledger row**: `SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1` (drafted,
+  `consumed = no`, profile `model-free-check`).
+* **Expected counts**: 800 rows; **0 model / encoder / tokenizer / network contacts, 0 speech
+  seconds, 0 GPU hours**.
+* **ROLL-1 placeholders filled**: the four `knowledge_stores.train-exemplars.phase_supply.solver.query_source`
+  entries and `preparation_source_receipts[8]`.
+
+### 4.1 Correction to the ROLL-1 placeholder note (measured, not assumed)
+
+The `stage3_pending_placeholders` note for
+`knowledge_stores.train-exemplars.phase_supply.solver.query_source.relpath` says this pin "requires
+only a MODEL-FREE alias/subset export of the pool-side content vectors already sealed for **every
+TRAIN utterance** (`vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl` parent)".
+**That is not the case.** Measured here at id level, with no vector component read:
+
+* `vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl` holds **1,080 rows**, and its
+  own `...provenance.json` records `row_count: 1080` with
+  `parent_relpath: vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl`.
+  It is the **TRAIN Fold A query side**, not a pool-wide export covering every TRAIN utterance.
+* Its intersection with the 800 R01 `sample_id`s is **0**, as is the Fold A segment file's -- which
+  is exactly right, because the S3-1 draw excluded every Fold A recording.
+
+So preparation 3 cannot be a subset of an existing file; it is a derivative of **preparation 2's own
+output**, exactly as cell B6's DEV-2000-ADDED content file is a derivative of the DEV-2000-ADDED
+segment file. It stays model-free (0 contacts), but it is **sequenced after** preparation 2 rather
+than independent of it, and the encoder contacts of preparation 2 are therefore unavoidable. The
+placeholder note should be rewritten at re-pin time to say so.
+
+## 5. Order, and the one blocker fixed here
+
+| # | Step | Contacts | Depends on |
+| --- | --- | ---: | --- |
+| 1 | ENCODE + PROMOTE packets (`SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS`) | 800 frozen-core | the committed roster receipt + runtime view |
+| 2a | Speech-query source inventory (model-free) | 0 | the same two files |
+| 2b | Speech-query encoding (`...-SPEECH-QUERY-ENCODING-V1`) | 800 encoder | 2a; run after step 1 closes so it never competes for CPU custody |
+| 2c | Segment dimension alias (model-free) | 0 | 2b |
+| 3 | Content-dimension derivative (`...-QUERY-VECTOR-EXPORT-V1`) | 0 | 2c |
+| 4 | Re-pin ROLL-1, build its prepared supply and its fit | 0 by itself | 1, 2, 3 |
+
+Steps 1 and 2b are CPU-resident passes; per owner decision 77 each launches as its own scheduled
+task rather than as one long-lived process, and the resident decoder-only serving session on port
+8080 is never stopped, reloaded or contacted by either.
+
+**Blocker found and fixed (model-free).** `scripts/build_speech_query_source_inventory.py` read the
+roster receipt's rows as `item["id"]`. `core.roster.freeze_roster` guarantees only `sample_id`; the
+`id` extra is optional, `SLURP-DEV-2000-ADDED-V1` declares it (and it equals `sample_id` on all
+1,000 of its rows), and `SLURP-STAGE3-CONSTRUCTION-R01` declares the draw extras `stratum`,
+`draw_rank` and `min_cosine_to_selected` instead. Step 2a would therefore have raised
+`KeyError: 'id'` on R01 before a single byte was read. The builder now reads `id` when present --
+so every already-sealed inventory reproduces byte for byte -- and falls back to `sample_id`
+(`roster_sample_ids`, covered by `tests/unit/test_stage3_construction_r01_preparations.py`).
+
+## 6. Preparation 4 (not a new tool contact): the prepared supply and the native-contact fit
+
+The last four ROLL-1 placeholders are per-flight bookkeeping the existing flight machinery mints
+once steps 1-3 exist; nothing new is registered for them here.
+
+* `prepared_phase_supply.{relpath,sha256}` -- the cell's own model-free first-phase Perception
+  supply, built by `core.flight.cli prepare-supply` (`python -m
+  speech_aware_evidence_acquisition.core.flight.cli prepare-supply --repo-root ... --data-root ...
+  --runtime-root /home/chao --lock-path <umbrella datasets.lock.json> --experiment
+  slurp-native-stage3-rollout-r01-v1 --cell <cell> --output <phase-supply-vN.json>`). In practice it
+  is invoked through `python scripts/flights/repin_cell.py`, which re-runs `prepare-supply` only
+  when the prepared artifact would actually mismatch, re-pins it into the baseline fragment,
+  rewrites every dependent composed/protocol hash and then flips `readiness.state` with
+  `--set-ready`.
+* `native_contact_fit.{run_id,attempt_id,contact_cap}` -- minted at flip time by the same tool, as
+  cell B6's registration did. Following the S3-2 naming, the run ids will be
+  `SAEA-SLURP-STAGE3-ROLLOUT-R01-V1` (generation), `SAEA-SLURP-STAGE3-ROLLOUT-R01-FIT-V1` (fit) and
+  `SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-V1` / `-SMOKE-4-FIT-V1` for the four-row smoke; the fit
+  batch itself runs through `python scripts/flights/run_fit_batch.py`. The contact cap is the
+  graph's own ceiling (`rails.native_episode_config` with `samples=5`: 1 + 2 x (5 + 3 + 1) = 19 per
+  row) times the 800 roster rows.
+* `preparation_source_receipts[6].sha256` -- the committed roster receipt's own hash. It needs no
+  preparation at all and is already measured here:
+  **`fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0`**.
+
+## 7. What this document does not authorise
+
+No contact of any kind, no readiness flip, no cell registration, no campaign-plan entry, no queue
+append, and no scoring or answer read. The three ledger rows appended to `docs/exposure-ledger.md`
+alongside this note are DRAFTS carrying `consumed = no`; each still needs root's countersignature at
+a clean tree before the corresponding step may run, and none of them authorises cell ROLL-1 itself.
