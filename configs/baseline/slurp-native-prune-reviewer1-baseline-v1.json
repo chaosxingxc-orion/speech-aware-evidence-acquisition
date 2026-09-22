@@ -215,7 +215,7 @@
       "state_fill": null
     }
   },
-  "policy": "phase-native-candidates-review-revise-v1",
+  "policy": "phase-native-candidates-review1-revise-v1",
   "preparation_source_receipts": [
     {
       "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",

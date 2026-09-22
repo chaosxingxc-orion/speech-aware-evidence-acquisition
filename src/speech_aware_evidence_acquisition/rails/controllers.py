@@ -1429,6 +1429,15 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     # ids must never resolve to the same object because their contact
     # ceilings differ.
     "phase-native-candidates-solve-v1": "phase-native-candidates-solve-v1.json",
+    # Cell P1, 2026-09-22 (owner decision 85, the first pruning cell on the
+    # measurable-Reviewer base R-PRIM, decision 97): the SAME four phases and
+    # the SAME episode shape as "phase-native-candidates-review-revise-v1",
+    # with the Reviewer at ONE visit per revision round (the baseline's own
+    # native_episode.roles.reviewer.max_iterations 3 -> 1). Only max_contacts
+    # moves (11 -> 7: 1 + (1+1)*(1+1+1)); a separate program id because the
+    # two program ids must never resolve to the same object when their
+    # contact ceilings differ.
+    "phase-native-candidates-review1-revise-v1": "phase-native-candidates-review1-revise-v1.json",
     # E2b, 2026-09-16: the SAME four phases and the SAME episode_id as
     # "phase-native-candidates-solve-v1", with a wider contact ceiling for
     # a grouped Solver visit (rails.native_episode_config: 1 + 1*(0+0+5) =
@@ -1655,6 +1664,13 @@ def register_phase_programs_v1() -> None:
             "phase-native-candidates-solve-samples5-v1",
             default_controller_factory(
                 default_phase_program("phase-native-candidates-solve-samples5-v1")
+            ),
+        )
+    if "phase-native-candidates-review1-revise-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-candidates-review1-revise-v1",
+            default_controller_factory(
+                default_phase_program("phase-native-candidates-review1-revise-v1")
             ),
         )
     if "phase-native-candidates-review-revise-samples5-v1" not in registered:

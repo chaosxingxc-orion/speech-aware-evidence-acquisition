@@ -66,6 +66,12 @@ _EXPECTED_PROGRAM_SHAPES = {
     ),
     # E2b, 2026-09-16 (M2 on the review-off base): the review-off program with
     # a grouped Solver visit, so the ceiling is 1 + 1*(0 + 0 + 1*5) = 6.
+    # Cell P1, 2026-09-22 (decision 85 on the R-PRIM base, decision 97): the
+    # review-revise program with the Reviewer at ONE visit per round, so the
+    # ceiling is 1 + (1+1)*(1 + 1 + 1) = 7.
+    "phase-native-candidates-review1-revise-v1": (
+        ("perception", "reviewer", "planner", "solver"), 7, "native-role-episode"
+    ),
     "phase-native-candidates-solve-samples5-v1": (
         ("perception", "reviewer", "planner", "solver"), 6, "native-role-episode"
     ),
