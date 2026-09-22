@@ -1,7 +1,7 @@
 # Stage 3 on the locked SLURP base: training-free RL over the knowledge content and the context-engineering dimensions (design draft)
 
-Author: the coordinator (Fable 5.1). Date: 2026-09-21. Status: DRAFT for owner review; it opens only after the
-Stage-2 seal (decision 78: PLAN, PLANr, B9a, B6 read; base lock v3 written). Owner mandate: decisions 29 (one test
+Author: the coordinator (Fable 5.1). Date: 2026-09-21. Status: DECIDED 2026-09-22 (owner decisions 80-83 and the owner's Stage-3 goal); it opens after base lock v3
+(the Stage-2 seal path PLAN / PLANr / B9a-rec / B6 is complete). Owner mandate: decisions 29 (one test
 read after Stage 3), 34-35 (DEV-2000), 38 (own-null margins), 42-43 (base lock v3 before Stage 3), 70 (index content
 by best discriminability through training-free RL, value retrieval, context-engineering dimensions), 72 (index line
 closed), 73 ((b) the offline Pareto reading first, then (a) semantic advantage with additive store deltas), 74 (measure
@@ -87,7 +87,30 @@ tool-free base's throughput), the advantage contacts (one per disagreeing row, a
 sub-roster, and one TRAIN A cell plus its twin (about 2.7 GPU-h). Three iterations: about 20 GPU-h, all through the
 scheduled-task queue (decision 77), with the reads and the curation in CPU time between steps.
 
-## 6. Owner decisions this draft needs (after the prelude numbers)
+## 6. Owner decisions (taken 2026-09-22) and the Stage-3 goal
+
+The owner's goal (2026-09-22, translated): "the basic engineering base is set by the field's open-source training-free RL
+techniques; the research then optimises and improves those capabilities; Stage 3 must end with an observable positive
+gain." So Stage 3 has two layers: (A) a FAITHFUL base loop assembled from the surveyed open-source mechanics -- Training-Free
+GRPO's group-relative semantic advantage, GEPA's reflect-on-the-trace proposal with Pareto selection, ACE's grow-and-refine
+delta store -- flown as one registered cell family on the locked plan and read against the sealed PLAN arm at the plan's own
+null (h_SLU 1.2485 / h_intent 0.9943); (B) the program's improvements on top of (A) (E36b findings-keyed acquisition with a
+discriminability rule, E37 primitive Reviewer verdicts, per-scenario frontier selection), each a one-factor cell against the
+(A) base. The exit condition is a CI95-proven official SLU-F1 gain on TRAIN A that replicates on Fold B.
+
+80. N = 5 rollouts per state ("N = 5, start with that"); T = 3 iterations as proposed.
+81. The rollout roster: about 800 construction rows drawn with a semantic-diversity rule over the sealed content embeddings
+    (farthest-point coverage so semantically distant utterances are represented), never a TRAIN A / TRAIN B / DEV-1000 /
+    DEV-2000 utterance; the draw is a registered model-free preparation with its own receipt.
+82. The semantic-advantage contact may see the construction row's gold; its output enters only provenance-tagged store
+    deltas, never an evaluated row.
+83. Selection keeps the per-scenario effect x prefilled-token frontier ("find the frontier per scenario"); the cost weight is
+    read from the frontier slope of the sealed cells.
+
+Order of the first cells: E37 (a measurable Reviewer) -> the decision-85 pruning cells -> the (A) base loop, iteration 1 ->
+E36b on the (A) base -> iterations 2-3.
+
+### 6a. Superseded: the questions as drafted
 
 80. T (proposed 3) and N (proposed 5, subject to decision 74's measurement).
 81. The construction roster for rollouts: the 2026-09-13 construction pool (about 9,354 utterances after exclusions)
