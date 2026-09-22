@@ -15,7 +15,7 @@
   "policy": "phase-direct-only-v1",
   "prepared_execution_units": {
     "batch": "SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1",
-    "registry_run_id": "SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1",
+    "registry_run_id": "SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1",
     "relpath": "analysis/SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1/window-inventory.json",
     "sha256": "e5f3cfbcbc407fbb3a7b59469b86ab9d405f7b43963cb2d18b655790c5f4a32b",
     "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992",
