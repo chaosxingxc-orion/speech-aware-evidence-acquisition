@@ -31,6 +31,25 @@ Two phases in one invocation, per roster:
    the "promotion receipt already exists" guard below), so a roster can never be
    silently re-promoted or made to overwrite a sibling roster's packets.
 
+   Item E40 (2026-09-22): "refuse on conflict" never meant "refuse on
+   provenance". A packet id that already exists and differs from this pass in
+   EXACTLY ``encoder_receipt_sha256`` -- the hash of the runtime RECEIPT
+   DOCUMENT, not of anything the encoder produced -- while its chunk count and
+   every chunk hash are identical is SHARED: accepted unchanged, not one byte
+   of the feature root written, and listed in the receipt's ``shared_packets``
+   ledger with both receipt hashes. Every other difference still refuses.
+
+3. PROMOTE-ONLY (``--promote-only``) -- phase 2 alone, for a roster whose
+   legacy cache is ALREADY fully warm (e.g. an ENCODE pass whose PROMOTE was
+   refused). No sidecar, no session, no encoder, ZERO contacts. It refuses
+   unless every roster row is warm, runs the same D1 / frozen-core preflight as
+   ``--run``, and records a NEW attempt id under the same run id. Because it
+   touches no model it constructs no ``contracts.ExecutionPlan`` and reserves
+   no attempt budget: both refuse a zero declaration by design
+   (``contracts/plan.py`` requires finite POSITIVE calls/GPU-hours/speech
+   seconds, ``core/attempts/store.py`` positive reserved calls), and a
+   zero-contact pass must not weaken either.
+
 Label-free by construction: samples are built from a roster's frozen
 ``saea-speech-native-runtime-view-v1`` dataset fragment, which carries media
 identity and nothing else, and every media file is re-hashed against the view's
@@ -66,6 +85,8 @@ Modes::
     python scripts/slurp_evo_fold_preprocess.py --roster dev2000-added --run
     python scripts/slurp_evo_fold_preprocess.py --roster stage3-construction-r01 --preflight-only
     python scripts/slurp_evo_fold_preprocess.py --roster stage3-construction-r01 --run
+    python scripts/slurp_evo_fold_preprocess.py --roster stage3-construction-r01-recovery \
+        --promote-only --attempt-id attempt-promote-only-stage3-construction-r01-v1
 """
 
 from __future__ import annotations
@@ -103,7 +124,9 @@ from speech_aware_evidence_acquisition.core.base import TRANSPORTS  # noqa: E402
 from speech_aware_evidence_acquisition.core.config import (  # noqa: E402
     compose, d1_media_supplement_relpath, d1_media_supplement_sha256)
 from speech_aware_evidence_acquisition.core.model.speech_features import (  # noqa: E402
-    legacy_audio_feature_cache_key, materialize_legacy_cached_speech_feature_packets)
+    PROMOTION_MODE_ENCODE_AND_PROMOTE, PROMOTION_MODE_PROMOTE_ONLY,
+    SharedSpeechFeaturePacketRecord, legacy_audio_feature_cache_key,
+    materialize_legacy_cached_speech_feature_packets)
 from speech_aware_evidence_acquisition.core.session import (  # noqa: E402
     load_runtime_receipt, start_session, stop_session)
 from speech_aware_evidence_acquisition.data.lock import (  # noqa: E402
@@ -136,6 +159,28 @@ DECODING_PARAMS = {"temperature": 0, "seed": 20260803, "max_tokens": 1}
 # them.
 DEFAULT_FEATURE_ROOT = Path("/home/chao/feat-cache/slurp-q4km-packets-04ccc72a")
 DEFAULT_LEGACY_CACHE_DIR = Path("/home/chao/feat-cache/slurp-q4km")
+
+# Item E40. --promote-only makes zero model contacts, so it opens no budget at
+# all: no contracts.ExecutionPlan is constructed and no attempt is reserved in
+# the attempt store. Neither would accept a zero declaration -- contracts/
+# plan.py requires finite POSITIVE planned_model_calls / planned_gpu_hours /
+# planned_speech_audio_seconds and core/attempts/store.py positive
+# reserved_calls -- and item E40 weakens neither: a pass that touches no model
+# must not reserve one contact of head-room. These numbers are what the run
+# directory's own attempt report declares.
+PROMOTE_ONLY_PROFILE = "model-free-check"
+PROMOTE_ONLY_PLAN: dict[str, object] = {
+    "calls": 0,
+    "speech_audio_seconds": 0,
+    "gpu_hours": 0.0,
+    "basis": (
+        "promote-only: zero model contacts, therefore no ExecutionPlan is "
+        "validated and no attempt budget is reserved; the plan validator and "
+        "the attempt store both refuse a zero declaration by design and "
+        "neither is weakened"
+    ),
+}
+PROMOTE_ONLY_REPORT_NAME = "promote-only.report.json"
 
 
 class RosterSpec(NamedTuple):
@@ -291,6 +336,121 @@ def _resolve_promotion_receipt(
     return packet_root / spec.promotion_receipt_name
 
 
+def _require_fully_warm(warm: int, total: int, roster_key: str) -> None:
+    """--promote-only never encodes, so a cold row could only fail closed."""
+
+    if warm != total:
+        raise SystemExit(
+            "--promote-only requires every roster row to be warm in the legacy "
+            "cache; roster %r has %d/%d warm (%d cold). Run --run instead, or "
+            "complete the ENCODE pass first." % (roster_key, warm, total, total - warm)
+        )
+
+
+def _decoder_and_mmproj(runtime_receipt: Mapping[str, object]) -> tuple[Mapping[str, object], Mapping[str, object]]:
+    gguf = runtime_receipt["gguf_files"]
+    decoder = [e for e in gguf if "mmproj" not in Path(str(e["path"])).name.lower()]
+    mmproj = [e for e in gguf if "mmproj" in Path(str(e["path"])).name.lower()]
+    if len(decoder) != 1 or len(mmproj) != 1:
+        raise SystemExit("preprocess receipt must bind exactly one decoder and one mmproj")
+    return decoder[0], mmproj[0]
+
+
+def _promote_roster(
+    *, samples, root: Path, packet_root: Path, legacy_cache: Path,
+    runtime_receipt: Mapping[str, object], decoder: Mapping[str, object],
+    mmproj: Mapping[str, object], workers: int,
+) -> tuple[tuple, tuple[SharedSpeechFeaturePacketRecord, ...]]:
+    """PROMOTE the warm legacy cache into audited packets. Zero contacts.
+
+    Item E40: an already-promoted packet whose identity differs from this pass
+    in exactly the encoder receipt hash, with identical chunks, comes back as a
+    shared record instead of a refusal; nothing under the feature root is
+    rewritten either way.
+    """
+
+    shared: list[SharedSpeechFeaturePacketRecord] = []
+    packets = materialize_legacy_cached_speech_feature_packets(
+        feature_root=packet_root,
+        bindings=tuple({"packet_id": sample.sample_id.replace(":", "/"),
+                        "audio_path": str(root / sample.media_relpath)} for sample in samples),
+        legacy_cache_dir=legacy_cache, encoder_receipt_sha256=canonical_sha256(runtime_receipt),
+        decoder_gguf_sha256=str(decoder["sha256"]), mmproj_sha256=str(mmproj["sha256"]),
+        expected_n_embd=EXPECTED_N_EMBD, causal_attention=True, workers=workers,
+        on_shared=shared.append)
+    if len(packets) != len(samples):
+        raise SystemExit("promotion produced %d packets for %d samples" % (len(packets), len(samples)))
+    audio_by_packet = {sample.sample_id.replace(":", "/"): sample.audio_ref.sha256 for sample in samples}
+    for packet in packets:
+        if packet.audio_sha256 != audio_by_packet[packet.packet_id]:
+            raise SystemExit("promoted packet %s carries a different audio sha256" % packet.packet_id)
+    return packets, tuple(shared)
+
+
+def _promotion_receipt_document(
+    *, packets, shared: Sequence[SharedSpeechFeaturePacketRecord],
+    values: Mapping[str, object], packet_root: Path, legacy_cache: Path,
+    decoder: Mapping[str, object], mmproj: Mapping[str, object],
+    runtime_receipt: Mapping[str, object], mode: str, encode_contacts: int,
+    session_id: str, session_receipt_sha256: str | None,
+    stop_receipt_sha256: str | None,
+) -> dict[str, object]:
+    """The roster's promotion receipt, identical in both modes but for its mode.
+
+    The per-packet entries stay exactly as they have always been -- the
+    EXISTING packet's own ``packet_sha256`` -- so re-verifying this receipt
+    against the packet root still holds for a shared packet. The item E40
+    ``shared_packets`` ledger is provenance beside them, never instead of them.
+    """
+
+    return {
+        "schema": "saea-speech-packet-promotion-receipt-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "count": len(packets),
+        "mode": mode,
+        "encode_contacts": encode_contacts,
+        "dataset_runtime_view_sha256": str(values["runtime_view_sha256"]),
+        "feature_root": str(packet_root),
+        "legacy_cache_dir": str(legacy_cache),
+        "preprocess_session_id": session_id,
+        "preprocess_session_receipt_sha256": session_receipt_sha256,
+        "preprocess_stop_receipt_sha256": stop_receipt_sha256,
+        "runtime_receipt_sha256": canonical_sha256(runtime_receipt),
+        "shared_packet_count": len(shared),
+        "shared_packets": [
+            record.as_json()
+            for record in sorted(shared, key=lambda entry: entry.packet_id)
+        ],
+        "packets": [
+            {"packet_id": packet.packet_id, "packet_sha256": packet.packet_sha256,
+             "audio_sha256": packet.audio_sha256,
+             "decoder_gguf_sha256": str(decoder["sha256"]), "mmproj_sha256": str(mmproj["sha256"])}
+            for packet in sorted(packets, key=lambda entry: entry.packet_id)
+        ],
+    }
+
+
+def _write_promotion_receipt(path: Path, receipt: Mapping[str, object]) -> str:
+    """Create-only: a promotion receipt is never rewritten in place."""
+
+    try:
+        with path.open("x", encoding="utf-8", newline="\n") as handle:
+            handle.write(json.dumps(receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
+    except FileExistsError as error:
+        raise SystemExit("promotion receipt already exists: %s" % path) from error
+    return sha256_file(path)
+
+
+def _emit(args, report: Mapping[str, object]) -> None:
+    if args.output is not None:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        with args.output.open("w", encoding="utf-8", newline="\n") as handle:
+            handle.write(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True, default=str) + "\n")
+        log("wrote %s" % args.output)
+    else:
+        print(json.dumps(report, indent=2, sort_keys=True, default=str))
+
+
 def _write_union_receipt(args) -> int:
     """One promotion receipt over both TRAIN folds, from the two the sessions wrote.
 
@@ -358,7 +518,101 @@ def _write_union_receipt(args) -> int:
     return 0
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def _promote_only(
+    args, *, roster_key: str, spec: RosterSpec, values: Mapping[str, object],
+    samples, root: Path, packet_root: Path, legacy_cache: Path,
+    promotion_receipt: Path, composed, audio_seconds: float, warm: int,
+) -> int:
+    """PROMOTE alone, zero contacts, for a roster whose cache is already warm.
+
+    The caller has already run the shared preflight: the frozen runtime view,
+    every media file re-hashed, the promotion-receipt-absent guard, and the D1
+    media-identity check through the same FrozenCoreGate --run builds. What
+    this mode adds is the refusal that makes "no encoder" safe: EVERY roster
+    row must already be warm, because a cold row could otherwise only be
+    completed by an online encode, which this mode cannot and must not do.
+
+    No server is started, no session or stop receipt exists, and no model is
+    touched -- so no contracts.ExecutionPlan is validated and no attempt budget
+    is reserved (see PROMOTE_ONLY_PLAN). The attempt is recorded by its own NEW
+    run directory plus the report written into it.
+    """
+
+    attempt_id = args.attempt_id
+    _require_fully_warm(warm, len(samples), roster_key)
+    runtime_receipt = load_runtime_receipt(REPO / "docs" / RUNTIME_RECEIPT_RELPATH)
+    if runtime_receipt.get("role") != "preprocess":
+        raise SystemExit("runtime receipt role must be preprocess")
+    decoder, mmproj = _decoder_and_mmproj(runtime_receipt)
+    run_dir = root / "runs" / spec.run_id / attempt_id
+    try:
+        run_dir.mkdir(parents=True, exist_ok=False)
+    except FileExistsError as error:
+        raise SystemExit(
+            "--promote-only records a NEW attempt; %s already exists" % run_dir
+        ) from error
+    log("PROMOTE-ONLY: %d/%d rows warm, zero contacts, no sidecar, attempt %s"
+        % (warm, len(samples), attempt_id))
+
+    promote_started = time.time()
+    packets, shared = _promote_roster(
+        samples=samples, root=root, packet_root=packet_root, legacy_cache=legacy_cache,
+        runtime_receipt=runtime_receipt, decoder=decoder, mmproj=mmproj,
+        workers=args.promote_workers)
+    promote_seconds = time.time() - promote_started
+    tokens = {packet.packet_id: sum(chunk.n_tokens for chunk in packet.chunks) for packet in packets}
+
+    receipt = _promotion_receipt_document(
+        packets=packets, shared=shared, values=values, packet_root=packet_root,
+        legacy_cache=legacy_cache, decoder=decoder, mmproj=mmproj,
+        runtime_receipt=runtime_receipt, mode=PROMOTION_MODE_PROMOTE_ONLY,
+        encode_contacts=0,
+        session_id="promote-only:%s:%s" % (spec.run_id, attempt_id),
+        session_receipt_sha256=None, stop_receipt_sha256=None)
+    promotion_receipt_sha256 = _write_promotion_receipt(promotion_receipt, receipt)
+    log("promotion receipt %s (sha256 %s, %d shared of %d)"
+        % (promotion_receipt, promotion_receipt_sha256[:16], len(shared), len(packets)))
+
+    report = {
+        "schema": "saea-slurp-evo-fold-preprocess-receipt-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "generated_at": datetime.now(tz=timezone.utc).isoformat(),
+        "run_id": spec.run_id, "attempt_id": attempt_id, "roster": roster_key,
+        "mode": PROMOTION_MODE_PROMOTE_ONLY,
+        "execution_profile": PROMOTE_ONLY_PROFILE,
+        "fold": str(values["fold"]) if "fold" in values else None,
+        "config_fragments": {"model": MODEL_FRAGMENT, "dataset": spec.dataset_fragment,
+                             "baseline": BASELINE_FRAGMENT, "experiment": spec.experiment_fragment},
+        "config_hash": composed.config_hash,
+        "split_identity_hash": str(values["split_identity_hash"]),
+        "rows": len(samples), "audio_seconds": round(audio_seconds, 6),
+        "declared_plan": dict(PROMOTE_ONLY_PLAN),
+        "legacy_cache_warm_before": warm,
+        "contacts": 0, "failures": [],
+        "promote_seconds": round(promote_seconds, 3),
+        "promote_packets_per_second": round(len(packets) / max(promote_seconds, 1e-9), 4),
+        "promote_workers": args.promote_workers,
+        "promotion_receipt": str(promotion_receipt),
+        "promotion_receipt_sha256": promotion_receipt_sha256,
+        "shared_packet_count": len(shared),
+        "shared_packets": [
+            record.as_json() for record in sorted(shared, key=lambda entry: entry.packet_id)
+        ],
+        "packet_tokens": {"min": min(tokens.values()), "max": max(tokens.values()),
+                          "total": sum(tokens.values())},
+        "session": None,
+        "run_dir": str(run_dir),
+        "gpu_offload": "no server is started: this mode leaves the GPU and both ports untouched",
+    }
+    with (run_dir / PROMOTE_ONLY_REPORT_NAME).open("x", encoding="utf-8", newline="\n") as handle:
+        handle.write(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True, default=str) + "\n")
+    _emit(args, report)
+    return 0
+
+
+def build_parser() -> argparse.ArgumentParser:
+    """The driver's whole CLI surface, built where a test can read it."""
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--fold", default=None, choices=("a", "b"),
@@ -387,7 +641,26 @@ def main(argv: Sequence[str] | None = None) -> int:
             "The DEV-2000-ADDED roster is never part of this union."
         ),
     )
-    args = parser.parse_args(argv)
+    mode.add_argument(
+        "--promote-only", action="store_true",
+        help=(
+            "PROMOTE phase alone, ZERO contacts: no sidecar, no session, no encoder. "
+            "Requires an already fully warm legacy cache for the roster and an explicit "
+            "--attempt-id, runs the same D1 / frozen-core preflight as --run, and writes "
+            "the roster's promotion receipt with mode=promote-only and encode_contacts=0."
+        ),
+    )
+    return parser
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+
+    # Before any config, data root, or media read: --promote-only records a NEW
+    # attempt under the roster's run id and must never inherit the roster's
+    # default attempt id, which an earlier ENCODE pass already used.
+    if args.promote_only and args.attempt_id is None:
+        raise SystemExit("--promote-only requires an explicit --attempt-id (a NEW attempt)")
 
     if args.union_receipt:
         return _write_union_receipt(args)
@@ -398,7 +671,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         "fold-%s" % args.fold if args.fold is not None else None
     )
     if roster_key is None:
-        raise SystemExit("--roster (or the deprecated --fold a|b) is required for --preflight-only and --run")
+        raise SystemExit(
+            "--roster (or the deprecated --fold a|b) is required for "
+            "--preflight-only, --run and --promote-only"
+        )
     spec = PREPROCESS_ROSTERS[roster_key]
 
     lock, root = load_lock(umbrella_lock_path()), data_root()
@@ -447,6 +723,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.preflight_only:
         log("PREFLIGHT-ONLY PASS: inputs verified, zero contacts, no session, no gate open")
         return 0
+
+    if args.promote_only:
+        return _promote_only(
+            args, roster_key=roster_key, spec=spec, values=values, samples=samples,
+            root=root, packet_root=packet_root, legacy_cache=legacy_cache,
+            promotion_receipt=promotion_receipt, composed=composed,
+            audio_seconds=audio_seconds, warm=warm)
 
     for port, label in ((SIDECAR_PORT, "sidecar"), ):
         try:
@@ -523,55 +806,32 @@ def main(argv: Sequence[str] | None = None) -> int:
         raise SystemExit("%d encode contacts failed; refusing to promote a partial cache: %r"
                          % (len(failures), failures[:5]))
 
-    gguf = runtime_receipt["gguf_files"]
-    decoder = [e for e in gguf if "mmproj" not in Path(str(e["path"])).name.lower()]
-    mmproj = [e for e in gguf if "mmproj" in Path(str(e["path"])).name.lower()]
-    if len(decoder) != 1 or len(mmproj) != 1:
-        raise SystemExit("preprocess receipt must bind exactly one decoder and one mmproj")
+    decoder, mmproj = _decoder_and_mmproj(runtime_receipt)
     promote_started = time.time()
-    packets = materialize_legacy_cached_speech_feature_packets(
-        feature_root=packet_root,
-        bindings=tuple({"packet_id": sample.sample_id.replace(":", "/"),
-                        "audio_path": str(root / sample.media_relpath)} for sample in samples),
-        legacy_cache_dir=legacy_cache, encoder_receipt_sha256=canonical_sha256(runtime_receipt),
-        decoder_gguf_sha256=str(decoder[0]["sha256"]), mmproj_sha256=str(mmproj[0]["sha256"]),
-        expected_n_embd=EXPECTED_N_EMBD, causal_attention=True, workers=args.promote_workers)
+    packets, shared = _promote_roster(
+        samples=samples, root=root, packet_root=packet_root, legacy_cache=legacy_cache,
+        runtime_receipt=runtime_receipt, decoder=decoder, mmproj=mmproj,
+        workers=args.promote_workers)
     promote_seconds = time.time() - promote_started
-    if len(packets) != len(samples):
-        raise SystemExit("promotion produced %d packets for %d samples" % (len(packets), len(samples)))
-    audio_by_packet = {sample.sample_id.replace(":", "/"): sample.audio_ref.sha256 for sample in samples}
-    for packet in packets:
-        if packet.audio_sha256 != audio_by_packet[packet.packet_id]:
-            raise SystemExit("promoted packet %s carries a different audio sha256" % packet.packet_id)
     tokens = {packet.packet_id: sum(chunk.n_tokens for chunk in packet.chunks) for packet in packets}
 
-    receipt = {
-        "schema": "saea-speech-packet-promotion-receipt-v1",
-        "study": "speech-aware-evidence-acquisition",
-        "count": len(packets),
-        "dataset_runtime_view_sha256": str(values["runtime_view_sha256"]),
-        "feature_root": str(packet_root),
-        "legacy_cache_dir": str(legacy_cache),
-        "preprocess_session_id": session.session_id,
-        "preprocess_session_receipt_sha256": canonical_sha256(session.as_json()),
-        "preprocess_stop_receipt_sha256": canonical_sha256(stop),
-        "runtime_receipt_sha256": canonical_sha256(runtime_receipt),
-        "packets": [
-            {"packet_id": packet.packet_id, "packet_sha256": packet.packet_sha256,
-             "audio_sha256": packet.audio_sha256,
-             "decoder_gguf_sha256": str(decoder[0]["sha256"]), "mmproj_sha256": str(mmproj[0]["sha256"])}
-            for packet in sorted(packets, key=lambda entry: entry.packet_id)
-        ],
-    }
-    with promotion_receipt.open("w", encoding="utf-8", newline="\n") as handle:
-        handle.write(json.dumps(receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
-    log("promotion receipt %s (sha256 %s)" % (promotion_receipt, sha256_file(promotion_receipt)[:16]))
+    receipt = _promotion_receipt_document(
+        packets=packets, shared=shared, values=values, packet_root=packet_root,
+        legacy_cache=legacy_cache, decoder=decoder, mmproj=mmproj,
+        runtime_receipt=runtime_receipt, mode=PROMOTION_MODE_ENCODE_AND_PROMOTE,
+        encode_contacts=contacts, session_id=session.session_id,
+        session_receipt_sha256=canonical_sha256(session.as_json()),
+        stop_receipt_sha256=canonical_sha256(stop))
+    promotion_receipt_sha256 = _write_promotion_receipt(promotion_receipt, receipt)
+    log("promotion receipt %s (sha256 %s, %d shared)"
+        % (promotion_receipt, promotion_receipt_sha256[:16], len(shared)))
 
     report = {
         "schema": "saea-slurp-evo-fold-preprocess-receipt-v1",
         "study": "speech-aware-evidence-acquisition",
         "generated_at": datetime.now(tz=timezone.utc).isoformat(),
         "run_id": spec.run_id, "attempt_id": attempt_id, "roster": roster_key,
+        "mode": PROMOTION_MODE_ENCODE_AND_PROMOTE,
         "fold": str(values["fold"]) if "fold" in values else None,
         "config_fragments": {"model": MODEL_FRAGMENT, "dataset": spec.dataset_fragment,
                              "baseline": BASELINE_FRAGMENT, "experiment": spec.experiment_fragment},
@@ -590,7 +850,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "promote_packets_per_second": round(len(packets) / max(promote_seconds, 1e-9), 4),
         "promote_workers": args.promote_workers,
         "promotion_receipt": str(promotion_receipt),
-        "promotion_receipt_sha256": sha256_file(promotion_receipt),
+        "promotion_receipt_sha256": promotion_receipt_sha256,
+        "shared_packet_count": len(shared),
         "packet_tokens": {"min": min(tokens.values()), "max": max(tokens.values()),
                           "total": sum(tokens.values())},
         "core_client": {"trace_manifest_hash": core_receipt.get("trace_manifest_hash"),
@@ -598,13 +859,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "session": {"session_id": session.session_id, "pid": session.pid, "stop": stop},
         "gpu_offload": "-ngl 0 --no-mmproj-offload: this pass leaves the GPU free",
     }
-    if args.output is not None:
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        with args.output.open("w", encoding="utf-8", newline="\n") as handle:
-            handle.write(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
-        log("wrote %s" % args.output)
-    else:
-        print(json.dumps(report, indent=2, sort_keys=True, default=str))
+    _emit(args, report)
     return 0
 
 
