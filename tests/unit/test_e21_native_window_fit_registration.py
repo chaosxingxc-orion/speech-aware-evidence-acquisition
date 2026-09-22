@@ -35,7 +35,10 @@ READINESS = ROOT / "docs/readiness/2026-09-15-e21-native-window-direct-fit-regis
 ADMISSION_RELPATH = "coordination/e21-native-window-registration-v1/admission-v1.json"
 ADMISSION_SHA256 = "de78bb55f4fcb46e0b04432da997dc2ff3c8e5a002d358646f7cdcd0542272e8"
 LEDGER_PREFIX_BYTES = 3715862
-LEDGER_PREFIX_SHA256 = "f07e5d007bcd1d3fba36505fc768eb2d4a3b3bd17e0b32154ca6b44e8ae2a95f"
+# Re-pinned 2026-09-22: the ledger hygiene pass of 2026-09-2x (6d4cca75 / f0ae76f2, closing or superseding
+# back-catalogue rows inside the prefix) and the B8b smoke re-pin (6f921100) legitimately rewrote bytes
+# inside the prefix; the boundary is unchanged and the E21 rows after it are unchanged.
+LEDGER_PREFIX_SHA256 = "788104a32e0c483948a58c0995e91fbac2e4a1e64162ed374ce7c5c4c50fb781"
 # Re-pinned 2026-09-16: commit 2736fab6 ("docs: correct Audio2Tool scope-tools
 # ledger carrier") legitimately lower-cased four "Audio2Tool" occurrences that
 # happen to fall inside this byte window after this test was authored at
