@@ -23,10 +23,10 @@
             "kind": "decision",
             "reason": "Root B6 admission (placeholder sha256 of 64 zeros: the coordinator mints this receipt on the data root after merge and scripts/flights/repin_cell.py re-pins the real hash; see the package README).",
             "relpath": "coordination/slurp-b6-dev2000-added-v1/root-admission-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "85baafc004ce9aa0fddc7c8a66f2ad84abccb10ac634b73c1fb2f73e146d579f"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV2000-ADDED-V1"
     }

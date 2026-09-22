@@ -18,7 +18,7 @@ Composed/protocol hashes at generation time (recomputed live by this script from
 fragments; a merge or re-pin that changes either fragment changes these, and this README along with
 every other package file must be re-derived rather than hand-edited):
 
-* direct: composed `48cd20439824cb1d7febf9fb5b8b206c609a90bbb3ff14ce068294414c96a529`, protocol `80ec3a3ea2f149fb48821e9e52f6ea83142b94228283d42f50d0770ed697c9bc`
+* direct: composed `b8e38d6ac04d9e5fc793af83d6bba7c58647f3470e49eec04cf0b98bb17e1f59`, protocol `281b9f3bdaf38a4164fdb796a0ccfa1d32f3002ca495e1b4dc24069a82b45cd1`
 * plan: composed `b88f7b8285c9771a515ea378d6d8e53a5393694fedaae7fb6d9df8b4760d16bf`, protocol `e5e2ba6868f02a9b62ccfcd54ffe46a8e38f0bca5c4699f440bf95abbb40e93e`
 
 ## Readiness

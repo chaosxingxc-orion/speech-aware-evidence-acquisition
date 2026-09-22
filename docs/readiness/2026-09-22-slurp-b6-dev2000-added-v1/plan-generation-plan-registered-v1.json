@@ -32,7 +32,7 @@
   "plan_kind": "generation",
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-22-slurp-b6-dev2000-added-v1/protocol-registered-v1.json",
-    "sha256": "17df0590fee05a125230292de52315ade2697419b6a11098e8dc8b41e521cabc"
+    "sha256": "ba88692d1f3981f6b8e8d00a91188de21f3283c51911f25a22dbbbed1ddef30d"
   },
   "purpose": "Cell B6 plan arm: read the locked v2.0 default plan against the sealed direct arm (cell B6 direct arm, this same package) on the identical fresh DEV-2000-ADDED roster: a paired, report-only generalisation read of the locked plan against the bare frozen core, not a new admission decision (owner decisions 34, 35, 78, 79, 86, 88).",
   "quality_read_gate": "No task-quality read before the complete sealed manifest and the single successful complete official score exist on BOTH arms of this package.",
