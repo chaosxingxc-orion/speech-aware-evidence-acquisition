@@ -57,6 +57,7 @@ no-op if it is already absent.
 from __future__ import annotations
 
 import shutil
+import socket
 import sys
 from pathlib import Path
 
@@ -112,3 +113,53 @@ def _purge_scoring_pycache_after_every_test():
 
     yield
     _purge_scoring_pycache()
+
+
+# ---------------------------------------------------------------------------
+# Offline-guard leak backstop
+# ---------------------------------------------------------------------------
+#
+# ``analysis.dev100_reviewer_audit.arm_offline_guard()`` monkey-patches
+# ``socket.socket.connect``, ``socket.socket.connect_ex`` and
+# ``socket.create_connection`` process-globally to prove a model-free row
+# touched no network -- by design, a production ``main()`` that arms it
+# never un-arms it, because the guard's whole claim is "refuses every
+# outbound connection for the rest of THIS process" (see that module's
+# "Offline proof" docstring section and ``_ConnectAttempts.disarm``).
+#
+# When a unit test executes one of those ``main()``s (or otherwise arms the
+# guard) in-process, the same permanence becomes a cross-test leak: every
+# LATER test in the same pytest session whose fixture opens a real loopback
+# socket (a stub HTTP/llama-server, ``socket.create_connection`` in a
+# transport test, ...) then raises the guard's ``AuditError`` instead of
+# connecting, even though that later test never touched the guard itself.
+#
+# This fixture is the general backstop: snapshot the three attributes
+# before every test body runs, and restore them after, regardless of which
+# test (this one, or a future one) armed the guard and forgot -- or, per
+# the guard's own design, never intended -- to disarm it. It never calls
+# ``_ConnectAttempts.disarm()`` (which only that object's own caller can
+# invoke); it restores the raw ``socket`` attributes directly, which is
+# strictly equivalent to a disarm for whichever guard instance is currently
+# armed, and is a no-op when nothing patched them.
+#
+# The snapshot/restore logic is factored into two plain (undecorated)
+# functions so ``tests/unit/test_offline_guard_restorable.py`` can drive the
+# exact same code the fixture runs, deterministically and without a nested
+# pytest invocation.
+def _snapshot_socket_attributes() -> tuple[object, object, object]:
+    return (socket.socket.connect, socket.socket.connect_ex, socket.create_connection)
+
+
+def _restore_socket_attributes(snapshot: tuple[object, object, object]) -> None:
+    connect, connect_ex, create_connection = snapshot
+    socket.socket.connect = connect  # type: ignore[method-assign]
+    socket.socket.connect_ex = connect_ex  # type: ignore[method-assign]
+    socket.create_connection = create_connection  # type: ignore[assignment]
+
+
+@pytest.fixture(autouse=True)
+def _restore_socket_attributes_after_every_test():
+    snapshot = _snapshot_socket_attributes()
+    yield
+    _restore_socket_attributes(snapshot)

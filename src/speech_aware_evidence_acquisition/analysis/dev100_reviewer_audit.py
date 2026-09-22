@@ -91,6 +91,7 @@ it cannot be satisfied by a contact that happens to log nothing.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
 import math
 import socket
@@ -155,11 +156,41 @@ class AuditError(RuntimeError):
 
 
 class _ConnectAttempts:
-    """Mutable counter the guard closes over (published in the receipt)."""
+    """Mutable counter the guard closes over (published in the receipt).
+
+    Also carries the pre-arm originals of the three patched socket
+    attributes, so the SAME object callers already read ``.count``/
+    ``.targets`` off of can restore them via :meth:`disarm`. Neither
+    attribute is read by any receipt writer today (only ``.count`` and
+    ``.targets`` are), so adding them changes no published output."""
 
     def __init__(self) -> None:
         self.count = 0
         self.targets: list[str] = []
+        self._original_connect = None
+        self._original_connect_ex = None
+        self._original_create_connection = None
+        self._armed = False
+
+    def disarm(self) -> None:
+        """Restore ``socket.socket.connect``/``connect_ex`` and
+        ``socket.create_connection`` to what they were immediately before
+        this guard's own :func:`arm_offline_guard` call.
+
+        Idempotent: a no-op if this guard was never armed, or has already
+        been disarmed. Production ``main()`` callers never call this --
+        their whole point is that the guard stays armed for the rest of
+        that process (see the module docstring's "Offline proof" section);
+        only tests and the ``disarmed_offline_guard`` context manager use
+        it, to stop one test's guard from leaking into the next test's
+        socket use."""
+
+        if not self._armed:
+            return
+        socket.socket.connect = self._original_connect  # type: ignore[method-assign]
+        socket.socket.connect_ex = self._original_connect_ex  # type: ignore[method-assign]
+        socket.create_connection = self._original_create_connection  # type: ignore[assignment]
+        self._armed = False
 
 
 def arm_offline_guard() -> _ConnectAttempts:
@@ -168,9 +199,17 @@ def arm_offline_guard() -> _ConnectAttempts:
     Called before any input is opened. A model-free row's whole claim is
     that it contacts nothing; this turns that claim into something the
     process itself enforces rather than something the reader has to take on
-    trust from a log file the process does not own."""
+    trust from a log file the process does not own.
+
+    The guard stays armed until the returned object's ``disarm()`` is
+    called (or never, for a production ``main()``) -- arming semantics are
+    unchanged from before ``disarm()`` existed."""
 
     attempts = _ConnectAttempts()
+    attempts._original_connect = socket.socket.connect
+    attempts._original_connect_ex = socket.socket.connect_ex
+    attempts._original_create_connection = socket.create_connection
+    attempts._armed = True
 
     def _refuse(self, address, *args, **kwargs):  # noqa: ANN001 - socket API shape
         attempts.count += 1
@@ -192,6 +231,25 @@ def arm_offline_guard() -> _ConnectAttempts:
     socket.socket.connect_ex = _refuse  # type: ignore[method-assign]
     socket.create_connection = _refuse_create  # type: ignore[assignment]
     return attempts
+
+
+@contextlib.contextmanager
+def disarmed_offline_guard():
+    """Context-manager form of :func:`arm_offline_guard`: arm for the body,
+    then unconditionally :meth:`~_ConnectAttempts.disarm` on exit (normal
+    return or exception).
+
+    For tests, and any other short-lived offline-proof scope that must not
+    leak its armed guard into whatever runs next in the same process.
+    Production ``main()`` callers keep calling :func:`arm_offline_guard`
+    directly and are unaffected -- this is an additive alternative entry
+    point, not a replacement for the existing one."""
+
+    attempts = arm_offline_guard()
+    try:
+        yield attempts
+    finally:
+        attempts.disarm()
 
 
 # ---------------------------------------------------------------------------
