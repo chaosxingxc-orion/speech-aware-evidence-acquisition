@@ -55,9 +55,17 @@ def dump_like(raw, obj):
     return json.dumps(obj, indent=ind, ensure_ascii=False) + ("\n" if raw.endswith("\n") else "")
 
 
+PROTECTED = ("saea-review-primitives-v1",)  # registry ids that contain the base slug must survive the substitution
+
+
 def subst(text, base, cell):
-    return (text.replace(base["name"], cell_name(cell)).replace(base["tag"], CELLS[cell]["tag"])
+    for i, tok in enumerate(PROTECTED):
+        text = text.replace(tok, f"@@PROTECTED{i}@@")
+    text = (text.replace(base["name"], cell_name(cell)).replace(base["tag"], CELLS[cell]["tag"])
             .replace(base["short"], CELLS[cell]["short"]))
+    for i, tok in enumerate(PROTECTED):
+        text = text.replace(f"@@PROTECTED{i}@@", tok)
+    return text
 
 
 def cell_name(cell):
