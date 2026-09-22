@@ -87,7 +87,9 @@ def _diff_paths(a: object, b: object, prefix: str = "") -> set[str]:
 
 def test_plan_arm_baseline_differs_from_cell_plan_only_in_the_enumerated_bindings():
     plan, new = _load(PLAN_PRECEDENT), _load(PLAN_NEW)
-    assert _diff_paths(plan, new) == PLAN_BASELINE_CHANGED_PATHS
+    # the prepared-supply pin diffs as a whole key while unpinned and as two leaves once the flip pins it
+    diff = frozenset("prepared_phase_supply" if path.startswith("prepared_phase_supply") else path for path in _diff_paths(plan, new))
+    assert diff == PLAN_BASELINE_CHANGED_PATHS
     # Untouched: native_episode, phase_material, policy, both non-query_source
     # store blocks, geometry, and the E13/E20/E22 declarations.
     assert plan["native_episode"] == new["native_episode"]
