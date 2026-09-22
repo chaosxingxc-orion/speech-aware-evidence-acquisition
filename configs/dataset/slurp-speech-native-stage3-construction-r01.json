@@ -2,9 +2,9 @@
   "audio_seconds_total": 3491.426125,
   "carrier_lock_key": "slurp",
   "count": 800,
-  "d1_manifest_sha256": null,
-  "d1_media_supplement": null,
-  "d1_media_supplement_sha256": null,
+  "d1_manifest_sha256": "f45c630715cf0786f1f2e2d47516c3d15d22535dc5e9f0abcbfed7c6a538c57a",
+  "d1_media_supplement": "receipts/artifacts/d1-slurp-stage3-construction-r01.json",
+  "d1_media_supplement_sha256": "7cf5f978dbff16645866ce6bee501efbb9fb48d69b1a5243ba2781491a4d9f56",
   "items": [
     {
       "audio_seconds": 3.5835,
@@ -6407,7 +6407,7 @@
       "sample_rate_hz": 16000
     }
   ],
-  "runtime_view_sha256": "1a4d0d62dec254255c6726757af7fbab7074b4413a38c0bcffc870b261d14055",
+  "runtime_view_sha256": "d3503d5861943b975b213ec2804e094e084e63206f31cb0b1b5715e815338bdd",
   "schema": "saea-speech-native-runtime-view-v1",
   "seed": 20260922,
   "source_binding_sha256": "a1f0f6f6570e92b6d0216c64a5770cc6c314b338021ffc6e73fd1d3cbfd92026",
