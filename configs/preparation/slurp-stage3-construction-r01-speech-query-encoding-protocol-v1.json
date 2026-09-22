@@ -1,0 +1,43 @@
+{
+  "answer_authority": "No answers are generated; these are frozen retrieval-tool query vectors.",
+  "boundary_policy": "fixed-stride-complete-final-tail-v1",
+  "cache_relpath": "prepared/slurp-stage3-construction-r01-speech-query-span-cache-v1",
+  "contact_policy": "One lazy local frozen encoder load, one speech input per forward, no jitter, retry, fallback, or automatic restart.",
+  "cpu_workers": 4,
+  "dimension": 2048,
+  "encoder": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-speech-query-encoder-inventory-v2.json",
+    "sha256": "1548387ba91209921fd747e9eff981027be618c618b732efe20ca7d43680bb31"
+  },
+  "expected_unique_spans": 800,
+  "input_order": "source-id-then-original-frame",
+  "isolation": "Read only the registered TRAIN construction-pool speech carried by SLURP-STAGE3-CONSTRUCTION-R01. Do not read reference transcripts, task labels, intent/slot annotations, prior answers, feedback from any sealed SLURP roster, or future turns.",
+  "max_audio_samples": 1920000,
+  "max_seconds": 120.0,
+  "max_sequence_tokens": 8192,
+  "monitor_interval_seconds": 10,
+  "output_relpath": "prepared/SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1/index.json",
+  "overlap_seconds": 8.0,
+  "query_prompt": "query: ",
+  "query_rows_relpath": "prepared/SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1/queries.jsonl",
+  "roster_sha256": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0",
+  "schema": "saea-speech-query-encoding-protocol-v1",
+  "sources": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-stage3-construction-r01-speech-query-source-inventory-v1.json",
+    "sha256": "a4ed13ad67441f5ceaf8be14ef52e3516a6c5f86d1155c6fb754a8ef6b2f771b",
+    "schema": "saea-speech-query-source-inventory-v1",
+    "built_by": "scripts/build_speech_query_source_inventory.py (model-free: byte hashes + audio header geometry; no decode, encoder, tokenizer or network)",
+    "derived_from": {
+      "runtime_view": {
+        "path": "configs/dataset/slurp-speech-native-stage3-construction-r01.json",
+        "raw_sha256": "b3c1239d92ea95c03ec371cc010db47c8f0ea4312a8e3e38d4efc4dbd6dbf0b5",
+        "canonical_runtime_view_sha256": "d3503d5861943b975b213ec2804e094e084e63206f31cb0b1b5715e815338bdd"
+      },
+      "roster_receipt": {
+        "path": "docs/receipts/rosters/slurp-stage3-construction-r01.json",
+        "sha256": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0"
+      }
+    },
+    "registration_note": "Built 2026-09-22 by root (step 2a of preparation 2, zero contacts): 800 rows, split identity 2ece5e51ff781fdec89bef8e7448d8ba88249030d3c8a6478dba5e7c1e621dac, audio_seconds_total 3491.426125. The DEV-2000-ADDED protocol needed two corrections before its launch because it first pinned the runtime view here; this registration pins the inventory from the start, so no correction is expected."
+  }
+}
