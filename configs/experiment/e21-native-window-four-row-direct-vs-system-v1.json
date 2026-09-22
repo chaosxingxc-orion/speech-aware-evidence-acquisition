@@ -51,7 +51,7 @@
     {
       "cell_id": "e21-native-window-system-four-row-v1",
       "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-V1",
-      "attempt_id": "attempt-e21-native-window-system-four-row-recovery-v3",
+      "attempt_id": "attempt-e21-native-window-system-four-row-recovery-v4",
       "arm": "speech-feature-query",
       "policy": "phase-native-review-revise-acquire-v1",
       "model_fragment": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1",
@@ -81,7 +81,7 @@
         "planned_gpu_hours": 0.5,
         "planned_speech_audio_seconds": 360
       },
-      "attempt_note": "attempt-e21-native-window-system-four-row-v1 ABORTED 2026-09-22T13:58Z with zero contacts (the baseline lacked the knowledge_snapshot pins the native episode requires); recovery attempt under the same run id, caps unchanged. attempt-e21-native-window-system-four-row-recovery-v1 ABORTED 2026-09-22T14:38Z with zero contacts (native_contact_fit.contact_cap 44 != the registered maximum endpoint count 176 = 4 units x 11 x 4 endpoints); recovery-v2 under the same run id, caps unchanged; both aborts are pre-contact registration refusals. recovery-v2 ABORTED 2026-09-22T14:54Z after 4 Perception contacts (360 s): the registered speech-second cap counted one pass per window, not the repeated seconds of a multi-contact episode; recovery-v3 with the corrected cap."
+      "attempt_note": "attempt-e21-native-window-system-four-row-v1 ABORTED 2026-09-22T13:58Z with zero contacts (the baseline lacked the knowledge_snapshot pins the native episode requires); recovery attempt under the same run id, caps unchanged. attempt-e21-native-window-system-four-row-recovery-v1 ABORTED 2026-09-22T14:38Z with zero contacts (native_contact_fit.contact_cap 44 != the registered maximum endpoint count 176 = 4 units x 11 x 4 endpoints); recovery-v2 under the same run id, caps unchanged; both aborts are pre-contact registration refusals. recovery-v2 ABORTED 2026-09-22T14:54Z after 4 Perception contacts (360 s): the registered speech-second cap counted one pass per window, not the repeated seconds of a multi-contact episode; recovery-v3 with the corrected cap. recovery-v3 ABORTED 2026-09-22T15:04Z with zero contacts (the original fit identity already carried recovery-v2's evidence; fit moved to FIT-RECOVERY-V3); recovery-v4."
     }
   ],
   "execution_plan": {
