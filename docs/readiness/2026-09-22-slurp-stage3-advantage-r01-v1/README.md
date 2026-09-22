@@ -6,6 +6,12 @@ spec: `docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md` s
 design: `docs/superpowers/specs/2026-09-21-slurp-stage3-training-free-rl-design.md` section 2 step 4
 (owner decision 82).
 
+Stage-3 algorithm (owner decision 101): **`tfgrpo-semantic-advantage-v1`** (Training-Free GRPO,
+arXiv:2510.08191), operator `credit_assignment` -- this cell produces the group-relative semantic
+advantage statement and nothing else; the update and its application are S3-5 and CELL-1. Declared as
+`stage3_algorithm` in `configs/experiment/slurp-native-stage3-advantage-r01-v1.json` and checked by
+`scripts/checks/stage3_algorithm_label_check.py`.
+
 ## What this cell is
 
 One `construction-advantage-text` contact per row S3-3 selects as disagreeing within its N=5 ROLL-1

@@ -336,7 +336,7 @@ def pairs(
     run_id: str, attempt_id: str, scorer_id: str, roster: Mapping[str, str],
     roster_relpath: str, roster_sha256: str, roster_split_identity_hash: str,
     scored: Mapping[str, Any], delivered: Mapping[str, Mapping[str, Any]], samples: int,
-    out_dir: Path,
+    out_dir: Path, stage3_algorithm: Mapping[str, Any] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     ids = sorted(roster)
     rows: list[dict[str, Any]] = []
@@ -387,6 +387,9 @@ def pairs(
         "contacts": {"model": 0, "tokenizer": 0, "encoder": 0, "asr": 0, "server": 0,
                      "network": 0, "scorer": samples},
     }
+    # Owner decision 101: a Stage-3 read says which training-free RL it reads.
+    if stage3_algorithm is not None:
+        header["stage3_algorithm"] = dict(stage3_algorithm)
     per_row_payload = {**header, "rows": rows}
     pairs_payload = {
         **header,
@@ -424,13 +427,24 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     parser.add_argument("--repo-root", default=str(REPO_ROOT))
     parser.add_argument("--data-root", default=None, help="defaults to data.lock.data_root()")
+    parser.add_argument(
+        "--stage3-algorithm", default=None,
+        help=(
+            "registered Stage-3 algorithm id (core.base.STAGE3_ALGORITHMS); the default "
+            "resolves the label from the experiment fragment that owns --run"
+        ),
+    )
     args = parser.parse_args(argv)
 
+    from speech_aware_evidence_acquisition.core.stage3_algorithms import (  # noqa: PLC0415
+        summary_for_run_id,
+    )
     from speech_aware_evidence_acquisition.data.lock import (  # noqa: PLC0415
         data_root as resolve_data_root, load_lock, umbrella_lock_path,
     )
 
     repo_root = Path(args.repo_root)
+    stage3_algorithm = summary_for_run_id(repo_root, args.run, args.stage3_algorithm)
     root = Path(args.data_root) if args.data_root else resolve_data_root()
     lock = load_lock(umbrella_lock_path(repo_root))
     directory = run_dir(root, args.run, args.attempt)
@@ -488,11 +502,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         _, pairs_payload = pairs(
             args.run, args.attempt, args.scorer_id, roster, args.roster, roster_sha256,
             roster_split_identity_hash, scored, delivered, samples, out_dir,
+            stage3_algorithm,
         )
         print(json.dumps(
             {
                 "stage": "pairs",
                 "pair_count": pairs_payload["count"],
+                "stage3_algorithm": pairs_payload.get("stage3_algorithm"),
                 "coverage_by_stratum": pairs_payload["coverage_by_stratum"],
             },
             indent=2, sort_keys=True,

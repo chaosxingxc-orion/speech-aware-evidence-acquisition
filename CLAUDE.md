@@ -80,7 +80,9 @@ build commit plus per-file GGUF SHA-256. Record every model or tool contact in
 - Offline gates: `python scripts/checks/engineering_base_check.py`,
   `harness_admission_check.py`, `results_ledger_check.py`, `tool_catalog_check.py`,
   `experiment_handoff_check.py`, `openjiuwen_native_reuse_check.py`,
-  `derived_media_confinement_check.py`, and
+  `derived_media_confinement_check.py`, `stage3_algorithm_label_check.py` (owner decision 101:
+  every Stage-3 cell carries a `stage3_algorithm` label resolving in `core.base.STAGE3_ALGORITHMS`),
+  and
   `finite_completion_policy_check.py` -- every live, unflown native cell must declare
   BOTH `native_episode.finite_completion_policy` as `"deliver-latest-or-abstain"` (item E13;
   the B7a recovery arm lost 1,451 contacts to the parser default `"raise"`) and

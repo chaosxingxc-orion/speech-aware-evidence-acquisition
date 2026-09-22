@@ -89,5 +89,12 @@
   },
   "purpose": "Stage-3 S3-4 ADV-1: one construction-advantage-text contact per S3-3-selected disagreeing construction row, asking the frozen core to state (DELTA-KIND / TARGET / STATEMENT) what distinguished ROLL-1's best rollout sample from its worst on that row, with the row's own construction gold visible (owner decision 82). PRIMARY DELIVERABLE: the sealed manifest of parsed AdvantageStatement rows (rails.stage3_advantage.parse_advantage_statement), legal/illegal counted, feeding S3-5's curation into the stage3-deltas-v1 store. No answer to any evaluated row is produced or read here.",
   "service_session": "PENDING_ROOT_SELECTION",
-  "split_id": "PENDING_S3_1_SPLIT_ID"
+  "split_id": "PENDING_S3_1_SPLIT_ID",
+  "stage3_algorithm": {
+    "id": "tfgrpo-semantic-advantage-v1",
+    "operators_used": [
+      "credit_assignment"
+    ],
+    "note": "ADV-1 is Training-Free GRPO's group-relative semantic advantage operator and nothing else: one contact per disagreeing row states what distinguished the best rollout sample from the worst; no store update and no context application happen in this cell."
+  }
 }

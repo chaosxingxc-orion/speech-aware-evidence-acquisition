@@ -131,6 +131,61 @@ are appended, never rewritten (ACE). Survey: `wiki/survey/workbench/training-fre
 - Exit (the owner's goal): a CI95-proven official SLU-F1 gain against the sealed PLAN arm on TRAIN A, replicated on
   Fold B's single evaluation read (decision 29 order), with the frontier row beside it.
 
+## Algorithm labels, decision 101
+
+Owner decision 101 (2026-09-22, translated): *"in the Stage-3 experiment set-up, different experiments must explicitly
+mark which training-free RL they use; you may explore several groups of training-free RL algorithms."* Layer A flies
+three families on the SAME ROLL-1 rollouts and the SAME locked plan, so each cell must say which family it instantiates
+and which loop operator it exercises -- otherwise the arms of a verdict table are distinguishable only by a run id.
+
+Every Stage-3 cell therefore carries a top-level `stage3_algorithm` object in its EXPERIMENT fragment:
+
+```json
+"stage3_algorithm": {"id": "tfgrpo-semantic-advantage-v1", "operators_used": ["credit_assignment"], "note": "one sentence"}
+```
+
+The id resolves in `core.base.STAGE3_ALGORITHMS`, registered from
+`src/speech_aware_evidence_acquisition/core/stage3_algorithms.py` (one Registry mechanism, like every other
+config-declared component id), and `operators_used` is a subset of what that algorithm DEFINES. The registry today:
+
+| id | family | status | operators the algorithm defines | citation |
+| --- | --- | --- | --- | --- |
+| `shared-rollout` | shared substrate | base-loop | rollout, scoring | this spec, S3-2 / S3-3 |
+| `tfgrpo-semantic-advantage-v1` | Training-Free GRPO | base-loop | rollout, scoring, credit_assignment, update, context_application | arXiv:2510.08191 |
+| `gepa-reflective-pareto-v1` | GEPA | planned | credit_assignment, update, selection | arXiv:2507.19457 |
+| `ace-grow-refine-v1` | ACE | planned | update, selection, context_application | see design spec section 6 |
+| `none` | none | not-applicable | (none; states its `reason`) | not applicable |
+
+The gate is `python scripts/checks/stage3_algorithm_label_check.py`: a fragment is a Stage-3 cell when its stem or
+`experiment_id` carries the token `stage3`, when its text names either Stage-3 spec, or when it is on the check's
+explicit list; every such cell must carry a resolvable label. Labelled today: ROLL-1 and its smoke (`shared-rollout`,
+rollout), ADV-1 (`tfgrpo-semantic-advantage-v1`, credit_assignment), CELL-1 and its twin/fit/smoke siblings
+(`tfgrpo-semantic-advantage-v1`, update + context_application). Allowlisted in the check with their reason, because
+their composed hashes are already pinned and this repository does not rewrite a registered plan out from under a
+ledger row: R-PRIM and its smoke, and the S3-1 packet-promotion preparation -- all three wear `none` as prose in their
+own readiness notes and leave the allowlist the next time they are re-pinned. The label is echoed into every verdict
+table by the read drivers (`scripts/analysis/stage3_rollout_score.py`'s `pairs.json` / `per_row.json` header and
+`scripts/analysis/slurp_paired_roster_read.py`'s `verdict.json`), resolved from the run id or given by
+`--stage3-algorithm`; ledger rows minted for a Stage-3 cell from now on name the id in their note, and rows written
+before decision 101 are never rewritten.
+
+### The GEPA and ACE arms
+
+Both reuse the substrate rather than rebuilding it: ROLL-1's custodied grouped samples (S3-2) and S3-3's per-sample
+official scores, pairs and per-scenario coverage, with no new rollout and no new scoring job. GEPA replaces the
+credit-assignment and update operators: instead of one per-row advantage statement, a reflective mutation of the
+delta / instruction text is proposed from the execution traces of a scenario's rows, and survivors are chosen by the
+per-scenario Pareto frontier over per-row scores (decision 83's frontier rule is already the selection operator, so
+GEPA changes what is proposed, not how the frontier is read). ACE replaces the update operator only: a curator turns
+the same reflector output into incremental delta items, de-duplicated against every earlier item by the S3-5 rule
+(exact normalised text, then token Jaccard >= 0.8, provenance merged into the survivor), growing the playbook and
+never rewriting a view. Both release through the SAME `stage3-deltas` store and the SAME `context_supply` route as
+CELL-1, so `CELL-1-GEPA` (`SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-V1`, store `stage3-deltas-gepa-v1`) and `CELL-1-ACE`
+(`SAEA-SLURP-STAGE3-DELTA-CELL-ACE-R01-V1`, store `stage3-deltas-ace-v1`) are one-factor arms on the locked plan
+against the same sealed PLAN comparator, the same own null and the same derangement-twin form control as CELL-1 --
+the three families differ in the delta store they release and in nothing else. Neither cell exists yet; registering
+one is a package plus a fragment carrying its own `stage3_algorithm` label, not new wiring.
+
 ## Sequencing and budget
 
 S3-1 (CPU, plus one registered ENCODE preparation for the construction packets, about 1.5 GPU-h once) -> ROLL-1

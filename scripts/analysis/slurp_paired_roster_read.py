@@ -407,6 +407,9 @@ class Args:
     recipe_id: str | None
     title: str
     split_identity_hash: str | None
+    #: Owner decision 101: the Stage-3 algorithm block echoed into verdict.json
+    #: (``None`` for the Stage-2 reads this driver was written for).
+    stage3_algorithm: dict | None = None
 
 
 def parse_args(argv: Sequence[str] | None = None) -> Args:
@@ -431,6 +434,13 @@ def parse_args(argv: Sequence[str] | None = None) -> Args:
     parser.add_argument("--recipe-id", default=None)
     parser.add_argument("--title", default=DEFAULT_TITLE)
     parser.add_argument("--split-identity-hash", default=None)
+    parser.add_argument(
+        "--stage3-algorithm", default=None,
+        help=(
+            "registered Stage-3 algorithm id (core.base.STAGE3_ALGORITHMS); the default "
+            "resolves the label from the experiment fragment that owns --right-run"
+        ),
+    )
     ns = parser.parse_args(argv)
     return Args(
         stage=ns.stage,
@@ -447,7 +457,26 @@ def parse_args(argv: Sequence[str] | None = None) -> Args:
         recipe_id=ns.recipe_id,
         title=ns.title,
         split_identity_hash=ns.split_identity_hash,
+        stage3_algorithm=_stage3_algorithm_block(
+            Path(ns.repo_root), ns.right_run, ns.stage3_algorithm
+        ),
     )
+
+
+def _stage3_algorithm_block(
+    repo_root: Path, run_id: str, override_id: str | None
+) -> dict | None:
+    """The right arm's Stage-3 algorithm label, or ``None`` (owner decision
+    101). A Stage-2 read of two sealed arms has no label and writes none."""
+
+    src = str(Path(repo_root) / "src")
+    if src not in sys.path:
+        sys.path.insert(0, src)
+    from speech_aware_evidence_acquisition.core.stage3_algorithms import (  # noqa: PLC0415
+        summary_for_run_id,
+    )
+
+    return summary_for_run_id(Path(repo_root), run_id, override_id)
 
 
 # --------------------------------------------------------------------------
@@ -1190,6 +1219,9 @@ def stage_verdict(args: Args) -> dict:
         "recipe_id": args.recipe_id,
         "artifact_sha256": written,
     }
+    # Owner decision 101: every Stage-3 verdict table names its training-free RL.
+    if args.stage3_algorithm is not None:
+        verdict["stage3_algorithm"] = dict(args.stage3_algorithm)
     write_json(args.analysis_root / "verdict.json", verdict)
     return verdict
 
