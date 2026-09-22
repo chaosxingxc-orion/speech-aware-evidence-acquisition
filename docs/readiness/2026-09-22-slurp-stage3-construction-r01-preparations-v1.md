@@ -344,3 +344,135 @@ and the cells that consume its samples are labelled `tfgrpo-semantic-advantage-v
 as prose rather than in `configs/experiment/slurp-stage3-construction-r01-preprocess.json` because that
 fragment's composed config hash is pinned in this note and carried by its DRAFT ledger rows;
 `scripts/checks/stage3_algorithm_label_check.py` allowlists it with that reason.
+
+## 8. Prepared configs for preparations 2 and 3 (2026-09-22)
+
+Registered model-free in worktree `/home/chao/saea-worktrees/fable-s3q` (branch `fable/s3q`) on the
+commit that carries this section. **Zero model, encoder, tokenizer, scorer, GPU and network
+contacts were made by this registration**, no audio sample was decoded, and no utterance text, gold
+label or score was read. It authorises nothing: steps 2b, 2c and 3 still need root's countersignature
+on their already-drafted exposure rows.
+
+### 8.1 The files
+
+| File | Raw sha256 | What it is |
+| --- | --- | --- |
+| `configs/preparation/slurp-stage3-construction-r01-speech-query-encoding-protocol-v1.json` | `c7da3e89cf95597a7c31db64e8b222aa04cd8c32df0a328ba0cd1dae7bd2bc06` | the step-2b `saea-speech-query-encoding-protocol-v1` |
+| `configs/preparation/slurp-stage3-construction-r01-query-alias-v1.json` | `67d2cb22a5d1fec9b744c14ea4e5e863d0f5d9fa8679a3da6b8d6f9779ea2403` | the step-2c alias **template** (two `PENDING_STEP_2B_*` digests) |
+| `scripts/flights/batch/r01_prep2_runtime_config.py` | `d800d9b1391de5b1da69fd8487fd17d38f29d7361fedc0d32a21dd0f4ce1dca3` | mints the step-2b runtime config and prints its sha256 plus launch line |
+| `scripts/flights/batch/r01_prep23.sh` | `545409c91bd60ccbf4e205e40ec106e59cb650c2a7cd12febad5e98a6ecb1398` | the runbook root runs **after** step 2b: steps 2c and 3, then the fill values |
+| `scripts/flights/batch/r01_prep23_steps.py` | `85e12696ae5e9b396ff970b1bb9764f3d33bb55cd2eec60afb52c22e5b714f4a` | that runbook's model-free helper steps |
+| `tests/unit/test_stage3_construction_r01_preparation_configs.py` | `f17e18c7ef76c4f1ba21625caf8d0542c3420584609c17ba2d66c05d4f2a2991` | 32 assertions over both configs, the generator and the runbook |
+
+The protocol is the DEV-2000-ADDED protocol field for field except the seven roster-bound values
+(`cache_relpath`, `expected_unique_spans`, `isolation`, `output_relpath`, `query_rows_relpath`,
+`roster_sha256`, `sources`), which the test asserts one by one. Its `sources` pins the step-2a
+inventory `$SPEECHRL_DATA_DIR/coordination/slurp-stage3-construction-r01-speech-query-source-inventory-v1.json`
+sha256 `a4ed13ad67441f5ceaf8be14ef52e3516a6c5f86d1155c6fb754a8ef6b2f771b` from the start, so the
+two-correction sequence the DEV-2000-ADDED protocol had to record is not expected here.
+
+**Validated without running the encoder**, through the runtime's own loaders
+(`core.speech_preparation_runtime.pinned_json` / `confined`,
+`core.preparation_speech_queries.segment_plan`, `contracts.ExecutionPlan.validate`) -- every check
+`run_preparation` performs before its first contact: protocol schema and bytes, the pinned source and
+encoder bindings, `sources.roster_sha256 == protocol.roster_sha256`, the three confined artifact
+paths (all still free), **800 unique spans**, **3491.426125 span seconds** (under the declared 3,492),
+and the reproduced split identity `2ece5e51ff781fdec89bef8e7448d8ba88249030d3c8a6478dba5e7c1e621dac`.
+The one check deliberately not reproduced is `verify_encoder`, which re-hashes the whole frozen
+Omni-Embed-Nemotron directory and belongs to the run itself.
+
+### 8.2 The step-2b runtime config and the exact launch
+
+`core.speech_preparation_runtime.main` refuses unless the runtime config's `study_head` equals the
+HEAD of the clean checkout the launch runs from, so that digest cannot exist in a committed document
+(it would have to hash the commit that carries it). It is therefore minted, not committed:
+
+```bash
+cd /home/chao/saea-worktrees/fable-s3q      # any clean checkout of the registration commit
+export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$PWD:$PWD/src"
+export SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+source ~/.venvs/speechrl/bin/activate
+
+python -B scripts/flights/batch/r01_prep2_runtime_config.py \
+    --repo-root "$PWD" --data-root "$SPEECHRL_DATA_DIR"
+```
+
+It writes `$SPEECHRL_DATA_DIR/coordination/slurp-stage3-construction-r01-query-encoding-v1/runtime-config-v1.json`
+(refusing to change existing bytes, and refusing a dirty tree) and prints the `sha256` to pass. The
+document is the DEV-2000-ADDED one with this roster's values: plan `800` calls / `3492` speech
+seconds / `2.0` GPU hours, `split_role` `discovery`, split identity `2ece5e51...`, `protocol_hash` =
+the protocol's raw sha256 `c7da3e89...`, `session_id`
+`local-nemotron-slurp-stage3-construction-r01-query-v1`, and the umbrella lock
+`/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json`. Then:
+
+```bash
+python -B -m speech_aware_evidence_acquisition.core.speech_preparation_runtime \
+    --config "$SPEECHRL_DATA_DIR/coordination/slurp-stage3-construction-r01-query-encoding-v1/runtime-config-v1.json" \
+    --config-sha256 <the sha256 the generator printed> \
+    --data-root "$SPEECHRL_DATA_DIR" \
+    --source-root "$PWD"
+```
+
+Step 2b runs only after `SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS` has closed (it has: the R01
+promotion receipt is sealed at sha256 `a1664e34...`), so the two CPU-resident passes never compete
+for custody, and never while a serving task is started or stopped.
+
+### 8.3 Step-2b ledger-row values for the countersignature
+
+The row `SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1` is already drafted; the
+countersignature needs exactly these values, and every one is what the minted plan claims:
+
+| Field | Value |
+| --- | --- |
+| run id | `SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1` |
+| attempt id | `encode-v1` |
+| execution profile | `bounded-discovery-probe` |
+| split role | `discovery` |
+| split identity hash | `2ece5e51ff781fdec89bef8e7448d8ba88249030d3c8a6478dba5e7c1e621dac` |
+| carrier | `slurp` |
+| consumed | `no` (until the run seals) |
+| calls | `800` (measured: 800 unique spans, one forward each) |
+| speech audio seconds | `3492` (measured 3,491.426125) |
+| gpu hours | `2.0` (the DEV-2000-ADDED ceiling; about 0.09 expected) |
+| protocol hash | `c7da3e89cf95597a7c31db64e8b222aa04cd8c32df0a328ba0cd1dae7bd2bc06` |
+| config sha256 | printed by `r01_prep2_runtime_config.py`; binds `study_head` = the registration commit |
+| source inventory sha256 | `a4ed13ad67441f5ceaf8be14ef52e3516a6c5f86d1155c6fb754a8ef6b2f771b` |
+| roster receipt sha256 | `fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0` |
+
+### 8.4 Steps 2c and 3: the runbook
+
+The committed alias config is a **template**: `core.preparation_vectors` accepts exactly eight keys
+and no placeholder, so it is never handed the committed file, and the committed file is never edited
+in place. `PENDING_STEP_2B_QUERIES_SHA256` is the step-2b `queries.jsonl` digest and
+`PENDING_STEP_2B_RECEIPT_SHA256` is the raw digest of that run's `receipt.json`; the `how_to_fill`
+key says so and is stripped on materialisation. After step 2b seals:
+
+```bash
+bash scripts/flights/batch/r01_prep23.sh          # PREP23_DRY=1 to rehearse without writing
+```
+
+It (A) verifies the sealed step-2b receipt (schema, `SEALED`, run and attempt id, protocol sha,
+800 `logical_encoder_contacts`, the source-inventory sha) and re-hashes `queries.jsonl` against the
+receipt's own `query_rows_sha256`, then materialises the runnable alias config to
+`$SPEECHRL_DATA_DIR/coordination/slurp-stage3-construction-r01-query-encoding-v1/query-alias-v1.json`;
+(B) runs step 2c with that file's sha256; (C) re-hashes the 800-row segment export the 2c receipt
+declares; (D) runs preparation 3 (`scripts/build_slurp_query_content_derivative.py`, `--ledger-row
+SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1`); and (E) prints every output path with
+its sha256 plus the ROLL-1 fill values:
+
+* `knowledge_stores.intent-boundaries.phase_supply.perception.query_source` -> kind
+  `sealed-segment-vectors`, relpath `vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-segments.jsonl`,
+  sha256 from the 2c receipt, ledger row `SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1`;
+* `knowledge_stores.train-exemplars.phase_supply.solver.query_source` -> kind `sealed-vectors`,
+  relpath `vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-content-v1.jsonl`, sha256
+  from the derivative, ledger row `SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1`;
+* `preparation_source_receipts[6].sha256` -> `fdb6521a...` (already measured in section 6);
+* `preparation_source_receipts[7]` -> `preparation-runs/SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json`, root `data`.
+
+**One open choice for `preparation_source_receipts[8]`, which the runbook prints both ways rather
+than deciding silently.** Section 4 of this note assigns [8] to preparation 3's own receipt
+(`vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-content-v1.provenance.json`), while
+the DEV-2000-ADDED precedent `configs/baseline/slurp-native-default-plan-dev2000-added-baseline-v1.json`
+instead pins the 2c alias receipt (`prepared/SAEA-SLURP-DEV2000-ADDED-ALIAS-V1/query-dimension-alias.json`,
+its index 5) and never pins the content provenance at all. The re-pin should pin one and **append**
+the other rather than drop it; both digests are printed.
