@@ -18,12 +18,16 @@
     "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992",
     "planned_model_calls": 4,
     "planned_gpu_hours": 0.1,
-    "planned_speech_audio_seconds": 360
+    "planned_speech_audio_seconds": 360,
+    "protocol_hash": "983a87cef33bb8631803f251fce9f9967e2635ab792961179a0d030da418c3a8"
   },
   "scoring": "One complete official score after seal (asr-wer-whisper, conec-entity-wer-official, numeric-value-accuracy-v1, semantic-high-impact-error-rate-v1, cost), run once through core.scoring_batch.",
   "execution_location": "Shared direct-only controller (phase-direct-only-v1) and the OpenJiuwen executor.",
   "requires_before_flight": [
     "Materialize analysis/SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1/window-inventory.json via scripts/build_e21_native_window_unit_subset.py (expected file_sha256 e5f3cfbcbc407fbb3a7b59469b86ab9d405f7b43963cb2d18b655790c5f4a32b, unit_count 4)."
   ],
-  "registration_state": "NOT YET REGISTERED: this plan requires a root decision receipt, a fresh unconsumed exposure-ledger row, and re-pin before any contact."
+  "registration_state": "REGISTERED by root before contact on 2026-09-22 (owner decision 91): decision receipt coordination/e21-native-window-flightruntime-e35-v1/root-admission-v1.json (e21-native-window-flightruntime-e35-admission-v1); fresh unconsumed exposure-ledger rows; readiness flipped through core.flight.repin.apply_decision_and_readiness (no supply to prepare: item E38 path).",
+  "composed_config_hash": "2ce6b441c7847bdf5b43082890d0bb0f62c58311a9a8c8be84f7ca225a60302c",
+  "registered_at_utc": "2026-09-22T12:00:00.000000+00:00",
+  "expected_session_id": "serving-e21-native-window-flightruntime-np4-max1024-v1"
 }

@@ -1,5 +1,6 @@
 {
   "carrier_lock_key": "earnings21-original",
+  "split_id": "e21-current-executor-four-row-proof-v1",
   "split_name": "e21-current-executor-four-row-proof-v1",
   "d1_evidence_supplement": "receipts/artifacts/d1-e21-participant-names.json",
   "d1_evidence_supplement_sha256": "313da4c48acf7403207e2a45c28f90262a94adfaa42873a0c9f251fc9d6bfd83",

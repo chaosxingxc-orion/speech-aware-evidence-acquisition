@@ -1,5 +1,6 @@
 {
   "carrier_lock_key": "earnings21-original",
+  "split_id": "r4-e21-sub10-sample",
   "split_name": "r4-e21-sub10-sample",
   "d1_evidence_supplement": "receipts/artifacts/d1-e21-participant-names.json",
   "d1_evidence_supplement_sha256": "313da4c48acf7403207e2a45c28f90262a94adfaa42873a0c9f251fc9d6bfd83",

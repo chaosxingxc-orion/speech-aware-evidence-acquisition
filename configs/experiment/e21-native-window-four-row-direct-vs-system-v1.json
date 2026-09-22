@@ -23,13 +23,28 @@
       "model_fragment": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1",
       "dataset_fragment": "e21-native-window-four-row-v1",
       "baseline_fragment": "e21-native-window-direct-four-row-v1",
-      "allowed_execution_stages": ["check"],
+      "allowed_execution_stages": [
+        "check"
+      ],
       "readiness": {
-        "state": "held",
+        "state": "ready",
         "reason": "Item E35 registers configuration only. New exposure registration, re-pin and explicit owner resume remain required before any contact.",
         "requirements": [
-          {"kind": "preparation", "description": "Materialize the derived four-row execution-unit artifact this cell's baseline pins (scripts/build_e21_native_window_unit_subset.py) under SPEECHRL_DATA_DIR."},
-          {"kind": "decision", "description": "Root decision receipt admitting this readiness package."}
+          {
+            "kind": "decision",
+            "expected_decision_id": "e21-native-window-flightruntime-e35-admission-v1",
+            "relpath": "coordination/e21-native-window-flightruntime-e35-v1/root-admission-v1.json",
+            "sha256": "0c6bf46610fe01ce0eb90d705ae0a6485a99c9f1f46b7874ba0b23a3453ea901",
+            "reason": "Decision e21-native-window-flightruntime-e35-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "description": "Materialize the derived four-row execution-unit artifact this cell's baseline pins (scripts/build_e21_native_window_unit_subset.py) under SPEECHRL_DATA_DIR."
+          },
+          {
+            "kind": "decision",
+            "description": "Root decision receipt admitting this readiness package."
+          }
         ]
       },
       "execution_plan": {
@@ -48,13 +63,28 @@
       "model_fragment": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1",
       "dataset_fragment": "e21-native-window-four-row-v1",
       "baseline_fragment": "e21-native-window-system-four-row-v1",
-      "allowed_execution_stages": ["check"],
+      "allowed_execution_stages": [
+        "check"
+      ],
       "readiness": {
-        "state": "held",
+        "state": "ready",
         "reason": "Item E35 registers configuration only. New exposure registration, re-pin and explicit owner resume remain required before any contact.",
         "requirements": [
-          {"kind": "preparation", "description": "Materialize the derived four-row execution-unit artifact this cell's baseline pins (scripts/build_e21_native_window_unit_subset.py) under SPEECHRL_DATA_DIR."},
-          {"kind": "decision", "description": "Root decision receipt admitting this readiness package."}
+          {
+            "kind": "decision",
+            "expected_decision_id": "e21-native-window-flightruntime-e35-admission-v1",
+            "relpath": "coordination/e21-native-window-flightruntime-e35-v1/root-admission-v1.json",
+            "sha256": "0c6bf46610fe01ce0eb90d705ae0a6485a99c9f1f46b7874ba0b23a3453ea901",
+            "reason": "Decision e21-native-window-flightruntime-e35-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "description": "Materialize the derived four-row execution-unit artifact this cell's baseline pins (scripts/build_e21_native_window_unit_subset.py) under SPEECHRL_DATA_DIR."
+          },
+          {
+            "kind": "decision",
+            "description": "Root decision receipt admitting this readiness package."
+          }
         ]
       },
       "execution_plan": {
@@ -64,5 +94,13 @@
         "planned_speech_audio_seconds": 360
       }
     }
-  ]
+  ],
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.6,
+    "planned_model_calls": 48,
+    "planned_speech_audio_seconds": 360,
+    "split_role": "discovery"
+  },
+  "execution_plan_note": "Pair totals (direct + system arms; ceilings, not targets), enforced run-cumulatively per run id by the runtime; the per-arm expectations are in the readiness plans."
 }
