@@ -324,3 +324,14 @@ No contact of any kind, no readiness flip, no cell registration, no campaign-pla
 append, and no scoring or answer read. The three ledger rows appended to `docs/exposure-ledger.md`
 alongside this note are DRAFTS carrying `consumed = no`; each still needs root's countersignature at
 a clean tree before the corresponding step may run, and none of them authorises cell ROLL-1 itself.
+
+## 7. Recovery addendum (2026-09-22, coordinator)
+
+Attempt v1 of preparation 1 (`SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS`, scheduled task SAEA-Prep-R01, 19:09-19:21 UTC)
+failed: the CPU-only sidecar on port 8081 was killed at 19:21:20 UTC by the SAEA-Serving task entry's orphan reaper
+(`pgrep -f "llama-server --host"` + `kill -9`) when the coordinator switched the serving geometry from E21 to SLURP beside
+it. Encode 72 ok / 728 failed; the driver refused to promote a partial cache; no promotion receipt exists. Fix: the reaper is
+scoped to `--port 8080` in both entry scripts. The one recovery is `SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS-RECOVERY-V1`
+(roster key `stage3-construction-r01-recovery`, own run id because the plan budget is cumulative per run id; identical
+form and target receipt), registered in the ledger before its first contact. Rule for the recovery: no serving task start or
+stop while the sidecar runs.

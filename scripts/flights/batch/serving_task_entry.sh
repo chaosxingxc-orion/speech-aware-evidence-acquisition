@@ -1,4 +1,5 @@
 #!/bin/bash
+# Orphan reaper scoped to port 8080 (2026-09-22): the unscoped pattern killed the CPU-only preprocess sidecar on 8081 mid-run.
 # Entry point for the Windows Scheduled Task "SAEA-Serving": owns the resident serving wrapper for as long as it lives,
 # independent of any Claude Code process or interactive wsl.exe session. Reaps orphans, records a stale stop if needed,
 # starts the wrapper, archives the stale stop record once the new session.json exists, then waits on the wrapper.
@@ -12,7 +13,7 @@ LOG=/home/chao/serving-task-$(date -u +%Y%m%dT%H%M%SZ).log
 exec > "$LOG" 2>&1
 echo "task entry $(date -u +%FT%TZ) HEAD $(git rev-parse --short HEAD)"
 for p in $(pgrep -f "core.session.serving start"); do kill -9 $p && echo "killed orphan wrapper $p"; done
-for p in $(pgrep -f "llama-server --host"); do kill -9 $p && echo "killed orphan server $p"; done
+for p in $(pgrep -f "llama-server --host 127.0.0.1 --port 8080"); do kill -9 $p && echo "killed orphan server $p"; done
 sleep 2
 if [ -f "$S/session.json" ] && [ ! -f "$S/session-stop.json" ]; then
   echo "recording the stale stop of the previous session"; bash scripts/serving_session.sh stop --session-id serving-slurp-native-candidate-five-train-a-np4-v1 2>&1 | tail -2

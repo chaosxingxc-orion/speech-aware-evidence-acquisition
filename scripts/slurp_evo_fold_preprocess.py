@@ -208,6 +208,19 @@ PREPROCESS_ROSTERS: dict[str, RosterSpec] = {
         default_attempt_id="attempt-packets-stage3-construction-r01-v1",
         plan_calls=800, plan_speech_seconds=3492, plan_gpu_hours=1.0,
     ),
+    # The one recovery of the R01 preprocess (2026-09-22): attempt v1 lost its CPU sidecar to the serving task entry's
+    # unscoped orphan reaper during the E21 -> SLURP geometry switch (72 ok / 728 failed, partial cache refused). Own run id
+    # because the plan budget is cumulative per run id; same roster, same dataset fragment, same promotion receipt target.
+    "stage3-construction-r01-recovery": RosterSpec(
+        run_id="SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS-RECOVERY-V1",
+        dataset_fragment="slurp-speech-native-stage3-construction-r01",
+        experiment_fragment="slurp-stage3-construction-r01-preprocess-recovery-v1",
+        sample_id_prefix="slurp:train:",
+        split_role="discovery",
+        promotion_receipt_name="STAGE3-CONSTRUCTION-R01-promotion.json",
+        default_attempt_id="attempt-packets-stage3-construction-r01-recovery-v1",
+        plan_calls=800, plan_speech_seconds=3492, plan_gpu_hours=1.0,
+    ),
 }
 
 # The two EVO-S1 TRAIN folds, in the fixed order the union receipt merges them.

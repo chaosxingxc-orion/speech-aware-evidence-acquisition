@@ -49,7 +49,7 @@ def test_roster_table_has_exactly_the_registered_rosters() -> None:
     # Stage-3 S3-1 construction roster. The union receipt still covers the two
     # folds only.
     assert set(module.PREPROCESS_ROSTERS) == {
-        "fold-a", "fold-b", "dev2000-added", "stage3-construction-r01",
+        "fold-a", "fold-b", "dev2000-added", "stage3-construction-r01", "stage3-construction-r01-recovery",
     }
     assert module.FOLD_ROSTER_KEYS == ("fold-a", "fold-b")
 

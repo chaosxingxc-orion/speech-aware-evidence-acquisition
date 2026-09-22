@@ -13,21 +13,21 @@ echo "task entry $(date -u +%FT%TZ) HEAD $(git rev-parse --short HEAD) dirt $(gi
 [ "$(git status --short | grep -vc '^??')" = "0" ] || { echo "dirty tree; refusing"; exit 2; }
 OUT=docs/checks/speech-aware-evidence-acquisition/2026-09-22-slurp-stage3-construction-r01-packets
 mkdir -p "$OUT"
-python -B scripts/slurp_evo_fold_preprocess.py --roster stage3-construction-r01 --preflight-only || { echo "PREFLIGHT FAILED"; exit 3; }
+python -B scripts/slurp_evo_fold_preprocess.py --roster ${PREP_ROSTER:-stage3-construction-r01-recovery} --preflight-only || { echo "PREFLIGHT FAILED"; exit 3; }
 (
   while true; do
     AV=$(free -g | awk '/^Mem:/{print $7}')
     echo "watchdog $(date -u +%T) available_gb=$AV" >> /home/chao/prep-r01-watchdog.log
     if [ "$AV" -lt 6 ]; then
       echo "WATCHDOG: available memory ${AV} GB < 6 GB; stopping the preprocess $(date -u +%FT%TZ)" | tee -a /home/chao/prep-r01-watchdog.log
-      pkill -f "slurp_evo_fold_preprocess.py --roster stage3-construction-r01 --run"
+      pkill -f "slurp_evo_fold_preprocess.py --roster ${PREP_ROSTER:-stage3-construction-r01-recovery} --run"
       exit 0
     fi
     sleep 10
   done
 ) &
 WD=$!
-python -B scripts/slurp_evo_fold_preprocess.py --roster stage3-construction-r01 --run --workers 4 --promote-workers 8 --output "$OUT/preprocess-report.json"
+python -B scripts/slurp_evo_fold_preprocess.py --roster ${PREP_ROSTER:-stage3-construction-r01-recovery} --run --workers 4 --promote-workers 8 --output "$OUT/preprocess-report-${PREP_ROSTER:-stage3-construction-r01-recovery}.json"
 RC=$?
 kill $WD 2>/dev/null
 echo "preprocess exit $RC $(date -u +%FT%TZ)"

@@ -12,7 +12,7 @@ LOG=/home/chao/serving-e21-task-$(date -u +%Y%m%dT%H%M%SZ).log
 exec > "$LOG" 2>&1
 echo "task entry $(date -u +%FT%TZ) HEAD $(git rev-parse --short HEAD)"
 for p in $(pgrep -f "core.session.serving start"); do kill -9 $p && echo "killed orphan wrapper $p"; done
-for p in $(pgrep -f "llama-server --host"); do kill -9 $p && echo "killed orphan server $p"; done
+for p in $(pgrep -f "llama-server --host 127.0.0.1 --port 8080"); do kill -9 $p && echo "killed orphan server $p"; done
 sleep 2
 if [ -f "$S/session.json" ] && [ ! -f "$S/session-stop.json" ]; then
   echo "recording the stale stop of the previous E21 session"; bash scripts/serving_session.sh stop --session-id $SID 2>&1 | tail -2
