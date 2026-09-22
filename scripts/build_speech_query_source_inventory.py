@@ -40,6 +40,28 @@ def raw_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def roster_sample_ids(receipt: dict) -> set[str]:
+    """The roster receipt's own sample identities, however the receipt spells them.
+
+    A receipt frozen by ``core.roster.freeze_roster`` always carries
+    ``sample_id`` (the schema's identity field); the ``id`` extra is optional
+    and only some rosters declare it. ``SLURP-DEV-2000-ADDED-V1`` carries both
+    and they are equal on all 1,000 rows, so reading ``id`` first keeps every
+    already-sealed inventory reproducible byte for byte;
+    ``SLURP-STAGE3-CONSTRUCTION-R01`` carries the draw extras
+    (``draw_rank``, ``min_cosine_to_selected``, ``stratum``) and no ``id``,
+    which used to raise ``KeyError: 'id'`` here before a single byte was read.
+    """
+
+    ids: set[str] = set()
+    for index, item in enumerate(receipt["items"]):
+        value = item.get("id", item.get("sample_id"))
+        if not isinstance(value, str) or not value:
+            raise SystemExit(f"roster receipt items[{index}] carries no sample identity")
+        ids.add(value)
+    return ids
+
+
 def split_identity(carrier_lock_key: str, ids: list[str]) -> str:
     return hashlib.sha256(
         "\n".join(sorted(f"{carrier_lock_key}/{sample_id}" for sample_id in ids)).encode("utf-8")
@@ -57,7 +79,7 @@ def build(runtime_view: Path, roster_receipt: Path, data_root: Path, source_root
         raise SystemExit(f"roster receipt schema is invalid: {receipt.get('schema')!r}")
     if view["split_identity_hash"] != receipt["split_identity_hash"]:
         raise SystemExit("runtime view and roster receipt disagree on the split identity hash")
-    receipt_ids = {item["id"] for item in receipt["items"]}
+    receipt_ids = roster_sample_ids(receipt)
     rows = []
     seconds_total = 0.0
     for item in view["items"]:
