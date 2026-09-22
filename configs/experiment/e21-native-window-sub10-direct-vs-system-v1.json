@@ -24,7 +24,9 @@
       "dataset_fragment": "e21-native-window-sub10-v1",
       "baseline_fragment": "e21-native-window-direct-sub10-v1",
       "allowed_execution_stages": [
-        "check"
+        "check",
+        "worker",
+        "campaign"
       ],
       "readiness": {
         "state": "ready",
@@ -64,7 +66,9 @@
       "dataset_fragment": "e21-native-window-sub10-v1",
       "baseline_fragment": "e21-native-window-system-sub10-v1",
       "allowed_execution_stages": [
-        "check"
+        "check",
+        "worker",
+        "campaign"
       ],
       "readiness": {
         "state": "ready",
