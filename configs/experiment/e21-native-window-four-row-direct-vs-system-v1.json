@@ -30,22 +30,14 @@
       ],
       "readiness": {
         "state": "ready",
-        "reason": "Item E35 registers configuration only. New exposure registration, re-pin and explicit owner resume remain required before any contact.",
+        "reason": "Item E35 (owner decisions 89 / 91): registered before contact 2026-09-22; decision receipt pinned; derived unit subset and per-batch packet artifacts materialised at their pinned hashes; the E21 serving geometry is resident for these cells.",
         "requirements": [
           {
             "kind": "decision",
             "expected_decision_id": "e21-native-window-flightruntime-e35-admission-v1",
             "relpath": "coordination/e21-native-window-flightruntime-e35-v1/root-admission-v1.json",
-            "sha256": "0c6bf46610fe01ce0eb90d705ae0a6485a99c9f1f46b7874ba0b23a3453ea901",
+            "sha256": "bfdfa4b739e79a49a19d14c553f1fd118b08974b61c5965f73271d05fe1ff761",
             "reason": "Decision e21-native-window-flightruntime-e35-admission-v1 pinned by scripts/flights/repin_cell.py."
-          },
-          {
-            "kind": "preparation",
-            "description": "Materialize the derived four-row execution-unit artifact this cell's baseline pins (scripts/build_e21_native_window_unit_subset.py) under SPEECHRL_DATA_DIR."
-          },
-          {
-            "kind": "decision",
-            "description": "Root decision receipt admitting this readiness package."
           }
         ]
       },
@@ -72,22 +64,14 @@
       ],
       "readiness": {
         "state": "ready",
-        "reason": "Item E35 registers configuration only. New exposure registration, re-pin and explicit owner resume remain required before any contact.",
+        "reason": "Item E35 (owner decisions 89 / 91): registered before contact 2026-09-22; decision receipt pinned; derived unit subset and per-batch packet artifacts materialised at their pinned hashes; the E21 serving geometry is resident for these cells.",
         "requirements": [
           {
             "kind": "decision",
             "expected_decision_id": "e21-native-window-flightruntime-e35-admission-v1",
             "relpath": "coordination/e21-native-window-flightruntime-e35-v1/root-admission-v1.json",
-            "sha256": "0c6bf46610fe01ce0eb90d705ae0a6485a99c9f1f46b7874ba0b23a3453ea901",
+            "sha256": "bfdfa4b739e79a49a19d14c553f1fd118b08974b61c5965f73271d05fe1ff761",
             "reason": "Decision e21-native-window-flightruntime-e35-admission-v1 pinned by scripts/flights/repin_cell.py."
-          },
-          {
-            "kind": "preparation",
-            "description": "Materialize the derived four-row execution-unit artifact this cell's baseline pins (scripts/build_e21_native_window_unit_subset.py) under SPEECHRL_DATA_DIR."
-          },
-          {
-            "kind": "decision",
-            "description": "Root decision receipt admitting this readiness package."
           }
         ]
       },
