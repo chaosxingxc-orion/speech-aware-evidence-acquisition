@@ -13,7 +13,22 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "Registered by engineering item E37 (owner decision 84 of 2026-09-21, docs/superpowers/specs/2026-09-22-slurp-reviewer-primitive-verdict-design.md), 2026-09-22: cell R-PRIM, the locked default plan (cell PLAN) plus exactly native_episode.reviewer_verdict armed at {\"vocabulary\": \"saea-review-primitives-v1\"} and the Reviewer's swapped instruction template. HELD: no decision receipt, no prepared supply and no flight authorisation exist yet for this cell; root registers the decision receipt, prepares this cell's own first-phase supply under its own run id and flips readiness to 'ready' before any contact. Nothing here authorises a flight.",
-        "state": "held"
+        "state": "ready",
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-review-primitives-admission-v1",
+            "relpath": "coordination/slurp-review-primitives-v1/root-admission-v1.json",
+            "sha256": "ee91590b2814ba8f05acae9e5a2657a63bf839c934eae118864e94384cb7cbec",
+            "reason": "Decision slurp-review-primitives-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-REVIEW-PRIMITIVES-V1/phase-supply-v1.json",
+            "sha256": "6e0b751a971ac474acf5a1984b6d08f51b5261ef74eb629fc2cb61801ae1d0c7",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ]
       },
       "run_id": "SAEA-SLURP-NATIVE-REVIEW-PRIMITIVES-V1"
     }
