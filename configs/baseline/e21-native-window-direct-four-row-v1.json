@@ -1,0 +1,43 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_snapshot_relpath": "knowledge/e21/governed/participant-roster-v1/snapshot.json",
+  "knowledge_snapshot_sha256": "72e7ddff84b6996ccb924564975a92352d186861347760ab9f39c07218ccdb93",
+  "ojw_workflow_timeout_seconds": 21600,
+  "phase_material": {
+    "direct": {
+      "instruction_fill": null,
+      "instruction_template": "probes/e21_native_window_direct_v1.txt",
+      "predecessor_binding": "none"
+    }
+  },
+  "policy": "phase-direct-only-v1",
+  "prepared_execution_units": {
+    "batch": "SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1",
+    "registry_run_id": "SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1",
+    "relpath": "analysis/SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1/window-inventory.json",
+    "sha256": "e5f3cfbcbc407fbb3a7b59469b86ab9d405f7b43963cb2d18b655790c5f4a32b",
+    "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992",
+    "unit_count": 4
+  },
+  "prepared_window_feature_packets": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+    "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
+  },
+  "prompt_fit_multiple": 1.3333333333333333,
+  "scorers": [
+    "asr-wer-whisper",
+    "conec-entity-wer-official",
+    "numeric-value-accuracy-v1",
+    "semantic-high-impact-error-rate-v1",
+    "cost"
+  ],
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-e21-native-window-v1:current-window",
+  "speech_feature_matcher_policy_id": "saea-e21-native-window-v1",
+  "task_contract_source": "active-instruction",
+  "task_instruction": "Transcribe the speech verbatim exactly as spoken. Preserve spoken names, numbers and repetitions. Do not add explanations, speaker labels, timestamps or words unsupported by the audio. Output only the transcript text.",
+  "what_this_is": "Item E35 four-row engineering smoke, direct arm: the pure frozen-core comparator for the six-node system arm (e21-native-window-system-four-row-v1), on the SAME four native windows of the same already-authorized construction-subset call (4320211), through the SAME shared direct-only controller, OpenJiuwen executor, delivery and scoring path the full44 direct baseline (e21-native-window-direct-full44-v1) already flies. One direct contact per unit; no facets, values, supply route or tool. Registered before contact; requires the derived execution-unit artifact this fragment pins (scripts/build_e21_native_window_unit_subset.py) to be materialized before any flight."
+}

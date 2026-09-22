@@ -1,0 +1,68 @@
+{
+  "experiment_id": "SAEA-E21-NATIVE-WINDOW-SUB10-DIRECT-VS-SYSTEM-V1",
+  "date": "2026-09-22",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Item E35 (owner decision 89, 2026-09-21): a small, paired direct-versus-system engineering read on the seeded 10-of-44 discovery subset (342 native windows), proving the Earnings21+ConEC carrier flies the SAME six-node native episode SLURP flies through the SAME shared harness, alongside its direct-only comparator, at a scale large enough to exercise the review/revise/acquisition graph repeatedly rather than only once. Engineering read only: n=342 rows is below CLAUDE.md's n>=400 effectiveness bar by construction. NO optimisation, NO new mechanism, NO flight: registered-before-contact configuration only. No score, comparison, decision, effectiveness or generalization claim may be made from this proof.",
+  "failure_policy": "Preserve original failure and contact record. No automatic restart/replay/geometry/output-cap change. At most one separately registered recovery after a named cause and bounded proof.",
+  "population": {
+    "carrier": "earnings21-original",
+    "count": 10,
+    "execution_units": 342,
+    "dataset_fragment": "e21-native-window-sub10-v1",
+    "roster_receipt": "docs/receipts/probe-samples/r4-e21-sub10-sample.json",
+    "split_identity_hash": "744c4b2e2d2eece3b05c68089c02000e38c96d5c62db8055d9c421fd509a8f61",
+    "historically_exposed": true
+  },
+  "cells": [
+    {
+      "cell_id": "e21-native-window-direct-sub10-v1",
+      "run_id": "SAEA-E21-NATIVE-WINDOW-DIRECT-SUB10-V1",
+      "attempt_id": "attempt-e21-native-window-direct-sub10-v1",
+      "arm": "speech-feature-query",
+      "policy": "phase-direct-only-v1",
+      "model_fragment": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1",
+      "dataset_fragment": "e21-native-window-sub10-v1",
+      "baseline_fragment": "e21-native-window-direct-sub10-v1",
+      "allowed_execution_stages": ["check"],
+      "readiness": {
+        "state": "held",
+        "reason": "Item E35 registers configuration only. New exposure registration, re-pin and explicit owner resume remain required before any contact.",
+        "requirements": [
+          {"kind": "preparation", "description": "Materialize the derived sub10 execution-unit artifact this cell's baseline pins (scripts/build_e21_native_window_unit_subset.py) under SPEECHRL_DATA_DIR."},
+          {"kind": "decision", "description": "Root decision receipt admitting this readiness package."}
+        ]
+      },
+      "execution_plan": {
+        "split_role": "discovery",
+        "planned_model_calls": 342,
+        "planned_gpu_hours": 1.5,
+        "planned_speech_audio_seconds": 30407
+      }
+    },
+    {
+      "cell_id": "e21-native-window-system-sub10-v1",
+      "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-V1",
+      "attempt_id": "attempt-e21-native-window-system-sub10-v1",
+      "arm": "speech-feature-query",
+      "policy": "phase-native-review-revise-acquire-v1",
+      "model_fragment": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1",
+      "dataset_fragment": "e21-native-window-sub10-v1",
+      "baseline_fragment": "e21-native-window-system-sub10-v1",
+      "allowed_execution_stages": ["check"],
+      "readiness": {
+        "state": "held",
+        "reason": "Item E35 registers configuration only. New exposure registration, re-pin and explicit owner resume remain required before any contact.",
+        "requirements": [
+          {"kind": "preparation", "description": "Materialize the derived sub10 execution-unit artifact this cell's baseline pins (scripts/build_e21_native_window_unit_subset.py) under SPEECHRL_DATA_DIR."},
+          {"kind": "decision", "description": "Root decision receipt admitting this readiness package."}
+        ]
+      },
+      "execution_plan": {
+        "split_role": "discovery",
+        "planned_model_calls": 3762,
+        "planned_gpu_hours": 12.0,
+        "planned_speech_audio_seconds": 30407
+      }
+    }
+  ]
+}

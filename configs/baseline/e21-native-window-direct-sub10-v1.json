@@ -1,0 +1,43 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_snapshot_relpath": "knowledge/e21/governed/participant-roster-v1/snapshot.json",
+  "knowledge_snapshot_sha256": "72e7ddff84b6996ccb924564975a92352d186861347760ab9f39c07218ccdb93",
+  "ojw_workflow_timeout_seconds": 21600,
+  "phase_material": {
+    "direct": {
+      "instruction_fill": null,
+      "instruction_template": "probes/e21_native_window_direct_v1.txt",
+      "predecessor_binding": "none"
+    }
+  },
+  "policy": "phase-direct-only-v1",
+  "prepared_execution_units": {
+    "batch": "SAEA-E21-NATIVE-WINDOW-SUB10-V1",
+    "registry_run_id": "SAEA-E21-NATIVE-WINDOW-SUB10-V1",
+    "relpath": "analysis/SAEA-E21-NATIVE-WINDOW-SUB10-V1/window-inventory.json",
+    "sha256": "57ee023e4c1e38a79f99418c9e9dd5e4f87233a2162eac213ac070a73a31bba5",
+    "split_identity_hash": "744c4b2e2d2eece3b05c68089c02000e38c96d5c62db8055d9c421fd509a8f61",
+    "unit_count": 342
+  },
+  "prepared_window_feature_packets": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+    "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
+  },
+  "prompt_fit_multiple": 1.3333333333333333,
+  "scorers": [
+    "asr-wer-whisper",
+    "conec-entity-wer-official",
+    "numeric-value-accuracy-v1",
+    "semantic-high-impact-error-rate-v1",
+    "cost"
+  ],
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-e21-native-window-v1:current-window",
+  "speech_feature_matcher_policy_id": "saea-e21-native-window-v1",
+  "task_contract_source": "active-instruction",
+  "task_instruction": "Transcribe the speech verbatim exactly as spoken. Preserve spoken names, numbers and repetitions. Do not add explanations, speaker labels, timestamps or words unsupported by the audio. Output only the transcript text.",
+  "what_this_is": "Item E35 paired direct-vs-system engineering read, direct arm: the pure frozen-core comparator for the six-node system arm (e21-native-window-system-sub10-v1), on the SAME already-authorized seeded 10-of-44 discovery subset (docs/receipts/probe-samples/r4-e21-sub10-sample.json, 342 native windows), through the SAME shared direct-only controller, OpenJiuwen executor, delivery and scoring path the full44 direct baseline already flies. One direct contact per unit; no facets, values, supply route or tool. Engineering-only: n=342 is below CLAUDE.md's n>=400 effectiveness bar by construction, so this pairing supports no effectiveness or comparison claim. Registered before contact; requires the derived execution-unit artifact this fragment pins (scripts/build_e21_native_window_unit_subset.py) to be materialized before any flight."
+}

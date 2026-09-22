@@ -315,9 +315,14 @@ def entity_scoped_carrier_lock_keys() -> frozenset[str]:
 
 def task_scoped_carrier_lock_keys() -> frozenset[str]:
     """Every registered carrier whose descriptor declares its own
-    :class:`TaskLayout` (consolidation slice C1) -- today ``audio2tool`` and
-    ``slurp`` only; the two earnings descriptors declare no ``task`` layer
-    (``CarrierDescriptor.task``'s own docstring)."""
+    :class:`TaskLayout` (consolidation slice C1) -- ``audio2tool`` and
+    ``slurp`` from that slice, plus ``earnings21-original`` since item E35
+    (owner decision 89, 2026-09-21: the contextual-ASR task layer, so the
+    Earnings21+ConEC carrier can fly the same native six-node episode SLURP
+    flies through the shared harness). ``earnings22-original`` still
+    declares no ``task`` layer at all (``CarrierDescriptor.task``'s own
+    docstring) -- it is not in scope for E35 and has no ConEC evidence layer
+    of its own (``EARNINGS22_ORIGINAL.evidence is None`` above)."""
 
     return frozenset(key for key, entry in _REGISTRY.items() if entry.task is not None)
 
@@ -381,6 +386,21 @@ EARNINGS21_ORIGINAL = register_carrier_descriptor(
         # `earnings22_layers` has no `wer_tags` layer -- so `entity-wer`
         # fails closed for it via `entity_scoped_carrier_lock_keys`.
         entity=EntityLayout(subdir="transcripts/wer_tags", extension=".wer_tag.json"),
+        # Item E35 (owner decision 89, 2026-09-21): the Earnings21+ConEC
+        # carrier is a "contextual-asr" task -- the program's standard
+        # Earnings number is the Whisper-normalised corpus WER
+        # (``asr-wer-whisper``, beside ``saea-scoring-v1``); its knowledge
+        # layer is the ConEC evidence layer this descriptor already declares
+        # above (``evidence.d1_layer_key == "e21_contexts"``); its natural
+        # stratified-read axis is the per-call id
+        # (``metadata_columns.id_column == "file_id"``), the same field the
+        # native-window six-node episode's readiness package strata on.
+        task=TaskLayout(
+            task_kind="contextual-asr",
+            official_scorer_id="asr-wer-whisper",
+            knowledge_layer="conec-contexts",
+            stratum_key="file_id",
+        ),
     )
 )
 

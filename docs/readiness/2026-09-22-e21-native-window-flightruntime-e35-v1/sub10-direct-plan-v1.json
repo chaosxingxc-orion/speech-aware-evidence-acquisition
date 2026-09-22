@@ -1,0 +1,30 @@
+{
+  "schema": "saea-registered-generation-plan-v1",
+  "cell": "e21-native-window-direct-sub10-v1",
+  "experiment": "e21-native-window-sub10-direct-vs-system-v1",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-22-e21-native-window-flightruntime-e35-v1/protocol-v1.json",
+    "sha256": "33d847f257a1791e6372ed419c31f0cda4a66ad6b9cf0181f6324ac4fc87bfaa"
+  },
+  "root_registration_required": true,
+  "execution_plan": {
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-DIRECT-SUB10-V1",
+    "attempt_id": "attempt-e21-native-window-direct-sub10-v1",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "earnings21-original",
+    "split_role": "discovery",
+    "split_identity_hash": "744c4b2e2d2eece3b05c68089c02000e38c96d5c62db8055d9c421fd509a8f61",
+    "planned_model_calls": 342,
+    "planned_gpu_hours": 1.5,
+    "planned_speech_audio_seconds": 30407
+  },
+  "scoring": "One complete official score after seal (asr-wer-whisper, conec-entity-wer-official, numeric-value-accuracy-v1, semantic-high-impact-error-rate-v1, cost), run once through core.scoring_batch.",
+  "execution_location": "Shared direct-only controller (phase-direct-only-v1) and the OpenJiuwen executor.",
+  "requires_before_flight": [
+    "Materialize analysis/SAEA-E21-NATIVE-WINDOW-SUB10-V1/window-inventory.json via scripts/build_e21_native_window_unit_subset.py (expected file_sha256 57ee023e4c1e38a79f99418c9e9dd5e4f87233a2162eac213ac070a73a31bba5, unit_count 342)."
+  ],
+  "claim_surface": "Engineering-only: n=342 rows is below CLAUDE.md's n>=400 effectiveness bar by construction; this cell supports no effectiveness or comparison claim.",
+  "registration_state": "NOT YET REGISTERED: this plan requires a root decision receipt, a fresh unconsumed exposure-ledger row, and re-pin before any contact."
+}

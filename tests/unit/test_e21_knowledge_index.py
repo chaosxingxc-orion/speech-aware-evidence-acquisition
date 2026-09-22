@@ -678,9 +678,22 @@ def test_refusal_7_is_lifted_when_no_role_holds_tool_authority():
 
 
 def test_refusal_8_a_carrier_with_no_knowledge_layer():
-    with pytest.raises(ValueError, match="declares no knowledge_layer"):
+    # Item E35 (owner decision 89, 2026-09-21) gives earnings21-original its
+    # own TaskLayout with a real knowledge_layer ("conec-contexts"), so
+    # refusal 8's "no knowledge_layer at all" guard no longer fires for it --
+    # correctly: it now goes one refusal deeper, into the actual
+    # knowledge-index carrier-profile registry (rails.knowledge_index),
+    # which still fails closed because earnings21-original has no registered
+    # profile there (only audio2tool/slurp do).
+    with pytest.raises(ValueError, match="has no registered knowledge-index carrier profile"):
         load_native_episode_config(
             _armed_values(carrier_lock_key="earnings21-original"), _episode_program()
+        )
+    # earnings22-original still declares no task layer at all, so refusal 8
+    # itself is still reachable and still fires for it.
+    with pytest.raises(ValueError, match="declares no knowledge_layer"):
+        load_native_episode_config(
+            _armed_values(carrier_lock_key="earnings22-original"), _episode_program()
         )
     values = _armed_values()
     values.pop("carrier_lock_key")

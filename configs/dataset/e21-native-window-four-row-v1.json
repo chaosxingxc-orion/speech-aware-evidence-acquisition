@@ -1,0 +1,12 @@
+{
+  "carrier_lock_key": "earnings21-original",
+  "split_name": "e21-current-executor-four-row-proof-v1",
+  "d1_evidence_supplement": "receipts/artifacts/d1-e21-participant-names.json",
+  "d1_evidence_supplement_sha256": "313da4c48acf7403207e2a45c28f90262a94adfaa42873a0c9f251fc9d6bfd83",
+  "e21_runtime_subset": {
+    "receipt_split_name": "e21-current-executor-four-row-proof-v1",
+    "parent_split": "discovery",
+    "subset_role": "construction"
+  },
+  "dataset_note": "Item E35 (owner decision 89, 2026-09-21): the SAME already-authorized one-call construction subset (docs/receipts/probe-samples/e21-current-executor-four-row-proof-v1.json, call 4320211) the OBS-path current-executor four-row proof used, re-bound here to the native-window execution-unit mechanism (the shared window inventory's own first four windows of that call, contiguous from w0001) so the six-node episode and the direct-only comparator can both run a four-row engineering smoke through the SAME shared FlightRuntime/OpenJiuwen path the full44 native-window cells already use. No new sample authority: this dataset fragment names no id the discovery split does not already contain."
+}
