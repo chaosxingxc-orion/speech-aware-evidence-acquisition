@@ -126,7 +126,7 @@
   },
   "native_contact_fit": {
     "attempt_id": "attempt-slurp-native-prune-review-off-smoke-4-fit-v1",
-    "contact_cap": 176,
+    "contact_cap": 32,
     "max_speech_packets": 1,
     "run_id": "SAEA-SLURP-NATIVE-PRUNE-REVIEW-OFF-SMOKE-4-FIT-V1"
   },
@@ -270,6 +270,6 @@
   "what_this_is": "Cell P0 (owner decision 85, base chosen by decision 97 = cell R-PRIM): review-off: native_episode.roles.reviewer.max_iterations 3 -> 0, roles.planner.max_iterations 1 -> 0, max_revisions 1 -> 0 (the item-E1 / cell-B0 form: Perception -> Solver -> Delivery; everything else byte-identical to the base). Derived 2026-09-22 by scripts/flights/batch/derive_pruning_cells.py from configs/baseline/slurp-native-review-primitives-smoke-4-baseline-v1.json. Four-row smoke baseline of Cell P0 (item E37, owner decision 84 of 2026-09-21): the locked default plan (cell PLAN) plus exactly native_episode.reviewer_verdict armed at {\"vocabulary\": \"saea-review-primitives-v1\"} (rails.review_primitives) and the Reviewer's instruction_template swapped to probes/slurp_native_role_reviewer_primitives_v1.txt. REGISTERED AND HELD (engineering item E37, 2026-09-22): no contact authorised. native_contact_fit and prepared_phase_supply below are COPIED from cell PLAN's own smoke registration, not this cell's own prepared artifact -- root prepares and pins this cell's own fit and phase-supply under its own run id before any flight (E16).",
   "prepared_phase_supply": {
     "relpath": "prepared/SAEA-SLURP-NATIVE-PRUNE-REVIEW-OFF-SMOKE-4-V1/phase-supply-v1.json",
-    "sha256": "3bac215c1b931b90ea781843c026165851a257535cfab6486c8a0e0a459b0edc"
+    "sha256": "b551ed25b1214ec9d68cae0be7833a24f943a01b0a9a6053abfff47c1575f1cb"
   }
 }

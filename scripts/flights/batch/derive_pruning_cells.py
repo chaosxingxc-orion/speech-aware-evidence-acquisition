@@ -26,12 +26,12 @@ BASES = {
 }
 CELLS = {
     "prune-reviewer1": {
-        "tag": "PRUNE-REVIEWER1", "short": "P1", "policy": "phase-native-candidates-review1-revise-v1",  # ceiling 7
+        "tag": "PRUNE-REVIEWER1", "short": "P1", "policy": "phase-native-candidates-review1-revise-v1", "ceiling": 7,
         "factor": "native_episode.roles.reviewer.max_iterations: 3 -> 1 (one Reviewer visit per revision round; everything else byte-identical to the base)",
         "edit": lambda ne: ne["roles"]["reviewer"].__setitem__("max_iterations", 1),
     },
     "prune-review-off": {
-        "tag": "PRUNE-REVIEW-OFF", "short": "P0", "policy": "phase-native-candidates-solve-v1",  # ceiling 2 (item E1 / cell B0)
+        "tag": "PRUNE-REVIEW-OFF", "short": "P0", "policy": "phase-native-candidates-solve-v1", "ceiling": 2,  # item E1 / cell B0
         "factor": "review-off: native_episode.roles.reviewer.max_iterations 3 -> 0, roles.planner.max_iterations 1 -> 0, max_revisions 1 -> 0 (the item-E1 / cell-B0 form: Perception -> Solver -> Delivery; everything else byte-identical to the base)",
         "edit": lambda ne: (ne["roles"]["reviewer"].__setitem__("max_iterations", 0),
                             ne["roles"]["planner"].__setitem__("max_iterations", 0),
@@ -90,10 +90,20 @@ def main():
                 ne = obj["native_episode"]
                 spec["edit"](ne)
                 obj["policy"] = spec["policy"]  # the program whose max_contacts equals the pruned graph ceiling
+                rows = 4 if "smoke" in suffix else 1080
+                obj["native_contact_fit"]["contact_cap"] = rows * spec["ceiling"] * (int(obj["native_contact_fit"]["max_speech_packets"]) + 3)
                 obj["what_this_is"] = (f"Cell {spec['short']} (owner decision 85, base chosen by decision 97 = cell {base['short']}): "
                                        f"{spec['factor']}. Derived {a.date} by scripts/flights/batch/derive_pruning_cells.py from {src}. "
                                        + str(obj.get("what_this_is", "")))
             else:
+                rows = 4 if "smoke" in suffix else 1080
+                gen, fit = rows * spec["ceiling"], rows * spec["ceiling"] * 4
+                if isinstance(obj.get("execution_plan"), dict) and isinstance(obj["execution_plan"].get("planned_model_calls"), int):
+                    obj["execution_plan"]["planned_model_calls"] = gen
+                fb = obj.get("family_budget")
+                if isinstance(fb, dict):
+                    if "generation_calls_cap" in fb: fb["generation_calls_cap"] = gen
+                    if "fit_endpoint_calls_cap" in fb: fb["fit_endpoint_calls_cap"] = fit
                 for c in obj.get("cells", []):
                     r = c.get("readiness", {})
                     r["state"] = "held"

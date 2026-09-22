@@ -13,19 +13,19 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "Registered 2026-09-22 by the coordinator as pruning cell P1 (owner decisions 85 and 97; base = cell R-PRIM, decision 97): native_episode.roles.reviewer.max_iterations: 3 -> 1 (one Reviewer visit per revision round; everything else byte-identical to the base). Derived from configs/experiment/slurp-native-review-primitives-v1.json by scripts/flights/batch/derive_pruning_cells.py; readiness flips only through scripts/flights/repin_cell.py after the decision receipt is minted. Stage-3 algorithm label (decision 101): none -- a pruning cell on the locked plan carries no training-free RL operator.",
-        "state": "ready",
+        "state": "held",
         "requirements": [
           {
             "kind": "decision",
             "expected_decision_id": "slurp-prune-reviewer1-admission-v1",
             "relpath": "coordination/slurp-prune-reviewer1-v1/root-admission-v1.json",
-            "sha256": "0c54114e096db8632a7ef5a2c13e305e302d2a35db66cab3426620cd22a28559",
+            "sha256": "ee91590b2814ba8f05acae9e5a2657a63bf839c934eae118864e94384cb7cbec",
             "reason": "Decision slurp-prune-reviewer1-admission-v1 pinned by scripts/flights/repin_cell.py."
           },
           {
             "kind": "preparation",
             "relpath": "prepared/SAEA-SLURP-NATIVE-PRUNE-REVIEWER1-V1/phase-supply-v1.json",
-            "sha256": "8ee6c7109ce11318dea719d00a809cec9b4e4631ea4c1c8e066e5f32abeadce1",
+            "sha256": "6e0b751a971ac474acf5a1984b6d08f51b5261ef74eb629fc2cb61801ae1d0c7",
             "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
           }
         ]
@@ -37,7 +37,7 @@
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 12.0,
-    "planned_model_calls": 11880,
+    "planned_model_calls": 7560,
     "planned_speech_audio_seconds": 33930,
     "split_role": "discovery"
   },
@@ -48,8 +48,8 @@
     "asr_calls": 0,
     "ceilings_are_not_targets": true,
     "encoder_calls": 0,
-    "fit_endpoint_calls_cap": 47520,
-    "generation_calls_cap": 11880,
+    "fit_endpoint_calls_cap": 30240,
+    "generation_calls_cap": 7560,
     "gpu_hours_fit_inclusive": 12.0,
     "native_task_contract_calls_cap": 6480,
     "official_complete_scoring_jobs": 1,
