@@ -3435,6 +3435,8 @@ async def _invoke_native_role_episode(
                 context_fit_policy=config.context_fit_policy,
                 # E22: keyword for the same reason.
                 react_exhaustion_policy=config.react_exhaustion_policy,
+                # E37: keyword for the same reason.
+                reviewer_verdict_vocabulary=config.reviewer_verdict_vocabulary,
             ),
             nodes=NativeEpisodeNodes(**nodes),
             role_input_builder=role_input,
@@ -3639,6 +3641,13 @@ async def _invoke_native_role_episode(
             # text. Absent on every unarmed row, so such a row's receipt is
             # byte-identical to its pre-E22 self.
             "react_exhaustion",
+            # E37 (owner decision 84): present exactly when
+            # native_episode.reviewer_verdict is armed -- one mark per
+            # Reviewer visit of this row ({"visit", "token", "disposition",
+            # "head"}, disposition one of legal / review_verdict_illegal /
+            # react_exhaustion). Absent on every unarmed row, so such a
+            # row's receipt is byte-identical to its pre-E37 self.
+            "reviewer_verdicts",
         ) if key in receipt}
         if not config.review_loop_enabled:
             # Configuration, not failure: record which phases never ran

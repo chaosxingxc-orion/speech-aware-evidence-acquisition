@@ -58,11 +58,18 @@ WHAT IT MEASURES
      findings are NOT a candidate and the report says why.
 
 STAGES
-  --stage reviewer   stage 1 and the route-side half of stage 3.
-  --stage rollouts   stage 2 and the sample-agreement half of stage 3.
-  --stage report     the Markdown tables.
-  --stage all        all three, in order.
-  --self-check       recompute one pinned number and refuse on a mismatch.
+  --stage reviewer     stage 1 and the route-side half of stage 3.
+  --stage rollouts     stage 2 and the sample-agreement half of stage 3.
+  --stage report       the Markdown tables.
+  --stage primitives   item E37 (owner decision 84): parse rate, per-token
+                        counts, REVISE-* precision/recall, the token x
+                        correctness confusion table, cross-visit agreement
+                        and the Planner route conditioned on the token, for
+                        every arm of PRIMITIVE_ARMS. Empty and a no-op
+                        SKIP until cell R-PRIM has flown; NOT part of
+                        --stage all.
+  --stage all          reviewer, rollouts and report, in order.
+  --self-check         recompute one pinned number and refuse on a mismatch.
 
 USAGE
   PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<repo>/src \\
@@ -93,6 +100,17 @@ from typing import Any, Iterable, Mapping, Sequence
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT / "src") not in sys.path:  # noqa: PLC0415 - a script, not a module
     sys.path.insert(0, str(REPO_ROOT / "src"))
+
+# E37 (owner decision 84, 2026-09-22): the primitive-verdict vocabulary and
+# receipt-mark dispositions, imported so this driver's "primitives" stage
+# reads the same registered names the harness itself writes.
+from speech_aware_evidence_acquisition.reproduction.ojw.native_episode import (  # noqa: E402
+    REACT_EXHAUSTION_DISPOSITION,
+    REVIEWER_VERDICT_ILLEGAL_DISPOSITION,
+)
+from speech_aware_evidence_acquisition.rails.review_primitives import (  # noqa: E402
+    REVIEW_PRIMITIVE_TOKENS,
+)
 
 SCHEMA = "saea-slurp-verifier-measurement-v1"
 SCORER = "slurp-slu-official-train"
@@ -395,6 +413,12 @@ def scan_episodes(directory: Path, run_id: str) -> dict[str, dict[str, Any]]:
             "first_route": routes[0] if routes else None,
             "revision_executed": len(solver_visits) > 1,
             "episode_shape": [v["stage"] for v in visits],
+            # E37 (owner decision 84): present exactly when the row's
+            # arm declares native_episode.reviewer_verdict, one mark per
+            # Reviewer visit ({"visit", "token", "disposition", "head"}).
+            # None on every row of every unarmed arm -- the receipt carries
+            # no such key at all, and this scan never invents one.
+            "reviewer_verdicts": receipt.get("reviewer_verdicts"),
         }
     if len(out) != ROSTER_ROWS:
         raise VerifierError(f"{run_id}: {len(out)} rows, expected {ROSTER_ROWS}")
@@ -874,6 +898,225 @@ def stage_rollouts(
 
 
 # ---------------------------------------------------------------------------
+# Stage: primitives (item E37, owner decision 84, 2026-09-22)
+#
+# Decision 74: measure the verifier first. The closed-vocabulary Reviewer
+# (rails.review_primitives) is the first Reviewer output this driver can
+# actually PARSE -- 0 of 2,167 anchor/B1/B1notool Reviewer outputs parse
+# under rails.review_findings' declared JSON contract -- so this stage is
+# the one this module owes decision 74 for cell R-PRIM, once R-PRIM has a
+# sealed arm. Until then it is proved on a SYNTHETIC receipt set with known
+# precision (tests/unit/test_e37_reviewer_verdict.py); no sealed run,
+# scorer or SPEECHRL_DATA_DIR read is needed for that proof.
+# ---------------------------------------------------------------------------
+
+
+#: The REVISE-* subset of the closed vocabulary: every legal token that
+#: asserts the draft has a supported issue, as opposed to ACCEPT (no issue)
+#: and UNSURE (no decision).
+REVISE_PRIMITIVE_TOKENS = frozenset(
+    token for token in REVIEW_PRIMITIVE_TOKENS if token.startswith("REVISE-")
+)
+
+#: The two non-token dispositions a mark may carry beside a legal token,
+#: reused verbatim as pseudo-token labels in the per-token breakdowns below
+#: so an illegal or exhausted visit is counted, never dropped silently.
+_ILLEGAL_LABEL = REVIEWER_VERDICT_ILLEGAL_DISPOSITION
+_EXHAUSTED_LABEL = REACT_EXHAUSTION_DISPOSITION
+
+
+def _mark_label(mark: Mapping[str, Any]) -> str:
+    """The one label a ``reviewer_verdicts`` mark contributes to every
+    per-token count below: its legal token, or its disposition when it
+    carries none."""
+
+    token = mark.get("token")
+    if isinstance(token, str) and token:
+        return token
+    return str(mark.get("disposition"))
+
+
+def primitive_verdict_stats(
+    rows: Mapping[str, Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Item E37 deliverable 6: the primitives stage's whole computation, as a
+    PURE function over already-scanned rows -- no file, scorer or network
+    access of any kind, so it is exactly as testable on a synthetic receipt
+    set as it is on a real ``scan_episodes`` output.
+
+    Each ``rows[sample_id]`` is a mapping carrying at least:
+      * ``reviewer_verdicts``: the list ``scan_episodes`` now collects (one
+        mark per Reviewer visit, or ``None``/absent on an unarmed row);
+      * ``official_correct``: whether the row's DELIVERED answer was
+        officially correct (bool);
+      * ``planner_routes``: the row's ordered Planner actions, one per
+        revision round, exactly as ``scan_episodes`` already returns them.
+
+    Returns parse rate, per-token visit counts, REVISE-* precision/recall
+    against ``official_correct``, the token x correctness confusion table,
+    cross-visit agreement (rows with 2+ Reviewer visits whose legal tokens
+    all match) and the Planner route conditioned on the SAME-round token.
+    """
+
+    armed_rows = {
+        sample_id: entry
+        for sample_id, entry in rows.items()
+        if entry.get("reviewer_verdicts")
+    }
+    total_visits = 0
+    legal_visits = 0
+    token_counts: dict[str, int] = {}
+    confusion: dict[str, dict[str, int]] = {}
+    route_by_token: dict[str, dict[str, int]] = {}
+    agreeing_rows = 0
+    multi_visit_rows = 0
+    predicted_wrong_rows = 0
+    actual_wrong_rows = 0
+    both_wrong_rows = 0
+
+    for entry in armed_rows.values():
+        marks = list(entry["reviewer_verdicts"])
+        routes = list(entry.get("planner_routes") or ())
+        official_correct = bool(entry["official_correct"])
+        actual_wrong = not official_correct
+        if actual_wrong:
+            actual_wrong_rows += 1
+        total_visits += len(marks)
+
+        legal_tokens_this_row: list[str] = []
+        row_predicts_wrong = False
+        for mark in marks:
+            label = _mark_label(mark)
+            token_counts[label] = token_counts.get(label, 0) + 1
+            bucket = confusion.setdefault(label, {"correct": 0, "incorrect": 0})
+            bucket["correct" if official_correct else "incorrect"] += 1
+            if label in REVIEW_PRIMITIVE_TOKENS:
+                legal_visits += 1
+                if label in REVISE_PRIMITIVE_TOKENS:
+                    row_predicts_wrong = True
+                legal_tokens_this_row.append(label)
+            visit_index = mark.get("visit")
+            if isinstance(visit_index, int) and 0 <= visit_index < len(routes):
+                route_counts = route_by_token.setdefault(label, {})
+                route_counts[routes[visit_index]] = route_counts.get(routes[visit_index], 0) + 1
+
+        if row_predicts_wrong:
+            predicted_wrong_rows += 1
+            if actual_wrong:
+                both_wrong_rows += 1
+        if len(marks) >= 2:
+            multi_visit_rows += 1
+            if len(set(legal_tokens_this_row)) <= 1 and len(legal_tokens_this_row) == len(marks):
+                agreeing_rows += 1
+
+    def _rate(numerator: int, denominator: int) -> float | None:
+        return None if denominator == 0 else numerator / denominator
+
+    return {
+        "schema": "saea-slurp-verifier-primitives-v1",
+        "armed_rows": len(armed_rows),
+        "total_rows": len(rows),
+        "total_visits": total_visits,
+        "legal_visits": legal_visits,
+        "parse_rate": _rate(legal_visits, total_visits),
+        "token_counts": dict(sorted(token_counts.items())),
+        "confusion": {
+            label: dict(sorted(buckets.items())) for label, buckets in sorted(confusion.items())
+        },
+        "revise_precision": _rate(both_wrong_rows, predicted_wrong_rows),
+        "revise_recall": _rate(both_wrong_rows, actual_wrong_rows),
+        "predicted_wrong_rows": predicted_wrong_rows,
+        "actual_wrong_rows": actual_wrong_rows,
+        "cross_visit_agreement_rate": _rate(agreeing_rows, multi_visit_rows),
+        "multi_visit_rows": multi_visit_rows,
+        "route_by_token": {
+            label: dict(sorted(counts.items())) for label, counts in sorted(route_by_token.items())
+        },
+    }
+
+
+@dataclass(frozen=True)
+class PrimitiveArm:
+    key: str
+    label: str
+    run_id: str
+    attempt_id: str
+    verdict: str
+
+
+#: Empty until cell R-PRIM has flown and a verdict names its sealed arm --
+#: exactly the discipline ``docs/receipts/harness-admission.json``'s PENDING
+#: entry for native_episode.reviewer_verdict states: this module invents no
+#: sealed data, so ``stage_primitives`` refuses to run rather than read
+#: nothing and report zeros.
+PRIMITIVE_ARMS: tuple[PrimitiveArm, ...] = ()
+
+
+def stage_primitives(
+    data_root: Path, repo_root: Path, lock_path: Path, out_dir: Path
+) -> dict[str, Any]:
+    """Item E37: parse rate, per-token counts, REVISE-* precision/recall,
+    the token x correctness confusion table, cross-visit agreement and the
+    Planner route conditioned on the token -- for every arm of
+    :data:`PRIMITIVE_ARMS`. Model-free: it scores a COPY of each arm's
+    already-sealed delivered answers, exactly as :func:`stage_reviewer`
+    does, and never opens a run directory for writing.
+    """
+
+    from speech_aware_evidence_acquisition.data.lock import load_lock  # noqa: PLC0415
+
+    if not PRIMITIVE_ARMS:
+        payload = {
+            "schema": "saea-slurp-verifier-primitives-v1",
+            "arms": {},
+            "note": (
+                "PRIMITIVE_ARMS is empty: cell R-PRIM (native_episode.reviewer_verdict, "
+                "item E37) is registered and HELD, not flown. This stage refuses to "
+                "invent a sealed arm; rerun it once a verdict names one. The pure "
+                "computation (primitive_verdict_stats) is proved on a synthetic "
+                "receipt set by tests/unit/test_e37_reviewer_verdict.py."
+            ),
+        }
+        write_json(out_dir / "primitives.json", payload)
+        print("primitives -> SKIP: PRIMITIVE_ARMS is empty (cell R-PRIM has not flown)")
+        return payload
+
+    lock = load_lock(lock_path)
+    arms: dict[str, Any] = {}
+    for arm in PRIMITIVE_ARMS:
+        directory = run_dir(data_root, arm.run_id, arm.attempt_id)
+        episodes = scan_episodes(directory, arm.run_id)
+        draft_rows = [
+            {"sample_id": sample_id, "text": entry["delivered_text"]}
+            for sample_id, entry in sorted(episodes.items())
+        ]
+        work = out_dir / "primitives" / arm.key
+        draft_path = work / "delivered-outputs.jsonl"
+        write_jsonl(draft_path, draft_rows)
+        result, elapsed = score_copy(
+            SCORER, draft_path, work / f"{SCORER}-delivered-scores.json", lock, data_root
+        )
+        print(f"[{arm.key}] delivered copy scored in {elapsed:.1f}s", flush=True)
+        scores = {str(r["sample_id"]): r for r in result["per_sample"]}
+        rows = {
+            sample_id: {
+                "reviewer_verdicts": entry["reviewer_verdicts"],
+                "planner_routes": entry["planner_routes"],
+                "official_correct": correctness(scores[sample_id])["full_task_exact"],
+            }
+            for sample_id, entry in episodes.items()
+        }
+        arms[arm.key] = {
+            "label": arm.label, "run_id": arm.run_id, "attempt_id": arm.attempt_id,
+            "verdict": arm.verdict, "stats": primitive_verdict_stats(rows),
+        }
+    payload = {"schema": "saea-slurp-verifier-primitives-v1", "arms": arms}
+    write_json(out_dir / "primitives.json", payload)
+    print(f"primitives -> {out_dir / 'primitives.json'}")
+    return payload
+
+
+# ---------------------------------------------------------------------------
 # Stage 3: report
 # ---------------------------------------------------------------------------
 
@@ -1021,7 +1264,11 @@ def self_check(data_root: Path, out_dir: Path) -> int:
     return 0 if ok else 1
 
 
-STAGES = ("reviewer", "rollouts", "report", "all")
+#: "primitives" (item E37) is deliberately NOT part of "all": PRIMITIVE_ARMS
+#: is empty until cell R-PRIM has flown, and this driver never silently
+#: no-ops inside a bundled run -- a caller who wants the empty-arm receipt
+#: must ask for "primitives" by name.
+STAGES = ("reviewer", "rollouts", "report", "primitives", "all")
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -1065,11 +1312,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     if args.stage in ("reviewer", "rollouts", "all") and not lock_path.is_file():
         parser.error(f"--lock-path must name the umbrella lock (tried {lock_path})")
+    if args.stage == "primitives" and PRIMITIVE_ARMS and not lock_path.is_file():
+        parser.error(f"--lock-path must name the umbrella lock (tried {lock_path})")
 
     if args.stage in ("reviewer", "all"):
         stage_reviewer(data_root, args.repo_root, lock_path, out_dir)
     if args.stage in ("rollouts", "all"):
         stage_rollouts(data_root, args.repo_root, lock_path, out_dir)
+    if args.stage == "primitives":
+        stage_primitives(data_root, args.repo_root, lock_path, out_dir)
     if args.stage in ("report", "all"):
         reviewer = json.loads((out_dir / "reviewer.json").read_text(encoding="utf-8"))
         rollouts = json.loads((out_dir / "rollouts.json").read_text(encoding="utf-8"))

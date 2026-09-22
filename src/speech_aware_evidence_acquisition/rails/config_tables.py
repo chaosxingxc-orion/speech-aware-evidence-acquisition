@@ -471,6 +471,31 @@ NATIVE_EPISODE_TOP_LEVEL_KEY = "native_episode"
 #: default of every new cell. See
 #: ``reproduction.ojw.native_roles.REACT_EXHAUSTION_OUTPUT`` and
 #: ``scripts/checks/finite_completion_policy_check.py``.
+#: ``native_episode.reviewer_verdict`` (item E37, owner decision 84,
+#: 2026-09-22) is the THIRTEENTH. It decides whether the Reviewer's verdict is
+#: parsed as a closed set of primitives: absent -- every spec written before
+#: E37 and every OFF arm -- means ``reproduction.ojw.native_episode._ApplyRole``
+#: parses nothing on the Reviewer's branch and writes no ``reviewer_verdicts``
+#: mark, so the receipt is byte-identical to its pre-E37 self; armed, its
+#: value is ``{"vocabulary": "saea-review-primitives-v1"}`` -- the ONE
+#: registered vocabulary id (``rails.review_primitives.
+#: REVIEW_PRIMITIVES_VOCABULARY``), refused by ``rails.native_episode_config.
+#: load_native_episode_config`` when any other id is named -- and every
+#: Reviewer visit's response is parsed against
+#: ``rails.review_primitives.parse_review_primitive`` and recorded as one mark
+#: (``legal`` / ``review_verdict_illegal`` / ``react_exhaustion``) in
+#: ``native_episode_receipt.reviewer_verdicts``. Like E13's, E20's and E22's
+#: keys it renders NO request byte of its own: the parse happens strictly
+#: AFTER the Reviewer's response is already in hand, and the raw text still
+#: renders into the Planner's query exactly as it would unarmed (the verdict
+#: is a recommendation, never a route -- the Planner keeps routing authority).
+#: It belongs here rather than in the ``judges`` table because that table
+#: wraps a phase's ``phase_review`` entry (owner Decision 11-C's
+#: criticism-only Reviewer seat) and this key changes how the SAME Reviewer
+#: seat's own completion is READ afterward, exactly as
+#: ``native_episode.deliver_normaliser`` and ``native_episode.
+#: finite_completion_policy`` are declared inside ``native_episode`` rather
+#: than in a per-phase table.
 EPISODE_LEVEL_SWITCH_KEYS = frozenset({
     "native_episode.roles.solver",
     "native_episode.review_loop",
@@ -484,6 +509,7 @@ EPISODE_LEVEL_SWITCH_KEYS = frozenset({
     "native_episode.acquisition",
     "native_episode.knowledge_index",
     "native_episode.react_exhaustion_policy",
+    "native_episode.reviewer_verdict",
 })
 
 #: The top-level key every ``stores``-class switch key names one child of.
@@ -1341,7 +1367,13 @@ def is_episode_null_arm(key: str, value: object) -> bool:
     full text; and ``native_episode.react_exhaustion_policy``'s OFF is the
     key's absence OR its explicit default ``"raise"`` (item E22 -- the
     ReAct-exhaustion disposition, not the Earnings-22 carrier), for exactly
-    the reason E13's and E20's are.
+    the reason E13's and E20's are; and ``native_episode.reviewer_verdict``'s
+    OFF is the key's ABSENCE (item E37, owner decision 84), because the
+    primitive-verdict parse is either armed or it is not -- with the key
+    absent the Reviewer's ``_ApplyRole`` branch writes no
+    ``reviewer_verdicts`` mark at all, for the same reason
+    ``deliver_normaliser``'s and ``acquisition``'s OFF arms are the key's
+    absence.
     """
 
     if key == "native_episode.context_policy":
@@ -1441,6 +1473,11 @@ def is_episode_null_arm(key: str, value: object) -> bool:
         # composes the same episode as one that omits it.
         # ``"continue-without-answer"`` is the one armed value.
         return value is None or value == "raise"
+    if key == "native_episode.reviewer_verdict":
+        # Item E37 (owner decision 84): the block is ABSENT or it is armed --
+        # there is no third shape, exactly as native_episode.deliver_normaliser's
+        # and native_episode.acquisition's own OFF arms are the key's absence.
+        return value is None
     raise ConfigTableError(f"unknown episode switch key {key!r}")
 
 

@@ -178,10 +178,13 @@ def test_the_episode_config_and_spec_default_to_raise():
     # construction written before E20 composes the spec it always did. Item
     # E22 (the ReAct-exhaustion disposition, not the Earnings-22 carrier)
     # appended its own key after it under exactly the same rule, which
-    # leaves E20's position untouched.
-    assert list(NativeEpisodeSpec.__dataclass_fields__)[-2:] == [
+    # leaves E20's position untouched. Item E37 (owner decision 84) appended
+    # a third key after E22's under the same rule, which leaves both E20's
+    # and E22's positions untouched.
+    assert list(NativeEpisodeSpec.__dataclass_fields__)[-3:] == [
         "context_fit_policy",
         "react_exhaustion_policy",
+        "reviewer_verdict_vocabulary",
     ]
 
 

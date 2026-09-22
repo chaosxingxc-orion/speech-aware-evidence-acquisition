@@ -182,3 +182,44 @@ def test_the_b9a_v2_experiment_cell_is_held_with_the_e36b_baseline_pinned():
     [smoke_cell] = smoke_document["cells"]
     assert smoke_cell["readiness"]["state"] == "held"
     assert smoke_cell["baseline_fragment"] == "slurp-native-plan-acquisition-b9a-v2-smoke-4-baseline-v1"
+R_PRIM = BASELINES / "slurp-native-review-primitives-baseline-v1.json"
+R_PRIM_SMOKE = BASELINES / "slurp-native-review-primitives-smoke-4-baseline-v1.json"
+
+
+def test_r_prim_moves_exactly_the_reviewer_verdict_module_against_the_plan():
+    """Cell R-PRIM (item E37, owner decision 84): the locked default plan
+    (cell PLAN) plus exactly the primitive-verdict module --
+    native_episode.reviewer_verdict and the Reviewer's swapped instruction
+    template -- and nothing else outside the bookkeeping."""
+    flown, r_prim = _load(FLOWN), _load(R_PRIM)
+    diff = _non_bookkeeping_diff(flown, r_prim)
+    assert diff == ["native_episode", "phase_material"]
+
+    ne_plan, ne_r_prim = flown["native_episode"], r_prim["native_episode"]
+    episode_diff = sorted(
+        key for key in set(ne_plan) | set(ne_r_prim) if ne_plan.get(key) != ne_r_prim.get(key)
+    )
+    assert episode_diff == ["reviewer_verdict"]
+    assert ne_r_prim["reviewer_verdict"] == {"vocabulary": "saea-review-primitives-v1"}
+
+    pm_plan, pm_r_prim = flown["phase_material"], r_prim["phase_material"]
+    material_diff = sorted(
+        key for key in set(pm_plan) | set(pm_r_prim) if pm_plan.get(key) != pm_r_prim.get(key)
+    )
+    assert material_diff == ["reviewer"]
+    reviewer_plan, reviewer_r_prim = pm_plan["reviewer"], pm_r_prim["reviewer"]
+    reviewer_diff = sorted(
+        key for key in set(reviewer_plan) | set(reviewer_r_prim)
+        if reviewer_plan.get(key) != reviewer_r_prim.get(key)
+    )
+    assert reviewer_diff == ["instruction_template"]
+    assert (
+        reviewer_r_prim["instruction_template"]
+        == "probes/slurp_native_role_reviewer_primitives_v1.txt"
+    )
+
+
+def test_r_prim_smoke_carries_the_same_one_factor():
+    plan_smoke, r_prim_smoke = _load(FLOWN_SMOKE), _load(R_PRIM_SMOKE)
+    diff = _non_bookkeeping_diff(plan_smoke, r_prim_smoke)
+    assert diff == ["native_episode", "phase_material"]

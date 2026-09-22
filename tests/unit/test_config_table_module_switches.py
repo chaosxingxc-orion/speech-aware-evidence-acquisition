@@ -1164,7 +1164,13 @@ def test_node_context_policy_is_one_episode_class_key():
     # (2026-09-19, the ReAct-exhaustion disposition, not the Earnings-22
     # carrier, after the B8b-anchor abort) and is the THIRD failure-mode
     # key: it decides what a tool role's exhausted ReAct loop does. Its
-    # proof is tests/unit/test_e22_react_exhaustion.py.
+    # proof is tests/unit/test_e22_react_exhaustion.py. The thirteenth,
+    # native_episode.reviewer_verdict, was admitted by item E37 (owner
+    # decision 84, 2026-09-22): the Reviewer's verdict becomes a closed set
+    # of primitives (rails.review_primitives), parsed and recorded as a
+    # native_episode_receipt.reviewer_verdicts mark; the verdict is a
+    # recommendation, never a route -- the Planner keeps routing authority.
+    # Its proof is tests/unit/test_e37_reviewer_verdict.py.
     assert sorted(EPISODE_LEVEL_SWITCH_KEYS) == [
         "native_episode.acquisition",
         "native_episode.context_fit_policy",
@@ -1175,6 +1181,7 @@ def test_node_context_policy_is_one_episode_class_key():
         "native_episode.react_exhaustion_policy",
         "native_episode.review_loop",
         "native_episode.reviewer_audit",
+        "native_episode.reviewer_verdict",
         "native_episode.roles.solver",
         "native_episode.solver_hints",
         "native_episode.tool_schema_rendering",

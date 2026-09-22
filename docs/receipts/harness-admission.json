@@ -1340,6 +1340,43 @@
         "what_flew": "The ON arm flew configs/baseline/slurp-native-anchor-exemplars-k20-index-v1.json at 38984e80: the sealed B1-notool fragment plus this one key (the E13 / E22 declarations already on the base). The OFF arm is the sealed B1-notool arm itself (no knowledge_index key). The twin flew configs/baseline/slurp-native-anchor-exemplars-k20-index-twin-v1.json at 9f2997d0: the same block with the view pins of slurp-knowledge-index-twin-v1.",
         "why_this_table": "the module changes how the Solver, Reviewer and Planner are supplied inside the native episode (a constant index suffix plus a per-row pointer block and expansions) and is declared under native_episode; it moves request bytes, so it is not run-class, and it is not one phase's knowledge_views entry"
       }
+    },
+    {
+      "carrier": "slurp",
+      "comparator": {
+        "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1",
+        "attempt_id": "attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1",
+        "note": "planned comparator (design section 4): the sealed PLAN arm at PLANr's own-null margins (h_SLU 1.2350 / h_intent 1.2212); not yet read against this module -- cell R-PRIM has not flown"
+      },
+      "date": "2026-09-22",
+      "module": "Reviewer verdict as a closed set of primitives: line 1 of the Reviewer's response is exactly one token of vocabulary saea-review-primitives-v1 (ACCEPT / REVISE-INTENT / REVISE-SLOT-MISSING / REVISE-SLOT-EXTRA / REVISE-SLOT-VALUE / REVISE-FORMAT / UNSURE), parsed by rails.review_primitives.parse_review_primitive and recorded as native_episode_receipt.reviewer_verdicts (legal / review_verdict_illegal / react_exhaustion); the verdict is a recommendation only -- the Planner keeps routing authority (item E37, owner decision 84 of 2026-09-21)",
+      "row": "SAEA-SLURP-NATIVE-REVIEW-PRIMITIVES-V1",
+      "status": "PENDING",
+      "status_basis": "PENDING is this table's status for a registered, undecided module (status_values.PENDING: 'registered, not yet decided'). Cell R-PRIM (configs/experiment/slurp-native-review-primitives-v1.json, four-row smoke configs/experiment/slurp-native-review-primitives-smoke-4-v1.json) is registered and HELD: no decision receipt, no prepared supply and no contact. Decision rule (design section 4): parse rate >= 95% AND NEUTRAL-or-better on the official numbers -> the primitive verdict becomes the base's Reviewer form (base lock v3 amendment) and the pruning cells of decision 85 read on it; parse rate < 95% -> one instruction repair, one recovery registration; HARMFUL on SLU or intent -> keep the prose Reviewer, pruning cells read on visit counts only.",
+      "evidence": {
+        "model_free": "the parser, the config-switch and the wire-through-the-real-role-graph proofs of tests/unit/test_e37_reviewer_verdict.py: every vocabulary token; leading blank lines; trailing rationale kept byte-exact; near-miss tokens (Accept, REVISE, REVISE-SLOT) illegal; empty text illegal; a fake-transport row with a legal, an illegal and a react_exhaustion Reviewer visit carries three reviewer_verdicts marks and renders the raw review text unchanged into the Planner's query; an unarmed episode's receipt carries no reviewer_verdicts key at all (byte-identical to its pre-E37 self). The verifier script's 'primitives' stage (scripts/analysis/slurp_verifier_measurement.py) is proved on a synthetic receipt set with known precision.",
+        "primary": "none: no model, tokenizer, encoder or server contact has been made for this module"
+      },
+      "not_admitted_for": [
+        "any task-quality, comparator or admission claim: the module has not flown",
+        "any request-byte or delivered-byte claim beyond the model-free proofs above",
+        "any carrier other than SLURP"
+      ],
+      "caveats": [
+        "PENDING carries no obligation to enter a default plan (the gate's rule 2 reads only ADMITTED/NEUTRAL); this entry exists so the allowlist admission (rails.config_tables.EPISODE_LEVEL_SWITCH_KEYS, its thirteenth member) has a receipt before the first read, per the gate's own rule"
+      ],
+      "switch": {
+        "added_by": "docs/superpowers/specs/2026-09-22-slurp-reviewer-primitive-verdict-design.md; class 'episode' of harness-admission v3, whose closed allowlist item E37 extends with this key (rails.config_tables.EPISODE_LEVEL_SWITCH_KEYS, its thirteenth member)",
+        "table": "episode",
+        "key": "native_episode.reviewer_verdict",
+        "off": null,
+        "on": {
+          "vocabulary": "saea-review-primitives-v1"
+        },
+        "proof": "tests/unit/test_default_plan_lock_cells.py::test_r_prim_moves_exactly_the_reviewer_verdict_module_against_the_plan",
+        "what_flew": "NOTHING flew for this entry: cell R-PRIM is registered (configs/experiment/slurp-native-review-primitives-v1.json, configs/experiment/slurp-native-review-primitives-smoke-4-v1.json) and HELD; root queues it through the scheduled-task driver (decision 77) once its own decision receipt and prepared supply are in place. The ON arm is proved against the fake model through the real role graph (rails.review_primitives.parse_review_primitive; the Reviewer's _ApplyRole branch in reproduction/ojw/native_episode.py) with three visits -- legal, illegal and react_exhaustion -- each writing its own native_episode_receipt.reviewer_verdicts mark and none of them touching the raw text the Planner's query renders. The OFF arm (the key absent) is proved receipt-byte-identical to the pre-E37 shape by the same test module. The baseline fragment configs/baseline/slurp-native-review-primitives-baseline-v1.json is the locked PLAN fragment plus exactly this key and the Reviewer's swapped instruction_template, proved by tests/unit/test_default_plan_lock_cells.py::test_r_prim_moves_exactly_the_reviewer_verdict_module_against_the_plan.",
+        "why_this_table": "the module reads the Reviewer's own completion inside the episode's role chain and is declared inside the native_episode block beside the roles it governs -- a mode of none of the four per-phase tables (not what a phase observes, is supplied with, is judged by or may call) and not a per-run driver knob, exactly like E13's, E20's and E22's keys. It renders NO request byte of its own -- the parse happens strictly AFTER the Reviewer's response is already in hand -- but it is declared 'episode' rather than 'run' because it is read inside the role chain beside the roles it governs, exactly as E13's, E20's and E22's own zero-request-byte failure-mode keys are."
+      }
     }
   ],
   "switch_classes": [
