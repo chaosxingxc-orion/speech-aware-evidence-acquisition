@@ -1,0 +1,166 @@
+{
+  "arms": {
+    "arm": {
+      "run_id": "SAEA-SLURP-NATIVE-PRUNE-REVIEWER1-V1",
+      "attempt_id": "attempt-slurp-native-prune-reviewer1-train-fold-a-generation-v1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL",
+      "outputs_sha256": "PENDING_SEAL"
+    },
+    "comparator": {
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1",
+      "attempt_id": "attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1",
+      "role": "gating comparator, sealed, never re-flown"
+    },
+    "margins": {
+      "h_slu": 1.2485,
+      "h_intent": 0.9943,
+      "source": "the plan's own null (PLANr)"
+    }
+  },
+  "authority": {
+    "owner_decisions": "55, 56, 57, 58, 38, 25, 28 (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md)",
+    "evidence_base": "docs/results/2026-09-19-slurp-eff1-tool-constant-verdict.md; docs/results/2026-09-19-slurp-b1-replicate-verdict.md; docs/results/2026-09-19-slurp-efficiency-pareto-consolidation-v1.md",
+    "own_null": "analysis/SAEA-SLURP-B1-REPLICATE-OWN-NULL-PAIRED-ANALYSIS-V1/README.md"
+  },
+  "cell_kind": "EFFICIENCY -- the efficiency tables are the deliverable; the paired score read is a non-inferiority guard",
+  "claim_boundary": "Descriptive paired read on historically exposed TRAIN Fold A discovery rows, plus a cost measurement of the same flight. No superiority, generalization, component-causal, bar or confirmatory claim; no cross-carrier claim; no geometry claim.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "decision_rule": {
+    "comparator": "the sealed B1-notool arm SAEA-SLURP-NATIVE-EXEMPLARS-K20-NOTOOL-V1",
+    "rule": "see protocol-registered-v1.json decision_rule (GATING / LOCK / LOCK_COMPARISON)"
+  },
+  "delta_convention": "delta = PLAN minus the sealed anchor, in percentage points; negative is worse",
+  "diagnostics_required": [
+    "FINITE COMPLETIONS. The count of rows whose terminal_disposition.reason is \"finite_completion\", the affected sample ids, the delivered-draft versus abstention split, and -- only if the count is non-zero -- the primary official metric recomputed with those rows excluded BESIDE the registered all-rows number, which stays the number the decision rule reads. No row is ever filtered out of the scored manifest. Expected zero; the anchor side is provably zero (docs/receipts/slurp-finite-completion-exposure-v1.json).",
+    "planner_action_illegal. The flight's own count, the sample ids that carry it, and their action character counts and SHA-256 values (the form inherited from the B7a recovery note's section 8). This is the failure item E8c repaired; it is reported whether or not it is zero.",
+    "FIRST-REQUEST BYTE IDENTITY, stated honestly before contact. Under this arm the first request of a row (Perception) is NOT byte-identical to the base's: the slot-contract cards it carries are the v2 release's (M4b). Claimed and proven by the smoke: no request carries a tools array; one normaliser receipt per row; the Reviewer and Planner requests differ from the base's only through upstream content.",
+    "THE CONSTANCY TABLE per row from the sealed receipt: mode, rendered_tool_names, the five contact rows with authority_tool_names beside rendered_tool_names, and distinct_tool_schemas_sha256 == 1.",
+    "NATIVE TASK-CONTRACT CALL COUNT against the anchor's realized 1,082, and the count of tool calls emitted by a role that holds no authority (expected zero; a non-zero count is not a failure of the flight -- the rail refuses the call and the episode continues -- but it is the single most interesting behavioural consequence of showing three more roles the tool definitions, and it is reported per role).",
+    "PER-SCENARIO intent and SLU tables over all 18 scenarios, in BOTH the natural-mixture and the equal-scenario weighting, plus net harmed rows per scenario with any scenario of five or more flagged (owner decision 17) -- a diagnostic the verdict must carry, not an additional gate.",
+    "ROW ACCOUNTING: 1,080 in, 1,080 out on both sides, no row dropped and no sample_id invented.",
+    "COST: actual generation contacts against the anchor's realized 5,417 and the 11,880 ceiling; actual repeated speech seconds against the anchor's realized 15,459.76; actual FIT endpoints; GPU hours read from the serving monitor over the lease window."
+  ],
+  "efficiency_tables_required": [
+    "HEADLINE EFFICIENCY: prefilled tokens per row, GPU hours per 1,080 rows, wall seconds per row, contacts per row, aggregate prefill tok/s and aggregate decode tok/s -- PLAN beside the anchor's own realized cost block and beside the B4b reference, with every number's source named (run manifest, flight receipts, monitor, or server.log).",
+    "PER-POSITION TABLE over the five positions perception / solver / reviewer 1 / reviewer 2 / planner: prompt tokens, prefilled tokens, cached share, generated tokens, speech-packet re-decode share and prefilled tokens per row -- PLAN beside the B4b reference of arms.efficiency_reference_not_an_arm, with the reference labelled as a reference on every row.",
+    "CONSTANCY: distinct_tool_schemas_sha256 per row (must be 1 on all 1,080), rendered_tool_names, and authority_tool_names per role -- from the sealed saea-native-tool-schema-rendering-v1 block.",
+    "PREFILL JOIN QUALITY: the share of contacts on which n_tokens - generated + 1 equals the client's usage.prompt_tokens. Below 100.00 % the per-role figures are reported as estimates, not measurements, and the verdict says so.",
+    "CLIENT PROMPT TOKENS per row and the per-contact delta at each of the three tool-free positions, stated as an EXPECTED RISE and explicitly not a regression.",
+    "SLOT OCCUPANCY AND UTILISATION over the lease window: mean busy slots, zero-busy share, parked fraction, mean utilisation, GPU power -- from flight receipts and monitor.jsonl."
+  ],
+  "estimators": {
+    "bootstrap_pooled": "analysis.paired.resampled_statistic",
+    "not_used": "analysis.score_compare_cli as the runner: it hard-codes ci_level 0.90 and DEV population names",
+    "paired_per_row": "analysis.paired.paired_contrast",
+    "percentiles": "analysis.bootstrap._percentile over the retained BootstrapResult.replicates",
+    "pooled_micro_f1": "analysis.null_calibration.pooled_f1",
+    "row_reader": "analysis.null_calibration_cli.rows_for"
+  },
+  "execution_profile": "model-free-check",
+  "metrics": [
+    {
+      "counts": "tp = [slu_f1_word_tp, slu_f1_char_tp], fp and fn likewise",
+      "estimand": "pooled count F1",
+      "id": "pooled_slu_f1",
+      "null_half_width_pp": 1.235,
+      "role": "primary non-inferiority guard"
+    },
+    {
+      "estimand": "joint scenario+action accuracy",
+      "id": "intent_accuracy",
+      "null_half_width_pp": 1.2212,
+      "role": "second non-inferiority guard"
+    },
+    {
+      "id": "scenario_accuracy",
+      "role": "secondary"
+    },
+    {
+      "id": "action_accuracy",
+      "role": "secondary"
+    },
+    {
+      "id": "pooled_span_f1",
+      "role": "secondary"
+    },
+    {
+      "id": "per_row_mean_slu_f1",
+      "role": "secondary"
+    },
+    {
+      "id": "per_row_mean_exact_slot_f1",
+      "role": "secondary"
+    }
+  ],
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-PRUNE-REVIEWER1-PAIRED-ANALYSIS-V1",
+    "files": [
+      "score-contrasts.json",
+      "throughput-tables.json",
+      "README.md"
+    ],
+    "harness_admission": "on NEUTRAL the coordinator writes the harness-admission entry in the form the protocol document's harness_admission_entry_form records, and adds the key to the SLURP default plan",
+    "prints_only_aggregates": "no utterance text, no filler and no gold is printed or persisted by the read",
+    "root": "SPEECHRL_DATA_DIR",
+    "verdict_document": "docs/results/2026-09-2x-slurp-b1-notool-verdict.md"
+  },
+  "population": {
+    "fold_b_contact_authorized": false,
+    "roster": "TRAIN Fold A, docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+    "roster_metadata": {
+      "relpath": "analysis/SAEA-SLURP-TRAIN-A-DIRECT-ANCHOR-RELEASE-PAIRED-ANALYSIS-V1/roster-metadata.json",
+      "sha256": "07f4cd83b83d83d65500a328e0a38421ede575195c63ae118def0d1006c14e34"
+    },
+    "rows": 1080,
+    "rows_per_scenario": 60,
+    "scenario_strata": 18,
+    "speaker_clusters": 125,
+    "split_id": "SLURP-EVO-FOLD-A-V2",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+  },
+  "recipe_id": "slurp-prune-reviewer1-paired-analysis-v1",
+  "registered_at_utc": "2026-09-22T12:00:00.000000+00:00",
+  "resampling": {
+    "clusters": "125 speaker clusters, 18 scenarios of 60 rows, 523 headset and 557 far-field rows, from the released roster metadata",
+    "draws": 10000,
+    "interval_form": "percentile pairs of the same retained replicate sequence",
+    "intervals": [
+      "CI95 for the decision clauses",
+      "CI90 for diagnostics"
+    ],
+    "pairing_note": "both sides of this contrast are decoded runs, so the paired interval carries real decoding noise; the own-null margins are the calibration for exactly that. A NON-INFERIORITY read is the correct shape here precisely because the expected true effect is zero.",
+    "primary": "paired whole-speaker cluster bootstrap",
+    "seed": 20260915,
+    "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed",
+    "tables": [
+      "natural mixture",
+      "equal-scenario weighting"
+    ]
+  },
+  "schema": "saea-paired-analysis-recipe-v1",
+  "scorer": {
+    "evaluator": "slurp-official-8eb16545",
+    "id": "slurp-slu-official-train",
+    "projection_v3_companion": "slurp-slu-official-projected-v3-train, reported beside every official number (owner decision 7)",
+    "runs": "once per complete manifest through core.scoring_batch, never sharded; this read invokes no scorer",
+    "symmetric_normalised_companion": "slurp-slu-f1-normalized-v1-train, the TRAIN sibling registered under owner decision 14, reported beside every official number"
+  },
+  "tables_required": [
+    "headline score: the anchor, PLAN, the delta, speaker CI95, speaker CI90, the scenario-stratified CI90 and the equal-scenario delta, for official pooled SLU-F1 and intent",
+    "per-scenario intent and SLU over all 18 scenarios, in both weightings",
+    "net harmed rows per scenario, with any scenario of five or more flagged (owner decision 17)",
+    "saves / harms / ties with the exact two-sided McNemar p",
+    "projection v3 and the TRAIN symmetric number beside every official number",
+    "the mandatory diagnostics of the protocol document's diagnostics_required, in order",
+    "the frontier row: official SLU-F1 delta x prefilled tokens per row x GPU hours per 1,080 rows, pooled and per scenario (decision 75)"
+  ],
+  "title": "Cell P1: Reviewer 3 -> 1 on the measurable-Reviewer base (cell R-PRIM), the first decision-85 pruning cell -- paired read against the sealed PLAN arm at the plan's own null, with the frontier row"
+}
