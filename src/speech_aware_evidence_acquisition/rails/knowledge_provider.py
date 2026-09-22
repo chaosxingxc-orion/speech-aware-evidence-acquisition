@@ -1990,15 +1990,18 @@ class Stage3DeltaCandidateProvider(KnowledgeProvider):
     the thin ``KnowledgeProvider`` wrapper the shared registry, and this
     check's registered-name discipline, both require).
 
-    NOT YET reachable from a live flight: ``rails.knowledge_stores.
-    build_knowledge_store_supply``'s ``context_supply``/``candidate_supply``
-    dispatchers do not recognize :data:`~.stage3_delta_supply.
-    STAGE3_DELTA_CONTEXT_PROVIDER_ID` yet (a documented root follow-up, see
-    ``rails/stage3_delta_supply.py`` module docstring and the S3-6
-    readiness package). Registering the class here, complete and tested on
-    its own terms, is what lets a config fragment's ``"provider":
-    "stage3-delta-candidate-bound-v1"`` resolve honestly today rather than
-    naming a component that does not exist at all.
+    S3-6w (2026-09-22) wired this into a live flight:
+    ``rails.knowledge_stores.build_knowledge_store_supply``'s
+    ``context_supply`` dispatcher recognises a ``store_role: "stage3-deltas"``
+    store declaring ``{"provider": "stage3-delta-candidate-bound-v1",
+    "candidate_state_phase", "cap", "rank_by": "prior_score"}`` and routes
+    the Solver phase through this class: it reads the row's Perception
+    candidate intents off the configured ``candidate_state_phase`` state,
+    then selects and caps deltas by ``prior_score`` -- see the router's
+    ``_stage3_delta_local_supply`` closure and
+    ``tests/unit/test_stage3_delta_supply_router.py``. What remains PENDING
+    is only the store's own release (S3-5) and a root admission decision --
+    the wiring itself is complete and tested.
     """
 
     def __init__(self, *, provider_id: str = STAGE3_DELTA_CONTEXT_PROVIDER_ID) -> None:
