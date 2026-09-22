@@ -244,13 +244,15 @@ def test_the_declared_scorers_add_only_the_projected_v3_diagnostic():
     assert smoke["scorers"][0] == b1["scorers"][0]
 
 
-def test_the_smoke_experiment_is_registered_held_at_the_four_row_roster():
+def test_the_smoke_experiment_is_registered_at_the_four_row_roster():
+    # Registered held at 9a25420c; flipped to ready by the re-pin tool at d5378d07 (the flip adds
+    # the decision requirement in front of the preparation one). The test reads the flown state.
     experiment = _load_experiment(B8A_SMOKE_EXPERIMENT)
     (cell,) = experiment["cells"]
 
-    assert cell["readiness"]["state"] == "held"
+    assert cell["readiness"]["state"] == "ready"
     kinds = [entry["kind"] for entry in cell["readiness"]["requirements"]]
-    assert kinds == ["preparation"]
+    assert kinds == ["decision", "preparation"]
     assert "slurp-b8a-deliver-normalise-admission-v1" in cell["readiness"]["reason"]
     assert (
         "coordination/slurp-b8a-deliver-normalise-v1/root-admission-v1.json"
