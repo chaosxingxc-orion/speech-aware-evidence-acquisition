@@ -1,0 +1,312 @@
+{
+ "comparator_official": {
+  "slu_f1": 64.2091,
+  "intent_accuracy": 82.1296,
+  "scenario_accuracy": 87.2222,
+  "action_accuracy": 83.1481,
+  "span_f1": 53.739,
+  "source": "docs/results/2026-09-22-slurp-review-primitives-verdict.md (cell R-PRIM, the decision-97 base)"
+ },
+ "lock_official": {
+  "slu_f1": 62.3351,
+  "intent_accuracy": 80.0926,
+  "source": "docs/results/2026-09-18-slurp-b5e-combination-verdict.md"
+ },
+ "lock_node_applied": {
+  "slu_f1": 63.7757,
+  "intent_accuracy": 81.8519,
+  "source": "docs/results/2026-09-19-slurp-b8a-deliver-normalise-verdict.md and docs/results/2026-09-20-slurp-v2-provisional-lock-v1.md (63.78 / 81.85)"
+ },
+ "own_null_right_official": {
+  "slu_f1": 63.8048,
+  "intent_accuracy": 82.5,
+  "source": "docs/results/2026-09-22-slurp-planr-v2-lock-replicate-verdict.md (cell PLANr)"
+ },
+ "own_null_left_official": {
+  "slu_f1": 63.6304,
+  "intent_accuracy": 82.2222,
+  "source": "docs/results/2026-09-21-slurp-plan-v2-lock-arm-verdict.md (cell PLAN)"
+ },
+ "own_null_table": {
+  "source": "docs/results/2026-09-22-slurp-planr-v2-lock-replicate-verdict.md, section 1 (the plan's own null)",
+  "pooled_micro": {
+   "slu_f1_micro": {
+    "left": 63.6304,
+    "right": 63.8048,
+    "delta": 0.1744,
+    "ci95": [
+     -1.1136,
+     1.3835
+    ],
+    "ci95_half_width": 1.2485
+   },
+   "span_f1_micro": {
+    "left": 53.7755,
+    "right": 53.112,
+    "delta": -0.6635,
+    "ci95": [
+     -2.3225,
+     0.8276
+    ],
+    "ci95_half_width": 1.5751
+   }
+  },
+  "per_row": {
+   "scenario_action_exact": {
+    "left": 82.2222,
+    "right": 82.5,
+    "delta": 0.2778,
+    "ci95": [
+     -0.7361,
+     1.2524
+    ],
+    "ci95_half_width": 0.9943,
+    "saves": 15,
+    "harms": 12,
+    "ties": 1053
+   }
+  },
+  "margin_tolerance": 0.0001,
+  "table_tolerance": 0.005
+ },
+ "comparator_cost_reference": {
+  "label": "cell R-PRIM (the sealed measurable-Reviewer base, decision 97)",
+  "source": "docs/results/2026-09-22-slurp-review-primitives-verdict.md and analysis/SAEA-SLURP-REVIEW-PRIMITIVES-PAIRED-ANALYSIS-V1/efficiency.json",
+  "sealed_efficiency_path": "analysis/SAEA-SLURP-REVIEW-PRIMITIVES-PAIRED-ANALYSIS-V1/efficiency.json",
+  "contacts": 4353,
+  "prefilled_tokens_per_row": 8346.489814814815,
+  "gpu_hours_per_1080": 1.5688423045476279,
+  "contacts_per_minute": 44.234479522579974,
+  "contacts_per_row": 4.030555555555556,
+  "projected_read_hours_13078": 21.287,
+  "cache_hit_share": 0.7505446918821006,
+  "wall_seconds": 6225.346284151077,
+  "finite_completion_rows": 10,
+  "react_exhaustion_rows": 0,
+  "planner_action_illegal_rows": 1,
+  "revisions_executed": 3
+ },
+ "b4b_reference": {
+  "source": "docs/results/2026-09-19-slurp-throughput-root-cause-v1.md",
+  "rows": 500,
+  "prefilled_tokens_per_row": 26197,
+  "gpu_hours_per_1080": 3.837,
+  "per_position": {
+   "0_perception": {
+    "prefilled_per_row": 1374,
+    "cached_share": 0.618
+   },
+   "1_solver": {
+    "prefilled_per_row": 6258,
+    "cached_share": 0.361
+   },
+   "2_reviewer_1": {
+    "prefilled_per_row": 7505,
+    "cached_share": 0.236
+   },
+   "3_reviewer_2": {
+    "prefilled_per_row": 1859,
+    "cached_share": 0.835
+   },
+   "4_planner": {
+    "prefilled_per_row": 9109,
+    "cached_share": 0.198
+   }
+  }
+ },
+ "registered_ceilings": {
+  "generation_calls_run_cumulative": 7560,
+  "fit_endpoints": 30240,
+  "repeated_speech_seconds": 33930,
+  "gpu_hours_fit_inclusive": 12.0,
+  "native_task_contract_calls": 6480,
+  "official_scoring_jobs": 1
+ },
+ "knowledge_pins": {
+  "source": "configs/baseline/slurp-native-default-plan-lock-baseline-v1.json",
+  "arm": {
+   "slot-contracts": {
+    "relpath": "knowledge/slurp/semantic/slot-contracts-v2/release.json",
+    "sha256": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b"
+   },
+   "intent-boundaries": {
+    "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+    "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+   },
+   "train-exemplars": {
+    "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/release.json",
+    "sha256": "171aa4a82c2b15fff2c72e907ea80298be8d72309cca0d7367eb50debb042129"
+   }
+  },
+  "comparator": {
+   "slot-contracts": {
+    "relpath": "knowledge/slurp/semantic/slot-contracts-v2/release.json",
+    "sha256": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b"
+   },
+   "intent-boundaries": {
+    "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+    "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+   },
+   "train-exemplars": {
+    "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/release.json",
+    "sha256": "171aa4a82c2b15fff2c72e907ea80298be8d72309cca0d7367eb50debb042129"
+   }
+  }
+ },
+ "declared_episode_keys": {
+  "deliver_normaliser": {
+   "normaliser": "saea-deliver-normalise-v3"
+  },
+  "review_loop": "on",
+  "context_fit_policy": "compact-or-abstain",
+  "finite_completion_policy": "deliver-latest-or-abstain",
+  "react_exhaustion_policy": "continue-without-answer",
+  "reviewer_verdict": {
+   "vocabulary": "saea-review-primitives-v1"
+  },
+  "_factor": "roles.reviewer.max_iterations 3 -> 1"
+ },
+ "frontier_registered_rows": [
+  {
+   "cell": "R-PRIM",
+   "status": "NEUTRAL vs PLAN (by width)",
+   "official_slu": 64.21,
+   "official_intent": 82.13,
+   "gpu_hours_per_1080": 1.5688,
+   "contacts_per_row": 4.031,
+   "prefilled_tokens_per_row": 8346.5,
+   "token_basis": "measured",
+   "source": "docs/results/2026-09-22-slurp-review-primitives-verdict.md"
+  },
+  {
+   "cell": "PLAN",
+   "status": "NEUTRAL vs B1-notool",
+   "official_slu": 63.63,
+   "official_intent": 82.22,
+   "gpu_hours_per_1080": 1.7579,
+   "contacts_per_row": 4.096,
+   "prefilled_tokens_per_row": 8353.2,
+   "token_basis": "ESTIMATE",
+   "source": null
+  },
+  {
+   "cell": "PLANr",
+   "status": "REPLICATED (NEUTRAL) vs PLAN",
+   "official_slu": 63.8,
+   "official_intent": 82.5,
+   "gpu_hours_per_1080": 1.6654,
+   "contacts_per_row": 4.064,
+   "prefilled_tokens_per_row": 8321.5,
+   "source": "docs/results/2026-09-22-slurp-planr-v2-lock-replicate-verdict.md",
+   "token_basis": "ESTIMATE"
+  },
+  {
+   "cell": "B8a (B5e base)",
+   "status": "ADMITTED",
+   "official_slu": 63.78,
+   "official_intent": 81.85,
+   "gpu_hours_per_1080": 3.8709,
+   "contacts_per_row": 5.014,
+   "prefilled_tokens_per_row": 46796.0,
+   "token_basis": "PROXY",
+   "source": null
+  },
+  {
+   "cell": "B8a (B1 base)",
+   "status": "ADMITTED",
+   "official_slu": 62.67,
+   "official_intent": 81.76,
+   "gpu_hours_per_1080": 3.6819,
+   "contacts_per_row": 5.023,
+   "prefilled_tokens_per_row": 45730.5,
+   "token_basis": "PROXY",
+   "source": null
+  },
+  {
+   "cell": "B5e",
+   "status": "NEUTRAL vs B1",
+   "official_slu": 62.34,
+   "official_intent": 80.09,
+   "gpu_hours_per_1080": 3.8709,
+   "contacts_per_row": 5.014,
+   "prefilled_tokens_per_row": 46796.0,
+   "token_basis": "PROXY",
+   "source": null
+  },
+  {
+   "cell": "B1r",
+   "status": "REPLICATED",
+   "official_slu": 62.23,
+   "official_intent": 80.09,
+   "gpu_hours_per_1080": 3.8507,
+   "contacts_per_row": 5.04,
+   "prefilled_tokens_per_row": 26071.9,
+   "token_basis": "measured",
+   "source": null
+  },
+  {
+   "cell": "B1-notool",
+   "status": "NON-INFERIORITY NOT PROVEN",
+   "official_slu": 62.13,
+   "official_intent": 80.0,
+   "gpu_hours_per_1080": 1.6108,
+   "contacts_per_row": 4.104,
+   "prefilled_tokens_per_row": 8019.8,
+   "token_basis": "measured",
+   "source": null
+  },
+  {
+   "cell": "B1",
+   "status": "ADMITTED",
+   "official_slu": 61.14,
+   "official_intent": 80.19,
+   "gpu_hours_per_1080": 3.6819,
+   "contacts_per_row": 5.023,
+   "prefilled_tokens_per_row": 25933.0,
+   "token_basis": "measured",
+   "source": null
+  },
+  {
+   "cell": "IDX",
+   "status": "HARMFUL",
+   "official_slu": 54.76,
+   "official_intent": 77.59,
+   "gpu_hours_per_1080": 1.334,
+   "contacts_per_row": 4.181,
+   "prefilled_tokens_per_row": 3379.1,
+   "token_basis": "measured",
+   "source": null
+  },
+  {
+   "cell": "B4b",
+   "status": "ADMITTED",
+   "official_slu": 51.09,
+   "official_intent": 78.52,
+   "gpu_hours_per_1080": 3.4651,
+   "contacts_per_row": 5.006,
+   "prefilled_tokens_per_row": 26197.0,
+   "token_basis": "measured",
+   "source": null
+  },
+  {
+   "cell": "B0",
+   "status": "HARMFUL",
+   "official_slu": 48.67,
+   "official_intent": 77.59,
+   "gpu_hours_per_1080": 1.054,
+   "contacts_per_row": 2.0,
+   "prefilled_tokens_per_row": 12328.7,
+   "token_basis": "PROXY",
+   "source": null
+  }
+ ],
+ "frontier_source": "docs/results/2026-09-21-slurp-stage3-prelude-frontier-and-verifier-v1.md, PART A table A1",
+ "authority_relpaths": [
+  "docs/readiness/2026-09-22-slurp-prune-reviewer1-v1-preregistration.md",
+  "docs/readiness/2026-09-22-slurp-prune-reviewer1-v1/analysis-recipe-v1.json",
+  "docs/readiness/2026-09-22-slurp-prune-reviewer1-v1/protocol-registered-v1.json",
+  "docs/results/2026-09-22-slurp-review-primitives-verdict.md",
+  "docs/results/2026-09-22-slurp-v2-lock-v1.md"
+ ],
+ "_note": "Registered facts for the cell P1 read (decision 85 pruning cell, decision 97 base): comparator = the sealed R-PRIM arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943, decision 38); the own-null tables are the plan's (PLAN vs PLANr) as in every plan-based read. Written by the coordinator 2026-09-22 before the seal."
+}
