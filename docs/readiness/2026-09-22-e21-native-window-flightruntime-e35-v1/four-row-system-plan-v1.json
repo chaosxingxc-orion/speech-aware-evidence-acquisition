@@ -19,7 +19,7 @@
     "planned_model_calls": 44,
     "planned_gpu_hours": 0.5,
     "planned_speech_audio_seconds": 4320,
-    "protocol_hash": "62286505ecbea4c03ed522ce1db9d69d3b5e6227aef5a2debcf3d1d2183f4661"
+    "protocol_hash": "52da2ff08e539b834943ce7ef90eb93746dbc4b43178d81a250e5754963d2a1e"
   },
   "scoring": "One complete official score after seal (asr-wer-whisper, conec-entity-wer-official, numeric-value-accuracy-v1, semantic-high-impact-error-rate-v1, cost), run once through core.scoring_batch.",
   "execution_location": "Shared six-node controller (phase-native-review-revise-acquire-v1: perception, solver, reviewer x3, planner, zero-contact acquisition, delivery normaliser) and the OpenJiuwen executor.",
@@ -27,7 +27,7 @@
     "Materialize analysis/SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1/window-inventory.json via scripts/build_e21_native_window_unit_subset.py (expected file_sha256 e5f3cfbcbc407fbb3a7b59469b86ab9d405f7b43963cb2d18b655790c5f4a32b, unit_count 4)."
   ],
   "registration_state": "REGISTERED by root before contact on 2026-09-22 (owner decision 91): decision receipt coordination/e21-native-window-flightruntime-e35-v1/root-admission-v1.json (e21-native-window-flightruntime-e35-admission-v1); fresh unconsumed exposure-ledger rows; readiness flipped through core.flight.repin.apply_decision_and_readiness (no supply to prepare: item E38 path).",
-  "composed_config_hash": "bb5ee61ac6ec0c8637052aa28808cae5c650573ea529107e8cbfe3bfec91ef97",
+  "composed_config_hash": "422312f6dd543cf9674acdb8a5c4575613823c85396680407eb79981e378d3cb",
   "registered_at_utc": "2026-09-22T12:00:00.000000+00:00",
   "expected_session_id": "serving-e21-native-window-flightruntime-np4-max1024-v1",
   "recovery_note": "attempt-e21-native-window-system-four-row-v1 ABORTED with zero contacts (missing knowledge_snapshot pins); one recovery attempt, same run id and caps. recovery-v1 ABORTED with zero contacts (fit cap 44 != 176); recovery-v2. recovery-v2 ABORTED after 4 contacts (repeated-seconds cap); recovery-v3."
