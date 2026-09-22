@@ -49,14 +49,14 @@
       "baseline_fragment": "configs/baseline/slurp-native-prune-review-off-baseline-v1.json",
       "campaign_plan": "configs/campaign/slurp-native-prune-review-off-v1.json",
       "cell": "slurp-native-prune-review-off-v1",
-      "composed_config_hash": "a03088fe2c2d79c92b9f171634fa2f7592e8d76fb58b9c98c5dc8004ba608999",
+      "composed_config_hash": "e11195a15fcc49030f99c96ef133fd931a90e88e6009510cae371da93ca62302",
       "execution_route": "core.flight.cli campaign over the committed single-cell campaign plan; the campaign acquires its own GenerationLease against the resident session and schedules the one official score at finalize",
       "experiment": "slurp-native-prune-review-off-v1",
       "experiment_fragment": "configs/experiment/slurp-native-prune-review-off-v1.json",
       "fit_attempt_id": "attempt-slurp-native-prune-review-off-train-fold-a-fit-v1",
       "fit_run_id": "SAEA-SLURP-NATIVE-PRUNE-REVIEW-OFF-FIT-V1",
       "order_constraint": "opens only after this cell's own four-row smoke has sealed and its acceptance list passes. One experiment in flight at a time",
-      "protocol_hash": "d49cc18b80e44c6d2a4f34efe10c71bbccf5c80fec2f8a4b5e1aebd186b90e6b",
+      "protocol_hash": "989f02acd98547f8384d36b1c90f91b9618a6c69ed8d5cff5664192127e3d273",
       "readiness": "held; NO decision requirement; this cell's OWN preparation pin",
       "rows": 1080,
       "run_id": "SAEA-SLURP-NATIVE-PRUNE-REVIEW-OFF-V1",
@@ -210,7 +210,7 @@
   "prepared_phase_supply": {
     "arm": {
       "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
-      "relpath": "prepared/SAEA-SLURP-NATIVE-PRUNE-REVIEW-OFF-V1/phase-supply-v1.json",
+      "relpath": "prepared/SAEA-SLURP-NATIVE-PRUNE-REVIEW-OFF-V1/phase-supply-v2.json",
       "sha256": "50da0c7bdaa756fb47abffefdaaa8f920f654b79f60905ca06a911067e6301c6"
     },
     "identity_proof": "arm output ba5e1faa... on 1,080 of 1,080 rows and smoke output 512583ec... on 4 of 4 rows, each byte-identical to the sealed cell B1 preparation's own output block; the arm value is also the sealed anchor preparation's, which is why the knowledge channel is provably unmoved",
