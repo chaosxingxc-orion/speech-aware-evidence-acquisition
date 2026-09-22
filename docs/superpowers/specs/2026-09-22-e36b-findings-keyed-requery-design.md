@@ -56,3 +56,28 @@ number, is the decision-relevant output.
 
 Nothing about kinds (b) / (c); nothing about the Planner's routing rate (an instruction question, decision 84's cell
 territory); no flight is authorised by this note.
+
+## 6. Model-free replay on the 18 sealed ACQUIRE rows (2026-09-22, after the B9a-rec read)
+
+Script `e36b_replay.py` (session scratchpad; zero contacts): the plan's three released stores loaded through the real
+`load_knowledge_store_binding` (composite snapshot of 9,468 values: intent-boundaries 60, slot-contracts 54,
+train-exemplars 9,354), each row's recorded 5 to 8 state-filter tokens, the crude E36 predicate (`token in content or
+facet id`), the row's prepared-perception ids excluded (8 per row; the Solver's 20 exemplars are supplied from a
+separate artifact and were not excluded here, so the counts are upper bounds).
+
+| fact | value |
+| --- | --- |
+| rows with at least one non-visible matching value | 18 of 18 (with at least five: 18 of 18) |
+| matching values per row | 58 to 9,460 (median about 2,300) |
+| top-5 by token-hit count, by store (all rows) | slot-contracts 79, train-exemplars 7, intent-boundaries 4 |
+| best token-hit count in a row's top 5 | 1 to 7 |
+
+Reading: candidates exist on every row, so a findings-keyed search is not empty by construction -- but the E36
+predicate has no discriminability: common tokens match thousands of values and the top of the list is the generic
+slot-contract cards the Solver's context already covers by type. Before any B9a v2 flight the ranking needs a
+discriminability rule (decision 70's language): weight tokens by rarity across the composite snapshot (an
+inverse-frequency weight), drop tokens shorter than four characters or present in more than a fixed share of values,
+and prefer values whose matched tokens are absent from the row's visible context. That rule is a value-retrieval
+policy in Stage 3's action space (training-free RL over context-engineering dimensions), not a Stage-2 seal item.
+Recommendation to the owner: keep the Acquisition node off the locked plan for the seal, close B9a on this evidence
+(instantiated, inert, root-caused), and carry E36b into Stage 3 as the first acquisition-policy cell.
