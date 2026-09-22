@@ -58,6 +58,23 @@ PLANNER_ACTION_ILLEGAL = "__saea_planner_action_illegal__"
 #: The ``planner_routes`` disposition and receipt-mark name for that row.
 PLANNER_ACTION_ILLEGAL_DISPOSITION = "planner_action_illegal"
 
+#: Item E39 (2026-09-22): the two scopes item E13's
+#: ``finite_completion_policy`` may be read under. ``"episode"`` is the
+#: default and every pre-E39 row's behaviour.
+FINITE_COMPLETION_SCOPES = ("episode", "answering-node")
+
+#: Item E39: the ONE stage of this graph that answers. Under
+#: ``"answering-node"`` it is the only stage whose truncated completion is an
+#: E13 disposition; every other stage keeps its partial text and the episode
+#: walks on.
+ANSWERING_STAGE = "solver"
+
+#: Item E39: the mark a role node puts on a tolerated truncation, and the
+#: receipt list the graph collects those marks into.
+LENGTH_TRUNCATION_MARK = "length_truncation"
+TRUNCATION_EVENTS = "truncation_events"
+TRUNCATION_EVENTS_SCHEMA = "saea-native-length-truncation-v1"
+
 #: The receipt-mark schema the episode state carries once a row took it.
 PLANNER_ACTION_ILLEGAL_SCHEMA = "saea-native-planner-action-illegal-v1"
 
@@ -219,6 +236,17 @@ class NativeEpisodeSpec:
     # other episode-level field already is). Declared LAST, for the same
     # reason ``react_exhaustion_policy`` was.
     reviewer_verdict_vocabulary: str | None = None
+    # Item E39 (2026-09-22): WHICH node's truncated completion ends the
+    # episode. ``"episode"`` -- every spec written before E39 -- is the
+    # pre-E39 behaviour, and the only thing this field then does is stay out
+    # of the terminal disposition it is not written into. Under
+    # ``"answering-node"`` the role NODES of every non-answering role tolerate
+    # a ``length`` truncation (see
+    # ``reproduction.ojw.native_roles.NativeRoleNode._tolerated_truncation``),
+    # so this graph never sees their refusal at all, and the disposition a
+    # Solver truncation still writes records which rule applied. Declared
+    # LAST, for the same reason ``reviewer_verdict_vocabulary`` was.
+    finite_completion_scope: str = "episode"
 
     def __post_init__(self) -> None:
         if not isinstance(self.episode_id, str) or not self.episode_id:
@@ -275,6 +303,11 @@ class NativeEpisodeSpec:
             or not self.reviewer_verdict_vocabulary.strip()
         ):
             raise ValueError("reviewer_verdict_vocabulary must be None or a non-empty string")
+        if (
+            not isinstance(self.finite_completion_scope, str)
+            or self.finite_completion_scope not in FINITE_COMPLETION_SCOPES
+        ):
+            raise ValueError("finite_completion_scope is invalid")
         if self.refresh_action == PLANNER_ACTION_ILLEGAL:
             # E8c: the illegal-output routing value is reserved.
             raise ValueError("candidate refresh must not use the reserved illegal action")
@@ -688,6 +721,60 @@ class _ApplyRole(WorkflowComponent):
             )
         return {"state": updated}
 
+    def _record_truncation(self, updated, updated_visits, block) -> None:
+        """Item E39: mark the visit whose completion was truncated.
+
+        The node decided the tolerance (only a NON-answering role of an
+        ``answering-node`` episode can carry the mark at all); this records
+        it, twice and consistently: ``truncated`` on the visit itself, so a
+        reader walking ``role_visits`` sees it without a second lookup, and
+        one ordered ``truncation_events`` record binding that visit index to
+        the contact digests the truncation actually happened on. Ids, digests
+        and counts only -- never text.
+        """
+
+        if self._kind == ANSWERING_STAGE:
+            # The answering node's truncation is item E13's own case and can
+            # never be tolerated; a mark here is a wiring defect, not a row.
+            raise NativeEpisodeError(
+                "the answering stage cannot report a tolerated truncation"
+            )
+        contact = block.get("contact") if isinstance(block, Mapping) else None
+        role_id = updated_visits[-1]["role_id"]
+        if (
+            not isinstance(block, Mapping)
+            or block.get("finish_reason") != "length"
+            or block.get("role_id") != role_id
+            or not isinstance(contact, Mapping)
+            or not contact
+        ):
+            raise NativeEpisodeError(
+                f"{self._kind} node reported a malformed length truncation"
+            )
+        revision_count = updated.get("revision_count")
+        if isinstance(revision_count, bool) or not isinstance(revision_count, int):
+            raise NativeEpisodeError("episode state has invalid revision count")
+        updated_visits[-1]["truncated"] = True
+        prior: list[object] = []
+        mark = updated.get(TRUNCATION_EVENTS)
+        if isinstance(mark, Mapping):
+            seen = mark.get("events")
+            if isinstance(seen, Sequence) and not isinstance(seen, (str, bytes)):
+                prior = [copy.deepcopy(item) for item in seen]
+        record = {
+            "role_id": role_id,
+            "stage": self._kind,
+            "role_visit_index": len(updated_visits) - 1,
+            "revision_count": revision_count,
+            "finish_reason": "length",
+            "contact": copy.deepcopy(dict(contact)),
+        }
+        updated[TRUNCATION_EVENTS] = {
+            "schema": TRUNCATION_EVENTS_SCHEMA,
+            "count": len(prior) + 1,
+            "events": [*prior, record],
+        }
+
     async def invoke(
         self, inputs: Input, session: Session, context: ModelContext
     ) -> Output:
@@ -723,6 +810,9 @@ class _ApplyRole(WorkflowComponent):
             }
         )
         updated["role_visits"] = updated_visits
+        truncation = role.get(LENGTH_TRUNCATION_MARK)
+        if truncation is not None:
+            self._record_truncation(updated, updated_visits, truncation)
         result: dict[str, object] = {"state": updated}
         if self._kind == "solver":
             if role.get("delivery_eligible") is not True:
@@ -1070,6 +1160,7 @@ def _finite_error_in_chain(
 def _finite_terminal_outcome(
     error: FrozenCoreRoleFiniteCompletionError,
     checkpoint: _RoleCheckpoint,
+    scope: str = "episode",
 ) -> dict[str, object]:
     if (
         checkpoint.state is None
@@ -1125,7 +1216,7 @@ def _finite_terminal_outcome(
         "stage": checkpoint.stage,
         "execution_receipt": copy.deepcopy(dict(interrupted_receipt)),
     }
-    state["terminal_disposition"] = {
+    disposition = {
         "reason": "finite_completion",
         "finish_reason": error.finish_reason,
         "role_id": checkpoint.role_id,
@@ -1134,6 +1225,12 @@ def _finite_terminal_outcome(
         "planner_accepted": False,
         "rejected_contact": dict(normalized_rejected),
     }
+    if scope != "episode":
+        # Item E39: WHICH rule ended this row. Written only under the armed
+        # scope, so every row sealed before E39 -- and every ``"episode"``
+        # row after it -- carries exactly the seven keys it always did.
+        disposition["scope"] = scope
+    state["terminal_disposition"] = disposition
 
     solver = state.get("latest_solver")
     if isinstance(solver, Mapping) and solver.get("delivery_eligible") is True:
@@ -1682,7 +1779,16 @@ class NativeEpisodeWorkflow:
                 == "deliver-latest-or-abstain"
             ):
                 try:
-                    return _finite_terminal_outcome(finite_error, checkpoint)
+                    return _finite_terminal_outcome(
+                        finite_error,
+                        checkpoint,
+                        # Item E39: under ``"answering-node"`` the only
+                        # refusals that reach here are the answering node's
+                        # own and the ones its siblings could not tolerate
+                        # (an empty or tool-bearing truncation, or a
+                        # ``content_filter`` stop).
+                        self.spec.finite_completion_scope,
+                    )
                 except NativeEpisodeError as terminal_error:
                     raise NativeEpisodeError(str(terminal_error)) from error
             cause: BaseException | None = error

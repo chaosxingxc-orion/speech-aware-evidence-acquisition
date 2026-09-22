@@ -2804,6 +2804,10 @@ async def _invoke_native_role_episode(
                 "decoding_overrides": dict(solver_role_config.decoding_overrides),
             }
         ),
+        # Item E39 (2026-09-22): the per-role completion caps this episode
+        # declares. Empty for every config written before E39, which leaves
+        # every composed request byte-identical.
+        role_completion_caps=config.role_completion_caps,
     )
     # E8b: the SAME request composer, bound to the cleaning contact's own
     # binding provider and to a completion sink that settles nothing. It is a
@@ -3182,6 +3186,15 @@ async def _invoke_native_role_episode(
                     role_id=role.phase_id, role_kind=role.role_kind, prompt=prompt,
                     max_iterations=role.max_iterations, ability_names=role.tool_names,
                     reserve_final_report=config.reserve_final_report and bool(role.tool_names),
+                    # Item E39 (2026-09-22): under ``answering-node`` scope a
+                    # NON-answering role keeps its truncated text and the
+                    # episode continues to the node that does answer. False
+                    # for the Solver always, and for every role of every
+                    # config written before E39.
+                    tolerate_length_truncation=(
+                        config.finite_completion_scope == "answering-node"
+                        and role.role_kind != "solver"
+                    ),
                 ),
                 metered_request=metered, contact_context_provider=contact_context,
                 reject_tool_batch=reject_tool_batch if role.tool_names else None,
@@ -3245,6 +3258,12 @@ async def _invoke_native_role_episode(
                         role_id=acquisition_phase_id, role_kind="perception",
                         prompt=prompt,
                         max_iterations=acquisition_role_config.max_iterations,
+                        # Item E39: the re-observation seat is a Perception
+                        # role and answers nothing, so it takes exactly the
+                        # same tolerance the Perception node takes.
+                        tolerate_length_truncation=(
+                            config.finite_completion_scope == "answering-node"
+                        ),
                     ),
                     metered_request=metered,
                     contact_context_provider=acquisition_contact_context,
@@ -3437,6 +3456,8 @@ async def _invoke_native_role_episode(
                 react_exhaustion_policy=config.react_exhaustion_policy,
                 # E37: keyword for the same reason.
                 reviewer_verdict_vocabulary=config.reviewer_verdict_vocabulary,
+                # E39: keyword for the same reason.
+                finite_completion_scope=config.finite_completion_scope,
             ),
             nodes=NativeEpisodeNodes(**nodes),
             role_input_builder=role_input,
@@ -3446,6 +3467,17 @@ async def _invoke_native_role_episode(
         from .native_episode_receipt import (
             validate_native_episode_delivery_receipt, validate_native_episode_finite_path,
             validate_native_episode_terminal_policy,
+            validate_native_episode_truncation_scope,
+        )
+
+        # Item E39 (2026-09-22): a row may only survive a truncated auxiliary
+        # node under a scope declared before the flight. Reads nothing and
+        # refuses nothing on a row that carries no truncation, which is every
+        # row of every cell written before E39.
+        validate_native_episode_truncation_scope(
+            receipt,
+            finite_completion_scope=config.finite_completion_scope,
+            error_type=RailsRunnerError,
         )
         raw_disposition = receipt.get("terminal_disposition")
         finite = (
@@ -3648,6 +3680,15 @@ async def _invoke_native_role_episode(
             # react_exhaustion). Absent on every unarmed row, so such a
             # row's receipt is byte-identical to its pre-E37 self.
             "reviewer_verdicts",
+            # Item E39 (2026-09-22): present exactly when a NON-answering
+            # node of this row had a length-truncated completion tolerated
+            # under native_episode.finite_completion_scope
+            # "answering-node". One record per tolerated visit -- the role,
+            # the stage, the visit index, the revision count and that
+            # contact's own digests. Never the truncated text. Absent on
+            # every "episode" row, so such a row's receipt is byte-identical
+            # to its pre-E39 self.
+            "truncation_events",
         ) if key in receipt}
         if not config.review_loop_enabled:
             # Configuration, not failure: record which phases never ran

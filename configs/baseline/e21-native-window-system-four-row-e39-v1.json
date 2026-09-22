@@ -1,0 +1,132 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "native_contact_fit": {
+    "attempt_id": "attempt-e21-native-window-system-four-row-e39-v1-fit",
+    "contact_cap": 176,
+    "max_speech_packets": 1,
+    "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39-V1-FIT-V1"
+  },
+  "native_episode": {
+    "actions": {
+      "accept": "ACCEPT",
+      "acquire": "ACQUIRE",
+      "revise": "REVISE"
+    },
+    "episode_id": "e21-native-window-system-four-row-e39-v1",
+    "deliver_normaliser": {
+      "normaliser": "saea-deliver-earnings-text-v1"
+    },
+    "exhaustion_policy": "deliver-latest-solver",
+    "finite_completion_policy": "deliver-latest-or-abstain",
+    "react_exhaustion_policy": "continue-without-answer",
+    "max_revisions": 1,
+    "review_loop": "on",
+    "roles": {
+      "perception": {
+        "max_iterations": 1,
+        "phase_id": "perception",
+        "max_completion_tokens": 320
+      },
+      "planner": {
+        "max_iterations": 1,
+        "phase_id": "planner"
+      },
+      "reviewer": {
+        "max_iterations": 3,
+        "phase_id": "reviewer",
+        "max_completion_tokens": 384
+      },
+      "solver": {
+        "max_iterations": 1,
+        "phase_id": "solver"
+      },
+      "acquisition": {
+        "phase_id": "acquisition",
+        "max_iterations": 0,
+        "kinds": [
+          "knowledge-requery"
+        ]
+      }
+    },
+    "acquisition": {
+      "policy": "saea-acquire-knowledge-requery-v1",
+      "budget": {
+        "max_acquisitions_per_row": 1,
+        "contact_budget": 0
+      }
+    },
+    "schema": "saea-native-episode-config-v1",
+    "finite_completion_scope": "answering-node"
+  },
+  "ojw_workflow_timeout_seconds": 21600,
+  "phase_material": {
+    "perception": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/e21_native_window_system_perception_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    },
+    "planner": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/e21_native_window_system_planner_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    },
+    "reviewer": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/e21_native_window_system_reviewer_v2.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    },
+    "solver": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/e21_native_window_direct_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    }
+  },
+  "policy": "phase-native-review-revise-acquire-v1",
+  "prepared_execution_units": {
+    "batch": "SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1",
+    "registry_run_id": "SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1",
+    "relpath": "analysis/SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1/window-inventory.json",
+    "sha256": "e5f3cfbcbc407fbb3a7b59469b86ab9d405f7b43963cb2d18b655790c5f4a32b",
+    "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992",
+    "unit_count": 4
+  },
+  "prepared_window_feature_packets": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1/window-feature-packets.json",
+    "sha256": "3fb18dd3dcd0d41eb3f8d3750090e72e0f412eef00378e3c0d791f4d9ed1fc0c"
+  },
+  "prompt_fit_multiple": 1.3333333333333333,
+  "scorers": [
+    "asr-wer-whisper",
+    "conec-entity-wer-official",
+    "numeric-value-accuracy-v1",
+    "semantic-high-impact-error-rate-v1",
+    "cost"
+  ],
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-e21-native-window-v1:current-window",
+  "speech_feature_matcher_policy_id": "saea-e21-native-window-v1",
+  "task_contract_source": "active-instruction",
+  "task_instruction": "Transcribe the speech verbatim exactly as spoken. Preserve spoken names, numbers and repetitions. Do not add explanations, speaker labels, timestamps or words unsupported by the audio. Output only the transcript text.",
+  "what_this_is": "Item E39 (2026-09-22) four-row dry run, HELD: the SAME six-node native episode and the SAME shared harness as e21-native-window-system-four-row-v1, with item E13's finite-completion rule scoped to the ANSWERING node instead of the whole episode, and with per-role completion caps on the two free-text auxiliary nodes. The E35 sub10 read (docs/results/2026-09-22-e21-native-window-e35-sub10-diagnosis.md) found that 75 of 342 windows never reached the Solver because the Perception note hit the 1024-token completion cap and item E13 then ended the episode with no draft at all: those 76 empty windows carry 95.6 % of the arm's extra error mass, and removing them moves the arm from 0.2864 to 0.0778 corpus WER. NO optimisation, NO new mechanism, NO flight: this is a registered-before-contact engineering repair proof only, and no score, comparison, decision, effectiveness or generalization claim may be made from it.",
+  "knowledge_snapshot_relpath": "knowledge/e21/governed/participant-roster-v1/snapshot.json",
+  "knowledge_snapshot_sha256": "72e7ddff84b6996ccb924564975a92352d186861347760ab9f39c07218ccdb93",
+  "readiness": {
+    "state": "held",
+    "reason": "Item E39 (2026-09-22) dry-run form, HELD: this fragment is the engineering repair of the E35 sub10 finding and has no owner registration, no exposure-ledger row and no decision receipt yet. Root registers the run id, pins the decision receipt and lifts the hold; the implementer never does. Three leaves move against e21-native-window-system-four-row-v1 and nothing else: native_episode.finite_completion_scope 'answering-node' (item E39 -- a truncated Perception or Reviewer keeps its text and the Solver still answers, instead of voiding the window), the per-role completion caps perception 320 / reviewer 384 (both inside the serving geometry's 1024, sized on the E35 sub10 medians of 324 and 381), and the tool-free Reviewer template v2 (v1 orders a task-contract tool call this cell arms no tool for). The pinned execution-unit and feature-packet artifacts are KEPT at the parent's hashes: they are bound to the four-row roster batch SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1, not to a run id, so a fresh run id needs no fresh artifact."
+  }
+}

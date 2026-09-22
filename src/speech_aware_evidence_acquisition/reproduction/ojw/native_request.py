@@ -291,6 +291,7 @@ class MeteredNativeSpeechRequest:
         completion_sink: Callable[[NativeRoleModelRequest, CoreCompletion], None],
         solver_role_id: str | None = None,
         solver_sampling: Mapping[str, object] | None = None,
+        role_completion_caps: Mapping[str, int] | None = None,
     ):
         if not isinstance(client, FrozenCoreClient):
             raise NativeSpeechRequestError("use the flight's existing FrozenCoreClient")
@@ -310,6 +311,23 @@ class MeteredNativeSpeechRequest:
                 raise NativeSpeechRequestError(
                     "solver_sampling must carry exactly fragment_seed and decoding_overrides"
                 )
+        # Item E39 (2026-09-22): ``{role_id: max_tokens}`` for the roles whose
+        # configuration declares a completion cap of their own. Empty or None
+        # -- every adapter written before E39 and every config that declares
+        # no cap -- leaves every composed request byte-identical.
+        caps = dict(role_completion_caps or {})
+        for role_id, cap in caps.items():
+            if (
+                not isinstance(role_id, str)
+                or not role_id
+                or isinstance(cap, bool)
+                or not isinstance(cap, int)
+                or cap < 1
+            ):
+                raise NativeSpeechRequestError(
+                    "role_completion_caps must map role ids to positive integers"
+                )
+        self._role_completion_caps = caps
         self._owner = object()
         self._client = client
         self._binding_provider = binding_provider
@@ -401,6 +419,15 @@ class MeteredNativeSpeechRequest:
             raise NativeSpeechRequestError(
                 "only the registered Solver role may bind a sample_index"
             )
+        # Item E39 (2026-09-22): this role's own completion cap, composed at
+        # request-composition time and nowhere else -- the same seam E2's
+        # Solver overrides are composed at, and for the same reason: the model
+        # fragment and the serving-session identity never change, only this
+        # one request's ``max_tokens``. The loader has already refused a cap
+        # wider than the serving geometry's own, so this only ever narrows.
+        cap = self._role_completion_caps.get(request.role_id)
+        if cap is not None:
+            decoding["max_tokens"] = cap
         kwargs["decoding_params"] = decoding
         instruction = framework_contact_instruction(
             role_id=binding.role_id, sample_id=binding.sample_id,

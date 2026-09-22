@@ -285,6 +285,17 @@ class NativeRoleNodeSpec:
     max_iterations: int
     ability_names: tuple[str, ...] = ()
     reserve_final_report: bool = False
+    # Item E39 (2026-09-22): whether a ``length``-truncated completion of THIS
+    # role ends the episode. ``False`` -- every spec written before E39 and
+    # every ``native_episode.finite_completion_scope`` ``"episode"`` config --
+    # re-raises the finite-completion refusal exactly as before, so item E13
+    # keeps its whole-episode scope. ``True`` -- set by the runner only for a
+    # NON-answering role under ``"answering-node"`` -- keeps the truncated
+    # text as this role's output and lets the graph continue to the node that
+    # does answer. Only the Solver answers, so the answering role may never
+    # carry it. Declared LAST so every positional construction written before
+    # E39 composes exactly the spec it always did.
+    tolerate_length_truncation: bool = False
 
     def __post_init__(self) -> None:
         if not isinstance(self.role_id, str) or not self.role_id:
@@ -317,6 +328,16 @@ class NativeRoleNodeSpec:
             and (not self.ability_names or self.max_iterations < 2)
         ):
             raise ValueError("final report reservation requires a tool role with two or more iterations")
+        if type(self.tolerate_length_truncation) is not bool:
+            raise ValueError("tolerate_length_truncation must be a boolean")
+        if self.tolerate_length_truncation and self.role_kind == "solver":
+            # Item E39: the Solver IS the answering node, so its truncation is
+            # exactly the case item E13 exists for. Refused by name rather
+            # than silently ignored.
+            raise ValueError(
+                "the answering Solver role always ends the episode on a truncated "
+                "completion"
+            )
 
 
 @dataclass(frozen=True)
@@ -995,6 +1016,13 @@ class NativeRoleNode(WorkflowComponent):
                 raise FrozenCoreRoleModelError(
                     "finite role completion lost its actual contact receipt"
                 ) from error
+            tolerated = self._tolerated_truncation(error, receipt_contacts)
+            if tolerated is not None:
+                # Item E39: a NON-answering role under ``answering-node``
+                # scope. The contact was made, metered and traced exactly as
+                # any other; what changes is that its partial text becomes
+                # this role's output instead of ending the row.
+                return tolerated
             error.role_id = self.spec.role_id
             error.execution_receipt = {
                 "contacts": [dict(contact) for contact in receipt_contacts],
@@ -1038,6 +1066,57 @@ class NativeRoleNode(WorkflowComponent):
             # text -- tool ids and digests only.
             role_result["react_exhaustion"] = exhaustion
         return role_result
+
+    def _tolerated_truncation(
+        self,
+        error: FrozenCoreRoleFiniteCompletionError,
+        receipt_contacts: Sequence[Mapping[str, str]],
+    ) -> dict[str, object] | None:
+        """Item E39: this role's truncated output, or ``None`` to re-raise.
+
+        Four conditions, all required: this role's spec tolerates truncation
+        (which the runner sets only for a NON-answering role of an
+        ``answering-node`` episode), the completion stopped on ``length`` (a
+        ``content_filter`` stop is a refusal, not a partial answer, and keeps
+        its pre-E39 whole-episode effect), the completion carries no native
+        tool call (a half-rendered call is not an instruction this graph may
+        execute), and the truncated text is non-empty (no text is no output,
+        and item E13's disposition is the honest record of that). Any one of
+        them missing leaves the result exactly as it was before E39 -- the
+        refusal the caller re-raises.
+
+        The returned result is the same dict an answering visit returns, plus
+        one ``length_truncation`` mark carrying ids and digests only -- never
+        text.
+        """
+
+        if (
+            not self.spec.tolerate_length_truncation
+            or error.finish_reason != "length"
+            or error.completion.tool_calls
+        ):
+            return None
+        actor_output = error.completion.text
+        if not isinstance(actor_output, str) or not actor_output:
+            return None
+        return {
+            "role_id": self.spec.role_id,
+            "actor_output": actor_output,
+            "result_type": "answer",
+            # Item E39: a truncated draft is never delivery-eligible, and no
+            # role that can carry this flag is the delivering one anyway.
+            "delivery_eligible": False,
+            "execution_receipt": {
+                "contacts": [dict(contact) for contact in receipt_contacts],
+                "final_contact": dict(receipt_contacts[-1]),
+            },
+            "length_truncation": {
+                "role_id": self.spec.role_id,
+                "role_kind": self.spec.role_kind,
+                "finish_reason": error.finish_reason,
+                "contact": _contact_receipt(error.completion),
+            },
+        }
 
     def _react_exhaustion(
         self,
