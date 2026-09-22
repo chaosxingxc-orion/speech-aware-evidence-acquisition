@@ -4,7 +4,7 @@
   "evidence_source": "none",
   "native_contact_fit": {
     "attempt_id": "attempt-e21-native-window-system-sub10-v1-fit",
-    "contact_cap": 3762,
+    "contact_cap": 15048,
     "max_speech_packets": 1,
     "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-V1-FIT"
   },
