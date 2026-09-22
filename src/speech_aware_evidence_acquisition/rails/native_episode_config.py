@@ -409,6 +409,16 @@ class NativeEpisodeConfig:
     # row whose roles answer. Declared LAST, for the same reason E20's and
     # E21's fields are.
     react_exhaustion_policy: str = "raise"
+    # Item E37 (owner decision 84), 2026-09-22: the Reviewer's verdict as a
+    # closed set of primitives. ``None`` -- every config written before E37
+    # and every OFF arm -- means ``native_episode.reviewer_verdict`` is
+    # absent, the Reviewer's ``_ApplyRole`` branch parses nothing and writes
+    # no ``reviewer_verdicts`` receipt mark. A non-empty string is the armed
+    # vocabulary id -- today only
+    # ``rails.review_primitives.REVIEW_PRIMITIVES_VOCABULARY`` -- and is
+    # refused below when it names anything else. Declared LAST, for the same
+    # reason E22's field is.
+    reviewer_verdict_vocabulary: str | None = None
 
     @property
     def acquisition_enabled(self) -> bool:
@@ -632,6 +642,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         "tool_schema_rendering",
         "acquisition",
         "knowledge_index",
+        "reviewer_verdict",
     }
     if (
         not isinstance(raw, Mapping)
@@ -670,6 +681,29 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         or react_exhaustion_policy not in {"raise", "continue-without-answer"}
     ):
         raise ValueError("native episode react exhaustion policy is invalid")
+    # Item E37 (owner decision 84), 2026-09-22: the Reviewer's verdict as a
+    # closed set of primitives. Absent -- every config written before E37 and
+    # every OFF arm -- is None: the parse is unarmed. Present, the block must
+    # name exactly the ONE registered vocabulary id; any other id, or any
+    # other shape, is refused here, before any contact, rather than reaching
+    # the graph as a silently-unarmed key.
+    reviewer_verdict_vocabulary = None
+    if "reviewer_verdict" in raw:
+        from .review_primitives import REVIEW_PRIMITIVES_VOCABULARY  # noqa: PLC0415
+
+        block = raw["reviewer_verdict"]
+        if not isinstance(block, Mapping) or set(block) != {"vocabulary"}:
+            raise ValueError(
+                "native_episode.reviewer_verdict must be an object with exactly a "
+                "'vocabulary' id"
+            )
+        reviewer_verdict_vocabulary = block["vocabulary"]
+        if reviewer_verdict_vocabulary != REVIEW_PRIMITIVES_VOCABULARY:
+            raise ValueError(
+                f"native_episode.reviewer_verdict.vocabulary is "
+                f"{reviewer_verdict_vocabulary!r}; the only registered vocabulary is "
+                f"{REVIEW_PRIMITIVES_VOCABULARY!r}"
+            )
     planner_output_format = raw.get("planner_output_format", "exact-text")
     if planner_output_format not in {"exact-text", "json-action-v1"}:
         raise ValueError("native episode Planner output format is invalid")
@@ -1281,6 +1315,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         context_fit_policy,
         knowledge_index_json,
         react_exhaustion_policy,
+        reviewer_verdict_vocabulary,
     )
 
 

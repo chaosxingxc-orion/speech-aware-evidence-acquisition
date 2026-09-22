@@ -320,6 +320,13 @@ PARSER_IDS: Mapping[str, str] = {
     "review-finding": "rails.review_findings.parse_review_findings",
     "plan-action": "rails.node_context_policy.parse_plan_action",
     "tool-observation": "rails.node_context_policy.parse_tool_observation",
+    # E37 (owner decision 84, 2026-09-22): the primitive-verdict parser
+    # alongside the declared-but-unreachable JSON one above. Registered here
+    # so a later NCP arm can render the token structurally; no boundary of
+    # SLURP_BOUNDARY_IDS names "review-primitive" today, so the locked plan
+    # (NCP off) and every existing boundary's FALLBACK-RAW default are
+    # untouched by this entry.
+    "review-primitive": "rails.review_primitives.parse_review_primitive",
 }
 
 #: The renderer key each boundary expects of its template.
@@ -399,6 +406,22 @@ RENDERER_SECTIONS: Mapping[str, Mapping[str, tuple[str, ...]]] = {
         "footer": ("revisions_remaining", "available_actions"),
     },
     "tool-observation": {"reference": ("tool_id",)},
+    # E37 (owner decision 84, 2026-09-22): the primitive-verdict renderer
+    # section, declared so a later NCP arm has a template contract to render
+    # against -- no boundary of SLURP_BOUNDARY_IDS/RENDERER_KEYS names
+    # "review-primitive" today, so no template is loaded through it and this
+    # entry changes nothing reachable by the locked plan. ``body`` carries
+    # the parsed token; the rationale beside it is free text and is never a
+    # placeholder (rails.review_primitives.parse_review_primitive never
+    # parses it either).
+    "review-primitive": {
+        "header": (),
+        "body": ("token",),
+        "footer": (),
+        "header_unparsed": (),
+        "unparsed": ("source_content",),
+        "omitted": ("reason",),
+    },
     # E8b. ``cleaning-review`` is the INSTRUCTION the cleaning contact reads;
     # ``cleaned-review-finding`` is how an ACCEPTED cleaning output is rendered
     # into the consumer's context. Both are ordinary committed templates, so

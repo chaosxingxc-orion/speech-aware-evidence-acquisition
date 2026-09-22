@@ -170,7 +170,13 @@ def test_the_spec_defaults_to_raise_and_refuses_a_third_value():
 
 def test_the_key_resolves_in_the_closed_episode_class():
     assert SWITCH_KEY in EPISODE_LEVEL_SWITCH_KEYS
-    assert len(EPISODE_LEVEL_SWITCH_KEYS) == 12
+    # E37 (owner decision 84, 2026-09-22) added a thirteenth key,
+    # native_episode.reviewer_verdict, after this module's own admission;
+    # this count is bumped so the two admissions do not race each other's
+    # assertion. See tests/unit/test_e37_reviewer_verdict.py for that key's
+    # own proof and tests/unit/test_config_table_module_switches.py for the
+    # allowlist's full enumeration.
+    assert len(EPISODE_LEVEL_SWITCH_KEYS) == 13
     assert resolve_episode_switch_key(SWITCH_KEY) == SWITCH_KEY
     # The null arm is the key's ABSENCE or its explicit default, exactly as
     # E13's and E20's are.

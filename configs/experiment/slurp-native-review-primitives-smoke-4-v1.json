@@ -1,0 +1,65 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-review-primitives-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-review-primitives-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-review-primitives-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Registered by engineering item E37 (owner decision 84 of 2026-09-21, docs/superpowers/specs/2026-09-22-slurp-reviewer-primitive-verdict-design.md), 2026-09-22: cell R-PRIM, the locked default plan (cell PLAN) plus exactly native_episode.reviewer_verdict armed at {\"vocabulary\": \"saea-review-primitives-v1\"} and the Reviewer's swapped instruction template. HELD: no decision receipt, no prepared supply and no flight authorisation exist yet for this cell; root registers the decision receipt, prepares this cell's own first-phase supply under its own run id and flips readiness to 'ready' before any contact. Nothing here authorises a flight.",
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-REVIEW-PRIMITIVES-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-22",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-NATIVE-REVIEW-PRIMITIVES-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops cell PLAN and the arm does not open. The resume-recovery clause of owner decision 22 applies to the arm, not to a four-row form smoke, which is re-flown whole if it is re-flown at all.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-native-review-primitives-smoke-4-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The same unchanged TRAIN Fold A roster the sealed anchor, cell B1 and cell B1r flew; every row is preserved so the paired contrast against the sealed B1 arm covers the whole roster.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row form smoke of cell R-PRIM (item E37, owner decision 84): the same one-factor fragment as configs/experiment/slurp-native-review-primitives-v1.json on the first four TRAIN Fold A rows, to prove the request forms before the 1,080-row flight -- no scoring, no partial quality read. Registered and HELD; root queues it through the scheduled-task driver once its own decision receipt and prepared supply are in place. Nothing here authorises a flight.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2"
+}

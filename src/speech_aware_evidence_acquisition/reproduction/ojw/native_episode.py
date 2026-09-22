@@ -31,6 +31,7 @@ from ...rails.context_fit import (
     CONTEXT_COMPACTION_DISPOSITION,
     terminal_context_disposition,
 )
+from ...rails.review_primitives import REVIEW_VERDICT_ILLEGAL, parse_review_primitive
 from .native_group_solver import GroupedSolverRoleNode
 from .native_roles import (
     FrozenCoreRoleContextFitError,
@@ -85,6 +86,28 @@ REACT_EXHAUSTION_SCHEMA = "saea-native-react-exhaustion-v1"
 #: raise.  Perception carries no tool authority at all and cannot reach
 #: this class.
 REACT_EXHAUSTION_STAGES = frozenset({"review"})
+
+#: Item E37 (owner decision 84), 2026-09-22: the receipt-mark disposition a
+#: ``reviewer_verdicts`` entry carries when the first non-empty line of the
+#: Reviewer's response is one of
+#: ``rails.review_primitives.REVIEW_PRIMITIVE_TOKENS``, exactly.
+REVIEWER_VERDICT_LEGAL = "legal"
+
+#: The disposition an illegal primitive verdict carries -- the Reviewer's own
+#: analogue of :data:`PLANNER_ACTION_ILLEGAL_DISPOSITION`: the row is
+#: RETAINED, the raw text still renders into the Planner's query exactly as
+#: today, and the receipt keeps only the bounded head
+#: ``rails.review_primitives.parse_review_primitive`` returns.
+REVIEWER_VERDICT_ILLEGAL_DISPOSITION = "review_verdict_illegal"
+
+#: ``native_episode_receipt.reviewer_verdicts`` is a plain ordered list, one
+#: entry per Reviewer visit of the row, each
+#: ``{"visit": n, "token": ..., "disposition": ..., "head": ...}``. Present
+#: ONLY when ``native_episode.reviewer_verdict`` is armed: an unarmed row's
+#: ``_ApplyRole`` Reviewer branch never calls the helper that writes this
+#: key, so its state -- and therefore its sealed receipt -- carries no
+#: ``reviewer_verdicts`` key at all, byte-identical to its pre-E37 self.
+REVIEWER_VERDICTS_KEY = "reviewer_verdicts"
 
 #: E18 (2026-09-19, owner decisions 43 and 44): the stage name one
 #: :class:`AcquisitionNode` visit registers in ``role_visits``.  It is the
@@ -184,6 +207,18 @@ class NativeEpisodeSpec:
     # contact is spent, and no request byte of any other contact moves.
     # Declared LAST, for the same reason ``context_fit_policy`` was.
     react_exhaustion_policy: str = "raise"
+    # Item E37 (owner decision 84), 2026-09-22: the Reviewer's verdict as a
+    # closed set of primitives. ``None`` -- every spec written before E37 and
+    # every OFF arm -- means the Reviewer's ``_ApplyRole`` branch parses
+    # nothing and writes no ``reviewer_verdicts`` mark, so the receipt is
+    # byte-identical to its pre-E37 self. A non-empty string is the armed
+    # vocabulary id (only ``rails.review_primitives.REVIEW_PRIMITIVES_VOCABULARY``
+    # is registered today; a config-level refusal of any other id lives in
+    # ``rails.native_episode_config.load_native_episode_config``, not here,
+    # because THIS class stays the thin, config-free graph identity every
+    # other episode-level field already is). Declared LAST, for the same
+    # reason ``react_exhaustion_policy`` was.
+    reviewer_verdict_vocabulary: str | None = None
 
     def __post_init__(self) -> None:
         if not isinstance(self.episode_id, str) or not self.episode_id:
@@ -235,6 +270,11 @@ class NativeEpisodeSpec:
             not in {"raise", "continue-without-answer"}
         ):
             raise ValueError("react_exhaustion_policy is invalid")
+        if self.reviewer_verdict_vocabulary is not None and (
+            not isinstance(self.reviewer_verdict_vocabulary, str)
+            or not self.reviewer_verdict_vocabulary.strip()
+        ):
+            raise ValueError("reviewer_verdict_vocabulary must be None or a non-empty string")
         if self.refresh_action == PLANNER_ACTION_ILLEGAL:
             # E8c: the illegal-output routing value is reserved.
             raise ValueError("candidate refresh must not use the reserved illegal action")
@@ -470,6 +510,37 @@ def _planner_action(
     return action, control, None
 
 
+def _append_reviewer_verdict(
+    state: dict[str, object],
+    *,
+    visit: int,
+    token: str | None,
+    disposition: str,
+    head: str | None,
+) -> None:
+    """E37: append one mark to ``reviewer_verdicts``, beside ``planner_routes``.
+
+    Mutates ``state`` IN PLACE, exactly as the Planner-illegal and
+    react-exhaustion marks beside it do, so a caller that already bound a
+    result mapping to ``state`` (``{"state": updated}``, set before this
+    branch runs) sees the mark without a second assignment.
+
+    Called ONLY from the Reviewer's own ``_ApplyRole`` branch, and only when
+    ``native_episode.reviewer_verdict`` is armed -- so an unarmed row never
+    calls this, ``reviewer_verdicts`` never enters its state, and its sealed
+    receipt stays byte-identical to its pre-E37 self.
+    """
+
+    marks = state.get(REVIEWER_VERDICTS_KEY)
+    prior = (
+        [dict(mark) for mark in marks]
+        if isinstance(marks, Sequence) and not isinstance(marks, (str, bytes))
+        else []
+    )
+    prior.append({"visit": visit, "token": token, "disposition": disposition, "head": head})
+    state[REVIEWER_VERDICTS_KEY] = prior
+
+
 class _ApplyRole(WorkflowComponent):
     def __init__(
         self,
@@ -479,6 +550,7 @@ class _ApplyRole(WorkflowComponent):
         planner_output_format: str = "exact-text",
         planner_actions: set[str] | None = None,
         react_exhaustion_policy: str = "raise",
+        reviewer_verdict_vocabulary: str | None = None,
     ) -> None:
         super().__init__()
         self._kind = kind
@@ -487,6 +559,11 @@ class _ApplyRole(WorkflowComponent):
         self._planner_output_format = planner_output_format
         self._planner_actions = planner_actions
         self._react_exhaustion_policy = react_exhaustion_policy
+        # E37: handed to every stage, exactly as react_exhaustion_policy is;
+        # only the Reviewer's own branch (self._kind == "review") ever reads
+        # it, because reproduction.ojw.native_episode._build supplies it only
+        # for that stage's _ApplyRole (see NativeEpisodeWorkflow._add_role).
+        self._reviewer_verdict_vocabulary = reviewer_verdict_vocabulary
 
     def _react_exhaustion(self, role: Mapping[str, object]) -> Mapping[str, object] | None:
         """E22: this visit's exhaustion evidence when the armed policy admits
@@ -594,6 +671,21 @@ class _ApplyRole(WorkflowComponent):
             "count": len(prior) + 1,
             "visits": [*prior, record],
         }
+        if self._kind == "review" and self._reviewer_verdict_vocabulary is not None:
+            # E37: the exhausted visit asserted no primitive at all -- no
+            # token, no head, just the disposition the Reviewer's own
+            # react_exhaustion mark already carries above. ``visit`` is the
+            # Reviewer's OWN 0-based visit count (see the note beside the
+            # legal/illegal branch below for why, and why that is exactly
+            # the revision round index for this graph's one-reviewer-per-
+            # round shape).
+            _append_reviewer_verdict(
+                updated,
+                visit=sum(1 for v in updated_visits if v["stage"] == self._kind) - 1,
+                token=None,
+                disposition=REACT_EXHAUSTION_DISPOSITION,
+                head=None,
+            )
         return {"state": updated}
 
     async def invoke(
@@ -701,6 +793,30 @@ class _ApplyRole(WorkflowComponent):
             result["action"] = action
         else:
             updated[self._kind] = output
+            if self._kind == "review" and self._reviewer_verdict_vocabulary is not None:
+                # E37: parse-only -- state[self._kind] (the raw text the
+                # Planner's query renders) is already set above and is NEVER
+                # rewritten here; only the receipt mark below is derived from
+                # the parse. ``visit`` is the Reviewer's OWN 0-based visit
+                # count, NOT the global role_visits index Planner routes key
+                # on (``role_visit_index``): this graph builds exactly one
+                # Reviewer visit per revision round, so the Reviewer's own
+                # count IS that round's index, and a reader can therefore
+                # index ``planner_routes[visit]`` directly to read the same
+                # round's route -- which is what the verifier script's
+                # "Planner route conditioned on the token" reading needs.
+                token, _rationale, head = parse_review_primitive(output)
+                legal = token != REVIEW_VERDICT_ILLEGAL
+                _append_reviewer_verdict(
+                    updated,
+                    visit=sum(1 for v in updated_visits if v["stage"] == self._kind) - 1,
+                    token=token if legal else None,
+                    disposition=(
+                        REVIEWER_VERDICT_LEGAL if legal
+                        else REVIEWER_VERDICT_ILLEGAL_DISPOSITION
+                    ),
+                    head=None if legal else head,
+                )
         return result
 
 
@@ -1257,6 +1373,11 @@ class NativeEpisodeWorkflow:
                 # stages in REACT_EXHAUSTION_STAGES can act on it, and with
                 # the key at its default ``"raise"`` no stage can.
                 self.spec.react_exhaustion_policy,
+                # E37: only the Reviewer's own branch (kind == "review") ever
+                # reads this; every other stage gets None regardless of what
+                # the spec carries, exactly as `planner_actions` above is
+                # None for every stage but the Planner's.
+                self.spec.reviewer_verdict_vocabulary if kind == "review" else None,
             ),
             inputs_schema={
                 "state": "${" + query_id + ".state}",
@@ -1672,6 +1793,9 @@ __all__ = [
     "REACT_EXHAUSTION_DISPOSITION",
     "REACT_EXHAUSTION_SCHEMA",
     "REACT_EXHAUSTION_STAGES",
+    "REVIEWER_VERDICT_ILLEGAL_DISPOSITION",
+    "REVIEWER_VERDICT_LEGAL",
+    "REVIEWER_VERDICTS_KEY",
     "NativeEpisodeActions",
     "NativeEpisodeError",
     "NativeEpisodeNodes",
