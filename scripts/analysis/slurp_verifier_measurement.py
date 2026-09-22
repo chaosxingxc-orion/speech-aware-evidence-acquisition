@@ -1049,7 +1049,14 @@ class PrimitiveArm:
 #: entry for native_episode.reviewer_verdict states: this module invents no
 #: sealed data, so ``stage_primitives`` refuses to run rather than read
 #: nothing and report zeros.
-PRIMITIVE_ARMS: tuple[PrimitiveArm, ...] = ()
+PRIMITIVE_ARMS: tuple[PrimitiveArm, ...] = (
+    PrimitiveArm(
+        "rprim", "cell R-PRIM (item E37: the Reviewer verdict as a closed set of primitives, on the locked plan)",
+        "SAEA-SLURP-NATIVE-REVIEW-PRIMITIVES-V1",
+        "attempt-slurp-native-review-primitives-train-fold-a-generation-v1",
+        "docs/results/2026-09-22-slurp-review-primitives-verdict.md",
+    ),
+)
 
 
 def stage_primitives(
