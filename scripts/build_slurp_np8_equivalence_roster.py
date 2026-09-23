@@ -2,7 +2,7 @@
 """CLI: freeze the 4-row np8 GEOMETRY-EQUIVALENCE roster.
 
 Owner decision 107 of 2026-09-23 expands the development side to the whole
-SLURP ``devel`` split, and that 6,690-row preprocessing pass wants more sidecar
+SLURP ``devel`` split, and that 6,570-row preprocessing pass wants more sidecar
 slots than the ``-np 4`` geometry every sealed speech packet was produced with.
 More slots change how the server batches, so before the big pass runs the
 equivalence is MEASURED: four ALREADY-PROMOTED DEV-2000-ADDED recordings are

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CLI: freeze ``SLURP-DEVEL-REMAINDER-V1``, the rest of the SLURP devel split.
+"""CLI: freeze ``SLURP-DEVEL-REMAINDER-V<n>``, the rest of the SLURP devel split.
 
 Owner decision 107 of 2026-09-23 (``docs/readiness/2026-09-16-slurp-next-stage-
 owner-decisions-v1.md``): the development side may expand up to the FULL SLURP
@@ -49,15 +49,37 @@ recordings of utterances the sealed halves already read. The receipt's
 the consequence for analysis (cluster by ``utterance_id``; a remainder result
 and a DEV-1000/DEV-2000-ADDED result are not independent utterance samples).
 
-Reserved sets inside the remainder
-----------------------------------
+Reserved sets inside the remainder, and the carve-out
+-----------------------------------------------------
 "Everything that is not DEV-1000 or DEV-2000-ADDED" necessarily includes the
 60 ``reserved-final-unread`` FINAL60 recordings and the 60 historic probe-60
-recordings that the DEV ladder held back. They are NOT silently dropped and
-NOT silently consumed: they stay in the roster (the owner asked for the full
-split) and are counted in ``reserved_sets_inside_the_remainder`` and in
-deviation ``REM-D1``, which needs an owner acknowledgement before the
-remainder is ever read as evidence.
+recordings that the DEV ladder held back. V1 kept them and put the choice to
+the owner as deviation ``REM-D1``.
+
+The coordinator ruling of 2026-09-23 (provisional decision 109) answers it: the
+remainder must NOT spend the FINAL60 reservation and must stay contact-fresh, so
+BOTH sets are carved out and the roster is re-frozen as a NEW version rather
+than rewritten in place. ``--exclude-receipt`` is how a carve-out is expressed
+on the command line (repeatable, one committed receipt per flag) and
+``--version`` is which version is being frozen, so the freeze is reproducible
+from a single line::
+
+    python scripts/build_slurp_devel_remainder_roster.py --version 2 \\
+      --exclude-receipt docs/receipts/probe-samples/FINAL60.json \\
+      --exclude-receipt configs/probes/g0-binding/pslu-sample-devel-n60.json --write
+
+A carve-out is proven, never asserted: the receipt carries the per-receipt and
+union counts, a SHA-256 over the sorted excluded id list, the pairwise overlap
+between the carved sets, and a ``shared_with_carved_out_*`` line per set in the
+disjointness proof. The completeness identity grows a fourth part (DEV-1000 U
+DEV-2000-ADDED U CARVED-OUT U REMAINDER == the complete devel split), so nothing
+is lost -- it is accounted for.
+
+What a recording-level carve-out does NOT remove is the reserved UTTERANCES:
+devel carries several recordings of one utterance, so sibling recordings of the
+carved-out utterances stay in the remainder. Their exact count is in
+``carved_out_reserved_sets.remainder_recordings_of_carved_out_utterances`` and in
+deviation ``REM-D1``; it is reported, not silently absorbed.
 
 Text disjointness
 -----------------
@@ -124,16 +146,57 @@ from speech_aware_evidence_acquisition.rails.proposer import (  # noqa: E402
 
 CARRIER = "slurp"
 SEED = 20260923
-ROSTER_ID = "SLURP-DEVEL-REMAINDER-V1"
-ROSTER_RELPATH = "docs/receipts/rosters/slurp-devel-remainder-v1.json"
-CHECK_DIR = (
-    "docs/checks/speech-aware-evidence-acquisition/2026-09-23-slurp-devel-remainder-roster"
-)
+DEFAULT_VERSION = 1
 AUTHORITY = (
     "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md owner decision 107 "
     "of 2026-09-23"
 )
+CARVE_OUT_AUTHORITY = (
+    "coordinator ruling of 2026-09-23 (provisional decision 109): the remainder must not "
+    "spend the FINAL60 reservation and must stay contact-fresh, so both reserved sets are "
+    "carved out and the roster is re-frozen as a new version"
+)
 GENERATOR = "scripts/build_slurp_devel_remainder_roster.py"
+
+#: The label the two DEV-ladder reservations keep wherever they are named, so
+#: ``reserved_sets_inside_the_remainder``, ``carved_out_reserved_sets`` and the
+#: disjointness proof agree key for key. Any other ``--exclude-receipt`` gets a
+#: label derived from its file stem.
+CARVE_OUT_LABELS: dict[str, str] = {
+    "docs/receipts/probe-samples/FINAL60.json": "final60",
+    "configs/probes/g0-binding/pslu-sample-devel-n60.json": "historic_probe60",
+}
+
+
+def roster_id(version: int) -> str:
+    """``2`` -> ``SLURP-DEVEL-REMAINDER-V2``."""
+
+    return f"SLURP-DEVEL-REMAINDER-V{int(version)}"
+
+
+def roster_relpath(version: int) -> str:
+    return f"docs/receipts/rosters/slurp-devel-remainder-v{int(version)}.json"
+
+
+def check_dir(version: int) -> str:
+    """V1 keeps its committed check directory name; a later version gets its own."""
+
+    base = "docs/checks/speech-aware-evidence-acquisition/2026-09-23-slurp-devel-remainder"
+    return f"{base}-roster" if int(version) == 1 else f"{base}-v{int(version)}-roster"
+
+
+def carve_out_label(relpath: str) -> str:
+    known = CARVE_OUT_LABELS.get(relpath)
+    if known:
+        return known
+    return "".join(
+        character if character.isalnum() else "_" for character in Path(relpath).stem.lower()
+    )
+
+
+ROSTER_ID = roster_id(DEFAULT_VERSION)
+ROSTER_RELPATH = roster_relpath(DEFAULT_VERSION)
+CHECK_DIR = check_dir(DEFAULT_VERSION)
 
 DEV1000_RELPATH = "docs/receipts/probe-samples/DEV-1000.json"
 DEV2000_ADDED_RELPATH = "docs/receipts/rosters/slurp-dev-2000-added-v1.json"
@@ -292,7 +355,40 @@ def enrich(sample_id: str, record_by_id: Mapping[str, object]) -> dict[str, obje
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--write", action="store_true", help="write the receipts")
+    parser.add_argument(
+        "--version",
+        type=int,
+        default=DEFAULT_VERSION,
+        help=(
+            "which DEVEL-REMAINDER version to freeze (default %d); the roster id, the "
+            "receipt relpath and the check directory all follow from it" % DEFAULT_VERSION
+        ),
+    )
+    parser.add_argument(
+        "--exclude-receipt",
+        action="append",
+        default=[],
+        metavar="RELPATH",
+        dest="exclude_receipt",
+        help=(
+            "a committed receipt whose sample ids are carved OUT of the remainder, on top "
+            "of the two sealed halves (repeatable; order does not affect the result)"
+        ),
+    )
     args = parser.parse_args(argv)
+
+    if args.version < 1:
+        raise SystemExit("--version must be a positive integer")
+    version = int(args.version)
+    this_roster_id = roster_id(version)
+    this_roster_relpath = roster_relpath(version)
+    this_check_dir = check_dir(version)
+    carve_relpaths: tuple[str, ...] = tuple(dict.fromkeys(args.exclude_receipt))
+    for relpath in carve_relpaths:
+        if not (REPO_ROOT / relpath).is_file():
+            raise SystemExit(f"--exclude-receipt names a missing file: {relpath}")
+    if len({carve_out_label(relpath) for relpath in carve_relpaths}) != len(carve_relpaths):
+        raise SystemExit("two --exclude-receipt paths derive the same carve-out label")
 
     attempts = arm_offline_guard()
     lock = load_lock(umbrella_lock_path(REPO_ROOT))
@@ -367,9 +463,39 @@ def main(argv: Sequence[str] | None = None) -> int:
     if len(sealed_ids) != 2000:
         raise SystemExit("the two sealed halves are not disjoint at recording level")
 
+    # ---- the carve-out, proven id by id before it is applied --------------
+    carve_ids_by_label: dict[str, set[str]] = {}
+    carve_sources: list[dict[str, object]] = []
+    for relpath in carve_relpaths:
+        label = carve_out_label(relpath)
+        ids = set(receipt_sample_ids(relpath))
+        outside = sorted(sid for sid in ids if sid not in record_by_id)
+        if outside:
+            raise SystemExit(
+                f"--exclude-receipt {relpath} names {len(outside)} id absent from the "
+                "devel loader"
+            )
+        carve_ids_by_label[label] = ids
+        carve_sources.append(
+            {
+                "label": label,
+                "relpath": relpath,
+                "receipt_file_sha256": sha256_file(relpath),
+                "recordings": len(ids),
+                "recordings_already_excluded_by_a_sealed_half": len(ids & sealed_ids),
+                "recordings_carved_out_by_this_version": len(ids - sealed_ids),
+                "utterances": len({utterance_of(sid) for sid in ids}),
+            }
+        )
+    carved_ids: set[str] = set()
+    for ids in carve_ids_by_label.values():
+        carved_ids |= ids
+    carved_ids -= sealed_ids
+    excluded_ids = sealed_ids | carved_ids
+
     # ---- the take-all freeze ----------------------------------------------
     remainder_capacity = Counter(
-        record.scenario for record in records if record.sample_id not in sealed_ids
+        record.scenario for record in records if record.sample_id not in excluded_ids
     )
     quotas = {scenario: int(remainder_capacity.get(scenario, 0)) for scenario in sorted(devel_mixture)}
     candidates = [
@@ -386,14 +512,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         per_stratum=quotas,
         seed=SEED,
         split_role="dev",
-        exclude_sample_ids=sorted(sealed_ids),
-        roster_id=ROSTER_ID,
+        exclude_sample_ids=sorted(excluded_ids),
+        roster_id=this_roster_id,
         roster_role="evaluation",
     )
     remainder_ids = sorted(str(item["sample_id"]) for item in receipt_draw["items"])
-    if set(remainder_ids) != set(record_by_id) - sealed_ids:
+    if set(remainder_ids) != set(record_by_id) - excluded_ids:
         raise SystemExit("the take-all freeze did not take the whole remainder")
-    if receipt_draw["excluded_count"] != len(sealed_ids):
+    if receipt_draw["excluded_count"] != len(excluded_ids):
         raise SystemExit("freeze_roster excluded a different number of candidates")
 
     items = [enrich(sid, record_by_id) for sid in remainder_ids]
@@ -431,6 +557,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             Counter(utterance_of(sid) for sid in remainder_ids).values()
         ),
     }
+    # The carve-out is proven the same way every other exclusion is: by id, in
+    # the receipt, with a zero the reader can check rather than a promise.
+    for label in sorted(carve_ids_by_label):
+        disjointness["shared_with_carved_out_%s_recordings" % label] = len(
+            remainder_set & carve_ids_by_label[label]
+        )
+    if carved_ids:
+        disjointness["shared_with_any_carved_out_recording"] = len(remainder_set & carved_ids)
     for key, value in disjointness.items():
         if key.startswith("shared_with") and value:
             raise SystemExit(f"DEVEL-REMAINDER disjointness proof failed: {key} = {value}")
@@ -438,34 +572,59 @@ def main(argv: Sequence[str] | None = None) -> int:
         raise SystemExit("a remainder id is not a member of the frozen devel enumeration")
 
     # ---- the completeness identity ----------------------------------------
+    # Without a carve-out the identity has three parts; a carve-out adds a
+    # fourth so that nothing disappears from the accounting -- the reserved
+    # recordings are named and set aside, not subtracted into silence.
+    parts: list[tuple[str, set[str]]] = [
+        ("DEV-1000", set(dev1000_ids)),
+        ("DEV-2000-ADDED", set(added_ids)),
+    ]
+    if carved_ids:
+        parts.append(("CARVED-OUT", set(carved_ids)))
+    parts.append(("DEVEL-REMAINDER", remainder_set))
+    parts_union: set[str] = set()
+    for _, member in parts:
+        parts_union |= member
+    parts_disjoint = all(
+        not (parts[left][1] & parts[right][1])
+        for left in range(len(parts))
+        for right in range(left + 1, len(parts))
+    )
+    sum_key = "four_parts_sum" if carved_ids else "three_parts_sum"
     completeness = {
         "devel_recordings": len(records),
         "dev1000_recordings": len(dev1000_ids),
         "dev2000_added_recordings": len(added_ids),
         "remainder_recordings": len(remainder_ids),
-        "three_parts_sum": len(dev1000_ids) + len(added_ids) + len(remainder_ids),
-        "union_equals_the_complete_devel_split": (
-            set(dev1000_ids) | set(added_ids) | remainder_set
-        )
-        == set(record_by_id),
-        "parts_are_pairwise_disjoint": (
-            not (set(dev1000_ids) & set(added_ids))
-            and not (set(dev1000_ids) & remainder_set)
-            and not (set(added_ids) & remainder_set)
-        ),
+        sum_key: sum(len(member) for _, member in parts),
+        "union_equals_the_complete_devel_split": parts_union == set(record_by_id),
+        "parts_are_pairwise_disjoint": parts_disjoint,
         "statement": (
-            "The expanded development read is DEV-1000 U DEV-2000-ADDED U DEVEL-REMAINDER, "
-            "and that union is the COMPLETE SLURP devel split at recording granularity: "
-            "1,000 + 1,000 + "
-            f"{len(remainder_ids)} = {len(records)} recordings, pairwise disjoint."
+            (
+                "The expanded development read is DEV-1000 U DEV-2000-ADDED U "
+                "DEVEL-REMAINDER, and that union is the COMPLETE SLURP devel split at "
+                "recording granularity: 1,000 + 1,000 + "
+                f"{len(remainder_ids)} = {len(records)} recordings, pairwise disjoint."
+            )
+            if not carved_ids
+            else (
+                "The expanded development read is DEV-1000 U DEV-2000-ADDED U "
+                "DEVEL-REMAINDER, and with the CARVED-OUT reservations it is the COMPLETE "
+                "SLURP devel split at recording granularity: 1,000 + 1,000 + "
+                f"{len(remainder_ids)} + {len(carved_ids)} = {len(records)} recordings, "
+                "pairwise disjoint. The carved-out recordings are accounted for, not lost: "
+                "they stay reserved and this roster never reads them."
+            )
         ),
     }
+    if carved_ids:
+        completeness["carved_out_recordings"] = len(carved_ids)
     if not completeness["union_equals_the_complete_devel_split"]:
-        raise SystemExit("the three parts do not cover the devel split")
+        raise SystemExit("the parts do not cover the devel split")
     if not completeness["parts_are_pairwise_disjoint"]:
-        raise SystemExit("the three parts are not pairwise disjoint")
-    if completeness["three_parts_sum"] != len(records):
-        raise SystemExit("the three parts do not sum to the devel split size")
+        raise SystemExit("the parts are not pairwise disjoint")
+    if completeness[sum_key] != len(records):
+        raise SystemExit("the parts do not sum to the devel split size")
 
     # ---- utterance overlap (reported, never enforced) ---------------------
     utterance_overlap = {
@@ -524,11 +683,70 @@ def main(argv: Sequence[str] | None = None) -> int:
         "final60_and_probe60_share_a_recording": len(set(final60_ids) & set(probe60_ids)),
         "final60_and_probe60_share_an_utterance": len(final60_utterances & probe60_utterances),
         "reading": (
-            "These two sets were HELD BACK by the DEV ladder, not consumed by it, so they "
-            "are not in either sealed half and a remainder defined by subtraction contains "
-            "them. They are neither dropped nor quietly read here: the roster carries them "
-            "and deviation REM-D1 asks the owner to acknowledge or carve them out before "
-            "the remainder is read as evidence."
+            (
+                "These two sets were HELD BACK by the DEV ladder, not consumed by it, so "
+                "they are not in either sealed half and a remainder defined by subtraction "
+                "contains them. They are neither dropped nor quietly read here: the roster "
+                "carries them and deviation REM-D1 asks the owner to acknowledge or carve "
+                "them out before the remainder is read as evidence."
+            )
+            if not carved_ids
+            else (
+                "These two sets were HELD BACK by the DEV ladder, not consumed by it, so a "
+                "remainder defined by subtraction alone would contain them. This version "
+                "CARVES THEM OUT (see carved_out_reserved_sets): "
+                "recordings_inside_the_remainder is 0 for both, so the FINAL60 reservation "
+                "is not spent and no already-contacted probe-60 recording is on the roster. "
+                "remainder_recordings_of_those_utterances is what a recording-level "
+                "carve-out cannot remove -- sibling recordings of the same utterances -- "
+                "and deviation REM-D1 puts that residue to the owner."
+            )
+        ),
+    }
+
+    # ---- what the carve-out removed, and what it could not remove ---------
+    carve_utterances = {utterance_of(sid) for sid in carved_ids}
+    carve_labels = sorted(carve_ids_by_label)
+    pairwise_recordings: dict[str, int] = {}
+    pairwise_utterances: dict[str, int] = {}
+    for left_index, left in enumerate(carve_labels):
+        for right in carve_labels[left_index + 1 :]:
+            key = f"{left}|{right}"
+            pairwise_recordings[key] = len(
+                carve_ids_by_label[left] & carve_ids_by_label[right]
+            )
+            pairwise_utterances[key] = len(
+                {utterance_of(sid) for sid in carve_ids_by_label[left]}
+                & {utterance_of(sid) for sid in carve_ids_by_label[right]}
+            )
+    carve_block = {
+        "authority": CARVE_OUT_AUTHORITY,
+        "receipts": carve_sources,
+        "union_recordings": len(carved_ids),
+        "union_utterances": len(carve_utterances),
+        "union_sample_id_list_sha256": hashlib.sha256(
+            "\n".join(sorted(carved_ids)).encode("utf-8")
+        ).hexdigest(),
+        "pairwise_shared_recordings": pairwise_recordings,
+        "pairwise_shared_utterances": pairwise_utterances,
+        "carved_out_recordings_still_in_the_remainder": len(remainder_set & carved_ids),
+        "carved_out_utterances_still_represented_in_the_remainder": len(
+            remainder_utterances & carve_utterances
+        ),
+        "remainder_recordings_of_carved_out_utterances": sum(
+            1 for sid in remainder_ids if utterance_of(sid) in carve_utterances
+        ),
+        "reading": (
+            "The carve-out is exact at RECORDING granularity and is proven here and in "
+            "disjointness_proof: zero carved-out recordings survive in the remainder. It "
+            "is NOT exact at UTTERANCE granularity and cannot be, because devel carries "
+            "several recordings of one utterance: "
+            f"{len(remainder_utterances & carve_utterances)} of the carved-out utterances "
+            "still have sibling recordings on this roster "
+            f"({sum(1 for sid in remainder_ids if utterance_of(sid) in carve_utterances)} "
+            "recordings). Reading them exposes the same sentence and the same gold as the "
+            "reserved recordings would, through a different microphone. Deviation REM-D1 "
+            "puts that residue to the owner rather than absorbing it."
         ),
     }
 
@@ -600,8 +818,36 @@ def main(argv: Sequence[str] | None = None) -> int:
     audio_total = round(sum(float(item["audio_seconds"]) for item in items), 9)
     audio_values = [float(item["audio_seconds"]) for item in items]
 
-    deviations = [
-        {
+    if carved_ids:
+        rem_d1 = {
+            "id": "REM-D1",
+            "statement": (
+                f"The {len(carved_ids)} reserved recordings -- the {len(final60_ids)} "
+                "FINAL60 recordings (receipt split_role 'reserved-final-unread', held back "
+                f"on 2026-08-23) and the {len(probe60_ids)} historic probe-60 recordings "
+                "already contacted by early probes -- are CARVED OUT of this version, so "
+                "the FINAL60 reservation is not spent and no already-contacted recording "
+                "is on the roster. What the carve-out cannot remove is the reserved "
+                f"UTTERANCES: {len(remainder_utterances & carve_utterances)} of them still "
+                "have sibling recordings here "
+                f"({sum(1 for sid in remainder_ids if utterance_of(sid) in carve_utterances)} "
+                "recordings of the same sentences through different microphones)."
+            ),
+            "why_unavoidable": (
+                "Arithmetic again: devel carries several recordings of one utterance, so a "
+                "recording-level reservation cannot be enforced at utterance level without "
+                "dropping recordings that were never reserved."
+            ),
+            "owner_action": (
+                "decide whether the utterance-level residue also has to go (that is a "
+                f"further {sum(1 for sid in remainder_ids if utterance_of(sid) in carve_utterances)} "
+                "recordings and a third version of this roster), or accept that the "
+                "reservation is enforced at recording granularity only; the counts needed "
+                "for either choice are in carved_out_reserved_sets"
+            ),
+        }
+    else:
+        rem_d1 = {
             "id": "REM-D1",
             "statement": (
                 f"The remainder contains the {len(final60_ids)} FINAL60 recordings "
@@ -620,7 +866,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "the 120 recordings out of the remainder before it is read (the counts "
                 "needed for the carve-out are in reserved_sets_inside_the_remainder)"
             ),
-        },
+        }
+    deviations = [
+        rem_d1,
         {
             "id": "REM-D2",
             "statement": (
@@ -656,9 +904,36 @@ def main(argv: Sequence[str] | None = None) -> int:
         },
     ]
 
+    extra_keys: dict[str, object] = {}
+    if version != DEFAULT_VERSION:
+        extra_keys["roster_version"] = version
+        parent_relpath = roster_relpath(version - 1)
+        if (REPO_ROOT / parent_relpath).is_file():
+            parent = read_json(parent_relpath)
+            extra_keys["supersedes"] = {
+                "roster_id": parent["roster_id"],
+                "relpath": parent_relpath,
+                "receipt_file_sha256": sha256_file(parent_relpath),
+                "split_identity_hash": parent["split_identity_hash"],
+                "recordings": len(parent["items"]),
+                "reading": (
+                    "The parent receipt stays committed exactly as it was frozen and is "
+                    "NEVER rewritten: several committed documents pin its "
+                    "receipt_file_sha256, so adding a superseded_by key to it would break "
+                    "every one of those pins. The supersession is recorded here and in the "
+                    "preparation plan note instead."
+                ),
+            }
+    if carve_relpaths:
+        extra_keys["carved_out_reserved_sets"] = carve_block
+    authority_text = (
+        AUTHORITY if not carve_relpaths else f"{AUTHORITY}; {CARVE_OUT_AUTHORITY}"
+    )
+
     receipt = {
         **receipt_draw,
-        "authority": AUTHORITY,
+        **extra_keys,
+        "authority": authority_text,
         "generator": GENERATOR,
         "status": "FROZEN; MODEL-FREE, ZERO CONTACTS",
         "design": (
@@ -740,7 +1015,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     verify_roster(receipt)
 
     summary = {
-        "roster_id": ROSTER_ID,
+        **extra_keys,
+        "roster_id": this_roster_id,
         "split_identity_hash": receipt["split_identity_hash"],
         "count": len(items),
         "audio_seconds_total": audio_total,
@@ -761,19 +1037,20 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(json.dumps(summary, indent=2, sort_keys=True))
 
     if args.write:
-        write_roster(receipt, REPO_ROOT / ROSTER_RELPATH)
-        check_dir = REPO_ROOT / CHECK_DIR
-        check_dir.mkdir(parents=True, exist_ok=True)
+        write_roster(receipt, REPO_ROOT / this_roster_relpath)
+        proof_dir = REPO_ROOT / this_check_dir
+        proof_dir.mkdir(parents=True, exist_ok=True)
         proof = {
             "schema": "saea-devel-remainder-roster-disjointness-v1",
             "study": "speech-aware-evidence-acquisition",
-            "authority": AUTHORITY,
+            "authority": authority_text,
             "generator": GENERATOR,
+            **extra_keys,
             "roster": {
-                "roster_id": ROSTER_ID,
-                "relpath": ROSTER_RELPATH,
+                "roster_id": this_roster_id,
+                "relpath": this_roster_relpath,
                 "split_identity_hash": receipt["split_identity_hash"],
-                "receipt_file_sha256": sha256_file(ROSTER_RELPATH),
+                "receipt_file_sha256": sha256_file(this_roster_relpath),
                 "count": len(items),
                 "audio_seconds_total": audio_total,
             },
@@ -790,13 +1067,13 @@ def main(argv: Sequence[str] | None = None) -> int:
             "offline_guard": receipt["offline_guard"],
         }
         proof["proof_sha256"] = canonical_sha256(proof)
-        (check_dir / "disjointness.json").write_text(
+        (proof_dir / "disjointness.json").write_text(
             json.dumps(proof, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
             newline="\n",
         )
-        print(f"wrote {ROSTER_RELPATH}")
-        print(f"wrote {CHECK_DIR}/disjointness.json")
+        print(f"wrote {this_roster_relpath}")
+        print(f"wrote {this_check_dir}/disjointness.json")
     return 0
 
 

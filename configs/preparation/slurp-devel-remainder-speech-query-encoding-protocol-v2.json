@@ -1,0 +1,43 @@
+{
+  "answer_authority": "No answers are generated; these are frozen retrieval-tool query vectors.",
+  "boundary_policy": "fixed-stride-complete-final-tail-v1",
+  "cache_relpath": "prepared/slurp-devel-remainder-speech-query-span-cache-v1",
+  "contact_policy": "One lazy local frozen encoder load, one speech input per forward, no jitter, retry, fallback, or automatic restart.",
+  "cpu_workers": 8,
+  "dimension": 2048,
+  "encoder": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-speech-query-encoder-inventory-v2.json",
+    "sha256": "1548387ba91209921fd747e9eff981027be618c618b732efe20ca7d43680bb31"
+  },
+  "expected_unique_spans": 6570,
+  "input_order": "source-id-then-original-frame",
+  "isolation": "Read only the registered devel-split speech carried by SLURP-DEVEL-REMAINDER-V2, the carved roster: the 60 reserved-final-unread FINAL60 recordings and the 60 historic probe-60 recordings are NOT on it. Do not read reference transcripts, task labels, intent/slot annotations, prior answers, feedback from the sealed DEV-1000 or DEV-2000-ADDED halves, the carved-out reservations, or future turns.",
+  "max_audio_samples": 1920000,
+  "max_seconds": 120.0,
+  "max_sequence_tokens": 8192,
+  "monitor_interval_seconds": 10,
+  "output_relpath": "prepared/SAEA-SLURP-DEVEL-REMAINDER-SPEECH-QUERY-ENCODING-V1/index.json",
+  "overlap_seconds": 8.0,
+  "query_prompt": "query: ",
+  "query_rows_relpath": "prepared/SAEA-SLURP-DEVEL-REMAINDER-SPEECH-QUERY-ENCODING-V1/queries.jsonl",
+  "roster_sha256": "b695a6bdb7ed70dba5ae842ac52e02e026dfc5940b856673884cb549ef7f9977",
+  "schema": "saea-speech-query-encoding-protocol-v1",
+  "sources": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-devel-remainder-speech-query-source-inventory-v2.json",
+    "sha256": "d8ca6915864d4b08f99157d990b52543f6b705184686546a5922acea6dda9aae",
+    "schema": "saea-speech-query-source-inventory-v1",
+    "built_by": "scripts/build_speech_query_source_inventory.py (model-free: byte hashes + audio header geometry; no decode, encoder, tokenizer or network)",
+    "derived_from": {
+      "runtime_view": {
+        "path": "configs/dataset/slurp-speech-native-devel-remainder-v2.json",
+        "raw_sha256": "51ea5ad6310f0a4f772b91231a703d042d55862586db1272febbeaf68f7dc758",
+        "canonical_runtime_view_sha256": "72a8d82910f15360c4d85ce504cfcb892adc692d749e677d8ade70bf195fe62b"
+      },
+      "roster_receipt": {
+        "path": "docs/receipts/rosters/slurp-devel-remainder-v2.json",
+        "sha256": "b695a6bdb7ed70dba5ae842ac52e02e026dfc5940b856673884cb549ef7f9977"
+      }
+    },
+    "registration_note": "Built 2026-09-23 (step 2a of preparation 2, MODEL-FREE, zero contacts): 6,570 rows, split identity f8af142bec49755d70364b665b31e3963972084fb73a568c9921f53b41fd341a, audio_seconds_total 18611.584875. V2 REPLACES the v1 inventory of 6,690 rows: the coordinator ruling of 2026-09-23 (provisional decision 109) carved the 60 reserved-final-unread FINAL60 recordings and the 60 already-contacted historic probe-60 recordings out of the roster, so the remainder no longer spends the FINAL60 reservation and carries no already-contacted row. The v1 inventory stays on disk as the superseded parent and is bound by nothing. The inventory is pinned here from the start, following the SLURP-STAGE3-CONSTRUCTION-R01 registration, so the two-correction sequence the DEV-2000-ADDED protocol had to record is not expected. cpu_workers is 8 rather than the precedent's 4 (owner decision 107: the expanded DEV side is prepared fast, with more workers); the standing rule of at most 8 CPU workers beside a GPU campaign still binds."
+  }
+}
