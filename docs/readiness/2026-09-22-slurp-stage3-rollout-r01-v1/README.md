@@ -84,10 +84,10 @@ Composed and protocol hashes as registered (every one of them moves at the flip,
 
 | cell | composed config | protocol |
 | --- | --- | --- |
-| `slurp-native-stage3-rollout-r01-v1` | `d90e7c550fedfaa8a60dfe1157655691b1dc57ece4303f95e1657f4eb9d09063` | `e9b07b184ae6c4147b5bfb08d100673da913536e22953fa8eafaeb34892f3aab` |
-| `slurp-native-stage3-rollout-r01-smoke-4-v1` | `b0e6ae457676f994111c12341a02eaadc13b96cb92bebef72d690dfe8c3d93ba` | `0743d51e88ecc3052f4f5564b65a05026c9e52f1a9eb8d9402bfc1aa66e1ae86` |
+| `slurp-native-stage3-rollout-r01-v1` | `6e3e26baa4d25dbc17e3e52110b0bfd423c47cc7b7931e67f495033ba51e0b32` | `7af1324dfaa8918ee3f54fa9ab32963647ad584027797365f859918b1f186686` |
+| `slurp-native-stage3-rollout-r01-smoke-4-v1` | `b31191e06d11c81b8329a42f0830da47546991d598ac89f22c97a198cc4003c5` | `a40249f2232bfea1ea9a3fc93925526da789a3beead533ff77999e42ab5cee43` |
 
-Protocol document sha256 `9d9e03113efe95ae3ae11e0e059b6e31177a1848c4afde1dd96c8b74eec3cf80`.
+Protocol document sha256 `31cfb0cfd2206deeb4d082724c4c92e0148a1a6099a41789516319e3f8b52ad4`.
 
 Still root's to do, in order: mint `coordination/slurp-stage3-rollout-r01-v1/root-admission-v1.json` (decision id `slurp-stage3-rollout-r01-admission-v1`), then re-pin BOTH cells in
 ONE cycle with `scripts/flights/repin_cell.py --set-ready`. The re-pin builds this cell's own
@@ -97,3 +97,56 @@ never be rewritten -- pins it into the baseline fragment and into the experiment
 PENDING `preparation` readiness requirement, INSERTS the decision requirement (none is registered
 here, so nothing is left behind without an `expected_decision_id`), and recomputes every dependent
 hash. Then queue the smoke and the arm on the SAEA-Batch-Driver (decision 77) on the SLURP geometry.
+
+## R01C narrowing (2026-09-23)
+
+Cell ROLL-1 now flies **R01C**, the clean subset of the S3-1 construction roster:
+`SLURP-STAGE3-CONSTRUCTION-R01C`, **625 rows** (`docs/receipts/rosters/slurp-stage3-construction-r01c.json`,
+sha256 `e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd`). Everything else about the cell is unchanged --
+same arm, same grouped-Solver factor, same knowledge stores, same geometry, same scorers,
+same four run ids and attempt ids.
+
+**Why.** `rails.runner.run_speech_native_agent_loop` refuses a run whose query samples intersect
+the bound composite snapshot's own `source_sample_ids` (the union over the composed stores).
+Item S3-1k removed the overlap contributed by `train-exemplars` by re-pointing it at
+`size-pool-annotated-exemplars-minus-r01`. The residual intersection was **175** R01 rows whose
+utterances are card sources of the two AUTHORED semantic stores (`intent-boundaries-v1`,
+57 recordings; `slot-contracts-v2`, 155 recordings; union 175 utterances), and an authored card
+cannot be re-pointed model-free. Those rows left the QUERY side instead (coordinator decision 102,
+pending owner confirmation). A later top-up draw (R02) is a separate item.
+
+**How.** `scripts/build_slurp_stage3_construction_clean_subset.py` -- a pure SELECTION of R01 with
+zero model, tool, encoder, tokenizer, scorer, GPU and network contacts (the armed offline socket
+guard recorded 0 attempts). Exclusion is by UTTERANCE, the same rule
+`scripts/build_slurp_stage3_r01_excluded_exemplar_store.py` applies from the knowledge side. Every
+surviving roster item, runtime-view row and query-vector line is the parent artifact's own bytes,
+in the parent's order.
+
+**New artefacts.**
+
+| artefact | path | sha256 |
+| --- | --- | --- |
+| roster receipt (625 rows, 175 excluded) | `docs/receipts/rosters/slurp-stage3-construction-r01c.json` | `e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd` |
+| dataset fragment / runtime view | `configs/dataset/slurp-speech-native-stage3-construction-r01c.json` | `36949a683739676616d4e4845fb302cad59721c8032ce4d65d18b35823a56cba` |
+| intent-boundary query vectors (data root) | `vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-segments.jsonl` | `ebaa743241a67a2cb759353fa8a9f58a3f09d27c00c8c66cb3172958dcccc1b8` |
+| content query vectors (data root) | `vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-content-v1.jsonl` | `dd3b2924cda10810487b2b114e61380beaf8477634c602096b875e461ae44baa` |
+
+**Re-registered plan numbers.**
+
+| run id | planned_model_calls | planned_speech_audio_seconds | split identity hash |
+| --- | --- | --- | --- |
+| `SAEA-SLURP-STAGE3-ROLLOUT-R01-V1` | 11,875 | 51,811 | `f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515` |
+| `SAEA-SLURP-STAGE3-ROLLOUT-R01-FIT-V1` | 47,500 | 51,811 | `f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515` |
+| `SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-V1` | 76 | 324 | `e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5` |
+| `SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-FIT-V1` | 304 | 324 | `e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5` |
+
+`planned_gpu_hours` is unchanged (8.0 arm / 1.0 smoke): a ceiling is never a target. The featcache
+packet promotion receipt (800 packets) and the R01 D1 media supplement stay pinned -- both are read
+BY ID and accept a superset, and all 625 R01C ids bind.
+
+**Still root's to do.** This narrowing flips no readiness and touches no readiness state field. The
+`prepared_phase_supply` artifacts pinned in both baselines were minted over the old populations and
+`core.flight.runtime._phase_seed_inputs` binds a prepared artifact to the composed config, the split
+identity and the packet map, so BOTH must be re-minted with `scripts/flights/repin_cell.py` before
+either cell flies; that re-pin also recomputes the composed and protocol hashes once more and
+rewrites every document that quotes them, including the four exposure-ledger rows above.
