@@ -20,6 +20,9 @@ import pytest
 
 from speech_aware_evidence_acquisition.core.config import compose, protocol_hash
 from speech_aware_evidence_acquisition.core.flight.repin import (
+    NO_ARTIFACT_REASONS,
+    NO_CONSTRUCTION_SUPPLY_MESSAGE,
+    NO_SUPPLIED_PHASE_MESSAGE,
     RepinError,
     apply_decision_and_readiness,
     repin_package,
@@ -647,3 +650,106 @@ def test_a_cell_without_a_supplied_phase_flips_on_its_decision_alone(tmp_path):
     kinds = [entry["kind"] for entry in readiness["requirements"]]
     assert "decision" in kinds and "preparation" not in kinds
     assert not list((pkg["data"] / "prepared" / RUN_ID).glob("phase-supply-v2.json"))
+
+
+# --------------------------------------------------------------------------
+# Item E42: a construction-visible TEXT arm has no prepared phase supply.
+#
+# ``run_phases`` dispatches such an arm through ``_dispatch_fixed_policy``, so
+# it never builds a knowledge snapshot, a speech packet binding or a phase
+# supply; the preparation runtime says so by name and the re-pin records the
+# skip instead of trying to derive an artifact that does not exist. (Before
+# this slice the re-pin of cell ADV-1 died on the SPEECH-arm refusal
+# "phase programs require an explicit feature or raw speech arm".)
+# --------------------------------------------------------------------------
+
+
+def test_the_no_artifact_messages_mirror_the_preparation_runtime():
+    """The two literals this module matches on are the runtime's own."""
+    from speech_aware_evidence_acquisition.core.flight.runtime import (
+        NO_CONSTRUCTION_PHASE_SUPPLY_MESSAGE,
+    )
+
+    assert NO_CONSTRUCTION_SUPPLY_MESSAGE == NO_CONSTRUCTION_PHASE_SUPPLY_MESSAGE
+    assert set(NO_ARTIFACT_REASONS) == {
+        NO_SUPPLIED_PHASE_MESSAGE,
+        NO_CONSTRUCTION_SUPPLY_MESSAGE,
+    }
+
+
+class FakeConstructionArm(Fake):
+    """A ``prepare_supply_fn`` that behaves like the real one on a
+    construction-visible text arm: it raises the preparation runtime's own
+    message, on an existing path and on a fresh one alike, and writes
+    nothing."""
+
+    def __call__(self, *, run_id, output_path, **kwargs):
+        self.calls.append({"run_id": run_id, "output_path": str(output_path), **kwargs})
+        raise RuntimeError(f"PreparationError: {NO_CONSTRUCTION_SUPPLY_MESSAGE}")
+
+
+def test_a_construction_visible_cell_flips_without_a_prepared_supply(tmp_path):
+    pkg = build_package(tmp_path)
+    _make_direct_only(pkg)
+    baseline = pkg["repo"] / "configs/baseline/baseline-1.json"
+    before = baseline.read_text(encoding="utf-8")
+    decision_path = pkg["data"] / "coordination/decision.json"
+    _write(decision_path, {"decision_id": "decision-1", "eligible_run_ids": [RUN_ID]})
+    fake = FakeConstructionArm()
+
+    summary = run(
+        pkg,
+        fake,
+        decision=("coordination/decision.json", "decision-1"),
+        set_ready=True,
+    )
+
+    report = summary["cells"][0]["artifact"]
+    assert report["rebuilt"] is False and report["pin"] is None
+    assert report["skipped"] == NO_CONSTRUCTION_SUPPLY_MESSAGE
+    assert report["reason"] == NO_ARTIFACT_REASONS[NO_CONSTRUCTION_SUPPLY_MESSAGE]
+    assert "construction-visible text arm" in report["reason"]
+    # the baseline fragment is byte-identical: the transient drop was restored
+    assert baseline.read_text(encoding="utf-8") == before
+    assert "prepared_phase_supply" not in json.loads(before)
+    experiment = json.loads(
+        (pkg["repo"] / f"configs/experiment/{EXPERIMENT_ID}.json").read_text(encoding="utf-8")
+    )
+    readiness = experiment["cells"][0]["readiness"]
+    assert readiness["state"] == "ready"
+    kinds = [entry["kind"] for entry in readiness["requirements"]]
+    assert "decision" in kinds and "preparation" not in kinds
+    # nothing new was derived: the fixture's own v1 artifact is all there is
+    assert not list((pkg["data"] / "prepared" / RUN_ID).glob("phase-supply-v2.json"))
+
+
+def test_a_construction_visible_cell_that_pins_a_supply_is_refused(tmp_path):
+    """Fail closed: nothing today gives a construction-visible arm a prepared
+    supply, so a cell that both composes one and pins one is undefined."""
+    pkg = build_package(tmp_path)
+    baseline = pkg["repo"] / "configs/baseline/baseline-1.json"
+    before = baseline.read_text(encoding="utf-8")
+    assert "prepared_phase_supply" in json.loads(before)
+    fake = FakeConstructionArm()
+
+    with pytest.raises(RepinError) as error:
+        run(pkg, fake)
+
+    message = str(error.value)
+    assert "has no derivable prepared phase supply" in message
+    assert "phase-supply-v1.json" in message
+    assert baseline.read_text(encoding="utf-8") == before
+    assert not list((pkg["data"] / "prepared" / RUN_ID).glob("phase-supply-v2.json"))
+
+
+def test_a_stale_pin_on_an_ordinary_cell_still_rebuilds(tmp_path):
+    """The E42 refusal is scoped to its own message: an ordinary stale pin
+    takes the unchanged rebuild path."""
+    pkg = build_package(tmp_path)
+    fake = Fake(mismatched={RUN_ID})
+
+    summary = run(pkg, fake)
+
+    report = summary["cells"][0]["artifact"]
+    assert report["rebuilt"] is True
+    assert report["new_pin"]["relpath"].endswith("phase-supply-v2.json")

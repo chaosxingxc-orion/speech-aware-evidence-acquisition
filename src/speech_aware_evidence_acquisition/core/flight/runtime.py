@@ -365,6 +365,19 @@ def arm_shows_construction_targets(arm: str) -> bool:
     return CONSTRUCTION_VISIBLE_FIELD in set(ARM_VISIBLE_FIELDS.get(arm, ()))
 
 
+#: Item E42 (2026-09-23). The preparation refusal a CONSTRUCTION-VISIBLE arm
+#: answers the prepared-first-phase-supply question with: it is dispatched
+#: text-only (:meth:`FlightRuntime._dispatch_fixed_policy`), builds no
+#: knowledge snapshot, no speech packet binding and no phase supply, and so has
+#: no prepared supply artifact AT ALL -- nothing for ``core.flight.repin`` to
+#: verify, re-mint or pin. ``core.flight.repin.NO_CONSTRUCTION_SUPPLY_MESSAGE``
+#: mirrors this literal exactly as it already mirrors the "no supplied first
+#: phase" one (item E38).
+NO_CONSTRUCTION_PHASE_SUPPLY_MESSAGE = (
+    "a construction-visible text arm has no prepared phase supply to prepare"
+)
+
+
 ARTIFACT_RESULT_BINDING_SCHEMA = "saea-artifact-result-binding-v1"
 ARTIFACT_RESULT_ROLE = "training-feedback-proposal"
 ARTIFACT_RESULT_BINDING_SCHEMA_V2 = "saea-artifact-result-binding-v2"
@@ -7132,6 +7145,71 @@ class FlightRuntime:
         self._prepared_artifact_reports = tuple(reports)
         return self._prepared_artifact_reports
 
+    #: The composed keys that would give a construction-visible arm a prepared
+    #: phase supply. Any of them declared BESIDE that arm is a combination
+    #: nothing in this runtime implements (item E42), so it is refused by name
+    #: rather than silently reported as "no supply".
+    _CONSTRUCTION_SUPPLY_KEYS = (
+        "knowledge_stores",
+        "phase_supply",
+        "prepared_phase_supply",
+        "prepared_phase_recall",
+    )
+
+    def _prepared_phase_supply_absent_reason(self) -> str | None:
+        """Why this cell has NO prepared first-phase supply artifact, or ``None``.
+
+        Item E42 (2026-09-23). A construction-visible arm
+        (:func:`arm_shows_construction_targets`) is dispatched TEXT-ONLY:
+        :meth:`run_phases` routes it to :meth:`_dispatch_fixed_policy` and
+        never reaches :meth:`_dispatch_phase_program`, so no knowledge
+        snapshot, no speech packet binding and no phase supply is built for it
+        at any point of a real flight. Asking
+        :meth:`_prepared_phase_program_binding` for one anyway is what made the
+        re-pin of cell ADV-1 die on the SPEECH-arm refusal of
+        :meth:`_default_phase_program_binding` ("phase programs require an
+        explicit feature or raw speech arm") -- a speech-only assumption
+        applied to a cell that flies no speech.
+
+        CONFIG ALONE: no adapter, no split, no lock. Composing the four
+        fragments is all this needs, and an already-resolved ``self._composed``
+        is reused, so a speech cell pays at most one extra
+        :func:`~core.config.compose` on the offline preparation path and
+        nothing at all on the flight path.
+
+        Fail-closed: a construction-visible cell that DOES declare a knowledge
+        store, a ``phase_supply``, or a prepared supply/recall pin is refused
+        by name -- that combination is undefined today, and answering "no
+        supply" for it would hide a real misconfiguration.
+        """
+
+        values = (
+            self._composed.values
+            if self._composed is not None
+            else compose(
+                self._repo_root,
+                self._model,
+                self._dataset,
+                self._baseline,
+                self._experiment,
+            ).values
+        )
+        arm = values.get("arm")
+        if not isinstance(arm, str) or not arm_shows_construction_targets(arm):
+            return None
+        declared = [
+            key
+            for key in self._CONSTRUCTION_SUPPLY_KEYS
+            if values.get(key) not in (None, {}, [])
+        ]
+        if declared:
+            raise FlightRuntimeError(
+                f"arm {arm!r} is construction-visible and is dispatched text-only, so this "
+                f"flight builds no phase supply, yet the cell declares {declared}; that "
+                "combination is undefined -- drop the declaration, or fly a speech arm"
+            )
+        return NO_CONSTRUCTION_PHASE_SUPPLY_MESSAGE
+
     def phase_supply_artifact_identity(self):
         """``(program, binding, specs, first phase, split identity, inputs)``
         for the prepared first-phase supply artifact.
@@ -7144,9 +7222,19 @@ class FlightRuntime:
         through this method and the :meth:`_phase_seed_inputs` it returns, so
         ``check``, ``repin`` and the flight cannot disagree about what makes an
         artifact stale.
+
+        Item E42: a cell that HAS no such artifact says so here, BEFORE the
+        speech phase-program binding is built
+        (:meth:`_prepared_phase_supply_absent_reason`), in the same
+        ``PreparationError`` shape ``core.flight.repin`` already reads for a
+        program without a supplied first phase.
         """
 
         from ..preparation import PreparationError
+
+        absent = self._prepared_phase_supply_absent_reason()
+        if absent is not None:
+            raise PreparationError(absent)
 
         program, binding, identity = self._prepared_phase_program_binding()
         specs = binding.get("supply_specs") or {}
