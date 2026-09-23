@@ -1,17 +1,17 @@
 {
   "cell": "slurp-native-stage3-rollout-r01-smoke-4-v1",
-  "composed_config_hash": "b0e6ae457676f994111c12341a02eaadc13b96cb92bebef72d690dfe8c3d93ba",
+  "composed_config_hash": "b31191e06d11c81b8329a42f0830da47546991d598ac89f22c97a198cc4003c5",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-rollout-r01-smoke-4-generation-recovery-v1",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 76,
-    "planned_speech_audio_seconds": 286,
-    "protocol_hash": "0743d51e88ecc3052f4f5564b65a05026c9e52f1a9eb8d9402bfc1aa66e1ae86",
+    "planned_speech_audio_seconds": 324,
+    "protocol_hash": "a40249f2232bfea1ea9a3fc93925526da789a3beead533ff77999e42ab5cee43",
     "run_id": "SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
-    "split_identity_hash": "2f151c186d6712c3ed20b3c927ae68646ebd7fabfabe27461ab74a434de2a335",
+    "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
     "split_role": "discovery",
     "study": "speech-aware-evidence-acquisition"
   },
@@ -27,12 +27,12 @@
     "gpu_hours_fit_inclusive": 1.0,
     "native_task_contract_calls_cap": 0,
     "official_complete_scoring_jobs": 0,
-    "repeated_speech_audio_seconds_cap": 286
+    "repeated_speech_audio_seconds_cap": 324
   },
   "modules": {
     "base": "the LOCKED v2.0 default plan (cell PLAN, sealed arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1): the complete native episode with the review loop on, the shared rails.controllers.EvidenceAgentController through core.flight.FlightRuntime and the same OpenJiuwen executor, Solver-only answer authority, the slot-contracts v2 store, the train-exemplars store at k = 20, the intent-boundaries store, the np4 x 24,576 max512 resident geometry and the scorers. Nothing of it moves except the enumerated factor.",
-    "factor": "ONE factor against the locked v2.0 default plan (cell PLAN, configs/baseline/slurp-native-default-plan-lock-baseline-v1.json): native_episode.roles.solver.samples = 5 with decoding_overrides = {temperature: 0.7, seed_offset: 0} and commit = {policy: saea-commit-plurality-support-v1, min_support: 3, similarity_threshold: 0.8} -- the sealed B2 v3 grouped-Solver form -- and native_episode.deliver_normaliser REMOVED, because rails.native_episode_config refuses a grouped Solver together with the delivery normaliser node; the v3 projection moves to S3-3's offline scoring instead. The roster is the S3-1 construction roster SLURP-STAGE3-CONSTRUCTION-R01 (800 TRAIN construction rows) rather than TRAIN Fold A, with that roster's own promoted featcache packets and its own two query-vector pins. Everything else -- knowledge_stores.slot-contracts, phase_material, the task instruction template, the np4 x 24,576 geometry, the scorers -- is byte-identical to cell PLAN, and tests/unit/test_stage3_rollout_baseline_cell.py is the byte proof. Every sample is custodied in solver_group (invariant I7g); the delivered answer is the plurality commit and is read for nothing but custody.",
-    "roster_is_part_of_the_factor": "the S3-1 construction roster SLURP-STAGE3-CONSTRUCTION-R01 (800 TRAIN construction rows, roster receipt docs/receipts/rosters/slurp-stage3-construction-r01.json, split identity 2ece5e51ff781fdec89bef8e7448d8ba88249030d3c8a6478dba5e7c1e621dac) replaces TRAIN Fold A, with its own promoted featcache packets (SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS-RECOVERY-V1), its own intent-boundary speech-query vectors (SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1) and its own model-free content derivative (SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1). All three are sealed and pinned by hash in the baseline fragment; no comparator is defined on this roster.",
+    "factor": "ONE factor against the locked v2.0 default plan (cell PLAN, configs/baseline/slurp-native-default-plan-lock-baseline-v1.json): native_episode.roles.solver.samples = 5 with decoding_overrides = {temperature: 0.7, seed_offset: 0} and commit = {policy: saea-commit-plurality-support-v1, min_support: 3, similarity_threshold: 0.8} -- the sealed B2 v3 grouped-Solver form -- and native_episode.deliver_normaliser REMOVED, because rails.native_episode_config refuses a grouped Solver together with the delivery normaliser node; the v3 projection moves to S3-3's offline scoring instead. The roster is the clean subset of the S3-1 construction roster, SLURP-STAGE3-CONSTRUCTION-R01C (625 TRAIN construction rows) rather than TRAIN Fold A, with that roster's own promoted featcache packets and its own two query-vector pins. Everything else -- knowledge_stores.slot-contracts, phase_material, the task instruction template, the np4 x 24,576 geometry, the scorers -- is byte-identical to cell PLAN, and tests/unit/test_stage3_rollout_baseline_cell.py is the byte proof. Every sample is custodied in solver_group (invariant I7g); the delivered answer is the plurality commit and is read for nothing but custody.",
+    "roster_is_part_of_the_factor": "the clean subset of the S3-1 construction roster (SLURP-STAGE3-CONSTRUCTION-R01C, 625 TRAIN construction rows, roster receipt docs/receipts/rosters/slurp-stage3-construction-r01c.json, split identity f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515) replaces TRAIN Fold A, with R01's own promoted featcache packets (superset, bound by packet id) and the two R01C query-vector subsets. R01C is R01 minus the 175 rows whose utterances are knowledge-card sources; see r01c_narrowing_2026_09_23 in the protocol document. No comparator is defined on this roster.",
     "declared_keys_that_are_not_factors": "native_episode.finite_completion_policy = deliver-latest-or-abstain (item E13) and native_episode.react_exhaustion_policy = continue-without-answer (item E22), both required of every live SLURP native cell by scripts/checks/finite_completion_policy_check.py. Neither renders a request byte; each only decides whether a finite completion or a ReAct exhaustion aborts the flight or the row is RETAINED with its terminal disposition.",
     "zero_tool_authority": "no role carries phase_tools; the native task-contract call ceiling is 0 and no tools array is rendered on any request (item E23 repair form 0-B).",
     "purpose": "Cell ROLL-1 (S3-2): produce five custodied Solver samples per row of the S3-1 construction roster so that S3-3 can score the copies and select the best/worst pair on every disagreeing row, and S3-4 can ask the frozen core what distinguished the better answer from the worse. No admission verdict is read from this cell. Stage-3 algorithm label (owner decision 101): shared-rollout, operator rollout -- the algorithm-neutral rollout operator whose five custodied Solver samples per row every layer-A family (Training-Free GRPO, GEPA, ACE) consumes; it applies no learned context of its own. Declared as stage3_algorithm in both experiment fragments and checked by scripts/checks/stage3_algorithm_label_check.py."
@@ -43,14 +43,72 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1/protocol-registered-v1.json",
-    "sha256": "9d9e03113efe95ae3ae11e0e059b6e31177a1848c4afde1dd96c8b74eec3cf80"
+    "sha256": "31cfb0cfd2206deeb4d082724c4c92e0148a1a6099a41789516319e3f8b52ad4"
   },
-  "quality_read_gate": "No read of any kind before the complete sealed manifest, the exact ordered 800 outputs with five custodied solver_group samples per row (invariant I7g) and the native phase summary all exist. There is no admission read and no comparator: the only read is S3-3's own CLI (scripts/analysis/stage3_rollout_score.py) on COPIES of the sealed outputs, model-free, and the row accounting 800 in / 800 out must hold on both sides before any pair is selected.",
+  "quality_read_gate": "No read of any kind before the complete sealed manifest, the exact ordered 4 outputs with five custodied solver_group samples per row (invariant I7g) and the native phase summary all exist. There is no admission read and no comparator: the only read is S3-3's own CLI (scripts/analysis/stage3_rollout_score.py) on COPIES of the sealed outputs, model-free, and the row accounting 4 in / 4 out must hold on both sides before any pair is selected.",
   "registered_at_utc": "2026-09-23T12:00:00.000000+00:00",
   "registration_base_commit": "db3b4d6a",
   "schema": "saea-registered-generation-plan-v1",
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-roll1reg, branch fable/roll1reg",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
   "unused_budget_is_not_attempt_authority": true,
-  "purpose": "Cell ROLL-1 (S3-2): produce five custodied Solver samples per row of the S3-1 construction roster so that S3-3 can score the copies and select the best/worst pair on every disagreeing row, and S3-4 can ask the frozen core what distinguished the better answer from the worse. No admission verdict is read from this cell. Stage-3 algorithm label (owner decision 101): shared-rollout, operator rollout -- the algorithm-neutral rollout operator whose five custodied Solver samples per row every layer-A family (Training-Free GRPO, GEPA, ACE) consumes; it applies no learned context of its own. Declared as stage3_algorithm in both experiment fragments and checked by scripts/checks/stage3_algorithm_label_check.py."
+  "purpose": "Cell ROLL-1 (S3-2): produce five custodied Solver samples per row of the S3-1 construction roster so that S3-3 can score the copies and select the best/worst pair on every disagreeing row, and S3-4 can ask the frozen core what distinguished the better answer from the worse. No admission verdict is read from this cell. Stage-3 algorithm label (owner decision 101): shared-rollout, operator rollout -- the algorithm-neutral rollout operator whose five custodied Solver samples per row every layer-A family (Training-Free GRPO, GEPA, ACE) consumes; it applies no learned context of its own. Declared as stage3_algorithm in both experiment fragments and checked by scripts/checks/stage3_algorithm_label_check.py.",
+  "r01c_narrowing_2026_09_23": {
+    "what": "Cell ROLL-1 was re-registered from the 800-row construction roster R01 onto its clean subset R01C (SLURP-STAGE3-CONSTRUCTION-R01C, 625 rows). Nothing else about the cell moved: the same arm, the same grouped-Solver factor, the same knowledge stores, the same geometry, the same scorers, the same four run ids and the same attempt ids.",
+    "why": "rails.runner.run_speech_native_agent_loop refuses a run whose query samples intersect the bound composite snapshot's own source_sample_ids (the union over the composed stores, rails.knowledge_stores._composite). Item S3-1k removed the overlap the train-exemplars store contributed by re-pointing it at the release size-pool-annotated-exemplars-minus-r01. The residual intersection was 175 R01 rows whose utterances are card sources of the two AUTHORED semantic stores (intent-boundaries-v1, 57 recordings; slot-contracts-v2, 155 recordings; union 175 utterances), and an authored card cannot be re-pointed model-free. Those rows therefore left the QUERY side.",
+    "authority": "coordinator decision 102, pending owner confirmation. A later top-up draw (R02) that restores the roster to about 800 clean rows is a separate item.",
+    "how": "scripts/build_slurp_stage3_construction_clean_subset.py: a pure SELECTION of R01 with zero model, tool, encoder, tokenizer, scorer, GPU and network contacts (an offline socket guard is armed before the first input is opened and recorded 0 attempts). Exclusion is by UTTERANCE, the same rule scripts/build_slurp_stage3_r01_excluded_exemplar_store.py applies from the knowledge side. Every surviving roster item, runtime-view row and query-vector line is the parent artifact's own bytes, in the parent's order.",
+    "artifacts": {
+      "roster_receipt": {
+        "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+        "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd",
+        "rows": 625,
+        "excluded": 175
+      },
+      "dataset_fragment": {
+        "relpath": "configs/dataset/slurp-speech-native-stage3-construction-r01c.json",
+        "sha256": "36949a683739676616d4e4845fb302cad59721c8032ce4d65d18b35823a56cba",
+        "runtime_view_sha256": "d66057804a80b7b75e37e6e34453f6647bb48313545c4e252c3d40ecc1e874bf"
+      },
+      "query_vectors_intent_boundary": {
+        "relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-segments.jsonl",
+        "sha256": "ebaa743241a67a2cb759353fa8a9f58a3f09d27c00c8c66cb3172958dcccc1b8",
+        "root": "data"
+      },
+      "query_vectors_content": {
+        "relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-content-v1.jsonl",
+        "sha256": "dd3b2924cda10810487b2b114e61380beaf8477634c602096b875e461ae44baa",
+        "root": "data"
+      },
+      "parent_roster_receipt": {
+        "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01.json",
+        "sha256": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0",
+        "rows": 800
+      }
+    },
+    "unchanged_pins": "The featcache packet promotion receipt (800 packets, a1664e34742dcd2d59c226da701395edf41d150bbbf8db4acc0cdae9c3c0250f) stays pinned: core.flight.FlightRuntime.speech_packet_bindings binds packets BY ID and refuses only the samples a receipt does NOT cover, so a superset is accepted and all 625 R01C packet ids are bound. The R01 D1 media supplement stays pinned for the same reason: contracts.gate_media_identity._d1_media_supplement_records looks each FLOWN id up and never requires an exact cover.",
+    "still_owed_by_root": "This narrowing does NOT flip readiness and touches no readiness state field. The prepared_phase_supply artifacts pinned in both baselines were minted over the old populations, and core.flight.runtime._phase_seed_inputs binds a prepared artifact to the composed config, the split identity and the packet map -- so both must be re-minted by scripts/flights/repin_cell.py before either cell flies. That same re-pin recomputes the composed and protocol hashes once more and rewrites every document that quotes them, including the four exposure-ledger rows.",
+    "ledger_rows_to_re_register": {
+      "SAEA-SLURP-STAGE3-ROLLOUT-R01-V1": {
+        "planned_model_calls": 11875,
+        "planned_speech_audio_seconds": 51811,
+        "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"
+      },
+      "SAEA-SLURP-STAGE3-ROLLOUT-R01-FIT-V1": {
+        "planned_model_calls": 47500,
+        "planned_speech_audio_seconds": 51811,
+        "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"
+      },
+      "SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-V1": {
+        "planned_model_calls": 76,
+        "planned_speech_audio_seconds": 324,
+        "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5"
+      },
+      "SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-FIT-V1": {
+        "planned_model_calls": 304,
+        "planned_speech_audio_seconds": 324,
+        "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5"
+      }
+    }
+  }
 }

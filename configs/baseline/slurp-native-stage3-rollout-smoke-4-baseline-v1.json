@@ -26,10 +26,10 @@
           "k": 8,
           "provider": "kb-facet-v1",
           "query_source": {
-            "embedded_signal": "speech: complete original SLURP-STAGE3-CONSTRUCTION-R01 recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension, once the construction roster's featcache packets are promoted (S3-1 note: a registered SAEA-SN-...-PREPROCESS preparation; the ENCODE step is a tool contact, registered before it runs) and a segment-vector encoding pass analogous to SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1 is registered and run against this roster's own recordings; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn will enter this query.",
+            "embedded_signal": "speech: complete original SLURP-STAGE3-CONSTRUCTION-R01C recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension. The file is a pure id SELECTION of the sealed R01 segment vectors (parent vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-segments.jsonl, exposure row SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1): every kept line is the parent's own line bytes. Segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
             "kind": "sealed-segment-vectors",
-            "relpath": "vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-segments.jsonl",
-            "sha256": "41b47b3f744a3f18ffcec5cdf76e7116b06da72a63aa566b3d711bdc0adc8ae8",
+            "relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-segments.jsonl",
+            "sha256": "ebaa743241a67a2cb759353fa8a9f58a3f09d27c00c8c66cb3172958dcccc1b8",
             "tool_contact_ledger_row": "SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1"
           },
           "rank_policy": "saea-rank-wcos-prior-agree-v1",
@@ -98,10 +98,10 @@
           "k": 20,
           "provider": "kb-facet-v1",
           "query_source": {
-            "embedded_signal": "speech: complete original SLURP-STAGE3-CONSTRUCTION-R01 recordings represented by the sealed full-utterance speech vector of the row's own recording, in the content retrieval dimension (S3-1 note: a NEW ALIAS EXPORT of the pool-side content vectors already sealed for every TRAIN utterance at vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl -- this roster is a subset of that same pool -- so this pin needs only a model-free alias/subset export, NOT an encoder contact, once that export is built and registered); no flattening of MEANING, re-encoding, transcript, answer or future turn will enter this query.",
+            "embedded_signal": "speech: complete original SLURP-STAGE3-CONSTRUCTION-R01C recordings represented by the sealed full-utterance speech vector of the row's own recording, in the content retrieval dimension. The file is a pure id SELECTION of the sealed R01 content derivative (parent vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-content-v1.jsonl, exposure row SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1): every kept line is the parent's own line bytes. No flattening of MEANING, re-encoding, transcript, answer or future turn enters this query.",
             "kind": "sealed-vectors",
-            "relpath": "vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-content-v1.jsonl",
-            "sha256": "651ddfbbb9e6f29996a000a0f4a16de993a85cfc8e52115e1c66d28760f749cf",
+            "relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-content-v1.jsonl",
+            "sha256": "dd3b2924cda10810487b2b114e61380beaf8477634c602096b875e461ae44baa",
             "tool_contact_ledger_row": "SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1"
           },
           "rank_policy": "saea-rank-wcos-prior-agree-v1",
@@ -252,9 +252,9 @@
       "sha256": "e4d7bb61a65dd17d42c3d601c4b3bd33effe48920dd59cb2e9232e739221d1c4"
     },
     {
-      "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01.json",
+      "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
       "root": "repository",
-      "sha256": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0"
+      "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd"
     },
     {
       "relpath": "preparation-runs/SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
@@ -262,9 +262,19 @@
       "sha256": "2117fa6d5fdb7563e4f609b66e2fc3971a340a7dd22d178fa3cfd5a7c111839a"
     },
     {
-      "relpath": "vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-content-v1.provenance.json",
+      "relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-content-v1.provenance.json",
       "root": "data",
-      "sha256": "b699279f15ed20598c54b4c7be846b1ac1e96b7c280aed2a12c8c0aab353a590"
+      "sha256": "e259ea1a80799bac906942bc1eb7d0a42443064a3696f35cc94507d5209634e9"
+    },
+    {
+      "relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-segments.provenance.json",
+      "root": "data",
+      "sha256": "10e6479c9ae201a267067353e8746a39fbb3904db8772a3da5d1dc93af6c09cc"
+    },
+    {
+      "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01.json",
+      "root": "repository",
+      "sha256": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0"
     }
   ],
   "scorers": [
@@ -281,8 +291,8 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
-  "what_the_train_exemplars_store_is": "SLURP v2 base program module M1 / cell B1, read unmodified on the S3-1 construction roster (SLURP-STAGE3-CONSTRUCTION-R01, 800 rows, farthest-point semantic-diversity draw): the top-20 TRAIN construction-pool exemplars (excluding every utterance with a recording in TRAIN Fold A, Fold B, DEV-1000, DEV-2000 or DEV-2000-ADDED, and -- release size-pool-annotated-exemplars-minus-r01, 8,554 of the pool's 9,354 utterances -- every utterance of the S3-1 construction roster SLURP-STAGE3-CONSTRUCTION-R01 itself, because that roster IS this cell's query population and rails.runner.run_speech_native_agent_loop refuses a run whose query samples intersect the bound snapshot's own source_sample_ids) recalled by cosine against this row's OWN sealed speech vector, ranked by saea-rank-wcos-prior-agree-v1 (identity on cosine: w_cos=1, w_prior=0, w_agree=0) and passed through saea-fuse-supplyfilter-v1 with m=c=top_l=20. The decision is delivered to the SOLVER phase through the E6 acquire transition, exactly as on TRAIN Fold A; the Solver's instruction bytes are byte-identical to the unmodified cell PLAN's. Query-source pins are PENDING (stage3_pending_placeholders above) until the construction roster's packets are promoted.",
-  "what_this_is": "Cell ROLL-1 four-row structural smoke (S3-2, docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md): the locked v2.0 default plan's fragment (cell PLAN: the sealed B1-notool base plus slot-contracts v2, the review-loop marker 'on') with EXACTLY the four Solver keys changed -- native_episode.roles.solver.samples=5, decoding_overrides={temperature:0.7,seed_offset:0}, commit={policy:saea-commit-plurality-support-v1,min_support:3,similarity_threshold:0.8} (the B2 v3 form) -- and native_episode.deliver_normaliser REMOVED (rails/native_episode_config.py refuses a grouped Solver together with the normaliser node; the v3 projection this arm's delivered text would otherwise carry is instead applied OFFLINE at scoring time, S3-3, via the scorer sibling slurp-slu-official-projected-v3-train). Flown on four rows of the S3-1 construction roster (SLURP-STAGE3-CONSTRUCTION-R01) and its packets/vectors, NOT TRAIN Fold A. Every other key -- knowledge_stores.slot-contracts, phase_material, the task instruction template, the geometry, scorers -- stays byte-identical to cell PLAN and to the full-roster ROLL-1 arm. Structural acceptance only: no tools array, the grouped Solver's five samples in custody, every request fits. The roster-bound identity pins are PENDING placeholders (stage3_pending_placeholders block above) until the construction roster's featcache packets are promoted and the two query-vector pins are registered; this registration authorises no flight, no readiness flip and no contact.",
+  "what_the_train_exemplars_store_is": "SLURP v2 base program module M1 / cell B1, read unmodified on the clean subset of the S3-1 construction roster (SLURP-STAGE3-CONSTRUCTION-R01C, 625 rows: R01's farthest-point semantic-diversity draw minus the 175 rows whose utterances are card sources of the two authored semantic stores): the top-20 TRAIN construction-pool exemplars (excluding every utterance with a recording in TRAIN Fold A, Fold B, DEV-1000, DEV-2000 or DEV-2000-ADDED, and -- release size-pool-annotated-exemplars-minus-r01, 8,554 of the pool's 9,354 utterances -- every utterance of the S3-1 construction roster SLURP-STAGE3-CONSTRUCTION-R01 itself, because that roster IS this cell's query population and rails.runner.run_speech_native_agent_loop refuses a run whose query samples intersect the bound snapshot's own source_sample_ids) recalled by cosine against this row's OWN sealed speech vector, ranked by saea-rank-wcos-prior-agree-v1 (identity on cosine: w_cos=1, w_prior=0, w_agree=0) and passed through saea-fuse-supplyfilter-v1 with m=c=top_l=20. The decision is delivered to the SOLVER phase through the E6 acquire transition, exactly as on TRAIN Fold A; the Solver's instruction bytes are byte-identical to the unmodified cell PLAN's. Query-source pins are PENDING (stage3_pending_placeholders above) until the construction roster's packets are promoted. R01C narrowing (2026-09-23, coordinator decision 102, pending owner confirmation): the rails BUILD/USE guard refuses a run whose query samples intersect the bound composite snapshot's own source_sample_ids, and after item S3-1k re-pointed train-exemplars at size-pool-annotated-exemplars-minus-r01 the residual intersection was the 175 R01 rows whose utterances are card sources of the two AUTHORED semantic stores (intent-boundaries-v1 and slot-contracts-v2), which cannot be re-pointed model-free. Those rows left the roster instead: R01C (SLURP-STAGE3-CONSTRUCTION-R01C, 625 rows, docs/receipts/rosters/slurp-stage3-construction-r01c.json) is a PURE SELECTION of R01 built by scripts/build_slurp_stage3_construction_clean_subset.py with zero contacts, and its dataset fragment, query-vector subsets and plan numbers replace R01's throughout this cell. A later top-up draw (R02) is a separate item.",
+  "what_this_is": "Cell ROLL-1 four-row structural smoke (S3-2, docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md): the locked v2.0 default plan's fragment (cell PLAN: the sealed B1-notool base plus slot-contracts v2, the review-loop marker 'on') with EXACTLY the four Solver keys changed -- native_episode.roles.solver.samples=5, decoding_overrides={temperature:0.7,seed_offset:0}, commit={policy:saea-commit-plurality-support-v1,min_support:3,similarity_threshold:0.8} (the B2 v3 form) -- and native_episode.deliver_normaliser REMOVED (rails/native_episode_config.py refuses a grouped Solver together with the normaliser node; the v3 projection this arm's delivered text would otherwise carry is instead applied OFFLINE at scoring time, S3-3, via the scorer sibling slurp-slu-official-projected-v3-train). Flown on four rows of the S3-1 construction roster (SLURP-STAGE3-CONSTRUCTION-R01) and its packets/vectors, NOT TRAIN Fold A. Every other key -- knowledge_stores.slot-contracts, phase_material, the task instruction template, the geometry, scorers -- stays byte-identical to cell PLAN and to the full-roster ROLL-1 arm. Structural acceptance only: no tools array, the grouped Solver's five samples in custody, every request fits. The roster-bound identity pins are PENDING placeholders (stage3_pending_placeholders block above) until the construction roster's featcache packets are promoted and the two query-vector pins are registered; this registration authorises no flight, no readiness flip and no contact. R01C narrowing (2026-09-23, coordinator decision 102, pending owner confirmation): the rails BUILD/USE guard refuses a run whose query samples intersect the bound composite snapshot's own source_sample_ids, and after item S3-1k re-pointed train-exemplars at size-pool-annotated-exemplars-minus-r01 the residual intersection was the 175 R01 rows whose utterances are card sources of the two AUTHORED semantic stores (intent-boundaries-v1 and slot-contracts-v2), which cannot be re-pointed model-free. Those rows left the roster instead: R01C (SLURP-STAGE3-CONSTRUCTION-R01C, 625 rows, docs/receipts/rosters/slurp-stage3-construction-r01c.json) is a PURE SELECTION of R01 built by scripts/build_slurp_stage3_construction_clean_subset.py with zero contacts, and its dataset fragment, query-vector subsets and plan numbers replace R01's throughout this cell. A later top-up draw (R02) is a separate item.",
   "stage3_placeholders_filled": [
     {
       "path": "speech_packet_promotion_receipt",
@@ -297,12 +307,12 @@
     {
       "path": "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.relpath",
       "filled": "2026-09-23",
-      "by": "preparation 2 (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1, attempt encode-v1, 800 encoder contacts, 2026-09-23 00:50-00:55 UTC) and preparation 3 (SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1, model-free) via scripts/flights/batch/r01_prep23.sh; preparation_source_receipts[8] = preparation 3's provenance per the note section 4; fit ids minted by root"
+      "by": "preparation 2 (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1, attempt encode-v1, 800 encoder contacts, 2026-09-23 00:50-00:55 UTC) and preparation 3 (SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1, model-free) via scripts/flights/batch/r01_prep23.sh; preparation_source_receipts[8] = preparation 3's provenance per the note section 4; fit ids minted by root | 2026-09-23 R01C narrowing (coordinator decision 102): re-pointed from the 800-row R01 artifacts to the 625-row R01C pure-selection artifacts (scripts/build_slurp_stage3_construction_clean_subset.py, zero contacts); preparation_source_receipts now pins the R01C roster receipt at [6], the R01C content-vector provenance at [8], the R01C segment-vector provenance at [9] and keeps the parent R01 roster receipt at [10]"
     },
     {
       "path": "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.sha256",
       "filled": "2026-09-23",
-      "by": "preparation 2 (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1, attempt encode-v1, 800 encoder contacts, 2026-09-23 00:50-00:55 UTC) and preparation 3 (SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1, model-free) via scripts/flights/batch/r01_prep23.sh; preparation_source_receipts[8] = preparation 3's provenance per the note section 4; fit ids minted by root"
+      "by": "preparation 2 (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1, attempt encode-v1, 800 encoder contacts, 2026-09-23 00:50-00:55 UTC) and preparation 3 (SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1, model-free) via scripts/flights/batch/r01_prep23.sh; preparation_source_receipts[8] = preparation 3's provenance per the note section 4; fit ids minted by root | 2026-09-23 R01C narrowing (coordinator decision 102): re-pointed from the 800-row R01 artifacts to the 625-row R01C pure-selection artifacts (scripts/build_slurp_stage3_construction_clean_subset.py, zero contacts); preparation_source_receipts now pins the R01C roster receipt at [6], the R01C content-vector provenance at [8], the R01C segment-vector provenance at [9] and keeps the parent R01 roster receipt at [10]"
     },
     {
       "path": "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.tool_contact_ledger_row",
@@ -312,12 +322,12 @@
     {
       "path": "knowledge_stores.train-exemplars.phase_supply.solver.query_source.relpath",
       "filled": "2026-09-23",
-      "by": "preparation 2 (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1, attempt encode-v1, 800 encoder contacts, 2026-09-23 00:50-00:55 UTC) and preparation 3 (SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1, model-free) via scripts/flights/batch/r01_prep23.sh; preparation_source_receipts[8] = preparation 3's provenance per the note section 4; fit ids minted by root"
+      "by": "preparation 2 (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1, attempt encode-v1, 800 encoder contacts, 2026-09-23 00:50-00:55 UTC) and preparation 3 (SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1, model-free) via scripts/flights/batch/r01_prep23.sh; preparation_source_receipts[8] = preparation 3's provenance per the note section 4; fit ids minted by root | 2026-09-23 R01C narrowing (coordinator decision 102): re-pointed from the 800-row R01 artifacts to the 625-row R01C pure-selection artifacts (scripts/build_slurp_stage3_construction_clean_subset.py, zero contacts); preparation_source_receipts now pins the R01C roster receipt at [6], the R01C content-vector provenance at [8], the R01C segment-vector provenance at [9] and keeps the parent R01 roster receipt at [10]"
     },
     {
       "path": "knowledge_stores.train-exemplars.phase_supply.solver.query_source.sha256",
       "filled": "2026-09-23",
-      "by": "preparation 2 (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1, attempt encode-v1, 800 encoder contacts, 2026-09-23 00:50-00:55 UTC) and preparation 3 (SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1, model-free) via scripts/flights/batch/r01_prep23.sh; preparation_source_receipts[8] = preparation 3's provenance per the note section 4; fit ids minted by root"
+      "by": "preparation 2 (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1, attempt encode-v1, 800 encoder contacts, 2026-09-23 00:50-00:55 UTC) and preparation 3 (SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1, model-free) via scripts/flights/batch/r01_prep23.sh; preparation_source_receipts[8] = preparation 3's provenance per the note section 4; fit ids minted by root | 2026-09-23 R01C narrowing (coordinator decision 102): re-pointed from the 800-row R01 artifacts to the 625-row R01C pure-selection artifacts (scripts/build_slurp_stage3_construction_clean_subset.py, zero contacts); preparation_source_receipts now pins the R01C roster receipt at [6], the R01C content-vector provenance at [8], the R01C segment-vector provenance at [9] and keeps the parent R01 roster receipt at [10]"
     },
     {
       "path": "knowledge_stores.train-exemplars.phase_supply.solver.query_source.tool_contact_ledger_row",
@@ -327,7 +337,7 @@
     {
       "path": "preparation_source_receipts[6].sha256",
       "filled": "2026-09-23",
-      "by": "preparation 2 (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1, attempt encode-v1, 800 encoder contacts, 2026-09-23 00:50-00:55 UTC) and preparation 3 (SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1, model-free) via scripts/flights/batch/r01_prep23.sh; preparation_source_receipts[8] = preparation 3's provenance per the note section 4; fit ids minted by root"
+      "by": "preparation 2 (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1, attempt encode-v1, 800 encoder contacts, 2026-09-23 00:50-00:55 UTC) and preparation 3 (SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1, model-free) via scripts/flights/batch/r01_prep23.sh; preparation_source_receipts[8] = preparation 3's provenance per the note section 4; fit ids minted by root | 2026-09-23 R01C narrowing (coordinator decision 102): re-pointed from the 800-row R01 artifacts to the 625-row R01C pure-selection artifacts (scripts/build_slurp_stage3_construction_clean_subset.py, zero contacts); preparation_source_receipts now pins the R01C roster receipt at [6], the R01C content-vector provenance at [8], the R01C segment-vector provenance at [9] and keeps the parent R01 roster receipt at [10]"
     },
     {
       "path": "preparation_source_receipts[7]",
@@ -337,17 +347,17 @@
     {
       "path": "preparation_source_receipts[8]",
       "filled": "2026-09-23",
-      "by": "preparation 2 (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1, attempt encode-v1, 800 encoder contacts, 2026-09-23 00:50-00:55 UTC) and preparation 3 (SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1, model-free) via scripts/flights/batch/r01_prep23.sh; preparation_source_receipts[8] = preparation 3's provenance per the note section 4; fit ids minted by root"
+      "by": "preparation 2 (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1, attempt encode-v1, 800 encoder contacts, 2026-09-23 00:50-00:55 UTC) and preparation 3 (SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1, model-free) via scripts/flights/batch/r01_prep23.sh; preparation_source_receipts[8] = preparation 3's provenance per the note section 4; fit ids minted by root | 2026-09-23 R01C narrowing (coordinator decision 102): re-pointed from the 800-row R01 artifacts to the 625-row R01C pure-selection artifacts (scripts/build_slurp_stage3_construction_clean_subset.py, zero contacts); preparation_source_receipts now pins the R01C roster receipt at [6], the R01C content-vector provenance at [8], the R01C segment-vector provenance at [9] and keeps the parent R01 roster receipt at [10]"
     },
     {
       "path": "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.embedded_signal",
       "filled": "2026-09-23",
-      "by": "root: fit ids/caps minted (ceiling 19 x rows x 4 endpoints); prepared_phase_supply block removed so scripts/flights/repin_cell.py mints it at the flip; embedded_signal prose prefix dropped"
+      "by": "root: fit ids/caps minted (ceiling 19 x rows x 4 endpoints); prepared_phase_supply block removed so scripts/flights/repin_cell.py mints it at the flip; embedded_signal prose prefix dropped | 2026-09-23 R01C narrowing (coordinator decision 102): re-pointed from the 800-row R01 artifacts to the 625-row R01C pure-selection artifacts (scripts/build_slurp_stage3_construction_clean_subset.py, zero contacts); preparation_source_receipts now pins the R01C roster receipt at [6], the R01C content-vector provenance at [8], the R01C segment-vector provenance at [9] and keeps the parent R01 roster receipt at [10]"
     },
     {
       "path": "knowledge_stores.train-exemplars.phase_supply.solver.query_source.embedded_signal",
       "filled": "2026-09-23",
-      "by": "root: fit ids/caps minted (ceiling 19 x rows x 4 endpoints); prepared_phase_supply block removed so scripts/flights/repin_cell.py mints it at the flip; embedded_signal prose prefix dropped"
+      "by": "root: fit ids/caps minted (ceiling 19 x rows x 4 endpoints); prepared_phase_supply block removed so scripts/flights/repin_cell.py mints it at the flip; embedded_signal prose prefix dropped | 2026-09-23 R01C narrowing (coordinator decision 102): re-pointed from the 800-row R01 artifacts to the 625-row R01C pure-selection artifacts (scripts/build_slurp_stage3_construction_clean_subset.py, zero contacts); preparation_source_receipts now pins the R01C roster receipt at [6], the R01C content-vector provenance at [8], the R01C segment-vector provenance at [9] and keeps the parent R01 roster receipt at [10]"
     },
     {
       "path": "native_contact_fit.attempt_id",
@@ -357,7 +367,7 @@
     {
       "path": "native_contact_fit.contact_cap",
       "filled": "2026-09-23",
-      "by": "root: fit ids/caps minted (ceiling 19 x rows x 4 endpoints); prepared_phase_supply block removed so scripts/flights/repin_cell.py mints it at the flip; embedded_signal prose prefix dropped"
+      "by": "root: fit ids/caps minted (ceiling 19 x rows x 4 endpoints); prepared_phase_supply block removed so scripts/flights/repin_cell.py mints it at the flip; embedded_signal prose prefix dropped | 2026-09-23 R01C narrowing (coordinator decision 102): re-pointed from the 800-row R01 artifacts to the 625-row R01C pure-selection artifacts (scripts/build_slurp_stage3_construction_clean_subset.py, zero contacts); preparation_source_receipts now pins the R01C roster receipt at [6], the R01C content-vector provenance at [8], the R01C segment-vector provenance at [9] and keeps the parent R01 roster receipt at [10]"
     },
     {
       "path": "native_contact_fit.run_id",
@@ -373,6 +383,16 @@
       "path": "prepared_phase_supply.sha256",
       "filled": "2026-09-23",
       "by": "root: fit ids/caps minted (ceiling 19 x rows x 4 endpoints); prepared_phase_supply block removed so scripts/flights/repin_cell.py mints it at the flip; embedded_signal prose prefix dropped"
+    },
+    {
+      "path": "preparation_source_receipts[10]",
+      "filled": "2026-09-23",
+      "by": "2026-09-23 R01C narrowing (coordinator decision 102): re-pointed from the 800-row R01 artifacts to the 625-row R01C pure-selection artifacts (scripts/build_slurp_stage3_construction_clean_subset.py, zero contacts); preparation_source_receipts now pins the R01C roster receipt at [6], the R01C content-vector provenance at [8], the R01C segment-vector provenance at [9] and keeps the parent R01 roster receipt at [10]"
+    },
+    {
+      "path": "preparation_source_receipts[9]",
+      "filled": "2026-09-23",
+      "by": "2026-09-23 R01C narrowing (coordinator decision 102): re-pointed from the 800-row R01 artifacts to the 625-row R01C pure-selection artifacts (scripts/build_slurp_stage3_construction_clean_subset.py, zero contacts); preparation_source_receipts now pins the R01C roster receipt at [6], the R01C content-vector provenance at [8], the R01C segment-vector provenance at [9] and keeps the parent R01 roster receipt at [10]"
     }
   ],
   "prepared_phase_supply": {

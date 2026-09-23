@@ -9,10 +9,10 @@
       "attempt_id": "attempt-slurp-native-stage3-rollout-r01-smoke-4-generation-recovery-v1",
       "baseline_fragment": "slurp-native-stage3-rollout-smoke-4-baseline-v1",
       "cell_id": "slurp-native-stage3-rollout-r01-smoke-4-v1",
-      "dataset_fragment": "slurp-speech-native-stage3-construction-r01",
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Four-row form smoke of cell ROLL-1 (S3-2, docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md), REGISTERED FOR FLIGHT 2026-09-23 beside the arm in the same package. READINESS HELD: the three S3-1 preparations are now SATISFIED and pinned BY HASH in configs/baseline/slurp-native-stage3-rollout-baseline-v1.json, whose own stage3_placeholders_filled block records all 18 fills one for one: the featcache packet promotion (run SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS-RECOVERY-V1, promote-only attempt, 800/800 packets with 8 shared, receipt sha256 a1664e34742dcd2d59c226da701395edf41d150bbbf8db4acc0cdae9c3c0250f); the intent-boundary speech-query encoding (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1, 800 encoder contacts 2026-09-23 00:50-00:55 UTC, alias vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-segments.jsonl sha256 41b47b3f744a3f18ffcec5cdf76e7116b06da72a63aa566b3d711bdc0adc8ae8); and the model-free content derivative (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1, vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-content-v1.jsonl sha256 651ddfbbb9e6f29996a000a0f4a16de993a85cfc8e52115e1c66d28760f749cf). What is still open is root's own act, which this registration does not perform: mint coordination/slurp-stage3-rollout-r01-v1/root-admission-v1.json (decision id slurp-stage3-rollout-r01-admission-v1) and run scripts/flights/repin_cell.py --set-ready, which builds this cell's own prepared_phase_supply model-free under its own run id, pins it into the baseline fragment and the preparation requirement below, INSERTS the decision requirement and flips this state to 'ready'. No decision requirement is registered here on purpose (the sealed sibling packages carry none either): core.flight.repin._upsert_decision_requirement inserts it, and a placeholder decision entry without an expected_decision_id would be left behind beside it and refuse the campaign at load (core.flight.campaign.declared_readiness). Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "reason": "Four-row form smoke of cell ROLL-1 (S3-2, docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md), REGISTERED FOR FLIGHT 2026-09-23 beside the arm in the same package. READINESS HELD: the three S3-1 preparations are now SATISFIED and pinned BY HASH in configs/baseline/slurp-native-stage3-rollout-baseline-v1.json, whose own stage3_placeholders_filled block records all 18 fills one for one: the featcache packet promotion (run SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS-RECOVERY-V1, promote-only attempt, 800/800 packets with 8 shared, receipt sha256 a1664e34742dcd2d59c226da701395edf41d150bbbf8db4acc0cdae9c3c0250f); the intent-boundary speech-query encoding (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1, 800 encoder contacts 2026-09-23 00:50-00:55 UTC, alias vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-segments.jsonl sha256 41b47b3f744a3f18ffcec5cdf76e7116b06da72a63aa566b3d711bdc0adc8ae8); and the model-free content derivative (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1, vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-content-v1.jsonl sha256 651ddfbbb9e6f29996a000a0f4a16de993a85cfc8e52115e1c66d28760f749cf). What is still open is root's own act, which this registration does not perform: mint coordination/slurp-stage3-rollout-r01-v1/root-admission-v1.json (decision id slurp-stage3-rollout-r01-admission-v1) and run scripts/flights/repin_cell.py --set-ready, which builds this cell's own prepared_phase_supply model-free under its own run id, pins it into the baseline fragment and the preparation requirement below, INSERTS the decision requirement and flips this state to 'ready'. No decision requirement is registered here on purpose (the sealed sibling packages carry none either): core.flight.repin._upsert_decision_requirement inserts it, and a placeholder decision entry without an expected_decision_id would be left behind beside it and refuse the campaign at load (core.flight.campaign.declared_readiness). Nothing here authorises a flight, a readiness flip or an admission entry. R01C narrowing (2026-09-23, coordinator decision 102, pending owner confirmation): the rails BUILD/USE guard refuses a run whose query samples intersect the bound composite snapshot's own source_sample_ids, and after item S3-1k re-pointed train-exemplars at size-pool-annotated-exemplars-minus-r01 the residual intersection was the 175 R01 rows whose utterances are card sources of the two AUTHORED semantic stores (intent-boundaries-v1 and slot-contracts-v2), which cannot be re-pointed model-free. Those rows left the roster instead: R01C (SLURP-STAGE3-CONSTRUCTION-R01C, 625 rows, docs/receipts/rosters/slurp-stage3-construction-r01c.json) is a PURE SELECTION of R01 built by scripts/build_slurp_stage3_construction_clean_subset.py with zero contacts, and its dataset fragment, query-vector subsets and plan numbers replace R01's throughout this cell. A later top-up draw (R02) is a separate item. Readiness is NOT flipped by this narrowing and no state field is touched: the pinned prepared_phase_supply artifact was minted over the old population and root must re-mint it with scripts/flights/repin_cell.py before this cell flies. The fourth smoke row moved because the old one (slurp:train:000259:audio--1504197862) is itself a knowledge-card source.",
         "requirements": [
           {
             "kind": "decision",
@@ -38,7 +38,7 @@
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 76,
-    "planned_speech_audio_seconds": 286,
+    "planned_speech_audio_seconds": 324,
     "split_role": "discovery"
   },
   "execution_profile": "bounded-discovery-probe",
@@ -53,40 +53,40 @@
     "gpu_hours_fit_inclusive": 1.0,
     "native_task_contract_calls_cap": 0,
     "official_complete_scoring_jobs": 0,
-    "repeated_speech_audio_seconds_cap": 286
+    "repeated_speech_audio_seconds_cap": 324
   },
   "fragment_kind": "saea-slurp-native-stage3-rollout-r01-smoke-4-v1",
   "population": {
     "count": 4,
-    "dataset_fragment": "slurp-speech-native-stage3-construction-r01",
-    "decision_population": "The first 4 (by sample_id) rows of the S3-1 construction roster, for structural smoke only.",
-    "split_identity_hash": "2f151c186d6712c3ed20b3c927ae68646ebd7fabfabe27461ab74a434de2a335"
+    "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+    "decision_population": "The first 4 (by sample_id) rows of the clean construction subset SLURP-STAGE3-CONSTRUCTION-R01C, for structural smoke only.",
+    "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5"
   },
   "populations": [
     {
-      "dataset_fragment": "slurp-speech-native-stage3-construction-r01",
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
       "ids": [
         "slurp:train:000049:audio-1434542455",
         "slurp:train:000051:audio-1434531302-headset",
         "slurp:train:000234:audio-1499688528",
-        "slurp:train:000259:audio--1504197862"
+        "slurp:train:000260:audio-1488549919"
       ]
     }
   ],
   "preserve_wire_responses": true,
-  "purpose": "Cell ROLL-1 (S3-2): produce five custodied Solver samples per row of the S3-1 construction roster for S3-3 (score on copies, best/worst pair selection) and S3-4 (the semantic-advantage contact). No admission verdict is read from this cell (readiness held; no gating decision rule).",
+  "purpose": "Cell ROLL-1 (S3-2): produce five custodied Solver samples per row of the S3-1 construction roster for S3-3 (score on copies, best/worst pair selection) and S3-4 (the semantic-advantage contact). No admission verdict is read from this cell (readiness held; no gating decision rule). R01C narrowing (2026-09-23, coordinator decision 102, pending owner confirmation): the rails BUILD/USE guard refuses a run whose query samples intersect the bound composite snapshot's own source_sample_ids, and after item S3-1k re-pointed train-exemplars at size-pool-annotated-exemplars-minus-r01 the residual intersection was the 175 R01 rows whose utterances are card sources of the two AUTHORED semantic stores (intent-boundaries-v1 and slot-contracts-v2), which cannot be re-pointed model-free. Those rows left the roster instead: R01C (SLURP-STAGE3-CONSTRUCTION-R01C, 625 rows, docs/receipts/rosters/slurp-stage3-construction-r01c.json) is a PURE SELECTION of R01 built by scripts/build_slurp_stage3_construction_clean_subset.py with zero contacts, and its dataset fragment, query-vector subsets and plan numbers replace R01's throughout this cell. A later top-up draw (R02) is a separate item.",
   "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
-  "split_id": "STAGE3-CONSTRUCTION-R01",
+  "split_id": "STAGE3-CONSTRUCTION-R01C",
   "stage3_algorithm": {
     "id": "shared-rollout",
     "operators_used": [
       "rollout"
     ],
-    "note": "The four-row smoke of ROLL-1: the same algorithm-neutral rollout operator on four rows, producing no scores and no deltas."
+    "note": "The four-row smoke of ROLL-1: the same algorithm-neutral rollout operator on four rows, producing no scores and no deltas. R01C narrowing (2026-09-23, coordinator decision 102, pending owner confirmation): the rails BUILD/USE guard refuses a run whose query samples intersect the bound composite snapshot's own source_sample_ids, and after item S3-1k re-pointed train-exemplars at size-pool-annotated-exemplars-minus-r01 the residual intersection was the 175 R01 rows whose utterances are card sources of the two AUTHORED semantic stores (intent-boundaries-v1 and slot-contracts-v2), which cannot be re-pointed model-free. Those rows left the roster instead: R01C (SLURP-STAGE3-CONSTRUCTION-R01C, 625 rows, docs/receipts/rosters/slurp-stage3-construction-r01c.json) is a PURE SELECTION of R01 built by scripts/build_slurp_stage3_construction_clean_subset.py with zero contacts, and its dataset fragment, query-vector subsets and plan numbers replace R01's throughout this cell. A later top-up draw (R02) is a separate item."
   },
   "generation_budget": {
     "cap": 76,
-    "definition": "15,200 = 800 rows x 19 and 76 = 4 rows x 19, where 19 is the grouped-Solver graph's OWN ceiling as rails.native_episode_config.load_native_episode_config resolves it: perception.max_iterations + (max_revisions + 1) x (solver.max_iterations x solver.samples + reviewer.max_iterations + planner.max_iterations) = 1 + 2 x (5 + 3 + 1) = 19. Owner decision 96 re-registers this cell's planned_model_calls from the plan cell's non-grouped 800 x 11 = 8,800 to 800 x 19 = 15,200 at the readiness flip, expected about 6,400 contacts (about 8 per row, spec section S3-2), planned_gpu_hours 8.0 unchanged. 60,800 = 15,200 x (1 speech packet + 3 endpoints) and 304 = 76 x 4. 66,338 = ceil(3,491.426125 roster audio seconds x 19) repeated speech seconds; 286 = ceil(15.03875 x 19) for the four smoke rows. native_task_contract_calls_cap = 0: the cell is tool-free, no role carries phase_tools. Ceilings are bounds, never targets.",
+    "definition": "11,875 = 625 rows x 19 and 76 = 4 rows x 19, where 19 is the grouped-Solver graph's OWN ceiling as rails.native_episode_config.load_native_episode_config resolves it: perception.max_iterations + (max_revisions + 1) x (solver.max_iterations x solver.samples + reviewer.max_iterations + planner.max_iterations) = 1 + 2 x (5 + 3 + 1) = 19. Owner decision 96 re-registered the arm's planned_model_calls to 19 contacts per row; the 2026-09-23 R01C narrowing then re-registered the arm's ROW COUNT from 800 to 625 (15,200 -> 11,875). 47,500 = 11,875 x (1 speech packet + 3 endpoints) and 304 = 76 x 4. 51,811 = ceil(2,726.8471875 R01C roster audio seconds x 19); 324 = ceil(17.0349375 x 19) for these four smoke rows. native_task_contract_calls_cap = 0: the cell is tool-free, no role carries phase_tools. Ceilings are bounds, never targets.",
     "target": 32
   }
 }
