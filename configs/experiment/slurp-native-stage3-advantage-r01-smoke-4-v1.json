@@ -5,7 +5,7 @@
         "check",
         "worker"
       ],
-      "attempt_id": "attempt-slurp-native-stage3-advantage-r01-smoke-4-v1-generation",
+      "attempt_id": "attempt-slurp-native-stage3-advantage-r01-smoke-4-v1-generation-recovery",
       "baseline_fragment": "slurp-native-stage3-advantage-smoke-4-baseline-v1",
       "cell_id": "slurp-native-stage3-advantage-r01-smoke-4-v1",
       "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",

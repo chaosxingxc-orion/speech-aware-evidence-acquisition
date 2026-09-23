@@ -104,6 +104,58 @@ _SPEECH_FEATURE_PROMPT_ORDERS = frozenset(
 
 _RAW_NATIVE_PROMPT_ORDER = "native-raw-speech-v1"
 
+#: Payload fields a TEXT-ONLY CONSTRUCTION request may never carry (see
+#: :func:`_assert_text_only_construction_payload`). The first six are the
+#: formal speech-feature request's own fields, exactly as ``rails.core_client``
+#: attaches them; the last three are every other payload field that puts MEDIA
+#: on the wire (the raw native query identity and the v3 exemplar-bank /
+#: delta-candidate media carriers).
+_TEXT_ONLY_CONSTRUCTION_REFUSED_FIELDS = (
+    "query_source",
+    "mmproj_loaded",
+    "speech_feature_parts",
+    "speech_packet_sha256",
+    "key_representation_id",
+    "matcher_policy_id",
+    "raw_speech_query",
+    "exemplar_bank",
+    "delta_candidates",
+)
+
+
+def _assert_text_only_construction_payload(
+    payload: Mapping[str, object], prompt_order: str
+) -> None:
+    """Fail closed on a construction-visible payload that is not text-only.
+
+    A payload carrying ``construction_targets`` AND a speech-feature field (or
+    a media part) is UNDEFINED: the two request shapes disagree about what the
+    frozen core is being asked to perceive, and rendering it as either one
+    would send a prompt no receipt describes. A non-empty ``history`` is
+    refused for the same reason -- the text-only render has nowhere to put
+    Agent state/control, so keeping it would silently drop it off the wire
+    while the audited payload still recorded it.
+    """
+
+    present = [
+        field
+        for field in _TEXT_ONLY_CONSTRUCTION_REFUSED_FIELDS
+        if field in payload
+    ]
+    if present:
+        raise FrozenCoreError(
+            "a text-only construction request under prompt_order "
+            f"{prompt_order!r} must carry no speech-feature field and no media "
+            f"part; got {present}"
+        )
+    history = payload.get("history")
+    if history:
+        raise FrozenCoreError(
+            "a text-only construction request under prompt_order "
+            f"{prompt_order!r} has nowhere to render Agent state/control; "
+            "refusing rather than dropping a non-empty history off the wire"
+        )
+
 
 def _ordered_speech_feature_content(
     *,
@@ -851,7 +903,67 @@ class LlamaServerTransport:
                         "speech knowledge_role must be 'key', 'value', or absent"
                     )
                 knowledge_roles.append(knowledge_role)
-        if self._prompt_order in _SPEECH_FEATURE_PROMPT_ORDERS:
+        # 2026-09-23 defect (cell ADV-1 SMOKE, FIRST LAUNCH REFUSED BEFORE
+        # ANY CONTACT): a construction-visible payload under a SPEECH prompt
+        # order had no branch at all. The smoke
+        # (``slurp-native-stage3-advantage-r01-smoke-4-v1``) composes the
+        # RESIDENT np4/ctx24k model fragment, whose ``prompt_order`` is
+        # ``speech-query-prefix-v2``, with the ONE text-only construction
+        # dispatch (``core.flight.runtime._run_construction_proposer`` ->
+        # ``rails.core_client.FrozenCoreClient.complete`` ->
+        # ``core.policies.build_arm_payload``). That dispatch sends the
+        # D2-frozen construction field set -- the rendered instruction as the
+        # system message, an EMPTY user content list, ``construction_targets``
+        # and NONE of the five speech-feature fields -- so the speech-feature
+        # branch below refused it at its very first rail ("speech feature
+        # request query_source must be 'speech_features'"), with zero contacts
+        # spent.
+        #
+        # The repair belongs HERE, in the renderer, not in a new fragment:
+        # ``prompt_order`` travels inside the COMPARED session identity
+        # (``model_fragment_sha256`` hashes the whole fragment;
+        # ``core.session.serving.SERVING_IDENTITY_FIELDS``), so a sibling
+        # fragment declaring a text prompt order could not attach to the
+        # resident session at all.
+        #
+        # The render is EXACTLY the ``evidence-first-system-v2`` render of the
+        # same payload: system message, empty user content, zero audio parts
+        # (the ``text_only`` computation above already skipped the loader), no
+        # speech-feature field required and no speech packet opened. Every
+        # other payload under a speech order falls through to the branch below
+        # with its refusals unchanged, in the same order.
+        text_only_construction = (
+            text_only and self._prompt_order in _SPEECH_FEATURE_PROMPT_ORDERS
+        )
+        construction_receipt: dict[str, object] | None = None
+        if text_only_construction:
+            _assert_text_only_construction_payload(payload, self._prompt_order)
+            if evidence_projection is not None:
+                raise FrozenCoreError(
+                    "native evidence projection is undefined for a text-only "
+                    "construction request: it projects speech/raw native "
+                    "history into the request, and this payload carries no "
+                    "speech query, no evidence and no history"
+                )
+            self._assert_system_message_suppression_is_lossless(
+                payload, evidence_texts=evidence_texts
+            )
+            system_text = "\n\n".join(
+                [*evidence_texts, str(payload["task_instruction"])]
+            )
+            messages = self._messages(system_text, self._user_content([]))
+            construction_receipt = {
+                "text_only_construction": True,
+                "prompt_order": self._prompt_order,
+                "reason": (
+                    f"payload carries {CONSTRUCTION_VISIBLE_FIELD!r} under "
+                    f"speech prompt order {self._prompt_order!r}; rendered as "
+                    "the evidence-first system order renders it -- system "
+                    "instruction plus an empty user content list, zero audio "
+                    "parts and zero speech packets (2026-09-23, ADV-1 smoke)"
+                ),
+            }
+        elif self._prompt_order in _SPEECH_FEATURE_PROMPT_ORDERS:
             if payload.get("query_source") != "speech_features":
                 raise FrozenCoreError(
                     "speech feature request query_source must be 'speech_features'"
@@ -1149,7 +1261,29 @@ class LlamaServerTransport:
         if self._feature_cache_guard is not None:
             self._feature_cache_guard.validate(payload, body)
         receipt = None
-        if evidence_projection is not None:
+        if construction_receipt is not None:
+            # A receipt for the text-only construction render, carried on the
+            # SAME channel as the native-evidence-projection receipt but never
+            # confused with it: the two are mutually exclusive (the branch
+            # above refuses a bound projection), and ``__call__`` emits only
+            # the projection one to the ORG trace.
+            request_id = payload.get("request_id")
+            if not isinstance(request_id, str) or not request_id:
+                raise FrozenCoreError(
+                    "a text-only construction request requires a non-empty "
+                    "payload request_id"
+                )
+            receipt = {
+                **construction_receipt,
+                "input_request_id": request_id,
+                "input_request_bytes_sha256": hashlib.sha256(
+                    request_bytes
+                ).hexdigest(),
+                "rendered_body_canonical_sha256": hashlib.sha256(
+                    canonical_bytes(body)
+                ).hexdigest(),
+            }
+        elif evidence_projection is not None:
             if len(projection_receipts) != 1:
                 raise FrozenCoreError(
                     "native evidence projection must produce exactly one receipt; "
@@ -1182,7 +1316,15 @@ class LlamaServerTransport:
 
     def __call__(self, request_bytes: bytes) -> bytes:
         body, projection_receipt = self.render_request_with_receipt(request_bytes)
-        if projection_receipt is not None:
+        # The text-only construction receipt (2026-09-23, ADV-1) rides the
+        # same return channel but is NOT a projection record: it names no
+        # projection policy, so emitting it as one would seal an ORG
+        # ``native-evidence-projection`` event for a contact that never had
+        # one. Only the projection receipt reaches the trace, exactly as
+        # before this branch existed.
+        if projection_receipt is not None and not projection_receipt.get(
+            "text_only_construction"
+        ):
             from ..tracing import TraceBuffer, get_current_trace_buffer
 
             trace_buffer = get_current_trace_buffer()
