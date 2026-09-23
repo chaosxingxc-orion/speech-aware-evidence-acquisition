@@ -109,6 +109,10 @@ placeholder entry without an `expected_decision_id` left beside it would refuse 
 
 ## What is left for root
 
+**Historical (the version-1 pass).** Every `PENDING_` token below was filled long ago; the store now
+pinned is revision **v1r** and the fill map's paths name version 1. See "S3-5 revision v1r" at the
+end of this README for what is actually in force, and `stage3-deltas-v1-superseded-v1.md` for why.
+
 The fill map is `docs/readiness/2026-09-22-slurp-stage3-advantage-r01-v1/fill-after-roll1-seal.json`
 (one file for both Stage-3 packages): every remaining token, its exact JSON path, the artefact that
 produces it and the field to copy.
@@ -138,8 +142,17 @@ and prints every mutating command line; `DELTAS_DRY=0` performs them.
 
 ```
 MSYS_NO_PATHCONV=1 wsl -d Ubuntu-24.04 DELTAS_DRY=0 REPO=<checkout> \
+  DELTA_VERSION_TAG=v1r DELTA_FROM_VERSION_TAG=v1 \
   bash scripts/flights/batch/adv1_to_deltas.sh
 ```
+
+`DELTA_VERSION_TAG` (default `v1`) names the store version this pass builds and parametrises every
+artifact, namespace and registration name below;
+`DELTA_FROM_VERSION_TAG` names the version the fragments currently pin. `DELTA_FACET_RULE` (default
+`source-intent`) chooses the facet rule. The transcript below is the **version-1** pass, kept because it
+names each step; at another tag every `-v1` in it becomes `-<tag>`, and two steps are added -- **R**, the
+supply-reach measurement, and, in **F**, the JSON-path re-point that replaces the substitution tool once no
+`PENDING_` token is left.
 
 which runs, in order:
 
