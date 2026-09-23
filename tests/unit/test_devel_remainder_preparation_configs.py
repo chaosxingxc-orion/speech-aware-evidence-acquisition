@@ -58,19 +58,24 @@ from speech_aware_evidence_acquisition.core.preparation_vectors import (  # noqa
 RUN = "SAEA-SLURP-DEVEL-REMAINDER-SPEECH-QUERY-ENCODING-V1"
 EXPORT_ROW = "SAEA-SLURP-DEVEL-REMAINDER-QUERY-VECTOR-EXPORT-V1"
 PROTOCOL_RELPATH = (
-    "configs/preparation/slurp-devel-remainder-speech-query-encoding-protocol-v1.json"
+    "configs/preparation/slurp-devel-remainder-speech-query-encoding-protocol-v2.json"
 )
-ALIAS_RELPATH = "configs/preparation/slurp-devel-remainder-query-alias-v1.json"
+ALIAS_RELPATH = "configs/preparation/slurp-devel-remainder-query-alias-v2.json"
 PRECEDENT_PROTOCOL_RELPATH = (
     "configs/preparation/slurp-dev2000-added-speech-query-encoding-protocol-v1.json"
 )
-DATASET_RELPATH = "configs/dataset/slurp-speech-native-devel-remainder.json"
-ROSTER_RELPATH = "docs/receipts/rosters/slurp-devel-remainder-v1.json"
-INVENTORY_RELPATH = "coordination/slurp-devel-remainder-speech-query-source-inventory-v1.json"
-INVENTORY_SHA256 = "a7fd59a6dba79aa3c94cae738744daf5324e133f1cd80b476e5a69818d3163ed"
-SPLIT_IDENTITY = "e65cd3b1842e7a4c1d8cab39b86278166b45e22c0c4d5f5c3f707724dc2e4fdc"
-ROSTER_ROWS = 6690
-PLANNED_SPEECH_SECONDS = 18979
+DATASET_RELPATH = "configs/dataset/slurp-speech-native-devel-remainder-v2.json"
+ROSTER_RELPATH = "docs/receipts/rosters/slurp-devel-remainder-v2.json"
+INVENTORY_RELPATH = "coordination/slurp-devel-remainder-speech-query-source-inventory-v2.json"
+INVENTORY_SHA256 = "d8ca6915864d4b08f99157d990b52543f6b705184686546a5922acea6dda9aae"
+SPLIT_IDENTITY = "f8af142bec49755d70364b665b31e3963972084fb73a568c9921f53b41fd341a"
+ROSTER_ROWS = 6570
+PLANNED_SPEECH_SECONDS = 18612
+#: The superseded v1 pair stays committed and must stay unbound by the runbook.
+PARENT_PROTOCOL_RELPATH = (
+    "configs/preparation/slurp-devel-remainder-speech-query-encoding-protocol-v1.json"
+)
+PARENT_ALIAS_RELPATH = "configs/preparation/slurp-devel-remainder-query-alias-v1.json"
 
 
 def _load(name: str, relpath: str):
@@ -158,8 +163,29 @@ def test_protocol_roster_hash_is_the_committed_roster_receipt() -> None:
         "sha256": roster_sha256,
     }
     receipt = load_json(ROSTER_RELPATH)
-    assert receipt["roster_id"] == "SLURP-DEVEL-REMAINDER-V1"
+    assert receipt["roster_id"] == "SLURP-DEVEL-REMAINDER-V2"
     assert len(receipt["items"]) == PROTOCOL["expected_unique_spans"]
+    assert receipt["carved_out_reserved_sets"]["union_recordings"] == 120
+
+
+def test_the_superseded_v1_preparation_configs_are_committed_and_bound_by_nothing() -> None:
+    """V1 stays on disk as the parent; the runbook must name only V2."""
+
+    parent_protocol = load_json(PARENT_PROTOCOL_RELPATH)
+    parent_alias = load_json(PARENT_ALIAS_RELPATH)
+    assert parent_protocol["expected_unique_spans"] == 6690
+    assert parent_alias["expected_rows"] == 6690
+    bound = {
+        PREPARATION.protocol_relpath,
+        PREPARATION.alias_template_relpath,
+        PREPARATION.roster_relpath,
+        PREPARATION.dataset_relpath,
+        PREPARATION.inventory_relpath,
+    }
+    assert PARENT_PROTOCOL_RELPATH not in bound
+    assert PARENT_ALIAS_RELPATH not in bound
+    assert "docs/receipts/rosters/slurp-devel-remainder-v1.json" not in bound
+    assert "configs/dataset/slurp-speech-native-devel-remainder.json" not in bound
 
 
 def test_protocol_runtime_view_pin_is_the_committed_dataset_fragment() -> None:

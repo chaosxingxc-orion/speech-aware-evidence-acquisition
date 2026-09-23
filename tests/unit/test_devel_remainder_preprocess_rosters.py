@@ -59,13 +59,16 @@ def _compose(key: str):
 def test_devel_remainder_spec_is_the_registered_one() -> None:
     spec = module.PREPROCESS_ROSTERS["devel-remainder"]
     assert spec.run_id == "SAEA-SN-DEVEL-REMAINDER-PREPROCESS"
-    assert spec.dataset_fragment == "slurp-speech-native-devel-remainder"
-    assert spec.experiment_fragment == "slurp-devel-remainder-preprocess"
+    assert spec.dataset_fragment == "slurp-speech-native-devel-remainder-v2"
+    assert spec.experiment_fragment == "slurp-devel-remainder-preprocess-v2"
     assert spec.sample_id_prefix == "slurp:devel:"
     assert spec.split_role == "dev"
     assert spec.promotion_receipt_name == "DEVEL-REMAINDER-promotion.json"
     assert spec.default_attempt_id == "attempt-packets-devel-remainder-v1"
-    assert (spec.plan_calls, spec.plan_speech_seconds, spec.plan_gpu_hours) == (6690, 18979, 1.0)
+    # V2 of the roster (provisional decision 109 carved out the 120 reserved
+    # recordings); the run id and the attempt are unchanged, no contact was made
+    # under them.
+    assert (spec.plan_calls, spec.plan_speech_seconds, spec.plan_gpu_hours) == (6570, 18612, 1.0)
     assert spec.sidecar_fragment == module.MODEL_FRAGMENT_NP8
     assert spec.equivalence is None
 
@@ -352,13 +355,16 @@ def test_comparison_refuses_a_scratch_cache_the_encode_never_filled(tmp_path, mo
 # ------------------------------------------------ the composed fragments
 
 
-def test_composed_devel_remainder_config_binds_6690_devel_rows_on_eight_slots() -> None:
+def test_composed_devel_remainder_config_binds_6570_devel_rows_on_eight_slots() -> None:
     values = _compose("devel-remainder").values
     assert values["experiment_id"] == "SAEA-SN-DEVEL-REMAINDER-PREPROCESS"
     assert values["execution_profile"] == "bounded-discovery-probe"
     assert values["split_role"] == "dev"
-    assert int(values["count"]) == 6690
-    assert float(values["audio_seconds_total"]) == pytest.approx(18978.9523125)
+    assert int(values["count"]) == 6570
+    assert float(values["audio_seconds_total"]) == pytest.approx(18611.584875)
+    assert values["split_identity_hash"] == (
+        "f8af142bec49755d70364b665b31e3963972084fb73a568c9921f53b41fd341a"
+    )
     assert module._server_slots(values, "np8") == 8
     assert values["server_env"]["LLAMA_MTMD_FEAT_CACHE_DIR"] == str(
         module.DEFAULT_LEGACY_CACHE_DIR

@@ -140,26 +140,31 @@ PREPARATION_SETS: dict[str, PreparationSet] = {
         attempt="encode-v1",
         alias_run_id="SAEA-SLURP-DEVEL-REMAINDER-ALIAS-V1",
         export_row="SAEA-SLURP-DEVEL-REMAINDER-QUERY-VECTOR-EXPORT-V1",
+        # The roster-bound relpaths and hashes are V2's: the coordinator ruling of
+        # 2026-09-23 (provisional decision 109) carved the 60 FINAL60 and the 60
+        # historic probe-60 recordings out of the remainder. The run id, the
+        # attempt, the vector directory and the coordination directory are
+        # UNCHANGED, because no contact has been made under any of them yet.
         protocol_relpath=(
-            "configs/preparation/slurp-devel-remainder-speech-query-encoding-protocol-v1.json"
+            "configs/preparation/slurp-devel-remainder-speech-query-encoding-protocol-v2.json"
         ),
-        alias_template_relpath="configs/preparation/slurp-devel-remainder-query-alias-v1.json",
-        roster_relpath="docs/receipts/rosters/slurp-devel-remainder-v1.json",
-        dataset_relpath="configs/dataset/slurp-speech-native-devel-remainder.json",
+        alias_template_relpath="configs/preparation/slurp-devel-remainder-query-alias-v2.json",
+        roster_relpath="docs/receipts/rosters/slurp-devel-remainder-v2.json",
+        dataset_relpath="configs/dataset/slurp-speech-native-devel-remainder-v2.json",
         inventory_relpath=(
-            "coordination/slurp-devel-remainder-speech-query-source-inventory-v1.json"
+            "coordination/slurp-devel-remainder-speech-query-source-inventory-v2.json"
         ),
-        inventory_sha256="a7fd59a6dba79aa3c94cae738744daf5324e133f1cd80b476e5a69818d3163ed",
+        inventory_sha256="d8ca6915864d4b08f99157d990b52543f6b705184686546a5922acea6dda9aae",
         vector_dir="vectors/slurp-devel-remainder-v1",
         coordination_dir="coordination/slurp-devel-remainder-query-encoding-v1",
         session_id="local-nemotron-slurp-devel-remainder-query-v1",
-        rows=6690,
+        rows=6570,
         vector_width=2048,
         split_identity_hash=(
-            "e65cd3b1842e7a4c1d8cab39b86278166b45e22c0c4d5f5c3f707724dc2e4fdc"
+            "f8af142bec49755d70364b665b31e3963972084fb73a568c9921f53b41fd341a"
         ),
         split_role="dev",
-        planned_speech_audio_seconds=18979,
+        planned_speech_audio_seconds=18612,
         planned_gpu_hours=2.0,
     ),
 }

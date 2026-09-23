@@ -77,8 +77,11 @@ Rosters (``PREPROCESS_ROSTERS``):
   refuse-on-conflict promotion re-verifies byte for byte instead of
   rewriting; the remaining 792 are new.
 - ``devel-remainder`` -- owner decision 107 of 2026-09-23, the expansion of the
-  development side to the whole SLURP devel split (``slurp:devel:...`` rows,
-  ``split_role="dev"``, 6,690 rows / 18,978.9523125 speech seconds). Promotes
+  development side to the SLURP devel split, carved by the coordinator ruling of
+  2026-09-23 (provisional decision 109) so that it neither spends the FINAL60
+  reservation nor carries an already-contacted row: ``SLURP-DEVEL-REMAINDER-V2``
+  (``slurp:devel:...`` rows, ``split_role="dev"``, 6,570 rows / 18,611.584875
+  speech seconds; the superseded V1 was 6,690 / 18,978.9523125). Promotes
   additively into the same resident packet root under its own
   ``DEVEL-REMAINDER-promotion.json`` receipt. It is the first roster to run on
   the ``-np 8`` sidecar fragment (see "More slots, honestly" below).
@@ -102,7 +105,7 @@ one-value sibling at ``-np 8``.
 
 Geometry equivalence
 --------------------
-Changing ``-np`` changes how the server batches, so before a 6,690-row pass
+Changing ``-np`` changes how the server batches, so before a 6,570-row pass
 runs on a geometry no sealed packet was produced with, the equivalence is
 MEASURED. ``devel-remainder-np8-equivalence-4`` re-encodes 4 already-promoted
 DEV-2000-ADDED rows through the np8 sidecar into a SCRATCH feature cache, then
@@ -341,19 +344,24 @@ PREPROCESS_ROSTERS: dict[str, RosterSpec] = {
         default_attempt_id="attempt-packets-stage3-construction-r01-recovery-v1",
         plan_calls=800, plan_speech_seconds=3492, plan_gpu_hours=1.0,
     ),
-    # Owner decision 107 (2026-09-23): the development side expands to the whole
-    # SLURP devel split. 6,690 rows / 18,978.9523125 speech seconds (declared
-    # 18,979); 60 rows are already warm in the legacy cache (the historic
-    # probe-60) and 0 are promoted, so all 6,690 are contacted once.
+    # Owner decision 107 (2026-09-23): the development side expands to the SLURP
+    # devel split; the coordinator ruling of 2026-09-23 (provisional decision
+    # 109) then carved the 60 reserved-final-unread FINAL60 recordings and the
+    # 60 already-contacted historic probe-60 recordings out of it, so the roster
+    # is SLURP-DEVEL-REMAINDER-V2: 6,570 rows / 18,611.584875 speech seconds
+    # (declared 18,612). 0 rows are warm in the legacy cache -- the 60 warm rows
+    # of V1 were exactly the carved-out probe-60 -- and 0 are promoted, so all
+    # 6,570 are contacted once and every contact is a first contact. The
+    # superseded V1 fragments stay committed and are bound by nothing.
     "devel-remainder": RosterSpec(
         run_id="SAEA-SN-DEVEL-REMAINDER-PREPROCESS",
-        dataset_fragment="slurp-speech-native-devel-remainder",
-        experiment_fragment="slurp-devel-remainder-preprocess",
+        dataset_fragment="slurp-speech-native-devel-remainder-v2",
+        experiment_fragment="slurp-devel-remainder-preprocess-v2",
         sample_id_prefix="slurp:devel:",
         split_role="dev",
         promotion_receipt_name="DEVEL-REMAINDER-promotion.json",
         default_attempt_id="attempt-packets-devel-remainder-v1",
-        plan_calls=6690, plan_speech_seconds=18979, plan_gpu_hours=1.0,
+        plan_calls=6570, plan_speech_seconds=18612, plan_gpu_hours=1.0,
         sidecar_fragment=MODEL_FRAGMENT_NP8,
     ),
     # The 4-row geometry-equivalence preflight of the roster above: it re-encodes

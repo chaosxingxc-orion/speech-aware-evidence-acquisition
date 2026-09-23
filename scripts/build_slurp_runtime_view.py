@@ -46,9 +46,9 @@ Run in WSL2::
 
     PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<repo>/src \\
       python scripts/build_slurp_runtime_view.py \\
-        --roster-receipt docs/receipts/rosters/slurp-devel-remainder-v1.json \\
-        --output configs/dataset/slurp-speech-native-devel-remainder.json \\
-        --checks-dir docs/checks/speech-aware-evidence-acquisition/2026-09-23-slurp-devel-remainder-packets \\
+        --roster-receipt docs/receipts/rosters/slurp-devel-remainder-v2.json \\
+        --output configs/dataset/slurp-speech-native-devel-remainder-v2.json \\
+        --checks-dir docs/checks/speech-aware-evidence-acquisition/2026-09-23-slurp-devel-remainder-v2-packets \\
         --write
 """
 
@@ -59,6 +59,7 @@ import hashlib
 import json
 import math
 import os
+import re
 import sys
 import time
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
@@ -138,20 +139,22 @@ def split_of(sample_ids: Sequence[str]) -> str:
 
 
 def default_split_name(roster_id: str) -> str:
-    """``SLURP-DEVEL-REMAINDER-V1`` -> ``DEVEL-REMAINDER``.
+    """``SLURP-DEVEL-REMAINDER-V2`` -> ``DEVEL-REMAINDER``.
 
     The ``split_name`` a runtime view carries is the roster's own name without
     the carrier prefix and version suffix -- the convention
-    ``DEV-2000-ADDED`` / ``STAGE3-CONSTRUCTION-R01`` already follow. A caller
-    that wants something else passes ``--split-name``.
+    ``DEV-2000-ADDED`` / ``STAGE3-CONSTRUCTION-R01`` already follow. ANY
+    ``-V<n>`` suffix is dropped, not just ``-V1``: which population a view
+    describes is the split name, which FREEZE of it is the roster id, the
+    receipt relpath and the split identity hash, and conflating the two would
+    make ``DEVEL-REMAINDER-V2`` read like a different population. A caller that
+    wants something else passes ``--split-name``.
     """
 
     name = roster_id
     if name.startswith("SLURP-"):
         name = name[len("SLURP-") :]
-    if name.endswith("-V1"):
-        name = name[: -len("-V1")]
-    return name
+    return re.sub(r"-V\d+$", "", name)
 
 
 def promoted_coverage(packet_ids: Sequence[str]) -> dict[str, object]:

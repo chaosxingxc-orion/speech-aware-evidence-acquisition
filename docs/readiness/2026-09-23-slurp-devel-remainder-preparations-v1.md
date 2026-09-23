@@ -1,5 +1,15 @@
 # SLURP DEVEL-REMAINDER preparation plan, v1
 
+> **Sections 0-9 are the v1 record and their roster-bound numbers are SUPERSEDED by
+> [section 10, "v2 carve-out"](#10-v2-carve-out-provisional-decision-109).** The coordinator ruling
+> of 2026-09-23 (provisional decision 109) carved the 60 `reserved-final-unread` FINAL60 recordings
+> and the 60 already-contacted historic probe-60 recordings out of the remainder, so the live roster
+> is `SLURP-DEVEL-REMAINDER-V2` (6,570 rows), not the `…-V1` named below. V1's receipt, runtime view
+> and check artifacts stay committed exactly as they were frozen and are **never rewritten** -- the
+> committed documents that pin their file hashes would break -- so every v1 number below is left
+> standing as the parent record and section 10 states what replaced it. Nothing here has been
+> contacted: all four ledger rows are still DRAFT with `consumed = no`.
+
 Owner decision 107 of 2026-09-23 (`docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md`):
 the development side may expand up to the full SLURP `devel` split as the development-side
 validation resource, prepared with the same pipeline as DEV-2000-ADDED, built in parallel ahead of
@@ -13,7 +23,7 @@ Precedent throughout: the DEV-2000-ADDED preparation chain of cell B6
 (`docs/readiness/2026-09-21-slurp-b6-dev2000-added-preparation-plan-v1.md`) and the Stage-3
 construction chain of R01 (`docs/readiness/2026-09-22-slurp-stage3-construction-r01-preparations-v1.md`).
 
-## 0. The roster in one paragraph
+## 0. The roster in one paragraph (v1; superseded by section 10)
 
 `SLURP-DEVEL-REMAINDER-V1` (`docs/receipts/rosters/slurp-devel-remainder-v1.json`, raw sha256
 `83f618bdadf338fe88ae0a851d43ce4c9e3ef9569365fd7bf2bcffb82cb4ee18`): **6,690 SLURP `devel`
@@ -45,7 +55,7 @@ The view therefore carries `d1_media_supplement: null`, `d1_media_supplement_sha
 `d1_manifest_sha256: null`, and the driver's own `--preflight-only` confirmed **D1 media identity
 PASS for 6,690 samples**.
 
-## 1. Coverage finding: how many DEVEL-REMAINDER rows already have packets or a warm cache
+## 1. Coverage finding: how many DEVEL-REMAINDER rows already have packets or a warm cache (v1; superseded by section 10)
 
 **0 of 6,690 rows are promoted. 60 of 6,690 are warm in the legacy feature cache, and they are
 exactly the historic probe-60.**
@@ -150,7 +160,7 @@ python scripts/slurp_evo_fold_preprocess.py --roster devel-remainder-np8-equival
   `sidecar_fragment` for `devel-remainder` moves back to `q4km-preprocess-featcache-cpu-sidecar`,
   which re-pins its composed and protocol hashes and needs a re-registration.
 
-## 3. Preparation 1 of 3 -- speech packet promotion (ENCODE + PROMOTE)
+## 3. Preparation 1 of 3 -- speech packet promotion (ENCODE + PROMOTE) (v1 bindings; superseded by section 10)
 
 * **Precedent artifact**: `/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-2000-ADDED-promotion.json`
   (1,000 packets), written by run `SAEA-SN-DEV2000-ADDED-PREPROCESS`.
@@ -199,7 +209,7 @@ PREP_ROSTER=devel-remainder PREP_WORKERS=8 PREP_PROMOTE_WORKERS=8 \
 * **Host memory**: the task entry's watchdog stops the pass if available memory falls below 6 GB.
   The host has 43 GB total and about 38 GB available with the GPU session resident.
 
-## 4. Preparation 2 of 3 -- speech query vectors (an encoder contact)
+## 4. Preparation 2 of 3 -- speech query vectors (an encoder contact) (v1 bindings; superseded by section 10)
 
 Modelled one for one on `SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1` and, after it,
 `SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1`. Three steps, of which only the middle
@@ -259,7 +269,7 @@ and prints every output hash.
   = 29 minutes (row-scaled: 1,827 s = 30.5 minutes; the two agree here because the encoder's cost is
   dominated by the forward, not the file). The declared ceiling is `2.0`, the precedent's value.
 
-## 5. Preparation 3 of 3 -- the content-dimension derivative (model-free)
+## 5. Preparation 3 of 3 -- the content-dimension derivative (model-free) (v1 bindings; superseded by section 10)
 
 Exactly R01's step 3: a zero-contact flatten of preparation 2's alias export into the `content`
 dimension, every float byte-identical to the parent's single segment vector.
@@ -285,7 +295,7 @@ python scripts/build_slurp_query_content_derivative.py \
 * **Expected counts**: 6,690 rows; **0 model / encoder / tokenizer / network contacts, 0 speech
   seconds, 0 GPU hours**.
 
-## 6. Order, and the throughput projection
+## 6. Order, and the throughput projection (v1; superseded by section 10)
 
 | # | Step | Contacts | Depends on |
 | --- | --- | ---: | --- |
@@ -334,6 +344,10 @@ decision 107 releases the FINAL60 reservation** or **carve those 120 recordings 
 remainder is read. Carving them out is a one-line change to the generator's exclusion set and a fresh
 receipt; it cannot be done after the rows have been flown.
 
+**Answered on 2026-09-23 (provisional decision 109): carve them out.** See section 10. The generator
+grew `--exclude-receipt` and `--version`, the 120 recordings left the roster, and the deviation is
+re-stated in the V2 receipt as the *utterance-level residue* the carve-out could not remove.
+
 **Deviation REM-D2.** 1,719 of the 1,839 remainder utterances already have a recording in a sealed
 half; only **120** remainder utterances were never read before (and those 120 are exactly the FINAL60
 and probe-60 utterances). One utterance contributes up to 59 remainder recordings. Every paired
@@ -371,12 +385,13 @@ and the dual weighting of REM-D3) enters only through that cell's own registrati
 training-free RL operator. The label lives here as prose rather than in the experiment fragments
 because neither fragment is a Stage-3 cell:
 `scripts/checks/stage3_algorithm_label_check.py` puts a fragment in scope only through a `stage3`
-token in its stem or `experiment_id` or a reference to one of the two Stage-3 specs, and neither
-`slurp-devel-remainder-preprocess.json` nor
-`slurp-devel-remainder-np8-equivalence-4-preprocess.json` carries any of those. The gate confirms it:
-8 Stage-3 cells of 445 experiment fragments, unchanged by this registration.
+token in its stem or `experiment_id` or a reference to one of the two Stage-3 specs, and none of
+`slurp-devel-remainder-preprocess.json`, `slurp-devel-remainder-preprocess-v2.json` (the v2
+successor, section 10) or `slurp-devel-remainder-np8-equivalence-4-preprocess.json` carries any of
+those. The gate confirms it: 8 Stage-3 cells of 446 experiment fragments (445 before the v2
+fragment), unchanged by this registration.
 
-## 9. The files this plan registers
+## 9. The files this plan registers (v1; section 10 lists the v2 files)
 
 | File | Raw sha256 | What it is |
 | --- | --- | --- |
@@ -400,8 +415,156 @@ token in its stem or `experiment_id` or a reference to one of the two Stage-3 sp
 | `docs/checks/…/2026-09-23-slurp-devel-remainder-packets/media-inventory.json` | `b82040cc…` | the media inventory + cache warmth |
 | `docs/checks/…/2026-09-23-slurp-devel-remainder-packets/packet-preparation-plan.json` | `6a90ea99…` | what remains for the packets |
 
-Tests: `tests/unit/test_slurp_devel_remainder_roster.py` (23),
-`tests/unit/test_devel_remainder_preprocess_rosters.py` (25),
-`tests/unit/test_devel_remainder_preparation_configs.py` (23), and the updated
+Tests, after the section-10 carve-out: `tests/unit/test_slurp_devel_remainder_roster.py` (33,
+was 23), `tests/unit/test_devel_remainder_preprocess_rosters.py` (25),
+`tests/unit/test_devel_remainder_preparation_configs.py` (24, was 23), and
 `tests/unit/test_e33_preprocess_rosters.py` (13), whose exact-set assertion over
-`PREPROCESS_ROSTERS` now names the two new keys.
+`PREPROCESS_ROSTERS` names the two keys this plan added. The three DEVEL-REMAINDER modules now
+assert the V2 artifacts and keep a short section proving V1 is still committed, intact and
+correctly superseded.
+
+## 10. v2 carve-out (provisional decision 109)
+
+**Ruling, 2026-09-23 (coordinator, provisional decision 109).** The remainder must not spend the
+FINAL60 reservation and must stay contact-fresh. Both reserved sets are therefore excluded and the
+roster is re-frozen as a **new version**; the v1 receipt is kept committed as the superseded parent
+and is never rewritten.
+
+### 10.1 What was excluded, and the proof that it is exactly 120 recordings
+
+| Set | Receipt | Recordings | Utterances | Already in a sealed half |
+| --- | --- | ---: | ---: | ---: |
+| FINAL60 (`split_role` `reserved-final-unread`, held back 2026-08-23) | `docs/receipts/probe-samples/FINAL60.json` (`630d6e25…`) | 60 | 60 | 0 |
+| historic probe-60 (already contacted by early probes; the 60 warm legacy-cache rows) | `configs/probes/g0-binding/pslu-sample-devel-n60.json` (`782609ac…`) | 60 | 60 | 0 |
+| **union** | | **120** | **120** | **0** |
+
+The two sets share **0 recordings and 0 utterances** (`carved_out_reserved_sets.
+pairwise_shared_recordings` / `…_utterances`), so the union is exactly 60 + 60 = 120. SHA-256 over
+the sorted excluded sample-id list:
+`30ca991cc7957d5e6d18cbe7d8a303f174bec83d73bcd36315ce2bbbcd50767c`.
+
+### 10.2 The v2 roster, number for number against v1
+
+| | v1 (`SLURP-DEVEL-REMAINDER-V1`) | **v2 (`SLURP-DEVEL-REMAINDER-V2`)** | delta |
+| --- | ---: | ---: | ---: |
+| recordings | 6,690 | **6,570** | -120 |
+| distinct utterances | 1,839 | **1,827** | -12 |
+| audio seconds | 18,978.9523125 | **18,611.584875** | -367.3674375 |
+| declared ceiling | 18,979 | **18,612** | -367 |
+| mean / min / max seconds | 2.837 / 0.512 / 13.166 | **2.833 / 0.512 / 13.166** | |
+| headset / far-field | 3,235 / 3,455 | **3,176 / 3,394** | -59 / -61 |
+| media bytes | 359,107,433 | **352,145,084** | -6,962,349 |
+| excluded candidates | 2,000 | **2,120** | +120 |
+| warm in the legacy feature cache | 60 | **0** | -60 |
+| already promoted under the resident root | 0 | **0** | 0 |
+| split identity hash | `e65cd3b1…` | **`f8af142b…`** | |
+
+Only **12** utterances left with their recordings: those whose *only* devel recording outside the
+two sealed halves was a reserved one. The seed is unchanged (`20260923`), the draw is still the
+take-all freeze through `core.roster.freeze_roster`, and `roster_role` / `split_role` /
+`stratum_withheld_per_item` / `target_gold_opened_before_receipt` are unchanged.
+
+**Completeness still holds, with a fourth part.** DEV-1000 (1,000) + DEV-2000-ADDED (1,000) +
+CARVED-OUT (120) + DEVEL-REMAINDER (6,570) = **8,690** = the complete devel split, pairwise
+disjoint, proven id by id in the receipt's `completeness` block. Nothing is lost; the 120
+recordings are named and set aside.
+
+**Disjointness.** Every `shared_with_*` line of the V2 `disjointness_proof` is 0, including the
+three new ones: `shared_with_carved_out_final60_recordings`,
+`shared_with_carved_out_historic_probe60_recordings` and
+`shared_with_any_carved_out_recording`.
+
+### 10.3 The residue a recording-level carve-out cannot remove
+
+Devel carries several recordings of one utterance, so excluding a *recording* does not exclude its
+*sentence*. **108 of the 120 carved-out utterances still have sibling recordings on the v2 roster --
+383 recordings in total** (194 of the FINAL60 utterances, 189 of the probe-60 utterances). Reading
+them exposes the same sentence and the same gold as the reserved recordings would, through a
+different microphone. That is why the v2 text-contamination profile against the TRAIN construction
+pool is unchanged from v1 (**3** exact sentence matches, **210** utterances sharing a TRAIN 6-gram,
+now over 1,827 utterances instead of 1,839).
+
+This is recorded as deviation **REM-D1** in the V2 receipt, with the owner action: *decide whether
+the utterance-level residue also has to go (a further 383 recordings and a third version of this
+roster), or accept that the reservation is enforced at recording granularity only.* **Open for the
+coordinator; nothing here assumes an answer.**
+
+### 10.4 The revised throughput projection
+
+Same measurement as section 6 (the R01 recovery ENCODE: 800 rows / 3,491.426 audio seconds in
+6,268 s at `--workers 4`), rescaled to 6,570 rows / 18,611.584875 audio seconds:
+
+| Basis | at 4 workers (`-np 4`) | at 8 workers (`-np 8`), IF throughput scales with slots |
+| --- | ---: | ---: |
+| audio-second-scaled | 33,413 s = **9.28 h** (v1: 9.46 h) | 16,706 s = **4.64 h** (v1: 4.73 h) |
+| row-scaled | 51,476 s = **14.30 h** (v1: 14.56 h) | 25,738 s = **7.15 h** (v1: 7.28 h) |
+
+The np8 column is still an assumption, not a measurement; the 4-row equivalence preflight of
+section 2 measures feature equivalence and per-row wall clock, not aggregate scaling. Step 2b
+(query encoding) rescales the DEV-2000-ADDED receipt's 273.14 s / 2,983.527 speech seconds the same
+way: **1,704 s = 28.4 minutes = 0.47 GPU hours** audio-scaled (1,795 s = 29.9 min row-scaled); the
+declared ceiling stays the precedent's `2.0`.
+
+### 10.5 The v2 files, and what they replace
+
+| v2 file | Raw sha256 | Replaces |
+| --- | --- | --- |
+| `docs/receipts/rosters/slurp-devel-remainder-v2.json` | `b695a6bd…` | `…-v1.json` (`83f618bd…`) |
+| `configs/dataset/slurp-speech-native-devel-remainder-v2.json` | `51ea5ad6…` (canonical `72a8d829…`) | `…-devel-remainder.json` (`192a2144…`, canonical `5ecda759…`) |
+| `configs/experiment/slurp-devel-remainder-preprocess-v2.json` | `af1001a9…` | `…-preprocess.json` (`197a2720…`) |
+| `configs/preparation/slurp-devel-remainder-speech-query-encoding-protocol-v2.json` | `2e646bd2…` | `…-protocol-v1.json` (`66a86ec2…`) |
+| `configs/preparation/slurp-devel-remainder-query-alias-v2.json` | `db7f948a…` | `…-alias-v1.json` (`b9fc487e…`) |
+| `docs/checks/…/2026-09-23-slurp-devel-remainder-v2-roster/disjointness.json` | `640c4b3b…` | `…-roster/disjointness.json` |
+| `docs/checks/…/2026-09-23-slurp-devel-remainder-v2-packets/media-inventory.json` | `9c5741e5…` | `…-packets/media-inventory.json` |
+| `docs/checks/…/2026-09-23-slurp-devel-remainder-v2-packets/packet-preparation-plan.json` | `4d9885d0…` | `…-packets/packet-preparation-plan.json` |
+| `$SPEECHRL_DATA_DIR/coordination/slurp-devel-remainder-speech-query-source-inventory-v2.json` | `d8ca6915…` | `…-v1.json` (`a7fd59a6…`) -- outside Git, model-free, 6,570 rows |
+
+Re-pointed in place (the run ids, attempts, vector and coordination directories are **unchanged**,
+because no contact has been made under any of them): `PREPROCESS_ROSTERS["devel-remainder"]` in
+`scripts/slurp_evo_fold_preprocess.py` (now 6,570 calls / 18,612 declared speech seconds on the v2
+fragments), `PREPARATION_SETS["devel-remainder"]` in `scripts/flights/batch/prep_generic_steps.py`
+(v2 protocol / alias / roster / dataset / inventory, `rows` 6,570, `planned_speech_audio_seconds`
+18,612, v2 split identity), and the four DRAFT exposure-ledger rows.
+
+**Re-pinned hashes for preparation 1.** Composed config
+`q4km-preprocess-featcache-cpu-sidecar-np8` / `slurp-speech-native-devel-remainder-v2` /
+`speech-native-preprocess` / `slurp-devel-remainder-preprocess-v2`, **config hash**
+`4526c012b94a91679b9e28502d3939a3a4a5e204d2258fce8152fadb132b4be3` (v1:
+`6c99858b…`), arm `bare-core`, **protocol hash**
+`e01218edf4467cdf5fbf14a2069b619e4b348e324e787ad8b06ade49a00e4a65` (v1: `04102a5e…`). The np8
+geometry-equivalence preflight of section 2 is **unaffected**: its roster is drawn from
+DEV-2000-ADDED, and its config hash `bd39d33f…` and protocol hash `14132ad0…` were re-computed here
+and are unchanged.
+
+### 10.6 How to reproduce the v2 freeze
+
+```bash
+python scripts/build_slurp_devel_remainder_roster.py --version 2 \
+    --exclude-receipt docs/receipts/probe-samples/FINAL60.json \
+    --exclude-receipt configs/probes/g0-binding/pslu-sample-devel-n60.json --write
+
+python scripts/build_slurp_runtime_view.py \
+    --roster-receipt docs/receipts/rosters/slurp-devel-remainder-v2.json \
+    --output configs/dataset/slurp-speech-native-devel-remainder-v2.json \
+    --checks-dir docs/checks/speech-aware-evidence-acquisition/2026-09-23-slurp-devel-remainder-v2-packets \
+    --workers 8 --write
+
+python scripts/build_speech_query_source_inventory.py \
+    --runtime-view configs/dataset/slurp-speech-native-devel-remainder-v2.json \
+    --roster-receipt docs/receipts/rosters/slurp-devel-remainder-v2.json \
+    --data-root "$SPEECHRL_DATA_DIR" --source-root "$PWD" \
+    --out "$SPEECHRL_DATA_DIR/coordination/slurp-devel-remainder-speech-query-source-inventory-v2.json"
+```
+
+`--version 1` with no `--exclude-receipt` still reproduces the v1 receipt and its disjointness
+document **byte for byte** -- verified in this worktree by rebuilding both and comparing bytes --
+so the generalised generator did not silently change the parent.
+
+### 10.7 What section 10 does not do
+
+It does not rewrite the v1 receipt (no `superseded_by` key was grafted onto it: the v1 media
+inventory, the v1 protocol, the v1 ledger prose and this note all pin its file hash, and every one
+of those pins would break). It authorises no contact, flips no readiness state, mints no decision
+receipt and countersigns no ledger row. It does not admit `-np 8`; section 2's preflight still does,
+and only on `EQUIVALENT`. Decision 109 is recorded here as **provisional**: it is the coordinator's
+ruling, and the owner's own decision log entry is still owed.

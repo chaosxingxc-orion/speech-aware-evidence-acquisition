@@ -1,0 +1,161 @@
+{
+  "counts": {
+    "audio_seconds_declared_ceiling": 18612,
+    "audio_seconds_total": 18611.584875,
+    "distinct_utterances": 1827,
+    "recordings": 6570,
+    "sample_rates_hz": [
+      16000
+    ],
+    "total_bytes": 352145084
+  },
+  "cpu_pipeline": {
+    "cache_key_files_per_second": 1337.545,
+    "cache_key_wall_seconds": 4.912,
+    "decoder": "soundfile header probe for duration and rate; bytes hashed with SHA-256. ffmpeg is absent by design and no media byte is rewritten -- the librosa fallback stays the pinned decode path for every later consumer.",
+    "media_inventory_audio_seconds_per_wall_second": 2394.492,
+    "media_inventory_files_per_second": 845.27,
+    "media_inventory_mib_per_second": 43.207,
+    "media_inventory_wall_seconds": 7.773,
+    "workers": 8
+  },
+  "d1_closure": {
+    "closure_ids_for_carrier": 8690,
+    "covered_items": 6570,
+    "reader": "contracts.FrozenCoreGate.assert_media_identity_closure / media_identity_closure_ids -- the gate's own reader, with NO D1 media supplement configured",
+    "relpath": "docs/receipts/artifacts/d1-identity.json",
+    "supplement_required": false
+  },
+  "generator": "scripts/build_slurp_runtime_view.py",
+  "inventory_sha256": "91b17e98da281e547ac1355a30eb18d28d61ee7fa62cd00946644f234e065626",
+  "legacy_feature_cache": {
+    "available": true,
+    "cold_rows": 6570,
+    "dir": "/home/chao/feat-cache/slurp-q4km",
+    "key_convention": "core.model.speech_features.legacy_audio_feature_cache_key -- FNV-1a over the encoded media bytes, so warmth is a property of the file, not of a prompt",
+    "warm_rows": 0
+  },
+  "offline_guard": {
+    "attempted_targets": [],
+    "outbound_connection_attempts": 0
+  },
+  "promoted_packet_coverage": {
+    "available": true,
+    "covered_rows": 0,
+    "method": "id level only: every promotion-receipt document under the resident root is parsed for its packets[].packet_id set and intersected with this roster's packet ids, then confirmed against the on-disk leaf directories. No packet byte, no .feat file and no media file is read.",
+    "on_disk_leaf_directories_under_this_carrier_split": 2000,
+    "on_disk_leaves_that_are_roster_rows": 0,
+    "receipts_inspected": [
+      {
+        "covers": 0,
+        "packets": 100,
+        "receipt": "DEV-100-promotion.json"
+      },
+      {
+        "covers": 0,
+        "packets": 1000,
+        "receipt": "DEV-1000-promotion.json"
+      },
+      {
+        "covers": 0,
+        "packets": 1000,
+        "receipt": "DEV-2000-ADDED-promotion.json"
+      },
+      {
+        "covers": 0,
+        "packets": 500,
+        "receipt": "DEV-500-promotion.json"
+      },
+      {
+        "covers": 0,
+        "packets": 108,
+        "receipt": "EFFECT-C108-promotion.json"
+      },
+      {
+        "covers": 0,
+        "packets": 8,
+        "receipt": "ENG-GATE8-promotion.json"
+      },
+      {
+        "covers": 0,
+        "packets": 108,
+        "receipt": "EVIDENCE-E108-promotion.json"
+      },
+      {
+        "covers": 0,
+        "packets": 1080,
+        "receipt": "EVO-FOLD-A-V2-promotion.json"
+      },
+      {
+        "covers": 0,
+        "packets": 1080,
+        "receipt": "EVO-FOLD-B-V2-promotion.json"
+      },
+      {
+        "covers": 0,
+        "packets": 2160,
+        "receipt": "EVO-FOLDS-V2-promotion.json"
+      },
+      {
+        "covers": 0,
+        "packets": 108,
+        "receipt": "FACTOR-D108-promotion.json"
+      },
+      {
+        "covers": 0,
+        "packets": 36,
+        "receipt": "GATE-C36-promotion.json"
+      },
+      {
+        "covers": 0,
+        "packets": 18,
+        "receipt": "GATE18-promotion.json"
+      },
+      {
+        "covers": 0,
+        "packets": 18,
+        "receipt": "KEY18-promotion.json"
+      },
+      {
+        "covers": 0,
+        "packets": 36,
+        "receipt": "OPT-A36-promotion.json"
+      },
+      {
+        "covers": 0,
+        "packets": 18,
+        "receipt": "OPT-B18-promotion.json"
+      },
+      {
+        "covers": 0,
+        "packets": 63,
+        "receipt": "SLURP-KNOWLEDGE63-promotion.json"
+      },
+      {
+        "covers": 0,
+        "packets": 800,
+        "receipt": "STAGE3-CONSTRUCTION-R01-promotion.json"
+      },
+      {
+        "covers": 0,
+        "packets": 90,
+        "receipt": "TRAIN90-promotion.json"
+      }
+    ],
+    "root": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+    "uncovered_rows": 6570
+  },
+  "roster": {
+    "receipt_file_sha256": "b695a6bdb7ed70dba5ae842ac52e02e026dfc5940b856673884cb549ef7f9977",
+    "relpath": "docs/receipts/rosters/slurp-devel-remainder-v2.json",
+    "roster_id": "SLURP-DEVEL-REMAINDER-V2",
+    "split_identity_hash": "f8af142bec49755d70364b665b31e3963972084fb73a568c9921f53b41fd341a"
+  },
+  "runtime_view": {
+    "per_file_sha256": "one audio_sha256 per row inside the runtime view; the inventory does not duplicate the digests",
+    "relpath": "configs/dataset/slurp-speech-native-devel-remainder-v2.json",
+    "runtime_view_sha256": "72a8d82910f15360c4d85ce504cfcb892adc692d749e677d8ade70bf195fe62b"
+  },
+  "schema": "saea-slurp-speech-native-media-inventory-v1",
+  "study": "speech-aware-evidence-acquisition"
+}
