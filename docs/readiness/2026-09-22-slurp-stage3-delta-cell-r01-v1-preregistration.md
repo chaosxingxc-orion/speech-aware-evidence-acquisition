@@ -258,7 +258,7 @@ Each of these was measured, not assumed; the refusal is quoted in the report tha
 | --- | --- | --- | --- | --- | --- |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1` | `...-r01-v1` | `generation-plan-registered-v1.json` | `1fae45a3c401c4f4fd63ff921489af4466ab2713f9adf29bc6b8871ec67c1e80` | `a42a660d919be2e9531176be4c43f84e26eda62ae76fb2633898fc7267d4c74b` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1` | `...-r01-fit-v1` | `fit-plan-registered-v1.json` | same | same | same |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1` | `...-r01-twin-v1` | `twin-generation-plan-registered-v1.json` | `ace333be32c3e13b4b3cd48d985ee0677576ae7a685e2a3bdeb292a4b7276d9c` | `4203ccb3b6bf2a50515601b1b72f7d76d3725e704dde528e91f4e277e7e41546` | same |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1` | `...-r01-twin-v1` | `twin-generation-plan-registered-v1.json` | `6e388e1cd52381b02f6ab9cab3fda74452d215dea4386437c3f0f9149cfa5f6b` | `d0955196e0034f6c98606b501d1113b73fe544f10b064a0a6d44833fabec8f2f` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-FIT-V1` | `...-r01-twin-fit-v1` | `twin-fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1` | `...-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `f7fc3f983242e8f957121fabdd035a6238cc229bdc141c6ad5e33d3377092373` | `e33af742bcfeae72342798e904f63c03d2419b097b4c2ab6648f8f96c51ccf87` | `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-FIT-V1` | (spend identity) | `smoke-fit-plan-registered-v1.json` | same | same | same |
