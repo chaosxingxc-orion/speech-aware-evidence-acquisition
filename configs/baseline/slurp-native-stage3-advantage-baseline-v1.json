@@ -16,8 +16,8 @@
     }
   },
   "advantage_pairs": {
-    "relpath": "PENDING_S3_3_PAIRS_JSON_RELPATH",
-    "sha256": "PENDING_S3_3_PAIRS_JSON_SHA256",
+    "relpath": "analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1/pairs.json",
+    "sha256": "d66cd80104e2ec9161057a8e4f587dac981e701f347c2fce3c5dce40cba6ef80",
     "rollout_run_id": "SAEA-SLURP-STAGE3-ROLLOUT-R01-V1",
     "rollout_attempt_id": "attempt-slurp-native-stage3-rollout-r01-generation-v1",
     "analysis_root_relpath": "analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1",
