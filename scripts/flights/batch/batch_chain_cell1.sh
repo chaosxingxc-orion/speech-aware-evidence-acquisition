@@ -56,7 +56,7 @@ steps = [
      "campaign_plan": "configs/campaign/slurp-native-stage3-delta-cell-r01-v1.json",
      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1",
      "fit_run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1",
-     "gen_attempt_id": "attempt-slurp-native-stage3-delta-cell-r01-v1-generation-recovery",
+     "gen_attempt_id": "attempt-slurp-native-stage3-delta-cell-r01-v1-generation-recovery-relaunch",
      "smoke_run_id": None,
      "smoke_attempt_id": None,
      "expected_rows": 1080, "contacts_per_row": 4, "ceiling_per_row": 11, "notool": True,

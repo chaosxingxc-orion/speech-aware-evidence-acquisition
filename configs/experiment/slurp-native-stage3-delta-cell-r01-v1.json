@@ -6,7 +6,7 @@
         "worker",
         "campaign"
       ],
-      "attempt_id": "attempt-slurp-native-stage3-delta-cell-r01-v1-generation-recovery",
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-r01-v1-generation-recovery-relaunch",
       "baseline_fragment": "slurp-native-stage3-delta-cell-baseline-v1",
       "cell_id": "slurp-native-stage3-delta-cell-r01-v1",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
@@ -70,7 +70,7 @@
         "worker",
         "campaign"
       ],
-      "attempt_id": "attempt-slurp-native-stage3-delta-cell-r01-v1-fit",
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-r01-v1-fit-recovery",
       "baseline_fragment": "slurp-native-stage3-delta-cell-baseline-v1",
       "cell_id": "slurp-native-stage3-delta-cell-r01-fit-v1",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
