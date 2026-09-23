@@ -6,7 +6,7 @@
         "worker",
         "campaign"
       ],
-      "attempt_id": "attempt-slurp-native-stage3-delta-cell-smoke-4-v1-generation",
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-smoke-4-v1-generation-recovery",
       "baseline_fragment": "slurp-native-stage3-delta-cell-smoke-4-baseline-v1",
       "cell_id": "slurp-native-stage3-delta-cell-smoke-4-v1",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",

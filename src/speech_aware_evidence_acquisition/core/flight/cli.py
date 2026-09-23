@@ -58,7 +58,7 @@ def assert_prepared_artifacts_current(flights) -> None:
     stale: list[str] = []
     for runtime in flights:
         for report in runtime.verify_prepared_artifacts():
-            if not report["identity_ok"]:
+            if not report["identity_ok"] or report.get("seed_ok") is False:
                 stale.append(
                     f"{runtime.run_id}/{runtime.attempt_id} {report['key']} "
                     f"({report['relpath']}): {report['reason']}"
@@ -73,20 +73,27 @@ def assert_prepared_artifacts_current(flights) -> None:
 
 
 def prepared_artifact_blockers(preflight) -> list[str]:
-    """One blocker string per prepared artifact whose identity no longer holds.
+    """One blocker string per prepared artifact this package cannot use.
 
     E16 (2026-09-19). Empty when ``preflight`` reports no prepared artifact or
     every one of them verified, so ``check`` exits zero exactly as before for
-    every package that is actually current.
+    every package that is actually current. Since 2026-09-23 a pinned
+    first-phase supply that verifies and then does NOT compose into a seed
+    (``seed_ok`` false) is a blocker of its own, named as such.
     """
 
     if not isinstance(preflight, dict) or preflight.get("prepared_artifacts_ok") is not False:
         return []
     return [
-        "prepared artifact identity mismatch: "
-        f"{report.get('key')} ({report.get('relpath')}): {report.get('reason')}"
+        (
+            "prepared artifact identity mismatch: "
+            if not report.get("identity_ok")
+            else "prepared artifact does not compose into a first-phase seed: "
+        )
+        + f"{report.get('key')} ({report.get('relpath')}): {report.get('reason')}"
         for report in preflight.get("prepared_artifacts", ())
-        if isinstance(report, dict) and not report.get("identity_ok")
+        if isinstance(report, dict)
+        and (not report.get("identity_ok") or report.get("seed_ok") is False)
     ] or ["prepared artifact identity mismatch (no per-artifact detail reported)"]
 
 

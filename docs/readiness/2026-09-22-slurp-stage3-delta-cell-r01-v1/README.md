@@ -444,3 +444,63 @@ superseded in English by `stage3-deltas-v1-superseded-v1.md` in this package, wh
 every v1 and v1r digest side by side. Version 1 was never consumed: all eight exposure rows read
 `consumed = no`, readiness is `held` on all six cells, no decision receipt exists and nothing
 reached the batch queue.
+
+## First launch REFUSED, recovery re-registration (2026-09-23)
+
+The smoke cell `slurp-native-stage3-delta-cell-smoke-4-v1` was **refused before its first contact**
+at 14:14 UTC. The attempt `attempt-slurp-native-stage3-delta-cell-smoke-4-v1-generation` was opened
+and carries **zero contacts and zero metered seconds**; it stays in place as the record of the
+refused launch. The twin smoke's attempt never opened and is untouched.
+
+**The refusal.** `core/flight/runtime.py` `run_phases` -> `_dispatch_phase_program` ->
+`_phase_supply_seeds` -> `_merge_unconditional_first_phase`:
+
+```
+FlightRuntimeError: an unconditional store route repeats a seeded value id:
+['stage3-deltas::delta:1:0098d11d2d55', 'stage3-deltas::delta:1:2705faddd09d',
+ 'stage3-deltas::delta:1:458b1eb85929']
+```
+
+**Root cause.** S3-4s publishes the Perception UNCONDITIONAL route as its own seam
+(`rails/knowledge_stores.py`, `unconditional_first_phase`) so a cell that pins a
+`prepared_phase_supply` artifact for the first phase's RETRIEVAL store still gets the route composed
+on top. That reasoning held for an artifact prepared before the store existed and not for this one:
+`FlightRuntime.prepare_phase_supply` derives the artifact **through the same**
+`_phase_supply_seeds` (item E16 -- one identity computation, one producer), which for a store-routed
+cell runs `rails.knowledge_stores.bootstrap_first_phase`, and **that** already appends the
+unconditional route itself. So each of the four pinned artifacts already carried the four
+`stage3-deltas` Perception deltas at the tail of every row, and the dispatch merge appended them a
+second time. The overlap check then refused -- correctly, on a seed the producer had already
+composed. All six CELL-1 cells were affected, arm and twin included, and every one of them was
+reproduced offline with zero contacts before the repair.
+
+**The repair.** `_merge_unconditional_first_phase` now composes the route **exactly once**. The
+prepared-artifact call site passes `seeded_from_artifact=True`, under which a row already ending in
+exactly this route's ids is VERIFIED and left untouched, while a row carrying none of them (an
+artifact prepared before the store declared the route -- the case the seam was written for) still
+has them appended. A partial or misordered overlap is never repaired silently, and every seed that
+is not a prepared artifact keeps the strict pre-fix rule under which any overlap refuses. Covered by
+`tests/unit/test_stage3_delta_node_routes.py`: the real router driven through
+`FlightRuntime._phase_supply_seeds` from scratch and from a prepared artifact, plus the artifact
+seed that predates the route, the two genuine-duplicate shapes and the strict from-scratch refusal.
+
+**The pinned artifacts must be re-prepared.** Their `output` is CORRECT and is expected to reproduce
+byte for byte; what moves is the identity envelope, because
+`FlightRuntime._phase_seed_inputs` hashes `core/flight/runtime.py` itself into every prepared
+artifact (`sources.implementation.runtime`). Any repair at all in that file -- or in
+`rails/knowledge_stores.py`, which is hashed in beside it whenever a store router is bound --
+invalidates every artifact prepared before it. The coordinator therefore re-pins all four generation
+cells in one cycle with `scripts/flights/batch/cell1_flip_all.sh`, exactly as the readiness flip
+already does; `--allow-output-change` must still never be passed, and an output change here would
+mean the knowledge channel moved and must be reported instead.
+
+**Recovery re-registration.** This is the **one** root-diagnosed recovery re-registration the
+failure rule allows for this flight. The smoke generation cell's attempt id becomes
+`attempt-slurp-native-stage3-delta-cell-smoke-4-v1-generation-recovery`
+(`configs/experiment/slurp-native-stage3-delta-cell-smoke-4-v1.json`, and `smoke_attempt_id` in
+`scripts/flights/batch/batch_chain_cell1.sh`). **Unchanged:** the twin smoke's attempt id, both
+arms' attempt ids, every run id, the fit identities, the population, the store pins, the caps and
+the decision rule. The budgets are unchanged because **nothing was metered** -- the refusal happened
+inside phase dispatch, before any request was built -- and they remain run-cumulative across every
+attempt of the run id. The readiness states and the registered plan/protocol documents are untouched
+here; the coordinator re-pins.

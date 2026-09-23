@@ -594,21 +594,39 @@ def validate_artifact_result_binding(
     }
 
 
-def _merge_unconditional_first_phase(facets, values, binding, first_phase):
+def _merge_unconditional_first_phase(
+    facets, values, binding, first_phase, *, seeded_from_artifact=False
+):
     """Compose a named store's UNCONDITIONAL first-phase route (S3-4s,
-    owner decision 106) on top of whatever seeded the first phase.
+    owner decision 106) EXACTLY ONCE on top of whatever seeded the first
+    phase.
 
     The first phase has no preceding ``advance`` to carry a per-row
-    decision, so its supply is SEEDED. The seed normally comes from one
-    of two places: a prepared, hash-pinned artifact
+    decision, so its supply is SEEDED. The seed comes from one of two
+    places: a prepared, hash-pinned artifact
     (:meth:`_load_phase_supply_seed`) or the store router's own
-    ``bootstrap_first_phase``. Neither can answer for a store that
-    declares only an unconditional route -- the prepared artifact is a
-    frozen selection of the store it was prepared over, and
-    ``bootstrap_first_phase`` is not called at all when a prepared
-    artifact is pinned. This composes the route's own per-sample value
-    ids on top, appended after whatever was already seeded and never
-    replacing it.
+    ``bootstrap_first_phase``. The latter composes the route itself
+    (``rails.knowledge_stores``), so this function exists for the seeds
+    that route does not produce.
+
+    A prepared artifact looked like exactly such a seed and is not:
+    :meth:`prepare_phase_supply` derives it THROUGH this same
+    :meth:`_phase_supply_seeds` (item E16 -- ONE identity computation,
+    one producer), which for a store-routed cell means through
+    ``bootstrap_first_phase``. So the artifact ALREADY carries the
+    route's own qualified value ids, at the tail of every row it was
+    prepared over, and appending them again refused cell CELL-1's
+    generation smoke before its first contact (2026-09-23, zero calls:
+    four ``stage3-deltas`` deltas seeded twice on every row).
+
+    Hence ``seeded_from_artifact``. For an artifact seed the route is
+    VERIFIED rather than appended: a row already ending in exactly this
+    route's ids is left untouched, and a row carrying none of them (an
+    artifact prepared before the store declared the route -- the case
+    this seam was written for) still has them appended. A partial
+    overlap is never repaired silently. Every other caller keeps the
+    strict rule, under which any overlap at all is a genuine duplicate
+    and refuses.
 
     Byte-identical no-op for every flight whose router publishes no
     ``unconditional_first_phase`` seam -- which is every flight written
@@ -631,14 +649,25 @@ def _merge_unconditional_first_phase(facets, values, binding, first_phase):
             )
         destination = merged_values.setdefault(phase, {})
         for sample_id, value_ids in rows.items():
+            route = tuple(value_ids)
+            if not route:
+                continue
             already = tuple(destination.get(sample_id, ()))
-            overlap = set(already) & set(value_ids)
+            if (
+                seeded_from_artifact
+                and len(already) >= len(route)
+                and already[len(already) - len(route):] == route
+            ):
+                # The producer of this artifact already composed the very
+                # same route, once. Verified here, never appended again.
+                continue
+            overlap = set(already) & set(route)
             if overlap:
                 raise FlightRuntimeError(
                     "an unconditional store route repeats a seeded value id: "
                     f"{sorted(overlap)[:3]}"
                 )
-            destination[sample_id] = already + tuple(value_ids)
+            destination[sample_id] = already + route
     return facets, merged_values
 
 
@@ -3562,18 +3591,22 @@ class FlightRuntime:
         # per-artifact verdict.
         prepared_artifacts = self.verify_prepared_artifacts()
         prepared_artifacts_ok = all(
-            report["identity_ok"] for report in prepared_artifacts
+            report["identity_ok"] and report.get("seed_ok") is not False
+            for report in prepared_artifacts
         )
         if not prepared_artifacts_ok and enforce_prepared_artifacts:
             from ..preparation import PreparationError
 
             stale = [
-                report for report in prepared_artifacts if not report["identity_ok"]
+                report
+                for report in prepared_artifacts
+                if not report["identity_ok"] or report.get("seed_ok") is False
             ]
             raise PreparationError(
                 "refusing to open an attempt: "
                 f"{len(stale)} prepared artifact(s) no longer match this "
-                "implementation and config; re-pin the package on the launch "
+                "implementation and config, or do not compose into a "
+                "first-phase seed; re-pin the package on the launch "
                 "commit (core.flight.repin). "
                 + "; ".join(
                     f"{report['key']} ({report['relpath']}): {report['reason']}"
@@ -7009,7 +7042,17 @@ class FlightRuntime:
         flight used to discover that only at dispatch, after the attempt had
         been opened. This recomputes the identity exactly as the dispatch will
         (:meth:`phase_supply_artifact_identity`) and reports, per artifact,
-        ``{key, relpath, sha256, identity_ok, reason, difference}``.
+        ``{key, relpath, sha256, identity_ok, seed_ok, reason, difference}``.
+
+        ``seed_ok`` (2026-09-23) is the second half of that promise: a pinned
+        first-phase supply whose identity holds is also COMPOSED here, through
+        :meth:`_phase_supply_seeds`, exactly as ``_dispatch_phase_program``
+        composes it. Identity alone was not enough -- cell CELL-1's generation
+        smoke passed every identity check and was then refused inside
+        :func:`_merge_unconditional_first_phase`, after preflight, preprocess
+        and serve had been paid for and the attempt opened. For a pinned cell
+        this costs one artifact load plus the store's own per-flight-constant
+        route, and a cell that pins nothing never reaches it.
 
         Nothing is reported for a cell that pins no prepared artifact, and
         nothing for a policy that never loads one (``fixed`` and the obs
@@ -7094,6 +7137,7 @@ class FlightRuntime:
                             else None
                         ),
                         "identity_ok": failure is None,
+                        "seed_ok": None,
                         "reason": failure,
                         "difference": None,
                     }
@@ -7104,6 +7148,7 @@ class FlightRuntime:
                 "relpath": None,
                 "sha256": None,
                 "identity_ok": False,
+                "seed_ok": None,
                 "reason": failure,
                 "difference": None,
             }
@@ -7141,6 +7186,24 @@ class FlightRuntime:
                             inputs=inputs,
                         )
                     )
+                    if report.get("identity_ok"):
+                        from types import SimpleNamespace
+
+                        report["seed_ok"] = True
+                        try:
+                            self._phase_supply_seeds(
+                                program,
+                                binding,
+                                specs,
+                                SimpleNamespace(split_identity_hash=identity),
+                            )
+                        except Exception as error:  # noqa: BLE001 -- a refusal
+                            report["seed_ok"] = False
+                            report["reason"] = (
+                                "the pinned first-phase supply verifies but does "
+                                "not compose into a seed: "
+                                f"{type(error).__name__}: {error}"
+                            )
             reports.append(report)
         self._prepared_artifact_reports = tuple(reports)
         return self._prepared_artifact_reports
@@ -7550,8 +7613,12 @@ class FlightRuntime:
             facets, values = self._load_phase_supply_seed(
                 prepared, binding, spec, plan.split_identity_hash
             )
+            # The artifact was produced through this same method, so for a
+            # store-routed cell it already carries the unconditional route
+            # ``bootstrap_first_phase`` composed into it; the merge verifies
+            # that route instead of seeding it a second time.
             return _merge_unconditional_first_phase(
-                facets, values, binding, first_phase
+                facets, values, binding, first_phase, seeded_from_artifact=True
             )
         supply_for_store = binding.get("supply_for_store")
         store_bootstrap = getattr(

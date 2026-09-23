@@ -390,3 +390,244 @@ def test_a_pre_s3_4s_spec_without_node_target_still_validates_and_routes(tmp_pat
         "stage3-deltas::delta:1:dddddddddddd",
     )
     assert not hasattr(router, "unconditional_first_phase")
+# ---------------------------------------------------------------------------
+# Seeding the route EXACTLY ONCE (2026-09-23)
+#
+# The route reaches the first phase through two seeds, and cell CELL-1's
+# generation smoke was refused before its first contact because both of them
+# carried it: ``prepare_phase_supply`` derives the pinned artifact THROUGH
+# ``FlightRuntime._phase_supply_seeds`` (item E16), which for a store-routed
+# cell means through ``bootstrap_first_phase``, which composes the route
+# itself -- and the dispatch merge then appended it a second time.
+# ---------------------------------------------------------------------------
+
+
+UNCONDITIONAL_IDS = (
+    "stage3-deltas::delta:1:eeeeeeeeeeee",
+    "stage3-deltas::delta:1:ffffffffffff",
+)
+
+
+def _seed_runtime(tmp_path, binding, router):
+    """A ``FlightRuntime`` bound to the REAL router for the model-free
+    first-phase seed path only: no client, no adapter, no attempt, no gate.
+    """
+
+    from types import SimpleNamespace
+
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+    from speech_aware_evidence_acquisition.rails.controllers import (
+        default_phase_program,
+    )
+
+    frozen = b"synthetic frozen preparation source"
+    (tmp_path / "frozen-source.json").write_bytes(frozen)
+    values = {
+        # The locked plan's own policy: its phase order is _program()'s.
+        "policy": "phase-native-candidates-review-revise-v1",
+        "preparation_source_receipts": [
+            {
+                "root": "repository",
+                "relpath": "frozen-source.json",
+                "sha256": hashlib.sha256(frozen).hexdigest(),
+            }
+        ],
+    }
+    runtime = object.__new__(FlightRuntime)
+    runtime._data_root = tmp_path
+    runtime._repo_root = tmp_path
+    runtime._composed = SimpleNamespace(values=values, config_hash="c" * 64)
+    runtime._prepare = lambda: (values, "slurp", "TRAIN", SHA_B)
+    spec = SimpleNamespace(
+        as_json=lambda: {"phase": "perception"}, phase="perception"
+    )
+    phase_binding = {
+        "knowledge_snapshot": binding.composite_snapshot,
+        "speech_packet_bindings": {
+            "s1": {"packet_id": "speech/s1", "sha256": SHA_A},
+            "s2": {"packet_id": "speech/s2", "sha256": SHA_B},
+        },
+        "supply_specs": {"perception": spec},
+        "supply_for_store": router,
+    }
+    runtime._phase_program_material = phase_binding
+    runtime._default_phase_program_binding = lambda program, client: phase_binding
+    return runtime, phase_binding, default_phase_program(values["policy"])
+
+
+def test_the_route_is_seeded_once_from_scratch_and_once_from_a_prepared_artifact(
+    tmp_path,
+):
+    from types import SimpleNamespace
+
+    binding, router = _bound(tmp_path, ALL_ROUTES)
+    runtime, phase_binding, program = _seed_runtime(tmp_path, binding, router)
+    specs = phase_binding["supply_specs"]
+    plan = SimpleNamespace(split_identity_hash=SHA_B)
+
+    # (b) Computed from scratch: bootstrap_first_phase composes the route and
+    # the merge adds nothing on top of it.
+    live = runtime._phase_supply_seeds(program, phase_binding, specs, plan)
+    assert live == (
+        {},
+        {"perception": {"s1": UNCONDITIONAL_IDS, "s2": UNCONDITIONAL_IDS}},
+    )
+
+    # (a) From the pinned artifact, which was produced by that same seed and
+    # therefore ALREADY carries the route.
+    artifact = runtime.prepare_phase_supply(tmp_path / "prepared-seed.json")
+    published = json.loads(
+        (tmp_path / "prepared-seed.json").read_text(encoding="utf-8")
+    )
+    assert published["output"]["values"]["perception"]["s1"] == list(
+        UNCONDITIONAL_IDS
+    )
+    runtime._composed.values["prepared_phase_supply"] = {
+        "relpath": "prepared-seed.json",
+        "sha256": artifact["sha256"],
+    }
+    prepared = runtime._phase_supply_seeds(program, phase_binding, specs, plan)
+    assert prepared == live
+    for row in prepared[1]["perception"].values():
+        assert [row.count(value_id) for value_id in UNCONDITIONAL_IDS] == [1, 1]
+
+
+def _seam_binding(route, rows=("s1",)):
+    from types import SimpleNamespace
+
+    def seam(*, speech_packet_bindings, **_ignored):
+        return {
+            "perception": {
+                sample_id: route for sample_id in sorted(speech_packet_bindings)
+            }
+        }
+
+    return {
+        "supply_for_store": SimpleNamespace(unconditional_first_phase=seam),
+        "speech_packet_bindings": {sample_id: {} for sample_id in rows},
+    }
+
+
+def test_an_artifact_seed_already_carrying_the_route_keeps_every_id_once():
+    from speech_aware_evidence_acquisition.core.flight.runtime import (
+        _merge_unconditional_first_phase,
+    )
+
+    route = ("store::d1", "store::d2")
+    seeded = ("retrieval::v1", "retrieval::v2") + route
+    facets, values = _merge_unconditional_first_phase(
+        {"perception": {"s1": ("retrieval::f1",)}},
+        {"perception": {"s1": seeded}},
+        _seam_binding(route),
+        "perception",
+        seeded_from_artifact=True,
+    )
+    assert facets == {"perception": {"s1": ("retrieval::f1",)}}
+    assert values == {"perception": {"s1": seeded}}
+
+
+def test_an_artifact_seed_prepared_before_the_route_existed_still_gets_it():
+    """The case the seam was written for: an artifact frozen over a store
+    that did not yet declare an unconditional route."""
+
+    from speech_aware_evidence_acquisition.core.flight.runtime import (
+        _merge_unconditional_first_phase,
+    )
+
+    route = ("store::d1", "store::d2")
+    _facets, values = _merge_unconditional_first_phase(
+        {},
+        {"perception": {"s1": ("retrieval::v1",)}},
+        _seam_binding(route),
+        "perception",
+        seeded_from_artifact=True,
+    )
+    assert values == {"perception": {"s1": ("retrieval::v1",) + route}}
+
+
+@pytest.mark.parametrize(
+    "seeded",
+    [
+        # A partial overlap is not a composition of this route.
+        ("retrieval::v1", "store::d1"),
+        # The route's ids, but not as the tail this producer writes.
+        ("store::d1", "store::d2", "retrieval::v1"),
+    ],
+)
+def test_a_genuine_duplicate_still_refuses_an_artifact_seed(seeded):
+    from speech_aware_evidence_acquisition.core.flight.runtime import (
+        FlightRuntimeError,
+        _merge_unconditional_first_phase,
+    )
+
+    with pytest.raises(FlightRuntimeError, match="repeats a seeded value id"):
+        _merge_unconditional_first_phase(
+            {},
+            {"perception": {"s1": seeded}},
+            _seam_binding(("store::d1", "store::d2")),
+            "perception",
+            seeded_from_artifact=True,
+        )
+
+
+def test_a_seed_computed_from_scratch_keeps_the_strict_overlap_refusal():
+    """Only an artifact seed may already carry the route. Every other seed
+    keeps the pre-fix rule, under which any overlap at all refuses."""
+
+    from speech_aware_evidence_acquisition.core.flight.runtime import (
+        FlightRuntimeError,
+        _merge_unconditional_first_phase,
+    )
+
+    route = ("store::d1", "store::d2")
+    with pytest.raises(FlightRuntimeError, match="repeats a seeded value id"):
+        _merge_unconditional_first_phase(
+            {}, {"perception": {"s1": route}}, _seam_binding(route), "perception"
+        )
+
+
+def test_check_refuses_a_pinned_supply_that_cannot_compose(tmp_path):
+    """``core.flight.cli check`` verified a pinned artifact's IDENTITY and
+    never composed it, which is exactly the gap CELL-1's smoke fell through:
+    the artifact was current, and the seed it produced was refused at
+    dispatch. ``verify_prepared_artifacts`` now composes it too."""
+
+    from speech_aware_evidence_acquisition.core.flight.cli import (
+        prepared_artifact_blockers,
+    )
+
+    binding, router = _bound(tmp_path, ALL_ROUTES)
+    runtime, _phase_binding, _program = _seed_runtime(tmp_path, binding, router)
+    artifact = runtime.prepare_phase_supply(tmp_path / "prepared-seed.json")
+    runtime._composed.values["prepared_phase_supply"] = {
+        "relpath": "prepared-seed.json",
+        "sha256": artifact["sha256"],
+    }
+    (report,) = runtime.verify_prepared_artifacts()
+    assert (report["key"], report["identity_ok"], report["seed_ok"]) == (
+        "prepared_phase_supply", True, True,
+    )
+    assert prepared_artifact_blockers(
+        {"prepared_artifacts_ok": True, "prepared_artifacts": [report]}
+    ) == []
+
+    # A route overlapping the seeded values without being their tail is a
+    # genuine duplicate. The artifact's identity still holds, so only the
+    # composition can catch it -- and it must, before an attempt is opened.
+    runtime._prepared_artifact_reports = None
+    router.unconditional_first_phase = lambda *, speech_packet_bindings, **_k: {
+        "perception": {
+            sample_id: (UNCONDITIONAL_IDS[0],)
+            for sample_id in sorted(speech_packet_bindings)
+        }
+    }
+    (broken,) = runtime.verify_prepared_artifacts()
+    assert broken["identity_ok"] is True
+    assert broken["seed_ok"] is False
+    assert "repeats a seeded value id" in broken["reason"]
+    assert prepared_artifact_blockers(
+        {"prepared_artifacts_ok": False, "prepared_artifacts": [broken]}
+    ) == [
+        "prepared artifact does not compose into a first-phase seed: "
+        f"prepared_phase_supply ({broken['relpath']}): {broken['reason']}"
+    ]
