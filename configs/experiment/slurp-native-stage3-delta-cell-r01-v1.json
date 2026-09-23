@@ -24,8 +24,8 @@
           {
             "kind": "preparation",
             "reason": "S3-5's release of knowledge/slurp/semantic/stage3-deltas-v1r/, built from the sealed ADV-1 outputs by scripts/flights/batch/adv1_to_deltas.sh at DELTA_VERSION_TAG=v1r under the source-intent facet rule. The cell stays HELD on a root admission decision.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1/phase-supply-v4.json",
-            "sha256": "2e6ce773ac06ffcf1ac6e9942b819c43c7a19dba7c71f71222182d1ad5ab3cad"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1/phase-supply-v5.json",
+            "sha256": "ae9bb0f39d0c036776bb35598ed904730019ac24f5692f5d44a833037e03ceae"
           }
         ],
         "state": "ready"
