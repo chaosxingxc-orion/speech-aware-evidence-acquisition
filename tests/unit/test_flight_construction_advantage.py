@@ -124,6 +124,9 @@ def _trajectory(sample_id: str) -> dict[str, object]:
         "perception": {
             "candidate_intent_ids": ["synthetic_act0", "synthetic_act1"],
             "candidate_count": 2,
+            # One duplicate the first-occurrence-distinct projection folded,
+            # so the raw count and the distinct count differ on purpose.
+            "raw_candidate_count": 3,
         },
         "delivered": {
             "kind": "accepted",
@@ -307,6 +310,31 @@ def test_each_row_renders_the_custodied_best_and_worst_answers(tmp_path, gold) -
         ).hexdigest()
         assert contact.construction_target_ids == (sample_id,)
         assert "{" + "candidate_list" + "}" not in contact.instruction
+
+
+def test_the_instruction_shows_everything_section_3_requires(tmp_path, gold) -> None:
+    """Preregistration section 3: the candidate list in first-occurrence
+    distinct order WITH the raw count, ANSWER A and ANSWER B, the delivered
+    answer with the Reviewer verdict labels and the Planner route (action
+    labels, revision count, delivery kind), and the row's own gold."""
+
+    contact = _material(tmp_path).contacts[0]
+    text = contact.instruction
+    assert "1. synthetic_act0" in text and "2. synthetic_act1" in text
+    assert "(3 candidate(s) proposed; 2 distinct id(s) above" in text
+    assert "visit 0: ACCEPT" in text
+    assert "1. ACCEPT (legal, revisions so far 0)" in text
+    assert "(delivery: accepted; revisions: 0)" in text
+    for heading in (
+        "PERCEPTION CANDIDATES",
+        "ANSWER A",
+        "ANSWER B",
+        "DELIVERED ANSWER",
+        "REVIEWER VERDICTS",
+        "PLANNER ROUTE",
+        "CORRECT ANSWER",
+    ):
+        assert heading in text
 
 
 def test_a_custody_drift_is_refused_by_name(tmp_path, gold) -> None:

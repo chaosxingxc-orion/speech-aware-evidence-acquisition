@@ -159,13 +159,26 @@ def render_construction_gold(row: Mapping[str, object]) -> str:
     )
 
 
-def render_candidate_list(intent_ids: Sequence[str]) -> str:
-    """The Perception node's ordered candidate ids, one per line."""
+def render_candidate_list(
+    intent_ids: Sequence[str], *, raw_count: object = None
+) -> str:
+    """The Perception node's ordered candidate ids, one per line.
+
+    First-occurrence distinct ids WITH the raw count beside them
+    (preregistration section 3 item 1): a duplicate the trajectory's own
+    projection folded is then visible to the contact rather than invisible.
+    """
 
     ordered = [str(item) for item in intent_ids if isinstance(item, str) and item]
     if not ordered:
         return _NOTHING_TO_SHOW
-    return "\n".join(f"{index + 1}. {item}" for index, item in enumerate(ordered))
+    lines = [f"{index + 1}. {item}" for index, item in enumerate(ordered)]
+    if isinstance(raw_count, int) and not isinstance(raw_count, bool) and raw_count > 0:
+        lines.append(
+            f"({raw_count} candidate(s) proposed; {len(ordered)} distinct id(s) above, "
+            "in first-occurrence order)"
+        )
+    return "\n".join(lines)
 
 
 def render_reviewer_verdicts(marks: Sequence[Mapping[str, object]]) -> str:
@@ -188,9 +201,15 @@ def render_reviewer_verdicts(marks: Sequence[Mapping[str, object]]) -> str:
     return "\n".join(lines) if lines else _NOTHING_TO_SHOW
 
 
-def render_planner_route(routes: Sequence[Mapping[str, object]]) -> str:
+def render_planner_route(
+    routes: Sequence[Mapping[str, object]],
+    *,
+    delivered_kind: str | None = None,
+    revision_count: object = None,
+) -> str:
     """One line per planner route: the action LABEL, its legality and the
-    revision count at that point."""
+    revision count at that point, closed by the episode's own DELIVERY KIND
+    and total revision count (preregistration section 3 item 3)."""
 
     lines: list[str] = []
     for index, route in enumerate(routes):
@@ -201,7 +220,16 @@ def render_planner_route(routes: Sequence[Mapping[str, object]]) -> str:
         revisions = route.get("revision_count")
         suffix = "" if revisions is None else f", revisions so far {revisions}"
         lines.append(f"{index + 1}. {action} ({legal}{suffix})")
-    return "\n".join(lines) if lines else _NOTHING_TO_SHOW
+    if not lines:
+        lines = [_NOTHING_TO_SHOW]
+    tail: list[str] = []
+    if delivered_kind:
+        tail.append(f"delivery: {delivered_kind}")
+    if isinstance(revision_count, int) and not isinstance(revision_count, bool):
+        tail.append(f"revisions: {revision_count}")
+    if tail:
+        lines.append("(" + "; ".join(tail) + ")")
+    return "\n".join(lines)
 
 
 # ---------------------------------------------------------------------------
@@ -618,15 +646,23 @@ def build_advantage_material(
             else 0
         )
 
+        raw_candidate_count = (
+            perception.get("raw_candidate_count") if isinstance(perception, Mapping) else None
+        )
+        delivered_kind = str(delivered.get("kind") or "unavailable")
         instruction = build_advantage_instruction_for_row_v2(
             template_text,
             pair,
-            candidate_list_text=render_candidate_list(candidate_ids),
+            candidate_list_text=render_candidate_list(
+                candidate_ids, raw_count=raw_candidate_count
+            ),
             best_answer_text=best_text,
             worst_answer_text=worst_text,
             delivered_answer_text=delivered_text,
             reviewer_verdicts_text=render_reviewer_verdicts(marks),
-            planner_route_text=render_planner_route(routes),
+            planner_route_text=render_planner_route(
+                routes, delivered_kind=delivered_kind, revision_count=revision_count
+            ),
             gold_text=gold_text,
         )
         contacts.append(
@@ -651,7 +687,7 @@ def build_advantage_material(
                 planner_actions=tuple(
                     str(route.get("action") or "unavailable") for route in routes
                 ),
-                delivered_kind=str(delivered.get("kind") or "unavailable"),
+                delivered_kind=delivered_kind,
                 revision_count=revision_count,
                 trajectory_available=bool(trajectory.get("available")),
             )
