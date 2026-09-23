@@ -90,6 +90,7 @@ TWIN_REG_TEMPLATE=docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage
 REG=$REPO/docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v1-release-registration.json
 TWIN_REG=$REPO/docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-twin-v1-release-registration.json
 RELEASE_PINS=$COORD/stage3-deltas-v1-release-pins.json
+mkdir -p "$COORD"  # 2026-09-23: the first real run lost its release-pins write to a missing coordination directory
 VALUES=$COORD/cell1-fill-values.json
 HELPERS=scripts/flights/batch/adv1_to_deltas_steps.py
 ADV1_EXPERIMENT=${ADV1_EXPERIMENT:-configs/experiment/slurp-native-stage3-advantage-r01-v1.json}

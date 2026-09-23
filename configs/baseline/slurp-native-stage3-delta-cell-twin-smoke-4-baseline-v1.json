@@ -107,11 +107,11 @@
       },
       "release": {
         "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1/release.json",
-        "sha256": "PENDING_S3_6_TWIN_RELEASE_JSON_SHA256"
+        "sha256": "a58a370ce9275391c74ae582704ae04c45ad886f6274bff6edd0256c5448f015"
       },
       "snapshot": {
         "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1/snapshot.json",
-        "sha256": "PENDING_S3_6_TWIN_SNAPSHOT_JSON_SHA256"
+        "sha256": "95c3b2aac36d5e490a662e482808d1ae98b13c76f80eb1f820b0ee3abb57305a"
       },
       "store_role": "stage3-deltas"
     },

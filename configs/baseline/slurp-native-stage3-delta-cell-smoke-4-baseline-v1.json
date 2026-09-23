@@ -107,11 +107,11 @@
       },
       "release": {
         "relpath": "knowledge/slurp/semantic/stage3-deltas-v1/release.json",
-        "sha256": "PENDING_S3_5_RELEASE_JSON_SHA256"
+        "sha256": "ec9da3e2b8ed842a73c13ea51f58a1f077c787777da2edad82a8234729777338"
       },
       "snapshot": {
         "relpath": "knowledge/slurp/semantic/stage3-deltas-v1/snapshot.json",
-        "sha256": "PENDING_S3_5_SNAPSHOT_JSON_SHA256"
+        "sha256": "3a770de1ecb752c27aa00942db9f5de2d94e8cbd7029ec358a3736a8a6dc1de7"
       },
       "store_role": "stage3-deltas"
     },
