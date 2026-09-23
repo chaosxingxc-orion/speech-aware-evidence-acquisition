@@ -9,27 +9,16 @@
       "attempt_id": "attempt-slurp-native-stage3-advantage-r01-v1-generation",
       "baseline_fragment": "slurp-native-stage3-advantage-baseline-v1",
       "cell_id": "slurp-native-stage3-advantage-r01-v1",
-      "dataset_fragment": "PENDING_S3_1_DATASET_FRAGMENT",
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
       "readiness": {
-        "reason": "Stage-3 S3-4 ADV-1 (docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md section S3-4): one contact per S3-3-selected disagreeing construction row of ROLL-1. Held because S3-1 (construction roster), S3-2 (ROLL-1 rollout) and S3-3 (pairs.json) are a sibling deliverable that has not landed in this worktree; nothing here authorises a flight, a readiness flip or an admission entry.",
+        "reason": "Stage-3 S3-4 ADV-1 (docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md section S3-4): one construction-advantage-text contact per disagreeing row of cell ROLL-1, over the CLEAN construction subset R01C (SLURP-STAGE3-CONSTRUCTION-R01C, 625 rows, coordinator decision 102 pending owner confirmation; roster receipt docs/receipts/rosters/slurp-stage3-construction-r01c.json). S3-1 HAS LANDED, so every S3-1 placeholder is filled here from committed bytes: the dataset fragment is slurp-speech-native-stage3-construction-r01c and the R01C roster receipt plus its parent R01 receipt are pinned by hash in the baseline fragment's preparation_source_receipts. WHAT IS STILL OPEN IS S3-3: ROLL-1 has not sealed, so pairs.json does not exist and this cell's population, its count, its split id and its split identity hash cannot be named -- they stay PENDING_ and are filled, one for one, by scripts/flights/batch/adv1_prepare.sh through scripts/flights/batch/roll1_fill_placeholders.py; the exact JSON path, source artefact and field of every one of them is docs/readiness/2026-09-22-slurp-stage3-advantage-r01-v1/fill-after-roll1-seal.json. NO DECISION REQUIREMENT IS REGISTERED HERE ON PURPOSE (the ROLL-1 precedent): core.flight.repin._upsert_decision_requirement inserts it at the readiness flip, and a placeholder decision entry without an expected_decision_id would be left behind beside it and refuse the campaign at load (core.flight.campaign.declared_readiness). Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
           {
             "kind": "preparation",
-            "reason": "S3-1's construction roster receipt (docs/receipts/rosters/slurp-stage3-construction-r01.json) does not exist yet.",
-            "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01.json",
-            "sha256": "PENDING_S3_1_ROSTER_SHA256"
-          },
-          {
-            "kind": "preparation",
-            "reason": "S3-3's pairs.json (analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1/pairs.json) does not exist yet; it selects and pins this cell's disagreeing-row population.",
+            "reason": "S3-3's pairs.json, which selects and pins this cell's disagreeing-row population. core.flight.campaign.declared_readiness resolves every readiness requirement BENEATH THE DATA ROOT, so this relpath is data-root relative; the analysis root scripts/flights/batch/adv1_prepare.sh writes is analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1/. It cannot exist until cell ROLL-1 (run SAEA-SLURP-STAGE3-ROLLOUT-R01-V1) seals and scripts/analysis/stage3_rollout_score.py --stage all has run on the seal. The R01C roster receipt is NOT a readiness requirement (it is a repository artifact, not a data-root one): it is pinned by hash in configs/baseline/slurp-native-stage3-advantage-baseline-v1.json preparation_source_receipts, the ROLL-1 precedent.",
             "relpath": "PENDING_S3_3_PAIRS_JSON_RELPATH",
             "sha256": "PENDING_S3_3_PAIRS_JSON_SHA256"
-          },
-          {
-            "kind": "decision",
-            "expected_decision_id": "PENDING_ROOT_DECISION_ID",
-            "reason": "No root decision receipt admits ADV-1 to a flight yet; the S3-4 engineering package alone never authorises one."
           }
         ],
         "state": "held"
@@ -45,14 +34,14 @@
       "attempt_id": "attempt-slurp-native-stage3-advantage-r01-v1-fit",
       "baseline_fragment": "slurp-native-stage3-advantage-baseline-v1",
       "cell_id": "slurp-native-stage3-advantage-r01-fit-v1",
-      "dataset_fragment": "PENDING_S3_1_DATASET_FRAGMENT",
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-proposer-max1536",
       "readiness": {
-        "reason": "The tokenizer-capacity fit pass for the generation cell above (same population, same pinned advantage template and response format), required before the generation cell may open. Held for the same reason.",
+        "reason": "The tokenizer-capacity fit pass for the generation cell above (same population, same pinned advantage template and response format), required before the generation cell may open. Held on the same S3-3 dependency; the S3-1 pins are filled exactly as above.",
         "requirements": [
           {
             "kind": "preparation",
-            "reason": "Depends on the same S3-1/S3-3 artifacts the generation cell above names.",
+            "reason": "S3-3's pairs.json, which selects and pins this cell's disagreeing-row population. core.flight.campaign.declared_readiness resolves every readiness requirement BENEATH THE DATA ROOT, so this relpath is data-root relative; the analysis root scripts/flights/batch/adv1_prepare.sh writes is analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1/. It cannot exist until cell ROLL-1 (run SAEA-SLURP-STAGE3-ROLLOUT-R01-V1) seals and scripts/analysis/stage3_rollout_score.py --stage all has run on the seal. The R01C roster receipt is NOT a readiness requirement (it is a repository artifact, not a data-root one): it is pinned by hash in configs/baseline/slurp-native-stage3-advantage-baseline-v1.json preparation_source_receipts, the ROLL-1 precedent.",
             "relpath": "PENDING_S3_3_PAIRS_JSON_RELPATH",
             "sha256": "PENDING_S3_3_PAIRS_JSON_SHA256"
           }
@@ -65,8 +54,8 @@
   "date": "2026-09-22",
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
-    "planned_gpu_hours": 0.3,
-    "planned_model_calls": "PENDING_S3_3_DISAGREEING_ROW_COUNT",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 625,
     "planned_speech_audio_seconds": 0,
     "split_role": "discovery"
   },
@@ -77,24 +66,33 @@
     "asr_calls": 0,
     "ceilings_are_not_targets": true,
     "encoder_calls": 0,
-    "gpu_hours_fit_inclusive": 0.3,
-    "official_complete_scoring_jobs": 0
+    "fit_endpoint_calls_cap": 1875,
+    "generation_calls_cap": 625,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 0
   },
   "fragment_kind": "saea-slurp-native-stage3-advantage-r01-v1",
   "population": {
     "count": "PENDING_S3_3_DISAGREEING_ROW_COUNT",
-    "dataset_fragment": "PENDING_S3_1_DATASET_FRAGMENT",
-    "decision_population": "Exactly the rows S3-3's pairs.json names as disagreeing (SLU-F1/intent disagreement > 0 within the row's N=5 rollout group), a subset of the S3-1 construction roster. Expected 300-500 of the roster's ~800 rows.",
-    "split_identity_hash": "PENDING_S3_1_ROSTER_SPLIT_IDENTITY_HASH"
+    "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+    "decision_population": "Exactly the rows S3-3's pairs.json names as disagreeing (best-minus-worst official SLU-F1 / intent disagreement > 0 within the row's N=5 ROLL-1 rollout group), a subset of the clean construction subset R01C (625 TRAIN utterances, receipt docs/receipts/rosters/slurp-stage3-construction-r01c.json). About 210 rows are expected (the 0.3398 dry-run disagreement-pair rate); the registered ceiling is R01C's whole 625. Because construction-advantage-text is a CONSTRUCTION-VISIBLE arm, contracts.gate_exposure._require_construction_role_for_visible_targets refuses the touch unless this cell's split_identity_hash is that of a COMMITTED roster_role='construction' roster of carrier slurp: root therefore commits a construction-role roster receipt over exactly these disagreeing rows (a pure selection of R01C, zero contacts, the SLURP-EVO-S1-PROPOSER-R01 precedent) before the flip, and split_id / split_identity_hash below are that receipt's. See docs/readiness/2026-09-22-slurp-stage3-advantage-r01-v1/fill-after-roll1-seal.json.",
+    "split_identity_hash": "PENDING_S3_3_DISAGREEING_SPLIT_IDENTITY_HASH"
   },
-  "purpose": "Stage-3 S3-4 ADV-1: one construction-advantage-text contact per S3-3-selected disagreeing construction row, asking the frozen core to state (DELTA-KIND / TARGET / STATEMENT) what distinguished ROLL-1's best rollout sample from its worst on that row, with the row's own construction gold visible (owner decision 82). PRIMARY DELIVERABLE: the sealed manifest of parsed AdvantageStatement rows (rails.stage3_advantage.parse_advantage_statement), legal/illegal counted, feeding S3-5's curation into the stage3-deltas-v1 store. No answer to any evaluated row is produced or read here.",
+  "purpose": "Stage-3 S3-4 ADV-1: one construction-advantage-text contact per S3-3-selected disagreeing construction row, asking the frozen core to state (DELTA-KIND / TARGET / STATEMENT) what distinguished ROLL-1's best rollout sample from its worst on that row, with the row's own construction gold visible (owner decision 82). PRIMARY DELIVERABLE: the sealed manifest of parsed AdvantageStatement rows (rails.stage3_advantage.parse_advantage_statement), legal/illegal counted, feeding S3-5's curation into the stage3-deltas-v1 store. No answer to any evaluated row is produced or read here. R01C narrowing (2026-09-23, coordinator decision 102, pending owner confirmation): cell ROLL-1 flies the 625-row clean subset R01C instead of the 800-row R01, so ADV-1's candidate pool is R01C and this fragment's dataset fragment, roster pins and plan numbers are R01C's throughout.",
   "service_session": "PENDING_ROOT_SELECTION",
-  "split_id": "PENDING_S3_1_SPLIT_ID",
+  "split_id": "PENDING_S3_3_DISAGREEING_SPLIT_ID",
   "stage3_algorithm": {
     "id": "tfgrpo-semantic-advantage-v1",
     "operators_used": [
       "credit_assignment"
     ],
-    "note": "ADV-1 is Training-Free GRPO's group-relative semantic advantage operator and nothing else: one contact per disagreeing row states what distinguished the best rollout sample from the worst; no store update and no context application happen in this cell."
+    "note": "ADV-1 is Training-Free GRPO's group-relative semantic advantage operator and nothing else: one contact per disagreeing row states what distinguished the best rollout sample from the worst; no store update and no context application happen in this cell. Its rollout source is cell ROLL-1 (algorithm shared-rollout, run SAEA-SLURP-STAGE3-ROLLOUT-R01-V1, attempt attempt-slurp-native-stage3-rollout-r01-generation-v1) on the clean construction subset R01C."
+  },
+  "generation_budget": {
+    "cap": 625,
+    "definition": "625 = one construction-advantage-text contact per row of R01C: the registered CEILING that stands until S3-3's pairs.json names the disagreeing rows, never a target. The expected volume is about 213 contacts (0.3398 x 625), 0.3398 being the disagreement-pair rate the S3-3 dry run measured over 1,080 rows (docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1/s3-3-dry-run-receipt-v1.json); the engineering spec's own estimate is 300-500 rows out of the parent R01's 800. fit_endpoint_calls_cap 1,875 = 625 x (0 speech packets + 3 endpoints): this arm is TEXT ONLY (owner decision 82 and the D2 invariant, see the baseline fragment's modality_note), so planned_speech_audio_seconds and repeated_speech_audio_seconds_cap are 0 and no speech packet and no mmproj forward is ever opened. native_task_contract_calls_cap = 0: the one-phase advantage program carries no phase_tools. planned_gpu_hours 1.0 is the registered ceiling for the generation cell plus its fit pass (the engineering spec's own point estimate is about 0.3). Ceilings are bounds, never targets.",
+    "target": 213
   }
 }

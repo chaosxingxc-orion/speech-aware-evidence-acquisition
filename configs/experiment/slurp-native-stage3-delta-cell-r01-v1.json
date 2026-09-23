@@ -8,24 +8,13 @@
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Stage-3 S3-6 CELL-1 (docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md section S3-6): the locked plan plus the stage3-deltas store as one factor on TRAIN A, comparator the sealed PLAN arm at the plan's own null. Held because the store's release does not exist (S3-5 depends on S3-4 depends on S3-1/S3-2/S3-3), the context_supply routing this fragment declares is not yet resolved by rails.knowledge_stores.build_knowledge_store_supply (rails/stage3_delta_supply.py module docstring), and no root decision admits a flight.",
+        "reason": "Stage-3 S3-6 CELL-1 (docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md section S3-6): the locked plan plus the stage3-deltas store as ONE factor on TRAIN A, comparator the sealed PLAN arm at the plan's own null. The context_supply routing this fragment declares IS RESOLVED: item S3-6w extended rails.knowledge_stores.build_knowledge_store_supply's context_supply dispatcher to recognise the store_role='stage3-deltas' provider shape and route it through the registered rails.knowledge_provider.Stage3DeltaCandidateProvider, with the two pre-existing routes proven byte-identical (tests/unit/test_stage3_delta_supply_router.py). The PENDING_ROOT_WIRING requirement that stood here is therefore removed. What still holds this cell is the store itself: S3-5's release of knowledge/slurp/semantic/stage3-deltas-v1/ does not exist (S3-5 depends on S3-4 ADV-1, which depends on ROLL-1's seal and S3-3's pairs.json), and no root decision admits a flight. The population is unchanged TRAIN Fold A (1,080 rows, split identity 61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6) and is NOT affected by the R01C narrowing of the construction side: R01C changes which rows the deltas are BUILT from, never which rows this cell is read on. No decision requirement is registered here on purpose (the ROLL-1 precedent): core.flight.repin._upsert_decision_requirement inserts it at the readiness flip, and a placeholder decision entry without an expected_decision_id would be left behind beside it and refuse the campaign at load (core.flight.campaign.declared_readiness). Every remaining PENDING_ token, its JSON path and the field that fills it is listed in docs/readiness/2026-09-22-slurp-stage3-advantage-r01-v1/fill-after-roll1-seal.json.",
         "requirements": [
           {
             "kind": "preparation",
-            "reason": "S3-5's release of knowledge/slurp/semantic/stage3-deltas-v1/ does not exist yet.",
+            "reason": "S3-5's release of knowledge/slurp/semantic/stage3-deltas-v1/ does not exist yet; scripts/flights/batch/adv1_to_deltas.sh builds and releases it from the sealed ADV-1 outputs and prints this hash.",
             "relpath": "knowledge/slurp/semantic/stage3-deltas-v1/release.json",
-            "sha256": "PENDING_S3_5_RELEASE_SHA256"
-          },
-          {
-            "kind": "preparation",
-            "reason": "The context_supply.solver provider stage3-delta-candidate-bound-v1 is not yet resolved by rails.knowledge_stores.build_knowledge_store_supply; the selection algorithm is complete (rails/stage3_delta_supply.py) but not wired in.",
-            "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_stores.py",
-            "sha256": "PENDING_ROOT_WIRING"
-          },
-          {
-            "kind": "decision",
-            "expected_decision_id": "PENDING_ROOT_DECISION_ID",
-            "reason": "No root decision receipt admits CELL-1 to a flight yet."
+            "sha256": "PENDING_S3_5_RELEASE_JSON_SHA256"
           }
         ],
         "state": "held"
@@ -46,7 +35,7 @@
             "kind": "preparation",
             "reason": "The twin release of knowledge/slurp/semantic/stage3-deltas-twin-v1/ does not exist yet; it is built from S3-5's own release by the twin generator once that release lands.",
             "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1/release.json",
-            "sha256": "PENDING_S3_6_TWIN_RELEASE_SHA256"
+            "sha256": "PENDING_S3_6_TWIN_RELEASE_JSON_SHA256"
           }
         ],
         "state": "held"
@@ -67,7 +56,7 @@
             "kind": "preparation",
             "reason": "Depends on the generation cell's own release and wiring requirements above.",
             "relpath": "knowledge/slurp/semantic/stage3-deltas-v1/release.json",
-            "sha256": "PENDING_S3_5_RELEASE_SHA256"
+            "sha256": "PENDING_S3_5_RELEASE_JSON_SHA256"
           }
         ],
         "state": "held"
@@ -88,7 +77,7 @@
             "kind": "preparation",
             "reason": "Depends on the twin cell's own release requirement above.",
             "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1/release.json",
-            "sha256": "PENDING_S3_6_TWIN_RELEASE_SHA256"
+            "sha256": "PENDING_S3_6_TWIN_RELEASE_JSON_SHA256"
           }
         ],
         "state": "held"
@@ -109,7 +98,7 @@
             "kind": "preparation",
             "reason": "Depends on the generation cell's own release requirement above.",
             "relpath": "knowledge/slurp/semantic/stage3-deltas-v1/release.json",
-            "sha256": "PENDING_S3_5_RELEASE_SHA256"
+            "sha256": "PENDING_S3_5_RELEASE_JSON_SHA256"
           }
         ],
         "state": "held"
@@ -130,7 +119,7 @@
             "kind": "preparation",
             "reason": "Depends on the twin cell's own release requirement above.",
             "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1/release.json",
-            "sha256": "PENDING_S3_6_TWIN_RELEASE_SHA256"
+            "sha256": "PENDING_S3_6_TWIN_RELEASE_JSON_SHA256"
           }
         ],
         "state": "held"
@@ -141,9 +130,9 @@
   "date": "2026-09-22",
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
-    "planned_gpu_hours": 3.6,
-    "planned_model_calls": "PENDING_S3_1_ROSTER_ROW_COUNT",
-    "planned_speech_audio_seconds": "PENDING_S3_1_ROSTER_AUDIO_SECONDS",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 11880,
+    "planned_speech_audio_seconds": 33930,
     "split_role": "discovery"
   },
   "execution_profile": "bounded-discovery-probe",
@@ -153,18 +142,22 @@
     "asr_calls": 0,
     "ceilings_are_not_targets": true,
     "encoder_calls": 0,
-    "gpu_hours_fit_inclusive": 3.6,
-    "official_complete_scoring_jobs": 2
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 2,
+    "repeated_speech_audio_seconds_cap": 33930
   },
   "fragment_kind": "saea-slurp-native-stage3-delta-cell-r01-v1",
   "population": {
-    "count": "PENDING_S3_1_ROSTER_ROW_COUNT",
+    "count": 1080,
     "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
-    "decision_population": "TRAIN A (the same population the sealed PLAN arm and PLANr read), per the S3-6 exit condition: a CI95-proven official SLU-F1 gain against the sealed PLAN arm.",
-    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    "decision_population": "TRAIN A (the same population the sealed PLAN arm and PLANr read, 1,080 rows, split identity 61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6 as configs/experiment/slurp-native-default-plan-lock-v1.json registers it), per the S3-6 exit condition: a CI95-proven official SLU-F1 gain against the sealed PLAN arm. The four-row smoke cells read the four-row prefix of the same roster (split identity 4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb, the PLAN smoke's own).",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
   },
-  "purpose": "Stage-3 S3-6 CELL-1: the locked plan plus the stage3-deltas store (S3-5's append-only delta store, version 1) as ONE factor on TRAIN A, comparator the sealed PLAN arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943), twin arm (derangement of associated_facet_ids) as the form control. PRIMARY DELIVERABLES per decision 75/83: (1) the official read against PLAN; (2) the per-scenario effect x prefilled-token frontier table, in both natural-mixture and equal-stratum weightings, deciding which deltas survive into version 2; (3) the delta-consumption read (item E34-style per-cell registered facts): which deltas were supplied, per scenario, and the saves/harms on the rows that received each delta.",
-  "service_session": "PENDING_ROOT_SELECTION",
+  "purpose": "Stage-3 S3-6 CELL-1: the locked plan plus the stage3-deltas store (S3-5's append-only delta store, version 1) as ONE factor on TRAIN A, comparator the sealed PLAN arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943), twin arm (derangement of associated_facet_ids) as the form control. The store is BUILT from the clean construction subset R01C (625 rows, coordinator decision 102) by way of ROLL-1 -> S3-3 -> ADV-1 -> S3-5; the READ population here is unchanged TRAIN Fold A and the R01C narrowing does not touch it. PRIMARY DELIVERABLES per decision 75/83: (1) the official read against PLAN; (2) the per-scenario effect x prefilled-token frontier table, in both natural-mixture and equal-stratum weightings, deciding which deltas survive into version 2; (3) the delta-consumption read (item E34-style per-cell registered facts): which deltas were supplied, per scenario, and the saves/harms on the rows that received each delta.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "split_id": "SLURP-EVO-FOLD-A-V2",
   "stage3_algorithm": {
     "id": "tfgrpo-semantic-advantage-v1",
@@ -172,6 +165,11 @@
       "update",
       "context_application"
     ],
-    "note": "CELL-1 exercises Training-Free GRPO's experiential-delta update and its application: S3-5's append-only stage3-deltas store (version 1) supplied candidate-bound to the Solver as ONE factor on the locked plan, with the derangement twin as the form control."
+    "note": "CELL-1 exercises Training-Free GRPO's experiential-delta update and its application: S3-5's append-only stage3-deltas store (version 1, curated from the ADV-1 statements over the clean construction subset R01C) supplied candidate-bound to the Solver as ONE factor on the locked plan, with the derangement twin as the form control."
+  },
+  "generation_budget": {
+    "cap": 11880,
+    "definition": "11,880 = 1,080 TRAIN Fold A rows x 11, the locked plan's OWN per-row contact ceiling as the sealed PLAN cell registered it (configs/experiment/slurp-native-default-plan-lock-v1.json); 44 = 4 x 11 for each four-row smoke. This cell is the locked plan plus exactly one store, so its role graph and therefore its per-row ceiling are PLAN's unchanged. 47,520 = 11,880 x (1 speech packet + 3 endpoints) and 33,930 s is TRAIN Fold A's repeated speech under that same ceiling -- both PLAN's own registered numbers. native_task_contract_calls_cap 6,480 is likewise PLAN's. The one execution_plan governs all six cells of this fragment (generation, twin, both fits, both four-row smokes); each cell flies under its own run id and the plan budget is run-cumulative, so the smokes consume 44 of the same ceiling. 12.0 GPU-h is PLAN's own registered ceiling; the engineering spec's point estimate for the arm plus its twin is 3.6. Ceilings are bounds, never targets.",
+    "target": 11880
   }
 }

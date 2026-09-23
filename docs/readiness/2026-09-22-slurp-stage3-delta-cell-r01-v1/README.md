@@ -23,6 +23,9 @@ by `prior_score` (the statement's disagreement mass), ordered descending
 plan's own null (h_SLU 1.2485 / h_intent 0.9943). Twin: the same store with a seeded derangement of
 `associated_facet_ids` (`scripts/build_slurp_stage3_delta_twin.py`) as the form control.
 
+**The read population is unchanged TRAIN Fold A.** R01C changes which rows the deltas are BUILT
+from (ROLL-1 -> S3-3 -> ADV-1 -> S3-5), never which rows this cell is read on.
+
 ## Engineering delivered here
 
 - `rails/stage3_delta_supply.py`: the candidate-bound, prior_score-capped selection algorithm
@@ -31,9 +34,7 @@ plan's own null (h_SLU 1.2485 / h_intent 0.9943). Twin: the same store with a se
 - `rails.knowledge_provider.Stage3DeltaCandidateProvider`, registered into `core.base.KNOWLEDGE_PROVIDERS`
   under `stage3-delta-candidate-bound-v1` (`rails/knowledge_provider.py`, the canonical registration
   site `scripts/checks/engineering_base_check.py` requires): a real, tested `KnowledgeProvider`
-  (`build`/`candidates`/`fuse`) wrapping the selection algorithm, so the config fragments' `"provider":
-  "stage3-delta-candidate-bound-v1"` resolves honestly today. It is NOT YET reachable from a live
-  flight -- see the scope decision below.
+  (`build`/`candidates`/`fuse`) wrapping the selection algorithm.
 - `scripts/build_slurp_stage3_delta_twin.py`: a seeded, zero-fixed-point derangement of
   `associated_facet_ids` over an authored-deltas document (Sattolo's algorithm, the same idiom as the
   B1/IDXT twins), tested (`tests/unit/test_stage3_delta_supply.py`).
@@ -44,6 +45,9 @@ plan's own null (h_SLU 1.2485 / h_intent 0.9943). Twin: the same store with a se
   six held cells: generation, twin, both fits, both four-row smokes (run ids
   `SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1`, `-TWIN-V1`, `-R01-FIT-V1`, `-TWIN-FIT-V1`,
   `-SMOKE-4-V1`, `-SMOKE-4-TWIN-V1`).
+- The S3-5 runbook `scripts/flights/batch/adv1_to_deltas.sh` with its helper
+  `scripts/flights/batch/adv1_to_deltas_steps.py` and the two release-registration TEMPLATES beside
+  this README (added with the 2026-09-22 re-pointing below).
 
 ## Root wiring: DONE (S3-6w, 2026-09-22)
 
@@ -56,50 +60,147 @@ recognise a SECOND provider shape alongside the pre-existing source-scoped one:
   unchanged -- byte-identical construction, byte-identical routing, byte-identical receipts, proven by
   `tests/unit/test_stage3_delta_supply_router.py::
   test_existing_two_admitted_routes_stay_byte_identical_when_stage3_deltas_is_added` alongside the
-  full existing `test_knowledge_stores*.py` / `test_candidate_semantic_supply.py` suites (223 tests,
-  all green after this change).
+  full existing `test_knowledge_stores*.py` / `test_candidate_semantic_supply.py` suites.
 - A store with `store_role: "stage3-deltas"` may now declare `context_supply.<phase> = {"provider":
   "stage3-delta-candidate-bound-v1", "candidate_state_phase", "cap", "rank_by": "prior_score"}` --
   exactly the shape the fragments below already carried. The router reads the row's Perception
   candidate intents off the `candidate_state_phase` state (`rails.slurp_intent_hypotheses.
   parse_slurp_intent_hypothesis_state`, canonical/non-compact form), then routes them through the
-  registered `rails.knowledge_provider.Stage3DeltaCandidateProvider`
-  (`rails.stage3_delta_supply.select_stage3_delta_values` does the actual selection): candidate-bound,
-  capped, `prior_score`-ranked, deterministic.
+  registered `rails.knowledge_provider.Stage3DeltaCandidateProvider`: candidate-bound, capped,
+  `prior_score`-ranked, deterministic.
 - The router's E3b collision guard (rule 1: scoped `context_supply` and `candidate_supply` never
   coexist on one phase) is narrowed the SAME way E3b narrowed the phase_supply/candidate_supply
-  guard: only for phases a store routes through the STAGE3_DELTA provider specifically. The
-  source-scoped provider keeps refusing that overlap exactly as before. This is what lets this
-  program's anchor pairing -- `stage3-deltas` `context_supply.solver` alongside `slot-contracts`
-  `candidate_supply.solver` -- compose in one `automatic_for_phase` call.
+  guard: only for phases a store routes through the STAGE3_DELTA provider specifically.
 
-`candidate_supply`'s own two-role, round-robin dispatcher (`rails.candidate_semantic_supply.
-load_candidate_semantic_supply_specs`) was left untouched -- the stage3-deltas route lives entirely in
-`context_supply`, never inside `candidate_supply`.
+`candidate_supply`'s own two-role, round-robin dispatcher was left untouched -- the stage3-deltas
+route lives entirely in `context_supply`, never inside `candidate_supply`.
 
-## What is left for root (PENDING_ placeholders)
+The `PENDING_ROOT_WIRING` readiness requirement that stood for this follow-up **was removed** in the
+2026-09-22 re-pointing, and the fragments' `what_the_stage3_deltas_store_is` notes, which still said
+the route was unresolved, were corrected. Only the store's own release and a root admission decision
+block a flight now.
 
-- `PENDING_S3_5_RELEASE_SHA256`: S3-5's release of `knowledge/slurp/semantic/stage3-deltas-v1/`.
-- `PENDING_S3_6_TWIN_RELEASE_SHA256`: the twin release of `knowledge/slurp/semantic/stage3-deltas-twin-v1/`,
-  built by `scripts/build_slurp_stage3_delta_twin.py` from the S3-5 release once it exists.
-- `PENDING_ROOT_WIRING` (in `configs/experiment/slurp-native-stage3-delta-cell-r01-v1.json`'s held
-  requirements): RESOLVED by S3-6w -- `rails/knowledge_stores.py` now recognises the provider; this
-  requirement entry stays until the experiment fragment itself is next touched, since only the store's
-  own release and a root admission decision still block a flight.
-- `PENDING_<CELL>_OWN_<KEY>` (per cell): the per-flight bookkeeping (`native_contact_fit`,
-  `prepared_phase_supply`, `preparation_source_receipts`, speech-feature identity ids,
-  `speech_packet_promotion_receipt[_sha256]`) this cell must prepare under its OWN run id before
-  flight (owner rule E16: a prepared artifact is evidence only for the implementation that produced
-  it) -- never PLAN's own pins, even though the bytes may turn out identical.
-- `PENDING_S3_1_*` / `PENDING_ROOT_DECISION_ID` / `PENDING_ROOT_SELECTION`: the same S3-1 roster and
-  root-admission dependencies the S3-4 and S3-2 packages name.
+## Re-pointing and plan numbers (2026-09-22)
+
+Filled from committed bytes in this pass:
+
+| what | value | basis |
+| --- | --- | --- |
+| `population.count` | 1080 | TRAIN Fold A, the population the sealed PLAN arm and PLANr read |
+| `population.split_identity_hash` | `61b0f062...5398b6` | **corrected**: the fragment carried `4e3413fe...b969cb`, which is the FOUR-ROW smoke's identity (`configs/experiment/slurp-native-default-plan-lock-smoke-4-v1.json`), not the 1,080-row roster's |
+| `planned_model_calls` / `generation_calls_cap` | 11,880 = 1,080 x 11 | cell PLAN's own registered per-row ceiling; this cell is PLAN plus one store, so the role graph and the ceiling are PLAN's unchanged |
+| `fit_endpoint_calls_cap` | 47,520 = 11,880 x (1 speech packet + 3 endpoints) | cell PLAN |
+| `planned_speech_audio_seconds` / `repeated_speech_audio_seconds_cap` | 33,930 | cell PLAN |
+| `native_task_contract_calls_cap` | 6,480 | cell PLAN |
+| `planned_gpu_hours` / `gpu_hours_fit_inclusive` | 12.0 | cell PLAN's registered ceiling (the spec's point estimate for arm + twin is 3.6; ceilings are bounds, never targets) |
+| `service_session` | `serving-slurp-native-candidate-five-train-a-np4-v1` | this cell's model fragment is byte-identical to cell PLAN's and cell ROLL-1's, and both name that resident session |
+
+The one top-level `execution_plan` governs all six cells; each flies under its own run id and the
+plan budget is run-cumulative, so each four-row smoke consumes 44 of the same ceiling.
+`generation_budget` carries the arithmetic in free English, the ROLL-1 form.
+
+The placeholder decision requirement was removed for the same reason it was removed from ADV-1:
+`core.flight.repin._upsert_decision_requirement` inserts the real one at the readiness flip, and a
+placeholder entry without an `expected_decision_id` left beside it would refuse the campaign at load
+(`core.flight.campaign.declared_readiness`).
+
+## What is left for root
+
+The fill map is `docs/readiness/2026-09-22-slurp-stage3-advantage-r01-v1/fill-after-roll1-seal.json`
+(one file for both Stage-3 packages): every remaining token, its exact JSON path, the artefact that
+produces it and the field to copy.
+
+- `PENDING_S3_5_RELEASE_JSON_SHA256` / `PENDING_S3_5_SNAPSHOT_JSON_SHA256`: S3-5's release of
+  `knowledge/slurp/semantic/stage3-deltas-v1/`. **These were one token until this pass.** `release
+  .json` and `snapshot.json` are two files with two digests, so a single `PENDING_S3_5_RELEASE_SHA256`
+  could never be filled correctly by any substitution tool; it was split.
+- `PENDING_S3_6_TWIN_RELEASE_JSON_SHA256` / `PENDING_S3_6_TWIN_SNAPSHOT_JSON_SHA256`: the twin
+  release of `knowledge/slurp/semantic/stage3-deltas-twin-v1/`, split for the same reason.
+- `PENDING_<CELL>_OWN_<KEY>` (per cell, 28 tokens over the four baselines): the per-flight
+  bookkeeping (`native_contact_fit`, `prepared_phase_supply`, `preparation_source_receipts`,
+  speech-feature identity ids, `speech_packet_promotion_receipt[_sha256]`) this cell must prepare
+  under its OWN run id before flight (owner rule E16: a prepared artifact is evidence only for the
+  implementation that produced it) -- never PLAN's own pins, even though the bytes may turn out
+  identical. These are minted by `scripts/flights/repin_cell.py`, never by the substitution tool,
+  and `--allow-output-change` must never be passed.
+- A root admission decision, and the two S3-5 preparations the release registration pins (see below).
+
+## The runbook
+
+`scripts/flights/batch/adv1_to_deltas.sh` -- run by ROOT after cell ADV-1 seals and after
+`scripts/flights/batch/adv1_prepare.sh` has filled the ADV-1 fragments (this runbook reads the
+disagreeing-row split identity out of the ADV-1 experiment fragment). Model-free: zero frozen-core,
+tool, embedding, encoder, tokenizer, scorer, GPU and network contacts. `DELTAS_DRY=1` is the default
+and prints every mutating command line; `DELTAS_DRY=0` performs them.
+
+```
+MSYS_NO_PATHCONV=1 wsl -d Ubuntu-24.04 DELTAS_DRY=0 REPO=<checkout> \
+  bash scripts/flights/batch/adv1_to_deltas.sh
+```
+
+which runs, in order:
+
+```
+python scripts/build_slurp_stage3_delta_store.py --advantage-outputs <prepared>/advantage-outputs-v1.jsonl \
+    --pairs <data>/analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1/pairs.json --repo-root "$REPO" \
+    --predecessor none --iteration 1 --run-id SAEA-SLURP-STAGE3-ADVANTAGE-R01-V1 \
+    --out-authored <prepared>/authored-stage3-deltas-v1.json
+python scripts/build_slurp_stage3_delta_twin.py --authored <prepared>/authored-stage3-deltas-v1.json \
+    --seed 20260922 --out <prepared>/authored-stage3-deltas-twin-v1.json
+python scripts/flights/batch/adv1_to_deltas_steps.py --repo-root "$REPO" --data-root "$DATA" registration \
+    --template docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v1-release-registration.template.json \
+    --out <coordination>/stage3-deltas-v1-release-registration.json \
+    --source-split-identity-hash <the ADV-1 population's>      # and again for the twin template
+python scripts/build_slurp_stage3_delta_store.py <same curation arguments> \
+    --release <coordination>/stage3-deltas-v1-release-registration.json --data-root "$DATA" \
+    --release-pins <coordination>/stage3-deltas-v1-release-pins.json
+python -m speech_aware_evidence_acquisition.core.driver.cli prepare-semantic-knowledge \
+    --registration <coordination>/stage3-deltas-twin-v1-release-registration.json \
+    --repo-root "$REPO" --data-root "$DATA"
+python scripts/flights/batch/adv1_to_deltas_steps.py --repo-root "$REPO" --data-root "$DATA" \
+    cell1-values --values-out <coordination>/cell1-fill-values.json
+python scripts/flights/batch/roll1_fill_placeholders.py \
+    --fragments configs/experiment/slurp-native-stage3-delta-cell-r01-v1.json \
+                configs/baseline/slurp-native-stage3-delta-cell-baseline-v1.json \
+                configs/baseline/slurp-native-stage3-delta-cell-smoke-4-baseline-v1.json \
+                configs/baseline/slurp-native-stage3-delta-cell-twin-baseline-v1.json \
+                configs/baseline/slurp-native-stage3-delta-cell-twin-smoke-4-baseline-v1.json \
+    --values <coordination>/cell1-fill-values.json --by "<provenance>" --occurrence-policy any
+```
+
+The generation store goes out through the curator's own `--release` path (which also writes the
+release-pins document the spec asks for); the twin's authored document is a derangement, not a
+curation, so it is released directly through the driver's `prepare-semantic-knowledge`. Re-running
+the curator for the release step is deliberate: curation is deterministic (survivors sorted by
+`value_id`), so the authored bytes and therefore the digest the registration pinned are reproduced,
+and if they ever were not, the preparer fails closed on the `authored_source` pin rather than
+releasing a different store.
+
+**Two release registrations are committed here as TEMPLATES**
+(`stage3-deltas-v1-release-registration.template.json`,
+`stage3-deltas-twin-v1-release-registration.template.json`).
+`core.semantic_knowledge_preparation.prepare_semantic_knowledge_store` verifies `authored_source`,
+`construction_scope`, `permitted_roster` and every `forbidden_rosters` pin by SHA-256, and the
+authored document's digest only exists after the curator has written it -- so the committed file
+carries `PENDING_` tokens, is never passed to the preparer and is never edited in place; the helper
+materialises a runnable copy under the data root with the real digests, exactly as
+`scripts/flights/batch/r01_prep23.sh` materialises the query-alias template. The helper re-verifies
+each forbidden-roster digest (TRAIN Fold A, TRAIN Fold B, DEV-1000) against the committed receipt and
+fails closed on a mismatch. The two `prepared/` roster documents the registration pins
+(`outer-construction-roster.json`, `permitted-roster.json`, in the shape the slot-contracts
+preparation uses) are root's own S3-5 preparations; the runbook checks for them and stops, it does
+not invent them.
 
 ## Proof obligations covered by tests
 
 - `tests/unit/test_stage3_delta_supply.py`: candidate-bound selection, prior_score ordering, the cap,
   empty-match returns `()` never raises, the receipt carries no content, the twin derangement has zero
   fixed points, preserves every non-facet field, and is deterministic for a fixed seed.
+- `tests/unit/test_stage3_delta_supply_router.py`: the two pre-existing `context_supply` routes stay
+  byte-identical once the stage3-deltas route is added.
 - `tests/unit/test_stage3_delta_cell_fragment.py`: the generation cell equals the locked PLAN fragment
   on every key except the one added store and the per-flight bookkeeping keys; the twin cell equals the
   generation cell except the release namespace; every pin left for root is an explicit `PENDING_`
   token; the smoke variants carry the same store shape as their full siblings.
+- `tests/unit/test_roll1_fill_placeholders.py`: the substitution tool's ROLL-1 contract is unchanged
+  by the `--fragments` / `--occurrence-policy` arguments this package needs.
