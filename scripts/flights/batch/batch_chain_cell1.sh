@@ -13,6 +13,18 @@
 # run-cumulative per run id, which is why the identity had to move again. Step 2's twin smoke keeps
 # its own v1 run id, which never opened.
 #
+# 2026-09-23, the ARM's ONE recovery re-registration: step 1's arm flies under attempt
+# attempt-slurp-native-stage3-delta-cell-r01-v1-generation-recovery. The first arm attempt metered
+# 304 contacts over 75 Perception rows of 1,080 and aborted at row ~75 -- two of those 75 Perception
+# answers named ONE legal intent three times, and the stage3-deltas candidate-bound route was the
+# only reader of that state in the plan that read it without the bounded first-occurrence
+# projection its sibling slot-contracts candidate supply declares. The run id, the split, the
+# geometry, the session, the store pins and the registered budgets are UNCHANGED (a plan budget is
+# run-cumulative per run id: 304 spent + 4,424 expected is far inside the registered 11,880). Under
+# the program's failure rule this is the one recovery re-registration this flight gets; a second
+# failure stops it. The twin cells are untouched -- their attempts never opened -- and the v3 smoke
+# keeps its own id.
+#
 # ceiling_per_row 11 is the locked plan's OWN per-row ceiling
 # (configs/policy/phase-native-candidates-review-revise-v1.json max_contacts 11, resolved from the
 # unchanged role graph perception 1 / solver 1 / reviewer 3 / planner 1 with max_revisions 1 as
@@ -41,7 +53,7 @@ steps = [
      "campaign_plan": "configs/campaign/slurp-native-stage3-delta-cell-r01-v1.json",
      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1",
      "fit_run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1",
-     "gen_attempt_id": "attempt-slurp-native-stage3-delta-cell-r01-v1-generation",
+     "gen_attempt_id": "attempt-slurp-native-stage3-delta-cell-r01-v1-generation-recovery",
      "smoke_run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3",
      "smoke_attempt_id": "attempt-slurp-native-stage3-delta-cell-smoke-4-v3-generation",
      "expected_rows": 1080, "contacts_per_row": 4, "ceiling_per_row": 11, "notool": True,

@@ -432,3 +432,70 @@ def test_a_revise_verdict_revisits_three_nodes_without_acquiring_twice():
     # given are already on the accumulated QueryState.
     for node in result.nodes[4:]:
         assert node.supplied_value_ids == (), node.phase
+
+
+def test_a_duplicate_candidate_row_walks_instead_of_killing_the_flight():
+    """The 2026-09-23 ARM abort, offline.
+
+    The CELL-1 ARM spent 304 metered contacts and died at row ~75 of 1,080
+    with ``candidate intent_ids must be unique and ordered``, raised inside
+    the stage3-deltas candidate-bound route. Two of its 75 Perception answers
+    named ONE legal intent three times; the sealed PLAN arm carries 25 such
+    rows in 1,080 (2.3 %) -- including one of those two, sample
+    ``slurp:train:000544:audio-1501158529`` -- and completed every one of
+    them, because its only other reader of that state, the slot-contracts
+    candidate supply, declares the bounded first-occurrence projection.
+
+    Pre-fix this walk raised ``KnowledgeStoreError: candidate intent_ids must
+    be unique and ordered`` on both duplicate shapes. Post-fix all four shapes
+    complete the whole graph, the duplicates project to their first
+    occurrences, and the projection is receipted per node and per row.
+    """
+
+    runtime, binding = _smoke_composition(sample_limit=4)
+    roster = tuple(item.sample_id for item in runtime._samples)
+    legal = set(legal_intent_ids(runtime))
+    addressed = sorted(
+        item for item in store_facet_ids(runtime, DELTA_STORE) if item in legal
+    )
+    assert len(addressed) >= 3, addressed
+    first, second, third = addressed[:3]
+
+    # One row per shape: a router memoises its per-row selection by
+    # (phase, sample, query-state hash), so two shapes cannot share a row.
+    shapes = {
+        # exactly the shape the ARM died on, and the PLAN arm's own n=3/d=1
+        "duplicate-all-the-same": (first, first, first),
+        # the PLAN arm's other duplicate shape, n=3 distinct=2
+        "duplicate-one-repeat": (first, second, first),
+        # "ordered" in the refusal text is not an ordering constraint
+        "out-of-order-descending": tuple(sorted((first, second, third), reverse=True)),
+        "clean-control": (first, second, third),
+    }
+
+    for (shape, candidates), sample_id in zip(shapes.items(), roster):
+        result = dry_run_native_episode(
+            runtime,
+            answers=_answers_for(candidates),
+            sample_id=sample_id,
+            sample_limit=4,
+        )
+        assert tuple(node.phase for node in result.nodes) == NATIVE_ROLE_GRAPH_ORDER, shape
+        assert result.delivered_phase == "solver", shape
+
+    router = binding["phase_binding"].get("supply_for_store")
+    projections = router.receipt["delta_candidate_projection"]
+    # Only the two duplicate rows are recorded, and every node that read them.
+    recorded = {entry["sample_id"] for entry in projections.values()}
+    assert recorded == {roster[0], roster[1]}, recorded
+    by_row = {
+        entry["sample_id"]: (entry["raw_positions"], entry["retained_positions"])
+        for entry in projections.values()
+    }
+    assert by_row[roster[0]] == (3, 1)
+    assert by_row[roster[1]] == (3, 2)
+    for entry in projections.values():
+        assert entry["store_id"] == DELTA_STORE
+        assert entry["node"] == entry["phase"]
+        assert entry["projection_policy_id"]
+        assert entry["original_text_sha256"] != entry["projected_content_sha256"]

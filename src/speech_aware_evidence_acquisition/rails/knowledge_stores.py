@@ -421,7 +421,9 @@ def build_knowledge_store_supply(
     )
 
     from .candidate_semantic_supply import (
+        DEFAULT_MAX_SLURP_CANDIDATES,
         build_candidate_semantic_supply,
+        candidate_state_read_parameters,
         load_candidate_semantic_supply_specs,
     )
     from .governed_context_supply import (
@@ -439,6 +441,8 @@ def build_knowledge_store_supply(
     )
     from .artifact_results import SLURP_HYPOTHESIS_CONTENT_ID
     from .slurp_intent_hypotheses import (
+        BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+        CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
         SlurpIntentHypothesisError,
         parse_slurp_intent_hypothesis_state,
     )
@@ -483,6 +487,19 @@ def build_knowledge_store_supply(
     #: of which row took no supply step and why, instead of the skip being
     #: invisible.
     delta_supply_audits: dict[str, object] = {}
+    #: Per-row receipt of every first-occurrence projection this route applied
+    #: to a sealed Perception state that named one intent more than once
+    #: (2026-09-23 ARM fix). Recorded ONLY when the projection actually
+    #: dropped a position, keyed exactly as the skip audits are, and published
+    #: on ``route.receipt["delta_candidate_projection"]`` -- so "this row's
+    #: candidate list was deduplicated, exactly as the plan's own candidate
+    #: route deduplicated it" is a count a reader can assert on, never a
+    #: silent normalisation.
+    delta_candidate_projection_audits: dict[str, object] = {}
+    #: How this route reads each candidate state phase, memoised at BUILD time
+    #: from the plan's own candidate routes
+    #: (``rails.candidate_semantic_supply.candidate_state_read_parameters``).
+    delta_candidate_reads: dict[str, object] = {}
     delta_supply_lock = threading.Lock()
     candidate_specs = load_candidate_semantic_supply_specs(binding, program)
     if candidate_specs and legal_candidate_ids is None:
@@ -566,6 +583,11 @@ def build_knowledge_store_supply(
                 "stage3-deltas context_supply requires a candidate-bound, capped, "
                 "prior_score-ranked spec on a later supplied phase"
             )
+        # 2026-09-23, the CELL-1 ARM abort. Resolve HOW this state is read
+        # here, at build time, not per row: a plan whose candidate routes
+        # disagree about one Perception phase is a config defect and must be
+        # refused before a contact is spent, never discovered on row 75.
+        _delta_candidate_read(candidate_state_phase)
 
     def _validate_stage3_delta_unconditional_spec(raw_spec, *, store, phase):
         """The UNCONDITIONAL branch (S3-4s), the FIRST phase's own.
@@ -602,6 +624,107 @@ def build_knowledge_store_supply(
                 "prior_score-ranked, node-targeted spec on the program's first "
                 "supplied phase, with no candidate_state_phase"
             )
+
+    def _delta_candidate_read(candidate_state_phase):
+        """``(compact_source_phase, max_candidates, projection_policy)`` for one
+        candidate state phase -- the reading the plan's OWN candidate routes
+        perform over the very same sealed bytes.
+
+        2026-09-23, the CELL-1 ARM abort after 304 contacts. WHICH FORM the
+        state has was already read off the phase's declared output contract
+        (the comment in ``_stage3_delta_local_supply``); WHICH TOLERANCE it is
+        read with was not, and the delta route was the only reader of that
+        state in the whole plan that read it without the bounded
+        first-occurrence projection. The sealed PLAN arm carries 25 rows in
+        1,080 whose Perception answer names one legal intent more than once,
+        and it completed every one of them, because its only reader of that
+        state -- the slot-contracts candidate supply -- declares
+        ``projection_policy`` and ``max_candidates`` and the parser projects
+        the duplicates away by first occurrence. The delta route asked the
+        SAME parser entry for the strict canonical reading and raised
+        "candidate intent_ids must be unique and ordered".
+
+        There is no second implementation and no new config key: the tuple
+        comes from ``rails.candidate_semantic_supply.
+        candidate_state_read_parameters`` over the specs this router already
+        loaded, so the two routes cannot drift apart. Where a plan declares no
+        SLURP candidate route over that phase there is no sibling to match, and
+        the documented default keeps the route's own pre-fix bound while
+        adopting the same first-occurrence projection every other reader of a
+        compact SLURP Perception state in this codebase uses
+        (``rails.role_context``, ``rails.node_context_policy``,
+        ``rails.slot_binding_view``).
+        """
+
+        memo = delta_candidate_reads.get(candidate_state_phase)
+        if memo is not None:
+            return memo
+        candidate_format_id = getattr(
+            program.phase(candidate_state_phase), "response_format_id", None
+        )
+        if candidate_format_id != SLURP_HYPOTHESIS_CONTENT_ID:
+            # Not the compact contract: the canonical four-key reading, byte-
+            # identically to the pre-fix router. A projection policy is not
+            # even legal without a compact source phase.
+            memo = (None, len(frozenset(legal_candidate_ids or ())), None)
+            delta_candidate_reads[candidate_state_phase] = memo
+            return memo
+        try:
+            sibling = candidate_state_read_parameters(
+                candidate_specs, candidate_state_phase=candidate_state_phase
+            )
+        except RailsError as error:
+            raise KnowledgeStoreError(str(error)) from error
+        if sibling is not None:
+            memo = (candidate_state_phase, sibling[0], sibling[1])
+        else:
+            maximum = len(frozenset(legal_candidate_ids or ())) or 1
+            memo = (
+                candidate_state_phase,
+                maximum,
+                (
+                    CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+                    if maximum > DEFAULT_MAX_SLURP_CANDIDATES
+                    else BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+                ),
+            )
+        delta_candidate_reads[candidate_state_phase] = memo
+        return memo
+
+    def _record_delta_candidate_projection(
+        *,
+        store_id,
+        phase,
+        node_target,
+        sample_id,
+        query_state,
+        projection,
+    ):
+        """Record one first-occurrence projection that DROPPED a position.
+
+        Identities, counts and hashes only -- never a candidate's text --
+        matching every other receipt in this study. A clean list projects to
+        itself and is never recorded, so a non-empty map means exactly "these
+        rows named an intent more than once".
+        """
+
+        key = f"{phase}:{sample_id}:{query_state.content_hash()}"
+        entry = {
+            "node": node_target,
+            "phase": phase,
+            "sample_id": sample_id,
+            "store_id": store_id,
+            "raw_positions": len(projection.raw_positions),
+            "retained_positions": len(
+                {item.intent_id for item in projection.raw_positions}
+            ),
+            "projection_policy_id": projection.projection_policy_id,
+            "projection_policy_sha256": projection.projection_policy_sha256,
+            "original_text_sha256": projection.original_text_sha256,
+            "projected_content_sha256": projection.projected_content_sha256,
+        }
+        with delta_supply_lock:
+            delta_candidate_projection_audits[key] = entry
 
     def _record_delta_supply_skip(
         *,
@@ -703,24 +826,56 @@ def build_knowledge_store_supply(
         # identically to the pre-fix router. Nothing is relaxed: the parser
         # stays strict on both sides, and a fragment cannot forget to say
         # which it is, because it never says it at all.
-        candidate_format_id = getattr(
-            program.phase(candidate_state_phase), "response_format_id", None
-        )
-        compact_source_phase = (
-            candidate_state_phase
-            if candidate_format_id == SLURP_HYPOTHESIS_CONTENT_ID
-            else None
+        #
+        # 2026-09-23, the CELL-1 ARM abort after 304 metered contacts, at row
+        # ~75 of 1,080. WHICH TOLERANCE the state is read with is decided the
+        # same way and in the same ONE place the plan's own candidate route
+        # decides it (``_delta_candidate_read``): same parser entry, same
+        # bound, same first-occurrence projection, so a Perception answer that
+        # names one legal intent three times -- 2.3 % of the sealed PLAN arm's
+        # rows do -- projects for this route exactly as it projects for the
+        # slot-contracts candidate supply beside it.
+        compact_source_phase, max_candidates, projection_policy = (
+            _delta_candidate_read(candidate_state_phase)
         )
         try:
             hypothesis_state = parse_slurp_intent_hypothesis_state(
                 matches[0],
                 expected_sample_id=str(sample_id),
                 legal_intent_ids=legal,
-                max_candidates=len(frozenset(legal)),
+                max_candidates=max_candidates,
                 compact_source_phase=compact_source_phase,
+                projection_policy=projection_policy,
             )
         except SlurpIntentHypothesisError as error:
+            # The DISPOSITION is the sibling's too, and deliberately so. The
+            # plan's own candidate route raises
+            # (``rails.candidate_semantic_supply``'s
+            # ``CandidateSemanticSupplyError``) on a state it cannot read, and
+            # it reads the SAME bytes with the SAME parameters at the SOLVER,
+            # which the native role graph visits BEFORE the Reviewer and the
+            # Planner (``analysis.native_episode_dry_run.
+            # NATIVE_ROLE_GRAPH_ORDER``). So after this fix the delta route
+            # can never be the first reader to refuse a row: anything it
+            # refuses, the plan's own route already refused one node earlier,
+            # and a row this route kills is a row the PLAN arm would have
+            # killed too. Degrading here instead would hide exactly the
+            # wiring defects the two strictness regressions in
+            # ``tests/unit/test_stage3_delta_node_routes.py`` exist to catch
+            # (a canonical document under the compact contract; a state
+            # sealed for another sample).
             raise KnowledgeStoreError(str(error)) from error
+        if hypothesis_state.projection is not None and len(
+            {item.intent_id for item in hypothesis_state.projection.raw_positions}
+        ) != len(hypothesis_state.projection.raw_positions):
+            _record_delta_candidate_projection(
+                store_id=store.store_id,
+                phase=phase,
+                node_target=node_target,
+                sample_id=sample_id,
+                query_state=query_state,
+                projection=hypothesis_state.projection,
+            )
         candidate_facet_ids = tuple(item.intent_id for item in hypothesis_state.candidates)
 
         provider = _build_stage3_delta_provider(store, raw_spec=raw_spec)
@@ -1265,6 +1420,9 @@ def build_knowledge_store_supply(
         # byte-identical to its pre-fix self (the identity
         # ``tests/unit/test_candidate_semantic_supply.py`` pins).
         route.receipt["delta_supply"] = delta_supply_audits
+        route.receipt["delta_candidate_projection"] = (
+            delta_candidate_projection_audits
+        )
     # DELIBERATELY NOT WIDENED (E3): a config whose stores declare later-phase
     # plain phase_supply and NOTHING ELSE (no context_supply anywhere, no
     # candidate_supply anywhere) still gets no `automatic_for_phase` -- exactly
