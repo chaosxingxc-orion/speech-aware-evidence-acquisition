@@ -15,13 +15,20 @@
         "reason": "Stage-3 S3-4 ADV-1 (docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md section S3-4): one construction-advantage-text contact per disagreeing row of cell ROLL-1, over the CLEAN construction subset R01C (SLURP-STAGE3-CONSTRUCTION-R01C, 625 rows, coordinator decision 102 pending owner confirmation; roster receipt docs/receipts/rosters/slurp-stage3-construction-r01c.json). S3-1 HAS LANDED, so every S3-1 placeholder is filled here from committed bytes: the dataset fragment is slurp-speech-native-stage3-construction-r01c and the R01C roster receipt plus its parent R01 receipt are pinned by hash in the baseline fragment's preparation_source_receipts. S3-3 HAS NOW LANDED (2026-09-23): cell ROLL-1 sealed, scripts/analysis/stage3_rollout_score.py ran on the seal, and every PENDING_ token of this fragment is filled from committed bytes -- pairs.json's relpath and sha256, the disagreeing-row count (225 of R01C's 625), the split id STAGE3-ADVANTAGE-R01C-DISAGREEING-V1 and its split identity hash, whose committed roster_role='construction' receipt is docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-v1.json. The fill map is docs/readiness/2026-09-22-slurp-stage3-advantage-r01-v1/fill-after-roll1-seal.json. REGISTERED FOR FLIGHT 2026-09-23 beside this cell's own four-row form smoke (configs/experiment/slurp-native-stage3-advantage-r01-smoke-4-v1.json, cells slurp-native-stage3-advantage-r01-smoke-4-v1 / -smoke-4-fit-v1) in the same package; readiness stays HELD and the arm opens only after that smoke has sealed. NO DECISION REQUIREMENT IS REGISTERED HERE ON PURPOSE (the ROLL-1 precedent): core.flight.repin._upsert_decision_requirement inserts it at the readiness flip, and a placeholder decision entry without an expected_decision_id would be left behind beside it and refuse the campaign at load (core.flight.campaign.declared_readiness). Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-advantage-r01-admission-v1",
+            "relpath": "coordination/slurp-stage3-advantage-r01-v1/root-admission-v1.json",
+            "sha256": "aebf81157998d2e2011843eef9267115c5857b31803b17199fd52b77086d9e44",
+            "reason": "Decision slurp-stage3-advantage-r01-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "S3-3's pairs.json, which selects and pins this cell's disagreeing-row population. core.flight.campaign.declared_readiness resolves every readiness requirement BENEATH THE DATA ROOT, so this relpath is data-root relative; the analysis root scripts/flights/batch/adv1_prepare.sh writes is analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1/. It cannot exist until cell ROLL-1 (run SAEA-SLURP-STAGE3-ROLLOUT-R01-V1) seals and scripts/analysis/stage3_rollout_score.py --stage all has run on the seal. The R01C roster receipt is NOT a readiness requirement (it is a repository artifact, not a data-root one): it is pinned by hash in configs/baseline/slurp-native-stage3-advantage-baseline-v1.json preparation_source_receipts, the ROLL-1 precedent.",
             "relpath": "analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1/pairs.json",
             "sha256": "d66cd80104e2ec9161057a8e4f587dac981e701f347c2fce3c5dce40cba6ef80"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-ADVANTAGE-R01-V1"
     },

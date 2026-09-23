@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-advantage-r01-v1",
-  "composed_config_hash": "6c274af569483f5414fd43be0b67e3c35a5521a34f8d7b64ee4abb0db5c31af6",
+  "composed_config_hash": "9a4f061c5e3f9e52512a9369b4240cdc9b10460be7e62d6b12db3752e07ca055",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-advantage-r01-v1-generation",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 225,
     "planned_speech_audio_seconds": 0,
-    "protocol_hash": "40abcefd1d496e0c701bf6239d73b9c271087893527eb09a0b62ff45630415de",
+    "protocol_hash": "67779678aa0ee76764b94829c51a208fd251f6e9b4aa9dd5ddcd9f40f3c1f154",
     "run_id": "SAEA-SLURP-STAGE3-ADVANTAGE-R01-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "7c603857503faacbc40999d0dd939202ac141ba50aac3fb5e3594542931c46d7",
@@ -75,7 +75,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-22-slurp-stage3-advantage-r01-v1/protocol-registered-v1.json",
-    "sha256": "7e39bad9e1d9f724d5bd579ef10f6297aca96b17348e2e6e7b7c769b04e2b959"
+    "sha256": "eea6fff56cf42a26eccc8b21b80f645905d78b590f92917501ebc3001946d0db"
   },
   "purpose": "Stage-3 S3-4 as amended by S3-4s (owner decision 106): ONE construction-advantage-text contact per S3-3-selected disagreeing construction row, shown the whole ROLL-1 trajectory of that row and the row's own construction gold, answering in one to three NODE / DELTA-KIND / TARGET / STATEMENT blocks that say what each responsible node should do differently. PRIMARY DELIVERABLE: the sealed manifest of parsed AdvantageStatementSet blocks, legal and illegal counted per block, feeding S3-5's curation into the node-targeted stage3-deltas-v1 store. No answer to any evaluated row is produced or read here, and no effectiveness claim is made.",
   "quality_read_gate": "No read of any kind before the complete sealed manifest and the exact ordered 225 outputs exist. There is no admission read and no comparator: the only read is the five structural items of the registered decision rule, and then S3-5's curation. A partial manifest is never read.",
