@@ -1,0 +1,43 @@
+{
+  "answer_authority": "No answers are generated; these are frozen retrieval-tool query vectors.",
+  "boundary_policy": "fixed-stride-complete-final-tail-v1",
+  "cache_relpath": "prepared/slurp-test-full-speech-query-span-cache-v1",
+  "contact_policy": "One lazy local frozen encoder load, one speech input per forward, no jitter, retry, fallback, or automatic restart.",
+  "cpu_workers": 8,
+  "dimension": 2048,
+  "encoder": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-speech-query-encoder-inventory-v2.json",
+    "sha256": "1548387ba91209921fd747e9eff981027be618c618b732efe20ca7d43680bb31"
+  },
+  "expected_unique_spans": 13078,
+  "input_order": "source-id-then-original-frame",
+  "isolation": "Read only the registered speech of the complete official SLURP test split carried by SLURP-TEST-FULL-13078-V1. Do not read reference transcripts, task labels, intent/slot annotations, sentences, prior answers, feedback from any sealed SLURP roster, or future turns. This pass produces retrieval vectors over the speech signal alone; the split's answer surface is untouched and stays reserved for the ONE registered read.",
+  "max_audio_samples": 1920000,
+  "max_seconds": 120.0,
+  "max_sequence_tokens": 8192,
+  "monitor_interval_seconds": 10,
+  "output_relpath": "prepared/SAEA-SLURP-TEST-FULL-SPEECH-QUERY-ENCODING-V1/index.json",
+  "overlap_seconds": 8.0,
+  "query_prompt": "query: ",
+  "query_rows_relpath": "prepared/SAEA-SLURP-TEST-FULL-SPEECH-QUERY-ENCODING-V1/queries.jsonl",
+  "roster_sha256": "b925e90ab99727e7d0ff9fc4ec6b7c91a0d86bff0a5b0a4746b9cc98237b19c3",
+  "schema": "saea-speech-query-encoding-protocol-v1",
+  "sources": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-test-full-speech-query-source-inventory-v1.json",
+    "sha256": "c16ede61a994ef5b2920ab0b9a446203574ee7c731e4c8cae7e5a31e1306ca5f",
+    "schema": "saea-speech-query-source-inventory-v1",
+    "built_by": "scripts/build_speech_query_source_inventory.py (model-free: byte hashes + audio header geometry; no decode, encoder, tokenizer or network)",
+    "derived_from": {
+      "runtime_view": {
+        "path": "configs/dataset/slurp-speech-native-test-full.json",
+        "raw_sha256": "127556a475996603862302ef68196d80ec075818cd88a407e37d42387b664e34",
+        "canonical_runtime_view_sha256": "c657d4fe3ea05d6e655707530f0e30ae8f67dd1671a2a475cc682422903e7744"
+      },
+      "roster_receipt": {
+        "path": "docs/receipts/rosters/slurp-test-full-13078-v1.json",
+        "sha256": "b925e90ab99727e7d0ff9fc4ec6b7c91a0d86bff0a5b0a4746b9cc98237b19c3"
+      }
+    },
+    "registration_note": "Built 2026-09-23 model-free (step 2a of preparation 2, zero contacts): 13,078 rows, split identity 7247647b8c8b37becd564b7031691565d4e6b09d8e124823054906d36372c95d, audio_seconds_total 36911.938812. Pinned from the start, as the R01 registration did, so the two-correction sequence the DEV-2000-ADDED protocol had to record is not expected here. cpu_workers is 8, the ceiling core.speech_preparation_runtime enforces and the standing CPU rule allows, because this roster is thirteen times the size of any development roster flown so far."
+  }
+}
