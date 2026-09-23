@@ -50,6 +50,10 @@ from test_candidate_semantic_supply import _store
 SHA_A = "a" * 64
 SHA_B = "b" * 64
 INVENTORY = ("alpha", "beta", "gamma", "delta")
+#: The registered structured-output contract the locked plan's Perception
+#: phase declares (``configs/policy/phase-native-candidates-review-revise-v1
+#: .json``); its schema is the COMPACT one-key document.
+HYPOTHESES_FORMAT_ID = "slurp-intent-hypotheses-v1"
 
 
 # ---------------------------------------------------------------------------
@@ -131,13 +135,28 @@ def test_an_unknown_node_target_is_refused(bad) -> None:
 # ---------------------------------------------------------------------------
 
 
-def _program():
-    """The locked plan's own phase order and knowledge classes."""
+def _program(*, perception_response_format=HYPOTHESES_FORMAT_ID):
+    """The locked plan's own phase order, knowledge classes AND output
+    contract.
+
+    2026-09-23: the response format id is the part this fixture used to
+    leave out, and leaving it out is exactly why the CELL-1 generation
+    smoke's Solver input failed against a router these tests called green.
+    ``configs/policy/phase-native-candidates-review-revise-v1.json`` declares
+    ``response_format_id`` ``"slurp-intent-hypotheses-v1"`` on ``perception``
+    and ``null`` on the other three, so the Perception state a flight seals
+    is the COMPACT structured-output document, never the canonical
+    four-key one. ``perception_response_format=None`` keeps the pre-fix
+    canonical-state program reachable, so both reads stay covered.
+    """
 
     return PhaseProgram(
         program_id="synthetic-four-node-v1",
         phases=(
-            PhaseSpec("perception", "form-candidates", "supplied", None, False),
+            PhaseSpec(
+                "perception", "form-candidates", "supplied",
+                perception_response_format, False,
+            ),
             PhaseSpec("reviewer", "review-evidence", "supplied", None, False),
             PhaseSpec("planner", "choose-next-action", "supplied", None, False),
             PhaseSpec("solver", "answer", "supplied", None, False),
@@ -190,11 +209,16 @@ def _config(tmp_path, *, context_supply, rows=ROWS):
     return {"knowledge_stores": {"stage3-deltas": store}}
 
 
-def _bound(tmp_path, context_supply, rows=ROWS):
+def _bound(
+    tmp_path, context_supply, rows=ROWS,
+    perception_response_format=HYPOTHESES_FORMAT_ID,
+):
     document = _config(tmp_path, context_supply=context_supply, rows=rows)
     binding = load_knowledge_store_binding(document, data_root=tmp_path)
     return binding, build_knowledge_store_supply(
-        binding, program=_program(), data_root=tmp_path,
+        binding,
+        program=_program(perception_response_format=perception_response_format),
+        data_root=tmp_path,
         legal_candidate_ids=INVENTORY,
     )
 
@@ -226,27 +250,46 @@ ALL_ROUTES = {
 }
 
 
-def _perception_state(sample_id, intents):
-    content = json.dumps(
+def _candidates(intents):
+    return [
+        {
+            "intent_id": intent,
+            "distinction": f"Evidence for {intent}.",
+            "evidence_refs": ["speech"],
+            "unresolved_fields": [],
+        }
+        for intent in intents
+    ]
+
+
+def _perception_state(sample_id, intents, *, canonical=False, state_id=None):
+    """The Perception state a native episode actually seals.
+
+    ``rails.controllers.seal_phase_response_state`` is handed
+    ``completion.text``, and a phase answering under
+    ``slurp-intent-hypotheses-v1`` answers the COMPACT document -- exactly
+    ``{"candidates": [...]}``, because ``required: ["candidates"]`` plus
+    ``additionalProperties: false`` is the whole registered schema. The
+    four-key canonical document is the consumption view, rebuilt at each
+    reading site; ``canonical=True`` builds it so the pre-fix read stays
+    covered. ``state_id`` defaults to the bare ``<phase>:<sample>`` form; a
+    real flight namespaces it with the contact id, which the compact branch
+    accepts through its ``endswith`` rule.
+    """
+
+    document = (
         {
             "schema": "saea-slurp-intent-hypotheses-v1",
             "semantics": "ranked-mutually-exclusive-intent-alternatives",
             "sample_id": sample_id,
-            "candidates": [
-                {
-                    "intent_id": intent,
-                    "distinction": f"Evidence for {intent}.",
-                    "evidence_refs": ["speech"],
-                    "unresolved_fields": [],
-                }
-                for intent in intents
-            ],
-        },
-        sort_keys=True,
-        separators=(",", ":"),
+            "candidates": _candidates(intents),
+        }
+        if canonical
+        else {"candidates": _candidates(intents)}
     )
+    content = json.dumps(document, sort_keys=True, separators=(",", ":"))
     return AgentStateArtifact(
-        state_id=f"perception:{sample_id}",
+        state_id=state_id or f"perception:{sample_id}",
         state_kind="phase:perception",
         content=content,
         source_query_state_sha256=SHA_B,
@@ -631,3 +674,90 @@ def test_check_refuses_a_pinned_supply_that_cannot_compose(tmp_path):
         "prepared artifact does not compose into a first-phase seed: "
         f"prepared_phase_supply ({broken['relpath']}): {broken['reason']}"
     ]
+
+
+# ---------------------------------------------------------------------------
+# The candidate state's SEALED shape (2026-09-23)
+#
+# Cell CELL-1's generation smoke made four Perception contacts and then died
+# at the openJiuwen vertex ``solver_0_input`` with
+#
+#     NativeEpisodeError: native episode node failed: [100054] component
+#     'solver_0_input' execute 'invoke' error, reason='hypothesis state must
+#     contain exactly ['candidates', 'sample_id', 'schema', 'semantics']'
+#
+# The sealed Perception state carried exactly ONE key, ``candidates``: the
+# registered ``slurp-intent-hypotheses-v1`` schema IS the compact document,
+# and ``seal_phase_response_state`` seals the model's own response bytes. The
+# candidate-bound delta route read it as the canonical four-key document, so
+# three keys a native episode can never seal were missing. The sibling route
+# on the SAME phase (slot-contracts ``candidate_supply.solver``) declares
+# ``compact_source_phase`` and was fine, which is why the PLAN arm flew this
+# episode and this cell did not.
+# ---------------------------------------------------------------------------
+
+
+def test_the_candidate_bound_route_reads_the_compact_state_a_flight_seals(tmp_path):
+    """The exact shape the CELL-1 smoke sealed, read without error."""
+
+    binding, router = _bound(tmp_path, ALL_ROUTES)
+    state = _perception_state("s1", ("alpha", "beta"))
+    assert sorted(json.loads(state.content)) == ["candidates"]
+    context = _context(binding, state)
+    assert _selected(router.automatic_for_phase("solver", context)) == (
+        "stage3-deltas::delta:1:aaaaaaaaaaaa", "stage3-deltas::delta:1:bbbbbbbbbbbb",
+    )
+
+
+def test_the_route_reads_a_contact_namespaced_state_id(tmp_path):
+    """A flight namespaces the state id with the contact id (``<contact>:
+    <phase>:<sample>``); the compact branch binds it by suffix."""
+
+    binding, router = _bound(tmp_path, ALL_ROUTES)
+    state = _perception_state(
+        "s1", ("alpha",), state_id="contact-0007:perception:s1",
+    )
+    context = _context(binding, state)
+    assert _selected(router.automatic_for_phase("solver", context)) == (
+        "stage3-deltas::delta:1:aaaaaaaaaaaa",
+    )
+
+
+def test_a_compact_contract_phase_refuses_the_canonical_document(tmp_path):
+    """Strict both ways: under the compact contract the four-key document is
+    not a second accepted form, it is a refusal."""
+
+    binding, router = _bound(tmp_path, ALL_ROUTES)
+    context = _context(binding, _perception_state("s1", ("alpha",), canonical=True))
+    with pytest.raises(KnowledgeStoreError):
+        router.automatic_for_phase("solver", context)
+
+
+def test_a_phase_declaring_no_format_still_reads_the_canonical_document(tmp_path):
+    """The pre-fix read, unchanged: a candidate state phase with no declared
+    response format is read canonically, and the compact document is then the
+    refusal."""
+
+    binding, router = _bound(
+        tmp_path, ALL_ROUTES, perception_response_format=None,
+    )
+    canonical = _context(binding, _perception_state("s1", ("alpha",), canonical=True))
+    assert _selected(router.automatic_for_phase("solver", canonical)) == (
+        "stage3-deltas::delta:1:aaaaaaaaaaaa",
+    )
+    compact = _context(binding, _perception_state("s1", ("alpha",)))
+    with pytest.raises(KnowledgeStoreError):
+        router.automatic_for_phase("solver", compact)
+
+
+def test_the_compact_read_still_binds_the_phase_and_the_sample(tmp_path):
+    """The compact branch's phase/sample binding is a STRONGER check than the
+    canonical branch's, not a weaker one: a state sealed for another sample is
+    refused even though its bytes parse."""
+
+    binding, router = _bound(tmp_path, ALL_ROUTES)
+    other_sample = _context(
+        binding, _perception_state("s2", ("alpha",), state_id="perception:s2"),
+    )
+    with pytest.raises(KnowledgeStoreError):
+        router.automatic_for_phase("solver", other_sample)

@@ -504,3 +504,156 @@ the decision rule. The budgets are unchanged because **nothing was metered** -- 
 inside phase dispatch, before any request was built -- and they remain run-cumulative across every
 attempt of the run id. The readiness states and the registered plan/protocol documents are untouched
 here; the coordinator re-pins.
+
+## Second failure; the v1 smoke run id is retired and the v2 smoke is the proof (2026-09-23)
+
+The recovery attempt flew and failed. `attempt-slurp-native-stage3-delta-cell-smoke-4-v1-generation-recovery`
+metered **4 Perception contacts and 10.6 s**, then died at the openJiuwen vertex `solver_0_input`:
+
+```
+rails/runner.py:3465 _invoke_native_role_episode
+  -> reproduction/ojw/native_episode.py:1801 invoke_direct
+    -> NativeEpisodeError: native episode node failed: [100054] component 'solver_0_input'
+       execute 'invoke' error, reason='hypothesis state must contain exactly
+       ['candidates', 'sample_id', 'schema', 'semantics']'
+```
+
+### What the keys were
+
+Three keys were **missing**, not extra: `sample_id`, `schema` and `semantics`. The sealed Perception
+state document carries exactly one key, `candidates`.
+
+`rails.controllers.seal_phase_response_state` is handed `completion.text` -- the model's own bytes
+-- and this program's Perception phase answers under the registered `slurp-intent-hypotheses-v1`
+structured-output contract, whose whole schema is `required: ["candidates"]` with
+`additionalProperties: false`
+(`rails.artifact_results.slurp_intent_hypotheses_response_format`). The canonical four-key document
+is the **consumption view**: `parse_slurp_intent_hypothesis_state` rebuilds it from the sealed bytes
+plus the reading site's own trusted phase and sample identity, when -- and only when -- that site
+names a `compact_source_phase`. It was never on the wire and never sealed. The failed attempt's four
+`MODEL_RESPONSE` records confirm it: top-level keys `['candidates']`, per-candidate keys
+`['distinction', 'evidence_refs', 'intent_id', 'unresolved_fields']`.
+
+`rails.knowledge_stores._stage3_delta_local_supply` -- the candidate-bound route the Solver, the
+Reviewer and the Planner all share -- called the parser with **no** `compact_source_phase`, so it
+demanded the canonical document and refused the compact one. The sibling route on the same phase,
+slot-contracts `candidate_supply.solver`, declares `compact_source_phase: "perception"` and was
+fine: that is why the sealed PLAN arm flew this exact episode without the store and never hit this
+refusal, and why the first node to fail was the Solver's input rather than the Perception node.
+Every unit test of the delta route built a canonical Perception document by hand
+(`tests/unit/test_stage3_delta_node_routes.py::_perception_state`,
+`tests/unit/test_candidate_semantic_supply.py::_artifact`), so the ladder was green against a state
+shape no flight produces.
+
+### The fix
+
+`_stage3_delta_local_supply` now derives the read from the **declared output contract of the
+candidate state phase**:
+
+```
+compact_source_phase = candidate_state_phase
+    if program.phase(candidate_state_phase).response_format_id == "slurp-intent-hypotheses-v1"
+    else None
+```
+
+* It is a **declaration**, not a guess from the bytes -- `rails.slot_binding_view` already decides
+  the same question off the same field, and `rails.candidate_semantic_supply` already enforces
+  `compact_source_phase == candidate_state_phase` on the sibling route.
+* **No config key is added**, so all four delta-cell baselines (and both twins) keep their decided
+  keys byte for byte, and the delta-cell-vs-PLAN key-diff proof is unchanged.
+* The parser stays **strict** both ways: under the compact contract the canonical document is a
+  refusal, and the compact branch additionally binds `state_kind`/`state_id` to that phase and
+  sample -- a stronger check than the canonical branch makes.
+* A future plan-based cell **cannot forget to declare it**, because it never declares it at all.
+
+Covered by `tests/unit/test_stage3_delta_node_routes.py`, whose Perception fixture now seals what a
+flight seals (the compact response), whose program fixture now declares the response format the real
+program declares, and which asserts both refusals (canonical under the compact contract; compact
+under a phase that declares no format) plus the phase/sample binding.
+
+### The offline four-row dry run
+
+The failure rule (`CLAUDE.md`, owner 2026-09-03) is: *at most one recovery re-registration per
+flight; a second failure stops the flight and the fix is proven on a 4-row dry run.* `core.flight.cli
+check` cannot be that proof -- it composes fragments and verifies pins, but never walks the episode,
+so no node ever asks for its material and no node boundary ever resolves its supply.
+
+`speech_aware_evidence_acquisition.analysis.native_episode_dry_run` is the missing step and is
+reusable for every future plan-based cell:
+
+```
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$REPO/src \
+python -m speech_aware_evidence_acquisition.analysis.native_episode_dry_run \
+  --repo-root $REPO --data-root $DATA --runtime-root /home/chao --lock-path $LOCK \
+  --experiment slurp-native-stage3-delta-cell-smoke-4-v2 \
+  --cell slurp-native-stage3-delta-cell-smoke-4-v2 \
+  --store stage3-deltas --describe            # what this cell can be answered with
+  # ... then the same command with --answers <{role: text}.json> to walk it
+```
+
+REAL: the four composed fragments, the carrier adapter and its split, the phase program, the native
+episode config, every phase's rendered instruction and resolved response format, the knowledge-store
+binding over the released stores, the supply router with every explicit, candidate-bound and
+unconditional route, the first-phase seed, and the production sealer and advance. SYNTHETIC: only
+the role responses -- canned, deterministic and schema-valid, exactly as a fake frozen core would
+answer. **Zero** model, tool, network, GPU, gate, transport, client, attempt or serving-session
+contacts.
+
+On this cell's own composition, one row:
+
+| | pre-fix | post-fix |
+|---|---|---|
+| outcome | `KnowledgeStoreError: hypothesis state must contain exactly ['candidates', 'sample_id', 'schema', 'semantics']`, raised in `_stage3_delta_local_supply` | the whole graph completes |
+| walked order | stops at the Solver boundary | perception -> solver -> reviewer -> planner -> delivery |
+| deltas per node | none | Perception 4 (seeded, unconditional), Solver 8, Reviewer 4, Planner 1 of cap 4 |
+| other supply | -- | Solver also 20 train-exemplars + 11 slot-contracts, the base plan's own |
+| delivery | -- | the Solver's sealed draft |
+
+A stale pinned first-phase artifact does not stop the dry run: it falls back to the router's own
+`bootstrap_first_phase` (the very function the artifact is minted from) and **reports** which seed it
+used, because a dry run is most useful precisely on a working tree that carries a fix to one of the
+five files the artifact identity hashes.
+
+### What is registered for the replacement
+
+Run id `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1` and its FIT identity
+`SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-FIT-V1` are **retired** and take no third attempt; the
+coordinator closes both ledger rows (this registration does not edit them). The four-row proof flies
+under:
+
+| | v1 (retired) | v2 |
+|---|---|---|
+| experiment fragment | `slurp-native-stage3-delta-cell-smoke-4-v1` | `slurp-native-stage3-delta-cell-smoke-4-v2` |
+| baseline fragment | `slurp-native-stage3-delta-cell-smoke-4-baseline-v1` | `slurp-native-stage3-delta-cell-smoke-4-v2-baseline-v1` |
+| cell id | `slurp-native-stage3-delta-cell-smoke-4-v1` | `slurp-native-stage3-delta-cell-smoke-4-v2` |
+| run id | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1` | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2` |
+| attempt | `...-v1-generation-recovery` | `attempt-slurp-native-stage3-delta-cell-smoke-4-v2-generation` |
+| FIT identity | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-FIT-V1` | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2-FIT-V1` |
+| plans | `smoke-generation-plan-registered-v1.json`, `smoke-fit-plan-registered-v1.json` | `smoke-v2-generation-plan-registered-v1.json`, `smoke-v2-fit-plan-registered-v1.json` |
+
+Unchanged: the population and its split identity
+`4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb`, every store pin, the geometry,
+the session, the caps (44 / 176 / 117 / 1.0 / 24 / 0) and the decision rule. The caps had to travel
+to a new run id rather than be re-registered because a plan budget is run-cumulative across every
+attempt of one run id. The v2 baseline carries **no** `prepared_phase_supply` key, so
+`core.flight.repin.ensure_artifact_pinned` mints this cell's own artifact under its own run id (item
+E16) -- the same form the v1 smoke was first registered in.
+
+The **twin smoke keeps its v1 run id** `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1` (never
+opened), still registered in `configs/experiment/slurp-native-stage3-delta-cell-smoke-4-v1.json`,
+and carries the same fix because the fix is in a shared rails module. Both 1,080-row arms are
+untouched.
+
+`scripts/flights/batch/cell1_repin_smoke.sh`, `scripts/flights/batch/cell1_flip_all.sh` and
+`scripts/flights/batch/batch_chain_cell1.sh` are pointed at the v2 ids; the arm step's smoke is the
+v2 smoke.
+
+### Re-pin obligation (again, and for the same reason)
+
+`rails/knowledge_stores.py` is hashed into every prepared phase-supply artifact's identity beside
+`core/flight/runtime.py` (`FlightRuntime._phase_seed_inputs`), so this fix invalidates the pinned
+first-phase artifact of **all six** CELL-1 cells -- the two arms, the two twin cells and both
+smokes. `core.flight.cli check` reports them as `prepared artifact identity mismatch` blockers until
+the re-pin runs. Their `output` is expected to reproduce **byte for byte**, because the fix moves no
+selection; `--allow-output-change` must never be passed, and an output change here would mean the
+knowledge channel moved and must be reported instead.
