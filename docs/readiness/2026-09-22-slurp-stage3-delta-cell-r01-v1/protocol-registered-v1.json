@@ -61,14 +61,14 @@
       "baseline_fragment": "configs/baseline/slurp-native-stage3-delta-cell-baseline-v1.json",
       "campaign_plan": "configs/campaign/slurp-native-stage3-delta-cell-r01-v1.json",
       "cell": "slurp-native-stage3-delta-cell-r01-v1",
-      "composed_config_hash": "e377e689e6c3fdefde45c7178e81475797dcbd6a289cdf7cbb301db88dcca625",
+      "composed_config_hash": "ccfe79f1347d77868eaa56b8d540ab25645a4b13e5d30aa8b3ea51445aed121f",
       "execution_route": "core.flight.cli campaign over the committed single-cell campaign plan; the campaign acquires its own GenerationLease against the resident session and schedules the one official score at finalize",
       "experiment": "slurp-native-stage3-delta-cell-r01-v1",
       "experiment_fragment": "configs/experiment/slurp-native-stage3-delta-cell-r01-v1.json",
       "fit_attempt_id": "attempt-slurp-native-stage3-delta-cell-r01-v1-fit",
       "fit_run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1",
       "order_constraint": "opens only after its own four-row smoke has sealed and its acceptance list passes. One experiment in flight at a time",
-      "protocol_hash": "c803e8eda7d98e0e6fd83866e5adf21c28ac5b1fe5fa350babfeb66aa875fb43",
+      "protocol_hash": "6744d17f9a67eff016db6a283c8cdfca77f12abdf4a1615825fbeb6badae91ed",
       "readiness": "held; NO decision requirement (the re-pin inserts the real one at the flip); NO prepared phase-supply pin (the re-pin mints this cell's own)",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1",
@@ -78,14 +78,14 @@
       "attempt_id": "attempt-slurp-native-stage3-delta-cell-smoke-4-v1-generation",
       "baseline_fragment": "configs/baseline/slurp-native-stage3-delta-cell-smoke-4-baseline-v1.json",
       "cell": "slurp-native-stage3-delta-cell-smoke-4-v1",
-      "composed_config_hash": "7d4fb05e6417e6c6d42f464e8fbfa85d6a2b48e260b15a837eca52360767e848",
+      "composed_config_hash": "12bed8fa763ac848228c6eabc72690078ad57b895ce5cc169fe4b036616bc72d",
       "execution_route": "shared core.flight.lease_cli worker lease plus a standalone core.flight.cli worker attached to the resident session, driven by the SAEA-Batch-Driver (owner decision 77). No campaign, no scorer",
       "experiment": "slurp-native-stage3-delta-cell-smoke-4-v1",
       "experiment_fragment": "configs/experiment/slurp-native-stage3-delta-cell-smoke-4-v1.json",
       "fit_attempt_id": "attempt-slurp-native-stage3-delta-cell-smoke-4-v1-fit",
       "fit_run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-FIT-V1",
       "order_constraint": "opens when the GPU is free and no other form smoke is in flight",
-      "protocol_hash": "3c3f23bd60a48bffa92a766ca5bfdd78b59d395cb5f66506495c7f48788a1367",
+      "protocol_hash": "0ae6522116104f43df9ddf3b1940dc3fa63fcd0cab5efb328a46d7cdc7983d72",
       "readiness": "held; NO decision requirement (the re-pin inserts the real one at the flip); NO prepared phase-supply pin (the re-pin mints this cell's own)",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1",
@@ -96,14 +96,14 @@
       "baseline_fragment": "configs/baseline/slurp-native-stage3-delta-cell-twin-baseline-v1.json",
       "campaign_plan": "configs/campaign/slurp-native-stage3-delta-cell-r01-twin-v1.json",
       "cell": "slurp-native-stage3-delta-cell-r01-twin-v1",
-      "composed_config_hash": "f21cc058e12c62132f0f9e17f9702e93a410eda6f66d7f6aa5b82c7da711844b",
+      "composed_config_hash": "56542e2490786e21376daeae0c6aafa4162db8f7f529a3219409471bd63f7ea1",
       "execution_route": "core.flight.cli campaign over the committed single-cell campaign plan; the campaign acquires its own GenerationLease against the resident session and schedules the one official score at finalize",
       "experiment": "slurp-native-stage3-delta-cell-r01-v1",
       "experiment_fragment": "configs/experiment/slurp-native-stage3-delta-cell-r01-v1.json",
       "fit_attempt_id": "attempt-slurp-native-stage3-delta-cell-r01-v1-twin-fit",
       "fit_run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-FIT-V1",
       "order_constraint": "opens only after the twin's own four-row smoke has sealed AND the arm has sealed; never beside the arm",
-      "protocol_hash": "e98f5b729c45e545fe035ab148b42b5e834d0d17c8d313b57c5bf3cf474a09e7",
+      "protocol_hash": "7f1e2bea19b4e73206c5cf02339fa80f9d9d803c48d2ed231d0a184c6314ea48",
       "readiness": "held; NO decision requirement (the re-pin inserts the real one at the flip); NO prepared phase-supply pin (the re-pin mints this cell's own)",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1",
@@ -113,14 +113,14 @@
       "attempt_id": "attempt-slurp-native-stage3-delta-cell-smoke-4-v1-twin",
       "baseline_fragment": "configs/baseline/slurp-native-stage3-delta-cell-twin-smoke-4-baseline-v1.json",
       "cell": "slurp-native-stage3-delta-cell-smoke-4-twin-v1",
-      "composed_config_hash": "96bae3568769f7cec68d9e1d5e20ef4dcacca0a08e21c6799b2cc7b809699505",
+      "composed_config_hash": "31b8c13775a20acd438330df7aad108e42d139b1eb6151e91abb801d7f6530d4",
       "execution_route": "shared core.flight.lease_cli worker lease plus a standalone core.flight.cli worker attached to the resident session, driven by the SAEA-Batch-Driver (owner decision 77). No campaign, no scorer",
       "experiment": "slurp-native-stage3-delta-cell-smoke-4-v1",
       "experiment_fragment": "configs/experiment/slurp-native-stage3-delta-cell-smoke-4-v1.json",
       "fit_attempt_id": "attempt-slurp-native-stage3-delta-cell-smoke-4-v1-twin-fit",
       "fit_run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-FIT-V1",
       "order_constraint": "opens when the GPU is free and no other form smoke is in flight",
-      "protocol_hash": "e44d10f0337b89c86af892a9cae26e2f105b819b30e4a9b18026f6438737b101",
+      "protocol_hash": "c2e310a3eec874afa339c447ce51b71b7900dae5ad12b6085a2d8a1f1a95f386",
       "readiness": "held; NO decision requirement (the re-pin inserts the real one at the flip); NO prepared phase-supply pin (the re-pin mints this cell's own)",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1",
@@ -167,6 +167,7 @@
   },
   "delta_store": {
     "arm": {
+      "pin_note": "release.sha256 is the release.json FILE digest (rails.knowledge_stores._read_pinned hashes the bytes); snapshot.sha256 is the snapshot's CONTENT hash (KnowledgeSnapshot.content_hash(), equal to the release's own snapshot_sha256), never the snapshot.json file digest. The two are different values and the loader checks both identities, which is the defect this registration repaired -- S3-5's cell1-fill-values.json carried the snapshot FILE digest (3a770de1... / 95c3b2aa...) where the content hash (1d55f441... / d393bbbb...) belongs.",
       "registration": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v1-release-registration.json",
       "release": {
         "relpath": "knowledge/slurp/semantic/stage3-deltas-v1/release.json",
@@ -174,8 +175,9 @@
       },
       "snapshot": {
         "relpath": "knowledge/slurp/semantic/stage3-deltas-v1/snapshot.json",
-        "sha256": "3a770de1ecb752c27aa00942db9f5de2d94e8cbd7029ec358a3736a8a6dc1de7"
-      }
+        "sha256": "1d55f44122c741e0c17e5186cf6f17a3181a31bae0152dea95decd7a4b9fea10"
+      },
+      "snapshot_file_sha256": "3a770de1ecb752c27aa00942db9f5de2d94e8cbd7029ec358a3736a8a6dc1de7"
     },
     "facts": {
       "content_chars_max": 126,
@@ -231,6 +233,7 @@
     },
     "selection": "rails.stage3_delta_supply.select_stage3_delta_values (candidate-bound) and select_unconditional_stage3_delta_values (Perception), both prior_score-ranked with value_id as the tiebreak",
     "twin": {
+      "pin_note": "release.sha256 is the release.json FILE digest (rails.knowledge_stores._read_pinned hashes the bytes); snapshot.sha256 is the snapshot's CONTENT hash (KnowledgeSnapshot.content_hash(), equal to the release's own snapshot_sha256), never the snapshot.json file digest. The two are different values and the loader checks both identities, which is the defect this registration repaired -- S3-5's cell1-fill-values.json carried the snapshot FILE digest (3a770de1... / 95c3b2aa...) where the content hash (1d55f441... / d393bbbb...) belongs.",
       "registration": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-twin-v1-release-registration.json",
       "release": {
         "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1/release.json",
@@ -238,8 +241,9 @@
       },
       "snapshot": {
         "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1/snapshot.json",
-        "sha256": "95c3b2aac36d5e490a662e482808d1ae98b13c76f80eb1f820b0ee3abb57305a"
-      }
+        "sha256": "d393bbbb7db698a881c160ce8a77aea68af9964ab68c10fe2b7c8781b472c5a4"
+      },
+      "snapshot_file_sha256": "95c3b2aac36d5e490a662e482808d1ae98b13c76f80eb1f820b0ee3abb57305a"
     }
   },
   "diagnostics_required": [
@@ -409,7 +413,8 @@
     "prepared_phase_supply was REMOVED from the four baselines rather than left as a PENDING string: core.flight.repin.ArtifactPin.from_mapping refuses a string pin before ensure_artifact_pinned can mint the real one. Removal is the cell-P0 form.",
     "populations was added to the experiment fragment (cell PLAN's own inlined 1,080 ids): without it rails.adapters.runtime_view.registered_population_ids returns None and the SLURP adapter refuses every cell with 'runtime SLURP TRAIN samples require an explicit registered population'.",
     "The two four-row smoke cells were moved into their own experiment fragment configs/experiment/slurp-native-stage3-delta-cell-smoke-4-v1.json: registered_population_ids resolves exactly ONE selection per dataset fragment, so a 1,080-row arm and a four-row smoke cannot share one fragment. This is cell PLAN's and cell ADV-1's own form.",
-    "preserve_wire_responses: true was added to both fragments, as every plan-family fragment carries it; the registered read's structural stage compares Perception request keys against the sealed comparator's preserved requests."
+    "preserve_wire_responses: true was added to both fragments, as every plan-family fragment carries it; the registered read's structural stage compares Perception request keys against the sealed comparator's preserved requests.",
+    "The four baselines' knowledge_stores.stage3-deltas.snapshot.sha256 was corrected from the snapshot.json FILE digest to the snapshot's CONTENT hash. rails.knowledge_stores checks BOTH KnowledgeSnapshot.content_hash() == snapshot_pin['sha256'] AND release['snapshot_sha256'] == snapshot_pin['sha256'], and refuses with 'knowledge store stage3-deltas snapshot SHA-256 mismatch' otherwise. S3-5's cell1-fill-values.json supplied the file digest (3a770de1... / 95c3b2aa...) where the content hash (1d55f441... / d393bbbb...) belongs; every other store in the locked plan pins the content hash, which is what made the convention checkable. The release pin is unchanged: it IS the release.json file digest."
   ],
   "resampling": {
     "clusters": "125 speaker clusters, 18 scenarios of 60 rows, 523 headset and 557 far-field rows, from the released roster metadata",

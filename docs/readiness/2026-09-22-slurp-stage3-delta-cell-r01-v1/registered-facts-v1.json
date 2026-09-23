@@ -80,6 +80,7 @@
   },
   "delta_store": {
     "arm": {
+      "pin_note": "release.sha256 is the release.json FILE digest (rails.knowledge_stores._read_pinned hashes the bytes); snapshot.sha256 is the snapshot's CONTENT hash (KnowledgeSnapshot.content_hash(), equal to the release's own snapshot_sha256), never the snapshot.json file digest. The two are different values and the loader checks both identities, which is the defect this registration repaired -- S3-5's cell1-fill-values.json carried the snapshot FILE digest (3a770de1... / 95c3b2aa...) where the content hash (1d55f441... / d393bbbb...) belongs.",
       "registration": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v1-release-registration.json",
       "release": {
         "relpath": "knowledge/slurp/semantic/stage3-deltas-v1/release.json",
@@ -87,8 +88,9 @@
       },
       "snapshot": {
         "relpath": "knowledge/slurp/semantic/stage3-deltas-v1/snapshot.json",
-        "sha256": "3a770de1ecb752c27aa00942db9f5de2d94e8cbd7029ec358a3736a8a6dc1de7"
-      }
+        "sha256": "1d55f44122c741e0c17e5186cf6f17a3181a31bae0152dea95decd7a4b9fea10"
+      },
+      "snapshot_file_sha256": "3a770de1ecb752c27aa00942db9f5de2d94e8cbd7029ec358a3736a8a6dc1de7"
     },
     "facts": {
       "content_chars_max": 126,
@@ -144,6 +146,7 @@
     },
     "selection": "rails.stage3_delta_supply.select_stage3_delta_values (candidate-bound) and select_unconditional_stage3_delta_values (Perception), both prior_score-ranked with value_id as the tiebreak",
     "twin": {
+      "pin_note": "release.sha256 is the release.json FILE digest (rails.knowledge_stores._read_pinned hashes the bytes); snapshot.sha256 is the snapshot's CONTENT hash (KnowledgeSnapshot.content_hash(), equal to the release's own snapshot_sha256), never the snapshot.json file digest. The two are different values and the loader checks both identities, which is the defect this registration repaired -- S3-5's cell1-fill-values.json carried the snapshot FILE digest (3a770de1... / 95c3b2aa...) where the content hash (1d55f441... / d393bbbb...) belongs.",
       "registration": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-twin-v1-release-registration.json",
       "release": {
         "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1/release.json",
@@ -151,8 +154,9 @@
       },
       "snapshot": {
         "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1/snapshot.json",
-        "sha256": "95c3b2aac36d5e490a662e482808d1ae98b13c76f80eb1f820b0ee3abb57305a"
-      }
+        "sha256": "d393bbbb7db698a881c160ce8a77aea68af9964ab68c10fe2b7c8781b472c5a4"
+      },
+      "snapshot_file_sha256": "95c3b2aac36d5e490a662e482808d1ae98b13c76f80eb1f820b0ee3abb57305a"
     }
   },
   "frontier_registered_rows": [

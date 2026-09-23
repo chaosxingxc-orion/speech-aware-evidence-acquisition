@@ -350,6 +350,11 @@ exposure-ledger rows, and the runbooks `scripts/flights/batch/cell1_repin_{smoke
 6. The two smoke FIT identities (`...-SMOKE-4-FIT-V1`, `...-SMOKE-4-TWIN-FIT-V1`) are named by the smoke
    baselines' `native_contact_fit` and declared by no cell -- cell PLAN's own form -- and each carries its own
    registered plan document and its own unconsumed exposure row.
+7. The four baselines' `knowledge_stores.stage3-deltas.snapshot.sha256` was corrected from the `snapshot.json`
+   **file** digest to the snapshot's **content** hash (`1d55f441...` for the store, `d393bbbb...` for the twin).
+   `rails.knowledge_stores` checks `KnowledgeSnapshot.content_hash()` and `release["snapshot_sha256"]` against
+   that pin and otherwise refuses with `knowledge store stage3-deltas snapshot SHA-256 mismatch`; S3-5's
+   `cell1-fill-values.json` supplied the file digest. The release pin is unchanged -- it *is* the file digest.
 
 **The store as released** (counts read model-free from the snapshot; no statement text): 379 values, node targets
 perception 119 / solver 151 / reviewer 95 / planner 14, delta kinds slot-contract 147 / intent-boundary 117 /

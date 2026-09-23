@@ -20,8 +20,8 @@ the locked v2.0 plan and asks whether the loop bought anything.
 | --- | --- |
 | base | the locked v2.0 plan, `configs/baseline/slurp-native-default-plan-lock-baseline-v1.json`, exactly as the sealed PLAN arm flew it (official 63.6304 / 82.2222) |
 | factor | `knowledge_stores.stage3-deltas` and nothing else: the released store supplied per node through `context_supply` -- Perception **unconditional** cap 4 (`stage3-delta-unconditional-v1`), Solver cap 8, Reviewer cap 4, Planner cap 4 (`stage3-delta-candidate-bound-v1`, each bound to the row's own Perception candidate intents); every route `node_target`-filtered and `prior_score`-ranked |
-| store | `knowledge/slurp/semantic/stage3-deltas-v1/` -- release `ec9da3e2...`, snapshot `3a770de1...`; 379 values (perception 119 / solver 151 / reviewer 95 / planner 14), 97 distinct facets, 223 source sample ids, mean statement 84.0 characters |
-| twin | `knowledge/slurp/semantic/stage3-deltas-twin-v1/` -- release `a58a370c...`, snapshot `95c3b2aa...`; the same 379 statements, the same node distribution, the same token count, facet attachment and unconditional TARGET fields deranged under seed 20260922 (zero fixed points) |
+| store | `knowledge/slurp/semantic/stage3-deltas-v1/` -- release file `ec9da3e2...`, snapshot content hash `1d55f441...`; 379 values (perception 119 / solver 151 / reviewer 95 / planner 14), 97 distinct facets, 223 source sample ids, mean statement 84.0 characters, longest 126 |
+| twin | `knowledge/slurp/semantic/stage3-deltas-twin-v1/` -- release file `a58a370c...`, snapshot content hash `d393bbbb...`; the same 379 statements, the same node distribution, the same token count, facet attachment and unconditional TARGET fields deranged under seed 20260922 (zero fixed points) |
 | population | TRAIN Fold A, 1,080 rows, split identity `61b0f062...5398b6`; the smokes read the first four rows, split identity `4e3413fe...b969cb` (cell PLAN's own smoke population) |
 | comparator | the sealed PLAN arm `SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1`, attempt `attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1`, **never re-flown** |
 | margins | the plan's own null (PLAN vs PLANr): **h_SLU 1.2485, h_intent 0.9943** |
@@ -178,22 +178,30 @@ Each of these was measured, not assumed; the refusal is quoted in the report tha
    by the two smoke baselines' `native_contact_fit` and are declared by no cell -- cell PLAN's own form, where a
    smoke's FIT identity is a spend identity rather than a flyable cell. Each has its own registered plan document
    and its own unconsumed exposure row, so no endpoint spend can land unregistered.
+7. **The four baselines' `knowledge_stores.stage3-deltas.snapshot.sha256` was corrected** from the `snapshot.json`
+   **file** digest to the snapshot's **content** hash: `1d55f441...` for the store and `d393bbbb...` for the twin.
+   `rails.knowledge_stores` checks both `KnowledgeSnapshot.content_hash() == snapshot_pin["sha256"]` and
+   `release["snapshot_sha256"] == snapshot_pin["sha256"]` and otherwise refuses with
+   `knowledge store stage3-deltas snapshot SHA-256 mismatch`. S3-5's `cell1-fill-values.json` supplied the file
+   digest (`3a770de1...` / `95c3b2aa...`) where the content hash belongs; every other store of the locked plan pins
+   the content hash, which is what made the convention checkable. The **release** pin is unchanged -- it *is* the
+   `release.json` file digest, and the readiness requirements that pin it were already correct.
 
 ## 8. Registered hashes
 
 | run id | cell | plan | composed config | protocol hash | split identity |
 | --- | --- | --- | --- | --- | --- |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1` | `...-r01-v1` | `generation-plan-registered-v1.json` | `e377e689e6c3fdefde45c7178e81475797dcbd6a289cdf7cbb301db88dcca625` | `c803e8eda7d98e0e6fd83866e5adf21c28ac5b1fe5fa350babfeb66aa875fb43` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1` | `...-r01-v1` | `generation-plan-registered-v1.json` | `ccfe79f1347d77868eaa56b8d540ab25645a4b13e5d30aa8b3ea51445aed121f` | `6744d17f9a67eff016db6a283c8cdfca77f12abdf4a1615825fbeb6badae91ed` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1` | `...-r01-fit-v1` | `fit-plan-registered-v1.json` | same | same | same |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1` | `...-r01-twin-v1` | `twin-generation-plan-registered-v1.json` | `f21cc058e12c62132f0f9e17f9702e93a410eda6f66d7f6aa5b82c7da711844b` | `e98f5b729c45e545fe035ab148b42b5e834d0d17c8d313b57c5bf3cf474a09e7` | same |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1` | `...-r01-twin-v1` | `twin-generation-plan-registered-v1.json` | `56542e2490786e21376daeae0c6aafa4162db8f7f529a3219409471bd63f7ea1` | `7f1e2bea19b4e73206c5cf02339fa80f9d9d803c48d2ed231d0a184c6314ea48` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-FIT-V1` | `...-r01-twin-fit-v1` | `twin-fit-plan-registered-v1.json` | same | same | same |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1` | `...-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `7d4fb05e6417e6c6d42f464e8fbfa85d6a2b48e260b15a837eca52360767e848` | `3c3f23bd60a48bffa92a766ca5bfdd78b59d395cb5f66506495c7f48788a1367` | `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1` | `...-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `12bed8fa763ac848228c6eabc72690078ad57b895ce5cc169fe4b036616bc72d` | `0ae6522116104f43df9ddf3b1940dc3fa63fcd0cab5efb328a46d7cdc7983d72` | `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-FIT-V1` | (spend identity) | `smoke-fit-plan-registered-v1.json` | same | same | same |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1` | `...-smoke-4-twin-v1` | `twin-smoke-generation-plan-registered-v1.json` | `96bae3568769f7cec68d9e1d5e20ef4dcacca0a08e21c6799b2cc7b809699505` | `e44d10f0337b89c86af892a9cae26e2f105b819b30e4a9b18026f6438737b101` | same |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1` | `...-smoke-4-twin-v1` | `twin-smoke-generation-plan-registered-v1.json` | `31b8c13775a20acd438330df7aad108e42d139b1eb6151e91abb801d7f6530d4` | `c2e310a3eec874afa339c447ce51b71b7900dae5ad12b6085a2d8a1f1a95f386` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-FIT-V1` | (spend identity) | `twin-smoke-fit-plan-registered-v1.json` | same | same | same |
 
 Protocol document `protocol-registered-v1.json` sha256
-`5086fa1fc8b218531bc3b3996fc1866abd4123f9c879e8a54ae0169304148b0a`.
+`3e159ddf2dd8af643900f43b6cc16ec85cf98e80a6cea31b17bed8fc1899f2f3`.
 
 **Every one of these hashes moves at the readiness flip** (the flip edits the readiness block, which `compose()`
 hashes), and `scripts/flights/repin_cell.py` -- driven by `repin_loop_generic.sh` -- rewrites the plans, this note,
