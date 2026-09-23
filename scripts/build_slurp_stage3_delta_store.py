@@ -43,7 +43,19 @@ What it does
    the survivor; predecessor rows are never edited even when they absorb a
    new row's provenance.
 6. Writes the merged, sorted rows to ``--out-authored``.
-7. With ``--release <registration.json> --repo-root <path> --data-root
+7. With ``--out-source``, ALSO writes the release-ready wrapper of that
+   document (``build_authored_source_document``): the authored rows
+   verbatim inside the shared ``saea-authored-semantic-knowledge-source-v1``
+   envelope, which is the only shape
+   ``core.semantic_knowledge_preparation.prepare_semantic_knowledge_store``
+   accepts as an ``authored_source``. The curated document itself is NOT
+   that shape (its schema names the curation, it carries ``iteration``, and
+   it names no builder policy or split identity), so a release registration
+   must pin the WRAPPER, never ``--out-authored`` directly. Writing both in
+   one process is what keeps the release fail-closed: if curation ever
+   stopped being deterministic, the wrapper's bytes would move with it and
+   the preparer would refuse the pin instead of releasing different content.
+8. With ``--release <registration.json> --repo-root <path> --data-root
    <path>``, releases the compiled snapshot through
    ``core.semantic_knowledge_preparation.prepare_semantic_knowledge_store``
    into the registration's own ``output_namespace``
@@ -100,6 +112,18 @@ CONTAINMENT_SPAN_TOKENS = 6
 #: JSONL row apart from a whole-file {sample_id: text} object.
 _ROW_TEXT_FIELDS = frozenset({"text", "transcript", "sentence"})
 RELEASE_PINS_SCHEMA = "saea-reviewed-semantic-store-release-pins-v2"
+#: The shared envelope every released authored semantic store is read
+#: from (``core.semantic_knowledge_preparation.SOURCE_SCHEMA``; the
+#: intent-boundaries and slot-contracts releases use the same one). Its
+#: four top-level keys are checked for EXACT equality there, so the
+#: wrapper can carry no further field -- the provenance that pins the
+#: authored document it was built from lives in the wrap receipt beside
+#: it, never inside the envelope.
+AUTHORED_SOURCE_SCHEMA = "saea-authored-semantic-knowledge-source-v1"
+#: The wrap receipt: authored document -> released source document, by
+#: SHA-256. Written beside the wrapper, never read by the preparer.
+SOURCE_WRAP_RECEIPT_SCHEMA = "saea-stage3-delta-source-wrap-receipt-v1"
+_SHA256_HEX = re.compile(r"[0-9a-f]{64}")
 _WORD = re.compile(r"[a-z0-9]+")
 
 
@@ -459,6 +483,153 @@ def write_authored_document(
     return hashlib.sha256(raw).hexdigest()
 
 
+#: Which registered builder compiles the rows of each authored schema
+#: (``rails.semantic_knowledge_build``). The wrapper names the builder, so
+#: this mapping -- not an operator-typed string -- is what puts the right
+#: one in the released envelope.
+BUILDER_POLICY_BY_AUTHORED_SCHEMA = {
+    AUTHORED_SCHEMA: "saea-authored-stage3-deltas-v1",
+    AUTHORED_SCHEMA_V2: "saea-authored-stage3-deltas-v2",
+}
+_ROW_KEYS_BY_AUTHORED_SCHEMA = {
+    AUTHORED_SCHEMA: _AUTHORED_ROW_KEYS,
+    AUTHORED_SCHEMA_V2: _AUTHORED_ROW_KEYS_V2,
+}
+
+
+def build_authored_source_document(
+    document: Mapping[str, object],
+    *,
+    source_split_identity_hash: str,
+    builder_policy_id: str | None = None,
+) -> dict[str, object]:
+    """Wrap one authored-deltas document (this CLI's own ``--out-authored``
+    output, or the twin CLI's derangement of it) in the release-ready
+    ``saea-authored-semantic-knowledge-source-v1`` envelope.
+
+    PURE and MODEL-FREE: every row is carried over VERBATIM
+    (``value_id``, ``content``, ``associated_facet_ids``,
+    ``source_sample_ids``, ``provenance_refs``, ``task_target``,
+    ``prior_score``, and ``node_target`` under the v2 schema), in the
+    document's own row order, with its exact key set re-validated on the
+    way through -- a row with a missing or extra field is refused here
+    rather than deep inside the builder. Nothing is derived, renamed,
+    reordered or dropped; the only new information is the envelope's own
+    three header fields.
+
+    ``builder_policy_id`` is DERIVED from the authored schema
+    (:data:`BUILDER_POLICY_BY_AUTHORED_SCHEMA`); passing one is a
+    cross-check that fails closed on a mismatch, never an override.
+    """
+
+    if not isinstance(document, Mapping):
+        raise Stage3DeltaStoreError("the authored document must be a JSON object")
+    schema = document.get("schema")
+    if schema not in _ROW_KEYS_BY_AUTHORED_SCHEMA:
+        raise Stage3DeltaStoreError(
+            f"expected schema {AUTHORED_SCHEMA!r} or {AUTHORED_SCHEMA_V2!r}, "
+            f"got {schema!r}"
+        )
+    if (
+        not isinstance(source_split_identity_hash, str)
+        or _SHA256_HEX.fullmatch(source_split_identity_hash) is None
+    ):
+        raise Stage3DeltaStoreError(
+            "--source-split-identity-hash must be a lowercase 64-hex SHA-256"
+        )
+    expected_builder = BUILDER_POLICY_BY_AUTHORED_SCHEMA[schema]
+    if builder_policy_id is not None and builder_policy_id != expected_builder:
+        raise Stage3DeltaStoreError(
+            f"{schema} rows are compiled by {expected_builder!r}, "
+            f"not {builder_policy_id!r}"
+        )
+    rows = document.get("rows")
+    if not isinstance(rows, list) or not rows:
+        raise Stage3DeltaStoreError("the authored document has no rows")
+    required = _ROW_KEYS_BY_AUTHORED_SCHEMA[schema]
+    return {
+        "schema": AUTHORED_SOURCE_SCHEMA,
+        "builder_policy_id": expected_builder,
+        "source_split_identity_hash": source_split_identity_hash,
+        "rows": [
+            _validate_authored_row(row, field=f"rows[{index}]", required=required)
+            for index, row in enumerate(rows)
+        ],
+    }
+
+
+def default_source_receipt_path(out_path: Path) -> Path:
+    """Where the wrap receipt lands when none is named: beside the wrapper."""
+
+    return out_path.with_name(f"{out_path.stem}-wrap-receipt.json")
+
+
+def write_authored_source(
+    authored_path: Path,
+    *,
+    out_path: Path,
+    source_split_identity_hash: str,
+    builder_policy_id: str | None = None,
+    receipt_path: Path | None = None,
+) -> dict[str, object]:
+    """Read one authored-deltas document, write its release-ready wrapper
+    and the wrap receipt that pins BOTH digests, and return the receipt
+    (plus the receipt's own pin) for the console report.
+
+    Deterministic bytes on both files: canonical JSON, sorted keys, UTF-8,
+    LF-safe (``write_bytes``, no newline translation), so re-running the
+    curation and the wrap over the same inputs reproduces the digest a
+    release registration pinned -- which is what lets
+    ``prepare_semantic_knowledge_store`` fail closed rather than release
+    content that moved.
+
+    Ids, counts and digests only: no statement text is returned or printed.
+    """
+
+    raw_authored = authored_path.read_bytes()
+    try:
+        document = json.loads(raw_authored.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise Stage3DeltaStoreError(
+            f"{authored_path} is not valid JSON: {error}"
+        ) from error
+    source = build_authored_source_document(
+        document,
+        source_split_identity_hash=source_split_identity_hash,
+        builder_policy_id=builder_policy_id,
+    )
+    raw_source = canonical_json_bytes(source)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_bytes(raw_source)
+    receipt = {
+        "schema": SOURCE_WRAP_RECEIPT_SCHEMA,
+        "authored": {
+            "relpath": str(authored_path),
+            "sha256": hashlib.sha256(raw_authored).hexdigest(),
+            "authored_schema": str(document.get("schema")),
+            "iteration": document.get("iteration"),
+            "twin_of_seed": document.get("twin_of_seed"),
+            "row_count": len(source["rows"]),
+        },
+        "source": {
+            "relpath": str(out_path),
+            "sha256": hashlib.sha256(raw_source).hexdigest(),
+        },
+        "builder_policy_id": source["builder_policy_id"],
+        "source_split_identity_hash": source["source_split_identity_hash"],
+    }
+    raw_receipt = canonical_json_bytes(receipt)
+    receipt_path = receipt_path or default_source_receipt_path(out_path)
+    receipt_path.parent.mkdir(parents=True, exist_ok=True)
+    receipt_path.write_bytes(raw_receipt)
+    report = dict(receipt)
+    report["receipt"] = {
+        "relpath": str(receipt_path),
+        "sha256": hashlib.sha256(raw_receipt).hexdigest(),
+    }
+    return report
+
+
 def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--advantage-outputs", required=True, type=Path)
@@ -468,6 +639,27 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     parser.add_argument("--iteration", required=True, type=int)
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--out-authored", required=True, type=Path)
+    parser.add_argument(
+        "--out-source", default=None, type=Path,
+        help=(
+            "also write the release-ready wrapper of the curated document "
+            "(schema saea-authored-semantic-knowledge-source-v1), which is what "
+            "a release registration pins as its authored_source. Requires "
+            "--source-split-identity-hash."
+        ),
+    )
+    parser.add_argument(
+        "--source-split-identity-hash", default=None,
+        help=(
+            "the split identity of the construction population the authored rows "
+            "were drawn from; must equal the release registration's own "
+            "source_split_identity_hash or the preparer refuses the source."
+        ),
+    )
+    parser.add_argument(
+        "--source-receipt", default=None, type=Path,
+        help="wrap receipt path (default: <--out-source stem>-wrap-receipt.json)",
+    )
     parser.add_argument("--release", default=None, type=Path)
     parser.add_argument("--data-root", default=None, type=Path)
     parser.add_argument("--release-pins", default=None, type=Path)
@@ -535,6 +727,23 @@ def main(argv: Sequence[str] | None = None) -> int:
         schema=authored_schema,
     )
 
+    source_report = None
+    if args.out_source is not None:
+        if not args.source_split_identity_hash:
+            raise Stage3DeltaStoreError(
+                "--out-source requires --source-split-identity-hash"
+            )
+        source_report = write_authored_source(
+            args.out_authored,
+            out_path=args.out_source,
+            source_split_identity_hash=args.source_split_identity_hash,
+            receipt_path=args.source_receipt,
+        )
+    elif args.source_split_identity_hash:
+        raise Stage3DeltaStoreError(
+            "--source-split-identity-hash is only meaningful with --out-source"
+        )
+
     report = {
         "schema": "saea-stage3-delta-curation-report-v1",
         "iteration": args.iteration,
@@ -546,6 +755,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "survivor_count": len(survivors),
         "out_authored": {"relpath": str(args.out_authored), "sha256": out_sha256},
     }
+    if source_report is not None:
+        report["authored_source"] = source_report
     if args.schema_version == 2:
         report["survivors_by_node"] = {
             node: sum(1 for row in survivors if row.get("node_target") == node)

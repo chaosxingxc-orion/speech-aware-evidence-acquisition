@@ -22,16 +22,26 @@
 #      curation, counted). Without DELTA_TRANSCRIPTS the rule is DISABLED and the report
 #      says so -- set it before a release.
 #   C  twin: scripts/build_slurp_stage3_delta_twin.py derangement of associated_facet_ids
-#   D  materialise both release registrations from their committed templates with the real digests
+#   W  wrap: scripts/build_slurp_stage3_delta_source.py re-envelopes the TWIN's curated document
+#      as saea-authored-semantic-knowledge-source-v1 (rows verbatim) plus a two-digest wrap
+#      receipt. The generation store's wrapper is written by the curator itself in B and E
+#      (--out-source), one process with the curation that produced the rows. A release
+#      registration pins the WRAPPER, never --out-authored: prepare_semantic_knowledge_store
+#      reads authored_source through that envelope only.
+#   D  materialise both release registrations from their committed templates with the real
+#      digests, BESIDE the templates in the repository (the preparer records a registration by
+#      its repo-relative path and refuses one outside repo_root)
 #   E  release the generation store (the curator's own --release path, which also writes the
 #      release-pins document) and the twin store (the driver's prepare-semantic-knowledge)
 #   F  print the CELL-1 fill values and apply them to the five CELL-1 fragments
 #
 # Environment overrides: REPO, SPEECHRL_DATA_DIR, PY, ADV1_RUN, ADV1_OUTPUTS, SCORE_RUN,
 # DELTA_ITERATION, DELTA_TWIN_SEED, DELTA_PREDECESSOR, DELTA_SCHEMA_VERSION,
-# DELTA_TRANSCRIPTS.
+# DELTA_TRANSCRIPTS, ADV1_EXPERIMENT (the fragment step A reads the split identity out of;
+# overridable so the whole sequence can be dry-rehearsed before ADV-1 has sealed).
 # DELTAS_DRY=1 (the default) runs A read-only and prints every mutating command line;
-# DELTAS_DRY=0 runs them. Commit the five touched fragments afterwards, then re-pin.
+# DELTAS_DRY=0 runs them. Commit the five touched fragments AND the two materialised release
+# registrations afterwards, then re-pin.
 set -u
 REPO=${REPO:-/home/chao/saea-worktrees/fable-s3adv}
 DATA=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
@@ -62,17 +72,27 @@ ADV1_OUTPUTS=${ADV1_OUTPUTS:-$PREPARED/advantage-outputs-v1.jsonl}
 PAIRS=$DATA/analysis/$SCORE_RUN/pairs.json
 AUTHORED=$PREPARED/authored-stage3-deltas-v1.json
 TWIN_AUTHORED=$PREPARED/authored-stage3-deltas-twin-v1.json
+# The RELEASE SOURCE documents: the same rows inside the shared
+# saea-authored-semantic-knowledge-source-v1 envelope, which is the only shape a registration's
+# authored_source may pin. Beside each one, its <stem>-wrap-receipt.json pins the curated
+# document it was built from by SHA-256 (the envelope itself admits no extra key).
+SOURCE=$PREPARED/source-stage3-deltas-v1.json
+TWIN_SOURCE=$PREPARED/source-stage3-deltas-twin-v1.json
 SCOPE=$PREPARED/outer-construction-roster.json
 PERMITTED=$PREPARED/permitted-roster.json
 COORD=$DATA/coordination/slurp-stage3-delta-cell-r01-v1
 REG_TEMPLATE=docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v1-release-registration.template.json
 TWIN_REG_TEMPLATE=docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-twin-v1-release-registration.template.json
-REG=$COORD/stage3-deltas-v1-release-registration.json
-TWIN_REG=$COORD/stage3-deltas-twin-v1-release-registration.json
+# The runnable registrations are REPOSITORY files, beside their templates and committed after
+# the run: core.semantic_knowledge_preparation records a registration by its repo-relative path
+# and refuses outright one that is not confined to repo_root (the slot-contracts precedent
+# docs/readiness/2026-09-17-slurp-slot-contracts-preparation-registration-v2.json).
+REG=$REPO/docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v1-release-registration.json
+TWIN_REG=$REPO/docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-twin-v1-release-registration.json
 RELEASE_PINS=$COORD/stage3-deltas-v1-release-pins.json
 VALUES=$COORD/cell1-fill-values.json
 HELPERS=scripts/flights/batch/adv1_to_deltas_steps.py
-ADV1_EXPERIMENT=configs/experiment/slurp-native-stage3-advantage-r01-v1.json
+ADV1_EXPERIMENT=${ADV1_EXPERIMENT:-configs/experiment/slurp-native-stage3-advantage-r01-v1.json}
 CELL_EXPERIMENT=configs/experiment/slurp-native-stage3-delta-cell-r01-v1.json
 CELL_BASELINES="configs/baseline/slurp-native-stage3-delta-cell-baseline-v1.json configs/baseline/slurp-native-stage3-delta-cell-smoke-4-baseline-v1.json configs/baseline/slurp-native-stage3-delta-cell-twin-baseline-v1.json configs/baseline/slurp-native-stage3-delta-cell-twin-smoke-4-baseline-v1.json"
 
@@ -113,12 +133,21 @@ run "$PY" -B scripts/build_slurp_stage3_delta_store.py \
     --advantage-outputs "$ADV1_OUTPUTS" --pairs "$PAIRS" --repo-root "$REPO" \
     --predecessor "$DELTA_PREDECESSOR" --iteration "$DELTA_ITERATION" \
     --run-id "$ADV1_RUN" --out-authored "$AUTHORED" \
-    --schema-version "$DELTA_SCHEMA_VERSION" $CONTAINMENT
+    --schema-version "$DELTA_SCHEMA_VERSION" $CONTAINMENT \
+    --out-source "$SOURCE" --source-split-identity-hash "$SPLIT"
 
 # ---------------------------------------------------------------- C: the derangement twin
 echo "C  twin seed $DELTA_TWIN_SEED"
 run "$PY" -B scripts/build_slurp_stage3_delta_twin.py \
     --authored "$AUTHORED" --seed "$DELTA_TWIN_SEED" --out "$TWIN_AUTHORED"
+
+# ---------------------------------------------------------------- W: the twin's release source
+# The twin's document is a derangement, not a curation, so no curator run produces its wrapper;
+# this is the same conversion the curator applies to the generation document in B and E.
+echo "W  wrap the twin's curated document as a release source"
+run "$PY" -B scripts/build_slurp_stage3_delta_source.py \
+    --authored "$TWIN_AUTHORED" --out "$TWIN_SOURCE" \
+    --source-split-identity-hash "$SPLIT"
 
 # ---------------------------------------------------------------- D: runnable registrations
 echo "D  materialise the two release registrations"
@@ -130,9 +159,11 @@ run "$PY" -B "$HELPERS" --repo-root "$REPO" --data-root "$DATA" registration \
 # ---------------------------------------------------------------- E: release both stores
 # The generation store goes out through the curator's own --release path (it also writes the
 # release-pins document the spec asks for). Re-running the curator here is deliberate and safe:
-# curation is deterministic (survivors sorted by value_id), so --out-authored is rewritten byte
-# for byte and the digest step D pinned still matches -- and if it ever did not, the preparer
-# fails closed on the authored_source pin rather than releasing a different store.
+# curation is deterministic (survivors sorted by value_id), so --out-authored and --out-source
+# are rewritten byte for byte and the digest step D pinned still matches -- and if it ever did
+# not, the preparer fails closed on the authored_source pin rather than releasing a different
+# store. --out-source is passed again HERE, in the same process as this re-curation, so that
+# what the preparer then reads is the wrapper of the rows this process just curated.
 echo "E  release"
 # shellcheck disable=SC2086
 run "$PY" -B scripts/build_slurp_stage3_delta_store.py \
@@ -140,6 +171,7 @@ run "$PY" -B scripts/build_slurp_stage3_delta_store.py \
     --predecessor "$DELTA_PREDECESSOR" --iteration "$DELTA_ITERATION" \
     --run-id "$ADV1_RUN" --out-authored "$AUTHORED" \
     --schema-version "$DELTA_SCHEMA_VERSION" $CONTAINMENT \
+    --out-source "$SOURCE" --source-split-identity-hash "$SPLIT" \
     --release "$REG" --data-root "$DATA" --release-pins "$RELEASE_PINS"
 # The twin's authored document is the derangement, not a curation, so it is released directly.
 run "$PY" -B -m speech_aware_evidence_acquisition.core.driver.cli prepare-semantic-knowledge \
@@ -154,5 +186,8 @@ run "$PY" -B scripts/flights/batch/roll1_fill_placeholders.py \
     --fragments $CELL_EXPERIMENT $CELL_BASELINES \
     --values "$VALUES" --by "$BY" --occurrence-policy any --date "$(date -u +%F)"
 
-echo "F  commit: git add $CELL_EXPERIMENT $CELL_BASELINES && git commit -F <message file>"
+echo "F  commit: git add $CELL_EXPERIMENT $CELL_BASELINES \\"
+echo "               docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v1-release-registration.json \\"
+echo "               docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-twin-v1-release-registration.json"
+echo "           && git commit -F <message file>"
 echo "== adv1_to_deltas done $(date -u +%FT%TZ) dry=$DRY"

@@ -11,13 +11,26 @@ Two steps:
 
 ``registration``
     Materialise a committed release-registration TEMPLATE into a RUNNABLE copy
-    under the data root, with the authored document's real digest and the
-    scope / permitted-roster digests root's own S3-5 preparations produced.
-    ``core.semantic_knowledge_preparation.prepare_semantic_knowledge_store``
-    verifies every one of those pins by SHA-256, so the template -- which
-    carries ``PENDING_`` tokens -- is never passed to it and is never edited in
-    place. The forbidden-roster pins the template carries are re-verified
-    against the committed receipts and a mismatch fails closed.
+    BESIDE it in the repository, with the release source document's real digest
+    and the scope / permitted-roster digests root's own S3-5 preparations
+    produced. ``core.semantic_knowledge_preparation.
+    prepare_semantic_knowledge_store`` verifies every one of those pins by
+    SHA-256, so the template -- which carries ``PENDING_`` tokens -- is never
+    passed to it and is never edited in place. The forbidden-roster pins the
+    template carries are re-verified against the committed receipts and a
+    mismatch fails closed.
+
+    The runnable copy is a REPOSITORY path, not a data-root one: the preparer
+    records the registration by its repo-relative path
+    (``_registration``: ``path.resolve().relative_to(repo_root)``) and refuses
+    outright any registration that is not confined to ``repo_root``.
+
+    ``authored_source`` must already be the WRAPPED release source document
+    (``saea-authored-semantic-knowledge-source-v1``), which
+    ``scripts/build_slurp_stage3_delta_source.py`` -- or the curator's own
+    ``--out-source`` -- writes from the curated authored-deltas document. A
+    curation document pinned directly would be refused deep inside the
+    preparer, so it is refused here, by name, with the command that fixes it.
 
 ``cell1-values``
     Read the released store's ``release.json`` / ``snapshot.json`` (and the
@@ -36,6 +49,12 @@ from typing import Any, Mapping
 
 REPO_DEFAULT = Path(__file__).resolve().parents[3]
 TEMPLATE_KEYS_DROPPED = ("template_note", "what_the_pins_are")
+#: The only ``authored_source`` shape ``core.semantic_knowledge_preparation``
+#: accepts, and its exact top-level key set (checked there for equality).
+AUTHORED_SOURCE_SCHEMA = "saea-authored-semantic-knowledge-source-v1"
+AUTHORED_SOURCE_KEYS = frozenset(
+    {"schema", "builder_policy_id", "source_split_identity_hash", "rows"}
+)
 
 
 class Adv1DeltaStepError(RuntimeError):
@@ -61,6 +80,54 @@ def _resolve(pin: Mapping[str, Any], *, repo_root: Path, data_root: Path) -> Pat
     return base / str(pin["relpath"])
 
 
+def _verify_authored_source(
+    path: Path, *, builder_policy_id: str, source_split_identity_hash: str
+) -> int:
+    """Fail closed unless ``path`` is the WRAPPED release source document the
+    preparer will accept, and unless its two identity headers equal the
+    registration's own. Returns the row count (a count, never a row).
+
+    This duplicates no rule: it is the same contract
+    ``core.semantic_knowledge_preparation._source_rows`` enforces, checked
+    one step earlier so the operator is told which command to run rather than
+    reading "authored_source has unsupported schema" out of a release that
+    already touched the knowledge namespace.
+    """
+
+    document = _read_json(path)
+    if not isinstance(document, Mapping):
+        raise Adv1DeltaStepError(f"{path} must be a JSON object")
+    schema = document.get("schema")
+    if schema != AUTHORED_SOURCE_SCHEMA:
+        raise Adv1DeltaStepError(
+            f"{path} carries schema {schema!r}, but a release registration's "
+            f"authored_source must be {AUTHORED_SOURCE_SCHEMA!r}. Wrap the curated "
+            "authored-deltas document first: scripts/build_slurp_stage3_delta_"
+            "source.py --authored <curated> --out <this path> "
+            "--source-split-identity-hash <split>, or pass --out-source to "
+            "scripts/build_slurp_stage3_delta_store.py"
+        )
+    if set(document) != AUTHORED_SOURCE_KEYS:
+        raise Adv1DeltaStepError(
+            f"{path} fields differ from {AUTHORED_SOURCE_SCHEMA}: the preparer "
+            "checks that key set for exact equality"
+        )
+    if document["builder_policy_id"] != builder_policy_id:
+        raise Adv1DeltaStepError(
+            f"{path} names builder {document['builder_policy_id']!r}, the "
+            f"registration names {builder_policy_id!r}"
+        )
+    if document["source_split_identity_hash"] != source_split_identity_hash:
+        raise Adv1DeltaStepError(
+            f"{path} carries a different source_split_identity_hash than the "
+            "registration; refusing to release a store against another population"
+        )
+    rows = document["rows"]
+    if not isinstance(rows, list) or not rows:
+        raise Adv1DeltaStepError(f"{path} carries no rows")
+    return len(rows)
+
+
 def cmd_registration(args: argparse.Namespace) -> int:
     repo_root, data_root = Path(args.repo_root), Path(args.data_root)
     registration = _read_json(repo_root / args.template)
@@ -68,8 +135,14 @@ def cmd_registration(args: argparse.Namespace) -> int:
         registration.pop(key, None)
 
     registration["source_split_identity_hash"] = args.source_split_identity_hash
-    registration["authored_source"]["sha256"] = sha256_file(
-        _resolve(registration["authored_source"], repo_root=repo_root, data_root=data_root)
+    authored_source_path = _resolve(
+        registration["authored_source"], repo_root=repo_root, data_root=data_root
+    )
+    registration["authored_source"]["sha256"] = sha256_file(authored_source_path)
+    authored_source_rows = _verify_authored_source(
+        authored_source_path,
+        builder_policy_id=registration["builder_policy_id"],
+        source_split_identity_hash=args.source_split_identity_hash,
     )
     registration["construction_scope"]["sha256"] = sha256_file(
         _resolve(registration["construction_scope"], repo_root=repo_root, data_root=data_root)
@@ -97,6 +170,7 @@ def cmd_registration(args: argparse.Namespace) -> int:
         "sha256": sha256_file(out_path),
         "output_namespace": registration["output_namespace"],
         "authored_source_sha256": registration["authored_source"]["sha256"],
+        "authored_source_rows": authored_source_rows,
     }, indent=2, sort_keys=True))
     return 0
 
@@ -134,7 +208,14 @@ def main(argv: list[str] | None = None) -> int:
 
     registration = sub.add_parser("registration", help="materialise a runnable release registration")
     registration.add_argument("--template", required=True, help="committed template, repo-root relative")
-    registration.add_argument("--out", required=True, help="runnable copy, an absolute path under the data root")
+    registration.add_argument(
+        "--out", required=True,
+        help=(
+            "runnable copy; it MUST be inside the repository root -- the preparer "
+            "records the registration by its repo-relative path and refuses any "
+            "path outside it"
+        ),
+    )
     registration.add_argument(
         "--source-split-identity-hash", required=True,
         help="the ADV-1 population's split identity (the disagreeing-row construction roster's)",
