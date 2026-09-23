@@ -281,6 +281,7 @@ def _first_phase_seed(runtime, program, phase_binding):
 
     from ..core.preparation import PreparationError
 
+    pinned = runtime._composed.values.get("prepared_phase_supply") is not None
     try:
         facet_seed, value_seed = runtime._phase_supply_seeds(
             program,
@@ -288,7 +289,11 @@ def _first_phase_seed(runtime, program, phase_binding):
             phase_binding.get("supply_specs") or {},
             runtime._plan,
         )
-        return facet_seed, value_seed, "prepared-artifact"
+        return (
+            facet_seed,
+            value_seed,
+            "prepared-artifact" if pinned else "router-bootstrap (no pinned artifact)",
+        )
     except PreparationError as error:
         router = phase_binding.get("supply_for_store")
         bootstrap = getattr(router, "bootstrap_first_phase", None)
