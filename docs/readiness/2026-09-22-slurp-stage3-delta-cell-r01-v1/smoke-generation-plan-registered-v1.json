@@ -59,7 +59,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/protocol-registered-v1.json",
-    "sha256": "bb8c5fd681387cd0b02beedc7766edbda424d9958aa2475eb4ad01b7c7469c65"
+    "sha256": "66df50b39543a2b7dabe6e959826f1c7540a61ff59b79e4b6744f099308fa52b"
   },
   "purpose": "Stage-3 S3-6 CELL-1 as amended by S3-4s (owner decisions 83, 99, 101, 106): the locked v2.0 plan plus the NODE-TARGETED stage3-deltas store as ONE factor on TRAIN Fold A, comparator the sealed PLAN arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943), twin arm as the form control. PRIMARY DELIVERABLES: (1) the official paired read against the sealed PLAN arm under the decision-99 TRAIN lock rule; (2) the per-scenario effect x prefilled-token frontier table in both natural-mixture and equal-stratum weightings, deciding which deltas survive into version 2; (3) the per-node delta-consumption table (S3-4s): which deltas were supplied, per scenario and per node, and the saves and harms on the rows that received each delta; (4) the twin contrast, which decides attribution, never admission.",
   "quality_read_gate": "no task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist, and not before the registered STOP condition passes (the sealed PLAN and PLANr aggregates reproduce to the hundredth). The twin is read only after the arm has sealed and been read. The efficiency and delta-consumption reads may proceed from the sealed receipts, trace and server log as soon as the manifest seals, because they touch no answer, reference or quality field.",
