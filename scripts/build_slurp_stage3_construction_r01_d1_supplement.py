@@ -152,6 +152,21 @@ def _roster_sample_ids(roster: Mapping[str, Any]) -> list[str]:
         raise SupplementError(f"roster receipt schema must be {ROSTER_SCHEMA!r}")
     if roster.get("carrier_lock_key") != CARRIER:
         raise SupplementError(f"roster receipt carrier must be {CARRIER!r}")
+    # A tripwire, and a narrow one: it refuses the literal split_role value
+    # "test", which no roster this repository has ever frozen uses. It is NOT
+    # the guard that keeps a held-out split safe, and it never was -- a D1
+    # media supplement carries media identity only (relpath, bytes, SHA-256,
+    # header duration, sample rate) and no annotation of any kind, so building
+    # one can never make a gold field reachable.
+    #
+    # SLURP-TEST-FULL-13078-V1 (owner decisions 99 of 2026-09-22 and 107 of
+    # 2026-09-23) is supplemented here deliberately, with
+    # --sample-id-prefix slurp:test:, because the immutable D1 artifact closes
+    # over the SLURP devel split only and every test row therefore sits outside
+    # it. Its roster declares split_role "final-report", and the guard that
+    # actually governs it is contracts.plan.require_owner_split_allowance,
+    # which refuses every final-report ExecutionPlan until the committed
+    # owner-allowance receipt says "authorised".
     if roster.get("split_role") == "test":
         raise SupplementError("a test-split roster is never supplemented here")
     items = roster.get("items")
