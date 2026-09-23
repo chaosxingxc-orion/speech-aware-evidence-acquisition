@@ -1,0 +1,233 @@
+{
+  "accounting": {
+    "arm_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 60800,
+      "generation_calls_cap": 15200,
+      "gpu_hours_fit_inclusive": 8.0,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 66338
+    },
+    "ceiling_arithmetic": "15,200 = 800 rows x 19 and 76 = 4 rows x 19, where 19 is the grouped-Solver graph's OWN ceiling as rails.native_episode_config.load_native_episode_config resolves it: perception.max_iterations + (max_revisions + 1) x (solver.max_iterations x solver.samples + reviewer.max_iterations + planner.max_iterations) = 1 + 2 x (5 + 3 + 1) = 19. Owner decision 96 re-registers planned_model_calls from 8,800 to 15,200 at the flip; the expected spend is about 6,400 contacts (about 8 per row, spec section S3-2) and about 2.5 GPU hours. 60,800 = 15,200 x (1 speech packet + 3 endpoints) and 304 = 76 x 4. 66,338 = ceil(3,491.426125 roster audio seconds x 19) repeated speech seconds; 286 = ceil(15.03875 x 19) for the four smoke rows. native_task_contract_calls_cap = 0: the cell is tool-free and no role carries phase_tools. Budgets are RUN-CUMULATIVE across every attempt of a run id. Ceilings are bounds, never targets.",
+    "expected_cost": {
+      "arm_contacts_expected": 6400,
+      "arm_contacts_per_row_expected": 8,
+      "arm_gpu_hours_expected": 2.5,
+      "note": "spec section S3-2's own estimate: about 8 realized contacts per row against the graph ceiling 19, about 2.5 GPU hours at np4. The B2 v3 grouped-Solver precedent on 1,080 TRAIN Fold A rows is the only realized grouped-Solver cost on file.",
+      "smoke_contacts_expected": 32
+    },
+    "exposure_rows": [
+      "SAEA-SLURP-STAGE3-ROLLOUT-R01-V1 (generation)",
+      "SAEA-SLURP-STAGE3-ROLLOUT-R01-FIT-V1 (native contact fit)",
+      "SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-V1 (generation)",
+      "SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-FIT-V1 (native contact fit)"
+    ],
+    "plan_budget_is_run_cumulative": true,
+    "smoke_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 304,
+      "generation_calls_cap": 76,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 286
+    },
+    "unused_budget_is_not_attempt_authority": true
+  },
+  "authority": "owner decisions 80-83 (the Stage-3 training-free RL base loop), 96 (this cell's planned_model_calls re-registered from the plan cell's non-grouped 800 x 11 = 8,800 to the grouped-Solver graph's own ceiling 800 x 19 = 15,200, expected about 6,400, planned_gpu_hours 8.0 unchanged, at the readiness flip) and 101 (every Stage-3 cell carries a machine-checked stage3_algorithm label); engineering spec docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md section S3-2",
+  "cells": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-rollout-r01-generation-v1",
+      "baseline_fragment": "configs/baseline/slurp-native-stage3-rollout-baseline-v1.json",
+      "campaign_plan": "configs/campaign/slurp-native-stage3-rollout-r01-v1.json",
+      "cell": "slurp-native-stage3-rollout-r01-v1",
+      "composed_config_hash": "cf356bf34cbfb78e2f8f67f2d04ac17a0cfc00705cb2b00ffd48d3bf20e8e9b0",
+      "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan configs/campaign/slurp-native-stage3-rollout-r01-v1.json; the campaign acquires its own GenerationLease against the resident session and schedules the one official score at finalize. Queued through the SAEA-Batch-Driver scheduled task (decision 77).",
+      "experiment": "slurp-native-stage3-rollout-r01-v1",
+      "experiment_fragment": "configs/experiment/slurp-native-stage3-rollout-r01-v1.json",
+      "fit_attempt_id": "attempt-slurp-native-stage3-rollout-r01-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-ROLLOUT-R01-FIT-V1",
+      "order_constraint": "opens only after this cell's own four-row smoke has sealed and its acceptance list passes. One experiment in flight at a time.",
+      "protocol_hash": "ea6ade3853d6699be3eac2fd8b8e18c77a4ad08af066f2d67fc40e9e58eb982c",
+      "readiness": "held; NO decision requirement registered (core.flight.repin inserts it); one PENDING 'preparation' requirement the re-pin tool overwrites with this cell's own prepared supply",
+      "rows": 800,
+      "run_id": "SAEA-SLURP-STAGE3-ROLLOUT-R01-V1",
+      "split_identity_hash": "2ece5e51ff781fdec89bef8e7448d8ba88249030d3c8a6478dba5e7c1e621dac"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-rollout-r01-smoke-4-generation-v1",
+      "baseline_fragment": "configs/baseline/slurp-native-stage3-rollout-smoke-4-baseline-v1.json",
+      "cell": "slurp-native-stage3-rollout-r01-smoke-4-v1",
+      "composed_config_hash": "1e4761fd74e607641a7f1c11f4a6afd82a39a000344fdb09d0c24cb320807a8e",
+      "execution_route": "Shared core.flight.lease_cli worker lease plus a standalone core.flight.cli worker attached to the resident session, launched through the SAEA-Batch-Driver scheduled task with the battery and idle conditions disabled and no execution time limit (owner decision 24). No campaign, no scorer.",
+      "experiment": "slurp-native-stage3-rollout-r01-smoke-4-v1",
+      "experiment_fragment": "configs/experiment/slurp-native-stage3-rollout-r01-smoke-4-v1.json",
+      "fit_attempt_id": "attempt-slurp-native-stage3-rollout-r01-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-FIT-V1",
+      "order_constraint": "opens when the GPU is free and no other form smoke is in flight",
+      "protocol_hash": "981ac13d2b579c21b242ccb45020152146c41dd58b46384112d94517f13adc88",
+      "readiness": "held; NO decision requirement registered; one PENDING 'preparation' requirement the re-pin tool overwrites",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-V1",
+      "split_identity_hash": "2f151c186d6712c3ed20b3c927ae68646ebd7fabfabe27461ab74a434de2a335"
+    }
+  },
+  "comparator": null,
+  "comparator_reason": "There is no gating comparator, by design. ROLL-1 is a ROLLOUT for curation: its sealed outputs are read by scripts/analysis/stage3_rollout_score.py (S3-3, model-free, on copies) and then by S3-4's semantic-advantage contact, never by scripts/analysis/plan_cell_read.py, and no delta, margin or admission verdict is computed from it. The gating claim of the Stage-3 loop belongs to S3-6's eventual TRAIN A delta-store cell, whose comparator is the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 at the plan's own null (h_SLU 1.2485 / h_intent 0.9943). Declaring a comparator here would invite exactly the admission read this cell must not carry.",
+  "contact_free_evidence": {
+    "proof_test": "tests/unit/test_stage3_rollout_baseline_cell.py: the rollout baseline differs from the locked plan fragment only in the enumerated S3-2 keys plus per-flight bookkeeping and the placeholder documentation block; the Solver carries exactly the four B2 v3 keys; the delivery normaliser is absent; slot-contracts, geometry, scorers, phase material and the task instruction template are byte-identical to cell PLAN; and the smoke fragment agrees with the arm on every decided key.",
+    "label_test": "tests/unit/test_stage3_algorithm_labels.py plus scripts/checks/stage3_algorithm_label_check.py"
+  },
+  "decision_rule": {
+    "rule": "NONE. This cell carries no gating decision rule (preregistration section 4). Acceptance is structural only: a clean seal, 800 of 800 rows delivered, exactly five custodied samples per row in solver_group (invariant I7g), one request-fit receipt per realized contact, and every disposition reported rather than filtered."
+  },
+  "diagnostics_required": [
+    "ROW ACCOUNTING: 800 in, 800 out; no row dropped and no sample_id invented.",
+    "SAMPLE CUSTODY: exactly 5 samples in solver_group per row (invariant I7g), with the plurality-commit replay of saea-commit-plurality-support-v1 over the raw samples reproducing the sealed delivered answer.",
+    "MALFORMED SAMPLES: the count of samples whose answer does not parse, with their sample ids and sample indices, retained rather than dropped (the S3-3 dry run on the sealed B2 v3 grouped-Solver samples saw 29 malformed samples over 13 rows of 1,080).",
+    "DISPOSITIONS: finite_completion (item E13) and react_exhaustion (item E22) counts with their sample ids; planner_action_illegal with sample ids and action SHA-256 values; every retained row reported, never filtered.",
+    "TOOL CONSTANCY: no tools array on any request, tool_choice none, 0 tool calls, native task-contract call count 0.",
+    "FIT: one request-fit receipt per realized contact, every request fits, with the minimum realized margin against the 24,576-token slot.",
+    "PER-SCENARIO COVERAGE from the roster's own stratum field over the 18 scenario strata (the roster metadata, never gold).",
+    "COST: realized generation contacts against the 15,200 ceiling and the about-6,400 expectation; realized repeated speech seconds against 66,338; realized FIT endpoints against 60,800; GPU hours read from the serving monitor over the lease window, never a wall-clock guess."
+  ],
+  "downstream_read": {
+    "cli": "scripts/analysis/stage3_rollout_score.py",
+    "recipe": "docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1/analysis-recipe-v1.json",
+    "dry_run_receipt": "docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1/s3-3-dry-run-receipt-v1.json",
+    "note": "S3-3 is a separate, model-free act with its own model-free-check ledger row. It renders one outputs copy per Solver sample index and scores the five copies once through slurp-slu-official-projected-v3-train, never core.scoring_batch, because every side is a derived copy with no manifest and no bundle."
+  },
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, knowledge, geometry or cap change. This registration pre-authorises no recovery; at most one root-diagnosed recovery re-registration once the cell is flown, and a partial manifest is never scored and never read.",
+  "fit": {
+    "arithmetic": "800 rows x 19 native contacts x (1 speech packet + 3 endpoints) = 60,800; 4 rows x 19 x 4 = 304",
+    "contact_cap": 60800,
+    "coordinate_fit": "must NOT be run, or the FIT rows are double-charged",
+    "mode": "native_contact_fit",
+    "smoke_contact_cap": 304,
+    "the_authority_in_flight": "core.preparation_fit.build_native_contact_fit_gate fits every realized immutable request against the resident tokenizer before it is transmitted and STOPS the flight rather than truncating. No static bound in this package overrides it."
+  },
+  "metrics": {
+    "primary": "NONE for this cell. The rollout produces raw custodied samples; the official per-sample numbers are computed offline by S3-3, and the delivered answer's own official score is read from the sealed scores file, never rescored.",
+    "online_scorers": [
+      "slurp-slu-official-train",
+      "cost"
+    ],
+    "note": "the one complete official TRAIN score at campaign finalize exists so the manifest seals in the standard shape and the delivered commit has a sealed score for S3-3 to read; it is not an admission number and no comparator is scored beside it."
+  },
+  "not_authorized": [
+    "no flight before root mints coordination/slurp-stage3-rollout-r01-v1/root-admission-v1.json (decision id slurp-stage3-rollout-r01-admission-v1) and flips BOTH cells with scripts/flights/repin_cell.py --set-ready",
+    "no model, tokenizer, encoder, ASR, scorer, server, network or paid-API contact by this registration",
+    "--allow-output-change on the re-pin tool",
+    "coordinate-fit (the FIT gate runs inside the same campaign or worker; a standalone fit run would double-charge the FIT row)",
+    "no admission read, no comparator, no harness-admission entry and no default-plan edit",
+    "no paper-scale profile, no confirmatory split, no TRAIN Fold A, Fold B, DEV or test-split contact"
+  ],
+  "not_claimed": [
+    "NO SUPERIORITY, GENERALISATION, COMPONENT-CAUSAL, BAR, HELD-OUT OR PAPER-SCALE CLAIM OF ANY KIND. The construction roster is exposed development data (owner decision 28).",
+    "NO CLAIM ABOUT THE GROUPED SOLVER'S TASK QUALITY: the delivered plurality commit is custody, not a measured arm; no delta against cell PLAN is computed from this cell.",
+    "NO CLAIM ABOUT ANY OTHER CARRIER, ROSTER OR IN-FLIGHT CELL.",
+    "A STRUCTURAL SMOKE RESULT IS NEVER A QUALITY RESULT."
+  ],
+  "one_factor": "ONE factor against the locked v2.0 default plan (cell PLAN, configs/baseline/slurp-native-default-plan-lock-baseline-v1.json): native_episode.roles.solver.samples = 5 with decoding_overrides = {temperature: 0.7, seed_offset: 0} and commit = {policy: saea-commit-plurality-support-v1, min_support: 3, similarity_threshold: 0.8} -- the sealed B2 v3 grouped-Solver form -- and native_episode.deliver_normaliser REMOVED, because rails.native_episode_config refuses a grouped Solver together with the delivery normaliser node; the v3 projection moves to S3-3's offline scoring instead. The roster is the S3-1 construction roster SLURP-STAGE3-CONSTRUCTION-R01 (800 TRAIN construction rows) rather than TRAIN Fold A, with that roster's own promoted featcache packets and its own two query-vector pins. Everything else -- knowledge_stores.slot-contracts, phase_material, the task instruction template, the np4 x 24,576 geometry, the scorers -- is byte-identical to cell PLAN, and tests/unit/test_stage3_rollout_baseline_cell.py is the byte proof. Every sample is custodied in solver_group (invariant I7g); the delivered answer is the plurality commit and is read for nothing but custody.",
+  "population": {
+    "fold_a_and_dev": "TRAIN Fold A, TRAIN Fold B, DEV-1000, DEV-2000, DEV-2000-ADDED and the test split stay untouched and unread; the S3-1 draw excluded all six by construction (owner decision 81)",
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01.json",
+      "roster_id": "SLURP-STAGE3-CONSTRUCTION-R01",
+      "roster_role": "construction",
+      "sha256": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0"
+    },
+    "rows": 800,
+    "rows_per_scenario": "44 or 45 (natural rounding, fixed in the roster receipt)",
+    "scenario_strata": 18,
+    "smoke_note": "the first four rows by sample_id of the SAME construction roster -- no quality-based selection, no separate population; all four are members of the 800-row roster",
+    "smoke_rows": 4,
+    "smoke_split_identity_hash": "2f151c186d6712c3ed20b3c927ae68646ebd7fabfabe27461ab74a434de2a335",
+    "split_id": "SLURP-STAGE3-CONSTRUCTION-R01",
+    "split_identity_hash": "2ece5e51ff781fdec89bef8e7448d8ba88249030d3c8a6478dba5e7c1e621dac",
+    "split_role": "discovery",
+    "total_audio_seconds": 3491.426125
+  },
+  "prepared_phase_supply": {
+    "note": "NOT built by this registration and deliberately NOT pinned here. core.flight.repin builds this cell's OWN model-free artifact under its own run id at the readiness flip (item E16: a prepared artifact is evidence only for the implementation that produced it, so nothing is inherited from cell PLAN or from B2 v3), then pins it into configs/baseline/slurp-native-stage3-rollout-baseline-v1.json and into the experiment fragment's 'preparation' readiness requirement, which carries PENDING placeholders until then. No relpath or sha256 is written into these plans, because with no current pin the re-pin tool builds no old-value mapping and would leave a placeholder here forever. --allow-output-change must never be passed."
+  },
+  "preparations": {
+    "note": "all three S3-1 preparations are SEALED and pinned by hash in the baseline fragment, whose stage3_placeholders_filled block records all 18 fills one for one",
+    "rows": [
+      {
+        "run_id": "SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS-RECOVERY-V1",
+        "what": "featcache speech-packet promotion, 800 of 800 with 8 shared",
+        "sha256": "a1664e34742dcd2d59c226da701395edf41d150bbbf8db4acc0cdae9c3c0250f"
+      },
+      {
+        "run_id": "SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1",
+        "what": "intent-boundary speech-query segment vectors, 800 pinned retrieval-encoder contacts, aliased to vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-segments.jsonl",
+        "sha256": "41b47b3f744a3f18ffcec5cdf76e7116b06da72a63aa566b3d711bdc0adc8ae8"
+      },
+      {
+        "run_id": "SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1",
+        "what": "model-free content derivative for the train-exemplars Solver supply, vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-content-v1.jsonl",
+        "sha256": "651ddfbbb9e6f29996a000a0f4a16de993a85cfc8e52115e1c66d28760f749cf"
+      }
+    ]
+  },
+  "protocol_id": "slurp-stage3-rollout-r01-protocol-v1",
+  "purpose": "Cell ROLL-1 (S3-2): produce five custodied Solver samples per row of the S3-1 construction roster so that S3-3 can score the copies and select the best/worst pair on every disagreeing row, and S3-4 can ask the frozen core what distinguished the better answer from the worse. No admission verdict is read from this cell. Stage-3 algorithm label (owner decision 101): shared-rollout, operator rollout -- the algorithm-neutral rollout operator whose five custodied Solver samples per row every layer-A family (Training-Free GRPO, GEPA, ACE) consumes; it applies no learned context of its own. Declared as stage3_algorithm in both experiment fragments and checked by scripts/checks/stage3_algorithm_label_check.py.",
+  "quality_gate": "No read of any kind before the complete sealed manifest, the exact ordered 800 outputs with five custodied solver_group samples per row (invariant I7g) and the native phase summary all exist. There is no admission read and no comparator: the only read is S3-3's own CLI (scripts/analysis/stage3_rollout_score.py) on COPIES of the sealed outputs, model-free, and the row accounting 800 in / 800 out must hold on both sides before any pair is selected.",
+  "readiness_flip": {
+    "decision_id": "slurp-stage3-rollout-r01-admission-v1",
+    "decision_relpath": "coordination/slurp-stage3-rollout-r01-v1/root-admission-v1.json",
+    "note": "root mints the decision receipt, then re-pins BOTH cells in ONE cycle with scripts/flights/repin_cell.py --set-ready, because round 2 of the tool rewrites the protocol document hash inside every plan in this package. The re-pin builds this cell's own prepared supply, inserts the decision requirement, overwrites the PENDING preparation requirement, recomputes the composed and protocol hashes and rewrites every document that quotes them, including these four ledger rows."
+  },
+  "registered_at_utc": "2026-09-23T12:00:00.000000+00:00",
+  "registration_base_commit": "db3b4d6a",
+  "resampling": {
+    "note": "NONE for this cell: no interval, no margin and no paired contrast is computed here. S3-3's pair selection is deterministic (best and worst sample by (slu_f1_f1, scenario_action_exact) with an ascending-sample_index tie-break)."
+  },
+  "schema": "saea-slurp-stage3-rollout-protocol-v1",
+  "scoring": {
+    "complete_jobs": 1,
+    "no_sharding": true,
+    "official_scorer": "pinned SLURP official evaluate.py (slurp-official-8eb16545) through core.scoring_batch, once over the complete manifest at campaign finalize",
+    "scheduled_by": "the campaign finalize step",
+    "scorers": [
+      "slurp-slu-official-train",
+      "cost"
+    ],
+    "smoke": "none -- zero official scoring jobs"
+  },
+  "service": {
+    "decoder_only": true,
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "mmproj": "absent",
+    "no_child_start_stop": true,
+    "note": "attach only, never spawn or stop; the geometry is cell PLAN's and is not a factor",
+    "slot_tokens": 24576,
+    "slots": 4,
+    "total_context": 98304
+  },
+  "smoke_acceptance": {
+    "contacts_per_row": "at most 19; about 8 expected",
+    "dispositions": "finite_completion and react_exhaustion counted (0 expected on four rows); no abort",
+    "fits": "every request fits (one request-fit receipt per realized contact)",
+    "normaliser": "NO deliver_normaliser receipt on any row -- the node is removed by the factor",
+    "rows_delivered": 4,
+    "solver_group": "exactly five custodied samples per row (invariant I7g), plurality commit delivered",
+    "tools_array": "absent on every request; tool_choice none; 0 tool calls"
+  },
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-roll1reg, branch fable/roll1reg",
+  "stage3_algorithm": {
+    "id": "shared-rollout",
+    "operators_used": [
+      "rollout"
+    ],
+    "note": "Stage-3 algorithm label (owner decision 101): shared-rollout, operator rollout -- the algorithm-neutral rollout operator whose five custodied Solver samples per row every layer-A family (Training-Free GRPO, GEPA, ACE) consumes; it applies no learned context of its own. Declared as stage3_algorithm in both experiment fragments and checked by scripts/checks/stage3_algorithm_label_check.py."
+  },
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "verdict_document": "none -- this cell produces no verdict. Its downstream read is analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1 under SPEECHRL_DATA_DIR, registered as its own model-free-check ledger row."
+}

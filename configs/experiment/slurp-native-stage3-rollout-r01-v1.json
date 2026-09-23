@@ -13,31 +13,13 @@
       "dataset_fragment": "slurp-speech-native-stage3-construction-r01",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Cell ROLL-1 (S3-2, docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md): the locked plan's grouped-Solver fragment on the S3-1 construction roster. READINESS HELD: the roster-bound identity pins (both stores' query_source, the speech packet promotion receipt, native_contact_fit, prepared_phase_supply) are PENDING placeholders (configs/baseline/slurp-native-stage3-rollout-baseline-v1.json's stage3_pending_placeholders block) until the construction roster's featcache packets are promoted and the two query-vector pins are registered (docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1/README.md section 2). Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "reason": "Cell ROLL-1 (S3-2, docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md): the locked v2.0 plan's grouped-Solver fragment on the S3-1 construction roster, REGISTERED FOR FLIGHT 2026-09-23 (package docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1/, campaign plan configs/campaign/slurp-native-stage3-rollout-r01-v1.json, four unconsumed exposure-ledger rows). READINESS HELD: the three S3-1 preparations are now SATISFIED and pinned BY HASH in configs/baseline/slurp-native-stage3-rollout-baseline-v1.json, whose own stage3_placeholders_filled block records all 18 fills one for one: the featcache packet promotion (run SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS-RECOVERY-V1, promote-only attempt, 800/800 packets with 8 shared, receipt sha256 a1664e34742dcd2d59c226da701395edf41d150bbbf8db4acc0cdae9c3c0250f); the intent-boundary speech-query encoding (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1, 800 encoder contacts 2026-09-23 00:50-00:55 UTC, alias vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-segments.jsonl sha256 41b47b3f744a3f18ffcec5cdf76e7116b06da72a63aa566b3d711bdc0adc8ae8); and the model-free content derivative (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1, vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-content-v1.jsonl sha256 651ddfbbb9e6f29996a000a0f4a16de993a85cfc8e52115e1c66d28760f749cf). What is still open is root's own act, which this registration does not perform: mint coordination/slurp-stage3-rollout-r01-v1/root-admission-v1.json (decision id slurp-stage3-rollout-r01-admission-v1) and run scripts/flights/repin_cell.py --set-ready, which builds this cell's own prepared_phase_supply model-free under its own run id, pins it into the baseline fragment and the preparation requirement below, INSERTS the decision requirement and flips this state to 'ready'. No decision requirement is registered here on purpose (the sealed sibling packages carry none either): core.flight.repin._upsert_decision_requirement inserts it, and a placeholder decision entry without an expected_decision_id would be left behind beside it and refuse the campaign at load (core.flight.campaign.declared_readiness). Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
           {
             "kind": "preparation",
-            "reason": "S3-1 construction roster featcache packet promotion (an ENCODE tool contact, registered before it runs) -- NOT satisfied.",
-            "relpath": "PENDING_STAGE3_CONSTRUCTION_R01_SPEECH_PACKET_PROMOTION_RECEIPT_PATH",
-            "sha256": "PENDING_STAGE3_CONSTRUCTION_R01_SPEECH_PACKET_PROMOTION_RECEIPT_SHA256"
-          },
-          {
-            "kind": "preparation",
-            "reason": "intent-boundary query-vector encoding pass against this roster's own recordings (a tool contact) -- NOT satisfied.",
-            "relpath": "PENDING_STAGE3_CONSTRUCTION_R01_INTENT_BOUNDARY_QUERY_VECTORS_RELPATH",
-            "sha256": "PENDING_STAGE3_CONSTRUCTION_R01_INTENT_BOUNDARY_QUERY_VECTORS_SHA256"
-          },
-          {
-            "kind": "preparation",
-            "reason": "train-exemplars query-vector alias export (model-free) -- NOT satisfied.",
-            "relpath": "PENDING_STAGE3_CONSTRUCTION_R01_TRAIN_EXEMPLARS_QUERY_VECTORS_RELPATH",
-            "sha256": "PENDING_STAGE3_CONSTRUCTION_R01_TRAIN_EXEMPLARS_QUERY_VECTORS_SHA256"
-          },
-          {
-            "kind": "decision",
-            "reason": "root-admission decision receipt -- NOT minted.",
-            "relpath": "PENDING_STAGE3_ROLLOUT_R01_ROOT_ADMISSION_DECISION_RELPATH",
-            "sha256": "PENDING_STAGE3_ROLLOUT_R01_ROOT_ADMISSION_DECISION_SHA256"
+            "reason": "This cell's OWN model-free first-phase supply, minted under its own run id by core.flight.repin (core.flight.cli prepare-supply) at the readiness flip -- item E16: a prepared artifact is evidence only for the implementation that produced it, so nothing is inherited from cell PLAN or cell B2 v3. The relpath and sha256 below are PENDING placeholders that scripts/flights/repin_cell.py overwrites (core.flight.repin._set_preparation_requirement) before it flips this state; --allow-output-change must never be passed.",
+            "relpath": "PENDING_STAGE3_ROLLOUT_R01_PREPARED_PHASE_SUPPLY_RELPATH",
+            "sha256": "PENDING_STAGE3_ROLLOUT_R01_PREPARED_PHASE_SUPPLY_SHA256"
           }
         ],
         "state": "held"
@@ -49,8 +31,8 @@
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 8.0,
-    "planned_model_calls": 8800,
-    "planned_speech_audio_seconds": 38405.687375,
+    "planned_model_calls": 15200,
+    "planned_speech_audio_seconds": 66338,
     "split_role": "discovery"
   },
   "execution_profile": "bounded-discovery-probe",
@@ -60,12 +42,12 @@
     "asr_calls": 0,
     "ceilings_are_not_targets": true,
     "encoder_calls": 0,
-    "fit_endpoint_calls_cap": 35200,
-    "generation_calls_cap": 8800,
+    "fit_endpoint_calls_cap": 60800,
+    "generation_calls_cap": 15200,
     "gpu_hours_fit_inclusive": 8.0,
-    "native_task_contract_calls_cap": 4800,
+    "native_task_contract_calls_cap": 0,
     "official_complete_scoring_jobs": 1,
-    "repeated_speech_audio_seconds_cap": 38405.687375
+    "repeated_speech_audio_seconds_cap": 66338
   },
   "fragment_kind": "saea-slurp-native-stage3-rollout-r01-v1",
   "population": {
@@ -883,7 +865,7 @@
   ],
   "preserve_wire_responses": true,
   "purpose": "Cell ROLL-1 (S3-2): produce five custodied Solver samples per row of the S3-1 construction roster for S3-3 (score on copies, best/worst pair selection) and S3-4 (the semantic-advantage contact). No admission verdict is read from this cell (readiness held; no gating decision rule).",
-  "service_session": "PENDING_STAGE3_ROLLOUT_R01_SERVICE_SESSION",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "split_id": "SLURP-STAGE3-CONSTRUCTION-R01",
   "stage3_algorithm": {
     "id": "shared-rollout",
@@ -891,5 +873,10 @@
       "rollout"
     ],
     "note": "ROLL-1 is the algorithm-neutral rollout operator: it produces the five custodied Solver samples per construction row that every layer-A family (Training-Free GRPO, GEPA, ACE) consumes, and it applies no learned context of its own."
+  },
+  "generation_budget": {
+    "cap": 15200,
+    "definition": "15,200 = 800 rows x 19 and 76 = 4 rows x 19, where 19 is the grouped-Solver graph's OWN ceiling as rails.native_episode_config.load_native_episode_config resolves it: perception.max_iterations + (max_revisions + 1) x (solver.max_iterations x solver.samples + reviewer.max_iterations + planner.max_iterations) = 1 + 2 x (5 + 3 + 1) = 19. Owner decision 96 re-registers this cell's planned_model_calls from the plan cell's non-grouped 800 x 11 = 8,800 to 800 x 19 = 15,200 at the readiness flip, expected about 6,400 contacts (about 8 per row, spec section S3-2), planned_gpu_hours 8.0 unchanged. 60,800 = 15,200 x (1 speech packet + 3 endpoints) and 304 = 76 x 4. 66,338 = ceil(3,491.426125 roster audio seconds x 19) repeated speech seconds; 286 = ceil(15.03875 x 19) for the four smoke rows. native_task_contract_calls_cap = 0: the cell is tool-free, no role carries phase_tools. Ceilings are bounds, never targets.",
+    "target": 6400
   }
 }

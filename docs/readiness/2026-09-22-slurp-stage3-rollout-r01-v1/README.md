@@ -50,3 +50,50 @@ admission read -- ROLL-1 has no gating decision rule of its own (preregistration
 No flight before every placeholder above resolves and the cell is flipped; no contact by this registration; no
 ledger row (root registers); no re-flying or re-scoring of any comparator; no admission verdict (S3-6's eventual
 TRAIN A cell carries that).
+
+## Flight registration (2026-09-23)
+
+Registered for flight on 2026-09-23 at study commit `db3b4d6a` (worktree
+`/home/chao/saea-worktrees/fable-roll1reg`, branch `fable/roll1reg`), before any contact. This
+section supersedes section 1's "NOT registered here" list: the plans, the protocol, the campaign
+plan and the four exposure-ledger rows now exist. The design record above (sections 0-4), the
+analysis recipe and the S3-3 dry-run receipt are unchanged.
+
+Stage-3 algorithm label (owner decision 101): **`shared-rollout`**, operator `rollout`.
+
+| run id | plan | calls | speech seconds | GPU hours |
+| --- | --- | --- | --- | --- |
+| `SAEA-SLURP-STAGE3-ROLLOUT-R01-V1` | `generation-plan-registered-v1.json` | 15,200 | 66,338 | 8.0 |
+| `SAEA-SLURP-STAGE3-ROLLOUT-R01-FIT-V1` | `fit-plan-registered-v1.json` | 60,800 | 66,338 | 8.0 |
+| `SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-V1` | `smoke-generation-plan-registered-v1.json` | 76 | 286 | 1.0 |
+| `SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-FIT-V1` | `smoke-fit-plan-registered-v1.json` | 304 | 286 | 1.0 |
+
+Ceiling accounting (owner decision 96): 15,200 = 800 rows x 19, where 19 is the grouped-Solver
+graph's own ceiling `1 + (max_revisions + 1) * (solver.max_iterations * solver.samples +
+reviewer.max_iterations + planner.max_iterations) = 1 + 2 * (5 + 3 + 1)`, replacing the plan cell's
+non-grouped 800 x 11 = 8,800; expected about 6,400 contacts and about 2.5 GPU hours.
+60,800 = 15,200 x (1 speech packet + 3 endpoints). 66,338 = `ceil(3,491.426125 x 19)`.
+286 = `ceil(15.03875 x 19)` on the four smoke rows. `native_task_contract_calls_cap = 0`: the cell
+is tool-free.
+
+No comparator: `protocol-registered-v1.json` carries `"comparator": null` with its reason. The read
+is S3-3's own CLI on copies, never `plan_cell_read.py`.
+
+Composed and protocol hashes as registered (every one of them moves at the flip, and
+`scripts/flights/repin_cell.py` rewrites each document that quotes them):
+
+| cell | composed config | protocol |
+| --- | --- | --- |
+| `slurp-native-stage3-rollout-r01-v1` | `cf356bf34cbfb78e2f8f67f2d04ac17a0cfc00705cb2b00ffd48d3bf20e8e9b0` | `ea6ade3853d6699be3eac2fd8b8e18c77a4ad08af066f2d67fc40e9e58eb982c` |
+| `slurp-native-stage3-rollout-r01-smoke-4-v1` | `1e4761fd74e607641a7f1c11f4a6afd82a39a000344fdb09d0c24cb320807a8e` | `981ac13d2b579c21b242ccb45020152146c41dd58b46384112d94517f13adc88` |
+
+Protocol document sha256 `6506203d8482fbf878135528d49f49b750c37eee7cab04bdb25476f4bc414f85`.
+
+Still root's to do, in order: mint `coordination/slurp-stage3-rollout-r01-v1/root-admission-v1.json` (decision id `slurp-stage3-rollout-r01-admission-v1`), then re-pin BOTH cells in
+ONE cycle with `scripts/flights/repin_cell.py --set-ready`. The re-pin builds this cell's own
+model-free prepared phase supply under its own run id (item E16) -- nothing is pinned for it here,
+because with no current pin the tool builds no old-value mapping and a placeholder in a plan would
+never be rewritten -- pins it into the baseline fragment and into the experiment fragment's single
+PENDING `preparation` readiness requirement, INSERTS the decision requirement (none is registered
+here, so nothing is left behind without an `expected_decision_id`), and recomputes every dependent
+hash. Then queue the smoke and the arm on the SAEA-Batch-Driver (decision 77) on the SLURP geometry.

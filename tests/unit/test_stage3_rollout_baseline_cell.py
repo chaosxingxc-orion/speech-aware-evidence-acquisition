@@ -10,6 +10,13 @@ bytes, not of prose. The roster-side identity pins that cannot exist yet
 (the construction roster's packets are not promoted) are PENDING
 placeholders, and this file proves every one of them is both present and
 documented, per the task's own "the proof test must accept them" rule.
+
+Once a placeholder is filled its entry moves from ``stage3_pending_placeholders``
+to ``stage3_placeholders_filled`` (both blocks are part of the same
+documentation key set the fragment is allowed to move against cell PLAN). The
+placeholder proof therefore has two halves: while an entry is open its
+``PENDING_`` leaf must be documented, and once every entry is closed no
+``PENDING_`` leaf may remain anywhere in the fragment.
 """
 
 from __future__ import annotations
@@ -49,6 +56,10 @@ ENUMERATED = frozenset({
     "speech_packet_promotion_receipt",
     "speech_packet_promotion_receipt_sha256",
     "stage3_pending_placeholders",
+    # the closed half of the same documentation block: an entry moves here the
+    # moment its placeholder is filled (2026-09-23), so the two keys are one
+    # allowance, not two.
+    "stage3_placeholders_filled",
 })
 
 SOLVER_KEYS = frozenset({"samples", "decoding_overrides", "commit", "max_iterations", "phase_id"})
@@ -156,14 +167,29 @@ def test_rollout_baseline_keeps_slot_contracts_geometry_and_scorers_byte_identic
 def test_every_pending_leaf_value_is_documented_in_stage3_pending_placeholders():
     rollout = _load(ROLLOUT)
     placeholders = rollout["stage3_pending_placeholders"]
-    assert placeholders
+    filled = rollout["stage3_placeholders_filled"]
+    assert placeholders or filled, "neither an open nor a closed placeholder record"
     documented_paths = {entry["path"] for entry in placeholders}
     assert len(documented_paths) == len(placeholders), "duplicate placeholder path documented"
     for entry in placeholders:
         assert entry["path"] and entry["note"], entry
         assert len(entry["note"]) > 20, f"placeholder note too short to be useful: {entry}"
 
+    filled_paths = {entry["path"] for entry in filled}
+    assert len(filled_paths) == len(filled), "duplicate filled path recorded"
+    for entry in filled:
+        # "by" may legitimately be a back-reference ("same") to the preceding
+        # entry's provenance, as the sha256 sibling of a receipt path is; what
+        # must never be empty is the triple itself.
+        assert entry["path"] and entry["filled"] and entry["by"], entry
+    assert not (documented_paths & filled_paths), "a path is both open and filled"
+
     pending_paths = _all_pending_strings(rollout)
+    if not placeholders:
+        # every placeholder is closed: the fragment must carry no PENDING_ leaf
+        # at all, which is the other half of the same proof.
+        assert not pending_paths, f"all placeholders filled but PENDING_ remains: {pending_paths}"
+        return
     assert pending_paths, "the rollout baseline carries no PENDING_ value at all"
 
     undocumented = []
