@@ -1,0 +1,73 @@
+{
+  "attempt_id": "attempt-packets-devel-remainder-v1",
+  "audio_seconds": 18611.584875,
+  "config_fragments": {
+    "baseline": "speech-native-preprocess",
+    "dataset": "slurp-speech-native-devel-remainder-v2",
+    "experiment": "slurp-devel-remainder-preprocess-v2",
+    "model": "q4km-preprocess-featcache-cpu-sidecar"
+  },
+  "config_hash": "4526c012b94a91679b9e28502d3939a3a4a5e204d2258fce8152fadb132b4be3",
+  "contacts": 6570,
+  "core_client": {
+    "cost": {
+      "audio_seconds_used": 18611.584874999935,
+      "calls_used": 6570,
+      "completion_tokens_total": 6570,
+      "latency_seconds_total": 85270.2548690536,
+      "prompt_tokens_total": 480981,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+    },
+    "trace_manifest_hash": "7c0820cffd31c466a749f8c8f67aab83b18dee33e3cc313798d426b4ceb06448"
+  },
+  "declared_plan": {
+    "basis": "run-cumulative: prior durable spend on this run id plus this attempt's own worst case",
+    "calls": 6570,
+    "gpu_hours": 1.0,
+    "speech_audio_seconds": 18612
+  },
+  "encode_rows_per_second": 0.5941,
+  "encode_seconds": 11059.469,
+  "encode_workers": 8,
+  "failures": [],
+  "fold": null,
+  "generated_at": "2026-09-23T10:22:59.432008+00:00",
+  "gpu_offload": "-ngl 0 --no-mmproj-offload: this pass leaves the GPU free",
+  "legacy_cache_warm_before": 0,
+  "mode": "encode-and-promote",
+  "packet_tokens": {
+    "max": 182,
+    "min": 13,
+    "total": 283881
+  },
+  "promote_packets_per_second": 33.4559,
+  "promote_seconds": 196.378,
+  "promote_workers": 8,
+  "promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEVEL-REMAINDER-promotion.json",
+  "promotion_receipt_sha256": "e7e9b516ca17802cae7eb468b4bebaf8c04a836bba2c57b718295ee6760e9a3f",
+  "roster": "devel-remainder",
+  "rows": 6570,
+  "run_id": "SAEA-SN-DEVEL-REMAINDER-PREPROCESS",
+  "schema": "saea-slurp-evo-fold-preprocess-receipt-v1",
+  "session": {
+    "pid": 839078,
+    "session_id": "SAEA-SN-DEVEL-REMAINDER-PREPROCESS-attempt-packets-devel-remainder-v1-cpu-sidecar",
+    "stop": {
+      "final_process_state": "defunct",
+      "forced": false,
+      "pid": 839078,
+      "runtime_receipt_sha256": "e80c635d7344a9b4181a2b2d81330e35b626a6191fd499f95ac61b15d17d808b",
+      "schema": "saea-session-stop-receipt-v1",
+      "session_id": "SAEA-SN-DEVEL-REMAINDER-PREPROCESS-attempt-packets-devel-remainder-v1-cpu-sidecar",
+      "session_receipt_sha256": "fd7867c8056c316fd4efbf0de8135f0e7ca6f6ecf67b6b1f68ed1593f7c6662f",
+      "session_role": "preprocess",
+      "stopped_at": "2026-09-23T10:19:43.017933+00:00",
+      "study": "speech-aware-evidence-acquisition",
+      "termination_signal": "SIGTERM"
+    }
+  },
+  "shared_packet_count": 0,
+  "split_identity_hash": "f8af142bec49755d70364b665b31e3963972084fb73a568c9921f53b41fd341a",
+  "study": "speech-aware-evidence-acquisition"
+}
