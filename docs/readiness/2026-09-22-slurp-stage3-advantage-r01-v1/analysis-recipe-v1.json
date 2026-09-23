@@ -1,0 +1,35 @@
+{
+  "authority": "docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md sections S3-4 and S3-4s; owner decisions 82, 101, 106",
+  "cell_kind": "ADVANTAGE CONTACT -- one SYSTEM-level semantic-advantage contact per disagreeing ROLL-1 row (Training-Free GRPO credit assignment, stage3_algorithm tfgrpo-semantic-advantage-v1); its statements are curated into the S3-5 delta store; no admission verdict is read from this cell",
+  "claim_boundary": "No superiority, generalisation, component-causal, bar or confirmatory claim of any kind. This cell exists to produce one parsed statement set per disagreeing row; S3-6's TRAIN A delta-store cell (CELL-1) carries the only gating claim in the loop (decision 99 order).",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "decision_rule": {
+    "rule": "STRUCTURAL ONLY (preregistration section 5): legal-block parse rate over the 225 rows, node distribution (perception / solver / reviewer / planner), delta-kind distribution, illegal-block count, cost (contacts, completion tokens, GPU-h). No threshold gates a downstream step; a parse rate below 80 % is reported to the owner before S3-5 curation."
+  },
+  "downstream_read": {
+    "cli": "scripts/flights/batch/adv1_to_deltas.sh (S3-5 curation: scripts/build_slurp_stage3_delta_store.py over the sealed advantage_statements receipts; twin by scripts/build_slurp_stage3_delta_twin.py)",
+    "output": "prepared/SAEA-SLURP-STAGE3-DELTAS-V1/ under $SPEECHRL_DATA_DIR and the released stores; counts and digests only, no statement text in any receipt",
+    "stages": {
+      "curate": "every legal block becomes a delta row (node_target, task_target NODE:DELTA-KIND:TARGET, provenance advantage:<run>:<row>:<best>:<worst>); illegal blocks dropped and counted; six-token containment rule against the construction transcripts; dedup by normalised text and token Jaccard >= 0.8",
+      "release": "knowledge/slurp/semantic/stage3-deltas-v1/ (and the twin) through core.semantic_knowledge_preparation with release-pins",
+      "wrap": "the authored document is wrapped into saea-authored-semantic-knowledge-source-v1 with a wrap receipt pinning the authored sha256"
+    }
+  },
+  "execution_profile": "bounded-discovery-probe (this cell's own flight); model-free-check (the S3-5 curation)",
+  "roster": {
+    "note": "pure selections of the clean construction subset R01C over the rows S3-3's pairs.json names as disagreeing (roster_role construction, split_role discovery)",
+    "receipt": "docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-v1.json",
+    "rows": 225,
+    "smoke_receipt": "docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-smoke-4-v1.json",
+    "smoke_rows": 4,
+    "split_identity_hash": "7c603857503faacbc40999d0dd939202ac141ba50aac3fb5e3594542931c46d7"
+  },
+  "schema": "saea-stage3-rollout-analysis-recipe-v1"
+}
