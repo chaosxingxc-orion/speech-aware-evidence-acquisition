@@ -85,7 +85,7 @@ Composed and protocol hashes as registered (every one of them moves at the flip,
 | cell | composed config | protocol |
 | --- | --- | --- |
 | `slurp-native-stage3-rollout-r01-v1` | `cf356bf34cbfb78e2f8f67f2d04ac17a0cfc00705cb2b00ffd48d3bf20e8e9b0` | `ea6ade3853d6699be3eac2fd8b8e18c77a4ad08af066f2d67fc40e9e58eb982c` |
-| `slurp-native-stage3-rollout-r01-smoke-4-v1` | `1e4761fd74e607641a7f1c11f4a6afd82a39a000344fdb09d0c24cb320807a8e` | `981ac13d2b579c21b242ccb45020152146c41dd58b46384112d94517f13adc88` |
+| `slurp-native-stage3-rollout-r01-smoke-4-v1` | `bb27fcfecc4de24780a2a871237e0b29023268295055cdc561d5b6429b7ee4a7` | `b2b5f8d558ba7df6cf67e41acc4cea0caf90e403aee4321921715e09965e3597` |
 
 Protocol document sha256 `6506203d8482fbf878135528d49f49b750c37eee7cab04bdb25476f4bc414f85`.
 
