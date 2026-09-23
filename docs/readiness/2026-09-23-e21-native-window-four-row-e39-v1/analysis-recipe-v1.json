@@ -1,0 +1,87 @@
+{
+  "schema": "saea-receipts-only-read-recipe-v1",
+  "recipe_id": "e21-native-window-four-row-e39-receipts-read-v1",
+  "registered_at_utc": "2026-09-23T00:00:00.000000+00:00",
+  "title": "Item E39 four-row dry run on the Earnings21+ConEC native window cell: receipts-only read",
+  "cell_kind": "STRUCTURAL DRY RUN -- the three receipt assertions are the deliverable. No score is computed, requested or reported.",
+  "authority": {
+    "read_section": "docs/results/2026-09-22-e21-native-window-flightruntime-e35-read.md section 5",
+    "base_lock": "docs/results/2026-09-22-base-lock-v3.md section 5a",
+    "owner_decisions": "89 (2026-09-21), 98",
+    "diagnosis": "docs/results/2026-09-22-e21-native-window-e35-sub10-diagnosis.md"
+  },
+  "claim_boundary": "Structural receipts on four historically exposed discovery windows of one Earnings21 call. No score, effectiveness, comparison, superiority, generalization, bar or confirmatory claim of any kind; n = 4 is far below the paired-effectiveness floor of n >= 400.",
+  "execution_profile": "model-free-check (this read); bounded-discovery-probe (the cell's own flight)",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "run_ids": {
+    "arm": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39-V1",
+    "fit": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39-V1-FIT-V1"
+  },
+  "population": {
+    "carrier": "earnings21-original",
+    "calls": 1,
+    "execution_units": 4,
+    "roster_receipt": "docs/receipts/probe-samples/e21-current-executor-four-row-proof-v1.json",
+    "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992",
+    "split_role": "discovery"
+  },
+  "inputs": {
+    "sealed_manifest": "the single attempt's COMPLETED manifest for SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39-V1",
+    "per_row_outputs": "the sealed per-row outputs under $SPEECHRL_DATA_DIR/runs/SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39-V1/ (never under docs/checks); read for receipt FIELDS only",
+    "native_phase_summary": "the run's native phase summary (per-role contact and finish_reason counts)",
+    "comparator_receipts": "the sealed comparator SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-V1 (attempt-e21-native-window-system-four-row-recovery-v4, flight commit 1a9c78d2): its 13 contacts / 1,170 repeated seconds and its terminal dispositions, read structurally and never re-scored"
+  },
+  "decision_rule": {
+    "kind": "receipts-only; no estimator, no interval, no margin, no bar",
+    "assertions": [
+      {
+        "id": "R1",
+        "statement": "ZERO retained rows carry a terminal_disposition whose role_id is 'perception' or 'reviewer' together with an abstention. Under finite_completion_scope='answering-node' a length-truncated non-answering node keeps its truncated note and the Solver still answers, so no auxiliary node may void its window.",
+        "verdict_effect": "a single such row FAILS the dry run"
+      },
+      {
+        "id": "R2",
+        "statement": "4 of 4 windows deliver NON-EMPTY text: one saea-deliver-earnings-text-v1 delivery receipt per window and zero blank deliveries.",
+        "verdict_effect": "fewer than 4 non-empty deliveries FAILS the dry run"
+      },
+      {
+        "id": "R3",
+        "statement": "ZERO Perception or Reviewer contacts end with finish_reason 'length' at the per-role caps 320 / 384.",
+        "verdict_effect": "reported with its exact count on every verdict; a non-zero count is a NAMED CAUSE carried into the next registration, never a silent pass"
+      }
+    ],
+    "pass": "PASS iff R1, R2 and R3 all hold.",
+    "consequence": "On PASS the repair is proposed to the owner as base lock v3.1. On FAIL the repair stops and the named cause is registered before anything else flies."
+  },
+  "tables_required": [
+    "per-role contact counts (perception, solver, reviewer, planner, acquisition) beside the sealed comparator's",
+    "per-role finish_reason counts (stop / length / other) beside the sealed comparator's",
+    "terminal_disposition table: role_id x reason x count, this arm and the comparator",
+    "delivery table: window, delivered non-empty (yes/no), normaliser receipt present (yes/no)",
+    "contact and repeated-speech-second totals against the registered ceilings 44 / 3,960"
+  ],
+  "diagnostics_required": [
+    "the realized per-role completion-token distribution against the 320 / 384 caps (counts and quantiles, no text)",
+    "the number of windows that reached the Solver, beside the comparator's",
+    "the number of REVISE / ACCEPT Reviewer decisions, beside the comparator's",
+    "every abort, refusal and recovery re-registration, with its cause"
+  ],
+  "scorer": {
+    "runs": "NONE. This read invokes no scorer and the campaign schedules no scoring job.",
+    "why": "n = 4 carries no quality information, and the E35 read already root-caused the descriptive HARM it measured; re-scoring four windows would invite exactly the score claim this cell forbids."
+  },
+  "output": {
+    "root": "the repository",
+    "verdict_document": "docs/results/2026-09-2x-e21-native-window-four-row-e39-dry-run-read.md",
+    "prints_only_aggregates": "no utterance, transcript, delivered text, gold or reference text is printed or persisted by the read -- counts, role ids, reasons and booleans only",
+    "harness_admission": "NONE -- a base repair admits no module"
+  },
+  "what_is_not_here": "No paired estimator, no bootstrap, no margins, no own-null, no per-stratum table and no frontier row: this cell has no score to carry them."
+}

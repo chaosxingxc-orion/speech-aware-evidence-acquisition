@@ -1,0 +1,67 @@
+{
+  "schema": "saea-registered-generation-plan-v1",
+  "plan_kind": "native contact fit",
+  "cell": "e21-native-window-system-four-row-e39-v1",
+  "experiment": "e21-native-window-four-row-e39-dry-run-v1",
+  "campaign_plan": "configs/campaign/e21-native-window-system-four-row-e39-v1.json",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-23-e21-native-window-four-row-e39-v1/protocol-registered-v1.json",
+    "sha256": "d9e622cd26007ba0e06e1cff625fc3df9e247df56e0f72f0df8672b1e8844a68"
+  },
+  "root_registration_required": true,
+  "execution_plan": {
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39-V1-FIT-V1",
+    "attempt_id": "attempt-e21-native-window-system-four-row-e39-v1-fit",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "earnings21-original",
+    "split_role": "discovery",
+    "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992",
+    "planned_model_calls": 176,
+    "planned_gpu_hours": 0.5,
+    "planned_speech_audio_seconds": 3960,
+    "protocol_hash": "9b9274454b47b628baf93d5213a2042eecdad6fe184e5b8ef52552f4227c6290"
+  },
+  "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realized native request inside the same campaign, under the same lease. coordinate-fit must NOT be run, or this row is double-charged.",
+  "execution_location": "Shared six-node controller (phase-native-review-revise-acquire-v1: perception, solver, reviewer x3, planner, zero-contact acquisition, delivery normaliser) and the OpenJiuwen executor, through core.flight.FlightRuntime.",
+  "expected_session_id": "serving-e21-native-window-flightruntime-np4-max1024-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 0.5,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "paid_api_calls": 0,
+    "repeated_speech_audio_seconds_cap": 3960
+  },
+  "modules": {
+    "base": "the SEALED cell e21-native-window-system-four-row-v1 exactly as its recovery-v4 attempt flew it at flight commit 1a9c78d2: the six-node native episode phase-native-review-revise-acquire-v1 (Perception -> Solver -> Reviewer x3 -> Planner -> zero-contact Acquisition -> saea-deliver-earnings-text-v1 delivery normaliser), ceiling 11, tool-free (no phase_tools, no knowledge_stores), the shared rails.controllers.EvidenceAgentController / core.flight.FlightRuntime / OpenJiuwen executor path, the np4 x 24,576 max1024 E21 geometry, the four-row roster batch SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1 with the parent's execution-unit subset, window feature packets and participant-roster knowledge snapshot, and the parent's task instruction and Perception / Solver / Planner probes. Nothing of it moves.",
+    "factor": "ONE engineering repair, three leaves: native_episode.finite_completion_scope 'episode' -> 'answering-node'; roles.perception.max_completion_tokens 320 and roles.reviewer.max_completion_tokens 384 (sized on the E35 sub10 medians 324 / 381, both inside the geometry's 1,024); and the tool-free Reviewer probe v2 in place of v1. Everything else is byte-identical to the parent.",
+    "second_declared_key_not_a_factor": "native_episode.finite_completion_policy stays 'deliver-latest-or-abstain' (item E13) and native_episode.react_exhaustion_policy stays 'continue-without-answer' (item E22), the two keys scripts/checks/finite_completion_policy_check.py requires of every live unflown native cell. Neither value moves; what this cell moves is the SCOPE the first applies to.",
+    "zero_added_contacts": "The role graph is untouched, so the bounded ceiling stays 11 contacts per window and every cap is the parent's own registered ceiling, unchanged.",
+    "purpose": "ONE DELIVERABLE: the three receipt assertions of the E35 read's section 5 dry-run sketch -- (R1) zero retained rows with a perception/reviewer terminal_disposition abstention, (R2) 4 of 4 non-empty deliveries, (R3) zero length-truncated Perception/Reviewer contacts at the 320 / 384 caps. RECEIPTS ONLY: zero scoring jobs, no metric, no score claim, no effectiveness or generalization claim. A Stage-2 base repair (base lock v3.1 candidate), not a Stage-3 cell; harness-admission label NONE."
+  },
+  "scoring": "NONE. Zero official scoring jobs: the dry run is a receipts-only read and quotes no metric. The baseline's scorers block is the parent's, carried unchanged for configuration identity only.",
+  "quality_read_gate": "No read of any kind before the single attempt's manifest is sealed and complete. The read is RECEIPTS ONLY -- terminal_disposition role ids and reasons, per-role finish_reason counts, delivery receipts, contact counts -- and prints or persists no utterance or transcript text. A partial manifest is never read.",
+  "requires_before_flight": [
+    "The parent's derived execution-unit subset analysis/SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1/window-inventory.json must be present at file_sha256 e5f3cfbcbc407fbb3a7b59469b86ab9d405f7b43963cb2d18b655790c5f4a32b with unit_count 4 (it already is: the sealed E35 four-row flight used it). It is bound to the roster batch, not to a run id, so nothing is rebuilt for this run.",
+    "The parent's window feature packets analysis/SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1/window-feature-packets.json must be present at sha256 3fb18dd3dcd0d41eb3f8d3750090e72e0f412eef00378e3c0d791f4d9ed1fc0c.",
+    "The knowledge snapshot knowledge/e21/governed/participant-roster-v1/snapshot.json must be present at sha256 72e7ddff84b6996ccb924564975a92352d186861347760ab9f39c07218ccdb93.",
+    "The resident serving session serving-e21-native-window-flightruntime-np4-max1024-v1 must be up on the E21 geometry; the flight attaches to it and never spawns or stops a server.",
+    "Root must have minted coordination/e21-native-window-four-row-e39-v1/root-admission-v1.json (e21-native-window-four-row-e39-admission-v1) and flipped this cell with scripts/flights/repin_cell.py; readiness is HELD until then."
+  ],
+  "prepared_phase_supply_note": "NONE and none is pinned: the program declares no supplied first phase, so core.flight.cli prepare-supply returns 'program has no supplied first phase to prepare' (item E38) and core.flight.repin rebuilds and pins nothing. --allow-output-change must never be passed.",
+  "fit_arithmetic": "4 units x 11 native contacts x (1 speech packet + 3 endpoints) = 176",
+  "registration_state": "REGISTERED BEFORE CONTACT on 2026-09-23 by the E39 registration agent (Fable 5.1); readiness still HELD. Fresh unconsumed exposure-ledger rows exist for both run ids. Root mints coordination/e21-native-window-four-row-e39-v1/root-admission-v1.json (e21-native-window-four-row-e39-admission-v1) and flips with core.flight.repin.apply_decision_and_readiness via scripts/flights/repin_cell.py; there is no supply to prepare (item E38 path: the program declares no supplied first phase), so no prepared artifact and no 'preparation' readiness requirement exist for this cell. The flip moves the composed and protocol hashes below and the tool rewrites them here, in the protocol document and in the two ledger rows.",
+  "composed_config_hash": "b2d60c637093cad1527f3e8311cac6a66fbf3c504d41a73fc23a0428c1e1e698",
+  "registered_at_utc": "2026-09-23T00:00:00.000000+00:00",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-e39reg, branch fable/e39reg, base commit 321b64fe",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true,
+  "attempt_note": "First attempt of this run id. At most one separately registered recovery after a named cause; a second failure stops the flight.",
+  "purpose": "ONE DELIVERABLE: the three receipt assertions of the E35 read's section 5 dry-run sketch -- (R1) zero retained rows with a perception/reviewer terminal_disposition abstention, (R2) 4 of 4 non-empty deliveries, (R3) zero length-truncated Perception/Reviewer contacts at the 320 / 384 caps. RECEIPTS ONLY: zero scoring jobs, no metric, no score claim, no effectiveness or generalization claim. A Stage-2 base repair (base lock v3.1 candidate), not a Stage-3 cell; harness-admission label NONE."
+}
