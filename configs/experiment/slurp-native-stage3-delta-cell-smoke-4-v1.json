@@ -18,7 +18,7 @@
             "kind": "decision",
             "expected_decision_id": "slurp-stage3-delta-cell-r01-admission-v1",
             "relpath": "coordination/slurp-stage3-delta-cell-r01-v1/root-admission-v1.json",
-            "sha256": "ad11728bbbe708b951a609863112021db0025ad1c6f7b04f29d2b01daeadb80b",
+            "sha256": "72e6827a5b291fe68c223994918403147660a309610101ae46855ff9459ebc9c",
             "reason": "Decision slurp-stage3-delta-cell-r01-admission-v1 pinned by scripts/flights/repin_cell.py."
           },
           {
