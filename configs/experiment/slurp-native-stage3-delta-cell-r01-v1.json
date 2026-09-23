@@ -47,13 +47,20 @@
         "reason": "The derangement-twin form control for CELL-1 (owner-standard B1/IDXT twin discipline): same statement content, wrong facet attachment (scripts/build_slurp_stage3_delta_twin.py). Held for the same reasons as the generation cell.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-delta-cell-r01-admission-v1",
+            "relpath": "coordination/slurp-stage3-delta-cell-r01-v1/root-admission-v1.json",
+            "sha256": "ad11728bbbe708b951a609863112021db0025ad1c6f7b04f29d2b01daeadb80b",
+            "reason": "Decision slurp-stage3-delta-cell-r01-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The twin release of knowledge/slurp/semantic/stage3-deltas-twin-v1r/, the seeded derangement of the v1r store's own authored document (seed 20260922). The cell stays HELD on a root admission decision.",
-            "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1r/release.json",
-            "sha256": "7c0dc8979e8b9f1ae66105049168b310d5136c99983f99a98885d01e27d84219"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1/phase-supply-v1.json",
+            "sha256": "043516877b36053eaec5e468d9de3c11ba008805633223ceb0091d20b556445b"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1"
     },
