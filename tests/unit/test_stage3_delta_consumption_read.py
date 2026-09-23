@@ -578,6 +578,68 @@ def test_without_a_comparator_the_read_still_reports_supply(sealed):
 
 
 # --------------------------------------------------------------------------
+# A REVISE revisit (the seven-wave trajectory the real flight carries)
+# --------------------------------------------------------------------------
+
+def test_a_revise_revisit_accumulates_under_the_same_node(tmp_path, monkeypatch):
+    """A Planner REVISE sends the episode back to the Solver, so a role is VISITED TWICE.
+
+    Cell PLAN's own sealed trajectory carries such rows (contacts-per-row histogram 4 and 7), so
+    the node attribution must aggregate a role's repeated visits under that one node rather than
+    inventing a node or dropping the second supply.
+    """
+
+    data_root = tmp_path / "data"
+    monkeypatch.setattr(drv, "DATA", data_root)
+    sample_id = "s:9"
+    order = [
+        ("perception", [_contact_ref(sample_id, "perception"), COMPOSITE], [_qualified("d2")]),
+        ("solver", [_contact_ref(sample_id, "solver"), _node_ref("reviewer", 4)],
+         [_qualified("d4")]),
+        ("reviewer", [_contact_ref(sample_id, "reviewer"), _node_ref("planner", 4)],
+         [_qualified("d5")]),
+        # the Planner answers REVISE: the episode returns to the Solver, supplying nothing
+        ("planner", [_contact_ref(sample_id, "planner"), COMPOSITE], []),
+        # the SECOND Solver visit feeds the SECOND Reviewer visit
+        ("solver", [_contact_ref(sample_id, "solver"), _node_ref("reviewer", 4)],
+         [_qualified("d6")]),
+        ("reviewer", [_contact_ref(sample_id, "reviewer"), _node_ref("planner", 4)], []),
+        ("planner", [_contact_ref(sample_id, "planner")], []),
+    ]
+    waves = [
+        _wave(sample_id, role, index, _transition(refs=refs, new_value_ids=new))
+        for index, (role, refs, new) in enumerate(order)
+    ]
+    _seal_run(
+        data_root,
+        RUN,
+        ATTEMPT,
+        results=[_result(sample_id, waves)],
+        scores=None,
+        with_projection=False,
+    )
+    out = tmp_path / "out"
+    assert drv.main([
+        "--run", RUN, "--attempt", ATTEMPT, "--analysis-root", str(out),
+        "--roster-metadata", "analysis/ABSENT/roster-metadata.json",
+    ]) == 0
+    nodes = json.loads((out / "delta-consumption.json").read_text(encoding="utf-8"))[
+        "consumption"
+    ]["per_node"]
+    assert nodes["perception"]["items_supplied_total"] == 2  # the unconditional seed
+    assert nodes["solver"]["items_supplied_total"] == 1
+    assert nodes["solver"]["distinct_value_id_list"] == [f"{STORE}::d2"]
+    # both Reviewer visits land on the reviewer node, on the SAME row
+    assert nodes["reviewer"]["rows_supplied"] == 1
+    assert nodes["reviewer"]["items_supplied_total"] == 2
+    assert nodes["reviewer"]["distinct_value_id_list"] == [
+        f"{STORE}::d4", f"{STORE}::d6"
+    ]
+    assert nodes["planner"]["items_supplied_total"] == 1
+    assert nodes["planner"]["distinct_value_id_list"] == [f"{STORE}::d5"]
+
+
+# --------------------------------------------------------------------------
 # Refusals
 # --------------------------------------------------------------------------
 
