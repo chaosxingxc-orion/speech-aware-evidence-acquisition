@@ -175,7 +175,9 @@ run "$PY" -B scripts/build_slurp_stage3_delta_store.py \
     --out-source "$SOURCE" --source-split-identity-hash "$SPLIT" \
     --release "$REG" --data-root "$DATA" --release-pins "$RELEASE_PINS"
 # The twin's authored document is the derangement, not a curation, so it is released directly.
-run "$PY" -B -m speech_aware_evidence_acquisition.core.driver.cli prepare-semantic-knowledge \
+# 2026-09-23 (first real run): the PACKAGE entry core.driver (its __main__) runs main(); "-m ...core.driver.cli"
+# imported the module without running it and exited 0 having released nothing.
+run "$PY" -B -m speech_aware_evidence_acquisition.core.driver prepare-semantic-knowledge \
     --registration "$TWIN_REG" --repo-root "$REPO" --data-root "$DATA"
 
 # ---------------------------------------------------------------- F: the CELL-1 fill values
