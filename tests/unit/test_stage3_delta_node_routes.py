@@ -345,8 +345,22 @@ def test_a_candidate_bound_phase_still_binds_to_the_rows_own_candidates(tmp_path
     assert _selected(router.automatic_for_phase("solver", only_beta)) == (
         "stage3-deltas::delta:1:bbbbbbbbbbbb",
     )
-    # beta has no reviewer delta at all -> nothing supplied, no error.
-    assert router.automatic_for_phase("reviewer", only_beta).fusion_decision.selected_value_ids == ()
+    # beta has no reviewer delta at all -> NO SUPPLY STEP, not an empty one.
+    #
+    # This line used to assert an empty-but-present decision, and that is the
+    # object that killed the v2 CELL-1 smoke at the openJiuwen vertex
+    # ``reviewer_0_input`` on 2026-09-23 after 12 metered contacts: any supply
+    # becomes an ``acquire`` transition, and an acquire that introduces neither
+    # a value nor a facet is refused by ``AgentStepTransition.validate``. The
+    # route now declines the phase, which the runner already handles (the wave
+    # seals as an ordinary ``organize`` step).
+    assert router.automatic_for_phase("reviewer", only_beta) is None
+    skip = next(iter(router.receipt["delta_supply"].values()))
+    assert (skip["node"], skip["selected"], skip["already_acquired"]) == (
+        "reviewer",
+        0,
+        0,
+    )
 
 
 def test_the_perception_route_is_served_by_the_first_phase_seed(tmp_path):

@@ -500,3 +500,78 @@ output is expected to reproduce byte for byte, and `--allow-output-change` must 
 
 **If the v2 smoke fails.** The one-recovery allowance for this flight is spent. A failure here stops
 cell CELL-1 outright and is escalated to root; it is not re-registered a third time.
+
+## Addendum 2026-09-23 (third): the smoke's third failure; the v3 smoke is the four-row proof
+
+The v2 smoke was flown and **failed**. Attempt
+`attempt-slurp-native-stage3-delta-cell-smoke-4-v2-generation` metered **12 contacts** on the four
+rows -- rows 1 and 3 completed their episodes, rows 2 and 4 stopped after Perception and Solver --
+and died at the openJiuwen vertex `reviewer_0_input`:
+
+```
+NativeEpisodeError: native episode node failed: [100054] component 'reviewer_0_input'
+execute 'invoke' error, reason='acquire must introduce at least one new value or facet'
+```
+
+**Root cause.** The stage3-deltas store is node-addressed: 379 values in disjoint per-node slices
+(Perception 119, Solver 151, Reviewer 95, Planner 14), and the Reviewer slice associates with only
+30 of the 39 legal intents. A row whose Perception candidates fall outside those 30 matches **no**
+Reviewer delta, and the pre-fix `rails.knowledge_stores._stage3_delta_local_supply` still returned a
+`PhaseSupply` with an empty decision. `rails.controllers.advance_phase_response_state` turns any
+supply into an `action_kind="acquire"` transition, and
+`rails.knowledge.AgentStepTransition.validate` refuses an acquire that introduces neither a value
+nor a facet. The Solver phase composes three supplies and a sibling always carried a value, so the
+defect was invisible there; the Reviewer and the Planner are served by this store alone.
+
+**Why the offline proof missed it.** The dry run introduced after the second failure walked the
+roster's **first** row -- one of the two that completed -- on the **ACCEPT** path, with a canned
+Perception answer built from the store's **union** of addressed facets, and it asserted that every
+node received a delta. A unit test also pinned the defect as "an empty but valid supply". The
+cumulative value set was not the cause (the slices are disjoint), but it is the same hazard on a
+**revisit**, which the runner already handles with
+`rails.controllers.restrict_repeat_visit_supply` and which the dry run did not perform.
+
+**The program rule applies again.** A failure is fixed and PROVEN on a four-row dry run before any
+further contact (study `CLAUDE.md`, owner 2026-09-03). Run id
+`SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2` is **retired** with its FIT identity
+`SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2-FIT-V1`; the coordinator closes both ledger rows.
+
+**The fix** (engineering only; no config key added, no decided key moved). A later-phase delta route
+that introduces nothing new supplies **nothing**: the pool is ranked in full, already-acquired ids
+are dropped, the per-node cap is applied to what remains, and an empty result returns `None`, so the
+phase takes no supply step and the wave seals as an ordinary `organize` transition. Each skip is
+receipted as `delta_supply {node, phase, sample_id, store_id, selected, already_acquired, reason}`.
+The dry run now performs the runner's repeat-visit restriction, so a REVISE walk is the flight's
+behaviour; the regression walks all four rows with the candidate ids the v2 trace recorded and a
+REVISE verdict, and fails pre-fix with the flight's own error sentence on exactly the two rows the
+flight lost.
+
+**The replacement.** The four-row proof flies under run id
+`SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3`, attempt
+`attempt-slurp-native-stage3-delta-cell-smoke-4-v3-generation`, FIT identity
+`SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3-FIT-V1`. The caps are the v1 and v2 smokes', unchanged
+(44 / 176 / 117 / 1.0 / 24 / 0), and are run-cumulative per run id, so neither the v1 spend
+(4 calls, 10.60 s) nor the v2 spend (12 calls) enters them. Registered here:
+
+* `configs/experiment/slurp-native-stage3-delta-cell-smoke-4-v3.json` (one cell, **held**);
+* `configs/baseline/slurp-native-stage3-delta-cell-smoke-4-v3-baseline-v1.json` -- the v2 smoke
+  baseline with only `native_contact_fit` re-identified and `prepared_phase_supply` absent, so the
+  re-pin mints this cell's own artifact under its own run id (item E16);
+* `docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/smoke-v3-generation-plan-registered-v1.json`
+  and `.../smoke-v3-fit-plan-registered-v1.json`;
+* two DRAFT exposure-ledger rows, `consumed = no`, root countersignature pending.
+
+Composed config `6f90ee7525e7dd045df9ed1279c7a4b5cac1758d162eb31ac789480acb9f8b8d`, protocol
+`b4440feaba272d3bbeebfe7c41cca5ca01eb93e471373808609aeabab083432e`, computed at this commit before
+the re-pin inserts the prepared pin; the re-pin recomputes and rewrites both.
+
+**Population, split identity, store pins, geometry, session, decision rule and every decided key are
+unchanged.** The twin smoke keeps its own run id `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1`
+(never opened) and carries the same fix through the shared rails module. Both arms are untouched.
+
+**The coordinator's sequence is section 10's, with the v3 ids substituted for the v2 ones:** merge
+this branch; root's admission receipt gains
+`SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3` and `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3-FIT-V1` in
+its `eligible_run_ids`; `scripts/flights/batch/cell1_flip_all.sh` re-pins and flips every CELL-1
+cell in one cycle (the fix is hashed into every prepared artifact identity);
+`scripts/flights/batch/batch_chain_cell1.sh` then flies step 1's smoke under the v3 ids.

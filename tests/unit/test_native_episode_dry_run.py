@@ -13,16 +13,26 @@ CANONICAL four-key Perception document while a native episode seals the
 model's own COMPACT structured-output bytes. This module is the durable
 proof that the walk now happens offline, before a flight is queued.
 
-Two layers:
+The v2 smoke then spent 12 contacts and died at ``reviewer_0_input`` with
+"acquire must introduce at least one new value or facet" -- a defect this
+module's first version walked straight past, because it asked only about the
+roster's FIRST row, with candidates read off the store's own union of
+addressed facets, on the ACCEPT path. All three are now variables, not
+assumptions.
+
+Three layers:
 
 * the always-on part -- the helper's own contracts (the graph order it
-  derives, the refusals it makes), which need no data root; and
+  derives, the refusals it makes), which need no data root;
 * ``test_the_cell_1_smoke_composition_walks_its_whole_episode``, which walks
   the REAL registered smoke cell on the REAL released stores for ONE row with
   canned, schema-valid role answers. It SKIPS where the data root, the
   released stores or the promoted packets are absent, and asserts where they
   are present: the whole graph completes, every node is supplied its own
-  stage3-deltas slice, and the delivery is the Solver's sealed draft.
+  stage3-deltas slice, and the delivery is the Solver's sealed draft; and
+* the two regressions below it: EVERY row of the smoke roster, answered with
+  the Perception candidate ids the retired v2 attempt's own trace recorded,
+  and a REVISE verdict that revisits the Solver, the Reviewer and the Planner.
 """
 
 from __future__ import annotations
@@ -49,8 +59,8 @@ from speech_aware_evidence_acquisition.rails.native_episode_config import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-SMOKE_EXPERIMENT = "slurp-native-stage3-delta-cell-smoke-4-v2"
-SMOKE_CELL = "slurp-native-stage3-delta-cell-smoke-4-v2"
+SMOKE_EXPERIMENT = "slurp-native-stage3-delta-cell-smoke-4-v3"
+SMOKE_CELL = "slurp-native-stage3-delta-cell-smoke-4-v3"
 DELTA_STORE = "stage3-deltas"
 
 
@@ -112,6 +122,14 @@ def _data_root() -> Path | None:
 def _umbrella_lock() -> Path | None:
     from speech_aware_evidence_acquisition.data.lock import umbrella_lock_path
 
+    # A worktree is NOT in the adjacent-checkout layout, and a worktree is
+    # exactly where a fix to these rails is developed and dry-run. The
+    # established override name (``scripts/run_enhancement_survey.py``) makes
+    # the real-cell walk runnable there instead of silently skipping.
+    override = os.environ.get("SAEA_UMBRELLA_LOCK")
+    if override:
+        path = Path(override)
+        return path if path.is_file() else None
     try:
         path = umbrella_lock_path(REPO_ROOT)
     except Exception:  # pragma: no cover - absent umbrella checkout
@@ -154,9 +172,8 @@ def _canned_answers(runtime) -> dict[str, str]:
     }
 
 
-def test_the_cell_1_smoke_composition_walks_its_whole_episode():
-    """The proof the flight budget paid for twice: walk the registered v2
-    smoke cell's own composition, offline, for one row."""
+def _smoke_composition(*, sample_limit: int = 1):
+    """``(runtime, binding)`` for the registered smoke cell, or a skip."""
 
     from speech_aware_evidence_acquisition.core.flight.factory import (
         build_flight_runtime,
@@ -184,9 +201,57 @@ def test_the_cell_1_smoke_composition_walks_its_whole_episode():
             lock_path=lock_path,
             campaign_active=False,
         )
-        binding = compose_dry_run(runtime, sample_limit=1)
+        binding = compose_dry_run(runtime, sample_limit=sample_limit)
     except Exception as error:  # pragma: no cover - host without the assets
         pytest.skip(f"this host cannot compose the cell offline: {error}")
+    return runtime, binding
+
+
+def _answers_for(candidates, *, revise_on_first_visit=False):
+    """A fake frozen core answering with a GIVEN candidate list.
+
+    The Perception answer is the COMPACT document the registered
+    ``slurp-intent-hypotheses-v1`` schema defines -- exactly what a flight
+    seals. Which intents it names is the whole variable: a node-filtered
+    candidate-bound route selects from its OWN slice, and the slices do not
+    all address the same intents.
+    """
+
+    perception = json.dumps(
+        {
+            "candidates": [
+                {
+                    "intent_id": intent,
+                    "distinction": "Dry-run canned alternative.",
+                    "evidence_refs": [],
+                    "unresolved_fields": [],
+                }
+                for intent in candidates
+            ]
+        },
+        separators=(",", ":"),
+    )
+
+    def answer(role: str, visit: int) -> str:
+        if role == "perception":
+            return perception
+        if role == "solver":
+            return f"intent: {candidates[0]}\nentities: none"
+        if role == "reviewer":
+            return "The draft names one legal intent and no unsupported entity."
+        if role == "planner":
+            return "REVISE" if (revise_on_first_visit and visit == 1) else "ACCEPT"
+        raise AssertionError(f"unexpected role {role!r}")
+
+    return answer
+
+
+def test_the_cell_1_smoke_composition_walks_its_whole_episode():
+    """The proof the flight budget paid for twice: walk the registered
+    smoke cell's own composition, offline, for one row."""
+
+    _runtime, binding = _smoke_composition(sample_limit=1)
+    runtime = _runtime
 
     assert DELTA_STORE in binding["store_ids"]
     assert episode_node_order(binding["episode"]) == (
@@ -232,3 +297,138 @@ def test_the_cell_1_smoke_composition_walks_its_whole_episode():
     document = result.as_json()
     assert json.loads(json.dumps(document)) == document
     assert document["supplied_value_counts"]["perception"] >= 1
+
+
+# ---------------------------------------------------------------------------
+# The third failure: the rows the canned composition never asked about
+# ---------------------------------------------------------------------------
+
+#: The Perception candidate ids the RETIRED v2 smoke actually produced, read
+#: off that attempt's own trace (``MODEL_RESPONSE`` records, ids only). Rows 1
+#: and 3 completed their episodes; rows 2 and 4 died at the openJiuwen vertex
+#: ``reviewer_0_input`` with "acquire must introduce at least one new value or
+#: facet", because the Reviewer slice of the released store addresses 30 of
+#: the 39 legal intents and neither row's candidates fall in it.
+TRACE_CANDIDATES = {
+    "slurp:train:000007:audio--1504197557": (
+        "audio_volume_up",
+        "audio_volume_mute",
+        "play_audiobook",
+    ),
+    "slurp:train:000009:audio-1497557594-headset": (
+        "iot_hue_lightchange",
+        "iot_hue_lightup",
+        "iot_hue_lighton",
+    ),
+    "slurp:train:000015:audio-1488524781": (
+        "audio_volume_up",
+        "play_radio",
+        "audio_volume_mute",
+    ),
+    "slurp:train:000023:audio-1490956038": (
+        "iot_hue_lightdim",
+        "iot_hue_lighton",
+        "iot_hue_lightoff",
+    ),
+}
+
+
+def test_every_smoke_row_walks_on_the_candidates_the_flight_actually_produced():
+    """The regression the v2 smoke paid 12 contacts to discover.
+
+    The canned answers of the test above name candidates read off the store's
+    OWN union of addressed facets, so every node's slice had something to
+    select and the walk was green on a defect that killed half the roster.
+    These are the candidates the flight itself produced. Pre-fix, rows 2 and
+    4 raise ``RailsError: acquire must introduce at least one new value or
+    facet`` here -- the flight's own error, offline, for nothing. Post-fix,
+    all four rows complete, and the nodes whose slice has nothing for the row
+    simply take no supply step.
+    """
+
+    runtime, _binding = _smoke_composition(sample_limit=4)
+    roster = tuple(item.sample_id for item in runtime._samples)
+    assert roster == tuple(TRACE_CANDIDATES), roster
+
+    def deltas(value_ids):
+        return [item for item in value_ids if item.startswith(f"{DELTA_STORE}::")]
+
+    supplied = {}
+    for sample_id, candidates in TRACE_CANDIDATES.items():
+        result = dry_run_native_episode(
+            runtime,
+            answers=_answers_for(candidates),
+            sample_id=sample_id,
+            sample_limit=4,
+        )
+        assert tuple(node.phase for node in result.nodes) == NATIVE_ROLE_GRAPH_ORDER
+        assert result.delivered_phase == "solver"
+        supplied[sample_id] = {
+            node.phase: len(deltas(node.supplied_value_ids))
+            for node in result.nodes
+        }
+
+    # The two rows that completed in the flight are supplied at every node;
+    # the two that died supply the Solver and decline Reviewer and Planner.
+    rows = list(TRACE_CANDIDATES)
+    assert supplied[rows[0]]["reviewer"] == 3
+    assert supplied[rows[0]]["planner"] == 1
+    assert supplied[rows[1]]["reviewer"] == 0
+    assert supplied[rows[1]]["planner"] == 0
+    assert supplied[rows[2]]["reviewer"] == 2
+    assert supplied[rows[3]]["reviewer"] == 0
+
+    # And the skips are receipted, per node and per row, with their reason.
+    router = _binding["phase_binding"].get("supply_for_store")
+    audits = router.receipt["delta_supply"]
+    declined = {
+        (entry["phase"], entry["sample_id"])
+        for entry in audits.values()
+        if entry["selected"] == 0
+    }
+    assert ("reviewer", rows[1]) in declined
+    assert ("planner", rows[1]) in declined
+    assert ("reviewer", rows[3]) in declined
+    for entry in audits.values():
+        assert entry["node"] == entry["phase"]
+        assert entry["store_id"] == DELTA_STORE
+        assert entry["reason"]
+
+
+def test_a_revise_verdict_revisits_three_nodes_without_acquiring_twice():
+    """The other way a route introduces nothing: the cumulative value set.
+
+    A per-node selection is a pure function of (phase, sample), so the second
+    visit of the Solver, the Reviewer and the Planner is handed ids the
+    episode already holds. The walk performs the runner's own
+    ``restrict_repeat_visit_supply`` step, so this is the flight's behaviour
+    and not an approximation of it.
+    """
+
+    runtime, _binding = _smoke_composition(sample_limit=4)
+    sample_id, candidates = next(iter(TRACE_CANDIDATES.items()))
+    result = dry_run_native_episode(
+        runtime,
+        answers=_answers_for(candidates, revise_on_first_visit=True),
+        sample_id=sample_id,
+        sample_limit=4,
+        node_order=NATIVE_ROLE_GRAPH_ORDER + ("solver", "reviewer", "planner"),
+    )
+
+    walked = tuple((node.phase, node.visit) for node in result.nodes)
+    assert walked == (
+        ("perception", 1),
+        ("solver", 1),
+        ("reviewer", 1),
+        ("planner", 1),
+        ("solver", 2),
+        ("reviewer", 2),
+        ("planner", 2),
+    )
+    first_visits = {node.phase: node for node in result.nodes[:4]}
+    assert first_visits["solver"].supplied_value_ids
+    assert first_visits["reviewer"].supplied_value_ids
+    # Every second visit acquires nothing: the values it would have been
+    # given are already on the accumulated QueryState.
+    for node in result.nodes[4:]:
+        assert node.supplied_value_ids == (), node.phase

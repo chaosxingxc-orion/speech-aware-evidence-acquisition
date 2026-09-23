@@ -432,6 +432,7 @@ def dry_run_native_episode(
 
     from ..rails.controllers import (
         advance_phase_response_state,
+        restrict_repeat_visit_supply,
         seal_phase_response_state,
     )
     from ..rails.knowledge import QueryState
@@ -569,6 +570,17 @@ def dry_run_native_episode(
                     raise NativeEpisodeDryRunError(
                         f"phase {next_phase!r} received supply but is not supplied"
                     )
+                # The runner's own next step (``rails.runner``'s settle, E3c):
+                # a prepared per-node selection is a pure function of (phase,
+                # sample), so a REVISITED node is handed the SAME decision and
+                # may acquire only what the accumulated QueryState does not
+                # already carry. Walking without this made the dry run
+                # DIVERGE from the flight on exactly the path a REVISE
+                # verdict takes -- so the walk performs it, against the same
+                # pre-seal context the runner passes.
+                supply = restrict_repeat_visit_supply(
+                    supply, context, phase_name=next_phase
+                )
         nodes.append(
             DryRunNode(
                 phase=phase,
