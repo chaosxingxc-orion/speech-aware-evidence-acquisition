@@ -1,0 +1,54 @@
+{
+  "experiment_id": "SAEA-E21-NATIVE-WINDOW-FOUR-ROW-E39-DRY-RUN-V1",
+  "date": "2026-09-22",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "E39b: Item E39 (2026-09-22): a four-row dry run of the finite-completion repair the E35 sub10 read asked for -- item E13's deliver-latest-or-abstain rule scoped to the ANSWERING node (native_episode.finite_completion_scope 'answering-node') plus per-role completion caps on Perception and the Reviewer, on the SAME six-node episode, the SAME shared harness (rails.controllers.EvidenceAgentController, core.flight.FlightRuntime, the OpenJiuwen executor) and the SAME four-row roster the E35 smoke flew. NO optimisation, NO new mechanism, NO flight: registered-before-contact configuration only. No score, comparison, decision, effectiveness or generalization claim may be made from this proof. Recovery of E39 (caps 320 / 384 -> 640 / 640).",
+  "failure_policy": "Preserve original failure and contact record. No automatic restart/replay/geometry/output-cap change. At most one separately registered recovery after a named cause and bounded proof.",
+  "population": {
+    "carrier": "earnings21-original",
+    "count": 1,
+    "execution_units": 4,
+    "dataset_fragment": "e21-native-window-four-row-v1",
+    "roster_receipt": "docs/receipts/probe-samples/e21-current-executor-four-row-proof-v1.json",
+    "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992",
+    "historically_exposed": true
+  },
+  "cells": [
+    {
+      "cell_id": "e21-native-window-system-four-row-e39b-v1",
+      "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39B-V1",
+      "attempt_id": "attempt-e21-native-window-system-four-row-e39b-v1",
+      "arm": "speech-feature-query",
+      "policy": "phase-native-review-revise-acquire-v1",
+      "model_fragment": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1",
+      "dataset_fragment": "e21-native-window-four-row-v1",
+      "baseline_fragment": "e21-native-window-system-four-row-e39b-v1",
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "readiness": {
+        "state": "held",
+        "reason": "E39b (2026-09-23): the one recovery re-registration of the E39 four-row dry run (rule FAIL on R3, cause = cap sizing); caps 640 / 640; decision id e21-native-window-four-row-e39b-admission-v1 at coordination/e21-native-window-four-row-e39b-v1/root-admission-v1.json; held until root mints and flips.",
+        "requirements": []
+      },
+      "execution_plan": {
+        "split_role": "discovery",
+        "planned_model_calls": 44,
+        "planned_gpu_hours": 0.5,
+        "planned_speech_audio_seconds": 3960
+      },
+      "attempt_note": "First attempt of this run id. The repair is three leaves against e21-native-window-system-four-row-v1: finite_completion_scope 'answering-node', the per-role completion caps perception 320 / reviewer 384, and the tool-free Reviewer template v2. Every pinned artifact (execution-unit subset, window feature packets, knowledge snapshot) is the parent's, unchanged: those pins are bound to the four-row roster batch SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1, not to a run id."
+    }
+  ],
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 3960,
+    "split_role": "discovery"
+  },
+  "execution_plan_note": "One arm only (the E39 system form); its direct comparator is the already-flown e21-native-window-direct-four-row-v1 cell of e21-native-window-four-row-direct-vs-system-v1, on the same roster and the same serving geometry. Ceilings, not targets, enforced run-cumulatively per run id by the runtime. Speech seconds are REPEATED seconds: every native-episode contact re-sends the window audio, so the ceiling is windows x 11 x window seconds.",
+  "service_session": "serving-e21-native-window-flightruntime-np4-max1024-v1"
+}

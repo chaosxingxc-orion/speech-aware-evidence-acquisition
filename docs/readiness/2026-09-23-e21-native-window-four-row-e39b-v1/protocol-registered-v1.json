@@ -1,0 +1,226 @@
+{
+  "schema": "saea-e39-dry-run-protocol-v1",
+  "protocol_id": "e21-native-window-four-row-e39b-dry-run-protocol-v1",
+  "item": "E39",
+  "registered_at_utc": "2026-09-23T04:00:00+00:00",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-e39reg, branch fable/e39reg, base commit 321b64fe",
+  "authority": "docs/results/2026-09-22-e21-native-window-flightruntime-e35-read.md section 5 (the dry-run sketch this package registers); docs/results/2026-09-22-base-lock-v3.md section 5a (the one open harness defect at the lock; the repair enters as base lock v3.1 AFTER this four-row dry run on the E21 geometry); owner decisions 89 (the E21 carrier on FlightRuntime) and 98 (the Earnings full-discovery calibration stays after the Stage-3 SLURP main line).",
+  "cell_kind": "STRUCTURAL DRY RUN -- receipts only. A Stage-2 base repair proof, not a Stage-3 cell and not an effectiveness read. The deliverable is three receipt assertions, not a number.",
+  "question": "On the SAME four-row roster, the SAME six-node native episode (phase-native-review-revise-acquire-v1, ceiling 11) and the SAME resident E21 serving geometry the sealed E35 four-row system cell flew, does a LENGTH-TRUNCATED Perception or Reviewer contact still VOID its window?",
+  "claim_surface": "Engineering structure only. No score, comparison, decision, effectiveness or generalization claim may be made from this cell.",
+  "one_factor": "ONE engineering repair, three leaves, against the sealed cell e21-native-window-system-four-row-v1: (a) native_episode.finite_completion_scope 'episode' -> 'answering-node' (item E13's deliver-latest-or-abstain rule stops ending the episode when a NON-answering node is length-truncated; only a truncated Solver, or no Solver draft at the end, still triggers it); (b) per-role completion caps roles.perception.max_completion_tokens 320 and roles.reviewer.max_completion_tokens 384, both inside the geometry's 1,024, sized on the E35 sub10 medians of 324 and 381; (c) the tool-free Reviewer probe v2 (probes/e21_native_window_system_reviewer_v2.txt) in place of v1, which orders a task-contract tool call this tool-free cell arms no tool for. The three leaves are ONE repair of one defect and are not separable on four rows; nothing else moves.",
+  "comparator": {
+    "kind": "structural comparison only -- receipts against receipts, never scores against scores",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-V1",
+    "attempt_id": "attempt-e21-native-window-system-four-row-recovery-v4",
+    "sealed_at": "flight commit 1a9c78d2 (SAEA-Batch-Chain-E35 step 1, 2026-09-22 15:46 UTC)",
+    "sealed_receipts": "13 contacts / 1,170 repeated speech seconds through all six nodes",
+    "read": "docs/results/2026-09-22-e21-native-window-flightruntime-e35-read.md",
+    "never_reflown": true,
+    "what_is_compared": "terminal_disposition role ids and reasons, per-role finish_reason counts, delivery receipts and contact counts. NOT scores: the comparator's official numbers are not re-read, re-scored or revised by this cell."
+  },
+  "decision_rule": {
+    "kind": "receipts-only; no statistical test, no margin, no bar",
+    "pass": "PASS iff R1, R2 and R3 all hold on the sealed manifest's receipts.",
+    "fail": "FAIL if R1 or R2 fails. R3 is reported with its count on every verdict and a non-zero count is a named cause for the next registration, never a silent pass.",
+    "assertions": [
+      "R1. ZERO retained rows whose terminal_disposition.role_id is 'perception' or 'reviewer' with an abstention: under the answering-node scope a length-truncated auxiliary node must no longer void its window. Any such row FAILS the dry run.",
+      "R2. 4 of 4 windows deliver NON-EMPTY text through the saea-deliver-earnings-text-v1 normaliser (one delivery receipt per window, zero blank deliveries).",
+      "R3. ZERO length-truncated Perception or Reviewer contacts at the per-role caps 320 / 384 (finish_reason 'length' counted per role from the native phase summary); a non-zero count is reported with its value and is a named cause, not a silent pass."
+    ],
+    "no_score_gate": "There is no score in this decision rule. The dry run schedules ZERO scoring jobs and the verdict document carries no metric.",
+    "consequence": "On PASS the repair is proposed to the owner as base lock v3.1 (base lock v3 section 5a). On FAIL the repair stops here and the named cause is registered before anything else flies."
+  },
+  "population": {
+    "carrier": "earnings21-original",
+    "calls": 1,
+    "execution_units": 4,
+    "unit_kind": "native windows of call 4320211 (construction stratum), 90 s each",
+    "dataset_fragment": "e21-native-window-four-row-v1",
+    "roster_receipt": "docs/receipts/probe-samples/e21-current-executor-four-row-proof-v1.json",
+    "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992",
+    "split_role": "discovery",
+    "historically_exposed": true,
+    "roster_note": "The SAME four-row roster the sealed E35 four-row pair flew, and before it the OBS-path current-executor four-row proof. No new population, no fresh roster draw.",
+    "power_note": "n = 4. Far below the paired-effectiveness floor of n >= 400. This is why the cell has no score and no decision rule over one."
+  },
+  "cells": {
+    "arm": {
+      "cell_id": "e21-native-window-system-four-row-e39b-v1",
+      "experiment": "e21-native-window-four-row-e39b-dry-run-v1",
+      "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39B-V1",
+      "attempt_id": "attempt-e21-native-window-system-four-row-e39b-v1",
+      "fit_run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39B-V1-FIT-V1",
+      "fit_attempt_id": "attempt-e21-native-window-system-four-row-e39b-v1-fit",
+      "arm": "speech-feature-query",
+      "policy": "phase-native-review-revise-acquire-v1",
+      "model_fragment": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1",
+      "dataset_fragment": "e21-native-window-four-row-v1",
+      "baseline_fragment": "e21-native-window-system-four-row-e39b-v1",
+      "campaign_plan": "configs/campaign/e21-native-window-system-four-row-e39b-v1.json",
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "composed_config_hash": "7ba9bf518a76c15fb9c8e904d0dc544d5fa8fb6253f8ea5e4121e0a2080724bf",
+      "protocol_hash": "f3f3cb13588ae536cda0a9c79439490db18adec4fece8a9a512a646cb4cffd9c",
+      "contact_ceiling_per_window": 11
+    },
+    "no_direct_comparator_cell": "One arm only. The direct comparator is the ALREADY-FLOWN e21-native-window-direct-four-row-v1 cell of e21-native-window-four-row-direct-vs-system-v1, on the same roster and the same serving geometry; it is not re-flown and contributes no contact to this registration."
+  },
+  "service": {
+    "expected_session_id": "serving-e21-native-window-flightruntime-np4-max1024-v1",
+    "attach_only": true,
+    "no_child_start_stop": true,
+    "slots": 4,
+    "slot_tokens": 24576,
+    "total_context": 98304,
+    "max_completion_tokens": 1024,
+    "decoder_only": true,
+    "mmproj": "absent",
+    "note": "The E21 geometry, unchanged from the sealed E35 cells (decision 91). Root switches the resident serving geometry to this session before the flight and queues the cell on the SAEA-Batch-Driver (decision 77); the flight itself attaches and never spawns or stops a server. The per-role caps 320 / 384 are REQUEST-TIME composition inside this same geometry, not a geometry change."
+  },
+  "fit": {
+    "mode": "native_contact_fit",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39B-V1-FIT-V1",
+    "attempt_id": "attempt-e21-native-window-system-four-row-e39b-v1-fit",
+    "contact_cap": 176,
+    "arithmetic": "4 units x 11 native contacts x (1 speech packet + 3 endpoints) = 176",
+    "max_speech_packets": 1,
+    "coordinate_fit": "must NOT be run, or the FIT row is double-charged",
+    "note": "The parent's own registered fit cap, unchanged. The E35 recovery-v1 attempt aborted with zero contacts precisely because a fit cap of 44 is not the registered maximum endpoint count; this cell carries 176 from the start, under its OWN fit run id, because core.preparation_fit.build_native_contact_fit_gate refuses a request-fit receipt path that already exists and every one of the parent's exists."
+  },
+  "accounting": {
+    "plan_budget_is_run_cumulative": true,
+    "unused_budget_is_not_attempt_authority": true,
+    "ceilings_are_not_targets": true,
+    "generation_calls_cap": 44,
+    "fit_endpoint_calls_cap": 176,
+    "repeated_speech_audio_seconds_cap": 3960,
+    "gpu_hours_fit_inclusive": 0.5,
+    "official_complete_scoring_jobs": 0,
+    "asr_calls": 0,
+    "encoder_calls": 0,
+    "paid_api_calls": 0,
+    "native_task_contract_calls_cap": 0,
+    "ceiling_arithmetic": "44 = 4 windows x the exact eleven-contact program maximum. 176 = 44 x (1 speech packet + 3 endpoints). 3,960 REPEATED speech seconds = 4 windows x 11 contacts x 90 s: every native-episode contact re-sends the window audio, which is the convention the sealed E35 experiment fragment's execution_plan_note states and the one whose absence aborted E35's recovery-v2 after four contacts. 0.5 GPU hours is the sealed E35 four-row SYSTEM arm's own registered value (E35's experiment-level 0.6 is the PAIR total: 0.5 system + 0.1 direct); this experiment has one arm, so its experiment-level execution_plan carries that single arm's 44 / 0.5 / 3,960.",
+    "expected_cost": "The sealed comparator realized 13 contacts / 1,170 repeated seconds on these same four windows. This cell renders more auxiliary-node continuations, not fewer, and is still far under the ceilings. Ceilings are bounds, never targets.",
+    "exposure_rows": [
+      {
+        "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39B-V1",
+        "kind": "generation",
+        "consumed": "no",
+        "plan": "docs/readiness/2026-09-23-e21-native-window-four-row-e39b-v1/generation-plan-registered-v1.json"
+      },
+      {
+        "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39B-V1-FIT-V1",
+        "kind": "native contact fit",
+        "consumed": "no",
+        "plan": "docs/readiness/2026-09-23-e21-native-window-four-row-e39b-v1/fit-plan-registered-v1.json"
+      }
+    ]
+  },
+  "scoring": {
+    "complete_jobs": 0,
+    "official_scorer": "NONE IS RUN. The baseline's scorers block (asr-wer-whisper, conec-entity-wer-official, numeric-value-accuracy-v1, semantic-high-impact-error-rate-v1, cost) is the parent's and is carried unchanged for configuration identity; this dry run schedules no scoring job and its verdict quotes no metric.",
+    "no_sharding": true,
+    "scheduled_by": "nothing -- zero scoring jobs are scheduled for this cell"
+  },
+  "prepared_phase_supply_note": "NONE, and none is pinned. phase-native-review-revise-acquire-v1 declares no supplied first phase, so core.flight.cli prepare-supply returns 'program has no supplied first phase to prepare' (item E38) and core.flight.repin flips this cell on its decision requirement alone, with no artifact, no 'preparation' readiness requirement and no baseline change -- exactly the path the sealed E35 cells took.",
+  "pinned_artifacts_are_the_parents": {
+    "prepared_execution_units": {
+      "relpath": "analysis/SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1/window-inventory.json",
+      "sha256": "e5f3cfbcbc407fbb3a7b59469b86ab9d405f7b43963cb2d18b655790c5f4a32b",
+      "unit_count": 4
+    },
+    "prepared_window_feature_packets": {
+      "relpath": "analysis/SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1/window-feature-packets.json",
+      "sha256": "3fb18dd3dcd0d41eb3f8d3750090e72e0f412eef00378e3c0d791f4d9ed1fc0c"
+    },
+    "knowledge_snapshot": {
+      "relpath": "knowledge/e21/governed/participant-roster-v1/snapshot.json",
+      "sha256": "72e7ddff84b6996ccb924564975a92352d186861347760ab9f39c07218ccdb93"
+    },
+    "why_unchanged": "Every one of these pins is bound to the four-row ROSTER BATCH SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1, not to a run id, so a fresh run id needs no fresh artifact and none is built. They are already materialized at these hashes for the sealed E35 flight."
+  },
+  "code_and_config_bound": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/native_episode_config.py",
+      "role": "item E39: NativeEpisodeConfig.finite_completion_scope, FINITE_COMPLETION_SCOPES, NativeEpisodeRole.max_completion_tokens and the role_completion_caps property"
+    },
+    {
+      "relpath": "configs/baseline/e21-native-window-system-four-row-e39b-v1.json",
+      "role": "the arm baseline (the three leaves); every other key is the parent's"
+    },
+    {
+      "relpath": "configs/experiment/e21-native-window-four-row-e39b-dry-run-v1.json",
+      "role": "the one-cell experiment fragment"
+    },
+    {
+      "relpath": "configs/campaign/e21-native-window-system-four-row-e39b-v1.json",
+      "role": "the single-cell campaign plan"
+    },
+    {
+      "relpath": "configs/probes/e21_native_window_system_reviewer_v2.txt",
+      "role": "the tool-free Reviewer template"
+    },
+    {
+      "relpath": "configs/policy/phase-native-review-revise-acquire-v1.json",
+      "role": "the six-node program, unchanged (ceiling 11)"
+    },
+    {
+      "relpath": "configs/dataset/e21-native-window-four-row-v1.json",
+      "role": "the four-row dataset fragment, unchanged"
+    }
+  ],
+  "model_free_proofs": [
+    "tests/unit/test_e39_finite_completion_scope.py",
+    "tests/unit/test_e35_earnings_native_window_configs.py",
+    "tests/unit/test_e35_earnings_native_episode_wire.py",
+    "tests/unit/test_e35_native_review_revise_acquire_program.py",
+    "tests/unit/test_e35_earnings_delivery_normaliser.py"
+  ],
+  "gates": [
+    "scripts/checks/engineering_base_check.py",
+    "scripts/checks/finite_completion_policy_check.py",
+    "scripts/checks/derived_media_confinement_check.py",
+    "scripts/checks/harness_admission_check.py",
+    "scripts/checks/results_ledger_check.py",
+    "scripts/checks/tool_catalog_check.py"
+  ],
+  "second_declared_key_not_a_factor": "native_episode.finite_completion_policy stays 'deliver-latest-or-abstain' (item E13) and native_episode.react_exhaustion_policy stays 'continue-without-answer' (item E22), exactly as the parent declares them and as scripts/checks/finite_completion_policy_check.py requires of every live unflown native cell. Neither moves; what moves is the SCOPE the first of them applies to.",
+  "failure_policy": "Preserve the original failure and contact record. No automatic restart, replay, row filtering, roster, role-graph, prompt, knowledge, geometry or cap change. AT MOST ONE separately registered recovery after a named cause and a bounded proof; a second failure stops the flight and the fix is proven on a fresh four-row dry run first.",
+  "quality_gate": "There is no quality read. Receipts are read only from the sealed manifest of the single attempt; a partial manifest is never read. No delivered utterance or transcript text is printed or persisted by the read -- counts and dispositions only.",
+  "harness_admission_entry_form": {
+    "label": "NONE",
+    "reason": "A base repair admits no module. Nothing is added to docs/receipts/harness-admission.json by this cell."
+  },
+  "not_claimed": [
+    "No score, WER, entity-WER, numeric-accuracy or semantic-error-rate claim of any kind: the dry run reads RECEIPTS ONLY and schedules no scoring job.",
+    "No effectiveness, superiority, comparison or generalization claim (n = 4 windows of one call; the paired-power floor is n >= 400 calls).",
+    "No claim that the repair helps the sub10 or full-discovery E21 read; the descriptive HARM the E35 read recorded is not re-read, re-scored or revised here.",
+    "No claim about SLURP or Audio2Tool: every sealed cell keeps finite_completion_scope 'episode' and declares no per-role cap, so their configuration bytes are unchanged by construction and none of them is re-flown.",
+    "No Stage-3 claim and no admission of a module: this is a Stage-2 base repair, and the harness-admission label for this cell is NONE."
+  ],
+  "not_authorized": [
+    "Any flight before root mints coordination/e21-native-window-four-row-e39b-v1/root-admission-v1.json (e21-native-window-four-row-e39b-admission-v1) and flips this cell with scripts/flights/repin_cell.py.",
+    "Any scoring job, any official scorer invocation, any analysis over delivered text.",
+    "Re-flying, re-reading or re-scoring the sealed E35 four-row or sub10 cells.",
+    "A second recovery re-registration: at most one, after a named cause.",
+    "Any roster, geometry, cap, probe, knowledge or graph change inside this run id.",
+    "Spawning or stopping a llama-server: the flight ATTACHES to the resident E21 session.",
+    "Promotion of the repair into a sealed cell before this dry run's receipts are read."
+  ],
+  "analysis_recipe": "docs/readiness/2026-09-23-e21-native-window-four-row-e39b-v1/analysis-recipe-v1.json",
+  "preregistration": "docs/readiness/2026-09-23-e21-native-window-four-row-e39b-v1-preregistration.md",
+  "runbook": "docs/readiness/2026-09-23-e21-native-window-four-row-e39b-v1/README.md",
+  "verdict_document": "docs/results/2026-09-2x-e21-native-window-four-row-e39-dry-run-read.md",
+  "root_actions": {
+    "mint": "coordination/e21-native-window-four-row-e39b-v1/root-admission-v1.json (decision id e21-native-window-four-row-e39b-admission-v1)",
+    "repin": "scripts/flights/repin_cell.py over this package (experiment e21-native-window-four-row-e39b-dry-run-v1, cell e21-native-window-system-four-row-e39b-v1, readiness dir docs/readiness/2026-09-23-e21-native-window-four-row-e39b-v1, preregistration docs/readiness/2026-09-23-e21-native-window-four-row-e39b-v1-preregistration.md, decision id e21-native-window-four-row-e39b-admission-v1, decision relpath coordination/e21-native-window-four-row-e39b-v1/root-admission-v1.json, set ready); the tool rewrites the composed/protocol hashes this package and the two ledger rows quote, because the readiness flip itself moves them.",
+    "geometry": "switch the resident serving geometry to serving-e21-native-window-flightruntime-np4-max1024-v1",
+    "queue": "enqueue through the SAEA-Batch-Driver scheduled task (decision 77)"
+  }
+}
