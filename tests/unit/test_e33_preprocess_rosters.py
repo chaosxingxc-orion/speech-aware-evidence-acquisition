@@ -46,13 +46,14 @@ from speech_aware_evidence_acquisition.core.model.speech_features import (  # no
 
 def test_roster_table_has_exactly_the_registered_rosters() -> None:
     # The two sealed EVO-S1 folds, item E33's dev2000-added roster, the
-    # Stage-3 S3-1 construction roster and its one recovery, and owner decision
-    # 107's devel-remainder expansion plus that expansion's 4-row np8
-    # geometry-equivalence preflight. The union receipt still covers the two
-    # folds only.
+    # Stage-3 S3-1 construction roster and its one recovery, owner decision 107's
+    # devel-remainder expansion plus its 4-row np8 geometry-equivalence preflight, and
+    # the final-report test-full roster (owner decisions 99 and 107), whose own coverage
+    # lives in tests/unit/test_slurp_test_full_preprocess_roster.py. The union receipt
+    # still covers the two folds only.
     assert set(module.PREPROCESS_ROSTERS) == {
         "fold-a", "fold-b", "dev2000-added", "stage3-construction-r01", "stage3-construction-r01-recovery",
-        "devel-remainder", "devel-remainder-np8-equivalence-4",
+        "devel-remainder", "devel-remainder-np8-equivalence-4", "test-full",
     }
     assert module.FOLD_ROSTER_KEYS == ("fold-a", "fold-b")
 

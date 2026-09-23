@@ -1,0 +1,66 @@
+{
+  "already_promoted_packets": {
+    "method": "id-level only: the existence of the leaf directory <packet_root>/<packet_id> is tested. No packet byte, no .feat file and no audio sample is read.",
+    "packet_root": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+    "rows_with_a_leaf_directory": 0
+  },
+  "authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md owner decisions 99 (2026-09-22) and 107 (2026-09-23)",
+  "counts": {
+    "audio_seconds_total": 36911.9388125,
+    "distinct_utterances": 2974,
+    "far_field": 6797,
+    "headset": 6281,
+    "recordings": 13078,
+    "sample_rates_hz": [
+      16000
+    ],
+    "total_bytes": 700033078
+  },
+  "cpu_pipeline": {
+    "cache_key_files_per_second": 1527.517,
+    "cache_key_wall_seconds": 8.562,
+    "decoder": "soundfile header probe for duration and rate; bytes hashed with SHA-256. ffmpeg is absent by design and no media byte is rewritten -- the librosa fallback stays the pinned decode path for every later consumer.",
+    "media_inventory_audio_seconds_per_wall_second": 2247.287,
+    "media_inventory_files_per_second": 796.22,
+    "media_inventory_mib_per_second": 40.645,
+    "media_inventory_wall_seconds": 16.425,
+    "workers": 8
+  },
+  "d1_closure": {
+    "covered_items": 0,
+    "note": "The immutable D1 identity artifact closes over the SLURP devel split only, so every row of a test-split roster sits outside it and the additive saea-d1-media-supplement-v1 successor is required. The supplement is written by scripts/build_slurp_stage3_construction_r01_d1_supplement.py, which re-hashes every media file, and this builder carries its pinned triple forward on a rebuild after re-verifying the supplement's bytes.",
+    "relpath": "docs/receipts/artifacts/d1-identity.json",
+    "supplement_manifest_sha256": "58400dbb2b796f4e476a5ce4b6f2ee2ea6c04cc3b36e088e82b70c5d1c5cffc5",
+    "supplement_relpath": "receipts/artifacts/d1-slurp-test-full.json",
+    "supplement_required": true,
+    "supplement_sha256": "d68bd784b58a62062cd5ffa3896d21a6a55985fac6abcdcc98f3ceab0cdb4138"
+  },
+  "generator": "scripts/build_slurp_test_full_runtime_view.py",
+  "inventory_sha256": "d952f1ede83dd47c1dccc3ee1d6120093f44a5a9ed359299014204f0fcb4be0b",
+  "legacy_feature_cache": {
+    "available": true,
+    "cold_rows": 13078,
+    "dir": "/home/chao/feat-cache/slurp-q4km",
+    "key_convention": "core.model.speech_features.legacy_audio_feature_cache_key -- FNV-1a over the encoded media bytes, so warmth is a property of the file, not of a prompt",
+    "warm_rows": 0
+  },
+  "offline_guard": {
+    "attempted_targets": [],
+    "outbound_connection_attempts": 0
+  },
+  "roster": {
+    "receipt_file_sha256": "b925e90ab99727e7d0ff9fc4ec6b7c91a0d86bff0a5b0a4746b9cc98237b19c3",
+    "relpath": "docs/receipts/rosters/slurp-test-full-13078-v1.json",
+    "roster_id": "SLURP-TEST-FULL-13078-V1",
+    "split": "test",
+    "split_identity_hash": "7247647b8c8b37becd564b7031691565d4e6b09d8e124823054906d36372c95d",
+    "split_role": "final-report"
+  },
+  "runtime_view": {
+    "per_file_sha256": "one audio_sha256 per row inside the runtime view; the inventory does not duplicate 13078 digests",
+    "relpath": "configs/dataset/slurp-speech-native-test-full.json",
+    "runtime_view_sha256": "c657d4fe3ea05d6e655707530f0e30ae8f67dd1671a2a475cc682422903e7744"
+  },
+  "schema": "saea-slurp-roster-media-inventory-v1",
+  "study": "speech-aware-evidence-acquisition"
+}

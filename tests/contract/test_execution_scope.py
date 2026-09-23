@@ -222,6 +222,19 @@ def test_plan_budget_fields_must_be_finite_and_integral():
 
 
 def test_historical_execution_plan_default_identity_is_unchanged():
+    """The field set only ever grows by a dated owner decision.
+
+    ``owner_allowance`` was added on 2026-09-23 under owner decisions 99 and
+    107 (``docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md``)
+    as the paired code change the one-shot SLURP test-split read protocol's
+    section 6.3 requires -- and it is an ``InitVar``, not a thirteenth field,
+    precisely so THIS assertion does not move. ``asdict(plan)`` is a serialized
+    identity that three frozen launchers under ``docs/checks/`` and
+    ``core.driver.speech_native``'s resume check all compare against committed
+    documents. Its own refusal branches live in
+    ``tests/unit/test_final_report_split_role.py``.
+    """
+
     plan = _plan()
 
     assert asdict(plan) == {
@@ -238,6 +251,7 @@ def test_historical_execution_plan_default_identity_is_unchanged():
         "schema": EXECUTION_PLAN_SCHEMA,
         "study": "speech-aware-evidence-acquisition",
     }
+    assert plan.owner_allowance is None
 
 
 def test_text_encoder_plan_admits_exact_integer_zero_speech_budget():

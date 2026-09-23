@@ -1,0 +1,35 @@
+{
+  "authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md owner decisions 99 (2026-09-22) and 107 (2026-09-23)",
+  "checked_by": "contracts.FrozenCoreGate.verify_media_identity -- the SAME reader the frozen-core gate uses before a model touch: it resolves D1 through the E0 closure receipt, loads the additive supplement, and re-measures every named file's size and SHA-256 from disk",
+  "contacts": {
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "d1_supplement": {
+    "manifest_sha256": "58400dbb2b796f4e476a5ce4b6f2ee2ea6c04cc3b36e088e82b70c5d1c5cffc5",
+    "relpath": "docs/receipts/artifacts/d1-slurp-test-full.json",
+    "sha256": "d68bd784b58a62062cd5ffa3896d21a6a55985fac6abcdcc98f3ceab0cdb4138"
+  },
+  "generator": "scripts/build_slurp_test_full_runtime_view.py --verify-d1-gate",
+  "note": "A PASS here means the gate READER accepts the supplement over every roster row. It is NOT an authorisation: a final-report ExecutionPlan is still refused by contracts.plan.require_owner_split_allowance while docs/receipts/owner/2026-09-23-slurp-test-split-allowance-v1.json says 'pending-owner'.",
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-test-full-13078-v1.json",
+    "roster_id": "SLURP-TEST-FULL-13078-V1",
+    "split_identity_hash": "7247647b8c8b37becd564b7031691565d4e6b09d8e124823054906d36372c95d"
+  },
+  "rows_from_base_d1": 0,
+  "rows_from_the_supplement": 13078,
+  "rows_verified": 13078,
+  "runtime_view": {
+    "relpath": "configs/dataset/slurp-speech-native-test-full.json",
+    "runtime_view_sha256": "c657d4fe3ea05d6e655707530f0e30ae8f67dd1671a2a475cc682422903e7744"
+  },
+  "schema": "saea-d1-supplement-gate-verification-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "verdict": "PASS",
+  "verification_sha256": "8a544b6ddad802402d154451b41df3c70b08edd6ef625a89edc4c3bdf36e1991",
+  "wall_seconds": 97.122
+}

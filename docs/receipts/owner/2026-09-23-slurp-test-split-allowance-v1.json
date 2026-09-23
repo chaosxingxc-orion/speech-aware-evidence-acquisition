@@ -1,0 +1,104 @@
+{
+  "schema": "saea-owner-split-allowance-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "status": "pending-owner",
+  "status_meaning": "NOT AUTHORISED. contracts.plan.require_owner_split_allowance accepts only status == 'authorised', so while this file says 'pending-owner' every final-report ExecutionPlan in this repository is refused and every preparation that binds this receipt refuses before it opens a media file. Nothing here authorises a contact, a readiness flip, a decision receipt or a ledger countersignature.",
+  "date": "2026-09-23",
+  "dated_owner_decision": "PENDING owner decision 108 (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md). The predecessors this allowance implements are owner decision 99 of 2026-09-22 (exactly ONE complete official SLURP test-split read at the end of Stage 3) and owner decision 107 of 2026-09-23 (its preparations are registered now and built in parallel ahead of time so the read waits on nothing). Decision 108 is the venue-and-role ruling this file is waiting for; when it is taken, its number, date and verbatim text replace this string and 'status' becomes 'authorised'.",
+  "venue": "PENDING. The one-shot read protocol draft (docs/readiness/2026-09-19-slurp-test-split-one-read-protocol-v1-draft.md section 6) puts two remedies to the owner and recommends the first. Remedy A promotes the read to an independent papers/<slug> repository under OWNER_GO_AND_PAPER_EXECUTION_CONTRACT, which is what the paper gate exists for and which leaves this study's fail-closed guard untouched. Remedy B keeps the read here behind a dated owner amendment plus this paired code change, and requires the amendment to say WHY the read is not being promoted. This field must carry that reason before the read may run. Until it does, the honest answer is that no reason has been given, and the allowance stays pending.",
+  "split": {
+    "carrier_lock_key": "slurp",
+    "split_name": "TEST-FULL",
+    "roster_id": "SLURP-TEST-FULL-13078-V1",
+    "roster_receipt_relpath": "docs/receipts/rosters/slurp-test-full-13078-v1.json",
+    "roster_receipt_sha256": "b925e90ab99727e7d0ff9fc4ec6b7c91a0d86bff0a5b0a4746b9cc98237b19c3",
+    "split_identity_hash": "7247647b8c8b37becd564b7031691565d4e6b09d8e124823054906d36372c95d",
+    "split_identity_hash_basis": "sha256 over the LF-joined sorted carrier-prefixed 'slurp/<sample_id>' ids -- the core.roster / data.splits convention, which is the value an ExecutionPlan declares and which this allowance binds",
+    "carrier_split_identity_hash": "3f7063cb8b1e60d69c383d2215b5f244bbd7164d484010193a093a5e879389bd",
+    "carrier_split_identity_hash_basis": "sha256 over the LF-joined sorted BARE sample ids, the rails.knowledge_build.freeze_slurp_split_identity convention recorded in docs/receipts/knowledge/slurp-split-identity.json",
+    "recordings": 13078,
+    "utterances": 2974,
+    "headset_recordings": 6281,
+    "far_field_recordings": 6797,
+    "audio_seconds_total": 36911.9388125,
+    "media_bytes_total": 700033078,
+    "disjointness_receipt_relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-23-slurp-test-roster/disjointness.json",
+    "disjointness_receipt_sha256": "f6b759d2b5b8cc49203426b7ea8115a79b29159664841f59319ec317e2a897f5",
+    "prior_exposure": "ZERO. No exposure-ledger row names either identity hash. After the read's row is countersigned and consumed, the split is closed permanently and can never be read again."
+  },
+  "permitted_run_ids": [
+    "SAEA-SN-TEST-FULL-PREPROCESS",
+    "SAEA-SLURP-TEST-FULL-SPEECH-QUERY-ENCODING-V1",
+    "SAEA-SLURP-TEST-FULL-QUERY-VECTOR-EXPORT-V1",
+    "SAEA-SLURP-TEST-FULL-LOCKED-SYSTEM-V1",
+    "SAEA-SLURP-TEST-FULL-DIRECT-V1"
+  ],
+  "read_run_ids": [
+    "SAEA-SLURP-TEST-FULL-LOCKED-SYSTEM-V1",
+    "SAEA-SLURP-TEST-FULL-DIRECT-V1"
+  ],
+  "preparation_run_ids": [
+    "SAEA-SN-TEST-FULL-PREPROCESS",
+    "SAEA-SLURP-TEST-FULL-SPEECH-QUERY-ENCODING-V1",
+    "SAEA-SLURP-TEST-FULL-QUERY-VECTOR-EXPORT-V1"
+  ],
+  "run_ids": {
+    "SAEA-SN-TEST-FULL-PREPROCESS": {
+      "kind": "preparation",
+      "what": "ENCODE + PROMOTE the featcache speech packets for all 13,078 rows: one frozen-core contact per row at max_tokens 1 through the CPU-only llama.cpp sidecar on port 8081, then a zero-contact additive promotion into the resident packet root. The legacy feature-cache key is the FNV-1a hash of the media bytes alone, so the prompt cannot affect the cached features and the fixed one-token response is never read semantically.",
+      "reads_labels": false,
+      "expected_contacts": 13078,
+      "expected_speech_audio_seconds": 36912,
+      "execution_profile": "bounded-discovery-probe"
+    },
+    "SAEA-SLURP-TEST-FULL-SPEECH-QUERY-ENCODING-V1": {
+      "kind": "preparation",
+      "what": "One frozen retrieval-encoder forward per recording (Omni-Embed-Nemotron-3B, prompt 'query: ', dimension 2048) producing the speech query vectors the Perception and Solver knowledge stores retrieve with, plus the zero-contact dimension alias that renames them. No answer is produced and no gold is opened.",
+      "reads_labels": false,
+      "expected_contacts": 13078,
+      "expected_speech_audio_seconds": 36912,
+      "execution_profile": "bounded-discovery-probe"
+    },
+    "SAEA-SLURP-TEST-FULL-QUERY-VECTOR-EXPORT-V1": {
+      "kind": "preparation",
+      "what": "The zero-contact flatten of the segment vectors into the content dimension. It constructs no contracts.ExecutionPlan at all -- the plan validator requires finite POSITIVE calls, GPU hours and speech seconds by design, and a pass that touches no model must not reserve one contact of head-room -- so the profile rule of this allowance does not bind it. It is named here because it is a derivative of test-split media and its exposure row must carry the owner's name like its parents.",
+      "reads_labels": false,
+      "expected_contacts": 0,
+      "expected_speech_audio_seconds": 0,
+      "execution_profile": "model-free-check"
+    },
+    "SAEA-SLURP-TEST-FULL-LOCKED-SYSTEM-V1": {
+      "kind": "read",
+      "what": "THE READ. The locked default plan at the v2.0 lock commit, unchanged, on all 13,078 rows; protocol section 7.1. One attempt, ever.",
+      "reads_labels": "gold is read ONLY by the official scorer, after delivery, in one complete manifest job; never by the control plane and never inside a request",
+      "execution_profile": "bounded-discovery-probe"
+    },
+    "SAEA-SLURP-TEST-FULL-DIRECT-V1": {
+      "kind": "read",
+      "what": "The frozen core's direct baseline on the same roster, one extra contact per row, flown in the same registered read and scored in the same job; protocol section 5(c), which the draft recommends and section 9 item 2 leaves to the owner. One attempt, ever.",
+      "reads_labels": "same as the system arm",
+      "execution_profile": "bounded-discovery-probe"
+    }
+  },
+  "attempt_budget": {
+    "read_run_ids": 1,
+    "preparation_run_ids": 2,
+    "enforced_by": "contracts.gate_exposure._ExposureAndCarrierMixin._require_final_report_attempt_budget",
+    "statement": "A read run id gets exactly ONE attempt and is refused a second even as a recovery (protocol section 4.4: no repeat, no second configuration, no best-of). The resume clause of protocol section 7 is a decision the owner takes by registering a fresh run id, never something the gate lets through. A preparation run id keeps the ordinary one-recovery budget."
+  },
+  "what_this_receipt_does_not_do": [
+    "it does not authorise any contact while its status is 'pending-owner'",
+    "it does not flip a readiness state, mint a decision receipt or countersign an exposure row",
+    "it does not choose between Remedy A and Remedy B -- that is decision 108",
+    "it does not admit a second read, a re-score, or a re-projection of delivered bytes",
+    "it does not widen any Stage-2 role: STAGE2_SPLIT_ROLES still admits only 'discovery' and 'dev', and 'confirmatory' is still refused outright"
+  ],
+  "re_pinning_note": "Every config fragment that binds this allowance pins these exact bytes by sha256. Flipping 'status' to 'authorised' changes the bytes, so every pin breaks and every composed config hash moves. That is deliberate: the owner's ruling forces a visible, countersigned re-pin of each preparation and of the read itself, rather than silently unlocking already-registered plans.",
+  "paired_code_change": {
+    "contracts_plan": "src/speech_aware_evidence_acquisition/contracts/plan.py -- FINAL_REPORT_SPLIT_ROLE, OwnerSplitAllowance, require_owner_split_allowance, and the ExecutionPlan.validate branch that calls it",
+    "contracts_gate_exposure": "src/speech_aware_evidence_acquisition/contracts/gate_exposure.py -- _require_final_report_isolation and its three sub-checks (no construction-visible arm, gate-time disjointness re-proof, one sealed attempt)",
+    "data_slurp": "src/speech_aware_evidence_acquisition/data/slurp.py -- _RUNTIME_VIEW_SPLIT_ROLES, so the label-free runtime view may NAME the role it has",
+    "tests": "tests/unit/test_final_report_split_role.py",
+    "protocol": "docs/readiness/2026-09-19-slurp-test-split-one-read-protocol-v1-draft.md sections 2, 6.3 and 7"
+  }
+}

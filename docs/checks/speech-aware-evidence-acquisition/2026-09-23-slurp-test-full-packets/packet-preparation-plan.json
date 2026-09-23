@@ -1,0 +1,38 @@
+{
+  "authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md owner decisions 99 (2026-09-22) and 107 (2026-09-23)",
+  "binding": {
+    "owner_allowance": "docs/receipts/owner/2026-09-23-slurp-test-split-allowance-v1.json",
+    "roster": "docs/receipts/rosters/slurp-test-full-13078-v1.json",
+    "runtime_view": "configs/dataset/slurp-speech-native-test-full.json",
+    "runtime_view_sha256": "c657d4fe3ea05d6e655707530f0e30ae8f67dd1671a2a475cc682422903e7744",
+    "split_identity_hash": "7247647b8c8b37becd564b7031691565d4e6b09d8e124823054906d36372c95d"
+  },
+  "generator": "scripts/build_slurp_test_full_runtime_view.py",
+  "plan_sha256": "f36c0ac3c59281ed78ac18784798f50df9034ded99269107e29b0a1f7e8f5e75",
+  "rows_already_warm_in_the_legacy_cache": 0,
+  "rows_needing_encode": 13078,
+  "schema": "saea-slurp-roster-packet-plan-v1",
+  "state": "PREREQUISITES COMPLETE; ENCODE AND PROMOTE NOT RUN AND NOT AUTHORISED",
+  "study": "speech-aware-evidence-acquisition",
+  "target_packet_root": {
+    "path": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+    "promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/TEST-FULL-promotion.json",
+    "write_mode": "ADDITIVE ONLY: new per-row packet directories under slurp/test/<utterance>/<recording>/ and one new promotion receipt. No file the resident session already serves is read-modified-written, and no existing promotion receipt is touched. Promotion is refuse-on-conflict by construction."
+  },
+  "what_remains": [
+    {
+      "contacts": 13078,
+      "detail": "CPU llama-server sidecar on port 8081 (-ngl 0 --no-mmproj-offload, receipts/runtime-q4km-preprocess.json), one contact per row at max_tokens 1, under its own session and stop receipts. GPU stays free.",
+      "name": "ENCODE",
+      "speech_seconds": 36911.939,
+      "step": 1
+    },
+    {
+      "contacts": 0,
+      "detail": "core.model.speech_features.materialize_legacy_cached_speech_feature_packets over the runtime view's packet ids, workers <= 8, writing TEST-FULL-promotion.json beside the existing per-set receipts.",
+      "name": "PROMOTE",
+      "step": 2
+    }
+  ],
+  "why_not_run": "A speech packet in this repository is an ENCODER product. The pipeline (scripts/slurp_evo_fold_preprocess.py) first drives a CPU llama-server sidecar with one contact per row at max_tokens 1 to warm the legacy feature cache, and only then promotes the warm entries. That first phase is a model contact under a structured ExecutionPlan, which a model-free mission may not make. For THIS roster it is additionally refused by contracts.plan.require_owner_split_allowance: the split role is 'final-report' and the committed allowance docs/receipts/owner/2026-09-23-slurp-test-split-allowance-v1.json says 'pending-owner'."
+}

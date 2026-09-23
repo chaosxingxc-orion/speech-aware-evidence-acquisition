@@ -16,7 +16,11 @@ from typing import Mapping
 from .errors import GateClosed
 from .identifiers import CONSTRUCTION_VISIBLE_ARMS
 from .ledger import _CARRIER_CELL_TOKEN_SPLIT, _EXPOSURE_CARRIER_COLUMN, _EXPOSURE_RUN_COLUMN, _parse_ledger_tables
-from .plan import ExecutionPlan
+from .plan import (
+    FINAL_REPORT_SPLIT_ROLE,
+    ExecutionPlan,
+    require_owner_split_allowance,
+)
 from .receipts import general_audio_deny_lock_keys
 
 # The umbrella lock's speech-aware-* profiles (docs/datasets.lock.json `profiles`,
@@ -211,6 +215,271 @@ class _ExposureAndCarrierMixin:
                 f"{plan.split_identity_hash!r} is not one of "
                 f"{sorted(hashes.values()) or 'any (none committed)'}; model touch refused"
             )
+
+    # ------------------------------------------------------------------ #
+    # The final-reporting read (owner decisions 99 and 107; decision 108)
+    # ------------------------------------------------------------------ #
+
+    def _carrier_roster_receipts(
+        self, carrier_lock_key: str
+    ) -> list[tuple[str, Mapping[str, object], frozenset[str], str]]:
+        """``(relpath, document, sample ids, recomputed identity hash)`` for every
+        committed roster receipt of one carrier.
+
+        The identity hash is recomputed from the receipt's OWN items with the
+        same four-line convention every identity check in this package uses --
+        sha256 over the LF-joined, sorted, carrier-prefixed
+        ``f"{lock_key}/{sample_id}"`` ids -- and a receipt whose recorded hash
+        disagrees is refused as tampered. Deliberately separate from
+        :meth:`_construction_roster_identity_hashes`, which is on the hot path
+        of every construction-visible touch and must keep looking at
+        construction receipts only.
+        """
+
+        directory = Path(self.source_root) / ROSTER_RECEIPTS_RELDIR
+        rows: list[tuple[str, Mapping[str, object], frozenset[str], str]] = []
+        if not directory.is_dir():
+            return rows
+        for path in sorted(directory.glob("*.json")):
+            try:
+                document = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError, json.JSONDecodeError) as error:
+                raise GateClosed(f"roster receipt unreadable ({path}): {error}") from error
+            if not isinstance(document, Mapping):
+                raise GateClosed(f"roster receipt {path} must be a JSON object")
+            if document.get("carrier_lock_key") != carrier_lock_key:
+                continue
+            if document.get("schema") != ROSTER_RECEIPT_SCHEMA:
+                raise GateClosed(
+                    f"roster receipt {path} schema {document.get('schema')!r} is not "
+                    f"{ROSTER_RECEIPT_SCHEMA!r}"
+                )
+            items = document.get("items")
+            if not isinstance(items, list) or not items:
+                raise GateClosed(f"roster receipt {path} has no items")
+            ids: list[str] = []
+            for item in items:
+                if not isinstance(item, Mapping):
+                    raise GateClosed(f"roster receipt {path} has a malformed item")
+                sample_id = item.get("sample_id")
+                if not isinstance(sample_id, str) or not sample_id:
+                    raise GateClosed(f"roster receipt {path} has an item with no sample_id")
+                ids.append(sample_id)
+            if len(set(ids)) != len(ids):
+                raise GateClosed(f"roster receipt {path} repeats a sample_id")
+            measured = hashlib.sha256(
+                "\n".join(sorted(f"{carrier_lock_key}/{value}" for value in ids)).encode(
+                    "utf-8"
+                )
+            ).hexdigest()
+            if measured != document.get("split_identity_hash"):
+                raise GateClosed(
+                    f"roster receipt {path} split_identity_hash does not match the hash "
+                    "recomputed from its own items; refusing a tampered receipt"
+                )
+            rows.append(
+                (
+                    str(Path(path).relative_to(Path(self.source_root)).as_posix()),
+                    document,
+                    frozenset(ids),
+                    measured,
+                )
+            )
+        return rows
+
+    def _final_report_roster(
+        self, plan: "ExecutionPlan"
+    ) -> tuple[str, frozenset[str]]:
+        """The ONE committed ``split_role: final-report`` roster of the plan's
+        carrier whose recomputed identity is the plan's own."""
+
+        matches = [
+            (relpath, ids)
+            for relpath, document, ids, measured in self._carrier_roster_receipts(
+                plan.carrier_lock_key
+            )
+            if document.get("split_role") == FINAL_REPORT_SPLIT_ROLE
+            and measured == plan.split_identity_hash
+        ]
+        if len(matches) != 1:
+            raise GateClosed(
+                f"a {FINAL_REPORT_SPLIT_ROLE!r} plan's split identity must be that of "
+                f"exactly ONE committed roster receipt of carrier "
+                f"{plan.carrier_lock_key!r} whose own split_role is "
+                f"{FINAL_REPORT_SPLIT_ROLE!r}; {plan.split_identity_hash!r} matches "
+                f"{len(matches)}; model touch refused"
+            )
+        return matches[0]
+
+    @staticmethod
+    def _bytes_contain_any(path: Path, needles: tuple[bytes, ...]) -> bool:
+        """Stream ``path`` and report whether any needle occurs in its bytes.
+
+        A superset test that costs one sequential read and no JSON parse: if a
+        knowledge snapshot's bytes do not contain the roster's carrier/split id
+        prefix, no roster id can be inside it and the exact intersection can be
+        skipped. Chunks overlap by ``max(len(needle)) - 1`` so a needle
+        straddling a chunk boundary is still found.
+        """
+
+        if not needles:
+            return False
+        overlap = max(len(needle) for needle in needles) - 1
+        tail = b""
+        with Path(path).open("rb") as handle:
+            while True:
+                chunk = handle.read(1 << 20)
+                if not chunk:
+                    return False
+                window = tail + chunk
+                if any(needle in window for needle in needles):
+                    return True
+                tail = window[-overlap:] if overlap else b""
+
+    def _require_final_report_disjointness(
+        self, plan: "ExecutionPlan", relpath: str, roster_ids: frozenset[str]
+    ) -> None:
+        """Re-prove, at gate time, that nothing the control plane was built from
+        intersects the final-reporting roster.
+
+        A committed disjointness receipt is a record, not a proof: it could have
+        been minted before a store was rebuilt. So the ids are intersected here,
+        against every other committed roster receipt of the carrier (construction
+        rosters, exemplar-pool rosters and every other roster alike) and against
+        every knowledge store / exemplar pool snapshot under the controlled data
+        root. Only ``source_sample_ids`` is taken from a snapshot; its ``values``
+        and ``facets`` blocks -- which carry the construction gold -- are never
+        inspected.
+        """
+
+        for other_relpath, _document, other_ids, measured in self._carrier_roster_receipts(
+            plan.carrier_lock_key
+        ):
+            if measured == plan.split_identity_hash:
+                continue
+            shared = roster_ids & other_ids
+            if shared:
+                raise GateClosed(
+                    f"the {FINAL_REPORT_SPLIT_ROLE!r} roster {relpath} shares "
+                    f"{len(shared)} sample id(s) with the committed roster "
+                    f"{other_relpath} (first: {sorted(shared)[:3]}); a final-reporting "
+                    "read may never overlap a roster the control plane was built or "
+                    "optimized on; model touch refused"
+                )
+
+        prefixes = tuple(
+            sorted(
+                {
+                    ":".join(value.split(":")[:2]).encode("utf-8") + b":"
+                    for value in roster_ids
+                    if value.count(":") >= 2
+                }
+            )
+        )
+        base = Path(self.data_root) / "knowledge" / plan.carrier_lock_key
+        if not base.is_dir():
+            return
+        for path in sorted(base.rglob("snapshot.json")):
+            if not self._bytes_contain_any(path, prefixes):
+                continue
+            try:
+                document = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError, json.JSONDecodeError) as error:
+                raise GateClosed(
+                    f"knowledge snapshot unreadable ({path}): {error}"
+                ) from error
+            source_ids = (
+                document.get("source_sample_ids") if isinstance(document, Mapping) else None
+            )
+            if not isinstance(source_ids, list):
+                continue
+            shared = roster_ids & {str(value) for value in source_ids}
+            if shared:
+                raise GateClosed(
+                    f"the {FINAL_REPORT_SPLIT_ROLE!r} roster {relpath} shares "
+                    f"{len(shared)} sample id(s) with the knowledge store / exemplar pool "
+                    f"{path} (first: {sorted(shared)[:3]}); model touch refused"
+                )
+
+    def _require_final_report_attempt_budget(
+        self, plan: "ExecutionPlan", allowance: Mapping[str, object]
+    ) -> None:
+        """ONE sealed attempt per permitted READ run id; one recovery for a
+        preparation run id.
+
+        Protocol section 4.4: "No repeat, no second configuration, no best-of."
+        A second attempt of the one read is refused even as a recovery -- the
+        resume clause of section 7 is a decision the owner takes by registering
+        a fresh run id, never something this gate lets through. The preparation
+        passes are label-free encoder work and keep the ordinary one-recovery
+        budget the rest of this repository uses.
+        """
+
+        read_ids = {
+            str(value) for value in (allowance.get("read_run_ids") or ()) if value
+        }
+        is_read = plan.run_id in read_ids
+        limit = 1 if is_read else 2
+        kind = "read" if is_read else "preparation"
+        directory = Path(self.data_root) / "attempts" / plan.run_id
+        states: dict[str, str] = {}
+        if directory.is_dir():
+            for path in sorted(directory.glob("*.json")):
+                try:
+                    document = json.loads(path.read_text(encoding="utf-8"))
+                except (OSError, UnicodeError, json.JSONDecodeError) as error:
+                    raise GateClosed(
+                        f"attempt record unreadable ({path}): {error}"
+                    ) from error
+                states[path.stem] = str(
+                    document.get("state") if isinstance(document, Mapping) else "UNKNOWN"
+                )
+        own = plan.attempt_id
+        distinct = len(states) + (1 if own is not None and own not in states else 0)
+        if distinct > limit:
+            raise GateClosed(
+                f"{FINAL_REPORT_SPLIT_ROLE!r} {kind} run {plan.run_id!r} allows at most "
+                f"{limit} attempt(s); attempts {sorted(states)} already exist and this "
+                f"plan declares {own!r}; model touch refused (protocol section 4.4: no "
+                "repeat, no second configuration, no best-of)"
+            )
+        if own is not None and states.get(own) in {"FINALIZED", "ABORTED"}:
+            raise GateClosed(
+                f"attempt {plan.run_id!r}/{own!r} is already {states[own]}; a "
+                f"{FINAL_REPORT_SPLIT_ROLE!r} {kind} attempt is never re-flown; model "
+                "touch refused"
+            )
+
+    def _require_final_report_isolation(
+        self, plan: "ExecutionPlan", arm: str | None
+    ) -> None:
+        """Everything a ``final-report`` touch must satisfy beyond its plan.
+
+        Returns immediately for every other split role, so no pre-existing
+        caller's behaviour changes. Owner decisions 99 and 107; one-shot read
+        protocol ``docs/readiness/2026-09-19-slurp-test-split-one-read-protocol
+        -v1-draft.md`` sections 2.3, 4.4 and 6.3.
+        """
+
+        if plan.split_role != FINAL_REPORT_SPLIT_ROLE:
+            return
+        allowance = require_owner_split_allowance(
+            run_id=plan.run_id,
+            execution_profile=plan.execution_profile,
+            carrier_lock_key=plan.carrier_lock_key,
+            split_identity_hash=plan.split_identity_hash,
+            owner_allowance=plan.owner_allowance,
+            source_root=self.source_root,
+        )
+        if arm is not None and arm in CONSTRUCTION_VISIBLE_ARMS:
+            raise GateClosed(
+                f"arm {arm!r} makes construction gold visible to the frozen core and may "
+                f"only fly on a construction roster of a discovery split; a "
+                f"{FINAL_REPORT_SPLIT_ROLE!r} plan can never carry it; model touch refused"
+            )
+        relpath, roster_ids = self._final_report_roster(plan)
+        self._require_final_report_disjointness(plan, relpath, roster_ids)
+        self._require_final_report_attempt_budget(plan, allowance)
 
     def _require_exposure_preregistration(
         self, plan: "ExecutionPlan", lock: Mapping[str, object] | None = None

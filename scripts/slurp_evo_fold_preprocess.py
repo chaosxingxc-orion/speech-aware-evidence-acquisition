@@ -118,6 +118,17 @@ refuses a promotion for any roster carrying an ``EquivalenceSpec``, refuses a
 scratch geometry whose cache or feature root is the resident one, and refuses
 ``--promote-only`` for it. The verdict plus the measured per-row wall clock go
 into the ``--output`` report.
+- ``test-full`` -- the COMPLETE official SLURP test split
+  (``slurp:test:...`` rows, ``split_role="final-report"``, 13,078 rows /
+  36,911.9388125 speech seconds), the packet preparation of the ONE end-of-
+  Stage-3 read (owner decisions 99 of 2026-09-22 and 107 of 2026-09-23).
+  REFUSED TODAY, in every mode including ``--preflight-only``: the roster's
+  split role is ``final-report`` and
+  ``contracts.plan.require_owner_split_allowance`` accepts only an
+  ``authorised`` owner-allowance receipt, while the committed
+  ``docs/receipts/owner/2026-09-23-slurp-test-split-allowance-v1.json`` says
+  ``pending-owner``. The refusal is raised BEFORE the data root is opened, so
+  not one test media file is read while the allowance is pending.
 
 Modes::
 
@@ -131,6 +142,7 @@ Modes::
         --promote-only --attempt-id attempt-promote-only-stage3-construction-r01-v1
     python scripts/slurp_evo_fold_preprocess.py --roster devel-remainder-np8-equivalence-4 --run
     python scripts/slurp_evo_fold_preprocess.py --roster devel-remainder --run --workers 8
+    python scripts/slurp_evo_fold_preprocess.py --roster test-full --preflight-only  # refuses
 """
 
 from __future__ import annotations
@@ -163,7 +175,9 @@ import speech_aware_evidence_acquisition as _pkg  # noqa: E402
 if Path(_pkg.__file__ or "") != REPO / "src" / "speech_aware_evidence_acquisition" / "__init__.py":
     raise SystemExit("package resolves to %s, not the main checkout" % (_pkg.__file__,))
 
-from speech_aware_evidence_acquisition.contracts import ExecutionPlan, FrozenCoreGate  # noqa: E402
+from speech_aware_evidence_acquisition.contracts import (  # noqa: E402
+    FINAL_REPORT_SPLIT_ROLE, ExecutionPlan, FrozenCoreGate,
+    require_owner_split_allowance)
 from speech_aware_evidence_acquisition.core.base import TRANSPORTS  # noqa: E402
 from speech_aware_evidence_acquisition.core.config import (  # noqa: E402
     compose, d1_media_supplement_relpath, d1_media_supplement_sha256)
@@ -383,6 +397,25 @@ PREPROCESS_ROSTERS: dict[str, RosterSpec] = {
             reference_promotion_receipt="DEV-2000-ADDED-promotion.json",
             reference_geometry_slots=4,
         ),
+    ),
+    # Owner decisions 99 (2026-09-22) and 107 (2026-09-23): the packet
+    # preparation of the ONE complete official SLURP test-split read, registered
+    # now and built ahead of time so the read waits on nothing. 13,078 rows /
+    # 36,911.9388125 measured audio seconds (declared 36,912 = the ceiling, the
+    # form every roster above uses) / 1.0 declared GPU hours against 0.0 actually
+    # consumed, because the sidecar runs -ngl 0 --no-mmproj-offload and leaves
+    # the GPU to the resident serving session. The split role is the
+    # owner-allowance-gated FINAL_REPORT_SPLIT_ROLE, so main() refuses this
+    # roster in EVERY mode until the committed allowance says "authorised".
+    "test-full": RosterSpec(
+        run_id="SAEA-SN-TEST-FULL-PREPROCESS",
+        dataset_fragment="slurp-speech-native-test-full",
+        experiment_fragment="slurp-test-full-preprocess",
+        sample_id_prefix="slurp:test:",
+        split_role=FINAL_REPORT_SPLIT_ROLE,
+        promotion_receipt_name="TEST-FULL-promotion.json",
+        default_attempt_id="attempt-packets-test-full-v1",
+        plan_calls=13078, plan_speech_seconds=36912, plan_gpu_hours=1.0,
     ),
 }
 
@@ -1141,6 +1174,24 @@ def main(argv: Sequence[str] | None = None) -> int:
             "roster %r expects dataset split_role %r, fragment carries %r"
             % (roster_key, spec.split_role, values.get("split_role"))
         )
+    if spec.split_role == FINAL_REPORT_SPLIT_ROLE:
+        # Owner decisions 99 and 107. A final-reporting roster is refused HERE,
+        # before roster_samples() opens the first media file, in EVERY mode --
+        # --preflight-only and --promote-only included. Neither of those builds
+        # a contracts.ExecutionPlan, so without this call the plan validator
+        # (which only --run reaches) would let a whole 700 MB media pass and a
+        # cache-warmth measurement run over the test split while the owner
+        # allowance is still pending. The composed config carries the pin, so
+        # flipping the receipt's status breaks it and forces a deliberate
+        # re-pin plus a fresh countersignature.
+        require_owner_split_allowance(
+            run_id=spec.run_id,
+            execution_profile=str(values["execution_profile"]),
+            carrier_lock_key=SLURP_LOCK_KEY,
+            split_identity_hash=str(values["split_identity_hash"]),
+            owner_allowance=values.get("owner_allowance"),
+            source_root=REPO,
+        )
     slots = _server_slots(values, spec.sidecar_fragment)
     _assert_worker_fit(args.workers, slots, roster_key, spec.sidecar_fragment)
     packet_root = Path(str(values.get("feature_root", DEFAULT_FEATURE_ROOT)))
@@ -1216,7 +1267,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         split_identity_hash=str(values["split_identity_hash"]),
         planned_model_calls=calls, planned_gpu_hours=gpu_hours,
         planned_speech_audio_seconds=speech, protocol_hash=composed.config_hash,
-        attempt_id=attempt_id).validate()
+        attempt_id=attempt_id,
+        # None for every Stage-2 roster above (and a Stage-2 plan that declared
+        # one would be refused); the final-report roster carries its committed
+        # owner-allowance pin, which validate() and the gate both re-verify.
+        owner_allowance=values.get("owner_allowance")).validate(source_root=REPO)
     log("frozen-core gate PASS (lock %s)" % gate.assert_model_touch_allowed(plan)[:12])
 
     runtime_receipt = load_runtime_receipt(REPO / "docs" / RUNTIME_RECEIPT_RELPATH)
