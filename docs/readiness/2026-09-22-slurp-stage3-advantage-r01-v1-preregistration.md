@@ -235,7 +235,7 @@ registered plans. Two files that must stay in sync and prove nothing are a defec
 | --- | --- | --- | --- | --- | --- |
 | `SAEA-SLURP-STAGE3-ADVANTAGE-R01-V1` | `...-r01-v1` | `generation-plan-registered-v1.json` | `9a4f061c5e3f9e52512a9369b4240cdc9b10460be7e62d6b12db3752e07ca055` | `67779678aa0ee76764b94829c51a208fd251f6e9b4aa9dd5ddcd9f40f3c1f154` | `7c603857503faacbc40999d0dd939202ac141ba50aac3fb5e3594542931c46d7` |
 | `SAEA-SLURP-STAGE3-ADVANTAGE-R01-FIT-V1` | `...-r01-fit-v1` | `fit-plan-registered-v1.json` | same | same | same |
-| `SAEA-SLURP-STAGE3-ADVANTAGE-R01-SMOKE-4-V1` | `...-r01-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `8798db4e3a92bc312d14ef8fa94121ee3d0682c9e39c3ee5519970b1247be5da` | `bd98fbebf379711bb4197bab48797e1c417bee62e5501bf66d79627e1d65b82f` | `8cbdb0acece69a74145685ab1b6452d494ac86a82b6b18b260cec66d36264762` |
+| `SAEA-SLURP-STAGE3-ADVANTAGE-R01-SMOKE-4-V1` | `...-r01-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `3dd482a3c8e87c8ef1157a3cdc0172d0a5a2e7b6531d9c06d5ddc8062276d384` | `1c5598f6d9fe870a45bd68a8d2c333dd61dcdb4cff7807f9fbb7b5423d76d3ef` | `8cbdb0acece69a74145685ab1b6452d494ac86a82b6b18b260cec66d36264762` |
 | `SAEA-SLURP-STAGE3-ADVANTAGE-R01-SMOKE-4-FIT-V1` | `...-r01-smoke-4-fit-v1` | `smoke-fit-plan-registered-v1.json` | same | same | same |
 
 Protocol document `protocol-registered-v1.json` sha256 `eea6fff56cf42a26eccc8b21b80f645905d78b590f92917501ebc3001946d0db`. S3-3's `pairs.json`
