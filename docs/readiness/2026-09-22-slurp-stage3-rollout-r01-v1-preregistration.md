@@ -48,3 +48,57 @@ reuses cell PLAN's non-grouped per-row ceiling (11) as the planning number, not 
 ceiling (19, section 2); `execution_plan.planned_speech_audio_seconds = audio_seconds_total(roster) x 11` (repeated
 speech accounting, the same convention); `execution_plan.planned_gpu_hours = 8.0`. `family_budget` mirrors these.
 First failure stops and preserves; no automatic recovery is pre-authorised here.
+
+## Flight registration (2026-09-23)
+
+The three S3-1 preparations of section 3 are now SEALED and pinned by hash in both baseline
+fragments (`stage3_placeholders_filled` records all 18 fills): the featcache packet promotion
+`SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS-RECOVERY-V1` (receipt sha256 `a1664e34...`), the
+intent-boundary speech-query encoding `SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1`
+(alias sha256 `41b47b3f...`) and the model-free content derivative
+`SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1` (sha256 `651ddfbb...`). The cell is
+therefore registered for flight on 2026-09-23 at study commit `db3b4d6a`, before any contact, and
+`readiness.state` stays `"held"`.
+
+Stage-3 algorithm label (owner decision 101): **`shared-rollout`**, operator `rollout` -- the
+algorithm-neutral rollout operator every layer-A family (Training-Free GRPO, GEPA, ACE) consumes.
+
+### Section 5 superseded: the registered budgets (owner decision 96)
+
+Section 5 above registered `planned_model_calls = 8,800` (800 x 11, cell PLAN's non-grouped
+ceiling). Owner decision 96 replaces that at the readiness flip with the grouped-Solver graph's OWN
+ceiling:
+
+| quantity | arm | smoke |
+| --- | --- | --- |
+| `planned_model_calls` | 15,200 = 800 x 19 | 76 = 4 x 19 |
+| `fit_endpoint_calls_cap` | 60,800 = 15,200 x 4 | 304 = 76 x 4 |
+| `planned_speech_audio_seconds` | 66,338 = `ceil(3,491.426125 x 19)` | 286 = `ceil(15.03875 x 19)` |
+| `planned_gpu_hours` | 8.0 (unchanged) | 1.0 |
+| `native_task_contract_calls_cap` | 0 (tool-free) | 0 (tool-free) |
+
+19 = `1 + (max_revisions + 1) * (solver.max_iterations * solver.samples + reviewer.max_iterations +
+planner.max_iterations) = 1 + 2 * (5 + 3 + 1)`, as
+`rails.native_episode_config.load_native_episode_config` resolves it. Expected spend: about 6,400
+contacts (about 8 per row, spec S3-2) and about 2.5 GPU hours. Ceilings are bounds, never targets,
+and budgets are run-cumulative across every attempt of a run id.
+
+`service_session` is now `serving-slurp-native-candidate-five-train-a-np4-v1` in both fragments
+(the resident SLURP session; attach only, never spawn or stop).
+
+### What is registered
+
+Package `docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1/` (the four plans fresh and
+registered, `protocol-registered-v1.json`, plus the pre-existing README, analysis recipe and S3-3
+dry-run receipt), campaign plan `configs/campaign/slurp-native-stage3-rollout-r01-v1.json`, and four
+unconsumed exposure-ledger rows (`SAEA-SLURP-STAGE3-ROLLOUT-R01-V1` / `-FIT-V1` /
+`-SMOKE-4-V1` / `-SMOKE-4-FIT-V1`, `consumed = no`).
+
+Section 4's decision rule is unchanged and the protocol states it machine-readably:
+`"comparator": null`, because ROLL-1 is a rollout for curation read by
+`scripts/analysis/stage3_rollout_score.py`, never by `scripts/analysis/plan_cell_read.py`.
+
+Nothing here authorises a flight. Root mints
+`coordination/slurp-stage3-rollout-r01-v1/root-admission-v1.json` (decision id
+`slurp-stage3-rollout-r01-admission-v1`) and flips both cells with
+`scripts/flights/repin_cell.py --set-ready`, which also mints this cell's own prepared phase supply.
