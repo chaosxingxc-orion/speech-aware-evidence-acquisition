@@ -311,7 +311,7 @@ class FrozenCoreGate(
                 "retired by umbrella Decision-Log continuation entry 93 (semantic scope "
                 "gate)"
             )
-        ExecutionPlan.validate(plan)
+        ExecutionPlan.validate(plan, source_root=self.source_root)
         if plan.schema == TEXT_ENCODER_PLAN_SCHEMA:
             raise ExecutionScopeError(
                 "a text-encoder plan cannot authorize a Qwen frozen-core model touch"
@@ -323,6 +323,16 @@ class FrozenCoreGate(
             )
         assert_wsl_execution_environment()
         self._require_construction_role_for_visible_targets(plan, arm)
+        # Owner decisions 99 and 107 (2026-09-22/23): a ``final-report`` plan
+        # carries the one-shot SLURP test-split read or one of its label-free
+        # preparations. Beyond the owner allowance ``ExecutionPlan.validate``
+        # already re-verified above, it must additionally prove -- HERE, from
+        # live bytes, not from a committed receipt -- that its roster is
+        # disjoint from every roster, knowledge store and exemplar pool the
+        # control plane was built on, that it carries no construction-visible
+        # arm, and that it has not already been attempted. Returns immediately
+        # for every other split role.
+        self._require_final_report_isolation(plan, arm)
         lock, lock_sha256 = self._load_lock_with_hash()
         self._require_exposure_preregistration(plan, lock)
         self._resolve_carrier_dataset_entry(plan.carrier_lock_key, lock)

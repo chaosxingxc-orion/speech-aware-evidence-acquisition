@@ -493,7 +493,19 @@ def _probe_engineering_media(path: Path) -> tuple[str, float, int]:
 # ``docs/readiness/2026-08-23-knowledge-plane-baseline-rulings.md`` section
 # 2.2); ``confirmatory`` stays refused here exactly as before -- a runtime
 # view can never name a confirmatory split.
-_RUNTIME_VIEW_SPLIT_ROLES = frozenset({"discovery", "dev"})
+#
+# ``final-report`` (owner decisions 99 of 2026-09-22 and 107 of 2026-09-23;
+# one-shot read protocol section 6.3) is admitted here too, because the ONE
+# complete SLURP test-split read and its label-free preparation passes bind a
+# runtime view exactly as every development roster does. Naming the role in a
+# runtime view is a STATEMENT, never an authority: a speech-native runtime view
+# carries media identity only -- relpath, bytes, sha256, header duration, sample
+# rate, packet id -- and no annotation, so admitting the role here cannot make a
+# gold field reachable. The authority lives entirely in
+# ``contracts.plan.require_owner_split_allowance``, which refuses every
+# ``final-report`` ExecutionPlan until the committed owner-allowance receipt
+# says ``authorised``.
+_RUNTIME_VIEW_SPLIT_ROLES = frozenset({"discovery", "dev", "final-report"})
 
 
 def load_slurp_engineering_gate(
