@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-rollout-r01-smoke-4-v1",
-  "composed_config_hash": "b31191e06d11c81b8329a42f0830da47546991d598ac89f22c97a198cc4003c5",
+  "composed_config_hash": "78319cac32eb46a9b0250d4c683b4f17faaecc10c84cdaadc784f149b64efb09",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-rollout-r01-smoke-4-generation-recovery-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 76,
     "planned_speech_audio_seconds": 324,
-    "protocol_hash": "a40249f2232bfea1ea9a3fc93925526da789a3beead533ff77999e42ab5cee43",
+    "protocol_hash": "6461e09d24a2c0d61812a93a3371d76fe90dda5625e5a83f961be16c3867dd7b",
     "run_id": "SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
@@ -43,7 +43,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1/protocol-registered-v1.json",
-    "sha256": "31cfb0cfd2206deeb4d082724c4c92e0148a1a6099a41789516319e3f8b52ad4"
+    "sha256": "c3006bf1b695d1f4b9374057fee6d87d04ef08eb8229ba4a7df4e6d538f1b9c1"
   },
   "quality_read_gate": "No read of any kind before the complete sealed manifest, the exact ordered 4 outputs with five custodied solver_group samples per row (invariant I7g) and the native phase summary all exist. There is no admission read and no comparator: the only read is S3-3's own CLI (scripts/analysis/stage3_rollout_score.py) on COPIES of the sealed outputs, model-free, and the row accounting 4 in / 4 out must hold on both sides before any pair is selected.",
   "registered_at_utc": "2026-09-23T12:00:00.000000+00:00",

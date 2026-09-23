@@ -24,8 +24,8 @@
           {
             "kind": "preparation",
             "reason": "This cell's OWN model-free first-phase supply, minted under its own run id by core.flight.repin (core.flight.cli prepare-supply) at the readiness flip -- item E16: a prepared artifact is evidence only for the implementation that produced it, so nothing is inherited from cell PLAN or cell B2 v3. The relpath and sha256 below are PENDING placeholders that scripts/flights/repin_cell.py overwrites (core.flight.repin._set_preparation_requirement) before it flips this state; --allow-output-change must never be passed.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-V1/phase-supply-v1.json",
-            "sha256": "62427f341ec5b942d68f9dea104085589c5c8c11f636225c4aa163cab8334d30"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-V1/phase-supply-v3.json",
+            "sha256": "60d38922c46cf756365ed9571df99f7e60a9fa462583e3cfc5e005b69a85aceb"
           }
         ],
         "state": "ready"

@@ -396,7 +396,7 @@
     }
   ],
   "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-V1/phase-supply-v1.json",
-    "sha256": "62427f341ec5b942d68f9dea104085589c5c8c11f636225c4aa163cab8334d30"
+    "relpath": "prepared/SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-V1/phase-supply-v3.json",
+    "sha256": "60d38922c46cf756365ed9571df99f7e60a9fa462583e3cfc5e005b69a85aceb"
   }
 }
