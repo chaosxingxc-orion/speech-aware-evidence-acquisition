@@ -396,7 +396,7 @@
     }
   ],
   "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-STAGE3-ROLLOUT-R01-V1/phase-supply-v1.json",
-    "sha256": "16c8d7c6ef4bbdbdbf147550816da0234d4a785e1238ef6f18dd54e7b8066b11"
+    "relpath": "prepared/SAEA-SLURP-STAGE3-ROLLOUT-R01-V1/phase-supply-v2.json",
+    "sha256": "d59ce03f5411ef159db93a5d8438dc78fed73b61a7f11f492eec28dbdd0612b6"
   }
 }

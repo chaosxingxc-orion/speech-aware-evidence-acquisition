@@ -84,10 +84,10 @@ Composed and protocol hashes as registered (every one of them moves at the flip,
 
 | cell | composed config | protocol |
 | --- | --- | --- |
-| `slurp-native-stage3-rollout-r01-v1` | `6e3e26baa4d25dbc17e3e52110b0bfd423c47cc7b7931e67f495033ba51e0b32` | `7af1324dfaa8918ee3f54fa9ab32963647ad584027797365f859918b1f186686` |
+| `slurp-native-stage3-rollout-r01-v1` | `1946b6fbb7b5a82cc5940d9bbd1d3c834e6902c0496c6a03e22f9e7d77ea2a6d` | `7220e87b005dae482590c565c35fbf3a7bb38d15c1b8b0349d633fd0c40f8438` |
 | `slurp-native-stage3-rollout-r01-smoke-4-v1` | `78319cac32eb46a9b0250d4c683b4f17faaecc10c84cdaadc784f149b64efb09` | `6461e09d24a2c0d61812a93a3371d76fe90dda5625e5a83f961be16c3867dd7b` |
 
-Protocol document sha256 `c3006bf1b695d1f4b9374057fee6d87d04ef08eb8229ba4a7df4e6d538f1b9c1`.
+Protocol document sha256 `b5b8398f7ed7c91a264a7a9249a0fb619f488c6fc8aa7c4b4abda7e8191dc471`.
 
 Still root's to do, in order: mint `coordination/slurp-stage3-rollout-r01-v1/root-admission-v1.json` (decision id `slurp-stage3-rollout-r01-admission-v1`), then re-pin BOTH cells in
 ONE cycle with `scripts/flights/repin_cell.py --set-ready`. The re-pin builds this cell's own
