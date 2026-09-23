@@ -1,0 +1,44 @@
+{
+  "schema": "saea-authored-semantic-knowledge-preparation-v1",
+  "registration_id": "SAEA-SLURP-STAGE3-DELTAS-TWIN-PREPARATION-V1",
+  "template_note": "TEMPLATE, never passed to core.semantic_knowledge_preparation.prepare_semantic_knowledge_store; see the sibling stage3-deltas-v1-release-registration.template.json. THIS IS THE FORM CONTROL: its authored source is scripts/build_slurp_stage3_delta_twin.py's seeded, zero-fixed-point derangement of the S3-5 release's own authored document (Sattolo's algorithm over associated_facet_ids) -- same statement content, wrong facet attachment, the B1/IDXT twin idiom. Everything else is byte-identical to the generation registration except registration_id, authored_source.relpath and output_namespace. scripts/flights/batch/adv1_to_deltas_steps.py materialises the runnable copy. Remove this key in the runnable copy.",
+  "carrier_lock_key": "slurp",
+  "source_partition_role": "train",
+  "source_split_identity_hash": "PENDING_S3_3_DISAGREEING_SPLIT_IDENTITY_HASH",
+  "builder_policy_id": "saea-authored-stage3-deltas-v1",
+  "store_id": "stage3-deltas",
+  "store_role": "stage3-deltas",
+  "authored_source": {
+    "root": "data",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-DELTAS-V1/authored-stage3-deltas-twin-v1.json",
+    "sha256": "PENDING_S3_6_TWIN_AUTHORED_SHA256"
+  },
+  "construction_scope": {
+    "root": "data",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-DELTAS-V1/outer-construction-roster.json",
+    "sha256": "PENDING_S3_5_CONSTRUCTION_SCOPE_SHA256"
+  },
+  "permitted_roster": {
+    "root": "data",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-DELTAS-V1/permitted-roster.json",
+    "sha256": "PENDING_S3_5_PERMITTED_ROSTER_SHA256"
+  },
+  "forbidden_rosters": [
+    {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+      "root": "repo"
+    },
+    {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+      "root": "repo"
+    },
+    {
+      "relpath": "docs/receipts/probe-samples/DEV-1000.json",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b",
+      "root": "repo"
+    }
+  ],
+  "output_namespace": "knowledge/slurp/semantic/stage3-deltas-twin-v1"
+}

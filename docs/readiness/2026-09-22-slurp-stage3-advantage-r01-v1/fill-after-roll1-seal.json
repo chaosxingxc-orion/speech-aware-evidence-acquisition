@@ -1,0 +1,174 @@
+{
+  "schema": "saea-stage3-fill-map-v1",
+  "date": "2026-09-22",
+  "what_this_is": "Every placeholder the Stage-3 ADV-1 (S3-4) and CELL-1 (S3-6) fragments still carry, with the exact JSON path it lives at, the artefact that produces its value and the field to copy. Written when both packages were re-pointed from the 800-row construction roster R01 onto the 625-row clean subset R01C (coordinator decision 102, pending owner confirmation). Everything that a committed byte could fill was filled then; what is listed here is exactly what cannot exist until cell ROLL-1 seals (the S3-3 group), until ADV-1 seals and S3-5 releases (the S3-5/S3-6 group), or until root performs its own act (the root group). Nothing in this file authorises a flight, a readiness flip or an admission entry.",
+  "substitution_tool": {
+    "path": "scripts/flights/batch/roll1_fill_placeholders.py",
+    "invocation": "python scripts/flights/batch/roll1_fill_placeholders.py --fragments <fragment> [<fragment> ...] --values <values.json> --by \"<provenance sentence>\" [--occurrence-policy at-least-one]",
+    "semantics": "Each token is replaced wherever it appears as a whole JSON string value. The default --occurrence-policy exactly-one is the ROLL-1 rule (a token must occur exactly once per named fragment); at-least-one is what the groups below need, because a release hash is pinned by several held cells of one experiment fragment. Whatever the policy, a token that occurs nowhere in the whole fragment set is refused. A value that still contains PENDING_ is refused. Fragments that carry a stage3_pending_placeholders block get the closed entries moved into stage3_placeholders_filled with the --by note; fragments that carry no such block are left structurally alone."
+  },
+  "groups": [
+    {
+      "id": "S3-3",
+      "blocked_by": "Cell ROLL-1 (run SAEA-SLURP-STAGE3-ROLLOUT-R01-V1, attempt attempt-slurp-native-stage3-rollout-r01-generation-v1) has not sealed, so scripts/analysis/stage3_rollout_score.py has not produced per_row.json / pairs.json.",
+      "runbook": "scripts/flights/batch/adv1_prepare.sh",
+      "entries": [
+        {
+          "token": "PENDING_S3_3_PAIRS_JSON_RELPATH",
+          "paths": [
+            {"fragment": "configs/experiment/slurp-native-stage3-advantage-r01-v1.json", "json_path": "cells[0].readiness.requirements[0].relpath"},
+            {"fragment": "configs/experiment/slurp-native-stage3-advantage-r01-v1.json", "json_path": "cells[1].readiness.requirements[0].relpath"},
+            {"fragment": "configs/baseline/slurp-native-stage3-advantage-baseline-v1.json", "json_path": "advantage_pairs.relpath"}
+          ],
+          "source_artifact": "$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1/pairs.json",
+          "field_to_copy": "the path itself, expressed relative to the data root, i.e. \"analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1/pairs.json\"",
+          "why_data_root_relative": "core.flight.campaign.declared_readiness resolves every readiness requirement beneath the data root and refuses a path that escapes it; the baseline's advantage_pairs.relpath is the same artefact and keeps the same convention."
+        },
+        {
+          "token": "PENDING_S3_3_PAIRS_JSON_SHA256",
+          "paths": [
+            {"fragment": "configs/experiment/slurp-native-stage3-advantage-r01-v1.json", "json_path": "cells[0].readiness.requirements[0].sha256"},
+            {"fragment": "configs/experiment/slurp-native-stage3-advantage-r01-v1.json", "json_path": "cells[1].readiness.requirements[0].sha256"},
+            {"fragment": "configs/baseline/slurp-native-stage3-advantage-baseline-v1.json", "json_path": "advantage_pairs.sha256"}
+          ],
+          "source_artifact": "$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1/pairs.json",
+          "field_to_copy": "sha256 of the file's bytes (scripts/analysis/stage3_rollout_score.py writes it with write_json, LF, one trailing newline); rails.stage3_advantage.load_advantage_pairs verifies this pin at load."
+        },
+        {
+          "token": "PENDING_S3_3_DISAGREEING_ROW_COUNT",
+          "paths": [
+            {"fragment": "configs/experiment/slurp-native-stage3-advantage-r01-v1.json", "json_path": "population.count"}
+          ],
+          "source_artifact": "pairs.json",
+          "field_to_copy": "the top-level \"count\" field (== len(pairs)); it must be <= execution_plan.planned_model_calls, which is registered at R01C's whole 625 as the ceiling.",
+          "expectation": "about 213 rows: the S3-3 dry run measured a 0.3398 disagreement-pair rate over 1,080 rows (docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1/s3-3-dry-run-receipt-v1.json); the engineering spec's own estimate is 300-500 of the parent R01's 800."
+        },
+        {
+          "token": "PENDING_S3_3_DISAGREEING_SPLIT_ID",
+          "paths": [
+            {"fragment": "configs/experiment/slurp-native-stage3-advantage-r01-v1.json", "json_path": "split_id"}
+          ],
+          "source_artifact": "docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-v1.json (the construction-role roster receipt scripts/flights/batch/adv1_prepare.sh writes over exactly the disagreeing rows)",
+          "field_to_copy": "its roster_id without the carrier prefix: \"STAGE3-ADVANTAGE-R01C-DISAGREEING-V1\" for roster_id \"SLURP-STAGE3-ADVANTAGE-R01C-DISAGREEING-V1\" (the ROLL-1 convention: split_id STAGE3-CONSTRUCTION-R01C for roster_id SLURP-STAGE3-CONSTRUCTION-R01C)."
+        },
+        {
+          "token": "PENDING_S3_3_DISAGREEING_SPLIT_IDENTITY_HASH",
+          "paths": [
+            {"fragment": "configs/experiment/slurp-native-stage3-advantage-r01-v1.json", "json_path": "population.split_identity_hash"}
+          ],
+          "source_artifact": "docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-v1.json",
+          "field_to_copy": "its split_identity_hash, which is data.splits.split_identity_hash(data.splits.prefixed(\"slurp\", <the disagreeing sample_ids>)) == sha256 of the LF-joined sorted \"slurp/<sample_id>\" keys, UTF-8, no trailing newline -- exactly what core.roster.verify_roster recomputes and what core.bundle.raw_contact_source cross-checks against the flown ids.",
+          "hard_constraint": "construction-advantage-text is a CONSTRUCTION-VISIBLE arm (contracts.CONSTRUCTION_VISIBLE_ARMS), so contracts.gate_exposure._require_construction_role_for_visible_targets refuses the model touch unless this hash is that of a COMMITTED roster_role='construction' receipt of carrier slurp under docs/receipts/rosters/. Filling this token without committing that receipt leaves a cell that fails closed at the first contact."
+        }
+      ],
+      "structural_fills": [
+        {
+          "fragment": "configs/experiment/slurp-native-stage3-advantage-r01-v1.json",
+          "json_path": "populations",
+          "operation": "insert",
+          "value": "[{\"dataset_fragment\": \"slurp-speech-native-stage3-construction-r01c\", \"ids\": [<the disagreeing sample_ids, ascending>]}]",
+          "why": "core.flight.repin cross-checks populations[*].ids against the recomputed split identity when a fragment inlines them (core/flight/repin.py). Cell ROLL-1 and its smoke both inline theirs; ADV-1 cannot until pairs.json names the rows. scripts/flights/batch/adv1_prepare.sh writes this block from pairs.json in the same pass that fills the tokens above."
+        },
+        {
+          "artifact": "docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-v1.json",
+          "operation": "create",
+          "why": "the committed construction-role roster the exposure gate demands (see the hard_constraint above). It is a PURE SELECTION of docs/receipts/rosters/slurp-stage3-construction-r01c.json -- every surviving item is the parent's item verbatim, in the parent's order, zero contacts -- exactly as R01C is a pure selection of R01 (scripts/build_slurp_stage3_construction_clean_subset.py) and as SLURP-EVO-S1-PROPOSER-R01 is a construction sub-roster for the proposer arm. Written and verified (core.roster.verify_roster, core.roster.write_roster) by scripts/flights/batch/adv1_prepare.sh."
+        }
+      ]
+    },
+    {
+      "id": "S3-5/S3-6",
+      "blocked_by": "ADV-1 has not sealed, so scripts/build_slurp_stage3_delta_store.py has no advantage outputs to curate and knowledge/slurp/semantic/stage3-deltas-v1/ does not exist; the derangement twin is built from that release's own authored document.",
+      "runbook": "scripts/flights/batch/adv1_to_deltas.sh",
+      "entries": [
+        {
+          "token": "PENDING_S3_5_RELEASE_JSON_SHA256",
+          "paths": [
+            {"fragment": "configs/experiment/slurp-native-stage3-delta-cell-r01-v1.json", "json_path": "cells[0].readiness.requirements[0].sha256"},
+            {"fragment": "configs/experiment/slurp-native-stage3-delta-cell-r01-v1.json", "json_path": "cells[2].readiness.requirements[0].sha256"},
+            {"fragment": "configs/experiment/slurp-native-stage3-delta-cell-r01-v1.json", "json_path": "cells[4].readiness.requirements[0].sha256"},
+            {"fragment": "configs/baseline/slurp-native-stage3-delta-cell-baseline-v1.json", "json_path": "knowledge_stores.stage3-deltas.release.sha256"},
+            {"fragment": "configs/baseline/slurp-native-stage3-delta-cell-smoke-4-baseline-v1.json", "json_path": "knowledge_stores.stage3-deltas.release.sha256"}
+          ],
+          "source_artifact": "$SPEECHRL_DATA_DIR/knowledge/slurp/semantic/stage3-deltas-v1/release.json",
+          "field_to_copy": "sha256 of that file's bytes, as the release-pins document scripts/build_slurp_stage3_delta_store.py --release-pins writes records it (the form of docs/readiness/2026-09-17-slurp-semantic-store-release-pins-v2.json).",
+          "note": "--occurrence-policy at-least-one: three held cells of the experiment fragment pin the same release.json."
+        },
+        {
+          "token": "PENDING_S3_5_SNAPSHOT_JSON_SHA256",
+          "paths": [
+            {"fragment": "configs/baseline/slurp-native-stage3-delta-cell-baseline-v1.json", "json_path": "knowledge_stores.stage3-deltas.snapshot.sha256"},
+            {"fragment": "configs/baseline/slurp-native-stage3-delta-cell-smoke-4-baseline-v1.json", "json_path": "knowledge_stores.stage3-deltas.snapshot.sha256"}
+          ],
+          "source_artifact": "$SPEECHRL_DATA_DIR/knowledge/slurp/semantic/stage3-deltas-v1/snapshot.json",
+          "field_to_copy": "sha256 of that file's bytes.",
+          "why_a_separate_token": "release.json and snapshot.json are two different files with two different digests. Until this re-pointing both were written as one PENDING_S3_5_RELEASE_SHA256 token, which no substitution tool can fill correctly; the token was split here."
+        },
+        {
+          "token": "PENDING_S3_6_TWIN_RELEASE_JSON_SHA256",
+          "paths": [
+            {"fragment": "configs/experiment/slurp-native-stage3-delta-cell-r01-v1.json", "json_path": "cells[1].readiness.requirements[0].sha256"},
+            {"fragment": "configs/experiment/slurp-native-stage3-delta-cell-r01-v1.json", "json_path": "cells[3].readiness.requirements[0].sha256"},
+            {"fragment": "configs/experiment/slurp-native-stage3-delta-cell-r01-v1.json", "json_path": "cells[5].readiness.requirements[0].sha256"},
+            {"fragment": "configs/baseline/slurp-native-stage3-delta-cell-twin-baseline-v1.json", "json_path": "knowledge_stores.stage3-deltas.release.sha256"},
+            {"fragment": "configs/baseline/slurp-native-stage3-delta-cell-twin-smoke-4-baseline-v1.json", "json_path": "knowledge_stores.stage3-deltas.release.sha256"}
+          ],
+          "source_artifact": "$SPEECHRL_DATA_DIR/knowledge/slurp/semantic/stage3-deltas-twin-v1/release.json",
+          "field_to_copy": "sha256 of that file's bytes."
+        },
+        {
+          "token": "PENDING_S3_6_TWIN_SNAPSHOT_JSON_SHA256",
+          "paths": [
+            {"fragment": "configs/baseline/slurp-native-stage3-delta-cell-twin-baseline-v1.json", "json_path": "knowledge_stores.stage3-deltas.snapshot.sha256"},
+            {"fragment": "configs/baseline/slurp-native-stage3-delta-cell-twin-smoke-4-baseline-v1.json", "json_path": "knowledge_stores.stage3-deltas.snapshot.sha256"}
+          ],
+          "source_artifact": "$SPEECHRL_DATA_DIR/knowledge/slurp/semantic/stage3-deltas-twin-v1/snapshot.json",
+          "field_to_copy": "sha256 of that file's bytes."
+        }
+      ],
+      "structural_fills": [
+        {
+          "artifact": "the release registration scripts/build_slurp_stage3_delta_store.py --release consumes",
+          "operation": "materialise",
+          "template": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v1-release-registration.template.json",
+          "why": "core.semantic_knowledge_preparation.prepare_semantic_knowledge_store verifies authored_source, construction_scope, permitted_roster and every forbidden_rosters pin by SHA-256, and the authored document's digest only exists after the curator has written it. The committed file is therefore a TEMPLATE carrying PENDING_ pins and is never passed to the preparer; scripts/flights/batch/adv1_to_deltas.sh materialises a runnable copy under the data root with the real digests, exactly as scripts/flights/batch/r01_prep23.sh materialises configs/preparation/slurp-stage3-construction-r01-query-alias-v1.json."
+        }
+      ]
+    },
+    {
+      "id": "root",
+      "blocked_by": "Root's own acts: choosing a resident serving session and minting an admission decision receipt. Neither is a value any artefact of this program produces.",
+      "entries": [
+        {
+          "token": "PENDING_ROOT_SELECTION",
+          "paths": [
+            {"fragment": "configs/experiment/slurp-native-stage3-advantage-r01-v1.json", "json_path": "service_session"}
+          ],
+          "source_artifact": "the resident llama-server session root attaches this cell to, for the proposer geometry q4km-mmproj-free-speech-native-np4-proposer-max1536",
+          "field_to_copy": "the session id.",
+          "note": "CELL-1's own service_session was NOT left pending: its model fragment is byte-identical to cell PLAN's and cell ROLL-1's, so it is registered at serving-slurp-native-candidate-five-train-a-np4-v1, the session both of those cells name. No such committed twin exists for the proposer geometry (configs/experiment/slurp-evo-s1-proposer-r01.json, the only other cell on that model fragment, declares no service_session at all)."
+        },
+        {
+          "artifact": "the decision requirement of every cell in both fragments",
+          "operation": "inserted-by-repin",
+          "why": "Neither fragment registers a placeholder decision requirement any more. core.flight.repin._upsert_decision_requirement inserts the real one at the readiness flip (scripts/flights/repin_cell.py --set-ready) from the minted receipt under coordination/<cell>/root-admission-v1.json; a placeholder entry left beside it would carry no expected_decision_id and would refuse the campaign at load (core.flight.campaign.declared_readiness). This is the discipline the registered ROLL-1 cell states in its own readiness reason."
+        },
+        {
+          "artifact": "configs/baseline/slurp-native-stage3-delta-cell{,-twin,-smoke-4,-twin-smoke-4}-baseline-v1.json",
+          "json_paths": [
+            "native_contact_fit",
+            "prepared_phase_supply",
+            "preparation_source_receipts",
+            "speech_feature_key_representation_id",
+            "speech_feature_matcher_policy_id",
+            "speech_packet_promotion_receipt",
+            "speech_packet_promotion_receipt_sha256"
+          ],
+          "tokens": "PENDING_SLURP_NATIVE_STAGE3_DELTA_CELL[_TWIN][_SMOKE_4]_V1_OWN_<KEY>, one per cell per key (28 tokens over the four baselines)",
+          "operation": "minted-by-repin",
+          "why": "Item E16: a prepared artifact is evidence only for the implementation that produced it, so each of the four cells prepares its OWN supply, fit receipt and speech-feature identities under its OWN run id at the readiness flip (core.flight.cli prepare-supply through scripts/flights/repin_cell.py), never inheriting cell PLAN's even when the bytes turn out identical. These are NOT substitution-tool fills and must not be written by hand; --allow-output-change must never be passed."
+        }
+      ]
+    }
+  ]
+}
