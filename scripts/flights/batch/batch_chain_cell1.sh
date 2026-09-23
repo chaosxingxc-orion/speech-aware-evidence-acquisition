@@ -35,7 +35,7 @@ steps = [
      "fit_run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1",
      "gen_attempt_id": "attempt-slurp-native-stage3-delta-cell-r01-v1-generation",
      "smoke_run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1",
-     "smoke_attempt_id": "attempt-slurp-native-stage3-delta-cell-smoke-4-v1-generation",
+     "smoke_attempt_id": "attempt-slurp-native-stage3-delta-cell-smoke-4-v1-generation-recovery",
      "expected_rows": 1080, "contacts_per_row": 4, "ceiling_per_row": 11, "notool": True,
      "owner": "root-slurp-native-stage3-delta-cell-r01-v1"},
     {"order": 2, "short": "cell1twin", "kind": "cell",

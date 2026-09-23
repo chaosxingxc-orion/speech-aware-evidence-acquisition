@@ -377,3 +377,30 @@ opens only after its own smoke seals, and the twin never flies beside the arm.
 
 **4. Read**, arm first, then the twin, with `scripts/analysis/plan_cell_read.py` as `analysis-recipe-v1.json`
 records. **5. Countersign** the eight exposure rows as the flights consume them. Do not countersign before contact.
+
+## Addendum 2026-09-23: first launch refused before contact, one recovery re-registration
+
+The generation smoke `slurp-native-stage3-delta-cell-smoke-4-v1` was refused at 14:14 UTC **before
+any contact**, with `FlightRuntimeError: an unconditional store route repeats a seeded value id`
+raised inside `core.flight.runtime._merge_unconditional_first_phase`. The pinned
+`prepared_phase_supply` artifact was produced through the same `_phase_supply_seeds` (item E16) and
+therefore already carried the S3-4s Perception unconditional route, which the dispatch merge then
+seeded a second time. The attempt
+`attempt-slurp-native-stage3-delta-cell-smoke-4-v1-generation` was opened and carries **zero calls
+and zero seconds**; it is retired and left as the record.
+
+The **one** recovery re-registration this flight is allowed flies as
+`attempt-slurp-native-stage3-delta-cell-smoke-4-v1-generation-recovery`, set in
+`configs/experiment/slurp-native-stage3-delta-cell-smoke-4-v1.json` and in `smoke_attempt_id` of
+`scripts/flights/batch/batch_chain_cell1.sh`. **No cap, ceiling, population, roster, prompt,
+knowledge pin, geometry or decision rule moves, and no budget is re-registered: nothing was
+metered.** The twin smoke's attempt never opened and is unchanged, as are both arms.
+
+The repair is engineering only: the unconditional route is now composed exactly once whether the
+first-phase seed comes from a prepared artifact or is computed from scratch, and a genuine duplicate
+still refuses. Because `core.flight.runtime`'s own SHA-256 is part of every prepared artifact's
+identity, all four pinned first-phase artifacts must be re-prepared by the coordinator in the same
+re-pin cycle; their output is expected to reproduce byte for byte, and `--allow-output-change` must
+never be passed. Details and the reproduction: the package runbook
+`docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/README.md`, section "First launch REFUSED,
+recovery re-registration (2026-09-23)".

@@ -594,21 +594,39 @@ def validate_artifact_result_binding(
     }
 
 
-def _merge_unconditional_first_phase(facets, values, binding, first_phase):
+def _merge_unconditional_first_phase(
+    facets, values, binding, first_phase, *, seeded_from_artifact=False
+):
     """Compose a named store's UNCONDITIONAL first-phase route (S3-4s,
-    owner decision 106) on top of whatever seeded the first phase.
+    owner decision 106) EXACTLY ONCE on top of whatever seeded the first
+    phase.
 
     The first phase has no preceding ``advance`` to carry a per-row
-    decision, so its supply is SEEDED. The seed normally comes from one
-    of two places: a prepared, hash-pinned artifact
+    decision, so its supply is SEEDED. The seed comes from one of two
+    places: a prepared, hash-pinned artifact
     (:meth:`_load_phase_supply_seed`) or the store router's own
-    ``bootstrap_first_phase``. Neither can answer for a store that
-    declares only an unconditional route -- the prepared artifact is a
-    frozen selection of the store it was prepared over, and
-    ``bootstrap_first_phase`` is not called at all when a prepared
-    artifact is pinned. This composes the route's own per-sample value
-    ids on top, appended after whatever was already seeded and never
-    replacing it.
+    ``bootstrap_first_phase``. The latter composes the route itself
+    (``rails.knowledge_stores``), so this function exists for the seeds
+    that route does not produce.
+
+    A prepared artifact looked like exactly such a seed and is not:
+    :meth:`prepare_phase_supply` derives it THROUGH this same
+    :meth:`_phase_supply_seeds` (item E16 -- ONE identity computation,
+    one producer), which for a store-routed cell means through
+    ``bootstrap_first_phase``. So the artifact ALREADY carries the
+    route's own qualified value ids, at the tail of every row it was
+    prepared over, and appending them again refused cell CELL-1's
+    generation smoke before its first contact (2026-09-23, zero calls:
+    four ``stage3-deltas`` deltas seeded twice on every row).
+
+    Hence ``seeded_from_artifact``. For an artifact seed the route is
+    VERIFIED rather than appended: a row already ending in exactly this
+    route's ids is left untouched, and a row carrying none of them (an
+    artifact prepared before the store declared the route -- the case
+    this seam was written for) still has them appended. A partial
+    overlap is never repaired silently. Every other caller keeps the
+    strict rule, under which any overlap at all is a genuine duplicate
+    and refuses.
 
     Byte-identical no-op for every flight whose router publishes no
     ``unconditional_first_phase`` seam -- which is every flight written
@@ -631,14 +649,25 @@ def _merge_unconditional_first_phase(facets, values, binding, first_phase):
             )
         destination = merged_values.setdefault(phase, {})
         for sample_id, value_ids in rows.items():
+            route = tuple(value_ids)
+            if not route:
+                continue
             already = tuple(destination.get(sample_id, ()))
-            overlap = set(already) & set(value_ids)
+            if (
+                seeded_from_artifact
+                and len(already) >= len(route)
+                and already[len(already) - len(route):] == route
+            ):
+                # The producer of this artifact already composed the very
+                # same route, once. Verified here, never appended again.
+                continue
+            overlap = set(already) & set(route)
             if overlap:
                 raise FlightRuntimeError(
                     "an unconditional store route repeats a seeded value id: "
                     f"{sorted(overlap)[:3]}"
                 )
-            destination[sample_id] = already + tuple(value_ids)
+            destination[sample_id] = already + route
     return facets, merged_values
 
 
@@ -7550,8 +7579,12 @@ class FlightRuntime:
             facets, values = self._load_phase_supply_seed(
                 prepared, binding, spec, plan.split_identity_hash
             )
+            # The artifact was produced through this same method, so for a
+            # store-routed cell it already carries the unconditional route
+            # ``bootstrap_first_phase`` composed into it; the merge verifies
+            # that route instead of seeding it a second time.
             return _merge_unconditional_first_phase(
-                facets, values, binding, first_phase
+                facets, values, binding, first_phase, seeded_from_artifact=True
             )
         supply_for_store = binding.get("supply_for_store")
         store_bootstrap = getattr(
