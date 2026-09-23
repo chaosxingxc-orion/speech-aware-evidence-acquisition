@@ -575,3 +575,45 @@ this branch; root's admission receipt gains
 its `eligible_run_ids`; `scripts/flights/batch/cell1_flip_all.sh` re-pins and flips every CELL-1
 cell in one cycle (the fix is hashed into every prepared artifact identity);
 `scripts/flights/batch/batch_chain_cell1.sh` then flies step 1's smoke under the v3 ids.
+## Addendum, 2026-09-23 -- the arm's one recovery re-registration
+
+**What was spent.** The 1,080-row arm attempt
+`attempt-slurp-native-stage3-delta-cell-r01-v1-generation` metered **304 contacts** over 75
+Perception rows and aborted at row ~75 inside the stage3-deltas candidate-bound route
+(`candidate intent_ids must be unique and ordered`, graph component `solver_0_input`). 73 of the 75
+rows completed; no output was sealed and no score was produced, so the attempt contributes evidence
+about the harness only.
+
+**Cause, in one line.** Two of the 75 Perception answers named one legal intent three times, and the
+delta route was the only reader of that sealed state in the whole plan that read it without the
+bounded first-occurrence projection the slot-contracts candidate supply beside it declares. The
+sealed PLAN comparator carries 25 such rows in 1,080 (2.3 %) -- one of them the very same sample --
+and completed every one. The fix makes both routes derive that reading from one function
+(`rails.candidate_semantic_supply.candidate_state_read_parameters`); the full account and the
+offline dry-run table are in the package README's 2026-09-23 section.
+
+**The replacement.** The arm flies under attempt
+`attempt-slurp-native-stage3-delta-cell-r01-v1-generation-recovery`, on the SAME run id
+`SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1` and the same FIT identity
+`SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1`. **Unchanged:** the population TRAIN Fold A (1,080) and its
+split identity `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6`, every store pin,
+the serving geometry, the session `serving-slurp-native-candidate-five-train-a-np4-v1`, the
+comparator, the estimator, the decision rule, the twin's role, and every registered budget. The caps
+are run-cumulative per run id, so the 304 already-metered contacts count against the registered
+generation cap of 11,880 and 304 + 4,424 expected leaves it far from binding; no cap is raised and
+none is re-registered.
+
+**Untouched:** all three other cells of the fragment (the twin, the arm FIT and the twin FIT) keep
+their own attempt ids -- none of those attempts ever opened -- and the v3 four-row smoke keeps
+`attempt-slurp-native-stage3-delta-cell-smoke-4-v3-generation`.
+
+**The failure rule.** This is the arm's ONE recovery re-registration. A second failure stops the
+flight, and the fix is then proven on a four-row dry run before anything is re-queued.
+
+**Open registration decision.** The v3 smoke's attempt is consumed (a `(run_id, attempt_id)` pair is a one-time key), and the batch driver flies a step's smoke whenever the step declares one, so step 1 as queued would be refused at the smoke before the arm starts. The coordinator either clears step 1's `smoke_experiment` -- the form smoke has already passed and this fix changes only how an already-sealed Perception state is READ, proven offline on four answer shapes -- or registers a fresh smoke identity. This branch takes neither.
+
+**Coordinator sequence:** merge this branch; `scripts/flights/batch/cell1_flip_all.sh` re-pins and
+flips every CELL-1 cell in one cycle (`rails/knowledge_stores.py` is hashed into every prepared
+artifact identity, and no first-phase selection moves, so `--allow-output-change` must never be
+passed); `scripts/flights/batch/batch_chain_cell1.sh` then flies step 1 -- the v3 smoke, then the arm
+under the recovery attempt id.

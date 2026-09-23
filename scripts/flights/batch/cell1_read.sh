@@ -4,9 +4,14 @@
 # the twin read is the arm read with one input changed (analysis-recipe-v1.json, twin_invocation). Driver = the repo copy
 # scripts/analysis/plan_cell_read.py. Model-free: zero model / tokenizer / encoder / server contacts; scorer contacts only through the
 # sealed per-sample scores. Registered as SAEA-SLURP-STAGE3-DELTA-CELL-{R01,TWIN}-PAIRED-ANALYSIS-V1 (model-free-check rows).
+# 2026-09-23: the arm attempt is the RECOVERY id (attempt-slurp-native-stage3-delta-cell-r01-v1-generation-recovery).
+# The first arm attempt aborted after 304 contacts and sealed no outputs; the registered package files
+# (generation-plan-registered-v1.json, protocol-registered-v1.json, analysis-recipe-v1.json) keep the
+# original id they were registered with, exactly as the smoke's own recovery did, and the README note
+# records the divergence. The run id, the comparator and the estimator are unchanged.
 WHICH=$1
 case $WHICH in
-  arm) ARM_RUN=SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1; ARM_ATTEMPT=attempt-slurp-native-stage3-delta-cell-r01-v1-generation; ARM_FIT=SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1; LABEL="cell CELL-1 (the locked plan plus the per-node stage3-deltas store)"; TAG=R01;;
+  arm) ARM_RUN=SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1; ARM_ATTEMPT=attempt-slurp-native-stage3-delta-cell-r01-v1-generation-recovery; ARM_FIT=SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1; LABEL="cell CELL-1 (the locked plan plus the per-node stage3-deltas store)"; TAG=R01;;
   twin) ARM_RUN=SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1; ARM_ATTEMPT=attempt-slurp-native-stage3-delta-cell-r01-v1-twin; ARM_FIT=SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-FIT-V1; LABEL="the CELL-1 derangement twin (form control)"; TAG=TWIN;;
   *) echo "usage: cell1_read.sh arm|twin"; exit 2;;
 esac

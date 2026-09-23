@@ -354,6 +354,60 @@ def load_candidate_semantic_supply_specs(
     return MappingProxyType(specs)
 
 
+def candidate_state_read_parameters(
+    specs: Mapping[str, "CandidateSemanticSupplySpec"],
+    *,
+    candidate_state_phase: str,
+) -> tuple[int, str | None] | None:
+    """How this plan's candidate routes read ``candidate_state_phase``.
+
+    The answer is ``(max_candidates, projection_policy)`` -- the reading a
+    plan's OWN candidate routes perform on that phase's sealed COMPACT
+    Perception state. This is the ONE place it lives, so a sibling route over
+    the same bytes can be neither stricter nor more lenient than the plan's
+    candidate supply is.
+
+    2026-09-23, the CELL-1 ARM abort. The locked plan reads one sealed
+    Perception state through TWO routes: the slot-contracts candidate supply
+    (this module) and the stage3-deltas candidate-bound context supply
+    (``rails.knowledge_stores._stage3_delta_local_supply``). The plan's own
+    route reads it with ``projection_policy=
+    "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1"`` and
+    ``max_candidates=3``; the delta route was reading the same bytes with NO
+    projection policy, so a Perception answer that names one intent three
+    times -- 25 of the sealed PLAN arm's 1,080 rows do, and the PLAN arm
+    completed every one of them -- projected cleanly for the plan and raised
+    ``candidate intent_ids must be unique and ordered`` for the delta route,
+    killing the row and, with it, the flight.
+
+    The two routes now derive that reading from the SAME function. Returns
+    ``None`` when no SLURP candidate route in this plan reads that phase's
+    compact output, which leaves the caller its own documented default.
+    Routes that disagree about the same phase are a config defect and are
+    refused here, at build time, rather than per row.
+    """
+
+    if not isinstance(candidate_state_phase, str) or not candidate_state_phase:
+        raise CandidateSemanticSupplyError(
+            "candidate_state_phase must be one non-empty phase name"
+        )
+    readings = {
+        (spec.max_candidates, spec.projection_policy)
+        for spec in specs.values()
+        if spec.provider == SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID
+        and spec.candidate_state_phase == candidate_state_phase
+        and spec.compact_source_phase == candidate_state_phase
+    }
+    if not readings:
+        return None
+    if len(readings) != 1:
+        raise CandidateSemanticSupplyError(
+            f"candidate routes disagree on how to read {candidate_state_phase!r}: "
+            f"{sorted(readings)}"
+        )
+    return next(iter(readings))
+
+
 def _read_released_source(store: object, data_root: Path) -> Mapping[str, object]:
     root = Path(data_root).resolve()
     path = (root / store.source_pin["relpath"]).resolve()
@@ -812,5 +866,6 @@ __all__ = [
     "CandidateSemanticSupplyError",
     "CandidateSemanticSupplySpec",
     "build_candidate_semantic_supply",
+    "candidate_state_read_parameters",
     "load_candidate_semantic_supply_specs",
 ]

@@ -30,9 +30,21 @@ from speech_aware_evidence_acquisition.rails.knowledge_stores import (
 )
 from speech_aware_evidence_acquisition.rails.controllers import PhaseProgram, PhaseSpec
 from speech_aware_evidence_acquisition.rails.runner import AgentRuntimeContext
+from speech_aware_evidence_acquisition.rails.candidate_semantic_supply import (
+    CandidateSemanticSupplyError,
+    CandidateSemanticSupplySpec,
+    candidate_state_read_parameters,
+    load_candidate_semantic_supply_specs,
+)
+from speech_aware_evidence_acquisition.rails.errors import RailsError
 from speech_aware_evidence_acquisition.rails.semantic_knowledge_build import (
     AuthoredSemanticKnowledgeSpec,
+    build_slot_contract_snapshot,
     build_stage3_delta_snapshot_v2,
+)
+from speech_aware_evidence_acquisition.rails.slurp_intent_hypotheses import (
+    BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
 )
 from speech_aware_evidence_acquisition.rails.stage3_delta_supply import (
     DEFAULT_STAGE3_DELTA_NODE_CAPS,
@@ -45,7 +57,7 @@ from speech_aware_evidence_acquisition.rails.stage3_delta_supply import (
     select_unconditional_stage3_delta_values,
 )
 
-from test_candidate_semantic_supply import _store
+from test_candidate_semantic_supply import _slot_row, _store
 
 SHA_A = "a" * 64
 SHA_B = "b" * 64
@@ -775,3 +787,297 @@ def test_the_compact_read_still_binds_the_phase_and_the_sample(tmp_path):
     )
     with pytest.raises(KnowledgeStoreError):
         router.automatic_for_phase("solver", other_sample)
+
+
+# ---------------------------------------------------------------------------
+# The 2026-09-23 ARM abort: one sealed Perception state, two readers
+# ---------------------------------------------------------------------------
+#
+# The CELL-1 ARM died after 304 metered contacts at row ~75 of 1,080 with
+# "candidate intent_ids must be unique and ordered", raised inside
+# ``_stage3_delta_local_supply``. The locked plan reads ONE sealed Perception
+# state through TWO routes -- the slot-contracts candidate supply and this
+# stage3-deltas candidate-bound supply -- and only the second read it without
+# the bounded first-occurrence projection. The sealed PLAN arm carries 25 rows
+# in 1,080 (2.3 %) whose Perception answer names one legal intent more than
+# once, and it completed every one of them.
+#
+# These tests pin the invariant the fix establishes: over the SAME sealed
+# bytes the two routes agree -- both accept, on the same first-occurrence
+# candidate ids, or both refuse.
+
+
+SLOT_CANDIDATE_SUPPLY = {
+    "solver": {
+        "provider": "slurp-candidate-semantic-v1",
+        "rank_policy": "saea-ranked-candidate-round-robin-v1",
+        "fuse_policy": "saea-candidate-semantic-passthrough-v1",
+        "candidate_state_phase": "perception",
+        "compact_source_phase": "perception",
+        "projection_policy": BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+        "max_candidates": 3,
+        "max_values_per_candidate": 1,
+        "max_total_values": 3,
+    }
+}
+
+
+def _slot_store(tmp_path):
+    """The locked plan's OWN reader of the Perception state, as configured."""
+
+    rows = tuple(_slot_row(f"slot_{intent}", (intent,)) for intent in INVENTORY)
+    snapshot = build_slot_contract_snapshot(
+        AuthoredSemanticKnowledgeSpec(
+            carrier_lock_key="slurp",
+            source_split_identity_hash=SHA_A,
+            permitted_source_sample_ids=("train-1",),
+        ),
+        rows=rows,
+    )
+    source = {
+        "schema": "saea-authored-semantic-knowledge-source-v1",
+        "builder_policy_id": snapshot.builder_policy_id,
+        "source_split_identity_hash": SHA_A,
+        "rows": list(rows),
+    }
+    store = _store(tmp_path, "slot-contracts", "slot-contracts", snapshot, source)
+    store["candidate_supply"] = SLOT_CANDIDATE_SUPPLY
+    return store
+
+
+def _both_readers(tmp_path, *, rows=ROWS):
+    """``(binding, router)`` for a plan that carries BOTH readers at once."""
+
+    document = _config(tmp_path, context_supply=ALL_ROUTES, rows=rows)
+    document["knowledge_stores"]["slot-contracts"] = _slot_store(tmp_path)
+    binding = load_knowledge_store_binding(document, data_root=tmp_path)
+    return binding, build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path,
+        legal_candidate_ids=INVENTORY,
+    )
+
+
+def _sibling_only(tmp_path):
+    """``(binding, router)`` for the plan's candidate route ALONE."""
+
+    document = {"knowledge_stores": {"slot-contracts": _slot_store(tmp_path)}}
+    binding = load_knowledge_store_binding(document, data_root=tmp_path)
+    return binding, build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path,
+        legal_candidate_ids=INVENTORY,
+    )
+
+
+def _delta_only(tmp_path):
+    """``(binding, router)`` for the stage3-deltas route ALONE -- the shape
+    the ARM flew, and the shape the Reviewer and the Planner always have."""
+
+    return _bound(tmp_path, ALL_ROUTES)
+
+
+def _read(router, phase, context):
+    """``("accept", ids)`` or ``("refuse", error type)`` for one route."""
+
+    try:
+        supply = router.automatic_for_phase(phase, context)
+    except RailsError as error:
+        return "refuse", type(error).__name__
+    return "accept", () if supply is None else _selected(supply)
+
+
+#: Every candidate-list shape a Perception answer can take. ``n=3 distinct=1``
+#: and ``n=3 distinct=2`` are the two shapes the sealed PLAN arm carries.
+CANDIDATE_SHAPES = {
+    "clean": ("alpha", "beta"),
+    "duplicate-all-the-same": ("alpha", "alpha", "alpha"),
+    "duplicate-one-repeat": ("alpha", "beta", "alpha"),
+    "duplicate-adjacent": ("beta", "beta", "alpha"),
+    "out-of-order": ("beta", "alpha"),
+    "out-of-order-descending": ("gamma", "beta", "alpha"),
+    "empty": (),
+    "over-the-bound": ("alpha", "beta", "gamma", "delta"),
+}
+
+
+@pytest.mark.parametrize("shape", sorted(CANDIDATE_SHAPES))
+def test_the_delta_route_and_the_plans_own_route_agree_on_every_shape(
+    tmp_path, shape,
+):
+    """Never stricter, never more lenient: over the SAME sealed bytes the two
+    readers accept together or refuse together.
+
+    The delta verdict is taken at the REVIEWER node of the plan that carries
+    both readers, because that node is served by the stage3-deltas store
+    ALONE: its verdict is the delta route's own, uncomposed with the candidate
+    route's, while the reading parameters are the ones the plan's candidate
+    route declares.
+    """
+
+    intents = CANDIDATE_SHAPES[shape]
+    state = _perception_state("s1", intents)
+
+    sibling_binding, sibling_router = _sibling_only(tmp_path / "sibling")
+    both_binding, both_router = _both_readers(tmp_path / "both")
+    sibling = _read(sibling_router, "solver", _context(sibling_binding, state))
+    delta = _read(both_router, "reviewer", _context(both_binding, state))
+
+    assert sibling[0] == delta[0], (shape, sibling, delta)
+    if shape in ("empty", "over-the-bound"):
+        assert sibling[0] == "refuse", (shape, sibling)
+    else:
+        assert sibling[0] == "accept", (shape, sibling)
+
+
+@pytest.mark.parametrize(
+    "intents,retained",
+    [
+        (("alpha", "alpha", "alpha"), ("alpha",)),
+        (("alpha", "beta", "alpha"), ("alpha", "beta")),
+        (("beta", "beta", "alpha"), ("beta", "alpha")),
+    ],
+)
+def test_a_duplicate_list_projects_to_its_first_occurrences(
+    tmp_path, intents, retained,
+):
+    """The shared helper dedups preserving order, and the delta route selects
+    exactly the deltas of the RETAINED ids -- nothing more, nothing less."""
+
+    binding, router = _both_readers(tmp_path)
+    context = _context(binding, _perception_state("s1", intents))
+    reference_binding, reference_router = _both_readers(tmp_path / "reference")
+    reference = _context(
+        reference_binding,
+        _perception_state("s1", retained, state_id="perception:s1"),
+    )
+
+    assert set(_selected(router.automatic_for_phase("solver", context))) == set(
+        _selected(reference_router.automatic_for_phase("solver", reference))
+    )
+
+
+def test_an_out_of_order_list_is_not_a_malformed_list(tmp_path):
+    """The refusal text says "unique and ordered", but no ordering constraint
+    on ``intent_id`` exists anywhere in the parser: a ranked shortlist is
+    ordered by the model's own confidence, not lexically. Both readers accept
+    a descending list, and the delta route keeps that order."""
+
+    binding, router = _both_readers(tmp_path)
+    descending = _context(binding, _perception_state("s1", ("gamma", "beta", "alpha")))
+    supply = router.automatic_for_phase("solver", descending)
+    assert supply is not None
+    assert _selected(supply)
+
+
+def test_the_delta_route_adopts_the_plans_own_reading_not_its_own(tmp_path):
+    """``candidate_state_read_parameters`` is the single source of the answer:
+    with the plan's candidate route present the delta route reads at the
+    sibling's bound (3) under the sibling's projection policy, and the
+    duplicate-list projection is receipted under that same policy id."""
+
+    binding, router = _both_readers(tmp_path)
+    assert candidate_state_read_parameters(
+        load_candidate_semantic_supply_specs(binding, _program()),
+        candidate_state_phase="perception",
+    ) == (3, BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID)
+
+    context = _context(binding, _perception_state("s1", ("alpha", "alpha", "alpha")))
+    assert router.automatic_for_phase("solver", context) is not None
+    audits = router.receipt["delta_candidate_projection"]
+    entry = next(iter(audits.values()))
+    assert entry["phase"] == "solver"
+    assert entry["node"] == "solver"
+    assert entry["sample_id"] == "s1"
+    assert entry["store_id"] == "stage3-deltas"
+    assert entry["raw_positions"] == 3
+    assert entry["retained_positions"] == 1
+    assert entry["projection_policy_id"] == (
+        BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+    )
+    assert len(entry["original_text_sha256"]) == 64
+    assert entry["original_text_sha256"] != entry["projected_content_sha256"]
+
+
+def test_a_clean_list_is_never_recorded_as_a_projection(tmp_path):
+    """A non-empty projection receipt means exactly "these rows named an
+    intent more than once"."""
+
+    binding, router = _both_readers(tmp_path)
+    context = _context(binding, _perception_state("s1", ("alpha", "beta")))
+    assert router.automatic_for_phase("solver", context) is not None
+    assert router.receipt["delta_candidate_projection"] == {}
+
+
+def test_without_a_sibling_route_the_delta_route_still_projects(tmp_path):
+    """The Reviewer and the Planner are served by this store ALONE, and a
+    future plan may carry no candidate supply at all. With no sibling to copy,
+    the route keeps its own documented bound and still applies the same
+    first-occurrence projection every other reader of a compact SLURP
+    Perception state uses."""
+
+    binding, router = _delta_only(tmp_path)
+    assert (
+        candidate_state_read_parameters(
+            load_candidate_semantic_supply_specs(binding, _program()),
+            candidate_state_phase="perception",
+        )
+        is None
+    )
+    context = _context(binding, _perception_state("s1", ("alpha", "alpha")))
+    assert _selected(router.automatic_for_phase("reviewer", context)) == (
+        "stage3-deltas::delta:1:cccccccccccc",
+    )
+    entry = next(iter(router.receipt["delta_candidate_projection"].values()))
+    assert (entry["raw_positions"], entry["retained_positions"]) == (2, 1)
+    assert entry["projection_policy_id"] == (
+        CONFIGURABLE_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+    )
+
+
+def test_the_no_sibling_bound_is_the_routes_own_pre_fix_bound(tmp_path):
+    """The ONE place the two readings differ, and it is the pre-fix behaviour
+    kept rather than a new leniency: with no candidate route to copy, the
+    delta route bounds the list by the legal inventory (its pre-fix bound)
+    instead of the plan's tighter 3. The locked plan always has the sibling,
+    so this branch never decides a CELL-1 row; it exists for a plan that
+    declares no candidate supply at all."""
+
+    over_the_bound = _perception_state("s1", INVENTORY)
+
+    alone_binding, alone_router = _delta_only(tmp_path / "alone")
+    assert alone_router.automatic_for_phase(
+        "solver", _context(alone_binding, over_the_bound)
+    ) is not None
+
+    both_binding, both_router = _both_readers(tmp_path / "both")
+    with pytest.raises(RailsError):
+        both_router.automatic_for_phase(
+            "reviewer", _context(both_binding, over_the_bound)
+        )
+
+
+def test_candidate_routes_that_disagree_about_one_phase_are_refused():
+    """A plan whose two candidate routes read one Perception phase differently
+    has no single answer to copy; that is a config defect, refused at BUILD
+    time rather than discovered on row 75."""
+
+    def _spec(phase, maximum):
+        return CandidateSemanticSupplySpec(
+            phase=phase, store_id="slot-contracts",
+            provider="slurp-candidate-semantic-v1",
+            rank_policy="saea-ranked-candidate-round-robin-v1",
+            fuse_policy="saea-candidate-semantic-passthrough-v1",
+            candidate_state_phase="perception", max_candidates=maximum,
+            max_values_per_candidate=1, max_total_values=maximum,
+            compact_source_phase="perception",
+            projection_policy=BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+        )
+
+    specs = {"solver": _spec("solver", 3), "planner": _spec("planner", 2)}
+    with pytest.raises(CandidateSemanticSupplyError, match="disagree"):
+        candidate_state_read_parameters(specs, candidate_state_phase="perception")
+
+
+@pytest.mark.parametrize("bad", [None, "", 0])
+def test_the_shared_reader_refuses_a_nameless_phase(bad):
+    with pytest.raises(CandidateSemanticSupplyError):
+        candidate_state_read_parameters({}, candidate_state_phase=bad)

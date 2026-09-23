@@ -785,3 +785,103 @@ v2 cell already reports `router-bootstrap (pinned artifact refused: prepared art
 mismatch)` for exactly this reason, with the same 12 seeded value ids. Their `output` is expected to
 reproduce **byte for byte**, because the fix moves no first-phase selection -- the unconditional
 Perception route is untouched; `--allow-output-change` must never be passed.
+## 2026-09-23 -- the ARM's one recovery re-registration (duplicate Perception candidates)
+
+The four-row v3 smoke passed and the 1,080-row **arm** then metered **304 contacts** over 75
+Perception rows and aborted at row ~75:
+
+```
+rails/knowledge_stores.py  _stage3_delta_local_supply -> parse_slurp_intent_hypothesis_state
+SlurpIntentHypothesisError: candidate intent_ids must be unique and ordered
+-> KnowledgeStoreError -> graph component 'solver_0_input' -> NativeEpisodeError -> attempt aborted
+```
+
+**What happened.** Two of those 75 Perception answers named ONE legal intent three times
+(`slurp:train:000544:audio-1501158529` and `slurp:train:000575:audio-1498486436`, Perception
+contacts 61 and 64; each `n=3 distinct=1`). Both rows stopped after their Perception contact alone
+-- no Planner, Solver or Reviewer contact follows either -- and 73 of the 75 completed.
+
+**Why the PLAN arm never saw it.** The locked plan reads ONE sealed Perception state through TWO
+routes, and only one of them was reading it strictly:
+
+| reader | `max_candidates` | `projection_policy` | a duplicate list |
+|---|---|---|---|
+| `rails.knowledge_provider.CandidateSemanticProvider._candidate_state` (slot-contracts candidate supply, the plan's own) | 3 | `bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1` | **projected**, first occurrence retained, recorded in `candidate_projection` |
+| `rails.slot_binding_view` | spec's | spec's | projected, and a refusal degrades to `malformed-perception-candidates` |
+| `rails.node_context_policy._episode_candidates`, `rails.role_context` | configured | configured | projected, and a refusal returns `None` |
+| `rails.knowledge_stores._stage3_delta_local_supply` (this cell's added route) | `len(legal)` | **none** | **refused** |
+
+`parse_slurp_intent_hypothesis_content` refuses a repeated `intent_id`; the bounded first-occurrence
+projection (`project_bounded_slurp_intent_hypotheses`) is the explicit seam where duplicates are
+allowed and dropped by first occurrence. The delta route asked the same parser entry for the strict
+reading, so a state every other reader in the plan normalises killed the row.
+
+The sealed PLAN arm's own trace settles it: **25 of its 1,080 Perception answers (2.3 %) carry a
+duplicate candidate id**, including `slurp:train:000544:audio-1501158529`, and the PLAN arm
+completed every one of them.
+
+("Ordered" in that refusal text is vestigial: no ordering constraint on `intent_id` exists anywhere
+in the parser, and a descending list is accepted by every reader, as
+`test_an_out_of_order_list_is_not_a_malformed_list` now pins.)
+
+**The fix.** `rails.candidate_semantic_supply.candidate_state_read_parameters` is now the ONE place
+that answers "how does this plan read that Perception phase's sealed compact output", and the delta
+route takes its `(max_candidates, projection_policy)` from it -- the plan's own candidate route's
+answer, `(3, bounded-first-occurrence-...)`, for every CELL-1 cell. No second implementation, no new
+config key, no fragment change. Where a plan declares no SLURP candidate route over that phase there
+is nothing to copy, and the route keeps its own pre-fix bound while adopting the same
+first-occurrence projection every other reader of a compact SLURP Perception state uses. The
+disposition stays the sibling's too: a state the parser still refuses raises, exactly as the plan's
+own candidate route raises -- and because the native role graph visits the Solver (where that route
+runs) *before* the Reviewer and the Planner, the delta route can never be the first reader to refuse
+a row.
+
+Every projection that actually drops a position is receipted per row and per node on
+`route.receipt["delta_candidate_projection"]` (raw vs retained positions, policy id and sha, source
+and projected content sha256 -- identities and counts only). A clean list is never recorded, so a
+non-empty map means exactly "these rows named an intent more than once".
+
+**Offline proof.** `analysis.native_episode_dry_run` walks the registered v3 smoke cell on the real
+released stores with a Perception answer of each shape, contact-free:
+
+| Perception answer | pre-fix | post-fix |
+|---|---|---|
+| `n=3 distinct=1` (the ARM's own shape) | `KnowledgeStoreError: candidate intent_ids must be unique and ordered` at `solver_0_input` | whole graph walks; projection receipted `raw 3 / retained 1` |
+| `n=3 distinct=2` (the PLAN arm's other duplicate shape) | same refusal | whole graph walks; projection receipted `raw 3 / retained 2` |
+| descending, no duplicate | walks | walks, unchanged |
+| clean control | walks | walks, unchanged, and nothing is recorded |
+
+Regressions: `tests/unit/test_stage3_delta_node_routes.py` (the two routes agree -- accept together
+or refuse together -- over duplicate, out-of-order, empty and over-the-bound lists; the shared
+reader's own contracts) and
+`tests/unit/test_native_episode_dry_run.py::test_a_duplicate_candidate_row_walks_instead_of_killing_the_flight`.
+
+**The re-registration.** The arm's ONE recovery re-registration under the program's failure rule:
+`configs/experiment/slurp-native-stage3-delta-cell-r01-v1.json`'s arm **generation** cell now carries
+`attempt_id: attempt-slurp-native-stage3-delta-cell-r01-v1-generation-recovery`, and
+`scripts/flights/batch/batch_chain_cell1.sh` and `scripts/flights/batch/cell1_read.sh` name the same
+id. The run id `SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1`, the FIT identity, the population and its split
+identity, every store pin, the geometry, the session, the decision rule and every registered budget
+are **unchanged**: a plan budget is run-cumulative per run id, and 304 spent plus the 4,424 expected
+is far inside the registered 11,880 generation cap. The registered package files
+(`generation-plan-registered-v1.json`, `protocol-registered-v1.json`, `analysis-recipe-v1.json`) keep
+the original attempt id they were registered with, exactly as the smoke's own recovery left
+`smoke-generation-plan-registered-v1.json` untouched. **The twin cells are untouched** -- their
+attempts never opened -- and the v3 smoke keeps its own id. A second failure stops the flight.
+
+**One open registration decision for the coordinator, not taken here.** The v3 four-row smoke
+already flew and its attempt
+`SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3/attempt-slurp-native-stage3-delta-cell-smoke-4-v3-generation`
+is consumed; a `(run_id, attempt_id)` pair is a one-time key. `scripts/flights/batch/batch_driver.sh`
+flies a step's smoke whenever the step declares one, so step 1 as queued would re-open that consumed
+attempt and be refused before the arm ever starts. Either the step's `smoke_experiment` is set to
+`None` (the form smoke has already passed; this fix changes only how the delta route READS an
+already-sealed Perception state, and the four-shape offline dry run above is its proof), or a fresh
+smoke identity is registered. This branch takes neither: it changes only the ARM's attempt id, which
+is the one recovery re-registration the failure rule allows.
+
+**Re-pin obligation (again, and for the same reason).** `rails/knowledge_stores.py` is hashed into
+every prepared phase-supply artifact's identity, so this fix invalidates the pinned first-phase
+artifact of **every** CELL-1 cell. The unconditional Perception route is untouched and no first-phase
+selection moves, so the re-pinned `output` must reproduce byte for byte;
+`--allow-output-change` must never be passed.
