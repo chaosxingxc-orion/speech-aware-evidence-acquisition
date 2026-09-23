@@ -256,7 +256,7 @@ Each of these was measured, not assumed; the refusal is quoted in the report tha
 
 | run id | cell | plan | composed config | protocol hash | split identity |
 | --- | --- | --- | --- | --- | --- |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1` | `...-r01-v1` | `generation-plan-registered-v1.json` | `063aef5c488cf90346c9ee4eecb2ebb9002057da65fec713486417aa03feeab1` | `cf4087b84e83bc5bb8604c952e202acf350ecf1eda9dfe1d7bd5388b6e5003c6` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1` | `...-r01-v1` | `generation-plan-registered-v1.json` | `efca606fba9fbe835eadcdd963c3607f18e41ea3afdd80efd1e9d7af56640e02` | `0ce740ce82446bcac8382f909716104e10bba3836464797227dbe730a271bd7c` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1` | `...-r01-fit-v1` | `fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1` | `...-r01-twin-v1` | `twin-generation-plan-registered-v1.json` | `43f56a1020ec62e47a43c374d58d5cc2f779c115f1be99baffbbeab9b3e9380f` | `ac862b793a2f0844a6b351ae4b3b7cb9b29ea75797569035cd5a3c291d85922d` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-FIT-V1` | `...-r01-twin-fit-v1` | `twin-fit-plan-registered-v1.json` | same | same | same |
@@ -266,7 +266,7 @@ Each of these was measured, not assumed; the refusal is quoted in the report tha
 | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-FIT-V1` | (spend identity) | `twin-smoke-fit-plan-registered-v1.json` | same | same | same |
 
 Protocol document `protocol-registered-v1.json` sha256
-`02e49de9e257f2d70b063be69b93721709d1cea67aabd1e79087f981da4b17df`.
+`88d83fd5898d62651520b889e76250b067be48b2a0129177a7bb9a51e8062fd1`.
 
 `core.flight.cli check` exits **0 on all six cells** on this committed tree, with the measured `config_hash` and
 `protocol_hash` equal to the values above, `prepared_artifacts_ok: true` (no pin yet: the flip mints each cell's

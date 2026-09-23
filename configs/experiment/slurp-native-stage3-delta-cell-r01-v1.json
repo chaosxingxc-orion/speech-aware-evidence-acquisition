@@ -15,13 +15,20 @@
         "reason": "Stage-3 S3-6 CELL-1 (docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md section S3-6): the locked plan plus the stage3-deltas store as ONE factor on TRAIN A, comparator the sealed PLAN arm at the plan's own null. The context_supply routing this fragment declares IS RESOLVED: item S3-6w extended rails.knowledge_stores.build_knowledge_store_supply's context_supply dispatcher to recognise the store_role='stage3-deltas' provider shape and route it through the registered rails.knowledge_provider.Stage3DeltaCandidateProvider, with the two pre-existing routes proven byte-identical (tests/unit/test_stage3_delta_supply_router.py); item S3-4s (owner decision 106, 2026-09-23) widened that route to PER-NODE supply -- Solver cap 8, Reviewer cap 4, Planner cap 4, each candidate-bound and filtered by node_target, plus an UNCONDITIONAL Perception route (cap 4, provider stage3-delta-unconditional-v1) served through the router's first-phase seed because the first phase has no preceding advance to carry a per-row decision. The PENDING_ROOT_WIRING requirement that stood here is therefore removed. What still holds this cell is a root decision, not the store: S3-5 released knowledge/slurp/semantic/stage3-deltas-v1r/ and its derangement twin on 2026-09-23 (store revision v1r, the source-intent facet rule; the superseded v1 release is kept for the record and is described in docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v1-superseded-v1.md). The population is unchanged TRAIN Fold A (1,080 rows, split identity 61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6) and is NOT affected by the R01C narrowing of the construction side: R01C changes which rows the deltas are BUILT from, never which rows this cell is read on. No decision requirement is registered here on purpose (the ROLL-1 precedent): core.flight.repin._upsert_decision_requirement inserts it at the readiness flip, and a placeholder decision entry without an expected_decision_id would be left behind beside it and refuse the campaign at load (core.flight.campaign.declared_readiness). Every remaining PENDING_ token, its JSON path and the field that fills it is listed in docs/readiness/2026-09-22-slurp-stage3-advantage-r01-v1/fill-after-roll1-seal.json.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-delta-cell-r01-admission-v1",
+            "relpath": "coordination/slurp-stage3-delta-cell-r01-v1/root-admission-v1.json",
+            "sha256": "ad11728bbbe708b951a609863112021db0025ad1c6f7b04f29d2b01daeadb80b",
+            "reason": "Decision slurp-stage3-delta-cell-r01-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "S3-5's release of knowledge/slurp/semantic/stage3-deltas-v1r/, built from the sealed ADV-1 outputs by scripts/flights/batch/adv1_to_deltas.sh at DELTA_VERSION_TAG=v1r under the source-intent facet rule. The cell stays HELD on a root admission decision.",
-            "relpath": "knowledge/slurp/semantic/stage3-deltas-v1r/release.json",
-            "sha256": "02505ba2e548a008cc6c16ffda6f7b9bff505061863026a3d7e1396c26d6c2e0"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1/phase-supply-v1.json",
+            "sha256": "9d33455130a982edec2c7d194c1603355bbae12230d82e39b9865c6aa2ca9a88"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1"
     },
