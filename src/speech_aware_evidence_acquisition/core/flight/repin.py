@@ -27,6 +27,15 @@ exposure-ledger notes for the package's run ids) in dependency order, then runs
 ``core.flight.cli check`` for every cell and asserts the runtime-derived hashes
 agree.
 
+Not every registered cell HAS a prepared phase-supply artifact. A program
+without a supplied first phase (the direct-only comparators, item E38) and a
+construction-visible text arm (item E42 -- ``run_phases`` dispatches it through
+``FlightRuntime._dispatch_fixed_policy``, so it builds no knowledge snapshot,
+no speech packet binding and no phase supply at all) both re-pin WITHOUT one:
+the preparation step says so by name, the summary records the skip and its
+reason, and no ``prepared_phase_supply`` pin or 'preparation' readiness
+requirement is created for them.
+
 Every step is model-free: the only contacts this module makes are the
 :func:`default_prepare_supply` (``core.flight.cli prepare-supply``, itself
 zero-model-contact) and :func:`default_run_check` (``core.flight.cli check``)
@@ -54,6 +63,49 @@ from .campaign import CampaignCell, CampaignError, load_campaign_cells
 
 #: The preparation runtime's own message for a program without a supplied first phase (item E38).
 NO_SUPPLIED_PHASE_MESSAGE = "program has no supplied first phase to prepare"
+
+#: The preparation runtime's own message for a CONSTRUCTION-VISIBLE arm, which
+#: is dispatched text-only and builds no phase supply at any point of a real
+#: flight, so no prepared supply artifact exists for it to verify or pin (item
+#: E42). Mirrors ``core.flight.runtime.NO_CONSTRUCTION_PHASE_SUPPLY_MESSAGE``
+#: exactly as the line above mirrors the runtime's E38 literal; the mirror is
+#: asserted by ``tests/unit/test_flight_repin.py``.
+NO_CONSTRUCTION_SUPPLY_MESSAGE = (
+    "a construction-visible text arm has no prepared phase supply to prepare"
+)
+
+#: Every preparation message that means "this cell HAS no prepared phase-supply
+#: artifact", mapped to the reason the re-pin summary records beside it. A cell
+#: whose preparation answers one of these is re-pinned WITHOUT an artifact: no
+#: derivation, no ``prepared_phase_supply`` pin, and no 'preparation' readiness
+#: requirement is created or rewritten for it.
+NO_ARTIFACT_REASONS: Mapping[str, str] = {
+    NO_SUPPLIED_PHASE_MESSAGE: (
+        "the program declares no supplied phase, so no prepared artifact exists for this cell"
+    ),
+    NO_CONSTRUCTION_SUPPLY_MESSAGE: (
+        "the cell composes a construction-visible text arm with no knowledge store and no "
+        "phase supply, so no prepared artifact exists for this cell"
+    ),
+}
+
+
+def no_prepared_artifact_reason(error: BaseException) -> str | None:
+    """The :data:`NO_ARTIFACT_REASONS` key ``error`` announces, or ``None``.
+
+    Matched on the message rather than the exception type for the same reason
+    item E38 already did: ``prepare_supply_fn`` is a dependency-injected seam,
+    so the failure that reaches here may be the real
+    ``core.preparation.PreparationError``, a subprocess-shaped re-raise, or a
+    test double's ``RuntimeError`` carrying the same sentence.
+    """
+
+    message = str(error)
+    for candidate in NO_ARTIFACT_REASONS:
+        if candidate in message:
+            return candidate
+    return None
+
 
 SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 _VERSION_PATTERN = re.compile(r"^phase-supply-v(\d+)\.json$")
@@ -461,6 +513,13 @@ def ensure_artifact_pinned(
     previous artifact's ``output`` when one exists, and only then is the new
     pin written into both the baseline fragment and the experiment's
     'preparation' readiness requirement.
+
+    A cell that HAS no prepared phase supply -- a program without a supplied
+    first phase (item E38), or a construction-visible text arm (item E42) --
+    is reported as ``{"rebuilt": False, "pin": None, "skipped": <message>,
+    "reason": ...}``: nothing is derived, nothing is pinned, and the cell's own
+    'preparation' readiness requirement (which for such a cell names a sibling
+    deliverable rather than a phase-supply artifact) is left untouched.
     """
 
     baseline_path = baseline_fragment_path(repo_root, identity.baseline_fragment)
@@ -524,17 +583,30 @@ def ensure_artifact_pinned(
         )
     except Exception as error:  # noqa: BLE001 -- the baseline is restored verbatim on every failure
         baseline_path.write_text(original_baseline_text, encoding="utf-8", newline="\n")
-        if current_pin is None and NO_SUPPLIED_PHASE_MESSAGE in str(error):
+        skipped = no_prepared_artifact_reason(error)
+        if skipped is not None and current_pin is None:
             # Item E38: a program with no supplied first phase (the direct-only
-            # comparators) has nothing to prepare and nothing to pin. The cell
-            # is flipped on its decision requirement alone; no artifact, no
-            # 'preparation' readiness requirement, no baseline change.
+            # comparators). Item E42: a construction-visible TEXT arm, which
+            # ``run_phases`` dispatches through ``_dispatch_fixed_policy`` and
+            # which therefore builds no knowledge snapshot, no speech packet
+            # binding and no phase supply. Either way there is nothing to
+            # prepare and nothing to pin: the cell is flipped on its decision
+            # requirement alone; no artifact, no 'preparation' readiness
+            # requirement, no baseline change.
             return {
                 "rebuilt": False,
                 "pin": None,
-                "skipped": NO_SUPPLIED_PHASE_MESSAGE,
-                "reason": "the program declares no supplied phase, so no prepared artifact exists for this cell",
+                "skipped": skipped,
+                "reason": NO_ARTIFACT_REASONS[skipped],
             }
+        if skipped == NO_CONSTRUCTION_SUPPLY_MESSAGE and current_pin is not None:
+            raise RepinError(
+                f"cell {identity.cell_id!r} composes the construction-visible arm "
+                f"{identity.arm!r}, which has no derivable prepared phase supply, yet its "
+                f"baseline fragment {identity.baseline_fragment!r} pins "
+                f"prepared_phase_supply {current_pin.relpath!r}; that combination is "
+                "undefined -- remove the pin by hand and re-run"
+            ) from error
         raise
     new_sha256 = receipt.get("sha256") if isinstance(receipt, Mapping) else None
     if not isinstance(new_sha256, str) or SHA256_PATTERN.fullmatch(new_sha256) is None:

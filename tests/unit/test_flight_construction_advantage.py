@@ -47,7 +47,9 @@ from speech_aware_evidence_acquisition.contracts.gate_exposure import (
     _ExposureAndCarrierMixin,
 )
 from speech_aware_evidence_acquisition.contracts.plan import ExecutionPlan
+from speech_aware_evidence_acquisition.core.preparation import PreparationError
 from speech_aware_evidence_acquisition.core.flight.runtime import (
+    NO_CONSTRUCTION_PHASE_SUPPLY_MESSAGE,
     FlightRuntime,
     FlightRuntimeError,
     _default_construction_material,
@@ -769,3 +771,70 @@ def test_the_dispatch_declares_the_program_and_its_single_phase(tmp_path, gold) 
     phase = material_receipt["phases"][0]
     assert phase["spec"]["response_format_id"] == "stage3-advantage-statement-v2"
     assert phase["response_format_sha256"]
+
+
+# ---------------------------------------------------------------------------
+# Item E42: the prepared-phase-supply question this arm answers with "none"
+#
+# The offline preparation path (``core.flight.repin`` -> ``prepare-supply``)
+# used to walk the SPEECH phase-program binding for every non-fixed policy and
+# died on "phase programs require an explicit feature or raw speech arm" --
+# true of a speech cell, meaningless for an arm whose whole dispatch is
+# ``_dispatch_fixed_policy``. These prove the honest answer, and that it stays
+# scoped to exactly this shape.
+# ---------------------------------------------------------------------------
+
+
+def test_the_advantage_cell_reports_no_prepared_phase_supply(tmp_path, gold) -> None:
+    runtime, _material = _runtime(tmp_path, gold)
+
+    assert (
+        runtime._prepared_phase_supply_absent_reason()
+        == NO_CONSTRUCTION_PHASE_SUPPLY_MESSAGE
+    )
+    with pytest.raises(PreparationError) as identity_error:
+        runtime.phase_supply_artifact_identity()
+    assert str(identity_error.value) == NO_CONSTRUCTION_PHASE_SUPPLY_MESSAGE
+
+    target = tmp_path / "prepared" / "phase-supply-v1.json"
+    with pytest.raises(PreparationError) as prepare_error:
+        runtime.prepare_phase_supply(target)
+    assert str(prepare_error.value) == NO_CONSTRUCTION_PHASE_SUPPLY_MESSAGE
+    assert not target.exists()
+
+
+@pytest.mark.parametrize(
+    "key, value",
+    [
+        ("knowledge_stores", {"slot-contracts": {"view": "v1"}}),
+        ("phase_supply", {"advantage": {"provider": "kb-facet-v1"}}),
+        ("prepared_phase_supply", {"relpath": "prepared/x.json", "sha256": "a" * 64}),
+        ("prepared_phase_recall", {"advantage": {"relpath": "prepared/r.json", "sha256": "b" * 64}}),
+    ],
+)
+def test_a_construction_cell_that_declares_supply_is_refused_by_name(
+    tmp_path, gold, key, value
+) -> None:
+    runtime, _material = _runtime(tmp_path, gold)
+    baseline = runtime._repo_root / "configs" / "baseline" / "b.json"
+    document = json.loads(baseline.read_text(encoding="utf-8"))
+    document[key] = value
+    baseline.write_text(json.dumps(document), encoding="utf-8")
+
+    with pytest.raises(FlightRuntimeError) as error:
+        runtime.phase_supply_artifact_identity()
+    message = str(error.value)
+    assert key in message
+    assert "undefined" in message
+
+
+def test_a_speech_arm_is_untouched_by_the_construction_answer(tmp_path, gold) -> None:
+    """The guard reads the ARM, not the policy: a speech cell keeps its own
+    (unchanged) phase-supply derivation, refusals included."""
+    runtime, _material = _runtime(tmp_path, gold)
+    baseline = runtime._repo_root / "configs" / "baseline" / "b.json"
+    document = json.loads(baseline.read_text(encoding="utf-8"))
+    document["arm"] = "speech-feature-query-native-tools"
+    baseline.write_text(json.dumps(document), encoding="utf-8")
+
+    assert runtime._prepared_phase_supply_absent_reason() is None
