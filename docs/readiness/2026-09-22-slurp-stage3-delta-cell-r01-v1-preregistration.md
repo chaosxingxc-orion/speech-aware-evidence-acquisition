@@ -256,7 +256,7 @@ Each of these was measured, not assumed; the refusal is quoted in the report tha
 
 | run id | cell | plan | composed config | protocol hash | split identity |
 | --- | --- | --- | --- | --- | --- |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1` | `...-r01-v1` | `generation-plan-registered-v1.json` | `32cb36b8cb78d696ae2a5d47ca2125899cf3e463c7665e5693f639145a708c97` | `6b572e15807f405560b36caff8e1d282adc195f337db197d219a93844c1eda48` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1` | `...-r01-v1` | `generation-plan-registered-v1.json` | `4cf1bf7aca9e6460462219aefacf3d002fb4b97fdda0c7a4a06b3f020d1aeb01` | `9f309d4468743b66f6f2d35a7a2012d971a88040bd8f021a1c1a31e9039dd072` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1` | `...-r01-fit-v1` | `fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1` | `...-r01-twin-v1` | `twin-generation-plan-registered-v1.json` | `062773122be36fa73f921f39d72a4dd56a5ca60a7c9345dbab38b553ad9e56e2` | `51b7008e92707da2193e100f8ab419c837d7ea83787334e8b02a5c2a12ec0c0b` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-FIT-V1` | `...-r01-twin-fit-v1` | `twin-fit-plan-registered-v1.json` | same | same | same |
