@@ -36,7 +36,7 @@
             "kind": "decision",
             "expected_decision_id": "e21-native-window-four-row-e39-admission-v1",
             "relpath": "coordination/e21-native-window-four-row-e39-v1/root-admission-v1.json",
-            "sha256": "d55cf11e4dec91c232fb914a55f65812dd9e83a28d68529e53ad93359744fc20",
+            "sha256": "e31e15068c1cf0311bff5a02324c5aa9107325a46e2093acee37aa9c27250e05",
             "reason": "Decision e21-native-window-four-row-e39-admission-v1 pinned by scripts/flights/repin_cell.py."
           }
         ]

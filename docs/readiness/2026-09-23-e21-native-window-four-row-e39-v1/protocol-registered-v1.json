@@ -64,8 +64,8 @@
         "worker",
         "campaign"
       ],
-      "composed_config_hash": "4c27608af9b560d40928bd322f9c0d0d59b07aa5b3fb748bc38a78fe2e397da2",
-      "protocol_hash": "4fad497575348ca52370d96e36360430403b36f9f044bd644e3743dc2b6acfc2",
+      "composed_config_hash": "7ba9bf518a76c15fb9c8e904d0dc544d5fa8fb6253f8ea5e4121e0a2080724bf",
+      "protocol_hash": "f3f3cb13588ae536cda0a9c79439490db18adec4fece8a9a512a646cb4cffd9c",
       "contact_ceiling_per_window": 11
     },
     "no_direct_comparator_cell": "One arm only. The direct comparator is the ALREADY-FLOWN e21-native-window-direct-four-row-v1 cell of e21-native-window-four-row-direct-vs-system-v1, on the same roster and the same serving geometry; it is not re-flown and contributes no contact to this registration."
