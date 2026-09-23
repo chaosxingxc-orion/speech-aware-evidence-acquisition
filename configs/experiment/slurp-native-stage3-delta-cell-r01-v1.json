@@ -50,14 +50,14 @@
             "kind": "decision",
             "expected_decision_id": "slurp-stage3-delta-cell-r01-admission-v1",
             "relpath": "coordination/slurp-stage3-delta-cell-r01-v1/root-admission-v1.json",
-            "sha256": "09e4aaa4d7e1c0c782bd2c06f67e0224a63b72f3957535ddd9f6b4c8e58fd3d0",
+            "sha256": "e0f7017df715ab26e7b209b8948d765bec082cc564387254558b195e00dd2544",
             "reason": "Decision slurp-stage3-delta-cell-r01-admission-v1 pinned by scripts/flights/repin_cell.py."
           },
           {
             "kind": "preparation",
             "reason": "The twin release of knowledge/slurp/semantic/stage3-deltas-twin-v1r/, the seeded derangement of the v1r store's own authored document (seed 20260922). The cell stays HELD on a root admission decision.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1/phase-supply-v3.json",
-            "sha256": "60641804a0030786d14a8c653c75c0fe98c6b84e4d55c723478b1a77fddff67e"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1/phase-supply-v4.json",
+            "sha256": "a508f698333d990e856900998dcd046ba142e36400e24c351bcb9601235747f0"
           }
         ],
         "state": "ready"
