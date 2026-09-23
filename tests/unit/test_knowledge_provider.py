@@ -464,6 +464,10 @@ def test_knowledge_providers_registry_resolves_every_registered_provider():
         # docstring: build_knowledge_store_supply does not recognize this
         # provider id in its context_supply/candidate_supply dispatch yet).
         "stage3-delta-candidate-bound-v1",
+        # Stage-3 S3-4s (owner decision 106, 2026-09-23): the same store's
+        # UNCONDITIONAL, node-filtered selector -- the Perception route, whose
+        # node produces the candidate list and so has nothing to bind against.
+        "stage3-delta-unconditional-v1",
     }
 
 

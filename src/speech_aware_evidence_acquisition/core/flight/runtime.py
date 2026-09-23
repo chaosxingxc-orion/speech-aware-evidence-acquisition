@@ -579,6 +579,54 @@ def validate_artifact_result_binding(
     }
 
 
+def _merge_unconditional_first_phase(facets, values, binding, first_phase):
+    """Compose a named store's UNCONDITIONAL first-phase route (S3-4s,
+    owner decision 106) on top of whatever seeded the first phase.
+
+    The first phase has no preceding ``advance`` to carry a per-row
+    decision, so its supply is SEEDED. The seed normally comes from one
+    of two places: a prepared, hash-pinned artifact
+    (:meth:`_load_phase_supply_seed`) or the store router's own
+    ``bootstrap_first_phase``. Neither can answer for a store that
+    declares only an unconditional route -- the prepared artifact is a
+    frozen selection of the store it was prepared over, and
+    ``bootstrap_first_phase`` is not called at all when a prepared
+    artifact is pinned. This composes the route's own per-sample value
+    ids on top, appended after whatever was already seeded and never
+    replacing it.
+
+    Byte-identical no-op for every flight whose router publishes no
+    ``unconditional_first_phase`` seam -- which is every flight written
+    before S3-4s, and every flight whose stores declare no such route.
+    """
+
+    router = binding.get("supply_for_store")
+    seam = getattr(router, "unconditional_first_phase", None)
+    if not callable(seam):
+        return facets, values
+    extra = seam(speech_packet_bindings=binding["speech_packet_bindings"])
+    if not extra:
+        return facets, values
+    merged_values = {phase: dict(rows) for phase, rows in values.items()}
+    for phase, rows in extra.items():
+        if phase != first_phase:
+            raise FlightRuntimeError(
+                "an unconditional store route seeded a phase other than the "
+                f"program's first ({phase!r} != {first_phase!r})"
+            )
+        destination = merged_values.setdefault(phase, {})
+        for sample_id, value_ids in rows.items():
+            already = tuple(destination.get(sample_id, ()))
+            overlap = set(already) & set(value_ids)
+            if overlap:
+                raise FlightRuntimeError(
+                    "an unconditional store route repeats a seeded value id: "
+                    f"{sorted(overlap)[:3]}"
+                )
+            destination[sample_id] = already + tuple(value_ids)
+    return facets, merged_values
+
+
 def _default_construction_material(
     values: Mapping[str, object],
     *,
@@ -7211,16 +7259,21 @@ class FlightRuntime:
             build_bootstrap_selection,
         )
 
-        if not supply_specs:
-            return {}, {}
         first_phase = program.phase_names()[0]
-        spec = supply_specs.get(first_phase)
+        spec = supply_specs.get(first_phase) if supply_specs else None
         if spec is None:
-            return {}, {}
+            # S3-4s: a store may seed the first phase UNCONDITIONALLY without
+            # declaring a retrieval phase_supply there at all. With no such
+            # store bound (every flight written before S3-4s) this is exactly
+            # the ``return {}, {}`` it replaces.
+            return _merge_unconditional_first_phase({}, {}, binding, first_phase)
         prepared = self._composed.values.get("prepared_phase_supply")
         if prepared is not None:
-            return self._load_phase_supply_seed(
+            facets, values = self._load_phase_supply_seed(
                 prepared, binding, spec, plan.split_identity_hash
+            )
+            return _merge_unconditional_first_phase(
+                facets, values, binding, first_phase
             )
         supply_for_store = binding.get("supply_for_store")
         store_bootstrap = getattr(
@@ -7235,6 +7288,9 @@ class FlightRuntime:
                     self._data_root / "locks" / "flight.lock"
                 ).exists(),
             )
+            # ``bootstrap_first_phase`` already composed the unconditional
+            # route itself (rails.knowledge_stores), so nothing is merged
+            # here -- merging again would double every value id.
             return ({first_phase: facets} if facets else {}), (
                 {first_phase: values} if values else {}
             )
@@ -7260,8 +7316,11 @@ class FlightRuntime:
             workers=max_workers,
             lease_metadata_present=(self._data_root / "locks" / "flight.lock").exists(),
         )
-        return ({first_phase: facets} if facets else {}), (
-            {first_phase: values} if values else {}
+        return _merge_unconditional_first_phase(
+            ({first_phase: facets} if facets else {}),
+            ({first_phase: values} if values else {}),
+            binding,
+            first_phase,
         )
 
     def run_phases(self, *, workers: int | None = None) -> Mapping[str, object]:

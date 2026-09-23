@@ -77,9 +77,30 @@
     },
     "stage3-deltas": {
       "context_supply": {
+        "perception": {
+          "cap": 4,
+          "node_target": "perception",
+          "provider": "stage3-delta-unconditional-v1",
+          "rank_by": "prior_score"
+        },
+        "planner": {
+          "candidate_state_phase": "perception",
+          "cap": 4,
+          "node_target": "planner",
+          "provider": "stage3-delta-candidate-bound-v1",
+          "rank_by": "prior_score"
+        },
+        "reviewer": {
+          "candidate_state_phase": "perception",
+          "cap": 4,
+          "node_target": "reviewer",
+          "provider": "stage3-delta-candidate-bound-v1",
+          "rank_by": "prior_score"
+        },
         "solver": {
           "candidate_state_phase": "perception",
           "cap": 8,
+          "node_target": "solver",
           "provider": "stage3-delta-candidate-bound-v1",
           "rank_by": "prior_score"
         }
@@ -143,7 +164,7 @@
       "store_role": "train-exemplars"
     }
   },
-  "knowledge_stores_note": "This fragment equals configs/baseline/slurp-native-default-plan-lock-baseline-v1.json on every key except knowledge_stores.stage3-deltas (added) and the per-flight bookkeeping keys this cell must re-prepare under its own run id (native_contact_fit, prepared_phase_supply, preparation_source_receipts, the speech-feature identity ids, speech_packet_promotion_receipt[_sha256]) -- the SAME exclusion set the locked plan's own proof test already uses for its predecessor fragment. Proof: tests/unit/test_stage3_delta_cell_fragment.py.",
+  "knowledge_stores_note": "Stage-3 S3-4s (owner decision 106, 2026-09-23): the ONE added store now declares a PER-NODE context_supply -- Perception (unconditional, cap 4, the node that produces the candidate list and therefore has no candidate state to bind against), Solver (cap 8), Reviewer (cap 4) and Planner (cap 4), each candidate-bound except Perception, each prior_score-ranked and each filtered to the rows whose node_target is that phase's node (rails.stage3_delta_supply). The cell is still ONE factor on the locked plan: the config diff against configs/baseline/slurp-native-default-plan-lock-baseline-v1.json is exactly the knowledge_stores.stage3-deltas key plus the per-flight bookkeeping keys this cell must re-prepare under its own run id (native_contact_fit, prepared_phase_supply, preparation_source_receipts, the speech-feature identity ids, speech_packet_promotion_receipt[_sha256]) -- the SAME exclusion set the locked plan's own proof test uses for its predecessor fragment. Proof: tests/unit/test_stage3_delta_cell_fragment.py.",
   "native_contact_fit": "PENDING_SLURP_NATIVE_STAGE3_DELTA_CELL_TWIN_V1_OWN_NATIVE_CONTACT_FIT",
   "native_episode": {
     "actions": {

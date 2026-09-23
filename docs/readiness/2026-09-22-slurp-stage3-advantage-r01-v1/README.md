@@ -183,3 +183,71 @@ runbook `scripts/flights/batch/adv1_to_deltas.sh` (package
   by the `--fragments` / `--occurrence-policy` arguments these packages need, a token matching
   nothing anywhere is still refused, and a fragment with no `stage3_pending_placeholders` block does
   not grow one.
+
+## S3-4s amendment: the SYSTEM-level v2 contact (owner decision 106, 2026-09-23)
+
+Owner ruling (translated): *"roll out as much information as possible; we are doing SYSTEM-level
+optimisation, not the optimisation of a single module."* This package is still **HELD** and nothing
+below authorises a flight, a flip or an admission entry. Cell ROLL-1 is **not** re-flown: its sealed
+episode receipts already custody every contact of every node, so the trajectory is rebuilt model-free
+from the seal.
+
+**What changed in this package**
+
+| Before (S3-4, v1) | After (S3-4s, v2) |
+| --- | --- |
+| `policy` `phase-stage3-advantage-v1` | `policy` `phase-stage3-advantage-v2` (`configs/policy/phase-stage3-advantage-v2.json`) |
+| `task_instruction_template` `probes/slurp_stage3_advantage_system_v1.txt` | `probes/slurp_stage3_advantage_system_v2.txt` |
+| `phase_material.advantage.instruction_template` `probes/slurp_stage3_advantage_v1.txt` | `probes/slurp_stage3_advantage_v2.txt` |
+| `response_format_id` `stage3-advantage-statement-v1` | `stage3-advantage-statement-v2` |
+| one three-line statement | one to three four-line blocks, `NODE` / `DELTA-KIND` / `TARGET` / `STATEMENT` |
+| parser `parse_advantage_statement` | parser `parse_advantage_statements_v2` (reads the four-line form AND the registered JSON shape) |
+
+A program and its fragment must agree on a phase's output contract (`rails.phase_material`), so the
+v2 response format needs its own program rather than a mutation of v1's. **v1 stays reachable, byte
+for byte**: its probe, its program, its response format and its parser are untouched.
+
+**What the contact now sees** (rendered into the instruction only, never receipted; the D2 field set
+is UNCHANGED -- `construction_targets` still carries only this row's own construction gold):
+
+1. the Perception candidate list, in the order the Perception node proposed it;
+2. ANSWER A (best) and ANSWER B (worst), the two custodied rollout samples;
+3. the DELIVERED answer with the Reviewer's verdict labels and the Planner's route;
+4. the construction gold.
+
+All four come from S3-3's `pairs.json` `trajectory` block plus the sealed rollout outputs; the
+renderer is `rails.stage3_advantage.render_advantage_instruction_v2` /
+`build_advantage_instruction_for_row_v2`.
+
+**`pairs.json` is now `pairs_schema` `saea-stage3-rollout-pairs-v2`.** Per disagreeing row it carries
+a `trajectory` block: the Perception candidate ids (first-occurrence distinct, with the raw count) and
+whether the construction gold intent is among them; the best/worst sample indices with their rendered
+answer hashes and their sealed contact hashes; the delivered path (Reviewer verdict labels and
+dispositions per review visit, Planner action labels, revision count, delivery kind,
+`delivered_below_best`); and per-node completion tokens, finish reasons and truncation flags. Ids,
+labels, counts and hashes only. The pre-existing `pairs` array is unchanged and a `rows` array in the
+exact shape `load_advantage_pairs` reads is written beside it.
+
+**Two honest limits, for root to close**
+
+1. **The gold intent.** The committed R01/R01C roster receipts annotate `stratum` (the SCENARIO), not
+   `scenario_action`, so "was the gold intent among the candidates" cannot be answered from them.
+   Pass `ADV1_GOLD_INTENTS=<path>` (a model-free `{sample_id: "<scenario>_<action>"}` JSON map over
+   the construction roster) to `scripts/flights/batch/adv1_prepare.sh`. Without it the field reads
+   `gold_intent_known: false` / `gold_intent_in_candidates: null` and the summary says
+   `gold_intent_source: "unavailable"` -- reported, never guessed.
+2. **The Reviewer verdict labels.** Cell ROLL-1's `native_episode` fragment arms neither
+   `reviewer_verdict` (item E37) nor `role_context`, so its sealed receipt carries no
+   `reviewer_verdicts` key and no candidate-projection audit. The trajectory therefore re-derives the
+   verdict label from the sealed Reviewer response with the registered closed-vocabulary parser
+   (`rails.review_primitives.parse_review_primitive`) -- the same reading the armed path would have
+   sealed -- and the candidate ids from the sealed Perception response, both through the attempt's own
+   `<run_id>.trace.jsonl`. The block names its source in `reviewer_verdict_source` / `reading`. With
+   `--trace none`, or with no trace file beside the seal, every trace-derived field reads absent with
+   a reason instead of a value.
+
+**Tests**: `tests/unit/test_stage3_advantage_v2.py` (the multi-block parser on legal, illegal and
+mixed responses; the JSON shape; the committed template's placeholders; registration beside v1) and
+`tests/unit/test_stage3_rollout_trajectory.py` (a synthetic sealed receipt + trace fixture; the
+candidate list, the delivered path, the per-node tokens and truncation flags; no text in either
+written file; idempotency; the `rows` view loads through `load_advantage_pairs`).

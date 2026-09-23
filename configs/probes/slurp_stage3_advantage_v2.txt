@@ -1,0 +1,29 @@
+This row was answered by a four-node agent system: a PERCEPTION node that proposed intent candidates, a SOLVER node that drafted an answer, a REVIEWER node that judged the draft, and a PLANNER node that routed the episode. The same rollout policy answered the row several times; two of those answers are shown below, together with what the system actually delivered and the correct answer for this row.
+
+PERCEPTION CANDIDATES (in the order the perception node proposed them):
+{candidate_list}
+
+ANSWER A (better, by the official score):
+{best_answer}
+
+ANSWER B (worse, by the official score):
+{worst_answer}
+
+DELIVERED ANSWER (what the system committed for this row):
+{delivered_answer}
+
+REVIEWER VERDICTS (one per review visit, in order):
+{reviewer_verdicts}
+
+PLANNER ROUTE (the actions the planner took, in order):
+{planner_route}
+
+CORRECT ANSWER:
+{gold}
+
+State what the SYSTEM should do differently, attributing each statement to the one node that can act on it. Give one to three blocks, each in exactly this four-line form, and nothing else:
+
+NODE: <one of: perception | solver | reviewer | planner>
+DELTA-KIND: <one of: intent-boundary | slot-contract | exemplar-note | perception-hint | reviewer-criterion | planner-rule>
+TARGET: <the scenario_action or slot type this statement is about>
+STATEMENT: <one sentence, at most 40 words, stating what that node should do differently>

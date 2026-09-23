@@ -5,7 +5,7 @@
   "carrier_lock_key": "slurp",
   "source_partition_role": "train",
   "source_split_identity_hash": "PENDING_S3_3_DISAGREEING_SPLIT_IDENTITY_HASH",
-  "builder_policy_id": "saea-authored-stage3-deltas-v1",
+  "builder_policy_id": "saea-authored-stage3-deltas-v2",
   "store_id": "stage3-deltas",
   "store_role": "stage3-deltas",
   "authored_source": {

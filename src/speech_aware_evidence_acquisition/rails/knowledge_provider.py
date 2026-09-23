@@ -91,6 +91,9 @@ from .slurp_intent_hypotheses import (
     validate_fallback_distinction,
 )
 from .stage3_delta_supply import (
+    STAGE3_DELTA_UNCONDITIONAL_PROVIDER_ID,
+    node_target_of_task_target,
+    select_unconditional_stage3_delta_values,
     STAGE3_DELTA_CONTEXT_PROVIDER_ID,
     DEFAULT_STAGE3_DELTA_CAP,
     DeltaCandidate,
@@ -2004,8 +2007,16 @@ class Stage3DeltaCandidateProvider(KnowledgeProvider):
     the wiring itself is complete and tested.
     """
 
-    def __init__(self, *, provider_id: str = STAGE3_DELTA_CONTEXT_PROVIDER_ID) -> None:
+    def __init__(
+        self,
+        *,
+        provider_id: str = STAGE3_DELTA_CONTEXT_PROVIDER_ID,
+        node_target: str | None = None,
+    ) -> None:
         super().__init__(provider_id=provider_id)
+        # S3-4s: which node's slice this instance serves. ``None`` -- the
+        # default and every pre-S3-4s construction -- applies no node filter.
+        self.node_target = node_target
 
     def build(self, source_rows: Sequence[Mapping[str, object]], *, policy_id: str) -> tuple[DeltaCandidate, ...]:
         candidates = tuple(
@@ -2013,6 +2024,12 @@ class Stage3DeltaCandidateProvider(KnowledgeProvider):
                 value_id=row["value_id"],
                 associated_facet_ids=tuple(row["associated_facet_ids"]),
                 prior_score=float(row["prior_score"]),
+                # S3-4s: a v2 row's ``task_target`` is NODE:DELTA-KIND:TARGET,
+                # so the node is read off the released value itself rather
+                # than carried beside it. A v1 row names no node and reads
+                # ``None``, which is exactly what keeps an unfiltered
+                # selection byte-identical to its pre-S3-4s self.
+                node_target=node_target_of_task_target(row.get("task_target")),
             ).validate()
             for row in source_rows
         )
@@ -2028,7 +2045,9 @@ class Stage3DeltaCandidateProvider(KnowledgeProvider):
         if self._built is None:
             raise RailsError("Stage3DeltaCandidateProvider.candidates requires build() first")
         facet_ids = tuple(query)
-        selected_ids = select_stage3_delta_values(facet_ids, self._built, cap=k)
+        selected_ids = select_stage3_delta_values(
+            facet_ids, self._built, cap=k, node_target=self.node_target
+        )
         by_id = {candidate.value_id: candidate for candidate in self._built}
         entries = tuple(
             RankedEntry(entry_id=value_id, score=by_id[value_id].prior_score, provenance={})
@@ -2065,6 +2084,58 @@ def _stage3_delta_candidate_provider(**kwargs: object) -> Stage3DeltaCandidatePr
     return Stage3DeltaCandidateProvider(**kwargs)
 
 
+class Stage3DeltaUnconditionalProvider(Stage3DeltaCandidateProvider):
+    """Stage-3 S3-4s: the stage3-deltas store's UNCONDITIONAL, node-filtered,
+    ``prior_score``-capped selector.
+
+    The Perception node produces the candidate list, so at the moment it is
+    contacted there is no candidate state to bind its deltas against. Its
+    route is therefore row-independent: the top ``cap`` deltas whose
+    ``node_target`` is the configured node, identical on every row of the
+    split (``rails.stage3_delta_supply.
+    select_unconditional_stage3_delta_values``). ``query`` is accepted and
+    DELIBERATELY IGNORED -- it is recorded in the ranking's ``query_sha256``
+    so the receipt still says what the row's state was, and it never changes
+    which deltas are selected.
+    """
+
+    def __init__(
+        self,
+        *,
+        provider_id: str = STAGE3_DELTA_UNCONDITIONAL_PROVIDER_ID,
+        node_target: str = "perception",
+    ) -> None:
+        super().__init__(provider_id=provider_id, node_target=node_target)
+
+    def candidates(self, query: Sequence[str], *, k: int) -> Ranking:
+        if self._built is None:
+            raise RailsError(
+                "Stage3DeltaUnconditionalProvider.candidates requires build() first"
+            )
+        facet_ids = tuple(query)
+        selected_ids = select_unconditional_stage3_delta_values(
+            self._built, cap=k, node_target=str(self.node_target)
+        )
+        by_id = {candidate.value_id: candidate for candidate in self._built}
+        entries = tuple(
+            RankedEntry(entry_id=value_id, score=by_id[value_id].prior_score, provenance={})
+            for value_id in selected_ids
+        )
+        query_sha256 = hashlib.sha256(
+            "\n".join(sorted(facet_ids)).encode("utf-8")
+        ).hexdigest()
+        return Ranking(
+            entries=entries,
+            index_sha256=self._index_sha256,
+            query_sha256=query_sha256,
+            source=self.provider_id,
+        ).validate()
+
+
+def _stage3_delta_unconditional_provider(**kwargs: object) -> Stage3DeltaUnconditionalProvider:
+    return Stage3DeltaUnconditionalProvider(**kwargs)
+
+
 # Keep all provider/rank/fuse registration at the canonical shared site.
 # Lazy construction avoids circular imports between providers and named stores.
 if "source-scoped-context-v1" not in KNOWLEDGE_PROVIDERS.names():
@@ -2080,6 +2151,10 @@ if "saea-named-context-composite-fuse-v1" not in KNOWLEDGE_FUSERS.names():
 if STAGE3_DELTA_CONTEXT_PROVIDER_ID not in KNOWLEDGE_PROVIDERS.names():
     KNOWLEDGE_PROVIDERS.register(
         STAGE3_DELTA_CONTEXT_PROVIDER_ID, _stage3_delta_candidate_provider
+    )
+if STAGE3_DELTA_UNCONDITIONAL_PROVIDER_ID not in KNOWLEDGE_PROVIDERS.names():
+    KNOWLEDGE_PROVIDERS.register(
+        STAGE3_DELTA_UNCONDITIONAL_PROVIDER_ID, _stage3_delta_unconditional_provider
     )
 
 

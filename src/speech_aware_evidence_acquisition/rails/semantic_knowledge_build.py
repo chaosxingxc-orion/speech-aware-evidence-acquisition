@@ -27,7 +27,20 @@ SLOT_CONTRACT_BUILD_POLICY_ID = "saea-authored-slot-contracts-v1"
 #: ``task_target`` and ``prior_score`` before this builder ever sees them),
 #: so this builder compiles rather than derives, unlike every builder above.
 STAGE3_DELTA_BUILD_POLICY_ID = "saea-authored-stage3-deltas-v1"
+#: Stage-3 S3-4s (owner decision 106, 2026-09-23): the NODE-TARGETED
+#: delta store. Registered BESIDE v1, never in place of it: v1 rows stay
+#: loadable and v1 releases stay flyable. The only shape difference is
+#: one further authored-row key, ``node_target``, and the ``task_target``
+#: form it implies (``NODE:DELTA-KIND:TARGET`` instead of v1's
+#: ``DELTA-KIND:TARGET``) -- which is what lets one store serve the
+#: Perception, Solver, Reviewer and Planner routes from four disjoint
+#: slices (``rails.stage3_delta_supply.node_target_of_task_target``).
+STAGE3_DELTA_V2_BUILD_POLICY_ID = "saea-authored-stage3-deltas-v2"
 STAGE3_DELTA_DIMENSION = "stage3-delta-target"
+#: The nodes a v2 row may address, spelled as PHASE names. Restated
+#: from ``rails.stage3_delta_supply.STAGE3_DELTA_NODES``; this module
+#: keeps no import of the supply side.
+STAGE3_DELTA_NODE_TARGETS = ("perception", "solver", "reviewer", "planner")
 SHARED_INTENT_GUIDANCE_VALUE_ID = "intent-boundary:shared-guidance"
 _SHARED_INTENT_GUIDANCE_SCOPE = (
     "Shared guidance for all intent-boundary values in this store."
@@ -48,6 +61,8 @@ _STAGE3_DELTA_KEYS = {
     "value_id", "content", "associated_facet_ids", "source_sample_ids",
     "provenance_refs", "task_target", "prior_score",
 }
+#: S3-4s: exactly the v1 key set plus ``node_target``.
+_STAGE3_DELTA_V2_KEYS = _STAGE3_DELTA_KEYS | {"node_target"}
 _DELTA_VALUE_ID = re.compile(r"delta:[0-9]+:[0-9a-f]{12}")
 
 
@@ -430,7 +445,7 @@ def build_stage3_delta_snapshot(
     rows: Sequence[Mapping[str, object]],
     forbidden_sample_ids: frozenset[str] = frozenset(),
 ) -> KnowledgeSnapshot:
-    """Compile S3-5's curated, append-only authored delta rows.
+    """Compile S3-5's curated, append-only authored delta rows (v1).
 
     Unlike :func:`build_intent_boundary_snapshot`/
     :func:`build_slot_contract_snapshot` (which derive ONE self-minted
@@ -452,6 +467,57 @@ def build_stage3_delta_snapshot(
     match ``delta:<iteration>:<12-hex>`` (the spec's own id form).
     """
 
+    return _build_stage3_delta_snapshot(
+        spec,
+        rows=rows,
+        forbidden_sample_ids=forbidden_sample_ids,
+        builder_policy_id=STAGE3_DELTA_BUILD_POLICY_ID,
+        row_keys=_STAGE3_DELTA_KEYS,
+    )
+
+
+def build_stage3_delta_snapshot_v2(
+    spec: AuthoredSemanticKnowledgeSpec,
+    *,
+    rows: Sequence[Mapping[str, object]],
+    forbidden_sample_ids: frozenset[str] = frozenset(),
+) -> KnowledgeSnapshot:
+    """Compile S3-5's NODE-TARGETED authored delta rows (S3-4s, owner
+    decision 106).
+
+    Identical to :func:`build_stage3_delta_snapshot` in every rule it
+    enforces -- append-only subset of the permitted construction roster, no
+    forbidden sample, one self-minted facet per distinct
+    ``associated_facet_ids`` entry, ``delta:<iteration>:<12-hex>`` value ids
+    -- plus exactly two: every row carries a ``node_target`` in
+    :data:`STAGE3_DELTA_NODE_TARGETS`, and its ``task_target`` begins with
+    that node (``NODE:DELTA-KIND:TARGET``). ``node_target`` itself is NOT a
+    :class:`~.knowledge.ValueBundle` field: the released value carries the
+    node inside ``task_target``, which is where every consumer reads it from
+    (``rails.stage3_delta_supply.node_target_of_task_target``), so a release
+    stays self-describing without a schema change to the shared contract.
+    """
+
+    return _build_stage3_delta_snapshot(
+        spec,
+        rows=rows,
+        forbidden_sample_ids=forbidden_sample_ids,
+        builder_policy_id=STAGE3_DELTA_V2_BUILD_POLICY_ID,
+        row_keys=_STAGE3_DELTA_V2_KEYS,
+    )
+
+
+def _build_stage3_delta_snapshot(
+    spec: AuthoredSemanticKnowledgeSpec,
+    *,
+    rows: Sequence[Mapping[str, object]],
+    forbidden_sample_ids: frozenset[str],
+    builder_policy_id: str,
+    row_keys: set,
+) -> KnowledgeSnapshot:
+    """The shared compiler behind the v1 and v2 delta builders."""
+
+    node_targeted = "node_target" in row_keys
     if not isinstance(spec, AuthoredSemanticKnowledgeSpec):
         raise RailsError("stage3 delta builder requires AuthoredSemanticKnowledgeSpec")
     spec.validate()
@@ -464,7 +530,7 @@ def build_stage3_delta_snapshot(
     used_sources: set[str] = set()
     source_rows: list[Mapping[str, object]] = []
     for index, raw in enumerate(rows):
-        row = _object(raw, f"rows[{index}]", _STAGE3_DELTA_KEYS)
+        row = _object(raw, f"rows[{index}]", row_keys)
         value_id = _text(row["value_id"], f"rows[{index}].value_id")
         if _DELTA_VALUE_ID.fullmatch(value_id) is None:
             raise RailsError(
@@ -480,6 +546,18 @@ def build_stage3_delta_snapshot(
             sorted(_texts(row["provenance_refs"], f"rows[{index}].provenance_refs"))
         )
         task_target = _text(row["task_target"], f"rows[{index}].task_target")
+        if node_targeted:
+            node_target = _text(row["node_target"], f"rows[{index}].node_target")
+            if node_target not in STAGE3_DELTA_NODE_TARGETS:
+                raise RailsError(
+                    f"rows[{index}].node_target must be one of "
+                    f"{STAGE3_DELTA_NODE_TARGETS}, got {node_target!r}"
+                )
+            if not task_target.startswith(f"{node_target}:"):
+                raise RailsError(
+                    f"rows[{index}].task_target must be "
+                    "'<node_target>:<delta-kind>:<target>'"
+                )
         prior_score = row["prior_score"]
         if isinstance(prior_score, bool) or not isinstance(prior_score, (int, float)):
             raise RailsError(f"rows[{index}].prior_score must be a number")
@@ -530,16 +608,16 @@ def build_stage3_delta_snapshot(
             "source_partition_role": spec.source_partition_role,
             "source_split_identity_hash": spec.source_split_identity_hash,
             "source_sample_ids": sorted(used_sources),
-            "builder_policy_id": STAGE3_DELTA_BUILD_POLICY_ID,
+            "builder_policy_id": builder_policy_id,
             "rows": sorted(source_rows, key=lambda row: str(row["value_id"])),
         }
     )
     return KnowledgeSnapshot(
-        snapshot_id=f"{STAGE3_DELTA_BUILD_POLICY_ID}:{identity[:16]}",
+        snapshot_id=f"{builder_policy_id}:{identity[:16]}",
         source_split_identity_hash=spec.source_split_identity_hash,
         source_sample_ids=tuple(sorted(used_sources)),
         source_partition_role=spec.source_partition_role,
-        builder_policy_id=STAGE3_DELTA_BUILD_POLICY_ID,
+        builder_policy_id=builder_policy_id,
         facets=facets,
         values=values,
     ).validate()
@@ -552,9 +630,12 @@ __all__ = [
     "SLOT_CONTRACT_BUILD_POLICY_ID",
     "STAGE3_DELTA_BUILD_POLICY_ID",
     "STAGE3_DELTA_DIMENSION",
+    "STAGE3_DELTA_NODE_TARGETS",
+    "STAGE3_DELTA_V2_BUILD_POLICY_ID",
     "AuthoredSemanticKnowledgeSpec",
     "build_factored_intent_boundary_snapshot",
     "build_intent_boundary_snapshot",
     "build_slot_contract_snapshot",
     "build_stage3_delta_snapshot",
+    "build_stage3_delta_snapshot_v2",
 ]

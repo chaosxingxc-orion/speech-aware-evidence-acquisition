@@ -130,6 +130,13 @@ _EXPECTED_PROGRAM_SHAPES = {
     # phase-direct-only-v1; bound to the construction-advantage-text arm and
     # the stage3-advantage-statement-v1 response format instead.
     "phase-stage3-advantage-v1": (("advantage",), 1, "always-run-full-program"),
+    # Stage-3 S3-4s (owner decision 106, 2026-09-23): the SYSTEM-level
+    # advantage program -- the same one-phase shape, binding the
+    # stage3-advantage-statement-v2 response format (one to three
+    # NODE/DELTA-KIND/TARGET/STATEMENT blocks) instead of v1's single
+    # three-line statement. A program and its fragment must agree on a
+    # phase output contract, so the v2 contract needs its own program.
+    "phase-stage3-advantage-v2": (("advantage",), 1, "always-run-full-program"),
     "phase-training-feedback-proposal-v1": (
         ("proposal",),
         1,
