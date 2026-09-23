@@ -404,3 +404,99 @@ re-pin cycle; their output is expected to reproduce byte for byte, and `--allow-
 never be passed. Details and the reproduction: the package runbook
 `docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/README.md`, section "First launch REFUSED,
 recovery re-registration (2026-09-23)".
+
+## Addendum 2026-09-23 (second): the smoke's second failure; the v2 smoke is the four-row proof
+
+The one recovery re-registration allowed above was flown and **failed**. Attempt
+`attempt-slurp-native-stage3-delta-cell-smoke-4-v1-generation-recovery` metered **4 Perception
+contacts and 10.6 s**, then died at the openJiuwen vertex `solver_0_input`:
+
+```
+NativeEpisodeError: native episode node failed: [100054] component 'solver_0_input'
+execute 'invoke' error, reason='hypothesis state must contain exactly
+['candidates', 'sample_id', 'schema', 'semantics']'
+```
+
+**Root cause.** `rails.controllers.seal_phase_response_state` seals a role state from the model's
+**own response bytes**, and this program's Perception phase answers under the registered
+`slurp-intent-hypotheses-v1` structured-output contract, whose entire schema is
+`required: ["candidates"]` with `additionalProperties: false`. The sealed Perception state is
+therefore the **compact one-key document**; the canonical four-key document (`schema`, `semantics`,
+`sample_id`, `candidates`) is the *consumption view*, rebuilt at each reading site from those bytes
+plus that site's own trusted phase/sample identity. It was never on the wire and never sealed.
+`rails.knowledge_stores._stage3_delta_local_supply` read the candidate state canonically, so three
+keys a native episode can never seal were **missing** -- the error names the four keys it wanted,
+not extra keys it found. The four trace responses of the failed attempt carry exactly one top-level
+key, `candidates`. The sibling route on the same phase -- slot-contracts `candidate_supply.solver`
+-- declares `compact_source_phase: "perception"` and was fine, which is why the sealed PLAN arm flew
+this very episode and this cell did not; and every unit test of the delta route fed it a canonical
+document, which is why the whole ladder was green.
+
+**The program rule applies.** "At most one recovery re-registration per flight; a second failure
+stops the flight and the fix is proven on a 4-row dry run" (study `CLAUDE.md`, owner 2026-09-03).
+Run id `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1` has now failed twice and **takes no third
+attempt**. It is retired, with its FIT identity
+`SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-FIT-V1`; the coordinator closes both ledger rows.
+
+**The replacement.** The four-row proof flies under a **new run id**,
+`SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2`, attempt
+`attempt-slurp-native-stage3-delta-cell-smoke-4-v2-generation`, with its own FIT spend identity
+`SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2-FIT-V1`. A plan budget is run-cumulative across every
+attempt of one run id, which is exactly why the identity has to move: the caps are the v1 smoke's,
+unchanged (44 generation contacts, 176 FIT endpoints, 117 repeated speech seconds, 1.0
+fit-inclusive GPU hours, 24 native task-contract calls, no official score), and none of the v1
+spend enters them. Registered here:
+
+* `configs/experiment/slurp-native-stage3-delta-cell-smoke-4-v2.json` (one cell, **held**);
+* `configs/baseline/slurp-native-stage3-delta-cell-smoke-4-v2-baseline-v1.json` -- the v1 smoke
+  baseline with only `native_contact_fit` re-identified and `prepared_phase_supply` dropped, so the
+  re-pin mints this cell's own artifact under its own run id (item E16);
+* `docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/smoke-v2-generation-plan-registered-v1.json`
+  and `.../smoke-v2-fit-plan-registered-v1.json`;
+* two DRAFT exposure-ledger rows, `consumed = no`, root countersignature pending.
+
+**Population, split identity, store pins, geometry, session, decision rule and every decided key are
+unchanged.** The twin smoke keeps its own run id `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1`
+(never opened) in `configs/experiment/slurp-native-stage3-delta-cell-smoke-4-v1.json`; it carries
+the same fix, because the fix is in a shared rails module and not in any fragment. Both arms are
+untouched.
+
+**The fix** (engineering only; **no config key is added and no decided key moves**).
+`_stage3_delta_local_supply` now reads the candidate state through the **compact** branch of
+`rails.slurp_intent_hypotheses.parse_slurp_intent_hypothesis_state` whenever the candidate state
+phase **declares** the `slurp-intent-hypotheses-v1` contract, and canonically otherwise -- the same
+question `rails.slot_binding_view` already answers off the same declared field, and the same
+equality `rails.candidate_semantic_supply` enforces between `compact_source_phase` and
+`candidate_state_phase`. The parser stays strict both ways: under the compact contract the canonical
+document is a refusal, and the compact branch additionally binds `state_kind`/`state_id` to that
+phase and sample, which is a *stronger* check than the canonical branch makes. Because the shape is
+read off the program's own declared output contract rather than from a new spec key, a future cell
+cannot forget to declare it.
+
+**The four-row dry run the rule demands is offline and was run before this registration.**
+`speech_aware_evidence_acquisition.analysis.native_episode_dry_run` walks a plan-based native
+episode node by node on the **real** composed fragments, the **real** released stores and the
+**real** supply router, with canned, schema-valid role answers standing in for the frozen core and
+**zero** model, tool, network, GPU, gate, transport, client, attempt or serving contacts. On this
+cell's own composition, one row:
+
+* **pre-fix** it reproduces the flight's own sentence, `hypothesis state must contain exactly
+  ['candidates', 'sample_id', 'schema', 'semantics']`, raised from the same
+  `_stage3_delta_local_supply` frame;
+* **post-fix** the whole graph completes, perception -> solver -> reviewer -> planner -> delivery,
+  and every node is supplied its own `node_target` slice of the store: Perception 4 (seeded through
+  the unconditional route), Solver 8, Reviewer 4, Planner 1 of cap 4, beside the base plan's own 20
+  train-exemplars and 11 slot-contracts values at the Solver. The delivery is the Solver's sealed
+  draft.
+
+Regression tests: `tests/unit/test_native_episode_dry_run.py` (the walk, on this registered cell)
+and `tests/unit/test_stage3_delta_node_routes.py`, whose Perception fixture now seals what a flight
+seals and whose program fixture now declares the response format the real program declares.
+
+**Re-pin obligation.** `rails/knowledge_stores.py` is one of the five files whose SHA-256 is part of
+every prepared phase-supply artifact identity, so this fix invalidates the pinned first-phase
+artifact of **all six** CELL-1 cells. The coordinator re-pins each of them in one cycle; their
+output is expected to reproduce byte for byte, and `--allow-output-change` must never be passed.
+
+**If the v2 smoke fails.** The one-recovery allowance for this flight is spent. A failure here stops
+cell CELL-1 outright and is escalated to root; it is not re-registered a third time.

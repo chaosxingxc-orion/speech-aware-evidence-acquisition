@@ -220,3 +220,158 @@ def test_smoke_variants_carry_the_same_store_shape_as_their_full_siblings() -> N
         full["knowledge_stores"]["stage3-deltas"]["context_supply"]
         == smoke["knowledge_stores"]["stage3-deltas"]["context_supply"]
     )
+
+
+# ---------------------------------------------------------------------------
+# The v2 smoke (2026-09-23): the same cell under a new run identity
+#
+# Run id SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1 failed twice -- refused before
+# contact, then 4 metered Perception contacts and a refusal at solver_0_input
+# on the sealed Perception state's shape -- so the program's own rule ("a
+# second failure stops the flight and the fix is proven on a 4-row dry run")
+# retires it. The replacement must be the SAME cell: what moves is the run,
+# attempt and fit identity, because a plan budget is run-cumulative across
+# every attempt of one run id.
+# ---------------------------------------------------------------------------
+
+_V2_BASELINE = "slurp-native-stage3-delta-cell-smoke-4-v2-baseline-v1.json"
+_V2_FRAGMENT = "slurp-native-stage3-delta-cell-smoke-4-v2.json"
+_V1_SMOKE_BASELINE = "slurp-native-stage3-delta-cell-smoke-4-baseline-v1.json"
+_V1_SMOKE_FRAGMENT = "slurp-native-stage3-delta-cell-smoke-4-v1.json"
+
+
+def test_the_v2_smoke_baseline_moves_only_its_fit_identity() -> None:
+    """Every DECIDED key is the v1 smoke's, byte for byte.
+
+    Exactly three things differ, and each for a named reason: the fit spend
+    identity (``native_contact_fit``, which must be this run id's own -- owner
+    rule E16), the prose ``smoke_note`` that records the retirement, and the
+    ABSENCE of ``prepared_phase_supply`` -- the re-pin mints this cell's own
+    artifact under its own run id, and a committed pin would give it something
+    to compare against that was never prepared for it.
+    """
+
+    v1 = _load(REPO_ROOT / "configs" / "baseline" / _V1_SMOKE_BASELINE)
+    v2 = _load(REPO_ROOT / "configs" / "baseline" / _V2_BASELINE)
+    assert set(v1) - set(v2) == {"prepared_phase_supply"}
+    assert set(v2) - set(v1) == set()
+    differing = {key for key in set(v1) & set(v2) if v1[key] != v2[key]}
+    assert differing == {"native_contact_fit", "smoke_note"}
+
+    fit = v2["native_contact_fit"]
+    assert fit["run_id"] == "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2-FIT-V1"
+    assert fit["attempt_id"] == "attempt-slurp-native-stage3-delta-cell-smoke-4-v2-fit"
+    assert fit["contact_cap"] == v1["native_contact_fit"]["contact_cap"]
+    assert fit["max_speech_packets"] == v1["native_contact_fit"]["max_speech_packets"]
+
+
+def test_the_v2_smoke_fragment_is_one_held_cell_on_the_same_population() -> None:
+    v1 = _load(REPO_ROOT / "configs" / "experiment" / _V1_SMOKE_FRAGMENT)
+    v2 = _load(REPO_ROOT / "configs" / "experiment" / _V2_FRAGMENT)
+
+    assert len(v2["cells"]) == 1
+    cell = v2["cells"][0]
+    assert cell["cell_id"] == "slurp-native-stage3-delta-cell-smoke-4-v2"
+    assert cell["run_id"] == "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2"
+    assert (
+        cell["attempt_id"]
+        == "attempt-slurp-native-stage3-delta-cell-smoke-4-v2-generation"
+    )
+    assert cell["baseline_fragment"] == _V2_BASELINE[: -len(".json")]
+    assert cell["readiness"]["state"] == "held"
+
+    v1_cell = next(
+        item
+        for item in v1["cells"]
+        if item["cell_id"] == "slurp-native-stage3-delta-cell-smoke-4-v1"
+    )
+    for key in ("dataset_fragment", "model_fragment", "allowed_execution_stages"):
+        assert cell[key] == v1_cell[key], key
+
+    # The population, its identity and every cap are the retired smoke's.
+    for key in (
+        "execution_plan",
+        "family_budget",
+        "population",
+        "populations",
+        "split_id",
+        "service_session",
+        "execution_profile",
+    ):
+        assert v2[key] == v1[key], key
+    assert v2["generation_budget"]["cap"] == v1["generation_budget"]["cap"]
+    assert v2["generation_budget"]["target"] == v1["generation_budget"]["target"]
+    assert v2["stage3_algorithm"]["id"] == v1["stage3_algorithm"]["id"]
+    assert v2["stage3_algorithm"]["operators_used"] == (
+        v1["stage3_algorithm"]["operators_used"]
+    )
+
+    # The twin smoke keeps its own v1 run id and stays where it was registered.
+    twin = [
+        item
+        for item in v1["cells"]
+        if item["run_id"] == "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1"
+    ]
+    assert len(twin) == 1
+    assert not any(
+        item["run_id"] == "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1"
+        for item in v2["cells"]
+    )
+
+
+def test_the_v2_smoke_run_ids_are_registered_before_contact_and_unconsumed() -> None:
+    """Both v2 identities carry a DRAFT exposure row, ``consumed = no``.
+
+    Parsed with the repository's own parser, so a row hidden in a comment or a
+    fence is exactly as invisible here as it is to the frozen-core gate.
+    """
+
+    from speech_aware_evidence_acquisition.contracts import _parse_ledger_tables
+
+    ledger = (REPO_ROOT / "docs" / "exposure-ledger.md").read_text(encoding="utf-8")
+    rows = _parse_ledger_tables(ledger)
+    for run_id, plan in (
+        (
+            "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2",
+            "smoke-v2-generation-plan-registered-v1.json",
+        ),
+        (
+            "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2-FIT-V1",
+            "smoke-v2-fit-plan-registered-v1.json",
+        ),
+    ):
+        matches = [row for row in rows if row.get("run/experiment id") == run_id]
+        assert len(matches) == 1, run_id
+        row = matches[0]
+        assert row["consumed"].strip().lower() == "no", run_id
+        assert row["artifacts"].endswith(plan), run_id
+        assert plan in row["artifacts"], run_id
+
+
+def test_the_v2_plan_documents_name_the_v2_identities() -> None:
+    package = REPO_ROOT / "docs" / "readiness" / "2026-09-22-slurp-stage3-delta-cell-r01-v1"
+    for name, run_id, calls in (
+        (
+            "smoke-v2-generation-plan-registered-v1.json",
+            "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2",
+            44,
+        ),
+        (
+            "smoke-v2-fit-plan-registered-v1.json",
+            "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2-FIT-V1",
+            176,
+        ),
+    ):
+        document = _load(package / name)
+        assert document["cell"] == "slurp-native-stage3-delta-cell-smoke-4-v2"
+        assert document["experiment"] == "slurp-native-stage3-delta-cell-smoke-4-v2"
+        plan = document["execution_plan"]
+        assert plan["run_id"] == run_id
+        assert plan["planned_model_calls"] == calls
+        assert plan["split_identity_hash"] == (
+            "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+        )
+        assert document["supersedes"]["run_ids"] == [
+            "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1",
+            "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-FIT-V1",
+        ]

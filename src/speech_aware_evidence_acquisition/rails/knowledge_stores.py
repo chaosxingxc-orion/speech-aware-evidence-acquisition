@@ -436,6 +436,7 @@ def build_knowledge_store_supply(
         STAGE3_DELTA_STORE_ROLE,
         STAGE3_DELTA_UNCONDITIONAL_PROVIDER_ID,
     )
+    from .artifact_results import SLURP_HYPOTHESIS_CONTENT_ID
     from .slurp_intent_hypotheses import (
         SlurpIntentHypothesisError,
         parse_slurp_intent_hypothesis_state,
@@ -624,12 +625,51 @@ def build_knowledge_store_supply(
                 "stage3-deltas context_supply requires the task adapter authoritative "
                 "legal candidate inventory"
             )
+        # 2026-09-23, the CELL-1 generation smoke's second failure. A role
+        # state is sealed as the model's OWN response bytes
+        # (``rails.controllers.seal_phase_response_state`` is handed
+        # ``completion.text``). When the candidate state phase answers under
+        # the registered ``slurp-intent-hypotheses-v1`` structured-output
+        # contract, those bytes are the COMPACT document -- ``{"candidates":
+        # [...]}`` and nothing else, because that is the whole schema
+        # (``rails.artifact_results.slurp_intent_hypotheses_response_format``:
+        # ``required: ["candidates"]``, ``additionalProperties: false``).
+        # The four-key document (``schema``, ``semantics``, ``sample_id``,
+        # ``candidates``) is the CONSUMPTION view, rebuilt at each reading
+        # site from those sealed bytes plus that site's own trusted
+        # phase/sample identity; it is never what the wire carried and never
+        # what was sealed. Reading the state without naming a compact source
+        # phase therefore demands three keys a native episode can never have
+        # sealed, and the smoke died at ``solver_0_input`` after four
+        # Perception contacts with "hypothesis state must contain exactly
+        # ['candidates', 'sample_id', 'schema', 'semantics']".
+        #
+        # WHICH form to expect is not guessed from the bytes: it is read off
+        # the phase's own DECLARED output contract, exactly as
+        # ``rails.slot_binding_view`` already decides the same question
+        # ("response_format_id != 'slurp-intent-hypotheses-v1'"). A phase
+        # that declares the compact contract is read through the compact
+        # branch -- which additionally binds ``state_kind``/``state_id`` to
+        # that phase and sample, a STRONGER check than the canonical branch
+        # makes -- and every other phase is read canonically, byte-
+        # identically to the pre-fix router. Nothing is relaxed: the parser
+        # stays strict on both sides, and a fragment cannot forget to say
+        # which it is, because it never says it at all.
+        candidate_format_id = getattr(
+            program.phase(candidate_state_phase), "response_format_id", None
+        )
+        compact_source_phase = (
+            candidate_state_phase
+            if candidate_format_id == SLURP_HYPOTHESIS_CONTENT_ID
+            else None
+        )
         try:
             hypothesis_state = parse_slurp_intent_hypothesis_state(
                 matches[0],
                 expected_sample_id=str(sample_id),
                 legal_intent_ids=legal,
                 max_candidates=len(frozenset(legal)),
+                compact_source_phase=compact_source_phase,
             )
         except SlurpIntentHypothesisError as error:
             raise KnowledgeStoreError(str(error)) from error
