@@ -48,14 +48,17 @@ steps = [
     {"order": 1, "short": "cell1", "kind": "cell",
      "experiment": "slurp-native-stage3-delta-cell-r01-v1",
      "cell": "slurp-native-stage3-delta-cell-r01-v1",
-     "smoke_experiment": "slurp-native-stage3-delta-cell-smoke-4-v3",
-     "smoke_cell": "slurp-native-stage3-delta-cell-smoke-4-v3",
+     # 2026-09-23 (coordinator): the v3 four-row form smoke PASSED before the first arm attempt (16 contacts, structural PASS)
+     # and its attempt is consumed; the arm recovery re-flies without a smoke -- the fourth fix (8843d0a5) changes only how a
+     # sealed Perception state is READ and was proven offline on four answer shapes (analysis/native_episode_dry_run.py).
+     "smoke_experiment": None,
+     "smoke_cell": None,
      "campaign_plan": "configs/campaign/slurp-native-stage3-delta-cell-r01-v1.json",
      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1",
      "fit_run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1",
      "gen_attempt_id": "attempt-slurp-native-stage3-delta-cell-r01-v1-generation-recovery",
-     "smoke_run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3",
-     "smoke_attempt_id": "attempt-slurp-native-stage3-delta-cell-smoke-4-v3-generation",
+     "smoke_run_id": None,
+     "smoke_attempt_id": None,
      "expected_rows": 1080, "contacts_per_row": 4, "ceiling_per_row": 11, "notool": True,
      "owner": "root-slurp-native-stage3-delta-cell-r01-v1"},
     {"order": 2, "short": "cell1twin", "kind": "cell",
