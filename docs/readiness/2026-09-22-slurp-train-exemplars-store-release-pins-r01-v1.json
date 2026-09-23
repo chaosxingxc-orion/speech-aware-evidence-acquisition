@@ -1,0 +1,92 @@
+{
+  "authority": "docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md item S3-2 (cell ROLL-1); rails.runner.run_speech_native_agent_loop BUILD/USE disjointness rule",
+  "build_receipt": {
+    "relpath": "docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars-minus-r01.json",
+    "root": "repository",
+    "sha256": "e4d7bb61a65dd17d42c3d601c4b3bd33effe48920dd59cb2e9232e739221d1c4"
+  },
+  "consumers": [
+    "configs/baseline/slurp-native-stage3-rollout-baseline-v1.json",
+    "configs/baseline/slurp-native-stage3-rollout-smoke-4-baseline-v1.json"
+  ],
+  "contacts": {
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0,
+    "tool": 0
+  },
+  "excluded_query_roster": {
+    "recordings": 800,
+    "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01.json",
+    "root": "repository",
+    "roster_id": "SLURP-STAGE3-CONSTRUCTION-R01",
+    "sha256": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0",
+    "split_identity_hash": "2ece5e51ff781fdec89bef8e7448d8ba88249030d3c8a6478dba5e7c1e621dac",
+    "utterances": 800
+  },
+  "execution_profile": "model-free-check",
+  "generator": "scripts/build_slurp_stage3_r01_excluded_exemplar_store.py",
+  "predecessor": {
+    "receipt_relpath": "docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json",
+    "receipt_sha256": "48d0f34cf536ebf9806d55b5dcced1b607080bec3c68ca7dea27cdb01478cc72",
+    "snapshot_sha256": "4c498dc0282055b9fe036ed7e950af519bd48b5f26e76876d0250727196a72e9",
+    "source_recordings": 37407,
+    "source_split_identity_hash": "22f6092dfdb4a160376e529d8e59e9215bc7701e274620d35feb1c4d82f309e9",
+    "store_release_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/release.json",
+    "store_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/snapshot.json",
+    "value_count": 9354
+  },
+  "rebuild_kind": "pure selection: the surviving 8,554 utterances keep bit-identical facets, values, prior scores and provenance refs; nothing was re-embedded, re-authored or re-scored",
+  "residual_overlap_not_cleared_by_this_release": {
+    "composite_overlap_after_this_release": {
+      "roll_1_arm_800_rows": 175,
+      "roll_1_smoke_4_rows": 1
+    },
+    "intent-boundaries-v1": {
+      "authored_cards_touching_an_r01_utterance": "50 of 60",
+      "overlap_with_r01_recordings": 57,
+      "release": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+      "source_recordings": 2037
+    },
+    "slot-contracts-v2": {
+      "authored_cards_touching_an_r01_utterance": "41 of 54",
+      "overlap_with_r01_recordings": 155,
+      "release": "knowledge/slurp/semantic/slot-contracts-v2/release.json",
+      "source_recordings": 3162
+    },
+    "verdict": "CELL ROLL-1 IS STILL REFUSED",
+    "why": "the two authored semantic stores the same cell composes were built FROM per-row support material of R01 rows, so their snapshots still name those rows in source_sample_ids and the composite union still intersects the query roster. They cannot be narrowed model-free: rails.semantic_knowledge_build._build requires the authored source_support to EQUAL the permitted construction roster, and rails.candidate_semantic_supply re-derives the slot-contracts snapshot from the released authored source and demands byte equality, so a narrowed support set is a re-authoring (a model contact), not a re-pointing."
+  },
+  "schema": "saea-knowledge-store-release-pins-v1",
+  "status": "RELEASED_PENDING_RUNTIME_CONSUMPTION",
+  "stores": {
+    "train-exemplars": {
+      "builder_policy_id": "saea-kb-distmodel-v1",
+      "facet_vectors_unchanged": {
+        "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+        "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+        "why": "the sealed KU-S3 file carries one vector per governed TRAIN utterance (11,514) and stays a strict superset of this snapshot's 8,554 content facets, so no filtered derivative and no encoder contact is needed"
+      },
+      "release": {
+        "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/release.json",
+        "sha256": "83620eb0b02f12424a00cd5572904f4df48a49c329b1b0e1a9321d4b9ec14fd0"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+        "sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63"
+      },
+      "snapshot_file_sha256": "f549466f22bb0cae00a99849a1a811889eb82af9b632305c815fa123ad5795ca",
+      "source_partition_role": "train",
+      "source_recordings": 34474,
+      "source_split_identity_hash": "461b64287b522ac89e7af910a8a319ca0b6e11af6289e86d64d67f649b33d500",
+      "source_utterances": 8554,
+      "store_id": "train-exemplars",
+      "store_role": "train-exemplars",
+      "value_count": 8554
+    }
+  },
+  "why": "rails.runner.run_speech_native_agent_loop refuses an agent loop whose query samples intersect the bound snapshot's own source_sample_ids. Cell ROLL-1 flies the 800-row TRAIN construction roster SLURP-STAGE3-CONSTRUCTION-R01 as its QUERY population, and that roster was drawn from the very construction pool the released parent train-exemplars store is built over, so all 800 query rows were also knowledge source rows. This release removes them."
+}
