@@ -57,8 +57,8 @@ applies to.
 | fit run | `SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39-V1-FIT-V1` (176 endpoints) |
 | roster | 4 native windows of call `4320211`, split identity `4d9ea907...` |
 | session | `serving-e21-native-window-flightruntime-np4-max1024-v1` (np4, 1,024) |
-| composed config | `b2d60c637093cad1527f3e8311cac6a66fbf3c504d41a73fc23a0428c1e1e698` |
-| protocol | `9b9274454b47b628baf93d5213a2042eecdad6fe184e5b8ef52552f4227c6290` |
+| composed config | `4c27608af9b560d40928bd322f9c0d0d59b07aa5b3fb748bc38a78fe2e397da2` |
+| protocol | `4fad497575348ca52370d96e36360430403b36f9f044bd644e3743dc2b6acfc2` |
 | comparator | the sealed E35 four-row **system** arm, receipts only, never re-flown |
 
 Comparator receipts (not re-scored): `SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-V1`,

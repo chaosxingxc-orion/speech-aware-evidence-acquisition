@@ -29,9 +29,17 @@
         "campaign"
       ],
       "readiness": {
-        "state": "held",
+        "state": "ready",
         "reason": "Item E39 (2026-09-22; the E35 read section 5, base lock v3 section 5a, owner decisions 89 / 98): REGISTERED BEFORE CONTACT by the implementer and still HELD. Registered here: the readiness package docs/readiness/2026-09-23-e21-native-window-four-row-e39-v1/, the preregistration docs/readiness/2026-09-23-e21-native-window-four-row-e39-v1-preregistration.md, the campaign plan configs/campaign/e21-native-window-system-four-row-e39-v1.json and two fresh unconsumed exposure-ledger rows (SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39-V1 and SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39-V1-FIT-V1). Root lifts the hold: mint the decision receipt coordination/e21-native-window-four-row-e39-v1/root-admission-v1.json (decision id e21-native-window-four-row-e39-admission-v1), then flip and re-pin with scripts/flights/repin_cell.py, which inserts the decision requirement here and rewrites the composed/protocol hashes this package quotes. The implementer never flips it, and until it is flipped this cell may not be flown at any stage.",
-        "requirements": []
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "e21-native-window-four-row-e39-admission-v1",
+            "relpath": "coordination/e21-native-window-four-row-e39-v1/root-admission-v1.json",
+            "sha256": "d55cf11e4dec91c232fb914a55f65812dd9e83a28d68529e53ad93359744fc20",
+            "reason": "Decision e21-native-window-four-row-e39-admission-v1 pinned by scripts/flights/repin_cell.py."
+          }
+        ]
       },
       "execution_plan": {
         "split_role": "discovery",
