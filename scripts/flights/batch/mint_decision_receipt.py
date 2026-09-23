@@ -44,6 +44,7 @@ def main():
     ap.add_argument("--claim-boundary", required=True)
     ap.add_argument("--expected-contacts", type=int, default=None)
     ap.add_argument("--expected-gpu-hours", type=float, default=None)
+    ap.add_argument("--replace", action="append", default=[], help="extra OLD=NEW substitutions applied AFTER the id substitutions (e.g. run ids without the NATIVE infix, attempt ids without the roster slug)")
     a = ap.parse_args()
     src = f"{DATA}/coordination/slurp-{a.src}-v1/root-admission-v1.json"
     s = io.open(src, encoding="utf-8").read()
@@ -54,6 +55,9 @@ def main():
         (f"docs/readiness/{a.from_date}-slurp-{a.src}-v1", f"docs/readiness/{a.date}-slurp-{a.name}-v1"),
         (f"coordination/slurp-{a.src}-v1", f"coordination/slurp-{a.name}-v1"),
     ]:
+        s = s.replace(old, new)
+    for pair in a.replace:
+        old, new = pair.split("=", 1)
         s = s.replace(old, new)
     n = json.loads(s)
     assert n.get("decision_id") == f"slurp-{a.name}-admission-v1", n.get("decision_id")
