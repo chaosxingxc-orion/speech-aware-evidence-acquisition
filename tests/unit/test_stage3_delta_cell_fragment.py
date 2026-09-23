@@ -10,6 +10,7 @@ locked plan's own proof test already uses against its predecessor
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -113,20 +114,103 @@ def test_twin_cell_differs_from_generation_cell_only_by_the_release_namespace() 
     assert gen_store["context_supply"] == twin_store["context_supply"]
 
 
-def test_every_pin_left_for_root_is_an_explicit_pending_token() -> None:
-    for filename in (
-        "slurp-native-stage3-delta-cell-baseline-v1.json",
-        "slurp-native-stage3-delta-cell-twin-baseline-v1.json",
-        "slurp-native-stage3-delta-cell-smoke-4-baseline-v1.json",
-        "slurp-native-stage3-delta-cell-twin-smoke-4-baseline-v1.json",
-    ):
+_BASELINES = (
+    "slurp-native-stage3-delta-cell-baseline-v1.json",
+    "slurp-native-stage3-delta-cell-twin-baseline-v1.json",
+    "slurp-native-stage3-delta-cell-smoke-4-baseline-v1.json",
+    "slurp-native-stage3-delta-cell-twin-smoke-4-baseline-v1.json",
+)
+#: The store version the four baselines pin. S3-5 revision v1r (2026-09-23)
+#: superseded v1, whose facets were the statements' TARGETs and therefore
+#: unreachable on 258 of 379 rows; see
+#: docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/
+#: stage3-deltas-v1-superseded-v1.md.
+_STORE_VERSION = "v1r"
+
+
+def test_no_bookkeeping_key_is_left_as_a_pending_token() -> None:
+    """The CELL-1 registration (commit 6d1f30fc and its repair fb4d8915)
+    filled the per-flight bookkeeping this cell prepares under its OWN run id
+    and REMOVED ``prepared_phase_supply``, because ``core.config.compose``
+    raises on a PENDING ``preparation_source_receipts`` and
+    ``core.flight.repin.ArtifactPin.from_mapping`` refuses a string pin
+    before ``ensure_artifact_pinned`` can mint the real one. Neither
+    ``core.flight.cli check`` nor ``scripts/flights/repin_cell.py`` could
+    reach the preparation step while a token was left, so a token left here
+    is a defect, not a hand-off."""
+
+    for filename in _BASELINES:
         document = _load(REPO_ROOT / "configs" / "baseline" / filename)
-        for key in _BOOKKEEPING_KEYS:
+        # The flip mints this one and inserts its readiness requirement.
+        assert "prepared_phase_supply" not in document, filename
+        for key in _BOOKKEEPING_KEYS - {"prepared_phase_supply"}:
             value = document[key]
-            assert isinstance(value, str) and value.startswith("PENDING_"), (filename, key, value)
+            assert value, (filename, key)
+            if isinstance(value, str):
+                assert not value.startswith("PENDING_"), (filename, key, value)
+        # native_contact_fit carries THIS cell's own fit identity, never cell
+        # PLAN's (owner rule E16).
+        fit = document["native_contact_fit"]
+        assert "stage3-delta-cell" in fit["run_id"].lower().replace("_", "-")
+        assert "stage3-delta-cell" in fit["attempt_id"]
+
+
+def test_the_store_pins_name_one_released_version_and_two_distinct_digests() -> None:
+    """Commit fb4d8915: ``rails.knowledge_stores`` checks the snapshot pin
+    against BOTH ``KnowledgeSnapshot.content_hash()`` and the release
+    document's own ``snapshot_sha256`` -- one number, and NOT the
+    ``snapshot.json`` FILE digest, which is a third value. The release pin IS
+    the ``release.json`` file digest. The two pins are therefore always
+    different numbers over the same store, and both are real digests.
+
+    Repository-only: nothing here reads ``SPEECHRL_DATA_DIR``."""
+
+    seen = set()
+    for filename in _BASELINES:
+        document = _load(REPO_ROOT / "configs" / "baseline" / filename)
         store = document["knowledge_stores"]["stage3-deltas"]
-        assert store["snapshot"]["sha256"].startswith("PENDING_")
-        assert store["release"]["sha256"].startswith("PENDING_")
+        twin = "twin" in filename
+        namespace = (
+            f"knowledge/slurp/semantic/stage3-deltas"
+            f"{'-twin' if twin else ''}-{_STORE_VERSION}"
+        )
+        assert store["release"]["relpath"] == f"{namespace}/release.json", filename
+        assert store["snapshot"]["relpath"] == f"{namespace}/snapshot.json", filename
+        for pin in ("release", "snapshot"):
+            digest = store[pin]["sha256"]
+            assert re.fullmatch(r"[0-9a-f]{64}", digest), (filename, pin, digest)
+        assert store["release"]["sha256"] != store["snapshot"]["sha256"], filename
+        seen.add((store["release"]["sha256"], store["snapshot"]["sha256"], twin))
+    # The arm's two baselines pin one store and the twin's two pin the other.
+    assert len(seen) == 2
+    assert {twin for _, _, twin in seen} == {False, True}
+
+
+def test_the_experiment_readiness_requirements_pin_the_same_release() -> None:
+    """A cell is HELD on its store's ``release.json``; that requirement and
+    the baseline's own release pin are the same document and the same
+    digest, or the flip would mint a readiness requirement for a store the
+    fragment does not use."""
+
+    by_side = {}
+    for filename in _BASELINES:
+        document = _load(REPO_ROOT / "configs" / "baseline" / filename)
+        store = document["knowledge_stores"]["stage3-deltas"]
+        by_side["twin" if "twin" in filename else "arm"] = store["release"]
+    for name in (
+        "slurp-native-stage3-delta-cell-r01-v1.json",
+        "slurp-native-stage3-delta-cell-smoke-4-v1.json",
+    ):
+        fragment = _load(REPO_ROOT / "configs" / "experiment" / name)
+        pinned = {
+            (requirement["relpath"], requirement["sha256"])
+            for cell in fragment["cells"]
+            for requirement in cell["readiness"]["requirements"]
+            if requirement["kind"] == "preparation"
+        }
+        assert pinned == {
+            (pin["relpath"], pin["sha256"]) for pin in by_side.values()
+        }, name
 
 
 def test_smoke_variants_carry_the_same_store_shape_as_their_full_siblings() -> None:
