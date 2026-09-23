@@ -483,17 +483,23 @@
     "slurp_phase_evidence.txt": {
       "sha256": "f7af111e48468b89c3549a27bd07a0b76fa377be06b0a9c6fbfc0dabaa560224"
     },
-    "slurp_stage3_advantage_system_v1.txt": {
-      "sha256": "e2d8ae4368ff35f23c433cffb18f5c6e86bb721cc587041b7c9f4c515e79844f"
-    },
-    "slurp_stage3_advantage_v1.txt": {
-      "sha256": "a047ff8c8a35f3139b9ed2570f9b70e7117a6450f3d74382410b61e1c29da7fc"
-    },
     "slurp_phase_revise.txt": {
       "sha256": "236d1ee5a31300912b3e2404a4baf24b47a2c01f190f701467417e0c047cc518"
     },
     "slurp_phase_slots.txt": {
       "sha256": "221ed0d343b0a543eda98008312938da25bde204a131efe8427ea8e3934a5e1f"
+    },
+    "slurp_stage3_advantage_system_v1.txt": {
+      "sha256": "e2d8ae4368ff35f23c433cffb18f5c6e86bb721cc587041b7c9f4c515e79844f"
+    },
+    "slurp_stage3_advantage_system_v2.txt": {
+      "sha256": "12c213d0572ef5cd63e3a53e184de441c6b8426a3384a6d65c60cd134bb167e0"
+    },
+    "slurp_stage3_advantage_v1.txt": {
+      "sha256": "a047ff8c8a35f3139b9ed2570f9b70e7117a6450f3d74382410b61e1c29da7fc"
+    },
+    "slurp_stage3_advantage_v2.txt": {
+      "sha256": "663ca3da0569511e901d961d439024f7df303fc8ab00c3d94432d06db17d31b9"
     },
     "slurp_top3_closed_joint_slots_v1.txt": {
       "sha256": "db7168bf4adab7ece0616add41ffa98809f7f1508c1f9069ba2327229dd01dee"
