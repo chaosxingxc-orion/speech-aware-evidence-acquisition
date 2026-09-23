@@ -24,8 +24,8 @@
           {
             "kind": "preparation",
             "reason": "Depends on the generation cell's own release requirement above.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1/phase-supply-v1.json",
-            "sha256": "a82db4aa314b8998dd58b8caf8b0ac25ea17f79dc8b2aa4226ab9f26cabcb93d"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1/phase-supply-v2.json",
+            "sha256": "3b41fff110a2864df7fad8a19577f4e1b9e6c5fcabc667976ff856d7cd77f08f"
           }
         ],
         "state": "ready"
