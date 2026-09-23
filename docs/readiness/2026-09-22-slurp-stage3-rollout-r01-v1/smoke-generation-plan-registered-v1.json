@@ -2,7 +2,7 @@
   "cell": "slurp-native-stage3-rollout-r01-smoke-4-v1",
   "composed_config_hash": "b0e6ae457676f994111c12341a02eaadc13b96cb92bebef72d690dfe8c3d93ba",
   "execution_plan": {
-    "attempt_id": "attempt-slurp-native-stage3-rollout-r01-smoke-4-generation-v1",
+    "attempt_id": "attempt-slurp-native-stage3-rollout-r01-smoke-4-generation-recovery-v1",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 1.0,

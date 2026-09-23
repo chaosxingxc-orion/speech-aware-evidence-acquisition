@@ -60,7 +60,7 @@
       "split_identity_hash": "2ece5e51ff781fdec89bef8e7448d8ba88249030d3c8a6478dba5e7c1e621dac"
     },
     "smoke": {
-      "attempt_id": "attempt-slurp-native-stage3-rollout-r01-smoke-4-generation-v1",
+      "attempt_id": "attempt-slurp-native-stage3-rollout-r01-smoke-4-generation-recovery-v1",
       "baseline_fragment": "configs/baseline/slurp-native-stage3-rollout-smoke-4-baseline-v1.json",
       "cell": "slurp-native-stage3-rollout-r01-smoke-4-v1",
       "composed_config_hash": "b0e6ae457676f994111c12341a02eaadc13b96cb92bebef72d690dfe8c3d93ba",

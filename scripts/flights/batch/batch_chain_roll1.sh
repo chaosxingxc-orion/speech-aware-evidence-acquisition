@@ -20,7 +20,7 @@ steps=[{"order":1,"short":"roll1","kind":"cell",
         "campaign_plan":"configs/campaign/slurp-native-stage3-rollout-r01-v1.json",
         "run_id":"SAEA-SLURP-STAGE3-ROLLOUT-R01-V1","fit_run_id":"SAEA-SLURP-STAGE3-ROLLOUT-R01-FIT-V1",
         "gen_attempt_id":"attempt-slurp-native-stage3-rollout-r01-generation-v1",
-        "smoke_run_id":"SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-V1","smoke_attempt_id":"attempt-slurp-native-stage3-rollout-r01-smoke-4-generation-v1",
+        "smoke_run_id":"SAEA-SLURP-STAGE3-ROLLOUT-R01-SMOKE-4-V1","smoke_attempt_id":"attempt-slurp-native-stage3-rollout-r01-smoke-4-generation-recovery-v1",
         "expected_rows":800,"contacts_per_row":8,"ceiling_per_row":19,"notool":True,"owner":"root-slurp-native-stage3-rollout-r01-v1"}]
 json.dump(steps, open("/home/chao/batch-queue.json","w"), indent=1)
 PY
