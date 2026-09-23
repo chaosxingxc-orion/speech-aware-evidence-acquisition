@@ -69,7 +69,7 @@
   "preserve_wire_responses": true,
   "purpose": "Cell ROLL-1 (S3-2): produce five custodied Solver samples per row of the S3-1 construction roster for S3-3 (score on copies, best/worst pair selection) and S3-4 (the semantic-advantage contact). No admission verdict is read from this cell (readiness held; no gating decision rule).",
   "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
-  "split_id": "SLURP-STAGE3-CONSTRUCTION-R01",
+  "split_id": "STAGE3-CONSTRUCTION-R01",
   "stage3_algorithm": {
     "id": "shared-rollout",
     "operators_used": [
