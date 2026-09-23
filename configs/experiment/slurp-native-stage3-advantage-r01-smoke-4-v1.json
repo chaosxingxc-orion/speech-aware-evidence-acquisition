@@ -1,0 +1,107 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-advantage-r01-smoke-4-v1-generation",
+      "baseline_fragment": "slurp-native-stage3-advantage-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-advantage-r01-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Four-row form smoke of Stage-3 S3-4 / S3-4s cell ADV-1 (docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md sections S3-4 and S3-4s, owner decision 106), REGISTERED FOR FLIGHT 2026-09-23 beside the arm in the same package (docs/readiness/2026-09-22-slurp-stage3-advantage-r01-v1/README.md, campaign plan configs/campaign/slurp-native-stage3-advantage-r01-v1.json, four unconsumed exposure-ledger rows). The program rule is that every NEW module form flies a four-row smoke before its full cell (study CLAUDE.md, owner 2026-09-03), and phase-stage3-advantage-v2 with the stage3-advantage-statement-v2 four-line block form has never flown. READINESS HELD: the one requirement below is S3-3's pairs.json, which is SATISFIED (cell ROLL-1 sealed and scripts/analysis/stage3_rollout_score.py ran on the seal) and pinned by hash here and in the baseline fragment's advantage_pairs block. NO DECISION REQUIREMENT IS REGISTERED HERE ON PURPOSE (the ROLL-1 precedent): core.flight.repin._upsert_decision_requirement inserts it at the readiness flip, and a placeholder decision entry without an expected_decision_id would be left behind beside it and refuse the campaign at load (core.flight.campaign.declared_readiness). Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "S3-3's pairs.json, which this smoke's four rows are selected out of and which the per-row instruction renders its trajectory block from. core.flight.campaign.declared_readiness resolves every readiness requirement BENEATH THE DATA ROOT, so this relpath is data-root relative. The two roster receipts (the disagreeing parent and this smoke's own four rows) are NOT readiness requirements -- they are repository artifacts, not data-root ones -- and are pinned by hash in configs/baseline/slurp-native-stage3-advantage-smoke-4-baseline-v1.json preparation_source_receipts, the ROLL-1 precedent.",
+            "relpath": "analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1/pairs.json",
+            "sha256": "d66cd80104e2ec9161057a8e4f587dac981e701f347c2fce3c5dce40cba6ef80"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-ADVANTAGE-R01-SMOKE-4-V1"
+    },
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-advantage-r01-smoke-4-v1-fit",
+      "baseline_fragment": "slurp-native-stage3-advantage-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-advantage-r01-smoke-4-fit-v1",
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "The tokenizer-capacity fit pass for the four-row smoke above (same four rows, same pinned advantage template and response format), required before the smoke's generation cell may open. Held on the same S3-3 dependency; fit_endpoint_calls_cap 12 = 4 contacts x (0 speech packets + 3 endpoints). Four-row form smoke of Stage-3 S3-4 / S3-4s cell ADV-1 (docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md sections S3-4 and S3-4s, owner decision 106), REGISTERED FOR FLIGHT 2026-09-23 beside the arm in the same package (docs/readiness/2026-09-22-slurp-stage3-advantage-r01-v1/README.md, campaign plan configs/campaign/slurp-native-stage3-advantage-r01-v1.json, four unconsumed exposure-ledger rows). The program rule is that every NEW module form flies a four-row smoke before its full cell (study CLAUDE.md, owner 2026-09-03), and phase-stage3-advantage-v2 with the stage3-advantage-statement-v2 four-line block form has never flown. READINESS HELD: the one requirement below is S3-3's pairs.json, which is SATISFIED (cell ROLL-1 sealed and scripts/analysis/stage3_rollout_score.py ran on the seal) and pinned by hash here and in the baseline fragment's advantage_pairs block. NO DECISION REQUIREMENT IS REGISTERED HERE ON PURPOSE (the ROLL-1 precedent): core.flight.repin._upsert_decision_requirement inserts it at the readiness flip, and a placeholder decision entry without an expected_decision_id would be left behind beside it and refuse the campaign at load (core.flight.campaign.declared_readiness). Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "S3-3's pairs.json, which this smoke's four rows are selected out of and which the per-row instruction renders its trajectory block from. core.flight.campaign.declared_readiness resolves every readiness requirement BENEATH THE DATA ROOT, so this relpath is data-root relative. The two roster receipts (the disagreeing parent and this smoke's own four rows) are NOT readiness requirements -- they are repository artifacts, not data-root ones -- and are pinned by hash in configs/baseline/slurp-native-stage3-advantage-smoke-4-baseline-v1.json preparation_source_receipts, the ROLL-1 precedent.",
+            "relpath": "analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1/pairs.json",
+            "sha256": "d66cd80104e2ec9161057a8e4f587dac981e701f347c2fce3c5dce40cba6ef80"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-ADVANTAGE-R01-SMOKE-4-FIT-V1"
+    }
+  ],
+  "date": "2026-09-23",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 4,
+    "planned_speech_audio_seconds": 0,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-ADVANTAGE-R01-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact; no retry. A failed smoke STOPS cell ADV-1 and the 225-row arm does not open. This registration pre-authorises no recovery; a root-diagnosed recovery re-registration is a separate act. A partial manifest is never read.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 12,
+    "generation_calls_cap": 4,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 0
+  },
+  "fragment_kind": "saea-slurp-native-stage3-advantage-r01-smoke-4-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+    "decision_population": "The FIRST FOUR rows, in the parent receipt's own order (ascending sample_id), of the disagreeing-row construction roster docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-v1.json (225 rows, split identity 7c603857503faacbc40999d0dd939202ac141ba50aac3fb5e3594542931c46d7). A pure selection for a structural form smoke: no quality-based selection, no score read and no separate draw. Because construction-advantage-text is a CONSTRUCTION-VISIBLE arm, the four rows carry their own committed roster_role='construction' receipt docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-smoke-4-v1.json, and split_id / split_identity_hash below are that receipt's.",
+    "split_identity_hash": "8cbdb0acece69a74145685ab1b6452d494ac86a82b6b18b260cec66d36264762"
+  },
+  "purpose": "Four-row form smoke of Stage-3 S3-4 as amended by S3-4s (owner decision 106): prove the contact FORM of cell ADV-1 -- one phase-stage3-advantage-v2 contact per row, the system and per-row templates rendered from S3-3's trajectory block plus the row's own construction gold, the answer read by rails.stage3_advantage.parse_advantage_statements_v2 into one to three NODE / DELTA-KIND / TARGET / STATEMENT blocks with illegal blocks retained and counted -- before the 225-row arm opens. STRUCTURAL EVIDENCE ONLY: no advantage statement produced here enters S3-5's curation input, no scorer runs, and no answer to any evaluated row is produced or read.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "STAGE3-ADVANTAGE-R01C-DISAGREEING-SMOKE-4-V1",
+  "stage3_algorithm": {
+    "id": "tfgrpo-semantic-advantage-v1",
+    "operators_used": [
+      "credit_assignment"
+    ],
+    "note": "The four-row form smoke of ADV-1: the same Training-Free GRPO group-relative semantic advantage operator on four rows, producing no store update, no context application and no curated delta. Its rollout source is cell ROLL-1 (algorithm shared-rollout, run SAEA-SLURP-STAGE3-ROLLOUT-R01-V1, attempt attempt-slurp-native-stage3-rollout-r01-generation-v1) on the clean construction subset R01C."
+  },
+  "generation_budget": {
+    "cap": 4,
+    "definition": "4 = 4 rows x 1, where 1 is the advantage program's OWN per-row ceiling as configs/policy/phase-stage3-advantage-v2.json declares it (one phase named 'advantage', max_contacts 1, stop_rule always-run-full-program). The arm's own ceiling is 225 = 225 disagreeing rows x 1. fit_endpoint_calls_cap 12 = 4 x (0 speech packets + 3 endpoints): this arm is TEXT ONLY (owner decision 82 and the D2 invariant, see the baseline fragment's modality_note), so planned_speech_audio_seconds and repeated_speech_audio_seconds_cap are 0 and no speech packet and no mmproj forward is ever opened. native_task_contract_calls_cap = 0: the one-phase advantage program carries no phase_tools. planned_gpu_hours 1.0 is the registered ceiling for the smoke plus its fit pass; the expected spend is minutes. Ceilings are bounds, never targets, and budgets are RUN-CUMULATIVE across every attempt of a run id.",
+    "target": 4
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+      "ids": [
+        "slurp:train:000282:audio-1502114155",
+        "slurp:train:000308:audio-1488905475",
+        "slurp:train:000309:audio-1490018206",
+        "slurp:train:000395:audio-1495378207"
+      ]
+    }
+  ]
+}
