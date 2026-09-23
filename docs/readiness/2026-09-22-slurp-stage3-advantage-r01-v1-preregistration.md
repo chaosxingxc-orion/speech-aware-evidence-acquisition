@@ -233,7 +233,7 @@ registered plans. Two files that must stay in sync and prove nothing are a defec
 
 | run id | cell | plan | composed config | protocol hash | split identity |
 | --- | --- | --- | --- | --- | --- |
-| `SAEA-SLURP-STAGE3-ADVANTAGE-R01-V1` | `...-r01-v1` | `generation-plan-registered-v1.json` | `9900ae9d79ee4c3fff5add78d455a84560242c9d1eab98e5814a82262bb86b88` | `7cbbf1590a94596de231c57ed460c93f546365d3a8bb76721346e8e7d0e107fd` | `7c603857503faacbc40999d0dd939202ac141ba50aac3fb5e3594542931c46d7` |
+| `SAEA-SLURP-STAGE3-ADVANTAGE-R01-V1` | `...-r01-v1` | `generation-plan-registered-v1.json` | `6c274af569483f5414fd43be0b67e3c35a5521a34f8d7b64ee4abb0db5c31af6` | `40abcefd1d496e0c701bf6239d73b9c271087893527eb09a0b62ff45630415de` | `7c603857503faacbc40999d0dd939202ac141ba50aac3fb5e3594542931c46d7` |
 | `SAEA-SLURP-STAGE3-ADVANTAGE-R01-FIT-V1` | `...-r01-fit-v1` | `fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-ADVANTAGE-R01-SMOKE-4-V1` | `...-r01-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `8798db4e3a92bc312d14ef8fa94121ee3d0682c9e39c3ee5519970b1247be5da` | `bd98fbebf379711bb4197bab48797e1c417bee62e5501bf66d79627e1d65b82f` | `8cbdb0acece69a74145685ab1b6452d494ac86a82b6b18b260cec66d36264762` |
 | `SAEA-SLURP-STAGE3-ADVANTAGE-R01-SMOKE-4-FIT-V1` | `...-r01-smoke-4-fit-v1` | `smoke-fit-plan-registered-v1.json` | same | same | same |
