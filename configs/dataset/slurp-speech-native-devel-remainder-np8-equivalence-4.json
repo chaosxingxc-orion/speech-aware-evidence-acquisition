@@ -1,0 +1,51 @@
+{
+  "audio_seconds_total": 11.90275,
+  "carrier_lock_key": "slurp",
+  "count": 4,
+  "d1_manifest_sha256": null,
+  "d1_media_supplement": null,
+  "d1_media_supplement_sha256": null,
+  "items": [
+    {
+      "audio_seconds": 3.1995625,
+      "audio_sha256": "1158fce48b28aa372a57cc71e58aa6d9fec8fcff280c817b5792ad54f4e46472",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1498567827.flac",
+      "packet_id": "slurp/devel/003620/audio-1498567827",
+      "sample_id": "slurp:devel:003620:audio-1498567827",
+      "sample_rate_hz": 16000
+    },
+    {
+      "audio_seconds": 1.5998125,
+      "audio_sha256": "c89730435b1a58020be9428d403a49f6b2a87d3e7e741f8bcdedcb51e5af9621",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1494548673.flac",
+      "packet_id": "slurp/devel/010388/audio-1494548673",
+      "sample_id": "slurp:devel:010388:audio-1494548673",
+      "sample_rate_hz": 16000
+    },
+    {
+      "audio_seconds": 2.368,
+      "audio_sha256": "835ce4e60aecf697bf6eebbadf087a8bffc0a298cf417d174c746c4aab8999ac",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434532898-headset.flac",
+      "packet_id": "slurp/devel/014069/audio-1434532898-headset",
+      "sample_id": "slurp:devel:014069:audio-1434532898-headset",
+      "sample_rate_hz": 16000
+    },
+    {
+      "audio_seconds": 4.735375,
+      "audio_sha256": "132aad17983f756297dcc346454c1dadf5c17c4f17499b335def1f59a292b8f3",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502200664.flac",
+      "packet_id": "slurp/devel/014872/audio-1502200664",
+      "sample_id": "slurp:devel:014872:audio-1502200664",
+      "sample_rate_hz": 16000
+    }
+  ],
+  "runtime_view_sha256": "86397e8711fdc6b20d70fc4d9abca62a526c8639c29a65563ffd7fd1a4d30ecd",
+  "schema": "saea-speech-native-runtime-view-v1",
+  "seed": 20260923,
+  "source_binding_sha256": "58d7525eac4358a3f82f5d69f104c271f9b05bc1a0b66f2fc9863a22d5927c5c",
+  "split_identity_hash": "b33dab5f5dcf2cae7d17434e803c39ff61efbdf2e14ce2c1b7ca0b3ff168ec7c",
+  "split_name": "DEVEL-REMAINDER-NP8-EQUIVALENCE-4",
+  "split_role": "dev",
+  "status": "MODEL-FREE, LABEL-FREE ENGINEERING INPUT; NOT AN EXPOSURE REGISTRATION",
+  "study": "speech-aware-evidence-acquisition"
+}

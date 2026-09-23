@@ -1,0 +1,37 @@
+{
+  "binding": {
+    "roster": "docs/receipts/rosters/slurp-devel-remainder-np8-equivalence-4-v1.json",
+    "runtime_view": "configs/dataset/slurp-speech-native-devel-remainder-np8-equivalence-4.json",
+    "runtime_view_sha256": "86397e8711fdc6b20d70fc4d9abca62a526c8639c29a65563ffd7fd1a4d30ecd",
+    "split_identity_hash": "b33dab5f5dcf2cae7d17434e803c39ff61efbdf2e14ce2c1b7ca0b3ff168ec7c"
+  },
+  "generator": "scripts/build_slurp_runtime_view.py",
+  "plan_sha256": "6e2a0f2f0c652f9a6a1b714903b4b6185510f81f10a1590060919b139f3c751c",
+  "rows": 4,
+  "rows_already_promoted_under_the_resident_root": 4,
+  "rows_needing_encode": 0,
+  "rows_promotable_with_zero_contacts": 4,
+  "schema": "saea-slurp-speech-native-packet-plan-v1",
+  "state": "PREREQUISITES COMPLETE; ENCODE AND PROMOTE NOT RUN",
+  "study": "speech-aware-evidence-acquisition",
+  "target_packet_root": {
+    "path": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+    "write_mode": "ADDITIVE ONLY: new per-row packet directories plus one new promotion receipt. No file the resident session already serves is read-modified-written, and no existing promotion receipt is touched; an already-promoted packet id is re-verified byte for byte (item E40 makes an encoder-receipt-only difference SHARED rather than a refusal)."
+  },
+  "what_remains": [
+    {
+      "contacts": 4,
+      "detail": "CPU llama-server sidecar on port 8081 (-ngl 0 --no-mmproj-offload, receipts/runtime-q4km-preprocess.json), one contact per roster row at max_tokens 1, under its own session and stop receipts. GPU stays free.",
+      "name": "ENCODE",
+      "speech_seconds": 11.903,
+      "step": 1
+    },
+    {
+      "contacts": 0,
+      "detail": "core.model.speech_features.materialize_legacy_cached_speech_feature_packets over the runtime view's packet ids, workers <= 8, writing the roster's own promotion receipt beside the existing per-set receipts.",
+      "name": "PROMOTE",
+      "step": 2
+    }
+  ],
+  "why_not_run": "A speech packet in this repository is an ENCODER product. The pipeline (scripts/slurp_evo_fold_preprocess.py, precedent SAEA-SN-DEV2000-ADDED-PREPROCESS) first drives a CPU llama-server sidecar carrying the decoder and the bf16 mmproj with one contact per row at max_tokens 1 to warm the legacy feature cache, and only then promotes the warm entries. That first phase is a model contact under a structured ExecutionPlan, which a model-free mission may not make. Everything that does not need the encoder is done and committed."
+}
