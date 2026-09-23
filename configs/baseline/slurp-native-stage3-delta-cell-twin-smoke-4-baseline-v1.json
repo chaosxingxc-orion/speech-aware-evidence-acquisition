@@ -106,12 +106,12 @@
         }
       },
       "release": {
-        "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1/release.json",
-        "sha256": "a58a370ce9275391c74ae582704ae04c45ad886f6274bff6edd0256c5448f015"
+        "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1r/release.json",
+        "sha256": "7c0dc8979e8b9f1ae66105049168b310d5136c99983f99a98885d01e27d84219"
       },
       "snapshot": {
-        "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1/snapshot.json",
-        "sha256": "d393bbbb7db698a881c160ce8a77aea68af9964ab68c10fe2b7c8781b472c5a4"
+        "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1r/snapshot.json",
+        "sha256": "5aee8d1df90430272d7eedbafb2ab4fe032178a7b681b692b8234ecb2e56fb98"
       },
       "store_role": "stage3-deltas"
     },

@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-delta-cell-smoke-4-v1",
-  "composed_config_hash": "12bed8fa763ac848228c6eabc72690078ad57b895ce5cc169fe4b036616bc72d",
+  "composed_config_hash": "9c66586d664bfecdc9621104a09ef92cb71d94b981eaef7267fe8e7e990bf2c0",
   "decision_rule": {
     "ADMITTED": "the CI95 lower bound of the paired official pooled SLU-F1 delta (CELL-1 minus PLAN) is ABOVE ZERO and the CI95 lower bound of the paired intent delta exceeds -0.9943 (owner decision 99, the TRAIN lock: a gain is proven, not merely non-inferior)",
     "DELTA_CONSUMPTION": "item S3-4s: the per-node delta-consumption table -- how many deltas each node was supplied per row, which value_ids were supplied, and the saves and harms on the rows that received each one -- is a PRIMARY deliverable, reported whatever the verdict, and is what decides which deltas survive into store version 2.",
@@ -20,7 +20,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 176,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "0ae6522116104f43df9ddf3b1940dc3fa63fcd0cab5efb328a46d7cdc7983d72",
+    "protocol_hash": "ae6bcef8499212e76ff1f2d0ef712b9bb902d3e865244c45c8ca4be5c4de1f39",
     "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -43,7 +43,7 @@
   },
   "modules": {
     "base": "the locked v2.0 SLURP default plan, exactly as the sealed PLAN arm flew it (configs/baseline/slurp-native-default-plan-lock-baseline-v1.json): the complete native episode with the review loop on, the shared controller and FlightRuntime path, no phase_tools on any role, Solver-only answer authority, the three-candidate contract, the max512 np4 resident geometry, the slot-contracts v2 / intent-boundaries v1 / train-exemplars k=20 stores, saea-deliver-normalise-v3 at delivery, and items E13 and E22 declared. Nothing of it moves.",
-    "factor": "knowledge_stores.stage3-deltas added to the locked v2.0 plan fragment (configs/baseline/slurp-native-default-plan-lock-baseline-v1.json) and nothing else: the released stage3-deltas store (S3-5's 379 curated experiential deltas over the clean construction subset R01C) supplied per node through context_supply -- Perception unconditional cap 4 (provider stage3-delta-unconditional-v1), Solver cap 8, Reviewer cap 4 and Planner cap 4 (provider stage3-delta-candidate-bound-v1, each bound to the row's own Perception candidate intents), every route node_target-filtered and prior_score-ranked. The config diff against the locked plan is exactly that one store key plus the per-flight bookkeeping keys this cell prepares under its own run id; proof tests/unit/test_stage3_delta_cell_fragment.py.",
+    "factor": "knowledge_stores.stage3-deltas added to the locked v2.0 plan fragment (configs/baseline/slurp-native-default-plan-lock-baseline-v1.json) and nothing else: the released stage3-deltas store (S3-5's 379 curated experiential deltas over the clean construction subset R01C, store revision v1r: every value routes on the construction gold intent it was learned on rather than on its TARGET, so all 379 are reachable on every node) supplied per node through context_supply -- Perception unconditional cap 4 (provider stage3-delta-unconditional-v1), Solver cap 8, Reviewer cap 4 and Planner cap 4 (provider stage3-delta-candidate-bound-v1, each bound to the row's own Perception candidate intents), every route node_target-filtered and prior_score-ranked. The config diff against the locked plan is exactly that one store key plus the per-flight bookkeeping keys this cell prepares under its own run id; proof tests/unit/test_stage3_delta_cell_fragment.py.",
     "per_role_rendering_held": "native_episode.tool_schema_rendering is NOT armed.",
     "purpose": "Stage-3 S3-6 CELL-1 as amended by S3-4s (owner decisions 83, 99, 101, 106): the locked v2.0 plan plus the NODE-TARGETED stage3-deltas store as ONE factor on TRAIN Fold A, comparator the sealed PLAN arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943), twin arm as the form control. PRIMARY DELIVERABLES: (1) the official paired read against the sealed PLAN arm under the decision-99 TRAIN lock rule; (2) the per-scenario effect x prefilled-token frontier table in both natural-mixture and equal-stratum weightings, deciding which deltas survive into version 2; (3) the per-node delta-consumption table (S3-4s): which deltas were supplied, per scenario and per node, and the saves and harms on the rows that received each delta; (4) the twin contrast, which decides attribution, never admission.",
     "second_declared_key_not_a_factor": "native_episode.react_exhaustion_policy = continue-without-answer (item E22) and finite_completion_policy = deliver-latest-or-abstain (item E13): failure-mode declarations the locked plan already carries, required of every live SLURP native cell by scripts/checks/finite_completion_policy_check.py. Neither renders a request byte.",
@@ -59,7 +59,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/protocol-registered-v1.json",
-    "sha256": "19e3c1c07f837ad7a3f254a63768f44beb041c4d6a0c1d52a3f3f98325e08ae5"
+    "sha256": "a57717c130b1636fea555cb8dc64b9cfc9bbafb666fea749f182d476996876b4"
   },
   "purpose": "Stage-3 S3-6 CELL-1 as amended by S3-4s (owner decisions 83, 99, 101, 106): the locked v2.0 plan plus the NODE-TARGETED stage3-deltas store as ONE factor on TRAIN Fold A, comparator the sealed PLAN arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943), twin arm as the form control. PRIMARY DELIVERABLES: (1) the official paired read against the sealed PLAN arm under the decision-99 TRAIN lock rule; (2) the per-scenario effect x prefilled-token frontier table in both natural-mixture and equal-stratum weightings, deciding which deltas survive into version 2; (3) the per-node delta-consumption table (S3-4s): which deltas were supplied, per scenario and per node, and the saves and harms on the rows that received each delta; (4) the twin contrast, which decides attribution, never admission.",
   "quality_read_gate": "no task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist, and not before the registered STOP condition passes (the sealed PLAN and PLANr aggregates reproduce to the hundredth). The twin is read only after the arm has sealed and been read. The efficiency and delta-consumption reads may proceed from the sealed receipts, trace and server log as soon as the manifest seals, because they touch no answer, reference or quality field.",

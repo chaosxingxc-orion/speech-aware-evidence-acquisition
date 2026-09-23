@@ -10,7 +10,11 @@ flight, no readiness flip, no decision receipt, no exposure-row countersignature
 
 Cell ROLL-1 sealed 625 construction rows; S3-3 found 225 of them disagreeing; cell ADV-1 asked the frozen core,
 once per disagreeing row, what each responsible node should do differently; S3-5 curated those statements into
-the append-only delta store `stage3-deltas-v1` (379 rows) and its derangement twin. CELL-1 is the only cell of
+the append-only delta store `stage3-deltas-v1r` (379 rows) and its derangement twin. (Store **revision v1r**, 2026-09-23: the same 379
+statements re-attached to the construction gold intent each was learned on. Version 1 attached each
+statement's `TARGET`, which is a **slot type** on the 147 slot-contract rows, so a candidate-bound route
+could reach only 121 of 379 values and only 11 of the Solver's 151; it is superseded before any flight
+and was never consumed -- `stage3-deltas-v1-superseded-v1.md` in this package.) CELL-1 is the only cell of
 the Training-Free GRPO loop that carries a **gating** claim (owner decision 99 order): it applies the store to
 the locked v2.0 plan and asks whether the loop bought anything.
 
@@ -20,8 +24,8 @@ the locked v2.0 plan and asks whether the loop bought anything.
 | --- | --- |
 | base | the locked v2.0 plan, `configs/baseline/slurp-native-default-plan-lock-baseline-v1.json`, exactly as the sealed PLAN arm flew it (official 63.6304 / 82.2222) |
 | factor | `knowledge_stores.stage3-deltas` and nothing else: the released store supplied per node through `context_supply` -- Perception **unconditional** cap 4 (`stage3-delta-unconditional-v1`), Solver cap 8, Reviewer cap 4, Planner cap 4 (`stage3-delta-candidate-bound-v1`, each bound to the row's own Perception candidate intents); every route `node_target`-filtered and `prior_score`-ranked |
-| store | `knowledge/slurp/semantic/stage3-deltas-v1/` -- release file `ec9da3e2...`, snapshot content hash `1d55f441...`; 379 values (perception 119 / solver 151 / reviewer 95 / planner 14), 97 distinct facets, 223 source sample ids, mean statement 84.0 characters, longest 126 |
-| twin | `knowledge/slurp/semantic/stage3-deltas-twin-v1/` -- release file `a58a370c...`, snapshot content hash `d393bbbb...`; the same 379 statements, the same node distribution, the same token count, facet attachment and unconditional TARGET fields deranged under seed 20260922 (zero fixed points) |
+| store | `knowledge/slurp/semantic/stage3-deltas-v1r/` -- release file `02505ba2...`, snapshot content hash `e2552666...`; 379 values (perception 119 / solver 151 / reviewer 95 / planner 14), **39 distinct facets, every one a legal intent id** (402 facet entries: 357 rows carry one, 21 carry two, 1 carries three), 223 source sample ids, mean statement 84.0 characters, longest 126 |
+| twin | `knowledge/slurp/semantic/stage3-deltas-twin-v1r/` -- release file `7c0dc897...`, snapshot content hash `5aee8d1d...`; the same 379 statements, the same node distribution, the same token count (5,740) and the same per-row facet-count multiset, facet attachment and unconditional TARGET fields deranged under seed 20260922 as **whole attachment tuples**; 16 of 379 rows landed on an equal facet set by arithmetic (39 distinct intents over 379 rows) and are reported, not refused |
 | population | TRAIN Fold A, 1,080 rows, split identity `61b0f062...5398b6`; the smokes read the first four rows, split identity `4e3413fe...b969cb` (cell PLAN's own smoke population) |
 | comparator | the sealed PLAN arm `SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1`, attempt `attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1`, **never re-flown** |
 | margins | the plan's own null (PLAN vs PLANr): **h_SLU 1.2485, h_intent 0.9943** |
@@ -227,29 +231,42 @@ Each of these was measured, not assumed; the refusal is quoted in the report tha
    smoke's FIT identity is a spend identity rather than a flyable cell. Each has its own registered plan document
    and its own unconsumed exposure row, so no endpoint spend can land unregistered.
 7. **The four baselines' `knowledge_stores.stage3-deltas.snapshot.sha256` was corrected** from the `snapshot.json`
-   **file** digest to the snapshot's **content** hash: `1d55f441...` for the store and `d393bbbb...` for the twin.
+   **file** digest to the snapshot's **content** hash (for the version-1 release then in force: `1d55f441...` for
+   the store and `d393bbbb...` for the twin).
    `rails.knowledge_stores` checks both `KnowledgeSnapshot.content_hash() == snapshot_pin["sha256"]` and
    `release["snapshot_sha256"] == snapshot_pin["sha256"]` and otherwise refuses with
    `knowledge store stage3-deltas snapshot SHA-256 mismatch`. S3-5's `cell1-fill-values.json` supplied the file
    digest (`3a770de1...` / `95c3b2aa...`) where the content hash belongs; every other store of the locked plan pins
    the content hash, which is what made the convention checkable. The **release** pin is unchanged -- it *is* the
    `release.json` file digest, and the readiness requirements that pin it were already correct.
+8. **Store revision v1r (2026-09-23)** replaced the facet rule, and nothing else. The released store was mostly
+   **unreachable**: a candidate-bound route (`rails/knowledge_stores.py::_stage3_delta_local_supply` ->
+   `rails/stage3_delta_supply.py::select_stage3_delta_values`) selects a value only when one of its
+   `associated_facet_ids` **equals** one of the row's Perception candidate **intent** ids, and S3-5's curator
+   wrote `associated_facet_ids = [TARGET]` -- a **slot type** on the 147 slot-contract rows. Measured against
+   the 60 registered candidate intents: solver 11 of 151, reviewer 24 of 95, planner 6 of 14, **121 of 379**
+   overall. `scripts/build_slurp_stage3_delta_store.py` gained `--facet-rule`; the new schema-v2 default
+   `source-intent` attaches the construction gold intent of every source row (owner decision 82) plus `TARGET`
+   when `TARGET` is itself a legal intent. Same statements, same counts, same routes, same caps, same twin
+   seed; **379 of 379 reachable on every node, arm and twin**. `--facet-rule target-only` reproduces version 1
+   byte for byte (`3d2bc069...` / `c548b8df...`), version 1 is untouched on disk, and it was never consumed.
+   Full statement: `stage3-deltas-v1-superseded-v1.md` in this package.
 
 ## 8. Registered hashes
 
 | run id | cell | plan | composed config | protocol hash | split identity |
 | --- | --- | --- | --- | --- | --- |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1` | `...-r01-v1` | `generation-plan-registered-v1.json` | `ccfe79f1347d77868eaa56b8d540ab25645a4b13e5d30aa8b3ea51445aed121f` | `6744d17f9a67eff016db6a283c8cdfca77f12abdf4a1615825fbeb6badae91ed` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1` | `...-r01-v1` | `generation-plan-registered-v1.json` | `063aef5c488cf90346c9ee4eecb2ebb9002057da65fec713486417aa03feeab1` | `cf4087b84e83bc5bb8604c952e202acf350ecf1eda9dfe1d7bd5388b6e5003c6` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1` | `...-r01-fit-v1` | `fit-plan-registered-v1.json` | same | same | same |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1` | `...-r01-twin-v1` | `twin-generation-plan-registered-v1.json` | `56542e2490786e21376daeae0c6aafa4162db8f7f529a3219409471bd63f7ea1` | `7f1e2bea19b4e73206c5cf02339fa80f9d9d803c48d2ed231d0a184c6314ea48` | same |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1` | `...-r01-twin-v1` | `twin-generation-plan-registered-v1.json` | `43f56a1020ec62e47a43c374d58d5cc2f779c115f1be99baffbbeab9b3e9380f` | `ac862b793a2f0844a6b351ae4b3b7cb9b29ea75797569035cd5a3c291d85922d` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-FIT-V1` | `...-r01-twin-fit-v1` | `twin-fit-plan-registered-v1.json` | same | same | same |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1` | `...-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `12bed8fa763ac848228c6eabc72690078ad57b895ce5cc169fe4b036616bc72d` | `0ae6522116104f43df9ddf3b1940dc3fa63fcd0cab5efb328a46d7cdc7983d72` | `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1` | `...-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `9c66586d664bfecdc9621104a09ef92cb71d94b981eaef7267fe8e7e990bf2c0` | `ae6bcef8499212e76ff1f2d0ef712b9bb902d3e865244c45c8ca4be5c4de1f39` | `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-FIT-V1` | (spend identity) | `smoke-fit-plan-registered-v1.json` | same | same | same |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1` | `...-smoke-4-twin-v1` | `twin-smoke-generation-plan-registered-v1.json` | `31b8c13775a20acd438330df7aad108e42d139b1eb6151e91abb801d7f6530d4` | `c2e310a3eec874afa339c447ce51b71b7900dae5ad12b6085a2d8a1f1a95f386` | same |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1` | `...-smoke-4-twin-v1` | `twin-smoke-generation-plan-registered-v1.json` | `f98bb7a04d541b82d84d18313b0bb076c1a0e2bc03447ae79df1186f7cffe27f` | `9e3a553d39f23588273d520b084792627f46378a534e08d4e5e839019ec98f27` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-FIT-V1` | (spend identity) | `twin-smoke-fit-plan-registered-v1.json` | same | same | same |
 
 Protocol document `protocol-registered-v1.json` sha256
-`19e3c1c07f837ad7a3f254a63768f44beb041c4d6a0c1d52a3f3f98325e08ae5`.
+`a57717c130b1636fea555cb8dc64b9cfc9bbafb666fea749f182d476996876b4`.
 
 `core.flight.cli check` exits **0 on all six cells** on this committed tree, with the measured `config_hash` and
 `protocol_hash` equal to the values above, `prepared_artifacts_ok: true` (no pin yet: the flip mints each cell's

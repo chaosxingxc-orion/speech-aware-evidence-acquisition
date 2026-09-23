@@ -109,6 +109,10 @@ placeholder entry without an `expected_decision_id` left beside it would refuse 
 
 ## What is left for root
 
+**Historical (the version-1 pass).** Every `PENDING_` token below was filled long ago; the store now
+pinned is revision **v1r** and the fill map's paths name version 1. See "S3-5 revision v1r" at the
+end of this README for what is actually in force, and `stage3-deltas-v1-superseded-v1.md` for why.
+
 The fill map is `docs/readiness/2026-09-22-slurp-stage3-advantage-r01-v1/fill-after-roll1-seal.json`
 (one file for both Stage-3 packages): every remaining token, its exact JSON path, the artefact that
 produces it and the field to copy.
@@ -138,8 +142,17 @@ and prints every mutating command line; `DELTAS_DRY=0` performs them.
 
 ```
 MSYS_NO_PATHCONV=1 wsl -d Ubuntu-24.04 DELTAS_DRY=0 REPO=<checkout> \
+  DELTA_VERSION_TAG=v1r DELTA_FROM_VERSION_TAG=v1 \
   bash scripts/flights/batch/adv1_to_deltas.sh
 ```
+
+`DELTA_VERSION_TAG` (default `v1`) names the store version this pass builds and parametrises every
+artifact, namespace and registration name below;
+`DELTA_FROM_VERSION_TAG` names the version the fragments currently pin. `DELTA_FACET_RULE` (default
+`source-intent`) chooses the facet rule. The transcript below is the **version-1** pass, kept because it
+names each step; at another tag every `-v1` in it becomes `-<tag>`, and two steps are added -- **R**, the
+supply-reach measurement, and, in **F**, the JSON-path re-point that replaces the substitution tool once no
+`PENDING_` token is left.
 
 which runs, in order:
 
@@ -358,10 +371,76 @@ exposure-ledger rows, and the runbooks `scripts/flights/batch/cell1_repin_{smoke
 
 **The store as released** (counts read model-free from the snapshot; no statement text): 379 values, node targets
 perception 119 / solver 151 / reviewer 95 / planner 14, delta kinds slot-contract 147 / intent-boundary 117 /
-reviewer-criterion 95 / planner-rule 13 / exemplar-note 5 / perception-hint 2, 97 distinct facets, 223 source
-sample ids, mean statement 84.0 characters, longest 126. The twin holds all of it except facet attachment.
+reviewer-criterion 95 / planner-rule 13 / exemplar-note 5 / perception-hint 2, 223 source sample ids, mean
+statement 84.0 characters, longest 126. The twin holds all of it except facet attachment. **Under store
+revision v1r (below) the facet count is 39, not the 97 this pass measured**; every other number here is
+unchanged.
 
 **Numbers a plan-based cell inherits**: 1,080 rows x the 11-contact program ceiling = 11,880 generation calls;
 47,520 FIT endpoints; 33,930 repeated speech seconds; 12.0 fit-inclusive GPU hours; 6,480 native task-contract
 calls; one official complete score per arm. Each four-row smoke: 44 / 176 / 117 / 1.0 / 24 / 0. Cell PLAN's own
 realised cost on this roster was 4,424 contacts, 8,353.2 prefilled tokens per row and 1.7579 GPU hours per 1,080.
+
+## S3-5 revision v1r: the facet rule (2026-09-23)
+
+Still **HELD**. Nothing in this section authorises a flight, a flip or an admission entry.
+
+The released `stage3-deltas-v1` store was **mostly unreachable**, which the CELL-1 registration
+measured and registered as an expectation (`supply_reach` above) rather than repaired. The
+coordinator ruled it a defect to fix before contact: flying a cell on an inert supply is the
+cell B9a-rec failure repeated on purpose.
+
+A candidate-bound route (`rails/knowledge_stores.py::_stage3_delta_local_supply` ->
+`rails/stage3_delta_supply.py::select_stage3_delta_values`) selects a value only when one of its
+`associated_facet_ids` **equals** one of the row's Perception candidate **intent** ids. S3-5's
+curator wrote `associated_facet_ids = [TARGET]`, and `TARGET` is a **slot type** on the 147
+slot-contract rows. Against the 60 registered candidate intents: solver **11 of 151**, reviewer
+24 of 95, planner 6 of 14, **121 of 379** overall.
+
+**The revision changes the facet rule and nothing else.**
+`scripts/build_slurp_stage3_delta_store.py --facet-rule source-intent` (the new schema-v2
+default) writes the ordered, de-duplicated union of the construction **gold intent id** of every
+source row (`--gold-intents`, owner decision 82 -- a routing key over the *construction*
+population only, exactly as `slot-contracts`, `intent-boundaries` and `train-exemplars` already
+carry TRAIN intent ids) and the bare `TARGET` when `TARGET` is itself a legal intent id
+(`--intent-vocabulary`). A slot type never becomes a facet. `--facet-rule target-only` keeps the
+pre-v1r rule and is proven byte-identical (`3d2bc069...` / `c548b8df...`).
+
+| | v1 | v1r |
+| --- | --- | --- |
+| values, node targets, delta kinds, source sample ids, statement lengths | unchanged | unchanged |
+| distinct facets | 97 (slot types, generic words) | **39, every one a legal intent id** |
+| facet entries per row | 379 x 1 | 357 x 1, 21 x 2, 1 x 3 (402 entries) |
+| reachable, solver | 11 of 151 | **151 of 151** |
+| reachable, reviewer / planner / perception | 24 / 6 / 80 | **95 / 14 / 119** |
+| reachable, total (arm and twin) | 121 of 379 | **379 of 379** |
+| twin token count | held | held (5,740) |
+| twin per-row facet-count multiset | n/a (all 1) | **held** |
+| twin value fixed points | 0 | 16 of 379 (arithmetic; 39 intents over 379 rows) |
+
+**The twin.** A row may now carry more than one facet, so both derangements move a row's whole
+attachment **as one unit** -- the entire `associated_facet_ids` tuple for the candidate-bound
+group, and for the unconditional group the donor's `TARGET` field together with the donor's whole
+tuple. A permutation of whole tuples preserves the multiset, so the token count and the new
+per-row facet-count multiset are held exactly; both are enforced in the builder and proven in
+`tests/unit/test_stage3_delta_twin_v2.py`. On a `target-only` document the donor's tuple *is*
+`[donor_target]`, so the v1 twin's bytes are unaffected.
+
+**The reach step.** `scripts/flights/batch/adv1_to_deltas_steps.py reach` is the model-free
+supply-reach measurement -- per node, the values carrying at least one facet inside the
+registered intent vocabulary, plus the per-intent facet histogram (counts and ids only). It
+reproduces the registered v1 figures exactly, and the runbook's new step **R** writes it into the
+release-pins document.
+
+**The runbook.** `DELTA_VERSION_TAG` (default `v1`) parametrises every artifact, namespace and
+registration name; `DELTA_FACET_RULE` / `DELTA_GOLD_INTENTS` / `DELTA_INTENT_CATALOG` pass
+through; step **F** re-points the fragments by JSON path once no `PENDING_` token is left.
+`cell1-values` now emits the snapshot's **content** hash (read from `release.json`, cross-checked
+against `snapshot.json`) where the fragment pin belongs, so commit `fb4d8915`'s defect cannot
+recur.
+
+Version 1's namespaces, prepared documents and release registrations are **untouched**; it is
+superseded in English by `stage3-deltas-v1-superseded-v1.md` in this package, which also carries
+every v1 and v1r digest side by side. Version 1 was never consumed: all eight exposure rows read
+`consumed = no`, readiness is `held` on all six cells, no decision receipt exists and nothing
+reached the batch queue.

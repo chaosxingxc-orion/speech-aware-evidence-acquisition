@@ -80,17 +80,18 @@
   },
   "delta_store": {
     "arm": {
-      "pin_note": "release.sha256 is the release.json FILE digest (rails.knowledge_stores._read_pinned hashes the bytes); snapshot.sha256 is the snapshot's CONTENT hash (KnowledgeSnapshot.content_hash(), equal to the release's own snapshot_sha256), never the snapshot.json file digest. The two are different values and the loader checks both identities, which is the defect this registration repaired -- S3-5's cell1-fill-values.json carried the snapshot FILE digest (3a770de1... / 95c3b2aa...) where the content hash (1d55f441... / d393bbbb...) belongs.",
-      "registration": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v1-release-registration.json",
+      "pin_note": "release.sha256 is the release.json FILE digest (rails.knowledge_stores._read_pinned hashes the bytes); snapshot.sha256 is the snapshot's CONTENT hash (KnowledgeSnapshot.content_hash(), equal to the release's own snapshot_sha256), never the snapshot.json file digest, which is recorded beside it as snapshot_file_sha256 and pins nothing. The loader checks both identities. S3-5's original cell1-fill-values.json supplied the file digest where the content hash belongs and every cell refused; adv1_to_deltas_steps.py cell1-values now reads the content hash out of release.json and cross-checks it against snapshot.json, so the two cannot be confused again.",
+      "registration": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v1r-release-registration.json",
       "release": {
-        "relpath": "knowledge/slurp/semantic/stage3-deltas-v1/release.json",
-        "sha256": "ec9da3e2b8ed842a73c13ea51f58a1f077c787777da2edad82a8234729777338"
+        "relpath": "knowledge/slurp/semantic/stage3-deltas-v1r/release.json",
+        "sha256": "02505ba2e548a008cc6c16ffda6f7b9bff505061863026a3d7e1396c26d6c2e0"
       },
       "snapshot": {
-        "relpath": "knowledge/slurp/semantic/stage3-deltas-v1/snapshot.json",
-        "sha256": "1d55f44122c741e0c17e5186cf6f17a3181a31bae0152dea95decd7a4b9fea10"
+        "relpath": "knowledge/slurp/semantic/stage3-deltas-v1r/snapshot.json",
+        "sha256": "e2552666ebe6dcd87e4239bfddb3a02d62e8965280b9f52c40acf9cbf4b2f27d"
       },
-      "snapshot_file_sha256": "3a770de1ecb752c27aa00942db9f5de2d94e8cbd7029ec358a3736a8a6dc1de7"
+      "snapshot_file_sha256": "cf6f7fa639c4b1a0e7e7bad0bf071a8672352a25160544431966d7922250e071",
+      "superseded": "store version 1 (knowledge/slurp/semantic/stage3-deltas-v1/) is superseded before any flight; see docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v1-superseded-v1.md"
     },
     "facts": {
       "content_chars_max": 126,
@@ -103,7 +104,16 @@
         "reviewer-criterion": 95,
         "slot-contract": 147
       },
-      "distinct_facets": 97,
+      "distinct_facets": 39,
+      "distinct_facets_v1_superseded": 97,
+      "facet_entries": 402,
+      "facet_rule": "source-intent",
+      "facet_rule_note": "S3-5 revision v1r (2026-09-23): associated_facet_ids is the ordered, de-duplicated union of the construction gold intent id of every source row (owner decision 82; a routing key over the CONSTRUCTION population only, as slot-contracts / intent-boundaries / train-exemplars already carry TRAIN intent ids) and the bare TARGET when TARGET is itself a legal intent id. A slot type is never a facet. task_target, node_target, the value_id form, the statements themselves and every count below except distinct_facets are unchanged from version 1.",
+      "facets_per_row": {
+        "1": 357,
+        "2": 21,
+        "3": 1
+      },
       "node_counts": {
         "perception": 119,
         "planner": 14,
@@ -146,17 +156,18 @@
     },
     "selection": "rails.stage3_delta_supply.select_stage3_delta_values (candidate-bound) and select_unconditional_stage3_delta_values (Perception), both prior_score-ranked with value_id as the tiebreak",
     "twin": {
-      "pin_note": "release.sha256 is the release.json FILE digest (rails.knowledge_stores._read_pinned hashes the bytes); snapshot.sha256 is the snapshot's CONTENT hash (KnowledgeSnapshot.content_hash(), equal to the release's own snapshot_sha256), never the snapshot.json file digest. The two are different values and the loader checks both identities, which is the defect this registration repaired -- S3-5's cell1-fill-values.json carried the snapshot FILE digest (3a770de1... / 95c3b2aa...) where the content hash (1d55f441... / d393bbbb...) belongs.",
-      "registration": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-twin-v1-release-registration.json",
+      "pin_note": "release.sha256 is the release.json FILE digest (rails.knowledge_stores._read_pinned hashes the bytes); snapshot.sha256 is the snapshot's CONTENT hash (KnowledgeSnapshot.content_hash(), equal to the release's own snapshot_sha256), never the snapshot.json file digest, which is recorded beside it as snapshot_file_sha256 and pins nothing. The loader checks both identities. S3-5's original cell1-fill-values.json supplied the file digest where the content hash belongs and every cell refused; adv1_to_deltas_steps.py cell1-values now reads the content hash out of release.json and cross-checks it against snapshot.json, so the two cannot be confused again.",
+      "registration": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-twin-v1r-release-registration.json",
       "release": {
-        "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1/release.json",
-        "sha256": "a58a370ce9275391c74ae582704ae04c45ad886f6274bff6edd0256c5448f015"
+        "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1r/release.json",
+        "sha256": "7c0dc8979e8b9f1ae66105049168b310d5136c99983f99a98885d01e27d84219"
       },
       "snapshot": {
-        "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1/snapshot.json",
-        "sha256": "d393bbbb7db698a881c160ce8a77aea68af9964ab68c10fe2b7c8781b472c5a4"
+        "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1r/snapshot.json",
+        "sha256": "5aee8d1df90430272d7eedbafb2ab4fe032178a7b681b692b8234ecb2e56fb98"
       },
-      "snapshot_file_sha256": "95c3b2aac36d5e490a662e482808d1ae98b13c76f80eb1f820b0ee3abb57305a"
+      "snapshot_file_sha256": "b39b6b4c0d27161a6da9434f69821aeedac98ef49ab86d347fae6bd8155c67a4",
+      "superseded": "store version 1 (knowledge/slurp/semantic/stage3-deltas-twin-v1/) is superseded before any flight; see docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v1-superseded-v1.md"
     }
   },
   "frontier_registered_rows": [
@@ -305,8 +316,8 @@
         "sha256": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b"
       },
       "stage3-deltas": {
-        "relpath": "knowledge/slurp/semantic/stage3-deltas-v1/release.json",
-        "sha256": "ec9da3e2b8ed842a73c13ea51f58a1f077c787777da2edad82a8234729777338"
+        "relpath": "knowledge/slurp/semantic/stage3-deltas-v1r/release.json",
+        "sha256": "02505ba2e548a008cc6c16ffda6f7b9bff505061863026a3d7e1396c26d6c2e0"
       },
       "train-exemplars": {
         "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/release.json",
@@ -329,8 +340,8 @@
     },
     "source": "configs/baseline/slurp-native-stage3-delta-cell-baseline-v1.json and configs/baseline/slurp-native-default-plan-lock-baseline-v1.json",
     "twin_arm_stage3_deltas": {
-      "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1/release.json",
-      "sha256": "a58a370ce9275391c74ae582704ae04c45ad886f6274bff6edd0256c5448f015"
+      "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1r/release.json",
+      "sha256": "7c0dc8979e8b9f1ae66105049168b310d5136c99983f99a98885d01e27d84219"
     }
   },
   "lock_node_applied": {
@@ -439,23 +450,51 @@
   "supply_reach": {
     "arm": {
       "perception": {
-        "reachable": "n/a (unconditional route; all 119 are eligible and the cap-4 slice is identical on every row)",
+        "binding": "unconditional; the bound does not apply, the cap-4 slice is identical on every row",
+        "distinct_intents_covered": 34,
+        "reachable_by_a_candidate_intent": 119,
+        "share": 1.0,
         "values": 119
       },
       "planner": {
-        "distinct_intents_covered": 6,
+        "distinct_intents_covered": 14,
+        "reachable_by_a_candidate_intent": 14,
+        "share": 1.0,
+        "values": 14
+      },
+      "reviewer": {
+        "distinct_intents_covered": 30,
+        "reachable_by_a_candidate_intent": 95,
+        "share": 1.0,
+        "values": 95
+      },
+      "solver": {
+        "distinct_intents_covered": 34,
+        "reachable_by_a_candidate_intent": 151,
+        "share": 1.0,
+        "values": 151
+      },
+      "total": {
+        "distinct_intents_covered": 39,
+        "intent_vocabulary": 60,
+        "reachable": 379,
+        "share": 1.0,
+        "values": 379
+      }
+    },
+    "superseded_v1": {
+      "note": "Store version 1 attached the statement's TARGET, and TARGET is a SLOT TYPE on the 147 slot-contract rows, so most of it was unroutable. This block is kept so the revision is auditable; the full statement is docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v1-superseded-v1.md.",
+      "planner": {
         "reachable_by_a_candidate_intent": 6,
         "share": 0.429,
         "values": 14
       },
       "reviewer": {
-        "distinct_intents_covered": 13,
         "reachable_by_a_candidate_intent": 24,
         "share": 0.253,
         "values": 95
       },
       "solver": {
-        "distinct_intents_covered": 8,
         "reachable_by_a_candidate_intent": 11,
         "share": 0.073,
         "values": 151
@@ -464,27 +503,35 @@
         "reachable": 121,
         "share": 0.319,
         "values": 379
-      }
+      },
+      "twin_total_reachable": 121
     },
     "twin": {
+      "perception": {
+        "distinct_intents_covered": 34,
+        "reachable_by_a_candidate_intent": 119
+      },
       "planner": {
-        "distinct_intents_covered": 4,
-        "reachable_by_a_candidate_intent": 4
+        "distinct_intents_covered": 10,
+        "reachable_by_a_candidate_intent": 14
       },
       "reviewer": {
-        "distinct_intents_covered": 10,
-        "reachable_by_a_candidate_intent": 15
+        "distinct_intents_covered": 29,
+        "reachable_by_a_candidate_intent": 95
       },
       "solver": {
-        "distinct_intents_covered": 12,
-        "reachable_by_a_candidate_intent": 22
+        "distinct_intents_covered": 28,
+        "reachable_by_a_candidate_intent": 151
       },
       "total": {
-        "reachable": 121
+        "distinct_intents_covered": 39,
+        "reachable": 379,
+        "share": 1.0
       }
     },
-    "twin_token_matching_caveat": "The builder holds authored_token_count(twin) == authored_token_count(parent) over the WHOLE store, and the node distribution is held exactly (119 / 151 / 95 / 14). It does NOT follow that the SUPPLIED volume matches per row: the derangement moves facet attachment, and the measured reach above already differs (arm solver 11 against twin solver 22). The smoke therefore measures the per-node supplied item COUNTS on the same four rows, and the verdict reports the realised supplied-token delta between arm and twin rather than assuming it is zero. A twin that supplies materially more or less than the arm is a weaker form control and the verdict says so.",
-    "what_it_means": "The Solver route -- the cap-8 route that carries the most deltas -- can reach at most 11 of its 151 values, because S3-5's curation wrote the SLOT TYPE into TARGET for the 147 slot-contract rows while the route intersects TARGET against scenario_action intent ids. This is a REGISTERED EXPECTATION, not a defect of this registration: the smoke's delta-supply acceptance measures the realised reach per node on four rows and a route that serves zero items on every row stops the arm (the B9a-rec lesson). If the realised Solver reach is near zero, the verdict says the Solver route was inert and the effect, whatever it is, belongs to the Perception, Reviewer and Planner routes -- and store version 2 fixes the TARGET vocabulary rather than the supply route.",
-    "what_this_is": "A MODEL-FREE upper bound on what each candidate-bound route can ever select, computed by intersecting each value's associated_facet_ids with the 60 registered SLURP candidate intents of prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json. A candidate-bound route matches a value only when one of its facet ids EQUALS one of the row's Perception candidate intent ids, so a value whose facet id is a slot type ('place_name') or a generic word ('query', 'entities') is unreachable on every row."
+    "twin_fixed_points": "16 of 379 twin rows landed on a facet set equal to their own, against 0 under v1. That is arithmetic, not a defect: v1r's vocabulary is 39 distinct intents over 379 rows, so a positional derangement sometimes hands a row an equal attachment, and the builder refuses only a twin that moved nothing at all. The twin is a genuine form control on 363 of 379 rows (95.8 %) and the verdict says so rather than claiming a perfect derangement.",
+    "twin_token_matching": "The builder holds authored_token_count(twin) == authored_token_count(parent) (5,740), the node distribution exactly (119 / 151 / 95 / 14) and -- new at v1r -- the per-row facet-count multiset, because both derangements move a row's whole attachment as one unit. The v1 caveat that arm and twin could be REACHED at different volumes (arm solver 11 against twin solver 22) is gone: both are 379 of 379. The smoke still measures the per-node supplied item COUNTS on the same four rows and the verdict still reports the realised supplied-token delta rather than assuming it is zero.",
+    "what_it_means": "Every value of the released store is reachable on every node, arm and twin. The route is therefore NOT inert and the B9a-rec failure mode (18 ACQUIRE rows, 0 items each) is excluded before contact. This is still an UPPER BOUND, not a prediction: a given row supplies only the deltas attached to the at most three intents its own Perception step proposed, capped at 8 / 4 / 4. The smoke's delta-supply acceptance measures the REALISED per-node counts on four rows and a route that serves zero items on every row still stops the arm.",
+    "what_this_is": "A MODEL-FREE upper bound on what each candidate-bound route can ever select, computed by intersecting each value's associated_facet_ids with the 60 registered SLURP candidate intents of prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json. A candidate-bound route matches a value only when one of its facet ids EQUALS one of the row's Perception candidate intent ids. Measured by scripts/flights/batch/adv1_to_deltas_steps.py reach and written into the release-pins document coordination/slurp-stage3-delta-cell-r01-v1/stage3-deltas-v1r-release-pins.json."
   }
 }
