@@ -16,13 +16,20 @@
         "reason": "Cell ROLL-1 (S3-2, docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md): the locked v2.0 plan's grouped-Solver fragment on the S3-1 construction roster, REGISTERED FOR FLIGHT 2026-09-23 (package docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1/, campaign plan configs/campaign/slurp-native-stage3-rollout-r01-v1.json, four unconsumed exposure-ledger rows). READINESS HELD: the three S3-1 preparations are now SATISFIED and pinned BY HASH in configs/baseline/slurp-native-stage3-rollout-baseline-v1.json, whose own stage3_placeholders_filled block records all 18 fills one for one: the featcache packet promotion (run SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS-RECOVERY-V1, promote-only attempt, 800/800 packets with 8 shared, receipt sha256 a1664e34742dcd2d59c226da701395edf41d150bbbf8db4acc0cdae9c3c0250f); the intent-boundary speech-query encoding (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1, 800 encoder contacts 2026-09-23 00:50-00:55 UTC, alias vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-segments.jsonl sha256 41b47b3f744a3f18ffcec5cdf76e7116b06da72a63aa566b3d711bdc0adc8ae8); and the model-free content derivative (run SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1, vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-content-v1.jsonl sha256 651ddfbbb9e6f29996a000a0f4a16de993a85cfc8e52115e1c66d28760f749cf). What is still open is root's own act, which this registration does not perform: mint coordination/slurp-stage3-rollout-r01-v1/root-admission-v1.json (decision id slurp-stage3-rollout-r01-admission-v1) and run scripts/flights/repin_cell.py --set-ready, which builds this cell's own prepared_phase_supply model-free under its own run id, pins it into the baseline fragment and the preparation requirement below, INSERTS the decision requirement and flips this state to 'ready'. No decision requirement is registered here on purpose (the sealed sibling packages carry none either): core.flight.repin._upsert_decision_requirement inserts it, and a placeholder decision entry without an expected_decision_id would be left behind beside it and refuse the campaign at load (core.flight.campaign.declared_readiness). Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-rollout-r01-admission-v1",
+            "relpath": "coordination/slurp-stage3-rollout-r01-v1/root-admission-v1.json",
+            "sha256": "162e7063ae62c2bfbc1473641c637e33eb355eb711b5993c259a04b75e671eaf",
+            "reason": "Decision slurp-stage3-rollout-r01-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "This cell's OWN model-free first-phase supply, minted under its own run id by core.flight.repin (core.flight.cli prepare-supply) at the readiness flip -- item E16: a prepared artifact is evidence only for the implementation that produced it, so nothing is inherited from cell PLAN or cell B2 v3. The relpath and sha256 below are PENDING placeholders that scripts/flights/repin_cell.py overwrites (core.flight.repin._set_preparation_requirement) before it flips this state; --allow-output-change must never be passed.",
-            "relpath": "PENDING_STAGE3_ROLLOUT_R01_PREPARED_PHASE_SUPPLY_RELPATH",
-            "sha256": "PENDING_STAGE3_ROLLOUT_R01_PREPARED_PHASE_SUPPLY_SHA256"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-ROLLOUT-R01-V1/phase-supply-v1.json",
+            "sha256": "16c8d7c6ef4bbdbdbf147550816da0234d4a785e1238ef6f18dd54e7b8066b11"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-ROLLOUT-R01-V1"
     }

@@ -374,5 +374,9 @@
       "filled": "2026-09-23",
       "by": "root: fit ids/caps minted (ceiling 19 x rows x 4 endpoints); prepared_phase_supply block removed so scripts/flights/repin_cell.py mints it at the flip; embedded_signal prose prefix dropped"
     }
-  ]
+  ],
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-STAGE3-ROLLOUT-R01-V1/phase-supply-v1.json",
+    "sha256": "16c8d7c6ef4bbdbdbf147550816da0234d4a785e1238ef6f18dd54e7b8066b11"
+  }
 }

@@ -43,7 +43,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1/protocol-registered-v1.json",
-    "sha256": "9475f138c78de0ee4450ec634bec0fb8398128512c36ec4a1cbdd2a217e4fe4c"
+    "sha256": "9d9e03113efe95ae3ae11e0e059b6e31177a1848c4afde1dd96c8b74eec3cf80"
   },
   "quality_read_gate": "No read of any kind before the complete sealed manifest, the exact ordered 800 outputs with five custodied solver_group samples per row (invariant I7g) and the native phase summary all exist. There is no admission read and no comparator: the only read is S3-3's own CLI (scripts/analysis/stage3_rollout_score.py) on COPIES of the sealed outputs, model-free, and the row accounting 800 in / 800 out must hold on both sides before any pair is selected.",
   "registered_at_utc": "2026-09-23T12:00:00.000000+00:00",
