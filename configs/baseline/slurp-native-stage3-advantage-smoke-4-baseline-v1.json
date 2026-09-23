@@ -5,8 +5,11 @@
   "scorers": [
     "cost"
   ],
-  "task_instruction_template": "probes/slurp_stage3_advantage_system_v2.txt",
-  "task_instruction_fill": null,
+  "task_instruction": "You are reviewing one spoken-language-understanding request that a four-node agent system (perception, solver, reviewer, planner) answered. You will be shown the perception node's candidate list, two answers the solver produced under independent sampling, the answer the system delivered together with the reviewer's verdicts and the planner's route, and the correct answer. You are asked to state, in one to three fixed four-line blocks, what each responsible node should do differently. Attribute every statement to exactly one node. Answer for this one row only, and answer exactly once.",
+  "serving_slots": 4,
+  "serving_slot_tokens": 24576,
+  "serving_geometry_note": "The resident SLURP session geometry (np4 x 24,576 = -c 98304) of the model fragment q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1, declared so rails.adapters.slurp_runtime.configured_geometry binds the real server args instead of its (8, 8192) defaults (coordinator repair 2026-09-23).",
+  "task_instruction_note": "The static system message of every ADV-1 contact, the byte content of configs/probes/slurp_stage3_advantage_system_v2.txt (stripped); declared as a LITERAL because core.instructions renders a task_instruction_template only through a registered fill with a {tool_schemas} placeholder, which this static text has no use for (coordinator repair 2026-09-23, preregistration section 13, option A).",
   "phase_material": {
     "advantage": {
       "instruction_template": "probes/slurp_stage3_advantage_v2.txt",

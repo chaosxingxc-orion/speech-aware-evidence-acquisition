@@ -54,7 +54,8 @@
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 4,
-    "planned_speech_audio_seconds": 0,
+    "planned_speech_audio_seconds": 17,
+    "planned_speech_audio_seconds_note": "ceil of the 4 population rows' audio seconds from the roster receipt: the contract requires a positive declaration; the contact is text-only under the D2 freeze (no speech packet is attached), so the realised speech seconds are expected to read 0 <= 17 (coordinator repair 2026-09-23)",
     "split_role": "discovery"
   },
   "execution_profile": "bounded-discovery-probe",
@@ -69,7 +70,7 @@
     "gpu_hours_fit_inclusive": 1.0,
     "native_task_contract_calls_cap": 0,
     "official_complete_scoring_jobs": 0,
-    "repeated_speech_audio_seconds_cap": 0
+    "repeated_speech_audio_seconds_cap": 17
   },
   "fragment_kind": "saea-slurp-native-stage3-advantage-r01-smoke-4-v1",
   "population": {
@@ -80,7 +81,8 @@
   },
   "purpose": "Four-row form smoke of Stage-3 S3-4 as amended by S3-4s (owner decision 106): prove the contact FORM of cell ADV-1 -- one phase-stage3-advantage-v2 contact per row, the system and per-row templates rendered from S3-3's trajectory block plus the row's own construction gold, the answer read by rails.stage3_advantage.parse_advantage_statements_v2 into one to three NODE / DELTA-KIND / TARGET / STATEMENT blocks with illegal blocks retained and counted -- before the 225-row arm opens. STRUCTURAL EVIDENCE ONLY: no advantage statement produced here enters S3-5's curation input, no scorer runs, and no answer to any evaluated row is produced or read.",
   "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
-  "split_id": "STAGE3-ADVANTAGE-R01C-DISAGREEING-SMOKE-4-V1",
+  "split_id": "STAGE3-CONSTRUCTION-R01C",
+  "split_id_note": "The runtime split id must equal the dataset fragment split_name (rails.adapters.slurp_runtime._assert_sample_namespaces; the ROLL-1 smoke precedent): the population is the explicit populations block and the split identity hash is the disagreeing roster receipt (coordinator repair 2026-09-23)",
   "stage3_algorithm": {
     "id": "tfgrpo-semantic-advantage-v1",
     "operators_used": [
