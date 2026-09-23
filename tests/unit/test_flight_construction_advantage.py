@@ -696,6 +696,39 @@ def test_the_response_is_parsed_at_delivery_into_a_text_free_receipt(
         )
 
 
+def test_the_sealed_row_keeps_the_delivery_read(tmp_path, gold) -> None:
+    runtime, material = _runtime(tmp_path, gold)
+    runtime.wire_check(seal_and_score=False, response_text=_ADVANTAGE_RESPONSE)
+    sealed = runtime._canonical_output_rows(runtime._client)
+    assert len(sealed) == len(SAMPLE_IDS)
+    expected = parse_advantage_statements_v2(_ADVANTAGE_RESPONSE).receipt()
+    for row in sealed:
+        assert row["advantage_statements"] == expected
+        assert row["arm"] == STAGE3_ADVANTAGE_ARM
+        assert row["text"] == _ADVANTAGE_RESPONSE
+
+
+def test_the_construction_draws_seal_the_per_row_identities(tmp_path, gold) -> None:
+    runtime, material = _runtime(tmp_path, gold)
+    receipt = runtime.wire_check(
+        seal_and_score=False, response_text=_ADVANTAGE_RESPONSE
+    )
+    draws = {record["sample_id"]: record for record in receipt["construction_draws"]}
+    assert set(draws) == set(SAMPLE_IDS)
+    for sample_id, record in draws.items():
+        contact = material.by_sample()[sample_id]
+        assert record["best_sample_index"] == 0
+        assert record["worst_sample_index"] == 2
+        assert record["best_answer_sha256"] == contact.best_answer_sha256
+        assert record["worst_answer_sha256"] == contact.worst_answer_sha256
+        assert record["gold_sha256"] == contact.gold_sha256
+        assert record["prompt_sha256"] == contact.prompt_sha256
+        assert record["candidate_intent_ids"] == ["synthetic_act0", "synthetic_act1"]
+        assert record["reviewer_verdict_dispositions"] == ["ACCEPT"]
+        assert record["planner_actions"] == ["ACCEPT"]
+        assert record["delivered_kind"] == "accepted"
+
+
 def test_the_dispatch_declares_the_program_and_its_single_phase(tmp_path, gold) -> None:
     runtime, material = _runtime(tmp_path, gold)
     receipt = runtime.wire_check(

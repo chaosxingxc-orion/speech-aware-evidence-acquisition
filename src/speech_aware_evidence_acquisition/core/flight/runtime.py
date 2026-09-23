@@ -7663,6 +7663,24 @@ class FlightRuntime:
             # arm, which has no phases at all. ``contact_count`` above is
             # the sum of the ``contacts`` column.
             "phases": phase_receipt,
+            # E2.4 / S3-4s: what a construction-visible arm actually
+            # contacted -- one entry per row, identity, counts and digests
+            # only (the proposer's draw id, target and prompt sha256; the
+            # advantage arm's best/worst sample indices, answer hashes,
+            # delivered-answer and gold digests, trajectory labels and
+            # prompt sha256). NEVER the rendered instruction, which carries
+            # construction text. Absent for every other arm, which is every
+            # arm but the two.
+            **(
+                {
+                    "construction_draws": [
+                        contact.as_json()
+                        for contact in self.construction_material().contacts
+                    ]
+                }
+                if self.shows_construction_targets()
+                else {}
+            ),
             # What each phase's instruction and response format actually
             # were, by sha256 and length -- never the text itself, which can
             # be the whole 152-tool registry. None for a direct arm, and for
@@ -9335,6 +9353,17 @@ class FlightRuntime:
                     **(
                         {"solver_group": dict(solver_group)}
                         if solver_group is not None else {}
+                    ),
+                    # S3-4s: the delivery-time read of a construction-visible
+                    # phase's declared output contract, carried into the seal
+                    # exactly as ``solver_group`` above is. A RECEIPT --
+                    # legality, per-block labels, word counts and digests --
+                    # and never the statement text, which stays only in the
+                    # sealed ``text`` the contact itself returned.
+                    **(
+                        {"advantage_statements": dict(row["advantage_statements"])}
+                        if isinstance(row.get("advantage_statements"), Mapping)
+                        else {}
                     ),
                 }
             )
