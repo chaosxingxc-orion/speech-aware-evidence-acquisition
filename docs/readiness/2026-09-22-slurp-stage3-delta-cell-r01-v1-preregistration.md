@@ -260,13 +260,13 @@ Each of these was measured, not assumed; the refusal is quoted in the report tha
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1` | `...-r01-fit-v1` | `fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1` | `...-r01-twin-v1` | `twin-generation-plan-registered-v1.json` | `43f56a1020ec62e47a43c374d58d5cc2f779c115f1be99baffbbeab9b3e9380f` | `ac862b793a2f0844a6b351ae4b3b7cb9b29ea75797569035cd5a3c291d85922d` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-FIT-V1` | `...-r01-twin-fit-v1` | `twin-fit-plan-registered-v1.json` | same | same | same |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1` | `...-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `9c66586d664bfecdc9621104a09ef92cb71d94b981eaef7267fe8e7e990bf2c0` | `ae6bcef8499212e76ff1f2d0ef712b9bb902d3e865244c45c8ca4be5c4de1f39` | `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1` | `...-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `ed87c0ae1e1511a7974d7cc4e6ce290c44a0014a9164d57151d26afb781ddcdd` | `267f402c5d12d2d9bd7b89f8f22c687865a1651723663aed9950445f3bafb973` | `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-FIT-V1` | (spend identity) | `smoke-fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1` | `...-smoke-4-twin-v1` | `twin-smoke-generation-plan-registered-v1.json` | `f98bb7a04d541b82d84d18313b0bb076c1a0e2bc03447ae79df1186f7cffe27f` | `9e3a553d39f23588273d520b084792627f46378a534e08d4e5e839019ec98f27` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-FIT-V1` | (spend identity) | `twin-smoke-fit-plan-registered-v1.json` | same | same | same |
 
 Protocol document `protocol-registered-v1.json` sha256
-`a57717c130b1636fea555cb8dc64b9cfc9bbafb666fea749f182d476996876b4`.
+`3cd58d2ab7b1211e3f2274bf82c638e0d2dcd1bde0590e894de51f22c231cf9b`.
 
 `core.flight.cli check` exits **0 on all six cells** on this committed tree, with the measured `config_hash` and
 `protocol_hash` equal to the values above, `prepared_artifacts_ok: true` (no pin yet: the flip mints each cell's

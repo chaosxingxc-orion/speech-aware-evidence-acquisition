@@ -15,13 +15,20 @@
         "reason": "A four-row form smoke of CELL-1, required before the full arm may open (owner discipline: every PLAN-family cell smokes four rows first). Held for the same reasons as the generation cell.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-delta-cell-r01-admission-v1",
+            "relpath": "coordination/slurp-stage3-delta-cell-r01-v1/root-admission-v1.json",
+            "sha256": "ad11728bbbe708b951a609863112021db0025ad1c6f7b04f29d2b01daeadb80b",
+            "reason": "Decision slurp-stage3-delta-cell-r01-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "Depends on the generation cell's own release requirement above.",
-            "relpath": "knowledge/slurp/semantic/stage3-deltas-v1r/release.json",
-            "sha256": "02505ba2e548a008cc6c16ffda6f7b9bff505061863026a3d7e1396c26d6c2e0"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "a82db4aa314b8998dd58b8caf8b0ac25ea17f79dc8b2aa4226ab9f26cabcb93d"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1"
     },
