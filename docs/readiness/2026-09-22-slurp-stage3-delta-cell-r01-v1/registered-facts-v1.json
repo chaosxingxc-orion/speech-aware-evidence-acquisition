@@ -395,6 +395,39 @@
     "source": "docs/results/2026-09-22-slurp-planr-v2-lock-replicate-verdict.md, section 1 (the plan's own null)",
     "table_tolerance": 0.005
   },
+  "prompt_fit_bound": {
+    "basis": "MEASURED on the committed tree by core.flight.cli check (exit 0 on all six cells), whose _assess_prompt_budget bounds each phase by the WORST CASE the supplied stores can render -- not the realised prompt. Cell PLAN's own realised cost over this roster was 8,353.2 prefilled tokens per row over 4.096 contacts. The store's own contribution is small: worst case, in characters of statement text, {\"perception\": 485, \"solver\": 938, \"reviewer\": 423, \"planner\": 381} (mean statement 84.0 characters, longest 126).",
+    "compaction_is_a_reported_diagnostic": "cell PLAN's own sealed run compacted ZERO rows (analysis/SAEA-SLURP-DEFAULT-PLAN-LOCK-PAIRED-ANALYSIS-V1/compaction.json). The four-row smoke reads its own E20 receipts and the verdict carries the compacted-row count per phase beside cell PLAN's 0. A non-zero count is a cost and a caveat on the frontier row's token basis, not a failure.",
+    "decision": "ALLOW on perception, reviewer and planner. The SOLVER phase's worst-case bound is COMPACT_REQUIRED by 317 tokens against the live slot minus its one-eighth reserve (24,576 - 3,072). That is a BOUND, not a prediction: it assumes every supplied store renders its cap at its longest on one row. The episode declares context_fit_policy 'compact-or-abstain', so a Solver request that really does exceed the window is COMPACTED, never truncated, and every compaction is counted in the E20 receipts. core.flight.cli check reports no blocker and authorises the cell.",
+    "measured_bound_per_phase": {
+      "identical_on_the_twin": true,
+      "perception": {
+        "decision": "ALLOW",
+        "operational_margin_tokens": 1512,
+        "required_window_tokens": 19992
+      },
+      "planner": {
+        "decision": "ALLOW",
+        "operational_margin_tokens": 1709,
+        "required_window_tokens": 19795
+      },
+      "reviewer": {
+        "decision": "ALLOW",
+        "operational_margin_tokens": 1648,
+        "required_window_tokens": 19856
+      },
+      "smoke_cells": "identical to the hundred: reviewer 19,855, planner 19,794, solver 21,820",
+      "solver": {
+        "decision": "COMPACT_REQUIRED",
+        "operational_margin_tokens": -317,
+        "required_window_tokens": 21821
+      }
+    },
+    "no_comparator_bound_was_measurable": "the same bound could not be taken for cell PLAN: contracts.gate_exposure refuses core.flight.cli check on a run whose exposure row is consumed ('a consumed run cannot be re-executed'), which is correct and is why the empirical reference above is PLAN's sealed REALISED prefill rather than its bound.",
+    "operational_reserve_tokens": 3072,
+    "slot_tokens": 24576,
+    "the_authority_in_flight": "core.preparation_fit.build_native_contact_fit_gate fits every realised immutable request against the resident tokenizer before it is transmitted and STOPS the flight rather than truncating. No static bound in this package replaces it."
+  },
   "registered_ceilings": {
     "fit_endpoints": 47520,
     "generation_calls_run_cumulative": 11880,
@@ -402,5 +435,56 @@
     "native_task_contract_calls": 6480,
     "official_scoring_jobs": 1,
     "repeated_speech_seconds": 33930
+  },
+  "supply_reach": {
+    "arm": {
+      "perception": {
+        "reachable": "n/a (unconditional route; all 119 are eligible and the cap-4 slice is identical on every row)",
+        "values": 119
+      },
+      "planner": {
+        "distinct_intents_covered": 6,
+        "reachable_by_a_candidate_intent": 6,
+        "share": 0.429,
+        "values": 14
+      },
+      "reviewer": {
+        "distinct_intents_covered": 13,
+        "reachable_by_a_candidate_intent": 24,
+        "share": 0.253,
+        "values": 95
+      },
+      "solver": {
+        "distinct_intents_covered": 8,
+        "reachable_by_a_candidate_intent": 11,
+        "share": 0.073,
+        "values": 151
+      },
+      "total": {
+        "reachable": 121,
+        "share": 0.319,
+        "values": 379
+      }
+    },
+    "twin": {
+      "planner": {
+        "distinct_intents_covered": 4,
+        "reachable_by_a_candidate_intent": 4
+      },
+      "reviewer": {
+        "distinct_intents_covered": 10,
+        "reachable_by_a_candidate_intent": 15
+      },
+      "solver": {
+        "distinct_intents_covered": 12,
+        "reachable_by_a_candidate_intent": 22
+      },
+      "total": {
+        "reachable": 121
+      }
+    },
+    "twin_token_matching_caveat": "The builder holds authored_token_count(twin) == authored_token_count(parent) over the WHOLE store, and the node distribution is held exactly (119 / 151 / 95 / 14). It does NOT follow that the SUPPLIED volume matches per row: the derangement moves facet attachment, and the measured reach above already differs (arm solver 11 against twin solver 22). The smoke therefore measures the per-node supplied item COUNTS on the same four rows, and the verdict reports the realised supplied-token delta between arm and twin rather than assuming it is zero. A twin that supplies materially more or less than the arm is a weaker form control and the verdict says so.",
+    "what_it_means": "The Solver route -- the cap-8 route that carries the most deltas -- can reach at most 11 of its 151 values, because S3-5's curation wrote the SLOT TYPE into TARGET for the 147 slot-contract rows while the route intersects TARGET against scenario_action intent ids. This is a REGISTERED EXPECTATION, not a defect of this registration: the smoke's delta-supply acceptance measures the realised reach per node on four rows and a route that serves zero items on every row stops the arm (the B9a-rec lesson). If the realised Solver reach is near zero, the verdict says the Solver route was inert and the effect, whatever it is, belongs to the Perception, Reviewer and Planner routes -- and store version 2 fixes the TARGET vocabulary rather than the supply route.",
+    "what_this_is": "A MODEL-FREE upper bound on what each candidate-bound route can ever select, computed by intersecting each value's associated_facet_ids with the 60 registered SLURP candidate intents of prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json. A candidate-bound route matches a value only when one of its facet ids EQUALS one of the row's Perception candidate intent ids, so a value whose facet id is a slot type ('place_name') or a generic word ('query', 'entities') is unreachable on every row."
   }
 }

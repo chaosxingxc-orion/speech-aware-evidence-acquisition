@@ -68,9 +68,37 @@ exactly the added block):
 
 **the four routes must actually serve.** Per contact, the selection receipt names the supplied `value_id`s, the
 node pool size and the cap. A route that serves zero items on every row is an inert route and a FORM defect that
-stops the arm -- the B9a-rec lesson (18 ACQUIRE rows, 0 items each). The twin smoke must show the **same per-node
-item counts** as the generation smoke on the same four rows with different `value_id`s: that count identity is the
-token-matching evidence the twin's role as a form control rests on.
+stops the arm -- the B9a-rec lesson (18 ACQUIRE rows, 0 items each). The smoke also reads its own **E20 compaction
+receipts** per phase, because the registered worst-case bound puts the Solver phase at `COMPACT_REQUIRED` (section
+5); a non-zero compacted-row count is a cost and a caveat, an abstention caused by compaction is a failure.
+
+### 4a. A registered expectation about reach, measured model-free before contact
+
+A candidate-bound route matches a value only when one of its `associated_facet_ids` **equals** one of the row's
+Perception candidate intent ids. Intersecting the released store against the 60 registered candidate intents of
+`prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json` gives the upper bound on what each route
+can ever select:
+
+| node | values | reachable by a candidate intent | distinct intents covered |
+| --- | --- | --- | --- |
+| perception (unconditional) | 119 | all 119 eligible; the cap-4 slice is identical on every row | -- |
+| solver (cap 8) | 151 | **11 (7.3 %)** | 8 |
+| reviewer (cap 4) | 95 | 24 (25.3 %) | 13 |
+| planner (cap 4) | 14 | 6 (42.9 %) | 6 |
+| total | 379 | 121 (31.9 %) | -- |
+
+The Solver route -- the one carrying the most deltas -- is the narrowest, because S3-5's curation wrote the **slot
+type** into `TARGET` for the 147 slot-contract rows while the route intersects `TARGET` against `scenario_action`
+intent ids. This is registered as an **expectation**, not repaired here: the smoke measures the realised reach, and
+if the Solver route is inert the verdict says so and attributes whatever effect exists to the other three routes,
+and store version 2 fixes the TARGET vocabulary rather than the supply route.
+
+**Twin token-matching caveat.** The builder holds `authored_token_count(twin) == authored_token_count(parent)` over
+the whole store and holds the node distribution exactly, but the *supplied* volume need not match: the derangement
+moves facet attachment, and the measured reach already differs (arm Solver 11 against twin Solver 22). The smoke
+therefore measures the per-node supplied item counts on the same four rows, and the verdict reports the realised
+supplied-token delta between arm and twin rather than assuming it is zero. A twin that supplies materially more or
+less than the arm is a weaker form control and the verdict says so.
 
 ## 5. Budgets
 
@@ -101,6 +129,26 @@ point estimate. Ceilings are bounds, never targets; budgets are run-cumulative a
 **Fit.** `native_contact_fit`, fitted inside the same flight under the same lease. `coordinate-fit` must **not**
 be run. Each cell carries its OWN fit identity (item E16): the gate refuses a request-fit receipt path that
 already exists, and every one of cell PLAN's exists.
+
+**Prompt fit, measured on the committed tree** by `core.flight.cli check` (exit 0 on all six cells). The numbers
+are the runtime's own **worst-case bound** over what the supplied stores can render, not a prediction:
+
+| phase | decision | required window tokens | operational margin |
+| --- | --- | --- | --- |
+| perception | ALLOW | 19,992 | +1,512 |
+| reviewer | ALLOW | 19,856 | +1,648 |
+| planner | ALLOW | 19,795 | +1,709 |
+| **solver** | **COMPACT_REQUIRED** | 21,821 | **-317** |
+
+against the 24,576-token live slot less its one-eighth (3,072) reserve; identical on the twin and within one token
+on the smokes. `check` reports no blocker and authorises every cell. The episode declares `context_fit_policy`
+`compact-or-abstain`, so a Solver request that really exceeds the window is **compacted, never truncated**, and
+every compaction is counted in the E20 receipts (cell PLAN's own sealed run compacted zero rows). The same bound
+could not be taken for cell PLAN for comparison: `contracts.gate_exposure` refuses `check` on a run whose exposure
+row is consumed, which is correct -- so the empirical reference above is PLAN's sealed **realised** prefill
+(8,353.2 tokens per row), not its bound. The authority in flight stays
+`core.preparation_fit.build_native_contact_fit_gate`, which fits every realised request against the resident
+tokenizer and stops rather than truncating.
 
 ## 6. Boundary
 
@@ -201,7 +249,11 @@ Each of these was measured, not assumed; the refusal is quoted in the report tha
 | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-FIT-V1` | (spend identity) | `twin-smoke-fit-plan-registered-v1.json` | same | same | same |
 
 Protocol document `protocol-registered-v1.json` sha256
-`3e159ddf2dd8af643900f43b6cc16ec85cf98e80a6cea31b17bed8fc1899f2f3`.
+`19e3c1c07f837ad7a3f254a63768f44beb041c4d6a0c1d52a3f3f98325e08ae5`.
+
+`core.flight.cli check` exits **0 on all six cells** on this committed tree, with the measured `config_hash` and
+`protocol_hash` equal to the values above, `prepared_artifacts_ok: true` (no pin yet: the flip mints each cell's
+own) and no blocker.
 
 **Every one of these hashes moves at the readiness flip** (the flip edits the readiness block, which `compose()`
 hashes), and `scripts/flights/repin_cell.py` -- driven by `repin_loop_generic.sh` -- rewrites the plans, this note,
