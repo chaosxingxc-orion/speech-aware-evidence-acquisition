@@ -258,7 +258,7 @@ Each of these was measured, not assumed; the refusal is quoted in the report tha
 | --- | --- | --- | --- | --- | --- |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1` | `...-r01-v1` | `generation-plan-registered-v1.json` | `1fae45a3c401c4f4fd63ff921489af4466ab2713f9adf29bc6b8871ec67c1e80` | `a42a660d919be2e9531176be4c43f84e26eda62ae76fb2633898fc7267d4c74b` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1` | `...-r01-fit-v1` | `fit-plan-registered-v1.json` | same | same | same |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1` | `...-r01-twin-v1` | `twin-generation-plan-registered-v1.json` | `6e388e1cd52381b02f6ab9cab3fda74452d215dea4386437c3f0f9149cfa5f6b` | `d0955196e0034f6c98606b501d1113b73fe544f10b064a0a6d44833fabec8f2f` | same |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1` | `...-r01-twin-v1` | `twin-generation-plan-registered-v1.json` | `08406e8a9345f80a636247e4340e5c7e20c91f79cd11250f24c51c5c294a6ed3` | `ab3fa4f258226a5bd4caed8b20ec27efcf9ce68ff735e8918a5b2ad135a5d621` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-FIT-V1` | `...-r01-twin-fit-v1` | `twin-fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1` | `...-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `f7fc3f983242e8f957121fabdd035a6238cc229bdc141c6ad5e33d3377092373` | `e33af742bcfeae72342798e904f63c03d2419b097b4c2ab6648f8f96c51ccf87` | `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-FIT-V1` | (spend identity) | `smoke-fit-plan-registered-v1.json` | same | same | same |
@@ -266,7 +266,7 @@ Each of these was measured, not assumed; the refusal is quoted in the report tha
 | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-FIT-V1` | (spend identity) | `twin-smoke-fit-plan-registered-v1.json` | same | same | same |
 
 Protocol document `protocol-registered-v1.json` sha256
-`81b9a035c0d38e234c43c06346912dce51feb48ef4819ed211d9866269a231f5`.
+`d9144b0ee57e5829f7229ba9a75ae1aa5bf4936f9480014b60eab1718a3babae`.
 
 `core.flight.cli check` exits **0 on all six cells** on this committed tree, with the measured `config_hash` and
 `protocol_hash` equal to the values above, `prepared_artifacts_ok: true` (no pin yet: the flip mints each cell's
