@@ -262,7 +262,7 @@ Each of these was measured, not assumed; the refusal is quoted in the report tha
 | `SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-FIT-V1` | `...-r01-twin-fit-v1` | `twin-fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1` | `...-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `a124c8caf5cef712832dbb12610e0aa692b1babe9a99b9c73da5bd9ff9bd2a55` | `860a1aac318902c579017c8062de3ebf0d2f8b3f5a530012e8775bf9c3bf5364` | `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-FIT-V1` | (spend identity) | `smoke-fit-plan-registered-v1.json` | same | same | same |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1` | `...-smoke-4-twin-v1` | `twin-smoke-generation-plan-registered-v1.json` | `a54351d89c7370cdf514b0b4cffc22632d0fcc9ff7f03cdd18e5b555ce7d04dd` | `f6dc4b52236745f5628c27e036b75e29f19bee8ed4862330988139b9e5260633` | same |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1` | `...-smoke-4-twin-v1` | `twin-smoke-generation-plan-registered-v1.json` | `e7ea268c6b7d51ee2027cc8ced7d2137c41f8212350ae677355170fb55a01df1` | `01364bfb41c4028aabdcf3f94d620106c2acadad034694a223e9b02262e1dc2f` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-FIT-V1` | (spend identity) | `twin-smoke-fit-plan-registered-v1.json` | same | same | same |
 
 Protocol document `protocol-registered-v1.json` sha256
