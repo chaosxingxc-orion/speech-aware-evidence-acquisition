@@ -1,0 +1,223 @@
+{
+  "attempt_id": "attempt-np8-equivalence-4-v1",
+  "audio_seconds": 11.90275,
+  "comparisons": [
+    {
+      "audio_seconds": 3.199562,
+      "audio_sha256": "1158fce48b28aa372a57cc71e58aa6d9fec8fcff280c817b5792ad54f4e46472",
+      "feature_payload_identical_to_resident_packet": true,
+      "legacy_cache_file_identical_to_resident_cache": true,
+      "legacy_cache_key": "11067105036044411413",
+      "packet_id": "slurp/devel/003620/audio-1498567827",
+      "resident_legacy_cache_still_warm": true,
+      "resident_packet": {
+        "audio_sha256": "1158fce48b28aa372a57cc71e58aa6d9fec8fcff280c817b5792ad54f4e46472",
+        "chunks": [
+          {
+            "feature_sha256": "1fbea343b11feb93539d09d6d0a595e790a328cce48239b5e7ab34829e9e2800",
+            "n_embd": 2048,
+            "n_tokens": 52,
+            "ordinal": 0
+          }
+        ],
+        "encoder_receipt_sha256": "e5c4a135eef1f2066cd2098f6375ec5d4ab7aea86b12133f8eac8a8ddb5bbf49",
+        "packet_sha256": "15b03d5ad52febb12a49526f9a46e5c5d1a068bb9e10ef970f3e9e050b609d2b"
+      },
+      "sample_id": "slurp:devel:003620:audio-1498567827",
+      "scratch_chunks": [
+        {
+          "feature_payload_sha256": "1fbea343b11feb93539d09d6d0a595e790a328cce48239b5e7ab34829e9e2800",
+          "file_bytes": 426000,
+          "file_sha256": "a419c7264f0b3f7f7c4897d8d8f8d90a7f8c0cdf139c5da182e747b9ad41bcc6",
+          "filename": "11067105036044411413_o0.feat",
+          "n_embd": 2048,
+          "n_tokens": 52
+        }
+      ]
+    },
+    {
+      "audio_seconds": 1.599813,
+      "audio_sha256": "c89730435b1a58020be9428d403a49f6b2a87d3e7e741f8bcdedcb51e5af9621",
+      "feature_payload_identical_to_resident_packet": true,
+      "legacy_cache_file_identical_to_resident_cache": true,
+      "legacy_cache_key": "17333473028958016422",
+      "packet_id": "slurp/devel/010388/audio-1494548673",
+      "resident_legacy_cache_still_warm": true,
+      "resident_packet": {
+        "audio_sha256": "c89730435b1a58020be9428d403a49f6b2a87d3e7e741f8bcdedcb51e5af9621",
+        "chunks": [
+          {
+            "feature_sha256": "a35b880e2384239e2c90b3c208e4c0289a5217f55e635cb0bcd39b3020dbaeec",
+            "n_embd": 2048,
+            "n_tokens": 26,
+            "ordinal": 0
+          }
+        ],
+        "encoder_receipt_sha256": "e5c4a135eef1f2066cd2098f6375ec5d4ab7aea86b12133f8eac8a8ddb5bbf49",
+        "packet_sha256": "53c1913356876cb81645ed15381b1bb78f5cf7b724762ef67f341fb472589fc5"
+      },
+      "sample_id": "slurp:devel:010388:audio-1494548673",
+      "scratch_chunks": [
+        {
+          "feature_payload_sha256": "a35b880e2384239e2c90b3c208e4c0289a5217f55e635cb0bcd39b3020dbaeec",
+          "file_bytes": 213008,
+          "file_sha256": "7f5bc2918c40a71a2ebf616391fdd1efa95d5e523c4f6a0b0470ee61d9b565f0",
+          "filename": "17333473028958016422_o0.feat",
+          "n_embd": 2048,
+          "n_tokens": 26
+        }
+      ]
+    },
+    {
+      "audio_seconds": 2.368,
+      "audio_sha256": "835ce4e60aecf697bf6eebbadf087a8bffc0a298cf417d174c746c4aab8999ac",
+      "feature_payload_identical_to_resident_packet": true,
+      "legacy_cache_file_identical_to_resident_cache": true,
+      "legacy_cache_key": "7268171815892389922",
+      "packet_id": "slurp/devel/014069/audio-1434532898-headset",
+      "resident_legacy_cache_still_warm": true,
+      "resident_packet": {
+        "audio_sha256": "835ce4e60aecf697bf6eebbadf087a8bffc0a298cf417d174c746c4aab8999ac",
+        "chunks": [
+          {
+            "feature_sha256": "9f02b70ab141874d480ed94a530e4bb5c0d5afa16b9fb7e9ad3ed1246edb0bdc",
+            "n_embd": 2048,
+            "n_tokens": 39,
+            "ordinal": 0
+          }
+        ],
+        "encoder_receipt_sha256": "e5c4a135eef1f2066cd2098f6375ec5d4ab7aea86b12133f8eac8a8ddb5bbf49",
+        "packet_sha256": "704b7b317e6ef8aca7bda62436ffc7b501d92831eb39427d2ce436b4e2c681ba"
+      },
+      "sample_id": "slurp:devel:014069:audio-1434532898-headset",
+      "scratch_chunks": [
+        {
+          "feature_payload_sha256": "9f02b70ab141874d480ed94a530e4bb5c0d5afa16b9fb7e9ad3ed1246edb0bdc",
+          "file_bytes": 319504,
+          "file_sha256": "770e2f4012294f3ed5085d2ae10dc09eabdebf5fd208026e900fc34ceda5ede6",
+          "filename": "7268171815892389922_o0.feat",
+          "n_embd": 2048,
+          "n_tokens": 39
+        }
+      ]
+    },
+    {
+      "audio_seconds": 4.735375,
+      "audio_sha256": "132aad17983f756297dcc346454c1dadf5c17c4f17499b335def1f59a292b8f3",
+      "feature_payload_identical_to_resident_packet": true,
+      "legacy_cache_file_identical_to_resident_cache": true,
+      "legacy_cache_key": "1707457404711482424",
+      "packet_id": "slurp/devel/014872/audio-1502200664",
+      "resident_legacy_cache_still_warm": true,
+      "resident_packet": {
+        "audio_sha256": "132aad17983f756297dcc346454c1dadf5c17c4f17499b335def1f59a292b8f3",
+        "chunks": [
+          {
+            "feature_sha256": "31c66a1c77cb2fb107a4bd822012a8682c2c7f595e63f6e12b78966d18ccb61c",
+            "n_embd": 2048,
+            "n_tokens": 65,
+            "ordinal": 0
+          }
+        ],
+        "encoder_receipt_sha256": "e5c4a135eef1f2066cd2098f6375ec5d4ab7aea86b12133f8eac8a8ddb5bbf49",
+        "packet_sha256": "cb5fc5fee1c31f596c2decf43960119e19ca4ca8e936c3f5644e7bb2555e5718"
+      },
+      "sample_id": "slurp:devel:014872:audio-1502200664",
+      "scratch_chunks": [
+        {
+          "feature_payload_sha256": "31c66a1c77cb2fb107a4bd822012a8682c2c7f595e63f6e12b78966d18ccb61c",
+          "file_bytes": 532496,
+          "file_sha256": "c418665068634080262a15f43e9971f17887830804415043cc2cd5c35547f2f7",
+          "filename": "1707457404711482424_o0.feat",
+          "n_embd": 2048,
+          "n_tokens": 65
+        }
+      ]
+    }
+  ],
+  "config_fragments": {
+    "baseline": "speech-native-preprocess",
+    "dataset": "slurp-speech-native-devel-remainder-np8-equivalence-4",
+    "experiment": "slurp-devel-remainder-np8-equivalence-4-preprocess",
+    "model": "q4km-preprocess-featcache-cpu-sidecar-np8-scratch"
+  },
+  "config_hash": "bd39d33f520a9d9ae9c8e3b7b882e90c803b3d6614c855ec367268839c82f8c4",
+  "contacts": 4,
+  "core_client": {
+    "cost": {
+      "audio_seconds_used": 11.902750000000001,
+      "calls_used": 4,
+      "completion_tokens_total": 4,
+      "latency_seconds_total": 43.94502830397687,
+      "prompt_tokens_total": 302,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+    },
+    "trace_manifest_hash": "eb28a3e83a2d6c8c65cb2b222c69589d43cef00c60657001072a346177cd8cde"
+  },
+  "encode_seconds": 13.708,
+  "failures": [],
+  "feature_payload_identical_on_every_row": true,
+  "generated_at": "2026-09-23T07:07:47.416864+00:00",
+  "geometry": {
+    "encode_workers": 4,
+    "measured_slots": 8,
+    "reference_feature_root": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+    "reference_promotion_receipt": "DEV-2000-ADDED-promotion.json",
+    "reference_slots": 4,
+    "resident_legacy_cache_dir": "/home/chao/feat-cache/slurp-q4km",
+    "scratch_legacy_cache_dir": "/home/chao/feat-cache/scratch-np8-equivalence-20260923",
+    "server_args": [
+      "-c",
+      "16384",
+      "-np",
+      "8",
+      "-b",
+      "512",
+      "-ub",
+      "128",
+      "-fa",
+      "on",
+      "-ngl",
+      "0",
+      "--no-mmproj-offload"
+    ]
+  },
+  "gpu_offload": "-ngl 0 --no-mmproj-offload: this pass leaves the GPU free",
+  "legacy_cache_file_identical_on_every_comparable_row": true,
+  "mode": "geometry-equivalence",
+  "per_row_audio_second_per_wall_second": 0.8683,
+  "per_row_seconds": {
+    "slurp:devel:003620:audio-1498567827": 6.042,
+    "slurp:devel:010388:audio-1494548673": 12.792,
+    "slurp:devel:014069:audio-1434532898-headset": 12.791,
+    "slurp:devel:014872:audio-1502200664": 12.791
+  },
+  "per_row_seconds_mean": 11.104,
+  "promotion": "NONE. This roster promotes nothing: no packet is materialised, no promotion receipt is written, and neither the resident legacy cache nor the resident packet root is opened for writing.",
+  "roster": "devel-remainder-np8-equivalence-4",
+  "rows": 4,
+  "rows_compared": 4,
+  "run_id": "SAEA-SN-DEVEL-REMAINDER-NP8-EQUIVALENCE-4-V1",
+  "schema": "saea-sidecar-geometry-equivalence-receipt-v1",
+  "session": {
+    "pid": 830295,
+    "session_id": "SAEA-SN-DEVEL-REMAINDER-NP8-EQUIVALENCE-4-V1-attempt-np8-equivalence-4-v1-cpu-sidecar",
+    "stop": {
+      "final_process_state": "defunct",
+      "forced": false,
+      "pid": 830295,
+      "runtime_receipt_sha256": "e80c635d7344a9b4181a2b2d81330e35b626a6191fd499f95ac61b15d17d808b",
+      "schema": "saea-session-stop-receipt-v1",
+      "session_id": "SAEA-SN-DEVEL-REMAINDER-NP8-EQUIVALENCE-4-V1-attempt-np8-equivalence-4-v1-cpu-sidecar",
+      "session_receipt_sha256": "71d36fd9fd77ae636634049bbcbd6f083057285622a1437bd396dcf8332badc0",
+      "session_role": "preprocess",
+      "stopped_at": "2026-09-23T07:07:47.372385+00:00",
+      "study": "speech-aware-evidence-acquisition",
+      "termination_signal": "SIGTERM"
+    }
+  },
+  "split_identity_hash": "b33dab5f5dcf2cae7d17434e803c39ff61efbdf2e14ce2c1b7ca0b3ff168ec7c",
+  "study": "speech-aware-evidence-acquisition",
+  "verdict": "EQUIVALENT"
+}
