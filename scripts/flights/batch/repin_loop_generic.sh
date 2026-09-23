@@ -37,6 +37,7 @@ PY
   fi
   if grep -q "has uncommitted changes" "$ERR"; then continue; fi
   if [ -s "$ERR" ] && grep -q '"error"' "$ERR"; then echo "REFUSAL:"; $PY -c "import json,io; print(json.load(io.open('$ERR'))['error'][:500])"; exit 4; fi
+  if [ -s "$ERR" ] && grep -q "Traceback" "$ERR"; then echo "REFUSAL (traceback):"; tail -3 "$ERR" | cut -c1-300; exit 4; fi  # 2026-09-23: a raw traceback was misread as satisfied
   echo "satisfied at $(git rev-parse HEAD)"; exit 0
 done
 echo "did not converge"; exit 5
