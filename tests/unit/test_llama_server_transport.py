@@ -15,6 +15,7 @@ import subprocess
 import sys
 import threading
 import time
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -3558,3 +3559,281 @@ def test_metered_native_role_roundtrip_sends_bound_framework_history_once(tmp_pa
     assert close_summary["request_count"] == 3
     assert close_summary["cost"]["calls_used"] == 3
     assert close_summary["cost"]["tool_calls"] == 1
+
+
+# ---------------------------------------------------------------------------
+# Cell ADV-1 (2026-09-23): a construction-visible payload under a SPEECH
+# prompt order.
+#
+# The SMOKE cell ``slurp-native-stage3-advantage-r01-smoke-4-v1`` was REFUSED
+# AT ITS FIRST CONTACT, before a single model call was spent: the composed
+# model fragment ``q4km-mmproj-free-slurp-native-bounded-perception-proof-
+# np4-ctx24k-max512-v1`` declares ``prompt_order: speech-query-prefix-v2``
+# (it is the resident np4 serving geometry, and ``prompt_order`` travels
+# inside the compared session identity, so it cannot simply be swapped), while
+# the construction dispatch sends the D2-frozen TEXT-ONLY field set -- system
+# instruction, EMPTY user content, ``construction_targets``, and none of the
+# five speech-feature fields. The renderer had no branch for that pair and
+# refused on the first speech-feature rail.
+# ---------------------------------------------------------------------------
+
+_ADV1_TARGETS = [
+    {
+        "sample_id": "slurp:train:000282:audio-1502114155",
+        "target": '{"scenario": "synthetic", "action": "act0"}',
+    }
+]
+
+
+def _adv1_payload(tmp_path, **overrides):
+    """The shape ``rails.core_client`` builds for the advantage arm: bare-core's
+    zero-supply field set (no ``supplied_evidence``/``evidence_provenance``)
+    plus exactly ``construction_targets``."""
+
+    payload = _boundary_payload(
+        tmp_path,
+        task_instruction="Write one advantage statement for this row.",
+        construction_targets=list(_ADV1_TARGETS),
+    )
+    payload.update(overrides)
+    return payload
+
+
+def _speech_order_transport(tmp_path, *, post=None, prompt_order="speech-query-prefix-v2"):
+    feature_root = tmp_path / "features"
+    feature_root.mkdir(parents=True, exist_ok=True)
+    return _transport(
+        _base_url(),
+        tmp_path,
+        post=post if post is not None else (lambda _url, _body: _canned_response()),
+        session=_fake_inference_session(),
+        prompt_order=prompt_order,
+        feature_root=feature_root,
+    )
+
+
+def test_a_construction_payload_under_a_speech_order_renders_text_only(tmp_path):
+    """The repair: the ADV-1 request shape renders, and renders exactly as the
+    evidence-first system order renders it -- system instruction, empty user
+    content, zero audio parts, zero speech-feature parts."""
+
+    captured = {}
+
+    def post(_url, body):
+        captured["body"] = json.loads(body)
+        return _canned_response()
+
+    transport = _speech_order_transport(tmp_path, post=post)
+    payload = _adv1_payload(tmp_path)
+    request_bytes = canonical_bytes(payload)
+
+    body, receipt = transport.render_request_with_receipt(request_bytes)
+
+    assert [message["role"] for message in body["messages"]] == ["system", "user"]
+    assert body["messages"][0] == {
+        "role": "system",
+        "content": "Write one advantage statement for this row.",
+    }
+    assert body["messages"][1]["content"] == []
+    assert not [
+        part
+        for message in body["messages"]
+        if isinstance(message["content"], list)
+        for part in message["content"]
+    ]
+    assert "input_audio" not in json.dumps(body)
+    assert "input_speech_features" not in json.dumps(body)
+
+    assert receipt["text_only_construction"] is True
+    assert receipt["prompt_order"] == "speech-query-prefix-v2"
+    assert "construction_targets" in receipt["reason"]
+    assert receipt["input_request_id"] == "req-1"
+    assert receipt["input_request_bytes_sha256"] == hashlib.sha256(
+        request_bytes
+    ).hexdigest()
+    assert receipt["rendered_body_canonical_sha256"] == hashlib.sha256(
+        canonical_bytes(body)
+    ).hexdigest()
+
+    # The whole send path works too, and emits no projection trace record
+    # (there is no projection policy on this transport at all).
+    transport(request_bytes)
+    assert captured["body"] == body
+
+
+def test_the_text_only_construction_render_equals_the_evidence_first_render(tmp_path):
+    """"Renders exactly as ``evidence-first-system-v2`` renders it" is asserted
+    against that branch itself, not restated by hand."""
+
+    speech = _speech_order_transport(tmp_path)
+    evidence_first = _transport(
+        _base_url(),
+        tmp_path,
+        post=lambda _url, _body: _canned_response(),
+        prompt_order="evidence-first-system-v2",
+    )
+    request_bytes = canonical_bytes(_adv1_payload(tmp_path))
+    assert speech.render_request(request_bytes) == evidence_first.render_request(
+        request_bytes
+    )
+
+
+def test_a_speech_payload_under_the_same_order_keeps_its_refusals_in_order(tmp_path):
+    """Every payload that is NOT construction-visible falls through to the
+    speech-feature branch with its rails unchanged, in the same order."""
+
+    transport = _speech_order_transport(tmp_path)
+    payload = _boundary_payload(
+        tmp_path, task_instruction="Choose exactly one opaque key id."
+    )
+
+    with pytest.raises(FrozenCoreError) as first:
+        transport.render_request(canonical_bytes(payload))
+    assert "query_source must be 'speech_features'" in str(first.value)
+
+    payload["query_source"] = "speech_features"
+    with pytest.raises(FrozenCoreError) as second:
+        transport.render_request(canonical_bytes(payload))
+    assert "mmproj_loaded=false" in str(second.value)
+
+    payload["mmproj_loaded"] = False
+    with pytest.raises(FrozenCoreError) as third:
+        transport.render_request(canonical_bytes(payload))
+    assert "key_representation_id must be a non-empty string" in str(third.value)
+
+    payload["key_representation_id"] = "k1-text-card-v1"
+    payload["matcher_policy_id"] = "m1-listwise-v1"
+    with pytest.raises(FrozenCoreError) as fourth:
+        transport.render_request(canonical_bytes(payload))
+    assert "must carry speech_feature_parts" in str(fourth.value)
+
+
+@pytest.mark.parametrize(
+    "field, value",
+    [
+        ("query_source", "speech_features"),
+        ("mmproj_loaded", False),
+        ("speech_feature_parts", [{"packet_id": "p", "sha256": "c" * 64, "role": "query"}]),
+        ("speech_packet_sha256", "c" * 64),
+        ("key_representation_id", "k1-text-card-v1"),
+        ("matcher_policy_id", "m1-listwise-v1"),
+        ("raw_speech_query", {"media_relpath": "media/5000001.mp3", "sha256": "d" * 64}),
+        ("exemplar_bank", [{"media_relpath": "media/5000001.mp3", "label": "x"}]),
+        ("delta_candidates", [{"media_relpath": "media/5000001.mp3"}]),
+    ],
+)
+def test_a_construction_payload_carrying_speech_or_media_is_refused(
+    tmp_path, field, value
+):
+    """That combination is UNDEFINED -- the two request shapes disagree about
+    what the core is being asked to perceive -- so it fails closed rather than
+    silently rendering as one of them."""
+
+    transport = _speech_order_transport(tmp_path)
+    payload = _adv1_payload(tmp_path, **{field: value})
+    with pytest.raises(FrozenCoreError) as error:
+        transport.render_request(canonical_bytes(payload))
+    message = str(error.value)
+    assert "no speech-feature field and no media part" in message
+    assert field in message
+
+
+def test_a_construction_payload_carrying_agent_history_is_refused(tmp_path):
+    """The text-only render has nowhere to put Agent state/control; dropping it
+    silently would send a prompt the audited payload does not describe."""
+
+    transport = _speech_order_transport(tmp_path)
+    content = "prior agent state"
+    payload = _adv1_payload(
+        tmp_path,
+        history=[
+            {
+                "turn": 0,
+                "role": "control",
+                "contact_id": "unit-1/c1",
+                "content": content,
+                "content_sha256": hashlib.sha256(content.encode("utf-8")).hexdigest(),
+            }
+        ],
+    )
+    with pytest.raises(FrozenCoreError) as error:
+        transport.render_request(canonical_bytes(payload))
+    assert "nowhere to render Agent state/control" in str(error.value)
+
+
+def test_a_construction_payload_with_a_bound_projection_is_refused(tmp_path):
+    """A native evidence projection projects speech/raw native history. There
+    is none here, so the pair is refused by name instead of dying later on
+    "must produce exactly one receipt; got 0"."""
+
+    feature_root = tmp_path / "features"
+    feature_root.mkdir(parents=True, exist_ok=True)
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=lambda _url, _body: _canned_response(),
+        session=_fake_inference_session(),
+        prompt_order="speech-query-prefix-v2",
+        feature_root=feature_root,
+        native_evidence_projection="native-knowledge-reference-v1",
+    )
+    with pytest.raises(FrozenCoreError) as error:
+        transport.render_request(canonical_bytes(_adv1_payload(tmp_path)))
+    assert "native evidence projection is undefined" in str(error.value)
+
+
+def test_the_real_adv1_payloads_render_under_the_real_np4_prompt_order(
+    tmp_path, monkeypatch
+):
+    """END TO END, zero contacts: build the payloads the way the real ADV-1
+    dispatch builds them (``core.flight.runtime._run_construction_proposer`` ->
+    ``rails.core_client`` -> ``core.policies.build_arm_payload``, observed
+    through ``FlightRuntime.wire_check``), then render each one through the
+    REAL transport under the REAL flown fragment's own ``prompt_order``."""
+
+    import test_flight_construction_advantage as advantage
+
+    rows = advantage._gold_rows()
+
+    def _load(_lock, _root, sample_ids):
+        return {sample_id: rows[sample_id] for sample_id in sample_ids}
+
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.data.slurp."
+        "load_slurp_train_construction_rows",
+        _load,
+    )
+    runtime, _material = advantage._runtime(tmp_path / "flight", rows)
+    payloads: list = []
+    runtime.wire_check(
+        seal_and_score=False,
+        response_text=advantage._ADVANTAGE_RESPONSE,
+        request_payload_observer=payloads.append,
+    )
+    assert len(payloads) == len(advantage.SAMPLE_IDS)
+
+    fragment = json.loads(
+        (
+            Path(__file__).resolve().parents[2]
+            / "configs"
+            / "model"
+            / "q4km-mmproj-free-slurp-native-bounded-perception-proof-"
+            "np4-ctx24k-max512-v1.json"
+        ).read_text(encoding="utf-8")
+    )
+    # The flown fragment's own key, read rather than restated: this is exactly
+    # the value that refused the smoke's first contact.
+    assert fragment["prompt_order"] == "speech-query-prefix-v2"
+
+    transport = _speech_order_transport(
+        tmp_path, prompt_order=fragment["prompt_order"]
+    )
+    for payload in payloads:
+        assert "construction_targets" in payload
+        assert not {"query_source", "speech_feature_parts"} & set(payload)
+        body, receipt = transport.render_request_with_receipt(canonical_bytes(payload))
+        assert receipt["text_only_construction"] is True
+        assert [message["role"] for message in body["messages"]] == ["system", "user"]
+        assert body["messages"][0]["content"] == payload["task_instruction"]
+        assert body["messages"][1]["content"] == []
+        assert "input_audio" not in json.dumps(body)

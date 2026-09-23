@@ -251,3 +251,53 @@ mixed responses; the JSON shape; the committed template's placeholders; registra
 `tests/unit/test_stage3_rollout_trajectory.py` (a synthetic sealed receipt + trace fixture; the
 candidate list, the delivered path, the per-node tokens and truncation flags; no text in either
 written file; idempotency; the `rows` view loads through `load_advantage_pairs`).
+
+## First launch REFUSED, recovery re-registration (2026-09-23)
+
+The smoke cell `slurp-native-stage3-advantage-r01-smoke-4-v1` was **refused at its first contact**,
+**before any model call was spent**. The attempt
+`attempt-slurp-native-stage3-advantage-r01-smoke-4-v1-generation` was opened and carries **zero
+contacts**; it is left in place as the record of the refused launch.
+
+**The refusal.** `core/model/transport.py` `render_request_with_receipt`:
+
+```
+FrozenCoreError: speech feature request query_source must be 'speech_features'
+```
+
+**Root cause.** The composed model fragment
+`q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1` declares
+`prompt_order: speech-query-prefix-v2` (it is the resident np4 serving geometry). The ADV-1 dispatch
+is the **text-only construction** path -- `core.flight.runtime._run_construction_proposer` ->
+`rails.core_client.FrozenCoreClient.complete(..., text_only_sample_id=...)` ->
+`core.policies.build_arm_payload` -- which sends the D2-frozen construction field set: the rendered
+instruction as the system message, an **empty** user content list, `construction_targets`, and
+**none** of the five speech-feature fields. The renderer had no branch for that pair, so the
+speech-feature branch refused on its first rail. `prompt_order` travels inside the **compared**
+session identity (`model_fragment_sha256` hashes the whole fragment;
+`core.session.serving.SERVING_IDENTITY_FIELDS`), so a sibling fragment declaring a text prompt order
+could not have attached to the resident session `serving-slurp-native-candidate-five-train-a-np4-v1`
+at all -- the repair belongs in the renderer.
+
+**The repair.** A dedicated text-only construction branch in
+`core/model/transport.py`: under a speech prompt order, a construction-visible payload renders
+exactly as the `evidence-first-system-v2` branch renders it (system instruction, empty user content,
+zero audio parts, zero speech packets), and its render receipt carries
+`text_only_construction: true` with the reason. A construction-visible payload that ALSO carries a
+speech-feature field, a media part or a non-empty `history` is refused by name -- that combination is
+undefined. Every other payload under a speech order keeps its refusals, in the same order. Covered by
+`tests/unit/test_llama_server_transport.py` (the render, the receipt, the equality against the
+`evidence-first-system-v2` branch, the ordered speech refusals, the fail-closed pairs, and an
+end-to-end test that renders the payloads `FlightRuntime.wire_check` actually builds for this arm
+under the flown fragment's own `prompt_order`).
+
+**Recovery re-registration.** This is the **one** root-diagnosed recovery re-registration the failure
+rule allows for this flight. The smoke generation cell's attempt id becomes
+`attempt-slurp-native-stage3-advantage-r01-smoke-4-v1-generation-recovery`
+(`configs/experiment/slurp-native-stage3-advantage-r01-smoke-4-v1.json`, and `smoke_attempt_id` in
+`scripts/flights/batch/batch_chain_adv1.sh`). **Unchanged:** the fit attempt id, both of the arm's
+attempt ids, both run ids, the population, the roster receipts, the templates, the response format,
+the caps and the decision rule. Budgets stay **run-cumulative** across every attempt of the run id,
+so the refused attempt's zero contacts count against the same 4-contact ceiling. The readiness states
+and the registered plan/protocol documents are untouched here; the coordinator re-pins both cells in
+one cycle with `scripts/flights/batch/adv1_flip_both.sh`.

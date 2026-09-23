@@ -288,6 +288,42 @@ so it is a registration decision for root, not a mechanical repair, and this pac
 are left byte-consistent with each other so the chosen repair can be applied to both in one edit. Applying it
 re-composes both config hashes — which the re-pin cycle rewrites anyway.
 
+### 13a. Second blocking defect, found at the first launch and repaired (2026-09-23)
+
+The section 13 defect was repaired and both cells were flipped to ready. The smoke then **refused at
+its first contact, before any model call was spent**, on a second, independent defect. The attempt
+`attempt-slurp-native-stage3-advantage-r01-smoke-4-v1-generation` was opened and carries **zero
+contacts**.
+
+```
+FrozenCoreError: speech feature request query_source must be 'speech_features'
+```
+
+raised from `core/model/transport.py` `render_request_with_receipt`.
+
+**Why.** The composed model fragment
+`q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1` declares
+`prompt_order: speech-query-prefix-v2` -- it is the **resident** np4 serving geometry. ADV-1's
+dispatch is the text-only construction path
+(`core.flight.runtime._run_construction_proposer` -> `rails.core_client` ->
+`core.policies.build_arm_payload`), whose D2-frozen payload is the rendered instruction as the system
+message, an **empty** user content list, `construction_targets`, and **none** of the five
+speech-feature fields. The renderer had no branch for that pair. A new fragment could not have fixed
+it: `prompt_order` is inside the **compared** session identity (`model_fragment_sha256` hashes the
+whole fragment; `core.session.serving.SERVING_IDENTITY_FIELDS`), so a fragment declaring a text
+prompt order cannot attach to the resident session.
+
+**Repaired in the renderer.** A dedicated text-only construction branch: under a speech prompt order,
+a construction-visible payload renders exactly as `evidence-first-system-v2` renders it (system
+instruction, empty user content, zero audio parts, zero speech packets), with a render receipt
+carrying `text_only_construction: true` and the reason. A construction-visible payload that also
+carries a speech-feature field, a media part or a non-empty `history` is refused by name; every other
+payload under a speech order keeps its refusals in the same order. Covered by
+`tests/unit/test_llama_server_transport.py`, including an end-to-end test that renders the payloads
+`FlightRuntime.wire_check` actually builds for this arm under the flown fragment's own
+`prompt_order`. Nothing about the contact form, the population, the templates, the response format,
+the caps or the decision rule moves.
+
 ## 14. The coordinator's sequence
 
 On the main checkout, after merging `fable/adv1reg` **and after repairing section 13**. Nothing below was performed by
@@ -344,3 +380,31 @@ Expected rows 4 then 225, one contact per row, ceiling 1, tool-free, session
 `serving-slurp-native-candidate-five-train-a-np4-v1`. The arm opens only after the smoke seals.
 
 **4. Countersign** the four exposure-ledger rows as the flights consume them. Do not countersign before contact.
+
+### 14a. Recovery re-registration after the refused first launch (2026-09-23)
+
+The sequence above was executed through step 3 and the smoke's first launch was **refused before
+contact** (section 13a). This is the **one** root-diagnosed recovery re-registration the failure rule
+allows for this flight.
+
+**Changed, and only this:** the smoke GENERATION cell's attempt id becomes
+
+```
+attempt-slurp-native-stage3-advantage-r01-smoke-4-v1-generation-recovery
+```
+
+in `configs/experiment/slurp-native-stage3-advantage-r01-smoke-4-v1.json` and as `smoke_attempt_id`
+in `scripts/flights/batch/batch_chain_adv1.sh`.
+
+**Unchanged:** the smoke fit attempt id
+(`attempt-slurp-native-stage3-advantage-r01-smoke-4-v1-fit`), both arm attempt ids
+(`attempt-slurp-native-stage3-advantage-r01-v1-generation` / `-fit`), all four run ids, the
+population, both roster receipts, the two templates, the response format, every cap and the decision
+rule. The refused attempt is left in place as the record of the refused launch; budgets are
+**run-cumulative** across every attempt of a run id, so its zero contacts count against the same
+4-contact ceiling.
+
+**Coordinator:** re-run step 2 (`bash scripts/flights/batch/adv1_flip_both.sh`) so the re-pin rewrites
+the registered smoke documents and the ledger row to the recovery attempt id and to the freshly
+composed hashes, then step 3. The readiness states and the registered plan hashes were NOT edited by
+hand.
