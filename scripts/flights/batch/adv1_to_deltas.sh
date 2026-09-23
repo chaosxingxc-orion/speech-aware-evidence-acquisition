@@ -38,6 +38,13 @@
 #      pre-v1r rule and is kept so an earlier release reproduces byte for byte. Under
 #      target-only the 147 slot-contract rows carried a SLOT TYPE as their facet and only
 #      121 of 379 values were reachable by any registered intent (Solver 11 of 151).
+#      S3-6 retirement (owner decision 83): DELTA_RETIRE_VALUE_IDS names the retention
+#      document scripts/build_slurp_stage3_delta_retention.py writes over the PREVIOUS
+#      version's read. The curator then drops the named predecessor rows from version t's
+#      set, records their ids in the report, and keeps them as dedup tombstones so the
+#      same statements cannot re-enter from the same advantage outputs. Unset -- the
+#      default -- leaves append-only exactly as it was and reproduces an earlier
+#      version byte for byte.
 #   C  twin: scripts/build_slurp_stage3_delta_twin.py derangement of associated_facet_ids
 #      (candidate-bound nodes) and of the TARGET field (the unconditional node), each moving a
 #      row's WHOLE attachment as one unit so the token count and the facet count are held
@@ -61,7 +68,7 @@
 # Environment overrides: REPO, SPEECHRL_DATA_DIR, PY, ADV1_RUN, ADV1_OUTPUTS, SCORE_RUN,
 # DELTA_VERSION_TAG, DELTA_FROM_VERSION_TAG, DELTA_FACET_RULE, DELTA_GOLD_INTENTS,
 # DELTA_INTENT_CATALOG, DELTA_ITERATION, DELTA_TWIN_SEED, DELTA_PREDECESSOR,
-# DELTA_SCHEMA_VERSION, DELTA_TRANSCRIPTS, ADV1_EXPERIMENT (the fragment step A reads the split
+# DELTA_SCHEMA_VERSION, DELTA_TRANSCRIPTS, DELTA_RETIRE_VALUE_IDS, ADV1_EXPERIMENT (the fragment step A reads the split
 # identity out of; overridable so the whole sequence can be dry-rehearsed before ADV-1 sealed).
 # DELTAS_DRY=1 (the default) runs A read-only and prints every mutating command line;
 # DELTAS_DRY=0 runs them. Commit the six touched fragments AND the two materialised release
@@ -90,6 +97,9 @@ DELTA_FACET_RULE=${DELTA_FACET_RULE:-source-intent}
 # The construction rows' transcripts, read ONLY to reject statements that repeat six or
 # more consecutive transcript tokens. Root's own model-free preparation; never in Git.
 DELTA_TRANSCRIPTS=${DELTA_TRANSCRIPTS:-}
+# S3-6 (owner decision 83): the retention document whose RETIRE ids version t drops from
+# its predecessor. Empty -- the default -- keeps the pre-S3-6 append-only curation.
+DELTA_RETIRE_VALUE_IDS=${DELTA_RETIRE_VALUE_IDS:-}
 
 PREPARED=$DATA/prepared/SAEA-SLURP-STAGE3-DELTAS-V1
 # S3-4s: the containment rule's input, beside the other prepared/ documents.
@@ -170,12 +180,19 @@ FACETS="--facet-rule $DELTA_FACET_RULE"
 if [ "$DELTA_FACET_RULE" = "source-intent" ]; then
   FACETS="$FACETS --gold-intents $DELTA_GOLD_INTENTS --intent-vocabulary $DELTA_INTENT_CATALOG"
 fi
+RETIRE=""
+if [ -n "$DELTA_RETIRE_VALUE_IDS" ]; then
+  [ -f "$DELTA_RETIRE_VALUE_IDS" ] || { echo "B  MISSING retention document $DELTA_RETIRE_VALUE_IDS"; exit 2; }
+  [ "$DELTA_PREDECESSOR" = "none" ] && { echo "B  DELTA_RETIRE_VALUE_IDS needs a DELTA_PREDECESSOR to retire rows from"; exit 2; }
+  RETIRE="--retire-value-ids $DELTA_RETIRE_VALUE_IDS"
+  echo "B  retiring the value ids named by $DELTA_RETIRE_VALUE_IDS"
+fi
 # shellcheck disable=SC2086
 run "$PY" -B scripts/build_slurp_stage3_delta_store.py \
     --advantage-outputs "$ADV1_OUTPUTS" --pairs "$PAIRS" --repo-root "$REPO" \
     --predecessor "$DELTA_PREDECESSOR" --iteration "$DELTA_ITERATION" \
     --run-id "$ADV1_RUN" --out-authored "$AUTHORED" \
-    --schema-version "$DELTA_SCHEMA_VERSION" $CONTAINMENT $FACETS \
+    --schema-version "$DELTA_SCHEMA_VERSION" $CONTAINMENT $FACETS $RETIRE \
     --out-source "$SOURCE" --source-split-identity-hash "$SPLIT"
 
 # ---------------------------------------------------------------- C: the derangement twin
@@ -214,7 +231,7 @@ run "$PY" -B scripts/build_slurp_stage3_delta_store.py \
     --advantage-outputs "$ADV1_OUTPUTS" --pairs "$PAIRS" --repo-root "$REPO" \
     --predecessor "$DELTA_PREDECESSOR" --iteration "$DELTA_ITERATION" \
     --run-id "$ADV1_RUN" --out-authored "$AUTHORED" \
-    --schema-version "$DELTA_SCHEMA_VERSION" $CONTAINMENT $FACETS \
+    --schema-version "$DELTA_SCHEMA_VERSION" $CONTAINMENT $FACETS $RETIRE \
     --out-source "$SOURCE" --source-split-identity-hash "$SPLIT" \
     --release "$REG" --data-root "$DATA" --release-pins "$RELEASE_PINS"
 # The twin's authored document is the derangement, not a curation, so it is released directly.

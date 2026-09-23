@@ -54,6 +54,20 @@ What it does
 4. Loads version t-1's authored rows (``--predecessor``, or the literal
    string ``none`` for iteration 1) and keeps them VERBATIM as the base of
    version t's set (append-only).
+
+   S3-6 retirement (``--retire-value-ids``, owner decision 83): append-only
+   is AMENDED exactly as that decision prescribes -- "a delta whose target
+   scenario shows a net harm beyond the null band is retired in version
+   t+1". The named predecessor rows are dropped from version t's set and
+   their ids are recorded in the curation report. Dropping them is not
+   enough on its own: version t is curated from the SAME advantage outputs,
+   so every retired statement would be re-proposed as a fresh candidate and
+   silently reinstated under a new iteration's ``value_id``. A retired row
+   is therefore kept as a TOMBSTONE for the dedup comparison only -- a
+   candidate that is an exact-normalised or Jaccard match of one is dropped
+   and counted, never emitted. Without the flag not one byte moves, so
+   ``--schema-version 1`` and every already-released store still reproduce
+   exactly.
 5. Dedups the whole set (predecessor rows first, in their existing order,
    then new candidates in input order) by EXACT normalised text, then by
    token-Jaccard >= 0.8 against every earlier SURVIVOR: a match drops the
@@ -567,12 +581,105 @@ def load_predecessor_rows(
     ]
 
 
+def load_retired_value_ids(path: Path) -> list[str]:
+    """The value ids version t+1 retires (S3-6, owner decision 83).
+
+    Accepts the retention document
+    ``scripts/build_slurp_stage3_delta_retention.py`` writes (schema
+    ``saea-stage3-delta-retention-v1``: ``retired_value_ids``, or a
+    ``decisions`` list carrying ``decision == "RETIRE"``), or a plain JSON
+    list of ids. Ordered and de-duplicated; ids only, never a statement.
+    """
+
+    document = json.loads(path.read_text(encoding="utf-8"))
+    raw: Sequence[object]
+    if isinstance(document, list):
+        raw = document
+    elif isinstance(document, Mapping) and isinstance(
+        document.get("retired_value_ids"), list
+    ):
+        raw = document["retired_value_ids"]
+    elif isinstance(document, Mapping) and isinstance(document.get("decisions"), list):
+        raw = [
+            entry.get("value_id")
+            for entry in document["decisions"]
+            if isinstance(entry, Mapping) and entry.get("decision") == "RETIRE"
+        ]
+    else:
+        raise Stage3DeltaStoreError(
+            f"{path} is not a retention document or a list of value ids"
+        )
+    ids: list[str] = []
+    for value in raw:
+        if not isinstance(value, str) or not value:
+            raise Stage3DeltaStoreError(f"{path} names a non-string value id")
+        if value not in ids:
+            ids.append(value)
+    if not ids:
+        raise Stage3DeltaStoreError(f"{path} retires no value id")
+    return ids
+
+
+def partition_retired(
+    rows: Sequence[Mapping[str, object]], retired_value_ids: Sequence[str]
+) -> tuple[list[dict[str, object]], list[dict[str, object]], dict[str, object]]:
+    """Split the predecessor rows into the ones version t keeps and the ones
+    it retires. PURE; returns ``(kept, retired, report)``.
+
+    ``report`` names counts and ids ONLY (``requested``, ``applied``,
+    ``applied_value_ids``, ``not_present_value_ids``): a retired row's
+    statement never reaches it.
+    """
+
+    wanted = list(dict.fromkeys(retired_value_ids))
+    present = {str(row["value_id"]) for row in rows}
+    kept: list[dict[str, object]] = []
+    retired: list[dict[str, object]] = []
+    for row in rows:
+        if str(row["value_id"]) in wanted:
+            retired.append(dict(row))
+        else:
+            kept.append(dict(row))
+    report = {
+        "requested": len(wanted),
+        "applied": len(retired),
+        "applied_value_ids": sorted(str(row["value_id"]) for row in retired),
+        "not_present_value_ids": [
+            value_id for value_id in wanted if value_id not in present
+        ],
+        "predecessor_rows_in": len(rows),
+        "predecessor_rows_kept": len(kept),
+    }
+    return kept, retired, report
+
+
+def _matches_pool(
+    normalised: str,
+    tokens: frozenset[str],
+    pool_normalised: Sequence[str],
+    pool_tokens: Sequence[frozenset[str]],
+    *,
+    jaccard_threshold: float,
+) -> bool:
+    """Is this candidate an exact-normalised or Jaccard match of anything in
+    ``pool``? The same two tests :func:`curate` applies to its survivors,
+    stated once so the tombstone scan cannot drift from them."""
+
+    for index, existing in enumerate(pool_normalised):
+        if existing == normalised:
+            return True
+        if _jaccard(pool_tokens[index], tokens) >= jaccard_threshold:
+            return True
+    return False
+
+
 def curate(
     *,
     predecessor_rows: Sequence[Mapping[str, object]],
     candidate_rows: Sequence[Mapping[str, object]],
     jaccard_threshold: float = 0.8,
     merge_facets: bool = False,
+    retired_rows: Sequence[Mapping[str, object]] = (),
 ) -> tuple[list[dict[str, object]], dict[str, int]]:
     """Append-only curation: predecessor rows verbatim, then new candidates,
     deduped by exact normalised text and by token-Jaccard against every
@@ -586,14 +693,24 @@ def curate(
     two rows independently produced must route on both intents; under
     ``target-only`` the facet is a restatement of TARGET and merging it would
     change nothing but the bytes, which is why the pre-v1r behaviour is the
-    default here."""
+    default here.
+
+    ``retired_rows`` (S3-6, owner decision 83) are TOMBSTONES: rows version
+    t+1 has retired, which are never emitted and never absorb provenance,
+    but against which every new candidate is still compared. A candidate
+    matching one is dropped and counted as ``retired_suppressed``, so a
+    retired lesson cannot walk back in under a fresh iteration's value id.
+    Survivors are scanned FIRST, so a candidate that also matches a LIVE row
+    is absorbed there as before: retirement removes a statement, it does not
+    poison an unrelated survivor that happens to be close to it."""
 
     survivors: list[dict[str, object]] = []
     normalised: list[str] = []
     tokens: list[frozenset[str]] = []
     counts = {
         "predecessor": 0, "new_accepted": 0, "exact_duplicate": 0,
-        "near_duplicate": 0, "facet_merges": 0,
+        "near_duplicate": 0, "facet_merges": 0, "retired_tombstones": 0,
+        "retired_suppressed": 0,
     }
 
     def _absorb(index: int, row: Mapping[str, object]) -> None:
@@ -618,6 +735,10 @@ def curate(
         tokens.append(_tokens(str(row["content"])))
         counts["predecessor"] += 1
 
+    retired_normalised = [_normalise(str(row["content"])) for row in retired_rows]
+    retired_tokens = [_tokens(str(row["content"])) for row in retired_rows]
+    counts["retired_tombstones"] = len(retired_normalised)
+
     for row in candidate_rows:
         text = str(row["content"])
         row_normalised = _normalise(text)
@@ -634,6 +755,12 @@ def curate(
                 break
         if match_index is not None:
             _absorb(match_index, row)
+            continue
+        if _matches_pool(
+            row_normalised, row_tokens, retired_normalised, retired_tokens,
+            jaccard_threshold=jaccard_threshold,
+        ):
+            counts["retired_suppressed"] += 1
             continue
         survivors.append(dict(row))
         normalised.append(row_normalised)
@@ -888,6 +1015,17 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--retire-value-ids", default=None, type=Path,
+        help=(
+            "S3-6 (owner decision 83): the retention document "
+            "scripts/build_slurp_stage3_delta_retention.py writes (or a plain JSON "
+            "list of value ids). The named PREDECESSOR rows are dropped from this "
+            "version's set and their ids are recorded in the report; they are also "
+            "kept as dedup tombstones so the same statements cannot re-enter as "
+            "fresh candidates. Requires --predecessor."
+        ),
+    )
+    parser.add_argument(
         "--construction-transcripts", default=None, type=Path,
         help=(
             "schema version 2 only: the construction rows' transcripts, read ONLY "
@@ -966,11 +1104,24 @@ def main(argv: Sequence[str] | None = None) -> int:
     predecessor_rows = load_predecessor_rows(
         args.predecessor, schema_version=args.schema_version
     )
+    retirement: dict[str, object] | None = None
+    retired_rows: list[dict[str, object]] = []
+    if args.retire_value_ids is not None:
+        if not predecessor_rows:
+            raise Stage3DeltaStoreError(
+                "--retire-value-ids requires a --predecessor to retire rows from"
+            )
+        retired_value_ids = load_retired_value_ids(args.retire_value_ids)
+        predecessor_rows, retired_rows, retirement = partition_retired(
+            predecessor_rows, retired_value_ids
+        )
+        retirement["source"] = str(args.retire_value_ids)
     survivors, curation_counts = curate(
         predecessor_rows=predecessor_rows,
         candidate_rows=candidates,
         jaccard_threshold=args.jaccard_threshold,
         merge_facets=facet_rule == FACET_RULE_SOURCE_INTENT,
+        retired_rows=retired_rows,
     )
     out_sha256 = write_authored_document(
         args.out_authored, iteration=args.iteration, rows=survivors,
@@ -1019,6 +1170,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "survivor_count": len(survivors),
         "out_authored": {"relpath": str(args.out_authored), "sha256": out_sha256},
     }
+    if retirement is not None:
+        report["retirement"] = retirement
     if source_report is not None:
         report["authored_source"] = source_report
     if args.schema_version == 2:
