@@ -30,6 +30,20 @@ Two steps, both idempotent:
     ``roll1_fill_placeholders.py`` values file; with ``--experiment`` also
     insert the ``populations`` block ``core.flight.repin`` cross-checks against
     the recomputed split identity.
+
+``smoke-roster``
+    Write ``docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-smoke
+    -4-v1.json``: the FIRST ``--rows`` items of the disagreeing receipt above,
+    in that receipt's own order, as a construction-role roster of their own.
+    The program rule is that every NEW module form flies a four-row smoke
+    before its full cell, and ``construction-advantage-text`` is a
+    construction-visible arm, so the smoke cell's OWN ``split_identity_hash``
+    must also be a committed ``roster_role='construction'`` receipt --
+    ``contracts.gate_exposure._require_construction_role_for_visible_targets``
+    knows nothing about parent rosters and would refuse a four-row subset of
+    one. Like ``roster`` this is a pure SELECTION: every surviving item is the
+    parent's item verbatim, no rng is consulted, and no utterance text, gold
+    label, scenario, action or model output is read, printed or persisted.
 """
 
 from __future__ import annotations
@@ -49,6 +63,11 @@ REPO_DEFAULT = Path(__file__).resolve().parents[3]
 PARENT_ROSTER = "docs/receipts/rosters/slurp-stage3-construction-r01c.json"
 ROSTER_OUT = "docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-v1.json"
 ROSTER_ID = "SLURP-STAGE3-ADVANTAGE-R01C-DISAGREEING-V1"
+SMOKE_ROSTER_OUT = (
+    "docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-smoke-4-v1.json"
+)
+SMOKE_ROSTER_ID = "SLURP-STAGE3-ADVANTAGE-R01C-DISAGREEING-SMOKE-4-V1"
+SMOKE_ROWS = 4
 EXPERIMENT = "configs/experiment/slurp-native-stage3-advantage-r01-v1.json"
 DATASET_FRAGMENT = "slurp-speech-native-stage3-construction-r01c"
 CARRIER = "slurp"
@@ -212,6 +231,114 @@ def cmd_roster(args: argparse.Namespace) -> int:
     return 0
 
 
+def build_smoke_roster_receipt(
+    *, parent: Mapping[str, Any], rows: int, parent_relpath: str, parent_sha256: str, splits
+) -> dict[str, Any]:
+    """The first ``rows`` items of the disagreeing receipt, as a roster of their own."""
+
+    parent_items = parent.get("items")
+    if not isinstance(parent_items, list) or not parent_items:
+        raise Adv1PrepareError(f"{parent_relpath} carries no items")
+    if rows < 1 or rows > len(parent_items):
+        raise Adv1PrepareError(
+            f"--rows {rows} is outside 1..{len(parent_items)} for {parent_relpath}"
+        )
+    items = list(parent_items[:rows])
+    ids = [str(item["sample_id"]) for item in items]
+    counts = dict(sorted(Counter(str(item["stratum"]) for item in items).items()))
+    receipt: dict[str, Any] = {
+        "schema": parent["schema"],
+        "roster_id": SMOKE_ROSTER_ID,
+        "carrier_lock_key": CARRIER,
+        "split_role": "discovery",
+        "roster_role": "construction",
+        "seed": parent.get("seed"),
+        "per_stratum": counts,
+        "strata_counts": counts,
+        "items": items,
+        "excluded_count": len(parent_items) - len(items),
+        "split_identity_hash": splits.split_identity_hash(splits.prefixed(CARRIER, ids)),
+        "authority": (
+            f"Stage-3 S3-4 ADV-1 ({SPEC} section S3-4) plus the program's own four-row form "
+            "smoke rule (study CLAUDE.md, owner 2026-09-03: a NEW module form flies a four-row "
+            "smoke before its full cell). construction-advantage-text is a construction-visible "
+            "arm, so contracts.gate_exposure._require_construction_role_for_visible_targets "
+            "refuses the touch unless the FLYING cell's own split_identity_hash is that of a "
+            "committed roster_role='construction' receipt; that gate knows nothing about parent "
+            "rosters, so the four smoke rows need a committed receipt of their own."
+        ),
+        "roster_role_note": (
+            "construction: the arm sees this row's own construction gold and produces an "
+            "artifact (an advantage statement), never an answer to an evaluated row "
+            "(owner decision 82)."
+        ),
+        "draw_method": (
+            "No draw. This receipt is a pure SELECTION of the parent receipt's frozen items: "
+            f"the FIRST {rows} items, in the parent's own order (ascending sample_id), each item "
+            "verbatim. The seed is the parent's and is carried for provenance only -- no rng is "
+            "consulted anywhere in this build, and no score, quality or label is read."
+        ),
+        "selection_rule": (
+            f"the first {rows} rows, by the parent receipt's own order, of {ROSTER_ID} -- a "
+            "structural form smoke, never a quality-based selection."
+        ),
+        "generator": "scripts/flights/batch/adv1_prepare_steps.py",
+        "parent": {
+            "roster_id": parent.get("roster_id"),
+            "count": len(parent_items),
+            "relpath": parent_relpath,
+            "sha256": parent_sha256,
+            "split_identity_hash": parent.get("split_identity_hash"),
+        },
+        "offline_guard": {"attempted_targets": [], "outbound_connection_attempts": 0},
+    }
+    for carried in (
+        "d1_supplement",
+        "disjointness_proof",
+        "knowledge_source_guard",
+        "selection_source",
+    ):
+        if carried in parent:
+            receipt[carried] = parent[carried]
+    return receipt
+
+
+def cmd_smoke_roster(args: argparse.Namespace) -> int:
+    repo_root = Path(args.repo_root)
+    roster_module, splits = _import_repo(repo_root)
+    parent_path = repo_root / args.parent
+    parent = _read_json(parent_path)
+    roster_module.verify_roster(parent)
+    receipt = build_smoke_roster_receipt(
+        parent=parent,
+        rows=args.rows,
+        parent_relpath=args.parent,
+        parent_sha256=sha256_file(parent_path),
+        splits=splits,
+    )
+    measured = roster_module.verify_roster(receipt)
+    out_path = repo_root / args.roster_out
+    if out_path.is_file():
+        existing = _read_json(out_path)
+        if existing.get("split_identity_hash") != measured:
+            raise Adv1PrepareError(
+                f"{args.roster_out} already exists with a different split identity "
+                f"({existing.get('split_identity_hash')!r} vs {measured!r}); refusing to rewrite"
+            )
+        print(f"smoke-roster  {args.roster_out} already present and identical ({measured})")
+    elif args.write:
+        roster_module.write_roster(receipt, out_path)
+        print(f"smoke-roster  wrote {args.roster_out} rows={args.rows} split_identity={measured}")
+    else:
+        print(
+            f"smoke-roster  (dry) would write {args.roster_out} rows={args.rows} "
+            f"split_identity={measured}"
+        )
+    present = sha256_file(out_path) if out_path.is_file() else "(not written)"
+    print(f"smoke-roster  file_sha256={present}")
+    return 0
+
+
 def cmd_report(args: argparse.Namespace) -> int:
     repo_root = Path(args.repo_root)
     _roster_module, splits = _import_repo(repo_root)
@@ -277,6 +404,14 @@ def main(argv: list[str] | None = None) -> int:
     report.add_argument("--values-out", required=True, help="where to write the fill values JSON")
     report.add_argument("--experiment", default=EXPERIMENT, help="fragment to receive populations")
     report.set_defaults(func=cmd_report)
+
+    smoke = sub.add_parser(
+        "smoke-roster", help="write the four-row form-smoke construction roster receipt"
+    )
+    smoke.add_argument("--parent", default=ROSTER_OUT, help="the disagreeing-row receipt")
+    smoke.add_argument("--rows", type=int, default=SMOKE_ROWS)
+    smoke.add_argument("--roster-out", default=SMOKE_ROSTER_OUT)
+    smoke.set_defaults(func=cmd_smoke_roster)
 
     args = parser.parse_args(argv)
     try:
