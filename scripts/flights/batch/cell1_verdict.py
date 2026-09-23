@@ -241,7 +241,6 @@ def render(args, arm: dict, twin, note_path: str) -> str:
     trajectory = (structural.get("trajectory") or {}).get("arm") or {}
     comparator_trajectory = (structural.get("trajectory") or {}).get("comparator") or {}
     dispositions = (structural.get("dispositions") or {}).get("arm") or {}
-    frontier = arm["frontier"] or {}
 
     short = "CELL-1" if args.which == "arm" else "CELL-1 twin"
     lines = []
