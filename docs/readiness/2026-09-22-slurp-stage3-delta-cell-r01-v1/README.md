@@ -764,8 +764,8 @@ Unchanged: the population and its split identity
 `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb`, every store pin, the geometry,
 the session, the caps (44 / 176 / 117 / 1.0 / 24 / 0) and the decision rule. Registered hashes at
 this commit, **before** the re-pin inserts the prepared pin: composed config
-`ade96c4db756f263c100d9f0507c04940b45d6dff8f8c1fd6f91f98024469f57`, protocol
-`cd0afdab0bd5cf078b6afa257e44f5263dfc5539251942d94630aed1d47eee60`. The v3 baseline carries **no**
+`99f77ff3b1f5d856653801ea477fd420ffcb3b5992bc01e8775c59b6cb309a1c`, protocol
+`760e81f48ac9dc0289d08ddbb81cb63d66646dd9ae1f388240ab95cfa2afd169`. The v3 baseline carries **no**
 `prepared_phase_supply` key, so the re-pin mints this cell's own artifact under its own run id (item
 E16).
 

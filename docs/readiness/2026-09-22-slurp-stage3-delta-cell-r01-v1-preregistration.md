@@ -561,8 +561,8 @@ flight lost.
   and `.../smoke-v3-fit-plan-registered-v1.json`;
 * two DRAFT exposure-ledger rows, `consumed = no`, root countersignature pending.
 
-Composed config `ade96c4db756f263c100d9f0507c04940b45d6dff8f8c1fd6f91f98024469f57`, protocol
-`cd0afdab0bd5cf078b6afa257e44f5263dfc5539251942d94630aed1d47eee60`, computed at this commit before
+Composed config `99f77ff3b1f5d856653801ea477fd420ffcb3b5992bc01e8775c59b6cb309a1c`, protocol
+`760e81f48ac9dc0289d08ddbb81cb63d66646dd9ae1f388240ab95cfa2afd169`, computed at this commit before
 the re-pin inserts the prepared pin; the re-pin recomputes and rewrites both.
 
 **Population, split identity, store pins, geometry, session, decision rule and every decided key are

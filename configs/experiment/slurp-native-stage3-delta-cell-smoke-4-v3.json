@@ -24,8 +24,8 @@
           {
             "kind": "preparation",
             "reason": "Depends on the generation cell's own release requirement: the released stage3-deltas store revision v1r this cell supplies per node.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3/phase-supply-v1.json",
-            "sha256": "9326ab656adc83607e5732a1f1dba4ac28e20507db36f089794c7a8a94676874"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3/phase-supply-v2.json",
+            "sha256": "ae64d6cfb5ad0f0403de1fde16db13dca478713e48a34e761ea2f3fad06944af"
           }
         ],
         "state": "ready"
