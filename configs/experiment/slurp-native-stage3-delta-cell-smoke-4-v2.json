@@ -15,13 +15,20 @@
         "reason": "The four-row form smoke of CELL-1, re-registered under a NEW run id after the v1 smoke run id's second failure (see purpose). HELD exactly as the v1 smoke was: root mints the admission receipt, rewrites its eligible_run_ids to include this run id and its fit identity, and re-pins this cell with scripts/flights/repin_cell.py --set-ready, which mints this cell's own first-phase supply artifact under its own run id and inserts the matching 'preparation' requirement.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-delta-cell-r01-admission-v1",
+            "relpath": "coordination/slurp-stage3-delta-cell-r01-v1/root-admission-v1.json",
+            "sha256": "09e4aaa4d7e1c0c782bd2c06f67e0224a63b72f3957535ddd9f6b4c8e58fd3d0",
+            "reason": "Decision slurp-stage3-delta-cell-r01-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "Depends on the generation cell's own release requirement: the released stage3-deltas store revision v1r this cell supplies per node.",
-            "relpath": "knowledge/slurp/semantic/stage3-deltas-v1r/release.json",
-            "sha256": "02505ba2e548a008cc6c16ffda6f7b9bff505061863026a3d7e1396c26d6c2e0"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2/phase-supply-v1.json",
+            "sha256": "f32731710784db44a0d02a51f8f27e548b6d68194043adce750c07f4c71fda97"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2"
     }
