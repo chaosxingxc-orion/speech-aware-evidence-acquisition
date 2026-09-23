@@ -5239,7 +5239,11 @@ class FlightRuntime:
         ]
 
     def _run_construction_proposer(
-        self, client: object, decoding_params: Mapping[str, object] | None
+        self,
+        client: object,
+        decoding_params: Mapping[str, object] | None,
+        *,
+        phase: Mapping[str, object] | None = None,
     ) -> list[Mapping[str, object]]:
         """The fixed-policy direct arm for the TEXT-ONLY construction-proposer
         arm: ONE contact per DRAW, carrying that draw's rendered instruction
@@ -5262,11 +5266,30 @@ class FlightRuntime:
         The candidates are produced afterwards, model-free, by
         ``rails.evolution.harvest_proposer_responses`` over the SEALED
         manifest.
+
+        Stage-3 S3-4s: this is now the ONE text-only construction dispatch,
+        shared by BOTH construction-visible arms
+        (``contracts.CONSTRUCTION_VISIBLE_ARMS``) rather than forked per
+        arm. ``phase`` is ``None`` for a ``policy == "fixed"`` proposer
+        round -- every byte below is then exactly what it always was -- and
+        is the resolved single-phase material
+        (:meth:`_construction_phase_material`) for a construction-visible
+        arm whose policy is a ONE-PHASE program: the phase's registered
+        response format then rides ``decoding_params`` (the same key
+        ``rails.controllers`` sets from ``PhaseMaterial.response_format``),
+        and the phase's own registered reader turns each response into a
+        per-row RECEIPT -- counts, labels and digests, never the text.
         """
 
         material = self.construction_material()
         by_sample = material.by_sample()
         arm = self._arm()
+        if phase is not None and phase.get("response_format") is not None:
+            decoding_params = {
+                **dict(decoding_params or {}),
+                "response_format": dict(phase["response_format"]),
+            }
+        reader = phase.get("reader") if phase is not None else None
         rows: list[Mapping[str, object]] = []
         for sample in self._samples:
             contact = by_sample.get(sample.sample_id)
@@ -5285,26 +5308,129 @@ class FlightRuntime:
                 text_only_sample_id=sample.sample_id,
                 construction_target_ids=contact.construction_target_ids,
             )
-            rows.append(
-                {
-                    "arm": arm,
-                    "sample_id": sample.sample_id,
-                    "messages": list(messages),
-                    "response_text": response_text,
-                    "metrics": {},
-                    "consumption": None,
-                    "proposer_draw": contact.as_json(),
-                }
-            )
+            row: dict[str, object] = {
+                "arm": arm,
+                "sample_id": sample.sample_id,
+                "messages": list(messages),
+                "response_text": response_text,
+                "metrics": {},
+                "consumption": None,
+                "proposer_draw": contact.as_json(),
+            }
+            if phase is not None:
+                row["phase"] = phase["phase"]
+                if reader is not None:
+                    # S3-4s: the delivery-time read of the phase's declared
+                    # output contract. A receipt, never the statement text --
+                    # ``rails.stage3_advantage.AdvantageStatementSet.receipt``
+                    # seals legality, per-block node/kind/target labels, word
+                    # counts and digests and nothing else.
+                    row[str(phase["reader_key"])] = reader(response_text)
+            rows.append(row)
         return rows
 
+    def _construction_phase_material(self, policy: str):
+        """The single-phase material a construction-visible PHASE PROGRAM
+        declares, or ``None`` for ``policy == "fixed"``.
+
+        Why a construction-visible arm dispatches through the text-only
+        construction path above rather than through
+        ``rails.phase_runner.run_program``: that runner binds every contact
+        to a speech ``rails.knowledge.QueryState`` ("agent state or
+        generated text cannot replace the original speech query"), and a
+        construction-visible arm's D2-frozen field set is bare-core's ten
+        fields plus ``construction_targets`` -- text only, no audio part and
+        no speech-feature packet, by
+        ``e0.d2_leakage._construction_visibility``'s own strict equality.
+        The two are incompatible by construction, so the ONE contact such a
+        program declares is dispatched by the text-only construction path,
+        with the program supplying the phase's identity and its registered
+        output contract.
+        """
+
+        if policy == "fixed":
+            return None
+        from ...rails.phase_material import (  # noqa: PLC0415 (cycle guard)
+            load_phase_material_specs,
+            phase_material_receipt,
+            resolve_response_formats,
+        )
+
+        program = default_phase_program(policy)
+        if len(program.phases) != 1:
+            raise FlightRuntimeError(
+                "a construction-visible arm is a ONE-CONTACT text-only dispatch; "
+                f"program {policy!r} declares {len(program.phases)} phases"
+            )
+        if program.max_contacts != 1:
+            raise FlightRuntimeError(
+                "a construction-visible arm makes exactly one contact per row; "
+                f"program {policy!r} declares max_contacts={program.max_contacts}"
+            )
+        specs = load_phase_material_specs(self._composed.values, program)
+        formats = resolve_response_formats(specs, self._lock, self._data_root)
+        name = program.phases[0].name
+        # The sample-independent identity of this phase's instruction is the
+        # frozen TEMPLATE the fragment pins, not any one row's filled text:
+        # every row's own rendered prompt sha256 is sealed per row in
+        # ``construction_draws`` instead.
+        template_text = self._construction_instruction_template(specs[name])
+        receipt = {
+            **phase_material_receipt(specs, {name: template_text}, formats),
+            "instruction_is_per_row": True,
+            "instruction_identity": (
+                "the phase's frozen template; every row's own filled prompt sha256 is "
+                "sealed in construction_draws"
+            ),
+        }
+        self._phase_material_receipt = receipt
+        reader = None
+        reader_key = None
+        if self._arm() == STAGE3_ADVANTAGE_ARM:
+            from ...rails.stage3_advantage import (  # noqa: PLC0415 (cycle guard)
+                parse_advantage_statements_v2,
+            )
+
+            reader_key = "advantage_statements"
+
+            def reader(text: str) -> Mapping[str, object]:
+                return parse_advantage_statements_v2(text).receipt()
+
+        return {
+            "program": program,
+            "phase": name,
+            "response_format": formats.get(name),
+            "receipt": receipt,
+            "reader": reader,
+            "reader_key": reader_key,
+        }
+
+    def _construction_instruction_template(self, spec: object) -> str:
+        """The phase's frozen template bytes, read for its identity only."""
+
+        relpath = str(getattr(spec, "instruction_template", "") or "")
+        path = self._repo_root / "configs" / relpath
+        try:
+            return path.read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as error:
+            raise FlightRuntimeError(
+                f"phase instruction template unreadable ({path}): {error}"
+            ) from error
+
     def _dispatch_fixed_policy(
-        self, client: object, plan: ExecutionPlan, *, workers: int | None = None
+        self,
+        client: object,
+        plan: ExecutionPlan,
+        *,
+        workers: int | None = None,
+        policy: str = "fixed",
     ) -> tuple[list[Mapping[str, object]], int, str, dict[str, object]]:
-        """The ``policy == "fixed"`` dispatch, factored out so
-        :meth:`wire_check` drives the SAME code path a real flight does --
-        a wiring proof that ran its own copy of this would prove nothing
-        about the flight."""
+        """The ``policy == "fixed"`` dispatch -- and, since Stage-3 S3-4s,
+        the dispatch of a construction-visible arm whose policy is a
+        one-phase program (:meth:`_construction_phase_material` says why) --
+        factored out so :meth:`wire_check` drives the SAME code path a real
+        flight does: a wiring proof that ran its own copy of this would
+        prove nothing about the flight."""
 
         baseline_values = self._composed.values
         if self.shows_construction_targets():
@@ -5312,11 +5438,18 @@ class FlightRuntime:
             # four contacts per target (twelve in round 1), so there is
             # nothing for a worker pool to overlap, and a serial dispatch
             # keeps the per-draw request order identical to the roster's.
-            rows = self._run_construction_proposer(client, self._decoding_params())
+            phase = self._construction_phase_material(policy)
+            rows = self._run_construction_proposer(
+                client, self._decoding_params(), phase=phase
+            )
             return (
                 rows,
                 len(rows),
-                "direct-construction-proposer",
+                (
+                    "direct-construction-advantage"
+                    if self._arm() == STAGE3_ADVANTAGE_ARM
+                    else "direct-construction-proposer"
+                ),
                 {
                     "workers": 1,
                     "max_in_flight": 1,
@@ -5324,6 +5457,11 @@ class FlightRuntime:
                     "dispatch": "serial",
                     "contacts_per_sample": 1,
                     "queue_depth": "not a knob for a one-contact text-only policy",
+                    **(
+                        {"program_id": policy, "phase_names": [phase["phase"]]}
+                        if phase is not None
+                        else {}
+                    ),
                 },
             )
         packets = self.uses_speech_feature_packets()
@@ -7426,13 +7564,23 @@ class FlightRuntime:
         started = self._clock()
         dispatch: dict[str, object] = {"dispatch": "phase-program"}
         phase_receipt: list[Mapping[str, object]] = []
-        if policy == "fixed":
+        if policy == "fixed" or self.shows_construction_targets():
             (
                 self._output_rows,
                 contact_count,
                 policy_kind,
                 dispatch,
-            ) = self._dispatch_fixed_policy(client, self._plan, workers=workers)
+            ) = self._dispatch_fixed_policy(
+                client, self._plan, workers=workers, policy=policy
+            )
+            if policy != "fixed":
+                phase_receipt = [
+                    {
+                        "phase": policy,
+                        "rows": len(self._output_rows),
+                        "contacts": contact_count,
+                    }
+                ]
         else:
             (
                 self._output_rows,
@@ -10178,10 +10326,14 @@ class FlightRuntime:
         phase_receipt: list[Mapping[str, object]] = []
         self._wire_check_active = True
         try:
-            if policy == "fixed":
+            if policy == "fixed" or proposer:
                 rows, contact_count, policy_kind, dispatch = self._dispatch_fixed_policy(
-                    client, plan, workers=workers
+                    client, plan, workers=workers, policy=policy
                 )
+                if policy != "fixed":
+                    phase_receipt = [
+                        {"phase": policy, "rows": len(rows), "contacts": contact_count}
+                    ]
             else:
                 (
                     rows,
@@ -10304,12 +10456,21 @@ class FlightRuntime:
                 f"{arrival['rows_answered_as_text']} text row(s) for "
                 f"{expected_payloads} request(s)"
             )
-        if policy != "fixed":
+        if policy != "fixed" and not proposer:
             # A phase's instruction rides the payload's ORG/CONTROL history,
             # not the system message (rails.core_client._agent_history). If
             # the last history turn is not the control turn, the phase's own
             # instruction never reached the wire and the cell would have run
             # every phase on the bare system prompt.
+            #
+            # A construction-visible arm is the ONE exception, and by its own
+            # D2 contract rather than by exemption: it is text-only, it sends
+            # no audio part and no agent history at all, and its per-row
+            # instruction IS the system message. What proves the instruction
+            # reached the wire for that arm is the stronger, per-row check
+            # _wire_check_construction_problems already makes -- every
+            # payload's task_instruction must hash to that row's own pinned
+            # prompt sha256.
             for index, payload in enumerate(transport.payloads):
                 history = payload.get("history")
                 if not isinstance(history, list) or not history:
