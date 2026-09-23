@@ -11,12 +11,13 @@
 # The two FIT cells of the arm fragment (slurp-native-stage3-delta-cell-r01-fit-v1 and
 # ...-r01-twin-fit-v1) are NOT flipped: they are spend identities, never flown as generation cells.
 #
-# 2026-09-23, SECOND FAILURE: the generation smoke is now the REPLACEMENT cell
-# slurp-native-stage3-delta-cell-smoke-4-v2 (experiment fragment of the same name, plan prefix
-# smoke-v2-generation); run id SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1 is retired after failing
-# twice and takes no third attempt. The twin smoke keeps its v1 cell id and its v1 plan prefix. Root
-# must ALSO extend the minted receipt's eligible_run_ids to SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2
-# and SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2-FIT-V1, or declared_readiness refuses the new smoke.
+# 2026-09-23, THIRD FAILURE: the generation smoke is now the REPLACEMENT cell
+# slurp-native-stage3-delta-cell-smoke-4-v3 (experiment fragment of the same name, plan prefix
+# smoke-v3-generation); run ids SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1 (two failures) and
+# ...-SMOKE-4-V2 (12 contacts, reviewer_0_input) are both retired and take no further attempt. The
+# twin smoke keeps its v1 cell id and its v1 plan prefix. Root must ALSO extend the minted receipt's
+# eligible_run_ids to SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3 and
+# SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3-FIT-V1, or declared_readiness refuses the new smoke.
 # Every CELL-1 cell must be re-pinned in this one cycle: rails/knowledge_stores.py carries the fix
 # and is hashed into every prepared first-phase artifact identity.
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
@@ -28,7 +29,7 @@ research: flip cell CELL-1 ($K) to ready (Stage-3 S3-6 / S3-4s: the locked v2.0 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 M
 done
-bash $SP/repin_loop_generic.sh $SP/cell1_repin_smoke.sh $RD slurp-native-stage3-delta-cell-smoke-4-v2 smoke-v2-generation /home/chao/cell1-smoke-commit.txt || exit $?
+bash $SP/repin_loop_generic.sh $SP/cell1_repin_smoke.sh $RD slurp-native-stage3-delta-cell-smoke-4-v3 smoke-v3-generation /home/chao/cell1-smoke-commit.txt || exit $?
 bash $SP/repin_loop_generic.sh $SP/cell1_repin_twin_smoke.sh $RD slurp-native-stage3-delta-cell-smoke-4-twin-v1 twin-smoke-generation /home/chao/cell1-twin-smoke-commit.txt || exit $?
 bash $SP/repin_loop_generic.sh $SP/cell1_repin_arm.sh $RD slurp-native-stage3-delta-cell-r01-v1 generation /home/chao/cell1-arm-commit.txt || exit $?
 bash $SP/repin_loop_generic.sh $SP/cell1_repin_twin.sh $RD slurp-native-stage3-delta-cell-r01-twin-v1 twin-generation /home/chao/cell1-twin-commit.txt || exit $?

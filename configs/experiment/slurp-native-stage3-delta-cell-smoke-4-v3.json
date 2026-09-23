@@ -1,0 +1,86 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-smoke-4-v3-generation",
+      "baseline_fragment": "slurp-native-stage3-delta-cell-smoke-4-v3-baseline-v1",
+      "cell_id": "slurp-native-stage3-delta-cell-smoke-4-v3",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "The four-row form smoke of CELL-1, re-registered under a NEW run id after the v2 smoke run id's failure (see purpose). HELD exactly as the v1 and v2 smokes were: root mints the admission receipt, rewrites its eligible_run_ids to include this run id and its fit identity, and re-pins this cell with scripts/flights/repin_cell.py --set-ready, which mints this cell's own first-phase supply artifact under its own run id and inserts the matching 'preparation' requirement. The re-pin is MANDATORY here and not merely conventional: rails/knowledge_stores.py carries the fix and its SHA-256 is part of every prepared phase-supply artifact identity (core.flight.runtime._phase_seed_inputs), so the v2 artifact no longer resolves.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "Depends on the generation cell's own release requirement: the released stage3-deltas store revision v1r this cell supplies per node.",
+            "relpath": "knowledge/slurp/semantic/stage3-deltas-v1r/release.json",
+            "sha256": "02505ba2e548a008cc6c16ffda6f7b9bff505061863026a3d7e1396c26d6c2e0"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3"
+    }
+  ],
+  "date": "2026-09-23",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. This run id is the THIRD registration of this smoke and the program's one-recovery rule has already been spent on the v1 run id: a failure here stops cell CELL-1 outright and is escalated to root, rather than re-registered a fourth time. A failed smoke stops CELL-1 and the 1,080-row arm does not open; the twin smoke gates the twin arm the same way.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-native-stage3-delta-cell-smoke-4-v3",
+  "generation_budget": {
+    "cap": 44,
+    "definition": "44 = 4 rows x 11, the locked plan's OWN per-row contact ceiling (configs/policy/phase-native-candidates-review-revise-v1.json max_contacts 11, resolved from the unchanged role graph perception 1 / solver 1 / reviewer 3 / planner 1 with max_revisions 1). 176 = 44 x (1 speech packet + 3 endpoints) and 117 s is the four rows' repeated speech under that ceiling -- cell PLAN's own registered smoke numbers, unchanged, because this cell is the locked plan plus exactly one store and its role graph is PLAN's. native_task_contract_calls_cap 24 is likewise PLAN's smoke number. The one execution_plan governs both smoke cells of this fragment; each flies under its own run id and the plan budget is run-cumulative. Ceilings are bounds, never targets. This fragment declares ONE smoke cell, so the one execution_plan governs that cell alone; its budget is run-cumulative under the NEW run id and neither the retired v1 smoke's spend (4 contacts, 10.6 s) nor the retired v2 smoke's spend (12 contacts) is carried into it.",
+    "target": 44
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The first four rows of TRAIN Fold A in the roster's own order -- cell PLAN's own four-row smoke population, split identity 4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb (configs/experiment/slurp-native-default-plan-lock-smoke-4-v1.json). A pure selection with zero contacts: no quality-based choice, no score read, no separate draw. Structural evidence only; no quality read is taken from this fragment.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "The four-row form proof of Stage-3 S3-6 CELL-1 (owner decisions 83, 99, 101, 106), re-registered under a new run id. THIRD FAILURE, v2 SMOKE RUN ID RETIRED (2026-09-23). Run id SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2 spent 12 contacts on the four rows and died at the openJiuwen vertex reviewer_0_input with 'acquire must introduce at least one new value or facet'. Rows 1 and 3 completed their episodes; rows 2 and 4 did not, because the Reviewer slice of the released stage3-deltas store addresses 30 of the 39 legal intents and neither row's Perception candidates fall in it, so the per-node candidate-bound route selected NOTHING and still returned a supply -- and any supply makes rails.controllers.advance_phase_response_state emit an acquire transition, which AgentStepTransition.validate then refuses. The Solver never showed it because that phase composes three supplies and a sibling always carried a value; the Reviewer and the Planner are served by this store alone. The unit ladder had PINNED the defect (a test asserting 'an empty but valid supply'), and the offline dry run missed it twice because its canned Perception answer was built from the store's union of addressed facets, it walked only the roster's first row -- one of the two that completed -- and it never walked a REVISE revisit. The fix is rails.knowledge_stores._stage3_delta_local_supply: a route that introduces nothing new supplies NOTHING (no acquire transition at all), the already-acquired ids are dropped before the per-node cap is applied, and each skip is receipted as delta_supply {node, selected, already_acquired, reason}. It is proven offline, before this flight, by analysis.native_episode_dry_run walking this exact composition node by node on all four rows with the candidate ids the v2 attempt's own trace recorded, plus the REVISE revisit path, at zero contacts (tests/unit/test_native_episode_dry_run.py, tests/unit/test_stage3_delta_supply_router.py). Same fragments, same store pins, same population, same split identity, same geometry, same session and the same caps as the retired v2 smoke; only the run, attempt and fit identities move, because a plan budget is run-cumulative across every attempt of one run id. STRUCTURAL ONLY: no official score is run here and no effectiveness claim is read from it. The twin smoke keeps its own v1 run id (SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1, never opened) and stays registered in configs/experiment/slurp-native-stage3-delta-cell-smoke-4-v1.json; it carries the same fix through the shared rails module.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2",
+  "stage3_algorithm": {
+    "id": "tfgrpo-semantic-advantage-v1",
+    "operators_used": [
+      "update",
+      "context_application"
+    ],
+    "note": "The four-row form proof of CELL-1: the same Training-Free GRPO experiential-delta store, the same per-node application and the same derangement control as the arms, flown on four rows for structural evidence only, under the third run id."
+  }
+}

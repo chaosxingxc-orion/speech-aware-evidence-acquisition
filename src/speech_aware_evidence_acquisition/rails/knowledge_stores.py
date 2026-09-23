@@ -6,6 +6,7 @@ from dataclasses import dataclass, field, replace
 import hashlib
 import json
 import re
+import threading
 from pathlib import Path
 from types import MappingProxyType
 from typing import Mapping
@@ -474,6 +475,15 @@ def build_knowledge_store_supply(
     # ``PhaseSupplySpec`` the prepared-seed loader expects. The route is
     # served by ``bootstrap_first_phase`` / ``unconditional_first_phase``.
     first_phase_context_specs: dict[str, object] = {}
+    #: Per-row receipt of every stage3-deltas route that supplied NOTHING
+    #: (2026-09-23 fix, ``_stage3_delta_local_supply``). Keyed exactly as the
+    #: candidate route's own per-row audits are
+    #: (``phase:sample_id:query_state_sha256``) and published on
+    #: ``route.receipt["delta_supply"]``, so a flight receipt says which node
+    #: of which row took no supply step and why, instead of the skip being
+    #: invisible.
+    delta_supply_audits: dict[str, object] = {}
+    delta_supply_lock = threading.Lock()
     candidate_specs = load_candidate_semantic_supply_specs(binding, program)
     if candidate_specs and legal_candidate_ids is None:
         raise KnowledgeStoreError(
@@ -593,13 +603,51 @@ def build_knowledge_store_supply(
                 "supplied phase, with no candidate_state_phase"
             )
 
-    def _stage3_delta_local_supply(store, raw_spec, context):
+    def _record_delta_supply_skip(
+        *,
+        store_id,
+        phase,
+        node_target,
+        sample_id,
+        query_state,
+        already_acquired,
+        reason,
+    ):
+        """Record one stage3-deltas route that introduced nothing.
+
+        Identities and counts only -- never a statement, never a candidate's
+        text -- matching every other supply receipt in this study. Written
+        under a lock because one router serves every row of a split and a
+        campaign walks rows in parallel; re-recording the SAME key with the
+        same decision is idempotent, exactly as the candidate route's audits
+        are.
+        """
+
+        key = f"{phase}:{sample_id}:{query_state.content_hash()}"
+        entry = {
+            "node": node_target,
+            "phase": phase,
+            "sample_id": sample_id,
+            "store_id": store_id,
+            "selected": 0,
+            "already_acquired": already_acquired,
+            "reason": reason,
+        }
+        with delta_supply_lock:
+            delta_supply_audits[key] = entry
+
+    def _stage3_delta_local_supply(store, raw_spec, context, *, phase=None):
         """Candidate-bound, prior_score-capped Solver supply for one
         stage3-deltas store (S3-6): read the row Perception candidate
         intents off the configured candidate_state_phase state, then
         route them through the registered Stage3DeltaCandidateProvider
         (rails.stage3_delta_supply.select_stage3_delta_values does the
-        actual selection)."""
+        actual selection).
+
+        Returns ``None`` -- no supply step at all for this phase -- when the
+        route introduces nothing new; see the SUPPLIES NOTHING note below the
+        selection.
+        """
 
         candidate_state_phase = raw_spec["candidate_state_phase"]
         cap = raw_spec["cap"]
@@ -676,8 +724,71 @@ def build_knowledge_store_supply(
         candidate_facet_ids = tuple(item.intent_id for item in hypothesis_state.candidates)
 
         provider = _build_stage3_delta_provider(store, raw_spec=raw_spec)
-        ranking = provider.candidates(candidate_facet_ids, k=cap)
-        selected_ids = tuple(entry.entry_id for entry in ranking.entries)
+        # 2026-09-23, the CELL-1 generation smoke's THIRD failure -- SUPPLIES
+        # NOTHING. A node-filtered, candidate-bound slice can legitimately
+        # select NOTHING for a row: the Reviewer slice of the released
+        # stage3-deltas store addresses 30 of the 39 legal intents, so a row
+        # whose Perception candidates all fall in the other 9 matches no
+        # Reviewer delta at all (rows 2 and 4 of the four-row smoke). The
+        # pre-fix route still returned a PhaseSupply for that row, and
+        # ``rails.controllers.advance_phase_response_state`` makes a supply --
+        # ANY supply -- an ``action_kind="acquire"`` transition, so the wave
+        # carried neither a new value nor a new facet and
+        # ``AgentStepTransition.validate`` refused it ("acquire must introduce
+        # at least one new value or facet"): the episode died at the openJiuwen
+        # vertex ``reviewer_0_input`` after 12 metered contacts. The Solver
+        # never showed it because the Solver phase composes THREE supplies
+        # (slot-contracts candidate_supply, train-exemplars phase_supply and
+        # this route), so a sibling always carried a value; the Reviewer and
+        # the Planner are served by this store ALONE.
+        #
+        # Two ways a route can introduce nothing, and both end here rather
+        # than in a transition:
+        #
+        # * no delta of this node's slice matches the row's candidates; or
+        # * every one that does is ALREADY in this episode's
+        #   ``QueryState.retrieved_value_ids`` -- what a REVISITED node sees,
+        #   because a prepared per-node selection is a pure function of
+        #   (phase, sample) and the agent's value set is cumulative across
+        #   phases (the same hazard ``rails.controllers.
+        #   restrict_repeat_visit_supply`` caught at the runner seam after the
+        #   2026-09-17 cell B1 abort; this route now refuses to hand that seam
+        #   an empty acquisition in the first place).
+        #
+        # The pool is ranked in FULL and capped AFTER the already-acquired ids
+        # are dropped, so the per-node cap counts NEW values (owner ruling,
+        # 2026-09-23). On a first visit nothing is visible, ``fresh`` is the
+        # whole ranking and ``fresh[:cap]`` is byte-identically the pre-fix
+        # ``k=cap`` selection.
+        pool_size = max(len(store.snapshot.values), 1)
+        ranking = provider.candidates(candidate_facet_ids, k=pool_size)
+        ranked_ids = tuple(entry.entry_id for entry in ranking.entries)
+        visible_value_ids = frozenset(
+            getattr(query_state, "retrieved_value_ids", ()) or ()
+        )
+        fresh_ids = tuple(
+            value_id
+            for value_id in ranked_ids
+            if qualify_id(store.store_id, value_id) not in visible_value_ids
+        )
+        already_acquired = len(ranked_ids) - len(fresh_ids)
+        selected_ids = fresh_ids[:cap]
+        if not selected_ids:
+            _record_delta_supply_skip(
+                store_id=store.store_id,
+                phase=phase,
+                node_target=node_target,
+                sample_id=sample_id,
+                query_state=query_state,
+                already_acquired=already_acquired,
+                reason=(
+                    "every ranked delta of this node slice is already acquired "
+                    "in this episode"
+                    if already_acquired
+                    else "no delta of this node slice matches the row candidates"
+                ),
+            )
+            return None
         by_id = {value.value_id: value for value in store.snapshot.values}
         supporting: dict[str, None] = {}
         for value_id in selected_ids:
@@ -985,7 +1096,9 @@ def build_knowledge_store_supply(
             store = binding.store(store_id)
             raw_spec = context_specs[(store_id, phase)]
             if raw_spec["provider"] == STAGE3_DELTA_CONTEXT_PROVIDER_ID:
-                return _stage3_delta_local_supply(store, raw_spec, context)
+                return _stage3_delta_local_supply(
+                    store, raw_spec, context, phase=phase
+                )
             query_state = getattr(context, "query_state", None)
             provider = resolve_provider(
                 SOURCE_SCOPED_CONTEXT_PROVIDER_ID,
@@ -1066,11 +1179,21 @@ def build_knowledge_store_supply(
         query_state = getattr(context, "query_state", None)
         if query_state is None:
             raise KnowledgeStoreError("automatic context supply requires a QueryState")
-        supplies = [
-            binding.qualify_supply(store_id, route(store_id, phase, context), query_state)
-            for store_id in binding.store_ids
-            if (store_id, phase) in context_specs
-        ]
+        supplies = []
+        for store_id in binding.store_ids:
+            if (store_id, phase) not in context_specs:
+                continue
+            # A context route may decline this phase on this row: the
+            # stage3-deltas route returns None when its node slice introduces
+            # nothing new (``_stage3_delta_local_supply``, SUPPLIES NOTHING).
+            # The phase then simply takes no supply step -- the same shape the
+            # plain later-phase branch below has always had.
+            context_supply = route(store_id, phase, context)
+            if context_supply is None:
+                continue
+            supplies.append(
+                binding.qualify_supply(store_id, context_supply, query_state)
+            )
         for store_id in binding.store_ids:
             if (store_id, phase) in context_specs or (store_id, phase) not in plain_later_phase_specs:
                 continue
@@ -1131,6 +1254,17 @@ def build_knowledge_store_supply(
         "binding_sha256": binding.binding_sha256,
         "stores": receipts,
     }
+    if any(
+        raw_spec["provider"] == STAGE3_DELTA_CONTEXT_PROVIDER_ID
+        for raw_spec in context_specs.values()
+    ):
+        # Grows during the flight, exactly as ``candidate_selections`` does:
+        # one entry per (phase, row, query state) whose stage3-deltas route
+        # supplied nothing. Published ONLY when such a route exists, so every
+        # receipt this router has ever produced for a cell without one is
+        # byte-identical to its pre-fix self (the identity
+        # ``tests/unit/test_candidate_semantic_supply.py`` pins).
+        route.receipt["delta_supply"] = delta_supply_audits
     # DELIBERATELY NOT WIDENED (E3): a config whose stores declare later-phase
     # plain phase_supply and NOTHING ELSE (no context_supply anywhere, no
     # candidate_supply anywhere) still gets no `automatic_for_phase` -- exactly

@@ -50,6 +50,7 @@ from test_candidate_semantic_supply import (
     _artifact,
     _config as _candidate_config,
     _context as _candidate_context,
+    _latest_context,
     _program as _candidate_program,
     _store,
 )
@@ -273,7 +274,17 @@ def test_cap_eight_matches_the_production_delta_cell_fragment_shape(tmp_path):
     assert selected[-1] == "stage3-deltas::delta:1:000000000002"
 
 
-def test_no_matching_candidate_yields_an_empty_but_valid_supply(tmp_path):
+def test_no_matching_candidate_supplies_nothing_rather_than_an_empty_acquire(tmp_path):
+    """The CELL-1 smoke's third failure (2026-09-23), at the router.
+
+    This test used to assert "an empty but VALID supply" -- and that is
+    precisely what killed the flight. A supply object, any supply object,
+    makes ``rails.controllers.advance_phase_response_state`` emit an
+    ``action_kind="acquire"`` transition, and an acquire that introduces
+    neither a value nor a facet is refused by ``AgentStepTransition.validate``.
+    The route now DECLINES the phase instead, and the skip is receipted.
+    """
+
     rows = [_delta_row("aaaaaaaaaaaa", ("gamma",), 0.9)]
     delta_store, _snapshot = _stage3_delta_store_doc(tmp_path, rows=rows)
     delta_store["context_supply"] = {"solve": _delta_supply_spec()}
@@ -286,9 +297,147 @@ def test_no_matching_candidate_yields_an_empty_but_valid_supply(tmp_path):
         legal_candidate_ids=legal,
     )
     context = _candidate_context(binding, _artifact("s1", ("alpha", "beta")))
-    supply = router.automatic_for_phase("solve", context)
-    assert supply.fusion_decision.selected_value_ids == ()
-    assert supply.fusion_decision.supporting_facet_ids == ()
+    assert router.automatic_for_phase("solve", context) is None
+
+    entry = next(iter(router.receipt["delta_supply"].values()))
+    assert entry["selected"] == 0
+    assert entry["already_acquired"] == 0
+    assert entry["phase"] == "solve"
+    assert entry["sample_id"] == "s1"
+    assert entry["store_id"] == "stage3-deltas"
+    assert entry["reason"] == "no delta of this node slice matches the row candidates"
+
+
+def test_the_empty_supply_this_route_no_longer_returns_is_a_refused_acquire(tmp_path):
+    """Why the route declines instead of returning an empty decision.
+
+    The pre-fix object, built by hand and handed to the production advance,
+    raises the exact refusal the openJiuwen vertex ``reviewer_0_input``
+    raised on 2026-09-23 after 12 metered contacts. The transition invariant
+    stays STRICT; the route stops handing it nothing.
+    """
+
+    from speech_aware_evidence_acquisition.rails.controllers import (
+        PhaseSupply,
+        advance_phase_response_state,
+    )
+    from speech_aware_evidence_acquisition.rails.knowledge import (
+        FusionDecision,
+        RailsError,
+        RankResult,
+    )
+
+    rows = [_delta_row("aaaaaaaaaaaa", ("gamma",), 0.9)]
+    delta_store, snapshot = _stage3_delta_store_doc(tmp_path, rows=rows)
+    delta_store["context_supply"] = {"solve": _delta_supply_spec()}
+    document = {"knowledge_stores": {"stage3-deltas": delta_store}}
+    binding = load_knowledge_store_binding(document, data_root=tmp_path)
+    context = _candidate_context(binding, _artifact("s1", ("alpha", "beta")))
+    query_hash = context.query_state.content_hash()
+
+    rank = RankResult(
+        snapshot_sha256=snapshot.content_hash(),
+        query_state_sha256=query_hash,
+        ranking_policy_id=STAGE3_DELTA_CONTEXT_PROVIDER_ID,
+        candidates=(),
+    ).validate()
+    empty = PhaseSupply(
+        rank_result=rank,
+        fusion_decision=FusionDecision(
+            snapshot_sha256=snapshot.content_hash(),
+            query_state_sha256=query_hash,
+            rank_result_sha256=rank.content_hash(),
+            fusion_policy_id=STAGE3_DELTA_CONTEXT_PROVIDER_ID,
+            supporting_facet_ids=(),
+            selected_value_ids=(),
+        ).validate(),
+        action_target_ref=f"{STAGE3_DELTA_CONTEXT_PROVIDER_ID}:node=reviewer:cap=4",
+    ).validate()
+
+    with pytest.raises(
+        RailsError, match="acquire must introduce at least one new value or facet"
+    ):
+        advance_phase_response_state(
+            context=context,
+            added_states=(_artifact("s1", ("alpha",), state_id="phase:solve:s1",
+                                    state_kind="phase:solve"),),
+            action_target_ref="synthetic-hypotheses-then-solve-v1:solve:contact-1",
+            supply=empty,
+        )
+
+
+def test_a_revisited_node_acquires_only_what_is_new_and_declines_when_nothing_is(
+    tmp_path,
+):
+    """The cumulative value set, at the route.
+
+    A per-node selection is a pure function of (phase, sample): a revisited
+    node is handed the SAME ids, and the agent's value set is cumulative, so
+    those ids are already in ``QueryState.retrieved_value_ids``. The route
+    drops them and caps what REMAINS; when nothing remains it declines.
+    """
+
+    rows = [
+        _delta_row("aaaaaaaaaaaa", ("alpha",), 0.9),
+        _delta_row("bbbbbbbbbbbb", ("alpha",), 0.8),
+        _delta_row("cccccccccccc", ("alpha",), 0.7),
+    ]
+    delta_store, _snapshot = _stage3_delta_store_doc(tmp_path, rows=rows)
+    delta_store["context_supply"] = {"solve": _delta_supply_spec(cap=2)}
+    document = {"knowledge_stores": {"stage3-deltas": delta_store}}
+    binding = load_knowledge_store_binding(document, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=_candidate_program(), data_root=tmp_path,
+        legal_candidate_ids=("alpha", "beta"),
+    )
+    artifact = _artifact("s1", ("alpha",))
+
+    # First visit: the cap picks the two highest priors, exactly as before.
+    first = router.automatic_for_phase("solve", _candidate_context(binding, artifact))
+    assert first.fusion_decision.selected_value_ids == (
+        "stage3-deltas::delta:1:aaaaaaaaaaaa",
+        "stage3-deltas::delta:1:bbbbbbbbbbbb",
+    )
+
+    # Revisit with those two already acquired: the cap now applies to the NEW
+    # values, so the third delta -- which the pre-fix k=cap ranking never even
+    # reached -- is what this visit acquires.
+    second = router.automatic_for_phase(
+        "solve",
+        _latest_context(
+            binding,
+            (artifact,),
+            retrieved_value_ids=first.fusion_decision.selected_value_ids,
+        ),
+    )
+    assert second.fusion_decision.selected_value_ids == (
+        "stage3-deltas::delta:1:cccccccccccc",
+    )
+
+    # Revisit with the whole slice acquired: nothing new, so no supply step.
+    assert (
+        router.automatic_for_phase(
+            "solve",
+            _latest_context(
+                binding,
+                (artifact,),
+                retrieved_value_ids=(
+                    first.fusion_decision.selected_value_ids
+                    + second.fusion_decision.selected_value_ids
+                ),
+            ),
+        )
+        is None
+    )
+    entry = next(
+        item
+        for item in router.receipt["delta_supply"].values()
+        if item["already_acquired"] == 3
+    )
+    assert entry["selected"] == 0
+    assert entry["reason"] == (
+        "every ranked delta of this node slice is already acquired in this episode"
+    )
 
 
 def test_deterministic_across_two_independent_calls(tmp_path):

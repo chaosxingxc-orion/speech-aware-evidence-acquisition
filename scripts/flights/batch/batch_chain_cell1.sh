@@ -5,12 +5,13 @@
 # arm, and each arm opens only after its own smoke seals (the driver enforces both -- one step at a
 # time, smoke before arm inside a step).
 #
-# 2026-09-23, SECOND FAILURE: step 1's smoke is the REPLACEMENT cell
-# slurp-native-stage3-delta-cell-smoke-4-v2 (run id SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2, attempt
-# attempt-slurp-native-stage3-delta-cell-smoke-4-v2-generation). Run id
-# SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1 failed twice and is retired; it takes no third attempt, and
-# a plan budget is run-cumulative per run id, which is why the identity had to move. Step 2's twin
-# smoke keeps its own v1 run id, which never opened.
+# 2026-09-23, THIRD FAILURE: step 1's smoke is the REPLACEMENT cell
+# slurp-native-stage3-delta-cell-smoke-4-v3 (run id SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3, attempt
+# attempt-slurp-native-stage3-delta-cell-smoke-4-v3-generation). Run id
+# SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1 failed twice and ...-SMOKE-4-V2 then metered 12 contacts
+# and died at reviewer_0_input; both are retired and take no further attempt, and a plan budget is
+# run-cumulative per run id, which is why the identity had to move again. Step 2's twin smoke keeps
+# its own v1 run id, which never opened.
 #
 # ceiling_per_row 11 is the locked plan's OWN per-row ceiling
 # (configs/policy/phase-native-candidates-review-revise-v1.json max_contacts 11, resolved from the
@@ -35,14 +36,14 @@ steps = [
     {"order": 1, "short": "cell1", "kind": "cell",
      "experiment": "slurp-native-stage3-delta-cell-r01-v1",
      "cell": "slurp-native-stage3-delta-cell-r01-v1",
-     "smoke_experiment": "slurp-native-stage3-delta-cell-smoke-4-v2",
-     "smoke_cell": "slurp-native-stage3-delta-cell-smoke-4-v2",
+     "smoke_experiment": "slurp-native-stage3-delta-cell-smoke-4-v3",
+     "smoke_cell": "slurp-native-stage3-delta-cell-smoke-4-v3",
      "campaign_plan": "configs/campaign/slurp-native-stage3-delta-cell-r01-v1.json",
      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1",
      "fit_run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1",
      "gen_attempt_id": "attempt-slurp-native-stage3-delta-cell-r01-v1-generation",
-     "smoke_run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2",
-     "smoke_attempt_id": "attempt-slurp-native-stage3-delta-cell-smoke-4-v2-generation",
+     "smoke_run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3",
+     "smoke_attempt_id": "attempt-slurp-native-stage3-delta-cell-smoke-4-v3-generation",
      "expected_rows": 1080, "contacts_per_row": 4, "ceiling_per_row": 11, "notool": True,
      "owner": "root-slurp-native-stage3-delta-cell-r01-v1"},
     {"order": 2, "short": "cell1twin", "kind": "cell",

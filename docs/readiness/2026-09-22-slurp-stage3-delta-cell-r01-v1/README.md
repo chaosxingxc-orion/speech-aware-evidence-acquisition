@@ -657,3 +657,131 @@ smokes. `core.flight.cli check` reports them as `prepared artifact identity mism
 the re-pin runs. Their `output` is expected to reproduce **byte for byte**, because the fix moves no
 selection; `--allow-output-change` must never be passed, and an output change here would mean the
 knowledge channel moved and must be reported instead.
+
+## Third failure; the v2 smoke run id is retired and the v3 smoke is the proof (2026-09-23)
+
+The v2 smoke flew at 17:07 UTC, **metered 12 contacts** on the four rows and died at the openJiuwen
+vertex `reviewer_0_input`:
+
+```
+NativeEpisodeError: native episode node failed: [100054] component 'reviewer_0_input'
+execute 'invoke' error, reason='acquire must introduce at least one new value or facet'
+```
+
+Rows 1 and 3 completed their episodes (Perception, Solver, Reviewer, Planner ACCEPT); rows 2 and 4
+stopped after Perception and Solver. The refusal is
+`rails.knowledge.AgentStepTransition.validate`.
+
+### Root cause: a node slice that selects nothing must supply nothing
+
+The store is **node-addressed**. Its 379 released values split into disjoint slices by
+`task_target` -- Perception 119, Solver 151, Reviewer 95, Planner 14 -- and the Reviewer slice
+associates with only **30 of the 39** legal intents. A row whose Perception candidates all fall in
+the other 9 matches no Reviewer delta at all. That is rows 2 and 4 of this roster, whose candidate
+ids (read off the v2 attempt's own trace) are `iot_hue_lightchange / iot_hue_lightup /
+iot_hue_lighton` and `iot_hue_lightdim / iot_hue_lighton / iot_hue_lightoff`.
+
+The pre-fix `rails.knowledge_stores._stage3_delta_local_supply` returned a `PhaseSupply` for that
+row anyway, with an empty `FusionDecision`. `rails.controllers.advance_phase_response_state` makes
+**any** supply an `action_kind="acquire"` transition, and an acquire that introduces neither a value
+nor a facet is refused by the transition invariant. So the episode died at the first node boundary
+whose slice came up empty.
+
+Why the Solver never showed it: the Solver phase composes **three** supplies -- slot-contracts
+`candidate_supply`, train-exemplars `phase_supply` and this route -- and a sibling always carried a
+value. The Solver's own delta selection was in fact empty on rows 3 and 4 and passed unnoticed. The
+**Reviewer and the Planner are served by this store alone**, so there is nothing to hide behind.
+
+### Why the ladder was green, twice
+
+* A unit test **pinned the defect**: `test_no_matching_candidate_yields_an_empty_but_valid_supply`
+  asserted that an empty selection returns a valid supply. It never handed that object to the
+  production advance, which is the only place it is invalid.
+* The offline dry run introduced after the second failure walked the **first row of the roster**
+  (one of the two that completed), on the **ACCEPT** path, with a canned Perception answer built
+  from the store's **union** of addressed facets -- `sorted(addressed)[:3]`, chosen precisely so
+  that "the candidate-bound routes have something to select". Every node had something to select by
+  construction, and the walk asserted that it did.
+
+The cumulative value set was *not* the cause: the per-node slices are disjoint, so no value is ever
+acquired twice across nodes (verified on all four rows). It is a real hazard only on a **revisit**,
+where `rails.controllers.restrict_repeat_visit_supply` already handled it at the runner seam -- the
+dry run simply did not perform that step, which is now fixed too.
+
+### The fix
+
+`_stage3_delta_local_supply`: a later-phase route that introduces nothing new **supplies nothing**.
+The matching pool is ranked in full; ids already in `QueryState.retrieved_value_ids` are dropped;
+the per-node cap is applied to what **remains**; an empty result returns `None`, so the phase takes
+no supply step and the wave seals as an ordinary `organize` transition. `automatic_for_phase` skips
+a declining route the same way the plain later-phase branch always has. The transition invariant
+stays strict, no config key is added, no decided key moves, and on a first visit with nothing
+visible the selection is byte-identical to its pre-fix self.
+
+Each skip is receipted on the router as
+`delta_supply: {node, phase, sample_id, store_id, selected, already_acquired, reason}`, keyed
+`phase:sample_id:query_state_sha256` exactly as the candidate route's own per-row audits are, so a
+flight receipt says which node of which row took no supply step and why.
+
+### The offline four-row dry run, made realistic
+
+`analysis.native_episode_dry_run` now performs the runner's own
+`restrict_repeat_visit_supply` step at each boundary, so a REVISE walk is the flight's behaviour and
+not an approximation of it. The regression walks **every** row of the smoke roster with the
+candidate ids the v2 attempt's trace recorded, and a REVISE verdict on row 1.
+
+| row | Perception (seeded) | Solver | Reviewer | Planner | pre-fix |
+|---|---|---|---|---|---|
+| `slurp:train:000007:audio--1504197557` | 4 | 1 | 3 | 1 | completes |
+| `slurp:train:000009:audio-1497557594-headset` | 4 | 4 | 0 | 0 | **refused at the Reviewer** |
+| `slurp:train:000015:audio-1488524781` | 4 | 0 | 2 | 1 | completes |
+| `slurp:train:000023:audio-1490956038` | 4 | 0 | 0 | 0 | **refused at the Reviewer** |
+
+(Delta counts only; the Solver additionally receives the base plan's own 25-33 exemplar and
+slot-contract values on every row.) Pre-fix the walk reproduces the flight's own error sentence on
+exactly the two rows the flight lost, and completes exactly the two it completed. Post-fix all four
+complete, and the REVISE walk visits Solver, Reviewer and Planner a second time acquiring nothing
+again.
+
+### What is registered for the replacement
+
+Run id `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2` and its FIT identity
+`SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2-FIT-V1` are **retired** and take no further attempt; the
+coordinator closes both ledger rows (this registration does not edit them). The four-row proof flies
+under:
+
+| | v2 (retired) | v3 |
+|---|---|---|
+| experiment fragment | `slurp-native-stage3-delta-cell-smoke-4-v2` | `slurp-native-stage3-delta-cell-smoke-4-v3` |
+| baseline fragment | `slurp-native-stage3-delta-cell-smoke-4-v2-baseline-v1` | `slurp-native-stage3-delta-cell-smoke-4-v3-baseline-v1` |
+| cell id | `slurp-native-stage3-delta-cell-smoke-4-v2` | `slurp-native-stage3-delta-cell-smoke-4-v3` |
+| run id | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2` | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3` |
+| attempt | `...-v2-generation` | `attempt-slurp-native-stage3-delta-cell-smoke-4-v3-generation` |
+| FIT identity | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2-FIT-V1` | `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3-FIT-V1` |
+| plans | `smoke-v2-*-plan-registered-v1.json` | `smoke-v3-generation-plan-registered-v1.json`, `smoke-v3-fit-plan-registered-v1.json` |
+
+Unchanged: the population and its split identity
+`4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb`, every store pin, the geometry,
+the session, the caps (44 / 176 / 117 / 1.0 / 24 / 0) and the decision rule. Registered hashes at
+this commit, **before** the re-pin inserts the prepared pin: composed config
+`6f90ee7525e7dd045df9ed1279c7a4b5cac1758d162eb31ac789480acb9f8b8d`, protocol
+`b4440feaba272d3bbeebfe7c41cca5ca01eb93e471373808609aeabab083432e`. The v3 baseline carries **no**
+`prepared_phase_supply` key, so the re-pin mints this cell's own artifact under its own run id (item
+E16).
+
+The **twin smoke keeps its v1 run id** `SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1` (never
+opened) and carries the same fix, because the fix is in a shared rails module. Both 1,080-row arms
+are untouched.
+
+`scripts/flights/batch/cell1_repin_smoke.sh`, `scripts/flights/batch/cell1_flip_all.sh` and
+`scripts/flights/batch/batch_chain_cell1.sh` are pointed at the v3 ids; the arm step's smoke is the
+v3 smoke.
+
+### Re-pin obligation (a third time, and for the same reason)
+
+`rails/knowledge_stores.py` is hashed into every prepared phase-supply artifact's identity, so this
+fix invalidates the pinned first-phase artifact of **every** CELL-1 cell. The dry run on the retired
+v2 cell already reports `router-bootstrap (pinned artifact refused: prepared artifact identity
+mismatch)` for exactly this reason, with the same 12 seeded value ids. Their `output` is expected to
+reproduce **byte for byte**, because the fix moves no first-phase selection -- the unconditional
+Perception route is untouched; `--allow-output-change` must never be passed.

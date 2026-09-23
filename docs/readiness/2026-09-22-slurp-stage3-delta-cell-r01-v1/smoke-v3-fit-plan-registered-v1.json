@@ -1,0 +1,84 @@
+{
+  "baseline_fragment": "slurp-native-stage3-delta-cell-smoke-4-v3-baseline-v1",
+  "cell": "slurp-native-stage3-delta-cell-smoke-4-v3",
+  "composed_config_hash": "6f90ee7525e7dd045df9ed1279c7a4b5cac1758d162eb31ac789480acb9f8b8d",
+  "decision_rule": {
+    "ADMITTED": "the CI95 lower bound of the paired official pooled SLU-F1 delta (CELL-1 minus PLAN) is ABOVE ZERO and the CI95 lower bound of the paired intent delta exceeds -0.9943 (owner decision 99, the TRAIN lock: a gain is proven, not merely non-inferior)",
+    "DELTA_CONSUMPTION": "item S3-4s: the per-node delta-consumption table -- how many deltas each node was supplied per row, which value_ids were supplied, and the saves and harms on the rows that received each one -- is a PRIMARY deliverable, reported whatever the verdict, and is what decides which deltas survive into store version 2.",
+    "FRONTIER": "owner decision 75: the frontier row (official SLU-F1 delta x prefilled tokens per row x GPU hours per 1,080 rows) is reported on every verdict and placed beside the registered rows.",
+    "HARMFUL": "a MEASURED loss on either guard (owner decision 25, Method B: a CI95 upper bound below zero, or a point estimate beyond the margin); width alone is NEUTRAL, never HARMFUL",
+    "NEUTRAL": "both guards are non-inferior -- the SLU CI95 lower bound exceeds -1.2485 and the intent CI95 lower bound exceeds -0.9943 -- without a proven SLU gain",
+    "PER_SCENARIO_HARM_BOUND": "owner decision 17: per-scenario intent and SLU tables over all 18 scenarios in BOTH the natural-mixture and the equal-stratum weighting, with net harmed rows per scenario and any scenario of five or more flagged. A breach is a diagnostic beside the verdict, never a gate.",
+    "REPLICATION": "an ADMITTED result is replicated on the SAME roster before any DEV, Fold B or test read (the owner iteration rule; no DEV read is authorised by this package).",
+    "TWIN": "ATTRIBUTION, never admission. The twin arm is read with the same estimator against the same sealed PLAN comparator. A gain the twin reproduces within the plan's own null is FORM (the store's shape and token volume), not content, and the verdict says so and claims no content effect. A gain the twin does not reproduce is attributed to the deltas' content, with the twin delta reported beside it.",
+    "comparator": "the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 (official 63.6304 / 82.2222); nothing is re-flown",
+    "efficiency_is_reported_regardless": "every efficiency deliverable is reported whatever the verdict"
+  },
+  "defect_and_fix": "THE FIX. The stage3-deltas store is NODE-ADDRESSED: its 379 values split into disjoint per-node slices (Perception 119, Solver 151, Reviewer 95, Planner 14), and the Reviewer slice associates with only 30 of the 39 legal intents, so a row whose Perception candidates fall outside those 30 matches no Reviewer delta at all. The pre-fix rails.knowledge_stores._stage3_delta_local_supply still returned a PhaseSupply for that row; rails.controllers.advance_phase_response_state turns ANY supply into an action_kind=acquire transition, and rails.knowledge.AgentStepTransition.validate refuses an acquire that introduces neither a value nor a facet -- so the v2 smoke died at the openJiuwen vertex reviewer_0_input after 12 metered contacts, on the two of four rows whose candidates miss the Reviewer slice. The Solver never showed it because that phase composes three supplies and a sibling always carried a value; the Reviewer and the Planner are served by this store alone. The route now supplies NOTHING when it introduces nothing new: the matching pool is ranked in full, the ids already in QueryState.retrieved_value_ids are dropped (the cumulative value set a revisited node sees), the per-node cap is applied to what REMAINS, and an empty result returns None, so the phase takes no supply step and the wave seals as an ordinary organize transition. The transition invariant stays strict; no config key was added and no decided key moved; on a first visit with nothing visible the selection is byte-identical to its pre-fix self. Each skip is receipted on the router as delta_supply {node, phase, sample_id, store_id, selected, already_acquired, reason}. PROVEN OFFLINE BEFORE THIS FLIGHT: analysis.native_episode_dry_run walks this exact composition node by node on the real released stores with zero model, tool, network, GPU, gate, transport, client or attempt contacts -- now on ALL FOUR rows, with the Perception candidate ids the v2 attempt's own trace recorded, and with the runner's own repeat-visit restriction performed in the walk. Pre-fix it reproduces the flight's own error sentence on rows 2 and 4 and completes rows 1 and 3, exactly as the flight did; post-fix all four rows complete (per-node deltas supplied: Perception 4 seeded on every row; Solver 1 / 4 / 0 / 0; Reviewer 3 / 0 / 2 / 0; Planner 1 / 0 / 1 / 0), and a REVISE walk revisits Solver, Reviewer and Planner acquiring nothing a second time. Regression: tests/unit/test_native_episode_dry_run.py (the real cell, all four rows, plus the REVISE path) and tests/unit/test_stage3_delta_supply_router.py (the router contract, the refused empty acquire that the ladder used to pin as \"an empty but valid supply\", and the cap applied to new values).",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-delta-cell-smoke-4-v3-fit",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 176,
+    "planned_speech_audio_seconds": 117,
+    "protocol_hash": "b4440feaba272d3bbeebfe7c41cca5ca01eb93e471373808609aeabab083432e",
+    "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realised native request inside the same flight, under the same lease. coordinate-fit must NOT be run, or this row is double-charged.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-delta-cell-smoke-4-v3",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "modules": {
+    "base": "the locked v2.0 SLURP default plan, exactly as the sealed PLAN arm flew it (configs/baseline/slurp-native-default-plan-lock-baseline-v1.json): the complete native episode with the review loop on, the shared controller and FlightRuntime path, no phase_tools on any role, Solver-only answer authority, the three-candidate contract, the max512 np4 resident geometry, the slot-contracts v2 / intent-boundaries v1 / train-exemplars k=20 stores, saea-deliver-normalise-v3 at delivery, and items E13 and E22 declared. Nothing of it moves.",
+    "factor": "knowledge_stores.stage3-deltas added to the locked v2.0 plan fragment (configs/baseline/slurp-native-default-plan-lock-baseline-v1.json) and nothing else: the released stage3-deltas store (S3-5's 379 curated experiential deltas over the clean construction subset R01C, store revision v1r: every value routes on the construction gold intent it was learned on rather than on its TARGET, so all 379 are reachable on every node) supplied per node through context_supply -- Perception unconditional cap 4 (provider stage3-delta-unconditional-v1), Solver cap 8, Reviewer cap 4 and Planner cap 4 (provider stage3-delta-candidate-bound-v1, each bound to the row's own Perception candidate intents), every route node_target-filtered and prior_score-ranked. The config diff against the locked plan is exactly that one store key plus the per-flight bookkeeping keys this cell prepares under its own run id; proof tests/unit/test_stage3_delta_cell_fragment.py.",
+    "per_role_rendering_held": "native_episode.tool_schema_rendering is NOT armed.",
+    "purpose": "Stage-3 S3-6 CELL-1 as amended by S3-4s (owner decisions 83, 99, 101, 106): the locked v2.0 plan plus the NODE-TARGETED stage3-deltas store as ONE factor on TRAIN Fold A, comparator the sealed PLAN arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943), twin arm as the form control. PRIMARY DELIVERABLES: (1) the official paired read against the sealed PLAN arm under the decision-99 TRAIN lock rule; (2) the per-scenario effect x prefilled-token frontier table in both natural-mixture and equal-stratum weightings, deciding which deltas survive into version 2; (3) the per-node delta-consumption table (S3-4s): which deltas were supplied, per scenario and per node, and the saves and harms on the rows that received each delta; (4) the twin contrast, which decides attribution, never admission.",
+    "second_declared_key_not_a_factor": "native_episode.react_exhaustion_policy = continue-without-answer (item E22) and finite_completion_policy = deliver-latest-or-abstain (item E13): failure-mode declarations the locked plan already carries, required of every live SLURP native cell by scripts/checks/finite_completion_policy_check.py. Neither renders a request byte.",
+    "zero_added_contacts": "the added store supplies text to requests the plan already makes, so the role graph and therefore the 11-contact per-row ceiling are cell PLAN's unchanged"
+  },
+  "plan_kind": "native contact fit",
+  "preparation_base_commit": "0f68015e",
+  "prepared_phase_supply": {
+    "allow_output_change": "--allow-output-change must never be passed",
+    "expected_identity": "cell PLAN's own arm preparation output is ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f and its smoke's is 512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733. This cell's added store is routed through context_supply, not through the first phase's retrieval store, so the PREPARED Perception selection is expected to reproduce those outputs exactly. If it does not, the knowledge channel moved: stop and report rather than passing --allow-output-change.",
+    "note": "Item E16: a prepared artifact is evidence only for the implementation that produced it, so each of the four flown cells prepares its OWN first-phase Perception supply under its OWN run id at the readiness flip. core.flight.repin.ensure_artifact_pinned runs core.flight.cli prepare-supply (model-free, zero model / tokenizer / encoder / scorer / server contacts), writes the pin into the baseline fragment and inserts the matching 'preparation' readiness requirement. The committed baselines therefore carry NO prepared_phase_supply key at all -- the cell-P0 form (scripts/flights/batch/derive_plan_cell_registration.py drops it for exactly this reason). A PENDING_ string in its place is NOT a valid registration: core.flight.repin.ArtifactPin.from_mapping refuses it ('malformed artifact pin') before the preparation step can run, which is the defect this registration repaired.",
+    "status": "NOT PINNED HERE, and deliberately not written by hand"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/protocol-registered-v1.json",
+    "sha256": "774f5029f2fe2e327be44bc2249d1b03295291c5dde3815a88f8bd9e18a46336"
+  },
+  "purpose": "Stage-3 S3-6 CELL-1 as amended by S3-4s (owner decisions 83, 99, 101, 106): the locked v2.0 plan plus the NODE-TARGETED stage3-deltas store as ONE factor on TRAIN Fold A, comparator the sealed PLAN arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943), twin arm as the form control. PRIMARY DELIVERABLES: (1) the official paired read against the sealed PLAN arm under the decision-99 TRAIN lock rule; (2) the per-scenario effect x prefilled-token frontier table in both natural-mixture and equal-stratum weightings, deciding which deltas survive into version 2; (3) the per-node delta-consumption table (S3-4s): which deltas were supplied, per scenario and per node, and the saves and harms on the rows that received each delta; (4) the twin contrast, which decides attribution, never admission.",
+  "quality_read_gate": "no task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist, and not before the registered STOP condition passes (the sealed PLAN and PLANr aggregates reproduce to the hundredth). The twin is read only after the arm has sealed and been read. The efficiency and delta-consumption reads may proceed from the sealed receipts, trace and server log as soon as the manifest seals, because they touch no answer, reference or quality field.",
+  "registered_at_utc": "2026-09-23T23:30:00.000000+00:00",
+  "registration_base_commit": "0f68015e",
+  "repin_obligation": "RE-PIN OBLIGATION. rails/knowledge_stores.py is one of the five files whose SHA-256 is part of every prepared phase-supply artifact identity (core.flight.runtime._phase_seed_inputs), so this fix invalidates the pinned first-phase artifact of EVERY CELL-1 cell. The coordinator re-pins each of them with scripts/flights/repin_cell.py, which re-runs the model-free prepare-supply step; their output is expected to reproduce byte for byte, because the change moves no first-phase selection (the unconditional Perception route is untouched), and --allow-output-change must never be passed. This cell carries no committed prepared_phase_supply pin at all, so the re-pin MINTS its own under its own run id (item E16). The offline dry run of this composition already reports 'router-bootstrap (pinned artifact refused: prepared artifact identity mismatch)' on the retired v2 cell for exactly this reason, with the same 12 seeded value ids.",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-cell1fix3, branch fable/cell1fix3, base master 0f68015e (master carries the ledger-only commit ca08ebab)",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "supersedes": {
+    "cell": "slurp-native-stage3-delta-cell-smoke-4-v2",
+    "plan": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/smoke-v2-fit-plan-registered-v1.json",
+    "run_ids": [
+      "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2",
+      "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2-FIT-V1"
+    ],
+    "reason": "THIRD FAILURE, v2 SMOKE RUN ID RETIRED (2026-09-23). Run id SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2 launched at 17:07 UTC, metered 12 contacts on the four rows and died at the openJiuwen vertex reviewer_0_input with \"acquire must introduce at least one new value or facet\": a node-filtered, candidate-bound delta route that selected nothing still returned a supply, and any supply is an acquire transition. The v1 run id before it failed twice and is likewise retired. Under the program's own rule (study CLAUDE.md, owner 2026-09-03) a failure is fixed and proven on a four-row dry run before any further contact, so THIS plan is that proof, under a new run id with a fresh run-cumulative budget. Neither the v1 spend (4 calls, 10.60 s) nor the v2 spend (12 calls) is carried into it."
+  },
+  "unused_budget_is_not_attempt_authority": true
+}
