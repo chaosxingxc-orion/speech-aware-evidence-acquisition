@@ -50,14 +50,14 @@
             "kind": "decision",
             "expected_decision_id": "slurp-stage3-delta-cell-r01-admission-v1",
             "relpath": "coordination/slurp-stage3-delta-cell-r01-v1/root-admission-v1.json",
-            "sha256": "72e6827a5b291fe68c223994918403147660a309610101ae46855ff9459ebc9c",
+            "sha256": "09e4aaa4d7e1c0c782bd2c06f67e0224a63b72f3957535ddd9f6b4c8e58fd3d0",
             "reason": "Decision slurp-stage3-delta-cell-r01-admission-v1 pinned by scripts/flights/repin_cell.py."
           },
           {
             "kind": "preparation",
             "reason": "Depends on the twin cell's own release requirement above.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1/phase-supply-v2.json",
-            "sha256": "51728eef0055ead00b99472c5b080a0e684943973488b47bd433432bba31a6c5"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1/phase-supply-v3.json",
+            "sha256": "11f1b21d4edfcf328d84db68457e34120b54a9275aa7514bb86084c811a77b36"
           }
         ],
         "state": "ready"
