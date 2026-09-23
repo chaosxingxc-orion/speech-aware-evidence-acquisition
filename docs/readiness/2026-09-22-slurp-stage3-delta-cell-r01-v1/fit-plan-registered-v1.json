@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-delta-cell-r01-fit-v1",
-  "composed_config_hash": "1fae45a3c401c4f4fd63ff921489af4466ab2713f9adf29bc6b8871ec67c1e80",
+  "composed_config_hash": "668e56c50981af2824a68c6ae01201184f18d6486f4df64496ccc39a726f8584",
   "decision_rule": {
     "ADMITTED": "the CI95 lower bound of the paired official pooled SLU-F1 delta (CELL-1 minus PLAN) is ABOVE ZERO and the CI95 lower bound of the paired intent delta exceeds -0.9943 (owner decision 99, the TRAIN lock: a gain is proven, not merely non-inferior)",
     "DELTA_CONSUMPTION": "item S3-4s: the per-node delta-consumption table -- how many deltas each node was supplied per row, which value_ids were supplied, and the saves and harms on the rows that received each one -- is a PRIMARY deliverable, reported whatever the verdict, and is what decides which deltas survive into store version 2.",
@@ -20,7 +20,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 47520,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "a42a660d919be2e9531176be4c43f84e26eda62ae76fb2633898fc7267d4c74b",
+    "protocol_hash": "7c27ce9deb27fb0925f2e179775cd811530f3f08f871b3bec05872e821e1de68",
     "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
