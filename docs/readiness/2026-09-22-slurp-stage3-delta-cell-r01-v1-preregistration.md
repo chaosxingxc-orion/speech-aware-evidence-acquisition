@@ -610,6 +610,8 @@ their own attempt ids -- none of those attempts ever opened -- and the v3 four-r
 **The failure rule.** This is the arm's ONE recovery re-registration. A second failure stops the
 flight, and the fix is then proven on a four-row dry run before anything is re-queued.
 
+**Open registration decision.** The v3 smoke's attempt is consumed (a `(run_id, attempt_id)` pair is a one-time key), and the batch driver flies a step's smoke whenever the step declares one, so step 1 as queued would be refused at the smoke before the arm starts. The coordinator either clears step 1's `smoke_experiment` -- the form smoke has already passed and this fix changes only how an already-sealed Perception state is READ, proven offline on four answer shapes -- or registers a fresh smoke identity. This branch takes neither.
+
 **Coordinator sequence:** merge this branch; `scripts/flights/batch/cell1_flip_all.sh` re-pins and
 flips every CELL-1 cell in one cycle (`rails/knowledge_stores.py` is hashed into every prepared
 artifact identity, and no first-phase selection moves, so `--allow-output-change` must never be

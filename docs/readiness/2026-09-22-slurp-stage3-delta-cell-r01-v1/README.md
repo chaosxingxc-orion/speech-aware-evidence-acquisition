@@ -869,6 +869,17 @@ the original attempt id they were registered with, exactly as the smoke's own re
 `smoke-generation-plan-registered-v1.json` untouched. **The twin cells are untouched** -- their
 attempts never opened -- and the v3 smoke keeps its own id. A second failure stops the flight.
 
+**One open registration decision for the coordinator, not taken here.** The v3 four-row smoke
+already flew and its attempt
+`SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3/attempt-slurp-native-stage3-delta-cell-smoke-4-v3-generation`
+is consumed; a `(run_id, attempt_id)` pair is a one-time key. `scripts/flights/batch/batch_driver.sh`
+flies a step's smoke whenever the step declares one, so step 1 as queued would re-open that consumed
+attempt and be refused before the arm ever starts. Either the step's `smoke_experiment` is set to
+`None` (the form smoke has already passed; this fix changes only how the delta route READS an
+already-sealed Perception state, and the four-shape offline dry run above is its proof), or a fresh
+smoke identity is registered. This branch takes neither: it changes only the ARM's attempt id, which
+is the one recovery re-registration the failure rule allows.
+
 **Re-pin obligation (again, and for the same reason).** `rails/knowledge_stores.py` is hashed into
 every prepared phase-supply artifact's identity, so this fix invalidates the pinned first-phase
 artifact of **every** CELL-1 cell. The unconditional Perception route is untouched and no first-phase
