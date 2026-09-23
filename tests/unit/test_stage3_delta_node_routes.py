@@ -584,3 +584,50 @@ def test_a_seed_computed_from_scratch_keeps_the_strict_overlap_refusal():
         _merge_unconditional_first_phase(
             {}, {"perception": {"s1": route}}, _seam_binding(route), "perception"
         )
+
+
+def test_check_refuses_a_pinned_supply_that_cannot_compose(tmp_path):
+    """``core.flight.cli check`` verified a pinned artifact's IDENTITY and
+    never composed it, which is exactly the gap CELL-1's smoke fell through:
+    the artifact was current, and the seed it produced was refused at
+    dispatch. ``verify_prepared_artifacts`` now composes it too."""
+
+    from speech_aware_evidence_acquisition.core.flight.cli import (
+        prepared_artifact_blockers,
+    )
+
+    binding, router = _bound(tmp_path, ALL_ROUTES)
+    runtime, _phase_binding, _program = _seed_runtime(tmp_path, binding, router)
+    artifact = runtime.prepare_phase_supply(tmp_path / "prepared-seed.json")
+    runtime._composed.values["prepared_phase_supply"] = {
+        "relpath": "prepared-seed.json",
+        "sha256": artifact["sha256"],
+    }
+    (report,) = runtime.verify_prepared_artifacts()
+    assert (report["key"], report["identity_ok"], report["seed_ok"]) == (
+        "prepared_phase_supply", True, True,
+    )
+    assert prepared_artifact_blockers(
+        {"prepared_artifacts_ok": True, "prepared_artifacts": [report]}
+    ) == []
+
+    # A route overlapping the seeded values without being their tail is a
+    # genuine duplicate. The artifact's identity still holds, so only the
+    # composition can catch it -- and it must, before an attempt is opened.
+    runtime._prepared_artifact_reports = None
+    router.unconditional_first_phase = lambda *, speech_packet_bindings, **_k: {
+        "perception": {
+            sample_id: (UNCONDITIONAL_IDS[0],)
+            for sample_id in sorted(speech_packet_bindings)
+        }
+    }
+    (broken,) = runtime.verify_prepared_artifacts()
+    assert broken["identity_ok"] is True
+    assert broken["seed_ok"] is False
+    assert "repeats a seeded value id" in broken["reason"]
+    assert prepared_artifact_blockers(
+        {"prepared_artifacts_ok": False, "prepared_artifacts": [broken]}
+    ) == [
+        "prepared artifact does not compose into a first-phase seed: "
+        f"prepared_phase_supply ({broken['relpath']}): {broken['reason']}"
+    ]

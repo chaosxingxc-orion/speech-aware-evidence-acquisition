@@ -3591,18 +3591,22 @@ class FlightRuntime:
         # per-artifact verdict.
         prepared_artifacts = self.verify_prepared_artifacts()
         prepared_artifacts_ok = all(
-            report["identity_ok"] for report in prepared_artifacts
+            report["identity_ok"] and report.get("seed_ok") is not False
+            for report in prepared_artifacts
         )
         if not prepared_artifacts_ok and enforce_prepared_artifacts:
             from ..preparation import PreparationError
 
             stale = [
-                report for report in prepared_artifacts if not report["identity_ok"]
+                report
+                for report in prepared_artifacts
+                if not report["identity_ok"] or report.get("seed_ok") is False
             ]
             raise PreparationError(
                 "refusing to open an attempt: "
                 f"{len(stale)} prepared artifact(s) no longer match this "
-                "implementation and config; re-pin the package on the launch "
+                "implementation and config, or do not compose into a "
+                "first-phase seed; re-pin the package on the launch "
                 "commit (core.flight.repin). "
                 + "; ".join(
                     f"{report['key']} ({report['relpath']}): {report['reason']}"
@@ -7038,7 +7042,17 @@ class FlightRuntime:
         flight used to discover that only at dispatch, after the attempt had
         been opened. This recomputes the identity exactly as the dispatch will
         (:meth:`phase_supply_artifact_identity`) and reports, per artifact,
-        ``{key, relpath, sha256, identity_ok, reason, difference}``.
+        ``{key, relpath, sha256, identity_ok, seed_ok, reason, difference}``.
+
+        ``seed_ok`` (2026-09-23) is the second half of that promise: a pinned
+        first-phase supply whose identity holds is also COMPOSED here, through
+        :meth:`_phase_supply_seeds`, exactly as ``_dispatch_phase_program``
+        composes it. Identity alone was not enough -- cell CELL-1's generation
+        smoke passed every identity check and was then refused inside
+        :func:`_merge_unconditional_first_phase`, after preflight, preprocess
+        and serve had been paid for and the attempt opened. For a pinned cell
+        this costs one artifact load plus the store's own per-flight-constant
+        route, and a cell that pins nothing never reaches it.
 
         Nothing is reported for a cell that pins no prepared artifact, and
         nothing for a policy that never loads one (``fixed`` and the obs
@@ -7123,6 +7137,7 @@ class FlightRuntime:
                             else None
                         ),
                         "identity_ok": failure is None,
+                        "seed_ok": None,
                         "reason": failure,
                         "difference": None,
                     }
@@ -7133,6 +7148,7 @@ class FlightRuntime:
                 "relpath": None,
                 "sha256": None,
                 "identity_ok": False,
+                "seed_ok": None,
                 "reason": failure,
                 "difference": None,
             }
@@ -7170,6 +7186,24 @@ class FlightRuntime:
                             inputs=inputs,
                         )
                     )
+                    if report.get("identity_ok"):
+                        from types import SimpleNamespace
+
+                        report["seed_ok"] = True
+                        try:
+                            self._phase_supply_seeds(
+                                program,
+                                binding,
+                                specs,
+                                SimpleNamespace(split_identity_hash=identity),
+                            )
+                        except Exception as error:  # noqa: BLE001 -- a refusal
+                            report["seed_ok"] = False
+                            report["reason"] = (
+                                "the pinned first-phase supply verifies but does "
+                                "not compose into a seed: "
+                                f"{type(error).__name__}: {error}"
+                            )
             reports.append(report)
         self._prepared_artifact_reports = tuple(reports)
         return self._prepared_artifact_reports
