@@ -1,7 +1,7 @@
 {
   "schema": "saea-authored-semantic-knowledge-preparation-v1",
   "registration_id": "SAEA-SLURP-STAGE3-DELTAS-PREPARATION-V1",
-  "template_note": "TEMPLATE, never passed to core.semantic_knowledge_preparation.prepare_semantic_knowledge_store. That preparer verifies authored_source, construction_scope, permitted_roster and every forbidden_rosters pin by SHA-256, and the authored document's digest only exists after scripts/build_slurp_stage3_delta_store.py has curated it. scripts/flights/batch/adv1_to_deltas_steps.py materialises a RUNNABLE copy of this file under the data root with the real digests, exactly as scripts/flights/batch/r01_prep23.sh materialises configs/preparation/slurp-stage3-construction-r01-query-alias-v1.json; this committed file is never edited in place and its PENDING_ tokens never reach the preparer. Remove this key in the runnable copy.",
+  "template_note": "TEMPLATE, never passed to core.semantic_knowledge_preparation.prepare_semantic_knowledge_store. That preparer verifies authored_source, construction_scope, permitted_roster and every forbidden_rosters pin by SHA-256, and the authored document's digest only exists after scripts/build_slurp_stage3_delta_store.py has curated it. scripts/flights/batch/adv1_to_deltas_steps.py materialises a RUNNABLE copy of this file BESIDE it in this package (stage3-deltas-v1-release-registration.json) with the real digests. That copy is a REPOSITORY path, not a data-root one: the preparer records a registration by its repo-relative path and refuses one that is not confined to repo_root, exactly as docs/readiness/2026-09-17-slurp-slot-contracts-preparation-registration-v2.json is a repository file. This committed template is never edited in place and its PENDING_ tokens never reach the preparer. Remove this key in the runnable copy.",
   "carrier_lock_key": "slurp",
   "source_partition_role": "train",
   "source_split_identity_hash": "PENDING_S3_3_DISAGREEING_SPLIT_IDENTITY_HASH",
@@ -10,7 +10,7 @@
   "store_role": "stage3-deltas",
   "authored_source": {
     "root": "data",
-    "relpath": "prepared/SAEA-SLURP-STAGE3-DELTAS-V1/authored-stage3-deltas-v1.json",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-DELTAS-V1/source-stage3-deltas-v1.json",
     "sha256": "PENDING_S3_5_AUTHORED_SHA256"
   },
   "construction_scope": {
@@ -43,7 +43,7 @@
   "output_namespace": "knowledge/slurp/semantic/stage3-deltas-v1",
   "what_the_pins_are": {
     "source_split_identity_hash": "the split identity of the ADV-1 population, i.e. of the committed construction roster docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-v1.json. Copied from configs/experiment/slurp-native-stage3-advantage-r01-v1.json population.split_identity_hash once scripts/flights/batch/adv1_prepare.sh has filled it.",
-    "authored_source": "scripts/build_slurp_stage3_delta_store.py --out-authored, the curated append-only authored-deltas document (schema saea-stage3-authored-deltas-v1). Its digest is computed by the materialiser, never typed by hand.",
+    "authored_source": "the RELEASE SOURCE document: scripts/build_slurp_stage3_delta_store.py --out-source (equivalently scripts/build_slurp_stage3_delta_source.py over its --out-authored output), which re-envelopes the curated append-only authored-deltas rows verbatim as saea-authored-semantic-knowledge-source-v1 -- the only authored_source shape core.semantic_knowledge_preparation accepts. The curation document itself (schema saea-stage3-authored-deltas-v2) is NOT that shape and must never be pinned here; source-stage3-deltas-v1-wrap-receipt.json beside it pins the curated document it was built from. Its digest is computed by the materialiser, never typed by hand.",
     "construction_scope": "the outer construction roster this store's content may be drawn from: the R01C construction subset, exported to the data root in the shape core.semantic_knowledge_preparation._roster parses (the slot-contracts precedent, prepared/SAEA-SLURP-SEMANTIC-AUTHORING-PREPARE-V1/outer-construction-roster.json). A root preparation of S3-5, not produced by this template.",
     "permitted_roster": "the rows an authored delta may actually cite: the disagreeing rows of ADV-1, in the same exported shape. A root preparation of S3-5.",
     "forbidden_rosters": "the evaluation populations no authored content may touch: TRAIN Fold A, TRAIN Fold B and DEV-1000, pinned exactly as docs/readiness/2026-09-17-slurp-slot-contracts-preparation-registration-v2.json pins them. The materialiser re-verifies each digest against the committed receipt and fails closed on a mismatch."

@@ -38,6 +38,9 @@ from (ROLL-1 -> S3-3 -> ADV-1 -> S3-5), never which rows this cell is read on.
 - `scripts/build_slurp_stage3_delta_twin.py`: a seeded, zero-fixed-point derangement of
   `associated_facet_ids` over an authored-deltas document (Sattolo's algorithm, the same idiom as the
   B1/IDXT twins), tested (`tests/unit/test_stage3_delta_supply.py`).
+- `scripts/build_slurp_stage3_delta_source.py` and the curator's own `--out-source`: the
+  authored-deltas -> RELEASE SOURCE conversion (see "The release source" below), tested end to end in
+  `tests/unit/test_stage3_delta_source_wrap.py`.
 - Four baseline fragments (`configs/baseline/slurp-native-stage3-delta-cell-*-v1.json`: generation,
   twin, and their four-row smokes), each the locked PLAN fragment plus exactly one added store; proof
   test `tests/unit/test_stage3_delta_cell_fragment.py`.
@@ -144,18 +147,23 @@ which runs, in order:
 python scripts/build_slurp_stage3_delta_store.py --advantage-outputs <prepared>/advantage-outputs-v1.jsonl \
     --pairs <data>/analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1/pairs.json --repo-root "$REPO" \
     --predecessor none --iteration 1 --run-id SAEA-SLURP-STAGE3-ADVANTAGE-R01-V1 \
-    --out-authored <prepared>/authored-stage3-deltas-v1.json
+    --out-authored <prepared>/authored-stage3-deltas-v1.json \
+    --out-source <prepared>/source-stage3-deltas-v1.json \
+    --source-split-identity-hash <the ADV-1 population's>
 python scripts/build_slurp_stage3_delta_twin.py --authored <prepared>/authored-stage3-deltas-v1.json \
     --seed 20260922 --out <prepared>/authored-stage3-deltas-twin-v1.json
+python scripts/build_slurp_stage3_delta_source.py --authored <prepared>/authored-stage3-deltas-twin-v1.json \
+    --out <prepared>/source-stage3-deltas-twin-v1.json \
+    --source-split-identity-hash <the ADV-1 population's>
 python scripts/flights/batch/adv1_to_deltas_steps.py --repo-root "$REPO" --data-root "$DATA" registration \
     --template docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v1-release-registration.template.json \
-    --out <coordination>/stage3-deltas-v1-release-registration.json \
+    --out "$REPO"/docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v1-release-registration.json \
     --source-split-identity-hash <the ADV-1 population's>      # and again for the twin template
-python scripts/build_slurp_stage3_delta_store.py <same curation arguments> \
-    --release <coordination>/stage3-deltas-v1-release-registration.json --data-root "$DATA" \
-    --release-pins <coordination>/stage3-deltas-v1-release-pins.json
+python scripts/build_slurp_stage3_delta_store.py <same curation and --out-source arguments> \
+    --release "$REPO"/docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v1-release-registration.json \
+    --data-root "$DATA" --release-pins <coordination>/stage3-deltas-v1-release-pins.json
 python -m speech_aware_evidence_acquisition.core.driver.cli prepare-semantic-knowledge \
-    --registration <coordination>/stage3-deltas-twin-v1-release-registration.json \
+    --registration "$REPO"/docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-twin-v1-release-registration.json \
     --repo-root "$REPO" --data-root "$DATA"
 python scripts/flights/batch/adv1_to_deltas_steps.py --repo-root "$REPO" --data-root "$DATA" \
     cell1-values --values-out <coordination>/cell1-fill-values.json
@@ -172,24 +180,60 @@ The generation store goes out through the curator's own `--release` path (which 
 release-pins document the spec asks for); the twin's authored document is a derangement, not a
 curation, so it is released directly through the driver's `prepare-semantic-knowledge`. Re-running
 the curator for the release step is deliberate: curation is deterministic (survivors sorted by
-`value_id`), so the authored bytes and therefore the digest the registration pinned are reproduced,
-and if they ever were not, the preparer fails closed on the `authored_source` pin rather than
-releasing a different store.
+`value_id`), so the authored bytes -- and the release source wrapped from them in the same process,
+and therefore the digest the registration pinned -- are reproduced, and if they ever were not, the
+preparer fails closed on the `authored_source` pin rather than releasing a different store.
 
 **Two release registrations are committed here as TEMPLATES**
 (`stage3-deltas-v1-release-registration.template.json`,
 `stage3-deltas-twin-v1-release-registration.template.json`).
 `core.semantic_knowledge_preparation.prepare_semantic_knowledge_store` verifies `authored_source`,
 `construction_scope`, `permitted_roster` and every `forbidden_rosters` pin by SHA-256, and the
-authored document's digest only exists after the curator has written it -- so the committed file
+release source's digest only exists after the curator has written it -- so the committed file
 carries `PENDING_` tokens, is never passed to the preparer and is never edited in place; the helper
-materialises a runnable copy under the data root with the real digests, exactly as
-`scripts/flights/batch/r01_prep23.sh` materialises the query-alias template. The helper re-verifies
-each forbidden-roster digest (TRAIN Fold A, TRAIN Fold B, DEV-1000) against the committed receipt and
-fails closed on a mismatch. The two `prepared/` roster documents the registration pins
+materialises a runnable copy **beside the templates in this package** with the real digests. That
+copy is a REPOSITORY path, not a data-root one: the preparer records a registration by its
+repo-relative path (`_registration`) and refuses outright one that is not confined to `repo_root`,
+which is why `docs/readiness/2026-09-17-slurp-slot-contracts-preparation-registration-v2.json` is a
+repository file too. Commit both runnable registrations with the filled fragments. The helper also
+re-verifies each forbidden-roster digest (TRAIN Fold A, TRAIN Fold B, DEV-1000) against the committed
+receipt, and re-verifies that `authored_source` really is a wrapped release source, failing closed on
+either mismatch. The two `prepared/` roster documents the registration pins
 (`outer-construction-roster.json`, `permitted-roster.json`, in the shape the slot-contracts
 preparation uses) are root's own S3-5 preparations; the runbook checks for them and stops, it does
 not invent them.
+
+## The release source (the wrapper between curation and release)
+
+`prepare_semantic_knowledge_store` reads an `authored_source` **only** through the shared envelope
+`saea-authored-semantic-knowledge-source-v1` -- exactly
+`{schema, builder_policy_id, source_split_identity_hash, rows}`, key set checked for equality, with
+`builder_policy_id` and `source_split_identity_hash` cross-checked against the registration's own
+(`core.semantic_knowledge_preparation._source_rows`). The curator's `--out-authored` document is a
+different shape (`saea-stage3-authored-deltas-v2`, with `iteration`, and no builder or split
+identity), and so is the twin's derangement of it (which adds `twin_of_seed`). Neither may be pinned
+as an `authored_source`; until this conversion existed the release step could not run at all.
+
+The conversion (`build_authored_source_document` in `scripts/build_slurp_stage3_delta_store.py`,
+exposed as `scripts/build_slurp_stage3_delta_source.py`) carries **every row over verbatim** --
+`value_id`, `content`, `associated_facet_ids`, `node_target`, `source_sample_ids`, `provenance_refs`,
+`task_target`, `prior_score` -- in the document's own order, re-validating each row's exact key set on
+the way through, and adds nothing but the envelope's three header fields. `builder_policy_id` is
+derived from the authored schema (v1 -> `saea-authored-stage3-deltas-v1`, v2 ->
+`saea-authored-stage3-deltas-v2`), never typed. Bytes are canonical JSON with sorted keys, so the
+digest a registration pins is reproducible.
+
+Because the envelope admits no fourth key, the link back to curation is a **wrap receipt** written
+beside the wrapper (`source-stage3-deltas-v1-wrap-receipt.json`, schema
+`saea-stage3-delta-source-wrap-receipt-v1`): the authored document's SHA-256, the wrapper's SHA-256,
+the authored schema, the iteration (and a twin's seed) and the row count. The registration pins the
+wrapper; the receipt closes the chain back to the curated document.
+
+The generation store's wrapper is written by the curator itself (`--out-source`, in the same process
+as the curation that produced the rows, in step B and again in step E), so a drift in curation would
+move the wrapper's digest and the preparer would refuse the pin instead of releasing different
+content. The twin's document is a derangement rather than a curation, so its wrapper is written by
+the standalone CLI in step W.
 
 ## Proof obligations covered by tests
 
@@ -204,6 +248,13 @@ not invent them.
   token; the smoke variants carry the same store shape as their full siblings.
 - `tests/unit/test_roll1_fill_placeholders.py`: the substitution tool's ROLL-1 contract is unchanged
   by the `--fragments` / `--occurrence-policy` arguments this package needs.
+- `tests/unit/test_stage3_delta_source_wrap.py`: the release path end to end on a SYNTHETIC authored
+  document in `tmp_path` (never `SPEECHRL_DATA_DIR`) -- curate + wrap, derange + wrap, materialise
+  both registrations through `adv1_to_deltas_steps.py`, release through
+  `prepare_semantic_knowledge_store`, round-trip the snapshot's values, and serve all four per-node
+  `context_supply` routes from the released snapshot; plus the two refusals that make the shape
+  mandatory (a curated document pinned as `authored_source`, and a registration written outside
+  `repo_root`) and the consistency of the committed templates with the runbook's own paths.
 
 ## S3-4s amendment: per-node supply (owner decision 106, 2026-09-23)
 

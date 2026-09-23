@@ -1,7 +1,7 @@
 {
   "schema": "saea-authored-semantic-knowledge-preparation-v1",
   "registration_id": "SAEA-SLURP-STAGE3-DELTAS-TWIN-PREPARATION-V1",
-  "template_note": "TEMPLATE, never passed to core.semantic_knowledge_preparation.prepare_semantic_knowledge_store; see the sibling stage3-deltas-v1-release-registration.template.json. THIS IS THE FORM CONTROL: its authored source is scripts/build_slurp_stage3_delta_twin.py's seeded, zero-fixed-point derangement of the S3-5 release's own authored document (Sattolo's algorithm over associated_facet_ids) -- same statement content, wrong facet attachment, the B1/IDXT twin idiom. Everything else is byte-identical to the generation registration except registration_id, authored_source.relpath and output_namespace. scripts/flights/batch/adv1_to_deltas_steps.py materialises the runnable copy. Remove this key in the runnable copy.",
+  "template_note": "TEMPLATE, never passed to core.semantic_knowledge_preparation.prepare_semantic_knowledge_store; see the sibling stage3-deltas-v1-release-registration.template.json. THIS IS THE FORM CONTROL: its authored source is scripts/build_slurp_stage3_delta_twin.py's seeded, zero-fixed-point derangement of the S3-5 release's own authored document (Sattolo's algorithm over associated_facet_ids) -- same statement content, wrong facet attachment, the B1/IDXT twin idiom -- re-enveloped as saea-authored-semantic-knowledge-source-v1 by scripts/build_slurp_stage3_delta_source.py, which is the only authored_source shape the preparer accepts. Everything else is byte-identical to the generation registration except registration_id, authored_source.relpath and output_namespace. scripts/flights/batch/adv1_to_deltas_steps.py materialises the runnable copy beside this template in the repository. Remove this key in the runnable copy.",
   "carrier_lock_key": "slurp",
   "source_partition_role": "train",
   "source_split_identity_hash": "PENDING_S3_3_DISAGREEING_SPLIT_IDENTITY_HASH",
@@ -10,7 +10,7 @@
   "store_role": "stage3-deltas",
   "authored_source": {
     "root": "data",
-    "relpath": "prepared/SAEA-SLURP-STAGE3-DELTAS-V1/authored-stage3-deltas-twin-v1.json",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-DELTAS-V1/source-stage3-deltas-twin-v1.json",
     "sha256": "PENDING_S3_6_TWIN_AUTHORED_SHA256"
   },
   "construction_scope": {
