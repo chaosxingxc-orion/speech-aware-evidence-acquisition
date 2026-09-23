@@ -47,13 +47,20 @@
         "reason": "A four-row form smoke of the twin cell. Held for the same reasons as the twin generation cell.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-delta-cell-r01-admission-v1",
+            "relpath": "coordination/slurp-stage3-delta-cell-r01-v1/root-admission-v1.json",
+            "sha256": "ad11728bbbe708b951a609863112021db0025ad1c6f7b04f29d2b01daeadb80b",
+            "reason": "Decision slurp-stage3-delta-cell-r01-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "Depends on the twin cell's own release requirement above.",
-            "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1r/release.json",
-            "sha256": "7c0dc8979e8b9f1ae66105049168b310d5136c99983f99a98885d01e27d84219"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1/phase-supply-v1.json",
+            "sha256": "e47f19f07e86cb1cb9504dd1f261b140ff25616268e990e29eaf28744ae24322"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1"
     }
