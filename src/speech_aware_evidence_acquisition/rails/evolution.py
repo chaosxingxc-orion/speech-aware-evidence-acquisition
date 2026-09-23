@@ -2496,6 +2496,16 @@ class ProposerContact:
     def sample_id(self) -> str:
         return self.draw.anchor_sample_id
 
+    @property
+    def draw_id(self) -> str:
+        """This contact's own stable id. Named on the CONTACT (rather than
+        reached through ``contact.draw``) so every construction-visible
+        material -- this one and ``rails.stage3_advantage_material
+        .AdvantageContact``, which has no ``ProposerDraw`` at all -- answers
+        the same accessor for the wire check's own messages."""
+
+        return self.draw.draw_id
+
     def as_json(self) -> dict[str, object]:
         """Everything a receipt may record about this contact -- identity,
         counts and digests, never the rendered text."""
