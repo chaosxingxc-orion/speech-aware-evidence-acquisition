@@ -11,7 +11,7 @@
 # records the divergence. The run id, the comparator and the estimator are unchanged.
 WHICH=$1
 case $WHICH in
-  arm) ARM_RUN=SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1; ARM_ATTEMPT=attempt-slurp-native-stage3-delta-cell-r01-v1-generation-recovery-relaunch; ARM_FIT=SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1; LABEL="cell CELL-1 (the locked plan plus the per-node stage3-deltas store)"; TAG=R01;;
+  arm) ARM_RUN=SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1; ARM_ATTEMPT=attempt-slurp-native-stage3-delta-cell-r01-v1-generation-recovery-relaunch-2; ARM_FIT=SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1; LABEL="cell CELL-1 (the locked plan plus the per-node stage3-deltas store)"; TAG=R01;;
   twin) ARM_RUN=SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1; ARM_ATTEMPT=attempt-slurp-native-stage3-delta-cell-r01-v1-twin; ARM_FIT=SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-FIT-V1; LABEL="the CELL-1 derangement twin (form control)"; TAG=TWIN;;
   *) echo "usage: cell1_read.sh arm|twin"; exit 2;;
 esac

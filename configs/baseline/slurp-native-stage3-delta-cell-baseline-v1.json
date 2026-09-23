@@ -166,7 +166,7 @@
   },
   "knowledge_stores_note": "Stage-3 S3-4s (owner decision 106, 2026-09-23): the ONE added store now declares a PER-NODE context_supply -- Perception (unconditional, cap 4, the node that produces the candidate list and therefore has no candidate state to bind against), Solver (cap 8), Reviewer (cap 4) and Planner (cap 4), each candidate-bound except Perception, each prior_score-ranked and each filtered to the rows whose node_target is that phase's node (rails.stage3_delta_supply). The cell is still ONE factor on the locked plan: the config diff against configs/baseline/slurp-native-default-plan-lock-baseline-v1.json is exactly the knowledge_stores.stage3-deltas key plus the per-flight bookkeeping keys this cell must re-prepare under its own run id (native_contact_fit, prepared_phase_supply, preparation_source_receipts, the speech-feature identity ids, speech_packet_promotion_receipt[_sha256]) -- the SAME exclusion set the locked plan's own proof test uses for its predecessor fragment. Proof: tests/unit/test_stage3_delta_cell_fragment.py.",
   "native_contact_fit": {
-    "attempt_id": "attempt-slurp-native-stage3-delta-cell-r01-v1-fit",
+    "attempt_id": "attempt-slurp-native-stage3-delta-cell-r01-v1-fit-recovery",
     "contact_cap": 47520,
     "max_speech_packets": 1,
     "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R01-FIT-V1"
