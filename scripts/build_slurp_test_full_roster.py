@@ -416,29 +416,41 @@ def _probe_binding_sources() -> list[dict[str, object]]:
 
 
 def _exposure_closure(identity_hashes: Iterable[str]) -> dict[str, object]:
-    """No exposure-ledger row may already name this split -- consumed or not."""
+    """The split must appear in no CONSUMED exposure-ledger row.
+
+    Protocol section 2.3 item 4 states the criterion exactly: "the test identity
+    hash appears in no consumed exposure-ledger row: the split is unread at the
+    moment of registration". A row with ``consumed = no`` is a REGISTRATION --
+    the three preparation rows of this very read are exactly that, and they are
+    written after this receipt is minted -- so it is reported, not treated as a
+    violation. Only a consumed row means the split has already been read, and
+    that stops everything.
+    """
 
     text = (REPO_ROOT / EXPOSURE_LEDGER_RELPATH).read_text(encoding="utf-8")
     rows = _parse_ledger_tables(text)
     wanted = {value for value in identity_hashes if value}
     matches = []
+    consumed = []
     for row in rows:
         cell = row.get("split identity hash", "")
         for value in wanted:
             if value and value in cell:
-                matches.append(
-                    {
-                        "run_id": row.get("run/experiment id"),
-                        "consumed": row.get("consumed"),
-                        "identity_hash": value,
-                    }
-                )
+                record = {
+                    "run_id": row.get("run/experiment id"),
+                    "consumed": row.get("consumed"),
+                    "identity_hash": value,
+                }
+                matches.append(record)
+                if str(record["consumed"]).strip().lower() != "no":
+                    consumed.append(record)
     return {
         "ledger_relpath": EXPOSURE_LEDGER_RELPATH,
         "rows_parsed": len(rows),
         "identity_hashes_searched": sorted(wanted),
         "matching_rows": matches,
-        "verdict": "UNREAD" if not matches else "ALREADY REGISTERED -- STOP",
+        "consumed_rows": consumed,
+        "verdict": "UNREAD" if not consumed else "ALREADY CONSUMED -- STOP",
     }
 
 
@@ -535,7 +547,7 @@ def build_disjointness(
         },
         "sources": checked,
         "violations": violations,
-        "verdict": "CLEAN" if not violations and not closure["matching_rows"] else "STOP",
+        "verdict": "CLEAN" if not violations and not closure["consumed_rows"] else "STOP",
         "offline_guard": {
             "outbound_connection_attempts": getattr(attempts, "count", None),
             "attempted_targets": list(getattr(attempts, "targets", ()) or ()),

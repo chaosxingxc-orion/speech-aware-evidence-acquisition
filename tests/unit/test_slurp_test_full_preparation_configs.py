@@ -413,6 +413,58 @@ def test_materialising_the_template_yields_exactly_the_contract_field_set() -> N
     assert ALIAS_TEMPLATE["source"]["sha256"] == "PENDING_STEP_2B_QUERIES_SHA256"
 
 
+def test_the_three_draft_rows_are_registered_exactly_once_and_unconsumed() -> None:
+    """DRAFT rows: written before any contact, never ``consumed = yes``.
+
+    ``contracts.gate_exposure._require_exposure_preregistration`` refuses a run
+    id registered more than once and refuses a consumed row outright, so both
+    properties are load-bearing, not decoration.
+    """
+
+    from speech_aware_evidence_acquisition.contracts import (  # noqa: PLC0415
+        _parse_ledger_tables,
+    )
+
+    rows = _parse_ledger_tables(
+        (REPO / "docs/exposure-ledger.md").read_text(encoding="utf-8")
+    )
+    expected = {
+        "SAEA-SN-TEST-FULL-PREPROCESS": ("bounded-discovery-probe", "13078", "36912", "1.0"),
+        RUN: ("bounded-discovery-probe", "13078", "36912", "4.0"),
+        EXPORT_ROW: ("model-free-check", "0", "0", "0"),
+    }
+    for run_id, (profile, calls, seconds, gpu_hours) in expected.items():
+        matched = [row for row in rows if row.get("run/experiment id") == run_id]
+        assert len(matched) == 1, run_id
+        row = matched[0]
+        assert row["execution profile"] == profile
+        assert row["split role"] == FINAL_REPORT_SPLIT_ROLE
+        assert row["split identity hash"] == SPLIT_IDENTITY
+        assert row["consumed"].strip().lower() == "no"
+        assert (row["calls"], row["speech audio seconds"], row["gpu hours"]) == (
+            calls,
+            seconds,
+            gpu_hours,
+        )
+        assert "DRAFT" in row["notes"]
+        assert "owner allowance + root countersignature pending" in row["scope"]
+
+
+def test_the_plan_note_is_committed_and_names_every_run_id() -> None:
+    note = (
+        REPO / "docs/readiness/2026-09-23-slurp-test-full-preparations-v1.md"
+    ).read_text(encoding="utf-8")
+    for run_id in ("SAEA-SN-TEST-FULL-PREPROCESS", RUN, EXPORT_ROW):
+        assert run_id in note
+    for run_id in (
+        "SAEA-SLURP-TEST-FULL-LOCKED-SYSTEM-V1",
+        "SAEA-SLURP-TEST-FULL-DIRECT-V1",
+    ):
+        assert run_id in note
+    assert "13,078" in note and "2,974" in note
+    assert "36,911.9388125" in note
+
+
 def test_the_content_derivative_step_reuses_the_generic_r01_cli() -> None:
     """Preparation 3 registers no new tool: it is R01's step 3 on this roster."""
 
