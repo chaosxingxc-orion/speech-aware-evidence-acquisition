@@ -218,6 +218,13 @@ def world(tmp_path):
                 "--run-id", "SAEA-TEST-ADVANTAGE-V1",
                 "--out-authored", str(authored),
                 "--out-source", str(source),
+                # The legacy facet rule: this world's whole point is the
+                # release PATH (curate -> wrap -> register -> release ->
+                # route), and target-only keeps its rows' facets equal to
+                # their TARGETs so the per-node route assertions below read
+                # the same as they did before S3-5 revision v1r. The v1r
+                # rule itself is proven in test_stage3_delta_store_v2.py.
+                "--facet-rule", "target-only",
                 "--source-split-identity-hash", SPLIT,
             ]
         )
@@ -901,11 +908,22 @@ def test_the_committed_templates_pin_a_wrapped_release_source(name, namespace) -
 
 
 def test_the_runbook_writes_exactly_the_sources_the_templates_pin() -> None:
+    """The runbook's source paths and the templates' pins are the same
+    documents. Since S3-5 revision v1r the runbook writes them at
+    ``$TAG`` rather than at the literal ``v1``, and
+    ``adv1_to_deltas_steps.py registration --version-tag`` re-points the
+    template's pin the same way, so the two agree at every tag exactly when
+    they agree once the tag is substituted back."""
+
     generation = _committed("stage3-deltas-v1-release-registration.template.json")
     twin = _committed("stage3-deltas-twin-v1-release-registration.template.json")
     for pin in (generation["authored_source"], twin["authored_source"]):
         basename = pin["relpath"][len(PREPARED_PREFIX):]
-        assert f"=$PREPARED/{basename}\n" in RUNBOOK, basename
+        tagged = basename.replace("-v1.json", "-$TAG.json")
+        assert f"=$PREPARED/{tagged}\n" in RUNBOOK, basename
+        assert steps.retag(basename, name="pin", tag="v1r") == basename.replace(
+            "-v1.json", "-v1r.json"
+        )
     # And it wraps them: the curator's own --out-source for the generation
     # document, the standalone conversion CLI for the twin's derangement.
     assert '--out-source "$SOURCE"' in RUNBOOK
@@ -941,3 +959,81 @@ def test_the_cell1_value_defaults_match_the_committed_namespaces() -> None:
         namespace = _committed(name)["output_namespace"]
         for artifact in ("release.json", "snapshot.json"):
             assert f'default="{namespace}/{artifact}"' in helper_source
+
+
+# ---------------------------------------------------------------------------
+# S3-5 revision v1r: the helper's version tag, content hash and reach step
+# ---------------------------------------------------------------------------
+
+
+def test_retag_moves_a_version_and_refuses_to_guess() -> None:
+    assert steps.retag("source-stage3-deltas-v1.json", name="x", tag="v1r") == (
+        "source-stage3-deltas-v1r.json"
+    )
+    assert steps.retag(
+        "knowledge/slurp/semantic/stage3-deltas-twin-v1", name="x", tag="v1r"
+    ) == "knowledge/slurp/semantic/stage3-deltas-twin-v1r"
+    assert steps.retag("SAEA-X-PREPARATION-V1", name="x", tag="V1R", old="V1") == (
+        "SAEA-X-PREPARATION-V1R"
+    )
+    # A file inside a versioned namespace: the version is the last path
+    # component ending in -v1, not the basename (the first v1r pass caught
+    # its own --snapshot-relpath default on exactly this shape).
+    assert steps.retag(
+        "knowledge/slurp/semantic/stage3-deltas-v1/snapshot.json", name="x", tag="v1r"
+    ) == "knowledge/slurp/semantic/stage3-deltas-v1r/snapshot.json"
+    # The identity, and the refusal.
+    assert steps.retag("anything-v1", name="x", tag="v1") == "anything-v1"
+    with pytest.raises(steps.Adv1DeltaStepError, match="refusing to guess"):
+        steps.retag("no-version-here", name="x", tag="v1r")
+
+
+def test_the_snapshot_value_is_the_content_hash_not_the_file_digest(tmp_path) -> None:
+    """Commit fb4d8915: the fragment pin is checked against
+    ``KnowledgeSnapshot.content_hash()`` and the release document's own
+    ``snapshot_sha256`` -- one number, and NOT the snapshot.json file
+    digest, which is a third value because the file carries that hash as a
+    field of itself."""
+
+    content = "c" * 64
+    release = tmp_path / "release.json"
+    snapshot = tmp_path / "snapshot.json"
+    release.write_text(json.dumps({"snapshot_sha256": content}), encoding="utf-8")
+    snapshot.write_text(
+        json.dumps({"snapshot_sha256": content, "values": []}), encoding="utf-8"
+    )
+    assert steps.snapshot_content_hash(release, snapshot) == content
+    assert steps.sha256_file(snapshot) != content
+
+    snapshot.write_text(json.dumps({"snapshot_sha256": "d" * 64}), encoding="utf-8")
+    with pytest.raises(steps.Adv1DeltaStepError, match="different snapshot_sha256"):
+        steps.snapshot_content_hash(release, snapshot)
+
+
+def test_supply_reach_counts_the_routable_values_per_node() -> None:
+    """The model-free upper bound: a candidate-bound route matches a value
+    only when one of its facet ids EQUALS a registered candidate intent, so a
+    value whose only facet is a slot type is unreachable on every row."""
+
+    def value(node, facets):
+        return {
+            "value_id": f"delta:1:{node}{len(facets)}",
+            "task_target": f"{node}:slot-contract:whatever",
+            "associated_facet_ids": list(facets),
+        }
+
+    snapshot = {"values": [
+        value("solver", ["alarm_set"]),
+        value("solver", ["place_name"]),
+        value("reviewer", ["alarm_set", "email_query"]),
+        value("perception", ["place_name"]),
+    ]}
+    report = steps.measure_supply_reach(
+        snapshot, legal_intents=frozenset({"alarm_set", "email_query"})
+    )
+    assert report["solver"]["values"] == 2
+    assert report["solver"]["reachable_by_a_candidate_intent"] == 1
+    assert report["reviewer"]["distinct_intents_covered"] == 2
+    assert report["perception"]["reachable_by_a_candidate_intent"] == 0
+    assert report["total"]["reachable_by_a_candidate_intent"] == 2
+    assert report["per_intent_facet_histogram"] == {"alarm_set": 2, "email_query": 1}

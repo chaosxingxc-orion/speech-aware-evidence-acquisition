@@ -42,6 +42,24 @@ Both are PERMUTATIONS within their own group, so the twin's token count is
 identical to the parent's by construction: no statement text is edited and
 the multiset of targets is preserved. :func:`authored_token_count` states
 that invariant and ``tests/unit/test_stage3_delta_twin_v2.py`` proves it.
+
+S3-5 revision v1r (2026-09-23)
+------------------------------
+Under the curator's ``source-intent`` facet rule a row may carry MORE THAN
+ONE facet id (its source rows' construction gold intents, plus TARGET when
+TARGET is itself a legal intent). Both derangements therefore move a row's
+WHOLE ATTACHMENT AS ONE UNIT -- the entire ``associated_facet_ids`` tuple,
+never a single position, and for the unconditional group the donor's TARGET
+field together with the donor's whole tuple. That choice, and not a
+per-position shuffle, is what keeps the invariant exact: a permutation of
+whole tuples preserves the MULTISET of tuples, so both the number of facet
+entries and the total token count are equal on the two sides whatever the
+per-row facet counts are. :func:`facet_count_multiset` states that second
+invariant beside :func:`authored_token_count`.
+
+On a ``target-only`` document the two rules coincide byte for byte (a
+target-only row's single facet IS its TARGET field), so this is not a change
+of behaviour for any store released before v1r.
 """
 
 from __future__ import annotations
@@ -94,7 +112,12 @@ def derange_facet_assignment(
 ) -> list[dict[str, object]]:
     """Reassign every row's ``associated_facet_ids`` from a DIFFERENT row's,
     by a seeded Sattolo derangement over the row order. Every other field is
-    copied byte-identical (deep-equal on read-back)."""
+    copied byte-identical (deep-equal on read-back).
+
+    The WHOLE tuple moves as one unit, so a row carrying two or three facet
+    ids (the v1r ``source-intent`` rule) hands over all of them together and
+    the multiset of tuples -- hence the facet count and the token count -- is
+    preserved exactly."""
 
     order = _sattolo_cycle(len(rows), seed=seed)
     twinned: list[dict[str, object]] = []
@@ -132,21 +155,26 @@ def permute_target_fields(
     """Reassign every row's TARGET from a DIFFERENT row's, by a seeded
     Sattolo derangement over the row order.
 
-    Rewrites ``task_target``'s third field and the ``associated_facet_ids``
-    entry that mirrors it, and touches nothing else: ``content``,
-    ``node_target``, ``prior_score``, ``source_sample_ids`` and
+    Rewrites ``task_target``'s third field and takes the donor's WHOLE
+    ``associated_facet_ids`` tuple with it, and touches nothing else:
+    ``content``, ``node_target``, ``prior_score``, ``source_sample_ids`` and
     ``provenance_refs`` are copied byte-identical, so the twin says the same
-    sentences about the wrong targets -- and carries the same token count.
+    sentences about the wrong targets -- and carries the same facet count and
+    the same token count.
+
+    On a ``target-only`` document the donor's tuple IS ``[donor_target]``, so
+    this is byte-identical to the pre-v1r rule that wrote that literal.
     """
 
     order = _sattolo_cycle(len(rows), seed=seed)
     twinned: list[dict[str, object]] = []
     for index, row in enumerate(rows):
-        donor_target = _target_field(rows[order[index]]["task_target"])
+        donor = rows[order[index]]
+        donor_target = _target_field(donor["task_target"])
         node, kind, _own = str(row["task_target"]).split(":", 2)
         new_row: MutableMapping[str, object] = dict(row)
         new_row["task_target"] = f"{node}:{kind}:{donor_target}"
-        new_row["associated_facet_ids"] = [donor_target]
+        new_row["associated_facet_ids"] = list(donor["associated_facet_ids"])
         twinned.append(dict(new_row))
     return twinned
 
@@ -182,6 +210,23 @@ def authored_token_count(document: Mapping[str, object]) -> int:
         for facet_id in row["associated_facet_ids"]:
             total += len(str(facet_id).split())
     return total
+
+
+def facet_count_multiset(document: Mapping[str, object]) -> tuple[int, ...]:
+    """The sorted multiset of per-row facet COUNTS.
+
+    The second S3-5 v1r form-control invariant: both derangements move whole
+    attachment tuples, so this multiset -- and therefore the number of facet
+    ids a supply packet can ever render -- is equal on parent and twin
+    however many facets a row carries.
+    """
+
+    return tuple(
+        sorted(
+            len(row["associated_facet_ids"])
+            for row in document.get("rows", ())  # type: ignore[union-attr]
+        )
+    )
 
 
 def derange_v2_rows(
@@ -273,18 +318,29 @@ def build_twin_document(
             f"derangement produced {fixed_points} fixed point(s); refusing a twin "
             "that is not a genuine derangement"
         )
-    twin = {
+    twin: dict[str, object] = {
         "schema": schema,
         "iteration": document.get("iteration"),
         "twin_of_seed": seed,
         "rows": twinned_rows,
     }
+    # The parent's facet rule travels with the twin, so the released form
+    # control says on its face which rule attached the facets it deranged.
+    # Absent on a pre-v1r document, and then absent here too: the twin of an
+    # earlier release reproduces byte for byte.
+    if document.get("facet_rule") is not None:
+        twin["facet_rule"] = document["facet_rule"]
     parent_tokens = authored_token_count(document)
     twin_tokens = authored_token_count(twin)
     if parent_tokens != twin_tokens:
         raise Stage3DeltaTwinError(
             f"twin token count {twin_tokens} differs from the parent's "
             f"{parent_tokens}; a form control must hold the token count"
+        )
+    if facet_count_multiset(document) != facet_count_multiset(twin):
+        raise Stage3DeltaTwinError(
+            "the twin's per-row facet counts are not a permutation of the "
+            "parent's; a form control must hold the attachment volume"
         )
     return twin
 
@@ -311,8 +367,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         "seed": args.seed,
         "authored_schema": twin["schema"],
         "row_count": len(twin["rows"]),
+        "facet_rule": twin.get("facet_rule"),
         "token_count": authored_token_count(twin),
         "parent_token_count": authored_token_count(document),
+        "facet_count_multiset_held": (
+            facet_count_multiset(document) == facet_count_multiset(twin)
+        ),
+        "facet_entries": sum(facet_count_multiset(twin)),
         "value_fixed_points": count_value_fixed_points(
             document["rows"], twin["rows"]
         ),

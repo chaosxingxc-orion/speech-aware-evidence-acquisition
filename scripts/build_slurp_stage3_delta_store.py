@@ -27,12 +27,30 @@ What it does
    S3-4s (``--schema-version 2``, the DEFAULT; owner decision 106): the v2
    parser reads one to three NODE-attributed blocks per contact, so one
    contact yields up to three rows; each row carries ``node_target`` and a
-   three-field ``task_target`` (``NODE:DELTA-KIND:TARGET``);
-   ``associated_facet_ids`` is the bare ``TARGET`` (what a candidate-bound
-   route actually intersects against); and one further curation rule drops
-   any statement repeating six or more consecutive tokens of a construction
-   transcript (``--construction-transcripts``; counts reported, no text
-   printed or persisted). ``--schema-version 1`` keeps every pre-S3-4s byte.
+   three-field ``task_target`` (``NODE:DELTA-KIND:TARGET``); and one further
+   curation rule drops any statement repeating six or more consecutive
+   tokens of a construction transcript (``--construction-transcripts``;
+   counts reported, no text printed or persisted). ``--schema-version 1``
+   keeps every pre-S3-4s byte.
+
+   S3-5 revision v1r (``--facet-rule``, 2026-09-23): what goes into
+   ``associated_facet_ids`` -- the ONLY field a candidate-bound route
+   intersects against the row's Perception candidate INTENT ids.
+
+   * ``source-intent`` (the DEFAULT for schema 2) writes the ordered,
+     de-duplicated union of (a) the construction GOLD INTENT id
+     (``<scenario>_<action>``) of every source row the statement was drawn
+     from (``--gold-intents``) and (b) the bare ``TARGET`` when ``TARGET`` is
+     itself a legal intent id (``--intent-vocabulary``; the default
+     vocabulary is the distinct values of the gold map). A slot type never
+     becomes a facet.
+   * ``target-only`` is the pre-v1r rule -- the bare ``TARGET``, whatever it
+     is -- kept so a released store can be reproduced byte for byte.
+
+   The v1 store measured 121 of 379 rows reachable by ANY of the 60
+   registered SLURP candidate intents (solver 11 of 151), because the 147
+   slot-contract rows carry a SLOT TYPE in ``TARGET``; under
+   ``source-intent`` every row carries at least one reachable facet.
 4. Loads version t-1's authored rows (``--predecessor``, or the literal
    string ``none`` for iteration 1) and keeps them VERBATIM as the base of
    version t's set (append-only).
@@ -107,6 +125,11 @@ AUTHORED_SCHEMA_V2 = "saea-stage3-authored-deltas-v2"
 #: fewer is a phrasing pattern and is allowed, as are slot values and intent
 #: names of any length that do not reach six consecutive tokens.
 CONTAINMENT_SPAN_TOKENS = 6
+#: S3-5 revision v1r: the two ``associated_facet_ids`` rules. See the module
+#: docstring; :func:`facet_ids_for_statement` is the whole of both.
+FACET_RULE_SOURCE_INTENT = "source-intent"
+FACET_RULE_TARGET_ONLY = "target-only"
+FACET_RULES = (FACET_RULE_SOURCE_INTENT, FACET_RULE_TARGET_ONLY)
 #: The per-row field names a JSONL transcript file may carry its text in.
 #: Their presence at the TOP level of a parsed file is what tells one
 #: JSONL row apart from a whole-file {sample_id: text} object.
@@ -219,6 +242,108 @@ def contains_transcript_span(
     return bool(_ngrams(_token_sequence(statement), span) & spans)
 
 
+def load_gold_intents(path: Path) -> dict[str, str]:
+    """The construction rows' gold intent ids, keyed by sample id.
+
+    A JSON object mapping ``sample_id`` to ``<scenario>_<action>``. Read
+    model-free and used ONLY as a routing key over the CONSTRUCTION
+    population: the gold of the population a cell is READ on never enters
+    this file, this store or any runtime path -- exactly as every other
+    TRAIN-derived store of this study (``slot-contracts``,
+    ``intent-boundaries``, ``train-exemplars``) carries TRAIN intent ids as
+    facet ids. No value is printed by this CLI.
+    """
+
+    document = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(document, Mapping) or not document:
+        raise Stage3DeltaStoreError(f"{path} must be a non-empty JSON object")
+    intents: dict[str, str] = {}
+    for sample_id, value in document.items():
+        if not isinstance(sample_id, str) or not sample_id:
+            raise Stage3DeltaStoreError(f"{path} has a non-string sample id")
+        if not isinstance(value, str) or not value:
+            raise Stage3DeltaStoreError(
+                f"{path} maps a sample id to something that is not an intent id"
+            )
+        intents[sample_id] = value
+    return intents
+
+
+def load_intent_vocabulary(
+    path: Path | None, *, gold_intents: Mapping[str, str]
+) -> frozenset[str]:
+    """The LEGAL intent ids -- the vocabulary a Perception candidate list can
+    ever name, and therefore the only ``TARGET`` values worth keeping as a
+    facet under ``source-intent``.
+
+    ``path`` accepts the registered SLURP candidate catalog
+    (``{"profiles": [{"candidate_id": ...}, ...]}``), a plain JSON list of
+    ids, or a JSON object keyed by id. ``None`` -- the default -- falls back
+    to the distinct values of the gold map, which is the vocabulary the
+    construction population itself attests.
+    """
+
+    if path is None:
+        return frozenset(gold_intents.values())
+    document = json.loads(path.read_text(encoding="utf-8"))
+    ids: list[str] = []
+    if isinstance(document, Mapping) and isinstance(document.get("profiles"), list):
+        for index, profile in enumerate(document["profiles"]):
+            if not isinstance(profile, Mapping) or not isinstance(
+                profile.get("candidate_id"), str
+            ):
+                raise Stage3DeltaStoreError(
+                    f"{path} profiles[{index}] carries no candidate_id"
+                )
+            ids.append(profile["candidate_id"])
+    elif isinstance(document, Mapping):
+        ids = [key for key in document if isinstance(key, str) and key]
+    elif isinstance(document, list):
+        ids = [item for item in document if isinstance(item, str) and item]
+    else:
+        raise Stage3DeltaStoreError(f"{path} is not an intent vocabulary")
+    if not ids:
+        raise Stage3DeltaStoreError(f"{path} names no intent id")
+    return frozenset(ids)
+
+
+def facet_ids_for_statement(
+    *,
+    sample_ids: Sequence[str],
+    target: str,
+    facet_rule: str,
+    gold_intents: Mapping[str, str] = {},
+    legal_intents: frozenset[str] = frozenset(),
+) -> list[str]:
+    """The ``associated_facet_ids`` of one curated row: PURE, total, ordered
+    and de-duplicated.
+
+    ``target-only`` is the bare ``TARGET``, whatever it is (the pre-v1r
+    rule). ``source-intent`` is the construction gold intent id of every
+    source row, in source order, then ``TARGET`` when ``TARGET`` is itself a
+    legal intent id -- so an intent-boundary row keeps its target intent as a
+    facet and a slot-contract row whose target is a SLOT TYPE gets the intent
+    its lesson was actually learned on instead of an id no Perception
+    candidate list can ever name.
+
+    Returns ``[]`` when ``source-intent`` can attest nothing; the caller
+    drops that row and counts it rather than releasing an unroutable value.
+    """
+
+    if facet_rule == FACET_RULE_TARGET_ONLY:
+        return [target]
+    if facet_rule != FACET_RULE_SOURCE_INTENT:
+        raise Stage3DeltaStoreError(f"unknown facet rule {facet_rule!r}")
+    facets: list[str] = []
+    for sample_id in sample_ids:
+        intent = gold_intents.get(sample_id)
+        if isinstance(intent, str) and intent and intent not in facets:
+            facets.append(intent)
+    if target in legal_intents and target not in facets:
+        facets.append(target)
+    return facets
+
+
 def _jaccard(a: frozenset[str], b: frozenset[str]) -> float:
     if not a and not b:
         return 1.0
@@ -306,6 +431,9 @@ def build_candidate_rows_v2(
     run_id: str,
     iteration: int,
     transcript_spans: set = frozenset(),
+    facet_rule: str = FACET_RULE_TARGET_ONLY,
+    gold_intents: Mapping[str, str] = {},
+    legal_intents: frozenset[str] = frozenset(),
 ) -> tuple[list[dict[str, object]], dict[str, int]]:
     """S3-4s: parse and join every ADV-t output into NODE-TARGETED rows.
 
@@ -318,21 +446,24 @@ def build_candidate_rows_v2(
     statement that repeats six or more consecutive tokens of a construction
     transcript is dropped by the containment rule, counted separately.
 
-    ``associated_facet_ids`` is the TARGET itself, not a
+    ``associated_facet_ids`` is a BARE id, not a
     ``stage3-delta-target:`` prefixed form: a candidate-bound route
     intersects a row's Perception candidate INTENT ids against exactly this
     field (``rails.stage3_delta_supply.select_stage3_delta_values``), so a
     prefixed id could never intersect one and the store would be unroutable.
     The facet DIMENSION stays ``stage3-delta-target``
     (``rails.semantic_knowledge_build.STAGE3_DELTA_DIMENSION``), which is
-    where the namespace lives.
+    where the namespace lives. WHICH bare id is
+    :func:`facet_ids_for_statement`'s ``facet_rule``: the v1r default
+    ``source-intent`` (the source row's gold intent, plus TARGET when TARGET
+    is a legal intent) or the pre-v1r ``target-only``.
     """
 
     candidates: list[dict[str, object]] = []
     counts = {
         "total": 0, "legal": 0, "illegal": 0, "unmatched_pair": 0,
         "blocks_total": 0, "blocks_legal": 0, "blocks_illegal": 0,
-        "blocks_contained": 0,
+        "blocks_contained": 0, "blocks_missing_gold": 0, "blocks_no_facet": 0,
     }
     per_node = {node: 0 for node in LEGAL_DELTA_NODES}
     for entry in advantage_outputs:
@@ -361,6 +492,24 @@ def build_candidate_rows_v2(
             if contains_transcript_span(block.statement, transcript_spans):
                 counts["blocks_contained"] += 1
                 continue
+            if (
+                facet_rule == FACET_RULE_SOURCE_INTENT
+                and sample_id not in gold_intents
+            ):
+                counts["blocks_missing_gold"] += 1
+            facet_ids = facet_ids_for_statement(
+                sample_ids=(sample_id,),
+                target=block.target,
+                facet_rule=facet_rule,
+                gold_intents=gold_intents,
+                legal_intents=legal_intents,
+            )
+            if not facet_ids:
+                # An unroutable value: no candidate-bound route could ever
+                # select it and DeltaCandidate.validate refuses an empty
+                # facet tuple. Dropped and counted, never raised.
+                counts["blocks_no_facet"] += 1
+                continue
             counts["blocks_legal"] += 1
             per_node[block.node] += 1
             kept += 1
@@ -368,7 +517,7 @@ def build_candidate_rows_v2(
                 {
                     "value_id": f"delta:{iteration}:{block.statement_sha256()[:12]}",
                     "content": block.statement,
-                    "associated_facet_ids": [block.target],
+                    "associated_facet_ids": facet_ids,
                     "node_target": block.node,
                     "source_sample_ids": [sample_id],
                     "provenance_refs": [
@@ -423,15 +572,29 @@ def curate(
     predecessor_rows: Sequence[Mapping[str, object]],
     candidate_rows: Sequence[Mapping[str, object]],
     jaccard_threshold: float = 0.8,
+    merge_facets: bool = False,
 ) -> tuple[list[dict[str, object]], dict[str, int]]:
     """Append-only curation: predecessor rows verbatim, then new candidates,
     deduped by exact normalised text and by token-Jaccard against every
-    earlier survivor. Returns ``(survivors, counts)``."""
+    earlier survivor. Returns ``(survivors, counts)``.
+
+    ``merge_facets`` (S3-5 revision v1r, set by the ``source-intent`` rule and
+    NEVER by ``target-only``) extends the absorb step: a survivor that
+    absorbs a duplicate also takes on that duplicate's facet ids, in the
+    survivor's own order first. Under ``source-intent`` a facet id records
+    WHICH construction intent the statement was learned on, so a statement
+    two rows independently produced must route on both intents; under
+    ``target-only`` the facet is a restatement of TARGET and merging it would
+    change nothing but the bytes, which is why the pre-v1r behaviour is the
+    default here."""
 
     survivors: list[dict[str, object]] = []
     normalised: list[str] = []
     tokens: list[frozenset[str]] = []
-    counts = {"predecessor": 0, "new_accepted": 0, "exact_duplicate": 0, "near_duplicate": 0}
+    counts = {
+        "predecessor": 0, "new_accepted": 0, "exact_duplicate": 0,
+        "near_duplicate": 0, "facet_merges": 0,
+    }
 
     def _absorb(index: int, row: Mapping[str, object]) -> None:
         survivor = survivors[index]
@@ -439,6 +602,15 @@ def curate(
         merged_sources = sorted(set(survivor["source_sample_ids"]) | set(row["source_sample_ids"]))
         survivor["provenance_refs"] = merged_provenance
         survivor["source_sample_ids"] = merged_sources
+        if not merge_facets:
+            return
+        facets = list(survivor["associated_facet_ids"])
+        added = [
+            facet for facet in row["associated_facet_ids"] if facet not in facets
+        ]
+        if added:
+            survivor["associated_facet_ids"] = facets + added
+            counts["facet_merges"] += 1
 
     for row in predecessor_rows:
         survivors.append(dict(row))
@@ -474,9 +646,22 @@ def curate(
 
 def write_authored_document(
     path: Path, *, iteration: int, rows: Sequence[Mapping[str, object]],
-    schema: str = AUTHORED_SCHEMA,
+    schema: str = AUTHORED_SCHEMA, facet_rule: str | None = None,
 ) -> str:
-    document = {"schema": schema, "iteration": iteration, "rows": list(rows)}
+    """Write the curated document and return its SHA-256.
+
+    ``facet_rule`` is recorded in the header, so a released store says on its
+    face which rule attached its facets. It is written ONLY for a non-legacy
+    rule: ``target-only`` leaves the header exactly as it was before S3-5
+    revision v1r, which is what lets an earlier release be reproduced byte
+    for byte.
+    """
+
+    document: dict[str, object] = {
+        "schema": schema, "iteration": iteration, "rows": list(rows)
+    }
+    if facet_rule is not None and facet_rule != FACET_RULE_TARGET_ONLY:
+        document["facet_rule"] = facet_rule
     raw = canonical_json_bytes(document)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(raw)
@@ -608,6 +793,7 @@ def write_authored_source(
             "sha256": hashlib.sha256(raw_authored).hexdigest(),
             "authored_schema": str(document.get("schema")),
             "iteration": document.get("iteration"),
+            "facet_rule": document.get("facet_rule"),
             "twin_of_seed": document.get("twin_of_seed"),
             "row_count": len(source["rows"]),
         },
@@ -673,6 +859,35 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--facet-rule", default=None, choices=FACET_RULES,
+        help=(
+            "schema version 2 only: what goes into associated_facet_ids. "
+            f"{FACET_RULE_SOURCE_INTENT!r} (the default) writes the source rows' "
+            "construction gold intent ids plus TARGET when TARGET is a legal "
+            f"intent id; {FACET_RULE_TARGET_ONLY!r} writes the bare TARGET, the "
+            "pre-v1r rule, kept so a released store reproduces byte for byte. "
+            "Schema version 1 always uses the target-only rule."
+        ),
+    )
+    parser.add_argument(
+        "--gold-intents", default=None, type=Path,
+        help=(
+            "the construction rows' gold intent ids, a JSON object mapping "
+            "sample id to <scenario>_<action>. REQUIRED by --facet-rule "
+            "source-intent. Read model-free; no value is printed or persisted "
+            "other than as a routing facet id of the construction population."
+        ),
+    )
+    parser.add_argument(
+        "--intent-vocabulary", default=None, type=Path,
+        help=(
+            "the legal intent ids a TARGET may be kept as a facet under "
+            "--facet-rule source-intent (the registered SLURP candidate "
+            "catalog, a JSON list, or a JSON object keyed by id). Default: the "
+            "distinct values of --gold-intents."
+        ),
+    )
+    parser.add_argument(
         "--construction-transcripts", default=None, type=Path,
         help=(
             "schema version 2 only: the construction rows' transcripts, read ONLY "
@@ -684,10 +899,41 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
+def resolve_facet_rule(requested: str | None, *, schema_version: int) -> str:
+    """Which facet rule this run uses. Schema 1 is frozen on the pre-v1r
+    rule and REFUSES an explicit ``source-intent``; schema 2 defaults to
+    ``source-intent``."""
+
+    if schema_version == 1:
+        if requested == FACET_RULE_SOURCE_INTENT:
+            raise Stage3DeltaStoreError(
+                "--facet-rule source-intent requires --schema-version 2"
+            )
+        return FACET_RULE_TARGET_ONLY
+    return requested or FACET_RULE_SOURCE_INTENT
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parse_args(argv)
     if args.iteration < 1:
         raise Stage3DeltaStoreError("--iteration must be >= 1")
+    facet_rule = resolve_facet_rule(args.facet_rule, schema_version=args.schema_version)
+    gold_intents: dict[str, str] = {}
+    legal_intents: frozenset[str] = frozenset()
+    if facet_rule == FACET_RULE_SOURCE_INTENT:
+        if args.gold_intents is None:
+            raise Stage3DeltaStoreError(
+                "--facet-rule source-intent requires --gold-intents"
+            )
+        gold_intents = load_gold_intents(args.gold_intents)
+        legal_intents = load_intent_vocabulary(
+            args.intent_vocabulary, gold_intents=gold_intents
+        )
+    elif args.gold_intents is not None or args.intent_vocabulary is not None:
+        raise Stage3DeltaStoreError(
+            "--gold-intents and --intent-vocabulary are only meaningful with "
+            "--facet-rule source-intent"
+        )
 
     pairs = load_advantage_pairs(
         args.pairs, repo_root=args.repo_root, expected_rollout_run_id=None
@@ -704,6 +950,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             run_id=args.run_id,
             iteration=args.iteration,
             transcript_spans=spans,
+            facet_rule=facet_rule,
+            gold_intents=gold_intents,
+            legal_intents=legal_intents,
         )
         authored_schema = AUTHORED_SCHEMA_V2
     else:
@@ -721,10 +970,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         predecessor_rows=predecessor_rows,
         candidate_rows=candidates,
         jaccard_threshold=args.jaccard_threshold,
+        merge_facets=facet_rule == FACET_RULE_SOURCE_INTENT,
     )
     out_sha256 = write_authored_document(
         args.out_authored, iteration=args.iteration, rows=survivors,
-        schema=authored_schema,
+        schema=authored_schema, facet_rule=facet_rule,
     )
 
     source_report = None
@@ -744,11 +994,25 @@ def main(argv: Sequence[str] | None = None) -> int:
             "--source-split-identity-hash is only meaningful with --out-source"
         )
 
+    facet_counts: dict[str, int] = {}
+    for row in survivors:
+        facet_counts[str(len(row["associated_facet_ids"]))] = (
+            facet_counts.get(str(len(row["associated_facet_ids"])), 0) + 1
+        )
     report = {
         "schema": "saea-stage3-delta-curation-report-v1",
         "iteration": args.iteration,
         "schema_version": args.schema_version,
         "authored_schema": authored_schema,
+        "facet_rule": facet_rule,
+        "facets": {
+            "distinct": len(
+                {facet for row in survivors for facet in row["associated_facet_ids"]}
+            ),
+            "per_row_histogram": facet_counts,
+            "gold_intent_rows": len(gold_intents),
+            "legal_intent_vocabulary": len(legal_intents),
+        },
         "containment": containment,
         "parse": parse_counts,
         "curation": curation_counts,

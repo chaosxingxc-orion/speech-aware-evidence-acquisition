@@ -17,8 +17,8 @@
           {
             "kind": "preparation",
             "reason": "Depends on the generation cell's own release requirement above.",
-            "relpath": "knowledge/slurp/semantic/stage3-deltas-v1/release.json",
-            "sha256": "ec9da3e2b8ed842a73c13ea51f58a1f077c787777da2edad82a8234729777338"
+            "relpath": "knowledge/slurp/semantic/stage3-deltas-v1r/release.json",
+            "sha256": "02505ba2e548a008cc6c16ffda6f7b9bff505061863026a3d7e1396c26d6c2e0"
           }
         ],
         "state": "held"
@@ -42,8 +42,8 @@
           {
             "kind": "preparation",
             "reason": "Depends on the twin cell's own release requirement above.",
-            "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1/release.json",
-            "sha256": "a58a370ce9275391c74ae582704ae04c45ad886f6274bff6edd0256c5448f015"
+            "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1r/release.json",
+            "sha256": "7c0dc8979e8b9f1ae66105049168b310d5136c99983f99a98885d01e27d84219"
           }
         ],
         "state": "held"
