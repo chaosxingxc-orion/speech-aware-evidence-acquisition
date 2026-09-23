@@ -7,5 +7,6 @@ export PREREG=docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1-preregistrat
 export DEC_PATH=coordination/slurp-stage3-rollout-r01-v1/root-admission-v1.json
 export DEC_ID=slurp-stage3-rollout-r01-admission-v1
 export TAG=roll1-arm ARM=1
+export ALLOW_OUTPUT_CHANGE=1  # 2026-09-23: the R01 -> R01C narrowing legitimately changes the prepared supply
 export MSG=/home/chao/roll1-arm-commit.txt
 exec bash "$(dirname "$0")/repin_cell_generic.sh"

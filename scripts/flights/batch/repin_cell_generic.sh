@@ -7,7 +7,7 @@
 #   PREREG    preregistration note (repo-relative)
 #   DEC_PATH  decision receipt relpath under the data root; DEC_ID its decision id
 #   TAG       short tag for the out/err files, e.g. rprim-smoke; ARM=1 marks the 1,080-row arm (records the flight commit, runs the summary)
-#   MSG       commit message file
+#   MSG       commit message file; ALLOW_OUTPUT_CHANGE=1 passes --allow-output-change (a re-pin whose prepared supply legitimately changes, e.g. a roster narrowing)
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 LOCK=/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json
@@ -20,7 +20,7 @@ $PY -B scripts/flights/repin_cell.py \
   --repo-root "$MAIN" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
   --experiment "${EXP:-$CELL}" --cell "$CELL" --readiness-dir "$RD" --package-name "$PKG" --preregistration "$PREREG" \
   --decision "$DEC_PATH" --decision-id "$DEC_ID" \
-  --set-ready > /home/chao/$TAG-repin-cell.out 2> /home/chao/$TAG-repin-cell.err
+  --set-ready ${ALLOW_OUTPUT_CHANGE:+--allow-output-change} > /home/chao/$TAG-repin-cell.out 2> /home/chao/$TAG-repin-cell.err
 echo "repin exit $? (1 = its internal check refused the dirty tree, expected)"
 grep -o "has uncommitted changes" /home/chao/$TAG-repin-cell.err | head -1
 grep -o "Error[A-Za-z]*: [^\\\\]*" /home/chao/$TAG-repin-cell.err | grep -v "uncommitted" | head -2 | cut -c1-200
