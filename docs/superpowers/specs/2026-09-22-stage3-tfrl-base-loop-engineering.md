@@ -131,6 +131,70 @@ are appended, never rewritten (ACE). Survey: `wiki/survey/workbench/training-fre
 - Exit (the owner's goal): a CI95-proven official SLU-F1 gain against the sealed PLAN arm on TRAIN A, replicated on
   Fold B's single evaluation read (decision 29 order), with the frontier row beside it.
 
+## S3-4s  System-level advantage and node-targeted deltas (owner decision 106, 2026-09-23)
+
+Amends S3-3, S3-4, S3-5 and S3-6. Owner ruling (translated): "roll out as much information as possible; we are doing
+SYSTEM-level optimisation, not the optimisation of a single module." Engineering item; lands before ADV-1 flies; ROLL-1
+is NOT re-flown (its sealed episode receipts already custody every contact of every node, so the trajectory is rebuilt
+model-free from the seal).
+
+- **S3-3 pairs carry the whole trajectory.** `pairs.json` gains, per disagreeing row, a `trajectory` block rebuilt from
+  the sealed episode receipt: the Perception candidate list (intent ids, ordered, whether the construction gold intent
+  is among them), the best and worst Solver sample indices with their answer hashes, the delivered path after the commit
+  (the Reviewer verdict labels and primitive ids per iteration, the Planner action labels, the revision count, the
+  delivery kind, whether the delivered answer scores below the best sample), and per-node completion tokens and
+  truncation flags. Ids, labels, counts and hashes only; no text in `pairs.json`.
+- **ADV-1 instruction v2** (`configs/probes/slurp_stage3_advantage_v2.txt`, response format
+  `stage3-advantage-statement-v2`): the contact sees, rendered from custodied bytes at contact time exactly as the two
+  answers are today, (1) the Perception candidate list, (2) ANSWER A / ANSWER B, (3) the delivered answer with the
+  Reviewer's verdict and the Planner's route, and (4) the construction gold. It answers with one to three blocks, each
+  in the four-line form `NODE: <perception | solver | reviewer | planner>` / `DELTA-KIND: <intent-boundary |
+  slot-contract | exemplar-note | perception-hint | reviewer-criterion | planner-rule>` / `TARGET: <scenario_action or
+  slot type>` / `STATEMENT: <one sentence, at most 40 words>`; a closed-form multi-block parser; illegal blocks are
+  retained and dropped at curation. The construction arm, the gate and the leakage rule of S3-4 are unchanged.
+- **S3-5 store rows carry `node_target`** (`task_target = NODE:DELTA-KIND:TARGET`); builder rules unchanged
+  (append-only, dedup, provenance merge) plus one containment rule: a statement that contains a verbatim span of six or
+  more consecutive tokens of any construction-row transcript is dropped at curation (counts reported; slot values,
+  intent names and phrasing patterns are allowed, whole utterances are not).
+- **S3-5 supply route per node.** The store may declare `context_supply` for the Solver, Reviewer and Planner phases,
+  each candidate-bound, capped (Solver 8, Reviewer 4, Planner 4), `prior_score`-ranked and filtered to the rows whose
+  `node_target` is that phase's node. Perception has no candidate state yet, so `perception-hint` deltas are supplied
+  unconditionally to the Perception phase, capped at 4 and ranked by `prior_score`. The form twin deranges the facets
+  of the candidate-bound nodes and permutes the TARGET fields of the unconditional list, holding the token count.
+- **S3-6 CELL-t** stays one factor (store version t with its per-node `context_supply`); the read adds a per-node
+  delta-consumption table (which deltas reached which node, per scenario, saves and harms on the rows that received
+  each delta). Every later version may retire a node's deltas on the frontier rule of decision 83 exactly as before.
+
+## S3-7  DEV expansion and the one-shot test preparations (owner decisions 99 and 107, 2026-09-23)
+
+Owner ruling (translated): "the test set is read only once; the features must be built in parallel and fast; DEV may be
+extended -- it is the development-side optimisation resource; be as complete as possible so that the test set shows a
+STABLE gain." Two preparation packages, both model-free until their registered encoder passes:
+
+- **DEVEL-REMAINDER** (`docs/readiness/2026-09-23-slurp-devel-remainder-preparations-v1.md`): roster
+  `SLURP-DEVEL-REMAINDER-V1` = every devel recording outside the sealed DEV-1000 and DEV-2000-ADDED (expected 6,690;
+  `split_role: dev`; base D1 already closes over devel), runtime view, `PREPROCESS_ROSTERS` entry
+  `devel-remainder` (run `SAEA-SN-DEVEL-REMAINDER-PREPROCESS`), the np8 sidecar fragment with a registered four-row
+  geometry-equivalence preflight (byte-equal packets at `-np 8` against the resident `-np 4` packets), the speech
+  query encoding `SAEA-SLURP-DEVEL-REMAINDER-SPEECH-QUERY-ENCODING-V1` and its content derivative, generic task-entry
+  runbooks (`prep_generic_task_entry.sh`). The expanded DEV read = DEV-1000 + DEV-2000-ADDED + DEVEL-REMAINDER = the
+  complete devel split (8,690); the remainder needs its own sealed PLAN and direct comparators (about 11 GPU-h at the
+  L1 geometry) before a CELL-t confirmation on it.
+- **TEST-FULL** (`docs/readiness/2026-09-23-slurp-test-full-preparations-v1.md`): roster `SLURP-TEST-FULL-13078-V1`
+  exactly as the one-read protocol draft (`docs/readiness/2026-09-19-slurp-test-split-one-read-protocol-v1-draft.md`,
+  section 2), D1 supplement, runtime view, `PREPROCESS_ROSTERS` entry `test-full` (run `SAEA-SN-TEST-FULL-PREPROCESS`),
+  speech query encoding `SAEA-SLURP-TEST-FULL-SPEECH-QUERY-ENCODING-V1`. The preparations are encoder contacts on the
+  test split, so they need the machine role the protocol's Remedy B names: the paired code change admits the split role
+  `final-report`, accepted only with a hash-pinned owner-allowance receipt
+  (`docs/receipts/owner/<date>-slurp-test-split-allowance-v1.json`, `status: "authorised"`, the permitted run ids, the
+  dated decision, the venue statement); committed as `pending-owner`, so every `final-report` plan is refused until the
+  owner's decision 108 (venue: Remedy A papers repository, or Remedy B here; and the preparations' role) is written.
+- **Order of reads (decisions 99, 107):** TRAIN lock (CELL-t vs the sealed PLAN on TRAIN A, replicated) -> DEV
+  confirmation (DEV-2000 sealed comparators, then the expanded devel split) -> the single test read (system + bare
+  core, official `evaluate.py`, about 41-42 GPU-h per protocol section 7.3). DEV numbers stay development numbers
+  (decision 86). Throughput reference for the packet passes: R01 measured 800 rows / 3,491 audio-s in 6,268 s at
+  `-np 4` (about 23 h for the test split at that rate; the np8 preflight measures the gain).
+
 ## Algorithm labels, decision 101
 
 Owner decision 101 (2026-09-22, translated): *"in the Stage-3 experiment set-up, different experiments must explicitly
