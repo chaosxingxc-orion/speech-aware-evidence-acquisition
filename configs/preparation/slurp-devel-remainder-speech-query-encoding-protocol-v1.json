@@ -1,0 +1,43 @@
+{
+  "answer_authority": "No answers are generated; these are frozen retrieval-tool query vectors.",
+  "boundary_policy": "fixed-stride-complete-final-tail-v1",
+  "cache_relpath": "prepared/slurp-devel-remainder-speech-query-span-cache-v1",
+  "contact_policy": "One lazy local frozen encoder load, one speech input per forward, no jitter, retry, fallback, or automatic restart.",
+  "cpu_workers": 8,
+  "dimension": 2048,
+  "encoder": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-speech-query-encoder-inventory-v2.json",
+    "sha256": "1548387ba91209921fd747e9eff981027be618c618b732efe20ca7d43680bb31"
+  },
+  "expected_unique_spans": 6690,
+  "input_order": "source-id-then-original-frame",
+  "isolation": "Read only the registered devel-split speech carried by SLURP-DEVEL-REMAINDER-V1. Do not read reference transcripts, task labels, intent/slot annotations, prior answers, feedback from the sealed DEV-1000 or DEV-2000-ADDED halves, or future turns.",
+  "max_audio_samples": 1920000,
+  "max_seconds": 120.0,
+  "max_sequence_tokens": 8192,
+  "monitor_interval_seconds": 10,
+  "output_relpath": "prepared/SAEA-SLURP-DEVEL-REMAINDER-SPEECH-QUERY-ENCODING-V1/index.json",
+  "overlap_seconds": 8.0,
+  "query_prompt": "query: ",
+  "query_rows_relpath": "prepared/SAEA-SLURP-DEVEL-REMAINDER-SPEECH-QUERY-ENCODING-V1/queries.jsonl",
+  "roster_sha256": "83f618bdadf338fe88ae0a851d43ce4c9e3ef9569365fd7bf2bcffb82cb4ee18",
+  "schema": "saea-speech-query-encoding-protocol-v1",
+  "sources": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-devel-remainder-speech-query-source-inventory-v1.json",
+    "sha256": "a7fd59a6dba79aa3c94cae738744daf5324e133f1cd80b476e5a69818d3163ed",
+    "schema": "saea-speech-query-source-inventory-v1",
+    "built_by": "scripts/build_speech_query_source_inventory.py (model-free: byte hashes + audio header geometry; no decode, encoder, tokenizer or network)",
+    "derived_from": {
+      "runtime_view": {
+        "path": "configs/dataset/slurp-speech-native-devel-remainder.json",
+        "raw_sha256": "192a214408c098458adcf8d9471cc1a966e332aaa5e3d1888dce87977181791e",
+        "canonical_runtime_view_sha256": "5ecda759a387e8b13de7a1236234ac77be5ff82dc4d3ab9a816eeb2ab636d20b"
+      },
+      "roster_receipt": {
+        "path": "docs/receipts/rosters/slurp-devel-remainder-v1.json",
+        "sha256": "83f618bdadf338fe88ae0a851d43ce4c9e3ef9569365fd7bf2bcffb82cb4ee18"
+      }
+    },
+    "registration_note": "Built 2026-09-23 (step 2a of preparation 2, MODEL-FREE, zero contacts): 6,690 rows, split identity e65cd3b1842e7a4c1d8cab39b86278166b45e22c0c4d5f5c3f707724dc2e4fdc, audio_seconds_total 18978.952312. The inventory is pinned here from the start, following the SLURP-STAGE3-CONSTRUCTION-R01 registration, so the two-correction sequence the DEV-2000-ADDED protocol had to record is not expected. cpu_workers is 8 rather than the precedent's 4 (owner decision 107: the expanded DEV side is prepared fast, with more workers); the standing rule of at most 8 CPU workers beside a GPU campaign still binds."
+  }
+}

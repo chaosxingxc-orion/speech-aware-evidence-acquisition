@@ -76,6 +76,45 @@ Rosters (``PREPROCESS_ROSTERS``):
   EFFECT-C108 / EVIDENCE-E108 / FACTOR-D108 receipts, which the additive
   refuse-on-conflict promotion re-verifies byte for byte instead of
   rewriting; the remaining 792 are new.
+- ``devel-remainder`` -- owner decision 107 of 2026-09-23, the expansion of the
+  development side to the whole SLURP devel split (``slurp:devel:...`` rows,
+  ``split_role="dev"``, 6,690 rows / 18,978.9523125 speech seconds). Promotes
+  additively into the same resident packet root under its own
+  ``DEVEL-REMAINDER-promotion.json`` receipt. It is the first roster to run on
+  the ``-np 8`` sidecar fragment (see "More slots, honestly" below).
+- ``devel-remainder-np8-equivalence-4`` -- the 4-row GEOMETRY-EQUIVALENCE
+  preflight of that np8 pass. It is not a preparation: it promotes nothing,
+  writes no promotion receipt, and exists only to prove that ``-np 8`` produces
+  the same encoder features as the ``-np 4`` geometry every sealed packet was
+  produced with. See "Geometry equivalence" below.
+
+More slots, honestly
+--------------------
+``--workers`` is encode CONCURRENCY and the sidecar's ``-np`` is how many
+sequences it actually serves in parallel; asking for more workers than slots
+only queues requests inside the server, which looks like throughput and is not.
+The number therefore comes from the composed model fragment, not from prose:
+each roster names its own ``sidecar_fragment`` (``RosterSpec``), the driver
+reads that fragment's ``-np`` out of ``server_args``, and ``--workers`` above it
+is REFUSED rather than silently clamped. ``q4km-preprocess-featcache-cpu-
+sidecar`` serves ``-np 4``; ``q4km-preprocess-featcache-cpu-sidecar-np8`` is its
+one-value sibling at ``-np 8``.
+
+Geometry equivalence
+--------------------
+Changing ``-np`` changes how the server batches, so before a 6,690-row pass
+runs on a geometry no sealed packet was produced with, the equivalence is
+MEASURED. ``devel-remainder-np8-equivalence-4`` re-encodes 4 already-promoted
+DEV-2000-ADDED rows through the np8 sidecar into a SCRATCH feature cache, then
+compares, per row: the legacy cache entry (ordinals, token counts, file bytes)
+against the resident cache's entry, and the SHA-256 of each chunk's feature
+payload against the ``feature_sha256`` the resident PACKET manifest already
+serves. Nothing is written under the resident cache or the resident packet
+root, no packet is materialised and no promotion receipt is created; the driver
+refuses a promotion for any roster carrying an ``EquivalenceSpec``, refuses a
+scratch geometry whose cache or feature root is the resident one, and refuses
+``--promote-only`` for it. The verdict plus the measured per-row wall clock go
+into the ``--output`` report.
 
 Modes::
 
@@ -87,6 +126,8 @@ Modes::
     python scripts/slurp_evo_fold_preprocess.py --roster stage3-construction-r01 --run
     python scripts/slurp_evo_fold_preprocess.py --roster stage3-construction-r01-recovery \
         --promote-only --attempt-id attempt-promote-only-stage3-construction-r01-v1
+    python scripts/slurp_evo_fold_preprocess.py --roster devel-remainder-np8-equivalence-4 --run
+    python scripts/slurp_evo_fold_preprocess.py --roster devel-remainder --run --workers 8
 """
 
 from __future__ import annotations
@@ -126,7 +167,12 @@ from speech_aware_evidence_acquisition.core.config import (  # noqa: E402
 from speech_aware_evidence_acquisition.core.model.speech_features import (  # noqa: E402
     PROMOTION_MODE_ENCODE_AND_PROMOTE, PROMOTION_MODE_PROMOTE_ONLY,
     SharedSpeechFeaturePacketRecord, legacy_audio_feature_cache_key,
-    materialize_legacy_cached_speech_feature_packets)
+    load_speech_feature_packet, materialize_legacy_cached_speech_feature_packets)
+# The legacy feature-cache file header, imported rather than re-declared so the
+# geometry-equivalence comparison below can never drift from the parse the
+# promotion path itself performs (core/model/speech_features.py).
+from speech_aware_evidence_acquisition.core.model.speech_features import (  # noqa: E402
+    _LEGACY_FEAT_HEADER as LEGACY_FEAT_HEADER)
 from speech_aware_evidence_acquisition.core.session import (  # noqa: E402
     load_runtime_receipt, start_session, stop_session)
 from speech_aware_evidence_acquisition.data.lock import (  # noqa: E402
@@ -139,6 +185,11 @@ from speech_aware_evidence_acquisition.rails.obs import AudioRef  # noqa: E402
 
 RUNTIME_ROOT = Path("/home/chao")
 MODEL_FRAGMENT = "q4km-preprocess-featcache-cpu-sidecar"
+#: The one-value sibling of MODEL_FRAGMENT: identical except ``-np 8``.
+MODEL_FRAGMENT_NP8 = "q4km-preprocess-featcache-cpu-sidecar-np8"
+#: The np8 sidecar pointed at a SCRATCH feature cache, for the geometry
+#: equivalence preflight alone. Never used by a preparation that promotes.
+MODEL_FRAGMENT_NP8_SCRATCH = "q4km-preprocess-featcache-cpu-sidecar-np8-scratch"
 BASELINE_FRAGMENT = "speech-native-preprocess"
 RUNTIME_RECEIPT_RELPATH = "receipts/runtime-q4km-preprocess.json"
 SIDECAR_PORT = 8081
@@ -183,6 +234,21 @@ PROMOTE_ONLY_PLAN: dict[str, object] = {
 PROMOTE_ONLY_REPORT_NAME = "promote-only.report.json"
 
 
+class EquivalenceSpec(NamedTuple):
+    """A roster that MEASURES a serving geometry instead of preparing packets.
+
+    ``reference_feature_root`` is the RESIDENT packet root, opened read-only:
+    its already-promoted packet manifests are the reference the freshly encoded
+    scratch-cache features are compared against. ``reference_promotion_receipt``
+    is the receipt (under that root) that promoted them, recorded in the report
+    so a reader can re-derive the comparison from committed documents.
+    """
+
+    reference_feature_root: Path
+    reference_promotion_receipt: str
+    reference_geometry_slots: int
+
+
 class RosterSpec(NamedTuple):
     """One preprocessing roster: which rows, which receipt, which plan.
 
@@ -210,6 +276,15 @@ class RosterSpec(NamedTuple):
     plan_calls: int
     plan_speech_seconds: int
     plan_gpu_hours: float
+    # WHICH SIDECAR GEOMETRY this roster encodes on. The default is the
+    # historical ``-np 4`` fragment, so every sealed roster above keeps its
+    # exact composed config hash; a roster that wants more slots names the
+    # ``-np 8`` sibling here rather than passing a flag, because the fragment
+    # enters the composed config hash and therefore the protocol hash its
+    # exposure row pins.
+    sidecar_fragment: str = MODEL_FRAGMENT
+    # Set only on a geometry-equivalence roster: it promotes NOTHING.
+    equivalence: EquivalenceSpec | None = None
 
 
 PREPROCESS_ROSTERS: dict[str, RosterSpec] = {
@@ -265,6 +340,41 @@ PREPROCESS_ROSTERS: dict[str, RosterSpec] = {
         promotion_receipt_name="STAGE3-CONSTRUCTION-R01-promotion.json",
         default_attempt_id="attempt-packets-stage3-construction-r01-recovery-v1",
         plan_calls=800, plan_speech_seconds=3492, plan_gpu_hours=1.0,
+    ),
+    # Owner decision 107 (2026-09-23): the development side expands to the whole
+    # SLURP devel split. 6,690 rows / 18,978.9523125 speech seconds (declared
+    # 18,979); 60 rows are already warm in the legacy cache (the historic
+    # probe-60) and 0 are promoted, so all 6,690 are contacted once.
+    "devel-remainder": RosterSpec(
+        run_id="SAEA-SN-DEVEL-REMAINDER-PREPROCESS",
+        dataset_fragment="slurp-speech-native-devel-remainder",
+        experiment_fragment="slurp-devel-remainder-preprocess",
+        sample_id_prefix="slurp:devel:",
+        split_role="dev",
+        promotion_receipt_name="DEVEL-REMAINDER-promotion.json",
+        default_attempt_id="attempt-packets-devel-remainder-v1",
+        plan_calls=6690, plan_speech_seconds=18979, plan_gpu_hours=1.0,
+        sidecar_fragment=MODEL_FRAGMENT_NP8,
+    ),
+    # The 4-row geometry-equivalence preflight of the roster above: it re-encodes
+    # four ALREADY-PROMOTED DEV-2000-ADDED rows on the np8 sidecar into a scratch
+    # cache and compares the result against what the resident root already
+    # serves. It promotes nothing and writes no promotion receipt.
+    "devel-remainder-np8-equivalence-4": RosterSpec(
+        run_id="SAEA-SN-DEVEL-REMAINDER-NP8-EQUIVALENCE-4-V1",
+        dataset_fragment="slurp-speech-native-devel-remainder-np8-equivalence-4",
+        experiment_fragment="slurp-devel-remainder-np8-equivalence-4-preprocess",
+        sample_id_prefix="slurp:devel:",
+        split_role="dev",
+        promotion_receipt_name=None,
+        default_attempt_id="attempt-np8-equivalence-4-v1",
+        plan_calls=4, plan_speech_seconds=12, plan_gpu_hours=1.0,
+        sidecar_fragment=MODEL_FRAGMENT_NP8_SCRATCH,
+        equivalence=EquivalenceSpec(
+            reference_feature_root=DEFAULT_FEATURE_ROOT,
+            reference_promotion_receipt="DEV-2000-ADDED-promotion.json",
+            reference_geometry_slots=4,
+        ),
     ),
 }
 
@@ -345,6 +455,164 @@ def _require_fully_warm(warm: int, total: int, roster_key: str) -> None:
             "cache; roster %r has %d/%d warm (%d cold). Run --run instead, or "
             "complete the ENCODE pass first." % (roster_key, warm, total, total - warm)
         )
+
+
+def _server_slots(values: Mapping[str, object], fragment: str) -> int:
+    """The ``-np`` the composed sidecar fragment actually serves.
+
+    Read from the fragment rather than from a docstring, so "the sidecar serves
+    -np 4" can never drift away from what the sidecar is launched with.
+    """
+
+    argv = [str(token) for token in values.get("server_args", ())]
+    for index, token in enumerate(argv):
+        if token == "-np":
+            if index + 1 >= len(argv) or not argv[index + 1].isdecimal():
+                raise SystemExit("model fragment %r has a malformed -np value" % fragment)
+            slots = int(argv[index + 1])
+            if slots <= 0:
+                raise SystemExit("model fragment %r declares -np %d" % (fragment, slots))
+            return slots
+    raise SystemExit("model fragment %r declares no -np; refusing to guess" % fragment)
+
+
+def _assert_worker_fit(workers: int, slots: int, roster_key: str, fragment: str) -> None:
+    """--workers above the sidecar's -np only queues requests inside the server.
+
+    Refused, never clamped: a silently clamped concurrency would be reported as
+    throughput that the geometry cannot deliver.
+    """
+
+    if workers > slots:
+        raise SystemExit(
+            "--workers %d exceeds the %d slots model fragment %r serves for roster %r; "
+            "raise -np in a sibling fragment instead of over-subscribing the sidecar"
+            % (workers, slots, fragment, roster_key)
+        )
+
+
+def _assert_equivalence_isolation(
+    values: Mapping[str, object], spec: RosterSpec, roster_key: str,
+    packet_root: Path, legacy_cache: Path,
+) -> None:
+    """A geometry-equivalence roster may not touch anything the session serves."""
+
+    assert spec.equivalence is not None
+    if spec.promotion_receipt_name is not None or "promotion_receipt" in values:
+        raise SystemExit(
+            "roster %r is a geometry-equivalence roster and must name no promotion "
+            "receipt: it promotes nothing" % roster_key
+        )
+    if legacy_cache == DEFAULT_LEGACY_CACHE_DIR:
+        raise SystemExit(
+            "roster %r must encode into a SCRATCH legacy cache, not the resident %s"
+            % (roster_key, DEFAULT_LEGACY_CACHE_DIR)
+        )
+    if packet_root == DEFAULT_FEATURE_ROOT:
+        raise SystemExit(
+            "roster %r must not declare the resident packet root %s as its feature root"
+            % (roster_key, DEFAULT_FEATURE_ROOT)
+        )
+    if spec.equivalence.reference_feature_root != DEFAULT_FEATURE_ROOT:
+        raise SystemExit(
+            "roster %r compares against %s, which is not the resident packet root"
+            % (roster_key, spec.equivalence.reference_feature_root)
+        )
+    served = dict(values.get("server_env", {})).get("LLAMA_MTMD_FEAT_CACHE_DIR")
+    if served is None or Path(str(served)) != legacy_cache:
+        raise SystemExit(
+            "roster %r declares legacy_cache_dir %s but its sidecar writes to %r; the "
+            "comparison would read an empty directory" % (roster_key, legacy_cache, served)
+        )
+
+
+def _compare_row_against_resident_packet(
+    *, sample, root: Path, legacy_cache: Path, reference_root: Path,
+) -> dict[str, object]:
+    """One row's scratch-cache features against the resident packet it already has.
+
+    Model-free, read-only, and byte-level: the freshly encoded scratch cache is
+    parsed with the SAME header the promotion path parses, each chunk's feature
+    payload is hashed exactly as ``materialize_speech_feature_packet`` hashes it
+    (``sha256(feature_bytes)``), and the result is compared with the
+    ``feature_sha256`` the resident packet manifest already serves. The resident
+    legacy cache entry, when it is still warm, is compared as a whole file too.
+    Nothing is written anywhere.
+    """
+
+    packet_id = sample.sample_id.replace(":", "/")
+    audio_path = root / sample.media_relpath
+    audio_bytes = audio_path.read_bytes()
+    key = legacy_audio_feature_cache_key(audio_bytes)
+
+    def payloads(cache_dir: Path) -> list[dict[str, object]] | None:
+        entries = sorted(cache_dir.glob("%s_o*.feat" % key))
+        if not entries:
+            return None
+        rows: list[dict[str, object]] = []
+        for path in entries:
+            raw = path.read_bytes()
+            n_tokens, n_embd = LEGACY_FEAT_HEADER.unpack_from(raw)
+            rows.append(
+                {
+                    "filename": path.name,
+                    "file_bytes": len(raw),
+                    "file_sha256": hashlib.sha256(raw).hexdigest(),
+                    "n_tokens": int(n_tokens),
+                    "n_embd": int(n_embd),
+                    "feature_payload_sha256": hashlib.sha256(
+                        raw[LEGACY_FEAT_HEADER.size :]
+                    ).hexdigest(),
+                }
+            )
+        rows.sort(key=lambda entry: str(entry["filename"]))
+        return rows
+
+    fresh = payloads(legacy_cache)
+    if fresh is None:
+        raise SystemExit(
+            "geometry equivalence: the scratch cache has no entry for %s after ENCODE"
+            % sample.sample_id
+        )
+    resident_cache = payloads(DEFAULT_LEGACY_CACHE_DIR)
+    packet = load_speech_feature_packet(reference_root, packet_id)
+    packet_chunks = [
+        {
+            "ordinal": chunk.ordinal,
+            "n_tokens": chunk.n_tokens,
+            "n_embd": chunk.n_embd,
+            "feature_sha256": chunk.feature_sha256,
+        }
+        for chunk in packet.chunks
+    ]
+    payload_match = len(fresh) == len(packet_chunks) and all(
+        str(row["feature_payload_sha256"]) == str(chunk["feature_sha256"])
+        and int(row["n_tokens"]) == int(chunk["n_tokens"])
+        and int(row["n_embd"]) == int(chunk["n_embd"])
+        for row, chunk in zip(fresh, packet_chunks)
+    )
+    cache_match: bool | None = None
+    if resident_cache is not None:
+        cache_match = [
+            (row["file_sha256"], row["file_bytes"]) for row in fresh
+        ] == [(row["file_sha256"], row["file_bytes"]) for row in resident_cache]
+    return {
+        "sample_id": sample.sample_id,
+        "packet_id": packet_id,
+        "audio_sha256": sample.audio_ref.sha256,
+        "audio_seconds": round(float(sample.audio_seconds), 6),
+        "legacy_cache_key": key,
+        "scratch_chunks": fresh,
+        "resident_packet": {
+            "packet_sha256": packet.packet_sha256,
+            "audio_sha256": packet.audio_sha256,
+            "encoder_receipt_sha256": packet.encoder_receipt_sha256,
+            "chunks": packet_chunks,
+        },
+        "resident_legacy_cache_still_warm": resident_cache is not None,
+        "feature_payload_identical_to_resident_packet": payload_match,
+        "legacy_cache_file_identical_to_resident_cache": cache_match,
+    }
 
 
 def _decoder_and_mmproj(runtime_receipt: Mapping[str, object]) -> tuple[Mapping[str, object], Mapping[str, object]]:
@@ -610,6 +878,172 @@ def _promote_only(
     return 0
 
 
+def _geometry_equivalence(
+    args, *, roster_key: str, spec: RosterSpec, values: Mapping[str, object],
+    samples, root: Path, legacy_cache: Path, composed, audio_seconds: float,
+    binding, gate, slots: int,
+) -> int:
+    """ENCODE on a new serving geometry, compare, and promote NOTHING.
+
+    The one mode that is allowed to encode a row whose packet already exists:
+    it writes into a SCRATCH feature cache, never the resident one, and its
+    whole output is a comparison report. ``_promote_roster`` and
+    ``_write_promotion_receipt`` are unreachable from here by construction --
+    the caller has already refused a promotion receipt for this roster
+    (``_assert_equivalence_isolation``) and nothing below materialises a packet.
+    """
+
+    equivalence = spec.equivalence
+    assert equivalence is not None
+    attempt_id = args.attempt_id or spec.default_attempt_id
+    if legacy_cache.exists() and any(legacy_cache.glob("*_o*.feat")):
+        raise SystemExit(
+            "geometry equivalence: the scratch cache %s is not empty; a stale entry would "
+            "make a cache HIT look like a fresh encode. Move it aside first." % legacy_cache
+        )
+    legacy_cache.mkdir(parents=True, exist_ok=True)
+    for sample in samples:
+        packet_id = sample.sample_id.replace(":", "/")
+        if not (equivalence.reference_feature_root / packet_id / "packet.json").is_file():
+            raise SystemExit(
+                "geometry equivalence: row %s has no resident packet to compare against"
+                % sample.sample_id
+            )
+
+    for port, label in ((SIDECAR_PORT, "sidecar"), ):
+        try:
+            with socket.create_connection(("127.0.0.1", port), timeout=1.0):
+                raise SystemExit("something already listens on the %s port %d" % (label, port))
+        except OSError:
+            pass
+
+    plan = ExecutionPlan(
+        run_id=spec.run_id, execution_profile=str(values["execution_profile"]),
+        carrier_lock_key=SLURP_LOCK_KEY, split_role=spec.split_role,
+        split_identity_hash=str(values["split_identity_hash"]),
+        planned_model_calls=args.plan_calls if args.plan_calls is not None else spec.plan_calls,
+        planned_gpu_hours=spec.plan_gpu_hours,
+        planned_speech_audio_seconds=(
+            args.plan_speech_seconds if args.plan_speech_seconds is not None
+            else spec.plan_speech_seconds),
+        protocol_hash=composed.config_hash, attempt_id=attempt_id).validate()
+    log("frozen-core gate PASS (lock %s)" % gate.assert_model_touch_allowed(plan)[:12])
+
+    runtime_receipt = load_runtime_receipt(REPO / "docs" / RUNTIME_RECEIPT_RELPATH)
+    if runtime_receipt.get("role") != "preprocess":
+        raise SystemExit("runtime receipt role must be preprocess")
+    run_dir = root / "runs" / spec.run_id / attempt_id
+    run_dir.mkdir(parents=True, exist_ok=True)
+    log("spawning the CPU-only sidecar on %d at -np %d (SCRATCH cache %s)"
+        % (SIDECAR_PORT, slots, legacy_cache))
+    session = start_session(
+        runtime_root=RUNTIME_ROOT, data_root=root, runtime_receipt=runtime_receipt,
+        host="127.0.0.1", port=SIDECAR_PORT, session_id="%s-%s-cpu-sidecar" % (spec.run_id, attempt_id),
+        extra_argv=list(values["server_args"]), extra_env=dict(values["server_env"]),
+        receipt_path=run_dir / "session-preprocess.receipt.json",
+        server_log_path=run_dir / "session-preprocess.server.log",
+        role="preprocess", ready_timeout_seconds=1800.0)
+    log("sidecar up: pid=%s port=%s" % (session.pid, session.port))
+
+    contacts, failures, timings = 0, [], {}
+    started = time.time()
+    try:
+        transport = TRANSPORTS.resolve(str(values["transport"]))(
+            values, root, session=session, runtime_receipt=runtime_receipt, runtime_root=RUNTIME_ROOT)
+        client = FrozenCoreClient(plan=plan, gate=gate, transport=transport, run_dir=run_dir,
+                                  binding=binding, request_id_prefix="slurpnp8equiv")
+
+        def encode(sample) -> tuple[str, float, str | None]:
+            messages = (
+                {"role": "system", "content": PREPROCESS_INSTRUCTION},
+                {"role": "user", "content": [{"type": "input_audio", "media_relpath": sample.media_relpath}]},
+            )
+            row_started = time.time()
+            try:
+                client.complete(messages, decoding_params=DECODING_PARAMS)
+                return sample.sample_id, time.time() - row_started, None
+            except Exception as error:  # noqa: BLE001 -- reported, never masked
+                return sample.sample_id, time.time() - row_started, "%s: %r" % (sample.sample_id, error)
+
+        with ThreadPoolExecutor(max_workers=max(1, args.workers)) as pool:
+            for sample_id, seconds, problem in pool.map(encode, samples):
+                timings[sample_id] = round(seconds, 3)
+                if problem is None:
+                    contacts += 1
+                else:
+                    failures.append(problem)
+                    log("contact FAILED %s" % problem)
+        core_receipt = client.close()
+    finally:
+        stop = stop_session(session, runtime_receipt=runtime_receipt, runtime_root=RUNTIME_ROOT,
+                            receipt_path=run_dir / "session-preprocess.stop-receipt.json",
+                            force_after_timeout=True)
+        log("sidecar stopped: %s forced=%s" % (stop.get("termination_signal"), stop.get("forced")))
+    encode_seconds = time.time() - started
+    if failures:
+        raise SystemExit("%d encode contacts failed; the comparison is void: %r"
+                         % (len(failures), failures[:5]))
+
+    comparisons = [
+        _compare_row_against_resident_packet(
+            sample=sample, root=root, legacy_cache=legacy_cache,
+            reference_root=equivalence.reference_feature_root)
+        for sample in samples
+    ]
+    payload_equal = all(row["feature_payload_identical_to_resident_packet"] for row in comparisons)
+    cache_rows = [row for row in comparisons if row["legacy_cache_file_identical_to_resident_cache"] is not None]
+    cache_equal = all(row["legacy_cache_file_identical_to_resident_cache"] for row in cache_rows)
+    verdict = "EQUIVALENT" if payload_equal else "NOT EQUIVALENT"
+    log("geometry equivalence %s: %d/%d rows byte-identical to the resident packets"
+        % (verdict, sum(1 for row in comparisons if row["feature_payload_identical_to_resident_packet"]),
+           len(comparisons)))
+
+    report = {
+        "schema": "saea-sidecar-geometry-equivalence-receipt-v1",
+        "study": "speech-aware-evidence-acquisition",
+        "generated_at": datetime.now(tz=timezone.utc).isoformat(),
+        "run_id": spec.run_id, "attempt_id": attempt_id, "roster": roster_key,
+        "mode": "geometry-equivalence",
+        "verdict": verdict,
+        "feature_payload_identical_on_every_row": payload_equal,
+        "legacy_cache_file_identical_on_every_comparable_row": cache_equal,
+        "rows_compared": len(comparisons),
+        "config_fragments": {"model": spec.sidecar_fragment, "dataset": spec.dataset_fragment,
+                             "baseline": BASELINE_FRAGMENT, "experiment": spec.experiment_fragment},
+        "config_hash": composed.config_hash,
+        "split_identity_hash": str(values["split_identity_hash"]),
+        "geometry": {
+            "measured_slots": slots,
+            "reference_slots": equivalence.reference_geometry_slots,
+            "server_args": [str(token) for token in values["server_args"]],
+            "encode_workers": args.workers,
+            "scratch_legacy_cache_dir": str(legacy_cache),
+            "resident_legacy_cache_dir": str(DEFAULT_LEGACY_CACHE_DIR),
+            "reference_feature_root": str(equivalence.reference_feature_root),
+            "reference_promotion_receipt": equivalence.reference_promotion_receipt,
+        },
+        "rows": len(samples), "audio_seconds": round(audio_seconds, 6),
+        "contacts": contacts, "failures": failures,
+        "encode_seconds": round(encode_seconds, 3),
+        "per_row_seconds": timings,
+        "per_row_seconds_mean": round(sum(timings.values()) / max(len(timings), 1), 3),
+        "per_row_audio_second_per_wall_second": round(
+            audio_seconds / max(encode_seconds, 1e-9), 4),
+        "comparisons": comparisons,
+        "promotion": (
+            "NONE. This roster promotes nothing: no packet is materialised, no promotion "
+            "receipt is written, and neither the resident legacy cache nor the resident "
+            "packet root is opened for writing."
+        ),
+        "core_client": {"trace_manifest_hash": core_receipt.get("trace_manifest_hash"),
+                        "cost": core_receipt.get("cost")},
+        "session": {"session_id": session.session_id, "pid": session.pid, "stop": stop},
+        "gpu_offload": "-ngl 0 --no-mmproj-offload: this pass leaves the GPU free",
+    }
+    _emit(args, report)
+    return 0 if payload_equal else 4
+
+
 def build_parser() -> argparse.ArgumentParser:
     """The driver's whole CLI surface, built where a test can read it."""
 
@@ -619,7 +1053,13 @@ def build_parser() -> argparse.ArgumentParser:
         help="deprecated alias for --roster fold-a / --roster fold-b (kept for the sealed folds)",
     )
     parser.add_argument("--roster", default=None, choices=sorted(PREPROCESS_ROSTERS))
-    parser.add_argument("--workers", type=int, default=4, help="encode concurrency; the sidecar serves -np 4")
+    parser.add_argument(
+        "--workers", type=int, default=4,
+        help=(
+            "encode concurrency; refused above the -np the roster's own sidecar fragment "
+            "serves (4 for q4km-preprocess-featcache-cpu-sidecar, 8 for its -np8 sibling)"
+        ),
+    )
     parser.add_argument("--promote-workers", type=int, default=8)
     parser.add_argument("--output", type=Path, default=None)
     parser.add_argument("--attempt-id", default=None)
@@ -677,8 +1117,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
     spec = PREPROCESS_ROSTERS[roster_key]
 
+    if args.promote_only and spec.equivalence is not None:
+        raise SystemExit(
+            "roster %r is a geometry-equivalence roster: it promotes nothing, so "
+            "--promote-only is meaningless for it" % roster_key
+        )
+
     lock, root = load_lock(umbrella_lock_path()), data_root()
-    composed = compose(REPO, MODEL_FRAGMENT, spec.dataset_fragment, BASELINE_FRAGMENT, spec.experiment_fragment)
+    composed = compose(REPO, spec.sidecar_fragment, spec.dataset_fragment, BASELINE_FRAGMENT, spec.experiment_fragment)
     values = composed.values
     if str(values["experiment_id"]) != spec.run_id:
         raise SystemExit("experiment fragment names a different run id")
@@ -687,9 +1133,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             "roster %r expects dataset split_role %r, fragment carries %r"
             % (roster_key, spec.split_role, values.get("split_role"))
         )
+    slots = _server_slots(values, spec.sidecar_fragment)
+    _assert_worker_fit(args.workers, slots, roster_key, spec.sidecar_fragment)
     packet_root = Path(str(values.get("feature_root", DEFAULT_FEATURE_ROOT)))
     legacy_cache = Path(str(values.get("legacy_cache_dir", DEFAULT_LEGACY_CACHE_DIR)))
-    promotion_receipt = _resolve_promotion_receipt(values, spec, packet_root, roster_key)
+    if spec.equivalence is None:
+        promotion_receipt = _resolve_promotion_receipt(values, spec, packet_root, roster_key)
+    else:
+        _assert_equivalence_isolation(values, spec, roster_key, packet_root, legacy_cache)
+        promotion_receipt = None
     samples = roster_samples(values, root, args.promote_workers, spec.sample_id_prefix, roster_key)
     audio_seconds = sum(float(sample.audio_seconds) for sample in samples)
     log("roster %s: %d samples, %.6f audio-s, config %s"
@@ -701,8 +1153,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                                  % legacy_audio_feature_cache_key((root / sample.media_relpath).read_bytes())))
     )
     log("artifact preflight: %d/%d legacy cache entries warm; promotion receipt exists=%s"
-        % (warm, len(samples), promotion_receipt.exists()))
-    if promotion_receipt.exists():
+        % (warm, len(samples), promotion_receipt.exists() if promotion_receipt else "n/a"))
+    if promotion_receipt is not None and promotion_receipt.exists():
         raise SystemExit("promotion receipt already exists: %s" % promotion_receipt)
 
     binding = build_payload_binding(
@@ -725,11 +1177,18 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
 
     if args.promote_only:
+        assert promotion_receipt is not None  # refused above for an equivalence roster
         return _promote_only(
             args, roster_key=roster_key, spec=spec, values=values, samples=samples,
             root=root, packet_root=packet_root, legacy_cache=legacy_cache,
             promotion_receipt=promotion_receipt, composed=composed,
             audio_seconds=audio_seconds, warm=warm)
+
+    if spec.equivalence is not None:
+        return _geometry_equivalence(
+            args, roster_key=roster_key, spec=spec, values=values, samples=samples,
+            root=root, legacy_cache=legacy_cache, composed=composed,
+            audio_seconds=audio_seconds, binding=binding, gate=gate, slots=slots)
 
     for port, label in ((SIDECAR_PORT, "sidecar"), ):
         try:

@@ -1,0 +1,85 @@
+{
+  "audio_seconds_total": 11.90275,
+  "authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md owner decision 107 of 2026-09-23; docs/readiness/2026-09-23-slurp-devel-remainder-preparations-v1.md section 4",
+  "carrier_lock_key": "slurp",
+  "design": "The four DEV-2000-ADDED recordings the np8 geometry-equivalence preflight re-encodes. It is not a preparation: the rows are already promoted, the re-encode writes into a scratch cache, and nothing is promoted from it.",
+  "excluded_count": 0,
+  "generator": "scripts/build_slurp_np8_equivalence_roster.py",
+  "item_fields": [
+    "audio_seconds",
+    "packet_id",
+    "sample_id",
+    "stratum",
+    "utterance_id"
+  ],
+  "items": [
+    {
+      "audio_seconds": 3.1995625,
+      "packet_id": "slurp/devel/003620/audio-1498567827",
+      "sample_id": "slurp:devel:003620:audio-1498567827",
+      "stratum": "weather",
+      "utterance_id": "slurp:devel:003620"
+    },
+    {
+      "audio_seconds": 1.5998125,
+      "packet_id": "slurp/devel/010388/audio-1494548673",
+      "sample_id": "slurp:devel:010388:audio-1494548673",
+      "stratum": "play",
+      "utterance_id": "slurp:devel:010388"
+    },
+    {
+      "audio_seconds": 2.368,
+      "packet_id": "slurp/devel/014069/audio-1434532898-headset",
+      "sample_id": "slurp:devel:014069:audio-1434532898-headset",
+      "stratum": "qa",
+      "utterance_id": "slurp:devel:014069"
+    },
+    {
+      "audio_seconds": 4.735375,
+      "packet_id": "slurp/devel/014872/audio-1502200664",
+      "sample_id": "slurp:devel:014872:audio-1502200664",
+      "stratum": "general",
+      "utterance_id": "slurp:devel:014872"
+    }
+  ],
+  "offline_guard": {
+    "attempted_targets": [],
+    "outbound_connection_attempts": 0
+  },
+  "parent_roster": {
+    "count": 1000,
+    "receipt_file_sha256": "f78dd8ad2894b1fd02bfe6050e39e3fb2c5d178a649e5d20e85ea4ecf4b8dc58",
+    "relpath": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+    "roster_id": "SLURP-DEV-2000-ADDED-V1",
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67"
+  },
+  "per_stratum": {
+    "general": 1,
+    "play": 1,
+    "qa": 1,
+    "weather": 1
+  },
+  "reference": {
+    "feature_root": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+    "geometry_slots": 4,
+    "promotion_receipt": "DEV-2000-ADDED-promotion.json",
+    "reading": "Every row is already promoted, so this preflight opens NO new speech identity: its four contacts re-encode audio the frozen core already saw under SAEA-SN-DEV2000-ADDED-PREPROCESS.",
+    "rows_already_promoted": 4
+  },
+  "roster_id": "SLURP-DEVEL-REMAINDER-NP8-EQUIVALENCE-4-V1",
+  "roster_role": "evaluation",
+  "schema": "saea-roster-receipt-v1",
+  "seed": 20260923,
+  "selection_rule": "The 1,000 SLURP-DEV-2000-ADDED-V1 recordings the resident packet root already serves, sorted by (audio_seconds, sample_id); the rows at the 10th, 35th, 65th, 90th percentile positions are taken so the measured per-row wall clock spans the duration range. Frozen through core.roster.freeze_roster with quota == pool size per stratum, so the canonical machinery produces the receipt and the shuffle has nothing left to choose between.",
+  "split_identity_hash": "b33dab5f5dcf2cae7d17434e803c39ff61efbdf2e14ce2c1b7ca0b3ff168ec7c",
+  "split_role": "dev",
+  "status": "FROZEN; MODEL-FREE, ZERO CONTACTS",
+  "strata_counts": {
+    "general": 1,
+    "play": 1,
+    "qa": 1,
+    "weather": 1
+  },
+  "stratum_withheld_per_item": false,
+  "target_gold_opened_before_receipt": false
+}

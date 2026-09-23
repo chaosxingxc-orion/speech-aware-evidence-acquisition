@@ -1,0 +1,251 @@
+{
+  "authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md owner decision 107 of 2026-09-23",
+  "channel_counts": {
+    "far_field": 3455,
+    "headset": 3235
+  },
+  "completeness": {
+    "dev1000_recordings": 1000,
+    "dev2000_added_recordings": 1000,
+    "devel_recordings": 8690,
+    "parts_are_pairwise_disjoint": true,
+    "remainder_recordings": 6690,
+    "statement": "The expanded development read is DEV-1000 U DEV-2000-ADDED U DEVEL-REMAINDER, and that union is the COMPLETE SLURP devel split at recording granularity: 1,000 + 1,000 + 6690 = 8690 recordings, pairwise disjoint.",
+    "three_parts_sum": 8690,
+    "union_equals_the_complete_devel_split": true
+  },
+  "construction_rosters_checked": [
+    {
+      "items": 1080,
+      "receipt_file_sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "shared_with_remainder": 0
+    },
+    {
+      "items": 1080,
+      "receipt_file_sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "shared_with_remainder": 0
+    },
+    {
+      "items": 430,
+      "receipt_file_sha256": "0d57df6c711e494af148745db4bd3082719fd2c1d5f7e0a340075887e4fddf05",
+      "relpath": "docs/receipts/rosters/slurp-evo-exemplars-v2.json",
+      "shared_with_remainder": 0
+    },
+    {
+      "items": 540,
+      "receipt_file_sha256": "ed330bdfe520517a4ef060aa288e33ca848cd9ee43c738e382571fd43d6cf0ee",
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v1.json",
+      "shared_with_remainder": 0
+    },
+    {
+      "items": 540,
+      "receipt_file_sha256": "b94371b00ef58e71742dc68f2da21c5f613ea81cd4779314d1139784f67650e1",
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v1.json",
+      "shared_with_remainder": 0
+    },
+    {
+      "items": 432,
+      "receipt_file_sha256": "4400e362e3664451aa3aeb73f84dcb617a7dacbff04a04fc4da253d65326d83d",
+      "relpath": "docs/receipts/rosters/slurp-evo-exemplars-v1.json",
+      "shared_with_remainder": 0
+    },
+    {
+      "items": 54,
+      "receipt_file_sha256": "f9d3be07309778938466db83179d903b969a448d771454e399a363a2e95e261a",
+      "relpath": "docs/receipts/rosters/slurp-evo-s1-proposer-r01.json",
+      "shared_with_remainder": 0
+    },
+    {
+      "items": 4,
+      "receipt_file_sha256": "78abd5c328987149c64e15c15a8f3d2873c465578cc23b971bc01d28d50c1087",
+      "relpath": "docs/receipts/rosters/slurp-native-tools-engineering-4-v1.json",
+      "shared_with_remainder": 0
+    },
+    {
+      "items": 800,
+      "receipt_file_sha256": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0",
+      "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01.json",
+      "shared_with_remainder": 0
+    },
+    {
+      "items": 625,
+      "receipt_file_sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd",
+      "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+      "shared_with_remainder": 0
+    }
+  ],
+  "dev_ladder_nesting": {
+    "counts": {
+      "DEV-100": 100,
+      "DEV-1000": 1000,
+      "DEV-2000": 2000,
+      "DEV-2000-ADDED": 1000,
+      "DEV-500": 500,
+      "DEV-500-B": 500
+    },
+    "dev100_subset_of_dev1000": true,
+    "dev100_subset_of_dev500": true,
+    "dev2000_equals_dev1000_union_added": true,
+    "dev500_subset_of_dev1000": true,
+    "dev500b_subset_of_dev2000_added": true,
+    "reading": "DEV-100 and DEV-500 are exact sub-tables of DEV-1000 and DEV-500-B is an exact sub-table of DEV-2000-ADDED, so excluding the two sealed rosters excludes every rung of the DEV ladder with them; nothing else has to be subtracted."
+  },
+  "deviations": [
+    {
+      "id": "REM-D1",
+      "owner_action": "acknowledge that decision 107 releases the FINAL60 reservation, or carve the 120 recordings out of the remainder before it is read (the counts needed for the carve-out are in reserved_sets_inside_the_remainder)",
+      "statement": "The remainder contains the 60 FINAL60 recordings (receipt split_role 'reserved-final-unread', held back by the DEV ladder on 2026-08-23) and the 60 historic probe-60 recordings. Reading the remainder therefore spends a reservation that was created to stay unread.",
+      "why_unavoidable": "Decision 107 expands the development side to the FULL devel split, and the remainder is defined by subtracting the two sealed halves; neither half contains these 120 recordings."
+    },
+    {
+      "id": "REM-D2",
+      "owner_action": "cluster every paired analysis by utterance_id, and never report a remainder result and a DEV-1000 / DEV-2000-ADDED result as independent utterance samples",
+      "statement": "1719 of the 1839 remainder utterances already have a recording in DEV-1000 or DEV-2000-ADDED; only 120 remainder utterances were never read before, and one utterance contributes up to 59 remainder recordings.",
+      "why_unavoidable": "Arithmetic: devel carries 8,690 recordings of 2,033 utterances."
+    },
+    {
+      "id": "REM-D3",
+      "owner_action": "report every DEVEL-REMAINDER verdict under both natural-mixture and equal-stratum weighting, per the 2026-09-03 reporting rule",
+      "statement": "No equal-per-scenario allocation is possible: the remainder is whatever the two sealed halves left, so its scenario mixture is the devel mixture minus their draws (see scenario_allocation).",
+      "why_unavoidable": "Capacity, not choice; the roster is a take-all remainder."
+    }
+  ],
+  "disjointness_proof": {
+    "max_recordings_per_remainder_utterance": 59,
+    "non_devel_ids_in_remainder": 0,
+    "shared_with_dev1000_recordings": 0,
+    "shared_with_dev2000_added_recordings": 0,
+    "shared_with_dev2000_recordings": 0,
+    "shared_with_test_recordings": 0,
+    "shared_with_train_construction_recordings": 0
+  },
+  "generator": "scripts/build_slurp_devel_remainder_roster.py",
+  "offline_guard": {
+    "attempted_targets": [],
+    "outbound_connection_attempts": 0
+  },
+  "proof_sha256": "9f501a51d95a1cbae7d7914fc8cecd38b69771b2cd1acc54c1e547369353b3fa",
+  "reserved_sets_inside_the_remainder": {
+    "final60": {
+      "receipt_file_sha256": "630d6e255a8a31738a7cf9c2d0a7c0798a3eb099eb17797d8ea88cbdb2fbbc78",
+      "recordings": 60,
+      "recordings_inside_the_remainder": 60,
+      "relpath": "docs/receipts/probe-samples/FINAL60.json",
+      "remainder_recordings_of_those_utterances": 254,
+      "split_role": "reserved-final-unread",
+      "utterances": 60
+    },
+    "final60_and_probe60_share_a_recording": 0,
+    "final60_and_probe60_share_an_utterance": 0,
+    "historic_probe60": {
+      "receipt_file_sha256": "782609ac54b1ab58e403a042e43030899ed68551c575740caabef97411b63b63",
+      "recordings": 60,
+      "recordings_inside_the_remainder": 60,
+      "relpath": "configs/probes/g0-binding/pslu-sample-devel-n60.json",
+      "remainder_recordings_of_those_utterances": 249,
+      "utterances": 60
+    },
+    "reading": "These two sets were HELD BACK by the DEV ladder, not consumed by it, so they are not in either sealed half and a remainder defined by subtraction contains them. They are neither dropped nor quietly read here: the roster carries them and deviation REM-D1 asks the owner to acknowledge or carve them out before the remainder is read as evidence."
+  },
+  "roster": {
+    "audio_seconds_total": 18978.9523125,
+    "count": 6690,
+    "receipt_file_sha256": "83f618bdadf338fe88ae0a851d43ce4c9e3ef9569365fd7bf2bcffb82cb4ee18",
+    "relpath": "docs/receipts/rosters/slurp-devel-remainder-v1.json",
+    "roster_id": "SLURP-DEVEL-REMAINDER-V1",
+    "split_identity_hash": "e65cd3b1842e7a4c1d8cab39b86278166b45e22c0c4d5f5c3f707724dc2e4fdc"
+  },
+  "scenario_allocation": {
+    "alarm": 308,
+    "audio": 255,
+    "calendar": 864,
+    "cooking": 160,
+    "datetime": 292,
+    "email": 440,
+    "general": 418,
+    "iot": 365,
+    "lists": 328,
+    "music": 203,
+    "news": 226,
+    "play": 997,
+    "qa": 592,
+    "recommendation": 182,
+    "social": 206,
+    "takeaway": 147,
+    "transport": 323,
+    "weather": 384
+  },
+  "schema": "saea-devel-remainder-roster-disjointness-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "text_disjointness": {
+    "dev1000_baseline": {
+      "distinct_sentence_digests": 1000,
+      "exact_sentence_matches_in_train_construction_pool": 1,
+      "gram_digest_set_sha256": "7f96a02026b0b828aa7a6688028160a07a8ea60be0268dcd06f6e5aac366d0b7",
+      "sentence_digest_set_sha256": "8c6d85c2d680ba2b6212164e051a895faf8df6a3be8baacc52f4934ce38c1c29",
+      "utterances_read": 1000,
+      "utterances_sharing_a_train_6gram": 111
+    },
+    "method": "Digest only, after scripts/build_slurp_evo_decontamination.py and scripts/build_slurp_dev2000_roster.py: sentences are read inside one generator, compared as whole-sentence SHA-256 digests and as word 6-gram digests (rails.proposer.word_ngrams / ngram_digest), and only counts and digest-set hashes are written. No sentence and no gram is written anywhere.",
+    "reading": "Construction pools are TRAIN-only by loader construction, so the id-level proof is structural; these counts say how much of the remainder's TEXT a TRAIN-built knowledge store could already contain, measured against the sealed DEV-1000 half under the identical method.",
+    "remainder": {
+      "distinct_sentence_digests": 1838,
+      "exact_sentence_matches_in_train_construction_pool": 3,
+      "gram_digest_set_sha256": "98683b3ac98a644a20ccc6b25746662583b99bbd470899222f0e0686fb80b6b4",
+      "sentence_digest_set_sha256": "1e7a429ec8e277c49de50990cce078cd22b40a1041132525c7bf69a6217d47d5",
+      "utterances_read": 1839,
+      "utterances_sharing_a_train_6gram": 210
+    },
+    "train_construction_pool": {
+      "gram_digests": 25475,
+      "pool_id": "slurp-construction-text-pool-v1",
+      "sentence_digests": 11483,
+      "source_identity_hash": "545847bb95a9423005c71bdcc3fa74af55a3a1b6ae91409ba4070fd35bf92fef",
+      "utterance_count": 11514
+    }
+  },
+  "utterance_overlap": {
+    "devel_utterances": 2033,
+    "reading": "devel carries 8,690 recordings of 2,033 utterances, so utterance-level disjointness from the two sealed halves is arithmetically impossible for a remainder that must cover the whole split. These counts are the exact size of the sharing; see deviation REM-D2 for what an analysis has to do about it.",
+    "recordings_per_remainder_utterance": {
+      "1": 564,
+      "2": 273,
+      "3": 359,
+      "4": 160,
+      "5": 167,
+      "6": 75,
+      "7": 67,
+      "8": 32,
+      "9": 47,
+      "10": 22,
+      "11": 15,
+      "12": 12,
+      "13": 11,
+      "14": 4,
+      "15": 7,
+      "16": 3,
+      "17": 3,
+      "18": 1,
+      "19": 1,
+      "20": 1,
+      "21": 1,
+      "22": 2,
+      "23": 1,
+      "25": 2,
+      "27": 2,
+      "28": 1,
+      "29": 2,
+      "30": 1,
+      "35": 1,
+      "39": 1,
+      "59": 1
+    },
+    "remainder_utterances": 1839,
+    "remainder_utterances_also_in_dev1000": 887,
+    "remainder_utterances_also_in_dev2000_added": 832,
+    "remainder_utterances_also_in_either_sealed_half": 1719,
+    "remainder_utterances_never_read_before": 120
+  }
+}
