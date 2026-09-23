@@ -56,8 +56,8 @@
           {
             "kind": "preparation",
             "reason": "Depends on the twin cell's own release requirement above.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1/phase-supply-v4.json",
-            "sha256": "03ccf6c91b9bc43f24504ee939c2308525e8b1d388b16647b07791d6c6609d8b"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1/phase-supply-v5.json",
+            "sha256": "1642a79b989c492d836e018500f36339383ad32f608262fc82df4b48c7f0d616"
           }
         ],
         "state": "ready"
