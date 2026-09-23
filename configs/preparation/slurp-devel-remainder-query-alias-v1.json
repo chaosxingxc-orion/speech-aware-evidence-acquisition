@@ -1,0 +1,32 @@
+{
+  "expected_rows": 6690,
+  "how_to_fill": "TEMPLATE, not directly loadable: strip this key and replace PENDING_STEP_2B_QUERIES_SHA256 with the step-2b receipt's query_rows_sha256 and PENDING_STEP_2B_RECEIPT_SHA256 with the raw sha256 of that receipt.json, then pass the materialised copy (scripts/flights/batch/prep_generic_encode_task_entry.sh writes it to $SPEECHRL_DATA_DIR/coordination/slurp-devel-remainder-query-encoding-v1/query-alias-v1.json) to core.preparation_vectors, whose config contract accepts exactly the other eight keys.",
+  "output_relpath": "vectors/slurp-devel-remainder-v1/query-vectors-speech-segments.jsonl",
+  "receipt_relpath": "prepared/SAEA-SLURP-DEVEL-REMAINDER-ALIAS-V1/query-dimension-alias.json",
+  "schema": "saea-sealed-segment-vector-dimension-alias-v1",
+  "source": {
+    "dimension": "content",
+    "kind": "sealed-segment-vectors",
+    "relpath": "prepared/SAEA-SLURP-DEVEL-REMAINDER-SPEECH-QUERY-ENCODING-V1/queries.jsonl",
+    "sha256": "PENDING_STEP_2B_QUERIES_SHA256"
+  },
+  "source_receipts": [
+    {
+      "relpath": "preparation-runs/SAEA-SLURP-DEVEL-REMAINDER-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
+      "root": "data",
+      "sha256": "PENDING_STEP_2B_RECEIPT_SHA256"
+    },
+    {
+      "relpath": "configs/dataset/slurp-speech-native-devel-remainder.json",
+      "root": "repository",
+      "sha256": "192a214408c098458adcf8d9471cc1a966e332aaa5e3d1888dce87977181791e"
+    },
+    {
+      "relpath": "docs/receipts/rosters/slurp-devel-remainder-v1.json",
+      "root": "repository",
+      "sha256": "83f618bdadf338fe88ae0a851d43ce4c9e3ef9569365fd7bf2bcffb82cb4ee18"
+    }
+  ],
+  "target_dimension": "intent-boundary",
+  "vector_width": 2048
+}
