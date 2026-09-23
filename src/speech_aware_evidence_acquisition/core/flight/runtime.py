@@ -58,6 +58,8 @@ from ...rails.context_budget import (
 from ...rails.controllers import default_phase_program
 from ...rails.core_client import FrozenCoreClient, build_payload_binding
 from ...rails.evolution import ProposerMaterial, build_proposer_material
+from ...rails.stage3_advantage import STAGE3_ADVANTAGE_ARM
+from ...rails.stage3_advantage_material import AdvantageMaterial
 from ...rails.phase_runner import run_continuous_program, run_program
 from ...rails.runner import RAILS_ARMS, run_rails_experiment
 from ...rails.task_adapter import TaskAdapter
@@ -634,9 +636,58 @@ def _default_construction_material(
     data_root: Path,
     repo_root: Path,
     samples: Sequence[object],
-) -> ProposerMaterial:
+) -> "ProposerMaterial | AdvantageMaterial":
     """The config-driven default for the ``construction_material_resolver``
-    seam: render every proposer contact this flight will make.
+    seam, dispatched on the composed baseline's own ``arm``.
+
+    There are two construction-visible arms
+    (``contracts.CONSTRUCTION_VISIBLE_ARMS``) and their material has nothing
+    in common beyond the invariant that the rendered text lives in the
+    instruction and never in a receipt:
+
+    * ``"construction-proposer-text"`` -> :func:`_proposer_construction_material`
+      below, byte for byte what this seam has always resolved;
+    * ``"construction-advantage-text"`` (Stage-3 S3-4s) ->
+      ``rails.stage3_advantage_material.build_advantage_material``, which
+      renders one per-row advantage instruction from S3-3's pinned
+      ``pairs.json``, the sealed rollout's own custody and the row's own
+      construction gold.
+
+    Dispatching here rather than at every call site keeps the seam's
+    signature, its single injection point and every existing test double
+    unchanged.
+    """
+
+    if str(values.get("arm") or "") == STAGE3_ADVANTAGE_ARM:
+        from ...rails.stage3_advantage_material import (  # noqa: PLC0415 (cycle guard)
+            Stage3AdvantageMaterialError,
+            build_advantage_material,
+        )
+
+        try:
+            return build_advantage_material(
+                values,
+                lock=lock,
+                data_root=Path(data_root),
+                repo_root=Path(repo_root),
+                samples=samples,
+            )
+        except Stage3AdvantageMaterialError as error:
+            raise FlightRuntimeError(str(error)) from None
+    return _proposer_construction_material(
+        values, lock=lock, data_root=data_root, repo_root=repo_root, samples=samples
+    )
+
+
+def _proposer_construction_material(
+    values: Mapping[str, object],
+    *,
+    lock: Mapping[str, object],
+    data_root: Path,
+    repo_root: Path,
+    samples: Sequence[object],
+) -> ProposerMaterial:
+    """Render every proposer contact this flight will make.
 
     Everything it reads is committed and hash-pinned by the composed config:
 
@@ -3611,10 +3662,11 @@ class FlightRuntime:
                 repo_root=self._repo_root,
                 samples=self._samples,
             )
-            if not isinstance(material, ProposerMaterial):
+            if not isinstance(material, (ProposerMaterial, AdvantageMaterial)):
                 raise FlightRuntimeError(
                     "construction_material_resolver must return a "
-                    "rails.evolution.ProposerMaterial"
+                    "rails.evolution.ProposerMaterial or a "
+                    "rails.stage3_advantage_material.AdvantageMaterial"
                 )
             if not material.contacts:
                 raise FlightRuntimeError(
@@ -10567,7 +10619,7 @@ class FlightRuntime:
             if got != contact.construction_target_ids:
                 problems.append(
                     f"request {index} declares construction targets {list(got)}, not "
-                    f"draw {contact.draw.draw_id}'s own "
+                    f"draw {contact.draw_id}'s own "
                     f"{list(contact.construction_target_ids)}"
                 )
             if any(set(entry) != {"sample_id", "target"} for entry in declared):
@@ -10580,7 +10632,7 @@ class FlightRuntime:
             if digest != contact.prompt_sha256:
                 problems.append(
                     f"request {index} task_instruction hashes to {digest[:16]}, not draw "
-                    f"{contact.draw.draw_id}'s pinned prompt {contact.prompt_sha256[:16]}"
+                    f"{contact.draw_id}'s pinned prompt {contact.prompt_sha256[:16]}"
                 )
         for index, body in enumerate(transport.request_bodies):
             text = body.decode("utf-8", errors="replace")
