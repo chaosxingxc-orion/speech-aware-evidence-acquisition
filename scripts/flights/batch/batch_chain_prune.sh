@@ -24,6 +24,9 @@ def step(order, short, name, tag, cpr, ceil, smoke_attempt=None):
         "smoke_run_id":f"SAEA-SLURP-NATIVE-{tag}-SMOKE-4-V1","smoke_attempt_id":smoke_attempt or f"attempt-slurp-native-{name}-smoke-4-generation-v1",
         "expected_rows":1080,"contacts_per_row":cpr,"ceiling_per_row":ceil,"notool":True,"owner":f"root-slurp-native-{name}-v1"}
 steps=[step(1,"p1","prune-reviewer1","PRUNE-REVIEWER1",4,7,"attempt-slurp-native-prune-reviewer1-smoke-4-generation-recovery-v1"), step(2,"p0","prune-review-off","PRUNE-REVIEW-OFF",2,2)]
+import os
+only = os.environ.get("PRUNE_ONLY")
+if only: steps = [s for s in steps if s["short"] == only]  # e.g. PRUNE_ONLY=p0 after P1 sealed (the driver's smoke-wait bug ended the first two-step run)
 json.dump(steps, open("/home/chao/batch-queue.json","w"), indent=1)
 PY
 echo "queue [p1 p0] written; starting driver $(date -u +%FT%TZ)" >> $LOG

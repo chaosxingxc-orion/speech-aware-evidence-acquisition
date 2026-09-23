@@ -53,7 +53,7 @@ fly_smoke() {  # $1 order $2 smoke_experiment $3 smoke_cell $4 owner
       --experiment "$exp" --cell "$cell" --owner "root-$cell" --expected-session-id "$SESSION" \
       --token-output "coordination/$cell.worker-lease.json" <&3 > /home/chao/batch-smoke-$1-lease.out 2>&1 ) &
   local lpid=$!
-  for i in $(seq 1 90); do [ -f "$token" ] && break; sleep 1; done
+  local w; for w in $(seq 1 90); do [ -f "$token" ] && break; sleep 1; done  # never reuse the outer step index (2026-09-23: it ended a two-step queue after step 1)
   [ -f "$token" ] || { kill $lpid 2>/dev/null; stop "smoke lease token never appeared for step $1 ($(tail -c 300 /home/chao/batch-smoke-$1-lease.out))"; }
   $PY -B -m speech_aware_evidence_acquisition.core.flight.cli worker \
       --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
