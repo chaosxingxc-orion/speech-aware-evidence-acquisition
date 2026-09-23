@@ -29,9 +29,17 @@
         "campaign"
       ],
       "readiness": {
-        "state": "held",
+        "state": "ready",
         "reason": "E39b (2026-09-23): the one recovery re-registration of the E39 four-row dry run (rule FAIL on R3, cause = cap sizing); caps 640 / 640; decision id e21-native-window-four-row-e39b-admission-v1 at coordination/e21-native-window-four-row-e39b-v1/root-admission-v1.json; held until root mints and flips.",
-        "requirements": []
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "e21-native-window-four-row-e39b-admission-v1",
+            "relpath": "coordination/e21-native-window-four-row-e39b-v1/root-admission-v1.json",
+            "sha256": "19d23854cffd89d65021aadc11f31c47164c362a53564b8bee88cbbf442cf912",
+            "reason": "Decision e21-native-window-four-row-e39b-admission-v1 pinned by scripts/flights/repin_cell.py."
+          }
+        ]
       },
       "execution_plan": {
         "split_role": "discovery",

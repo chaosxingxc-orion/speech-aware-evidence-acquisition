@@ -6,7 +6,7 @@
   "campaign_plan": "configs/campaign/e21-native-window-system-four-row-e39b-v1.json",
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-23-e21-native-window-four-row-e39b-v1/protocol-registered-v1.json",
-    "sha256": "bf365ef3bd610b64af4f1e4df4986b68a5c55e7c920f81ab7e6dd9671de076ab"
+    "sha256": "da2c40249086773029fd119e68cc0e4fffa2bd838f54bd2d57d1e86d3565c0fb"
   },
   "root_registration_required": true,
   "execution_plan": {
@@ -21,7 +21,7 @@
     "planned_model_calls": 44,
     "planned_gpu_hours": 0.5,
     "planned_speech_audio_seconds": 3960,
-    "protocol_hash": "b25859bd2303d4ed4b485a038c09bc1067872c2b911ba4ccd3b88ef5d132ddbd"
+    "protocol_hash": "a06b65a712a72b29a002131b2261ab6cdbf7baab1cf190a9a6b6fd7783986cec"
   },
   "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan configs/campaign/e21-native-window-system-four-row-e39b-v1.json; the campaign acquires its own GenerationLease against the resident E21 session and schedules ZERO scoring jobs at finalize.",
   "execution_location": "Shared six-node controller (phase-native-review-revise-acquire-v1: perception, solver, reviewer x3, planner, zero-contact acquisition, delivery normaliser) and the OpenJiuwen executor, through core.flight.FlightRuntime.",
@@ -57,7 +57,7 @@
   "prepared_phase_supply_note": "NONE and none is pinned: the program declares no supplied first phase, so core.flight.cli prepare-supply returns 'program has no supplied first phase to prepare' (item E38) and core.flight.repin rebuilds and pins nothing. --allow-output-change must never be passed.",
   "fit_arithmetic": "4 units x 11 native contacts x (1 speech packet + 3 endpoints) = 176",
   "registration_state": "REGISTERED BEFORE CONTACT on 2026-09-23 by the E39 registration agent (Fable 5.1); readiness still HELD. Fresh unconsumed exposure-ledger rows exist for both run ids. Root mints coordination/e21-native-window-four-row-e39b-v1/root-admission-v1.json (e21-native-window-four-row-e39b-admission-v1) and flips with core.flight.repin.apply_decision_and_readiness via scripts/flights/repin_cell.py; there is no supply to prepare (item E38 path: the program declares no supplied first phase), so no prepared artifact and no 'preparation' readiness requirement exist for this cell. The flip moves the composed and protocol hashes below and the tool rewrites them here, in the protocol document and in the two ledger rows.",
-  "composed_config_hash": "4d0486f62dccd010e4ef43162bbb677d615ea5363dbd262265d1f67f98ff7d3a",
+  "composed_config_hash": "615d7f227348e7c71ac0fd9bc266dfe3693d22c2d86381055c915802f2680630",
   "registered_at_utc": "2026-09-23T04:00:00+00:00",
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-e39reg, branch fable/e39reg, base commit 321b64fe",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
