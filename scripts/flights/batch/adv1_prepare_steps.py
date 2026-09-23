@@ -186,6 +186,11 @@ def cmd_roster(args: argparse.Namespace) -> int:
         "rollout_run_id": pairs_document.get("run_id"),
         "rollout_attempt_id": pairs_document.get("attempt_id"),
         "scorer_id": pairs_document.get("scorer_id"),
+        # S3-4s (owner decision 106): which pairs.json payload version this
+        # selection was made from. "saea-stage3-rollout-pairs-v2" is the one
+        # that carries the per-row trajectory block ADV-1's v2 instruction
+        # renders from; a file without the key is a pre-S3-4s v1 payload.
+        "pairs_schema": pairs_document.get("pairs_schema", "saea-stage3-rollout-score-v1"),
     }
     receipt = build_roster_receipt(parent=parent, ids=ids, pairs_pin=pairs_pin, splits=splits)
     measured = roster_module.verify_roster(receipt)

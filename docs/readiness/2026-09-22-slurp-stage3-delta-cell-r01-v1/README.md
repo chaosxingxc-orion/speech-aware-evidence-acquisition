@@ -204,3 +204,59 @@ not invent them.
   token; the smoke variants carry the same store shape as their full siblings.
 - `tests/unit/test_roll1_fill_placeholders.py`: the substitution tool's ROLL-1 contract is unchanged
   by the `--fragments` / `--occurrence-policy` arguments this package needs.
+
+## S3-4s amendment: per-node supply (owner decision 106, 2026-09-23)
+
+Still **HELD**; nothing below authorises a flight, a flip or an admission entry.
+
+**The store is node-targeted.** S3-5's curator now writes `node_target` per row and
+`task_target = NODE:DELTA-KIND:TARGET`, under the authored schema
+`saea-stage3-authored-deltas-v2` and the builder policy `saea-authored-stage3-deltas-v2`
+(registered BESIDE `...-v1`, which stays loadable and flyable). `associated_facet_ids` is the bare
+`TARGET` -- the value a candidate-bound route actually intersects a row's Perception candidate intent
+ids against. One further curation rule: a statement repeating six or more consecutive tokens of any
+construction-row transcript is dropped, counted, and never printed
+(`--construction-transcripts`; `DELTA_TRANSCRIPTS` in the runbook). Without that file the rule is
+DISABLED and the curation report says so -- prepare it before releasing.
+
+**Four routes, one store** (declared in all four delta-cell baseline fragments and their twins):
+
+| phase | provider | cap | binding |
+| --- | --- | --- | --- |
+| `perception` | `stage3-delta-unconditional-v1` | 4 | unconditional (no candidate state exists yet) |
+| `reviewer` | `stage3-delta-candidate-bound-v1` | 4 | candidate-bound, `node_target: reviewer` |
+| `planner` | `stage3-delta-candidate-bound-v1` | 4 | candidate-bound, `node_target: planner` |
+| `solver` | `stage3-delta-candidate-bound-v1` | 8 | candidate-bound, `node_target: solver` |
+
+The pre-S3-4s `context_supply` contract insisted on a LATER supplied phase, for a real reason: a
+later phase has a preceding `advance` to carry its per-row decision and the first phase has none.
+Perception is admitted through its own validation branch rather than around that reason: its
+selection carries **no per-row term at all**, so it is decided once per flight and SEEDED -- through
+`rails.knowledge_stores`' `bootstrap_first_phase`, and, when a cell pins a `prepared_phase_supply`
+artifact for the first phase's retrieval store, through the new
+`unconditional_first_phase` seam that `core.flight.runtime._merge_unconditional_first_phase`
+composes on top of it. A `candidate_state_phase` on that route is REFUSED, not ignored. Every flight
+whose router publishes no such seam is byte-identical to its pre-S3-4s self.
+
+**The twin.** `scripts/build_slurp_stage3_delta_twin.py` now reads the v2 schema and twins each group
+by what that group's route actually reads: the candidate-bound nodes keep v1's facet derangement, the
+unconditional list gets a derangement of its TARGET fields (and the `associated_facet_ids` entry that
+mirrors it). Both are permutations within their own group, so the **token count is held exactly** --
+`authored_token_count(twin) == authored_token_count(parent)`, enforced in the builder and proven in
+`tests/unit/test_stage3_delta_twin_v2.py`. A group naming one distinct attachment is refused (every
+permutation of it is the identity in effect); a duplicate row landing on an equal value is counted
+(`value_fixed_points`) rather than refused, because a real store carries several deltas per target and
+refusing that would make the v2 twin unbuildable.
+
+**The equality proof is unchanged in kind**: `tests/unit/test_stage3_delta_cell_fragment.py` now also
+asserts that, after the per-flight bookkeeping and documentation keys are excluded, the ONLY key on
+which the cell fragment differs from `configs/baseline/slurp-native-default-plan-lock-baseline-v1.json`
+is `knowledge_stores`, and the only added store key is `stage3-deltas` with exactly
+`{context_supply, release, snapshot, store_role}`.
+
+**Tests**: `tests/unit/test_stage3_delta_node_routes.py` (the node filter partitions one pool into
+disjoint slices; the unconditional selection has no row-dependent term; the first-phase seed and its
+receipt; the unconditional spec validated fail-closed, including the refusal of `candidate_state_phase`
+and of the unconditional provider on a later phase; a pre-S3-4s spec without `node_target` still
+validates and routes unchanged), `tests/unit/test_stage3_delta_store_v2.py` (the v2 builder, the
+containment rule and its counts) and `tests/unit/test_stage3_delta_twin_v2.py`.

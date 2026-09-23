@@ -476,21 +476,431 @@ def stage3_advantage_response_format_v1(
     }
 
 
+
+# ---------------------------------------------------------------------------
+# S3-4s (owner decision 106, 2026-09-23): the SYSTEM-level v2 contact.
+#
+# v1 above is frozen, byte for byte: every v1 id, parser, renderer and
+# response format keeps working and is still reachable. v2 is purely
+# additive. The one contact now sees the whole trajectory -- the Perception
+# candidate list, ANSWER A / ANSWER B, the DELIVERED answer with the
+# Reviewer's verdict and the Planner's route, and the construction gold --
+# and answers with one to three FOUR-line blocks, each naming the NODE the
+# statement is about. The node is what S3-5 stores as ``node_target`` and
+# what S3-6 routes on.
+# ---------------------------------------------------------------------------
+
+STAGE3_ADVANTAGE_RESPONSE_FORMAT_ID_V2 = "stage3-advantage-statement-v2"
+STAGE3_ADVANTAGE_PROGRAM_ID_V2 = "phase-stage3-advantage-v2"
+#: The committed v2 templates, named here so a launcher and a fragment
+#: cannot drift apart silently.
+STAGE3_ADVANTAGE_TEMPLATE_RELPATH_V2 = "probes/slurp_stage3_advantage_v2.txt"
+STAGE3_ADVANTAGE_SYSTEM_TEMPLATE_RELPATH_V2 = (
+    "probes/slurp_stage3_advantage_system_v2.txt"
+)
+
+#: The four nodes of the locked plan's episode, in program order. These are
+#: PHASE names (``configs/policy/phase-native-candidates-review-revise-v1
+#: .json``), which is what a ``context_supply`` route keys on -- not the
+#: episode's internal STAGE names (where the reviewer phase's stage is
+#: spelled ``"review"``).
+LEGAL_DELTA_NODES = ("perception", "solver", "reviewer", "planner")
+
+#: The v2 DELTA-KIND vocabulary: v1's three plus one per newly addressable
+#: node (spec section S3-4s). Membership, not order, is what the parser
+#: checks; the order below is the canonical display order.
+LEGAL_DELTA_KINDS_V2 = (
+    *LEGAL_DELTA_KINDS,
+    "perception-hint",
+    "reviewer-criterion",
+    "planner-rule",
+)
+
+#: At most three blocks per contact (spec section S3-4s: "one to three
+#: blocks"). A fourth and later block is RETAINED and marked illegal, never
+#: silently dropped -- curation drops it, counted.
+MAX_ADVANTAGE_BLOCKS = 3
+
+_V2_KEY_LINE = re.compile(
+    r"^\s*(NODE|DELTA-KIND|TARGET|STATEMENT)\s*:\s*(.*)$", re.IGNORECASE
+)
+_V2_REQUIRED_KEYS = ("NODE", "DELTA-KIND", "TARGET", "STATEMENT")
+_V2_JSON_FIELDS = {"node", "delta_kind", "target", "statement"}
+
+
+@dataclass(frozen=True)
+class AdvantageBlock:
+    """One four-line block of a v2 advantage response.
+
+    Retained exactly as :class:`AdvantageStatement` is: an illegal block
+    keeps every field the parser could read and names every violation in
+    ``illegal_reasons``, so S3-5's curator drops it with a counted,
+    auditable reason rather than a silent loss.
+    """
+
+    block_index: int
+    node: str
+    delta_kind: str
+    target: str
+    statement: str
+    legal: bool
+    illegal_reasons: tuple
+
+    def word_count(self) -> int:
+        return len(self.statement.split())
+
+    def statement_sha256(self) -> str:
+        return hashlib.sha256(self.statement.encode("utf-8")).hexdigest()
+
+    def task_target(self) -> str:
+        """``NODE:DELTA-KIND:TARGET`` -- S3-5's row key (spec S3-4s)."""
+
+        return f"{self.node}:{self.delta_kind}:{self.target}"
+
+    def receipt(self) -> dict:
+        """Identities, counts and digests ONLY -- never ``statement`` text."""
+
+        return {
+            "schema": "saea-stage3-advantage-block-receipt-v1",
+            "block_index": self.block_index,
+            "node": self.node,
+            "delta_kind": self.delta_kind,
+            "target": self.target,
+            "legal": self.legal,
+            "illegal_reasons": list(self.illegal_reasons),
+            "statement_word_count": self.word_count(),
+            "statement_sha256": self.statement_sha256(),
+        }
+
+
+@dataclass(frozen=True)
+class AdvantageStatementSet:
+    """One v2 advantage contact's whole response: its blocks, retained."""
+
+    blocks: tuple
+    legal: bool
+    illegal_reasons: tuple
+    raw_text_sha256: str
+    source_form: str
+
+    def legal_blocks(self) -> tuple:
+        return tuple(block for block in self.blocks if block.legal)
+
+    def receipt(self) -> dict:
+        return {
+            "schema": "saea-stage3-advantage-statement-receipt-v2",
+            "legal": self.legal,
+            "illegal_reasons": list(self.illegal_reasons),
+            "source_form": self.source_form,
+            "block_count": len(self.blocks),
+            "legal_block_count": len(self.legal_blocks()),
+            "blocks": [block.receipt() for block in self.blocks],
+            "raw_text_sha256": self.raw_text_sha256,
+        }
+
+
+def _v2_blocks_from_json(raw: str):
+    """Normalise a STRUCTURED reply into the four-line block fields.
+
+    The registered v2 response format is a JSON schema (native structured
+    decoding), so a compliant contact answers with JSON rather than with the
+    literal four lines. Returning the same field mapping from both shapes is
+    what makes :func:`parse_advantage_statements_v2` the single parser of
+    record. Anything that is not a JSON array/object of the declared shape
+    returns ``None`` and falls through to the line-keyed reading.
+    """
+
+    stripped = raw.strip()
+    if not stripped or stripped[0] not in "[{":
+        return None
+    try:
+        document = json.loads(stripped)
+    except (json.JSONDecodeError, ValueError):
+        return None
+    if isinstance(document, Mapping):
+        rows = document.get("blocks", document.get("statements"))
+        if rows is None:
+            rows = [document]
+    else:
+        rows = document
+    if not isinstance(rows, Sequence) or isinstance(rows, (str, bytes)) or not rows:
+        return None
+    blocks = []
+    for row in rows:
+        if not isinstance(row, Mapping) or not _V2_JSON_FIELDS & set(row):
+            return None
+        blocks.append(
+            {
+                "NODE": str(row.get("node", "")).strip(),
+                "DELTA-KIND": str(row.get("delta_kind", "")).strip(),
+                "TARGET": str(row.get("target", "")).strip(),
+                "STATEMENT": str(row.get("statement", "")).strip(),
+            }
+        )
+    return blocks
+
+
+def _v2_blocks_from_lines(raw: str):
+    """Line-keyed block segmentation: a ``NODE:`` line opens a new block.
+
+    A repeated key inside one block is ignored past its first occurrence
+    (the v1 rule, per block). A keyed line seen BEFORE the first ``NODE:``
+    line opens an implicit block 0, so a response that merely forgot the
+    NODE line is retained (illegal, missing key) rather than discarded.
+    """
+
+    blocks = []
+    current = None
+    for line in raw.splitlines():
+        match = _V2_KEY_LINE.match(line)
+        if match is None:
+            continue
+        key = match.group(1).upper()
+        value = match.group(2).strip()
+        if key == "NODE" or current is None:
+            current = {}
+            blocks.append(current)
+        if key in current:
+            continue
+        current[key] = value
+    return blocks
+
+
+def parse_advantage_statements_v2(
+    text: object, *, max_words: int = MAX_STATEMENT_WORDS
+) -> AdvantageStatementSet:
+    """Parse one v2 advantage contact's raw response into one to three blocks.
+
+    Closed-form and total, exactly like :func:`parse_advantage_statement`:
+    it never raises. A non-string ``text``, an empty response, a block
+    missing a key, an out-of-vocabulary ``NODE`` or ``DELTA-KIND``, an empty
+    ``TARGET``/``STATEMENT``, an over-long ``STATEMENT`` and a fourth or
+    later block all come back RETAINED and marked illegal. Curation (S3-5)
+    is what drops an illegal block, counted.
+    """
+
+    raw = text if isinstance(text, str) else ""
+    raw_sha256 = hashlib.sha256(raw.encode("utf-8")).hexdigest()
+    structured = _v2_blocks_from_json(raw)
+    source_form = "json" if structured is not None else "lines"
+    found_blocks = structured if structured is not None else _v2_blocks_from_lines(raw)
+
+    set_reasons = []
+    if not isinstance(text, str):
+        set_reasons.append("response text is not a string")
+    if not found_blocks:
+        set_reasons.append("no NODE/DELTA-KIND/TARGET/STATEMENT block was found")
+    if len(found_blocks) > MAX_ADVANTAGE_BLOCKS:
+        set_reasons.append(
+            f"{len(found_blocks)} blocks exceed the {MAX_ADVANTAGE_BLOCKS}-block form"
+        )
+
+    blocks = []
+    for index, found in enumerate(found_blocks):
+        reasons = []
+        missing = [key for key in _V2_REQUIRED_KEYS if key not in found]
+        if missing:
+            reasons.append(f"missing keys: {', '.join(missing)}")
+        node = found.get("NODE", "")
+        delta_kind = found.get("DELTA-KIND", "")
+        target = found.get("TARGET", "")
+        statement = found.get("STATEMENT", "")
+        if node and node not in LEGAL_DELTA_NODES:
+            reasons.append(f"illegal node: {node!r}")
+        if delta_kind and delta_kind not in LEGAL_DELTA_KINDS_V2:
+            reasons.append(f"illegal delta-kind: {delta_kind!r}")
+        if "TARGET" in found and not target:
+            reasons.append("empty target")
+        if "STATEMENT" in found and not statement:
+            reasons.append("empty statement")
+        word_count = len(statement.split())
+        if statement and word_count > max_words:
+            reasons.append(f"statement exceeds {max_words} words ({word_count})")
+        if index >= MAX_ADVANTAGE_BLOCKS:
+            reasons.append(
+                f"block {index} is past the {MAX_ADVANTAGE_BLOCKS}-block form"
+            )
+        blocks.append(
+            AdvantageBlock(
+                block_index=index,
+                node=node,
+                delta_kind=delta_kind,
+                target=target,
+                statement=statement,
+                legal=not reasons,
+                illegal_reasons=tuple(reasons),
+            )
+        )
+
+    legal = not set_reasons and bool(blocks) and all(block.legal for block in blocks)
+    return AdvantageStatementSet(
+        blocks=tuple(blocks),
+        legal=legal,
+        illegal_reasons=tuple(set_reasons),
+        raw_text_sha256=raw_sha256,
+        source_form=source_form,
+    )
+
+
+# ---------------------------------------------------------------------------
+# v2 instruction rendering -- the ONLY place trajectory text + gold appear.
+# ---------------------------------------------------------------------------
+
+#: The v2 template's placeholders, in the order the template states them.
+#: Rendering substitutes them LITERALLY (``str.replace``) rather than through
+#: ``str.format``: a rendered answer is JSON and a template that ever grew a
+#: literal brace must not turn a contact into a ``KeyError``.
+V2_TEMPLATE_PLACEHOLDERS = (
+    "{candidate_list}",
+    "{best_answer}",
+    "{worst_answer}",
+    "{delivered_answer}",
+    "{reviewer_verdicts}",
+    "{planner_route}",
+    "{gold}",
+)
+
+
+def render_advantage_instruction_v2(
+    template_text: str,
+    *,
+    candidate_list_text: str,
+    best_answer_text: str,
+    worst_answer_text: str,
+    delivered_answer_text: str,
+    reviewer_verdicts_text: str,
+    planner_route_text: str,
+    gold_text: str,
+) -> str:
+    """Fill ``configs/probes/slurp_stage3_advantage_v2.txt``.
+
+    The ONE function in this module that combines the row's whole rendered
+    trajectory with the construction gold. Its return value is a flight-time
+    instruction, never a receipt field -- exactly the boundary
+    :func:`render_advantage_instruction` documents for v1.
+
+    Every argument is already RENDERED text supplied by the caller from
+    custodied bytes (``candidate_list_text`` from the Perception candidate
+    ids of S3-3's ``trajectory`` block; the three answers from the sealed
+    rollout's own custody; ``reviewer_verdicts_text`` / ``planner_route_text``
+    from the sealed episode receipt's labels). This module neither opens a
+    seal nor decides what a label means.
+    """
+
+    if not isinstance(template_text, str) or not template_text.strip():
+        raise Stage3AdvantageError("template_text must be a non-empty string")
+    missing = [key for key in V2_TEMPLATE_PLACEHOLDERS if key not in template_text]
+    if missing:
+        raise Stage3AdvantageError(
+            f"advantage v2 template is missing placeholder(s): {missing}"
+        )
+    values = {
+        "{candidate_list}": candidate_list_text,
+        "{best_answer}": best_answer_text,
+        "{worst_answer}": worst_answer_text,
+        "{delivered_answer}": delivered_answer_text,
+        "{reviewer_verdicts}": reviewer_verdicts_text,
+        "{planner_route}": planner_route_text,
+        "{gold}": gold_text,
+    }
+    rendered = template_text
+    for placeholder, value in values.items():
+        if not isinstance(value, str):
+            raise Stage3AdvantageError(
+                f"advantage v2 material {placeholder} must be text"
+            )
+        rendered = rendered.replace(placeholder, value)
+    return rendered
+
+
+def build_advantage_instruction_for_row_v2(
+    template_text: str, pair: AdvantagePair, **material: str
+) -> str:
+    """The reusable per-row unit a v2 launcher's ``material_for_phase``
+    override calls once (``pair`` identifies WHICH sample indices supplied
+    the two answers, so a caller can assert it read the right custodied
+    bytes before calling this)."""
+
+    pair.validate()
+    return render_advantage_instruction_v2(template_text, **material)
+
+
+def stage3_advantage_response_format_v2(
+    _lock: Mapping[str, object], _root: Path, **_params: object
+) -> Mapping[str, object]:
+    """The v2 structured-decoding contract registered under
+    :data:`STAGE3_ADVANTAGE_RESPONSE_FORMAT_ID_V2`.
+
+    One to three blocks, each carrying the four fields of the four-line
+    form. :func:`parse_advantage_statements_v2` stays the parser of record
+    and reads this JSON shape directly (``_v2_blocks_from_json``), so the
+    schema and the parser are one contract rather than two.
+    """
+
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "saea_stage3_advantage_statement_v2",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["blocks"],
+                "properties": {
+                    "blocks": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": MAX_ADVANTAGE_BLOCKS,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": False,
+                            "required": ["node", "delta_kind", "target", "statement"],
+                            "properties": {
+                                "node": {"type": "string", "enum": list(LEGAL_DELTA_NODES)},
+                                "delta_kind": {
+                                    "type": "string",
+                                    "enum": list(LEGAL_DELTA_KINDS_V2),
+                                },
+                                "target": {"type": "string", "minLength": 1},
+                                "statement": {"type": "string", "minLength": 1},
+                            },
+                        },
+                    }
+                },
+            },
+        },
+    }
+
+
 __all__ = [
     "LEGAL_DELTA_KINDS",
+    "LEGAL_DELTA_KINDS_V2",
+    "LEGAL_DELTA_NODES",
+    "MAX_ADVANTAGE_BLOCKS",
     "MAX_STATEMENT_WORDS",
     "STAGE3_ADVANTAGE_ARM",
     "STAGE3_ADVANTAGE_PHASE_NAME",
     "STAGE3_ADVANTAGE_PROGRAM_ID",
+    "STAGE3_ADVANTAGE_PROGRAM_ID_V2",
     "STAGE3_ADVANTAGE_RESPONSE_FORMAT_ID",
+    "STAGE3_ADVANTAGE_RESPONSE_FORMAT_ID_V2",
+    "STAGE3_ADVANTAGE_SYSTEM_TEMPLATE_RELPATH_V2",
+    "STAGE3_ADVANTAGE_TEMPLATE_RELPATH_V2",
+    "V2_TEMPLATE_PLACEHOLDERS",
+    "AdvantageBlock",
     "AdvantagePair",
     "AdvantagePairSample",
     "AdvantagePairs",
     "AdvantageStatement",
+    "AdvantageStatementSet",
     "Stage3AdvantageError",
     "build_advantage_instruction_for_row",
+    "build_advantage_instruction_for_row_v2",
     "load_advantage_pairs",
     "parse_advantage_statement",
+    "parse_advantage_statements_v2",
     "render_advantage_instruction",
+    "render_advantage_instruction_v2",
     "stage3_advantage_response_format_v1",
+    "stage3_advantage_response_format_v2",
 ]

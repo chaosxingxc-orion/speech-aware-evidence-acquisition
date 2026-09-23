@@ -14,7 +14,13 @@
 #   A  preconditions: the sealed ADV-1 advantage outputs, S3-3's pairs.json, and the two root
 #      S3-5 preparations the release registration pins (construction scope, permitted roster)
 #   B  curate (no release): scripts/build_slurp_stage3_delta_store.py writes the append-only
-#      authored-deltas document and prints its digest
+#      authored-deltas document (schema saea-stage3-authored-deltas-v2, builder policy
+#      saea-authored-stage3-deltas-v2) and prints its digest. S3-4s (owner decision 106):
+#      one contact yields one to three NODE-attributed rows, each carrying node_target and
+#      task_target NODE:DELTA-KIND:TARGET; DELTA_TRANSCRIPTS arms the six-token containment
+#      rule (a statement repeating six or more consecutive transcript tokens is dropped at
+#      curation, counted). Without DELTA_TRANSCRIPTS the rule is DISABLED and the report
+#      says so -- set it before a release.
 #   C  twin: scripts/build_slurp_stage3_delta_twin.py derangement of associated_facet_ids
 #   D  materialise both release registrations from their committed templates with the real digests
 #   E  release the generation store (the curator's own --release path, which also writes the
@@ -22,7 +28,8 @@
 #   F  print the CELL-1 fill values and apply them to the five CELL-1 fragments
 #
 # Environment overrides: REPO, SPEECHRL_DATA_DIR, PY, ADV1_RUN, ADV1_OUTPUTS, SCORE_RUN,
-# DELTA_ITERATION, DELTA_TWIN_SEED, DELTA_PREDECESSOR.
+# DELTA_ITERATION, DELTA_TWIN_SEED, DELTA_PREDECESSOR, DELTA_SCHEMA_VERSION,
+# DELTA_TRANSCRIPTS.
 # DELTAS_DRY=1 (the default) runs A read-only and prints every mutating command line;
 # DELTAS_DRY=0 runs them. Commit the five touched fragments afterwards, then re-pin.
 set -u
@@ -39,8 +46,15 @@ DELTA_ITERATION=${DELTA_ITERATION:-1}
 # recorded so the derangement is reproducible byte for byte.
 DELTA_TWIN_SEED=${DELTA_TWIN_SEED:-20260922}
 DELTA_PREDECESSOR=${DELTA_PREDECESSOR:-none}
+# S3-4s: 2 is the node-targeted curation; 1 keeps the pre-S3-4s single-statement path.
+DELTA_SCHEMA_VERSION=${DELTA_SCHEMA_VERSION:-2}
+# The construction rows' transcripts, read ONLY to reject statements that repeat six or
+# more consecutive transcript tokens. Root's own model-free preparation; never in Git.
+DELTA_TRANSCRIPTS=${DELTA_TRANSCRIPTS:-}
 
 PREPARED=$DATA/prepared/SAEA-SLURP-STAGE3-DELTAS-V1
+# S3-4s: the containment rule's input, beside the other prepared/ documents.
+: "${DELTA_TRANSCRIPTS:=$PREPARED/construction-transcripts.jsonl}"
 # Rendered from the sealed ADV-1 run's custodied outputs at the ADV-1 seal (one JSON object per
 # line: {"sample_id", "response_text", "disagreement"}); it is S3-4's own deliverable, not this
 # runbook's, and it never enters Git.
@@ -86,11 +100,20 @@ run() {  # run, or print, one mutating command line
 }
 
 # ---------------------------------------------------------------- B: curate (no release)
-echo "B  curate iteration $DELTA_ITERATION predecessor $DELTA_PREDECESSOR"
+echo "B  curate iteration $DELTA_ITERATION predecessor $DELTA_PREDECESSOR schema v$DELTA_SCHEMA_VERSION"
+CONTAINMENT=""
+if [ -f "$DELTA_TRANSCRIPTS" ]; then
+  CONTAINMENT="--construction-transcripts $DELTA_TRANSCRIPTS"
+else
+  echo "B  NO transcripts at $DELTA_TRANSCRIPTS: the six-token containment rule will be"
+  echo "   DISABLED and the curation report will say so. Prepare them before releasing."
+fi
+# shellcheck disable=SC2086
 run "$PY" -B scripts/build_slurp_stage3_delta_store.py \
     --advantage-outputs "$ADV1_OUTPUTS" --pairs "$PAIRS" --repo-root "$REPO" \
     --predecessor "$DELTA_PREDECESSOR" --iteration "$DELTA_ITERATION" \
-    --run-id "$ADV1_RUN" --out-authored "$AUTHORED"
+    --run-id "$ADV1_RUN" --out-authored "$AUTHORED" \
+    --schema-version "$DELTA_SCHEMA_VERSION" $CONTAINMENT
 
 # ---------------------------------------------------------------- C: the derangement twin
 echo "C  twin seed $DELTA_TWIN_SEED"
@@ -111,10 +134,12 @@ run "$PY" -B "$HELPERS" --repo-root "$REPO" --data-root "$DATA" registration \
 # for byte and the digest step D pinned still matches -- and if it ever did not, the preparer
 # fails closed on the authored_source pin rather than releasing a different store.
 echo "E  release"
+# shellcheck disable=SC2086
 run "$PY" -B scripts/build_slurp_stage3_delta_store.py \
     --advantage-outputs "$ADV1_OUTPUTS" --pairs "$PAIRS" --repo-root "$REPO" \
     --predecessor "$DELTA_PREDECESSOR" --iteration "$DELTA_ITERATION" \
     --run-id "$ADV1_RUN" --out-authored "$AUTHORED" \
+    --schema-version "$DELTA_SCHEMA_VERSION" $CONTAINMENT \
     --release "$REG" --data-root "$DATA" --release-pins "$RELEASE_PINS"
 # The twin's authored document is the derangement, not a curation, so it is released directly.
 run "$PY" -B -m speech_aware_evidence_acquisition.core.driver.cli prepare-semantic-knowledge \

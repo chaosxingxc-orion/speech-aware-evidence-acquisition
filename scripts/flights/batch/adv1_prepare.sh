@@ -12,7 +12,13 @@
 # What it does, in order:
 #   A  S3-3 render: one outputs COPY per sample index over the R01C roster
 #   B  S3-3 score:  each copy scored ONCE through --scorer-id (scorer contacts only, no model)
-#   C  S3-3 pairs:  per_row.json + pairs.json, best/worst per disagreeing row
+#   C  S3-3 pairs:  per_row.json + pairs.json (pairs_schema saea-stage3-rollout-pairs-v2),
+#      best/worst per disagreeing row PLUS the S3-4s trajectory block rebuilt from the
+#      sealed episode receipt and the sealed <run>.trace.jsonl -- ids, labels, counts and
+#      hashes only. Set ADV1_GOLD_INTENTS to a {sample_id: scenario_action} JSON map over
+#      the CONSTRUCTION roster to also answer "was the gold intent among the perception
+#      candidates" (it enters pairs.json as a boolean and a count, never as a label);
+#      without it that question is reported unanswered rather than guessed.
 #   D  the disagreeing-row CONSTRUCTION roster receipt (pure selection of R01C, zero contacts):
 #      construction-advantage-text is a construction-visible arm, so
 #      contracts.gate_exposure._require_construction_role_for_visible_targets refuses the touch
@@ -35,6 +41,8 @@ ROLL1_RUN=${ROLL1_RUN:-SAEA-SLURP-STAGE3-ROLLOUT-R01-V1}
 ROLL1_ATTEMPT=${ROLL1_ATTEMPT:-attempt-slurp-native-stage3-rollout-r01-generation-v1}
 SCORE_RUN=${SCORE_RUN:-SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1}
 ADV1_SCORER=${ADV1_SCORER:-slurp-slu-official-projected-v3-train}
+# S3-4s: optional, model-free, read only inside the CLI (see the header).
+ADV1_GOLD_INTENTS=${ADV1_GOLD_INTENTS:-}
 
 ROSTER=docs/receipts/rosters/slurp-stage3-construction-r01c.json
 ROSTER_OUT=docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-v1.json
@@ -54,10 +62,12 @@ echo "   rollout $ROLL1_RUN / $ROLL1_ATTEMPT  scorer $ADV1_SCORER  analysis $ANA
 
 WRITE=""
 [ "$DRY" = "0" ] && WRITE="--write"
+GOLD=""
+[ -n "$ADV1_GOLD_INTENTS" ] && GOLD="--gold-intents $ADV1_GOLD_INTENTS"
 
 # ---------------------------------------------------------------- A/B/C: S3-3 on the seal
 for STAGE in render score pairs; do
-  CMD="$PY -B $SCORE_CLI --run $ROLL1_RUN --attempt $ROLL1_ATTEMPT --roster $ROSTER --analysis-root $ANALYSIS_ROOT --scorer-id $ADV1_SCORER --repo-root $REPO --data-root $DATA --stage $STAGE"
+  CMD="$PY -B $SCORE_CLI --run $ROLL1_RUN --attempt $ROLL1_ATTEMPT --roster $ROSTER --analysis-root $ANALYSIS_ROOT --scorer-id $ADV1_SCORER --repo-root $REPO --data-root $DATA --stage $STAGE $GOLD"
   if [ "$DRY" = "1" ] && [ ! -f "$PAIRS" ]; then
     echo "$STAGE  (dry) would run: $CMD"
     continue

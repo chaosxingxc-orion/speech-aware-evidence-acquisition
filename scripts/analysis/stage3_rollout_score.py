@@ -34,6 +34,42 @@ plus the sealed delivered scores and the roster's stratum), ``all`` (the
 three in sequence). Every stage is idempotent: a copy or score file that
 already exists on disk is read back, never rewritten.
 
+S3-4s (owner decision 106, 2026-09-23): the whole TRAJECTORY
+--------------------------------------------------------------
+"Roll out as much information as possible; we are doing SYSTEM-level
+optimisation." ``pairs.json`` therefore carries, per DISAGREEING row, a
+``trajectory`` block rebuilt from the SEALED episode receipt (cell ROLL-1 is
+not re-flown): the Perception candidate ids in order and whether the
+construction gold intent is among them, the best and worst Solver sample
+indices with their answer hashes, the delivered path after the commit (the
+Reviewer verdict labels and primitive ids per iteration, the Planner action
+labels, the revision count, the delivery kind and whether the delivered
+answer scores below the best sample), and the per-node completion tokens and
+truncation flags. IDS, LABELS, COUNTS AND HASHES ONLY -- exactly the
+discipline the rest of this CLI keeps; no statement, transcript, gold label
+or model output text is ever written to ``pairs.json``.
+
+Two of those facts do not live in the episode receipt and are read from the
+sealed attempt's own ``<run_id>.trace.jsonl`` instead, joined by request id:
+per-contact ``usage.completion_tokens`` (``MODEL_RESPONSE``) and per-contact
+``finish_reason`` (``MODEL_WIRE_RESPONSE``), and, for the Perception visit
+ONLY, the response text -- opened here to read back the ordered candidate
+``intent_id``s and discarded, exactly as this CLI already opens sealed
+Solver answers to render and score them. One more fact does not live in
+either: the construction GOLD intent. It is read, when available, from the
+construction roster's own annotation or from an explicit ``--gold-intents``
+map, and it enters ``pairs.json`` only as the boolean
+``gold_intent_in_candidates`` and a count.
+
+Whatever a given seal does not carry is reported ABSENT with a named reason
+rather than guessed: cell ROLL-1's own ``native_episode`` fragment arms
+neither ``reviewer_verdict`` (item E37) nor ``role_context``, so its receipt
+carries no ``reviewer_verdicts`` key -- the Reviewer verdict labels are then
+re-derived from the sealed Reviewer response text with the registered
+closed-vocabulary parser (``rails.review_primitives.parse_review_primitive``),
+which is the same reading the armed path would have sealed, and the block
+says which source it used.
+
 Run in WSL2::
 
     PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<repo>/src python \\
@@ -60,6 +96,16 @@ if str(REPO_ROOT / "src") not in sys.path:
     sys.path.insert(0, str(REPO_ROOT / "src"))
 
 SCHEMA = "saea-stage3-rollout-score-v1"
+#: S3-4s: the ``pairs.json`` payload version. Bumped because the file gained
+#: a per-row ``trajectory`` block and a loader-shaped ``rows`` array; the
+#: pre-existing ``pairs`` array, its fields and its ordering are unchanged,
+#: so a reader written against v1 keeps reading v1's fields.
+PAIRS_SCHEMA = "saea-stage3-rollout-pairs-v2"
+#: The episode STAGE names (``reproduction.ojw.native_episode``) whose
+#: per-node tokens and truncation this block reports. The reviewer PHASE is
+#: spelled ``reviewer`` and its episode STAGE is spelled ``review``; both are
+#: written out so a reader never has to know that.
+TRAJECTORY_STAGES = ("perception", "solver", "review", "planner", "acquisition")
 DEFAULT_SCORER_ID = "slurp-slu-official-projected-v3-train"
 COUNT_FIELDS = (
     "slu_f1_word_tp", "slu_f1_word_fp", "slu_f1_word_fn",
@@ -193,8 +239,404 @@ def correctness_fields(row: Mapping[str, Any]) -> dict[str, Any]:
 
 
 # ---------------------------------------------------------------------------
+# S3-4s: the sealed trajectory, rebuilt model-free
+# ---------------------------------------------------------------------------
+
+
+def load_gold_intents(
+    roster_path: Path, gold_path: Path | None
+) -> tuple[dict[str, str], str]:
+    """``({sample_id: "<scenario>_<action>"}, source)``.
+
+    The construction gold intent is legal to READ here (construction rows,
+    owner decision 82) and illegal to WRITE anywhere: it leaves this
+    function only as the boolean ``gold_intent_in_candidates`` and a count.
+
+    Two sources, in order. (1) An explicit ``--gold-intents`` JSON map --
+    the coordinator's own model-free export over the construction roster.
+    (2) The roster receipt's own per-item annotation, when it carries one
+    (``gold_intent``/``scenario_action``/``intent_id``). The R01/R01C
+    receipts as committed carry ``stratum`` (the SCENARIO) and no
+    scenario_action, so without (1) this returns an empty map and the block
+    says ``"unavailable"`` rather than silently answering the question with
+    a scenario-level match that is not the question.
+    """
+
+    if gold_path is not None:
+        document = json.loads(gold_path.read_text(encoding="utf-8"))
+        if not isinstance(document, Mapping):
+            raise Stage3ScoreError("--gold-intents must be a JSON object")
+        return {str(k): str(v) for k, v in document.items()}, "gold-intents-file"
+    document = json.loads(roster_path.read_text(encoding="utf-8"))
+    annotated: dict[str, str] = {}
+    for item in document.get("items", ()):
+        for field in ("gold_intent", "scenario_action", "intent_id"):
+            value = item.get(field)
+            if isinstance(value, str) and value:
+                annotated[str(item["sample_id"])] = value
+                break
+    return annotated, ("roster-annotation" if annotated else "unavailable")
+
+
+def scan_trace(path: Path) -> dict[str, dict[str, Any]]:
+    """``{request_id: {completion_tokens, finish_reason, text}}`` from one
+    sealed ``<run_id>.trace.jsonl``.
+
+    Streamed, like ``analysis.finite_completion_exposure_scan.scan_trace``,
+    and reduced to the three facts the trajectory needs. ``text`` is kept in
+    memory only so the Perception visit's ordered candidate ids can be read
+    back; it is never printed and never written. The ``MODEL_WIRE_RESPONSE``
+    channel's base64 body is deliberately not decoded or retained.
+    """
+
+    facts: dict[str, dict[str, Any]] = {}
+    with path.open(encoding="utf-8", errors="replace") as stream:
+        for line in stream:
+            if not line.strip():
+                continue
+            try:
+                record = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if not isinstance(record, Mapping):
+                continue
+            channel = record.get("channel")
+            record_id = str(record.get("record_id", ""))
+            payload = record.get("payload")
+            payload = payload if isinstance(payload, Mapping) else {}
+            if channel == "MODEL_RESPONSE" and record_id.endswith("/response"):
+                request_id = record_id[: -len("/response")]
+                usage = payload.get("usage")
+                usage = usage if isinstance(usage, Mapping) else {}
+                tokens = usage.get("completion_tokens")
+                entry = facts.setdefault(request_id, {})
+                entry["completion_tokens"] = tokens if isinstance(tokens, int) else None
+                body = payload.get("text")
+                entry["text"] = body if isinstance(body, str) else None
+            elif channel == "MODEL_WIRE_RESPONSE" and record_id.endswith("/wire-response"):
+                request_id = record_id[: -len("/wire-response")]
+                reason = payload.get("finish_reason")
+                facts.setdefault(request_id, {})["finish_reason"] = (
+                    reason if isinstance(reason, str) else None
+                )
+    return facts
+
+
+def _contacts_of(visit: Mapping[str, Any]) -> list[Mapping[str, Any]]:
+    receipt = visit.get("execution_receipt")
+    if not isinstance(receipt, Mapping):
+        return []
+    contacts = receipt.get("contacts")
+    if not isinstance(contacts, list):
+        return []
+    return [contact for contact in contacts if isinstance(contact, Mapping)]
+
+
+def _candidate_intent_ids(response_text: object) -> tuple[list[str], int, str]:
+    """``(ordered distinct intent ids, raw count, reading)``.
+
+    The Perception phase answers under the registered
+    ``slurp-intent-hypotheses-v1`` response format, so its response IS the
+    JSON candidate document. The ids are reported in first-occurrence
+    distinct order -- the same ordering rule the bounded projection policy
+    applies (``bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1``)
+    -- and the raw count is reported beside it, so a duplicate a projection
+    would have folded is visible rather than invented.
+    """
+
+    if not isinstance(response_text, str) or not response_text.strip():
+        return [], 0, "absent"
+    try:
+        document = json.loads(response_text)
+    except json.JSONDecodeError:
+        return [], 0, "unparseable"
+    rows = document.get("candidates") if isinstance(document, Mapping) else None
+    if not isinstance(rows, list):
+        return [], 0, "no-candidates-field"
+    ordered: list[str] = []
+    raw = 0
+    for row in rows:
+        if not isinstance(row, Mapping):
+            continue
+        intent_id = row.get("intent_id")
+        if not isinstance(intent_id, str) or not intent_id:
+            continue
+        raw += 1
+        if intent_id not in ordered:
+            ordered.append(intent_id)
+    return ordered, raw, "sealed-perception-response"
+
+
+def _reviewer_verdicts(
+    receipt: Mapping[str, Any], visits: Sequence[Mapping[str, Any]],
+    trace: Mapping[str, Mapping[str, Any]],
+) -> tuple[list[dict[str, Any]], str]:
+    """The Reviewer's verdict LABELS per review visit, and where they came
+    from.
+
+    An E37-armed row seals them itself (``reviewer_verdicts``). An unarmed
+    row -- which is every row of cell ROLL-1 -- does not, so the same
+    closed-vocabulary parser the armed path uses is applied here to the
+    sealed Reviewer response text. Only the token and the disposition are
+    kept; the free-text rationale is never parsed, printed or stored.
+    """
+
+    sealed = receipt.get("reviewer_verdicts")
+    if isinstance(sealed, list) and sealed:
+        return (
+            [
+                {
+                    "visit": mark.get("visit"),
+                    "token": mark.get("token"),
+                    "disposition": mark.get("disposition"),
+                }
+                for mark in sealed if isinstance(mark, Mapping)
+            ],
+            "sealed-reviewer-verdicts",
+        )
+    from speech_aware_evidence_acquisition.rails.review_primitives import (  # noqa: PLC0415
+        REVIEW_VERDICT_ILLEGAL,
+        parse_review_primitive,
+    )
+
+    marks: list[dict[str, Any]] = []
+    visit_number = 0
+    for visit in visits:
+        if visit.get("stage") != "review":
+            continue
+        contacts = _contacts_of(visit)
+        body = None
+        if contacts:
+            body = trace.get(str(contacts[-1].get("request_id")), {}).get("text")
+        if not isinstance(body, str):
+            marks.append({"visit": visit_number, "token": None, "disposition": "unavailable"})
+        else:
+            token, _head, _rest = parse_review_primitive(body)
+            marks.append(
+                {
+                    "visit": visit_number,
+                    "token": None if token == REVIEW_VERDICT_ILLEGAL else token,
+                    "disposition": (
+                        "review_verdict_illegal"
+                        if token == REVIEW_VERDICT_ILLEGAL else "legal"
+                    ),
+                }
+            )
+        visit_number += 1
+    return marks, ("derived-from-sealed-response" if marks else "no-review-visit")
+
+
+def _delivery_kind(receipt: Mapping[str, Any]) -> str:
+    """The delivery kind, through the SAME validator the seal used."""
+
+    try:
+        from speech_aware_evidence_acquisition.rails.native_episode_receipt import (  # noqa: PLC0415
+            validate_native_episode_delivery_receipt,
+        )
+
+        return validate_native_episode_delivery_receipt(receipt).kind
+    except Exception:  # noqa: BLE001 -- a post-seal READER never stops a read
+        disposition = receipt.get("terminal_disposition")
+        if isinstance(disposition, Mapping):
+            reason = disposition.get("reason")
+            if isinstance(reason, str) and reason:
+                return f"unclassified:{reason}"
+        if receipt.get("accepted_solver_receipt") is not None:
+            return "accepted"
+        return "unclassified"
+
+
+def build_trajectory(
+    row: Mapping[str, Any], *, best_index: int, worst_index: int,
+    rendered: Mapping[int, str], trace: Mapping[str, Mapping[str, Any]],
+    gold_intent: str | None, delivered_f1: float | None, best_f1: float,
+) -> dict[str, Any]:
+    """One disagreeing row's whole trajectory, as ids, labels, counts and
+    hashes. Never raises on a seal that carries less than this wants: the
+    missing part is reported absent with a named reason."""
+
+    trajectory: dict[str, Any] = {
+        "schema": "saea-stage3-rollout-trajectory-v1",
+        "trace_joined": bool(trace),
+    }
+
+    # -- the two compared samples ----------------------------------------
+    group = row.get("solver_group")
+    samples = group.get("samples") if isinstance(group, Mapping) else None
+    samples = samples if isinstance(samples, list) else []
+    by_index = {
+        int(record["sample_index"]): record
+        for record in samples
+        if isinstance(record, Mapping) and isinstance(record.get("sample_index"), int)
+    }
+
+    def _sample_block(index: int) -> dict[str, Any]:
+        record = by_index.get(index)
+        contacts = record.get("contacts") if isinstance(record, Mapping) else None
+        contacts = [c for c in contacts if isinstance(c, Mapping)] if isinstance(contacts, list) else []
+        last = contacts[-1] if contacts else {}
+        request_id = str(last.get("request_id") or "")
+        return {
+            "sample_index": index,
+            "parse_status": record.get("parse_status") if isinstance(record, Mapping) else None,
+            # The hash of the CANONICAL RENDERED answer -- the exact bytes
+            # the ADV-1 instruction will carry for this sample.
+            "answer_sha256": hashlib.sha256(
+                rendered.get(index, EMPTY_ANSWER).encode("utf-8")
+            ).hexdigest(),
+            # The sealed raw contact's own custody, when the seal carries it.
+            "contact_response_text_sha256": last.get("response_text_sha256"),
+            "completion_tokens": trace.get(request_id, {}).get("completion_tokens"),
+        }
+
+    trajectory["best"] = _sample_block(best_index)
+    trajectory["worst"] = _sample_block(worst_index)
+
+    receipt = row.get("native_episode_receipt")
+    if not isinstance(receipt, Mapping):
+        trajectory["available"] = False
+        trajectory["reason"] = "the sealed row carries no native_episode_receipt"
+        return trajectory
+    trajectory["available"] = True
+
+    visits = receipt.get("role_visits")
+    visits = [v for v in visits if isinstance(v, Mapping)] if isinstance(visits, list) else []
+
+    # -- Perception candidates -------------------------------------------
+    perception_visits = [v for v in visits if v.get("stage") == "perception"]
+    candidate_ids: list[str] = []
+    raw_count = 0
+    reading = "no-perception-visit"
+    if perception_visits:
+        contacts = _contacts_of(perception_visits[-1])
+        body = trace.get(str(contacts[-1].get("request_id")), {}).get("text") if contacts else None
+        candidate_ids, raw_count, reading = _candidate_intent_ids(body)
+    trajectory["perception"] = {
+        "candidate_intent_ids": candidate_ids,
+        "candidate_count": len(candidate_ids),
+        "raw_candidate_count": raw_count,
+        "reading": reading,
+        "gold_intent_known": gold_intent is not None,
+        "gold_intent_in_candidates": (
+            None if gold_intent is None else gold_intent in candidate_ids
+        ),
+        "gold_intent_rank": (
+            None if gold_intent is None or gold_intent not in candidate_ids
+            else candidate_ids.index(gold_intent)
+        ),
+    }
+
+    # -- the delivered path ----------------------------------------------
+    marks, verdict_source = _reviewer_verdicts(receipt, visits, trace)
+    routes = receipt.get("planner_routes")
+    routes = [r for r in routes if isinstance(r, Mapping)] if isinstance(routes, list) else []
+    revision_counts = [
+        r["revision_count"] for r in routes
+        if isinstance(r.get("revision_count"), int) and not isinstance(r["revision_count"], bool)
+    ]
+    trajectory["delivered"] = {
+        "kind": _delivery_kind(receipt),
+        "reviewer_verdicts": marks,
+        "reviewer_verdict_source": verdict_source,
+        "planner_actions": [
+            {
+                "action": route.get("action"),
+                "legal": route.get("legal", True),
+                "disposition": route.get("disposition"),
+                "revision_count": route.get("revision_count"),
+            }
+            for route in routes
+        ],
+        "revision_count": max(revision_counts) if revision_counts else 0,
+        "delivered_slu_f1_f1": delivered_f1,
+        "delivered_below_best": (
+            None if delivered_f1 is None else bool(delivered_f1 < best_f1)
+        ),
+    }
+
+    # -- per-node tokens and truncation ----------------------------------
+    nodes: list[dict[str, Any]] = []
+    tokens_by_stage: dict[str, int] = {}
+    known_by_stage: dict[str, int] = {}
+    unknown_by_stage: dict[str, int] = {}
+    truncated_stages: list[str] = []
+    for index, visit in enumerate(visits):
+        stage = str(visit.get("stage") or "unknown")
+        contacts = _contacts_of(visit)
+        tokens = [
+            trace.get(str(contact.get("request_id")), {}).get("completion_tokens")
+            for contact in contacts
+        ]
+        finish_reasons = [
+            trace.get(str(contact.get("request_id")), {}).get("finish_reason")
+            for contact in contacts
+        ]
+        truncated = bool(visit.get("truncated")) or any(
+            reason == "length" for reason in finish_reasons
+        )
+        if truncated:
+            truncated_stages.append(stage)
+        known = [value for value in tokens if isinstance(value, int)]
+        tokens_by_stage[stage] = tokens_by_stage.get(stage, 0) + sum(known)
+        known_by_stage[stage] = known_by_stage.get(stage, 0) + len(known)
+        unknown_by_stage[stage] = unknown_by_stage.get(stage, 0) + (len(tokens) - len(known))
+        nodes.append({
+            "role_visit_index": index,
+            "stage": stage,
+            "role_id": visit.get("role_id"),
+            "contacts": len(contacts),
+            "completion_tokens": tokens,
+            "finish_reasons": finish_reasons,
+            "truncated": truncated,
+        })
+    truncation_events = receipt.get("truncation_events")
+    trajectory["nodes"] = nodes
+    # Only a stage whose contacts actually reported a token count appears:
+    # a stage that reported none would otherwise read as a genuine zero.
+    trajectory["completion_tokens_by_stage"] = {
+        stage: tokens_by_stage[stage] for stage in TRAJECTORY_STAGES
+        if known_by_stage.get(stage)
+    }
+    trajectory["unknown_completion_tokens_by_stage"] = {
+        stage: count for stage, count in sorted(unknown_by_stage.items()) if count
+    }
+    trajectory["truncated_stages"] = sorted(set(truncated_stages))
+    trajectory["sealed_truncation_event_count"] = (
+        truncation_events.get("count") if isinstance(truncation_events, Mapping) else 0
+    )
+    return trajectory
+
+
+# ---------------------------------------------------------------------------
 # render
 # ---------------------------------------------------------------------------
+
+
+def load_sealed_rows(
+    directory: Path, run_id: str, roster: Mapping[str, str], samples: int
+) -> dict[str, dict[str, Any]]:
+    """``{sample_id: {"row": <sealed row>, "rendered": {index: text}}}``.
+
+    Re-reads the sealed ``outputs.jsonl`` -- the same file :func:`render`
+    reads, with the same canonical rendering -- so the ``pairs`` stage can
+    rebuild a trajectory on its own, without a prior ``render`` in the same
+    process. Zero contacts of any kind.
+    """
+
+    out: dict[str, dict[str, Any]] = {}
+    for row in iter_jsonl(directory / f"{run_id}.outputs.jsonl"):
+        sample_id = str(row["sample_id"])
+        if sample_id not in roster:
+            continue
+        group = row.get("solver_group")
+        records = group["samples"] if isinstance(group, Mapping) else []
+        rendered = {}
+        for record in records:
+            index = int(record["sample_index"])
+            payload = record["parsed_answer"] if record["parse_status"] == "ok" else None
+            rendered[index] = render_answer(payload)
+        out[sample_id] = {"row": row, "rendered": rendered}
+    return out
 
 
 def detect_samples(directory: Path, run_id: str) -> int:
@@ -337,7 +779,15 @@ def pairs(
     roster_relpath: str, roster_sha256: str, roster_split_identity_hash: str,
     scored: Mapping[str, Any], delivered: Mapping[str, Mapping[str, Any]], samples: int,
     out_dir: Path, stage3_algorithm: Mapping[str, Any] | None = None,
+    sealed_rows: Mapping[str, Mapping[str, Any]] | None = None,
+    trace: Mapping[str, Mapping[str, Any]] | None = None,
+    gold_intents: Mapping[str, str] | None = None,
+    gold_source: str = "unavailable",
+    trace_relpath: str | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
+    sealed_rows = sealed_rows or {}
+    trace = trace or {}
+    gold_intents = gold_intents or {}
     ids = sorted(roster)
     rows: list[dict[str, Any]] = []
     for sample_id in ids:
@@ -377,6 +827,52 @@ def pairs(
             ),
         }
 
+    # -- S3-4s: one trajectory block per DISAGREEING row -----------------
+    trajectories: dict[str, dict[str, Any]] = {}
+    for row in disagreeing:
+        sample_id = row["sample_id"]
+        sealed = sealed_rows.get(sample_id) or {}
+        trajectories[sample_id] = build_trajectory(
+            sealed.get("row") or {},
+            best_index=row["best_index"],
+            worst_index=row["worst_index"],
+            rendered=sealed.get("rendered") or {},
+            trace=trace,
+            gold_intent=gold_intents.get(sample_id),
+            delivered_f1=(
+                None if row["delivered"] is None else row["delivered"]["slu_f1_f1"]
+            ),
+            best_f1=row["best_slu_f1_f1"],
+        )
+    trajectory_summary = {
+        "rows": len(trajectories),
+        "with_episode_receipt": sum(
+            1 for block in trajectories.values() if block.get("available")
+        ),
+        "with_candidate_list": sum(
+            1 for block in trajectories.values()
+            if block.get("perception", {}).get("candidate_count")
+        ),
+        "gold_intent_source": gold_source,
+        "gold_intent_known_rows": sum(
+            1 for block in trajectories.values()
+            if block.get("perception", {}).get("gold_intent_known")
+        ),
+        "gold_intent_in_candidates_rows": sum(
+            1 for block in trajectories.values()
+            if block.get("perception", {}).get("gold_intent_in_candidates")
+        ),
+        "delivered_below_best_rows": sum(
+            1 for block in trajectories.values()
+            if block.get("delivered", {}).get("delivered_below_best")
+        ),
+        "rows_with_a_truncated_node": sum(
+            1 for block in trajectories.values() if block.get("truncated_stages")
+        ),
+        "trace": trace_relpath,
+        "trace_requests": len(trace),
+    }
+
     header = {
         "schema": SCHEMA, "stage": "pairs", "run_id": run_id, "attempt_id": attempt_id,
         "scorer_id": scorer_id, "samples": samples,
@@ -393,15 +889,43 @@ def pairs(
     per_row_payload = {**header, "rows": rows}
     pairs_payload = {
         **header,
+        # S3-4s: the payload version, beside (never in place of) ``schema``.
+        "pairs_schema": PAIRS_SCHEMA,
         "count": len(disagreeing),
         "pairs": [
             {
                 "sample_id": row["sample_id"], "stratum": row["stratum"],
                 "best_index": row["best_index"], "worst_index": row["worst_index"],
                 "disagreement": row["disagreement"],
+                "trajectory": trajectories[row["sample_id"]],
             }
             for row in disagreeing
         ],
+        # The loader-shaped view ``rails.stage3_advantage.load_advantage_pairs``
+        # reads: EXACTLY ``{sample_id, best, worst}`` per row, best/worst
+        # carrying the sample index and the rendered answer's own sha256.
+        # Written here so the ADV-1 material loader can bind this file
+        # directly instead of a hand-made copy of it; the ``pairs`` array
+        # above is unchanged and stays the file's own record.
+        "rows": [
+            {
+                "sample_id": row["sample_id"],
+                "best": {
+                    "sample_index": row["best_index"],
+                    "response_text_sha256": trajectories[row["sample_id"]]["best"][
+                        "answer_sha256"
+                    ],
+                },
+                "worst": {
+                    "sample_index": row["worst_index"],
+                    "response_text_sha256": trajectories[row["sample_id"]]["worst"][
+                        "answer_sha256"
+                    ],
+                },
+            }
+            for row in disagreeing
+        ],
+        "trajectory_summary": trajectory_summary,
         "coverage_by_stratum": coverage,
     }
     write_json(out_dir / "per_row.json", per_row_payload)
@@ -427,6 +951,25 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     parser.add_argument("--repo-root", default=str(REPO_ROOT))
     parser.add_argument("--data-root", default=None, help="defaults to data.lock.data_root()")
+    parser.add_argument(
+        "--trace", default=None,
+        help=(
+            "the sealed attempt's own <run_id>.trace.jsonl, joined by request id for "
+            "per-contact completion tokens, finish reasons and the Perception "
+            "response (S3-4s). The default is that file inside the attempt "
+            "directory when it exists; 'none' disables the join and the trajectory "
+            "block says so."
+        ),
+    )
+    parser.add_argument(
+        "--gold-intents", default=None,
+        help=(
+            "optional JSON object {sample_id: '<scenario>_<action>'} over the "
+            "CONSTRUCTION roster. Read only to answer whether the gold intent was "
+            "among the Perception candidates; it enters pairs.json as a boolean and "
+            "a count, never as a label."
+        ),
+    )
     parser.add_argument(
         "--stage3-algorithm", default=None,
         help=(
@@ -489,6 +1032,25 @@ def main(argv: Sequence[str] | None = None) -> int:
             }
 
     if needs_pairs:
+        # S3-4s: the trajectory inputs. All three are OPTIONAL and all three
+        # are reported absent rather than guessed.
+        trace_facts: dict[str, dict[str, Any]] = {}
+        trace_relpath = None
+        if args.trace != "none":
+            trace_path = (
+                Path(args.trace) if args.trace
+                else directory / f"{args.run}.trace.jsonl"
+            )
+            if trace_path.is_file():
+                trace_facts = scan_trace(trace_path)
+                trace_relpath = str(trace_path)
+            elif args.trace:
+                raise Stage3ScoreError(f"no sealed trace at {trace_path}")
+        gold_intents, gold_source = load_gold_intents(
+            repo_root / args.roster,
+            Path(args.gold_intents) if args.gold_intents else None,
+        )
+        sealed_rows = load_sealed_rows(directory, args.run, roster, samples)
         try:
             delivered = sealed_per_sample(directory, args.run, args.scorer_id)
         except Stage3ScoreError as error:
@@ -503,12 +1065,19 @@ def main(argv: Sequence[str] | None = None) -> int:
             args.run, args.attempt, args.scorer_id, roster, args.roster, roster_sha256,
             roster_split_identity_hash, scored, delivered, samples, out_dir,
             stage3_algorithm,
+            sealed_rows=sealed_rows,
+            trace=trace_facts,
+            gold_intents=gold_intents,
+            gold_source=gold_source,
+            trace_relpath=trace_relpath,
         )
         print(json.dumps(
             {
                 "stage": "pairs",
+                "pairs_schema": pairs_payload["pairs_schema"],
                 "pair_count": pairs_payload["count"],
                 "stage3_algorithm": pairs_payload.get("stage3_algorithm"),
+                "trajectory_summary": pairs_payload["trajectory_summary"],
                 "coverage_by_stratum": pairs_payload["coverage_by_stratum"],
             },
             indent=2, sort_keys=True,

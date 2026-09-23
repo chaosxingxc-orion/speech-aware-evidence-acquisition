@@ -1524,6 +1524,17 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     # ``material_for_phase`` at flight time (`rails.stage3_advantage`
     # module docstring), never by this program.
     "phase-stage3-advantage-v1": "phase-stage3-advantage-v1.json",
+    # Stage-3 S3-4s (owner decision 106, 2026-09-23): the SYSTEM-level
+    # advantage program. Identical in shape to v1 -- one phase
+    # ("advantage"), one contact, no knowledge -- and different in exactly
+    # one field: it binds the ``stage3-advantage-statement-v2`` response
+    # format (one to three NODE/DELTA-KIND/TARGET/STATEMENT blocks)
+    # instead of v1's single three-line statement. A program and its
+    # fragment must agree on a phase output contract
+    # (``rails.phase_material``), so the v2 contract needs its own program
+    # rather than a mutation of v1's -- and v1 stays reachable, byte for
+    # byte, for anything already registered against it.
+    "phase-stage3-advantage-v2": "phase-stage3-advantage-v2.json",
     "phase-training-feedback-proposal-v1": "phase-training-feedback-proposal-v1.json",
     "phase-intent-hypotheses-only-v1": "phase-intent-hypotheses-only-v1.json",
     "phase-direct-then-slots-v1": "phase-direct-then-slots-v1.json",
@@ -1730,6 +1741,11 @@ def register_phase_programs_v1() -> None:
         AGENT_CONTROLLERS.register(
             "phase-stage3-advantage-v1",
             default_controller_factory(default_phase_program("phase-stage3-advantage-v1")),
+        )
+    if "phase-stage3-advantage-v2" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-stage3-advantage-v2",
+            default_controller_factory(default_phase_program("phase-stage3-advantage-v2")),
         )
     if "phase-training-feedback-proposal-v1" not in registered:
         AGENT_CONTROLLERS.register(
@@ -2064,6 +2080,20 @@ def register_response_formats_v1() -> None:
         RESPONSE_FORMATS.register(
             "stage3-advantage-statement-v1",
             stage3_advantage_response_format_v1,
+        )
+    # Stage-3 S3-4s (owner decision 106, 2026-09-23): the SYSTEM-level
+    # contact's structured-output contract -- one to three blocks, each
+    # NODE / DELTA-KIND / TARGET / STATEMENT. Its parser of record is
+    # ``rails.stage3_advantage.parse_advantage_statements_v2``, which
+    # reads BOTH this JSON shape and the literal four-line form, so the
+    # schema and the parser are one contract. Registering the id changes
+    # no phase; ``configs/policy/phase-stage3-advantage-v2.json`` binds it.
+    if "stage3-advantage-statement-v2" not in registered:
+        from .stage3_advantage import stage3_advantage_response_format_v2
+
+        RESPONSE_FORMATS.register(
+            "stage3-advantage-statement-v2",
+            stage3_advantage_response_format_v2,
         )
 
 

@@ -22,6 +22,26 @@ target, or would ANY delta of the store move the number by the same amount.
 
 Refuses (fail-closed) a document with fewer than two rows: a derangement of
 one element does not exist.
+
+S3-4s (owner decision 106, 2026-09-23)
+--------------------------------------
+A v2 (``saea-stage3-authored-deltas-v2``) document carries ``node_target``
+per row, and the two route shapes need two different form controls:
+
+* CANDIDATE-BOUND nodes (solver / reviewer / planner) keep the v1 twin: the
+  facet attachment is deranged, so the question stays "does it matter that a
+  delta is attached to the RIGHT candidate intent".
+* The UNCONDITIONAL node (perception) has no facet binding at flight time --
+  every row of the split receives the same capped list -- so deranging its
+  facets would change nothing that is read. Its form control is a
+  derangement of the TARGET field instead (``task_target``'s third field,
+  and the ``associated_facet_ids`` entry that mirrors it), so the twin says
+  the same things ABOUT THE WRONG TARGETS.
+
+Both are PERMUTATIONS within their own group, so the twin's token count is
+identical to the parent's by construction: no statement text is edited and
+the multiset of targets is preserved. :func:`authored_token_count` states
+that invariant and ``tests/unit/test_stage3_delta_twin_v2.py`` proves it.
 """
 
 from __future__ import annotations
@@ -42,6 +62,13 @@ from speech_aware_evidence_acquisition.rails.hashing import (  # noqa: E402
 )
 
 AUTHORED_SCHEMA = "saea-stage3-authored-deltas-v1"
+AUTHORED_SCHEMA_V2 = "saea-stage3-authored-deltas-v2"
+#: The nodes whose route is candidate-bound (facet derangement) and the one
+#: whose route is unconditional (TARGET derangement). Restated here rather
+#: than imported: this CLI is a pure permutation over an authored document
+#: and keeps no dependency on the supply side.
+CANDIDATE_BOUND_NODES = ("solver", "reviewer", "planner")
+UNCONDITIONAL_NODES = ("perception",)
 
 
 class Stage3DeltaTwinError(RuntimeError):
@@ -79,31 +106,187 @@ def derange_facet_assignment(
     return twinned
 
 
+def _attachment_key(row: Mapping[str, object], group_name: str) -> str:
+    """What the twin MOVES for this group: the facet attachment for a
+    candidate-bound row, the TARGET field for an unconditional one."""
+
+    if group_name == "candidate-bound":
+        return "\u0000".join(sorted(str(item) for item in row["associated_facet_ids"]))
+    return _target_field(row["task_target"])
+
+
+def _target_field(task_target: str) -> str:
+    """The TARGET field of a v2 ``NODE:DELTA-KIND:TARGET`` row."""
+
+    parts = str(task_target).split(":", 2)
+    if len(parts) != 3 or not parts[2]:
+        raise Stage3DeltaTwinError(
+            "a v2 row's task_target must be 'NODE:DELTA-KIND:TARGET'"
+        )
+    return parts[2]
+
+
+def permute_target_fields(
+    rows: Sequence[Mapping[str, object]], *, seed: int
+) -> list[dict[str, object]]:
+    """Reassign every row's TARGET from a DIFFERENT row's, by a seeded
+    Sattolo derangement over the row order.
+
+    Rewrites ``task_target``'s third field and the ``associated_facet_ids``
+    entry that mirrors it, and touches nothing else: ``content``,
+    ``node_target``, ``prior_score``, ``source_sample_ids`` and
+    ``provenance_refs`` are copied byte-identical, so the twin says the same
+    sentences about the wrong targets -- and carries the same token count.
+    """
+
+    order = _sattolo_cycle(len(rows), seed=seed)
+    twinned: list[dict[str, object]] = []
+    for index, row in enumerate(rows):
+        donor_target = _target_field(rows[order[index]]["task_target"])
+        node, kind, _own = str(row["task_target"]).split(":", 2)
+        new_row: MutableMapping[str, object] = dict(row)
+        new_row["task_target"] = f"{node}:{kind}:{donor_target}"
+        new_row["associated_facet_ids"] = [donor_target]
+        twinned.append(dict(new_row))
+    return twinned
+
+
+def count_value_fixed_points(
+    rows: Sequence[Mapping[str, object]], twinned: Sequence[Mapping[str, object]]
+) -> int:
+    """How many rows kept their own attachment VALUE (not their own slot)."""
+
+    return sum(
+        1
+        for original, twin in zip(rows, twinned)
+        if set(original["associated_facet_ids"]) == set(twin["associated_facet_ids"])
+    )
+
+
+def authored_token_count(document: Mapping[str, object]) -> int:
+    """The document's total whitespace-token count over every field a supply
+    packet can render -- ``content``, ``task_target`` and every
+    ``associated_facet_ids`` entry.
+
+    The S3-4s form-control invariant: a twin must differ from its parent in
+    WHAT IS ATTACHED TO WHAT and in nothing else, so this number must be
+    equal on both sides. Both twin operations are permutations within a
+    group, so equality holds by construction; the test asserts it rather
+    than trusting the construction.
+    """
+
+    total = 0
+    for row in document.get("rows", ()):  # type: ignore[union-attr]
+        total += len(str(row["content"]).split())
+        total += len(str(row["task_target"]).split())
+        for facet_id in row["associated_facet_ids"]:
+            total += len(str(facet_id).split())
+    return total
+
+
+def derange_v2_rows(
+    rows: Sequence[Mapping[str, object]], *, seed: int
+) -> list[dict[str, object]]:
+    """S3-4s: derange the candidate-bound nodes' FACETS and the
+    unconditional node's TARGETS, each within its own group, and put the
+    rows back in their original order.
+
+    A group of fewer than two rows has no derangement, so it is refused
+    rather than silently left as a fixed point -- a twin with fixed points
+    is not a form control.
+    """
+
+    groups: dict[str, list[int]] = {}
+    for index, row in enumerate(rows):
+        node = row.get("node_target")
+        if node in CANDIDATE_BOUND_NODES:
+            groups.setdefault("candidate-bound", []).append(index)
+        elif node in UNCONDITIONAL_NODES:
+            groups.setdefault("unconditional", []).append(index)
+        else:
+            raise Stage3DeltaTwinError(
+                f"row {index} carries an unknown node_target {node!r}"
+            )
+    twinned: list[dict[str, object]] = [dict(row) for row in rows]
+    for group_name, indices in sorted(groups.items()):
+        if len(indices) < 2:
+            raise Stage3DeltaTwinError(
+                f"the {group_name} group has {len(indices)} row(s); a derangement "
+                "requires at least two"
+            )
+        # A group whose rows all name the SAME attachment cannot be twinned:
+        # every permutation of it is the identity in effect, and a twin that
+        # is the identity in effect is not a form control. Refused rather
+        # than released as a vacuous control.
+        keys = {
+            _attachment_key(rows[index], group_name) for index in indices
+        }
+        if len(keys) < 2:
+            raise Stage3DeltaTwinError(
+                f"the {group_name} group names one distinct attachment; every "
+                "permutation of it is the identity in effect"
+            )
+        subset = [rows[index] for index in indices]
+        # A per-group seed, so one group's size never silently re-orders the
+        # other's permutation.
+        group_seed = seed + (0 if group_name == "candidate-bound" else 1)
+        if group_name == "candidate-bound":
+            deranged = derange_facet_assignment(subset, seed=group_seed)
+        else:
+            deranged = permute_target_fields(subset, seed=group_seed)
+        for position, index in enumerate(indices):
+            twinned[index] = deranged[position]
+    return twinned
+
+
 def build_twin_document(
     document: Mapping[str, object], *, seed: int
 ) -> dict[str, object]:
-    if document.get("schema") != AUTHORED_SCHEMA:
-        raise Stage3DeltaTwinError(f"expected schema {AUTHORED_SCHEMA!r}")
+    schema = document.get("schema")
+    if schema not in (AUTHORED_SCHEMA, AUTHORED_SCHEMA_V2):
+        raise Stage3DeltaTwinError(
+            f"expected schema {AUTHORED_SCHEMA!r} or {AUTHORED_SCHEMA_V2!r}"
+        )
     rows = document.get("rows")
     if not isinstance(rows, list) or not rows:
         raise Stage3DeltaTwinError("authored document has no rows")
-    twinned_rows = derange_facet_assignment(rows, seed=seed)
-    fixed_points = sum(
-        1
-        for original, twin in zip(rows, twinned_rows)
-        if set(original["associated_facet_ids"]) == set(twin["associated_facet_ids"])
-    )
-    if fixed_points:
+    if schema == AUTHORED_SCHEMA_V2:
+        twinned_rows = derange_v2_rows(rows, seed=seed)
+    else:
+        twinned_rows = derange_facet_assignment(rows, seed=seed)
+    fixed_points = count_value_fixed_points(rows, twinned_rows)
+    if schema == AUTHORED_SCHEMA_V2:
+        # A v2 store legitimately carries several deltas per target (three
+        # solver lessons about alarm_set, say), so a POSITIONAL derangement
+        # -- which is what holds the token count -- can still leave a
+        # duplicate row attached to the same value. That is arithmetic, not a
+        # defect: Sattolo guarantees no row keeps its OWN slot, and
+        # ``derange_v2_rows`` has already refused a group with one distinct
+        # attachment. Refuse only a twin that moved nothing at all.
+        if fixed_points >= len(rows):
+            raise Stage3DeltaTwinError(
+                "the derangement changed no row's attachment; refusing a twin that "
+                "is not a form control"
+            )
+    elif fixed_points:
         raise Stage3DeltaTwinError(
             f"derangement produced {fixed_points} fixed point(s); refusing a twin "
             "that is not a genuine derangement"
         )
-    return {
-        "schema": AUTHORED_SCHEMA,
+    twin = {
+        "schema": schema,
         "iteration": document.get("iteration"),
         "twin_of_seed": seed,
         "rows": twinned_rows,
     }
+    parent_tokens = authored_token_count(document)
+    twin_tokens = authored_token_count(twin)
+    if parent_tokens != twin_tokens:
+        raise Stage3DeltaTwinError(
+            f"twin token count {twin_tokens} differs from the parent's "
+            f"{parent_tokens}; a form control must hold the token count"
+        )
+    return twin
 
 
 def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
@@ -126,7 +309,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     report = {
         "schema": "saea-stage3-delta-twin-report-v1",
         "seed": args.seed,
+        "authored_schema": twin["schema"],
         "row_count": len(twin["rows"]),
+        "token_count": authored_token_count(twin),
+        "parent_token_count": authored_token_count(document),
+        "value_fixed_points": count_value_fixed_points(
+            document["rows"], twin["rows"]
+        ),
         "out": {"relpath": str(args.out), "sha256": hashlib.sha256(raw).hexdigest()},
     }
     print(json.dumps(report, indent=2, sort_keys=True))  # noqa: T201 -- ids/counts/hashes only

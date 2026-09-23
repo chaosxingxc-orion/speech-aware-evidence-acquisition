@@ -1514,10 +1514,12 @@ from .semantic_knowledge_build import (  # noqa: E402
     INTENT_BOUNDARY_BUILD_POLICY_ID,
     SLOT_CONTRACT_BUILD_POLICY_ID,
     STAGE3_DELTA_BUILD_POLICY_ID,
+    STAGE3_DELTA_V2_BUILD_POLICY_ID,
     build_factored_intent_boundary_snapshot,
     build_intent_boundary_snapshot,
     build_slot_contract_snapshot,
     build_stage3_delta_snapshot,
+    build_stage3_delta_snapshot_v2,
 )
 
 KNOWLEDGE_BUILDERS.register(
@@ -1537,16 +1539,24 @@ KNOWLEDGE_BUILDERS.register(
 KNOWLEDGE_BUILDERS.register(
     STAGE3_DELTA_BUILD_POLICY_ID, build_stage3_delta_snapshot
 )
+# Stage-3 S3-4s (owner decision 106, 2026-09-23): the NODE-TARGETED delta
+# builder, registered BESIDE v1 so a v1 release stays flyable and a v2
+# release can be built without a migration.
+KNOWLEDGE_BUILDERS.register(
+    STAGE3_DELTA_V2_BUILD_POLICY_ID, build_stage3_delta_snapshot_v2
+)
 
 __all__ += [
     "FACTORED_INTENT_BOUNDARY_BUILD_POLICY_ID",
     "INTENT_BOUNDARY_BUILD_POLICY_ID",
     "SLOT_CONTRACT_BUILD_POLICY_ID",
     "STAGE3_DELTA_BUILD_POLICY_ID",
+    "STAGE3_DELTA_V2_BUILD_POLICY_ID",
     "build_factored_intent_boundary_snapshot",
     "build_intent_boundary_snapshot",
     "build_slot_contract_snapshot",
     "build_stage3_delta_snapshot",
+    "build_stage3_delta_snapshot_v2",
 ]
 
 

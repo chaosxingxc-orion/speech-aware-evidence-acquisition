@@ -299,6 +299,13 @@ def test_load_predecessor_rows_reads_an_authored_document(tmp_path) -> None:
 
 
 def test_main_writes_authored_document_and_reports_counts(tmp_path, capsys) -> None:
+    """The pre-S3-4s (v1) curation path, still reachable and unchanged.
+
+    S3-4s made ``--schema-version 2`` the DEFAULT (node-targeted rows, the
+    multi-block parser, the containment rule), so this test now names the v1
+    path explicitly. Everything it asserts is what it asserted before.
+    """
+
     pairs_document = {
         "rows": [
             {
@@ -338,6 +345,7 @@ def test_main_writes_authored_document_and_reports_counts(tmp_path, capsys) -> N
             "--iteration", "1",
             "--run-id", "SAEA-TEST-RUN",
             "--out-authored", str(out_path),
+            "--schema-version", "1",
         ]
     )
     assert exit_code == 0

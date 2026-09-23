@@ -57,11 +57,47 @@ def test_generation_cell_differs_from_plan_only_by_the_one_store() -> None:
     _assert_only_stage3_deltas_added(plan_ks, cell_ks)
     store = cell_ks["stage3-deltas"]
     assert store["store_role"] == "stage3-deltas"
-    assert set(store["context_supply"]) == {"solver"}
-    solver_spec = store["context_supply"]["solver"]
-    assert solver_spec["cap"] == 8
-    assert solver_spec["rank_by"] == "prior_score"
-    assert solver_spec["provider"] == "stage3-delta-candidate-bound-v1"
+    # S3-4s (owner decision 106): PER-NODE supply on the same one store.
+    assert set(store["context_supply"]) == {
+        "perception", "solver", "reviewer", "planner",
+    }
+    for phase, cap in (("solver", 8), ("reviewer", 4), ("planner", 4)):
+        spec = store["context_supply"][phase]
+        assert spec["cap"] == cap, phase
+        assert spec["rank_by"] == "prior_score"
+        assert spec["provider"] == "stage3-delta-candidate-bound-v1"
+        assert spec["candidate_state_phase"] == "perception"
+        assert spec["node_target"] == phase
+    # Perception produces the candidate list, so its route is unconditional
+    # and carries NO candidate_state_phase.
+    perception = store["context_supply"]["perception"]
+    assert perception == {
+        "cap": 4,
+        "node_target": "perception",
+        "provider": "stage3-delta-unconditional-v1",
+        "rank_by": "prior_score",
+    }
+
+
+def test_the_cell_differs_from_plan_by_exactly_the_store_keys() -> None:
+    """The S3-6 equality proof, stated as a KEY DIFF rather than a value diff:
+    after excluding the per-flight bookkeeping and the documentation keys, the
+    only difference between the cell fragment and the locked plan is the one
+    ``knowledge_stores.stage3-deltas`` key and its own sub-keys."""
+
+    plan = _load(PLAN_PATH)
+    cell = _load(REPO_ROOT / "configs" / "baseline" / "slurp-native-stage3-delta-cell-baseline-v1.json")
+    assert set(_comparable(plan)) == set(_comparable(cell))
+    differing = {
+        key for key in _comparable(plan)
+        if _comparable(plan)[key] != _comparable(cell)[key]
+    }
+    assert differing == {"knowledge_stores"}
+    added = set(cell["knowledge_stores"]) - set(plan["knowledge_stores"])
+    assert added == {"stage3-deltas"}
+    assert set(cell["knowledge_stores"]["stage3-deltas"]) == {
+        "context_supply", "release", "snapshot", "store_role",
+    }
 
 
 def test_twin_cell_differs_from_generation_cell_only_by_the_release_namespace() -> None:
@@ -72,6 +108,8 @@ def test_twin_cell_differs_from_generation_cell_only_by_the_release_namespace() 
     assert generation["knowledge_stores"] == twin["knowledge_stores"]
     assert "twin" in twin_store["snapshot"]["relpath"]
     assert "twin" not in gen_store["snapshot"]["relpath"]
+    # The twin differs in the released STORE, never in the routing: the same
+    # four per-node routes, the same caps, the same node targets.
     assert gen_store["context_supply"] == twin_store["context_supply"]
 
 

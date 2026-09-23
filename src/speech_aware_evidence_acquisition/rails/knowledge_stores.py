@@ -432,7 +432,9 @@ def build_knowledge_store_supply(
 
     from .stage3_delta_supply import (
         STAGE3_DELTA_CONTEXT_PROVIDER_ID,
+        STAGE3_DELTA_NODES,
         STAGE3_DELTA_STORE_ROLE,
+        STAGE3_DELTA_UNCONDITIONAL_PROVIDER_ID,
     )
     from .slurp_intent_hypotheses import (
         SlurpIntentHypothesisError,
@@ -459,6 +461,18 @@ def build_knowledge_store_supply(
             target_indices[store_id] = index
     callbacks, explicit_specs_by_store, specs_by_store, receipts = {}, {}, {}, {}
     context_specs: dict[tuple[str, str], object] = {}
+    # S3-4s (owner decision 106, 2026-09-23): a stage3-deltas store's
+    # UNCONDITIONAL route on the program's FIRST phase. Kept in its OWN map,
+    # never in ``context_specs``, for two reasons: (1) ``route`` /
+    # ``automatic_for_phase`` are never consulted for the first phase (a
+    # first-phase selection has no preceding ``advance``; see the comment
+    # above ``plain_later_phase_specs``), so a first-phase entry there would
+    # be dead weight that only risked being dispatched by mistake; and
+    # (2) ``specs_by_store`` feeds ``core.flight.runtime._resolve_phase_supply``'s
+    # ``merged`` map, whose first-phase entry must stay the retrieval
+    # ``PhaseSupplySpec`` the prepared-seed loader expects. The route is
+    # served by ``bootstrap_first_phase`` / ``unconditional_first_phase``.
+    first_phase_context_specs: dict[str, object] = {}
     candidate_specs = load_candidate_semantic_supply_specs(binding, program)
     if candidate_specs and legal_candidate_ids is None:
         raise KnowledgeStoreError(
@@ -475,13 +489,27 @@ def build_knowledge_store_supply(
     )
     first_phase = program.phase_names()[0]
 
-    def _build_stage3_delta_provider(store):
-        """Resolve and build the registered Stage3DeltaCandidateProvider
-        over one store released delta pool. Re-derived per call, never
-        cached on the router, mirroring the source-scoped provider own
-        re-resolve-per-call precedent just below."""
+    def _build_stage3_delta_provider(store, *, raw_spec=None):
+        """Resolve and build the registered stage3-delta provider over one
+        store released delta pool. Re-derived per call, never cached on the
+        router, mirroring the source-scoped provider own re-resolve-per-call
+        precedent just below.
 
-        provider = resolve_provider(STAGE3_DELTA_CONTEXT_PROVIDER_ID)
+        S3-4s: ``raw_spec`` selects WHICH registered provider and which
+        node slice. Without it (every pre-S3-4s call site, and the
+        pre-flight "does the pool build cleanly" proof) the candidate-bound
+        provider is built with no node filter -- byte-identically to its
+        pre-S3-4s self.
+        """
+
+        provider_id = STAGE3_DELTA_CONTEXT_PROVIDER_ID
+        options: dict[str, object] = {}
+        if isinstance(raw_spec, Mapping):
+            provider_id = str(raw_spec.get("provider", provider_id))
+            node_target = raw_spec.get("node_target")
+            if isinstance(node_target, str) and node_target:
+                options["node_target"] = node_target
+        provider = resolve_provider(provider_id, **options)
         provider.build(
             [value.as_json() for value in store.snapshot.values],
             policy_id=store.snapshot.builder_policy_id,
@@ -489,12 +517,25 @@ def build_knowledge_store_supply(
         return provider
 
     def _validate_stage3_delta_context_spec(raw_spec, *, store, phase):
+        """The CANDIDATE-BOUND branch: a later supplied phase only.
+
+        S3-4s admits ONE further optional key, ``node_target``: which node's
+        slice of the store this phase is served from (spec S3-4s, "filtered
+        to the rows whose ``node_target`` is that phase's node"). A spec
+        without it is the exact pre-S3-4s spec and validates identically.
+        """
+
         phases = program.phase_names()
         candidate_state_phase = raw_spec.get("candidate_state_phase")
         cap = raw_spec.get("cap")
+        node_target = raw_spec.get("node_target")
         if (
             store.store_role != STAGE3_DELTA_STORE_ROLE
-            or set(raw_spec) != {"provider", "candidate_state_phase", "cap", "rank_by"}
+            or not (
+                {"provider", "candidate_state_phase", "cap", "rank_by"}
+                <= set(raw_spec)
+                <= {"provider", "candidate_state_phase", "cap", "rank_by", "node_target"}
+            )
             or raw_spec.get("rank_by") != "prior_score"
             or not isinstance(candidate_state_phase, str)
             or candidate_state_phase not in phases
@@ -505,10 +546,50 @@ def build_knowledge_store_supply(
             or isinstance(cap, bool)
             or not isinstance(cap, int)
             or cap < 1
+            or (
+                "node_target" in raw_spec
+                and (node_target not in STAGE3_DELTA_NODES or node_target == first_phase)
+            )
         ):
             raise KnowledgeStoreError(
                 "stage3-deltas context_supply requires a candidate-bound, capped, "
                 "prior_score-ranked spec on a later supplied phase"
+            )
+
+    def _validate_stage3_delta_unconditional_spec(raw_spec, *, store, phase):
+        """The UNCONDITIONAL branch (S3-4s), the FIRST phase's own.
+
+        The pre-S3-4s ``context_supply`` contract insisted on a LATER
+        supplied phase, for a real reason: a later phase has a preceding
+        ``advance`` to carry its per-row decision, and the first phase has
+        none. The Perception node's deltas are admitted here without
+        weakening that reason rather than around it: the selection carries
+        NO per-row term at all (``rails.stage3_delta_supply.
+        select_unconditional_stage3_delta_values``), so it is decided once
+        per flight and seeded, exactly as every other first-phase selection
+        in this router is (``bootstrap_first_phase``). ``candidate_state_phase``
+        is therefore REFUSED here, not merely optional: a spec that names one
+        is asking for a per-row binding this route cannot honour.
+        """
+
+        cap = raw_spec.get("cap")
+        node_target = raw_spec.get("node_target")
+        if (
+            store.store_role != STAGE3_DELTA_STORE_ROLE
+            or set(raw_spec) != {"provider", "cap", "rank_by", "node_target"}
+            or raw_spec.get("rank_by") != "prior_score"
+            or phase != first_phase
+            or program.phase(phase).knowledge != "supplied"
+            or node_target != phase
+            or node_target not in STAGE3_DELTA_NODES
+            or isinstance(cap, bool)
+            or not isinstance(cap, int)
+            or cap < 1
+        ):
+            raise KnowledgeStoreError(
+                "stage3-deltas unconditional context_supply requires a capped, "
+                "prior_score-ranked, node-targeted spec on the program's first "
+                "supplied phase, with no candidate_state_phase"
             )
 
     def _stage3_delta_local_supply(store, raw_spec, context):
@@ -521,6 +602,7 @@ def build_knowledge_store_supply(
 
         candidate_state_phase = raw_spec["candidate_state_phase"]
         cap = raw_spec["cap"]
+        node_target = raw_spec.get("node_target")
         query_state = getattr(context, "query_state", None)
         if query_state is None:
             raise KnowledgeStoreError("stage3-deltas context_supply requires a QueryState")
@@ -553,7 +635,7 @@ def build_knowledge_store_supply(
             raise KnowledgeStoreError(str(error)) from error
         candidate_facet_ids = tuple(item.intent_id for item in hypothesis_state.candidates)
 
-        provider = _build_stage3_delta_provider(store)
+        provider = _build_stage3_delta_provider(store, raw_spec=raw_spec)
         ranking = provider.candidates(candidate_facet_ids, k=cap)
         selected_ids = tuple(entry.entry_id for entry in ranking.entries)
         by_id = {value.value_id: value for value in store.snapshot.values}
@@ -583,8 +665,22 @@ def build_knowledge_store_supply(
         return PhaseSupply(
             rank_result=rank_result,
             fusion_decision=fusion_decision,
-            action_target_ref=f"{STAGE3_DELTA_CONTEXT_PROVIDER_ID}:cap={cap}",
+            action_target_ref=(
+                f"{STAGE3_DELTA_CONTEXT_PROVIDER_ID}:cap={cap}"
+                if node_target is None
+                else f"{STAGE3_DELTA_CONTEXT_PROVIDER_ID}:node={node_target}:cap={cap}"
+            ),
         ).validate()
+
+    def _stage3_delta_unconditional_ids(store, raw_spec):
+        """The UNCONDITIONAL first-phase selection (S3-4s): the same capped,
+        ``prior_score``-ranked, node-filtered value ids on every row of the
+        split. A pure function of the store, so it is computed ONCE per
+        flight and seeded per sample."""
+
+        provider = _build_stage3_delta_provider(store, raw_spec=raw_spec)
+        ranking = provider.candidates((), k=raw_spec["cap"])
+        return tuple(entry.entry_id for entry in ranking.entries)
 
     for store_id in binding.store_ids:
         store = binding.store(store_id)
@@ -606,6 +702,17 @@ def build_knowledge_store_supply(
                     )
             elif provider_id == STAGE3_DELTA_CONTEXT_PROVIDER_ID:
                 _validate_stage3_delta_context_spec(raw_spec, store=store, phase=phase)
+            elif provider_id == STAGE3_DELTA_UNCONDITIONAL_PROVIDER_ID:
+                # S3-4s: the first phase's own branch (see the validator).
+                _validate_stage3_delta_unconditional_spec(
+                    raw_spec, store=store, phase=phase
+                )
+                if store_id in first_phase_context_specs:
+                    raise KnowledgeStoreError(
+                        "one store declares two unconditional first-phase routes"
+                    )
+                first_phase_context_specs[store_id] = raw_spec
+                continue
             else:
                 raise KnowledgeStoreError(
                     f"context_supply names an unrecognised provider {provider_id!r}"
@@ -619,7 +726,9 @@ def build_knowledge_store_supply(
                     SOURCE_SCOPED_CONTEXT_PROVIDER_ID,
                     snapshot=store.snapshot, value_id_namespace=store_id,
                 )
-            if STAGE3_DELTA_CONTEXT_PROVIDER_ID in providers_used:
+            if providers_used & {
+                STAGE3_DELTA_CONTEXT_PROVIDER_ID, STAGE3_DELTA_UNCONDITIONAL_PROVIDER_ID
+            }:
                 # Prove the delta pool builds cleanly before any runtime contact.
                 _build_stage3_delta_provider(store)
     if (
@@ -636,7 +745,13 @@ def build_knowledge_store_supply(
     for store_id in binding.store_ids:
         store = binding.store(store_id)
         scoped_phases = {phase for (owner, phase) in context_specs if owner == store_id}
-        if set(store.phase_supply).intersection(scoped_phases):
+        # S3-4s: the unconditional first-phase route is scoped supply too --
+        # for the overlap guard and for the receipt -- even though it is not
+        # dispatched through ``route``.
+        unconditional_phases = (
+            {first_phase} if store_id in first_phase_context_specs else set()
+        )
+        if set(store.phase_supply).intersection(scoped_phases | unconditional_phases):
             raise KnowledgeStoreError("explicit and scoped supply cannot overlap on one store phase")
         specs = load_phase_supply_specs({"phase_supply": store.phase_supply}, program)
         # E3b fix: the E3 fix (module comment above, plain_later_phase_specs)
@@ -715,10 +830,19 @@ def build_knowledge_store_supply(
             for phase, spec in candidate_specs.items()
             if spec.store_id == store_id
         }
-        if not specs and not store_candidate_specs and not scoped_phases and store_id not in on_demand:
+        if (
+            not specs and not store_candidate_specs and not scoped_phases
+            and not unconditional_phases and store_id not in on_demand
+        ):
             raise KnowledgeStoreError(f"knowledge store {store_id} has no phase_supply")
         specs_by_store[store_id] = {**specs, **store_candidate_specs}
-        specs_by_store[store_id].update({phase: raw for phase, raw in store.context_supply.items()})
+        # S3-4s: the FIRST-phase unconditional entry is deliberately left out
+        # of ``specs_by_store`` (see ``first_phase_context_specs`` above);
+        # everything else is recorded exactly as before.
+        specs_by_store[store_id].update({
+            phase: raw for phase, raw in store.context_supply.items()
+            if (store_id, phase) in context_specs
+        })
         receipts[store_id] = {
             **binding.store_receipt(store_id),
             "phase_supply": (
@@ -738,8 +862,22 @@ def build_knowledge_store_supply(
                 store_candidate_specs[phase].as_json()
                 for phase in sorted(store_candidate_specs)
             ]
-        if scoped_phases:
-            receipts[store_id]["context_supply"] = sorted(scoped_phases)
+        if scoped_phases or unconditional_phases:
+            receipts[store_id]["context_supply"] = sorted(
+                scoped_phases | unconditional_phases
+            )
+        if unconditional_phases:
+            receipts[store_id]["unconditional_context_supply"] = {
+                "phase": first_phase,
+                "provider": first_phase_context_specs[store_id]["provider"],
+                "node_target": first_phase_context_specs[store_id]["node_target"],
+                "cap": first_phase_context_specs[store_id]["cap"],
+                "selected_value_ids": list(
+                    _stage3_delta_unconditional_ids(
+                        store, first_phase_context_specs[store_id]
+                    )
+                ),
+            }
 
     def bootstrap_first_phase(
         *,
@@ -776,6 +914,20 @@ def build_knowledge_store_supply(
                 values_by_sample.setdefault(sample_id, []).extend(
                     qualify_id(store_id, value_id)
                     for value_id in local_values[sample_id]
+                )
+        # S3-4s: every store with an unconditional first-phase route
+        # contributes the SAME capped, node-filtered, prior_score-ranked
+        # value ids to every row of the split. No facets: the route supplies
+        # values only, exactly as the candidate-bound route does.
+        for store_id, raw_spec in first_phase_context_specs.items():
+            selected = _stage3_delta_unconditional_ids(
+                binding.store(store_id), raw_spec
+            )
+            if not selected:
+                continue
+            for sample_id in sorted(speech_packet_bindings):
+                values_by_sample.setdefault(sample_id, []).extend(
+                    qualify_id(store_id, value_id) for value_id in selected
                 )
         return (
             {
@@ -891,9 +1043,46 @@ def build_knowledge_store_supply(
                 supplies.append(candidate_supply)
         return _compose_supplies(supplies, query_state)
 
+    def unconditional_first_phase(*, speech_packet_bindings, **_ignored):
+        """S3-4s: ``{phase: {sample_id: (qualified value ids,)}}`` for every
+        store declaring an unconditional first-phase route, or ``{}``.
+
+        Published SEPARATELY from :func:`bootstrap_first_phase` so a flight
+        that pins a ``prepared_phase_supply`` artifact for the first phase's
+        RETRIEVAL store still gets this route composed on top of it
+        (``core.flight.runtime._phase_supply_seeds``): the prepared artifact
+        is a frozen selection of ONE store and cannot be asked about a store
+        that did not exist when it was prepared. Absent as an attribute
+        when no store declares the route, so every existing flight reads
+        ``getattr(..., 'unconditional_first_phase', None) is None`` and
+        behaves byte-identically.
+        """
+
+        by_sample: dict[str, list[str]] = {}
+        for store_id, raw_spec in first_phase_context_specs.items():
+            selected = _stage3_delta_unconditional_ids(
+                binding.store(store_id), raw_spec
+            )
+            if not selected:
+                continue
+            for sample_id in sorted(speech_packet_bindings):
+                by_sample.setdefault(sample_id, []).extend(
+                    qualify_id(store_id, value_id) for value_id in selected
+                )
+        if not by_sample:
+            return {}
+        return {
+            first_phase: {
+                sample_id: tuple(value_ids)
+                for sample_id, value_ids in sorted(by_sample.items())
+            }
+        }
+
     route.target_indices = MappingProxyType(target_indices)
     route.specs_by_store = specs_by_store
     route.bootstrap_first_phase = bootstrap_first_phase
+    if first_phase_context_specs:
+        route.unconditional_first_phase = unconditional_first_phase
     candidate_receipt = (
         None if candidate_callback is None else candidate_callback.receipt
     )

@@ -23,6 +23,16 @@ What it does
    ``source_sample_ids`` ``(<row sample_id>,)``, ``provenance_refs``
    ``(advantage:<run>:<row>:<best>:<worst>,)``, ``task_target``
    ``"<DELTA-KIND>:<TARGET>"``, ``prior_score`` the row's ``disagreement``.
+
+   S3-4s (``--schema-version 2``, the DEFAULT; owner decision 106): the v2
+   parser reads one to three NODE-attributed blocks per contact, so one
+   contact yields up to three rows; each row carries ``node_target`` and a
+   three-field ``task_target`` (``NODE:DELTA-KIND:TARGET``);
+   ``associated_facet_ids`` is the bare ``TARGET`` (what a candidate-bound
+   route actually intersects against); and one further curation rule drops
+   any statement repeating six or more consecutive tokens of a construction
+   transcript (``--construction-transcripts``; counts reported, no text
+   printed or persisted). ``--schema-version 1`` keeps every pre-S3-4s byte.
 4. Loads version t-1's authored rows (``--predecessor``, or the literal
    string ``none`` for iteration 1) and keeps them VERBATIM as the base of
    version t's set (append-only).
@@ -64,12 +74,31 @@ from speech_aware_evidence_acquisition.rails.hashing import (  # noqa: E402
     canonical_json_bytes,
 )
 from speech_aware_evidence_acquisition.rails.stage3_advantage import (  # noqa: E402
+    LEGAL_DELTA_NODES,
     Stage3AdvantageError,
     load_advantage_pairs,
     parse_advantage_statement,
+    parse_advantage_statements_v2,
 )
 
 AUTHORED_SCHEMA = "saea-stage3-authored-deltas-v1"
+#: S3-4s (owner decision 106, 2026-09-23): the NODE-TARGETED authored
+#: document. One further row key (``node_target``), a three-field
+#: ``task_target`` (``NODE:DELTA-KIND:TARGET``), and one further curation
+#: rule (the six-token containment check below). Everything else -- the
+#: ``value_id`` form, the append-only predecessor rule, the exact-normalised
+#: and Jaccard dedup, the provenance merge -- is unchanged.
+AUTHORED_SCHEMA_V2 = "saea-stage3-authored-deltas-v2"
+#: The containment rule's span length (spec S3-4s): a statement that repeats
+#: six or more CONSECUTIVE tokens of any construction-row transcript is a
+#: transcript fragment, not a lesson, and is dropped at curation. Five or
+#: fewer is a phrasing pattern and is allowed, as are slot values and intent
+#: names of any length that do not reach six consecutive tokens.
+CONTAINMENT_SPAN_TOKENS = 6
+#: The per-row field names a JSONL transcript file may carry its text in.
+#: Their presence at the TOP level of a parsed file is what tells one
+#: JSONL row apart from a whole-file {sample_id: text} object.
+_ROW_TEXT_FIELDS = frozenset({"text", "transcript", "sentence"})
 RELEASE_PINS_SCHEMA = "saea-reviewed-semantic-store-release-pins-v2"
 _WORD = re.compile(r"[a-z0-9]+")
 
@@ -84,6 +113,86 @@ def _normalise(text: str) -> str:
 
 def _tokens(text: str) -> frozenset[str]:
     return frozenset(_WORD.findall(text.lower()))
+
+
+def _token_sequence(text: str) -> list[str]:
+    """The ORDERED normalised tokens of one string (the containment rule
+    needs order; :func:`_tokens` deliberately does not)."""
+
+    return _WORD.findall(text.lower())
+
+
+def _ngrams(tokens: Sequence[str], n: int) -> set[tuple[str, ...]]:
+    return {tuple(tokens[i:i + n]) for i in range(len(tokens) - n + 1)}
+
+
+def load_construction_spans(
+    path: Path | None, *, span: int = CONTAINMENT_SPAN_TOKENS
+) -> tuple[set, dict[str, int]]:
+    """The set of ``span``-token n-grams of the construction rows'
+    transcripts, plus counts.
+
+    THE ONLY PLACE this CLI reads utterance text. The transcripts are read,
+    reduced to normalised token n-grams and thrown away: no transcript, no
+    fragment of one and no token is printed, returned as text or written to
+    any artifact -- only the n-gram SET, which is used to REJECT statements,
+    and the counts in the report. The file is one JSON object per line
+    (``{"sample_id": ..., "text": ...}``) or one JSON object mapping sample
+    id to text; it is a root preparation over the construction roster (the
+    same rows S3-4 already showed the core), never a repository artifact.
+
+    ``None`` -- the default -- returns an empty set and a zero count, which
+    disables the rule and says so in the report rather than silently passing
+    every statement as if it had been checked.
+    """
+
+    if path is None:
+        return set(), {"transcripts": 0, "spans": 0, "span_tokens": span}
+    raw = path.read_text(encoding="utf-8")
+    texts: list[str] = []
+    # Two accepted shapes, told apart by CONTENT rather than by a line count:
+    # a whole-file JSON object mapping sample id to text (no row-field key),
+    # or one JSON row per line carrying a row-field key.
+    try:
+        document = json.loads(raw)
+    except json.JSONDecodeError:
+        document = None
+    if isinstance(document, Mapping) and not (_ROW_TEXT_FIELDS & set(document)):
+        texts = [value for value in document.values() if isinstance(value, str)]
+    else:
+        for line_number, line in enumerate(raw.splitlines(), start=1):
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError as error:
+                raise Stage3DeltaStoreError(
+                    f"{path}:{line_number} is not valid JSON: {error}"
+                ) from error
+            if isinstance(row, Mapping):
+                value = row.get("text", row.get("transcript", row.get("sentence")))
+                if isinstance(value, str):
+                    texts.append(value)
+                    continue
+            raise Stage3DeltaStoreError(
+                f"{path}:{line_number} carries no transcript text field"
+            )
+    spans: set = set()
+    for value in texts:
+        spans |= _ngrams(_token_sequence(value), span)
+    return spans, {"transcripts": len(texts), "spans": len(spans), "span_tokens": span}
+
+
+def contains_transcript_span(
+    statement: str, spans: set, *, span: int = CONTAINMENT_SPAN_TOKENS
+) -> bool:
+    """Does ``statement`` repeat ``span`` or more CONSECUTIVE transcript
+    tokens? Pure, total and text-free in its result (a bool)."""
+
+    if not spans:
+        return False
+    return bool(_ngrams(_token_sequence(statement), span) & spans)
 
 
 def _jaccard(a: frozenset[str], b: frozenset[str]) -> float:
@@ -166,24 +275,121 @@ def build_candidate_rows(
     return candidates, counts
 
 
-def _validate_authored_row(row: Mapping[str, object], *, field: str) -> dict[str, object]:
-    required = {
-        "value_id", "content", "associated_facet_ids", "source_sample_ids",
-        "provenance_refs", "task_target", "prior_score",
+def build_candidate_rows_v2(
+    *,
+    advantage_outputs: Sequence[Mapping[str, object]],
+    pairs_by_sample: Mapping[str, object],
+    run_id: str,
+    iteration: int,
+    transcript_spans: set = frozenset(),
+) -> tuple[list[dict[str, object]], dict[str, int]]:
+    """S3-4s: parse and join every ADV-t output into NODE-TARGETED rows.
+
+    One contact now yields one to THREE blocks
+    (``rails.stage3_advantage.parse_advantage_statements_v2``), so one
+    advantage output can produce up to three candidate rows -- each with its
+    own ``node_target``, its own ``task_target``
+    (``NODE:DELTA-KIND:TARGET``) and its own ``value_id`` over its own
+    statement. Illegal blocks are dropped, counted, never raised. A
+    statement that repeats six or more consecutive tokens of a construction
+    transcript is dropped by the containment rule, counted separately.
+
+    ``associated_facet_ids`` is the TARGET itself, not a
+    ``stage3-delta-target:`` prefixed form: a candidate-bound route
+    intersects a row's Perception candidate INTENT ids against exactly this
+    field (``rails.stage3_delta_supply.select_stage3_delta_values``), so a
+    prefixed id could never intersect one and the store would be unroutable.
+    The facet DIMENSION stays ``stage3-delta-target``
+    (``rails.semantic_knowledge_build.STAGE3_DELTA_DIMENSION``), which is
+    where the namespace lives.
+    """
+
+    candidates: list[dict[str, object]] = []
+    counts = {
+        "total": 0, "legal": 0, "illegal": 0, "unmatched_pair": 0,
+        "blocks_total": 0, "blocks_legal": 0, "blocks_illegal": 0,
+        "blocks_contained": 0,
     }
+    per_node = {node: 0 for node in LEGAL_DELTA_NODES}
+    for entry in advantage_outputs:
+        counts["total"] += 1
+        sample_id = entry.get("sample_id")
+        if not isinstance(sample_id, str) or not sample_id:
+            raise Stage3DeltaStoreError("advantage-outputs row is missing sample_id")
+        pair = pairs_by_sample.get(sample_id)
+        if pair is None:
+            counts["unmatched_pair"] += 1
+            continue
+        parsed = parse_advantage_statements_v2(entry.get("response_text"))
+        counts["blocks_total"] += len(parsed.blocks)
+        legal_blocks = parsed.legal_blocks()
+        counts["blocks_illegal"] += len(parsed.blocks) - len(legal_blocks)
+        if not legal_blocks:
+            counts["illegal"] += 1
+            continue
+        disagreement = entry.get("disagreement")
+        if isinstance(disagreement, bool) or not isinstance(disagreement, (int, float)):
+            raise Stage3DeltaStoreError(
+                f"advantage-outputs row for {sample_id!r} has no numeric disagreement"
+            )
+        kept = 0
+        for block in legal_blocks:
+            if contains_transcript_span(block.statement, transcript_spans):
+                counts["blocks_contained"] += 1
+                continue
+            counts["blocks_legal"] += 1
+            per_node[block.node] += 1
+            kept += 1
+            candidates.append(
+                {
+                    "value_id": f"delta:{iteration}:{block.statement_sha256()[:12]}",
+                    "content": block.statement,
+                    "associated_facet_ids": [block.target],
+                    "node_target": block.node,
+                    "source_sample_ids": [sample_id],
+                    "provenance_refs": [
+                        f"advantage:{run_id}:{sample_id}:"
+                        f"{pair.best.sample_index}:{pair.worst.sample_index}"
+                        f":{block.block_index}"
+                    ],
+                    "task_target": block.task_target(),
+                    "prior_score": float(disagreement),
+                }
+            )
+        if kept:
+            counts["legal"] += 1
+        else:
+            counts["illegal"] += 1
+    counts.update({f"blocks_node_{node}": per_node[node] for node in LEGAL_DELTA_NODES})
+    return candidates, counts
+
+
+_AUTHORED_ROW_KEYS = {
+    "value_id", "content", "associated_facet_ids", "source_sample_ids",
+    "provenance_refs", "task_target", "prior_score",
+}
+_AUTHORED_ROW_KEYS_V2 = _AUTHORED_ROW_KEYS | {"node_target"}
+
+
+def _validate_authored_row(
+    row: Mapping[str, object], *, field: str, required: set = _AUTHORED_ROW_KEYS
+) -> dict[str, object]:
     if not isinstance(row, Mapping) or set(row) != required:
         raise Stage3DeltaStoreError(f"{field} has the wrong fields")
     return dict(row)
 
 
-def load_predecessor_rows(predecessor: str | None) -> list[dict[str, object]]:
+def load_predecessor_rows(
+    predecessor: str | None, *, schema_version: int = 1
+) -> list[dict[str, object]]:
+    required = _AUTHORED_ROW_KEYS_V2 if schema_version == 2 else _AUTHORED_ROW_KEYS
     if predecessor is None or predecessor == "none":
         return []
     document = json.loads(Path(predecessor).read_text(encoding="utf-8"))
     if not isinstance(document, Mapping) or not isinstance(document.get("rows"), list):
         raise Stage3DeltaStoreError(f"{predecessor} must be an authored-deltas document")
     return [
-        _validate_authored_row(row, field=f"predecessor rows[{index}]")
+        _validate_authored_row(row, field=f"predecessor rows[{index}]", required=required)
         for index, row in enumerate(document["rows"])
     ]
 
@@ -242,8 +448,11 @@ def curate(
     return survivors, counts
 
 
-def write_authored_document(path: Path, *, iteration: int, rows: Sequence[Mapping[str, object]]) -> str:
-    document = {"schema": AUTHORED_SCHEMA, "iteration": iteration, "rows": list(rows)}
+def write_authored_document(
+    path: Path, *, iteration: int, rows: Sequence[Mapping[str, object]],
+    schema: str = AUTHORED_SCHEMA,
+) -> str:
+    document = {"schema": schema, "iteration": iteration, "rows": list(rows)}
     raw = canonical_json_bytes(document)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(raw)
@@ -263,6 +472,23 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     parser.add_argument("--data-root", default=None, type=Path)
     parser.add_argument("--release-pins", default=None, type=Path)
     parser.add_argument("--jaccard-threshold", default=0.8, type=float)
+    parser.add_argument(
+        "--schema-version", default=2, type=int, choices=(1, 2),
+        help=(
+            "2 (the default, S3-4s owner decision 106): NODE-TARGETED rows, the "
+            "multi-block v2 advantage parser and the six-token containment rule. "
+            "1 keeps the pre-S3-4s single-statement curation byte for byte."
+        ),
+    )
+    parser.add_argument(
+        "--construction-transcripts", default=None, type=Path,
+        help=(
+            "schema version 2 only: the construction rows' transcripts, read ONLY "
+            "to reject statements that repeat six or more consecutive transcript "
+            "tokens. Reduced to token n-grams on read; no text is printed or "
+            "persisted. Omitting it disables the rule and the report says so."
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -276,28 +502,55 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     pairs_by_sample = pairs.by_sample()
     advantage_outputs = _read_jsonl(args.advantage_outputs)
-    candidates, parse_counts = build_candidate_rows(
-        advantage_outputs=advantage_outputs,
-        pairs_by_sample=pairs_by_sample,
-        run_id=args.run_id,
-        iteration=args.iteration,
+    containment = {"enabled": False, "transcripts": 0, "spans": 0, "span_tokens": 0}
+    if args.schema_version == 2:
+        spans, span_counts = load_construction_spans(args.construction_transcripts)
+        containment = {"enabled": bool(spans), **span_counts}
+        candidates, parse_counts = build_candidate_rows_v2(
+            advantage_outputs=advantage_outputs,
+            pairs_by_sample=pairs_by_sample,
+            run_id=args.run_id,
+            iteration=args.iteration,
+            transcript_spans=spans,
+        )
+        authored_schema = AUTHORED_SCHEMA_V2
+    else:
+        candidates, parse_counts = build_candidate_rows(
+            advantage_outputs=advantage_outputs,
+            pairs_by_sample=pairs_by_sample,
+            run_id=args.run_id,
+            iteration=args.iteration,
+        )
+        authored_schema = AUTHORED_SCHEMA
+    predecessor_rows = load_predecessor_rows(
+        args.predecessor, schema_version=args.schema_version
     )
-    predecessor_rows = load_predecessor_rows(args.predecessor)
     survivors, curation_counts = curate(
         predecessor_rows=predecessor_rows,
         candidate_rows=candidates,
         jaccard_threshold=args.jaccard_threshold,
     )
-    out_sha256 = write_authored_document(args.out_authored, iteration=args.iteration, rows=survivors)
+    out_sha256 = write_authored_document(
+        args.out_authored, iteration=args.iteration, rows=survivors,
+        schema=authored_schema,
+    )
 
     report = {
         "schema": "saea-stage3-delta-curation-report-v1",
         "iteration": args.iteration,
+        "schema_version": args.schema_version,
+        "authored_schema": authored_schema,
+        "containment": containment,
         "parse": parse_counts,
         "curation": curation_counts,
         "survivor_count": len(survivors),
         "out_authored": {"relpath": str(args.out_authored), "sha256": out_sha256},
     }
+    if args.schema_version == 2:
+        report["survivors_by_node"] = {
+            node: sum(1 for row in survivors if row.get("node_target") == node)
+            for node in LEGAL_DELTA_NODES
+        }
     print(json.dumps(report, indent=2, sort_keys=True))  # noqa: T201 -- ids/counts/hashes only
 
     if args.release is not None:
