@@ -1,0 +1,111 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-smoke-4-v1-generation",
+      "baseline_fragment": "slurp-native-stage3-delta-cell-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-delta-cell-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "A four-row form smoke of CELL-1, required before the full arm may open (owner discipline: every PLAN-family cell smokes four rows first). Held for the same reasons as the generation cell.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "Depends on the generation cell's own release requirement above.",
+            "relpath": "knowledge/slurp/semantic/stage3-deltas-v1/release.json",
+            "sha256": "ec9da3e2b8ed842a73c13ea51f58a1f077c787777da2edad82a8234729777338"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1"
+    },
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-smoke-4-v1-twin",
+      "baseline_fragment": "slurp-native-stage3-delta-cell-twin-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-delta-cell-smoke-4-twin-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "A four-row form smoke of the twin cell. Held for the same reasons as the twin generation cell.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "Depends on the twin cell's own release requirement above.",
+            "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1/release.json",
+            "sha256": "a58a370ce9275391c74ae582704ae04c45ad886f6274bff6edd0256c5448f015"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1"
+    }
+  ],
+  "date": "2026-09-22",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops cell CELL-1 and the 1,080-row arm does not open; the twin smoke gates the twin arm the same way. The resume-recovery clause of owner decision 22 applies to an arm, not to a four-row form smoke, which is re-flown whole if it is re-flown at all.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-native-stage3-delta-cell-smoke-4-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The first four rows of TRAIN Fold A in the roster's own order -- cell PLAN's own four-row smoke population, split identity 4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb (configs/experiment/slurp-native-default-plan-lock-smoke-4-v1.json). A pure selection with zero contacts: no quality-based choice, no score read, no separate draw. Structural evidence only; no quality read is taken from this fragment.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row form smoke of Stage-3 S3-6 CELL-1 and of its derangement twin (owner decisions 83, 99, 101, 106): the locked v2.0 plan plus the released stage3-deltas store supplied per node (Perception unconditional cap 4, Solver 8, Reviewer 4, Planner 4) has never flown, so the program's own rule (study CLAUDE.md, owner 2026-09-03) requires four rows of structural evidence before either 1,080-row arm opens. Same fragments, same store pins, same geometry and same session as the arms; only the population and the caps differ. STRUCTURAL ONLY: no official score is run here and no effectiveness claim is read from it.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2",
+  "stage3_algorithm": {
+    "id": "tfgrpo-semantic-advantage-v1",
+    "operators_used": [
+      "update",
+      "context_application"
+    ],
+    "note": "The four-row form smoke of CELL-1 and its twin: the same Training-Free GRPO experiential-delta store, the same per-node application and the same derangement control as the arms, flown on four rows for structural evidence only."
+  },
+  "generation_budget": {
+    "cap": 44,
+    "definition": "44 = 4 rows x 11, the locked plan's OWN per-row contact ceiling (configs/policy/phase-native-candidates-review-revise-v1.json max_contacts 11, resolved from the unchanged role graph perception 1 / solver 1 / reviewer 3 / planner 1 with max_revisions 1). 176 = 44 x (1 speech packet + 3 endpoints) and 117 s is the four rows' repeated speech under that ceiling -- cell PLAN's own registered smoke numbers, unchanged, because this cell is the locked plan plus exactly one store and its role graph is PLAN's. native_task_contract_calls_cap 24 is likewise PLAN's smoke number. The one execution_plan governs both smoke cells of this fragment; each flies under its own run id and the plan budget is run-cumulative. Ceilings are bounds, never targets.",
+    "target": 44
+  }
+}

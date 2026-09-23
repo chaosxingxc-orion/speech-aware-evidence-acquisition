@@ -165,7 +165,12 @@
     }
   },
   "knowledge_stores_note": "Stage-3 S3-4s (owner decision 106, 2026-09-23): the ONE added store now declares a PER-NODE context_supply -- Perception (unconditional, cap 4, the node that produces the candidate list and therefore has no candidate state to bind against), Solver (cap 8), Reviewer (cap 4) and Planner (cap 4), each candidate-bound except Perception, each prior_score-ranked and each filtered to the rows whose node_target is that phase's node (rails.stage3_delta_supply). The cell is still ONE factor on the locked plan: the config diff against configs/baseline/slurp-native-default-plan-lock-baseline-v1.json is exactly the knowledge_stores.stage3-deltas key plus the per-flight bookkeeping keys this cell must re-prepare under its own run id (native_contact_fit, prepared_phase_supply, preparation_source_receipts, the speech-feature identity ids, speech_packet_promotion_receipt[_sha256]) -- the SAME exclusion set the locked plan's own proof test uses for its predecessor fragment. Proof: tests/unit/test_stage3_delta_cell_fragment.py.",
-  "native_contact_fit": "PENDING_SLURP_NATIVE_STAGE3_DELTA_CELL_SMOKE_4_V1_OWN_NATIVE_CONTACT_FIT",
+  "native_contact_fit": {
+    "attempt_id": "attempt-slurp-native-stage3-delta-cell-smoke-4-v1-fit",
+    "contact_cap": 176,
+    "max_speech_packets": 1,
+    "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-FIT-V1"
+  },
   "native_episode": {
     "actions": {
       "accept": "ACCEPT",
@@ -249,8 +254,43 @@
     }
   },
   "policy": "phase-native-candidates-review-revise-v1",
-  "preparation_source_receipts": "PENDING_SLURP_NATIVE_STAGE3_DELTA_CELL_SMOKE_4_V1_OWN_PREPARATION_SOURCE_RECEIPTS",
-  "prepared_phase_supply": "PENDING_SLURP_NATIVE_STAGE3_DELTA_CELL_SMOKE_4_V1_OWN_PREPARED_PHASE_SUPPLY",
+  "preparation_source_receipts": [
+    {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+      "root": "data",
+      "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/completion.json",
+      "root": "data",
+      "sha256": "ebd60aca7e16e647c750a59370fce8010d55f3b57375d202817a4a08da1f4a5e"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+      "root": "data",
+      "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/slot-contracts-v1/completion.json",
+      "root": "data",
+      "sha256": "7acb644871b037f7123adec0c8fd7283ab9215d67c12fc0a32748a67a0f9dc51"
+    },
+    {
+      "relpath": "preparation-runs/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/encode-v1/receipt.json",
+      "root": "data",
+      "sha256": "3c152fc086ed1d1858f5b3021a336570d1b68c87f9c3a5abbe16209c009e2653"
+    },
+    {
+      "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-TRAIN-FOLD-A-ALIAS-V1/query-dimension-alias.json",
+      "root": "data",
+      "sha256": "c1aaf37a678240633078a8fcca455f949a5c4b2b18d37356129976006c9dc138"
+    },
+    {
+      "relpath": "docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json",
+      "root": "repository",
+      "sha256": "48d0f34cf536ebf9806d55b5dcced1b607080bec3c68ca7dea27cdb01478cc72"
+    }
+  ],
   "scorers": [
     "slurp-slu-official-train",
     "cost"
@@ -258,10 +298,10 @@
   "serving_slot_tokens": 24576,
   "serving_slots": 4,
   "smoke_note": "Four-row smoke variant of this cell; population is a synthetic four-row set, pinned once S3-1's construction roster exists.",
-  "speech_feature_key_representation_id": "PENDING_SLURP_NATIVE_STAGE3_DELTA_CELL_SMOKE_4_V1_OWN_SPEECH_FEATURE_KEY_REPRESENTATION_ID",
-  "speech_feature_matcher_policy_id": "PENDING_SLURP_NATIVE_STAGE3_DELTA_CELL_SMOKE_4_V1_OWN_SPEECH_FEATURE_MATCHER_POLICY_ID",
-  "speech_packet_promotion_receipt": "PENDING_SLURP_NATIVE_STAGE3_DELTA_CELL_SMOKE_4_V1_OWN_SPEECH_PACKET_PROMOTION_RECEIPT",
-  "speech_packet_promotion_receipt_sha256": "PENDING_SLURP_NATIVE_STAGE3_DELTA_CELL_SMOKE_4_V1_OWN_SPEECH_PACKET_PROMOTION_RECEIPT_SHA256",
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-anchor-exemplars-k20-replicate-smoke-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-anchor-exemplars-k20-replicate-smoke-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247",
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,

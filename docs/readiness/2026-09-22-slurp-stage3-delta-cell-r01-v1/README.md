@@ -311,3 +311,52 @@ receipt; the unconditional spec validated fail-closed, including the refusal of 
 and of the unconditional provider on a later phase; a pre-S3-4s spec without `node_target` still
 validates and routes unchanged), `tests/unit/test_stage3_delta_store_v2.py` (the v2 builder, the
 containment rule and its counts) and `tests/unit/test_stage3_delta_twin_v2.py`.
+
+## Registration (2026-09-23): the package is complete and the fragments compose
+
+Still **HELD**. Nothing in this section authorises a flight, a flip or an admission entry.
+
+The CELL-1 registration agent (worktree `/home/chao/saea-worktrees/fable-cell1reg`, branch `fable/cell1reg`,
+base master `56b1570b`) wrote the registration documents this package was missing and repaired the fragment
+defects that stopped it composing at all. The full statement is
+`docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1-preregistration.md`; the short version:
+
+**Added here**: `protocol-registered-v1.json`, `registered-facts-v1.json` (what
+`scripts/analysis/plan_cell_read.py` reads against), `analysis-recipe-v1.json`, and eight registered plan
+documents -- `generation`, `fit`, `twin-generation`, `twin-fit`, `smoke-generation`, `smoke-fit`,
+`twin-smoke-generation`, `twin-smoke-fit`. Added outside: the preregistration note, the campaign plans
+`configs/campaign/slurp-native-stage3-delta-cell-r01-v1.json` and `...-r01-twin-v1.json`, eight unconsumed
+exposure-ledger rows, and the runbooks `scripts/flights/batch/cell1_repin_{smoke,arm,twin_smoke,twin}.sh`,
+`cell1_flip_all.sh` and `batch_chain_cell1.sh`.
+
+**Repaired** (each measured, not assumed):
+
+1. The six non-prepared-supply `PENDING_<CELL>_OWN_<KEY>` tokens were filled. `core.config.compose` raises
+   `preparation_source_receipts must be a non-empty list` on a PENDING string, so the claim above that the re-pin
+   mints them was wrong for six of the seven: neither `core.flight.cli check` nor `scripts/flights/repin_cell.py`
+   could reach the preparation step. Every filled value except `native_contact_fit` is cell PLAN's own byte for
+   byte; `native_contact_fit` carries this cell's own fit identity and endpoint ceiling.
+2. `prepared_phase_supply` was **removed** from the four baselines rather than left as a token:
+   `core.flight.repin.ArtifactPin.from_mapping` refuses a string pin before `ensure_artifact_pinned` can mint the
+   real one. Removal is the cell-P0 form; the flip mints each cell's own pin and its readiness requirement.
+3. `populations` was added to the experiment fragment (cell PLAN's own inlined 1,080 ids); without it the SLURP
+   adapter refuses every cell with `runtime SLURP TRAIN samples require an explicit registered population`.
+4. The two four-row smoke cells moved into their own fragment
+   `configs/experiment/slurp-native-stage3-delta-cell-smoke-4-v1.json`, because
+   `rails.adapters.runtime_view.registered_population_ids` resolves exactly one selection per dataset fragment and
+   a 1,080-row arm and a four-row smoke therefore cannot share one. The arm fragment keeps four cells: the arm,
+   the twin and their two fit identities.
+5. `preserve_wire_responses: true` was added to both fragments, as every plan-family fragment carries it.
+6. The two smoke FIT identities (`...-SMOKE-4-FIT-V1`, `...-SMOKE-4-TWIN-FIT-V1`) are named by the smoke
+   baselines' `native_contact_fit` and declared by no cell -- cell PLAN's own form -- and each carries its own
+   registered plan document and its own unconsumed exposure row.
+
+**The store as released** (counts read model-free from the snapshot; no statement text): 379 values, node targets
+perception 119 / solver 151 / reviewer 95 / planner 14, delta kinds slot-contract 147 / intent-boundary 117 /
+reviewer-criterion 95 / planner-rule 13 / exemplar-note 5 / perception-hint 2, 97 distinct facets, 223 source
+sample ids, mean statement 84.0 characters, longest 126. The twin holds all of it except facet attachment.
+
+**Numbers a plan-based cell inherits**: 1,080 rows x the 11-contact program ceiling = 11,880 generation calls;
+47,520 FIT endpoints; 33,930 repeated speech seconds; 12.0 fit-inclusive GPU hours; 6,480 native task-contract
+calls; one official complete score per arm. Each four-row smoke: 44 / 176 / 117 / 1.0 / 24 / 0. Cell PLAN's own
+realised cost on this roster was 4,424 contacts, 8,353.2 prefilled tokens per row and 1.7579 GPU hours per 1,080.

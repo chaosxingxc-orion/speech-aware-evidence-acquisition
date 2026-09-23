@@ -1,0 +1,72 @@
+{
+  "cell": "slurp-native-stage3-delta-cell-r01-twin-v1",
+  "composed_config_hash": "f21cc058e12c62132f0f9e17f9702e93a410eda6f66d7f6aa5b82c7da711844b",
+  "decision_rule": {
+    "ADMITTED": "the CI95 lower bound of the paired official pooled SLU-F1 delta (CELL-1 minus PLAN) is ABOVE ZERO and the CI95 lower bound of the paired intent delta exceeds -0.9943 (owner decision 99, the TRAIN lock: a gain is proven, not merely non-inferior)",
+    "DELTA_CONSUMPTION": "item S3-4s: the per-node delta-consumption table -- how many deltas each node was supplied per row, which value_ids were supplied, and the saves and harms on the rows that received each one -- is a PRIMARY deliverable, reported whatever the verdict, and is what decides which deltas survive into store version 2.",
+    "FRONTIER": "owner decision 75: the frontier row (official SLU-F1 delta x prefilled tokens per row x GPU hours per 1,080 rows) is reported on every verdict and placed beside the registered rows.",
+    "HARMFUL": "a MEASURED loss on either guard (owner decision 25, Method B: a CI95 upper bound below zero, or a point estimate beyond the margin); width alone is NEUTRAL, never HARMFUL",
+    "NEUTRAL": "both guards are non-inferior -- the SLU CI95 lower bound exceeds -1.2485 and the intent CI95 lower bound exceeds -0.9943 -- without a proven SLU gain",
+    "PER_SCENARIO_HARM_BOUND": "owner decision 17: per-scenario intent and SLU tables over all 18 scenarios in BOTH the natural-mixture and the equal-stratum weighting, with net harmed rows per scenario and any scenario of five or more flagged. A breach is a diagnostic beside the verdict, never a gate.",
+    "REPLICATION": "an ADMITTED result is replicated on the SAME roster before any DEV, Fold B or test read (the owner iteration rule; no DEV read is authorised by this package).",
+    "TWIN": "ATTRIBUTION, never admission. The twin arm is read with the same estimator against the same sealed PLAN comparator. A gain the twin reproduces within the plan's own null is FORM (the store's shape and token volume), not content, and the verdict says so and claims no content effect. A gain the twin does not reproduce is attributed to the deltas' content, with the twin delta reported beside it.",
+    "comparator": "the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 (official 63.6304 / 82.2222); nothing is re-flown",
+    "efficiency_is_reported_regardless": "every efficiency deliverable is reported whatever the verdict"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-delta-cell-r01-v1-twin",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 11880,
+    "planned_speech_audio_seconds": 33930,
+    "protocol_hash": "e98f5b729c45e545fe035ab148b42b5e834d0d17c8d313b57c5bf3cf474a09e7",
+    "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan configs/campaign/slurp-native-stage3-delta-cell-r01-twin-v1.json; the campaign acquires its own GenerationLease against the resident session serving-slurp-native-candidate-five-train-a-np4-v1 (attach only, never spawn or stop) and schedules the one official complete TRAIN score at finalize. Queued through the SAEA-Batch-Driver scheduled task (owner decision 77). coordinate-fit must NOT be run.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-delta-cell-r01-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "modules": {
+    "base": "the locked v2.0 SLURP default plan, exactly as the sealed PLAN arm flew it (configs/baseline/slurp-native-default-plan-lock-baseline-v1.json): the complete native episode with the review loop on, the shared controller and FlightRuntime path, no phase_tools on any role, Solver-only answer authority, the three-candidate contract, the max512 np4 resident geometry, the slot-contracts v2 / intent-boundaries v1 / train-exemplars k=20 stores, saea-deliver-normalise-v3 at delivery, and items E13 and E22 declared. Nothing of it moves.",
+    "factor": "the same one factor as the arm, with the store pinned to the DERANGEMENT TWIN release (knowledge/slurp/semantic/stage3-deltas-twin-v1/): the same 379 statements, the same node distribution and the same token count, with the candidate-bound nodes' associated_facet_ids and the unconditional list's TARGET fields deranged under seed 20260922 (scripts/build_slurp_stage3_delta_twin.py, zero fixed points). The twin is the FORM control: a gain it reproduces is form, not content.",
+    "per_role_rendering_held": "native_episode.tool_schema_rendering is NOT armed.",
+    "purpose": "Stage-3 S3-6 CELL-1 as amended by S3-4s (owner decisions 83, 99, 101, 106): the locked v2.0 plan plus the NODE-TARGETED stage3-deltas store as ONE factor on TRAIN Fold A, comparator the sealed PLAN arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943), twin arm as the form control. PRIMARY DELIVERABLES: (1) the official paired read against the sealed PLAN arm under the decision-99 TRAIN lock rule; (2) the per-scenario effect x prefilled-token frontier table in both natural-mixture and equal-stratum weightings, deciding which deltas survive into version 2; (3) the per-node delta-consumption table (S3-4s): which deltas were supplied, per scenario and per node, and the saves and harms on the rows that received each delta; (4) the twin contrast, which decides attribution, never admission.",
+    "second_declared_key_not_a_factor": "native_episode.react_exhaustion_policy = continue-without-answer (item E22) and finite_completion_policy = deliver-latest-or-abstain (item E13): failure-mode declarations the locked plan already carries, required of every live SLURP native cell by scripts/checks/finite_completion_policy_check.py. Neither renders a request byte.",
+    "zero_added_contacts": "the added store supplies text to requests the plan already makes, so the role graph and therefore the 11-contact per-row ceiling are cell PLAN's unchanged"
+  },
+  "plan_kind": "generation",
+  "preparation_base_commit": "56b1570b",
+  "prepared_phase_supply": {
+    "allow_output_change": "--allow-output-change must never be passed",
+    "expected_identity": "cell PLAN's own arm preparation output is ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f and its smoke's is 512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733. This cell's added store is routed through context_supply, not through the first phase's retrieval store, so the PREPARED Perception selection is expected to reproduce those outputs exactly. If it does not, the knowledge channel moved: stop and report rather than passing --allow-output-change.",
+    "note": "Item E16: a prepared artifact is evidence only for the implementation that produced it, so each of the four flown cells prepares its OWN first-phase Perception supply under its OWN run id at the readiness flip. core.flight.repin.ensure_artifact_pinned runs core.flight.cli prepare-supply (model-free, zero model / tokenizer / encoder / scorer / server contacts), writes the pin into the baseline fragment and inserts the matching 'preparation' readiness requirement. The committed baselines therefore carry NO prepared_phase_supply key at all -- the cell-P0 form (scripts/flights/batch/derive_plan_cell_registration.py drops it for exactly this reason). A PENDING_ string in its place is NOT a valid registration: core.flight.repin.ArtifactPin.from_mapping refuses it ('malformed artifact pin') before the preparation step can run, which is the defect this registration repaired.",
+    "status": "NOT PINNED HERE, and deliberately not written by hand"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/protocol-registered-v1.json",
+    "sha256": "5086fa1fc8b218531bc3b3996fc1866abd4123f9c879e8a54ae0169304148b0a"
+  },
+  "purpose": "Stage-3 S3-6 CELL-1 as amended by S3-4s (owner decisions 83, 99, 101, 106): the locked v2.0 plan plus the NODE-TARGETED stage3-deltas store as ONE factor on TRAIN Fold A, comparator the sealed PLAN arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943), twin arm as the form control. PRIMARY DELIVERABLES: (1) the official paired read against the sealed PLAN arm under the decision-99 TRAIN lock rule; (2) the per-scenario effect x prefilled-token frontier table in both natural-mixture and equal-stratum weightings, deciding which deltas survive into version 2; (3) the per-node delta-consumption table (S3-4s): which deltas were supplied, per scenario and per node, and the saves and harms on the rows that received each delta; (4) the twin contrast, which decides attribution, never admission.",
+  "quality_read_gate": "no task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist, and not before the registered STOP condition passes (the sealed PLAN and PLANr aggregates reproduce to the hundredth). The twin is read only after the arm has sealed and been read. The efficiency and delta-consumption reads may proceed from the sealed receipts, trace and server log as soon as the manifest seals, because they touch no answer, reference or quality field.",
+  "registered_at_utc": "2026-09-23T18:00:00.000000+00:00",
+  "registration_base_commit": "56b1570b",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-cell1reg, branch fable/cell1reg, base master 56b1570b",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}
