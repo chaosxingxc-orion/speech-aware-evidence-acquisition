@@ -14,13 +14,20 @@
         "reason": "Four-row form smoke of Stage-3 S3-4 / S3-4s cell ADV-1 (docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md sections S3-4 and S3-4s, owner decision 106), REGISTERED FOR FLIGHT 2026-09-23 beside the arm in the same package (docs/readiness/2026-09-22-slurp-stage3-advantage-r01-v1/README.md, campaign plan configs/campaign/slurp-native-stage3-advantage-r01-v1.json, four unconsumed exposure-ledger rows). The program rule is that every NEW module form flies a four-row smoke before its full cell (study CLAUDE.md, owner 2026-09-03), and phase-stage3-advantage-v2 with the stage3-advantage-statement-v2 four-line block form has never flown. READINESS HELD: the one requirement below is S3-3's pairs.json, which is SATISFIED (cell ROLL-1 sealed and scripts/analysis/stage3_rollout_score.py ran on the seal) and pinned by hash here and in the baseline fragment's advantage_pairs block. NO DECISION REQUIREMENT IS REGISTERED HERE ON PURPOSE (the ROLL-1 precedent): core.flight.repin._upsert_decision_requirement inserts it at the readiness flip, and a placeholder decision entry without an expected_decision_id would be left behind beside it and refuse the campaign at load (core.flight.campaign.declared_readiness). Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-advantage-r01-admission-v1",
+            "relpath": "coordination/slurp-stage3-advantage-r01-v1/root-admission-v1.json",
+            "sha256": "aebf81157998d2e2011843eef9267115c5857b31803b17199fd52b77086d9e44",
+            "reason": "Decision slurp-stage3-advantage-r01-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "S3-3's pairs.json, which this smoke's four rows are selected out of and which the per-row instruction renders its trajectory block from. core.flight.campaign.declared_readiness resolves every readiness requirement BENEATH THE DATA ROOT, so this relpath is data-root relative. The two roster receipts (the disagreeing parent and this smoke's own four rows) are NOT readiness requirements -- they are repository artifacts, not data-root ones -- and are pinned by hash in configs/baseline/slurp-native-stage3-advantage-smoke-4-baseline-v1.json preparation_source_receipts, the ROLL-1 precedent.",
             "relpath": "analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1/pairs.json",
             "sha256": "d66cd80104e2ec9161057a8e4f587dac981e701f347c2fce3c5dce40cba6ef80"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-ADVANTAGE-R01-SMOKE-4-V1"
     },
