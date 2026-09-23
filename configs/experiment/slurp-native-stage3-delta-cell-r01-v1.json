@@ -56,8 +56,8 @@
           {
             "kind": "preparation",
             "reason": "The twin release of knowledge/slurp/semantic/stage3-deltas-twin-v1r/, the seeded derangement of the v1r store's own authored document (seed 20260922). The cell stays HELD on a root admission decision.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1/phase-supply-v1.json",
-            "sha256": "043516877b36053eaec5e468d9de3c11ba008805633223ceb0091d20b556445b"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1/phase-supply-v2.json",
+            "sha256": "646ec3c15c9b730c00978c89ac7cbedfe9b694d6f10725c3a0cc93fe0907cca4"
           }
         ],
         "state": "ready"
