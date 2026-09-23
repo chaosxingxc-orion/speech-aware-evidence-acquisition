@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-delta-cell-smoke-4-twin-v1",
-  "composed_config_hash": "e7ea268c6b7d51ee2027cc8ced7d2137c41f8212350ae677355170fb55a01df1",
+  "composed_config_hash": "6c3c785afff9d53ed5bad1f7acb2b2cf055ebbab61f2d9175a2c05230de3b682",
   "decision_rule": {
     "ADMITTED": "the CI95 lower bound of the paired official pooled SLU-F1 delta (CELL-1 minus PLAN) is ABOVE ZERO and the CI95 lower bound of the paired intent delta exceeds -0.9943 (owner decision 99, the TRAIN lock: a gain is proven, not merely non-inferior)",
     "DELTA_CONSUMPTION": "item S3-4s: the per-node delta-consumption table -- how many deltas each node was supplied per row, which value_ids were supplied, and the saves and harms on the rows that received each one -- is a PRIMARY deliverable, reported whatever the verdict, and is what decides which deltas survive into store version 2.",
@@ -20,7 +20,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 44,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "01364bfb41c4028aabdcf3f94d620106c2acadad034694a223e9b02262e1dc2f",
+    "protocol_hash": "78748af6e189dd57c9bd0e8acaf73030fad551640a28c07e9a39ff4554ad4644",
     "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-TWIN-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -59,7 +59,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/protocol-registered-v1.json",
-    "sha256": "3b45a69363c59e5b77304cc7f043a79938385ffe0c0c1d9d7ebd495b99317479"
+    "sha256": "13193d8ad770a57cff7ebbe0ce96be3109aeb0312f590ce85cd0aa0ef772e66c"
   },
   "purpose": "Stage-3 S3-6 CELL-1 as amended by S3-4s (owner decisions 83, 99, 101, 106): the locked v2.0 plan plus the NODE-TARGETED stage3-deltas store as ONE factor on TRAIN Fold A, comparator the sealed PLAN arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943), twin arm as the form control. PRIMARY DELIVERABLES: (1) the official paired read against the sealed PLAN arm under the decision-99 TRAIN lock rule; (2) the per-scenario effect x prefilled-token frontier table in both natural-mixture and equal-stratum weightings, deciding which deltas survive into version 2; (3) the per-node delta-consumption table (S3-4s): which deltas were supplied, per scenario and per node, and the saves and harms on the rows that received each delta; (4) the twin contrast, which decides attribution, never admission.",
   "quality_read_gate": "no task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist, and not before the registered STOP condition passes (the sealed PLAN and PLANr aggregates reproduce to the hundredth). The twin is read only after the arm has sealed and been read. The efficiency and delta-consumption reads may proceed from the sealed receipts, trace and server log as soon as the manifest seals, because they touch no answer, reference or quality field.",
