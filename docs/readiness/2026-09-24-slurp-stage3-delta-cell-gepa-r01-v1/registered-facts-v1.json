@@ -619,7 +619,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-gepa-r01-v1/protocol-registered-v1.json",
-    "sha256": "69b615dc0d12c0459410a2dcd9d4e157d8915d7e67b538d94a9c3a5a0b388404"
+    "sha256": "1404b5c70cc74220df4fa35e74363577f4cc8ca623d63f8e580a8e96b6265245"
   },
   "registered_ceilings": {
     "fit_endpoints": 47520,

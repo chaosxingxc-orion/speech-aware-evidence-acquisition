@@ -15,13 +15,20 @@
         "reason": "The four-row form smoke of CELL-1-GEPA. HELD exactly as the arm is: root mints the admission receipt, rewrites its eligible_run_ids to include this run id and its fit identity, and re-pins this cell with scripts/flights/repin_cell.py --set-ready, which mints this cell's own first-phase supply artifact under its own run id (item E16). The committed baseline carries NO prepared_phase_supply key. The smoke seals before the arm opens.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-delta-cell-gepa-r01-admission-v1",
+            "relpath": "coordination/slurp-stage3-delta-cell-gepa-r01-v1/cell-admission-v1.json",
+            "sha256": "e4cf17b93a351fad23ba5005862326a2e462b607ada0962539be53467131f4de",
+            "reason": "Decision slurp-stage3-delta-cell-gepa-r01-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The GEPA delta store: the release of knowledge/slurp/semantic/stage3-deltas-gepa-v1/, curated model-free from the sealed GEPA proposer outputs of SAEA-SLURP-STAGE3-GEPA-R01-V1 and appended to the 200 iteration-1 rows the decision-83 retention document prepared/SAEA-SLURP-STAGE3-DELTAS-GEPA-V1/retention-gepa-v1.json kept of v1r's 379: 448 values. Released 2026-09-24, model-free, by scripts/flights/batch/gepa_to_deltas.sh; release pins coordination/slurp-stage3-delta-cell-gepa-r01-v1/stage3-deltas-gepa-v1-release-pins.json. The cell stays HELD on a root admission decision.",
-            "relpath": "knowledge/slurp/semantic/stage3-deltas-gepa-v1/release.json",
-            "sha256": "53c1267169b5269bc850f75527b2c8086fd681126f9180ac4a0df9410b61fcfa"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "ac2be2ad70efd052fdf9a7c1a8f14355c1a0e7469958b1e7546d25aae63a0d42"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-V1"
     },
