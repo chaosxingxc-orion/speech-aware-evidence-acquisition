@@ -335,7 +335,7 @@ no gain.
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-TWIN-FIT-V1` | `...-gepa-r01-smoke-4-twin-fit-v1` | `twin-smoke-fit-plan-registered-v1.json` | same | same | same |
 
 Protocol document `protocol-registered-v1.json` sha256
-`b3220d4b08a4ab4a05d0326c9f5cfde0013b2a95ff44885c91f0c73a9e7450ef`.
+`69b615dc0d12c0459410a2dcd9d4e157d8915d7e67b538d94a9c3a5a0b388404`.
 
 Every hash above was computed offline by `core.config.compose` and `core.config.protocol_hash` over
 the committed fragments, exactly as `scripts/flights/batch/e35_rehash.py` does. **`core.flight.cli

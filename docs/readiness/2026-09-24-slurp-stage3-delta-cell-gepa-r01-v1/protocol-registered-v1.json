@@ -170,9 +170,9 @@
     "arm": {
       "pin_note": "release.sha256 is the release.json FILE digest (rails.knowledge_stores._read_pinned hashes the bytes); snapshot.sha256 is the snapshot's CONTENT hash (KnowledgeSnapshot.content_hash(), equal to the release's own snapshot_sha256), never the snapshot.json file digest, which is recorded beside it as snapshot_file_sha256 and pins nothing. The loader checks both identities. Both values were read out of the released documents by scripts/flights/batch/adv1_to_deltas_steps.py cell1-values at version tag v2 and written into coordination/slurp-stage3-delta-cell-gepa-r01-v1/gepacell-fill-values-v1.json; no digest in this package was typed by hand.",
       "predecessor": "version 1r (knowledge/slurp/semantic/stage3-deltas-v1r/, release 02505ba2e548a008cc6c16ffda6f7b9bff505061863026a3d7e1396c26d6c2e0) is the store CELL-1 flew and the store this one is append-only over; version 2 is its decision-83 retention and is what CELL-2 flies. Neither is superseded and neither is rewritten: all three stay on disk.",
-      "registration": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v2-release-registration.json",
+      "registration": "docs/readiness/2026-09-24-slurp-stage3-gepa-r01-v1/stage3-deltas-gepa-v1-release-registration.json",
       "registration_note": "The two runnable release registrations stay where the release that produced them recorded them -- inside the CELL-1 package -- because core.semantic_knowledge_preparation records a registration by its repo-relative path and the released release.json binds exactly that path. This package REFERENCES them and does not copy them, so there is only one file per registration to keep true.",
-      "registration_sha256": "9ad980f0299d2492675453dc1a18478335d8c1f33ddfb1bc043272ce8ef45f24",
+      "registration_sha256": "cbcf18d414177acbd7bc23fec093c5d1e548c72b97e07b06c98673b14e039bd3",
       "release": {
         "relpath": "knowledge/slurp/semantic/stage3-deltas-gepa-v1/release.json",
         "sha256": "53c1267169b5269bc850f75527b2c8086fd681126f9180ac4a0df9410b61fcfa"
@@ -336,8 +336,8 @@
     "twin": {
       "pin_note": "release.sha256 is the release.json FILE digest (rails.knowledge_stores._read_pinned hashes the bytes); snapshot.sha256 is the snapshot's CONTENT hash (KnowledgeSnapshot.content_hash(), equal to the release's own snapshot_sha256), never the snapshot.json file digest, which is recorded beside it as snapshot_file_sha256 and pins nothing. The loader checks both identities. Both values were read out of the released documents by scripts/flights/batch/adv1_to_deltas_steps.py cell1-values at version tag v2 and written into coordination/slurp-stage3-delta-cell-gepa-r01-v1/gepacell-fill-values-v1.json; no digest in this package was typed by hand.",
       "predecessor": "version 1r's twin (knowledge/slurp/semantic/stage3-deltas-twin-v1r/) and version 2's twin (knowledge/slurp/semantic/stage3-deltas-twin-v2/) are the twins CELL-1 and CELL-2 fly; they stay on disk and are not rewritten.",
-      "registration": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-twin-v2-release-registration.json",
-      "registration_sha256": "548f6640c32c2ed63d3565b49816f73d295e9712e62200b4b43822e87911e37f",
+      "registration": "docs/readiness/2026-09-24-slurp-stage3-gepa-r01-v1/stage3-deltas-gepa-twin-v1-release-registration.json",
+      "registration_sha256": "f4fa1332282bce1210f96827c89333958dde53e1643a50012a5f7eed1bfc317e",
       "release": {
         "relpath": "knowledge/slurp/semantic/stage3-deltas-gepa-twin-v1/release.json",
         "sha256": "fb2dad3082848f1ff794401f2ea1d9b0d53e33b0f7a459592b44364cce196fb3"
@@ -351,7 +351,7 @@
   },
   "derivation_from_cell1": [
     "CELL-1-GEPA is a SIBLING fragment set, never an edit of CELL-1's: CELL-1's run ids, attempt ids and fit identities are sealed and consumed, and the runbook's repoint step -- which rewrites store pins in place -- is for a HELD cell, never for re-pointing a sealed identity onto new content. The release runbook was therefore run step by step (B / C / W / D / E / R) and its fill stage was not run at all.",
-    "The four baselines are CELL-1's with exactly three changes: the stage3-deltas release and snapshot pins moved to the version-2 namespaces, native_contact_fit renamed to this family's own R02 identities, and prepared_phase_supply REMOVED (the cell-P0 form; the flip mints each cell's own artifact under its own run id, item E16). Every other decided key is byte-identical to CELL-1's, so the one-factor proof against the locked plan still holds by construction.",
+    "The four baselines are CELL-1's with exactly three changes: the stage3-deltas release and snapshot pins moved to the stage3-deltas-gepa-v1 and stage3-deltas-gepa-twin-v1 namespaces, native_contact_fit renamed to this family's own GEPA-R01 identities, and prepared_phase_supply REMOVED (the cell-P0 form; the flip mints each cell's own artifact under its own run id, item E16). Every other decided key is byte-identical to CELL-1's -- and to CELL-2's -- so the one-factor proof against the locked plan still holds by construction and the three families' arms differ only in the store they pin (owner decision 101).",
     "A recovery re-registration needs BOTH a new generation attempt id AND a new native_contact_fit.attempt_id in the baseline. CELL-1 lost two relaunches to exactly this: the fit gate binds the BASELINE's fit attempt id and refuses an identity that already carries evidence. Both failure_policy strings say so.",
     "The two smoke FIT identities are declared as held CELLS in the smoke fragment, where CELL-1 left them undeclared (cell PLAN's form). Each of this family's eight run ids therefore carries a cell, a registered plan document, an exposure row and its own core.flight.cli check. This is the only intentional shape difference from CELL-1 and it authorises nothing extra: both cells stay held and are never flown as generation cells.",
     "No decision requirement is registered in either fragment, on purpose: core.flight.repin._upsert_decision_requirement inserts the real one at the flip and a placeholder without an expected_decision_id would refuse the campaign at load.",
@@ -663,7 +663,7 @@
     "first_request_identity": "the Perception request differs from cell PLAN's for the same row by exactly the added unconditional delta block and by nothing else; the Solver, Reviewer and Planner requests differ by their own added block plus upstream content",
     "fits": "every request fits (one request-fit receipt per contact)",
     "normaliser": "one deliver_normaliser receipt (saea-deliver-normalise-v3) per row; the four knowledge-store release and snapshot pins on every receipt",
-    "offline_precondition": "Before the smoke flies, analysis.native_episode_dry_run walks this exact composition on all four rows against the REAL released version-2 stores, contact-free, including a duplicate candidate row and a REVISE revisit, and reports the per-node supplied counts. The registered result of that walk is in this package's README.",
+    "offline_precondition": "Before the smoke flies, analysis.native_episode_dry_run walks this exact composition on all four rows against the REAL released GEPA stores, contact-free, including a duplicate-candidate row and a REVISE revisit, and reports the per-node supplied counts. That walk has been run on both the arm form and the twin form and BOTH PASS; its registered result is docs/readiness/2026-09-24-slurp-stage3-delta-cell-gepa-r01-v1/dry-run-v1.md, and the smoke's realised counts must EQUAL it.",
     "revisit": "A REVISE revisit must acquire only what the episode does not already hold; a duplicate acquisition is a FORM defect that stops the arm. The second slice's size is reported, not refused. See revisit_supply_rule.",
     "rows_delivered": 4,
     "tools_array": "absent on every request; tool_choice none; 0 tool calls",
