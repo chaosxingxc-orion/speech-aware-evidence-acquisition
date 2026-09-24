@@ -237,7 +237,7 @@ Composed config and protocol hashes, computed offline by `core.config.compose` a
 
 | cell | composed config hash | protocol hash |
 | --- | --- | --- |
-| `slurp-native-default-plan-dev2000-added-replicate-v1` | `83e68035c4c4e9bc33555f01f8b8041d92083677e9f2c77f818847f57933c085` | `c16d649e57f8f9958cdb0c90d2b6a95a4bb63c94acf45e3e78a6597e41782e67` |
+| `slurp-native-default-plan-dev2000-added-replicate-v1` | `7e8ef09633a8c77785d45011dfc50b6a74245a2cfd7b894e115ccf16869c7944` | `075bf598a48ea20ca90a200d925cc22efe55289b479b84170be66677439f83e3` |
 | `slurp-native-default-plan-dev2000-added-replicate-fit-v1` | `83e68035…` | `c16d649e…` |
 | `slurp-native-stage3-delta-cell-r03-gate-v1` | `7c8db497059c02d4b86f82ef241aac6b723695cd257ac86cd83ada0188245c8d` | `abd0091c0c9f7bf4c489b5b551af0fc71262e929cb93164062426a73e65396dc` |
 | `slurp-native-stage3-delta-cell-r03-gate-fit-v1` | `7c8db497…` | `abd0091c…` |
@@ -261,7 +261,7 @@ Store pins, all read off the bytes on disk by the generator: arm release
 CONTENT hash, never the `snapshot.json` file digest.
 
 Protocol document `docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1/protocol-registered-v1.json`,
-sha256 `9bc3e4e723b1b1d683f933b22c9bbcdfedb51fa81e374f3ceb2ac9da0b0d8c68`, pinned by all ten plan
+sha256 `2f493105ac9d1a2462c59a22dc63feaacebff6f0d51d331b7a8bc66b889f9183`, pinned by all ten plan
 documents.
 
 ## 9. What is registered, and what this registration does NOT authorise

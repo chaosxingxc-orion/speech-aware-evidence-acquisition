@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-default-plan-dev2000-added-replicate-v1",
-  "composed_config_hash": "83e68035c4c4e9bc33555f01f8b8041d92083677e9f2c77f818847f57933c085",
+  "composed_config_hash": "7e8ef09633a8c77785d45011dfc50b6a74245a2cfd7b894e115ccf16869c7944",
   "decision_rule": {
     "comparator": "the sealed SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1; nothing of it is re-flown",
     "role": "PLANr-DEV2000 CARRIES NO ADMISSION RULE OF ITS OWN. It is the roster's own null: its deliverable is the margin table PLAN-DEV2000 versus PLANr-DEV2000 (pooled official SLU-F1 and intent half-widths, CI95, same paired estimator, utterance-id clusters, seed 20260915, 10,000 draws), read model-free as SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-OWN-NULL-V1. No ADMITTED/NEUTRAL/HARMFUL verdict is read from this cell and it carries no bar (owner decision 86).",
@@ -14,7 +14,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11000,
     "planned_speech_audio_seconds": 32819,
-    "protocol_hash": "c16d649e57f8f9958cdb0c90d2b6a95a4bb63c94acf45e3e78a6597e41782e67",
+    "protocol_hash": "075bf598a48ea20ca90a200d925cc22efe55289b479b84170be66677439f83e3",
     "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-REPLICATE-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
@@ -63,7 +63,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1/protocol-registered-v1.json",
-    "sha256": "9bc3e4e723b1b1d683f933b22c9bbcdfedb51fa81e374f3ceb2ac9da0b0d8c68"
+    "sha256": "2f493105ac9d1a2462c59a22dc63feaacebff6f0d51d331b7a8bc66b889f9183"
   },
   "purpose": "Cell PLANr-DEV2000: the request-identical second pass of cell B6 plan arm on the fresh DEV-2000-ADDED roster, flown for ONE reason -- to give this roster its OWN NULL. Cell CELL-3 (Stage-3 S3-6 iteration 3) is read against the sealed SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1 on these same 1,000 rows, and a non-inferiority margin imported from TRAIN Fold A (h_SLU 1.2485 / h_intent 0.9943) is a margin measured on a different roster, a different scorer sibling and a different clustering (speaker there, utterance id here). This pass produces the half-widths PLAN-DEV2000 vs PLANr-DEV2000 under the same paired estimator, so CELL-3 is not read under an imported margin. Nothing moves against cell B6 plan arm except the run, attempt and fit identities: same packets, same vectors, same receipts, same stores, same serving geometry, same caps, same devel-gold scorer. NO SMOKE IS REGISTERED: the form is already sealed and flown on this exact roster by cell B6 (its own why_no_smoke rule), and a request-identical replicate raises no new structural question a four-row flight would answer. REPORT-ONLY on its own: this cell makes no admission claim and carries no bar; its deliverable is a margin table.",
   "quality_read_gate": "no task-quality read before the complete sealed manifest, the exact ordered 1,000 outputs, the native phase summary and the single successful complete official devel score all exist, and not before the stop stage passes. This cell's read is the margin table and nothing else.",
