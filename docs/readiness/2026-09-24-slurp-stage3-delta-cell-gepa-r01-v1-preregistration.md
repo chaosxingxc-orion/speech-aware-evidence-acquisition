@@ -324,7 +324,7 @@ no gain.
 
 | run id | cell | plan | composed config | protocol hash | split identity |
 | --- | --- | --- | --- | --- | --- |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-V1` | `...-gepa-r01-v1` | `generation-plan-registered-v1.json` | `a7defc1a4943845f493c9f4af4605d67e51184abc5af29604f279a17119c4810` | `a407a87bfd5fe43d4affdf56651dee0e99bc69c15dc448a6bbda3646b475956d` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-V1` | `...-gepa-r01-v1` | `generation-plan-registered-v1.json` | `a7853c3f45b115ff60d64ecc42d7733e6546e4a7c7729f8bb772c92f3b8f48d2` | `ac06f785d76d4ceb9e0200e3527a7558d70ed3c89587e0bb41c6ec7172682ede` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-FIT-V1` | `...-gepa-r01-fit-v1` | `fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-TWIN-V1` | `...-gepa-r01-twin-v1` | `twin-generation-plan-registered-v1.json` | `fce42bd1812ebb7b4fdfa843722d2d9258c9ceba1d5f59ef4f759cbc1b435670` | `3e9bd26ca5f183e02eede45527928f81d7626c78c8251d81891da65bdaa5ed80` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-TWIN-FIT-V1` | `...-gepa-r01-twin-fit-v1` | `twin-fit-plan-registered-v1.json` | same | same | same |
@@ -433,8 +433,8 @@ d["budget"]["smoke"].update({"generation_calls_cap": 44, "fit_endpoint_calls_cap
                              "repeated_speech_audio_seconds_cap": 117, "gpu_hours_fit_inclusive_cap": 1.0,
                              "native_task_contract_calls_cap": 24, "official_complete_score_jobs": 0})
 d["registered_hashes"].update({
-    "arm_composed_config": "a7defc1a4943845f493c9f4af4605d67e51184abc5af29604f279a17119c4810",
-    "arm_protocol": "a407a87bfd5fe43d4affdf56651dee0e99bc69c15dc448a6bbda3646b475956d",
+    "arm_composed_config": "a7853c3f45b115ff60d64ecc42d7733e6546e4a7c7729f8bb772c92f3b8f48d2",
+    "arm_protocol": "ac06f785d76d4ceb9e0200e3527a7558d70ed3c89587e0bb41c6ec7172682ede",
     "smoke_composed_config": "5be01487d8037ea757e011bc62ce4e8bac9c484d6c5a2784fbc654eb3bb6e839",
     "smoke_protocol": "023c497a43ac1d22699a45fdbc6b544cf517bc3f8d689e270e6962937fff4a30"})
 d["cell_kind"] = ("Stage-3 S3-6 one-factor knowledge cell, the GEPA family (owner decision 101): the locked "
