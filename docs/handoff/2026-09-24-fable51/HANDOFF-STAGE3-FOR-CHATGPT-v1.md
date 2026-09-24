@@ -1,6 +1,8 @@
 # Stage-3 handoff for ChatGPT: the complete experiment plan and the current state
 
-Author: Fable 5.1 (root coordinator). Date: 2026-09-24 (UTC). Study repository:
+Author: Fable 5.1 (root coordinator). Created 2026-09-24 (UTC). **Last refreshed: 2026-09-24 18:40 UTC**
+(this is ONE living document: when a new result lands, the key conclusions in sections 4, 6 and 7 are
+rewritten in place and the refresh stamp moves; there is no log section). Study repository:
 `studies/speech-aware-evidence-acquisition` on `master` (HEAD at writing: `cc9fd097`; every commit
 named below is on `master`). Umbrella repo: `exploring-l4-intelligence` (`wiki/Research-Objective.md`
 carries the five-line current state). Language of every document: English (program policy); the
@@ -176,45 +178,73 @@ bank keyed on runtime-observable signatures is being produced now
 | greedy diffuseness | byte-identical prompts flip 28 % of raw outputs, 5 % of intents; 225 / 625 rows disagree across 5 samples | sample-and-aggregate; adaptive compute on disagreement |
 | review loop inert | ACCEPT 98.4 %, 5 revisions / 1,000 rows | give the Reviewer evidence (sample disagreement, support counts, checker results) |
 
-## 7. The comprehensive experiment plan from here (Stage 3, revised 2026-09-24)
+## 7. The comprehensive experiment plan from here and the fast-validation routes (Stage 3, revised 2026-09-24)
 
-Three policy layers, each learned by rolling out CONSTRUCTION VARIANTS per row (same node, K
-variants, within one flight, paired per row), scored by dense per-class proxies (entity F1 by
-slot type, candidate coverage, intent exact), aggregated by group-relative advantage per
-runtime-observable state, and validated out of fold.
+### 7.1 The three policy layers
+
+Every layer is learned by rolling out CONSTRUCTION VARIANTS per row (same node, K variants, within
+one flight, paired per row), scored by dense per-class proxies (entity F1 by slot type, candidate
+coverage, intent exact), aggregated by group-relative advantage per runtime-observable state, and
+validated out of fold.
 
 **Layer 1: demonstrations (data).** Actions: source (TRAIN gold exemplars vs the core's own
-verified rollout outputs = bootstrapped demos), k in {5, 8, 12}, selection (speech neighbours /
-candidate-intent aligned / slot-type matched / empty-entity share / channel matched), rendering
-(raw-line conventions vs structured). Reward: entity F1 by type, FP mass. State keys: predicted
-scenario, candidate margin, exemplar-intent agreement, channel, duration.
+gold-verified rollout outputs = bootstrapped demonstrations), k in {5, 8, 12}, selection (speech
+neighbours / candidate-intent aligned / slot-type matched / empty-entity share / channel matched),
+rendering (raw-line conventions vs structured). Reward: entity F1 by type, FP mass. State keys:
+predicted scenario, candidate margin, exemplar-intent agreement, channel, duration.
 **Layer 2: constraints (content / contracts).** Per-intent legal slot-type schema at the delivery
 node (llama.cpp grammar / json_schema; deterministic, zero tokens), slot-contract rendering,
-date / time serialisation rules, "no entity" rule. Reward: type-swap and illegal-type mass.
+date / time serialisation rules, the "no entity" rule. Reward: type-swap and illegal-type mass.
 **Layer 3: selection (inference-time RL).** Disagreement-triggered adaptive sampling (N = 5 only
 where the first two samples disagree), deterministic verifiers (legal intent inventory, intent ->
 legal slot types, date / time validators), majority / support commit delivering a medoid sample
-(invariant I7: the delivered text is a model response), Reviewer fed with evidence.
+(invariant I7: the delivered text is a model response), a Reviewer fed with evidence.
 
-Evaluation methodology: (a) an A/A null inside one flight (the identical prompt twice) to measure
-within-flight paired noise, which is expected far below the +-1.25 pp cross-flight band; (b) search
-on small batches (200 construction rows, K variants per row, paired), confirm at full scale;
-(c) select variants on DEV-remainder rows, validate on Fold A / B, claim on the one test read.
+### 7.2 Evaluation methodology
 
-Sequence and cost (GPU-hours on the resident session):
+(a) An A/A null inside one flight (the identical prompt twice) measures the within-flight paired
+noise, expected far below the +-1.25 pp cross-flight band; every variant rollout at n = 200 is read
+against that within-flight margin. (b) Search on small batches (200 construction rows, K variants
+per row, paired), confirm at full scale (Fold A 1,080 at the own null, then DEV-2000-ADDED at its
+own null). (c) Select variants on DEV-remainder rows, validate on Fold A / B, claim on the one test
+read (decision 108). A route is worth a flight only when it names the bad class it moves, its
+recoverable upper bound from the bad-case bank is >= 2 pp on the target roster, its first read fits
+in one day, and it costs <= 4 GPU-hours before that read.
+
+### 7.3 The fast-validation routes (ordered by information per GPU-hour; status and result refreshed in place)
+
+| # | route | target bad class | first read | GPU-h to first read | status | key conclusion |
+| --- | --- | --- | --- | ---: | --- | --- |
+| F0 | Bad-case bank of the locked plan: typed, counted, runtime-observable signatures, stable-wrong vs flipping rows, recoverable headroom per class, Fold A and DEV-2000-ADDED | all | zero-contact script over the sealed PLAN / PLANr / direct arms | 0 | RUNNING (branch `fable/badcases`) | pending |
+| F1 | Offline sample aggregation over ROLL-1's five sealed samples: R0 single, R1 medoid, R2 intent-plurality medoid, R3 support-filtered (s = 2/3/4), oracle best-of-5, with the deterministic-checker filter | greedy diffuseness (225 / 625 rows disagree); entity FP | zero-contact script over sealed samples and per-sample official scores | 0 | RUNNING (branch `fable/agg`) | pending; AGG-1 (F7) opens only if an I7-compatible rule clears +1.5 pp SLU vs single |
+| F2 | Within-flight A/A null: the identical PLAN prompt twice per row inside one flight, 200 R01C rows, greedy | measurement floor | per-row paired delta distribution -> the within-flight margin h_within | ~0.4 | REGISTERING (branch `fable/aanull`) | decides whether n = 200 variant rollouts are readable |
+| F3 | ROLL-2-VARIANTS: K = 4 exemplar-construction variants per row on R01C plus the A/A control, one flight, Solver only, dense rewards | entity FN (`date`), FP on empty-gold rows, same-type filler distance | group-relative advantage per variant per state | ~1.5 | DESIGN (needs F0 headroom + F2 margin) | -- |
+| F4 | Perception coverage rollout: 4 candidate-construction variants (K, neighbour-intent union, general fallback position, card order), one Perception contact per row per variant, Fold A; reward = gold-in-candidates coverage | intent by candidate coverage (own card absent -> 17.3 % covered) | coverage per variant per state | ~1 | DESIGN | -- |
+| F5 | Per-intent legal slot-type constraint at the delivery node (llama.cpp json_schema / grammar): offline mass count first, then a four-row smoke and a Fold A cell | type swap (4.7 %), illegal types, part of FP | offline count, then the admission rule | 0, then ~2 | DESIGN | -- |
+| F6 | Bootstrapped demonstrations: the core's own gold-verified rollout outputs rendered as exemplars in its own output format, retrieved by speech key (DSPy-style bootstrap, ExpeL-style successful trajectories) | conventions, entity FN / FP | inside F3 as a source variant | (in F3) | DESIGN | -- |
+| F7 | AGG-1 inference-time selection cell: adaptive N + deterministic verifier + medoid commit; Fold A vs PLAN at the own null, then DEV-2000-ADDED | greedy diffuseness | admission rule | ~3.5 (+3.5 DEV) | GATED by F1 | -- |
+| F8 | Reviewer with evidence: sample disagreement, per-entity support counts and checker results instead of one draft | review loop inert (ACCEPT 98.4 %) | inside F7's form | (in F7) | DESIGN | -- |
+| F9 | Contract / instruction search (GEPA-style on the task contract: date / time serialisation, "no entity" rule, per-type convention line), selected on DEV-remainder rows, validated on Fold A / B | date / time FN, empty-gold FP | small-batch paired search, then a cell | ~2 | LATER (after F3 / F5) | -- |
+
+Closed routes (do not reopen): the semantic-delta APPLICATION line (gating / pruning / re-ranking
+over the v1r / v2 / gepa stores, owner decision 111); a `general`-targeted mechanism (form cost,
+upper bound 0.56 pp intent); entity-FP suppression by filtering deltas (<= 0.12 pp).
+
+### 7.4 Sequence and cost (GPU-hours on the resident session)
 
 | step | what | cost | read |
 | --- | --- | --- | --- |
-| 0 (now, zero GPU) | bad-case bank; offline aggregation read over ROLL-1's five samples (R0 single, R1 medoid, R2 intent-plurality medoid, R3 support-filtered s = 2/3/4, oracle best-of-5) | 0 | `docs/results/2026-09-24-slurp-plan-bad-case-bank.md`, `docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md` |
-| 1 | ROLL-2-VARIANTS on R01C: K = 4 exemplar-construction variants + 1 A/A control per row, one flight, Solver only | ~1.5 | per-row paired variant table, advantage per state |
-| 1b | Perception coverage rollout on Fold A: 4 candidate-construction variants, 1 contact / row / variant | ~1 | gold-in-candidates coverage per variant per state |
-| 2 | policy tables (layer 1 + 2) -> CELL-4 on Fold A vs PLAN at own null, four-row smoke first, twin optional | ~2 | admission rule |
-| 3 | CELL-4 replicate on DEV-2000-ADDED at its sealed own null | ~2 | fresh-roster admission |
-| 4 | if the offline aggregation read clears +1.5 pp: AGG-1 (adaptive N + deterministic commit) on Fold A, then DEV | ~3.5 + 3.5 | admission rule |
-| 5 | the one-shot test read (decision 108) only after a fresh-roster gain | ~21 (13,078 rows) | claim beside the published SLURP ladder |
+| 0 (now, zero GPU) | F0 bad-case bank; F1 offline aggregation read | 0 | `docs/results/2026-09-24-slurp-plan-bad-case-bank.md`, `docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md` |
+| 1 | F2 A/A null (200 rows) -> h_within | ~0.4 | within-flight margin |
+| 2 | F3 ROLL-2-VARIANTS on R01C and F4 Perception coverage rollout on Fold A | ~1.5 + ~1 | per-row paired variant tables, advantage per state |
+| 3 | policy tables (layers 1 + 2, incl. F5 if its offline count clears 1 pp) -> CELL-4 on Fold A vs PLAN at the own null, four-row smoke first | ~2 | admission rule |
+| 4 | CELL-4 replicate on DEV-2000-ADDED at its sealed own null | ~2 | fresh-roster admission |
+| 5 | F7 AGG-1 (if F1 clears +1.5 pp): Fold A, then DEV | ~3.5 + 3.5 | admission rule |
+| 6 | the one-shot test read (decision 108) only after a fresh-roster gain | ~21 (13,078 rows) | the claim beside the published SLURP ladder |
 
 Fallback (decision 112-B): a core swap study if the construction-variant and aggregation lines are
-both negative on the fresh roster.
+both negative on the fresh roster. Every result rewrites the "status" and "key conclusion" cells
+above and the conclusions of sections 4 and 6; nothing is appended as a log.
 
 ## 8. Open items and hazards a collaborator must know
 
@@ -244,5 +274,4 @@ both negative on the fresh roster.
   `docs/results/stage2-results-ledger.md`, exposure ledger `docs/exposure-ledger.md`.
 - Sealed bytes: `$SPEECHRL_DATA_DIR/runs/<run id>/<attempt>/`; analyses
   `$SPEECHRL_DATA_DIR/analysis/<root>/`; stores `$SPEECHRL_DATA_DIR/knowledge/slurp/semantic/`.
-- The fast-validation board (living document, refreshed with every new result):
-  `docs/readiness/2026-09-24-slurp-stage3-fast-validation-board-v1.md`.
+- This document is the single living Stage-3 handoff; section 7.3 is the fast-validation board.
