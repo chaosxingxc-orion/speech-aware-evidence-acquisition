@@ -1,0 +1,43 @@
+{
+  "for": "SAEA-SLURP-STAGE3-GEPA-R01-V1",
+  "reads": "STRUCTURAL ONLY -- no comparator, no margin, no effectiveness claim",
+  "schema": "saea-analysis-recipe-v1",
+  "steps": [
+    {
+      "contacts": 0,
+      "how": "scripts/flights/batch/gepa_render_proposal_outputs.py -- one {group_id, response_text} per sealed row, the response text verified against its response_text_sha256; the text lives only in the data root",
+      "step": 1,
+      "what": "render the sealed outputs"
+    },
+    {
+      "contacts": 0,
+      "how": "rails.stage3_gepa.parse_gepa_proposal over the rendered outputs with each group's own node: parse rate, node discipline, illegal-block reasons, blocks per contact; the sealed per-row gepa_proposals receipt carries the same reading made at flight time",
+      "step": 2,
+      "what": "the six structural items of the decision rule"
+    },
+    {
+      "contacts": 0,
+      "how": "scripts/build_slurp_stage3_gepa_delta_rows.py's own curation report: revision_share.absorbed_into_an_existing_row against entered_as_new_rows",
+      "step": 3,
+      "what": "REVISION SHARE"
+    },
+    {
+      "contacts": 0,
+      "how": "scripts/build_slurp_stage3_delta_retention.py over the CELL-1 read, written to prepared/SAEA-SLURP-STAGE3-DELTAS-GEPA-V1/retention-gepa-v1.json and passed to the curator as --retire-value-ids. It never reads or writes the stage3-deltas-v2 artifacts; its retired_value_ids are EXPECTED to equal that line's because the inputs and the rule are identical, which is a cross-check and not a dependency",
+      "step": 4,
+      "what": "the decision-83 selection over the inherited rows"
+    },
+    {
+      "contacts": 0,
+      "how": "the model-free per-node reach report scripts/flights/batch/adv1_to_deltas_steps.py reach writes into the release-pins document -- an inert route is what stopped cell B9a-rec and is the number to read before a CELL-1-GEPA flight",
+      "step": 5,
+      "what": "supply reach of the released store"
+    },
+    {
+      "contacts": "a registered flight of its own",
+      "how": "NOT HERE. Cell CELL-1-GEPA (SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-V1), one factor on the locked plan against the sealed PLAN arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943) with a derangement twin, read by scripts/flights/batch/cell1_verdict.py's own recipe. See docs/readiness/2026-09-24-slurp-stage3-gepa-r01-v1/cell-1-gepa-diff-plan-v1.md",
+      "step": 6,
+      "what": "the effect"
+    }
+  ]
+}

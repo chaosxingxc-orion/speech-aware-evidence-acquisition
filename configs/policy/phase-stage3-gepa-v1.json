@@ -1,0 +1,15 @@
+{
+  "max_contacts": 1,
+  "phases": [
+    {
+      "barrier": false,
+      "knowledge": "none",
+      "name": "gepa",
+      "purpose": "reflective-delta-proposal",
+      "response_format_id": "stage3-gepa-proposal-v1"
+    }
+  ],
+  "program_id": "phase-stage3-gepa-v1",
+  "schema": "saea-phase-program-v1",
+  "stop_rule": "always-run-full-program"
+}

@@ -1,0 +1,19 @@
+A four-node agent system (PERCEPTION proposes intent candidates, SOLVER drafts the answer, REVIEWER judges the draft, PLANNER routes the episode) answered many spoken-language-understanding requests in the {scenario} scenario. Below are the rows of that scenario where the system did WORST and the rows where it did BEST, each with the whole trajectory the system left, and the correct answer for each row.
+
+You are improving the standing guidance of exactly ONE node: the {node} node, in the {scenario} scenario.
+
+CURRENT {node} GUIDANCE FOR {scenario} (the text you are revising):
+{current_deltas}
+
+ROWS WHERE THE SYSTEM DID WORST IN {scenario}:
+{worst_rows}
+
+ROWS WHERE THE SYSTEM DID BEST IN {scenario}:
+{best_rows}
+
+Compare the worst rows with the best rows. Say what the {node} node should do differently so that the worst rows come out like the best ones. Revise a statement of the current guidance when the evidence contradicts or sharpens it, and add a new statement when the evidence shows something the current guidance does not say. Give one to five blocks, each in exactly this four-line form, and nothing else. Every block must name the {node} node.
+
+NODE: {node}
+DELTA-KIND: <one of: intent-boundary | slot-contract | exemplar-note | perception-hint | reviewer-criterion | planner-rule>
+TARGET: <the scenario_action or slot type this statement is about>
+STATEMENT: <one sentence, at most 40 words, stating what the {node} node should do differently>

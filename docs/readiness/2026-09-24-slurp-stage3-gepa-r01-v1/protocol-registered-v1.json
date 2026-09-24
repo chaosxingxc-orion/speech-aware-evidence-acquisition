@@ -1,0 +1,110 @@
+{
+  "decision_rule": {
+    "no_gate_number": "No threshold is pre-registered on any of the six, because this cell carries no admission verdict: a low parse rate, a degenerate node distribution or a zero revision share is a FORM defect that stops the arm and is root-caused, not a measured result. The smoke's own acceptance is the same six items on 4 contacts; a failed smoke stops the arm and it does not open.",
+    "rule": "STRUCTURAL ONLY. No effectiveness claim is read from this cell -- the effect of the curated deltas is read at CELL-1-GEPA, against the plan's own null. Acceptance here is: (1) PARSE RATE -- the fraction of contacts whose response yields at least one LEGAL block under rails.stage3_gepa.parse_gepa_proposal, reported with its denominator; (2) NODE DISCIPLINE -- the count of blocks whose NODE differs from the group's own node, the invariant only this arm's parser enforces; (3) ILLEGAL-BLOCK COUNT by the parser's own reason strings, retained and never repaired; (4) BLOCKS PER CONTACT -- the one-to-five distribution; (5) REVISION SHARE -- accepted proposals the curator absorbed into an existing row against those that entered as new rows, which is the number that says whether a reflective proposer reflected on the text it was shown; (6) a clean seal with row accounting in = out."
+  },
+  "design_note": "docs/superpowers/specs/2026-09-24-slurp-stage3-gepa-arm-design.md",
+  "engineering_spec": "docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md",
+  "failure_policy": "Stop on the first failure and preserve every contact; no retry. This cell is TEXT-ONLY (construction-advantage-text) and spends one contact per group, so a failed group is dropped from the curation input, counted, never silently retried.",
+  "fit": {
+    "arithmetic": "204 = 68 x 1 x (0 speech packets + 3 endpoints); 12 = 4 x 1 x (0 + 3)",
+    "contact_cap": 204,
+    "coordinate_fit": "must NOT be run; there is no fit identity for it to charge",
+    "if_root_ever_configures_live_fit": "core.preparation_fit.build_live_phase_fit_gate requires contact_cap to EQUAL len(phases) x (1 + 3 x rows) exactly -- 1 x (1 + 3 x 68) = 205 for the arm and 1 x (1 + 3 x 4) = 13 for the smoke, each ONE MORE than the ceiling registered here. Registering a live_phase_fit block therefore requires re-registering the fit ceiling first; this package does not attempt it.",
+    "mode": "registration reserve -- NO fit mechanism is configured for this cell today",
+    "offline_prompt_size_scan": "All 68 contacts were rendered offline before this registration (zero contacts of any kind): min 2,477 / median 13,309 / max 16,281 CHARACTERS, the largest being gepa:transport:solver (12 rows, 12 current deltas). Characters, not tokens -- measuring tokens needs a tokenizer endpoint, which is a contact, and the FIT pass is what measures them. The live slot is 24,576 with the one-eighth reserve (3,072), so 21,504 tokens are budgetable; a 16,281-character prompt is far inside it on any plausible ratio, and the fit pass is what proves it.",
+    "smoke_contact_cap": 12,
+    "what_is_configured": "configs/baseline/slurp-native-stage3-gepa-baseline-v1.json declares NEITHER native_contact_fit (that path belongs to a native_episode cell, and this cell is a one-phase phase program) NOR live_phase_fit with whole_roster_wave_barrier. No fit gate is therefore built at dispatch and the FIT run ids are expected to be charged ZERO. They are registered all the same so that, if any endpoint spend ever lands under this cell's fit identity, it lands against a row that was written before the result was read. The ADV-1 precedent, unchanged."
+  },
+  "leakage_rule": {
+    "delta_text": "the statements shown as the text to revise are this study's OWN released rows, curated under the six-token transcript containment rule, so none repeats a construction transcript span. They are rendered into the instruction and nowhere else, and the same rule is applied again to every proposal at curation.",
+    "gate": "contracts.gate_exposure._require_construction_role_for_visible_targets: the arm is construction-visible, so the FLYING cell's split identity must be that of a committed roster_role='construction' roster of carrier slurp on a discovery split. Both cells carry their own receipt.",
+    "narrowing": "rails.core_client.FrozenCoreClient binds the UNION of every group's rows once, at construction, and each request names EXACTLY its own group's ordered rows; an id the bound tuple does not carry is refused. A request can only ever narrow.",
+    "no_evaluation_contact": "nothing of this contact reaches an evaluated row: its output is an artifact, and the store's effect is measured on TRAIN Fold A at CELL-1-GEPA.",
+    "nothing_is_sealed_but_identity": "GepaContact.as_json records ids, counts and digests only -- group id, scenario, node, carrier, the group's row ids, the current delta value ids, per-row answer/gold digests and label counts, and the prompt sha256 and length. The rendered instruction is never a receipt field.",
+    "shown_population": "every one of the 173 distinct GROUP rows whose gold is rendered is an item of the committed R01C parent receipt; the groups builder refuses outright if an eligible row is not. The gate proves the FLOWN split; this proves the SHOWN population."
+  },
+  "offline_proofs_run_before_registration": {
+    "one_contact_dry_run": "scripts/flights/batch/gepa_dry_run.py -- the real material, the runtime's own message list through the client's reverse parser, the D2 field-set equality and the transport's own text-only construction gate; zero contacts of any kind",
+    "prompt_size_scan": "all 68 contacts rendered offline: min 2,477 / median 13,309 / max 16,281 characters",
+    "unit_tests": "tests/unit/test_stage3_gepa.py (29 tests)"
+  },
+  "protocol_id": "SAEA-SLURP-STAGE3-GEPA-R01-V1",
+  "registered_at_utc": "2026-09-24T00:00:00.000000+00:00",
+  "schema": "saea-registered-protocol-v1",
+  "stage3_algorithm": {
+    "id": "gepa-reflective-pareto-v1",
+    "note": "GEPA's reflective mutation operator and nothing else: one contact per (scenario, node) group reflects over that scenario's worst- and best-outcome ROLL-1 rows -- their whole sealed trajectories -- together with the node's current delta statements, and proposes one to five revised or new statements for that node. credit_assignment because the contrast that drives the proposal is between ROWS of one scenario rather than between the samples of one row (Training-Free GRPO's unit); update because the reflection IS the mutation of the instruction text, unlike ADV-1 where the curator composes the update from per-row statements. The SELECTION operator is not exercised here: survivors are chosen by the decision-83 per-scenario frontier rule (scripts/build_slurp_stage3_delta_retention.py) over the CELL-1 read at curation, and the new rows' own outcome is read at CELL-1-GEPA. Rollout source: cell ROLL-1 (algorithm shared-rollout, run SAEA-SLURP-STAGE3-ROLLOUT-R01-V1, attempt attempt-slurp-native-stage3-rollout-r01-generation-v1) on the clean construction subset R01C.",
+    "operators_used": [
+      "credit_assignment",
+      "update"
+    ]
+  },
+  "status": "REGISTERED_BEFORE_CONTACT",
+  "what_is_frozen": {
+    "base": "No base plan and no factor: this is a CONSTRUCTION contact, not an arm of the locked v2.0 default plan. What is registered is the contact form -- arm construction-advantage-text, program phase-stage3-gepa-v1, the two pinned templates, the stage3-gepa-proposal-v1 response format, evidence_source none and scorers ['cost'] -- on the same frozen core and the same resident SLURP geometry cell PLAN, cell ROLL-1 and cell ADV-1 fly.",
+    "block_form": {
+      "lines": [
+        "NODE: <the group's own node; any other node is retained and marked illegal>",
+        "DELTA-KIND: <intent-boundary | slot-contract | exemplar-note | perception-hint | reviewer-criterion | planner-rule>",
+        "TARGET: <the scenario_action or slot type this statement is about>",
+        "STATEMENT: <one sentence, at most 40 words>"
+      ],
+      "node_invariant": "the ONE invariant this parser adds to its ADV-1 sibling: a GEPA contact is addressed to exactly one node, so a block naming another node is RETAINED and marked illegal rather than silently routed into that other node's slice of the store.",
+      "parser": "rails.stage3_gepa.parse_gepa_proposal",
+      "response_format_id": "stage3-gepa-proposal-v1",
+      "revised_versus_new": "decided by the CURATOR, not by a self-report: a proposal whose normalised text matches an existing store row under the exact-normalised or token-Jaccard >= 0.8 rule is absorbed into that survivor with its provenance merged (a REVISION); anything else enters as a new row. The block form carries no 'this revises X' field because nothing downstream could check one.",
+      "shape": "one to five four-line blocks (MAX_GEPA_BLOCKS = 5; a sixth and later block is RETAINED and marked illegal, never silently dropped)"
+    },
+    "declared_keys_that_are_not_factors": "native_episode.finite_completion_policy and native_episode.react_exhaustion_policy are NOT declared here and are not owed: this cell carries no native_episode at all (it is a one-phase phase program, not the grouped-Solver graph), so scripts/checks/finite_completion_policy_check.py has no native cell to check. stage3_algorithm (owner decision 101) IS declared: gepa-reflective-pareto-v1, operators credit_assignment + update.",
+    "group_form": {
+      "artifact": {
+        "relpath": "prepared/SAEA-SLURP-STAGE3-DELTAS-GEPA-V1/gepa-groups-v1.json",
+        "sha256": "43f64a78b081ab809e6973496b2458c362d91805caf9aa2e19c4a561b35a316a"
+      },
+      "carriers_from_roster_topup": 5,
+      "current_deltas_per_group_histogram": {
+        "0": 8,
+        "1": 11,
+        "10": 1,
+        "11": 4,
+        "12": 10,
+        "2": 4,
+        "3": 2,
+        "4": 4,
+        "5": 6,
+        "6": 3,
+        "7": 7,
+        "8": 5,
+        "9": 3
+      },
+      "distinct_group_rows": 173,
+      "excluded_scenarios": [
+        "music"
+      ],
+      "groups": 68,
+      "groups_with_no_current_delta": 8,
+      "k": 6,
+      "nodes": 4,
+      "rank_metric": "group-mean",
+      "rows_per_group_histogram": {
+        "1": 4,
+        "10": 4,
+        "11": 8,
+        "12": 44,
+        "2": 4,
+        "6": 4
+      },
+      "scenarios": 17,
+      "unit": "one SCENARIO x one NODE"
+    },
+    "purpose": "Stage-3 layer A, the GEPA arm (docs/superpowers/specs/2026-09-24-slurp-stage3-gepa-arm-design.md; owner decision 101): ONE reflective contact per (scenario, node) group -- 17 scenarios x 4 nodes = 68 contacts -- asking the frozen core to revise and extend one node's standing guidance for one scenario from that scenario's worst- and best-outcome ROLL-1 trajectories. PRIMARY DELIVERABLE: the sealed manifest of parsed proposal blocks, feeding the GEPA curation into the stage3-deltas-gepa-v1 store, whose effect is read at cell CELL-1-GEPA. No answer to any evaluated row is produced or read here and no effectiveness claim is made.",
+    "roster_is_part_of_the_form": "the 68 CARRIER rows of the prepared groups artifact -- one per group -- committed as their own construction-role receipt docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-v1.json (split identity 86da42e2b9a643795749664d5d2bc75b2f2e502429a5cebb36c22c75daa8b132); the four-row smoke flies the first four of them, the four groups of the first scenario, under docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-smoke-4-v1.json (split identity 5a8bf7f89170c1cc3565cbbd41dac168000123cdab866ade04b8e354dbb86ea7). The GOLD the contacts show belongs to the 173 distinct GROUP rows, every one an item of the same committed R01C parent receipt; the groups builder refuses outright if any eligible row is not.",
+    "what_the_contact_sees": [
+      "the SCENARIO and the NODE it is improving, named in the system message and again in the per-group instruction",
+      "that node's CURRENT released delta statements for that scenario, numbered, in prior_score order and capped at 12 -- the instruction text a reflective mutation revises; a group whose node carries none is told so in words",
+      "the scenario's WORST-outcome rows and its BEST-outcome rows, DISJOINT halves of the ranked list, at most 6 each, every row rendered with its Perception candidate list, its best and worst Solver samples, its delivered answer with the Reviewer verdict labels and the Planner route, and its own construction gold"
+    ],
+    "zero_tool_authority": "no phase carries phase_tools; the native task-contract call ceiling is 0 and no tools array is rendered on any request."
+  }
+}

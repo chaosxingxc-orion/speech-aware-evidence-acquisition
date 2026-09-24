@@ -1,0 +1,160 @@
+#!/bin/bash
+# Runbook: the Stage-3 GEPA arm's CURATION and RELEASE (design note
+# docs/superpowers/specs/2026-09-24-slurp-stage3-gepa-arm-design.md sections 3-4; owner decisions
+# 83 and 101).
+#
+# ROOT RUNS THIS **AFTER** CELL GEPA-R01 (SAEA-SLURP-STAGE3-GEPA-R01-V1) HAS SEALED.
+# It makes ZERO model, encoder, tokenizer, scorer, GPU and network contacts: every byte read is an
+# already-sealed local file and everything written is pure Python curation over that text. It does
+# NOT flip readiness, mint a decision receipt or touch docs/exposure-ledger.md.
+#
+# What it does, in order:
+#   A  preconditions: the sealed GEPA outputs, the prepared groups artifact, the released v1r
+#      authored document, the construction gold intents, the intent vocabulary and the transcripts
+#   R  retention: scripts/build_slurp_stage3_delta_retention.py over the CELL-1 read, written to
+#      THIS line's own prepared directory. It never reads or writes the stage3-deltas-v2
+#      artifacts; its retired_value_ids are EXPECTED to equal that line's, which is a cross-check
+#      and not a dependency, and the counts of both are printed side by side when the v2 document
+#      is present.
+#   B  render:  scripts/flights/batch/gepa_render_proposal_outputs.py -> the proposal outputs, the
+#      construction scope and the PERMITTED roster (the GROUP rows, not the carriers)
+#   C  curate:  scripts/build_slurp_stage3_gepa_delta_rows.py -- the ADV-1 curator's own rules
+#      (append-only, exact-normalised + Jaccard >= 0.8 dedup, provenance merge, source-intent
+#      facets, six-token containment) over group-keyed candidate rows; predecessor = the released
+#      v1r authored document, retirement = R's document
+#   T  twin:    scripts/build_slurp_stage3_delta_twin.py (unchanged) + scripts/build_slurp_stage3_
+#      delta_source.py to wrap it
+#   D  materialise both release registrations from their committed templates with the real digests
+#   E  release both stores
+#   R2 the model-free supply-reach expectation of both released stores
+#
+# GEPA_DELTAS_DRY=1 (the default) runs A read-only and prints every mutating command line;
+# GEPA_DELTAS_DRY=0 runs them. Commit the two materialised release registrations afterwards.
+set -u
+REPO=${REPO:-/home/chao/saea-worktrees/fable-gepa}
+DATA=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+PY=${PY:-/home/chao/.venvs/speechrl/bin/python}
+export SPEECHRL_DATA_DIR=$DATA PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$REPO:$REPO/src
+DRY=${GEPA_DELTAS_DRY:-1}
+
+GEPA_RUN=${GEPA_RUN:-SAEA-SLURP-STAGE3-GEPA-R01-V1}
+GEPA_ATTEMPT=${GEPA_ATTEMPT:-attempt-slurp-native-stage3-gepa-r01-v1-generation}
+TAG=${GEPA_VERSION_TAG:-gepa-v1}
+TWIN_TAG=${GEPA_TWIN_VERSION_TAG:-gepa-twin-v1}
+ITERATION=${GEPA_ITERATION:-2}
+TWIN_SEED=${GEPA_TWIN_SEED:-20260924}
+
+PREPARED=$DATA/prepared/SAEA-SLURP-STAGE3-DELTAS-GEPA-V1
+ADV_PREPARED=$DATA/prepared/SAEA-SLURP-STAGE3-DELTAS-V1
+GROUPS=$PREPARED/gepa-groups-v1.json
+OUTPUTS=$PREPARED/gepa-proposal-outputs-v1.jsonl
+PREDECESSOR=${GEPA_PREDECESSOR:-$ADV_PREPARED/authored-stage3-deltas-v1r.json}
+TRANSCRIPTS=${GEPA_TRANSCRIPTS:-$ADV_PREPARED/construction-transcripts.jsonl}
+GOLD=${GEPA_GOLD_INTENTS:-$DATA/coordination/slurp-stage3-advantage-r01-v1/r01c-gold-intents.json}
+CATALOG=${GEPA_INTENT_CATALOG:-$DATA/prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json}
+RETENTION=$PREPARED/retention-gepa-v1.json
+RETENTION_MD=$PREPARED/retention-gepa-v1.md
+AUTHORED=$PREPARED/authored-stage3-deltas-$TAG.json
+SOURCE=$PREPARED/source-stage3-deltas-$TAG.json
+TWIN_AUTHORED=$PREPARED/authored-stage3-deltas-$TWIN_TAG.json
+TWIN_SOURCE=$PREPARED/source-stage3-deltas-$TWIN_TAG.json
+COORD=$DATA/coordination/slurp-stage3-delta-cell-gepa-r01-v1
+RELEASE_PINS=$COORD/stage3-deltas-$TAG-release-pins.json
+RD=docs/readiness/2026-09-24-slurp-stage3-gepa-r01-v1
+REG_TEMPLATE=$RD/stage3-deltas-gepa-v1-release-registration.template.json
+TWIN_REG_TEMPLATE=$RD/stage3-deltas-gepa-twin-v1-release-registration.template.json
+REG=$REPO/$RD/stage3-deltas-$TAG-release-registration.json
+TWIN_REG=$REPO/$RD/stage3-deltas-$TWIN_TAG-release-registration.json
+HELPERS=scripts/flights/batch/adv1_to_deltas_steps.py
+mkdir -p "$COORD"
+
+cd "$REPO" || { echo "no checkout at $REPO"; exit 1; }
+echo "== gepa_to_deltas $(date -u +%FT%TZ) REPO=$REPO HEAD=$(git rev-parse --short HEAD) dry=$DRY tag=$TAG"
+
+run() { if [ "$DRY" = "1" ]; then echo "   (dry) would run: $*"; else "$@" || { echo "FAILED: $*"; exit 3; }; fi; }
+
+# ---------------------------------------------------------------- A: preconditions
+SPLIT=$($PY -B -c "import json,sys;print(json.load(open(sys.argv[1]))['population']['split_identity_hash'])" \
+        configs/experiment/slurp-native-stage3-gepa-r01-v1.json)
+echo "A  GEPA population split identity $SPLIT"
+MISSING=0
+for F in "$GROUPS" "$PREDECESSOR" "$GOLD" "$CATALOG"; do
+  [ -f "$F" ] || { echo "A  MISSING $F"; MISSING=1; }
+done
+[ -f "$TRANSCRIPTS" ] || echo "A  NO transcripts at $TRANSCRIPTS: the six-token containment rule will be DISABLED and the report will say so. Prepare them before releasing."
+if [ "$MISSING" = "1" ] && [ "$DRY" != "1" ]; then exit 2; fi
+
+# ---------------------------------------------------------------- R: decision-83 retention
+echo "R  decision-83 retention over the CELL-1 read -> $RETENTION"
+echo "   (the flags are CELL-1's own; see scripts/build_slurp_stage3_delta_retention.py --help)"
+run "$PY" -B scripts/build_slurp_stage3_delta_retention.py \
+    --authored "$PREDECESSOR" \
+    --out-json "$RETENTION" --out-markdown "$RETENTION_MD" \
+    ${GEPA_RETENTION_ARGS:-}
+if [ -f "$ADV_PREPARED/retention-v2.json" ] && [ -f "$RETENTION" ]; then
+  "$PY" -B - "$RETENTION" "$ADV_PREPARED/retention-v2.json" <<'PY'
+import json, sys
+def ids(path):
+    d = json.load(open(path, encoding="utf-8"))
+    return set(d.get("retired_value_ids") or [])
+mine, theirs = ids(sys.argv[1]), ids(sys.argv[2])
+print(f"R  cross-check: this line retires {len(mine)}, the v2 line retires {len(theirs)}; "
+      f"symmetric difference {len(mine ^ theirs)} (0 is the expected reading -- same inputs, same rule)")
+PY
+fi
+
+# ---------------------------------------------------------------- B: render the sealed outputs
+echo "B  render the sealed GEPA outputs, the construction scope and the permitted roster"
+run "$PY" -B scripts/flights/batch/gepa_render_proposal_outputs.py \
+    --run "$GEPA_RUN" --attempt "$GEPA_ATTEMPT" --groups "$GROUPS" --out-dir "$PREPARED"
+
+# ---------------------------------------------------------------- C: curate
+echo "C  curate iteration $ITERATION predecessor $PREDECESSOR"
+CONTAINMENT=""
+[ -f "$TRANSCRIPTS" ] && CONTAINMENT="--construction-transcripts $TRANSCRIPTS"
+RETIRE=""
+[ -f "$RETENTION" ] && RETIRE="--retire-value-ids $RETENTION"
+# shellcheck disable=SC2086
+run "$PY" -B scripts/build_slurp_stage3_gepa_delta_rows.py \
+    --proposal-outputs "$OUTPUTS" --groups "$GROUPS" --repo-root "$REPO" \
+    --predecessor "$PREDECESSOR" --iteration "$ITERATION" --run-id "$GEPA_RUN" \
+    --facet-rule source-intent --gold-intents "$GOLD" --intent-vocabulary "$CATALOG" \
+    $CONTAINMENT $RETIRE \
+    --out-authored "$AUTHORED" --out-source "$SOURCE" --source-split-identity-hash "$SPLIT"
+
+# ---------------------------------------------------------------- T: the derangement twin
+echo "T  twin seed $TWIN_SEED"
+run "$PY" -B scripts/build_slurp_stage3_delta_twin.py \
+    --authored "$AUTHORED" --seed "$TWIN_SEED" --out "$TWIN_AUTHORED"
+run "$PY" -B scripts/build_slurp_stage3_delta_source.py \
+    --authored "$TWIN_AUTHORED" --out "$TWIN_SOURCE" --source-split-identity-hash "$SPLIT"
+
+# ---------------------------------------------------------------- D: runnable registrations
+echo "D  materialise the two release registrations at tag $TAG / $TWIN_TAG"
+run "$PY" -B "$HELPERS" --repo-root "$REPO" --data-root "$DATA" registration \
+    --template "$REG_TEMPLATE" --out "$REG" --version-tag "$TAG" \
+    --source-split-identity-hash "$SPLIT"
+run "$PY" -B "$HELPERS" --repo-root "$REPO" --data-root "$DATA" registration \
+    --template "$TWIN_REG_TEMPLATE" --out "$TWIN_REG" --version-tag "$TWIN_TAG" \
+    --source-split-identity-hash "$SPLIT"
+
+# ---------------------------------------------------------------- E: release both stores
+echo "E  release"
+# shellcheck disable=SC2086
+run "$PY" -B scripts/build_slurp_stage3_gepa_delta_rows.py \
+    --proposal-outputs "$OUTPUTS" --groups "$GROUPS" --repo-root "$REPO" \
+    --predecessor "$PREDECESSOR" --iteration "$ITERATION" --run-id "$GEPA_RUN" \
+    --facet-rule source-intent --gold-intents "$GOLD" --intent-vocabulary "$CATALOG" \
+    $CONTAINMENT $RETIRE \
+    --out-authored "$AUTHORED" --out-source "$SOURCE" --source-split-identity-hash "$SPLIT" \
+    --release "$REG" --data-root "$DATA" --release-pins "$RELEASE_PINS"
+run "$PY" -B -m speech_aware_evidence_acquisition.core.driver prepare-semantic-knowledge \
+    --registration "$TWIN_REG" --repo-root "$REPO" --data-root "$DATA"
+
+# ---------------------------------------------------------------- R2: supply reach
+echo "R2 supply reach against $CATALOG (an inert route is what stopped cell B9a-rec)"
+run "$PY" -B "$HELPERS" --repo-root "$REPO" --data-root "$DATA" reach \
+    --version-tag "$TAG" --intent-vocabulary "$CATALOG" --release-pins "$RELEASE_PINS"
+
+echo "F  next: write the CELL-1-GEPA fragments from $RD/cell-1-gepa-diff-plan-v1.md"
+echo "== gepa_to_deltas done $(date -u +%FT%TZ) dry=$DRY tag=$TAG"
