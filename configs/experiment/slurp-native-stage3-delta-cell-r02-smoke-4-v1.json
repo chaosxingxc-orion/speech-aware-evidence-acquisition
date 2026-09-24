@@ -15,13 +15,20 @@
         "reason": "The four-row form smoke of CELL-2. HELD exactly as the arm is: root mints the admission receipt, rewrites its eligible_run_ids to include this run id and its fit identity, and re-pins this cell with scripts/flights/repin_cell.py --set-ready, which mints this cell's own first-phase supply artifact under its own run id (item E16). The committed baseline carries NO prepared_phase_supply key. The smoke seals before the arm opens.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-delta-cell-r02-admission-v1",
+            "relpath": "coordination/slurp-stage3-delta-cell-r02-v1/root-admission-v1.json",
+            "sha256": "7068ff966a8525070462ab1d468065f6ee1f2d347cb043d53d9bca1d7498ca56",
+            "reason": "Decision slurp-stage3-delta-cell-r02-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "S3-6 iteration 2: the release of knowledge/slurp/semantic/stage3-deltas-v2/, built from the sealed ADV-1 advantage outputs with the decision-83 retention document prepared/SAEA-SLURP-STAGE3-DELTAS-V1/retention-v2.json (200 kept of 379). Released 2026-09-24, model-free, through the adv1_to_deltas steps B/C/W/D/E/R at DELTA_VERSION_TAG=v2; release pins coordination/slurp-stage3-delta-cell-r02-v1/stage3-deltas-v2-release-pins.json. The cell stays HELD on a root admission decision.",
-            "relpath": "knowledge/slurp/semantic/stage3-deltas-v2/release.json",
-            "sha256": "b81df5c5175e45e68933d4875c110fd46bea933283631d2c428187c480fc31f0"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "e212434a4b8cdadcfc86bdb6fb5cc3109d4e1f878515439a2494fe2027fc84cc"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-V1"
     },
