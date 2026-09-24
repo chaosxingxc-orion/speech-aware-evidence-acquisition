@@ -15,19 +15,26 @@
         "reason": "Stage-3 VAR-1 cell VAR1-SMOKE-4: the VAR1-PER-K16C5 form on four rows; structural only. HELD: root mints the admission receipt coordination/slurp-stage3-var1-v1/root-admission-v1.json (decision id slurp-stage3-var1-admission-v1), rewrites its eligible_run_ids to this family's FOURTEEN run ids and its budget caps to this family's, and re-pins this cell with scripts/flights/repin_cell.py --set-ready, which mints this cell's OWN first-phase supply artifact under its own run id (harness item E16) and inserts the matching preparation requirement. The committed baseline carries NO prepared_phase_supply key, which is the cell-P0 form; --allow-output-change must never be passed.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-var1-admission-v1",
+            "relpath": "coordination/slurp-stage3-var1-v1/root-admission-v1.json",
+            "sha256": "d1b9adb22d7d057a42bd69b75956a32ee1df33a0649c9e53a4daf6a3e6164692",
+            "reason": "Decision slurp-stage3-var1-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The released train-exemplars store this family retrieves from: size-pool-annotated-exemplars-MINUS-R01, the parent pool with every R01 construction utterance removed (coordinator decision 102). Nothing new is released by this family; the requirement states what the fragment binds. The cell stays HELD on a root admission decision.",
-            "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/release.json",
-            "sha256": "83620eb0b02f12424a00cd5572904f4df48a49c329b1b0e1a9321d4b9ec14fd0"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-VAR1-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "f48c00bf81b28744b4645ac0d8f2474e25b9b7df28510451f2ac3215ccbf77ec"
           },
           {
             "kind": "preparation",
             "reason": "The R01 speech-query encoding receipt both R01C query_source pins descend from (SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1, sealed and already consumed by cell ROLL-1). The R01C files are pure id SELECTIONS of that sealed parent: every kept line is the parent's own line bytes. Nothing new is encoded for this family. The cell stays HELD on a root admission decision.",
-            "relpath": "preparation-runs/SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
-            "sha256": "2117fa6d5fdb7563e4f609b66e2fc3971a340a7dd22d178fa3cfd5a7c111839a"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-VAR1-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "f48c00bf81b28744b4645ac0d8f2474e25b9b7df28510451f2ac3215ccbf77ec"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-VAR1-SMOKE-4-V1"
     },

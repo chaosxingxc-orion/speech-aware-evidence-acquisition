@@ -279,7 +279,7 @@
       "attempt_id": "attempt-slurp-native-stage3-var1-smoke-4-v1-generation",
       "baseline_fragment": "configs/baseline/slurp-native-stage3-var1-smoke-4-baseline-v1.json",
       "cell": "slurp-native-stage3-var1-smoke-4-v1",
-      "composed_config_hash": "7ad58b95a96c9ba69fb721b9beb5c9ff780443c4a9a3defc8d79943055695552",
+      "composed_config_hash": "c71864ecbaf2fc6f073fb168eff3f3ab531e3526d4335482f0e07c7aaa38579d",
       "experiment": "slurp-native-stage3-var1-smoke-4-v1",
       "experiment_fragment": "configs/experiment/slurp-native-stage3-var1-smoke-4-v1.json",
       "knobs": {
@@ -303,7 +303,7 @@
         "slot_contracts_max_candidates": 5
       },
       "order_constraint": "flies immediately before the VAR1-PER-K16C5 arm, inside the same batch-driver step; the arm does not open until it has sealed",
-      "protocol_hash": "bc0d1f7c9f031a48f935cb2f9ec6effde77d9ee2f04146b5e561d723054de2f2",
+      "protocol_hash": "300161e7ee89f0c331ad83ffe6a9da8f5184dee82eb17aff4e7bb7522a3865b2",
       "readiness": "held -- the coordinator mints coordination/slurp-stage3-var1-v1/root-admission-v1.json (decision id slurp-stage3-var1-admission-v1), rewrites its eligible_run_ids to this family's fourteen run ids, and re-pins this cell with scripts/flights/repin_cell.py --set-ready",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-VAR1-SMOKE-4-V1",
@@ -973,10 +973,10 @@
     "smoke": {
       "attempt_id": "attempt-slurp-native-stage3-var1-smoke-4-v1-fit",
       "cell": "slurp-native-stage3-var1-smoke-4-fit-v1",
-      "composed_config_hash": "7ad58b95a96c9ba69fb721b9beb5c9ff780443c4a9a3defc8d79943055695552",
+      "composed_config_hash": "c71864ecbaf2fc6f073fb168eff3f3ab531e3526d4335482f0e07c7aaa38579d",
       "experiment": "slurp-native-stage3-var1-smoke-4-v1",
       "note": "A SPEND identity, never flown as a generation cell and never flipped to ready. core.preparation_fit.build_native_contact_fit_gate fits each realised native request inside the same flight under the same lease; coordinate-fit must NOT be run, or these rows are double-charged.",
-      "protocol_hash": "bc0d1f7c9f031a48f935cb2f9ec6effde77d9ee2f04146b5e561d723054de2f2",
+      "protocol_hash": "300161e7ee89f0c331ad83ffe6a9da8f5184dee82eb17aff4e7bb7522a3865b2",
       "run_id": "SAEA-SLURP-STAGE3-VAR1-SMOKE-4-FIT-V1"
     }
   },
