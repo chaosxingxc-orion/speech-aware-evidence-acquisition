@@ -1,0 +1,58 @@
+{
+  "authority": "Board route F2, docs/handoff/2026-09-24-fable51/HANDOFF-STAGE3-FOR-CHATGPT-v1.md section 7.3; substrate cell ROLL-1 (docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md section S3-2, and its read S3-3).",
+  "cell_kind": "A/A NULL -- two greedy repeats of one Solver prompt per row inside one flight; DESCRIPTIVE, no admission verdict, no comparator, no gate.",
+  "claim_boundary": "No superiority, generalisation, component-causal, bar or confirmatory claim of any kind. The only output is a measurement floor, and it is valid only at n = 200, on these nine scenario strata of R01C, at samples 2, on the np4 x 24,576 SLURP geometry.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": 2,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "decision_rule": {
+    "output": "h_within (SLU-F1) and h_within_intent, the CI95 half-widths of the pooled micro paired delta; they become the registered within-flight margins for ROLL-2 variant comparisons at n = 200.",
+    "rule": "NONE -- this cell has no gating decision rule. Its read is DESCRIPTIVE."
+  },
+  "execution_profile": "model-free-check (the read); bounded-discovery-probe (the flight itself)",
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-ROLL-AA-READ-V1",
+    "files": [
+      "per_row.json -- one object per row: sample_id, stratum, the two samples' official SLU-F1 and scenario_action_exact, their answer sha256s, the byte-identical flag, the intent-flip flag, the entity-set-flip flag, and the paired delta; ids, labels, counts and hashes only.",
+      "null.json -- the pooled paired-delta distribution (mean, sd, CI95, half-width) for SLU-F1 and intent, the three flip shares with their denominators, the per-stratum table, and the commit-effect count.",
+      "the per-sample-index outputs copies and their score jsonl, sha256-pinned, written by stage3_rollout_score.py under the same analysis root."
+    ],
+    "privacy": "No utterance text, gold label, transcript or model output is printed or persisted by the read's own summary files: per_row.json and null.json carry ids, stratum names, sample indices, scores, flags and hashes only. The rendered outputs COPIES do carry the rendered JSON answer text, because the registered scorer needs it; they are written under the analysis root inside SPEECHRL_DATA_DIR, never under the repository -- exactly as every other score_copy caller in this repository writes."
+  },
+  "recipe_id": "slurp-stage3-roll-aa-within-flight-null-v1",
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-stage3-roll-aa-r01c-200-v1.json",
+    "roster_id": "SLURP-STAGE3-ROLL-AA-R01C-200-V1",
+    "roster_role": "construction",
+    "rows": 200,
+    "split_identity_hash": "dbb60c9db5c2d2dc4f5bd06274ee1ab70d0dd3d4f8a0b70b21e5f1d6127487a3",
+    "stratum_coverage": "9 of the parent's 18 scenario strata (a first-N prefix of an ascending-sample_id roster is not stratified); the per-stratum table is reported with that fact stated beside it."
+  },
+  "row_accounting_required": "200 in, 200 out; every row's solver_group carries exactly 2 samples in custody (I7g) with seeds 2080141211 / 2080141212 and temperature 0.0 on both; the commit replay of saea-commit-plurality-support-v1 (min_support 2, similarity_threshold 0.8) over the raw samples reproduces the sealed delivered answer.",
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-ROLL-AA-V1",
+    "fit": "SAEA-SLURP-STAGE3-ROLL-AA-FIT-V1",
+    "read": "SAEA-SLURP-STAGE3-ROLL-AA-READ-V1",
+    "smoke": "SAEA-SLURP-STAGE3-ROLL-AA-SMOKE-4-V1",
+    "smoke_fit": "SAEA-SLURP-STAGE3-ROLL-AA-SMOKE-4-FIT-V1"
+  },
+  "schema": "saea-stage3-rollout-analysis-recipe-v1",
+  "stages": {
+    "1_render": "scripts/analysis/stage3_rollout_score.py --stage render: one outputs COPY per Solver sample index (0 and 1), each row's solver_group.samples[index].parsed_answer rendered through the canonical analysis.native_commit_replay.replay_row form. The sample count is auto-detected from the sealed custody (detect_samples) and must come back 2; --samples 2 may be passed to assert it.",
+    "2_score": "scripts/analysis/stage3_rollout_score.py --stage score --scorer-id slurp-slu-official-projected-v3-train: each of the two copies scored ONCE through the registered scorer. Never core.scoring_batch (every side here is a derived copy with no manifest and no bundle). The v3-projected scorer is the same choice cell ROLL-1's read registered, for the same reason: a grouped Solver carries no deliver_normaliser, so the projection is applied offline here.",
+    "3_pairs": "scripts/analysis/stage3_rollout_score.py --stage pairs: per-row best/worst and the sealed delivered score, as for ROLL-1. For an A/A null best/worst is simply the ordered pair, so this stage is run for its row accounting and its sealed-delivered join, not for a selection.",
+    "4_null": "the paired-delta read proper (this recipe): per row, delta_slu = slu_f1_f1(sample 1) - slu_f1_f1(sample 0) and delta_intent = scenario_action_exact(sample 1) - scenario_action_exact(sample 0), computed from the two score files by sample_id; then the pooled MICRO delta of each metric with its CI95 by paired row bootstrap (10,000 draws, seed 20260915, the row as the resampling unit), plus mean, sd and half-width; plus the three flip shares and the per-stratum table."
+  },
+  "three_flip_shares": {
+    "byte_identical_share": "the fraction of rows whose two RAW Solver response texts are byte-identical (sha256 equality over the sealed raw sample text, before any parse or projection). This is the cleanest statement of how deterministic greedy decoding actually is under batch-composition variation.",
+    "entity_set_flip_share": "the fraction of rows whose two samples' parsed entity SETS differ, compared as sorted (type, filler) pairs under the scorer's own normalisation.",
+    "intent_flip_share": "the fraction of rows whose two samples' parsed (scenario, action) differ.",
+    "note": "The three shares are nested in intent but not in general: a byte-identical pair cannot flip anything, an intent flip need not move SLU-F1, and an entity-set flip usually does. All three are reported with their denominators."
+  },
+  "what_is_not_here": "No comparator block and no margins block: there is no gating comparator (an A/A null is its own control) and the cross-flight own-null half-widths (Fold A h_SLU 1.2485 / h_intent 0.9943; DEV-2000-ADDED h_SLU 1.2525 / h_intent 1.1520) appear only as REPORTED-BESIDE context in the protocol, never as a gate. No plan_cell_read.py invocation, no verdict document and no frontier row."
+}

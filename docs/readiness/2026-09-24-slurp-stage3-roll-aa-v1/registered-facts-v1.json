@@ -1,0 +1,108 @@
+{
+  "_note": "Registered facts for cell ROLL-AA (board route F2, the Stage-3 within-flight A/A null). Every value here was measured or derived MODEL-FREE at registration, before any contact: the composed and protocol hashes through core.config.compose / core.config.protocol_hash, the split identities through data.splits.split_identity_hash, the roster arithmetic from the committed R01C receipt and runtime view, and the per-sample decoding params through reproduction.ojw.native_request.compose_solver_sample_decoding_params. Zero model, tokenizer, encoder, scorer, GPU and network contacts; no audio sample decoded.",
+  "authority_relpaths": [
+    "docs/handoff/2026-09-24-fable51/HANDOFF-STAGE3-FOR-CHATGPT-v1.md section 7.3",
+    "docs/readiness/2026-09-24-slurp-stage3-roll-aa-v1-preregistration.md",
+    "docs/readiness/2026-09-24-slurp-stage3-roll-aa-v1/protocol-registered-v1.json",
+    "docs/readiness/2026-09-24-slurp-stage3-roll-aa-v1/analysis-recipe-v1.json",
+    "docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md",
+    "docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md"
+  ],
+  "cells": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-roll-aa-v1-generation",
+      "cell_id": "slurp-native-stage3-roll-aa-v1",
+      "composed_config_hash": "7a29df5e00bc1c4f0f99dc30667d13a647f1e45ec5b6a8002bbc774663c54690",
+      "fit_attempt_id": "attempt-slurp-native-stage3-roll-aa-v1-fit",
+      "fit_run_id": "SAEA-SLURP-STAGE3-ROLL-AA-FIT-V1",
+      "protocol_hash": "ee45afcd21ea6b337ea47c94b5eae27931b02c95bb447ae63864d6cd166152d6",
+      "run_id": "SAEA-SLURP-STAGE3-ROLL-AA-V1",
+      "split_identity_hash": "dbb60c9db5c2d2dc4f5bd06274ee1ab70d0dd3d4f8a0b70b21e5f1d6127487a3"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-roll-aa-smoke-4-v1-generation",
+      "cell_id": "slurp-native-stage3-roll-aa-smoke-4-v1",
+      "composed_config_hash": "0decf326679336d94a74c9e4fb4a999a9cefe0ff7278bba9dd4ecd3377fd322e",
+      "fit_attempt_id": "attempt-slurp-native-stage3-roll-aa-smoke-4-v1-fit",
+      "fit_run_id": "SAEA-SLURP-STAGE3-ROLL-AA-SMOKE-4-FIT-V1",
+      "protocol_hash": "61948dd4918dfc51061210baf836c777d147cb0e6662fd5f08a203f5a6952b73",
+      "run_id": "SAEA-SLURP-STAGE3-ROLL-AA-SMOKE-4-V1",
+      "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5"
+    }
+  },
+  "committed_artifacts": {
+    "campaign_plan": {"relpath": "configs/campaign/slurp-native-stage3-roll-aa-v1.json", "sha256": "58c61e0d22b1b266411bb6e440bd1031886a1cb4c8e1305240ee6d3580cce5ee"},
+    "arm_baseline": {"relpath": "configs/baseline/slurp-native-stage3-roll-aa-baseline-v1.json", "sha256": "cc54be844d6d55b036f2124f934370f8609689a57e7569db247b4b61285fb64b"},
+    "arm_experiment": {"relpath": "configs/experiment/slurp-native-stage3-roll-aa-v1.json", "sha256": "474883743e782471ad13e0b9baa1d2be24e8acc563a1f66cc2db035b93eb1975"},
+    "phase_program": {"relpath": "configs/policy/phase-native-candidates-review-revise-samples2-v1.json", "sha256": "ff9418600958d4a10c9c12bab64adb7ba382e5f5af1388334830edafbe2930ca"},
+    "roster": {"relpath": "docs/receipts/rosters/slurp-stage3-roll-aa-r01c-200-v1.json", "sha256": "7a69a88d8a74333707ddcac0d9aeee6fbaf7db868e193e95784b718d62aedec6"},
+    "smoke_baseline": {"relpath": "configs/baseline/slurp-native-stage3-roll-aa-smoke-4-baseline-v1.json", "sha256": "39e7d705e2fdc79f69de1e0868ebb7b538aa07f3034e7423402db3de6b3a816d"},
+    "smoke_experiment": {"relpath": "configs/experiment/slurp-native-stage3-roll-aa-smoke-4-v1.json", "sha256": "b5e8f628691c91be194b9b58b81ba7236e8b790c90b9845bfd9b8fe0703d9b25"},
+    "smoke_roster": {"relpath": "docs/receipts/rosters/slurp-stage3-roll-aa-r01c-smoke-4-v1.json", "sha256": "0ae11e22071b1904719652fb9a292b1d05576632ea44ea33214be71de50bc3fe"},
+    "sha_note": "Every configs/ hash above MOVES at the readiness flip (the re-pin writes this cell's prepared-supply pin into the baselines and the requirement into the experiments). The roster and phase-program hashes do not: nothing in the flip touches them."
+  },
+  "cost_expectation": {
+    "basis": "cell CELL-1 measured 4.216 contacts per row on the same four-node graph at samples 1 (predecessor_read of docs/readiness/2026-09-24-slurp-stage3-delta-cell-gepa-r01-v1/registered-facts-v1.json); a two-sample Solver group spends exactly one extra contact per Solver visit. The GPU-hour basis is the L1 geometry's measured 1.79 GPU-hours per 1,080 rows at about 4 contacts per row (serving-geometry findings 2026-09-19).",
+    "contacts_per_row_expected": 5.2,
+    "expected_contacts_arm": 1040,
+    "expected_gpu_hours_arm": 0.4,
+    "registered_ceiling_contacts_arm": 2600,
+    "registered_ceiling_gpu_hours_arm": 2.0,
+    "registered_before_contact": "PREDICTED, and labelled as such. The realised figures are reported by the read beside these, and a large disagreement is itself a finding."
+  },
+  "decoding_identity_proof": {
+    "base_decoding_params": {"id_slot": "per-sample", "max_tokens": 512, "seed": 20260913, "temperature": 0},
+    "fields_that_differ_between_the_two_samples": ["seed"],
+    "fragment_seed": 2080141211,
+    "fragment_seed_source": "rails.runner._solver_fragment_seed('phase-native-candidates-review-revise-samples2-v1') -- derived only from the composed program's own identity, never from the row, so every row of the run shares the same base and the two-way repeat is identical across rows.",
+    "sample_0": {"id_slot": "per-sample", "max_tokens": 512, "seed": 2080141211, "temperature": 0.0},
+    "sample_1": {"id_slot": "per-sample", "max_tokens": 512, "seed": 2080141212, "temperature": 0.0},
+    "seed_formula": "seed = fragment_seed + seed_offset + sample_index (reproduction.ojw.native_request.compose_solver_sample_decoding_params). The two seeds therefore MUST differ by construction; the grouped sampler offers no way to make them equal. At temperature 0 llama.cpp decodes greedily and does not consult the seed, which is exactly why rails.native_episode_config admits temperature 0 only under the explicit twin 'greedy-repeat' marker and calls the pinned seeds 'recorded custody, never a source of diversity at temperature 0'.",
+    "what_this_does_not_prove": "That the two decodes are bitwise equal. They are not guaranteed to be: llama.cpp greedy decoding is not bitwise reproducible across batch compositions, and measuring that residual is the entire point of this cell."
+  },
+  "declared_episode_keys": {
+    "_factor": "native_episode.roles.solver: samples 2, twin 'greedy-repeat', decoding_overrides {temperature 0.0, seed_offset 0}, commit {saea-commit-plurality-support-v1, min_support 2, similarity_threshold 0.8}",
+    "context_fit_policy": "compact-or-abstain",
+    "episode_id": "slurp-native-dual-store-dev1000-v1",
+    "exhaustion_policy": "deliver-latest-solver",
+    "finite_completion_policy": "deliver-latest-or-abstain",
+    "graph_ceiling": 13,
+    "max_revisions": 1,
+    "policy": "phase-native-candidates-review-revise-samples2-v1",
+    "react_exhaustion_policy": "continue-without-answer",
+    "review_loop": "on",
+    "roles": "perception 1 / solver 1 (x2 samples) / reviewer 3 / planner 1"
+  },
+  "min_support_choice": {
+    "chosen": 2,
+    "not_chosen": 1,
+    "why": "Cell ROLL-1's rule is 'an entity cluster survives when its support reaches a strict majority of the samples' (3 of 5). At N = 2 that rule has no exact image: 2 of 2 is unanimity and 1 of 2 is below a majority. min_support 2 is the conservative reading -- the delivered answer keeps only what BOTH greedy passes produced -- and on a row where the two passes agree (the expected majority of rows on an A/A null) it is byte-identical to either sample. min_support 1 was rejected because it would make the delivered answer the UNION of the two samples' entities, adding false positives that neither single greedy pass would have delivered and that no single-sample arm can be compared against. Either way the choice does not touch the measured quantity: the read scores the two RAW samples, not the committed answer. The commit's divergence from both samples is reported as a count so the choice stays visible."
+  },
+  "reported_beside": {
+    "dev_2000_added": {"h_intent": 1.1520, "h_slu": 1.2525, "n": 2000, "source": "the DEV-2000-ADDED own null"},
+    "note": "CONTEXT ONLY. These are CROSS-FLIGHT own-null half-widths measured on different rosters, at different n, across two flights. They are never a comparator for h_within and never a gate. The comparison the program actually wants is qualitative: is the within-flight paired floor materially smaller than the cross-flight one?",
+    "train_fold_a": {"h_intent": 0.9943, "h_slu": 1.2485, "n": 1080, "source": "the plan's own null, cell PLAN against cell PLANr"}
+  },
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "metrics": ["slu_f1_f1", "scenario_action_exact"],
+    "seed": 20260915,
+    "unit": "row (paired: both of a row's samples move together)"
+  },
+  "roster_facts": {
+    "audio_seconds_total": 787.2898125,
+    "parent": {"relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json", "roster_id": "SLURP-STAGE3-CONSTRUCTION-R01C", "rows": 625, "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"},
+    "rows": 200,
+    "selection_rule": "the FIRST 200 items of the parent receipt, in the parent's own order (ascending sample_id); a pure selection, no draw, no rng",
+    "strata": {"alarm": 17, "audio": 23, "datetime": 24, "iot": 23, "music": 21, "news": 30, "play": 13, "takeaway": 28, "weather": 21},
+    "strata_covered": 9,
+    "strata_in_parent": 18,
+    "strata_missing": ["calendar", "cooking", "email", "general", "lists", "qa", "recommendation", "social", "transport"]
+  },
+  "schema": "saea-registered-facts-v1",
+  "unflown_form": {
+    "precedent_run_id": "SAEA-SLURP-NATIVE-SAMPLES5-GREEDY-TWIN-TRAIN-FOLD-A-V1",
+    "precedent_status": "registered 2026-09-17, never flown -- owner decisions 8 and 15 launch a twin only after a positive arm, and cell B2's arm CI95 lower bound was -1.4598 (docs/results/2026-09-19-slurp-b2-samples5-verdict.md).",
+    "what": "ROLL-AA would be the first FLIGHT of a temperature-0 Solver group. The form is exercised by unit tests (tests/unit/test_native_episode_config.py) and by this package's offline dry run, and the four-row smoke is its flight proof."
+  }
+}
