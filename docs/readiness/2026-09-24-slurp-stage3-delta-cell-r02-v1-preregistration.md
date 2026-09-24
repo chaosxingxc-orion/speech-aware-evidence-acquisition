@@ -184,8 +184,9 @@ rule CELL-1 learned by losing two relaunches to a fit identity that already carr
 | planner | ALLOW | 19,795 | +1,709 |
 | **solver** | **COMPACT_REQUIRED** | 21,821 | **-317** |
 
-against the 24,576-token live slot less its one-eighth (3,072) reserve. These are **identical to CELL-1's to
-the token**, and deliberately so: the runtime's bound is the WORST CASE the supplied stores can render,
+against the 24,576-token live slot less its one-eighth (3,072) reserve. The twin's bound is identical
+and each smoke's is within one token (19,992 / 19,855 / 19,794 / 21,820). These are **identical to
+CELL-1's to the token**, and deliberately so: the runtime's bound is the WORST CASE the supplied stores can render,
 driven by the per-node caps and the longest statement (126 characters at both versions), neither of which
 the retention moves. What version 2 lowers is the realised prefill, which the flight measures. The episode
 declares `context_fit_policy` `compact-or-abstain`, so a Solver request that really exceeds the window is
