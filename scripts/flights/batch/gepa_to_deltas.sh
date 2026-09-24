@@ -137,11 +137,13 @@ run "$PY" -B scripts/build_slurp_stage3_delta_source.py \
 
 # ---------------------------------------------------------------- D: runnable registrations
 echo "D  materialise the two release registrations at tag $TAG / $TWIN_TAG"
+# 2026-09-24: no --version-tag here -- the committed templates already carry their gepa-v1 / gepa-twin-v1 names;
+# re-pointing v1 -> gepa-v1 inside them produced source-stage3-deltas-gepa-gepa-v1.json and a refusal.
 run "$PY" -B "$HELPERS" --repo-root "$REPO" --data-root "$DATA" registration \
-    --template "$REG_TEMPLATE" --out "$REG" --version-tag "$TAG" \
+    --template "$REG_TEMPLATE" --out "$REG" \
     --source-split-identity-hash "$SPLIT"
 run "$PY" -B "$HELPERS" --repo-root "$REPO" --data-root "$DATA" registration \
-    --template "$TWIN_REG_TEMPLATE" --out "$TWIN_REG" --version-tag "$TWIN_TAG" \
+    --template "$TWIN_REG_TEMPLATE" --out "$TWIN_REG" \
     --source-split-identity-hash "$SPLIT"
 
 # ---------------------------------------------------------------- E: release both stores
