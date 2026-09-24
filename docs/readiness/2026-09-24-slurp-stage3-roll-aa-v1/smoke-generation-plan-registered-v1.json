@@ -16,7 +16,7 @@
   },
   "comparator": null,
   "comparator_reason": "None, by design: an A/A null's two sides are two samples of the same Solver visit of the same flight, so the cell is its own control. No sealed arm is re-flown, re-scored or compared against, and the read is never plan_cell_read.py.",
-  "composed_config_hash": "0decf326679336d94a74c9e4fb4a999a9cefe0ff7278bba9dd4ecd3377fd322e",
+  "composed_config_hash": "bea38a568f6baa40f22338181ec9d282e4feb3ddb1da5ca3603014387f7e6a5c",
   "decision_rule": {
     "no_gate_number": "No threshold is pre-registered on any number this cell produces. Its output is a measurement floor, h_within, which becomes a registered margin for the ROLL-2 variant comparisons -- not a verdict about this cell.",
     "output": "h_within (SLU-F1) and h_within_intent: the CI95 half-widths of the pooled micro paired delta (sample 1 minus sample 0) by paired row bootstrap, 10,000 draws, seed 20260915, reported beside the byte-identical / intent-flip / entity-set-flip shares and the per-stratum table.",
@@ -29,7 +29,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 52,
     "planned_speech_audio_seconds": 222,
-    "protocol_hash": "61948dd4918dfc51061210baf836c777d147cb0e6662fd5f08a203f5a6952b73",
+    "protocol_hash": "da74d580a4cceadf39ce6ea10e438876cb9654421a528347223dd717b5ceae9b",
     "run_id": "SAEA-SLURP-STAGE3-ROLL-AA-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
@@ -77,7 +77,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-24-slurp-stage3-roll-aa-v1/protocol-registered-v1.json",
-    "sha256": "e5b3185810dd24715ff66bac7b7f68d3f41dde80f6975e1f6e5227d42cab298d"
+    "sha256": "c1cd9a3350876f2d5ec086d19d3c597ef7db15490edd2b352afbaf7eba574dd6"
   },
   "purpose": "Cell ROLL-AA (board route F2, docs/handoff/2026-09-24-fable51/HANDOFF-STAGE3-FOR-CHATGPT-v1.md section 7.3): the WITHIN-FLIGHT A/A null of the Stage-3 variant-rollout methodology. The locked v2.0 plan's Solver answers the IDENTICAL prompt TWICE for each of 200 R01C construction rows inside ONE flight, greedy (temperature 0 under the E2b twin 'greedy-repeat' marker), and the offline read reports the per-row paired difference between the two samples. Because the two sides are two contacts of one request, whatever difference appears is the measurement floor itself, and its CI95 half-width becomes h_within -- the margin every ROLL-2 variant comparison at n = 200 is read against. DESCRIPTIVE: no admission verdict, no comparator, no gate.",
   "quality_read_gate": "No read of any kind before the complete sealed manifest and the exact ordered outputs with exactly two custodied solver_group samples per row exist. A partial manifest is never read; a failed smoke stops the arm and it does not open.",

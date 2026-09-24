@@ -89,7 +89,7 @@ Composed and protocol hashes **as registered** (every one of them moves at the f
 | cell | composed config | protocol |
 | --- | --- | --- |
 | `slurp-native-stage3-roll-aa-v1` | `7a29df5e00bc1c4f0f99dc30667d13a647f1e45ec5b6a8002bbc774663c54690` | `ee45afcd21ea6b337ea47c94b5eae27931b02c95bb447ae63864d6cd166152d6` |
-| `slurp-native-stage3-roll-aa-smoke-4-v1` | `0decf326679336d94a74c9e4fb4a999a9cefe0ff7278bba9dd4ecd3377fd322e` | `61948dd4918dfc51061210baf836c777d147cb0e6662fd5f08a203f5a6952b73` |
+| `slurp-native-stage3-roll-aa-smoke-4-v1` | `bea38a568f6baa40f22338181ec9d282e4feb3ddb1da5ca3603014387f7e6a5c` | `da74d580a4cceadf39ce6ea10e438876cb9654421a528347223dd717b5ceae9b` |
 
 ## 4. Smoke, arm, read
 
