@@ -18,6 +18,13 @@ Three walks, all four rows:
 3. a DUPLICATE-candidate Perception answer (n=3, distinct=1 -- the shape that aborted the
    CELL-1 arm after 304 metered contacts) on row 1, which must walk instead of raising.
 
+The exit status is structural: every row walks the whole graph and delivers, a REVISE revisit
+acquires nothing it already holds, and the duplicate row walks. The per-node counts it prints
+are the registered structural rule for the smoke -- the flight's realised counts must equal
+them -- and a node that selects nothing on these four rows is reported, not failed: four rows
+cannot decide whether a candidate-bound route is inert, and the Perception route is seeded
+before the walk rather than supplied at a node boundary.
+
 Each walk group composes its OWN runtime: the plan's slot-contracts candidate route audits
 its selection per (phase, sample, query state) and refuses a selection that changed within
 one query, which is exactly what a second walk of the same row with different candidates
@@ -177,8 +184,20 @@ def main(argv=None) -> int:
             per_node[phase] += count
             rows_supplied[phase] += 1 if count else 0
     report["totals"] = {"items_per_node": per_node, "rows_supplied_per_node": rows_supplied}
-    report["inert_routes"] = sorted(phase for phase, count in per_node.items() if count == 0)
-    report["ok"] = ok and not report["inert_routes"]
+    # INFORMATION, never the verdict: four rows cannot decide whether a candidate-bound
+    # route is inert -- the 1,080-row arm's own delta-consumption table decides that -- and
+    # the Perception route is SEEDED before the walk, so it is never a node supply step here.
+    report["zero_on_this_roster"] = sorted(
+        phase for phase, count in per_node.items()
+        if count == 0 and phase != "perception"
+    )
+    report["what_the_verdict_is"] = (
+        "ok means: every row walked the whole graph and delivered, the REVISE revisit "
+        "acquired nothing it already held, and the duplicate-candidate row walked instead "
+        "of raising. The per-node counts are the registered structural rule for the smoke: "
+        "the flight's realised counts must EQUAL them."
+    )
+    report["ok"] = ok
     print(json.dumps(report, indent=2, sort_keys=True))
     return 0 if report["ok"] else 1
 
