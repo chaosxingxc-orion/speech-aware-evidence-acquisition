@@ -1,0 +1,185 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-r03-gate-smoke-4-v1-generation",
+      "baseline_fragment": "slurp-native-stage3-delta-cell-r03-gate-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-delta-cell-r03-gate-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-dev2000-added",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "The four-row form smoke of CELL-3. HELD exactly as the arm is. The committed baseline carries NO prepared_phase_supply key. The smoke seals before the arm opens.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The released stage3-deltas store VERSION 2, the store CELL-2 flew on TRAIN Fold A: 200 of v1r 379 values, the owner-decision-83 retention. Iteration 3 changes neither the store nor the selection, only the APPLICATION, so this cell pins the SAME release CELL-2 pinned and releases nothing new. The cell stays HELD on a root admission decision.",
+            "relpath": "knowledge/slurp/semantic/stage3-deltas-v2/release.json",
+            "sha256": "b81df5c5175e45e68933d4875c110fd46bea933283631d2c428187c480fc31f0"
+          },
+          {
+            "kind": "preparation",
+            "reason": "The DEV-2000-ADDED speech-query encoding receipt this roster two query_source pins are built from (SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1, sealed 2026-09-21 and already consumed by cell B6). Nothing new is prepared for this cell; the requirement states what the fragment binds. The cell stays HELD on a root admission decision.",
+            "relpath": "preparation-runs/SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
+            "sha256": "9c2b6cdcb17ca3b1ad35b599217ca4e7d84f3c7e5a5d55056bdbf7d92fc9dc9d"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-SMOKE-4-V1"
+    },
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-r03-gate-smoke-4-v1-twin",
+      "baseline_fragment": "slurp-native-stage3-delta-cell-r03-gate-twin-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-delta-cell-r03-gate-smoke-4-twin-v1",
+      "dataset_fragment": "slurp-speech-native-dev2000-added",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "The four-row form smoke of the CELL-3 derangement twin, on the same four rows with the twin release pinned and the same gate. Held for the same reasons as the generation smoke; it seals before the twin arm opens.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The twin release of knowledge/slurp/semantic/stage3-deltas-twin-v2/, the seeded derangement (seed 20260922) of version 2 own authored document: 200 statements, authored token count 3,001 held exactly, 13 arithmetic fixed points. The cell stays HELD on a root admission decision.",
+            "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v2/release.json",
+            "sha256": "b18b141f67dae4b413391d22dd787a3b85480d2b4fab24db0848e547e7aa1a9a"
+          },
+          {
+            "kind": "preparation",
+            "reason": "The DEV-2000-ADDED speech-query encoding receipt this roster two query_source pins are built from (SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1, sealed 2026-09-21 and already consumed by cell B6). Nothing new is prepared for this cell; the requirement states what the fragment binds. The cell stays HELD on a root admission decision.",
+            "relpath": "preparation-runs/SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
+            "sha256": "9c2b6cdcb17ca3b1ad35b599217ca4e7d84f3c7e5a5d55056bdbf7d92fc9dc9d"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-SMOKE-4-TWIN-V1"
+    },
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-r03-gate-smoke-4-v1-fit",
+      "baseline_fragment": "slurp-native-stage3-delta-cell-r03-gate-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-delta-cell-r03-gate-smoke-4-fit-v1",
+      "dataset_fragment": "slurp-speech-native-dev2000-added",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "The tokenizer-capacity fit pass of the CELL-3 four-row smoke. A SPEND identity, never flown as a generation cell.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The released stage3-deltas store VERSION 2, the store CELL-2 flew on TRAIN Fold A: 200 of v1r 379 values, the owner-decision-83 retention. Iteration 3 changes neither the store nor the selection, only the APPLICATION, so this cell pins the SAME release CELL-2 pinned and releases nothing new. The cell stays HELD on a root admission decision.",
+            "relpath": "knowledge/slurp/semantic/stage3-deltas-v2/release.json",
+            "sha256": "b81df5c5175e45e68933d4875c110fd46bea933283631d2c428187c480fc31f0"
+          },
+          {
+            "kind": "preparation",
+            "reason": "The DEV-2000-ADDED speech-query encoding receipt this roster two query_source pins are built from (SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1, sealed 2026-09-21 and already consumed by cell B6). Nothing new is prepared for this cell; the requirement states what the fragment binds. The cell stays HELD on a root admission decision.",
+            "relpath": "preparation-runs/SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
+            "sha256": "9c2b6cdcb17ca3b1ad35b599217ca4e7d84f3c7e5a5d55056bdbf7d92fc9dc9d"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-SMOKE-4-FIT-V1"
+    },
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-r03-gate-smoke-4-v1-twin-fit",
+      "baseline_fragment": "slurp-native-stage3-delta-cell-r03-gate-twin-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-delta-cell-r03-gate-smoke-4-twin-fit-v1",
+      "dataset_fragment": "slurp-speech-native-dev2000-added",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "The tokenizer-capacity fit pass of the CELL-3 twin four-row smoke. A SPEND identity, never flown as a generation cell.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The twin release of knowledge/slurp/semantic/stage3-deltas-twin-v2/, the seeded derangement (seed 20260922) of version 2 own authored document: 200 statements, authored token count 3,001 held exactly, 13 arithmetic fixed points. The cell stays HELD on a root admission decision.",
+            "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v2/release.json",
+            "sha256": "b18b141f67dae4b413391d22dd787a3b85480d2b4fab24db0848e547e7aa1a9a"
+          },
+          {
+            "kind": "preparation",
+            "reason": "The DEV-2000-ADDED speech-query encoding receipt this roster two query_source pins are built from (SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1, sealed 2026-09-21 and already consumed by cell B6). Nothing new is prepared for this cell; the requirement states what the fragment binds. The cell stays HELD on a root admission decision.",
+            "relpath": "preparation-runs/SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
+            "sha256": "9c2b6cdcb17ca3b1ad35b599217ca4e7d84f3c7e5a5d55056bdbf7d92fc9dc9d"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-SMOKE-4-TWIN-FIT-V1"
+    }
+  ],
+  "date": "2026-09-24",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 102,
+    "split_role": "dev"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops CELL-3 and the 1,000-row arm does not open; the twin smoke gates the twin arm the same way. At most ONE root-diagnosed recovery re-registration, which needs BOTH a new generation attempt id AND a new native_contact_fit.attempt_id; a second failure stops the flight and the fix is proven on a four-row offline dry run.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 102
+  },
+  "fragment_kind": "saea-slurp-native-stage3-delta-cell-r03-gate-smoke-4-v1",
+  "generation_budget": {
+    "cap": 44,
+    "definition": "44 = 4 rows x 11, the locked plan OWN per-row contact ceiling. 176 = 44 x (1 speech packet + 3 endpoints); 102 s is the four rows repeated speech under that ceiling (9.215312 s of audio x 11, rounded up) and 24 is the PLAN family own registered native task-contract number, unchanged. The one execution_plan governs both smoke cells of this fragment; each flies under its own run id and the plan budget is run-cumulative under that run id. Ceilings are bounds, never targets.",
+    "target": 44
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-dev2000-added",
+    "decision_population": "The DEV-2000-ADDED smoke population this package DEFINES, because cell B6 registered no smoke on this roster and there is no inherited four-row population to reuse: the FIRST TWO GATE-CLOSED and the FIRST TWO GATE-OPEN rows of DEV-2000-ADDED in the roster own order, decided model-free from the SEALED comparator own Perception candidate labels (SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1, attempt attempt-slurp-native-default-plan-dev2000-added-generation-v1), projected with the route own bounded first-occurrence rule (max 3 candidates) and reduced by rails.stage3_delta_supply.majority_candidate_scenario. Roster positions 1, 2, 8 and 14. A pure selection with zero contacts: labels only; no gold, no score, no quality read and no separate draw entered it. Structural evidence only; no quality read is taken from this fragment.",
+    "split_identity_hash": "2cca58464272bfce1ba80828f7efe9955367ad78ab0ac3d85d4d6b3fe2ed8d58"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-dev2000-added",
+      "ids": [
+        "slurp:devel:000017:audio-1501773854-headset",
+        "slurp:devel:000024:audio-1490195864-headset",
+        "slurp:devel:000099:audio-1501754782",
+        "slurp:devel:000217:audio-1490367363"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "The four-row form proof of Stage-3 S3-6 CELL-3 on DEV-2000-ADDED. THE ITEM THIS SMOKE EXISTS FOR: that the SCENARIO GATE fires on a real flight and that a CLOSED gate takes no supply step. The four rows are the first two gate-CLOSED and the first two gate-OPEN rows of the roster in its own order, decided model-free from the SEALED comparator own Perception candidate labels: slurp:devel:000017:audio-1501773854-headset and slurp:devel:000024:audio-1490195864-headset carry majority scenario iot (GATED -> all three routes CLOSED, zero delta items at solver, reviewer and planner), and slurp:devel:000099:audio-1501754782 and slurp:devel:000217:audio-1490367363 carry weather (NOT gated -> all three routes OPEN and the supply is byte-identical to what the ungated route would have selected). The registered structural rule is that the REALISED gate decisions equal those four, that every closed node supplies nothing, and that the delta_scenario_gate receipt carries one decision per node per row (12 decisions over 4 rows). A row whose realised Perception answer differs from the sealed comparator answer -- greedy decoding is not bit-reproducible across batch compositions -- is REPORTED with its realised majority scenario and is not a failure; what fails the smoke is a closed gate that still supplied, an open gate that supplied nothing where the ungated route would have supplied, a missing receipt, or a row that does not walk the whole graph and deliver. STRUCTURAL ONLY: no official score is run here and no effectiveness claim is read from it. Run and attempt identities are new because a plan budget is run-cumulative per run id.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "DEV-2000-ADDED",
+  "stage3_algorithm": {
+    "id": "tfgrpo-semantic-advantage-v1",
+    "note": "CELL-3 is iteration 3 of the Training-Free GRPO delta line. The store it pins is the iteration-2 release produced by that algorithm UPDATE operator over the sealed ROLL-1 advantage outputs; what iteration 3 changes is the CONTEXT_APPLICATION operator and nothing else -- a coverage gate that withholds the supply on the strata the store has no reach into. Both operators are registered for tfgrpo-semantic-advantage-v1 in core.base.STAGE3_ALGORITHMS; no selection or credit-assignment step is re-run here.",
+    "operators_used": [
+      "update",
+      "context_application"
+    ]
+  }
+}

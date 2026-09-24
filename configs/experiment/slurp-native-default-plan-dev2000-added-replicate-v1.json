@@ -1,0 +1,97 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-default-plan-dev2000-added-replicate-generation-v1",
+      "baseline_fragment": "slurp-native-default-plan-dev2000-added-replicate-baseline-v1",
+      "cell_id": "slurp-native-default-plan-dev2000-added-replicate-v1",
+      "dataset_fragment": "slurp-speech-native-dev2000-added",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Cell PLANr-DEV2000, the roster own null for Stage-3 iteration 3. HELD: root mints the admission receipt coordination/slurp-stage3-delta-cell-r03-gate-v1/root-admission-v1.json (decision id slurp-stage3-delta-cell-r03-gate-admission-v1), rewrites its eligible_run_ids to this family TEN run ids and its budget caps to this family caps, and re-pins this cell with scripts/flights/repin_cell.py --set-ready, which mints this cell OWN first-phase supply artifact under its own run id (item E16) and inserts the matching preparation requirement. The committed baseline carries NO prepared_phase_supply key, which is the cell-P0 form; --allow-output-change must never be passed.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The DEV-2000-ADDED speech-query encoding receipt this roster two query_source pins are built from (SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1, sealed 2026-09-21 and already consumed by cell B6). Nothing new is prepared for this cell; the requirement states what the fragment binds. The cell stays HELD on a root admission decision.",
+            "relpath": "preparation-runs/SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
+            "sha256": "9c2b6cdcb17ca3b1ad35b599217ca4e7d84f3c7e5a5d55056bdbf7d92fc9dc9d"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-REPLICATE-V1"
+    },
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-default-plan-dev2000-added-replicate-fit-v1",
+      "baseline_fragment": "slurp-native-default-plan-dev2000-added-replicate-baseline-v1",
+      "cell_id": "slurp-native-default-plan-dev2000-added-replicate-fit-v1",
+      "dataset_fragment": "slurp-speech-native-dev2000-added",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "The tokenizer-capacity fit pass for cell PLANr-DEV2000. A SPEND identity: it is never flown as a generation cell and stays held. It is declared here so each of this family ten registered run ids carries a cell, a registered plan document and an exposure row.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The DEV-2000-ADDED speech-query encoding receipt this roster two query_source pins are built from (SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1, sealed 2026-09-21 and already consumed by cell B6). Nothing new is prepared for this cell; the requirement states what the fragment binds. The cell stays HELD on a root admission decision.",
+            "relpath": "preparation-runs/SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
+            "sha256": "9c2b6cdcb17ca3b1ad35b599217ca4e7d84f3c7e5a5d55056bdbf7d92fc9dc9d"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-REPLICATE-FIT-V1"
+    }
+  ],
+  "date": "2026-09-24",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 11000,
+    "planned_speech_audio_seconds": 32819,
+    "split_role": "dev"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-REPLICATE-V1",
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, knowledge, geometry or cap change. AT MOST ONE root-diagnosed recovery re-registration for this run, which needs BOTH a new generation attempt id AND a new native_contact_fit.attempt_id (the CELL-1 lesson: the fit gate binds the baseline fit identity and refuses one that already carries evidence); a second failure closes this flight and the fix is proven on a four-row dry run before another mechanism is admitted. RESUME-RECOVERY CLAUSE (owner decision 22 of 2026-09-18): if the abort is an INFRASTRUCTURE failure with code and request bytes unchanged, the one recovery takes the resume-recovery form of harness item E10 -- the same run id, a fresh attempt id, a resume_from declaration naming the predecessor attempt and its trace SHA-256, every COMPLETE row kept without selection under invariant I7r, every partial or unstarted row re-flown in full, no change to the question, roster, comparator, decision rule or caps, and the run-cumulative budget re-checked; otherwise the one recovery is a full re-fly. A partial manifest is never scored and never read.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 44000,
+    "generation_calls_cap": 11000,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6000,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 32819
+  },
+  "fragment_kind": "saea-slurp-native-default-plan-dev2000-added-replicate-v1",
+  "generation_budget": {
+    "cap": 11000,
+    "definition": "11,000 = 1,000 DEV-2000-ADDED rows x 11, the locked plan OWN per-row contact ceiling (configs/policy/phase-native-candidates-review-revise-v1.json max_contacts 11, resolved from the unchanged role graph perception 1 / solver 1 / reviewer 3 / planner 1 with max_revisions 1 as 1 + 2 x (3 + 1 + 1)). It is the exact program maximum, not a safety bound. Cell B6 plan arm measured 4.071 contacts per row on this exact roster, which projects to about 4,071 contacts; that is an ESTIMATE, never a target, and this cell adds no contact because the added store supplies text to requests the plan already makes.",
+    "target": 4071
+  },
+  "population": {
+    "count": 1000,
+    "dataset_fragment": "slurp-speech-native-dev2000-added",
+    "decision_population": "The fresh DEV-2000-ADDED roster (docs/receipts/rosters/slurp-dev-2000-added-v1.json, roster id SLURP-DEV-2000-ADDED-V1, 1,000 devel recordings over 913 distinct utterances, 87 of which carry two recordings; 540 far-field / 460 headset; 13 scenarios present -- calendar 221, play 203, qa 157, email 96, weather 65, general 62, iot 57, lists 52, transport 48, news 20, datetime 9, recommendation 6, social 4). The roster has been flown exactly twice, by cell B6 direct and cell B6 plan arms, and is never re-flown: this cell is read against those SEALED outputs. TRAIN Fold A, Fold B, DEV-1000 and the test split stay untouched and unread. NOTE FOR THE READ: the roster receipt withholds the per-item stratum (stratum_withheld_per_item: true) and the official per-sample record carries no scenario field, so a GOLD per-scenario table is not derivable on this roster without gold (cell B6 read, section 1). What is derivable model-free, and what this cell is about, is the PREDICTED majority candidate scenario the gate itself reads.",
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67"
+  },
+  "preserve_wire_responses": true,
+  "purpose": "Cell PLANr-DEV2000: the request-identical second pass of cell B6 plan arm on the fresh DEV-2000-ADDED roster, flown for ONE reason -- to give this roster its OWN NULL. Cell CELL-3 (Stage-3 S3-6 iteration 3) is read against the sealed SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1 on these same 1,000 rows, and a non-inferiority margin imported from TRAIN Fold A (h_SLU 1.2485 / h_intent 0.9943) is a margin measured on a different roster, a different scorer sibling and a different clustering (speaker there, utterance id here). This pass produces the half-widths PLAN-DEV2000 vs PLANr-DEV2000 under the same paired estimator, so CELL-3 is not read under an imported margin. Nothing moves against cell B6 plan arm except the run, attempt and fit identities: same packets, same vectors, same receipts, same stores, same serving geometry, same caps, same devel-gold scorer. NO SMOKE IS REGISTERED: the form is already sealed and flown on this exact roster by cell B6 (its own why_no_smoke rule), and a request-identical replicate raises no new structural question a four-row flight would answer. REPORT-ONLY on its own: this cell makes no admission claim and carries no bar; its deliverable is a margin table.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "DEV-2000-ADDED",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "PLANr-DEV2000 exercises no training-free RL operator: it is the locked v2.0 plan with no delta store at all, flown a second time to measure this roster own null. The label is declared because the cell is registered inside a Stage-3 package and owner decision 101 asks every Stage-3 cell to say which family it is an instance of; the honest answer for a null pass is none.",
+    "operators_used": []
+  }
+}

@@ -1,0 +1,351 @@
+{
+  "arm": "speech-feature-query-native-tools",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_stores": {
+    "intent-boundaries": {
+      "phase_supply": {
+        "perception": {
+          "dimensions": [
+            "intent-boundary"
+          ],
+          "expose_facets": false,
+          "facet_source": {
+            "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+            "kind": "sealed-vectors",
+            "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+            "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+            "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+          },
+          "fuse_coverage": {
+            "c": 1,
+            "m": 8,
+            "top_l": 8
+          },
+          "fuse_policy": "saea-fuse-associated-values-v1",
+          "k": 8,
+          "provider": "kb-facet-v1",
+          "query_source": {
+            "embedded_signal": "speech: complete original DEV-2000-ADDED recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+            "kind": "sealed-segment-vectors",
+            "relpath": "vectors/slurp-dev2000-added-v1/query-vectors-speech-segments.jsonl",
+            "sha256": "e2a5fd046dac7c87fcf53830955e41e69d20402a2305a02ebf2bfc1a33001b9d",
+            "tool_contact_ledger_row": "SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1"
+          },
+          "rank_policy": "saea-rank-wcos-prior-agree-v1",
+          "rank_weights": {
+            "w_agree": 0.0,
+            "w_cos": 1.0,
+            "w_prior": 0.0
+          },
+          "tau": 0.0
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+        "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json",
+        "sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe"
+      },
+      "store_role": "intent-boundaries"
+    },
+    "slot-contracts": {
+      "candidate_supply": {
+        "solver": {
+          "candidate_state_phase": "perception",
+          "compact_source_phase": "perception",
+          "fuse_policy": "saea-candidate-semantic-passthrough-v1",
+          "max_candidates": 3,
+          "max_total_values": 28,
+          "max_values_per_candidate": 16,
+          "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+          "provider": "slurp-candidate-semantic-v1",
+          "rank_policy": "saea-ranked-candidate-round-robin-v1"
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v2/release.json",
+        "sha256": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v2/snapshot.json",
+        "sha256": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec"
+      },
+      "store_role": "slot-contracts"
+    },
+    "stage3-deltas": {
+      "context_supply": {
+        "planner": {
+          "candidate_state_phase": "perception",
+          "cap": 4,
+          "node_target": "planner",
+          "provider": "stage3-delta-candidate-bound-v1",
+          "rank_by": "prior_score",
+          "scenario_gate": {
+            "policy": "majority-candidate-scenario-not-in-v1",
+            "scenarios": [
+              "general",
+              "alarm",
+              "music",
+              "social",
+              "iot",
+              "play",
+              "news"
+            ]
+          }
+        },
+        "reviewer": {
+          "candidate_state_phase": "perception",
+          "cap": 4,
+          "node_target": "reviewer",
+          "provider": "stage3-delta-candidate-bound-v1",
+          "rank_by": "prior_score",
+          "scenario_gate": {
+            "policy": "majority-candidate-scenario-not-in-v1",
+            "scenarios": [
+              "general",
+              "alarm",
+              "music",
+              "social",
+              "iot",
+              "play",
+              "news"
+            ]
+          }
+        },
+        "solver": {
+          "candidate_state_phase": "perception",
+          "cap": 8,
+          "node_target": "solver",
+          "provider": "stage3-delta-candidate-bound-v1",
+          "rank_by": "prior_score",
+          "scenario_gate": {
+            "policy": "majority-candidate-scenario-not-in-v1",
+            "scenarios": [
+              "general",
+              "alarm",
+              "music",
+              "social",
+              "iot",
+              "play",
+              "news"
+            ]
+          }
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v2/release.json",
+        "sha256": "b18b141f67dae4b413391d22dd787a3b85480d2b4fab24db0848e547e7aa1a9a"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v2/snapshot.json",
+        "sha256": "131809122d23ccdaac86c9a9426c5e045a9544fc3059c1b46f80a3365151d614"
+      },
+      "store_role": "stage3-deltas"
+    },
+    "train-exemplars": {
+      "phase_supply": {
+        "solver": {
+          "dimensions": [
+            "content"
+          ],
+          "expose_facets": false,
+          "facet_source": {
+            "embedded_signal": "text: Omni-Embed-Nemotron-3B over the 11,514 governed SLURP TRAIN utterance texts, prompt 'passage: ', mean-pooled and L2-normalised; one vector per content facet id facet:content:<slurp_id>. The KEY side is knowledge text by construction and is unconstrained by the owner's 2026-09-06 query-signal rule.",
+            "kind": "sealed-vectors",
+            "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+            "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+            "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+          },
+          "fuse_coverage": {
+            "c": 20,
+            "m": 20,
+            "top_l": 20
+          },
+          "fuse_policy": "saea-fuse-supplyfilter-v1",
+          "k": 20,
+          "provider": "kb-facet-v1",
+          "query_source": {
+            "embedded_signal": "speech: complete original DEV-2000-ADDED recordings represented by the sealed full-utterance speech vector of the row's own recording, in the content retrieval dimension; flattened from the sealed intent-boundary full-utterance SEGMENT vectors (vectors/slurp-dev2000-added-v1/query-vectors-speech-content-v1.provenance.json -- one segment per row, dimension renamed intent-boundary to content, every float byte-identical to the parent) because docs/results/2026-09-17-slurp-a2-exemplar-headroom-audit-v1.md establishes intent-boundary as an alias of the content embedding space; no flattening of MEANING, re-encoding, transcript, answer or future turn enters this query.",
+            "kind": "sealed-vectors",
+            "relpath": "vectors/slurp-dev2000-added-v1/query-vectors-speech-content-v1.jsonl",
+            "sha256": "7d4ebdce553fd897fa86cc6b6d878ebf2298e19ee509eeceaf1aa0aca4855ee0",
+            "tool_contact_ledger_row": "SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1"
+          },
+          "rank_policy": "saea-rank-wcos-prior-agree-v1",
+          "rank_weights": {
+            "w_agree": 0.0,
+            "w_cos": 1.0,
+            "w_prior": 0.0
+          },
+          "tau": 0.0
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/release.json",
+        "sha256": "171aa4a82c2b15fff2c72e907ea80298be8d72309cca0d7367eb50debb042129"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/snapshot.json",
+        "sha256": "4c498dc0282055b9fe036ed7e950af519bd48b5f26e76876d0250727196a72e9"
+      },
+      "store_role": "train-exemplars"
+    }
+  },
+  "knowledge_stores_note": "Stage-3 iteration 3 (owner decision 110, PENDING), on top of S3-4s (owner decision 106): the ONE added store declares a per-node context_supply for the Solver (cap 8), the Reviewer (cap 4) and the Planner (cap 4) -- each candidate-bound, prior_score-ranked and filtered to the rows whose node_target is that phase node (rails.stage3_delta_supply) -- and each carries a scenario_gate: a row-level APPLICATION policy that withholds the supply entirely when the majority scenario of the row own projected Perception candidates is one of the seven strata the store has no reach into. The Perception unconditional route of CELL-2 is REMOVED rather than gated: it is the node that produces the candidate list, so at the moment it is served there is nothing to gate on, and the router refuses a scenario_gate on that route by construction. The gate reads the sealed Perception state of the same episode and nothing else -- no gold, no reference, no scorer, no future turn. The cell is ONE factor on the locked plan, flown on the FRESH DEV-2000-ADDED roster: the config diff against configs/baseline/slurp-native-default-plan-dev2000-added-baseline-v1.json is exactly the knowledge_stores.stage3-deltas key plus the per-flight bookkeeping keys this cell prepares under its own run id.",
+  "native_contact_fit": {
+    "attempt_id": "attempt-slurp-native-stage3-delta-cell-r03-gate-smoke-4-v1-twin-fit",
+    "contact_cap": 176,
+    "max_speech_packets": 1,
+    "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-SMOKE-4-TWIN-FIT-V1"
+  },
+  "native_episode": {
+    "actions": {
+      "accept": "ACCEPT",
+      "acquire": "ACQUIRE",
+      "revise": "REVISE"
+    },
+    "context_fit_policy": "compact-or-abstain",
+    "deliver_normaliser": {
+      "normaliser": "saea-deliver-normalise-v3"
+    },
+    "episode_id": "slurp-native-dual-store-dev1000-v1",
+    "exhaustion_policy": "deliver-latest-solver",
+    "finite_completion_policy": "deliver-latest-or-abstain",
+    "max_revisions": 1,
+    "react_exhaustion_policy": "continue-without-answer",
+    "review_loop": "on",
+    "roles": {
+      "perception": {
+        "max_iterations": 1,
+        "phase_id": "perception"
+      },
+      "planner": {
+        "max_iterations": 1,
+        "phase_id": "planner"
+      },
+      "reviewer": {
+        "max_iterations": 3,
+        "phase_id": "reviewer"
+      },
+      "solver": {
+        "max_iterations": 1,
+        "phase_id": "solver"
+      }
+    },
+    "schema": "saea-native-episode-config-v1"
+  },
+  "phase_material": {
+    "perception": {
+      "fill_params": {
+        "id": "slurp-intent-hypotheses-v1",
+        "max_candidates": 3,
+        "max_distinction_chars": 128,
+        "max_evidence_refs": 0,
+        "max_unresolved_fields": 0,
+        "min_candidates": 1,
+        "source_catalog": {
+          "data_relpath": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
+          "sha256": "3e60268b3f940c3018ab8b8c80ccd988b1d1efd6c5a198929c6af05ba21f8263",
+          "source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201"
+        }
+      },
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_perception_v3.txt",
+      "predecessor_binding": "none",
+      "response_format_id": "slurp-intent-hypotheses-v1",
+      "state_fill": null
+    },
+    "planner": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_planner_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    },
+    "reviewer": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_reviewer_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    },
+    "solver": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_solver_v2.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    }
+  },
+  "policy": "phase-native-candidates-review-revise-v1",
+  "preparation_source_receipts": [
+    {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+      "root": "data",
+      "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/completion.json",
+      "root": "data",
+      "sha256": "ebd60aca7e16e647c750a59370fce8010d55f3b57375d202817a4a08da1f4a5e"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+      "root": "data",
+      "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/slot-contracts-v1/completion.json",
+      "root": "data",
+      "sha256": "7acb644871b037f7123adec0c8fd7283ab9215d67c12fc0a32748a67a0f9dc51"
+    },
+    {
+      "relpath": "preparation-runs/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/encode-v1/receipt.json",
+      "root": "data",
+      "sha256": "3c152fc086ed1d1858f5b3021a336570d1b68c87f9c3a5abbe16209c009e2653"
+    },
+    {
+      "relpath": "prepared/SAEA-SLURP-DEV2000-ADDED-ALIAS-V1/query-dimension-alias.json",
+      "root": "data",
+      "sha256": "9d41262d18b7dc524807e36fb1d97b859f43920524a6dfe85f1bead2b07a5768"
+    },
+    {
+      "relpath": "docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json",
+      "root": "repository",
+      "sha256": "48d0f34cf536ebf9806d55b5dcced1b607080bec3c68ca7dea27cdb01478cc72"
+    },
+    {
+      "relpath": "preparation-runs/SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
+      "root": "data",
+      "sha256": "9c2b6cdcb17ca3b1ad35b599217ca4e7d84f3c7e5a5d55056bdbf7d92fc9dc9d"
+    },
+    {
+      "relpath": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+      "root": "repository",
+      "sha256": "f78dd8ad2894b1fd02bfe6050e39e3fb2c5d178a649e5d20e85ea4ecf4b8dc58"
+    }
+  ],
+  "scorers": [
+    "slurp-slu-official",
+    "cost"
+  ],
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "smoke_note": "Four-row form smoke of CELL-3 on the DEV-2000-ADDED smoke population this package DEFINES (split identity 2cca58464272bfce1ba80828f7efe9955367ad78ab0ac3d85d4d6b3fe2ed8d58): cell B6 registered no smoke on this roster, so there is no inherited four-row population to reuse. The four rows are the FIRST TWO GATE-CLOSED and the FIRST TWO GATE-OPEN rows of DEV-2000-ADDED in the roster own order, decided model-free from the SEALED comparator own Perception candidate labels (SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1): roster positions 1 and 2 carry majority scenario iot (gated, CLOSED) and positions 8 and 14 carry weather (not gated, OPEN). A pure selection with zero contacts: labels only, no gold, no score and no quality read entered it. STRUCTURAL ONLY: no official score is run here and no effectiveness claim is read from it.",
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-anchor-exemplars-k20-replicate-smoke-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-anchor-exemplars-k20-replicate-smoke-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-2000-ADDED-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "978fc63888b99fa73ec5ca51ebb03676cb853f052125212f48326e213cf35091",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
+  "task_instruction_template_active": true,
+  "what_the_stage3_deltas_store_is": "Stage-3 S3-6 iteration 3, the coverage-gated APPLICATION policy (docs/results/2026-09-24-slurp-general-scenario-diagnostic.md and docs/results/2026-09-24-slurp-stage3-delta-cell-r02-verdict.md): the SAME released stage3-deltas-v2 store CELL-2 flew -- same release, same snapshot, same 200 values, same builder policy, same facet rule, same caps -- applied on FEWER ROWS. The CELL-2 verdict read a content gain wherever the store has reach (arm minus twin: news +7.4, alarm +4.2, qa +4.2, weather +4.1 pp SLU) and a loss on the strata it does not reach; the derangement twin reproduced that loss, which makes it a FORM cost of carrying a supply rather than the content of any delta. Iteration 3 therefore changes neither the store nor the selection but the APPLICATION: each candidate-bound route declares scenario_gate majority-candidate-scenario-not-in-v1 over general, alarm, music, social, iot, play and news, and a row whose projected Perception candidates have a majority scenario in that set takes no supply step at that node at all (receipted as a delta_supply skip with reason scenario-gate-closed plus the majority scenario label, and as an open/closed decision on delta_scenario_gate). On every other row the supply is byte-identical to the ungated route. THE VENUE IS NEW: the gated set was chosen on TRAIN Fold A, and this cell reads it on the fresh DEV-2000-ADDED roster (decision 99 replicate venue), which makes this the FIRST out-of-fold read of the Stage-3 delta line. What holds this cell is a root admission decision, not wiring. THIS IS THE TWIN ARM: the released store at this namespace is the seeded derangement (seed 20260922, scripts/build_slurp_stage3_delta_twin.py) of version 2 own authored document -- same 200 statements, same node distribution, the same authored token count (3,001) and the same per-row facet-count multiset, with the attachment moved as whole tuples. 13 of the 200 rows land on an equal facet set by arithmetic (26 distinct intents over 200 rows) and are reported, not refused. THE GATE IS THE ARM GATE, unchanged: the twin therefore isolates what the gated supply FORM costs and pays on exactly the rows the gate leaves open. It is the FORM control for the CELL-3 read and decides attribution, never admission.",
+  "what_the_train_exemplars_store_is": "SLURP v2 base program module M1 / cell B1, read unmodified on the fresh DEV-2000-ADDED roster: the top-20 TRAIN construction-pool exemplars (excluding every utterance with a recording in TRAIN Fold A, Fold B or DEV-1000; 9,354-facet pool) recalled by cosine against this row's OWN sealed DEV-2000-ADDED speech vector, ranked by saea-rank-wcos-prior-agree-v1 (identity on cosine: w_cos=1, w_prior=0, w_agree=0) and passed through saea-fuse-supplyfilter-v1 with m=c=top_l=20 -- twenty in, twenty out on every row, the same 'no coverage reshaping' discipline cell KU-S3 established. Each value renders as '<utterance> | <scenario>_<action> | type=filler; ...' (KB view annotated-exemplars, scripts/build_knowledge_snapshot.py). The decision is delivered to the SOLVER phase (the program's LAST phase) through the E6 acquire transition, exactly as on TRAIN Fold A; the Solver's instruction bytes are byte-identical to the unmodified cell PLAN's. The composed acquire transition also carries the slot-contracts store's own candidate_supply.solver decision on the same wave; both compose into one PhaseSupply via rails.knowledge_stores._compose_supplies.",
+  "what_this_is": "Cell CELL-3 (Stage-3 S3-6 iteration 3): the locked v2.0 default plan as cell B6 plan arm flew it on DEV-2000-ADDED, plus exactly ONE added factor -- the released stage3-deltas-v2 store supplied per node through a COVERAGE-GATED context_supply (Solver 8, Reviewer 4, Planner 4; no Perception route). Only the roster-bound bindings of cell CELL-2 fragment move, and they move exactly where cell B6 moved cell PLAN: the dataset fragment, the promoted speech packets, the two row-side query_source pins, the preparation_source_receipts, the devel-gold scorer and the per-flight ids. The native_episode block, phase_material, policy, all four knowledge-store releases and snapshots, the geometry and the E13/E22 declarations stay byte-identical to cell B6 plan arm. Comparator: the sealed SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1 (official 65.40 SLU / 76.6 intent, flight commit 54f569c6), never re-flown, at the roster OWN null (cell PLANr-DEV2000, registered in this same package and flown first). THIS IS THE TWIN ARM: knowledge_stores.stage3-deltas is pinned to stage3-deltas-twin-v2 and nothing else moves."
+}
