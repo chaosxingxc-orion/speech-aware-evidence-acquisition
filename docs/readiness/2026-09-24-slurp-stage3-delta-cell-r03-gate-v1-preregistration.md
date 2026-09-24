@@ -245,7 +245,7 @@ Composed config and protocol hashes, computed offline by `core.config.compose` a
 | `slurp-native-stage3-delta-cell-r03-gate-twin-fit-v1` | `9790943f…` | `5c0377b9…` |
 | `slurp-native-stage3-delta-cell-r03-gate-smoke-4-v1` | `e973ce71c9a5289c7f8f851bfafc8469202e92072044b134b45680dfefadcbb8` | `ae51986ce6cf16c6b55a9e04961ef80437875be31f31bfd3cfe6b0a2ad90488b` |
 | `slurp-native-stage3-delta-cell-r03-gate-smoke-4-fit-v1` | `a934df73…` | `295085a6…` |
-| `slurp-native-stage3-delta-cell-r03-gate-smoke-4-twin-v1` | `688b0e5a0c00560914e980a375513b31be7edb28dc1d1ebc67b10d86de7130f5` | `ecdd7b650bc11e2edbfc407be8753b48408b5e0e006350387b1f88ef12690f65` |
+| `slurp-native-stage3-delta-cell-r03-gate-smoke-4-twin-v1` | `85be8202c4c0b1e94f8485ba83429212dd86919ef20e47575ade941d73f7c895` | `3a1e461d9608d7748ebfc606be84f36593207bb2a610d4a6622a0f123bdc2f37` |
 | `slurp-native-stage3-delta-cell-r03-gate-smoke-4-twin-fit-v1` | `688b0e5a…` | `ecdd7b65…` |
 
 Split identities: `ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67` (the 1,000-row
