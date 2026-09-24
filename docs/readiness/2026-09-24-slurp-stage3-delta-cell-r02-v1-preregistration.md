@@ -258,7 +258,7 @@ the CELL-1 package, where the release that produced them recorded them --
 
 | run id | cell | plan | composed config | protocol hash | split identity |
 | --- | --- | --- | --- | --- | --- |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-R02-V1` | `...-r02-v1` | `generation-plan-registered-v1.json` | `0534ff041f69edd907132b8f417521b97123a34a09671c019cad1b6b1c2d8076` | `1355a85249bb9424cb20dcada6592099623518aa858f2def56c26d962a01c49e` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-R02-V1` | `...-r02-v1` | `generation-plan-registered-v1.json` | `4f69a5cd6742092512cd939fd4767f05e20735a7a495fe601a921747d49e1634` | `01cd0a24631f14812d6f567f45438fdbce6b25077b68b7b43c05246cbc2f89ea` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-FIT-V1` | `...-r02-fit-v1` | `fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-TWIN-V1` | `...-r02-twin-v1` | `twin-generation-plan-registered-v1.json` | `dfb5ccf3fa5d951ff20b11f4b6602f2ae48cdaa2df662783cf7d0c7810a16913` | `31d180fd00a4178a6e7b0137a83f992f84b2c4a562de54284cf2cf86b54553b3` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-TWIN-FIT-V1` | `...-r02-twin-fit-v1` | `twin-fit-plan-registered-v1.json` | same | same | same |
@@ -360,8 +360,8 @@ d["budget"]["smoke"].update({"generation_calls_cap": 44, "fit_endpoint_calls_cap
                              "repeated_speech_audio_seconds_cap": 117, "gpu_hours_fit_inclusive_cap": 1.0,
                              "native_task_contract_calls_cap": 24, "official_complete_score_jobs": 0})
 d["registered_hashes"].update({
-    "arm_composed_config": "0534ff041f69edd907132b8f417521b97123a34a09671c019cad1b6b1c2d8076",
-    "arm_protocol": "1355a85249bb9424cb20dcada6592099623518aa858f2def56c26d962a01c49e",
+    "arm_composed_config": "4f69a5cd6742092512cd939fd4767f05e20735a7a495fe601a921747d49e1634",
+    "arm_protocol": "01cd0a24631f14812d6f567f45438fdbce6b25077b68b7b43c05246cbc2f89ea",
     "smoke_composed_config": "ad2958081efe9b9503c949336cdc6b2d50aaef9af1af7c2f90ce366dd9ae85b1",
     "smoke_protocol": "b0531732d2ec23edd0d53d7b774334777f91cd467f4528b9cf6a297f1387f829"})
 d["cell_kind"] = ("Stage-3 S3-6 one-factor knowledge cell, ITERATION 2: the locked v2.0 plan plus the "

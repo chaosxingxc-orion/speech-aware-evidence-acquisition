@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-delta-cell-r02-fit-v1",
-  "composed_config_hash": "0534ff041f69edd907132b8f417521b97123a34a09671c019cad1b6b1c2d8076",
+  "composed_config_hash": "4f69a5cd6742092512cd939fd4767f05e20735a7a495fe601a921747d49e1634",
   "decision_rule": {
     "ADMITTED": "the CI95 lower bound of the paired official pooled SLU-F1 delta (CELL-2 minus PLAN) is ABOVE ZERO and the CI95 lower bound of the paired intent delta exceeds -0.9943 (owner decision 99, the TRAIN lock: a gain is proven, not merely non-inferior)",
     "DELTA_CONSUMPTION": "item S3-4s: the per-node delta-consumption table -- how many deltas each node was supplied per row, which value_ids were supplied, and the saves and harms on the rows that received each one -- is a PRIMARY deliverable, reported whatever the verdict, placed beside CELL-1's own table, and is what decides whether there is an iteration 3 and what it retains. The PLANNER route is reported separately, never pooled: 4 of its 14 values survive the retention and CELL-1 measured it at 0.594 of rows supplied and never at cap.",
@@ -21,7 +21,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 47520,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "1355a85249bb9424cb20dcada6592099623518aa858f2def56c26d962a01c49e",
+    "protocol_hash": "01cd0a24631f14812d6f567f45438fdbce6b25077b68b7b43c05246cbc2f89ea",
     "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R02-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
