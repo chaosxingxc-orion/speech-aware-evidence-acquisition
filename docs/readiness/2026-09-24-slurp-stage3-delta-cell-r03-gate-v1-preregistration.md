@@ -261,7 +261,7 @@ Store pins, all read off the bytes on disk by the generator: arm release
 CONTENT hash, never the `snapshot.json` file digest.
 
 Protocol document `docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1/protocol-registered-v1.json`,
-sha256 `732056f4993402b140a9f0de7e7cd272cf5e2b3b30962084691b696fbaea5c6b`, pinned by all ten plan
+sha256 `86fee21b2b3e9a6b65e6c020b24a7cd53b6928437eb118cc41f110e28f602c40`, pinned by all ten plan
 documents.
 
 ## 9. What is registered, and what this registration does NOT authorise
