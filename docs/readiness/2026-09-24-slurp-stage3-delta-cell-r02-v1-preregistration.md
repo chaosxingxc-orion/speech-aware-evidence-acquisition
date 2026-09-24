@@ -262,7 +262,7 @@ the CELL-1 package, where the release that produced them recorded them --
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-FIT-V1` | `...-r02-fit-v1` | `fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-TWIN-V1` | `...-r02-twin-v1` | `twin-generation-plan-registered-v1.json` | `dfb5ccf3fa5d951ff20b11f4b6602f2ae48cdaa2df662783cf7d0c7810a16913` | `31d180fd00a4178a6e7b0137a83f992f84b2c4a562de54284cf2cf86b54553b3` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-TWIN-FIT-V1` | `...-r02-twin-fit-v1` | `twin-fit-plan-registered-v1.json` | same | same | same |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-V1` | `...-r02-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `ad2958081efe9b9503c949336cdc6b2d50aaef9af1af7c2f90ce366dd9ae85b1` | `b0531732d2ec23edd0d53d7b774334777f91cd467f4528b9cf6a297f1387f829` | `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-V1` | `...-r02-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `58f6f9826b459e02672ed70e70e3560aa341b36c38f275985e35ea4d53e5ab98` | `5fae760da954ba3e5c70333b6edae71d35dde9230adf0038560943ffbd8caec0` | `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-FIT-V1` | `...-r02-smoke-4-fit-v1` | `smoke-fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-TWIN-V1` | `...-r02-smoke-4-twin-v1` | `twin-smoke-generation-plan-registered-v1.json` | `c579a1fa78ea005967cd93d6660b92582b7de00f6838de26830fea32b6d3ea63` | `08047a47d37ce44ce8a93b81b1507df7648f6e16fcf07874c4efdc0d35ddce07` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-TWIN-FIT-V1` | `...-r02-smoke-4-twin-fit-v1` | `twin-smoke-fit-plan-registered-v1.json` | same | same | same |
@@ -362,8 +362,8 @@ d["budget"]["smoke"].update({"generation_calls_cap": 44, "fit_endpoint_calls_cap
 d["registered_hashes"].update({
     "arm_composed_config": "4f69a5cd6742092512cd939fd4767f05e20735a7a495fe601a921747d49e1634",
     "arm_protocol": "01cd0a24631f14812d6f567f45438fdbce6b25077b68b7b43c05246cbc2f89ea",
-    "smoke_composed_config": "ad2958081efe9b9503c949336cdc6b2d50aaef9af1af7c2f90ce366dd9ae85b1",
-    "smoke_protocol": "b0531732d2ec23edd0d53d7b774334777f91cd467f4528b9cf6a297f1387f829"})
+    "smoke_composed_config": "58f6f9826b459e02672ed70e70e3560aa341b36c38f275985e35ea4d53e5ab98",
+    "smoke_protocol": "5fae760da954ba3e5c70333b6edae71d35dde9230adf0038560943ffbd8caec0"})
 d["cell_kind"] = ("Stage-3 S3-6 one-factor knowledge cell, ITERATION 2: the locked v2.0 plan plus the "
                   "retained 200-value stage3-deltas store, read against the sealed PLAN arm at the plan's "
                   "own null, with a derangement twin as the form control. A SECOND look on the TRAIN Fold A "
