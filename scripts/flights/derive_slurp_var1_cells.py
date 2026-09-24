@@ -105,6 +105,10 @@ DECISION_ID = "slurp-stage3-var1-admission-v1"
 DECISION_RELPATH = "coordination/slurp-stage3-var1-v1/root-admission-v1.json"
 
 REGISTERED_AT_UTC = "2026-09-24T21:00:00.000000+00:00"
+#: The commit that carries this registration. A commit cannot name its own
+#: hash, so the sixteen DRAFT exposure rows were stamped by the follow-up
+#: commit and this constant keeps the generator idempotent afterwards.
+REGISTRATION_COMMIT = "1d2fc2e1"
 REGISTRATION_DATE = "2026-09-24"
 PACKAGE_NAME = "slurp-stage3-var1-v1"
 READINESS_DIR = REPO_ROOT / "docs" / "readiness" / "2026-09-24-slurp-stage3-var1-v1"
@@ -2562,7 +2566,15 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="dry run: write nothing")
     parser.add_argument("--stage", choices=("configs", "hashes", "package"), default="configs")
-    parser.add_argument("--commit", default="PENDING", help="the study commit for ledger rows")
+    parser.add_argument(
+        "--commit", default=REGISTRATION_COMMIT,
+        help=(
+            "the study commit the DRAFT ledger rows name. The default is the commit that "
+            "actually carries this registration, so a re-run reproduces the committed rows "
+            "byte for byte; a commit cannot name its own hash, which is why the value is a "
+            "constant here and was stamped by a follow-up commit."
+        ),
+    )
     args = parser.parse_args(argv)
 
     verify_bindings()
