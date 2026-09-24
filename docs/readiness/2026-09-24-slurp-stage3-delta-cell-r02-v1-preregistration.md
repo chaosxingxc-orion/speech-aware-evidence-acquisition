@@ -260,7 +260,7 @@ the CELL-1 package, where the release that produced them recorded them --
 | --- | --- | --- | --- | --- | --- |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-V1` | `...-r02-v1` | `generation-plan-registered-v1.json` | `0534ff041f69edd907132b8f417521b97123a34a09671c019cad1b6b1c2d8076` | `1355a85249bb9424cb20dcada6592099623518aa858f2def56c26d962a01c49e` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-FIT-V1` | `...-r02-fit-v1` | `fit-plan-registered-v1.json` | same | same | same |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-R02-TWIN-V1` | `...-r02-twin-v1` | `twin-generation-plan-registered-v1.json` | `506e3c60e95c0fd927af96a6d83e4d9c7ad2cdc5ba991d89e211dabeeadf9257` | `adaed3cfdab1d5df847fca408043359c286f7b7d9a3078f4c2c96502ef801512` | same |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-R02-TWIN-V1` | `...-r02-twin-v1` | `twin-generation-plan-registered-v1.json` | `0cd19839fffaea98eebf22654a582a7db47edf30d0b001b4da52c14d6c9d22b4` | `3f7298c19808d64f80be4efb5b7a8e37c2f7e07b3d9b6dc682df74e434ea87ef` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-TWIN-FIT-V1` | `...-r02-twin-fit-v1` | `twin-fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-V1` | `...-r02-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `ad2958081efe9b9503c949336cdc6b2d50aaef9af1af7c2f90ce366dd9ae85b1` | `b0531732d2ec23edd0d53d7b774334777f91cd467f4528b9cf6a297f1387f829` | `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-FIT-V1` | `...-r02-smoke-4-fit-v1` | `smoke-fit-plan-registered-v1.json` | same | same | same |
