@@ -1,6 +1,21 @@
 {
   "cell": "slurp-native-stage3-gepa-r01-smoke-4-fit-v1",
-  "composed_config_hash": "PENDING_CHECK_COMPOSED_CONFIG_HASH",
+  "check_receipt": {
+    "command": "python -m speech_aware_evidence_acquisition.core.flight.cli check --repo-root <repo> --data-root <data> --runtime-root /home/chao --lock-path <umbrella datasets.lock.json> --experiment <exp> --cell <cell>",
+    "contacts": {
+      "encoder": 0,
+      "model": 0,
+      "network": 0,
+      "scorer": 0,
+      "tokenizer": 0
+    },
+    "exit_code": 0,
+    "generation_authorized": false,
+    "prepared_artifacts": "none (this cell pins no prepared phase supply)",
+    "readiness_state": "held",
+    "study_commit": "58224dea78823b050c9b7644700e94d00684ef88"
+  },
+  "composed_config_hash": "dbb41b63aa3b2cb52e4c14b09967d4cc1a3f5e1601828344d7a6e3cbbef6d2f3",
   "decision_rule": {
     "no_gate_number": "No threshold is pre-registered on any of the six, because this cell carries no admission verdict: a low parse rate, a degenerate node distribution or a zero revision share is a FORM defect that stops the arm and is root-caused, not a measured result. The smoke's own acceptance is the same six items on 4 contacts; a failed smoke stops the arm and it does not open.",
     "rule": "STRUCTURAL ONLY. No effectiveness claim is read from this cell -- the effect of the curated deltas is read at CELL-1-GEPA, against the plan's own null. Acceptance here is: (1) PARSE RATE -- the fraction of contacts whose response yields at least one LEGAL block under rails.stage3_gepa.parse_gepa_proposal, reported with its denominator; (2) NODE DISCIPLINE -- the count of blocks whose NODE differs from the group's own node, the invariant only this arm's parser enforces; (3) ILLEGAL-BLOCK COUNT by the parser's own reason strings, retained and never repaired; (4) BLOCKS PER CONTACT -- the one-to-five distribution; (5) REVISION SHARE -- accepted proposals the curator absorbed into an existing row against those that entered as new rows, which is the number that says whether a reflective proposer reflected on the text it was shown; (6) a clean seal with row accounting in = out."
@@ -12,7 +27,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 12,
     "planned_speech_audio_seconds": 27,
-    "protocol_hash": "PENDING_CHECK_PROTOCOL_HASH",
+    "protocol_hash": "924135f3b034f199435adceec47420d909692a72ca79bdff3c8eb4fbb3a345c8",
     "run_id": "SAEA-SLURP-STAGE3-GEPA-R01-SMOKE-4-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "5a8bf7f89170c1cc3565cbbd41dac168000123cdab866ade04b8e354dbb86ea7",
@@ -38,6 +53,17 @@
     "contact_cap": 204,
     "coordinate_fit": "must NOT be run; there is no fit identity for it to charge",
     "if_root_ever_configures_live_fit": "core.preparation_fit.build_live_phase_fit_gate requires contact_cap to EQUAL len(phases) x (1 + 3 x rows) exactly -- 1 x (1 + 3 x 68) = 205 for the arm and 1 x (1 + 3 x 4) = 13 for the smoke, each ONE MORE than the ceiling registered here. Registering a live_phase_fit block therefore requires re-registering the fit ceiling first; this package does not attempt it.",
+    "measured_prompt_budget": {
+      "completion_token_ceiling": 512,
+      "decision": "ALLOW",
+      "first_row_rendered_text_tokens": 3343,
+      "measured_by": "core.flight.cli check at study commit 58224dea, offline: the prompt budget is estimated by the harness without a tokenizer endpoint (contacts: 0).",
+      "operational_margin_tokens": 17646,
+      "operational_reserve_tokens": 3072,
+      "phase": "gepa",
+      "required_window_tokens": 3858,
+      "slot_limit_tokens": 24576
+    },
     "mode": "registration reserve -- NO fit mechanism is configured for this cell today",
     "offline_prompt_size_scan": "All 68 contacts were rendered offline before this registration (zero contacts of any kind): min 2,477 / median 13,309 / max 16,281 CHARACTERS, the largest being gepa:transport:solver (12 rows, 12 current deltas). Characters, not tokens -- measuring tokens needs a tokenizer endpoint, which is a contact, and the FIT pass is what measures them. The live slot is 24,576 with the one-eighth reserve (3,072), so 21,504 tokens are budgetable; a 16,281-character prompt is far inside it on any plausible ratio, and the fit pass is what proves it.",
     "smoke_contact_cap": 12,
@@ -115,7 +141,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-24-slurp-stage3-gepa-r01-v1/protocol-registered-v1.json",
-    "sha256": "PENDING_PROTOCOL_DOCUMENT_SHA256"
+    "sha256": "765cd606606b0b7c651dd85745f4a5198029a3addc63ae0e71f8e8972d3b1621"
   },
   "purpose": "Four-row form smoke of the GEPA arm: prove the contact FORM -- one phase-stage3-gepa-v1 contact per group, the system and per-group templates rendered from the prepared groups artifact, the sealed ROLL-1 custody and the released v1r delta statements, the answer read by rails.stage3_gepa.parse_gepa_proposal into one to five node-fixed blocks with illegal blocks retained and counted -- before the full arm opens. The four rows are the four groups of the first scenario, one per NODE, so all four current-delta slices and the node-fixed parser are exercised at once. STRUCTURAL EVIDENCE ONLY.",
   "quality_read_gate": "No read of any kind before the complete sealed manifest and the exact ordered 4 outputs exist. There is no admission read and no comparator: the only read is the six structural items of the registered decision rule, and then the GEPA curation. A partial manifest is never read.",

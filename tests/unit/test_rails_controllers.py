@@ -137,6 +137,13 @@ _EXPECTED_PROGRAM_SHAPES = {
     # three-line statement. A program and its fragment must agree on a
     # phase output contract, so the v2 contract needs its own program.
     "phase-stage3-advantage-v2": (("advantage",), 1, "always-run-full-program"),
+    # Stage-3 layer A, the GEPA arm: one phase ("gepa"), one contact, the same
+    # one-phase shape the two advantage programs have. It differs in exactly
+    # one field, the stage3-gepa-proposal-v1 response format (one to FIVE
+    # blocks, all addressed to the group's single node), and it is the id
+    # core.flight.runtime._default_construction_material dispatches the GEPA
+    # material on, because both construction-visible cells fly the SAME arm.
+    "phase-stage3-gepa-v1": (("gepa",), 1, "always-run-full-program"),
     "phase-training-feedback-proposal-v1": (
         ("proposal",),
         1,
