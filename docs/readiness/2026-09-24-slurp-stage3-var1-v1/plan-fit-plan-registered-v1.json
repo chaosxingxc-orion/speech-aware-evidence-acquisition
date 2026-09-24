@@ -1,0 +1,90 @@
+{
+  "cell": "slurp-native-stage3-var1-plan-r01c-fit-v1",
+  "composed_config_hash": "029dbb74e49c6d035dd0d3b07ff79f3982e9c93cdfd6f0d81aaeb853729ca07d",
+  "decision_rule": {
+    "DENSE_PROXIES": "Reported per variant beside the pooled score, because a 625-row pooled SLU delta is at the measurement floor and a dense proxy is not: entity FALSE POSITIVES and FALSE NEGATIVES by slot TYPE, the empty-gold-row emission rate, intent exactness, and -- from the sealed Perception receipts, model-free -- the coverage rate (gold intent present in the row's own candidate list). Coverage is the quantity VAR1-PER-K16C5 exists to move and is read directly, not inferred from the pooled score.",
+    "EFFICIENCY_REGARDLESS": "Every efficiency deliverable is reported whatever the table says. VAR1-EX-K10 in particular is expected to cost FEWER prefilled tokens per row than VAR1-PLAN, and a variant that holds the score at a lower token cost is a finding in its own right.",
+    "FRONTIER": "Owner decision 75: the frontier row (official SLU-F1 delta x prefilled tokens per row x GPU hours per 625 rows) is reported for every variant beside the registered rows. The denominator is 625 here, not 1,080 or 1,000: a frontier row from another roster is rescaled or labelled, never silently placed beside.",
+    "GROUP_RELATIVE_ADVANTAGE": "PRIMARY DELIVERABLE. For every runtime-observable state key -- predicted scenario (the majority scenario of the row's own Perception candidates), candidate count, channel (headset / far-field) and audio-duration band -- the per-row scores of the K variants plus VAR1-PLAN are grouped, and each variant's advantage is its score minus the group mean over the variants ON THAT ROW. That is the group-relative advantage a training-free RL policy would be learned from, and computing it is the whole point of flying the variants paired on one roster. It is reported with its per-state sample size and is never read as an effect at a state with fewer than twenty rows.",
+    "OWN_NULL_FIRST": "THE ORDER IS PART OF THE REGISTRATION. h_SLU and h_intent are the CI95 half-widths VAR1-PLAN against VAR1-PLANR produces on THIS roster, with the same estimator, clustering, seed and draws as every variant contrast. The own-null read SAEA-SLURP-STAGE3-VAR1-OWN-NULL-V1 is completed and its margin table SEALED before any variant contrast stage is read, and the margins are never adjusted after a variant's numbers are seen. The TRAIN Fold A margins (h_SLU 1.2485 / h_intent 0.9943) and the DEV-2000-ADDED margins (1.2525 / 1.1520) are CONTEXT ONLY: a margin is a property of a roster, never of a mechanism, and R01C is a different roster of a different size.",
+    "PER_STRATUM": "Owner decision 17: a per-scenario table in BOTH weightings, natural mixture and equal-stratum. R01C's roster receipt carries a per-item stratum (18 scenarios, 26-42 rows each), so unlike DEV-2000-ADDED a GOLD per-scenario table IS derivable here offline, from the roster receipt alone and with no gold at runtime. It is reported for every variant.",
+    "PER_VARIANT_READING": "For each variant v: delta(v) = v minus VAR1-PLAN on the same 625 rows, paired by row, in percentage points, for the official pooled SLU micro F1 (primary) and the intent (joint scenario+action) accuracy (guard). Each delta is reported with its CI90 and CI95 from the row-cluster bootstrap, beside h_SLU and h_intent from the own null. A variant is called SEPARATED FROM THE NULL when its CI95 excludes zero AND its point estimate is outside +-h on that metric; anything else is INSIDE THE NULL. That is a reading of a construction rollout, NOT an admission: the words ADMITTED and HARMFUL are not used of a VAR-1 cell.",
+    "REPLICATION_AND_TRANSFER": "NOTHING SELECTED HERE IS A RESULT. A variant that separates from the null on R01C is a CANDIDATE, and the next step is a re-read of that one variant on TRAIN Fold A against the sealed PLAN comparator at Fold A's own null, and then on DEV-2000-ADDED at its own null -- the CELL-3 lesson, where a store selected on Fold A did not transfer to a fresh roster. Selecting on construction rows and claiming on them is the error this family is designed not to repeat.",
+    "STATUS_IS_DESCRIPTIVE": "THIS FAMILY RETURNS NO ADMISSION VERDICT. It is a construction-variant ROLLOUT on a construction roster: its output is a table, not a decision. No ADMITTED / NEUTRAL / HARMFUL label is attached to any VAR-1 cell, no module is admitted, no store is released, nothing is locked and the v2.0 lock is untouched. The paired read driver writes status DESCRIPTIVE and the coordinator does not convert it.",
+    "comparator": "cell VAR1-PLAN (SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1), flown in this same family. It is FLOWN rather than imported because no plan-form arm has ever been sealed on R01C: cell ROLL-1 flew the five-sample grouped-Solver policy (phase-native-candidates-review-revise-samples5-v1), not the locked single-sample plan, and greedy decoding is not bit-reproducible across batch compositions, so a comparator from another roster would import a margin this family cannot measure."
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-var1-plan-r01c-v1-fit",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 8.0,
+    "planned_model_calls": 27500,
+    "planned_speech_audio_seconds": 29996,
+    "protocol_hash": "004a32be92e9d445f8c5b74440a2d091bd4736425a6269a9b88f701ceeb12540",
+    "run_id": "SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realised native request inside the same flight, under the same lease. coordinate-fit must NOT be run, or this row is double-charged.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-var1-plan-r01c-v1",
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, knowledge, geometry or cap change. AT MOST ONE root-diagnosed recovery re-registration for this run, which needs BOTH a new generation attempt id AND a new native_contact_fit.attempt_id (the CELL-1 lesson: the fit gate binds the baseline's fit identity and refuses one that already carries evidence); a second failure closes this flight and the fix is proven on a four-row dry run before another mechanism is admitted. RESUME-RECOVERY CLAUSE (owner decision 22 of 2026-09-18): if the abort is an INFRASTRUCTURE failure with code and request bytes unchanged, the one recovery takes the resume-recovery form of harness item E10 -- the same run id, a fresh attempt id, a resume_from declaration naming the predecessor attempt and its trace SHA-256, every COMPLETE row kept without selection under invariant I7r, every partial or unstarted row re-flown in full, no change to the question, roster, comparator, decision rule or caps, and the run-cumulative budget re-checked; otherwise the one recovery is a full re-fly. A partial manifest is never scored and never read. One experiment is in flight at a time: a failure in any VAR-1 cell stops the whole family's chain, and the remaining variants do not open.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 27500,
+    "generation_calls_cap": 6875,
+    "gpu_hours_fit_inclusive": 8.0,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 29996
+  },
+  "modules": {
+    "base": "the LOCKED v2.0 default plan (configs/baseline/slurp-native-default-plan-lock-baseline-v1.json): the complete native episode with the review loop on, the shared controller and FlightRuntime path, no phase_tools on any role, Solver-only answer authority, the max512 np4 resident geometry, the intent-boundaries v1 / slot-contracts v2 / train-exemplars stores, saea-deliver-normalise-v3 at delivery, and items E13 and E22 declared. Nothing of it moves except this cell's own declared knobs.",
+    "knobs": {
+      "exemplars_fuse_coverage": {
+        "c": 20,
+        "m": 20,
+        "top_l": 20
+      },
+      "exemplars_k": 20,
+      "moved_against_the_locked_plan": [],
+      "perception_fill_max_candidates": 3,
+      "perception_fuse_coverage": {
+        "c": 1,
+        "m": 8,
+        "top_l": 8
+      },
+      "perception_k": 8,
+      "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+      "slot_contracts_max_candidates": 3
+    },
+    "per_role_rendering_held": "native_episode.tool_schema_rendering is NOT armed.",
+    "roster_repointing": "the R01C re-pointing cell ROLL-1 already proved on this venue, key for key: the two query_source pins, preparation_source_receipts, the packet promotion receipt and its sha256, and the MINUS-R01 exemplar store release and snapshot (coordinator decision 102: a construction roster may never retrieve itself). Not a variant, and identical across all seven cells.",
+    "second_declared_key_not_a_factor": "native_episode.react_exhaustion_policy = continue-without-answer (item E22) and finite_completion_policy = deliver-latest-or-abstain (item E13): failure-mode declarations the locked plan already carries, required of every live SLURP native cell by scripts/checks/finite_completion_policy_check.py. Neither renders a request byte.",
+    "what_moved": [],
+    "zero_added_contacts": "no VAR-1 knob adds a contact: every one of them changes how much text an already-scheduled request carries. The role graph, and therefore the 11-contact per-row ceiling, is the locked plan's unchanged."
+  },
+  "plan_kind": "native contact fit",
+  "preparation_base_commit": "8db3d5b3",
+  "prepared_phase_supply": {
+    "allow_output_change": "--allow-output-change must never be passed",
+    "note": "harness item E16: scripts/flights/repin_cell.py mints this cell's own first-phase supply model-free at flip time and writes the pin plus the matching preparation requirement. The committed baseline carries no prepared_phase_supply key.",
+    "status": "NOT PINNED HERE"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-24-slurp-stage3-var1-v1/protocol-registered-v1.json",
+    "sha256": "be04e56449032ea2eec0c7f65c4154d00a4b3984664959081fca84f96fbeb830"
+  },
+  "purpose": "Stage-3 VAR-1, the FIRST construction-variant rollout of the locked v2.0 plan (owner directive 2026-09-24: training-free RL gains come from rolling out VARIATIONS of prompts, data and content construction over an optimisation space, scored per variant, with the winners encoded into demonstrations, constraints and selection rules; handoff docs/handoff/2026-09-24-fable51/HANDOFF-STAGE3-FOR-CHATGPT-v1.md sections 6-7, routes F3 and F4). Six cells on the 625-row SLURP-STAGE3-CONSTRUCTION-R01C construction roster: the locked plan re-pointed at R01C (VAR1-PLAN, the comparator), its request-identical replicate (VAR1-PLANR, the roster's own null), and four single-knob construction variants of its knowledge supply. THIS PLAN IS CELL VAR1-PLAN: the locked v2.0 plan itself, re-pointed at R01C; no knob moves. Cell VAR1-PLAN: the LOCKED v2.0 default plan (configs/baseline/slurp-native-default-plan-lock-baseline-v1.json), unchanged in every decided key, re-pointed at the SLURP-STAGE3-CONSTRUCTION-R01C roster -- its promoted speech packets, its two sealed speech query-vector files and its own preparation receipts -- exactly as cell B6 re-pointed PLAN at DEV-2000-ADDED and cell ROLL-1 re-pointed it at this very roster. One deviation is MANDATORY and is not a variant: the train-exemplars store is the size-pool-annotated-exemplars-MINUS-R01 release, because R01's own utterances are in the parent exemplar pool and a construction roster may never retrieve itself (coordinator decision 102). This cell is the COMPARATOR every VAR-1 variant is paired against; it is flown, not imported, because no plan-form arm has ever been sealed on R01C -- ROLL-1 flew the five-sample grouped Solver policy, not this one. READ DISCIPLINE: the output of this family is DESCRIPTIVE -- a per-row paired variant table at the roster's own null, a per-scenario table, entity FP/FN by slot type, Perception coverage, and the group-relative advantage of each variant per runtime-observable state. NO admission verdict, no lock, no store release and no claim is taken from it. R01C is a CONSTRUCTION roster (split role discovery): variants are chosen here on construction rows, and any winner must be re-read on TRAIN Fold A and on DEV-2000-ADDED, each at that roster's own null, before it becomes a claim of any kind. Owner decisions 28 and 86: TRAIN and DEV numbers are development numbers; the one test read (decision 29 / 108) is not authorised here and is deferred until a fresh-roster gain exists.",
+  "quality_read_gate": "no task-quality read before this cell's complete sealed manifest, its exact ordered 625 outputs, its native phase summary and its single successful complete official TRAIN score all exist, and not before the own-null read SAEA-SLURP-STAGE3-VAR1-OWN-NULL-V1 has sealed its margin table.",
+  "registered_at_utc": "2026-09-24T21:00:00.000000+00:00",
+  "registration_base_commit": "8db3d5b3",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-var1, branch fable/var1",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}
