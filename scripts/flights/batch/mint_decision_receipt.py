@@ -44,6 +44,7 @@ def main():
     ap.add_argument("--claim-boundary", required=True)
     ap.add_argument("--expected-contacts", type=int, default=None)
     ap.add_argument("--expected-gpu-hours", type=float, default=None)
+    ap.add_argument("--out-name", default="root-admission-v1.json", help="receipt file name inside coordination/slurp-<name>-v1/ (2026-09-24: a cell that shares its coordination directory with a sibling receipt names its own, e.g. cell-admission-v1.json)")
     ap.add_argument("--replace", action="append", default=[], help="extra OLD=NEW substitutions applied AFTER the id substitutions (e.g. run ids without the NATIVE infix, attempt ids without the roster slug)")
     a = ap.parse_args()
     src = f"{DATA}/coordination/slurp-{a.src}-v1/root-admission-v1.json"
@@ -74,7 +75,9 @@ def main():
             n["budget"]["arm"]["expected_gpu_hours"] = a.expected_gpu_hours
     out_dir = f"{DATA}/coordination/slurp-{a.name}-v1"
     os.makedirs(out_dir, exist_ok=True)
-    out = f"{out_dir}/root-admission-v1.json"
+    out = f"{out_dir}/{a.out_name}"
+    if os.path.exists(out):
+        raise SystemExit(f"refusing to overwrite an existing receipt: {out} (pass --out-name for a sibling receipt)")
     io.open(out, "w", encoding="utf-8", newline="\n").write(json.dumps(n, indent=2) + "\n")
     print("minted", out, "| decision_id", n.get("decision_id"), "| eligible", n.get("eligible_run_ids"))
 

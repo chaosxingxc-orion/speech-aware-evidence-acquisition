@@ -11,9 +11,9 @@ TRAIN lock) and 106 (the per-node routes). Design authority:
 note is `docs/readiness/2026-09-24-slurp-stage3-delta-cell-gepa-r01-v1-preregistration.md`.
 
 Stage-3 algorithm (owner decision 101): **`gepa-reflective-pareto-v1`**, operators `update` +
-`selection`. The per-node supply is the context-application step and is **not** declared, because
-`core.base.STAGE3_ALGORITHMS` does not define `context_application` for this record; see section 2a
-of the preregistration. Declared as `stage3_algorithm` in both experiment fragments and checked by
+`selection` + `context_application` (the per-node supply is the context-application step; the
+registry record gained that operator by the coordinator ruling of 2026-09-24, see section 2a of the
+preregistration). Declared as `stage3_algorithm` in both experiment fragments and checked by
 `scripts/checks/stage3_algorithm_label_check.py`.
 
 ## What this cell is

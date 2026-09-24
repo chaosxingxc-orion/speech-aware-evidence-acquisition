@@ -135,10 +135,11 @@
   "split_id": "SLURP-EVO-FOLD-A-V2",
   "stage3_algorithm": {
     "id": "gepa-reflective-pareto-v1",
-    "note": "CELL-1-GEPA applies GEPA's released context as ONE factor on the locked plan. The store it pins was produced by GEPA's own two operators: the proposer cell reflected on the sealed ROLL-1 trajectories per (scenario, node) and rewrote that node's guidance text (UPDATE), and the surviving iteration-1 rows were chosen against each scenario's own null band rather than by a pooled average (SELECTION). The per-node context_supply route that puts those statements into a row is the context-application step; it is NOT declared in operators_used because core.base.STAGE3_ALGORITHMS registers gepa-reflective-pareto-v1 with credit_assignment / update / selection only, and core.stage3_algorithms.validate_stage3_algorithm_label refuses an operator the algorithm does not define. Adding context_application to that registry record is a coordinator decision, not an implementer's.",
+    "note": "CELL-1-GEPA applies GEPA's released context as ONE factor on the locked plan. The store it pins was produced by GEPA's own two operators: the proposer cell reflected on the sealed ROLL-1 trajectories per (scenario, node) and rewrote that node's guidance text (UPDATE), and the surviving iteration-1 rows were chosen against each scenario's own null band rather than by a pooled average (SELECTION). The per-node context_supply route that puts those statements into a row is the CONTEXT_APPLICATION step, declared here: by the coordinator ruling of 2026-09-24 the registry record gepa-reflective-pareto-v1 defines context_application as well, so every family that applies a released store by candidate-bound supply carries the same application operator.",
     "operators_used": [
       "update",
-      "selection"
+      "selection",
+      "context_application"
     ]
   },
   "generation_budget": {

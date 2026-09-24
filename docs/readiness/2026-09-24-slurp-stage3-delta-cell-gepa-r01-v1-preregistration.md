@@ -48,23 +48,22 @@ comparator, at the same own null, on the same rows.
 attempt of one run id. CELL-1-GEPA is a sibling fragment set, not an edit of CELL-1's or CELL-2's
 files, and neither is touched by this registration.
 
-### 2a. The algorithm label, and the one operator it cannot declare
+### 2a. The algorithm label: three operators
 
 `core.base.STAGE3_ALGORITHMS` registers `gepa-reflective-pareto-v1` with operators
-**`credit_assignment` / `update` / `selection`**, and
-`core.stage3_algorithms.validate_stage3_algorithm_label` refuses an `operators_used` entry the
-algorithm does not define. The diff plan names three operators for this cell -- `update`,
-`selection` and `context_application` -- but `context_application` is **not** in that record, so the
-fragments declare `["update", "selection"]` and the label's `note` states the omission in words:
-the per-node `context_supply` route IS the context-application step, and declaring it needs an
-amendment to the registry record (`core/stage3_algorithms.py`), which is a coordinator decision, not
-an implementer's. `scripts/checks/stage3_algorithm_label_check.py` passes as written.
+`credit_assignment` / `update` / `selection` / `context_application`. The fragments declare
+`["update", "selection", "context_application"]`: the proposer cell rewrote each node's guidance
+text by reflecting on the sealed ROLL-1 trajectories (UPDATE), the decision-83 frontier rule chose
+the survivors at curation (SELECTION), and the per-node `context_supply` route that puts those
+statements into a row is the context-application step (CONTEXT_APPLICATION), the same operator the
+Training-Free GRPO family declares for the same route. `credit_assignment` is not declared here
+because this cell performs none: it consumes a released store.
 
-This is the one place where this registration deliberately does not do what the diff plan's table
-says, and it is flagged rather than worked around. Note that the sibling record
-`ace-grow-refine-v1` already defines `context_application`, so adding it to the GEPA record would be
-a one-line change plus its test -- but a change to a shared registry module during a live flight is
-not this agent's to make.
+History: the registration agent's first draft declared two operators because the registry record
+lacked `context_application`; the coordinator amended the record on 2026-09-24 (before any flip or
+contact) so that every family that applies a released store by candidate-bound supply carries the
+same application operator and the three arms stay comparable by construction (owner decision 101).
+`scripts/checks/stage3_algorithm_label_check.py` passes with the three operators.
 
 ## 3. Decision rule (fixed here, owner decision 99: the TRAIN lock)
 

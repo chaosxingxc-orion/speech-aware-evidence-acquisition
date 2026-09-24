@@ -448,7 +448,7 @@
   },
   "harness_admission_entry_form": {
     "carrier": "slurp",
-    "module": "the stage3-deltas store version 1, supplied per node (Training-Free GRPO update + context_application). An admission entry is written ONLY on ADMITTED and only after the replicate on the same roster; a NEUTRAL or HARMFUL verdict writes a results-ledger row and no admission entry.",
+    "module": "the stage3-deltas-gepa store version 1, supplied per node (GEPA update + selection at curation, context_application at supply). An admission entry is written ONLY on ADMITTED and only after the replicate on the same roster; a NEUTRAL or HARMFUL verdict writes a results-ledger row and no admission entry.",
     "written_by": "the coordinator, from the sealed verdict of the arm, its twin and the replicate"
   },
   "metrics": {

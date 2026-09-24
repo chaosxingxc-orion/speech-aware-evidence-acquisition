@@ -197,7 +197,7 @@ GEPA_REFLECTIVE_PARETO_V1 = _register(
         family="gepa",
         display_name="GEPA (reflective Pareto evolution of the context)",
         citation="arXiv:2507.19457",
-        operators=("credit_assignment", "update", "selection"),
+        operators=("credit_assignment", "update", "selection", "context_application"),
         status="planned",
         what_it_changes=(
             "The context/instruction text is mutated by reflecting on execution traces "
