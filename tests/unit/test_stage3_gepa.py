@@ -18,9 +18,11 @@ Six groups of obligations:
 6. The GEPA curation produces the group-keyed row shape, drops a wrong-node
    block, absorbs a verbatim repeat as a REVISION, and leaves the existing twin
    builder's two invariants exact.
-7. The store's SOURCE population is the GROUP rows and is a committed roster of
-   its own: the mint is a pure selection of R01C, the renderer copies that
-   receipt byte for byte, and the copied file is what ``core.roster`` verifies.
+7. Three populations are kept apart: the flown CARRIERS, the GROUP rows the
+   contact was shown (a committed roster of its own, minted as a pure selection
+   of R01C), and the store's PERMITTED roster, the ADV-1 disagreeing receipt.
+   The renderer copies the permitted receipt byte for byte and proves the group
+   union is inside it; the copied file is what ``core.roster`` verifies.
 
 Every fixture is synthetic: no real SLURP utterance, gold or model output
 appears anywhere in this file.
@@ -876,7 +878,12 @@ def test_the_existing_twin_builder_holds_its_two_invariants_on_a_gepa_document()
     assert TWIN.facet_count_multiset(twin) == TWIN.facet_count_multiset(document)
     assert [row["content"] for row in twin["rows"]] == [row["content"] for row in rows]
 # --------------------------------------------------------------------------- 7
-# The GEPA store's SOURCE population is the GROUP rows, not the flown carriers.
+# Three populations, and they are not the same rows.
+#
+#   FLIGHT          the 68 CARRIERS, one contact each (the experiment fragment).
+#   CONTACT MATERIAL the 173 GROUP rows, what a contact was actually shown.
+#   STORE PERMITTED  the 225 ADV-1 disagreeing rows, what an authored delta may
+#                    cite -- exactly the receipt stage3-deltas-v1r and -v2 pin.
 #
 # core.semantic_knowledge_preparation verifies a release registration's
 # permitted_roster through core.roster.read_roster and then requires
@@ -884,7 +891,11 @@ def test_the_existing_twin_builder_holds_its_two_invariants_on_a_gepa_document()
 # first GEPA release attempt handed it a roster synthesised in the renderer with
 # its split_identity_hash removed, against the CARRIERS identity, and was refused
 # ("roster receipt split_identity_hash must be non-empty text" ->
-# "permitted_roster is not a verified roster"). These tests hold the fix.
+# "permitted_roster is not a verified roster"). The second handed it the group
+# union and was refused by rails.semantic_knowledge_build, because the store is
+# append-only over v1r and 42 retained iteration-1 rows cite 28 R01C rows outside
+# that union. So the renderer's rule is CONTAINMENT, not equality: the permitted
+# receipt must hold every group row. These tests hold that.
 
 GROUPS_ARTIFACT = {
     "schema": "saea-stage3-gepa-groups-v1",
@@ -1043,12 +1054,13 @@ def _render(tmp_path, monkeypatch, groups_path, permitted_receipt, out_dir):
     return RENDER.main()
 
 
-def test_the_renderer_copies_the_committed_groups_receipt_byte_for_byte(
+def test_the_renderer_copies_the_committed_permitted_receipt_byte_for_byte(
     tmp_path, monkeypatch
 ):
     from speech_aware_evidence_acquisition.core import roster as roster_module
 
     _parent, groups_path = _prepare_repo(tmp_path)
+    # the exact group union satisfies containment too -- equality is its edge case
     PREPARE.cmd_groups_roster(_namespace(tmp_path, groups_path))
     committed = tmp_path / PREPARE.GROUPS_ROSTER_OUT
     out_dir = tmp_path / "prepared"
@@ -1059,7 +1071,51 @@ def test_the_renderer_copies_the_committed_groups_receipt_byte_for_byte(
     assert roster_module.read_roster(copied)["roster_id"] == PREPARE.GROUPS_ROSTER_ID
 
 
-def test_the_renderer_refuses_a_permitted_roster_that_is_not_the_group_rows(
+def test_a_permitted_roster_that_contains_every_group_row_is_accepted(
+    tmp_path, monkeypatch
+):
+    """The ADV-1 shape: a SUPERSET of the group rows, copied byte for byte.
+
+    The real permitted roster is the 225-row disagreeing receipt and the group
+    union is 173 of those rows; here the synthetic parent R01C (five rows) plays
+    the superset over a three-row union.
+    """
+
+    from speech_aware_evidence_acquisition.core import roster as roster_module
+
+    parent_path, groups_path = _prepare_repo(tmp_path)
+    out_dir = tmp_path / "prepared"
+    assert _render(tmp_path, monkeypatch, groups_path, parent_path, out_dir) == 0
+    copied = out_dir / "permitted-roster.json"
+    assert copied.read_bytes() == parent_path.read_bytes()
+    permitted = roster_module.read_roster(copied)
+    held = {item["sample_id"] for item in permitted["items"]}
+    assert set(PREPARE.group_row_ids(GROUPS_ARTIFACT)) < held
+
+
+def test_the_renderer_refuses_a_permitted_roster_missing_a_group_row(
+    tmp_path, monkeypatch
+):
+    from speech_aware_evidence_acquisition.data import splits
+
+    _parent, groups_path = _prepare_repo(tmp_path)
+    # one group row short of containment: a delta citing row-c would be refused
+    # by rails.semantic_knowledge_build, so the renderer refuses first
+    short = _parent_roster()
+    short["items"] = [i for i in short["items"] if i["sample_id"] != "row-c"]
+    short["split_identity_hash"] = splits.split_identity_hash(
+        splits.prefixed("slurp", [i["sample_id"] for i in short["items"]])
+    )
+    short_path = tmp_path / "short-roster.json"
+    short_path.write_text(
+        json.dumps(short, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    with pytest.raises(SystemExit) as refusal:
+        _render(tmp_path, monkeypatch, groups_path, short_path, tmp_path / "prepared")
+    assert "does not contain 1" in str(refusal.value)
+
+
+def test_the_renderer_refuses_the_carriers_receipt_as_the_permitted_roster(
     tmp_path, monkeypatch
 ):
     _parent, groups_path = _prepare_repo(tmp_path)
@@ -1069,31 +1125,76 @@ def test_the_renderer_refuses_a_permitted_roster_that_is_not_the_group_rows(
     carriers = tmp_path / PREPARE.ROSTER_OUT
     with pytest.raises(SystemExit) as refusal:
         _render(tmp_path, monkeypatch, groups_path, carriers, tmp_path / "prepared")
-    assert "groups-roster" in str(refusal.value)
+    assert "does not contain" in str(refusal.value)
+    assert "FLIGHT population" in str(refusal.value)
 
 
-def test_the_committed_gepa_rosters_are_two_verified_populations():
+def test_the_committed_rosters_are_three_verified_populations():
     from speech_aware_evidence_acquisition.core import roster as roster_module
 
+    paths = {
+        "groups": "docs/receipts/rosters/slurp-stage3-gepa-r01c-groups-v1.json",
+        "carriers": "docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-v1.json",
+        "permitted": (
+            "docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-v1.json"
+        ),
+    }
     receipts = {}
-    for name in ("groups", "carriers"):
-        path = REPO_ROOT / f"docs/receipts/rosters/slurp-stage3-gepa-r01c-{name}-v1.json"
-        receipt = json.loads(path.read_text(encoding="utf-8"))
+    for name, relpath in paths.items():
+        receipt = json.loads((REPO_ROOT / relpath).read_text(encoding="utf-8"))
         assert roster_module.verify_roster(receipt) == receipt["split_identity_hash"]
         assert receipt["roster_role"] == "construction"
         assert receipt["carrier_lock_key"] == "slurp"
         receipts[name] = receipt
-    assert (
-        receipts["groups"]["split_identity_hash"]
-        != receipts["carriers"]["split_identity_hash"]
-    )
+    identities = {name: r["split_identity_hash"] for name, r in receipts.items()}
+    assert len(set(identities.values())) == 3
     assert len(receipts["groups"]["items"]) == 173
     assert len(receipts["carriers"]["items"]) == 68
-    # the runbook binds the STORE SOURCE identity to the GROUPS receipt, never to
-    # the experiment fragment's flown population
+    assert len(receipts["permitted"]["items"]) == 225
+    rows = {
+        name: {item["sample_id"] for item in receipt["items"]}
+        for name, receipt in receipts.items()
+    }
+    # containment is what the renderer proves; the carriers are NOT contained,
+    # because five of them are topped up from R01C outside the disagreeing rows
+    assert rows["groups"] < rows["permitted"]
+    assert not rows["carriers"] <= rows["permitted"]
+    # and the permitted identity is the one stage3-deltas-v1r / -v2 already carry
+    for name in ("stage3-deltas-v1r", "stage3-deltas-v2"):
+        registration = json.loads(
+            (
+                REPO_ROOT
+                / "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1"
+                / f"{name}-release-registration.json"
+            ).read_text(encoding="utf-8")
+        )
+        assert registration["source_split_identity_hash"] == identities["permitted"]
+    # the runbook binds the STORE identity to the PERMITTED receipt, never to the
+    # experiment fragment's flown population, and still records the other two
     runbook = (REPO_ROOT / "scripts/flights/batch/gepa_to_deltas.sh").read_text(
         encoding="utf-8"
     )
     assert "slurp-stage3-gepa-r01c-groups-v1.json" in runbook
-    assert '--permitted-receipt "$GROUPS_ROSTER"' in runbook
+    assert "slurp-stage3-advantage-r01c-disagreeing-v1.json" in runbook
+    assert '--permitted-receipt "$PERMITTED_ROSTER"' in runbook
     assert 'SPLIT=$($PY -B -c "import json,sys;d=json.load(open(sys.argv[1]));' in runbook
+    assert "$GROUPS_SPLIT from $GROUPS_ROSTER" in runbook
+    # and both release templates name the permitted roster, not the group union
+    for template in (
+        "stage3-deltas-gepa-v1-release-registration.template.json",
+        "stage3-deltas-gepa-twin-v1-release-registration.template.json",
+    ):
+        document = json.loads(
+            (
+                REPO_ROOT
+                / "docs/readiness/2026-09-24-slurp-stage3-gepa-r01-v1"
+                / template
+            ).read_text(encoding="utf-8")
+        )
+        assert document["source_split_identity_hash"] == (
+            "PENDING_GEPA_PERMITTED_ROSTER_SPLIT_IDENTITY_HASH"
+        )
+        assert (
+            "slurp-stage3-advantage-r01c-disagreeing-v1.json"
+            in document["what_the_pins_are"]["source_split_identity_hash"]
+        )
