@@ -139,7 +139,7 @@
       "baseline_fragment": "configs/baseline/slurp-native-stage3-var1-ex-k30-r01c-baseline-v1.json",
       "campaign_plan": "configs/campaign/slurp-native-stage3-var1-ex-k30-r01c-v1.json",
       "cell": "slurp-native-stage3-var1-ex-k30-r01c-v1",
-      "composed_config_hash": "9a68f50a87073ccc109b6c11e2f5080928ce87854ee3fc9979e4ed46f88117bb",
+      "composed_config_hash": "e09a8419e8fef184e9094454c4729214a4474e690ba8d8d0c6cd74acb6a026f4",
       "experiment": "slurp-native-stage3-var1-ex-k30-r01c-v1",
       "experiment_fragment": "configs/experiment/slurp-native-stage3-var1-ex-k30-r01c-v1.json",
       "knobs": {
@@ -164,7 +164,7 @@
         "slot_contracts_max_candidates": 3
       },
       "order_constraint": "flies fourth; one experiment in flight at a time",
-      "protocol_hash": "096228b2fc71bc42c769072b0d7b55a08020eecb0d6e80848d756d4acad3dc1c",
+      "protocol_hash": "db60eb72a77e560d0be86e26789dc7c66dddc7579135cc2897ed14e4bb9f0316",
       "readiness": "held -- the coordinator mints coordination/slurp-stage3-var1-v1/root-admission-v1.json (decision id slurp-stage3-var1-admission-v1), rewrites its eligible_run_ids to this family's fourteen run ids, and re-pins this cell with scripts/flights/repin_cell.py --set-ready",
       "rows": 625,
       "run_id": "SAEA-SLURP-STAGE3-VAR1-EX-K30-R01C-V1",
@@ -937,10 +937,10 @@
     "exk30": {
       "attempt_id": "attempt-slurp-native-stage3-var1-ex-k30-r01c-v1-fit",
       "cell": "slurp-native-stage3-var1-ex-k30-r01c-fit-v1",
-      "composed_config_hash": "9a68f50a87073ccc109b6c11e2f5080928ce87854ee3fc9979e4ed46f88117bb",
+      "composed_config_hash": "e09a8419e8fef184e9094454c4729214a4474e690ba8d8d0c6cd74acb6a026f4",
       "experiment": "slurp-native-stage3-var1-ex-k30-r01c-v1",
       "note": "A SPEND identity, never flown as a generation cell and never flipped to ready. core.preparation_fit.build_native_contact_fit_gate fits each realised native request inside the same flight under the same lease; coordinate-fit must NOT be run, or these rows are double-charged.",
-      "protocol_hash": "096228b2fc71bc42c769072b0d7b55a08020eecb0d6e80848d756d4acad3dc1c",
+      "protocol_hash": "db60eb72a77e560d0be86e26789dc7c66dddc7579135cc2897ed14e4bb9f0316",
       "run_id": "SAEA-SLURP-STAGE3-VAR1-EX-K30-R01C-FIT-V1"
     },
     "perk16c5": {
