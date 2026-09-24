@@ -326,7 +326,7 @@ no gain.
 | --- | --- | --- | --- | --- | --- |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-V1` | `...-gepa-r01-v1` | `generation-plan-registered-v1.json` | `a7defc1a4943845f493c9f4af4605d67e51184abc5af29604f279a17119c4810` | `a407a87bfd5fe43d4affdf56651dee0e99bc69c15dc448a6bbda3646b475956d` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-FIT-V1` | `...-gepa-r01-fit-v1` | `fit-plan-registered-v1.json` | same | same | same |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-TWIN-V1` | `...-gepa-r01-twin-v1` | `twin-generation-plan-registered-v1.json` | `2ad328a30ed2a6df3741ecc96c13d1924c690cb81cdf2a53cf9cd76b66e89f13` | `89014113639222a3ae5849d29cad0b2900834f51e73eaab92642d36c0b3a8014` | same |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-TWIN-V1` | `...-gepa-r01-twin-v1` | `twin-generation-plan-registered-v1.json` | `da3db7c1f282253a1cecaa6d58da7c57222355ac34dfd3f2a608b8d758bf6714` | `4a9ae373ca253d805486104bffc2f321ee432207859269358f729a0036ce091e` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-TWIN-FIT-V1` | `...-gepa-r01-twin-fit-v1` | `twin-fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-V1` | `...-gepa-r01-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `0f6dcd36d872348daa4ac98377e2b5acbff0ca91209eed06a9fc33fcb78da708` | `8d81e61370363d6758dd596ca996e7ecdbddf5ddaa5a5aed8f83a5cda0ba5d40` | `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-FIT-V1` | `...-gepa-r01-smoke-4-fit-v1` | `smoke-fit-plan-registered-v1.json` | same | same | same |
