@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-delta-cell-gepa-r01-fit-v1",
-  "composed_config_hash": "c173e6ae0dd633fb2fc2141aa6f8d9aea02d699cea2afa55349786423a9b19a4",
+  "composed_config_hash": "a7defc1a4943845f493c9f4af4605d67e51184abc5af29604f279a17119c4810",
   "decision_rule": {
     "ADMITTED": "the CI95 lower bound of the paired official pooled SLU-F1 delta (CELL-1-GEPA minus PLAN) is ABOVE ZERO and the CI95 lower bound of the paired intent delta exceeds -0.9943 (owner decision 99, the TRAIN lock: a gain is proven, not merely non-inferior)",
     "DELTA_CONSUMPTION": "item S3-4s: the per-node delta-consumption table -- how many deltas each node was supplied per row, which value_ids were supplied, and the saves and harms on the rows that received each one -- is a PRIMARY deliverable, reported whatever the verdict, placed beside CELL-1's own table, and is what decides whether there is a GEPA iteration 2 and what it retains. The PLANNER route is reported separately, never pooled: it grows from CELL-1's 14 values to 77 (73 of them GEPA-authored), and CELL-1 measured it at 0.594 of rows supplied and never at cap, so whether the route reaches its cap at all is this cell's own question. Each supplied value is also reported by PROVENANCE -- GEPA-authored or iteration-1 retained -- so the consumption table separates what the new statements did from what the kept ones did.",
@@ -21,7 +21,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 47520,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "7bf01a1084d8941c64b317e991323b20cd9742c19d85faefc1d601b36003b2c5",
+    "protocol_hash": "a407a87bfd5fe43d4affdf56651dee0e99bc69c15dc448a6bbda3646b475956d",
     "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
