@@ -92,7 +92,8 @@ OWN_NULL_ROOT=$DATA/analysis/SAEA-SLURP-DEFAULT-PLAN-LOCK-REPLICATE-PAIRED-ANALY
 # 2026-09-24: the retention CLI (fable/s35v2) requires the CELL-1 read inputs explicitly; these are the same four inputs
 # the v2 retention used (prepared/SAEA-SLURP-STAGE3-DELTAS-V1/retention-v2.json "inputs"), so the GEPA line inherits the
 # identical 200 / 179 decisions.
-run "$PY" -B scripts/build_slurp_stage3_delta_retention.py --authored "$PREDECESSOR" \n    --cell-per-scenario "$CELL1_ROOT/per-scenario-tables.json" --own-null-per-scenario "$OWN_NULL_ROOT/per-scenario-tables.json" \n    --delta-consumption "$CELL1_ROOT/delta-consumption.json" \n    --registered-facts docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/registered-facts-v1.json \n    --out-json "$RETENTION" --out-markdown "${RETENTION%.json}.md"
+GEPA_RETENTION_ARGS=${GEPA_RETENTION_ARGS:-"--cell-per-scenario $CELL1_ROOT/per-scenario-tables.json --own-null-per-scenario $OWN_NULL_ROOT/per-scenario-tables.json --delta-consumption $CELL1_ROOT/delta-consumption.json --registered-facts docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/registered-facts-v1.json"}
+run "$PY" -B scripts/build_slurp_stage3_delta_retention.py \
     --authored "$PREDECESSOR" \
     --out-json "$RETENTION" --out-markdown "$RETENTION_MD" \
     ${GEPA_RETENTION_ARGS:-}
