@@ -1,6 +1,6 @@
 # Stage-3 handoff for ChatGPT: the complete experiment plan and the current state
 
-Author: Fable 5.1 (root coordinator). Created 2026-09-24 (UTC). **Last refreshed: 2026-09-24 18:40 UTC**
+Author: Fable 5.1 (root coordinator). Created 2026-09-24 (UTC). **Last refreshed: 2026-09-24 18:50 UTC**
 (this is ONE living document: when a new result lands, the key conclusions in sections 4, 6 and 7 are
 rewritten in place and the refresh stamp moves; there is no log section). Study repository:
 `studies/speech-aware-evidence-acquisition` on `master` (HEAD at writing: `cc9fd097`; every commit
@@ -86,7 +86,7 @@ third registered:
 | GEPA store | `stage3-deltas-gepa-v1` (448 values = 248 new + 200 retained; permitted roster = ADV-1 disagreeing receipt, the v1r / v2 precedent) + twin | `docs/readiness/2026-09-24-slurp-stage3-gepa-r01-v1/` | released |
 | CELL-1-GEPA | plan + gepa-v1 vs PLAN, Fold A, + twin | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-V1` (+ twin); verdict `docs/results/2026-09-24-slurp-stage3-delta-cell-gepa-r01-verdict.md` | READ |
 | scenario gate | row-level gate on the candidate-bound routes: policy `majority-candidate-scenario-not-in-v1`, reads only the row's own Perception candidates; registry `core.base.STAGE3_SUPPLY_GATE_POLICIES`; skip receipt `scenario-gate-closed` | commit `060d822c`; design `docs/readiness/2026-09-24-slurp-stage3-scenario-gate-design-v1.md` | merged, 35 tests |
-| CELL-3 | plan + v2 through the gate (Perception seeds dropped) on DEV-2000-ADDED vs the sealed B6 PLAN, own null from PLANr-DEV2000, + twin | `SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-V1`; arm read `analysis/SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-PAIRED-ANALYSIS-V1` | arm READ; twin flying (seal ~18:35 UTC), verdict pending |
+| CELL-3 | plan + v2 through the gate (Perception seeds dropped) on DEV-2000-ADDED vs the sealed B6 PLAN, own null from PLANr-DEV2000, + twin | `SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-V1` (+ twin); verdict `docs/results/2026-09-24-slurp-stage3-delta-cell-r03-gate-verdict.md` | READ (closes the line, decision 111) |
 | ACE family | registered in `core.stage3_algorithms` (`ace-grow-refine-v1`), not flown | -- | planned, now deprioritised |
 
 Supporting tooling (all on `master`): batch driver family (`scripts/flights/batch/batch_driver.sh`,
@@ -110,7 +110,7 @@ run `analysis/native_episode_dry_run.py` that every new form passes before a fli
 | CELL-1-GEPA (deltas gepa-v1) | Fold A | 63.63 -> 63.60 | -0.04 [-1.58, +1.39] | -0.09 [-1.54, +1.32] | NEUTRAL by width |
 | CELL-1-GEPA twin | Fold A | 63.63 -> 62.87 | -0.76 [-2.39, +0.76] | -0.28 [-1.51, +0.89] | arm minus twin +0.73 / +0.19 |
 | CELL-3 (gated v2, fresh roster) | DEV-2000-ADDED | 65.40 -> 63.95 | **-1.44 [-2.88, -0.05]** | 0.00 [-1.01, +1.00] | HARMFUL by the registered rule (SLU guard) |
-| CELL-3 twin | DEV-2000-ADDED | -- | flying | -- | pending |
+| CELL-3 twin | DEV-2000-ADDED | 65.40 -> 65.78 | +0.38 [-0.97, +1.75] | 0.00 [-1.21, +1.20] | NEUTRAL; arm minus twin -1.82 SLU: the loss is the store's CONTENT on the fresh roster, not the form |
 
 Against the Stage-2 lock (B5e official 62.34 / 80.09) every Stage-3 arm is significantly higher
 (CELL-2 +1.93 SLU [+0.56, +3.34] / +2.04 intent [+0.74, +3.34]); that gain belongs to the locked
@@ -132,7 +132,8 @@ how, never "no gain"):
    supplied rows is -0.35 pp above its own null, an entity-precision cost (`date` +29 FP behind
    date-bearing slot-contract / reviewer-criterion deltas); harm is diffuse over 120 values; Fold A
    winners average +0.33 on DEV vs Fold A losers +0.99 (sign agreement 49/96); a perfect gate
-   reaches only ~PLAN (-0.51 [-1.40, +0.37]).
+   reaches only ~PLAN (-0.51 [-1.40, +0.37]). The CELL-3 twin (same gate, deranged values) is NEUTRAL (+0.38),
+   so on the fresh roster the content of the Fold-A-selected store is what harms; carrying a supply is not.
 4. **The measurement floor**: about +-1.3 pp pooled SLU at n = 1,000 across flights, +-2 pp on
    355-row splits. Any mechanism must target a named bad class with >= 2 pp recoverable mass to be
    readable at this scale, and within-flight paired variant designs are needed for search.
@@ -248,9 +249,8 @@ above and the conclusions of sections 4 and 6; nothing is appended as a log.
 
 ## 8. Open items and hazards a collaborator must know
 
-- CELL-3 twin: flying (step 3 of `SAEA-Batch-Chain-CELL3`, flight commit `a9b48dfc`); after its
-  seal: twin read (`scripts/flights/batch/cell3_read.sh twin`), verdict document (coordinator-
-  written, B6 precedent; the driver writes DESCRIPTIVE), close the 12 CELL-3 rows.
+- CELL-3 is fully read and closed (verdict `docs/results/2026-09-24-slurp-stage3-delta-cell-r03-gate-verdict.md`,
+  commit `5f52262a`); the GPU is idle until route F2 is registered, minted and flipped.
 - DEV-2000-ADDED has no gold per-scenario labels per row; per-scenario tables there use the
   predicted majority scenario (stated as such).
 - `plan_cell_read.py` reads Fold A cells only (TRAIN scorer siblings); DEV cells use
