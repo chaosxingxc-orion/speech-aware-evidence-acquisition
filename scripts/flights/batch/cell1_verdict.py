@@ -46,15 +46,54 @@ DATA = Path(
     )
 )
 
-ARM_ROOT = "SAEA-SLURP-STAGE3-DELTA-CELL-R01-PAIRED-ANALYSIS-V1"
-TWIN_ROOT = "SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-PAIRED-ANALYSIS-V1"
+#: 2026-09-24: one writer for every cell of the delta-cell family (CELL-1, CELL-2, later
+#: CELL-1-GEPA); ``--cell`` selects the record. The CELL-1 values are the historical defaults.
+CELLS = {
+    "r01": {
+        "name": "CELL-1",
+        "run": "SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1",
+        "arm_root": "SAEA-SLURP-STAGE3-DELTA-CELL-R01-PAIRED-ANALYSIS-V1",
+        "twin_root": "SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-PAIRED-ANALYSIS-V1",
+        "family_prefix": "SAEA-SLURP-STAGE3-DELTA-CELL-",
+        "family_exclude": (
+            "SAEA-SLURP-STAGE3-DELTA-CELL-R02-",
+            "SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-",
+        ),
+        "chain": "SAEA-Batch-Chain-Cell1",
+        "read_sh": "cell1_read.sh",
+        "verdict_slug": "slurp-stage3-delta-cell-r01-verdict.md",
+        "twin_slug": "slurp-stage3-delta-cell-twin-read.md",
+        "heading": "(Stage-3 S3-6 / S3-4s, owner decisions 83, 99, 101, 106)",
+        "algorithm": "tfgrpo-semantic-advantage-v1",
+        "decision_line": "Outcome of decision 99 (CELL-1, {date})",
+    },
+    "r02": {
+        "name": "CELL-2",
+        "run": "SAEA-SLURP-STAGE3-DELTA-CELL-R02-V1",
+        "arm_root": "SAEA-SLURP-STAGE3-DELTA-CELL-R02-PAIRED-ANALYSIS-V1",
+        "twin_root": "SAEA-SLURP-STAGE3-DELTA-CELL-R02-TWIN-PAIRED-ANALYSIS-V1",
+        "family_prefix": "SAEA-SLURP-STAGE3-DELTA-CELL-R02-",
+        "family_exclude": (),
+        "chain": "SAEA-Batch-Chain-CELL2",
+        "read_sh": "cell2_read.sh",
+        "verdict_slug": "slurp-stage3-delta-cell-r02-verdict.md",
+        "twin_slug": "slurp-stage3-delta-cell-r02-twin-read.md",
+        "heading": (
+            "(Stage-3 S3-6 ITERATION 2: the decision-83 retention of v1r; "
+            "owner decisions 83, 99, 101, 106)"
+        ),
+        "algorithm": "tfgrpo-semantic-advantage-v1",
+        "decision_line": "Outcome of decisions 83 and 99, iteration 2 (CELL-2, {date})",
+    },
+}
+CELL = CELLS["r01"]  # rebound by main() from --cell
 
 LEDGER = "docs/exposure-ledger.md"
 RESULTS_LEDGER = "docs/results/stage2-results-ledger.md"
 DECISIONS = "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md"
 
 #: Every exposure-ledger row of this cell's family carries this prefix.
-FAMILY_PREFIX = "SAEA-SLURP-STAGE3-DELTA-CELL-"
+FAMILY_PREFIX = "SAEA-SLURP-STAGE3-DELTA-CELL-"  # superseded by CELL["family_prefix"]
 #: The RETIRED smoke registrations. They were closed when they were retired and this read must
 #: never touch them again, whatever their consumed column says.
 RETIRED_ROWS = frozenset(
@@ -242,22 +281,22 @@ def render(args, arm: dict, twin, note_path: str) -> str:
     comparator_trajectory = (structural.get("trajectory") or {}).get("comparator") or {}
     dispositions = (structural.get("dispositions") or {}).get("arm") or {}
 
-    short = "CELL-1" if args.which == "arm" else "CELL-1 twin"
+    short = CELL["name"] if args.which == "arm" else f"{CELL['name']} twin"
     lines = []
     if args.which == "arm":
         lines.append(
-            f"# Cell CELL-1 verdict: {args.factor} "
-            "(Stage-3 S3-6 / S3-4s, owner decisions 83, 99, 101, 106)"
+            f"# Cell {CELL['name']} verdict: {args.factor} "
+            f"{CELL['heading']}"
         )
     else:
         lines.append(
-            f"# Cell CELL-1 twin read: {args.factor} "
+            f"# Cell {CELL['name']} twin read: {args.factor} "
             "(the derangement form control; attribution, never admission)"
         )
     lines.append("")
     lines.append(
         f"Read {args.date} by the coordinator (Fable 5.1) with "
-        f"`scripts/analysis/plan_cell_read.py` via `scripts/flights/batch/cell1_read.sh "
+        f"`scripts/analysis/plan_cell_read.py` via `scripts/flights/batch/{CELL['read_sh']} "
         f"{args.which}` (analysis root `$SPEECHRL_DATA_DIR/analysis/{arm['root'].name}`, "
         f"score-contrasts sha256 `{arm['score_contrasts_sha256']}`), and the per-node "
         "delta-consumption table with "
@@ -306,7 +345,7 @@ def render(args, arm: dict, twin, note_path: str) -> str:
     lines.append("### 1a. The decision rule, as registered (owner decision 99, the TRAIN lock)")
     lines.append("")
     lines.append(
-        "Delta = CELL-1 minus the sealed PLAN arm "
+        f"Delta = {CELL['name']} minus the sealed PLAN arm "
         "(`SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1`), in percentage points."
     )
     lines.append("")
@@ -486,7 +525,7 @@ def render(args, arm: dict, twin, note_path: str) -> str:
         "| prefilled tok / row | on GPU-h frontier | on token frontier |"
     )
     lines.append("| --- | ---: | ---: | ---: | ---: | ---: | --- | --- |")
-    for label, block in (("CELL-1", arm), ("CELL-1 twin", twin)):
+    for label, block in ((CELL["name"], arm), (f"{CELL['name']} twin", twin)):
         if block is None:
             continue
         row = (block["frontier"] or {}).get("row") or {}
@@ -706,7 +745,9 @@ def close_ledger_rows(repo: Path, args, arm: dict, note_path: str, *, dry_run: b
         if len(cells) < 16:
             continue
         run_id = cells[2].strip()
-        if not run_id.startswith(FAMILY_PREFIX) or run_id in RETIRED_ROWS:
+        if not run_id.startswith(CELL["family_prefix"]) or run_id in RETIRED_ROWS:
+            continue
+        if any(run_id.startswith(x) for x in CELL["family_exclude"]):
             continue
         if cells[9].strip() != "no":
             continue
@@ -730,7 +771,7 @@ def close_ledger_rows(repo: Path, args, arm: dict, note_path: str, *, dry_run: b
             )
         cells[9] = " yes "
         cells[15] = (
-            f" {what}; flight commit {args.commit} (SAEA-Batch-Chain-Cell1, {args.flown}). "
+            f" {what}; flight commit {args.commit} ({CELL['chain']}, {args.flown}). "
             f"Read: `{note_path}`." + cells[15]
         )
         lines[index] = "|".join(cells)
@@ -740,7 +781,7 @@ def close_ledger_rows(repo: Path, args, arm: dict, note_path: str, *, dry_run: b
             f"expected to close {args.expect_rows} ledger row(s), matched {len(closed)}: {closed}"
         )
     if not closed:
-        raise SystemExit("no open CELL-1 exposure-ledger row matched; refusing a silent no-op")
+        raise SystemExit(f"no open {CELL['name']} exposure-ledger row matched; refusing a silent no-op")
     if not dry_run:
         io.open(path, "w", encoding="utf-8", newline="").write("\n".join(lines))
     return closed
@@ -754,24 +795,24 @@ def results_ledger_entry(args, arm: dict, note_path: str) -> str:
     slu = metric_block(contrasts, "pooled_micro", "slu_f1_micro") or {}
     intent = metric_block(contrasts, "per_row", "scenario_action_exact") or {}
     return (
-        f"\n\n## {args.date}: cell CELL-1, {args.factor} (Fable 5.1)\n\n"
-        f"Run SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1 ({trajectory.get('contacts')} contacts = "
+        f"\n\n## {args.date}: cell {CELL['name']}, {args.factor} (Fable 5.1)\n\n"
+        f"Run {CELL['run']} ({trajectory.get('contacts')} contacts = "
         f"{_num(trajectory.get('contacts_per_row'), 2)} per row, "
         f"{_num(efficiency.get('gpu_hours_per_1080'), 2)} GPU-h, FINALIZED at flight commit "
-        f"{args.commit}, SAEA-Batch-Chain-Cell1) against the sealed PLAN arm on the same 1,080 "
+        f"{args.commit}, {CELL['chain']}) against the sealed PLAN arm on the same 1,080 "
         "rows at the plan's own null (h_SLU 1.2485 / h_intent 0.9943): official pooled SLU-F1 "
         f"{_num(slu.get('left_pct'))} -> {_num(slu.get('right_pct'))}, "
         f"**{_signed(slu.get('delta_pp'))} pp CI95 {_ci(slu.get('ci95_pp'))}**; intent "
         f"{_num(intent.get('left_pct'))} -> {_num(intent.get('right_pct'))}, "
         f"**{_signed(intent.get('delta_pp'))} pp CI95 {_ci(intent.get('ci95_pp'))}**: "
         f"**{args.status}**. {args.reading} Stage-3 algorithm label "
-        f"tfgrpo-semantic-advantage-v1 (decision 101). Read: `{note_path}`.\n"
+        f"{CELL['algorithm']} (decision 101). Read: `{note_path}`.\n"
     )
 
 
 def decision_outcome(args, note_path: str) -> str:
     return (
-        f"\n\nOutcome of decision 99 (CELL-1, {args.date}): {args.status}. {args.reading} "
+        f"\n\n{CELL['decision_line'].format(date=args.date)}: {args.status}. {args.reading} "
         f"Read: `{note_path}`.\n"
     )
 
@@ -783,6 +824,8 @@ def decision_outcome(args, note_path: str) -> str:
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--which", required=True, choices=("arm", "twin"))
+    parser.add_argument("--cell", default="r01", choices=sorted(CELLS),
+                        help="which delta cell's records to write (r01 = CELL-1, r02 = CELL-2)")
     parser.add_argument("--status", required=True)
     parser.add_argument("--factor", required=True)
     parser.add_argument("--reading", required=True)
@@ -796,23 +839,25 @@ def main(argv=None) -> int:
     parser.add_argument("--no-twin", action="store_true", help="ignore the twin analysis root")
     parser.add_argument("--dry-run", action="store_true", help="write nothing; print instead")
     args = parser.parse_args(argv)
+    global CELL
+    CELL = CELLS[args.cell]
 
     repo = Path(args.repo)
     arm_root = Path(
         args.arm_root
-        or (DATA / "analysis" / (ARM_ROOT if args.which == "arm" else TWIN_ROOT))
+        or (DATA / "analysis" / (CELL["arm_root"] if args.which == "arm" else CELL["twin_root"]))
     )
     arm = load_root(arm_root)
     twin = None
     if args.which == "arm" and not args.no_twin:
-        twin_root = Path(args.twin_root or (DATA / "analysis" / TWIN_ROOT))
+        twin_root = Path(args.twin_root or (DATA / "analysis" / CELL["twin_root"]))
         if twin_root.exists() and twin_root != arm_root:
             twin = load_root(twin_root)
 
     slug = (
-        f"{args.date}-slurp-stage3-delta-cell-r01-verdict.md"
+        f"{args.date}-{CELL['verdict_slug']}"
         if args.which == "arm"
-        else f"{args.date}-slurp-stage3-delta-cell-twin-read.md"
+        else f"{args.date}-{CELL['twin_slug']}"
     )
     note_path = f"docs/results/{slug}"
     document = render(args, arm, twin, note_path)
