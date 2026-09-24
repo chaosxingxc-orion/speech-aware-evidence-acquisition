@@ -47,13 +47,20 @@
         "reason": "The derangement-twin form control for CELL-1-GEPA (the owner-standard B1/IDXT twin discipline): the same 448 statements, wrong facet attachment (scripts/build_slurp_stage3_delta_twin.py, seed 20260924). Held for the same reasons as the generation cell; the twin never flies beside the arm and decides attribution, never admission.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-delta-cell-gepa-r01-admission-v1",
+            "relpath": "coordination/slurp-stage3-delta-cell-gepa-r01-v1/cell-admission-v1.json",
+            "sha256": "e4cf17b93a351fad23ba5005862326a2e462b607ada0962539be53467131f4de",
+            "reason": "Decision slurp-stage3-delta-cell-gepa-r01-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The twin release of knowledge/slurp/semantic/stage3-deltas-gepa-twin-v1/, the seeded derangement (seed 20260924) of the GEPA store's own authored document: 448 statements, authored token count 7,345 held exactly. The cell stays HELD on a root admission decision.",
-            "relpath": "knowledge/slurp/semantic/stage3-deltas-gepa-twin-v1/release.json",
-            "sha256": "fb2dad3082848f1ff794401f2ea1d9b0d53e33b0f7a459592b44364cce196fb3"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-TWIN-V1/phase-supply-v1.json",
+            "sha256": "7a6f0c1345116bb7586e210debcdd483c0eb51d65f4121a2fe7a80942c63691e"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-TWIN-V1"
     },
