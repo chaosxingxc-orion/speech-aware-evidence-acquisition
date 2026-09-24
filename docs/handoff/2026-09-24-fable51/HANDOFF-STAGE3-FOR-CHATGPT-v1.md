@@ -1,6 +1,6 @@
 # Stage-3 handoff for ChatGPT: the complete experiment plan and the current state
 
-Author: Fable 5.1 (root coordinator). Created 2026-09-24 (UTC). **Last refreshed: 2026-09-24 19:35 UTC**
+Author: Fable 5.1 (root coordinator). Created 2026-09-24 (UTC). **Last refreshed: 2026-09-24 20:10 UTC**
 (this is ONE living document: when a new result lands, the key conclusions in sections 4, 6 and 7 are
 rewritten in place and the refresh stamp moves; there is no log section). Study repository:
 `studies/speech-aware-evidence-acquisition` on `master` (HEAD at writing: `cc9fd097`; every commit
@@ -173,7 +173,7 @@ sealed per-sample scores; ledger row `SAEA-SLURP-PLAN-BAD-CASE-BANK-V1` closed).
 | ENTITY-MIXED (FN and FP on one row) | 193 / 195 | 187 / 190 | +17.4 / +16.5 | 0 | half of all recoverable SLU; never moved by any plan module; dominated by same-type SPAN-BOUNDARY containments (77 of 168 mismatches), only 4 / 168 reachable by any surface normalisation |
 | INTENT-UNCOVERED (gold outside Perception's list) | 130 / 169 | 127 / 165 | +5.4 / +6.8 | +12.0 / +16.9 | 68 % / 73 % of intent errors; the delivered wrong intent was itself a candidate 95 % of the time: a CANDIDATE-PROPOSAL failure, not a selection failure |
 | ENTITY-FN-ONLY | 84 / 65 | 72 / 60 | +5.1 / +4.0 | 0 | `date` leads (70 / 74); the slot's own contract was supplied on 100 % of date / time FN rows: contract text is exhausted |
-| ENTITY-FP-ONLY | 131 / 108 | 120 / 95 | +4.8 / +3.5 | 0 | 41.5 % / 48.4 % of empty-gold rows emit entities; the exemplar pool holds 0 entity-free values out of 9,354 while 38 % / 31 % of rows carry no gold entity; the plan CREATES 58 / 41 FP-ONLY rows from direct-correct rows |
+| ENTITY-FP-ONLY | 131 / 108 | 120 / 95 | +4.8 / +3.5 | 0 | 41.5 % / 48.4 % of empty-gold rows emit entities; the plan CREATES 58 / 41 FP-ONLY rows from direct-correct rows. CORRECTION 2026-09-24 20:00 UTC: the exemplar pool DOES hold entity-free values (2,949 of 9,354 = 31.5 %); the bank's zero was its parser counting the rendered token `none` as a slot type. What the supply never shows is the Solver contract's own empty ANSWER form (`"entities":[]`); the re-rendered view `train-exemplars-with-empty-v1` tests that one factor |
 | INTENT-COVERED (gold in the list, wrong pick) | 61 / 63 | 57 / 60 | +2.4 / +2.7 | +5.7 / +6.3 | selection among candidates |
 | ALL-BAD | 600 / 602 | 563 / 571 | +36.4 / +34.6 | +17.8 / +23.4 | -- |
 
@@ -189,8 +189,7 @@ MIXED. Three plan constants separate nothing (20 exemplars, 0 entity-free exempl
 compaction).
 
 Consequences for the rollout design: (1) candidate PROPOSAL (Perception K, neighbour-intent union,
-exemplar-intent agreement as the trigger) carries all the intent headroom; (2) entity-free
-demonstrations are a pure data-construction defect with +4 pp SLU headroom; (3) span-boundary
+exemplar-intent agreement as the trigger) carries all the intent headroom; (2) the empty-answer FORM of the entity-free demonstrations (rendered `none`, never the contract's `"entities":[]`) is a one-factor construction lever against the +4 pp FP-ONLY headroom; (3) span-boundary
 resolution (ENTITY-MIXED) is the largest SLU mass and needs demonstrations of boundary
 conventions and sample-level consensus (aggregation), not contracts or normalisers; (4) the
 greedy diffuseness lever is real but bounded (row-level flips 7 %).
@@ -241,7 +240,7 @@ in one day, and it costs <= 4 GPU-hours before that read.
 | F6 | Bootstrapped demonstrations: the core's own gold-verified rollout outputs rendered as exemplars in its own output format, retrieved by speech key (DSPy-style bootstrap, ExpeL-style successful trajectories) | conventions, entity FN / FP | inside F3 as a source variant | (in F3) | DESIGN | -- |
 | F7 | AGG-1 inference-time selection cell as framed (adaptive N + medoid commit) | greedy diffuseness | -- | -- | CLOSED by F1 (nil at 1x-equivalent rules; the FP mass is pursued at 1x through F10) | the open question left is the +6.5 pp oracle gap: a SELECTION probe (one contact per row shown the five sealed samples, asked to pick; 625 rows, ~0.3 GPU-h) would say whether the core can verify better than it generates -- queued after VAR-1 as F11 |
 | F8 | Reviewer with evidence: sample disagreement, per-entity support counts and checker results instead of one draft | review loop inert (ACCEPT 98.4 %) | inside F7's form | (in F7) | DESIGN | -- |
-| F10 | Entity-free demonstrations: the exemplar view rebuilt to include entity-free TRAIN utterances rendered with the empty answer form (`train-exemplars-with-empty-v1`), then a VAR-1 variant | ENTITY-FP-ONLY (+4.8 / +3.5 pp SLU headroom) | model-free release, then one ~1 GPU-h variant flight | 0, then ~1 | BUILDING (branch `fable/emptyex`) | -- |
+| F10 | Empty-answer demonstrations: the exemplar view re-rendered so entity-free lines end in the Solver contract's exact empty form (`train-exemplars-with-empty-v1`, released, content hash `e3998525...`; the pool already held 31.5 % entity-free values, the bank's zero was a parser artefact) | ENTITY-FP-ONLY (+4.8 / +3.5 pp SLU headroom) | one ~1 GPU-h variant flight; legal on Fold A / DEV, needs a minus-r01 sibling for R01C | ~1 | RELEASED; cell to register (Fold A vs PLAN or a VAR-1 sibling after the minus-r01 build) | -- |
 | F11 | Verifier-selection probe: one contact per R01C row shown its five sealed ROLL-1 samples (labels and structured answers only) and asked to pick the best; read = agreement with the oracle, SLU of the picked sample vs single | the +6.5 pp oracle gap (+12.5 on disagreeing rows) | 625 contacts, offline read against sealed scores | ~0.3 | DESIGN (after VAR-1) | -- |
 | F9 | Contract / instruction search (GEPA-style on the task contract: date / time serialisation, "no entity" rule, per-type convention line), selected on DEV-remainder rows, validated on Fold A / B | date / time FN, empty-gold FP | small-batch paired search, then a cell | ~2 | LATER (after F3 / F5) | -- |
 
