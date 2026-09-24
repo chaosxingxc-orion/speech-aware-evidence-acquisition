@@ -1,0 +1,417 @@
+{
+  "_note": "Registered facts for the cell CELL-3 read (Stage-3 S3-6 iteration 3, the coverage-gated application policy on the fresh DEV-2000-ADDED roster; owner decisions 83, 99, 101, 106 and 110 PENDING). Every number here is read out of a sealed document or a released store, model-free, and is registered BEFORE contact so a surprise reads as a surprise.",
+  "authority_relpaths": [
+    "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1-preregistration.md",
+    "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1/README.md",
+    "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1/protocol-registered-v1.json",
+    "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1/analysis-recipe-v1.json",
+    "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1/dry-run-v1.md",
+    "docs/readiness/2026-09-24-slurp-stage3-scenario-gate-design-v1.md",
+    "docs/results/2026-09-24-slurp-stage3-delta-cell-r02-verdict.md",
+    "docs/results/2026-09-24-slurp-general-scenario-diagnostic.md",
+    "docs/results/2026-09-22-slurp-b6-dev2000-added-direct-vs-plan-read.md",
+    "docs/results/2026-09-22-slurp-planr-v2-lock-replicate-verdict.md",
+    "docs/results/2026-09-21-slurp-plan-v2-lock-arm-verdict.md",
+    "docs/readiness/2026-09-22-slurp-b6-dev2000-added-v1/README.md",
+    "docs/readiness/2026-09-22-slurp-b6-dev2000-added-v1/analysis-recipe-v1.json",
+    "docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md",
+    "docs/receipts/rosters/slurp-dev-2000-added-v1.json"
+  ],
+  "comparator_cost_reference": {
+    "client_prompt_tokens_per_row": 35913,
+    "compacted_rows": 0,
+    "contact_histogram": {
+      "2": 10,
+      "4": 963,
+      "7": 27
+    },
+    "contacts": 4071,
+    "contacts_per_minute": 37.9,
+    "contacts_per_row": 4.071,
+    "finite_completion_rows": 10,
+    "gpu_active_seconds": 5956,
+    "gpu_hours_per_1000": 1.655,
+    "label": "cell B6 plan arm",
+    "mean_utilisation": 0.8,
+    "react_exhaustion_rows": 0,
+    "revised_rows": 27,
+    "source": "docs/results/2026-09-22-slurp-b6-dev2000-added-direct-vs-plan-read.md sections 0 and 3",
+    "tool_calls": 0,
+    "wall_seconds": 6453
+  },
+  "comparator_official": {
+    "action_accuracy": 79.2,
+    "attempt_id": "attempt-slurp-native-default-plan-dev2000-added-generation-v1",
+    "intent_accuracy": 76.6,
+    "label": "cell B6 plan arm on DEV-2000-ADDED (the sealed comparator)",
+    "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1",
+    "scenario_accuracy": 81.6,
+    "scorer": "slurp-slu-official (devel gold)",
+    "slot_f1_exact": 40.61,
+    "slu_f1": 65.4,
+    "source": "docs/results/2026-09-22-slurp-b6-dev2000-added-direct-vs-plan-read.md section 1",
+    "span_f1": 57.05
+  },
+  "declared_episode_keys": {
+    "_factor": "knowledge_stores.stage3-deltas, supplied per node under the coverage gate (Solver 8, Reviewer 4, Planner 4; no Perception route)",
+    "context_fit_policy": "compact-or-abstain",
+    "deliver_normaliser": {
+      "normaliser": "saea-deliver-normalise-v3"
+    },
+    "finite_completion_policy": "deliver-latest-or-abstain",
+    "react_exhaustion_policy": "continue-without-answer",
+    "review_loop": "on"
+  },
+  "delta_store": {
+    "arm_release": "b81df5c5175e45e68933d4875c110fd46bea933283631d2c428187c480fc31f0",
+    "arm_snapshot_content": "44a804184cf83a08e85831d40bae942af1e71ed4365b485d833f9a03807ef150",
+    "node_counts": {
+      "perception": 80,
+      "planner": 4,
+      "reviewer": 40,
+      "solver": 76
+    },
+    "twin_release": "b18b141f67dae4b413391d22dd787a3b85480d2b4fab24db0848e547e7aa1a9a",
+    "twin_snapshot_content": "131809122d23ccdaac86c9a9426c5e045a9544fc3059c1b46f80a3365151d614",
+    "unreachable_in_this_cell": "the 80 perception-targeted values: CELL-3 removes the Perception route, so 80 of the 200 values cannot be supplied at all. Registered before contact.",
+    "values": 200
+  },
+  "direct_arm_on_the_same_roster": {
+    "intent_accuracy": 61.7,
+    "label": "cell B6 direct arm (the bare frozen core) -- CONTEXT, never a comparator for this cell",
+    "plan_minus_direct_intent_pp": 14.9,
+    "plan_minus_direct_slu_pp": 27.3,
+    "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV2000-ADDED-V1",
+    "slu_f1": 38.09,
+    "source": "docs/results/2026-09-22-slurp-b6-dev2000-added-direct-vs-plan-read.md"
+  },
+  "dry_run": {
+    "arm_per_row_items": {
+      "slurp:devel:000017:audio-1501773854-headset": {
+        "planner": 0,
+        "reviewer": 0,
+        "solver": 0
+      },
+      "slurp:devel:000024:audio-1490195864-headset": {
+        "planner": 0,
+        "reviewer": 0,
+        "solver": 0
+      },
+      "slurp:devel:000099:audio-1501754782": {
+        "planner": 0,
+        "reviewer": 4,
+        "solver": 8
+      },
+      "slurp:devel:000217:audio-1490367363": {
+        "planner": 0,
+        "reviewer": 4,
+        "solver": 8
+      }
+    },
+    "both_forms_ok": true,
+    "contacts": {
+      "attempt": 0,
+      "client": 0,
+      "gate": 0,
+      "gpu": 0,
+      "model": 0,
+      "network": 0,
+      "serving_session": 0,
+      "tool": 0,
+      "transport": 0
+    },
+    "driver": "scripts/flights/batch/cell3_dry_run.py",
+    "planner_route_note": "the ARM supplies ZERO planner items on both open rows and the TWIN supplies 1 and 3. That is expected and reported, not failed: version 2's planner slice is 4 values over 4 intents, the weather candidates of these two rows reach none of them on the arm, and the derangement moves whole attachment tuples so the twin's planner slice reaches different rows. Whether the planner route serves at population level is the arm's own delta-consumption table, never four rows.",
+    "record": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1/dry-run-v1.md",
+    "tie_walks": "the same two candidates in the two orders on slurp:devel:000099:audio-1501754782: weather_query first leaves all three gates OPEN (solver 8 / reviewer 4), iot_hue_lighton first CLOSES all three (0 / 0 / 0). The first-listed tie-break is doing its job.",
+    "totals_arm": {
+      "perception": 0,
+      "planner": 0,
+      "reviewer": 8,
+      "solver": 16
+    },
+    "totals_twin": {
+      "perception": 0,
+      "planner": 4,
+      "reviewer": 8,
+      "solver": 16
+    },
+    "twin_per_row_items": {
+      "slurp:devel:000017:audio-1501773854-headset": {
+        "planner": 0,
+        "reviewer": 0,
+        "solver": 0
+      },
+      "slurp:devel:000024:audio-1490195864-headset": {
+        "planner": 0,
+        "reviewer": 0,
+        "solver": 0
+      },
+      "slurp:devel:000099:audio-1501754782": {
+        "planner": 1,
+        "reviewer": 4,
+        "solver": 8
+      },
+      "slurp:devel:000217:audio-1490367363": {
+        "planner": 3,
+        "reviewer": 4,
+        "solver": 8
+      }
+    }
+  },
+  "gate": {
+    "closed_when": "the candidate list is non-empty AND the majority scenario is one the gate names. A closed gate returns None -- no supply step at all for that node on that row -- so the wave seals as an ordinary organize step rather than an empty acquisition.",
+    "declared_on": [
+      "solver",
+      "reviewer",
+      "planner"
+    ],
+    "design_note": "docs/readiness/2026-09-24-slurp-stage3-scenario-gate-design-v1.md",
+    "majority": "most-frequent, not strictly-more-than-half. Ties are broken by the scenario whose FIRST OCCURRENCE in the candidate list is earliest.",
+    "not_declared_on": "perception -- the CELL-2 unconditional route is REMOVED, not gated. The Perception node PRODUCES the candidate list, so nothing exists to gate on when it is served, and the unconditional validator's key set is an EQUALITY, so a scenario_gate there is refused by construction.",
+    "open_changes_nothing": "control falls through to the identical selection; the supply is byte-identical to the ungated route's (same selected ids, same RankResult hash, same FusionDecision hash, same action_target_ref). Proved by tests/unit/test_stage3_scenario_gate.py::test_an_open_gate_is_byte_identical_to_the_ungated_route.",
+    "policy": "majority-candidate-scenario-not-in-v1",
+    "receipts": {
+      "decision": "route.receipt['delta_scenario_gate'], EVERY decision open and closed: node, phase, sample id, store id, policy id, gated scenarios, majority scenario, candidate count, closed. Published only when some route declares a gate. Labels, identities and counts only -- no utterance, transcript, gold label, candidate text or statement is ever written.",
+      "skip": "route.receipt['delta_supply'], the existing per-row skip audit, with reason = 'scenario-gate-closed' and a majority_scenario label declared LAST and omitted when absent, so every ungated cell's skip receipt is byte-identical to its pre-iteration-3 self"
+    },
+    "registry": "core.base.STAGE3_SUPPLY_GATE_POLICIES, populated from rails/knowledge_provider.py beside the delta provider ids; resolved by rails.knowledge_provider.resolve_scenario_gate and checked BY PATH by scripts/checks/engineering_base_check.py",
+    "scenario_of_intent": "the part before the first underscore, the SLURP catalog's own composition rule (general_quirky -> general, iot_hue_lightoff -> iot); rails.stage3_delta_supply.scenario_of_intent",
+    "scenarios": [
+      "general",
+      "alarm",
+      "music",
+      "social",
+      "iot",
+      "play",
+      "news"
+    ],
+    "what_it_reads": "the SAME projected Perception candidate list the route already reads -- after the bounded first-occurrence projection (max 3 candidates), before any store lookup -- and nothing else. Only the sealed Perception state of the same episode. No gold, no reference transcript, no scorer, no future turn, no other row."
+  },
+  "general_scenario_diagnostic": {
+    "cell1_intent_delta_pp": -10.0,
+    "cell1_slu_delta_pp": -12.37,
+    "cell2_intent_delta_pp": -6.67,
+    "cell2_slu_delta_pp": -10.62,
+    "cell2_twin_intent_delta_pp": -11.67,
+    "cell2_twin_slu_delta_pp": -10.23,
+    "conclusion": "the twin loses as much as or more than the arm, so the loss is a FORM cost of carrying a supply and the lever is application, not content",
+    "gold_intent_distribution": {
+      "general_greet": 5,
+      "general_joke": 10,
+      "general_quirky": 45
+    },
+    "plan_intent": 43.33,
+    "plan_slu_f1": 30.23,
+    "recoverable_at_fold_a_grain": {
+      "intent_pp": 0.56,
+      "slu_pp": 0.24
+    },
+    "rows": 60,
+    "source": "docs/results/2026-09-24-slurp-general-scenario-diagnostic.md",
+    "values_targeting_general": 0
+  },
+  "knowledge_pins": {
+    "arm": {
+      "intent-boundaries": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4",
+      "slot-contracts": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b",
+      "stage3-deltas": "b81df5c5175e45e68933d4875c110fd46bea933283631d2c428187c480fc31f0",
+      "train-exemplars": "171aa4a82c2b15fff2c72e907ea80298be8d72309cca0d7367eb50debb042129"
+    },
+    "comparator": {
+      "intent-boundaries": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4",
+      "slot-contracts": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b",
+      "train-exemplars": "171aa4a82c2b15fff2c72e907ea80298be8d72309cca0d7367eb50debb042129"
+    },
+    "source": "configs/baseline/slurp-native-stage3-delta-cell-r03-gate-baseline-v1.json and configs/baseline/slurp-native-default-plan-dev2000-added-baseline-v1.json",
+    "twin_arm_stage3_deltas": "b18b141f67dae4b413391d22dd787a3b85480d2b4fab24db0848e547e7aa1a9a"
+  },
+  "own_null": {
+    "estimator": "paired whole-utterance-cluster bootstrap, 10,000 draws, seed 20260915, CI95 half-widths on pooled official SLU-F1 and intent",
+    "left": {
+      "attempt_id": "attempt-slurp-native-default-plan-dev2000-added-generation-v1",
+      "label": "PLAN-DEV2000",
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1"
+    },
+    "read_run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-OWN-NULL-V1",
+    "right": {
+      "attempt_id": "attempt-slurp-native-default-plan-dev2000-added-replicate-generation-v1",
+      "label": "PLANr-DEV2000",
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-REPLICATE-V1"
+    },
+    "status": "NOT MEASURED. This package registers the pass that measures it.",
+    "train_fold_a_context_only": {
+      "h_intent": 0.9943,
+      "h_slu": 1.2485,
+      "source": "docs/results/2026-09-22-slurp-planr-v2-lock-replicate-verdict.md"
+    }
+  },
+  "population_keys_repointed_from_cell2": [
+    "knowledge_stores.intent-boundaries.phase_supply.perception.query_source (embedded_signal, relpath, sha256, tool_contact_ledger_row)",
+    "knowledge_stores.train-exemplars.phase_supply.solver.query_source (embedded_signal, relpath, sha256, tool_contact_ledger_row)",
+    "preparation_source_receipts (alias swapped; the DEV-2000-ADDED encode receipt and the roster receipt added)",
+    "scorers (slurp-slu-official-train -> slurp-slu-official, the devel gold scorer)",
+    "speech_packet_promotion_receipt and speech_packet_promotion_receipt_sha256 (EVO-FOLDS-V2 -> DEV-2000-ADDED)",
+    "native_contact_fit (run id, attempt id, contact_cap 47520 -> 44000)",
+    "dataset_fragment, population.count, population.split_identity_hash and split_id in the experiment fragment"
+  ],
+  "predecessor_cell2_on_train_fold_a": {
+    "arm_minus_twin_intent_pp": 0.83,
+    "arm_minus_twin_slu_pp": 0.59,
+    "compacted_rows": 0,
+    "consumption": {
+      "perception": {
+        "distinct_value_ids": 4,
+        "items": 4320,
+        "rows_supplied": 1080
+      },
+      "planner": {
+        "distinct_value_ids": 4,
+        "items": 281,
+        "rows_supplied": 198
+      },
+      "reviewer": {
+        "distinct_value_ids": 39,
+        "items": 2296,
+        "rows_supplied": 692
+      },
+      "solver": {
+        "distinct_value_ids": 74,
+        "items": 4177,
+        "rows_supplied": 740
+      }
+    },
+    "contacts_per_row": 4.151,
+    "finite_completion_rows": 5,
+    "gpu_hours_per_1080": 1.7679,
+    "intent_ci95": [
+      -1.22,
+      0.96
+    ],
+    "intent_delta_pp": -0.09,
+    "official_intent": 82.13,
+    "official_slu": 64.27,
+    "per_scenario_slu_delta_pp": {
+      "alarm": -3.644,
+      "general": -10.622,
+      "iot": -0.86,
+      "music": -3.401,
+      "news": -0.46,
+      "play": -0.551,
+      "social": -3.106
+    },
+    "per_scenario_slu_delta_pp_not_gated": {
+      "audio": 14.537,
+      "calendar": 0.553,
+      "cooking": 0.051,
+      "datetime": 2.444,
+      "email": 3.541,
+      "lists": -0.288,
+      "qa": -0.893,
+      "recommendation": 1.066,
+      "takeaway": -0.032,
+      "transport": 1.213,
+      "weather": 9.717
+    },
+    "prefilled_tokens_per_row": 8905.1,
+    "role": "SELECTION INPUT and context, never a comparator: CELL-2's per-scenario table is what chose this cell's seven gated scenarios",
+    "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R02-V1",
+    "slu_ci95": [
+      -0.76,
+      1.92
+    ],
+    "slu_delta_pp": 0.64,
+    "status": "NEUTRAL by width; non-inferiority NOT proven on intent",
+    "verdict": "docs/results/2026-09-24-slurp-stage3-delta-cell-r02-verdict.md"
+  },
+  "projection_from_the_sealed_comparator": {
+    "closed_share_projected": 0.355,
+    "gate_closed_projected": 355,
+    "gate_open_projected": 645,
+    "note_on_the_two_gated_scenarios_absent_from_the_roster": "alarm and music carry ZERO gold rows on DEV-2000-ADDED, so two of the seven gated strata cannot contribute a gold row at all. They still gate rows: the gate reads the PREDICTED majority candidate scenario, and the projection puts 21 rows at alarm and 42 at music. That asymmetry -- gating on a predicted label that the roster's gold does not carry -- is registered here before contact as a known property of the mechanism on this venue.",
+    "projected_majority_scenario_histogram": {
+      "alarm": 21,
+      "audio": 30,
+      "calendar": 160,
+      "cooking": 3,
+      "datetime": 16,
+      "email": 80,
+      "general": 38,
+      "iot": 61,
+      "lists": 49,
+      "music": 42,
+      "news": 23,
+      "play": 164,
+      "qa": 142,
+      "recommendation": 41,
+      "social": 6,
+      "takeaway": 2,
+      "transport": 59,
+      "weather": 63
+    },
+    "roster_gold_scenario_allocation": {
+      "calendar": 221,
+      "datetime": 9,
+      "email": 96,
+      "general": 62,
+      "iot": 57,
+      "lists": 52,
+      "news": 20,
+      "play": 203,
+      "qa": 157,
+      "recommendation": 6,
+      "social": 4,
+      "transport": 48,
+      "weather": 65
+    },
+    "rows": 1000,
+    "rows_with_no_candidates": 0,
+    "what_this_is": "A MODEL-FREE PROJECTION, not a measurement of this cell: the gate outcome each DEV-2000-ADDED row would take if its Perception candidates were the ones the SEALED comparator itself produced. Computed from SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1's own sealed phase states (intent ids only), projected with the route's bounded first-occurrence rule at max 3 candidates and reduced by rails.stage3_delta_supply.majority_candidate_scenario. Zero contacts. CELL-3's Perception request is byte-identical to the comparator's for the same row -- the Perception delta route is REMOVED -- so the projection is close, but greedy decoding is not bit-reproducible across batch compositions, so the realised share is MEASURED by the consumption read and never assumed."
+  },
+  "registered_at_utc": "2026-09-24T12:00:00.000000+00:00",
+  "schema": "saea-registered-facts-v1",
+  "smoke_population": [
+    {
+      "candidates": [
+        "iot_hue_lightdim",
+        "iot_hue_lighton",
+        "iot_hue_lightoff"
+      ],
+      "gate": "CLOSED",
+      "projected_majority_scenario": "iot",
+      "roster_position": 1,
+      "sample_id": "slurp:devel:000017:audio-1501773854-headset"
+    },
+    {
+      "candidates": [
+        "iot_hue_lightdim",
+        "iot_hue_lighton",
+        "iot_hue_lightchange"
+      ],
+      "gate": "CLOSED",
+      "projected_majority_scenario": "iot",
+      "roster_position": 2,
+      "sample_id": "slurp:devel:000024:audio-1490195864-headset"
+    },
+    {
+      "candidates": [
+        "weather_query"
+      ],
+      "gate": "OPEN",
+      "projected_majority_scenario": "weather",
+      "roster_position": 8,
+      "sample_id": "slurp:devel:000099:audio-1501754782"
+    },
+    {
+      "candidates": [
+        "weather_query",
+        "transport_traffic",
+        "datetime_query"
+      ],
+      "gate": "OPEN",
+      "projected_majority_scenario": "weather",
+      "roster_position": 14,
+      "sample_id": "slurp:devel:000217:audio-1490367363"
+    }
+  ]
+}

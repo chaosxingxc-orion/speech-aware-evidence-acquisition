@@ -1,0 +1,76 @@
+{
+  "cell": "slurp-native-default-plan-dev2000-added-replicate-v1",
+  "composed_config_hash": "83e68035c4c4e9bc33555f01f8b8041d92083677e9f2c77f818847f57933c085",
+  "decision_rule": {
+    "comparator": "the sealed SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1; nothing of it is re-flown",
+    "role": "PLANr-DEV2000 CARRIES NO ADMISSION RULE OF ITS OWN. It is the roster's own null: its deliverable is the margin table PLAN-DEV2000 versus PLANr-DEV2000 (pooled official SLU-F1 and intent half-widths, CI95, same paired estimator, utterance-id clusters, seed 20260915, 10,000 draws), read model-free as SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-OWN-NULL-V1. No ADMITTED/NEUTRAL/HARMFUL verdict is read from this cell and it carries no bar (owner decision 86).",
+    "stop_condition": "the sealed PLAN-DEV2000 aggregate reproduces from its own per-sample scores to 1e-6 and the roster identity reproduces on both sides; a replicate that fails the stop stage produces no margin and the family halts.",
+    "what_it_decides_for_CELL-3": "h_SLU and h_intent. Until this read seals, CELL-3 has no margin and its contrast stage is not read. The TRAIN Fold A numbers 1.2485 / 0.9943 are context only."
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-default-plan-dev2000-added-replicate-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 11000,
+    "planned_speech_audio_seconds": 32819,
+    "protocol_hash": "c16d649e57f8f9958cdb0c90d2b6a95a4bb63c94acf45e3e78a6597e41782e67",
+    "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-REPLICATE-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan configs/campaign/slurp-native-default-plan-dev2000-added-replicate-v1.json; the campaign acquires its own GenerationLease against the resident session serving-slurp-native-candidate-five-train-a-np4-v1 (attach only, never spawn or stop) and schedules the one official complete devel score at finalize. Queued through the SAEA-Batch-Driver scheduled task (owner decision 77). coordinate-fit must NOT be run.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-default-plan-dev2000-added-replicate-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 44000,
+    "generation_calls_cap": 11000,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6000,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 32819
+  },
+  "modules": {
+    "base": "cell B6's plan arm, exactly as it flew on DEV-2000-ADDED (configs/baseline/slurp-native-default-plan-dev2000-added-baseline-v1.json): the locked v2.0 default plan -- the complete native episode with the review loop on, the shared controller and FlightRuntime path, no phase_tools on any role, Solver-only answer authority, the three-candidate contract, the max512 np4 resident geometry, the slot-contracts v2 / intent-boundaries v1 / train-exemplars k=20 stores, saea-deliver-normalise-v3 at delivery, and items E13 and E22 declared. Nothing of it moves.",
+    "factor": "NONE. PLANr-DEV2000 is request-identical to cell B6's plan arm: the config diff is the run, attempt and native-contact-fit identities and the what_this_is sentence. Proved by tests/unit/test_slurp_cell3_gate_registration.py.",
+    "per_role_rendering_held": "native_episode.tool_schema_rendering is NOT armed.",
+    "purpose": "Cell PLANr-DEV2000: the request-identical second pass of cell B6 plan arm on the fresh DEV-2000-ADDED roster, flown for ONE reason -- to give this roster its OWN NULL. Cell CELL-3 (Stage-3 S3-6 iteration 3) is read against the sealed SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1 on these same 1,000 rows, and a non-inferiority margin imported from TRAIN Fold A (h_SLU 1.2485 / h_intent 0.9943) is a margin measured on a different roster, a different scorer sibling and a different clustering (speaker there, utterance id here). This pass produces the half-widths PLAN-DEV2000 vs PLANr-DEV2000 under the same paired estimator, so CELL-3 is not read under an imported margin. Nothing moves against cell B6 plan arm except the run, attempt and fit identities: same packets, same vectors, same receipts, same stores, same serving geometry, same caps, same devel-gold scorer. NO SMOKE IS REGISTERED: the form is already sealed and flown on this exact roster by cell B6 (its own why_no_smoke rule), and a request-identical replicate raises no new structural question a four-row flight would answer. REPORT-ONLY on its own: this cell makes no admission claim and carries no bar; its deliverable is a margin table.",
+    "second_declared_key_not_a_factor": "native_episode.react_exhaustion_policy = continue-without-answer (item E22) and finite_completion_policy = deliver-latest-or-abstain (item E13): failure-mode declarations the locked plan already carries, required of every live SLURP native cell by scripts/checks/finite_completion_policy_check.py. Neither renders a request byte.",
+    "why": "Greedy decoding at temperature 0 is not bit-reproducible across batch compositions (the 2026-09-04 finding), so a second pass of an identical request measures the decode noise this roster's paired estimator actually carries. Importing a margin from TRAIN Fold A would import a different roster, a different gold split, a different scorer sibling and a different clustering."
+  },
+  "plan_kind": "generation",
+  "predecessor": {
+    "cell": "B6 plan arm",
+    "contacts_per_row": 4.071,
+    "gpu_hours_per_1000": 1.655,
+    "official_intent": 76.6,
+    "official_slu": 65.4,
+    "role": "THE OTHER SIDE OF THE PAIR, sealed and never re-flown",
+    "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1",
+    "verdict": "docs/results/2026-09-22-slurp-b6-dev2000-added-direct-vs-plan-read.md"
+  },
+  "preparation_base_commit": "060d822c",
+  "prepared_phase_supply": {
+    "allow_output_change": "--allow-output-change must never be passed",
+    "expected_identity": "cell B6's plan arm prepared 36463545fa791723c2adee82db9fb8c78420c72d0ebc07d4ec179cc0ddb2e179. PLANr-DEV2000 is request-identical, so its own prepared artifact MUST reproduce that value exactly; a different value means the knowledge channel moved and the replicate is not a replicate. Stop and report.",
+    "note": "Item E16: a prepared artifact is evidence only for the implementation that produced it, so each of the five flown cells (PLANr-DEV2000, arm, twin and the two smokes) prepares its OWN first-phase Perception supply under its OWN run id at the readiness flip. core.flight.repin.ensure_artifact_pinned runs core.flight.cli prepare-supply (model-free, zero model / tokenizer / encoder / scorer / server contacts), writes the pin into the baseline fragment and inserts the matching preparation readiness requirement. The committed baselines therefore carry NO prepared_phase_supply key at all -- the cell-P0 form. A PENDING_ string in its place is NOT a valid registration: core.flight.repin.ArtifactPin.from_mapping refuses it before the preparation step can run.",
+    "status": "NOT PINNED HERE, and deliberately not written by hand"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1/protocol-registered-v1.json",
+    "sha256": "9bc3e4e723b1b1d683f933b22c9bbcdfedb51fa81e374f3ceb2ac9da0b0d8c68"
+  },
+  "purpose": "Cell PLANr-DEV2000: the request-identical second pass of cell B6 plan arm on the fresh DEV-2000-ADDED roster, flown for ONE reason -- to give this roster its OWN NULL. Cell CELL-3 (Stage-3 S3-6 iteration 3) is read against the sealed SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1 on these same 1,000 rows, and a non-inferiority margin imported from TRAIN Fold A (h_SLU 1.2485 / h_intent 0.9943) is a margin measured on a different roster, a different scorer sibling and a different clustering (speaker there, utterance id here). This pass produces the half-widths PLAN-DEV2000 vs PLANr-DEV2000 under the same paired estimator, so CELL-3 is not read under an imported margin. Nothing moves against cell B6 plan arm except the run, attempt and fit identities: same packets, same vectors, same receipts, same stores, same serving geometry, same caps, same devel-gold scorer. NO SMOKE IS REGISTERED: the form is already sealed and flown on this exact roster by cell B6 (its own why_no_smoke rule), and a request-identical replicate raises no new structural question a four-row flight would answer. REPORT-ONLY on its own: this cell makes no admission claim and carries no bar; its deliverable is a margin table.",
+  "quality_read_gate": "no task-quality read before the complete sealed manifest, the exact ordered 1,000 outputs, the native phase summary and the single successful complete official devel score all exist, and not before the stop stage passes. This cell's read is the margin table and nothing else.",
+  "registered_at_utc": "2026-09-24T12:00:00.000000+00:00",
+  "registration_base_commit": "060d822c",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-cell3reg, branch fable/cell3reg, base master 060d822c",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

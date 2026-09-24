@@ -1,0 +1,204 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-r03-gate-v1-generation",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "comparator": {
+      "attempt_id": "attempt-slurp-native-default-plan-dev2000-added-generation-v1",
+      "role": "gating comparator, sealed, never re-flown",
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1"
+    },
+    "margins": {
+      "h_intent": "PENDING_OWN_NULL",
+      "h_slu": "PENDING_OWN_NULL",
+      "source": "the roster's own null (PLAN-DEV2000 vs PLANr-DEV2000), read as SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-OWN-NULL-V1 BEFORE the arm's contrast stage"
+    },
+    "own_null_right": {
+      "attempt_id": "attempt-slurp-native-default-plan-dev2000-added-replicate-generation-v1",
+      "outputs_sha256": "PENDING_SEAL",
+      "role": "the roster's own null, flown FIRST; its margin table is this cell's bar",
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-REPLICATE-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "twin": {
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-r03-gate-v1-twin",
+      "outputs_sha256": "PENDING_SEAL",
+      "role": "FORM CONTROL: the same 200 statements, deranged attachment, total authored token count held at 3,001, THE SAME GATE. The SUPPLIED volume is not held and is not expected to match the arm's.",
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-TWIN-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    }
+  },
+  "authority": {
+    "evidence_base": "docs/results/2026-09-22-slurp-b6-dev2000-added-direct-vs-plan-read.md; docs/results/2026-09-24-slurp-stage3-delta-cell-r02-verdict.md; docs/results/2026-09-24-slurp-general-scenario-diagnostic.md",
+    "own_null_precedent": "docs/results/2026-09-22-slurp-planr-v2-lock-replicate-verdict.md",
+    "owner_decisions": "83, 99, 101, 106, 110 (pending), plus 17, 25, 28, 29, 58, 75, 79, 86",
+    "spec": "docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md sections S3-6 and S3-4s; docs/readiness/2026-09-24-slurp-stage3-scenario-gate-design-v1.md"
+  },
+  "cell_kind": "KNOWLEDGE -- one added store as one factor on the locked plan, applied under a coverage gate; the paired official read is the deliverable, the twin decides attribution, and the gate table is a primary deliverable in its own right",
+  "claim_boundary": "Descriptive paired read on the DEV-2000-ADDED development roster (owner decisions 28, 86), plus a cost measurement of the same flight, the gate table and the per-node delta-consumption table. This is the FIRST out-of-fold read of the Stage-3 delta line -- the gated set was chosen on TRAIN Fold A -- and that is what it is worth: an out-of-fold development number, not a test claim, not a superiority claim and not a generalisation claim. NOT IN SCOPE: any comparison against CELL-1, CELL-2 or CELL-1-GEPA as arms, because those were read on a different roster against a different comparator at a different null.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "decision_rule": {
+    "comparator": "the sealed SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1",
+    "rule": "see protocol-registered-v1.json decision_rule (ADMITTED / NEUTRAL / HARMFUL / TWIN / GATE_CONSUMPTION / PER_STRATUM / FRONTIER / REPLICATION / OUT_OF_FOLD), with h_SLU and h_intent supplied by the own-null read"
+  },
+  "delta_convention": "delta = CELL-3 minus the sealed DEV-2000-ADDED PLAN arm, in percentage points; negative is worse",
+  "diagnostics_required": [
+    "GATE DECISIONS, the item this cell exists for: from delta_scenario_gate, the count of OPEN and CLOSED decisions per node over the 1,000 rows, the realised majority-scenario histogram, and the share of rows on which all three nodes closed together (the gate reads one candidate list, so they should agree on every row; a row where they disagree is a defect to report). Placed beside the model-free projection of 355 closed / 645 open.",
+    "DELTA SUPPLY REACH AND CONSUMPTION, per node, SPLIT BY GATE OUTCOME: rows supplied, items per supplied row against the cap, distinct value_ids, and the saves / harms / ties on the rows that received each one -- for the gate-open rows -- beside the skip audit's gated_rows count for the gate-closed rows. CELL-2's TRAIN Fold A table (perception 1080 rows / 4320 items, solver 740 / 4177, reviewer 692 / 2296, planner 198 / 281) is context on a different roster, never a comparator.",
+    "THE PERCEPTION ROUTE'S ABSENCE, stated as a measurement: CELL-2 supplied 4 unconditional Perception items on every one of its 1,080 rows and CELL-3 supplies none on any row. That is a second change against CELL-2 beside the gate, it is registered as such, and the read must not attribute the whole arm-minus-CELL-2 difference to gating.",
+    "PER-STRATUM TABLES over the PREDICTED majority candidate scenario, in both the natural mixture and the equal-stratum weighting, plus the two-cell gate-closed / gate-open stratification. The GOLD per-scenario table is NOT DERIVABLE on this roster and its absence is stated, never silently omitted.",
+    "PER-CHANNEL table (540 far-field, 460 headset) from the roster's own headset field, descriptive and unclustered, as cell B6's read reported it.",
+    "E20 COMPACTION, per phase: rows compacted, at which phase and by how much, beside cell B6's own sealed ZERO. CELL-2's registered worst case put the Solver at COMPACT_REQUIRED by 317 tokens; CELL-3 removes the Perception block and withholds the Solver block on a projected 35.5 % of rows, so a LOWER count than CELL-2's is expected. An abstention caused by compaction is a failure, not a caveat.",
+    "ARM-VERSUS-TWIN SUPPLIED VOLUME per node, on the gate-open rows only: the derangement holds the store's TOTAL token count, not the SUPPLIED token count, and the four-row dry run already measures a different planner volume (arm 0, twin 4). The read reports both sides and does not assume they match.",
+    "FINITE COMPLETIONS: the count of rows whose terminal_disposition.reason is 'finite_completion', the affected sample ids, the delivered-draft versus abstention split, and -- only if non-zero -- the primary official metric recomputed with those rows excluded BESIDE the registered all-rows number, which stays the number the decision rule reads. No row is ever filtered out of the scored manifest. Cell B6's plan arm count on this roster is 10.",
+    "REACT EXHAUSTION: the count of rows whose disposition is react_exhaustion (cell B6's count on this roster is 0), reported whether or not it is zero.",
+    "planner_action_illegal: the flight's own count and the sample ids that carry it, reported whether or not it is zero.",
+    "FIRST-REQUEST BYTE DELTA, stated honestly before contact: under this arm the PERCEPTION request IS byte-identical to the sealed comparator's for the same row, because the Perception delta route is removed. That is what makes the projection above meaningful and it is also what the structural stage must confirm.",
+    "REVISIT SUPPLY: the number of rows whose Planner routed REVISE, and for those rows the items each revisited node acquired on its second visit, with the count of duplicate acquisitions (registered expectation: ZERO; a duplicate kills a trajectory). A row whose gate is CLOSED acquires nothing on either visit.",
+    "ROW ACCOUNTING: 1,000 in, 1,000 out on both sides, no row dropped and no sample_id invented.",
+    "COST: actual generation contacts against cell B6's realised 4,071 and the 11,000 ceiling; actual repeated speech seconds; actual FIT endpoints; GPU hours read from the serving monitor over the lease window."
+  ],
+  "driver": {
+    "arm_invocation": "python scripts/analysis/slurp_paired_roster_read.py --stage all --left-run SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1 --left-attempt attempt-slurp-native-default-plan-dev2000-added-generation-v1 --left-label 'the sealed DEV-2000-ADDED PLAN arm' --right-run SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-V1 --right-attempt attempt-slurp-native-stage3-delta-cell-r03-gate-v1-generation --right-label 'cell CELL-3 (the locked plan plus the coverage-gated stage3-deltas-v2 store)' --analysis-root $SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-PAIRED-ANALYSIS-V1 --data-root $SPEECHRL_DATA_DIR --recipe-id slurp-stage3-delta-cell-r03-gate-arm-paired-analysis-v1",
+    "cli": "scripts/analysis/slurp_paired_roster_read.py",
+    "consumption_cli": "scripts/analysis/stage3_delta_consumption_read.py",
+    "consumption_invocation": "python scripts/analysis/stage3_delta_consumption_read.py --run SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-V1 --attempt attempt-slurp-native-stage3-delta-cell-r03-gate-v1-generation --comparator-run SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1 --comparator-attempt attempt-slurp-native-default-plan-dev2000-added-generation-v1 --store-id stage3-deltas --scorer slurp-slu-official --analysis-root $SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-PAIRED-ANALYSIS-V1. Its gated_rows counter is the gate table's own denominator; --scorer MUST be passed, because the module default is the TRAIN sibling.",
+    "own_null_invocation": "python scripts/analysis/slurp_paired_roster_read.py --stage all --left-run SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1 --left-attempt attempt-slurp-native-default-plan-dev2000-added-generation-v1 --left-label 'PLAN-DEV2000 (the sealed comparator)' --right-run SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-REPLICATE-V1 --right-attempt attempt-slurp-native-default-plan-dev2000-added-replicate-generation-v1 --right-label 'PLANr-DEV2000 (the request-identical replicate)' --analysis-root $SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-OWN-NULL-V1 --data-root $SPEECHRL_DATA_DIR --recipe-id slurp-dev2000-added-own-null-v1 --title 'DEV-2000-ADDED own null: PLAN against its request-identical replicate'",
+    "registered_facts": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1/registered-facts-v1.json",
+    "runbook": "scripts/flights/batch/cell3_read.sh <arm|twin|own-null>",
+    "stages": [
+      "stop",
+      "structural",
+      "contrast",
+      "efficiency",
+      "verdict"
+    ],
+    "twin_invocation": "the same command with --right-run SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-TWIN-V1, --right-attempt attempt-slurp-native-stage3-delta-cell-r03-gate-v1-twin, --right-label 'the CELL-3 derangement twin (form control)' and --analysis-root $SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-TWIN-PAIRED-ANALYSIS-V1. Same comparator, same margins, same estimator, same seed: the twin read is the arm read with one input changed.",
+    "verdict_is_written_by_the_coordinator": "slurp_paired_roster_read.py always writes status DESCRIPTIVE by design; it computes no ADMITTED/NEUTRAL/HARMFUL verdict and reads no margin. The decision rule of protocol-registered-v1.json is applied BY THE COORDINATOR in the verdict document, against the margins the own-null read produced, and the verdict document shows the arithmetic.",
+    "why_this_driver": "It is the driver cell B6 proved on THIS roster, with THIS scorer and THIS clustering: --scorer-id slurp-slu-official, --roster docs/receipts/rosters/slurp-dev-2000-added-v1.json, --cluster-key utterance_id are its own defaults. scripts/analysis/plan_cell_read.py -- the driver every TRAIN Fold A delta cell used -- CANNOT read this cell as committed: its SCORER, V3_SCORER and SYM_SCORER are module constants bound to the TRAIN gold siblings with no override flag, its lock stage compares against a TRAIN-only B5e comparator, and its per-scenario stages need a roster-metadata file carrying a per-sample speaker and scenario that this roster does not publish. Adapting it is a separate engineering change with its own tests and its own review; a registration agent does not make it, and certainly not beside a live flight."
+  },
+  "estimators": {
+    "bootstrap_pooled": "analysis.paired.resampled_statistic",
+    "cluster_core": "analysis.bootstrap.paired_cluster_bootstrap",
+    "mcnemar": "analysis.paired.paired_contrast's own sign_test_p",
+    "paired_per_row": "analysis.paired.paired_contrast",
+    "pooled_micro_f1": "analysis.null_calibration.pooled_f1"
+  },
+  "execution_profile": "model-free-check",
+  "metrics": [
+    {
+      "estimand": "pooled count F1",
+      "id": "pooled_slu_f1",
+      "null_half_width_pp": "PENDING_OWN_NULL",
+      "role": "primary"
+    },
+    {
+      "estimand": "joint scenario+action accuracy",
+      "id": "intent_accuracy",
+      "null_half_width_pp": "PENDING_OWN_NULL",
+      "role": "non-inferiority guard"
+    },
+    {
+      "id": "scenario_accuracy",
+      "role": "secondary"
+    },
+    {
+      "id": "action_accuracy",
+      "role": "secondary"
+    },
+    {
+      "id": "pooled_span_f1",
+      "role": "secondary"
+    },
+    {
+      "id": "per_row_mean_slu_f1",
+      "role": "secondary"
+    },
+    {
+      "id": "per_row_mean_exact_slot_f1",
+      "role": "secondary"
+    }
+  ],
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-PAIRED-ANALYSIS-V1",
+    "files": [
+      "stop.json",
+      "structural.json",
+      "score-contrasts.json",
+      "efficiency.json",
+      "per-scenario-tables.json",
+      "delta-consumption.json",
+      "verdict.json",
+      "README.md"
+    ],
+    "harness_admission": "on ADMITTED, and only after the replicate on the same roster, the coordinator writes the harness-admission entry; a NEUTRAL or HARMFUL verdict writes a results-ledger row and no admission entry",
+    "own_null_root": "analysis/SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-OWN-NULL-V1",
+    "prints_only_aggregates": "no utterance text, no gold, no delivered filler and no delta STATEMENT text is printed or persisted: the gate and consumption tables name value_ids, node targets, facet ids, scenario labels and counts only",
+    "root": "SPEECHRL_DATA_DIR",
+    "twin_analysis_root": "analysis/SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-TWIN-PAIRED-ANALYSIS-V1",
+    "verdict_document": "docs/results/<date>-slurp-stage3-delta-cell-r03-gate-verdict.md"
+  },
+  "population": {
+    "cluster_key": "utterance_id",
+    "distinct_utterances": 913,
+    "gold_per_scenario_table": "NOT AVAILABLE -- the roster receipt withholds the per-item stratum and the official per-sample record carries no scenario field. The predicted-majority-scenario table is reported instead and the absence is stated.",
+    "roster": "DEV-2000-ADDED, docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+    "rows": 1000,
+    "split_id": "DEV-2000-ADDED",
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
+    "split_role": "dev"
+  },
+  "recipe_id": "slurp-stage3-delta-cell-r03-gate-paired-analysis-v1",
+  "registered_at_utc": "2026-09-24T12:00:00.000000+00:00",
+  "resampling": {
+    "cluster_key": "utterance_id",
+    "draws": 10000,
+    "interval_form": "percentile pairs of the same retained replicate sequence",
+    "intervals": [
+      "CI95 for the decision clauses",
+      "CI90 for diagnostics"
+    ],
+    "pairing_note": "both sides of this contrast are decoded runs, so the paired interval carries real decoding noise; the roster's own-null margins are the calibration for exactly that, which is why PLANr-DEV2000 flies first.",
+    "primary": "paired whole-utterance-cluster bootstrap (913 clusters over 1,000 recordings)",
+    "seed": 20260915,
+    "sensitivity": "paired per-recording bootstrap, same draws and seed",
+    "tables": [
+      "natural mixture",
+      "equal-stratum weighting over the predicted majority scenario"
+    ]
+  },
+  "schema": "saea-paired-analysis-recipe-v1",
+  "scorer": {
+    "evaluator": "slurp-official-8eb16545",
+    "gold": "devel",
+    "id": "slurp-slu-official",
+    "runs": "once per complete manifest through core.scoring_batch, never sharded; this read invokes no scorer",
+    "train_siblings_not_applicable": "slurp-slu-official-projected-v3-train and slurp-slu-f1-normalized-v1-train are TRAIN-gold scorers and are not reported against devel gold"
+  },
+  "tables_required": [
+    "headline score: the sealed DEV-2000-ADDED PLAN arm, CELL-3, the delta, CI90 and CI95, for official pooled SLU-F1 and intent, with the own-null half-widths printed beside them",
+    "the margin table from the own-null read (PLAN-DEV2000 vs PLANr-DEV2000), printed FIRST",
+    "the SAME headline table for the twin arm, beside the arm's, with the twin delta and its CI95",
+    "the GATE table: open/closed per node, gated-row share, realised majority-scenario histogram, beside the model-free projection of 355 closed / 645 open",
+    "the per-node delta-consumption table split by gate outcome, with value ids and counts only",
+    "saves / harms / ties with the exact two-sided McNemar p",
+    "per-stratum tables over the predicted majority scenario, in both weightings",
+    "the per-channel table (540 far-field, 460 headset)",
+    "the mandatory diagnostics of the protocol document's diagnostics_required, in order",
+    "the frontier row: official SLU-F1 delta x prefilled tokens per row x GPU hours per 1,000 rows, for the arm and the twin"
+  ],
+  "title": "Cell CELL-3: the locked v2.0 plan plus the COVERAGE-GATED stage3-deltas-v2 store (Stage-3 S3-6 iteration 3) on the fresh DEV-2000-ADDED roster -- paired read against the sealed DEV-2000-ADDED PLAN arm at that roster's own null, with the derangement twin as the form control, the gate table and the frontier row"
+}

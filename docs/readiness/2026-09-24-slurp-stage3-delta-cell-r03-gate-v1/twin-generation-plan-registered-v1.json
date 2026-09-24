@@ -1,0 +1,109 @@
+{
+  "cell": "slurp-native-stage3-delta-cell-r03-gate-twin-v1",
+  "composed_config_hash": "9790943fa24a4d05ef8914e33ade2b37c79f0c00a1c0deec2d724a893ee31258",
+  "decision_rule": {
+    "ADMITTED": "the CI95 lower bound of the paired official pooled SLU-F1 delta (CELL-3 minus the sealed DEV-2000-ADDED PLAN arm) is ABOVE ZERO, and the CI95 lower bound of the paired intent delta exceeds -h_intent, the roster's own-null intent half-width. A gain is proven, not merely non-inferior.",
+    "FRONTIER": "owner decision 75: the frontier row (official SLU-F1 delta x prefilled tokens per row x GPU hours per 1,000 rows) is reported on every verdict and placed beside the registered rows. Note the denominator is 1,000 rows here, not 1,080: a TRAIN Fold A frontier row is not comparable digit for digit and is rescaled or labelled, never silently placed beside.",
+    "GATE_CONSUMPTION": "PRIMARY DELIVERABLE, reported whatever the verdict: the gated-row share per node from the delta-consumption read -- how many rows each candidate-bound node had its supply WITHHELD on (delta_supply skip, reason scenario-gate-closed) against how many it was supplied on, the open/closed counts the delta_scenario_gate receipt publishes, and the realised majority-scenario histogram. The model-free PROJECTION from the sealed comparator's own Perception candidates is 355 closed / 645 open of 1,000 rows on every gated node; the realised number is measured, never assumed, because the arm's own Perception answers are its own (greedy decoding is not bit-reproducible across batch compositions). A realised share far from 355 is a finding, not a failure.",
+    "HARMFUL": "a MEASURED loss on either guard (owner decision 25, Method B: a CI95 upper bound below zero, or a point estimate beyond the margin); width alone is NEUTRAL, never HARMFUL.",
+    "NEUTRAL": "both guards are non-inferior at the roster's own null -- the SLU CI95 lower bound exceeds -h_SLU and the intent CI95 lower bound exceeds -h_intent -- without a proven SLU gain.",
+    "OUT_OF_FOLD": "THE VENUE IS THE POINT AND IT CUTS BOTH WAYS. The seven gated scenarios were chosen on TRAIN Fold A, from the CELL-2 read and the general-scenario diagnostic; DEV-2000-ADDED is a roster the Stage-3 delta line has never touched, so this is the FIRST out-of-fold read of that line and the first time the gated set is exposed to selection it did not shape. It is still a DEVELOPMENT number (owner decisions 28, 86): DEV-2000-ADDED is a development roster, and no test, superiority, generalisation or paper-scale claim is read from this cell.",
+    "PER_STRATUM": "owner decision 17 asks for a per-scenario table in both weightings. On this roster a GOLD per-scenario table is NOT DERIVABLE model-free: the roster receipt withholds the per-item stratum (stratum_withheld_per_item: true) and the official per-sample record carries no scenario field, so deriving one needs gold, which is refused (cell B6's own read records this and the open registration item). What IS reported, in both the natural-mixture and the equal-stratum weighting, is the table over the strata the MECHANISM acts on: the row's PREDICTED majority candidate scenario, which is exactly what the gate reads and is model-free by construction. Gate-closed versus gate-open is reported as its own two-cell stratification. The absence of the gold table is stated in the verdict, never omitted.",
+    "REPLICATION": "an ADMITTED result is replicated on the SAME roster before any Fold B or test read (the owner iteration rule). No test read is authorised by this package (owner decision 29: one test read, after Stage 3).",
+    "TWIN": "ATTRIBUTION, never admission. The twin arm is read with the same estimator against the same sealed DEV-2000-ADDED PLAN comparator, and it carries THE SAME GATE. A gain the twin reproduces within the roster's own null is FORM (the gated supply's shape and token volume on the rows the gate leaves open), not content, and the verdict says so and claims no content effect. A gain the twin does not reproduce is attributed to the deltas' content, with the twin delta reported beside it.",
+    "comparator": "the sealed DEV-2000-ADDED PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1 (official 65.40 SLU / 76.6 intent, flight commit 54f569c6); nothing is re-flown",
+    "efficiency_is_reported_regardless": "every efficiency deliverable is reported whatever the verdict",
+    "margins": "THE MARGINS ARE NOT KNOWN AT REGISTRATION AND ARE NOT TYPED HERE. h_SLU and h_intent for this cell are the half-widths the ROSTER'S OWN NULL produces -- cell PLAN-DEV2000 against cell PLANr-DEV2000 (SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-REPLICATE-V1), the request-identical second pass registered in this same package and flown FIRST -- computed with the same paired estimator, the same clustering (utterance id, owner decision 79 D2), the same seed and the same draws as the arm contrast. The TRAIN Fold A numbers h_SLU 1.2485 / h_intent 0.9943 are recorded in this package as CONTEXT ONLY and are explicitly NOT this cell's bar: they were measured on a different roster, against a different gold split (TRAIN gold versus devel gold), with a different scorer sibling (slurp-slu-official-train versus slurp-slu-official) and a different clustering (whole speaker versus utterance id). The ORDER is part of the registration: the own-null read SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-OWN-NULL-V1 is completed and its margin table sealed BEFORE the arm's contrast stage is read, and the margins are never adjusted after the arm's numbers are seen."
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-delta-cell-r03-gate-v1-twin",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 11000,
+    "planned_speech_audio_seconds": 32819,
+    "protocol_hash": "5c0377b92219cae3fb6972f3aca079d89df3c9899c1de2288456083c1d225be4",
+    "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-TWIN-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan configs/campaign/slurp-native-stage3-delta-cell-r03-gate-v1-twin.json; the campaign acquires its own GenerationLease against the resident session serving-slurp-native-candidate-five-train-a-np4-v1 (attach only, never spawn or stop) and schedules the one official complete devel score at finalize. Queued through the SAEA-Batch-Driver scheduled task (owner decision 77). coordinate-fit must NOT be run.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-delta-cell-r03-gate-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 44000,
+    "generation_calls_cap": 11000,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6000,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 32819
+  },
+  "modules": {
+    "base": "cell B6's plan arm, exactly as it flew on DEV-2000-ADDED (configs/baseline/slurp-native-default-plan-dev2000-added-baseline-v1.json): the locked v2.0 default plan -- the complete native episode with the review loop on, the shared controller and FlightRuntime path, no phase_tools on any role, Solver-only answer authority, the three-candidate contract, the max512 np4 resident geometry, the slot-contracts v2 / intent-boundaries v1 / train-exemplars k=20 stores, saea-deliver-normalise-v3 at delivery, and items E13 and E22 declared. Nothing of it moves.",
+    "factor": "knowledge_stores.stage3-deltas added to cell B6's plan fragment and nothing else: the released stage3-deltas-v2 store (the 200 values the owner-decision-83 retention kept of v1r's 379) supplied per node through a COVERAGE-GATED context_supply -- Solver cap 8, Reviewer cap 4, Planner cap 4, each candidate-bound (provider stage3-delta-candidate-bound-v1), node_target-filtered, prior_score-ranked, and each carrying scenario_gate majority-candidate-scenario-not-in-v1 over general, alarm, music, social, iot, play and news. CELL-2's Perception unconditional route is REMOVED, not gated: the Perception node produces the candidate list, so there is nothing to gate on when it is served, and the router refuses a scenario_gate there by construction.",
+    "per_role_rendering_held": "native_episode.tool_schema_rendering is NOT armed.",
+    "purpose": "Stage-3 S3-6 CELL-3 (owner decisions 83, 99, 101, 106, and 110 PENDING): the locked v2.0 default plan plus ONE added factor -- the released stage3-deltas-v2 store supplied per node through a COVERAGE-GATED context_supply -- flown on the FRESH DEV-2000-ADDED roster. Iteration 3 changes neither the store nor the selection but the APPLICATION: the Perception unconditional route CELL-2 carried is REMOVED, and the Solver (cap 8), Reviewer (cap 4) and Planner (cap 4) candidate-bound routes each declare scenario_gate majority-candidate-scenario-not-in-v1 over general, alarm, music, social, iot, play and news, so a row whose projected Perception candidates have a majority scenario in that set takes no supply step at that node at all. THE VENUE IS THE POINT: the gated set was chosen on TRAIN Fold A from the CELL-2 read and the general-scenario diagnostic, and it is read here on a roster the Stage-3 line has never touched -- decision 99 replicate venue -- which makes this the FIRST out-of-fold read of the Stage-3 delta line. Comparator: the sealed SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1 (official 65.40 / 76.6, flight commit 54f569c6), never re-flown, at the roster OWN null measured by cell PLANr-DEV2000 in this same package. PRIMARY DELIVERABLES: (1) the paired official read against that sealed comparator at the roster own null; (2) the gated-row share per node from the delta-consumption read, with the open/closed decision counts the gate itself receipts; (3) the per-node delta-consumption table (item S3-4s) split by gate outcome; (4) the twin contrast, which decides attribution, never admission; (5) the frontier row (decision 75). READ DISCIPLINE: DEV-2000-ADDED is a development roster (owner decisions 28, 86) -- no test claim, no superiority claim, and no paper-scale or generalisation statement is read from this cell.",
+    "second_declared_key_not_a_factor": "native_episode.react_exhaustion_policy = continue-without-answer (item E22) and finite_completion_policy = deliver-latest-or-abstain (item E13): failure-mode declarations the locked plan already carries, required of every live SLURP native cell by scripts/checks/finite_completion_policy_check.py. Neither renders a request byte.",
+    "what_iteration_3_changes": "NEITHER the store NOR the selection: the APPLICATION. Against CELL-2's fragment the diff is exactly two things -- the Perception route removed, and the three candidate-bound routes each carrying the gate -- plus the roster re-pointing cell B6 already proved on this venue. On a row the gate leaves open, the supply is byte-identical to the ungated route's (same selected ids, same RankResult hash, same FusionDecision hash, same action_target_ref; tests/unit/test_stage3_scenario_gate.py::test_an_open_gate_is_byte_identical_to_the_ungated_route). On a row it closes, the node takes no supply step at all and the wave seals as an ordinary organize step.",
+    "why": "docs/results/2026-09-24-slurp-general-scenario-diagnostic.md: on the strata the store has no reach into, the arm loses AND THE DERANGEMENT TWIN LOSES AS MUCH (general intent -11.67 pp twin versus -6.67 CELL-2 and -10.00 CELL-1 on 60 rows), and 0 of the 200 v2 values declare a general target. A loss the twin reproduces is a FORM cost of CARRYING a supply, not the content of any delta. The lever is therefore not a better statement and not a better ranking but a narrower application: do not carry the supply into a row where the store cannot pay for its own form cost.",
+    "zero_added_contacts": "the added store supplies text to requests the plan already makes, so the role graph and therefore the 11-contact per-row ceiling are cell B6's unchanged. The gate can only REMOVE supplied text, never add a contact, so CELL-3's prefilled tokens per row are expected at or below CELL-2's rate and above the bare plan's only on the open rows."
+  },
+  "plan_kind": "generation",
+  "predecessor": {
+    "arm_minus_twin_intent_pp": 0.83,
+    "arm_minus_twin_slu_pp": 0.59,
+    "cell": "CELL-2",
+    "contacts_per_row": 4.151,
+    "gated_strata_evidence": {
+      "alarm": -3.644,
+      "general": -10.622,
+      "iot": -0.86,
+      "music": -3.401,
+      "news": -0.46,
+      "play": -0.551,
+      "social": -3.106
+    },
+    "gpu_hours_per_1080": 1.7679,
+    "intent_ci95": [
+      -1.22,
+      0.96
+    ],
+    "intent_delta_pp": -0.09,
+    "note": "CELL-2's per-scenario table on TRAIN Fold A is what CHOSE this cell's seven gated scenarios, so CELL-2 is the selection input and can never be this cell's comparator. It is reported BESIDE the verdict as context. The gated set was chosen on a different roster from the one it is read on, which is the whole point of the venue.",
+    "official_intent": 82.13,
+    "official_slu": 64.27,
+    "prefilled_tokens_per_row": 8905.1,
+    "roster": "TRAIN Fold A (a DIFFERENT roster: context, never a comparator)",
+    "slu_ci95": [
+      -0.76,
+      1.92
+    ],
+    "slu_delta_pp": 0.64,
+    "status": "NEUTRAL by width; non-inferiority NOT proven on intent (lower bound 0.23 pp beyond the TRAIN margin)",
+    "verdict": "docs/results/2026-09-24-slurp-stage3-delta-cell-r02-verdict.md"
+  },
+  "preparation_base_commit": "060d822c",
+  "prepared_phase_supply": {
+    "allow_output_change": "--allow-output-change must never be passed",
+    "expected_identity": "cell B6's plan arm prepared 36463545fa791723c2adee82db9fb8c78420c72d0ebc07d4ec179cc0ddb2e179 under prepared/SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1/phase-supply-v1.json. This cell's added store is routed through context_supply, not through the first phase's retrieval store, AND its Perception route is removed entirely, so the PREPARED Perception selection is expected to reproduce that output exactly. If it does not, the knowledge channel moved: stop and report rather than passing --allow-output-change. The four-row smokes prepare their own artifact over their own four rows and have no such predecessor to compare against, because cell B6 registered no smoke on this roster.",
+    "note": "Item E16: a prepared artifact is evidence only for the implementation that produced it, so each of the five flown cells (PLANr-DEV2000, arm, twin and the two smokes) prepares its OWN first-phase Perception supply under its OWN run id at the readiness flip. core.flight.repin.ensure_artifact_pinned runs core.flight.cli prepare-supply (model-free, zero model / tokenizer / encoder / scorer / server contacts), writes the pin into the baseline fragment and inserts the matching preparation readiness requirement. The committed baselines therefore carry NO prepared_phase_supply key at all -- the cell-P0 form. A PENDING_ string in its place is NOT a valid registration: core.flight.repin.ArtifactPin.from_mapping refuses it before the preparation step can run.",
+    "status": "NOT PINNED HERE, and deliberately not written by hand"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1/protocol-registered-v1.json",
+    "sha256": "9bc3e4e723b1b1d683f933b22c9bbcdfedb51fa81e374f3ceb2ac9da0b0d8c68"
+  },
+  "purpose": "Stage-3 S3-6 CELL-3 (owner decisions 83, 99, 101, 106, and 110 PENDING): the locked v2.0 default plan plus ONE added factor -- the released stage3-deltas-v2 store supplied per node through a COVERAGE-GATED context_supply -- flown on the FRESH DEV-2000-ADDED roster. Iteration 3 changes neither the store nor the selection but the APPLICATION: the Perception unconditional route CELL-2 carried is REMOVED, and the Solver (cap 8), Reviewer (cap 4) and Planner (cap 4) candidate-bound routes each declare scenario_gate majority-candidate-scenario-not-in-v1 over general, alarm, music, social, iot, play and news, so a row whose projected Perception candidates have a majority scenario in that set takes no supply step at that node at all. THE VENUE IS THE POINT: the gated set was chosen on TRAIN Fold A from the CELL-2 read and the general-scenario diagnostic, and it is read here on a roster the Stage-3 line has never touched -- decision 99 replicate venue -- which makes this the FIRST out-of-fold read of the Stage-3 delta line. Comparator: the sealed SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1 (official 65.40 / 76.6, flight commit 54f569c6), never re-flown, at the roster OWN null measured by cell PLANr-DEV2000 in this same package. PRIMARY DELIVERABLES: (1) the paired official read against that sealed comparator at the roster own null; (2) the gated-row share per node from the delta-consumption read, with the open/closed decision counts the gate itself receipts; (3) the per-node delta-consumption table (item S3-4s) split by gate outcome; (4) the twin contrast, which decides attribution, never admission; (5) the frontier row (decision 75). READ DISCIPLINE: DEV-2000-ADDED is a development roster (owner decisions 28, 86) -- no test claim, no superiority claim, and no paper-scale or generalisation statement is read from this cell.",
+  "quality_read_gate": "no task-quality read before the complete sealed manifest, the exact ordered 1,000 outputs, the native phase summary and the single successful complete official devel score all exist, and not before the registered STOP condition passes (the sealed DEV-2000-ADDED PLAN aggregate reproduces from its own per-sample scores to 1e-6 and the roster identity reproduces). THE OWN NULL IS READ FIRST: the arm's contrast stage is not read until SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-OWN-NULL-V1 has sealed its margin table. The twin is read only after the arm has sealed and been read. The efficiency, gate and delta-consumption reads may proceed from the sealed receipts, trace and server log as soon as the manifest seals, because they touch no answer, reference or quality field.",
+  "registered_at_utc": "2026-09-24T12:00:00.000000+00:00",
+  "registration_base_commit": "060d822c",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-cell3reg, branch fable/cell3reg, base master 060d822c",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}
