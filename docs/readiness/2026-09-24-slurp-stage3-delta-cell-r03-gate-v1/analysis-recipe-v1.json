@@ -13,8 +13,8 @@
       "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1"
     },
     "margins": {
-      "h_intent": "PENDING_OWN_NULL",
-      "h_slu": "PENDING_OWN_NULL",
+      "h_intent": 1.1519637519869,
+      "h_slu": 1.2525179737475,
       "source": "the roster's own null (PLAN-DEV2000 vs PLANr-DEV2000), read as SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-OWN-NULL-V1 BEFORE the arm's contrast stage"
     },
     "own_null_right": {
@@ -102,13 +102,13 @@
     {
       "estimand": "pooled count F1",
       "id": "pooled_slu_f1",
-      "null_half_width_pp": "PENDING_OWN_NULL",
+      "null_half_width_pp": 1.2525179737475,
       "role": "primary"
     },
     {
       "estimand": "joint scenario+action accuracy",
       "id": "intent_accuracy",
-      "null_half_width_pp": "PENDING_OWN_NULL",
+      "null_half_width_pp": 1.1519637519869,
       "role": "non-inferiority guard"
     },
     {
@@ -200,5 +200,32 @@
     "the mandatory diagnostics of the protocol document's diagnostics_required, in order",
     "the frontier row: official SLU-F1 delta x prefilled tokens per row x GPU hours per 1,000 rows, for the arm and the twin"
   ],
-  "title": "Cell CELL-3: the locked v2.0 plan plus the COVERAGE-GATED stage3-deltas-v2 store (Stage-3 S3-6 iteration 3) on the fresh DEV-2000-ADDED roster -- paired read against the sealed DEV-2000-ADDED PLAN arm at that roster's own null, with the derangement twin as the form control, the gate table and the frontier row"
+  "title": "Cell CELL-3: the locked v2.0 plan plus the COVERAGE-GATED stage3-deltas-v2 store (Stage-3 S3-6 iteration 3) on the fresh DEV-2000-ADDED roster -- paired read against the sealed DEV-2000-ADDED PLAN arm at that roster's own null, with the derangement twin as the form control, the gate table and the frontier row",
+  "own_null": {
+    "source_root": "analysis/SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-OWN-NULL-V1",
+    "recipe_id": "slurp-dev2000-added-own-null-v1",
+    "read_at_utc": "2026-09-24T14:38:24Z",
+    "score_contrasts_sha256": "1cba957ea592a0d6befb07ec5559f44a7d6e1b24e5ed0b932f834e3cafd8b5e6",
+    "left": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1",
+    "right": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-REPLICATE-V1",
+    "slu_f1_micro": {
+      "delta_pp": -0.25,
+      "ci95_pp": [
+        -1.5211,
+        0.984
+      ],
+      "ci95_half_width_pp": 1.2525179737475
+    },
+    "scenario_action_exact": {
+      "delta_pp": 0.2,
+      "ci95_pp": [
+        -0.9921,
+        1.3118
+      ],
+      "ci95_half_width_pp": 1.1519637519869
+    },
+    "estimator": "paired cluster bootstrap by utterance_id, 913 clusters, 10,000 draws, seed 20260915, CI95 half-width",
+    "sealed_before_the_arm_contrast": true,
+    "note": "materialised by the coordinator 2026-09-24 14:50 UTC; never adjusted after."
+  }
 }
