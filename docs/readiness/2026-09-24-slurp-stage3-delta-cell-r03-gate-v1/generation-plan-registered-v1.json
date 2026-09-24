@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-delta-cell-r03-gate-v1",
-  "composed_config_hash": "b7eff1843e9e9dac1f6338a0167846d2090de98dcc19606f7067cfc85485de92",
+  "composed_config_hash": "888965b78137eec271563423daa2b081ed4391f63f55f966bd2ceccf4c9f1188",
   "decision_rule": {
     "ADMITTED": "the CI95 lower bound of the paired official pooled SLU-F1 delta (CELL-3 minus the sealed DEV-2000-ADDED PLAN arm) is ABOVE ZERO, and the CI95 lower bound of the paired intent delta exceeds -h_intent, the roster's own-null intent half-width. A gain is proven, not merely non-inferior.",
     "FRONTIER": "owner decision 75: the frontier row (official SLU-F1 delta x prefilled tokens per row x GPU hours per 1,000 rows) is reported on every verdict and placed beside the registered rows. Note the denominator is 1,000 rows here, not 1,080: a TRAIN Fold A frontier row is not comparable digit for digit and is rescaled or labelled, never silently placed beside.",
@@ -22,7 +22,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11000,
     "planned_speech_audio_seconds": 32819,
-    "protocol_hash": "ca025d6d66efcc405f019fa6ee53029b7250cc61cfb1ec8c6250b446732b55c1",
+    "protocol_hash": "16b4fca4fdf2b4a2c3b33c77a46a155e1e17dd0b0fb6acd0389eb5952e161d1f",
     "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",

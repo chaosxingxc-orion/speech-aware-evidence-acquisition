@@ -239,7 +239,7 @@ Composed config and protocol hashes, computed offline by `core.config.compose` a
 | --- | --- | --- |
 | `slurp-native-default-plan-dev2000-added-replicate-v1` | `7e8ef09633a8c77785d45011dfc50b6a74245a2cfd7b894e115ccf16869c7944` | `075bf598a48ea20ca90a200d925cc22efe55289b479b84170be66677439f83e3` |
 | `slurp-native-default-plan-dev2000-added-replicate-fit-v1` | `83e68035…` | `c16d649e…` |
-| `slurp-native-stage3-delta-cell-r03-gate-v1` | `b7eff1843e9e9dac1f6338a0167846d2090de98dcc19606f7067cfc85485de92` | `ca025d6d66efcc405f019fa6ee53029b7250cc61cfb1ec8c6250b446732b55c1` |
+| `slurp-native-stage3-delta-cell-r03-gate-v1` | `888965b78137eec271563423daa2b081ed4391f63f55f966bd2ceccf4c9f1188` | `16b4fca4fdf2b4a2c3b33c77a46a155e1e17dd0b0fb6acd0389eb5952e161d1f` |
 | `slurp-native-stage3-delta-cell-r03-gate-fit-v1` | `7c8db497…` | `abd0091c…` |
 | `slurp-native-stage3-delta-cell-r03-gate-twin-v1` | `5c164ce37d4473c98b2745ed39d18547a2a2f6c964bdedc85d48830f54979673` | `27bd2f9df1bf9c3f340d32f7defbc81561fa857420f1df22a59ba2b6b0c6d956` |
 | `slurp-native-stage3-delta-cell-r03-gate-twin-fit-v1` | `9790943f…` | `5c0377b9…` |
