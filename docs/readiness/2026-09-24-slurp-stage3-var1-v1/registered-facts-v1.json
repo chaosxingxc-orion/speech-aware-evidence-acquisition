@@ -822,12 +822,12 @@
   },
   "hashes": {
     "slurp-native-stage3-var1-ex-div-r01c-fit-v1": {
-      "composed_config_hash": "606016d2b34532f691760ab3282fffef84c70ee341015a22660514fe3f9b05ba",
-      "protocol_hash": "866d14b670b9820c0654e53550fcf78bebf9e5ba525002ac7c221d8bc202632c"
+      "composed_config_hash": "f2c34c157aaa4c97f1d14cb96dd11b954d53e6913ae7f2e6c39f9c295b82c137",
+      "protocol_hash": "56a5920c1ef49d363578650f1f6996dd1eada0b2605e60a6fb46bc2b27271418"
     },
     "slurp-native-stage3-var1-ex-div-r01c-v1": {
-      "composed_config_hash": "606016d2b34532f691760ab3282fffef84c70ee341015a22660514fe3f9b05ba",
-      "protocol_hash": "866d14b670b9820c0654e53550fcf78bebf9e5ba525002ac7c221d8bc202632c"
+      "composed_config_hash": "f2c34c157aaa4c97f1d14cb96dd11b954d53e6913ae7f2e6c39f9c295b82c137",
+      "protocol_hash": "56a5920c1ef49d363578650f1f6996dd1eada0b2605e60a6fb46bc2b27271418"
     },
     "slurp-native-stage3-var1-ex-k10-r01c-fit-v1": {
       "composed_config_hash": "b12d2917aae9fa1cf802a2b37f9784ab1c0b550a64fb0c9bb55b6b19d97a37a2",
