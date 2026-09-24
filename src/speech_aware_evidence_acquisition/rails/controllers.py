@@ -1462,6 +1462,18 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-native-candidates-review-revise-samples5-v1": (
         "phase-native-candidates-review-revise-samples5-v1.json"
     ),
+    # Cell ROLL-AA, 2026-09-24 (board route F2, the Stage-3 within-flight A/A null):
+    # the SAME four phases and the SAME episode_id as
+    # "phase-native-candidates-review-revise-samples5-v1" -- the review loop ON,
+    # reviewer 3 / planner 1 / max_revisions 1 -- with the grouped-Solver ceiling at
+    # samples 2 instead of 5: 1 + (1+1)*(1*2 + 3 + 1) = 13. A separate program id,
+    # never a flag on the samples5 program, for the reason every comment above
+    # states: two program ids must never resolve to the same object when their
+    # contact ceilings differ, and rails.native_episode_config asserts
+    # program.max_contacts equals the graph ceiling.
+    "phase-native-candidates-review-revise-samples2-v1": (
+        "phase-native-candidates-review-revise-samples2-v1.json"
+    ),
     # Cell B7b on the sealed anchor, 2026-09-17 (M5 / NCP level L2): the SAME
     # four phases, the SAME episode_id and the SAME role graph as
     # "phase-native-candidates-review-revise-v1" -- reviewer 3 / planner 1 /
@@ -1701,6 +1713,13 @@ def register_phase_programs_v1() -> None:
             "phase-native-candidates-review-revise-samples5-v1",
             default_controller_factory(
                 default_phase_program("phase-native-candidates-review-revise-samples5-v1")
+            ),
+        )
+    if "phase-native-candidates-review-revise-samples2-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-candidates-review-revise-samples2-v1",
+            default_controller_factory(
+                default_phase_program("phase-native-candidates-review-revise-samples2-v1")
             ),
         )
     if "phase-native-candidates-review-revise-clean1-v1" not in registered:

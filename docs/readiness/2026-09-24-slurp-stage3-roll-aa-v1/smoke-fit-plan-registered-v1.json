@@ -1,0 +1,90 @@
+{
+  "ceiling_accounting": "2,600 = 200 rows x 13 and 52 = 4 rows x 13, where 13 is the grouped-Solver graph's OWN ceiling at samples 2 as rails.native_episode_config resolves it: 1 + (1 + 1) x (1 x 2 + 3 + 1). Expected spend about 5.2 contacts per row (about 1,040 contacts, about 0.4 GPU hours on the arm), so the ceiling is about 2.5x the expectation. Ceilings are bounds, never targets, and budgets are run-cumulative across every attempt of a run id.",
+  "cell": "slurp-native-stage3-roll-aa-smoke-4-v1",
+  "check_receipt": {
+    "command": "python -m speech_aware_evidence_acquisition.core.flight.cli check --repo-root <repo> --data-root <data> --runtime-root /home/chao --lock-path <umbrella datasets.lock.json> --experiment <exp> --cell <cell>",
+    "contacts": {
+      "encoder": 0,
+      "model": 0,
+      "network": 0,
+      "scorer": 0,
+      "tokenizer": 0
+    },
+    "not_run_by_this_registration": "DELIBERATELY NOT RUN. A GPU flight was in progress at registration time and core.flight.cli check touches the runtime root and the coordination tree, so this package registers the cells without it. The coordinator's own clean-tree re-pin cycle (scripts/flights/batch/repin_cell_generic.sh, ARM=1) runs check on the minted receipt and asserts the runtime-derived hashes agree with the ones registered here; a disagreement stops the flip, which is the intended failure mode.",
+    "readiness_state": "held",
+    "study_commit": "95951add"
+  },
+  "comparator": null,
+  "comparator_reason": "None, by design: an A/A null's two sides are two samples of the same Solver visit of the same flight, so the cell is its own control. No sealed arm is re-flown, re-scored or compared against, and the read is never plan_cell_read.py.",
+  "composed_config_hash": "0decf326679336d94a74c9e4fb4a999a9cefe0ff7278bba9dd4ecd3377fd322e",
+  "decision_rule": {
+    "no_gate_number": "No threshold is pre-registered on any number this cell produces. Its output is a measurement floor, h_within, which becomes a registered margin for the ROLL-2 variant comparisons -- not a verdict about this cell.",
+    "output": "h_within (SLU-F1) and h_within_intent: the CI95 half-widths of the pooled micro paired delta (sample 1 minus sample 0) by paired row bootstrap, 10,000 draws, seed 20260915, reported beside the byte-identical / intent-flip / entity-set-flip shares and the per-stratum table.",
+    "rule": "DESCRIPTIVE. Nothing is admitted, rejected or locked by this cell. Structural acceptance only: a clean seal, every row delivered, exactly two custodied Solver samples per row in solver_group (invariant I7g) with seeds 2080141211 / 2080141212 and temperature 0.0 on both, the plurality-commit replay reproducing the sealed delivered answer, zero native task-contract calls, every request fitting."
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-roll-aa-smoke-4-v1-fit",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 208,
+    "planned_speech_audio_seconds": 222,
+    "protocol_hash": "61948dd4918dfc51061210baf836c777d147cb0e6662fd5f08a203f5a6952b73",
+    "run_id": "SAEA-SLURP-STAGE3-ROLL-AA-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan configs/campaign/slurp-native-stage3-roll-aa-v1.json; the campaign acquires its own GenerationLease against the resident session serving-slurp-native-candidate-five-train-a-np4-v1 (attach only, never spawn or stop) and schedules ONE official complete score at finalize so the manifest seals in the standard shape. The four-row smoke flies through core.flight.cli worker under its own lease. Queued through the SAEA-Batch-Driver scheduled task (decision 77) by scripts/flights/batch/batch_chain_rollaa.sh: one step, smoke then arm.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-roll-aa-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 208,
+    "generation_calls_cap": 52,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 222
+  },
+  "fit": {
+    "arithmetic": "200 rows x 13 native contacts x (1 speech packet + 3 endpoints) = 10,400; 4 rows x 13 x 4 = 208 -- cell ROLL-1's own native_contact_fit mode and multiplier, rescaled to this cell's rows and ceiling.",
+    "contact_cap": 208,
+    "coordinate_fit": "must NOT be run, or the FIT rows are double-charged",
+    "measured_prompt_budget": {
+      "decision": "NOT MEASURED BY THIS REGISTRATION",
+      "measured_by": "core.flight.cli check's _assess_prompt_budget, which runs in the coordinator's clean-tree re-pin cycle on the minted receipt. This registration deliberately did not run check (a GPU flight was in progress); the prompt form is cell ROLL-1's own, unchanged, and ROLL-1's requests fit at the same geometry, so the expectation is a pass and the flip is where it is proven.",
+      "operational_reserve_tokens": 3072,
+      "slot_limit_tokens": 24576
+    },
+    "mode": "native_contact_fit",
+    "what_is_configured": "configs/baseline/slurp-native-stage3-roll-aa-baseline-v1.json declares native_contact_fit with max_speech_packets 1 and the contact cap above, and no live_phase_fit. The FIT run ids are registered so that any endpoint spend lands against a row written before the result was read."
+  },
+  "modules": {
+    "base": "Cell ROLL-1 (configs/baseline/slurp-native-stage3-rollout-baseline-v1.json), which is itself the locked v2.0 default plan (cell PLAN) with the grouped-Solver factor. ROLL-AA changes only the Solver group; the knowledge stores, phase material, task instruction template, geometry, scorers, evidence source and arm are ROLL-1's own bytes, and tests/unit/test_stage3_roll_aa_baseline_cell.py is the byte proof.",
+    "declared_keys_that_are_not_factors": "native_episode.finite_completion_policy 'deliver-latest-or-abstain' and native_episode.react_exhaustion_policy 'continue-without-answer' are declared, inherited verbatim from cell ROLL-1, and checked by scripts/checks/finite_completion_policy_check.py. stage3_algorithm (owner decision 101) is declared as shared-rollout / operator rollout.",
+    "factor": "ONE factor against cell ROLL-1: native_episode.roles.solver.samples 5 -> 2, decoding_overrides.temperature 0.7 -> 0.0, the explicit twin 'greedy-repeat' marker added, commit.min_support 3 -> 2; seed_offset stays 0. The policy program id moves with the bounded graph ceiling (samples5, 19 -> samples2, 13). Everything else is cell ROLL-1's own bytes.",
+    "roster_is_part_of_the_form": "The flown population is the 200 rows of docs/receipts/rosters/slurp-stage3-roll-aa-r01c-200-v1.json (split identity dbb60c9db5c2d2dc4f5bd06274ee1ab70d0dd3d4f8a0b70b21e5f1d6127487a3), a pure selection of the committed R01C construction receipt; the four-row smoke flies the first four of them under docs/receipts/rosters/slurp-stage3-roll-aa-r01c-smoke-4-v1.json (split identity e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5), which are the same four rows cell ROLL-1's own smoke flies. REGISTERED LIMITATION: a first-N prefix of an ascending-sample_id roster is not scenario-stratified -- these 200 rows cover 9 of the parent's 18 strata.",
+    "why_a_null_and_not_a_factor": "reproduction.ojw.native_group_solver.run_grouped_solver_samples composes N independent Solver invocations of ONE visit through the same metered request path, and reproduction.ojw.native_request.compose_solver_sample_decoding_params overrides exactly two request fields per sample: temperature (0.0 for both) and seed (fragment_seed + seed_offset + sample_index). Every other byte of the two requests is the same object -- same messages, same speech packet, same supplied knowledge, same response format. At temperature 0 the seed is inert, so the residual difference is batch composition alone.",
+    "zero_tool_authority": "no phase carries phase_tools; the native task-contract call ceiling is 0 and no tools array is rendered on any request (cell ROLL-1's own form, unchanged)."
+  },
+  "plan_kind": "fit",
+  "prepared_phase_supply": {
+    "note": "NONE pinned. core.flight.repin mints this cell's OWN model-free first-phase supply under its own run id at the readiness flip (item E16); nothing is inherited from cell ROLL-1 and --allow-output-change must never be passed."
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-24-slurp-stage3-roll-aa-v1/protocol-registered-v1.json",
+    "sha256": "e5b3185810dd24715ff66bac7b7f68d3f41dde80f6975e1f6e5227d42cab298d"
+  },
+  "purpose": "Cell ROLL-AA (board route F2, docs/handoff/2026-09-24-fable51/HANDOFF-STAGE3-FOR-CHATGPT-v1.md section 7.3): the WITHIN-FLIGHT A/A null of the Stage-3 variant-rollout methodology. The locked v2.0 plan's Solver answers the IDENTICAL prompt TWICE for each of 200 R01C construction rows inside ONE flight, greedy (temperature 0 under the E2b twin 'greedy-repeat' marker), and the offline read reports the per-row paired difference between the two samples. Because the two sides are two contacts of one request, whatever difference appears is the measurement floor itself, and its CI95 half-width becomes h_within -- the margin every ROLL-2 variant comparison at n = 200 is read against. DESCRIPTIVE: no admission verdict, no comparator, no gate.",
+  "quality_read_gate": "No read of any kind before the complete sealed manifest and the exact ordered outputs with exactly two custodied solver_group samples per row exist. A partial manifest is never read; a failed smoke stops the arm and it does not open.",
+  "registered_at_utc": "2026-09-24T12:00:00.000000+00:00",
+  "registration_base_commit": "95951add",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-aanull, branch fable/aanull",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

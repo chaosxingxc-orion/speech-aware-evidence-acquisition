@@ -1,0 +1,165 @@
+{
+  "authority": "The four-row structural smoke population of cell ROLL-AA. The gate knows nothing about parent rosters, so those four rows need a committed receipt of their own (the GEPA smoke-roster precedent).",
+  "carrier_lock_key": "slurp",
+  "d1_supplement": {
+    "file_sha256": "7cf5f978dbff16645866ce6bee501efbb9fb48d69b1a5243ba2781491a4d9f56",
+    "note": "the R01 D1 media supplement is NOT rebuilt for R01C. It closes over all 800 parent recordings, a strict SUPERSET of R01C's 625, and contracts.gate_media_identity._d1_media_supplement_records verifies the supplement's own integrity and then looks each FLOWN id up in it -- it never requires an exact cover. The R01C runtime view therefore carries the parent's supplement triple verbatim.",
+    "r01c_ids_covered": 625,
+    "relpath": "docs/receipts/artifacts/d1-slurp-stage3-construction-r01.json",
+    "supplement_count": 800
+  },
+  "disjointness_proof": {
+    "DEV-1000": {
+      "items": 1000,
+      "relpath": "docs/receipts/probe-samples/DEV-1000.json",
+      "shared_recordings": 0,
+      "shared_utterances": 0
+    },
+    "excluded_utterances_before_the_draw": 0,
+    "slurp-dev-2000-added-v1": {
+      "items": 1000,
+      "relpath": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+      "shared_recordings": 0,
+      "shared_utterances": 0
+    },
+    "slurp-dev-2000-v1": {
+      "items": 2000,
+      "relpath": "docs/receipts/rosters/slurp-dev-2000-v1.json",
+      "shared_recordings": 0,
+      "shared_utterances": 0
+    },
+    "slurp-dev-500-b-v1": {
+      "items": 500,
+      "relpath": "docs/receipts/rosters/slurp-dev-500-b-v1.json",
+      "shared_recordings": 0,
+      "shared_utterances": 0
+    },
+    "slurp-evo-fold-a-v2": {
+      "items": 1080,
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "shared_recordings": 0,
+      "shared_utterances": 0
+    },
+    "slurp-evo-fold-b-v2": {
+      "items": 1080,
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "shared_recordings": 0,
+      "shared_utterances": 0
+    }
+  },
+  "draw_method": "No draw. This receipt is a pure SELECTION of the parent receipt's frozen items: every surviving item is the parent's item verbatim, in the parent's order (ascending sample_id, as core.roster.freeze_roster left it). The seed is the parent's and is carried for provenance only -- no rng is consulted anywhere in this build.",
+  "excluded_count": 621,
+  "generator": "scripts/flights/batch/rollaa_prepare_steps.py",
+  "items": [
+    {
+      "audio_seconds": 3.5835,
+      "draw_rank": 28,
+      "headset": false,
+      "min_cosine_to_selected": 0.9066923378304634,
+      "sample_id": "slurp:train:000049:audio-1434542455",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:000049"
+    },
+    {
+      "audio_seconds": 5.76,
+      "draw_rank": 16,
+      "headset": true,
+      "min_cosine_to_selected": 0.884093998135618,
+      "sample_id": "slurp:train:000051:audio-1434531302-headset",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:000051"
+    },
+    {
+      "audio_seconds": 4.3514375,
+      "draw_rank": 9,
+      "headset": false,
+      "min_cosine_to_selected": 0.8848146785103139,
+      "sample_id": "slurp:train:000234:audio-1499688528",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:000234"
+    },
+    {
+      "audio_seconds": 3.34,
+      "draw_rank": 29,
+      "headset": false,
+      "min_cosine_to_selected": 0.9498944492701951,
+      "sample_id": "slurp:train:000260:audio-1488549919",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:000260"
+    }
+  ],
+  "knowledge_source_guard": {
+    "asserted": "set(R01C sample ids) & set(composite source_sample_ids) == set(); the exact intersection rails.runner.run_speech_native_agent_loop computes before it dispatches a single row",
+    "binding_sha256": "36c01efe79c12581ca17238dc17e66a290aaeec04f6c28d06f1deec146d07311",
+    "composed_from": {
+      "baseline": "slurp-native-stage3-rollout-baseline-v1",
+      "dataset": "slurp-speech-native-stage3-construction-r01",
+      "experiment": "slurp-native-stage3-rollout-r01-v1",
+      "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
+    },
+    "composite_snapshot_sha256": "36c01efe79c12581ca17238dc17e66a290aaeec04f6c28d06f1deec146d07311",
+    "composite_source_sample_ids": 35134,
+    "composite_source_split_identity_hash": "b74ddbdc5920f8080d2aa2de95493db5105f8850ed50aaaceadf4dffe521ab27",
+    "derivation": "core.config.compose of the ROLL-1 cell's four fragments, then rails.knowledge_stores.load_knowledge_store_binding; the guard set is the composite snapshot's source_sample_ids (the union over composed stores, rails.knowledge_stores._composite). The dataset fragment cannot move this set: only knowledge_stores feeds it.",
+    "overlap_with_parent_recordings": 175,
+    "overlap_with_r01c_recordings": 0,
+    "overlap_with_r01c_utterances": 0,
+    "stores": {
+      "intent-boundaries": {
+        "release_relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+        "release_sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4",
+        "snapshot_relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json",
+        "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+        "source_sample_ids": 2037,
+        "store_role": "intent-boundaries"
+      },
+      "slot-contracts": {
+        "release_relpath": "knowledge/slurp/semantic/slot-contracts-v2/release.json",
+        "release_sha256": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b",
+        "snapshot_relpath": "knowledge/slurp/semantic/slot-contracts-v2/snapshot.json",
+        "snapshot_sha256": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec",
+        "source_sample_ids": 3162,
+        "store_role": "slot-contracts"
+      },
+      "train-exemplars": {
+        "release_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/release.json",
+        "release_sha256": "83620eb0b02f12424a00cd5572904f4df48a49c329b1b0e1a9321d4b9ec14fd0",
+        "snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+        "snapshot_sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+        "source_sample_ids": 34474,
+        "store_role": "train-exemplars"
+      }
+    }
+  },
+  "offline_guard": {
+    "attempted_targets": [],
+    "outbound_connection_attempts": 0
+  },
+  "parent": {
+    "count": 625,
+    "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+    "roster_id": "SLURP-STAGE3-CONSTRUCTION-R01C",
+    "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"
+  },
+  "per_stratum": {
+    "alarm": 1,
+    "audio": 1,
+    "datetime": 1,
+    "takeaway": 1
+  },
+  "roster_id": "SLURP-STAGE3-ROLL-AA-R01C-SMOKE-4-V1",
+  "roster_role": "construction",
+  "roster_role_note": "construction: ROLL-AA reads no gold at runtime and produces no admission verdict. These TRAIN rows carry construction gold that the OFFLINE read scores the two Solver samples against, exactly as cell ROLL-1's rows do; the flight itself is the locked plan, unchanged, with a two-sample greedy Solver group.",
+  "schema": "saea-roster-receipt-v1",
+  "seed": 20260922,
+  "selection_rule": "The FIRST 4 items of docs/receipts/rosters/slurp-stage3-roll-aa-r01c-200-v1.json -- equivalently of docs/receipts/rosters/slurp-stage3-construction-r01c.json -- in the parent's own order; order preserved. These are the same four rows cell ROLL-1's own smoke flies.",
+  "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
+  "split_role": "discovery",
+  "strata_counts": {
+    "alarm": 1,
+    "audio": 1,
+    "datetime": 1,
+    "takeaway": 1
+  },
+  "stratum_coverage_note": "A PREFIX of an ascending-sample_id roster is NOT scenario-stratified: these 4 rows cover 4 of the parent's 18 scenario strata (alarm, audio, datetime, takeaway). The selection rule was specified as the first-N prefix and is registered as such; the preregistration's own 'What this null does not measure' section states the consequence, and the alternative (a stratified 200) is recorded there as a decision NOT taken."
+}

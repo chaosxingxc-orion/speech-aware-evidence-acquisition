@@ -81,6 +81,15 @@ _EXPECTED_PROGRAM_SHAPES = {
     "phase-native-candidates-review-revise-samples5-v1": (
         ("perception", "reviewer", "planner", "solver"), 19, "native-role-episode"
     ),
+    # Cell ROLL-AA, 2026-09-24 (board route F2, the Stage-3 within-flight A/A
+    # null): the same review-revise program with a grouped Solver visit at
+    # samples 2 instead of 5, so the ceiling is 1 + (1+1)*(1*2 + 3 + 1) = 13.
+    # It shares that 13 with the clean1 program above by arithmetic, not by
+    # meaning -- clean1 reaches it through a cleaning boundary -- which is
+    # exactly why each carries its own program id.
+    "phase-native-candidates-review-revise-samples2-v1": (
+        ("perception", "reviewer", "planner", "solver"), 13, "native-role-episode"
+    ),
     # Cell B7b on the sealed anchor, 2026-09-17 (M5 / NCP level L2): the
     # review-revise program with ONE declared cleaning boundary, so the
     # ceiling is 1 + (1+1)*(1 + 3 + 1 + 1) = 13.

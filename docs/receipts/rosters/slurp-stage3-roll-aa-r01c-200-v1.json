@@ -1,0 +1,1939 @@
+{
+  "authority": "Board route F2 (docs/readiness/2026-09-24-slurp-stage3-fast-validation-board-v1.md), the Stage-3 within-flight A/A null: the flown population of cell ROLL-AA. A construction-role receipt of its own is required because the population is not the parent's: core.flight.campaign and contracts.gate_exposure bind a flight to the split identity of the rows it actually flies, and the GEPA carriers receipt (SLURP-STAGE3-GEPA-R01C-CARRIERS-V1) is the precedent for committing a narrower construction population as its own receipt.",
+  "carrier_lock_key": "slurp",
+  "d1_supplement": {
+    "file_sha256": "7cf5f978dbff16645866ce6bee501efbb9fb48d69b1a5243ba2781491a4d9f56",
+    "note": "the R01 D1 media supplement is NOT rebuilt for R01C. It closes over all 800 parent recordings, a strict SUPERSET of R01C's 625, and contracts.gate_media_identity._d1_media_supplement_records verifies the supplement's own integrity and then looks each FLOWN id up in it -- it never requires an exact cover. The R01C runtime view therefore carries the parent's supplement triple verbatim.",
+    "r01c_ids_covered": 625,
+    "relpath": "docs/receipts/artifacts/d1-slurp-stage3-construction-r01.json",
+    "supplement_count": 800
+  },
+  "disjointness_proof": {
+    "DEV-1000": {
+      "items": 1000,
+      "relpath": "docs/receipts/probe-samples/DEV-1000.json",
+      "shared_recordings": 0,
+      "shared_utterances": 0
+    },
+    "excluded_utterances_before_the_draw": 0,
+    "slurp-dev-2000-added-v1": {
+      "items": 1000,
+      "relpath": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+      "shared_recordings": 0,
+      "shared_utterances": 0
+    },
+    "slurp-dev-2000-v1": {
+      "items": 2000,
+      "relpath": "docs/receipts/rosters/slurp-dev-2000-v1.json",
+      "shared_recordings": 0,
+      "shared_utterances": 0
+    },
+    "slurp-dev-500-b-v1": {
+      "items": 500,
+      "relpath": "docs/receipts/rosters/slurp-dev-500-b-v1.json",
+      "shared_recordings": 0,
+      "shared_utterances": 0
+    },
+    "slurp-evo-fold-a-v2": {
+      "items": 1080,
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "shared_recordings": 0,
+      "shared_utterances": 0
+    },
+    "slurp-evo-fold-b-v2": {
+      "items": 1080,
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "shared_recordings": 0,
+      "shared_utterances": 0
+    }
+  },
+  "draw_method": "No draw. This receipt is a pure SELECTION of the parent receipt's frozen items: every surviving item is the parent's item verbatim, in the parent's order (ascending sample_id, as core.roster.freeze_roster left it). The seed is the parent's and is carried for provenance only -- no rng is consulted anywhere in this build.",
+  "excluded_count": 425,
+  "generator": "scripts/flights/batch/rollaa_prepare_steps.py",
+  "items": [
+    {
+      "audio_seconds": 3.5835,
+      "draw_rank": 28,
+      "headset": false,
+      "min_cosine_to_selected": 0.9066923378304634,
+      "sample_id": "slurp:train:000049:audio-1434542455",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:000049"
+    },
+    {
+      "audio_seconds": 5.76,
+      "draw_rank": 16,
+      "headset": true,
+      "min_cosine_to_selected": 0.884093998135618,
+      "sample_id": "slurp:train:000051:audio-1434531302-headset",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:000051"
+    },
+    {
+      "audio_seconds": 4.3514375,
+      "draw_rank": 9,
+      "headset": false,
+      "min_cosine_to_selected": 0.8848146785103139,
+      "sample_id": "slurp:train:000234:audio-1499688528",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:000234"
+    },
+    {
+      "audio_seconds": 3.34,
+      "draw_rank": 29,
+      "headset": false,
+      "min_cosine_to_selected": 0.9498944492701951,
+      "sample_id": "slurp:train:000260:audio-1488549919",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:000260"
+    },
+    {
+      "audio_seconds": 4.2493125,
+      "draw_rank": 6,
+      "headset": false,
+      "min_cosine_to_selected": 0.8355860616426394,
+      "sample_id": "slurp:train:000282:audio-1502114155",
+      "stratum": "news",
+      "utterance_id": "slurp:train:000282"
+    },
+    {
+      "audio_seconds": 4.8633125,
+      "draw_rank": 36,
+      "headset": false,
+      "min_cosine_to_selected": 0.9097050016309809,
+      "sample_id": "slurp:train:000308:audio-1488905475",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:000308"
+    },
+    {
+      "audio_seconds": 3.5835,
+      "draw_rank": 15,
+      "headset": false,
+      "min_cosine_to_selected": 0.8827992452708608,
+      "sample_id": "slurp:train:000309:audio-1490018206",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:000309"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "draw_rank": 35,
+      "headset": false,
+      "min_cosine_to_selected": 0.9094866517756106,
+      "sample_id": "slurp:train:000351:audio-1499689684",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:000351"
+    },
+    {
+      "audio_seconds": 3.4555625,
+      "draw_rank": 20,
+      "headset": false,
+      "min_cosine_to_selected": 0.8923883039254926,
+      "sample_id": "slurp:train:000354:audio-1490018785",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:000354"
+    },
+    {
+      "audio_seconds": 4.9913125,
+      "draw_rank": 31,
+      "headset": false,
+      "min_cosine_to_selected": 0.8997570837137064,
+      "sample_id": "slurp:train:000374:audio-1434539191",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:000374"
+    },
+    {
+      "audio_seconds": 3.5835,
+      "draw_rank": 32,
+      "headset": false,
+      "min_cosine_to_selected": 0.909762228250798,
+      "sample_id": "slurp:train:000395:audio-1495378207",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:000395"
+    },
+    {
+      "audio_seconds": 4.0954375,
+      "draw_rank": 3,
+      "headset": false,
+      "min_cosine_to_selected": 0.8739150774688371,
+      "sample_id": "slurp:train:000459:audio-1488987242",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:000459"
+    },
+    {
+      "audio_seconds": 2.5596875,
+      "draw_rank": 9,
+      "headset": false,
+      "min_cosine_to_selected": 0.9106102055575153,
+      "sample_id": "slurp:train:000514:audio--1504190353",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:000514"
+    },
+    {
+      "audio_seconds": 4.3514375,
+      "draw_rank": 16,
+      "headset": false,
+      "min_cosine_to_selected": 0.8682127866931701,
+      "sample_id": "slurp:train:000539:audio-1488974182",
+      "stratum": "music",
+      "utterance_id": "slurp:train:000539"
+    },
+    {
+      "audio_seconds": 2.815625,
+      "draw_rank": 23,
+      "headset": false,
+      "min_cosine_to_selected": 0.900333313132679,
+      "sample_id": "slurp:train:000569:audio-1489152229",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:000569"
+    },
+    {
+      "audio_seconds": 3.1355625,
+      "draw_rank": 39,
+      "headset": false,
+      "min_cosine_to_selected": 0.9228779083322098,
+      "sample_id": "slurp:train:000570:audio-1490105713",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:000570"
+    },
+    {
+      "audio_seconds": 2.17575,
+      "draw_rank": 40,
+      "headset": false,
+      "min_cosine_to_selected": 0.9125145597605127,
+      "sample_id": "slurp:train:000605:audio-1489151533",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:000605"
+    },
+    {
+      "audio_seconds": 2.687625,
+      "draw_rank": 27,
+      "headset": false,
+      "min_cosine_to_selected": 0.9447918993828427,
+      "sample_id": "slurp:train:000609:audio--1506521512",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:000609"
+    },
+    {
+      "audio_seconds": 1.98375,
+      "draw_rank": 42,
+      "headset": false,
+      "min_cosine_to_selected": 0.9236896764126223,
+      "sample_id": "slurp:train:000618:audio-1501752218",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:000618"
+    },
+    {
+      "audio_seconds": 4.735375,
+      "draw_rank": 30,
+      "headset": false,
+      "min_cosine_to_selected": 0.859756039505804,
+      "sample_id": "slurp:train:000627:audio-1489153204",
+      "stratum": "play",
+      "utterance_id": "slurp:train:000627"
+    },
+    {
+      "audio_seconds": 2.5596875,
+      "draw_rank": 31,
+      "headset": false,
+      "min_cosine_to_selected": 0.8979001604163707,
+      "sample_id": "slurp:train:000632:audio-1498573091",
+      "stratum": "news",
+      "utterance_id": "slurp:train:000632"
+    },
+    {
+      "audio_seconds": 3.5195625,
+      "draw_rank": 18,
+      "headset": false,
+      "min_cosine_to_selected": 0.9109324799612373,
+      "sample_id": "slurp:train:000650:audio--1504195263",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:000650"
+    },
+    {
+      "audio_seconds": 6.335125,
+      "draw_rank": 34,
+      "headset": false,
+      "min_cosine_to_selected": 0.9137108106097698,
+      "sample_id": "slurp:train:000661:audio-1488975295",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:000661"
+    },
+    {
+      "audio_seconds": 4.0954375,
+      "draw_rank": 3,
+      "headset": false,
+      "min_cosine_to_selected": 0.8210335514207157,
+      "sample_id": "slurp:train:000677:audio-1488987427",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:000677"
+    },
+    {
+      "audio_seconds": 1.984,
+      "draw_rank": 37,
+      "headset": true,
+      "min_cosine_to_selected": 0.9074247127978176,
+      "sample_id": "slurp:train:000793:audio-1490200434-headset",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:000793"
+    },
+    {
+      "audio_seconds": 3.9675,
+      "draw_rank": 5,
+      "headset": false,
+      "min_cosine_to_selected": 0.8936355707566902,
+      "sample_id": "slurp:train:000802:audio-1490956349",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:000802"
+    },
+    {
+      "audio_seconds": 4.9273125,
+      "draw_rank": 15,
+      "headset": false,
+      "min_cosine_to_selected": 0.8650547458623369,
+      "sample_id": "slurp:train:000815:audio-1497871933",
+      "stratum": "news",
+      "utterance_id": "slurp:train:000815"
+    },
+    {
+      "audio_seconds": 3.3275625,
+      "draw_rank": 13,
+      "headset": false,
+      "min_cosine_to_selected": 0.8683776661591124,
+      "sample_id": "slurp:train:000831:audio-1490105559",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:000831"
+    },
+    {
+      "audio_seconds": 3.2740625,
+      "draw_rank": 32,
+      "headset": false,
+      "min_cosine_to_selected": 0.904047846948601,
+      "sample_id": "slurp:train:000842:audio-1502309098",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:000842"
+    },
+    {
+      "audio_seconds": 2.687625,
+      "draw_rank": 27,
+      "headset": false,
+      "min_cosine_to_selected": 0.8959546561478134,
+      "sample_id": "slurp:train:000899:audio-1490021508",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:000899"
+    },
+    {
+      "audio_seconds": 4.0403125,
+      "draw_rank": 29,
+      "headset": false,
+      "min_cosine_to_selected": 0.8975650995358117,
+      "sample_id": "slurp:train:000959:audio-1501696179",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:000959"
+    },
+    {
+      "audio_seconds": 1.5358125,
+      "draw_rank": 23,
+      "headset": false,
+      "min_cosine_to_selected": 0.891728513258512,
+      "sample_id": "slurp:train:000965:audio-1495371601",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:000965"
+    },
+    {
+      "audio_seconds": 3.4555625,
+      "draw_rank": 13,
+      "headset": false,
+      "min_cosine_to_selected": 0.9207693297327483,
+      "sample_id": "slurp:train:000980:audio--1504198481",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:000980"
+    },
+    {
+      "audio_seconds": 3.8395,
+      "draw_rank": 7,
+      "headset": false,
+      "min_cosine_to_selected": 0.8301393128774225,
+      "sample_id": "slurp:train:001013:audio-1492783219",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:001013"
+    },
+    {
+      "audio_seconds": 4.87625,
+      "draw_rank": 4,
+      "headset": false,
+      "min_cosine_to_selected": 0.7895624248513335,
+      "sample_id": "slurp:train:001021:audio-1502308412",
+      "stratum": "music",
+      "utterance_id": "slurp:train:001021"
+    },
+    {
+      "audio_seconds": 2.11175,
+      "draw_rank": 20,
+      "headset": false,
+      "min_cosine_to_selected": 0.9348581227899373,
+      "sample_id": "slurp:train:001050:audio--1504195188",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:001050"
+    },
+    {
+      "audio_seconds": 5.37525,
+      "draw_rank": 24,
+      "headset": false,
+      "min_cosine_to_selected": 0.8915758451337418,
+      "sample_id": "slurp:train:001068:audio-1497869773",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:001068"
+    },
+    {
+      "audio_seconds": 2.3036875,
+      "draw_rank": 25,
+      "headset": false,
+      "min_cosine_to_selected": 0.9436726407511514,
+      "sample_id": "slurp:train:001086:audio--1505405899",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:001086"
+    },
+    {
+      "audio_seconds": 4.0403125,
+      "draw_rank": 9,
+      "headset": false,
+      "min_cosine_to_selected": 0.8573351754071652,
+      "sample_id": "slurp:train:001099:audio-1501156283",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:001099"
+    },
+    {
+      "audio_seconds": 3.3275625,
+      "draw_rank": 38,
+      "headset": false,
+      "min_cosine_to_selected": 0.9118479101663419,
+      "sample_id": "slurp:train:001138:audio-1495733915",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:001138"
+    },
+    {
+      "audio_seconds": 3.3275625,
+      "draw_rank": 33,
+      "headset": false,
+      "min_cosine_to_selected": 0.9102178963508674,
+      "sample_id": "slurp:train:001150:audio-1489674004",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:001150"
+    },
+    {
+      "audio_seconds": 6.8470625,
+      "draw_rank": 13,
+      "headset": false,
+      "min_cosine_to_selected": 0.8326938390795514,
+      "sample_id": "slurp:train:001162:audio-1494513088",
+      "stratum": "play",
+      "utterance_id": "slurp:train:001162"
+    },
+    {
+      "audio_seconds": 4.9913125,
+      "draw_rank": 34,
+      "headset": false,
+      "min_cosine_to_selected": 0.8629346108684163,
+      "sample_id": "slurp:train:001164:audio-1495371785",
+      "stratum": "play",
+      "utterance_id": "slurp:train:001164"
+    },
+    {
+      "audio_seconds": 4.607375,
+      "draw_rank": 33,
+      "headset": false,
+      "min_cosine_to_selected": 0.8982165280714105,
+      "sample_id": "slurp:train:001165:audio-1490289884",
+      "stratum": "music",
+      "utterance_id": "slurp:train:001165"
+    },
+    {
+      "audio_seconds": 5.50325,
+      "draw_rank": 3,
+      "headset": false,
+      "min_cosine_to_selected": 0.7698140016141273,
+      "sample_id": "slurp:train:001194:audio-1501772892",
+      "stratum": "play",
+      "utterance_id": "slurp:train:001194"
+    },
+    {
+      "audio_seconds": 4.9913125,
+      "draw_rank": 26,
+      "headset": false,
+      "min_cosine_to_selected": 0.9026578549664016,
+      "sample_id": "slurp:train:001226:audio-1489504266",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:001226"
+    },
+    {
+      "audio_seconds": 4.0314375,
+      "draw_rank": 11,
+      "headset": false,
+      "min_cosine_to_selected": 0.8640471952723154,
+      "sample_id": "slurp:train:001231:audio-1501758652",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:001231"
+    },
+    {
+      "audio_seconds": 3.264,
+      "draw_rank": 14,
+      "headset": true,
+      "min_cosine_to_selected": 0.8753570676720234,
+      "sample_id": "slurp:train:001244:audio-1498569454-headset",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:001244"
+    },
+    {
+      "audio_seconds": 2.624,
+      "draw_rank": 21,
+      "headset": true,
+      "min_cosine_to_selected": 0.8899122078170575,
+      "sample_id": "slurp:train:001246:audio-1490355784-headset",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:001246"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "draw_rank": 35,
+      "headset": false,
+      "min_cosine_to_selected": 0.9028029907237767,
+      "sample_id": "slurp:train:001261:audio-1490291792",
+      "stratum": "music",
+      "utterance_id": "slurp:train:001261"
+    },
+    {
+      "audio_seconds": 3.776,
+      "draw_rank": 1,
+      "headset": true,
+      "min_cosine_to_selected": 0.798280282404516,
+      "sample_id": "slurp:train:001302:audio-1490006044-headset",
+      "stratum": "news",
+      "utterance_id": "slurp:train:001302"
+    },
+    {
+      "audio_seconds": 3.4555625,
+      "draw_rank": 43,
+      "headset": false,
+      "min_cosine_to_selected": 0.9116607603514983,
+      "sample_id": "slurp:train:001332:audio-1488983682",
+      "stratum": "music",
+      "utterance_id": "slurp:train:001332"
+    },
+    {
+      "audio_seconds": 5.7591875,
+      "draw_rank": 13,
+      "headset": false,
+      "min_cosine_to_selected": 0.8808917925060584,
+      "sample_id": "slurp:train:001347:audio-1497864844",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:001347"
+    },
+    {
+      "audio_seconds": 1.856,
+      "draw_rank": 42,
+      "headset": true,
+      "min_cosine_to_selected": 0.9598717421736667,
+      "sample_id": "slurp:train:001366:audio--1504197859-headset",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:001366"
+    },
+    {
+      "audio_seconds": 1.4718125,
+      "draw_rank": 44,
+      "headset": false,
+      "min_cosine_to_selected": 0.9601410174845826,
+      "sample_id": "slurp:train:001373:audio-1434541956",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:001373"
+    },
+    {
+      "audio_seconds": 4.2234375,
+      "draw_rank": 11,
+      "headset": false,
+      "min_cosine_to_selected": 0.8727929267401068,
+      "sample_id": "slurp:train:001386:audio-1490007321",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:001386"
+    },
+    {
+      "audio_seconds": 3.6475,
+      "draw_rank": 14,
+      "headset": false,
+      "min_cosine_to_selected": 0.871244352659252,
+      "sample_id": "slurp:train:001391:audio-1492780719",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:001391"
+    },
+    {
+      "audio_seconds": 6.527125,
+      "draw_rank": 4,
+      "headset": false,
+      "min_cosine_to_selected": 0.7740907587330852,
+      "sample_id": "slurp:train:001439:audio-1489154118",
+      "stratum": "play",
+      "utterance_id": "slurp:train:001439"
+    },
+    {
+      "audio_seconds": 1.91975,
+      "draw_rank": 41,
+      "headset": false,
+      "min_cosine_to_selected": 0.9129291883607824,
+      "sample_id": "slurp:train:001457:audio-1498577622",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:001457"
+    },
+    {
+      "audio_seconds": 3.1995625,
+      "draw_rank": 8,
+      "headset": false,
+      "min_cosine_to_selected": 0.8317234404381325,
+      "sample_id": "slurp:train:001495:audio-1488974798",
+      "stratum": "music",
+      "utterance_id": "slurp:train:001495"
+    },
+    {
+      "audio_seconds": 2.879625,
+      "draw_rank": 25,
+      "headset": false,
+      "min_cosine_to_selected": 0.8976702611938561,
+      "sample_id": "slurp:train:001518:audio-1497029574",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:001518"
+    },
+    {
+      "audio_seconds": 3.5835,
+      "draw_rank": 26,
+      "headset": false,
+      "min_cosine_to_selected": 0.9438809456362384,
+      "sample_id": "slurp:train:001522:audio--1505406339",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:001522"
+    },
+    {
+      "audio_seconds": 2.815625,
+      "draw_rank": 24,
+      "headset": false,
+      "min_cosine_to_selected": 0.8920675887926593,
+      "sample_id": "slurp:train:001535:audio-1434541305",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:001535"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "draw_rank": 42,
+      "headset": false,
+      "min_cosine_to_selected": 0.9067574074076192,
+      "sample_id": "slurp:train:001565:audio-1490007404",
+      "stratum": "news",
+      "utterance_id": "slurp:train:001565"
+    },
+    {
+      "audio_seconds": 3.071625,
+      "draw_rank": 10,
+      "headset": false,
+      "min_cosine_to_selected": 0.9116063746776315,
+      "sample_id": "slurp:train:001631:audio-1497869791",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:001631"
+    },
+    {
+      "audio_seconds": 4.48,
+      "draw_rank": 21,
+      "headset": false,
+      "min_cosine_to_selected": 0.8829235829171229,
+      "sample_id": "slurp:train:001638:audio-1497437567",
+      "stratum": "news",
+      "utterance_id": "slurp:train:001638"
+    },
+    {
+      "audio_seconds": 1.3438125,
+      "draw_rank": 36,
+      "headset": false,
+      "min_cosine_to_selected": 0.9051428345509107,
+      "sample_id": "slurp:train:001660:audio-1489152775",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:001660"
+    },
+    {
+      "audio_seconds": 5.2473125,
+      "draw_rank": 15,
+      "headset": false,
+      "min_cosine_to_selected": 0.8714829199298484,
+      "sample_id": "slurp:train:001686:audio-1488993147",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:001686"
+    },
+    {
+      "audio_seconds": 3.5835,
+      "draw_rank": 27,
+      "headset": false,
+      "min_cosine_to_selected": 0.8910583749668736,
+      "sample_id": "slurp:train:001695:audio-1490956357",
+      "stratum": "music",
+      "utterance_id": "slurp:train:001695"
+    },
+    {
+      "audio_seconds": 2.2396875,
+      "draw_rank": 7,
+      "headset": false,
+      "min_cosine_to_selected": 0.9097075563859718,
+      "sample_id": "slurp:train:001714:audio--1505405393",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:001714"
+    },
+    {
+      "audio_seconds": 5.37525,
+      "draw_rank": 39,
+      "headset": false,
+      "min_cosine_to_selected": 0.910887641496653,
+      "sample_id": "slurp:train:001724:audio-1488983443",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:001724"
+    },
+    {
+      "audio_seconds": 7.6789375,
+      "draw_rank": 12,
+      "headset": false,
+      "min_cosine_to_selected": 0.8647415322245895,
+      "sample_id": "slurp:train:001727:audio-1497880236",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:001727"
+    },
+    {
+      "audio_seconds": 2.815625,
+      "draw_rank": 34,
+      "headset": false,
+      "min_cosine_to_selected": 0.9094802794338754,
+      "sample_id": "slurp:train:001730:audio-1494418064",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:001730"
+    },
+    {
+      "audio_seconds": 5.63125,
+      "draw_rank": 13,
+      "headset": false,
+      "min_cosine_to_selected": 0.8754925358286848,
+      "sample_id": "slurp:train:001731:audio-1488973886",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:001731"
+    },
+    {
+      "audio_seconds": 3.8395,
+      "draw_rank": 15,
+      "headset": false,
+      "min_cosine_to_selected": 0.8655874434787146,
+      "sample_id": "slurp:train:001740:audio-1499692478",
+      "stratum": "music",
+      "utterance_id": "slurp:train:001740"
+    },
+    {
+      "audio_seconds": 6.966,
+      "draw_rank": 2,
+      "headset": false,
+      "min_cosine_to_selected": 0.8142112075580885,
+      "sample_id": "slurp:train:001743:audio-1501696562",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:001743"
+    },
+    {
+      "audio_seconds": 3.7755,
+      "draw_rank": 8,
+      "headset": false,
+      "min_cosine_to_selected": 0.858095140792517,
+      "sample_id": "slurp:train:001748:audio-1497869179",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:001748"
+    },
+    {
+      "audio_seconds": 4.2234375,
+      "draw_rank": 13,
+      "headset": false,
+      "min_cosine_to_selected": 0.8616145188910491,
+      "sample_id": "slurp:train:001758:audio-1498484992",
+      "stratum": "news",
+      "utterance_id": "slurp:train:001758"
+    },
+    {
+      "audio_seconds": 3.9675,
+      "draw_rank": 40,
+      "headset": false,
+      "min_cosine_to_selected": 0.9057008615639828,
+      "sample_id": "slurp:train:001761:audio-1494512708",
+      "stratum": "news",
+      "utterance_id": "slurp:train:001761"
+    },
+    {
+      "audio_seconds": 8.0,
+      "draw_rank": 1,
+      "headset": true,
+      "min_cosine_to_selected": 0.698804463800114,
+      "sample_id": "slurp:train:001767:audio-1497557897-headset",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:001767"
+    },
+    {
+      "audio_seconds": 3.9035,
+      "draw_rank": 17,
+      "headset": false,
+      "min_cosine_to_selected": 0.8788867255384811,
+      "sample_id": "slurp:train:001842:audio-1490110226",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:001842"
+    },
+    {
+      "audio_seconds": 2.17575,
+      "draw_rank": 24,
+      "headset": false,
+      "min_cosine_to_selected": 0.8842519519503382,
+      "sample_id": "slurp:train:001861:audio-1502199529",
+      "stratum": "news",
+      "utterance_id": "slurp:train:001861"
+    },
+    {
+      "audio_seconds": 4.2234375,
+      "draw_rank": 19,
+      "headset": false,
+      "min_cosine_to_selected": 0.8850041441417247,
+      "sample_id": "slurp:train:001890:audio--1505404681",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:001890"
+    },
+    {
+      "audio_seconds": 4.9913125,
+      "draw_rank": 37,
+      "headset": false,
+      "min_cosine_to_selected": 0.8646169928068196,
+      "sample_id": "slurp:train:001963:audio-1490354388",
+      "stratum": "play",
+      "utterance_id": "slurp:train:001963"
+    },
+    {
+      "audio_seconds": 5.2473125,
+      "draw_rank": 11,
+      "headset": false,
+      "min_cosine_to_selected": 0.8557694645637499,
+      "sample_id": "slurp:train:001984:audio-1488984839",
+      "stratum": "news",
+      "utterance_id": "slurp:train:001984"
+    },
+    {
+      "audio_seconds": 3.8395,
+      "draw_rank": 11,
+      "headset": false,
+      "min_cosine_to_selected": 0.8624893632451461,
+      "sample_id": "slurp:train:002019:audio-1501778720",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:002019"
+    },
+    {
+      "audio_seconds": 3.3275625,
+      "draw_rank": 26,
+      "headset": false,
+      "min_cosine_to_selected": 0.8934818426017832,
+      "sample_id": "slurp:train:002049:audio-1494606792",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:002049"
+    },
+    {
+      "audio_seconds": 4.2874375,
+      "draw_rank": 34,
+      "headset": false,
+      "min_cosine_to_selected": 0.9030602618339696,
+      "sample_id": "slurp:train:002053:audio-1497268066",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:002053"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "draw_rank": 23,
+      "headset": false,
+      "min_cosine_to_selected": 0.8847103145416128,
+      "sample_id": "slurp:train:002055:audio-1490022119",
+      "stratum": "music",
+      "utterance_id": "slurp:train:002055"
+    },
+    {
+      "audio_seconds": 6.335125,
+      "draw_rank": 2,
+      "headset": false,
+      "min_cosine_to_selected": 0.8118265791577732,
+      "sample_id": "slurp:train:002066:audio-1489504306",
+      "stratum": "news",
+      "utterance_id": "slurp:train:002066"
+    },
+    {
+      "audio_seconds": 3.8395,
+      "draw_rank": 14,
+      "headset": false,
+      "min_cosine_to_selected": 0.8338928245320522,
+      "sample_id": "slurp:train:002084:audio-1490703305",
+      "stratum": "play",
+      "utterance_id": "slurp:train:002084"
+    },
+    {
+      "audio_seconds": 4.032,
+      "draw_rank": 4,
+      "headset": true,
+      "min_cosine_to_selected": 0.8282688952735413,
+      "sample_id": "slurp:train:002100:audio-1490201283-headset",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:002100"
+    },
+    {
+      "audio_seconds": 3.8395,
+      "draw_rank": 42,
+      "headset": false,
+      "min_cosine_to_selected": 0.8684816780550616,
+      "sample_id": "slurp:train:002107:audio-1490022318",
+      "stratum": "play",
+      "utterance_id": "slurp:train:002107"
+    },
+    {
+      "audio_seconds": 5.1833125,
+      "draw_rank": 29,
+      "headset": false,
+      "min_cosine_to_selected": 0.9070960947655173,
+      "sample_id": "slurp:train:002111:audio-1488990637",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:002111"
+    },
+    {
+      "audio_seconds": 3.9675,
+      "draw_rank": 36,
+      "headset": false,
+      "min_cosine_to_selected": 0.903332478798366,
+      "sample_id": "slurp:train:002126:audio-1489498448",
+      "stratum": "news",
+      "utterance_id": "slurp:train:002126"
+    },
+    {
+      "audio_seconds": 3.2635625,
+      "draw_rank": 4,
+      "headset": false,
+      "min_cosine_to_selected": 0.8180445209587681,
+      "sample_id": "slurp:train:002145:audio-1498573305",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:002145"
+    },
+    {
+      "audio_seconds": 3.6475,
+      "draw_rank": 30,
+      "headset": false,
+      "min_cosine_to_selected": 0.8958745688413399,
+      "sample_id": "slurp:train:002242:audio-1498572044",
+      "stratum": "music",
+      "utterance_id": "slurp:train:002242"
+    },
+    {
+      "audio_seconds": 2.17575,
+      "draw_rank": 30,
+      "headset": false,
+      "min_cosine_to_selected": 0.8985531712808621,
+      "sample_id": "slurp:train:002248:audio-1490704414",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:002248"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "draw_rank": 43,
+      "headset": false,
+      "min_cosine_to_selected": 0.9158798335150409,
+      "sample_id": "slurp:train:002275:audio-1498575931",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:002275"
+    },
+    {
+      "audio_seconds": 4.0954375,
+      "draw_rank": 4,
+      "headset": false,
+      "min_cosine_to_selected": 0.8294511531721831,
+      "sample_id": "slurp:train:002290:audio-1488985975",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:002290"
+    },
+    {
+      "audio_seconds": 3.5835,
+      "draw_rank": 18,
+      "headset": false,
+      "min_cosine_to_selected": 0.889399449722952,
+      "sample_id": "slurp:train:002300:audio-1497870207",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:002300"
+    },
+    {
+      "audio_seconds": 3.5835,
+      "draw_rank": 19,
+      "headset": false,
+      "min_cosine_to_selected": 0.8909057654040389,
+      "sample_id": "slurp:train:002301:audio-1490108977",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:002301"
+    },
+    {
+      "audio_seconds": 3.072,
+      "draw_rank": 41,
+      "headset": true,
+      "min_cosine_to_selected": 0.9107113165780172,
+      "sample_id": "slurp:train:002307:audio-1502894454-headset",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:002307"
+    },
+    {
+      "audio_seconds": 7.0390625,
+      "draw_rank": 3,
+      "headset": false,
+      "min_cosine_to_selected": 0.7675334693345803,
+      "sample_id": "slurp:train:002308:audio-1501778311",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:002308"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "draw_rank": 19,
+      "headset": false,
+      "min_cosine_to_selected": 0.9343982515784739,
+      "sample_id": "slurp:train:002325:audio--1504191023",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:002325"
+    },
+    {
+      "audio_seconds": 4.45825,
+      "draw_rank": 17,
+      "headset": false,
+      "min_cosine_to_selected": 0.9313924448172453,
+      "sample_id": "slurp:train:002342:audio-1501157074",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:002342"
+    },
+    {
+      "audio_seconds": 2.3676875,
+      "draw_rank": 19,
+      "headset": false,
+      "min_cosine_to_selected": 0.8786369706087682,
+      "sample_id": "slurp:train:002348:audio-1490104141",
+      "stratum": "music",
+      "utterance_id": "slurp:train:002348"
+    },
+    {
+      "audio_seconds": 3.5835,
+      "draw_rank": 35,
+      "headset": false,
+      "min_cosine_to_selected": 0.9008612423804013,
+      "sample_id": "slurp:train:002390:audio-1489674064",
+      "stratum": "news",
+      "utterance_id": "slurp:train:002390"
+    },
+    {
+      "audio_seconds": 2.6236875,
+      "draw_rank": 28,
+      "headset": false,
+      "min_cosine_to_selected": 0.8914792790323873,
+      "sample_id": "slurp:train:002440:audio-1490106360",
+      "stratum": "music",
+      "utterance_id": "slurp:train:002440"
+    },
+    {
+      "audio_seconds": 7.9349375,
+      "draw_rank": 24,
+      "headset": false,
+      "min_cosine_to_selected": 0.8957993684227337,
+      "sample_id": "slurp:train:002449:audio-1488982703",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:002449"
+    },
+    {
+      "audio_seconds": 7.7429375,
+      "draw_rank": 19,
+      "headset": false,
+      "min_cosine_to_selected": 0.8805149411077617,
+      "sample_id": "slurp:train:002468:audio-1497271180",
+      "stratum": "news",
+      "utterance_id": "slurp:train:002468"
+    },
+    {
+      "audio_seconds": 3.008,
+      "draw_rank": 17,
+      "headset": true,
+      "min_cosine_to_selected": 0.8709267694915852,
+      "sample_id": "slurp:train:002494:audio-1490007720-headset",
+      "stratum": "news",
+      "utterance_id": "slurp:train:002494"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "draw_rank": 21,
+      "headset": false,
+      "min_cosine_to_selected": 0.888154855715023,
+      "sample_id": "slurp:train:002513:audio-1502890128",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:002513"
+    },
+    {
+      "audio_seconds": 7.167,
+      "draw_rank": 12,
+      "headset": false,
+      "min_cosine_to_selected": 0.8183943224504497,
+      "sample_id": "slurp:train:002529:audio-1497887668",
+      "stratum": "play",
+      "utterance_id": "slurp:train:002529"
+    },
+    {
+      "audio_seconds": 3.3275625,
+      "draw_rank": 32,
+      "headset": false,
+      "min_cosine_to_selected": 0.8628295988356857,
+      "sample_id": "slurp:train:002574:audio-1501766583",
+      "stratum": "play",
+      "utterance_id": "slurp:train:002574"
+    },
+    {
+      "audio_seconds": 2.815625,
+      "draw_rank": 6,
+      "headset": false,
+      "min_cosine_to_selected": 0.9045272691242447,
+      "sample_id": "slurp:train:002580:audio--1504194934",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:002580"
+    },
+    {
+      "audio_seconds": 3.3275625,
+      "draw_rank": 30,
+      "headset": false,
+      "min_cosine_to_selected": 0.9071080099126277,
+      "sample_id": "slurp:train:002613:audio-1489153760",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:002613"
+    },
+    {
+      "audio_seconds": 5.50325,
+      "draw_rank": 2,
+      "headset": false,
+      "min_cosine_to_selected": 0.7881126000566118,
+      "sample_id": "slurp:train:002616:audio-1489153315",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:002616"
+    },
+    {
+      "audio_seconds": 5.69525,
+      "draw_rank": 7,
+      "headset": false,
+      "min_cosine_to_selected": 0.8416328121533809,
+      "sample_id": "slurp:train:002619:audio-1490956229",
+      "stratum": "news",
+      "utterance_id": "slurp:train:002619"
+    },
+    {
+      "audio_seconds": 5.44,
+      "draw_rank": 27,
+      "headset": true,
+      "min_cosine_to_selected": 0.8879984674426032,
+      "sample_id": "slurp:train:002626:audio-1490006881-headset",
+      "stratum": "news",
+      "utterance_id": "slurp:train:002626"
+    },
+    {
+      "audio_seconds": 2.3676875,
+      "draw_rank": 40,
+      "headset": false,
+      "min_cosine_to_selected": 0.9582676960024827,
+      "sample_id": "slurp:train:002627:audio-1495371111",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:002627"
+    },
+    {
+      "audio_seconds": 3.7755,
+      "draw_rank": 28,
+      "headset": false,
+      "min_cosine_to_selected": 0.8973385698935314,
+      "sample_id": "slurp:train:002655:audio-1497261762",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:002655"
+    },
+    {
+      "audio_seconds": 6.1431875,
+      "draw_rank": 12,
+      "headset": false,
+      "min_cosine_to_selected": 0.859522364796928,
+      "sample_id": "slurp:train:002666:audio-1488974025",
+      "stratum": "news",
+      "utterance_id": "slurp:train:002666"
+    },
+    {
+      "audio_seconds": 3.7115,
+      "draw_rank": 14,
+      "headset": false,
+      "min_cosine_to_selected": 0.9010097652535389,
+      "sample_id": "slurp:train:002671:audio--1504192839",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:002671"
+    },
+    {
+      "audio_seconds": 3.9675,
+      "draw_rank": 33,
+      "headset": false,
+      "min_cosine_to_selected": 0.9078476558590853,
+      "sample_id": "slurp:train:002689:audio-1488983611",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:002689"
+    },
+    {
+      "audio_seconds": 4.543375,
+      "draw_rank": 3,
+      "headset": false,
+      "min_cosine_to_selected": 0.821656975999925,
+      "sample_id": "slurp:train:002696:audio-1490704799",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:002696"
+    },
+    {
+      "audio_seconds": 7.295,
+      "draw_rank": 6,
+      "headset": false,
+      "min_cosine_to_selected": 0.8432055230658437,
+      "sample_id": "slurp:train:002698:audio-1488983954",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:002698"
+    },
+    {
+      "audio_seconds": 3.4555625,
+      "draw_rank": 42,
+      "headset": false,
+      "min_cosine_to_selected": 0.9373334861002216,
+      "sample_id": "slurp:train:002718:audio--1504192128",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:002718"
+    },
+    {
+      "audio_seconds": 1.4078125,
+      "draw_rank": 0,
+      "headset": false,
+      "min_cosine_to_selected": null,
+      "sample_id": "slurp:train:002725:audio-1501688772",
+      "stratum": "news",
+      "utterance_id": "slurp:train:002725"
+    },
+    {
+      "audio_seconds": 3.1995625,
+      "draw_rank": 27,
+      "headset": false,
+      "min_cosine_to_selected": 0.9028910139685032,
+      "sample_id": "slurp:train:002784:audio-1490106125",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:002784"
+    },
+    {
+      "audio_seconds": 1.85575,
+      "draw_rank": 34,
+      "headset": false,
+      "min_cosine_to_selected": 0.9524629443637864,
+      "sample_id": "slurp:train:002828:audio--1504197979",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:002828"
+    },
+    {
+      "audio_seconds": 3.071625,
+      "draw_rank": 44,
+      "headset": false,
+      "min_cosine_to_selected": 0.9133420423664788,
+      "sample_id": "slurp:train:002836:audio-1489673276",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:002836"
+    },
+    {
+      "audio_seconds": 3.456,
+      "draw_rank": 39,
+      "headset": true,
+      "min_cosine_to_selected": 0.9133251742566895,
+      "sample_id": "slurp:train:002907:audio-1490354179-headset",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:002907"
+    },
+    {
+      "audio_seconds": 5.824,
+      "draw_rank": 31,
+      "headset": true,
+      "min_cosine_to_selected": 0.90397457643438,
+      "sample_id": "slurp:train:002924:audio-1497868041-headset",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:002924"
+    },
+    {
+      "audio_seconds": 2.04775,
+      "draw_rank": 0,
+      "headset": false,
+      "min_cosine_to_selected": null,
+      "sample_id": "slurp:train:002972:audio-1434533001",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:002972"
+    },
+    {
+      "audio_seconds": 4.607375,
+      "draw_rank": 36,
+      "headset": false,
+      "min_cosine_to_selected": 0.9060890681856362,
+      "sample_id": "slurp:train:002999:audio-1490184405",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:002999"
+    },
+    {
+      "audio_seconds": 6.207125,
+      "draw_rank": 15,
+      "headset": false,
+      "min_cosine_to_selected": 0.8753924275433255,
+      "sample_id": "slurp:train:003051:audio-1497450977",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:003051"
+    },
+    {
+      "audio_seconds": 4.671375,
+      "draw_rank": 16,
+      "headset": false,
+      "min_cosine_to_selected": 0.8650672805922184,
+      "sample_id": "slurp:train:003055:audio-1434541682",
+      "stratum": "news",
+      "utterance_id": "slurp:train:003055"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "draw_rank": 44,
+      "headset": false,
+      "min_cosine_to_selected": 0.9378445550062626,
+      "sample_id": "slurp:train:003064:audio--1504197665",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:003064"
+    },
+    {
+      "audio_seconds": 2.5596875,
+      "draw_rank": 37,
+      "headset": false,
+      "min_cosine_to_selected": 0.9115895840748667,
+      "sample_id": "slurp:train:003068:audio-1490199024",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:003068"
+    },
+    {
+      "audio_seconds": 3.9675,
+      "draw_rank": 26,
+      "headset": false,
+      "min_cosine_to_selected": 0.8889867801841991,
+      "sample_id": "slurp:train:003079:audio-1499694769",
+      "stratum": "music",
+      "utterance_id": "slurp:train:003079"
+    },
+    {
+      "audio_seconds": 9.08675,
+      "draw_rank": 1,
+      "headset": false,
+      "min_cosine_to_selected": 0.762884628768886,
+      "sample_id": "slurp:train:003085:audio-1488983822",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:003085"
+    },
+    {
+      "audio_seconds": 3.2635625,
+      "draw_rank": 32,
+      "headset": false,
+      "min_cosine_to_selected": 0.9033450102828328,
+      "sample_id": "slurp:train:003095:audio-1488984987",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:003095"
+    },
+    {
+      "audio_seconds": 8.7668125,
+      "draw_rank": 16,
+      "headset": false,
+      "min_cosine_to_selected": 0.8374083248258508,
+      "sample_id": "slurp:train:003132:audio-1497359919",
+      "stratum": "play",
+      "utterance_id": "slurp:train:003132"
+    },
+    {
+      "audio_seconds": 8.254875,
+      "draw_rank": 36,
+      "headset": false,
+      "min_cosine_to_selected": 0.8641976879297145,
+      "sample_id": "slurp:train:003133:audio-1489498919",
+      "stratum": "play",
+      "utterance_id": "slurp:train:003133"
+    },
+    {
+      "audio_seconds": 3.84,
+      "draw_rank": 20,
+      "headset": true,
+      "min_cosine_to_selected": 0.8858473074204444,
+      "sample_id": "slurp:train:003137:audio-1434528257-headset",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:003137"
+    },
+    {
+      "audio_seconds": 3.13475,
+      "draw_rank": 13,
+      "headset": false,
+      "min_cosine_to_selected": 0.8987179295835815,
+      "sample_id": "slurp:train:003150:audio-1501172702",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:003150"
+    },
+    {
+      "audio_seconds": 7.167,
+      "draw_rank": 7,
+      "headset": false,
+      "min_cosine_to_selected": 0.8710176275445454,
+      "sample_id": "slurp:train:003156:audio--1504192797",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:003156"
+    },
+    {
+      "audio_seconds": 2.17575,
+      "draw_rank": 26,
+      "headset": false,
+      "min_cosine_to_selected": 0.8871525407651578,
+      "sample_id": "slurp:train:003189:audio-1502890863",
+      "stratum": "news",
+      "utterance_id": "slurp:train:003189"
+    },
+    {
+      "audio_seconds": 6.6550625,
+      "draw_rank": 13,
+      "headset": false,
+      "min_cosine_to_selected": 0.8711712593094371,
+      "sample_id": "slurp:train:003198:audio-1497884777",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:003198"
+    },
+    {
+      "audio_seconds": 4.9913125,
+      "draw_rank": 14,
+      "headset": false,
+      "min_cosine_to_selected": 0.8650341101921111,
+      "sample_id": "slurp:train:003217:audio-1491103230",
+      "stratum": "news",
+      "utterance_id": "slurp:train:003217"
+    },
+    {
+      "audio_seconds": 2.687625,
+      "draw_rank": 43,
+      "headset": false,
+      "min_cosine_to_selected": 0.9245578447770432,
+      "sample_id": "slurp:train:003229:audio-1490108965",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:003229"
+    },
+    {
+      "audio_seconds": 4.0954375,
+      "draw_rank": 21,
+      "headset": false,
+      "min_cosine_to_selected": 0.9134463865451924,
+      "sample_id": "slurp:train:003249:audio--1504195064",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:003249"
+    },
+    {
+      "audio_seconds": 3.4555625,
+      "draw_rank": 9,
+      "headset": false,
+      "min_cosine_to_selected": 0.8546617903481202,
+      "sample_id": "slurp:train:003260:audio-1490183686",
+      "stratum": "news",
+      "utterance_id": "slurp:train:003260"
+    },
+    {
+      "audio_seconds": 4.48,
+      "draw_rank": 36,
+      "headset": true,
+      "min_cosine_to_selected": 0.9043649463134525,
+      "sample_id": "slurp:train:003267:audio-1499692617-headset",
+      "stratum": "music",
+      "utterance_id": "slurp:train:003267"
+    },
+    {
+      "audio_seconds": 3.7115,
+      "draw_rank": 28,
+      "headset": false,
+      "min_cosine_to_selected": 0.8906360034813285,
+      "sample_id": "slurp:train:003268:audio-1494415542",
+      "stratum": "news",
+      "utterance_id": "slurp:train:003268"
+    },
+    {
+      "audio_seconds": 4.2234375,
+      "draw_rank": 28,
+      "headset": false,
+      "min_cosine_to_selected": 0.9017949015502681,
+      "sample_id": "slurp:train:003275:audio-1501757134",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:003275"
+    },
+    {
+      "audio_seconds": 7.295,
+      "draw_rank": 25,
+      "headset": false,
+      "min_cosine_to_selected": 0.9247242575840618,
+      "sample_id": "slurp:train:003313:audio--1504192338",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:003313"
+    },
+    {
+      "audio_seconds": 2.815625,
+      "draw_rank": 37,
+      "headset": false,
+      "min_cosine_to_selected": 0.9036574147711015,
+      "sample_id": "slurp:train:003348:audio-1490107492",
+      "stratum": "news",
+      "utterance_id": "slurp:train:003348"
+    },
+    {
+      "audio_seconds": 2.751625,
+      "draw_rank": 43,
+      "headset": false,
+      "min_cosine_to_selected": 0.9137542525957196,
+      "sample_id": "slurp:train:003355:audio-1497872647",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:003355"
+    },
+    {
+      "audio_seconds": 3.071625,
+      "draw_rank": 38,
+      "headset": false,
+      "min_cosine_to_selected": 0.9037554083319268,
+      "sample_id": "slurp:train:003359:audio-1488992715",
+      "stratum": "news",
+      "utterance_id": "slurp:train:003359"
+    },
+    {
+      "audio_seconds": 1.279875,
+      "draw_rank": 0,
+      "headset": false,
+      "min_cosine_to_selected": null,
+      "sample_id": "slurp:train:003383:audio-1498572750",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:003383"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "draw_rank": 43,
+      "headset": false,
+      "min_cosine_to_selected": 0.9121538143178785,
+      "sample_id": "slurp:train:003415:audio-1498577293",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:003415"
+    },
+    {
+      "audio_seconds": 6.8470625,
+      "draw_rank": 43,
+      "headset": false,
+      "min_cosine_to_selected": 0.9069936534395042,
+      "sample_id": "slurp:train:003452:audio-1497438880",
+      "stratum": "news",
+      "utterance_id": "slurp:train:003452"
+    },
+    {
+      "audio_seconds": 2.815625,
+      "draw_rank": 35,
+      "headset": false,
+      "min_cosine_to_selected": 0.9341889857759824,
+      "sample_id": "slurp:train:003498:audio--1506079560",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:003498"
+    },
+    {
+      "audio_seconds": 4.0954375,
+      "draw_rank": 19,
+      "headset": false,
+      "min_cosine_to_selected": 0.8869764464723824,
+      "sample_id": "slurp:train:003556:audio-1497271276",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:003556"
+    },
+    {
+      "audio_seconds": 4.2234375,
+      "draw_rank": 12,
+      "headset": false,
+      "min_cosine_to_selected": 0.9201358753895725,
+      "sample_id": "slurp:train:003580:audio--1505406102",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:003580"
+    },
+    {
+      "audio_seconds": 3.1995625,
+      "draw_rank": 38,
+      "headset": false,
+      "min_cosine_to_selected": 0.9358090211399046,
+      "sample_id": "slurp:train:003584:audio--1504190580",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:003584"
+    },
+    {
+      "audio_seconds": 1.279875,
+      "draw_rank": 33,
+      "headset": false,
+      "min_cosine_to_selected": 0.9524125626592176,
+      "sample_id": "slurp:train:003591:audio-1490288574",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:003591"
+    },
+    {
+      "audio_seconds": 3.9675,
+      "draw_rank": 27,
+      "headset": false,
+      "min_cosine_to_selected": 0.9000138273774364,
+      "sample_id": "slurp:train:003618:audio-1499693270",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:003618"
+    },
+    {
+      "audio_seconds": 3.3275625,
+      "draw_rank": 41,
+      "headset": false,
+      "min_cosine_to_selected": 0.9106623526067705,
+      "sample_id": "slurp:train:003655:audio-1497867500",
+      "stratum": "music",
+      "utterance_id": "slurp:train:003655"
+    },
+    {
+      "audio_seconds": 4.352,
+      "draw_rank": 28,
+      "headset": true,
+      "min_cosine_to_selected": 0.8961387158778675,
+      "sample_id": "slurp:train:003659:audio-1498646986-headset",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:003659"
+    },
+    {
+      "audio_seconds": 2.752,
+      "draw_rank": 29,
+      "headset": true,
+      "min_cosine_to_selected": 0.8928364217235006,
+      "sample_id": "slurp:train:003684:audio-1434531669-headset",
+      "stratum": "music",
+      "utterance_id": "slurp:train:003684"
+    },
+    {
+      "audio_seconds": 3.2635625,
+      "draw_rank": 31,
+      "headset": false,
+      "min_cosine_to_selected": 0.9303098925468379,
+      "sample_id": "slurp:train:003696:audio--1504192325",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:003696"
+    },
+    {
+      "audio_seconds": 2.04775,
+      "draw_rank": 24,
+      "headset": false,
+      "min_cosine_to_selected": 0.8864701062177556,
+      "sample_id": "slurp:train:003699:audio-1502376115",
+      "stratum": "music",
+      "utterance_id": "slurp:train:003699"
+    },
+    {
+      "audio_seconds": 2.688,
+      "draw_rank": 42,
+      "headset": true,
+      "min_cosine_to_selected": 0.9115805053590609,
+      "sample_id": "slurp:train:003715:audio-1490371932-headset",
+      "stratum": "music",
+      "utterance_id": "slurp:train:003715"
+    },
+    {
+      "audio_seconds": 4.0954375,
+      "draw_rank": 21,
+      "headset": false,
+      "min_cosine_to_selected": 0.8445943240141904,
+      "sample_id": "slurp:train:003728:audio-1501751794",
+      "stratum": "play",
+      "utterance_id": "slurp:train:003728"
+    },
+    {
+      "audio_seconds": 3.1995625,
+      "draw_rank": 25,
+      "headset": false,
+      "min_cosine_to_selected": 0.8861488986873106,
+      "sample_id": "slurp:train:003730:audio-1502200418",
+      "stratum": "news",
+      "utterance_id": "slurp:train:003730"
+    },
+    {
+      "audio_seconds": 3.7755,
+      "draw_rank": 14,
+      "headset": false,
+      "min_cosine_to_selected": 0.9245422941703979,
+      "sample_id": "slurp:train:003738:audio--1504194866",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:003738"
+    },
+    {
+      "audio_seconds": 4.2234375,
+      "draw_rank": 20,
+      "headset": false,
+      "min_cosine_to_selected": 0.8818654724182846,
+      "sample_id": "slurp:train:003755:audio-1494512469",
+      "stratum": "news",
+      "utterance_id": "slurp:train:003755"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "draw_rank": 16,
+      "headset": false,
+      "min_cosine_to_selected": 0.9306530229270646,
+      "sample_id": "slurp:train:003793:audio--1504192708",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:003793"
+    },
+    {
+      "audio_seconds": 2.2396875,
+      "draw_rank": 22,
+      "headset": false,
+      "min_cosine_to_selected": 0.8824990934017369,
+      "sample_id": "slurp:train:003826:audio-1490184097",
+      "stratum": "music",
+      "utterance_id": "slurp:train:003826"
+    },
+    {
+      "audio_seconds": 3.84,
+      "draw_rank": 11,
+      "headset": false,
+      "min_cosine_to_selected": 0.8931224310457777,
+      "sample_id": "slurp:train:003869:audio-1497439380",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:003869"
+    },
+    {
+      "audio_seconds": 6.463125,
+      "draw_rank": 1,
+      "headset": false,
+      "min_cosine_to_selected": 0.7880459701899858,
+      "sample_id": "slurp:train:003905:audio--1504192118",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:003905"
+    },
+    {
+      "audio_seconds": 3.0650625,
+      "draw_rank": 18,
+      "headset": false,
+      "min_cosine_to_selected": 0.8863315549785962,
+      "sample_id": "slurp:train:003951:audio-1502112401",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:003951"
+    },
+    {
+      "audio_seconds": 2.6236875,
+      "draw_rank": 19,
+      "headset": false,
+      "min_cosine_to_selected": 0.9122220462606503,
+      "sample_id": "slurp:train:004018:audio-1490705851",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:004018"
+    },
+    {
+      "audio_seconds": 8.318875,
+      "draw_rank": 10,
+      "headset": false,
+      "min_cosine_to_selected": 0.8887018967080473,
+      "sample_id": "slurp:train:004080:audio-1499265326",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:004080"
+    },
+    {
+      "audio_seconds": 4.9273125,
+      "draw_rank": 37,
+      "headset": false,
+      "min_cosine_to_selected": 0.9194329448841364,
+      "sample_id": "slurp:train:004113:audio-1498484202",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:004113"
+    },
+    {
+      "audio_seconds": 3.6475,
+      "draw_rank": 8,
+      "headset": false,
+      "min_cosine_to_selected": 0.8441999564311948,
+      "sample_id": "slurp:train:004133:audio-1495376916",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:004133"
+    },
+    {
+      "audio_seconds": 3.9675,
+      "draw_rank": 19,
+      "headset": false,
+      "min_cosine_to_selected": 0.8864245262610633,
+      "sample_id": "slurp:train:004162:audio-1490183955",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:004162"
+    },
+    {
+      "audio_seconds": 1.91975,
+      "draw_rank": 2,
+      "headset": false,
+      "min_cosine_to_selected": 0.764570648326223,
+      "sample_id": "slurp:train:004190:audio-1501692436",
+      "stratum": "music",
+      "utterance_id": "slurp:train:004190"
+    },
+    {
+      "audio_seconds": 2.815625,
+      "draw_rank": 32,
+      "headset": false,
+      "min_cosine_to_selected": 0.9313585650004328,
+      "sample_id": "slurp:train:004200:audio--1504192683",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:004200"
+    },
+    {
+      "audio_seconds": 3.4555625,
+      "draw_rank": 15,
+      "headset": false,
+      "min_cosine_to_selected": 0.8777663258358273,
+      "sample_id": "slurp:train:004225:audio--1506079382",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:004225"
+    },
+    {
+      "audio_seconds": 2.5596875,
+      "draw_rank": 4,
+      "headset": false,
+      "min_cosine_to_selected": 0.8911903271501931,
+      "sample_id": "slurp:train:004267:audio-1434541820",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:004267"
+    },
+    {
+      "audio_seconds": 3.5835,
+      "draw_rank": 41,
+      "headset": false,
+      "min_cosine_to_selected": 0.9059708698943202,
+      "sample_id": "slurp:train:004310:audio-1497862505",
+      "stratum": "news",
+      "utterance_id": "slurp:train:004310"
+    },
+    {
+      "audio_seconds": 4.1099375,
+      "draw_rank": 33,
+      "headset": false,
+      "min_cosine_to_selected": 0.9036345963072714,
+      "sample_id": "slurp:train:004327:audio-1502111676",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:004327"
+    },
+    {
+      "audio_seconds": 4.1594375,
+      "draw_rank": 17,
+      "headset": false,
+      "min_cosine_to_selected": 0.8797974116471181,
+      "sample_id": "slurp:train:004357:audio-1492780828",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:004357"
+    },
+    {
+      "audio_seconds": 3.9675,
+      "draw_rank": 18,
+      "headset": false,
+      "min_cosine_to_selected": 0.8809301524831057,
+      "sample_id": "slurp:train:004388:audio-1497621778",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:004388"
+    },
+    {
+      "audio_seconds": 2.687625,
+      "draw_rank": 16,
+      "headset": false,
+      "min_cosine_to_selected": 0.8764994319062924,
+      "sample_id": "slurp:train:004403:audio-1490704728",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:004403"
+    },
+    {
+      "audio_seconds": 1.98375,
+      "draw_rank": 21,
+      "headset": false,
+      "min_cosine_to_selected": 0.87987861651128,
+      "sample_id": "slurp:train:004415:audio-1495372153",
+      "stratum": "music",
+      "utterance_id": "slurp:train:004415"
+    }
+  ],
+  "knowledge_source_guard": {
+    "asserted": "set(R01C sample ids) & set(composite source_sample_ids) == set(); the exact intersection rails.runner.run_speech_native_agent_loop computes before it dispatches a single row",
+    "binding_sha256": "36c01efe79c12581ca17238dc17e66a290aaeec04f6c28d06f1deec146d07311",
+    "composed_from": {
+      "baseline": "slurp-native-stage3-rollout-baseline-v1",
+      "dataset": "slurp-speech-native-stage3-construction-r01",
+      "experiment": "slurp-native-stage3-rollout-r01-v1",
+      "model": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
+    },
+    "composite_snapshot_sha256": "36c01efe79c12581ca17238dc17e66a290aaeec04f6c28d06f1deec146d07311",
+    "composite_source_sample_ids": 35134,
+    "composite_source_split_identity_hash": "b74ddbdc5920f8080d2aa2de95493db5105f8850ed50aaaceadf4dffe521ab27",
+    "derivation": "core.config.compose of the ROLL-1 cell's four fragments, then rails.knowledge_stores.load_knowledge_store_binding; the guard set is the composite snapshot's source_sample_ids (the union over composed stores, rails.knowledge_stores._composite). The dataset fragment cannot move this set: only knowledge_stores feeds it.",
+    "overlap_with_parent_recordings": 175,
+    "overlap_with_r01c_recordings": 0,
+    "overlap_with_r01c_utterances": 0,
+    "stores": {
+      "intent-boundaries": {
+        "release_relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+        "release_sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4",
+        "snapshot_relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json",
+        "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+        "source_sample_ids": 2037,
+        "store_role": "intent-boundaries"
+      },
+      "slot-contracts": {
+        "release_relpath": "knowledge/slurp/semantic/slot-contracts-v2/release.json",
+        "release_sha256": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b",
+        "snapshot_relpath": "knowledge/slurp/semantic/slot-contracts-v2/snapshot.json",
+        "snapshot_sha256": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec",
+        "source_sample_ids": 3162,
+        "store_role": "slot-contracts"
+      },
+      "train-exemplars": {
+        "release_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/release.json",
+        "release_sha256": "83620eb0b02f12424a00cd5572904f4df48a49c329b1b0e1a9321d4b9ec14fd0",
+        "snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+        "snapshot_sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+        "source_sample_ids": 34474,
+        "store_role": "train-exemplars"
+      }
+    }
+  },
+  "offline_guard": {
+    "attempted_targets": [],
+    "outbound_connection_attempts": 0
+  },
+  "parent": {
+    "count": 625,
+    "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+    "roster_id": "SLURP-STAGE3-CONSTRUCTION-R01C",
+    "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"
+  },
+  "per_stratum": {
+    "alarm": 17,
+    "audio": 23,
+    "datetime": 24,
+    "iot": 23,
+    "music": 21,
+    "news": 30,
+    "play": 13,
+    "takeaway": 28,
+    "weather": 21
+  },
+  "roster_id": "SLURP-STAGE3-ROLL-AA-R01C-200-V1",
+  "roster_role": "construction",
+  "roster_role_note": "construction: ROLL-AA reads no gold at runtime and produces no admission verdict. These TRAIN rows carry construction gold that the OFFLINE read scores the two Solver samples against, exactly as cell ROLL-1's rows do; the flight itself is the locked plan, unchanged, with a two-sample greedy Solver group.",
+  "schema": "saea-roster-receipt-v1",
+  "seed": 20260922,
+  "selection_rule": "The FIRST 200 items of docs/receipts/rosters/slurp-stage3-construction-r01c.json, in the parent's own order; order preserved.",
+  "split_identity_hash": "dbb60c9db5c2d2dc4f5bd06274ee1ab70d0dd3d4f8a0b70b21e5f1d6127487a3",
+  "split_role": "discovery",
+  "strata_counts": {
+    "alarm": 17,
+    "audio": 23,
+    "datetime": 24,
+    "iot": 23,
+    "music": 21,
+    "news": 30,
+    "play": 13,
+    "takeaway": 28,
+    "weather": 21
+  },
+  "stratum_coverage_note": "A PREFIX of an ascending-sample_id roster is NOT scenario-stratified: these 200 rows cover 9 of the parent's 18 scenario strata (alarm, audio, datetime, iot, music, news, play, takeaway, weather). The selection rule was specified as the first-N prefix and is registered as such; the preregistration's own 'What this null does not measure' section states the consequence, and the alternative (a stratified 200) is recorded there as a decision NOT taken."
+}
