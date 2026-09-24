@@ -87,6 +87,18 @@ AGENT_CONTROLLERS = Registry("Agent controller")
 # source. ``rails.knowledge_provider.KNOWLEDGE_PROVIDERS`` is now a
 # re-export of this object, so every existing caller is unaffected.
 KNOWLEDGE_PROVIDERS = Registry("knowledge provider")
+# Stage-3 iteration 3 (2026-09-24): named, config-pinned APPLICATION policies
+# for a stage3-deltas context route -- the rule that decides, per ROW, whether
+# a node takes the store's supply at all. ``KNOWLEDGE_PROVIDERS`` above answers
+# "which values", this answers "on which rows", and the two are different
+# questions, so a config must say which it declared. Same one-Registry
+# discipline as every other seam here: a ``context_supply.<node>.scenario_gate
+# .policy`` value must RESOLVE IN A core.base REGISTRY like every other
+# config-declared component id, and ``scripts/checks/engineering_base_check.py``
+# reads that resolution from source. An entry is a factory
+# ``(**params) -> gate``; populated from ``rails/knowledge_provider.py``, the
+# canonical registration site the delta providers themselves register from.
+STAGE3_SUPPLY_GATE_POLICIES = Registry("stage3 supply gate policy")
 # E1 (2026-09-05): named structured-response formats a phase program's
 # config may bind to one phase. ``rails.controllers.PhaseSpec`` already
 # declares a ``response_format_id`` per phase but nothing resolved it, so

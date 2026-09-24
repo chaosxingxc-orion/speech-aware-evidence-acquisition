@@ -60,6 +60,14 @@ The receipt names, per node, the supplied value ids (so "the per-node deltas
 were supplied" is a count a caller can assert on), the instruction digest, the
 sealed state id and the delivered answer.
 
+It also names, per node, every row-level SCENARIO-GATE decision the walked
+routes recorded -- open and closed alike, as labels and counts
+(``rails.stage3_delta_supply``'s iteration-3 application policy). A gate that
+closes takes no supply step at all, which is indistinguishable in the supplied
+counts from a node slice that simply matched nothing; the decision receipt is
+what tells the two apart, so "the gate closed on this row and was open on that
+one" is a fact a caller can assert on before a contact is ever spent.
+
 Reuse
 -----
 ``dry_run_native_episode(runtime, answers=...)`` takes any ``FlightRuntime``
@@ -128,6 +136,33 @@ class DryRunNode:
 
 
 @dataclass(frozen=True)
+class DryRunGateDecision:
+    """One row-level scenario-gate decision at one node.
+
+    Labels and counts only -- a node name, a policy id, the majority scenario
+    NAME, how many candidates it was read from and whether the gate closed.
+    Never an utterance, a transcript, a gold label or a statement.
+    """
+
+    phase: str
+    node: str
+    policy_id: str
+    majority_scenario: str | None
+    candidate_count: int
+    closed: bool
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "phase": self.phase,
+            "node": self.node,
+            "policy_id": self.policy_id,
+            "majority_scenario": self.majority_scenario,
+            "candidate_count": self.candidate_count,
+            "closed": self.closed,
+        }
+
+
+@dataclass(frozen=True)
 class DryRunResult:
     """One row's walked episode."""
 
@@ -144,6 +179,15 @@ class DryRunResult:
     delivered_sha256: str
     store_ids: tuple[str, ...]
     first_phase_seed_source: str
+    #: Declared LAST and defaulted, so a cell whose routes declare no gate
+    #: produces exactly the receipt it always did.
+    scenario_gate_decisions: tuple[DryRunGateDecision, ...] = ()
+
+    def gate_closed_by_node(self) -> dict[str, bool]:
+        """``{node: closed}`` -- the one-line answer to "which nodes did the
+        gate withhold on this row?"""
+
+        return {item.node: item.closed for item in self.scenario_gate_decisions}
 
     def supplied_counts(self) -> dict[str, int]:
         """``{phase: supplied value count}`` over every walked visit.
@@ -180,11 +224,42 @@ class DryRunResult:
             "delivered_phase": self.delivered_phase,
             "delivered_sha256": self.delivered_sha256,
             "first_phase_seed_source": self.first_phase_seed_source,
+            "scenario_gate_decisions": [
+                item.as_json() for item in self.scenario_gate_decisions
+            ],
+            "scenario_gate_closed_by_node": self.gate_closed_by_node(),
         }
 
 
 def _sha256(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _scenario_gate_decisions(phase_binding, sample_id: str):
+    """Every scenario-gate decision the walked routes recorded for ONE row.
+
+    Read off the supply router's own receipt
+    (``rails.knowledge_stores``'s ``delta_scenario_gate`` map), never
+    recomputed here: a dry run that decided the gate a second time would be
+    proving its own arithmetic instead of the router's. Absent -- and therefore
+    empty -- for a cell whose routes declare no gate.
+    """
+
+    router = phase_binding.get("supply_for_store")
+    audits = (getattr(router, "receipt", None) or {}).get("delta_scenario_gate") or {}
+    decisions = [
+        DryRunGateDecision(
+            phase=str(entry.get("phase")),
+            node=str(entry.get("node")),
+            policy_id=str(entry.get("policy_id")),
+            majority_scenario=entry.get("majority_scenario"),
+            candidate_count=int(entry.get("candidate_count") or 0),
+            closed=bool(entry.get("closed")),
+        )
+        for entry in audits.values()
+        if isinstance(entry, Mapping) and entry.get("sample_id") == sample_id
+    ]
+    return tuple(sorted(decisions, key=lambda item: (item.phase, item.node)))
 
 
 def _require_binding(runtime) -> Mapping[str, object]:
@@ -635,6 +710,9 @@ def dry_run_native_episode(
         delivered_sha256=_sha256(delivered),
         store_ids=tuple(binding["store_ids"]),
         first_phase_seed_source=seed_source,
+        scenario_gate_decisions=_scenario_gate_decisions(
+            phase_binding, sample.sample_id
+        ),
     )
 
 
@@ -642,6 +720,7 @@ __all__ = [
     "CONTACT_NAMESPACE",
     "NATIVE_ROLE_GRAPH_ORDER",
     "DRY_RUN_SCHEMA",
+    "DryRunGateDecision",
     "DryRunNode",
     "DryRunResult",
     "NativeEpisodeDryRunError",

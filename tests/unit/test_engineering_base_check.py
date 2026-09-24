@@ -355,6 +355,11 @@ def test_regex_extraction_agrees_with_package_import():
         # is exactly the drift this test exists to catch.
         "JUDGES": set(core_base.JUDGES.names()),
         "PHASE_PLANNERS": set(core_base.PHASE_PLANNERS.names()),
+        # Stage-3 iteration 3 (2026-09-24): the row-level supply-application
+        # policies a stage3-deltas ``context_supply.<node>.scenario_gate.policy``
+        # resolves against, registered from the same canonical
+        # rails/knowledge_provider.py file as the delta provider ids.
+        "STAGE3_SUPPLY_GATE_POLICIES": set(core_base.STAGE3_SUPPLY_GATE_POLICIES.names()),
         # WAVE W3 (2026-09-08): the pinned, system-invoked tool catalog a
         # ``tools`` list in configs/ resolves against.
         "TOOL_CATALOG": set(_tools.TOOL_CATALOG.names()),

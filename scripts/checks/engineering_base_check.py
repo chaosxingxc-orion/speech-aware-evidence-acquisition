@@ -195,6 +195,27 @@ MAX_TOKENS_POLICY_KEY = "policy"
 MAX_TOKENS_POLICY_VAR = "MAX_TOKENS_POLICIES"
 DECODING_CONFIG_DIRS = ("configs/model", *CONFIG_DIRS)
 
+# Stage-3 iteration 3 (2026-09-24): a stage3-deltas ``context_supply.<node>``
+# route may declare an APPLICATION gate -- ``{"scenario_gate": {"policy":
+# "<id>", "scenarios": [...]}}`` -- deciding, per ROW, whether that node takes
+# the store's supply at all. The policy id must resolve in
+# ``core.base.STAGE3_SUPPLY_GATE_POLICIES`` like every other component id a
+# config declares (``rails/knowledge_provider.py`` registers it beside the
+# delta provider ids).
+#
+# Matched by PATH rather than by bare key name, for exactly the reason
+# DECODING_PARAMS_KEY above is: the key inside the gate object is spelled
+# ``policy``, which at top level already means an arm program's own
+# ``POLICIES``/``AGENT_CONTROLLERS`` id, so adding ``policy`` to
+# NESTED_ID_KEYS would check every ``"policy": "fixed"`` in the tree against
+# the wrong registry. The CONTAINER key, ``scenario_gate``, is unambiguous,
+# and the gate lives per node under ``knowledge_stores.<store>.context_supply
+# .<node>`` -- a path whose middle segments are store and node NAMES, so the
+# container is found at any depth rather than by a hard-coded path.
+SCENARIO_GATE_KEY = "scenario_gate"
+SCENARIO_GATE_POLICY_KEY = "policy"
+SCENARIO_GATE_POLICY_VAR = "STAGE3_SUPPLY_GATE_POLICIES"
+
 # --- WAVE W3 (tool catalog, 2026-09-08) ------------------------------------
 # Every ``tools`` LIST in ``configs/`` names catalog ids and must resolve in
 # ``rails.tools.TOOL_CATALOG`` (registered from TOOLS_MODULE above), exactly as
@@ -225,6 +246,7 @@ ALL_REGISTRY_VARS = (
     | set(NESTED_ID_KEYS.values())
     | set(NESTED_LIST_ID_KEYS.values())
     | {MAX_TOKENS_POLICY_VAR}
+    | {SCENARIO_GATE_POLICY_VAR}
     | {TOOL_REGISTRY_VAR}  # WAVE W3
 )
 
@@ -553,6 +575,23 @@ def _walk_nested_id_keys(node: object, path_prefix: str = ""):
             yield from _walk_nested_id_keys(item, f"{path_prefix}[{index}]")
 
 
+def _walk_scenario_gates(node: object, path_prefix: str = ""):
+    """``(dotted path, gate object)`` for every :data:`SCENARIO_GATE_KEY`
+    container at any depth -- the path counterpart of
+    :func:`_walk_nested_id_keys`, keyed on the CONTAINER rather than on the
+    ambiguous ``policy`` key inside it."""
+
+    if isinstance(node, dict):
+        for key, value in node.items():
+            here = f"{path_prefix}.{key}" if path_prefix else key
+            if key == SCENARIO_GATE_KEY and isinstance(value, dict):
+                yield here, value
+            yield from _walk_scenario_gates(value, here)
+    elif isinstance(node, list):
+        for index, item in enumerate(node):
+            yield from _walk_scenario_gates(item, f"{path_prefix}[{index}]")
+
+
 def _walk_nested_list_id_keys(node: object, path_prefix: str = ""):
     """``(dotted path, key, value)`` for every :data:`NESTED_LIST_ID_KEYS` key
     at any depth -- the list counterpart of :func:`_walk_nested_id_keys`."""
@@ -664,6 +703,16 @@ def rule_unregistered_config_values(
                 for index, entry in enumerate(value):
                     if isinstance(entry, str) and entry not in registered[var]:
                         offenders.append(f"{relpath}::{dotted_path}[{index}]={entry}")
+
+            for dotted_path, gate in _walk_scenario_gates(doc):
+                dotted = f"{dotted_path}.{SCENARIO_GATE_POLICY_KEY}"
+                keys_found.add(f"{SCENARIO_GATE_KEY}.{SCENARIO_GATE_POLICY_KEY}")
+                value = gate.get(SCENARIO_GATE_POLICY_KEY)
+                if (
+                    not isinstance(value, str)
+                    or value not in registered[SCENARIO_GATE_POLICY_VAR]
+                ):
+                    offenders.append(f"{relpath}::{dotted}={value}")
 
     # The per-sample max_tokens rule, matched by PATH (see
     # DECODING_PARAMS_KEY's own comment for why not by bare key name).

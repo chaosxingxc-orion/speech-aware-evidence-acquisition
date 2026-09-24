@@ -431,11 +431,13 @@ def build_knowledge_store_supply(
         SOURCE_SCOPED_CONTEXT_PROVIDER_ID,
     )
 
-    from .knowledge_provider import resolve_provider
+    from .knowledge_provider import resolve_provider, resolve_scenario_gate
 
     from .stage3_delta_supply import (
         STAGE3_DELTA_CONTEXT_PROVIDER_ID,
         STAGE3_DELTA_NODES,
+        STAGE3_DELTA_SCENARIO_GATE_KEY,
+        STAGE3_DELTA_SCENARIO_GATE_SKIP_REASON,
         STAGE3_DELTA_STORE_ROLE,
         STAGE3_DELTA_UNCONDITIONAL_PROVIDER_ID,
     )
@@ -496,6 +498,21 @@ def build_knowledge_store_supply(
     #: route deduplicated it" is a count a reader can assert on, never a
     #: silent normalisation.
     delta_candidate_projection_audits: dict[str, object] = {}
+    #: ITERATION 3 (2026-09-24): the parsed, registry-resolved row-level
+    #: APPLICATION gate of each candidate-bound route that declares one,
+    #: keyed ``(store_id, phase)``. Built ONCE, at config load, by
+    #: ``_validate_stage3_delta_context_spec`` -- a route without a
+    #: ``scenario_gate`` key has no entry here and behaves byte-identically
+    #: to its ungated self.
+    delta_scenario_gates: dict[tuple[str, str], object] = {}
+    #: Per-row receipt of EVERY gate decision, open and closed alike, keyed
+    #: exactly as the skip audits are and published on
+    #: ``route.receipt["delta_scenario_gate"]`` ONLY when some route declares a
+    #: gate. Both outcomes are recorded because "the gate closed here" is only
+    #: readable against "and it was open there": a receipt carrying closures
+    #: alone cannot say what share of rows the gate actually withheld. Labels
+    #: and counts only -- a scenario name, a candidate count and a boolean.
+    delta_scenario_gate_audits: dict[str, object] = {}
     #: How this route reads each candidate state phase, memoised at BUILD time
     #: from the plan's own candidate routes
     #: (``rails.candidate_semantic_supply.candidate_state_read_parameters``).
@@ -551,6 +568,11 @@ def build_knowledge_store_supply(
         slice of the store this phase is served from (spec S3-4s, "filtered
         to the rows whose ``node_target`` is that phase's node"). A spec
         without it is the exact pre-S3-4s spec and validates identically.
+
+        Iteration 3 (2026-09-24) admits ONE more, ``scenario_gate``: on WHICH
+        ROWS this node takes the supply at all. Optional in exactly the same
+        sense -- a spec without it is the pre-iteration-3 spec and validates,
+        selects and supplies identically.
         """
 
         phases = program.phase_names()
@@ -562,7 +584,10 @@ def build_knowledge_store_supply(
             or not (
                 {"provider", "candidate_state_phase", "cap", "rank_by"}
                 <= set(raw_spec)
-                <= {"provider", "candidate_state_phase", "cap", "rank_by", "node_target"}
+                <= {
+                    "provider", "candidate_state_phase", "cap", "rank_by",
+                    "node_target", STAGE3_DELTA_SCENARIO_GATE_KEY,
+                }
             )
             or raw_spec.get("rank_by") != "prior_score"
             or not isinstance(candidate_state_phase, str)
@@ -588,6 +613,26 @@ def build_knowledge_store_supply(
         # disagree about one Perception phase is a config defect and must be
         # refused before a contact is spent, never discovered on row 75.
         _delta_candidate_read(candidate_state_phase)
+        # ITERATION 3: the OPTIONAL row-level application gate, parsed and
+        # resolved in the SAME place and for the SAME reason -- a gate naming
+        # a scenario this carrier does not have, or an intent id written where
+        # a scenario belongs, is a config defect, and the only authority on
+        # which scenarios exist is the legal candidate inventory this route
+        # already binds against. An explicit ``null`` is refused too: a spec
+        # that carries the key is asking for a gate.
+        if STAGE3_DELTA_SCENARIO_GATE_KEY in raw_spec:
+            legal = tuple(legal_candidate_ids or ())
+            if not legal:
+                raise KnowledgeStoreError(
+                    "stage3-deltas context_supply requires the task adapter "
+                    "authoritative legal candidate inventory"
+                )
+            try:
+                delta_scenario_gates[(store.store_id, phase)] = resolve_scenario_gate(
+                    raw_spec[STAGE3_DELTA_SCENARIO_GATE_KEY], legal_intent_ids=legal
+                )
+            except RailsError as error:
+                raise KnowledgeStoreError(str(error)) from error
 
     def _validate_stage3_delta_unconditional_spec(raw_spec, *, store, phase):
         """The UNCONDITIONAL branch (S3-4s), the FIRST phase's own.
@@ -603,6 +648,12 @@ def build_knowledge_store_supply(
         in this router is (``bootstrap_first_phase``). ``candidate_state_phase``
         is therefore REFUSED here, not merely optional: a spec that names one
         is asking for a per-row binding this route cannot honour.
+
+        Iteration 3's ``scenario_gate`` is refused for exactly that reason and
+        by exactly that rule (the key set below is an EQUALITY): the gate reads
+        the row's Perception candidates, and this is the node that produces
+        them, so at the moment it is served there is nothing to gate on. A cell
+        that wants the Perception deltas withheld simply omits this route.
         """
 
         cap = raw_spec.get("cap")
@@ -726,6 +777,42 @@ def build_knowledge_store_supply(
         with delta_supply_lock:
             delta_candidate_projection_audits[key] = entry
 
+    def _record_delta_scenario_gate(
+        *,
+        store_id,
+        phase,
+        node_target,
+        sample_id,
+        query_state,
+        gate,
+        decision,
+    ):
+        """Record ONE row-level gate decision at one node, open or closed.
+
+        Labels and counts only -- the majority scenario NAME, how many
+        candidates it was read from, and whether the gate closed. No utterance,
+        no transcript, no gold label, no candidate text and no statement. Keyed
+        and locked exactly as the skip audits beside it are, and idempotent for
+        the same reason: one router serves every row of a split, a campaign
+        walks rows in parallel, and re-deciding the same (phase, row, query
+        state) is a pure function that returns the same answer.
+        """
+
+        key = f"{phase}:{sample_id}:{query_state.content_hash()}"
+        entry = {
+            "node": node_target,
+            "phase": phase,
+            "sample_id": sample_id,
+            "store_id": store_id,
+            "policy_id": decision.policy_id,
+            "gated_scenarios": list(gate.scenarios),
+            "majority_scenario": decision.majority_scenario,
+            "candidate_count": decision.candidate_count,
+            "closed": decision.closed,
+        }
+        with delta_supply_lock:
+            delta_scenario_gate_audits[key] = entry
+
     def _record_delta_supply_skip(
         *,
         store_id,
@@ -735,6 +822,7 @@ def build_knowledge_store_supply(
         query_state,
         already_acquired,
         reason,
+        majority_scenario=None,
     ):
         """Record one stage3-deltas route that introduced nothing.
 
@@ -756,6 +844,11 @@ def build_knowledge_store_supply(
             "already_acquired": already_acquired,
             "reason": reason,
         }
+        # Declared LAST and omitted when absent, so every skip receipt this
+        # router has ever written for an ungated route is byte-identical to
+        # its pre-iteration-3 self.
+        if majority_scenario is not None:
+            entry["majority_scenario"] = majority_scenario
         with delta_supply_lock:
             delta_supply_audits[key] = entry
 
@@ -877,6 +970,49 @@ def build_knowledge_store_supply(
                 projection=hypothesis_state.projection,
             )
         candidate_facet_ids = tuple(item.intent_id for item in hypothesis_state.candidates)
+
+        # ITERATION 3 (2026-09-24), the coverage-gated application policy. The
+        # general-scenario diagnostic (docs/results/2026-09-24-slurp-general-
+        # scenario-diagnostic.md) established that on the strata the store has
+        # no reach into, the DERANGEMENT TWIN loses as much as the arm does:
+        # the loss there is the FORM cost of carrying a supply, not the content
+        # of any delta. So the fix is not a better delta, it is not applying
+        # the store where it should not apply.
+        #
+        # The gate reads the SAME projected candidate list the selection below
+        # reads -- after the first-occurrence projection, before any store
+        # lookup -- and NOTHING ELSE. No gold, no reference transcript, no
+        # future turn, no scorer: only the sealed Perception state of this same
+        # episode, which this route already holds. A CLOSED gate takes no
+        # supply step at all, returning ``None`` exactly as the "introduces
+        # nothing new" branch below does, so a withheld node seals as an
+        # ordinary ``organize`` step rather than an empty acquisition. An OPEN
+        # gate changes nothing: control falls through to the identical
+        # selection, and the supply is byte-identical to the ungated route's.
+        gate = delta_scenario_gates.get((store.store_id, phase))
+        if gate is not None:
+            decision = gate.decide(candidate_facet_ids)
+            _record_delta_scenario_gate(
+                store_id=store.store_id,
+                phase=phase,
+                node_target=node_target,
+                sample_id=sample_id,
+                query_state=query_state,
+                gate=gate,
+                decision=decision,
+            )
+            if decision.closed:
+                _record_delta_supply_skip(
+                    store_id=store.store_id,
+                    phase=phase,
+                    node_target=node_target,
+                    sample_id=sample_id,
+                    query_state=query_state,
+                    already_acquired=0,
+                    reason=STAGE3_DELTA_SCENARIO_GATE_SKIP_REASON,
+                    majority_scenario=decision.majority_scenario,
+                )
+                return None
 
         provider = _build_stage3_delta_provider(store, raw_spec=raw_spec)
         # 2026-09-23, the CELL-1 generation smoke's THIRD failure -- SUPPLIES
@@ -1423,6 +1559,11 @@ def build_knowledge_store_supply(
         route.receipt["delta_candidate_projection"] = (
             delta_candidate_projection_audits
         )
+        if delta_scenario_gates:
+            # ITERATION 3: published ONLY when a route actually declares a
+            # gate, so every receipt an ungated cell produces stays byte-
+            # identical to its pre-iteration-3 self.
+            route.receipt["delta_scenario_gate"] = delta_scenario_gate_audits
     # DELIBERATELY NOT WIDENED (E3): a config whose stores declare later-phase
     # plain phase_supply and NOTHING ELSE (no context_supply anywhere, no
     # candidate_supply anywhere) still gets no `automatic_for_phase` -- exactly

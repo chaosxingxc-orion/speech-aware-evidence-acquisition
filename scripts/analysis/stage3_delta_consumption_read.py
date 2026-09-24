@@ -76,6 +76,9 @@ if str(REPO / "src") not in sys.path:
     sys.path.insert(0, str(REPO / "src"))
 
 from speech_aware_evidence_acquisition.analysis.null_calibration_cli import rows_for  # noqa: E402
+from speech_aware_evidence_acquisition.rails.stage3_delta_supply import (  # noqa: E402
+    STAGE3_DELTA_SCENARIO_GATE_SKIP_REASON,
+)
 
 DATA = Path(
     os.environ.get(
@@ -364,10 +367,33 @@ def extract_row_supply(results, policy_id, store_id: str) -> dict:
     }
 
 
+#: The per-node skip block a node with NO skip receipt reports. Named once so the
+#: fallback and the real block can never drift apart.
+EMPTY_SKIP_BLOCK = {
+    "skip_events": 0,
+    "rows_skipped": 0,
+    "reasons": {},
+    "already_acquired_total": 0,
+    "already_acquired_events": 0,
+    "gated_events": 0,
+    "gated_rows": 0,
+    "gated_majority_scenarios": {},
+}
+
+
 def summarise_skips(delta_supply) -> dict:
-    """The skip receipts, by node: events, distinct rows and the reason each route gave."""
+    """The skip receipts, by node: events, distinct rows and the reason each route gave.
+
+    Iteration 3 (2026-09-24) adds the GATE counts. A row-level scenario gate
+    declines a node by taking no supply step at all, receipted through the very
+    same ``delta_supply`` map with ``reason ==
+    STAGE3_DELTA_SCENARIO_GATE_SKIP_REASON`` plus the majority scenario LABEL
+    that closed it -- so the reason counter below already names it, and
+    ``gated_rows`` separates "this node was WITHHELD on n rows" from "this node
+    found nothing to give on n rows", which are different facts about a cell.
+    """
     if not isinstance(delta_supply, dict):
-        return {"published": False, "by_node": {}, "events": 0}
+        return {"published": False, "by_node": {}, "events": 0, "gated_events": 0}
     by_node: dict = {}
     for entry in delta_supply.values():
         if not isinstance(entry, dict):
@@ -381,6 +407,9 @@ def summarise_skips(delta_supply) -> dict:
                 "reasons": Counter(),
                 "already_acquired_total": 0,
                 "already_acquired_events": 0,
+                "gated_events": 0,
+                "gated_rows": set(),
+                "gated_majority_scenarios": Counter(),
             },
         )
         block["skip_events"] += 1
@@ -390,6 +419,10 @@ def summarise_skips(delta_supply) -> dict:
         if already:
             block["already_acquired_total"] += int(already)
             block["already_acquired_events"] += 1
+        if entry.get("reason") == STAGE3_DELTA_SCENARIO_GATE_SKIP_REASON:
+            block["gated_events"] += 1
+            block["gated_rows"].add(entry.get("sample_id"))
+            block["gated_majority_scenarios"][str(entry.get("majority_scenario"))] += 1
     rendered = {
         node: {
             "skip_events": block["skip_events"],
@@ -397,6 +430,11 @@ def summarise_skips(delta_supply) -> dict:
             "reasons": dict(sorted(block["reasons"].items())),
             "already_acquired_total": block["already_acquired_total"],
             "already_acquired_events": block["already_acquired_events"],
+            "gated_events": block["gated_events"],
+            "gated_rows": len(block["gated_rows"]),
+            "gated_majority_scenarios": dict(
+                sorted(block["gated_majority_scenarios"].items())
+            ),
         }
         for node, block in sorted(by_node.items())
     }
@@ -404,6 +442,7 @@ def summarise_skips(delta_supply) -> dict:
         "published": True,
         "by_node": rendered,
         "events": sum(block["skip_events"] for block in rendered.values()),
+        "gated_events": sum(block["gated_events"] for block in rendered.values()),
     }
 
 
@@ -542,16 +581,7 @@ def build_consumption(
             "rows_at_full_cap": (histogram.get(cap, 0) if cap is not None else None),
             "distinct_value_ids": len(distinct),
             "distinct_value_id_list": sorted(distinct),
-            "skips": (skips.get("by_node") or {}).get(
-                node,
-                {
-                    "skip_events": 0,
-                    "rows_skipped": 0,
-                    "reasons": {},
-                    "already_acquired_total": 0,
-                    "already_acquired_events": 0,
-                },
-            ),
+            "skips": (skips.get("by_node") or {}).get(node, dict(EMPTY_SKIP_BLOCK)),
             "route_is_inert": len(supplied_rows) == 0,
         }
         if joinable and supplied_rows:
@@ -609,6 +639,7 @@ def build_consumption(
         ),
         "unconditional_seed_value_ids": len(unconditional.get("selected_value_ids") or ()),
         "skip_events": skips.get("events", 0),
+        "gated_skip_events": skips.get("gated_events", 0),
         "projection_events": projection.get("events", 0),
         "inert_routes": [node for node, block in per_node.items() if block["route_is_inert"]],
         "score_join": "joined" if joinable else "not available",
@@ -665,6 +696,7 @@ def render_markdown(payload: dict, *, max_value_rows: int) -> str:
         "distinct_value_ids_supplied",
         "unconditional_seed_value_ids",
         "skip_events",
+        "gated_skip_events",
         "projection_events",
     ):
         lines.append(f"| {key} | {_fmt(summary.get(key))} |")
@@ -675,9 +707,11 @@ def render_markdown(payload: dict, *, max_value_rows: int) -> str:
     lines.append("")
     lines.append(
         "| node | cap | rows supplied | share | items | items / supplied row | at full cap "
-        "| distinct value ids | skip events | rows skipped |"
+        "| distinct value ids | skip events | rows skipped | gated rows |"
     )
-    lines.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |")
+    lines.append(
+        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |"
+    )
     for node in block["node_order"]:
         entry = block["per_node"][node]
         skips = entry["skips"]
@@ -686,9 +720,26 @@ def render_markdown(payload: dict, *, max_value_rows: int) -> str:
             f"| {_fmt(entry['rows_supplied_share'])} | {entry['items_supplied_total']} "
             f"| {_fmt(entry['items_per_supplied_row_mean'])} "
             f"| {_fmt(entry['rows_at_full_cap'], 0)} | {entry['distinct_value_ids']} "
-            f"| {skips.get('skip_events', 0)} | {skips.get('rows_skipped', 0)} |"
+            f"| {skips.get('skip_events', 0)} | {skips.get('rows_skipped', 0)} "
+            f"| {skips.get('gated_rows', 0)} |"
         )
     lines.append("")
+    # Iteration 3: WHICH strata the gate actually withheld, per node. Labels and
+    # counts only, and printed only where a gate closed at all -- a run of an
+    # ungated cell renders exactly what it always did.
+    gate_lines = []
+    for node in block["node_order"]:
+        scenarios = block["per_node"][node]["skips"].get("gated_majority_scenarios") or {}
+        if scenarios:
+            gate_lines.append(
+                f"- {node} gate closed on majority scenario: "
+                + "; ".join(
+                    f"{scenario} = {count}" for scenario, count in sorted(scenarios.items())
+                )
+            )
+    if gate_lines:
+        lines.extend(gate_lines)
+        lines.append("")
     reason_lines = []
     for node in block["node_order"]:
         reasons = block["per_node"][node]["skips"].get("reasons") or {}

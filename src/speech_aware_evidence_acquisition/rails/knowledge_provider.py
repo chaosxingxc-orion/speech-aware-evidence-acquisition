@@ -60,6 +60,7 @@ from ..core.base import (
     KNOWLEDGE_FUSERS,
     KNOWLEDGE_PROVIDERS as _CORE_KNOWLEDGE_PROVIDERS,
     KNOWLEDGE_RANKERS,
+    STAGE3_SUPPLY_GATE_POLICIES,
 )
 from ..core import evidence as _core_evidence  # noqa: F401 -- side-effect import:
 # registers "conec-contexts"/"conec-names"/"conec-bias-list"/... into the
@@ -95,8 +96,11 @@ from .stage3_delta_supply import (
     node_target_of_task_target,
     select_unconditional_stage3_delta_values,
     STAGE3_DELTA_CONTEXT_PROVIDER_ID,
+    STAGE3_DELTA_SCENARIO_GATE_POLICY_ID,
     DEFAULT_STAGE3_DELTA_CAP,
     DeltaCandidate,
+    ScenarioGate,
+    parse_scenario_gate,
     select_stage3_delta_values,
 )
 from .supply import SupplyDose, SupplyForm, SupplyItem, SupplyPacket
@@ -2136,6 +2140,22 @@ def _stage3_delta_unconditional_provider(**kwargs: object) -> Stage3DeltaUncondi
     return Stage3DeltaUnconditionalProvider(**kwargs)
 
 
+def _majority_candidate_scenario_gate(**kwargs: object) -> ScenarioGate:
+    """Stage-3 iteration 3: the one registered supply-application policy.
+
+    Constructed from a config's own ``scenario_gate`` parameters, exactly as
+    every provider factory above is constructed from its route's parameters,
+    so the gate a flight applies is the gate the composed config declares and
+    nothing else. The RULE itself lives beside the selection it gates
+    (``rails.stage3_delta_supply.ScenarioGate``); this is only the registration
+    seam, kept at the canonical site with the provider ids.
+    """
+
+    return ScenarioGate(
+        policy_id=STAGE3_DELTA_SCENARIO_GATE_POLICY_ID, **kwargs
+    ).validate()
+
+
 # Keep all provider/rank/fuse registration at the canonical shared site.
 # Lazy construction avoids circular imports between providers and named stores.
 if "source-scoped-context-v1" not in KNOWLEDGE_PROVIDERS.names():
@@ -2156,6 +2176,10 @@ if STAGE3_DELTA_UNCONDITIONAL_PROVIDER_ID not in KNOWLEDGE_PROVIDERS.names():
     KNOWLEDGE_PROVIDERS.register(
         STAGE3_DELTA_UNCONDITIONAL_PROVIDER_ID, _stage3_delta_unconditional_provider
     )
+if STAGE3_DELTA_SCENARIO_GATE_POLICY_ID not in STAGE3_SUPPLY_GATE_POLICIES.names():
+    STAGE3_SUPPLY_GATE_POLICIES.register(
+        STAGE3_DELTA_SCENARIO_GATE_POLICY_ID, _majority_candidate_scenario_gate
+    )
 
 
 def resolve_provider(provider_id: str, **kwargs: object) -> KnowledgeProvider:
@@ -2165,6 +2189,23 @@ def resolve_provider(provider_id: str, **kwargs: object) -> KnowledgeProvider:
 
     factory = KNOWLEDGE_PROVIDERS.resolve(provider_id)
     return factory(**kwargs)
+
+
+def resolve_scenario_gate(raw_gate: object, *, legal_intent_ids) -> ScenarioGate:
+    """Validate a config's ``scenario_gate`` spec and construct it through the
+    REGISTERED policy, exactly as :func:`resolve_provider` constructs a
+    provider through the registered provider id.
+
+    Two refusals, deliberately in this order: the spec is parsed against the
+    carrier's own scenario catalog first (so a misspelling or an intent id
+    written where a scenario belongs names ITSELF in the error), and the
+    policy id is then resolved in ``core.base.STAGE3_SUPPLY_GATE_POLICIES``, so
+    the registration is load-bearing rather than decorative.
+    """
+
+    spec = parse_scenario_gate(raw_gate, legal_intent_ids=legal_intent_ids)
+    factory = STAGE3_SUPPLY_GATE_POLICIES.resolve(spec.policy_id)
+    return factory(scenarios=spec.scenarios)
 
 
 __all__ = [
@@ -2188,5 +2229,6 @@ __all__ = [
     "SlurpCandidateSemanticProvider",
     "SlurpIntentCandidateProvider",
     "resolve_provider",
+    "resolve_scenario_gate",
     "select_candidate_semantic_values",
 ]

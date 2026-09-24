@@ -36,6 +36,7 @@ it -- never the routing.
 
 from __future__ import annotations
 
+from collections import Counter
 from dataclasses import dataclass
 from typing import Mapping, Sequence
 
@@ -71,6 +72,26 @@ DEFAULT_STAGE3_DELTA_NODE_CAPS = {
 #: of that one, exactly as ``rails.native_episode_receipt`` restates the
 #: episode's own constants rather than importing the runtime.
 STAGE3_DELTA_NODES = ("perception", "solver", "reviewer", "planner")
+#: ITERATION 3, the coverage-gated application policy (the general-scenario
+#: diagnostic, ``docs/results/2026-09-24-slurp-general-scenario-diagnostic.md``).
+#: On TRAIN Fold A the delta store LOSES on the strata it has no reach into,
+#: and the derangement twin loses as much -- so that loss is a FORM cost of
+#: CARRYING a supply, not the content of any delta. The answer is therefore not
+#: a better delta but a narrower APPLICATION: a row-level gate that declines to
+#: supply a node at all where the store should not apply.
+#:
+#: The one registered policy id. A gate names it explicitly, exactly as a route
+#: names its provider, so a config can never mean "some gate" -- and it
+#: resolves in ``core.base.STAGE3_SUPPLY_GATE_POLICIES`` like every other
+#: component id a config declares.
+STAGE3_DELTA_SCENARIO_GATE_POLICY_ID = "majority-candidate-scenario-not-in-v1"
+#: The OPTIONAL ``context_supply.<node>`` key that carries one.
+STAGE3_DELTA_SCENARIO_GATE_KEY = "scenario_gate"
+#: The ``reason`` a CLOSED gate receipts on the route's own skip audit
+#: (``rails.knowledge_stores``'s ``delta_supply`` map). A short label, not a
+#: sentence, because the consumption read counts it
+#: (``scripts/analysis/stage3_delta_consumption_read.py``'s ``gated_rows``).
+STAGE3_DELTA_SCENARIO_GATE_SKIP_REASON = "scenario-gate-closed"
 
 
 class Stage3DeltaSupplyError(RailsError):
@@ -252,16 +273,187 @@ def stage3_delta_selection_receipt(
     return receipt
 
 
+# ---------------------------------------------------------------------------
+# Iteration 3: the row-level scenario gate (runtime state only)
+# ---------------------------------------------------------------------------
+
+
+def scenario_of_intent(intent_id: object) -> str:
+    """The SLURP SCENARIO of one intent id: the part before the first ``_``.
+
+    ``general_quirky -> general``, ``qa_factoid -> qa``,
+    ``iot_hue_lightoff -> iot``. That is the catalog's own composition rule
+    (``data.slurp``'s ontology pairs a scenario with its actions, and an
+    intent id is ``<scenario>_<action>``), and this is the ONE implementation
+    of it on the supply path -- the analysis scripts that already spell
+    ``intent_id.split("_", 1)[0]`` read sealed outputs, never a live route.
+
+    Total on a well-formed id and fail-closed on anything else: nothing is
+    silently coerced into a scenario name.
+    """
+
+    if not isinstance(intent_id, str) or not intent_id:
+        raise Stage3DeltaSupplyError("a SLURP intent id must be a non-empty string")
+    return intent_id.split("_", 1)[0]
+
+
+def catalog_scenarios(legal_intent_ids: Sequence[str]) -> tuple[str, ...]:
+    """The scenario CATALOG, derived from the task adapter's authoritative
+    legal candidate inventory rather than hard-coded here.
+
+    A gate may only name a scenario this carrier actually has, and the one
+    place that is known is the inventory the route already binds against
+    (``rails.knowledge_stores``'s ``legal_candidate_ids``). Deriving it means
+    a misspelling (``generl``) and a CATEGORY error (``qa_factoid``, which is
+    an intent, not a scenario) are both refused by the same rule, at config
+    load, before a contact is spent.
+    """
+
+    ids = tuple(legal_intent_ids or ())
+    if not ids:
+        raise Stage3DeltaSupplyError(
+            "the scenario catalog requires the authoritative legal candidate inventory"
+        )
+    return tuple(sorted({scenario_of_intent(item) for item in ids}))
+
+
+def majority_candidate_scenario(candidate_intent_ids: Sequence[str]) -> str | None:
+    """The MAJORITY scenario of one row's projected Perception candidates, or
+    ``None`` when the row proposed nothing.
+
+    "Majority" is most-frequent, not strictly more than half: a candidate list
+    ``qa_factoid, qa_definition, general_quirky`` has the majority scenario
+    ``qa``. Ties are broken by the FIRST-LISTED candidate -- implemented as "of
+    the scenarios tied at the maximum count, the one whose first occurrence in
+    the candidate list is earliest", which IS the first-listed candidate's
+    scenario whenever that scenario is one of the tied maxima (the case the
+    rule describes), and is still deterministic when it is not (e.g.
+    ``a_x, b_y, b_z, c_p, c_q``, where ``a`` cannot win a tie it is not in).
+    """
+
+    ordered = [scenario_of_intent(item) for item in candidate_intent_ids]
+    if not ordered:
+        return None
+    counts = Counter(ordered)
+    best = max(counts.values())
+    for scenario in ordered:
+        if counts[scenario] == best:
+            return scenario
+    raise AssertionError("unreachable: a counted scenario is always in the list")
+
+
+@dataclass(frozen=True)
+class ScenarioGateDecision:
+    """One row's gate decision at one node. Labels and counts only -- never an
+    utterance, a transcript, a gold label or a statement."""
+
+    policy_id: str
+    majority_scenario: str | None
+    candidate_count: int
+    closed: bool
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "policy_id": self.policy_id,
+            "majority_scenario": self.majority_scenario,
+            "candidate_count": self.candidate_count,
+            "closed": self.closed,
+        }
+
+
+@dataclass(frozen=True)
+class ScenarioGate:
+    """A parsed ``scenario_gate`` spec: WHICH policy, and WHICH scenarios."""
+
+    policy_id: str
+    scenarios: tuple[str, ...]
+
+    def validate(self) -> "ScenarioGate":
+        if self.policy_id != STAGE3_DELTA_SCENARIO_GATE_POLICY_ID:
+            raise Stage3DeltaSupplyError(
+                f"unknown scenario_gate policy {self.policy_id!r}; the one registered "
+                f"policy is {STAGE3_DELTA_SCENARIO_GATE_POLICY_ID!r}"
+            )
+        if (
+            not isinstance(self.scenarios, tuple)
+            or not self.scenarios
+            or any(not isinstance(item, str) or not item for item in self.scenarios)
+            or len(set(self.scenarios)) != len(self.scenarios)
+        ):
+            raise Stage3DeltaSupplyError(
+                "scenario_gate.scenarios must be a non-empty list of distinct "
+                "scenario names"
+            )
+        return self
+
+    def decide(self, candidate_intent_ids: Sequence[str]) -> ScenarioGateDecision:
+        """CLOSED exactly when the row proposed candidates AND their majority
+        scenario is one this gate names. Pure: the only input is the row's own
+        projected Perception candidate list."""
+
+        ordered = tuple(candidate_intent_ids)
+        majority = majority_candidate_scenario(ordered)
+        return ScenarioGateDecision(
+            policy_id=self.policy_id,
+            majority_scenario=majority,
+            candidate_count=len(ordered),
+            closed=majority is not None and majority in self.scenarios,
+        )
+
+    def as_json(self) -> dict[str, object]:
+        return {"policy": self.policy_id, "scenarios": list(self.scenarios)}
+
+
+def parse_scenario_gate(raw: object, *, legal_intent_ids: Sequence[str]) -> ScenarioGate:
+    """Parse and VALIDATE one ``scenario_gate`` spec, fail-closed.
+
+    Refused: an unknown policy id, a missing or extra key, a non-list, an
+    empty list, a repeated name, a non-string name, and any name that is not a
+    scenario of :func:`catalog_scenarios` -- which is what refuses an intent id
+    (``qa_factoid``) written where a scenario belongs.
+    """
+
+    if not isinstance(raw, Mapping) or set(raw) != {"policy", "scenarios"}:
+        raise Stage3DeltaSupplyError(
+            "scenario_gate requires exactly the keys 'policy' and 'scenarios'"
+        )
+    scenarios = raw["scenarios"]
+    if isinstance(scenarios, (str, bytes)) or not isinstance(scenarios, (list, tuple)):
+        raise Stage3DeltaSupplyError(
+            "scenario_gate.scenarios must be a non-empty list of distinct "
+            "scenario names"
+        )
+    gate = ScenarioGate(policy_id=raw["policy"], scenarios=tuple(scenarios)).validate()
+    catalog = frozenset(catalog_scenarios(legal_intent_ids))
+    unknown = sorted(set(gate.scenarios) - catalog)
+    if unknown:
+        raise Stage3DeltaSupplyError(
+            f"scenario_gate.scenarios names non-catalog scenario(s) {unknown}; a "
+            "scenario is the part of a SLURP intent id before the first underscore, "
+            "so an intent id is not one"
+        )
+    return gate
+
+
 __all__ = [
     "DEFAULT_STAGE3_DELTA_CAP",
     "DEFAULT_STAGE3_DELTA_NODE_CAPS",
     "STAGE3_DELTA_CONTEXT_PROVIDER_ID",
     "STAGE3_DELTA_NODES",
+    "STAGE3_DELTA_SCENARIO_GATE_KEY",
+    "STAGE3_DELTA_SCENARIO_GATE_POLICY_ID",
+    "STAGE3_DELTA_SCENARIO_GATE_SKIP_REASON",
     "STAGE3_DELTA_STORE_ROLE",
     "STAGE3_DELTA_UNCONDITIONAL_PROVIDER_ID",
     "DeltaCandidate",
+    "ScenarioGate",
+    "ScenarioGateDecision",
     "Stage3DeltaSupplyError",
+    "catalog_scenarios",
+    "majority_candidate_scenario",
     "node_target_of_task_target",
+    "parse_scenario_gate",
+    "scenario_of_intent",
     "select_stage3_delta_values",
     "select_unconditional_stage3_delta_values",
     "stage3_delta_selection_receipt",
