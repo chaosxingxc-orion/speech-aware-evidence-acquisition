@@ -328,7 +328,7 @@ no gain.
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-FIT-V1` | `...-gepa-r01-fit-v1` | `fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-TWIN-V1` | `...-gepa-r01-twin-v1` | `twin-generation-plan-registered-v1.json` | `fce42bd1812ebb7b4fdfa843722d2d9258c9ceba1d5f59ef4f759cbc1b435670` | `3e9bd26ca5f183e02eede45527928f81d7626c78c8251d81891da65bdaa5ed80` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-TWIN-FIT-V1` | `...-gepa-r01-twin-fit-v1` | `twin-fit-plan-registered-v1.json` | same | same | same |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-V1` | `...-gepa-r01-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `0f6dcd36d872348daa4ac98377e2b5acbff0ca91209eed06a9fc33fcb78da708` | `8d81e61370363d6758dd596ca996e7ecdbddf5ddaa5a5aed8f83a5cda0ba5d40` | `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-V1` | `...-gepa-r01-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `5be01487d8037ea757e011bc62ce4e8bac9c484d6c5a2784fbc654eb3bb6e839` | `023c497a43ac1d22699a45fdbc6b544cf517bc3f8d689e270e6962937fff4a30` | `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-FIT-V1` | `...-gepa-r01-smoke-4-fit-v1` | `smoke-fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-TWIN-V1` | `...-gepa-r01-smoke-4-twin-v1` | `twin-smoke-generation-plan-registered-v1.json` | `7e08dcb26c04d6bad5cb0e303364609bb75714f53a6c1145fc907d6d22d59a1c` | `fab28bae8a3f33b37c6fa912b2039410d025d48c9ec0f7fcc6b21e85a564822e` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-TWIN-FIT-V1` | `...-gepa-r01-smoke-4-twin-fit-v1` | `twin-smoke-fit-plan-registered-v1.json` | same | same | same |
@@ -435,8 +435,8 @@ d["budget"]["smoke"].update({"generation_calls_cap": 44, "fit_endpoint_calls_cap
 d["registered_hashes"].update({
     "arm_composed_config": "a7defc1a4943845f493c9f4af4605d67e51184abc5af29604f279a17119c4810",
     "arm_protocol": "a407a87bfd5fe43d4affdf56651dee0e99bc69c15dc448a6bbda3646b475956d",
-    "smoke_composed_config": "0f6dcd36d872348daa4ac98377e2b5acbff0ca91209eed06a9fc33fcb78da708",
-    "smoke_protocol": "8d81e61370363d6758dd596ca996e7ecdbddf5ddaa5a5aed8f83a5cda0ba5d40"})
+    "smoke_composed_config": "5be01487d8037ea757e011bc62ce4e8bac9c484d6c5a2784fbc654eb3bb6e839",
+    "smoke_protocol": "023c497a43ac1d22699a45fdbc6b544cf517bc3f8d689e270e6962937fff4a30"})
 d["cell_kind"] = ("Stage-3 S3-6 one-factor knowledge cell, the GEPA family (owner decision 101): the locked "
                   "v2.0 plan plus the released 448-value stage3-deltas-gepa-v1 store, read against the sealed "
                   "PLAN arm at the plan's own null, with a derangement twin as the form control. PARTLY a "
