@@ -1,6 +1,6 @@
 # Stage-3 handoff for ChatGPT: the complete experiment plan and the current state
 
-Author: Fable 5.1 (root coordinator). Created 2026-09-24 (UTC). **Last refreshed: 2026-09-24 18:50 UTC**
+Author: Fable 5.1 (root coordinator). Created 2026-09-24 (UTC). **Last refreshed: 2026-09-24 19:10 UTC**
 (this is ONE living document: when a new result lands, the key conclusions in sections 4, 6 and 7 are
 rewritten in place and the refresh stamp moves; there is no log section). Study repository:
 `studies/speech-aware-evidence-acquisition` on `master` (HEAD at writing: `cc9fd097`; every commit
@@ -164,20 +164,36 @@ rules -- never from running a simple algorithm mechanically and declaring a conc
 
 ## 6. The bad-case structure of the locked plan (what the next rollouts must move)
 
-From the Phase A audits (2026-09-17) and the 2026-09-24 diagnostics; the typed, counted bad-case
-bank keyed on runtime-observable signatures is being produced now
-(`docs/results/2026-09-24-slurp-plan-bad-case-bank.md`, script
-`scripts/analysis/slurp_plan_bad_case_bank.py`, agent on branch `fable/badcases`).
+Measured by the bad-case bank (`docs/results/2026-09-24-slurp-plan-bad-case-bank.md`, script
+`scripts/analysis/slurp_plan_bad_case_bank.py`, 2,080 typed rows, every number re-derived from the
+sealed per-sample scores; ledger row `SAEA-SLURP-PLAN-BAD-CASE-BANK-V1` closed). Fold A / DEV-2000-ADDED.
 
-| bad class | evidence | lever |
-| --- | --- | --- |
-| entity FN ~31.5 % | `date` omission dominates (84 / 138 reference dates unmatched on Fold A) | demonstrations that carry the type; slot-contract serialisation |
-| entity FP ~28.8 % | 184 of 414 empty-gold rows emit entities; on DEV, date-bearing knowledge adds `date` FP | demonstrations of "emit nothing"; per-intent legal-type constraints |
-| same-type filler distance 35 % | time / date representation (55 matched, 8 exact) | convention transfer through raw-line exemplars (M1 finding); deterministic normaliser (module M3) |
-| intent by candidate coverage | own card supplied -> 96.5 % covered, absent -> 17.3 % | Perception candidate construction (K, neighbour-intent union, ordering) |
-| general / play / social | general intent 43 %; DEV intent 76.6 (far-field 73.9 / headset 79.8) | no content exists; protect, do not try to win (diagnostic) |
-| greedy diffuseness | byte-identical prompts flip 28 % of raw outputs, 5 % of intents; 225 / 625 rows disagree across 5 samples | sample-and-aggregate; adaptive compute on disagreement |
-| review loop inert | ACCEPT 98.4 %, 5 revisions / 1,000 rows | give the Reviewer evidence (sample disagreement, support counts, checker results) |
+| class (PLAN) | rows T / D | stable-wrong T / D | SLU headroom pp T / D | intent headroom pp T / D | what it is |
+| --- | ---: | ---: | ---: | ---: | --- |
+| ENTITY-MIXED (FN and FP on one row) | 193 / 195 | 187 / 190 | +17.4 / +16.5 | 0 | half of all recoverable SLU; never moved by any plan module; dominated by same-type SPAN-BOUNDARY containments (77 of 168 mismatches), only 4 / 168 reachable by any surface normalisation |
+| INTENT-UNCOVERED (gold outside Perception's list) | 130 / 169 | 127 / 165 | +5.4 / +6.8 | +12.0 / +16.9 | 68 % / 73 % of intent errors; the delivered wrong intent was itself a candidate 95 % of the time: a CANDIDATE-PROPOSAL failure, not a selection failure |
+| ENTITY-FN-ONLY | 84 / 65 | 72 / 60 | +5.1 / +4.0 | 0 | `date` leads (70 / 74); the slot's own contract was supplied on 100 % of date / time FN rows: contract text is exhausted |
+| ENTITY-FP-ONLY | 131 / 108 | 120 / 95 | +4.8 / +3.5 | 0 | 41.5 % / 48.4 % of empty-gold rows emit entities; the exemplar pool holds 0 entity-free values out of 9,354 while 38 % / 31 % of rows carry no gold entity; the plan CREATES 58 / 41 FP-ONLY rows from direct-correct rows |
+| INTENT-COVERED (gold in the list, wrong pick) | 61 / 63 | 57 / 60 | +2.4 / +2.7 | +5.7 / +6.3 | selection among candidates |
+| ALL-BAD | 600 / 602 | 563 / 571 | +36.4 / +34.6 | +17.8 / +23.4 | -- |
+
+Stability: only 7.2 % / 6.6 % of rows flip between PLAN and PLANr at row level; the bad mass is
+STABLE and therefore a real optimisation target. Direct -> PLAN: +151 / +165 net repairs, but
+ENTITY-MIXED (82 / 92), FN-ONLY (61 / 37) and FP-ONLY (24 / 17) rows sit untouched.
+
+Gold-free runtime signatures (what a policy can key on): the supplied exemplars' intent agreement
+with candidate 1 falls from 0.70 to 0.20 (Fold A; 0.75 -> 0.21 DEV) on INTENT-UNCOVERED rows -- a
+directly gateable trigger for broader candidate construction; far-field +11 / +13 pp on the
+entity classes; Planner REVISE +6.9 pp; the deliver-normaliser changing the answer +10 pp on
+MIXED. Three plan constants separate nothing (20 exemplars, 0 entity-free exemplars, no
+compaction).
+
+Consequences for the rollout design: (1) candidate PROPOSAL (Perception K, neighbour-intent union,
+exemplar-intent agreement as the trigger) carries all the intent headroom; (2) entity-free
+demonstrations are a pure data-construction defect with +4 pp SLU headroom; (3) span-boundary
+resolution (ENTITY-MIXED) is the largest SLU mass and needs demonstrations of boundary
+conventions and sample-level consensus (aggregation), not contracts or normalisers; (4) the
+greedy diffuseness lever is real but bounded (row-level flips 7 %).
 
 ## 7. The comprehensive experiment plan from here and the fast-validation routes (Stage 3, revised 2026-09-24)
 
@@ -216,15 +232,16 @@ in one day, and it costs <= 4 GPU-hours before that read.
 
 | # | route | target bad class | first read | GPU-h to first read | status | key conclusion |
 | --- | --- | --- | --- | ---: | --- | --- |
-| F0 | Bad-case bank of the locked plan: typed, counted, runtime-observable signatures, stable-wrong vs flipping rows, recoverable headroom per class, Fold A and DEV-2000-ADDED | all | zero-contact script over the sealed PLAN / PLANr / direct arms | 0 | RUNNING (branch `fable/badcases`) | pending |
+| F0 | Bad-case bank of the locked plan | all | zero-contact script over the sealed arms | 0 | DONE (`docs/results/2026-09-24-slurp-plan-bad-case-bank.md`) | intent errors are candidate-PROPOSAL failures with a gold-free trigger (exemplar-intent agreement 0.70 -> 0.20); ENTITY-MIXED = half the SLU headroom, span boundaries; 0 entity-free exemplars in the pool (+4 pp FP headroom); contract text and surface normalisation exhausted |
 | F1 | Offline sample aggregation over ROLL-1's five sealed samples: R0 single, R1 medoid, R2 intent-plurality medoid, R3 support-filtered (s = 2/3/4), oracle best-of-5, with the deterministic-checker filter | greedy diffuseness (225 / 625 rows disagree); entity FP | zero-contact script over sealed samples and per-sample official scores | 0 | RUNNING (branch `fable/agg`) | pending; AGG-1 (F7) opens only if an I7-compatible rule clears +1.5 pp SLU vs single |
 | F2 | Within-flight A/A null: the identical PLAN prompt twice per row inside one flight, 200 R01C rows, greedy | measurement floor | per-row paired delta distribution -> the within-flight margin h_within | ~0.4 | REGISTERING (branch `fable/aanull`) | decides whether n = 200 variant rollouts are readable |
-| F3 | ROLL-2-VARIANTS: K = 4 exemplar-construction variants per row on R01C plus the A/A control, one flight, Solver only, dense rewards | entity FN (`date`), FP on empty-gold rows, same-type filler distance | group-relative advantage per variant per state | ~1.5 | DESIGN (needs F0 headroom + F2 margin) | -- |
-| F4 | Perception coverage rollout: 4 candidate-construction variants (K, neighbour-intent union, general fallback position, card order), one Perception contact per row per variant, Fold A; reward = gold-in-candidates coverage | intent by candidate coverage (own card absent -> 17.3 % covered) | coverage per variant per state | ~1 | DESIGN | -- |
+| F3 | VAR-1 construction-variant family on R01C (625 rows, full plan): PLAN, PLANr (own null), exemplars k 10 / 30 / intent-diversified, Perception k 16 + 5 candidates; paired per row at the R01C own null; reads = per-row variant table, entity FP / FN by type, candidate coverage, advantage per state | entity FN / FP, same-type distance, intent coverage | six ~1 GPU-h flights in one chain | ~6.5 | REGISTERING (branch `fable/var1`) | -- |
+| F4 | Candidate-proposal rollout: Perception K / neighbour-intent union / exemplar-intent-agreement-triggered broadening; the coverage read comes free from every VAR-1 flight's Perception receipts | INTENT-UNCOVERED (+12 / +17 pp intent headroom) | gold-in-candidates coverage per variant per state | (in F3, then ~1) | DESIGN after VAR-1's coverage read | -- |
 | F5 | Per-intent legal slot-type constraint at the delivery node (llama.cpp json_schema / grammar): offline mass count first, then a four-row smoke and a Fold A cell | type swap (4.7 %), illegal types, part of FP | offline count, then the admission rule | 0, then ~2 | DESIGN | -- |
 | F6 | Bootstrapped demonstrations: the core's own gold-verified rollout outputs rendered as exemplars in its own output format, retrieved by speech key (DSPy-style bootstrap, ExpeL-style successful trajectories) | conventions, entity FN / FP | inside F3 as a source variant | (in F3) | DESIGN | -- |
 | F7 | AGG-1 inference-time selection cell: adaptive N + deterministic verifier + medoid commit; Fold A vs PLAN at the own null, then DEV-2000-ADDED | greedy diffuseness | admission rule | ~3.5 (+3.5 DEV) | GATED by F1 | -- |
 | F8 | Reviewer with evidence: sample disagreement, per-entity support counts and checker results instead of one draft | review loop inert (ACCEPT 98.4 %) | inside F7's form | (in F7) | DESIGN | -- |
+| F10 | Entity-free demonstrations: the exemplar view rebuilt to include entity-free TRAIN utterances rendered with the empty answer form (`train-exemplars-with-empty-v1`), then a VAR-1 variant | ENTITY-FP-ONLY (+4.8 / +3.5 pp SLU headroom) | model-free release, then one ~1 GPU-h variant flight | 0, then ~1 | BUILDING (branch `fable/emptyex`) | -- |
 | F9 | Contract / instruction search (GEPA-style on the task contract: date / time serialisation, "no entity" rule, per-type convention line), selected on DEV-remainder rows, validated on Fold A / B | date / time FN, empty-gold FP | small-batch paired search, then a cell | ~2 | LATER (after F3 / F5) | -- |
 
 Closed routes (do not reopen): the semantic-delta APPLICATION line (gating / pruning / re-ranking
