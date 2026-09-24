@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -137,12 +138,24 @@ def test_no_bookkeeping_key_is_left_as_a_pending_token() -> None:
     before ``ensure_artifact_pinned`` can mint the real one. Neither
     ``core.flight.cli check`` nor ``scripts/flights/repin_cell.py`` could
     reach the preparation step while a token was left, so a token left here
-    is a defect, not a hand-off."""
+    is a defect, not a hand-off.
+
+    2026-09-24: all four baselines have since been flipped to ready and
+    flown, so ``prepared_phase_supply`` is now present everywhere (the flip
+    mints it under the cell's own run id). The live invariant is unchanged in
+    substance -- no bookkeeping key may hold a leftover ``PENDING_``
+    placeholder -- so this key is checked for a well-formed pin when present
+    instead of being required absent.
+    """
 
     for filename in _BASELINES:
         document = _load(REPO_ROOT / "configs" / "baseline" / filename)
-        # The flip mints this one and inserts its readiness requirement.
-        assert "prepared_phase_supply" not in document, filename
+        # Pre-flip this key is absent; post-flip the mint fills it with a
+        # real pin (never a PENDING_ placeholder string).
+        supply = document.get("prepared_phase_supply")
+        if supply is not None:
+            assert isinstance(supply, dict), filename
+            assert supply.get("relpath") and supply.get("sha256"), filename
         for key in _BOOKKEEPING_KEYS - {"prepared_phase_supply"}:
             value = document[key]
             assert value, (filename, key)
@@ -187,30 +200,54 @@ def test_the_store_pins_name_one_released_version_and_two_distinct_digests() -> 
 
 
 def test_the_experiment_readiness_requirements_pin_the_same_release() -> None:
-    """A cell is HELD on its store's ``release.json``; that requirement and
-    the baseline's own release pin are the same document and the same
-    digest, or the flip would mint a readiness requirement for a store the
-    fragment does not use."""
+    """A HELD cell's ``preparation`` requirement pins its store's
+    ``release.json``, matching the baseline's own release pin, or the flip
+    would mint a readiness requirement for a store the fragment does not
+    use. Once ``scripts/flights/repin_cell.py`` flips a cell to ready it
+    mints that cell's own phase-supply artifact and REWRITES the same
+    requirement to pin that artifact instead (see
+    ``test_no_bookkeeping_key_is_left_as_a_pending_token``, "the flip mints
+    this one").
+
+    2026-09-24: CELL-1's generation and twin cells have since been flown and
+    flipped to ready, so both forms now coexist inside these fragments (the
+    still-held fit cells keep the release pin; the flown cells carry their
+    own minted artifact). The check follows each cell's OWN
+    ``readiness.state`` and its OWN baseline's ``prepared_phase_supply``
+    rather than assuming every cell in the fragment is still held.
+    """
 
     by_side = {}
     for filename in _BASELINES:
         document = _load(REPO_ROOT / "configs" / "baseline" / filename)
         store = document["knowledge_stores"]["stage3-deltas"]
         by_side["twin" if "twin" in filename else "arm"] = store["release"]
+
     for name in (
         "slurp-native-stage3-delta-cell-r01-v1.json",
         "slurp-native-stage3-delta-cell-smoke-4-v1.json",
     ):
         fragment = _load(REPO_ROOT / "configs" / "experiment" / name)
-        pinned = {
-            (requirement["relpath"], requirement["sha256"])
-            for cell in fragment["cells"]
-            for requirement in cell["readiness"]["requirements"]
-            if requirement["kind"] == "preparation"
-        }
-        assert pinned == {
-            (pin["relpath"], pin["sha256"]) for pin in by_side.values()
-        }, name
+        for cell in fragment["cells"]:
+            preparation = [
+                requirement
+                for requirement in cell["readiness"]["requirements"]
+                if requirement["kind"] == "preparation"
+            ]
+            assert len(preparation) == 1, (name, cell["cell_id"])
+            pin = (preparation[0]["relpath"], preparation[0]["sha256"])
+            side = "twin" if "twin" in cell["cell_id"] else "arm"
+            release_pin = (by_side[side]["relpath"], by_side[side]["sha256"])
+            if cell["readiness"]["state"] == "held":
+                assert pin == release_pin, (name, cell["cell_id"])
+            else:
+                baseline = _load(
+                    REPO_ROOT / "configs" / "baseline"
+                    / f"{cell['baseline_fragment']}.json"
+                )
+                own = baseline["prepared_phase_supply"]
+                assert pin == (own["relpath"], own["sha256"]), (name, cell["cell_id"])
+                assert pin != release_pin, (name, cell["cell_id"])
 
 
 def test_smoke_variants_carry_the_same_store_shape_as_their_full_siblings() -> None:
@@ -232,6 +269,13 @@ def test_smoke_variants_carry_the_same_store_shape_as_their_full_siblings() -> N
 # retires it. The replacement must be the SAME cell: what moves is the run,
 # attempt and fit identity, because a plan budget is run-cumulative across
 # every attempt of one run id.
+#
+# 2026-09-24: the v2 smoke was itself flown (registered at commit a2754593,
+# flipped to ready at commit 630330b6) and failed at the Reviewer input (12
+# contacts metered); its run id was retired in turn and a v3 smoke replaced
+# it (commit abeba9f5). The tests below are updated where a value moved from
+# held/unconsumed to ready/consumed as a normal consequence of that flight,
+# and kept exactly where the underlying structural invariant still holds.
 # ---------------------------------------------------------------------------
 
 _V2_BASELINE = "slurp-native-stage3-delta-cell-smoke-4-v2-baseline-v1.json"
@@ -245,24 +289,38 @@ def test_the_v2_smoke_baseline_moves_only_its_fit_identity() -> None:
 
     Exactly three things differ, and each for a named reason: the fit spend
     identity (``native_contact_fit``, which must be this run id's own -- owner
-    rule E16), the prose ``smoke_note`` that records the retirement, and the
-    ABSENCE of ``prepared_phase_supply`` -- the re-pin mints this cell's own
-    artifact under its own run id, and a committed pin would give it something
-    to compare against that was never prepared for it.
+    rule E16), the prose ``smoke_note`` that records the retirement, and
+    ``prepared_phase_supply`` -- each cell's re-pin mints ITS OWN artifact
+    under its own run id, so the two pins are never interchangeable.
+
+    2026-09-24: at registration ``prepared_phase_supply`` was ABSENT from v2
+    and present on v1, so the original form of this test read the exclusion
+    as a missing key (the re-pin mints this cell's own artifact under its own
+    run id, and a committed pin would have given it something to compare
+    against that was never prepared for it). v2 has since been flipped to
+    ready and flown, minting its own pin, so the key is now present on BOTH
+    sides with a DIFFERENT value; the invariant is the same fact -- this
+    cell's own artifact, never the sibling's -- restated as a value diff
+    instead of a key diff.
     """
 
     v1 = _load(REPO_ROOT / "configs" / "baseline" / _V1_SMOKE_BASELINE)
     v2 = _load(REPO_ROOT / "configs" / "baseline" / _V2_BASELINE)
-    assert set(v1) - set(v2) == {"prepared_phase_supply"}
-    assert set(v2) - set(v1) == set()
+    assert set(v1) == set(v2)
     differing = {key for key in set(v1) & set(v2) if v1[key] != v2[key]}
-    assert differing == {"native_contact_fit", "smoke_note"}
+    assert differing == {"native_contact_fit", "smoke_note", "prepared_phase_supply"}
 
     fit = v2["native_contact_fit"]
     assert fit["run_id"] == "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2-FIT-V1"
     assert fit["attempt_id"] == "attempt-slurp-native-stage3-delta-cell-smoke-4-v2-fit"
     assert fit["contact_cap"] == v1["native_contact_fit"]["contact_cap"]
     assert fit["max_speech_packets"] == v1["native_contact_fit"]["max_speech_packets"]
+
+    # Each cell's phase-supply pin is minted under ITS OWN run id, never the
+    # sibling's, and the two pins are never equal.
+    assert "SMOKE-4-V2" in v2["prepared_phase_supply"]["relpath"]
+    assert "SMOKE-4-V1" in v1["prepared_phase_supply"]["relpath"]
+    assert v1["prepared_phase_supply"] != v2["prepared_phase_supply"]
 
 
 def test_the_v2_smoke_fragment_is_one_held_cell_on_the_same_population() -> None:
@@ -278,7 +336,13 @@ def test_the_v2_smoke_fragment_is_one_held_cell_on_the_same_population() -> None
         == "attempt-slurp-native-stage3-delta-cell-smoke-4-v2-generation"
     )
     assert cell["baseline_fragment"] == _V2_BASELINE[: -len(".json")]
-    assert cell["readiness"]["state"] == "held"
+    # 2026-09-24: "held" was true only at registration (commit a2754593);
+    # CELL-1's v2 smoke was since flipped to ready (commit 630330b6) and
+    # flown -- see test_the_v2_smoke_run_ids_are_registered_before_contact_
+    # and_unconsumed for the historical, pre-flip form of that fact. Accept
+    # both states here so this test keeps guarding the population match
+    # below, which is still live.
+    assert cell["readiness"]["state"] in {"held", "ready"}
 
     v1_cell = next(
         item
@@ -320,16 +384,36 @@ def test_the_v2_smoke_fragment_is_one_held_cell_on_the_same_population() -> None
 
 
 def test_the_v2_smoke_run_ids_are_registered_before_contact_and_unconsumed() -> None:
-    """Both v2 identities carry a DRAFT exposure row, ``consumed = no``.
+    """Both v2 identities carried a DRAFT exposure row, ``consumed = no``, at
+    registration commit a2754593 -- before either identity was flipped to
+    ready or contacted.
 
-    Parsed with the repository's own parser, so a row hidden in a comment or a
-    fence is exactly as invisible here as it is to the frozen-core gate.
+    2026-09-24: both identities have since been flown
+    (SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2 failed at the Reviewer input, 12
+    contacts metered, and was itself retired for a v3 smoke; its fit run
+    reads consumed too) and their live ledger rows now read
+    ``consumed = yes``, so the unconsumed claim is no longer a live
+    invariant. It is pinned here to the registration commit instead, read
+    with ``git show`` so a rewritten working tree can never fake it.
+
+    Parsed with the repository's own parser, so a row hidden in a comment or
+    a fence is exactly as invisible here as it is to the frozen-core gate.
     """
 
     from speech_aware_evidence_acquisition.contracts import _parse_ledger_tables
 
-    ledger = (REPO_ROOT / "docs" / "exposure-ledger.md").read_text(encoding="utf-8")
-    rows = _parse_ledger_tables(ledger)
+    registration_commit = "a2754593"
+    completed = subprocess.run(
+        [
+            "git", "-C", str(REPO_ROOT), "show",
+            f"{registration_commit}:docs/exposure-ledger.md",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+    rows = _parse_ledger_tables(completed.stdout)
     for run_id, plan in (
         (
             "SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V2",
