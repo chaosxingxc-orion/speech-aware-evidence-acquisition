@@ -15,7 +15,7 @@
     "readiness_state": "held",
     "study_commit": "58224dea78823b050c9b7644700e94d00684ef88"
   },
-  "composed_config_hash": "dbb41b63aa3b2cb52e4c14b09967d4cc1a3f5e1601828344d7a6e3cbbef6d2f3",
+  "composed_config_hash": "da982ad697492fba3f775d10616c68b07507e5782a0d56bae49634d4a86a96f7",
   "decision_rule": {
     "no_gate_number": "No threshold is pre-registered on any of the six, because this cell carries no admission verdict: a low parse rate, a degenerate node distribution or a zero revision share is a FORM defect that stops the arm and is root-caused, not a measured result. The smoke's own acceptance is the same six items on 4 contacts; a failed smoke stops the arm and it does not open.",
     "rule": "STRUCTURAL ONLY. No effectiveness claim is read from this cell -- the effect of the curated deltas is read at CELL-1-GEPA, against the plan's own null. Acceptance here is: (1) PARSE RATE -- the fraction of contacts whose response yields at least one LEGAL block under rails.stage3_gepa.parse_gepa_proposal, reported with its denominator; (2) NODE DISCIPLINE -- the count of blocks whose NODE differs from the group's own node, the invariant only this arm's parser enforces; (3) ILLEGAL-BLOCK COUNT by the parser's own reason strings, retained and never repaired; (4) BLOCKS PER CONTACT -- the one-to-five distribution; (5) REVISION SHARE -- accepted proposals the curator absorbed into an existing row against those that entered as new rows, which is the number that says whether a reflective proposer reflected on the text it was shown; (6) a clean seal with row accounting in = out."
@@ -27,7 +27,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 4,
     "planned_speech_audio_seconds": 27,
-    "protocol_hash": "924135f3b034f199435adceec47420d909692a72ca79bdff3c8eb4fbb3a345c8",
+    "protocol_hash": "d6bd2d7e0567aa91e1a3969385fc8e99c60460a962e1e9be5f215532b3276706",
     "run_id": "SAEA-SLURP-STAGE3-GEPA-R01-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "5a8bf7f89170c1cc3565cbbd41dac168000123cdab866ade04b8e354dbb86ea7",
