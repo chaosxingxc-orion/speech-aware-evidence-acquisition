@@ -15,7 +15,7 @@
     "readiness_state": "held",
     "study_commit": "58224dea78823b050c9b7644700e94d00684ef88"
   },
-  "composed_config_hash": "6f8ce1ba7419500b26494c0753384f18f0a25cf21651aca27396ca7b268b5e6f",
+  "composed_config_hash": "0a15a069e6eaf89d59fc71233fddbf514730e2574fed7edf0aa54f26ecb8d51b",
   "decision_rule": {
     "no_gate_number": "No threshold is pre-registered on any of the six, because this cell carries no admission verdict: a low parse rate, a degenerate node distribution or a zero revision share is a FORM defect that stops the arm and is root-caused, not a measured result. The smoke's own acceptance is the same six items on 4 contacts; a failed smoke stops the arm and it does not open.",
     "rule": "STRUCTURAL ONLY. No effectiveness claim is read from this cell -- the effect of the curated deltas is read at CELL-1-GEPA, against the plan's own null. Acceptance here is: (1) PARSE RATE -- the fraction of contacts whose response yields at least one LEGAL block under rails.stage3_gepa.parse_gepa_proposal, reported with its denominator; (2) NODE DISCIPLINE -- the count of blocks whose NODE differs from the group's own node, the invariant only this arm's parser enforces; (3) ILLEGAL-BLOCK COUNT by the parser's own reason strings, retained and never repaired; (4) BLOCKS PER CONTACT -- the one-to-five distribution; (5) REVISION SHARE -- accepted proposals the curator absorbed into an existing row against those that entered as new rows, which is the number that says whether a reflective proposer reflected on the text it was shown; (6) a clean seal with row accounting in = out."
@@ -27,7 +27,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 68,
     "planned_speech_audio_seconds": 292,
-    "protocol_hash": "8a53ab0928c094bf67b12be5534f3fa9a51e1a766714d83801a309e4008f82ae",
+    "protocol_hash": "9e4738376dc46dc49948c05f47500299b4c4d8996876618e9a7f3e6422a455d3",
     "run_id": "SAEA-SLURP-STAGE3-GEPA-R01-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "86da42e2b9a643795749664d5d2bc75b2f2e502429a5cebb36c22c75daa8b132",

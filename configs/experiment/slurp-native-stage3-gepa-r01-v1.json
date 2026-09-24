@@ -15,13 +15,20 @@
         "reason": "Stage-3 layer A, the GEPA arm (docs/superpowers/specs/2026-09-24-slurp-stage3-gepa-arm-design.md): 68 construction-advantage-text contacts, one per (scenario, node) group, over the CARRIER rows of the prepared groups artifact. Every input is already sealed or committed: ROLL-1's custody, S3-3's pairs.json, the released stage3-deltas v1r authored document and the R01C roster receipt. Readiness stays HELD and no decision requirement is registered here on purpose (the ROLL-1 and ADV-1 precedent): core.flight.repin._upsert_decision_requirement inserts it at the readiness flip, and a placeholder decision entry without an expected_decision_id would be left behind beside it and refuse the campaign at load (core.flight.campaign.declared_readiness). Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-gepa-r01-admission-v1",
+            "relpath": "coordination/slurp-stage3-delta-cell-gepa-r01-v1/root-admission-v1.json",
+            "sha256": "0a13894e56390809d4c43a0e2f5e9d4ec1324b6d35db8b3a41ed828c6cc2835e",
+            "reason": "Decision slurp-stage3-gepa-r01-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The prepared GEPA groups artifact, which selects and pins this cell's carrier population, its per-group rows and its per-group current-delta slice. core.flight.campaign.declared_readiness resolves every readiness requirement BENEATH THE DATA ROOT, so this relpath is data-root relative. It is written model-free by scripts/build_slurp_stage3_gepa_groups.py from the sealed ROLL-1 score root, the released v1r authored-deltas document and the committed R01C roster receipt. The roster receipts are NOT readiness requirements (they are repository artifacts): they are pinned by hash in the baseline fragment's preparation_source_receipts, the ROLL-1 and ADV-1 precedent.",
             "relpath": "prepared/SAEA-SLURP-STAGE3-DELTAS-GEPA-V1/gepa-groups-v1.json",
             "sha256": "43f64a78b081ab809e6973496b2458c362d91805caf9aa2e19c4a561b35a316a"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-GEPA-R01-V1"
     },
