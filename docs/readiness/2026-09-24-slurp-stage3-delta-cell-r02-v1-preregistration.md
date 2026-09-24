@@ -264,7 +264,7 @@ the CELL-1 package, where the release that produced them recorded them --
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-TWIN-FIT-V1` | `...-r02-twin-fit-v1` | `twin-fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-V1` | `...-r02-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `ad2958081efe9b9503c949336cdc6b2d50aaef9af1af7c2f90ce366dd9ae85b1` | `b0531732d2ec23edd0d53d7b774334777f91cd467f4528b9cf6a297f1387f829` | `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-FIT-V1` | `...-r02-smoke-4-fit-v1` | `smoke-fit-plan-registered-v1.json` | same | same | same |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-TWIN-V1` | `...-r02-smoke-4-twin-v1` | `twin-smoke-generation-plan-registered-v1.json` | `5efbd8298889ba4b7e2d8a6478e5811821e7b4aa9312f582292edd8fbedd9b24` | `7ab54c022d70186614ca94227f77aaadf30f47162efe8d1d0ed5981525028266` | same |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-TWIN-V1` | `...-r02-smoke-4-twin-v1` | `twin-smoke-generation-plan-registered-v1.json` | `3ee814c4eb894d245a9de0d307dba319645ec9e578d33b96feacf77cf1fd7e6d` | `a5af96169f01020105afe66b3ee7d3a6f56e8a9c2a348363b2bd0d446da92dc3` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-TWIN-FIT-V1` | `...-r02-smoke-4-twin-fit-v1` | `twin-smoke-fit-plan-registered-v1.json` | same | same | same |
 
 Protocol document `protocol-registered-v1.json` sha256
