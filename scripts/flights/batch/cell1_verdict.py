@@ -85,6 +85,24 @@ CELLS = {
         "algorithm": "tfgrpo-semantic-advantage-v1",
         "decision_line": "Outcome of decisions 83 and 99, iteration 2 (CELL-2, {date})",
     },
+    "gepa": {
+        "name": "CELL-1-GEPA",
+        "run": "SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-V1",
+        "arm_root": "SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-PAIRED-ANALYSIS-V1",
+        "twin_root": "SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-TWIN-PAIRED-ANALYSIS-V1",
+        "family_prefix": "SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-",
+        "family_exclude": (),
+        "chain": "SAEA-Batch-Chain-GEPACELL",
+        "read_sh": "gepacell_read.sh",
+        "verdict_slug": "slurp-stage3-delta-cell-gepa-r01-verdict.md",
+        "twin_slug": "slurp-stage3-delta-cell-gepa-r01-twin-read.md",
+        "heading": (
+            "(Stage-3 S3-6, the GEPA family arm: the locked v2.0 plan plus the released "
+            "448-value stage3-deltas-gepa-v1 store; owner decisions 83, 99, 101, 106)"
+        ),
+        "algorithm": "gepa-reflective-pareto-v1",
+        "decision_line": "Outcome of decision 101 for the GEPA family (CELL-1-GEPA, {date})",
+    },
 }
 CELL = CELLS["r01"]  # rebound by main() from --cell
 
@@ -825,7 +843,7 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--which", required=True, choices=("arm", "twin"))
     parser.add_argument("--cell", default="r01", choices=sorted(CELLS),
-                        help="which delta cell's records to write (r01 = CELL-1, r02 = CELL-2)")
+                        help="which delta cell's records to write (r01 = CELL-1, r02 = CELL-2, gepa = CELL-1-GEPA)")
     parser.add_argument("--status", required=True)
     parser.add_argument("--factor", required=True)
     parser.add_argument("--reading", required=True)
