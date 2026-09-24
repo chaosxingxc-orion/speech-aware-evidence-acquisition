@@ -1,0 +1,90 @@
+{
+  "authority": "docs/results/2026-09-24-slurp-plan-bad-case-bank.md section 1e (the ENTITY-FP-ONLY mass on empty-gold rows); configs/probes/slurp_native_role_solver_v2.txt (the Solver output contract this store demonstrates the empty form of)",
+  "contacts": {
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0,
+    "tool": 0
+  },
+  "consumers": [],
+  "corrects_a_number_in_its_own_motivation": {
+    "claim": "docs/results/2026-09-24-slurp-plan-bad-case-bank.md section 1e reports the released train-exemplars pool holds 0 entity-free values out of 9,354, with an entity-count spread starting at 1.",
+    "measured": "the released parent snapshot 4c498dc0... carries 2,949 entity-free values of 9,354 (31.5 %), each rendered '<utterance> | <scenario>_<action> | none'.",
+    "why_the_note_says_zero": "scripts/analysis/slurp_plan_bad_case_bank.py::load_exemplar_labels splits the raw line's third field on ';' and keeps the text before '=', so the literal token 'none' is counted as an entity type named 'none' and every entity-free value lands in the 1-entity bucket. The 0-bucket is therefore empty by construction, not by measurement.",
+    "what_survives": "the HEADROOM is untouched -- ENTITY-FP-ONLY is 131 / 108 rows carrying +4.76 / +3.47 pp of pooled official SLU, and 38.3 % / 31.4 % of roster rows carry no gold entity. What the supply lacks is not the empty CASE but the correct empty ANSWER: 'none' appears in no legal Solver response.",
+    "status": "the bad-case bank is an immutable countersigned record and is NOT rewritten; this release is its English successor on that one number."
+  },
+  "execution_profile": "model-free-check",
+  "generator": "scripts/build_slurp_train_exemplars_with_empty_store.py",
+  "predecessor": {
+    "relpath": "docs/readiness/2026-09-22-slurp-train-exemplars-store-release-pins-r01-v1.json",
+    "sha256": "7c140759fbb0586bd65d543ebfc8f9cf2a7f3727439ce81ad980ee243b72df3e"
+  },
+  "rebuild_kind": "pure RE-RENDERING: the selection, the exclusion rosters, the source split identity hash, every facet (id, dimension, representation kind and text, source sample ids, parent facet ids), every value id, prior score, task target, association and provenance ref are bit-identical to the released parent. Only the trailing field of the 2,949 entity-free raw lines changes, from the bare word 'none' to the Solver contract's own empty form. Nothing was re-embedded, re-authored, re-scored or re-encoded.",
+  "registration": {
+    "relpath": "docs/readiness/2026-09-24-slurp-train-exemplars-with-empty-v1/README.md"
+  },
+  "schema": "saea-knowledge-store-release-pins-v1",
+  "status": "RELEASED_PENDING_RUNTIME_CONSUMPTION",
+  "stores": {
+    "train-exemplars-with-empty-v1": {
+      "build_receipt": {
+        "relpath": "docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars-empty-contract-v1.json",
+        "root": "repository",
+        "sha256": "df28a3cea60cee6ca3b57d12aa0f58f16e6592bb639f444344b6ea54ff8194bf"
+      },
+      "builder_policy_id": "saea-kb-distmodel-v1",
+      "excluded_query_rosters": [
+        "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+        "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+        "docs/receipts/probe-samples/DEV-1000.json"
+      ],
+      "facet_vectors_unchanged": {
+        "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+        "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+        "why": "this store's facet ids ARE the released parent's facet ids (facet:content:<slurp_id>), and its facet representations are byte-identical, so the sealed KU-S3 file stays the same strict superset it already was. No filtered derivative, no re-keying and no encoder contact of any kind."
+      },
+      "kb_view": "annotated-exemplars-empty-contract",
+      "pool_composition": {
+        "entity_bearing": 6405,
+        "entity_free": 2949,
+        "entity_free_share": 0.315266,
+        "total": 9354
+      },
+      "predecessor_store": {
+        "snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/snapshot.json",
+        "snapshot_sha256": "4c498dc0282055b9fe036ed7e950af519bd48b5f26e76876d0250727196a72e9",
+        "values_byte_identical": 6405,
+        "values_changed": 2949,
+        "facets_byte_identical": 9354,
+        "facets_changed": 0
+      },
+      "release": {
+        "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-empty-contract-v1/release.json",
+        "sha256": "4aa2c6dce28395efae5662aea2d4f755a01fdc9ab81ab0c6ad9844f4eeb71c2d"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-empty-contract-v1/snapshot.json",
+        "sha256": "e39985250bbd32ae0ac80ef234b8d0357943c4a68ac4e73b680ee4be4f48dbc6"
+      },
+      "snapshot_file_sha256": "53135ef430c1ba560a8a4ee67683a0ebb239c02dc97071812c33f43ff1b16f7d",
+      "snapshot_id": "slurp-kb-distmodel-75a1c9173c3ebdc3",
+      "solver_empty_entity_list_form": "\"entities\":[]",
+      "solver_output_contract": {
+        "relpath": "configs/probes/slurp_native_role_solver_v2.txt",
+        "root": "repository",
+        "sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "source_partition_role": "train",
+      "source_split_identity_hash": "22f6092dfdb4a160376e529d8e59e9215bc7701e274620d35feb1c4d82f309e9",
+      "source_utterances": 9354,
+      "store_id": "train-exemplars",
+      "store_role": "train-exemplars",
+      "value_count": 9354
+    }
+  },
+  "why": "The Solver's own output contract requires {\"scenario\":\"...\",\"action\":\"...\",\"entities\":[]} on a row whose speech expresses no entity, and says so in words (\"If no entity is expressed, return an empty entities array\"). The released exemplar supply shows that case 2,949 times and renders its answer as the bare English word 'none', which occurs in no legal Solver response. Module M1's admitted gain was convention transfer from the raw line; this release extends exactly that mechanism to the empty case, at zero contacts and with the retrieval key side untouched, so a construction-variant cell can test whether showing the correct empty ANSWER moves the ENTITY-FP-ONLY mass."
+}
