@@ -330,7 +330,7 @@ no gain.
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-TWIN-FIT-V1` | `...-gepa-r01-twin-fit-v1` | `twin-fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-V1` | `...-gepa-r01-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `0f6dcd36d872348daa4ac98377e2b5acbff0ca91209eed06a9fc33fcb78da708` | `8d81e61370363d6758dd596ca996e7ecdbddf5ddaa5a5aed8f83a5cda0ba5d40` | `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-FIT-V1` | `...-gepa-r01-smoke-4-fit-v1` | `smoke-fit-plan-registered-v1.json` | same | same | same |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-TWIN-V1` | `...-gepa-r01-smoke-4-twin-v1` | `twin-smoke-generation-plan-registered-v1.json` | `b7925afae969087cd341420dffd24b09d95f341060e80fd599b39d84bd0e039d` | `715820666b18c82bf09352499d96d9fbb6630aae21493c4cea911a687a448b82` | same |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-TWIN-V1` | `...-gepa-r01-smoke-4-twin-v1` | `twin-smoke-generation-plan-registered-v1.json` | `7e08dcb26c04d6bad5cb0e303364609bb75714f53a6c1145fc907d6d22d59a1c` | `fab28bae8a3f33b37c6fa912b2039410d025d48c9ec0f7fcc6b21e85a564822e` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-TWIN-FIT-V1` | `...-gepa-r01-smoke-4-twin-fit-v1` | `twin-smoke-fit-plan-registered-v1.json` | same | same | same |
 
 Protocol document `protocol-registered-v1.json` sha256
