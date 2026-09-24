@@ -47,13 +47,20 @@
         "reason": "The four-row form smoke of the CELL-2 derangement twin, on the same four rows with the twin release pinned. Held for the same reasons as the generation smoke; it seals before the twin arm opens.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-delta-cell-r02-admission-v1",
+            "relpath": "coordination/slurp-stage3-delta-cell-r02-v1/root-admission-v1.json",
+            "sha256": "7068ff966a8525070462ab1d468065f6ee1f2d347cb043d53d9bca1d7498ca56",
+            "reason": "Decision slurp-stage3-delta-cell-r02-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The twin release of knowledge/slurp/semantic/stage3-deltas-twin-v2/, the seeded derangement (seed 20260922) of version 2's own authored document: 200 statements, authored token count 3,001 held exactly. The cell stays HELD on a root admission decision.",
-            "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v2/release.json",
-            "sha256": "b18b141f67dae4b413391d22dd787a3b85480d2b4fab24db0848e547e7aa1a9a"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-TWIN-V1/phase-supply-v1.json",
+            "sha256": "8553a67541a69ce849b284815adc29a7a56dfb21eb484ced6e7dbbc64bfa230b"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-TWIN-V1"
     },
