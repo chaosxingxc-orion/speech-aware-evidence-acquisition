@@ -7,7 +7,18 @@ and it lives only in this data-root file -- never in Git and never in a receipt.
 flown row to its group is the prepared groups artifact's own carrier map.
 
 The sibling of scripts/flights/batch/adv1_render_advantage_outputs.py, and the same discipline:
-counts and digests are printed, text never is.
+counts and digests are printed, text never is -- including the two rosters, which are COMMITTED
+receipts copied byte for byte rather than receipts synthesised here:
+
+* outer-construction-roster.json -- the construction scope: the committed R01C receipt.
+* permitted-roster.json -- the store's SOURCE population: the committed GROUP-ROWS receipt
+  (docs/receipts/rosters/slurp-stage3-gepa-r01c-groups-v1.json, minted by
+  scripts/flights/batch/gepa_prepare_steps.py groups-roster), whose split identity IS the release
+  registration's source_split_identity_hash. NOT the carriers receipt, which is the FLOWN
+  population. core.semantic_knowledge_preparation verifies this file as a full
+  saea-roster-receipt-v1 (core.roster.read_roster) and then checks that identity against the
+  registration, so a hand-made selection without a split_identity_hash is refused -- which is
+  exactly what stopped the first release attempt.
 """
 import argparse
 import hashlib
@@ -38,6 +49,15 @@ def main() -> int:
     )
     ap.add_argument(
         "--scope-receipt", default="docs/receipts/rosters/slurp-stage3-construction-r01c.json"
+    )
+    ap.add_argument(
+        "--permitted-receipt",
+        default="docs/receipts/rosters/slurp-stage3-gepa-r01c-groups-v1.json",
+        help=(
+            "the COMMITTED construction roster over the GROUP rows (the rows the reflections "
+            "were made from), not the carriers; copied byte for byte and cross-checked against "
+            "the groups artifact"
+        ),
     )
     ap.add_argument(
         "--permitted-out", default=None,
@@ -97,32 +117,30 @@ def main() -> int:
     shutil.copyfile(a.scope_receipt, scope)
     print("outer-construction-roster.json from", a.scope_receipt, "sha256", sha(scope))
 
-    # The PERMITTED roster is the union of the GROUP rows, not the carriers: those are the rows an
-    # authored GEPA delta may cite. It is a pure selection of the R01C receipt.
+    # The PERMITTED roster is the union of the GROUP rows, not the carriers: those are the rows
+    # an authored GEPA delta may cite, and that union's committed receipt carries the split
+    # identity the release registration pins. It is copied BYTE FOR BYTE (the ADV-1 discipline):
+    # a receipt synthesised here would carry no split_identity_hash and core.roster would refuse
+    # it, and a receipt re-hashed here would be a second implementation of the identity rule.
     permitted_path = Path(a.permitted_out) if a.permitted_out else out / "permitted-roster.json"
-    parent = json.loads(Path(a.scope_receipt).read_text(encoding="utf-8"))
-    wanted = {row for g in groups["groups"] for row in g["row_sample_ids"]}
-    items = [item for item in parent["items"] if item["sample_id"] in wanted]
-    missing = wanted - {item["sample_id"] for item in items}
-    if missing:
+    receipt = json.loads(Path(a.permitted_receipt).read_text(encoding="utf-8"))
+    held = {str(item["sample_id"]) for item in receipt["items"]}
+    wanted = {str(row) for g in groups["groups"] for row in g["row_sample_ids"]}
+    if held != wanted:
         raise SystemExit(
-            f"{len(missing)} group row(s) are not in {a.scope_receipt}; first {sorted(missing)[0]}"
+            f"{a.permitted_receipt} holds {len(held)} rows, the groups artifact's union is "
+            f"{len(wanted)}: {len(wanted - held)} group row(s) are outside the receipt and "
+            f"{len(held - wanted)} receipt row(s) are outside the groups. Re-mint it with "
+            "scripts/flights/batch/gepa_prepare_steps.py groups-roster before releasing."
         )
-    permitted = dict(parent)
-    permitted["roster_id"] = "SLURP-STAGE3-GEPA-R01C-GROUP-ROWS-V1"
-    permitted["items"] = items
-    permitted["excluded_count"] = len(parent["items"]) - len(items)
-    permitted["selection_rule"] = (
-        "R01C restricted to the union of the GEPA groups' row_sample_ids -- the rows the "
-        "reflections were made from, which are the rows an authored GEPA delta may cite. A pure "
-        "selection; no rng, no score, no label."
+    shutil.copyfile(a.permitted_receipt, permitted_path)
+    print(
+        "permitted-roster.json from", a.permitted_receipt,
+        "roster_id", receipt.get("roster_id"),
+        "rows", len(held),
+        "split_identity", receipt.get("split_identity_hash"),
+        "sha256", sha(permitted_path),
     )
-    permitted.pop("split_identity_hash", None)
-    permitted_path.write_text(
-        json.dumps(permitted, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
-    print("permitted-roster.json rows", len(items), "sha256", sha(permitted_path))
     return 0
 
 

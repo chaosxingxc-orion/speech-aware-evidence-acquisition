@@ -8,7 +8,7 @@ and everything written is ids, counts and digests. No utterance text,
 transcript, gold label, statement text, scenario answer or model output is
 read, printed or persisted.
 
-Three steps, all idempotent:
+Four steps, all idempotent:
 
 ``roster``
     Write ``docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-v1.json``: the
@@ -22,6 +22,20 @@ Three steps, all idempotent:
     refuses the touch unless the FLYING cell's own ``split_identity_hash`` is
     that of a committed ``roster_role='construction'`` receipt of carrier
     ``slurp``.
+
+``groups-roster``
+    Write ``docs/receipts/rosters/slurp-stage3-gepa-r01c-groups-v1.json``: the
+    construction-role roster over the UNION of the groups' ``row_sample_ids``
+    -- the rows whose rollout trajectories and construction gold a GEPA contact
+    was actually shown. That union, not the carriers, is the SOURCE population
+    of the GEPA delta store: ``core.semantic_knowledge_preparation`` verifies a
+    release registration's ``permitted_roster`` as a committed
+    ``roster_role='construction'`` receipt AND requires its split identity to
+    equal the registration's ``source_split_identity_hash``, so the store's
+    source population needs a committed receipt of its own. The two rosters are
+    different populations and both are committed: the CARRIERS receipt is what
+    FLEW (one contact per carrier row) and the GROUPS receipt is what the
+    store's content may CITE.
 
 ``smoke-roster``
     Write ``docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-smoke-4-v1
@@ -56,6 +70,8 @@ REPO_DEFAULT = Path(__file__).resolve().parents[3]
 PARENT_ROSTER = "docs/receipts/rosters/slurp-stage3-construction-r01c.json"
 ROSTER_OUT = "docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-v1.json"
 ROSTER_ID = "SLURP-STAGE3-GEPA-R01C-CARRIERS-V1"
+GROUPS_ROSTER_OUT = "docs/receipts/rosters/slurp-stage3-gepa-r01c-groups-v1.json"
+GROUPS_ROSTER_ID = "SLURP-STAGE3-GEPA-R01C-GROUPS-V1"
 SMOKE_ROSTER_OUT = "docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-smoke-4-v1.json"
 SMOKE_ROSTER_ID = "SLURP-STAGE3-GEPA-R01C-CARRIERS-SMOKE-4-V1"
 SMOKE_ROWS = 4
@@ -65,6 +81,24 @@ EXPERIMENT = "configs/experiment/slurp-native-stage3-gepa-r01-v1.json"
 SMOKE_EXPERIMENT = "configs/experiment/slurp-native-stage3-gepa-r01-smoke-4-v1.json"
 BASELINE = "configs/baseline/slurp-native-stage3-gepa-baseline-v1.json"
 SMOKE_BASELINE = "configs/baseline/slurp-native-stage3-gepa-smoke-4-baseline-v1.json"
+
+
+#: The ``roster_role`` note of the FLOWN rosters: the carrier row is the
+#: flight's row identity, the material it carries is its group's.
+CARRIER_ROLE_NOTE = (
+    "construction: the GEPA contact sees the construction gold of its GROUP's rows "
+    "and produces an artifact (a delta proposal), never an answer to an evaluated "
+    "row (owner decision 82). The CARRIER row is the flight's row identity; the "
+    "material it carries is the group's."
+)
+#: The ``roster_role`` note of the STORE SOURCE roster: the group rows themselves.
+GROUP_ROWS_ROLE_NOTE = (
+    "construction: these rows' own construction gold and rollout trajectories were "
+    "rendered into the GEPA contact, which produced an artifact (a delta proposal) and "
+    "never an answer to an evaluated row (owner decision 82). This roster is the SOURCE "
+    "population of the GEPA delta store -- the rows an authored delta may cite -- not "
+    "the flown population, which is the carriers receipt."
+)
 
 
 class GepaPrepareError(RuntimeError):
@@ -90,6 +124,43 @@ def _read_json(path: Path) -> Any:
 
 def sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def group_row_ids(groups_document: Mapping[str, Any]) -> list[str]:
+    """The ascending UNION of the groups' ``row_sample_ids``.
+
+    These are the rows a GEPA contact was shown -- their rollout trajectories
+    and their construction gold -- and therefore the rows an authored GEPA
+    delta may cite. The artifact's own ``group_row_sample_ids`` summary is
+    cross-checked against the union rather than trusted, so a re-derived groups
+    artifact whose summary drifted from its groups is refused instead of
+    silently minting a roster over one of the two.
+    """
+
+    groups = groups_document.get("groups")
+    if not isinstance(groups, list) or not groups:
+        raise GepaPrepareError("the groups artifact carries no non-empty 'groups'")
+    union: set[str] = set()
+    for index, group in enumerate(groups):
+        if not isinstance(group, Mapping):
+            raise GepaPrepareError(f"groups[{index}] must be an object")
+        rows = group.get("row_sample_ids")
+        if not isinstance(rows, list) or not rows:
+            raise GepaPrepareError(f"groups[{index}] carries no row_sample_ids")
+        for row in rows:
+            if not isinstance(row, str) or not row:
+                raise GepaPrepareError(f"groups[{index}] has an empty row sample id")
+            union.add(row)
+    declared = groups_document.get("group_row_sample_ids")
+    if declared is not None:
+        if not isinstance(declared, list):
+            raise GepaPrepareError("group_row_sample_ids must be a list when present")
+        if set(declared) != union:
+            raise GepaPrepareError(
+                "the groups artifact's group_row_sample_ids disagrees with the union of "
+                f"the groups' own row_sample_ids ({len(set(declared))} vs {len(union)})"
+            )
+    return sorted(union)
 
 
 def carrier_ids(groups_document: Mapping[str, Any]) -> list[str]:
@@ -121,6 +192,7 @@ def _selection_receipt(
     draw_method: str,
     source_pin: Mapping[str, Any],
     splits,
+    roster_role_note: str = CARRIER_ROLE_NOTE,
 ) -> dict[str, Any]:
     """A pure selection of the parent receipt over ``ids``; no draw, no rng."""
 
@@ -132,7 +204,7 @@ def _selection_receipt(
     missing = keep - {str(item["sample_id"]) for item in items}
     if missing:
         raise GepaPrepareError(
-            f"{len(missing)} carrier sample id(s) are not in {PARENT_ROSTER}: "
+            f"{len(missing)} selected sample id(s) are not in {PARENT_ROSTER}: "
             f"{sorted(missing)[:3]}"
         )
     counts = dict(sorted(Counter(str(item["stratum"]) for item in items).items()))
@@ -149,12 +221,7 @@ def _selection_receipt(
         "excluded_count": len(parent_items) - len(items),
         "split_identity_hash": splits.split_identity_hash(splits.prefixed(CARRIER, ids)),
         "authority": authority,
-        "roster_role_note": (
-            "construction: the GEPA contact sees the construction gold of its GROUP's rows "
-            "and produces an artifact (a delta proposal), never an answer to an evaluated "
-            "row (owner decision 82). The CARRIER row is the flight's row identity; the "
-            "material it carries is the group's."
-        ),
+        "roster_role_note": roster_role_note,
         "draw_method": draw_method,
         "selection_rule": selection_rule,
         "generator": "scripts/flights/batch/gepa_prepare_steps.py",
@@ -257,6 +324,58 @@ def cmd_roster(args: argparse.Namespace) -> int:
         roster_module=roster_module,
         receipt=receipt,
         out_relpath=args.roster_out,
+        repo_root=repo_root,
+        write=args.write,
+    )
+    return 0
+
+
+def cmd_groups_roster(args: argparse.Namespace) -> int:
+    repo_root = Path(args.repo_root)
+    roster_module, splits = _import_repo(repo_root)
+    groups_document = _read_json(Path(args.groups))
+    ids = group_row_ids(groups_document)
+    parent = _read_json(repo_root / PARENT_ROSTER)
+    roster_module.verify_roster(parent)
+    receipt = _selection_receipt(
+        parent=parent,
+        ids=ids,
+        roster_id=GROUPS_ROSTER_ID,
+        authority=(
+            f"Stage-3 layer A, the GEPA arm ({DESIGN_NOTE}; owner decisions 83 and 101): the "
+            "SOURCE population of the GEPA delta store. A GEPA contact is rendered from its "
+            "GROUP's rows -- their rollout trajectories and their construction gold -- so the "
+            "rows an authored GEPA delta may cite are the union of the groups' row_sample_ids. "
+            "core.semantic_knowledge_preparation verifies a release registration's "
+            "permitted_roster as a committed roster_role='construction' receipt AND requires "
+            "its split identity to equal the registration's source_split_identity_hash, so this "
+            "population needs a committed receipt of its own. The FLOWN population is the "
+            "different, also committed SLURP-STAGE3-GEPA-R01C-CARRIERS-V1 (one contact per "
+            "carrier row). The precedent is SLURP-STAGE3-ADVANTAGE-R01C-DISAGREEING-V1, where "
+            "the flown population and the store source are the same rows; the GEPA arm "
+            "separates them because a group shows more rows than its carrier."
+        ),
+        selection_rule=(
+            "R01C restricted to the UNION of the prepared GEPA groups artifact's "
+            "row_sample_ids -- every row any group showed its contact. A carrier topped up "
+            "from the roster, from which no proposal was rendered, is not in this roster "
+            "unless some group also showed it; order preserved."
+        ),
+        draw_method=(
+            "No draw. This receipt is a pure SELECTION of the parent receipt's frozen items: "
+            "every surviving item is the parent's item verbatim, in the parent's order "
+            "(ascending sample_id). The seed is the parent's and is carried for provenance "
+            "only -- no rng is consulted anywhere in this build, and no score, quality or "
+            "label is read."
+        ),
+        source_pin=_source_pin(args, groups_document),
+        splits=splits,
+        roster_role_note=GROUP_ROWS_ROLE_NOTE,
+    )
+    _write_receipt(
+        roster_module=roster_module,
+        receipt=receipt,
+        out_relpath=args.groups_roster_out,
         repo_root=repo_root,
         write=args.write,
     )
@@ -402,13 +521,18 @@ def main(argv: list[str] | None = None) -> int:
         default="prepared/SAEA-SLURP-STAGE3-DELTAS-GEPA-V1/gepa-groups-v1.json",
     )
     parser.add_argument("--roster-out", default=ROSTER_OUT)
+    parser.add_argument("--groups-roster-out", default=GROUPS_ROSTER_OUT)
     parser.add_argument("--smoke-roster-out", default=SMOKE_ROSTER_OUT)
     parser.add_argument("--rows", default=SMOKE_ROWS, type=int)
     parser.add_argument("--write", action="store_true")
-    parser.add_argument("command", choices=("roster", "smoke-roster", "verify"))
+    parser.add_argument(
+        "command", choices=("roster", "groups-roster", "smoke-roster", "verify")
+    )
     args = parser.parse_args(argv)
     if args.command == "roster":
         return cmd_roster(args)
+    if args.command == "groups-roster":
+        return cmd_groups_roster(args)
     if args.command == "smoke-roster":
         return cmd_smoke_roster(args)
     return cmd_verify(args)

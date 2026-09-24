@@ -18,6 +18,9 @@ Six groups of obligations:
 6. The GEPA curation produces the group-keyed row shape, drops a wrong-node
    block, absorbs a verbatim repeat as a REVISION, and leaves the existing twin
    builder's two invariants exact.
+7. The store's SOURCE population is the GROUP rows and is a committed roster of
+   its own: the mint is a pure selection of R01C, the renderer copies that
+   receipt byte for byte, and the copied file is what ``core.roster`` verifies.
 
 Every fixture is synthetic: no real SLURP utterance, gold or model output
 appears anywhere in this file.
@@ -79,6 +82,8 @@ def _load_script(name: str):
 
 
 GROUPS = _load_script("build_slurp_stage3_gepa_groups.py")
+PREPARE = _load_script("flights/batch/gepa_prepare_steps.py")
+RENDER = _load_script("flights/batch/gepa_render_proposal_outputs.py")
 CURATOR = _load_script("build_slurp_stage3_gepa_delta_rows.py")
 TWIN = _load_script("build_slurp_stage3_delta_twin.py")
 
@@ -870,3 +875,225 @@ def test_the_existing_twin_builder_holds_its_two_invariants_on_a_gepa_document()
     assert TWIN.authored_token_count(twin) == TWIN.authored_token_count(document)
     assert TWIN.facet_count_multiset(twin) == TWIN.facet_count_multiset(document)
     assert [row["content"] for row in twin["rows"]] == [row["content"] for row in rows]
+# --------------------------------------------------------------------------- 7
+# The GEPA store's SOURCE population is the GROUP rows, not the flown carriers.
+#
+# core.semantic_knowledge_preparation verifies a release registration's
+# permitted_roster through core.roster.read_roster and then requires
+# permitted.split_identity_hash == registration.source_split_identity_hash. The
+# first GEPA release attempt handed it a roster synthesised in the renderer with
+# its split_identity_hash removed, against the CARRIERS identity, and was refused
+# ("roster receipt split_identity_hash must be non-empty text" ->
+# "permitted_roster is not a verified roster"). These tests hold the fix.
+
+GROUPS_ARTIFACT = {
+    "schema": "saea-stage3-gepa-groups-v1",
+    "rollout_run_id": "ROLL-RUN",
+    "rollout_attempt_id": "ROLL-ATTEMPT",
+    "scorer_id": "scorer",
+    "k": 6,
+    "rank_metric": "group-mean",
+    "group_row_sample_ids": ["row-a", "row-b", "row-c"],
+    "groups": [
+        {
+            "group_id": "alarm:solver",
+            "scenario": "alarm",
+            "carrier_sample_id": "row-a",
+            "row_sample_ids": ["row-a", "row-b"],
+            "carrier_audio_seconds": 1.0,
+        },
+        {
+            "group_id": "alarm:reviewer",
+            "scenario": "alarm",
+            "carrier_sample_id": "carrier-topup",
+            "row_sample_ids": ["row-b", "row-c"],
+            "carrier_audio_seconds": 1.0,
+        },
+    ],
+}
+
+
+def _parent_roster():
+    """A synthetic R01C: five frozen items, ascending, with a real identity."""
+
+    from speech_aware_evidence_acquisition.data import splits
+
+    ids = ["carrier-topup", "row-a", "row-b", "row-c", "row-unused"]
+    return {
+        "schema": "saea-roster-receipt-v1",
+        "roster_id": "SLURP-STAGE3-CONSTRUCTION-R01C",
+        "carrier_lock_key": "slurp",
+        "split_role": "discovery",
+        "roster_role": "construction",
+        "seed": 20260922,
+        "items": [{"sample_id": sample_id, "stratum": "alarm"} for sample_id in ids],
+        "split_identity_hash": splits.split_identity_hash(splits.prefixed("slurp", ids)),
+    }
+
+
+def _prepare_repo(tmp_path):
+    """A repo root carrying only the parent roster, plus the groups artifact."""
+
+    parent_path = tmp_path / PREPARE.PARENT_ROSTER
+    parent_path.parent.mkdir(parents=True, exist_ok=True)
+    parent_path.write_text(
+        json.dumps(_parent_roster(), indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    groups_path = tmp_path / "gepa-groups-v1.json"
+    groups_path.write_text(
+        json.dumps(GROUPS_ARTIFACT, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    return parent_path, groups_path
+
+
+def _namespace(tmp_path, groups_path, **overrides):
+    import argparse
+
+    values = {
+        "repo_root": tmp_path,
+        "groups": groups_path,
+        "groups_relpath": "prepared/X/gepa-groups-v1.json",
+        "groups_roster_out": PREPARE.GROUPS_ROSTER_OUT,
+        "roster_out": PREPARE.ROSTER_OUT,
+        "write": True,
+    }
+    values.update(overrides)
+    return argparse.Namespace(**values)
+
+
+def test_group_row_ids_is_the_union_and_the_summary_is_cross_checked():
+    assert PREPARE.group_row_ids(GROUPS_ARTIFACT) == ["row-a", "row-b", "row-c"]
+    # the carriers are a DIFFERENT population: one of them is in no group at all
+    assert PREPARE.carrier_ids(GROUPS_ARTIFACT) == ["row-a", "carrier-topup"]
+    drifted = json.loads(json.dumps(GROUPS_ARTIFACT))
+    drifted["group_row_sample_ids"] = ["row-a", "row-b"]
+    with pytest.raises(PREPARE.GepaPrepareError):
+        PREPARE.group_row_ids(drifted)
+    empty = json.loads(json.dumps(GROUPS_ARTIFACT))
+    empty["groups"][0]["row_sample_ids"] = []
+    with pytest.raises(PREPARE.GepaPrepareError):
+        PREPARE.group_row_ids(empty)
+
+
+def test_the_groups_roster_is_a_pure_selection_with_its_own_identity(tmp_path):
+    from speech_aware_evidence_acquisition.core import roster as roster_module
+    from speech_aware_evidence_acquisition.data import splits
+
+    _parent, groups_path = _prepare_repo(tmp_path)
+    assert PREPARE.cmd_groups_roster(_namespace(tmp_path, groups_path)) == 0
+    receipt = json.loads(
+        (tmp_path / PREPARE.GROUPS_ROSTER_OUT).read_text(encoding="utf-8")
+    )
+    assert receipt["roster_id"] == PREPARE.GROUPS_ROSTER_ID
+    assert receipt["roster_role"] == "construction"
+    assert receipt["split_role"] == "discovery"
+    # a PURE SELECTION: the parent's items verbatim, in the parent's own order
+    parent_items = _parent_roster()["items"]
+    kept = [item for item in parent_items if item["sample_id"] != "row-unused"]
+    kept = [item for item in kept if item["sample_id"] != "carrier-topup"]
+    assert receipt["items"] == kept
+    assert receipt["excluded_count"] == len(parent_items) - len(kept)
+    # and its own, recomputable identity -- the thing the first attempt had none of
+    assert roster_module.verify_roster(receipt) == receipt["split_identity_hash"]
+    assert receipt["split_identity_hash"] == splits.split_identity_hash(
+        splits.prefixed("slurp", ["row-a", "row-b", "row-c"])
+    )
+    # the FLOWN roster is a different population with a different identity
+    assert PREPARE.cmd_roster(_namespace(tmp_path, groups_path)) == 0
+    carriers = json.loads((tmp_path / PREPARE.ROSTER_OUT).read_text(encoding="utf-8"))
+    assert carriers["split_identity_hash"] != receipt["split_identity_hash"]
+    assert roster_module.verify_roster(carriers) == carriers["split_identity_hash"]
+    assert carriers["roster_role_note"] != receipt["roster_role_note"]
+
+
+def _render(tmp_path, monkeypatch, groups_path, permitted_receipt, out_dir):
+    monkeypatch.setattr(RENDER, "DATA", tmp_path)
+    run, attempt = "RUN-V1", "attempt-v1"
+    sealed = tmp_path / "runs" / run / attempt
+    sealed.mkdir(parents=True, exist_ok=True)
+    response = "NODE: solver\n"
+    (sealed / f"{run}.outputs.jsonl").write_text(
+        json.dumps(
+            {
+                "sample_id": "row-a",
+                "text": response,
+                "response_text_sha256": _digest(response),
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    scope = tmp_path / "scope.json"
+    scope.write_text(
+        json.dumps(_parent_roster(), indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "gepa_render_proposal_outputs.py",
+            "--run", run,
+            "--attempt", attempt,
+            "--groups", str(groups_path),
+            "--scope-receipt", str(scope),
+            "--permitted-receipt", str(permitted_receipt),
+            "--out-dir", str(out_dir),
+        ],
+    )
+    return RENDER.main()
+
+
+def test_the_renderer_copies_the_committed_groups_receipt_byte_for_byte(
+    tmp_path, monkeypatch
+):
+    from speech_aware_evidence_acquisition.core import roster as roster_module
+
+    _parent, groups_path = _prepare_repo(tmp_path)
+    PREPARE.cmd_groups_roster(_namespace(tmp_path, groups_path))
+    committed = tmp_path / PREPARE.GROUPS_ROSTER_OUT
+    out_dir = tmp_path / "prepared"
+    assert _render(tmp_path, monkeypatch, groups_path, committed, out_dir) == 0
+    copied = out_dir / "permitted-roster.json"
+    assert copied.read_bytes() == committed.read_bytes()
+    # what the preparer does with that file, done here: it IS a verified roster
+    assert roster_module.read_roster(copied)["roster_id"] == PREPARE.GROUPS_ROSTER_ID
+
+
+def test_the_renderer_refuses_a_permitted_roster_that_is_not_the_group_rows(
+    tmp_path, monkeypatch
+):
+    _parent, groups_path = _prepare_repo(tmp_path)
+    # the CARRIERS receipt is a committed construction roster too -- and it is the
+    # wrong population, so it is refused rather than silently released against
+    PREPARE.cmd_roster(_namespace(tmp_path, groups_path))
+    carriers = tmp_path / PREPARE.ROSTER_OUT
+    with pytest.raises(SystemExit) as refusal:
+        _render(tmp_path, monkeypatch, groups_path, carriers, tmp_path / "prepared")
+    assert "groups-roster" in str(refusal.value)
+
+
+def test_the_committed_gepa_rosters_are_two_verified_populations():
+    from speech_aware_evidence_acquisition.core import roster as roster_module
+
+    receipts = {}
+    for name in ("groups", "carriers"):
+        path = REPO_ROOT / f"docs/receipts/rosters/slurp-stage3-gepa-r01c-{name}-v1.json"
+        receipt = json.loads(path.read_text(encoding="utf-8"))
+        assert roster_module.verify_roster(receipt) == receipt["split_identity_hash"]
+        assert receipt["roster_role"] == "construction"
+        assert receipt["carrier_lock_key"] == "slurp"
+        receipts[name] = receipt
+    assert (
+        receipts["groups"]["split_identity_hash"]
+        != receipts["carriers"]["split_identity_hash"]
+    )
+    assert len(receipts["groups"]["items"]) == 173
+    assert len(receipts["carriers"]["items"]) == 68
+    # the runbook binds the STORE SOURCE identity to the GROUPS receipt, never to
+    # the experiment fragment's flown population
+    runbook = (REPO_ROOT / "scripts/flights/batch/gepa_to_deltas.sh").read_text(
+        encoding="utf-8"
+    )
+    assert "slurp-stage3-gepa-r01c-groups-v1.json" in runbook
+    assert '--permitted-receipt "$GROUPS_ROSTER"' in runbook
+    assert 'SPLIT=$($PY -B -c "import json,sys;d=json.load(open(sys.argv[1]));' in runbook
