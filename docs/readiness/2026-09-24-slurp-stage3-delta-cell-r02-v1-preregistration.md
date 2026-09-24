@@ -268,7 +268,7 @@ the CELL-1 package, where the release that produced them recorded them --
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-TWIN-FIT-V1` | `...-r02-smoke-4-twin-fit-v1` | `twin-smoke-fit-plan-registered-v1.json` | same | same | same |
 
 Protocol document `protocol-registered-v1.json` sha256
-`e342ed8f956ba6e60910f1e07227671ff07711e4855678016cebfcecdd62674f`.
+`0ca3760c56fd335febb36a7f8e8368ab08e8c586046b5a76ee15ca2b71947372`.
 
 `core.flight.cli check` exits **0 on all eight cells** on this committed tree, with `prepared_artifacts_ok:
 true` (no pin yet: the flip mints each cell's own), `scientific_readiness.state` `held`,
