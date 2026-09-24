@@ -175,7 +175,7 @@
       "baseline_fragment": "configs/baseline/slurp-native-stage3-var1-per-k16c5-r01c-baseline-v1.json",
       "campaign_plan": "configs/campaign/slurp-native-stage3-var1-per-k16c5-r01c-v1.json",
       "cell": "slurp-native-stage3-var1-per-k16c5-r01c-v1",
-      "composed_config_hash": "5a16192c2fbed78735a63738349457e2fa2431849d800e1556dcf9035fb29b3d",
+      "composed_config_hash": "a2628353144f2aa840970fd676b3611bda4cc1849884545b88c5b013c7949ce2",
       "experiment": "slurp-native-stage3-var1-per-k16c5-r01c-v1",
       "experiment_fragment": "configs/experiment/slurp-native-stage3-var1-per-k16c5-r01c-v1.json",
       "knobs": {
@@ -203,7 +203,7 @@
         "slot_contracts_max_candidates": 5
       },
       "order_constraint": "flies sixth and LAST, and only after its own four-row smoke has sealed: it is the only VAR-1 form whose contract shape changes",
-      "protocol_hash": "952d4b886891647cfcae12a5f63f109b75cdc864235f21ff432398c0b01987e2",
+      "protocol_hash": "7e5a1d79469fb4cb8737d692cc4b1ba0d5ed5286ac01401062a848c62bdac388",
       "readiness": "held -- the coordinator mints coordination/slurp-stage3-var1-v1/root-admission-v1.json (decision id slurp-stage3-var1-admission-v1), rewrites its eligible_run_ids to this family's fourteen run ids, and re-pins this cell with scripts/flights/repin_cell.py --set-ready",
       "rows": 625,
       "run_id": "SAEA-SLURP-STAGE3-VAR1-PER-K16C5-R01C-V1",
@@ -946,10 +946,10 @@
     "perk16c5": {
       "attempt_id": "attempt-slurp-native-stage3-var1-per-k16c5-r01c-v1-fit",
       "cell": "slurp-native-stage3-var1-per-k16c5-r01c-fit-v1",
-      "composed_config_hash": "5a16192c2fbed78735a63738349457e2fa2431849d800e1556dcf9035fb29b3d",
+      "composed_config_hash": "a2628353144f2aa840970fd676b3611bda4cc1849884545b88c5b013c7949ce2",
       "experiment": "slurp-native-stage3-var1-per-k16c5-r01c-v1",
       "note": "A SPEND identity, never flown as a generation cell and never flipped to ready. core.preparation_fit.build_native_contact_fit_gate fits each realised native request inside the same flight under the same lease; coordinate-fit must NOT be run, or these rows are double-charged.",
-      "protocol_hash": "952d4b886891647cfcae12a5f63f109b75cdc864235f21ff432398c0b01987e2",
+      "protocol_hash": "7e5a1d79469fb4cb8737d692cc4b1ba0d5ed5286ac01401062a848c62bdac388",
       "run_id": "SAEA-SLURP-STAGE3-VAR1-PER-K16C5-R01C-FIT-V1"
     },
     "plan": {
