@@ -65,11 +65,11 @@
       "baseline_fragment": "configs/baseline/slurp-native-stage3-delta-cell-r03-gate-baseline-v1.json",
       "campaign_plan": "configs/campaign/slurp-native-stage3-delta-cell-r03-gate-v1.json",
       "cell": "slurp-native-stage3-delta-cell-r03-gate-v1",
-      "composed_config_hash": "7c8db497059c02d4b86f82ef241aac6b723695cd257ac86cd83ada0188245c8d",
+      "composed_config_hash": "b7eff1843e9e9dac1f6338a0167846d2090de98dcc19606f7067cfc85485de92",
       "experiment": "slurp-native-stage3-delta-cell-r03-gate-v1",
       "experiment_fragment": "configs/experiment/slurp-native-stage3-delta-cell-r03-gate-v1.json",
       "order_constraint": "opens only after its own four-row smoke has sealed and its acceptance list passes, AND after SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-OWN-NULL-V1 has sealed. One experiment in flight at a time.",
-      "protocol_hash": "abd0091c0c9f7bf4c489b5b551af0fc71262e929cb93164062426a73e65396dc",
+      "protocol_hash": "ca025d6d66efcc405f019fa6ee53029b7250cc61cfb1ec8c6250b446732b55c1",
       "readiness": "held; NO decision requirement (the re-pin inserts the real one at the flip); NO prepared phase-supply pin (the re-pin mints this cell's own under its own run id, item E16)",
       "rows": 1000,
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-V1",
@@ -398,10 +398,10 @@
     "armfit": {
       "attempt_id": "attempt-slurp-native-stage3-delta-cell-r03-gate-v1-fit",
       "cell": "slurp-native-stage3-delta-cell-r03-gate-fit-v1",
-      "composed_config_hash": "7c8db497059c02d4b86f82ef241aac6b723695cd257ac86cd83ada0188245c8d",
+      "composed_config_hash": "b7eff1843e9e9dac1f6338a0167846d2090de98dcc19606f7067cfc85485de92",
       "experiment": "slurp-native-stage3-delta-cell-r03-gate-v1",
       "note": "declared HELD in its experiment fragment; a SPEND identity, never flown as a generation cell, declared so every registered run id carries a cell, a registered plan document, an exposure row and its own core.flight.cli check",
-      "protocol_hash": "abd0091c0c9f7bf4c489b5b551af0fc71262e929cb93164062426a73e65396dc",
+      "protocol_hash": "ca025d6d66efcc405f019fa6ee53029b7250cc61cfb1ec8c6250b446732b55c1",
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-FIT-V1"
     },
     "planrfit": {
