@@ -293,3 +293,20 @@ change) -> `chain` the flight with `scripts/flights/batch/batch_chain_gepa.sh` (
 the 68-group arm) -> `curate` and `release` with `scripts/flights/batch/gepa_to_deltas.sh` ->
 register and fly **CELL-1-GEPA** from the diff plan
 `docs/readiness/2026-09-24-slurp-stage3-gepa-r01-v1/cell-1-gepa-diff-plan-v1.md`.
+
+## 12. The store's permitted roster (appended 2026-09-24)
+
+The delta store released from this arm pins the committed ADV-1 disagreeing receipt
+`docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-v1.json` (225 rows, split identity
+`7c603857...`) as its `permitted_roster` and `source_split_identity_hash` -- the precedent of
+`stage3-deltas-v1r` and `stage3-deltas-v2`, whose registrations carry the same identity. The reason
+is decision 83's append-only retention: the curated store is 248 new GEPA rows plus 200 retained
+iteration-1 rows, and 42 of those retained rows cite 28 R01C rows that lie outside the 173 group
+rows this arm's contacts were shown, so a permitted roster built from the group union would be
+refused by `rails.semantic_knowledge_build` unless retained content were discarded. Sharing v1r's
+source identity also keeps the GEPA store source-comparable with the CELL-1 / CELL-2 stores. The
+group union stays a committed roster of its own
+(`docs/receipts/rosters/slurp-stage3-gepa-r01c-groups-v1.json`) as the record of the contact
+material, and `scripts/flights/batch/gepa_render_proposal_outputs.py` proves it is contained in the
+permitted roster before copying that receipt byte for byte; the 68-row carriers receipt remains the
+flight population and is never the store's roster.

@@ -17,7 +17,33 @@
 #      and not a dependency, and the counts of both are printed side by side when the v2 document
 #      is present.
 #   B  render:  scripts/flights/batch/gepa_render_proposal_outputs.py -> the proposal outputs, the
-#      construction scope and the PERMITTED roster (the GROUP rows, not the carriers)
+#      construction scope and the PERMITTED roster, both of them COMMITTED receipts copied byte
+#      for byte
+#
+# THREE POPULATIONS, AND THEY ARE NOT THE SAME ROWS.
+#   FLIGHT population = the CARRIERS, docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-v1.json
+#     (68 rows, split identity 86da42e2...): one contact per carrier row, which is what the
+#     experiment fragment's population block pins and what the exposure gate reads. Printed below
+#     as FLIGHT_SPLIT and never passed to the store.
+#   CONTACT MATERIAL population = the GROUP ROWS, docs/receipts/rosters/slurp-stage3-gepa-r01c-
+#     groups-v1.json (173 rows, split identity 0d020435...): the rows whose rollout trajectories
+#     and construction gold were rendered into a contact, i.e. exactly what the GEPA contact saw.
+#     Committed as the record of that and printed below as GROUPS_SPLIT. It is a SUBSET of the
+#     permitted roster -- which the renderer proves -- and it is not itself the store's roster.
+#   STORE PERMITTED ROSTER = the ADV-1 DISAGREEING receipt, docs/receipts/rosters/slurp-stage3-
+#     advantage-r01c-disagreeing-v1.json (225 rows, split identity 7c603857...), which is exactly
+#     what stage3-deltas-v1r and stage3-deltas-v2 pin, so this store shares its SOURCE identity
+#     with the CELL-1 / CELL-2 stores. The store is append-only over v1r (decision 83): it retains
+#     200 iteration-1 rows, and 42 of those cite 28 R01C rows outside the 173 group rows, so the
+#     group union cannot be the permitted roster without discarding retained content.
+#     core.semantic_knowledge_preparation verifies the registration's permitted_roster as a
+#     committed roster_role='construction' receipt AND requires permitted.split_identity_hash ==
+#     registration.source_split_identity_hash, so $SPLIT below is the PERMITTED-ROSTER identity.
+#     The first release attempt (2026-09-24) passed the carriers identity against a hand-made
+#     permitted roster carrying no split_identity_hash at all and was refused twice over, by
+#     core.roster.RosterError and then by 'permitted_roster is not a verified roster'; the second
+#     passed the group union and was refused by rails.semantic_knowledge_build with 'authored
+#     delta source_sample_ids must be a subset of the permitted construction roster'.
 #   C  curate:  scripts/build_slurp_stage3_gepa_delta_rows.py -- the ADV-1 curator's own rules
 #      (append-only, exact-normalised + Jaccard >= 0.8 dedup, provenance merge, source-intent
 #      facets, six-token containment) over group-keyed candidate rows; predecessor = the released
@@ -74,11 +100,23 @@ echo "== gepa_to_deltas $(date -u +%FT%TZ) REPO=$REPO HEAD=$(git rev-parse --sho
 run() { if [ "$DRY" = "1" ]; then echo "   (dry) would run: $*"; else "$@" || { echo "FAILED: $*"; exit 3; }; fi; }
 
 # ---------------------------------------------------------------- A: preconditions
-SPLIT=$($PY -B -c "import json,sys;print(json.load(open(sys.argv[1]))['population']['split_identity_hash'])" \
+GROUPS_ROSTER=${GEPA_GROUPS_ROSTER:-docs/receipts/rosters/slurp-stage3-gepa-r01c-groups-v1.json}
+PERMITTED_ROSTER=${GEPA_PERMITTED_ROSTER:-docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-v1.json}
+# The FLIGHT population identity, as the experiment fragment pins the carriers: printed for the
+# record, never passed to the store.
+FLIGHT_SPLIT=$($PY -B -c "import json,sys;print(json.load(open(sys.argv[1]))['population']['split_identity_hash'])" \
         configs/experiment/slurp-native-stage3-gepa-r01-v1.json)
-echo "A  GEPA population split identity $SPLIT"
+# The CONTACT MATERIAL identity: the committed GROUP-ROWS receipt. Printed for the record.
+GROUPS_SPLIT=$($PY -B -c "import json,sys;d=json.load(open(sys.argv[1]));print(d['split_identity_hash'])" \
+        "$GROUPS_ROSTER")
+# The STORE identity: the committed permitted roster, the ADV-1 disagreeing receipt v1r/v2 pin.
+SPLIT=$($PY -B -c "import json,sys;d=json.load(open(sys.argv[1]));print(d['split_identity_hash'])" \
+        "$PERMITTED_ROSTER")
+echo "A  GEPA FLIGHT population (carriers) split identity $FLIGHT_SPLIT"
+echo "A  GEPA CONTACT MATERIAL (group rows) split identity $GROUPS_SPLIT from $GROUPS_ROSTER"
+echo "A  GEPA STORE permitted roster split identity $SPLIT from $PERMITTED_ROSTER"
 MISSING=0
-for F in "$GEPA_GROUPS" "$PREDECESSOR" "$GOLD" "$CATALOG"; do
+for F in "$GEPA_GROUPS" "$PREDECESSOR" "$GOLD" "$CATALOG" "$GROUPS_ROSTER" "$PERMITTED_ROSTER"; do
   [ -f "$F" ] || { echo "A  MISSING $F"; MISSING=1; }
 done
 [ -f "$TRANSCRIPTS" ] || echo "A  NO transcripts at $TRANSCRIPTS: the six-token containment rule will be DISABLED and the report will say so. Prepare them before releasing."
@@ -112,7 +150,8 @@ fi
 # ---------------------------------------------------------------- B: render the sealed outputs
 echo "B  render the sealed GEPA outputs, the construction scope and the permitted roster"
 run "$PY" -B scripts/flights/batch/gepa_render_proposal_outputs.py \
-    --run "$GEPA_RUN" --attempt "$GEPA_ATTEMPT" --groups "$GEPA_GROUPS" --out-dir "$PREPARED"
+    --run "$GEPA_RUN" --attempt "$GEPA_ATTEMPT" --groups "$GEPA_GROUPS" --out-dir "$PREPARED" \
+    --permitted-receipt "$PERMITTED_ROSTER"
 
 # ---------------------------------------------------------------- C: curate
 echo "C  curate iteration $ITERATION predecessor $PREDECESSOR"
@@ -161,8 +200,14 @@ run "$PY" -B -m speech_aware_evidence_acquisition.core.driver prepare-semantic-k
 
 # ---------------------------------------------------------------- R2: supply reach
 echo "R2 supply reach against $CATALOG (an inert route is what stopped cell B9a-rec)"
+# --version-tag v1 is the IDENTITY of adv1_to_deltas_steps.retag: the two namespaces are passed
+# literally because the twin's is stage3-deltas-gepa-twin-v1, which no re-tag of
+# stage3-deltas-twin-v1 reaches (it would ask for stage3-deltas-twin-gepa-v1 and find nothing).
 run "$PY" -B "$HELPERS" --repo-root "$REPO" --data-root "$DATA" reach \
-    --version-tag "$TAG" --intent-vocabulary "$CATALOG" --release-pins "$RELEASE_PINS"
+    --version-tag v1 \
+    --snapshot-relpath "knowledge/slurp/semantic/stage3-deltas-$TAG/snapshot.json" \
+    --twin-snapshot-relpath "knowledge/slurp/semantic/stage3-deltas-$TWIN_TAG/snapshot.json" \
+    --intent-vocabulary "$CATALOG" --release-pins "$RELEASE_PINS"
 
 echo "F  next: write the CELL-1-GEPA fragments from $RD/cell-1-gepa-diff-plan-v1.md"
 echo "== gepa_to_deltas done $(date -u +%FT%TZ) dry=$DRY tag=$TAG"

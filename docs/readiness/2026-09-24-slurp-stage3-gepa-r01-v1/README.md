@@ -121,3 +121,72 @@ DRAFT exposure rows: the "SLURP Stage-3 GEPA arm" section at the end of `docs/ex
 the CELL-1 family for the runtime change) -> `chain` with `batch_chain_gepa.sh` (smoke, then the
 68-group arm) -> `curate` + `release` with `gepa_to_deltas.sh` -> register and fly **CELL-1-GEPA**
 from `cell-1-gepa-diff-plan-v1.md`.
+
+## Two populations: the flight's carriers and the store's group rows (appended 2026-09-24)
+
+Appended after the first release attempt of `gepa_to_deltas.sh` was refused at step E. Nothing
+above is rewritten; this section states the distinction the refusal exposed.
+
+| | roster | rows | split identity | what pins it |
+| --- | --- | --- | --- | --- |
+| **flight population** | `docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-v1.json` | 68 | `86da42e2...` | `configs/experiment/slurp-native-stage3-gepa-r01-v1.json` `population`; the exposure gate |
+| **store source population** | `docs/receipts/rosters/slurp-stage3-gepa-r01c-groups-v1.json` | 173 | `0d020435...` | the two release registrations' `permitted_roster` **and** `source_split_identity_hash` |
+
+The flight makes one contact per CARRIER row, so the carriers are the flown identities. The
+material a contact is shown is its GROUP's rows -- their sealed trajectories and their construction
+gold -- so the rows an authored GEPA delta may cite are the union of the groups' `row_sample_ids`.
+Five carriers are topped up from R01C and are shown in no group, so the two rosters are genuinely
+different populations, not a relabelling of one.
+
+`core.semantic_knowledge_preparation.prepare_semantic_knowledge_store` verifies a registration's
+`permitted_roster` through `core.roster.read_roster` (a full `saea-roster-receipt-v1`, construction
+role, right carrier) and then requires `permitted.split_identity_hash ==
+registration.source_split_identity_hash` and `permitted.sample_ids` inside the construction scope.
+The first attempt supplied a permitted roster synthesised inside
+`gepa_render_proposal_outputs.py` with its `split_identity_hash` deliberately removed, against the
+CARRIERS identity, and was refused twice over:
+
+```
+core.roster.RosterError: roster receipt split_identity_hash must be non-empty text
+core.semantic_knowledge_preparation.SemanticKnowledgePreparationError:
+    permitted_roster is not a verified roster
+```
+
+The fix is the ADV-1 discipline: the GROUP-ROWS roster is minted once as a committed, pure
+selection of R01C (`scripts/flights/batch/gepa_prepare_steps.py groups-roster`), the renderer
+copies that committed receipt byte for byte into `prepared/SAEA-SLURP-STAGE3-DELTAS-GEPA-V1/
+permitted-roster.json` (cross-checking its items against the groups artifact), and the runbook
+reads `source_split_identity_hash` out of that receipt rather than out of the experiment fragment.
+
+## Ruling: the store's permitted roster is the ADV-1 disagreeing receipt (appended 2026-09-24)
+
+Appended after the release step was refused a second time. Nothing above is rewritten; the section
+above named two populations and made the 173 group rows the store's permitted roster, and this
+section records the coordinator's ruling that replaces that last step.
+
+With the group rows as the permitted roster, `core.driver prepare-semantic-knowledge` refused:
+
+```
+SemanticKnowledgePreparationError: authored delta source_sample_ids must be a subset of the
+    permitted construction roster
+```
+
+The curated GEPA store is append-only over the released `stage3-deltas-v1r` (decision 83): 448 rows
+= 248 new GEPA rows + 200 retained iteration-1 rows. Those 448 rows cite 201 distinct sample ids and
+28 of them -- cited by 42 retained rows and by no new GEPA row -- lie outside the 173 group rows.
+All 201 lie inside the committed ADV-1 disagreeing roster. The ruling is therefore the
+precedent-exact one: the STORE's permitted roster is that ADV-1 receipt, exactly as
+`stage3-deltas-v1r` and `stage3-deltas-v2` pin it, so `stage3-deltas-gepa-v1` shares its source
+identity with the CELL-1 / CELL-2 stores rather than inventing a third one.
+
+| | roster | rows | split identity | what pins it |
+| --- | --- | --- | --- | --- |
+| **flight population** | `docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-v1.json` | 68 | `86da42e2...` | `configs/experiment/slurp-native-stage3-gepa-r01-v1.json` `population`; the exposure gate |
+| **contact material** | `docs/receipts/rosters/slurp-stage3-gepa-r01c-groups-v1.json` | 173 | `0d020435...` | committed as the record of what the contact was shown; printed by the runbook; a strict subset of the permitted roster |
+| **store permitted roster** | `docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-v1.json` | 225 | `7c603857...` | the two release registrations' `permitted_roster` **and** `source_split_identity_hash`, exactly as v1r / v2 pin them |
+
+Neither the carriers identity nor the groups identity is ever written into the store.
+`scripts/flights/batch/gepa_render_proposal_outputs.py` still copies the permitted receipt byte for
+byte, but its population check is now CONTAINMENT rather than equality: every group row must be
+inside the receipt, so no GEPA-authored citation can escape it. The carriers receipt still fails
+that check, and so does any receipt one group row short.
