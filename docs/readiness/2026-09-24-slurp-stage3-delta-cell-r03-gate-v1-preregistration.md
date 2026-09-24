@@ -245,7 +245,7 @@ Composed config and protocol hashes, computed offline by `core.config.compose` a
 | `slurp-native-stage3-delta-cell-r03-gate-twin-fit-v1` | `9790943f…` | `5c0377b9…` |
 | `slurp-native-stage3-delta-cell-r03-gate-smoke-4-v1` | `e973ce71c9a5289c7f8f851bfafc8469202e92072044b134b45680dfefadcbb8` | `ae51986ce6cf16c6b55a9e04961ef80437875be31f31bfd3cfe6b0a2ad90488b` |
 | `slurp-native-stage3-delta-cell-r03-gate-smoke-4-fit-v1` | `a934df73…` | `295085a6…` |
-| `slurp-native-stage3-delta-cell-r03-gate-smoke-4-twin-v1` | `85be8202c4c0b1e94f8485ba83429212dd86919ef20e47575ade941d73f7c895` | `3a1e461d9608d7748ebfc606be84f36593207bb2a610d4a6622a0f123bdc2f37` |
+| `slurp-native-stage3-delta-cell-r03-gate-smoke-4-twin-v1` | `351ece33900cef90300532d09b7aa8e22a3ab284009c8f36ef76dc0019a7be5a` | `4b7a4d6c4bdb48203254c9b4f4355344722e2b2abd63ab0c8ff05175d3669a36` |
 | `slurp-native-stage3-delta-cell-r03-gate-smoke-4-twin-fit-v1` | `688b0e5a…` | `ecdd7b65…` |
 
 Split identities: `ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67` (the 1,000-row
@@ -261,7 +261,7 @@ Store pins, all read off the bytes on disk by the generator: arm release
 CONTENT hash, never the `snapshot.json` file digest.
 
 Protocol document `docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1/protocol-registered-v1.json`,
-sha256 `e7bcd505ca62adb487282523be2a41adedf451b2a6f3ff9c0da04b2285850c88`, pinned by all ten plan
+sha256 `5b42b739463cf1e31d926d1e1c8c7abe4389099338874f970eeea04ef9c8b11f`, pinned by all ten plan
 documents.
 
 ## 9. What is registered, and what this registration does NOT authorise

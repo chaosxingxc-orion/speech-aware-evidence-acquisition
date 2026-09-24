@@ -123,11 +123,11 @@
       "attempt_id": "attempt-slurp-native-stage3-delta-cell-r03-gate-smoke-4-v1-twin",
       "baseline_fragment": "configs/baseline/slurp-native-stage3-delta-cell-r03-gate-twin-smoke-4-baseline-v1.json",
       "cell": "slurp-native-stage3-delta-cell-r03-gate-smoke-4-twin-v1",
-      "composed_config_hash": "85be8202c4c0b1e94f8485ba83429212dd86919ef20e47575ade941d73f7c895",
+      "composed_config_hash": "351ece33900cef90300532d09b7aa8e22a3ab284009c8f36ef76dc0019a7be5a",
       "experiment": "slurp-native-stage3-delta-cell-r03-gate-smoke-4-v1",
       "experiment_fragment": "configs/experiment/slurp-native-stage3-delta-cell-r03-gate-smoke-4-v1.json",
       "order_constraint": "opens when the GPU is free and no other form smoke is in flight",
-      "protocol_hash": "3a1e461d9608d7748ebfc606be84f36593207bb2a610d4a6622a0f123bdc2f37",
+      "protocol_hash": "4b7a4d6c4bdb48203254c9b4f4355344722e2b2abd63ab0c8ff05175d3669a36",
       "readiness": "held; NO decision requirement (the re-pin inserts the real one at the flip); NO prepared phase-supply pin (the re-pin mints this cell's own under its own run id, item E16)",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-SMOKE-4-TWIN-V1",
@@ -434,10 +434,10 @@
     "twinsmokefit": {
       "attempt_id": "attempt-slurp-native-stage3-delta-cell-r03-gate-smoke-4-v1-twin-fit",
       "cell": "slurp-native-stage3-delta-cell-r03-gate-smoke-4-twin-fit-v1",
-      "composed_config_hash": "85be8202c4c0b1e94f8485ba83429212dd86919ef20e47575ade941d73f7c895",
+      "composed_config_hash": "351ece33900cef90300532d09b7aa8e22a3ab284009c8f36ef76dc0019a7be5a",
       "experiment": "slurp-native-stage3-delta-cell-r03-gate-smoke-4-v1",
       "note": "declared HELD in its experiment fragment; a SPEND identity, never flown as a generation cell, declared so every registered run id carries a cell, a registered plan document, an exposure row and its own core.flight.cli check",
-      "protocol_hash": "3a1e461d9608d7748ebfc606be84f36593207bb2a610d4a6622a0f123bdc2f37",
+      "protocol_hash": "4b7a4d6c4bdb48203254c9b4f4355344722e2b2abd63ab0c8ff05175d3669a36",
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-SMOKE-4-TWIN-FIT-V1"
     }
   },

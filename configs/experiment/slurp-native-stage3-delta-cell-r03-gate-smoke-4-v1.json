@@ -53,19 +53,26 @@
         "reason": "The four-row form smoke of the CELL-3 derangement twin, on the same four rows with the twin release pinned and the same gate. Held for the same reasons as the generation smoke; it seals before the twin arm opens.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-delta-cell-r03-gate-admission-v1",
+            "relpath": "coordination/slurp-stage3-delta-cell-r03-gate-v1/root-admission-v1.json",
+            "sha256": "f68aabe46655fea4c20fcd0a809d45388eeeebf41cd198607e33837a2afaf688",
+            "reason": "Decision slurp-stage3-delta-cell-r03-gate-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The twin release of knowledge/slurp/semantic/stage3-deltas-twin-v2/, the seeded derangement (seed 20260922) of version 2 own authored document: 200 statements, authored token count 3,001 held exactly, 13 arithmetic fixed points. The cell stays HELD on a root admission decision.",
-            "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v2/release.json",
-            "sha256": "b18b141f67dae4b413391d22dd787a3b85480d2b4fab24db0848e547e7aa1a9a"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-SMOKE-4-TWIN-V1/phase-supply-v1.json",
+            "sha256": "9c3cb94547383287030bb163da0c154715e93f4a7a427f63337adc22e6ec4122"
           },
           {
             "kind": "preparation",
             "reason": "The DEV-2000-ADDED speech-query encoding receipt this roster two query_source pins are built from (SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1, sealed 2026-09-21 and already consumed by cell B6). Nothing new is prepared for this cell; the requirement states what the fragment binds. The cell stays HELD on a root admission decision.",
-            "relpath": "preparation-runs/SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
-            "sha256": "9c2b6cdcb17ca3b1ad35b599217ca4e7d84f3c7e5a5d55056bdbf7d92fc9dc9d"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-SMOKE-4-TWIN-V1/phase-supply-v1.json",
+            "sha256": "9c3cb94547383287030bb163da0c154715e93f4a7a427f63337adc22e6ec4122"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-SMOKE-4-TWIN-V1"
     },
