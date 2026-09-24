@@ -1,0 +1,1117 @@
+{
+  "accounting": {
+    "ceiling_arithmetic": "6875 = 625 R01C rows x 11, the locked plan's OWN per-row contact ceiling; 27500 = 6875 x (1 speech packet + 3 endpoints); 29996 s = the roster's 2726.8471875 s of audio x 11. The four-row smoke is 4 x 11 = 44, 44 x 4 = 176 and 188 s (17.0349375 s x 11, rounded up).",
+    "expected_cost": {
+      "contacts_per_cell_expected": 2563,
+      "contacts_per_row_expected": 4.1,
+      "family_contacts_expected": 15395,
+      "family_gpu_hours_expected": 6.5,
+      "gpu_hours_per_cell_expected": 1.05,
+      "note": "Cell PLAN realised 4.0963 contacts per row on TRAIN Fold A and cell B6's plan arm 4.071 on DEV-2000-ADDED; 1.79 GPU-h per 1,080 rows at the L1 geometry scales to about 1.05 GPU-h per 625 rows. No VAR-1 knob adds a contact. These are ESTIMATES, never targets, and the ceilings above are the exact program maxima."
+    },
+    "exposure_rows": [
+      "SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1 (generation)",
+      "SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-V1 (generation)",
+      "SAEA-SLURP-STAGE3-VAR1-EX-K10-R01C-V1 (generation)",
+      "SAEA-SLURP-STAGE3-VAR1-EX-K30-R01C-V1 (generation)",
+      "SAEA-SLURP-STAGE3-VAR1-EX-DIV-R01C-V1 (generation)",
+      "SAEA-SLURP-STAGE3-VAR1-PER-K16C5-R01C-V1 (generation)",
+      "SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-FIT-V1 (fit)",
+      "SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-FIT-V1 (fit)",
+      "SAEA-SLURP-STAGE3-VAR1-EX-K10-R01C-FIT-V1 (fit)",
+      "SAEA-SLURP-STAGE3-VAR1-EX-K30-R01C-FIT-V1 (fit)",
+      "SAEA-SLURP-STAGE3-VAR1-EX-DIV-R01C-FIT-V1 (fit)",
+      "SAEA-SLURP-STAGE3-VAR1-PER-K16C5-R01C-FIT-V1 (fit)",
+      "SAEA-SLURP-STAGE3-VAR1-SMOKE-4-V1 (generation)",
+      "SAEA-SLURP-STAGE3-VAR1-SMOKE-4-FIT-V1 (fit)",
+      "SAEA-SLURP-STAGE3-VAR1-OWN-NULL-V1 (model-free read)",
+      "SAEA-SLURP-STAGE3-VAR1-VARIANT-READ-V1 (model-free read)"
+    ],
+    "family_scope": "SIXTEEN registered rows: fourteen flight identities (seven cells x generation + fit) and two model-free-check reads. The decision receipt coordination/slurp-stage3-var1-v1/root-admission-v1.json (decision id slurp-stage3-var1-admission-v1) lists the FOURTEEN flight run ids as eligible_run_ids.",
+    "per_cell_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 27500,
+      "generation_calls_cap": 6875,
+      "gpu_hours_fit_inclusive": 8.0,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 29996
+    },
+    "plan_budget_is_run_cumulative": true,
+    "smoke_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 188
+    },
+    "unused_budget_is_not_attempt_authority": true
+  },
+  "bad_case_targets": {
+    "entity_false_negatives": "about 31.5 % of reference entities unmatched on TRAIN Fold A, date omission dominant (84 of 138 reference dates). The EX knobs aim at this through demonstration count and diversity.",
+    "entity_false_positives": "about 28.8 %; 184 of 414 empty-gold rows emit entities. VAR1-EX-DIV's diversified neighbourhood and VAR1-EX-K10's shorter block are the two knobs that could move it in opposite directions.",
+    "intent_by_candidate_coverage": "own card supplied -> 96.5 % covered, absent -> 17.3 %. This is VAR1-PER-K16C5's target and it is read DIRECTLY as a coverage rate, not inferred from the pooled score.",
+    "measurement_floor": "about +-1.3 pp pooled SLU at n = 1,000 across flights. At n = 625 the cross-flight floor is wider still, which is exactly why this family measures its OWN null on its OWN roster and leans on dense per-class proxies."
+  },
+  "comparator_context_only": {
+    "dev2000_added_margins": {
+      "h_intent": 1.152,
+      "h_slu": 1.2525
+    },
+    "dev2000_added_plan": {
+      "intent_accuracy": 76.6,
+      "official_slu_f1": 65.4
+    },
+    "train_fold_a_margins": {
+      "h_intent": 0.9943,
+      "h_slu": 1.2485
+    },
+    "train_fold_a_plan": {
+      "intent_accuracy": 82.22,
+      "official_slu_f1": 63.63,
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1"
+    },
+    "train_fold_a_planr": {
+      "intent_accuracy": 82.5,
+      "official_slu_f1": 63.8
+    },
+    "warning": "CONTEXT ONLY. None of these is this family's comparator or bar: a margin is a property of a roster, and R01C is a different roster of a different size with a different scenario allocation. VAR1-PLAN and VAR1-PLANR measure this roster's own."
+  },
+  "contact_free_evidence": {
+    "dry_run": {
+      "all_forms_ok": true,
+      "contacts": {
+        "encoder": 0,
+        "model": 0,
+        "network": 0,
+        "scorer": 0,
+        "tokenizer": 0
+      },
+      "driver": "scripts/flights/batch/var1_dry_run.py",
+      "forms": {
+        "exdiv": {
+          "canned_candidates": [
+            "alarm_query",
+            "alarm_remove",
+            "alarm_set"
+          ],
+          "duplicate_walk_ok": [
+            "perception",
+            "solver",
+            "reviewer",
+            "planner"
+          ],
+          "first_phase_seed_source": [
+            "router-bootstrap (no pinned artifact)"
+          ],
+          "items_per_node_by_store_over_4_rows": {
+            "perception": {
+              "intent-boundaries": 32,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "planner": {
+              "intent-boundaries": 0,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "reviewer": {
+              "intent-boundaries": 0,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "solver": {
+              "intent-boundaries": 0,
+              "slot-contracts": 44,
+              "train-exemplars": 46
+            }
+          },
+          "items_per_node_over_4_rows": {
+            "perception": 32,
+            "planner": 0,
+            "reviewer": 0,
+            "solver": 90
+          },
+          "knobs": {
+            "exemplars_fuse_coverage": {
+              "c": 4,
+              "m": 20,
+              "top_l": 20
+            },
+            "exemplars_k": 20,
+            "perception_fill_max_candidates": 3,
+            "perception_fuse_coverage": {
+              "c": 1,
+              "m": 8,
+              "top_l": 8
+            },
+            "perception_k": 8,
+            "slot_contracts_max_candidates": 3
+          },
+          "max_instruction_chars_per_node": {
+            "perception": 960,
+            "planner": 193,
+            "reviewer": 435,
+            "solver": 1129
+          },
+          "mean_instruction_chars_per_node": {
+            "perception": 960.0,
+            "planner": 193.0,
+            "reviewer": 435.0,
+            "solver": 1129.0
+          },
+          "ok": true,
+          "revise_second_visit_items": 0
+        },
+        "exk10": {
+          "canned_candidates": [
+            "alarm_query",
+            "alarm_remove",
+            "alarm_set"
+          ],
+          "duplicate_walk_ok": [
+            "perception",
+            "solver",
+            "reviewer",
+            "planner"
+          ],
+          "first_phase_seed_source": [
+            "router-bootstrap (no pinned artifact)"
+          ],
+          "items_per_node_by_store_over_4_rows": {
+            "perception": {
+              "intent-boundaries": 32,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "planner": {
+              "intent-boundaries": 0,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "reviewer": {
+              "intent-boundaries": 0,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "solver": {
+              "intent-boundaries": 0,
+              "slot-contracts": 44,
+              "train-exemplars": 40
+            }
+          },
+          "items_per_node_over_4_rows": {
+            "perception": 32,
+            "planner": 0,
+            "reviewer": 0,
+            "solver": 84
+          },
+          "knobs": {
+            "exemplars_fuse_coverage": {
+              "c": 10,
+              "m": 10,
+              "top_l": 10
+            },
+            "exemplars_k": 10,
+            "perception_fill_max_candidates": 3,
+            "perception_fuse_coverage": {
+              "c": 1,
+              "m": 8,
+              "top_l": 8
+            },
+            "perception_k": 8,
+            "slot_contracts_max_candidates": 3
+          },
+          "max_instruction_chars_per_node": {
+            "perception": 960,
+            "planner": 193,
+            "reviewer": 435,
+            "solver": 1129
+          },
+          "mean_instruction_chars_per_node": {
+            "perception": 960.0,
+            "planner": 193.0,
+            "reviewer": 435.0,
+            "solver": 1129.0
+          },
+          "ok": true,
+          "revise_second_visit_items": 0
+        },
+        "exk30": {
+          "canned_candidates": [
+            "alarm_query",
+            "alarm_remove",
+            "alarm_set"
+          ],
+          "duplicate_walk_ok": [
+            "perception",
+            "solver",
+            "reviewer",
+            "planner"
+          ],
+          "first_phase_seed_source": [
+            "router-bootstrap (no pinned artifact)"
+          ],
+          "items_per_node_by_store_over_4_rows": {
+            "perception": {
+              "intent-boundaries": 32,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "planner": {
+              "intent-boundaries": 0,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "reviewer": {
+              "intent-boundaries": 0,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "solver": {
+              "intent-boundaries": 0,
+              "slot-contracts": 44,
+              "train-exemplars": 120
+            }
+          },
+          "items_per_node_over_4_rows": {
+            "perception": 32,
+            "planner": 0,
+            "reviewer": 0,
+            "solver": 164
+          },
+          "knobs": {
+            "exemplars_fuse_coverage": {
+              "c": 30,
+              "m": 30,
+              "top_l": 30
+            },
+            "exemplars_k": 30,
+            "perception_fill_max_candidates": 3,
+            "perception_fuse_coverage": {
+              "c": 1,
+              "m": 8,
+              "top_l": 8
+            },
+            "perception_k": 8,
+            "slot_contracts_max_candidates": 3
+          },
+          "max_instruction_chars_per_node": {
+            "perception": 960,
+            "planner": 193,
+            "reviewer": 435,
+            "solver": 1129
+          },
+          "mean_instruction_chars_per_node": {
+            "perception": 960.0,
+            "planner": 193.0,
+            "reviewer": 435.0,
+            "solver": 1129.0
+          },
+          "ok": true,
+          "revise_second_visit_items": 0
+        },
+        "perk16c5": {
+          "canned_candidates": [
+            "alarm_query",
+            "alarm_remove",
+            "alarm_set",
+            "audio_volume_down",
+            "audio_volume_mute"
+          ],
+          "duplicate_walk_ok": [
+            "perception",
+            "solver",
+            "reviewer",
+            "planner"
+          ],
+          "first_phase_seed_source": [
+            "router-bootstrap (no pinned artifact)"
+          ],
+          "items_per_node_by_store_over_4_rows": {
+            "perception": {
+              "intent-boundaries": 64,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "planner": {
+              "intent-boundaries": 0,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "reviewer": {
+              "intent-boundaries": 0,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "solver": {
+              "intent-boundaries": 0,
+              "slot-contracts": 48,
+              "train-exemplars": 80
+            }
+          },
+          "items_per_node_over_4_rows": {
+            "perception": 64,
+            "planner": 0,
+            "reviewer": 0,
+            "solver": 128
+          },
+          "knobs": {
+            "exemplars_fuse_coverage": {
+              "c": 20,
+              "m": 20,
+              "top_l": 20
+            },
+            "exemplars_k": 20,
+            "perception_fill_max_candidates": 5,
+            "perception_fuse_coverage": {
+              "c": 1,
+              "m": 16,
+              "top_l": 16
+            },
+            "perception_k": 16,
+            "slot_contracts_max_candidates": 5
+          },
+          "max_instruction_chars_per_node": {
+            "perception": 960,
+            "planner": 193,
+            "reviewer": 435,
+            "solver": 1129
+          },
+          "mean_instruction_chars_per_node": {
+            "perception": 960.0,
+            "planner": 193.0,
+            "reviewer": 435.0,
+            "solver": 1129.0
+          },
+          "ok": true,
+          "revise_second_visit_items": 0
+        },
+        "plan": {
+          "canned_candidates": [
+            "alarm_query",
+            "alarm_remove",
+            "alarm_set"
+          ],
+          "duplicate_walk_ok": [
+            "perception",
+            "solver",
+            "reviewer",
+            "planner"
+          ],
+          "first_phase_seed_source": [
+            "router-bootstrap (no pinned artifact)"
+          ],
+          "items_per_node_by_store_over_4_rows": {
+            "perception": {
+              "intent-boundaries": 32,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "planner": {
+              "intent-boundaries": 0,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "reviewer": {
+              "intent-boundaries": 0,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "solver": {
+              "intent-boundaries": 0,
+              "slot-contracts": 44,
+              "train-exemplars": 80
+            }
+          },
+          "items_per_node_over_4_rows": {
+            "perception": 32,
+            "planner": 0,
+            "reviewer": 0,
+            "solver": 124
+          },
+          "knobs": {
+            "exemplars_fuse_coverage": {
+              "c": 20,
+              "m": 20,
+              "top_l": 20
+            },
+            "exemplars_k": 20,
+            "perception_fill_max_candidates": 3,
+            "perception_fuse_coverage": {
+              "c": 1,
+              "m": 8,
+              "top_l": 8
+            },
+            "perception_k": 8,
+            "slot_contracts_max_candidates": 3
+          },
+          "max_instruction_chars_per_node": {
+            "perception": 960,
+            "planner": 193,
+            "reviewer": 435,
+            "solver": 1129
+          },
+          "mean_instruction_chars_per_node": {
+            "perception": 960.0,
+            "planner": 193.0,
+            "reviewer": 435.0,
+            "solver": 1129.0
+          },
+          "ok": true,
+          "revise_second_visit_items": 0
+        },
+        "planr": {
+          "canned_candidates": [
+            "alarm_query",
+            "alarm_remove",
+            "alarm_set"
+          ],
+          "duplicate_walk_ok": [
+            "perception",
+            "solver",
+            "reviewer",
+            "planner"
+          ],
+          "first_phase_seed_source": [
+            "router-bootstrap (no pinned artifact)"
+          ],
+          "items_per_node_by_store_over_4_rows": {
+            "perception": {
+              "intent-boundaries": 32,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "planner": {
+              "intent-boundaries": 0,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "reviewer": {
+              "intent-boundaries": 0,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "solver": {
+              "intent-boundaries": 0,
+              "slot-contracts": 44,
+              "train-exemplars": 80
+            }
+          },
+          "items_per_node_over_4_rows": {
+            "perception": 32,
+            "planner": 0,
+            "reviewer": 0,
+            "solver": 124
+          },
+          "knobs": {
+            "exemplars_fuse_coverage": {
+              "c": 20,
+              "m": 20,
+              "top_l": 20
+            },
+            "exemplars_k": 20,
+            "perception_fill_max_candidates": 3,
+            "perception_fuse_coverage": {
+              "c": 1,
+              "m": 8,
+              "top_l": 8
+            },
+            "perception_k": 8,
+            "slot_contracts_max_candidates": 3
+          },
+          "max_instruction_chars_per_node": {
+            "perception": 960,
+            "planner": 193,
+            "reviewer": 435,
+            "solver": 1129
+          },
+          "mean_instruction_chars_per_node": {
+            "perception": 960.0,
+            "planner": 193.0,
+            "reviewer": 435.0,
+            "solver": 1129.0
+          },
+          "ok": true,
+          "revise_second_visit_items": 0
+        },
+        "smoke": {
+          "canned_candidates": [
+            "alarm_query",
+            "alarm_remove",
+            "alarm_set",
+            "audio_volume_down",
+            "audio_volume_mute"
+          ],
+          "duplicate_walk_ok": [
+            "perception",
+            "solver",
+            "reviewer",
+            "planner"
+          ],
+          "first_phase_seed_source": [
+            "router-bootstrap (no pinned artifact)"
+          ],
+          "items_per_node_by_store_over_4_rows": {
+            "perception": {
+              "intent-boundaries": 64,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "planner": {
+              "intent-boundaries": 0,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "reviewer": {
+              "intent-boundaries": 0,
+              "slot-contracts": 0,
+              "train-exemplars": 0
+            },
+            "solver": {
+              "intent-boundaries": 0,
+              "slot-contracts": 48,
+              "train-exemplars": 80
+            }
+          },
+          "items_per_node_over_4_rows": {
+            "perception": 64,
+            "planner": 0,
+            "reviewer": 0,
+            "solver": 128
+          },
+          "knobs": {
+            "exemplars_fuse_coverage": {
+              "c": 20,
+              "m": 20,
+              "top_l": 20
+            },
+            "exemplars_k": 20,
+            "perception_fill_max_candidates": 5,
+            "perception_fuse_coverage": {
+              "c": 1,
+              "m": 16,
+              "top_l": 16
+            },
+            "perception_k": 16,
+            "slot_contracts_max_candidates": 5
+          },
+          "max_instruction_chars_per_node": {
+            "perception": 960,
+            "planner": 193,
+            "reviewer": 435,
+            "solver": 1129
+          },
+          "mean_instruction_chars_per_node": {
+            "perception": 960.0,
+            "planner": 193.0,
+            "reviewer": 435.0,
+            "solver": 1129.0
+          },
+          "ok": true,
+          "revise_second_visit_items": 0
+        }
+      },
+      "record": "docs/readiness/2026-09-24-slurp-stage3-var1-v1/dry-run-v1.md",
+      "rows": 4,
+      "what_it_walks": "every one of the seven registered VAR-1 forms, composed from its OWN committed fragments over the REAL released stores, walked node by node on the same four R01C rows, with only the four role answers canned. Three walks per form: the ACCEPT path on all four rows, a REVISE revisit on row 1, and a duplicate-candidate Perception answer on row 1."
+    },
+    "gates": [
+      "engineering_base_check.py",
+      "harness_admission_check.py",
+      "results_ledger_check.py",
+      "tool_catalog_check.py",
+      "experiment_handoff_check.py",
+      "finite_completion_policy_check.py",
+      "stage3_algorithm_label_check.py",
+      "derived_media_confinement_check.py"
+    ],
+    "proof_test": "tests/unit/test_slurp_var1_registration.py: every VAR-1 baseline equals the locked v2.0 plan fragment on every key except the R01C re-pointing, the per-cell identity bookkeeping and its OWN declared knobs; VAR1-PLANR equals VAR1-PLAN on every key except the fit identities and what_this_is; the knob table in protocol-registered-v1.json equals the bytes in the fragments; and the registered composed/protocol hashes reproduce from core.config.compose."
+  },
+  "family": {
+    "exdiv": {
+      "fit_run_id": "SAEA-SLURP-STAGE3-VAR1-EX-DIV-R01C-FIT-V1",
+      "knobs": {
+        "exemplars_fuse_coverage": {
+          "c": 4,
+          "m": 20,
+          "top_l": 20
+        },
+        "exemplars_k": 20,
+        "moved_against_the_locked_plan": [
+          "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.c: 20 -> 4 (k and the top-m window and top_l are unchanged at 20)"
+        ],
+        "perception_fill_max_candidates": 3,
+        "perception_fuse_coverage": {
+          "c": 1,
+          "m": 8,
+          "top_l": 8
+        },
+        "perception_k": 8,
+        "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+        "slot_contracts_max_candidates": 3
+      },
+      "label": "VAR1-EX-DIV",
+      "rows": 625,
+      "run_id": "SAEA-SLURP-STAGE3-VAR1-EX-DIV-R01C-V1"
+    },
+    "exk10": {
+      "fit_run_id": "SAEA-SLURP-STAGE3-VAR1-EX-K10-R01C-FIT-V1",
+      "knobs": {
+        "exemplars_fuse_coverage": {
+          "c": 10,
+          "m": 10,
+          "top_l": 10
+        },
+        "exemplars_k": 10,
+        "moved_against_the_locked_plan": [
+          "knowledge_stores.train-exemplars.phase_supply.solver.k: 20 -> 10",
+          "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage: {c:20,m:20,top_l:20} -> {c:10,m:10,top_l:10}"
+        ],
+        "perception_fill_max_candidates": 3,
+        "perception_fuse_coverage": {
+          "c": 1,
+          "m": 8,
+          "top_l": 8
+        },
+        "perception_k": 8,
+        "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+        "slot_contracts_max_candidates": 3
+      },
+      "label": "VAR1-EX-K10",
+      "rows": 625,
+      "run_id": "SAEA-SLURP-STAGE3-VAR1-EX-K10-R01C-V1"
+    },
+    "exk30": {
+      "fit_run_id": "SAEA-SLURP-STAGE3-VAR1-EX-K30-R01C-FIT-V1",
+      "knobs": {
+        "exemplars_fuse_coverage": {
+          "c": 30,
+          "m": 30,
+          "top_l": 30
+        },
+        "exemplars_k": 30,
+        "moved_against_the_locked_plan": [
+          "knowledge_stores.train-exemplars.phase_supply.solver.k: 20 -> 30",
+          "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage: {c:20,m:20,top_l:20} -> {c:30,m:30,top_l:30}"
+        ],
+        "perception_fill_max_candidates": 3,
+        "perception_fuse_coverage": {
+          "c": 1,
+          "m": 8,
+          "top_l": 8
+        },
+        "perception_k": 8,
+        "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+        "slot_contracts_max_candidates": 3
+      },
+      "label": "VAR1-EX-K30",
+      "rows": 625,
+      "run_id": "SAEA-SLURP-STAGE3-VAR1-EX-K30-R01C-V1"
+    },
+    "perk16c5": {
+      "fit_run_id": "SAEA-SLURP-STAGE3-VAR1-PER-K16C5-R01C-FIT-V1",
+      "knobs": {
+        "exemplars_fuse_coverage": {
+          "c": 20,
+          "m": 20,
+          "top_l": 20
+        },
+        "exemplars_k": 20,
+        "moved_against_the_locked_plan": [
+          "knowledge_stores.intent-boundaries.phase_supply.perception.k: 8 -> 16",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.fuse_coverage: {c:1,m:8,top_l:8} -> {c:1,m:16,top_l:16}",
+          "phase_material.perception.fill_params.max_candidates: 3 -> 5",
+          "knowledge_stores.slot-contracts.candidate_supply.solver.max_candidates: 3 -> 5",
+          "knowledge_stores.slot-contracts.candidate_supply.solver.projection_policy: bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1 -> configurable-bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1 (REQUIRED COMPANION: rails.candidate_semantic_supply refuses a candidate bound above three under the literal-3 bounded policy; the projection itself -- first occurrence in the model's own order, distinct on intent_id -- does not change)"
+        ],
+        "perception_fill_max_candidates": 5,
+        "perception_fuse_coverage": {
+          "c": 1,
+          "m": 16,
+          "top_l": 16
+        },
+        "perception_k": 16,
+        "projection_policy": "configurable-bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+        "slot_contracts_max_candidates": 5
+      },
+      "label": "VAR1-PER-K16C5",
+      "rows": 625,
+      "run_id": "SAEA-SLURP-STAGE3-VAR1-PER-K16C5-R01C-V1"
+    },
+    "plan": {
+      "fit_run_id": "SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-FIT-V1",
+      "knobs": {
+        "exemplars_fuse_coverage": {
+          "c": 20,
+          "m": 20,
+          "top_l": 20
+        },
+        "exemplars_k": 20,
+        "moved_against_the_locked_plan": [],
+        "perception_fill_max_candidates": 3,
+        "perception_fuse_coverage": {
+          "c": 1,
+          "m": 8,
+          "top_l": 8
+        },
+        "perception_k": 8,
+        "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+        "slot_contracts_max_candidates": 3
+      },
+      "label": "VAR1-PLAN",
+      "rows": 625,
+      "run_id": "SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1"
+    },
+    "planr": {
+      "fit_run_id": "SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-FIT-V1",
+      "knobs": {
+        "exemplars_fuse_coverage": {
+          "c": 20,
+          "m": 20,
+          "top_l": 20
+        },
+        "exemplars_k": 20,
+        "moved_against_the_locked_plan": [],
+        "perception_fill_max_candidates": 3,
+        "perception_fuse_coverage": {
+          "c": 1,
+          "m": 8,
+          "top_l": 8
+        },
+        "perception_k": 8,
+        "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+        "slot_contracts_max_candidates": 3
+      },
+      "label": "VAR1-PLANR",
+      "rows": 625,
+      "run_id": "SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-V1"
+    },
+    "smoke": {
+      "fit_run_id": "SAEA-SLURP-STAGE3-VAR1-SMOKE-4-FIT-V1",
+      "knobs": {
+        "exemplars_fuse_coverage": {
+          "c": 20,
+          "m": 20,
+          "top_l": 20
+        },
+        "exemplars_k": 20,
+        "moved_against_the_locked_plan": [
+          "the VAR1-PER-K16C5 form on four rows"
+        ],
+        "perception_fill_max_candidates": 5,
+        "perception_fuse_coverage": {
+          "c": 1,
+          "m": 16,
+          "top_l": 16
+        },
+        "perception_k": 16,
+        "projection_policy": "configurable-bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+        "slot_contracts_max_candidates": 5
+      },
+      "label": "VAR1-SMOKE-4",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-VAR1-SMOKE-4-V1"
+    }
+  },
+  "hashes": {
+    "slurp-native-stage3-var1-ex-div-r01c-fit-v1": {
+      "composed_config_hash": "606016d2b34532f691760ab3282fffef84c70ee341015a22660514fe3f9b05ba",
+      "protocol_hash": "866d14b670b9820c0654e53550fcf78bebf9e5ba525002ac7c221d8bc202632c"
+    },
+    "slurp-native-stage3-var1-ex-div-r01c-v1": {
+      "composed_config_hash": "606016d2b34532f691760ab3282fffef84c70ee341015a22660514fe3f9b05ba",
+      "protocol_hash": "866d14b670b9820c0654e53550fcf78bebf9e5ba525002ac7c221d8bc202632c"
+    },
+    "slurp-native-stage3-var1-ex-k10-r01c-fit-v1": {
+      "composed_config_hash": "d27a2d7304e8680e2003e135ac140d3353c234db46c74fb778db5f85d1da5a0d",
+      "protocol_hash": "92ed2735773a40ce056d2987381a2bb649baafe4fe93b54db7e17ee7f7bce4da"
+    },
+    "slurp-native-stage3-var1-ex-k10-r01c-v1": {
+      "composed_config_hash": "d27a2d7304e8680e2003e135ac140d3353c234db46c74fb778db5f85d1da5a0d",
+      "protocol_hash": "92ed2735773a40ce056d2987381a2bb649baafe4fe93b54db7e17ee7f7bce4da"
+    },
+    "slurp-native-stage3-var1-ex-k30-r01c-fit-v1": {
+      "composed_config_hash": "9a68f50a87073ccc109b6c11e2f5080928ce87854ee3fc9979e4ed46f88117bb",
+      "protocol_hash": "096228b2fc71bc42c769072b0d7b55a08020eecb0d6e80848d756d4acad3dc1c"
+    },
+    "slurp-native-stage3-var1-ex-k30-r01c-v1": {
+      "composed_config_hash": "9a68f50a87073ccc109b6c11e2f5080928ce87854ee3fc9979e4ed46f88117bb",
+      "protocol_hash": "096228b2fc71bc42c769072b0d7b55a08020eecb0d6e80848d756d4acad3dc1c"
+    },
+    "slurp-native-stage3-var1-per-k16c5-r01c-fit-v1": {
+      "composed_config_hash": "5a16192c2fbed78735a63738349457e2fa2431849d800e1556dcf9035fb29b3d",
+      "protocol_hash": "952d4b886891647cfcae12a5f63f109b75cdc864235f21ff432398c0b01987e2"
+    },
+    "slurp-native-stage3-var1-per-k16c5-r01c-v1": {
+      "composed_config_hash": "5a16192c2fbed78735a63738349457e2fa2431849d800e1556dcf9035fb29b3d",
+      "protocol_hash": "952d4b886891647cfcae12a5f63f109b75cdc864235f21ff432398c0b01987e2"
+    },
+    "slurp-native-stage3-var1-plan-r01c-fit-v1": {
+      "composed_config_hash": "029dbb74e49c6d035dd0d3b07ff79f3982e9c93cdfd6f0d81aaeb853729ca07d",
+      "protocol_hash": "004a32be92e9d445f8c5b74440a2d091bd4736425a6269a9b88f701ceeb12540"
+    },
+    "slurp-native-stage3-var1-plan-r01c-v1": {
+      "composed_config_hash": "029dbb74e49c6d035dd0d3b07ff79f3982e9c93cdfd6f0d81aaeb853729ca07d",
+      "protocol_hash": "004a32be92e9d445f8c5b74440a2d091bd4736425a6269a9b88f701ceeb12540"
+    },
+    "slurp-native-stage3-var1-planr-r01c-fit-v1": {
+      "composed_config_hash": "2bb848172c3bf68c8afd76a1b8610903e5f6f362e06a0aa1b0e356fc0aa4faf5",
+      "protocol_hash": "86bd0a22216a1e07d8dfb7b02c9810f5ab97423750e427632cf400a6f82875e7"
+    },
+    "slurp-native-stage3-var1-planr-r01c-v1": {
+      "composed_config_hash": "2bb848172c3bf68c8afd76a1b8610903e5f6f362e06a0aa1b0e356fc0aa4faf5",
+      "protocol_hash": "86bd0a22216a1e07d8dfb7b02c9810f5ab97423750e427632cf400a6f82875e7"
+    },
+    "slurp-native-stage3-var1-smoke-4-fit-v1": {
+      "composed_config_hash": "7ad58b95a96c9ba69fb721b9beb5c9ff780443c4a9a3defc8d79943055695552",
+      "protocol_hash": "bc0d1f7c9f031a48f935cb2f9ec6effde77d9ee2f04146b5e561d723054de2f2"
+    },
+    "slurp-native-stage3-var1-smoke-4-v1": {
+      "composed_config_hash": "7ad58b95a96c9ba69fb721b9beb5c9ff780443c4a9a3defc8d79943055695552",
+      "protocol_hash": "bc0d1f7c9f031a48f935cb2f9ec6effde77d9ee2f04146b5e561d723054de2f2"
+    }
+  },
+  "pins": {
+    "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+    "query_vectors": [
+      {
+        "relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-segments.jsonl",
+        "sha256": "ebaa743241a67a2cb759353fa8a9f58a3f09d27c00c8c66cb3172958dcccc1b8"
+      },
+      {
+        "relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-content-v1.jsonl",
+        "sha256": "dd3b2924cda10810487b2b114e61380beaf8477634c602096b875e461ae44baa"
+      }
+    ],
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+      "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd"
+    },
+    "speech_packet_promotion_receipt": {
+      "note": "800 R01 packets, a strict superset of R01C's 625",
+      "path": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/STAGE3-CONSTRUCTION-R01-promotion.json",
+      "sha256": "a1664e34742dcd2d59c226da701395edf41d150bbbf8db4acc0cdae9c3c0250f"
+    },
+    "speech_query_encode_receipt": {
+      "relpath": "preparation-runs/SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
+      "sha256": "2117fa6d5fdb7563e4f609b66e2fc3971a340a7dd22d178fa3cfd5a7c111839a"
+    },
+    "train_exemplars_release": {
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/release.json",
+      "sha256": "83620eb0b02f12424a00cd5572904f4df48a49c329b1b0e1a9321d4b9ec14fd0"
+    },
+    "verified": "every pin above was re-hashed against the bytes on disk by scripts/flights/derive_slurp_var1_cells.py at generation time, not typed"
+  },
+  "population": {
+    "audio_seconds_total": 2726.8471875,
+    "cluster_key": "utterance_id (625 distinct; the cluster is the row on this roster)",
+    "disjointness": "the roster receipt proves 0 shared recordings and 0 shared utterances with TRAIN Fold A, TRAIN Fold B, DEV-1000 and DEV-2000-ADDED, and 0 overlap with the source utterances of every composed knowledge store.",
+    "distinct_utterances": 625,
+    "far_field_rows": 558,
+    "gold_per_scenario_table": "AVAILABLE. The roster receipt carries a per-item stratum, so the gold per-scenario table is derivable offline from the receipt alone, with no gold at runtime. This is the one thing R01C gives that DEV-2000-ADDED withheld.",
+    "headset_rows": 67,
+    "prior_exposure": "R01C has had exactly one generation exposure, cell ROLL-1 (the five-sample grouped-Solver rollout, 5,347 contacts, sealed 2026-09-23), plus the ADV-1 and GEPA proposer arms on subsets of it. It is a CONSTRUCTION roster and repeated exposure of it is its purpose.",
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+      "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd"
+    },
+    "roster_id": "SLURP-STAGE3-CONSTRUCTION-R01C",
+    "rows": 625,
+    "scenario_strata_present": 18,
+    "smoke_audio_seconds": 17.0349375,
+    "smoke_population": [
+      "slurp:train:000049:audio-1434542455",
+      "slurp:train:000051:audio-1434531302-headset",
+      "slurp:train:000234:audio-1499688528",
+      "slurp:train:000260:audio-1488549919"
+    ],
+    "smoke_rows": 4,
+    "smoke_selection_rule": "the FIRST FOUR rows of R01C in the roster's own order (positions 1-4). A pure positional selection with zero contacts: no gold, no score, no label and no separate draw entered it. Strata datetime, takeaway, alarm and audio; three far-field and one headset.",
+    "smoke_split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
+    "split_id": "STAGE3-CONSTRUCTION-R01C",
+    "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
+    "split_role": "discovery",
+    "strata_counts": {
+      "alarm": 26,
+      "audio": 30,
+      "calendar": 42,
+      "cooking": 31,
+      "datetime": 39,
+      "email": 33,
+      "general": 42,
+      "iot": 33,
+      "lists": 37,
+      "music": 27,
+      "news": 36,
+      "play": 37,
+      "qa": 38,
+      "recommendation": 29,
+      "social": 35,
+      "takeaway": 37,
+      "transport": 32,
+      "weather": 41
+    },
+    "utterances_with_two_recordings": 0
+  },
+  "prompt_fit_bound": {
+    "basis": "NOT MEASURED IN TOKENS BY THIS REGISTRATION -- no tokenizer was contacted. core.flight.cli check's _assess_prompt_budget is the measurement and it runs in the coordinator's clean-tree cycle against the minted receipt.",
+    "cell2_measured_bound_for_reference": {
+      "perception": {
+        "decision": "ALLOW",
+        "operational_margin_tokens": 1512,
+        "required_window_tokens": 19992
+      },
+      "planner": {
+        "decision": "ALLOW",
+        "operational_margin_tokens": 1709,
+        "required_window_tokens": 19795
+      },
+      "reviewer": {
+        "decision": "ALLOW",
+        "operational_margin_tokens": 1648,
+        "required_window_tokens": 19856
+      },
+      "solver": {
+        "decision": "COMPACT_REQUIRED",
+        "operational_margin_tokens": -317,
+        "required_window_tokens": 21821
+      },
+      "source": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r02-v1/registered-facts-v1.json, measured on TRAIN Fold A for the locked plan PLUS the stage3-deltas-v2 store"
+    },
+    "decision": "EXPECTED: ALLOW or COMPACT_REQUIRED on every phase of every cell, and NEVER REFUSE. Arithmetic, registered before contact. (1) VAR1-EX-K30's widest SUPPLIED Solver content on the four offline rows is 28,728 characters against VAR1-PLAN's 27,394 -- 1,334 more, at most 534 tokens at 2.5 characters per token. CELL-2's MEASURED Solver bound on TRAIN Fold A was 21,821 required-window tokens WITH a stage3-deltas block VAR-1 does not carry; adding the bound above to that upper reference gives at most 22,355 against the 24,576-token slot, so REFUSE is arithmetically excluded and COMPACT_REQUIRED is the expectation. (2) VAR1-PER-K16C5's widest supplied Perception content is 11,570 characters against VAR1-PLAN's 5,862 -- 5,708 more, at most 2,284 tokens on the same basis. CELL-2's measured Perception bound was 19,992 with an unconditional delta block VAR-1 does not carry, giving at most 22,276, again inside the slot. (3) VAR1-PER-K16C5's Solver block grows too, by a smaller amount: its widest supplied Solver content is 28,999 characters, 1,605 more than VAR1-PLAN's, at most 642 tokens, for at most 22,463. That is the five-candidate round robin filling the UNCHANGED 28-value / 16-per-candidate slot-contract budget differently, not a larger budget: max_total_values and max_values_per_candidate are not moved. (4) VAR1-EX-K10 and VAR1-EX-DIV can only SHRINK the Solver block, and the offline measurement confirms it. A COMPACT_REQUIRED is recorded and the flight proceeds; a REFUSE triggers the registered fallback and that cell alone does not open.",
+    "fallback_if_refused": "FAIL-CLOSED AND REGISTERED BEFORE CONTACT: if the coordinator's check reports REFUSE (not COMPACT_REQUIRED) on VAR1-EX-K30's Solver, that cell DOES NOT OPEN. It is re-registered at k = 26 with fuse_coverage 26/26/26, a NEW run id, a NEW generation attempt id and a NEW native_contact_fit attempt id, and the k = 30 identity is retired unused. The same rule applies to VAR1-PER-K16C5 at k = 12 with coverage 1/12/12. No other cell is touched, and no margin or decision rule moves.",
+    "offline_character_measurement": {
+      "exdiv": {
+        "perception": {
+          "max_supplied_content_chars_per_row": 5862,
+          "mean_supplied_content_chars_per_row": 5596.0
+        },
+        "planner": {
+          "max_supplied_content_chars_per_row": 0,
+          "mean_supplied_content_chars_per_row": 0.0
+        },
+        "reviewer": {
+          "max_supplied_content_chars_per_row": 0,
+          "mean_supplied_content_chars_per_row": 0.0
+        },
+        "solver": {
+          "max_supplied_content_chars_per_row": 26256,
+          "mean_supplied_content_chars_per_row": 25825.2
+        }
+      },
+      "exk10": {
+        "perception": {
+          "max_supplied_content_chars_per_row": 5862,
+          "mean_supplied_content_chars_per_row": 5596.0
+        },
+        "planner": {
+          "max_supplied_content_chars_per_row": 0,
+          "mean_supplied_content_chars_per_row": 0.0
+        },
+        "reviewer": {
+          "max_supplied_content_chars_per_row": 0,
+          "mean_supplied_content_chars_per_row": 0.0
+        },
+        "solver": {
+          "max_supplied_content_chars_per_row": 26186,
+          "mean_supplied_content_chars_per_row": 25726.5
+        }
+      },
+      "exk30": {
+        "perception": {
+          "max_supplied_content_chars_per_row": 5862,
+          "mean_supplied_content_chars_per_row": 5596.0
+        },
+        "planner": {
+          "max_supplied_content_chars_per_row": 0,
+          "mean_supplied_content_chars_per_row": 0.0
+        },
+        "reviewer": {
+          "max_supplied_content_chars_per_row": 0,
+          "mean_supplied_content_chars_per_row": 0.0
+        },
+        "solver": {
+          "max_supplied_content_chars_per_row": 28728,
+          "mean_supplied_content_chars_per_row": 27393.5
+        }
+      },
+      "perk16c5": {
+        "perception": {
+          "max_supplied_content_chars_per_row": 11570,
+          "mean_supplied_content_chars_per_row": 11154.8
+        },
+        "planner": {
+          "max_supplied_content_chars_per_row": 0,
+          "mean_supplied_content_chars_per_row": 0.0
+        },
+        "reviewer": {
+          "max_supplied_content_chars_per_row": 0,
+          "mean_supplied_content_chars_per_row": 0.0
+        },
+        "solver": {
+          "max_supplied_content_chars_per_row": 28999,
+          "mean_supplied_content_chars_per_row": 28156.2
+        }
+      },
+      "plan": {
+        "perception": {
+          "max_supplied_content_chars_per_row": 5862,
+          "mean_supplied_content_chars_per_row": 5596.0
+        },
+        "planner": {
+          "max_supplied_content_chars_per_row": 0,
+          "mean_supplied_content_chars_per_row": 0.0
+        },
+        "reviewer": {
+          "max_supplied_content_chars_per_row": 0,
+          "mean_supplied_content_chars_per_row": 0.0
+        },
+        "solver": {
+          "max_supplied_content_chars_per_row": 27394,
+          "mean_supplied_content_chars_per_row": 26551.2
+        }
+      }
+    },
+    "operational_reserve_tokens": 3072,
+    "rule": "rails.context_budget: required_window_tokens = rendered text tokens + speech tokens + the registered special-token reserve + the 512-token completion ceiling. ALLOW when required <= slot - reserve = 21,504; COMPACT_REQUIRED when required <= slot = 24,576, which core.flight.runtime RECORDS and proceeds on under native_episode.context_fit_policy = compact-or-abstain (harness item E20, owner decision 45); REFUSE above the slot, which aborts.",
+    "slot_tokens": 24576,
+    "the_authority_in_flight": "core.preparation_fit.build_native_contact_fit_gate fits every realised immutable request against the resident tokenizer, contact by contact.",
+    "what_the_characters_say": "The knowledge a store decides for a node does NOT travel in the rendered instruction -- it reaches the node as typed content blocks through the acquire transition, and every VAR-1 form's rendered instruction is the same 1,129 characters at the Solver and 960 at Perception. So the quantity that actually moves is measured directly: the SUPPLIED CONTENT CHARACTERS per node per row, summed from the released snapshots over the value ids the offline walk selected on the same four R01C rows. Converting a character DIFFERENCE to a token bound at the deliberately pessimistic 2.5 characters per token over-states the tokens the extra block costs, so a fit conclusion drawn that way is conservative. The absolute required-window token count is NOT derived this way and is left to the tokenizer."
+  },
+  "registered_at_utc": "2026-09-24T21:00:00.000000+00:00",
+  "schema": "saea-slurp-stage3-var1-registered-facts-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-var1, branch fable/var1",
+  "store_facts": {
+    "intent_boundaries": {
+      "facets": 60,
+      "max_value_content_chars": 895,
+      "mean_value_content_chars": 702.2,
+      "note": "one card per intent; c=1 with m=top_l=k gives exactly k cards, so k 8 -> 16 is the single largest text change in the family",
+      "release": "intent-boundaries-v1",
+      "values": 60
+    },
+    "slot_contracts": {
+      "release": "slot-contracts-v2",
+      "values": 54
+    },
+    "train_exemplars": {
+      "distinct_content_facets": 8554,
+      "distinct_task_targets": 59,
+      "max_value_content_chars": 200,
+      "mean_value_content_chars": 69.9,
+      "median_value_content_chars": 66,
+      "note": "one value per content facet, so a k-deep recall yields at most k values; task_target is the SLURP intent id, which is what fuse_coverage.c caps per target in VAR1-EX-DIV",
+      "p95_value_content_chars": 117,
+      "release": "size-pool-annotated-exemplars-minus-r01",
+      "values": 8554
+    }
+  },
+  "what_this_is": "Every number this registration asserts before contact, so a later read can be checked against it instead of against memory. Nothing here is a measurement of a VAR-1 cell; the cells have not flown."
+}
