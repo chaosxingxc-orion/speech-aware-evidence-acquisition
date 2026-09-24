@@ -247,7 +247,7 @@
       "baseline_fragment": "configs/baseline/slurp-native-stage3-var1-planr-r01c-baseline-v1.json",
       "campaign_plan": "configs/campaign/slurp-native-stage3-var1-planr-r01c-v1.json",
       "cell": "slurp-native-stage3-var1-planr-r01c-v1",
-      "composed_config_hash": "2bb848172c3bf68c8afd76a1b8610903e5f6f362e06a0aa1b0e356fc0aa4faf5",
+      "composed_config_hash": "3239ba6dcc3bf42439f58092b7f20a7a427465193bf17fb5cfd7a3120d7cae9b",
       "experiment": "slurp-native-stage3-var1-planr-r01c-v1",
       "experiment_fragment": "configs/experiment/slurp-native-stage3-var1-planr-r01c-v1.json",
       "knobs": {
@@ -269,7 +269,7 @@
         "slot_contracts_max_candidates": 3
       },
       "order_constraint": "FLIES SECOND, before any variant. Its contrast against VAR1-PLAN is the roster's own null, and the margins h_SLU / h_intent are sealed BEFORE any variant contrast is read and are never adjusted afterwards.",
-      "protocol_hash": "86bd0a22216a1e07d8dfb7b02c9810f5ab97423750e427632cf400a6f82875e7",
+      "protocol_hash": "c70ef12d0411eb11819930d33fa820b4ec86897669f505af114a73b2627c7f6b",
       "readiness": "held -- the coordinator mints coordination/slurp-stage3-var1-v1/root-admission-v1.json (decision id slurp-stage3-var1-admission-v1), rewrites its eligible_run_ids to this family's fourteen run ids, and re-pins this cell with scripts/flights/repin_cell.py --set-ready",
       "rows": 625,
       "run_id": "SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-V1",
@@ -964,10 +964,10 @@
     "planr": {
       "attempt_id": "attempt-slurp-native-stage3-var1-planr-r01c-v1-fit",
       "cell": "slurp-native-stage3-var1-planr-r01c-fit-v1",
-      "composed_config_hash": "2bb848172c3bf68c8afd76a1b8610903e5f6f362e06a0aa1b0e356fc0aa4faf5",
+      "composed_config_hash": "3239ba6dcc3bf42439f58092b7f20a7a427465193bf17fb5cfd7a3120d7cae9b",
       "experiment": "slurp-native-stage3-var1-planr-r01c-v1",
       "note": "A SPEND identity, never flown as a generation cell and never flipped to ready. core.preparation_fit.build_native_contact_fit_gate fits each realised native request inside the same flight under the same lease; coordinate-fit must NOT be run, or these rows are double-charged.",
-      "protocol_hash": "86bd0a22216a1e07d8dfb7b02c9810f5ab97423750e427632cf400a6f82875e7",
+      "protocol_hash": "c70ef12d0411eb11819930d33fa820b4ec86897669f505af114a73b2627c7f6b",
       "run_id": "SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-FIT-V1"
     },
     "smoke": {

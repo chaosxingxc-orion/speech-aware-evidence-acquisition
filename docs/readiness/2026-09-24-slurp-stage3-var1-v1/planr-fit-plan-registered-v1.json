@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-var1-planr-r01c-fit-v1",
-  "composed_config_hash": "2bb848172c3bf68c8afd76a1b8610903e5f6f362e06a0aa1b0e356fc0aa4faf5",
+  "composed_config_hash": "3239ba6dcc3bf42439f58092b7f20a7a427465193bf17fb5cfd7a3120d7cae9b",
   "decision_rule": {
     "DENSE_PROXIES": "Reported per variant beside the pooled score, because a 625-row pooled SLU delta is at the measurement floor and a dense proxy is not: entity FALSE POSITIVES and FALSE NEGATIVES by slot TYPE, the empty-gold-row emission rate, intent exactness, and -- from the sealed Perception receipts, model-free -- the coverage rate (gold intent present in the row's own candidate list). Coverage is the quantity VAR1-PER-K16C5 exists to move and is read directly, not inferred from the pooled score.",
     "EFFICIENCY_REGARDLESS": "Every efficiency deliverable is reported whatever the table says. VAR1-EX-K10 in particular is expected to cost FEWER prefilled tokens per row than VAR1-PLAN, and a variant that holds the score at a lower token cost is a finding in its own right.",
@@ -20,7 +20,7 @@
     "planned_gpu_hours": 8.0,
     "planned_model_calls": 27500,
     "planned_speech_audio_seconds": 29996,
-    "protocol_hash": "86bd0a22216a1e07d8dfb7b02c9810f5ab97423750e427632cf400a6f82875e7",
+    "protocol_hash": "c70ef12d0411eb11819930d33fa820b4ec86897669f505af114a73b2627c7f6b",
     "run_id": "SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
@@ -77,7 +77,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-24-slurp-stage3-var1-v1/protocol-registered-v1.json",
-    "sha256": "38e10f054ec5a7f9bfb004c3fd979b496f200fd5c3957537f7d2932903e36e9f"
+    "sha256": "ddc76dacaffbd9db882dae53d1af160aa5c0b85f452a288018b518c18c11c19b"
   },
   "purpose": "Stage-3 VAR-1, the FIRST construction-variant rollout of the locked v2.0 plan (owner directive 2026-09-24: training-free RL gains come from rolling out VARIATIONS of prompts, data and content construction over an optimisation space, scored per variant, with the winners encoded into demonstrations, constraints and selection rules; handoff docs/handoff/2026-09-24-fable51/HANDOFF-STAGE3-FOR-CHATGPT-v1.md sections 6-7, routes F3 and F4). Six cells on the 625-row SLURP-STAGE3-CONSTRUCTION-R01C construction roster: the locked plan re-pointed at R01C (VAR1-PLAN, the comparator), its request-identical replicate (VAR1-PLANR, the roster's own null), and four single-knob construction variants of its knowledge supply. THIS PLAN IS CELL VAR1-PLANR: the locked v2.0 plan itself, re-pointed at R01C; a request-identical replicate. Cell VAR1-PLANR: the REQUEST-IDENTICAL second pass of VAR1-PLAN on the same 625 R01C rows. It differs from VAR1-PLAN only by its run, attempt and native-contact-fit identities; every rendered byte of every request is the same. It is the roster's OWN NULL: the A/A cross-flight pair whose CI95 half-widths h_SLU and h_intent are the margins every VAR-1 variant is read at. It flies SECOND and its margin table is sealed BEFORE any variant contrast is read. Precedent: cell PLANr on TRAIN Fold A and cell PLANr-DEV2000 on DEV-2000-ADDED. READ DISCIPLINE: the output of this family is DESCRIPTIVE -- a per-row paired variant table at the roster's own null, a per-scenario table, entity FP/FN by slot type, Perception coverage, and the group-relative advantage of each variant per runtime-observable state. NO admission verdict, no lock, no store release and no claim is taken from it. R01C is a CONSTRUCTION roster (split role discovery): variants are chosen here on construction rows, and any winner must be re-read on TRAIN Fold A and on DEV-2000-ADDED, each at that roster's own null, before it becomes a claim of any kind. Owner decisions 28 and 86: TRAIN and DEV numbers are development numbers; the one test read (decision 29 / 108) is not authorised here and is deferred until a fresh-roster gain exists.",
   "quality_read_gate": "no task-quality read before this cell's complete sealed manifest, its exact ordered 625 outputs, its native phase summary and its single successful complete official TRAIN score all exist, and not before the own-null read SAEA-SLURP-STAGE3-VAR1-OWN-NULL-V1 has sealed its margin table.",
