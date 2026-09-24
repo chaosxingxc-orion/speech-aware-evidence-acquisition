@@ -1,6 +1,6 @@
 # Stage-3 handoff for ChatGPT: the complete experiment plan and the current state
 
-Author: Fable 5.1 (root coordinator). Created 2026-09-24 (UTC). **Last refreshed: 2026-09-24 20:10 UTC**
+Author: Fable 5.1 (root coordinator). Created 2026-09-24 (UTC). **Last refreshed: 2026-09-25 00:00 UTC**
 (this is ONE living document: when a new result lands, the key conclusions in sections 4, 6 and 7 are
 rewritten in place and the refresh stamp moves; there is no log section). Study repository:
 `studies/speech-aware-evidence-acquisition` on `master` (HEAD at writing: `cc9fd097`; every commit
@@ -134,9 +134,16 @@ how, never "no gain"):
    winners average +0.33 on DEV vs Fold A losers +0.99 (sign agreement 49/96); a perfect gate
    reaches only ~PLAN (-0.51 [-1.40, +0.37]). The CELL-3 twin (same gate, deranged values) is NEUTRAL (+0.38),
    so on the fresh roster the content of the Fold-A-selected store is what harms; carrying a supply is not.
-4. **The measurement floor**: about +-1.3 pp pooled SLU at n = 1,000 across flights, +-2 pp on
-   355-row splits. Any mechanism must target a named bad class with >= 2 pp recoverable mass to be
-   readable at this scale, and within-flight paired variant designs are needed for search.
+4. **The measurement floor is a BETWEEN-flight phenomenon** (ROLL-AA, route F2,
+   `docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md`): inside ONE flight,
+   byte-identical prompts at temperature 0 repeat the delivered answer on 91.5 % of rows and flip
+   the delivered INTENT on 0 of 200, giving h_within 0.735 pp SLU and 0.000 pp intent at n = 200;
+   across flights the same identity reads +-1.25 pp pooled (n about 1,000) and +-2 pp on 355-row
+   splits, and the program's earlier "28 % of raw outputs, 5 % of intents" diffuseness was measured
+   across flights, not within one. Consequences: a mechanism flown as its own campaign must target
+   >= 2 pp of recoverable mass to be readable, while a variant interleaved per row inside one
+   campaign is readable at about 0.4 pp on 625 rows -- so per-row variant interleaving inside one
+   campaign is the engineering item that makes the optimisation space searchable (VAR-2).
 5. **Engineering assets retained**: the closed loop, the gate mechanism, the fresh-roster own-null
    protocol, the batch driver hardening, the diagnostics, the verdict writer, the label gate.
 
@@ -233,14 +240,15 @@ in one day, and it costs <= 4 GPU-hours before that read.
 | --- | --- | --- | --- | ---: | --- | --- |
 | F0 | Bad-case bank of the locked plan | all | zero-contact script over the sealed arms | 0 | DONE (`docs/results/2026-09-24-slurp-plan-bad-case-bank.md`) | intent errors are candidate-PROPOSAL failures with a gold-free trigger (exemplar-intent agreement 0.70 -> 0.20); ENTITY-MIXED = half the SLU headroom, span boundaries; 0 entity-free exemplars in the pool (+4 pp FP headroom); contract text and surface normalisation exhausted |
 | F1 | Offline sample aggregation over ROLL-1's five sealed samples (all temperature 0.7) | greedy diffuseness; entity FP | zero-contact script (`docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md`) | 0 | DONE | no I7-compatible rule beats one sample (medoid +0.03 [-0.63, +0.71]); the support-filter editing rule at s = 3 reads +1.40 [+0.55, +2.29] but only on the 400 agreeing rows and mostly as FP suppression on the 191 no-gold-entity rows, at 2.09x contacts; oracle best-of-5 +6.55 (+12.55 on disagreeing rows) = the verifier headroom no rule reaches |
-| F2 | Within-flight A/A null: the identical PLAN prompt twice per row inside one flight, 200 R01C rows, greedy | measurement floor | per-row paired delta distribution -> the within-flight margin h_within | ~0.4 | REGISTERING (branch `fable/aanull`) | decides whether n = 200 variant rollouts are readable |
-| F3 | VAR-1 construction-variant family on R01C (625 rows, full plan): PLAN, PLANr (own null), exemplars k 10 / 30 / intent-diversified, Perception k 16 + 5 candidates; paired per row at the R01C own null; reads = per-row variant table, entity FP / FN by type, candidate coverage, advantage per state | entity FN / FP, same-type distance, intent coverage | six ~1 GPU-h flights in one chain | ~6.5 | REGISTERING (branch `fable/var1`) | -- |
+| F2 | Within-flight A/A null: the identical PLAN prompt twice per row inside one flight, 200 R01C rows, greedy | measurement floor | per-row paired delta distribution | 0.5 (flown) | DONE (`docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md`) | **h_within 0.735 pp SLU / 0.000 pp intent at n = 200**; 91.5 % byte-identical, 0 intent flips, 15 entity-set flips; the +-1.25 pp band is between-flight, so within-flight interleaving buys about 3x the power (VAR-2 engineering item) |
+| F3 | VAR-1 construction-variant family on R01C (625 rows, full plan): PLAN, PLANr (the R01C cross-flight own null), exemplars k 10 / k 30 / intent-diversified (c 4), Perception k 16 with 5 candidates; paired per row, reads = per-row variant table, entity FP / FN by slot type, Perception candidate coverage, advantage per state | entity FN / FP, same-type distance, intent coverage | six campaigns in one chain, flight commit `3ade29ff`, receipt `slurp-stage3-var1-admission-v1` | ~6.5 | FLYING since 2026-09-24 23:48 UTC (SAEA-Batch-Chain-VAR1) | EX-DIV also lowers the demonstration count (EX-K10 is its count-only control); the variant driver (FP / FN by type, coverage, advantage) must land before the variant reads (VAR1-OPEN-1 / 2) |
 | F4 | Candidate-proposal rollout: Perception K / neighbour-intent union / exemplar-intent-agreement-triggered broadening; the coverage read comes free from every VAR-1 flight's Perception receipts | INTENT-UNCOVERED (+12 / +17 pp intent headroom) | gold-in-candidates coverage per variant per state | (in F3, then ~1) | DESIGN after VAR-1's coverage read | -- |
 | F5 | Per-intent legal slot-type constraint at the delivery node (llama.cpp json_schema / grammar): offline mass count first, then a four-row smoke and a Fold A cell | type swap (4.7 %), illegal types, part of FP | offline count, then the admission rule | 0, then ~2 | DESIGN | -- |
 | F6 | Bootstrapped demonstrations: the core's own gold-verified rollout outputs rendered as exemplars in its own output format, retrieved by speech key (DSPy-style bootstrap, ExpeL-style successful trajectories) | conventions, entity FN / FP | inside F3 as a source variant | (in F3) | DESIGN | -- |
 | F7 | AGG-1 inference-time selection cell as framed (adaptive N + medoid commit) | greedy diffuseness | -- | -- | CLOSED by F1 (nil at 1x-equivalent rules; the FP mass is pursued at 1x through F10) | the open question left is the +6.5 pp oracle gap: a SELECTION probe (one contact per row shown the five sealed samples, asked to pick; 625 rows, ~0.3 GPU-h) would say whether the core can verify better than it generates -- queued after VAR-1 as F11 |
 | F8 | Reviewer with evidence: sample disagreement, per-entity support counts and checker results instead of one draft | review loop inert (ACCEPT 98.4 %) | inside F7's form | (in F7) | DESIGN | -- |
 | F10 | Empty-answer demonstrations: the exemplar view re-rendered so entity-free lines end in the Solver contract's exact empty form (`train-exemplars-with-empty-v1`, released, content hash `e3998525...`; the pool already held 31.5 % entity-free values, the bank's zero was a parser artefact) | ENTITY-FP-ONLY (+4.8 / +3.5 pp SLU headroom) | one ~1 GPU-h variant flight; legal on Fold A / DEV, needs a minus-r01 sibling for R01C | ~1 | RELEASED; cell to register (Fold A vs PLAN or a VAR-1 sibling after the minus-r01 build) | -- |
+| F12 | VAR-2 per-row variant interleaving inside ONE campaign (the harness change ROLL-AA's null argues for: K construction variants per row in one flight, like the grouped sampler but varying the supply, so comparisons are read at h_within rather than at the cross-flight band) | all construction levers; 3x the power of VAR-1's design | engineering item first (rails supply composition per sample), then one ~1.5 GPU-h flight | 0 then ~1.5 | DESIGN (after VAR-1's reads) | -- |
 | F11 | Verifier-selection probe: one contact per R01C row shown its five sealed ROLL-1 samples (labels and structured answers only) and asked to pick the best; read = agreement with the oracle, SLU of the picked sample vs single | the +6.5 pp oracle gap (+12.5 on disagreeing rows) | 625 contacts, offline read against sealed scores | ~0.3 | DESIGN (after VAR-1) | -- |
 | F9 | Contract / instruction search (GEPA-style on the task contract: date / time serialisation, "no entity" rule, per-type convention line), selected on DEV-remainder rows, validated on Fold A / B | date / time FN, empty-gold FP | small-batch paired search, then a cell | ~2 | LATER (after F3 / F5) | -- |
 
