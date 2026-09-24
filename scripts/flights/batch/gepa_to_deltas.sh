@@ -46,7 +46,7 @@ TWIN_SEED=${GEPA_TWIN_SEED:-20260924}
 
 PREPARED=$DATA/prepared/SAEA-SLURP-STAGE3-DELTAS-GEPA-V1
 ADV_PREPARED=$DATA/prepared/SAEA-SLURP-STAGE3-DELTAS-V1
-GROUPS=$PREPARED/gepa-groups-v1.json
+GEPA_GROUPS=$PREPARED/gepa-groups-v1.json  # named GEPA_GROUPS because bash's read-only GROUPS array expands to the caller's group id (the first real run printed 'A  MISSING 1000')
 OUTPUTS=$PREPARED/gepa-proposal-outputs-v1.jsonl
 PREDECESSOR=${GEPA_PREDECESSOR:-$ADV_PREPARED/authored-stage3-deltas-v1r.json}
 TRANSCRIPTS=${GEPA_TRANSCRIPTS:-$ADV_PREPARED/construction-transcripts.jsonl}
@@ -78,7 +78,7 @@ SPLIT=$($PY -B -c "import json,sys;print(json.load(open(sys.argv[1]))['populatio
         configs/experiment/slurp-native-stage3-gepa-r01-v1.json)
 echo "A  GEPA population split identity $SPLIT"
 MISSING=0
-for F in "$GROUPS" "$PREDECESSOR" "$GOLD" "$CATALOG"; do
+for F in "$GEPA_GROUPS" "$PREDECESSOR" "$GOLD" "$CATALOG"; do
   [ -f "$F" ] || { echo "A  MISSING $F"; MISSING=1; }
 done
 [ -f "$TRANSCRIPTS" ] || echo "A  NO transcripts at $TRANSCRIPTS: the six-token containment rule will be DISABLED and the report will say so. Prepare them before releasing."
@@ -87,7 +87,12 @@ if [ "$MISSING" = "1" ] && [ "$DRY" != "1" ]; then exit 2; fi
 # ---------------------------------------------------------------- R: decision-83 retention
 echo "R  decision-83 retention over the CELL-1 read -> $RETENTION"
 echo "   (the flags are CELL-1's own; see scripts/build_slurp_stage3_delta_retention.py --help)"
-run "$PY" -B scripts/build_slurp_stage3_delta_retention.py \
+CELL1_ROOT=$DATA/analysis/SAEA-SLURP-STAGE3-DELTA-CELL-R01-PAIRED-ANALYSIS-V1
+OWN_NULL_ROOT=$DATA/analysis/SAEA-SLURP-DEFAULT-PLAN-LOCK-REPLICATE-PAIRED-ANALYSIS-V1
+# 2026-09-24: the retention CLI (fable/s35v2) requires the CELL-1 read inputs explicitly; these are the same four inputs
+# the v2 retention used (prepared/SAEA-SLURP-STAGE3-DELTAS-V1/retention-v2.json "inputs"), so the GEPA line inherits the
+# identical 200 / 179 decisions.
+run "$PY" -B scripts/build_slurp_stage3_delta_retention.py --authored "$PREDECESSOR" \n    --cell-per-scenario "$CELL1_ROOT/per-scenario-tables.json" --own-null-per-scenario "$OWN_NULL_ROOT/per-scenario-tables.json" \n    --delta-consumption "$CELL1_ROOT/delta-consumption.json" \n    --registered-facts docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/registered-facts-v1.json \n    --out-json "$RETENTION" --out-markdown "${RETENTION%.json}.md"
     --authored "$PREDECESSOR" \
     --out-json "$RETENTION" --out-markdown "$RETENTION_MD" \
     ${GEPA_RETENTION_ARGS:-}
@@ -106,7 +111,7 @@ fi
 # ---------------------------------------------------------------- B: render the sealed outputs
 echo "B  render the sealed GEPA outputs, the construction scope and the permitted roster"
 run "$PY" -B scripts/flights/batch/gepa_render_proposal_outputs.py \
-    --run "$GEPA_RUN" --attempt "$GEPA_ATTEMPT" --groups "$GROUPS" --out-dir "$PREPARED"
+    --run "$GEPA_RUN" --attempt "$GEPA_ATTEMPT" --groups "$GEPA_GROUPS" --out-dir "$PREPARED"
 
 # ---------------------------------------------------------------- C: curate
 echo "C  curate iteration $ITERATION predecessor $PREDECESSOR"
@@ -116,7 +121,7 @@ RETIRE=""
 [ -f "$RETENTION" ] && RETIRE="--retire-value-ids $RETENTION"
 # shellcheck disable=SC2086
 run "$PY" -B scripts/build_slurp_stage3_gepa_delta_rows.py \
-    --proposal-outputs "$OUTPUTS" --groups "$GROUPS" --repo-root "$REPO" \
+    --proposal-outputs "$OUTPUTS" --groups "$GEPA_GROUPS" --repo-root "$REPO" \
     --predecessor "$PREDECESSOR" --iteration "$ITERATION" --run-id "$GEPA_RUN" \
     --facet-rule source-intent --gold-intents "$GOLD" --intent-vocabulary "$CATALOG" \
     $CONTAINMENT $RETIRE \
@@ -142,7 +147,7 @@ run "$PY" -B "$HELPERS" --repo-root "$REPO" --data-root "$DATA" registration \
 echo "E  release"
 # shellcheck disable=SC2086
 run "$PY" -B scripts/build_slurp_stage3_gepa_delta_rows.py \
-    --proposal-outputs "$OUTPUTS" --groups "$GROUPS" --repo-root "$REPO" \
+    --proposal-outputs "$OUTPUTS" --groups "$GEPA_GROUPS" --repo-root "$REPO" \
     --predecessor "$PREDECESSOR" --iteration "$ITERATION" --run-id "$GEPA_RUN" \
     --facet-rule source-intent --gold-intents "$GOLD" --intent-vocabulary "$CATALOG" \
     $CONTAINMENT $RETIRE \
