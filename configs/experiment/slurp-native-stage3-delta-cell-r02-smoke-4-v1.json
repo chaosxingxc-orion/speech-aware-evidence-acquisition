@@ -1,0 +1,161 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-r02-smoke-4-v1-generation",
+      "baseline_fragment": "slurp-native-stage3-delta-cell-r02-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-delta-cell-r02-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "The four-row form smoke of CELL-2. HELD exactly as the arm is: root mints the admission receipt, rewrites its eligible_run_ids to include this run id and its fit identity, and re-pins this cell with scripts/flights/repin_cell.py --set-ready, which mints this cell's own first-phase supply artifact under its own run id (item E16). The committed baseline carries NO prepared_phase_supply key. The smoke seals before the arm opens.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "S3-6 iteration 2: the release of knowledge/slurp/semantic/stage3-deltas-v2/, built from the sealed ADV-1 advantage outputs with the decision-83 retention document prepared/SAEA-SLURP-STAGE3-DELTAS-V1/retention-v2.json (200 kept of 379). Released 2026-09-24, model-free, through the adv1_to_deltas steps B/C/W/D/E/R at DELTA_VERSION_TAG=v2; release pins coordination/slurp-stage3-delta-cell-r02-v1/stage3-deltas-v2-release-pins.json. The cell stays HELD on a root admission decision.",
+            "relpath": "knowledge/slurp/semantic/stage3-deltas-v2/release.json",
+            "sha256": "b81df5c5175e45e68933d4875c110fd46bea933283631d2c428187c480fc31f0"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-V1"
+    },
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-r02-smoke-4-v1-twin",
+      "baseline_fragment": "slurp-native-stage3-delta-cell-r02-twin-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-delta-cell-r02-smoke-4-twin-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "The four-row form smoke of the CELL-2 derangement twin, on the same four rows with the twin release pinned. Held for the same reasons as the generation smoke; it seals before the twin arm opens.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The twin release of knowledge/slurp/semantic/stage3-deltas-twin-v2/, the seeded derangement (seed 20260922) of version 2's own authored document: 200 statements, authored token count 3,001 held exactly. The cell stays HELD on a root admission decision.",
+            "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v2/release.json",
+            "sha256": "b18b141f67dae4b413391d22dd787a3b85480d2b4fab24db0848e547e7aa1a9a"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-TWIN-V1"
+    },
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-r02-smoke-4-v1-fit",
+      "baseline_fragment": "slurp-native-stage3-delta-cell-r02-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-delta-cell-r02-smoke-4-fit-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "The tokenizer-capacity fit pass of the CELL-2 four-row smoke. A SPEND identity, never flown as a generation cell; it is declared here -- where CELL-1 left its smoke fit identities undeclared -- so that each of this family's eight registered run ids carries a cell, a registered plan document, an exposure row and its own core.flight.cli check.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "S3-6 iteration 2: the release of knowledge/slurp/semantic/stage3-deltas-v2/, built from the sealed ADV-1 advantage outputs with the decision-83 retention document prepared/SAEA-SLURP-STAGE3-DELTAS-V1/retention-v2.json (200 kept of 379). Released 2026-09-24, model-free, through the adv1_to_deltas steps B/C/W/D/E/R at DELTA_VERSION_TAG=v2; release pins coordination/slurp-stage3-delta-cell-r02-v1/stage3-deltas-v2-release-pins.json. The cell stays HELD on a root admission decision.",
+            "relpath": "knowledge/slurp/semantic/stage3-deltas-v2/release.json",
+            "sha256": "b81df5c5175e45e68933d4875c110fd46bea933283631d2c428187c480fc31f0"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-FIT-V1"
+    },
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-r02-smoke-4-v1-twin-fit",
+      "baseline_fragment": "slurp-native-stage3-delta-cell-r02-twin-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-delta-cell-r02-smoke-4-twin-fit-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "The tokenizer-capacity fit pass of the CELL-2 twin four-row smoke. A SPEND identity, never flown as a generation cell, declared for the same reason as the generation smoke's fit identity.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The twin release of knowledge/slurp/semantic/stage3-deltas-twin-v2/, the seeded derangement (seed 20260922) of version 2's own authored document: 200 statements, authored token count 3,001 held exactly. The cell stays HELD on a root admission decision.",
+            "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v2/release.json",
+            "sha256": "b18b141f67dae4b413391d22dd787a3b85480d2b4fab24db0848e547e7aa1a9a"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-TWIN-FIT-V1"
+    }
+  ],
+  "date": "2026-09-24",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops CELL-2 and the 1,080-row arm does not open; the twin smoke gates the twin arm the same way. At most ONE root-diagnosed recovery re-registration, which needs BOTH a new generation attempt id AND a new native_contact_fit.attempt_id; a second failure stops the flight and the fix is proven on a four-row offline dry run.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-native-stage3-delta-cell-r02-smoke-4-v1",
+  "generation_budget": {
+    "cap": 44,
+    "definition": "44 = 4 rows x 11, the locked plan's OWN per-row contact ceiling (configs/policy/phase-native-candidates-review-revise-v1.json max_contacts 11, resolved from the unchanged role graph perception 1 / solver 1 / reviewer 3 / planner 1 with max_revisions 1). 176 = 44 x (1 speech packet + 3 endpoints), 117 s is the four rows' repeated speech under that ceiling and 24 is PLAN's own native task-contract number -- cell PLAN's registered smoke numbers, unchanged. The one execution_plan governs both smoke cells of this fragment; each flies under its own run id and the plan budget is run-cumulative under that run id, so no spend of any CELL-1 smoke is carried into it. Ceilings are bounds, never targets.",
+    "target": 44
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The first four rows of TRAIN Fold A in the roster's own order -- cell PLAN's own four-row smoke population, split identity 4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb (configs/experiment/slurp-native-default-plan-lock-smoke-4-v1.json), and the same four rows CELL-1's smokes flew. A pure selection with zero contacts: no quality-based choice, no score read, no separate draw. Structural evidence only; no quality read is taken from this fragment.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "The four-row form proof of Stage-3 S3-6 CELL-2 (owner decisions 83, 99, 101, 106): the same locked v2.0 plan, the same four routes and caps and the same four rows as CELL-1's v3 smoke, with knowledge_stores.stage3-deltas re-pointed to the released version-2 store (200 values) and the twin smoke to stage3-deltas-twin-v2. THE ITEM THIS SMOKE EXISTS FOR: the PER-NODE SUPPLIED COUNTS. Version 2 retires 10 of the 14 Planner values and 55 of the 95 Reviewer values, and these four registered rows carry audio_volume_*, play_* and iot_hue_* candidates -- the scenarios the decision-83 retention cut hardest (iot kept 0 of 19, play 1 of 25, audio 1 of 3). The offline four-row dry run over the RELEASED version-2 stores (scripts/flights/batch/cell2_dry_run.py, zero contacts) therefore predicts, per row, Solver 0 / Reviewer 1, 0, 1, 0 / Planner 0 on the arm and Solver 1, 0, 1, 0 / Reviewer 0 / Planner 0 on the twin, with the same four seeded Perception values on every row. The registered structural rule is that the REALISED counts equal those; a mismatch is a FORM defect that stops the arm. Whether the candidate-bound routes serve AT ALL is answered on the 1,080-row arm by its own delta-consumption table (the B9a-rec inert-route check at population level), never by these four rows. STRUCTURAL ONLY: no official score is run here and no effectiveness claim is read from it. Run and attempt identities are new because CELL-1's smoke identities are consumed and a plan budget is run-cumulative per run id.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2",
+  "stage3_algorithm": {
+    "id": "tfgrpo-semantic-advantage-v1",
+    "operators_used": [
+      "update",
+      "context_application"
+    ],
+    "note": "The four-row form proof of CELL-2: the same Training-Free GRPO experiential-delta store at iteration 2, the same per-node application and the same derangement control as the arms, flown on four rows for structural evidence only."
+  }
+}

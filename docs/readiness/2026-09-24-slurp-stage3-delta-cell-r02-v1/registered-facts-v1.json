@@ -1,0 +1,666 @@
+{
+  "_note": "Registered facts for the cell CELL-2 read (Stage-3 S3-6, iteration 2 of the delta store; owner decisions 83, 99, 101, 106): comparator = the sealed PLAN arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943), predecessor = CELL-1 (NEUTRAL by width, non-inferiority not proven). Development numbers under owner decisions 28 and 86; CELL-2 is a second look on the rows that chose the retained set.",
+  "authority_relpaths": [
+    "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r02-v1-preregistration.md",
+    "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r02-v1/analysis-recipe-v1.json",
+    "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r02-v1/protocol-registered-v1.json",
+    "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r02-v1/README.md",
+    "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/iteration-2-retention-v1.md",
+    "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/iteration-2-plan-v1.md",
+    "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v2-release-registration.json",
+    "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-twin-v2-release-registration.json",
+    "docs/results/2026-09-23-slurp-stage3-delta-cell-r01-verdict.md",
+    "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "docs/results/2026-09-21-slurp-plan-v2-lock-arm-verdict.md",
+    "docs/results/2026-09-22-slurp-planr-v2-lock-replicate-verdict.md",
+    "docs/results/2026-09-22-slurp-v2-lock-v1.md",
+    "docs/results/2026-09-21-slurp-stage3-prelude-frontier-and-verifier-v1.md",
+    "configs/baseline/slurp-native-default-plan-lock-baseline-v1.json",
+    "configs/baseline/slurp-native-stage3-delta-cell-r02-baseline-v1.json",
+    "configs/experiment/slurp-native-stage3-delta-cell-r02-v1.json"
+  ],
+  "b4b_reference": {
+    "gpu_hours_per_1080": 3.837,
+    "per_position": {
+      "0_perception": {
+        "cached_share": 0.618,
+        "prefilled_per_row": 1374
+      },
+      "1_solver": {
+        "cached_share": 0.361,
+        "prefilled_per_row": 6258
+      },
+      "2_reviewer_1": {
+        "cached_share": 0.236,
+        "prefilled_per_row": 7505
+      },
+      "3_reviewer_2": {
+        "cached_share": 0.835,
+        "prefilled_per_row": 1859
+      },
+      "4_planner": {
+        "cached_share": 0.198,
+        "prefilled_per_row": 9109
+      }
+    },
+    "prefilled_tokens_per_row": 26197,
+    "rows": 500,
+    "source": "docs/results/2026-09-19-slurp-throughput-root-cause-v1.md"
+  },
+  "cell2_cost_expectation": {
+    "contacts_per_row_expected": 4.2,
+    "gpu_hours_per_1080_ceiling": 1.8021,
+    "prefilled_tokens_per_row_ceiling": 9264.9,
+    "registered_before_contact": "no more than CELL-1's 9,264.9 prefilled tokens per row and no more than its 1.8021 GPU hours per 1,080, with the realised numbers MEASURED, never predicted. Version 2 supplies fewer items at three of four nodes and adds no contact, but Perception's four unconditional items per row and the binding Solver and Reviewer caps stay, so the cell is not expected to fall back to the PLAN row (8,353.2 tokens per row, 1.7579 GPU-h)."
+  },
+  "comparator_cost_reference": {
+    "cache_hit_share": 0.7544654602803369,
+    "contacts": 4424,
+    "contacts_per_minute": 39.92009949975315,
+    "contacts_per_row": 4.0962962962962965,
+    "finite_completion_rows": 10,
+    "gpu_hours_per_1080": 1.757887275616328,
+    "label": "cell PLAN (the locked v2.0 plan arm, owner decision 83)",
+    "planner_action_illegal_rows": 1,
+    "prefilled_tokens_per_row": 8353.242592592593,
+    "projected_read_hours_13078": 21.286712768991055,
+    "react_exhaustion_rows": 0,
+    "revisions_executed": 3,
+    "sealed_efficiency_path": "analysis/SAEA-SLURP-DEFAULT-PLAN-LOCK-PAIRED-ANALYSIS-V1/efficiency.json",
+    "source": "docs/results/2026-09-21-slurp-plan-v2-lock-arm-verdict.md and analysis/SAEA-SLURP-DEFAULT-PLAN-LOCK-PAIRED-ANALYSIS-V1/efficiency.json",
+    "wall_seconds": 6946.031834602356
+  },
+  "comparator_official": {
+    "action_accuracy": 83.5185,
+    "intent_accuracy": 82.2222,
+    "scenario_accuracy": 87.3148,
+    "slu_f1": 63.6304,
+    "source": "docs/results/2026-09-21-slurp-plan-v2-lock-arm-verdict.md (cell PLAN, the locked v2.0 arm) and analysis/SAEA-SLURP-DEFAULT-PLAN-LOCK-PAIRED-ANALYSIS-V1/score-contrasts.json official_aggregates.arm",
+    "span_f1": 53.7755
+  },
+  "declared_episode_keys": {
+    "_factor": "knowledge_stores.stage3-deltas, supplied per node (Perception 4 unconditional, Solver 8, Reviewer 4, Planner 4)",
+    "context_fit_policy": "compact-or-abstain",
+    "deliver_normaliser": {
+      "normaliser": "saea-deliver-normalise-v3"
+    },
+    "finite_completion_policy": "deliver-latest-or-abstain",
+    "react_exhaustion_policy": "continue-without-answer",
+    "review_loop": "on"
+  },
+  "delta_store": {
+    "arm": {
+      "pin_note": "release.sha256 is the release.json FILE digest (rails.knowledge_stores._read_pinned hashes the bytes); snapshot.sha256 is the snapshot's CONTENT hash (KnowledgeSnapshot.content_hash(), equal to the release's own snapshot_sha256), never the snapshot.json file digest, which is recorded beside it as snapshot_file_sha256 and pins nothing. The loader checks both identities. Both values were read out of the released documents by scripts/flights/batch/adv1_to_deltas_steps.py cell1-values at version tag v2 and written into coordination/slurp-stage3-delta-cell-r02-v1/cell2-fill-values-v2.json; no digest in this package was typed by hand.",
+      "predecessor": "version 1r (knowledge/slurp/semantic/stage3-deltas-v1r/, release 02505ba2e548a008cc6c16ffda6f7b9bff505061863026a3d7e1396c26d6c2e0) is the store CELL-1 flew; it is NOT superseded in the sense version 1 was -- it was consumed, read and verdicted, and version 2 is its decision-83 retention. Both stay on disk.",
+      "registration": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-v2-release-registration.json",
+      "registration_note": "The two runnable release registrations stay where the release that produced them recorded them -- inside the CELL-1 package -- because core.semantic_knowledge_preparation records a registration by its repo-relative path and the released release.json binds exactly that path. This package REFERENCES them and does not copy them, so there is only one file per registration to keep true.",
+      "registration_sha256": "9ad980f0299d2492675453dc1a18478335d8c1f33ddfb1bc043272ce8ef45f24",
+      "release": {
+        "relpath": "knowledge/slurp/semantic/stage3-deltas-v2/release.json",
+        "sha256": "b81df5c5175e45e68933d4875c110fd46bea933283631d2c428187c480fc31f0"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/stage3-deltas-v2/snapshot.json",
+        "sha256": "44a804184cf83a08e85831d40bae942af1e71ed4365b485d833f9a03807ef150"
+      },
+      "snapshot_file_sha256": "f960bc84b920e37030a141a81c182df9c928dc2d3a9b7948ae3c9ac42b878085"
+    },
+    "facts": {
+      "authored_token_count": 3001,
+      "content_chars_max": 126,
+      "content_chars_mean": 83.7,
+      "delta_kind_counts": {
+        "exemplar-note": 2,
+        "intent-boundary": 79,
+        "planner-rule": 4,
+        "reviewer-criterion": 40,
+        "slot-contract": 75
+      },
+      "distinct_facets": 26,
+      "facet_entries": 219,
+      "facet_rule": "source-intent",
+      "facets_per_row": {
+        "1": 182,
+        "2": 17,
+        "3": 1
+      },
+      "node_counts": {
+        "perception": 80,
+        "planner": 4,
+        "reviewer": 40,
+        "solver": 76
+      },
+      "predecessor_v1r": {
+        "authored_token_count": 5740,
+        "distinct_facets": 39,
+        "facet_entries": 402,
+        "node_counts": {
+          "perception": 119,
+          "planner": 14,
+          "reviewer": 95,
+          "solver": 151
+        },
+        "source_sample_ids": 223,
+        "statement_chars_total": 31840,
+        "values": 379,
+        "worst_case_supplied_chars_per_node": {
+          "perception": 485,
+          "planner": 381,
+          "reviewer": 423,
+          "solver": 938
+        }
+      },
+      "read_note": "counts and lengths only, read model-free from the released snapshot and the authored document; no statement text is reproduced here",
+      "retention": {
+        "append_only_amendment": "the 179 retired rows are dropped from version 2's set AND kept as dedup tombstones, because version 2 is curated from the same ADV-1 advantage outputs and would otherwise re-propose every retired statement under an iteration-2 value_id; the curation report records retirement.applied_value_ids (179) and curation.retired_suppressed (182 candidate blocks).",
+        "band": "DERIVED, not measured: max(|PLANr - PLAN per-scenario pooled SLU delta|, 1.2485 pp), the floor being the registered pooled own-null SLU-F1 micro CI95 half-width. It is a decision rule for pruning and no claim may treat it as a per-scenario null.",
+        "by_rule": {
+          "frontier-slope-tie": {
+            "kept": 117,
+            "retired": 61
+          },
+          "scenario": {
+            "kept": 83,
+            "retired": 118
+          }
+        },
+        "document": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/iteration-2-retention-v1.md",
+        "kept": 200,
+        "retention_json": "prepared/SAEA-SLURP-STAGE3-DELTAS-V1/retention-v2.json",
+        "retired": 179,
+        "rule": "owner decision 83 as preregistered: RETIRE when every targeted scenario is harmed beyond its own band; KEEP when any targeted scenario gains beyond it; otherwise the frontier-slope tie rule keeps a row only if its own per-delta paired SLU mean over the rows it reached exceeds 0.0 pp.",
+        "tie_threshold_pp": 0.0,
+        "unreached_policy": "keep",
+        "unsupplied_values_in_cell1": 123
+      },
+      "source_sample_ids": 136,
+      "source_split_identity_hash": "7c603857503faacbc40999d0dd939202ac141ba50aac3fb5e3594542931c46d7",
+      "statement_chars_total": 16743,
+      "twin_facts": {
+        "facet_count_multiset_held": true,
+        "note": "13 of the 200 twin rows land on a facet set equal to their own by arithmetic (26 distinct intents over 200 rows; the builder refuses only a twin that moved nothing at all), against 16 of 379 under v1r. The twin therefore bounds the form contribution slightly from below and the verdict reports it rather than claiming it away.",
+        "parent_token_count": 3001,
+        "rows": 200,
+        "seed": 20260922,
+        "token_count": 3001,
+        "value_fixed_points": 13
+      },
+      "values": 200,
+      "worst_case_supplied_chars_per_node": {
+        "perception": 476,
+        "planner": 269,
+        "reviewer": 416,
+        "solver": 850
+      }
+    },
+    "perception_slice_is_unchanged": "The unconditional route is the top 4 perception values by prior_score descending, value_id ascending. All four of CELL-1's seeds are KEPT by the retention and retirement only removes rows, so version 2's top 4 is the SAME four value ids. CELL-2 therefore tests the three candidate-bound routes and nothing else.",
+    "router": "rails.knowledge_stores.build_knowledge_store_supply's context_supply dispatcher for store_role 'stage3-deltas' (item S3-6w), widened to per-node supply by item S3-4s; the node a value is addressed to is read off its own task_target (NODE:DELTA-KIND:TARGET) by rails.stage3_delta_supply.node_target_of_task_target. Unchanged from CELL-1: no module, route, provider or cap moves at iteration 2.",
+    "routes": {
+      "perception": {
+        "binding": "unconditional",
+        "cap": 4,
+        "provider": "stage3-delta-unconditional-v1"
+      },
+      "planner": {
+        "binding": "candidate-bound",
+        "cap": 4,
+        "provider": "stage3-delta-candidate-bound-v1"
+      },
+      "reviewer": {
+        "binding": "candidate-bound",
+        "cap": 4,
+        "provider": "stage3-delta-candidate-bound-v1"
+      },
+      "solver": {
+        "binding": "candidate-bound",
+        "cap": 8,
+        "provider": "stage3-delta-candidate-bound-v1"
+      }
+    },
+    "selection": "rails.stage3_delta_supply.select_stage3_delta_values (candidate-bound) and select_unconditional_stage3_delta_values (Perception), both prior_score-ranked with value_id as the tiebreak",
+    "twin": {
+      "pin_note": "release.sha256 is the release.json FILE digest (rails.knowledge_stores._read_pinned hashes the bytes); snapshot.sha256 is the snapshot's CONTENT hash (KnowledgeSnapshot.content_hash(), equal to the release's own snapshot_sha256), never the snapshot.json file digest, which is recorded beside it as snapshot_file_sha256 and pins nothing. The loader checks both identities. Both values were read out of the released documents by scripts/flights/batch/adv1_to_deltas_steps.py cell1-values at version tag v2 and written into coordination/slurp-stage3-delta-cell-r02-v1/cell2-fill-values-v2.json; no digest in this package was typed by hand.",
+      "predecessor": "version 1r's twin (knowledge/slurp/semantic/stage3-deltas-twin-v1r/) is the twin CELL-1 flew; it stays on disk and is not rewritten.",
+      "registration": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/stage3-deltas-twin-v2-release-registration.json",
+      "registration_sha256": "548f6640c32c2ed63d3565b49816f73d295e9712e62200b4b43822e87911e37f",
+      "release": {
+        "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v2/release.json",
+        "sha256": "b18b141f67dae4b413391d22dd787a3b85480d2b4fab24db0848e547e7aa1a9a"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v2/snapshot.json",
+        "sha256": "131809122d23ccdaac86c9a9426c5e045a9544fc3059c1b46f80a3365151d614"
+      },
+      "snapshot_file_sha256": "cf8f6037a0aad34ee211120305ad6ca5a7cc4edfb0b3599727d6bdc032e44988"
+    }
+  },
+  "frontier_registered_rows": [
+    {
+      "cell": "R-PRIM",
+      "contacts_per_row": 4.031,
+      "gpu_hours_per_1080": 1.5688,
+      "official_intent": 82.13,
+      "official_slu": 64.21,
+      "prefilled_tokens_per_row": 8346.5,
+      "source": "docs/results/2026-09-22-slurp-review-primitives-verdict.md",
+      "status": "NEUTRAL vs PLAN (by width)",
+      "token_basis": "measured"
+    },
+    {
+      "cell": "PLAN",
+      "contacts_per_row": 4.096,
+      "gpu_hours_per_1080": 1.7579,
+      "official_intent": 82.22,
+      "official_slu": 63.63,
+      "prefilled_tokens_per_row": 8353.2,
+      "source": null,
+      "status": "NEUTRAL vs B1-notool",
+      "token_basis": "ESTIMATE"
+    },
+    {
+      "cell": "PLANr",
+      "contacts_per_row": 4.064,
+      "gpu_hours_per_1080": 1.6654,
+      "official_intent": 82.5,
+      "official_slu": 63.8,
+      "prefilled_tokens_per_row": 8321.5,
+      "source": "docs/results/2026-09-22-slurp-planr-v2-lock-replicate-verdict.md",
+      "status": "REPLICATED (NEUTRAL) vs PLAN",
+      "token_basis": "ESTIMATE"
+    },
+    {
+      "cell": "B8a (B5e base)",
+      "contacts_per_row": 5.014,
+      "gpu_hours_per_1080": 3.8709,
+      "official_intent": 81.85,
+      "official_slu": 63.78,
+      "prefilled_tokens_per_row": 46796.0,
+      "source": null,
+      "status": "ADMITTED",
+      "token_basis": "PROXY"
+    },
+    {
+      "cell": "B8a (B1 base)",
+      "contacts_per_row": 5.023,
+      "gpu_hours_per_1080": 3.6819,
+      "official_intent": 81.76,
+      "official_slu": 62.67,
+      "prefilled_tokens_per_row": 45730.5,
+      "source": null,
+      "status": "ADMITTED",
+      "token_basis": "PROXY"
+    },
+    {
+      "cell": "B5e",
+      "contacts_per_row": 5.014,
+      "gpu_hours_per_1080": 3.8709,
+      "official_intent": 80.09,
+      "official_slu": 62.34,
+      "prefilled_tokens_per_row": 46796.0,
+      "source": null,
+      "status": "NEUTRAL vs B1",
+      "token_basis": "PROXY"
+    },
+    {
+      "cell": "B1r",
+      "contacts_per_row": 5.04,
+      "gpu_hours_per_1080": 3.8507,
+      "official_intent": 80.09,
+      "official_slu": 62.23,
+      "prefilled_tokens_per_row": 26071.9,
+      "source": null,
+      "status": "REPLICATED",
+      "token_basis": "measured"
+    },
+    {
+      "cell": "B1-notool",
+      "contacts_per_row": 4.104,
+      "gpu_hours_per_1080": 1.6108,
+      "official_intent": 80.0,
+      "official_slu": 62.13,
+      "prefilled_tokens_per_row": 8019.8,
+      "source": null,
+      "status": "NON-INFERIORITY NOT PROVEN",
+      "token_basis": "measured"
+    },
+    {
+      "cell": "B1",
+      "contacts_per_row": 5.023,
+      "gpu_hours_per_1080": 3.6819,
+      "official_intent": 80.19,
+      "official_slu": 61.14,
+      "prefilled_tokens_per_row": 25933.0,
+      "source": null,
+      "status": "ADMITTED",
+      "token_basis": "measured"
+    },
+    {
+      "cell": "IDX",
+      "contacts_per_row": 4.181,
+      "gpu_hours_per_1080": 1.334,
+      "official_intent": 77.59,
+      "official_slu": 54.76,
+      "prefilled_tokens_per_row": 3379.1,
+      "source": null,
+      "status": "HARMFUL",
+      "token_basis": "measured"
+    },
+    {
+      "cell": "B4b",
+      "contacts_per_row": 5.006,
+      "gpu_hours_per_1080": 3.4651,
+      "official_intent": 78.52,
+      "official_slu": 51.09,
+      "prefilled_tokens_per_row": 26197.0,
+      "source": null,
+      "status": "ADMITTED",
+      "token_basis": "measured"
+    },
+    {
+      "cell": "B0",
+      "contacts_per_row": 2.0,
+      "gpu_hours_per_1080": 1.054,
+      "official_intent": 77.59,
+      "official_slu": 48.67,
+      "prefilled_tokens_per_row": 12328.7,
+      "source": null,
+      "status": "HARMFUL",
+      "token_basis": "PROXY"
+    },
+    {
+      "cell": "CELL-1",
+      "contacts_per_row": 4.216,
+      "gpu_hours_per_1080": 1.8021,
+      "official_intent": 81.48,
+      "official_slu": 63.15,
+      "prefilled_tokens_per_row": 9264.9,
+      "source": "docs/results/2026-09-23-slurp-stage3-delta-cell-r01-verdict.md",
+      "status": "NEUTRAL vs PLAN (by width); non-inferiority not proven",
+      "token_basis": "measured"
+    },
+    {
+      "cell": "CELL-1 twin",
+      "contacts_per_row": 4.142,
+      "gpu_hours_per_1080": 1.7879,
+      "official_intent": 82.31,
+      "official_slu": 63.19,
+      "prefilled_tokens_per_row": 9194.6,
+      "source": "docs/results/2026-09-23-slurp-stage3-delta-cell-r01-verdict.md",
+      "status": "form control, attribution only",
+      "token_basis": "measured"
+    }
+  ],
+  "frontier_source": "docs/results/2026-09-21-slurp-stage3-prelude-frontier-and-verifier-v1.md, PART A table A1",
+  "knowledge_pins": {
+    "arm": {
+      "intent-boundaries": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+        "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+      },
+      "slot-contracts": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v2/release.json",
+        "sha256": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b"
+      },
+      "stage3-deltas": {
+        "relpath": "knowledge/slurp/semantic/stage3-deltas-v2/release.json",
+        "sha256": "b81df5c5175e45e68933d4875c110fd46bea933283631d2c428187c480fc31f0"
+      },
+      "train-exemplars": {
+        "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/release.json",
+        "sha256": "171aa4a82c2b15fff2c72e907ea80298be8d72309cca0d7367eb50debb042129"
+      }
+    },
+    "comparator": {
+      "intent-boundaries": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+        "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+      },
+      "slot-contracts": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v2/release.json",
+        "sha256": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b"
+      },
+      "train-exemplars": {
+        "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/release.json",
+        "sha256": "171aa4a82c2b15fff2c72e907ea80298be8d72309cca0d7367eb50debb042129"
+      }
+    },
+    "source": "configs/baseline/slurp-native-stage3-delta-cell-r02-baseline-v1.json and configs/baseline/slurp-native-default-plan-lock-baseline-v1.json",
+    "twin_arm_stage3_deltas": {
+      "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v2/release.json",
+      "sha256": "b18b141f67dae4b413391d22dd787a3b85480d2b4fab24db0848e547e7aa1a9a"
+    }
+  },
+  "lock_node_applied": {
+    "intent_accuracy": 81.8519,
+    "slu_f1": 63.7757,
+    "source": "docs/results/2026-09-19-slurp-b8a-deliver-normalise-verdict.md and docs/results/2026-09-20-slurp-v2-provisional-lock-v1.md (63.78 / 81.85)"
+  },
+  "lock_official": {
+    "intent_accuracy": 80.0926,
+    "slu_f1": 62.3351,
+    "source": "docs/results/2026-09-18-slurp-b5e-combination-verdict.md"
+  },
+  "own_null_left_official": {
+    "intent_accuracy": 82.2222,
+    "slu_f1": 63.6304,
+    "source": "docs/results/2026-09-21-slurp-plan-v2-lock-arm-verdict.md (cell PLAN)"
+  },
+  "own_null_right_official": {
+    "intent_accuracy": 82.5,
+    "slu_f1": 63.8048,
+    "source": "docs/results/2026-09-22-slurp-planr-v2-lock-replicate-verdict.md (cell PLANr)"
+  },
+  "own_null_table": {
+    "margin_tolerance": 0.0001,
+    "per_row": {
+      "scenario_action_exact": {
+        "ci95": [
+          -0.7361,
+          1.2524
+        ],
+        "ci95_half_width": 0.9943,
+        "delta": 0.2778,
+        "harms": 12,
+        "left": 82.2222,
+        "right": 82.5,
+        "saves": 15,
+        "ties": 1053
+      }
+    },
+    "pooled_micro": {
+      "slu_f1_micro": {
+        "ci95": [
+          -1.1136,
+          1.3835
+        ],
+        "ci95_half_width": 1.2485,
+        "delta": 0.1744,
+        "left": 63.6304,
+        "right": 63.8048
+      },
+      "span_f1_micro": {
+        "ci95": [
+          -2.3225,
+          0.8276
+        ],
+        "ci95_half_width": 1.5751,
+        "delta": -0.6635,
+        "left": 53.7755,
+        "right": 53.112
+      }
+    },
+    "source": "docs/results/2026-09-22-slurp-planr-v2-lock-replicate-verdict.md, section 1 (the plan's own null)",
+    "table_tolerance": 0.005
+  },
+  "predecessor_read": {
+    "arm_minus_twin_intent_pp": -0.83,
+    "arm_minus_twin_slu_pp": -0.04,
+    "cell": "CELL-1",
+    "contacts": 4553,
+    "contacts_per_row": 4.216,
+    "gpu_hours_per_1080": 1.8021,
+    "intent_ci95": [
+      -2.17,
+      0.57
+    ],
+    "intent_delta_pp": -0.74,
+    "note": "CELL-1's own per-scenario and per-delta tables are the INPUT the decision-83 retention consumed, which is why CELL-2 on the same roster is a second look and not an independent confirmation.",
+    "official_intent": 81.4815,
+    "official_slu": 63.1502,
+    "prefilled_tokens_per_row": 9264.9,
+    "slu_ci95": [
+      -2.18,
+      1.24
+    ],
+    "slu_delta_pp": -0.48,
+    "status": "NEUTRAL by width; non-inferiority NOT proven on either metric",
+    "twin_gpu_hours_per_1080": 1.7879,
+    "twin_intent_delta_pp": 0.09,
+    "twin_prefilled_tokens_per_row": 9194.6,
+    "twin_slu_delta_pp": -0.44,
+    "verdict": "docs/results/2026-09-23-slurp-stage3-delta-cell-r01-verdict.md"
+  },
+  "prompt_fit_bound": {
+    "basis": "MEASURED on the committed tree by core.flight.cli check (exit 0 on all eight cells), whose _assess_prompt_budget bounds each phase by the WORST CASE the supplied stores can render, not by a prediction. The bound is identical to CELL-1's to the token, because it is driven by the per-node CAPS and the LONGEST statement (126 characters at both versions), neither of which the retention moves; what version 2 lowers is the worst-case supplied characters per node (476 / 850 / 416 / 269 against v1r's 485 / 938 / 423 / 381) and, on the realised requests, the number of rows at which a candidate-bound route fills its cap.",
+    "compaction_is_a_reported_diagnostic": "cell PLAN's own sealed run compacted ZERO rows (analysis/SAEA-SLURP-DEFAULT-PLAN-LOCK-PAIRED-ANALYSIS-V1/compaction.json). The four-row smoke reads its own E20 receipts and the verdict carries the compacted-row count per phase beside cell PLAN's 0. A non-zero count is a cost and a caveat on the frontier row's token basis, not a failure.",
+    "decision": "ALLOW on perception, reviewer and planner. The SOLVER phase's worst-case bound is COMPACT_REQUIRED by 317 tokens against the live slot minus its one-eighth reserve (24,576 - 3,072). That is a BOUND, not a prediction: it assumes every supplied store renders its cap at its longest on one row. The episode declares context_fit_policy 'compact-or-abstain', so a Solver request that really does exceed the window is COMPACTED, never truncated, and every compaction is counted in the E20 receipts. core.flight.cli check reports no blocker and authorises the cell.",
+    "measured_bound_per_phase": {
+      "identical_on_the_twin": true,
+      "perception": {
+        "decision": "ALLOW",
+        "operational_margin_tokens": 1512,
+        "required_window_tokens": 19992
+      },
+      "planner": {
+        "decision": "ALLOW",
+        "operational_margin_tokens": 1709,
+        "required_window_tokens": 19795
+      },
+      "reviewer": {
+        "decision": "ALLOW",
+        "operational_margin_tokens": 1648,
+        "required_window_tokens": 19856
+      },
+      "smoke_cells": "identical to the hundred: reviewer 19,855, planner 19,794, solver 21,820",
+      "solver": {
+        "decision": "COMPACT_REQUIRED",
+        "operational_margin_tokens": -317,
+        "required_window_tokens": 21821
+      }
+    },
+    "no_comparator_bound_was_measurable": "the same bound could not be taken for cell PLAN: contracts.gate_exposure refuses core.flight.cli check on a run whose exposure row is consumed ('a consumed run cannot be re-executed'), which is correct and is why the empirical reference above is PLAN's sealed REALISED prefill rather than its bound.",
+    "operational_reserve_tokens": 3072,
+    "slot_tokens": 24576,
+    "the_authority_in_flight": "core.preparation_fit.build_native_contact_fit_gate fits every realised immutable request against the resident tokenizer before it is transmitted and STOPS the flight rather than truncating. No static bound in this package replaces it."
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r02-v1/protocol-registered-v1.json",
+    "sha256": "62ecfcf247db937721d0903e30456ddca3ba7da717de89d7d6b6756b074d270f"
+  },
+  "registered_ceilings": {
+    "fit_endpoints": 47520,
+    "generation_calls_run_cumulative": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls": 6480,
+    "official_scoring_jobs": 1,
+    "repeated_speech_seconds": 33930
+  },
+  "store_iteration": {
+    "diff_plan": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/iteration-2-plan-v1.md",
+    "iteration": 2,
+    "predecessor_read": "docs/results/2026-09-23-slurp-stage3-delta-cell-r01-verdict.md",
+    "predecessor_store": "knowledge/slurp/semantic/stage3-deltas-v1r/ (379 values), the store CELL-1 flew",
+    "released": "2026-09-24, model-free, by the adv1_to_deltas runbook's steps B / C / W / D / E / R at DELTA_VERSION_TAG=v2 DELTA_FROM_VERSION_TAG=v1r DELTA_ITERATION=2, run step by step because the runbook's step F re-points CELL-1's SEALED fragments and CELL-2 owns its own. Release pins: coordination/slurp-stage3-delta-cell-r02-v1/stage3-deltas-v2-release-pins.json.",
+    "retention_document": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/iteration-2-retention-v1.md",
+    "what_moved": "WHICH rows the store carries, and nothing else. No schema, builder policy, facet rule, route, provider, cap, cell shape, population, comparator, margin or decision rule moves. Re-running the v1r command line on the same curator reproduces authored-stage3-deltas-v1r.json, source-stage3-deltas-v1r.json and authored-stage3-deltas-twin-v1r.json byte for byte, and the v2 curation reproduced the four pre-built v2 documents byte for byte on this pass (authored 94c38b35ca4d6b45..., source e1afc2d86bb27510..., twin authored b5fd2caa1b344fe7..., twin source 08767f3c0b1a8e1a...)."
+  },
+  "supply_reach": {
+    "arm": {
+      "perception": {
+        "binding": "unconditional; the bound does not apply, the cap-4 slice is identical on every row",
+        "distinct_intents_covered": 22,
+        "reachable_by_a_candidate_intent": 80,
+        "values": 80
+      },
+      "planner": {
+        "distinct_intents_covered": 4,
+        "reachable_by_a_candidate_intent": 4,
+        "values": 4
+      },
+      "reviewer": {
+        "distinct_intents_covered": 15,
+        "reachable_by_a_candidate_intent": 40,
+        "values": 40
+      },
+      "solver": {
+        "distinct_intents_covered": 20,
+        "reachable_by_a_candidate_intent": 76,
+        "values": 76
+      },
+      "total": {
+        "distinct_intents_covered": 26,
+        "intent_vocabulary": 60,
+        "reachable_by_a_candidate_intent": 200,
+        "values": 200
+      }
+    },
+    "cell1_measured_consumption_for_comparison": {
+      "perception": {
+        "at_full_cap": 1080,
+        "distinct_value_ids": 4,
+        "items": 4320,
+        "rows_supplied": 1080
+      },
+      "planner": {
+        "at_full_cap": 0,
+        "distinct_value_ids": 14,
+        "items": 807,
+        "rows_supplied": 641
+      },
+      "reviewer": {
+        "at_full_cap": 727,
+        "distinct_value_ids": 91,
+        "items": 3722,
+        "rows_supplied": 982
+      },
+      "solver": {
+        "at_full_cap": 536,
+        "distinct_value_ids": 147,
+        "items": 6386,
+        "rows_supplied": 937
+      },
+      "source": "analysis/SAEA-SLURP-STAGE3-DELTA-CELL-R01-PAIRED-ANALYSIS-V1/delta-consumption.json",
+      "upper_bound_after_retention": "the share of CELL-1's supplied items whose value survives retention -- perception 4,320 of 4,320 (100 %), solver 3,597 of 6,386 (56.3 %), reviewer 1,834 of 3,722 (49.3 %), planner 267 of 807 (33.1 %) -- is an UPPER bound on the reduction, because the Solver and Reviewer caps bind and refill from the remaining pool."
+    },
+    "twin": {
+      "perception": {
+        "distinct_intents_covered": 22,
+        "reachable_by_a_candidate_intent": 80,
+        "values": 80
+      },
+      "planner": {
+        "distinct_intents_covered": 3,
+        "reachable_by_a_candidate_intent": 4,
+        "values": 4
+      },
+      "reviewer": {
+        "distinct_intents_covered": 15,
+        "reachable_by_a_candidate_intent": 40,
+        "values": 40
+      },
+      "solver": {
+        "distinct_intents_covered": 19,
+        "reachable_by_a_candidate_intent": 76,
+        "values": 76
+      },
+      "total": {
+        "distinct_intents_covered": 26,
+        "intent_vocabulary": 60,
+        "reachable_by_a_candidate_intent": 200,
+        "values": 200
+      }
+    },
+    "what_it_means": "Every value of the released store is reachable on every node, arm and twin, exactly as at v1r. The routes are therefore not inert by construction. What the retention DOES change is how often a candidate-bound route finds a match at all: CELL-1 measured the Planner route at 0.594 of rows supplied and 1.259 items per supplied row against a cap of 4, and version 2 keeps 4 of its 14 Planner values over 4 distinct intents. The four-row smoke measures the realised per-node supplied counts before the arm opens, and the verdict reports the Planner route separately rather than pooled.",
+    "what_this_is": "A MODEL-FREE upper bound on what each candidate-bound route can ever select, computed by intersecting each value's associated_facet_ids with the 60 registered SLURP candidate intents of prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json. Measured on the released version-2 snapshots by scripts/flights/batch/adv1_to_deltas_steps.py reach and written into coordination/slurp-stage3-delta-cell-r02-v1/stage3-deltas-v2-release-pins.json."
+  }
+}
