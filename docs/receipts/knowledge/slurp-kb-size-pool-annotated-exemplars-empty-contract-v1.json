@@ -1,0 +1,286 @@
+{
+  "authority": "docs/results/2026-09-24-slurp-plan-bad-case-bank.md section 1e (the ENTITY-FP-ONLY mass on empty-gold rows); configs/probes/slurp_native_role_solver_v2.txt (the Solver output contract whose empty form this store demonstrates); docs/readiness/2026-09-24-slurp-train-exemplars-with-empty-v1/README.md",
+  "builder_policy_id": "saea-kb-distmodel-v1",
+  "contacts": {
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0,
+    "tool": 0
+  },
+  "coverage_report": {
+    "action_coverage": 1.0,
+    "cluster_coverage_proxy": 1.0,
+    "counts": {
+      "selected_entity_types": 54,
+      "selected_intents": 60,
+      "selected_utterances": 9354,
+      "train_entity_types": 54,
+      "train_intents": 60,
+      "train_utterances": 9354
+    },
+    "datastore_size_actual": 9354,
+    "entity_type_coverage": 1.0,
+    "intent_coverage": 1.0,
+    "kl_selected_given_train_over_intent": 0.0,
+    "long_tail_coverage": {
+      "entity_type": {
+        "coverage": 1.0,
+        "covered_count": 1,
+        "threshold": 5,
+        "train_long_tail_count": 1
+      },
+      "intent": {
+        "coverage": 1.0,
+        "covered_count": 1,
+        "threshold": 5,
+        "train_long_tail_count": 1
+      }
+    },
+    "scenario_coverage": 1.0,
+    "speaker_histogram_summary": {
+      "distinct_speakers": 150,
+      "max_speaker_share": 0.04286936070130425,
+      "top_speakers": [
+        {
+          "count": 401,
+          "speaker_id": "FO-488"
+        },
+        {
+          "count": 375,
+          "speaker_id": "FO-234"
+        },
+        {
+          "count": 241,
+          "speaker_id": "FO-462"
+        },
+        {
+          "count": 238,
+          "speaker_id": "FE-353"
+        },
+        {
+          "count": 190,
+          "speaker_id": "ME-223"
+        },
+        {
+          "count": 182,
+          "speaker_id": "FO-219"
+        },
+        {
+          "count": 176,
+          "speaker_id": "FE-249"
+        },
+        {
+          "count": 168,
+          "speaker_id": "ME-144"
+        },
+        {
+          "count": 146,
+          "speaker_id": "FE-250"
+        },
+        {
+          "count": 146,
+          "speaker_id": "ME-369"
+        }
+      ]
+    }
+  },
+  "decontamination": {
+    "checked_sample_count": 37407,
+    "excluded_rosters": [
+      {
+        "count": 1080,
+        "file_sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+        "new_exclusions": 1080,
+        "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+        "roster_id": "SLURP-EVO-FOLD-A-V2",
+        "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+      },
+      {
+        "count": 1080,
+        "file_sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+        "new_exclusions": 1080,
+        "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+        "roster_id": "SLURP-EVO-FOLD-B-V2",
+        "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+      },
+      {
+        "count": 1000,
+        "file_sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b",
+        "new_exclusions": 1000,
+        "relpath": "docs/receipts/probe-samples/DEV-1000.json",
+        "roster_id": null,
+        "split_identity_hash": "9fb44e3384b8ad8e0d8f825b88eb0a3051c218b699975051d8a0481aabc0243b"
+      }
+    ],
+    "excluded_sample_count": 3160,
+    "exclusion_authority": "docs/readiness/2026-09-13-slurp-semantic-authoring-registration-v1.json",
+    "selection_unchanged": "the source split identity hash equals the released parent store's, so the exclusion and the selection are the same ones already registered",
+    "verdict": "clean"
+  },
+  "execution_profile": "model-free-check",
+  "exposure_ledger_row": "SAEA-SLURP-TRAIN-EXEMPLARS-WITH-EMPTY-BUILD-V1",
+  "facet_count": 9354,
+  "generator": "scripts/build_slurp_train_exemplars_with_empty_store.py",
+  "parent_store": {
+    "receipt_relpath": "docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json",
+    "receipt_sha256": "48d0f34cf536ebf9806d55b5dcced1b607080bec3c68ca7dea27cdb01478cc72",
+    "relation": {
+      "change_shape": "the trailing field of the raw line only, from the bare word 'none' to the Solver contract's own empty form '\"entities\":[]'; nothing else on the line moves",
+      "facets_byte_identical": 9354,
+      "facets_changed": 0,
+      "parent_snapshot_sha256": "4c498dc0282055b9fe036ed7e950af519bd48b5f26e76876d0250727196a72e9",
+      "superset_statement": "NOT a byte superset of the parent's value contents: the entity-bearing values are byte-identical, the entity-free values differ in that trailing field alone. Facets, value ids, prior scores, task targets, associations and provenance refs are identical on every selected utterance, and the source split identity hash is the parent's.",
+      "values_byte_identical": 6405,
+      "values_changed": 2949,
+      "values_total": 9354
+    },
+    "snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/snapshot.json",
+    "source_split_identity_hash": "22f6092dfdb4a160376e529d8e59e9215bc7701e274620d35feb1c4d82f309e9",
+    "utterance_count": 9354
+  },
+  "pool_composition": {
+    "by_scenario": {
+      "alarm": {
+        "entity_bearing": 181,
+        "entity_free": 89,
+        "entity_free_share": 0.32963,
+        "total": 270
+      },
+      "audio": {
+        "entity_bearing": 30,
+        "entity_free": 140,
+        "entity_free_share": 0.823529,
+        "total": 170
+      },
+      "calendar": {
+        "entity_bearing": 1185,
+        "entity_free": 383,
+        "entity_free_share": 0.24426,
+        "total": 1568
+      },
+      "cooking": {
+        "entity_bearing": 78,
+        "entity_free": 13,
+        "entity_free_share": 0.142857,
+        "total": 91
+      },
+      "datetime": {
+        "entity_bearing": 231,
+        "entity_free": 51,
+        "entity_free_share": 0.180851,
+        "total": 282
+      },
+      "email": {
+        "entity_bearing": 563,
+        "entity_free": 270,
+        "entity_free_share": 0.32413,
+        "total": 833
+      },
+      "general": {
+        "entity_bearing": 160,
+        "entity_free": 372,
+        "entity_free_share": 0.699248,
+        "total": 532
+      },
+      "iot": {
+        "entity_bearing": 400,
+        "entity_free": 249,
+        "entity_free_share": 0.383667,
+        "total": 649
+      },
+      "lists": {
+        "entity_bearing": 170,
+        "entity_free": 249,
+        "entity_free_share": 0.594272,
+        "total": 419
+      },
+      "music": {
+        "entity_bearing": 62,
+        "entity_free": 150,
+        "entity_free_share": 0.707547,
+        "total": 212
+      },
+      "news": {
+        "entity_bearing": 311,
+        "entity_free": 72,
+        "entity_free_share": 0.18799,
+        "total": 383
+      },
+      "play": {
+        "entity_bearing": 942,
+        "entity_free": 315,
+        "entity_free_share": 0.250597,
+        "total": 1257
+      },
+      "qa": {
+        "entity_bearing": 738,
+        "entity_free": 325,
+        "entity_free_share": 0.305738,
+        "total": 1063
+      },
+      "recommendation": {
+        "entity_bearing": 229,
+        "entity_free": 84,
+        "entity_free_share": 0.268371,
+        "total": 313
+      },
+      "social": {
+        "entity_bearing": 229,
+        "entity_free": 42,
+        "entity_free_share": 0.154982,
+        "total": 271
+      },
+      "takeaway": {
+        "entity_bearing": 120,
+        "entity_free": 17,
+        "entity_free_share": 0.124088,
+        "total": 137
+      },
+      "transport": {
+        "entity_bearing": 374,
+        "entity_free": 77,
+        "entity_free_share": 0.170732,
+        "total": 451
+      },
+      "weather": {
+        "entity_bearing": 402,
+        "entity_free": 51,
+        "entity_free_share": 0.112583,
+        "total": 453
+      }
+    },
+    "entity_bearing": 6405,
+    "entity_free": 2949,
+    "entity_free_share": 0.315266,
+    "total": 9354
+  },
+  "release_artifact_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-empty-contract-v1/release.json",
+  "release_file_sha256": "4aa2c6dce28395efae5662aea2d4f755a01fdc9ab81ab0c6ad9844f4eeb71c2d",
+  "release_name": "train-exemplars-with-empty-v1",
+  "schema": "saea-kb-build-receipt-v1",
+  "snapshot_artifact_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-empty-contract-v1/snapshot.json",
+  "snapshot_file_sha256": "53135ef430c1ba560a8a4ee67683a0ebb239c02dc97071812c33f43ff1b16f7d",
+  "snapshot_id": "slurp-kb-distmodel-75a1c9173c3ebdc3",
+  "snapshot_sha256": "e39985250bbd32ae0ac80ef234b8d0357943c4a68ac4e73b680ee4be4f48dbc6",
+  "solver_empty_entity_list_form": "\"entities\":[]",
+  "solver_output_contract": "configs/probes/slurp_native_role_solver_v2.txt",
+  "source_split_identity_hash": "22f6092dfdb4a160376e529d8e59e9215bc7701e274620d35feb1c4d82f309e9",
+  "spec": {
+    "carrier_lock_key": "slurp",
+    "datastore_size": null,
+    "dimensions": [
+      "content"
+    ],
+    "seed": 20260823,
+    "view": "annotated-exemplars-empty-contract"
+  },
+  "timing_seconds": {
+    "build_snapshot": 0.302,
+    "coverage_report": 0.061,
+    "load_train_rows": 6.654
+  },
+  "value_count": 9354
+}

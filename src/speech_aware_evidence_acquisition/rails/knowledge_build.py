@@ -187,8 +187,70 @@ VIEW_SLOT_FILLERS = "slot-fillers"
 #: a duplicate of a closed mechanism.
 VIEW_ANNOTATED_EXEMPLARS = "annotated-exemplars"
 
-_ALLOWED_VIEWS: tuple[str, ...] = (VIEW_EXEMPLAR, VIEW_SLOT_FILLERS, VIEW_ANNOTATED_EXEMPLARS)
-_CONTENT_RECALL_VIEWS: tuple[str, ...] = (VIEW_SLOT_FILLERS, VIEW_ANNOTATED_EXEMPLARS)
+#: The SLURP Solver's own EMPTY form for the entity list, transcribed from
+#: its output contract ``configs/probes/slurp_native_role_solver_v2.txt``:
+#: the Solver returns
+#: ``{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}``
+#: and that template's own closing sentence is "If no entity is expressed,
+#: return an empty entities array" -- so the exact bytes a CORRECT empty
+#: answer carries are ``"entities":[]``. This constant exists so the
+#: rendering below cannot drift from the contract it is supposed to
+#: demonstrate; ``tests/unit/test_knowledge_build_empty_contract_view.py``
+#: reads that template and pins the two together.
+SOLVER_EMPTY_ENTITY_LIST_FORM = '"entities":[]'
+
+#: The EMPTY-CONTRACT annotated-exemplar view (2026-09-24). A ONE-FACTOR
+#: derivation of :data:`VIEW_ANNOTATED_EXEMPLARS`: same selection, same facet
+#: ids, same facet REPRESENTATIONS (byte for byte -- the descriptor still
+#: says ``annotated-exemplar retrieval key``, so the retrieval key side is
+#: untouched and the sealed KU-S3 facet vectors keep binding by id), same
+#: value ids, same ``prior_score``s, same ``task_target``s, same provenance.
+#: Exactly one string changes, on exactly the utterances that carry no
+#: entity annotation: the raw line's third field renders
+#: :data:`SOLVER_EMPTY_ENTITY_LIST_FORM` instead of the bare word ``none``.
+#:
+#: Why. The 2026-09-24 bad-case bank (``docs/results/
+#: 2026-09-24-slurp-plan-bad-case-bank.md``) measures an ENTITY-FP-ONLY mass
+#: of 12.1 % / 10.8 % of rows carrying +4.76 / +3.47 pp of pooled official
+#: SLU headroom, on rosters where 38.3 % / 31.4 % of rows carry no gold
+#: entity at all. The released pool already CONTAINS entity-free exemplars
+#: (2,949 of 9,354; that note's 'zero entity-free values' is a parser
+#: artefact of counting the literal token ``none`` as an entity type named
+#: "none"), so the supply is not missing the CASE -- what it never shows is
+#: the correct empty ANSWER. ``none`` is an English word that appears in no
+#: legal Solver response. Module M1's admitted gain was convention transfer
+#: from the raw line, and this view extends exactly that mechanism to the
+#: empty case: an exemplar whose answer is empty now shows the bytes the
+#: Solver would itself have to emit.
+#:
+#: NOT a value-content superset of the parent store, and that is stated
+#: rather than hidden: the entity-bearing values are byte identical, the
+#: entity-free values differ in their third field alone. Every facet, id,
+#: prior score and provenance ref is identical on every selected utterance.
+VIEW_ANNOTATED_EXEMPLARS_EMPTY_CONTRACT = "annotated-exemplars-empty-contract"
+
+_ALLOWED_VIEWS: tuple[str, ...] = (
+    VIEW_EXEMPLAR,
+    VIEW_SLOT_FILLERS,
+    VIEW_ANNOTATED_EXEMPLARS,
+    VIEW_ANNOTATED_EXEMPLARS_EMPTY_CONTRACT,
+)
+_CONTENT_RECALL_VIEWS: tuple[str, ...] = (
+    VIEW_SLOT_FILLERS,
+    VIEW_ANNOTATED_EXEMPLARS,
+    VIEW_ANNOTATED_EXEMPLARS_EMPTY_CONTRACT,
+)
+#: The annotated-exemplar views, whose rendered lines differ ONLY in the
+#: field an entity-free utterance puts last.
+_ANNOTATED_EXEMPLAR_VIEWS: tuple[str, ...] = (
+    VIEW_ANNOTATED_EXEMPLARS,
+    VIEW_ANNOTATED_EXEMPLARS_EMPTY_CONTRACT,
+)
+#: That field, per view.
+_ANNOTATED_EXEMPLAR_EMPTY_FORM: dict[str, str] = {
+    VIEW_ANNOTATED_EXEMPLARS: "none",
+    VIEW_ANNOTATED_EXEMPLARS_EMPTY_CONTRACT: SOLVER_EMPTY_ENTITY_LIST_FORM,
+}
 
 # Value-only representations preserve the established retrieval-key view.
 # A label-only projection removes information; the intent frame adds a TRAIN
@@ -540,7 +602,10 @@ def _content_facet_representation(row: KbRow, view: str) -> str:
             f"TRAIN utterance {row.utterance_id} (slot-filler retrieval key): "
             f"\"{row.content}\""
         )
-    if view == VIEW_ANNOTATED_EXEMPLARS:
+    if view in _ANNOTATED_EXEMPLAR_VIEWS:
+        # Byte-identical across BOTH annotated-exemplar views on purpose: the
+        # empty-contract derivation moves the VALUE side only, so the key side
+        # -- and every cell that recalls on it -- stays untouched.
         return (
             f"TRAIN utterance {row.utterance_id} (annotated-exemplar retrieval key): "
             f"\"{row.content}\""
@@ -548,16 +613,22 @@ def _content_facet_representation(row: KbRow, view: str) -> str:
     return row.content
 
 
-def _annotated_exemplar_value_content(row: KbRow) -> str:
+def _annotated_exemplar_value_content(row: KbRow, *, empty_form: str = "none") -> str:
     """A value's payload under :data:`VIEW_ANNOTATED_EXEMPLARS`: one line of
     ``<utterance> | <scenario>_<action> | <type>=<filler>; type=filler ...``.
 
     One ``type=filler`` entry per observed filler occurrence (a type with two
     fillers in one utterance renders two entries), lower-case as annotated;
-    ``| none`` when the utterance carries no entity annotation at all. See
+    ``empty_form`` when the utterance carries no entity annotation at all. See
     :data:`VIEW_ANNOTATED_EXEMPLARS` for why the exemplar sentence, its label
     and its fillers travel together here, unlike the filler-only
     :data:`VIEW_SLOT_FILLERS` rendering.
+
+    ``empty_form`` defaults to ``"none"``, which is what every snapshot built
+    before 2026-09-24 carries and what the locked SLURP v2.0 plan's pinned
+    store hash covers -- the default keeps those bytes frozen.
+    :data:`VIEW_ANNOTATED_EXEMPLARS_EMPTY_CONTRACT` passes
+    :data:`SOLVER_EMPTY_ENTITY_LIST_FORM` instead, and nothing else moves.
     """
 
     pairs = [
@@ -565,7 +636,7 @@ def _annotated_exemplar_value_content(row: KbRow) -> str:
         for entity_type in sorted(row.entity_fillers)
         for filler in row.entity_fillers[entity_type]
     ]
-    body = "; ".join(pairs) if pairs else "none"
+    body = "; ".join(pairs) if pairs else empty_form
     return f"{row.content} | {row.scenario}_{row.action} | {body}"
 
 
@@ -1017,8 +1088,10 @@ def _build_facets_and_values(
             )
         elif spec.view == VIEW_SLOT_FILLERS:
             content_text = _slot_filler_value_content(row)
-        elif spec.view == VIEW_ANNOTATED_EXEMPLARS:
-            content_text = _annotated_exemplar_value_content(row)
+        elif spec.view in _ANNOTATED_EXEMPLAR_VIEWS:
+            content_text = _annotated_exemplar_value_content(
+                row, empty_form=_ANNOTATED_EXEMPLAR_EMPTY_FORM[spec.view]
+            )
         else:
             content_text = (
                 f"Exemplar sentence: \"{row.content}\" -> intent {row.intent} "
@@ -1474,6 +1547,8 @@ __all__ = [
     "VIEW_EXEMPLAR",
     "VIEW_SLOT_FILLERS",
     "VIEW_ANNOTATED_EXEMPLARS",
+    "VIEW_ANNOTATED_EXEMPLARS_EMPTY_CONTRACT",
+    "SOLVER_EMPTY_ENTITY_LIST_FORM",
     "KbRow",
     "KnowledgeBuildSpec",
     "build_knowledge_snapshot",
