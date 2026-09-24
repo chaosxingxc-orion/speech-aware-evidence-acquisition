@@ -1,0 +1,103 @@
+{
+  "cell": "slurp-native-stage3-delta-cell-gepa-r01-smoke-4-twin-fit-v1",
+  "composed_config_hash": "5d4a295429fa3fd306bc68f11177e6a952166e45b8e8dd19c260c9fea0eaac01",
+  "decision_rule": {
+    "ADMITTED": "the CI95 lower bound of the paired official pooled SLU-F1 delta (CELL-1-GEPA minus PLAN) is ABOVE ZERO and the CI95 lower bound of the paired intent delta exceeds -0.9943 (owner decision 99, the TRAIN lock: a gain is proven, not merely non-inferior)",
+    "DELTA_CONSUMPTION": "item S3-4s: the per-node delta-consumption table -- how many deltas each node was supplied per row, which value_ids were supplied, and the saves and harms on the rows that received each one -- is a PRIMARY deliverable, reported whatever the verdict, placed beside CELL-1's own table, and is what decides whether there is a GEPA iteration 2 and what it retains. The PLANNER route is reported separately, never pooled: it grows from CELL-1's 14 values to 77 (73 of them GEPA-authored), and CELL-1 measured it at 0.594 of rows supplied and never at cap, so whether the route reaches its cap at all is this cell's own question. Each supplied value is also reported by PROVENANCE -- GEPA-authored or iteration-1 retained -- so the consumption table separates what the new statements did from what the kept ones did.",
+    "FRONTIER": "owner decision 75: the frontier row (official SLU-F1 delta x prefilled tokens per row x GPU hours per 1,080 rows) is reported on every verdict and placed beside the registered rows.",
+    "HARMFUL": "a MEASURED loss on either guard (owner decision 25, Method B: a CI95 upper bound below zero, or a point estimate beyond the margin); width alone is NEUTRAL, never HARMFUL",
+    "NEUTRAL": "both guards are non-inferior -- the SLU CI95 lower bound exceeds -1.2485 and the intent CI95 lower bound exceeds -0.9943 -- without a proven SLU gain",
+    "PER_SCENARIO_HARM_BOUND": "owner decision 17: per-scenario intent and SLU tables over all 18 scenarios in BOTH the natural-mixture and the equal-stratum weighting, with net harmed rows per scenario and any scenario of five or more flagged. A breach is a diagnostic beside the verdict, never a gate.",
+    "REPLICATION": "an ADMITTED result is replicated on the SAME roster before any DEV, Fold B or test read (the owner iteration rule; no DEV read is authorised by this package).",
+    "SECOND_LOOK": "200 of the 448 values CELL-1-GEPA pins are the iteration-1 rows CELL-1's read on these same TRAIN Fold A rows retained, so this verdict is partly a second look. It is a development number under owner decisions 28 and 86 and is not an independent confirmation of anything; an ADMITTED result is replicated on the same roster and then on a fresh one (Fold B or DEV) before any effectiveness claim. No such read is authorised by this package, and no comparison against the Training-Free GRPO arms is read here.",
+    "TWIN": "ATTRIBUTION, never admission. The twin arm is read with the same estimator against the same sealed PLAN comparator. A gain the twin reproduces within the plan's own null is FORM (the store's shape and token volume), not content, and the verdict says so and claims no content effect. A gain the twin does not reproduce is attributed to the deltas' content, with the twin delta reported beside it.",
+    "comparator": "the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 (official 63.6304 / 82.2222); nothing is re-flown",
+    "efficiency_is_reported_regardless": "every efficiency deliverable is reported whatever the verdict"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-delta-cell-gepa-r01-smoke-4-v1-twin-fit",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 176,
+    "planned_speech_audio_seconds": 117,
+    "protocol_hash": "caf31d981c58d715a9fc837a69d6f4a146e6fbe9160a9a234ae36f73fc90764e",
+    "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-TWIN-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "No standalone fit run. core.preparation_fit.build_native_contact_fit_gate fits each realised native request inside the same flight, under the same lease. coordinate-fit must NOT be run, or this row is double-charged.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-delta-cell-gepa-r01-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "modules": {
+    "base": "the locked v2.0 SLURP default plan, exactly as the sealed PLAN arm flew it (configs/baseline/slurp-native-default-plan-lock-baseline-v1.json): the complete native episode with the review loop on, the shared controller and FlightRuntime path, no phase_tools on any role, Solver-only answer authority, the three-candidate contract, the max512 np4 resident geometry, the slot-contracts v2 / intent-boundaries v1 / train-exemplars k=20 stores, saea-deliver-normalise-v3 at delivery, and items E13 and E22 declared. Nothing of it moves.",
+    "factor": "knowledge_stores.stage3-deltas added to the locked v2.0 plan fragment (configs/baseline/slurp-native-default-plan-lock-baseline-v1.json) and nothing else: the released GEPA store stage3-deltas-gepa-v1 (448 curated experiential deltas over the clean construction subset R01C -- 248 authored by the GEPA proposer cell, 200 retained from iteration 1 by the decision-83 rule) supplied per node through context_supply -- Perception unconditional cap 4 (provider stage3-delta-unconditional-v1), Solver cap 8, Reviewer cap 4 and Planner cap 4 (provider stage3-delta-candidate-bound-v1, each bound to the row's own Perception candidate intents), every route node_target-filtered and prior_score-ranked. The config diff against the locked plan is exactly that one store key plus the per-flight bookkeeping keys this cell prepares under its own run id; the four baselines are CELL-1's with the store pins and the fit identities moved and prepared_phase_supply removed.",
+    "family": "THE GEPA FAMILY (owner decision 101): stage3-deltas-gepa-v1 is the GEPA arm's own release. 248 of its 448 rows were authored by SAEA-SLURP-STAGE3-GEPA-R01-V1, one reflective contact per (scenario, node) group over the sealed ROLL-1 trajectories of R01C (68 groups, 17 scenarios x 4 nodes; music has no eligible row), and 200 are the iteration-1 rows the decision-83 retention kept. GEPA assigns credit per SCENARIO and mutates the guidance text; Training-Free GRPO assigns credit per ROW. That is the whole difference between this cell and CELL-1 / CELL-2, and it is the difference the CELL-1 read asked for: NEUTRAL overall with large and opposite per-scenario effects. Nothing else moves, and the Perception unconditional slice is the SAME four value ids as CELL-1's and CELL-2's -- measured, not assumed.",
+    "per_role_rendering_held": "native_episode.tool_schema_rendering is NOT armed.",
+    "purpose": "Stage-3 S3-6 CELL-1-GEPA (owner decisions 83, 99, 101, 106): the locked v2.0 plan plus the GEPA delta store as ONE factor on TRAIN Fold A, comparator the sealed PLAN arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943), twin arm as the form control. CELL-1-GEPA is CELL-1 with knowledge_stores.stage3-deltas re-pointed from stage3-deltas-v1r (379 values) to stage3-deltas-gepa-v1 (448 values) and the twin likewise; the base plan, the four routes and their caps (Perception unconditional 4, Solver 8, Reviewer 4, Planner 4), the population, the caps, the session, the decision rule and the comparator are all held. That is owner decision 101's point: the three training-free RL families differ in the delta store they release and in nothing else, so their arms are comparable by construction. PRIMARY DELIVERABLES: (1) the official paired read against the sealed PLAN arm under the decision-99 TRAIN lock rule; (2) the per-scenario effect x prefilled-token frontier table in both weightings; (3) the per-node delta-consumption table (S3-4s), with the Planner route reported separately because it grows from 14 values to 77; (4) the twin contrast, which decides attribution, never admission. READ DISCIPLINE: 200 of the 448 values were RETAINED by CELL-1's own read on these same TRAIN Fold A rows, so this verdict is partly a second look and is a development number (owner decisions 28, 86); the replicate on a fresh roster precedes any effectiveness claim. Comparing GEPA against Training-Free GRPO is NOT read here: three arms on one comparator make that comparison possible, but making it is a separate read with its own preregistration.",
+    "second_declared_key_not_a_factor": "native_episode.react_exhaustion_policy = continue-without-answer (item E22) and finite_completion_policy = deliver-latest-or-abstain (item E13): failure-mode declarations the locked plan already carries, required of every live SLURP native cell by scripts/checks/finite_completion_policy_check.py. Neither renders a request byte.",
+    "zero_added_contacts": "the added store supplies text to requests the plan already makes, so the role graph and therefore the 11-contact per-row ceiling are cell PLAN's unchanged"
+  },
+  "plan_kind": "native contact fit",
+  "predecessor": {
+    "arm_minus_twin_intent_pp": -0.83,
+    "arm_minus_twin_slu_pp": -0.04,
+    "cell": "CELL-1",
+    "contacts": 4553,
+    "contacts_per_row": 4.216,
+    "gpu_hours_per_1080": 1.8021,
+    "intent_ci95": [
+      -2.17,
+      0.57
+    ],
+    "intent_delta_pp": -0.74,
+    "note": "CELL-1's own per-scenario and per-delta tables are the INPUT the decision-83 retention consumed, and 200 of this store's 448 rows are what that retention kept, so CELL-1-GEPA on the same roster is partly a second look and not an independent confirmation. CELL-1's read is reported BESIDE this verdict as context, never as a comparator: the GEPA-versus-Training-Free-GRPO comparison is a separate read with its own preregistration.",
+    "official_intent": 81.4815,
+    "official_slu": 63.1502,
+    "prefilled_tokens_per_row": 9264.9,
+    "role": "PREDECESSOR CONTEXT, never a comparator: CELL-1 is the Training-Free GRPO arm of the same base plan on the same roster. Its numbers are reported beside this cell's so a reader can see both, and the formal GEPA-versus-TF-GRPO comparison is a separate read.",
+    "slu_ci95": [
+      -2.18,
+      1.24
+    ],
+    "slu_delta_pp": -0.48,
+    "status": "NEUTRAL by width; non-inferiority NOT proven on either metric",
+    "twin_gpu_hours_per_1080": 1.7879,
+    "twin_intent_delta_pp": 0.09,
+    "twin_prefilled_tokens_per_row": 9194.6,
+    "twin_slu_delta_pp": -0.44,
+    "verdict": "docs/results/2026-09-23-slurp-stage3-delta-cell-r01-verdict.md"
+  },
+  "preparation_base_commit": "9b0c4dd4",
+  "prepared_phase_supply": {
+    "allow_output_change": "--allow-output-change must never be passed",
+    "expected_identity": "cell PLAN's own arm preparation output is ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f and its smoke's is 512583ec2c684a2e285bfafea3f4101033a2a1d413fad39c8cfd2b74fbff5733. This cell's added store is routed through context_supply, not through the first phase's retrieval store, so the PREPARED Perception selection is expected to reproduce those outputs exactly. If it does not, the knowledge channel moved: stop and report rather than passing --allow-output-change.",
+    "note": "Item E16: a prepared artifact is evidence only for the implementation that produced it, so each of the four flown cells prepares its OWN first-phase Perception supply under its OWN run id at the readiness flip. core.flight.repin.ensure_artifact_pinned runs core.flight.cli prepare-supply (model-free, zero model / tokenizer / encoder / scorer / server contacts), writes the pin into the baseline fragment and inserts the matching 'preparation' readiness requirement. The committed baselines therefore carry NO prepared_phase_supply key at all -- the cell-P0 form (scripts/flights/batch/derive_plan_cell_registration.py drops it for exactly this reason). A PENDING_ string in its place is NOT a valid registration: core.flight.repin.ArtifactPin.from_mapping refuses it ('malformed artifact pin') before the preparation step can run, which is the defect this registration repaired.",
+    "status": "NOT PINNED HERE, and deliberately not written by hand"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-gepa-r01-v1/protocol-registered-v1.json",
+    "sha256": "b3220d4b08a4ab4a05d0326c9f5cfde0013b2a95ff44885c91f0c73a9e7450ef"
+  },
+  "purpose": "Stage-3 S3-6 CELL-1-GEPA (owner decisions 83, 99, 101, 106): the locked v2.0 plan plus the GEPA delta store as ONE factor on TRAIN Fold A, comparator the sealed PLAN arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943), twin arm as the form control. CELL-1-GEPA is CELL-1 with knowledge_stores.stage3-deltas re-pointed from stage3-deltas-v1r (379 values) to stage3-deltas-gepa-v1 (448 values) and the twin likewise; the base plan, the four routes and their caps (Perception unconditional 4, Solver 8, Reviewer 4, Planner 4), the population, the caps, the session, the decision rule and the comparator are all held. That is owner decision 101's point: the three training-free RL families differ in the delta store they release and in nothing else, so their arms are comparable by construction. PRIMARY DELIVERABLES: (1) the official paired read against the sealed PLAN arm under the decision-99 TRAIN lock rule; (2) the per-scenario effect x prefilled-token frontier table in both weightings; (3) the per-node delta-consumption table (S3-4s), with the Planner route reported separately because it grows from 14 values to 77; (4) the twin contrast, which decides attribution, never admission. READ DISCIPLINE: 200 of the 448 values were RETAINED by CELL-1's own read on these same TRAIN Fold A rows, so this verdict is partly a second look and is a development number (owner decisions 28, 86); the replicate on a fresh roster precedes any effectiveness claim. Comparing GEPA against Training-Free GRPO is NOT read here: three arms on one comparator make that comparison possible, but making it is a separate read with its own preregistration.",
+  "quality_read_gate": "no task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist, and not before the registered STOP condition passes (the sealed PLAN and PLANr aggregates reproduce to the hundredth). The twin is read only after the arm has sealed and been read. The efficiency and delta-consumption reads may proceed from the sealed receipts, trace and server log as soon as the manifest seals, because they touch no answer, reference or quality field.",
+  "registered_at_utc": "2026-09-24T06:00:00.000000+00:00",
+  "registration_base_commit": "9b0c4dd4",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-gepacell, branch fable/gepacell, base fable/gepafix 9b0c4dd4",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

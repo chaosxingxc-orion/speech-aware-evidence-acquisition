@@ -1,0 +1,214 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-gepa-r01-v1-generation",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "comparator": {
+      "attempt_id": "attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1",
+      "role": "gating comparator, sealed, never re-flown",
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1"
+    },
+    "margins": {
+      "h_intent": 0.9943,
+      "h_slu": 1.2485,
+      "source": "the plan's own null (PLAN vs PLANr)"
+    },
+    "predecessor": {
+      "analysis_root": "analysis/SAEA-SLURP-STAGE3-DELTA-CELL-R01-PAIRED-ANALYSIS-V1",
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-r01-v1-generation-recovery-relaunch-2",
+      "note": "CELL-1's own per-scenario and per-delta tables are the INPUT the decision-83 retention consumed, and 200 of this store's 448 rows are what that retention kept, so CELL-1-GEPA on the same roster is partly a second look and not an independent confirmation. CELL-1's read is reported BESIDE this verdict as context, never as a comparator: the GEPA-versus-Training-Free-GRPO comparison is a separate read with its own preregistration.",
+      "role": "PREDECESSOR CONTEXT, reported beside the verdict and never a comparator: CELL-1 is the Training-Free GRPO arm of the same base plan on the same roster, and its per-scenario and per-delta read is what the decision-83 retention consumed to choose the 200 iteration-1 rows this store keeps. The GEPA-versus-Training-Free-GRPO comparison is NOT taken here.",
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1"
+    },
+    "twin": {
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-gepa-r01-v1-twin",
+      "outputs_sha256": "PENDING_SEAL",
+      "role": "FORM CONTROL: the same 448 statements, deranged attachment, total authored token count held exactly at 7,345. The SUPPLIED volume is not held and is not expected to match the arm's.",
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-TWIN-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    }
+  },
+  "authority": {
+    "evidence_base": "docs/results/2026-09-21-slurp-plan-v2-lock-arm-verdict.md; docs/results/2026-09-22-slurp-planr-v2-lock-replicate-verdict.md; docs/results/2026-09-22-slurp-v2-lock-v1.md; docs/results/2026-09-23-slurp-stage3-advantage-r01-read.md; docs/results/2026-09-23-slurp-stage3-delta-cell-r01-verdict.md",
+    "own_null": "analysis/SAEA-SLURP-DEFAULT-PLAN-LOCK-REPLICATE-PAIRED-ANALYSIS-V1/README.md",
+    "owner_decisions": "83, 99, 101, 106, plus 17, 25, 28, 38, 58, 75, 86 (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md)",
+    "spec": "docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md sections S3-6 and S3-4s, and docs/superpowers/specs/2026-09-24-slurp-stage3-gepa-arm-design.md"
+  },
+  "cell_kind": "KNOWLEDGE -- one added store as one factor on the locked plan; the paired official read is the deliverable and the twin decides attribution",
+  "claim_boundary": "Descriptive paired read on historically exposed TRAIN Fold A discovery rows, plus a cost measurement of the same flight and the per-node delta-consumption table. 200 of the 448 values are the iteration-1 rows CELL-1's read on these same rows retained, so this is partly a second look: no independent confirmation, no superiority, generalisation or held-out claim, and the replicate on a fresh roster (Fold B or DEV) precedes any effectiveness claim. Development numbers under owner decisions 28 and 86. NOT IN SCOPE: any comparison of GEPA against Training-Free GRPO or ACE. Three arms on one comparator and one own null make such a comparison possible, but making it is a separate read with its own preregistration, built from the arms' CI95 intervals on the same population.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "decision_rule": {
+    "comparator": "the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1",
+    "rule": "see protocol-registered-v1.json decision_rule (ADMITTED / NEUTRAL / HARMFUL / TWIN / PER_SCENARIO_HARM_BOUND / FRONTIER / DELTA_CONSUMPTION / REPLICATION)"
+  },
+  "delta_convention": "delta = CELL-1-GEPA minus the sealed PLAN arm, in percentage points; negative is worse",
+  "diagnostics_required": [
+    "DELTA SUPPLY REACH AND CONSUMPTION, per node AND per value PROVENANCE (GEPA-authored, 248 rows; iteration-1 retained, 200 rows): rows supplied, items per supplied row against the cap, distinct value_ids and the saves / harms / ties on the rows that received each one, placed BESIDE CELL-1's own table (perception 1080 rows / 4320 items, solver 937 / 6386, reviewer 982 / 3722, planner 641 / 807) so the effect of the larger, fuller-reaching store on supply is visible. Separating the two provenances is what tells the GEPA statements' own contribution from the retained ones'.",
+    "THE PLANNER ROUTE SEPARATELY, never pooled: its slice grows from CELL-1's 14 values over 4 intents to 77 over 33, 73 of them GEPA-authored, and CELL-1 measured the route at 0.594 of rows supplied, 1.259 items per supplied row and never at cap. Whether it now reaches its cap at all is this cell's own question. An inert route is reported as such.",
+    "PER-SCENARIO TABLES beside the retention's own decisions and beside the GEPA proposer's group coverage: for each of the 18 scenarios, the CELL-1-GEPA delta, CELL-1's delta, the derived band the retention used, the retention signal (harm-beyond-band / gain-beyond-band / inside-band), how many of that scenario's iteration-1 values were kept and how many GEPA-authored values it received. GEPA assigns credit per SCENARIO, so this table is where its mechanism is visible or is not; the scenario with no eligible ROLL-1 row (music) received no GEPA group and is flagged.",
+    "E20 COMPACTION, per phase: rows compacted, at which phase and by how much, beside cell PLAN's own sealed ZERO. The registered worst-case bound puts the Solver phase at COMPACT_REQUIRED by 317 tokens, so a non-zero count is expected and is a caveat on the frontier row's token basis; an abstention caused by compaction is a failure.",
+    "ARM-VERSUS-TWIN SUPPLIED VOLUME. The derangement holds the store's total token count, not the SUPPLIED token count: the registered reach already differs per node (arm Solver 11 against twin Solver 22). The read reports the realised supplied items and supplied tokens per node for both arms and does not assume they match.",
+    "FINITE COMPLETIONS. The count of rows whose terminal_disposition.reason is \"finite_completion\", the affected sample ids, the delivered-draft versus abstention split, and -- only if the count is non-zero -- the primary official metric recomputed with those rows excluded BESIDE the registered all-rows number, which stays the number the decision rule reads. No row is ever filtered out of the scored manifest. Cell PLAN's own count on this roster is 10.",
+    "REACT EXHAUSTION. The count of rows whose disposition is react_exhaustion (cell PLAN's own count is 0), reported whether or not it is zero.",
+    "planner_action_illegal. The flight's own count, the sample ids that carry it, and their action character counts and SHA-256 values. Cell PLAN's own count on this roster is 1. Reported whether or not it is zero.",
+    "FIRST-REQUEST BYTE DELTA, stated honestly before contact: under this arm the Perception request is NOT byte-identical to the comparator's -- it carries the unconditional delta block. The structural stage reports which request keys moved and confirms that no key outside the armed set moved.",
+    "PER-SCENARIO intent and SLU tables over all 18 scenarios, in BOTH weightings, plus net harmed rows per scenario with any scenario of five or more flagged (owner decision 17).",
+    "ROW ACCOUNTING: 1,080 in, 1,080 out on both sides, no row dropped and no sample_id invented.",
+    "COST: actual generation contacts against cell PLAN's realised 4,424 and the 11,880 ceiling; actual repeated speech seconds; actual FIT endpoints; GPU hours read from the serving monitor over the lease window.",
+    "REVISIT SUPPLY. The number of rows whose Planner routed REVISE, and for those rows the items each revisited node acquired on its second visit, with the count of duplicate acquisitions (registered expectation: ZERO; a duplicate kills a trajectory). The offline dry run measures arm Solver 1 / Reviewer 4 / Planner 4 on the second visit of its REVISE row."
+  ],
+  "driver": {
+    "arm_invocation": "python scripts/analysis/plan_cell_read.py --stage <stage> --arm-run SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-V1 --arm-attempt attempt-slurp-native-stage3-delta-cell-gepa-r01-v1-generation --arm-fit-run SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-FIT-V1 --arm-label 'cell CELL-1-GEPA (the locked plan plus the per-node stage3-deltas store)' --comparator-run SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 --comparator-attempt attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1 --comparator-label 'the sealed PLAN arm (the locked v2.0 plan)' --own-null-left-run SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 --own-null-left-attempt attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1 --own-null-left-label 'cell PLAN' --own-null-right-run SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-REPLICATE-V1 --own-null-right-attempt attempt-slurp-native-default-plan-lock-replicate-train-fold-a-generation-v1 --own-null-right-label 'cell PLANr' --lock-run SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1 --lock-attempt <the sealed B5e attempt> --lock-label 'the B5e lock comparator' --package-dir docs/readiness/2026-09-24-slurp-stage3-delta-cell-gepa-r01-v1 --registered docs/readiness/2026-09-24-slurp-stage3-delta-cell-gepa-r01-v1/registered-facts-v1.json --h-slu 1.2485 --h-intent 0.9943 --analysis-root analysis/SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-PAIRED-ANALYSIS-V1",
+    "cli": "scripts/analysis/plan_cell_read.py",
+    "lock_stage_note": "the lock stage compares the arm to the B5e lock comparator with the delivery normaliser replayed, as every plan-based read has since cell PLAN. It is REPORTED, never a gate; the gate is the comparator clause.",
+    "own_null_note": "the comparator and the own-null LEFT side are the same sealed PLAN run. That is deliberate: the plan's own null is PLAN against PLANr, and PLAN is also this cell's gating comparator, so the stop stage reproduces the same sealed aggregate twice and the margin table once.",
+    "registered_facts": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-gepa-r01-v1/registered-facts-v1.json",
+    "runbook": "scripts/flights/batch/gepacell_read.sh <arm|twin>",
+    "stages": [
+      "stop",
+      "structural",
+      "contrast",
+      "lock",
+      "efficiency",
+      "frontier",
+      "verdict"
+    ],
+    "twin_invocation": "the same command with --arm-run SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-TWIN-V1, --arm-attempt attempt-slurp-native-stage3-delta-cell-gepa-r01-v1-twin, --arm-fit-run SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-TWIN-FIT-V1, --arm-label 'the CELL-1-GEPA derangement twin (form control)' and --analysis-root analysis/SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-TWIN-PAIRED-ANALYSIS-V1. Same comparator, same margins, same estimator, same seed: the twin read is the arm read with one input changed."
+  },
+  "efficiency_tables_required": [
+    "HEADLINE EFFICIENCY: prefilled tokens per row, GPU hours per 1,080 rows, wall seconds per row, contacts per row, aggregate prefill tok/s and aggregate decode tok/s -- PLAN beside the anchor's own realized cost block and beside the B4b reference, with every number's source named (run manifest, flight receipts, monitor, or server.log).",
+    "PER-POSITION TABLE over the five positions perception / solver / reviewer 1 / reviewer 2 / planner: prompt tokens, prefilled tokens, cached share, generated tokens, speech-packet re-decode share and prefilled tokens per row -- PLAN beside the B4b reference of arms.efficiency_reference_not_an_arm, with the reference labelled as a reference on every row.",
+    "CONSTANCY: distinct_tool_schemas_sha256 per row (must be 1 on all 1,080), rendered_tool_names, and authority_tool_names per role -- from the sealed saea-native-tool-schema-rendering-v1 block.",
+    "PREFILL JOIN QUALITY: the share of contacts on which n_tokens - generated + 1 equals the client's usage.prompt_tokens. Below 100.00 % the per-role figures are reported as estimates, not measurements, and the verdict says so.",
+    "CLIENT PROMPT TOKENS per row and the per-contact delta at each of the three tool-free positions, stated as an EXPECTED RISE and explicitly not a regression.",
+    "SLOT OCCUPANCY AND UTILISATION over the lease window: mean busy slots, zero-busy share, parked fraction, mean utilisation, GPU power -- from flight receipts and monitor.jsonl."
+  ],
+  "estimators": {
+    "bootstrap_pooled": "analysis.paired.resampled_statistic",
+    "not_used": "analysis.score_compare_cli as the runner: it hard-codes ci_level 0.90 and DEV population names",
+    "paired_per_row": "analysis.paired.paired_contrast",
+    "percentiles": "analysis.bootstrap._percentile over the retained BootstrapResult.replicates",
+    "pooled_micro_f1": "analysis.null_calibration.pooled_f1",
+    "row_reader": "analysis.null_calibration_cli.rows_for"
+  },
+  "execution_profile": "model-free-check",
+  "metrics": [
+    {
+      "counts": "tp = [slu_f1_word_tp, slu_f1_char_tp], fp and fn likewise",
+      "estimand": "pooled count F1",
+      "id": "pooled_slu_f1",
+      "null_half_width_pp": 1.235,
+      "role": "primary non-inferiority guard"
+    },
+    {
+      "estimand": "joint scenario+action accuracy",
+      "id": "intent_accuracy",
+      "null_half_width_pp": 1.2212,
+      "role": "second non-inferiority guard"
+    },
+    {
+      "id": "scenario_accuracy",
+      "role": "secondary"
+    },
+    {
+      "id": "action_accuracy",
+      "role": "secondary"
+    },
+    {
+      "id": "pooled_span_f1",
+      "role": "secondary"
+    },
+    {
+      "id": "per_row_mean_slu_f1",
+      "role": "secondary"
+    },
+    {
+      "id": "per_row_mean_exact_slot_f1",
+      "role": "secondary"
+    }
+  ],
+  "not_read_here": "GEPA versus Training-Free GRPO. The two families' arms share a comparator, a population, an own null and an estimator by construction (owner decision 101), so the comparison is available -- and it is deliberately not taken in this package. It needs its own preregistration naming the estimand, the multiplicity treatment over three families and the roster the claim is made on.",
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-PAIRED-ANALYSIS-V1",
+    "files": [
+      "score-contrasts.json",
+      "structural.json",
+      "efficiency.json",
+      "per-scenario-tables.json",
+      "frontier.json",
+      "delta-consumption.json",
+      "README.md"
+    ],
+    "harness_admission": "on ADMITTED, and only after the replicate on the same roster, the coordinator writes the harness-admission entry in the form the protocol document's harness_admission_entry_form records; a NEUTRAL or HARMFUL verdict writes a results-ledger row and no admission entry",
+    "prints_only_aggregates": "no utterance text, no gold, no delivered filler and no delta STATEMENT text is printed or persisted by the read: the delta-consumption table names value_ids, node targets, facet ids and counts only",
+    "root": "SPEECHRL_DATA_DIR",
+    "twin_analysis_root": "analysis/SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-TWIN-PAIRED-ANALYSIS-V1",
+    "verdict_document": "docs/results/<date>-slurp-stage3-delta-cell-gepa-r01-verdict.md"
+  },
+  "population": {
+    "fold_b_contact_authorized": false,
+    "roster": "TRAIN Fold A, docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+    "roster_metadata": {
+      "relpath": "analysis/SAEA-SLURP-TRAIN-A-DIRECT-ANCHOR-RELEASE-PAIRED-ANALYSIS-V1/roster-metadata.json",
+      "sha256": "07f4cd83b83d83d65500a328e0a38421ede575195c63ae118def0d1006c14e34"
+    },
+    "rows": 1080,
+    "rows_per_scenario": 60,
+    "scenario_strata": 18,
+    "speaker_clusters": 125,
+    "split_id": "SLURP-EVO-FOLD-A-V2",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+  },
+  "recipe_id": "slurp-stage3-delta-cell-gepa-r01-paired-analysis-v1",
+  "registered_at_utc": "2026-09-24T06:00:00.000000+00:00",
+  "resampling": {
+    "clusters": "125 speaker clusters, 18 scenarios of 60 rows, 523 headset and 557 far-field rows, from the released roster metadata",
+    "draws": 10000,
+    "interval_form": "percentile pairs of the same retained replicate sequence",
+    "intervals": [
+      "CI95 for the decision clauses",
+      "CI90 for diagnostics"
+    ],
+    "pairing_note": "both sides of this contrast are decoded runs, so the paired interval carries real decoding noise; the own-null margins are the calibration for exactly that. A NON-INFERIORITY read is the correct shape here precisely because the expected true effect is zero.",
+    "primary": "paired whole-speaker cluster bootstrap",
+    "seed": 20260915,
+    "sensitivity": "paired scenario-stratified row bootstrap, same draws and seed",
+    "tables": [
+      "natural mixture",
+      "equal-scenario weighting"
+    ]
+  },
+  "schema": "saea-paired-analysis-recipe-v1",
+  "scorer": {
+    "evaluator": "slurp-official-8eb16545",
+    "id": "slurp-slu-official-train",
+    "projection_v3_companion": "slurp-slu-official-projected-v3-train, reported beside every official number (owner decision 7)",
+    "runs": "once per complete manifest through core.scoring_batch, never sharded; this read invokes no scorer",
+    "symmetric_normalised_companion": "slurp-slu-f1-normalized-v1-train, the TRAIN sibling registered under owner decision 14, reported beside every official number"
+  },
+  "tables_required": [
+    "headline score: the sealed PLAN arm, CELL-1-GEPA, the delta, speaker CI95, speaker CI90, the scenario-stratified CI90 and the equal-scenario delta, for official pooled SLU-F1 and intent",
+    "the SAME headline table for the twin arm, beside the arm's, with the twin delta and its CI95",
+    "per-scenario intent and SLU over all 18 scenarios, in both weightings, for the arm and for the twin",
+    "net harmed rows per scenario, with any scenario of five or more flagged (owner decision 17)",
+    "saves / harms / ties with the exact two-sided McNemar p",
+    "projection v3 and the TRAIN symmetric number beside every official number",
+    "THE PER-NODE, PER-PROVENANCE DELTA-CONSUMPTION TABLE (item S3-4s): per node (perception / solver / reviewer / planner) and per scenario, the number of rows supplied, the mean and the distribution of items supplied per row against the node's cap, the distinct value_ids supplied with their supply counts, and -- joined to the paired per-row outcome -- the saves, harms and ties on the rows that received each value_id. Value ids, node targets, facet ids and counts only; never statement text.",
+    "the arm-versus-twin per-node SUPPLY COUNT table: the two arms are NOT expected to supply the same number of items per node per row -- the derangement holds the store's total authored token count, not the supplied volume, and the offline dry run already measures different counts on three of four smoke rows -- so the table reports both sides and the realised supplied tokens per node for each",
+    "the mandatory diagnostics of the protocol document's diagnostics_required, in order",
+    "the frontier row: official SLU-F1 delta x prefilled tokens per row x GPU hours per 1,080 rows, pooled and per scenario (owner decision 75), for the arm and for the twin"
+  ],
+  "title": "Cell CELL-1-GEPA: the locked v2.0 plan plus the GEPA family's per-node stage3-deltas store (Stage-3 S3-6 / S3-4s, owner decision 101) -- paired read against the sealed PLAN arm at the plan's own null, with the derangement twin as the form control, the per-node delta-consumption table by value provenance and the frontier row"
+}
