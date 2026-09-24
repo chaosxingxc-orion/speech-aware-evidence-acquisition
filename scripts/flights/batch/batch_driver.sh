@@ -40,6 +40,9 @@ prelaunch() {
   [ -z "$(pgrep -af 'core.flight.cli|lease_cli' | grep -v pgrep)" ] || stop "a flight or lease process is alive before step $1"
   local ok; ok=$(cd "$MAIN" && bash scripts/serving_session.sh status --session-id $SESSION 2>/dev/null | $PY -c "import json,sys;d=json.load(sys.stdin);m=d.get('last_monitor_sample') or {};print(m.get('server_ok'), (m.get('slots') or {}).get('busy'), (d.get('session') or {}).get('session_id'))" 2>/dev/null)
   case "$ok" in "True 0 $SESSION") ;; *) stop "serving session not idle/healthy before step $1: $ok";; esac
+  # 2026-09-24: the GEPA chain STOPPED between two steps on a cold GPU (9.8 TFLOP/s twenty seconds after the arm sealed);
+  # warm first (gpu_warm.sh loops the 9-s matmul until >= 30 TFLOP/s), then the ramp test stays the last guard.
+  bash $SP/gpu_warm.sh >/dev/null 2>&1 || true
   local ramp; ramp=$(bash $SP/gpu_ramp_test.sh 2>/dev/null | grep -o "[0-9.]* TFLOP/s" | grep -o "^[0-9.]*")
   [ -n "$ramp" ] && [ "$($PY -c "print(int(float('$ramp') >= 30))")" = "1" ] || stop "GPU ramp preflight failed before step $1 (${ramp:-none} TFLOP/s)"
   log "prelaunch-ok" "{\"step\":$1,\"ramp_tflops\":$ramp}"
