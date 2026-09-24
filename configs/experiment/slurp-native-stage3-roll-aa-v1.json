@@ -14,8 +14,22 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "Cell ROLL-AA (board route F2, docs/handoff/2026-09-24-fable51/HANDOFF-STAGE3-FOR-CHATGPT-v1.md section 7.3): the within-flight A/A null of the Stage-3 variant-rollout methodology. READINESS HELD. Every roster-bound preparation cell ROLL-1 needed is already SEALED and is inherited by hash in this cell's baseline (the R01C featcache packet promotion, the intent-boundary speech-query encoding and the model-free content derivative all close over a SUPERSET of these rows and are read by id). What does NOT exist yet is this cell's OWN model-free first-phase supply (item E16: a prepared artifact is evidence only for the implementation that produced it, so nothing is inherited from ROLL-1) and the root-admission decision receipt. 'requirements' is deliberately EMPTY rather than a PENDING placeholder pair: core.flight.repin._set_preparation_requirement CREATES the preparation requirement on the first successful preparation and _upsert_decision_requirement INSERTS the decision requirement at the flip, while a placeholder decision entry without an expected_decision_id would be left behind beside the real one and refuse the campaign at load (core.flight.campaign.declared_readiness). Nothing here authorises a flight, a readiness flip, a contact or an admission entry.",
-        "requirements": [],
-        "state": "held"
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-roll-aa-admission-v1",
+            "relpath": "coordination/slurp-stage3-roll-aa-v1/root-admission-v1.json",
+            "sha256": "e3c0a7e8bff76ac675cdd2c8c10a736deec80005d91b238282180ed86896c875",
+            "reason": "Decision slurp-stage3-roll-aa-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-ROLL-AA-V1/phase-supply-v1.json",
+            "sha256": "8566f1237d3ed65a0579f12882f7f25a5f9916ab983baa2f645ded7644b3098c",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-ROLL-AA-V1"
     }
