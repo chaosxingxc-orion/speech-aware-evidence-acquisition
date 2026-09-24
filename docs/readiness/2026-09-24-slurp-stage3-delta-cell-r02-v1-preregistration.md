@@ -258,7 +258,7 @@ the CELL-1 package, where the release that produced them recorded them --
 
 | run id | cell | plan | composed config | protocol hash | split identity |
 | --- | --- | --- | --- | --- | --- |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-R02-V1` | `...-r02-v1` | `generation-plan-registered-v1.json` | `5a061350c447c781522925bf2f944fd6ea2dcc5697b5caef49c65114e026ee98` | `c039c413cf416806ebadd0e7bcf914ee6c7d23ec06d6660119620d6631a07dfd` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-R02-V1` | `...-r02-v1` | `generation-plan-registered-v1.json` | `0534ff041f69edd907132b8f417521b97123a34a09671c019cad1b6b1c2d8076` | `1355a85249bb9424cb20dcada6592099623518aa858f2def56c26d962a01c49e` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-FIT-V1` | `...-r02-fit-v1` | `fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-TWIN-V1` | `...-r02-twin-v1` | `twin-generation-plan-registered-v1.json` | `506e3c60e95c0fd927af96a6d83e4d9c7ad2cdc5ba991d89e211dabeeadf9257` | `adaed3cfdab1d5df847fca408043359c286f7b7d9a3078f4c2c96502ef801512` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-TWIN-FIT-V1` | `...-r02-twin-fit-v1` | `twin-fit-plan-registered-v1.json` | same | same | same |
@@ -268,7 +268,7 @@ the CELL-1 package, where the release that produced them recorded them --
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-TWIN-FIT-V1` | `...-r02-smoke-4-twin-fit-v1` | `twin-smoke-fit-plan-registered-v1.json` | same | same | same |
 
 Protocol document `protocol-registered-v1.json` sha256
-`c431624c27d421bbc8ca920101557c17bc23f8cc928ea3cd1f9a72f2773a5862`.
+`d437d02b701c24d2fb14ff00f75e746405a0f4bd7ccf7e33dbad3db712ea7f20`.
 
 `core.flight.cli check` exits **0 on all eight cells** on this committed tree, with `prepared_artifacts_ok:
 true` (no pin yet: the flip mints each cell's own), `scientific_readiness.state` `held`,
@@ -360,8 +360,8 @@ d["budget"]["smoke"].update({"generation_calls_cap": 44, "fit_endpoint_calls_cap
                              "repeated_speech_audio_seconds_cap": 117, "gpu_hours_fit_inclusive_cap": 1.0,
                              "native_task_contract_calls_cap": 24, "official_complete_score_jobs": 0})
 d["registered_hashes"].update({
-    "arm_composed_config": "5a061350c447c781522925bf2f944fd6ea2dcc5697b5caef49c65114e026ee98",
-    "arm_protocol": "c039c413cf416806ebadd0e7bcf914ee6c7d23ec06d6660119620d6631a07dfd",
+    "arm_composed_config": "0534ff041f69edd907132b8f417521b97123a34a09671c019cad1b6b1c2d8076",
+    "arm_protocol": "1355a85249bb9424cb20dcada6592099623518aa858f2def56c26d962a01c49e",
     "smoke_composed_config": "ad2958081efe9b9503c949336cdc6b2d50aaef9af1af7c2f90ce366dd9ae85b1",
     "smoke_protocol": "b0531732d2ec23edd0d53d7b774334777f91cd467f4528b9cf6a297f1387f829"})
 d["cell_kind"] = ("Stage-3 S3-6 one-factor knowledge cell, ITERATION 2: the locked v2.0 plan plus the "

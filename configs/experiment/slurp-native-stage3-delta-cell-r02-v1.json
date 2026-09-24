@@ -15,13 +15,20 @@
         "reason": "Stage-3 S3-6 CELL-2 (spec section S3-6; owner decisions 83, 99, 101, 106): the locked v2.0 plan plus ITERATION 2 of the stage3-deltas store as ONE factor on TRAIN Fold A, comparator the sealed PLAN arm at the plan's own null. HELD: root mints the admission receipt coordination/slurp-stage3-delta-cell-r02-v1/root-admission-v1.json (decision id slurp-stage3-delta-cell-r02-admission-v1), rewrites its eligible_run_ids to this family's eight run ids and its budget caps to this family's, and re-pins this cell with scripts/flights/repin_cell.py --set-ready, which mints this cell's OWN first-phase supply artifact under its own run id (item E16) and inserts the matching 'preparation' requirement. The committed baseline carries NO prepared_phase_supply key, which is the cell-P0 form; --allow-output-change must never be passed.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-delta-cell-r02-admission-v1",
+            "relpath": "coordination/slurp-stage3-delta-cell-r02-v1/root-admission-v1.json",
+            "sha256": "7068ff966a8525070462ab1d468065f6ee1f2d347cb043d53d9bca1d7498ca56",
+            "reason": "Decision slurp-stage3-delta-cell-r02-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "S3-6 iteration 2: the release of knowledge/slurp/semantic/stage3-deltas-v2/, built from the sealed ADV-1 advantage outputs with the decision-83 retention document prepared/SAEA-SLURP-STAGE3-DELTAS-V1/retention-v2.json (200 kept of 379). Released 2026-09-24, model-free, through the adv1_to_deltas steps B/C/W/D/E/R at DELTA_VERSION_TAG=v2; release pins coordination/slurp-stage3-delta-cell-r02-v1/stage3-deltas-v2-release-pins.json. The cell stays HELD on a root admission decision.",
-            "relpath": "knowledge/slurp/semantic/stage3-deltas-v2/release.json",
-            "sha256": "b81df5c5175e45e68933d4875c110fd46bea933283631d2c428187c480fc31f0"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTA-CELL-R02-V1/phase-supply-v1.json",
+            "sha256": "917cd6d771f874b118726d00ba5c8ec773f9a2f86e6182c5f4910d87c21d124e"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R02-V1"
     },

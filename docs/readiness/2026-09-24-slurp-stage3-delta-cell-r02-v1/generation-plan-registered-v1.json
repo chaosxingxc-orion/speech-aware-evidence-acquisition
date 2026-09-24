@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-delta-cell-r02-v1",
-  "composed_config_hash": "5a061350c447c781522925bf2f944fd6ea2dcc5697b5caef49c65114e026ee98",
+  "composed_config_hash": "0534ff041f69edd907132b8f417521b97123a34a09671c019cad1b6b1c2d8076",
   "decision_rule": {
     "ADMITTED": "the CI95 lower bound of the paired official pooled SLU-F1 delta (CELL-2 minus PLAN) is ABOVE ZERO and the CI95 lower bound of the paired intent delta exceeds -0.9943 (owner decision 99, the TRAIN lock: a gain is proven, not merely non-inferior)",
     "DELTA_CONSUMPTION": "item S3-4s: the per-node delta-consumption table -- how many deltas each node was supplied per row, which value_ids were supplied, and the saves and harms on the rows that received each one -- is a PRIMARY deliverable, reported whatever the verdict, placed beside CELL-1's own table, and is what decides whether there is an iteration 3 and what it retains. The PLANNER route is reported separately, never pooled: 4 of its 14 values survive the retention and CELL-1 measured it at 0.594 of rows supplied and never at cap.",
@@ -21,7 +21,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "c039c413cf416806ebadd0e7bcf914ee6c7d23ec06d6660119620d6631a07dfd",
+    "protocol_hash": "1355a85249bb9424cb20dcada6592099623518aa858f2def56c26d962a01c49e",
     "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-R02-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -89,7 +89,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r02-v1/protocol-registered-v1.json",
-    "sha256": "c431624c27d421bbc8ca920101557c17bc23f8cc928ea3cd1f9a72f2773a5862"
+    "sha256": "d437d02b701c24d2fb14ff00f75e746405a0f4bd7ccf7e33dbad3db712ea7f20"
   },
   "purpose": "Stage-3 S3-6 CELL-2 (owner decisions 83, 99, 101, 106): the locked v2.0 plan plus ITERATION 2 of the node-targeted stage3-deltas store as ONE factor on TRAIN Fold A, comparator the sealed PLAN arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943), twin arm as the form control. Version 2 is the owner-decision-83 retention of the v1r store CELL-1 flew: 200 of 379 values kept, 179 retired, nothing else moved. PRIMARY DELIVERABLES: (1) the official paired read against the sealed PLAN arm under the decision-99 TRAIN lock rule; (2) the per-scenario effect x prefilled-token frontier table in both weightings, beside CELL-1's own; (3) the per-node delta-consumption table (S3-4s), with the Planner route reported separately because 4 of its 14 values survive; (4) the twin contrast, which decides attribution, never admission. READ DISCIPLINE: CELL-2 is a SECOND look on the same TRAIN Fold A rows that chose the retained set, so its verdict is a development number (owner decisions 28, 86) and the replicate on a fresh roster precedes any effectiveness claim.",
   "quality_read_gate": "no task-quality read before the complete sealed manifest, the exact ordered 1,080 outputs, the native phase summary and the single successful complete official TRAIN score all exist, and not before the registered STOP condition passes (the sealed PLAN and PLANr aggregates reproduce to the hundredth). The twin is read only after the arm has sealed and been read. The efficiency and delta-consumption reads may proceed from the sealed receipts, trace and server log as soon as the manifest seals, because they touch no answer, reference or quality field.",
