@@ -1,0 +1,162 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-gepa-r01-smoke-4-v1-generation",
+      "baseline_fragment": "slurp-native-stage3-delta-cell-gepa-r01-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-delta-cell-gepa-r01-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "The four-row form smoke of CELL-1-GEPA. HELD exactly as the arm is: root mints the admission receipt, rewrites its eligible_run_ids to include this run id and its fit identity, and re-pins this cell with scripts/flights/repin_cell.py --set-ready, which mints this cell's own first-phase supply artifact under its own run id (item E16). The committed baseline carries NO prepared_phase_supply key. The smoke seals before the arm opens.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The GEPA delta store: the release of knowledge/slurp/semantic/stage3-deltas-gepa-v1/, curated model-free from the sealed GEPA proposer outputs of SAEA-SLURP-STAGE3-GEPA-R01-V1 and appended to the 200 iteration-1 rows the decision-83 retention document prepared/SAEA-SLURP-STAGE3-DELTAS-GEPA-V1/retention-gepa-v1.json kept of v1r's 379: 448 values. Released 2026-09-24, model-free, by scripts/flights/batch/gepa_to_deltas.sh; release pins coordination/slurp-stage3-delta-cell-gepa-r01-v1/stage3-deltas-gepa-v1-release-pins.json. The cell stays HELD on a root admission decision.",
+            "relpath": "knowledge/slurp/semantic/stage3-deltas-gepa-v1/release.json",
+            "sha256": "53c1267169b5269bc850f75527b2c8086fd681126f9180ac4a0df9410b61fcfa"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-V1"
+    },
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-gepa-r01-smoke-4-v1-twin",
+      "baseline_fragment": "slurp-native-stage3-delta-cell-gepa-r01-twin-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-delta-cell-gepa-r01-smoke-4-twin-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "The four-row form smoke of the CELL-1-GEPA derangement twin, on the same four rows with the twin release pinned. Held for the same reasons as the generation smoke; it seals before the twin arm opens.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The twin release of knowledge/slurp/semantic/stage3-deltas-gepa-twin-v1/, the seeded derangement (seed 20260924) of the GEPA store's own authored document: 448 statements, authored token count 7,345 held exactly. The cell stays HELD on a root admission decision.",
+            "relpath": "knowledge/slurp/semantic/stage3-deltas-gepa-twin-v1/release.json",
+            "sha256": "fb2dad3082848f1ff794401f2ea1d9b0d53e33b0f7a459592b44364cce196fb3"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-TWIN-V1"
+    },
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-gepa-r01-smoke-4-v1-fit",
+      "baseline_fragment": "slurp-native-stage3-delta-cell-gepa-r01-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-delta-cell-gepa-r01-smoke-4-fit-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "The tokenizer-capacity fit pass of the CELL-1-GEPA four-row smoke. A SPEND identity, never flown as a generation cell; it is declared here -- where CELL-1 left its smoke fit identities undeclared -- so that each of this family's eight registered run ids carries a cell, a registered plan document, an exposure row and its own core.flight.cli check.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The GEPA delta store: the release of knowledge/slurp/semantic/stage3-deltas-gepa-v1/, curated model-free from the sealed GEPA proposer outputs of SAEA-SLURP-STAGE3-GEPA-R01-V1 and appended to the 200 iteration-1 rows the decision-83 retention document prepared/SAEA-SLURP-STAGE3-DELTAS-GEPA-V1/retention-gepa-v1.json kept of v1r's 379: 448 values. Released 2026-09-24, model-free, by scripts/flights/batch/gepa_to_deltas.sh; release pins coordination/slurp-stage3-delta-cell-gepa-r01-v1/stage3-deltas-gepa-v1-release-pins.json. The cell stays HELD on a root admission decision.",
+            "relpath": "knowledge/slurp/semantic/stage3-deltas-gepa-v1/release.json",
+            "sha256": "53c1267169b5269bc850f75527b2c8086fd681126f9180ac4a0df9410b61fcfa"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-FIT-V1"
+    },
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-delta-cell-gepa-r01-smoke-4-v1-twin-fit",
+      "baseline_fragment": "slurp-native-stage3-delta-cell-gepa-r01-twin-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-delta-cell-gepa-r01-smoke-4-twin-fit-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "The tokenizer-capacity fit pass of the CELL-1-GEPA twin four-row smoke. A SPEND identity, never flown as a generation cell, declared for the same reason as the generation smoke's fit identity.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The twin release of knowledge/slurp/semantic/stage3-deltas-gepa-twin-v1/, the seeded derangement (seed 20260924) of the GEPA store's own authored document: 448 statements, authored token count 7,345 held exactly. The cell stays HELD on a root admission decision.",
+            "relpath": "knowledge/slurp/semantic/stage3-deltas-gepa-twin-v1/release.json",
+            "sha256": "fb2dad3082848f1ff794401f2ea1d9b0d53e33b0f7a459592b44364cce196fb3"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-TWIN-FIT-V1"
+    }
+  ],
+  "date": "2026-09-24",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops CELL-1-GEPA and the 1,080-row arm does not open; the twin smoke gates the twin arm the same way. At most ONE root-diagnosed recovery re-registration, which needs BOTH a new generation attempt id AND a new native_contact_fit.attempt_id; a second failure stops the flight and the fix is proven on a four-row offline dry run.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-native-stage3-delta-cell-gepa-r01-smoke-4-v1",
+  "generation_budget": {
+    "cap": 44,
+    "definition": "44 = 4 rows x 11, the locked plan's OWN per-row contact ceiling (configs/policy/phase-native-candidates-review-revise-v1.json max_contacts 11, resolved from the unchanged role graph perception 1 / solver 1 / reviewer 3 / planner 1 with max_revisions 1). 176 = 44 x (1 speech packet + 3 endpoints), 117 s is the four rows' repeated speech under that ceiling and 24 is PLAN's own native task-contract number -- cell PLAN's registered smoke numbers, unchanged. The one execution_plan governs both smoke cells of this fragment; each flies under its own run id and the plan budget is run-cumulative under that run id, so no spend of any CELL-1 smoke is carried into it. Ceilings are bounds, never targets.",
+    "target": 44
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The first four rows of TRAIN Fold A in the roster's own order -- cell PLAN's own four-row smoke population, split identity 4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb (configs/experiment/slurp-native-default-plan-lock-smoke-4-v1.json), and the same four rows CELL-1's smokes flew. A pure selection with zero contacts: no quality-based choice, no score read, no separate draw. Structural evidence only; no quality read is taken from this fragment.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "The four-row form proof of Stage-3 S3-6 CELL-1-GEPA (owner decisions 83, 99, 101, 106): the same locked v2.0 plan, the same four routes and caps and the same four rows as CELL-1's v3 smoke and CELL-2's smoke, with knowledge_stores.stage3-deltas re-pointed to the released GEPA store stage3-deltas-gepa-v1 (448 values) and the twin smoke to stage3-deltas-gepa-twin-v1. THE ITEM THIS SMOKE EXISTS FOR: the PER-NODE SUPPLIED COUNTS. The GEPA store grows the Planner slice from CELL-1's 14 values to 77 and holds the Reviewer slice at 92, so these four registered rows -- which carry audio_volume_*, play_* and iot_hue_* candidates -- now reach three of the four routes at or near cap where CELL-2's retained 200-value store reached almost none of them. The offline four-row dry run over the RELEASED GEPA stores (scripts/flights/batch/gepacell_dry_run.py, zero contacts) therefore predicts, per row in roster order, Solver 8 / 1 / 5 / 0, Reviewer 4 / 4 / 4 / 0 and Planner 4 / 4 / 4 / 0 on the arm and Solver 8 / 4 / 5 / 0, Reviewer 4 / 3 / 4 / 0 and Planner 4 / 2 / 2 / 0 on the twin, with the Perception route SEEDED before the walk (4 unconditional values, the same four value ids as CELL-1's and CELL-2's) rather than supplied at a node boundary. The registered structural rule is that the REALISED counts equal those; a mismatch is a FORM defect that stops the arm. Row slurp:train:000023:audio-1490956038 declines all three candidate-bound routes on both forms -- its iot_hue_lightdim / lighton / lightoff candidates reach no value in the store -- and each declined route is receipted with its reason, reported and not failed. A REVISE revisit acquires a SECOND, DISJOINT slice at this store size (arm Solver 1 / Reviewer 4 / Planner 4 on the second visit, 25 distinct value ids over the episode, zero duplicate acquisitions) instead of acquiring nothing as it did at CELL-2's smaller store; the registered invariant is DISJOINTNESS, because QueryState refuses a duplicate retrieved_value_id and a re-acquisition would kill the trajectory. THE ARM AND THE TWIN ARE NOT EXPECTED TO MATCH per node: the derangement moves each row's whole attachment tuple, so a candidate-bound route selects a different slice and only the store's total authored token count (7,345) is held. Whether the candidate-bound routes serve AT ALL over the population is answered on the 1,080-row arm by its own delta-consumption table (the B9a-rec inert-route check at population level), never by these four rows. STRUCTURAL ONLY: no official score is run here and no effectiveness claim is read from it. Run and attempt identities are new because CELL-1's and CELL-2's smoke identities are consumed and a plan budget is run-cumulative per run id.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2",
+  "stage3_algorithm": {
+    "id": "gepa-reflective-pareto-v1",
+    "note": "The four-row form proof of CELL-1-GEPA: the same released GEPA delta store, the same per-node application and the same derangement control as the arms, flown on four rows for structural evidence only. CELL-1-GEPA applies GEPA's released context as ONE factor on the locked plan. The store it pins was produced by GEPA's own two operators: the proposer cell reflected on the sealed ROLL-1 trajectories per (scenario, node) and rewrote that node's guidance text (UPDATE), and the surviving iteration-1 rows were chosen against each scenario's own null band rather than by a pooled average (SELECTION). The per-node context_supply route that puts those statements into a row is the CONTEXT_APPLICATION step, declared here: by the coordinator ruling of 2026-09-24 the registry record gepa-reflective-pareto-v1 defines context_application as well, so every family that applies a released store by candidate-bound supply carries the same application operator.",
+    "operators_used": [
+      "update",
+      "selection",
+      "context_application"
+    ]
+  }
+}
