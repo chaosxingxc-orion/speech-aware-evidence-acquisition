@@ -555,7 +555,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r02-v1/protocol-registered-v1.json",
-    "sha256": "d437d02b701c24d2fb14ff00f75e746405a0f4bd7ccf7e33dbad3db712ea7f20"
+    "sha256": "e342ed8f956ba6e60910f1e07227671ff07711e4855678016cebfcecdd62674f"
   },
   "registered_ceilings": {
     "fit_endpoints": 47520,

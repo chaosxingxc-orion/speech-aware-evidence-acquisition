@@ -260,7 +260,7 @@ the CELL-1 package, where the release that produced them recorded them --
 | --- | --- | --- | --- | --- | --- |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-V1` | `...-r02-v1` | `generation-plan-registered-v1.json` | `0534ff041f69edd907132b8f417521b97123a34a09671c019cad1b6b1c2d8076` | `1355a85249bb9424cb20dcada6592099623518aa858f2def56c26d962a01c49e` | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-FIT-V1` | `...-r02-fit-v1` | `fit-plan-registered-v1.json` | same | same | same |
-| `SAEA-SLURP-STAGE3-DELTA-CELL-R02-TWIN-V1` | `...-r02-twin-v1` | `twin-generation-plan-registered-v1.json` | `0cd19839fffaea98eebf22654a582a7db47edf30d0b001b4da52c14d6c9d22b4` | `3f7298c19808d64f80be4efb5b7a8e37c2f7e07b3d9b6dc682df74e434ea87ef` | same |
+| `SAEA-SLURP-STAGE3-DELTA-CELL-R02-TWIN-V1` | `...-r02-twin-v1` | `twin-generation-plan-registered-v1.json` | `dfb5ccf3fa5d951ff20b11f4b6602f2ae48cdaa2df662783cf7d0c7810a16913` | `31d180fd00a4178a6e7b0137a83f992f84b2c4a562de54284cf2cf86b54553b3` | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-TWIN-FIT-V1` | `...-r02-twin-fit-v1` | `twin-fit-plan-registered-v1.json` | same | same | same |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-V1` | `...-r02-smoke-4-v1` | `smoke-generation-plan-registered-v1.json` | `ad2958081efe9b9503c949336cdc6b2d50aaef9af1af7c2f90ce366dd9ae85b1` | `b0531732d2ec23edd0d53d7b774334777f91cd467f4528b9cf6a297f1387f829` | `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-FIT-V1` | `...-r02-smoke-4-fit-v1` | `smoke-fit-plan-registered-v1.json` | same | same | same |
@@ -268,7 +268,7 @@ the CELL-1 package, where the release that produced them recorded them --
 | `SAEA-SLURP-STAGE3-DELTA-CELL-R02-SMOKE-4-TWIN-FIT-V1` | `...-r02-smoke-4-twin-fit-v1` | `twin-smoke-fit-plan-registered-v1.json` | same | same | same |
 
 Protocol document `protocol-registered-v1.json` sha256
-`d437d02b701c24d2fb14ff00f75e746405a0f4bd7ccf7e33dbad3db712ea7f20`.
+`e342ed8f956ba6e60910f1e07227671ff07711e4855678016cebfcecdd62674f`.
 
 `core.flight.cli check` exits **0 on all eight cells** on this committed tree, with `prepared_artifacts_ok:
 true` (no pin yet: the flip mints each cell's own), `scientific_readiness.state` `held`,
