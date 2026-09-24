@@ -1,0 +1,59 @@
+{
+  "arm": "construction-advantage-text",
+  "evidence_source": "none",
+  "gepa_groups": {
+    "generator": "scripts/build_slurp_stage3_gepa_groups.py",
+    "groups_note": "The prepared per-(scenario, node) group artifact: which rows each group shows, which carrier row carries it, and which released delta value ids are that node's CURRENT statements for that scenario. It pins S3-3's pairs.json and the released v1r authored-deltas document by sha256, and rails.stage3_gepa_material verifies both pins before it renders a single contact. Ids, counts and digests only -- the artifact carries no utterance, answer, gold or statement text.",
+    "groups_schema": "saea-stage3-gepa-groups-v1",
+    "k": 6,
+    "rank_metric": "group-mean",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-DELTAS-GEPA-V1/gepa-groups-v1.json",
+    "rollout_attempt_id": "attempt-slurp-native-stage3-rollout-r01-generation-v1",
+    "rollout_run_id": "SAEA-SLURP-STAGE3-ROLLOUT-R01-V1",
+    "sha256": "43f64a78b081ab809e6973496b2458c362d91805caf9aa2e19c4a561b35a316a"
+  },
+  "instruction_note": "construction_targets carries the GROUP's rows and their construction gold -- the same field and the same discipline construction-proposer-text and ADV-1 use. The client binds the UNION of every group's rows once, at construction, and each request names EXACTLY its own group's ordered rows, so a request can only ever NARROW what the core sees (rails.core_client.FrozenCoreClient._selected_construction_targets). Everything else the contact sees -- the Perception candidate lists, the best and worst Solver samples, the delivered answers with the Reviewer verdict labels and the Planner routes, and the node's CURRENT delta statements -- is rendered ONLY into the phase's own instruction text at flight time by rails.stage3_gepa_material.build_gepa_material, and never written to a receipt (rails.stage3_gepa module docstring).",
+  "modality_note": "TEXT ONLY, exactly like ADV-1 and construction-proposer-text: the D2 freeze binds construction-advantage-text to bare-core's ten identity/text fields plus construction_targets and nothing else (e0.d2_leakage.ARM_VISIBLE_FIELDS, contracts.CONSTRUCTION_VISIBLE_ARMS), so core.model.transport forces text_only for this arm regardless of media_relpath/speech_ref and no audio part or speech-feature packet is ever opened. The CARRIER row's audio seconds are declared as a positive ceiling because the execution contract requires a positive declaration; the realised speech seconds are expected to read 0 <= the ceiling.",
+  "phase_material": {
+    "gepa": {
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_stage3_gepa_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": "stage3-gepa-proposal-v1"
+    }
+  },
+  "policy": "phase-stage3-gepa-v1",
+  "preparation_source_receipts": [
+    {
+      "relpath": "docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-v1.json",
+      "root": "repository",
+      "sha256": "b6c618ef0df6c1fd53ea42161094b7f1a32951d699c1012680f5a39fde01e72e"
+    },
+    {
+      "relpath": "docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-smoke-4-v1.json",
+      "root": "repository",
+      "sha256": "caf080e6208e50038282cbdfba50adcd0f68fab04d9919d1c476c2f768363b1f"
+    },
+    {
+      "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+      "root": "repository",
+      "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd"
+    },
+    {
+      "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01.json",
+      "root": "repository",
+      "sha256": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0"
+    }
+  ],
+  "roster_note": "The four-row form smoke flies the first 4 carriers of the groups artifact, in that artifact's own group order: the four groups of the first scenario, i.e. one carrier per NODE. Committed as its own construction-role receipt docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-smoke-4-v1.json (split identity 5a8bf7f89170c1cc3565cbbd41dac168000123cdab866ade04b8e354dbb86ea7) because contracts.gate_exposure._require_construction_role_for_visible_targets knows nothing about parent rosters.",
+  "scorers": [
+    "cost"
+  ],
+  "scoring_note": "Only the 'cost' scorer, exactly as ADV-1's own fragment documents: a GEPA proposal is an ARTIFACT curated into the stage3-deltas-gepa store, never an answer to a scored row, so SLURP's own scorers would be scoring the wrong thing.",
+  "serving_geometry_note": "The resident SLURP session geometry (np4 x 24,576 = -c 98304) of the model fragment q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1, declared so rails.adapters.slurp_runtime.configured_geometry binds the real server args instead of its (8, 8192) defaults (the ADV-1 precedent).",
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "task_instruction": "You are improving the standing guidance of one node of a four-node spoken-language-understanding agent system (perception, solver, reviewer, planner). You will be shown one scenario's worst-outcome and best-outcome rows with their whole trajectories and correct answers, together with the guidance that node currently carries for that scenario. You are asked to revise that guidance and to add to it, in one to five fixed four-line blocks. Every block must name the one node you were asked about. Answer for this one scenario and this one node, and answer exactly once.",
+  "task_instruction_note": "The static system message of every GEPA contact, the byte content of configs/probes/slurp_stage3_gepa_system_v1.txt (stripped); declared as a LITERAL because core.instructions renders a task_instruction_template only through a registered fill with a {tool_schemas} placeholder, which this static text has no use for (the ADV-1 repair of 2026-09-23, option A).",
+  "what_this_is": "Four-row form smoke of the GEPA arm: prove the contact FORM -- one phase-stage3-gepa-v1 contact per group, the system and per-group templates rendered from the prepared groups artifact, the sealed ROLL-1 custody and the released v1r delta statements, the answer read by rails.stage3_gepa.parse_gepa_proposal into one to five node-fixed blocks with illegal blocks retained and counted -- before the full arm opens. STRUCTURAL EVIDENCE ONLY: no proposal produced here enters the curation input, no scorer runs, and no answer to any evaluated row is produced or read."
+}

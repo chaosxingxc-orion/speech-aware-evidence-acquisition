@@ -1535,6 +1535,18 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     # rather than a mutation of v1's -- and v1 stays reachable, byte for
     # byte, for anything already registered against it.
     "phase-stage3-advantage-v2": "phase-stage3-advantage-v2.json",
+    # Stage-3 layer A, the GEPA arm (owner decision 101; design note
+    # docs/superpowers/specs/2026-09-24-slurp-stage3-gepa-arm-design.md):
+    # one phase ("gepa"), one contact, no knowledge -- the same one-phase
+    # shape ``phase-stage3-advantage-v2`` has. It differs in exactly one
+    # field, the ``stage3-gepa-proposal-v1`` response format (one to FIVE
+    # blocks, all addressed to the group's single node), and a program and
+    # its fragment must agree on a phase output contract
+    # (``rails.phase_material``), so the GEPA contract needs its own program
+    # rather than a mutation of the advantage one. It is also the id
+    # ``core.flight.runtime._default_construction_material`` dispatches the
+    # GEPA material on, because both cells fly the SAME arm.
+    "phase-stage3-gepa-v1": "phase-stage3-gepa-v1.json",
     "phase-training-feedback-proposal-v1": "phase-training-feedback-proposal-v1.json",
     "phase-intent-hypotheses-only-v1": "phase-intent-hypotheses-only-v1.json",
     "phase-direct-then-slots-v1": "phase-direct-then-slots-v1.json",
@@ -1746,6 +1758,11 @@ def register_phase_programs_v1() -> None:
         AGENT_CONTROLLERS.register(
             "phase-stage3-advantage-v2",
             default_controller_factory(default_phase_program("phase-stage3-advantage-v2")),
+        )
+    if "phase-stage3-gepa-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-stage3-gepa-v1",
+            default_controller_factory(default_phase_program("phase-stage3-gepa-v1")),
         )
     if "phase-training-feedback-proposal-v1" not in registered:
         AGENT_CONTROLLERS.register(
@@ -2094,6 +2111,21 @@ def register_response_formats_v1() -> None:
         RESPONSE_FORMATS.register(
             "stage3-advantage-statement-v2",
             stage3_advantage_response_format_v2,
+        )
+    # Stage-3 layer A, the GEPA arm: the reflective proposal's own
+    # structured-output contract -- one to five blocks, each NODE /
+    # DELTA-KIND / TARGET / STATEMENT, with the group's node fixed by the
+    # CONTACT rather than by the format. Its parser of record is
+    # ``rails.stage3_gepa.parse_gepa_proposal``, which reads BOTH this JSON
+    # shape and the literal four-line form, so the schema and the parser are
+    # one contract. Registering the id changes no phase;
+    # ``configs/policy/phase-stage3-gepa-v1.json`` binds it.
+    if "stage3-gepa-proposal-v1" not in registered:
+        from .stage3_gepa import stage3_gepa_response_format_v1
+
+        RESPONSE_FORMATS.register(
+            "stage3-gepa-proposal-v1",
+            stage3_gepa_response_format_v1,
         )
 
 

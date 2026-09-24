@@ -1,0 +1,159 @@
+{
+  "cell": "slurp-native-stage3-gepa-r01-fit-v1",
+  "check_receipt": {
+    "command": "python -m speech_aware_evidence_acquisition.core.flight.cli check --repo-root <repo> --data-root <data> --runtime-root /home/chao --lock-path <umbrella datasets.lock.json> --experiment <exp> --cell <cell>",
+    "contacts": {
+      "encoder": 0,
+      "model": 0,
+      "network": 0,
+      "scorer": 0,
+      "tokenizer": 0
+    },
+    "exit_code": 0,
+    "generation_authorized": false,
+    "prepared_artifacts": "none (this cell pins no prepared phase supply)",
+    "readiness_state": "held",
+    "study_commit": "58224dea78823b050c9b7644700e94d00684ef88"
+  },
+  "composed_config_hash": "6f8ce1ba7419500b26494c0753384f18f0a25cf21651aca27396ca7b268b5e6f",
+  "decision_rule": {
+    "no_gate_number": "No threshold is pre-registered on any of the six, because this cell carries no admission verdict: a low parse rate, a degenerate node distribution or a zero revision share is a FORM defect that stops the arm and is root-caused, not a measured result. The smoke's own acceptance is the same six items on 4 contacts; a failed smoke stops the arm and it does not open.",
+    "rule": "STRUCTURAL ONLY. No effectiveness claim is read from this cell -- the effect of the curated deltas is read at CELL-1-GEPA, against the plan's own null. Acceptance here is: (1) PARSE RATE -- the fraction of contacts whose response yields at least one LEGAL block under rails.stage3_gepa.parse_gepa_proposal, reported with its denominator; (2) NODE DISCIPLINE -- the count of blocks whose NODE differs from the group's own node, the invariant only this arm's parser enforces; (3) ILLEGAL-BLOCK COUNT by the parser's own reason strings, retained and never repaired; (4) BLOCKS PER CONTACT -- the one-to-five distribution; (5) REVISION SHARE -- accepted proposals the curator absorbed into an existing row against those that entered as new rows, which is the number that says whether a reflective proposer reflected on the text it was shown; (6) a clean seal with row accounting in = out."
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-gepa-r01-v1-fit",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 204,
+    "planned_speech_audio_seconds": 292,
+    "protocol_hash": "8a53ab0928c094bf67b12be5534f3fa9a51e1a766714d83801a309e4008f82ae",
+    "run_id": "SAEA-SLURP-STAGE3-GEPA-R01-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "86da42e2b9a643795749664d5d2bc75b2f2e502429a5cebb36c22c75daa8b132",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "NO standalone fit run and, today, no fit gate at all: the baseline declares neither native_contact_fit nor live_phase_fit with whole_roster_wave_barrier, so no fit mechanism is built at dispatch and this run id is expected to be charged ZERO. It is registered so that any endpoint spend under this cell's fit identity lands against a row written before the result was read. coordinate-fit must NOT be run.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-gepa-r01-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 204,
+    "generation_calls_cap": 68,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 292
+  },
+  "fit": {
+    "arithmetic": "204 = 68 x 1 x (0 speech packets + 3 endpoints); 12 = 4 x 1 x (0 + 3)",
+    "contact_cap": 204,
+    "coordinate_fit": "must NOT be run; there is no fit identity for it to charge",
+    "if_root_ever_configures_live_fit": "core.preparation_fit.build_live_phase_fit_gate requires contact_cap to EQUAL len(phases) x (1 + 3 x rows) exactly -- 1 x (1 + 3 x 68) = 205 for the arm and 1 x (1 + 3 x 4) = 13 for the smoke, each ONE MORE than the ceiling registered here. Registering a live_phase_fit block therefore requires re-registering the fit ceiling first; this package does not attempt it.",
+    "measured_prompt_budget": {
+      "completion_token_ceiling": 512,
+      "decision": "ALLOW",
+      "first_row_rendered_text_tokens": 4508,
+      "measured_by": "core.flight.cli check at study commit 58224dea, offline: the prompt budget is estimated by the harness without a tokenizer endpoint (contacts: 0).",
+      "operational_margin_tokens": 16481,
+      "operational_reserve_tokens": 3072,
+      "phase": "gepa",
+      "required_window_tokens": 5023,
+      "slot_limit_tokens": 24576
+    },
+    "mode": "registration reserve -- NO fit mechanism is configured for this cell today",
+    "offline_prompt_size_scan": "All 68 contacts were rendered offline before this registration (zero contacts of any kind): min 2,477 / median 13,309 / max 16,281 CHARACTERS, the largest being gepa:transport:solver (12 rows, 12 current deltas). Characters, not tokens -- measuring tokens needs a tokenizer endpoint, which is a contact, and the FIT pass is what measures them. The live slot is 24,576 with the one-eighth reserve (3,072), so 21,504 tokens are budgetable; a 16,281-character prompt is far inside it on any plausible ratio, and the fit pass is what proves it.",
+    "smoke_contact_cap": 12,
+    "what_is_configured": "configs/baseline/slurp-native-stage3-gepa-baseline-v1.json declares NEITHER native_contact_fit (that path belongs to a native_episode cell, and this cell is a one-phase phase program) NOR live_phase_fit with whole_roster_wave_barrier. No fit gate is therefore built at dispatch and the FIT run ids are expected to be charged ZERO. They are registered all the same so that, if any endpoint spend ever lands under this cell's fit identity, it lands against a row that was written before the result was read. The ADV-1 precedent, unchanged."
+  },
+  "modules": {
+    "base": "No base plan and no factor: this is a CONSTRUCTION contact, not an arm of the locked v2.0 default plan. What is registered is the contact form -- arm construction-advantage-text, program phase-stage3-gepa-v1, the two pinned templates, the stage3-gepa-proposal-v1 response format, evidence_source none and scorers ['cost'] -- on the same frozen core and the same resident SLURP geometry cell PLAN, cell ROLL-1 and cell ADV-1 fly.",
+    "block_form": {
+      "lines": [
+        "NODE: <the group's own node; any other node is retained and marked illegal>",
+        "DELTA-KIND: <intent-boundary | slot-contract | exemplar-note | perception-hint | reviewer-criterion | planner-rule>",
+        "TARGET: <the scenario_action or slot type this statement is about>",
+        "STATEMENT: <one sentence, at most 40 words>"
+      ],
+      "node_invariant": "the ONE invariant this parser adds to its ADV-1 sibling: a GEPA contact is addressed to exactly one node, so a block naming another node is RETAINED and marked illegal rather than silently routed into that other node's slice of the store.",
+      "parser": "rails.stage3_gepa.parse_gepa_proposal",
+      "response_format_id": "stage3-gepa-proposal-v1",
+      "revised_versus_new": "decided by the CURATOR, not by a self-report: a proposal whose normalised text matches an existing store row under the exact-normalised or token-Jaccard >= 0.8 rule is absorbed into that survivor with its provenance merged (a REVISION); anything else enters as a new row. The block form carries no 'this revises X' field because nothing downstream could check one.",
+      "shape": "one to five four-line blocks (MAX_GEPA_BLOCKS = 5; a sixth and later block is RETAINED and marked illegal, never silently dropped)"
+    },
+    "declared_keys_that_are_not_factors": "native_episode.finite_completion_policy and native_episode.react_exhaustion_policy are NOT declared here and are not owed: this cell carries no native_episode at all (it is a one-phase phase program, not the grouped-Solver graph), so scripts/checks/finite_completion_policy_check.py has no native cell to check. stage3_algorithm (owner decision 101) IS declared: gepa-reflective-pareto-v1, operators credit_assignment + update.",
+    "group_form": {
+      "artifact": {
+        "relpath": "prepared/SAEA-SLURP-STAGE3-DELTAS-GEPA-V1/gepa-groups-v1.json",
+        "sha256": "43f64a78b081ab809e6973496b2458c362d91805caf9aa2e19c4a561b35a316a"
+      },
+      "carriers_from_roster_topup": 5,
+      "current_deltas_per_group_histogram": {
+        "0": 8,
+        "1": 11,
+        "10": 1,
+        "11": 4,
+        "12": 10,
+        "2": 4,
+        "3": 2,
+        "4": 4,
+        "5": 6,
+        "6": 3,
+        "7": 7,
+        "8": 5,
+        "9": 3
+      },
+      "distinct_group_rows": 173,
+      "excluded_scenarios": [
+        "music"
+      ],
+      "groups": 68,
+      "groups_with_no_current_delta": 8,
+      "k": 6,
+      "nodes": 4,
+      "rank_metric": "group-mean",
+      "rows_per_group_histogram": {
+        "1": 4,
+        "10": 4,
+        "11": 8,
+        "12": 44,
+        "2": 4,
+        "6": 4
+      },
+      "scenarios": 17,
+      "unit": "one SCENARIO x one NODE"
+    },
+    "purpose": "Stage-3 layer A, the GEPA arm (docs/superpowers/specs/2026-09-24-slurp-stage3-gepa-arm-design.md; owner decision 101): ONE reflective contact per (scenario, node) group -- 17 scenarios x 4 nodes = 68 contacts -- asking the frozen core to revise and extend one node's standing guidance for one scenario from that scenario's worst- and best-outcome ROLL-1 trajectories. PRIMARY DELIVERABLE: the sealed manifest of parsed proposal blocks, feeding the GEPA curation into the stage3-deltas-gepa-v1 store, whose effect is read at cell CELL-1-GEPA. No answer to any evaluated row is produced or read here and no effectiveness claim is made.",
+    "roster_is_part_of_the_form": "the 68 CARRIER rows of the prepared groups artifact -- one per group -- committed as their own construction-role receipt docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-v1.json (split identity 86da42e2b9a643795749664d5d2bc75b2f2e502429a5cebb36c22c75daa8b132); the four-row smoke flies the first four of them, the four groups of the first scenario, under docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-smoke-4-v1.json (split identity 5a8bf7f89170c1cc3565cbbd41dac168000123cdab866ade04b8e354dbb86ea7). The GOLD the contacts show belongs to the 173 distinct GROUP rows, every one an item of the same committed R01C parent receipt; the groups builder refuses outright if any eligible row is not.",
+    "what_the_contact_sees": [
+      "the SCENARIO and the NODE it is improving, named in the system message and again in the per-group instruction",
+      "that node's CURRENT released delta statements for that scenario, numbered, in prior_score order and capped at 12 -- the instruction text a reflective mutation revises; a group whose node carries none is told so in words",
+      "the scenario's WORST-outcome rows and its BEST-outcome rows, DISJOINT halves of the ranked list, at most 6 each, every row rendered with its Perception candidate list, its best and worst Solver samples, its delivered answer with the Reviewer verdict labels and the Planner route, and its own construction gold"
+    ],
+    "zero_tool_authority": "no phase carries phase_tools; the native task-contract call ceiling is 0 and no tools array is rendered on any request."
+  },
+  "plan_kind": "fit",
+  "prepared_phase_supply": {
+    "note": "NONE, and deliberately not pinned. phase-stage3-gepa-v1's single phase declares knowledge 'none' and the baseline declares evidence_source 'none', so there is no supplied first phase to prepare; core.flight.repin reports 'program has no supplied first phase to prepare' and leaves the cell without a prepared artifact. The only readiness requirement either cell carries is the prepared GEPA groups artifact."
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-24-slurp-stage3-gepa-r01-v1/protocol-registered-v1.json",
+    "sha256": "765cd606606b0b7c651dd85745f4a5198029a3addc63ae0e71f8e8972d3b1621"
+  },
+  "purpose": "Stage-3 layer A, the GEPA arm (docs/superpowers/specs/2026-09-24-slurp-stage3-gepa-arm-design.md; owner decision 101): ONE reflective contact per (scenario, node) group -- 17 scenarios x 4 nodes = 68 contacts -- asking the frozen core to revise and extend one node's standing guidance for one scenario from that scenario's worst- and best-outcome ROLL-1 trajectories. PRIMARY DELIVERABLE: the sealed manifest of parsed proposal blocks, feeding the GEPA curation into the stage3-deltas-gepa-v1 store, whose effect is read at cell CELL-1-GEPA. No answer to any evaluated row is produced or read here and no effectiveness claim is made.",
+  "quality_read_gate": "No read of any kind before the complete sealed manifest and the exact ordered 68 outputs exist. There is no admission read and no comparator: the only read is the six structural items of the registered decision rule, and then the GEPA curation. A partial manifest is never read.",
+  "re_pin_obligation": {
+    "consequence": "core/flight/runtime.py is hashed into every prepared phase-supply artifact's identity (FlightRuntime._phase_seed_inputs sources.implementation.runtime), so every artifact prepared before this commit is stale -- the CELL-1 family's included. The coordinator's flip step re-pins them in one cycle (scripts/flights/repin_cell.py). --allow-output-change must NEVER be passed: their output is expected to reproduce BYTE FOR BYTE because no selection path moved, and an output change would mean the knowledge channel moved and must be reported instead. FlightRuntime.verify_prepared_artifacts reports a stale artifact read-only before a flight opens anything, so the failure mode is a refusal, not a wrong flight.",
+    "what": "This registration's commit moves core/flight/runtime.py (two imports, one dispatch branch, one isinstance tuple, one reader branch, one dispatch-kind label -- all additive; no pre-existing arm or program takes a different path).",
+    "why_it_was_not_avoided": "Hiding the material dispatch inside rails/stage3_advantage_material.py would have left runtime.py untouched, but the phase READER lives in runtime.py: without touching it a GEPA response would be sealed under ADV-1's three-block reading, which marks legal blocks 4 and 5 illegal. A misleading sealed receipt is worse than a re-pin cycle the coordinator's own sequence already performs."
+  },
+  "registered_at_utc": "2026-09-24T00:00:00.000000+00:00",
+  "registration_base_commit": "4c2e09c9",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-gepa, branch fable/gepa",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

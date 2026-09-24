@@ -1,0 +1,50 @@
+{
+  "authored_source": {
+    "relpath": "prepared/SAEA-SLURP-STAGE3-DELTAS-GEPA-V1/source-stage3-deltas-gepa-twin-v1.json",
+    "root": "data",
+    "sha256": "PENDING_GEPA_AUTHORED_SHA256"
+  },
+  "builder_policy_id": "saea-authored-stage3-deltas-v2",
+  "carrier_lock_key": "slurp",
+  "construction_scope": {
+    "relpath": "prepared/SAEA-SLURP-STAGE3-DELTAS-GEPA-V1/outer-construction-roster.json",
+    "root": "data",
+    "sha256": "PENDING_GEPA_CONSTRUCTION_SCOPE_SHA256"
+  },
+  "forbidden_rosters": [
+    {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "root": "repo",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    },
+    {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "root": "repo",
+      "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8"
+    },
+    {
+      "relpath": "docs/receipts/probe-samples/DEV-1000.json",
+      "root": "repo",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+    }
+  ],
+  "output_namespace": "knowledge/slurp/semantic/stage3-deltas-gepa-twin-v1",
+  "permitted_roster": {
+    "relpath": "prepared/SAEA-SLURP-STAGE3-DELTAS-GEPA-V1/permitted-roster.json",
+    "root": "data",
+    "sha256": "PENDING_GEPA_PERMITTED_ROSTER_SHA256"
+  },
+  "registration_id": "SAEA-SLURP-STAGE3-DELTAS-GEPA-TWIN-PREPARATION-V1",
+  "schema": "saea-authored-semantic-knowledge-preparation-v1",
+  "source_partition_role": "train",
+  "source_split_identity_hash": "PENDING_GEPA_CARRIER_SPLIT_IDENTITY_HASH",
+  "store_id": "stage3-deltas",
+  "store_role": "stage3-deltas",
+  "template_note": "TEMPLATE, never passed to core.semantic_knowledge_preparation.prepare_semantic_knowledge_store. The preparer verifies authored_source, construction_scope, permitted_roster and every forbidden_rosters pin by SHA-256, and the authored document's digest only exists after the curation has run. scripts/flights/batch/adv1_to_deltas_steps.py registration --template <this file> --out <runnable copy> materialises the runnable copy BESIDE this template in the repository, with the real digests and this key removed. The GEPA line's version tag is 'gepa-twin-v1'; an earlier version's registration is never edited or deleted. THIS IS THE FORM CONTROL: its authored source is scripts/build_slurp_stage3_delta_twin.py's seeded, zero-fixed-point derangement of the GEPA release's own authored document -- same statement content, wrong attachment, the B1/IDXT twin idiom -- re-enveloped by scripts/build_slurp_stage3_delta_source.py.",
+  "what_the_pins_are": {
+    "construction_scope": "the outer construction roster this store's content may be drawn from: the R01C construction subset, exported to the data root in the same shape.",
+    "forbidden_rosters": "the evaluation populations no authored content may touch: TRAIN Fold A, TRAIN Fold B and DEV-1000, pinned exactly as the ADV-1 line pins them.",
+    "permitted_roster": "the rows an authored delta may cite. For the GEPA line this is the union of the GROUP rows (the rows the reflections were made from), exported in the shape core.semantic_knowledge_preparation._roster parses -- NOT the carriers, which are identity anchors. A root preparation of the GEPA curation step.",
+    "source_split_identity_hash": "the split identity of the GEPA population, i.e. of the committed construction roster docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-v1.json."
+  }
+}

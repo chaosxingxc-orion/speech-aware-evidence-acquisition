@@ -1,0 +1,176 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-gepa-r01-v1-generation",
+      "baseline_fragment": "slurp-native-stage3-gepa-baseline-v1",
+      "cell_id": "slurp-native-stage3-gepa-r01-v1",
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Stage-3 layer A, the GEPA arm (docs/superpowers/specs/2026-09-24-slurp-stage3-gepa-arm-design.md): 68 construction-advantage-text contacts, one per (scenario, node) group, over the CARRIER rows of the prepared groups artifact. Every input is already sealed or committed: ROLL-1's custody, S3-3's pairs.json, the released stage3-deltas v1r authored document and the R01C roster receipt. Readiness stays HELD and no decision requirement is registered here on purpose (the ROLL-1 and ADV-1 precedent): core.flight.repin._upsert_decision_requirement inserts it at the readiness flip, and a placeholder decision entry without an expected_decision_id would be left behind beside it and refuse the campaign at load (core.flight.campaign.declared_readiness). Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The prepared GEPA groups artifact, which selects and pins this cell's carrier population, its per-group rows and its per-group current-delta slice. core.flight.campaign.declared_readiness resolves every readiness requirement BENEATH THE DATA ROOT, so this relpath is data-root relative. It is written model-free by scripts/build_slurp_stage3_gepa_groups.py from the sealed ROLL-1 score root, the released v1r authored-deltas document and the committed R01C roster receipt. The roster receipts are NOT readiness requirements (they are repository artifacts): they are pinned by hash in the baseline fragment's preparation_source_receipts, the ROLL-1 and ADV-1 precedent.",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTAS-GEPA-V1/gepa-groups-v1.json",
+            "sha256": "43f64a78b081ab809e6973496b2458c362d91805caf9aa2e19c4a561b35a316a"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-GEPA-R01-V1"
+    },
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-gepa-r01-v1-fit",
+      "baseline_fragment": "slurp-native-stage3-gepa-baseline-v1",
+      "cell_id": "slurp-native-stage3-gepa-r01-fit-v1",
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "The tokenizer-capacity fit pass for the generation cell above (same population, same pinned groups artifact, same template and response format), required before the generation cell may open. fit_endpoint_calls_cap 204 = 68 contacts x (0 speech packets + 3 endpoints). Readiness stays HELD.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The prepared GEPA groups artifact, which selects and pins this cell's carrier population, its per-group rows and its per-group current-delta slice. core.flight.campaign.declared_readiness resolves every readiness requirement BENEATH THE DATA ROOT, so this relpath is data-root relative. It is written model-free by scripts/build_slurp_stage3_gepa_groups.py from the sealed ROLL-1 score root, the released v1r authored-deltas document and the committed R01C roster receipt. The roster receipts are NOT readiness requirements (they are repository artifacts): they are pinned by hash in the baseline fragment's preparation_source_receipts, the ROLL-1 and ADV-1 precedent.",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DELTAS-GEPA-V1/gepa-groups-v1.json",
+            "sha256": "43f64a78b081ab809e6973496b2458c362d91805caf9aa2e19c4a561b35a316a"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-GEPA-R01-FIT-V1"
+    }
+  ],
+  "date": "2026-09-24",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 68,
+    "planned_speech_audio_seconds": 292,
+    "planned_speech_audio_seconds_note": "ceil of the 68 carrier rows' audio seconds from the roster receipt: the contract requires a positive declaration; the contact is text-only under the D2 freeze (no speech packet is attached), so the realised speech seconds are expected to read 0 <= 292.",
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-GEPA-R01-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact; no retry. This cell is TEXT-ONLY (construction-advantage-text) and spends one contact per group, so a failed group is dropped from the curation input, counted, never silently retried.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 204,
+    "generation_calls_cap": 68,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 292
+  },
+  "fragment_kind": "saea-slurp-native-stage3-gepa-r01-v1",
+  "generation_budget": {
+    "cap": 68,
+    "definition": "PARSER EXPECTATION: every contact answers under the stage3-gepa-proposal-v1 response format and is read by rails.stage3_gepa.parse_gepa_proposal -- one to five four-line blocks (NODE / DELTA-KIND / TARGET / STATEMENT), every block naming the group's own node, illegal blocks RETAINED and dropped at curation, counted. THE POPULATION IS EXACT: 68 = the (scenario, node) groups the prepared artifact names, one contact each. The per-row ceiling is 1, as configs/policy/phase-stage3-gepa-v1.json resolves it (one phase named 'gepa', max_contacts 1, stop_rule always-run-full-program), so cap = target = 68 x 1 = 68: the ceiling and the expected volume coincide and neither is a claim that all 68 will succeed. fit_endpoint_calls_cap 204 = 68 x (0 speech packets + 3 endpoints): this arm is TEXT ONLY, so no speech packet and no mmproj forward is ever opened and the realised speech seconds are expected to read 0 <= 292. native_task_contract_calls_cap = 0: the one-phase GEPA program carries no phase_tools. planned_gpu_hours 1.0 is the registered ceiling for the generation cell plus its fit pass (the design note's own point estimate is about 0.2). Ceilings are bounds, never targets, and budgets are RUN-CUMULATIVE across every attempt of a run id.",
+    "target": 68
+  },
+  "population": {
+    "count": 68,
+    "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+    "decision_population": "Exactly the 68 CARRIER rows of the prepared GEPA groups artifact -- one per (scenario, node) group over the 17 scenarios that carry at least one sealed ROLL-1 trajectory. music is EXCLUDED: none of its 27 R01C rows disagreed within its rollout group, so pairs.json carries no trajectory for it and there is nothing for a reflective proposer to read; the artifact records the exclusion with its reason. Because construction-advantage-text is a CONSTRUCTION-VISIBLE arm, contracts.gate_exposure._require_construction_role_for_visible_targets refuses the touch unless this cell's split_identity_hash is that of a COMMITTED roster_role='construction' roster of carrier slurp, so the 68 carriers carry their own committed receipt docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-v1.json (a pure selection of R01C, zero contacts), and split_identity_hash above is that receipt's. The GOLD the contacts show belongs to the 173 distinct GROUP rows, every one of them an R01C construction row of the same committed parent receipt.",
+    "split_identity_hash": "86da42e2b9a643795749664d5d2bc75b2f2e502429a5cebb36c22c75daa8b132"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+      "ids": [
+        "slurp:train:003905:audio--1504192118",
+        "slurp:train:003313:audio--1504192338",
+        "slurp:train:006848:audio-1492779887",
+        "slurp:train:006847:audio-1488989186",
+        "slurp:train:002342:audio-1501157074",
+        "slurp:train:001522:audio--1505406339",
+        "slurp:train:000260:audio-1488549919",
+        "slurp:train:000459:audio-1488987242",
+        "slurp:train:008070:audio-1490017825",
+        "slurp:train:007105:audio-1502113413",
+        "slurp:train:006835:audio-1498564003",
+        "slurp:train:007853:audio-1434529873-headset",
+        "slurp:train:010000:audio-1501766725",
+        "slurp:train:010198:audio-1490955806-headset",
+        "slurp:train:009985:audio-1495369790",
+        "slurp:train:009937:audio-1495377878",
+        "slurp:train:000618:audio-1501752218",
+        "slurp:train:000309:audio-1490018206",
+        "slurp:train:002613:audio-1489153760",
+        "slurp:train:002300:audio-1497870207",
+        "slurp:train:017040:audio-1490801642",
+        "slurp:train:016784:audio-1501773068",
+        "slurp:train:016884:audio-1490199472",
+        "slurp:train:016547:audio-1501697140",
+        "slurp:train:006233:audio-1490283372-headset",
+        "slurp:train:006270:audio-1490203717",
+        "slurp:train:006437:audio-1490370732",
+        "slurp:train:006543:audio-1502199910",
+        "slurp:train:007331:audio-1434543137",
+        "slurp:train:005502:audio-1502891643",
+        "slurp:train:005329:audio-1490371261",
+        "slurp:train:001244:audio-1498569454-headset",
+        "slurp:train:011012:audio-1497272220",
+        "slurp:train:010722:audio-1434531046-headset",
+        "slurp:train:010983:audio-1490368766",
+        "slurp:train:011038:audio-1490263207",
+        "slurp:train:001861:audio-1502199529",
+        "slurp:train:000282:audio-1502114155",
+        "slurp:train:003268:audio-1494415542",
+        "slurp:train:001638:audio-1497437567",
+        "slurp:train:002529:audio-1497887668",
+        "slurp:train:005716:audio-1490104998",
+        "slurp:train:009867:audio--1504192476",
+        "slurp:train:003728:audio-1501751794",
+        "slurp:train:014915:audio-1494418416",
+        "slurp:train:014768:audio-1497884463",
+        "slurp:train:014830:audio-1500040797",
+        "slurp:train:014168:audio-1490183042",
+        "slurp:train:011614:audio-1490106271",
+        "slurp:train:011925:audio-1498574505",
+        "slurp:train:011868:audio-1498567799",
+        "slurp:train:012007:audio-1434529168-headset",
+        "slurp:train:015238:audio-1434543187",
+        "slurp:train:015509:audio-1490019478",
+        "slurp:train:015601:audio-1494548988",
+        "slurp:train:015673:audio-1490370905",
+        "slurp:train:001727:audio-1497880236",
+        "slurp:train:004225:audio--1506079382",
+        "slurp:train:005325:audio-1497557087-headset",
+        "slurp:train:002696:audio-1490704799",
+        "slurp:train:012421:audio-1502196128",
+        "slurp:train:012896:audio-1490195990",
+        "slurp:train:012426:audio-1490019475",
+        "slurp:train:012347:audio-1434538887",
+        "slurp:train:000831:audio-1490105559",
+        "slurp:train:002999:audio-1490184405",
+        "slurp:train:005417:audio-1498567503",
+        "slurp:train:005845:audio-1490966811"
+      ]
+    }
+  ],
+  "purpose": "Stage-3 layer A, the GEPA arm (docs/superpowers/specs/2026-09-24-slurp-stage3-gepa-arm-design.md; engineering spec docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md section 'The GEPA and ACE arms'; owner decision 101: several training-free RL families on the SAME ROLL-1 rollouts and the SAME locked plan): ONE reflective contact per (scenario, node) group -- 17 scenarios x 4 nodes = 68 contacts -- showing the frozen core that scenario's worst- and best-outcome ROLL-1 rows with their whole sealed trajectories and construction gold, together with the node's current delta statements, and asking it to revise and extend that node's guidance in one to five NODE / DELTA-KIND / TARGET / STATEMENT blocks. PRIMARY DELIVERABLE: the sealed manifest of parsed proposal blocks, legal and illegal counted per block, feeding the GEPA curation into the stage3-deltas-gepa-v1 store, whose effect is read at cell CELL-1-GEPA against the sealed PLAN arm under the same rule and the same own null as CELL-1. No answer to any evaluated row is produced or read here and no effectiveness claim is made.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "STAGE3-CONSTRUCTION-R01C",
+  "split_id_note": "The runtime split id must equal the dataset fragment split_name (rails.adapters.slurp_runtime._assert_sample_namespaces; the ROLL-1 and ADV-1 precedent): the population is the explicit populations block and the split identity hash is the carriers roster receipt.",
+  "stage3_algorithm": {
+    "id": "gepa-reflective-pareto-v1",
+    "note": "GEPA's reflective mutation operator and nothing else: one contact per (scenario, node) group reflects over that scenario's worst- and best-outcome ROLL-1 rows -- their whole sealed trajectories -- together with the node's current delta statements, and proposes one to five revised or new statements for that node. credit_assignment because the contrast that drives the proposal is between ROWS of one scenario rather than between the samples of one row (Training-Free GRPO's unit); update because the reflection IS the mutation of the instruction text, unlike ADV-1 where the curator composes the update from per-row statements. The SELECTION operator is not exercised here: survivors are chosen by the decision-83 per-scenario frontier rule (scripts/build_slurp_stage3_delta_retention.py) over the CELL-1 read at curation, and the new rows' own outcome is read at CELL-1-GEPA. Rollout source: cell ROLL-1 (algorithm shared-rollout, run SAEA-SLURP-STAGE3-ROLLOUT-R01-V1, attempt attempt-slurp-native-stage3-rollout-r01-generation-v1) on the clean construction subset R01C.",
+    "operators_used": [
+      "credit_assignment",
+      "update"
+    ]
+  }
+}

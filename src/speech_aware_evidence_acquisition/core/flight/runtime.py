@@ -60,6 +60,8 @@ from ...rails.core_client import FrozenCoreClient, build_payload_binding
 from ...rails.evolution import ProposerMaterial, build_proposer_material
 from ...rails.stage3_advantage import STAGE3_ADVANTAGE_ARM
 from ...rails.stage3_advantage_material import AdvantageMaterial
+from ...rails.stage3_gepa import STAGE3_GEPA_PROGRAM_ID
+from ...rails.stage3_gepa_material import GepaMaterial
 from ...rails.phase_runner import run_continuous_program, run_program
 from ...rails.runner import RAILS_ARMS, run_rails_experiment
 from ...rails.task_adapter import TaskAdapter
@@ -678,7 +680,7 @@ def _default_construction_material(
     data_root: Path,
     repo_root: Path,
     samples: Sequence[object],
-) -> "ProposerMaterial | AdvantageMaterial":
+) -> "ProposerMaterial | AdvantageMaterial | GepaMaterial":
     """The config-driven default for the ``construction_material_resolver``
     seam, dispatched on the composed baseline's own ``arm``.
 
@@ -695,12 +697,36 @@ def _default_construction_material(
       ``pairs.json``, the sealed rollout's own custody and the row's own
       construction gold.
 
+    The GEPA arm (Stage-3 layer A, owner decision 101) flies the SAME
+    construction-visible arm as ADV-1 -- a third arm would need its own D2
+    receipt and would carry the identical field set -- so the second level of
+    this dispatch is the composed PROGRAM: ``phase-stage3-gepa-v1`` resolves to
+    ``rails.stage3_gepa_material.build_gepa_material``, which renders one
+    per-(scenario, node) GROUP instruction from the same sealed rollout, the
+    same ``pairs.json`` and the released delta store's current statements.
+
     Dispatching here rather than at every call site keeps the seam's
     signature, its single injection point and every existing test double
     unchanged.
     """
 
     if str(values.get("arm") or "") == STAGE3_ADVANTAGE_ARM:
+        if str(values.get("policy") or "") == STAGE3_GEPA_PROGRAM_ID:
+            from ...rails.stage3_gepa_material import (  # noqa: PLC0415 (cycle guard)
+                Stage3GepaMaterialError,
+                build_gepa_material,
+            )
+
+            try:
+                return build_gepa_material(
+                    values,
+                    lock=lock,
+                    data_root=Path(data_root),
+                    repo_root=Path(repo_root),
+                    samples=samples,
+                )
+            except Stage3GepaMaterialError as error:
+                raise FlightRuntimeError(str(error)) from None
         from ...rails.stage3_advantage_material import (  # noqa: PLC0415 (cycle guard)
             Stage3AdvantageMaterialError,
             build_advantage_material,
@@ -3708,11 +3734,14 @@ class FlightRuntime:
                 repo_root=self._repo_root,
                 samples=self._samples,
             )
-            if not isinstance(material, (ProposerMaterial, AdvantageMaterial)):
+            if not isinstance(
+                material, (ProposerMaterial, AdvantageMaterial, GepaMaterial)
+            ):
                 raise FlightRuntimeError(
                     "construction_material_resolver must return a "
-                    "rails.evolution.ProposerMaterial or a "
-                    "rails.stage3_advantage_material.AdvantageMaterial"
+                    "rails.evolution.ProposerMaterial, a "
+                    "rails.stage3_advantage_material.AdvantageMaterial or a "
+                    "rails.stage3_gepa_material.GepaMaterial"
                 )
             if not material.contacts:
                 raise FlightRuntimeError(
@@ -5432,7 +5461,22 @@ class FlightRuntime:
         self._phase_material_receipt = receipt
         reader = None
         reader_key = None
-        if self._arm() == STAGE3_ADVANTAGE_ARM:
+        if policy == STAGE3_GEPA_PROGRAM_ID:
+            # The GEPA arm's own output contract. Dispatched on the PROGRAM,
+            # not on the arm: the GEPA cell flies the same construction-visible
+            # arm ADV-1 flies, and the two answer under different registered
+            # response formats (five blocks addressed to ONE node, against
+            # ADV-1's three blocks addressed to any).
+            from ...rails.stage3_gepa import (  # noqa: PLC0415 (cycle guard)
+                parse_gepa_proposal,
+            )
+
+            reader_key = "gepa_proposals"
+
+            def reader(text: str) -> Mapping[str, object]:
+                return parse_gepa_proposal(text).receipt()
+
+        elif self._arm() == STAGE3_ADVANTAGE_ARM:
             from ...rails.stage3_advantage import (  # noqa: PLC0415 (cycle guard)
                 parse_advantage_statements_v2,
             )
@@ -5492,7 +5536,9 @@ class FlightRuntime:
                 rows,
                 len(rows),
                 (
-                    "direct-construction-advantage"
+                    "direct-construction-gepa"
+                    if policy == STAGE3_GEPA_PROGRAM_ID
+                    else "direct-construction-advantage"
                     if self._arm() == STAGE3_ADVANTAGE_ARM
                     else "direct-construction-proposer"
                 ),
