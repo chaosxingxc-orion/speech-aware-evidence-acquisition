@@ -196,3 +196,19 @@ This does not resolve the distinct feedback-visibility, signed-group eligibility
 experience-operation, consolidation, action-space or reexecution requirements.
 It creates no model client and authorizes no semantic update. Current research
 GPU execution remains the registered complete-system candidate-recovery pair.
+
+
+## Terminal objective counterexamples and a separate candidate comparator
+
+Read 2026-09-25-system-terminal-ratio-objective-audit.md. The synthetic audit
+demonstrates that frozen-reference utility can rank two complete policies
+differently from pooled F1, local-state F1 optimization can disagree with the
+population objective, and averaging standardized group advantages can erase
+terminal error magnitude. These are mathematical limitations, not observed
+failures of a research policy or the upstream semantic updater.
+
+An exact finite-table fractional optimizer matches exhaustive search in the
+synthetic audit. It is a classical-method prototype, not an activated learner.
+Any ratio-aware learning comparison must be separately registered, retain the
+frozen-F0 baseline and same action space, address estimation/support and intent
+protection, and execute full-system evaluation and replication.

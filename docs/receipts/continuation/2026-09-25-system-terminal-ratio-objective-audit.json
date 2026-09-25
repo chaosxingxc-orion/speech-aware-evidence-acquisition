@@ -1,0 +1,97 @@
+{
+  "schema": "saea-system-terminal-ratio-objective-audit-receipt-v1",
+  "created_at": "2026-09-25T20:23:56.528506+00:00",
+  "parent_commit": "19310d6b8e3be7e39ba745dd7b963c7b1040070c",
+  "frozen_worker_commit": "9f6a949f445e4fb308789eb0786a1a25c3fb8f69",
+  "audit": {
+    "path": "/home/chao/system-ratio-objective-audit-v1.json",
+    "sha256": "69eeade8a38226234383198578577f18cbf1c931e4869370190d3fead28e88ae",
+    "source": "synthetic terminal count tables only",
+    "sweep": {
+      "all_ratio_optima_matched": true,
+      "fixed_reference_nonoptimal_tables": 31,
+      "interpretation": "Synthetic sanity coverage, not a task-performance frequency or statistical estimate.",
+      "max_iteration_count": 3,
+      "policies_checked": 1696,
+      "seed": 20260925,
+      "tables": 192
+    }
+  },
+  "implementation_sha256": {
+    "scripts/analysis/audit_system_ratio_objective.py": "70b90734ddd27fa36a42eb70be85dc29e6bb56757b7dfc30fab60dc7d6b5e59c",
+    "tests/unit/test_system_ratio_objective_audit.py": "3a4452c32de4d2e1dc7fac06b791ac09b2b40c05d3df9f161e1e5ee1c2de109f"
+  },
+  "validation": {
+    "related_tests_passed": 42,
+    "test_exit_code": 0,
+    "test_files": [
+      "tests/unit/test_system_ratio_objective_audit.py",
+      "tests/unit/test_system_rollout_groups.py",
+      "tests/unit/test_official_metric_feedback.py"
+    ],
+    "offline_checks_passed": 9,
+    "checks": [
+      {
+        "check": "engineering_base_check",
+        "exit": 0,
+        "log": "/home/chao/system-ratio-objective-validation-v1/engineering_base_check.log",
+        "log_sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+      },
+      {
+        "check": "harness_admission_check",
+        "exit": 0,
+        "log": "/home/chao/system-ratio-objective-validation-v1/harness_admission_check.log",
+        "log_sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+      },
+      {
+        "check": "results_ledger_check",
+        "exit": 0,
+        "log": "/home/chao/system-ratio-objective-validation-v1/results_ledger_check.log",
+        "log_sha256": "0426590fecc31f8de63ddacab92a3e818106a70b9c33abd048d66228c5d7b7c6"
+      },
+      {
+        "check": "tool_catalog_check",
+        "exit": 0,
+        "log": "/home/chao/system-ratio-objective-validation-v1/tool_catalog_check.log",
+        "log_sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+      },
+      {
+        "check": "experiment_handoff_check",
+        "exit": 0,
+        "log": "/home/chao/system-ratio-objective-validation-v1/experiment_handoff_check.log",
+        "log_sha256": "7f4a0ff62a0ceb50c94b6dda2e9e19f7e5885a5d0525fac9f08754cf141b4d01"
+      },
+      {
+        "check": "openjiuwen_native_reuse_check",
+        "exit": 0,
+        "log": "/home/chao/system-ratio-objective-validation-v1/openjiuwen_native_reuse_check.log",
+        "log_sha256": "045bb86f16e5755cc34a17332d2d86e29fb1fdb55544325682330d4f71a6c7db"
+      },
+      {
+        "check": "derived_media_confinement_check",
+        "exit": 0,
+        "log": "/home/chao/system-ratio-objective-validation-v1/derived_media_confinement_check.log",
+        "log_sha256": "bb97fd20c6be200bd6b637a3748379b673e00f60ae569a4a1110e91fe701b6aa"
+      },
+      {
+        "check": "stage3_algorithm_label_check",
+        "exit": 0,
+        "log": "/home/chao/system-ratio-objective-validation-v1/stage3_algorithm_label_check.log",
+        "log_sha256": "9fac0138523bbf4771cc09bd0e007add368542e30e1920608c9111a7aa8cd2aa"
+      },
+      {
+        "check": "finite_completion_policy_check",
+        "exit": 0,
+        "log": "/home/chao/system-ratio-objective-validation-v1/finite_completion_policy_check.log",
+        "log_sha256": "f82745fa49af22608b01172848d1f53e78f91f08fc16693254218ee5209cc331"
+      }
+    ]
+  },
+  "primary_method_reference": "https://pubsonline.informs.org/doi/10.1287/mnsc.13.7.492",
+  "research_model_contacts_added": 0,
+  "official_scorer_contacts_added": 0,
+  "active_family_outcomes_read": false,
+  "frozen_baseline_reward_changed": false,
+  "runtime_application_authorized": false,
+  "interpretation": "Mathematical objective counterexamples and a classical exact-count prototype, not a trained policy, algorithm novelty or research task gain"
+}

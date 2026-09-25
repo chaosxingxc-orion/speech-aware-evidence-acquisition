@@ -46,6 +46,25 @@ When complete, bind source hashes before using the shared official-feedback
 and system-trajectory analysis entries; no scorer replay or private executor.
 
 
+## Root objective audit: terminal policy ranking
+
+Read docs/readiness/2026-09-25-system-terminal-ratio-objective-audit.md.
+Synthetic equal-target-count examples confirm that the existing frozen-F0
+utility detects improvement over its reference but need not rank improved
+complete policies by pooled F1. Separately, averaging standardized within-input
+advantages can hide a large terminal loss behind several small wins; the
+current diagnostic grouper retains raw counts and does not apply that rule.
+
+A classical fractional-programming prototype matches exhaustive finite-policy
+search on synthetic count tables. It is not a runtime learner, a new theorem,
+or evidence of research gain. Validation: 42 related tests and all nine offline
+checks pass. Receipt: docs/receipts/continuation/2026-09-25-system-terminal-ratio-objective-audit.json.
+Keep the approved baseline unchanged. Consider
+a separately registered ratio-aware whole-policy comparator only after action
+admission, count-estimation/support design, intent protection, and full
+reexecution are concrete. No current family outcome was read for this audit.
+
+
 ## Complete-episode input prepared for the scholarly semantic baseline
 
 Read docs/readiness/2026-09-25-complete-system-semantic-summary-input.md.
