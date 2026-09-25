@@ -1,50 +1,58 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
 
-## Live continuation update: 2026-09-25, root Codex
+## Live continuation update: 2026-09-25 09:33 UTC, root Codex
 
-This section supersedes earlier live-status paragraphs below; retain them as
-historical context. Main is the repository's master branch. Use one implementation
-worktree and the pinned flight checkout; merge completed chunks promptly.
+This section supersedes older live-status paragraphs below. Main is master.
+Keep one implementation worktree plus one frozen flight checkout; merge reviewed
+chunks promptly.
 
-- All six VAR-1 arms completed and the corrected V2 whole-family read passed.
-  Read docs/results/2026-09-25-slurp-var1-complete-evidence.md for all scenario
-  rows, costs, error counts and the root interpretation. K10/K30 are +1.94/+1.95
-  pp versus PLAN, but only +0.07/+0.09 pp versus unchanged PLANR. No robust
-  optimization winner is admitted. K16/C5 coverage is 80.32%, below the 95%
-  priority, with no supported final task improvement.
-- Original VERIFY-1 four-row smoke stopped at the live-fit endpoint-count
-  guard before any model/tokenizer request. Its attempt is OPENED with zero
-  actual calls and zero audio. The original full arm never opened. Preserve
-  all original bytes and do not retry its identity.
-- One named recovery is registered in
-  docs/readiness/2026-09-25-slurp-stage3-verify-1-recovery-v1-preregistration.md.
-  Required fit caps are 13 / 1,876, not the generation caps 8 / 1,250.
-  The new shared count helper is tested. Recovery keeps every scientific
-  factor unchanged and must stop at the next failure.
-- Recovery clean offline checks passed for smoke and full arm. The independent
-  Windows task SAEA-VERIFY1-FitRecovery-20260925 is RUNNING at this update
-  (2026-09-25 08:56 UTC), pinned to 5366949cd9b21dc0ff3f90c51f93384844da5803.
-  The script confirmed running driver and service identities. No selector quality
-  result has been read. The resident decoder-only service remains loaded.
-  Independent launch script: scripts/flights/batch/batch_verify1_recovery.sh.
-  It archives the failed queue and STOP marker, then runs the recovery smoke,
-  full625 and registered complete selector read using the shared driver.
-- The owner requested 15-minute monitoring. A current-thread heartbeat named
-  SLURP background experiment inspection (automation id slurp) is ACTIVE.
-  It uses continuation_status.py, never a monitoring subagent; unchanged
-  non-actionable state stays quiet. The independent local server, GPU driver
-  and 10-second telemetry do not depend on this heartbeat, internet access,
-  ChatGPT credits or an active assistant turn.
-- No current user decision is required to execute this registered recovery
-  and the accepted continuation. Keep fresh DEV remainder6570 and test13078
-  closed. Revisit data promotion only with an explicit later plan.
-- Next: VERIFY-1 -> VAR-2/F10 -> evidence-qualified coverage or Reviewer work
-  -> complete-system validation -> finite contextual-bandit action selection.
-  Do not call manual prompt editing an RL result, or local Solver branch
-  scores full-system returns. Feedback v2 includes official TP/FP/FN to avoid
-  ignoring empty-gold false positives.
-
+- VAR-1: all six arms complete; official-count feedback v2 now complete.
+  See docs/results/2026-09-25-slurp-var1-complete-evidence.md and
+  docs/results/2026-09-25-slurp-var1-feedback-v2.md. K10/K30 improve versus PLAN
+  but not reliably versus unchanged PLANR. Coverage for K16/C5 is 80.32%;
+  this is R01C, not the earlier Fold A roster. Empty-gold rows: 191/625;
+  PLAN falsely emits entities on 114. No stable optimization winner.
+- VERIFY-1: the only registered recovery completed 625/625 at 09:04 UTC,
+  using 625 model contacts with no invalid choices or selected malformed sources.
+  Chosen SLU-F1 58.5816 versus mean-single 57.8807; delta +0.7009 pp,
+  CI95 [-0.2551, 1.6507]. Intent guard passes, primary benefit does not.
+  See docs/results/2026-09-25-slurp-verify1-complete-evidence.md.
+  Close as benefit not proven: no promotion, larger sampling, automatic rerun,
+  or automatic evidence-driven Reviewer successor. Do not claim all reviewers fail.
+- Preserve the original zero-contact fit refusal and both post-generation reader
+  refusal logs. Identity and contact-count metadata fixes enabled analysis only;
+  they changed no sealed predictions and added no model or scorer contacts.
+- VAR-2: configuration, root decision, four-row/full625 prepared supply, shared
+  first-visit custody/scoring and clean preflights are ready. No generation has
+  started at this update. Per-contact real fit and the live four-row proof
+  remain mandatory. See docs/receipts/continuation/2026-09-25-var2-preflight.json.
+  Only the last plan arm has downstream Reviewer/Planner behavior; local side
+  branches never count as system RL returns. Fixed arm order stays a limitation.
+- New derived scoring records a durable start marker before the official scorer.
+  A failed/interrupted invocation cannot be automatically repeated; completed
+  cached scores remain readable. Focused scoring/supply tests: 36 passed.
+- Execution entry: scripts/flights/batch/batch_chain_var2.sh through saea_task.ps1.
+  It uses the existing WSL shared driver and resident no-mmproj four-slot service,
+  then scores four complete first-visit columns serially. Never run generation
+  from an assistant PTY. /home/chao/var2-flight-commit.txt will bind launch.
+  The driver completing is not the derived scoring completing: inspect the
+  independent task/log and analysis score-summary.json before reporting closure.
+- The 15-minute current-thread heartbeat slurp is ACTIVE. Script-only status
+  checks, no monitoring agents; notify meaningful changes only. Its availability
+  is separate from the local GPU driver and 10-second telemetry. Generation
+  and scoring do not depend on network, assistant credits or this heartbeat.
+- MemRL and TF-GRPO upstream implementation pins were audited. Read
+  docs/readiness/2026-09-25-training-free-rl-baseline-fidelity.md.
+  The first cumulative-mean finite policy is MemRL-inspired contextual bandit,
+  not full MemRL reproduction. Do not feed signed/continuous reward to a
+  truthiness-based success update. Same-space scholarly algorithm loops remain
+  unexecuted and required by the persistent Stage-3 objective.
+- No current owner decision is required. Continue VAR-2/F10 -> qualify useful
+  full-system actions -> frozen-round exploration/update -> evaluate against
+  both the locked system and the strongest fixed action. Only revisit Reviewer
+  or coverage with a named information deficit. Fresh DEV6570 and test13078
+  remain closed. Semantic-delta application stays closed.
 
 Owner-approved implementation of the ChatGPT continuation plan, 2026-09-25 UTC.
 This is the single living handoff back to Fable. Update the current facts in place;

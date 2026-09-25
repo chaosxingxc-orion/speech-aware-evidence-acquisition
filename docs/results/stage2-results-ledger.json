@@ -2524,7 +2524,7 @@
       "preregistration": "docs/readiness/2026-09-08-slurp-logprob-judge-probe-v1-preregistration.md",
       "status": "NOT ADMITTED",
       "status_source": "h1",
-      "status_quote": "# Verdict — the SLURP logprob-as-judge probe: **NOT ADMITTED**",
+      "status_quote": "# Verdict \u2014 the SLURP logprob-as-judge probe: **NOT ADMITTED**",
       "pending": false,
       "comparator": {
         "text": "The sealed closed-list direct request is unchanged except for decoding_params.logprobs=true and top_logprobs=5. The admission bars concern the confidence signal; the greedy own-null replicate is the latency reference, not a replacement task baseline.",
@@ -3777,6 +3777,26 @@
       "run_ids": [
         "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-V2",
         "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-V2"
+      ]
+    },
+    {
+      "date": "2026-09-25",
+      "cell_id": "SLURP-STAGE3-VAR1-COMPLETE",
+      "status": "CONSTRUCTION_READ_NO_STABLE_WINNER",
+      "source": "docs/results/2026-09-25-slurp-var1-feedback-v2.md",
+      "source_sha256": "ba86aa4c536cffb35d2f21359c9d8733a82f8c8b626eb1fbb27d4e9a03c6121f",
+      "meaning": "All six625 arms read; K10/K30 positive versus PLAN but not versus PLANR. Count feedback includes 191 empty targets; no learned-policy admission.",
+      "run_ids": []
+    },
+    {
+      "date": "2026-09-25",
+      "cell_id": "SLURP-STAGE3-VERIFY1-RECOVERY",
+      "status": "BENEFIT_NOT_PROVEN",
+      "source": "docs/results/2026-09-25-slurp-verify1-complete-evidence.md",
+      "source_sha256": "6feba335efd7f6a13806e30b8eacd406da52aad104e4470593ccd10fa9f81cf4",
+      "meaning": "625 choices complete. SLU-F1 +0.7009pp CI95[-0.2551,1.6507] versus mean-single. Intent guard passes; no promotion or expansion.",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-VERIFY-1-RECOVERY-V1"
       ]
     }
   ]

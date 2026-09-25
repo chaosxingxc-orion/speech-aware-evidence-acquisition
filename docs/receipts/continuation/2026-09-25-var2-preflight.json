@@ -1,0 +1,41 @@
+{
+  "schema": "saea-var2-preflight-proof-v1",
+  "recorded_at_utc": "2026-09-25T09:32:09.249831+00:00",
+  "study_commit": "99292e5d78b41b2abb2dfc7436420acab5ad09d6",
+  "checks": [
+    {
+      "name": "preflight-smoke",
+      "data_relpath": "coordination/slurp-stage3-var2-v1/preflight-smoke.json",
+      "sha256": "b1a6030a4c05dc09f967d2a9289ae2d4065fcb784f68926427668c3bd89dbce3",
+      "sample_count": 4,
+      "prepared_artifacts_ok": true,
+      "scientific_readiness": {
+        "reason": "",
+        "state": "ready"
+      }
+    },
+    {
+      "name": "preflight-arm",
+      "data_relpath": "coordination/slurp-stage3-var2-v1/preflight-arm.json",
+      "sha256": "565e27bd469a80735de966b6f5cdef06b8797e0cbff43169caab3f6d224697d6",
+      "sample_count": 625,
+      "prepared_artifacts_ok": true,
+      "scientific_readiness": {
+        "reason": "",
+        "state": "ready"
+      }
+    },
+    {
+      "name": "openjiuwen",
+      "data_relpath": "coordination/slurp-stage3-var2-v1/model-free-checks/openjiuwen-proof.json",
+      "sha256": "635d25008a5d87610958b46e50e7df9e9636b5faa7e2d1f6161d5d539b9ef464",
+      "passed": true
+    }
+  ],
+  "meaning": "Model-free clean checks and prepared-supply verification. Not real-request fit or generation authority. Lease, live fit and smoke proof remain mandatory.",
+  "limitations": [
+    "Conservative preflight Solver prompt estimate reports COMPACT_REQUIRED; per-contact actual tokenizer fit is authoritative, with registered compaction/abstention policies. Historical K30 fits do not replace new request fits.",
+    "Results ledger gate passes with inherited findings and checkout-unavailable umbrella comparison; this is not proof of all historical ledger completeness.",
+    "Handoff checker reports owner-directed execution and an older snapshot; authority is the explicit owner continuation plus the root decision, never its return code alone."
+  ]
+}
