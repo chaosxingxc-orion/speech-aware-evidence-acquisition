@@ -250,6 +250,14 @@ Details:
 docs/readiness/2026-09-25-finite-policy-runtime-integration.md and
 docs/receipts/continuation/2026-09-25-finite-policy-runtime-integration.json.
 
+Existing implementation to reuse next: FlightRuntime._acquisition_requery_binding
+already includes E36b. With max_items_per_acquisition declared it searches the
+whole released composite snapshot, excludes already-held values and applies the
+registered token/IDF policy. Without that declaration it preserves the empty
+legacy B9a-rec path. Inspect and test the existing E36b seam on the prepared
+roster before proposing any new acquisition implementation; code availability
+does not establish useful evidence or a quality result.
+
 ## Next execution and algorithm plan
 
 The complete-system design above supersedes the older supply-only progression.
