@@ -25,6 +25,7 @@ method's own docstring for exactly which existing function it calls.
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import math
@@ -2726,6 +2727,118 @@ class FlightRuntime:
             similarity=similarity,
         )
 
+    def _supply_variant_binding(self, native_config, program):
+        """Item E42 (2026-09-25, family VAR-2): the per-arm supply resolver.
+
+        ``None`` on the unarmed arm, which is every cell written before E42
+        and every cell that does not declare ``roles.solver.supply_variants``;
+        the runner then never reaches a line of the arm seam and refuses a
+        resolver it did not ask for.
+
+        Armed, this builds ONE knowledge-store router per declared arm -- the
+        delivering arm included -- from a copy of this cell's own composed
+        values with that arm's declared selection knobs re-capped, over the
+        SAME released, hash-pinned stores, the SAME composite snapshot and the
+        SAME router options the delivering router was built with. Three
+        consequences the form depends on:
+
+        * every arm reads the same frozen knowledge and the same evidence
+          pins, so an arm can never reach bytes the cell did not release;
+        * an arm's value ids are store-qualified exactly as the delivering
+          arm's are, so they resolve in the ONE composite snapshot every
+          request renders from;
+        * the delivering arm's router is built INDEPENDENTLY of the flight's
+          own ``supply_for_phase``, which is what makes ``rails.runner``'s
+          live equality check on it a re-derivation rather than a restatement.
+
+        The routers are built once, at assembly, before any contact. Nothing
+        here touches a model, a tokenizer or the network.
+        """
+
+        if native_config is None or native_config.supply_variant_group is None:
+            return None
+        group = native_config.supply_variant_group
+        store_binding = getattr(self, "_knowledge_store_binding", None)
+        if store_binding is None:
+            raise FlightRuntimeError(
+                "roles.solver.supply_variants requires named knowledge_stores: "
+                "an arm re-caps a store route, and a top-level phase_supply "
+                "declares none"
+            )
+        options = getattr(self, "_knowledge_store_router_options", None)
+        if options is None:
+            raise FlightRuntimeError(
+                "roles.solver.supply_variants requires the knowledge-store "
+                "router this flight already built; an arm router must be built "
+                "with the same options"
+            )
+        from ...rails.knowledge_stores import (  # noqa: PLC0415
+            KnowledgeStoreError,
+            build_knowledge_store_supply,
+            load_knowledge_store_binding,
+        )
+
+        routers: dict[str, object] = {}
+        for arm in group.arms:
+            values = copy.deepcopy(dict(self._composed.values))
+            for knob in arm.knobs:
+                holder = values
+                segments = knob.path.split(".")
+                for segment in segments[:-1]:
+                    if not isinstance(holder, Mapping) or segment not in holder:
+                        raise FlightRuntimeError(
+                            f"supply-variant arm {arm.arm_id!r} overrides "
+                            f"{knob.path!r}, which this configuration does not "
+                            "declare; an arm re-caps a route the fragment "
+                            "already has, it never creates one"
+                        )
+                    holder = holder[segment]
+                if not isinstance(holder, dict) or segments[-1] not in holder:
+                    raise FlightRuntimeError(
+                        f"supply-variant arm {arm.arm_id!r} overrides "
+                        f"{knob.path!r}, which this configuration does not "
+                        "declare; an arm re-caps a route the fragment already "
+                        "has, it never creates one"
+                    )
+                holder[segments[-1]] = knob.value
+            try:
+                arm_store_binding = load_knowledge_store_binding(
+                    values, data_root=self._data_root,
+                )
+                if arm_store_binding is None:
+                    raise KnowledgeStoreError(
+                        "supply-variant arm produced no knowledge store binding"
+                    )
+                if (
+                    arm_store_binding.composite_snapshot.content_hash()
+                    != store_binding.composite_snapshot.content_hash()
+                ):
+                    raise KnowledgeStoreError(
+                        "composes a different composite snapshot than the "
+                        "delivering arm; an arm re-caps a selection, it never "
+                        "changes the released knowledge"
+                    )
+                routers[arm.arm_id] = build_knowledge_store_supply(
+                    arm_store_binding, program=program,
+                    data_root=self._data_root, **options,
+                ).automatic_for_phase
+            except (KnowledgeStoreError, ValueError) as error:
+                raise FlightRuntimeError(
+                    f"supply-variant arm {arm.arm_id!r} is invalid: {error}"
+                ) from error
+
+        def resolve(*, arm_id, phase_id, context):
+            """One arm's own supply decision for one visit of one row."""
+
+            route = routers.get(arm_id)
+            if route is None:
+                raise FlightRuntimeError(
+                    f"unknown supply-variant arm {arm_id!r}"
+                )
+            return route(phase_id, context)
+
+        return resolve
+
     def _acquisition_requery_binding(self, native_config, supply_for_phase, snapshot):
         """E36 / E36b: the flight-owned, model-free knowledge re-query the
         ``knowledge-requery`` acquisition (E18 kind (a)) runs.
@@ -5309,6 +5422,10 @@ class FlightRuntime:
                     {"solver_group": dict(result.solver_group)}
                     if getattr(result, "solver_group", None) is not None else {}
                 ),
+                **(
+                    {"supply_variants": dict(result.supply_variants)}
+                    if getattr(result, "supply_variants", None) is not None else {}
+                ),
             }
             for result in last.results
         ]
@@ -6130,6 +6247,14 @@ class FlightRuntime:
                 acquisition_requery=self._acquisition_requery_binding(
                     native_config, supply_for_phase,
                     binding.get("knowledge_snapshot"),
+                ),
+                # Item E42 (2026-09-25, family VAR-2): ONE arm's own resolved
+                # knowledge supply, flight-owned exactly as ``supply_for_phase``
+                # and ``acquisition_requery`` above are. None -- and therefore
+                # byte-identical to the pre-E42 tree -- unless
+                # ``roles.solver.supply_variants`` is declared.
+                supply_variant_for_phase=self._supply_variant_binding(
+                    native_config, program,
                 ),
             )
         facet_seed, value_seed = self._phase_supply_seeds(
@@ -8755,15 +8880,24 @@ class FlightRuntime:
                             "candidate_inventory_source_sha256": inventory.source_sha256,
                             "candidate_inventory_authority": inventory.source_authority,
                         }
+                router_options = {
+                    "on_demand_store_ids": on_demand_stores,
+                    "source_audio_bindings": (
+                        self.source_audio_bindings() if uses_segments else None
+                    ),
+                    "legal_candidate_ids": legal_candidate_ids,
+                    **inventory_options,
+                }
                 router = build_knowledge_store_supply(
                     store_binding, program=program, data_root=self._data_root,
-                    on_demand_store_ids=on_demand_stores,
-                    source_audio_bindings=(self.source_audio_bindings() if uses_segments else None),
-                    legal_candidate_ids=legal_candidate_ids,
-                    **inventory_options,
+                    **router_options,
                 )
             except (KnowledgeStoreError, CandidateSemanticSupplyError, ValueError) as error:
                 raise FlightRuntimeError(str(error)) from error
+            # Item E42 (2026-09-25): the options this router was built with, kept
+            # so a per-arm router is built with EXACTLY the same ones and differs
+            # from it in nothing but that arm's own declared selection knobs.
+            self._knowledge_store_router_options = dict(router_options)
             self._knowledge_store_supply = router
             self._phase_supply_receipt = router.receipt
             merged = {}
@@ -9189,6 +9323,12 @@ class FlightRuntime:
             # see the response_text_sha256 branch below (E2d), which hashes
             # the delivered bytes rather than the last raw contact's.
             solver_group = row.get("solver_group")
+            # Item E42 (2026-09-25, Stage-3 family VAR-2): present exactly when
+            # this row's Solver visit was ARM-grouped. Unlike a grouped row, the
+            # delivered final_response_text IS the delivering (last) arm's own
+            # response text, so the response_text_sha256 branch below needs no
+            # arm case -- the recorded contact's own text hash describes it.
+            supply_variants = row.get("supply_variants")
             # E11 (2026-09-18, owner directive 26): present exactly when this
             # row's episode ran the delivery-time normaliser node. The
             # delivered final_response_text is then that node's output over
@@ -9390,6 +9530,59 @@ class FlightRuntime:
                     validate_solver_group_receipt(
                         solver_group, samples=declared_samples, error_type=FlightRuntimeError,
                     )
+                if supply_variants is not None:
+                    # Item E42: the same custody check the runner made at
+                    # composition, re-made HERE against the RAW declared block
+                    # rather than the composed config -- exactly as the grouped
+                    # sample count is read above -- so a sealed row can never
+                    # describe an arm group other than the one the cell's own
+                    # fragment declares. The delivering arm's supplied ids are
+                    # compared against the row's own final accumulated state,
+                    # which this reader has and the composing runner (for which
+                    # the comparison would be circular) does not.
+                    from ...rails.native_episode_receipt import (  # noqa: PLC0415
+                        validate_supply_variant_receipt,
+                    )
+
+                    raw_roles = (
+                        (raw_native or {}).get("roles")
+                        if isinstance(raw_native, Mapping) else None
+                    )
+                    raw_solver_role = (
+                        raw_roles.get("solver") if isinstance(raw_roles, Mapping) else None
+                    )
+                    raw_variants = (
+                        raw_solver_role.get("supply_variants")
+                        if isinstance(raw_solver_role, Mapping) else None
+                    )
+                    raw_arms = (
+                        raw_variants.get("arms")
+                        if isinstance(raw_variants, Mapping) else None
+                    )
+                    if not isinstance(raw_arms, Sequence) or isinstance(
+                        raw_arms, (str, bytes)
+                    ) or not raw_arms or not all(
+                        isinstance(entry, Mapping) for entry in raw_arms
+                    ):
+                        raise FlightRuntimeError(
+                            "supply-variant delivery requires a declared arm list"
+                        )
+                    declared_arm_ids = [str(entry.get("arm_id")) for entry in raw_arms]
+                    validate_supply_variant_receipt(
+                        supply_variants,
+                        arm_ids=declared_arm_ids,
+                        delivered_arm_id=declared_arm_ids[-1],
+                        phase_id=str(
+                            raw_solver_role.get("phase_id")
+                            if isinstance(raw_solver_role, Mapping) else ""
+                        ),
+                        retrieved_value_ids=(
+                            sources[0].final_query_state.retrieved_value_ids
+                            if getattr(sources[0], "final_query_state", None) is not None
+                            else None
+                        ),
+                        error_type=FlightRuntimeError,
+                    )
                 if delivery.kind == "abstention":
                     from ..delivery import native_abstention_records
 
@@ -9554,6 +9747,14 @@ class FlightRuntime:
                     **(
                         {"solver_group": dict(solver_group)}
                         if solver_group is not None else {}
+                    ),
+                    # Item E42: every arm's declared knobs, supplied value ids
+                    # and item count, carried into the seal exactly as
+                    # ``solver_group`` above is -- ids and counts only, never a
+                    # supplied value's text.
+                    **(
+                        {"supply_variants": dict(supply_variants)}
+                        if supply_variants is not None else {}
                     ),
                     # S3-4s: the delivery-time read of a construction-visible
                     # phase's declared output contract, carried into the seal

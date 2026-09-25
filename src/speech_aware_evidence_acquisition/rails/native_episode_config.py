@@ -74,6 +74,16 @@ class NativeEpisodeRole:
     # written before E39 -- here and in the tests -- composes exactly the role
     # it always did.
     max_completion_tokens: int | None = None
+    # Item E42 (2026-09-25, Stage-3 family VAR-2): this node's SUPPLY-VARIANT
+    # arm group -- a validated ``rails.supply_variants.SupplyVariantGroup`` --
+    # or ``None``, which is every role of every config written before E42 and
+    # composes exactly the role it always did. K arms at one node multiply that
+    # node's visits exactly as ``samples`` does, and are refused together with
+    # ``samples >= 2``: two fan-outs at one node would make the visit's ONE
+    # contact batch ambiguous and its ceiling contribution the product of two
+    # independently declared knobs. Declared LAST, for the same reason E39's
+    # field is.
+    supply_variants: object = None
 
     def __post_init__(self):
         if self.role_kind == ACQUISITION_ROLE_KIND:
@@ -83,6 +93,11 @@ class NativeEpisodeRole:
             if self.tool_names or self.samples != 1 or self.twin is not None:
                 raise ValueError("the acquisition role carries no role knobs")
             if self.decoding_overrides is not None or self.commit is not None:
+                raise ValueError("the acquisition role carries no role knobs")
+            if self.supply_variants is not None:
+                # Item E42: the sixth node answers nothing and delivers
+                # nothing, so it has no draft whose construction could be
+                # varied and no delivering arm to name.
                 raise ValueError("the acquisition role carries no role knobs")
             if self.max_completion_tokens is not None:
                 # Item E39: the sixth node answers nothing and, on every kind
@@ -147,6 +162,47 @@ class NativeEpisodeRole:
             raise ValueError("only the Solver role may declare grouped sampling")
         if self.twin is not None and self.twin != "greedy-repeat":
             raise ValueError("solver twin, when given, must be 'greedy-repeat'")
+        # Item E42 (2026-09-25): the SUPPLY-variant arm group. Solver-only for
+        # the same reason grouped sampling is: the node this program varies is
+        # the one whose output is DELIVERED, so an arm group anywhere else would
+        # fan out a state the whole row is keyed on without delivering any of
+        # its arms. Refused beside ``samples >= 2`` because two fan-outs at one
+        # node make the visit's ONE contact batch ambiguous.
+        if self.supply_variants is not None:
+            from .supply_variants import SupplyVariantGroup  # noqa: PLC0415
+
+            if self.role_kind != "solver":
+                raise ValueError("only the Solver role may declare supply variants")
+            if not isinstance(self.supply_variants, SupplyVariantGroup):
+                raise ValueError(
+                    "supply_variants must be a parsed "
+                    "rails.supply_variants.SupplyVariantGroup"
+                )
+            if self.samples != 1:
+                raise ValueError(
+                    "supply_variants cannot combine with a grouped Solver visit "
+                    "(roles.solver.samples >= 2): two fan-outs at one node make "
+                    "the visit's one contact batch ambiguous and its ceiling "
+                    "contribution the product of two independently declared knobs"
+                )
+            if self.max_iterations != 1:
+                # One arm is one CONTACT: the runner binds a contact to its arm
+                # by ``invocation index % arm count`` (the same mapping E2b uses
+                # for its samples), which is only a bijection while one visit of
+                # this node spends exactly one contact. A multi-iteration
+                # (ReAct) node would put several contacts under one arm and
+                # silently shift every later arm's identity, so the combination
+                # is refused before any contact rather than mis-attributed.
+                raise ValueError(
+                    "supply_variants requires roles.solver.max_iterations 1: one "
+                    "arm is one contact, and the arm of a contact is its "
+                    "invocation index modulo the arm count"
+                )
+            if self.tool_names:
+                raise ValueError(
+                    "supply_variants cannot combine with role tool authority: a "
+                    "tool call would spend a second contact under one arm"
+                )
         if self.samples == 1:
             if self.decoding_overrides is not None:
                 raise ValueError("decoding_overrides requires samples >= 2")
@@ -497,6 +553,30 @@ class NativeEpisodeConfig:
         }
 
     @property
+    def supply_variant_group(self):
+        """Item E42: the Solver's declared arm group, or ``None``.
+
+        ``None`` for every config written before E42, which is what makes every
+        supply-variant branch of the runner, the request path and the seal
+        unreachable and their bytes identical.
+        """
+
+        return self.role("solver").supply_variants
+
+    @property
+    def supply_variant_arm_count(self) -> int:
+        """Item E42: the arm count one Solver visit fans out to; 1 when unarmed."""
+
+        return _supply_variant_arm_count(self.role("solver"))
+
+    @property
+    def supply_variant_phase_id(self) -> str | None:
+        """Item E42: the phase whose visits fan out into arms, or ``None``."""
+
+        role = self.role("solver")
+        return None if role.supply_variants is None else role.phase_id
+
+    @property
     def acquisition_enabled(self) -> bool:
         """Whether this episode builds the sixth node (E18)."""
 
@@ -617,6 +697,18 @@ class NativeEpisodeRunBinding:
     # ``config.knowledge_index_json`` is not None; every other binding leaves
     # it None, byte-identically to before.
     knowledge_index: object = None
+    # Item E42 (2026-09-25, Stage-3 family VAR-2): ONE arm's own resolved
+    # knowledge supply. The same flight-owned seam ``supply_for_phase``,
+    # ``acquisition_requery`` and ``knowledge_index`` are, and for the same
+    # reason: the runner never reaches for a store of its own. Called as
+    # ``(arm_id, phase_id, context) -> rails.controllers.PhaseSupply | None``
+    # and answered by the flight from a router built over the SAME released,
+    # pinned stores and the SAME composite snapshot as the delivering arm's,
+    # with only that arm's declared selection knobs re-capped. Required exactly
+    # when some role declares ``supply_variants``; every other binding leaves it
+    # None, byte-identically to before. Declared LAST, for the same reason
+    # E20's, E21's and E36's fields are.
+    supply_variant_for_phase: Callable | None = None
 
 
 @dataclass(frozen=True)
@@ -701,6 +793,19 @@ def _serving_geometry_max_tokens(values: Mapping) -> int | None:
     return None
 
 
+def _supply_variant_arm_count(role: NativeEpisodeRole) -> int:
+    """Item E42: this role's declared arm count, or 1 when it declares none.
+
+    One function, read by the ceiling formula in
+    :func:`load_native_episode_config` and by
+    :attr:`NativeEpisodeConfig.supply_variant_arm_count`, so "how many contacts
+    an arm group costs" has exactly one definition.
+    """
+
+    group = role.supply_variants
+    return 1 if group is None else int(group.arm_count)
+
+
 def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig | None:
     """Require explicit role limits, role-local tool authority and a graph ceiling.
 
@@ -712,10 +817,13 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
                 + max_candidate_refreshes * perception.max_iterations
                 + max_acquisitions_per_row * acquisition.max_iterations
 
-        per_revision = solver.max_iterations * solver.samples
+        per_revision = solver.max_iterations * solver.samples * solver.arms
                      + reviewer.max_iterations
                      + planner.max_iterations
                      + cleaning contacts per revision
+
+    where ``solver.arms`` (item E42) is the Solver's registered supply-variant
+    arm count and is 1 for every config that declares no arm group.
 
     Term by term: Perception runs once at the head of the row (E1); each of
     the ``max_revisions + 1`` rounds spends one Solver visit -- ``samples``
@@ -942,7 +1050,11 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         # Only the Solver row may carry grouped-sampling fields (E2, SLURP v2
         # base program M2); every other role keeps the historical shape.
         solver_fields = (
-            {"samples", "decoding_overrides", "commit", "twin"} if kind == "solver" else set()
+            # Item E42 (2026-09-25): ``supply_variants`` joins the Solver-only
+            # row fields for the same reason ``samples`` is one -- it fans out
+            # the delivering node's visit and nothing else may declare it.
+            {"samples", "decoding_overrides", "commit", "twin", "supply_variants"}
+            if kind == "solver" else set()
         )
         if (
             not isinstance(row, Mapping)
@@ -1020,6 +1132,47 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
                 "native_episode.review_loop is inconsistent with the reviewer/"
                 "planner max_iterations and max_revisions it must agree with"
             )
+    # Item E42 (2026-09-25, Stage-3 family VAR-2): the Solver's SUPPLY-variant
+    # arm group, parsed HERE -- before any contact -- so a fragment can never
+    # name a knob path this rail does not admit, re-cap a store it does not
+    # declare, vary the pre-flight-seeded first phase, name zero or several
+    # delivering arms, or declare a combination whose prompt-fit estimate
+    # exceeds the live slot with the registered reserve. ``None`` for every
+    # config written before E42, which leaves the ceiling below and every role
+    # exactly as they were.
+    supply_variant_group = None
+    if "supply_variants" in raw_roles["solver"]:
+        from .supply_variants import SupplyVariantError, parse_supply_variants
+
+        declared_stores = values.get("knowledge_stores")
+        if declared_stores is not None and not isinstance(declared_stores, Mapping):
+            raise ValueError("knowledge_stores must be a mapping")
+        try:
+            supply_variant_group = parse_supply_variants(
+                raw_roles["solver"]["supply_variants"],
+                phase_id=raw_roles["solver"]["phase_id"],
+                first_phase_id=program.phase_names()[0],
+                declared_stores=(
+                    None if declared_stores is None else tuple(declared_stores)
+                ),
+            )
+        except SupplyVariantError as error:
+            raise ValueError(
+                f"roles.solver.supply_variants is invalid: {error}"
+            ) from error
+        if knowledge_index_armed:
+            # The index REPLACES the row's ``value:`` evidence blocks with a
+            # pointer block plus a bounded expansion and appends its own system
+            # suffix (item E21, ``rails.knowledge_index.apply_to_payload``). An
+            # arm varies exactly those value blocks, so the two keys would each
+            # be rewriting the other's output with only one of them in custody.
+            # Refused by name until a cell needs it and its custody form is
+            # designed.
+            raise ValueError(
+                "roles.solver.supply_variants cannot combine with "
+                "native_episode.knowledge_index: the index replaces the very "
+                "value blocks an arm varies"
+            )
     roles = []
     for kind in kinds:
         row = raw_roles[kind]
@@ -1043,6 +1196,11 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
             # Item E39: keyword, because the role's own field is last and
             # every positional argument above is the pre-E39 order.
             max_completion_tokens=completion_caps_by_kind[kind],
+            # Item E42: keyword for the same reason, and None for every role
+            # but the Solver of a config that declares the key at all.
+            supply_variants=(
+                supply_variant_group if kind == "solver" else None
+            ),
         ))
     # E17: ``constant`` rendering is admitted only where it leaves every
     # tool-bearing role's request array exactly as ``per-role`` renders it.
@@ -1485,8 +1643,17 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
     # multiplied by its registered ``samples`` (1 for every role, and for
     # every pre-E2 config, which reduces this to the historical formula
     # exactly). Every other role's iterations are unchanged.
+    #
+    # Item E42 (2026-09-25, family VAR-2): and by its registered supply-variant
+    # ARM COUNT, for exactly the same reason -- K arms at one node are K real
+    # metered contacts of that node, one per declared construction. 1 for every
+    # config that declares no arm group, which again reduces this to the
+    # formula above. ``samples >= 2`` and an arm group are refused together
+    # (``NativeEpisodeRole.__post_init__``), so the product is never of two
+    # simultaneously non-unit factors.
     per_revision = sum(
-        r.max_iterations * r.samples if r.role_kind == "solver" else r.max_iterations
+        r.max_iterations * r.samples * _supply_variant_arm_count(r)
+        if r.role_kind == "solver" else r.max_iterations
         for r in roles[1:]
     )
     # E8b (SLURP v2 base program M5, design section 7): plus one cleaning

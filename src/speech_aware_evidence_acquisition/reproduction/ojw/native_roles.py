@@ -244,6 +244,14 @@ class NativeRoleContactContext:
     # composition knows which sample it is preparing. None for every
     # non-grouped role/contact -- today's entire behaviour.
     sample_index: int | None = None
+    # Item E42 (2026-09-25, Stage-3 family VAR-2): the declared SUPPLY-variant
+    # arm this contact is composed for, bound by the caller's
+    # contact_context_provider so ``rails.runner``'s binding provider knows
+    # which arm's knowledge construction to render. None for every
+    # non-arm-grouped role/contact -- today's entire behaviour. Declared LAST
+    # and defaulted, so every positional construction written before E42
+    # composes exactly the context it always did.
+    variant_arm_id: str | None = None
 
     def __post_init__(self) -> None:
         if not isinstance(self.sample_id, str) or not self.sample_id:
@@ -272,6 +280,10 @@ class NativeRoleContactContext:
             or self.sample_index < 0
         ):
             raise ValueError("sample_index must be a nonnegative integer or None")
+        if self.variant_arm_id is not None and (
+            not isinstance(self.variant_arm_id, str) or not self.variant_arm_id
+        ):
+            raise ValueError("variant_arm_id must be a non-empty string or None")
         object.__setattr__(self, "evidence_pins", MappingProxyType(pins))
 
 

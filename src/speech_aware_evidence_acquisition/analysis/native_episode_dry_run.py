@@ -117,6 +117,11 @@ class DryRunNode:
     state_id: str
     state_kind: str
     state_content_sha256: str
+    #: Item E42: every declared supply-variant arm of THIS visit, in declared
+    #: order, when the episode fans this node out. Declared LAST and defaulted,
+    #: so a cell that declares no arm group produces exactly the receipt it
+    #: always did.
+    supply_variant_arms: tuple[DryRunArm, ...] = ()
 
     def as_json(self) -> dict[str, object]:
         return {
@@ -132,6 +137,35 @@ class DryRunNode:
             "state_id": self.state_id,
             "state_kind": self.state_kind,
             "state_content_sha256": self.state_content_sha256,
+            "supply_variant_arms": [arm.as_json() for arm in self.supply_variant_arms],
+        }
+
+
+@dataclass(frozen=True)
+class DryRunArm(object):
+    """Item E42: ONE supply-variant arm of one node visit, as walked.
+
+    Labels, ids and counts only -- an arm id, the knob values it resolved and
+    the value ids its request would carry. Never a supplied value's text, never
+    an utterance and never a gold label.
+    """
+
+    arm_id: str
+    arm_index: int
+    deliver: bool
+    resolved_knobs: tuple[Mapping[str, object], ...]
+    supplied_value_ids: tuple[str, ...]
+    max_supplied_items: int
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "arm_id": self.arm_id,
+            "arm_index": self.arm_index,
+            "deliver": self.deliver,
+            "resolved_knobs": [dict(entry) for entry in self.resolved_knobs],
+            "supplied_value_ids": list(self.supplied_value_ids),
+            "supplied_item_count": len(self.supplied_value_ids),
+            "max_supplied_items": self.max_supplied_items,
         }
 
 
@@ -208,6 +242,33 @@ class DryRunResult:
             counts[first] = counts.get(first, 0) + len(self.bootstrap_value_ids)
         return counts
 
+    def supplied_counts_by_arm(self) -> dict[str, dict[str, int]]:
+        """Item E42: ``{phase: {arm id: supplied value count}}`` over the walk.
+
+        Empty for every cell that declares no arm group. For a cell that does,
+        this IS the dry run's per-arm table: one column per declared
+        construction, so "the default arm supplies exactly what the unvaried
+        plan supplies, and each variant differs only in its own declared knob"
+        is a number a reader can check rather than a claim.
+        """
+
+        table: dict[str, dict[str, int]] = {}
+        for node in self.nodes:
+            for arm in node.supply_variant_arms:
+                table.setdefault(node.phase, {})[arm.arm_id] = len(
+                    arm.supplied_value_ids
+                )
+        return table
+
+    def delivered_arm_id(self) -> str | None:
+        """Item E42: the arm the walked episode delivered, or ``None``."""
+
+        for node in self.nodes:
+            for arm in node.supply_variant_arms:
+                if arm.deliver:
+                    return arm.arm_id
+        return None
+
     def as_json(self) -> dict[str, object]:
         return {
             "schema": self.schema,
@@ -228,6 +289,8 @@ class DryRunResult:
                 item.as_json() for item in self.scenario_gate_decisions
             ],
             "scenario_gate_closed_by_node": self.gate_closed_by_node(),
+            "supplied_value_counts_by_arm": self.supplied_counts_by_arm(),
+            "delivered_arm_id": self.delivered_arm_id(),
         }
 
 
@@ -481,6 +544,11 @@ def compose_dry_run(runtime, *, sample_limit: int = 1) -> Mapping[str, object]:
         "static_text_by_phase": static_text,
         "knowledge_stores": stores,
         "store_ids": tuple(stores.store_ids) if stores is not None else (),
+        # Item E42: the SAME flight-owned per-arm resolver a live flight binds,
+        # built here from the same composed values -- so a dry run walks the arm
+        # routers the flight would use, not a stand-in. None for every cell that
+        # declares no arm group.
+        "supply_variant_for_phase": runtime._supply_variant_binding(episode, program),
     }
     runtime._dry_run_binding = binding
     return binding
@@ -522,6 +590,12 @@ def dry_run_native_episode(
     phase_binding = binding["phase_binding"]
     material_for_phase = phase_binding["material_for_phase"]
     supply_for_phase = phase_binding.get("supply_for_phase")
+    # Item E42: the arm group this cell declares, and the resolver that answers
+    # one arm's own supply. Both None for every cell written before E42, which
+    # leaves the walk below byte-identical to its pre-E42 self.
+    supply_variant_group = binding["episode"].supply_variant_group
+    supply_variant_phase = binding["episode"].supply_variant_phase_id
+    supply_variant_resolver = binding.get("supply_variant_for_phase")
     snapshot = phase_binding["knowledge_snapshot"]
     packets = phase_binding["speech_packet_bindings"]
     query_source = phase_binding.get("query_source", "speech_features")
@@ -605,6 +679,11 @@ def dry_run_native_episode(
     visits: dict[str, int] = {}
     nodes: list[DryRunNode] = []
     pending_supply = None
+    pending_arms: tuple = ()
+    #: Item E42: what the variant node's own supply steps have acquired on this
+    #: row, cumulatively -- the set a non-delivering arm replaces, exactly as
+    #: ``rails.runner`` tracks it.
+    variant_node_acquired: list[str] = []
     delivered = None
     delivered_phase = None
 
@@ -656,6 +735,78 @@ def dry_run_native_episode(
                 supply = restrict_repeat_visit_supply(
                     supply, context, phase_name=next_phase
                 )
+        arms: tuple = ()
+        if (
+            next_phase is not None
+            and supply_variant_group is not None
+            and next_phase == supply_variant_phase
+        ):
+            # Item E42: every declared arm's own supply, resolved against the
+            # SAME staged context the ordinary step above was -- the one place
+            # the flight resolves it too. Zero contacts: the routers read the
+            # released, pinned stores and nothing else.
+            from ..rails.supply_variants import arm_supplied_value_ids
+
+            if supply_variant_resolver is None:
+                raise NativeEpisodeDryRunError(
+                    "this cell declares roles.solver.supply_variants but the "
+                    "composed binding carries no per-arm resolver"
+                )
+            if supply is not None:
+                variant_node_acquired.extend(
+                    supply.fusion_decision.selected_value_ids
+                )
+            staged_for_arms = context_at(
+                query_state, [*states, state], [*responses, _sha256(text)]
+            )
+            walked = []
+            for arm_index, arm in enumerate(supply_variant_group.arms):
+                arm_supply = supply_variant_resolver(
+                    arm_id=arm.arm_id, phase_id=next_phase,
+                    context=staged_for_arms,
+                )
+                selected = (
+                    ()
+                    if arm_supply is None
+                    else tuple(arm_supply.fusion_decision.selected_value_ids)
+                )
+                if arm.deliver:
+                    if selected != tuple(variant_node_acquired):
+                        raise NativeEpisodeDryRunError(
+                            "the delivering supply-variant arm resolves a "
+                            "different supply than this row's own supply step "
+                            "acquired; the delivered request would not be the "
+                            "unvaried construction's request"
+                        )
+                    # The delivering arm renders the row's own accumulated
+                    # state, unmodified -- which is what the walk proves.
+                    supplied = tuple(query_state.retrieved_value_ids) + tuple(
+                        () if supply is None
+                        else supply.fusion_decision.selected_value_ids
+                    )
+                else:
+                    supplied = arm_supplied_value_ids(
+                        retrieved_value_ids=(
+                            tuple(query_state.retrieved_value_ids) + tuple(
+                                () if supply is None
+                                else supply.fusion_decision.selected_value_ids
+                            )
+                        ),
+                        node_acquired_value_ids=tuple(variant_node_acquired),
+                        arm_selected_value_ids=selected,
+                    )
+                walked.append(DryRunArm(
+                    arm_id=arm.arm_id,
+                    arm_index=arm_index,
+                    deliver=arm.deliver,
+                    resolved_knobs=tuple(
+                        {"path": knob.path, "value": knob.value}
+                        for knob in sorted(arm.knobs, key=lambda item: item.path)
+                    ),
+                    supplied_value_ids=supplied,
+                    max_supplied_items=arm.max_supplied_items,
+                ))
+            arms = tuple(walked)
         nodes.append(
             DryRunNode(
                 phase=phase,
@@ -677,6 +828,7 @@ def dry_run_native_episode(
                 state_id=state.state_id,
                 state_kind=state.state_kind,
                 state_content_sha256=_sha256(state.content),
+                supply_variant_arms=pending_arms,
             )
         )
         query_state, _transition = advance_phase_response_state(
@@ -688,6 +840,7 @@ def dry_run_native_episode(
         states.append(state)
         responses.append(_sha256(text))
         pending_supply = supply
+        pending_arms = arms
         delivered, delivered_phase = text, phase
 
     solver_states = [item for item in states if item.state_kind == "phase:solver"]

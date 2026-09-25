@@ -827,6 +827,11 @@ class AgentLoopResult:
     # native_episode_receipt, present exactly when this row's Solver visit
     # was grouped (samples >= 2). See _AgentRuntimeOutcome.solver_group.
     solver_group: Mapping[str, object] | None = None
+    # Item E42 (2026-09-25, family VAR-2): the same kind of top-level sibling,
+    # present exactly when this row's Solver visit was ARM-grouped. Declared
+    # LAST and defaulted, so every construction written before E42 composes
+    # exactly the result it always did.
+    supply_variants: Mapping[str, object] | None = None
 
     def as_json(self) -> dict[str, object]:
         result = {
@@ -850,6 +855,8 @@ class AgentLoopResult:
             result["native_episode_receipt"] = dict(self.native_episode_receipt)
         if self.solver_group is not None:
             result["solver_group"] = dict(self.solver_group)
+        if self.supply_variants is not None:
+            result["supply_variants"] = dict(self.supply_variants)
         if self.result_kind != TASK_ANSWER_RESULT_KIND:
             result["result_kind"] = self.result_kind
         if self.execution_unit_id is not None:
@@ -917,6 +924,12 @@ class _AgentRuntimeOutcome:
     # solver_group), or None for a samples-1 (or non-native) outcome --
     # byte-identical to before this field existed.
     solver_group: Mapping[str, object] | None = None
+    # Item E42 (2026-09-25, family VAR-2): every arm's declared knobs, supplied
+    # value ids and item count for an arm-grouped Solver visit
+    # (reproduction.ojw.native_supply_variants.run_supply_variant_arms's
+    # supply_variants), or None for every other outcome -- byte-identical to
+    # before this field existed.
+    supply_variants: Mapping[str, object] | None = None
 
 
 @dataclass
@@ -1926,6 +1939,36 @@ async def _invoke_native_role_episode(
     # visit in flight, in sample order, so the visit's ONE wave can name every
     # one of its N contacts. Emptied when that wave is recorded.
     solver_group_contacts: list[tuple[AgentContactPlan, object, int]] = []
+    # Item E42 (2026-09-25, Stage-3 family VAR-2): the Solver role's own
+    # declared SUPPLY-variant arm group, resolved once. ``None`` for every
+    # config written before E42 and every non-VAR-2 config, which makes every
+    # branch below unreachable and the composed requests byte-identical.
+    supply_variant_group = config.supply_variant_group
+    supply_variant_phase_id = config.supply_variant_phase_id
+    supply_variant_arms = config.supply_variant_arm_count
+    # The ``(plan, completion, slot_id)`` of the arms of the visit in flight, in
+    # arm order, so the visit's ONE wave can name every one of its K contacts.
+    # Emptied when that wave is recorded.
+    supply_variant_contacts: list[tuple[AgentContactPlan, object, int]] = []
+    # One record per arm of the visit in flight, keyed by contact id and written
+    # by the binding provider -- the only place that knows which value ids an
+    # arm's request actually carried, because it is the place that composed
+    # them.
+    supply_variant_records: dict[str, dict[str, object]] = {}
+    # The CUMULATIVE value ids this node's own supply steps have acquired on
+    # this row, in acquisition order. A non-delivering arm renders the row's
+    # accumulated state with exactly these removed and its own resolved
+    # selection put in their place, so its rendering is the same on a first
+    # visit and on a REVISE revisit, where
+    # ``restrict_repeat_visit_supply`` has already withheld everything visible.
+    supply_variant_node_acquired: list[str] = []
+    # Each arm's own resolved selection for the visit in flight, keyed by arm id.
+    # Resolved ONCE per visit, in ``settle``, against the SAME staged context
+    # this row's ordinary ``supply_for_phase`` step is resolved against -- not at
+    # binding composition, where the state already carries the node's own
+    # increment and a route that excludes what is visible would answer a
+    # different question.
+    supply_variant_arm_selections: dict[str, tuple[str, ...]] = {}
     pending = {}
     visits = {}
     completed = {}
@@ -2036,6 +2079,77 @@ async def _invoke_native_role_episode(
             index_role_kind=index_role_kind, index_sink=index_sink,
         )
 
+    def supply_variant_messages(ctx, *, request, plan):
+        """Item E42: ONE arm's own two messages, plus that arm's receipt row.
+
+        The delivering arm takes ``base_messages(ctx)`` unchanged -- it is the
+        ordinary path, so its request bytes are the unvaried construction's by
+        construction rather than by claim. That the flight's own independent
+        per-arm resolution of it AGREES with this row's ordinary supply step is
+        checked in ``settle``, where every arm is resolved, against the same
+        staged context, before any arm's request is composed.
+
+        Every other arm is rendered over a QueryState VIEW: the row's
+        accumulated ids with this node's own contribution removed and that arm's
+        resolved selection in its place. The view is used for rendering only and
+        never for custody -- no transition, no wave, no state and no hash edge
+        reads it -- so the episode's sealed state chain is exactly the one the
+        delivering arm describes, and the non-delivering arms' evidence is
+        declared in their own receipt rows instead.
+        """
+
+        from .supply_variants import (
+            SupplyVariantError, arm_supplied_value_ids, supply_variant_arm_record,
+        )
+
+        arm_id = request.context.variant_arm_id
+        if supply_variant_group is None or request.role_id != supply_variant_phase_id:
+            raise RailsRunnerError(
+                "only the registered supply-variant node may bind a variant arm"
+            )
+        try:
+            arm = supply_variant_group.arm(arm_id)
+        except SupplyVariantError as error:
+            raise RailsRunnerError(str(error)) from error
+        arm_index = supply_variant_group.arm_ids.index(arm_id)
+        if arm_id not in supply_variant_arm_selections:
+            raise RailsRunnerError(
+                "a supply-variant arm was contacted before its visit resolved "
+                "every arm's own supply"
+            )
+        selected = supply_variant_arm_selections[arm_id]
+        if arm.deliver:
+            supplied = tuple(ctx.query_state.retrieved_value_ids)
+            messages = base_messages(ctx)
+        else:
+            try:
+                supplied = arm_supplied_value_ids(
+                    retrieved_value_ids=ctx.query_state.retrieved_value_ids,
+                    node_acquired_value_ids=tuple(supply_variant_node_acquired),
+                    arm_selected_value_ids=selected,
+                )
+            except SupplyVariantError as error:
+                raise RailsRunnerError(str(error)) from error
+            messages = base_messages(replace(
+                ctx,
+                query_state=replace(
+                    ctx.query_state, retrieved_value_ids=supplied,
+                ),
+            ))
+        try:
+            record = supply_variant_arm_record(
+                arm=arm, arm_index=arm_index, contact_id=plan.contact_id,
+                supplied_value_ids=supplied,
+            )
+        except SupplyVariantError as error:
+            raise RailsRunnerError(str(error)) from error
+        existing = supply_variant_records.setdefault(plan.contact_id, record)
+        if existing != record:
+            raise RailsRunnerError(
+                "one supply-variant contact has conflicting arm records"
+            )
+        return messages
+
     def settle(*, tool_step=None, rejected_steps=(), next_phase=None):
         if not pending:
             return
@@ -2104,6 +2218,43 @@ async def _invoke_native_role_episode(
             response_record = tuple(item[1].text for item in solver_group_contacts)
             slot_ids = tuple(item[2] for item in solver_group_contacts)
             solver_group_contacts.clear()
+        if pending["phase_id"] == supply_variant_phase_id:
+            # Item E42: the arm group. Structurally the grouped sampler's twin
+            # just above, with the ONE difference that makes this form cheaper
+            # to audit: the DELIVERING arm is the LAST arm and carries no
+            # overrides, so its own ``source`` -- the ordinary seal
+            # ``capture_completion`` already computed from its own completion --
+            # is the state this visit registers. There is no aggregate, no
+            # committed-state view and no delivery-binding exception; arms
+            # 0..K-2 simply register no state at all, exactly as samples
+            # 0..N-2 do. Because the group takes no step between arms, all K
+            # bind the SAME QueryState and the SAME exposed history: they are
+            # independent constructions of one draft, not a chain.
+            arm_id = pending["variant_arm_id"]
+            expected = supply_variant_group.arm_ids[len(supply_variant_contacts)] if (
+                len(supply_variant_contacts) < supply_variant_arms
+            ) else None
+            if arm_id is None or arm_id != expected:
+                raise RailsRunnerError(
+                    "supply-variant arms settled out of their declared order"
+                )
+            if tool_step is not None or rejected_steps:
+                raise RailsRunnerError(
+                    "a supply-variant arm contact cannot execute a tool"
+                )
+            supply_variant_contacts.append((plan, completion, slot_id))
+            if len(supply_variant_contacts) < supply_variant_arms:
+                pending.clear()
+                return
+            contact_record = AgentContactBatch(
+                batch_id=f"{supply_variant_contacts[0][0].contact_id}:variants",
+                query_state_sha256=before.query_state.content_hash(),
+                contacts=tuple(item[0] for item in supply_variant_contacts),
+                fanout_semantics="action_alternatives",
+            ).validate()
+            response_record = tuple(item[1].text for item in supply_variant_contacts)
+            slot_ids = tuple(item[2] for item in supply_variant_contacts)
+            supply_variant_contacts.clear()
         staged = replace(
             before, agent_states=before.agent_states + (source,),
             prior_response_sha256s=before.prior_response_sha256s + (completion.response_text_sha256,),
@@ -2121,6 +2272,51 @@ async def _invoke_native_role_episode(
             # ride the accumulated QueryState. Acquire only what is new; the
             # first visit of every phase is returned unchanged.
             supply = restrict_repeat_visit_supply(supply, before, phase_name=next_phase)
+        if next_phase is not None and next_phase == supply_variant_phase_id:
+            # Item E42, and THE reason an arm's supply is resolved here rather
+            # than at binding composition: every arm is resolved against the
+            # SAME ``staged`` context this row's ordinary supply step was, so
+            # every arm answers the same question the delivering arm answers.
+            if supply is not None:
+                # What THIS node's own supply steps have put on the row,
+                # cumulatively. It is the set a non-delivering arm replaces, and
+                # the set the delivering arm's own resolved selection is checked
+                # against below.
+                supply_variant_node_acquired.extend(
+                    supply.fusion_decision.selected_value_ids
+                )
+            supply_variant_arm_selections.clear()
+            for arm in supply_variant_group.arms:
+                # ``staged``, not ``before``: a candidate-bound route reads the
+                # sealed state of its candidate phase off the context it is
+                # handed (``rails.knowledge_stores``' candidate/delta routes), so
+                # resolving an arm against the PRE-seal context would hide the
+                # Perception draft the delivering arm's own supply was resolved
+                # against and make the two answer different questions.
+                arm_supply = binding.supply_variant_for_phase(
+                    arm_id=arm.arm_id, phase_id=next_phase, context=staged,
+                )
+                selected = (
+                    () if arm_supply is None
+                    else tuple(arm_supply.fusion_decision.selected_value_ids)
+                )
+                supply_variant_arm_selections[arm.arm_id] = selected
+                if arm.deliver and selected != tuple(supply_variant_node_acquired):
+                    # The delivering arm declares NO overrides, so the flight's
+                    # own per-arm resolution -- a router built independently over
+                    # the same released, pinned stores -- must reproduce exactly
+                    # what this row's ordinary supply step acquired at this node.
+                    # Checked live, fail-closed, before any arm's request is
+                    # composed: this is the non-circular form of "the delivered
+                    # request is the unvaried construction's request", and it is
+                    # what lets the delivered number be read as the within-flight
+                    # baseline of every other arm.
+                    raise RailsRunnerError(
+                        "the delivering supply-variant arm resolves a different "
+                        "supply than this row's own supply step acquired at this "
+                        "node; the delivered request would not be the unvaried "
+                        "construction's request"
+                    )
         if rejected_steps and (tool_step is not None or any(step.supply is not None for step in rejected_steps)):
             raise RailsRunnerError("rejected batch cannot execute a tool or introduce supply")
         added = (source,) + (() if tool_step is None else (tool_step.state,))
@@ -2365,7 +2561,20 @@ async def _invoke_native_role_episode(
         ).validate()
         _assert_agent_control_excludes_knowledge_payloads(plan, protected_material)
         state.current_context, state.current_contact = ctx, plan
-        if knowledge_index is None:
+        if knowledge_index is None and request.context.variant_arm_id is not None:
+            # Item E42 (2026-09-25, family VAR-2): THE seam this whole form
+            # lives at. One arm's knowledge construction is composed HERE, at
+            # binding composition, and nowhere else -- the same place item E2
+            # composes a grouped sample's decoding and item E39 a role's
+            # completion cap, and for the same reason: the model fragment, the
+            # serving-session identity, the prompt ORDER, the task contract and
+            # the tool authority never move, only which evidence blocks this one
+            # request carries. The key's absence is unreachable here
+            # (``variant_arm_id`` is None for every contact of every episode
+            # form written before E42), so every other form's bytes are
+            # identical.
+            messages = supply_variant_messages(ctx, request=request, plan=plan)
+        elif knowledge_index is None:
             messages = base_messages(ctx)
         else:
             # E21w: the per-role budget is resolved HERE, at request
@@ -2582,6 +2791,12 @@ async def _invoke_native_role_episode(
             # group's last sample -- the one that registers the committed
             # state -- from the ones that register none.
             sample_index=request.context.sample_index,
+            # Item E42: which declared arm of a supply-variant visit this
+            # contact is (None for every contact of every other form), so
+            # ``settle`` can tell the group's delivering arm -- the LAST one,
+            # whose own seal is the state this visit registers -- from the ones
+            # that register none.
+            variant_arm_id=request.context.variant_arm_id,
         )
         if (binding.review_for_phase is not None and not completion.tool_calls
                 and completion.finish_reason == "stop"):
@@ -2610,6 +2825,25 @@ async def _invoke_native_role_episode(
                         "use_phase_judgments": [verdict.as_json() for verdict in verdicts],
                     },
                 )
+
+    def read_supply_variant_arm_record(arm_index, result):
+        """Item E42: the receipt row the binding provider wrote for THIS arm.
+
+        The arm's own contact id is read off its execution receipt, so the row
+        the node seals is the row the request that produced this answer was
+        composed from -- never a sibling arm's. Popped, so a row can be sealed
+        exactly once and a second visit of the node starts from an empty table.
+        """
+
+        receipt = result.get("execution_receipt")
+        final = receipt.get("final_contact") if isinstance(receipt, Mapping) else None
+        contact_id = final.get("agent_contact_id") if isinstance(final, Mapping) else None
+        record = supply_variant_records.pop(contact_id, None)
+        if record is None or record.get("arm_index") != arm_index:
+            raise RailsRunnerError(
+                "a supply-variant arm sealed no recorded contact of its own"
+            )
+        return record
 
     def cleaning_binding_provider(request):
         """E8b: hand the cleaning contact its own prepared speech binding.
@@ -2857,6 +3091,23 @@ async def _invoke_native_role_episode(
             "the episode binding carries a knowledge-index binding but "
             "native_episode.knowledge_index is not armed; an index no config "
             "hash claims would move request bytes outside the cell identity"
+        )
+    # Item E42 (2026-09-25): the arm group and its resolver are ONE module, in
+    # both directions -- a declared group with no resolver would compose an arm
+    # from nothing, and a resolver with no declared group would move request
+    # bytes no config hash claims. Both are refused by name before any contact,
+    # exactly as E21w's index binding is just above.
+    if supply_variant_group is not None and binding.supply_variant_for_phase is None:
+        raise RailsRunnerError(
+            "roles.solver.supply_variants is declared but the episode binding "
+            "carries no supply_variant_for_phase resolver; an arm's own supply is "
+            "flight-owned, exactly as supply_for_phase is"
+        )
+    if supply_variant_group is None and binding.supply_variant_for_phase is not None:
+        raise RailsRunnerError(
+            "the episode binding carries a supply_variant_for_phase resolver but "
+            "roles.solver.supply_variants is not declared; an arm no config hash "
+            "claims would move request bytes outside the cell identity"
         )
     knowledge_index = binding.knowledge_index
     #: E21w, per contact: the assembly this contact was composed from, the
@@ -3178,6 +3429,17 @@ async def _invoke_native_role_episode(
                     # rails.native_episode_receipt.validate_solver_group_receipt
                     # expects (sample_index ascending from 0 within a group).
                     kwargs["sample_index"] = index % role.samples
+                if role.supply_variants is not None:
+                    # Item E42: the SAME mapping E2b uses for its samples -- the
+                    # node's own invocation index is GLOBAL across the whole
+                    # episode (every revision's visit), so it counts up in exact
+                    # multiples of one visit's arm count and
+                    # ``rails.native_episode_receipt.
+                    # validate_supply_variant_receipt`` sees the arms in their
+                    # declared order, ascending from the first, within a group.
+                    kwargs["variant_arm_id"] = role.supply_variants.arm_ids[
+                        index % role.supply_variants.arm_count
+                    ]
                 return NativeRoleContactContext(**kwargs)
             def role_delivery_allowed(_role: str, output: str) -> bool:
                 return isinstance(output, str) and bool(output.strip())
@@ -3218,6 +3480,22 @@ async def _invoke_native_role_episode(
                     delivery_allowed=role_delivery_allowed,
                     # E2c: the committed answer is the reviewed draft.
                     on_commit=record_solver_commit,
+                )
+            elif role.supply_variants is not None:
+                # Item E42: the arm-grouped Solver visit -- K real
+                # invoke_direct calls on the SAME solver_node above, through
+                # the SAME metered request path, each composed over its own
+                # declared knowledge construction by the binding provider, the
+                # LAST one delivered. Every other role keeps the plain node
+                # unwrapped, byte-identical to before.
+                from ..reproduction.ojw.native_supply_variants import (
+                    SupplyVariantRoleNode,
+                )
+
+                nodes[role.role_kind] = SupplyVariantRoleNode(
+                    inner=solver_node, group=role.supply_variants,
+                    arm_record=read_supply_variant_arm_record,
+                    delivery_allowed=role_delivery_allowed,
                 )
             else:
                 nodes[role.role_kind] = solver_node
@@ -3594,6 +3872,46 @@ async def _invoke_native_role_episode(
             validate_solver_group_receipt(
                 solver_group, samples=solver_role_config.samples, error_type=RailsRunnerError,
             )
+        # Item E42 (2026-09-25, family VAR-2): the arm group's own custody.
+        # Absent on an abstention -- no arm ever answered -- exactly as
+        # ``solver_group`` is.
+        supply_variants = (
+            None if delivery.kind in ("abstention", "context-abstention")
+            else result["delivery"].get("supply_variants")
+        )
+        if supply_variant_group is not None and supply_variants is None:
+            raise RailsRunnerError(
+                "a declared supply-variant arm group delivered no arm custody"
+            )
+        if supply_variant_group is None and supply_variants is not None:
+            raise RailsRunnerError(
+                "a supply-variant receipt was delivered by an episode that "
+                "declares no arm group"
+            )
+        if supply_variants is not None:
+            from .native_episode_receipt import validate_supply_variant_receipt
+
+            # ``retrieved_value_ids`` is deliberately NOT passed here: the
+            # delivering arm's ids ARE this row's accumulated ids by
+            # construction (it takes ``base_messages(ctx)`` unchanged), so
+            # comparing them at the seal would restate the composition rather
+            # than check it. The non-circular statement of that property is the
+            # live refusal in ``supply_variant_messages``, which fails closed
+            # when the flight's per-arm resolution of the delivering arm differs
+            # from this row's own supply step. A POST-seal reader, which
+            # reconstructs the state from the sealed wave instead of composing
+            # it, passes the argument.
+            validate_supply_variant_receipt(
+                supply_variants,
+                arm_ids=supply_variant_group.arm_ids,
+                delivered_arm_id=supply_variant_group.delivered_arm.arm_id,
+                phase_id=solver_role_config.phase_id,
+                error_type=RailsRunnerError,
+            )
+        if supply_variant_records:
+            raise RailsRunnerError(
+                "supply-variant arm records were composed but never sealed"
+            )
         final_text = (
             "" if delivery.kind in ("abstention", "context-abstention")
             else result["delivery"]["actor_output"] if solver_group is not None
@@ -3833,6 +4151,7 @@ async def _invoke_native_role_episode(
             final_supply=_supply_for_state(snapshot, state.query_state),
             trace_buffer=trace, native_episode_receipt=compact_receipt,
             solver_group=solver_group,
+            supply_variants=supply_variants,
         )
     finally:
         # Public framework resources are episode-owned, not role-visit-owned.
@@ -5109,6 +5428,7 @@ def run_speech_native_agent_loop(
                 execution_unit_id=outcome.prepared.execution_unit_id,
                 execution_unit_binding=outcome.prepared.execution_unit_binding,
                 solver_group=getattr(outcome, "solver_group", None),
+                supply_variants=getattr(outcome, "supply_variants", None),
             )
         )
         if result_kind == TASK_ANSWER_RESULT_KIND and execution_units is None:

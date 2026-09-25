@@ -1,0 +1,1169 @@
+"""Item E42 (Stage-3 family VAR-2): per-row supply-variant interleaving.
+
+Cell ROLL-AA measured the locked v2.0 plan against itself INSIDE one flight and
+found ``h_within`` = 0.735 pp SLU / 0.000 pp intent at n = 200, against about
+1.25 pp for the same identity flown as two campaigns
+(``docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md``).
+This module is the offline proof of the harness capability that argues for:
+K declared knowledge-supply constructions at ONE node, inside ONE episode of
+ONE campaign, paired per row, with exactly one of them delivered.
+
+Four layers, all model-free:
+
+1. **The rail** -- every refusal ``rails.supply_variants.parse_supply_variants``
+   makes, and the pure ordered-id arithmetic a non-delivering arm renders with.
+2. **The configuration** -- the arm group on the real derived VAR-2 fragment,
+   the ceiling arithmetic (``1 + (1+1)*(1*1*4 + 3 + 1) = 17``), and the
+   refusals the loader adds on top of the rail's.
+3. **The custody** -- ``rails.native_episode_receipt.
+   validate_supply_variant_receipt`` on a well-formed receipt and on every way
+   of malforming it.
+4. **The live wiring** -- the whole mechanism through the SAME
+   ``_ActualEpisodeHarness`` fake transport the grouped-sampler proof uses:
+   K real contacts, K arm-scoped requests, ONE contact batch, ONE registered
+   Solver state, and the delivering arm's own text delivered.
+
+Plus the byte-identity statement this change owes every existing form: the
+VAR1-PLAN and v2.0-lock fragments compose to exactly the roles and ceilings
+they composed before, and a contact that binds no arm carries no arm key in its
+role custody document.
+"""
+
+from __future__ import annotations
+
+import copy
+import hashlib
+import json
+from pathlib import Path
+from types import SimpleNamespace
+
+import pytest
+
+from speech_aware_evidence_acquisition.rails.controllers import default_phase_program
+from speech_aware_evidence_acquisition.rails.native_episode_config import (
+    NativeEpisodeConfig,
+    NativeEpisodeRole,
+    load_native_episode_config,
+)
+from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
+    SUPPLY_VARIANT_RECEIPT_SCHEMA,
+    validate_supply_variant_receipt,
+)
+from speech_aware_evidence_acquisition.rails.supply_variants import (
+    MAX_SUPPLY_VARIANT_ARMS,
+    SupplyVariantError,
+    arm_supplied_value_ids,
+    parse_supply_variants,
+    supply_variant_arm_record,
+    supply_variant_receipt,
+)
+from speech_aware_evidence_acquisition.reproduction.ojw import openjiuwen_available
+from speech_aware_evidence_acquisition.reproduction.ojw.native_roles import (
+    NativeRoleContactContext,
+)
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+BASELINE_DIR = REPO_ROOT / "configs" / "baseline"
+VAR2_FRAGMENT = "slurp-native-stage3-var2-supply-variants-r01c-baseline-v1.json"
+VAR1_PLAN_FRAGMENT = "slurp-native-stage3-var1-plan-r01c-baseline-v1.json"
+PLAN_LOCK_FRAGMENT = "slurp-native-default-plan-lock-baseline-v1.json"
+
+EX = "knowledge_stores.train-exemplars.phase_supply.solver"
+SC = "knowledge_stores.slot-contracts.candidate_supply.solver"
+FIT = {
+    "slot_tokens": 24576,
+    "completion_ceiling": 640,
+    "base_prompt_tokens": 9600,
+    "tokens_per_supplied_item": 120,
+}
+
+
+def _fragment(name):
+    values = json.loads((BASELINE_DIR / name).read_text(encoding="utf-8"))
+    # ``carrier_lock_key`` is produced by the runtime at prepare time, not
+    # declared by a baseline fragment; the loader reads it for the
+    # delivery-normaliser carrier check.
+    values["carrier_lock_key"] = "slurp"
+    return values
+
+
+def _block(**overrides):
+    block = {
+        "arms": [
+            {
+                "arm_id": "exk10",
+                "max_supplied_items": 38,
+                "overrides": {f"{EX}.k": 10},
+            },
+            {"arm_id": "plan", "deliver": True, "max_supplied_items": 48},
+        ],
+        "fit_estimate": dict(FIT),
+    }
+    block.update(overrides)
+    return block
+
+
+def _parse(block=None, **kwargs):
+    options = {
+        "phase_id": "solver",
+        "first_phase_id": "perception",
+        "declared_stores": ("train-exemplars", "slot-contracts", "intent-boundaries"),
+    }
+    options.update(kwargs)
+    return parse_supply_variants(block if block is not None else _block(), **options)
+
+
+# ---------------------------------------------------------------------------
+# 1. The rail
+# ---------------------------------------------------------------------------
+
+
+def test_a_well_formed_group_parses_to_its_declared_order():
+    group = _parse()
+    assert group.arm_ids == ("exk10", "plan")
+    assert group.arm_count == 2
+    assert group.delivered_arm.arm_id == "plan"
+    assert group.arm("exk10").knobs[0].store_id == "train-exemplars"
+    assert group.arm("exk10").knobs[0].route == "phase_supply"
+    assert group.arm("exk10").knobs[0].tail == ("k",)
+    assert group.arm("exk10").knobs[0].value == 10
+    assert group.arm_at(1).deliver is True
+
+
+def test_the_fit_estimate_uses_the_registered_reserve_arithmetic():
+    group = _parse()
+    fit = group.fit_estimate
+    # 24,576-token live slot, one-eighth reserve capped at the registered
+    # 8,192 (item E33): 24,576 // 8 = 3,072.
+    assert fit.reserve_tokens == 3072
+    assert fit.prompt_limit_tokens == 24576 - 3072 - 640 - 2
+    assert fit.estimated_prompt_tokens(group.arm("exk10")) == 9600 + 38 * 120
+
+
+@pytest.mark.parametrize(
+    "mutate,expected",
+    [
+        pytest.param(
+            lambda b: b["arms"][1].__setitem__("deliver", False),
+            "exactly one arm with deliver",
+            id="zero-delivering-arms",
+        ),
+        pytest.param(
+            lambda b: b["arms"][0].__setitem__("deliver", True),
+            "exactly one arm with deliver",
+            id="two-delivering-arms",
+        ),
+        pytest.param(
+            lambda b: b["arms"].insert(0, copy.deepcopy(b["arms"][0])),
+            "arm ids must be distinct",
+            id="arm-id-collision",
+        ),
+        pytest.param(
+            lambda b: b["arms"].reverse(),
+            "must be the LAST arm",
+            id="delivering-arm-not-last",
+        ),
+        pytest.param(
+            lambda b: b["arms"][1].__setitem__("overrides", {f"{EX}.k": 9}),
+            "must declare no overrides",
+            id="delivering-arm-carries-overrides",
+        ),
+        pytest.param(
+            lambda b: b["arms"][0]["overrides"].__setitem__(f"{EX}.tau", 1),
+            "does not admit",
+            id="unknown-knob",
+        ),
+        pytest.param(
+            lambda b: b["arms"][0]["overrides"].__setitem__(
+                "knowledge_stores.train-exemplars.release.solver.sha256", 1
+            ),
+            "may re-cap only",
+            id="unknown-route",
+        ),
+        pytest.param(
+            lambda b: b["arms"][0]["overrides"].__setitem__(
+                "knowledge_stores.train-exemplars.release.sha256", 1
+            ),
+            "is not a knob path",
+            id="too-short-to-be-a-knob-path",
+        ),
+        pytest.param(
+            lambda b: b["arms"][0]["overrides"].__setitem__(
+                "decoding_params.temperature", 1
+            ),
+            "is not a knob path",
+            id="outside-the-knob-root",
+        ),
+        pytest.param(
+            lambda b: b["arms"][0]["overrides"].__setitem__(
+                "knowledge_stores.intent-boundaries.phase_supply.perception.k", 16
+            ),
+            "FIRST phase",
+            id="first-phase-knob",
+        ),
+        pytest.param(
+            lambda b: b["arms"][0]["overrides"].__setitem__(
+                "knowledge_stores.train-exemplars.phase_supply.reviewer.k", 4
+            ),
+            "may only re-cap the supply of its own node",
+            id="another-nodes-phase",
+        ),
+        pytest.param(
+            lambda b: b["arms"][0]["overrides"].__setitem__(
+                "knowledge_stores.absent-store.phase_supply.solver.k", 4
+            ),
+            "does not declare",
+            id="undeclared-store",
+        ),
+        pytest.param(
+            lambda b: b["arms"][0].__setitem__("max_supplied_items", 500),
+            "exceeds the",
+            id="prompt-fit-estimate-over-the-slot",
+        ),
+        pytest.param(
+            lambda b: b.pop("fit_estimate"),
+            "must be an object with exactly",
+            id="missing-fit-estimate",
+        ),
+        pytest.param(
+            lambda b: b["arms"].__setitem__(0, {"arm_id": "x"}),
+            "must carry exactly",
+            id="arm-row-missing-keys",
+        ),
+        pytest.param(
+            lambda b: b["arms"].__setitem__(0, dict(b["arms"][0], colour="red")),
+            "must carry exactly",
+            id="arm-row-unknown-key",
+        ),
+        pytest.param(
+            lambda b: b["arms"].pop(0),
+            "between 2 and",
+            id="single-arm-group",
+        ),
+        pytest.param(
+            lambda b: b["arms"][0]["overrides"].__setitem__(f"{EX}.k", 0),
+            "must be a positive integer",
+            id="non-positive-knob-value",
+        ),
+        pytest.param(
+            lambda b: b["arms"].insert(
+                0, {"arm_id": "twin", "max_supplied_items": 38,
+                    "overrides": {f"{EX}.k": 10}}
+            ),
+            "same overrides",
+            id="two-arms-one-construction",
+        ),
+    ],
+)
+def test_every_declared_refusal_is_raised_by_name(mutate, expected):
+    block = _block()
+    mutate(block)
+    with pytest.raises(SupplyVariantError, match=expected):
+        _parse(block)
+
+
+def test_an_arm_group_larger_than_the_registered_bound_is_refused():
+    block = _block()
+    block["arms"] = [
+        {"arm_id": f"a{index}", "max_supplied_items": 38,
+         "overrides": {f"{EX}.k": index + 2}}
+        for index in range(MAX_SUPPLY_VARIANT_ARMS)
+    ] + [{"arm_id": "plan", "deliver": True, "max_supplied_items": 48}]
+    with pytest.raises(SupplyVariantError, match="between 2 and"):
+        _parse(block)
+
+
+def test_a_non_delivering_arm_keeps_the_prefix_and_replaces_this_nodes_own_ids():
+    # The row's accumulated state: two values an earlier phase supplied, then
+    # three this node's own supply step acquired.
+    accumulated = ("b::1", "b::2", "x::7", "x::8", "x::9")
+    assert arm_supplied_value_ids(
+        retrieved_value_ids=accumulated,
+        node_acquired_value_ids=("x::7", "x::8", "x::9"),
+        arm_selected_value_ids=("x::4",),
+    ) == ("b::1", "b::2", "x::4")
+    # A REVISE revisit: the node's cumulative contribution is the same set, so
+    # the arm renders exactly what it rendered on the first visit.
+    assert arm_supplied_value_ids(
+        retrieved_value_ids=accumulated,
+        node_acquired_value_ids=("x::9", "x::7", "x::8"),
+        arm_selected_value_ids=("x::4",),
+    ) == ("b::1", "b::2", "x::4")
+
+
+@pytest.mark.parametrize(
+    "kwargs,expected",
+    [
+        (
+            {
+                "retrieved_value_ids": ("b::1",),
+                "node_acquired_value_ids": ("x::7",),
+                "arm_selected_value_ids": (),
+            },
+            "cannot locate",
+        ),
+        (
+            {
+                "retrieved_value_ids": ("b::1", "x::7"),
+                "node_acquired_value_ids": ("x::7",),
+                "arm_selected_value_ids": ("x::4", "x::4"),
+            },
+            "must be unique",
+        ),
+        (
+            {
+                "retrieved_value_ids": ("b::1", "x::7"),
+                "node_acquired_value_ids": ("x::7",),
+                "arm_selected_value_ids": ("b::1",),
+            },
+            "re-supplies value",
+        ),
+    ],
+)
+def test_the_arm_id_arithmetic_refuses_an_unlocatable_or_overlapping_selection(
+    kwargs, expected,
+):
+    with pytest.raises(SupplyVariantError, match=expected):
+        arm_supplied_value_ids(**kwargs)
+
+
+def test_an_arm_record_refuses_more_items_than_its_declared_bound():
+    group = _parse()
+    arm = group.arm("exk10")
+    with pytest.raises(SupplyVariantError, match="max_supplied_items"):
+        supply_variant_arm_record(
+            arm=arm, arm_index=0, contact_id="c1",
+            supplied_value_ids=tuple(f"x::{i}" for i in range(arm.max_supplied_items + 1)),
+        )
+
+
+def test_an_arm_record_refuses_resolved_knobs_it_did_not_declare():
+    group = _parse()
+    with pytest.raises(SupplyVariantError, match="differ from the knobs it declared"):
+        supply_variant_arm_record(
+            arm=group.arm("exk10"), arm_index=0, contact_id="c1",
+            supplied_value_ids=("x::1",), resolved_knobs={f"{EX}.k": 10, f"{SC}.max_candidates": 4},
+        )
+
+
+# ---------------------------------------------------------------------------
+# 2. The configuration and the ceiling
+# ---------------------------------------------------------------------------
+
+
+def test_the_derived_var2_fragment_composes_to_the_registered_ceiling():
+    values = _fragment(VAR2_FRAGMENT)
+    assert values["policy"] == "phase-native-candidates-review-revise-variants4-v1"
+    program = default_phase_program(values["policy"])
+    assert program.max_contacts == 17
+    config = load_native_episode_config(values, program)
+    # 1 Perception + (1 revision + 1) * (Solver 1 * 1 sample * 4 arms
+    # + Reviewer 3 + Planner 1) = 1 + 2 * 8 = 17.
+    assert config.max_contacts == 17
+    assert config.supply_variant_arm_count == 4
+    assert config.supply_variant_phase_id == "solver"
+    group = config.supply_variant_group
+    assert group.arm_ids == ("exk10", "exk30", "exdiv", "plan")
+    assert group.delivered_arm.arm_id == "plan"
+    assert group.delivered_arm.knobs == ()
+    # Each variant differs from the delivering construction in its OWN declared
+    # knobs and in nothing else.
+    assert {knob.path for knob in group.arm("exdiv").knobs} == {
+        f"{EX}.fuse_coverage.c"
+    }
+    assert {knob.value for knob in group.arm("exk30").knobs} == {30}
+
+
+def test_the_four_arm_group_on_the_eleven_contact_plan_program_is_refused():
+    values = _fragment(VAR2_FRAGMENT)
+    values["policy"] = "phase-native-candidates-review-revise-v1"
+    with pytest.raises(ValueError, match="contact ceiling"):
+        load_native_episode_config(values, default_phase_program(values["policy"]))
+
+
+@pytest.mark.parametrize(
+    "mutate,expected",
+    [
+        pytest.param(
+            lambda role: role.update(
+                samples=2,
+                decoding_overrides={"temperature": 0.7, "seed_offset": 0},
+                commit={
+                    "policy": "saea-commit-plurality-support-v1",
+                    "min_support": 2,
+                    "similarity_threshold": 0.8,
+                },
+            ),
+            "cannot combine with a grouped Solver visit",
+            id="beside-grouped-sampling",
+        ),
+        pytest.param(
+            lambda role: role.update(max_iterations=2),
+            "requires roles.solver.max_iterations 1",
+            id="multi-iteration-node",
+        ),
+    ],
+)
+def test_the_loader_refuses_a_group_the_arm_to_contact_mapping_cannot_carry(
+    mutate, expected,
+):
+    values = _fragment(VAR2_FRAGMENT)
+    mutate(values["native_episode"]["roles"]["solver"])
+    with pytest.raises(ValueError, match=expected):
+        load_native_episode_config(values, default_phase_program(values["policy"]))
+
+
+def test_a_group_beside_an_armed_knowledge_index_is_refused():
+    values = _fragment(VAR2_FRAGMENT)
+    values["native_episode"]["knowledge_index"] = {"view": "slurp-knowledge-index-v1"}
+    with pytest.raises(ValueError, match="knowledge_index"):
+        load_native_episode_config(values, default_phase_program(values["policy"]))
+
+
+def test_only_the_solver_role_may_declare_an_arm_group():
+    group = _parse()
+    with pytest.raises(ValueError, match="only the Solver role"):
+        NativeEpisodeRole(
+            phase_id="reviewer", role_kind="reviewer", max_iterations=1,
+            tool_names=(), supply_variants=group,
+        )
+
+
+def test_a_group_beside_role_tool_authority_is_refused():
+    group = _parse()
+    with pytest.raises(ValueError, match="tool authority"):
+        NativeEpisodeRole(
+            phase_id="solver", role_kind="solver", max_iterations=1,
+            tool_names=("someTool",), supply_variants=group,
+        )
+
+
+def test_the_acquisition_role_carries_no_arm_group():
+    group = _parse()
+    with pytest.raises(ValueError, match="no role knobs"):
+        NativeEpisodeRole(
+            phase_id="acquisition", role_kind="acquisition", max_iterations=0,
+            tool_names=(), acquisition_kinds=("knowledge-requery",),
+            supply_variants=group,
+        )
+
+
+# ---------------------------------------------------------------------------
+# 3. No existing episode form's bytes move
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "name,expected_ceiling",
+    [(VAR1_PLAN_FRAGMENT, 11), (PLAN_LOCK_FRAGMENT, 11)],
+)
+def test_an_existing_form_composes_exactly_the_config_it_always_did(
+    name, expected_ceiling,
+):
+    values = _fragment(name)
+    program = default_phase_program(values["policy"])
+    config = load_native_episode_config(values, program)
+    assert config.max_contacts == expected_ceiling == program.max_contacts
+    # The arm seam is UNREACHABLE for this form: no group, arm count 1, no
+    # variant phase. The ceiling formula's new factor is therefore exactly 1
+    # and the composed ceiling is the pre-E42 one.
+    assert config.supply_variant_group is None
+    assert config.supply_variant_arm_count == 1
+    assert config.supply_variant_phase_id is None
+    for role in config.roles:
+        assert role.supply_variants is None
+
+
+def test_the_composed_role_graph_of_the_locked_plan_is_hash_stable():
+    """A pinned digest of the composed role graph of the v2.0 lock.
+
+    Not decoration: it is the one assertion that fails if a future edit to
+    ``NativeEpisodeRole`` changes what an EXISTING fragment composes to, which
+    is precisely what item E42 must not do.
+    """
+
+    values = _fragment(PLAN_LOCK_FRAGMENT)
+    config = load_native_episode_config(
+        values, default_phase_program(values["policy"])
+    )
+    document = [
+        {
+            "phase_id": role.phase_id,
+            "role_kind": role.role_kind,
+            "max_iterations": role.max_iterations,
+            "tool_names": list(role.tool_names),
+            "history_scope": role.history_scope,
+            "samples": role.samples,
+            "decoding_overrides": role.decoding_overrides,
+            "commit": role.commit,
+            "twin": role.twin,
+            "acquisition_kinds": list(role.acquisition_kinds),
+            "max_completion_tokens": role.max_completion_tokens,
+            "supply_variants": None if role.supply_variants is None else "declared",
+        }
+        for role in config.roles
+    ]
+    digest = hashlib.sha256(
+        json.dumps(document, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    assert document == [
+        {
+            "phase_id": "perception", "role_kind": "perception", "max_iterations": 1,
+            "tool_names": [], "history_scope": "full", "samples": 1,
+            "decoding_overrides": None, "commit": None, "twin": None,
+            "acquisition_kinds": [], "max_completion_tokens": None,
+            "supply_variants": None,
+        },
+        {
+            "phase_id": "solver", "role_kind": "solver", "max_iterations": 1,
+            "tool_names": [], "history_scope": "full", "samples": 1,
+            "decoding_overrides": None, "commit": None, "twin": None,
+            "acquisition_kinds": [], "max_completion_tokens": None,
+            "supply_variants": None,
+        },
+        {
+            "phase_id": "reviewer", "role_kind": "reviewer", "max_iterations": 3,
+            "tool_names": [], "history_scope": "full", "samples": 1,
+            "decoding_overrides": None, "commit": None, "twin": None,
+            "acquisition_kinds": [], "max_completion_tokens": None,
+            "supply_variants": None,
+        },
+        {
+            "phase_id": "planner", "role_kind": "planner", "max_iterations": 1,
+            "tool_names": [], "history_scope": "full", "samples": 1,
+            "decoding_overrides": None, "commit": None, "twin": None,
+            "acquisition_kinds": [], "max_completion_tokens": None,
+            "supply_variants": None,
+        },
+    ]
+    assert len(digest) == 64
+
+
+def test_a_contact_that_binds_no_arm_carries_no_arm_key():
+    """Item E42's role-custody key is CONDITIONAL, so every contact of every
+    episode form written before it keeps its ``role_request_bytes`` byte for
+    byte."""
+
+    plain = NativeRoleContactContext(sample_id="s1", agent_contact_id="c1")
+    assert plain.variant_arm_id is None
+    armed = NativeRoleContactContext(
+        sample_id="s1", agent_contact_id="c1", variant_arm_id="exk10",
+    )
+    assert armed.variant_arm_id == "exk10"
+    with pytest.raises(ValueError, match="variant_arm_id"):
+        NativeRoleContactContext(sample_id="s1", agent_contact_id="c1", variant_arm_id="")
+
+
+# ---------------------------------------------------------------------------
+# 4. The receipt validator
+# ---------------------------------------------------------------------------
+
+
+def _receipt(group=None):
+    group = group or _parse()
+    records = [
+        supply_variant_arm_record(
+            arm=group.arm("exk10"), arm_index=0, contact_id="c0",
+            supplied_value_ids=("b::1", "x::4"),
+        ),
+        supply_variant_arm_record(
+            arm=group.arm("plan"), arm_index=1, contact_id="c1",
+            supplied_value_ids=("b::1", "x::7", "x::8"),
+        ),
+    ]
+    return supply_variant_receipt(group=group, phase_id="solver", records=records)
+
+
+def _validate(receipt, **kwargs):
+    group = _parse()
+    options = {
+        "arm_ids": group.arm_ids,
+        "delivered_arm_id": group.delivered_arm.arm_id,
+        "phase_id": "solver",
+    }
+    options.update(kwargs)
+    validate_supply_variant_receipt(receipt, **options)
+
+
+def test_a_well_formed_receipt_validates():
+    receipt = _receipt()
+    assert receipt["schema"] == SUPPLY_VARIANT_RECEIPT_SCHEMA
+    assert receipt["arm_count"] == 2
+    assert receipt["delivered_arm_id"] == "plan"
+    assert [row["arm_id"] for row in receipt["arms"]] == ["exk10", "plan"]
+    _validate(receipt)
+    # The delivering arm's ids open the row's own accumulated state.
+    _validate(receipt, retrieved_value_ids=("b::1", "x::7", "x::8", "later::1"))
+
+
+@pytest.mark.parametrize(
+    "mutate,expected",
+    [
+        pytest.param(
+            lambda r: r.__setitem__("schema", "something-else"),
+            "unregistered schema",
+            id="wrong-schema",
+        ),
+        pytest.param(
+            lambda r: r.__setitem__("phase_id", "reviewer"),
+            "names another phase",
+            id="wrong-phase",
+        ),
+        pytest.param(
+            lambda r: r.__setitem__("arm_count", 3),
+            "every declared arm",
+            id="wrong-arm-count",
+        ),
+        pytest.param(
+            lambda r: r.__setitem__("delivered_arm_id", "exk10"),
+            "another delivering arm",
+            id="wrong-delivered-arm",
+        ),
+        pytest.param(
+            lambda r: r["arms"].pop(0),
+            "every declared arm",
+            id="missing-arm",
+        ),
+        pytest.param(
+            lambda r: r["arms"].reverse(),
+            "ascending arm_index",
+            id="arms-physically-reversed",
+        ),
+        pytest.param(
+            lambda r: (
+                r["arms"][0].__setitem__("arm_id", "plan"),
+                r["arms"][1].__setitem__("arm_id", "exk10"),
+            ),
+            "declared order",
+            id="arm-ids-swapped-under-correct-indices",
+        ),
+        pytest.param(
+            lambda r: r["arms"][0].__setitem__("arm_index", 5),
+            "ascending arm_index",
+            id="wrong-arm-index",
+        ),
+        pytest.param(
+            lambda r: r["arms"][0].__setitem__("deliver", True),
+            "declared delivering arm",
+            id="two-delivering-rows",
+        ),
+        pytest.param(
+            lambda r: r["arms"][1].__setitem__(
+                "resolved_knobs", [{"path": f"{EX}.k", "value": 4}]
+            ),
+            "must resolve no knobs",
+            id="delivering-row-resolves-knobs",
+        ),
+        pytest.param(
+            lambda r: r["arms"][0].__setitem__("resolved_knobs", []),
+            "at least one",
+            id="variant-row-resolves-nothing",
+        ),
+        pytest.param(
+            lambda r: r["arms"][0].__setitem__(
+                "resolved_knobs", {f"{EX}.k": 10}
+            ),
+            "ordered sequence",
+            id="resolved-knobs-as-a-dotted-mapping",
+        ),
+        pytest.param(
+            lambda r: r["arms"][0].__setitem__(
+                "resolved_knobs", [{"path": f"{EX}.k"}]
+            ),
+            "malformed resolved knobs",
+            id="resolved-knob-missing-its-value",
+        ),
+        pytest.param(
+            lambda r: r["arms"][0].__setitem__(
+                "resolved_knobs",
+                [
+                    {"path": f"{EX}.k", "value": 10},
+                    {"path": f"{EX}.fuse_coverage.c", "value": 4},
+                ],
+            ),
+            "distinct and ordered by path",
+            id="resolved-knobs-out-of-order",
+        ),
+        pytest.param(
+            lambda r: r["arms"][0].__setitem__("supplied_item_count", 9),
+            "disagrees with its ids",
+            id="count-disagrees",
+        ),
+        pytest.param(
+            lambda r: r["arms"][0].__setitem__("supplied_value_ids", ["x::4", "x::4"]),
+            "must be unique",
+            id="duplicate-ids",
+        ),
+        pytest.param(
+            lambda r: r["arms"][0].__setitem__("max_supplied_items", 1),
+            "more items than the bound",
+            id="over-its-own-bound",
+        ),
+        pytest.param(
+            lambda r: r["arms"][1].__setitem__("contact_id", "c0"),
+            "distinct contact ids",
+            id="shared-contact-id",
+        ),
+        pytest.param(
+            lambda r: r.__setitem__("fit_estimate", {"slot_tokens": 1}),
+            "fit estimate has an invalid shape",
+            id="malformed-fit-estimate",
+        ),
+        pytest.param(
+            lambda r: r.__setitem__("extra", 1),
+            "invalid shape",
+            id="unknown-receipt-key",
+        ),
+    ],
+)
+def test_the_receipt_validator_refuses_every_malformation(mutate, expected):
+    receipt = _receipt()
+    mutate(receipt)
+    with pytest.raises(ValueError, match=expected):
+        _validate(receipt)
+
+
+def test_the_delivering_arms_ids_must_open_the_rows_own_state():
+    receipt = _receipt()
+    with pytest.raises(ValueError, match="ordered prefix"):
+        _validate(receipt, retrieved_value_ids=("x::7", "b::1", "x::8"))
+
+
+def test_a_receipt_whose_declared_delivering_arm_is_not_last_is_refused():
+    receipt = _receipt()
+    with pytest.raises(ValueError, match="last declared arm"):
+        _validate(receipt, arm_ids=("plan", "exk10"), delivered_arm_id="plan")
+
+
+# ---------------------------------------------------------------------------
+# 5. The live wiring, through the shared fake transport
+# ---------------------------------------------------------------------------
+
+pytest.importorskip("openjiuwen", reason="OpenJiuwen unavailable")
+
+# Module-scoped autouse fixture spawning the fake llama-server-shaped process
+# the transport dials; must be imported into this module's own namespace,
+# exactly as every other runner proof in this suite does. Not called directly.
+from test_llama_server_transport import _spawn_live_matching_process  # noqa: E402,F401
+from test_native_episode_runner import (  # noqa: E402
+    ACTIONS,
+    PHASES,
+    _ActualEpisodeHarness,
+)
+
+ARM_VALUE = "value:dim-light"
+
+
+def _live_group():
+    return parse_supply_variants(
+        {
+            "arms": [
+                {
+                    "arm_id": "wide",
+                    "max_supplied_items": 4,
+                    "overrides": {f"{EX}.k": 30},
+                },
+                {"arm_id": "plan", "deliver": True, "max_supplied_items": 4},
+            ],
+            "fit_estimate": dict(FIT),
+        },
+        phase_id="solver",
+        first_phase_id="perception",
+        declared_stores=("train-exemplars",),
+    )
+
+
+def _live_config(*, group, max_contacts):
+    """The review-off shape (Reviewer/Planner 0) with an arm-grouped Solver."""
+
+    return NativeEpisodeConfig(
+        episode_id="native-role-runner-proof-v1",
+        max_revisions=0,
+        actions=ACTIONS,
+        roles=tuple(
+            NativeEpisodeRole(
+                phase_id=phase,
+                role_kind=phase,
+                max_iterations=0 if phase in {"reviewer", "planner"} else 1,
+                tool_names=(),
+                supply_variants=(group if phase == "solver" else None),
+            )
+            for phase in PHASES
+        ),
+        max_contacts=max_contacts,
+    )
+
+
+def _arm_resolver(selections):
+    """The flight-owned per-arm resolver, as a deterministic double.
+
+    The runner reads exactly one thing off what this returns --
+    ``fusion_decision.selected_value_ids`` -- so a namespace with that attribute
+    chain exercises the real seam without a store on disk.
+    """
+
+    def resolve(*, arm_id, phase_id, context):
+        assert phase_id == "solver"
+        ids = selections[arm_id]
+        if ids is None:
+            return None
+        return SimpleNamespace(
+            fusion_decision=SimpleNamespace(selected_value_ids=tuple(ids))
+        )
+
+    return resolve
+
+
+def _arm_output(key):
+    """One distinct answer per arm, indexed by the harness's within-visit turn."""
+
+    sample_id, phase, visit, turn = key
+    if phase == "solver":
+        return f"solver-arm-{turn}:{sample_id}"
+    return f"{phase}-analysis:{sample_id}:visit:{visit}"
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_a_two_arm_visit_spends_two_contacts_and_delivers_the_last_arms_own_text(
+    tmp_path,
+):
+    group = _live_group()
+    # Perception 1 + Solver 1 visit * 2 arms = 3.
+    harness = _ActualEpisodeHarness(
+        tmp_path, sample_count=1, max_revisions=0, max_contacts=3, planner_actions=(),
+    )
+    harness.config = _live_config(group=group, max_contacts=3)
+    harness.supply_variant_for_phase = _arm_resolver(
+        {"wide": (ARM_VALUE,), "plan": ()}
+    )
+    harness._output = _arm_output
+    try:
+        summary = harness.run()
+    finally:
+        close_summary = harness.close()
+
+    assert close_summary["request_count"] == 3
+    result = summary.results[0]
+    assert len(result.contacts) == 3
+
+    # The custody: one row per declared arm, in declared order, each bound to
+    # its own contact, with the WIDE arm carrying the value its own route
+    # selected and the delivering arm carrying the row's own state (empty here,
+    # because this harness binds no ordinary supply_for_phase at all).
+    receipt = result.supply_variants
+    assert receipt is not None
+    assert receipt["schema"] == SUPPLY_VARIANT_RECEIPT_SCHEMA
+    assert [row["arm_id"] for row in receipt["arms"]] == ["wide", "plan"]
+    assert [row["deliver"] for row in receipt["arms"]] == [False, True]
+    assert receipt["arms"][0]["supplied_value_ids"] == [ARM_VALUE]
+    assert receipt["arms"][1]["supplied_value_ids"] == []
+    assert receipt["arms"][0]["resolved_knobs"] == [
+        {"path": f"{EX}.k", "value": 30}
+    ]
+    assert receipt["arms"][1]["resolved_knobs"] == []
+    assert len({row["contact_id"] for row in receipt["arms"]}) == 2
+    validate_supply_variant_receipt(
+        receipt, arm_ids=group.arm_ids,
+        delivered_arm_id=group.delivered_arm.arm_id, phase_id="solver",
+        retrieved_value_ids=result.final_query_state.retrieved_value_ids,
+    )
+
+    # The delivered text is the LAST (delivering) arm's own response -- no
+    # aggregate, so invariant I7 needs no new exception.
+    assert result.final_response_text == _arm_output(
+        (result.sample_id, "solver", 1, 2)
+    )
+
+    # ONE Solver state per visit, exactly as a grouped visit registers one.
+    episode_receipt = result.native_episode_receipt
+    assert [visit["stage"] for visit in episode_receipt["role_visits"]] == [
+        "perception", "solver",
+    ]
+    assert "supply_variants" not in episode_receipt
+    solver_states = [
+        state for state in result.agent_states if state.state_kind == "phase:solver"
+    ]
+    assert len(solver_states) == 1
+    assert solver_states[0].content == result.final_response_text
+
+    # ONE wave for the whole arm group, naming both contacts as alternatives of
+    # one another -- exactly the shape a grouped Solver visit's samples take.
+    waves = [wave.as_json() for wave in result.waves]
+    assert [wave["fanout_semantics"] for wave in waves] == [
+        "single", "action_alternatives",
+    ]
+    group_wave = waves[1]
+    assert group_wave["batch_id"].endswith(":variants")
+    assert len(group_wave["contact_plans"]) == 2
+    assert len(group_wave["response_sha256s"]) == 2
+    # All K arms bind the SAME QueryState: they are independent constructions of
+    # one draft, not a chain.
+    assert len({
+        plan["query_state_sha256"] for plan in group_wave["contact_plans"]
+    }) == 1
+    assert group_wave["query_state_sha256"] == (
+        group_wave["contact_plans"][0]["query_state_sha256"]
+    )
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_the_two_arms_requests_differ_only_in_their_supplied_evidence(tmp_path):
+    """The claim the whole form rests on, read off the REALISED request bytes.
+
+    Two arms of one visit, sealed as two ``MODEL_REQUEST`` payloads: the arm's
+    own ``supplied_evidence`` differs, and the decoding params, the task
+    instruction, the speech packet, the tool schemas and the rendered contract
+    do not. Nothing an arm declares can reach any of those, and this is the
+    byte-level statement of it.
+    """
+
+    group = _live_group()
+    harness = _ActualEpisodeHarness(
+        tmp_path, sample_count=1, max_revisions=0, max_contacts=3, planner_actions=(),
+    )
+    harness.config = _live_config(group=group, max_contacts=3)
+    harness.supply_variant_for_phase = _arm_resolver(
+        {"wide": (ARM_VALUE,), "plan": ()}
+    )
+    harness._output = _arm_output
+    try:
+        harness.run()
+    finally:
+        harness.close()
+
+    requests = [
+        payload["payload"]
+        for channel, _record_id, payload in harness.trace.records
+        if channel == "MODEL_REQUEST"
+    ]
+    # Perception, then the two Solver arms in declared order.
+    assert len(requests) == 3
+    wide, plan = requests[1], requests[2]
+
+    def evidence(request):
+        return [
+            (block["evidence_id"], block["knowledge_role"])
+            for block in request["supplied_evidence"]
+        ]
+
+    # The ONE declared difference.
+    assert evidence(wide) == [(ARM_VALUE, "value")]
+    assert evidence(plan) == []
+    assert [item["relpath"] for item in wide["evidence_provenance"]]
+    assert plan["evidence_provenance"] == []
+
+    # ...and nothing else. Every field an arm may NOT reach, compared byte for
+    # byte between the two arms of one visit.
+    for field in (
+        "decoding_params", "task_instruction", "tool_schemas",
+        "speech_feature_parts", "speech_packet_sha256", "query_source",
+        "key_representation_id", "matcher_policy_id", "carrier_lock_key",
+        "media_relpath", "audio_seconds", "sample_rate_hz", "sample_id",
+    ):
+        assert wide[field] == plan[field], field
+    # The exposed history is the same length and the same states; only the
+    # arm's own control turn (its own contact id) differs, as it does between
+    # any two contacts of any episode.
+    assert len(wide["history"]) == len(plan["history"])
+    assert wide["history"][0] == plan["history"][0]
+    assert wide["history"][-1]["role"] == plan["history"][-1]["role"] == "control"
+
+
+# ---------------------------------------------------------------------------
+# 6. The offline dry run, on a synthetic row
+# ---------------------------------------------------------------------------
+
+
+def _dry_run_walk(tmp_path, *, selections, program_max_contacts=3):
+    """Walk a two-arm Solver visit of a SYNTHETIC row, contact-free.
+
+    Zero model, tokenizer, encoder, server or network contact: the walk seals
+    canned role answers with the production sealer, resolves each arm's supply
+    through the same per-arm resolver shape a flight binds, and reports per arm
+    the supplied item ids it would have rendered.
+    """
+
+    from speech_aware_evidence_acquisition.analysis.native_episode_dry_run import (
+        dry_run_native_episode,
+    )
+    from speech_aware_evidence_acquisition.rails.controllers import (
+        PhaseProgram,
+        PhaseSpec,
+    )
+    from speech_aware_evidence_acquisition.rails.material import PhaseMaterial
+
+    from test_rails_frozen_core_client import _World, _plan
+    from test_rails_runner import _FakeAdapter, _knowledge_snapshot
+
+    world = _World(tmp_path)
+    world.samples = world.samples[:1]
+    sample = world.samples[0]
+    adapter = _FakeAdapter(samples=tuple(world.samples))
+    program = PhaseProgram(
+        program_id="dry-run-variants-proof-v1",
+        phases=tuple(
+            PhaseSpec(
+                name=phase,
+                purpose="answer" if phase == "solver" else phase,
+                knowledge="supplied",
+                response_format_id=None,
+                barrier=False,
+            )
+            for phase in PHASES
+        ),
+        max_contacts=program_max_contacts,
+        stop_rule="native-role-episode",
+    ).validate()
+    group = _live_group()
+    episode = _live_config(group=group, max_contacts=program_max_contacts)
+
+    def material_for_phase(phase, context, prior):
+        return PhaseMaterial(
+            instruction=f"dry-run instruction for {phase}",
+            response_format=None,
+            contact_id=f"dry-run:{phase}",
+            purpose="answer" if phase == "solver" else phase,
+        ).validate()
+
+    phase_binding = {
+        "material_for_phase": material_for_phase,
+        # No ordinary phase supply at all: the row's own accumulated state stays
+        # the bootstrap (empty), so the delivering arm's resolution must be
+        # empty too and the walk's own fail-closed check says so.
+        "supply_for_phase": None,
+        "knowledge_snapshot": _knowledge_snapshot(),
+        "speech_packet_bindings": {
+            sample.sample_id: {
+                "packet_id": sample.audio_ref.path,
+                "sha256": sample.audio_ref.sha256,
+            }
+        },
+        "query_source": "speech_audio",
+        "supply_specs": {},
+    }
+    runtime = SimpleNamespace(
+        _composed=SimpleNamespace(values={}),
+        _plan=_plan(),
+        _samples=tuple(world.samples),
+        _adapter=adapter,
+        _phase_supply_seeds=lambda *args, **kwargs: ({}, {}),
+        _dry_run_binding={
+            "policy": program.program_id,
+            "program": program,
+            "episode": episode,
+            "phase_binding": phase_binding,
+            "store_ids": (),
+            "supply_variant_for_phase": _arm_resolver(selections),
+        },
+    )
+    return dry_run_native_episode(
+        runtime,
+        answers={
+            "perception": "perception draft",
+            "solver": "solver draft",
+        },
+        node_order=("perception", "solver"),
+    )
+
+
+def test_the_dry_run_walks_every_arm_of_a_synthetic_row(tmp_path):
+    result = _dry_run_walk(tmp_path, selections={"wide": (ARM_VALUE,), "plan": ()})
+    document = result.as_json()
+
+    # The per-arm table: one column per declared construction, attached to the
+    # node whose supply it is.
+    assert document["supplied_value_counts_by_arm"] == {"solver": {"wide": 1, "plan": 0}}
+    assert document["delivered_arm_id"] == "plan"
+
+    solver_node = next(
+        node for node in document["nodes"] if node["phase"] == "solver"
+    )
+    assert [arm["arm_id"] for arm in solver_node["supply_variant_arms"]] == [
+        "wide", "plan",
+    ]
+    assert [arm["arm_index"] for arm in solver_node["supply_variant_arms"]] == [0, 1]
+    assert [arm["deliver"] for arm in solver_node["supply_variant_arms"]] == [
+        False, True,
+    ]
+    wide, plan = solver_node["supply_variant_arms"]
+    # The arms differ in exactly the declared knob, and in the ids that knob
+    # selects.
+    assert wide["resolved_knobs"] == [{"path": f"{EX}.k", "value": 30}]
+    assert plan["resolved_knobs"] == []
+    assert wide["supplied_value_ids"] == [ARM_VALUE]
+    # The DEFAULT arm's supplied ids are byte-identical to the unvaried plan's:
+    # here the row's own state is the empty bootstrap, and the arm renders
+    # exactly it.
+    assert plan["supplied_value_ids"] == []
+    assert plan["supplied_value_ids"] == list(document["bootstrap_value_ids"])
+    # Perception -- the node the arm group does NOT fan out -- carries no arms.
+    perception = next(
+        node for node in document["nodes"] if node["phase"] == "perception"
+    )
+    assert perception["supply_variant_arms"] == []
+    # And the walk stays contact-free.
+    assert document["run_id"].startswith("SAEA-")
+
+
+def test_the_dry_run_refuses_a_delivering_arm_that_resolves_a_different_supply(
+    tmp_path,
+):
+    with pytest.raises(Exception, match="unvaried construction"):
+        _dry_run_walk(
+            tmp_path, selections={"wide": (ARM_VALUE,), "plan": (ARM_VALUE,)}
+        )
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_a_declared_group_without_its_resolver_is_refused_before_any_contact(tmp_path):
+    group = _live_group()
+    harness = _ActualEpisodeHarness(
+        tmp_path, sample_count=1, max_revisions=0, max_contacts=3, planner_actions=(),
+    )
+    harness.config = _live_config(group=group, max_contacts=3)
+    harness._output = _arm_output
+    try:
+        with pytest.raises(Exception, match="supply_variant_for_phase"):
+            harness.run()
+    finally:
+        harness.close()
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_a_resolver_without_a_declared_group_is_refused(tmp_path):
+    harness = _ActualEpisodeHarness(
+        tmp_path, sample_count=1, max_revisions=0, max_contacts=2, planner_actions=(),
+    )
+    harness.supply_variant_for_phase = _arm_resolver({"plan": ()})
+    try:
+        with pytest.raises(Exception, match="not declared"):
+            harness.run()
+    finally:
+        harness.close()
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_a_delivering_arm_that_resolves_a_different_supply_is_refused(tmp_path):
+    """The live, non-circular statement of the default arm's byte identity.
+
+    The delivering arm declares no overrides, so the flight's own independent
+    per-arm resolution of it must reproduce exactly what this row's ordinary
+    supply step acquired at this node. Here the resolver is made to disagree,
+    and the row dies rather than delivering a request the cell's own identity
+    does not describe.
+    """
+
+    group = _live_group()
+    harness = _ActualEpisodeHarness(
+        tmp_path, sample_count=1, max_revisions=0, max_contacts=3, planner_actions=(),
+    )
+    harness.config = _live_config(group=group, max_contacts=3)
+    harness.supply_variant_for_phase = _arm_resolver(
+        {"wide": (ARM_VALUE,), "plan": (ARM_VALUE,)}
+    )
+    harness._output = _arm_output
+    try:
+        with pytest.raises(Exception, match="unvaried construction"):
+            harness.run()
+    finally:
+        harness.close()

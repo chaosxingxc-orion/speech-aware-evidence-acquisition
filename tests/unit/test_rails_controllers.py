@@ -90,6 +90,16 @@ _EXPECTED_PROGRAM_SHAPES = {
     "phase-native-candidates-review-revise-samples2-v1": (
         ("perception", "reviewer", "planner", "solver"), 13, "native-role-episode"
     ),
+    # Item E42, 2026-09-25 (board route F12, Stage-3 family VAR-2: per-row
+    # CONSTRUCTION-VARIANT interleaving inside ONE campaign): the same
+    # review-revise program with the Solver visit fanned out to FOUR declared
+    # supply-variant arms instead of one, so the ceiling is
+    # 1 + (1+1)*(1*1*4 + 3 + 1) = 17. rails.native_episode_config multiplies
+    # the Solver's own contribution by its registered arm count exactly as it
+    # multiplies it by samples.
+    "phase-native-candidates-review-revise-variants4-v1": (
+        ("perception", "reviewer", "planner", "solver"), 17, "native-role-episode"
+    ),
     # Cell B7b on the sealed anchor, 2026-09-17 (M5 / NCP level L2): the
     # review-revise program with ONE declared cleaning boundary, so the
     # ceiling is 1 + (1+1)*(1 + 3 + 1 + 1) = 13.

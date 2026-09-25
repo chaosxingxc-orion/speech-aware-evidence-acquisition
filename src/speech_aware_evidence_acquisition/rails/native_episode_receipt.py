@@ -1108,9 +1108,201 @@ def validate_solver_group_receipt(
             )
 
 
+#: Item E42 (2026-09-25, Stage-3 family VAR-2).
+SUPPLY_VARIANT_RECEIPT_SCHEMA = "saea-supply-variant-arms-v1"
+
+_SUPPLY_VARIANT_FIELDS = frozenset(
+    {"schema", "phase_id", "arm_count", "delivered_arm_id", "fit_estimate", "arms"}
+)
+_SUPPLY_VARIANT_ARM_FIELDS = frozenset(
+    {
+        "arm_index", "arm_id", "deliver", "contact_id", "resolved_knobs",
+        "supplied_value_ids", "supplied_item_count", "max_supplied_items",
+    }
+)
+_SUPPLY_VARIANT_FIT_FIELDS = frozenset(
+    {
+        "slot_tokens", "completion_ceiling", "base_prompt_tokens",
+        "tokens_per_supplied_item", "reserve_tokens", "prompt_limit_tokens",
+    }
+)
+
+
+def validate_supply_variant_receipt(
+    supply_variants: Mapping[str, object],
+    *,
+    arm_ids: Sequence[str],
+    delivered_arm_id: str,
+    phase_id: str,
+    retrieved_value_ids: Sequence[str] | None = None,
+    error_type: type[Exception] = ValueError,
+) -> None:
+    """Validate the custody a supply-variant visit keeps (item E42).
+
+    The twin of :func:`validate_solver_group_receipt`, and as strict: distinct
+    arm ids, EVERY declared arm present exactly once in declared order, the
+    delivering arm named and last, each arm's contact bound, each arm's resolved
+    knobs recorded, and each arm's supplied value ids ordered, unique and
+    counted within the bound the fit refusal was computed against.
+
+    ``arm_ids``/``delivered_arm_id`` are the CONFIGURATION's own -- the sealing
+    caller reads them off the composed config, a post-seal reader off the raw
+    ``native_episode.roles.solver.supply_variants`` block -- so a receipt can
+    never describe a group other than the one the cell declared.
+
+    ``retrieved_value_ids`` is the row's own accumulated state at whatever point
+    the reader has it. When given, the DELIVERING arm's ``supplied_value_ids``
+    must be an ordered PREFIX of it: that arm is rendered from the episode's own
+    ``QueryState`` with no arm-scoped view, and the state only ever grows by
+    append (``rails.controllers``' successor state is
+    ``retrieved_value_ids + new_value_ids``), so a reader holding the row's FINAL
+    state -- after any later phase took supply of its own -- still holds a state
+    the delivering arm's ids must open. This is the checked statement of the one
+    property the whole form rests on: the delivered request is the unvaried
+    construction's request, and only the NON-delivering arms carry evidence the
+    sealed state does not claim. Omitted (a reader with no state to compare) the
+    rest of the walk is unchanged.
+    """
+
+    declared = list(arm_ids)
+    if not declared or len(set(declared)) != len(declared):
+        _raise(error_type, "supply variant receipt requires distinct declared arm ids")
+    if not isinstance(delivered_arm_id, str) or delivered_arm_id != declared[-1]:
+        _raise(
+            error_type,
+            "supply variant receipt requires the delivering arm to be the last "
+            "declared arm",
+        )
+    if (
+        not isinstance(supply_variants, Mapping)
+        or set(supply_variants) != _SUPPLY_VARIANT_FIELDS
+    ):
+        _raise(error_type, "supply variant receipt has an invalid shape")
+    if supply_variants["schema"] != SUPPLY_VARIANT_RECEIPT_SCHEMA:
+        _raise(error_type, "supply variant receipt has an unregistered schema")
+    if supply_variants["phase_id"] != phase_id:
+        _raise(error_type, "supply variant receipt names another phase")
+    if supply_variants["arm_count"] != len(declared):
+        _raise(
+            error_type,
+            "supply variant receipt does not carry every declared arm",
+        )
+    if supply_variants["delivered_arm_id"] != delivered_arm_id:
+        _raise(error_type, "supply variant receipt names another delivering arm")
+    fit = supply_variants["fit_estimate"]
+    if not isinstance(fit, Mapping) or set(fit) != _SUPPLY_VARIANT_FIT_FIELDS:
+        _raise(error_type, "supply variant receipt fit estimate has an invalid shape")
+    rows = _sequence(supply_variants["arms"], "supply variant arms", error_type=error_type)
+    if len(rows) != len(declared):
+        _raise(error_type, "supply variant receipt does not carry every declared arm")
+    contact_ids: list[str] = []
+    for index, row in enumerate(rows):
+        if not isinstance(row, Mapping) or set(row) != _SUPPLY_VARIANT_ARM_FIELDS:
+            _raise(error_type, "supply variant arm record has an invalid shape")
+        if row["arm_index"] != index:
+            _raise(
+                error_type,
+                "supply variant arms must be ordered by ascending arm_index",
+            )
+        if row["arm_id"] != declared[index]:
+            _raise(
+                error_type,
+                "supply variant arms must appear in their declared order",
+            )
+        deliver = row["deliver"]
+        if not isinstance(deliver, bool) or deliver != (
+            row["arm_id"] == delivered_arm_id
+        ):
+            _raise(
+                error_type,
+                "supply variant arm disagrees with the declared delivering arm",
+            )
+        contact_id = row["contact_id"]
+        if not isinstance(contact_id, str) or not contact_id:
+            _raise(error_type, "supply variant arm lacks its contact identity")
+        contact_ids.append(contact_id)
+        # An ORDERED LIST of {path, value}: a mapping keyed by the dotted knob
+        # path cannot survive the framework's own node-result transport, which
+        # unflattens dotted keys (see ``rails.supply_variants.
+        # supply_variant_arm_record``).
+        knobs = _sequence(
+            row["resolved_knobs"], "supply variant arm resolved_knobs",
+            error_type=error_type,
+        )
+        if any(
+            not isinstance(entry, Mapping)
+            or set(entry) != {"path", "value"}
+            or not isinstance(entry["path"], str)
+            or not entry["path"]
+            or isinstance(entry["value"], bool)
+            or not isinstance(entry["value"], int)
+            for entry in knobs
+        ):
+            _raise(error_type, "supply variant arm has malformed resolved knobs")
+        paths = [entry["path"] for entry in knobs]
+        if len(set(paths)) != len(paths) or paths != sorted(paths):
+            _raise(
+                error_type,
+                "supply variant arm resolved knobs must be distinct and ordered "
+                "by path",
+            )
+        if deliver and paths:
+            _raise(
+                error_type,
+                "the delivering supply variant arm must resolve no knobs: it is "
+                "the unvaried construction",
+            )
+        if not deliver and not paths:
+            _raise(
+                error_type,
+                "a non-delivering supply variant arm must resolve at least one "
+                "knob, or it is a second spelling of the delivering arm",
+            )
+        ids = _sequence(
+            row["supplied_value_ids"], "supply variant arm supplied_value_ids",
+            error_type=error_type,
+        )
+        if any(not isinstance(value, str) or not value for value in ids):
+            _raise(error_type, "supply variant arm supplied ids must be nonempty strings")
+        if len(set(ids)) != len(ids):
+            _raise(error_type, "supply variant arm supplied ids must be unique")
+        count = _nonneg_int(
+            row["supplied_item_count"], "supply variant arm supplied_item_count",
+            error_type=error_type,
+        )
+        if count != len(ids):
+            _raise(
+                error_type,
+                "supply variant arm supplied_item_count disagrees with its ids",
+            )
+        bound = row["max_supplied_items"]
+        if isinstance(bound, bool) or not isinstance(bound, int) or bound < 1:
+            _raise(error_type, "supply variant arm max_supplied_items must be positive")
+        if count > bound:
+            _raise(
+                error_type,
+                "supply variant arm supplied more items than the bound its fit "
+                "refusal was computed against",
+            )
+        if deliver and retrieved_value_ids is not None:
+            accumulated = list(retrieved_value_ids)
+            if list(ids) != accumulated[: len(ids)]:
+                _raise(
+                    error_type,
+                    "the delivering supply variant arm's supplied ids are not an "
+                    "ordered prefix of the row's own accumulated "
+                    "retrieved_value_ids; the delivered request would not be the "
+                    "unvaried construction's request",
+                )
+    if len(set(contact_ids)) != len(contact_ids):
+        _raise(error_type, "supply variant arms must have distinct contact ids")
+
+
 __all__ = [
     "PLANNER_ACTION_ILLEGAL_DISPOSITION", "is_illegal_planner_route",
-    "NativeEpisodeDelivery", "validate_native_episode_delivery_receipt",
+    "NativeEpisodeDelivery", "SUPPLY_VARIANT_RECEIPT_SCHEMA",
+    "validate_native_episode_delivery_receipt",
     "validate_native_candidate_refresh_receipt", "validate_native_episode_terminal_policy",
     "validate_native_episode_finite_path", "validate_solver_group_receipt",
+    "validate_supply_variant_receipt",
 ]
