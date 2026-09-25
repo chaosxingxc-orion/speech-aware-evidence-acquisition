@@ -119,7 +119,7 @@ unchanged. Four specific differences must be declared:
 
 1. Group by the registered speech input identity, not instruction text.
    The upstream grouping at lines 82-85 uses raw_question. In the synthetic
-   case, two different recordings with two repeats each and identical task
+   case, four records with distinct speech identities and identical task
    instructions collapse into one four-member group. Bind the SLURP split,
    sample ID, original speech packet and round before grouping. Repeats must
    share the original input; their internal states and actions may differ.
