@@ -11,7 +11,12 @@
 # Status: /home/chao/batch-status.jsonl (one line per event); STOP marker: /home/chao/batch-STOP.
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
 export MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
-export REPO=/home/chao/saea-worktrees/fable-batch-flight
+# Reuse an existing clean frozen checkout while retaining an older failed source.
+if [ -f /home/chao/batch-flight-repo.txt ]; then
+  export REPO="$(cat /home/chao/batch-flight-repo.txt)"
+else
+  export REPO=/home/chao/saea-worktrees/fable-batch-flight
+fi
 export FLIGHT_COMMIT=$(cat /home/chao/batch-flight-commit.txt)
 export DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 export LOCK=/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json
