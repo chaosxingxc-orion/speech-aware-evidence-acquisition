@@ -1,0 +1,44 @@
+{
+  "arms": {
+    "control": {
+      "attempt_id": "attempt-slurp-native-stage3-candidate-recovery-control-r01c-seal-recovery1-v1-generation",
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-SEAL-RECOVERY1-V1",
+      "scorer_id": "slurp-slu-official-train",
+      "source_sha256": {
+        "outputs": null,
+        "run_manifest": null,
+        "scores": null
+      }
+    },
+    "expand": {
+      "attempt_id": "attempt-slurp-native-stage3-candidate-recovery-expand-r01c-seal-recovery1-v1-generation",
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-R01C-SEAL-RECOVERY1-V1",
+      "scorer_id": "slurp-slu-official-train",
+      "source_sha256": {
+        "outputs": null,
+        "run_manifest": null,
+        "scores": null
+      }
+    }
+  },
+  "cluster_key": "utterance_id",
+  "comparisons": [
+    {
+      "left": "control",
+      "right": "expand"
+    }
+  ],
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+    "rows": 625,
+    "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd",
+    "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
+    "split_role": "discovery"
+  },
+  "schema": "saea-sealed-official-count-comparison-v1",
+  "statistics": {
+    "draws": 10000,
+    "seed": 20260915
+  },
+  "status": "template-not-executable-until-sealed-hash-binding"
+}

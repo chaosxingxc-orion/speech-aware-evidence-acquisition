@@ -1,0 +1,154 @@
+{
+  "schema": "saea-candidate-seal-recovery-preparation-v1",
+  "recorded_at_utc": "2026-09-25T21:32:07.251621+00:00",
+  "status": "prepared-not-dispatched",
+  "package": "docs/readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1",
+  "root_decision": {
+    "relpath": "coordination/slurp-stage3-candidate-seal-recovery1-v1/root-admission-v1.json",
+    "sha256": "bb9388c8ac05e0f23ecda82d308a96258d31913e7da5eb5ad431b6f9d27fc887"
+  },
+  "cells": [
+    {
+      "key": "control",
+      "runtime_semantics_unchanged": true,
+      "prepared_output_sha256": "942fa4f38cd81327246bdcb2aea1558be21cf40ca0f001042e441e48b0b37027",
+      "new_prepared_pin": {
+        "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-FIT-SEAL-RECOVERY1-V1/phase-supply-v1.json",
+        "sha256": "2e03d35df17fe7d006818b3c5d3606d39f5a7d30767c2d571757e8b2131a24d8"
+      }
+    },
+    {
+      "key": "control-smoke",
+      "runtime_semantics_unchanged": true,
+      "prepared_output_sha256": "2cad72119c892012d7c067ddff4b96f96af065923dd50fa88fa79f8989c94040",
+      "new_prepared_pin": {
+        "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-SMOKE-4-R01C-FIT-SEAL-RECOVERY1-V1/phase-supply-v1.json",
+        "sha256": "751e7e0910ecf818c8e7646a59dbdd4f7ede12befe813f0bf7786ee8410e118b"
+      }
+    },
+    {
+      "key": "expand",
+      "runtime_semantics_unchanged": true,
+      "prepared_output_sha256": "942fa4f38cd81327246bdcb2aea1558be21cf40ca0f001042e441e48b0b37027",
+      "new_prepared_pin": {
+        "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-R01C-FIT-SEAL-RECOVERY1-V1/phase-supply-v1.json",
+        "sha256": "e5512287311c29bb1e909d7c897957c796e7be6e521764d6a1165b10fd3cc559"
+      }
+    },
+    {
+      "key": "expand-smoke",
+      "runtime_semantics_unchanged": true,
+      "prepared_output_sha256": "2cad72119c892012d7c067ddff4b96f96af065923dd50fa88fa79f8989c94040",
+      "new_prepared_pin": {
+        "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-SMOKE-4-R01C-FIT-SEAL-RECOVERY1-V1/phase-supply-v1.json",
+        "sha256": "0b25049113b98cc47383e34bb88f2a84e242a4824beab4032926872b4c39769e"
+      }
+    }
+  ],
+  "scientific_rules_unchanged": true,
+  "prior_failure_preserved": true,
+  "new_model_contacts": 0,
+  "quality_read": false,
+  "gates": [
+    {
+      "name": "engineering_base_check",
+      "exit_code": 0,
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "/home/chao/saea-worktrees/codex-stage3-continuation-20260925/scripts/checks/engineering_base_check.py"
+      ],
+      "log": "/home/chao/candidate-seal-recovery1-launch-validation/gates/engineering_base_check.log"
+    },
+    {
+      "name": "harness_admission_check",
+      "exit_code": 0,
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "/home/chao/saea-worktrees/codex-stage3-continuation-20260925/scripts/checks/harness_admission_check.py"
+      ],
+      "log": "/home/chao/candidate-seal-recovery1-launch-validation/gates/harness_admission_check.log"
+    },
+    {
+      "name": "results_ledger_check",
+      "exit_code": 0,
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "/home/chao/saea-worktrees/codex-stage3-continuation-20260925/scripts/checks/results_ledger_check.py"
+      ],
+      "log": "/home/chao/candidate-seal-recovery1-launch-validation/gates/results_ledger_check.log"
+    },
+    {
+      "name": "tool_catalog_check",
+      "exit_code": 0,
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "/home/chao/saea-worktrees/codex-stage3-continuation-20260925/scripts/checks/tool_catalog_check.py"
+      ],
+      "log": "/home/chao/candidate-seal-recovery1-launch-validation/gates/tool_catalog_check.log"
+    },
+    {
+      "name": "experiment_handoff_check",
+      "exit_code": 0,
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "/home/chao/saea-worktrees/codex-stage3-continuation-20260925/scripts/checks/experiment_handoff_check.py"
+      ],
+      "log": "/home/chao/candidate-seal-recovery1-launch-validation/gates/experiment_handoff_check.log"
+    },
+    {
+      "name": "openjiuwen_native_reuse_check",
+      "exit_code": 0,
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "/home/chao/saea-worktrees/codex-stage3-continuation-20260925/scripts/checks/openjiuwen_native_reuse_check.py",
+        "--output",
+        "/home/chao/candidate-seal-recovery1-launch-validation/gates/openjiuwen-proof.json"
+      ],
+      "log": "/home/chao/candidate-seal-recovery1-launch-validation/gates/openjiuwen_native_reuse_check.log"
+    },
+    {
+      "name": "derived_media_confinement_check",
+      "exit_code": 0,
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "/home/chao/saea-worktrees/codex-stage3-continuation-20260925/scripts/checks/derived_media_confinement_check.py",
+        "--output",
+        "/home/chao/candidate-seal-recovery1-launch-validation/gates/derived-media-proof"
+      ],
+      "log": "/home/chao/candidate-seal-recovery1-launch-validation/gates/derived_media_confinement_check.log"
+    },
+    {
+      "name": "stage3_algorithm_label_check",
+      "exit_code": 0,
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "/home/chao/saea-worktrees/codex-stage3-continuation-20260925/scripts/checks/stage3_algorithm_label_check.py"
+      ],
+      "log": "/home/chao/candidate-seal-recovery1-launch-validation/gates/stage3_algorithm_label_check.log"
+    },
+    {
+      "name": "finite_completion_policy_check",
+      "exit_code": 0,
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "/home/chao/saea-worktrees/codex-stage3-continuation-20260925/scripts/checks/finite_completion_policy_check.py"
+      ],
+      "log": "/home/chao/candidate-seal-recovery1-launch-validation/gates/finite_completion_policy_check.log"
+    }
+  ],
+  "registration_notes": [
+    "The initial repin wrote correct fresh bindings, then reported historical foreign source hashes. All reported foreign files were byte-verified against HEAD, and no old pin remains in the fresh package. Idempotent retry passed residue checking.",
+    "The retry then found new exposure-table header aliases inconsistent with the executable contract. Corrected only the unconsumed new table to the canonical column names. No model or tokenizer contact occurred.",
+    "Clean source preflight and real four-row structural smoke remain dispatch requirements."
+  ],
+  "validation_root": "/home/chao/candidate-seal-recovery1-launch-validation"
+}

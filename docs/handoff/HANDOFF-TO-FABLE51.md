@@ -7,17 +7,22 @@ for their own flights. Do not interpret old plans as permission to restart them.
 
 ## Checkpoint and research objective
 
-Checkpoint: 2026-09-25T20:59:06Z. The durable queue is stopped with a named
-control-arm seal-verifier failure. Driver PID 84082 and worker PID 84442 have
-exited. The resident model service remains available and idle. Do not restart
-the old queue. All 625 control output rows and 3,723 contacts are preserved,
-but the attempt is ABORTED and no official scorer ran. Expanded has not started.
-The raw-position versus distinct-label defect is fixed in the shared seal
-parser: eight full-graph cases, 116 related tests and nine checks passed.
-The repaired verifier accepts all 625 original rows without changing source
-bytes. No task quality has been read. Read the
-[seal failure and recovery boundary](../readiness/2026-09-25-slurp-stage3-candidate-recovery-v1/seal-failure-root-cause-v1.md).
-The one allowed fresh recovery still needs its registration and dispatch.
+Checkpoint: fresh named seal recovery is registered and prepared, not yet
+dispatched. The failed control remains ABORTED with 625 output rows, 3,723
+model contacts and no official score. Its worker stays frozen at
+9f6a949f445e4fb308789eb0786a1a25c3fb8f69. The repaired full verifier accepts
+all source rows without modifying them; 116 related tests and nine gates
+passed. No task quality has been read. The resident decoder-only service is
+retained. Read the [seal failure](../readiness/2026-09-25-slurp-stage3-candidate-recovery-v1/seal-failure-root-cause-v1.md)
+and [recovery preparation](../receipts/continuation/2026-09-25-candidate-seal-recovery1-preparation.json).
+
+The sole recovery uses fresh generation and fit identities, unchanged roster,
+runtime prompts, knowledge and scientific gates. All four prepared outputs
+match their original output hashes. Freeze the existing continuation checkout,
+complete eight clean preflights, then dispatch control smoke4/control625 and
+expanded smoke4/expanded625 through the existing Windows-owned WSL task.
+Any execution failure in this recovery closes the flight. Do not replay the
+old queue or reopen its aborted attempt.
 
 Stage-2's frozen four-node system already has substantial complete-task benefit.
 Stage-3 has **no learned-policy update with established stable benefit yet**.
@@ -25,11 +30,10 @@ The objective remains full sampling, terminal feedback, update, reexecution,
 and matched replication, first on SLURP, then Audio2Tool/E21/E22. Engineering
 proofs and fixed-policy improvements do not complete that objective.
 
-A named recovery has not been dispatched. The registration permits at most one
-root-diagnosed recovery after four-row proof. Existing infrastructure resume
+The named recovery is the one permitted attempt. Existing infrastructure resume
 does not apply to a harness defect; keep the aborted source immutable.
 
-## Live execution: preserve this queue and frozen source
+## Prior failed execution: retain for provenance
 
 | Item | Current authority |
 | --- | --- |
@@ -70,6 +74,16 @@ and [launch receipt](../receipts/continuation/2026-09-25-candidate-recovery-laun
 are the execution authority. Exact run/attempt IDs, caps and source pins live in
 the [registered package](../readiness/2026-09-25-slurp-stage3-candidate-recovery-v1/README.md).
 Never invent substitute IDs or consume a new attempt without registration.
+
+## Recovery execution authority
+
+Use the [fresh recovery registration](../readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1-preregistration.md)
+and [package](../readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1/README.md).
+The next selected worker is the existing continuation checkout. Preserve the
+old queue/commit/STOP and smoke logs before changing the runtime pointers.
+Current runtime pointers still name the failed queue until a launch receipt
+records the switch. The new source decision cites the corrected v2 exclusion
+proof, not the obsolete larger-roster overlap metadata.
 
 ## Current scientific question and decision rule
 

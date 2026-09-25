@@ -1,0 +1,123 @@
+{
+  "analysis_specification": "docs/readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1/analysis-specification-v1.json",
+  "authority": "docs/readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1-preregistration.md",
+  "cells": {
+    "control": {
+      "attempt_id": "attempt-slurp-native-stage3-candidate-recovery-control-r01c-seal-recovery1-v1-generation",
+      "audio_cap": 29996,
+      "baseline": "slurp-native-stage3-candidate-recovery-control-r01c-seal-recovery1-v1-baseline-v1",
+      "cell_id": "slurp-native-stage3-candidate-recovery-control-r01c-seal-recovery1-v1",
+      "composed_config_hash": "edc663c21cee62b23f6fa59c16e157b1cd1363b98a571296cd02967b8f19d094",
+      "experiment": "slurp-native-stage3-candidate-recovery-control-r01c-seal-recovery1-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-candidate-recovery-control-r01c-seal-recovery1-v1-fit",
+      "fit_cap": 27500,
+      "fit_cell_id": "slurp-native-stage3-candidate-recovery-control-r01c-fit-seal-recovery1-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-FIT-SEAL-RECOVERY1-V1",
+      "gen_cap": 6875,
+      "gpu_hours": 8.0,
+      "protocol_hash": "9fb99064c4c25c1707a35692066e7a083470f73422d49732a7859327e2f4389e",
+      "rows": 625,
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-SEAL-RECOVERY1-V1",
+      "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"
+    },
+    "control-smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-seal-recovery1-v1-generation",
+      "audio_cap": 290,
+      "baseline": "slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-seal-recovery1-v1-baseline-v1",
+      "cell_id": "slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-seal-recovery1-v1",
+      "composed_config_hash": "d0c0debccda0e75fb7d1d21f6355f60288debb5989f22e76caf95218042bbbf2",
+      "experiment": "slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-seal-recovery1-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-seal-recovery1-v1-fit",
+      "fit_cap": 176,
+      "fit_cell_id": "slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-fit-seal-recovery1-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-SMOKE-4-R01C-FIT-SEAL-RECOVERY1-V1",
+      "gen_cap": 44,
+      "gpu_hours": 1.0,
+      "protocol_hash": "ccf0e93e5d6c14c02c3c82a89df8cb2f0ea69bbe90850d6d1cdeda293fffa248",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-SMOKE-4-R01C-SEAL-RECOVERY1-V1",
+      "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5"
+    },
+    "expand": {
+      "attempt_id": "attempt-slurp-native-stage3-candidate-recovery-expand-r01c-seal-recovery1-v1-generation",
+      "audio_cap": 29996,
+      "baseline": "slurp-native-stage3-candidate-recovery-expand-r01c-seal-recovery1-v1-baseline-v1",
+      "cell_id": "slurp-native-stage3-candidate-recovery-expand-r01c-seal-recovery1-v1",
+      "composed_config_hash": "09b08cf42a7330dc653073d61ca1c5fa059b38d1ca843d5146d84a146efa1607",
+      "experiment": "slurp-native-stage3-candidate-recovery-expand-r01c-seal-recovery1-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-candidate-recovery-expand-r01c-seal-recovery1-v1-fit",
+      "fit_cap": 27500,
+      "fit_cell_id": "slurp-native-stage3-candidate-recovery-expand-r01c-fit-seal-recovery1-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-R01C-FIT-SEAL-RECOVERY1-V1",
+      "gen_cap": 6875,
+      "gpu_hours": 8.0,
+      "protocol_hash": "2aa64d40a9218d9bcadc15b276695cae72dfc724f82f186369fc5ab665171808",
+      "rows": 625,
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-R01C-SEAL-RECOVERY1-V1",
+      "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"
+    },
+    "expand-smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-candidate-recovery-expand-smoke-4-r01c-seal-recovery1-v1-generation",
+      "audio_cap": 290,
+      "baseline": "slurp-native-stage3-candidate-recovery-expand-smoke-4-r01c-seal-recovery1-v1-baseline-v1",
+      "cell_id": "slurp-native-stage3-candidate-recovery-expand-smoke-4-r01c-seal-recovery1-v1",
+      "composed_config_hash": "0bdfe08e0d3d1ec8b317939745e11f08b8bec81dfddad40d1dc4334598748ad3",
+      "experiment": "slurp-native-stage3-candidate-recovery-expand-smoke-4-r01c-seal-recovery1-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-candidate-recovery-expand-smoke-4-r01c-seal-recovery1-v1-fit",
+      "fit_cap": 176,
+      "fit_cell_id": "slurp-native-stage3-candidate-recovery-expand-smoke-4-r01c-fit-seal-recovery1-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-SMOKE-4-R01C-FIT-SEAL-RECOVERY1-V1",
+      "gen_cap": 44,
+      "gpu_hours": 1.0,
+      "protocol_hash": "236a59428b083ab7d3bb661c344c24a08f7dfc7ef07d75c00afb71276a829e1c",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-SMOKE-4-R01C-SEAL-RECOVERY1-V1",
+      "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5"
+    }
+  },
+  "claim_boundary": "Fixed whole-system construction policies; no learned RL, independent holdout or stable benefit claim.",
+  "comparison": "Expanded versus original proposal with coherent task knowledge and matched complete four-node continuations.",
+  "contacts_per_row_max": 11,
+  "cumulative_conservative_ceilings": {
+    "fit_endpoint_calls": 83028,
+    "generation_calls": 20757,
+    "gpu_hours": 27,
+    "repeated_audio_seconds": 90858
+  },
+  "execution_order": [
+    "control-smoke",
+    "control",
+    "expand-smoke",
+    "expand"
+  ],
+  "failure_policy": "This is the sole permitted named recovery. Any further execution failure closes the flight; no additional recovery, automatic replay or partial row selection.",
+  "intervention": "Original-only versus append-selected-exemplars mode; proposal propagated through Solver, independent Reviewer, Planner and revision. No hard answer filter.",
+  "limits": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap_including_smoke": 55352,
+    "generation_calls_cap_including_smoke": 13838,
+    "gpu_hours_fit_inclusive": 18.0,
+    "native_tool_calls": 0,
+    "official_full_scoring_jobs": 2,
+    "repeated_speech_audio_seconds_cap": 60572
+  },
+  "prior_costs": {
+    "generation_calls_actual_including_smoke": 3748,
+    "old_reservations_are_not_actual_use": true
+  },
+  "recovery_index": 1,
+  "schema": "saea-candidate-recovery-protocol-v1",
+  "source_failure": {
+    "attempt_id": "attempt-slurp-native-stage3-candidate-recovery-control-r01c-v1-generation",
+    "generation_contacts_actual": 3723,
+    "proof": "docs/receipts/continuation/2026-09-25-candidate-recovery-seal-repair.json",
+    "proof_sha256": "34f6288fb98c2dc72ced17d6dc00a1cb7cfd83172c95f62656799dce2e21a9cd",
+    "rows_preserved": 625,
+    "run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1",
+    "state": "ABORTED"
+  },
+  "stage3_algorithm": "shared-rollout",
+  "status": "registered-before-contact"
+}

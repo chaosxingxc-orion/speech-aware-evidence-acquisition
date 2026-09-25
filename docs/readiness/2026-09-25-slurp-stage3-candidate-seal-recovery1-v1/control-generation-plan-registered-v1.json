@@ -1,0 +1,45 @@
+{
+  "cell": "slurp-native-stage3-candidate-recovery-control-r01c-seal-recovery1-v1",
+  "composed_config_hash": "edc663c21cee62b23f6fa59c16e157b1cd1363b98a571296cd02967b8f19d094",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-candidate-recovery-control-r01c-seal-recovery1-v1-generation",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 8.0,
+    "planned_model_calls": 6875,
+    "planned_speech_audio_seconds": 29996,
+    "protocol_hash": "9fb99064c4c25c1707a35692066e7a083470f73422d49732a7859327e2f4389e",
+    "run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-SEAL-RECOVERY1-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-candidate-recovery-control-r01c-seal-recovery1-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 27500,
+    "generation_calls_cap": 6875,
+    "gpu_hours_fit_inclusive": 8.0,
+    "native_knowledge_target_lookup_calls_cap": 0,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 29996
+  },
+  "fit": {
+    "contact_cap": 27500,
+    "endpoints_per_contact": 4,
+    "mode": "native_contact_fit",
+    "scope": "Every actual full-roster shared native request, including proposal, intent/slot cards, independent review, Planner and revision."
+  },
+  "plan_kind": "generation",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1/protocol-registered-v1.json",
+    "sha256": "374171f5b307d9a650795e3566a52f91084a1e96287e11172c2260f8a985e1c4"
+  },
+  "read_rule": "Root admission, pinned preparation, clean preflight and exclusive matching service required. No outcomes until both full seals and complete scores.",
+  "schema": "saea-flight-execution-plan-v1",
+  "status": "registered-before-contact"
+}
