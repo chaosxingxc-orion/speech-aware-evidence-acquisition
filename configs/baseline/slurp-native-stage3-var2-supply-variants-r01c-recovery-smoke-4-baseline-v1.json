@@ -333,5 +333,9 @@
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
   "what_the_train_exemplars_store_is": "SLURP v2 base program module M1 / cell B1: the top-k TRAIN construction-pool exemplars recalled by cosine against this row's OWN sealed R01C speech vector in the content retrieval dimension, ranked by saea-rank-wcos-prior-agree-v1 (identity on cosine: w_cos=1, w_prior=0, w_agree=0) and passed through saea-fuse-supplyfilter-v1. The store is the size-pool-annotated-exemplars-MINUS-R01 release: the parent pool contains R01's own utterances, and a construction roster that retrieved itself would read its own answer (coordinator decision 102; docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars-minus-r01.json). Each value renders as '<utterance> | <scenario>_<action> | type=filler; ...'. The decision is delivered to the SOLVER phase through the E6 acquire transition as typed content blocks, composed with the slot-contracts candidate supply on the same wave.",
-  "what_this_is": "Registered VAR-2 matched-prefix local Solver supply-action discovery on R01C. Four arms share each pre-Solver state; only the unchanged last arm continues downstream. Side-arm scores are local Solver evidence, never complete-system returns. Fixed order is a declared limitation. Historical ROLL-AA row-F1 intervals do not establish a pooled-F1 power guarantee."
+  "what_this_is": "Registered VAR-2 matched-prefix local Solver supply-action discovery on R01C. Four arms share each pre-Solver state; only the unchanged last arm continues downstream. Side-arm scores are local Solver evidence, never complete-system returns. Fixed order is a declared limitation. Historical ROLL-AA row-F1 intervals do not establish a pooled-F1 power guarantee.",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-RECOVERY-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "b7b1787a8366176a6d0a385525a2a3e8c5f3e186b9dbdd8f563f2495ab386efc"
+  }
 }

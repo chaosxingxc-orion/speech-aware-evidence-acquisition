@@ -13,8 +13,22 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "Root-diagnosed VAR-2 recovery is HELD. Root must register the one recovery, mint new admission, prepare this run's first-phase supply and complete fit before contact.",
-        "requirements": [],
-        "state": "held"
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-var2-recovery-admission-v1",
+            "relpath": "coordination/slurp-stage3-var2-recovery-v1/root-admission-v1.json",
+            "sha256": "e1c1da4b3009a302b537b242ad7c4bbba8934183927b9cd5b26da290430dd773",
+            "reason": "Decision slurp-stage3-var2-recovery-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-RECOVERY-V1/phase-supply-v1.json",
+            "sha256": "820636150cc32fed732372238184e1e19499a7bf074b52988bb890d4352ad876",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-RECOVERY-V1"
     },

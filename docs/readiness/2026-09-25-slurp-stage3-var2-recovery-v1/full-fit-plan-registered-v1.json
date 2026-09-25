@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-var2-supply-variants-r01c-recovery-fit-v1",
-  "composed_config_hash": "22572b638da810bfea7a9507ef3359b03d26540d0e37c27b513048bd5a714b07",
+  "composed_config_hash": "71c86e04a2fc07a229cb1c59d955236ed83fb5adaf17fd0f4b16fde34bfae7c6",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-var2-supply-variants-r01c-recovery-v1-fit",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 8.0,
     "planned_model_calls": 42500,
     "planned_speech_audio_seconds": 46357,
-    "protocol_hash": "240f751e0e29331245a4bdc0934d62cf3d6237325640ab042517091e5c84f6b5",
+    "protocol_hash": "e04ed15bae2236654bc95f23237707d060af57eed715832a9359a3832829bcf4",
     "run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-RECOVERY-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
@@ -37,7 +37,7 @@
   "plan_kind": "fit",
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-25-slurp-stage3-var2-recovery-v1/protocol-registered-v1.json",
-    "sha256": "f0987b83b138e5b683746503227fc0eb0ba0513fe7fcf0aa12d27e1ec6b4dbce"
+    "sha256": "617542aa0148e0ce41111e4f278da2e18038fb0385c6931396cfaf0871da6f13"
   },
   "read_rule": "Registered before contact; launch requires root admission, source-bound preparation, clean preflight and each actual request fit. No predecessor partial outcome read.",
   "recovery_accounting": {
