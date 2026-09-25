@@ -42,7 +42,7 @@ def test_running_with_completed_step_and_sealed_metadata(tmp_path):
         "current_step": {"order": 2, "short": "second", "cell": "cell-b"},
         "completed_steps": [{"order": 1, "short": "first", "cell": "cell-a"}],
         "reason": None, "attempt_state": "FINALIZED", "manifest_status": "COMPLETED",
-        "ignored_incomplete_tail": False,
+        "ignored_incomplete_tail": False, "status_parse_error": None,
     }
     assert "secret" not in json.dumps(result) and "raw.log" not in json.dumps(result)
 
@@ -105,6 +105,20 @@ def test_existing_stop_marker_without_event_requires_handoff(tmp_path):
     result = summarize(queue, status, data, stop_marker=stop)
     assert result["state"] == "handoff-required"
     assert result["reason"] == "2026-09-25T00:00:00Z prior failure"
+
+
+def test_malformed_history_reports_explicit_stop_and_parse_error(tmp_path):
+    queue, status, data = fixture(tmp_path, [("step-start", {"step": 1, "short": "first"})])
+    with status.open("a", encoding="utf-8") as handle:
+        handle.write('INSPECT FAILED: "no manifest"\n')
+        handle.write('{"event":"STOP","detail":"later event"}\n')
+    stop = tmp_path / "STOP"
+    stop.write_text("2026-09-25T09:49:19Z structural failure\n")
+    result = summarize(queue, status, data, stop_marker=stop)
+    assert result["state"] == "handoff-required"
+    assert result["reason"] == "2026-09-25T09:49:19Z structural failure"
+    assert result["status_parse_error"] == "malformed complete status line 2"
+    assert result["completed_steps"] == []
 
 
 DRIVER = "/mnt/d/project/scripts/flights/batch/batch_driver.sh"

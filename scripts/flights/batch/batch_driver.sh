@@ -22,8 +22,13 @@ STATUS=/home/chao/batch-status.jsonl
 STOP=/home/chao/batch-STOP
 DONE_MARK=/home/chao/batch-done
 
-log() { printf '{"at":"%s","event":"%s","detail":%s}\n' "$(date -u +%FT%TZ)" "$1" "${2:-null}" >> "$STATUS"; echo "$(date -u +%T) $1 ${2:-}"; }
-stop() { log "STOP" "\"$1\""; echo "$(date -u +%FT%TZ) $1" > "$STOP"; exit 9; }
+log() {
+  local mode=()
+  [ "${3:-}" = "--text" ] && mode=(--text)
+  "$PY" -B "$SP/batch_jsonl_log.py" "$1" "${2:-null}" "${mode[@]}" >> "$STATUS"
+  echo "$(date -u +%T) $1 ${2:-}"
+}
+stop() { log "STOP" "$1" --text; echo "$(date -u +%FT%TZ) $1" > "$STOP"; exit 9; }
 
 [ -f "$STOP" ] && { echo "STOP marker present; refusing to run: $(cat $STOP)"; exit 8; }
 [ -d "$REPO" ] || stop "batch flight worktree missing: $REPO"

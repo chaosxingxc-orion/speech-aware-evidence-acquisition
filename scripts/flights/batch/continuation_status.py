@@ -25,7 +25,7 @@ def _json(path):
 
 def _events(path):
     if not path.exists():
-        return [], False
+        return [], False, None
     try:
         raw = path.read_bytes()
     except OSError as exc:
@@ -42,9 +42,16 @@ def _events(path):
             if index == len(lines) - 1 and not line.endswith(b"\n"):
                 ignored_tail = True
                 break
-            raise StatusReadError(f"malformed complete status line {index + 1}") from exc
+            return events, False, f"malformed complete status line {index + 1}"
         events.append(event)
-    return events, ignored_tail
+    return events, ignored_tail, None
+
+
+def _stop_reason(path):
+    try:
+        return Path(path).read_text(encoding="utf-8").strip() or "STOP marker present"
+    except OSError as exc:
+        raise StatusReadError(f"cannot read STOP marker: {type(exc).__name__}") from exc
 
 
 def _component(value):
@@ -116,7 +123,10 @@ def summarize(queue_path, status_path, data_root, *, stop_marker=None,
     queue = _json(queue_path)
     if not isinstance(queue, list) or any(not isinstance(step, dict) for step in queue):
         raise StatusReadError("queue must be a list of step objects")
-    events, ignored_tail = _events(status_path)
+    events, ignored_tail, parse_error = _events(status_path)
+    has_stop_marker = stop_marker is not None and Path(stop_marker).exists()
+    if parse_error and not has_stop_marker:
+        raise StatusReadError(parse_error)
     done = {event["detail"].get("short") for event in events
             if event["event"] == "step-done" and isinstance(event.get("detail"), dict)}
     completed = [_step_view(step) for step in queue if step.get("short") in done]
@@ -126,13 +136,12 @@ def summarize(queue_path, status_path, data_root, *, stop_marker=None,
     if current is not None:
         attempt_state, manifest_status, failure = _sealed_metadata(data_root, current)
     stops = [event.get("detail") for event in events if event["event"] == "STOP"]
-    if stops:
+    if parse_error:
+        failure = _stop_reason(stop_marker)
+    elif stops:
         failure = str(stops[-1])
-    elif stop_marker is not None and Path(stop_marker).exists():
-        try:
-            failure = Path(stop_marker).read_text(encoding="utf-8").strip() or "STOP marker present"
-        except OSError as exc:
-            raise StatusReadError(f"cannot read STOP marker: {type(exc).__name__}") from exc
+    elif has_stop_marker:
+        failure = _stop_reason(stop_marker)
     elif failure is None:
         exits = [event for event in events if event["event"] in ("arm-exit", "smoke-worker-exit")
                  and isinstance(event.get("detail"), dict) and event["detail"].get("rc") not in (None, 0)]
@@ -173,6 +182,7 @@ def summarize(queue_path, status_path, data_root, *, stop_marker=None,
         "attempt_state": attempt_state,
         "manifest_status": manifest_status,
         "ignored_incomplete_tail": ignored_tail,
+        "status_parse_error": parse_error,
     }
 
 
