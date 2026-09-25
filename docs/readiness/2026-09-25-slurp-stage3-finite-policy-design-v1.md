@@ -1,8 +1,9 @@
 # Finite action policy: pre-action state and full-system return
 
 Status: root design continuation; no model-contact authorization in this note.
-The action set and contact identities will be registered after VAR-2 and F10
-close. This note makes the approved algorithm operational without changing
+VAR-2 is closed after its sole recovery failed and supplies no matched-prefix
+result. The action set and contact identities will be registered after F10
+closes, using the available ordinary full-system VAR-1 evidence. This note makes the approved algorithm operational without changing
 the frozen answering model or reopening the closed semantic-delta campaign.
 
 ## Research question
@@ -128,3 +129,59 @@ The finite-policy baseline is the smallest actual sampling-feedback-update-
 evaluation cycle. It supplies a controlled optimization space for those
 algorithm comparisons, not a replacement for them. Review root conclusions
 before expanding to multi-step Reviewer/Planner decisions or other datasets.
+
+
+## Implementation boundary and next integration
+
+Reuse FlightRuntime._resolve_phase_supply and the ordinary
+NativeEpisodeRunBinding.supply_for_phase callback. The shared runner invokes
+that callback with the just-sealed Perception state before the first Solver
+request. Choose the action there once, then retain it by episode identity.
+Do not enter the closed supply_variants grouped-Solver branch.
+
+Reuse each action's existing named-knowledge-store router and the same
+composite knowledge identity. A fixed default20 preview establishes the
+state; selected-action routing establishes the actual supplied evidence.
+Both need separate receipts so an inspected preview is never reported as
+model-exposed evidence. Validate preview query/state hashes and reject any
+first decision that already contains Solver/Reviewer/Planner output.
+The absence of a policy configuration must preserve existing requests.
+
+A numeric policy library is necessary but insufficient for a runnable cell.
+Remaining integration is the source-pinned snapshot loader, pre-action
+state receipt, episode-held action router, ordinary four-node graph proof,
+all-action request capacity registration and terminal official-feedback join.
+The official reader must verify sealed files and the complete roster before
+constructing the in-memory round descriptor. A Python dataclass or a field
+saying complete is not artifact-seal verification.
+
+Round1 uses balanced sampling without replacement in fixed roster order.
+Choose the remainder-action allocation reproducibly before the round, then
+record the registered seed, quotas, roster order and per-decision random draw.
+Report the actual conditional probability vector remaining_count/remaining_total,
+including zero probabilities at the end of the schedule. Do not pass this
+allocation through the independent epsilon-greedy probability formula.
+Round2 uses the declared 80/20 epsilon-greedy rule with the prior snapshot
+frozen throughout; evaluation uses zero exploration.
+
+## Statistical limits to diagnose, not silently repair
+
+With625 trajectories and four actions, round1 provides about156 observations
+per action before splitting into five agreement states. Rare state-action
+cells may stay below20 observations; report that frequency and the resulting
+global fallback. Do not promise a detectable small improvement from these
+counts or replace the registered thresholds after seeing results.
+
+During adaptive round2, different actions may be sampled under different
+state mixtures. Their unweighted global means can therefore reflect both
+action quality and the states where they were selected. Preserve the approved
+cumulative-mean estimator for this baseline, retain exact propensities and
+state occupancy, and report the limitation. Importance-weighted or
+state-standardized estimators would be separately registered algorithm
+comparators, not an invisible repair after an unfavorable evaluation.
+
+The design does not require every action to outperform the default globally.
+It requires lawful complete-system execution and evidence sufficient to test
+conditional usefulness. Admission must consider the EX-DIV harm signal and
+the weak separation between K10/K30 and PLANR; no action is promoted merely
+because its single point estimate is largest.

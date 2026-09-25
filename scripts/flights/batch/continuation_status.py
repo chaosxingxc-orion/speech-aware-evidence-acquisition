@@ -9,6 +9,8 @@ Without --check-processes, an apparent running state is explicitly unverified.
 
 import argparse
 import json
+import math
+import time
 from pathlib import Path
 
 
@@ -116,8 +118,73 @@ def _sealed_metadata(data_root, step):
     return state, manifest_status, failure
 
 
+
+def telemetry_summary(path, *, now=None, stale_after_seconds=90):
+    """Read one completed, bounded telemetry row; never inspect task results.
+
+    Request totals belong to the serving process, not to the current experiment.
+    Warnings describe observations and never restart or invalidate a flight.
+    """
+    unknown = {
+        "server_ok": None,
+        "warnings": ["serving telemetry is unavailable or malformed"],
+    }
+    try:
+        with Path(path).open("rb") as handle:
+            handle.seek(0, 2)
+            end = handle.tell()
+            start = max(0, end - 65536)
+            handle.seek(start)
+            raw = handle.read(65536)
+        if start:
+            raw = raw.partition(b"\n")[2]
+        lines = raw.splitlines(keepends=True)
+        if lines and not lines[-1].endswith(b"\n"):
+            lines.pop()
+        if not lines:
+            return unknown
+        row = json.loads(lines[-1])
+        if not isinstance(row, dict) or row.get("schema") != "saea-serving-monitor-sample-v1":
+            return unknown
+        sampled = row.get("sampled_at")
+        if (isinstance(sampled, bool) or not isinstance(sampled, (int, float))
+                or not math.isfinite(sampled)):
+            return unknown
+        if not isinstance(row.get("server_ok"), bool):
+            return unknown
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return unknown
+
+    def number(mapping, name):
+        value = mapping.get(name) if isinstance(mapping, dict) else None
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            return None
+        return value if math.isfinite(value) and value >= 0 else None
+
+    age = (time.time() if now is None else now) - sampled
+    warnings = []
+    if age > stale_after_seconds:
+        warnings.append("serving telemetry is stale")
+    elif age < -5:
+        warnings.append("serving telemetry timestamp is in the future")
+    if not row["server_ok"]:
+        warnings.append("serving monitor reports unhealthy service")
+    return {
+        "sampled_at": sampled,
+        "age_seconds": round(age, 3),
+        "server_ok": row["server_ok"],
+        "gpu_utilization_percent": number(row.get("gpu"), "utilization_percent"),
+        "gpu_memory_used_mib": number(row.get("gpu"), "memory_used_mib"),
+        "gpu_power_watts": number(row.get("gpu"), "power_watts"),
+        "slots_busy": number(row.get("slots"), "busy"),
+        "slots_total": number(row.get("slots"), "total"),
+        "service_requests_total": number(row, "requests_total"),
+        "warnings": warnings,
+    }
+
 def summarize(queue_path, status_path, data_root, *, stop_marker=None,
-              process_snapshot=None, driver_script=None, session_id=None):
+              process_snapshot=None, driver_script=None, session_id=None,
+              telemetry_path=None, now=None):
     """Summarize one existing queue; all inputs are explicit, local, and read only."""
     queue_path, status_path, data_root = map(Path, (queue_path, status_path, data_root))
     queue = _json(queue_path)
@@ -173,7 +240,7 @@ def summarize(queue_path, status_path, data_root, *, stop_marker=None,
                 missing.append("serving session")
             failure = " and ".join(missing) + " process" + ("es" if len(missing) > 1 else "") + " absent"
             state = "handoff-required"
-    return {
+    result = {
         "state": state,
         "handoff_required": state == "handoff-required",
         "current_step": _step_view(current) if current is not None else None,
@@ -184,6 +251,9 @@ def summarize(queue_path, status_path, data_root, *, stop_marker=None,
         "ignored_incomplete_tail": ignored_tail,
         "status_parse_error": parse_error,
     }
+    if telemetry_path is not None:
+        result["telemetry"] = telemetry_summary(telemetry_path, now=now)
+    return result
 
 
 def main():
@@ -195,6 +265,7 @@ def main():
     parser.add_argument("--check-processes", action="store_true", help="Verify driver and serving session identities in Linux /proc")
     parser.add_argument("--driver-script", type=Path, help="Absolute batch_driver.sh path required with --check-processes")
     parser.add_argument("--session-id", help="Serving session id required with --check-processes")
+    parser.add_argument("--telemetry", type=Path, help="Optional local serving monitor JSONL; bounded metadata only")
     args = parser.parse_args()
     if args.check_processes and (not args.driver_script or not args.session_id or not args.driver_script.is_absolute()):
         parser.error("--check-processes requires --driver-script as an absolute path and --session-id")
@@ -202,7 +273,7 @@ def main():
         snapshot = _process_snapshot() if args.check_processes else None
         result = summarize(args.queue, args.status, args.data_root, stop_marker=args.stop_marker,
                            process_snapshot=snapshot, driver_script=args.driver_script,
-                           session_id=args.session_id)
+                           session_id=args.session_id, telemetry_path=args.telemetry)
     except StatusReadError as exc:
         parser.exit(2, f"status unavailable: {exc}\n")
     print(json.dumps(result, separators=(",", ":"), ensure_ascii=True))

@@ -53,8 +53,9 @@ These are root inferences from the inspected implementations and SLURP results.
    is truthy. Preserve the declared continuous feedback and record that
    adaptation; keep intent correctness as a separate protected outcome.
 2. Crediting every retrieved memory with the same terminal outcome does not
-   identify which evidence helped. VAR-2 supplies matched-prefix action
-   evidence, but its side branches still lack independent downstream
+   identify which evidence helped. VAR-2 was intended to supply matched-prefix
+   action evidence, but both attempts failed and the family is closed without
+   that result. Its planned side branches also lacked independent downstream
    Reviewer/Planner trajectories. Only complete-system trials can supply
    the return for a deployed action-selection policy.
 3. Memory values should represent supported conditional action experience

@@ -1,5 +1,29 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
+## Monitor and policy implementation checkpoint, 2026-09-25 11:05 UTC
+
+The15-minute heartbeat remains ACTIVE. The shared continuation_status.py now
+accepts an explicit --telemetry path and emits a bounded, allowlisted serving
+snapshot alongside queue/process status. It reads the last complete telemetry
+row, tolerates an in-progress tail, and warns on stale/unhealthy/unavailable
+telemetry without replaying or altering the job.21 synthetic status tests pass.
+A service request counter is service-wide, never a current-flight completion count.
+
+At11:04:40UTC the fresh-control625 process was RUNNING, with no STOP or completed
+full manifest. The service was healthy, all4 slots busy and GPU utilization97%.
+The first input-assembly interval was followed by active generation; do not
+infer completed rows from an OPENED attempt or announce partial task outcomes.
+No new owner decision is blocking the independent F10 chain.
+
+The finite-policy pure numeric component is in implementation/review, not yet
+connected to runtime and not authorized as a GPU cell. Root confirmed the
+ordinary pre-Solver supply callback can carry one episode-held action without
+reopening VAR-2. Required next integration is pinned snapshots, default20
+pre-action preview, a source-bound decision receipt, ordinary graph validation,
+real capacity registration and a complete terminal-feedback join. The design
+now explicitly records balanced allocation probabilities and adaptive global
+mean confounding. No training-free RL gain has been measured.
+
 ## Live execution: independent F10, 2026-09-25 10:47 UTC
 
 F10 is now RUNNING as independent task SAEA-F10-Continuation-20260925.

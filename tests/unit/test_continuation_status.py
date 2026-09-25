@@ -163,3 +163,78 @@ def test_proc_scanner_reads_only_cmdline_of_numeric_entries(tmp_path):
     (proc / "self").mkdir()
     (proc / "self" / "cmdline").write_bytes(b"fake\0")
     assert _process_snapshot(proc) == [["bash", DRIVER]]
+
+
+def telemetry_record(**updates):
+    row = {
+        "schema": "saea-serving-monitor-sample-v1", "sampled_at": 1000.0,
+        "sampled_at_iso": "1970-01-01T00:16:40+00:00", "server_ok": True,
+        "gpu": {"utilization_percent": 98.0, "memory_used_mib": 23000, "power_watts": 95.0},
+        "slots": {"busy": 4, "idle": 0, "total": 4}, "requests_total": 42,
+        "untrusted_extra": "do not forward",
+    }
+    return {**row, **updates}
+
+
+def test_optional_telemetry_is_bounded_allowlisted_and_ignores_partial_tail(tmp_path):
+    from continuation_status import telemetry_summary
+
+    path = tmp_path / "monitor.jsonl"
+    path.write_bytes(b"old junk" * 20000 + b"\n" + json.dumps(telemetry_record()).encode() +
+                     b'\n{"schema":')
+    result = telemetry_summary(path, now=1010)
+    assert result["server_ok"] is True
+    assert result["age_seconds"] == 10
+    assert result["slots_busy"] == 4
+    assert result["service_requests_total"] == 42
+    assert result["warnings"] == []
+    assert "untrusted_extra" not in json.dumps(result)
+    assert "do not forward" not in json.dumps(result)
+
+
+@pytest.mark.parametrize("updates,now,warning", [
+    ({}, 1100, "serving telemetry is stale"),
+    ({"server_ok": False}, 1010, "serving monitor reports unhealthy service"),
+    ({"sampled_at": 1200}, 1010, "serving telemetry timestamp is in the future"),
+])
+def test_telemetry_reports_observational_warnings(tmp_path, updates, now, warning):
+    from continuation_status import telemetry_summary
+
+    path = tmp_path / "monitor.jsonl"
+    path.write_text(json.dumps(telemetry_record(**updates)) + "\n")
+    assert warning in telemetry_summary(path, now=now)["warnings"]
+
+
+def test_idle_gpu_is_not_a_failure(tmp_path):
+    from continuation_status import telemetry_summary
+
+    path = tmp_path / "monitor.jsonl"
+    path.write_text(json.dumps(telemetry_record(
+        gpu={"utilization_percent": 0.0}, slots={"busy": 0, "idle": 4, "total": 4}
+    )) + "\n")
+    assert telemetry_summary(path, now=1010)["warnings"] == []
+
+
+@pytest.mark.parametrize("raw", [
+    b'{"schema":"wrong","sampled_at":1000}\n',
+    b'{"schema":"saea-serving-monitor-sample-v1","sampled_at":NaN}\n',
+    b'{"schema":',
+])
+def test_bad_telemetry_reports_unknown_not_healthy(tmp_path, raw):
+    from continuation_status import telemetry_summary
+
+    path = tmp_path / "monitor.jsonl"
+    path.write_bytes(raw)
+    result = telemetry_summary(path, now=1010)
+    assert result["server_ok"] is None
+    assert result["warnings"] == ["serving telemetry is unavailable or malformed"]
+
+
+def test_telemetry_requested_adds_snapshot_without_changing_queue_verdict(tmp_path):
+    queue, status, data = fixture(tmp_path, [("step-start", {"step": 1, "short": "first"})])
+    telemetry = tmp_path / "monitor.jsonl"
+    telemetry.write_text(json.dumps(telemetry_record(server_ok=False)) + "\n")
+    result = summarize(queue, status, data, telemetry_path=telemetry, now=1010)
+    assert result["state"] == "running-unverified"
+    assert result["telemetry"]["server_ok"] is False
+    assert result["telemetry"]["warnings"]
