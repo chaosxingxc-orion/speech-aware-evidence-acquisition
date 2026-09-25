@@ -58,9 +58,12 @@ chunks promptly.
   truthiness-based success update. Same-space scholarly algorithm loops remain
   unexecuted and required by the persistent Stage-3 objective.
 - F10: the existing empty-contract builder now accepts a source-bound sibling
-  configuration; 26 focused/legacy tests passed. Register and build the
-  minus-R01 sibling (8,554 examples), preserving retrieval keys and nonempty
-  values. The historical 9,354 store is not eligible for R01C. See
+  configuration; 26 focused/legacy tests and the engineering gate passed.
+  The registered CPU build is COMPLETE: 8,554 identical retrieval facets,
+  5,813 unchanged nonempty values and 2,741 re-rendered empty values.
+  All required vectors are present; zero model/tool/encoder/scorer/GPU contacts.
+  Receipt: docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars-empty-contract-minus-r01-v1.json.
+  Snapshot content SHA-256: 2c4d44626e269df2b9cc1371623c08a317de03dd0f1183e3a0bc3b8ed1477e18. The historical 9,354 store is not eligible for R01C. See
   docs/readiness/2026-09-25-slurp-stage3-f10-knowledge-build-v1.md.
   Proposed matched control/treatment runtime remains undispatched.
 - No current owner decision is required. Continue VAR-2/F10 -> qualify useful
