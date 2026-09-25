@@ -1,0 +1,24 @@
+{
+  "schema": "saea-r01c-own-null-calibration-v2",
+  "source": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-STAGE3-VAR1-OWN-NULL-V1-CORRECTED-V2/score-contrasts.json",
+  "source_sha256": "aee5961c0829b9abad93023a824e0cd2ec059fbe8e6ed3dda720045b91b5370d",
+  "rows": 625,
+  "draws": 10000,
+  "seed": 20260915,
+  "cluster": "utterance_id",
+  "h_slu_pp": 1.241325889503779,
+  "h_intent_pp": 1.44,
+  "slu_delta_pp": 1.8688967314994365,
+  "slu_ci95_pp": [
+    0.41208925574951377,
+    3.359871455841828
+  ],
+  "intent_delta_pp": -1.2800000000000034,
+  "intent_ci95_pp": [
+    -3.04,
+    0.48
+  ],
+  "ruling": "Operational uncertainty calibration only. The SLU repeat difference is nonzero and its CI95 excludes zero; investigate repeat variability in family analysis, do not interpret it as optimization gain. No per-scenario verdict until the family read. The selector must estimate its own paired contrast interval.",
+  "model_contacts": 0,
+  "scorer_contacts": 0
+}

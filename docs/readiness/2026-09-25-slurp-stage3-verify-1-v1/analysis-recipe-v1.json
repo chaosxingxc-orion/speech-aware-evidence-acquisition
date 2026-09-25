@@ -31,7 +31,7 @@
       "train_fold_a_h_intent": 0.9943,
       "train_fold_a_h_slu": 1.2485
     },
-    "primary": "PENDING_OWN_NULL_R01C",
+    "primary": {"receipt": "docs/receipts/continuation/2026-09-25-r01c-own-null-calibration-v2.json", "sha256": "e9cc3af74a61cb3d7f1a6d25904ae466197792e24079d7ab29f48098aa747a77", "h_intent_pp": 1.44, "h_slu_context_only_pp": 1.241325889503779},
     "primary_note": "Seal the R01C own-null first. Its intent half-width is an operational NI guard; compute the selector contrast interval directly from its paired official counts."
   },
   "prohibitions": [

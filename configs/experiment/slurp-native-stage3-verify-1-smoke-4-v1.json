@@ -12,8 +12,16 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "Cell VERIFY-1 (board route F11, package docs/readiness/2026-09-25-slurp-stage3-verify-1-v1, preregistration docs/readiness/2026-09-25-slurp-stage3-verify-1-v1-preregistration.md). READINESS HELD. Two things this cell needs do not exist yet and neither is created by this registration: the root admission decision receipt coordination/slurp-stage3-verify-1-v1/root-admission-v1.json (decision id slurp-stage3-verify-1-admission-v1) and the coordinator's own re-pin cycle. 'requirements' is deliberately EMPTY rather than a PENDING placeholder pair: core.flight.repin._upsert_decision_requirement INSERTS the decision requirement at the flip, while a placeholder decision entry without an expected_decision_id would be left behind beside the real one and refuse the campaign at load (core.flight.campaign.declared_readiness). This cell needs NO preparation requirement at all: its single phase declares knowledge 'none', it binds no phase_supply and no knowledge_stores, so there is no first-phase supply artifact to mint -- its per-row material is derived at contact time from the sealed ROLL-1 manifest bytes and the pinned permutation seed. Nothing here authorises a flight, a readiness flip, a contact or an admission entry.",
-        "requirements": [],
-        "state": "held"
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-verify-1-admission-v1",
+            "relpath": "coordination/slurp-stage3-verify-1-v1/root-admission-v1.json",
+            "sha256": "d2396fe79cd9126f2bae571829e4572b6398f6321e914e6bca13f8a1b5b7c079",
+            "reason": "Decision slurp-stage3-verify-1-admission-v1 pinned by scripts/flights/repin_cell.py."
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-SMOKE-4-V1"
     },

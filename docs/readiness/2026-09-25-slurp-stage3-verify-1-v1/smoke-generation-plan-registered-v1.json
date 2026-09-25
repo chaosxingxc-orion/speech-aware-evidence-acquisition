@@ -16,7 +16,7 @@
   },
   "comparator": null,
   "comparator_reason": "None is FLOWN. The comparison columns -- the five single-sample arms, their mean, the medoid rule and the oracle -- already exist in the SEALED ROLL-1 rollout and in the offline aggregation read derived from it, so this cell adds the CHOICE and re-flies nothing. The read is not plan_cell_read.py.",
-  "composed_config_hash": "1d34025fc4f096d081b6c9a74f1246c5901dbcd7ecd20755547475873bfa2702",
+  "composed_config_hash": "a4444aba05f591a0ac08a3be232152f1ccdadff190e7548c92e89227327e4a99",
   "decision_rule": {
     "status": "DESCRIPTIVE",
     "registered_before_contact": true,
@@ -34,7 +34,7 @@
     "planned_gpu_hours": 0.2,
     "planned_model_calls": 8,
     "planned_speech_audio_seconds": 37,
-    "protocol_hash": "aab7422b9efd5305743121e04a199a9dd73d0c43581486b6d947cdf4bd917833",
+    "protocol_hash": "0ed80405df7058f320c20d014b707dedd303940253194e323003f0496162122a",
     "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "2657110d135195dafbf1ebd12850470b0ae8dc28ffa1d61494266d047e349efd",
@@ -92,7 +92,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-25-slurp-stage3-verify-1-v1/protocol-registered-v1.json",
-    "sha256": "23c6eb5d4434b487c75de83cee725134f7c9bc0e25430dabe86a42373f65466d"
+    "sha256": "5ab2594128b81bb2882e7d4bbac21afe8a4467829e95b4db617d8c68a30b5922"
   },
   "purpose": "Cell VERIFY-1, the Stage-3 VERIFIER-SELECTION PROBE (board route F11; Stage-3 algorithm family inference-time-verification-v1, operator SELECTION). ONE contact per R01C construction row carries that row's OWN speech plus the FIVE sealed ROLL-1 Solver candidate answers for that same row, in a per-row presentation order pinned by the config, with NO delivered-answer anchor and no retrieved knowledge, and asks the frozen core to name the candidate the speech supports under a two-field contract. The question it exists for is the ORACLE gap the offline sample-aggregation read measured over this same sealed rollout: best-of-5 is +6.55 pp pooled SLU-F1 and +12.55 pp on the 225 score-disagreeing rows, and NOT ONE deterministic agreement rule the read could build reached any of it. Can the frozen core VERIFY better than it GENERATES? DESCRIPTIVE: no admission verdict, no comparator arm, no gate, nothing admitted, released or locked.",
   "quality_read_gate": "No read of any kind before the complete sealed manifest and the exact ordered outputs exist, one row per roster row. A partial manifest is never read; a failed smoke stops the arm and it does not open.",

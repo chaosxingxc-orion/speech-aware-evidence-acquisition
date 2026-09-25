@@ -22,10 +22,10 @@
     "smoke": {
       "attempt_id": "attempt-slurp-native-stage3-verify-1-smoke-4-v1-generation",
       "cell_id": "slurp-native-stage3-verify-1-smoke-4-v1",
-      "composed_config_hash": "1d34025fc4f096d081b6c9a74f1246c5901dbcd7ecd20755547475873bfa2702",
+      "composed_config_hash": "a4444aba05f591a0ac08a3be232152f1ccdadff190e7548c92e89227327e4a99",
       "fit_attempt_id": "attempt-slurp-native-stage3-verify-1-smoke-4-v1-fit",
       "fit_run_id": "SAEA-SLURP-STAGE3-VERIFY-1-SMOKE-4-FIT-V1",
-      "protocol_hash": "aab7422b9efd5305743121e04a199a9dd73d0c43581486b6d947cdf4bd917833",
+      "protocol_hash": "0ed80405df7058f320c20d014b707dedd303940253194e323003f0496162122a",
       "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-SMOKE-4-V1",
       "split_identity_hash": "2657110d135195dafbf1ebd12850470b0ae8dc28ffa1d61494266d047e349efd"
     }
@@ -146,7 +146,7 @@
       "train_fold_a_h_intent": 0.9943,
       "train_fold_a_h_slu": 1.2485
     },
-    "primary": "PENDING_OWN_NULL_R01C",
+    "primary": {"receipt": "docs/receipts/continuation/2026-09-25-r01c-own-null-calibration-v2.json", "sha256": "e9cc3af74a61cb3d7f1a6d25904ae466197792e24079d7ab29f48098aa747a77", "h_intent_pp": 1.44, "h_slu_context_only_pp": 1.241325889503779},
     "primary_note": "R01C has no own null of its own yet. The VAR-1 family's VAR1-PLAN / VAR1-PLANR pair (SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1 and SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-V1) measures it on this exact roster, and that half-width is the margin this cell's SLU comparison is read against. Until it is sealed the comparison is reported with the context half-widths below and explicitly labelled UNRESOLVED; no verdict is drawn from a margin this program does not yet have."
   },
   "populations": {
