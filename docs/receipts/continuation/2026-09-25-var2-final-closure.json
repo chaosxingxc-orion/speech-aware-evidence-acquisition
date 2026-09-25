@@ -1,0 +1,59 @@
+{
+  "attempts": [
+    {
+      "actual": {
+        "audio_seconds": 804.911625,
+        "calls": 224
+      },
+      "attempt_record_sha256": "c74feb079551579efcb08bedff88e88d1cc243b8562633f389e8ab6e289d09fd",
+      "cell": "arm",
+      "kind": "generation",
+      "run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-V1",
+      "state": "ABORTED"
+    },
+    {
+      "actual": {
+        "audio_seconds": 119.24456250000004,
+        "calls": 28
+      },
+      "attempt_record_sha256": "27467cf85b2baabaa2d49a18986a82a26f97a29314d191c72f91c64daf40a4f8",
+      "cell": "smoke",
+      "kind": "generation",
+      "run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-SMOKE-4-V1",
+      "state": "OPENED"
+    },
+    {
+      "actual": {
+        "audio_seconds": 1619.8742500000037,
+        "calls": 441
+      },
+      "attempt_record_sha256": "c0c51b026a7a243d30b06962327c64823b461692fc90e6a10015b6000d713e1d",
+      "cell": "full",
+      "kind": "generation",
+      "run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-RECOVERY-V1",
+      "state": "ABORTED"
+    },
+    {
+      "actual": {
+        "audio_seconds": 119.24456250000004,
+        "calls": 28
+      },
+      "attempt_record_sha256": "e25e92a99b987505cf6118b0a2cb1c1f29b58bf90ec2c6e4282505b29a63f232",
+      "cell": "smoke",
+      "kind": "generation",
+      "run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-RECOVERY-SMOKE-4-V1",
+      "state": "OPENED"
+    }
+  ],
+  "cause": "The exk10 supply-variant revisited Solver request carried40 cumulative items, exceeding declared max_supplied_items38. The preceding fix accumulated selections correctly but registration still bounded a shorter supply horizon.",
+  "f10_independence": "All three F10 configs omit native_episode.supply_variants. Ordinary requests use base_messages; this supply_variant_arm_record bound is unreachable without variant_arm_id. F10 remains subject to own smoke and actual request fit.",
+  "generation_contacts_all_attempts_and_smokes": 721,
+  "next_step": "Close VAR2, preserve failed attempts and costs, admit independent registered F10 only after root lease/STOP reconciliation; no third VAR2 run.",
+  "no_complete_recovery_manifest": true,
+  "official_full_scores_produced": false,
+  "partial_answers_read": false,
+  "recorded_at_utc": "2026-09-25T10:42:16.569500+00:00",
+  "recovery_failure_at_utc": "2026-09-25T10:36:23Z",
+  "schema": "saea-var2-final-closure-v1",
+  "status": "closed-no-further-recovery"
+}
