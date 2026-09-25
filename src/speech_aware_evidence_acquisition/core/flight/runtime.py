@@ -2547,6 +2547,34 @@ class FlightRuntime:
         baseline_values = self._composed.values
         policy = baseline_values.get("policy")
         obs_policy = policy in self._obs_policy_names()
+        budget_mode = baseline_values.get("preflight_budget_mode", "enforce-estimate")
+        if budget_mode not in {"enforce-estimate", "defer-to-native-contact-fit"}:
+            raise FlightRuntimeError("unknown preflight_budget_mode")
+        defer_estimate = budget_mode == "defer-to-native-contact-fit"
+        if defer_estimate:
+            # A worst-case UTF-8 envelope is not a measured model request.
+            # Only explicit strict native flights with the existing exact
+            # per-contact gate may record it without treating it as admission.
+            if self._token_counter is not _default_token_counter:
+                raise FlightRuntimeError(
+                    "native fit deferral is only valid for the default heuristic"
+                )
+            if (
+                policy == "fixed" or obs_policy
+                or not isinstance(baseline_values.get("native_episode"), Mapping)
+                or self._context_fit_policy() != "raise"
+            ):
+                raise FlightRuntimeError(
+                    "native fit deferral requires a strict native episode"
+                )
+            from ..preparation_fit import validate_native_contact_fit_config
+
+            if validate_native_contact_fit_config(
+                baseline_values, default_phase_program(str(policy))
+            ) is None:
+                raise FlightRuntimeError(
+                    "native fit deferral requires registered per-contact fitting"
+                )
         phase_names: tuple[str, ...]
         phase_payloads: Mapping[str, bytes] = {}
         if policy == "fixed" or obs_policy:
@@ -2645,7 +2673,7 @@ class FlightRuntime:
                 # against, in place of the 32,768-token module default.
                 serving_slot_limit_tokens=live_slot_limit_tokens,
             )
-            if decision.decision.value != "ALLOW":
+            if decision.decision.value != "ALLOW" and not defer_estimate:
                 # Before E20 the comment here read: "A pre-flight estimate
                 # has no live compaction mechanism to apply, so
                 # COMPACT_REQUIRED is just as fail-closed here as REFUSE."
@@ -2686,7 +2714,14 @@ class FlightRuntime:
                         f"{phase_name!r}, representative sample "
                         f"{representative.sample_id!r}: {decision.to_dict()}"
                     )
-            receipts.append({"phase": phase_name, **decision.to_dict()})
+            receipt = {"phase": phase_name, **decision.to_dict()}
+            if defer_estimate:
+                receipt.update(
+                    estimate_only=True,
+                    capacity_verified=False,
+                    enforcement="native-contact-fit-before-each-request",
+                )
+            receipts.append(receipt)
         return tuple(receipts)
 
     def _context_fit_policy(self) -> str:
