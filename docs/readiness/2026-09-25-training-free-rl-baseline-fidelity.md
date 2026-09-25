@@ -212,3 +212,19 @@ synthetic audit. It is a classical-method prototype, not an activated learner.
 Any ratio-aware learning comparison must be separately registered, retain the
 frozen-F0 baseline and same action space, address estimation/support and intent
 protection, and execute full-system evaluation and replication.
+
+
+## Implemented terminal feedback preparation
+
+Read 2026-09-25-system-semantic-feedback-inputs.md. The shared pure join now
+binds every complete episode to separate signed count/intent/format feedback.
+The versioned terminal-outcome-vector disagreement rule retains all groups
+and explicitly marks all-tie no-update cases. Reference-answer and arbitrary
+critique text remain excluded. This does not itself execute a model-facing
+comparison or fix the upstream flag/filter unchanged; the future adapted
+updater must consume the separate channel under its own registration.
+
+Summary inference, recorded summary-to-feedback joins, semantic operations,
+consolidation and full-system reexecution remain outstanding. The current
+registered candidate-recovery pair and historical frozen-F0 baseline are
+unchanged; no runtime application or learned-policy benefit is established.

@@ -1,0 +1,110 @@
+{
+  "schema": "saea-system-semantic-feedback-preparation-proof-v1",
+  "created_at": "2026-09-25T20:53:18.420634+00:00",
+  "parent_commit": "3a950f53c9eaa190102780c0d52d0b7f06eac681",
+  "frozen_worker_commit": "9f6a949f445e4fb308789eb0786a1a25c3fb8f69",
+  "scope": "Pure complete-episode/official-terminal feedback join and prospective semantic comparison input preparation",
+  "implementation_sha256": {
+    "src/speech_aware_evidence_acquisition/analysis/system_semantic_feedback.py": "355029d9488ab0c005a270fd2302d28cbd9b7372fa6b5353ff9ee9fab41c3c84",
+    "tests/unit/test_system_semantic_feedback.py": "8896784a80c9860d112c4b3212688f92a2315e554c26e993b2e3ac96876cc1a9"
+  },
+  "validation": {
+    "new_tests_passed": 29,
+    "related_tests_passed": 131,
+    "offline_checks_passed": 9,
+    "test_files": [
+      "test_system_semantic_feedback",
+      "test_system_semantic_trajectory",
+      "test_system_rollout_groups",
+      "test_system_feedback",
+      "test_system_trajectory",
+      "test_candidate_recovery_system",
+      "test_official_metric_feedback"
+    ],
+    "results": [
+      {
+        "check": "tests",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-feedback-validation-v1/tests.log",
+        "log_sha256": "2e16788d41dc4b6e9923a953d04e221967085baf4625d6445e446bad5baa1a4c"
+      },
+      {
+        "check": "engineering_base_check",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-feedback-validation-v1/engineering_base_check.log",
+        "log_sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+      },
+      {
+        "check": "harness_admission_check",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-feedback-validation-v1/harness_admission_check.log",
+        "log_sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+      },
+      {
+        "check": "results_ledger_check",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-feedback-validation-v1/results_ledger_check.log",
+        "log_sha256": "0426590fecc31f8de63ddacab92a3e818106a70b9c33abd048d66228c5d7b7c6"
+      },
+      {
+        "check": "tool_catalog_check",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-feedback-validation-v1/tool_catalog_check.log",
+        "log_sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+      },
+      {
+        "check": "experiment_handoff_check",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-feedback-validation-v1/experiment_handoff_check.log",
+        "log_sha256": "5315310193a553f6e11ec658ba27a7049409ab11e08b4444af008faa83473cbc"
+      },
+      {
+        "check": "openjiuwen_native_reuse_check",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-feedback-validation-v1/openjiuwen_native_reuse_check.log",
+        "log_sha256": "92c64bb9e7f2b16e1127d546dca86862efddd7138b9481db44aeae97171a2591"
+      },
+      {
+        "check": "derived_media_confinement_check",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-feedback-validation-v1/derived_media_confinement_check.log",
+        "log_sha256": "183b5953924de1ddd2a5fe3d89db17272f144e04a5eaa5bffb07198aeb649429"
+      },
+      {
+        "check": "stage3_algorithm_label_check",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-feedback-validation-v1/stage3_algorithm_label_check.log",
+        "log_sha256": "9fac0138523bbf4771cc09bd0e007add368542e30e1920608c9111a7aa8cd2aa"
+      },
+      {
+        "check": "finite_completion_policy_check",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-feedback-validation-v1/finite_completion_policy_check.log",
+        "log_sha256": "f82745fa49af22608b01172848d1f53e78f91f08fc16693254218ee5209cc331"
+      }
+    ],
+    "initial_invocation_correction": "openjiuwen_native_reuse_check requires --output; rerun with explicit validation path passed",
+    "default_check_outputs_preserved_outside_git": [
+      {
+        "path": "/home/chao/system-semantic-feedback-validation-v1/derived-media-generated-MANIFEST.sha256",
+        "sha256": "34438b914343652ea102c870fde4f6afed00d5217c3e0060b5a730f4dca7ac32"
+      },
+      {
+        "path": "/home/chao/system-semantic-feedback-validation-v1/derived-media-generated-derived-media-confinement.json",
+        "sha256": "dd2c72105dceefccfdbe3ea58db8cfa67529065a8386e6f271627711a9f14ce8"
+      }
+    ],
+    "historical_derived_media_check_files": "Restored byte-for-byte from parent; new checker output retained in validation directory"
+  },
+  "feedback_channel": "Only official combined counts, signed frozen-F0 utility, intent correctness and format status, bound to whole episodes",
+  "eligibility_rule": "terminal-outcome-vector-disagreement-v1",
+  "empty_group_disposition": "All groups remain present; all tied terminal vectors produce no-informative-terminal-groups",
+  "reference_answer_or_arbitrary_critique_forwarded": false,
+  "semantic_update_executed": false,
+  "learning_authorized": false,
+  "research_model_contacts_added": 0,
+  "official_scorer_contacts_added": 0,
+  "active_family_outcomes_read": false,
+  "active_registration_changed": false,
+  "next": "Complete registered whole-system pair, qualify actions, then register semantic summary/comparison/operations/consolidation/reexecution on the same policy surface"
+}

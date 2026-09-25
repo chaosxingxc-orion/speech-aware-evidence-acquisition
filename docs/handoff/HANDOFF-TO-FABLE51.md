@@ -118,12 +118,14 @@ move that checkout merely to run newer readers.
 | Semantic summary input, 19310d6b | Exact whole episode in the upstream first trajectory field; speech/split/round grouping, lossless field deduplication; 118 tests and 9 gates |
 | Objective audit, 63b1bb66 | Synthetic frozen-reward/local-F1/group-normalization counterexamples and exact fractional prototype; 42 tests and 9 gates |
 | Complete episode policy selector/catalog | Executable pre-Perception choice and terminal credit; one episode-start state only learns a global fixed choice |
+| Semantic feedback input preparation | Complete episode/count binding, separate summary and signed-feedback channels, explicit terminal-vector eligibility; 131 related tests and 9 gates; no model-facing update yet |
 | Contextual complete-continuation learner | Still outstanding at the real post-Perception/pre-Solver boundary; no learned continuation-selector has run |
 
 Test populations overlap; do not add them into one coverage claim. These are
 targeted checks, not a claim that every historical repository test passes.
 
-Read the [trajectory analysis](../readiness/2026-09-25-candidate-recovery-whole-trajectory-analysis.md),
+Read the [semantic feedback input contract](../readiness/2026-09-25-system-semantic-feedback-inputs.md),
+[trajectory analysis](../readiness/2026-09-25-candidate-recovery-whole-trajectory-analysis.md),
 [summary interface](../readiness/2026-09-25-complete-system-semantic-summary-input.md),
 [objective audit](../readiness/2026-09-25-system-terminal-ratio-objective-audit.md),
 [policy catalog](../readiness/2026-09-25-system-policy-catalog-runtime.md) and
@@ -145,8 +147,9 @@ for contracts and proof receipts. Raw task answers stay outside Git.
    default and strongest eligible fixed complete policy. Replicate before
    claiming stable benefit or moving the main effort to another carrier.
 5. Complete scholarly same-space baselines: MemRL remains a pinned reference
-   with explicit retrieval/update/credit adaptations; TF-GRPO still needs
-   feedback visibility, signed-group eligibility, actual semantic operations,
+   with explicit retrieval/update/credit adaptations; TF-GRPO now has separate
+   feedback fields and versioned eligibility preparation, but still needs an
+   executed summary/feedback comparison, actual semantic operations,
    consolidation and execution using the updated frozen experience. The
    summary serializer alone is not an algorithm reproduction.
 
