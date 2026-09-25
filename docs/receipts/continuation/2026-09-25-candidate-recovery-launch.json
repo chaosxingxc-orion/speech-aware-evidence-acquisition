@@ -1,0 +1,92 @@
+{
+  "control_smoke": {
+    "at": "2026-09-25T19:30:47Z",
+    "detail": {
+      "actual": {
+        "audio_seconds": 106.19025000000002,
+        "calls": 25
+      },
+      "attempt_id": "attempt-slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-v1-generation",
+      "attempt_state": "OPENED",
+      "contacts_per_row_hist": {},
+      "cost": {
+        "audio_seconds_used": 106.19025000000002,
+        "calls_used": 25,
+        "completion_tokens_total": 1734,
+        "prompt_tokens_total": 208773,
+        "tool_calls": 0
+      },
+      "dirt": [],
+      "dispositions": {},
+      "distinct": 4,
+      "fails": [],
+      "manifest_status": "COMPLETED",
+      "mode": "smoke",
+      "pass": true,
+      "requests": 25,
+      "requests_with_tool_schemas": 0,
+      "rows": 4,
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-SMOKE-4-R01C-V1",
+      "score_jobs": 1,
+      "sha256_outputs": "7bf23a7b026e32cae0ee2069f369949707818f40eca0228f4165087c86b81b07",
+      "sha256_run-manifest": "2432d0d3c8ec3c074c32f15a20293c2c3b8b3cceda1d9f417be4ba1f3adb9c16",
+      "study_commit": "9f6a949f445e4fb308789eb0786a1a25c3fb8f69"
+    },
+    "event": "smoke-inspect"
+  },
+  "driver_start": {
+    "at": "2026-09-25T19:29:18Z",
+    "detail": {
+      "flight_commit": "9f6a949f445e4fb308789eb0786a1a25c3fb8f69",
+      "queue": "/home/chao/batch-queue.json"
+    },
+    "event": "driver-start"
+  },
+  "durability": {
+    "automatic_restart_count": 0,
+    "execution_time_limit": "PT0S",
+    "heartbeat_id": "slurp",
+    "heartbeat_interval_minutes": 15,
+    "independent_of_assistant_and_credits": true,
+    "network_required": false,
+    "windows_task": "SAEA-Batch-Driver"
+  },
+  "engineering_checks": {
+    "path": "/home/chao/candidate-recovery-final-engineering-checks.json",
+    "sha256": "a73f552df247188f79c0322f9b276cbcf666617a80a5a5de0603505a940fa598"
+  },
+  "flight_commit": "9f6a949f445e4fb308789eb0786a1a25c3fb8f69",
+  "full_control_start": {
+    "at": "2026-09-25T19:30:57Z",
+    "detail": {
+      "log": "/home/chao/batch-campaign-1-candidate-recovery-control-v1-20260925T193057Z.log",
+      "step": 1
+    },
+    "event": "arm-start"
+  },
+  "interpretation": "Smoke structural success only. Do not read full-arm outcomes until both complete sources and official scores seal.",
+  "recorded_at_utc": "2026-09-25T19:32:15.917147+00:00",
+  "schema": "saea-candidate-recovery-launch-receipt-v1",
+  "source_bindings": {
+    "clean-check-summary-v2.json": {
+      "relpath": "coordination/slurp-stage3-candidate-recovery-v1/clean-check-summary-v2.json",
+      "sha256": "c9e82fabeac5651a5702aac4298c2674d6bcadf9dc1d7adc7f374394b92d94d7"
+    },
+    "dispatch-preparation-v1.json": {
+      "relpath": "coordination/slurp-stage3-candidate-recovery-v1/dispatch-preparation-v1.json",
+      "sha256": "9527fe639fb7aa7adf7e6aa6b1ddce872f1b5a5c095708acb82784518e619a51"
+    },
+    "dispatch-status-v2.json": {
+      "relpath": "coordination/slurp-stage3-candidate-recovery-v1/dispatch-status-v2.json",
+      "sha256": "1a13f2a0887b3c2a3e45c60f46e87b26e1e37612c7dd066905898d6f65291c73"
+    },
+    "queue-prepared-v1.json": {
+      "relpath": "coordination/slurp-stage3-candidate-recovery-v1/queue-prepared-v1.json",
+      "sha256": "55a633af12ec65296c17ecd8e9cc736ccefc17c96257c159fb7c6ff88df7af28"
+    },
+    "source-preparation-v2.json": {
+      "relpath": "coordination/slurp-stage3-candidate-recovery-v1/source-preparation-v2.json",
+      "sha256": "8db36bae5e5775b600df9fdf0da0dd108e08b23606ca421f676a14e8165abca8"
+    }
+  }
+}

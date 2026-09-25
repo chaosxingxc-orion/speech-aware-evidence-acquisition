@@ -1,5 +1,51 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
+## ACTIVE: complete-system candidate-recovery pair in independent WSL queue
+
+This is the current operational section. At2026-09-25T19:29:18Z the existing
+Windows task SAEA-Batch-Driver launched the registered candidate-recovery
+queue. Worker source is frozen at9f6a949f445e4fb308789eb0786a1a25c3fb8f69
+in /home/chao/saea-worktrees/fable-batch-flight. Do not advance that checkout
+until the two full arms finish scoring. Implementation and registration are
+merged into master; subsequent handoff commits do not change worker source.
+
+The control smoke4 completed at19:30:47Z with25 model contacts, four distinct
+delivered rows, no tool calls, clean source and a passed structural inspection.
+It proves execution only; no quality conclusion or partial scoring read.
+The ordered driver continues control625, expanded smoke4, expanded625.
+Use scripts/flights/batch/continuation_status.py for compact operational state;
+do not employ monitor subagents or infer completed rows from service totals.
+The fifteen-minute heartbeat slurp is updated, quiet on unchanged state,
+and not required for generation/scoring. The OS task has no network condition,
+no execution timeout and no automatic restart. Stop and preserve failures.
+
+All eight clean cell/fit preflights pass, with no blockers; all nine offline
+engineering checks pass. Source-bound v2 preparation is current. Model-free
+capacity envelopes are explicitly estimates; every actual native request
+still passes exact fit with the original strict rejection rule, completion512
+and four24576-token slots. Keep no-mmproj serving and all original source pins.
+
+Current source proof v2 verifies zero sample AND utterance overlap between
+R01C625 and each of the three knowledge stores. The larger R01 overlaps
+57/155 belong outside R01C. Do not repeat the earlier imprecise source caveat.
+R01C has already served construction analysis, so it is not an independent
+holdout despite source isolation. DEV6570 and test13078 stay closed.
+
+Root evaluates complete terminal task quality after BOTH full manifests and
+one official scoring job per arm seal. Preserve candidate proposals, exact
+role context, supply selection, independent review, routing, revision and
+delivery together. Candidate coverage is diagnostic. A passing fixed policy
+needs replication before any stable gain claim. Only then admit coordinated
+continuations to a trajectory-feedback policy learner. No learned RL update
+has occurred. No new owner decision is required for the currently registered
+pair. Do not restart closed semantic-delta, VAR-2, F10 or evidence-path arms.
+
+Read docs/readiness/2026-09-25-slurp-stage3-candidate-recovery-v1-preregistration.md
+and docs/receipts/continuation/2026-09-25-candidate-recovery-launch.json.
+When complete, bind source hashes before using the shared official-feedback
+and system-trajectory analysis entries; no scorer replay or private executor.
+
+
 ## Current prelaunch correction: exact fit and actual R01C source isolation
 
 Read docs/receipts/continuation/2026-09-25-candidate-recovery-preflight-amendment.json.
