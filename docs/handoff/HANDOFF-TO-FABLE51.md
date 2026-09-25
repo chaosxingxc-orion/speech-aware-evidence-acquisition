@@ -1,7 +1,7 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
 
-## Live continuation update: 2026-09-25 09:33 UTC, root Codex
+## Live continuation update: 2026-09-25 09:35 UTC, root Codex
 
 This section supersedes older live-status paragraphs below. Main is master.
 Keep one implementation worktree plus one frozen flight checkout; merge reviewed
@@ -24,9 +24,11 @@ chunks promptly.
   refusal logs. Identity and contact-count metadata fixes enabled analysis only;
   they changed no sealed predictions and added no model or scorer contacts.
 - VAR-2: configuration, root decision, four-row/full625 prepared supply, shared
-  first-visit custody/scoring and clean preflights are ready. No generation has
-  started at this update. Per-contact real fit and the live four-row proof
-  remain mandatory. See docs/receipts/continuation/2026-09-25-var2-preflight.json.
+  first-visit custody/scoring and clean preflights are ready. Independent task
+  SAEA-VAR2-Continuation-20260925 started at 09:33 UTC, flight commit
+  80299fe72458bcb3c280eef5725d2587a037d964; the driver is RUNNING.
+  Smoke4 precedes full625, and per-contact real fit remains mandatory.
+  This update does not assert smoke or full-arm completion. See docs/receipts/continuation/2026-09-25-var2-preflight.json.
   Only the last plan arm has downstream Reviewer/Planner behavior; local side
   branches never count as system RL returns. Fixed arm order stays a limitation.
 - New derived scoring records a durable start marker before the official scorer.
@@ -35,7 +37,11 @@ chunks promptly.
 - Execution entry: scripts/flights/batch/batch_chain_var2.sh through saea_task.ps1.
   It uses the existing WSL shared driver and resident no-mmproj four-slot service,
   then scores four complete first-visit columns serially. Never run generation
-  from an assistant PTY. /home/chao/var2-flight-commit.txt will bind launch.
+  from an assistant PTY. /home/chao/var2-flight-commit.txt binds this launch.
+  The actual driver runs from the frozen flight checkout; pass
+  --driver-script /home/chao/saea-worktrees/fable-batch-flight/scripts/flights/batch/batch_driver.sh
+  to continuation_status.py. Checking the old main-path driver falsely reports
+  an absent process. The heartbeat argument has been corrected.
   The driver completing is not the derived scoring completing: inspect the
   independent task/log and analysis score-summary.json before reporting closure.
 - The 15-minute current-thread heartbeat slurp is ACTIVE. Script-only status

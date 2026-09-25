@@ -1,0 +1,32 @@
+{
+  "schema": "saea-background-launch-v1",
+  "recorded_at_utc": "2026-09-25T09:35:29.577635+00:00",
+  "task": "SAEA-VAR2-Continuation-20260925",
+  "entry": "scripts/flights/batch/batch_chain_var2.sh",
+  "flight_commit": "80299fe72458bcb3c280eef5725d2587a037d964",
+  "queue_sha256": "cd5d3dd512f434fa7857d47f23b980a548ced7c0c24634e298c1097e9e6f21a5",
+  "driver_script": "/home/chao/saea-worktrees/fable-batch-flight/scripts/flights/batch/batch_driver.sh",
+  "driver_start_event": {
+    "at": "2026-09-25T09:33:35Z",
+    "event": "driver-start",
+    "detail": {
+      "flight_commit": "80299fe72458bcb3c280eef5725d2587a037d964",
+      "queue": "/home/chao/batch-queue.json"
+    }
+  },
+  "prelaunch_event": {
+    "at": "2026-09-25T09:33:43Z",
+    "event": "prelaunch-ok",
+    "detail": {
+      "step": 1,
+      "ramp_tflops": 71.7
+    }
+  },
+  "host_settings": {
+    "network_required": false,
+    "automatic_restart_count": 0,
+    "execution_time_limit": "PT0S"
+  },
+  "state_at_receipt": "RUNNING",
+  "claim": "Independent task and driver running; not a claim that smoke, full generation, scoring or scientific verdict have completed."
+}
