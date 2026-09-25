@@ -1,0 +1,37 @@
+{
+  "schema": "saea-named-recovery-v1",
+  "recorded_at_utc": "2026-09-25T08:46:30.039751+00:00",
+  "recovery_ordinal": 1,
+  "cause": "complete live-phase fit count was registered as generation ceiling",
+  "generation_contacts": 0,
+  "tokenizer_contacts": 0,
+  "old_attempt_state": "OPENED",
+  "old_attempt_unchanged": true,
+  "full_arm_opened": false,
+  "smoke_fit_cap": 13,
+  "full_fit_cap": 1876,
+  "generation_caps_unchanged": [
+    8,
+    1250
+  ],
+  "evidence": {
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-STAGE3-VERIFY-1-SMOKE-4-V1/attempt-slurp-native-stage3-verify-1-smoke-4-v1-generation.json": {
+      "sha256": "107865f390254b2c7422492e9f516de002b67e4b95d316880c78fd03fea6fbcb",
+      "bytes": 339
+    },
+    "/home/chao/batch-smoke-1-worker.log": {
+      "sha256": "6a112beee513b8418f776fa323273961db1a08ce1ed983164e4fa1cc61e40169",
+      "bytes": 1277
+    },
+    "/home/chao/batch-status.jsonl": {
+      "sha256": "2e0f12ef04cddde9d6671620f86df20f5518a02a0a0774b208acc45d4d1466ef",
+      "bytes": 708
+    },
+    "/home/chao/batch-STOP": {
+      "sha256": "277af0cf7fd2feba4a1939310b543f9e2d8faa0d5eec47fcf516e93697604109",
+      "bytes": 191
+    }
+  },
+  "validation_commit": "15ccf853",
+  "relevant_tests_passed": 25
+}

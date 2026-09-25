@@ -1,0 +1,101 @@
+{
+  "ceiling_accounting": "8 = 4 rows x 2, the program's OWN per-row contact ceiling (configs/policy/phase-slurp-verify-select-v1.json max_contacts 2 against ONE phase). 'always-run-full-program' walks each phase once, so the EXPECTED spend is exactly 1.0 contact per row (4 contacts). Ceilings are bounds, never targets, and budgets are run-cumulative across every attempt of a run id.",
+  "cell": "slurp-native-stage3-verify-1-recovery-smoke-4-v1",
+  "check_receipt": {
+    "contacts": {
+      "model": 0,
+      "tokenizer": 0,
+      "encoder": 0,
+      "scorer": 0
+    },
+    "state": "pending recovery re-pin"
+  },
+  "comparator": null,
+  "comparator_reason": "None is FLOWN. The comparison columns -- the five single-sample arms, their mean, the medoid rule and the oracle -- already exist in the SEALED ROLL-1 rollout and in the offline aggregation read derived from it, so this cell adds the CHOICE and re-flies nothing. The read is not plan_cell_read.py.",
+  "composed_config_hash": "a4444aba05f591a0ac08a3be232152f1ccdadff190e7548c92e89227327e4a99",
+  "decision_rule": {
+    "status": "DESCRIPTIVE",
+    "registered_before_contact": true,
+    "primary_read": "All 625 rows: paired pooled official SLU-F1 of the chosen sealed sample versus mean-single. Report sample-0, medoid and explicitly metric-limited oracle references. Report 420 content-distinct, 414 all-parsed, 205 identical-answer controls and 225 row-F1-disagreeing strata separately beside the complete-roster result.",
+    "self_verification_works_if": "The complete-roster paired CI95 lower bound for pooled SLU-F1 gain versus mean-single is positive and intent passes the preregistered operational non-inferiority guard from the R01C own-null. This opens a subsequent evidence-rich Reviewer design, not a system admission or test claim.",
+    "the_sampling_line_closes_if": "No supported complete-roster selection benefit: stop this bounded selection route without claiming that larger sampling can never help. Position histograms diagnose presentation bias; similarity or non-significance of those histograms alone never proves absence of content information.",
+    "structural_acceptance": "COMPLETED source and verifier manifests; exact 625 roster identities; every chosen position traceably resolves to the pinned source samples. Invalid choices use predeclared sealed source sample index 0 and remain in complete-roster estimates with separate failure/fallback counts. Selected malformed-source candidates are tagged, not dropped.",
+    "intervals": "Paired utterance-cluster bootstrap, 10000 draws, seed 20260915; official pooled counts and per-row F1 are separate estimands.",
+    "null_interpretation": "VAR1 PLAN/PLANR intent margin is an operational guard only; its SLU half-width is not a universal threshold or an estimator of selector contrast variance."
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-verify-1-recovery-smoke-4-v1-generation",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.2,
+    "planned_model_calls": 8,
+    "planned_speech_audio_seconds": 37,
+    "protocol_hash": "0ed80405df7058f320c20d014b707dedd303940253194e323003f0496162122a",
+    "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-RECOVERY-SMOKE-4-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "2657110d135195dafbf1ebd12850470b0ae8dc28ffa1d61494266d047e349efd",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared batch driver: recovery smoke then full arm, attach-only to the unchanged resident session. Independent Windows task launches WSL.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-verify-1-recovery-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 13,
+    "generation_calls_cap": 8,
+    "gpu_hours_fit_inclusive": 0.2,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 37
+  },
+  "fit": {
+    "arithmetic": "One phase x (1 props + 3 x 4 per-row endpoint calls) = 13; distinct from generation.",
+    "contact_cap": 13,
+    "coordinate_fit": "must NOT be run, or the FIT rows are double-charged",
+    "measured_prompt_budget": {
+      "audio_tokens_upper_bound": 365,
+      "budget_tokens": 21504,
+      "chars_per_token_pessimistic": 2.5,
+      "completion_ceiling_tokens": 512,
+      "decision": "ALLOW",
+      "envelope_overhead_tokens": 512,
+      "estimated_required_window_tokens": 6047,
+      "estimated_text_prompt_tokens": 4658,
+      "headroom_tokens": 15457,
+      "live_slot_tokens": 24576,
+      "operational_reserve_tokens": 3072,
+      "system_text_chars": 8146,
+      "widest_block_chars": 1915,
+      "widest_instruction_chars": 3498,
+      "widest_sample_id": "slurp:train:010932:audio-1501753631"
+    },
+    "mode": "live_phase_fit",
+    "whole_roster_wave_barrier": true
+  },
+  "modules": {
+    "base": "The R01C re-pointing of configs/baseline/slurp-native-stage3-var1-plan-r01c-baseline-v1.json: its promoted SLURP-STAGE3-CONSTRUCTION-R01 speech packet promotion receipt and sha256, its speech-feature representation and matcher ids, its serving geometry (np4 x 24,576), the MINUS-R01 exemplar release, and its roster/knowledge preparation receipts.",
+    "declared_keys_that_are_not_factors": "stage3_algorithm (owner decision 101) is declared as inference-time-verification-v1 with operators_used ['selection']. native_episode is NOT declared: a single-contact always-run-full-program program runs no episode, so finite_completion_policy and react_exhaustion_policy have nothing to bound and scripts/checks/finite_completion_policy_check.py has no key to require here.",
+    "factor": "Everything ELSE is new and is the cell: a one-phase program, a selection instruction and system template pair, a two-field response format, and the opt-in sealed-samples-manifest predecessor binding. This is not a one-knob variant of the plan and is not read as one.",
+    "roster_is_part_of_the_form": "The flown population is all 625 rows of docs/receipts/rosters/slurp-stage3-construction-r01c.json, split identity f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515. The four-row smoke flies two position-bias-control rows and two informative rows, not the roster prefix (the first four R01C rows are all degenerate).",
+    "zero_tool_authority": "no phase carries phase_tools; the native task-contract call ceiling is 0 and no tools array is rendered on any request."
+  },
+  "plan_kind": "generation",
+  "prepared_phase_supply": {
+    "note": "NONE, and none is minted at the flip: the single phase declares knowledge 'none' and the fragment binds no phase_supply and no knowledge_stores, so there is no first-phase supply artifact to prepare. The per-row material is derived at contact time from the sealed ROLL-1 manifest bytes and the pinned permutation seed, and the committed model-free record docs/receipts/verify1/slurp-stage3-verify-1-material-v1.json (sha256 e8154290564f6adb653c8200e2fc97ee676a5a1433c6bc79fa9516bf4743f5f5) is the READ's resolution table, not a flight input."
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-25-slurp-stage3-verify-1-recovery-v1/protocol-registered-v1.json",
+    "sha256": "42fe16c44a9b8fb3023042f22ba8b9f01246b31b89dd858e3821320959c11629"
+  },
+  "purpose": "Cell VERIFY-1, the Stage-3 VERIFIER-SELECTION PROBE (board route F11; Stage-3 algorithm family inference-time-verification-v1, operator SELECTION). ONE contact per R01C construction row carries that row's OWN speech plus the FIVE sealed ROLL-1 Solver candidate answers for that same row, in a per-row presentation order pinned by the config, with NO delivered-answer anchor and no retrieved knowledge, and asks the frozen core to name the candidate the speech supports under a two-field contract. The question it exists for is the ORACLE gap the offline sample-aggregation read measured over this same sealed rollout: best-of-5 is +6.55 pp pooled SLU-F1 and +12.55 pp on the 225 score-disagreeing rows, and NOT ONE deterministic agreement rule the read could build reached any of it. Can the frozen core VERIFY better than it GENERATES? DESCRIPTIVE: no admission verdict, no comparator arm, no gate, nothing admitted, released or locked.",
+  "quality_read_gate": "No read of any kind before the complete sealed manifest and the exact ordered outputs exist, one row per roster row. A partial manifest is never read; a failed smoke stops the arm and it does not open.",
+  "registered_at_utc": "2026-09-25T08:46:30.036209+00:00",
+  "registration_base_commit": "15ccf853",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "/home/chao/saea-worktrees/codex-stage3-continuation-20260925",
+  "status": "RECOVERY_REGISTERED_BEFORE_CONTACT",
+  "unused_budget_is_not_attempt_authority": true
+}

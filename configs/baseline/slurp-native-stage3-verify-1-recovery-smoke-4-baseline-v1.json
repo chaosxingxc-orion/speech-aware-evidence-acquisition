@@ -1,0 +1,71 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_is_bound_but_invisible": "rails.runner.run_speech_native_agent_loop requires a validated, non-empty KnowledgeSnapshot for every agent-loop contact even when no phase consumes one; this program's single phase declares knowledge 'none' and the snapshot is bound with empty bootstrap ids, so no facet and no value is rendered into any prompt (cell KC-S1a's own arrangement). What the binding buys is the leakage rule rails.runner._assert_agent_control_excludes_knowledge_payloads, which refuses a contact whose instruction -- HERE INCLUDING THE APPENDED CANDIDATE BLOCK -- contains any facet representation or value content of the bound snapshot. That matters more for this cell than for any other phase cell, because its instruction carries model-produced text. The snapshot named is the size-pool-annotated-exemplars-MINUS-R01 release (coordinator decision 102: a construction roster may never retrieve itself), which is the same release cell VAR1-PLAN retrieves from, and the registration proved the rule PASSES: zero of its 17,108 protected payloads is contained in any of the 625 rendered candidate blocks or in either probe template (docs/readiness/2026-09-25-slurp-stage3-verify-1-recovery-v1/dry-run-v1.md).",
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+  "knowledge_snapshot_sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+  "live_phase_fit": {
+    "attempt_id": "attempt-slurp-native-stage3-verify-1-recovery-smoke-4-v1-fit",
+    "contact_cap": 13,
+    "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-RECOVERY-SMOKE-4-FIT-V1"
+  },
+  "phase_material": {
+    "choose": {
+      "fill_params": {
+        "candidate_count": 5,
+        "max_reason_chars": 160
+      },
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_verify_select_v1.txt",
+      "predecessor_binding": "sealed-samples-manifest",
+      "predecessor_source": {
+        "expected_sample_count": 5,
+        "manifest_relpath": "runs/SAEA-SLURP-STAGE3-ROLLOUT-R01-V1/attempt-slurp-native-stage3-rollout-r01-generation-v1/SAEA-SLURP-STAGE3-ROLLOUT-R01-V1.run-manifest.json",
+        "manifest_sha256": "87ba077dfb2c053679b1befa4f36e98021a3efde55783a3b293f77d56381790a",
+        "permutation_seed": 20260925,
+        "producer_policy_id": "SAEA-SLURP-STAGE3-ROLLOUT-R01-V1",
+        "permutation_rule": "balanced-block-v1"
+      },
+      "response_format_id": "slurp-verifier-choice-v1",
+      "state_fill": null
+    }
+  },
+  "policy": "phase-slurp-verify-select-v1",
+  "preparation_source_receipts": [
+    {
+      "relpath": "docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars-minus-r01.json",
+      "root": "repository",
+      "sha256": "e4d7bb61a65dd17d42c3d601c4b3bd33effe48920dd59cb2e9232e739221d1c4"
+    },
+    {
+      "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+      "root": "repository",
+      "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd"
+    },
+    {
+      "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01.json",
+      "root": "repository",
+      "sha256": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0"
+    }
+  ],
+  "scorer_basis": "scorers ['cost'] and ZERO official complete scoring jobs, deliberately. This cell's delivered text is a CHOICE ({chosen_position, reason}), not a SLURP answer, so no SLU scorer can read it and one that tried would report a meaningless zero. The paper-facing numbers the read needs already exist: the five sealed ROLL-1 per-sample official scores ($SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1) and the single-sample mean, medoid and oracle columns the offline aggregation read already derived from them. The read RESOLVES each chosen position to a sealed sample index through the recorded permutation and reads that sample's existing score; it re-derives nothing and re-scores nothing.",
+  "scorers": [
+    "cost"
+  ],
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-anchor-exemplars-k20-replicate-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-anchor-exemplars-k20-replicate-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/STAGE3-CONSTRUCTION-R01-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "a1664e34742dcd2d59c226da701395edf41d150bbbf8db4acc0cdae9c3c0250f",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_verify_select_context_v1.txt",
+  "task_instruction_template_active": true,
+  "the_candidates_are_an_input_not_an_output": "predecessor_binding 'sealed-samples-manifest' rebuilds ONE AgentStateArtifact per row from cell ROLL-1's sealed grouped-Solver bundle through rails.phase_material.load_sealed_sample_groups: it reads that row's solver_group.samples, renders each sample's parsed answer through the SAME rails.stage3_advantage_material.render_rollout_answer the advantage material uses, orders them by the per-row permutation drawn from permutation_seed, and binds the state to that row's own request_sha256 / response_text_sha256. It never reads the sealed row's delivered 'text', so NO delivered-answer anchor tells the contact which candidate the harness already committed -- which is the whole thing being tested. It never reads gold: the loader refuses a custody object carrying a reference-shaped key rather than reading around it. A sample whose sealed parse_status is not 'ok' renders the canonical EMPTY answer, so the candidate count on the wire is the registered five on every row; those six rows remain in the primary complete-roster estimate and are separately flagged; the 414 all-parsed informative rows are a sensitivity subset.",
+  "the_fit_mode": "Fit each real request before generation. One phase uses one GET /props and three endpoint calls per row: 13 for four rows; 1876 for 625 rows. This count is independent of the generation ceiling.",
+  "what_this_is": "The FOUR-ROW FORM SMOKE of cell VERIFY-1: the arm's own bytes in every decided key, on four R01C rows chosen to cover BOTH registered populations rather than the roster's first four. Two rows render a single distinct candidate (slurp:train:000049:audio-1434542455 and slurp:train:000051:audio-1434531302-headset, which are also cells ROLL-1 and ROLL-AA's own smoke rows, so the packet path is the proven one) and two render four and five distinct candidates (slurp:train:000282:audio-1502114155 and slurp:train:000308:audio-1488905475). A smoke drawn from the roster prefix would have exercised only the degenerate shape: the first four R01C rows all render ONE distinct candidate. Cell VERIFY-1 (Stage-3 board route F11, the verifier-selection probe): ONE contact per R01C construction row carrying that row's OWN speech plus the FIVE sealed ROLL-1 Solver candidate answers for that same row, asking the frozen core to name the one the speech supports. It is the first cell of the registered Stage-3 family inference-time-verification-v1 and it exercises the SELECTION operator only: nothing in the store, the plan's context or the sampling policy changes, and the candidates are answers the frozen core already produced. Its question is the +6.55 pp pooled (and +12.55 pp on the 225 score-disagreeing rows) ORACLE gap the offline sample-aggregation read measured over the same sealed rollout (docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md, section 3): can the core VERIFY better than it GENERATES, when no deterministic agreement rule reaches any of that headroom? DESCRIPTIVE: no admission verdict, no comparator arm, no gate.",
+  "whole_roster_wave_barrier": true,
+  "why_no_retrieval": "NO knowledge is supplied to the choose phase (the program declares knowledge 'none' and the fragment declares no phase_supply and no knowledge_stores), and that is the probe's design rather than an omission. The five candidates ARE the evidence under test. Adding the plan's retrieved exemplars would make a negative result unattributable -- did the verifier fail, or did the supplied content mislead it, the exact failure mode cells IDX and EFF-1 already recorded -- and it could not reproduce the generator's information set anyway, because the plan's Solver also saw a Perception candidate state and a slot-contract candidate supply that a one-phase program has no seat for. The MINUS-R01 exemplar release is still BOUND, invisibly, as the leakage authority below.",
+  "why_one_phase": "ONE phase, one contact per row, and no native role episode. A selection is not an episode: there is no candidate formation, no review loop, no revision and nothing to plan, so the program is phase-slurp-verify-select-v1 -- the same one-phase always-run-full-program shape phase-slots-given-intent-v1 has -- and the per-row ceiling is 2 with an expected spend of exactly 1.0. Because the program is not a native-role episode it declares no native_episode block, which is also why scripts/checks/finite_completion_policy_check.py has no key to require here: finite_completion_policy and react_exhaustion_policy are episode keys and a single-contact program cannot exhaust an episode it does not run."
+}

@@ -1,0 +1,187 @@
+{
+  "cells": {
+    "arm": {
+      "cell_id": "slurp-native-stage3-verify-1-recovery-v1",
+      "composed_config_hash": "0bd577b3fe53cf91a80bae81ffe972c1142f9b17738a08d24c305bccfb1cadda",
+      "experiment": "slurp-native-stage3-verify-1-recovery-v1",
+      "per_row_ceiling": 2,
+      "phase_material_receipt_sha256": "e661eb9979077c3f9214bb16027c588b2793fa1654707e246f4e738c57de2998",
+      "phases": [
+        "choose"
+      ],
+      "program_id": "phase-slurp-verify-select-v1",
+      "protocol_hash": "7d24de7231442021397f1e194dc8f312b8d5224c9705e5f2bf1c2cd2cd148a38",
+      "response_format_ids": {
+        "choose": "slurp-verifier-choice-v1"
+      },
+      "response_formats_resolved": [
+        "choose"
+      ],
+      "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
+      "static_instruction_chars": {
+        "choose": 1529
+      },
+      "system_text_chars": 8146,
+      "system_text_sha256": "5a80ef3556517f2f3e237136ff9d896e029ad91a0e2baa37d327c61009870976"
+    },
+    "smoke": {
+      "cell_id": "slurp-native-stage3-verify-1-recovery-smoke-4-v1",
+      "composed_config_hash": "a4444aba05f591a0ac08a3be232152f1ccdadff190e7548c92e89227327e4a99",
+      "experiment": "slurp-native-stage3-verify-1-recovery-smoke-4-v1",
+      "per_row_ceiling": 2,
+      "phase_material_receipt_sha256": "e661eb9979077c3f9214bb16027c588b2793fa1654707e246f4e738c57de2998",
+      "phases": [
+        "choose"
+      ],
+      "program_id": "phase-slurp-verify-select-v1",
+      "protocol_hash": "0ed80405df7058f320c20d014b707dedd303940253194e323003f0496162122a",
+      "response_format_ids": {
+        "choose": "slurp-verifier-choice-v1"
+      },
+      "response_formats_resolved": [
+        "choose"
+      ],
+      "split_identity_hash": "2657110d135195dafbf1ebd12850470b0ae8dc28ffa1d61494266d047e349efd",
+      "static_instruction_chars": {
+        "choose": 1529
+      },
+      "system_text_chars": 8146,
+      "system_text_sha256": "5a80ef3556517f2f3e237136ff9d896e029ad91a0e2baa37d327c61009870976"
+    }
+  },
+  "four_row_table": [
+    {
+      "block_chars": 660,
+      "candidates_rendered": 5,
+      "contact_id": "phase-slurp-verify-select-v1:choose:slurp:train:000049:audio-1434542455",
+      "distinct_answers": 1,
+      "instruction_chars": 2243,
+      "instruction_sha256": "52fb8a15ee1f22170fef62361fc4a819b795b9863881dd0059f643523e7570bb",
+      "numbered_lines": 5,
+      "parse_failed": 0,
+      "parse_ok": 5,
+      "permutation_position_to_sample_index": [
+        1,
+        4,
+        3,
+        2,
+        0
+      ],
+      "response_format": true,
+      "sample_id": "slurp:train:000049:audio-1434542455"
+    },
+    {
+      "block_chars": 825,
+      "candidates_rendered": 5,
+      "contact_id": "phase-slurp-verify-select-v1:choose:slurp:train:000051:audio-1434531302-headset",
+      "distinct_answers": 1,
+      "instruction_chars": 2408,
+      "instruction_sha256": "babfe48c7368b66517956aca2a497494178a1552c1125f0f72cd6eaf35f51b6a",
+      "numbered_lines": 5,
+      "parse_failed": 0,
+      "parse_ok": 5,
+      "permutation_position_to_sample_index": [
+        3,
+        2,
+        4,
+        1,
+        0
+      ],
+      "response_format": true,
+      "sample_id": "slurp:train:000051:audio-1434531302-headset"
+    },
+    {
+      "block_chars": 689,
+      "candidates_rendered": 5,
+      "contact_id": "phase-slurp-verify-select-v1:choose:slurp:train:000282:audio-1502114155",
+      "distinct_answers": 4,
+      "instruction_chars": 2272,
+      "instruction_sha256": "6d06a9590d3cd4c5c659dd3c8c75694577382c765658d2cd08b1069803c968d8",
+      "numbered_lines": 5,
+      "parse_failed": 0,
+      "parse_ok": 5,
+      "permutation_position_to_sample_index": [
+        4,
+        0,
+        1,
+        2,
+        3
+      ],
+      "response_format": true,
+      "sample_id": "slurp:train:000282:audio-1502114155"
+    },
+    {
+      "block_chars": 1300,
+      "candidates_rendered": 5,
+      "contact_id": "phase-slurp-verify-select-v1:choose:slurp:train:000308:audio-1488905475",
+      "distinct_answers": 5,
+      "instruction_chars": 2883,
+      "instruction_sha256": "95d1ffc748e6ba9bcb659b66ae2c89b3ff834c701bff5740a2c3536c87be876b",
+      "numbered_lines": 5,
+      "parse_failed": 0,
+      "parse_ok": 5,
+      "permutation_position_to_sample_index": [
+        3,
+        4,
+        1,
+        2,
+        0
+      ],
+      "response_format": true,
+      "sample_id": "slurp:train:000308:audio-1488905475"
+    }
+  ],
+  "leakage_rule": {
+    "containment_hits": 0,
+    "decision": "PASS",
+    "haystacks": 627,
+    "protected_payloads": 17108,
+    "snapshot_content_hash": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63"
+  },
+  "material": {
+    "committed_record": "docs/receipts/verify1/slurp-stage3-verify-1-material-v1.json",
+    "committed_record_sha256": "e8154290564f6adb653c8200e2fc97ee676a5a1433c6bc79fa9516bf4743f5f5",
+    "deterministic_two_loads": true,
+    "expected_sample_count": 5,
+    "manifest_relpath": "runs/SAEA-SLURP-STAGE3-ROLLOUT-R01-V1/attempt-slurp-native-stage3-rollout-r01-generation-v1/SAEA-SLURP-STAGE3-ROLLOUT-R01-V1.run-manifest.json",
+    "manifest_sha256": "87ba077dfb2c053679b1befa4f36e98021a3efde55783a3b293f77d56381790a",
+    "permutation_seed": 20260925,
+    "populations": {
+      "distinct_answer_histogram": {
+        "1": 205,
+        "2": 182,
+        "3": 117,
+        "4": 85,
+        "5": 36
+      },
+      "informative_content_distinct": 420,
+      "informative_content_distinct_all_parsed": 414,
+      "position_bias_control_single_answer": 205,
+      "rows": 625,
+      "rows_with_unparseable_sample": 6,
+      "ruling": "All 625 rows are the primary population. Report the 420 content-distinct rows, 414 content-distinct rows with all candidates parsed, 205 identical-answer controls, and 225 row-F1-disagreeing rows separately. Preserve the six rows containing nine malformed source samples; flag their canonical empty renderings. Invalid verifier responses fall back to sealed source sample index 0. Do not exclude failures from complete-roster estimates. Position histograms are descriptive, not tests of semantic selection.",
+      "unparseable_samples": 9
+    },
+    "record_mismatches": [],
+    "rows_loaded": 625
+  },
+  "prompt_fit": {
+    "audio_tokens_upper_bound": 365,
+    "budget_tokens": 21504,
+    "chars_per_token_pessimistic": 2.5,
+    "completion_ceiling_tokens": 512,
+    "decision": "ALLOW",
+    "envelope_overhead_tokens": 512,
+    "estimated_required_window_tokens": 6047,
+    "estimated_text_prompt_tokens": 4658,
+    "headroom_tokens": 15457,
+    "live_slot_tokens": 24576,
+    "operational_reserve_tokens": 3072,
+    "system_text_chars": 8146,
+    "widest_block_chars": 1915,
+    "widest_instruction_chars": 3498,
+    "widest_sample_id": "slurp:train:010932:audio-1501753631"
+  },
+  "verdict": "PASS",
+  "zero_contacts": true
+}

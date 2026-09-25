@@ -1,0 +1,93 @@
+{
+  "_note": "The READ of cell VERIFY-1, registered BEFORE contact. It is MODEL-FREE: exposure row SAEA-SLURP-STAGE3-VERIFY-1-RECOVERY-READ-V1, zero model / tokenizer / encoder / scorer / server contacts. It RE-DERIVES NOTHING -- every comparator column is read from the sealed ROLL-1 per-sample official scores and from the offline aggregation read's committed report.",
+  "decision_rule": {
+    "status": "DESCRIPTIVE",
+    "registered_before_contact": true,
+    "primary_read": "All 625 rows: paired pooled official SLU-F1 of the chosen sealed sample versus mean-single. Report sample-0, medoid and explicitly metric-limited oracle references. Report 420 content-distinct, 414 all-parsed, 205 identical-answer controls and 225 row-F1-disagreeing strata separately beside the complete-roster result.",
+    "self_verification_works_if": "The complete-roster paired CI95 lower bound for pooled SLU-F1 gain versus mean-single is positive and intent passes the preregistered operational non-inferiority guard from the R01C own-null. This opens a subsequent evidence-rich Reviewer design, not a system admission or test claim.",
+    "the_sampling_line_closes_if": "No supported complete-roster selection benefit: stop this bounded selection route without claiming that larger sampling can never help. Position histograms diagnose presentation bias; similarity or non-significance of those histograms alone never proves absence of content information.",
+    "structural_acceptance": "COMPLETED source and verifier manifests; exact 625 roster identities; every chosen position traceably resolves to the pinned source samples. Invalid choices use predeclared sealed source sample index 0 and remain in complete-roster estimates with separate failure/fallback counts. Selected malformed-source candidates are tagged, not dropped.",
+    "intervals": "Paired utterance-cluster bootstrap, 10000 draws, seed 20260915; official pooled counts and per-row F1 are separate estimands.",
+    "null_interpretation": "VAR1 PLAN/PLANR intent margin is an operational guard only; its SLU half-width is not a universal threshold or an estimator of selector contrast variance."
+  },
+  "driver": "scripts/analysis/slurp_verifier_selection_read.py",
+  "inputs": {
+    "flown_manifest": "$SPEECHRL_DATA_DIR/runs/SAEA-SLURP-STAGE3-VERIFY-1-RECOVERY-V1/attempt-slurp-native-stage3-verify-1-recovery-v1-generation/SAEA-SLURP-STAGE3-VERIFY-1-RECOVERY-V1.run-manifest.json (COMPLETED, FINALIZED)",
+    "offline_aggregation_report": "$SPEECHRL_DATA_DIR/analysis/SLURP-SAMPLE-AGGREGATION-OFFLINE-READ-V1/report.json (sha256 0f8124a769bc206455b1386d3e6eec76115311bfb265b8796604d1266f989304), produced by scripts/analysis/slurp_sample_aggregation_offline_read.py",
+    "parser_of_record": "rails.artifact_results.parse_slurp_verifier_choice",
+    "permutation_record": {
+      "relpath": "docs/receipts/verify1/slurp-stage3-verify-1-material-v1.json",
+      "sha256": "e8154290564f6adb653c8200e2fc97ee676a5a1433c6bc79fa9516bf4743f5f5"
+    },
+    "sealed_rollout_scores": "$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1 -- the five per-sample official score files and per_row.json S3-3 sealed"
+  },
+  "margins": {
+    "context_only": {
+      "dev_2000_added_h_intent": 1.152,
+      "dev_2000_added_h_slu": 1.2525,
+      "note": "CONTEXT ONLY, never a gate: cross-flight half-widths on other rosters at other n, plus the ROLL-AA within-flight floor at n = 200. This cell's comparison is BETWEEN-flight (its chosen-sample column against the sealed ROLL-1 sample columns), so the within-flight floor is not its margin either.",
+      "roll_aa_within_flight_h_intent": 0.0,
+      "roll_aa_within_flight_h_slu": 0.735,
+      "train_fold_a_h_intent": 0.9943,
+      "train_fold_a_h_slu": 1.2485
+    },
+    "primary": {
+      "receipt": "docs/receipts/continuation/2026-09-25-r01c-own-null-calibration-v2.json",
+      "sha256": "e9cc3af74a61cb3d7f1a6d25904ae466197792e24079d7ab29f48098aa747a77",
+      "h_intent_pp": 1.44,
+      "h_slu_context_only_pp": 1.241325889503779
+    },
+    "primary_note": "Seal the R01C own-null first. Its intent half-width is an operational NI guard; compute the selector contrast interval directly from its paired official counts."
+  },
+  "prohibitions": [
+    "Never re-score a sealed ROLL-1 sample and never run core.scoring_batch: this read invokes no scorer.",
+    "Never report a number from this cell as a test claim: R01C is a construction roster and its numbers are development numbers (owner decisions 28 and 86).",
+    "Never print or persist candidate text, utterance text, a transcript or gold.",
+    "Never hide malformed rows by reporting a favourable subset without the complete 625-row estimate."
+  ],
+  "read_run_id": "SAEA-SLURP-STAGE3-VERIFY-1-RECOVERY-READ-V1",
+  "registered_at_utc": "2026-09-25T04:00:00.000000+00:00",
+  "schema": "saea-analysis-recipe-v1",
+  "steps": [
+    {
+      "how": "Parse all outputs with the registered parser and max_reason_chars=160. Count failures, apply sealed-source-index-0 fallback and retain every row.",
+      "id": 1,
+      "what": "CHOICE PARSE RATE"
+    },
+    {
+      "how": "Report all-roster and separate informative/control choice-position histograms. Chi-square is descriptive; its significance alone is not a content-selection test.",
+      "id": 2,
+      "what": "CHOSEN-POSITION DISTRIBUTION AND POSITION BIAS"
+    },
+    {
+      "how": "Resolve displayed positions with the sealed balanced-block-v1 permutation. Report source-index histograms without treating a particular histogram shape as proof of incorrect mapping.",
+      "id": 3,
+      "what": "RESOLUTION TO SEALED SAMPLE INDICES"
+    },
+    {
+      "how": "For each informative row, the ORACLE best-of-5 sample index is the one with the highest sealed per-row official SLU-F1 (ties: the full tie set). Report the share of rows whose chosen sample is IN the oracle tie set, and the same share for a random choice (1/5 adjusted for tie-set size) as the null. This is a metric-limited diagnostic; complete-roster pooled quality is primary.",
+      "id": 4,
+      "what": "ORACLE AGREEMENT ON THE INFORMATIVE POPULATION"
+    },
+    {
+      "how": "Build the chosen-sample column by taking each row's chosen sample's SEALED per-row official counts and pooling them exactly as the offline read proved the reconstruction identity (R1 reconstructed 57.90644985971403 vs R1 scored as a copy 57.90644985971403, absolute difference 0.0). Report it against R0-mean-single, R1-medoid and ORACLE, with the paired row bootstrap (10,000 draws, seed 20260915), on all 625 rows, on the informative 420 / 414, on the control 205, and on the 225 score-disagreeing subset. NO new scoring job is run and no scorer is invoked: every comparator column is already committed.",
+      "id": 5,
+      "what": "POOLED SLU-F1 AND INTENT OF 'DELIVER THE CHOSEN SAMPLE'"
+    },
+    {
+      "how": "The two partitions are DIFFERENT and both are reported. 'Content distinct' (420) means the five rendered candidates are not all the same text; 'score disagreeing' (225) means the five sealed per-row SLU-F1 values are not all equal. Every score-disagreeing row is content distinct; the 195 content-distinct-but-score-agreeing rows are where a choice changes the delivered text without changing the per-row score, and they expose the limitations of row-F1 as a feedback signal, including empty-entity false positives and intent ties.",
+      "id": 6,
+      "what": "THE 225 SCORE-DISAGREEING SUBSET BESIDE THE 420 CONTENT-DISTINCT"
+    },
+    {
+      "how": "Oracle agreement and chosen-sample SLU-F1 per SLURP scenario, from the R01C roster receipt's own per-item stratum. Diagnostics with no CI, never gates: the strata are 26-42 rows.",
+      "id": 7,
+      "what": "PER-SCENARIO TABLE"
+    },
+    {
+      "how": "Realised contacts per row (expected 1.0), realised GPU hours, the distribution of reason lengths, and the realised contact count against the registered ceiling.",
+      "id": 8,
+      "what": "COST AND THE REALISED FORM"
+    }
+  ]
+}

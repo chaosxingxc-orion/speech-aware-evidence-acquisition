@@ -1,0 +1,100 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-verify-1-recovery-smoke-4-v1-generation",
+      "baseline_fragment": "slurp-native-stage3-verify-1-recovery-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-verify-1-recovery-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "state": "held",
+        "requirements": [],
+        "reason": "Root diagnosed zero-contact fit-count failure; require recovery decision and clean re-pin before launch."
+      },
+      "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-RECOVERY-SMOKE-4-V1"
+    },
+    {
+      "allowed_execution_stages": [
+        "check"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-verify-1-recovery-smoke-4-v1-fit",
+      "baseline_fragment": "slurp-native-stage3-verify-1-recovery-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-verify-1-recovery-smoke-4-fit-v1",
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "state": "held",
+        "requirements": [],
+        "reason": "Root diagnosed zero-contact fit-count failure; require recovery decision and clean re-pin before launch."
+      },
+      "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-RECOVERY-SMOKE-4-FIT-V1"
+    }
+  ],
+  "date": "2026-09-25",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.2,
+    "planned_model_calls": 8,
+    "planned_speech_audio_seconds": 37,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-VERIFY-1-RECOVERY-SMOKE-4-V1",
+  "failure_policy": "This is the one named recovery for the fit-count registration error. Stop and preserve at the next failure; no second recovery, automatic replay, roster, prompt, output-cap or service change.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 13,
+    "generation_calls_cap": 8,
+    "gpu_hours_fit_inclusive": 0.2,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 37
+  },
+  "fragment_kind": "saea-slurp-native-stage3-verify-1-recovery-smoke-4-v1",
+  "generation_budget": {
+    "cap": 8,
+    "definition": "8 = 4 rows x 2, the same per-row ceiling the arm carries. Expected spend 4 contacts."
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+    "decision_population": "All 625 rows are the primary population. Report the 420 content-distinct rows, 414 content-distinct rows with all candidates parsed, 205 identical-answer controls, and 225 row-F1-disagreeing rows separately. Preserve the six rows containing nine malformed source samples; flag their canonical empty renderings. Invalid verifier responses fall back to sealed source sample index 0. Do not exclude failures from complete-roster estimates. Position histograms are descriptive, not tests of semantic selection.",
+    "roster_receipt": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+    "split_identity_hash": "2657110d135195dafbf1ebd12850470b0ae8dc28ffa1d61494266d047e349efd"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+      "ids": [
+        "slurp:train:000049:audio-1434542455",
+        "slurp:train:000051:audio-1434531302-headset",
+        "slurp:train:000282:audio-1502114155",
+        "slurp:train:000308:audio-1488905475"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "The FOUR-ROW FORM SMOKE of cell VERIFY-1: the arm's own bytes on four rows covering both registered populations, flown through core.flight.cli worker before the 625-row arm opens. Cell VERIFY-1 (Stage-3 board route F11, the verifier-selection probe; Stage-3 algorithm family inference-time-verification-v1, operator SELECTION). ONE contact per R01C construction row carries that row's OWN speech plus the FIVE sealed ROLL-1 Solver candidate answers for that same row, in a per-row presentation order pinned by the config, with NO delivered-answer anchor and no retrieved knowledge, and asks the frozen core to name the candidate the speech supports under a two-field contract (chosen_position, reason). The question is the ORACLE gap the offline sample-aggregation read measured over this same sealed rollout: +6.55 pp pooled SLU-F1 and +12.55 pp on the 225 score-disagreeing rows, none of which any deterministic agreement rule reached. Does the frozen core VERIFY better than it GENERATES? DESCRIPTIVE: no admission verdict, no comparator arm, no gate, nothing admitted, released or locked.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "STAGE3-CONSTRUCTION-R01C",
+  "stage3_algorithm": {
+    "id": "inference-time-verification-v1",
+    "note": "VERIFY-1 is the first cell of this family and exercises the SELECTION operator only: the frozen core reads its OWN five sealed candidate answers for a row and names one, and the delivered artifact is that name. The family's SCORING operator is deliberately NOT claimed -- the cell asks for no per-candidate score, ranking or margin, so nothing in the sealed output can be read as a model-produced score. Nothing in the store, the plan's context or the sampling policy changes; the candidates are the sealed ROLL-1 rollout's own.",
+    "operators_used": [
+      "selection"
+    ]
+  },
+  "recovery": {
+    "ordinal": 1,
+    "named_cause": "registered live fit cap incorrectly used the generation ceiling",
+    "original_run_id": "SAEA-SLURP-STAGE3-VERIFY-1-SMOKE-4-V1",
+    "zero_model_and_tokenizer_contacts_on_failed_smoke": true,
+    "next_failure": "Stop this flight; no second recovery."
+  }
+}
