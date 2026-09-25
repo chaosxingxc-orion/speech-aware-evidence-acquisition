@@ -1,0 +1,36 @@
+{
+  "analysis": [
+    "Retain all625 inputs for each source.",
+    "Report natural and equal-scenario coverage, every scenario, candidate widths and agreement strata.",
+    "Separate candidate absence from existing-example absence; join final intent correctness only offline.",
+    "Do not tune caps, tie-breaks, triggers or action selection using these outcomes."
+  ],
+  "candidate_caps": [
+    5,
+    8
+  ],
+  "contacts_added": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "execution_profile": "model-free-check",
+  "interpretation": "Post-hoc construction coverage/support diagnostic on existing complete PLAN/PLANR sources. The union is an available-label coverage ceiling, not a model accuracy or achievable system-gain estimate. Caps5/8 are descriptive fixed projections, not selected policies. No current evidence-path outcomes, new split, scoring or model contact.",
+  "output_relpath": "analysis/SAEA-SLURP-STAGE3-CANDIDATE-SUPPORT-READ-V1/support-read.json",
+  "read_id": "SAEA-SLURP-STAGE3-CANDIDATE-SUPPORT-READ-V1",
+  "registered_at_utc": "2026-09-25T17:11:28.630415+00:00",
+  "schema": "saea-slurp-candidate-support-read-v1",
+  "selection": "Preserve the actual normalized initial candidates. Append unseen labels from actual first-Solver exemplars by descending label frequency and then lexical label ID. No gold or terminal feedback enters this projection.",
+  "state_audit": {
+    "relpath": "analysis/SAEA-SLURP-STAGE3-SYSTEM-DECISION-STATE-AUDIT-V1/state-audit.json",
+    "sha256": "c712e190797fd7f95eab9ff9cf7e4718d2d42b10fbf8e0fff345a7961e9ed508"
+  },
+  "state_audit_recipe": {
+    "relpath": "docs/readiness/2026-09-25-system-decision-state-audit-v1.json",
+    "sha256": "7a0d298010d4eba58e20fab62a26df42d84605f7794c00368647d75c63f4bb56"
+  }
+}
