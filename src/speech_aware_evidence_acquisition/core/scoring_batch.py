@@ -591,8 +591,9 @@ def score_complete_derived_copy(
     """Score one full-roster derived column, bound to a verified parent bundle.
 
     The derived copy is not a new run. Its own exclusive receipt binds the
-    parent, roster, scorer, input bytes and result bytes; a retry only verifies
-    and reads that receipt, never invokes the scorer a second time.
+    parent, roster, scorer, input bytes and result bytes. A durable start marker
+    precedes the official scorer invocation. A successful retry reads the
+    complete receipt; an incomplete prior invocation refuses automatic replay.
     """
     from .base import SCORERS
     from . import scorers as _scorers  # noqa: F401
@@ -603,6 +604,7 @@ def score_complete_derived_copy(
     outputs_copy = Path(outputs_copy)
     result_path = Path(result_path)
     receipt_path = result_path.with_name(result_path.name + ".receipt.json")
+    started_path = result_path.with_name(result_path.name + ".started.json")
     lock_path = result_path.with_name(result_path.name + ".lock")
     bundle = verify_bundle(parent_manifest)
     if bundle.manifest.get("status") != "COMPLETED" or bundle.attempt_state != "FINALIZED":
@@ -657,7 +659,33 @@ def score_complete_derived_copy(
             if set(result) != {scorer_id}:
                 raise ScoreBatchError("derived score result names another scorer")
             return result[scorer_id]
+        if started_path.exists():
+            try:
+                started = json.loads(started_path.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError, json.JSONDecodeError) as error:
+                raise ScoreBatchError("prior derived score invocation marker is unreadable") from error
+            if (not isinstance(started, Mapping)
+                    or started.get("attempt_state") != "STARTED"
+                    or any(started.get(key) != value for key, value in binding.items())):
+                raise ScoreBatchError("prior derived score invocation marker differs from source")
+            raise ScoreBatchError(
+                "prior derived score invocation is incomplete; scorer will not rerun"
+            )
         scorer = SCORERS.resolve(scorer_id)
+        # The exclusive, source-bound marker is durable BEFORE scorer contact.
+        # A scorer exception or process death leaves it behind, so a retry
+        # cannot silently spend a second official scoring job.
+        with started_path.open("x", encoding="utf-8") as stream:
+            json.dump({**binding, "attempt_state": "STARTED"}, stream,
+                      sort_keys=True, indent=2)
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        directory_fd = os.open(result_path.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
         result = scorer(outputs_copy, lock, data_root)
         aggregate = result.get("aggregate") if isinstance(result, Mapping) else None
         per_sample = result.get("per_sample") if isinstance(result, Mapping) else None

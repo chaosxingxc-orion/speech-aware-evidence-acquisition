@@ -8,11 +8,22 @@ from speech_aware_evidence_acquisition.core.base import SCORERS, CoreError
 
 SCORER = "test-derived-complete-score-v1"
 CALLS = []
+FAIL = {"mode": None}
 
 
 def _score(path, _lock, _root):
     CALLS.append(str(path))
+    assert (path.parent / "derived-scores.json.started.json").is_file()
+    if FAIL["mode"] == "error":
+        raise RuntimeError("synthetic scorer failure")
+    if FAIL["mode"] == "interrupt":
+        raise KeyboardInterrupt()
     rows = [json.loads(line) for line in path.read_text().splitlines()]
+    if FAIL["mode"] == "post_call":
+        return {
+            "aggregate": {"identity_check": {"passed": True}, "official": object()},
+            "per_sample": [{"sample_id": row["sample_id"]} for row in rows],
+        }
     return {
         "aggregate": {"identity_check": {"passed": True},
                       "official": {"slu_f1": 0.5, "intent_accuracy": 0.5}},
@@ -54,6 +65,7 @@ def _run(parent, copy, tmp_path):
 
 def test_full_column_scores_once_and_reuses_exclusive_receipt(tmp_path, monkeypatch):
     CALLS.clear()
+    FAIL["mode"] = None
     parent, copy = _fixture(tmp_path, monkeypatch)
     first = _run(parent, copy, tmp_path)
     assert len(CALLS) == 1
@@ -72,6 +84,7 @@ def test_full_column_scores_once_and_reuses_exclusive_receipt(tmp_path, monkeypa
 
 def test_partial_column_and_modified_source_refused(tmp_path, monkeypatch):
     CALLS.clear()
+    FAIL["mode"] = None
     parent, copy = _fixture(tmp_path, monkeypatch)
     copy.write_text(json.dumps({"sample_id": "a", "text": "{}"}) + "\n")
     with pytest.raises(scoring_batch.ScoreBatchError, match="complete parent roster"):
@@ -87,6 +100,7 @@ def test_partial_column_and_modified_source_refused(tmp_path, monkeypatch):
 
 def test_missing_or_tampered_receipt_refuses_rescore(tmp_path, monkeypatch):
     CALLS.clear()
+    FAIL["mode"] = None
     parent, copy = _fixture(tmp_path, monkeypatch)
     _run(parent, copy, tmp_path)
     receipt = tmp_path / "derived-scores.json.receipt.json"
@@ -96,5 +110,47 @@ def test_missing_or_tampered_receipt_refuses_rescore(tmp_path, monkeypatch):
     assert len(CALLS) == 1
     receipt.unlink()
     with pytest.raises(scoring_batch.ScoreBatchError, match="partial derived score"):
+        _run(parent, copy, tmp_path)
+    assert len(CALLS) == 1
+
+
+@pytest.mark.parametrize(("mode", "error"), [
+    ("error", RuntimeError), ("interrupt", KeyboardInterrupt),
+])
+def test_failed_or_interrupted_invocation_cannot_be_retried(
+    tmp_path, monkeypatch, mode, error
+):
+    CALLS.clear()
+    FAIL["mode"] = mode
+    parent, copy = _fixture(tmp_path, monkeypatch)
+    try:
+        with pytest.raises(error):
+            _run(parent, copy, tmp_path)
+    finally:
+        FAIL["mode"] = None
+    marker = tmp_path / "derived-scores.json.started.json"
+    assert marker.is_file()
+    started = json.loads(marker.read_text())
+    assert started["parent_run_id"] == "RUN"
+    assert started["outputs_copy_sha256"] == hashlib.sha256(copy.read_bytes()).hexdigest()
+    assert started["column_binding"]["arm"] == "small"
+    assert not (tmp_path / "derived-scores.json").exists()
+    with pytest.raises(scoring_batch.ScoreBatchError, match="prior derived score invocation"):
+        _run(parent, copy, tmp_path)
+    assert len(CALLS) == 1
+
+
+def test_post_invocation_result_failure_blocks_retry(tmp_path, monkeypatch):
+    CALLS.clear()
+    FAIL["mode"] = "post_call"
+    parent, copy = _fixture(tmp_path, monkeypatch)
+    try:
+        with pytest.raises(TypeError):
+            _run(parent, copy, tmp_path)
+    finally:
+        FAIL["mode"] = None
+    assert (tmp_path / "derived-scores.json.started.json").is_file()
+    assert not (tmp_path / "derived-scores.json").exists()
+    with pytest.raises(scoring_batch.ScoreBatchError, match="prior derived score invocation"):
         _run(parent, copy, tmp_path)
     assert len(CALLS) == 1
