@@ -1,6 +1,6 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
-## Live continuation: evidence-path registered, preparing launch
+## Live continuation: evidence-path background queue running
 
 F10 is closed, not qualified. The next complete-system pair is registered in
 docs/readiness/2026-09-25-slurp-stage3-evidence-path-v1-preregistration.md.
@@ -13,7 +13,9 @@ Per-cell preparation and exact current intent/slot source-index checks are
 complete. The inherited F10 fit attempt IDs were corrected before contact.
 All model/tool/fit ceilings, prospective terminal statistics and exposure rows
 are registered; official scoring runs once per complete arm. No outcomes have
-been read. GPU launch still requires clean preflight and exclusive service.
+been read. All three clean preflights passed. The task launched at 13:57:59 UTC;
+the smoke passed at 13:59:36 and the control campaign started at 13:59:46.
+The code frozen through both official jobs is da443cdc1027b3c01034c26485805240ec0e671d.
 
 Full source-prefix availability is limited: original candidates have unseen
 intent-boundary values on 59/625 PLAN and 53/625 PLANR rows, but zero new slot
@@ -24,6 +26,19 @@ Do not expand this treatment because a local Reviewer metric looks promising.
 The existing batch driver now allows smoke_notool to differ from the following
 arm; the treatment smoke must not inherit the no-tool control assertion.
 Its default remains backward-compatible. No new launcher or executor exists.
+
+Smoke used 16 model contacts; all four Reviewer requests exposed tool schemas,
+but no tool was invoked. This proves fit/schema/delivery wiring, not evidence
+acquisition usefulness. Do not force calls or tune the policy on those rows.
+Full outcomes remain unread until both arms seal and score.
+
+Use the monitor script from master, but keep the active flight checkout frozen.
+The actual driver process path is the main checkout scripts/flights/batch/
+batch_driver.sh, not the flight checkout. An old driver-done in the append-only
+status log initially produced a false completion warning; metadata and process
+checks showed the new task was alive. The reader now scopes terminal events to
+the latest driver-start, retaining resume completions and explicit STOP markers.
+All 25 synthetic monitor tests pass. No model attempt was restarted.
 
 ## Owner steering: optimize complete system trajectories
 
@@ -132,7 +147,7 @@ used 16 model contacts. Control 625 used 2585 contacts, treatment 625 used 2552,
 
 The control campaign ran 10:48:53-12:04:40 UTC; treatment 12:05:11-13:15:34 UTC.
 The frozen flight remained 54b6e151481129f4e1915c37f42a88ade687930b through scoring.
-The resident decoder-only service remains available; no new GPU family is live.
+The same resident decoder-only service is now reused by the evidence-path queue.
 
 All 625 paired first Solver requests received identical ordered 20 exemplar IDs.
 There were 2,414 empty examples among 12,500 selections per arm; 176 rows saw none.

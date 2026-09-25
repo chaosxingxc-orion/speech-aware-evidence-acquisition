@@ -238,3 +238,35 @@ def test_telemetry_requested_adds_snapshot_without_changing_queue_verdict(tmp_pa
     assert result["state"] == "running-unverified"
     assert result["telemetry"]["server_ok"] is False
     assert result["telemetry"]["warnings"]
+
+
+@pytest.mark.parametrize("old_event,detail", [
+    ("driver-done", {"steps": 2}),
+    ("STOP", "previous family stopped"),
+    ("arm-exit", {"step": 1, "rc": 9}),
+])
+def test_new_driver_epoch_does_not_inherit_previous_terminal_event(tmp_path, old_event, detail):
+    queue, status, data = fixture(tmp_path, [
+        ("step-done", {"step": 1, "short": "first"}),
+        (old_event, detail),
+        ("driver-start", {"flight_commit": "new"}),
+        ("step-skip-done", {"step": 1, "short": "first"}),
+        ("step-start", {"step": 2, "short": "second"}),
+    ])
+    result = summarize(queue, status, data)
+    assert result["state"] == "running-unverified"
+    assert result["reason"] is None
+    assert result["current_step"]["short"] == "second"
+    assert len(result["completed_steps"]) == 1
+
+
+def test_new_driver_epoch_does_not_clear_a_stop_marker(tmp_path):
+    queue, status, data = fixture(tmp_path, [
+        ("driver-done", {"steps": 2}),
+        ("driver-start", {"flight_commit": "new"}),
+    ])
+    stop = tmp_path / "STOP"
+    stop.write_text("explicit unreleased failure")
+    result = summarize(queue, status, data, stop_marker=stop)
+    assert result["state"] == "handoff-required"
+    assert result["reason"] == "explicit unreleased failure"

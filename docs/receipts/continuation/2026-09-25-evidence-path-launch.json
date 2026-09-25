@@ -1,0 +1,96 @@
+{
+  "driver_script": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh",
+  "events": [
+    {
+      "at": "2026-09-25T13:57:59Z",
+      "detail": {
+        "flight_commit": "da443cdc1027b3c01034c26485805240ec0e671d",
+        "queue": "/home/chao/batch-queue.json"
+      },
+      "event": "driver-start"
+    },
+    {
+      "at": "2026-09-25T13:58:00Z",
+      "detail": {
+        "cell": "slurp-native-stage3-evidence-path-control-r01c-v1",
+        "kind": "cell",
+        "short": "evidence-path-control",
+        "step": 1
+      },
+      "event": "step-start"
+    },
+    {
+      "at": "2026-09-25T13:58:07Z",
+      "detail": {
+        "ramp_tflops": 70.5,
+        "step": 1
+      },
+      "event": "prelaunch-ok"
+    },
+    {
+      "at": "2026-09-25T13:59:36Z",
+      "detail": {
+        "rc": 0,
+        "step": 1
+      },
+      "event": "smoke-worker-exit"
+    },
+    {
+      "at": "2026-09-25T13:59:36Z",
+      "detail": {
+        "actual": {
+          "audio_seconds": 68.13975,
+          "calls": 16
+        },
+        "attempt_id": "attempt-slurp-native-stage3-evidence-path-tools-smoke-4-r01c-v1-generation",
+        "attempt_state": "OPENED",
+        "contacts_per_row_hist": {},
+        "cost": {
+          "audio_seconds_used": 68.13975,
+          "calls_used": 16,
+          "completion_tokens_total": 1083,
+          "prompt_tokens_total": 130400,
+          "tool_calls": 0
+        },
+        "dirt": [],
+        "dispositions": {},
+        "distinct": 4,
+        "fails": [],
+        "manifest_status": "COMPLETED",
+        "mode": "smoke",
+        "pass": true,
+        "requests": 16,
+        "requests_with_tool_schemas": 4,
+        "rows": 4,
+        "run_id": "SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-SMOKE-4-R01C-V1",
+        "score_jobs": 1,
+        "sha256_outputs": "c7f74018eb35acb67e85efdad1e152ec4e8a88ad862fcff21b38f4bf02e1321c",
+        "sha256_run-manifest": "61448e9496aedb49d3ffc322ce168aae99f55bf584712d20c6770201fdfc2e25",
+        "study_commit": "da443cdc1027b3c01034c26485805240ec0e671d"
+      },
+      "event": "smoke-inspect"
+    },
+    {
+      "at": "2026-09-25T13:59:46Z",
+      "detail": {
+        "log": "/home/chao/batch-campaign-1-evidence-path-control-20260925T135946Z.log",
+        "step": 1
+      },
+      "event": "arm-start"
+    }
+  ],
+  "flight_commit": "da443cdc1027b3c01034c26485805240ec0e671d",
+  "independent_of_assistant": true,
+  "monitor_fix": "Scope terminal events to the current driver invocation while retaining completed step identities. Prior append-only driver-done must not stop a new queue; STOP marker remains authoritative.",
+  "monitor_tests": 25,
+  "queue": [
+    "smoke4",
+    "control625",
+    "tools625"
+  ],
+  "reading_boundary": "Operational metadata only. Smoke has 16 model contacts, four tool-schema requests, zero actual tool invocations. It proves schema/fit/delivery wiring, not tool usefulness. Full outcome read waits for both seals and official jobs.",
+  "recorded_at": "2026-09-25T14:00:37.597242+00:00",
+  "schema": "saea-evidence-path-launch-receipt-v1",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "windows_task": "SAEA-Batch-Driver"
+}

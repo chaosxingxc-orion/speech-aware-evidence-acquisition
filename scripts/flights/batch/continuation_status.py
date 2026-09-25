@@ -202,7 +202,12 @@ def summarize(queue_path, status_path, data_root, *, stop_marker=None,
     attempt_state = manifest_status = failure = None
     if current is not None:
         attempt_state, manifest_status, failure = _sealed_metadata(data_root, current)
-    stops = [event.get("detail") for event in events if event["event"] == "STOP"]
+    # The append-only log spans queue families and manual resumptions.
+    # Keep completed step identities for resume, but scope terminal events to
+    # the latest driver invocation. An on-disk STOP remains authoritative.
+    starts = [i for i, event in enumerate(events) if event["event"] == "driver-start"]
+    epoch = events[starts[-1]:] if starts else events
+    stops = [event.get("detail") for event in epoch if event["event"] == "STOP"]
     if parse_error:
         failure = _stop_reason(stop_marker)
     elif stops:
@@ -210,12 +215,12 @@ def summarize(queue_path, status_path, data_root, *, stop_marker=None,
     elif has_stop_marker:
         failure = _stop_reason(stop_marker)
     elif failure is None:
-        exits = [event for event in events if event["event"] in ("arm-exit", "smoke-worker-exit")
+        exits = [event for event in epoch if event["event"] in ("arm-exit", "smoke-worker-exit")
                  and isinstance(event.get("detail"), dict) and event["detail"].get("rc") not in (None, 0)]
         if exits:
             last = exits[-1]
             failure = f"{last['event']} rc {last['detail']['rc']} on step {last['detail'].get('step')}"
-    driver_done = any(event["event"] == "driver-done" for event in events)
+    driver_done = any(event["event"] == "driver-done" for event in epoch)
     if driver_done and pending and not failure:
         failure = f"driver ended with {len(pending)} incomplete step" + ("s" if len(pending) != 1 else "")
     if failure:
