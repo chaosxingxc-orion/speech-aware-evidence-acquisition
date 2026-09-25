@@ -396,3 +396,66 @@ def _export_candidate_result(harness, result, output, records):
     assert len(visible["contacts"]) == sum(len(v["contacts"]) for v in row["role_visits"])
     assert visible["delivered_text"] == output["text"]
     return row
+
+
+@pytest.mark.usefixtures("_spawn_live_matching_process")
+@pytest.mark.parametrize("mode", ["original-only", "append-selected-exemplars"])
+@pytest.mark.parametrize("labels", [
+    ("gamma", "gamma", "gamma"),
+    ("alpha", "gamma", "alpha"),
+    ("alpha", "beta", "gamma"),
+    ("gamma",),
+])
+def test_seal_keeps_raw_position_bound_when_authority_labels_collapse(
+    tmp_path, monkeypatch, mode, labels,
+):
+    import test_native_episode_runner as episode
+    from test_native_finite_outcome_integration import _canonical_runtime
+    from speech_aware_evidence_acquisition.core.bundle.outputs import _verify_outputs_trace_binding
+
+    binding, router = _router(tmp_path / "stores", mode)
+    monkeypatch.setattr(episode, "_knowledge_snapshot", lambda: binding.composite_snapshot)
+    monkeypatch.setattr(episode, "_program", lambda **kwargs: _test_program(**kwargs))
+    original_run = episode.run_speech_native_agent_loop
+    harness = episode._ActualEpisodeHarness(
+        tmp_path / "runtime", sample_count=1, max_revisions=0, max_contacts=5,
+        planner_actions=("ACCEPT",),
+    )
+    raw = json.dumps({"candidates": [
+        {"intent_id": label, "distinction": "A speech cue",
+         "evidence_refs": [], "unresolved_fields": []}
+        for label in labels
+    ]})
+    original_output = harness._output
+    harness._output = lambda key: raw if key[1] == "perception" else original_output(key)
+
+    def run(**kwargs):
+        kwargs["native_episode_binding"] = replace(
+            kwargs["native_episode_binding"], supply_for_phase=router.automatic_for_phase,
+            candidate_proposal_for_context=router.candidate_proposal_for_context,
+        )
+        return original_run(**kwargs)
+
+    monkeypatch.setattr(episode, "run_speech_native_agent_loop", run)
+    try:
+        summary = harness.run()
+        runtime = _canonical_runtime(harness, summary)
+        runtime._composed.values["knowledge_stores"] = {
+            "slot-contracts": {"candidate_supply": {"solver": {
+                "exemplar_candidate_proposal": {"mode": mode},
+            }}},
+        }
+        outputs = runtime._canonical_output_rows(harness.client)
+    finally:
+        closed = harness.close()
+    assert closed["request_count"] == 4
+    records = {rid: payload for _, rid, payload in harness.trace.records}
+    _verify_outputs_trace_binding(tuple(outputs), records)
+    proposal = next(iter(summary.results[0].native_episode_receipt["candidate_proposal"]["proposals"].values()))
+    assert proposal["original_candidate_ids"] == list(dict.fromkeys(labels))
+    raw_states = [
+        state["content"] for payload in records.values()
+        for state in payload.get("org_agent_states", ())
+        if state["state_kind"] == "phase:perception"
+    ]
+    assert raw_states == [raw]

@@ -702,3 +702,56 @@ def test_append_fallback_candidate_refuses_an_id_outside_the_legal_inventory():
             fallback_candidates=["not_a_real_intent"],
             legal_intent_ids=FALLBACK_LEGAL,
         )
+
+
+def test_bounded_seal_projection_separates_raw_positions_from_distinct_authority():
+    from speech_aware_evidence_acquisition.rails.slurp_intent_hypotheses import (
+        project_bounded_slurp_intent_hypotheses, SlurpIntentHypothesisError,
+    )
+    raw = json.dumps({"candidates": [
+        {"intent_id": "one", "distinction": "A speech cue",
+         "evidence_refs": [], "unresolved_fields": []} for _ in range(3)
+    ]})
+    with pytest.raises(SlurpIntentHypothesisError, match="one through 1"):
+        project_bounded_slurp_intent_hypotheses(
+            raw, sample_id="s1", legal_intent_ids=("one",), max_candidates=1)
+    projected = project_bounded_slurp_intent_hypotheses(
+        raw, sample_id="s1", legal_intent_ids=("one",), max_candidates=1,
+        raw_max_candidates=3)
+    assert len(json.loads(projected.content)["candidates"]) == 1
+    assert len(projected.raw_positions) == 3
+    ordinary = project_bounded_slurp_intent_hypotheses(
+        raw, sample_id="s1", legal_intent_ids=("one", "two", "three"), max_candidates=3)
+    assert projected == ordinary
+
+
+@pytest.mark.parametrize("raw_limit", [True, 0, -1, 4, 1.5, "3"])
+def test_invalid_explicit_raw_projection_bounds_are_rejected(raw_limit):
+    from speech_aware_evidence_acquisition.rails.slurp_intent_hypotheses import (
+        project_bounded_slurp_intent_hypotheses, SlurpIntentHypothesisError,
+    )
+    raw = json.dumps({"candidates": [
+        {"intent_id": "one", "distinction": "A speech cue",
+         "evidence_refs": [], "unresolved_fields": []}
+    ]})
+    with pytest.raises(SlurpIntentHypothesisError):
+        project_bounded_slurp_intent_hypotheses(
+            raw, sample_id="s1", legal_intent_ids=("one",), max_candidates=1,
+            raw_max_candidates=raw_limit)
+
+
+@pytest.mark.parametrize("labels", [
+    ("one", "one", "one", "one"), ("one", "unknown", "one"),
+])
+def test_explicit_raw_bound_preserves_length_and_label_validation(labels):
+    from speech_aware_evidence_acquisition.rails.slurp_intent_hypotheses import (
+        project_bounded_slurp_intent_hypotheses, SlurpIntentHypothesisError,
+    )
+    raw = json.dumps({"candidates": [
+        {"intent_id": label, "distinction": "A speech cue",
+         "evidence_refs": [], "unresolved_fields": []} for label in labels
+    ]})
+    with pytest.raises(SlurpIntentHypothesisError):
+        project_bounded_slurp_intent_hypotheses(
+            raw, sample_id="s1", legal_intent_ids=("one",), max_candidates=1,
+            raw_max_candidates=3)

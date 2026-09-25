@@ -7,11 +7,17 @@ for their own flights. Do not interpret old plans as permission to restart them.
 
 ## Checkpoint and research objective
 
-Checkpoint: 2026-09-25T20:31:06.131796+00:00. Script state is running, current step
-candidate-recovery-control-v1, with no warning or handoff requirement.
-The driver and generation worker were verified live (PIDs 84082 and 84442);
-revalidate process identity before acting. Process IDs and utilization are
-observations, not durable identity or completed-row counts.
+Checkpoint: 2026-09-25T20:59:06Z. The durable queue is stopped with a named
+control-arm seal-verifier failure. Driver PID 84082 and worker PID 84442 have
+exited. The resident model service remains available and idle. Do not restart
+the old queue. All 625 control output rows and 3,723 contacts are preserved,
+but the attempt is ABORTED and no official scorer ran. Expanded has not started.
+The raw-position versus distinct-label defect is fixed in the shared seal
+parser: eight full-graph cases, 116 related tests and nine checks passed.
+The repaired verifier accepts all 625 original rows without changing source
+bytes. No task quality has been read. Read the
+[seal failure and recovery boundary](../readiness/2026-09-25-slurp-stage3-candidate-recovery-v1/seal-failure-root-cause-v1.md).
+The one allowed fresh recovery still needs its registration and dispatch.
 
 Stage-2's frozen four-node system already has substantial complete-task benefit.
 Stage-3 has **no learned-policy update with established stable benefit yet**.
@@ -19,14 +25,16 @@ The objective remains full sampling, terminal feedback, update, reexecution,
 and matched replication, first on SLURP, then Audio2Tool/E21/E22. Engineering
 proofs and fixed-policy improvements do not complete that objective.
 
-No new owner decision is required to finish the current registered pair.
+A named recovery has not been dispatched. The registration permits at most one
+root-diagnosed recovery after four-row proof. Existing infrastructure resume
+does not apply to a harness defect; keep the aborted source immutable.
 
 ## Live execution: preserve this queue and frozen source
 
 | Item | Current authority |
 | --- | --- |
 | Queue | /home/chao/batch-queue.json |
-| Ordered work | Control smoke4 (passed), control625 (running), expanded smoke4, expanded625 |
+| Ordered work | Control smoke4 passed; control625 ABORTED at seal; expanded not started |
 | Worker checkout | /home/chao/saea-worktrees/fable-batch-flight |
 | Frozen worker commit | 9f6a949f445e4fb308789eb0786a1a25c3fb8f69 |
 | Resident session | serving-slurp-native-candidate-five-train-a-np4-v1 |
@@ -35,7 +43,8 @@ No new owner decision is required to finish the current registered pair.
 | Status / stop | /home/chao/batch-status.jsonl / /home/chao/batch-STOP |
 | Data root | /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data |
 
-Do not advance the worker checkout until BOTH complete arms finish scoring.
+Retain the failed source worker checkout for provenance. Do not advance it or
+replay its queue while diagnosing recovery.
 Generation/scoring run independently of the assistant, network and credits.
 The OS task has no network condition, execution timeout or automatic replay.
 Keep the existing fifteen-minute heartbeat slurp; notify on meaningful change,

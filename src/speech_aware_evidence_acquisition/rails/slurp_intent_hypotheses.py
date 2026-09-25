@@ -480,11 +480,15 @@ def project_bounded_slurp_intent_hypotheses(
     legal_intent_ids: Iterable[str],
     max_candidates: int = 3,
     projection_policy: str = BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    raw_max_candidates: int | None = None,
 ) -> SlurpIntentHypothesisProjection:
     """Project a configured bounded response without editing the source.
 
     Validate every raw object before retaining the first occurrence of each
     intent. The historical default-three policy retains its exact identity.
+    A seal reader with a reduced authority inventory can explicitly preserve
+    the original bound on raw positions; duplicates do not consume distinct
+    labels. Omission retains the historical parsing contract.
     """
     if not isinstance(content, str):
         raise SlurpIntentHypothesisError("bounded hypothesis response must be JSON text")
@@ -510,6 +514,19 @@ def project_bounded_slurp_intent_hypotheses(
             "candidate bounds above three require the configurable bounded "
             "first-occurrence projection policy"
         )
+    raw_limit = max_candidates
+    if raw_max_candidates is not None:
+        if (
+            isinstance(raw_max_candidates, bool)
+            or not isinstance(raw_max_candidates, int)
+            or not max_candidates <= raw_max_candidates <= 3
+            or projection_policy != BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+        ):
+            raise SlurpIntentHypothesisError(
+                "explicit raw candidate bound requires the bounded-three policy "
+                "and a bound between the projected limit and three"
+            )
+        raw_limit = raw_max_candidates
     try:
         compact = json.loads(content, object_pairs_hook=_unique_json_object)
     except (TypeError, json.JSONDecodeError) as error:
@@ -519,10 +536,10 @@ def project_bounded_slurp_intent_hypotheses(
             "bounded hypothesis response must contain exactly candidates"
         )
     rows = compact["candidates"]
-    if not isinstance(rows, list) or not 1 <= len(rows) <= max_candidates:
+    if not isinstance(rows, list) or not 1 <= len(rows) <= raw_limit:
         raise SlurpIntentHypothesisError(
             "bounded hypothesis response must contain "
-            f"one through {max_candidates} candidates"
+            f"one through {raw_limit} candidates"
         )
     policy_sha256 = (
         BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256
@@ -614,6 +631,7 @@ def parse_slurp_intent_hypothesis_state(
     max_candidates: int,
     compact_source_phase: str | None = None,
     projection_policy: str | None = None,
+    raw_max_candidates: int | None = None,
 ) -> SlurpIntentHypothesisState:
     """Consume raw state without changing its sealed bytes or source hash.
 
@@ -650,6 +668,10 @@ def parse_slurp_intent_hypothesis_state(
         raise SlurpIntentHypothesisError(
             "projection_policy requires the bounded first-occurrence policy and compact source"
         )
+    if raw_max_candidates is not None and projection_policy is None:
+        raise SlurpIntentHypothesisError(
+            "an explicit raw candidate bound requires bounded projection"
+        )
     projection = None
     content = artifact.content
     legal = _legal_ids(legal_intent_ids)
@@ -679,6 +701,7 @@ def parse_slurp_intent_hypothesis_state(
                 legal_intent_ids=legal,
                 max_candidates=max_candidates,
                 projection_policy=projection_policy,
+                raw_max_candidates=raw_max_candidates,
             )
             content = projection.content
         else:

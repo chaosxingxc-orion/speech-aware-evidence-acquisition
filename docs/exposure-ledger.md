@@ -5198,3 +5198,25 @@ The owner approved this implementation before contact. Preserve all prior exposu
 ## 2026-09-25 candidate-recovery durable dispatch
 
 The registered four-cell queue started at2026-09-25T19:29:18Z, frozen at9f6a949f445e4fb308789eb0786a1a25c3fb8f69. Control smoke4 passed structural inspection with25 model contacts and four distinct rows at19:30:47Z. This is engineering validation only. The driver proceeds to the two625-row complete policies in registered order, with expanded smoke4 before the expanded arm. Read docs/receipts/continuation/2026-09-25-candidate-recovery-launch.json. No full-arm outcome has been read.
+
+## 2026-09-25 candidate-recovery seal failure and structural audit
+
+At 2026-09-25T20:59:06Z the durable queue stopped after the control flight
+failed during bundle verification. Its 625 output rows and 3,723 model
+contacts are preserved; the attempt is ABORTED and has zero official score
+jobs. The expanded smoke and full arm have not started. The source manifest's
+COMPLETED field does not override the authoritative aborted attempt state.
+
+Before reading source contents for structural diagnosis, root registers
+docs/readiness/2026-09-25-slurp-stage3-candidate-recovery-v1/seal-failure-audit-registration-v1.json.
+This model-free audit may verify complete custody and count raw versus distinct
+candidate positions without printing labels or answers. It may not score,
+join gold, modify source artifacts, reopen the aborted attempt or dispatch
+model/tokenizer calls. The full-pair outcome embargo remains in force.
+
+The structural audit passed on all 625 source rows with the repaired verifier.
+All seven pinned source artifacts remained unchanged. No task quality or gold
+was read, no official scoring occurred and the attempt remains ABORTED.
+Proof: docs/receipts/continuation/2026-09-25-candidate-recovery-seal-repair.json.
+The four-shape complete-graph proof uses synthetic transport only. A fresh
+named recovery has not yet been registered or dispatched.

@@ -407,6 +407,8 @@ def validate_candidate_proposal_consumption(
         source, expected_sample_id=sample_id, legal_intent_ids=authority_labels,
         max_candidates=min(3, len(authority_labels)), compact_source_phase="perception",
         projection_policy=BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+        # A reduced authority set bounds distinct labels, not raw duplicate positions.
+        raw_max_candidates=3,
     )
     if tuple(item.intent_id for item in parsed.candidates) != proposal.original_candidate_ids:
         refuse("original candidates differ from raw Perception")

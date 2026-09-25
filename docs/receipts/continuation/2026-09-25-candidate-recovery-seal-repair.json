@@ -1,0 +1,146 @@
+{
+  "schema": "saea-candidate-proposal-raw-bound-repair-v1",
+  "created_at": "2026-09-25T21:12:49.178547+00:00",
+  "parent_commit": "45197d8a9bfbd08ca1b920583b3bc18049cec243",
+  "frozen_failed_worker_commit": "9f6a949f445e4fb308789eb0786a1a25c3fb8f69",
+  "root_cause": "Seal validation incorrectly treated a reduced distinct-label authority set as the raw Perception position bound",
+  "repair": "Keep canonical distinct-label validation and separately preserve the historical three-position raw projection bound at the seal reader; default runtime callers are unchanged",
+  "validation": {
+    "related_tests_passed": 116,
+    "four_shape_proof": {
+      "shapes": [
+        "three equal labels",
+        "three positions with two distinct labels",
+        "three distinct labels",
+        "one position"
+      ],
+      "modes": [
+        "original-only",
+        "append-selected-exemplars"
+      ],
+      "cases": 8,
+      "synthetic_model_transport": true,
+      "research_model_contacts": 0
+    },
+    "red_log_sha256": "c807b304d8ae2a7caf127959f9d964b7b2a9b1b298b05656f8c313422ea4bcc5",
+    "tests_log_sha256": "af8367982f68921d193454b139258851fb3e1901da4411042c0cb8ab3d73fc89",
+    "offline_checks": [
+      {
+        "check": "engineering_base_check",
+        "exit": 0,
+        "log": "/home/chao/candidate-seal-recovery-validation-v1/engineering_base_check.log",
+        "log_sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+      },
+      {
+        "check": "harness_admission_check",
+        "exit": 0,
+        "log": "/home/chao/candidate-seal-recovery-validation-v1/harness_admission_check.log",
+        "log_sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+      },
+      {
+        "check": "results_ledger_check",
+        "exit": 0,
+        "log": "/home/chao/candidate-seal-recovery-validation-v1/results_ledger_check.log",
+        "log_sha256": "0426590fecc31f8de63ddacab92a3e818106a70b9c33abd048d66228c5d7b7c6"
+      },
+      {
+        "check": "tool_catalog_check",
+        "exit": 0,
+        "log": "/home/chao/candidate-seal-recovery-validation-v1/tool_catalog_check.log",
+        "log_sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+      },
+      {
+        "check": "experiment_handoff_check",
+        "exit": 0,
+        "log": "/home/chao/candidate-seal-recovery-validation-v1/experiment_handoff_check.log",
+        "log_sha256": "f501fd1d89044f766469fcc4a635e63e20a8bc0aecfa9db8b23423769013ad66"
+      },
+      {
+        "check": "openjiuwen_native_reuse_check",
+        "exit": 0,
+        "log": "/home/chao/candidate-seal-recovery-validation-v1/openjiuwen_native_reuse_check.log",
+        "log_sha256": "879d45bd6d8322e25d365accfde11b8b0819c65a29e8c2cebd5f1c4422eacd98"
+      },
+      {
+        "check": "derived_media_confinement_check",
+        "exit": 0,
+        "log": "/home/chao/candidate-seal-recovery-validation-v1/derived_media_confinement_check.log",
+        "log_sha256": "ec87516dfc9b00db5a042bb8548d95a7a077738d0a8b0af2a7c00ea174bea0a1"
+      },
+      {
+        "check": "stage3_algorithm_label_check",
+        "exit": 0,
+        "log": "/home/chao/candidate-seal-recovery-validation-v1/stage3_algorithm_label_check.log",
+        "log_sha256": "9fac0138523bbf4771cc09bd0e007add368542e30e1920608c9111a7aa8cd2aa"
+      },
+      {
+        "check": "finite_completion_policy_check",
+        "exit": 0,
+        "log": "/home/chao/candidate-seal-recovery-validation-v1/finite_completion_policy_check.log",
+        "log_sha256": "f82745fa49af22608b01172848d1f53e78f91f08fc16693254218ee5209cc331"
+      }
+    ],
+    "complete_source_proof": {
+      "schema": "saea-candidate-recovery-structural-reverification-v1",
+      "observed_at": "2026-09-25T21:08:40.023298+00:00",
+      "registration_sha256": "d328be7910d62f4f591e909fe619872f47283d5243580d34e8e8e43d9687001c",
+      "source_manifest_sha256": "3d44893f541ec3b2f684d619bc76d10c63a61726578e80013c314b21335039c5",
+      "source_run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1",
+      "source_attempt_id": "attempt-slurp-native-stage3-candidate-recovery-control-r01c-v1-generation",
+      "structural_verifier_passed": true,
+      "roster_count": 625,
+      "perception_shape_histogram": [
+        {
+          "raw_positions": 1,
+          "distinct_labels": 1,
+          "count": 31
+        },
+        {
+          "raw_positions": 2,
+          "distinct_labels": 1,
+          "count": 6
+        },
+        {
+          "raw_positions": 2,
+          "distinct_labels": 2,
+          "count": 132
+        },
+        {
+          "raw_positions": 3,
+          "distinct_labels": 1,
+          "count": 6
+        },
+        {
+          "raw_positions": 3,
+          "distinct_labels": 2,
+          "count": 6
+        },
+        {
+          "raw_positions": 3,
+          "distinct_labels": 3,
+          "count": 444
+        }
+      ],
+      "source_bytes_unchanged": true,
+      "elapsed_seconds": 9.20552747300826,
+      "verifier_patch_sha256": {
+        "src/speech_aware_evidence_acquisition/rails/slurp_intent_hypotheses.py": "8d54e7b5ef85748abf48c05044b28e3865cc6833e2e439f25b27041e633120f9",
+        "src/speech_aware_evidence_acquisition/rails/slurp_candidate_proposal.py": "d7c946a139c847624de8326160efc53f7e6454bd35bc94bad6562bca94610e5c"
+      },
+      "attempt_state_changed": false,
+      "official_scoring_performed": false,
+      "task_quality_read": false,
+      "model_contacts_added": 0,
+      "gpu_contacts_added": 0,
+      "claim_boundary": "Complete structural custody only; aborted status remains; not a completed/scored experiment or admission to rerun"
+    },
+    "complete_source_proof_path": "/home/chao/candidate-seal-recovery-validation-v1/full-source-structural-reverification.json",
+    "complete_source_proof_sha256": "ff8597f1e1e959df25320356a6d8f755440986e75aa4ca5d37782e79851fbd4c"
+  },
+  "research_model_contacts_added": 0,
+  "official_scorer_contacts_added": 0,
+  "task_quality_read": false,
+  "old_attempt_reopened": false,
+  "recovery_dispatched": false,
+  "next": "Register the one allowed named recovery with fresh generation/fit identities and structural smoke; preserve old failed artifacts and costs; keep full-pair outcome embargo"
+}

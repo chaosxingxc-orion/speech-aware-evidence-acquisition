@@ -1,0 +1,58 @@
+{
+  "schema": "saea-candidate-recovery-seal-audit-registration-v1",
+  "registered_at": "2026-09-25T21:07:30.381219+00:00",
+  "execution_profile": "model-free-check",
+  "purpose": "Diagnose and revalidate structural custody after post-generation verifier failure; do not score or read task quality",
+  "source_run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1",
+  "source_attempt_id": "attempt-slurp-native-stage3-candidate-recovery-control-r01c-v1-generation",
+  "source_attempt_state": "ABORTED",
+  "source_worker_commit": "9f6a949f445e4fb308789eb0786a1a25c3fb8f69",
+  "known_failure": "Seal verifier shrinks raw duplicate-position bound to the reduced distinct authority count",
+  "source_pins": {
+    "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1.run-manifest.json": {
+      "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1/attempt-slurp-native-stage3-candidate-recovery-control-r01c-v1-generation/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1.run-manifest.json",
+      "sha256": "3d44893f541ec3b2f684d619bc76d10c63a61726578e80013c314b21335039c5"
+    },
+    "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1.outputs.jsonl": {
+      "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1/attempt-slurp-native-stage3-candidate-recovery-control-r01c-v1-generation/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1.outputs.jsonl",
+      "sha256": "49245dcf1144bd9f4e1227cef7eba94d7918ff11aee93974c23bd4883f3ad809"
+    },
+    "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1.phases.json": {
+      "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1/attempt-slurp-native-stage3-candidate-recovery-control-r01c-v1-generation/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1.phases.json",
+      "sha256": "50c38a63055e10e634052ce79bfac0aa7e28e63e5a7ea504cfce4b0db855ec53"
+    },
+    "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1.trace.jsonl": {
+      "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1/attempt-slurp-native-stage3-candidate-recovery-control-r01c-v1-generation/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1.trace.jsonl",
+      "sha256": "fca43cb3fa89c67348b423933fcc6f13d7ca083e08abe252d99df7116e053ac6"
+    },
+    "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1.trace-manifest.json": {
+      "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1/attempt-slurp-native-stage3-candidate-recovery-control-r01c-v1-generation/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1.trace-manifest.json",
+      "sha256": "54b272905414c4884f24ffdf827cf211b3eb95ac57bd904133c2e562c44b0ef1"
+    },
+    "flight-receipts.json": {
+      "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1/attempt-slurp-native-stage3-candidate-recovery-control-r01c-v1-generation/flight-receipts.json",
+      "sha256": "3c7438cd818123db028325d5751d0629a15d31d565d2f40415f5ae8107bc2478"
+    },
+    "attempt-slurp-native-stage3-candidate-recovery-control-r01c-v1-generation.json": {
+      "relpath": "attempts/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1/attempt-slurp-native-stage3-candidate-recovery-control-r01c-v1-generation.json",
+      "sha256": "ea073009810caaae24682996b1b3ba3a4364eaf2026587cee416d3d461ef1b99"
+    }
+  },
+  "allowed_reads": [
+    "bundle structural verifier",
+    "complete row and contact counts",
+    "raw-position and distinct-label counts without answer or label disclosure",
+    "source file hashes"
+  ],
+  "forbidden": [
+    "official scoring",
+    "task accuracy or gold joins",
+    "partial outcome selection",
+    "writing source artifacts",
+    "reopening or finalizing the aborted attempt",
+    "model or tokenizer contacts"
+  ],
+  "new_model_contacts": 0,
+  "new_official_scorer_contacts": 0,
+  "recovery_status": "Not dispatched; first establish the named cause and four-shape complete-graph proof"
+}
