@@ -1,36 +1,44 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
-## Pending candidate-support diagnostic on prior complete sources
+## Latest root result: candidate support and complete-system recovery
 
-At 2026-09-25T17:17:32Z, the registered candidate-support read remains live as
-WSL process 66519 (Codex execution session 14021). Its log is
-/home/chao/candidate-support-read-20260925.log. It has verified all actor
-prefixes and is in the existing governed TRAIN loader's filesystem read.
-Observed memory is about 350 MiB, one thread, with ample available RAM.
-A filesystem wait is not a failed experiment; do not restart this process.
+The candidate-support read completed successfully in 727.24 seconds. Session
+14021 and process 66519 are finished; do not poll or restart them. Read
+docs/results/2026-09-25-slurp-candidate-support-diagnostic.md and receipt
+docs/receipts/continuation/2026-09-25-slurp-candidate-support-read.json.
 
-The committed recipe is
-docs/readiness/2026-09-25-slurp-candidate-support-read-v1.json; the thin shared
-entry is scripts/analysis/slurp_candidate_support_read.py. It reuses the
-source-pinned state audit, frozen knowledge, candidate parser and governed
-gold loader. It preserves initial candidates and projects capped5/capped8
-and all-existing-label unions, using example frequency with lexical ties.
-Selection has no gold input. All625 inputs per repeat and all scenario strata
-remain in the final descriptive read. No new scoring, inference or tool use.
+Both complete PLAN/PLANR 625 populations were retained. Initial candidate
+coverage is 77.76/77.28 percent. Preserving those candidates and appending
+labels from the actual first-Solver exemplars up to eight candidates gives
+93.12 percent in both repeats. The full label union gives 93.76 percent,
+adding only four rows beyond that cap; neither reaches the 95-percent target.
+Exemplar labels alone cover 90.40 percent, so do not replace initial candidates.
 
-Expected output:
-SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-STAGE3-CANDIDATE-SUPPORT-READ-V1/support-read.json.
-After completion, root must write the interpretation and receipt, finish the
-exposure row and merge that report. No coverage or task-gain result is available
-yet. Four projection tests and all nine offline gates passed; the first
-native-reuse check invocation omitted its required output argument, and the
-correct invocation passed. Gate logs are /home/chao/candidate-support-*-final.log
-or their first-run counterparts, indexed by candidate-support-gate-results.json.
+Among final intent errors, 92/98 have the correct label in the actual examples
+but outside initial candidates; 53/55 already have it in candidates; 39/39
+miss both label pools. These are diagnostic partitions, not causal assignments
+or achievable correction counts. The full scenario tables and equal-scenario
+weights are in the report.
 
-This adds independent analysis files only. Existing code and pinned inputs
-used by the detached evidence-path reader remain unchanged. That reader is
-still process 64899, waiting for tools campaign 56278. The active frozen GPU
-checkout is not modified. Do not confuse these two independent reads.
+A source-pinned follow-up also found 8/5 correct delivered intents outside the
+original candidate set. Three of the PLAN cases became intent-correct after
+revision; the others were already correct at first Solver. This is an
+instruction-compliance observation, not grounds to remove correct outcomes.
+Initial candidate coverage is not an observed hard system-accuracy ceiling.
+Do not add a strict filter or change historical scoring.
+
+Root prioritizes a complete candidate-recovery continuation design after the
+active evidence-path pair is interpreted: retain original proposals, append
+source-bound supported candidates, supply their distinguishing and slot
+knowledge, and carry this context through Reviewer/Planner/Solver to delivery.
+This is the previously planned F4 direction, not an admitted new flight or
+learned policy. Preserve the original Perception response and bind additions
+as a separate derived proposal. No extra GPU or scorer contact occurred.
+
+The pending evidence-path read is still the detached process 64899, waiting
+for the original tools campaign 56278. Existing code used by that reader and
+the frozen GPU source checkout remains unchanged. New candidate analysis files
+are independent additions; no analysis framework or model-service path changed.
 
 ## Latest algorithm-source finding: TF-GRPO needs a speech/feedback bridge
 

@@ -1,0 +1,165 @@
+{
+  "active_family_outcomes_read": false,
+  "checks": [
+    {
+      "exit_code": 0,
+      "log": "/home/chao/candidate-support-engineering_base_check.log",
+      "log_sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0",
+      "name": "engineering_base_check",
+      "seconds": 7.59
+    },
+    {
+      "exit_code": 0,
+      "log": "/home/chao/candidate-support-harness_admission_check.log",
+      "log_sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911",
+      "name": "harness_admission_check",
+      "seconds": 0.63
+    },
+    {
+      "exit_code": 0,
+      "log": "/home/chao/candidate-support-results_ledger_check.log",
+      "log_sha256": "24fde2a722ef94a5ea364970c08fd0628d9221fd306aaa63eccafd9bb5d68f0c",
+      "name": "results_ledger_check",
+      "seconds": 0.2
+    },
+    {
+      "exit_code": 0,
+      "log": "/home/chao/candidate-support-tool_catalog_check.log",
+      "log_sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc",
+      "name": "tool_catalog_check",
+      "seconds": 0.87
+    },
+    {
+      "exit_code": 0,
+      "log": "/home/chao/candidate-support-experiment_handoff_check.log",
+      "log_sha256": "71a7fe064d0fffe54ae4cefb4ef518e3aab4e77bb6d7a95516f40291ca437211",
+      "name": "experiment_handoff_check",
+      "seconds": 0.59
+    },
+    {
+      "exit_code": 2,
+      "log": "/home/chao/candidate-support-openjiuwen_native_reuse_check.log",
+      "log_sha256": "a3caf48ba400a19636117e9705e5a355d54db0246ccbc5217ee1ae0b45d0b154",
+      "name": "openjiuwen_native_reuse_check",
+      "seconds": 3.09
+    },
+    {
+      "args": [
+        "--output",
+        "/home/chao/candidate-support-native-reuse-proof.json"
+      ],
+      "exit_code": 0,
+      "log": "/home/chao/candidate-support-openjiuwen_native_reuse_check-final.log",
+      "log_sha256": "8a0ffb38c71da9eb61e80dcab1c5df13a9a9eed1b030e5e1a899f8d93952f39e",
+      "name": "openjiuwen_native_reuse_check",
+      "seconds": 3.41
+    },
+    {
+      "args": [],
+      "exit_code": 0,
+      "log": "/home/chao/candidate-support-stage3_algorithm_label_check-final.log",
+      "log_sha256": "e8268dee788bca9d811b3ff70222a9f5205d5ba9a9ae888017e2d1beaa932f47",
+      "name": "stage3_algorithm_label_check",
+      "seconds": 0.31
+    },
+    {
+      "args": [],
+      "exit_code": 0,
+      "log": "/home/chao/candidate-support-finite_completion_policy_check-final.log",
+      "log_sha256": "88e4930b4c055dd9ed068baafa8136de542d6f69cc4bde7d3f2fea5b703ee0d8",
+      "name": "finite_completion_policy_check",
+      "seconds": 0.22
+    },
+    {
+      "args": [
+        "--output",
+        "/home/chao/candidate-support-derived-media-proof.json"
+      ],
+      "exit_code": 0,
+      "log": "/home/chao/candidate-support-derived_media_confinement_check-final.log",
+      "log_sha256": "8649a3cc972fd4348619e18276b375d377e709e01fea592dc2f035b27cd4a04e",
+      "name": "derived_media_confinement_check",
+      "seconds": 34.01
+    }
+  ],
+  "contacts_added": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "created_at_utc": "2026-09-25T17:30:26.090019+00:00",
+  "execution_environment": "WSL Ubuntu-24.04; explicit checkout PYTHONPATH; one-thread CPU read",
+  "focused_tests": {
+    "failed": 0,
+    "passed": 4,
+    "scope": "candidate order retention, bounded width, lexical ties, empty support; synthetic inputs only"
+  },
+  "frozen_flight_commit_unchanged": "da443cdc1027b3c01034c26485805240ec0e671d",
+  "outputs": [
+    {
+      "content_sha256": "8cdb8f9e19522320e055ff5c1d5a9d4b66db56b93e595579b48ec07244cde3c3",
+      "relpath": "analysis/SAEA-SLURP-STAGE3-CANDIDATE-SUPPORT-READ-V1/support-read.json",
+      "sha256": "3b0f1778f6a15c09d36ed215dbe994090e40f87585ed0bdcf058caa53e6639fa"
+    },
+    {
+      "content_sha256": "d0998f184bd2b82ca216ff577402039847ec39b3f7c1c944a7532d37f61269c1",
+      "relpath": "analysis/SAEA-SLURP-STAGE3-CANDIDATE-SUPPORT-READ-V1/outside-original-candidates.json",
+      "sha256": "578874b668fb8869e457d72fb2f4ed35b0465bde1e4f8078161c17ee8dd749a4"
+    }
+  ],
+  "policy_updated": false,
+  "read_id": "SAEA-SLURP-STAGE3-CANDIDATE-SUPPORT-READ-V1",
+  "read_log": "/home/chao/candidate-support-read-20260925.log",
+  "read_log_sha256": "25efbface68a1fde44e1789583887aba0c74671b51551a2ed8d8f1859a1ddf16",
+  "read_seconds": 727.24,
+  "registration_commit": "26e909e2ec3467ce028625a95af7f86ffb6b1b54",
+  "repository_sources": [
+    {
+      "relpath": "docs/readiness/2026-09-25-slurp-candidate-support-read-v1.json",
+      "sha256": "9b3989b2c5b41ea1c8bf20c06a840d2140f1e72c1f908d15b0c8fb4e63ba5bdc"
+    },
+    {
+      "relpath": "scripts/analysis/slurp_candidate_support_read.py",
+      "sha256": "efa161fb1dfd7edfb12d4e1a0f840d36c2b3a0fea50c8278aa0110696bc61f57"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/slurp_candidate_support.py",
+      "sha256": "59a460654c859c915e382d968a517c35717e0ed077b415cf4fa9939dc25a69cf"
+    },
+    {
+      "relpath": "tests/unit/test_slurp_candidate_support.py",
+      "sha256": "c43168e3edd7161d4675049b98bb140b9caf3f9343352f0a038e322aee29fce9"
+    },
+    {
+      "relpath": "docs/results/2026-09-25-slurp-candidate-support-diagnostic.md",
+      "sha256": "8360c4521cff2cf704be9857cf1fab1af9356d9cd06712af5ac52d1f287a061e"
+    }
+  ],
+  "root_decision": "Prioritize a complete candidate-recovery continuation design after the active pair closes; coverage is not a hard system ceiling or a measured task gain.",
+  "schema": "saea-model-free-analysis-receipt-v1",
+  "source_feedback": [
+    {
+      "feedback": {
+        "relpath": "analysis/SAEA-SLURP-STAGE3-SYSTEM-TRAJECTORY-READ-V1/plan-system-feedback.json",
+        "sha256": "80d53a8f4728bccf4b932ffc1ae8a2e98ae05eb1f73acd343f1d60f0835537f1"
+      },
+      "label": "plan"
+    },
+    {
+      "feedback": {
+        "relpath": "analysis/SAEA-SLURP-STAGE3-SYSTEM-TRAJECTORY-READ-V1/planr-system-feedback.json",
+        "sha256": "2fcbe5e92771c752ef5fb986736a1089644a884cb315e27d5be5137487ef8f0b"
+      },
+      "label": "planr"
+    }
+  ],
+  "state_audit": {
+    "relpath": "analysis/SAEA-SLURP-STAGE3-SYSTEM-DECISION-STATE-AUDIT-V1/state-audit.json",
+    "sha256": "c712e190797fd7f95eab9ff9cf7e4718d2d42b10fbf8e0fff345a7961e9ed508"
+  },
+  "system_gain_measured": false
+}
