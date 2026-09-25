@@ -1,0 +1,57 @@
+{
+  "authority": "Root diagnosis of the aborted VAR-2 full attempt on 2026-09-25; one recovery only.",
+  "cells": {
+    "full": {
+      "attempt_id": "attempt-slurp-native-stage3-var2-supply-variants-r01c-recovery-v1-generation",
+      "audio_cap": 46357,
+      "baseline": "slurp-native-stage3-var2-supply-variants-r01c-recovery-baseline-v1",
+      "cell_id": "slurp-native-stage3-var2-supply-variants-r01c-recovery-v1",
+      "composed_config_hash": "22572b638da810bfea7a9507ef3359b03d26540d0e37c27b513048bd5a714b07",
+      "experiment": "slurp-native-stage3-var2-supply-variants-r01c-recovery-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-var2-supply-variants-r01c-recovery-v1-fit",
+      "fit_cap": 42500,
+      "fit_cell_id": "slurp-native-stage3-var2-supply-variants-r01c-recovery-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-RECOVERY-FIT-V1",
+      "gen_cap": 10625,
+      "gpu_hours": 8.0,
+      "protocol_hash": "240f751e0e29331245a4bdc0934d62cf3d6237325640ab042517091e5c84f6b5",
+      "rows": 625,
+      "run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-RECOVERY-V1",
+      "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-var2-supply-variants-r01c-recovery-smoke-4-v1-generation",
+      "audio_cap": 290,
+      "baseline": "slurp-native-stage3-var2-supply-variants-r01c-recovery-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-var2-supply-variants-r01c-recovery-smoke-4-v1",
+      "composed_config_hash": "e11fbc07efece6410eeea0eaeea6529a6835f015e24c378a085ebd52de0a93dc",
+      "experiment": "slurp-native-stage3-var2-supply-variants-r01c-recovery-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-var2-supply-variants-r01c-recovery-smoke-4-v1-fit",
+      "fit_cap": 272,
+      "fit_cell_id": "slurp-native-stage3-var2-supply-variants-r01c-recovery-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-RECOVERY-SMOKE-4-FIT-V1",
+      "gen_cap": 68,
+      "gpu_hours": 1.0,
+      "protocol_hash": "f648d2c6394f8d7042e573c419ca06f88479bb344efdefb9c536d4adfe7abe53",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-RECOVERY-SMOKE-4-V1",
+      "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5"
+    }
+  },
+  "claim_boundary": "The recovery's complete manifest alone may be scored; the aborted predecessor has no outcome read. The smoke is structural proof.",
+  "invariants": "Same R01C roster, existing first-four smoke subset, four actions exk10/exk30/exdiv/plan in fixed order, last PLAN continuation, policy, service geometry and 512-token cap.",
+  "recovery": {
+    "cause": "On an OpenJiuwen revision revisit, the resolver returned unseen supply increments while the runner compared those increments to cumulative acquired ids.",
+    "form": "Fresh complete 625-row re-flight; no resume or partial-row selection.",
+    "original_plus_recovery_generation_upper_bound": 10849,
+    "predecessor_model_contacts": 224,
+    "predecessor_run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-V1",
+    "predecessor_state": "aborted-before-complete-manifest",
+    "recoveries_used": 1,
+    "recovery_attempt_generation_cap": 10625,
+    "repair": "Runner accumulates selected ids per arm before comparing revisit state; first visit and ordinary final PLAN baseline are unchanged.",
+    "second_failure": "Close VAR-2."
+  },
+  "schema": "saea-var2-recovery-protocol-provisional-v1",
+  "status": "held"
+}

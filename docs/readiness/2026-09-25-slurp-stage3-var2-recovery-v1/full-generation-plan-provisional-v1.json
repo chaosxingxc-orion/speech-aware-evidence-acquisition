@@ -1,0 +1,57 @@
+{
+  "cell": "slurp-native-stage3-var2-supply-variants-r01c-recovery-v1",
+  "composed_config_hash": "22572b638da810bfea7a9507ef3359b03d26540d0e37c27b513048bd5a714b07",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-var2-supply-variants-r01c-recovery-v1-generation",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 8.0,
+    "planned_model_calls": 10625,
+    "planned_speech_audio_seconds": 46357,
+    "protocol_hash": "240f751e0e29331245a4bdc0934d62cf3d6237325640ab042517091e5c84f6b5",
+    "run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-RECOVERY-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-var2-supply-variants-r01c-recovery-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "derived_complete_scoring_jobs": 4,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 42500,
+    "generation_calls_cap": 10625,
+    "gpu_hours_fit_inclusive": 8.0,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 46357
+  },
+  "fit": {
+    "contact_cap": 42500,
+    "endpoints_per_contact": 4,
+    "mode": "native_contact_fit",
+    "scope": "Every actual request under the unchanged VAR-2 full program."
+  },
+  "plan_kind": "generation",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-25-slurp-stage3-var2-recovery-v1/protocol-provisional-v1.json",
+    "sha256": "af77a16a97b2ca4e9f70befcf9ae2b06f0b7659351a7b99171e7733b641e6934"
+  },
+  "read_rule": "HELD: root registration, admission, fresh prepared phase supply and fit must complete before contact. No score/read from the predecessor's partial state.",
+  "recovery_accounting": {
+    "original_full_model_contacts": 224,
+    "original_full_state": "aborted-before-complete-manifest",
+    "original_plus_full_recovery_generation_upper_bound": 10849,
+    "partial_rows_reused": 0,
+    "predecessor_run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-V1",
+    "recoveries_permitted": 1,
+    "recoveries_used": 1,
+    "recovery_kind": "fresh-full-run",
+    "second_failure_disposition": "close VAR-2",
+    "this_attempt_generation_cap": 10625
+  },
+  "schema": "saea-flight-execution-plan-v1",
+  "status": "held"
+}
