@@ -81,3 +81,21 @@ def test_cross_node_summary_preserves_a_repair_lost_during_delivery():
     assert summary["transitions"]["revision_task_repairs"] == 1
     assert summary["transitions"]["revision_task_repairs_retained"] == 0
     assert summary["transitions"]["revision_task_repairs_lost"] == 1
+
+def test_tool_events_do_not_double_count_calls_or_drop_no_action_rows():
+    from speech_aware_evidence_acquisition.analysis.slurp_system_attribution import tool_activity_summary
+    base={"request_id":"r","tool_call_id":"c","contact_receipt_available":True}
+    rejection={"request_id":None,"tool_call_id":None,"contact_receipt_available":False,"event":"rejected"}
+    rows=[{"sample_id":"a","tool_events":[dict(base,event="attempt"),dict(base,event="result")]},
+          {"sample_id":"b","tool_events":[rejection]},
+          {"sample_id":"c","tool_events":[]}]
+    result=tool_activity_summary(rows)
+    assert result["contacted_calls"]==1
+    assert result["event_counts"]=={"attempt":1,"result":1,"rejected":1}
+    assert result["rows_with_events"]==2 and result["rows_without_tool_events"]==1
+
+
+def test_tool_summary_requires_observed_events_instead_of_assuming_zero():
+    import pytest
+    from speech_aware_evidence_acquisition.analysis.slurp_system_attribution import tool_activity_summary
+    with pytest.raises(KeyError):tool_activity_summary([{"sample_id":"a"}])

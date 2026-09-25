@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from speech_aware_evidence_acquisition.analysis.native_episode_source import verify_native_episode_source
 from speech_aware_evidence_acquisition.core.bundle.artifacts import _verify_artifact
 from speech_aware_evidence_acquisition.analysis.slurp_system_attribution import (
-    answer_view, describe_changes, summarize_rows,
+    answer_view, describe_changes, summarize_rows, cross_node_summary, tool_activity_summary,
 )
 from speech_aware_evidence_acquisition.analysis.system_feedback import write_system_feedback
 from speech_aware_evidence_acquisition.rails.finite_policy_artifacts import _pinned_json
@@ -62,6 +62,11 @@ def _context(source, visit):
                 item["evidence_id"].split("::", 1)[0] for item in evidence)),
             "history_state_kinds": [item["state_kind"] for item in history if "state_kind" in item],
             "tool_schema_count": len(tool_schemas),
+            "text_input_chars": {
+                "task_instruction": len(payload.get("task_instruction", "")),
+                "history": sum(len(item.get("content", "")) for item in history if isinstance(item, dict)),
+                "supplied_evidence": sum(len(item.get("content", "")) for item in evidence),
+            },
             "task_contract_call_required_without_schema": instruction_in_history and not tool_schemas,
         })
     return {"stage": visit["stage"], "contacts": contacts}
@@ -129,22 +134,59 @@ def analyze_arm(source, feedback, gold):
             "final_error_group": error,
             "fallback_flags": terminal[sid]["fallback_flags"],
             "role_context": contexts,
+            "tool_events": trajectories[sid]["tool_events"],
             **describe_changes(first, last, delivered),
         }
         rows.append(row)
-    return {"summary": summarize_rows(rows), "rows": rows}
+    return {
+        "summary": summarize_rows(rows), "cross_node": cross_node_summary(rows),
+        "rows": rows, "tool_activity": tool_activity_summary(rows),
+    }
+
+
+
+def recipe_roster(recipe, repo_root):
+    """Keep the historical recipe valid; require explicit pins for later reads."""
+    if recipe.get("read_run_id") == "SAEA-SLURP-STAGE3-SYSTEM-TRAJECTORY-READ-V1":
+        registered = json.loads((repo_root / "docs/readiness/2026-09-24-slurp-stage3-var1-v1/registered-facts-v1.json").read_text())
+        roster_pin = registered["pins"]["roster"]
+        pair = ("plan", "planr")
+        legacy = True
+    else:
+        if (recipe.get("schema") != "saea-slurp-system-attribution-read-v1"
+                or recipe.get("execution_profile") != "model-free-check"
+                or recipe.get("feedback_role") != "construction"
+                or recipe.get("status") != "sealed"):
+            raise ValueError("attribution requires a registered construction read")
+        registration, _ = _pinned_json(repo_root, recipe["registration"], "prospective attribution scope")
+        if registration.get("read_id") != recipe.get("read_run_id"):
+            raise ValueError("attribution registration identity differs")
+        roster_pin = recipe["roster"]
+        if roster_pin != registration.get("roster"):
+            raise ValueError("attribution roster differs from registration")
+        if set(recipe["arms"]) != set(registration["arms"]):
+            raise ValueError("attribution arms differ from registration")
+        for arm, expected in registration["arms"].items():
+            run, attempt = expected["run_id"], expected["attempt_id"]
+            if recipe["arms"][arm]["manifest"]["relpath"] != f"runs/{run}/{attempt}/{run}.run-manifest.json":
+                raise ValueError("attribution source differs from registered run")
+        pair = tuple(recipe["comparison"])
+        legacy = False
+    if len(pair)!=2 or pair[0]==pair[1] or set(pair)!=set(recipe["arms"]):
+        raise ValueError("attribution comparison must cover exactly two distinct arms")
+    roster = var1.load_roster(repo_root, roster_pin["relpath"], "utterance_id")
+    if roster["sha256"] != roster_pin["sha256"] or roster["split_role"] != "discovery":
+        raise ValueError("registered discovery roster changed")
+    if not legacy and (roster["split_identity_hash"] != roster_pin["split_identity_hash"]
+                       or len(roster["ids"]) != roster_pin["rows"]):
+        raise ValueError("attribution split identity or size changed")
+    return roster, pair, legacy
 
 
 def run(args):
     recipe = json.loads(args.recipe.read_text())
     data = args.data_root
-    if recipe["read_run_id"] != "SAEA-SLURP-STAGE3-SYSTEM-TRAJECTORY-READ-V1":
-        raise ValueError("reader requires its registered diagnostic recipe")
-    registered = json.loads((REPO / "docs/readiness/2026-09-24-slurp-stage3-var1-v1/registered-facts-v1.json").read_text())
-    roster_pin = registered["pins"]["roster"]
-    roster = var1.load_roster(REPO, roster_pin["relpath"], "utterance_id")
-    if roster["sha256"] != roster_pin["sha256"]:
-        raise ValueError("registered roster changed")
+    roster, pair, legacy = recipe_roster(recipe, REPO)
     print(json.dumps({"stage": "governed-train-label-read", "rows": len(roster["ids"])}), flush=True)
     gold = var1.load_gold(args.lock, data, "train")
     out = {"schema": "saea-slurp-system-attribution-v1",
@@ -171,7 +213,7 @@ def run(args):
             expected_manifest_sha256=binding["manifest"]["sha256"],
             phase_artifact_path=data / binding["phases"]["relpath"],
             expected_phase_sha256=binding["phases"]["sha256"],
-            repo_root=args.source_repo_root)
+            repo_root=args.source_repo_root, data_root=data)
         if set(source.sample_ids) != set(roster["ids"]):
             raise ValueError("source changed the full registered roster")
         result = analyze_arm(source, feedback, gold["records"])
@@ -180,9 +222,10 @@ def run(args):
         print(json.dumps({"stage": "attributed", "arm": arm, "summary":
                           {key: value for key, value in result["summary"].items() if key != "per_scenario"}}), flush=True)
         del source, feedback
-    left = {row["sample_id"]: row for row in out["arms"]["plan"]["rows"]}
-    right = {row["sample_id"]: row for row in out["arms"]["planr"]["rows"]}
-    out["repeat_task_stability"] = dict(Counter(
+    left = {row["sample_id"]: row for row in out["arms"][pair[0]]["rows"]}
+    right = {row["sample_id"]: row for row in out["arms"][pair[1]]["rows"]}
+    out["comparison"] = list(pair)
+    out["repeat_task_stability" if legacy else "paired_terminal_task_agreement"] = dict(Counter(
         ("both_correct" if left[sid]["delivered"]["task_exact"] else "both_wrong")
         if left[sid]["delivered"]["task_exact"] == right[sid]["delivered"]["task_exact"]
         else "flipping" for sid in left))

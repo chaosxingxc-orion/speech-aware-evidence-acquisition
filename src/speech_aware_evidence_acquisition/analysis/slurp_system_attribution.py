@@ -127,3 +127,18 @@ def cross_node_summary(rows):
                 review["tool_schema_exposed"] += bool(contact["tool_schema_count"])
     return {"rows": len(rows), "transitions": dict(totals), "review_context": dict(review),
             "interpretation": "Descriptive within-trajectory changes, not counterfactual effects; supplied evidence identity does not prove semantic use."}
+
+
+def tool_activity_summary(rows):
+    """Count verified events without mistaking attempts/results for separate calls."""
+    tools = [event for row in rows for event in row["tool_events"]]
+    known_calls = {(row["sample_id"], event["request_id"], event["tool_call_id"])
+                   for row in rows for event in row["tool_events"]
+                   if event["contact_receipt_available"]}
+    return {
+        "event_counts": dict(Counter(event["event"] for event in tools)),
+        "rows_with_events": sum(bool(row["tool_events"]) for row in rows),
+        "contacted_calls": len(known_calls),
+        "rows_without_tool_events": sum(not row["tool_events"] for row in rows),
+        "interpretation": "Recorded attempts/results/rejections, not inferred information gain or semantic use.",
+    }

@@ -1,5 +1,25 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
+## Ready for paired completion: reuse the existing trajectory reader
+
+The existing scripts/analysis/slurp_system_trajectory_read.py now accepts a
+source-pinned registered construction pair as well as the original PLAN/PLANR
+recipe. Its shared attribution includes cross-node repairs/harms, actual tool
+events and contact de-duplication, plus text input volume. It does not infer
+semantic use from supplied IDs or tool success.
+
+The held evidence-path trajectory-binding-template-v1.json names the existing
+prospective official-read registration. Fill all four source pins for both
+complete arms only after sealing/scoring. Export complete feedback through
+scripts/analysis/export_system_feedback.py, then use those file hashes with
+the shared trajectory reader. Use the existing official-feedback-v2 comparison
+entry for the primary paired metric; no scorer rerun. The retained source
+checkout must remain frozen through this source validation.
+
+The control has a finalized full manifest and attached official score. The
+tools worker is still live; both outcome sets remain unread. No source hashes
+have yet been filled in the new template and no next GPU arm was dispatched.
+
 ## Latest scientific read: actual pre-Solver state audit
 
 Read docs/results/2026-09-25-slurp-system-decision-state-audit.md and its

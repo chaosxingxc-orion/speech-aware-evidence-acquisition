@@ -1,0 +1,110 @@
+{
+  "schema": "saea-model-free-engineering-receipt-v1",
+  "created_at_utc": "2026-09-25T16:20:39.520690+00:00",
+  "work": "Reuse the complete-system trajectory entry for registered paired construction reads, with tool event/call accounting and input volume.",
+  "parent_commit": "ce1014ef41a991d99adee82b62b4bc4fdb366f13",
+  "execution_environment": "WSL Ubuntu-24.04; explicit checkout PYTHONPATH; no model or scorer.",
+  "focused_tests_passed": 56,
+  "checks": [
+    {
+      "name": "focused-tests",
+      "exit_code": 0,
+      "seconds": 1.89,
+      "log": "/home/chao/system-paired-read-focused-tests.log",
+      "log_sha256": "2d039355e681b5e33f844b19198f1ade2efac14f96252ea02cc3ec2e6fca3f30"
+    },
+    {
+      "name": "engineering_base_check",
+      "exit_code": 0,
+      "seconds": 7.68,
+      "log": "/home/chao/system-paired-read-engineering_base_check.log",
+      "log_sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "name": "harness_admission_check",
+      "exit_code": 0,
+      "seconds": 0.67,
+      "log": "/home/chao/system-paired-read-harness_admission_check.log",
+      "log_sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+    },
+    {
+      "name": "results_ledger_check",
+      "exit_code": 0,
+      "seconds": 0.18,
+      "log": "/home/chao/system-paired-read-results_ledger_check.log",
+      "log_sha256": "24fde2a722ef94a5ea364970c08fd0628d9221fd306aaa63eccafd9bb5d68f0c"
+    },
+    {
+      "name": "tool_catalog_check",
+      "exit_code": 0,
+      "seconds": 1.12,
+      "log": "/home/chao/system-paired-read-tool_catalog_check.log",
+      "log_sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+    },
+    {
+      "name": "experiment_handoff_check",
+      "exit_code": 0,
+      "seconds": 0.31,
+      "log": "/home/chao/system-paired-read-experiment_handoff_check.log",
+      "log_sha256": "9c8bc917892e46d76104f82683c17c20e5746f38e7244785343c84d9143a2c43"
+    },
+    {
+      "name": "openjiuwen_native_reuse_check",
+      "exit_code": 0,
+      "seconds": 3.09,
+      "log": "/home/chao/system-paired-read-openjiuwen_native_reuse_check.log",
+      "log_sha256": "28e2d21482038add914aa015f020b573b91ff323db3add49ce482f8e46888066"
+    },
+    {
+      "name": "derived_media_confinement_check",
+      "exit_code": 0,
+      "seconds": 54.12,
+      "log": "/home/chao/system-paired-read-derived_media_confinement_check.log",
+      "log_sha256": "04455db48492344afbb652ea941eea1b1e210863caa144212d85d5439a917b1d"
+    },
+    {
+      "name": "stage3_algorithm_label_check",
+      "exit_code": 0,
+      "seconds": 0.43,
+      "log": "/home/chao/system-paired-read-stage3_algorithm_label_check.log",
+      "log_sha256": "e8268dee788bca9d811b3ff70222a9f5205d5ba9a9ae888017e2d1beaa932f47"
+    },
+    {
+      "name": "finite_completion_policy_check",
+      "exit_code": 0,
+      "seconds": 0.25,
+      "log": "/home/chao/system-paired-read-finite_completion_policy_check.log",
+      "log_sha256": "88e4930b4c055dd9ed068baafa8136de542d6f69cc4bde7d3f2fea5b703ee0d8"
+    }
+  ],
+  "model_contacts": 0,
+  "tokenizer_contacts": 0,
+  "official_score_contacts": 0,
+  "active_family_outcomes_read": false,
+  "real_policy_update": false,
+  "scientific_gain_claimed": false,
+  "sources": [
+    {
+      "relpath": "scripts/analysis/slurp_system_trajectory_read.py",
+      "sha256": "683a9c8ac729293465375c0a89d1d54929be0fc8fd5a9632bb583d54da6bb59f"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/slurp_system_attribution.py",
+      "sha256": "3c17cd9b2b5d32e68fa79cec53597d20377d46fad254c99d4ef81eff92d502ee"
+    },
+    {
+      "relpath": "tests/unit/test_slurp_system_attribution.py",
+      "sha256": "4d5477c9a33057c1f1aec77befffbf9a62600329ca8ad1e75db30372ea500c78"
+    },
+    {
+      "relpath": "tests/unit/test_slurp_system_trajectory_recipe.py",
+      "sha256": "2ed3dd9bf0e2c50ab19598a09fede176df9ed55ac860eb7e0e7c6c9ac5f50ea7"
+    },
+    {
+      "relpath": "docs/readiness/2026-09-25-slurp-stage3-evidence-path-v1/trajectory-binding-template-v1.json",
+      "sha256": "d37a718f0fe6f4c0b3eb133c7df14d036410d003925e70906264ed5c7910d604"
+    }
+  ],
+  "template_state": "Unfilled source hashes; refused as executable until sealed.",
+  "unchanged_frozen_flight_commit": "da443cdc1027b3c01034c26485805240ec0e671d"
+}
