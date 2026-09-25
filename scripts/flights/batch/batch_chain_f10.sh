@@ -82,8 +82,8 @@ for cell, event_name in ((smoke,"smoke-inspect"), (full,"arm-inspect")):
     if state!=inspected.get("attempt_state"): stop(f"{event_name} attempt state drifted")
     if cell is full:
         if state!="FINALIZED": stop("full predecessor attempt not FINALIZED")
-    elif state=="ABORTED":
-        stop("smoke predecessor attempt ABORTED")
+    elif state not in {"OPENED","FINALIZED"}:
+        stop("smoke predecessor attempt state is invalid")
     smoke_manifest=data/"runs"/cell["run_id"]/cell["attempt_id"]/(cell["run_id"]+".run-manifest.json")
     if not smoke_manifest.exists() or inspected.get("sha256_run-manifest")!=digest(smoke_manifest):
         stop(f"{event_name} manifest receipt hash differs")
@@ -146,6 +146,7 @@ trap 'fail "unexpected shell failure; preserve state"' ERR
 log waiting "VAR-2 recovery generation and all derived scoring"
 last_wait=""
 while true; do
+  [ ! -e "$H/f10-chain-STOP" ] || fail "F10 STOP marker exists"
   [ ! -e "$H/batch-STOP" ] || fail "predecessor batch-STOP exists"
   if boundary_output=$(boundary_check 2>&1); then
     if pgrep -f '[b]atch_chain_var2.sh recovery|[b]atch_chain_var2_recovery.sh' >/dev/null; then
