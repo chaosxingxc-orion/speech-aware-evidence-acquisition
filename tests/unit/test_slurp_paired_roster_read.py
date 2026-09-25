@@ -678,3 +678,82 @@ def test_structural_stage_never_carries_the_sentinel_either(world):
     drv.stage_structural(args, left, right)
     hits = _scan_for_sentinel(args.analysis_root)
     assert hits == []
+
+# --------------------------------------------------------------------------
+# TRAIN construction roster support (synthetic; never opens real VAR-1 data)
+# --------------------------------------------------------------------------
+
+def _as_train_world(world):
+    from dataclasses import replace
+    args = world["args"]
+    doc = json.loads(world["roster_path"].read_text(encoding="utf-8"))
+    doc["split_role"] = "discovery"
+    for item in doc["items"]:
+        for field in ("id", "sample_id", "key", "utterance_id"):
+            item[field] = item[field].replace(":devel:", ":train:")
+    world["ids"] = [item["sample_id"] for item in doc["items"]]
+    world["split_hash"] = drv.split_identity_hash(drv.prefixed(CARRIER, world["ids"]))
+    doc["split_identity_hash"] = world["split_hash"]
+    _write_json(world["roster_path"], doc)
+    for spec, correct in ((args.left, set(world["ids"][:8])),
+                          (args.right, set(world["ids"][:10]))):
+        _make_arm(
+            args.data_root, spec.run_id, spec.attempt_id,
+            ids=world["ids"], scorer_id="slurp-slu-official-train",
+            split_identity_hash=world["split_hash"], correct_ids=correct,
+            with_native_episode=(spec == args.right),
+        )
+        manifest_path = args.data_root / "runs" / spec.run_id / spec.attempt_id / f"{spec.run_id}.run-manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["split"]["role"] = "discovery"
+        _write_json(manifest_path, manifest)
+    return replace(args, scorer_id="slurp-slu-official-train", expected_split_role="discovery")
+
+
+def test_train_construction_roster_passes_with_explicit_role_and_train_scorer(world):
+    args = _as_train_world(world)
+    roster = drv.load_roster(args.repo_root, args.roster_relpath, args.cluster_key)
+    left, right = (drv.load_arm(args.data_root, spec) for spec in (args.left, args.right))
+    stop = drv.stage_stop(args, left, right, roster)
+    assert stop["status"] == "PASSED"
+    assert stop["roster"]["split_role"] == "discovery"
+
+
+def test_train_roster_refuses_default_dev_and_wrong_scorer(world):
+    args = _as_train_world(world)
+    roster = drv.load_roster(args.repo_root, args.roster_relpath, args.cluster_key)
+    left, right = (drv.load_arm(args.data_root, spec) for spec in (args.left, args.right))
+    from dataclasses import replace
+    with pytest.raises(drv.StopStageError, match="split role"):
+        drv.stage_stop(replace(args, expected_split_role="dev"), left, right, roster)
+    with pytest.raises(drv.StopStageError, match="scorer"):
+        drv.stage_stop(replace(args, scorer_id="slurp-slu-official"), left, right, roster)
+
+
+@pytest.mark.parametrize("forbidden", ["test", "final-report", "confirmatory"])
+def test_cli_rejects_forbidden_split_roles(forbidden, world):
+    args = world["args"]
+    with pytest.raises(SystemExit):
+        drv.parse_args([
+            "--left-run", args.left.run_id, "--left-attempt", args.left.attempt_id,
+            "--right-run", args.right.run_id, "--right-attempt", args.right.attempt_id,
+            "--analysis-root", str(args.analysis_root), "--data-root", str(args.data_root),
+            "--expected-split-role", forbidden,
+        ])
+
+
+def test_train_full_read_uses_construction_language(world):
+    args = _as_train_world(world)
+    drv.run_stages(args)
+    stop = json.loads((args.analysis_root / "stop.json").read_text(encoding="utf-8"))
+    verdict = json.loads((args.analysis_root / "verdict.json").read_text(encoding="utf-8"))
+    readme = (args.analysis_root / "README.md").read_text(encoding="utf-8")
+    scenario = json.loads((args.analysis_root / "per-scenario-tables.json").read_text(encoding="utf-8"))
+    assert stop["roster"]["split_role"] == "discovery"
+    assert verdict["status"] == "DESCRIPTIVE"
+    assert "TRAIN construction" in readme
+    assert "DEV-2000-ADDED" not in readme
+    assert "TRAIN construction" in scenario["natural_mixture"]["reason"]
+    contrast = json.loads((args.analysis_root / "score-contrasts.json").read_text(encoding="utf-8"))
+    assert contrast["sign_convention"].startswith("delta = right(")
+    assert "right variant" in contrast["sign_convention"]

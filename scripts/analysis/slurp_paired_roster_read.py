@@ -118,6 +118,7 @@ SCHEMA_VERDICT = "saea-slurp-b6-paired-roster-read-verdict-v1"
 DEFAULT_SCORER = "slurp-slu-official"
 DEFAULT_ROSTER = "docs/receipts/rosters/slurp-dev-2000-added-v1.json"
 DEFAULT_CLUSTER_KEY = "utterance_id"
+ALLOWED_SOURCE_SPLIT_ROLES = ("dev", "discovery")
 DEFAULT_SEED = 20260915
 DEFAULT_DRAWS = 10_000
 DEFAULT_TITLE = "SLURP cell B6: DEV-2000-ADDED paired read (direct vs locked v2.0 default plan)"
@@ -407,6 +408,7 @@ class Args:
     recipe_id: str | None
     title: str
     split_identity_hash: str | None
+    expected_split_role: str = "dev"
     #: Owner decision 101: the Stage-3 algorithm block echoed into verdict.json
     #: (``None`` for the Stage-2 reads this driver was written for).
     stage3_algorithm: dict | None = None
@@ -435,6 +437,10 @@ def parse_args(argv: Sequence[str] | None = None) -> Args:
     parser.add_argument("--title", default=DEFAULT_TITLE)
     parser.add_argument("--split-identity-hash", default=None)
     parser.add_argument(
+        "--expected-split-role", choices=ALLOWED_SOURCE_SPLIT_ROLES, default="dev",
+        help="source roster and manifest role; discovery requires the TRAIN official scorer",
+    )
+    parser.add_argument(
         "--stage3-algorithm", default=None,
         help=(
             "registered Stage-3 algorithm id (core.base.STAGE3_ALGORITHMS); the default "
@@ -457,6 +463,7 @@ def parse_args(argv: Sequence[str] | None = None) -> Args:
         recipe_id=ns.recipe_id,
         title=ns.title,
         split_identity_hash=ns.split_identity_hash,
+        expected_split_role=ns.expected_split_role,
         stage3_algorithm=_stage3_algorithm_block(
             Path(ns.repo_root), ns.right_run, ns.stage3_algorithm
         ),
@@ -497,7 +504,9 @@ def _check_score_job(arm: Arm) -> None:
         )
 
 
-def _check_manifest(arm: Arm, roster: Roster, expected_split_hash: str) -> None:
+def _check_manifest(
+    arm: Arm, roster: Roster, expected_split_hash: str, expected_split_role: str
+) -> None:
     if arm.manifest.get("status") != "COMPLETED":
         raise StopStageError(f"{arm.spec.label}: manifest status is not COMPLETED")
     pin = arm.manifest.get("scores") or {}
@@ -506,8 +515,10 @@ def _check_manifest(arm: Arm, roster: Roster, expected_split_hash: str) -> None:
     if Path(pin.get("path", "")).name != arm.scores_path.name:
         raise StopStageError(f"{arm.spec.label}: manifest score path does not name this file")
     split = arm.manifest.get("split") or {}
-    if split.get("role") != "dev":
-        raise StopStageError(f"{arm.spec.label}: split role is not 'dev'")
+    if split.get("role") != expected_split_role:
+        raise StopStageError(
+            f"{arm.spec.label}: split role is not {expected_split_role!r}"
+        )
     if split.get("identity_hash") != expected_split_hash:
         raise StopStageError(
             f"{arm.spec.label}: manifest split identity_hash does not match the roster"
@@ -580,9 +591,21 @@ def stage_stop(args: Args, left: Arm, right: Arm, roster: Roster) -> dict:
             f"(computed {computed_hash}, expected {args.split_identity_hash})"
         )
 
+    if args.expected_split_role not in ALLOWED_SOURCE_SPLIT_ROLES:
+        raise StopStageError("source split role is not permitted for this read")
+    if roster.document.get("split_role") != args.expected_split_role:
+        raise StopStageError("roster split role does not match the expected source role")
+    if args.expected_split_role == "discovery":
+        if args.scorer_id != "slurp-slu-official-train":
+            raise StopStageError("discovery source requires the TRAIN official scorer")
+        if roster.carrier_lock_key != "slurp" or any(
+            not sid.startswith("slurp:train:") for sid in roster.ids
+        ):
+            raise StopStageError("discovery source requires SLURP TRAIN sample identities")
+
     for arm in (left, right):
         _check_attempt_finalized(arm)
-        _check_manifest(arm, roster, computed_hash)
+        _check_manifest(arm, roster, computed_hash, args.expected_split_role)
         _check_score_job(arm)
         sample_ids = _per_sample_ids(arm, args.scorer_id)
         if sample_ids != set(roster.ids):
@@ -609,6 +632,7 @@ def stage_stop(args: Args, left: Arm, right: Arm, roster: Roster) -> dict:
             "rows": len(roster.ids),
             "split_identity_hash": computed_hash,
             "carrier_lock_key": roster.carrier_lock_key,
+            **({"split_role": "discovery"} if args.expected_split_role == "discovery" else {}),
         },
         "left": {
             "label": left.spec.label,
@@ -838,6 +862,13 @@ def _per_row_block(
     return out
 
 
+CONSTRUCTION_SCENARIO_REASON = (
+    "This paired driver does not compute a per-scenario table on the TRAIN "
+    "construction roster. The separately registered VAR-1 family read derives "
+    "that table from the roster receipt's per-item stratum; no per-row scenario "
+    "is inferred from model output or opened from gold here."
+)
+
 PER_SCENARIO_NOT_AVAILABLE_REASON = (
     "No model-free per-row scenario label exists for this roster. The roster "
     "(docs/receipts/rosters/slurp-dev-2000-added-v1.json) sets "
@@ -923,7 +954,11 @@ def stage_contrast(args: Args, left: Arm, right: Arm, roster: Roster) -> tuple[d
         "cluster_key": args.cluster_key,
         "sign_convention": (
             f"delta = right({right.spec.label}) minus left({left.spec.label}); "
-            "positive means the plan arm scores higher"
+            + (
+                "positive means the plan arm scores higher"
+                if args.expected_split_role == "dev"
+                else "positive means the right variant scores higher"
+            )
         ),
         "left": left.spec.label,
         "right": right.spec.label,
@@ -934,14 +969,18 @@ def stage_contrast(args: Args, left: Arm, right: Arm, roster: Roster) -> tuple[d
         "driver_sha256": digest(_DRIVER_PATH),
     }
 
+    scenario_reason = (
+        CONSTRUCTION_SCENARIO_REASON if args.expected_split_role == "discovery"
+        else PER_SCENARIO_NOT_AVAILABLE_REASON
+    )
     per_scenario_tables = {
         "schema": SCHEMA_SCENARIO,
         "contacts": dict(CONTACTS_ZERO),
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-        "natural_mixture": {"status": "NOT_AVAILABLE", "reason": PER_SCENARIO_NOT_AVAILABLE_REASON},
+        "natural_mixture": {"status": "NOT_AVAILABLE", "reason": scenario_reason},
         "equal_scenario_weighting": {
             "status": "NOT_AVAILABLE",
-            "reason": PER_SCENARIO_NOT_AVAILABLE_REASON,
+            "reason": scenario_reason,
         },
         "roster_scenario_allocation_aggregate_only": roster.document.get("scenario_allocation"),
         "driver_sha256": digest(_DRIVER_PATH),
@@ -1035,6 +1074,12 @@ def stage_efficiency(args: Args, left: Arm, right: Arm) -> dict:
 # Stage: verdict
 # --------------------------------------------------------------------------
 
+CONSTRUCTION_NOT_CLAIMED = (
+    "NO ADMISSION OR SUPERIORITY VERDICT.",
+    "NO GENERALIZATION OR PAPER-SCALE CLAIM: this is a TRAIN construction roster.",
+    "NO CLAIM ABOUT OTHER CARRIERS.",
+)
+
 NOT_CLAIMED = (
     "NO ADMISSION OR SUPERIORITY VERDICT.",
     "NO GENERALIZATION OR PAPER-SCALE CLAIM: DEV-2000-ADDED is a development roster "
@@ -1126,18 +1171,27 @@ def _readme(args: Args, stop: dict, structural: dict, contrast: dict, per_scenar
     lines = [f"# {args.title}", "", f"Generated: {datetime.now(timezone.utc).isoformat()}", ""]
     if args.recipe_id:
         lines += [f"Recipe: `{args.recipe_id}`", ""]
-    lines += [
-        "## Status",
-        "",
+    construction = args.expected_split_role == "discovery"
+    claimed = CONSTRUCTION_NOT_CLAIMED if construction else NOT_CLAIMED
+    status_explanation = (
+        "**DESCRIPTIVE.** This TRAIN construction-roster paired read reports no "
+        "admission or superiority verdict. The registered VAR-1 family read "
+        "applies the roster's own null before any variant is interpreted."
+        if construction else
         "**DESCRIPTIVE.** No admission or superiority verdict is read from this cell "
         "(owner decision 86: development numbers carry no bar). This is the fresh-roster "
         "generalisation read of the already-locked v2.0 default plan against the bare "
-        "frozen core.",
+        "frozen core."
+    )
+    lines += [
+        "## Status",
+        "",
+        status_explanation,
         "",
         "Not claimed:",
         "",
     ]
-    lines += [f"- {item}" for item in NOT_CLAIMED]
+    lines += [f"- {item}" for item in claimed]
     lines += [
         "",
         "## Arms",
@@ -1215,7 +1269,9 @@ def stage_verdict(args: Args) -> dict:
         "contacts": dict(CONTACTS_ZERO),
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "status": "DESCRIPTIVE",
-        "not_claimed": list(NOT_CLAIMED),
+        "not_claimed": list(
+            CONSTRUCTION_NOT_CLAIMED if args.expected_split_role == "discovery" else NOT_CLAIMED
+        ),
         "recipe_id": args.recipe_id,
         "artifact_sha256": written,
     }

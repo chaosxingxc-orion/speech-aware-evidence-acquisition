@@ -46,7 +46,7 @@
 WHICH=${1:-}
 CELL=${2:-}
 PY=/home/chao/.venvs/speechrl/bin/python
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_REPO_ROOT:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 PKG=$MAIN/docs/readiness/2026-09-24-slurp-stage3-var1-v1
 PKG_RELPATH=docs/readiness/2026-09-24-slurp-stage3-var1-v1
@@ -68,7 +68,7 @@ paired_read() {
   $PY slurp_paired_roster_read.py --stage all \
     --left-run $COMP_RUN --left-attempt $COMP_ATTEMPT --left-label "$LEFT_LABEL" \
     --right-run "$RIGHT_RUN" --right-attempt "$RIGHT_ATTEMPT" --right-label "$RIGHT_LABEL" \
-    --scorer-id slurp-slu-official-train \
+    --scorer-id slurp-slu-official-train --expected-split-role discovery \
     --roster docs/receipts/rosters/slurp-stage3-construction-r01c.json \
     --cluster-key utterance_id \
     --split-identity-hash f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515 \
