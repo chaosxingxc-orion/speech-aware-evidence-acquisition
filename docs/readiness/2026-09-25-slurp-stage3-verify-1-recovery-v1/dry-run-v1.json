@@ -2,7 +2,7 @@
   "cells": {
     "arm": {
       "cell_id": "slurp-native-stage3-verify-1-recovery-v1",
-      "composed_config_hash": "0bd577b3fe53cf91a80bae81ffe972c1142f9b17738a08d24c305bccfb1cadda",
+      "composed_config_hash": "e97407f2819caaca2aa33efe8469dc7211a593cf4436010dc0b8763e5e8441d5",
       "experiment": "slurp-native-stage3-verify-1-recovery-v1",
       "per_row_ceiling": 2,
       "phase_material_receipt_sha256": "e661eb9979077c3f9214bb16027c588b2793fa1654707e246f4e738c57de2998",
@@ -10,7 +10,7 @@
         "choose"
       ],
       "program_id": "phase-slurp-verify-select-v1",
-      "protocol_hash": "7d24de7231442021397f1e194dc8f312b8d5224c9705e5f2bf1c2cd2cd148a38",
+      "protocol_hash": "5e56548a71b3ce6a6bf0ca0ef6e66fc5de571d9921491b6a5c47a0c51ad71d8e",
       "response_format_ids": {
         "choose": "slurp-verifier-choice-v1"
       },
@@ -26,7 +26,7 @@
     },
     "smoke": {
       "cell_id": "slurp-native-stage3-verify-1-recovery-smoke-4-v1",
-      "composed_config_hash": "a4444aba05f591a0ac08a3be232152f1ccdadff190e7548c92e89227327e4a99",
+      "composed_config_hash": "24c9be42407cdb53059383e7246e22b3db443833d1a49636cc228c9f3d71c1ee",
       "experiment": "slurp-native-stage3-verify-1-recovery-smoke-4-v1",
       "per_row_ceiling": 2,
       "phase_material_receipt_sha256": "e661eb9979077c3f9214bb16027c588b2793fa1654707e246f4e738c57de2998",
@@ -34,7 +34,7 @@
         "choose"
       ],
       "program_id": "phase-slurp-verify-select-v1",
-      "protocol_hash": "0ed80405df7058f320c20d014b707dedd303940253194e323003f0496162122a",
+      "protocol_hash": "61dec198e75ce395cf5207261a549a389c82fa5f730de79e40c37d2c3ff8498f",
       "response_format_ids": {
         "choose": "slurp-verifier-choice-v1"
       },

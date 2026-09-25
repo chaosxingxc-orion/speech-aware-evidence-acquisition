@@ -96,3 +96,63 @@ Natural mixture is the pooled full-roster difference; equal scenario is the unwe
 | planr | 2591 | 4.146 | 34913.6 | 259.0 | 1.029 | 11327.3 | 0 | 20.00 | 12.13 | 0 |
 
 Candidate cards per row equal the mean widths in the coverage table. Source files: `stop.json`, `own-null.json`, `variant-contrasts.json`, `perception-coverage.json`, `slot-type-decomposition.json`, `per-scenario.json`, `cost.json`.
+
+## Root interpretation and action catalog
+
+Recorded after the registered complete-family read. Preserve the registered
+contrasts above. The following comparison with PLANR is a post-read descriptive
+sensitivity, not a new preregistered efficacy test.
+
+1. K10 and K30 improve pooled SLU-F1 by 1.9373 and 1.9540 pp versus PLAN,
+   while the unchanged PLANR improves by 1.8689 pp. Their point differences
+   versus PLANR are only 0.0684 and 0.0851 pp. No interval for either PLANR
+   contrast has been computed here. The original positive PLAN contrasts
+   alone therefore do not establish a repeatable optimization benefit.
+   Keep both executable actions for matched-prefix VAR-2 discovery; do not
+   promote either as an effective learned system action.
+2. EX-DIV supplies 10.29 exemplars on average versus PLAN's 20. Its small
+   unsupported pooled gain cannot isolate diversity from supply count.
+   Use K10 and actual supplied counts to interpret it. This family provides
+   no reason to deploy diversity selection yet.
+3. K16/C5 increases candidate coverage from 77.76% to 80.32%, but final
+   intent moves only 0.32 pp and pooled SLU-F1 only 0.16 pp. It changes both
+   Perception knowledge volume and allowed candidate width. Only 5/625
+   rows have the correct intent at positions four or five; that 0.8 pp
+   is not the causal effect of widening. The final arm also ran across a
+   documented serving-process boundary after the earlier queue stopped.
+   Coverage remains far below the owner's 95% priority. Do not mechanically
+   increase N again without analyzing uncovered intent pairs and evidence.
+4. Empty-entity behavior is a large remaining optimization surface:
+   191/625 rows have no gold entities, and 108-119 of them receive entities
+   across these arms (56.54%-62.30%). Even K30's lowest observed count
+   is descriptive and not a proven improvement. Test explicit empty-set
+   representation through the separately registered F10 path, and use
+   official-count feedback that penalizes false positives on empty rows.
+5. Gold intent in the candidate set is necessary for some downstream
+   choices but does not guarantee correct selection. In K16/C5 there are
+   62 covered-intent failures and 119 uncovered-intent failures in the
+   registered exclusive taxonomy. This supports retaining both research
+   lines: better proposal coverage and better evidence-driven selection.
+6. Prompt-token totals are summed across contacts, not one request's
+   context-window occupancy. GPU-hour entries are the report's measured
+   cost convention, not a promise of wall-clock completion time.
+
+Action status: default20 remains the fallback; K10, K30 and EX-DIV remain
+executable discovery actions for VAR-2, not qualified winners. K16/C5 stays
+a combined Perception intervention that VAR-2 cannot express. F10 changes
+knowledge representation and therefore uses a separate complete-system cell.
+
+The original reader's pooled CI95 half-width (1.4739 pp) and the root's
+prospective CI90 half-width (1.2413 pp) are different interval summaries.
+Neither is a universal detection guarantee. In particular, a pooled-F1
+margin must not be used as evidence for mean row-F1 or exact span-F1.
+The in-sample state-action winner table uses the old row-F1 feedback and
+the same rows to choose winners; it is not a frozen learned policy or
+evidence of out-of-sample policy improvement.
+
+Proceed in the owner-approved order: finish VERIFY-1 selection capability;
+measure VAR-2 same-prefix supply actions and F10 empty-set representation;
+validate any promising action through the complete four-node system; then
+learn and freeze a finite action-selection policy, evaluated against both
+the locked system and the best fixed action. Keep all exposed-roster
+findings explicitly labeled construction/regression evidence.

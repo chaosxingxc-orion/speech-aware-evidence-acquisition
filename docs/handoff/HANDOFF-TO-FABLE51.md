@@ -1,5 +1,48 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
+
+## Live continuation update: 2026-09-25, root Codex
+
+This section supersedes earlier live-status paragraphs below; retain them as
+historical context. Main is the repository's master branch. Use one implementation
+worktree and the pinned flight checkout; merge completed chunks promptly.
+
+- All six VAR-1 arms completed and the corrected V2 whole-family read passed.
+  Read docs/results/2026-09-25-slurp-var1-complete-evidence.md for all scenario
+  rows, costs, error counts and the root interpretation. K10/K30 are +1.94/+1.95
+  pp versus PLAN, but only +0.07/+0.09 pp versus unchanged PLANR. No robust
+  optimization winner is admitted. K16/C5 coverage is 80.32%, below the 95%
+  priority, with no supported final task improvement.
+- Original VERIFY-1 four-row smoke stopped at the live-fit endpoint-count
+  guard before any model/tokenizer request. Its attempt is OPENED with zero
+  actual calls and zero audio. The original full arm never opened. Preserve
+  all original bytes and do not retry its identity.
+- One named recovery is registered in
+  docs/readiness/2026-09-25-slurp-stage3-verify-1-recovery-v1-preregistration.md.
+  Required fit caps are 13 / 1,876, not the generation caps 8 / 1,250.
+  The new shared count helper is tested. Recovery keeps every scientific
+  factor unchanged and must stop at the next failure.
+- At this update, recovery is being re-pinned and checked before launch.
+  The resident decoder-only service remains loaded; do not restart it.
+  Independent launch script: scripts/flights/batch/batch_verify1_recovery.sh.
+  It archives the failed queue and STOP marker, then runs the recovery smoke,
+  full625 and registered complete selector read using the shared driver.
+- The owner requested 15-minute monitoring. A current-thread heartbeat named
+  SLURP background experiment inspection (automation id slurp) is ACTIVE.
+  It uses continuation_status.py, never a monitoring subagent; unchanged
+  non-actionable state stays quiet. The independent local server, GPU driver
+  and 10-second telemetry do not depend on this heartbeat, internet access,
+  ChatGPT credits or an active assistant turn.
+- No current user decision is required to execute this registered recovery
+  and the accepted continuation. Keep fresh DEV remainder6570 and test13078
+  closed. Revisit data promotion only with an explicit later plan.
+- Next: VERIFY-1 -> VAR-2/F10 -> evidence-qualified coverage or Reviewer work
+  -> complete-system validation -> finite contextual-bandit action selection.
+  Do not call manual prompt editing an RL result, or local Solver branch
+  scores full-system returns. Feedback v2 includes official TP/FP/FN to avoid
+  ignoring empty-gold false positives.
+
+
 Owner-approved implementation of the ChatGPT continuation plan, 2026-09-25 UTC.
 This is the single living handoff back to Fable. Update the current facts in place;
 preserve immutable flight artifacts and historical verdicts.

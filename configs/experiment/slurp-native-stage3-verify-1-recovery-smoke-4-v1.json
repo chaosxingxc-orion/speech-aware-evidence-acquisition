@@ -11,8 +11,16 @@
       "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "state": "held",
-        "requirements": [],
+        "state": "ready",
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-verify-1-recovery-admission-v1",
+            "relpath": "coordination/slurp-stage3-verify-1-recovery-v1/root-admission-v1.json",
+            "sha256": "6116d8145ba75d82863d9dc6b66cf153a3c9cd6addf892cfbba305a86f0cd241",
+            "reason": "Decision slurp-stage3-verify-1-recovery-admission-v1 pinned by scripts/flights/repin_cell.py."
+          }
+        ],
         "reason": "Root diagnosed zero-contact fit-count failure; require recovery decision and clean re-pin before launch."
       },
       "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-RECOVERY-SMOKE-4-V1"
