@@ -1,5 +1,37 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
+## Pending read operation after the active tools campaign
+
+As of 2026-09-25T16:34Z, the tools campaign PID 56278 remains live with its
+original identity. A model-free read operation is waiting on that same process
+in Codex execution session 29488. It has not read either arm's task outcomes.
+Its 20-minute observation deadline does not indicate a flight failure; if it
+expires, inspect the same campaign and existing analysis outputs before resuming
+analysis. Never replay generation or official scoring.
+
+After the campaign exits, the operation requires both manifests COMPLETED,
+both attempts FINALIZED, exactly one successful full official job per arm,
+625 rows, the registered split and the frozen da443cdc source commit. It then
+fills analysis-binding-sealed-v1.json and trajectory-binding-sealed-v1.json in
+the existing evidence-path readiness package. It calls the shared feedback
+export twice, official-feedback-v2 paired comparison once, and shared system
+attribution once. The final output directory is:
+SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1.
+read-operation.json records exact commands, exit status and log hashes.
+A failure may leave read-operation-partial.json and already completed immutable
+exports; verify and reuse their pins before resuming, rather than overwrite.
+
+The GPU campaign and official scorer remain in the independent durable WSL
+batch chain. This analysis waiter is not their parent and is not required for
+their progress. No new GPU flight, tool use or scorer contact was authorized.
+
+Root also rechecked the prior fixed-Whisper diagnosis: independent initial
+drafts explain much of its paired discordance, and evidence arrival did not
+prove useful revision. The existing lazy local Whisper tool can be reused if a
+later named acoustic deficit warrants a new complete-system question. Do not
+repeat fixed preprocessing, reuse old exposure authority, or relabel the old
+non-effective result as tool benefit.
+
 ## Ready for paired completion: reuse the existing trajectory reader
 
 The existing scripts/analysis/slurp_system_trajectory_read.py now accepts a
