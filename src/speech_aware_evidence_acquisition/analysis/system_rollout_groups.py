@@ -73,6 +73,8 @@ def load_group_source(*, data_root, feedback_pin, label):
     _require(feedback.get("schema") == "saea-slurp-system-feedback-v1"
              and feedback.get("feedback_role") == "construction",
              "only complete construction system feedback is admitted")
+    _require(feedback.get("policy_supply_receipt") is None,
+             "logged optimized decisions require their registered policy-credit join")
     for name in ("manifest", "phases", "flight_receipts", "score_jobs"):
         _pinned_json(root, feedback["source_bindings"][name], name)
     for name, pin in feedback["resolved_auxiliary_sources"].items():

@@ -40,6 +40,29 @@ checks showed the new task was alive. The reader now scopes terminal events to
 the latest driver-start, retaining resume completions and explicit STOP markers.
 All 25 synthetic monitor tests pass. No model attempt was restarted.
 
+## Complete-system grouped feedback is now verified
+
+The registered model-free read of PLAN/PLANR preserves all 625 input groups and
+1,250 full episodes. See docs/results/2026-09-25-slurp-system-group-feedback.md
+and docs/receipts/continuation/2026-09-25-system-group-feedback.json.
+The shared grouping entry is scripts/analysis/group_system_rollouts.py.
+
+There are 131 utility-informative groups, 494 utility ties, 189 parsed-answer
+disagreements and 32 intent disagreements. Nine intent disagreements have tied
+entity utility. Thirty-five empty-reference groups expose different false-
+positive utility; 43 groups would tie under the combined-count row-F1 ratio.
+Eight groups trade entity utility against intent. Of 131 utility differences,
+108 occur with neither episode reaching a subsequent Solver visit.
+
+Root conclusion: preserve complete terminal count/intent feedback and all ties;
+do not assign the observed advantage to revision or individual memory items.
+Historical runs have no logged optimized-action propensity. With two members,
+normalized advantage nearly always becomes +/-1; retain raw effect magnitude
+and contradictory evidence. This is learner-input evidence, not a semantic
+experience update, trained policy or stable gain. The next sampling cycle must
+record actual whole-policy selections and execute again after its update.
+The active evidence-path outcomes remain unread.
+
 ## Owner steering: optimize complete system trajectories
 
 The owner clarified on 2026-09-25 that Stage-3 must optimize the complete agentic

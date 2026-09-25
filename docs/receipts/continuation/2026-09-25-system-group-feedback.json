@@ -1,0 +1,301 @@
+{
+  "artifact": {
+    "relpath": "analysis/SAEA-SLURP-STAGE3-SYSTEM-GROUP-FEEDBACK-READ-V1/complete-groups-v1.json",
+    "sha256": "4041c8df08ed64c9bb81a0e5b6a3e4a10625aecccc43268f5ee65a8208481a43"
+  },
+  "diagnostics": {
+    "intent_disagreement": 32,
+    "neither_revised_utility_informative": 108,
+    "normalized_answer_disagreement": 189,
+    "row_f1_tie_utility_informative": 43,
+    "rows": 625,
+    "utility_informative": 131,
+    "utility_intent_direction_conflict": 8,
+    "zero_reference_entity_groups": 191,
+    "zero_reference_utility_informative": 35
+  },
+  "direction_table": [
+    {
+      "groups": 8,
+      "intent_sign_planr_minus_plan": -1,
+      "utility_sign_planr_minus_plan": -1
+    },
+    {
+      "groups": 43,
+      "intent_sign_planr_minus_plan": 0,
+      "utility_sign_planr_minus_plan": -1
+    },
+    {
+      "groups": 2,
+      "intent_sign_planr_minus_plan": 1,
+      "utility_sign_planr_minus_plan": -1
+    },
+    {
+      "groups": 6,
+      "intent_sign_planr_minus_plan": -1,
+      "utility_sign_planr_minus_plan": 0
+    },
+    {
+      "groups": 485,
+      "intent_sign_planr_minus_plan": 0,
+      "utility_sign_planr_minus_plan": 0
+    },
+    {
+      "groups": 3,
+      "intent_sign_planr_minus_plan": 1,
+      "utility_sign_planr_minus_plan": 0
+    },
+    {
+      "groups": 6,
+      "intent_sign_planr_minus_plan": -1,
+      "utility_sign_planr_minus_plan": 1
+    },
+    {
+      "groups": 65,
+      "intent_sign_planr_minus_plan": 0,
+      "utility_sign_planr_minus_plan": 1
+    },
+    {
+      "groups": 7,
+      "intent_sign_planr_minus_plan": 1,
+      "utility_sign_planr_minus_plan": 1
+    }
+  ],
+  "equal_stratum_rates": {
+    "intent_disagreement": 0.05113308002239173,
+    "normalized_answer_disagreement": 0.29890843142418033,
+    "utility_informative": 0.20717626949015244,
+    "utility_intent_direction_conflict": 0.013914607653264641,
+    "zero_reference_utility_informative": 0.056888759560629554
+  },
+  "implementation_commit": "e268b9e9ed19a1bf2b4ae847f30f2c2b73ff8352",
+  "learning_authorized": false,
+  "model_contacts_added": 0,
+  "per_stratum": {
+    "alarm": {
+      "intent_disagreement": 2,
+      "neither_revised_utility_informative": 3,
+      "normalized_answer_disagreement": 5,
+      "row_f1_tie_utility_informative": 1,
+      "rows": 26,
+      "utility_informative": 4,
+      "utility_intent_direction_conflict": 2,
+      "zero_reference_entity_groups": 9,
+      "zero_reference_utility_informative": 1
+    },
+    "audio": {
+      "intent_disagreement": 3,
+      "neither_revised_utility_informative": 2,
+      "normalized_answer_disagreement": 5,
+      "row_f1_tie_utility_informative": 2,
+      "rows": 30,
+      "utility_informative": 3,
+      "utility_intent_direction_conflict": 1,
+      "zero_reference_entity_groups": 24,
+      "zero_reference_utility_informative": 2
+    },
+    "calendar": {
+      "intent_disagreement": 0,
+      "neither_revised_utility_informative": 11,
+      "normalized_answer_disagreement": 15,
+      "row_f1_tie_utility_informative": 2,
+      "rows": 42,
+      "utility_informative": 12,
+      "utility_intent_direction_conflict": 0,
+      "zero_reference_entity_groups": 4,
+      "zero_reference_utility_informative": 1
+    },
+    "cooking": {
+      "intent_disagreement": 1,
+      "neither_revised_utility_informative": 3,
+      "normalized_answer_disagreement": 6,
+      "row_f1_tie_utility_informative": 4,
+      "rows": 31,
+      "utility_informative": 4,
+      "utility_intent_direction_conflict": 0,
+      "zero_reference_entity_groups": 6,
+      "zero_reference_utility_informative": 2
+    },
+    "datetime": {
+      "intent_disagreement": 1,
+      "neither_revised_utility_informative": 6,
+      "normalized_answer_disagreement": 7,
+      "row_f1_tie_utility_informative": 2,
+      "rows": 39,
+      "utility_informative": 7,
+      "utility_intent_direction_conflict": 0,
+      "zero_reference_entity_groups": 4,
+      "zero_reference_utility_informative": 2
+    },
+    "email": {
+      "intent_disagreement": 1,
+      "neither_revised_utility_informative": 9,
+      "normalized_answer_disagreement": 17,
+      "row_f1_tie_utility_informative": 2,
+      "rows": 33,
+      "utility_informative": 11,
+      "utility_intent_direction_conflict": 0,
+      "zero_reference_entity_groups": 5,
+      "zero_reference_utility_informative": 1
+    },
+    "general": {
+      "intent_disagreement": 5,
+      "neither_revised_utility_informative": 7,
+      "normalized_answer_disagreement": 18,
+      "row_f1_tie_utility_informative": 9,
+      "rows": 42,
+      "utility_informative": 10,
+      "utility_intent_direction_conflict": 1,
+      "zero_reference_entity_groups": 36,
+      "zero_reference_utility_informative": 7
+    },
+    "iot": {
+      "intent_disagreement": 0,
+      "neither_revised_utility_informative": 5,
+      "normalized_answer_disagreement": 8,
+      "row_f1_tie_utility_informative": 0,
+      "rows": 33,
+      "utility_informative": 7,
+      "utility_intent_direction_conflict": 0,
+      "zero_reference_entity_groups": 12,
+      "zero_reference_utility_informative": 0
+    },
+    "lists": {
+      "intent_disagreement": 3,
+      "neither_revised_utility_informative": 6,
+      "normalized_answer_disagreement": 10,
+      "row_f1_tie_utility_informative": 2,
+      "rows": 37,
+      "utility_informative": 8,
+      "utility_intent_direction_conflict": 1,
+      "zero_reference_entity_groups": 13,
+      "zero_reference_utility_informative": 2
+    },
+    "music": {
+      "intent_disagreement": 0,
+      "neither_revised_utility_informative": 4,
+      "normalized_answer_disagreement": 11,
+      "row_f1_tie_utility_informative": 6,
+      "rows": 27,
+      "utility_informative": 6,
+      "utility_intent_direction_conflict": 0,
+      "zero_reference_entity_groups": 22,
+      "zero_reference_utility_informative": 6
+    },
+    "news": {
+      "intent_disagreement": 5,
+      "neither_revised_utility_informative": 6,
+      "normalized_answer_disagreement": 14,
+      "row_f1_tie_utility_informative": 0,
+      "rows": 36,
+      "utility_informative": 8,
+      "utility_intent_direction_conflict": 0,
+      "zero_reference_entity_groups": 4,
+      "zero_reference_utility_informative": 0
+    },
+    "play": {
+      "intent_disagreement": 1,
+      "neither_revised_utility_informative": 8,
+      "normalized_answer_disagreement": 11,
+      "row_f1_tie_utility_informative": 5,
+      "rows": 37,
+      "utility_informative": 9,
+      "utility_intent_direction_conflict": 0,
+      "zero_reference_entity_groups": 7,
+      "zero_reference_utility_informative": 3
+    },
+    "qa": {
+      "intent_disagreement": 3,
+      "neither_revised_utility_informative": 8,
+      "normalized_answer_disagreement": 17,
+      "row_f1_tie_utility_informative": 5,
+      "rows": 38,
+      "utility_informative": 10,
+      "utility_intent_direction_conflict": 1,
+      "zero_reference_entity_groups": 25,
+      "zero_reference_utility_informative": 5
+    },
+    "recommendation": {
+      "intent_disagreement": 2,
+      "neither_revised_utility_informative": 5,
+      "normalized_answer_disagreement": 7,
+      "row_f1_tie_utility_informative": 2,
+      "rows": 29,
+      "utility_informative": 7,
+      "utility_intent_direction_conflict": 1,
+      "zero_reference_entity_groups": 4,
+      "zero_reference_utility_informative": 2
+    },
+    "social": {
+      "intent_disagreement": 4,
+      "neither_revised_utility_informative": 8,
+      "normalized_answer_disagreement": 12,
+      "row_f1_tie_utility_informative": 0,
+      "rows": 35,
+      "utility_informative": 8,
+      "utility_intent_direction_conflict": 1,
+      "zero_reference_entity_groups": 4,
+      "zero_reference_utility_informative": 0
+    },
+    "takeaway": {
+      "intent_disagreement": 1,
+      "neither_revised_utility_informative": 7,
+      "normalized_answer_disagreement": 13,
+      "row_f1_tie_utility_informative": 0,
+      "rows": 37,
+      "utility_informative": 7,
+      "utility_intent_direction_conflict": 0,
+      "zero_reference_entity_groups": 3,
+      "zero_reference_utility_informative": 0
+    },
+    "transport": {
+      "intent_disagreement": 0,
+      "neither_revised_utility_informative": 4,
+      "normalized_answer_disagreement": 6,
+      "row_f1_tie_utility_informative": 0,
+      "rows": 32,
+      "utility_informative": 4,
+      "utility_intent_direction_conflict": 0,
+      "zero_reference_entity_groups": 3,
+      "zero_reference_utility_informative": 0
+    },
+    "weather": {
+      "intent_disagreement": 0,
+      "neither_revised_utility_informative": 6,
+      "normalized_answer_disagreement": 7,
+      "row_f1_tie_utility_informative": 1,
+      "rows": 41,
+      "utility_informative": 6,
+      "utility_intent_direction_conflict": 0,
+      "zero_reference_entity_groups": 6,
+      "zero_reference_utility_informative": 1
+    }
+  },
+  "read_id": "SAEA-SLURP-STAGE3-SYSTEM-GROUP-FEEDBACK-READ-V1",
+  "registration_sha256": "e7c11883a899a080a1cfd3b90d7651c0677857c0459892a27fb2b89f0fa31074",
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+    "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd"
+  },
+  "schema": "saea-system-group-feedback-diagnostic-receipt-v1",
+  "scorer_contacts_added": 0,
+  "status": "COMPLETE_DIAGNOSTIC_NO_POLICY_UPDATE",
+  "summary": {
+    "answer_disagreement_with_tied_utility_groups": 58,
+    "episodes_with_fallback": 11,
+    "episodes_without_revision": 1187,
+    "groups": 625,
+    "intent_disagreement_groups": 32,
+    "model_contacts": 5181,
+    "normalized_answer_disagreement_groups": 189,
+    "utility_informative_groups": 131,
+    "utility_tied_groups": 494
+  },
+  "validation": {
+    "engineering_base": "pass",
+    "episodes": 1250,
+    "focused_tests": 53,
+    "groups": 625,
+    "real_complete_sources": 2
+  }
+}

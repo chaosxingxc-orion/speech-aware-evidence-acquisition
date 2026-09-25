@@ -3810,6 +3810,18 @@
         "SAEA-SLURP-STAGE3-F10-CONTROL-R01C-V1",
         "SAEA-SLURP-STAGE3-F10-EMPTY-R01C-V1"
       ]
+    },
+    {
+      "date": "2026-09-25",
+      "cell_id": "SAEA-SLURP-STAGE3-SYSTEM-GROUP-FEEDBACK-READ-V1",
+      "status": "COMPLETE_DIAGNOSTIC_NO_POLICY_UPDATE",
+      "source": "docs/results/2026-09-25-slurp-system-group-feedback.md",
+      "source_sha256": "3496a432d206df95a067e0f2dd0523def689acc1e35e26d260212a0b36eb7e0d",
+      "meaning": "625 complete same-input groups retain 1250 system episodes. 131 utility differences plus9 intent-only differences;35 empty-reference differences and8 utility/intent conflicts. No inferred propensities, node credit or algorithm gain.",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1",
+        "SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-V1"
+      ]
     }
   ]
 }
