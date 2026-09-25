@@ -1,0 +1,20 @@
+{
+  "schema": "saea-independent-background-launch-v1",
+  "recorded_at_utc": "2026-09-25T08:56:00.988458+00:00",
+  "task_name": "SAEA-VERIFY1-FitRecovery-20260925",
+  "flight_commit": "5366949cd9b21dc0ff3f90c51f93384844da5803",
+  "entry": "scripts/flights/batch/batch_verify1_recovery.sh",
+  "observed_state": "running",
+  "stop_on_battery": false,
+  "execution_time_limit": "PT0S",
+  "external_network_dependency": false,
+  "chatgpt_dependency": false,
+  "heartbeat_id": "slurp",
+  "heartbeat_interval_minutes": 15,
+  "heartbeat_required_for_gpu_execution": false,
+  "failure_disposition": "stop and preserve; no automatic recovery",
+  "queue": "/home/chao/batch-queue.json",
+  "status": "/home/chao/batch-status.jsonl",
+  "failed_queue_archive": "/home/chao/verify1-before-fit-count-recovery",
+  "quality_results_read": false
+}

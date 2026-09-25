@@ -22,8 +22,11 @@ worktree and the pinned flight checkout; merge completed chunks promptly.
   Required fit caps are 13 / 1,876, not the generation caps 8 / 1,250.
   The new shared count helper is tested. Recovery keeps every scientific
   factor unchanged and must stop at the next failure.
-- At this update, recovery is being re-pinned and checked before launch.
-  The resident decoder-only service remains loaded; do not restart it.
+- Recovery clean offline checks passed for smoke and full arm. The independent
+  Windows task SAEA-VERIFY1-FitRecovery-20260925 is RUNNING at this update
+  (2026-09-25 08:56 UTC), pinned to 5366949cd9b21dc0ff3f90c51f93384844da5803.
+  The script confirmed running driver and service identities. No selector quality
+  result has been read. The resident decoder-only service remains loaded.
   Independent launch script: scripts/flights/batch/batch_verify1_recovery.sh.
   It archives the failed queue and STOP marker, then runs the recovery smoke,
   full625 and registered complete selector read using the shared driver.
