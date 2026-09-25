@@ -1,0 +1,95 @@
+{
+  "fragment_kind": "saea-slurp-native-stage3-var2-supply-variants-r01c-smoke-4-v1",
+  "experiment_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-SMOKE-4-V1",
+  "date": "2026-09-25",
+  "execution_profile": "bounded-discovery-probe",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 68,
+    "planned_speech_audio_seconds": 290,
+    "planned_gpu_hours": 1.0
+  },
+  "cells": [
+    {
+      "cell_id": "slurp-native-stage3-var2-supply-variants-r01c-smoke-4-v1",
+      "run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-var2-supply-variants-r01c-smoke-4-v1-generation",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+      "baseline_fragment": "slurp-native-stage3-var2-supply-variants-r01c-smoke-4-baseline-v1",
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "readiness": {
+        "state": "held",
+        "requirements": [],
+        "reason": "Owner-approved continuation; require scored/custody-capable code, prepared first-phase supply, clean preflight and root admission. Exact request fit remains mandatory."
+      }
+    },
+    {
+      "cell_id": "slurp-native-stage3-var2-supply-variants-r01c-smoke-4-fit-v1",
+      "run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-SMOKE-4-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-var2-supply-variants-r01c-smoke-4-v1-fit",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+      "baseline_fragment": "slurp-native-stage3-var2-supply-variants-r01c-smoke-4-baseline-v1",
+      "allowed_execution_stages": [
+        "check"
+      ],
+      "readiness": {
+        "state": "held",
+        "requirements": [],
+        "reason": "Spend identity only; the generation worker performs per-contact fitting."
+      }
+    }
+  ],
+  "family_budget": {
+    "generation_calls_cap": 68,
+    "fit_endpoint_calls_cap": 272,
+    "gpu_hours_fit_inclusive": 1.0,
+    "repeated_speech_audio_seconds_cap": 290,
+    "encoder_calls": 0,
+    "asr_calls": 0,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "derived_complete_scoring_jobs": 0,
+    "ceilings_are_not_targets": true
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+    "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
+    "decision_population": "Four-row positional structural proof only."
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+      "ids": [
+        "slurp:train:000049:audio-1434542455",
+        "slurp:train:000051:audio-1434531302-headset",
+        "slurp:train:000234:audio-1499688528",
+        "slurp:train:000260:audio-1488549919"
+      ]
+    }
+  ],
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "STAGE3-CONSTRUCTION-R01C",
+  "stage3_algorithm": {
+    "id": "shared-rollout",
+    "operators_used": [
+      "rollout",
+      "scoring"
+    ],
+    "note": "Enumerate finite supply actions at a fixed pre-Solver state. No policy update in this cell; no claim of complete-system reward for side branches."
+  },
+  "preserve_wire_responses": true,
+  "purpose": "Execute the approved VAR-2 discovery form: exk10, exk30, exdiv, plan. Only plan delivers and continues Reviewer/Planner. Preserve first and revised Solver visits separately; analyze all rows with declared missing/invalid behavior.",
+  "failure_policy": "Stop on first failure and preserve. At most one root-diagnosed recovery with fresh generation and fit attempts; no automatic replay. A second failure closes the flight. Do not change roster, scientific question or caps during execution.",
+  "generation_budget": {
+    "cap": 68,
+    "definition": "4 x 17. Maximum: Perception 1 plus two visits of Solver four arms, Reviewer 3, Planner 1. Expected about seven contacts per row; the cap is not a target."
+  }
+}

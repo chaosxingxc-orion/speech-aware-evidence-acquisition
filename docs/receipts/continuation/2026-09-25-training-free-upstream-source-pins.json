@@ -1,0 +1,104 @@
+{
+  "schema": "saea-upstream-source-audit-v1",
+  "date": "2026-09-25",
+  "purpose": "Read-only algorithm fidelity audit; no source imported into runtime, no dependency installed, no model call.",
+  "local_reference_cache": "/home/chao/saea-reference-audits/20260925",
+  "sources": [
+    {
+      "repo": "MemTensor/MemRL",
+      "commit": "c1b322ca43de36ddf64c6712f89d0095bfc35ce0",
+      "path": "memrl/service/memory_service.py",
+      "url": "https://raw.githubusercontent.com/MemTensor/MemRL/c1b322ca43de36ddf64c6712f89d0095bfc35ce0/memrl/service/memory_service.py",
+      "sha256": "252ad7b09d1a53f9e6d6dc925b9b85b9bff1d9cc1bb4ea184dad8de890e363c3",
+      "bytes": 90829
+    },
+    {
+      "repo": "MemTensor/MemRL",
+      "commit": "c1b322ca43de36ddf64c6712f89d0095bfc35ce0",
+      "path": "memrl/service/procedural_memory.py",
+      "url": "https://raw.githubusercontent.com/MemTensor/MemRL/c1b322ca43de36ddf64c6712f89d0095bfc35ce0/memrl/service/procedural_memory.py",
+      "sha256": "e2d14fd894ba54dd2c55f05c0a128392e31021854527af0f99b299abc3eb3c12",
+      "bytes": 11777
+    },
+    {
+      "repo": "MemTensor/MemRL",
+      "commit": "c1b322ca43de36ddf64c6712f89d0095bfc35ce0",
+      "path": "memrl/service/retrievers.py",
+      "url": "https://raw.githubusercontent.com/MemTensor/MemRL/c1b322ca43de36ddf64c6712f89d0095bfc35ce0/memrl/service/retrievers.py",
+      "sha256": "a9a4494a08e9dec4fea71650807e854d90f2957937ba1443dfb303f2447e686b",
+      "bytes": 12811
+    },
+    {
+      "repo": "MemTensor/MemRL",
+      "commit": "c1b322ca43de36ddf64c6712f89d0095bfc35ce0",
+      "path": "memrl/configs/config.py",
+      "url": "https://raw.githubusercontent.com/MemTensor/MemRL/c1b322ca43de36ddf64c6712f89d0095bfc35ce0/memrl/configs/config.py",
+      "sha256": "3cd35e4bf0ece43e7622de54f8a8e9a17226cc403fb54fa21b319a95452b6ff3",
+      "bytes": 18285
+    },
+    {
+      "repo": "MemTensor/MemRL",
+      "commit": "c1b322ca43de36ddf64c6712f89d0095bfc35ce0",
+      "path": "configs/rl_alf_config.yaml",
+      "url": "https://raw.githubusercontent.com/MemTensor/MemRL/c1b322ca43de36ddf64c6712f89d0095bfc35ce0/configs/rl_alf_config.yaml",
+      "sha256": "c6f7e6852ed491c5c424e59259f204dcea7920128f1172272e8997dbebacd4b4",
+      "bytes": 2854
+    },
+    {
+      "repo": "TencentCloudADP/youtu-agent",
+      "commit": "c2caa539f4c95ae1c39ed24dc8a99cb3651e1d5d",
+      "path": "utu/practice/training_free_grpo.py",
+      "url": "https://raw.githubusercontent.com/TencentCloudADP/youtu-agent/c2caa539f4c95ae1c39ed24dc8a99cb3651e1d5d/utu/practice/training_free_grpo.py",
+      "sha256": "5a391c637a0a900511804877b03e08044fb4ed936428636c2c654ce57dc835d1",
+      "bytes": 13766
+    },
+    {
+      "repo": "TencentCloudADP/youtu-agent",
+      "commit": "c2caa539f4c95ae1c39ed24dc8a99cb3651e1d5d",
+      "path": "utu/practice/experience_updater.py",
+      "url": "https://raw.githubusercontent.com/TencentCloudADP/youtu-agent/c2caa539f4c95ae1c39ed24dc8a99cb3651e1d5d/utu/practice/experience_updater.py",
+      "sha256": "301d4a51136f6c0da620f1f2042d59316af494cee4b4c3329338ba1a1b937d04",
+      "bytes": 16069
+    },
+    {
+      "repo": "TencentCloudADP/youtu-agent",
+      "commit": "c2caa539f4c95ae1c39ed24dc8a99cb3651e1d5d",
+      "path": "utu/practice/rollout_manager.py",
+      "url": "https://raw.githubusercontent.com/TencentCloudADP/youtu-agent/c2caa539f4c95ae1c39ed24dc8a99cb3651e1d5d/utu/practice/rollout_manager.py",
+      "sha256": "2fb2c2e493f017de5cd41dfd77002e77a765d8948be591ce487a8f74f3131b67",
+      "bytes": 9420
+    },
+    {
+      "repo": "TencentCloudADP/youtu-agent",
+      "commit": "c2caa539f4c95ae1c39ed24dc8a99cb3651e1d5d",
+      "path": "utu/prompts/practice/experience.yaml",
+      "url": "https://raw.githubusercontent.com/TencentCloudADP/youtu-agent/c2caa539f4c95ae1c39ed24dc8a99cb3651e1d5d/utu/prompts/practice/experience.yaml",
+      "sha256": "875bd42ce2a87daf8ff1c037315fb92483d288d189d200fa3f9468c8530e305d",
+      "bytes": 17626
+    },
+    {
+      "repo": "MemTensor/MemRL",
+      "commit": "c1b322ca43de36ddf64c6712f89d0095bfc35ce0",
+      "path": "memrl/service/value_driven.py",
+      "url": "https://raw.githubusercontent.com/MemTensor/MemRL/c1b322ca43de36ddf64c6712f89d0095bfc35ce0/memrl/service/value_driven.py",
+      "sha256": "994a27154e78bdfdad07018b795c22c68e26ad30a41c67da7276c75cd85f563b",
+      "bytes": 10106
+    },
+    {
+      "repo": "MemTensor/MemRL",
+      "commit": "c1b322ca43de36ddf64c6712f89d0095bfc35ce0",
+      "path": "memrl/run/alfworld_rl_runner.py",
+      "url": "https://raw.githubusercontent.com/MemTensor/MemRL/c1b322ca43de36ddf64c6712f89d0095bfc35ce0/memrl/run/alfworld_rl_runner.py",
+      "sha256": "cb0583fbafcf00b082a1c619d371aa0423dff1b2d7888f249a1517d6598cfc91",
+      "bytes": 53706
+    },
+    {
+      "repo": "MemTensor/MemRL",
+      "commit": "c1b322ca43de36ddf64c6712f89d0095bfc35ce0",
+      "path": "memrl/run/llb_rl_runner.py",
+      "url": "https://raw.githubusercontent.com/MemTensor/MemRL/c1b322ca43de36ddf64c6712f89d0095bfc35ce0/memrl/run/llb_rl_runner.py",
+      "sha256": "3d93d5992b7496194529e02d48e148c8c5217c3bf07f2f3783c62035fa48bc18",
+      "bytes": 55593
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "schema": "saea-analysis-recipe-v1",
+  "read_run_id": "SAEA-SLURP-STAGE3-VAR1-OFFICIAL-FEEDBACK-V2",
+  "recorded_at_utc": "2026-09-25T09:01:57.737158+00:00",
+  "timing": "POST-HOC relative to the completed VAR-1 family results, registered before executing this derived read. No prospective efficacy claim.",
+  "input_package": "docs/readiness/2026-09-24-slurp-stage3-var1-v1/registered-facts-v1.json",
+  "input_package_sha256": "9b3396b04fa4610a4716e9aed317f41b123a4c91cd781f709ae28dd6945025d8",
+  "source_read": "analysis/SLURP-VAR1-VARIANT-READ-V1-CORRECTED-V2",
+  "population": "All 625 R01C construction utterances, identical aligned roster for all six sealed arms.",
+  "driver": "scripts/analysis/slurp_var1_official_feedback_v2.py",
+  "output": "analysis/SAEA-SLURP-STAGE3-VAR1-OFFICIAL-FEEDBACK-V2",
+  "comparators": [
+    "plan",
+    "planr"
+  ],
+  "feedback": {
+    "version": "official-count-utility-v2",
+    "counts": "sum official word and character TP/FP/FN",
+    "frozen_baseline": "Compute F0 once from sealed PLAN pooled counts before constructing any variant utility, retain exactly the same F0 for PLANR contrasts. Persist F0 and source hash.",
+    "utility": "2*TP - F0*(2*TP+FP+FN)",
+    "intent": "Keep scenario_action_exact separate; it is not hidden in entity reward."
+  },
+  "disagreement": "Use shared canonical_answer / answers_disagree: scenario, action and sorted entity multiset, preserving strings. No ad hoc Unicode/case/whitespace transformations.",
+  "empty_gold": "Require sealed slot_f1_exact_tp and slot_f1_exact_fn both zero. Require explicit fields, never infer missing as zero. Report false-positive counts/rates, format/fallback status and all-roster results together.",
+  "statistics": {
+    "paired_cluster": "utterance_id",
+    "draws": 10000,
+    "seed": 20260915,
+    "intervals": [
+      "CI90",
+      "CI95"
+    ],
+    "formal_metric": "pooled official SLU-F1; report row-F1 and utility as distinct quantities",
+    "weightings": [
+      "natural mixture",
+      "equal scenario"
+    ],
+    "per_scenario": true
+  },
+  "limits": [
+    "Do not rescore, contact a model or read a new split.",
+    "Do not change old verdicts or sealed files.",
+    "Do not call a same-roster action winner a held-out learned policy.",
+    "Do not use a pooled metric half-width as a row-F1 detection guarantee.",
+    "No raw answer, transcript or gold text in repository/report."
+  ],
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "scorer": 0,
+    "server": 0,
+    "network": 0
+  }
+}

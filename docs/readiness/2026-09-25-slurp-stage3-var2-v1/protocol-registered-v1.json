@@ -1,0 +1,54 @@
+{
+  "schema": "saea-var2-protocol-v1",
+  "cells": {
+    "arm": {
+      "experiment": "slurp-native-stage3-var2-supply-variants-r01c-v1",
+      "cell_id": "slurp-native-stage3-var2-supply-variants-r01c-v1",
+      "baseline": "slurp-native-stage3-var2-supply-variants-r01c-baseline-v1",
+      "run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-V1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-var2-supply-variants-r01c-v1-generation",
+      "fit_attempt_id": "attempt-slurp-native-stage3-var2-supply-variants-r01c-v1-fit",
+      "fit_cell_id": "slurp-native-stage3-var2-supply-variants-r01c-fit-v1",
+      "composed_config_hash": "6b361e1e2d3a99cf2f8923bd068b3efba7d1d0ef80b5c9c328623a6084e5fa80",
+      "protocol_hash": "91e11f8596c5e18b7ae2e6ffb33575e299988cff09b06367c62bb31bc3046a9e",
+      "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
+      "rows": 625,
+      "gen_cap": 10625,
+      "fit_cap": 42500,
+      "audio_cap": 46357,
+      "gpu_hours": 8.0
+    },
+    "smoke": {
+      "experiment": "slurp-native-stage3-var2-supply-variants-r01c-smoke-4-v1",
+      "cell_id": "slurp-native-stage3-var2-supply-variants-r01c-smoke-4-v1",
+      "baseline": "slurp-native-stage3-var2-supply-variants-r01c-smoke-4-baseline-v1",
+      "run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-SMOKE-4-V1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-SMOKE-4-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-var2-supply-variants-r01c-smoke-4-v1-generation",
+      "fit_attempt_id": "attempt-slurp-native-stage3-var2-supply-variants-r01c-smoke-4-v1-fit",
+      "fit_cell_id": "slurp-native-stage3-var2-supply-variants-r01c-smoke-4-fit-v1",
+      "composed_config_hash": "1d47ce5b52f445f6392f885c15af9f2fb48115269a60edc25adb8fa9b78b3a6a",
+      "protocol_hash": "46204a0f38023be9bd78f1a74d17d6c5ebd9905e4d79e39efccad04f03072285",
+      "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
+      "rows": 4,
+      "gen_cap": 68,
+      "fit_cap": 272,
+      "audio_cap": 290,
+      "gpu_hours": 1.0
+    }
+  },
+  "authority": "Owner explicitly approved VAR-2 in the continuation plan; root admission remains held until ready.",
+  "actions": [
+    "exk10",
+    "exk30",
+    "exdiv",
+    "plan"
+  ],
+  "delivery": "Only last plan arm continues downstream. Side arms are raw local Solver actions.",
+  "state": "Same pre-Solver QueryState for each group. Primary first visit; revisits conditioned on the plan path and reported separately.",
+  "order_limitation": "Fixed arm order is not counterbalanced; a favorable difference needs complete-system validation. No claim that earlier ROLL-AA removes order effects.",
+  "analysis": "Official pooled word/char counts, intent, empty-target FP, per-scenario natural/equal summaries; paired utterance bootstrap 10000 seed20260915. No borrowed pooled-F1 detection threshold. Frozen feedback F0 from sealed VAR1 PLAN source.",
+  "failure_policy": "One diagnosed recovery at most.",
+  "source_design": "docs/readiness/2026-09-25-slurp-stage3-var2-supply-variant-interleaving-design-v1.md"
+}
