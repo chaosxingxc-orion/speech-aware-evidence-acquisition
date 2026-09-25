@@ -1,0 +1,127 @@
+{
+  "schema": "saea-model-free-preflight-summary-v1",
+  "checked_at_utc": "2026-09-25T08:53:47.713949+00:00",
+  "checked_commit": "af5f0668",
+  "model_contacts": 0,
+  "tokenizer_contacts": 0,
+  "cells": {
+    "slurp-native-stage3-verify-1-recovery-smoke-4-v1": {
+      "path": "/home/chao/slurp-native-stage3-verify-1-recovery-smoke-4-v1-check.json",
+      "sha256": "47bc7265106614925fd940eaccf070e2858777293a810f39c9b907168f75e5a5",
+      "receipt": {
+        "generation_authorized": false,
+        "preflight": {
+          "attempt_id": "attempt-slurp-native-stage3-verify-1-recovery-smoke-4-v1-generation",
+          "attempt_reservation": "deferred to core.model.adapter.FrozenCoreAdapter",
+          "carrier_lock_key": "slurp",
+          "config_hash": "24c9be42407cdb53059383e7246e22b3db443833d1a49636cc228c9f3d71c1ee",
+          "phase_prompt_fit": null,
+          "prepared_artifacts": [],
+          "prepared_artifacts_ok": true,
+          "prompt_budget": [
+            {
+              "breakdown": {
+                "completion_token_ceiling": 512,
+                "rendered_text_tokens": 3114,
+                "required_window_tokens": 3680,
+                "special_token_reserve": 2,
+                "speech_feature_packet_tokens": [
+                  [
+                    "slurp:train:000049:audio-1434542455",
+                    52
+                  ]
+                ],
+                "speech_feature_tokens": 52
+              },
+              "compaction_pass": 0,
+              "decision": "ALLOW",
+              "dropped_identifiers": [],
+              "operational_margin_tokens": 17824,
+              "operational_reserve_tokens": 3072,
+              "payload_sha256": "bfa729bef5b4725ace7c622bd9b5a557517c3855849270c9cb3895066f9bf3d6",
+              "phase": "choose",
+              "physical_margin_tokens": 20896,
+              "slot_limit_tokens": 24576
+            }
+          ],
+          "protocol_hash": "61dec198e75ce395cf5207261a549a389c82fa5f730de79e40c37d2c3ff8498f",
+          "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-RECOVERY-SMOKE-4-V1",
+          "sample_count": 4,
+          "serving_geometry": {
+            "max_tokens": 512,
+            "slot_tokens": 24576,
+            "slots": 4
+          },
+          "split_id": "STAGE3-CONSTRUCTION-R01C",
+          "split_identity_hash": "2657110d135195dafbf1ebd12850470b0ae8dc28ffa1d61494266d047e349efd",
+          "stage": "preflight",
+          "stage_hash": "779fa02b1de023e5e4af31cf7f8f2a0572ae5a4d80202ce0b747176d177a5e0a",
+          "study_commit": "af5f0668a498dab9d08a35a24ce019327c29d6b7"
+        },
+        "scientific_readiness": {
+          "reason": "",
+          "state": "ready"
+        }
+      }
+    },
+    "slurp-native-stage3-verify-1-recovery-v1": {
+      "path": "/home/chao/slurp-native-stage3-verify-1-recovery-v1-check.json",
+      "sha256": "b8bc050a2f743b86e149fb803cbd13dd1f3419fd5498694a1c813b9e6044f7cf",
+      "receipt": {
+        "generation_authorized": false,
+        "preflight": {
+          "attempt_id": "attempt-slurp-native-stage3-verify-1-recovery-v1-generation",
+          "attempt_reservation": "deferred to core.model.adapter.FrozenCoreAdapter",
+          "carrier_lock_key": "slurp",
+          "config_hash": "e97407f2819caaca2aa33efe8469dc7211a593cf4436010dc0b8763e5e8441d5",
+          "phase_prompt_fit": null,
+          "prepared_artifacts": [],
+          "prepared_artifacts_ok": true,
+          "prompt_budget": [
+            {
+              "breakdown": {
+                "completion_token_ceiling": 512,
+                "rendered_text_tokens": 3287,
+                "required_window_tokens": 3853,
+                "special_token_reserve": 2,
+                "speech_feature_packet_tokens": [
+                  [
+                    "slurp:train:000049:audio-1434542455",
+                    52
+                  ]
+                ],
+                "speech_feature_tokens": 52
+              },
+              "compaction_pass": 0,
+              "decision": "ALLOW",
+              "dropped_identifiers": [],
+              "operational_margin_tokens": 17651,
+              "operational_reserve_tokens": 3072,
+              "payload_sha256": "724180a6fc7d4d9995f23c15d85551d5c3afc6f7932968a8d8cbb69bf9bf11ca",
+              "phase": "choose",
+              "physical_margin_tokens": 20723,
+              "slot_limit_tokens": 24576
+            }
+          ],
+          "protocol_hash": "5e56548a71b3ce6a6bf0ca0ef6e66fc5de571d9921491b6a5c47a0c51ad71d8e",
+          "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-RECOVERY-V1",
+          "sample_count": 625,
+          "serving_geometry": {
+            "max_tokens": 512,
+            "slot_tokens": 24576,
+            "slots": 4
+          },
+          "split_id": "STAGE3-CONSTRUCTION-R01C",
+          "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
+          "stage": "preflight",
+          "stage_hash": "222f6ef3c8855ffb7bc79b68b5171b8ab808ce76c588842d160d55199405a0ea",
+          "study_commit": "af5f0668a498dab9d08a35a24ce019327c29d6b7"
+        },
+        "scientific_readiness": {
+          "reason": "",
+          "state": "ready"
+        }
+      }
+    }
+  }
+}

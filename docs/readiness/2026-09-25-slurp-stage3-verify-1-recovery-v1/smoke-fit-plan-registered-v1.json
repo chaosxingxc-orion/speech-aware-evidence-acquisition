@@ -2,13 +2,16 @@
   "ceiling_accounting": "One phase x (1 props + 3 x 4 per-row endpoint calls) = 13; distinct from generation.",
   "cell": "slurp-native-stage3-verify-1-recovery-smoke-4-fit-v1",
   "check_receipt": {
+    "state": "passed",
+    "check_commit": "af5f0668",
     "contacts": {
       "model": 0,
       "tokenizer": 0,
       "encoder": 0,
       "scorer": 0
     },
-    "state": "pending recovery re-pin"
+    "receipt": "docs/receipts/continuation/2026-09-25-verify1-recovery-preflight.json",
+    "note": "Model-free check does not itself grant generation; root decision plus exclusive lease and real-request fit are mandatory."
   },
   "comparator": null,
   "comparator_reason": "None is FLOWN. The comparison columns -- the five single-sample arms, their mean, the medoid rule and the oracle -- already exist in the SEALED ROLL-1 rollout and in the offline aggregation read derived from it, so this cell adds the CHOICE and re-flies nothing. The read is not plan_cell_read.py.",
@@ -88,7 +91,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-25-slurp-stage3-verify-1-recovery-v1/protocol-registered-v1.json",
-    "sha256": "4b884c2b049ba28b91e7db7e544313d6e3c1fc5fb56c8db439529c1c54ebf688"
+    "sha256": "36f3ed4e08afccdbd0c52ad748c5211e66d784bab7ba3b31d6b4181a41101aec"
   },
   "purpose": "Cell VERIFY-1, the Stage-3 VERIFIER-SELECTION PROBE (board route F11; Stage-3 algorithm family inference-time-verification-v1, operator SELECTION). ONE contact per R01C construction row carries that row's OWN speech plus the FIVE sealed ROLL-1 Solver candidate answers for that same row, in a per-row presentation order pinned by the config, with NO delivered-answer anchor and no retrieved knowledge, and asks the frozen core to name the candidate the speech supports under a two-field contract. The question it exists for is the ORACLE gap the offline sample-aggregation read measured over this same sealed rollout: best-of-5 is +6.55 pp pooled SLU-F1 and +12.55 pp on the 225 score-disagreeing rows, and NOT ONE deterministic agreement rule the read could build reached any of it. Can the frozen core VERIFY better than it GENERATES? DESCRIPTIVE: no admission verdict, no comparator arm, no gate, nothing admitted, released or locked.",
   "quality_read_gate": "No read of any kind before the complete sealed manifest and the exact ordered outputs exist, one row per roster row. A partial manifest is never read; a failed smoke stops the arm and it does not open.",

@@ -111,7 +111,7 @@
       "snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json"
     },
     "no_retrieval": "The choose phase declares knowledge 'none'; the fragment declares no phase_supply and no knowledge_stores. The five candidates ARE the evidence under test. Supplying the plan's retrieved exemplars would make a negative result unattributable -- verifier failure or misleading supply, the failure mode cells IDX and EFF-1 recorded -- and could not reproduce the generator's information set anyway, because the plan's Solver also saw a Perception candidate state and a slot-contract candidate supply for which a one-phase program has no seat. REGISTERED AS A DEVIATION from the coordinator's 'clone the vectors and the MINUS-R01 exemplar release' instruction: the packets, the receipts and the MINUS-R01 release are cloned from configs/baseline/slurp-native-stage3-var1-plan-r01c-baseline-v1.json, the MINUS-R01 release being BOUND as the invisible leakage authority (knowledge_snapshot_relpath), while the two sealed speech query-vector files are NOT carried because no phase retrieves and a pinned vector file nothing reads pins nothing.",
-    "phase_material_receipt_sha256": "e8154290564f6adb653c8200e2fc97ee676a5a1433c6bc79fa9516bf4743f5f5",
+    "phase_material_receipt_sha256": "e661eb9979077c3f9214bb16027c588b2793fa1654707e246f4e738c57de2998",
     "predecessor_source": {
       "binding": "sealed-samples-manifest",
       "expected_sample_count": 5,
@@ -356,5 +356,9 @@
     "why_a_second_binding_and_not_a_flag": "rails.phase_material.sealed_states_from_manifest builds exactly ONE state per row from the sealed row's 'text' -- the DELIVERED answer -- and never opens solver_group. A verifier contact needs the opposite: all N samples, none privileged, and no delivered-answer anchor, because an anchor would tell the contact which candidate the harness already committed. Widening the first loader would have made every already-flown sealed-manifest cell's prompt depend on a new argument's default."
   },
   "prompt_fit_kind": "Dry run is an estimate only. Mandatory live_phase_fit covers every actual request before generation.",
-  "recovery_cause": "Original registration conflated generation ceilings with complete live-phase endpoint counts."
+  "recovery_cause": "Original registration conflated generation ceilings with complete live-phase endpoint counts.",
+  "inherited_form_proof": {
+    "source": "docs/readiness/2026-09-25-slurp-stage3-verify-1-v1/dry-run-v1.json",
+    "note": "Original semantic form proof only. Recovery changes bookkeeping identities and fit caps, not source bytes, templates, grammar, packets, permutations or rosters. Fresh clean checks are recorded separately; no newly executed dry run is implied."
+  }
 }
