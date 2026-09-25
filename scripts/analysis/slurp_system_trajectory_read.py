@@ -16,6 +16,7 @@ from speech_aware_evidence_acquisition.analysis.native_episode_source import ver
 from speech_aware_evidence_acquisition.core.bundle.artifacts import _verify_artifact
 from speech_aware_evidence_acquisition.analysis.slurp_system_attribution import (
     answer_view, describe_changes, summarize_rows, cross_node_summary, tool_activity_summary,
+    candidate_recovery_view, candidate_recovery_summary,
 )
 from speech_aware_evidence_acquisition.analysis.system_feedback import write_system_feedback
 from speech_aware_evidence_acquisition.rails.finite_policy_artifacts import _pinned_json
@@ -137,11 +138,27 @@ def analyze_arm(source, feedback, gold):
             "tool_events": trajectories[sid]["tool_events"],
             **describe_changes(first, last, delivered),
         }
+        projection = trajectories[sid].get("candidate_proposal")
+        if (("candidate_proposal" in native) != (projection is not None)
+                or projection is not None and (
+                    projection["receipt"] != native["candidate_proposal"]
+                    or projection["receipt_sha256"] != content_hash(native["candidate_proposal"]))):
+            raise ValueError("candidate proposal feedback differs from the whole verified source")
+        candidate = candidate_recovery_view(
+            trajectories[sid], gold_intent=f"{target.scenario}_{target.action}",
+            first=first, last=last, delivered=delivered,
+        )
+        if candidate is not None:
+            row["candidate_recovery"] = candidate
         rows.append(row)
-    return {
+    result = {
         "summary": summarize_rows(rows), "cross_node": cross_node_summary(rows),
         "rows": rows, "tool_activity": tool_activity_summary(rows),
     }
+    candidates = candidate_recovery_summary(rows)
+    if candidates is not None:
+        result["candidate_recovery"] = candidates
+    return result
 
 
 

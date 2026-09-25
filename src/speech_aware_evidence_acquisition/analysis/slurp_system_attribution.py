@@ -142,3 +142,105 @@ def tool_activity_summary(rows):
         "rows_without_tool_events": sum(not row["tool_events"] for row in rows),
         "interpretation": "Recorded attempts/results/rejections, not inferred information gain or semantic use.",
     }
+
+
+def candidate_recovery_view(trajectory, *, gold_intent, first, last, delivered):
+    """Join a verified proposal to offline choices, never infer semantic use.
+
+    Gold only classifies diagnostic coverage. It must not enter a runtime
+    state, action selector, proposal or model request.
+    """
+    if "candidate_proposal" not in trajectory:
+        return None
+    projection = trajectory["candidate_proposal"]
+    block = projection["receipt"]
+    documents = block["proposals"]
+    proposal = next(iter(documents.values())) if documents else None
+    original = set(proposal["original_candidate_ids"]) if proposal else set()
+    proposed = set(proposal["candidate_ids"]) if proposal else set()
+
+    def origin(answer):
+        if answer is None:
+            return "unavailable"
+        if proposal is None:
+            return "proposal_unavailable"
+        if not answer["format_ok"]:
+            return "malformed"
+        label = answer["predicted_intent"]
+        return "original" if label in original else "added" if label in proposed else "outside"
+
+    return {
+        "receipt_sha256": projection["receipt_sha256"],
+        "proposal_sha256": next(iter(documents)) if documents else None,
+        "status": ("supplied" if block["contacts"] else
+                   "prepared_without_response" if proposal else "not_reached"),
+        "original_count": len(original) if proposal else None,
+        "proposed_count": len(proposed) if proposal else None,
+        "original_covered": gold_intent in original if proposal else None,
+        "proposed_covered": gold_intent in proposed if proposal else None,
+        "coverage_group": ("not_reached" if proposal is None else
+                           "originally_covered" if gold_intent in original else
+                           "newly_covered" if gold_intent in proposed else "uncovered"),
+        "selected_exemplar_target_counts": dict(sorted(Counter(
+            item["task_target"] for item in proposal["selected_exemplars"]
+        ).items())) if proposal else None,
+        "contact_counts_by_role": dict(Counter(item["role_kind"] for item in block["contacts"])),
+        "prepared_without_response_count": len(block["prepared_without_response"]),
+        "selection_origin": {name: origin(answer) for name, answer in
+                             (("first", first), ("last", last), ("delivered", delivered))},
+    }
+
+
+def _candidate_summary(rows):
+    groups = defaultdict(list)
+    for row in rows:
+        groups[row["candidate_recovery"]["coverage_group"]].append(row)
+    result = {
+        "rows": len(rows),
+        "status_counts": dict(Counter(row["candidate_recovery"]["status"] for row in rows)),
+        "supplied_rows": sum(row["candidate_recovery"]["status"] == "supplied" for row in rows),
+        "original_covered_rows": sum(row["candidate_recovery"]["original_covered"] is True for row in rows),
+        "proposed_covered_rows": sum(row["candidate_recovery"]["proposed_covered"] is True for row in rows),
+        "supplied_proposed_covered_rows": sum(
+            row["candidate_recovery"]["status"] == "supplied" and
+            row["candidate_recovery"]["proposed_covered"] is True for row in rows),
+        "selection_origin_counts": {
+            stage: dict(Counter(row["candidate_recovery"]["selection_origin"][stage] for row in rows))
+            for stage in ("first", "last", "delivered")
+        },
+        "coverage_groups": {},
+    }
+    for name, group in sorted(groups.items()):
+        repaired = [row for row in group if row["revision_task_transition"] == "repair"]
+        result["coverage_groups"][name] = {
+            "rows": len(group),
+            "final_intent_correct_rows": sum(row["delivered"]["intent_correct"] for row in group),
+            "final_task_exact_rows": sum(row["delivered"]["task_exact"] for row in group),
+            "revised_rows": sum(row["solver_visits"] > 1 for row in group),
+            "task_repairs_retained": sum(row["delivered"]["task_exact"] for row in repaired),
+            "task_repairs_lost": sum(not row["delivered"]["task_exact"] for row in repaired),
+            "task_harms_during_revision": sum(row["revision_task_transition"] == "harm" for row in group),
+        }
+    return result
+
+
+def candidate_recovery_summary(rows):
+    """Retain all registered rows, including unreached and prepared-only continuations."""
+    if not rows or len({row["sample_id"] for row in rows}) != len(rows):
+        raise ValueError("candidate diagnostics require a nonempty unique population")
+    if not any("candidate_recovery" in row for row in rows):
+        return None
+    if not all(isinstance(row.get("candidate_recovery"), dict) for row in rows):
+        raise ValueError("candidate diagnostics must cover every trajectory")
+    result = _candidate_summary(rows)
+    scenarios = defaultdict(list)
+    for row in rows:
+        scenarios[row["scenario"]].append(row)
+    result["per_scenario"] = {name: _candidate_summary(group) for name, group in sorted(scenarios.items())}
+    result["interpretation"] = (
+        "Observed supply and within-trajectory associations, not counterfactual effects or semantic use. "
+        "Coverage groups use offline labels and cannot be policy states. Counts retain prepared-only and "
+        "unreached rows; preparation without a response does not prove dispatch or supply. Exact task diagnostics "
+        "do not replace the official pooled terminal SLU-F1 verdict."
+    )
+    return result

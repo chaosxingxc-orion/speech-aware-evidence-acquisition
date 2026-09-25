@@ -63,3 +63,45 @@ def test_contact_projection_retains_actual_input_volume_without_claiming_use():
     assert result["tool_schema_count"]==1
     assert result["history_state_kinds"]==["tool-result"]
     assert "semantic_use" not in result
+
+
+@pytest.mark.parametrize("mutation", [None, "missing", "different", "wrong-hash"])
+def test_full_arm_attribution_preserves_unreached_row_and_binds_proposal(monkeypatch, mutation):
+    import copy
+    from speech_aware_evidence_acquisition.rails.hashing import content_hash
+
+    block = {"schema": "saea-native-candidate-proposal-consumption-v1",
+             "proposals": {}, "contacts": [], "prepared_without_response": []}
+    native = {"candidate_proposal": block, "role_visits": [], "planner_routes": []}
+    source = SimpleNamespace(
+        plan=SimpleNamespace(run_id="run", attempt_id="attempt"),
+        phase_artifact_sha256="p", sample_ids=("s1",),
+        phase_results={"s1": {"native_episode_receipt": native, "agent_states": []}},
+        output_rows={"s1": {"text": ""}},
+        bundle=SimpleNamespace(manifest={"outputs": {"sha256": "o"}, "scores": {}},
+                               manifest_path=Path("/tmp/fake-manifest.json"), trace_records={}))
+    trajectory = {"sample_id": "s1", "trajectory_sha256": "t", "planner_routes": [], "tool_events": [],
+                  "candidate_proposal": {"receipt": copy.deepcopy(block), "receipt_sha256": content_hash(block)}}
+    feedback = {"run_id": "run", "attempt_id": "attempt",
+                "system_trajectories": {"source": {"phase_artifact_sha256": "p", "outputs_sha256": "o"},
+                                        "trajectories": [trajectory]},
+                "terminal_feedback": [{"sample_id": "s1", "intent_exact": False, "fallback_flags": []}]}
+    scores = {"slurp-slu-official-train": {"per_sample": [
+        {"sample_id": "s1", "slot_f1_exact_tp": 0, "slot_f1_exact_fp": 0, "slot_f1_exact_fn": 0}]}}
+    monkeypatch.setattr(cli, "_verify_artifact", lambda *args, **kwargs: json.dumps(scores).encode())
+    gold = {"s1": SimpleNamespace(scenario="alarm", action="set", entities=())}
+    if mutation == "missing":
+        del trajectory["candidate_proposal"]
+    elif mutation == "different":
+        trajectory["candidate_proposal"]["receipt"]["prepared_without_response"] = [{"request_id": "other"}]
+    elif mutation == "wrong-hash":
+        trajectory["candidate_proposal"]["receipt_sha256"] = "f"*64
+    if mutation:
+        with pytest.raises(ValueError, match="proposal"):
+            cli.analyze_arm(source, feedback, gold)
+    else:
+        result = cli.analyze_arm(source, feedback, gold)
+        assert result["summary"]["rows"] == result["summary"]["solver_not_reached"] == 1
+        assert result["candidate_recovery"]["status_counts"] == {"not_reached": 1}
+        assert result["candidate_recovery"]["supplied_rows"] == 0
+        assert result["rows"][0]["candidate_recovery"]["selection_origin"]["first"] == "unavailable"

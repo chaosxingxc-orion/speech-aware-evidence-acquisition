@@ -143,6 +143,32 @@ def _system_policy_choice(*, sid, phase, episode, output, visits, trace, related
     }
 
 
+def _candidate_proposal(*, sid, episode, output, trace):
+    """Keep derived candidates addressable across every downstream contact."""
+    import copy
+    from ..rails.slurp_candidate_proposal import validate_candidate_proposal_consumption
+
+    output_episode = _map(output.get("native_episode_receipt"), "output episode")
+    present = "candidate_proposal" in episode
+    if present != ("candidate_proposal" in output_episode):
+        raise SystemTrajectoryError("candidate proposal differs across phase and output")
+    if not present:
+        return None
+    block = episode["candidate_proposal"]
+    if block is None or block != output_episode["candidate_proposal"]:
+        raise SystemTrajectoryError("candidate proposal differs across phase and output")
+    try:
+        validate_candidate_proposal_consumption(
+            episode, sample_id=sid, trace_records=trace, error_type=SystemTrajectoryError,
+        )
+    except (KeyError, TypeError, ValueError) as error:
+        raise SystemTrajectoryError(f"candidate proposal source custody failed: {error}") from error
+    return {
+        "receipt": copy.deepcopy(block), "receipt_sha256": _hash(block),
+        "claim_scope": "verified-supply-not-semantic-use",
+    }
+
+
 def export_system_trajectories(source: VerifiedNativeEpisodeSource) -> dict[str, object]:
     """Export every role and contact of a verified source without answer or gold text.
 
@@ -297,6 +323,9 @@ def export_system_trajectories(source: VerifiedNativeEpisodeSource) -> dict[str,
         )
         if choice is not None:
             row["system_policy_decision"] = choice
+        proposal = _candidate_proposal(sid=sid, episode=episode, output=output, trace=trace)
+        if proposal is not None:
+            row["candidate_proposal"] = proposal
         row["trajectory_sha256"] = content_hash(row)
         rows.append(row)
     manifest = _map(source.bundle.manifest, "verified run manifest")

@@ -1,0 +1,78 @@
+{
+  "schema": "saea-candidate-recovery-whole-trajectory-analysis-v1",
+  "created_at": "2026-09-25T19:49:55.581805+00:00",
+  "parent_commit": "ed812d09accfc78fd7b72bac28f365f2de034658",
+  "frozen_worker_commit": "9f6a949f445e4fb308789eb0786a1a25c3fb8f69",
+  "scope": "Offline whole-system trajectory attribution; no runtime or registration change",
+  "validation": {
+    "related_tests_passed": 82,
+    "offline_gates_passed": 9,
+    "checks": [
+      {
+        "check": "engineering_base_check",
+        "exit": 0,
+        "log": "/home/chao/candidate-trajectory-validation-v1/engineering_base_check.log",
+        "log_sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+      },
+      {
+        "check": "harness_admission_check",
+        "exit": 0,
+        "log": "/home/chao/candidate-trajectory-validation-v1/harness_admission_check.log",
+        "log_sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+      },
+      {
+        "check": "results_ledger_check",
+        "exit": 0,
+        "log": "/home/chao/candidate-trajectory-validation-v1/results_ledger_check.log",
+        "log_sha256": "0426590fecc31f8de63ddacab92a3e818106a70b9c33abd048d66228c5d7b7c6"
+      },
+      {
+        "check": "tool_catalog_check",
+        "exit": 0,
+        "log": "/home/chao/candidate-trajectory-validation-v1/tool_catalog_check.log",
+        "log_sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+      },
+      {
+        "check": "experiment_handoff_check",
+        "exit": 0,
+        "log": "/home/chao/candidate-trajectory-validation-v1/experiment_handoff_check.log",
+        "log_sha256": "193f74ffad7adaa52058e1d28499a91ec5725fb5236de39bf9f952777db2035b"
+      },
+      {
+        "check": "openjiuwen_native_reuse_check",
+        "exit": 0,
+        "log": "/home/chao/candidate-trajectory-validation-v1/openjiuwen_native_reuse_check.log",
+        "log_sha256": "d8a56d3c99a711ee2e03e2d772dce9b8b38a30859951df561ce0b836602d04fd"
+      },
+      {
+        "check": "derived_media_confinement_check",
+        "exit": 0,
+        "log": "/home/chao/candidate-trajectory-validation-v1/derived_media_confinement_check.log",
+        "log_sha256": "35a0d582a071bb8e4beb2e5d22fb70407c40f8ab58c93f39ac985eb6fe072fc5"
+      },
+      {
+        "check": "stage3_algorithm_label_check",
+        "exit": 0,
+        "log": "/home/chao/candidate-trajectory-validation-v1/stage3_algorithm_label_check.log",
+        "log_sha256": "9fac0138523bbf4771cc09bd0e007add368542e30e1920608c9111a7aa8cd2aa"
+      },
+      {
+        "check": "finite_completion_policy_check",
+        "exit": 0,
+        "log": "/home/chao/candidate-trajectory-validation-v1/finite_completion_policy_check.log",
+        "log_sha256": "f82745fa49af22608b01172848d1f53e78f91f08fc16693254218ee5209cc331"
+      },
+      {
+        "check": "tests",
+        "exit": 0,
+        "log": "/home/chao/candidate-trajectory-validation-v1/tests.log",
+        "log_sha256": "6bc7b7c82cad1161c4953a163269d99a73e7ac7dc6e12e649729218aac992956"
+      }
+    ]
+  },
+  "model_contacts_added": 0,
+  "official_scorer_contacts_added": 0,
+  "active_family_partial_outcomes_read": false,
+  "learned_update_performed": false,
+  "next": "Wait for both full arms and one official scoring job each to seal; bind exact sources before the registered read"
+}

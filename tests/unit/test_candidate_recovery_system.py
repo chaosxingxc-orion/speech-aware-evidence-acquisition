@@ -239,6 +239,14 @@ def test_all_downstream_roles_consume_one_source_bound_proposal_and_keep_raw_per
         "native_episode_receipt": result.native_episode_receipt,
     }
     _verify_outputs_trace_binding((row,), records)
+    projected = _export_candidate_result(harness, result, row, records)
+    assert projected["candidate_proposal"]["receipt"] == receipt
+    assert projected["candidate_proposal"]["claim_scope"] == "verified-supply-not-semantic-use"
+    assert len(projected["candidate_proposal"]["receipt"]["contacts"]) == 6
+    missing = copy.deepcopy(row)
+    del missing["native_episode_receipt"]["candidate_proposal"]
+    with pytest.raises(ValueError, match="differs"):
+        _export_candidate_result(harness, result, missing, records)
     mutations = []
     changed = copy.deepcopy(result.native_episode_receipt)
     changed["candidate_proposal"]["contacts"].pop()
@@ -335,6 +343,11 @@ def test_finite_completion_retains_candidate_custody_and_whole_row(tmp_path, mon
     assert len(receipt["candidate_proposal"]["contacts"]) == contacts - 1
     records = {rid: payload for _, rid, payload in harness.trace.records}
     _verify_outputs_trace_binding(tuple(output), records)
+    exported = _export_candidate_result(harness, summary.results[0], output[0], records)
+    block = exported["candidate_proposal"]["receipt"]
+    assert len(block["contacts"]) == contacts - 1
+    assert len(block["proposals"]) == (0 if phase == "perception" else 1)
+    assert exported["delivery"]["kind"] == ("abstention" if phase in {"perception", "solver"} else "finite")
 
 
 def test_preparation_envelope_includes_added_cards_and_proposal_without_capacity_claim(tmp_path, monkeypatch):
@@ -359,3 +372,17 @@ def test_preparation_envelope_includes_added_cards_and_proposal_without_capacity
         assert sum("[evidence slot-contracts::" in text for text in texts) == 5
         assert sum("[evidence intent-boundaries::" in text for text in texts) == 4
         assert any("Additional exemplar-supported" in text for text in texts)
+
+
+def _export_candidate_result(harness, result, output, records):
+    from types import SimpleNamespace
+    from speech_aware_evidence_acquisition.analysis.native_episode_source import VerifiedNativeEpisodeSource
+    from speech_aware_evidence_acquisition.analysis.system_trajectory import export_system_trajectories
+    source = VerifiedNativeEpisodeSource(
+        bundle=SimpleNamespace(trace_records=records, manifest={"outputs": {"sha256": "a"*64}}),
+        composed=SimpleNamespace(config_hash="c"*64, values={"policy": harness.program.program_id}),
+        plan=harness.plan, sample_ids=("s1",),
+        phase_results={"s1": result.as_json()}, output_rows={"s1": output},
+        phase_artifact_sha256="b"*64, diagnostics={},
+    )
+    return export_system_trajectories(source)["trajectories"][0]

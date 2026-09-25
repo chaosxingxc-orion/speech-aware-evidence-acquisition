@@ -46,6 +46,30 @@ When complete, bind source hashes before using the shared official-feedback
 and system-trajectory analysis entries; no scorer replay or private executor.
 
 
+## Offline analysis prepared while the current pair runs
+
+Read docs/readiness/2026-09-25-candidate-recovery-whole-trajectory-analysis.md.
+The shared score-free export now exposes the validated proposal and its actual
+contacts across the complete continuation. Shared attribution distinguishes
+original/new coverage, first/last/delivered choices, retained/lost repairs,
+revision harms, prepared-only states and unreached rows. It retains all rows
+and per-scenario reporting. Actual supplied text does not prove semantic use;
+offline gold coverage groups must never become runtime policy states.
+
+Use terminal complete-task feedback for future coordinated continuation
+selection, not Solver-only rewards. Sample the whole continuation, freeze
+policy within a construction round, update external values after complete
+scoring, then execute again against the strongest fixed policy. Current work
+still contains no learned update or stable RL gain.
+
+Validation: 82 related tests and all nine offline gates pass in WSL. Receipt:
+docs/receipts/continuation/2026-09-25-candidate-recovery-whole-trajectory-analysis.json.
+
+This is offline analysis work in the implementation checkout. Keep the running
+worker at 9f6a949f through both full scoring jobs. No active partial outcome
+was read, no scorer/model contact was added, and no registration changed.
+
+
 ## Current prelaunch correction: exact fit and actual R01C source isolation
 
 Read docs/receipts/continuation/2026-09-25-candidate-recovery-preflight-amendment.json.

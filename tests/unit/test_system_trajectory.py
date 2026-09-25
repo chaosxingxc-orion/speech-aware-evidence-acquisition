@@ -204,3 +204,17 @@ def test_system_policy_source_disagreement_cannot_be_erased(mutation):
         source.bundle.trace_records[key]["org_system_policy_decision"] = copy.deepcopy(record)
     with pytest.raises(SystemTrajectoryError, match="policy"):
         _row(source)
+
+
+def test_legacy_source_keeps_its_pinned_trajectory_without_proposal_fields():
+    row = _row(_source())
+    assert "candidate_proposal" not in row
+    assert row["trajectory_sha256"] == "bff6b696f65a377951568ca78810f89383cbbaa16ded39ad17e6c19671bca625"
+
+
+def test_malformed_candidate_receipt_cannot_pass_through_score_free_export():
+    source = _source()
+    source.phase_results["s1"]["native_episode_receipt"]["candidate_proposal"] = {}
+    source.output_rows["s1"]["native_episode_receipt"]["candidate_proposal"] = {}
+    with pytest.raises(SystemTrajectoryError, match="proposal"):
+        _row(source)
