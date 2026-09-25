@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
+from collections.abc import Mapping
 import hashlib
 import json
 import math
@@ -380,6 +381,51 @@ def _render_source(record):
     return json.dumps(body, ensure_ascii=False, sort_keys=True)
 
 
+def bind_contact_counts(rows, trace_records, *, calls_used):
+    """Derive per-row contacts from verified single-phase request traces.
+
+    Include unsuccessful attempts and retries; preserve sealed output bytes.
+    This verifier has no tool-derived or stitched request roots.
+    """
+    if not isinstance(trace_records, Mapping):
+        raise ReadError("verifier trace records are unavailable")
+    if isinstance(calls_used, bool) or not isinstance(calls_used, int) or calls_used < 0:
+        raise ReadError("verifier generation cost is invalid")
+    contacts = Counter()
+    requests = {}
+    for record_id, envelope in trace_records.items():
+        if not record_id.endswith("/request"):
+            continue
+        payload = envelope.get("payload")
+        if (not isinstance(envelope.get("arm"), str) or
+                not isinstance(payload, Mapping)):
+            raise ReadError("verifier request trace lacks a model envelope")
+        request_id = record_id[:-len("/request")]
+        sid = payload.get("sample_id")
+        if sid not in rows or payload.get("request_id") != request_id:
+            raise ReadError("verifier request trace identity differs from the roster")
+        if request_id in requests:
+            raise ReadError("duplicate verifier request trace identity")
+        requests[request_id] = sid
+        contacts[sid] += 1
+    if sum(contacts.values()) != calls_used:
+        raise ReadError("verifier trace contacts disagree with generation cost")
+    enriched = {}
+    for sid, row in rows.items():
+        request_id = row.get("request_id")
+        if requests.get(request_id) != sid:
+            raise ReadError("verifier output lacks its own model request")
+        if f"{request_id}/response" not in trace_records:
+            raise ReadError("verifier output lacks its own model response")
+        if "contact_count" in row and (
+                isinstance(row["contact_count"], bool)
+                or not isinstance(row["contact_count"], int)
+                or row["contact_count"] != contacts[sid]):
+            raise ReadError("verifier declared contact count disagrees with trace")
+        enriched[sid] = dict(row, contact_count=contacts[sid])
+    return enriched
+
+
 def load_bound_inputs(
     *, manifest_path, source_manifest_path, receipt_path, expected_receipt_sha256,
     roster_path, score_root, scorer_id=SCORER, expected_rows=625, bundle_verifier=None,
@@ -538,6 +584,9 @@ def load_bound_inputs(
         or cost["calls_used"] < 0
     ):
         raise ReadError("verifier generation cost is missing")
+    chosen_rows = bind_contact_counts(
+        chosen_rows, chosen_bundle.trace_records, calls_used=cost["calls_used"]
+    )
     cost = {
         "calls_used": cost["calls_used"],
         "contacts_per_row": cost["calls_used"] / len(ids),
@@ -555,6 +604,7 @@ def load_bound_inputs(
             cost["gpu_active_hours"] = active / 3600
     bindings = {
         "verifier_run_id": expected_run_id,
+        "contact_count_source": "verified_model_request_trace",
         "verifier_manifest_sha256": sha256_file(manifest_path),
         "source_manifest_sha256": sha256_file(source_manifest_path),
         "permutation_receipt_sha256": sha256_file(receipt_path),

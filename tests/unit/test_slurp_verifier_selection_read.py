@@ -160,9 +160,22 @@ def test_bound_file_read_and_no_overwrite(tmp_path, registered_run):
     source_bundle=SimpleNamespace(
         manifest={"status":"COMPLETED","split":{"role":"discovery"},"run_id":"SOURCE"},
         attempt_state="FINALIZED",split_ids=frozenset(ids),outputs_rows=tuple(source_rows))
+    trace_records = {}
+    verifier_rows = []
+    for n, sid in enumerate(ids):
+        request_id = f"flight-{n:04d}"
+        row = {key: value for key, value in verifier[sid].items() if key != "contact_count"}
+        row["request_id"] = request_id
+        verifier_rows.append(row)
+        trace_records[f"{request_id}/request"] = {
+            "arm": "choice", "payload_sha256": "1" * 64,
+            "payload": {"sample_id": sid, "request_id": request_id},
+        }
+        trace_records[f"{request_id}/response"] = {"text": row["text"]}
     verifier_bundle=SimpleNamespace(
         manifest={"status":"COMPLETED","split":{"role":"discovery"},"run_id":registered_run},
-        attempt_state="FINALIZED",split_ids=frozenset(ids),outputs_rows=tuple(verifier.values()))
+        attempt_state="FINALIZED",split_ids=frozenset(ids),outputs_rows=tuple(verifier_rows),
+        trace_records=trace_records)
     def fake_verify(path):
         return source_bundle if Path(path)==source_manifest else verifier_bundle
     kwargs=dict(manifest_path=manifest,source_manifest_path=source_manifest,
@@ -174,6 +187,9 @@ def test_bound_file_read_and_no_overwrite(tmp_path, registered_run):
     report=read.run(**kwargs)
     assert report["bindings"]["verifier_run_id"] == registered_run
     assert report["rows"]==5
+    assert report["choice"]["one_contact_every_row"] is True
+    assert report["bindings"]["contact_count_source"] == "verified_model_request_trace"
+    assert all("contact_count" not in row for row in verifier_rows)
     assert (tmp_path/"report"/"report.json").exists()
     assert "chosen_position" not in (tmp_path/"report"/"report.md").read_text()
     with pytest.raises(read.ReadError,match="already exists"):
@@ -194,3 +210,43 @@ def test_bound_file_read_and_no_overwrite(tmp_path, registered_run):
     with pytest.raises(read.ReadError, match="run ID"):
         read.run(**kwargs)
     assert not kwargs["out_root"].exists()
+
+
+def test_trace_contact_counts_include_retries_without_mutating_output():
+    rows = {"s1": {"sample_id": "s1", "request_id": "b", "text": "answer"}}
+    trace = {
+        "a/request": {"arm": "choice", "payload_sha256": "1" * 64,
+                      "payload": {"sample_id": "s1", "request_id": "a"}},
+        "b/request": {"arm": "choice", "payload_sha256": "2" * 64,
+                      "payload": {"sample_id": "s1", "request_id": "b"}},
+        "b/response": {"text": "answer"},
+    }
+    enriched = read.bind_contact_counts(rows, trace, calls_used=2)
+    assert enriched["s1"]["contact_count"] == 2
+    assert "contact_count" not in rows["s1"]
+
+
+@pytest.mark.parametrize("fault", ["missing_trace", "wrong_sample", "wrong_request",
+                                  "wrong_total", "declared_mismatch", "duplicate_request"])
+def test_trace_contact_counts_refuse_invalid_bindings(fault):
+    rows = {"s1": {"sample_id": "s1", "request_id": "a", "text": "answer"}}
+    trace = {
+        "a/request": {"arm": "choice", "payload_sha256": "1" * 64,
+                      "payload": {"sample_id": "s1", "request_id": "a"}},
+        "a/response": {"text": "answer"},
+    }
+    total = 1
+    if fault == "missing_trace":
+        del trace["a/request"]
+    elif fault == "wrong_sample":
+        trace["a/request"]["payload"]["sample_id"] = "other"
+    elif fault == "wrong_request":
+        rows["s1"]["request_id"] = "other"
+    elif fault == "wrong_total":
+        total = 2
+    elif fault == "declared_mismatch":
+        rows["s1"]["contact_count"] = 2
+    else:
+        trace["b/request"] = trace["a/request"]
+    with pytest.raises(read.ReadError):
+        read.bind_contact_counts(rows, trace, calls_used=total)
