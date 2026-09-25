@@ -7,6 +7,7 @@ stage 1, pure move, no behaviour change).
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -242,6 +243,50 @@ class SessionReceipt:
         ).validate()
 
 
+def archived_session_receipt_path(path: Path, sha256: str) -> Path:
+    """The only archival location for bytes formerly held at a session path."""
+    if not isinstance(sha256, str) or _SHA256.fullmatch(sha256) is None:
+        raise SessionError("session receipt archive requires a 64-hex sha256")
+    path = Path(path)
+    return path.parent / f"{path.name}.archive" / f"{sha256}.json"
+
+
+def _archive_existing_session_receipt(path: Path) -> None:
+    """Durably retain exact prior bytes before replacing a resident receipt."""
+    try:
+        prior = path.read_bytes()
+    except FileNotFoundError:
+        return
+    digest = hashlib.sha256(prior).hexdigest()
+    archive = archived_session_receipt_path(path, digest)
+    try:
+        archive.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            fd = os.open(archive, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        except FileExistsError:
+            if archive.read_bytes() != prior:
+                raise SessionError(
+                    f"session receipt archive collision or tampering at {archive}"
+                )
+            return
+        try:
+            with os.fdopen(fd, "wb") as stream:
+                stream.write(prior)
+                stream.flush()
+                os.fsync(stream.fileno())
+        except BaseException:
+            archive.unlink(missing_ok=True)
+            raise
+        # Archive creation must precede replacement even across a crash.
+        directory_fd = os.open(archive.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
+    except OSError as error:
+        raise SessionError(f"cannot archive prior session receipt {path}: {error}") from error
+
+
 def write_session_receipt(path: Path, receipt: SessionReceipt) -> Path:
     """Atomic (temp-file + ``os.replace``) write, mirroring
     ``core.attempts.AttemptHandle._write``. Session receipts are RUN
@@ -255,12 +300,15 @@ def write_session_receipt(path: Path, receipt: SessionReceipt) -> Path:
     raw = json.dumps(receipt.as_json(), ensure_ascii=False, sort_keys=True, indent=2)
     try:
         tmp.write_text(raw, encoding="utf-8", newline="\n")
+        _archive_existing_session_receipt(path)
         os.replace(tmp, path)
-    except OSError as error:
+    except (OSError, SessionError) as error:
         try:
             tmp.unlink()
         except OSError:
             pass
+        if isinstance(error, SessionError):
+            raise
         raise SessionError(f"cannot persist session receipt {path}: {error}") from error
     return path
 

@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Mapping
 
 from . import BundleError
+from ..session.receipt import archived_session_receipt_path
 
 
 @dataclass(frozen=True)
@@ -80,11 +81,27 @@ def _verify_artifact(meta: object, label: str, *, confine_to: Path | None = None
                 "bound into this manifest"
             )
         artifact_path = resolved
-    raw = _read_bytes(artifact_path, label)
-    actual = hashlib.sha256(raw).hexdigest()
-    if actual != meta["sha256"]:
-        raise BundleError(
-            f"{label} hash mismatch: manifest records {meta['sha256'][:12]}..., actual "
-            f"on-disk bytes hash to {actual[:12]}... ({meta['path']})"
-        )
-    return raw
+    try:
+        raw = _read_bytes(artifact_path, label)
+    except BundleError:
+        if label != "session receipt" or confine_to is not None:
+            raise
+        raw = None
+    actual = hashlib.sha256(raw).hexdigest() if raw is not None else None
+    if actual == meta["sha256"]:
+        return raw
+    if label == "session receipt" and confine_to is None:
+        # Resident session paths can be replaced at restart. Only this artifact
+        # may resolve its original manifest hash from the defined sibling archive.
+        try:
+            archive = archived_session_receipt_path(artifact_path, meta["sha256"])
+        except ValueError as error:
+            raise BundleError(f"invalid archived session receipt hash: {error}") from error
+        archived = _read_bytes(archive, "archived session receipt")
+        if hashlib.sha256(archived).hexdigest() != meta["sha256"]:
+            raise BundleError(f"archived session receipt hash mismatch at {archive}")
+        return archived
+    raise BundleError(
+        f"{label} hash mismatch: manifest records {meta['sha256'][:12]}..., actual "
+        f"on-disk bytes hash to {actual[:12]}... ({meta['path']})"
+    )
