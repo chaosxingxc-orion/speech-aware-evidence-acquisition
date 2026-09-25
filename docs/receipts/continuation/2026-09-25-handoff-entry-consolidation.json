@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "kind": "handoff-entry-consolidation",
+  "recorded_at": "2026-09-25T20:38:21.415251+00:00",
+  "base_commit": "63b1bb66d612fc4dfba70beaf1f6a72537b8b801",
+  "entry_path": "docs/handoff/HANDOFF-TO-FABLE51.md",
+  "entry_sha256": "5d88d72bb390480922bf954f889e8b179d574e166d7b66ecb2db752e8e7f354e",
+  "entry_lines": 184,
+  "archive_path": "docs/handoff/archive/2026-09-25-HANDOFF-TO-FABLE51-through-63b1bb66.md",
+  "archive_sha256": "f9715df89823eea234a22149bf837ad89f4e30bc523b91f9a7438a736a4477f8",
+  "archive_lines": 914,
+  "archive_matches_parent_git_blob": true,
+  "relative_links_verified": 16,
+  "operational_snapshot": {
+    "path": "/home/chao/handoff-compaction-status-v1.json",
+    "sha256": "dc9d36f409ba51a92b6b757f9e427356acceed5615a73b486c93183c870d915d"
+  },
+  "frozen_worker_commit": "9f6a949f445e4fb308789eb0786a1a25c3fb8f69",
+  "runtime_or_registration_changed": false,
+  "task_outcomes_read": false,
+  "validation": [
+    "archive byte equality against parent Git blob",
+    "all relative links resolve",
+    "English-only mutable entry",
+    "git diff --check",
+    "experiment_handoff_check.py exit 0; expected old-snapshot/owned-change warnings"
+  ]
+}
