@@ -19,14 +19,31 @@ and final delivery; terminal score data is separate from actor context. The
 delivery-normalization diagnostic now uses the existing deterministic replay
 validator. New engineering evidence is model-free, not an algorithm gain.
 Current F10 remains on its frozen checkout and independent background chain.
-Whole-system reader validation: 94 focused/legacy tests passed in WSL, three
-targeted engineering gates passed, and the real completed control's score-stage
-metadata matched the new custody check without reading answers or task metrics.
-Receipt: docs/receipts/continuation/2026-09-25-system-trajectory-feedback.json.
-A real complete trajectory/feedback export still waits for its authorized read;
-tests and metadata validation are not a quality or algorithm-gain claim.
+Whole-system reader validation is now complete on real sealed PLAN and PLANR:
+both 625-row trajectories exported and source-bound, followed by offline attribution.
+Every delivered exact-entity count and intent indicator matched sealed official rows.
+Read docs/results/2026-09-25-slurp-system-trajectory-attribution.md and
+docs/receipts/continuation/2026-09-25-system-trajectory-attribution.json.
 
-Current execution verified 2026-09-25 at 12:05 UTC (05:05 Seattle).
+Root findings: only 32/31 rows reached a subsequent Solver; 29/481 and 26/478
+initially wrong strict answers were revised. Reasoning repaired 2/7 fully wrong
+answers and harmed 2/4 correct ones. All nine full repairs survived delivery.
+The current bottleneck is repair reach/effectiveness and offsetting harms, not
+observed erasure of successful full repairs. These are exact-task diagnostics,
+not official SLU-F1 or a counterfactual review ablation.
+
+Every first Reviewer received the same speech packet and evidence IDs as Solver.
+All 657/656 Reviewer requests retained a mandatory task-contract call instruction
+with zero exposed tool schemas. Fixing that interface is engineering; restoring
+the old duplicated-contract tool is not automatically useful information.
+
+Prior R-PRIM, B7a, B8b and B9a outcomes constrain the next family. In particular,
+B9a acquired zero items in all 18 acquisitions. Require a whole-roster proof that
+new evidence exists, survives filtering and reaches the next node before a new
+full-system intervention. Do not rename and rerun those old treatments.
+
+
+Current execution verified 2026-09-25 at 12:39 UTC (05:39 Seattle).
 This is the living record. Superseded snapshots remain in Git history through
 fe0d0ee2 and are not live instructions. Preserve immutable records and verdicts.
 
@@ -80,8 +97,8 @@ BOTH sealed arms and pinned sources.
   Five finite completions and one revision-limit disposition remain in the roster.
 - Treatment started 12:05:11 UTC on the same frozen service after a passing
   prelaunch check. The compact status reports OPENED with no full manifest.
-- Service healthy at transition, 22,988 MiB resident; the sampled idle slots/GPU
-  do not establish ongoing inactivity or continuous utilization.
+- At 12:39 UTC the service was healthy, 22,988 MiB resident, all four slots busy,
+  GPU utilization 86%. This is one sample, not continuous utilization.
   The service-wide request counter is not an arm-completed-row count.
 - Frozen flight: /home/chao/saea-worktrees/fable-batch-flight,
   commit 54b6e151481129f4e1915c37f42a88ade687930b through generation AND scoring.
@@ -240,10 +257,10 @@ The complete-system design above supersedes the older supply-only progression.
 1. Seal both F10 arms, bind sources, read the registered comparison. Retain the
    old representation if unqualified; replicate a positive result before stable
    adoption. Do not change this running experiment.
-2. Validate complete trajectory export on admitted sealed sources. Root identifies
-   the failure chain across candidate generation, evidence supply/consumption,
-   review, planning, revision and delivery. Preserve terminal failures and unknown
-   instrumentation. Do not infer causality from a retrospective subgroup.
+2. The PLAN/PLANR complete trajectory read is done. Use the linked full-system
+   attribution to prepare the next evidence acquisition/repair policy. Preserve
+   terminal failures and unknown instrumentation. Do not infer causality from the
+   descriptive wrong-row classes or copy them into runtime state.
 3. Admit a small set of coherent system policies from named evidence deficits.
    Use matched combinations to measure interactions, rather than a large Cartesian
    product of independent component knobs. Compare every policy's full terminal

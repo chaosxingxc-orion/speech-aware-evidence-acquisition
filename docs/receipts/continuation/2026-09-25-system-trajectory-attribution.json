@@ -1,0 +1,47 @@
+{
+  "schema": "saea-model-free-analysis-receipt-v1",
+  "recorded_at_utc": "2026-09-25T12:42:37.259339+00:00",
+  "read_run_id": "SAEA-SLURP-STAGE3-SYSTEM-TRAJECTORY-READ-V1",
+  "source_commit": "3ade29ffe2342ee65de47b6913990bd15fdcc24d",
+  "analysis_base_commit": "8839c28190d0df91d8ae323b87969e534ec0856c",
+  "source_sha256": {
+    "scripts/analysis/slurp_system_trajectory_read.py": "96212b0397056723221390ca77309bf639957cbf7b8e1337257c6c2f27df0a17",
+    "src/speech_aware_evidence_acquisition/analysis/slurp_system_attribution.py": "b8e14a983749b12c00513f772a38069421d4fa3206e3a61369b71f3c07aa5502",
+    "tests/unit/test_slurp_system_attribution.py": "477daed2dbfcdb51d0f27133b07c7486dab816f392fef7f9e74e775b40877bc2",
+    "docs/readiness/2026-09-25-stage3-system-trajectory-read-v1.json": "5ada13742d3cb28e94c6cb675bf6f595cac153059b6eac6b331b17f296cb6b45",
+    "docs/results/2026-09-25-slurp-system-trajectory-attribution.md": "03ab1c3c7b65f316d379706d6487c9ebf84f0e0e16dad7f5e84e650828ed1223"
+  },
+  "outputs": {
+    "plan-system-feedback.json": "80d53a8f4728bccf4b932ffc1ae8a2e98ae05eb1f73acd343f1d60f0835537f1",
+    "planr-system-feedback.json": "2fcbe5e92771c752ef5fb986736a1089644a884cb315e27d5be5137487ef8f0b",
+    "attribution.json": "494ae8788e41d741960e7bf5b5bce30dc37fd742cb04361c8de2f210da9a3db5",
+    "cross-node-summary.json": "cfb44d1fd6a77ccb3476cb64d1df1459531ebc572630897e9e67b0865ed3bb44"
+  },
+  "analysis_root": "analysis/SAEA-SLURP-STAGE3-SYSTEM-TRAJECTORY-READ-V1",
+  "validation": {
+    "complete_rows_per_arm": 625,
+    "source_verifier": "PASS both complete sealed sources",
+    "official_delivered_exact_counts_and_intent": "PASS every row in both arms",
+    "tests": "6 passed in 0.13 seconds",
+    "engineering_base_check": "PASS",
+    "cli_help": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "root_interpretation": "Sparse and weak revision with offsetting harms; all nine strict full-task reasoning repairs survived delivery. No algorithm or causal-effect claim.",
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "scorer": 0,
+    "server": 0,
+    "network": 0
+  },
+  "active_f10_checkout_modified": false,
+  "limits": [
+    "Strict intermediate exactness is not official SLU-F1.",
+    "Same exposed construction roster repeated; no fresh generalization.",
+    "Whole-trajectory changes do not establish a counterfactual causal effect.",
+    "No F10 task outcome, fresh DEV or test was read.",
+    "No policy or new GPU family admitted."
+  ]
+}
