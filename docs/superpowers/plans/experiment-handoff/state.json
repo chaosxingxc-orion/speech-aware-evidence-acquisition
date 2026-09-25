@@ -11,8 +11,8 @@
   "owner_decision_id": "OWNER-CONTINUATION-20260925",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-20260925.md",
   "snapshot_commit": "3727565cdedd2b26414e55314009613b74fbf5b9",
-  "updated_at_utc": "2026-09-25T06:11:02.283473+00:00",
-  "next_action": "Complete VAR-1 under the detached local queue; seal own-null before variant reads; resolve exact historical receipt custody and finish VERIFY-1 readiness before contact.",
+  "updated_at_utc": "2026-09-25T06:39:12.558283+00:00",
+  "next_action": "Independent VAR-1 final arm is running; admitted VERIFY-1 successor waits in a local Scheduled Task. Inspect sealed family and selector analyses, then root decides VAR-2/F10 and finite action policy work.",
   "launch_allowed": false,
   "launch_allowed_semantics": "Coordination state never authorizes launch; each registered ExecutionPlan remains independently gated.",
   "handoff_package": "docs/handoff/HANDOFF-TO-FABLE51.md",
@@ -23,7 +23,10 @@
   "active_source_worktree": "/home/chao/saea-worktrees/fable-batch-flight",
   "implementation_worktree": "/home/chao/saea-worktrees/codex-stage3-continuation-20260925",
   "generation_active": true,
-  "current_flight_status": "VAR1_PER_K16C5_RUNNING; local scheduled task; observed 2026-09-25T06:08Z",
+  "current_flight_status": "VAR1_PER_K16C5_RUNNING; VERIFY1_SUCCESSOR_WAITING; observed 2026-09-25T06:38Z",
   "owner_gpu_direction": "Local WSL GPU authorization active. No dependency on network or assistant credits; no automatic replay after interruption.",
-  "owner_research_direction": "SLURP system actions followed by bounded training-free full-system feedback learning; no fresh DEV or test exposure."
+  "owner_research_direction": "SLURP system actions followed by bounded training-free full-system feedback learning; no fresh DEV or test exposure.",
+  "implementation_status": "Merged independent execution, feedback helpers, supply custody, selector path/reader, historical receipt recovery and ready VERIFY1 configuration.",
+  "successor_flight_commit": "14ee125cc81dfa50bd15414a097c96209fbb0d90",
+  "successor_task": "SAEA-VERIFY1-Continuation-20260925"
 }

@@ -187,8 +187,8 @@ checks. Actual-request fit remains mandatory inside the scheduled worker/campaig
 scripts/flights/batch/batch_chain_verify1.sh waits for all six VAR-1 steps and
 FINALIZED attempts, preserves its queue/status, switches the frozen flight checkout
 at the boundary, then uses the existing batch driver for VERIFY-1 smoke and full
-625. The explicit flight commit is /home/chao/verify1-flight-commit.txt. A uniquely
-named Scheduled Task will own this chain; no Codex heartbeat or live assistant is
+625. The explicit flight commit is /home/chao/verify1-flight-commit.txt. The running Scheduled Task
+SAEA-VERIFY1-Continuation-20260925 owns this chain; no Codex heartbeat or live assistant is
 in the execution path. VAR-1's registered analysis runs concurrently on CPU and
 VERIFY-1's sealed-count reader runs after its completed manifest. Any driver
 failure stops the chain. VAR-2/F10 and adaptive policy experiments are not queued
@@ -209,3 +209,30 @@ gain. Preserve original planned contrasts and add interpretation against the
 replicate in the complete family read. Scenario/equal-weight tables remain pending
 that read; no final family verdict has been issued. Do not transfer the pooled
 half-width to mean row-F1, ROLL-AA, or the selector's own contrast variance.
+
+## Last verified execution snapshot: 2026-09-25 06:38 UTC
+
+- SAEA-Serving and SAEA-Monitor are running as independent host tasks.
+- SAEA-VAR1-Unopened-20260925 is running the final arm; its attempt is OPENED.
+  The five completed arms remain skipped. Latest observed GPU utilization: 93%.
+- SAEA-VERIFY1-Continuation-20260925 is running and waiting locally for VAR-1.
+  Its frozen successor commit is 14ee125cc81dfa50bd15414a097c96209fbb0d90.
+- All four host tasks have RunOnlyIfNetworkAvailable=false and no execution
+  time limit. The GPU path calls the local service, not a ChatGPT/OpenAI API.
+- Two orchestration-only prelaunch refusals are preserved: an embedded queue
+  newline syntax error, corrected before any queue mutation, and an initial
+  successor-task launch before its pin file finished writing. Neither opened
+  a model attempt or repeated an experiment. The pin file now exists and the
+  successor is waiting normally.
+- Further branch selection remains root work after sealed results. The detached
+  scripts do not invent a new experiment, update a policy mid-round, or continue
+  beyond a failure or unresolved scientific decision.
+
+Routine status (no subagent): run scripts/flights/batch/continuation_status.py
+with --queue /home/chao/batch-queue.json, --status /home/chao/batch-status.jsonl,
+--data-root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data,
+--stop-marker /home/chao/batch-STOP, --check-processes,
+--driver-script /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh,
+and --session-id serving-slurp-native-candidate-five-train-a-np4-v1.
+The successor task log is /home/chao/batch-chain-verify1.out. Inspect facts and
+errors via scripts; do not repeatedly read model output or invoke a monitoring LLM.
