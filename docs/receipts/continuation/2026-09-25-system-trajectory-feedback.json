@@ -1,0 +1,49 @@
+{
+  "schema": "saea-model-free-implementation-check-v1",
+  "recorded_at_utc": "2026-09-25T12:17:06.190198+00:00",
+  "base_commit": "1996e2dd0d0d6da82efbaf8db38e5d8ccf0d800b",
+  "scope": "Complete native system trajectory export, separate official TRAIN terminal feedback, and source-bound score finalization. No new GPU family.",
+  "source_sha256": {
+    "src/speech_aware_evidence_acquisition/analysis/system_feedback.py": "227078974bb6f3bcf9c002b81564b48397152a0328d42889c2cb6cfc1015be39",
+    "src/speech_aware_evidence_acquisition/analysis/system_trajectory.py": "2034ca654a2e12f726eb605b5c7a780a4ac2220a32d1938812cc40494468a7a9",
+    "src/speech_aware_evidence_acquisition/analysis/native_episode_diagnostics.py": "1146a0b2bb377053aea326df23d68d1dca7686b7129fbbb4f50627cc1cb20f44",
+    "scripts/analysis/export_system_feedback.py": "52716759ae22dab06b747b0dbfef4f85b0b01b24161b4568d5e8305ed0b78d0a",
+    "tests/unit/test_system_feedback.py": "6fee40f9f01cf9ada790bf6e6103dd02c245bc6722e8fa72ebab2df6e556bd97",
+    "tests/unit/test_system_trajectory.py": "674e55ac52f3885c9e2d3adafc29fd9cfe433c206deb792d7970430d2c61df4a",
+    "tests/unit/test_native_episode_diagnostics_normalisation.py": "61cc75d9777421e0d4c3e4fe23017cea6510cddf46aff6f19bbc81bd26610f08"
+  },
+  "tests": {
+    "command": "python -B -m pytest tests/unit/test_system_feedback.py tests/unit/test_system_trajectory.py tests/unit/test_native_episode_diagnostics_normalisation.py tests/unit/test_native_episode_source.py tests/unit/test_native_episode_diagnostics.py tests/unit/test_slurp_native_system_diagnostics_cli.py tests/unit/test_native_episode_runner_deliver_normaliser.py tests/unit/test_deliver_normaliser_custody.py -q --show-capture=no --tb=short",
+    "passed": 94,
+    "third_party_deprecation_warnings": 3,
+    "duration_seconds": 9.1,
+    "coverage_measured": false
+  },
+  "offline_checks": {
+    "engineering_base_check": "PASS",
+    "stage3_algorithm_label_check": "PASS",
+    "finite_completion_policy_check": "PASS",
+    "cli_help": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "completed_source_metadata_check": {
+    "run_id": "SAEA-SLURP-STAGE3-F10-CONTROL-R01C-V1",
+    "attempt_id": "attempt-slurp-native-stage3-f10-control-r01c-v1-generation",
+    "status": "PASS",
+    "scope": "Completed flight score-job/score-stage custody metadata only",
+    "answer_rows_read": false,
+    "task_metrics_read": false
+  },
+  "review": "Root implementation/review with independent bounded read-only review. Fixed missing score-job-to-flight custody and exposed known terminal exception references.",
+  "limits": [
+    "No real full trajectory/feedback export has run yet; authorized paired F10 result read remains pending.",
+    "Full source verifier integration has separate coverage; feedback fixtures mock its returned verified source.",
+    "Whole-system export indexes original sources; it does not infer unrecorded state or consumption.",
+    "Policy-action credit and action-not-reached learning semantics remain unadmitted.",
+    "No stable learned algorithm gain has been demonstrated.",
+    "Historical ledger gate findings remain; only the named targeted gates were run."
+  ],
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "active_f10_checkout_modified": false
+}

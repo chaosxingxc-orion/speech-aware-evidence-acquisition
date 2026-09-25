@@ -1,17 +1,47 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
-Current execution verified 2026-09-25 at 11:34 UTC (04:34 Seattle).
+## Owner steering: optimize complete system trajectories
+
+The owner clarified on 2026-09-25 that Stage-3 must optimize the complete agentic
+system and its cross-node decisions. A local component improvement can disappear
+after downstream review, revision or delivery. Terminal reward alone does not
+make a single Solver supply knob a sufficient system optimization space.
+
+The finite supply bandit is retained as a restricted comparator. The next research
+boundary is complete trajectory collection, root-owned cross-node attribution,
+then a small coordinated system action space with full terminal evaluation.
+Read docs/readiness/2026-09-25-stage3-system-trajectory-optimization.md before
+interpreting the older finite-policy sequence below.
+
+Shared full-system trajectory export and sealed official TRAIN feedback join are
+implemented. They preserve all roles, tools, state/transition references, fallback
+and final delivery; terminal score data is separate from actor context. The
+delivery-normalization diagnostic now uses the existing deterministic replay
+validator. New engineering evidence is model-free, not an algorithm gain.
+Current F10 remains on its frozen checkout and independent background chain.
+Whole-system reader validation: 94 focused/legacy tests passed in WSL, three
+targeted engineering gates passed, and the real completed control's score-stage
+metadata matched the new custody check without reading answers or task metrics.
+Receipt: docs/receipts/continuation/2026-09-25-system-trajectory-feedback.json.
+A real complete trajectory/feedback export still waits for its authorized read;
+tests and metadata validation are not a quality or algorithm-gain claim.
+
+Current execution verified 2026-09-25 at 12:05 UTC (05:05 Seattle).
 This is the living record. Superseded snapshots remain in Git history through
 fe0d0ee2 and are not live instructions. Preserve immutable records and verdicts.
 
 ## Read this first
 
-- F10 is RUNNING: fresh control625 OPENED, no full manifest; treatment625 follows.
-  Do not read partial outcomes. No owner decision blocks the independent chain.
+- F10 is RUNNING: control625 completed, finalized and passed the operational
+  inspection at 12:04:44 UTC; treatment625 started automatically at 12:05:11 UTC.
+  No task scores were read. Paired analysis waits for both complete arms.
+  No owner decision blocks the independent chain.
 - VAR-1 and VERIFY-1 are complete, without a stable supply winner or proven
   selector benefit. VAR-2 is CLOSED after its only recovery also failed.
-- Finite policy integration passes 118 tests, but no formal policy GPU cell has
-  run. Complete sealed terminal-feedback integration and admission next.
+- Finite policy integration passes 118 tests; no formal policy GPU cell has run.
+  Shared complete-system export and sealed official TRAIN feedback now exist.
+  Root-owned cross-node attribution and system action admission come next.
+  Policy-decision credit, including action-not-reached rows, remains unadmitted.
 - The stable full-system training-free optimization objective remains open.
 - Use scripts for progress, root for interpretation. Keep one continuation
   implementation worktree and merge reviewed chunks promptly into master.
@@ -44,9 +74,15 @@ Each full arm receives one complete official score. Paired analysis waits for
 BOTH sealed arms and pinned sources.
 
 - Smoke passed 10:48:43 UTC, 16 generation contacts.
-- Control started 10:48:53 UTC; OPENED at last check, not yet a complete result.
-- Latest sample: service healthy, GPU 95%, 22,988 MiB, 3/4 occupied slots.
-  This is not continuous utilization or a completed-row count.
+- Control started 10:48:53 UTC and exited successfully at 12:04:40 UTC.
+  Operational inspection at 12:04:44 found FINALIZED, COMPLETED, 625 distinct
+  outputs and one score job. Generation cost: 2,585 calls. No task metrics read.
+  Five finite completions and one revision-limit disposition remain in the roster.
+- Treatment started 12:05:11 UTC on the same frozen service after a passing
+  prelaunch check. The compact status reports OPENED with no full manifest.
+- Service healthy at transition, 22,988 MiB resident; the sampled idle slots/GPU
+  do not establish ongoing inactivity or continuous utilization.
+  The service-wide request counter is not an arm-completed-row count.
 - Frozen flight: /home/chao/saea-worktrees/fable-batch-flight,
   commit 54b6e151481129f4e1915c37f42a88ade687930b through generation AND scoring.
 - Launcher 7897d37ffa6a2200717af213cc82f0aed61e307c only adds explicit
@@ -199,30 +235,38 @@ docs/receipts/continuation/2026-09-25-finite-policy-runtime-integration.json.
 
 ## Next execution and algorithm plan
 
-1. Seal both F10 arms, bind their hashes, read the registered comparison.
-   Retain old representation if unqualified; require matched replication before
-   claiming stable adoption of a positive result.
-2. Join sealed full terminal trajectories and complete official counts to policy
-   decision receipts; write immutable next-round snapshots. Dataclass validity
-   alone is not source-seal proof. Do not update from partial/evaluation feedback.
-3. Admit a small action set from ordinary full-system evidence: unchanged default
-   always remains; examples10, examples30 and diversity require root review of
-   weak separation and diversity harm. F10 representation stays globally fixed.
-   VAR-2 side branches are not full-system returns.
-4. Register real all-action request capacity covering the WHOLE revision horizon,
-   four-row engineering proof, configuration, schedule, plans and budgets.
-   Reuse the independent queue and frozen runtime at the next boundary.
-5. Two complete R01C construction rounds: near-balanced random first, then 80%
-   preferred/20% uniform. Policy stays frozen within a round; score complete
-   trajectories and update cumulative external values only between rounds.
-   State/action support below 20 uses global fallback.
-6. Freeze policy and disable exploration on authorized exposed regression.
-   Compare locked default, best fixed action and learned policy. Register matched
-   replication before stable-gain claims.
-7. Implement same-space scholarly baselines: MemRL-style value/memory updates and
-   complete TF-GRPO grouped sampling, feedback, experience update, re-execution.
-   Manual prompt changes are engineering, not algorithm gain. Extend to multi-step
-   Reviewer/Planner when information-gain evidence supports it; other tasks follow.
+The complete-system design above supersedes the older supply-only progression.
+
+1. Seal both F10 arms, bind sources, read the registered comparison. Retain the
+   old representation if unqualified; replicate a positive result before stable
+   adoption. Do not change this running experiment.
+2. Validate complete trajectory export on admitted sealed sources. Root identifies
+   the failure chain across candidate generation, evidence supply/consumption,
+   review, planning, revision and delivery. Preserve terminal failures and unknown
+   instrumentation. Do not infer causality from a retrospective subgroup.
+3. Admit a small set of coherent system policies from named evidence deficits.
+   Use matched combinations to measure interactions, rather than a large Cartesian
+   product of independent component knobs. Compare every policy's full terminal
+   outcome with the locked system and strongest fixed system policy.
+4. Register full-horizon real request capacity, four-row engineering proof,
+   configuration, complete trajectory schedules, plans and budgets. Reuse the
+   independent queue and freeze runtime at the next execution boundary.
+5. Complete full-system sampling -> terminal feedback -> external memory/policy
+   update -> re-execution. Freeze policies within each construction round; log
+   pre-action states and true selection propensities. Multi-step credit requires
+   an explicit estimator, not the same terminal scalar blindly copied to all nodes.
+6. Run same-space scholarly baselines: MemRL-style external utility updates and
+   full Training-Free GRPO grouped trajectories, feedback, experience update and
+   re-execution. Keep the finite supply contextual bandit as a restricted comparator.
+   Its existing two-round balanced then 80/20 schedule is an engineering proposal,
+   not the entire Stage-3 optimization space.
+7. Freeze learning for authorized exposed regression, compare complete policies,
+   and replicate before stable-gain claims. Other datasets follow a stable SLURP
+   system; fresh DEV/test stay closed.
+
+The existing finite-policy implementation still needs decision/terminal-source
+credit and explicit action-not-reached handling before a formal admission. Do not
+drop terminal rows, fabricate actions, or repurpose closed VAR-2 as a new run.
 
 The first baseline is MemRL-inspired contextual bandit, not faithful MemRL or
 multi-step RL. Read docs/readiness/2026-09-25-training-free-rl-baseline-fidelity.md.

@@ -1,5 +1,12 @@
 # Finite action policy: pre-action state and full-system return
 
+Owner scope clarification: this is a restricted single-action comparator.
+The main Stage-3 objective is complete system policy optimization, as specified
+in 2026-09-25-stage3-system-trajectory-optimization.md. A full-system terminal
+reward does not by itself broaden the action space beyond Solver supply.
+Preserve this baseline, but do not report it as sufficient coverage of system RL.
+
+
 Status: root design continuation; no model-contact authorization in this note.
 VAR-2 is closed after its sole recovery failed and supplies no matched-prefix
 result. The action set and contact identities will be registered after F10
@@ -153,11 +160,13 @@ implemented. See 2026-09-25-finite-policy-runtime-integration.md and the corresp
 implementation receipt. This is model-free engineering evidence; the algorithm
 registry remains planned until a registered formal cell executes.
 
-Remaining integration is the source-bound terminal official-feedback join,
-immutable round-update entry point, all-action request capacity registration and
-formal family admission. The official reader must verify sealed files and the
-complete roster before constructing the in-memory round descriptor. A Python
-dataclass or a field saying complete is not artifact-seal verification.
+The shared full-system official-feedback reader now verifies complete sealed
+sources, finalized score custody, exact populations and pooled counts. See
+2026-09-25-stage3-system-trajectory-optimization.md. Remaining restricted-baseline
+work is its policy-decision credit join (including episodes ending before the
+action), immutable round-update entry point, complete-horizon request capacity and
+formal admission. Numeric dataclass validity alone is not artifact-seal proof.
+This restricted comparator does not replace the full-system optimization plan.
 
 Round1 uses balanced sampling without replacement in fixed roster order.
 Choose the remainder-action allocation reproducibly before the round, then
