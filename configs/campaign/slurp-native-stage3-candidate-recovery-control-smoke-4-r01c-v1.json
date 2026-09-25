@@ -1,0 +1,9 @@
+{
+  "schema": "saea-campaign-plan-v1",
+  "cells": [
+    {
+      "experiment": "slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-v1",
+      "cell": "slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-v1"
+    }
+  ]
+}

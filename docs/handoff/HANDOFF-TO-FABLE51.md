@@ -1,5 +1,44 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
+## Current boundary: candidate-recovery registered and prepared; clean preflight next
+
+The complete-system F4 pair and both engineering smoke4 cells are registered
+under docs/readiness/2026-09-25-slurp-stage3-candidate-recovery-v1/.
+Read the sibling pre-registration and the registration receipt under
+docs/receipts/continuation/. The shared source route, native graph and seal
+implementation is already merged. New common role prompts use a coherent
+proposal throughout Solver, independent Reviewer, Planner and revision.
+
+Fresh original-only and expanded policies share all runtime choices except
+the registered proposal mode. The expanded mode preserves original candidates
+and adds labels from the actual twenty retrieved examples to a total cap8,
+with released intent distinctions and at most24 additional slot cards.
+Canonical plain rendering and strict real request fit are explicit in both.
+This is a coordinated whole-system fixed-policy comparison, not local node
+gain or an RL update. Terminal official pooled F1 and intent protection decide.
+
+Eight source-bound preparation artifacts and nine offline gates are complete.
+The shared re-pin's final preflight refused the expected uncommitted state;
+after the registration commit, run clean checks before freezing the existing
+fable-batch-flight checkout and replacing the completed queue. No family
+model, tokenizer, scorer or encoder contact has occurred at this boundary.
+Do not mistake ready configuration for an already running flight.
+
+Order: control smoke4, control625, expanded smoke4, expanded625. Use unique
+candidate-recovery queue names and the existing matching resident no-mmproj
+four-slot service. Keep code frozen through both complete scoring jobs.
+The Windows-owned WSL queue must remain independent of network/credits.
+The existing15-minute monitor reads this current section first and stays
+quiet on unchanged/non-actionable state. No automatic replay.
+
+Source caveat: 8,554 exact examples exclude all R01 utterances. Inherited
+aggregate intent/slot authoring supports overlap57/155 R01 utterances; both
+arms share those TRAIN rules. This is exposed construction feedback, not an
+independent holdout or generalization test. DEV6570/test13078 remain closed.
+Root owns all terminal interpretation. A pass needs matched replication;
+failure closes this continuation without subgroup or component-only rescue.
+
+
 ## Latest implementation: complete candidate-recovery continuation
 
 Read docs/readiness/2026-09-25-candidate-recovery-complete-system-integration.md

@@ -1,0 +1,121 @@
+{
+  "admission": {
+    "relpath": "coordination/slurp-stage3-candidate-recovery-v1/root-admission-v1.json",
+    "sha256": "67ec78b38275088a36b0ae11b597c98074466f70cf42dbbcff37f0cb14ba86f6"
+  },
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "implementation_commit": "45df43dc100cfe617fe46003add5a4ff39385ce0",
+  "notes": [
+    "Shared repin produced and bound all eight generation/fit artifacts. Its final check correctly refused the not-yet-committed working tree; perform clean preflight after registration commit.",
+    "The first OpenJiuwen check invocation lacked its required output argument; corrected invocation passed. The default derived-media check rewrote two inherited reports; their original bytes were restored and the new result remains in the local log.",
+    "Pair configuration comparison passes: after identity/description/prepared-pin normalization, only exemplar_candidate_proposal.mode differs. Common prompts and plain rendering are explicit new matched policy context."
+  ],
+  "offline_checks": [
+    {
+      "check": "engineering_base_check",
+      "exit": 0,
+      "log": {
+        "path": "/home/chao/candidate-recovery-registration-engineering_base_check.log",
+        "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+      }
+    },
+    {
+      "check": "harness_admission_check",
+      "exit": 0,
+      "log": {
+        "path": "/home/chao/candidate-recovery-registration-harness_admission_check.log",
+        "sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+      }
+    },
+    {
+      "check": "results_ledger_check",
+      "exit": 0,
+      "log": {
+        "path": "/home/chao/candidate-recovery-registration-results_ledger_check.log",
+        "sha256": "0426590fecc31f8de63ddacab92a3e818106a70b9c33abd048d66228c5d7b7c6"
+      }
+    },
+    {
+      "check": "tool_catalog_check",
+      "exit": 0,
+      "log": {
+        "path": "/home/chao/candidate-recovery-registration-tool_catalog_check.log",
+        "sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+      }
+    },
+    {
+      "check": "experiment_handoff_check",
+      "exit": 0,
+      "log": {
+        "path": "/home/chao/candidate-recovery-registration-experiment_handoff_check.log",
+        "sha256": "47daed0ab440d269184102c9a78e456f6ab308623bc42cf6b2d2c23c9b594734"
+      }
+    },
+    {
+      "check": "openjiuwen_native_reuse_check",
+      "exit": 0,
+      "log": {
+        "path": "/home/chao/candidate-recovery-registration-openjiuwen_native_reuse_check-final.log",
+        "sha256": "5f5a42bf2e13e12c47f420238f8cde4021f46174d7fa2caf53de9c7db8edf3a8"
+      }
+    },
+    {
+      "check": "derived_media_confinement_check",
+      "exit": 0,
+      "log": {
+        "path": "/home/chao/candidate-recovery-registration-derived_media_confinement_check.log",
+        "sha256": "183b5953924de1ddd2a5fe3d89db17272f144e04a5eaa5bffb07198aeb649429"
+      }
+    },
+    {
+      "check": "stage3_algorithm_label_check",
+      "exit": 0,
+      "log": {
+        "path": "/home/chao/candidate-recovery-registration-stage3_algorithm_label_check.log",
+        "sha256": "9fac0138523bbf4771cc09bd0e007add368542e30e1920608c9111a7aa8cd2aa"
+      }
+    },
+    {
+      "check": "finite_completion_policy_check",
+      "exit": 0,
+      "log": {
+        "path": "/home/chao/candidate-recovery-registration-finite_completion_policy_check.log",
+        "sha256": "f82745fa49af22608b01172848d1f53e78f91f08fc16693254218ee5209cc331"
+      }
+    }
+  ],
+  "preparation": {
+    "slurp-native-stage3-candidate-recovery-control-r01c-v1-baseline-v1": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-FIT-V1/phase-supply-v1.json",
+      "sha256": "7010d4675113acd27d84a4b0a72d14ff3d575605420e449d1e34a4d29cb53307"
+    },
+    "slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-v1-baseline-v1": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-SMOKE-4-R01C-FIT-V1/phase-supply-v1.json",
+      "sha256": "7caf68f1f8b420da8c2e9104932300d8bb2bf1bdb278f0673a6265e00f9b773f"
+    },
+    "slurp-native-stage3-candidate-recovery-expand-r01c-v1-baseline-v1": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-R01C-FIT-V1/phase-supply-v1.json",
+      "sha256": "90940ffeccfe674a567ac95740dd9d311d807d098679cf27aa7d8d270eb8cd52"
+    },
+    "slurp-native-stage3-candidate-recovery-expand-smoke-4-r01c-v1-baseline-v1": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-SMOKE-4-R01C-FIT-V1/phase-supply-v1.json",
+      "sha256": "0fc70eb3093a316a11f64045a5f612f36a30768765d645deac15201dca913d92"
+    }
+  },
+  "protocol": {
+    "relpath": "docs/readiness/2026-09-25-slurp-stage3-candidate-recovery-v1/protocol-registered-v1.json",
+    "sha256": "d6fc939abac76d10546df67e485a170cf2f16a30abce38828a41b311802ef1bc"
+  },
+  "recorded_at_utc": "2026-09-25T19:12:17.561324+00:00",
+  "schema": "saea-candidate-recovery-registration-receipt-v1",
+  "source_preparation": {
+    "relpath": "coordination/slurp-stage3-candidate-recovery-v1/source-preparation-v1.json",
+    "sha256": "24b755e7be02afc3530dfe9fe77c8be6a8047b443aa424fc6aa69a4082737e3b"
+  },
+  "status": "prepared-and-registered-pending-clean-preflight"
+}

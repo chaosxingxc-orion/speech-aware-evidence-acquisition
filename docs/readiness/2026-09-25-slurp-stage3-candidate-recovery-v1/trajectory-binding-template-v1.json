@@ -1,0 +1,69 @@
+{
+  "arms": {
+    "control": {
+      "execution_profile": "model-free-check",
+      "feedback_role": "construction",
+      "flight_receipts": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1/attempt-slurp-native-stage3-candidate-recovery-control-r01c-v1-generation/flight-receipts.json",
+        "sha256": null
+      },
+      "manifest": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1/attempt-slurp-native-stage3-candidate-recovery-control-r01c-v1-generation/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1.run-manifest.json",
+        "sha256": null
+      },
+      "phases": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1/attempt-slurp-native-stage3-candidate-recovery-control-r01c-v1-generation/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1.phases.json",
+        "sha256": null
+      },
+      "schema": "saea-system-feedback-binding-v1",
+      "score_jobs": {
+        "relpath": null,
+        "sha256": null
+      },
+      "scorer_id": "slurp-slu-official-train"
+    },
+    "expand": {
+      "execution_profile": "model-free-check",
+      "feedback_role": "construction",
+      "flight_receipts": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-R01C-V1/attempt-slurp-native-stage3-candidate-recovery-expand-r01c-v1-generation/flight-receipts.json",
+        "sha256": null
+      },
+      "manifest": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-R01C-V1/attempt-slurp-native-stage3-candidate-recovery-expand-r01c-v1-generation/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-R01C-V1.run-manifest.json",
+        "sha256": null
+      },
+      "phases": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-R01C-V1/attempt-slurp-native-stage3-candidate-recovery-expand-r01c-v1-generation/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-R01C-V1.phases.json",
+        "sha256": null
+      },
+      "schema": "saea-system-feedback-binding-v1",
+      "score_jobs": {
+        "relpath": null,
+        "sha256": null
+      },
+      "scorer_id": "slurp-slu-official-train"
+    }
+  },
+  "comparison": [
+    "control",
+    "expand"
+  ],
+  "execution_profile": "model-free-check",
+  "feedback_role": "construction",
+  "output_relpath": "analysis/SAEA-SLURP-STAGE3-CANDIDATE-RECOVERY-OFFICIAL-READ-V1",
+  "read_run_id": "SAEA-SLURP-STAGE3-CANDIDATE-RECOVERY-OFFICIAL-READ-V1",
+  "registration": {
+    "relpath": "docs/readiness/2026-09-25-slurp-stage3-candidate-recovery-v1/analysis-specification-v1.json",
+    "sha256": "6e15362a60d269d132b06e038abbeae0c71c40455bf8eafc9965b975a5626a93"
+  },
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+    "rows": 625,
+    "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd",
+    "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
+    "split_role": "discovery"
+  },
+  "schema": "saea-slurp-system-attribution-read-v1",
+  "status": "template-not-executable-until-both-complete-source-bindings"
+}

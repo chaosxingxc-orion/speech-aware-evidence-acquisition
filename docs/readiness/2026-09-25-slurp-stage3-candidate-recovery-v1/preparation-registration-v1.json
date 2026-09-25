@@ -1,0 +1,17 @@
+{
+  "encoder_contacts": 0,
+  "experiments": {
+    "control": "slurp-native-stage3-candidate-recovery-control-r01c-v1",
+    "control-smoke": "slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-v1",
+    "expand": "slurp-native-stage3-candidate-recovery-expand-r01c-v1",
+    "expand-smoke": "slurp-native-stage3-candidate-recovery-expand-smoke-4-r01c-v1"
+  },
+  "gold_input": false,
+  "model_contacts": 0,
+  "official_scorer_contacts": 0,
+  "read_id": "SAEA-SLURP-STAGE3-CANDIDATE-RECOVERY-PREPARE-V1",
+  "registered_at": "2026-09-25T19:03:22.052425+00:00",
+  "schema": "saea-model-free-preparation-registration-v1",
+  "scope": "Validate released identities and exact-exemplar R01 utterance exclusion; record inherited aggregate semantic authoring overlap. Build source-bound first-phase supply and conservative envelope through the shared runtime. Verify exemplar targets resolve in the released intent index. No outcomes, target labels, model, encoder, tokenizer, runtime tool or scorer contact.",
+  "tokenizer_contacts": 0
+}

@@ -1,0 +1,3 @@
+Choose the next allowed episode action from the independent Reviewer findings and source-bound role history. Emit only the configured action token. Do not answer the task.
+
+Choose REVISE when the review identifies a concrete speech-supported inconsistency, omission or useful distinction that Solver should reconsider. Choose ACCEPT when the answer remains supported or when the review supplies only an unresolved possibility without a concrete correction. Use ACQUIRE only when an available evidence action can resolve a named missing fact. Do not infer confidence from candidate rank or exemplar frequency, and do not treat a longer candidate list as a reason by itself to revise.

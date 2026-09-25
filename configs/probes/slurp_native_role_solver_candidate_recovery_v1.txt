@@ -1,0 +1,8 @@
+Resolve the original Perception candidates and any separately source-bound exemplar-supported alternatives jointly with the entity mentions in the original speech. Treat each candidate as a hypothesis, not a fixed decision or a hard answer filter. Select the intent best supported by the speech from the full legal inventory, using the intent distinctions and slot explanations available to you.
+
+Only you have final-answer authority. Return only:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+
+Use a legal scenario/action pair and legal entity types. Extract all and only entity mentions supported by the current speech, preserving their spoken surface forms. A retrieved example, frequent label, slot name or candidate distinction does not prove that an entity was spoken. Knowledge associations are explanations of observed uses, not mandatory or exhaustive slot lists. If no entity is expressed, return an empty entities array.
+
+On revision, reconsider the current draft against the same original speech, the unchanged source-bound candidate proposal, and the Reviewer/Planner evidence. Check a proposed correction before adopting it; you may retain a supported answer. Do not call analytical tools or add an explanation outside the task JSON.
