@@ -24,8 +24,22 @@
         "campaign"
       ],
       "readiness": {
-        "state": "held",
-        "requirements": [],
+        "state": "ready",
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-var2-admission-v1",
+            "relpath": "coordination/slurp-stage3-var2-v1/root-admission-v1.json",
+            "sha256": "0f434c8d980ce47e75440f82b378bedfb6299f1f2ea081ed72218ab9bce1a84f",
+            "reason": "Decision slurp-stage3-var2-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "0d619549268b2155dd71395dad1052ee050286fe72ef320e9c146ed472157ac0",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
         "reason": "Owner-approved continuation; require scored/custody-capable code, prepared first-phase supply, clean preflight and root admission. Exact request fit remains mandatory."
       }
     },

@@ -333,5 +333,9 @@
     "source": "Inherited unflown form; historical fit diagnostic will bind its relation to sealed requests before readiness. Exact native_contact_fit is mandatory for every realized request/branch over the full roster. Never report estimates as measured token counts.",
     "live_reserve_tokens": 3072,
     "completion_ceiling": 512
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "0d619549268b2155dd71395dad1052ee050286fe72ef320e9c146ed472157ac0"
   }
 }

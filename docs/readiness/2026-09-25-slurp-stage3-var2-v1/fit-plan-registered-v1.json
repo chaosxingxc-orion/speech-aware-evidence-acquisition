@@ -5,7 +5,7 @@
   "registered_at_utc": "2026-09-25T09:07:01.678967+00:00",
   "experiment": "slurp-native-stage3-var2-supply-variants-r01c-v1",
   "cell": "slurp-native-stage3-var2-supply-variants-r01c-fit-v1",
-  "composed_config_hash": "6b361e1e2d3a99cf2f8923bd068b3efba7d1d0ef80b5c9c328623a6084e5fa80",
+  "composed_config_hash": "5210d6858b11f4c1dfea8354ad183a30731853387b876a1cd750283c866c2812",
   "family_budget": {
     "generation_calls_cap": 10625,
     "fit_endpoint_calls_cap": 42500,
@@ -30,7 +30,7 @@
     "planned_model_calls": 42500,
     "planned_speech_audio_seconds": 46357,
     "planned_gpu_hours": 8.0,
-    "protocol_hash": "91e11f8596c5e18b7ae2e6ffb33575e299988cff09b06367c62bb31bc3046a9e"
+    "protocol_hash": "6d7a1d7257b1d36d36fc165c927583820705587bb740349ebfdcd384dbeba087"
   },
   "fit": {
     "mode": "native_contact_fit",
@@ -41,6 +41,6 @@
   "read_rule": "First Solver visit only is primary. Four complete derived columns; preserve malformed/no-contact rows as declared. Revisions separate. Terminal plan scores are a separate complete-system column.",
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-25-slurp-stage3-var2-v1/protocol-registered-v1.json",
-    "sha256": "45d1971f7bfb95be7bd1993086cf3df01361c1a793beaff964ef1a161e2ef4ff"
+    "sha256": "d077da7d8fdeba2a32dcc26c16e05201dbaa136a4f5aca92bd34bad9db1a59ee"
   }
 }
