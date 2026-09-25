@@ -224,6 +224,30 @@ ACE_GROW_REFINE_V1 = _register(
     )
 )
 
+INFERENCE_TIME_VERIFICATION_V1 = _register(
+    Stage3Algorithm(
+        id="inference-time-verification-v1",
+        family="test-time-scaling",
+        display_name="Inference-time verification (self-selection over sampled answers)",
+        citation=(
+            "self-consistency / best-of-N with a verifier; see "
+            "docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md"
+        ),
+        operators=("scoring", "selection"),
+        status="planned",
+        what_it_changes=(
+            "The delivered answer is chosen from among the frozen core's OWN sampled "
+            "answers by the frozen core itself rather than by a deterministic "
+            "aggregation rule: the verifier reads a row's candidate answers and names "
+            "one, so the scoring operator is a model judgement over sampled answers "
+            "and the selection operator commits the named candidate. Nothing in the "
+            "store, the plan's context or the sampling policy changes -- only which of "
+            "the already-produced samples is delivered."
+        ),
+    )
+)
+
+
 SHARED_ROLLOUT = _register(
     Stage3Algorithm(
         id="shared-rollout",

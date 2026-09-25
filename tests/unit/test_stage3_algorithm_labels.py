@@ -34,6 +34,7 @@ from speech_aware_evidence_acquisition.core import (  # noqa: E402
 EXPECTED_IDS = {
     "ace-grow-refine-v1",
     "gepa-reflective-pareto-v1",
+    "inference-time-verification-v1",
     "none",
     "shared-rollout",
     "tfgrpo-semantic-advantage-v1",
@@ -86,6 +87,52 @@ def test_three_families_plus_a_shared_substrate_and_a_none_record() -> None:
     none = registry.resolve_stage3_algorithm(registry.NONE_ALGORITHM_ID)
     assert none.operators == () and none.status == "not-applicable"
     assert isinstance(none.reason, str) and none.reason.strip()
+
+
+def test_the_inference_time_verification_record_is_a_planned_selection_family() -> None:
+    """The VERIFY-1 line's own record (coordinator authorisation, 2026-09-25).
+
+    ``planned`` and nothing more: registering the family lets a fragment name it
+    without asserting that any cell was built, exactly as the GEPA and ACE records
+    did before their own cells existed. The operator pair is what a verifier
+    changes -- it scores the core's own samples and selects one -- and neither
+    ``update`` nor ``context_application`` is among them, because no store, view
+    or instruction text is touched.
+    """
+
+    record = registry.resolve_stage3_algorithm("inference-time-verification-v1")
+    assert record.family == "test-time-scaling"
+    assert record.status == "planned"
+    assert record.operators == ("scoring", "selection")
+    assert record.reason is None
+    assert "2026-09-24-slurp-sample-aggregation-offline-read.md" in record.citation
+
+
+def test_a_verification_label_may_not_claim_an_update_operator() -> None:
+    """A cell on this family that claimed to change the store is mislabelled."""
+
+    with pytest.raises(registry.Stage3AlgorithmError, match="does not define"):
+        registry.validate_stage3_algorithm_label(
+            {
+                "id": "inference-time-verification-v1",
+                "operators_used": ["selection", "update"],
+                "note": "a cell that claims an operator the family does not define",
+            },
+            cell="synthetic",
+        )
+
+
+def test_a_verification_label_declaring_selection_resolves() -> None:
+    record, used = registry.validate_stage3_algorithm_label(
+        {
+            "id": "inference-time-verification-v1",
+            "operators_used": ["selection"],
+            "note": "one contact per row selects among that row's own sealed samples.",
+        },
+        cell="synthetic",
+    )
+    assert record.id == "inference-time-verification-v1"
+    assert used == ("selection",)
 
 
 def test_a_record_with_an_unknown_operator_is_refused() -> None:
