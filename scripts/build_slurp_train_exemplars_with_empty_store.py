@@ -89,6 +89,7 @@ from speech_aware_evidence_acquisition.data.lock import (  # noqa: E402
     umbrella_lock_path,
 )
 from speech_aware_evidence_acquisition.e0.artifacts import write_json_artifact  # noqa: E402
+from speech_aware_evidence_acquisition.rails.knowledge import KnowledgeSnapshot  # noqa: E402
 from speech_aware_evidence_acquisition.rails.knowledge_build import (  # noqa: E402
     KB_BUILD_POLICY_ID,
     SOLVER_EMPTY_ENTITY_LIST_FORM,
@@ -159,7 +160,130 @@ def _sha256_path(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _excluded_sample_ids() -> tuple[frozenset[str], list[dict[str, object]]]:
+def _canonical_json_bytes(document: dict[str, object]) -> bytes:
+    text = json.dumps(document, ensure_ascii=False, sort_keys=True, indent=2) + "\n"
+    return text.encode("utf-8")
+
+
+def _canonical_json_sha256(document: dict[str, object]) -> str:
+    return hashlib.sha256(_canonical_json_bytes(document)).hexdigest()
+
+
+def _write_if_absent_or_same(
+    path: Path, document: dict[str, object], config: dict[str, object] | None
+) -> str:
+    if config is None:
+        return write_json_artifact(path, document)
+    raw = _canonical_json_bytes(document)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with path.open("xb") as handle:
+            handle.write(raw)
+    except FileExistsError:
+        if path.read_bytes() != raw:
+            raise SystemExit(f"refusing to overwrite a different published artifact: {path}")
+    return _sha256_path(path)
+
+
+
+CONFIG_SCHEMA = "saea-empty-contract-exemplar-build-config-v1"
+
+
+def _confined(root: Path, relpath: str) -> Path:
+    """Resolve a configured path without permitting traversal or symlink escape."""
+
+    if (
+        not isinstance(relpath, str)
+        or not relpath
+        or "\\" in relpath
+        or ":" in relpath
+        or Path(relpath).is_absolute()
+        or any(part in ("", ".", "..") for part in relpath.split("/"))
+    ):
+        raise SystemExit(f"invalid confined relative path: {relpath!r}")
+    base = root.resolve()
+    path = (base / relpath).resolve()
+    if not path.is_relative_to(base):
+        raise SystemExit(f"path escapes its bound root: {relpath!r}")
+    return path
+
+
+def _hash_pin(value: object, label: str) -> str:
+    if (
+        not isinstance(value, str)
+        or len(value) != 64
+        or any(char not in "0123456789abcdef" for char in value)
+    ):
+        raise SystemExit(f"{label} must be a lowercase SHA-256 hex digest")
+    return value
+
+
+def load_config(path: Path) -> dict[str, object]:
+    """Validate the bounded sibling recipe before reading construction data."""
+
+    path = path.resolve()
+    if not path.is_relative_to(REPO_ROOT.resolve()):
+        raise SystemExit("--config must be inside the repository")
+    raw = path.read_bytes()
+    config = json.loads(raw)
+    if not isinstance(config, dict) or set(config) != {
+        "schema", "parent", "exclude_rosters", "output",
+        "authority", "exposure_ledger_row",
+    } or config["schema"] != CONFIG_SCHEMA:
+        raise SystemExit("empty-contract build config schema/keys mismatch")
+    parent = config["parent"]
+    if not isinstance(parent, dict) or set(parent) != {
+        "snapshot_relpath", "snapshot_file_sha256", "snapshot_sha256",
+        "receipt_relpath", "receipt_sha256", "source_split_identity_hash",
+        "utterance_count",
+    }:
+        raise SystemExit("configured parent binding keys mismatch")
+    for key in ("snapshot_file_sha256", "snapshot_sha256", "receipt_sha256",
+                "source_split_identity_hash"):
+        _hash_pin(parent[key], f"parent.{key}")
+    _confined(data_root(), parent["snapshot_relpath"])
+    _confined(REPO_ROOT, parent["receipt_relpath"])
+    if type(parent["utterance_count"]) is not int or parent["utterance_count"] <= 0:
+        raise SystemExit("parent.utterance_count must be a positive integer")
+    rosters = config["exclude_rosters"]
+    if not isinstance(rosters, list) or not rosters:
+        raise SystemExit("exclude_rosters must be a nonempty list")
+    seen = set()
+    for item in rosters:
+        if not isinstance(item, dict) or set(item) != {"relpath", "sha256"}:
+            raise SystemExit("configured exclusion roster keys mismatch")
+        _confined(REPO_ROOT, item["relpath"])
+        _hash_pin(item["sha256"], "exclusion roster sha256")
+        if item["relpath"] in seen:
+            raise SystemExit("duplicate exclusion roster")
+        seen.add(item["relpath"])
+    output = config["output"]
+    if not isinstance(output, dict) or set(output) != {
+        "tier", "release_name", "receipt_relpath",
+    }:
+        raise SystemExit("configured output keys mismatch")
+    tier = output["tier"]
+    if (
+        not isinstance(tier, str) or not tier.startswith("pool-annotated-exemplars-empty-contract-")
+        or not tier.endswith("-v1")
+        or not all(char.islower() or char.isdigit() or char == "-" for char in tier)
+        or tier == TIER
+    ):
+        raise SystemExit("configured output tier is not a distinct empty-contract sibling")
+    if not isinstance(output["release_name"], str) or not output["release_name"].strip():
+        raise SystemExit("configured release_name must be nonempty")
+    receipt_path = _confined(REPO_ROOT, output["receipt_relpath"])
+    if not receipt_path.is_relative_to((REPO_ROOT / "docs" / "receipts" / "knowledge").resolve()):
+        raise SystemExit("configured receipt must be under docs/receipts/knowledge")
+    for key in ("authority", "exposure_ledger_row"):
+        if not isinstance(config[key], str) or not config[key].strip():
+            raise SystemExit(f"{key} must be nonempty English text")
+    config["_config_relpath"] = path.relative_to(REPO_ROOT.resolve()).as_posix()
+    config["_config_sha256"] = hashlib.sha256(raw).hexdigest()
+    return config
+
+
+def _excluded_sample_ids(config: dict[str, object] | None = None) -> tuple[frozenset[str], list[dict[str, object]]]:
     """The union of the three pool-exclusion rosters, with a receipt row each.
 
     Roster item shapes differ: the construction folds carry ``sample_id``, the
@@ -168,8 +292,13 @@ def _excluded_sample_ids() -> tuple[frozenset[str], list[dict[str, object]]]:
 
     excluded: set[str] = set()
     records: list[dict[str, object]] = []
-    for relpath in EXCLUDE_ROSTER_RELPATHS:
-        path = REPO_ROOT / relpath
+    roster_pins = (config["exclude_rosters"] if config is not None else
+                   [{"relpath": relpath} for relpath in EXCLUDE_ROSTER_RELPATHS])
+    for pin in roster_pins:
+        relpath = pin["relpath"]
+        path = _confined(REPO_ROOT, relpath)
+        if config is not None and _sha256_path(path) != pin["sha256"]:
+            raise SystemExit(f"configured exclusion roster hash mismatch: {relpath}")
         document = json.loads(path.read_text(encoding="utf-8"))
         ids = {
             str(item["sample_id"] if "sample_id" in item else item["id"])
@@ -190,14 +319,48 @@ def _excluded_sample_ids() -> tuple[frozenset[str], list[dict[str, object]]]:
     return frozenset(excluded), records
 
 
-def _load_parent_snapshot(root: Path) -> dict[str, object]:
-    path = root / PARENT_SNAPSHOT_RELDIR / "snapshot.json"
+def _load_parent_snapshot(
+    root: Path, config: dict[str, object] | None = None
+) -> dict[str, object]:
+    if config is None:
+        path = root / PARENT_SNAPSHOT_RELDIR / "snapshot.json"
+        document = json.loads(path.read_text(encoding="utf-8"))
+        declared = document.get("snapshot_sha256")
+        if declared != PARENT_SNAPSHOT_SHA256:
+            raise SystemExit(
+                f"parent snapshot declares {declared}, not the pinned {PARENT_SNAPSHOT_SHA256}"
+            )
+        return document
+
+    pin = config["parent"]
+    path = _confined(root, pin["snapshot_relpath"])
+    if _sha256_path(path) != pin["snapshot_file_sha256"]:
+        raise SystemExit("configured parent snapshot file SHA-256 mismatch")
     document = json.loads(path.read_text(encoding="utf-8"))
-    declared = document.get("snapshot_sha256")
-    if declared != PARENT_SNAPSHOT_SHA256:
-        raise SystemExit(
-            f"parent snapshot declares {declared}, not the pinned {PARENT_SNAPSHOT_SHA256}"
-        )
+    if document.get("snapshot_sha256") != pin["snapshot_sha256"]:
+        raise SystemExit("configured parent snapshot content SHA-256 mismatch")
+    parsed = KnowledgeSnapshot.from_frozen_json(document)
+    if (
+        parsed.content_hash() != pin["snapshot_sha256"]
+        or parsed.source_split_identity_hash != pin["source_split_identity_hash"]
+        or len(parsed.values) != pin["utterance_count"]
+        or parsed.builder_policy_id != KB_BUILD_POLICY_ID
+        or parsed.source_partition_role != "train"
+    ):
+        raise SystemExit("configured parent snapshot content/selection mismatch")
+    receipt_path = _confined(REPO_ROOT, pin["receipt_relpath"])
+    if _sha256_path(receipt_path) != pin["receipt_sha256"]:
+        raise SystemExit("configured parent receipt SHA-256 mismatch")
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    if (
+        receipt.get("schema") != "saea-kb-build-receipt-v1"
+        or receipt.get("snapshot_sha256") != pin["snapshot_sha256"]
+        or receipt.get("source_split_identity_hash") != pin["source_split_identity_hash"]
+        or receipt.get("value_count") != pin["utterance_count"]
+        or receipt.get("builder_policy_id") != KB_BUILD_POLICY_ID
+        or receipt.get("snapshot_artifact_relpath") != pin["snapshot_relpath"]
+    ):
+        raise SystemExit("configured parent receipt does not bind the snapshot/selection")
     return document
 
 
@@ -212,7 +375,9 @@ def entity_free_value_ids(rows) -> frozenset[str]:
     return frozenset(f"value:{row.utterance_id}" for row in rows if not row.entity_fillers)
 
 
-def assert_parent_relation(snapshot, parent, *, empty_ids) -> dict[str, object]:
+def assert_parent_relation(
+    snapshot, parent, *, empty_ids, parent_snapshot_sha256: str = PARENT_SNAPSHOT_SHA256
+) -> dict[str, object]:
     """Every difference from the released parent, enumerated and bounded.
 
     Returns the difference report. Raises if anything moves that must not: a
@@ -284,7 +449,7 @@ def assert_parent_relation(snapshot, parent, *, empty_ids) -> dict[str, object]:
             f"{changed} values changed but {len(empty_ids)} utterances are entity-free"
         )
     return {
-        "parent_snapshot_sha256": PARENT_SNAPSHOT_SHA256,
+        "parent_snapshot_sha256": parent_snapshot_sha256,
         "facets_byte_identical": len(snapshot.facets),
         "facets_changed": 0,
         "values_total": len(snapshot.values),
@@ -342,7 +507,9 @@ def composition(rows) -> dict[str, object]:
     }
 
 
-def build_store(*, check: bool, out_root: Path) -> dict[str, object]:
+def build_store(
+    *, check: bool, out_root: Path, config: dict[str, object] | None = None
+) -> dict[str, object]:
     lock = load_lock(umbrella_lock_path(REPO_ROOT))
     root = data_root()
 
@@ -350,7 +517,7 @@ def build_store(*, check: bool, out_root: Path) -> dict[str, object]:
     rows = slurp_kb_rows(lock, root)
     load_seconds = time.monotonic() - load_start
 
-    excluded_ids, excluded_records = _excluded_sample_ids()
+    excluded_ids, excluded_records = _excluded_sample_ids(config)
     before = len(rows)
     kept = tuple(row for row in rows if not (set(row.sample_ids) & excluded_ids))
     print(
@@ -358,10 +525,18 @@ def build_store(*, check: bool, out_root: Path) -> dict[str, object]:
         f"excluded {before - len(kept)} named by {len(excluded_records)} roster(s); "
         f"{len(kept)} remain"
     )
-    if len(kept) != EXPECTED_UTTERANCE_COUNT:
+    expected_count = (config["parent"]["utterance_count"] if config else
+                      EXPECTED_UTTERANCE_COUNT)
+    parent_receipt_relpath = (config["parent"]["receipt_relpath"] if config else
+                              PARENT_RECEIPT_RELPATH)
+    expected_split_hash = (config["parent"]["source_split_identity_hash"] if config else
+                           EXPECTED_SOURCE_SPLIT_IDENTITY_HASH)
+    parent_snapshot_sha256 = (config["parent"]["snapshot_sha256"] if config else
+                              PARENT_SNAPSHOT_SHA256)
+    if len(kept) != expected_count:
         raise SystemExit(
             f"construction pool carries {len(kept)} utterances, not the registered "
-            f"{EXPECTED_UTTERANCE_COUNT} ({PARENT_RECEIPT_RELPATH})"
+            f"{expected_count} ({parent_receipt_relpath})"
         )
 
     spec = KnowledgeBuildSpec(
@@ -382,16 +557,19 @@ def build_store(*, check: bool, out_root: Path) -> dict[str, object]:
         f"values={len(snapshot.values)} in {build_seconds:.2f}s"
     )
 
-    if snapshot.source_split_identity_hash != EXPECTED_SOURCE_SPLIT_IDENTITY_HASH:
+    if snapshot.source_split_identity_hash != expected_split_hash:
         raise SystemExit(
             f"source_split_identity_hash {snapshot.source_split_identity_hash} does not "
-            f"match the released parent pool identity {EXPECTED_SOURCE_SPLIT_IDENTITY_HASH}; "
+            f"match the released parent pool identity {expected_split_hash}; "
             "the selection moved, which this store must never do"
         )
 
-    parent = _load_parent_snapshot(root)
+    parent = _load_parent_snapshot(root, config)
     empty_ids = entity_free_value_ids(kept)
-    relation = assert_parent_relation(snapshot, parent, empty_ids=empty_ids)
+    relation = assert_parent_relation(
+        snapshot, parent, empty_ids=empty_ids,
+        parent_snapshot_sha256=parent_snapshot_sha256,
+    )
     pool = composition(kept)
     if relation["values_changed"] != pool["entity_free"]:
         raise SystemExit(
@@ -414,7 +592,12 @@ def build_store(*, check: bool, out_root: Path) -> dict[str, object]:
 
     frozen = snapshot.frozen_json()
     snapshot_sha256 = frozen["snapshot_sha256"]
-    snapshot_path = out_root / SNAPSHOT_RELDIR / "snapshot.json"
+    output_tier = config["output"]["tier"] if config else TIER
+    output_reldir = Path("knowledge") / "slurp" / KB_BUILD_POLICY_ID / f"size-{output_tier}"
+    snapshot_path = (
+        _confined(out_root, (output_reldir / "snapshot.json").as_posix())
+        if config else out_root / output_reldir / "snapshot.json"
+    )
 
     release = {
         "schema": RELEASE_SCHEMA,
@@ -428,19 +611,20 @@ def build_store(*, check: bool, out_root: Path) -> dict[str, object]:
             "sha256": _sha256_path(root / TRAIN_METADATA_RELPATH),
         },
     }
-    release_path = out_root / SNAPSHOT_RELDIR / "release.json"
+    release_path = (
+        _confined(out_root, (output_reldir / "release.json").as_posix())
+        if config else out_root / output_reldir / "release.json"
+    )
 
-    if not check:
-        snapshot_file_sha256 = write_json_artifact(snapshot_path, frozen)
-        print(
-            f"wrote {snapshot_path}  snapshot_sha256={snapshot_sha256[:16]}...  "
-            f"file_sha256={snapshot_file_sha256[:16]}..."
-        )
-        release_file_sha256 = write_json_artifact(release_path, release)
-        print(f"wrote {release_path}  file_sha256={release_file_sha256[:16]}...")
-    else:
-        snapshot_file_sha256 = None
-        release_file_sha256 = None
+    # A missing vector fails before any snapshot, release or receipt is published.
+    check_facet_vector_coverage(root, snapshot)
+    snapshot_file_sha256 = (
+        _canonical_json_sha256(frozen) if not check else None
+    )
+    release_file_sha256 = (
+        _canonical_json_sha256(release) if not check else None
+    )
+    if check:
         print(
             f"(check) snapshot would be {snapshot_path}  "
             f"snapshot_sha256={snapshot_sha256[:16]}..."
@@ -449,9 +633,9 @@ def build_store(*, check: bool, out_root: Path) -> dict[str, object]:
     receipt = {
         "schema": "saea-kb-build-receipt-v1",
         "generator": "scripts/build_slurp_train_exemplars_with_empty_store.py",
-        "authority": AUTHORITY,
+        "authority": config["authority"] if config else AUTHORITY,
         "builder_policy_id": KB_BUILD_POLICY_ID,
-        "release_name": RELEASE_NAME,
+        "release_name": config["output"]["release_name"] if config else RELEASE_NAME,
         "spec": {
             "carrier_lock_key": spec.carrier_lock_key,
             "datastore_size": spec.datastore_size,
@@ -471,11 +655,12 @@ def build_store(*, check: bool, out_root: Path) -> dict[str, object]:
         "coverage_report": report,
         "pool_composition": pool,
         "parent_store": {
-            "receipt_relpath": PARENT_RECEIPT_RELPATH,
-            "receipt_sha256": _sha256_path(REPO_ROOT / PARENT_RECEIPT_RELPATH),
-            "snapshot_relpath": (PARENT_SNAPSHOT_RELDIR / "snapshot.json").as_posix(),
-            "source_split_identity_hash": EXPECTED_SOURCE_SPLIT_IDENTITY_HASH,
-            "utterance_count": EXPECTED_UTTERANCE_COUNT,
+            "receipt_relpath": parent_receipt_relpath,
+            "receipt_sha256": _sha256_path(_confined(REPO_ROOT, parent_receipt_relpath)),
+            "snapshot_relpath": (config["parent"]["snapshot_relpath"] if config else
+                                 (PARENT_SNAPSHOT_RELDIR / "snapshot.json").as_posix()),
+            "source_split_identity_hash": expected_split_hash,
+            "utterance_count": expected_count,
             "relation": relation,
         },
         "decontamination": {
@@ -496,7 +681,7 @@ def build_store(*, check: bool, out_root: Path) -> dict[str, object]:
             "build_snapshot": round(build_seconds, 3),
             "coverage_report": round(report_seconds, 3),
         },
-        "exposure_ledger_row": LEDGER_ROW,
+        "exposure_ledger_row": config["exposure_ledger_row"] if config else LEDGER_ROW,
         "execution_profile": "model-free-check",
         "contacts": {
             "model": 0,
@@ -508,13 +693,39 @@ def build_store(*, check: bool, out_root: Path) -> dict[str, object]:
             "network": 0,
         },
     }
+    if config is not None:
+        receipt["build_config"] = {
+            "relpath": config["_config_relpath"],
+            "file_sha256": config["_config_sha256"],
+        }
     if snapshot_file_sha256 is not None:
         receipt["snapshot_file_sha256"] = snapshot_file_sha256
         receipt["release_file_sha256"] = release_file_sha256
+    receipt_path = (
+        _confined(REPO_ROOT, config["output"]["receipt_relpath"])
+        if config else RECEIPT_PATH
+    )
     if not check:
-        receipt_sha256 = write_json_artifact(RECEIPT_PATH, receipt)
+        if config is not None:
+            # One preflight covers every output, including the receipt. Do not
+            # alter even one artifact if a sibling is already published with
+            # different bytes.
+            for path, document in (
+                (snapshot_path, frozen), (release_path, release),
+                (receipt_path, receipt),
+            ):
+                if path.exists() and path.read_bytes() != _canonical_json_bytes(document):
+                    raise SystemExit(f"refusing to overwrite a different published artifact: {path}")
+        snapshot_file_sha256 = _write_if_absent_or_same(snapshot_path, frozen, config)
+        release_file_sha256 = _write_if_absent_or_same(release_path, release, config)
+        receipt_sha256 = _write_if_absent_or_same(receipt_path, receipt, config)
         print(
-            f"wrote {RECEIPT_PATH.relative_to(REPO_ROOT)}  sha256={receipt_sha256[:16]}..."
+            f"wrote {snapshot_path}  snapshot_sha256={snapshot_sha256[:16]}...  "
+            f"file_sha256={snapshot_file_sha256[:16]}..."
+        )
+        print(f"wrote {release_path}  file_sha256={release_file_sha256[:16]}...")
+        print(
+            f"wrote {receipt_path.relative_to(REPO_ROOT)}  sha256={receipt_sha256[:16]}..."
         )
     return {
         "snapshot": snapshot,
@@ -574,6 +785,7 @@ def check_facet_vector_coverage(root: Path, snapshot) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="verify only; write nothing")
+    parser.add_argument("--config", help="source-bound sibling build recipe inside repository")
     parser.add_argument(
         "--out-root",
         default=None,
@@ -585,11 +797,11 @@ def main() -> int:
     out_root = Path(args.out_root).resolve() if args.out_root else root
     if out_root != root:
         print(f"REHEARSAL: writing under {out_root}, not the controlled data root")
-    result = build_store(check=args.check, out_root=out_root)
-    check_facet_vector_coverage(root, result["snapshot"])
+    config = load_config(Path(args.config)) if args.config else None
+    result = build_store(check=args.check, out_root=out_root, config=config)
 
     print("---")
-    print(f"release_name={RELEASE_NAME}")
+    print(f"release_name={config['output']['release_name'] if config else RELEASE_NAME}")
     print(f"utterance_count={result['utterance_count']}")
     print(f"snapshot_relpath={result['snapshot_relpath']}")
     print(f"snapshot_sha256={result['snapshot_sha256']}")
