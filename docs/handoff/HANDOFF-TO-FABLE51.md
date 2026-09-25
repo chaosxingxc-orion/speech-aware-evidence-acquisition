@@ -179,5 +179,33 @@ build and offline dry run now pass again, with zero model contacts.
 VERIFY-1 sealed source binding, balanced presentation, shared actual-request fit
 path, parser and analysis reader have landed on master. 206 relevant phase,
 selector and status tests pass. Shared OpenJiuwen proof covers role visibility,
-rail rejection, iteration bounds and tool round trips. Readiness remains held
-until the clean-tree registration/decision repin; a code merge is not a flight.
+rail rejection, iteration bounds and tool round trips. Smoke and full-roster readiness are now ready after root admission and clean-tree
+checks. Actual-request fit remains mandatory inside the scheduled worker/campaign.
+
+## Independent successor prepared
+
+scripts/flights/batch/batch_chain_verify1.sh waits for all six VAR-1 steps and
+FINALIZED attempts, preserves its queue/status, switches the frozen flight checkout
+at the boundary, then uses the existing batch driver for VERIFY-1 smoke and full
+625. The explicit flight commit is /home/chao/verify1-flight-commit.txt. A uniquely
+named Scheduled Task will own this chain; no Codex heartbeat or live assistant is
+in the execution path. VAR-1's registered analysis runs concurrently on CPU and
+VERIFY-1's sealed-count reader runs after its completed manifest. Any driver
+failure stops the chain. VAR-2/F10 and adaptive policy experiments are not queued
+without their own completed scientific and engineering prerequisites.
+
+## R01C repeat calibration read
+
+The corrected own-null read completed under
+analysis/SAEA-SLURP-STAGE3-VAR1-OWN-NULL-V1-CORRECTED-V2. PLAN SLU-F1 is
+58.5066 and PLANR is 60.3755: +1.8689 pp, paired CI95 [0.4121, 3.3599].
+Intent (scenario/action exact) is 70.56 vs 69.28: -1.28 pp, CI95 [-3.04, 0.48].
+Frozen CI90 half-widths are 1.2413258895 pp for pooled SLU-F1 and 1.44 pp for
+intent. These are operational calibration values, not practically meaningful
+effect thresholds or universal sampling-noise bounds.
+
+The nonzero repeat shift is a caution for cross-run attribution, not an algorithm
+gain. Preserve original planned contrasts and add interpretation against the
+replicate in the complete family read. Scenario/equal-weight tables remain pending
+that read; no final family verdict has been issued. Do not transfer the pooled
+half-width to mean row-F1, ROLL-AA, or the selector's own contrast variance.

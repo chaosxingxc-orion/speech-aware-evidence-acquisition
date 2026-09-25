@@ -1,0 +1,48 @@
+{
+  "schema": "saea-verifier-preflight-summary-v1",
+  "checks": {
+    "smoke": {
+      "path": "/home/chao/verify1-smoke-check.json",
+      "sha256": "7a4a4f2b101384a12c10d51815f7aa53f386b3fcfbacaa60c3435ab6a1f7174e",
+      "scientific_readiness": {
+        "reason": "",
+        "state": "ready"
+      },
+      "generation_authorized_by_check": false,
+      "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-SMOKE-4-V1",
+      "sample_count": 4,
+      "config_hash": "a4444aba05f591a0ac08a3be232152f1ccdadff190e7548c92e89227327e4a99",
+      "protocol_hash": "0ed80405df7058f320c20d014b707dedd303940253194e323003f0496162122a",
+      "study_commit": "631e97968af2c5b604a1e88f635ae7468e1396c7",
+      "prepared_artifacts_ok": true
+    },
+    "full": {
+      "path": "/home/chao/verify1-full-check.json",
+      "sha256": "a062bd987639326e77b473fcfa78b4a65ddac1e8100777bf4aa5a24b4ad71e83",
+      "scientific_readiness": {
+        "reason": "",
+        "state": "ready"
+      },
+      "generation_authorized_by_check": false,
+      "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-V1",
+      "sample_count": 625,
+      "config_hash": "0bd577b3fe53cf91a80bae81ffe972c1142f9b17738a08d24c305bccfb1cadda",
+      "protocol_hash": "7d24de7231442021397f1e194dc8f312b8d5224c9705e5f2bf1c2cd2cd148a38",
+      "study_commit": "631e97968af2c5b604a1e88f635ae7468e1396c7",
+      "prepared_artifacts_ok": true
+    }
+  },
+  "model_contacts": 0,
+  "note": "Model-free check does not authorize generation itself. Worker/campaign must acquire the lease and run registered actual-request fit before generation.",
+  "engineering_gates": {
+    "engineering_base": "PASS",
+    "stage3_algorithm_label": "PASS",
+    "finite_completion_policy": "PASS",
+    "openjiuwen_native_reuse": "PASS"
+  },
+  "tests": {
+    "phase_selector_status_passed": 206,
+    "session_bundle_passed": 210,
+    "session_bundle_skipped": 6
+  }
+}
