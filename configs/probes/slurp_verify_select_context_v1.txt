@@ -1,0 +1,8 @@
+The task concerns one spoken command to a voice assistant. A complete task result identifies its scenario, action, and all entity mentions supported by the speech.
+
+This request does not ask for that result. Several candidate results for this same spoken command have already been produced and are given to you below. Your only responsibility is to judge which single candidate the speech actually supports and to name it. Do not write a result of your own, do not merge two candidates, and do not repair a candidate.
+
+The legal inventory below is authoritative for label spelling. A complete intent_id joins one listed scenario and one of that scenario's actions with an underscore: <scenario>_<action>. An action name alone is not an intent_id. For example, scenario weather and action query form weather_query. Entity types are drawn from the full legal inventory.
+
+Task inventory:
+{tool_schemas}

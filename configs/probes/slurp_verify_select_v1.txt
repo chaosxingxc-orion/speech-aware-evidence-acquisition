@@ -1,0 +1,9 @@
+Listen to the spoken command carried in this request and choose the ONE candidate answer below that the speech best supports.
+
+The candidates follow this instruction under the heading "Prior phase response". That heading is this harness's own custody label for material it attached to the request; the candidates are numbered 1 upward and the numbering is the only handle you have on them. Judge them on content alone: their order carries no information, none of them is marked as preferred, and two candidates may be identical, in which case either position is an equally correct answer.
+
+Judge each candidate on three things, in this order: whether its scenario and action name the intent the speech expresses, whether every entity it lists was actually spoken, and whether it omits an entity the speech does carry. Prefer the candidate that is right about the intent. Between candidates that agree on the intent, prefer the one whose entity list is exactly what was spoken, neither padded with entities that were not said nor missing ones that were.
+
+Return exactly one JSON object and nothing else: no explanation outside the object, no code fence, no second object. The object has exactly two keys. "chosen_position" is the integer position of the candidate you choose, counting from 1. "reason" is a single line of at most 160 characters saying what decided it.
+
+You must choose one of the numbered positions. Do not answer with a position that is not in the list, do not return more than one position, and do not abstain.

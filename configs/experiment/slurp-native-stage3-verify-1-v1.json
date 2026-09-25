@@ -1,0 +1,83 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-verify-1-v1-generation",
+      "baseline_fragment": "slurp-native-stage3-verify-1-baseline-v1",
+      "cell_id": "slurp-native-stage3-verify-1-v1",
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Cell VERIFY-1 (board route F11, package docs/readiness/2026-09-25-slurp-stage3-verify-1-v1, preregistration docs/readiness/2026-09-25-slurp-stage3-verify-1-v1-preregistration.md). READINESS HELD. Two things this cell needs do not exist yet and neither is created by this registration: the root admission decision receipt coordination/slurp-stage3-verify-1-v1/root-admission-v1.json (decision id slurp-stage3-verify-1-admission-v1) and the coordinator's own re-pin cycle. 'requirements' is deliberately EMPTY rather than a PENDING placeholder pair: core.flight.repin._upsert_decision_requirement INSERTS the decision requirement at the flip, while a placeholder decision entry without an expected_decision_id would be left behind beside the real one and refuse the campaign at load (core.flight.campaign.declared_readiness). This cell needs NO preparation requirement at all: its single phase declares knowledge 'none', it binds no phase_supply and no knowledge_stores, so there is no first-phase supply artifact to mint -- its per-row material is derived at contact time from the sealed ROLL-1 manifest bytes and the pinned permutation seed. Nothing here authorises a flight, a readiness flip, a contact or an admission entry.",
+        "requirements": [],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-V1"
+    },
+    {
+      "allowed_execution_stages": [
+        "check"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-verify-1-v1-fit",
+      "baseline_fragment": "slurp-native-stage3-verify-1-baseline-v1",
+      "cell_id": "slurp-native-stage3-verify-1-fit-v1",
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "The FIT spend identity of cell VERIFY-1, never flown as a generation cell. It exists so that any live_phase_fit endpoint spend lands against an exposure row written before any result was read. HELD.",
+        "requirements": [],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-FIT-V1"
+    }
+  ],
+  "date": "2026-09-25",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1250,
+    "planned_speech_audio_seconds": 5454,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-VERIFY-1-V1",
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, program, prompt, permutation-seed, geometry or cap change. This registration pre-authorises no recovery; a root-diagnosed recovery re-registration is a separate act once the cell is flown. A partial manifest is never read.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 1250,
+    "generation_calls_cap": 1250,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 5454
+  },
+  "fragment_kind": "saea-slurp-native-stage3-verify-1-v1",
+  "generation_budget": {
+    "cap": 1250,
+    "definition": "1250 = 625 R01C rows x 2, where 2 is the program's OWN per-row contact ceiling (configs/policy/phase-slurp-verify-select-v1.json max_contacts 2 against ONE phase). The EXPECTED spend is exactly 1.0 contact per row -- 625 contacts -- because 'always-run-full-program' walks each phase once; the ceiling carries one contact of headroom and is a BOUND, never a target. Budgets are run-cumulative across every attempt of a run id."
+  },
+  "population": {
+    "count": 625,
+    "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+    "decision_population": "All 625 rows are the primary population. Report the 420 content-distinct rows, 414 content-distinct rows with all candidates parsed, 205 identical-answer controls, and 225 row-F1-disagreeing rows separately. Preserve the six rows containing nine malformed source samples; flag their canonical empty renderings. Invalid verifier responses fall back to sealed source sample index 0. Do not exclude failures from complete-roster estimates. Position histograms are descriptive, not tests of semantic selection.",
+    "roster_receipt": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+    "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"
+  },
+  "preserve_wire_responses": true,
+  "purpose": "Cell VERIFY-1 (Stage-3 board route F11, the verifier-selection probe; Stage-3 algorithm family inference-time-verification-v1, operator SELECTION). ONE contact per R01C construction row carries that row's OWN speech plus the FIVE sealed ROLL-1 Solver candidate answers for that same row, in a per-row presentation order pinned by the config, with NO delivered-answer anchor and no retrieved knowledge, and asks the frozen core to name the candidate the speech supports under a two-field contract (chosen_position, reason). The question is the ORACLE gap the offline sample-aggregation read measured over this same sealed rollout: +6.55 pp pooled SLU-F1 and +12.55 pp on the 225 score-disagreeing rows, none of which any deterministic agreement rule reached. Does the frozen core VERIFY better than it GENERATES? DESCRIPTIVE: no admission verdict, no comparator arm, no gate, nothing admitted, released or locked.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "STAGE3-CONSTRUCTION-R01C",
+  "stage3_algorithm": {
+    "id": "inference-time-verification-v1",
+    "note": "VERIFY-1 is the first cell of this family and exercises the SELECTION operator only: the frozen core reads its OWN five sealed candidate answers for a row and names one, and the delivered artifact is that name. The family's SCORING operator is deliberately NOT claimed -- the cell asks for no per-candidate score, ranking or margin, so nothing in the sealed output can be read as a model-produced score. Nothing in the store, the plan's context or the sampling policy changes; the candidates are the sealed ROLL-1 rollout's own.",
+    "operators_used": [
+      "selection"
+    ]
+  }
+}

@@ -25,6 +25,17 @@ from .slurp_intent_hypotheses import (
 
 SLURP_HYPOTHESIS_CONTENT_ID = "slurp-intent-hypotheses-v1"
 
+#: Stage-3 F11, cell VERIFY-1: the id of the SELECTION contact's output
+#: contract. Registered in ``rails.controllers.register_response_formats_v1``
+#: and bound by ``configs/policy/phase-slurp-verify-select-v1.json``.
+SLURP_VERIFIER_CHOICE_FORMAT_ID = "slurp-verifier-choice-v1"
+
+#: The hard ceiling on the one-line reason. A reason is diagnostic only -- the
+#: cell's measured quantity is the chosen position -- so it is bounded rather
+#: than free: an unbounded field on a 625-row probe is a completion-token bill
+#: with no read attached to it.
+SLURP_VERIFIER_REASON_MAX_CHARS = 512
+
 
 class ArtifactContentError(ValueError):
     """A typed artifact source or its model-produced content is invalid."""
@@ -312,6 +323,140 @@ def slurp_intent_hypotheses_response_format(
     }
 
 
+# ---------------------------------------------------------------------------
+# Stage-3 F11 (cell VERIFY-1): the verifier's two-field choice.
+# ---------------------------------------------------------------------------
+#
+# EXACTLY TWO FIELDS, and the narrower one is the measured one. "chosen_position"
+# is the 1-based POSITION in the candidate block
+# ``rails.phase_material.render_sealed_sample_block`` rendered, never a sealed
+# sample index: the block deliberately never shows the sample index, so a
+# position has to be resolved through the per-row permutation
+# (``rails.phase_material.sealed_sample_permutation``) and a verifier cannot
+# pick "sample 0" by naming a number it read off the prompt. "reason" is one
+# bounded line, diagnostic only.
+#
+# The position is an integer ENUM rather than an integer with minimum/maximum
+# for a llama.cpp reason: an enum lowers to a closed set of literal
+# alternatives in every JSON-schema-to-grammar version this study has served,
+# which is the same reason ``slurp_intent_hypotheses_response_format`` puts its
+# legal intent ids in an enum.
+
+
+def slurp_verifier_choice_response_format(
+    _lock: Mapping[str, object],
+    _root: Path,
+    **params: object,
+) -> Mapping[str, object]:
+    """The registered ``slurp-verifier-choice-v1`` structured-output contract.
+
+    ``candidate_count`` (required) is how many numbered candidates the block
+    carries, and it must equal the phase material's own
+    ``predecessor_source.expected_sample_count`` -- the cell config states it
+    once per side and ``tests/unit/test_slurp_verify1_registration.py`` proves
+    the two agree, because a schema that allowed a position the block does not
+    render would admit an unresolvable answer.
+    ``max_reason_chars`` (optional) bounds the diagnostic line.
+    """
+
+    required = {"candidate_count"}
+    optional = {"max_reason_chars"}
+    if not required <= set(params) or not set(params) <= required | optional:
+        raise ArtifactContentError(
+            "the SLURP verifier choice contract takes candidate_count and an "
+            "optional max_reason_chars, and nothing else"
+        )
+    count = params["candidate_count"]
+    if isinstance(count, bool) or not isinstance(count, int) or not 2 <= count <= 16:
+        raise ArtifactContentError(
+            "SLURP verifier choice candidate_count must be an integer from 2 to 16"
+        )
+    reason_chars = params.get("max_reason_chars", SLURP_VERIFIER_REASON_MAX_CHARS)
+    if (
+        isinstance(reason_chars, bool)
+        or not isinstance(reason_chars, int)
+        or not 1 <= reason_chars <= SLURP_VERIFIER_REASON_MAX_CHARS
+    ):
+        raise ArtifactContentError(
+            "SLURP verifier choice max_reason_chars must be an integer from 1 to "
+            f"{SLURP_VERIFIER_REASON_MAX_CHARS}"
+        )
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "slurp_verifier_choice",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["chosen_position", "reason"],
+                "properties": {
+                    "chosen_position": {
+                        "type": "integer",
+                        "enum": list(range(1, count + 1)),
+                    },
+                    "reason": {"type": "string", "maxLength": reason_chars},
+                },
+            },
+        },
+    }
+
+
+def parse_slurp_verifier_choice(
+    raw_response: str, *, candidate_count: int,
+    max_reason_chars: int = SLURP_VERIFIER_REASON_MAX_CHARS,
+) -> dict[str, object]:
+    """The parser of record for a ``slurp-verifier-choice-v1`` response.
+
+    Beside the schema above, in this module, so the contract has ONE authority:
+    a read that parsed the response differently from the way the request asked
+    for it would be measuring its own leniency. Returns
+    ``{"chosen_position": int, "reason": str}``; raises
+    :class:`ArtifactContentError` on anything the schema would not have
+    produced, so a non-conforming row is a counted parse failure in the read
+    rather than a silently coerced choice.
+    """
+
+    if isinstance(candidate_count, bool) or not isinstance(candidate_count, int) or (
+        not 2 <= candidate_count <= 16
+    ):
+        raise ArtifactContentError(
+            "parse_slurp_verifier_choice needs a candidate_count from 2 to 16"
+        )
+    if not isinstance(raw_response, str) or not raw_response.strip():
+        raise ArtifactContentError("a verifier choice response must be non-empty text")
+    try:
+        document = json.loads(raw_response)
+    except json.JSONDecodeError as error:
+        raise ArtifactContentError(
+            f"verifier choice response is not one JSON object: {error}"
+        ) from error
+    if not isinstance(document, Mapping) or set(document) != {
+        "chosen_position",
+        "reason",
+    }:
+        raise ArtifactContentError(
+            "a verifier choice response carries exactly the keys chosen_position "
+            "and reason"
+        )
+    position = document["chosen_position"]
+    if (
+        isinstance(position, bool)
+        or not isinstance(position, int)
+        or not 1 <= position <= candidate_count
+    ):
+        raise ArtifactContentError(
+            f"verifier chosen_position must be an integer from 1 to {candidate_count}"
+        )
+    reason = document["reason"]
+    if (isinstance(max_reason_chars, bool) or not isinstance(max_reason_chars, int)
+            or not 1 <= max_reason_chars <= SLURP_VERIFIER_REASON_MAX_CHARS):
+        raise ArtifactContentError("invalid verifier reason character bound")
+    if not isinstance(reason, str) or len(reason) > max_reason_chars:
+        raise ArtifactContentError("verifier reason must be a string within its declared bound")
+    return {"chosen_position": position, "reason": reason}
+
+
 def register_artifact_content_v1() -> None:
     if SLURP_HYPOTHESIS_CONTENT_ID not in ARTIFACT_CONTENT_VALIDATORS.names():
         ARTIFACT_CONTENT_VALIDATORS.register(
@@ -335,7 +480,11 @@ register_artifact_content_v1()
 __all__ = [
     "ArtifactContentError",
     "SLURP_HYPOTHESIS_CONTENT_ID",
+    "SLURP_VERIFIER_CHOICE_FORMAT_ID",
+    "SLURP_VERIFIER_REASON_MAX_CHARS",
     "SlurpHypothesisArtifactValidator",
     "build_slurp_hypothesis_artifact_validator",
+    "parse_slurp_verifier_choice",
     "slurp_intent_hypotheses_response_format",
+    "slurp_verifier_choice_response_format",
 ]

@@ -1,0 +1,354 @@
+{
+  "_note": "The registered protocol of cell VERIFY-1, written BEFORE any contact. Every number here was measured or derived MODEL-FREE at registration: the composed and protocol hashes through core.config.compose / core.config.protocol_hash, the split identities through data.splits.split_identity_hash, the population counts and per-row permutations through scripts/build_slurp_verify1_material.py over the sealed ROLL-1 bundle, and the prompt-fit and leakage figures through scripts/flights/batch/verify1_dry_run.py. Zero model, tokenizer, encoder, scorer, GPU and network contacts; no audio decoded.",
+  "authority": {
+    "board_route": "F11",
+    "coordinator_rulings_2026_09_25": [
+      "Implement the recommended option: a NEW opt-in predecessor binding 'sealed-samples-manifest' in rails.phase_material whose loader reads row['solver_group']['samples'] of a sealed manifest, renders each sample through the existing render_rollout_answer in a permutation drawn from a seed pinned in predecessor_source, and returns that block as the bound state content with NO delivered-answer anchor prepended. Every existing sealed-manifest cell stays byte-identical (opt-in by the new binding name only). Speech rides the ordinary phase-program path, so no new D2 arm and no construction-visible field.",
+      "Population ruling: fly all 625 R01C rows. The 420 rows whose five samples render to at least two DISTINCT answers are the informative population and carry the probe's reading; the 205 rows whose samples render to one distinct answer are a built-in POSITION-BIAS control. Report both strata separately beside the primary complete-roster result."
+    ],
+    "handoff": "docs/handoff/2026-09-24-fable51/HANDOFF-STAGE3-FOR-CHATGPT-v1.md, route F11",
+    "predecessor_reads": [
+      "docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md",
+      "docs/readiness/2026-09-24-slurp-stage3-roll-aa-v1/README.md",
+      "docs/readiness/2026-09-24-slurp-stage3-var1-v1/README.md"
+    ],
+    "preregistration": "docs/readiness/2026-09-25-slurp-stage3-verify-1-v1-preregistration.md",
+    "registry_record": {
+      "family": "test-time-scaling",
+      "id": "inference-time-verification-v1",
+      "operators_defined": [
+        "scoring",
+        "selection"
+      ],
+      "operators_used_by_this_cell": [
+        "selection"
+      ],
+      "registered_by": "commit 213aacf4 (core.stage3_algorithms)",
+      "why_not_scoring": "The cell asks for no per-candidate score, ranking or margin, so nothing in its sealed output can be read as a model-produced score. Claiming the scoring operator would claim a quantity the response format cannot carry."
+    },
+    "owner_implementation_2026_09_25": "Owner approved the ChatGPT continuation plan, including all-roster analysis, pre-contact balanced positions, aligned metrics, independent WSL execution, and frozen-core action-value exploration."
+  },
+  "budgets": {
+    "arm": {
+      "expected_contacts": 625,
+      "expected_gpu_hours": 0.3,
+      "fit_endpoint_calls_cap": 1250,
+      "generation_calls_cap": 1250,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 5454
+    },
+    "ceilings_are_not_targets": true,
+    "run_cumulative": "planned_model_calls and planned_speech_audio_seconds bind across ALL attempts of a run id.",
+    "smoke": {
+      "expected_contacts": 4,
+      "fit_endpoint_calls_cap": 8,
+      "generation_calls_cap": 8,
+      "gpu_hours_fit_inclusive": 0.2,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 37
+    }
+  },
+  "cells": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-verify-1-v1-generation",
+      "audio_cap": 5454,
+      "baseline": "slurp-native-stage3-verify-1-baseline-v1",
+      "cell_id": "slurp-native-stage3-verify-1-v1",
+      "composed_config_hash": "ffd733033123a08a64d46e2a95d94e76a58b8b839d03c22ef6f19eea684cb134",
+      "experiment": "slurp-native-stage3-verify-1-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-verify-1-v1-fit",
+      "fit_cap": 1250,
+      "fit_cell_id": "slurp-native-stage3-verify-1-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-VERIFY-1-FIT-V1",
+      "gen_cap": 1250,
+      "gpu_hours": 1.0,
+      "protocol_hash": "10f0acb28972f6ee270e37d6cf45a6abac9231c11d5c94663466978bb65f3c9e",
+      "rows": 625,
+      "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-V1",
+      "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-verify-1-smoke-4-v1-generation",
+      "audio_cap": 37,
+      "baseline": "slurp-native-stage3-verify-1-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-verify-1-smoke-4-v1",
+      "composed_config_hash": "44c743b6e82e191958cc0e02c5319e94e63d988a6c4bbcba35ccfea00e7b1655",
+      "experiment": "slurp-native-stage3-verify-1-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-verify-1-smoke-4-v1-fit",
+      "fit_cap": 8,
+      "fit_cell_id": "slurp-native-stage3-verify-1-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-VERIFY-1-SMOKE-4-FIT-V1",
+      "gen_cap": 8,
+      "gpu_hours": 0.2,
+      "protocol_hash": "917800f1bfa947f7525259051cde95f01f18a59a7bd8d91b66e0577050d9dded",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-SMOKE-4-V1",
+      "split_identity_hash": "2657110d135195dafbf1ebd12850470b0ae8dc28ffa1d61494266d047e349efd"
+    }
+  },
+  "decision_rule": {
+    "status": "DESCRIPTIVE",
+    "registered_before_contact": true,
+    "primary_read": "All 625 rows: paired pooled official SLU-F1 of the chosen sealed sample versus mean-single. Report sample-0, medoid and explicitly metric-limited oracle references. Report 420 content-distinct, 414 all-parsed, 205 identical-answer controls and 225 row-F1-disagreeing strata separately beside the complete-roster result.",
+    "self_verification_works_if": "The complete-roster paired CI95 lower bound for pooled SLU-F1 gain versus mean-single is positive and intent passes the preregistered operational non-inferiority guard from the R01C own-null. This opens a subsequent evidence-rich Reviewer design, not a system admission or test claim.",
+    "the_sampling_line_closes_if": "No supported complete-roster selection benefit: stop this bounded selection route without claiming that larger sampling can never help. Position histograms diagnose presentation bias; similarity or non-significance of those histograms alone never proves absence of content information.",
+    "structural_acceptance": "COMPLETED source and verifier manifests; exact 625 roster identities; every chosen position traceably resolves to the pinned source samples. Invalid choices use predeclared sealed source sample index 0 and remain in complete-roster estimates with separate failure/fallback counts. Selected malformed-source candidates are tagged, not dropped.",
+    "intervals": "Paired utterance-cluster bootstrap, 10000 draws, seed 20260915; official pooled counts and per-row F1 are separate estimands.",
+    "null_interpretation": "VAR1 PLAN/PLANR intent margin is an operational guard only; its SLU half-width is not a universal threshold or an estimator of selector contrast variance."
+  },
+  "execution_route": "The four-row smoke flies through core.flight.cli worker under its own lease; the 625-row arm flies through the shared core.flight.cli campaign over the committed single-cell plan configs/campaign/slurp-native-stage3-verify-1-v1.json, attaching to the resident session serving-slurp-native-candidate-five-train-a-np4-v1 (attach only, never spawn or stop). Queued through the SAEA-Batch-Driver scheduled task (decision 77) by scripts/flights/batch/batch_chain_verify1.sh: ONE step, smoke then arm.",
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, program, prompt, permutation-seed, geometry or cap change. This registration pre-authorises no recovery; a root-diagnosed recovery re-registration is a separate act once the cell is flown. A partial manifest is never read.",
+  "form": {
+    "leakage_rule": {
+      "containment_hits": 0,
+      "decision": "PASS",
+      "haystacks": 627,
+      "protected_payloads": 17108,
+      "snapshot_content_hash": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+      "snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json"
+    },
+    "no_retrieval": "The choose phase declares knowledge 'none'; the fragment declares no phase_supply and no knowledge_stores. The five candidates ARE the evidence under test. Supplying the plan's retrieved exemplars would make a negative result unattributable -- verifier failure or misleading supply, the failure mode cells IDX and EFF-1 recorded -- and could not reproduce the generator's information set anyway, because the plan's Solver also saw a Perception candidate state and a slot-contract candidate supply for which a one-phase program has no seat. REGISTERED AS A DEVIATION from the coordinator's 'clone the vectors and the MINUS-R01 exemplar release' instruction: the packets, the receipts and the MINUS-R01 release are cloned from configs/baseline/slurp-native-stage3-var1-plan-r01c-baseline-v1.json, the MINUS-R01 release being BOUND as the invisible leakage authority (knowledge_snapshot_relpath), while the two sealed speech query-vector files are NOT carried because no phase retrieves and a pinned vector file nothing reads pins nothing.",
+    "phase_material_receipt_sha256": "e661eb9979077c3f9214bb16027c588b2793fa1654707e246f4e738c57de2998",
+    "predecessor_source": {
+      "binding": "sealed-samples-manifest",
+      "expected_sample_count": 5,
+      "manifest_relpath": "runs/SAEA-SLURP-STAGE3-ROLLOUT-R01-V1/attempt-slurp-native-stage3-rollout-r01-generation-v1/SAEA-SLURP-STAGE3-ROLLOUT-R01-V1.run-manifest.json",
+      "manifest_sha256": "87ba077dfb2c053679b1befa4f36e98021a3efde55783a3b293f77d56381790a",
+      "permutation_seed": 20260925,
+      "producer_policy_id": "SAEA-SLURP-STAGE3-ROLLOUT-R01-V1",
+      "permutation_rule": "balanced-block-v1"
+    },
+    "program": {
+      "id": "phase-slurp-verify-select-v1",
+      "knowledge": "none",
+      "max_contacts": 2,
+      "phases": [
+        "choose"
+      ],
+      "purpose": "select-candidate-answer",
+      "relpath": "configs/policy/phase-slurp-verify-select-v1.json",
+      "stop_rule": "always-run-full-program",
+      "why_ceiling_two": "'always-run-full-program' walks each phase once, so the program spends exactly ONE contact per row; the ceiling carries one contact of headroom and is a BOUND, never a target. The registered generation cap is 625 x 2 = 1,250 against an expected spend of 625."
+    },
+    "response_format": {
+      "chosen_position": "integer, enum 1..5 -- the 1-BASED POSITION in the rendered candidate block, never a sealed sample index. The block deliberately never shows the sample index, so a position must be resolved through the per-row permutation and a verifier cannot pick 'sample 0' by naming a number it read off the prompt. An enum rather than minimum/maximum because an enum lowers to a closed set of literal alternatives in every JSON-schema-to-grammar version this study has served.",
+      "fields": [
+        "chosen_position",
+        "reason"
+      ],
+      "id": "slurp-verifier-choice-v1",
+      "module": "rails.artifact_results",
+      "parser_of_record": "rails.artifact_results.parse_slurp_verifier_choice",
+      "reason": "string, maxLength 160 -- one bounded diagnostic line"
+    },
+    "system_text_sha256": "5a80ef3556517f2f3e237136ff9d896e029ad91a0e2baa37d327c61009870976",
+    "templates": {
+      "configs/probes/slurp_verify_select_context_v1.txt": "ae78c227648e7ae7fea11eee357ddce5296a34b49fd27a5e106e5b9863d579ab",
+      "configs/probes/slurp_verify_select_v1.txt": "67898dac032684a0d120abbb43807a72e8c1ef183157a29d8f6686fc87f55674"
+    }
+  },
+  "four_row_dry_run": [
+    {
+      "block_chars": 660,
+      "distinct_answers": 1,
+      "instruction_chars": 2243,
+      "permutation": [
+        0,
+        4,
+        3,
+        2,
+        1
+      ],
+      "sample_id": "slurp:train:000049:audio-1434542455",
+      "shape": "position-bias control"
+    },
+    {
+      "block_chars": 825,
+      "distinct_answers": 1,
+      "instruction_chars": 2408,
+      "permutation": [
+        0,
+        2,
+        1,
+        4,
+        3
+      ],
+      "sample_id": "slurp:train:000051:audio-1434531302-headset",
+      "shape": "position-bias control"
+    },
+    {
+      "block_chars": 689,
+      "distinct_answers": 4,
+      "instruction_chars": 2272,
+      "permutation": [
+        1,
+        3,
+        2,
+        0,
+        4
+      ],
+      "sample_id": "slurp:train:000282:audio-1502114155",
+      "shape": "informative"
+    },
+    {
+      "block_chars": 1300,
+      "distinct_answers": 5,
+      "instruction_chars": 2883,
+      "permutation": [
+        0,
+        3,
+        4,
+        1,
+        2
+      ],
+      "sample_id": "slurp:train:000308:audio-1488905475",
+      "shape": "informative (maximal disagreement)"
+    }
+  ],
+  "margins": {
+    "context_only": {
+      "dev_2000_added_h_intent": 1.152,
+      "dev_2000_added_h_slu": 1.2525,
+      "note": "CONTEXT ONLY, never a gate: cross-flight half-widths on other rosters at other n, plus the ROLL-AA within-flight floor at n = 200. This cell's comparison is BETWEEN-flight (its chosen-sample column against the sealed ROLL-1 sample columns), so the within-flight floor is not its margin either.",
+      "roll_aa_within_flight_h_intent": 0.0,
+      "roll_aa_within_flight_h_slu": 0.735,
+      "train_fold_a_h_intent": 0.9943,
+      "train_fold_a_h_slu": 1.2485
+    },
+    "primary": "PENDING_OWN_NULL_R01C",
+    "primary_note": "R01C has no own null of its own yet. The VAR-1 family's VAR1-PLAN / VAR1-PLANR pair (SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1 and SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-V1) measures it on this exact roster, and that half-width is the margin this cell's SLU comparison is read against. Until it is sealed the comparison is reported with the context half-widths below and explicitly labelled UNRESOLVED; no verdict is drawn from a margin this program does not yet have."
+  },
+  "populations": {
+    "distinct_answer_histogram": {
+      "1": 205,
+      "2": 182,
+      "3": 117,
+      "4": 85,
+      "5": 36
+    },
+    "informative_content_distinct": 420,
+    "informative_content_distinct_all_parsed": 414,
+    "position_bias_control_single_answer": 205,
+    "rows": 625,
+    "rows_with_unparseable_sample": 6,
+    "ruling": "All 625 rows are the primary population. Report the 420 content-distinct rows, 414 content-distinct rows with all candidates parsed, 205 identical-answer controls, and 225 row-F1-disagreeing rows separately. Preserve the six rows containing nine malformed source samples; flag their canonical empty renderings. Invalid verifier responses fall back to sealed source sample index 0. Do not exclude failures from complete-roster estimates. Position histograms are descriptive, not tests of semantic selection.",
+    "unparseable_samples": 9,
+    "why_the_control_is_not_waste": "A third of this roster is degenerate for selection, which is exactly why a prefix smoke would have proved nothing: the first four R01C rows all render one distinct candidate. Flying them costs 205 contacts and buys the only clean position-bias measurement available."
+  },
+  "prohibitions": [
+    "No official complete scoring job is scheduled: the delivered text is a CHOICE, not a SLURP answer. The read reuses the sealed ROLL-1 per-sample official scores and the offline aggregation read's derived columns and re-derives nothing.",
+    "No gold, reference, transcript or future turn enters runtime. The loader refuses a custody object carrying a reference-shaped key.",
+    "R01C is a CONSTRUCTION roster (owner decisions 28 and 86): every number this cell produces is a development number and never a test claim. Any effect that separates from this roster's own null must be re-read on TRAIN Fold A and on DEV-2000-ADDED before it is a claim of any kind.",
+    "No second answering model, retriever or judge; no tool authority on any phase."
+  ],
+  "prompt_fit": {
+    "audio_tokens_upper_bound": 365,
+    "budget_tokens": 21504,
+    "chars_per_token_pessimistic": 2.5,
+    "completion_ceiling_tokens": 512,
+    "decision": "ALLOW",
+    "envelope_overhead_tokens": 512,
+    "estimated_required_window_tokens": 6047,
+    "estimated_text_prompt_tokens": 4658,
+    "headroom_tokens": 15457,
+    "live_slot_tokens": 24576,
+    "operational_reserve_tokens": 3072,
+    "system_text_chars": 8146,
+    "widest_block_chars": 1915,
+    "widest_instruction_chars": 3498,
+    "widest_sample_id": "slurp:train:010932:audio-1501753631"
+  },
+  "purpose": "Cell VERIFY-1, the Stage-3 VERIFIER-SELECTION PROBE (board route F11; Stage-3 algorithm family inference-time-verification-v1, operator SELECTION). ONE contact per R01C construction row carries that row's OWN speech plus the FIVE sealed ROLL-1 Solver candidate answers for that same row, in a per-row presentation order pinned by the config, with NO delivered-answer anchor and no retrieved knowledge, and asks the frozen core to name the candidate the speech supports under a two-field contract. The question it exists for is the ORACLE gap the offline sample-aggregation read measured over this same sealed rollout: best-of-5 is +6.55 pp pooled SLU-F1 and +12.55 pp on the 225 score-disagreeing rows, and NOT ONE deterministic agreement rule the read could build reached any of it. Can the frozen core VERIFY better than it GENERATES? DESCRIPTIVE: no admission verdict, no comparator arm, no gate, nothing admitted, released or locked.",
+  "registered_at_utc": "2026-09-25T04:00:00.000000+00:00",
+  "registration_base_commit": "c868a99d",
+  "schema": "saea-registered-protocol-v1",
+  "sealed_comparator_numbers": {
+    "all_625": {
+      "R0_mean_single_intent_exact": 70.18,
+      "R0_mean_single_slu_f1": 57.88,
+      "R1_medoid_ci95": [
+        -0.63,
+        0.71
+      ],
+      "R1_medoid_dslu": 0.03,
+      "R1_medoid_slu_f1": 57.91,
+      "oracle_best_of_5_intent_exact": 71.04,
+      "oracle_best_of_5_slu_f1": 64.43,
+      "oracle_ci95": [
+        5.56,
+        7.56
+      ],
+      "oracle_dslu": 6.55
+    },
+    "bootstrap": "paired row bootstrap, 10,000 draws, seed 20260915, cluster = row",
+    "score_agreeing_400": {
+      "R0_mean_single_slu_f1": 54.57,
+      "oracle_ci95": [
+        -0.45,
+        0.68
+      ],
+      "oracle_dslu": 0.1,
+      "oracle_slu_f1": 54.67
+    },
+    "score_disagreeing_225": {
+      "R0_mean_single_slu_f1": 60.66,
+      "R1_medoid_slu_f1": 61.77,
+      "oracle_ci95": [
+        10.99,
+        14.15
+      ],
+      "oracle_dslu": 12.55,
+      "oracle_slu_f1": 73.21
+    },
+    "scorer": "slurp-slu-official-projected-v3-train",
+    "source": "docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md"
+  },
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-verify1b, branch fable/verify1b",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "the_harness_change": {
+    "byte_identity_proof": {
+      "config_layer": "The config-layer bytes of ALL 35 committed baselines declaring a sealed-manifest phase aggregate to sha256 acc9da6df5ae08bf4bf15b87ac94d93726e7c9135c5350571165baf652568a15, the value measured on the UNMODIFIED tree before the binding existed.",
+      "render_layer": "A hermetic sealed-manifest render (three synthetic rows, a stub bundle verifier) reproduces instruction sha256 3b2efbcd30fa1a37160524d9ba8793d0915d8ec8ef355acad283c30193351512 and phase-material-receipt sha256 200b312bfb876da1cfacb2f52a7f5b164077ca0ca8d2ef258df315fdb0d47c0e, both measured pre-change. The state kind of a sealed-manifest state is still exactly 'phase:<phase>'.",
+      "test": "tests/unit/test_phase_material_sealed_samples.py"
+    },
+    "permutation": {
+      "per_row_not_per_run": "One order shared by every row would confound position bias with sample-index bias, and the 205 single-answer rows exist precisely to measure position bias with no confound.",
+      "realised_index_to_position_spread": "Each sealed sample index lands in each of the five positions between 109 and 141 times over 625 rows (uniform expectation 125), so the pinned order introduces no systematic index-to-position bias.",
+      "recorded_where": [
+        "the AgentStateArtifact's cited_value_ids, as 'solver-sample-<index>-at-position-<n>'",
+        "the committed model-free record docs/receipts/verify1/slurp-stage3-verify-1-material-v1.json"
+      ],
+      "rule": "balanced-block-v1: hash-rank the full sealed source roster, then assign every cyclic rotation of a seeded Fisher-Yates permutation within each five-row block. Each source index appears at each position exactly 125 times on the full 625 rows.",
+      "seed": 20260925
+    },
+    "refusals_by_name": [
+      "a manifest row without solver_group",
+      "a row whose sample count differs from the registered expectation",
+      "a row whose solver sample indices are not 0..N-1, or carry a duplicate or non-integer sample_index",
+      "a solver sample whose parse_status is outside the closed vocabulary {ok, malformed}",
+      "a row, solver_group or sample record carrying a reference-shaped key (gold / reference / annotation / ground_truth / truth / target / expected / correct) -- refused rather than read around, so no gold can ever reach a candidate block",
+      "a missing or unpinned permutation seed, and a seed that is not a non-negative integer",
+      "an expected_sample_count outside 2..16, or absent",
+      "a predecessor_source whose key set is not exactly the five this binding declares (the three-key sealed-manifest source is refused here)",
+      "a state_fill declared beside this binding (every registered fill reads the state as ONE sealed answer)",
+      "use of the binding beside prepared_execution_units",
+      "a manifest whose bytes do not hash to the configured sha256",
+      "duplicate sealed rows for one sample id, and a requested sample the bundle does not carry",
+      "anything core.bundle.verify_bundle itself refuses"
+    ],
+    "unparseable_sample_disposition": {
+      "counts": {
+        "all_six_are_inside_the_informative_420": true,
+        "rows_with_unparseable_sample": 6,
+        "unparseable_samples": 9
+      },
+      "rule": "A sealed sample whose parse_status is not 'ok' renders the canonical EMPTY answer rails.stage3_advantage_material.render_rollout_answer already writes for a failed parse. The ROW IS FLOWN: the candidate count on the wire must be the registered five on every row, because a row shown four candidates would be under a different contract from every other row of the same cell. The row is EXCLUDED from the primary informative read, because one of its candidates is a harness constant rather than something the core said."
+    },
+    "what": "One NEW predecessor binding, 'sealed-samples-manifest', in rails.phase_material, plus the single dispatch seam rails.phase_material.sealed_states_for_spec that the three core.flight.FlightRuntime sites needing external per-sample states now share (the prompt-budget estimate, the pinned prompt-fit verification and the real flight binding). Written as one function rather than three copies of a branch so a binding can never reach the wire through one site and be padded at another.",
+    "why_a_second_binding_and_not_a_flag": "rails.phase_material.sealed_states_from_manifest builds exactly ONE state per row from the sealed row's 'text' -- the DELIVERED answer -- and never opens solver_group. A verifier contact needs the opposite: all N samples, none privileged, and no delivered-answer anchor, because an anchor would tell the contact which candidate the harness already committed. Widening the first loader would have made every already-flown sealed-manifest cell's prompt depend on a new argument's default."
+  },
+  "prompt_fit_kind": "Dry run is an estimate only. Mandatory live_phase_fit covers every actual request before generation."
+}

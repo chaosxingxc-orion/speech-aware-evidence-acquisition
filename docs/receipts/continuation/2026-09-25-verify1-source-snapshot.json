@@ -1,0 +1,33 @@
+{
+  "schema": "saea-source-worktree-snapshot-v1",
+  "source_worktree": "/home/chao/saea-worktrees/fable-verify1b",
+  "source_head": "c868a99dbf65e330253941374eb9a5953133c042",
+  "target_base": "d2d3910c",
+  "reason": "Continue the owner-approved Fable VERIFY-1 implementation without altering the source worktree or active flight.",
+  "files": {
+    "configs/probes/manifest.json": "2c4a496013766d9d9daa66508500ee3a78c55dd17b79a6d4580f5adb3922b212",
+    "src/speech_aware_evidence_acquisition/core/flight/runtime.py": "bdc51c8e2f25bc5e48829d495ed0fd3d8221b5afbcbcd25862e8789f4d4ef9d1",
+    "src/speech_aware_evidence_acquisition/rails/artifact_results.py": "cb0c6240d1f89ff9b47dec99dcf95f388fb5d26de4c7d63d5bc60b07ee2adee7",
+    "src/speech_aware_evidence_acquisition/rails/controllers.py": "1def20741b11fd3eb6f11c3aedc4346d7f0ea8f578775aafb88beea85280f513",
+    "src/speech_aware_evidence_acquisition/rails/phase_material.py": "3cf343de42b3647bf874c9ab38d5312947be6892f9eb6d221e54de032e4b50f6",
+    "configs/baseline/slurp-native-stage3-verify-1-baseline-v1.json": "6f26994b698501fda516cb73dfe81b6c5e0f349400588e9c5792886226400f1a",
+    "configs/baseline/slurp-native-stage3-verify-1-smoke-4-baseline-v1.json": "ae1a587fdd5262daf243265b967e5b12419c59d7a3f45ed2be284be1724782d9",
+    "configs/campaign/slurp-native-stage3-verify-1-v1.json": "4c31091e8e80fbcae6fd9ff35ee2417a335d215cc873bc6b7d7e348c37faf20e",
+    "configs/experiment/slurp-native-stage3-verify-1-smoke-4-v1.json": "4b6d01bf682f30cdb33ee870f744f12eed497b7321ba4a16dab888bdf61596f4",
+    "configs/experiment/slurp-native-stage3-verify-1-v1.json": "4bfc05cc76b63390ea1f995993851d018cb6462255cc8dac622b65afb1bbd92d",
+    "configs/policy/phase-slurp-verify-select-v1.json": "93f060a66cf82dc2c082b3fc731220d10d717229b7760a2bb56dca84bdbff487",
+    "configs/probes/slurp_verify_select_context_v1.txt": "ae78c227648e7ae7fea11eee357ddce5296a34b49fd27a5e106e5b9863d579ab",
+    "configs/probes/slurp_verify_select_v1.txt": "67898dac032684a0d120abbb43807a72e8c1ef183157a29d8f6686fc87f55674",
+    "docs/readiness/2026-09-25-slurp-stage3-verify-1-v1/analysis-recipe-v1.json": "6e36a16f42c1e5a0d41914c9fed73546da42458c48e2a11e06cb72a6bb4c6546",
+    "docs/readiness/2026-09-25-slurp-stage3-verify-1-v1/fit-plan-registered-v1.json": "938d926adcab896d2c5f0ee41b81a7d1518085bb46961a7cead84dc53177d2cc",
+    "docs/readiness/2026-09-25-slurp-stage3-verify-1-v1/generation-plan-registered-v1.json": "9d7bcef4b1019a40fdeb0e65df5bbbbe775f05aabe2a6a80bb869e987dea48a6",
+    "docs/readiness/2026-09-25-slurp-stage3-verify-1-v1/protocol-registered-v1.json": "23c6eb5d4434b487c75de83cee725134f7c9bc0e25430dabe86a42373f65466d",
+    "docs/readiness/2026-09-25-slurp-stage3-verify-1-v1/registered-facts-v1.json": "448904e8707244dcdcbab9ca22ec4afb25ed75b6f1fe84785f514ea0dd5e0528",
+    "docs/readiness/2026-09-25-slurp-stage3-verify-1-v1/smoke-fit-plan-registered-v1.json": "f220547db7a80af246ad8348d42c279fbb107ccf13d0e68035662a77aa1fc3b7",
+    "docs/readiness/2026-09-25-slurp-stage3-verify-1-v1/smoke-generation-plan-registered-v1.json": "382e6f0fa360b997ca5151047242fd8fa88614e615b08403e4a66f804aa2d158",
+    "docs/receipts/verify1/slurp-stage3-verify-1-material-v1.json": "843a31d319ed09e18e4e5c9a3b5c3283bb02fb7e00ecc8ee447da4629ef2c417",
+    "scripts/build_slurp_verify1_material.py": "a14d47a585171d02fb405b8230f5388ac6f42cbd4b3265403c5370e0ef7eef58",
+    "scripts/flights/batch/verify1_dry_run.py": "5cdc0265bc637651194604d2688c915d533f54d12d91cf27ff9ab07a02ab6108",
+    "tests/unit/test_phase_material_sealed_samples.py": "30629b5516700835159ea3bed2d41b755b0471ac3048ac9e2359dd4b668fd976"
+  }
+}

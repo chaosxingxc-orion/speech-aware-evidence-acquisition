@@ -1,0 +1,15 @@
+{
+  "schema": "saea-phase-program-v1",
+  "program_id": "phase-slurp-verify-select-v1",
+  "phases": [
+    {
+      "name": "choose",
+      "purpose": "select-candidate-answer",
+      "knowledge": "none",
+      "response_format_id": "slurp-verifier-choice-v1",
+      "barrier": false
+    }
+  ],
+  "max_contacts": 2,
+  "stop_rule": "always-run-full-program"
+}

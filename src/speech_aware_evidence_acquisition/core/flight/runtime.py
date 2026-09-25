@@ -1023,6 +1023,10 @@ def render_phase_prompt_envelopes(
     * ``sealed-manifest`` -- the state this sample's row was sealed with,
       from ``sealed_states_by_phase[phase][sample_id]``; also EXACT, and
       genuinely per-sample.
+    * ``sealed-samples-manifest`` -- the candidate BLOCK this sample's row
+      renders from an external grouped-Solver bundle, from the same mapping;
+      also EXACT and per-sample, and loaded by the same
+      ``rails.phase_material.sealed_states_for_spec`` the flight binding uses.
     * ``append-sealed-state`` -- the predecessor is this run's own preceding
       response and does not exist yet, so the instruction is padded with
       ``completion_token_ceiling`` tokens' worth of ASCII: an upper bound,
@@ -1975,7 +1979,7 @@ class FlightRuntime:
             PHASE_STATE_FILLS,
             load_phase_material_specs,
             render_static_instruction,
-            sealed_states_from_manifest,
+            sealed_states_for_spec,
         )
 
         samples = tuple(samples)
@@ -2015,21 +2019,23 @@ class FlightRuntime:
         ceiling = self._completion_token_ceiling()
         sample_ids = tuple(identity for _, identity, _ in sources)
 
-        # A sealed-manifest phase's predecessor is REAL and per-sample: load
-        # the whole roster's states once, from the manifest the fragment
-        # pins, rather than padding over something already on disk.
+        # An EXTERNALLY bound phase's predecessor is REAL and per-sample: load
+        # the whole roster's states once, from the manifest the fragment pins,
+        # rather than padding over something already on disk. One call per
+        # phase through rails.phase_material.sealed_states_for_spec, which is
+        # also what the real flight binding and the pinned-receipt
+        # verification use, so the three can never disagree about which
+        # bindings are exact and which are padded.
         sealed_states: dict[str, Mapping[str, object]] = {}
         for phase, spec in specs.items():
-            if getattr(spec, "predecessor_binding", "none") != "sealed-manifest":
-                continue
-            source = spec.predecessor_source or {}
-            sealed_states[phase] = sealed_states_from_manifest(
-                self._data_root / str(source["manifest_relpath"]),
-                expected_sha256=str(source["manifest_sha256"]),
+            states = sealed_states_for_spec(
+                spec,
+                data_root=self._data_root,
                 phase_name=phase,
-                producer_policy_id=str(source["producer_policy_id"]),
                 sample_ids=sample_ids,
             )
+            if states is not None:
+                sealed_states[phase] = states
 
         # Registered per-sample fills, resolved ONCE (a fill that reads
         # pinned carrier data pays for it here, not per sample) through the
@@ -2299,7 +2305,7 @@ class FlightRuntime:
         from ...rails.phase_material import (  # noqa: PLC0415 (cycle guard)
             load_phase_material_specs,
             render_static_instruction,
-            sealed_states_from_manifest,
+            sealed_states_for_spec,
         )
 
         values = self._composed.values
@@ -2429,15 +2435,14 @@ class FlightRuntime:
                 )
             sealed_states: dict[str, Mapping[str, object]] = {}
             spec = specs[phase]
-            if spec.predecessor_binding == "sealed-manifest":
-                source = spec.predecessor_source
-                sealed_states[phase] = sealed_states_from_manifest(
-                    self._data_root / str(source["manifest_relpath"]),
-                    expected_sha256=str(source["manifest_sha256"]),
-                    phase_name=phase,
-                    producer_policy_id=str(source["producer_policy_id"]),
-                    sample_ids=(sample_id,),
-                )
+            states = sealed_states_for_spec(
+                spec,
+                data_root=self._data_root,
+                phase_name=phase,
+                sample_ids=(sample_id,),
+            )
+            if states is not None:
+                sealed_states[phase] = states
             envelopes = render_phase_prompt_envelopes(
                 program_id=program.program_id,
                 phase_names=(phase,),
@@ -8618,7 +8623,7 @@ class FlightRuntime:
             phase_material_receipt,
             render_static_instruction,
             resolve_response_formats,
-            sealed_states_from_manifest,
+            sealed_states_for_spec,
         )
         from ...rails.runner import (  # noqa: PLC0415 (cycle guard)
             _protected_knowledge_material,
@@ -8642,16 +8647,14 @@ class FlightRuntime:
         sample_ids = tuple(sample.sample_id for sample in self._samples)
         per_sample_states: dict[str, Mapping[str, object]] = {}
         for phase, spec in specs.items():
-            if spec.predecessor_binding != "sealed-manifest":
-                continue
-            source = spec.predecessor_source
-            per_sample_states[phase] = sealed_states_from_manifest(
-                self._data_root / str(source["manifest_relpath"]),
-                expected_sha256=str(source["manifest_sha256"]),
+            states = sealed_states_for_spec(
+                spec,
+                data_root=self._data_root,
                 phase_name=phase,
-                producer_policy_id=str(source["producer_policy_id"]),
                 sample_ids=sample_ids,
             )
+            if states is not None:
+                per_sample_states[phase] = states
 
         protected = _protected_knowledge_material(snapshot)
         offenders: list[str] = []

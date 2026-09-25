@@ -40,6 +40,8 @@ worktree rather than accumulating independent branches.
   Record this service-process boundary in VAR-1 interpretation. Do not claim that
   the entire family ran in one server process.
 - No VAR-1 variant outcomes have been read by this continuation.
+- At 06:08 UTC the resumed final arm is OPENED, driver and service processes match,
+  and GPU utilization is 97%. SAEA-VAR1-Unopened-20260925 owns the WSL chain.
 - The inherited own-null read failed before any number: the supposedly reusable
   paired-roster reader hardcodes split role dev and rejects TRAIN construction.
   Fixed in 254a80a3 with explicitly guarded discovery/TRAIN support and 22 passing
@@ -122,3 +124,43 @@ The one-shot script scripts/flights/batch/batch_continue_var1_unopened.sh preser
 the original queue and records its replacement hash. It does not reopen five
 completed arms or repeat the completed smoke. The active frozen experiment checkout
 remains at 3ade29ff. Later VERIFY-1 code is integrated only at a run boundary.
+
+## Remaining experiments and expected decisions
+
+1. Close VAR-1 in registered order: PLAN/PLANR own-null, then four variants.
+   Preserve the failed original TRAIN-reader log and use a fresh corrected output.
+   Compare complete task quality, candidate coverage, entity FP/FN, empty-entity
+   mistakes, actual supply size and cost. K16/C5 is a combined action; diversity
+   may also change example count. Neither supports a single-factor claim yet.
+2. VERIFY-1: speech plus five sealed Solver candidates, balanced positions, all
+   625 rows primary; source-index-0 fallback for malformed selector output.
+   Selection benefit opens evidence-rich Reviewer work. Lack of benefit stops
+   expansion of this bounded sampling route. Report metric-limited oracle
+   references and operational intent guard separately.
+3. VAR-2: default 20, 10, 30 and diversity supply branches share their prefix.
+   Only the baseline branch continues downstream. Validate branch custody and
+   full-roster real requests; a component winner still needs a full-system run.
+4. F10: change empty-entity rendering only, preserving identities and count.
+   Evaluate false-positive reduction beside missed entities. Keep the R01C
+   exclusion in the knowledge version.
+5. F4 is conditional: if wider candidates improve coverage without improving
+   final answers, prioritize discriminative evidence and Reviewer selection;
+   otherwise measure marginal coverage from additional neighbor intents.
+6. First policy baseline: finite contextual bandit, frozen model, existing
+   pre-Solver agreement bins, eligible supply actions including default. Two
+   R01C full-system construction rounds: balanced exploration, then 80% current
+   best / 20% uniform. Record action probabilities and terminal trajectories.
+   Update cumulative external values only between rounds; state-action counts
+   below 20 fall back to global action estimates. Freeze policy for evaluation.
+   Use official-count utility plus a separate intent guard. Compare the locked
+   system, best fixed action and learned policy; configuration search alone is
+   not an RL improvement. Multistep optimization waits for useful downstream
+   evidence-acquisition and revision actions.
+
+## Latest custody issue
+
+VERIFY-1 preparation currently refuses a historical ROLL-1 session-receipt hash:
+the manifest names a mutable resident-session path that changed on a restart.
+Do not modify sealed manifests or suppress verification. Locate exact original
+bytes, preserve them by content hash, and establish a versioned relocation rule
+before any VERIFY-1 contact. The active VAR-1 arm does not consume this source.

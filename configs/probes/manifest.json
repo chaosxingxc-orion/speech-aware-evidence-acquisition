@@ -292,6 +292,23 @@
       },
       "scorer": "slurp-slu-official (the same pinned official evaluate.py at commit 8eb16545762be97ace75334109d73824217311f1 as SLURP-DEV1000-CLOSED-LIST-DIRECT), run once per complete manifest through core.scoring_batch; the paper-facing full-row table additionally comes from a post-seal, model-free projection that joins the sealed closed-list scenario/action to these entities and is scored by the SAME registered scorer over the complete roster.",
       "success": "KC-S1b is ADMITTED iff its paired SLU-F1 CI90 lower bound is above 0 against the sealed closed-list direct baseline on the unexposed NEW500 AND the (KC-S1b minus KC-S1a) lower bound is above 0; NULL if either includes 0; HARMFUL if an upper bound is below 0. KC-S1a is the contact-count control and has no gate of its own."
+    },
+    "SLURP-STAGE3-VERIFY-1": {
+      "arms": {
+        "choose": [
+          "slurp_verify_select_context_v1.txt",
+          "slurp_verify_select_v1.txt"
+        ]
+      },
+      "note": "Cell VERIFY-1 (Stage-3 board route F11, the verifier-selection probe). The PAIR: slurp_verify_select_context_v1.txt IS the system message (task_instruction_template, rendered through the slurp-label-inventory fill, so the closed label inventory is available for judging label legality) and slurp_verify_select_v1.txt is the ONE phase's CONTROL turn. Neither carries any knowledge fill: rails.runner refuses a contact instruction containing any facet or value text of the bound snapshot, and the registration proved zero containment for both templates and for all 625 rendered candidate blocks against the bound MINUS-R01 exemplar snapshot's 17,108 protected payloads. The candidate block itself is NOT a template: it is the appended predecessor state, rendered at contact time from cell ROLL-1's sealed grouped-Solver bundle by rails.phase_material.load_sealed_sample_groups under predecessor_binding 'sealed-samples-manifest'. configs/baseline/slurp-native-stage3-verify-1-baseline-v1.json and configs/baseline/slurp-native-stage3-verify-1-smoke-4-baseline-v1.json.",
+      "profile": "bounded-discovery-probe",
+      "sample_receipt": "slurp-stage3-construction-r01c.json",
+      "sampling": {
+        "design": "no new draw: all 625 rows of the committed SLURP-STAGE3-CONSTRUCTION-R01C construction roster cell ROLL-1 already flew, id for id. The per-row candidate PRESENTATION ORDER is drawn from the pinned permutation seed and nothing else.",
+        "seed": 20260925
+      },
+      "scorer": "cost only, and zero official complete scoring jobs: the delivered text is a CHOICE, not a SLURP answer. The read resolves each chosen position to a sealed ROLL-1 sample index through the recorded permutation and reads that sample's EXISTING official score.",
+      "success": "a probe, not a threshold: 625 delivered rows, one contact each, every response parsing under rails.artifact_results.parse_slurp_verifier_choice, and the two registered populations (420 informative / 205 position-bias control) reported separately."
     }
   },
   "samples": {
@@ -506,6 +523,12 @@
     },
     "slurp_top3_hard_first_slots_v1.txt": {
       "sha256": "c814d07822aa47368adad9b2ee60de0b0036e05ade964ca56e2c98b24ee5bcab"
+    },
+    "slurp_verify_select_context_v1.txt": {
+      "sha256": "ae78c227648e7ae7fea11eee357ddce5296a34b49fd27a5e106e5b9863d579ab"
+    },
+    "slurp_verify_select_v1.txt": {
+      "sha256": "67898dac032684a0d120abbb43807a72e8c1ef183157a29d8f6686fc87f55674"
     }
   }
 }

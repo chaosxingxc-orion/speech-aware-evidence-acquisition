@@ -54,12 +54,12 @@ LOCK=/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json
 COMP_RUN=SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1
 COMP_ATTEMPT=attempt-slurp-native-stage3-var1-plan-r01c-v1-generation
 LEFT_LABEL="VAR1-PLAN (the locked v2.0 plan on R01C)"
-FAMILY_ROOT=$SPEECHRL_DATA_DIR/analysis/SLURP-VAR1-VARIANT-READ-V1
+FAMILY_ROOT=$SPEECHRL_DATA_DIR/analysis/SLURP-VAR1-VARIANT-READ-V1${SAEA_ANALYSIS_SUFFIX:-}
 
 # One arm pair through the roster-generic paired driver.
 paired_read() {
   RIGHT_RUN=$1; RIGHT_ATTEMPT=$2; RIGHT_LABEL=$3; ROOT_ID=$4; RECIPE=$5; TITLE=$6
-  ROOT=$SPEECHRL_DATA_DIR/analysis/$ROOT_ID
+  ROOT=$SPEECHRL_DATA_DIR/analysis/$ROOT_ID${SAEA_ANALYSIS_SUFFIX:-}
   mkdir -p "$ROOT" \
     && cp "$MAIN/scripts/analysis/slurp_paired_roster_read.py" "$ROOT/slurp_paired_roster_read.py" \
     && cp "$PKG/registered-facts-v1.json" "$ROOT/registered-var1.json" \

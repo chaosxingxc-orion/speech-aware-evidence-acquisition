@@ -98,7 +98,19 @@ from .material import PhaseMaterial
 #:                    :func:`sealed_states_from_manifest`). This is how a
 #:                    slot-stage cell conditions on the sealed closed-list
 #:                    intent without re-flying the contact that produced it.
-PREDECESSOR_BINDINGS = frozenset({"none", "append-sealed-state", "sealed-manifest"})
+#: ``"sealed-samples-manifest"`` -- append a state rendering ALL N SEALED
+#:                    SOLVER SAMPLES of this row from a grouped-Solver bundle
+#:                    (see :func:`sealed_sample_states_from_manifest`), in a
+#:                    permutation pinned by the binding's own seed and with NO
+#:                    delivered-answer anchor. This is how a verifier cell
+#:                    conditions on the frozen core's OWN candidate answers
+#:                    while its speech rides the ordinary phase-program path.
+#:                    OPT-IN BY NAME: a ``"sealed-manifest"`` phase keeps its
+#:                    single delivered-answer state, byte for byte.
+SEALED_SAMPLES_BINDING = "sealed-samples-manifest"
+PREDECESSOR_BINDINGS = frozenset(
+    {"none", "append-sealed-state", "sealed-manifest", SEALED_SAMPLES_BINDING}
+)
 
 _SPEC_KEYS = frozenset(
     {
@@ -114,6 +126,27 @@ _SPEC_KEYS = frozenset(
 _PREDECESSOR_SOURCE_KEYS = frozenset(
     {"manifest_relpath", "manifest_sha256", "producer_policy_id"}
 )
+#: The EXACT keys a ``sealed-samples-manifest`` ``predecessor_source`` carries.
+#: The three the single-state loader needs, plus the two that make a candidate
+#: block auditable: how many samples every row MUST carry (a row with any other
+#: count is refused rather than silently shown fewer candidates) and the seed
+#: the per-row presentation order is drawn from. Both ride the config hash, so
+#: "which candidate sat in which position" is decided before the first contact
+#: and recoverable from the config alone.
+_SEALED_SAMPLES_SOURCE_KEYS = frozenset(
+    {
+        "manifest_relpath",
+        "manifest_sha256",
+        "producer_policy_id",
+        "expected_sample_count",
+        "permutation_seed",
+    }
+)
+_SEALED_SAMPLES_TEXT_KEYS = ("manifest_relpath", "manifest_sha256", "producer_policy_id")
+#: A one-candidate "selection" is not a selection, and a block wider than this
+#: is a different experiment; both are refused at config-load time.
+SEALED_SAMPLES_MIN_COUNT = 2
+SEALED_SAMPLES_MAX_COUNT = 16
 
 #: The exact prefix an appended predecessor state carries. Fixed here rather
 #: than made configurable: a two-contact cell's paired contrast is only a
@@ -845,6 +878,8 @@ class PhaseMaterialSpec:
                         f"phase {self.phase!r} predecessor_source.{key} must be a "
                         "non-empty string"
                     )
+        elif self.predecessor_binding == SEALED_SAMPLES_BINDING:
+            self._validate_sealed_samples_source()
         elif self.predecessor_source is not None:
             raise PhaseMaterialError(
                 f"phase {self.phase!r} declares predecessor_source but its "
@@ -861,7 +896,68 @@ class PhaseMaterialSpec:
                     f"{self.state_fill!r} but predecessor_binding 'none'; a state fill "
                     "reads the predecessor state, so there has to be one"
                 )
+            if self.predecessor_binding == SEALED_SAMPLES_BINDING:
+                # Every registered state fill was written against a state whose
+                # content is ONE sealed answer (the sealed intent, the evolved
+                # slot schema's source label). Handing it a MULTI-CANDIDATE
+                # block would make it read the first candidate as if it were the
+                # row's answer -- a silently wrong prompt rather than a refusal.
+                raise PhaseMaterialError(
+                    f"phase {self.phase!r} declares state_fill {self.state_fill!r} "
+                    f"beside predecessor_binding {SEALED_SAMPLES_BINDING!r}; a state "
+                    "fill reads the predecessor state as ONE sealed answer and this "
+                    "binding's state is a candidate BLOCK, so no registered fill can "
+                    "read it correctly"
+                )
         return self
+
+    def _validate_sealed_samples_source(self) -> None:
+        """The ``sealed-samples-manifest`` source binding, key by key.
+
+        Separate from :meth:`validate`'s ``sealed-manifest`` branch rather than
+        a widened version of it: the two bindings carry DIFFERENT exact key
+        sets, and a shared "at least these keys" rule would let a
+        ``sealed-manifest`` phase pick up a permutation seed that nothing reads.
+        """
+
+        source = self.predecessor_source
+        if (not isinstance(source, Mapping)
+                or not _SEALED_SAMPLES_SOURCE_KEYS <= set(source)
+                or set(source) - _SEALED_SAMPLES_SOURCE_KEYS - {"permutation_rule"}):
+            raise PhaseMaterialError(
+                f"phase {self.phase!r} predecessor_binding "
+                f"{SEALED_SAMPLES_BINDING!r} requires a predecessor_source object "
+                f"with exactly {sorted(_SEALED_SAMPLES_SOURCE_KEYS)}"
+            )
+        for key in _SEALED_SAMPLES_TEXT_KEYS:
+            if not isinstance(source[key], str) or not source[key].strip():
+                raise PhaseMaterialError(
+                    f"phase {self.phase!r} predecessor_source.{key} must be a "
+                    "non-empty string"
+                )
+        if source.get("permutation_rule", "row-hash-v1") not in (
+            "row-hash-v1", "balanced-block-v1"
+        ):
+            raise PhaseMaterialError("unknown sealed-samples permutation_rule")
+        count = source["expected_sample_count"]
+        if (
+            isinstance(count, bool)
+            or not isinstance(count, int)
+            or not SEALED_SAMPLES_MIN_COUNT <= count <= SEALED_SAMPLES_MAX_COUNT
+        ):
+            raise PhaseMaterialError(
+                f"phase {self.phase!r} predecessor_source.expected_sample_count must "
+                f"be an integer from {SEALED_SAMPLES_MIN_COUNT} to "
+                f"{SEALED_SAMPLES_MAX_COUNT}; a candidate block of one is not a "
+                "selection and the loader must know the count before it reads a row"
+            )
+        seed = source["permutation_seed"]
+        if isinstance(seed, bool) or not isinstance(seed, int) or seed < 0:
+            raise PhaseMaterialError(
+                f"phase {self.phase!r} predecessor_source.permutation_seed must be a "
+                "non-negative integer; an unpinned presentation order would make the "
+                "position a contact chose unrecoverable from the config"
+            )
 
     def as_json(self) -> dict[str, object]:
         self.validate()
@@ -990,13 +1086,13 @@ def load_phase_material_specs(
             raise PhaseMaterialError(
                 f"phase_material[{phase.name!r}] must be an object"
             )
-        if (
-            values.get("prepared_execution_units") is not None
-            and entry.get("predecessor_binding") == "sealed-manifest"
-        ):
+        if values.get("prepared_execution_units") is not None and entry.get(
+            "predecessor_binding"
+        ) in ("sealed-manifest", SEALED_SAMPLES_BINDING):
             raise PhaseMaterialError(
                 "execution windows require a unit-bound external predecessor; "
-                "the sealed-manifest loader binds whole-parent outputs only"
+                f"the {entry.get('predecessor_binding')} loader binds whole-parent "
+                "outputs only"
             )
         extra = sorted(set(entry) - _SPEC_KEYS)
         if extra:
@@ -1255,11 +1351,12 @@ def build_material_for_phase(
                     f"preceding phase sealed none for sample {sample_id!r}"
                 )
             instruction = _appended(instruction, state)
-        elif spec.predecessor_binding == "sealed-manifest":
+        elif spec.predecessor_binding in ("sealed-manifest", SEALED_SAMPLES_BINDING):
             state = states.get(phase_name, {}).get(sample_id)
             if state is None:
                 raise PhaseMaterialError(
-                    f"phase {phase_name!r} binds a sealed-manifest predecessor but no "
+                    f"phase {phase_name!r} binds a "
+                    f"{spec.predecessor_binding} predecessor but no "
                     f"state was loaded for sample {sample_id!r}"
                 )
             instruction = _appended(instruction, state)
@@ -1409,6 +1506,498 @@ def sealed_states_from_manifest(
     return states
 
 
+# ---------------------------------------------------------------------------
+# The opt-in sealed-SAMPLES binding (Stage-3 F11 / cell VERIFY-1).
+# ---------------------------------------------------------------------------
+#
+# WHY A SECOND LOADER AND NOT A FLAG ON THE FIRST. ``sealed_states_from_manifest``
+# above builds exactly ONE state per row from the sealed row's ``text`` -- the
+# DELIVERED answer -- and never opens ``solver_group``, where a grouped-Solver
+# run's N raw samples live. A verifier contact needs the opposite: all N
+# samples, none of them privileged, and no delivered-answer anchor at all
+# (an anchor would tell the contact which candidate the harness already
+# committed, which is the whole thing being tested). Widening the first loader
+# would have made every already-flown ``sealed-manifest`` cell's prompt depend
+# on a new argument's default; a SECOND binding name keeps those cells byte
+# for byte and makes the new form opt-in from config alone.
+
+#: The exact header the candidate block opens with. Fixed here, like
+#: :data:`PREDECESSOR_PREFIX`, because a selection cell and its own controls
+#: are only a single-factor contrast if this framing is identical in each.
+SEALED_SAMPLES_HEADER = "Candidate answers (choose exactly one by its position)"
+
+#: The state kind a candidate block is sealed under: the phase's own kind plus
+#: an explicit marker, so a reader of a trace can never mistake a candidate
+#: block for the single sealed answer ``sealed-manifest`` binds.
+SEALED_SAMPLES_STATE_KIND = "sealed-samples"
+
+#: The closed parse-status vocabulary a sealed grouped-Solver sample may carry
+#: (``reproduction.ojw.native_group_solver``). Anything else is refused rather
+#: than guessed at: a status this module does not understand could mean the
+#: record's ``parsed_answer`` is partial, and rendering a partial answer as a
+#: candidate would put text on the wire that no sealed contact produced.
+SEALED_SAMPLE_PARSE_STATUSES = frozenset({"ok", "malformed"})
+
+#: Key-name tokens that would mean a sealed custody row carries a REFERENCE
+#: rather than a model response. This loader reads model responses only, so a
+#: row, group or sample record carrying one of these is refused instead of
+#: opened -- the cheapest possible guarantee that no gold can ever reach a
+#: candidate block, and one that survives a future change to the sealing side.
+_SEALED_SAMPLES_FORBIDDEN_KEY_TOKENS = (
+    "gold",
+    "reference",
+    "annotation",
+    "ground_truth",
+    "groundtruth",
+    "truth",
+    "target",
+    "expected",
+    "correct",
+)
+
+#: The label the per-row permutation stream is derived under. Part of the
+#: derivation, so a future second permutation rule cannot silently reproduce
+#: this one's orders.
+_SEALED_SAMPLES_PERMUTATION_LABEL = "saea-sealed-samples-permutation-v1"
+
+
+def _permutation_byte_stream(label: str):
+    """An endless byte stream from ``sha256(label || counter)``.
+
+    Deliberately not ``random.Random``: the presentation order of a candidate
+    block is registered evidence, and it must be reproducible from the pinned
+    seed and the row id alone, on any interpreter, forever.
+    """
+
+    counter = 0
+    while True:
+        block = hashlib.sha256(f"{label}|{counter}".encode("utf-8")).digest()
+        counter += 1
+        for byte in block:
+            yield byte
+
+
+def sealed_sample_permutation(
+    sample_id: str, *, seed: int, count: int
+) -> tuple[int, ...]:
+    """The per-row presentation order: ``position -> sealed sample_index``.
+
+    A Fisher-Yates shuffle of ``range(count)`` driven by the sha256 stream of
+    ``(label, seed, sample_id)``, with REJECTION SAMPLING on each draw so the
+    order carries no modulo bias. Per ROW rather than per run, deliberately:
+    one order shared by every row would confound "position bias" with
+    "sample-index bias", and the 205 single-answer rows exist precisely to
+    measure position bias with no confound.
+    """
+
+    if not isinstance(sample_id, str) or not sample_id:
+        raise PhaseMaterialError("sealed_sample_permutation needs a sample id")
+    if isinstance(seed, bool) or not isinstance(seed, int) or seed < 0:
+        raise PhaseMaterialError(
+            "sealed_sample_permutation needs a non-negative integer seed"
+        )
+    if isinstance(count, bool) or not isinstance(count, int) or count < 1:
+        raise PhaseMaterialError(
+            "sealed_sample_permutation needs a positive sample count"
+        )
+    order = list(range(count))
+    stream = _permutation_byte_stream(
+        f"{_SEALED_SAMPLES_PERMUTATION_LABEL}|{seed}|{sample_id}"
+    )
+    for index in range(count - 1, 0, -1):
+        modulus = index + 1
+        limit = 256 - (256 % modulus)
+        draw = next(stream)
+        while draw >= limit:
+            draw = next(stream)
+        pick = draw % modulus
+        order[index], order[pick] = order[pick], order[index]
+    return tuple(order)
+
+
+def balanced_sealed_sample_permutations(
+    sample_ids: Sequence[str], *, seed: int, count: int
+) -> Mapping[str, tuple[int, ...]]:
+    """Balance source indices over positions in deterministic blocks.
+
+    Use the complete sealed source roster, including when a smoke requests a
+    subset. Each complete block contains every cyclic rotation of one seeded
+    permutation, so every source index occupies each position exactly once.
+    No answer content, scores, or gold are used to assign presentation order.
+    """
+    ids = tuple(sample_ids)
+    if (not ids or any(not isinstance(sid, str) or not sid for sid in ids)
+            or len(ids) != len(set(ids))):
+        raise PhaseMaterialError("balanced permutations need distinct non-empty sample ids")
+    if isinstance(count, bool) or not isinstance(count, int) or not 2 <= count <= 16:
+        raise PhaseMaterialError("balanced permutations need a candidate count from 2 to 16")
+    # Validate the seed through the existing immutable shuffle implementation.
+    sealed_sample_permutation("balanced-validation", seed=seed, count=count)
+    ordered = sorted(ids, key=lambda sid: (
+        hashlib.sha256(f"saea-balanced-samples-v1|{seed}|{sid}".encode()).hexdigest(), sid
+    ))
+    result = {}
+    for offset in range(0, len(ordered), count):
+        base = sealed_sample_permutation(f"balanced-block:{offset // count}", seed=seed, count=count)
+        for shift, sid in enumerate(ordered[offset:offset + count]):
+            result[sid] = base[shift:] + base[:shift]
+    return result
+
+
+def render_sealed_sample_block(rendered: Sequence[str]) -> str:
+    """The candidate block exactly as it goes on the wire.
+
+    One numbered line per candidate, in the order given (which is already the
+    permuted order), under :data:`SEALED_SAMPLES_HEADER`. The positions the
+    contact sees are 1-based and are the ONLY handle it is given: the sealed
+    sample index is never shown, so a chosen position has to be resolved
+    through the recorded permutation rather than read off the prompt.
+    """
+
+    lines = [str(item) for item in rendered]
+    if not lines or any(not line.strip() for line in lines):
+        raise PhaseMaterialError(
+            "a candidate block needs at least one non-empty rendered candidate"
+        )
+    body = "\n".join(f"{index + 1}. {line}" for index, line in enumerate(lines))
+    return f"{SEALED_SAMPLES_HEADER} [{len(lines)} candidates]:\n{body}"
+
+
+@dataclass(frozen=True)
+class SealedSampleGroup:
+    """One row's sealed grouped-Solver candidates, as this binding reads them."""
+
+    sample_id: str
+    #: ``position index -> sealed sample_index``.
+    permutation: tuple[int, ...]
+    #: The rendered candidate texts, in PRESENTATION order.
+    rendered: tuple[str, ...]
+    #: ``sha256`` of each rendered candidate, same order.
+    rendered_sha256: tuple[str, ...]
+    parse_ok: int
+    parse_failed: int
+    #: How many DISTINCT rendered candidates this row carries. ``1`` means
+    #: every choice is equally correct, which is what makes those rows a
+    #: position-bias control rather than an informative selection.
+    distinct_answers: int
+    state: AgentStateArtifact
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "sample_id": self.sample_id,
+            "permutation": list(self.permutation),
+            "rendered_sha256": list(self.rendered_sha256),
+            "parse_ok": self.parse_ok,
+            "parse_failed": self.parse_failed,
+            "distinct_answers": self.distinct_answers,
+            "state_content_sha256": hashlib.sha256(
+                self.state.content.encode("utf-8")
+            ).hexdigest(),
+        }
+
+
+def _refuse_forbidden_keys(document: Mapping[str, object], *, where: str) -> None:
+    offenders = sorted(
+        key
+        for key in document
+        if isinstance(key, str)
+        and any(token in key.casefold() for token in _SEALED_SAMPLES_FORBIDDEN_KEY_TOKENS)
+    )
+    if offenders:
+        raise PhaseMaterialError(
+            f"sealed sample custody {where} carries reference-shaped key(s) "
+            f"{offenders}; this loader renders MODEL RESPONSES only and refuses a "
+            "custody row that could carry a gold, reference or target field rather "
+            "than reading around it"
+        )
+
+
+def _sealed_sample_records(
+    row: Mapping[str, object], sample_id: str, expected_sample_count: int
+) -> tuple[Mapping[str, object], ...]:
+    """This row's ``solver_group.samples``, ordered by ``sample_index``."""
+
+    _refuse_forbidden_keys(row, where=f"row {sample_id!r}")
+    group = row.get("solver_group")
+    if not isinstance(group, Mapping):
+        raise PhaseMaterialError(
+            f"sealed row {sample_id!r} carries no solver_group custody; the "
+            f"{SEALED_SAMPLES_BINDING!r} binding reads a GROUPED-Solver bundle and a "
+            "single-sample row has no candidate set to show"
+        )
+    _refuse_forbidden_keys(group, where=f"row {sample_id!r} solver_group")
+    records = group.get("samples")
+    if not isinstance(records, Sequence) or isinstance(records, (str, bytes)):
+        raise PhaseMaterialError(
+            f"sealed row {sample_id!r} solver_group carries no samples list"
+        )
+    if len(records) != expected_sample_count:
+        raise PhaseMaterialError(
+            f"sealed row {sample_id!r} carries {len(records)} solver sample(s), not "
+            f"the registered {expected_sample_count}; a row whose candidate count "
+            "differs from the pinned one would be shown a different contract from "
+            "every other row of the same cell"
+        )
+    by_index: dict[int, Mapping[str, object]] = {}
+    for record in records:
+        if not isinstance(record, Mapping):
+            raise PhaseMaterialError(
+                f"sealed row {sample_id!r} carries a non-object solver sample record"
+            )
+        _refuse_forbidden_keys(record, where=f"row {sample_id!r} solver sample")
+        index = record.get("sample_index")
+        if isinstance(index, bool) or not isinstance(index, int):
+            raise PhaseMaterialError(
+                f"sealed row {sample_id!r} carries a solver sample without an "
+                "integer sample_index"
+            )
+        if index in by_index:
+            raise PhaseMaterialError(
+                f"sealed row {sample_id!r} carries two solver samples with "
+                f"sample_index {index}"
+            )
+        by_index[index] = record
+    if sorted(by_index) != list(range(expected_sample_count)):
+        raise PhaseMaterialError(
+            f"sealed row {sample_id!r} solver sample indices are "
+            f"{sorted(by_index)}, not 0..{expected_sample_count - 1}"
+        )
+    return tuple(by_index[index] for index in range(expected_sample_count))
+
+
+def load_sealed_sample_groups(
+    manifest_path: Path,
+    *,
+    expected_sha256: str,
+    phase_name: str,
+    producer_policy_id: str,
+    sample_ids: Sequence[str],
+    expected_sample_count: int,
+    permutation_seed: int,
+    permutation_rule: str = "row-hash-v1",
+    bundle_verifier=None,
+) -> Mapping[str, SealedSampleGroup]:
+    """Rebuild ``{sample_id: SealedSampleGroup}`` from a SEALED grouped-Solver
+    bundle.
+
+    Every candidate is rendered through
+    ``rails.stage3_advantage_material.render_rollout_answer`` -- the SAME
+    renderer ``rails.stage3_advantage_material._rendered_sample`` uses, so the
+    canonical delivered form is one function and not four -- and a sample whose
+    sealed ``parse_status`` is not ``"ok"`` renders the canonical EMPTY answer
+    that renderer already writes for a failed parse. That row is FLOWN (the
+    candidate count on the wire stays exactly the registered one; showing fewer
+    candidates on some rows would change the contract mid-roster) and its
+    unparseable count is recorded so the read can EXCLUDE it from the
+    informative population.
+
+    Fail-closed on: a manifest whose bytes do not hash to ``expected_sha256``;
+    duplicate rows for one sample; any requested sample the bundle does not
+    carry; a row without ``solver_group``; a row whose sample count is not the
+    registered one; a malformed or duplicate ``sample_index``; an unknown
+    ``parse_status``; a custody object carrying a reference-shaped key; and
+    anything ``core.bundle.verify_bundle`` itself refuses.
+    """
+
+    from ..core.bundle.verify import verify_bundle  # noqa: PLC0415 (cycle guard)
+    from .stage3_advantage_material import (  # noqa: PLC0415 (cycle guard)
+        Stage3AdvantageMaterialError,
+        render_rollout_answer,
+    )
+
+    if (
+        isinstance(expected_sample_count, bool)
+        or not isinstance(expected_sample_count, int)
+        or not SEALED_SAMPLES_MIN_COUNT
+        <= expected_sample_count
+        <= SEALED_SAMPLES_MAX_COUNT
+    ):
+        raise PhaseMaterialError(
+            "load_sealed_sample_groups needs an expected_sample_count from "
+            f"{SEALED_SAMPLES_MIN_COUNT} to {SEALED_SAMPLES_MAX_COUNT}"
+        )
+    verifier = bundle_verifier if bundle_verifier is not None else verify_bundle
+    manifest_path = Path(manifest_path)
+    digest = hashlib.sha256()
+    try:
+        with manifest_path.open("rb") as handle:
+            for chunk in iter(lambda: handle.read(1 << 20), b""):
+                digest.update(chunk)
+    except OSError as error:
+        raise PhaseMaterialError(
+            f"cannot read sealed predecessor manifest {manifest_path}: {error}"
+        ) from error
+    measured = digest.hexdigest()
+    if measured != expected_sha256:
+        raise PhaseMaterialError(
+            f"sealed predecessor manifest {manifest_path} hashes to {measured}, not "
+            f"the configured {expected_sha256}"
+        )
+
+    verified = verifier(manifest_path)
+    by_sample: dict[str, Mapping[str, object]] = {}
+    for row in verified.outputs_rows:
+        identity = str(row.get("sample_id"))
+        if identity in by_sample:
+            raise PhaseMaterialError(
+                f"sealed predecessor manifest {manifest_path} carries duplicate rows "
+                f"for sample {identity!r}"
+            )
+        by_sample[identity] = row
+
+    wanted = tuple(sample_ids)
+    missing = sorted(set(wanted) - set(by_sample))
+    if missing:
+        raise PhaseMaterialError(
+            f"sealed predecessor manifest {manifest_path} has no row for "
+            f"{len(missing)} requested sample(s), e.g. {missing[:5]}"
+        )
+
+    if permutation_rule not in ("row-hash-v1", "balanced-block-v1"):
+        raise PhaseMaterialError("unknown sealed-samples permutation_rule")
+    balanced = (
+        balanced_sealed_sample_permutations(
+            tuple(by_sample), seed=permutation_seed, count=expected_sample_count
+        ) if permutation_rule == "balanced-block-v1" else None
+    )
+    groups: dict[str, SealedSampleGroup] = {}
+    for sample_id in wanted:
+        row = by_sample[sample_id]
+        records = _sealed_sample_records(row, sample_id, expected_sample_count)
+        canonical: list[str] = []
+        parse_ok = 0
+        for record in records:
+            status = record.get("parse_status")
+            if status not in SEALED_SAMPLE_PARSE_STATUSES:
+                raise PhaseMaterialError(
+                    f"sealed row {sample_id!r} solver sample "
+                    f"{record.get('sample_index')} carries parse_status {status!r}; "
+                    f"the registered vocabulary is "
+                    f"{sorted(SEALED_SAMPLE_PARSE_STATUSES)}"
+                )
+            payload = record.get("parsed_answer") if status == "ok" else None
+            if status == "ok":
+                parse_ok += 1
+            try:
+                canonical.append(render_rollout_answer(payload))
+            except Stage3AdvantageMaterialError as error:
+                raise PhaseMaterialError(
+                    f"sealed row {sample_id!r} solver sample "
+                    f"{record.get('sample_index')} does not render: {error}"
+                ) from error
+        permutation = (
+            balanced[sample_id] if balanced is not None else
+            sealed_sample_permutation(sample_id, seed=permutation_seed, count=expected_sample_count)
+        )
+        rendered = tuple(canonical[index] for index in permutation)
+        content = render_sealed_sample_block(rendered)
+        state = AgentStateArtifact(
+            state_id=f"{phase_name}:{SEALED_SAMPLES_STATE_KIND}:{sample_id}",
+            state_kind=f"phase:{phase_name}:{SEALED_SAMPLES_STATE_KIND}",
+            content=content,
+            source_query_state_sha256=str(row["request_sha256"]),
+            source_response_sha256=str(row["response_text_sha256"]),
+            producer_policy_id=producer_policy_id,
+            cited_value_ids=tuple(
+                f"solver-sample-{index}-at-position-{position + 1}"
+                for position, index in enumerate(permutation)
+            ),
+        ).validate()
+        groups[sample_id] = SealedSampleGroup(
+            sample_id=sample_id,
+            permutation=permutation,
+            rendered=rendered,
+            rendered_sha256=tuple(
+                hashlib.sha256(item.encode("utf-8")).hexdigest() for item in rendered
+            ),
+            parse_ok=parse_ok,
+            parse_failed=expected_sample_count - parse_ok,
+            distinct_answers=len(set(canonical)),
+            state=state,
+        )
+    return groups
+
+
+def sealed_sample_states_from_manifest(
+    manifest_path: Path,
+    *,
+    expected_sha256: str,
+    phase_name: str,
+    producer_policy_id: str,
+    sample_ids: Sequence[str],
+    expected_sample_count: int,
+    permutation_seed: int,
+    permutation_rule: str = "row-hash-v1",
+    bundle_verifier=None,
+) -> Mapping[str, AgentStateArtifact]:
+    """``{sample_id: AgentStateArtifact}`` for the ``sealed-samples-manifest``
+    binding -- :func:`load_sealed_sample_groups` with the bookkeeping dropped."""
+
+    return {
+        sample_id: group.state
+        for sample_id, group in load_sealed_sample_groups(
+            manifest_path,
+            expected_sha256=expected_sha256,
+            phase_name=phase_name,
+            producer_policy_id=producer_policy_id,
+            sample_ids=sample_ids,
+            expected_sample_count=expected_sample_count,
+            permutation_seed=permutation_seed,
+            permutation_rule=permutation_rule,
+            bundle_verifier=bundle_verifier,
+        ).items()
+    }
+
+
+def sealed_states_for_spec(
+    spec: PhaseMaterialSpec,
+    *,
+    data_root: Path,
+    phase_name: str,
+    sample_ids: Sequence[str],
+    bundle_verifier=None,
+) -> Mapping[str, AgentStateArtifact] | None:
+    """The EXTERNAL per-sample states one phase's binding loads, or ``None``.
+
+    The single authority the three ``core.flight.FlightRuntime`` sites that
+    need external states share (the prompt-budget estimate, the pinned
+    prompt-fit verification and the real flight binding). Written as one
+    function rather than three copies of a branch so a new binding can never
+    reach the wire through one site and be padded at another -- which is
+    exactly how a prompt-fit estimate stops describing the request it is
+    estimating.
+
+    ``append-sealed-state`` and ``none`` load nothing here: their state is this
+    run's own preceding response, or absent.
+    """
+
+    binding = getattr(spec, "predecessor_binding", "none")
+    if binding not in ("sealed-manifest", SEALED_SAMPLES_BINDING):
+        return None
+    source = spec.predecessor_source or {}
+    path = Path(data_root) / str(source["manifest_relpath"])
+    if binding == "sealed-manifest":
+        return sealed_states_from_manifest(
+            path,
+            expected_sha256=str(source["manifest_sha256"]),
+            phase_name=phase_name,
+            producer_policy_id=str(source["producer_policy_id"]),
+            sample_ids=sample_ids,
+            bundle_verifier=bundle_verifier,
+        )
+    return sealed_sample_states_from_manifest(
+        path,
+        expected_sha256=str(source["manifest_sha256"]),
+        phase_name=phase_name,
+        producer_policy_id=str(source["producer_policy_id"]),
+        sample_ids=sample_ids,
+        expected_sample_count=int(source["expected_sample_count"]),
+        permutation_seed=int(source["permutation_seed"]),
+        permutation_rule=str(source.get("permutation_rule", "row-hash-v1")),
+        bundle_verifier=bundle_verifier,
+    )
+
+
 def render_phase_envelope(
     system_text: str,
     instruction: str,
@@ -1546,6 +2135,18 @@ def phase_material_receipt(
 
 
 __all__ = [
+    "SEALED_SAMPLES_BINDING",
+    "SEALED_SAMPLES_HEADER",
+    "SEALED_SAMPLES_MAX_COUNT",
+    "SEALED_SAMPLES_MIN_COUNT",
+    "SEALED_SAMPLES_STATE_KIND",
+    "SEALED_SAMPLE_PARSE_STATUSES",
+    "SealedSampleGroup",
+    "load_sealed_sample_groups",
+    "render_sealed_sample_block",
+    "sealed_sample_permutation",
+    "sealed_sample_states_from_manifest",
+    "sealed_states_for_spec",
     "PHASE_STATE_FILLS",
     "PREDECESSOR_BINDINGS",
     "PREDECESSOR_PREFIX",

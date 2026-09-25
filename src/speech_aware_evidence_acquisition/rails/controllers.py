@@ -1577,6 +1577,25 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     # ``core.flight.runtime._default_construction_material`` dispatches the
     # GEPA material on, because both cells fly the SAME arm.
     "phase-stage3-gepa-v1": "phase-stage3-gepa-v1.json",
+    # Stage-3 F11, cell VERIFY-1 (2026-09-25): ONE phase ("choose"), one
+    # contact, no knowledge -- the same one-phase shape
+    # ``phase-slots-given-intent-v1`` has, and reached the same way: the
+    # phase's speech rides the ordinary phase-program path and its per-row text
+    # is an EXTERNAL sealed state, here the row's five sealed ROLL-1 Solver
+    # candidates under the opt-in ``sealed-samples-manifest`` predecessor
+    # binding (``rails.phase_material``). It differs from every one-phase
+    # program already registered in exactly one field, the
+    # ``slurp-verifier-choice-v1`` response format, and a program and its
+    # fragment must agree on a phase output contract
+    # (``rails.phase_material.load_phase_material_specs``), so the selection
+    # contract needs its own program rather than a mutation of a slots one.
+    #
+    # ``max_contacts`` 2 against ONE phase, deliberately: the program spends
+    # exactly one contact per row ("always-run-full-program" walks each phase
+    # once), and the ceiling carries one contact of headroom so the registered
+    # per-row bound is 2 rather than a bound with no slack at all. It is a
+    # BOUND, never a target, and the cell's expected spend is 1.0 per row.
+    "phase-slurp-verify-select-v1": "phase-slurp-verify-select-v1.json",
     "phase-training-feedback-proposal-v1": "phase-training-feedback-proposal-v1.json",
     "phase-intent-hypotheses-only-v1": "phase-intent-hypotheses-only-v1.json",
     "phase-direct-then-slots-v1": "phase-direct-then-slots-v1.json",
@@ -1807,6 +1826,13 @@ def register_phase_programs_v1() -> None:
         AGENT_CONTROLLERS.register(
             "phase-stage3-gepa-v1",
             default_controller_factory(default_phase_program("phase-stage3-gepa-v1")),
+        )
+    if "phase-slurp-verify-select-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-slurp-verify-select-v1",
+            default_controller_factory(
+                default_phase_program("phase-slurp-verify-select-v1")
+            ),
         )
     if "phase-training-feedback-proposal-v1" not in registered:
         AGENT_CONTROLLERS.register(
@@ -2170,6 +2196,20 @@ def register_response_formats_v1() -> None:
         RESPONSE_FORMATS.register(
             "stage3-gepa-proposal-v1",
             stage3_gepa_response_format_v1,
+        )
+    # Stage-3 F11, cell VERIFY-1 (2026-09-25): the SELECTION contact's
+    # structured-output contract -- exactly two fields, the 1-based position of
+    # the chosen candidate and one bounded diagnostic line. Its parser of
+    # record is ``rails.artifact_results.parse_slurp_verifier_choice``, beside
+    # the schema in the same module, so the request's contract and the read's
+    # leniency are one thing. Registering the id changes no phase;
+    # ``configs/policy/phase-slurp-verify-select-v1.json`` binds it.
+    if "slurp-verifier-choice-v1" not in registered:
+        from .artifact_results import slurp_verifier_choice_response_format
+
+        RESPONSE_FORMATS.register(
+            "slurp-verifier-choice-v1",
+            slurp_verifier_choice_response_format,
         )
 
 
