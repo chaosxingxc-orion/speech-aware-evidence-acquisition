@@ -1,0 +1,81 @@
+{
+  "schema": "saea-system-decision-state-audit-v1",
+  "read_id": "SAEA-SLURP-STAGE3-SYSTEM-DECISION-STATE-AUDIT-V1",
+  "registered_at_utc": "2026-09-25T15:55:12.530790+00:00",
+  "scope": "Post-hoc construction diagnostic; no policy update, efficacy claim, future outcome read or model/tool contact.",
+  "sources": [
+    {
+      "feedback": {
+        "relpath": "analysis/SAEA-SLURP-STAGE3-SYSTEM-TRAJECTORY-READ-V1/plan-system-feedback.json",
+        "sha256": "80d53a8f4728bccf4b932ffc1ae8a2e98ae05eb1f73acd343f1d60f0835537f1"
+      },
+      "label": "plan"
+    },
+    {
+      "feedback": {
+        "relpath": "analysis/SAEA-SLURP-STAGE3-SYSTEM-TRAJECTORY-READ-V1/planr-system-feedback.json",
+        "sha256": "2fcbe5e92771c752ef5fb986736a1089644a884cb315e27d5be5137487ef8f0b"
+      },
+      "label": "planr"
+    }
+  ],
+  "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+    "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd"
+  },
+  "knowledge_snapshots": {
+    "intent-boundaries": {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json",
+      "sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe"
+    },
+    "train-exemplars": {
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+      "sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63"
+    }
+  },
+  "candidate_reader": {
+    "max_candidates": 3,
+    "compact_source_phase": "perception",
+    "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1"
+  },
+  "boundary": "After the fixed first Perception and initial default20 supply, before the first Solver request. Not available at episode start.",
+  "state_axes": [
+    "candidate_count",
+    "exemplar_top_agreement",
+    "candidate_count_x_agreement"
+  ],
+  "agreement_edges": [
+    0.25,
+    0.5,
+    0.75
+  ],
+  "analysis": [
+    "Use the shared bounded candidate projection and agreement function on the actual prefix.",
+    "Check first-Perception response custody and first-Solver request hashes and ordering.",
+    "Compare initial request exemplar IDs to the historical whole-episode union; future supply is not an actor feature.",
+    "Report state occupancy, missing-boundary rows, repeated-state stability and pre-action evidence/candidate changes.",
+    "Keep official terminal feedback in a separate diagnostic join; report natural/equal-scenario and per-scenario outcomes.",
+    "Do not choose policy winners or tune thresholds from these labels; do not interpret repeats as alternative actions."
+  ],
+  "sparse_diagnostic": {
+    "minimum_observations_per_action": 20,
+    "candidate_action_counts": [
+      2,
+      3
+    ],
+    "allocation": "Expected balanced counts for planning only, not realized coverage or power."
+  },
+  "frozen_f0": 0.5850661976193667,
+  "output_relpath": "analysis/SAEA-SLURP-STAGE3-SYSTEM-DECISION-STATE-AUDIT-V1/state-audit.json",
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "asr": 0,
+    "scorer": 0,
+    "server": 0,
+    "network": 0
+  },
+  "knowledge_snapshot_hash_semantics": "Shared KnowledgeSnapshot.content_hash, not serialized-file SHA; record both in output."
+}

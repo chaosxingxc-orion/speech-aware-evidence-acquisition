@@ -1,0 +1,156 @@
+{
+  "schema": "saea-model-free-analysis-receipt-v1",
+  "created_at_utc": "2026-09-25T16:09:33.341722+00:00",
+  "read_id": "SAEA-SLURP-STAGE3-SYSTEM-DECISION-STATE-AUDIT-V1",
+  "parent_commit": "1d97010df329389e8b509c440c189084b997adfe",
+  "execution_environment": "WSL Ubuntu-24.04; /home/chao/.venvs/speechrl/bin/python; explicit checkout PYTHONPATH",
+  "sources": [
+    {
+      "feedback": {
+        "relpath": "analysis/SAEA-SLURP-STAGE3-SYSTEM-TRAJECTORY-READ-V1/plan-system-feedback.json",
+        "sha256": "80d53a8f4728bccf4b932ffc1ae8a2e98ae05eb1f73acd343f1d60f0835537f1"
+      },
+      "label": "plan"
+    },
+    {
+      "feedback": {
+        "relpath": "analysis/SAEA-SLURP-STAGE3-SYSTEM-TRAJECTORY-READ-V1/planr-system-feedback.json",
+        "sha256": "2fcbe5e92771c752ef5fb986736a1089644a884cb315e27d5be5137487ef8f0b"
+      },
+      "label": "planr"
+    }
+  ],
+  "contacts_added": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "output": {
+    "relpath": "analysis/SAEA-SLURP-STAGE3-SYSTEM-DECISION-STATE-AUDIT-V1/state-audit.json",
+    "sha256": "c712e190797fd7f95eab9ff9cf7e4718d2d42b10fbf8e0fff345a7961e9ed508",
+    "content_sha256": "308ccea7ee69416732d3b94923efdd79f031b0b6ef2b50883f34f57173dc2b45"
+  },
+  "repository_sources": [
+    {
+      "relpath": "docs/readiness/2026-09-25-system-decision-state-audit-v1.json",
+      "sha256": "7a0d298010d4eba58e20fab62a26df42d84605f7794c00368647d75c63f4bb56"
+    },
+    {
+      "relpath": "scripts/analysis/slurp_decision_state_audit.py",
+      "sha256": "26dbec2fe8fe48633cefad6ff4b9174ac61852adb277a00ba894f627400fd14f"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/slurp_decision_state_audit.py",
+      "sha256": "e0bd0cf97da2ef5e6a0131daf9555350283216654ea82e6ba56d8a3d96503c78"
+    },
+    {
+      "relpath": "tests/unit/test_slurp_decision_state_audit.py",
+      "sha256": "c1fbe6003563339d40fc1cd115911ab3fea95ecfd6f129d4f8ccbb554dcc9f4f"
+    },
+    {
+      "relpath": "docs/results/2026-09-25-slurp-system-decision-state-audit.md",
+      "sha256": "cda167dbb242e6cf8a7e4a1980b1275731e0ab2859278668d873be85c4d7d960"
+    }
+  ],
+  "complete_episodes": 1250,
+  "inputs_per_source": 625,
+  "reached_states_per_source": 625,
+  "state_change_counts": {
+    "candidate_count": 93,
+    "candidate_count_x_agreement": 98,
+    "candidate_first_sha256": 30,
+    "candidate_ids_sha256": 212,
+    "exemplar_ids_sha256": 0,
+    "exemplar_top_agreement": 6
+  },
+  "real_policy_update": false,
+  "scientific_gain_claimed": false,
+  "active_family_outcomes_read": false,
+  "frozen_flight_commit_unchanged": "da443cdc1027b3c01034c26485805240ec0e671d",
+  "checks": [
+    {
+      "name": "focused-tests",
+      "exit_code": 0,
+      "seconds": 1.19,
+      "log": "/home/chao/system-state-audit-focused-tests.log",
+      "log_sha256": "cea07a5d8c6d2d531473482b1fb0c118ff214611efa780bc5b9f1f50b445a349"
+    },
+    {
+      "name": "engineering_base_check",
+      "exit_code": 0,
+      "seconds": 7.91,
+      "log": "/home/chao/system-state-audit-engineering_base_check.log",
+      "log_sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "name": "harness_admission_check",
+      "exit_code": 0,
+      "seconds": 0.48,
+      "log": "/home/chao/system-state-audit-harness_admission_check.log",
+      "log_sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+    },
+    {
+      "name": "results_ledger_check",
+      "exit_code": 0,
+      "seconds": 0.17,
+      "log": "/home/chao/system-state-audit-results_ledger_check.log",
+      "log_sha256": "24fde2a722ef94a5ea364970c08fd0628d9221fd306aaa63eccafd9bb5d68f0c"
+    },
+    {
+      "name": "tool_catalog_check",
+      "exit_code": 0,
+      "seconds": 0.94,
+      "log": "/home/chao/system-state-audit-tool_catalog_check.log",
+      "log_sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+    },
+    {
+      "name": "experiment_handoff_check",
+      "exit_code": 0,
+      "seconds": 0.47,
+      "log": "/home/chao/system-state-audit-experiment_handoff_check.log",
+      "log_sha256": "9618d711a040056debcd1f9eaa783b1287b6a9c08334cbe060ebfa01d35efe8a"
+    },
+    {
+      "name": "openjiuwen_native_reuse_check",
+      "exit_code": 0,
+      "seconds": 3.46,
+      "log": "/home/chao/system-state-audit-openjiuwen_native_reuse_check.log",
+      "log_sha256": "44b83ad43ff7268aff99ca0753e615097ed41ff7f50c88d688ae95fe4dfd7b71"
+    },
+    {
+      "name": "derived_media_confinement_check",
+      "exit_code": 0,
+      "seconds": 23.23,
+      "log": "/home/chao/system-state-audit-derived_media_confinement_check.log",
+      "log_sha256": "cb40d8ce2531a3c8fbaa9e3b3a7118249502147d6b3e92fabc067d235c355aac"
+    },
+    {
+      "name": "stage3_algorithm_label_check",
+      "exit_code": 0,
+      "seconds": 0.4,
+      "log": "/home/chao/system-state-audit-stage3_algorithm_label_check.log",
+      "log_sha256": "e8268dee788bca9d811b3ff70222a9f5205d5ba9a9ae888017e2d1beaa932f47"
+    },
+    {
+      "name": "finite_completion_policy_check",
+      "exit_code": 0,
+      "seconds": 0.68,
+      "log": "/home/chao/system-state-audit-finite_completion_policy_check.log",
+      "log_sha256": "88e4930b4c055dd9ed068baafa8136de542d6f69cc4bde7d3f2fea5b703ee0d8"
+    }
+  ],
+  "focused_tests_passed": 36,
+  "initial_test_failure": {
+    "scope": "synthetic fixture only",
+    "cause": "max_candidates=3 but fixture supplied only two legal IDs",
+    "resolution": "Added a third legal ID; shared runtime parser unchanged",
+    "failed": 3,
+    "passed": 4
+  },
+  "check_output_safety": "Derived-media gate output uses a fresh /home/chao/system-state-audit-derived-media directory; historical receipts are unchanged.",
+  "interpretation": "Actual pre-Solver agreement states are available and repeatable; neither state-conditioned terminal correlation nor repeated same-policy variation identifies action effects."
+}

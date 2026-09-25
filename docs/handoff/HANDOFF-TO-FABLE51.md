@@ -1,5 +1,29 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
+## Latest scientific read: actual pre-Solver state audit
+
+Read docs/results/2026-09-25-slurp-system-decision-state-audit.md and its
+registered recipe. Both complete PLAN/PLANR625 sources were rechecked; all 1,250
+episodes reached the boundary after initial Perception/default20 supply and
+before the first Solver. Agreement bins changed on 6/625 repeats, candidate
+width on 93/625, and ordered candidate identities on 212/625. Distinct projection
+changes raw candidate width on 21/25 rows. All initial exemplar sets match.
+
+The historical all-wave exemplar union equals the first Solver input on every
+audited row. Do not claim future-exemplar contamination in these sources.
+Use the actual prefix when future policies add evidence. Root recommends four
+existing agreement bins for the first contextual state, with width diagnostic
+only; twelve crossed cells are sparse. This is a feasibility decision, not
+proof of action value. Low agreement correlates with poor terminal intent, but
+does not show that a particular tool repairs it or justify dropping review.
+
+The later selector must run after its own prefix exists and control a complete
+downstream policy, logging actual action probability and terminal feedback.
+The present episode-start catalog is still only a fixed-policy comparator.
+Missing-decision episodes require explicit evaluation/no-credit accounting before
+admitting the later-boundary learner. No new live algorithm or policy update
+was enabled. Existing evidence-path outcomes remain unread.
+
 ## Latest implementation: pinned complete policies and per-row seal
 
 Read docs/readiness/2026-09-25-system-policy-catalog-runtime.md and its receipt
@@ -101,10 +125,10 @@ both finite and revised outcomes, applies synthetic terminal feedback through
 the existing update, then executes again with the learned frozen policy.
 No real outcome, model/tool/scorer contact or efficacy claim was added.
 
-This is deliberately NOT enabled in any live cell. Action asset admission
-and per-row source/seal verification must land before a registered algorithm
-flight. The candidate terminal credit join is described in the next section.
-Do not construct a live binding manually to bypass the remaining steps. Learned values are bound to identical whole-
+This is deliberately NOT enabled in any live cell. Action asset admission and per-row source/seal verification were subsequently
+completed by the catalog implementation described above; scientific action
+qualification and prospective algorithm registration remain pending. The candidate terminal credit join is described in the next section.
+Do not construct a live binding manually to bypass registration. Learned values are bound to identical whole-
 policy definitions; historical grouping refuses actual optimized decisions.
 The active evidence-path checkout stays frozen and background execution continues.
 
@@ -120,8 +144,9 @@ The candidate update entry invokes the existing complete native/official source
 reader, reconstructs each actual frozen allocation, then reuses the pure
 cumulative-mean update with full terminal counts and fallback/intent/format
 feedback. Evaluation is refused before label access. The candidate receipt is
-explicitly not runtime authorization; action asset loading and selected per-row
-seal/configuration authority remain pending. No real policy update was run.
+explicitly not runtime authorization. Action asset loading and selected per-row
+seal/configuration authority were subsequently completed above; action qualification
+and the next flight registration remain pending. No real policy update was run.
 
 Root correction: the present episode-start-only selector cannot in expectation
 outperform the best fixed member on stationary expected utility. It is a
