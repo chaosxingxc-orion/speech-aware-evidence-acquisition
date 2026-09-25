@@ -405,6 +405,10 @@ class NativeEpisodeNodes:
     # here means the Solver role's registered ``samples >= 2``; ``rails.
     # runner._invoke_native_role_episode`` builds it in place of the plain
     # ``NativeRoleNode`` every other role (and a samples-1 Solver) keeps.
+    # Item E42: or a ``reproduction.ojw.native_supply_variants.
+    # SupplyVariantRoleNode`` when the Solver role declares an arm group; the
+    # annotation stays the two concrete classes this module imports at top
+    # level, and ``build_native_episode`` admits the third by name.
     solver: NativeRoleNode | GroupedSolverRoleNode
     reviewer: NativeRoleNode | None = None
     planner: NativeRoleNode | None = None
@@ -1840,12 +1844,25 @@ def build_native_episode(
             # GroupedSolverRoleNode, not a NativeRoleNode; both expose the
             # same spec.role_id/spec.role_kind contract this validation and
             # _RoleQuery/_add_role actually need.
+            # Item E42: an ARM-grouped Solver visit is a
+            # SupplyVariantRoleNode, which exposes the same contract for the
+            # same reason. Imported function-locally, exactly as this module's
+            # other registration-style imports are, so the light top-level
+            # import discipline is kept.
+            from .native_supply_variants import (  # noqa: PLC0415
+                SupplyVariantRoleNode,
+            )
+
             if (
-                not isinstance(node, (NativeRoleNode, GroupedSolverRoleNode))
+                not isinstance(
+                    node,
+                    (NativeRoleNode, GroupedSolverRoleNode, SupplyVariantRoleNode),
+                )
                 or node.spec.role_kind != kind
             ):
                 raise ValueError(
-                    f"{field} must be a {kind} NativeRoleNode or GroupedSolverRoleNode"
+                    f"{field} must be a {kind} NativeRoleNode, "
+                    "GroupedSolverRoleNode or SupplyVariantRoleNode"
                 )
             continue
         if not isinstance(node, NativeRoleNode) or node.spec.role_kind != kind:

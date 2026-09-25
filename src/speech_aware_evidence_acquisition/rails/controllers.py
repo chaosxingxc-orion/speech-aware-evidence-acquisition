@@ -1474,6 +1474,24 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-native-candidates-review-revise-samples2-v1": (
         "phase-native-candidates-review-revise-samples2-v1.json"
     ),
+    # Item E42, 2026-09-25 (board route F12, Stage-3 family VAR-2: per-row
+    # CONSTRUCTION-VARIANT interleaving inside ONE campaign): the SAME four
+    # phases, the SAME episode_id and the SAME role graph as
+    # "phase-native-candidates-review-revise-v1" -- the review loop ON,
+    # reviewer 3 / planner 1 / max_revisions 1 -- with the Solver visit fanned
+    # out to FOUR declared supply-variant arms instead of one.
+    # rails.native_episode_config multiplies the Solver's own contribution by
+    # its registered arm count exactly as it multiplies it by samples, so the
+    # bounded graph ceiling is 1 + (1+1)*(1*1*4 + 3 + 1) = 17. A separate
+    # program id, never a flag on the review-revise program, for the reason
+    # every comment above states: two program ids must never resolve to the
+    # same object when their contact ceilings differ, and
+    # rails.native_episode_config asserts program.max_contacts equals the
+    # graph ceiling. A group of some other size needs its own id and its own
+    # fragment, exactly as samples2 needed one beside samples5.
+    "phase-native-candidates-review-revise-variants4-v1": (
+        "phase-native-candidates-review-revise-variants4-v1.json"
+    ),
     # Cell B7b on the sealed anchor, 2026-09-17 (M5 / NCP level L2): the SAME
     # four phases, the SAME episode_id and the SAME role graph as
     # "phase-native-candidates-review-revise-v1" -- reviewer 3 / planner 1 /
@@ -1720,6 +1738,13 @@ def register_phase_programs_v1() -> None:
             "phase-native-candidates-review-revise-samples2-v1",
             default_controller_factory(
                 default_phase_program("phase-native-candidates-review-revise-samples2-v1")
+            ),
+        )
+    if "phase-native-candidates-review-revise-variants4-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-candidates-review-revise-variants4-v1",
+            default_controller_factory(
+                default_phase_program("phase-native-candidates-review-revise-variants4-v1")
             ),
         )
     if "phase-native-candidates-review-revise-clean1-v1" not in registered:

@@ -519,6 +519,12 @@ class _ActualEpisodeHarness:
             # written before E20 and every unarmed episode -- leaves this
             # binding byte-identical to its pre-E20 self.
             context_fit_budget=getattr(self, "context_fit_budget", None),
+            # Item E42: the flight-owned per-arm supply resolver a declared
+            # ``roles.solver.supply_variants`` group needs. None -- every
+            # harness written before E42 and every episode that declares no arm
+            # group -- leaves this binding byte-identical to its pre-E42 self,
+            # and the runner refuses a resolver it did not ask for.
+            supply_variant_for_phase=getattr(self, "supply_variant_for_phase", None),
         )
         source_kwargs = (
             {}

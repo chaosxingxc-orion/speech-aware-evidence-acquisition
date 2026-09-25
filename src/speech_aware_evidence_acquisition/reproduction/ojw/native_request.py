@@ -472,15 +472,26 @@ class MeteredNativeSpeechRequest:
         # The authoritative transport validates and renders the SAME object
         # that dispatch consumes; capacity checks can inspect this body.
         body = self._render_request(prepared.payload_bytes)
+        # Item E42 (2026-09-25): the declared supply-variant arm this contact was
+        # composed for, recorded in the role custody document ONLY when it is
+        # set. Conditional on purpose: every contact of every episode form
+        # written before E42 carries no arm, so its ``role_request_bytes`` stay
+        # byte-identical to the pre-E42 tree's, and
+        # ``PreparedNativeRoleContact.role_request`` reconstructs the context
+        # from the dataclass default.
+        arm_context: dict[str, object] = {
+            "sample_id": request.context.sample_id,
+            "agent_contact_id": request.context.agent_contact_id,
+            "evidence_pins": dict(request.context.evidence_pins),
+            "budget_id": request.context.budget_id,
+            "sample_index": sample_index,
+        }
+        variant_arm_id = getattr(request.context, "variant_arm_id", None)
+        if variant_arm_id is not None:
+            arm_context["variant_arm_id"] = variant_arm_id
         role_bytes = _bytes({
             "role_id": request.role_id,
-            "context": {
-                "sample_id": request.context.sample_id,
-                "agent_contact_id": request.context.agent_contact_id,
-                "evidence_pins": dict(request.context.evidence_pins),
-                "budget_id": request.context.budget_id,
-                "sample_index": sample_index,
-            },
+            "context": arm_context,
             "messages": framework,
             "tool_schemas": list(request.tool_schemas),
             "visible_tool_names": list(request.visible_tool_names),
