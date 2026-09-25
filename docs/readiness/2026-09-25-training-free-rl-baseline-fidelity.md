@@ -182,3 +182,17 @@ and report that as a different search space rather than an algorithm-only win.
 The active fixed evidence-path pair remains unchanged. Its complete terminal
 evidence still determines the next system-action question. This audit neither
 reopens semantic-delta nor enables a new contextual policy or semantic update.
+
+
+## Implemented complete-episode summary carrier
+
+The source-only representation gap is now implemented in the shared analysis
+module. Read 2026-09-25-complete-system-semantic-summary-input.md. The pinned
+upstream first-entry extraction returns the complete role/tool/delivery episode,
+with exact request-field deduplication and speech/split/round grouping identity.
+Reference annotations and scores remain outside summary fields.
+
+This does not resolve the distinct feedback-visibility, signed-group eligibility,
+experience-operation, consolidation, action-space or reexecution requirements.
+It creates no model client and authorizes no semantic update. Current research
+GPU execution remains the registered complete-system candidate-recovery pair.

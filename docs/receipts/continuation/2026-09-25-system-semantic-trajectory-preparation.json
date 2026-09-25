@@ -1,0 +1,126 @@
+{
+  "schema": "saea-system-semantic-trajectory-preparation-proof-v1",
+  "created_at": "2026-09-25T20:09:00.556401+00:00",
+  "parent_commit": "2fd3b9344ff38c8c26861048694a54d78aeb0000",
+  "frozen_worker_commit": "9f6a949f445e4fb308789eb0786a1a25c3fb8f69",
+  "scope": "Shared lossless actor trace preparation and pinned TF-GRPO summary field extraction only",
+  "validation": {
+    "related_tests_passed": 118,
+    "offline_checks_passed": 9,
+    "checks": [
+      {
+        "check": "engineering_base_check",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-trajectory-validation-v1/engineering_base_check.log",
+        "log_sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+      },
+      {
+        "check": "harness_admission_check",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-trajectory-validation-v1/harness_admission_check.log",
+        "log_sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+      },
+      {
+        "check": "results_ledger_check",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-trajectory-validation-v1/results_ledger_check.log",
+        "log_sha256": "0426590fecc31f8de63ddacab92a3e818106a70b9c33abd048d66228c5d7b7c6"
+      },
+      {
+        "check": "tool_catalog_check",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-trajectory-validation-v1/tool_catalog_check.log",
+        "log_sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+      },
+      {
+        "check": "experiment_handoff_check",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-trajectory-validation-v1/experiment_handoff_check.log",
+        "log_sha256": "e23607a9d3e7507cbe76fc240f0aeaee8ee4af86ae698d4b32b85a417c5bac81"
+      },
+      {
+        "check": "openjiuwen_native_reuse_check",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-trajectory-validation-v1/openjiuwen_native_reuse_check.log",
+        "log_sha256": "f843bcd79c7957307bb8a96517ba3879128ed4104aa6be366f6845fdc0814c66"
+      },
+      {
+        "check": "derived_media_confinement_check",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-trajectory-validation-v1/derived_media_confinement_check.log",
+        "log_sha256": "8a740e284b77c0fd15e53a5e43b174c5b443c100e196acfac4f56dab6a1b5b7f"
+      },
+      {
+        "check": "stage3_algorithm_label_check",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-trajectory-validation-v1/stage3_algorithm_label_check.log",
+        "log_sha256": "9fac0138523bbf4771cc09bd0e007add368542e30e1920608c9111a7aa8cd2aa"
+      },
+      {
+        "check": "finite_completion_policy_check",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-trajectory-validation-v1/finite_completion_policy_check.log",
+        "log_sha256": "f82745fa49af22608b01172848d1f53e78f91f08fc16693254218ee5209cc331"
+      },
+      {
+        "check": "tests",
+        "exit": 0,
+        "log": "/home/chao/system-semantic-trajectory-validation-v1/tests.log",
+        "log_sha256": "fdc3d2563d5673395d83f7416a9876cd2fc4589c57d99e5036bd85c815a8e62d"
+      }
+    ]
+  },
+  "upstream_expression_audit": {
+    "sha256": "d431110c8d28d027377d17403b85af2e8bcd4e58ed0e2404c173be5493e8562f",
+    "source": {
+      "repo": "TencentCloudADP/youtu-agent",
+      "commit": "c2caa539f4c95ae1c39ed24dc8a99cb3651e1d5d",
+      "path": "utu/practice/experience_updater.py",
+      "url": "https://raw.githubusercontent.com/TencentCloudADP/youtu-agent/c2caa539f4c95ae1c39ed24dc8a99cb3651e1d5d/utu/practice/experience_updater.py",
+      "sha256": "301d4a51136f6c0da620f1f2042d59316af494cee4b4c3329338ba1a1b937d04",
+      "bytes": 16069
+    },
+    "expression": "json.loads(item.trajectories)[0]['trajectory']",
+    "cases": [
+      {
+        "case": "complete",
+        "roles": [
+          "perception",
+          "solver",
+          "review",
+          "planner"
+        ],
+        "contacts": 5,
+        "delivery": "accepted",
+        "passed": true
+      },
+      {
+        "case": "finite-with-solver",
+        "roles": [
+          "perception",
+          "solver",
+          "review"
+        ],
+        "contacts": 4,
+        "delivery": "finite",
+        "passed": true
+      },
+      {
+        "case": "abstention",
+        "roles": [
+          "perception",
+          "solver"
+        ],
+        "contacts": 2,
+        "delivery": "abstention",
+        "passed": true
+      }
+    ]
+  },
+  "learning_authorized": false,
+  "semantic_update_executed": false,
+  "research_model_contacts_added": 0,
+  "official_scorer_contacts_added": 0,
+  "active_family_outcomes_read": false,
+  "next": "Finish the registered full-system pair; admit actions from complete terminal evidence, then bind numeric feedback, all semantic update stages and reexecution before a scholarly baseline flight"
+}

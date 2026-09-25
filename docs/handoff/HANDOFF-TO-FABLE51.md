@@ -46,6 +46,26 @@ When complete, bind source hashes before using the shared official-feedback
 and system-trajectory analysis entries; no scorer replay or private executor.
 
 
+## Complete-episode input prepared for the scholarly semantic baseline
+
+Read docs/readiness/2026-09-25-complete-system-semantic-summary-input.md.
+Shared analysis now materializes an entire verified actor episode into the
+single trajectory field that the pinned TF-GRPO summary path reads. It retains
+all role contacts, tools, finite failures and delivery, with lossless request
+field deduplication. Group identity uses the actual speech input, split and
+round. It supplies no reference answer, score text, default reward or invented
+action probability. The existing complete-system numeric feedback remains a
+separate source.
+
+Validation: 118 related tests and all nine offline checks pass in WSL.
+Receipt: docs/receipts/continuation/2026-09-25-system-semantic-trajectory-preparation.json.
+This is model-free input preparation, not a semantic update or baseline result.
+Source AST checks use synthetic episodes only. Keep the active worker frozen
+and finish the current registered pair before admitting learning actions.
+Feedback visibility, signed-group eligibility, actual semantic operations and
+full reexecution remain required for the scholarly method comparison.
+
+
 ## Offline analysis prepared while the current pair runs
 
 Read docs/readiness/2026-09-25-candidate-recovery-whole-trajectory-analysis.md.

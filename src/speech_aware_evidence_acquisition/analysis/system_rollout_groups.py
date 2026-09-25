@@ -60,6 +60,15 @@ def _jsonl(path, expected_sha):
     _require(digest.hexdigest() == expected_sha, "source JSONL hash differs")
 
 
+def initial_speech_input_hash(payload):
+    """Bind the original speech input independently of instruction or policy text."""
+    fields = ("sample_id", "carrier_lock_key", "media_relpath", "speech_ref",
+              "speech_packet_sha256", "sample_rate_hz", "audio_seconds")
+    _require(all(payload.get(k) is not None for k in fields),
+             "first speech identity is incomplete")
+    return content_hash({k: payload[k] for k in fields})
+
+
 def load_group_source(*, data_root, feedback_pin, label):
     """Resolve complete actor input/output identities; no model, scorer or gold load.
 
@@ -122,11 +131,7 @@ def load_group_source(*, data_root, feedback_pin, label):
         _require(content_hash(request) == contact["request_record_sha256"]
                  and content_hash(payload) == contact["request_payload_sha256"]
                  and payload["sample_id"] == sid, "first request differs from verified trajectory")
-        fields = ("sample_id", "carrier_lock_key", "media_relpath", "speech_ref",
-                  "speech_packet_sha256", "sample_rate_hz", "audio_seconds")
-        _require(all(payload.get(k) is not None for k in fields),
-                 "first speech identity is incomplete")
-        inputs[sid] = content_hash({k: payload[k] for k in fields})
+        inputs[sid] = initial_speech_input_hash(payload)
     _require(set(inputs) == set(ids), "first request set does not cover the source")
     output_path, output_sha = _artifact(root, manifest["outputs"])
     outputs = {}

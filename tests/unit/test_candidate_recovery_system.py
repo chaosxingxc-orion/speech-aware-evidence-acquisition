@@ -385,4 +385,14 @@ def _export_candidate_result(harness, result, output, records):
         phase_results={"s1": result.as_json()}, output_rows={"s1": output},
         phase_artifact_sha256="b"*64, diagnostics={},
     )
-    return export_system_trajectories(source)["trajectories"][0]
+    row = export_system_trajectories(source)["trajectories"][0]
+    from speech_aware_evidence_acquisition.analysis.system_semantic_trajectory import (
+        materialize_semantic_trajectories, tfgrpo_summary_fields,
+    )
+    materialized = materialize_semantic_trajectories(source, round_id="synthetic-round")["episodes"][0]
+    fields = tfgrpo_summary_fields(materialized)
+    visible = json.loads(json.loads(fields["trajectories"])[0]["trajectory"])
+    assert visible["trajectory"]["candidate_proposal"] == row["candidate_proposal"]
+    assert len(visible["contacts"]) == sum(len(v["contacts"]) for v in row["role_visits"])
+    assert visible["delivered_text"] == output["text"]
+    return row
