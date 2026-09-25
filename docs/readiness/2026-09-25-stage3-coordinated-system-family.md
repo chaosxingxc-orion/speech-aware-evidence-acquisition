@@ -177,3 +177,139 @@ the treatment Reviewer; omit the duplicated task-contract tool. Keep all other
 runtime fields matched. See the evidence-path readiness package for concrete
 held cells and remaining admission work. This is a complete fixed-system policy
 comparison preparing actions for learning, not an adaptive RL result.
+
+
+## Root continuation decision: optimize the realized system path
+
+This section incorporates the owner's system-level steering and the actual
+pre-Solver state audit, before reading the active evidence-path pair. It is
+a design decision, not another registered flight or an implemented contextual
+selector. The current episode-start selector and its pinned catalog are
+implemented. The later decision boundary described here is not.
+
+The optimization unit is the complete delivered episode under an executable
+coordinated policy. A policy may change one boundary or several; changing every
+component at once is not required. Its acceptance depends on the complete
+system outcome, including consequences at unchanged downstream nodes. Treat a
+component score, knowledge novelty or successful tool execution as a diagnostic.
+
+Use the verified trajectory to distinguish the following failures:
+
+| System boundary | Diagnostic | Optimization question |
+| --- | --- | --- |
+| Perception to candidate contract | Correct-label coverage and exclusions, measured offline | Does the permitted action space leave a recoverable answer available? |
+| Problem recognition to evidence acquisition | Issue, actual tool choice, clean arguments, returned sources and empty/error results | Did the system obtain information relevant to the unresolved distinction? |
+| Evidence to Solver revision | Actual supplied content, old/new answers and support | Did the continuation consume the information without introducing unsupported changes? |
+| Revision to final delivery | Repairs retained, reversals, parsing, fallback and final output | Did the local change improve the delivered task result? |
+| Complete episode to policy update | Terminal counts, intent, failures, chosen policy and probability | Which observable state benefits from which whole continuation? |
+
+Keep these as linked observations of one trajectory. Do not count a source
+being supplied as proof that it caused a correction. Do not condition primary
+evaluation on a tool firing, revision being reached, or a sample improving.
+Diagnostic strata cannot replace the complete population.
+
+The PLAN/PLANR audit found nine complete reasoning repairs, all retained at
+delivery. Its immediate deficit is sparse effective repair and offsetting
+harms, not observed disappearance of those nine repairs. Continue measuring
+downstream loss in new policies without asserting that mechanism in advance.
+
+### Select only after the decision state actually exists
+
+For the first contextual comparator, execute one shared Perception prefix.
+At its completion, construct the same source-bound default20 preview and
+normalize distinct candidates with the existing shared parser. Select a whole
+continuation before action-dependent supply or the first Solver request.
+
+Use the four populated agreement bins from the registered state audit as the
+initial proposed state. Keep candidate width and identities as diagnostics;
+do not multiply them into sparse state cells. The existing no-exemplars state
+remains an explicit fallback if encountered. This state is not confidence,
+proof of an action effect, or a guarantee of statistical power.
+
+The audit observed agreement-bin changes on 6/625 repeated inputs, compared
+with width changes on 93/625. All 1,250 historical episodes reached the boundary.
+Neither observation licenses assuming that every future episode will reach it.
+Do not use Reviewer findings, later evidence, revised answers or official
+labels in this earlier choice.
+
+A continuation is a pinned complete downstream configuration: permitted
+evidence acquisition, role contexts, bounded Planner routes, Solver revision,
+review and terminal delivery. The first action set must be small and grounded
+in complete-system evidence. Preserve the default continuation. Define its
+actual members only after the current pair is sealed and interpreted under its
+prospective rule. A failed fixed-policy experiment is not reopened by selecting
+a favorable subgroup after seeing its results.
+
+### Reuse the native graph, without a second Perception or executor
+
+Implement an optional model-free selector after the existing perception_state
+component in the same OpenJiuwen Workflow. Reuse the existing branch router and
+role-construction helpers for uniquely named continuation branches and one
+terminal join. Retain one graph invocation and the original Perception contact,
+request history, speech identity and cost. Preserve the unarmed graph unchanged.
+
+The runner callback must select from the newly staged Perception context,
+before resolving first-Solver supply, then commit that transition exactly once.
+An ordinary settle followed by a later selector loses that precise boundary.
+Request composition, tools and subsequent role configuration must read the
+selected binding consistently; replacing only the supply callback is insufficient.
+
+Preflight must prove identical Perception and fixed preview definitions across
+all actions. Shared service geometry alone does not prove a common prefix.
+Keep the common finite ceiling and verify each selected continuation, including
+the prefix contact, at seal and during source validation.
+
+Record a new versioned continuation decision, separate from the existing
+episode-start schema. Bind the actual Perception response/state, original
+speech/query, default preview and selected value IDs, state definition,
+snapshot, schedule, action definitions, selected sources, actual probability
+vector and draw, and receipt hash. Emit it before the first dependent request.
+Only the realized branch may produce contacts. No model-logit propensity is
+invented for choices made internally by the frozen language model.
+
+### Preserve episodes whose decision is never reached
+
+Keep a prefix failure or other pre-selection terminal disposition in the
+complete-system outcome and cost denominator. Record an explicit
+decision-not-reached event and its source. Assign no action value, fabricated
+default choice or zero-reward credit to an action that was not chosen.
+
+For balanced collection, PolicySchedule already reserves a state-independent
+action allocation at each roster position. An unreached position keeps its
+reservation; do not reassign it to a later row. Its reservation is not an
+executed policy decision. Preserve the actual probability vector for each
+reached choice against the original complete schedule.
+
+The present numeric updater requires a decision on every row and remembers
+completed rounds through credited trajectories. It therefore needs explicit
+round-completion accounting before admitting this later selector: account for
+every roster position as reached or unreached, credit only reached decisions,
+and reject a duplicate complete round even if every decision was unreached.
+Do not remove failed rows or pass a shorter roster to the current updater.
+
+If a policy was actually selected and its optional tool never fired, its
+terminal outcome still credits that whole policy. That differs from a failure
+before policy selection. Neither case awards causal credit to an unused tool.
+
+### Learning and evaluation boundary
+
+Collect complete trajectories under a frozen construction-round policy, score
+the full manifest once, and update external values only after complete feedback
+and round accounting. Use terminal official counts with the frozen F0 utility;
+retain intent, format, failures and costs separately. Execute again after the
+update. Evaluation freezes the policy and cannot update it from labels.
+
+Compare the learned continuation policy with both the locked system and the
+strongest fixed complete continuation under matched evaluation. The
+episode-start selector remains a fixed-policy learning comparator. A later
+single contextual choice is still a contextual bandit, even though its selected
+continuation traverses several nodes. Multistep optimization needs separately
+defined subsequent decisions, probabilities and a return/credit estimator;
+copying terminal reward onto each role is not that estimator.
+
+Do not enlarge the engineering scope while waiting for the active comparison.
+Finish its whole-system read first. Then implement the minimum graph and
+round-accounting extension needed by the admitted algorithm family, with
+focused tests for actual ordering, branch authority, prefix failure, balanced
+reservations, all-unreached rounds, concurrency and unchanged default behavior.
+No current GPU source, protocol, data boundary or scientific threshold changes.

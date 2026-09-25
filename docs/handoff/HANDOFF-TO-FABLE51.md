@@ -1,5 +1,32 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
+## Current root decision: whole-system continuation, not component credit
+
+The owner's system-level requirement is now made concrete in the final section
+of docs/readiness/2026-09-25-stage3-coordinated-system-family.md. It defines
+complete-episode evaluation, the actual post-Perception/pre-Solver boundary,
+one shared OpenJiuwen graph, source-bound continuation choices and explicit
+accounting for episodes that never reach the decision.
+
+The current episode-start selector is implemented and remains a fixed-policy
+comparator. The contextual graph branch and no-decision round accounting are
+designed, not implemented or activated. Do not label them as completed RL or
+claim real learning from the existing synthetic graph tests. Finish the active
+pair before adding this engineering scope.
+
+As of 2026-09-25T16:47:34Z, the script reports the evidence-path control complete
+and the tools attempt OPENED with its original campaign identity. The service
+is healthy, GPU utilization is 98 percent and three of four slots are occupied.
+This is one telemetry sample, not average utilization or a completed-row count.
+Neither full arm's task outcomes has been read. The existing fifteen-minute
+heartbeat remains enabled; generation and scoring run independently of it.
+
+The prior PLAN/PLANR read found nine complete reasoning repairs, all preserved
+at delivery. Sparse effective repair and offsetting harms are established
+diagnostics. Disappearance of these repairs at final delivery is not.
+The root retains scientific attribution and decisions; the read-only helper
+inspected graph integration only and did not monitor or read current outcomes.
+
 ## Pending read operation after the active tools campaign
 
 As of 2026-09-25T16:34Z, the tools campaign PID 56278 remains live with its
