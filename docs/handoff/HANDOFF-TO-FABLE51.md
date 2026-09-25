@@ -1,5 +1,37 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
+## Live execution: independent F10, 2026-09-25 10:47 UTC
+
+F10 is now RUNNING as independent task SAEA-F10-Continuation-20260925.
+This supersedes the launch-pending paragraph below. Root explicitly closed
+VAR-2 after its second failure and released this independently registered
+family; no third VAR-2 attempt is authorized.
+
+- Launch10:47:15UTC; shared driver10:47:18; prelaunch passed10:47:25.
+- Sequence: empty-contract smoke4, fresh default control625, empty-contract625.
+  Each full arm has one complete official job. No partial outcomes are read.
+- Flight commit54b6e151481129f4e1915c37f42a88ade687930b stays frozen through
+  generation/scoring. Launcher commit7897d37ffa6a2200717af213cc82f0aed61e307c
+  adds only explicit failed-predecessor closure dispatch; runtime is unchanged.
+- Log /home/chao/batch-chain-f10.out; chain status /home/chao/f10-chain-status.jsonl;
+  own stop /home/chao/f10-chain-STOP; ordinary queue/status paths are reused.
+- Protocol docs/readiness/2026-09-25-slurp-stage3-f10-v1/protocol-registered-v1.json.
+  Prospective analysis-specification-v1.json binds the decision rules.
+  Fill analysis-binding-template-v1.json only after both full arms seal, hash
+  all sources before the read, and use the shared official-feedback reader.
+- Exact launch/preflight/closure hashes are in
+  docs/receipts/continuation/2026-09-25-f10-launch.json.
+- The approximately11-minute interruption was failure closure and independent
+  handoff work, not data wait. Record it; do not claim continuous GPU utilization.
+- Model servicePID714 remains resident, same no-mmproj four-slot geometry.
+-15-minute heartbeat slurp is ACTIVE; scripts inspect progress, root interprets.
+  Local telemetry, generation, scoring and queue control do not need network,
+  Codex credits or the heartbeat. Notifications may wait for app connectivity.
+- Shared analysis61 tests, launcher13 synthetic boundary tests and six relevant
+  engineering gates pass. Root confirmed three clean prepared preflights.
+- No new owner decision is blocking F10. Stage-3 stable optimization and the
+  finite-policy learning cycle remain unproven/unexecuted; do not mark goal done.
+
 ## Current state: VAR-2 closed; independent F10 admission ready
 
 This section supersedes every earlier execution snapshot.

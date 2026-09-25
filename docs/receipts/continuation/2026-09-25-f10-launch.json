@@ -1,0 +1,57 @@
+{
+  "closure_receipt_sha256": "c264123858aad1bc93968c391149ccf967bb216ca47c1c46d42e1d422974e206",
+  "driver_started_at_utc": "2026-09-25T10:47:18Z",
+  "flight_commit": "54b6e151481129f4e1915c37f42a88ade687930b",
+  "gap_reason": "Second-failure closure, isolate variant-only guard, archive/reconcile dead lease, register and validate explicit independent continuation.",
+  "gap_seconds_from_VAR2_abort_to_F10_prelaunch": 662,
+  "generation_started_claim": "F10 chain live; full arm completion is not claimed. The first stage is smoke4.",
+  "last_driver_event": {
+    "at": "2026-09-25T10:48:53Z",
+    "detail": {
+      "log": "/home/chao/batch-campaign-1-f10-control-20260925T104853Z.log",
+      "step": 1
+    },
+    "event": "arm-start"
+  },
+  "launch_intent_sha256": "803ea181d66724217c2b88f803fd27c7568bc70542c19c8835e7f742c5a3f807",
+  "launcher_commit": "7897d37ffa6a2200717af213cc82f0aed61e307c",
+  "observed_at_utc": "2026-09-25T10:49:17.730304+00:00",
+  "preflight": {
+    "preflight-control-r01c-v1.json": {
+      "prepared_artifacts_ok": true,
+      "sha256": "016064303849e8fd8a1f21d6123b32aa907f54f8b134ff81bf2f3e8f411a9c4d",
+      "state": "ready"
+    },
+    "preflight-empty-r01c-smoke-4-v1.json": {
+      "prepared_artifacts_ok": true,
+      "sha256": "d162e1a776055415c489da05038db7e6f9fd18554a99fbaf26862f13e87d85e0",
+      "state": "ready"
+    },
+    "preflight-empty-r01c-v1.json": {
+      "prepared_artifacts_ok": true,
+      "sha256": "01f93cd1641d68b10be104f9bd128aa6b526eeb74a8ac949494f9b232285e59f",
+      "state": "ready"
+    }
+  },
+  "queue_sha256": "dfeee5bce9cf43b839805eb85465c71b27c330053c899106daf6934980070f26",
+  "schema": "saea-f10-independent-launch-v1",
+  "started_at_utc": "2026-09-25T10:47:15Z",
+  "stop_markers_present": false,
+  "task_name": "SAEA-F10-Continuation-20260925",
+  "telemetry": {
+    "gpu": {
+      "clocks_sm_mhz": 180.0,
+      "memory_used_mib": 22988.0,
+      "power_watts": 6.43,
+      "pstate": "P8",
+      "utilization_percent": 0.0
+    },
+    "sampled_at_iso": "2026-09-25T10:49:07.045231+00:00",
+    "server_ok": true,
+    "slots": {
+      "busy": 0,
+      "idle": 4,
+      "total": 4
+    }
+  }
+}
