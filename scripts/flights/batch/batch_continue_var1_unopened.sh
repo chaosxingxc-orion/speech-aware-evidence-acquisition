@@ -44,8 +44,7 @@ backup=home/'batch-queue.pre-continuation-20260925.json'
 with backup.open('xb') as fh: fh.write(raw)
 for key in ('smoke_experiment','smoke_cell','smoke_run_id','smoke_attempt_id'):
     last[key]=None
-new=(json.dumps(steps,indent=2)+'
-').encode()
+new=(json.dumps(steps,indent=2)+'\n').encode()
 temporary=queue.with_suffix('.continuation.tmp')
 with temporary.open('xb') as fh: fh.write(new)
 os.replace(temporary,queue)
