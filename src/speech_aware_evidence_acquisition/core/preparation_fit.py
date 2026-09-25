@@ -639,6 +639,17 @@ def validate_live_phase_fit_config(values, program):
     return dict(spec)
 
 
+def complete_phase_endpoint_count(phase_count: int, row_count: int) -> int:
+    """Count fit endpoints: one properties call plus three per row, per phase."""
+    if (
+        isinstance(phase_count, bool) or not isinstance(phase_count, int)
+        or phase_count < 1 or isinstance(row_count, bool)
+        or not isinstance(row_count, int) or row_count < 1
+    ):
+        raise PreparationError("live fit requires positive phase and row counts")
+    return phase_count * (1 + 3 * row_count)
+
+
 def build_live_phase_fit_gate(
     runtime,
     program,
@@ -690,10 +701,11 @@ def build_live_phase_fit_gate(
         raise PreparationError("active_roster must derive the roster from prior decisions")
     expected_ids = tuple(sample.sample_id for sample in runtime._samples)
     phases = tuple(program.phase_names())
-    required_contacts = len(phases) * (1 + 3 * len(expected_ids))
+    required_contacts = complete_phase_endpoint_count(len(phases), len(expected_ids))
     if spec["contact_cap"] != required_contacts:
         raise PreparationError(
-            "live fit cap must equal the registered complete phase endpoint count"
+            "live fit cap must equal the registered complete phase endpoint count: "
+            f"expected {required_contacts}, got {spec['contact_cap']}"
         )
     fit_plan = replace(
         plan,
