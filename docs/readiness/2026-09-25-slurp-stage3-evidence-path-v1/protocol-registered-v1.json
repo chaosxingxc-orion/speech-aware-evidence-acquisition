@@ -1,0 +1,82 @@
+{
+  "analysis_specification": "docs/readiness/2026-09-25-slurp-stage3-evidence-path-v1/analysis-specification-v1.json",
+  "authority": "docs/readiness/2026-09-25-slurp-stage3-evidence-path-v1-preregistration.md",
+  "cells": {
+    "control": {
+      "attempt_id": "attempt-slurp-native-stage3-evidence-path-control-r01c-v1-generation",
+      "audio_cap": 29996,
+      "baseline": "slurp-native-stage3-evidence-path-control-r01c-v1-baseline-v1",
+      "cell_id": "slurp-native-stage3-evidence-path-control-r01c-v1",
+      "composed_config_hash": "2842118a12c463b5bd554505fc772fbe56630b9b2e5fa95457c5655a7d46d87d",
+      "experiment": "slurp-native-stage3-evidence-path-control-r01c-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-evidence-path-control-r01c-v1-fit",
+      "fit_cap": 27500,
+      "fit_cell_id": "slurp-native-stage3-evidence-path-control-r01c-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-EVIDENCE-PATH-CONTROL-R01C-FIT-V1",
+      "gen_cap": 6875,
+      "gpu_hours": 8.0,
+      "protocol_hash": "20d630bb9290f81c1da389d6dbec00e069ee56e0f8726dea2e5ae4463d4b77ca",
+      "rows": 625,
+      "run_id": "SAEA-SLURP-STAGE3-EVIDENCE-PATH-CONTROL-R01C-V1",
+      "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-evidence-path-tools-smoke-4-r01c-v1-generation",
+      "audio_cap": 290,
+      "baseline": "slurp-native-stage3-evidence-path-tools-smoke-4-r01c-v1-baseline-v1",
+      "cell_id": "slurp-native-stage3-evidence-path-tools-smoke-4-r01c-v1",
+      "composed_config_hash": "5c05d4ab61122a7cf12c8fd50225e8994ca7e3512aa9e8219bda43253e26f0fc",
+      "experiment": "slurp-native-stage3-evidence-path-tools-smoke-4-r01c-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-evidence-path-tools-smoke-4-r01c-v1-fit",
+      "fit_cap": 176,
+      "fit_cell_id": "slurp-native-stage3-evidence-path-tools-smoke-4-r01c-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-SMOKE-4-R01C-FIT-V1",
+      "gen_cap": 44,
+      "gpu_hours": 1.0,
+      "protocol_hash": "a6cd817047c1889aa71e805564f190ed10e5687976ad7879891eb7f5c9b1a807",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-SMOKE-4-R01C-V1",
+      "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5"
+    },
+    "tools": {
+      "attempt_id": "attempt-slurp-native-stage3-evidence-path-tools-r01c-v1-generation",
+      "audio_cap": 29996,
+      "baseline": "slurp-native-stage3-evidence-path-tools-r01c-v1-baseline-v1",
+      "cell_id": "slurp-native-stage3-evidence-path-tools-r01c-v1",
+      "composed_config_hash": "600c8e1ffe4b6786714184d345d05725e7ab9eca5d48c3af37c49b5ac0f6a1aa",
+      "experiment": "slurp-native-stage3-evidence-path-tools-r01c-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-evidence-path-tools-r01c-v1-fit",
+      "fit_cap": 27500,
+      "fit_cell_id": "slurp-native-stage3-evidence-path-tools-r01c-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-R01C-FIT-V1",
+      "gen_cap": 6875,
+      "gpu_hours": 8.0,
+      "protocol_hash": "1208ff61d7e62f33b75753deb6350f7ae9b95c8cd1edbbc5e83ff7212bfbcabd",
+      "rows": 625,
+      "run_id": "SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-R01C-V1",
+      "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"
+    }
+  },
+  "claim_boundary": "Whole-system construction candidate only; fixed policies are not learned RL. Replication is required for stable gain.",
+  "comparison": "Fresh control and tools policies; full terminal outcomes on the same R01C625.",
+  "contacts_per_row_max": 11,
+  "execution_order": [
+    "smoke",
+    "control",
+    "tools"
+  ],
+  "failure_policy": "Stop and preserve; one separately diagnosed recovery maximum; no automatic replay.",
+  "intervention": "Only on-demand Reviewer target lookup availability differs; same full program and prompts.",
+  "limits": {
+    "ceilings_are_not_targets": true,
+    "fit_endpoint_calls_cap_including_smoke": 55176,
+    "generation_calls_cap_including_smoke": 13794,
+    "gpu_hours_fit_inclusive": 17.0,
+    "native_knowledge_target_lookup_calls_cap": 2516,
+    "official_full_scoring_jobs": 2,
+    "repeated_speech_audio_seconds_cap": 60282
+  },
+  "schema": "saea-evidence-path-protocol-v1",
+  "stage3_algorithm": "shared-rollout",
+  "status": "registered-before-contact"
+}

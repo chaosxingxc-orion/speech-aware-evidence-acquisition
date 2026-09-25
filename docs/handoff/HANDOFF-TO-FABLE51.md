@@ -1,5 +1,30 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
+## Live continuation: evidence-path registered, preparing launch
+
+F10 is closed, not qualified. The next complete-system pair is registered in
+docs/readiness/2026-09-25-slurp-stage3-evidence-path-v1-preregistration.md.
+Sequence: tools engineering smoke4, fresh control625, tools625. Both arms use
+the same complete native program and problem-directed review; only Reviewer
+native target lookup availability differs. Planner routes and Solver answers.
+This is fixed-policy evidence for a later system action space, not learned RL.
+
+Per-cell preparation and exact current intent/slot source-index checks are
+complete. The inherited F10 fit attempt IDs were corrected before contact.
+All model/tool/fit ceilings, prospective terminal statistics and exposure rows
+are registered; official scoring runs once per complete arm. No outcomes have
+been read. GPU launch still requires clean preflight and exclusive service.
+
+Full source-prefix availability is limited: original candidates have unseen
+intent-boundary values on 59/625 PLAN and 53/625 PLANR rows, but zero new slot
+values. Missing review boundaries remain retained. This is a feasibility
+limitation, not information gain; retain empty tools and actions not reached.
+Do not expand this treatment because a local Reviewer metric looks promising.
+
+The existing batch driver now allows smoke_notool to differ from the following
+arm; the treatment smoke must not inherit the no-tool control assertion.
+Its default remains backward-compatible. No new launcher or executor exists.
+
 ## Owner steering: optimize complete system trajectories
 
 The owner clarified on 2026-09-25 that Stage-3 must optimize the complete agentic
@@ -57,7 +82,7 @@ delivery path. Interface correction is a common engineering control, not an RL
 gain. Map onto existing native seams, then register full-system sampling and
 evaluation; do not stop at optimizing Solver supply count.
 
-Current execution: the F10 chain completed at 13:15:57 UTC (06:15 Seattle) on 2026-09-25. The paired read is complete; the next GPU family is not launched.
+Current execution: F10 completed and its read closed. Evidence-path is registered and prepared; launch/preflight status is recorded in the live continuation section above.
 This is the living record. Superseded snapshots remain in Git history through
 fe0d0ee2 and are not live instructions. Preserve immutable records and verdicts.
 

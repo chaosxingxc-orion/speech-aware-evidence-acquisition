@@ -1,0 +1,20 @@
+{
+  "availability": {
+    "relpath": "coordination/slurp-stage3-evidence-path-v1/prefix-availability-v1.json",
+    "sha256": "cc5130fe2802e09d0c2a905f15bc6c2f193c5b44c9765ac858ede8288e9904de"
+  },
+  "checks": {
+    "batch_driver": "bash syntax and legacy/override flag cases passed",
+    "engineering_base": "pass",
+    "experiment_handoff": "owner-directed execution; clean launch preflight still required",
+    "finite_completion_policy": "pass",
+    "harness_admission": "pass",
+    "results_ledger": "pass with 103 existing findings and unavailable umbrella cross-check",
+    "stage3_algorithm_label": "pass",
+    "tool_catalog": "pass"
+  },
+  "model_contacts": 0,
+  "native_target_tests_passed": 55,
+  "prepared_cells": 3,
+  "schema": "saea-evidence-path-registration-validation-v1"
+}

@@ -1,6 +1,6 @@
 # Evidence-path complete-system comparison
 
-Status: HELD. Three thin cells compose through the existing native program.
+Status: REGISTERED; prepared and source-bound. Clean preflight and actual-request fit remain required. Three thin cells compose through the existing native program.
 No model, tokenizer, encoder, scorer or server contact has occurred for this family.
 This is a fixed whole-system policy comparison preparing the optimization space.
 
@@ -26,7 +26,7 @@ so correct intents absent from Perception cannot be claimed recovered by this
 cell. Report that residual ceiling; candidate recovery needs its own admitted
 transition rather than a silent prompt exception.
 
-## Held files
+## Registered files
 
 - slurp-native-stage3-evidence-path-control-r01c-v1
 - slurp-native-stage3-evidence-path-tools-r01c-v1
@@ -47,14 +47,13 @@ The two complete baseline documents differ only in phase_tools. The 55 existing
 tests covering native target knowledge, source indices, bounded lookup and
 invalid-call observations pass. No production code changed for this proposal.
 
-## Admission work still required
+## Admission and execution
 
-Freeze the whole-system protocol and analysis specification, exact execution
-plans, model/tool/fit budgets and prospective exposure entries. Bind the existing
-source-index proof to this store pair and prepare each cell's own first-phase
-supply. Check actual requests on the matching resident service with a registered
-fit identity, then perform the bounded engineering smoke. Use the durable WSL
-queue and freeze the flight checkout through scoring.
+The whole-system protocol, analysis specification, execution plans and exposure
+rows are registered. Each cell owns prepared first-phase supply and a separate
+fit attempt identity. The current intent and slot source indices have been
+verified. Check actual requests on the resident service, perform the bounded
+smoke, and use the durable queue with a checkout frozen through scoring.
 
 Compare final official pooled SLU-F1, intent protection, all strata, natural and
 equal weighting, empty FP/nonempty FN, repairs/harms, actual tool evidence and
@@ -63,3 +62,22 @@ or an isolated revised answer. Retain every terminal and action-not-reached row.
 
 F10 is closed and its new representation is not adopted. Prior semantic-delta,
 VAR-2 and failed review experiments remain closed. No fresh DEV or test use.
+
+The protocol, analysis specification, six execution plans and root admission are now prospective and pinned. The current slot-contracts-v2 target index was rebuilt and verified; the older v1 proof was not reused as current evidence. Per-cell fit IDs replace inherited F10 IDs before first contact. First-phase supply has been prepared without encoding or model calls.
+
+## Source-prefix availability and limitation
+
+The complete PLAN/PLANR pre-action request sets were hash-verified and checked
+against the current source-bound indices. On the original candidate lists,
+new intent-boundary values exist in 59/625 and 53/625 episodes. Slot-contract
+lookups for those same candidates supply zero new values: automatic candidate
+supply already provided them. Five/two first-review boundaries are unavailable
+and retained. This metadata-only check reads no gold or task outcomes and
+invokes no runtime tool or model. The source receipt is
+coordination/slurp-stage3-evidence-path-v1/prefix-availability-v1.json.
+
+This is a limited information opportunity, not evidence of broad new coverage.
+The model may request other legal targets for contrast, but the final candidate
+contract is unchanged. Empty and already-visible tool observations must remain
+in the denominator. Do not enlarge sampling or adopt the policy merely because
+lookup can return something. Only full terminal effectiveness can qualify it.

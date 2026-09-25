@@ -1,0 +1,45 @@
+{
+  "cell": "slurp-native-stage3-evidence-path-tools-r01c-v1",
+  "composed_config_hash": "600c8e1ffe4b6786714184d345d05725e7ab9eca5d48c3af37c49b5ac0f6a1aa",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-evidence-path-tools-r01c-v1-generation",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 8.0,
+    "planned_model_calls": 6875,
+    "planned_speech_audio_seconds": 29996,
+    "protocol_hash": "1208ff61d7e62f33b75753deb6350f7ae9b95c8cd1edbbc5e83ff7212bfbcabd",
+    "run_id": "SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-R01C-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-evidence-path-tools-r01c-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 27500,
+    "generation_calls_cap": 6875,
+    "gpu_hours_fit_inclusive": 8.0,
+    "native_knowledge_target_lookup_calls_cap": 2500,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 29996
+  },
+  "fit": {
+    "contact_cap": 27500,
+    "endpoints_per_contact": 4,
+    "mode": "native_contact_fit",
+    "scope": "Every actual shared native request, including tool schemas, observations, history and revisions; bound full roster."
+  },
+  "plan_kind": "generation",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-25-slurp-stage3-evidence-path-v1/protocol-registered-v1.json",
+    "sha256": "3756205717cbd504ea88e7ad38ddea71d87727e2e71d9e092c2c4507ab4dc125"
+  },
+  "read_rule": "Registered before contact. Root admission, pinned preparation, clean preflight and actual-request capacity checks are mandatory. No outcomes are read until both full arms are sealed and scored.",
+  "schema": "saea-flight-execution-plan-v1",
+  "status": "registered-before-contact"
+}

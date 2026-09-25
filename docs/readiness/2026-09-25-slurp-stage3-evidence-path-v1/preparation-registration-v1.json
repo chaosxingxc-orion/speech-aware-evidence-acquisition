@@ -1,0 +1,16 @@
+{
+  "encoder_contacts": 0,
+  "experiments": {
+    "control": "slurp-native-stage3-evidence-path-control-r01c-v1",
+    "smoke": "slurp-native-stage3-evidence-path-tools-smoke-4-r01c-v1",
+    "tools": "slurp-native-stage3-evidence-path-tools-r01c-v1"
+  },
+  "gold_input": false,
+  "model_contacts": 0,
+  "official_scorer_contacts": 0,
+  "read_id": "SAEA-SLURP-STAGE3-EVIDENCE-PATH-PREPARE-V1",
+  "registered_at": "2026-09-25T13:48:15.935063+00:00",
+  "schema": "saea-model-free-preparation-registration-v1",
+  "scope": "Build per-cell first-phase supply and verify current released semantic target indices against their exact source bytes; no runtime tool invocation or outcomes. Count source-index values not visible in complete PLAN/PLANR first review prefixes, using only actor requests and pre-action candidate IDs; no lookup execution, labels, task scores or online trigger claims.",
+  "tokenizer_contacts": 0
+}

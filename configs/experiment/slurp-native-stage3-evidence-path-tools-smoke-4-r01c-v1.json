@@ -12,9 +12,35 @@
       "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "state": "held",
-        "reason": "Await whole-system protocol, exact execution plans, root admission, preparation and actual request fit; configuration alone is not authority.",
-        "requirements": []
+        "reason": "Registered evidence-path system comparison; exclusive resident service and real per-request fit remain mandatory.",
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-evidence-path-admission-v1",
+            "relpath": "coordination/slurp-stage3-evidence-path-v1/root-admission-v1.json",
+            "sha256": "8d9b7040ebeb60de54298e9cda0681e235523b05ad7b13d9ad7a58288b4b509c",
+            "reason": "Decision slurp-stage3-evidence-path-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "reason": "The released R01C-safe train-exemplars store bound by this cell.",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-SMOKE-4-R01C-V1/phase-supply-v1.json",
+            "sha256": "dfaffab01f159ddb416ae04d3ba559cfe6ba3547726419186298c512b08ba3cd"
+          },
+          {
+            "kind": "preparation",
+            "reason": "The sealed R01 speech-query encoding from which R01C vectors are selected.",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-SMOKE-4-R01C-V1/phase-supply-v1.json",
+            "sha256": "dfaffab01f159ddb416ae04d3ba559cfe6ba3547726419186298c512b08ba3cd"
+          },
+          {
+            "kind": "preparation",
+            "reason": "Exact current intent and slot source relations verified without model or runtime tool contact.",
+            "relpath": "coordination/slurp-stage3-evidence-path-v1/released-target-index-preparation-v1.json",
+            "sha256": "7d9eea21277f4f7b9b7ffab944d926215360d1c082279546b095cf8d776ecee9"
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-SMOKE-4-R01C-V1"
     },
@@ -28,9 +54,28 @@
       "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "state": "held",
-        "reason": "Await whole-system protocol, exact execution plans, root admission, preparation and actual request fit; configuration alone is not authority.",
-        "requirements": []
+        "reason": "Tokenizer spend identity only; no independent generation.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The released R01C-safe train-exemplars store bound by this cell.",
+            "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/release.json",
+            "sha256": "83620eb0b02f12424a00cd5572904f4df48a49c329b1b0e1a9321d4b9ec14fd0"
+          },
+          {
+            "kind": "preparation",
+            "reason": "The sealed R01 speech-query encoding from which R01C vectors are selected.",
+            "relpath": "preparation-runs/SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
+            "sha256": "2117fa6d5fdb7563e4f609b66e2fc3971a340a7dd22d178fa3cfd5a7c111839a"
+          },
+          {
+            "kind": "preparation",
+            "reason": "Exact current intent and slot source relations verified without model or runtime tool contact.",
+            "relpath": "coordination/slurp-stage3-evidence-path-v1/released-target-index-preparation-v1.json",
+            "sha256": "7d9eea21277f4f7b9b7ffab944d926215360d1c082279546b095cf8d776ecee9"
+          }
+        ],
+        "state": "held"
       },
       "run_id": "SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-SMOKE-4-R01C-FIT-V1"
     }
@@ -53,15 +98,15 @@
     "fit_endpoint_calls_cap": 176,
     "generation_calls_cap": 44,
     "gpu_hours_fit_inclusive": 1.0,
+    "native_knowledge_target_lookup_calls_cap": 16,
     "native_task_contract_calls_cap": 0,
     "official_complete_scoring_jobs": 0,
-    "repeated_speech_audio_seconds_cap": 290,
-    "native_knowledge_target_lookup_calls_cap": 16
+    "repeated_speech_audio_seconds_cap": 290
   },
   "fragment_kind": "saea-slurp-native-stage3-evidence-path-tools-smoke-4-r01c-v1",
   "generation_budget": {
     "cap": 44,
-    "definition": "4 R01C rows x the unchanged PLAN program maximum of 11 frozen-core contacts per row."
+    "definition": "4 bound rows x the native program maximum of 11 frozen-core contacts per row."
   },
   "population": {
     "count": 4,
@@ -86,10 +131,10 @@
   "split_id": "STAGE3-CONSTRUCTION-R01C",
   "stage3_algorithm": {
     "id": "shared-rollout",
+    "note": "Fixed complete-system policy comparison; no RL update or learned-policy claim.",
     "operators_used": [
       "rollout",
       "scoring"
-    ],
-    "note": "Fixed complete-system policy comparison; no RL update or learned-policy claim."
+    ]
   }
 }

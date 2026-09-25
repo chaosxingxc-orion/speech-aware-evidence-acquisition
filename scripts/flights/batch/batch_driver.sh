@@ -7,6 +7,7 @@
 # Queue step fields: order, short, kind (cell|resume), experiment, cell, smoke_experiment (or null), smoke_cell,
 #   campaign_plan (repo-relative), run_id, fit_run_id, gen_attempt_id, smoke_run_id, smoke_attempt_id,
 #   expected_rows, contacts_per_row, ceiling_per_row, notool (true|false), owner.
+#   Optional smoke_notool overrides notool for a smoke with different tool authority.
 # Status: /home/chao/batch-status.jsonl (one line per event); STOP marker: /home/chao/batch-STOP.
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
 export MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
@@ -84,8 +85,11 @@ for ((i=0; i<N; i++)); do
   log "step-start" "{\"step\":$order,\"short\":\"$short\",\"kind\":\"$kind\",\"cell\":\"$cell\"}"
   prelaunch $order
   if [ -n "$sexp" ] && [ "$sexp" != "None" ]; then
+    smoke_notool=$(field $i smoke_notool)
+    [ -n "$smoke_notool" ] || smoke_notool=$notool
+    case "$smoke_notool" in true) smoke_nt=1 ;; false) smoke_nt=0 ;; *) stop "invalid smoke_notool on step $order" ;; esac
     fly_smoke $order "$sexp" "$scell" "$owner"
-    out=$($PY -B $SP/batch_inspect.py "$DATA" "$srun" "$satt" smoke 4 "$ceil" $nt "$FLIGHT_COMMIT"); rc=$?
+    out=$($PY -B $SP/batch_inspect.py "$DATA" "$srun" "$satt" smoke 4 "$ceil" $smoke_nt "$FLIGHT_COMMIT"); rc=$?
     log "smoke-inspect" "$out"
     [ $rc -eq 0 ] || stop "smoke structural check failed on step $order"
     sleep 10
