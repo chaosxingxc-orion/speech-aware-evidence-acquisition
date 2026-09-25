@@ -1,7 +1,11 @@
-# VAR-2 single recovery package (HELD)
+# VAR-2 single recovery registration
 
-The predecessor full 625-row run aborted before a complete manifest after 224 model contacts; no official score exists for it. The diagnosed fault was a comparison of revisit-only supply increments with cumulative acquired ids. The root's runner repair accumulates ids per arm while retaining first-visit and ordinary PLAN behavior.
+Root registered this package before contact after the documented revision
+supply correction. All original failed artifacts remain intact. Runtime
+admission and exact preparation are required before dispatch. Read the sibling
+2026-09-25-slurp-stage3-var2-recovery-v1-preregistration.md and
+../2026-09-25-var2-revision-recovery-diagnosis.md.
 
-This package gives the one permitted root-diagnosed recovery new run and attempt identities. It requires a fresh complete 625-row run, never a resume or selected partial rows. The four-row smoke is a structural proof on the same first four R01C rows. Both retain the original policy, four actions and order, last PLAN continuation, service geometry, 512-token cap, population and per-attempt budgets. The full recovery cap is 10,625 calls; including the aborted predecessor's 224, the family upper bound is 10,849. A second failure closes VAR-2.
-
-All plans remain HELD until root registers this recovery, admission, fresh preparation and fit. No contact, scoring or partial-manifest read is authorized by these provisional files.
+The fixed full625 comparison is the sole recovery. Smoke4 is engineering
+evidence only. No second recovery, partial-row reuse, changed comparator,
+changed roster, new DEV or test access is authorized.

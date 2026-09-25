@@ -1,15 +1,15 @@
 {
-  "cell": "slurp-native-stage3-var2-supply-variants-r01c-recovery-smoke-4-fit-v1",
+  "cell": "slurp-native-stage3-var2-supply-variants-r01c-recovery-smoke-4-v1",
   "composed_config_hash": "e11fbc07efece6410eeea0eaeea6529a6835f015e24c378a085ebd52de0a93dc",
   "execution_plan": {
-    "attempt_id": "attempt-slurp-native-stage3-var2-supply-variants-r01c-recovery-smoke-4-v1-fit",
+    "attempt_id": "attempt-slurp-native-stage3-var2-supply-variants-r01c-recovery-smoke-4-v1-generation",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 1.0,
-    "planned_model_calls": 272,
+    "planned_model_calls": 68,
     "planned_speech_audio_seconds": 290,
     "protocol_hash": "f648d2c6394f8d7042e573c419ca06f88479bb344efdefb9c536d4adfe7abe53",
-    "run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-RECOVERY-SMOKE-4-FIT-V1",
+    "run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-RECOVERY-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
     "split_role": "discovery",
@@ -34,12 +34,12 @@
     "mode": "native_contact_fit",
     "scope": "Every actual request under the unchanged VAR-2 full program."
   },
-  "plan_kind": "fit",
+  "plan_kind": "generation",
   "protocol_document": {
-    "relpath": "docs/readiness/2026-09-25-slurp-stage3-var2-recovery-v1/protocol-provisional-v1.json",
-    "sha256": "af77a16a97b2ca4e9f70befcf9ae2b06f0b7659351a7b99171e7733b641e6934"
+    "relpath": "docs/readiness/2026-09-25-slurp-stage3-var2-recovery-v1/protocol-registered-v1.json",
+    "sha256": "f0987b83b138e5b683746503227fc0eb0ba0513fe7fcf0aa12d27e1ec6b4dbce"
   },
-  "read_rule": "HELD: root registration, admission, fresh prepared phase supply and fit must complete before contact. No score/read from the predecessor's partial state.",
+  "read_rule": "Registered before contact; launch requires root admission, source-bound preparation, clean preflight and each actual request fit. No predecessor partial outcome read.",
   "recovery_accounting": {
     "original_full_model_contacts": 224,
     "original_full_state": "aborted-before-complete-manifest",
@@ -53,5 +53,5 @@
     "this_attempt_generation_cap": 68
   },
   "schema": "saea-flight-execution-plan-v1",
-  "status": "held"
+  "status": "registered-before-contact"
 }

@@ -1,4 +1,11 @@
 {
+  "actions": [
+    "exk10",
+    "exk30",
+    "exdiv",
+    "plan"
+  ],
+  "analysis": "Official pooled word/char counts, intent, empty-target FP, per-scenario natural/equal summaries; paired utterance bootstrap 10000 seed20260915. No borrowed pooled-F1 detection threshold. Frozen feedback F0 from sealed VAR1 PLAN source.",
   "authority": "Root diagnosis of the aborted VAR-2 full attempt on 2026-09-25; one recovery only.",
   "cells": {
     "full": {
@@ -39,8 +46,11 @@
     }
   },
   "claim_boundary": "The recovery's complete manifest alone may be scored; the aborted predecessor has no outcome read. The smoke is structural proof.",
+  "delivery": "Only last plan arm continues downstream. Side arms are raw local Solver actions.",
   "invariants": "Same R01C roster, existing first-four smoke subset, four actions exk10/exk30/exdiv/plan in fixed order, last PLAN continuation, policy, service geometry and 512-token cap.",
+  "order_limitation": "Fixed arm order is not counterbalanced; a favorable difference needs complete-system validation. No claim that earlier ROLL-AA removes order effects.",
   "recovery": {
+    "all_generation_upper_bound_including_smokes": 10945,
     "cause": "On an OpenJiuwen revision revisit, the resolver returned unseen supply increments while the runner compared those increments to cumulative acquired ids.",
     "form": "Fresh complete 625-row re-flight; no resume or partial-row selection.",
     "original_plus_recovery_generation_upper_bound": 10849,
@@ -50,8 +60,10 @@
     "recoveries_used": 1,
     "recovery_attempt_generation_cap": 10625,
     "repair": "Runner accumulates selected ids per arm before comparing revisit state; first visit and ordinary final PLAN baseline are unchanged.",
+    "scope_of_10849": "Full original actual plus full recovery ceiling; excludes the two engineering proofs.",
     "second_failure": "Close VAR-2."
   },
-  "schema": "saea-var2-recovery-protocol-provisional-v1",
-  "status": "held"
+  "schema": "saea-var2-recovery-protocol-v1",
+  "state": "Same pre-Solver QueryState for each group. Primary first visit; revisits conditioned on the plan path and reported separately.",
+  "status": "registered-before-contact"
 }
