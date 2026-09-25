@@ -1,0 +1,103 @@
+{
+  "schema": "saea-system-requery-replay-recipe-v1",
+  "read_run_id": "SAEA-SLURP-STAGE3-SYSTEM-REQUERY-READ-V1",
+  "registered_at_utc": "2026-09-25T12:54:28.908567+00:00",
+  "execution_profile": "model-free-check",
+  "timing": "After complete-system attribution; before full-context requery replay. Diagnostic, not efficacy or causal evaluation.",
+  "population": "Both complete PLAN and PLANR R01C construction sources, 625 rows each. Preserve rows lacking the boundary explicitly; never select on gold or outcomes.",
+  "arms": {
+    "plan": {
+      "feedback": {
+        "relpath": "analysis/SAEA-SLURP-STAGE3-SYSTEM-TRAJECTORY-READ-V1/plan-system-feedback.json",
+        "sha256": "80d53a8f4728bccf4b932ffc1ae8a2e98ae05eb1f73acd343f1d60f0835537f1"
+      },
+      "source_bindings": {
+        "schema": "saea-system-feedback-binding-v1",
+        "execution_profile": "model-free-check",
+        "feedback_role": "construction",
+        "scorer_id": "slurp-slu-official-train",
+        "manifest": {
+          "relpath": "runs/SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1/attempt-slurp-native-stage3-var1-plan-r01c-v1-generation/SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1.run-manifest.json",
+          "sha256": "9cffd764b76615c5c13b899c0e03163cfbd0524fb979290b7d1a41d94976a73e"
+        },
+        "phases": {
+          "relpath": "runs/SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1/attempt-slurp-native-stage3-var1-plan-r01c-v1-generation/SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1.phases.json",
+          "sha256": "02ac15d280803ae727809cc44c3388a6c9bbd5986751bcab218083045ab7a9d9"
+        },
+        "flight_receipts": {
+          "relpath": "runs/SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1/attempt-slurp-native-stage3-var1-plan-r01c-v1-generation/flight-receipts.json",
+          "sha256": "e94f6a8dfcd2ad25ffa5a3a70d2f9460fe0439154ff7826aa33a30363c1cf5b7"
+        },
+        "score_jobs": {
+          "relpath": "runs/SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1/attempt-slurp-native-stage3-var1-plan-r01c-v1-generation/score-jobs.jsonl",
+          "sha256": "8e6df9526a9b4c1194c932a6f9aabaf4a116a10d9ff9c047c2951e74714ba682"
+        }
+      }
+    },
+    "planr": {
+      "feedback": {
+        "relpath": "analysis/SAEA-SLURP-STAGE3-SYSTEM-TRAJECTORY-READ-V1/planr-system-feedback.json",
+        "sha256": "2fcbe5e92771c752ef5fb986736a1089644a884cb315e27d5be5137487ef8f0b"
+      },
+      "source_bindings": {
+        "schema": "saea-system-feedback-binding-v1",
+        "execution_profile": "model-free-check",
+        "feedback_role": "construction",
+        "scorer_id": "slurp-slu-official-train",
+        "manifest": {
+          "relpath": "runs/SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-V1/attempt-slurp-native-stage3-var1-planr-r01c-v1-generation/SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-V1.run-manifest.json",
+          "sha256": "62d490c8ad854d0813c1f3287dd4c03a2b4dccdc36dc3fa4e60a1c02c4697b16"
+        },
+        "phases": {
+          "relpath": "runs/SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-V1/attempt-slurp-native-stage3-var1-planr-r01c-v1-generation/SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-V1.phases.json",
+          "sha256": "503354e4aaccde710fcca4ab68f4d2d4fb96ffeba59a122a7ea2243ba90c100f"
+        },
+        "flight_receipts": {
+          "relpath": "runs/SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-V1/attempt-slurp-native-stage3-var1-planr-r01c-v1-generation/flight-receipts.json",
+          "sha256": "958f322d82b411ecb58cdd7551b8df7b85ca90c847483ef9e843d0c5250f920a"
+        },
+        "score_jobs": {
+          "relpath": "runs/SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-V1/attempt-slurp-native-stage3-var1-planr-r01c-v1-generation/score-jobs.jsonl",
+          "sha256": "8e1d9ab18d2fe96ef66ab7cfee96b4bb0931b2e806465783d24033a139d2e3de"
+        }
+      }
+    }
+  },
+  "source_commit": "3ade29ffe2342ee65de47b6913990bd15fdcc24d",
+  "replay_policy": {
+    "policy": "saea-acquire-knowledge-requery-v1",
+    "retrieval": {
+      "policy": "saea-requery-idf-v1",
+      "min_token_chars": 4,
+      "max_document_frequency": 0.05,
+      "exclude_visible_tokens": true
+    },
+    "max_items_per_acquisition": 5,
+    "max_state_filters": 8
+  },
+  "boundary": "First Planner request carrying the first completed Reviewer state. Reuse its normalized review, with the explicitly hypothetical action ACQUIRE. Exclude the union of all actual supplied evidence through this request, including Solver exemplars; never include later states.",
+  "analysis": [
+    "Verify prior complete-source feedback hashes and raw trace pins, and every consumed request against its exported fingerprint.",
+    "Load the source configuration's own pinned minus-R01 composite knowledge; refuse changed configuration.",
+    "Reuse production E36b callback and existing independent IDF diagnostics; require equal ordered item IDs.",
+    "Report available/missing boundaries, nonempty returns, token rejection reasons, new evidence IDs and store distribution, and existing shared rendering availability.",
+    "Save IDs, hashes and counts only; no raw answers, query words, references or knowledge text in derived report.",
+    "Report natural whole-roster rates and source-scenario strata; equal-stratum averages if source strata are available without a gold read."
+  ],
+  "limits": [
+    "No target gold, fresh DEV, test, F10 outcomes, model, tokenizer, encoder, scorer or network contact.",
+    "This is a hypothetical availability replay on all rows, not an observed ACQUIRE decision, online trigger rate, downstream consumption proof, or system improvement.",
+    "No policy fitting, parameter sweep, automatic GPU admission or reopening closed experiments.",
+    "The later owner decision 90 names findings-keyed E36b for Stage3. Label this lexical finding search accurately; do not describe it as a speech-vector query."
+  ],
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "scorer": 0,
+    "server": 0,
+    "network": 0,
+    "offline_retrieval_queries_cap": 1250
+  },
+  "output_relpath": "analysis/SAEA-SLURP-STAGE3-SYSTEM-REQUERY-READ-V1/replay.json"
+}
