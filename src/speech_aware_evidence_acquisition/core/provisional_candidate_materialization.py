@@ -144,10 +144,20 @@ def _load_config(path: Path, expected_sha256: str) -> tuple[dict[str, object], s
         raise MaterializationError(f"cannot read materialization config: {error}") from error
     if actual != expected or hashlib.sha256(raw).hexdigest() != expected:
         raise MaterializationError("materialization config hash mismatch")
-    if not isinstance(value, dict) or set(value) != _CONFIG_KEYS:
-        raise MaterializationError("materialization config has missing or unknown fields")
-    if value.get("schema") != CONFIG_SCHEMA:
+    from .provisional_candidate_consolidation import CONFIG_SCHEMA as CONSOLIDATION_CONFIG_SCHEMA
+
+    schemas = {
+        CONFIG_SCHEMA: _CONFIG_KEYS,
+        CONSOLIDATION_CONFIG_SCHEMA: {
+            "schema", "materialization_id", "memory_id", "max_candidates",
+            "initial_materialization", "rounds",
+        },
+    }
+    if (not isinstance(value, dict) or not isinstance(value.get("schema"), str)
+            or value["schema"] not in schemas):
         raise MaterializationError("materialization config schema mismatch")
+    if set(value) != schemas[value["schema"]]:
+        raise MaterializationError("materialization config has missing or unknown fields")
     materialization_id = value.get("materialization_id")
     if not isinstance(materialization_id, str) or _SAFE_ID.fullmatch(materialization_id) is None:
         raise MaterializationError("materialization_id is not a safe artifact identity")
@@ -473,6 +483,12 @@ def prepare_provisional_candidates(
     config, config_sha, config_fingerprint = _load_config(
         config_path, expected_config_sha256
     )
+    if config["schema"] != CONFIG_SCHEMA:
+        from .provisional_candidate_consolidation import prepare_consolidated_candidates
+
+        return prepare_consolidated_candidates(
+            config_path=config_path, expected_config_sha256=config_sha, data_root=data_root,
+        )
     manifest_path, _raw, bundle_sha, bundle_fingerprint = _stable_pinned_bytes(
         config["proposal_bundle"], "proposal bundle manifest"
     )

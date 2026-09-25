@@ -1,0 +1,136 @@
+{
+  "schema": "saea-consolidated-candidate-materialization-validation-v1",
+  "recorded_at_utc": "2026-09-25T22:42:38.775895+00:00",
+  "scope": "offline source replay and synthetic connected native execution",
+  "environment": "WSL Ubuntu-24.04; /home/chao/.venvs/speechrl/bin/python; explicit main src PYTHONPATH",
+  "base_commit": "9068eb27c1407bf56ba9b1ef60ccd26ab6bdfcfb",
+  "frozen_worker_commit_unchanged": "60d5719728f7a79f374000bcbd742508785c9894",
+  "source_files": [
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/provisional_candidate_consolidation.py",
+      "sha256": "545c6a317d0b259b212f84a18cdf4a9c433ca7ae1b3ddd387f5c7137b7cabdd8"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/provisional_candidate_materialization.py",
+      "sha256": "31555c19f571c25b4ea97ed62d76f4e96ec291a17e0d8ea5bd97d6efe5dcedde"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/rails/candidate_experience_memory.py",
+      "sha256": "2a1274eee06b3444d42767c93126b44197c0bf674347f27f503ad1ae11ee3345"
+    },
+    {
+      "path": "tests/unit/test_provisional_candidate_consolidation.py",
+      "sha256": "aa1725d22682158d6bbd1948e0edbbf3b483b9799cf1f316d48146fcc2b3215b"
+    }
+  ],
+  "research_model_contacts": 0,
+  "research_tool_contacts": 0,
+  "research_task_quality_reads": 0,
+  "research_runtime_activation": false,
+  "tests": {
+    "initial_red": {
+      "exit_code": 2,
+      "reason": "New materializer module did not yet exist.",
+      "log": "/home/chao/consolidation-materialization-validation-v1/red.txt"
+    },
+    "duplicate_key_red": {
+      "exit_code": 1,
+      "reason": "Ordinary JSON parsing silently accepted duplicate operation keys.",
+      "log": "/home/chao/consolidation-materialization-validation-v1/duplicate-red.txt"
+    },
+    "final": {
+      "exit_code": 0,
+      "passed": 84,
+      "new_materialization_cases": 14,
+      "log": "/home/chao/consolidation-materialization-validation-v1/custody-final-tests.txt",
+      "log_sha256": "8831e0f1b3c214487b7c8eb2bd2e4df7442ea2ff5407ac49272e89f74dd10a22",
+      "warnings": "Three existing dependency deprecation warnings."
+    },
+    "ruff": {
+      "exit_code": 0,
+      "log": "/home/chao/consolidation-materialization-validation-v1/ruff-custody-final.txt",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    }
+  },
+  "offline_gates": [
+    {
+      "name": "engineering_base_check",
+      "exit_code": 0,
+      "log": "/home/chao/consolidation-materialization-validation-v1/final-gates/engineering_base_check.txt",
+      "log_sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "name": "harness_admission_check",
+      "exit_code": 0,
+      "log": "/home/chao/consolidation-materialization-validation-v1/final-gates/harness_admission_check.txt",
+      "log_sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+    },
+    {
+      "name": "results_ledger_check",
+      "exit_code": 0,
+      "log": "/home/chao/consolidation-materialization-validation-v1/final-gates/results_ledger_check.txt",
+      "log_sha256": "ec9367bbd838063e612f82f2497a4e042f439e1b778d78d55e5f4c6117904d6f"
+    },
+    {
+      "name": "tool_catalog_check",
+      "exit_code": 0,
+      "log": "/home/chao/consolidation-materialization-validation-v1/final-gates/tool_catalog_check.txt",
+      "log_sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+    },
+    {
+      "name": "experiment_handoff_check",
+      "exit_code": 0,
+      "log": "/home/chao/consolidation-materialization-validation-v1/final-gates/experiment_handoff_check.txt",
+      "log_sha256": "1628d7e054d0bbdc10ea1f78558b47f327e21f565691eb10806b85ecc2b9dbc2"
+    },
+    {
+      "name": "openjiuwen_native_reuse_check",
+      "exit_code": 0,
+      "log": "/home/chao/consolidation-materialization-validation-v1/final-gates/openjiuwen_native_reuse_check.txt",
+      "log_sha256": "c04f63d273b02839e5d61130533290cdd74d07001a2a74499fdc59dca1aab9ed"
+    },
+    {
+      "name": "derived_media_confinement_check",
+      "exit_code": 0,
+      "log": "/home/chao/consolidation-materialization-validation-v1/final-gates/derived_media_confinement_check.txt",
+      "log_sha256": "5ac511939c98256e930c2bb87d35d11b99868b3ba72556540d0ca0e8b6c65607"
+    },
+    {
+      "name": "stage3_algorithm_label_check",
+      "exit_code": 0,
+      "log": "/home/chao/consolidation-materialization-validation-v1/final-gates/stage3_algorithm_label_check.txt",
+      "log_sha256": "772a0ea23eb2cbd08e1649908f386c524c8a78941bf58e74e26004da7cf524ca"
+    },
+    {
+      "name": "finite_completion_policy_check",
+      "exit_code": 0,
+      "log": "/home/chao/consolidation-materialization-validation-v1/final-gates/finite_completion_policy_check.txt",
+      "log_sha256": "20bc3dc18154a13c2956dd6455da6de859f1e724b864fd06bcaec02b0734cc22"
+    }
+  ],
+  "connected_test_boundary": {
+    "real": [
+      "Original synthetic proposal/reward source verification",
+      "Candidate materialization and attestation",
+      "FlightRuntime dispatch",
+      "OpenJiuwen native role and tool history",
+      "Reviewer tool result reaching Solver revision"
+    ],
+    "stubbed": [
+      "Consolidation bundle verifier in the new connected fixture",
+      "Model service responses"
+    ],
+    "negative_check": "Materialization and reward-source reads are forbidden during answer execution.",
+    "interpretation": "No real updater generation, research outcome or effectiveness is tested."
+  },
+  "remaining": [
+    "Register and execute complete model-facing semantic stages with exact input/source bindings.",
+    "Reconcile the multi-round construction schedule with the retained disjoint-TRAIN candidate evaluation boundary.",
+    "Evaluate frozen updated experience through complete-system execution, full official scoring and matched replication."
+  ],
+  "runtime_snapshot": {
+    "path": "/home/chao/consolidation-materialization-validation-v1/runtime-snapshot.txt",
+    "sha256": "a051a47122c20abc08cfc1604a55af7b9426b4c79345d43a18788714d0cc4129",
+    "interpretation": "Operational metadata only; control running with a live driver/campaign and no task-quality read."
+  }
+}

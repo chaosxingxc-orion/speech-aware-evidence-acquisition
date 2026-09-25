@@ -145,7 +145,10 @@ def _prepared_pinned(
 
 
 def _records(output: Mapping[str, object], construction_sha: str) -> tuple[ExperienceRecord, ...]:
-    if output.get("schema") != OUTPUT_SCHEMA or output.get("status") != "provisional":
+    from ..core.provisional_candidate_consolidation import OUTPUT_SCHEMA as CONSOLIDATED_SCHEMA
+
+    consolidated = output.get("schema") == CONSOLIDATED_SCHEMA
+    if output.get("schema") not in {OUTPUT_SCHEMA, CONSOLIDATED_SCHEMA} or output.get("status") != "provisional":
         raise CandidateExperienceMemoryError("candidate artifact is not provisional experience")
     provenance = output.get("provenance")
     if not isinstance(provenance, Mapping) or provenance.get(
@@ -158,9 +161,10 @@ def _records(output: Mapping[str, object], construction_sha: str) -> tuple[Exper
     found: list[ExperienceRecord] = []
     seen: set[str] = set()
     for row in samples:
-        if not isinstance(row, Mapping) or set(row) != {
-            "source_sample_id", "proposal_result_sha256", "records"
-        }:
+        expected_keys = {"source_sample_id", "records"}
+        if not consolidated:
+            expected_keys.add("proposal_result_sha256")
+        if not isinstance(row, Mapping) or set(row) != expected_keys:
             raise CandidateExperienceMemoryError("candidate sample row is malformed")
         sample_id = row["source_sample_id"]
         if (
@@ -169,7 +173,8 @@ def _records(output: Mapping[str, object], construction_sha: str) -> tuple[Exper
         ):
             raise CandidateExperienceMemoryError("candidate sample IDs must be unique")
         seen.add(sample_id)
-        _sha(row["proposal_result_sha256"], "proposal result SHA-256")
+        if not consolidated:
+            _sha(row["proposal_result_sha256"], "proposal result SHA-256")
         if not isinstance(row["records"], list):
             raise CandidateExperienceMemoryError("candidate records must be a list")
         for value in row["records"]:

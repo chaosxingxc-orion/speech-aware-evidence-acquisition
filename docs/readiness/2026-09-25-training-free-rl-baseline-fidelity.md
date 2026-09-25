@@ -317,3 +317,19 @@ proposal artifact. Summary inference, complete semantic update-stage receipts,
 same-space admission, frozen execution and matched replication remain open.
 No new model/tool contact, source-result read, scoring or running-worker change
 was made for this implementation. There is no learned-policy benefit claim.
+
+## Consolidation lineage now connects to candidate evaluation
+
+The distinct consolidated-candidate schema now replays original typed-proposal
+materializations and each sealed operation plan through the existing source
+attestation and runtime reader. Read
+2026-09-25-consolidated-candidate-materialization.md. This supersedes the earlier
+statement that deterministic update snapshots have no candidate-attestation
+connection. It does not supersede the outstanding model-facing stages,
+same-space registration, real frozen execution or replication.
+
+The current operation space selects, replaces or deletes already materialized
+proposal records. It cannot invent rewritten content in a consolidation plan;
+new content must first be a source-bound typed proposal. Report that restriction
+when comparing to the pinned upstream free-form consolidation rather than
+presenting this adapter as an unchanged TF-GRPO reproduction.

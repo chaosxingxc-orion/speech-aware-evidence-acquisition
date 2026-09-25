@@ -146,7 +146,8 @@ move that checkout merely to run newer readers.
 | Complete episode policy selector/catalog | Executable pre-Perception choice and terminal credit; one episode-start state only learns a global fixed choice |
 | Semantic feedback input preparation | Complete episode/count binding, separate summary and signed-feedback channels, explicit terminal-vector eligibility; 131 related tests and 9 gates; no model-facing update yet |
 | TF-GRPO cross-round consolidation source audit | Seven synthetic exact-source cases; sparse-ID ADD can overwrite prior experience after deletion. Require stable IDs and explicit atomic operations in the future adapter; no runtime change or task claim |
-| Atomic candidate consolidation | Shared ADD/UPDATE/DELETE over existing provisional experience records; immutable revision lineage and all-or-nothing failure; 143 related tests and 9 gates passed. Model-facing semantic stages, candidate attestation binding and runtime reexecution remain outstanding |
+| Atomic candidate consolidation | Shared ADD/UPDATE/DELETE over existing provisional experience records; immutable revision lineage and all-or-nothing failure; 143 related tests and 9 gates passed. Model-facing semantic stages and real runtime reexecution remain outstanding |
+| Consolidated candidate source replay | Existing materializer, attestation and runtime reader now accept a distinct verified consolidation-chain output. 84 related tests and 9 offline gates pass; connected synthetic native execution reaches Reviewer tool and Solver revision; model-facing semantic stages and real reexecution remain outstanding |
 | Contextual complete-continuation learner | Still outstanding at the real post-Perception/pre-Solver boundary; no learned continuation-selector has run |
 
 Test populations overlap; do not add them into one coverage claim. These are
@@ -158,7 +159,10 @@ Read the [semantic feedback input contract](../readiness/2026-09-25-system-seman
 [objective audit](../readiness/2026-09-25-system-terminal-ratio-objective-audit.md),
 [policy catalog](../readiness/2026-09-25-system-policy-catalog-runtime.md) and
 [baseline fidelity audit](../readiness/2026-09-25-training-free-rl-baseline-fidelity.md)
-for contracts and proof receipts. Raw task answers stay outside Git.
+for contracts and proof receipts. Read the new
+[consolidated candidate contract](../readiness/2026-09-25-consolidated-candidate-materialization.md)
+for the source-replay connection and its exact test boundary. Raw task answers
+stay outside Git.
 
 ## Next algorithm boundary
 
@@ -178,10 +182,14 @@ for contracts and proof receipts. Raw task answers stay outside Git.
    with explicit retrieval/update/credit adaptations; TF-GRPO now has separate
    feedback fields and versioned eligibility preparation, but still needs an
    executed summary/feedback comparison, model-generated semantic operations,
-   consolidation-stage execution, candidate source attestation and execution
-   using the updated frozen experience. The deterministic atomic plan applier
+   consolidation-stage execution and real execution using the updated frozen
+   experience. Consolidated candidates now connect through the existing
+   source-attestation/runtime path in synthetic integration tests. The deterministic atomic plan applier
    is now implemented over the existing provisional record contract. The
    summary serializer alone is not an algorithm reproduction.
+   Candidate runtime still requires disjoint TRAIN construction/evaluation;
+   reconcile the multi-round construction schedule before registration rather
+   than silently allowing provisional self-application.
 
 Keep the approved frozen-F0 baseline unchanged. Its utility detects improvement
 over F0 but need not rank improved policies by pooled F1. The ratio-aware
