@@ -1,0 +1,29 @@
+{
+  "active_flight_untouched": true,
+  "encoder_contacts": 0,
+  "model_contacts": 0,
+  "offline_refusals": [
+    "Implementation worktree had unrelated uncommitted analysis edits; preparation moved to main.",
+    "The registration wording changed config identity; recomposed all pins before preparation.",
+    "Existing main scoring bytecode from06:23UTC was quarantined; scoring source hashes unchanged."
+  ],
+  "preparation_requirements": "Preserved original store and speech-query bindings separately. Generic repin rewrites every preparation-kind requirement; corrected these configs after repin and recomposed once. Do not rerun repin blindly on mixed preparation requirements.",
+  "prepared": {
+    "control": {
+      "relpath": "prepared/SAEA-SLURP-STAGE3-F10-CONTROL-R01C-V1/phase-supply-v1.json",
+      "sha256": "4e03f4cf179d44e72f47e0ff52f62e88dde148d3ecf4fc12836ed72baef7b645"
+    },
+    "empty": {
+      "relpath": "prepared/SAEA-SLURP-STAGE3-F10-EMPTY-R01C-V1/phase-supply-v1.json",
+      "sha256": "54ab12e0c36664e4391d83d4078e15101d47ef847314dc5c179ea1f30ad7b894"
+    },
+    "smoke": {
+      "relpath": "prepared/SAEA-SLURP-STAGE3-F10-EMPTY-R01C-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "9913b3a8509737d7a8430eadfc9dfcda1001d7eab28da0282238b53bcd613fcd"
+    }
+  },
+  "protocol_sha256": "dfbe2da19962722dad64860a72964b2b8c17fc36156b49bd3c379c4decf66c34",
+  "recorded_at_utc": "2026-09-25T10:32:35.720601+00:00",
+  "schema": "saea-f10-preparation-boundary-v1",
+  "tokenizer_contacts": 0
+}

@@ -284,5 +284,9 @@
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
   "what_the_train_exemplars_store_is": "SLURP v2 base program module M1 / cell B1: the top-k TRAIN construction-pool exemplars recalled by cosine against this row's OWN sealed R01C speech vector in the content retrieval dimension, ranked by saea-rank-wcos-prior-agree-v1 (identity on cosine: w_cos=1, w_prior=0, w_agree=0) and passed through saea-fuse-supplyfilter-v1. The store uses the R01C-safe 8,554-utterance minus-R01 selection, preventing construction rows from retrieving their own answer (coordinator decision 102). The value rendering is defined by the pinned release; retrieval keys, ids and selection are shared across F10 arms. The decision is delivered to the SOLVER phase through the E6 acquire transition as typed content blocks, composed with the slot-contracts candidate supply on the same wave.",
-  "what_this_is": "F10 matched PLAN-form knowledge-rendering comparison on the full R01C construction roster."
+  "what_this_is": "F10 matched PLAN-form knowledge-rendering comparison on the full R01C construction roster.",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-STAGE3-F10-CONTROL-R01C-V1/phase-supply-v1.json",
+    "sha256": "4e03f4cf179d44e72f47e0ff52f62e88dde148d3ecf4fc12836ed72baef7b645"
+  }
 }

@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-f10-control-r01c-v1",
-  "composed_config_hash": "0b2be6a86fecf8a6fa0eae2f61dbd5da65d1998fdcca8af53c857a97fc83f88e",
+  "composed_config_hash": "075d613fb905d25eeeb62b2f414c51e057863fde454a79910bbabbbcc3a176ac",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-f10-control-r01c-v1-generation",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 8.0,
     "planned_model_calls": 6875,
     "planned_speech_audio_seconds": 29996,
-    "protocol_hash": "94065eb766749248f239710710cbd9325f4758d06f3696a40fb4efef125e73c3",
+    "protocol_hash": "dae63d5b07875eb8cb1589de354d5b0e7dcc9606cba629e705c55cd173b84eb3",
     "run_id": "SAEA-SLURP-STAGE3-F10-CONTROL-R01C-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
@@ -36,7 +36,7 @@
   "plan_kind": "generation",
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-25-slurp-stage3-f10-v1/protocol-registered-v1.json",
-    "sha256": "e0207bb0dbd8a605e8ff091ddb6553f76295aec5013d4f0481cecca8cd5e11a3"
+    "sha256": "dfbe2da19962722dad64860a72964b2b8c17fc36156b49bd3c379c4decf66c34"
   },
   "read_rule": "Registered before contact. Root admission, pinned preparation, clean preflight and actual-request capacity checks are mandatory. No outcomes are read until both full arms are sealed and scored.",
   "schema": "saea-flight-execution-plan-v1",

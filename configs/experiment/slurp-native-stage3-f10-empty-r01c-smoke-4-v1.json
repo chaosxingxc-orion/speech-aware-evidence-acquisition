@@ -12,7 +12,7 @@
       "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Registered F10 comparison; remain held until source-bound preparation, root admission and clean preflight. Actual request fit is mandatory.",
+        "reason": "Admitted F10; prepared supply and root decision pinned. Launch still requires predecessor completion, exclusive matching service and actual-request fit.",
         "requirements": [
           {
             "kind": "preparation",
@@ -25,9 +25,22 @@
             "reason": "The sealed R01 speech-query encoding from which R01C vectors are selected.",
             "relpath": "preparation-runs/SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
             "sha256": "2117fa6d5fdb7563e4f609b66e2fc3971a340a7dd22d178fa3cfd5a7c111839a"
+          },
+          {
+            "kind": "preparation",
+            "reason": "Verified model-free first-phase supply; source store and speech-query requirements above remain independently pinned.",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-F10-EMPTY-R01C-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "9913b3a8509737d7a8430eadfc9dfcda1001d7eab28da0282238b53bcd613fcd"
+          },
+          {
+            "expected_decision_id": "slurp-stage3-f10-admission-v1",
+            "kind": "decision",
+            "reason": "Decision slurp-stage3-f10-admission-v1 pinned by scripts/flights/repin_cell.py.",
+            "relpath": "coordination/slurp-stage3-f10-v1/root-admission-v1.json",
+            "sha256": "ba86ba4fee10ad9a29bf1718ba63fc82705010779d956f541e40f8f931250956"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-F10-EMPTY-R01C-SMOKE-4-V1"
     },
