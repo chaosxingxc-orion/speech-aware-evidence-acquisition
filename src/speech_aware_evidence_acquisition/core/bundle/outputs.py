@@ -128,6 +128,7 @@ def _minimum_model_calls_from_trace(
 #: The invariant code a grouped-Solver custody refusal names, so a failed
 #: seal is never confused with I7's single-response identity check.
 SOLVER_GROUP_INVARIANT = "I7g"
+SUPPLY_VARIANT_INVARIANT = "I7v"
 
 #: E11 (owner directive 26, 2026-09-18): the invariant code a delivery-time
 #: normalisation custody refusal names, so it is never confused with I7's
@@ -719,6 +720,109 @@ def _verify_grouped_solver_trace_binding(
         )
 
 
+def _verify_supply_variant_trace_binding(
+    row: Mapping[str, object], trace_records: Mapping[str, Mapping[str, object]],
+) -> None:
+    """Bind every Solver arm visit to its trace and the final arm to the row.
+
+    The output carries the final visit's arm selection. Earlier revision visits
+    remain in ``native_episode_receipt.role_visits``. The bundle has no raw
+    composed configuration; declaration identity was checked at flight seal.
+    """
+
+    label = _row_label(row)
+
+    def refuse(reason: str) -> None:
+        raise BundleError(f"{label}: {reason} ({SUPPLY_VARIANT_INVARIANT})")
+
+    variants = row.get("supply_variants")
+    if not isinstance(variants, Mapping):
+        refuse("supply_variants must be a receipt object")
+    arms = variants.get("arms")
+    if not isinstance(arms, Sequence) or isinstance(arms, (str, bytes)) or not arms:
+        refuse("supply_variants has no ordered arms")
+    arm_ids = [arm.get("arm_id") if isinstance(arm, Mapping) else None for arm in arms]
+    if any(not isinstance(arm_id, str) or not arm_id for arm_id in arm_ids):
+        refuse("supply_variants contains an arm without an id")
+
+    episode = row.get("native_episode_receipt")
+    visits = episode.get("role_visits") if isinstance(episode, Mapping) else None
+    if not isinstance(visits, Sequence) or isinstance(visits, (str, bytes)):
+        refuse("supply_variants has no native episode role visits")
+    solver_visits = [visit for visit in visits if isinstance(visit, Mapping)
+                     and visit.get("stage") == "solver"]
+    if not solver_visits:
+        refuse("supply_variants has no Solver visit")
+    final_visit = solver_visits[-1]
+    final_execution = final_visit.get("execution_receipt")
+    final_contacts = final_execution.get("contacts") if isinstance(final_execution, Mapping) else None
+    if not isinstance(final_contacts, Sequence) or isinstance(final_contacts, (str, bytes)):
+        refuse("final Solver visit has no contacts")
+    if [arm.get("contact_id") for arm in arms] != [
+        contact.get("agent_contact_id") if isinstance(contact, Mapping) else None
+        for contact in final_contacts
+    ]:
+        refuse("final arm contact ids disagree with the final Solver visit")
+
+    from ...rails.native_episode_receipt import validate_supply_variant_receipt
+
+    states = [payload.get("org_final_query_state") for payload in trace_records.values()
+              if isinstance(payload.get("org_final_query_state"), Mapping)
+              and payload["org_final_query_state"].get("query_sample_id") == row.get("sample_id")]
+    if len(states) != 1:
+        refuse("supply_variants needs exactly one final QueryState in the trace")
+    retrieved_ids = states[0].get("retrieved_value_ids")
+    if not isinstance(retrieved_ids, Sequence) or isinstance(retrieved_ids, (str, bytes)):
+        refuse("final QueryState has no retrieved value ids")
+    try:
+        validate_supply_variant_receipt(
+            variants, arm_ids=arm_ids, delivered_arm_id=arm_ids[-1],
+            phase_id=str(final_visit.get("role_id")),
+            retrieved_value_ids=retrieved_ids, error_type=BundleError,
+        )
+    except BundleError as error:
+        refuse(f"supply-variant receipt is invalid: {error}")
+
+    seen_contacts: set[str] = set()
+    last: Mapping[str, object] | None = None
+    for visit_index, visit in enumerate(solver_visits):
+        execution = visit.get("execution_receipt")
+        contacts = execution.get("contacts") if isinstance(execution, Mapping) else None
+        if (not isinstance(contacts, Sequence) or isinstance(contacts, (str, bytes))
+                or len(contacts) != len(arm_ids)):
+            refuse(f"Solver visit {visit_index} does not carry every arm contact")
+        if execution.get("final_contact") != contacts[-1]:
+            refuse(f"Solver visit {visit_index} final contact is not its last arm")
+        for arm_index, contact in enumerate(contacts):
+            if not isinstance(contact, Mapping):
+                refuse(f"Solver visit {visit_index} arm {arm_index} has no contact")
+            contact_id = contact.get("agent_contact_id")
+            request_id = contact.get("request_id")
+            if (not isinstance(contact_id, str) or not contact_id
+                    or contact_id in seen_contacts
+                    or not isinstance(request_id, str) or not request_id):
+                refuse(f"Solver visit {visit_index} arm {arm_index} has invalid identity")
+            seen_contacts.add(contact_id)
+            request = trace_records.get(f"{request_id}/request")
+            response = trace_records.get(f"{request_id}/response")
+            if not isinstance(request, Mapping) or not isinstance(response, Mapping):
+                refuse(f"Solver visit {visit_index} arm {arm_index} has no trace pair")
+            response_text = response.get("text")
+            if (request.get("payload_sha256") != contact.get("request_sha256")
+                    or _request_record_sample_id(request) != row.get("sample_id")
+                    or not isinstance(response_text, str)
+                    or hashlib.sha256(response_text.encode("utf-8")).hexdigest()
+                    != contact.get("response_text_sha256")
+                    or response.get("response_text_sha256") != contact.get("response_text_sha256")
+                    or response.get("response_sha256") != contact.get("response_sha256")):
+                refuse(f"Solver visit {visit_index} arm {arm_index} differs from its trace")
+            last = contact
+    if (last is None or row.get("request_id") != last.get("request_id")
+            or row.get("request_sha256") != last.get("request_sha256")
+            or row.get("response_sha256") != last.get("response_sha256")):
+        refuse("output identity is not the final delivering arm contact")
+
+
 def _split_jsonl(text: str) -> list[str]:
     """Split on the literal record separator only (matches ``core.tracing``'s
     and ``core.scorers``' own discipline): ``json.dumps(ensure_ascii=False)``
@@ -1091,3 +1195,10 @@ def _verify_outputs_trace_binding(
             _verify_delivery_normalisation(row, deliver_normaliser, payload)
         if solver_group is not None:
             _verify_grouped_solver_trace_binding(row, solver_group, records)
+        if "supply_variants" in row:
+            if solver_group is not None:
+                raise BundleError(
+                    f"{_row_label(row)}: supply variants cannot also carry a "
+                    f"grouped Solver commit ({SUPPLY_VARIANT_INVARIANT})"
+                )
+            _verify_supply_variant_trace_binding(row, records)
