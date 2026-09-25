@@ -57,7 +57,7 @@
       "audio_cap": 5454,
       "baseline": "slurp-native-stage3-verify-1-baseline-v1",
       "cell_id": "slurp-native-stage3-verify-1-v1",
-      "composed_config_hash": "7011bf9c8e9903fd28082006cad8b58208816d08cb58c8eb42337e07a4f049e9",
+      "composed_config_hash": "0bd577b3fe53cf91a80bae81ffe972c1142f9b17738a08d24c305bccfb1cadda",
       "experiment": "slurp-native-stage3-verify-1-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-verify-1-v1-fit",
       "fit_cap": 1250,
@@ -65,7 +65,7 @@
       "fit_run_id": "SAEA-SLURP-STAGE3-VERIFY-1-FIT-V1",
       "gen_cap": 1250,
       "gpu_hours": 1.0,
-      "protocol_hash": "b25b91c5142c62968c775470c95be1821e8f8709f7c54d5ca37ed8de6de900b7",
+      "protocol_hash": "7d24de7231442021397f1e194dc8f312b8d5224c9705e5f2bf1c2cd2cd148a38",
       "rows": 625,
       "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-V1",
       "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"
