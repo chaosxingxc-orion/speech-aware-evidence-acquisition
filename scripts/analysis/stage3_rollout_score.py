@@ -86,6 +86,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import sys
 import time
 from pathlib import Path
@@ -756,6 +757,329 @@ def score(
 
 
 # ---------------------------------------------------------------------------
+# Supply-variant first Solver visit (VAR-2). Grouped Solver remains the default.
+# ---------------------------------------------------------------------------
+
+SUPPLY_RENDER_SCHEMA = "saea-stage3-supply-variant-first-visit-v1"
+
+
+def _immutable_jsonl(path: Path, rows: Sequence[Mapping[str, Any]]) -> str:
+    raw = ("\n".join(json.dumps(row, ensure_ascii=False, sort_keys=True) for row in rows)
+           + "\n").encode("utf-8")
+    if path.exists():
+        if path.read_bytes() != raw:
+            raise Stage3ScoreError(f"existing derived copy differs from sealed source: {path}")
+    else:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            with path.open("xb") as stream:
+                stream.write(raw)
+        except FileExistsError as error:
+            raise Stage3ScoreError(f"derived copy appeared concurrently: {path}") from error
+    return hashlib.sha256(raw).hexdigest()
+
+
+def _immutable_json(path: Path, payload: Mapping[str, Any]) -> str:
+    raw = (json.dumps(payload, ensure_ascii=False, indent=1, sort_keys=True) + "\n").encode("utf-8")
+    if path.exists():
+        if path.read_bytes() != raw:
+            raise Stage3ScoreError(f"existing derived metadata differs from sealed source: {path}")
+    else:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            with path.open("xb") as stream:
+                stream.write(raw)
+        except FileExistsError as error:
+            raise Stage3ScoreError(f"derived metadata appeared concurrently: {path}") from error
+    return hashlib.sha256(raw).hexdigest()
+
+
+def render_supply_variant_first_visit(
+    bundle, group, roster: Mapping[str, str], out_dir: Path,
+    *, run_id: str, attempt_id: str, roster_sha256: str, config_hash: str,
+) -> dict[str, Any]:
+    """Render all declared arms from FIRST Solver contacts, with no row filtering.
+
+    A bundle-verified terminal abstention with no Solver visit is an explicit
+    canonical-empty fallback in every column. A partial arm group is invalid.
+    Revision visits are counted separately and never enter these copies.
+    """
+    from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
+        validate_native_episode_delivery_receipt, validate_supply_variant_receipt,
+    )
+    from speech_aware_evidence_acquisition.reproduction.slurp_scoring import parse_slu_response
+
+    if (bundle.manifest.get("status") != "COMPLETED"
+            or bundle.attempt_state != "FINALIZED"
+            or bundle.manifest.get("run_id") != run_id
+            or bundle.manifest_path.parent.name != attempt_id):
+        raise Stage3ScoreError("source bundle is not the requested finalized complete attempt")
+    ids = sorted(roster)
+    if set(ids) != set(bundle.split_ids) or len(ids) != len(bundle.outputs_rows):
+        raise Stage3ScoreError("roster differs from complete bundle split")
+    rows = {row.get("sample_id"): row for row in bundle.outputs_rows}
+    if set(rows) != set(ids):
+        raise Stage3ScoreError("bundle outputs have missing, extra, or duplicate roster rows")
+    if bundle.manifest.get("config", {}).get("config_hash") != config_hash:
+        raise Stage3ScoreError("composed config hash differs from sealed manifest")
+    arms = tuple(group.arms)
+    if not arms or not arms[-1].deliver:
+        raise Stage3ScoreError("declared supply arms lack a final delivering arm")
+    names = tuple(arm.arm_id for arm in arms)
+    if any(not isinstance(name, str) or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", name) is None
+           for name in names):
+        raise Stage3ScoreError("supply arm IDs must be safe single path segments")
+    columns = {name: [] for name in names}
+    row_meta = []
+    malformed = {name: 0 for name in names}
+    absent = 0
+    revisions = 0
+    for sid in ids:
+        row = rows[sid]
+        episode = row.get("native_episode_receipt")
+        if not isinstance(episode, Mapping):
+            raise Stage3ScoreError(f"{sid}: no sealed native episode")
+        visits = episode.get("role_visits")
+        delivery = validate_native_episode_delivery_receipt(
+            episode, error_type=Stage3ScoreError
+        )
+        solver = [visit for visit in visits if isinstance(visit, Mapping)
+                  and visit.get("stage") == "solver"]
+        revisions += max(0, len(solver) - 1)
+        if not solver:
+            if delivery.kind not in {"abstention", "context-abstention"} or (
+                row.get("supply_variants") is not None
+            ):
+                raise Stage3ScoreError(f"{sid}: missing Solver visit is not a declared terminal fallback")
+            absent += 1
+            for name in names:
+                columns[name].append({"sample_id": sid, "text": EMPTY_ANSWER})
+            row_meta.append({"sample_id": sid, "availability": "no_solver_visit",
+                             "fallback": "canonical_empty", "later_solver_visits": 0})
+            continue
+        final = row.get("supply_variants")
+        if not isinstance(final, Mapping):
+            raise Stage3ScoreError(f"{sid}: Solver visit has no final supply-variant custody")
+        validate_supply_variant_receipt(
+            final, arm_ids=names, delivered_arm_id=names[-1],
+            phase_id=solver[-1].get("role_id"), error_type=Stage3ScoreError,
+        )
+        if final["fit_estimate"] != group.fit_estimate.as_json():
+            raise Stage3ScoreError(f"{sid}: sealed fit estimate differs from declaration")
+        for i, arm in enumerate(arms):
+            sealed = final["arms"][i]
+            declared = [{"path": k.path, "value": k.value} for k in arm.knobs]
+            if sealed["resolved_knobs"] != sorted(declared, key=lambda x: x["path"]):
+                raise Stage3ScoreError(f"{sid}: arm resolved knobs differ from declaration")
+            if sealed["max_supplied_items"] != arm.max_supplied_items:
+                raise Stage3ScoreError(f"{sid}: arm supplied-item bound differs from declaration")
+        first = solver[0].get("execution_receipt")
+        contacts = first.get("contacts") if isinstance(first, Mapping) else None
+        if not isinstance(contacts, list) or len(contacts) != len(arms):
+            raise Stage3ScoreError(f"{sid}: first Solver visit lacks a complete arm group")
+        arm_meta = []
+        for i, arm in enumerate(arms):
+            contact = contacts[i]
+            if not isinstance(contact, Mapping):
+                raise Stage3ScoreError(f"{sid}: first Solver arm contact is malformed")
+            request_id = contact.get("request_id")
+            response = bundle.trace_records.get(f"{request_id}/response")
+            request = bundle.trace_records.get(f"{request_id}/request")
+            if not isinstance(response, Mapping) or not isinstance(request, Mapping):
+                raise Stage3ScoreError(f"{sid}: first Solver arm trace pair is absent")
+            raw = response.get("text")
+            if (not isinstance(raw, str)
+                    or request.get("payload_sha256") != contact.get("request_sha256")
+                    or hashlib.sha256(raw.encode("utf-8")).hexdigest()
+                    != contact.get("response_text_sha256")
+                    or response.get("response_text_sha256") != contact.get("response_text_sha256")):
+                raise Stage3ScoreError(f"{sid}: first Solver arm trace hash differs from custody")
+            scenario, action, entities, ok = parse_slu_response(raw)
+            parsed = ({"scenario": scenario or "", "action": action or "",
+                       "entities": [{"type": x.type, "filler": x.filler} for x in entities]}
+                      if ok else None)
+            if not ok:
+                malformed[arm.arm_id] += 1
+            columns[arm.arm_id].append({"sample_id": sid, "text": render_answer(parsed)})
+            arm_meta.append({
+                "arm_id": arm.arm_id, "contact_id": contact.get("agent_contact_id"),
+                "request_sha256": contact.get("request_sha256"),
+                "response_text_sha256": contact.get("response_text_sha256"),
+                "parse_status": "ok" if ok else "malformed",
+                "fallback": None if ok else "canonical_empty",
+            })
+        row_meta.append({"sample_id": sid, "availability": "first_solver_visit",
+                         "later_solver_visits": len(solver) - 1, "arms": arm_meta})
+    source = {
+        "run_id": run_id, "attempt_id": attempt_id,
+        "manifest_path": str(bundle.manifest_path),
+        "manifest_sha256": sha256_file(bundle.manifest_path),
+        "outputs_sha256": bundle.manifest["outputs"]["sha256"],
+        "raw_trace_sha256": bundle.manifest["raw_trace"]["sha256"],
+        "sealed_scores_sha256": bundle.manifest["scores"]["sha256"],
+        "config_hash": config_hash, "roster_sha256": roster_sha256,
+    }
+    manifest = {
+        "schema": SUPPLY_RENDER_SCHEMA, "stage": "render", "source": source,
+        "rows": len(ids), "arm_order": list(names),
+        "arm_declarations": [
+            {"arm_id": arm.arm_id, "deliver": arm.deliver,
+             "resolved_knobs": [{"path": k.path, "value": k.value} for k in arm.knobs],
+             "max_supplied_items": arm.max_supplied_items}
+            for arm in arms
+        ],
+        "no_solver_visit_rows": absent, "malformed_first_visit_by_arm": malformed,
+        "later_solver_visit_count": revisions,
+        "meaning": "first Solver visit local arm outputs; not full-system returns",
+        "arm_order_source": "declared native Solver supply_variants order; runtime invokes arms in this order",
+        "copies": {},
+    }
+    for name in names:
+        path = out_dir / f"arm-{name}-first-visit-outputs.jsonl"
+        digest = _immutable_jsonl(path, columns[name])
+        manifest["copies"][name] = {"path": str(path), "sha256": digest, "rows": len(ids)}
+    _immutable_json(out_dir / "first-visit-rows.json", {
+        "schema": SUPPLY_RENDER_SCHEMA, "source": source, "rows": row_meta,
+        "note": "later visits are counted only, never mixed into first-visit columns",
+    })
+    _immutable_json(out_dir / "render-manifest.json", manifest)
+    return manifest
+
+
+def score_supply_variant_copies(
+    scorer_id: str, manifest: Mapping[str, Any], out_dir: Path,
+    lock: Mapping[str, object], data_root: Path, delivered: Mapping[str, Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Use score_copy once per whole-roster first-visit arm, then cache summary."""
+    from speech_aware_evidence_acquisition.core.scoring_batch import (
+        score_complete_derived_copy,
+    )
+
+    if manifest.get("schema") != SUPPLY_RENDER_SCHEMA:
+        raise Stage3ScoreError("supply-variant score requires a first-visit render manifest")
+    ids = None
+    sides = {}
+    for arm in manifest["arm_order"]:
+        entry = manifest["copies"].get(arm)
+        if not isinstance(entry, Mapping):
+            raise Stage3ScoreError(f"missing rendered copy for arm {arm}")
+        path = Path(entry["path"])
+        if sha256_file(path) != entry["sha256"]:
+            raise Stage3ScoreError(f"rendered copy hash mismatch for arm {arm}")
+        copy_rows = list(iter_jsonl(path))
+        current = {row.get("sample_id") for row in copy_rows}
+        if len(copy_rows) != manifest["rows"] or len(current) != len(copy_rows):
+            raise Stage3ScoreError(f"rendered copy has partial identities for arm {arm}")
+        if ids is None:
+            ids = current
+        elif ids != current:
+            raise Stage3ScoreError("arm copies do not share one complete roster")
+        score_path = out_dir / f"arm-{arm}-{scorer_id}-scores.json"
+        result = score_complete_derived_copy(
+            parent_manifest=Path(manifest["source"]["manifest_path"]),
+            outputs_copy=path, expected_copy_sha256=entry["sha256"],
+            scorer_id=scorer_id, result_path=score_path, lock=lock,
+            data_root=data_root,
+            column_binding={
+                "arm": arm,
+                "arm_declaration": next(
+                    row for row in manifest["arm_declarations"] if row["arm_id"] == arm
+                ),
+                "render_manifest_sha256": sha256_file(out_dir / "render-manifest.json"),
+                "roster_sha256": manifest["source"]["roster_sha256"],
+                "visit": "first-solver",
+            },
+        )
+        aggregate = result.get("aggregate", {})
+        scores = result.get("per_sample")
+        if (not isinstance(scores, list) or len(scores) != len(current)
+                or {row.get("sample_id") for row in scores} != current
+                or not aggregate.get("identity_check", {}).get("passed")):
+            raise Stage3ScoreError(f"official scorer returned incomplete arm {arm}")
+        sides[arm] = {
+            "copy_sha256": entry["sha256"], "scores_sha256": sha256_file(score_path),
+            "official": aggregate["official"], "rows": len(scores),
+        }
+    if set(delivered) != ids:
+        raise Stage3ScoreError("sealed delivered scores differ from complete roster")
+    summary = {
+        "schema": SUPPLY_RENDER_SCHEMA, "stage": "score",
+        "source": manifest["source"], "scorer_id": scorer_id,
+        "arm_order": manifest["arm_order"], "arms": sides,
+        "sealed_delivered_scores_sha256": manifest["source"]["sealed_scores_sha256"],
+        "sealed_delivered_rows": len(delivered),
+        "meaning": "first Solver visit local branch feedback; not full-system returns",
+        "contacts": {"model": 0, "tokenizer": 0, "encoder": 0, "asr": 0,
+                     "server": 0, "network": 0, "scorer": len(sides)},
+    }
+    _immutable_json(out_dir / "score-summary.json", summary)
+    return summary
+
+
+def supply_variant_main(args, repo_root: Path, root: Path, lock) -> int:
+    from speech_aware_evidence_acquisition.core.bundle import verify_bundle
+    from speech_aware_evidence_acquisition.core.config import compose
+    from speech_aware_evidence_acquisition.rails.supply_variants import parse_supply_variants
+
+    if args.stage == "pairs" or args.samples is not None:
+        raise Stage3ScoreError("supply-variants mode supports render/score/all, not pairs or samples")
+    directory = run_dir(root, args.run, args.attempt)
+    bundle = verify_bundle(directory / f"{args.run}.run-manifest.json")
+    fragments = bundle.manifest.get("config", {}).get("fragments")
+    if not isinstance(fragments, Mapping):
+        raise Stage3ScoreError("sealed manifest has no composed fragments")
+    composed = compose(repo_root, *(fragments[k] for k in ("model", "dataset", "baseline", "experiment")))
+    if composed.config_hash != bundle.manifest["config"]["config_hash"]:
+        raise Stage3ScoreError("current fragments differ from sealed composed config")
+    native = composed.values.get("native_episode")
+    roles = native.get("roles") if isinstance(native, Mapping) else None
+    solver = roles.get("solver") if isinstance(roles, Mapping) else None
+    perception = roles.get("perception") if isinstance(roles, Mapping) else None
+    if not isinstance(solver, Mapping) or not isinstance(perception, Mapping):
+        raise Stage3ScoreError("composed config lacks native Solver/Perception roles")
+    stores = composed.values.get("knowledge_stores")
+    if not isinstance(stores, Mapping):
+        raise Stage3ScoreError("composed config lacks declared knowledge stores")
+    group = parse_supply_variants(
+        solver.get("supply_variants"), phase_id=solver.get("phase_id"),
+        first_phase_id=perception.get("phase_id"), declared_stores=tuple(stores),
+    )
+    roster, roster_sha256, _ = load_roster(repo_root, args.roster)
+    out_dir = Path(args.analysis_root)
+    if args.stage in ("render", "all"):
+        manifest = render_supply_variant_first_visit(
+            bundle, group, roster, out_dir, run_id=args.run, attempt_id=args.attempt,
+            roster_sha256=roster_sha256, config_hash=composed.config_hash,
+        )
+    else:
+        path = out_dir / "render-manifest.json"
+        if not path.is_file():
+            raise Stage3ScoreError("supply-variant score requires a prior render")
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+        if any(not Path(entry["path"]).is_file()
+               for entry in manifest.get("copies", {}).values()):
+            raise Stage3ScoreError("supply-variant score requires every prior rendered copy")
+        # Rebuild from the verified source before trusting cached copies.
+        checked = render_supply_variant_first_visit(
+            bundle, group, roster, out_dir, run_id=args.run, attempt_id=args.attempt,
+            roster_sha256=roster_sha256, config_hash=composed.config_hash,
+        )
+        if manifest != checked:
+            raise Stage3ScoreError("render manifest differs from verified source")
+    if args.stage in ("score", "all"):
+        delivered = sealed_per_sample(directory, args.run, args.scorer_id)
+        summary = score_supply_variant_copies(
+            args.scorer_id, manifest, out_dir, lock, root, delivered,
+        )
+        print(json.dumps({"stage": "score", "arms": list(summary["arms"]),
+                          "rows": summary["sealed_delivered_rows"]}))
+    else:
+        print(json.dumps({"stage": "render", "arms": manifest["arm_order"],
+                          "rows": manifest["rows"]}))
+    return 0
+
+
+# ---------------------------------------------------------------------------
 # pairs
 # ---------------------------------------------------------------------------
 
@@ -940,6 +1264,7 @@ def pairs(
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--mode", choices=("grouped", "supply-variants"), default="grouped")
     parser.add_argument("--run", required=True, help="sealed run id")
     parser.add_argument("--attempt", required=True, help="sealed attempt id")
     parser.add_argument("--roster", required=True, help="roster receipt relpath (repo-root relative)")
@@ -992,6 +1317,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     lock = load_lock(umbrella_lock_path(repo_root))
     directory = run_dir(root, args.run, args.attempt)
     roster, roster_sha256, roster_split_identity_hash = load_roster(repo_root, args.roster)
+    if args.mode == "supply-variants":
+        return supply_variant_main(args, repo_root, root, lock)
     out_dir = Path(args.analysis_root)
     out_dir.mkdir(parents=True, exist_ok=True)
 

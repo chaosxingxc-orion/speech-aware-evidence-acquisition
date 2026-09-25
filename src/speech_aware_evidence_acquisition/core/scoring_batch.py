@@ -1,10 +1,11 @@
 """Bounded outer parallelism for complete authoritative scoring jobs.
 
 Each worker launches the existing ``core.driver score --manifest`` command in
-its own process.  A job therefore verifies and scores one complete run bundle;
-this module never shards a corpus, reimplements a scorer, or averages
-per-shard aggregates.  Corpus-level official metrics remain owned by the
-registered scorer inside that single job process.
+its own process. A job verifies and scores one complete run bundle. A narrow
+derived-column entry verifies a sealed parent and one whole-roster copy before
+calling the same registered scorer, with an exclusive source-bound receipt.
+This module never shards a corpus, reimplements a scorer, or averages
+per-shard aggregates.
 """
 
 from __future__ import annotations
@@ -578,4 +579,103 @@ __all__ = [
     "run_official_finalize_job",
     "run_official_score_job",
     "run_score_batch",
+    "score_complete_derived_copy",
 ]
+
+
+def score_complete_derived_copy(
+    *, parent_manifest: Path, outputs_copy: Path, expected_copy_sha256: str,
+    scorer_id: str, result_path: Path, lock: Mapping[str, object], data_root: Path,
+    column_binding: Mapping[str, object],
+) -> Mapping[str, object]:
+    """Score one full-roster derived column, bound to a verified parent bundle.
+
+    The derived copy is not a new run. Its own exclusive receipt binds the
+    parent, roster, scorer, input bytes and result bytes; a retry only verifies
+    and reads that receipt, never invokes the scorer a second time.
+    """
+    from .base import SCORERS
+    from . import scorers as _scorers  # noqa: F401
+
+    if not isinstance(column_binding, Mapping) or not column_binding:
+        raise ScoreBatchError("derived scorer requires a nonempty column binding")
+    parent_manifest = Path(parent_manifest)
+    outputs_copy = Path(outputs_copy)
+    result_path = Path(result_path)
+    receipt_path = result_path.with_name(result_path.name + ".receipt.json")
+    lock_path = result_path.with_name(result_path.name + ".lock")
+    bundle = verify_bundle(parent_manifest)
+    if bundle.manifest.get("status") != "COMPLETED" or bundle.attempt_state != "FINALIZED":
+        raise ScoreBatchError("derived scorer parent is not a finalized complete bundle")
+    raw = outputs_copy.read_bytes()
+    copy_hash = hashlib.sha256(raw).hexdigest()
+    if copy_hash != expected_copy_sha256:
+        raise ScoreBatchError("derived copy hash differs from registered render")
+    try:
+        lines = raw.decode("utf-8").split("\n")
+        if lines and lines[-1] == "":
+            lines.pop()
+        rows = [json.loads(line) for line in lines]
+    except (UnicodeError, json.JSONDecodeError) as error:
+        raise ScoreBatchError(f"derived copy is not valid JSONL: {error}") from error
+    ids = [row.get("sample_id") for row in rows if isinstance(row, Mapping)]
+    if (len(ids) != len(rows) or len(ids) != len(bundle.split_ids)
+            or len(set(ids)) != len(ids) or set(ids) != set(bundle.split_ids)
+            or any(set(row) != {"sample_id", "text"}
+                   or not isinstance(row["text"], str) for row in rows)):
+        raise ScoreBatchError("derived copy is not one complete parent roster column")
+    binding = {
+        "schema": "saea-derived-complete-score-receipt-v1",
+        "parent_manifest": str(parent_manifest.resolve()),
+        "parent_manifest_sha256": hashlib.sha256(parent_manifest.read_bytes()).hexdigest(),
+        "parent_run_id": bundle.manifest.get("run_id"),
+        "parent_attempt_id": parent_manifest.parent.name,
+        "parent_outputs_sha256": bundle.manifest["outputs"]["sha256"],
+        "roster_count": len(ids),
+        "roster_ids_sha256": hashlib.sha256(
+            json.dumps(sorted(ids), separators=(",", ":")).encode("utf-8")
+        ).hexdigest(),
+        "outputs_copy": str(outputs_copy.resolve()),
+        "outputs_copy_sha256": copy_hash,
+        "scorer_id": scorer_id,
+        "column_binding": dict(column_binding),
+    }
+    result_path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor = os.open(lock_path, os.O_CREAT | os.O_RDWR, 0o600)
+    try:
+        fcntl.flock(descriptor, fcntl.LOCK_EX)
+        if result_path.exists() or receipt_path.exists():
+            if not result_path.is_file() or not receipt_path.is_file():
+                raise ScoreBatchError("partial derived score or receipt; scorer will not rerun")
+            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+            if any(receipt.get(key) != value for key, value in binding.items()):
+                raise ScoreBatchError("derived score receipt differs from source binding")
+            result_bytes = result_path.read_bytes()
+            if hashlib.sha256(result_bytes).hexdigest() != receipt.get("result_sha256"):
+                raise ScoreBatchError("derived score result hash differs from receipt")
+            result = json.loads(result_bytes)
+            if set(result) != {scorer_id}:
+                raise ScoreBatchError("derived score result names another scorer")
+            return result[scorer_id]
+        scorer = SCORERS.resolve(scorer_id)
+        result = scorer(outputs_copy, lock, data_root)
+        aggregate = result.get("aggregate") if isinstance(result, Mapping) else None
+        per_sample = result.get("per_sample") if isinstance(result, Mapping) else None
+        if (not isinstance(aggregate, Mapping)
+                or aggregate.get("identity_check", {}).get("passed") is not True
+                or not isinstance(per_sample, list)
+                or len(per_sample) != len(ids)
+                or {row.get("sample_id") for row in per_sample} != set(ids)):
+            raise ScoreBatchError("derived official scorer did not return complete identities")
+        result_bytes = (json.dumps({scorer_id: result}, ensure_ascii=False,
+                                   sort_keys=True, indent=2) + "\n").encode("utf-8")
+        with result_path.open("xb") as stream:
+            stream.write(result_bytes)
+        receipt = {**binding, "result_sha256": hashlib.sha256(result_bytes).hexdigest()}
+        with receipt_path.open("x", encoding="utf-8") as stream:
+            json.dump(receipt, stream, sort_keys=True, indent=2)
+            stream.write("\n")
+        return result
+    finally:
+        fcntl.flock(descriptor, fcntl.LOCK_UN)
+        os.close(descriptor)
