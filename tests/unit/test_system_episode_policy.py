@@ -83,6 +83,9 @@ def test_complete_policy_changes_real_graph_and_is_selected_before_first_fit(tmp
                       if c == "ORG" and "org_system_policy_decision" in p
                       and p["org_system_policy_decision"]["sample_id"] == result.sample_id]
         assert trace_rows == [choice]
+        ids = [rid for _, rid, _ in harness.trace.records]
+        first_id = receipt["role_visits"][0]["execution_receipt"]["contacts"][0]["request_id"] + "/request"
+        assert ids.index(result.sample_id + "/system-policy/initial") < ids.index(first_id)
         assert choice["selection_scope"] == "complete-episode-policy"
     assert {r["decision"]["action"] for r in receipts} == {"repair-enabled", "accept-only"}
     assert len(captured["policy"].decisions) == 2

@@ -128,3 +128,79 @@ def test_known_exception_events_remain_addressable_with_unknown_distinct_from_em
     empty = _episode_events({"truncation_events": []})
     assert empty["truncation_events"]["status"] == "recorded"
     assert empty["truncation_events"]["count"] == 0
+
+
+def _source_with_policy_decision(fixture=_fixture):
+    from speech_aware_evidence_acquisition.rails.finite_action_policy import PolicySnapshot, sample_action
+    from speech_aware_evidence_acquisition.rails.hashing import content_hash
+    from speech_aware_evidence_acquisition.rails.knowledge import QueryState
+    source = _source(fixture)
+    source.output_rows["s1"]["native_episode_receipt"] = copy.deepcopy(
+        source.output_rows["s1"]["native_episode_receipt"])
+    query = QueryState(query_id="q", query_sample_id="s1", speech_packet_id="packet",
+                       speech_packet_sha256="a"*64, use_split_identity_hash="b"*64)
+    snapshot = PolicySnapshot.create(actions=("complete-policy",), states=("episode-start",), f0=.58)
+    record = {
+        "schema": "saea-system-episode-policy-decision-v1",
+        "algorithm_id": "finite-system-policy-bandit-v1",
+        "selection_scope": "complete-episode-policy", "sample_id": "s1", "sequence_index": 0,
+        "pre_action_query_sha256": query.content_hash(), "speech_packet_sha256": "a"*64,
+        "schedule_sha256": "c"*64, "action_space_sha256": "d"*64,
+        "selected_definition_sha256": "e"*64, "selected_source_hashes": {"config": "f"*64},
+        "decision": sample_action(snapshot,state_id="episode-start",epsilon=0,draw=.2).as_json(),
+    }
+    record["decision_receipt_sha256"] = content_hash(record)
+    source.phase_results["s1"]["initial_query_state"] = query.as_json()
+    source.phase_results["s1"]["native_episode_receipt"]["system_policy_decision"] = copy.deepcopy(record)
+    source.output_rows["s1"]["native_episode_receipt"]["system_policy_decision"] = copy.deepcopy(record)
+    key = "s1/system-policy/initial"
+    source.bundle.trace_records = {key: {"org_system_policy_decision": copy.deepcopy(record)},
+                                   **source.bundle.trace_records}
+    first = source.bundle.trace_records["request-perception-1/request"]["payload"]
+    first["speech_packet_sha256"] = "a"*64
+    return source, record
+
+
+def test_system_policy_choice_is_joined_to_initial_state_and_complete_trajectory():
+    source, record = _source_with_policy_decision()
+    row = _row(source)
+    assert row["system_policy_decision"]["record"] == record
+    assert row["system_policy_decision"]["trace_record_id"] == "s1/system-policy/initial"
+    assert row["system_policy_decision"]["claim_scope"] == "recorded-choice-not-learning-admission"
+    assert "system_policy_decision" not in _row(_source())
+
+
+@pytest.mark.parametrize("mutation", [
+    "missing-trace", "late-trace", "another-query", "another-audio", "hidden-decision",
+    "duplicate-decision", "unknown-field", "future-state",
+])
+def test_system_policy_source_disagreement_cannot_be_erased(mutation):
+    from speech_aware_evidence_acquisition.rails.hashing import content_hash
+    source, record = _source_with_policy_decision()
+    key = "s1/system-policy/initial"
+    if mutation == "missing-trace":
+        del source.bundle.trace_records[key]
+    elif mutation == "late-trace":
+        item = source.bundle.trace_records.pop(key)
+        source.bundle.trace_records[key] = item
+    elif mutation == "duplicate-decision":
+        source.bundle.trace_records["another-choice"] = copy.deepcopy(source.bundle.trace_records[key])
+    elif mutation == "hidden-decision":
+        del source.phase_results["s1"]["native_episode_receipt"]["system_policy_decision"]
+        del source.output_rows["s1"]["native_episode_receipt"]["system_policy_decision"]
+    else:
+        if mutation == "another-query":
+            record["pre_action_query_sha256"] = "f"*64
+        elif mutation == "another-audio":
+            record["speech_packet_sha256"] = "f"*64
+        elif mutation == "unknown-field":
+            record["future_answer"] = "not allowed"
+        elif mutation == "future-state":
+            record["decision"]["state_id"] = "after-solver"
+        record.pop("decision_receipt_sha256")
+        record["decision_receipt_sha256"] = content_hash(record)
+        source.phase_results["s1"]["native_episode_receipt"]["system_policy_decision"] = copy.deepcopy(record)
+        source.output_rows["s1"]["native_episode_receipt"]["system_policy_decision"] = copy.deepcopy(record)
+        source.bundle.trace_records[key]["org_system_policy_decision"] = copy.deepcopy(record)
+    with pytest.raises(SystemTrajectoryError, match="policy"):
+        _row(source)

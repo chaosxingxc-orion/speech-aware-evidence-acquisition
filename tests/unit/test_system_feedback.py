@@ -14,10 +14,14 @@ from test_system_trajectory import _source
 
 
 @pytest.fixture
-def world(tmp_path, monkeypatch):
+def world(tmp_path, monkeypatch, request):
     root = tmp_path / "data"
     (root / "run").mkdir(parents=True)
-    source = _source()
+    if getattr(request, "param", None) == "system-policy":
+        from test_system_trajectory import _source_with_policy_decision
+        source, _ = _source_with_policy_decision()
+    else:
+        source = _source()
     source.plan.split_role = "discovery"
     source.plan.split_identity_hash = "d" * 64
     score_id = "slurp-slu-official-train"
@@ -225,3 +229,16 @@ def test_score_ledger_changed_after_generation_seal_is_refused(world):
     write_pin(world.root, "run/score-ledger-cells.json", {"cell": "different-cell"})
     with pytest.raises(PolicyArtifactError, match="SHA"):
         load(world)
+
+
+@pytest.mark.parametrize("world", ["system-policy"], indirect=True)
+def test_verified_whole_policy_choice_stays_joined_to_official_terminal_feedback(world):
+    report = load(world)
+    choice = report["policy_episode_decisions"]["s1"]
+    episode = report["system_trajectories"]["trajectories"][0]
+    final = report["terminal_feedback"][0]
+    assert choice == episode["system_policy_decision"]
+    assert final["trajectory_sha256"] == episode["trajectory_sha256"]
+    assert choice["record"]["sample_id"] == final["sample_id"]
+    assert choice["claim_scope"] == "recorded-choice-not-learning-admission"
+    assert "terminal_feedback" not in str(choice)

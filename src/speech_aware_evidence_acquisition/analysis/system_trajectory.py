@@ -103,6 +103,46 @@ def _trace_refs(trace: Mapping[str, object], sid: str, request_ids: set[str]) ->
     return sorted(refs, key=lambda item: str(item["record_id"]))
 
 
+
+def _system_policy_choice(*, sid, phase, episode, output, visits, trace, related, trace_order):
+    """Join the pre-role ORG choice to the original query and final receipt."""
+    import copy
+    from ..rails.knowledge import QueryState
+    from ..rails.system_episode_policy import parse_system_policy_record
+
+    record = episode.get("system_policy_decision")
+    if record is None and not related:
+        return None
+    try:
+        parse_system_policy_record(record)
+        key = f"{sid}/system-policy/initial"
+        if (record["sample_id"] != sid or related != {key: record}
+                or output.get("native_episode_receipt", {}).get("system_policy_decision") != record):
+            raise ValueError("choice is missing, duplicated or differs across source records")
+        query = QueryState.from_json(phase["initial_query_state"])
+        if (query.query_sample_id != sid or query.loop_step != 0 or query.agent_state_ids
+                or query.content_hash() != record["pre_action_query_sha256"]
+                or query.speech_packet_sha256 != record["speech_packet_sha256"]):
+            raise ValueError("choice differs from the initial speech query")
+        contacts = [c for visit in visits for c in visit["contacts"]]
+        if not contacts:
+            raise ValueError("choice has no realized first request")
+        first = contacts[0]["request_record_id"]
+        if trace[first]["payload"].get("speech_packet_sha256") != query.speech_packet_sha256:
+            raise ValueError("first model request uses different speech")
+        # VerifiedBundle preserves raw JSONL order. Check every contact, not a
+        # role label that could accidentally hide an earlier interrupted visit.
+        if any(trace_order[key] >= trace_order[c["request_record_id"]] for c in contacts):
+            raise ValueError("choice was not recorded before all model requests")
+    except (KeyError, TypeError, ValueError) as error:
+        raise SystemTrajectoryError(f"system policy source custody failed: {error}") from error
+    return {
+        "record": copy.deepcopy(record), "trace_record_id": key,
+        "trace_record_sha256": _hash(trace[key]),
+        "claim_scope": "recorded-choice-not-learning-admission",
+    }
+
+
 def export_system_trajectories(source: VerifiedNativeEpisodeSource) -> dict[str, object]:
     """Export every role and contact of a verified source without answer or gold text.
 
@@ -116,6 +156,15 @@ def export_system_trajectories(source: VerifiedNativeEpisodeSource) -> dict[str,
     if not ids or len(ids) != len(set(ids)) or set(ids) != set(source.phase_results) or set(ids) != set(source.output_rows):
         raise SystemTrajectoryError("source sample ids do not exactly cover phase and output rows")
     trace = _map(source.bundle.trace_records, "verified trace records")
+    policy_records = {}
+    for rid, payload in trace.items():
+        if isinstance(payload, Mapping) and "org_system_policy_decision" in payload:
+            record = payload["org_system_policy_decision"]
+            if (not isinstance(record, Mapping) or record.get("sample_id") not in ids
+                    or rid != f"{record.get('sample_id')}/system-policy/initial"):
+                raise SystemTrajectoryError("system policy trace has an orphan or duplicate choice")
+            policy_records[record["sample_id"]] = {rid: record}
+    policy_trace_order = {rid: index for index, rid in enumerate(trace)} if policy_records else {}
     values = _map(source.composed.values, "composed configuration")
     policy = values.get("policy")
     if not isinstance(policy, str) or not policy:
@@ -242,6 +291,12 @@ def export_system_trajectories(source: VerifiedNativeEpisodeSource) -> dict[str,
                 "response_text_sha256": output.get("response_text_sha256"),
             },
         }
+        choice = _system_policy_choice(
+            sid=sid, phase=phase, episode=episode, output=output, visits=visits, trace=trace,
+            related=policy_records.get(sid, {}), trace_order=policy_trace_order,
+        )
+        if choice is not None:
+            row["system_policy_decision"] = choice
         row["trajectory_sha256"] = content_hash(row)
         rows.append(row)
     manifest = _map(source.bundle.manifest, "verified run manifest")

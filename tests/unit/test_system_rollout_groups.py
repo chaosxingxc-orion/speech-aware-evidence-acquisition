@@ -212,10 +212,11 @@ def test_loader_refuses_rehashed_feedback_joined_to_another_trajectory(pinned_so
         load_group_source(data_root=root, feedback_pin=pin, label="one")
 
 
-def test_historical_grouping_does_not_discard_real_optimized_decisions(pinned_source):
+@pytest.mark.parametrize("field", ["policy_supply_receipt", "policy_episode_decisions"])
+def test_historical_grouping_does_not_discard_real_optimized_decisions(pinned_source, field):
     from speech_aware_evidence_acquisition.analysis.system_rollout_groups import load_group_source
     root, pin, document, write = pinned_source
-    document["policy_supply_receipt"] = {"recorded": "decision"}
+    document[field] = {"recorded": "decision"}
     document.pop("content_sha256")
     document["content_sha256"] = content_hash(document)
     pin = write("feedback.json", document)

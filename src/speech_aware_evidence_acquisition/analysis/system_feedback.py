@@ -229,6 +229,14 @@ def load_system_feedback(*, data_root: Path, repo_root: Path, binding: Mapping) 
         "reward_scope": "complete delivered system; intermediate states carry no gold feedback",
         "model_contacts_added": 0, "scorer_contacts_added": 0,
     }
+    choices = {
+        row["sample_id"]: row["system_policy_decision"]
+        for row in episodes if "system_policy_decision" in row
+    }
+    if choices:
+        if set(choices) != set(source.sample_ids):
+            raise SystemFeedbackError("complete policy choices must cover every terminal episode")
+        result["policy_episode_decisions"] = choices
     result["content_sha256"] = content_hash(result)
     return result
 

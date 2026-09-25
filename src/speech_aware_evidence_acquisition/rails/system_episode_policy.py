@@ -10,13 +10,49 @@ from dataclasses import asdict
 from threading import RLock
 from types import MappingProxyType
 
-from .finite_action_policy import _sha
+from .finite_action_policy import PolicyDecision, _sha
 from .hashing import content_hash
 from .native_episode_config import NativeEpisodeRunBinding
 
 
 class SystemEpisodePolicyError(ValueError):
     """A complete-policy selection violates its frozen execution envelope."""
+
+
+def parse_system_policy_record(record):
+    """Validate a recorded choice's shape, never its admission or source truth."""
+    keys = {
+        "schema", "algorithm_id", "selection_scope", "sample_id", "sequence_index",
+        "pre_action_query_sha256", "speech_packet_sha256", "schedule_sha256",
+        "action_space_sha256", "selected_definition_sha256", "selected_source_hashes",
+        "decision", "decision_receipt_sha256",
+    }
+    if not isinstance(record, dict) or set(record) != keys:
+        raise SystemEpisodePolicyError("system policy record has missing or unknown fields")
+    if (record["schema"] != "saea-system-episode-policy-decision-v1"
+            or record["algorithm_id"] != "finite-system-policy-bandit-v1"
+            or record["selection_scope"] != "complete-episode-policy"):
+        raise SystemEpisodePolicyError("system policy record schema or scope differs")
+    if (not isinstance(record["sample_id"], str) or not record["sample_id"]
+            or type(record["sequence_index"]) is not int or record["sequence_index"] < 0):
+        raise SystemEpisodePolicyError("system policy sample or sequence is invalid")
+    for field in keys:
+        if field.endswith("_sha256"):
+            _sha(record[field], "system policy " + field)
+    sources = record["selected_source_hashes"]
+    if (not isinstance(sources, dict) or not sources
+            or any(not isinstance(k, str) or not k for k in sources)):
+        raise SystemEpisodePolicyError("system policy selected sources are invalid")
+    for value in sources.values():
+        _sha(value, "system policy selected source")
+    unsigned = dict(record)
+    claimed = unsigned.pop("decision_receipt_sha256")
+    if claimed != content_hash(unsigned):
+        raise SystemEpisodePolicyError("system policy decision fingerprint differs")
+    decision = PolicyDecision.from_json(record["decision"])
+    if decision.state_id != "episode-start":
+        raise SystemEpisodePolicyError("system policy decision uses a future/unsupported state")
+    return decision
 
 
 class SystemEpisodePolicy:
@@ -89,6 +125,42 @@ class SystemEpisodePolicy:
         with self._lock:
             return copy.deepcopy(self._decisions)
 
+    def expected_record(self, sid, *, query_sha256, speech_packet_sha256):
+        """Reproduce the registered allocation; no contact, selection side effect or update."""
+        _sha(query_sha256, "initial query")
+        _sha(speech_packet_sha256, "initial speech")
+        decision, index = self.schedule.decision_for(sid, "episode-start", self.snapshot)
+        definition = self._definitions[decision.action]
+        selected = self.actions[decision.action]
+        if (asdict(selected.config) != definition["config"]
+                or asdict(selected.program) != definition["program"]):
+            raise SystemEpisodePolicyError("selected action changed after round freeze")
+        record = {
+            "schema": "saea-system-episode-policy-decision-v1",
+            "algorithm_id": "finite-system-policy-bandit-v1",
+            "selection_scope": "complete-episode-policy",
+            "sample_id": sid, "sequence_index": index,
+            "pre_action_query_sha256": query_sha256,
+            "speech_packet_sha256": speech_packet_sha256,
+            "schedule_sha256": self.schedule.sha256,
+            "action_space_sha256": self._definition_sha256,
+            "selected_definition_sha256": content_hash(definition),
+            "selected_source_hashes": copy.deepcopy(definition["source_hashes"]),
+            "decision": decision.as_json(),
+        }
+        record["decision_receipt_sha256"] = content_hash(record)
+        return record
+
+    def validate_record(self, record):
+        decision = parse_system_policy_record(record)
+        expected = self.expected_record(
+            record["sample_id"], query_sha256=record["pre_action_query_sha256"],
+            speech_packet_sha256=record["speech_packet_sha256"],
+        )
+        if record != expected:
+            raise SystemEpisodePolicyError("system policy record differs from frozen allocation or sources")
+        return decision
+
     def select(self, context):
         """Log one real choice before any model contact; never silently replay it."""
         with self._lock:
@@ -98,29 +170,13 @@ class SystemEpisodePolicy:
             query = context.query_state.validate()
             if (query.query_sample_id != sid or context.contact_index != 0
                     or context.agent_states or context.prior_response_sha256s
-                    or query.agent_state_ids):
+                    or query.agent_state_ids or query.loop_step != 0):
                 raise SystemEpisodePolicyError("selection must occur before every native role")
-            decision, index = self.schedule.decision_for(sid, "episode-start", self.snapshot)
-            definition = self._definitions[decision.action]
-            selected = self.actions[decision.action]
-            if (asdict(selected.config) != definition["config"]
-                    or asdict(selected.program) != definition["program"]):
-                raise SystemEpisodePolicyError("selected action changed after round freeze")
-            record = {
-                "schema": "saea-system-episode-policy-decision-v1",
-                "algorithm_id": "finite-system-policy-bandit-v1",
-                "selection_scope": "complete-episode-policy",
-                "sample_id": sid, "sequence_index": index,
-                "pre_action_query_sha256": query.content_hash(),
-                "speech_packet_sha256": query.speech_packet_sha256,
-                "schedule_sha256": self.schedule.sha256,
-                "action_space_sha256": self._definition_sha256,
-                "selected_definition_sha256": content_hash(definition),
-                "selected_source_hashes": copy.deepcopy(definition["source_hashes"]),
-                "decision": decision.as_json(),
-            }
-            record["decision_receipt_sha256"] = content_hash(record)
+            record = self.expected_record(
+                sid, query_sha256=query.content_hash(),
+                speech_packet_sha256=query.speech_packet_sha256,
+            )
             if self.emit_decision is not None:
                 self.emit_decision(copy.deepcopy(record))
             self._decisions[sid] = copy.deepcopy(record)
-            return self.actions[decision.action], record
+            return self.actions[record["decision"]["action"]], record

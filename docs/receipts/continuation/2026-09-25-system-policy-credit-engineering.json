@@ -1,0 +1,51 @@
+{
+  "schema": "saea-system-policy-credit-engineering-v1",
+  "status": "source-custody-and-candidate-update-verified-offline",
+  "implementation_base_commit": "d8f4e4b7d57be01dd76ee5d479a6150770e24b4e",
+  "active_flight_frozen_commit": "da443cdc1027b3c01034c26485805240ec0e671d",
+  "research_model_contacts": 0,
+  "research_tool_contacts": 0,
+  "research_scorer_contacts": 0,
+  "research_outcomes_read": false,
+  "real_policy_update_produced": false,
+  "live_cell_activation": false,
+  "validation": {
+    "focused_tests_passed": 90,
+    "affected_export_tests_passed_after_indexing": 39,
+    "counts_overlap": true,
+    "gates_passed": [
+      "engineering_base",
+      "stage3_algorithm_label"
+    ]
+  },
+  "proof_scope": "actual graph ordering with fake transport; synthetic native/source and terminal fixtures",
+  "implemented": [
+    "pre-role policy decision custody",
+    "complete official feedback decision export",
+    "shared frozen allocation reconstruction",
+    "candidate complete-terminal credit update"
+  ],
+  "pending": [
+    "source-pinned action catalog admission",
+    "selected per-row native configuration seal",
+    "registered real construction/evaluation flights",
+    "contextual or multistep optimization",
+    "scholarly baseline update and reexecution",
+    "stable task benefit"
+  ],
+  "scientific_limit": "one-state policy selection is a best-fixed-policy comparator, not per-input adaptation",
+  "files_sha256": {
+    "docs/handoff/HANDOFF-TO-FABLE51.md": "24687ad429255814ecd556e810492d194bbb785416edccc7c2a9f748c5b58c68",
+    "docs/readiness/2026-09-25-system-policy-credit-boundary.md": "a6e1ff5c0a4a410e1d74316bb9d8ec4199066492fef6c37ab397ec58e233320d",
+    "src/speech_aware_evidence_acquisition/analysis/system_feedback.py": "59e105f69501afe13ae2422496b67cf00830a5928326c1fce51b032abfe78e8d",
+    "src/speech_aware_evidence_acquisition/analysis/system_rollout_groups.py": "c0e1acf2bbfa8e2c04f80ac10a26251fc02361f8d4de19df8ed3157b16b78e90",
+    "src/speech_aware_evidence_acquisition/analysis/system_trajectory.py": "7d73f86df150e7c5c19608e48f65dcb09b7dd2df77d5988f852f083d23277aa6",
+    "src/speech_aware_evidence_acquisition/analysis/system_policy_credit.py": "32276d20a35a368e098a55360bf4c3e6dfaec7fd0d7e1a7fe059d83138e7c056",
+    "src/speech_aware_evidence_acquisition/rails/system_episode_policy.py": "6f86dc39234634c5578bccc38627fe9f0e9640c06b9d1b12bc987f80801b3f4e",
+    "tests/unit/test_system_episode_policy.py": "c901ccf84bdc9a54778841633796593d4aa806307323df3082bcedfc56687d5b",
+    "tests/unit/test_system_feedback.py": "5c8f41e965c8229b5b059bf0e67afd7a9341152d3f2edb8d61503eb2de261dad",
+    "tests/unit/test_system_rollout_groups.py": "00c1844bae7708b16c2247dbe1654a4cf460389fd43660a08da84796fa31ba72",
+    "tests/unit/test_system_trajectory.py": "c417603ceefd93739c837a942f26576fb651bbaaa7fd1ca83609379eb5e8c141",
+    "tests/unit/test_system_policy_credit.py": "66493a35d4d9e39f924af5c1da1053f961f77d9d52b0dbb81cd6eb2c58ddc8a6"
+  }
+}

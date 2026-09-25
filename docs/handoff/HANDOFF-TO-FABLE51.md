@@ -77,12 +77,33 @@ both finite and revised outcomes, applies synthetic terminal feedback through
 the existing update, then executes again with the learned frozen policy.
 No real outcome, model/tool/scorer contact or efficacy claim was added.
 
-This is deliberately NOT enabled in any live cell. Action asset admission,
-per-row source/seal verification and the official terminal credit join must
-land before a registered algorithm flight. Do not construct a live binding
-manually to bypass those steps. Learned values are bound to identical whole-
+This is deliberately NOT enabled in any live cell. Action asset admission
+and per-row source/seal verification must land before a registered algorithm
+flight. The candidate terminal credit join is described in the next section.
+Do not construct a live binding manually to bypass the remaining steps. Learned values are bound to identical whole-
 policy definitions; historical grouping refuses actual optimized decisions.
 The active evidence-path checkout stays frozen and background execution continues.
+
+## Complete policy choice-to-terminal credit: candidate proof
+
+Read docs/readiness/2026-09-25-system-policy-credit-boundary.md.
+The whole-trajectory exporter now verifies policy decisions against initial
+speech/query identity, pre-contact raw trace order, phase receipt and final
+output. The official feedback export retains every decision and terminal row.
+Historical trajectories remain without invented choices or propensities.
+
+The candidate update entry invokes the existing complete native/official source
+reader, reconstructs each actual frozen allocation, then reuses the pure
+cumulative-mean update with full terminal counts and fallback/intent/format
+feedback. Evaluation is refused before label access. The candidate receipt is
+explicitly not runtime authorization; action asset loading and selected per-row
+seal/configuration authority remain pending. No real policy update was run.
+
+Root correction: the present episode-start-only selector cannot in expectation
+outperform the best fixed member on stationary expected utility. It is a
+comparator for finding a fixed policy. The actual research objective requires
+useful pre-action context or multistep/experience optimization with complete
+system outcomes; do not stop at this numeric one-state baseline.
 
 ## Owner steering: optimize complete system trajectories
 
