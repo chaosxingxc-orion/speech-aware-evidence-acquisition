@@ -1,0 +1,69 @@
+{
+  "schema": "saea-model-free-research-receipt-v1",
+  "read_run_id": "SAEA-SLURP-STAGE3-SYSTEM-REQUERY-READ-V1",
+  "completed_at_utc": "2026-09-25T13:04:20.963026+00:00",
+  "population": "The same 625 R01C construction inputs in two complete PLAN/PLANR runs; not 1250 independent samples.",
+  "sources": {
+    "plan": {
+      "feedback_sha256": "80d53a8f4728bccf4b932ffc1ae8a2e98ae05eb1f73acd343f1d60f0835537f1",
+      "trace_sha256": "c125ff61fc33d6ed1056effa988ebfdf19070a57ca7dc244048dca3f6974dbb6",
+      "config_hash": "b12b6e86eae064367796ae8456481721b87a7a3e07f2ba7d8be692e4b777cdc4",
+      "knowledge_binding_sha256": "36c01efe79c12581ca17238dc17e66a290aaeec04f6c28d06f1deec146d07311"
+    },
+    "planr": {
+      "feedback_sha256": "2fcbe5e92771c752ef5fb986736a1089644a884cb315e27d5be5137487ef8f0b",
+      "trace_sha256": "3d77742428bc1eccc6af1fef1d84918e88d7b32f680631c0f419139c78b8ab31",
+      "config_hash": "3239ba6dcc3bf42439f58092b7f20a7a427465193bf17fb5cfd7a3120d7cae9b",
+      "knowledge_binding_sha256": "36c01efe79c12581ca17238dc17e66a290aaeec04f6c28d06f1deec146d07311"
+    }
+  },
+  "outputs": {
+    "replay.json": {
+      "relpath": "analysis/SAEA-SLURP-STAGE3-SYSTEM-REQUERY-READ-V1/replay.json",
+      "sha256": "0d9e630c48b19b707cbdf0880641e9fde2310e11a2a156e183f4fb85c0080565"
+    },
+    "query-surface.json": {
+      "relpath": "analysis/SAEA-SLURP-STAGE3-SYSTEM-REQUERY-READ-V1/query-surface.json",
+      "sha256": "6ca99fcab3cede68d550c45ddfb759d0f6f562369a430f1607b5601b37bf6b18",
+      "status": "Superseded: retained ACQUIRE term count did not distinguish its source; v2 adds explicit origin attribution."
+    },
+    "query-surface-v2.json": {
+      "relpath": "analysis/SAEA-SLURP-STAGE3-SYSTEM-REQUERY-READ-V1/query-surface-v2.json",
+      "sha256": "04b69c6fee8ed8f0d748e6dfecae64db52908a984cd7f19719cb11898790e8da"
+    }
+  },
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "network": 0,
+    "offline_retrieval_queries": 1243
+  },
+  "validation": {
+    "focused_tests_passed": 48,
+    "engineering_base_check": "PASS",
+    "production_diagnostic_ordered_id_agreement": 1243,
+    "novel_item_exclusion": "PASS for all replayed boundaries",
+    "shared_renderer": "PASS; not a downstream model consumption test",
+    "offline_checks": {
+      "engineering_base": "PASS",
+      "harness_admission": "PASS",
+      "results_ledger": "PASS with 103 findings; umbrella comparison unavailable in this isolated checkout",
+      "tool_catalog": "PASS",
+      "experiment_handoff": "No errors; historical snapshot/local changes warnings; not GPU launch authority",
+      "openjiuwen_native_reuse": "PASS, six deterministic fake proofs",
+      "derived_media_confinement": "PASS",
+      "stage3_algorithm_label": "PASS",
+      "finite_completion_policy": "PASS"
+    },
+    "openjiuwen_receipt_sha256": "635d25008a5d87610958b46e50e7df9e9636b5faa7e2d1f6161d5d539b9ef464"
+  },
+  "verdict": "Evidence availability exists, but generic protocol text can become retrieval keys. Do not admit the unchanged raw-review E36b policy as useful acquisition.",
+  "limitations": [
+    "Post-hoc descriptive construction evidence, no causal or efficacy claim.",
+    "No gold read, no official rescoring, no F10 outcome read.",
+    "Seven missing boundaries retained; no fabricated action credit.",
+    "Query-surface extension is explicitly post-hoc; no hyperparameter tuning."
+  ]
+}

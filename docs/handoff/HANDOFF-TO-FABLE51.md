@@ -43,7 +43,21 @@ new evidence exists, survives filtering and reaches the next node before a new
 full-system intervention. Do not rename and rerun those old treatments.
 
 
-Current execution verified 2026-09-25 at 12:39 UTC (05:39 Seattle).
+The full-context E36b availability replay is now complete on PLAN and PLANR.
+New evidence is available on 613/625 and 614/625 rows, but this is not information
+gain. Strict tool_call JSON occurs in 319/313 Reviewer states, and protocol text
+can become lexical retrieval keys. Do not fly the unchanged held B9a-v2 cell.
+Read docs/results/2026-09-25-slurp-system-acquisition-requery.md and the receipt
+docs/receipts/continuation/2026-09-25-system-requery-replay.json. No gold, model,
+tokenizer, encoder, official scorer or F10 outcomes were read for this diagnostic.
+
+Next design: docs/readiness/2026-09-25-stage3-coordinated-system-family.md.
+Optimize the complete supported-issue -> clean acquisition -> bounded repair ->
+delivery path. Interface correction is a common engineering control, not an RL
+gain. Map onto existing native seams, then register full-system sampling and
+evaluation; do not stop at optimizing Solver supply count.
+
+Current execution verified 2026-09-25 at 12:58 UTC (05:58 Seattle).
 This is the living record. Superseded snapshots remain in Git history through
 fe0d0ee2 and are not live instructions. Preserve immutable records and verdicts.
 
@@ -57,7 +71,8 @@ fe0d0ee2 and are not live instructions. Preserve immutable records and verdicts.
   selector benefit. VAR-2 is CLOSED after its only recovery also failed.
 - Finite policy integration passes 118 tests; no formal policy GPU cell has run.
   Shared complete-system export and sealed official TRAIN feedback now exist.
-  Root-owned cross-node attribution and system action admission come next.
+  Root-owned cross-node attribution and acquisition availability are complete.
+   Coordinated system action registration comes next.
   Policy-decision credit, including action-not-reached rows, remains unadmitted.
 - The stable full-system training-free optimization objective remains open.
 - Use scripts for progress, root for interpretation. Keep one continuation
@@ -97,8 +112,8 @@ BOTH sealed arms and pinned sources.
   Five finite completions and one revision-limit disposition remain in the roster.
 - Treatment started 12:05:11 UTC on the same frozen service after a passing
   prelaunch check. The compact status reports OPENED with no full manifest.
-- At 12:39 UTC the service was healthy, 22,988 MiB resident, all four slots busy,
-  GPU utilization 86%. This is one sample, not continuous utilization.
+- At 12:58 UTC the service was healthy, 22,988 MiB resident, all four slots busy,
+  GPU utilization 64%. This is one sample, not continuous utilization.
   The service-wide request counter is not an arm-completed-row count.
 - Frozen flight: /home/chao/saea-worktrees/fable-batch-flight,
   commit 54b6e151481129f4e1915c37f42a88ade687930b through generation AND scoring.
