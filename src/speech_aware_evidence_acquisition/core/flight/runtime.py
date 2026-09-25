@@ -2732,6 +2732,75 @@ class FlightRuntime:
             similarity=similarity,
         )
 
+    def _supply_action_router(self, program, action_id, knobs):
+        """Build a selection-only action from the already admitted store binding."""
+        from ...rails.knowledge_stores import (  # noqa: PLC0415
+            KnowledgeStoreError, build_knowledge_store_supply, load_knowledge_store_binding,
+        )
+        store_binding = getattr(self, "_knowledge_store_binding", None)
+        options = getattr(self, "_knowledge_store_router_options", None)
+        if store_binding is None or options is None:
+            raise FlightRuntimeError("supply action requires the existing named-store router")
+        values = copy.deepcopy(dict(self._composed.values))
+        for knob in knobs:
+            holder = values
+            segments = knob.path.split(".")
+            for segment in segments[:-1]:
+                if not isinstance(holder, Mapping) or segment not in holder:
+                    raise FlightRuntimeError(
+                        f"supply action {action_id!r} overrides undeclared path {knob.path!r}"
+                    )
+                holder = holder[segment]
+            if not isinstance(holder, dict) or segments[-1] not in holder:
+                raise FlightRuntimeError(
+                    f"supply action {action_id!r} overrides undeclared path {knob.path!r}"
+                )
+            holder[segments[-1]] = knob.value
+        try:
+            binding = load_knowledge_store_binding(values, data_root=self._data_root)
+            if binding is None or (
+                binding.composite_snapshot.content_hash()
+                != store_binding.composite_snapshot.content_hash()
+            ):
+                raise KnowledgeStoreError("supply action changed the released composite snapshot")
+            return build_knowledge_store_supply(
+                binding, program=program, data_root=self._data_root, **options,
+            )
+        except (KnowledgeStoreError, ValueError) as error:
+            raise FlightRuntimeError(f"supply action {action_id!r} is invalid: {error}") from error
+
+    def _finite_supply_policy_binding(self, native_config, program, supply_for_phase, sink):
+        """Arm a frozen policy on the ordinary complete-system supply path."""
+        if self._composed.values.get("finite_supply_policy") is None:
+            return supply_for_phase
+        if getattr(self, "_resume", None) is not None:
+            raise FlightRuntimeError("finite policy requires a complete registered round, not resume filtering")
+        from ...rails.finite_supply_policy import build_finite_supply_policy  # noqa: PLC0415
+        try:
+            bound = build_finite_supply_policy(
+                self._composed.values, program=program, native_config=native_config,
+                store_binding=getattr(self, "_knowledge_store_binding", None),
+                default_router=getattr(self, "_knowledge_store_supply", None),
+                action_router_factory=lambda action_id, knobs: self._supply_action_router(
+                    program, action_id, knobs,
+                ),
+                data_root=self._data_root, roster_ids=self._flight_roster_sample_ids(),
+                split_identity_hash=self._plan.split_identity_hash,
+                legal_candidate_ids=(getattr(self, "_knowledge_store_router_options", None) or {}).get(
+                    "legal_candidate_ids"
+                ),
+                emit_decision=lambda record: sink.emit(
+                    "SUPPLY", f"{record['sample_id']}/finite-supply-policy/initial",
+                    {"supply_action_decision": record},
+                ),
+            )
+        except ValueError as error:
+            raise FlightRuntimeError(str(error)) from error
+        self._phase_supply_receipt = {
+            **(self._phase_supply_receipt or {}), "finite_supply_policy": bound.receipt,
+        }
+        return bound
+
     def _supply_variant_binding(self, native_config, program):
         """Item E42 (2026-09-25, family VAR-2): the per-arm supply resolver.
 
@@ -2777,60 +2846,10 @@ class FlightRuntime:
                 "router this flight already built; an arm router must be built "
                 "with the same options"
             )
-        from ...rails.knowledge_stores import (  # noqa: PLC0415
-            KnowledgeStoreError,
-            build_knowledge_store_supply,
-            load_knowledge_store_binding,
-        )
-
-        routers: dict[str, object] = {}
-        for arm in group.arms:
-            values = copy.deepcopy(dict(self._composed.values))
-            for knob in arm.knobs:
-                holder = values
-                segments = knob.path.split(".")
-                for segment in segments[:-1]:
-                    if not isinstance(holder, Mapping) or segment not in holder:
-                        raise FlightRuntimeError(
-                            f"supply-variant arm {arm.arm_id!r} overrides "
-                            f"{knob.path!r}, which this configuration does not "
-                            "declare; an arm re-caps a route the fragment "
-                            "already has, it never creates one"
-                        )
-                    holder = holder[segment]
-                if not isinstance(holder, dict) or segments[-1] not in holder:
-                    raise FlightRuntimeError(
-                        f"supply-variant arm {arm.arm_id!r} overrides "
-                        f"{knob.path!r}, which this configuration does not "
-                        "declare; an arm re-caps a route the fragment already "
-                        "has, it never creates one"
-                    )
-                holder[segments[-1]] = knob.value
-            try:
-                arm_store_binding = load_knowledge_store_binding(
-                    values, data_root=self._data_root,
-                )
-                if arm_store_binding is None:
-                    raise KnowledgeStoreError(
-                        "supply-variant arm produced no knowledge store binding"
-                    )
-                if (
-                    arm_store_binding.composite_snapshot.content_hash()
-                    != store_binding.composite_snapshot.content_hash()
-                ):
-                    raise KnowledgeStoreError(
-                        "composes a different composite snapshot than the "
-                        "delivering arm; an arm re-caps a selection, it never "
-                        "changes the released knowledge"
-                    )
-                routers[arm.arm_id] = build_knowledge_store_supply(
-                    arm_store_binding, program=program,
-                    data_root=self._data_root, **options,
-                ).automatic_for_phase
-            except (KnowledgeStoreError, ValueError) as error:
-                raise FlightRuntimeError(
-                    f"supply-variant arm {arm.arm_id!r} is invalid: {error}"
-                ) from error
+        routers = {
+            arm.arm_id: self._supply_action_router(program, arm.arm_id, arm.knobs).automatic_for_phase
+            for arm in group.arms
+        }
 
         def resolve(*, arm_id, phase_id, context):
             """One arm's own supply decision for one visit of one row."""
@@ -6130,7 +6149,9 @@ class FlightRuntime:
         sink = getattr(self, "_phase_tool_trace_sink", None) or binding.get("trace_sink")
         if sink is None or sink is client:
             sink = TraceBuffer(plan.run_id)
-        supply_for_phase = binding.get("supply_for_phase")
+        supply_for_phase = self._finite_supply_policy_binding(
+            native_config, program, binding.get("supply_for_phase"), sink,
+        )
         supply_specs = binding.get("supply_specs") or {}
         review_for_phase = binding.get("review_for_phase")
         review_specs = binding.get("review_specs") or {}

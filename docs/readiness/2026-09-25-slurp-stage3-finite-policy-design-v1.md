@@ -147,13 +147,17 @@ model-exposed evidence. Validate preview query/state hashes and reject any
 first decision that already contains Solver/Reviewer/Planner output.
 The absence of a policy configuration must preserve existing requests.
 
-A numeric policy library is necessary but insufficient for a runnable cell.
-Remaining integration is the source-pinned snapshot loader, pre-action
-state receipt, episode-held action router, ordinary four-node graph proof,
-all-action request capacity registration and terminal official-feedback join.
-The official reader must verify sealed files and the complete roster before
-constructing the in-memory round descriptor. A Python dataclass or a field
-saying complete is not artifact-seal verification.
+The numeric library, pinned snapshot and schedule loader, pre-action state
+receipt, episode-held action router and ordinary OpenJiuwen graph proof are now
+implemented. See 2026-09-25-finite-policy-runtime-integration.md and the corresponding
+implementation receipt. This is model-free engineering evidence; the algorithm
+registry remains planned until a registered formal cell executes.
+
+Remaining integration is the source-bound terminal official-feedback join,
+immutable round-update entry point, all-action request capacity registration and
+formal family admission. The official reader must verify sealed files and the
+complete roster before constructing the in-memory round descriptor. A Python
+dataclass or a field saying complete is not artifact-seal verification.
 
 Round1 uses balanced sampling without replacement in fixed roster order.
 Choose the remainder-action allocation reproducibly before the round, then

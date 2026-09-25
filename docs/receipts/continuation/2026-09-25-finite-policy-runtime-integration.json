@@ -1,0 +1,42 @@
+{
+  "schema": "saea-model-free-implementation-check-v1",
+  "recorded_at_utc": "2026-09-25T11:39:34.101669+00:00",
+  "base_commit": "fe0d0ee269938ac4c1bcb598e84f0480b9021d4d",
+  "scope": "Pinned finite policy artifacts and episode-held ordinary runtime supply integration; no formal GPU cell admission.",
+  "source_sha256": {
+    "src/speech_aware_evidence_acquisition/rails/finite_action_policy.py": "bcaa987e51abb65c11c8436418e53c789811da1cf0017ec7a7a6957f5b01239a",
+    "src/speech_aware_evidence_acquisition/rails/finite_policy_artifacts.py": "390b068f4cf672eb45c46faa95e3f12102f1696555ea3b477815fc693565b62f",
+    "src/speech_aware_evidence_acquisition/rails/finite_supply_policy.py": "94c2981c803373d5f769522e88b4c597d16da5f7a946b9c55edae124061028fd",
+    "src/speech_aware_evidence_acquisition/core/flight/runtime.py": "d6a3de83138c209d9e7e441c067050bdc61728d54d94ef8cacf98896d1dc138a",
+    "src/speech_aware_evidence_acquisition/core/stage3_algorithms.py": "ef75bdf9906e9f8c539f80a52b88dae932674b929b5d2c1002390dd000dfb6c9",
+    "tests/unit/test_finite_action_policy.py": "181bdbfa68192550671096ffdb1e5602502d08a35796f8b5c38c4d8fe693a0d5",
+    "tests/unit/test_finite_policy_artifacts.py": "0efdf4e81871b5ec46b9fd27888cb9ec803281697ca4a96512340dbfd2c3bff4",
+    "tests/unit/test_finite_supply_policy.py": "1b54c61a45e6017db3581510806474756eb06778903d6cf4cd83e14ccdd58665",
+    "tests/unit/test_finite_supply_policy_binding.py": "fe532067b58eb52d05683048c1ab16aa164d99cb1a10a828594cb1c168dbe9ad",
+    "tests/unit/test_finite_policy_graph.py": "502e962ada24d98acde6b9818722ca5a43a8a16addaa85202e82d48d3b1a9dfd",
+    "tests/unit/test_stage3_supply_variant_interleaving.py": "8a4bb7639461543bfc475485ae237cdc0885c6f0f9176cca61d34d4e70fde115",
+    "tests/unit/test_native_episode_runner.py": "dbc2356ed8a8c0deffd91f19b69acbcea4eff88030766c02cf854f7f5e91af8b"
+  },
+  "tests": {
+    "command": "python -B -m pytest tests/unit/test_finite_action_policy.py tests/unit/test_finite_policy_artifacts.py tests/unit/test_finite_supply_policy.py tests/unit/test_finite_supply_policy_binding.py tests/unit/test_finite_policy_graph.py tests/unit/test_stage3_supply_variant_interleaving.py tests/unit/test_native_episode_runner.py -q",
+    "passed": 118,
+    "third_party_deprecation_warnings": 3,
+    "duration_seconds": 11.17,
+    "coverage_measured": false
+  },
+  "offline_checks": {
+    "engineering_base_check": "PASS",
+    "stage3_algorithm_label_check": "PASS",
+    "finite_completion_policy_check": "PASS"
+  },
+  "review": "Root review and bounded read-only independent integration review; no remaining concrete defect identified.",
+  "limits": [
+    "Model transport in graph proofs is fake; no inference/capacity claim.",
+    "Complete sealed terminal-feedback join and immutable update entry point remain required.",
+    "Formal cell configuration, complete-horizon actual request capacity and admission remain required.",
+    "Historical ledger findings in the primitives receipt remain unresolved."
+  ],
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "active_f10_checkout_modified": false
+}

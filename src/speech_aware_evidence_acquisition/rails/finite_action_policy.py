@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 import math
 import re
-from typing import Sequence
+from typing import Mapping, Sequence
 
 from .hashing import content_hash
 
@@ -48,6 +48,18 @@ def _number(value: object, field: str, *, minimum: float | None = None) -> float
     return result
 
 
+def _object(value: object, field: str, keys: frozenset[str]) -> Mapping[str, object]:
+    if not isinstance(value, Mapping) or set(value) != keys:
+        raise FinitePolicyError(f"{field} has missing or unknown keys")
+    return value
+
+
+def _list(value: object, field: str) -> list[object]:
+    if not isinstance(value, list):
+        raise FinitePolicyError(f"{field} must be a JSON list")
+    return value
+
+
 @dataclass(frozen=True)
 class CountSum:
     count: int = 0
@@ -61,6 +73,11 @@ class CountSum:
     @property
     def mean(self) -> float:
         return self.utility_sum / self.count if self.count else 0.0
+
+    @classmethod
+    def from_json(cls, value: object) -> "CountSum":
+        row = _object(value, "count/sum", frozenset({"count", "utility_sum"}))
+        return cls(row["count"], row["utility_sum"])
 
 
 @dataclass(frozen=True)
@@ -125,6 +142,28 @@ class CreditedTrajectory:
             "intent_exact": self.intent_exact, "format_ok": self.format_ok,
             "fallback_flags": list(self.fallback_flags), "utility": self.utility,
         }
+
+    @classmethod
+    def from_json(cls, value: object) -> "CreditedTrajectory":
+        row = _object(value, "credited trajectory", frozenset({
+            "round_id", "round_descriptor_sha256", "sample_id", "trajectory_sha256",
+            "source_hashes", "state_id", "action", "decision", "tp", "fp", "fn",
+            "intent_exact", "format_ok", "fallback_flags", "utility",
+        }))
+        sources = _list(row["source_hashes"], "credited source hashes")
+        pairs = []
+        for source in sources:
+            pair = _list(source, "credited source pair")
+            if len(pair) != 2:
+                raise FinitePolicyError("credited source pair must have name and SHA")
+            pairs.append(tuple(pair))
+        return cls(
+            row["round_id"], row["round_descriptor_sha256"], row["sample_id"],
+            row["trajectory_sha256"], tuple(pairs), row["state_id"], row["action"],
+            PolicyDecision.from_json(row["decision"]), row["tp"], row["fp"], row["fn"],
+            row["intent_exact"], row["format_ok"],
+            tuple(_list(row["fallback_flags"], "fallback flags")), row["utility"],
+        )
 
 
 @dataclass(frozen=True)
@@ -192,6 +231,25 @@ class PolicySnapshot:
             "parent_sha256": self.parent_sha256,
         }
 
+    @classmethod
+    def from_json(cls, value: object) -> "PolicySnapshot":
+        row = _object(value, "policy snapshot", frozenset({
+            "schema", "actions", "states", "f0", "sparse_support",
+            "cell_stats", "global_stats", "credited", "parent_sha256",
+        }))
+        if (row["schema"] != "saea-finite-action-policy-snapshot-v1"
+                or type(row["sparse_support"]) is not int or row["sparse_support"] != SPARSE_SUPPORT):
+            raise FinitePolicyError("snapshot schema or sparse support disagrees")
+        return cls(
+            tuple(_list(row["actions"], "snapshot actions")),
+            tuple(_list(row["states"], "snapshot states")),
+            row["f0"],
+            tuple(CountSum.from_json(item) for item in _list(row["cell_stats"], "snapshot cell stats")),
+            tuple(CountSum.from_json(item) for item in _list(row["global_stats"], "snapshot global stats")),
+            tuple(CreditedTrajectory.from_json(item) for item in _list(row["credited"], "snapshot credits")),
+            row["parent_sha256"],
+        )
+
     @property
     def sha256(self) -> str:
         return content_hash(self.as_json())
@@ -255,6 +313,18 @@ class PolicyDecision:
             "probabilities": list(self.probabilities), "propensity": self.propensity,
             "allocation_kind": self.allocation_kind,
         }
+
+    @classmethod
+    def from_json(cls, value: object) -> "PolicyDecision":
+        row = _object(value, "policy decision", frozenset({
+            "snapshot_sha256", "state_id", "epsilon", "draw", "action",
+            "probabilities", "propensity", "allocation_kind",
+        }))
+        return cls(
+            row["snapshot_sha256"], row["state_id"], row["epsilon"], row["draw"],
+            row["action"], tuple(_list(row["probabilities"], "decision probabilities")),
+            row["propensity"], row["allocation_kind"],
+        )
 
 
 def _select_probability(probabilities: tuple[float, ...], draw: float) -> int:

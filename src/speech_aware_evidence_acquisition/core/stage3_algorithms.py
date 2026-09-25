@@ -191,6 +191,25 @@ TFGRPO_SEMANTIC_ADVANTAGE_V1 = _register(
     )
 )
 
+
+FINITE_ACTION_BANDIT_V1 = _register(
+    Stage3Algorithm(
+        id="finite-action-bandit-v1",
+        family="contextual-bandit",
+        display_name="Finite supply action bandit with complete-system returns",
+        citation="docs/readiness/2026-09-25-slurp-stage3-finite-policy-design-v1.md",
+        operators=("rollout", "scoring", "credit_assignment", "update", "selection"),
+        status="planned",
+        what_it_changes=(
+            "A frozen per-round external value table selects one evidence-supply action "
+            "after initial Perception and retains it throughout the ordinary complete "
+            "episode. Values update from complete official-count feedback at round "
+            "boundaries. This cumulative-mean baseline is MemRL-inspired, not full "
+            "MemRL reproduction; no formal algorithm flight has executed yet."
+        ),
+    )
+)
+
 GEPA_REFLECTIVE_PARETO_V1 = _register(
     Stage3Algorithm(
         id="gepa-reflective-pareto-v1",
