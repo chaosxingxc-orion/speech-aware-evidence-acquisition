@@ -127,7 +127,151 @@ print("READY: complete recovery and four derived official scores verified")
 PYCODE
 }
 if [ "${1:-}" = "--check-boundary" ]; then boundary_check --fixture; exit $?; fi
-[ "$#" -eq 0 ] || { echo "usage: batch_chain_f10.sh [--check-boundary]" >&2; exit 2; }
+closed_check() {
+  local closure=$1 expected_sha=$2 home=$H data=$DATA repo=$REPO var2="" f10="" predecessor="" target=""
+  if [ "${3:-}" = "--fixture" ]; then
+    home=${F10_TEST_HOME:?}; data=${F10_TEST_DATA:?}; repo=${F10_TEST_REPO:?}
+    var2=${F10_TEST_VAR2_PROTOCOL:?}; f10=${F10_TEST_F10_PROTOCOL:?}
+    predecessor=${F10_TEST_VAR2_COMMIT:?}; target=${F10_TEST_F10_COMMIT:?}
+  fi
+  "$PY" -B - "$closure" "$expected_sha" "$home" "$data" "$repo" "$var2" "$f10" "$predecessor" "$target" "$VAR2_PROTOCOL" "$F10_PROTOCOL" <<'PYCODE'
+import hashlib, json, re, subprocess, sys
+from pathlib import Path
+closure_path=Path(sys.argv[1])
+expected_sha=sys.argv[2]
+home,data,repo=map(Path,sys.argv[3:6])
+var2_fixture,f10_fixture,predecessor,target,var2_rel,f10_rel=sys.argv[6:]
+def stop(message):
+    print("REFUSED: "+message,file=sys.stderr); raise SystemExit(20)
+def obj(path):
+    try: return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError,ValueError) as error: stop(f"cannot read {path.name}: {error}")
+def digest(path): return hashlib.sha256(path.read_bytes()).hexdigest()
+def pinned(commit,relpath,fixture=""):
+    if fixture: return obj(Path(fixture))
+    try: return json.loads(subprocess.check_output(
+        ["git","-C",str(repo),"show",f"{commit}:{relpath}"],text=True))
+    except (OSError,ValueError,subprocess.CalledProcessError) as error:
+        stop(f"cannot read pinned {relpath}: {error}")
+if not re.fullmatch(r"[0-9a-f]{64}",expected_sha): stop("closure SHA invalid")
+if not closure_path.is_absolute() or not closure_path.resolve().is_relative_to(
+        (data/"coordination").resolve()):
+    stop("closure path must be under DATA/coordination")
+if not closure_path.is_file() or digest(closure_path)!=expected_sha:
+    stop("closure receipt SHA differs")
+closure=obj(closure_path)
+required={"schema":"saea-closed-predecessor-continuation-v1","status":"decided",
+          "owner":"root","predecessor_state":"ABORTED",
+          "no_complete_manifest":True,"disposition":"closed-no-further-recovery",
+          "next_family":"F10"}
+if any(closure.get(k)!=v for k,v in required.items()):
+    stop("closure decision schema or disposition differs")
+if not isinstance(closure.get("decision_id"),str) or not closure["decision_id"].strip():
+    stop("closure decision id absent")
+if not isinstance(closure.get("reason"),str) or not closure["reason"].strip():
+    stop("closure reason absent")
+if var2_fixture:
+    predecessor=predecessor
+else:
+    try:
+        predecessor=(home/"var2-recovery-flight-commit.txt").read_text().strip()
+        target=(home/"f10-flight-commit.txt").read_text().strip()
+        head=subprocess.check_output(["git","-C",str(repo),"rev-parse","HEAD"],text=True).strip()
+        if head!=predecessor: stop("predecessor checkout moved before closure")
+    except (OSError,subprocess.CalledProcessError) as error:
+        stop(f"cannot bind flight commits: {error}")
+for label,value in (("predecessor",predecessor),("F10",target)):
+    if not re.fullmatch(r"[0-9a-f]{40}",value): stop(f"{label} commit invalid")
+var2=pinned(predecessor,var2_rel,var2_fixture)
+f10=pinned(target,f10_rel,f10_fixture)
+if var2.get("schema")!="saea-var2-recovery-protocol-v1" or f10.get("schema")!="saea-f10-protocol-v1":
+    stop("pinned protocol schema mismatch")
+full=var2["cells"]["full"]
+if (closure.get("predecessor_run_id")!=full["run_id"]
+    or closure.get("predecessor_attempt_id")!=full["attempt_id"]
+    or closure.get("predecessor_commit")!=predecessor):
+    stop("closure predecessor identity differs")
+attempt=data/"attempts"/full["run_id"]/(full["attempt_id"]+".json")
+if not attempt.is_file() or closure.get("predecessor_attempt_sha256")!=digest(attempt):
+    stop("aborted attempt receipt hash differs")
+if obj(attempt).get("state")!="ABORTED": stop("predecessor attempt is not ABORTED")
+run_dir=data/"runs"/full["run_id"]/full["attempt_id"]
+if list(run_dir.glob("*.run-manifest.json")) or (run_dir/"score-jobs.jsonl").exists():
+    stop("aborted predecessor has a manifest or official score job")
+if (data/"analysis"/"SAEA-SLURP-STAGE3-VAR2-RECOVERY-SUPPLY-READ-V1"/"score-summary.json").exists():
+    stop("aborted predecessor has a derived score summary")
+if (home/"batch-STOP").exists() or (home/"f10-chain-STOP").exists():
+    stop("STOP marker remains outside root archive")
+archive_rel=closure.get("archive_relpath")
+if (not isinstance(archive_rel,str) or archive_rel!="var2-recovery-closed-before-f10-20260925"
+    or Path(archive_rel).is_absolute() or "\\" in archive_rel
+    or any(x in ("",".","..") for x in archive_rel.split("/"))):
+    stop("closure archive_relpath invalid")
+archive=(home/archive_rel).resolve()
+if not archive.is_relative_to(home.resolve()):
+    stop("closure archive escapes /home/chao")
+if not (archive/"batch-STOP").is_file() or not (archive/"root-reconciliation.json").is_file():
+    stop("root STOP/reconciliation archive missing")
+if (home/"batch-done").exists(): stop("closed predecessor unexpectedly has batch-done")
+queue=obj(home/"batch-queue.json")
+if not isinstance(queue,list) or len(queue)!=1: stop("closed predecessor queue differs")
+step=queue[0]
+fields={"short":"var2-recovery","experiment":full["experiment"],"cell":full["cell_id"],
+        "run_id":full["run_id"],"gen_attempt_id":full["attempt_id"],
+        "fit_run_id":full["fit_run_id"],
+        "smoke_experiment":var2["cells"]["smoke"]["experiment"],
+        "smoke_cell":var2["cells"]["smoke"]["cell_id"],
+        "smoke_run_id":var2["cells"]["smoke"]["run_id"],
+        "smoke_attempt_id":var2["cells"]["smoke"]["attempt_id"],
+        "expected_rows":625,"ceiling_per_row":17}
+if any(step.get(k)!=v for k,v in fields.items()): stop("closed predecessor queue identity differs")
+try: events=[json.loads(x) for x in (home/"batch-status.jsonl").read_text().splitlines() if x]
+except (OSError,ValueError) as error: stop(f"closed predecessor status malformed: {error}")
+if not any(e.get("event")=="STOP" for e in events):
+    stop("closed predecessor has no STOP event")
+if any(e.get("event")=="driver-done" for e in events):
+    stop("closed predecessor status claims completion")
+if f10.get("execution_order")!=["smoke","control","empty"]:
+    stop("F10 order differs")
+cells=f10["cells"]
+ids=[cells[key][field] for key in ("smoke","control","empty")
+     for field in ("run_id","fit_run_id")]
+auth=closure.get("authorized_next_run_ids")
+if not isinstance(auth,list) or len(auth)!=6 or len(set(auth))!=6 or set(auth)!=set(ids):
+    stop("closure does not authorize exact F10 generation/fit identities")
+admission_sha=closure.get("root_admission_sha256")
+if not isinstance(admission_sha,str) or not re.fullmatch(r"[0-9a-f]{64}",admission_sha):
+    stop("closure root admission SHA invalid")
+for key in ("smoke","control","empty"):
+    exp=pinned(target,"configs/experiment/"+cells[key]["experiment"]+".json",
+               str(repo/"configs/experiment"/(cells[key]["experiment"]+".json")) if f10_fixture else "")
+    req=[x for x in exp["cells"][0]["readiness"]["requirements"] if x.get("kind")=="decision"]
+    if len(req)!=1 or req[0].get("sha256")!=admission_sha:
+        stop("F10 cell root admission pin differs")
+    admission=(data/req[0]["relpath"]).resolve()
+    if not admission.is_relative_to((data/"coordination").resolve()) or not admission.is_file():
+        stop("F10 root admission receipt missing")
+    if digest(admission)!=admission_sha: stop("F10 root admission bytes differ")
+print("READY: explicit root closure permits F10 without predecessor scoring")
+PYCODE
+}
+if [ "${1:-}" = "--check-closed-boundary" ]; then
+  [ "$#" -eq 3 ] || exit 2
+  if [ -n "${F10_TEST_HOME:-}" ]; then closed_check "$2" "$3" --fixture
+  else closed_check "$2" "$3"; fi
+  exit $?
+fi
+CLOSED=0
+CLOSURE=""
+CLOSURE_SHA=""
+if [ "${1:-}" = "--closed-predecessor" ]; then
+  [ "$#" -eq 4 ] && [ "$3" = "--closure-sha256" ] || {
+    echo "usage: batch_chain_f10.sh --closed-predecessor PATH --closure-sha256 HASH" >&2; exit 2;
+  }
+  CLOSED=1; CLOSURE=$2; CLOSURE_SHA=$4
+fi
+
+[ "$#" -eq 0 ] || [ "$CLOSED" -eq 1 ] || { echo "usage: batch_chain_f10.sh [--check-boundary|--closed-predecessor PATH --closure-sha256 HASH]" >&2; exit 2; }
 [ ! -e "$H/f10-chain-STOP" ] || { echo "F10 STOP marker exists; refuse replay" >&2; exit 8; }
 STATUS=$H/f10-chain-status.jsonl
 ( set -o noclobber; : > "$STATUS" ) || { echo "F10 chain already started; refuse replay" >&2; exit 9; }
@@ -143,31 +287,41 @@ fail() {
   echo "$1" >&2; exit 9
 }
 trap 'fail "unexpected shell failure; preserve state"' ERR
-log waiting "VAR-2 recovery generation and all derived scoring"
-last_wait=""
-while true; do
-  [ ! -e "$H/f10-chain-STOP" ] || fail "F10 STOP marker exists"
-  [ ! -e "$H/batch-STOP" ] || fail "predecessor batch-STOP exists"
-  if boundary_output=$(boundary_check 2>&1); then
-    if pgrep -f '[b]atch_chain_var2.sh recovery|[b]atch_chain_var2_recovery.sh' >/dev/null; then
-      sleep 10; continue
-    fi
-    break
-  else
-    rc=$?
-    [ "$rc" -eq 10 ] || fail "predecessor boundary rejected: $boundary_output"
-    if [ "$boundary_output" != "$last_wait" ]; then
-      log wait-state "$boundary_output"
-      last_wait=$boundary_output
-    fi
-    pgrep -f '[b]atch_chain_var2.sh recovery|[b]atch_chain_var2_recovery.sh' >/dev/null ||
-      fail "predecessor chain exited before derived scoring closed"
-    sleep 10
+if [ "$CLOSED" -eq 1 ]; then
+  log closure-check "explicit root decision for closed VAR-2 recovery"
+  closed_check "$CLOSURE" "$CLOSURE_SHA" || fail "closed-predecessor receipt rejected"
+  if pgrep -f '[b]atch_chain_var2.sh recovery|[b]atch_chain_var2_recovery.sh' >/dev/null; then
+    fail "closed predecessor chain still alive"
   fi
-done
-log predecessor-closed "complete manifest and four derived scores"
+  log predecessor-closed "root-closed VAR-2 recovery; no manifest or score"
+else
+  log waiting "VAR-2 recovery generation and all derived scoring"
+  last_wait=""
+  while true; do
+    [ ! -e "$H/f10-chain-STOP" ] || fail "F10 STOP marker exists"
+    [ ! -e "$H/batch-STOP" ] || fail "predecessor batch-STOP exists"
+    if boundary_output=$(boundary_check 2>&1); then
+      if pgrep -f '[b]atch_chain_var2.sh recovery|[b]atch_chain_var2_recovery.sh' >/dev/null; then
+        sleep 10; continue
+      fi
+      break
+    else
+      rc=$?
+      [ "$rc" -eq 10 ] || fail "predecessor boundary rejected: $boundary_output"
+      if [ "$boundary_output" != "$last_wait" ]; then
+        log wait-state "$boundary_output"
+        last_wait=$boundary_output
+      fi
+      pgrep -f '[b]atch_chain_var2.sh recovery|[b]atch_chain_var2_recovery.sh' >/dev/null ||
+        fail "predecessor chain exited before derived scoring closed"
+      sleep 10
+    fi
+  done
+  log predecessor-closed "complete manifest and four derived scores"
+fi
 [ ! -e "$DATA/locks/flight.lock" ] || fail "flight lock remains"
 [ ! -e "$H/batch-STOP" ] || fail "batch STOP remains"
+[ ! -e "$H/f10-chain-STOP" ] || fail "F10 STOP remains"
 if pgrep -f '[c]ore.flight.cli|[l]ease_cli|[b]atch_driver.sh|[s]tage3_rollout_score.py|[e]valuate.py|[s]lurp_scoring' >/dev/null; then
   fail "flight, lease, driver or scorer process remains"
 fi
@@ -191,23 +345,32 @@ for cell in cells.values():
         assert not (data/"runs"/cell[key]).exists()
 PYCODE
 ARCHIVE=$H/var2-recovery-before-f10
-"$PY" -B - "$H" "$ARCHIVE" "$DATA" "$READ_ID" <<'PYCODE' || fail "predecessor archive failed"
+if [ "$CLOSED" -eq 1 ]; then
+  archive_rel=$("$PY" -B -c 'import json,sys;print(json.load(open(sys.argv[1]))["archive_relpath"])' "$CLOSURE")
+  ARCHIVE=$H/$archive_rel/launcher-snapshot
+fi
+"$PY" -B - "$H" "$ARCHIVE" "$DATA" "$READ_ID" "$CLOSED" "$CLOSURE_SHA" <<'PYCODE' || fail "predecessor archive failed"
 import hashlib,json,shutil,sys
 from pathlib import Path
-home,archive,data=map(Path,sys.argv[1:4]); read_id=sys.argv[4]
-archive.mkdir()
-names=["batch-queue.json","batch-status.jsonl","batch-done","batch-flight-commit.txt",
+home,archive,data=map(Path,sys.argv[1:4]); read_id,closed,closure_sha=sys.argv[4:]
+archive.mkdir()  # Exclusive child under the root-owned closure archive in closed mode.
+names=["batch-queue.json","batch-status.jsonl","batch-flight-commit.txt",
        "batch-chain-var2-recovery.out","var2-recovery-flight-commit.txt",
        "batch-smoke-1-worker.log","batch-smoke-1-lease.out"]
+if closed=="0": names.append("batch-done")
 logs=sorted(home.glob("batch-campaign-1-var2-recovery-*.log"))
 if not logs: raise RuntimeError("campaign log missing")
 files=[home/name for name in names]+logs
 if any(not p.is_file() for p in files): raise RuntimeError("archive input missing")
 for path in files: shutil.copy2(path,archive/path.name)
-summary=data/"analysis"/read_id/"score-summary.json"
 receipt={"schema":"saea-f10-predecessor-archive-v1",
-         "files":{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in files},
-         "derived_score_summary_sha256":hashlib.sha256(summary.read_bytes()).hexdigest()}
+         "files":{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in files}}
+if closed=="1":
+    receipt["closed_predecessor_sha256"]=closure_sha
+    receipt["predecessor_disposition"]="closed-no-further-recovery"
+else:
+    summary=data/"analysis"/read_id/"score-summary.json"
+    receipt["derived_score_summary_sha256"]=hashlib.sha256(summary.read_bytes()).hexdigest()
 (archive/"archive-receipt.json").write_text(json.dumps(receipt,indent=2)+"\n")
 PYCODE
 git -C "$REPO" checkout -q --detach "$COMMIT" || fail "F10 checkout failed"
@@ -236,7 +399,7 @@ def replace(name,raw):
     os.replace(temp,path)
 replace("batch-queue.json",(json.dumps(queue,indent=2)+"\n").encode())
 replace("batch-status.jsonl",b"")
-(home/"batch-done").unlink()
+if (home/"batch-done").exists(): (home/"batch-done").unlink()
 replace("batch-flight-commit.txt",(commit+"\n").encode())
 PYCODE
 log driver-start "smoke then control625 then empty625"
