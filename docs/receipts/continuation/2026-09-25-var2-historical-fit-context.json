@@ -1,0 +1,13 @@
+{
+  "schema": "saea-fit-context-provenance-v1",
+  "status": "HISTORICAL_CONTEXT_ONLY",
+  "summary": {
+    "data_relpath": "analysis/SAEA-SLURP-STAGE3-VAR2-HISTORICAL-FIT-CONTEXT-V1/summary.json",
+    "sha256": "8947aad69a3090b6a9ea2796b80099529562c4052288aa9554b3dd6587694533"
+  },
+  "source_index": {
+    "data_relpath": "analysis/SAEA-SLURP-STAGE3-VAR2-HISTORICAL-FIT-CONTEXT-V1/sources.json",
+    "sha256": "4131e550a78d9b0ecb4a432012e5ea34f45bfd161e05e656ed12ba23e5212f5e"
+  },
+  "meaning": "Sealed VAR1 K30 actual request fits, no new model/tokenizer contact. They do not validate the new VAR2 requests. Runtime exact fits remain mandatory."
+}
