@@ -1,5 +1,33 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
+## Current prelaunch correction: exact fit and actual R01C source isolation
+
+Read docs/receipts/continuation/2026-09-25-candidate-recovery-preflight-amendment.json.
+The registered pair initially failed model-free preflight because a conservative
+whole-trajectory envelope was treated as measured capacity. No model/tokenizer
+contact occurred. Shared explicit preflight_budget_mode now records that
+heuristic without certifying capacity, only with strict native per-request
+fitting configured. Actual requests still refuse overflow before generation;
+no compaction, card removal, output-cap reduction or service change.
+
+177 runtime/deferral tests and52 native-fit/full-graph tests pass. All eight
+preparation artifacts are rebuilt as v2 and active identities cross-checked.
+The shared re-pin's final residue scan found only the intentionally preserved
+v1 registration receipt; do not erase historical pins. Clean final runtime
+checks are the next mandatory launch step after committing these bindings.
+
+Correction to the preceding source caveat: the actual R01C625 roster overlaps
+zero source samples/utterances in intent cards, slot cards AND exact exemplars.
+The57/155 counts belong to the larger R01 roster, outside R01C. Source proof v2
+also names canonical snapshot hashes versus file hashes correctly. No bytes or
+knowledge selections changed. R01C is still exposed construction, not an
+independent holdout. Source-preparation-v2 supersedes its v1 metadata wording.
+
+The planned ordered smoke/full pair is unchanged. No family generation has
+started at this receipt. Complete terminal trajectories and official task
+quality remain the only efficacy basis; this is not yet a learned RL update.
+
+
 ## Current boundary: candidate-recovery registered and prepared; clean preflight next
 
 The complete-system F4 pair and both engineering smoke4 cells are registered

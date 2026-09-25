@@ -1,0 +1,12 @@
+{
+  "arms_matched": true,
+  "engineering_note": "docs/readiness/2026-09-25-native-preflight-estimate-separation.md",
+  "generation_attempts_consumed": false,
+  "implementation_commit": "8f2979be58bcf98002a44154e01102e698bb2533",
+  "model_contacts_before_amendment": 0,
+  "reason": "Conservative envelopes are not measured capacity. Explicitly defer only the default heuristic to the unchanged strict exact native request gate.",
+  "recorded_at_utc": "2026-09-25T19:19:44.472558+00:00",
+  "schema": "saea-precontact-operational-amendment-v1",
+  "scientific_design_changed": false,
+  "tokenizer_contacts_before_amendment": 0
+}

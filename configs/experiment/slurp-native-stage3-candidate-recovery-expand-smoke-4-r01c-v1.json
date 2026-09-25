@@ -17,14 +17,14 @@
           {
             "kind": "decision",
             "expected_decision_id": "slurp-stage3-candidate-recovery-admission-v1",
-            "relpath": "coordination/slurp-stage3-candidate-recovery-v1/root-admission-v1.json",
-            "sha256": "67ec78b38275088a36b0ae11b597c98074466f70cf42dbbcff37f0cb14ba86f6",
+            "relpath": "coordination/slurp-stage3-candidate-recovery-v1/root-admission-v2.json",
+            "sha256": "94ad2783b2eafbde3c063c2c0d0c2959b516ea58a834dab28260cc289f352b9a",
             "reason": "Decision slurp-stage3-candidate-recovery-admission-v1 pinned by scripts/flights/repin_cell.py."
           },
           {
             "kind": "preparation",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-SMOKE-4-R01C-V1/phase-supply-v1.json",
-            "sha256": "0fc70eb3093a316a11f64045a5f612f36a30768765d645deac15201dca913d92",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-SMOKE-4-R01C-V1/phase-supply-v2.json",
+            "sha256": "64e9b124d596deed2d0cf02e554b7e7e94a952bc47521a16eff80074885745bb",
             "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
           }
         ],
@@ -47,14 +47,14 @@
           {
             "kind": "decision",
             "expected_decision_id": "slurp-stage3-candidate-recovery-admission-v1",
-            "relpath": "coordination/slurp-stage3-candidate-recovery-v1/root-admission-v1.json",
-            "sha256": "67ec78b38275088a36b0ae11b597c98074466f70cf42dbbcff37f0cb14ba86f6",
+            "relpath": "coordination/slurp-stage3-candidate-recovery-v1/root-admission-v2.json",
+            "sha256": "94ad2783b2eafbde3c063c2c0d0c2959b516ea58a834dab28260cc289f352b9a",
             "reason": "Decision slurp-stage3-candidate-recovery-admission-v1 pinned by scripts/flights/repin_cell.py."
           },
           {
             "kind": "preparation",
-            "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-SMOKE-4-R01C-FIT-V1/phase-supply-v1.json",
-            "sha256": "0fc70eb3093a316a11f64045a5f612f36a30768765d645deac15201dca913d92",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-SMOKE-4-R01C-FIT-V1/phase-supply-v2.json",
+            "sha256": "64e9b124d596deed2d0cf02e554b7e7e94a952bc47521a16eff80074885745bb",
             "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
           }
         ],

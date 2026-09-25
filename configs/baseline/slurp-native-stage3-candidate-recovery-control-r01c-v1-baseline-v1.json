@@ -56,20 +56,20 @@
         "solver": {
           "candidate_state_phase": "perception",
           "compact_source_phase": "perception",
+          "exemplar_candidate_proposal": {
+            "exemplar_store_id": "train-exemplars",
+            "intent_store_id": "intent-boundaries",
+            "max_added_slot_values": 24,
+            "max_candidates": 8,
+            "mode": "original-only"
+          },
           "fuse_policy": "saea-candidate-semantic-passthrough-v1",
           "max_candidates": 3,
           "max_total_values": 28,
           "max_values_per_candidate": 16,
           "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
           "provider": "slurp-candidate-semantic-v1",
-          "rank_policy": "saea-ranked-candidate-round-robin-v1",
-          "exemplar_candidate_proposal": {
-            "mode": "original-only",
-            "exemplar_store_id": "train-exemplars",
-            "intent_store_id": "intent-boundaries",
-            "max_candidates": 8,
-            "max_added_slot_values": 24
-          }
+          "rank_policy": "saea-ranked-candidate-round-robin-v1"
         }
       },
       "release": {
@@ -131,6 +131,7 @@
       "store_role": "train-exemplars"
     }
   },
+  "knowledge_value_rendering": "canonical-plain-v1",
   "native_contact_fit": {
     "attempt_id": "attempt-slurp-native-stage3-candidate-recovery-control-r01c-v1-fit",
     "contact_cap": 27500,
@@ -221,6 +222,7 @@
     }
   },
   "policy": "phase-native-candidates-review-revise-v1",
+  "preflight_budget_mode": "defer-to-native-contact-fit",
   "preparation_source_receipts": [
     {
       "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
@@ -293,9 +295,8 @@
   "task_instruction_template_active": true,
   "what_the_train_exemplars_store_is": "SLURP v2 base program module M1 / cell B1: the top-k TRAIN construction-pool exemplars recalled by cosine against this row's OWN sealed R01C speech vector in the content retrieval dimension, ranked by saea-rank-wcos-prior-agree-v1 (identity on cosine: w_cos=1, w_prior=0, w_agree=0) and passed through saea-fuse-supplyfilter-v1. The store uses the R01C-safe 8,554-utterance minus-R01 selection, preventing construction rows from retrieving their own answer (coordinator decision 102). The value rendering is defined by the pinned release; retrieval keys, ids and selection are shared across this evidence-path comparison. The decision is delivered to the SOLVER phase through the E6 acquire transition as typed content blocks, composed with the slot-contracts candidate supply on the same wave.",
   "what_this_is": "HELD full coordinated SLURP policy comparison. Both arms use the same frozen Perception, Solver, Reviewer, Planner, released TRAIN stores, legal final-answer inventory and native episode. The proposal mode alone selects original Perception candidates or appends source-bound labels from the actual selected TRAIN exemplars. This is a complete-system continuation comparison, with no learned policy.",
-  "knowledge_value_rendering": "canonical-plain-v1",
   "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-FIT-V1/phase-supply-v1.json",
-    "sha256": "7010d4675113acd27d84a4b0a72d14ff3d575605420e449d1e34a4d29cb53307"
+    "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-FIT-V1/phase-supply-v2.json",
+    "sha256": "eaef9cfba2097b808f1031760a3fbb1b9f1a16b2bdeb6b93641bc5075156a355"
   }
 }

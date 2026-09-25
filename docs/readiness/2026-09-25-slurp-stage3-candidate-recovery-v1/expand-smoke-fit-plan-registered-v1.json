@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-candidate-recovery-expand-smoke-4-r01c-fit-v1",
-  "composed_config_hash": "68e5a97f3e096ffe9bac98f4f83506315afddfdcad112583ebc1f43f8fd7fd8b",
+  "composed_config_hash": "a6c5a3828fd4f060afced42fe605a4aac3cbe5888e790b25fa7da98aac7da6f5",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-candidate-recovery-expand-smoke-4-r01c-v1-fit",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 176,
     "planned_speech_audio_seconds": 290,
-    "protocol_hash": "d13429a7a76e1066179067407e0880e196a87ea1faa69333fbaf735fa9715137",
+    "protocol_hash": "15aaa6a66e5a4f49e5aa654e0c8593ba844dbda4ab91761caac59b2010d10108",
     "run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-SMOKE-4-R01C-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
@@ -37,7 +37,7 @@
   "plan_kind": "fit",
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-25-slurp-stage3-candidate-recovery-v1/protocol-registered-v1.json",
-    "sha256": "d6fc939abac76d10546df67e485a170cf2f16a30abce38828a41b311802ef1bc"
+    "sha256": "0601bd491a210b053d1a74ad3c776d882317539e5b67ff30596ec7574fd564e4"
   },
   "read_rule": "Root admission, pinned preparation, clean preflight and exclusive matching service required. No outcomes until both full seals and complete scores.",
   "schema": "saea-flight-execution-plan-v1",
