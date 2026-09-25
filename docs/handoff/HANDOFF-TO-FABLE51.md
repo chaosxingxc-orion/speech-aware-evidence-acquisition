@@ -1,7 +1,7 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
 
-## Live continuation update: 2026-09-25 09:35 UTC, root Codex
+## Live continuation update: 2026-09-25 09:46 UTC, root Codex
 
 This section supersedes older live-status paragraphs below. Main is master.
 Keep one implementation worktree plus one frozen flight checkout; merge reviewed
@@ -27,8 +27,11 @@ chunks promptly.
   first-visit custody/scoring and clean preflights are ready. Independent task
   SAEA-VAR2-Continuation-20260925 started at 09:33 UTC, flight commit
   80299fe72458bcb3c280eef5725d2587a037d964; the driver is RUNNING.
-  Smoke4 precedes full625, and per-contact real fit remains mandatory.
-  This update does not assert smoke or full-arm completion. See docs/receipts/continuation/2026-09-25-var2-preflight.json.
+  Smoke4 passed at 09:36:25 UTC (4 rows, 28 contacts, zero tools); full625
+  started at 09:36:35 UTC. At 09:46 UTC, the service monitor reports 4/4 slots
+  busy and GPU 98%; the full attempt is OPENED. Per-contact real fit remains
+  mandatory. This is not a full-arm completion claim.
+  See docs/receipts/continuation/2026-09-25-var2-preflight.json.
   Only the last plan arm has downstream Reviewer/Planner behavior; local side
   branches never count as system RL returns. Fixed arm order stays a limitation.
 - New derived scoring records a durable start marker before the official scorer.
@@ -54,6 +57,12 @@ chunks promptly.
   not full MemRL reproduction. Do not feed signed/continuous reward to a
   truthiness-based success update. Same-space scholarly algorithm loops remain
   unexecuted and required by the persistent Stage-3 objective.
+- F10: the existing empty-contract builder now accepts a source-bound sibling
+  configuration; 26 focused/legacy tests passed. Register and build the
+  minus-R01 sibling (8,554 examples), preserving retrieval keys and nonempty
+  values. The historical 9,354 store is not eligible for R01C. See
+  docs/readiness/2026-09-25-slurp-stage3-f10-knowledge-build-v1.md.
+  Proposed matched control/treatment runtime remains undispatched.
 - No current owner decision is required. Continue VAR-2/F10 -> qualify useful
   full-system actions -> frozen-round exploration/update -> evaluate against
   both the locked system and the strongest fixed action. Only revisit Reviewer
@@ -292,7 +301,7 @@ Routine status (no subagent): run scripts/flights/batch/continuation_status.py
 with --queue /home/chao/batch-queue.json, --status /home/chao/batch-status.jsonl,
 --data-root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data,
 --stop-marker /home/chao/batch-STOP, --check-processes,
---driver-script /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh,
+--driver-script /home/chao/saea-worktrees/fable-batch-flight/scripts/flights/batch/batch_driver.sh,
 and --session-id serving-slurp-native-candidate-five-train-a-np4-v1.
 The successor task log is /home/chao/batch-chain-verify1.out. Inspect facts and
 errors via scripts; do not repeatedly read model output or invoke a monitoring LLM.
