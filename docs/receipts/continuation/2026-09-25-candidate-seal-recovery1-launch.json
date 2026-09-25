@@ -1,0 +1,179 @@
+{
+  "schema": "saea-candidate-seal-recovery-launch-v1",
+  "recorded_at_utc": "2026-09-25T21:39:56.608368+00:00",
+  "dispatch_at_utc": "2026-09-25T21:38:46.0440352Z",
+  "task": "SAEA-Batch-Driver",
+  "task_state_at_dispatch": "Running",
+  "worker_checkout": "/home/chao/saea-worktrees/codex-stage3-continuation-20260925",
+  "worker_commit": "60d5719728f7a79f374000bcbd742508785c9894",
+  "prior_failed_worker_retained": "9f6a949f445e4fb308789eb0786a1a25c3fb8f69",
+  "execution_order": [
+    "control-smoke4",
+    "control625",
+    "expanded-smoke4",
+    "expanded625"
+  ],
+  "preflight_count": 8,
+  "offline_gates_passed": 9,
+  "runtime_switch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-stage3-candidate-seal-recovery1-v1/runtime-switch-v1.json",
+    "sha256": "16ecc5df09ac57398b3a6e81b3c445c2b5a1655434dbc8647a6b523ac268a93a"
+  },
+  "stale_lease_reconciliation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-stage3-candidate-seal-recovery1-v1/stale-lease-reconciliation-v1.json",
+    "sha256": "f65e5836a203a6296700dcc797a49d17530bb2ecf87810f470d91eba947a4e97"
+  },
+  "processes": [
+    {
+      "pid": 95329,
+      "argv": [
+        "bash",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+      ]
+    },
+    {
+      "pid": 95467,
+      "argv": [
+        "bash",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+      ]
+    },
+    {
+      "pid": 95469,
+      "argv": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "-m",
+        "speech_aware_evidence_acquisition.core.flight.lease_cli",
+        "--stage",
+        "worker",
+        "--repo-root",
+        "/home/chao/saea-worktrees/codex-stage3-continuation-20260925",
+        "--data-root",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        "--runtime-root",
+        "/home/chao",
+        "--lock-path",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+        "--experiment",
+        "slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-seal-recovery1-v1",
+        "--cell",
+        "slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-seal-recovery1-v1",
+        "--owner",
+        "root-slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-seal-recovery1-v1",
+        "--expected-session-id",
+        "serving-slurp-native-candidate-five-train-a-np4-v1",
+        "--token-output",
+        "coordination/slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-seal-recovery1-v1.worker-lease.json"
+      ]
+    },
+    {
+      "pid": 95506,
+      "argv": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "-m",
+        "speech_aware_evidence_acquisition.core.flight.cli",
+        "worker",
+        "--repo-root",
+        "/home/chao/saea-worktrees/codex-stage3-continuation-20260925",
+        "--data-root",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        "--runtime-root",
+        "/home/chao",
+        "--lock-path",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+        "--experiment",
+        "slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-seal-recovery1-v1",
+        "--cell",
+        "slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-seal-recovery1-v1",
+        "--expected-session-id",
+        "serving-slurp-native-candidate-five-train-a-np4-v1",
+        "--lease-token-file",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-seal-recovery1-v1.worker-lease.json"
+      ]
+    }
+  ],
+  "task_network_required": false,
+  "task_timeout": "PT0S",
+  "task_auto_restart_count": 0,
+  "monitor_id": "slurp",
+  "monitor_minutes": 15,
+  "quality_read": false,
+  "claim_boundary": "This is a fixed complete-system construction comparison, not a learned RL update. Read only after both full manifests and one official scoring job per arm seal.",
+  "current_status": "control-smoke-passed-full-control-campaign-started",
+  "further_execution_failure": "close-flight-no-second-recovery",
+  "smoke": {
+    "at": "2026-09-25T21:40:08Z",
+    "event": "smoke-inspect",
+    "detail": {
+      "mode": "smoke",
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-SMOKE-4-R01C-SEAL-RECOVERY1-V1",
+      "attempt_id": "attempt-slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-seal-recovery1-v1-generation",
+      "pass": true,
+      "fails": [],
+      "attempt_state": "OPENED",
+      "actual": {
+        "audio_seconds": 96.17025000000001,
+        "calls": 22
+      },
+      "manifest_status": "COMPLETED",
+      "study_commit": "60d5719728f7a79f374000bcbd742508785c9894",
+      "dirt": [],
+      "rows": 4,
+      "distinct": 4,
+      "dispositions": {},
+      "contacts_per_row_hist": {},
+      "cost": {
+        "calls_used": 22,
+        "audio_seconds_used": 96.17025000000001,
+        "prompt_tokens_total": 186657,
+        "completion_tokens_total": 1344,
+        "tool_calls": 0
+      },
+      "score_jobs": 1,
+      "requests": 22,
+      "requests_with_tool_schemas": 0,
+      "sha256_run-manifest": "aa96b9594b9481901fe53ba8d05ac0f599f72575113444acf89412c6418732ba",
+      "sha256_outputs": "5aa21d90bc7927bd4acf82dd9b1549f9249cdccf4a3b5be6e5da5847e16cc4f5"
+    }
+  },
+  "smoke_official_scoring_jobs": 0,
+  "smoke_score_queue_note": "One cost-only queue entry; no official task scoring or task-quality read.",
+  "full_control_started_at": "2026-09-25T21:40:18Z",
+  "full_control_log": "/home/chao/batch-campaign-1-candidate-seal-recovery1-control-v1-20260925T214018Z.log",
+  "checkpoint_utc": "2026-09-25T21:41:50.487217+00:00",
+  "active_processes": [
+    {
+      "pid": 95329,
+      "argv": [
+        "bash",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+      ]
+    },
+    {
+      "pid": 95699,
+      "argv": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "-m",
+        "speech_aware_evidence_acquisition.core.flight.cli",
+        "campaign",
+        "--repo-root",
+        "/home/chao/saea-worktrees/codex-stage3-continuation-20260925",
+        "--data-root",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        "--runtime-root",
+        "/home/chao",
+        "--lock-path",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+        "--campaign-plan",
+        "/home/chao/saea-worktrees/codex-stage3-continuation-20260925/configs/campaign/slurp-native-stage3-candidate-recovery-control-r01c-seal-recovery1-v1.json",
+        "--owner",
+        "root-slurp-native-stage3-candidate-recovery-control-r01c-seal-recovery1-v1",
+        "--expected-session-id",
+        "serving-slurp-native-candidate-five-train-a-np4-v1"
+      ]
+    }
+  ]
+}

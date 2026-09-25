@@ -7,22 +7,24 @@ for their own flights. Do not interpret old plans as permission to restart them.
 
 ## Checkpoint and research objective
 
-Checkpoint: fresh named seal recovery is registered and prepared, not yet
-dispatched. The failed control remains ABORTED with 625 output rows, 3,723
-model contacts and no official score. Its worker stays frozen at
-9f6a949f445e4fb308789eb0786a1a25c3fb8f69. The repaired full verifier accepts
-all source rows without modifying them; 116 related tests and nine gates
-passed. No task quality has been read. The resident decoder-only service is
-retained. Read the [seal failure](../readiness/2026-09-25-slurp-stage3-candidate-recovery-v1/seal-failure-root-cause-v1.md)
-and [recovery preparation](../receipts/continuation/2026-09-25-candidate-seal-recovery1-preparation.json).
+Checkpoint: 2026-09-25T21:40:18Z. The sole named seal recovery is running
+through the existing Windows-owned WSL task. All eight clean preflights and
+nine offline gates passed. Control smoke4 passed at 21:40:08Z with 22 model
+contacts, four distinct rows and no tools or official scoring. The 625-row
+control campaign began at 21:40:18Z. Expanded remains queued, with its own
+structural smoke required. No task quality is read.
+The worker is frozen at 60d5719728f7a79f374000bcbd742508785c9894 in
+/home/chao/saea-worktrees/codex-stage3-continuation-20260925. Do not edit or
+advance this checkout through both complete scores. Read the
+[launch receipt](../receipts/continuation/2026-09-25-candidate-seal-recovery1-launch.json).
 
-The sole recovery uses fresh generation and fit identities, unchanged roster,
-runtime prompts, knowledge and scientific gates. All four prepared outputs
-match their original output hashes. Freeze the existing continuation checkout,
-complete eight clean preflights, then dispatch control smoke4/control625 and
-expanded smoke4/expanded625 through the existing Windows-owned WSL task.
-Any execution failure in this recovery closes the flight. Do not replay the
-old queue or reopen its aborted attempt.
+The old control remains ABORTED with 625 outputs, 3,723 model contacts and
+zero official scores. Its worker remains at 9f6a949f. Root verified owner
+death, kernel-lock availability and repeated zero busy service slots before
+archiving its stale lease metadata; the kernel guard inode is retained.
+The old queue, commit pointer, STOP and smoke logs are preserved separately.
+The recovery retains the roster, prompts, knowledge and scientific gates.
+Any further execution failure closes this flight; no second recovery.
 
 Stage-2's frozen four-node system already has substantial complete-task benefit.
 Stage-3 has **no learned-policy update with established stable benefit yet**.
@@ -75,15 +77,16 @@ are the execution authority. Exact run/attempt IDs, caps and source pins live in
 the [registered package](../readiness/2026-09-25-slurp-stage3-candidate-recovery-v1/README.md).
 Never invent substitute IDs or consume a new attempt without registration.
 
-## Recovery execution authority
+## Active recovery execution authority
 
-Use the [fresh recovery registration](../readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1-preregistration.md)
-and [package](../readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1/README.md).
-The next selected worker is the existing continuation checkout. Preserve the
-old queue/commit/STOP and smoke logs before changing the runtime pointers.
-Current runtime pointers still name the failed queue until a launch receipt
-records the switch. The new source decision cites the corrected v2 exclusion
-proof, not the obsolete larger-roster overlap metadata.
+Use the [fresh recovery registration](../readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1-preregistration.md),
+[package](../readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1/README.md)
+and launch receipt above. Runtime pointers now select the recovery, not the
+prior failed queue. Ordered work is control smoke4/control625/expanded
+smoke4/expanded625, with unique step names candidate-seal-recovery1-control-v1
+and candidate-seal-recovery1-expand-v1. The same resident session and geometry
+remain in use. The fifteen-minute slurp monitor stays quiet on unchanged state.
+The root admission cites the corrected v2 source exclusion proof.
 
 ## Current scientific question and decision rule
 

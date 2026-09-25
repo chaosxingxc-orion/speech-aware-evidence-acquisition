@@ -5235,3 +5235,15 @@ named recovery has not yet been registered or dispatched.
 | 2026-09-25 | SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-SMOKE-4-R01C-SEAL-RECOVERY1-V1 | bounded-discovery-probe | Sole named seal recovery: expand-smoke; generation | frozen local Qwen3-Omni API; zero paid API | slurp R01C 4 | discovery | e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5 | no | 44 | 290 | 1.0 | Same roster, knowledge, prompts and full-system policy; prior failure retained. | docs/readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1/expand-smoke-generation-plan-registered-v1.json | REGISTERED BEFORE CONTACT; Plan SHA256 0a53132aa1d46a405668ac64d26a03fa63d7b8d3b527c46f0c4fa664c93f82fe. Recovery index 1; any further failure closes this flight. |
 | 2026-09-25 | SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-SMOKE-4-R01C-FIT-SEAL-RECOVERY1-V1 | bounded-discovery-probe | Sole named seal recovery: expand-smoke; fit | frozen local Qwen3-Omni API; zero paid API | slurp R01C 4 | discovery | e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5 | no | 176 | 290 | 1.0 | Same roster, knowledge, prompts and full-system policy; prior failure retained. | docs/readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1/expand-smoke-fit-plan-registered-v1.json | REGISTERED BEFORE CONTACT; Plan SHA256 0ce1fe802a82eb7671c2f58b593cc73e9269e4d2ca276ece0b6eb52068dd4211. Recovery index 1; any further failure closes this flight. |
 | 2026-09-25 | SAEA-SLURP-STAGE3-CANDIDATE-RECOVERY-SEAL-RECOVERY1-OFFICIAL-READ-V1 | model-free-check | Complete recovery-pair official counts and whole-system trajectories | two complete official jobs; no model | slurp R01C625 | discovery | f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515 | no | 0 | 0 | 0.0 | Both full arms sealed and scored before outcome read; original failed outputs excluded. | docs/readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1/analysis-specification-v1.json | REGISTERED BEFORE READ; original primary, intent gate and statistics unchanged. |
+
+
+## 2026-09-25 named seal recovery durable dispatch
+
+The sole recovery was dispatched at 2026-09-25T21:38:46Z from frozen worker
+60d5719728f7a79f374000bcbd742508785c9894. Eight clean preflights and nine offline
+gates passed. Control smoke4 passed at 21:40:08Z with four distinct rows,
+22 model contacts and no tools. Its one cost-only score-queue entry is not
+an official task score; no official smoke scoring ran. The full control
+campaign began at 21:40:18Z. Both full arms must seal and complete their one
+official score before task-quality read. See
+docs/receipts/continuation/2026-09-25-candidate-seal-recovery1-launch.json.
