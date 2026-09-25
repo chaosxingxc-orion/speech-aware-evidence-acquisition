@@ -1,0 +1,107 @@
+{
+  "schema": "saea-semantic-consolidation-validation-v1",
+  "recorded_at_utc": "2026-09-25T22:13:20.645821+00:00",
+  "scope": "offline deterministic candidate consolidation only",
+  "environment": "WSL Ubuntu-24.04; /home/chao/.venvs/speechrl/bin/python; explicit main src PYTHONPATH",
+  "base_commit": "aae6138da44fe717ed7f929b9ef629af6552ac72",
+  "running_worker_commit_unchanged": "60d5719728f7a79f374000bcbd742508785c9894",
+  "model_contacts": 0,
+  "tool_contacts": 0,
+  "task_quality_reads": 0,
+  "runtime_activation": false,
+  "source_files": [
+    {
+      "path": "src/speech_aware_evidence_acquisition/rails/experience_consolidation.py",
+      "sha256": "1420681983d7cc1d94a5d916f1b6bab2416828f0b8c567e3d7bcb99790768b27"
+    },
+    {
+      "path": "tests/unit/test_experience_consolidation.py",
+      "sha256": "ed5f07ce973bde0330fceaea29254d45f63c5d9034bc13ee19186cb5a90166ec"
+    }
+  ],
+  "tests": {
+    "red": {
+      "exit_code": 2,
+      "reason": "New module absent before implementation",
+      "log": "/home/chao/semantic-consolidation-validation-v1/red.txt"
+    },
+    "related": {
+      "exit_code": 0,
+      "passed": 143,
+      "new_consolidation_cases": 22,
+      "log": "/home/chao/semantic-consolidation-validation-v1/tests-related.txt",
+      "log_sha256": "f8eac99288658b6c06c1ef58b7721da88ec5d918c6cfcea799fa939aae0efb22",
+      "warnings": "Three existing dependency deprecation warnings; no failed tests."
+    },
+    "ruff": {
+      "exit_code": 0,
+      "log": "/home/chao/semantic-consolidation-validation-v1/ruff.txt",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    }
+  },
+  "offline_gates": [
+    {
+      "name": "engineering_base_check",
+      "exit_code": 0,
+      "log": "/home/chao/semantic-consolidation-validation-v1/engineering_base_check.txt",
+      "log_sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "name": "harness_admission_check",
+      "exit_code": 0,
+      "log": "/home/chao/semantic-consolidation-validation-v1/harness_admission_check.txt",
+      "log_sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+    },
+    {
+      "name": "results_ledger_check",
+      "exit_code": 0,
+      "log": "/home/chao/semantic-consolidation-validation-v1/results_ledger_check.txt",
+      "log_sha256": "ec9367bbd838063e612f82f2497a4e042f439e1b778d78d55e5f4c6117904d6f"
+    },
+    {
+      "name": "tool_catalog_check",
+      "exit_code": 0,
+      "log": "/home/chao/semantic-consolidation-validation-v1/tool_catalog_check.txt",
+      "log_sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+    },
+    {
+      "name": "experiment_handoff_check",
+      "exit_code": 0,
+      "log": "/home/chao/semantic-consolidation-validation-v1/experiment_handoff_check.txt",
+      "log_sha256": "5268fce856a4dcb5c130033c828faf1e91658d03fd9c84589fb677e6a0c0ca1a"
+    },
+    {
+      "name": "openjiuwen_native_reuse_check",
+      "exit_code": 0,
+      "log": "/home/chao/semantic-consolidation-validation-v1/openjiuwen_native_reuse_check.txt",
+      "log_sha256": "ef2691fcf09a1e2d9626852d05bf4ff3b714fad936dc1ebdbc7824c505139061"
+    },
+    {
+      "name": "derived_media_confinement_check",
+      "exit_code": 0,
+      "log": "/home/chao/semantic-consolidation-validation-v1/derived_media_confinement_check-env-retry.txt",
+      "initial_exit_code": 1,
+      "initial_log": "/home/chao/semantic-consolidation-validation-v1/derived_media_confinement_check.txt",
+      "retry_reason": "Set required PYTHONDONTWRITEBYTECODE=1; no code or gate change.",
+      "log_sha256": "a3b89b8226b5b2ebe807153b5b1cf3c92ace40ad9ed5e8c96687098a694c6701"
+    },
+    {
+      "name": "stage3_algorithm_label_check",
+      "exit_code": 0,
+      "log": "/home/chao/semantic-consolidation-validation-v1/stage3_algorithm_label_check.txt",
+      "log_sha256": "772a0ea23eb2cbd08e1649908f386c524c8a78941bf58e74e26004da7cf524ca"
+    },
+    {
+      "name": "finite_completion_policy_check",
+      "exit_code": 0,
+      "log": "/home/chao/semantic-consolidation-validation-v1/finite_completion_policy_check.txt",
+      "log_sha256": "20bc3dc18154a13c2956dd6455da6de859f1e724b864fd06bcaec02b0734cc22"
+    }
+  ],
+  "interpretation": "The deterministic all-or-nothing applier preserves provisional record lineage. This is not a model-facing semantic update, complete TF-GRPO reproduction, authenticated runtime candidate materialization, or evidence of task improvement.",
+  "remaining": [
+    "Register and execute semantic stages from complete-system trajectories.",
+    "Bind consolidated records through existing candidate source attestation before runtime use.",
+    "Evaluate frozen updated experience through complete-system execution, official scoring and matched replication."
+  ]
+}

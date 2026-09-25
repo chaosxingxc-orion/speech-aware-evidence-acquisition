@@ -268,3 +268,52 @@ Preserving an experience does not prove it helps the complete system. Candidate
 snapshots still require the same permitted role/action surface, real frozen
 reexecution, terminal official scoring and matched replication. The active
 worker, its outcome embargo and the closed application families remain unchanged.
+
+## Implemented atomic candidate consolidation
+
+The pure shared adapter in rails/experience_consolidation.py applies the final
+ADD/UPDATE/DELETE plan to the existing ExperienceRecord type. It is the
+deterministic plan-application step, not a second memory runtime or a semantic
+optimizer. The upstream summary, comparison, group-operation and model-facing
+batch-consolidation stages still need registered execution.
+
+The input contract requires a pinned base snapshot, a round ID, already
+materialized provisional proposal records, and separate source hashes for
+complete-system feedback, the proposal artifact and the consolidation response.
+The caller must authenticate those sealed sources with existing verifiers;
+integrity hashes alone cannot prove that a supplied record came from a complete
+system trajectory. Reference annotations never become runtime memory.
+
+The adapter implements these deliberate reliability adaptations:
+
+- Let the model select explicit operations and existing proposal/record IDs.
+  Allocate immutable new record identities in the adapter. Keep all issued
+  identities, including deleted and superseded records, across rounds.
+- Preserve unchanged records byte-for-byte. UPDATE creates a new revision
+  linked to its predecessor; it cannot replace the old record in place.
+- Reject unknown operations, missing targets/proposals, conflicting operations,
+  duplicate active content, invalid sources and changed admission status.
+  Reject the whole batch without returning any partial successor.
+- Allow DELETE without content. Retain an explicit unchanged receipt for an
+  empty plan and allow deletion of all candidates without inventing a fallback.
+- Retain the submitted plan, source pins, proposal hashes, operation mapping and
+  failure reason in a separately hashed receipt. Never count a rejected batch
+  as an update. Snapshot dictionaries returned by this pure API are detached
+  values; persist them with the existing preparation layer before reuse.
+- Preserve provisional status. Existing admitted-memory loading still refuses
+  these records. Candidate source attestation and registered, disjoint TRAIN
+  evaluation remain necessary; this snapshot is not a runtime manifest.
+
+Multi-round tests cover sparse imported IDs, deletion followed by addition,
+successive revision lineage, late-operation failure, malformed plans, invalid
+unused proposals, source-population isolation and existing runtime refusal.
+Read docs/receipts/continuation/2026-09-25-semantic-consolidation-validation.json
+for the executed tests and offline gate results.
+
+This step does not yet connect the adapted update snapshots to the existing
+candidate source-attestation materializer. Complete that binding before any
+registered reexecution; do not relabel a consolidation snapshot as an original
+proposal artifact. Summary inference, complete semantic update-stage receipts,
+same-space admission, frozen execution and matched replication remain open.
+No new model/tool contact, source-result read, scoring or running-worker change
+was made for this implementation. There is no learned-policy benefit claim.

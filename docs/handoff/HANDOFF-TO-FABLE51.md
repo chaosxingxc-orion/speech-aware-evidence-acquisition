@@ -146,6 +146,7 @@ move that checkout merely to run newer readers.
 | Complete episode policy selector/catalog | Executable pre-Perception choice and terminal credit; one episode-start state only learns a global fixed choice |
 | Semantic feedback input preparation | Complete episode/count binding, separate summary and signed-feedback channels, explicit terminal-vector eligibility; 131 related tests and 9 gates; no model-facing update yet |
 | TF-GRPO cross-round consolidation source audit | Seven synthetic exact-source cases; sparse-ID ADD can overwrite prior experience after deletion. Require stable IDs and explicit atomic operations in the future adapter; no runtime change or task claim |
+| Atomic candidate consolidation | Shared ADD/UPDATE/DELETE over existing provisional experience records; immutable revision lineage and all-or-nothing failure; 143 related tests and 9 gates passed. Model-facing semantic stages, candidate attestation binding and runtime reexecution remain outstanding |
 | Contextual complete-continuation learner | Still outstanding at the real post-Perception/pre-Solver boundary; no learned continuation-selector has run |
 
 Test populations overlap; do not add them into one coverage claim. These are
@@ -176,8 +177,10 @@ for contracts and proof receipts. Raw task answers stay outside Git.
 5. Complete scholarly same-space baselines: MemRL remains a pinned reference
    with explicit retrieval/update/credit adaptations; TF-GRPO now has separate
    feedback fields and versioned eligibility preparation, but still needs an
-   executed summary/feedback comparison, actual semantic operations,
-   consolidation and execution using the updated frozen experience. The
+   executed summary/feedback comparison, model-generated semantic operations,
+   consolidation-stage execution, candidate source attestation and execution
+   using the updated frozen experience. The deterministic atomic plan applier
+   is now implemented over the existing provisional record contract. The
    summary serializer alone is not an algorithm reproduction.
 
 Keep the approved frozen-F0 baseline unchanged. Its utility detects improvement
