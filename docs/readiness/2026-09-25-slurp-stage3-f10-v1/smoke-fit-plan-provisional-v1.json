@@ -1,0 +1,44 @@
+{
+  "cell": "slurp-native-stage3-f10-empty-r01c-smoke-4-fit-v1",
+  "composed_config_hash": "0cbab476291f640db090ca8f5d517e51c95af889337f2455f79d6486f7d17dfa",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-f10-empty-r01c-smoke-4-v1-fit",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 176,
+    "planned_speech_audio_seconds": 290,
+    "protocol_hash": "fdba69cc42dd63db3f93f8a8aefe1631c0b09d20340bb85fc99d6228842ccba3",
+    "run_id": "SAEA-SLURP-STAGE3-F10-EMPTY-R01C-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-f10-empty-r01c-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 290
+  },
+  "fit": {
+    "contact_cap": 176,
+    "endpoints_per_contact": 4,
+    "mode": "native_contact_fit",
+    "scope": "Full bound roster and every actual request under the shared PLAN episode."
+  },
+  "plan_kind": "fit",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-25-slurp-stage3-f10-v1/protocol-provisional-v1.json",
+    "sha256": "a189de08eceecf12734abc8788af77c2ba4ac6199781b47ea597a958b2cfd1bd"
+  },
+  "read_rule": "No generation or fit contact is authorized by this provisional HELD plan; root admission and source-bound re-pin are required.",
+  "schema": "saea-flight-execution-plan-v1",
+  "status": "held"
+}
