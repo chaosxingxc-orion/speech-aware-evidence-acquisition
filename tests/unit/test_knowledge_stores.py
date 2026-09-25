@@ -273,7 +273,8 @@ def test_native_model_selects_each_store_and_joint_history_keeps_both(tmp_path):
     assert all("sha256" not in block["text"] for block in blocks)
 
 
-def test_real_request_gate_retains_exact_qualified_store_evidence(tmp_path):
+@pytest.mark.parametrize("rendering", [None, "canonical-plain-v1"])
+def test_real_request_gate_retains_exact_qualified_store_evidence(tmp_path, rendering):
     from speech_aware_evidence_acquisition.core.tracing import TraceBuffer
     from speech_aware_evidence_acquisition.rails.controllers import (
         EvidenceAgentController,
@@ -300,8 +301,11 @@ def test_real_request_gate_retains_exact_qualified_store_evidence(tmp_path):
     )
     assert "candidate_supply" not in router.receipt
     assert not hasattr(router, "automatic_for_phase")
+    tool_config = _native_config(binding.store_ids)
+    if rendering is not None:
+        tool_config["knowledge_value_rendering"] = rendering
     dispatcher = build_phase_tools(
-        _native_config(binding.store_ids),
+        tool_config,
         program,
         snapshot=binding.composite_snapshot,
         knowledge_stores=binding,
@@ -412,15 +416,22 @@ def test_real_request_gate_retains_exact_qualified_store_evidence(tmp_path):
         "supplied_evidence"
     ]
     assert "intent-boundaries::" in second_wire
-    assert "[knowledge store=intent-boundaries role=intent-boundaries]" in second_wire
+    assert ("[knowledge store=intent-boundaries role=intent-boundaries]" in second_wire) == (rendering is None)
     assert "store_release_sha256=" not in second_wire
     assert "intent-boundaries::" in final_wire
     assert "slot-contracts::" in final_wire
     assert len(fitted[2][0]["supplied_evidence"]) == 2
     assert all(
-        "[knowledge store=" in item["content"]
+        ("[knowledge store=" in item["content"]) == (rendering is None)
         for item in fitted[2][0]["supplied_evidence"]
     )
+    if rendering is not None:
+        canonical = {v.value_id: v.content for v in binding.composite_snapshot.values}
+        assert all(item["content"] == canonical[item["evidence_id"]]
+                   for item in fitted[2][0]["supplied_evidence"])
+        assert dispatcher.receipt()["knowledge_value_rendering"] == rendering
+    else:
+        assert "knowledge_value_rendering" not in dispatcher.receipt()
     assert "store_snapshot_sha256" not in final_wire
     assert router.receipt["stores"]["intent-boundaries"]["store_release_sha256"]
     assert router.receipt["stores"]["slot-contracts"]["store_source_sha256"]

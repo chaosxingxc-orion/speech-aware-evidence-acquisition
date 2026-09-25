@@ -72,7 +72,25 @@ def _json_object(pairs):
     return result
 
 
+def load_knowledge_value_rendering(config):
+    """Validate an explicit rendering choice independently of tool authority.
+
+    Absence preserves historical automatic rendering. Canonical text is an
+    opt-in common representation for matched tool-enabled/tool-free policies.
+    This changes presentation only; source binding and tool scopes still apply.
+    """
+    if "knowledge_value_rendering" not in config:
+        return None
+    value = config["knowledge_value_rendering"]
+    if value != "canonical-plain-v1" or not isinstance(value, str):
+        raise PhaseToolError(
+            "knowledge_value_rendering must be canonical-plain-v1 when declared"
+        )
+    return value
+
+
 def load_phase_tool_specs(config, program):
+    load_knowledge_value_rendering(config)
     raw = config.get("phase_tools")
     candidate_memory = config.get("candidate_experience_memory") is not None
     if raw is None or raw == {}:
@@ -393,6 +411,7 @@ class PhaseToolDispatcher:
         candidate_contracts=None,
         knowledge_stores=None,
         supply_for_store=None,
+        knowledge_value_rendering=None,
     ):
         self.specs = specs
         self.program = program
@@ -406,6 +425,10 @@ class PhaseToolDispatcher:
         self.candidate_contracts = candidate_contracts
         self.knowledge_stores = knowledge_stores
         self.supply_for_store = supply_for_store
+        self.knowledge_value_rendering = load_knowledge_value_rendering(
+            {} if knowledge_value_rendering is None
+            else {"knowledge_value_rendering": knowledge_value_rendering}
+        )
         self._candidate_ids = ()
         self._candidate_source_sha256 = None
         if any(CANDIDATE_CONTRACT_TOOL in spec["allowed_tools"] for spec in specs.values()):
@@ -1446,7 +1469,12 @@ class PhaseToolDispatcher:
                 raise PhaseToolError(
                     "named knowledge evidence changed its store-qualified ID"
                 )
-            named_blocks.append({**block, **visible})
+            # Validate source identity above even when no model-facing prefix
+            # is requested. Rendering never grants or removes tool authority.
+            named_blocks.append(
+                block if self.knowledge_value_rendering == "canonical-plain-v1"
+                else {**block, **visible}
+            )
         return tuple(named_blocks)
 
     def receipt(self):
@@ -1465,6 +1493,8 @@ class PhaseToolDispatcher:
             "completed": len(records),
             "result_hashes": [content_hash(row) for row in records],
         }
+        if self.knowledge_value_rendering is not None:
+            receipt["knowledge_value_rendering"] = self.knowledge_value_rendering
         if self.native_enabled:
             with self._lock:
                 rejected = tuple(self._native_rejections)
@@ -1543,4 +1573,5 @@ def build_phase_tools(
         candidate_contracts=candidate_contracts,
         knowledge_stores=knowledge_stores,
         supply_for_store=supply_for_store,
+        knowledge_value_rendering=load_knowledge_value_rendering(config),
     )

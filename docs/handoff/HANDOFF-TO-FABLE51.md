@@ -1,5 +1,29 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
+## Latest engineering: common rendering and source-bound proposal
+
+Read docs/readiness/2026-09-25-candidate-recovery-shared-implementation.md and
+docs/receipts/continuation/2026-09-25-candidate-recovery-shared-implementation.json.
+The shared dispatcher now accepts explicit knowledge_value_rendering set to
+canonical-plain-v1, independently of tool authority; omitted defaults preserve
+historical request semantics. A complete seven-contact native graph regression
+proves identical supplied evidence with and without optional lookup schemas.
+79 focused tests pass and all nine checks have successful final invocations.
+
+The separate CandidateProposal primitive is implemented and source-tested.
+Its bound-selection entry checks actual snapshot, query, rank/fusion and
+selected values; it preserves real Perception and attaches exemplar provenance.
+It is NOT yet wired into native episode supply, role contexts or source sealing.
+Next do that integration in the existing checkout, then register the complete
+F4 policies and real capacity checks. Do not claim GPU readiness from unit tests.
+The implementation note specifies exact remaining seams and constraints.
+
+No new GPU/scorer contact, dataset result read or algorithm update occurred.
+The completed queue and resident service state from the section below remain
+the operational baseline. Root reviewed the delegated pure module, strengthened
+the selection binding and personally owns the experiment/algorithm decisions.
+
+
 ## Current state: evidence-path closed; root whole-system decision
 
 This section supersedes all older live/pending statements below. The durable

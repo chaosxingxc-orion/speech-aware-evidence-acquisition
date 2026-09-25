@@ -47,3 +47,13 @@ def test_automatic_supply_does_not_grant_named_store_tool_authority(named_tool_a
     assert seen["supply_for_store"] is (router if named_tool_access else None)
     assert binding["knowledge_stores"] is stores
     assert binding["supply_for_store"] is router
+
+
+@pytest.mark.parametrize("bad", [None, {}, "unsupported"])
+def test_runtime_refuses_invalid_rendering_before_empty_tool_shortcut(bad):
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntimeError
+
+    runtime = FlightRuntime.__new__(FlightRuntime)
+    runtime._composed = SimpleNamespace(values={"knowledge_value_rendering": bad})
+    with pytest.raises(FlightRuntimeError, match="knowledge_value_rendering"):
+        runtime._phase_tool_specs("phase-native-candidates-review-revise-v1")

@@ -276,3 +276,21 @@ def test_configuration_runs_public_runtime_wire_path(tmp_path):
     assert receipt["dispatch"]["dispatch"] == "phase-program-continuous"
     assert receipt["dispatch"]["phase_tools"]["attempts"] == 2
     assert receipt["dispatch"]["phase_tools"]["completed"] == 2
+
+
+@pytest.mark.parametrize("bad", [None, "", "named-store-maybe", {}, 1, True])
+def test_explicit_invalid_value_rendering_refuses_even_without_tools(bad):
+    with pytest.raises(PhaseToolError, match="knowledge_value_rendering"):
+        build_phase_tools(
+            {"knowledge_value_rendering": bad},
+            rc.default_phase_program("phase-draft-revise-v1"),
+            snapshot=_knowledge_snapshot(),
+        )
+
+
+def test_plain_rendering_configuration_does_not_create_tool_authority():
+    assert build_phase_tools(
+        {"knowledge_value_rendering": "canonical-plain-v1"},
+        rc.default_phase_program("phase-draft-revise-v1"),
+        snapshot=_knowledge_snapshot(),
+    ) is None

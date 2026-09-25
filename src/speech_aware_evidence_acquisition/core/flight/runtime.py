@@ -8402,6 +8402,11 @@ class FlightRuntime:
     def _phase_tool_specs(self, policy: str):
         """Require an executable phase program for every declared task action."""
         values = self._composed.values
+        from ...rails.phase_tools import PhaseToolError, load_knowledge_value_rendering
+        try:
+            load_knowledge_value_rendering(values)
+        except PhaseToolError as error:
+            raise FlightRuntimeError(str(error)) from error
         declared = values.get("phase_tools")
         knowledge = values.get("phase_knowledge_views")
         declares_observation = values.get("prepared_speech_observations") not in (None, {})
