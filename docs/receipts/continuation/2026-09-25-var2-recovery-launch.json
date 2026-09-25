@@ -1,0 +1,66 @@
+{
+  "flight_commit": "960d793880b0782acf92dfc96f7ad9608364c954",
+  "last_checked_driver_events": [
+    "10:11:07 driver-start",
+    "10:11:15 prelaunch-ok ramp70.9"
+  ],
+  "launch_boundary": {
+    "archive": "/home/chao/var2-failed-before-recovery-20260925",
+    "at": "2026-09-25T10:10:58.280425+00:00",
+    "commit": "960d793880b0782acf92dfc96f7ad9608364c954",
+    "original_attempt_state": "ABORTED",
+    "original_full_contacts": 224,
+    "original_smoke_contacts": 28,
+    "preflights": "smoke and full ready; zero model contacts",
+    "recovery_count": 1,
+    "schema": "saea-recovery-launch-boundary-v1",
+    "stop_disposition": "matched original hash, archived, then removed for root-authorized single recovery",
+    "task_name": "SAEA-VAR2-Recovery-20260925"
+  },
+  "phase": "smoke4; full625 and four derived scores follow only on success",
+  "preflight": {
+    "full": {
+      "generation_authorized_in_model_free_check": false,
+      "relpath": "coordination/slurp-stage3-var2-recovery-v1/preflight-full.json",
+      "scientific_readiness": {
+        "reason": "",
+        "state": "ready"
+      },
+      "sha256": "154e2a47d6f1af7356264866ba5b5215f108d232d5f42dd719906747067ee165"
+    },
+    "smoke": {
+      "generation_authorized_in_model_free_check": false,
+      "relpath": "coordination/slurp-stage3-var2-recovery-v1/preflight-smoke.json",
+      "scientific_readiness": {
+        "reason": "",
+        "state": "ready"
+      },
+      "sha256": "9a87028bbaf06b139f7f5c26522fd2dccf83c07e9a2bacf1720573004f7adb1b"
+    }
+  },
+  "reconciliation": {
+    "archive_relpath": "coordination/slurp-stage3-var2-recovery-v1/original-flight-lock.json",
+    "archived_metadata_sha256": "ac50d9167f7d41b2ddfcf10665f101a45a7a21a499cb3b94e990c6824639e078",
+    "at": "2026-09-25T10:10:37.064991+00:00",
+    "campaign_and_lease_processes_absent": true,
+    "decision": "Root reconciles stopped aborted predecessor before one registered recovery.",
+    "guard_inode_preserved": true,
+    "kernel_guard_exclusively_acquired": true,
+    "original_run": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-V1",
+    "owner_pid": 22771,
+    "owner_pid_absent": true,
+    "resident_slots": {
+      "busy": 0,
+      "total": 4
+    },
+    "schema": "saea-root-lease-reconciliation-v1"
+  },
+  "recorded_at": "2026-09-25T10:12:34.322901+00:00",
+  "schema": "saea-recovery-execution-snapshot-v1",
+  "task": "SAEA-VAR2-Recovery-20260925",
+  "task_state": "running",
+  "test_results": {
+    "ordinary_native_status_logging": 35,
+    "variants_revision_bundle_scoring": 89
+  }
+}

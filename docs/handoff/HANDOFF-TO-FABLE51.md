@@ -1,6 +1,44 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
 
+## Current execution: VAR-2 single recovery, 2026-09-25 10:12 UTC
+
+This section supersedes earlier execution snapshots. The sole registered
+recovery is RUNNING under independent task SAEA-VAR2-Recovery-20260925.
+Flight checkout is pinned at 960d793880b0782acf92dfc96f7ad9608364c954.
+The driver started at 10:11:07 UTC; service prelaunch passed at 10:11:15.
+Smoke4 is followed by the full625 arm and then four serial derived scores.
+This snapshot does not claim smoke/full completion.
+
+- Entry: scripts/flights/batch/batch_chain_var2_recovery.sh, a thin profile of
+  the existing batch_chain_var2.sh and shared batch driver.
+- Log: /home/chao/batch-chain-var2-recovery.out.
+- Pin: /home/chao/var2-recovery-flight-commit.txt.
+- Full run: SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-RECOVERY-V1.
+- Analysis: $SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-STAGE3-VAR2-RECOVERY-SUPPLY-READ-V1.
+  Driver completion is not full chain completion; require score-summary.json.
+- Original failure remains archived at
+  /home/chao/var2-failed-before-recovery-20260925 and in original data-root paths.
+  Owner PID22771 is absent, all4 server slots were idle, and root held the
+  stable kernel guard exclusively before archiving/removing stale metadata.
+  The guard inode was preserved. No server restart or failed result read.
+- Clean smoke/full preflights pass. The first offline check refused incidental
+  scoring bytecode; it was quarantined outside the source tree before the clean
+  checks. No frozen scoring source changed and no model contact occurred.
+- Revision fix: two incremental graph tests failed before the correction,
+  repeated-selection controls passed; 89 variant-related and35 ordinary-native/
+  status/log tests pass afterward. A separate read-only code review found no
+  concrete defect. Source first-visit semantics and actual PLAN request remain.
+- The combined original-plus-recovery generation cap, INCLUDING both smoke
+  proofs, is 10,945; actual original costs are224 full+28 smoke. A second
+  failure closes VAR-2. No automatic recovery or changed readout threshold.
+- F10's three HELD runtime packages are committed: fresh full625 control,
+  empty-contract full625 and treatment smoke4. The8,554-example minus-R01
+  store is built and verified. Next: register matched analysis, prepare supply,
+  admit and launch after the current chain closes; do not change active files.
+- Exact recovery launch and preflight pins:
+  docs/receipts/continuation/2026-09-25-var2-recovery-launch.json.
+
 ## Active incident: 2026-09-25 10:02 UTC, root Codex
 
 This incident supersedes the running status in the prior snapshot.
