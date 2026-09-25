@@ -4,8 +4,9 @@ VAR-2 is closed without an effectiveness result. The original full arm aborted
 after224 model contacts. Its only registered recovery aborted at
 2026-09-25 10:36:23 UTC after441 contacts and1,619.87425 seconds of repeated
 speech. Each engineering smoke used28 calls, giving721 model contacts across
-both attempts and both smoke proofs. The complete per-attempt generation and
-fit accounting is in the linked continuation receipt.
+both attempts and both smoke proofs. Per-attempt generation accounting is in the continuation receipt. Fit
+endpoint records remain in the original contact artifacts and are not included
+in the721 generation-call total.
 
 Neither full attempt has a complete manifest or official score. No partial
 answers, task scores, winner selection or selective row reuse was performed.

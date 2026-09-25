@@ -1,5 +1,58 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
+## Current state: VAR-2 closed; independent F10 admission ready
+
+This section supersedes every earlier execution snapshot.
+The sole VAR-2 recovery ABORTED at2026-09-25 10:36:23 UTC after441 model
+contacts. The cumulative exk10 supply reached40 items against declared bound38.
+The original full attempt cost224 contacts and each smoke28: total721
+generation contacts. Neither full attempt produced a complete manifest or
+official score; no partial answers or scores were read. VAR-2 is CLOSED and
+must never receive a third attempt. Preserve both failed runs and all costs.
+
+Root diagnosis: the earlier increment/cumulative repair did not validate the
+whole allowed revision horizon against the registered item bound. The guard
+correctly refused the request. This is engineering failure, not evidence
+against the supply actions. Read
+docs/results/2026-09-25-slurp-var2-closed-engineering-failure.md and
+docs/receipts/continuation/2026-09-25-var2-final-closure.json.
+
+F10 is independently registered and prepared: smoke4, fresh control625, then
+empty-contract625. All three offline preflights passed at54b6e151 with exact
+prepared artifacts and root admission. F10 has no supply_variants and uses
+the ordinary four-node path; it does not enter the failing bound check.
+The official comparison is empty minus fresh control, pooled SLU-F1 CI95
+lower>0 and intent one-sided95 lower>-1.44pp. This is construction screening,
+not stable-gain or learned-policy evidence. All strata, empty FP and nonempty
+FN/FP must be reported. The knowledge store has8,554 keys, with2,741 empty
+values changed and5,813 nonempty values preserved exactly.
+
+Root has archived the original STOP and dead owner's lease metadata at
+/home/chao/var2-recovery-closed-before-f10-20260925. It checked PID27810 absent,
+no flight/scorer process, four idle server slots, and held the stable kernel
+guard while removing only stale metadata. ServerPID714 remains resident.
+Independent continuation receipt:
+$SPEECHRL_DATA_DIR/coordination/slurp-stage3-f10-v1/closed-predecessor-v1.json
+SHA256 c264123858aad1bc93968c391149ccf967bb216ca47c1c46d42e1d422974e206.
+This explicit root decision permits F10 after the failed predecessor; the
+default unattended path still refuses a failure. F10 launch is pending the
+reviewed closed-predecessor launcher profile; do not claim GPU has restarted.
+
+VAR-1 and VERIFY-1 conclusions are unchanged: no stable supply winner above
+the PLANR replicate; VERIFY benefit not proven, so no enlarged sampling.
+The finite policy remains designed, not executed. Its state must be recorded
+before the first Solver action, using a fixed default20 preview. The old
+analysis aggregates supply across all waves, so its agreement state cannot
+be assumed pre-action. Read
+docs/readiness/2026-09-25-slurp-stage3-finite-policy-design-v1.md.
+
+The generic official-count comparison reader now supports two registered
+arms, preflights BOTH seals and hashes before outcomes, and distinguishes
+exact-entity counts from pooled word/character counts.61 analysis tests and
+six launcher boundary tests pass. No new answering LLM or scorer replay.
+Use scripts for progress. Automation slurp remains ACTIVE every15minutes;
+host telemetry remains every10seconds. GPU processes never depend on either
+Codex heartbeat availability or local credits.
 
 ## Current execution: VAR-2 single recovery, 2026-09-25 10:12 UTC
 
