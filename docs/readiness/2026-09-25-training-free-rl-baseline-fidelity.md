@@ -228,3 +228,43 @@ Summary inference, recorded summary-to-feedback joins, semantic operations,
 consolidation and full-system reexecution remain outstanding. The current
 registered candidate-recovery pair and historical frozen-F0 baseline are
 unchanged; no runtime application or learned-policy benefit is established.
+
+## Verified cross-round consolidation behavior
+
+The pinned upstream plan applier was executed on seven synthetic cases, using
+only the exact AST suffix at lines 304-327 after its model response is parsed.
+No upstream import, research trajectory, model, network or scorer was involved.
+Read docs/receipts/continuation/2026-09-25-tfgrpo-consolidation-source-audit.json.
+The replay script is scripts/checks/tfgrpo_consolidation_source_audit.py; it
+requires the pinned source bytes and refuses a changed source or output overwrite.
+
+The verified cases distinguish implementation behavior from observed frequency:
+
+- Dense IDs 0,1 followed by ADD produce 0,1,2 as intended.
+- Sparse IDs 0,2 followed by ADD overwrite existing ID 2. The allocator starts
+  at the number of entries rather than an unused ID. A legitimate deletion in
+  one round followed by ADD in the next reproduces this loss.
+- DELETE without content is skipped; DELETE with content removes the target.
+  This describes the parser's current contract, not the frequency with which
+  the model follows or violates its prompt.
+- UPDATE of an unknown ID becomes ADD and can trigger the same collision.
+  An unknown operation is silently ignored.
+
+These are synthetic source-level counterexamples, not measured SLURP failures,
+evidence against the paper, or an explanation of the closed delta results.
+They do not change the running fixed-policy family or its scientific gate.
+
+For the future adapted TF-GRPO baseline, keep summary, semantic comparison,
+group operations and batch consolidation as distinct model stages. The final
+plan applier must use persistent never-reused experience identities, require
+an explicit operation, validate update/delete targets, and apply a validated
+batch atomically to a new immutable snapshot. A deletion should not require
+invented replacement content. Keep malformed operations and failed stages in
+the round receipt; do not silently report only successful updates. Record
+these as reliability adaptations to the pinned implementation, separately
+from any proposed algorithm improvement.
+
+Preserving an experience does not prove it helps the complete system. Candidate
+snapshots still require the same permitted role/action surface, real frozen
+reexecution, terminal official scoring and matched replication. The active
+worker, its outcome embargo and the closed application families remain unchanged.

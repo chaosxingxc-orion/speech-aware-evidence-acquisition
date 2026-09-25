@@ -1,0 +1,175 @@
+{
+  "schema": "saea-upstream-consolidation-source-audit-v1",
+  "source_path": "/home/chao/saea-reference-audits/20260925/youtu-agent/utu/practice/experience_updater.py",
+  "source_sha256": "301d4a51136f6c0da620f1f2042d59316af494cee4b4c3329338ba1a1b937d04",
+  "ast_source_lines": [
+    304,
+    327
+  ],
+  "cases": [
+    {
+      "case": "dense-add",
+      "verified": true,
+      "before_ids": [
+        "0",
+        "1"
+      ],
+      "after_ids": [
+        "0",
+        "1",
+        "2"
+      ],
+      "unrequested_existing_overwrites": [],
+      "source_store_mutated": false
+    },
+    {
+      "case": "sparse-add",
+      "verified": true,
+      "before_ids": [
+        "0",
+        "2"
+      ],
+      "after_ids": [
+        "0",
+        "2"
+      ],
+      "unrequested_existing_overwrites": [
+        "2"
+      ],
+      "source_store_mutated": false
+    },
+    {
+      "case": "delete-without-content",
+      "verified": true,
+      "before_ids": [
+        "0",
+        "1"
+      ],
+      "after_ids": [
+        "0",
+        "1"
+      ],
+      "unrequested_existing_overwrites": [],
+      "source_store_mutated": false
+    },
+    {
+      "case": "delete-with-content",
+      "verified": true,
+      "before_ids": [
+        "0",
+        "1"
+      ],
+      "after_ids": [
+        "1"
+      ],
+      "unrequested_existing_overwrites": [],
+      "source_store_mutated": false
+    },
+    {
+      "case": "unknown-update",
+      "verified": true,
+      "before_ids": [
+        "0",
+        "2"
+      ],
+      "after_ids": [
+        "0",
+        "2"
+      ],
+      "unrequested_existing_overwrites": [
+        "2"
+      ],
+      "source_store_mutated": false
+    },
+    {
+      "case": "unknown-operation",
+      "verified": true,
+      "before_ids": [
+        "0"
+      ],
+      "after_ids": [
+        "0"
+      ],
+      "unrequested_existing_overwrites": [],
+      "source_store_mutated": false
+    },
+    {
+      "case": "successive-delete-add-rounds",
+      "verified": true,
+      "after_delete_ids": [
+        "0",
+        "2"
+      ],
+      "after_add_ids": [
+        "0",
+        "2"
+      ],
+      "unrequested_existing_overwrites": [
+        "2"
+      ]
+    }
+  ],
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "scope": "Synthetic exact-source behavior; not task evidence or an algorithm execution.",
+  "replay_script": "scripts/checks/tfgrpo_consolidation_source_audit.py",
+  "replay_script_sha256": "fe30239e70f07c66b947ecf45a66fef2fd3a576dfff5057aa9d4432238beaa79",
+  "source_pin_receipt": "docs/receipts/continuation/2026-09-25-training-free-upstream-source-pins.json",
+  "upstream_commit": "c2caa539f4c95ae1c39ed24dc8a99cb3651e1d5d",
+  "source_url": "https://github.com/TencentCloudADP/youtu-agent/blob/c2caa539f4c95ae1c39ed24dc8a99cb3651e1d5d/utu/practice/experience_updater.py",
+  "wrong_source_refused_before_exec": true,
+  "existing_output_preserved": true,
+  "research_sources_read": false,
+  "active_worker_changed": false,
+  "validation_root": "/home/chao/tfgrpo-consolidation-validation-v1",
+  "offline_checks": [
+    {
+      "name": "engineering_base_check",
+      "exit_code": 0,
+      "log": "/home/chao/tfgrpo-consolidation-validation-v1/gates/engineering_base_check.log"
+    },
+    {
+      "name": "harness_admission_check",
+      "exit_code": 0,
+      "log": "/home/chao/tfgrpo-consolidation-validation-v1/gates/harness_admission_check.log"
+    },
+    {
+      "name": "results_ledger_check",
+      "exit_code": 0,
+      "log": "/home/chao/tfgrpo-consolidation-validation-v1/gates/results_ledger_check.log"
+    },
+    {
+      "name": "tool_catalog_check",
+      "exit_code": 0,
+      "log": "/home/chao/tfgrpo-consolidation-validation-v1/gates/tool_catalog_check.log"
+    },
+    {
+      "name": "experiment_handoff_check",
+      "exit_code": 0,
+      "log": "/home/chao/tfgrpo-consolidation-validation-v1/gates/experiment_handoff_check.log",
+      "initial_exit_code": 1,
+      "final_log": "/home/chao/tfgrpo-consolidation-validation-v1/gates/experiment_handoff_check-after-refresh.log",
+      "resolution": "Initial and isolated checks timed out reading mounted-drive Git metadata. Refreshing Git stat information, without staging content, allowed the unchanged WSL check to finish. Prior failed logs retained."
+    },
+    {
+      "name": "openjiuwen_native_reuse_check",
+      "exit_code": 0,
+      "log": "/home/chao/tfgrpo-consolidation-validation-v1/gates/openjiuwen_native_reuse_check.log"
+    },
+    {
+      "name": "derived_media_confinement_check",
+      "exit_code": 0,
+      "log": "/home/chao/tfgrpo-consolidation-validation-v1/gates/derived_media_confinement_check.log"
+    },
+    {
+      "name": "stage3_algorithm_label_check",
+      "exit_code": 0,
+      "log": "/home/chao/tfgrpo-consolidation-validation-v1/gates/stage3_algorithm_label_check.log"
+    },
+    {
+      "name": "finite_completion_policy_check",
+      "exit_code": 0,
+      "log": "/home/chao/tfgrpo-consolidation-validation-v1/gates/finite_completion_policy_check.log"
+    }
+  ]
+}

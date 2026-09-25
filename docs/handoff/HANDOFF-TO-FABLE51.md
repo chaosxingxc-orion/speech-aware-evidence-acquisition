@@ -39,7 +39,7 @@ does not apply to a harness defect; keep the aborted source immutable.
 
 | Item | Current authority |
 | --- | --- |
-| Queue | /home/chao/batch-queue.json |
+| Prior queue archive | DATA/coordination/slurp-stage3-candidate-seal-recovery1-v1/prior-runtime/batch-queue.json |
 | Ordered work | Control smoke4 passed; control625 ABORTED at seal; expanded not started |
 | Worker checkout | /home/chao/saea-worktrees/fable-batch-flight |
 | Frozen worker commit | 9f6a949f445e4fb308789eb0786a1a25c3fb8f69 |
@@ -145,6 +145,7 @@ move that checkout merely to run newer readers.
 | Objective audit, 63b1bb66 | Synthetic frozen-reward/local-F1/group-normalization counterexamples and exact fractional prototype; 42 tests and 9 gates |
 | Complete episode policy selector/catalog | Executable pre-Perception choice and terminal credit; one episode-start state only learns a global fixed choice |
 | Semantic feedback input preparation | Complete episode/count binding, separate summary and signed-feedback channels, explicit terminal-vector eligibility; 131 related tests and 9 gates; no model-facing update yet |
+| TF-GRPO cross-round consolidation source audit | Seven synthetic exact-source cases; sparse-ID ADD can overwrite prior experience after deletion. Require stable IDs and explicit atomic operations in the future adapter; no runtime change or task claim |
 | Contextual complete-continuation learner | Still outstanding at the real post-Perception/pre-Solver boundary; no learned continuation-selector has run |
 
 Test populations overlap; do not add them into one coverage claim. These are
