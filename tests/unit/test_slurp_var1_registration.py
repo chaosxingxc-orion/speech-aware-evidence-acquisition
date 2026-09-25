@@ -200,7 +200,11 @@ def test_planr_is_request_identical_to_plan():
     plan = baseline_of("plan")
     planr = baseline_of("planr")
     moved = {key for key in set(plan) | set(planr) if plan.get(key) != planr.get(key)}
-    assert moved == {"native_contact_fit", "what_this_is"}
+    # 2026-09-24: the flip mints each cell its OWN prepared-supply pin, so that key is a
+    # per-cell identity like native_contact_fit once the family has flown (flight commit
+    # 3ade29ff); the request-identity claim is about the supply CONSTRUCTION, checked below.
+    assert moved <= {"native_contact_fit", "what_this_is", "prepared_phase_supply"}
+    assert {"native_contact_fit", "what_this_is"} <= moved
     assert plan["knowledge_stores"] == planr["knowledge_stores"]
     assert plan["phase_material"] == planr["phase_material"]
     assert plan["native_episode"] == planr["native_episode"]
@@ -214,15 +218,28 @@ def test_the_smoke_flies_the_per_k16c5_form():
     smoke = baseline_of("smoke")
     arm = baseline_of("perk16c5")
     moved = {key for key in set(smoke) | set(arm) if smoke.get(key) != arm.get(key)}
-    assert moved == {
+    # 2026-09-24: the flip mints each cell its OWN prepared-supply pin, so that key is a
+    # per-cell identity like native_contact_fit once the family has flown (flight commit
+    # 3ade29ff); the request-identity claim is about the supply CONSTRUCTION, checked below.
+    expected = {
         "native_contact_fit", "what_this_is", "smoke_note",
         "speech_feature_key_representation_id", "speech_feature_matcher_policy_id",
     }
+    assert expected <= moved and moved <= expected | {"prepared_phase_supply"}
 
 
 @pytest.mark.parametrize("short", sorted(FAMILY))
 def test_no_committed_baseline_carries_a_prepared_phase_supply_pin(short):
-    assert "prepared_phase_supply" not in baseline_of(short)
+    """Before the flip a baseline carries no prepared-supply pin; the flip mints one under the
+    cell's own run id (2026-09-24, flight commit 3ade29ff), so the live invariant is that any pin
+    present is well formed."""
+    pin = baseline_of(short).get("prepared_phase_supply")
+    if pin is None:
+        return
+    assert isinstance(pin, dict), pin
+    assert {"relpath", "sha256"} <= set(pin), sorted(pin)
+    assert len(pin["sha256"]) == 64 and set(pin["sha256"]) <= set("0123456789abcdef"), pin["sha256"]
+    assert pin["relpath"], pin["relpath"]
 
 
 @pytest.mark.parametrize("short", sorted(FAMILY))
@@ -236,8 +253,11 @@ def test_every_registered_cell_is_held_and_names_its_own_identities(short):
     assert fragment["population"]["count"] == rows
     cells = {cell["cell_id"]: cell for cell in fragment["cells"]}
     assert set(cells) == {f"{stem}-v1", f"{stem}-fit-v1"}
+    # 2026-09-24: the family was flipped to ready and flown (flight commit 3ade29ff), so the
+    # pre-contact "held" state is history; the live invariant is that a cell sits in one of the
+    # two registered lifecycle states and names its own identities.
     for cell in cells.values():
-        assert cell["readiness"]["state"] == "held"
+        assert cell["readiness"]["state"] in {"held", "ready"}
         assert cell["dataset_fragment"] == DATASET_FRAGMENT
         assert cell["model_fragment"] == MODEL_FRAGMENT
         assert cell["baseline_fragment"] == f"{stem}-baseline-v1"
@@ -367,9 +387,9 @@ def test_every_plan_document_is_registered_and_held():
     for short in FAMILY:
         for kind in ("generation", "fit"):
             document = _load(READINESS / f"{short}-{kind}-plan-registered-v1.json")
-            assert document["status"] == (
-                "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP"
-            )
+            # 2026-09-24: the coordinator's flip rewrites this status; both strings are legal
+            # states of a registered plan document and the pre-flip one is history.
+            assert document["status"].startswith("REGISTERED_BEFORE_CONTACT"), document["status"]
             assert document["execution_plan"]["execution_profile"] == (
                 "bounded-discovery-probe"
             )
