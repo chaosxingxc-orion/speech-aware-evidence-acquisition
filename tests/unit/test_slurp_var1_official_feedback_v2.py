@@ -7,7 +7,7 @@ import sys
 from types import SimpleNamespace
 
 import pytest
-from test_slurp_var1_variant_read import world as var1_world, ARMS, RUN_OF, ATTEMPT_OF, PACKAGE_RELPATH
+from test_slurp_var1_variant_read import world as var1_world, ARMS, RUN_OF, ATTEMPT_OF, PACKAGE_RELPATH, ROSTER_RELPATH
 
 
 SCRIPT = Path(__file__).parents[2] / "scripts" / "analysis" / "slurp_var1_official_feedback_v2.py"
@@ -89,6 +89,33 @@ def test_equal_scenario_pooled_contrast_differs_from_natural_mixture():
     equal = pair["pooled_official_slu_f1_equal_scenario"]["point_estimate_pp"]
     assert natural != equal
     assert equal < natural < 0
+
+
+def test_explicit_two_arm_feedback_separates_empty_fp_nonempty_fn_and_intent():
+    ids = ("empty", "entity")
+    base = [score("empty", tp=2, fp=0, fn=0, slot_tp=0, slot_fp=0, slot_fn=0),
+            score("entity", tp=3, fp=0, fn=0, slot_tp=1, slot_fp=0, slot_fn=0)]
+    varied = [score("empty", tp=2, fp=1, fn=0, slot_tp=0, slot_fp=1, slot_fn=0),
+              score("entity", tp=0, fp=1, fn=3, slot_tp=0, slot_fp=0, slot_fn=1, intent=0)]
+    answers = {sid: ("alarm", "set", []) for sid in ids}
+    arms = {"control": arm(base, answers), "variant": arm(varied, answers)}
+    roster = {"ids": ids, "cluster": {sid: sid for sid in ids},
+              "stratum": {"empty": "A", "entity": "B"}}
+    result = reader.analyze(arms, roster, seed=3, draws=20,
+                            baseline_arm="control", comparison_pairs=(("variant", "control"),),
+                            extended=True)
+    pair = result["paired"]["variant"]["control"]
+    assert result["frozen_baseline_f0"] == 1.0
+    assert pair["empty_gold_fp_delta"] == 1
+    assert pair["slot_f1_exact_nonempty_gold_fn_delta"] == 1
+    assert pair["slot_f1_exact_nonempty_gold_fp_delta"] == 0
+    assert pair["slu_f1_word_char_empty_gold_fp_delta"] == 1
+    assert pair["slu_f1_word_char_nonempty_gold_fp_delta"] == 1
+    assert pair["slu_f1_word_char_nonempty_gold_fn_delta"] == 3
+    assert pair["intent_exact"]["delta"] < 0
+    assert "ci90_pp" in pair["intent_exact"]["intervals"]
+    assert "ci95_pp" in pair["intent_exact"]["intervals"]
+    assert "frozen_plan_f0" not in result
 
 
 def test_missing_empty_gold_count_is_rejected():
@@ -186,3 +213,100 @@ def test_cli_refuses_mismatched_preregistration_before_loading_arms(var1_world, 
                      "--read-recipe", str(recipe), "--out", str(tmp_path / "out.json"),
                      "--seed", "9", "--draws", "2"])
     assert error.value.code == 2
+
+
+def _comparison_recipe(world, tmp_path):
+    _finalize_synthetic_attempts(world)
+    registration = world["repo_root"] / "docs" / "readiness" / "registered-comparison.json"
+    registration.parent.mkdir(parents=True, exist_ok=True)
+    registration.write_text(json.dumps({"purpose": "synthetic comparison"}), encoding="utf-8")
+    roster = world["roster_path"]
+    arms = {}
+    for name in ("plan", "exdiv"):
+        run, attempt = RUN_OF[name], ATTEMPT_OF[name]
+        directory = world["data_root"] / "runs" / run / attempt
+        arms[name] = {"run_id": run, "attempt_id": attempt,
+                      "scorer_id": "slurp-slu-official-train",
+                      "source_sha256": {
+                          "run_manifest": reader.var1.digest(directory / f"{run}.run-manifest.json"),
+                          "scores": reader.var1.digest(directory / f"{run}.scores.json"),
+                          "outputs": reader.var1.digest(directory / f"{run}.outputs.jsonl"),
+                      }}
+    payload = {
+        "schema": "saea-sealed-official-count-comparison-v1",
+        "registration": {"path": "docs/readiness/registered-comparison.json",
+                         "sha256": reader.var1.digest(registration)},
+        "roster": {"relpath": ROSTER_RELPATH, "sha256": reader.var1.digest(roster),
+                   "split_identity_hash": world["split_identity_hash"],
+                   "split_role": "discovery", "rows": 64},
+        "cluster_key": "utterance_id", "arms": arms,
+        "comparisons": [{"left": "plan", "right": "exdiv"}],
+        "statistics": {"seed": 9, "draws": 2},
+    }
+    path = tmp_path / "comparison.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    return path, payload
+
+
+def test_two_arm_recipe_loads_exact_bound_sources(var1_world, tmp_path):
+    recipe, _ = _comparison_recipe(var1_world, tmp_path)
+    arms, roster, sources, pairs, stats = reader.load_comparison_sources(
+        var1_world["repo_root"], var1_world["data_root"], recipe)
+    assert set(arms) == {"plan", "exdiv"}
+    assert pairs == (("exdiv", "plan"),)
+    assert stats == (9, 2)
+    assert sources["registration_sha256"] == reader.var1.digest(
+        var1_world["repo_root"] / "docs/readiness/registered-comparison.json")
+    assert len(roster["ids"]) == 64
+
+
+def test_two_arm_recipe_refuses_bad_source_hash(var1_world, tmp_path):
+    recipe, payload = _comparison_recipe(var1_world, tmp_path)
+    payload["arms"]["exdiv"]["source_sha256"]["outputs"] = "0" * 64
+    recipe.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(reader.FeedbackReadError, match="outputs"):
+        reader.load_comparison_sources(var1_world["repo_root"], var1_world["data_root"], recipe)
+
+
+def test_two_arm_recipe_refuses_missing_hash(var1_world, tmp_path):
+    recipe, payload = _comparison_recipe(var1_world, tmp_path)
+    del payload["arms"]["plan"]["source_sha256"]["scores"]
+    recipe.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(reader.FeedbackReadError, match="scores"):
+        reader.load_comparison_sources(var1_world["repo_root"], var1_world["data_root"], recipe)
+
+
+def test_two_arm_cli_writes_bound_feedback_and_preserves_legacy_fields(var1_world, tmp_path):
+    recipe, _ = _comparison_recipe(var1_world, tmp_path)
+    out = tmp_path / "two-arm.json"
+    assert reader.main([
+        "--repo-root", str(var1_world["repo_root"]),
+        "--data-root", str(var1_world["data_root"]),
+        "--comparison-recipe", str(recipe), "--out", str(out),
+    ]) == 0
+    result = json.loads(out.read_text(encoding="utf-8"))
+    assert result["schema"] == "saea-sealed-official-count-comparison-read-v1"
+    assert result["sources"]["comparison_recipe_sha256"] == reader.var1.digest(recipe)
+    assert result["baseline_arm"] == "plan"
+    assert result["status"] == "descriptive_registered_comparison"
+    assert "frozen_plan_f0" not in result
+    assert "ci90_pp" in result["paired"]["exdiv"]["plan"]["intent_exact"]["intervals"]
+
+
+def test_two_arm_recipe_refuses_changed_registration(var1_world, tmp_path):
+    recipe, payload = _comparison_recipe(var1_world, tmp_path)
+    payload["registration"]["sha256"] = "0" * 64
+    recipe.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(reader.FeedbackReadError, match="registration SHA"):
+        reader.load_comparison_sources(var1_world["repo_root"], var1_world["data_root"], recipe)
+
+
+def test_two_arm_recipe_refuses_nonfinal_attempt_before_any_arm_load(var1_world, tmp_path, monkeypatch):
+    recipe, _ = _comparison_recipe(var1_world, tmp_path)
+    attempt = var1_world["data_root"] / "attempts" / RUN_OF["exdiv"] / f"{ATTEMPT_OF['exdiv']}.json"
+    attempt.write_text(json.dumps({"state": "RUNNING"}), encoding="utf-8")
+    loaded = []
+    monkeypatch.setattr(reader.var1, "load_arm", lambda **kwargs: loaded.append(kwargs))
+    with pytest.raises(reader.FeedbackReadError, match="FINALIZED"):
+        reader.load_comparison_sources(var1_world["repo_root"], var1_world["data_root"], recipe)
+    assert loaded == []
