@@ -1191,6 +1191,13 @@ def _verify_outputs_trace_binding(
                 f"outputs request_sha256 for request {request_id!r} disagrees with the trace "
                 f"record {request_record_id!r}"
             )
+        episode = row.get("native_episode_receipt")
+        if isinstance(episode, Mapping) and "candidate_proposal" in episode:
+            from ...rails.slurp_candidate_proposal import validate_candidate_proposal_consumption
+            validate_candidate_proposal_consumption(
+                episode, sample_id=row.get("sample_id"), trace_records=records,
+                error_type=BundleError,
+            )
         if deliver_normaliser is not None:
             _verify_delivery_normalisation(row, deliver_normaliser, payload)
         if solver_group is not None:

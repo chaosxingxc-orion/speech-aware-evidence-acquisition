@@ -1275,6 +1275,11 @@ def build_knowledge_store_supply(
         if (
             not specs and not store_candidate_specs and not scoped_phases
             and not unconditional_phases and store_id not in on_demand
+            and not any(
+                spec.exemplar_candidate_proposal is not None
+                and spec.exemplar_candidate_proposal["intent_store_id"] == store_id
+                for spec in candidate_specs.values()
+            )
         ):
             raise KnowledgeStoreError(f"knowledge store {store_id} has no phase_supply")
         specs_by_store[store_id] = {**specs, **store_candidate_specs}
@@ -1466,11 +1471,172 @@ def build_knowledge_store_supply(
         if phase != first_phase
     }
 
+    # Optional consumption of one source-bound proposal by the existing SLURP
+    # candidate provider. The same proposal is later exposed to every native
+    # continuation role; raw Perception is never replaced.
+    proposal_specs = {
+        phase: spec for phase, spec in candidate_specs.items()
+        if spec.exemplar_candidate_proposal is not None
+    }
+    proposal_objects, proposal_audits, proposal_required_ids = {}, {}, {}
+    proposal_lock = threading.Lock()
+    proposal_intent_indexes = {}
+    if proposal_specs:
+        if len(proposal_specs) != 1:
+            raise KnowledgeStoreError("candidate proposal requires exactly one Solver route")
+        for phase, spec in proposal_specs.items():
+            option = spec.exemplar_candidate_proposal
+            exemplar_id, intent_id = option["exemplar_store_id"], option["intent_store_id"]
+            if exemplar_id not in binding.store_ids or intent_id not in binding.store_ids:
+                raise KnowledgeStoreError("candidate proposal names an unbound store")
+            if (
+                binding.store(exemplar_id).store_role != "train-exemplars"
+                or binding.store(exemplar_id).snapshot.source_partition_role != "train"
+                or (exemplar_id, phase) not in plain_later_phase_specs
+                or (exemplar_id, phase) in context_specs
+                or binding.store(intent_id).store_role != "intent-boundaries"
+                or option["max_candidates"] > len(tuple(legal_candidate_ids))
+            ):
+                raise KnowledgeStoreError("candidate proposal stores or candidate bound are incompatible")
+            index = build_released_target_index(
+                binding.store(intent_id), data_root=data_root,
+                legal_candidate_ids=tuple(legal_candidate_ids),
+            )
+            if index is None:
+                raise KnowledgeStoreError("candidate proposal needs a released authored intent index")
+            proposal_intent_indexes[phase] = index
+
+    def proposal_key(context, original):
+        return f"{context.sample_id}:{original.content_hash()}"
+
+    def resolve_proposal(phase, context, local_supplies):
+        from .slurp_candidate_proposal import build_candidate_proposal_from_selection
+        spec = proposal_specs[phase]
+        option = spec.exemplar_candidate_proposal
+        original = candidate_callback.candidate_state_for(phase, context)
+        # Require exactly the committed context order or its one real trailing
+        # Perception response staged by the shared native transition.
+        state_ids = tuple(item.state_id for item in context.agent_states)
+        declared = context.query_state.agent_state_ids
+        if state_ids != declared and not (
+            len(state_ids) == len(declared) + 1 and state_ids[:-1] == declared
+            and context.agent_states[-1].source_query_state_sha256 == context.query_state.content_hash()
+            and context.prior_response_sha256s
+            and context.agent_states[-1].source_response_sha256 == context.prior_response_sha256s[-1]
+        ):
+            raise KnowledgeStoreError("proposal source differs from the actual native context")
+        parsed = parse_slurp_intent_hypothesis_state(
+            original, expected_sample_id=context.sample_id,
+            legal_intent_ids=tuple(legal_candidate_ids), max_candidates=3,
+            compact_source_phase="perception",
+            projection_policy=BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+        )
+        original_ids = tuple(item.intent_id for item in parsed.candidates)
+        cap = (len(original_ids) if option["mode"] == "original-only"
+               else option["max_candidates"])
+        exemplar_id = option["exemplar_store_id"]
+        if exemplar_id not in local_supplies:
+            raise KnowledgeStoreError("proposal requires the actual same-visit exemplar selection")
+        fresh = build_candidate_proposal_from_selection(
+            sample_id=context.sample_id, original_state=original,
+            parsed_candidates=original_ids, exemplar_snapshot=binding.store(exemplar_id).snapshot,
+            exemplar_supply=local_supplies[exemplar_id], query_state=context.query_state,
+            legal_candidate_ids=tuple(legal_candidate_ids), max_candidates=cap,
+        )
+        key = proposal_key(context, original)
+        with proposal_lock:
+            prior = proposal_objects.get(key)
+            if prior is not None:
+                # Revisions rebind rank/fusion to their current QueryState. The
+                # first selection remains the proposal source; its values and
+                # interpretation must be unchanged, not silently recomputed.
+                fixed = {"exemplar_selection_sha256"}
+                if ({k: v for k, v in fresh.as_json().items() if k not in fixed}
+                        != {k: v for k, v in prior.as_json().items() if k not in fixed}):
+                    raise KnowledgeStoreError("proposal changed after its first Solver visit")
+                return prior, key
+            proposal_objects[key] = fresh
+            local = local_supplies[exemplar_id]
+            proposal_audits[key] = {
+                "schema": "saea-source-bound-candidate-proposal-supply-v1",
+                "proposal": fresh.as_json(), "proposal_sha256": fresh.content_hash(),
+                "config": dict(option),
+                "selection_query_state_sha256": context.query_state.content_hash(),
+                "exemplar_store": binding.store_receipt(exemplar_id),
+                "exemplar_rank": local.rank_result.as_json(),
+                "exemplar_fusion": local.fusion_decision.as_json(),
+                "intent_index": dict(proposal_intent_indexes[phase].receipt),
+            }
+        return fresh, key
+
+    def proposal_intent_supply(phase, context, proposal):
+        from .knowledge import RankedFacet, RankResult, FusionDecision
+        from .knowledge_provider import (
+            SLURP_CANDIDATE_SEMANTIC_RANK_POLICY_ID,
+            SLURP_CANDIDATE_SEMANTIC_FUSE_POLICY_ID,
+        )
+        spec = proposal_specs[phase]
+        store_id = spec.exemplar_candidate_proposal["intent_store_id"]
+        store = binding.store(store_id)
+        index = proposal_intent_indexes[phase]
+        selected = tuple(dict.fromkeys(
+            value_id for label in proposal.candidate_ids
+            for value_id in index.mappings.get(label, ())
+        ))
+        missing = [label for label in proposal.candidate_ids if not index.mappings.get(label)]
+        if missing:
+            raise KnowledgeStoreError("candidate proposal has no released intent distinction")
+        values = {value.value_id: value for value in store.snapshot.values}
+        facets = tuple(dict.fromkeys(
+            facet_id for value_id in selected for facet_id in values[value_id].associated_facet_ids
+        ))
+        rank = RankResult(
+            snapshot_sha256=store.snapshot.content_hash(),
+            query_state_sha256=context.query_state.content_hash(),
+            ranking_policy_id=SLURP_CANDIDATE_SEMANTIC_RANK_POLICY_ID,
+            candidates=tuple(RankedFacet(facet_id=fid, score=float(len(facets)-i))
+                             for i, fid in enumerate(facets)),
+        ).validate()
+        visible = set(context.query_state.retrieved_value_ids)
+        added = tuple(vid for vid in selected if qualify_id(store_id, vid) not in visible)
+        needed = tuple(qualify_id(store_id, vid) for vid in selected)
+        if not added:
+            return None, needed
+        decision = FusionDecision(
+            snapshot_sha256=store.snapshot.content_hash(),
+            query_state_sha256=context.query_state.content_hash(),
+            rank_result_sha256=rank.content_hash(),
+            fusion_policy_id=SLURP_CANDIDATE_SEMANTIC_FUSE_POLICY_ID,
+            supporting_facet_ids=tuple(dict.fromkeys(
+                fid for vid in added for fid in values[vid].associated_facet_ids
+            )),
+            selected_value_ids=added,
+        ).validate()
+        local = PhaseSupply(rank_result=rank, fusion_decision=decision,
+                            action_target_ref="candidate-proposal-intent-distinction").validate()
+        return binding.qualify_supply(store_id, local, context.query_state), needed
+
+    def candidate_proposal_for_context(context):
+        matches = [item for item in context.agent_states if item.state_kind == "phase:perception"]
+        if len(matches) != 1:
+            raise KnowledgeStoreError("candidate proposal context requires one original Perception")
+        key = proposal_key(context, matches[0])
+        with proposal_lock:
+            proposal = proposal_objects.get(key)
+            required = proposal_required_ids.get(key)
+        if proposal is None or required is None:
+            raise KnowledgeStoreError("candidate proposal has not been supplied by its Solver visit")
+        if (matches[0].state_id not in context.query_state.agent_state_ids
+                or not set(required) <= set(context.query_state.retrieved_value_ids)):
+            raise KnowledgeStoreError("candidate proposal sources and cards are not all visible")
+        return proposal
+
     def automatic_for_phase(phase, context):
         query_state = getattr(context, "query_state", None)
         if query_state is None:
             raise KnowledgeStoreError("automatic context supply requires a QueryState")
         supplies = []
+        local_supplies = {}
         for store_id in binding.store_ids:
             if (store_id, phase) not in context_specs:
                 continue
@@ -1490,11 +1656,39 @@ def build_knowledge_store_supply(
                 continue
             local_supply = route(store_id, phase, context)
             if local_supply is not None:
+                local_supplies[store_id] = local_supply
                 supplies.append(binding.qualify_supply(store_id, local_supply, query_state))
+        proposal, proposal_id = (
+            resolve_proposal(phase, context, local_supplies)
+            if phase in proposal_specs else (None, None)
+        )
         if candidate_callback is not None:
-            candidate_supply = candidate_callback(phase, context)
+            candidate_supply = candidate_callback(
+                phase, context, **({"candidate_proposal": proposal} if proposal else {}),
+            )
             if candidate_supply is not None:
                 supplies.append(candidate_supply)
+        if proposal is not None:
+            intent_supply, intent_ids = proposal_intent_supply(phase, context, proposal)
+            if intent_supply is not None:
+                supplies.append(intent_supply)
+            spec = proposal_specs[phase]
+            audit_key = f"{phase}:{context.sample_id}:{query_state.content_hash()}"
+            selection = candidate_callback.receipt["candidate_selections"][audit_key]
+            exemplar_id = spec.exemplar_candidate_proposal["exemplar_store_id"]
+            required = (
+                tuple(qualify_id(exemplar_id, item.value_id) for item in proposal.selected_exemplars)
+                + tuple(selection["qualified_selected_value_ids"]) + intent_ids
+            )
+            with proposal_lock:
+                if proposal_id in proposal_required_ids and proposal_required_ids[proposal_id] != required:
+                    raise KnowledgeStoreError("proposal knowledge selection changed on a later visit")
+                proposal_required_ids[proposal_id] = required
+                audit = proposal_audits[proposal_id]
+                if "required_value_ids" not in audit:
+                    audit["required_value_ids"] = list(required)
+                    audit["slot_selection_receipt_sha256"] = selection["selection_receipt_sha256"]
+                    audit["supply_receipt_sha256"] = content_hash(audit)
         return _compose_supplies(supplies, query_state)
 
     def unconditional_first_phase(*, speech_packet_bindings, **_ignored):
@@ -1585,6 +1779,10 @@ def build_knowledge_store_supply(
     # parsed, validated and receipted and then silently never called.
     if context_specs or candidate_callback is not None:
         route.automatic_for_phase = automatic_for_phase
+    if proposal_specs:
+        route.candidate_proposal_for_context = candidate_proposal_for_context
+        automatic_for_phase.candidate_proposal_for_context = candidate_proposal_for_context
+        route.receipt["candidate_proposals"] = proposal_audits
     if candidate_receipt is not None:
         route.receipt["candidate_supply"] = candidate_receipt
         route.receipt["candidate_selections"] = candidate_receipt["candidate_selections"]

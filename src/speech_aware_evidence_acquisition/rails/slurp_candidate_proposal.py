@@ -105,25 +105,34 @@ class CandidateProposal:
 
     def model_text(self) -> str:
         """Render only task-usable labels and transparent, non-authoritative provenance."""
-        originals = ", ".join(self.original_candidate_ids)
-        lines = [
-            "Original Perception intent candidates, in model order: " + originals + ".",
-            "Additional exemplar-supported intent possibilities:",
-        ]
-        if self.additions:
-            lines.extend(
-                f"- {item.intent_id}: supported by "
-                f"{len(item.supporting_exemplar_value_ids)} selected TRAIN speech exemplar(s)."
-                for item in self.additions
-            )
-        else:
-            lines.append("- None.")
-        lines.append(
-            "Exemplar frequency is not confidence. These proposals are evidence "
-            "cues, not a hard answer filter. The full legal inventory remains "
-            "available; task judgment still depends on the speech and evidence."
+        return render_candidate_proposal_text(
+            self.original_candidate_ids,
+            tuple((item.intent_id, len(item.supporting_exemplar_value_ids))
+                  for item in self.additions),
         )
-        return "\n".join(lines)
+
+
+def render_candidate_proposal_text(original_candidate_ids, added_support_counts):
+    """Render task text; source validation remains the proposal builder's job."""
+    lines = [
+        "Original Perception intent candidates, in model order: "
+        + ", ".join(original_candidate_ids) + ".",
+        "Additional exemplar-supported intent possibilities:",
+    ]
+    if added_support_counts:
+        lines.extend(
+            f"- {intent}: supported by {count} selected TRAIN speech exemplar(s)."
+            for intent, count in added_support_counts
+        )
+    else:
+        lines.append("- None.")
+    lines.append(
+        "Exemplar frequency is not confidence. These proposals are evidence "
+        "cues, not a hard answer filter. The full legal inventory remains "
+        "available; task judgment still depends on the speech and evidence."
+    )
+    return "\n".join(lines)
+
 
 
 def build_candidate_proposal(
@@ -301,8 +310,149 @@ def build_candidate_proposal_from_selection(
     )
 
 
+
+def validate_candidate_proposal_consumption(
+    episode_receipt, *, sample_id, trace_records, error_type=ValueError,
+):
+    """Join all completed continuation contacts to the proposal and real requests.
+
+    Snapshot membership and release identity are checked by the bound supply
+    router before contact. This independent seal/read check proves actual
+    downstream consumption and ties the derived view to the raw Perception.
+    """
+    from collections.abc import Mapping
+
+    def refuse(message):
+        raise error_type("candidate proposal custody: " + message)
+
+    block = episode_receipt.get("candidate_proposal")
+    if block is None:
+        return
+    if (
+        not isinstance(block, Mapping)
+        or set(block) != {"schema", "proposals", "contacts", "prepared_without_response"}
+        or block["schema"] != "saea-native-candidate-proposal-consumption-v1"
+        or not isinstance(block["proposals"], Mapping)
+        or not isinstance(block["contacts"], list)
+        or not isinstance(block["prepared_without_response"], list)
+    ):
+        refuse("malformed consumption receipt")
+    expected = {}
+    perception_contacts = []
+    visits = list(episode_receipt.get("role_visits", ()))
+    if isinstance(episode_receipt.get("interrupted_role"), Mapping):
+        visits.append(episode_receipt["interrupted_role"])
+    for visit in visits:
+        contacts = visit.get("execution_receipt", {}).get("contacts", ())
+        if visit.get("role_id") == "perception":
+            perception_contacts.extend(contacts)
+            continue
+        for contact in contacts:
+            expected[contact["agent_contact_id"]] = (visit["role_id"], contact)
+    actual = block["contacts"]
+    if (any(not isinstance(row, Mapping) for row in actual)
+            or len(actual) != len(expected)
+            or {row.get("contact_id") for row in actual} != set(expected)):
+        refuse("completed downstream contacts do not match the whole native trajectory")
+    proposals = block["proposals"]
+    if len(proposals) != (1 if actual or block["prepared_without_response"] else 0):
+        refuse("one episode must retain one proposal when its continuation is reached")
+    if not proposals:
+        return
+    digest, document = next(iter(proposals.items()))
+    if (not isinstance(document, Mapping) or document.get("schema") != PROPOSAL_SCHEMA
+            or content_hash(document) != digest or document.get("sample_id") != sample_id):
+        refuse("proposal document hash or sample differs")
+    try:
+        fields = {k: v for k, v in document.items()
+                  if k not in {"schema", "additions", "selected_exemplars",
+                               "original_candidate_ids", "candidate_ids"}}
+        proposal = CandidateProposal(
+            **fields,
+            additions=tuple(ExemplarAddition(
+                item["intent_id"], tuple(item["supporting_exemplar_value_ids"]),
+            ) for item in document["additions"]),
+            selected_exemplars=tuple(SelectedExemplar(**item) for item in document["selected_exemplars"]),
+            original_candidate_ids=tuple(document["original_candidate_ids"]),
+            candidate_ids=tuple(document["candidate_ids"]),
+        )
+        if proposal.as_json() != document:
+            refuse("proposal has undeclared fields")
+    except (KeyError, TypeError) as error:
+        refuse(f"proposal shape is invalid: {error}")
+    source_states = [
+        state for payload in trace_records.values()
+        if isinstance(payload.get("org_final_query_state"), Mapping)
+        and payload["org_final_query_state"].get("query_sample_id") == sample_id
+        for state in payload.get("org_agent_states", ())
+        if state.get("state_id") == proposal.original_state_id
+    ]
+    if len(source_states) != 1:
+        refuse("original Perception is absent or duplicated in the sealed state chain")
+    source = AgentStateArtifact.from_json(source_states[0])
+    if (
+        source.state_kind != "phase:perception"
+        or source.content_hash() != proposal.original_state_sha256
+        or source.source_query_state_sha256 != proposal.original_query_state_sha256
+        or source.source_response_sha256 != proposal.original_response_sha256
+        or hashlib.sha256(source.content.encode("utf-8")).hexdigest() != proposal.original_response_sha256
+        or not any(contact.get("response_text_sha256") == proposal.original_response_sha256
+                   for contact in perception_contacts)
+    ):
+        refuse("proposal has a different raw Perception source")
+    authority_labels = tuple(dict.fromkeys((
+        *proposal.candidate_ids, *(item.task_target for item in proposal.selected_exemplars),
+    )))
+    parsed = parse_slurp_intent_hypothesis_state(
+        source, expected_sample_id=sample_id, legal_intent_ids=authority_labels,
+        max_candidates=min(3, len(authority_labels)), compact_source_phase="perception",
+        projection_policy=BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    )
+    if tuple(item.intent_id for item in parsed.candidates) != proposal.original_candidate_ids:
+        refuse("original candidates differ from raw Perception")
+    support = {}
+    for item in proposal.selected_exemplars:
+        support.setdefault(item.task_target, []).append(item.value_id)
+    order = sorted(
+        (label for label in support if label not in proposal.original_candidate_ids),
+        key=lambda label: (-len(support[label]), label),
+    )[:proposal.max_candidates - len(proposal.original_candidate_ids)]
+    expected_additions = tuple(ExemplarAddition(label, tuple(support[label])) for label in order)
+    if (
+        proposal.additions != expected_additions
+        or proposal.candidate_ids != proposal.original_candidate_ids + tuple(order)
+        or len(proposal.candidate_ids) != len(set(proposal.candidate_ids))
+    ):
+        refuse("proposal differs from its deterministic exemplar interpretation")
+    text = proposal.model_text()
+    text_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
+    for row in actual:
+        role_id, source_contact = expected[row["contact_id"]]
+        if (row.get("role_kind") != role_id or row.get("proposal_sha256") != digest
+                or row.get("rendered_text_sha256") != text_hash
+                or any(row.get(key) != source_contact.get(key) for key in (
+                    "request_id", "request_sha256", "response_sha256",
+                ))):
+            refuse("proposal contact differs from the native execution receipt")
+        request = trace_records.get(row["request_id"] + "/request", {})
+        response = trace_records.get(row["request_id"] + "/response", {})
+        body = request.get("payload", {})
+        if (request.get("payload_sha256") != row["request_sha256"]
+                or body.get("sample_id") != sample_id
+                or response.get("response_sha256") != row["response_sha256"]):
+            refuse("proposal contact has no matching raw request and response")
+        evidence = [part for part in body.get("supplied_evidence", ())
+                    if str(part.get("evidence_id", "")).startswith("candidate-proposal:")]
+        if (len(evidence) != 1
+                or evidence[0].get("evidence_id") != "candidate-proposal:" + digest
+                or evidence[0].get("content") != text):
+            refuse("the actual request did not consume the exact proposal")
+        org = trace_records.get(row["contact_id"] + "/candidate-proposal", {})
+        if org.get("org_candidate_proposal") != row:
+            refuse("proposal contact lost its separate ORG derivation")
+
 __all__ = [
     "CandidateProposal", "CandidateProposalError", "ExemplarAddition",
     "SelectedExemplar", "build_candidate_proposal",
-    "build_candidate_proposal_from_selection",
+    "build_candidate_proposal_from_selection", "validate_candidate_proposal_consumption",
 ]

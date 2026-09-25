@@ -75,6 +75,7 @@ _OPTIONAL_SPEC_KEYS = frozenset(
         "projection_policy",
         "fallback_candidates",
         "fallback_distinction",
+        "exemplar_candidate_proposal",
     }
 )
 _SOURCE_KEYS = frozenset(
@@ -126,6 +127,7 @@ class CandidateSemanticSupplySpec:
     #: already plays.
     fallback_candidates: tuple[str, ...] = ()
     fallback_distinction: str = DEFAULT_FALLBACK_DISTINCTION
+    exemplar_candidate_proposal: Mapping[str, object] | None = None
 
     def validate(self, program: PhaseProgram) -> "CandidateSemanticSupplySpec":
         program.validate()
@@ -176,6 +178,22 @@ class CandidateSemanticSupplySpec:
             raise CandidateSemanticSupplyError(
                 "projection_policy requires bounded first-occurrence and compact source"
             )
+        if self.exemplar_candidate_proposal is not None:
+            from .slurp_intent_hypotheses import BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+            validate_exemplar_candidate_proposal(self.exemplar_candidate_proposal)
+            if self.exemplar_candidate_proposal["max_added_slot_values"] > 32 * self.max_values_per_candidate:
+                raise CandidateSemanticSupplyError("proposal added-value budget exceeds its candidate bounds")
+            if not (
+                self.provider == SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID
+                and self.phase == "solver" and self.candidate_state_phase == "perception"
+                and self.compact_source_phase == "perception"
+                and self.max_candidates == 3 and not self.fallback_candidates
+                and self.candidate_state_selection == "single" and self.supply_mode == "provide"
+                and self.projection_policy == BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+            ):
+                raise CandidateSemanticSupplyError(
+                    "exemplar proposal requires the ordinary single Perception to Solver route"
+                )
         phases = program.phase_names()
         if self.phase not in phases or self.candidate_state_phase not in phases:
             raise CandidateSemanticSupplyError(
@@ -273,6 +291,8 @@ class CandidateSemanticSupplySpec:
                 max_actions=self.max_actions,
                 max_candidates_per_action=self.max_candidates_per_action,
             )
+        if self.exemplar_candidate_proposal is not None:
+            result["exemplar_candidate_proposal"] = dict(self.exemplar_candidate_proposal)
         if self.compact_source_phase is not None:
             result["compact_source_phase"] = self.compact_source_phase
         if self.supply_mode != "provide":
@@ -286,6 +306,27 @@ class CandidateSemanticSupplySpec:
             if self.fallback_distinction != DEFAULT_FALLBACK_DISTINCTION:
                 result["fallback_distinction"] = self.fallback_distinction
         return result
+
+
+
+def validate_exemplar_candidate_proposal(raw):
+    """Validate the existing SLURP provider's bounded proposal-consumption option."""
+    required = {
+        "mode", "exemplar_store_id", "intent_store_id",
+        "max_candidates", "max_added_slot_values",
+    }
+    if not isinstance(raw, Mapping) or set(raw) != required:
+        raise CandidateSemanticSupplyError("exemplar candidate proposal has the wrong fields")
+    if raw["mode"] not in ("original-only", "append-selected-exemplars"):
+        raise CandidateSemanticSupplyError("unknown exemplar candidate proposal mode")
+    for field in ("exemplar_store_id", "intent_store_id"):
+        if not isinstance(raw[field], str) or not raw[field] or "::" in raw[field]:
+            raise CandidateSemanticSupplyError("proposal store IDs must be explicit local IDs")
+    _positive_int(raw["max_candidates"], field="proposal max_candidates", maximum=32)
+    if raw["max_candidates"] < 3:
+        raise CandidateSemanticSupplyError("proposal must preserve up to three original candidates")
+    _positive_int(raw["max_added_slot_values"], field="proposal max_added_slot_values", maximum=512)
+    return MappingProxyType(dict(raw))
 
 
 def load_candidate_semantic_supply_specs(
@@ -346,6 +387,10 @@ def load_candidate_semantic_supply_specs(
                 max_actions=raw.get("max_actions"),
                 max_candidates_per_action=raw.get("max_candidates_per_action"),
                 fallback_candidates=tuple(raw.get("fallback_candidates") or ()),
+                exemplar_candidate_proposal=(
+                    validate_exemplar_candidate_proposal(raw["exemplar_candidate_proposal"])
+                    if "exemplar_candidate_proposal" in raw else None
+                ),
                 fallback_distinction=raw.get(
                     "fallback_distinction", DEFAULT_FALLBACK_DISTINCTION
                 ),
@@ -686,7 +731,7 @@ def build_candidate_semantic_supply(
             )
         return matches[-1]
 
-    def automatic_for_phase(phase: str, context: object) -> PhaseSupply | None:
+    def automatic_for_phase(phase: str, context: object, *, candidate_proposal=None) -> PhaseSupply | None:
         spec = specs.get(phase)
         if spec is None:
             return None
@@ -727,20 +772,23 @@ def build_candidate_semantic_supply(
             source_ids=store.snapshot.source_sample_ids,
             snapshot_sha256=store.snapshot.content_hash(),
         )
+        query = {
+            "query_state": query_state,
+            "candidate_state": selected_state,
+            "sample_id": sample_id,
+        }
+        total_k = spec.max_total_values
+        if spec.exemplar_candidate_proposal is not None:
+            if candidate_proposal is None:
+                raise CandidateSemanticSupplyError("declared proposal lacks its bound exemplar selection")
+            cap = spec.exemplar_candidate_proposal["max_added_slot_values"]
+            query.update(candidate_proposal=candidate_proposal, candidate_proposal_added_value_cap=cap)
+            total_k += cap
+        elif candidate_proposal is not None:
+            raise CandidateSemanticSupplyError("undeclared candidate proposal was supplied")
         try:
-            ranking = provider.candidates(
-                {
-                    "query_state": query_state,
-                    "candidate_state": selected_state,
-                    "sample_id": sample_id,
-                },
-                k=spec.max_total_values,
-            )
-            decision = provider.fuse(
-                [ranking],
-                k=spec.max_total_values,
-                policy_id=spec.fuse_policy,
-            )
+            ranking = provider.candidates(query, k=total_k)
+            decision = provider.fuse([ranking], k=total_k, policy_id=spec.fuse_policy)
         except (RailsError, SlurpIntentHypothesisError, Audio2ToolPerceptionStateError) as error:
             raise CandidateSemanticSupplyError(str(error)) from error
         audit = dict(provider.last_selection_audit() or {})
@@ -843,6 +891,15 @@ def build_candidate_semantic_supply(
             audits[audit_key] = audit
         return qualified
 
+    def selected_state_for(phase, context):
+        spec = specs[phase]
+        return candidate_state_for(
+            spec, phase=phase, query_state=context.query_state,
+            states=context.agent_states,
+            prior_response_sha256s=context.prior_response_sha256s,
+        )
+
+    automatic_for_phase.candidate_state_for = selected_state_for
     automatic_for_phase.receipt = {
         "schema": CANDIDATE_SUPPLY_SCHEMA,
         "specs": [specs[phase].as_json() for phase in sorted(specs)],

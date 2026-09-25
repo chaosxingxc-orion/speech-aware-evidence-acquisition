@@ -714,6 +714,9 @@ class NativeEpisodeRunBinding:
     # this engineering seam until action/source/seal admission is implemented.
     # The shared graph still runs each selected binding from start to delivery.
     system_episode_policy: object = None
+    # Optional source-bound interpretation of this episode's original
+    # Perception and actual exemplar selection. Shared by all downstream roles.
+    candidate_proposal_for_context: Callable | None = None
 
 
 @dataclass(frozen=True)

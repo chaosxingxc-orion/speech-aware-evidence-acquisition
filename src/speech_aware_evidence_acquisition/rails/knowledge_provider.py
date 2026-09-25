@@ -1344,14 +1344,15 @@ def select_candidate_semantic_values(
     *,
     max_values_per_candidate: int,
     max_total_values: int,
+    already_selected_ids: Sequence[str] = (),
 ) -> tuple[tuple[str, ...], list[dict[str, object]]]:
-    """Apply the shared candidate round-robin selection and audit policy."""
+    """Apply round-robin selection; optional visible IDs consume no new quota."""
     mapped = [candidate_values.get(candidate_id, ()) for candidate_id in candidate_ids]
     positions = [0 for _ in candidate_ids]
     selected_by = [[] for _ in candidate_ids]
     ignored_by: list[list[dict[str, str]]] = [[] for _ in candidate_ids]
     selected: list[str] = []
-    selected_set: set[str] = set()
+    selected_set: set[str] = set(already_selected_ids)
 
     while len(selected) < max_total_values:
         progressed = False
@@ -1512,6 +1513,7 @@ class CandidateSemanticProvider(KnowledgeProvider):
         self._last_rank_result: object | None = None
         self._last_selected_value_ids: tuple[str, ...] = ()
         self._last_selection_audit: Mapping[str, object] | None = None
+        self._last_proposal_expected_k: int | None = None
 
     def _validate_candidate_capacity(
         self, *, max_candidates: int, legal_candidate_count: int
@@ -1594,13 +1596,35 @@ class CandidateSemanticProvider(KnowledgeProvider):
 
     def candidates(self, query: object, *, k: int) -> Ranking:
         from .knowledge import RankedFacet, RankResult  # noqa: PLC0415
-        if k != self._max_total_values:
-            raise RailsError(
-                "CandidateSemanticProvider.candidates k must equal the configured "
-                "max_total_values"
-            )
         if not isinstance(query, Mapping):
             raise RailsError("candidate semantic query must be a mapping")
+        proposal_requested = (
+            "candidate_proposal" in query
+            or "candidate_proposal_added_value_cap" in query
+        )
+        added_cap = 0
+        if proposal_requested:
+            from .slurp_candidate_proposal import CandidateProposal  # noqa: PLC0415
+
+            proposal = query.get("candidate_proposal")
+            added_cap = query.get("candidate_proposal_added_value_cap")
+            if self.provider_id != SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID:
+                raise RailsError("candidate proposals are supported only for SLURP")
+            if self._fallback_candidates:
+                raise RailsError("candidate proposal cannot combine with standing fallback")
+            if not isinstance(proposal, CandidateProposal):
+                raise RailsError("candidate_proposal must be a source-bound CandidateProposal")
+            if (
+                isinstance(added_cap, bool) or not isinstance(added_cap, int)
+                or not 1 <= added_cap <= 32 * self._max_values_per_candidate
+            ):
+                raise RailsError("proposal added-value cap must be a bounded positive integer")
+        expected_k = self._max_total_values + added_cap
+        if k != expected_k:
+            raise RailsError(
+                "CandidateSemanticProvider.candidates k must equal the baseline "
+                "max_total_values plus the proposal added-value cap"
+            )
         query_state = query.get("query_state")
         artifact = query.get("candidate_state")
         sample_id = query.get("sample_id")
@@ -1612,6 +1636,52 @@ class CandidateSemanticProvider(KnowledgeProvider):
             raise RailsError("candidate semantic query sample identity mismatch")
         candidate_ids, state_audit = self._candidate_state(artifact, sample_id=str(sample_id))
         selected, mappings = self._select(candidate_ids)
+        proposal_audit: dict[str, object] = {}
+        if proposal_requested:
+            proposal = query["candidate_proposal"]
+            original_ids = proposal.original_candidate_ids
+            proposed_ids = proposal.candidate_ids
+            added_ids = tuple(item.intent_id for item in proposal.additions)
+            if (
+                proposal.sample_id != sample_id
+                or proposal.original_state_id != artifact.state_id
+                or proposal.original_state_sha256 != artifact.content_hash()
+                or proposal.original_response_sha256 != artifact.source_response_sha256
+                or proposal.original_query_state_sha256 != artifact.source_query_state_sha256
+                or original_ids != candidate_ids
+                or proposed_ids != original_ids + added_ids
+                or len(proposed_ids) > proposal.max_candidates
+                or len(proposed_ids) > 32
+                or len(proposed_ids) != len(set(proposed_ids))
+                or not set(proposed_ids) <= self._legal_candidate_ids
+            ):
+                raise RailsError("candidate proposal differs from its sealed Perception source")
+            support = {
+                item.value_id: item.task_target for item in proposal.selected_exemplars
+            }
+            if len(support) != len(proposal.selected_exemplars) or any(
+                not addition.supporting_exemplar_value_ids
+                or any(support.get(value_id) != addition.intent_id
+                       for value_id in addition.supporting_exemplar_value_ids)
+                for addition in proposal.additions
+            ):
+                raise RailsError("candidate proposal additions lack matching exemplar support")
+            extra, extra_mappings = select_candidate_semantic_values(
+                added_ids, self._candidate_values,
+                max_values_per_candidate=self._max_values_per_candidate,
+                max_total_values=added_cap,
+                already_selected_ids=selected,
+            )
+            proposal_audit = {
+                "candidate_proposal_sha256": proposal.content_hash(),
+                "candidate_proposal_original_ids": list(original_ids),
+                "candidate_proposal_baseline_value_ids": list(selected),
+                "candidate_proposal_added_value_ids": list(extra),
+                "candidate_proposal_added_value_cap": added_cap,
+            }
+            candidate_ids = proposed_ids
+            selected = selected + extra
+            mappings = mappings + extra_mappings
         supporting_facets = self.supporting_facet_ids(selected)
         ranked = tuple(
             RankedFacet(facet_id=facet_id, score=float(len(supporting_facets) - index))
@@ -1645,8 +1715,10 @@ class CandidateSemanticProvider(KnowledgeProvider):
         if self._compact_source_phase is not None:
             audit["compact_source_phase"] = self._compact_source_phase
         audit.update(state_audit)
+        audit.update(proposal_audit)
         audit["selection_sha256"] = content_hash(audit)
         self._last_query_state = query_state
+        self._last_proposal_expected_k = expected_k if proposal_requested else None
         self._last_rank_result = rank_result
         self._last_selected_value_ids = selected
         self._last_selection_audit = audit
@@ -1675,6 +1747,8 @@ class CandidateSemanticProvider(KnowledgeProvider):
         expected = self._last_query_state.content_hash()
         if ranking.query_sha256 != expected or ranking.index_sha256 != self.snapshot_sha256():
             raise RailsError("candidate semantic ranking has a changed source binding")
+        if self._last_proposal_expected_k is not None and k != self._last_proposal_expected_k:
+            raise RailsError("candidate proposal fuse k must equal its total selection budget")
         selected = self._last_selected_value_ids[:k]
         return FusionDecision(
             snapshot_sha256=self.snapshot_sha256(),

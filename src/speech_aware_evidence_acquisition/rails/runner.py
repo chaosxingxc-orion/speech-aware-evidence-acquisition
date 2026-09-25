@@ -2022,6 +2022,7 @@ async def _invoke_native_role_episode(
         role_configs[acquisition_role_config.phase_id] = acquisition_role_config
     context_binding = None
     context_compilations = {}
+    proposal_documents, proposal_contacts = {}, {}
     # E8a (2026-09-17, Node Context Policy): the same two-object shape the
     # typed role context uses -- one binding resolved at the Perception visit
     # (the policy's candidate inventory is the Perception schema's own), and
@@ -2690,6 +2691,30 @@ async def _invoke_native_role_episode(
                 raise RailsRunnerError(
                     "one native contact has conflicting node context compilations"
                 )
+        if binding.candidate_proposal_for_context is not None and role.role_kind != "perception":
+            proposal = binding.candidate_proposal_for_context(ctx)
+            digest = proposal.content_hash()
+            if proposal_documents and digest not in proposal_documents:
+                raise RailsRunnerError("one episode changed its candidate proposal between roles")
+            proposal_documents[digest] = proposal.as_json()
+            text = proposal.model_text()
+            messages = (
+                messages[0],
+                {**messages[1], "content": [*messages[1]["content"], {
+                    "type": "text", "text": text,
+                    "evidence_id": f"candidate-proposal:{digest}",
+                    "source_uri": f"candidate-proposal://{digest}",
+                }]},
+            )
+            record = {
+                "contact_id": plan.contact_id, "role_kind": role.role_kind,
+                "query_state_sha256": ctx.query_state.content_hash(),
+                "proposal_sha256": digest,
+                "rendered_text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
+            }
+            prior = proposal_contacts.setdefault(plan.contact_id, record)
+            if prior != record:
+                raise RailsRunnerError("one native contact changed its candidate proposal view")
         return NativeRoleSpeechBinding(
             role_id=request.role_id, sample_id=ctx.sample_id,
             role_query=visit["query"], base_messages=messages,
@@ -2715,6 +2740,12 @@ async def _invoke_native_role_episode(
         if pending:
             raise RailsRunnerError("native completion overwrote an unsettled source")
         before, plan = state.current_context, state.current_contact
+        if plan is not None and plan.contact_id in proposal_contacts:
+            proposal_contacts[plan.contact_id].update(
+                request_id=completion.request_id,
+                request_sha256=completion.request_sha256,
+                response_sha256=completion.response_sha256,
+            )
         if config.role_context_json is not None:
             context_compilations[plan.contact_id].update(
                 request_sha256=completion.request_sha256,
@@ -3114,6 +3145,19 @@ async def _invoke_native_role_episode(
             "roles.solver.supply_variants is not declared; an arm no config hash "
             "claims would move request bytes outside the cell identity"
         )
+    expected_proposal = getattr(binding.supply_for_phase, "candidate_proposal_for_context", None)
+    if binding.candidate_proposal_for_context != expected_proposal:
+        raise RailsRunnerError("candidate proposal consumption differs from its supply binding")
+    if expected_proposal is not None:
+        if any((
+            config.role_context_json is not None, config.context_policy_json is not None,
+            config.reviewer_audit_json is not None, config.knowledge_index_json is not None,
+            config.solver_hints_json is not None, config.context_fit_policy == "compact-or-abstain",
+            supply_variant_group is not None, acquisition_policy is not None,
+            config.max_candidate_refreshes != 0, grouped_solver_phase_id is not None,
+            binding.system_episode_policy is not None,
+        )):
+            raise RailsRunnerError("candidate proposal cannot combine with another context transformation")
     knowledge_index = binding.knowledge_index
     #: E21w, per contact: the assembly this contact was composed from, the
     #: system message it carried, and where the row's selection came from.
@@ -4091,6 +4135,15 @@ async def _invoke_native_role_episode(
                     if row["context_compaction"] is not None
                 ),
             }
+        if binding.candidate_proposal_for_context is not None:
+            compact_receipt["candidate_proposal"] = {
+                "schema": "saea-native-candidate-proposal-consumption-v1",
+                "proposals": dict(proposal_documents),
+                "contacts": [dict(row) for row in proposal_contacts.values() if "request_sha256" in row],
+                "prepared_without_response": [
+                    dict(row) for row in proposal_contacts.values() if "request_sha256" not in row
+                ],
+            }
         if config.role_context_json is not None:
             compact_receipt["role_context_compilations"] = list(context_compilations.values())
         if node_context_declared:
@@ -4138,6 +4191,10 @@ async def _invoke_native_role_episode(
             f"{state.prepared.sample.sample_id}/{program.program_id}/native-episode",
             state.prepared.execution_unit_id,
         )
+        for compilation in proposal_contacts.values():
+            trace.emit("ORG", compilation["contact_id"] + "/candidate-proposal", {
+                "org_candidate_proposal": compilation,
+            })
         for compilation in context_compilations.values():
             trace.emit("ORG", compilation["contact_id"] + "/role-context", {
                 "org_role_context": compilation,

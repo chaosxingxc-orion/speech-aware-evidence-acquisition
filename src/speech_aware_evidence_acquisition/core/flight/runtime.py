@@ -2228,12 +2228,48 @@ class FlightRuntime:
                     )
                     rendered.append((text, "value"))
                 selection_limit = min(
-                    len(rendered), spec.max_total_values * selection_count
+                    len(rendered),
+                    (spec.max_total_values + (
+                        spec.exemplar_candidate_proposal["max_added_slot_values"]
+                        if spec.exemplar_candidate_proposal is not None else 0
+                    )) * selection_count,
                 )
                 blocks = sorted(
                     rendered,
                     key=lambda block: (-len(block[0].encode("utf-8")), block[0]),
                 )[:selection_limit]
+                if spec.exemplar_candidate_proposal is not None:
+                    # Conservative preparation only. The actual native request
+                    # gate still measures every exact sent request. Include the
+                    # extra intent distinctions and derived proposal; do not
+                    # pretend that the legacy slot-only cap describes this path.
+                    option = spec.exemplar_candidate_proposal
+                    intent_store = store_binding.store(option["intent_store_id"])
+                    intent_blocks = []
+                    for value in intent_store.snapshot.values:
+                        visible = store_binding.model_evidence_block(
+                            option["intent_store_id"], local_evidence_id=value.value_id,
+                            content=value.content,
+                        )
+                        intent_blocks.append((
+                            f"[evidence {visible['evidence_id']}] {visible['text']}", "value",
+                        ))
+                    blocks.extend(sorted(
+                        intent_blocks, key=lambda item: (-len(item[0].encode("utf-8")), item[0]),
+                    )[:option["max_candidates"]])
+                    inventory = self._adapter.candidate_inventory().validate().candidate_ids
+                    longest = max(inventory, key=lambda item: len(item.encode("utf-8")))
+                    # Three longest originals plus a full cap of longest added
+                    # labels overbounds all realizations, including fewer than
+                    # three originals. Support counts cannot exceed the source
+                    # snapshot's finite number of values.
+                    count = len(store_binding.store(option["exemplar_store_id"]).snapshot.values)
+                    from ...rails.slurp_candidate_proposal import render_candidate_proposal_text
+                    upper_text = render_candidate_proposal_text(
+                        (longest,) * 3,
+                        tuple((longest, count) for _ in range(option["max_candidates"])),
+                    )
+                    blocks.append((upper_text, "value"))
                 previous = list(bound.get(phase, ()))
                 previous.extend(block for block in blocks if block not in previous)
                 bound[phase] = tuple(previous)
@@ -6245,6 +6281,9 @@ class FlightRuntime:
                 live_fit_gate = (
                     self._live_phase_fit_factory or build_live_phase_fit_gate
                 )(self, program, self._fit_base_plan(plan), **fit_options)
+        if (native_config is None and
+                getattr(supply_for_phase, "candidate_proposal_for_context", None) is not None):
+            raise FlightRuntimeError("candidate proposal consumption requires the complete native graph")
         native_binding = None
         native_fit_gate = None
         if native_config is not None:
@@ -6277,6 +6316,9 @@ class FlightRuntime:
                 material_for_phase=binding["material_for_phase"],
                 render_request=render_request, request_gate=native_fit_gate,
                 tools_for_phase=tool_dispatcher, supply_for_phase=supply_for_phase,
+                candidate_proposal_for_context=getattr(
+                    supply_for_phase, "candidate_proposal_for_context", None,
+                ),
                 review_for_phase=review_for_phase,
                 # E8a: where a declared node-context policy reads its
                 # committed, hash-pinned templates from. Unused, and
@@ -7267,6 +7309,10 @@ class FlightRuntime:
             sources["implementation"][knowledge_stores.__name__] = _sha256_file(
                 Path(knowledge_stores.__file__)
             )
+            if getattr(binding["supply_for_store"], "candidate_proposal_for_context", None) is not None:
+                from ...rails import candidate_semantic_supply, slurp_candidate_proposal, released_target_index
+                for module in (candidate_semantic_supply, slurp_candidate_proposal, released_target_index):
+                    sources["implementation"][module.__name__] = _sha256_file(Path(module.__file__))
         if (
             getattr(spec, "query_source", {}).get("kind")
             == phase_supply.SEALED_SEGMENT_VECTORS_KIND
@@ -9469,6 +9515,14 @@ class FlightRuntime:
                     validate_native_episode_terminal_policy,
                 )
 
+                raw_stores = self._composed.values.get("knowledge_stores", {})
+                proposal_declared = any(
+                    "exemplar_candidate_proposal" in spec
+                    for store in raw_stores.values()
+                    for spec in store.get("candidate_supply", {}).values()
+                )
+                if proposal_declared != ("candidate_proposal" in episode_receipt):
+                    raise FlightRuntimeError("candidate proposal receipt differs from its declared system policy")
                 raw_native = self._composed.values.get("native_episode")
                 choice = episode_receipt.get("system_policy_decision")
                 if policy_catalog is not None:

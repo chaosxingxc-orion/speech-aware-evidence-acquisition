@@ -1,0 +1,185 @@
+{
+  "base_commit": "b06017e653cb43cae9bf1c0a6ecec79d5fee3b7c",
+  "checks": [
+    {
+      "args": [],
+      "exit_code": 0,
+      "log": "/home/chao/candidate-recovery-engineering_base_check.log",
+      "log_sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0",
+      "name": "engineering_base_check",
+      "seconds": 4.84
+    },
+    {
+      "args": [],
+      "exit_code": 0,
+      "log": "/home/chao/candidate-recovery-harness_admission_check.log",
+      "log_sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911",
+      "name": "harness_admission_check",
+      "seconds": 0.36
+    },
+    {
+      "args": [],
+      "exit_code": 0,
+      "log": "/home/chao/candidate-recovery-results_ledger_check.log",
+      "log_sha256": "0426590fecc31f8de63ddacab92a3e818106a70b9c33abd048d66228c5d7b7c6",
+      "name": "results_ledger_check",
+      "seconds": 0.13
+    },
+    {
+      "args": [],
+      "exit_code": 0,
+      "log": "/home/chao/candidate-recovery-tool_catalog_check.log",
+      "log_sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc",
+      "name": "tool_catalog_check",
+      "seconds": 0.59
+    },
+    {
+      "args": [],
+      "exit_code": 0,
+      "log": "/home/chao/candidate-recovery-experiment_handoff_check.log",
+      "log_sha256": "48655ef211c8f11a9d293d62eaae47e2dce58f81852b0860bcb596247374d0cc",
+      "name": "experiment_handoff_check",
+      "seconds": 0.79
+    },
+    {
+      "args": [],
+      "exit_code": 0,
+      "log": "/home/chao/candidate-recovery-stage3_algorithm_label_check.log",
+      "log_sha256": "e8268dee788bca9d811b3ff70222a9f5205d5ba9a9ae888017e2d1beaa932f47",
+      "name": "stage3_algorithm_label_check",
+      "seconds": 0.21
+    },
+    {
+      "args": [],
+      "exit_code": 0,
+      "log": "/home/chao/candidate-recovery-finite_completion_policy_check.log",
+      "log_sha256": "88e4930b4c055dd9ed068baafa8136de542d6f69cc4bde7d3f2fea5b703ee0d8",
+      "name": "finite_completion_policy_check",
+      "seconds": 0.18
+    },
+    {
+      "args": [
+        "--output",
+        "/home/chao/candidate-recovery-openjiuwen_native_reuse_check-proof.json"
+      ],
+      "exit_code": 0,
+      "log": "/home/chao/candidate-recovery-openjiuwen_native_reuse_check.log",
+      "log_sha256": "ffab0940e98b87d165091c8031da353406bbbc1118d0c61af5e2063f261f050a",
+      "name": "openjiuwen_native_reuse_check",
+      "seconds": 3.64
+    },
+    {
+      "args": [
+        "--output",
+        "/home/chao/candidate-recovery-derived_media_confinement_check-proof.json"
+      ],
+      "exit_code": 0,
+      "log": "/home/chao/candidate-recovery-derived_media_confinement_check.log",
+      "log_sha256": "d25d11404b03647b37d257ab8e0fa7e746c18420e2418363488b85ed97d9bbed",
+      "name": "derived_media_confinement_check",
+      "seconds": 10.64
+    },
+    {
+      "exit_code": 0,
+      "log": "/home/chao/candidate-recovery-engineering-final.log",
+      "log_sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0",
+      "name": "engineering_base_check",
+      "note": "Final invocation after source changes."
+    },
+    {
+      "exit_code": 0,
+      "log": "/home/chao/candidate-recovery-post-docs-engineering_base_check.log",
+      "log_sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0",
+      "name": "engineering_base_check"
+    },
+    {
+      "exit_code": 0,
+      "log": "/home/chao/candidate-recovery-post-docs-experiment_handoff_check.log",
+      "log_sha256": "a30cab46222d792be0b1d692761bcc3febda01d69cd240922442a01d27c202bd",
+      "name": "experiment_handoff_check"
+    }
+  ],
+  "contacts_added": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "official_scorer": 0,
+    "tokenizer": 0
+  },
+  "coverage": "Not measured for this integration.",
+  "created_at_utc": "2026-09-25T18:51:09.965049+00:00",
+  "files": [
+    {
+      "relpath": "docs/readiness/2026-09-25-candidate-recovery-complete-system-integration.md",
+      "sha256": "804dddc88bff9b531278d81de2f496bc5261262ec41a5615ec1f91893059e1e3"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/bundle/outputs.py",
+      "sha256": "59739c2aab1c6fc47debf3c709d7ad4ac27748d2d84f5b14d53a99a7ef45d45b"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/flight/runtime.py",
+      "sha256": "2b5f1375462ef5c8f46bf7727dbe7ff11fed7c96d560308d1acc7d7bd3a504ca"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/candidate_semantic_supply.py",
+      "sha256": "c8d148b37de3933032251a416a384e26bf20a638260aed5d70e7812b87310249"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_provider.py",
+      "sha256": "a925abb033818dd0060cfe2e551ffa8a3b2d7d0a50816bc65edca32548cd3696"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_stores.py",
+      "sha256": "2740d2e262de8c29f4309c378b4c08c51a206f2ab8ee542b46919cf32099368a"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/native_episode_config.py",
+      "sha256": "f11939a6704b3aec31d622cd8815f39800286d64fae7113e4aad3833cd73948c"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/runner.py",
+      "sha256": "f4a5f8fe5dab7c015f4a0e3fabaa3f881dfdb6d8caeabbbe6c63f90dfddbeb90"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/slurp_candidate_proposal.py",
+      "sha256": "90bb200d64821bb4493ad1e0c83feb795434ec2196cfbb1177e884288f29bbe4"
+    },
+    {
+      "relpath": "tests/unit/test_candidate_recovery_system.py",
+      "sha256": "ad105eeb76f4374b264d02d31e568e5f2dc08f12237dcfcc7fa26ff37dcd083a"
+    },
+    {
+      "relpath": "tests/unit/test_candidate_semantic_proposal_selection.py",
+      "sha256": "b4856a458b72ecf8a75d956fe2424e7b1492368991a888c3fa4759696d585e4e"
+    }
+  ],
+  "flight_admitted": false,
+  "limitations": [
+    "No formal F4 configuration admitted.",
+    "Real request capacity and smoke4 remain pending.",
+    "No real full-system quality result or learned policy update."
+  ],
+  "policy_updated": false,
+  "research_outcomes_read": false,
+  "schema": "saea-model-free-engineering-receipt-v1",
+  "status": "COMPLETE_NATIVE_CANDIDATE_RECOVERY_INTEGRATED_NOT_FLIGHT_ADMITTED",
+  "test_count_note": "Overlapping invocations, not additive unique tests; final source verified by targeted follow-ups.",
+  "test_invocations": [
+    {
+      "log": "/home/chao/candidate-recovery-system-final-tests.log",
+      "log_sha256": "d1f3c9ebf3cb3b41804e8594c1a6657be3be288b75c6c002c825c4cd7978e578",
+      "passed": 442
+    },
+    {
+      "log": "/home/chao/candidate-recovery-final-source-tests.log",
+      "log_sha256": "f4952ff0bd86d188d0f3c2be2667561800a4c0f66b46197e07a252d29d65035b",
+      "passed": 141
+    },
+    {
+      "log": "/home/chao/candidate-recovery-envelope-final-tests.log",
+      "log_sha256": "977ee9573f7a259f762c992104d7005a6be66bf91c3f33bd518f9f382a183295",
+      "passed": 27
+    }
+  ]
+}

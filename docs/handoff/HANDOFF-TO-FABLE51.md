@@ -1,5 +1,34 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
+## Latest implementation: complete candidate-recovery continuation
+
+Read docs/readiness/2026-09-25-candidate-recovery-complete-system-integration.md
+and its same-date receipt under docs/receipts/continuation/. This supersedes the
+older statement that the proposal is not wired into runtime.
+
+The shared named-store route now consumes the actual exemplar selection,
+preserves baseline slot cards, appends bounded added-candidate cards, supplies
+released intent distinctions and freezes one separate proposal across the
+whole native continuation. Solver, Reviewer, Planner and revision consume the
+same source-bound proposal; raw Perception remains intact. Native and bundle
+custody validate actual model-facing proposal text, every role contact and
+finite-stop retention. Historical omitted behavior stays unchanged.
+
+Both complete synthetic policies and four-role finite stops pass. The broad
+affected suite passed 442 tests; final source/envelope follow-ups passed 141
+and 27 tests respectively (overlapping, not additive). All nine offline gates
+passed. Root reviewed the delegated provider selection and implemented/reviewed
+the source router, graph consumption, capacity estimate and seal integration.
+
+There is NO new GPU/scorer contact, result read or learned update. Formal F4
+configuration/preparation/registration, real capacity, smoke4 and full execution
+remain next. The new proposal path refuses context compaction and incompatible
+context transforms; explicitly match strict actual fit in the future policies.
+Do not reuse the old candidate-only Solver wording. Do not resume the completed
+evidence-path queue. The next policies must be compared on terminal full-task
+quality; historical candidate coverage is diagnostic, not promised benefit.
+
+
 ## Latest engineering: common rendering and source-bound proposal
 
 Read docs/readiness/2026-09-25-candidate-recovery-shared-implementation.md and
