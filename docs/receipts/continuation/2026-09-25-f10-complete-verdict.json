@@ -1,0 +1,42 @@
+{
+  "schema": "saea-f10-complete-verdict-v1",
+  "status": "BENEFIT_NOT_PROVEN",
+  "closed": true,
+  "recorded_at_utc": "2026-09-25T13:34:16.486974+00:00",
+  "primary_quality_pass": false,
+  "intent_protection_pass": true,
+  "primary_delta_pp": 0.33663578012987916,
+  "primary_ci95_pp": [
+    -1.4185470137923333,
+    2.285300872943588
+  ],
+  "intent_one_sided95_lower_pp": -1.1199999999999999,
+  "generation_calls_including_smoke": 5153,
+  "official_full_score_jobs": 2,
+  "model_contacts_added_by_analysis": 0,
+  "scorer_contacts_added_by_analysis": 0,
+  "source_binding": {
+    "path": "docs/readiness/2026-09-25-slurp-stage3-f10-v1/analysis-binding-sealed-v1.json",
+    "sha256": "ff7e758a35096bb50e604010979839a510db693aeaf56d980a2aec9d7d9f7ba2"
+  },
+  "artifacts": {
+    "comparison.json": {
+      "relpath": "analysis/SAEA-SLURP-STAGE3-F10-OFFICIAL-READ-V1/comparison.json",
+      "sha256": "2502cad66e97dcee2d545b12a9e3c67f6fe9e25ef3defdce9088a7494ea47020"
+    },
+    "comparison-v2.json": {
+      "relpath": "analysis/SAEA-SLURP-STAGE3-F10-OFFICIAL-READ-V1/comparison-v2.json",
+      "sha256": "40f3f40ae37a3dd51030a0091ba4df1ec6748abe06de1b8a96db587e103679ff"
+    },
+    "input-supplement.json": {
+      "relpath": "analysis/SAEA-SLURP-STAGE3-F10-OFFICIAL-READ-V1/input-supplement.json",
+      "sha256": "3b611b5fe6274a52080de8be5aacf8d79d842a7f93ee091bbd4c0add2a941c17"
+    }
+  },
+  "supersession": "comparison-v2 corrects only explicit fallback-disposition summaries; all efficacy metrics, intervals and source bindings agree.",
+  "report": {
+    "path": "docs/results/2026-09-25-slurp-f10-complete-verdict.md",
+    "sha256": "c4a784aab91f6ebb775c008f8c4b4919eb3b41ec1e49131e4e53dcd3ad538b09"
+  },
+  "next_action": "Keep incumbent knowledge. Prepare matched complete native policies with problem-directed review and on-demand semantic target lookup; no default promotion from F10."
+}

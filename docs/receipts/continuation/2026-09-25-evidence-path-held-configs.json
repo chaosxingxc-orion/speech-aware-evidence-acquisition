@@ -1,0 +1,73 @@
+{
+  "schema": "saea-held-config-verification-v1",
+  "status": "MODEL_FREE_CONFIGURATION_ONLY",
+  "recorded_at_utc": "2026-09-25T13:38:14.119881+00:00",
+  "new_model_contacts": 0,
+  "related_native_tool_tests_passed": 55,
+  "complete_arm_runtime_difference": [
+    "phase_tools"
+  ],
+  "compiled_max_contacts_per_row": 11,
+  "source_authority": "Reviewer-only existing semantic lookup; Solver answers and Planner routes",
+  "missing": [
+    "formal protocol and budget registration",
+    "source-index/prepared-supply binding",
+    "actual capacity receipt",
+    "four-row model engineering proof"
+  ],
+  "config_files": {
+    "configs/baseline/slurp-native-stage3-evidence-path-control-r01c-v1-baseline-v1.json": "ee2de56569658619309dfa72a1379c8236063576bfed69bae75a0bd1814251f0",
+    "configs/baseline/slurp-native-stage3-evidence-path-tools-r01c-v1-baseline-v1.json": "c8310dd3f675b72a1b2697c9f15c31deaad22770e2af574429e9731cf14721a0",
+    "configs/baseline/slurp-native-stage3-evidence-path-tools-smoke-4-r01c-v1-baseline-v1.json": "85604484f40fc9d13742ce9342bda496e8011275b39de5f2369b6191403b6d8d",
+    "configs/experiment/slurp-native-stage3-evidence-path-control-r01c-v1.json": "013227a88979ff5ecbd0e6b6babfed66ada5f2f0b4d24b9a2c794d7141eff8de",
+    "configs/experiment/slurp-native-stage3-evidence-path-tools-r01c-v1.json": "46541977e34148726e9577f23f4447905574c75ec96a0d7b57e06fb632bcd701",
+    "configs/experiment/slurp-native-stage3-evidence-path-tools-smoke-4-r01c-v1.json": "e4aabd20cde056908e6cbe1624838eb094543e3588621f382830e66c90b1da55",
+    "configs/campaign/slurp-native-stage3-evidence-path-control-r01c-v1.json": "7fb35e3113f555a54087a10de268589c6e6e2ef86f4c5ec2674c94454a27cfea",
+    "configs/campaign/slurp-native-stage3-evidence-path-tools-r01c-v1.json": "0bca9d56b7115fe6e6ca6cdfa6cff7feaebf1bf54153aa45ec37f14b7b325cc7",
+    "configs/campaign/slurp-native-stage3-evidence-path-tools-smoke-4-r01c-v1.json": "87ad1ca57b655d3302df73dcedb50e6d8ce335d14f0e482b16db714adcf9c4b7"
+  },
+  "checks": [
+    {
+      "check": "engineering_base_check.py",
+      "exit": 0,
+      "summary": [
+        "engineering base check: PASS"
+      ]
+    },
+    {
+      "check": "results_ledger_check.py",
+      "exit": 0,
+      "summary": [
+        "results ledger check: PASS (53 row(s), 66 run id(s) registered and closed, 157 cited path(s) present, 15 status word(s) re-parsed from the verdict's first line, 0 row(s) compared against the umbrella, 103 finding(s) reported)"
+      ]
+    },
+    {
+      "check": "tool_catalog_check.py",
+      "exit": 0,
+      "summary": [
+        "tool catalog check: PASS (34 tools, 1 extra pin(s), 17 module(s) clean of framework clients)"
+      ]
+    },
+    {
+      "check": "stage3_algorithm_label_check.py",
+      "exit": 0,
+      "summary": [
+        "stage3 algorithm label check: PASS (43 Stage-3 cell(s) of 483 experiment fragment(s); 4 allowlisted (pre-decision-101, flight-pinned))"
+      ]
+    },
+    {
+      "check": "finite_completion_policy_check.py",
+      "exit": 0,
+      "summary": [
+        "native episode failure-mode policy check: PASS (native_episode.finite_completion_policy='deliver-latest-or-abstain' and native_episode.react_exhaustion_policy='continue-without-answer'; 88 in-scope plan(s), 75 baseline(s) read; out of scope: 2 with no ledger row, 228 consumed, 0 naming no run id, 0 not-live cell(s))"
+      ]
+    },
+    {
+      "check": "harness_admission_check.py",
+      "exit": 0,
+      "summary": [
+        "harness admission check: PASS (17 module(s), 11 barred from every default plan, 2 default plan(s))"
+      ]
+    }
+  ]
+}

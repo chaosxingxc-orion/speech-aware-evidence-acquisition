@@ -18,7 +18,7 @@ implemented. They preserve all roles, tools, state/transition references, fallba
 and final delivery; terminal score data is separate from actor context. The
 delivery-normalization diagnostic now uses the existing deterministic replay
 validator. New engineering evidence is model-free, not an algorithm gain.
-Current F10 remains on its frozen checkout and independent background chain.
+F10 finished on its frozen checkout and independent background chain; its full paired read is closed below.
 Whole-system reader validation is now complete on real sealed PLAN and PLANR:
 both 625-row trajectories exported and source-bound, followed by offline attribution.
 Every delivered exact-entity count and intent indicator matched sealed official rows.
@@ -57,16 +57,17 @@ delivery path. Interface correction is a common engineering control, not an RL
 gain. Map onto existing native seams, then register full-system sampling and
 evaluation; do not stop at optimizing Solver supply count.
 
-Current execution verified 2026-09-25 at 12:58 UTC (05:58 Seattle).
+Current execution: the F10 chain completed at 13:15:57 UTC (06:15 Seattle) on 2026-09-25. The paired read is complete; the next GPU family is not launched.
 This is the living record. Superseded snapshots remain in Git history through
 fe0d0ee2 and are not live instructions. Preserve immutable records and verdicts.
 
 ## Read this first
 
-- F10 is RUNNING: control625 completed, finalized and passed the operational
-  inspection at 12:04:44 UTC; treatment625 started automatically at 12:05:11 UTC.
-  No task scores were read. Paired analysis waits for both complete arms.
-  No owner decision blocks the independent chain.
+- F10 is CLOSED, BENEFIT_NOT_PROVEN. Both 625 arms finalized and scored once.
+  SLU-F1 59.5717 -> 59.9083, +0.3366 pp CI95 [-1.4185, 2.2853].
+  Intent protection passes; primary quality does not. Empty exact FP -22,
+  nonempty exact FN +13. Keep the incumbent representation; no rescue subgroup.
+  Report: docs/results/2026-09-25-slurp-f10-complete-verdict.md.
 - VAR-1 and VERIFY-1 are complete, without a stable supply winner or proven
   selector benefit. VAR-2 is CLOSED after its only recovery also failed.
 - Finite policy integration passes 118 tests; no formal policy GPU cell has run.
@@ -98,52 +99,32 @@ Use /home/chao/.venvs/speechrl/bin/python, explicit checkout PYTHONPATH,
 PYTHONDONTWRITEBYTECODE=1 and python -B. No shared editable reinstall.
 Repository documents and all model-facing material are English.
 
-## Independent F10: current execution
+## F10 complete execution and decision
 
-Task SAEA-F10-Continuation-20260925 started at 10:47:15 UTC.
-Sequence: treatment smoke4 -> fresh control625 -> empty-contract treatment625.
-Each full arm receives one complete official score. Paired analysis waits for
-BOTH sealed arms and pinned sources.
+Task SAEA-F10-Continuation-20260925 finished at 13:15:57 UTC. The four-row smoke
+used 16 model contacts. Control 625 used 2585 contacts, treatment 625 used 2552, for
+5153 total. Each full arm had exactly one complete official scoring job.
 
-- Smoke passed 10:48:43 UTC, 16 generation contacts.
-- Control started 10:48:53 UTC and exited successfully at 12:04:40 UTC.
-  Operational inspection at 12:04:44 found FINALIZED, COMPLETED, 625 distinct
-  outputs and one score job. Generation cost: 2,585 calls. No task metrics read.
-  Five finite completions and one revision-limit disposition remain in the roster.
-- Treatment started 12:05:11 UTC on the same frozen service after a passing
-  prelaunch check. The compact status reports OPENED with no full manifest.
-- At 12:58 UTC the service was healthy, 22,988 MiB resident, all four slots busy,
-  GPU utilization 64%. This is one sample, not continuous utilization.
-  The service-wide request counter is not an arm-completed-row count.
-- Frozen flight: /home/chao/saea-worktrees/fable-batch-flight,
-  commit 54b6e151481129f4e1915c37f42a88ade687930b through generation AND scoring.
-- Launcher 7897d37ffa6a2200717af213cc82f0aed61e307c only adds explicit
-  failed-predecessor closure dispatch; it does not change this flight runtime.
-- Entry: scripts/flights/batch/batch_chain_f10.sh.
-- Log /home/chao/batch-chain-f10.out; status /home/chao/f10-chain-status.jsonl;
-  own stop /home/chao/f10-chain-STOP.
-- Shared files: /home/chao/batch-queue.json, /home/chao/batch-status.jsonl,
-  /home/chao/batch-STOP.
-- Serving session serving-slurp-native-candidate-five-train-a-np4-v1:
-  decoder-only --no-mmproj, total context 98,304, four 24,576 slots, output512.
-  Do not change geometry in flight.
-- Data root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data.
-- Explicit release: coordination/slurp-stage3-f10-v1/closed-predecessor-v1.json,
-  SHA c264123858aad1bc93968c391149ccf967bb216ca47c1c46d42e1d422974e206.
-- Launch receipt: docs/receipts/continuation/2026-09-25-f10-launch.json.
+The control campaign ran 10:48:53-12:04:40 UTC; treatment 12:05:11-13:15:34 UTC.
+The frozen flight remained 54b6e151481129f4e1915c37f42a88ade687930b through scoring.
+The resident decoder-only service remains available; no new GPU family is live.
 
-F10 changes empty-entity example rendering only. All 8,554 keys remain:
-5,813 nonempty values unchanged, 2,741 empty values re-rendered (32.0435%).
-All R01 and other required held-out exclusions remain; zero encoding contacts.
-Distinguish this from the older 31.5% pool and the 191/625 gold-empty evaluation rows.
+All 625 paired first Solver requests received identical ordered 20 exemplar IDs.
+There were 2,414 empty examples among 12,500 selections per arm; 176 rows saw none.
+Empty-gold exact FP 142 ->120, nonempty exact FN 384 ->397; QA accounts for 21 of
+the net 22 empty-FP reduction. This is a descriptive tradeoff, not a new policy.
 
-Registration: docs/readiness/2026-09-25-slurp-stage3-f10-v1/.
-The analysis binding template contains intentional null hashes; create a bound
-instance only after both arms seal. Primary construction decision is treatment
-minus fresh control pooled SLU-F1 CI95 lower > 0, with intent one-sided CI95
-lower > -1.44 pp. Report natural/equal weighting, all strata, empty false
-positives, nonempty false negatives/positives and cost. Passing produces a
-construction candidate requiring replication, not a stable-gain claim.
+The primary CI95 crosses zero, so the representation variant is closed under
+its prospective protocol. The intent guard passes. No default change, selected
+subgroup application or fresh-data claim follows.
+
+Binding: docs/readiness/2026-09-25-slurp-stage3-f10-v1/analysis-binding-sealed-v1.json.
+Receipt: docs/receipts/continuation/2026-09-25-f10-complete-verdict.json.
+External artifacts: analysis/SAEA-SLURP-STAGE3-F10-OFFICIAL-READ-V1/ under DATA.
+Use comparison-v2.json. comparison.json is preserved as superseded: the reader
+missed terminal_disposition.reason. Corrected finite-completion rows are 5/8 and
+revision-limit rows 1/1; all task metrics and intervals are unchanged. No model
+or official scoring replay occurred. The shared reader's 18 tests pass.
 
 ## Independent execution and monitor
 
@@ -265,7 +246,7 @@ Details:
 docs/readiness/2026-09-25-finite-policy-runtime-integration.md and
 docs/receipts/continuation/2026-09-25-finite-policy-runtime-integration.json.
 
-Existing implementation to reuse next: FlightRuntime._acquisition_requery_binding
+Existing implementation note: FlightRuntime._acquisition_requery_binding
 already includes E36b. With max_items_per_acquisition declared it searches the
 whole released composite snapshot, excludes already-held values and applies the
 registered token/IDF policy. Without that declaration it preserves the empty
@@ -275,34 +256,33 @@ does not establish useful evidence or a quality result.
 
 ## Next execution and algorithm plan
 
-The complete-system design above supersedes the older supply-only progression.
+1. F10 is closed. Keep the incumbent minus-R01 knowledge.
+2. Prefer the existing native target-knowledge lookup tool for the first
+   coordinated evidence policy. Its schema already requires a named store,
+   candidate IDs and the distinction to resolve, and keeps actual call/result
+   custody. It avoids the diagnosed lexical protocol-to-query path.
+3. Three thin held cells now compose: evidence-path control 625, tools 625 and
+   tools-smoke-4. Both full arms use the existing evidence-review instruction,
+   reserve-final-report iteration policy and unchanged Solver/Planner. Their
+   only runtime difference is Reviewer authority for the existing semantic tool.
+   No new executor, controller, query parser or knowledge builder was added.
+4. Finish formal registration, source-index/prepared-supply verification, exact
+   capacity and four-row engineering proof; then use the independent queue.
+   Every compiled native program has max_contacts 11; full generation ceilings
+   are 6,875 each. The valid semantic tool ceiling is four executions per row.
+   No model/tokenizer contact is yet authorized by the held fragments alone.
+5. Read complete final quality and cross-node repairs/harms; retain missing and
+   untriggered paths. The initial candidate contract is unchanged, so this cell
+   does not claim to solve missing-gold candidate coverage.
+6. Use executable coordinated actions for subsequent trajectory sampling and
+   external policy/experience updates. Compare adaptive policy to the best fixed
+   complete system. Keep the supply bandit as a restricted comparator.
 
-1. Seal both F10 arms, bind sources, read the registered comparison. Retain the
-   old representation if unqualified; replicate a positive result before stable
-   adoption. Do not change this running experiment.
-2. The PLAN/PLANR complete trajectory read is done. Use the linked full-system
-   attribution to prepare the next evidence acquisition/repair policy. Preserve
-   terminal failures and unknown instrumentation. Do not infer causality from the
-   descriptive wrong-row classes or copy them into runtime state.
-3. Admit a small set of coherent system policies from named evidence deficits.
-   Use matched combinations to measure interactions, rather than a large Cartesian
-   product of independent component knobs. Compare every policy's full terminal
-   outcome with the locked system and strongest fixed system policy.
-4. Register full-horizon real request capacity, four-row engineering proof,
-   configuration, complete trajectory schedules, plans and budgets. Reuse the
-   independent queue and freeze runtime at the next execution boundary.
-5. Complete full-system sampling -> terminal feedback -> external memory/policy
-   update -> re-execution. Freeze policies within each construction round; log
-   pre-action states and true selection propensities. Multi-step credit requires
-   an explicit estimator, not the same terminal scalar blindly copied to all nodes.
-6. Run same-space scholarly baselines: MemRL-style external utility updates and
-   full Training-Free GRPO grouped trajectories, feedback, experience update and
-   re-execution. Keep the finite supply contextual bandit as a restricted comparator.
-   Its existing two-round balanced then 80/20 schedule is an engineering proposal,
-   not the entire Stage-3 optimization space.
-7. Freeze learning for authorized exposed regression, compare complete policies,
-   and replicate before stable-gain claims. Other datasets follow a stable SLURP
-   system; fresh DEV/test stay closed.
+The evidence-path design and limits are in
+docs/readiness/2026-09-25-slurp-stage3-evidence-path-v1/README.md.
+The 55 related existing native-tool tests pass. Keep registration and new cells
+held until all named requirements are actually bound; do not silently run them.
+
 
 The existing finite-policy implementation still needs decision/terminal-source
 credit and explicit action-not-reached handling before a formal admission. Do not
@@ -328,7 +308,7 @@ Do not divide by row-mean ROLL-AA intervals to claim threefold power, or promise
 
 ## Owner decisions
 
-None blocks current authorized work. Root owns F10 interpretation and bounded
+None blocks current authorized work. Root has closed F10 and owns bounded
 action admission under the approved plan. A new decision is needed before fresh
 DEV/test access, reopening a closed family, changing data isolation/claim scope,
 or materially expanding experimental scope. Ordinary implementation or an

@@ -2524,7 +2524,7 @@
       "preregistration": "docs/readiness/2026-09-08-slurp-logprob-judge-probe-v1-preregistration.md",
       "status": "NOT ADMITTED",
       "status_source": "h1",
-      "status_quote": "# Verdict \u2014 the SLURP logprob-as-judge probe: **NOT ADMITTED**",
+      "status_quote": "# Verdict — the SLURP logprob-as-judge probe: **NOT ADMITTED**",
       "pending": false,
       "comparator": {
         "text": "The sealed closed-list direct request is unchanged except for decoding_params.logprobs=true and top_logprobs=5. The admission bars concern the confidence signal; the greedy own-null replicate is the latency reference, not a replacement task baseline.",
@@ -3797,6 +3797,18 @@
       "meaning": "625 choices complete. SLU-F1 +0.7009pp CI95[-0.2551,1.6507] versus mean-single. Intent guard passes; no promotion or expansion.",
       "run_ids": [
         "SAEA-SLURP-STAGE3-VERIFY-1-RECOVERY-V1"
+      ]
+    },
+    {
+      "date": "2026-09-25",
+      "cell_id": "SLURP-STAGE3-F10",
+      "status": "BENEFIT_NOT_PROVEN",
+      "source": "docs/results/2026-09-25-slurp-f10-complete-verdict.md",
+      "source_sha256": "c4a784aab91f6ebb775c008f8c4b4919eb3b41ec1e49131e4e53dcd3ad538b09",
+      "meaning": "Two complete625 arms. Official SLU-F1 +0.3366pp CI95[-1.4185,2.2853]; intent protection passes. Empty FP -22, nonempty FN +13. Representation variant closed without admission.",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-F10-CONTROL-R01C-V1",
+        "SAEA-SLURP-STAGE3-F10-EMPTY-R01C-V1"
       ]
     }
   ]

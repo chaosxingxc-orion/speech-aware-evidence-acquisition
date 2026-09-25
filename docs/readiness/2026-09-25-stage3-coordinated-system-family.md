@@ -2,7 +2,7 @@
 
 Status: root design following owner system-level steering and complete-source
 diagnostics. Not a GPU registration or a finding of algorithm benefit. F10
-continues unchanged; fresh DEV and test remain closed.
+is complete and not qualified; fresh DEV and test remain closed.
 
 ## Decision and empirical basis
 
@@ -143,8 +143,8 @@ one numerical update is not a full reproduction of those methods.
 
 ## Immediate sequence and stopping conditions
 
-- Finish F10's independent chain and its already registered complete paired read.
-  Preserve its representation-only interpretation even if it improves the system.
+- F10 is closed with benefit not proven. Keep its representation-only interpretation
+  and the incumbent knowledge; no selected-scenario rescue.
 - Land the complete-trajectory, availability and query-surface reports in master,
   and maintain HANDOFF-TO-FABLE51.md.
 - Map the above interface to the existing native configuration and typed state
@@ -160,3 +160,20 @@ one numerical update is not a full reproduction of those methods.
 No new owner preference is needed to continue the authorized SLURP construction
 work. A proposed expansion to closed data or a changed scientific objective would
 need a concrete separate decision. Existing closed lines remain closed.
+
+## Implementation choice after inspecting the existing framework
+
+Use the existing on-demand semantic target-knowledge tool for the first family.
+Its request already names a store, candidate identities and the distinction to
+resolve; existing source-bound indices connect authored knowledge to consumption.
+This avoids interpreting arbitrary Reviewer/protocol text as a lexical query.
+Reviewer may invoke it during its native tool loop, then Planner chooses whether
+Solver should revise with the recorded result. No new acquisition framework is
+needed. E36b remains available, but its unchanged raw-review policy stays held.
+
+Reuse probes/slurp_native_role_reviewer_evidence_v1.txt with no mandatory call,
+and reserve-final-report in both matched arms. Expose only semantic lookup to
+the treatment Reviewer; omit the duplicated task-contract tool. Keep all other
+runtime fields matched. See the evidence-path readiness package for concrete
+held cells and remaining admission work. This is a complete fixed-system policy
+comparison preparing actions for learning, not an adaptive RL result.

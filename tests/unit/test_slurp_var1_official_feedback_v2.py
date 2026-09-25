@@ -310,3 +310,18 @@ def test_two_arm_recipe_refuses_nonfinal_attempt_before_any_arm_load(var1_world,
     with pytest.raises(reader.FeedbackReadError, match="FINALIZED"):
         reader.load_comparison_sources(var1_world["repo_root"], var1_world["data_root"], recipe)
     assert loaded == []
+
+
+def test_fallback_flags_include_recorded_terminal_reasons(monkeypatch, tmp_path):
+    phases = {"results": [
+        {"sample_id": "finite", "native_episode_receipt": {
+            "terminal_disposition": {"reason": "finite_completion"}}},
+        {"sample_id": "limit", "native_episode_receipt": {
+            "terminal_disposition": {"reason": "revision_limit"}}},
+        {"sample_id": "ok", "native_episode_receipt": {}},
+    ]}
+    monkeypatch.setattr(reader.var1.bank, "load_phase_results", lambda *_: phases)
+    flags = reader._explicit_fallback_flags(tmp_path, "run", ["finite", "limit", "ok"])
+    assert flags["finite"]["finite_completion"]
+    assert flags["limit"]["revision_limit"]
+    assert not any(flags["ok"].values())

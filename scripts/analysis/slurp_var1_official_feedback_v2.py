@@ -100,7 +100,7 @@ def _exact_output_ids(path: Path, expected_ids) -> None:
         raise FeedbackReadError(f"{path.name}: delivered ids do not exactly match roster")
 
 
-FALLBACK_FIELDS = ("finite_completion", "react_exhaustion", "planner_action_illegal")
+FALLBACK_FIELDS = ("finite_completion", "react_exhaustion", "planner_action_illegal", "revision_limit")
 
 
 def _explicit_fallback_flags(directory: Path, run_id: str, expected_ids) -> dict:
@@ -113,8 +113,9 @@ def _explicit_fallback_flags(directory: Path, run_id: str, expected_ids) -> dict
             raise FeedbackReadError(f"{run_id}: repeated phase sample id")
         receipt = item.get("native_episode_receipt") or {}
         dispositions = receipt.get("dispositions") or {}
+        terminal_reason = (receipt.get("terminal_disposition") or {}).get("reason")
         result[sid] = {
-            field: bool(receipt.get(field) or dispositions.get(field))
+            field: bool(receipt.get(field) or dispositions.get(field) or terminal_reason == field)
             for field in FALLBACK_FIELDS
         }
     if set(result) != set(expected_ids):

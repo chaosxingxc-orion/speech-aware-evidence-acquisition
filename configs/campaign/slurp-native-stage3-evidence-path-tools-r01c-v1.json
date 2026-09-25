@@ -1,0 +1,9 @@
+{
+  "schema": "saea-campaign-plan-v1",
+  "cells": [
+    {
+      "experiment": "slurp-native-stage3-evidence-path-tools-r01c-v1",
+      "cell": "slurp-native-stage3-evidence-path-tools-r01c-v1"
+    }
+  ]
+}
