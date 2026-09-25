@@ -88,7 +88,8 @@ def test_intent_margin_is_explicit_and_not_borrowed():
                      draws=20,intent_ni_margin_pp=-1)
 
 
-def test_bound_file_read_and_no_overwrite(tmp_path):
+@pytest.mark.parametrize("registered_run", [read.RUN_ID, "SAEA-SLURP-STAGE3-VERIFY-1-RECOVERY-V1"])
+def test_bound_file_read_and_no_overwrite(tmp_path, registered_run):
     from types import SimpleNamespace
     from speech_aware_evidence_acquisition.rails.phase_material import (
         balanced_sealed_sample_permutations,
@@ -98,7 +99,7 @@ def test_bound_file_read_and_no_overwrite(tmp_path):
     run_dir.mkdir()
     source_manifest=tmp_path/"source-manifest.json"
     source_manifest.write_text("{}", encoding="utf-8")
-    manifest=run_dir/f"{read.RUN_ID}.run-manifest.json"
+    manifest=run_dir/f"{registered_run}.run-manifest.json"
     manifest.write_text("{}", encoding="utf-8")
     roster_path=tmp_path/"roster.json"
     roster_doc={"items":[{"sample_id":sid,"stratum":strata[sid],
@@ -153,14 +154,14 @@ def test_bound_file_read_and_no_overwrite(tmp_path):
             json.dumps(score_doc),encoding="utf-8")
     (score_root/"render-manifest.json").write_text(
         json.dumps({"samples":5,"copies":copies}),encoding="utf-8")
-    (run_dir/f"{read.RUN_ID}.generation-manifest.json").write_text(
+    (run_dir/f"{registered_run}.generation-manifest.json").write_text(
         json.dumps({"cost":{"calls_used":5,"prompt_tokens_total":100,
                             "completion_tokens_total":20}}),encoding="utf-8")
     source_bundle=SimpleNamespace(
         manifest={"status":"COMPLETED","split":{"role":"discovery"},"run_id":"SOURCE"},
         attempt_state="FINALIZED",split_ids=frozenset(ids),outputs_rows=tuple(source_rows))
     verifier_bundle=SimpleNamespace(
-        manifest={"status":"COMPLETED","split":{"role":"discovery"},"run_id":read.RUN_ID},
+        manifest={"status":"COMPLETED","split":{"role":"discovery"},"run_id":registered_run},
         attempt_state="FINALIZED",split_ids=frozenset(ids),outputs_rows=tuple(verifier.values()))
     def fake_verify(path):
         return source_bundle if Path(path)==source_manifest else verifier_bundle
@@ -168,7 +169,10 @@ def test_bound_file_read_and_no_overwrite(tmp_path):
                 receipt_path=receipt_path,expected_receipt_sha256=read.sha256_file(receipt_path),
                 roster_path=roster_path,score_root=score_root,out_root=tmp_path/"report",
                 expected_rows=5,draws=20,bundle_verifier=fake_verify)
+    if registered_run != read.RUN_ID:
+        kwargs["expected_run_id"] = registered_run
     report=read.run(**kwargs)
+    assert report["bindings"]["verifier_run_id"] == registered_run
     assert report["rows"]==5
     assert (tmp_path/"report"/"report.json").exists()
     assert "chosen_position" not in (tmp_path/"report"/"report.md").read_text()
@@ -182,5 +186,11 @@ def test_bound_file_read_and_no_overwrite(tmp_path):
     kwargs["expected_receipt_sha256"] = read.sha256_file(receipt_path)
     verifier_bundle.manifest["status"] = "PARTIAL"
     with pytest.raises(read.ReadError, match="partial"):
+        read.run(**kwargs)
+    assert not kwargs["out_root"].exists()
+
+    verifier_bundle.manifest["status"] = "COMPLETED"
+    kwargs["expected_run_id"] = "WRONG-REGISTERED-RUN"
+    with pytest.raises(read.ReadError, match="run ID"):
         read.run(**kwargs)
     assert not kwargs["out_root"].exists()

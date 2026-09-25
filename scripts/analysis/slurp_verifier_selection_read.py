@@ -8,6 +8,7 @@ import hashlib
 import json
 import math
 import os
+import re
 from pathlib import Path
 import sys
 
@@ -382,6 +383,7 @@ def _render_source(record):
 def load_bound_inputs(
     *, manifest_path, source_manifest_path, receipt_path, expected_receipt_sha256,
     roster_path, score_root, scorer_id=SCORER, expected_rows=625, bundle_verifier=None,
+    expected_run_id=RUN_ID,
 ):
     """Verify both bundles and every source/score/receipt identity before analysis."""
     from speech_aware_evidence_acquisition.core.bundle import verify_bundle
@@ -395,6 +397,8 @@ def load_bound_inputs(
     spec.loader.exec_module(aggregation)
     build_arms = aggregation.build_arms
 
+    if not isinstance(expected_run_id, str) or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", expected_run_id) is None:
+        raise ReadError("expected verifier run ID must be a plain identity")
     verifier = bundle_verifier or verify_bundle
     manifest_path = Path(manifest_path)
     source_manifest_path = Path(source_manifest_path)
@@ -425,8 +429,8 @@ def load_bound_inputs(
             raise ReadError(f"{name} bundle is not a discovery split")
     if source_bundle.manifest.get("run_id") != source_meta.get("rollout_run_id"):
         raise ReadError("source run ID differs from permutation receipt")
-    if chosen_bundle.manifest.get("run_id") != RUN_ID:
-        raise ReadError("verifier run ID differs from VERIFY-1")
+    if chosen_bundle.manifest.get("run_id") != expected_run_id:
+        raise ReadError("verifier run ID differs from the registered expected identity")
     roster_doc = read_json(roster_path)
     items = roster_doc.get("items")
     if not isinstance(items, list) or len(items) != expected_rows:
@@ -526,7 +530,7 @@ def load_bound_inputs(
     strata = {item["sample_id"]: item.get("stratum") for item in items}
     utterances = {item["sample_id"]: item.get("utterance_id") for item in items}
     generation = read_json(
-        manifest_path.parent / f"{RUN_ID}.generation-manifest.json"
+        manifest_path.parent / f"{expected_run_id}.generation-manifest.json"
     )
     cost = generation.get("cost")
     if not isinstance(cost, dict) or isinstance(cost.get("calls_used"), bool) or (
@@ -550,6 +554,7 @@ def load_bound_inputs(
         if isinstance(active, (int, float)) and not isinstance(active, bool):
             cost["gpu_active_hours"] = active / 3600
     bindings = {
+        "verifier_run_id": expected_run_id,
         "verifier_manifest_sha256": sha256_file(manifest_path),
         "source_manifest_sha256": sha256_file(source_manifest_path),
         "permutation_receipt_sha256": sha256_file(receipt_path),
@@ -566,7 +571,7 @@ def load_bound_inputs(
 def run(*, manifest_path, source_manifest_path, receipt_path, expected_receipt_sha256,
         roster_path, score_root, out_root, scorer_id=SCORER,
         intent_ni_margin_pp=None, draws=DRAWS, seed=SEED, expected_rows=625,
-        bundle_verifier=None):
+        bundle_verifier=None, expected_run_id=RUN_ID):
     """Read and validate before creating the new analysis directory."""
     out_root = Path(out_root)
     if out_root.exists():
@@ -576,6 +581,7 @@ def run(*, manifest_path, source_manifest_path, receipt_path, expected_receipt_s
         receipt_path=receipt_path, expected_receipt_sha256=expected_receipt_sha256,
         roster_path=roster_path, score_root=score_root, scorer_id=scorer_id,
         expected_rows=expected_rows, bundle_verifier=bundle_verifier,
+        expected_run_id=expected_run_id,
     )
     ids, scores, receipt, chosen, strata, utterances, medoid, source_status, cost, bindings = loaded
     report = analyze(
@@ -619,6 +625,7 @@ def main(argv=None):
     parser.add_argument("--repo-root", default=str(ROOT))
     parser.add_argument("--data-root", default=os.environ.get("SPEECHRL_DATA_DIR"))
     parser.add_argument("--scorer-id", default=SCORER)
+    parser.add_argument("--expected-run-id", default=RUN_ID)
     parser.add_argument("--intent-ni-margin-pp", type=float)
     parser.add_argument("--draws", type=int, default=DRAWS)
     parser.add_argument("--seed", type=int, default=SEED)
@@ -642,7 +649,7 @@ def main(argv=None):
             score_root=location(args.source_score_root, data_root),
             out_root=location(args.out_root, data_root), scorer_id=args.scorer_id,
             intent_ni_margin_pp=args.intent_ni_margin_pp,
-            draws=args.draws, seed=args.seed,
+            draws=args.draws, seed=args.seed, expected_run_id=args.expected_run_id,
         )
     except (ReadError, FeedbackError, OSError) as error:
         print(f"REFUSED: {error}", file=sys.stderr)

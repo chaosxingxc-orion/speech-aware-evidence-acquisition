@@ -9,7 +9,7 @@ ATTEMPT=${VERIFY1_ATTEMPT_ID:-attempt-slurp-native-stage3-verify-1-v1-generation
 OUT=${VERIFY1_READ_ID:-SAEA-SLURP-STAGE3-VERIFY-1-READ-V1}
 export PYTHONPATH=$MAIN/src PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2
 exec "$PY" "$MAIN/scripts/analysis/slurp_verifier_selection_read.py" \
- --repo-root "$MAIN" --data-root "$DATA" \
+ --repo-root "$MAIN" --data-root "$DATA" --expected-run-id "$RUN" \
  --manifest "runs/$RUN/$ATTEMPT/$RUN.run-manifest.json" \
  --source-manifest runs/SAEA-SLURP-STAGE3-ROLLOUT-R01-V1/attempt-slurp-native-stage3-rollout-r01-generation-v1/SAEA-SLURP-STAGE3-ROLLOUT-R01-V1.run-manifest.json \
  --receipt docs/receipts/verify1/slurp-stage3-verify-1-material-v1.json \
