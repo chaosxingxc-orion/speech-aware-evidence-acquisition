@@ -1,0 +1,69 @@
+{
+  "arms": {
+    "control": {
+      "execution_profile": "model-free-check",
+      "feedback_role": "construction",
+      "flight_receipts": {
+        "relpath": "runs/SAEA-SLURP-STAGE3-EVIDENCE-PATH-CONTROL-R01C-V1/attempt-slurp-native-stage3-evidence-path-control-r01c-v1-generation/flight-receipts.json",
+        "sha256": "6f8a3f5e007103ea23de9cb2fde230cbc9e0f0ea2fe51eccc0324e28e320e51f"
+      },
+      "manifest": {
+        "relpath": "runs/SAEA-SLURP-STAGE3-EVIDENCE-PATH-CONTROL-R01C-V1/attempt-slurp-native-stage3-evidence-path-control-r01c-v1-generation/SAEA-SLURP-STAGE3-EVIDENCE-PATH-CONTROL-R01C-V1.run-manifest.json",
+        "sha256": "453032a6feecfe090d87d3248401214b02d8501813ee15bff70b510c13fe6f8e"
+      },
+      "phases": {
+        "relpath": "runs/SAEA-SLURP-STAGE3-EVIDENCE-PATH-CONTROL-R01C-V1/attempt-slurp-native-stage3-evidence-path-control-r01c-v1-generation/SAEA-SLURP-STAGE3-EVIDENCE-PATH-CONTROL-R01C-V1.phases.json",
+        "sha256": "4dad9e1517039973712b0752d6e5727895a90a7ccad257c082ba4617451a6d8b"
+      },
+      "schema": "saea-system-feedback-binding-v1",
+      "score_jobs": {
+        "relpath": "runs/SAEA-SLURP-STAGE3-EVIDENCE-PATH-CONTROL-R01C-V1/attempt-slurp-native-stage3-evidence-path-control-r01c-v1-generation/score-jobs.jsonl",
+        "sha256": "7f48e39795282efc87155ae432b1e48b6df54453a60170cbf07b7bfb44ecdeb5"
+      },
+      "scorer_id": "slurp-slu-official-train"
+    },
+    "tools": {
+      "execution_profile": "model-free-check",
+      "feedback_role": "construction",
+      "flight_receipts": {
+        "relpath": "runs/SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-R01C-V1/attempt-slurp-native-stage3-evidence-path-tools-r01c-v1-generation/flight-receipts.json",
+        "sha256": "99b1772b24430055652b7ad69282e6987593925249db25537c42af70a6ef29fc"
+      },
+      "manifest": {
+        "relpath": "runs/SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-R01C-V1/attempt-slurp-native-stage3-evidence-path-tools-r01c-v1-generation/SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-R01C-V1.run-manifest.json",
+        "sha256": "d2b19602933085b462751c7dd952aa75d3fd70560aaa142283f6d28dcb1f0188"
+      },
+      "phases": {
+        "relpath": "runs/SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-R01C-V1/attempt-slurp-native-stage3-evidence-path-tools-r01c-v1-generation/SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-R01C-V1.phases.json",
+        "sha256": "aa8d8607a0b3961d8c87a53ff347e70e653460f305cbba3ef600551b0217c4d7"
+      },
+      "schema": "saea-system-feedback-binding-v1",
+      "score_jobs": {
+        "relpath": "runs/SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-R01C-V1/attempt-slurp-native-stage3-evidence-path-tools-r01c-v1-generation/score-jobs.jsonl",
+        "sha256": "4d47be7a2c5cee70cbef34bb65f90853a7cfc6f13123b4be89023deb6b5bec85"
+      },
+      "scorer_id": "slurp-slu-official-train"
+    }
+  },
+  "comparison": [
+    "control",
+    "tools"
+  ],
+  "execution_profile": "model-free-check",
+  "feedback_role": "construction",
+  "output_relpath": "analysis/SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1",
+  "read_run_id": "SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1",
+  "registration": {
+    "relpath": "docs/readiness/2026-09-25-slurp-stage3-evidence-path-v1/analysis-specification-v1.json",
+    "sha256": "50df8be1ac1407b85843a313419882464575069ad6dccf1ec01a094b5ce75199"
+  },
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+    "rows": 625,
+    "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd",
+    "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
+    "split_role": "discovery"
+  },
+  "schema": "saea-slurp-system-attribution-read-v1",
+  "status": "sealed"
+}

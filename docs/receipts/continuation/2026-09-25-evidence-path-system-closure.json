@@ -1,0 +1,219 @@
+{
+  "analysis_commit_before_closure": "d87af6c0afc54ab520acd8c8cfa86ea0dc9f3931",
+  "closure_checks": [
+    {
+      "exit_code": 0,
+      "log": "/home/chao/evidence-closure-results_ledger_check.log",
+      "log_sha256": "0426590fecc31f8de63ddacab92a3e818106a70b9c33abd048d66228c5d7b7c6",
+      "name": "results_ledger_check"
+    },
+    {
+      "exit_code": 0,
+      "log": "/home/chao/evidence-closure-experiment_handoff_check.log",
+      "log_sha256": "2a21a8f2bb2aa81c00f13148c82d0ab73e79bbba4ef541be46e2293407510ff3",
+      "name": "experiment_handoff_check"
+    },
+    {
+      "exit_code": 0,
+      "name": "git-diff-check"
+    }
+  ],
+  "created_at_utc": "2026-09-25T17:56:40.780045+00:00",
+  "criteria": {
+    "intent_ci90_lower_pp": -2.2399999999999998,
+    "intent_margin_pp": 1.44,
+    "intent_pass": false,
+    "slu_ci95_lower_pp": -0.88273236869975,
+    "slu_pass": false
+  },
+  "flight_commit": "da443cdc1027b3c01034c26485805240ec0e671d",
+  "local_diagnostic_recipes": [
+    {
+      "path": "/home/chao/evidence-path-closure-supplement-20260925.py",
+      "sha256": "e8c01f68e109187a48645bed6bae90260be9479d401f7df7d58b4be9d7411cbd"
+    },
+    {
+      "path": "/home/chao/evidence-path-prefix-diagnostic-20260925.py",
+      "sha256": "d67e400f1f4e7856daa92e00b4cafacba1e1bb0c157414b817b0b48bac96acf9"
+    }
+  ],
+  "model_contacts_added_by_read": 0,
+  "outputs": [
+    {
+      "relpath": "analysis/SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1/closure-supplement.json",
+      "sha256": "206ded0aa3b4229a3b351bb2cc1ac44594ec4d10704924f8f72f1121fa2e7680"
+    },
+    {
+      "relpath": "analysis/SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1/control-feedback-binding.json",
+      "sha256": "21a3356c091eef2302f183f8de8430557303a3bc748401717cdcd9b8e421eb77"
+    },
+    {
+      "relpath": "analysis/SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1/control-system-feedback.json",
+      "sha256": "bcc6246232d9e6ecc13d855f14ced9bad4827291fc0d4eb87c952fda9ba1e16f"
+    },
+    {
+      "relpath": "analysis/SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1/official-comparison.json",
+      "sha256": "432800cbc3482e348345fb6a47fd6995c9154950f72a8dca60de00213a402b98"
+    },
+    {
+      "relpath": "analysis/SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1/prefix-rendering-diagnostic.json",
+      "sha256": "e2b83735b9a3866408fd9b65788c5142f3fe0d1e7ae342640db25503549a6ef4"
+    },
+    {
+      "relpath": "analysis/SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1/read-operation.json",
+      "sha256": "00c71a703909c61c675ccbe2d365f90ab989fc8aadc97bf1f44e73b5923529ff"
+    },
+    {
+      "relpath": "analysis/SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1/system-attribution.json",
+      "sha256": "653a064dd391496f66d4344f695c9d4340d2cbb2bee90b2c99a5a9c4ed47de69"
+    },
+    {
+      "relpath": "analysis/SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1/tools-feedback-binding.json",
+      "sha256": "240d7bed6a581ce80ceb2b4d19f851d6c7a95cdf89af8bf6e2d3956129896f35"
+    },
+    {
+      "relpath": "analysis/SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1/tools-system-feedback.json",
+      "sha256": "050b21beaba5c8410e64de7e1ff038f939c067c2086f0169d282af7eabdf4211"
+    }
+  ],
+  "policy_updated": false,
+  "pure_tool_schema_contrast": "INVALIDATED_BY_PRE_REVIEW_RENDERING_DIFFERENCE",
+  "read_id": "SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1",
+  "read_operation": {
+    "model_contacts_added": 0,
+    "scorer_contacts_added": 0,
+    "steps": [
+      {
+        "command": [
+          "/home/chao/.venvs/speechrl/bin/python",
+          "-B",
+          "scripts/analysis/export_system_feedback.py",
+          "--data-root",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+          "--source-repo-root",
+          "/home/chao/saea-worktrees/fable-batch-flight",
+          "--binding-relpath",
+          "analysis/SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1/control-feedback-binding.json",
+          "--binding-sha256",
+          "21a3356c091eef2302f183f8de8430557303a3bc748401717cdcd9b8e421eb77",
+          "--output",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1/control-system-feedback.json"
+        ],
+        "exit_code": 0,
+        "log": "/home/chao/evidence-path-control-feedback.log",
+        "log_sha256": "ad4d9a77015ae405b0f2564bea52f1cd06d1f5493f5625521aca782b96f76b34",
+        "name": "control-feedback",
+        "seconds": 23.06
+      },
+      {
+        "command": [
+          "/home/chao/.venvs/speechrl/bin/python",
+          "-B",
+          "scripts/analysis/export_system_feedback.py",
+          "--data-root",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+          "--source-repo-root",
+          "/home/chao/saea-worktrees/fable-batch-flight",
+          "--binding-relpath",
+          "analysis/SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1/tools-feedback-binding.json",
+          "--binding-sha256",
+          "240d7bed6a581ce80ceb2b4d19f851d6c7a95cdf89af8bf6e2d3956129896f35",
+          "--output",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1/tools-system-feedback.json"
+        ],
+        "exit_code": 0,
+        "log": "/home/chao/evidence-path-tools-feedback.log",
+        "log_sha256": "480db60f09729389b032fd9eb36a9874e3bb4d2d011135f06e518955fdf3840f",
+        "name": "tools-feedback",
+        "seconds": 22.82
+      },
+      {
+        "command": [
+          "/home/chao/.venvs/speechrl/bin/python",
+          "-B",
+          "scripts/analysis/slurp_var1_official_feedback_v2.py",
+          "--repo-root",
+          "/home/chao/saea-worktrees/codex-stage3-continuation-20260925",
+          "--data-root",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+          "--comparison-recipe",
+          "/home/chao/saea-worktrees/codex-stage3-continuation-20260925/docs/readiness/2026-09-25-slurp-stage3-evidence-path-v1/analysis-binding-sealed-v1.json",
+          "--out",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1/official-comparison.json"
+        ],
+        "exit_code": 0,
+        "log": "/home/chao/evidence-path-paired-official-counts.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "name": "paired-official-counts",
+        "seconds": 13.94
+      },
+      {
+        "command": [
+          "/home/chao/.venvs/speechrl/bin/python",
+          "-B",
+          "scripts/analysis/slurp_system_trajectory_read.py",
+          "--data-root",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+          "--source-repo-root",
+          "/home/chao/saea-worktrees/fable-batch-flight",
+          "--lock",
+          "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+          "--recipe",
+          "/home/chao/saea-worktrees/codex-stage3-continuation-20260925/docs/readiness/2026-09-25-slurp-stage3-evidence-path-v1/trajectory-binding-sealed-v1.json",
+          "--output",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1/system-attribution.json",
+          "--feedback-sha256",
+          "control=bcc6246232d9e6ecc13d855f14ced9bad4827291fc0d4eb87c952fda9ba1e16f",
+          "--feedback-sha256",
+          "tools=050b21beaba5c8410e64de7e1ff038f939c067c2086f0169d282af7eabdf4211"
+        ],
+        "exit_code": 0,
+        "log": "/home/chao/evidence-path-full-attribution.log",
+        "log_sha256": "e2f73b70ab033cd30b3d43ac2f7628d92390f5c3eb2dc9f2e0bb173eff65f011",
+        "name": "full-trajectory-attribution",
+        "seconds": 159.83
+      }
+    ]
+  },
+  "report": {
+    "relpath": "docs/results/2026-09-25-slurp-evidence-path-system-verdict.md",
+    "sha256": "7f82a10174e38c84ef586e51fdacc65f7dae792143a8641b461af43c42d7f0db"
+  },
+  "root_decision": "Close fixed tools policy; advance separately registered whole-system candidate recovery. No replay or default adoption.",
+  "schema": "saea-system-experiment-closure-v1",
+  "scorer_contacts_added_by_read": 0,
+  "source_bindings": {
+    "arms": {
+      "control": {
+        "attempt_id": "attempt-slurp-native-stage3-evidence-path-control-r01c-v1-generation",
+        "attempt_record_sha256": "e966e6de57a201320a777f85c971a87e6ad6be828da3b8f4b110e567ab3b5f1b",
+        "flight_receipts_sha256": "6f8a3f5e007103ea23de9cb2fde230cbc9e0f0ea2fe51eccc0324e28e320e51f",
+        "generation_manifest_sha256": "44332f3ec0c72ff0732c0a84e31090b184cc7e41e3180a0ee36c892cdc88a52c",
+        "outputs_sha256": "67007870b769da860d406f8be23852901b1e860aca8fdc50fc04e3fe088e5492",
+        "phases_sha256": "4dad9e1517039973712b0752d6e5727895a90a7ccad257c082ba4617451a6d8b",
+        "run_id": "SAEA-SLURP-STAGE3-EVIDENCE-PATH-CONTROL-R01C-V1",
+        "run_manifest_sha256": "453032a6feecfe090d87d3248401214b02d8501813ee15bff70b510c13fe6f8e",
+        "score_jobs_sha256": "7f48e39795282efc87155ae432b1e48b6df54453a60170cbf07b7bfb44ecdeb5",
+        "scores_sha256": "2dd4e150c9e64d73cbfc012826672c49f3291300afb41c56ef8f63034c96541b"
+      },
+      "tools": {
+        "attempt_id": "attempt-slurp-native-stage3-evidence-path-tools-r01c-v1-generation",
+        "attempt_record_sha256": "95c968232b204b8516dfa6919df1b1a9d6bc8faaa6005ec4111908378fe3bd09",
+        "flight_receipts_sha256": "99b1772b24430055652b7ad69282e6987593925249db25537c42af70a6ef29fc",
+        "generation_manifest_sha256": "62a2ac9b26cafd18a2da134f25523c3a8ddb5b56e7a704dfd6310a9eccaf6664",
+        "outputs_sha256": "3279c476060513cde2bb2a3230448ba2b8c39ec276be192e2fb8071b5a368e3a",
+        "phases_sha256": "aa8d8607a0b3961d8c87a53ff347e70e653460f305cbba3ef600551b0217c4d7",
+        "run_id": "SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-R01C-V1",
+        "run_manifest_sha256": "d2b19602933085b462751c7dd952aa75d3fd70560aaa142283f6d28dcb1f0188",
+        "score_jobs_sha256": "4d47be7a2c5cee70cbef34bb65f90853a7cfc6f13123b4be89023deb6b5bec85",
+        "scores_sha256": "5896f063ad9b6e643252d5272bed24b42f031dbde528fd7131f3816cbc8b0ec8"
+      }
+    },
+    "comparison_recipe_sha256": "86cf682065a2adc1058c2f058003919ed49902f6d941d8d61102b9ef9d782f59",
+    "registration_sha256": "50df8be1ac1407b85843a313419882464575069ad6dccf1ec01a094b5ce75199",
+    "roster_sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd",
+    "scorer_id": "slurp-slu-official-train",
+    "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"
+  },
+  "status": "NOT_QUALIFIED"
+}

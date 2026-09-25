@@ -1,5 +1,65 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
+## Current state: evidence-path closed; root whole-system decision
+
+This section supersedes all older live/pending statements below. The durable
+queue completed at 2026-09-25T17:41:07Z; detached read process 64899 completed
+successfully at 17:44:44Z. Campaign 56278, reader 64899, and the older candidate
+read 66519 are finished. Do not poll/restart them or replay either full arm.
+The existing fifteen-minute monitor should stay quiet for unchanged completion.
+The resident service has not been stopped or restarted; no next flight is admitted.
+
+Read docs/results/2026-09-25-slurp-evidence-path-system-verdict.md and
+docs/receipts/continuation/2026-09-25-evidence-path-system-closure.json.
+Both arms retain all 625 inputs, one full official job each and complete
+source validation at frozen da443cdc1027b3c01034c26485805240ec0e671d.
+
+Official SLU-F1 is 60.9636 -> 61.5083 (+0.5448 pp, CI95 [-0.8827,+1.9986]).
+Intent is 71.84 -> 71.20 (-0.64 pp, CI90 [-2.24,+0.96]).
+Neither registered gate passes. Close this fixed availability policy without
+adoption, subgroup rescue, forced calls or automatic repeat. It is not RL gain.
+
+All 701 treatment Reviewer requests expose tools; actual attempts/calls/results
+are zero. Both arms retain every complete reasoning repair at delivery (13/10).
+Sparse useful correction is observed; disappearance of those repairs is not.
+Strict intermediate improvements are not causal component credit.
+
+Root also found an input isolation defect: all 625 first-Perception evidence
+bodies differ by the named-store prefix, although their speech, history, task,
+schema list and evidence IDs match. Enabling named-store tool authority changes
+rendering before review. Thus the result is not a pure Reviewer-schema contrast.
+Keep all sealed artifacts and the original registration. A pinned post-hoc
+derivative proves the exact prefix-only difference; do not rewrite history.
+
+Next implement the planned F4 complete candidate-recovery continuation using
+existing supply/graph interfaces: separate source-bound derived proposals from
+raw Perception, append bounded exemplar-supported candidates, give their intent
+distinctions and slot explanations to the downstream roles, and score delivery.
+Use matched common rendering/role text/program identity; prove this on actual
+requests before a full flight. Do not add a hard candidate-answer filter.
+The existing round-robin total-card cap can redistribute evidence when width
+grows; preserve and audit original selected cards before adding new cards.
+This is a structural risk, not a measured displacement rate.
+
+Existing semantic candidate providers do not restrict Solver's legal answer
+space, while the old Solver prompt requests original candidates. Future common
+role context must explicitly distinguish raw proposals and augmented support.
+Static max-two fallback candidates are not a substitute for dynamic provenance;
+do not reopen that closed fallback experiment or forge model-produced state.
+
+Complete contextual continuation sampling and learning remain outstanding.
+Select actions from their own pre-action states, retain unreached decisions
+without invented credit, use terminal reward, freeze between rounds and
+compare with the best fixed whole policy. Do not label these design/engineering
+steps as established training-free RL improvement. Root owns attribution;
+scripts monitor; generation/scoring remain independent of network and credits.
+
+## Historical handoff entries
+
+Older timestamps and pending/running descriptions below are retained as history.
+Use the current-state section above for dispatch and monitoring.
+
+
 ## Latest root result: candidate support and complete-system recovery
 
 The candidate-support read completed successfully in 727.24 seconds. Session

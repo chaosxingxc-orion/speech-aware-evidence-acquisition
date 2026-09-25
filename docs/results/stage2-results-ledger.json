@@ -3822,6 +3822,19 @@
         "SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1",
         "SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-V1"
       ]
+    },
+    {
+      "date": "2026-09-25",
+      "cell_id": "SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1",
+      "status": "NOT_QUALIFIED",
+      "source": "docs/results/2026-09-25-slurp-evidence-path-system-verdict.md",
+      "source_sha256": "7f82a10174e38c84ef586e51fdacc65f7dae792143a8641b461af43c42d7f0db",
+      "receipt": "docs/receipts/continuation/2026-09-25-evidence-path-system-closure.json",
+      "meaning": "Complete625 pair: official SLU +0.5448 pp CI95 [-0.8827,+1.9986]; intent -0.64 pp CI90 [-2.24,+0.96]. Neither gate passes. Actual tool calls zero; earlier evidence-prefix difference invalidates pure schema isolation. Fixed-policy diagnostic, no learning update or default adoption.",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-EVIDENCE-PATH-CONTROL-R01C-V1",
+        "SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-R01C-V1"
+      ]
     }
   ]
 }
