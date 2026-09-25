@@ -27,14 +27,25 @@ diagnostics. Disappearance of these repairs at final delivery is not.
 The root retains scientific attribution and decisions; the read-only helper
 inspected graph integration only and did not monitor or read current outcomes.
 
-## Pending read operation after the active tools campaign
+## Detached read operation after the active tools campaign
 
-As of 2026-09-25T16:34Z, the tools campaign PID 56278 remains live with its
-original identity. A model-free read operation is waiting on that same process
-in Codex execution session 29488. It has not read either arm's task outcomes.
-Its 20-minute observation deadline does not indicate a flight failure; if it
-expires, inspect the same campaign and existing analysis outputs before resuming
-analysis. Never replay generation or official scoring.
+The earlier execution-session waiter 29488 ended at its observation deadline
+while the original tools campaign remained live. No source binding or outcome
+read had begun. This was not a flight failure.
+
+At 2026-09-25T16:53:27Z, the same registered model-free read was launched as
+detached WSL process/session 64899, waiting for campaign PID 56278 with its
+exact cell identity. Its script is
+/home/chao/evidence-path-registered-read-20260925.py and its log is the same
+stem with .log. The .job.json file records launch and source identity; the
+.exit.json file will record completion/failure. The repository launch receipt
+is docs/receipts/continuation/2026-09-25-evidence-path-detached-read.json.
+
+It runs independently of Codex, network and credits and makes no model or
+scorer calls. Its twelve-hour observation deadline is not flight failure or
+replay authority. Do not start another waiter or overwrite partial outputs.
+Keep the implementation checkout's analysis code unchanged while the read
+is pending; documentation-only integration does not change that code.
 
 After the campaign exits, the operation requires both manifests COMPLETED,
 both attempts FINALIZED, exactly one successful full official job per arm,
@@ -49,8 +60,10 @@ A failure may leave read-operation-partial.json and already completed immutable
 exports; verify and reuse their pins before resuming, rather than overwrite.
 
 The GPU campaign and official scorer remain in the independent durable WSL
-batch chain. This analysis waiter is not their parent and is not required for
-their progress. No new GPU flight, tool use or scorer contact was authorized.
+batch chain. This detached analysis process is not their parent and is not
+required for their progress. No new GPU flight, tool use or scorer contact was
+authorized. Windows/WSL shutdown can still interrupt processes; preserve source
+artifacts and inspect receipt state instead of automatically replaying.
 
 Root also rechecked the prior fixed-Whisper diagnosis: independent initial
 drafts explain much of its paired discordance, and evidence arrival did not

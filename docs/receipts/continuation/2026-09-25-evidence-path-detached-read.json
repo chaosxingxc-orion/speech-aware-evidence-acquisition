@@ -1,0 +1,20 @@
+{
+  "analysis_code_commit": "a26dc6a76f0513b515d9ad9aeb7cf77ddf6e6c8a",
+  "analysis_repo_root": "/home/chao/saea-worktrees/codex-stage3-continuation-20260925",
+  "campaign_pid": 56278,
+  "exit_receipt": "/home/chao/evidence-path-registered-read-20260925.exit.json",
+  "generation_or_scoring_restart_authorized": false,
+  "log": "/home/chao/evidence-path-registered-read-20260925.log",
+  "model_contacts_added": 0,
+  "network_or_codex_session_required": false,
+  "observation_deadline_seconds": 43200,
+  "pid": 64899,
+  "schema": "saea-model-free-background-read-launch-v1",
+  "scorer_contacts_added": 0,
+  "script": "/home/chao/evidence-path-registered-read-20260925.py",
+  "script_sha256": "40daaf5dd265edd6e5dbd0da063a6735e2794e2c8ef20b726c7550516ceb4dd9",
+  "session_id": 64899,
+  "source_commit": "da443cdc1027b3c01034c26485805240ec0e671d",
+  "source_repo_root": "/home/chao/saea-worktrees/fable-batch-flight",
+  "started_at_utc": "2026-09-25T16:53:27.978259+00:00"
+}
