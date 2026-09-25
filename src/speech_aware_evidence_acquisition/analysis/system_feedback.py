@@ -125,7 +125,7 @@ def load_system_feedback(*, data_root: Path, repo_root: Path, binding: Mapping) 
     source = verify_native_episode_source(
         manifest_path=paths["manifest"], expected_manifest_sha256=hashes["manifest"],
         phase_artifact_path=paths["phases"], expected_phase_sha256=hashes["phases"],
-        repo_root=Path(repo_root),
+        repo_root=Path(repo_root), data_root=root,
     )
     bundle, plan = source.bundle, source.plan
     if plan.split_role != "discovery" or binding["scorer_id"] not in bundle.manifest["scorers"]:

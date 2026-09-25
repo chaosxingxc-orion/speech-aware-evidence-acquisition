@@ -1,5 +1,29 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
+## Latest implementation: pinned complete policies and per-row seal
+
+Read docs/readiness/2026-09-25-system-policy-catalog-runtime.md and its receipt
+docs/receipts/continuation/2026-09-25-system-policy-catalog-engineering.json.
+The shared FlightRuntime now loads pinned complete native policy assets, binds
+their permitted tools, executes the selected graph, reports actual per-action
+tool use and checks the selected configuration at seal and source verification.
+This closes the engineering loader/seal items described as pending below.
+Candidate updates still do not authorize a future flight. No live algorithm
+cell, real policy update or scientific gain was added.
+
+Root scientific priority remains complete-system improvement. The episode-start
+single-state comparator can learn the best fixed member; it cannot establish
+adaptive gains over that member. The next adaptive experiment must use information
+available at its actual decision boundary and couple acquisition with downstream
+consumption, revision and stopping. Read final delivered outcomes and retain
+harms/ties/fallback, not just local corrections.
+
+The background reader now reports the control driver step complete and tools
+running with all four slots occupied; the latest recorded utilization was 98%.
+Do not infer control scoring status from step-done or infer sample completion
+from cumulative service request counts. Both task-outcome sets remain unread.
+The frozen flight commit is unchanged.
+
 ## Live continuation: evidence-path background queue running
 
 F10 is closed, not qualified. The next complete-system pair is registered in

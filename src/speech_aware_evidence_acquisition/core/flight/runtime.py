@@ -2769,6 +2769,29 @@ class FlightRuntime:
         except (KnowledgeStoreError, ValueError) as error:
             raise FlightRuntimeError(f"supply action {action_id!r} is invalid: {error}") from error
 
+    def _load_system_policy_catalog(self, program, *, refresh=False):
+        if self._composed.values.get("system_episode_policy") is None:
+            return None
+        cached = getattr(self, "_resolved_system_policy_catalog", None)
+        if cached is not None and not refresh:
+            return cached
+        from ...rails.system_policy_catalog import load_system_policy_catalog
+        from ..config import fragment_hash
+        if getattr(self, "_resume", None) is not None:
+            raise FlightRuntimeError("whole-policy rounds do not silently resume partial sampling")
+        catalog = load_system_policy_catalog(
+            repo_root=self._repo_root, data_root=self._data_root,
+            values=self._composed.values, program=program,
+            expected_roster_ids=self._flight_roster_sample_ids(),
+            expected_split_identity_hash=self._plan.split_identity_hash,
+            shared_source_hashes={
+                "model_fragment": fragment_hash(self._model),
+                "baseline_fragment": fragment_hash(self._baseline),
+            },
+        )
+        self._resolved_system_policy_catalog = catalog
+        return catalog
+
     def _finite_supply_policy_binding(self, native_config, program, supply_for_phase, sink):
         """Arm a frozen policy on the ordinary complete-system supply path."""
         if self._composed.values.get("finite_supply_policy") is None:
@@ -3621,6 +3644,8 @@ class FlightRuntime:
 
         plan = self._build_execution_plan(values, carrier_lock_key, identity_hash)
         self._plan = plan
+        if values.get("system_episode_policy") is not None:
+            self._load_system_policy_catalog(default_phase_program(values.get("policy")), refresh=True)
         self._artifact_result_binding = validate_artifact_result_binding(
             values,
             plan=plan,
@@ -5917,9 +5942,15 @@ class FlightRuntime:
         return self._live_speech_provider
 
     def _build_phase_tool_dispatcher(
-        self, policy: str, program: object, *, binding: Mapping[str, object], sink: object, client: object
+        self, policy: str, program: object, *, binding: Mapping[str, object], sink: object, client: object,
+        values_override: Mapping[str, object] | None = None,
     ) -> object | None:
-        tool_specs = self._phase_tool_specs(policy)
+        values = self._composed.values if values_override is None else values_override
+        if values_override is None:
+            tool_specs = self._phase_tool_specs(policy)
+        else:
+            from ...rails.phase_tools import load_phase_tool_specs
+            tool_specs = load_phase_tool_specs(values, program)
         if not tool_specs:
             return None
         builder = self._phase_tool_builder
@@ -5961,21 +5992,29 @@ class FlightRuntime:
             CANDIDATE_CONTRACT_TOOL in spec.get("allowed_tools", ())
             for spec in tool_specs.values()
         )
-        candidate_spec = self._composed.values.get("candidate_contracts")
+        candidate_spec = values.get("candidate_contracts")
         if uses_candidate_contracts:
             kwargs["candidate_contracts"] = self._prepare_candidate_contract_provider(candidate_spec)
-        elif candidate_spec is not None:
+        elif candidate_spec is not None and values_override is None:
             raise FlightRuntimeError("candidate contracts are configured without a candidate lookup action")
         uses_native = any(spec.get("mode") == "native-tools" for spec in tool_specs.values())
         if uses_native:
             kwargs["tool_contact"] = self._record_phase_tool_contact
-        if self._live_speech_config is not None:
+        from ...rails.phase_tools import LIVE_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_SPAN_TOOL
+        uses_live_speech = any(
+            set(spec.get("allowed_tools", ())) & {LIVE_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_SPAN_TOOL}
+            for spec in tool_specs.values()
+        )
+        bind_live_speech = self._live_speech_config is not None and (
+            values_override is None or uses_live_speech
+        )
+        if bind_live_speech:
             provider = self._ensure_live_speech_provider()
             kwargs.update(
                 live_speech_observations=provider,
             )
-        dispatcher = builder(self._composed.values, program, **kwargs)
-        if self._live_speech_config is not None and not bool(
+        dispatcher = builder(values, program, **kwargs)
+        if bind_live_speech and not bool(
             getattr(dispatcher, "native_enabled", False)
         ):
             raise FlightRuntimeError(
@@ -5986,7 +6025,7 @@ class FlightRuntime:
             raise FlightRuntimeError(
                 "native-answer-or-tool stop rule and dispatcher mode must agree"
             )
-        if native_rule and self._composed.values.get("phase_planner") is not None:
+        if native_rule and values.get("phase_planner") is not None:
             raise FlightRuntimeError(
                 "native-answer-or-tool refuses an external stop policy"
             )
@@ -6283,6 +6322,18 @@ class FlightRuntime:
                     native_config, program,
                 ),
             )
+        catalog = self._load_system_policy_catalog(program)
+        if catalog is not None:
+            if native_binding is None:
+                raise FlightRuntimeError("whole policy selection requires native execution")
+            native_binding = catalog.bind(
+                native_binding,
+                tools_for_values=lambda values: self._build_phase_tool_dispatcher(
+                    policy, program, binding=binding, sink=sink, client=client,
+                    values_override=values),
+                acquisition_for_config=lambda config: self._acquisition_requery_binding(
+                    config, supply_for_phase, binding.get("knowledge_snapshot")),
+            )
         facet_seed, value_seed = self._phase_supply_seeds(
             program, binding, supply_specs, plan
         )
@@ -6473,7 +6524,26 @@ class FlightRuntime:
                 dispatch["barrier"] = (
                     "none: one continuous trajectory with bounded review decisions"
                 )
-        if tool_dispatcher is not None:
+        if catalog is not None:
+            selector = native_binding.system_episode_policy
+            decisions = selector.decisions.values()
+            dispatch["system_episode_policy"] = {
+                "schema": "saea-system-policy-dispatch-v1",
+                "snapshot_sha256": selector.snapshot.sha256,
+                "schedule_sha256": selector.schedule.sha256,
+                "actions": {
+                    name: {
+                        "episodes": sum(r["decision"]["action"] == name for r in decisions),
+                        "contact_ceiling_per_episode": selected.config.max_contacts,
+                        "phase_tools": (
+                            selected.tools_for_phase.receipt()
+                            if selected.tools_for_phase is not None else None
+                        ),
+                    }
+                    for name, selected in selector.actions.items()
+                },
+            }
+        elif tool_dispatcher is not None:
             dispatch["phase_tools"] = tool_dispatcher.receipt()
         if native_binding is not None:
             dispatch["native_episode"] = {
@@ -9323,6 +9393,10 @@ class FlightRuntime:
                 "outputs row per sample (a policy that made several contacts for one "
                 "sample seals the LAST response, never one row per contact)"
             )
+        policy_catalog = None
+        if self._composed.values.get("system_episode_policy") is not None:
+            policy_catalog = self._load_system_policy_catalog(
+                default_phase_program(self._composed.values.get("policy")), refresh=True)
         rows: list[Mapping[str, object]] = []
         for row in output_rows:
             sample_id = str(row.get("sample_id"))
@@ -9391,6 +9465,17 @@ class FlightRuntime:
                 )
 
                 raw_native = self._composed.values.get("native_episode")
+                choice = episode_receipt.get("system_policy_decision")
+                if policy_catalog is not None:
+                    initial = sources[0].initial_query_state
+                    raw_native = policy_catalog.native_for_episode(
+                        episode_receipt, sample_id=sample_id,
+                        query_sha256=initial.content_hash(),
+                        speech_packet_sha256=initial.speech_packet_sha256,
+                        contact_count=len(sources[0].contacts),
+                    )
+                elif choice is not None:
+                    raise FlightRuntimeError("unregistered whole-policy choice cannot be sealed")
                 terminal_actions = None
                 if isinstance(raw_native, Mapping):
                     raw_actions = raw_native.get("actions")

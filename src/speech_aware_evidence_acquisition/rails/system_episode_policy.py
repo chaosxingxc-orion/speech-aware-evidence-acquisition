@@ -55,6 +55,30 @@ def parse_system_policy_record(record):
     return decision
 
 
+def build_system_policy_record(*, snapshot, schedule, definitions, sid,
+                               query_sha256, speech_packet_sha256):
+    """One canonical allocation record for execution and source verification."""
+    _sha(query_sha256, "initial query")
+    _sha(speech_packet_sha256, "initial speech")
+    decision, index = schedule.decision_for(sid, "episode-start", snapshot)
+    definition = definitions[decision.action]
+    record = {
+        "schema": "saea-system-episode-policy-decision-v1",
+        "algorithm_id": "finite-system-policy-bandit-v1",
+        "selection_scope": "complete-episode-policy",
+        "sample_id": sid, "sequence_index": index,
+        "pre_action_query_sha256": query_sha256,
+        "speech_packet_sha256": speech_packet_sha256,
+        "schedule_sha256": schedule.sha256,
+        "action_space_sha256": content_hash(definitions),
+        "selected_definition_sha256": content_hash(definition),
+        "selected_source_hashes": copy.deepcopy(definition["source_hashes"]),
+        "decision": decision.as_json(),
+    }
+    record["decision_receipt_sha256"] = content_hash(record)
+    return record
+
+
 class SystemEpisodePolicy:
     """An episode-level bandit selection, not node-level causal credit.
 
@@ -110,7 +134,7 @@ class SystemEpisodePolicy:
         """Refuse an action set built for a different outer scheduler or service."""
         reference = self._reference
         if (binding.program != reference.program
-                or binding.config.max_contacts != reference.config.max_contacts
+                or not 0 < binding.config.max_contacts <= reference.program.max_contacts
                 or binding.config.local_tool_workers != reference.config.local_tool_workers):
             raise SystemEpisodePolicyError("actions changed the shared execution envelope")
         for field in ("material_for_phase", "render_request", "request_gate"):
@@ -135,21 +159,10 @@ class SystemEpisodePolicy:
         if (asdict(selected.config) != definition["config"]
                 or asdict(selected.program) != definition["program"]):
             raise SystemEpisodePolicyError("selected action changed after round freeze")
-        record = {
-            "schema": "saea-system-episode-policy-decision-v1",
-            "algorithm_id": "finite-system-policy-bandit-v1",
-            "selection_scope": "complete-episode-policy",
-            "sample_id": sid, "sequence_index": index,
-            "pre_action_query_sha256": query_sha256,
-            "speech_packet_sha256": speech_packet_sha256,
-            "schedule_sha256": self.schedule.sha256,
-            "action_space_sha256": self._definition_sha256,
-            "selected_definition_sha256": content_hash(definition),
-            "selected_source_hashes": copy.deepcopy(definition["source_hashes"]),
-            "decision": decision.as_json(),
-        }
-        record["decision_receipt_sha256"] = content_hash(record)
-        return record
+        return build_system_policy_record(
+            snapshot=self.snapshot, schedule=self.schedule, definitions=self._definitions,
+            sid=sid, query_sha256=query_sha256, speech_packet_sha256=speech_packet_sha256,
+        )
 
     def validate_record(self, record):
         decision = parse_system_policy_record(record)

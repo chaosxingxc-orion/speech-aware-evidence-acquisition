@@ -811,7 +811,9 @@ def _supply_variant_arm_count(role: NativeEpisodeRole) -> int:
     return 1 if group is None else int(group.arm_count)
 
 
-def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig | None:
+def load_native_episode_config(
+    values: Mapping, program, *, allow_subceiling: bool = False,
+) -> NativeEpisodeConfig | None:
     """Require explicit role limits, role-local tool authority and a graph ceiling.
 
     THE CONTACT CEILING, stated once (E1's formula, extended by E2, E8b and
@@ -1676,7 +1678,10 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
             acquisition_budget["max_acquisitions_per_row"]
             * acquisition_role.max_iterations
         )
-    if program.max_contacts != ceiling:
+    if allow_subceiling:
+        if ceiling > program.max_contacts:
+            raise ValueError("selected native graph exceeds the shared program contact ceiling")
+    elif program.max_contacts != ceiling:
         raise ValueError("program contact ceiling must equal the bounded native graph ceiling")
     return NativeEpisodeConfig(
         raw["episode_id"],

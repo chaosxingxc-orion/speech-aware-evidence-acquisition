@@ -10,7 +10,7 @@ from ..contracts import ExecutionPlan
 from ..core.bundle.artifacts import VerifiedBundle, _verify_artifact
 from ..core.bundle.git_commit import require_clean_study_repo
 from ..core.bundle.verify import verify_bundle
-from ..core.config import ComposedConfig, compose
+from ..core.config import ComposedConfig, compose, fragment_hash, read_fragment
 from ..rails.controllers import default_phase_program
 from ..rails.native_episode_config import load_native_episode_config
 from .native_episode_diagnostics import analyze_verified_native_episode_statistics
@@ -39,6 +39,7 @@ def verify_native_episode_source(
     phase_artifact_path: Path,
     expected_phase_sha256: str,
     repo_root: Path,
+    data_root: Path | None = None,
 ) -> VerifiedNativeEpisodeSource:
     """Verify source identities without scoring or touching a model service.
 
@@ -117,15 +118,76 @@ def verify_native_episode_source(
     ):
         raise NativeEpisodeSourceError("native phase results differ from the actual ordered outputs")
     results = {row["sample_id"]: row for row in summary["results"]}
-    if native_config.refresh_action is not None:
-        from ..rails.native_episode_receipt import validate_native_candidate_refresh_receipt
+    catalog = None
+    if values.get("system_episode_policy") is not None:
+        if data_root is None:
+            raise NativeEpisodeSourceError("selected policy source requires its pinned data root")
+        from ..rails.system_policy_catalog import load_system_policy_catalog
 
-        for row in results.values():
+        catalog = load_system_policy_catalog(
+            repo_root=Path(repo_root), data_root=Path(data_root), values=values,
+            program=program, expected_roster_ids=sample_ids,
+            expected_split_identity_hash=plan.split_identity_hash,
+            shared_source_hashes={
+                f"{kind}_fragment": fragment_hash(read_fragment(
+                    Path(repo_root), kind, fragments[kind]))
+                for kind in ("model", "baseline")
+            },
+        )
+    for row in results.values():
+        config = native_config
+        episode = row["native_episode_receipt"]
+        if catalog is not None:
+            from ..rails.knowledge import QueryState
+            from ..rails.native_episode_receipt import (
+                validate_native_episode_delivery_receipt,
+                validate_native_episode_terminal_policy,
+                validate_native_episode_finite_path,
+                validate_native_episode_truncation_scope,
+            )
+
+            query = QueryState.from_json(row["initial_query_state"])
+            raw_native = catalog.native_for_episode(
+                episode, sample_id=row["sample_id"],
+                query_sha256=query.content_hash(),
+                speech_packet_sha256=query.speech_packet_sha256,
+                contact_count=len(row["contacts"]),
+            )
+            action = episode["system_policy_decision"]["decision"]["action"]
+            config = catalog.configs[action]
+            delivery = validate_native_episode_delivery_receipt(
+                episode, terminal_actions=tuple(a for a in (
+                    config.actions[1], config.actions[2], config.refresh_action) if a),
+                error_type=NativeEpisodeSourceError,
+            )
+            validate_native_episode_terminal_policy(
+                delivery, exhaustion_policy=config.exhaustion_policy,
+                finite_completion_policy=config.finite_completion_policy,
+                context_fit_policy=config.context_fit_policy,
+                react_exhaustion_policy=config.react_exhaustion_policy,
+                max_revisions=config.max_revisions, error_type=NativeEpisodeSourceError,
+            )
+            validate_native_episode_truncation_scope(
+                episode, finite_completion_scope=raw_native.get("finite_completion_scope", "episode"),
+                error_type=NativeEpisodeSourceError,
+            )
+            if delivery.kind in {"finite", "abstention", "context-fit", "context-abstention"}:
+                validate_native_episode_finite_path(
+                    episode, max_revisions=config.max_revisions,
+                    accept_action=config.actions[0], revise_action=config.actions[1],
+                    refresh_action=config.refresh_action, max_refreshes=config.max_candidate_refreshes,
+                    error_type=NativeEpisodeSourceError,
+                )
+        elif episode.get("system_policy_decision") is not None:
+            raise NativeEpisodeSourceError("whole-policy receipt has no registered catalog")
+        if config.refresh_action is not None:
+            from ..rails.native_episode_receipt import validate_native_candidate_refresh_receipt
+
             validate_native_candidate_refresh_receipt(
-                row["native_episode_receipt"], refresh_action=native_config.refresh_action,
-                max_refreshes=native_config.max_candidate_refreshes,
-                max_revisions=native_config.max_revisions,
-                accept_action=native_config.actions[0], revise_action=native_config.actions[1],
+                episode, refresh_action=config.refresh_action,
+                max_refreshes=config.max_candidate_refreshes,
+                max_revisions=config.max_revisions,
+                accept_action=config.actions[0], revise_action=config.actions[1],
                 error_type=NativeEpisodeSourceError,
             )
     outputs = {row["sample_id"]: row for row in bundle.outputs_rows}

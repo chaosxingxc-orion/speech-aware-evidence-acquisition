@@ -89,7 +89,7 @@ def _credit_feedback(feedback, policy):
         "fallback_episodes_retained": sum(bool(row.fallback_flags) for row in rows),
         "credit_scope": "selected complete policy; no node or unexecuted tool credit",
         "runtime_application_authorized": False,
-        "remaining_boundary": "verified action catalog, per-row configuration seal, registered next flight",
+        "remaining_boundary": "scientific action qualification and a separately registered next flight",
     }
     receipt["content_sha256"] = content_hash(receipt)
     return updated, receipt
@@ -99,8 +99,9 @@ def candidate_update_from_source(*, data_root, repo_root, binding, policy):
     """Verify a complete source before arithmetic; never mutate or apply the policy.
 
     A caller-supplied policy contains resolved bindings and asset assertions.
-    This function proves their decision/terminal arithmetic, not that those
-    assets were admitted. Its output is deliberately not runtime authorization.
+    The source verifier requires the pinned action catalog and per-row native
+    configuration. Scientific action qualification and admission of the next
+    flight remain separate; this output is not runtime authorization.
     """
     if not isinstance(policy, SystemEpisodePolicy):
         raise SystemFeedbackError("a frozen complete-system policy is required")

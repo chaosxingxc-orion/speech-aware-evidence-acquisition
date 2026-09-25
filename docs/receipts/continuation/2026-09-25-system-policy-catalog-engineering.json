@@ -1,0 +1,215 @@
+{
+  "schema": "saea-model-free-engineering-receipt-v1",
+  "created_at_utc": "2026-09-25T15:46:00.962647+00:00",
+  "work": "Pinned complete-policy catalog, shared FlightRuntime dispatch, per-row seal and source verification",
+  "parent_commit": "bf94111e4aacc1f01d9e53e3c023a03c6e2d6bd4",
+  "execution_environment": "WSL Ubuntu-24.04; /home/chao/.venvs/speechrl/bin/python; explicit checkout PYTHONPATH",
+  "model_contacts": 0,
+  "tokenizer_contacts": 0,
+  "encoder_contacts": 0,
+  "asr_contacts": 0,
+  "official_score_contacts": 0,
+  "live_algorithm_cell_enabled": false,
+  "real_policy_update": false,
+  "scientific_gain_claimed": false,
+  "focused_tests": {
+    "passed": 248,
+    "log_sha256": "d05bf55f1749321b040a6371294c4273d107ed67492ec564075b4698d1f129b9"
+  },
+  "final_affected_tests": {
+    "passed": 131,
+    "overlaps_focused": true,
+    "log_sha256": "ff4dcddb858dd5c0b632f8dcfee116525ee1ba96dea00c2cb0aa2aa8e35ae40c"
+  },
+  "checks": [
+    {
+      "name": "focused-tests",
+      "exit_code": 0,
+      "seconds": 20.3,
+      "log": "/home/chao/system-policy-catalog-focused-tests.log"
+    },
+    {
+      "name": "engineering_base_check",
+      "exit_code": 0,
+      "seconds": 8.19,
+      "log": "/home/chao/system-policy-catalog-engineering_base_check.log"
+    },
+    {
+      "name": "harness_admission_check",
+      "exit_code": 0,
+      "seconds": 0.62,
+      "log": "/home/chao/system-policy-catalog-harness_admission_check.log"
+    },
+    {
+      "name": "results_ledger_check",
+      "exit_code": 0,
+      "seconds": 0.21,
+      "log": "/home/chao/system-policy-catalog-results_ledger_check.log"
+    },
+    {
+      "name": "tool_catalog_check",
+      "exit_code": 0,
+      "seconds": 1.1,
+      "log": "/home/chao/system-policy-catalog-tool_catalog_check.log"
+    },
+    {
+      "name": "experiment_handoff_check",
+      "exit_code": 0,
+      "seconds": 0.4,
+      "log": "/home/chao/system-policy-catalog-experiment_handoff_check.log"
+    },
+    {
+      "name": "openjiuwen_native_reuse_check",
+      "exit_code": 0,
+      "seconds": 3.24,
+      "log": "/home/chao/system-policy-catalog-openjiuwen_native_reuse_check.log",
+      "corrected_invocation": "--output /home/chao/system-policy-catalog-openjiuwen-native-reuse.json",
+      "initial_invocation_exit_code": 2,
+      "initial_failure": "Missing required --output argument"
+    },
+    {
+      "name": "derived_media_confinement_check",
+      "exit_code": 0,
+      "seconds": 22.17,
+      "log": "/home/chao/system-policy-catalog-derived_media_confinement_check.log"
+    },
+    {
+      "name": "stage3_algorithm_label_check",
+      "exit_code": 0,
+      "seconds": 0.88,
+      "log": "/home/chao/system-policy-catalog-stage3_algorithm_label_check.log"
+    },
+    {
+      "name": "finite_completion_policy_check",
+      "exit_code": 0,
+      "seconds": 0.24,
+      "log": "/home/chao/system-policy-catalog-finite_completion_policy_check.log"
+    }
+  ],
+  "framework_reuse_proofs": {
+    "installed_source_sha256": {
+      "core/foundation/tool/function/function.py": "8f994c84b83ef6ed5d8eeb911362147990ff5946b99b7a94eaa975cf98249869",
+      "core/runner/callback/errors.py": "b245b5fe16c622b43231b90a92884e44283e21ac24d947f9e7c9dd571be394c3",
+      "core/runner/callback/framework.py": "7a5a60501758d5d098a3fc78e78505ad14b292179e9ccccfad4c6e19630cdb99",
+      "core/single_agent/ability_manager.py": "12112e092f9e7e6254ff105bca4f36922d4cf3454b9f96b746a7e48da0f41050",
+      "core/single_agent/agents/react_agent.py": "7952a2798718772bb2ec15794211b6de3a9082e549de8dfadd9eedebd5b897ec",
+      "core/single_agent/rail/base.py": "f85d5dd6ee09686b3a0f04ad7afa3fc31335b868cfbe0963e165975041cd4cbe",
+      "core/workflow/workflow.py": "80e2fb6bed41fa0ae8b6266f31478987ea2fc017571e6344f1afa1d1eeb874fd"
+    },
+    "limitations": [
+      "A per-agent tool list controls model-visible schemas, but AbilityManager falls back to the process-global tool registry by requested name.",
+      "AgentRail.before_tool_call plus public AbortError blocks before callback invocation; the ReAct tool layer converts the failure to a tool observation and continues the bounded loop.",
+      "No private API was needed for the tested rejection. Supplying a custom replacement ToolMessage without raising would rely on the underscore-prefixed _skip_tool convention.",
+      "ReActAgentComp does not expose set_llm; workflow injection uses a small public WorkflowComponent that calls a public ReActAgent.",
+      "This proves framework behavior with deterministic fakes, not the repository service bridge, custody policy, or task efficacy."
+    ],
+    "openjiuwen_version": "0.1.16.post2",
+    "proofs": {
+      "advertised_tool_round_trip": {
+        "advertised_names": [
+          "audit_analyze"
+        ],
+        "callback_invocations": 1,
+        "passed": true,
+        "second_model_roles": [
+          "system",
+          "user",
+          "assistant",
+          "tool"
+        ],
+        "tool_call_id_preserved": "call-roundtrip"
+      },
+      "before_tool_call_rail_rejection": {
+        "hidden_callback_count_before_and_after_rejection": [
+          1,
+          1
+        ],
+        "passed": true,
+        "seen_tool_names": [
+          "audit_hidden_global"
+        ],
+        "tool_error_observation_reached_model": true,
+        "whole_react_run_aborted": false
+      },
+      "global_fallback_is_not_authority": {
+        "observation_reached_second_model_call": true,
+        "passed": true,
+        "unadvertised_callback_invocations": 1
+      },
+      "max_iterations": {
+        "configured": 1,
+        "model_calls": 1,
+        "passed": true,
+        "result_type": "error",
+        "tool_calls": 1
+      },
+      "per_agent_visibility": {
+        "agent_with_tool": [
+          "audit_analyze"
+        ],
+        "agent_without_tool": [],
+        "passed": true
+      },
+      "workflow_reviewer_then_solver": {
+        "passed": true,
+        "reviewer_invocations": 1,
+        "solver_invocations": 1,
+        "solver_received_reviewer_output": true,
+        "workflow_output_type": "WorkflowOutput"
+      }
+    },
+    "public_api": {
+      "agent": "ReActAgent.configure/set_llm/invoke",
+      "private_api_required_for_tested_behavior": false,
+      "rail": "ReActAgent.register_rail with AgentRail.before_tool_call and AbortError",
+      "tool": "ToolCard/LocalFunction and AbilityManager.add_ability",
+      "workflow": "Workflow/WorkflowComponent/Start/End"
+    },
+    "schema": "saea-openjiuwen-native-framework-proof-v1"
+  },
+  "background_snapshot": {
+    "state": "running",
+    "handoff_required": false,
+    "current_step": {
+      "order": 2,
+      "short": "evidence-path-tools",
+      "cell": "slurp-native-stage3-evidence-path-tools-r01c-v1"
+    },
+    "completed_steps": [
+      {
+        "order": 1,
+        "short": "evidence-path-control",
+        "cell": "slurp-native-stage3-evidence-path-control-r01c-v1"
+      }
+    ],
+    "reason": null,
+    "attempt_state": "OPENED",
+    "manifest_status": null,
+    "ignored_incomplete_tail": false,
+    "status_parse_error": null,
+    "telemetry": {
+      "sampled_at": 1790351065.4732351,
+      "age_seconds": 5.393,
+      "server_ok": true,
+      "gpu_utilization_percent": 98.0,
+      "gpu_memory_used_mib": 22988.0,
+      "gpu_power_watts": 96.81,
+      "slots_busy": 4,
+      "slots_total": 4,
+      "service_requests_total": 6577,
+      "warnings": []
+    }
+  },
+  "active_flight_commit": "da443cdc1027b3c01034c26485805240ec0e671d",
+  "active_flight_modified": false,
+  "limits": [
+    "One episode-start state is a global policy comparator, not an adaptive system optimizer.",
+    "No next flight is admitted by a numeric candidate update.",
+    "Full repository test cleanliness is not claimed; previously documented unrelated ROLL-AA fixture expectations remain outside this chunk."
+  ],
+  "derived_media_check": {
+    "result_sha256": "38405458c996de36456124fe289a79d8696d5c1c2aee178271d0b614f8fb45a4",
+    "historical_default_output_restored_to_original_bytes": true
+  },
+  "final_engineering_base_check": "PASS after dispatch-receipt integration"
+}
