@@ -1,0 +1,50 @@
+{
+  "arms": {
+    "control": {
+      "attempt_id": "attempt-slurp-native-stage3-f10-control-r01c-v1-generation",
+      "run_id": "SAEA-SLURP-STAGE3-F10-CONTROL-R01C-V1",
+      "scorer_id": "slurp-slu-official-train",
+      "source_sha256": {
+        "outputs": "ce5c96f6d55b9c4ab0c473ccda9b8b048d7b1db4ed0167daea0944707cbb5b54",
+        "run_manifest": "9d82254d27d81378e28fe745d938f0449872e5fb5bd5213a481def9d6d1b97f4",
+        "scores": "edaf77656cec83cd08487d6492ad310490546a4835a2ba5406edd1ee0144d317"
+      }
+    },
+    "empty": {
+      "attempt_id": "attempt-slurp-native-stage3-f10-empty-r01c-v1-generation",
+      "run_id": "SAEA-SLURP-STAGE3-F10-EMPTY-R01C-V1",
+      "scorer_id": "slurp-slu-official-train",
+      "source_sha256": {
+        "outputs": "49933872165c95668670fc065ba68ebe52195050e135f7288becd0d52cc77b48",
+        "run_manifest": "0f8f1f091530eb2c76a92d6d11a4c9f6e1b71fabf66c515e7cf2ac1cb134c1f0",
+        "scores": "f27772ea6e128851aec3eb092aa1a18bc31f5883618d70a94d9735dcf3cd6762"
+      }
+    }
+  },
+  "cluster_key": "utterance_id",
+  "comparisons": [
+    {
+      "left": "control",
+      "right": "empty"
+    }
+  ],
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+    "rows": 625,
+    "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd",
+    "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
+    "split_role": "discovery"
+  },
+  "schema": "saea-sealed-official-count-comparison-v1",
+  "statistics": {
+    "draws": 10000,
+    "seed": 20260915
+  },
+  "status": "bound-after-both-seals-before-outcome-read",
+  "registration": {
+    "path": "docs/readiness/2026-09-25-slurp-stage3-f10-v1/analysis-specification-v1.json",
+    "sha256": "423f36816bb9407b5519917e7c90b5a670acdddf6110f3b246e2af626a075aa4"
+  },
+  "bound_at_utc": "2026-09-25T13:19:38.446996+00:00",
+  "read_id": "SAEA-SLURP-STAGE3-F10-OFFICIAL-READ-V1"
+}
