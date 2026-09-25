@@ -1,0 +1,58 @@
+{
+  "schema": "saea-system-episode-policy-engineering-v1",
+  "status": "offline-graph-and-synthetic-feedback-proof-only",
+  "implementation_base_commit": "191e99eb578344287f60e39e6c10ebb6a96b0b51",
+  "active_flight_frozen_commit": "da443cdc1027b3c01034c26485805240ec0e671d",
+  "algorithm_id": "finite-system-policy-bandit-v1",
+  "live_cell_activation": false,
+  "model_contacts": 0,
+  "tool_backend_contacts": 0,
+  "tokenizer_contacts": 0,
+  "scorer_contacts": 0,
+  "research_outcomes_read": false,
+  "validation": {
+    "focused_suite_passed": 172,
+    "final_selector_registry_suite_passed": 49,
+    "counts_overlap": true,
+    "gates_passed": [
+      "engineering_base",
+      "stage3_algorithm_label",
+      "finite_completion_policy"
+    ],
+    "broad_stage3_initial": {
+      "passed": 553,
+      "failed": 3
+    },
+    "registry_expectation_fixed": true,
+    "remaining_legacy_findings": [
+      "ROLL-AA full cell readiness expectation held vs ready",
+      "ROLL-AA smoke cell readiness expectation held vs ready"
+    ],
+    "legacy_finding_files_match_prior_commit": true
+  },
+  "proofs": [
+    "pre-first-fit real policy selection",
+    "concurrent independent complete graph paths",
+    "finite fallback retained",
+    "synthetic terminal feedback -> frozen update -> complete graph reexecution",
+    "shared outer envelope checked before graph",
+    "learned values cannot cross changed action definitions"
+  ],
+  "pending_admission": [
+    "hash-verified FlightRuntime action asset loader",
+    "selected per-row native seal/source verification",
+    "official terminal decision-credit join",
+    "registered budgets, capacity and construction/evaluation cells"
+  ],
+  "files_sha256": {
+    "src/speech_aware_evidence_acquisition/rails/system_episode_policy.py": "ab312dc438bcc018a0d17bb4f68cd54dff4781079b3ad6347dffab9daa8db61a",
+    "src/speech_aware_evidence_acquisition/rails/native_episode_config.py": "5d9bb2813b40b492a2349510bda772ad052875674cf5a2213a1aff40ee3f61c4",
+    "src/speech_aware_evidence_acquisition/rails/runner.py": "da0408c2377e55cfd61d56ca40c188e654ed3994db9038fef348216b1e54af36",
+    "src/speech_aware_evidence_acquisition/core/stage3_algorithms.py": "43eba87e72c06c1df4ec228d76ce838ad724e94d676f224ce7baded11fd53108",
+    "src/speech_aware_evidence_acquisition/analysis/system_rollout_groups.py": "6387a4433a420cff101c3edc6955162cf5ec013e241e2902d179ebeeb395c03e",
+    "tests/unit/test_system_episode_policy.py": "502185711cd97475dbe14dbe32cf30208f1b7d54feaa887d4af176f03bf493a3",
+    "tests/unit/test_stage3_algorithm_labels.py": "22935b65b587bb0b58f5d246130305b5f947f3dfb826c66dde06ab6797556e2e",
+    "docs/readiness/2026-09-25-system-episode-policy-integration.md": "ff90b7b950cbaa810326b3de74d12782ad862e8bee846209efb1481412ffe45e",
+    "docs/handoff/HANDOFF-TO-FABLE51.md": "9b37f2e809be8d9813d84b5f087e588ebf39a8b30f2745c533dd4c99feb4dc25"
+  }
+}

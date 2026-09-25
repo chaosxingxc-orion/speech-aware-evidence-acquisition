@@ -131,6 +131,8 @@ def load_group_source(*, data_root, feedback_pin, label):
     outputs = {}
     for output in _jsonl(output_path, output_sha):
         sid = output["sample_id"]
+        _require(not output.get("native_episode_receipt", {}).get("system_policy_decision"),
+                 "logged whole-policy decisions require their registered policy-credit join")
         _require(sid not in outputs, "duplicate delivered output")
         outputs[sid] = output
     _require(set(outputs) == set(ids), "delivered output population differs")

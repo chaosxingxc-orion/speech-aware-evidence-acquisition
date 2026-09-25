@@ -710,6 +710,11 @@ class NativeEpisodeRunBinding:
     # E20's, E21's and E36's fields are.
     supply_variant_for_phase: Callable | None = None
 
+    # Optional flight-owned complete-policy selector. No cell loader activates
+    # this engineering seam until action/source/seal admission is implemented.
+    # The shared graph still runs each selected binding from start to delivery.
+    system_episode_policy: object = None
+
 
 @dataclass(frozen=True)
 class ContextFitBudget:

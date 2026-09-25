@@ -33,6 +33,8 @@ from speech_aware_evidence_acquisition.core import (  # noqa: E402
 
 EXPECTED_IDS = {
     "ace-grow-refine-v1",
+    "finite-action-bandit-v1",
+    "finite-system-policy-bandit-v1",
     "gepa-reflective-pareto-v1",
     "inference-time-verification-v1",
     "none",
@@ -59,7 +61,7 @@ LABELLED_FRAGMENTS = {
 # ---------------------------------------------------------------------------
 
 
-def test_the_registry_holds_exactly_the_decision_101_families() -> None:
+def test_the_registry_holds_exactly_the_registered_algorithm_families() -> None:
     assert set(registry.registered_ids()) == EXPECTED_IDS
     assert set(STAGE3_ALGORITHMS.names()) == EXPECTED_IDS
 

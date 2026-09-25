@@ -210,6 +210,26 @@ FINITE_ACTION_BANDIT_V1 = _register(
     )
 )
 
+FINITE_SYSTEM_POLICY_BANDIT_V1 = _register(
+    Stage3Algorithm(
+        id="finite-system-policy-bandit-v1",
+        family="finite-policy-bandit",
+        display_name="Complete-episode policy bandit with terminal system returns",
+        citation="docs/readiness/2026-09-25-system-episode-policy-integration.md",
+        operators=("rollout", "scoring", "credit_assignment", "update", "selection"),
+        status="planned",
+        what_it_changes=(
+            "Select a coherent complete native binding before its first role and "
+            "retain the choice through final delivery. The initial version uses one "
+            "episode-start state, actual logged allocation probabilities, and a frozen "
+            "per-round cumulative-mean value table. This is an episode-level bandit "
+            "comparator, not multistep RL, TF-GRPO or MemRL reproduction. Only offline "
+            "graph and synthetic feedback integration is proven; no algorithm flight "
+            "or efficacy claim is admitted."
+        ),
+    )
+)
+
 GEPA_REFLECTIVE_PARETO_V1 = _register(
     Stage3Algorithm(
         id="gepa-reflective-pareto-v1",

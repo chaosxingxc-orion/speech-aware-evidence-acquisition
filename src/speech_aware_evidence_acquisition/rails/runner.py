@@ -1876,7 +1876,7 @@ def _solver_fragment_seed(program_id: str) -> int:
 async def _invoke_native_role_episode(
     *, state, run_contact, session, binding, adapter, core_client, snapshot,
     snapshot_sha256, protected_material, base_decoding_params, run_id,
-    knowledge_value_renderer, run_local=None,
+    knowledge_value_renderer, run_local=None, system_policy_decision=None,
 ):
     """Collect one public role graph through the shared speech request custody.
 
@@ -4013,6 +4013,8 @@ async def _invoke_native_role_episode(
             # to its pre-E39 self.
             "truncation_events",
         ) if key in receipt}
+        if system_policy_decision is not None:
+            compact_receipt["system_policy_decision"] = system_policy_decision
         if not config.review_loop_enabled:
             # Configuration, not failure: record which phases never ran
             # rather than let their absence from role_visits speak alone.
@@ -4229,15 +4231,38 @@ def _run_agent_openjiuwen(
     )
 
     if native_episode_binding is not None:
+        selector = native_episode_binding.system_episode_policy
+        if selector is not None:
+            from .system_episode_policy import SystemEpisodePolicy
+            if not isinstance(selector, SystemEpisodePolicy):
+                raise RailsRunnerError("complete policy selector has an invalid type")
+            selector.assert_envelope(native_episode_binding)
         states = [
             _ContactAgentState(prepared=task, controller=None, query_state=task.initial_query_state)
             for task in prepared_tasks
         ]
 
         async def invoke_episode(state, run_contact, session, *, run_local=None):
+            selected_binding = native_episode_binding
+            decision = None
+            if selector is not None:
+                ctx = _runtime_context(
+                    prepared=state.prepared, snapshot=snapshot,
+                    snapshot_sha256=snapshot_sha256, query_state=state.query_state,
+                    state_store=state.state_store, response_sha256s=state.response_sha256s,
+                    contact_index=0,
+                )
+                selected_binding, decision = selector.select(ctx)
+                policy_trace = TraceBuffer(run_id)
+                policy_trace.emit(
+                    "ORG", f"{state.prepared.sample.sample_id}/system-policy/initial",
+                    {"org_system_policy_decision": decision},
+                )
+                state.trace_buffers[(-1, 0)] = policy_trace
             await _invoke_native_role_episode(
                 state=state, run_contact=run_contact, session=session, run_local=run_local,
-                binding=native_episode_binding, adapter=adapter,
+                binding=selected_binding, adapter=adapter,
+                system_policy_decision=decision,
                 core_client=core_client, snapshot=snapshot,
                 snapshot_sha256=snapshot_sha256, protected_material=protected_material,
                 base_decoding_params=base_decoding_params, run_id=run_id,

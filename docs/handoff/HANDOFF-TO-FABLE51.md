@@ -63,6 +63,27 @@ experience update, trained policy or stable gain. The next sampling cycle must
 record actual whole-policy selections and execute again after its update.
 The active evidence-path outcomes remain unread.
 
+## Whole-policy selection seam: offline graph proof only
+
+Read docs/readiness/2026-09-25-system-episode-policy-integration.md.
+The existing native executor can now select one complete binding before the
+first role and retain it through terminal delivery. Choices are recorded before
+the first fit, include real allocation probabilities, and remain in terminal
+receipts. The first version has one episode-start state: it is a global
+episode-policy bandit comparator, not contextual or multistep RL.
+
+An actual OpenJiuwen/fake-transport test samples two complete policies, retains
+both finite and revised outcomes, applies synthetic terminal feedback through
+the existing update, then executes again with the learned frozen policy.
+No real outcome, model/tool/scorer contact or efficacy claim was added.
+
+This is deliberately NOT enabled in any live cell. Action asset admission,
+per-row source/seal verification and the official terminal credit join must
+land before a registered algorithm flight. Do not construct a live binding
+manually to bypass those steps. Learned values are bound to identical whole-
+policy definitions; historical grouping refuses actual optimized decisions.
+The active evidence-path checkout stays frozen and background execution continues.
+
 ## Owner steering: optimize complete system trajectories
 
 The owner clarified on 2026-09-25 that Stage-3 must optimize the complete agentic
