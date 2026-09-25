@@ -12,7 +12,7 @@
       "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "F10 registration is HELD. Root must bind admission, prepare this run's first-phase supply, complete capacity fit, and set ready before any contact.",
+        "reason": "Registered F10 comparison; remain held until source-bound preparation, root admission and clean preflight. Actual request fit is mandatory.",
         "requirements": [
           {
             "kind": "preparation",

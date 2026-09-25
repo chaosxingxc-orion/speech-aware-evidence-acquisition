@@ -1,4 +1,5 @@
 {
+  "analysis_specification": "docs/readiness/2026-09-25-slurp-stage3-f10-v1/analysis-specification-v1.json",
   "authority": "Owner-approved F10 continuation; docs/readiness/2026-09-25-slurp-stage3-f10-knowledge-build-v1.md",
   "cells": {
     "control": {
@@ -56,11 +57,27 @@
       "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5"
     }
   },
-  "claim_boundary": "Construction evidence only; no learned-policy claim. Any gain needs later roster replication.",
+  "claim_boundary": "Construction candidate only if pre-registered primary improvement and intent protection pass. No stable gain, generalization or learned-policy claim without later replication.",
   "comparison": "Fresh matched default-rendering control then empty-contract treatment on the same 625 R01C rows. Smoke is engineering proof only.",
   "contacts_per_row_max": 11,
+  "execution_order": [
+    "smoke",
+    "control",
+    "empty"
+  ],
+  "failure_policy": "Stop on failure. At most one separately diagnosed and registered recovery; no automatic replay.",
+  "intervention": "For identical selected example identities under identical query state, change only the empty-value third field from none to the literal fragment \"entities\":[]. This is not a whole JSON object. Different downstream states may later select different examples.",
+  "limits": {
+    "ceilings_are_not_targets": true,
+    "fit_endpoint_calls_cap_including_smoke": 55176,
+    "generation_calls_cap_including_smoke": 13794,
+    "gpu_hours_fit_inclusive": 17.0,
+    "official_full_scoring_jobs": 2,
+    "repeated_speech_audio_seconds_cap": 60282
+  },
   "only_treatment_delta": "train-exemplars snapshot/release pins and source preparation receipt; PLAN episode, role prompts, feature identities and all retrieval settings are shared.",
-  "schema": "saea-f10-protocol-provisional-v1",
+  "predecessor_boundary": "Wait for the complete VAR-2 recovery chain, including derived scoring. A failure requires root closure and explicit release; never ignore STOP.",
+  "schema": "saea-f10-protocol-v1",
   "stage3_algorithm": "shared-rollout",
-  "status": "held"
+  "status": "registered-before-contact"
 }

@@ -1,7 +1,15 @@
-# F10 HELD runtime package
+# F10 registered runtime package
 
-Three cells are packaged: a fresh default-rendering control on all 625 R01C rows, an empty-contract treatment on the same rows, and a four-row treatment engineering smoke. All use the existing PLAN episode and shared-rollout algorithm; full cells score official TRAIN SLU plus cost, while smoke records cost only.
+The registered sequence is a four-row empty-contract engineering proof,
+a fresh 625-row default-rendering control, then the matched 625-row treatment.
+All use the existing four-node PLAN episode. The protocol and six execution
+plans bind identities and limits; analysis-specification-v1.json freezes the
+comparison before contact.
 
-The generation and fit plans and protocol in this directory are provisional and HELD. They do not authorize contact. Root will register analysis, admission, capacity fit and prepared first-phase supply before setting any generation cell ready. The control and treatment differ only in their train-exemplars snapshot/release pins and the matching preparation-source receipt; the full comparison uses fresh paired runs.
+The analysis binding template is intentionally non-executable until all three
+source hashes per arm are filled after sealing and before reading outcomes.
+A derived binding receipt must link back to this prospective specification.
 
-The smoke uses the first four existing R01C rows and has no effectiveness read. No policy update occurs inside a cell. Any positive full-roster construction result requires later replication before a claim.
+Registration does not bypass admission: model-free prepared supply, a pinned
+root decision, clean preflight and actual-request capacity checks are required.
+The active VAR-2 flight and checkout are not changed by this package.
