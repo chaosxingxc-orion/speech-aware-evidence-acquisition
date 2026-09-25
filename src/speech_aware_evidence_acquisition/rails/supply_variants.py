@@ -1,15 +1,9 @@
 """Per-row supply-variant interleaving at ONE node (item E42, family VAR-2).
 
-WHY THIS EXISTS. Cell ROLL-AA (``docs/results/2026-09-24-slurp-stage3-roll-aa-
-within-flight-null-read.md``) measured the locked v2.0 plan against itself
-INSIDE one flight: byte-identical prompts at temperature 0 repeat the delivered
-answer on 91.5 % of rows, the delivered intent never changes, and the paired
-per-row half-width is ``h_within`` = 0.735 pp SLU / 0.000 pp intent at n = 200.
-The SAME identity flown as two separate campaigns reads about 1.25 pp. So a
-construction variant compared per row INSIDE one campaign is read at roughly a
-third of the cross-flight floor. The VAR-1 family flies one campaign per
-variant and pays the between-flight penalty; this module is the harness
-capability that removes it.
+WHY THIS EXISTS. Compare declared supply actions within a shared predecessor
+state. This reduces between-flight differences in the prefix but does not
+establish a statistical power multiplier: the historical ROLL-AA row-mean F1
+interval and cross-flight pooled-F1 intervals use different estimands.
 
 WHAT THE FORM IS. One node, K arms, one episode, one row: the same node is
 contacted K times over the SAME ``QueryState``, each time with a DIFFERENT
@@ -520,6 +514,27 @@ def parse_supply_variants(
                 f"the {REGISTERED_SPECIAL_TOKEN_RESERVE}-token special reserve"
             )
     return SupplyVariantGroup(arms=tuple(arms), fit_estimate=fit_estimate)
+
+
+def accumulate_arm_selection(
+    previous: Sequence[str], resolved: Sequence[str],
+) -> tuple[str, ...]:
+    """Retain this arm's supply across visits while appending only new ids.
+
+    Routers may return an unseen increment or a repeated full selection.
+    Both describe a monotone acquisition history, as the ordinary QueryState
+    does. Repeated ids across visits are retained once; duplicates within a
+    single resolution remain a malformed decision and are refused.
+    """
+
+    prior, current = tuple(previous), tuple(resolved)
+    for name, ids in (("previous", prior), ("resolved", current)):
+        if len(set(ids)) != len(ids):
+            raise SupplyVariantError(f"{name} supply-variant selection must be unique")
+        for value_id in ids:
+            _nonempty_str(value_id, field=f"{name} supply-variant value id")
+    visible = set(prior)
+    return prior + tuple(value_id for value_id in current if value_id not in visible)
 
 
 def arm_supplied_value_ids(

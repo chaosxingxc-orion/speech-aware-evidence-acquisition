@@ -1,6 +1,19 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
 
+## Active incident: 2026-09-25 10:02 UTC, root Codex
+
+This incident supersedes the running status in the prior snapshot.
+VAR-2 full generation ABORTED at 09:49:19 UTC, after 224 model contacts.
+The service remains alive; the experiment driver has stopped. No sealed
+manifest or scientific result exists. No partial answers or scores were read.
+Root reproduced and fixed an increment-versus-cumulative supply check on the
+Solver revision path. One registered recovery is being prepared; it has not
+started. F10 HELD configurations are ready but not dispatched.
+Read docs/readiness/2026-09-25-var2-revision-recovery-diagnosis.md and the incident
+receipt. Preserve the original failed artifacts. Do not clear STOP or restart
+on a timer; the root recovery launch must bind the new identities and fix.
+
 ## Live continuation update: 2026-09-25 09:46 UTC, root Codex
 
 This section supersedes older live-status paragraphs below. Main is master.

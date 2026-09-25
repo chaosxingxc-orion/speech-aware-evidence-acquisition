@@ -1,0 +1,50 @@
+{
+  "failed_attempt": {
+    "actual": {
+      "audio_seconds": 804.911625,
+      "calls": 224
+    },
+    "attempt_id": "attempt-slurp-native-stage3-var2-supply-variants-r01c-v1-generation",
+    "carrier_lock_key": "slurp",
+    "failure_reason": "generation failed during run_phases or seal: NativeEpisodeError: native episode node failed: [100054] component 'solver_1_input' execute 'invoke' error, reason='the delivering supply-variant arm resolves a different supply than this row's own supply step acquired at this node; the delivered request would not be the unvaried construction's request', workflow='c779070e77864c6381c0303c304d7eba'",
+    "reserved": {
+      "audio_seconds": 46357.0,
+      "calls": 10625
+    },
+    "run_id": "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-V1",
+    "schema": "saea-attempt-v1",
+    "state": "ABORTED"
+  },
+  "incident": "var2-revision-increment-vs-cumulative-supply",
+  "no_partial_answer_or_metric_read": true,
+  "registered_at": "2026-09-25T10:01:44.494667+00:00",
+  "schema": "saea-root-incident-receipt-v1",
+  "scorer_contacts": 0,
+  "source_pins": {
+    "attempt": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-V1/attempt-slurp-native-stage3-var2-supply-variants-r01c-v1-generation.json",
+      "sha256": "c74feb079551579efcb08bedff88e88d1cc243b8562633f389e8ab6e289d09fd"
+    },
+    "campaign_log": {
+      "path": "/home/chao/batch-campaign-1-var2-20260925T093635Z.log",
+      "sha256": "9e2a37bd2f389d42e4bb2ce40e789308b8f90f86c623b73f0ac7e67fc2574566"
+    },
+    "chain_log": {
+      "path": "/home/chao/batch-chain-var2.out",
+      "sha256": "cfb4c378524af703e98ff5a889806e2595558b47b5131582db68dc25992f8978"
+    },
+    "status": {
+      "path": "/home/chao/batch-status.jsonl",
+      "sha256": "e9595813891e8493e86cce5f40ddf2c984e92f767d3684e76cc71ec9f61a7f6f"
+    },
+    "stop": {
+      "path": "/home/chao/batch-STOP",
+      "sha256": "144ca51c9ea776f5edf8571f39d7b105fb6d2f2bafc4a12e534ba852d4320989"
+    }
+  },
+  "state": "diagnosed-fix-tested-recovery-not-yet-launched",
+  "synthetic_reproduction": {
+    "after_fix": "89 variant/revision/bundle/scoring tests; 35 ordinary-native/status/logging tests pass",
+    "before_fix": "incremental resolver revision fails in solver_1_input; repeated-selection controls pass"
+  }
+}

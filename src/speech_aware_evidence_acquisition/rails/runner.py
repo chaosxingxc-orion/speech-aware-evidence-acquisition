@@ -1962,7 +1962,8 @@ async def _invoke_native_role_episode(
     # visit and on a REVISE revisit, where
     # ``restrict_repeat_visit_supply`` has already withheld everything visible.
     supply_variant_node_acquired: list[str] = []
-    # Each arm's own resolved selection for the visit in flight, keyed by arm id.
+    # Each arm's cumulative selection, keyed by arm id. Routers may return only
+    # new values on a revision; those increments extend the same arm's history.
     # Resolved ONCE per visit, in ``settle``, against the SAME staged context
     # this row's ordinary ``supply_for_phase`` step is resolved against -- not at
     # binding composition, where the state already carries the node's own
@@ -2285,7 +2286,8 @@ async def _invoke_native_role_episode(
                 supply_variant_node_acquired.extend(
                     supply.fusion_decision.selected_value_ids
                 )
-            supply_variant_arm_selections.clear()
+            from .supply_variants import accumulate_arm_selection
+
             for arm in supply_variant_group.arms:
                 # ``staged``, not ``before``: a candidate-bound route reads the
                 # sealed state of its candidate phase off the context it is
@@ -2299,6 +2301,9 @@ async def _invoke_native_role_episode(
                 selected = (
                     () if arm_supply is None
                     else tuple(arm_supply.fusion_decision.selected_value_ids)
+                )
+                selected = accumulate_arm_selection(
+                    supply_variant_arm_selections.get(arm.arm_id, ()), selected,
                 )
                 supply_variant_arm_selections[arm.arm_id] = selected
                 if arm.deliver and selected != tuple(supply_variant_node_acquired):
