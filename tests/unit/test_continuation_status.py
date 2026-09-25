@@ -9,7 +9,7 @@ import pytest
 
 SCRIPT = Path(__file__).parents[2] / "scripts" / "flights" / "batch"
 sys.path.insert(0, str(SCRIPT))
-from continuation_status import StatusReadError, summarize  # noqa: E402
+from continuation_status import StatusReadError, _process_snapshot, summarize  # noqa: E402
 
 
 def fixture(tmp_path, events, *, tail=""):
@@ -38,7 +38,7 @@ def test_running_with_completed_step_and_sealed_metadata(tmp_path):
     manifest.write_text(json.dumps({"status": "COMPLETED", "output": "never report"}))
     result = summarize(queue, status, data)
     assert result == {
-        "state": "running", "handoff_required": False,
+        "state": "running-unverified", "handoff_required": False,
         "current_step": {"order": 2, "short": "second", "cell": "cell-b"},
         "completed_steps": [{"order": 1, "short": "first", "cell": "cell-a"}],
         "reason": None, "attempt_state": "FINALIZED", "manifest_status": "COMPLETED",
@@ -105,3 +105,47 @@ def test_existing_stop_marker_without_event_requires_handoff(tmp_path):
     result = summarize(queue, status, data, stop_marker=stop)
     assert result["state"] == "handoff-required"
     assert result["reason"] == "2026-09-25T00:00:00Z prior failure"
+
+
+DRIVER = "/mnt/d/project/scripts/flights/batch/batch_driver.sh"
+SESSION = "serving-train-a"
+SERVICE = "speech_aware_evidence_acquisition.core.session.serving"
+
+
+def test_process_check_requires_driver_and_matching_service(tmp_path):
+    queue, status, data = fixture(tmp_path, [("step-start", {"step": 1, "short": "first"})])
+    result = summarize(queue, status, data, process_snapshot=[
+        ["/usr/bin/bash", DRIVER],
+        ["/home/chao/.venvs/speechrl/bin/python", "-m", SERVICE, "start", "q4", "--session-id", SESSION],
+    ], driver_script=DRIVER, session_id=SESSION)
+    assert result["state"] == "running"
+    assert result["reason"] is None
+
+
+def test_wrong_process_identity_does_not_prove_liveness(tmp_path):
+    queue, status, data = fixture(tmp_path, [("arm-start", {"step": 1})])
+    result = summarize(queue, status, data, process_snapshot=[
+        ["/usr/bin/bash", "/other/batch_driver.sh"],
+        ["/usr/bin/python", "-m", SERVICE, "start", "q4", "--session-id", "other-session"],
+        ["/usr/bin/bash", "-c", f"echo {DRIVER} {SESSION}"],
+    ], driver_script=DRIVER, session_id=SESSION)
+    assert result["state"] == "handoff-required"
+    assert result["reason"] == "batch driver and serving session processes absent"
+
+
+def test_driver_present_but_service_missing_requires_handoff(tmp_path):
+    queue, status, data = fixture(tmp_path, [("arm-start", {"step": 1})])
+    result = summarize(queue, status, data, process_snapshot=[
+        ["bash", DRIVER],
+    ], driver_script=DRIVER, session_id=SESSION)
+    assert result["state"] == "handoff-required"
+    assert result["reason"] == "serving session process absent"
+
+
+def test_proc_scanner_reads_only_cmdline_of_numeric_entries(tmp_path):
+    proc = tmp_path / "proc"
+    (proc / "123").mkdir(parents=True)
+    (proc / "123" / "cmdline").write_bytes(b"bash\0/mnt/d/project/scripts/flights/batch/batch_driver.sh\0")
+    (proc / "self").mkdir()
+    (proc / "self" / "cmdline").write_bytes(b"fake\0")
+    assert _process_snapshot(proc) == [["bash", DRIVER]]

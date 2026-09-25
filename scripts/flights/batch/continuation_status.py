@@ -3,7 +3,8 @@
 Example: python continuation_status.py --queue /home/chao/batch-queue.json
     --status /home/chao/batch-status.jsonl --data-root /path/to/data
 
-This command does not inspect output rows, scores, traces, campaign logs, or model services.
+This command does not inspect output rows, scores, traces, campaign logs, or model endpoints.
+Without --check-processes, an apparent running state is explicitly unverified.
 """
 
 import argparse
@@ -56,6 +57,40 @@ def _step_view(step):
     return {key: step.get(key) for key in ("order", "short", "cell")}
 
 
+def _process_snapshot(proc_root=Path("/proc")):
+    """Read Linux argv metadata; disappearing or inaccessible PIDs are ignored."""
+    try:
+        entries = list(Path(proc_root).iterdir())
+    except OSError as exc:
+        raise StatusReadError(f"cannot inspect process table: {type(exc).__name__}") from exc
+    snapshot = []
+    for entry in entries:
+        if not entry.name.isdecimal():
+            continue
+        try:
+            raw = (entry / "cmdline").read_bytes()
+            argv = [part.decode("utf-8") for part in raw.rstrip(b"\0").split(b"\0") if part]
+        except (OSError, UnicodeDecodeError):
+            continue
+        if argv:
+            snapshot.append(argv)
+    return snapshot
+
+
+def _process_presence(snapshot, driver_script, session_id):
+    driver = False
+    service = False
+    module = "speech_aware_evidence_acquisition.core.session.serving"
+    for argv in snapshot:
+        if len(argv) >= 2 and Path(argv[0]).name == "bash" and argv[1] == driver_script:
+            driver = True
+        if (len(argv) >= 6 and Path(argv[0]).name.startswith("python")
+                and argv[1:4] == ["-m", module, "start"]):
+            service = any(argv[i:i + 2] == ["--session-id", session_id]
+                          for i in range(4, len(argv) - 1)) or service
+    return driver, service
+
+
 def _sealed_metadata(data_root, step):
     run = step.get("run_id")
     attempt = step.get("gen_attempt_id")
@@ -74,7 +109,8 @@ def _sealed_metadata(data_root, step):
     return state, manifest_status, failure
 
 
-def summarize(queue_path, status_path, data_root, *, stop_marker=None):
+def summarize(queue_path, status_path, data_root, *, stop_marker=None,
+              process_snapshot=None, driver_script=None, session_id=None):
     """Summarize one existing queue; all inputs are explicit, local, and read only."""
     queue_path, status_path, data_root = map(Path, (queue_path, status_path, data_root))
     queue = _json(queue_path)
@@ -111,9 +147,23 @@ def summarize(queue_path, status_path, data_root, *, stop_marker=None):
     elif driver_done and not pending:
         state = "complete"
     elif events:
-        state = "running"
+        state = "running-unverified"
     else:
         state = "queued"
+    if process_snapshot is not None and state == "running-unverified":
+        if not driver_script or not session_id or not Path(driver_script).is_absolute():
+            raise StatusReadError("process check requires absolute driver script and serving session id")
+        driver, service = _process_presence(process_snapshot, str(driver_script), session_id)
+        if driver and service:
+            state = "running"
+        else:
+            missing = []
+            if not driver:
+                missing.append("batch driver")
+            if not service:
+                missing.append("serving session")
+            failure = " and ".join(missing) + " process" + ("es" if len(missing) > 1 else "") + " absent"
+            state = "handoff-required"
     return {
         "state": state,
         "handoff_required": state == "handoff-required",
@@ -132,9 +182,17 @@ def main():
     parser.add_argument("--status", type=Path, required=True)
     parser.add_argument("--data-root", type=Path, required=True)
     parser.add_argument("--stop-marker", type=Path, help="Optional explicit driver STOP marker path")
+    parser.add_argument("--check-processes", action="store_true", help="Verify driver and serving session identities in Linux /proc")
+    parser.add_argument("--driver-script", type=Path, help="Absolute batch_driver.sh path required with --check-processes")
+    parser.add_argument("--session-id", help="Serving session id required with --check-processes")
     args = parser.parse_args()
+    if args.check_processes and (not args.driver_script or not args.session_id or not args.driver_script.is_absolute()):
+        parser.error("--check-processes requires --driver-script as an absolute path and --session-id")
     try:
-        result = summarize(args.queue, args.status, args.data_root, stop_marker=args.stop_marker)
+        snapshot = _process_snapshot() if args.check_processes else None
+        result = summarize(args.queue, args.status, args.data_root, stop_marker=args.stop_marker,
+                           process_snapshot=snapshot, driver_script=args.driver_script,
+                           session_id=args.session_id)
     except StatusReadError as exc:
         parser.exit(2, f"status unavailable: {exc}\n")
     print(json.dumps(result, separators=(",", ":"), ensure_ascii=True))
