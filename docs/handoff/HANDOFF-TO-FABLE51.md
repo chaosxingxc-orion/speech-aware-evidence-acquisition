@@ -15,10 +15,15 @@ The first input-assembly interval was followed by active generation; do not
 infer completed rows from an OPENED attempt or announce partial task outcomes.
 No new owner decision is blocking the independent F10 chain.
 
-The finite-policy pure numeric component is in implementation/review, not yet
-connected to runtime and not authorized as a GPU cell. Root confirmed the
+The finite-policy pure numeric component is implemented and root-reviewed:
+immutable value snapshots, full decision/round provenance, balanced and
+80/20 sampling, sparse fallback and complete-round arithmetic updates. All30
+focused policy/status tests pass. It is not yet connected to runtime and is
+not authorized as a GPU cell. Root confirmed the
 ordinary pre-Solver supply callback can carry one episode-held action without
-reopening VAR-2. Required next integration is pinned snapshots, default20
+reopening VAR-2. Implementation/check details are in
+docs/receipts/continuation/2026-09-25-finite-policy-primitives.json. Existing
+ledger/handoff findings remain visible; passing checks is not flight admission. Required next integration is pinned snapshots, default20
 pre-action preview, a source-bound decision receipt, ordinary graph validation,
 real capacity registration and a complete terminal-feedback join. The design
 now explicitly records balanced allocation probabilities and adaptive global
