@@ -1,0 +1,137 @@
+{
+  "cases": [
+    {
+      "case": "binary_mixed_group",
+      "eligible_count": 2,
+      "given_ground_truth": true,
+      "group_members": {
+        "input-a": [
+          "a1",
+          "a2"
+        ]
+      },
+      "rewards": [
+        0,
+        1
+      ]
+    },
+    {
+      "case": "equal_fractional_rewards_are_still_eligible",
+      "eligible_count": 2,
+      "given_ground_truth": true,
+      "group_members": {
+        "input-a": [
+          "a1",
+          "a2"
+        ]
+      },
+      "rewards": [
+        0.2,
+        0.2
+      ]
+    },
+    {
+      "case": "distinct_signed_utilities_are_dropped_when_mean_is_negative",
+      "eligible_count": 0,
+      "given_ground_truth": true,
+      "group_members": {
+        "input-a": [
+          "a1",
+          "a2"
+        ]
+      },
+      "rewards": [
+        -2,
+        1
+      ]
+    },
+    {
+      "case": "distinct_utilities_above_one_are_dropped",
+      "eligible_count": 0,
+      "given_ground_truth": true,
+      "group_members": {
+        "input-a": [
+          "a1",
+          "a2"
+        ]
+      },
+      "rewards": [
+        2,
+        3
+      ]
+    },
+    {
+      "case": "redacted_mode_bypasses_filter",
+      "eligible_count": 2,
+      "given_ground_truth": false,
+      "group_members": {
+        "input-a": [
+          "a1",
+          "a2"
+        ]
+      },
+      "rewards": [
+        -2,
+        1
+      ]
+    },
+    {
+      "case": "different_recordings_merge_under_shared_question",
+      "eligible_count": 4,
+      "given_ground_truth": true,
+      "group_members": {
+        "Return the spoken intent and entities.": [
+          "recording-a-repeat1",
+          "recording-a-repeat2",
+          "recording-b-repeat1",
+          "recording-b-repeat2"
+        ]
+      },
+      "rewards": [
+        0,
+        1,
+        0,
+        1
+      ]
+    }
+  ],
+  "conclusion": "The upstream binary-reward/text-keyed interface needs explicit adaptation for signed official-count feedback and speech-identified complete system trajectories. This is not an efficacy experiment or a general claim of upstream failure.",
+  "date": "2026-09-25",
+  "executed_scope": "AST-extracted exact grouping/filter prefix before semaphore and model setup",
+  "input_kind": "synthetic cases only; no research outcomes or labels read",
+  "mode": "model-free-check",
+  "model_contacts": 0,
+  "runtime_dependencies_installed": false,
+  "schema": "saea-upstream-adaptation-audit-v1",
+  "scorer_contacts": 0,
+  "static_ground_truth_reward_gates": [
+    {
+      "expression": "item.correct_answer if given_ground_truth else '[REDACTED]'",
+      "line": 116
+    },
+    {
+      "expression": "rollouts_per_problem[0]['correct_answer'] if given_ground_truth else '[REDACTED]'",
+      "line": 180
+    },
+    {
+      "expression": "each['reward'] if given_ground_truth else '[REDACTED]'",
+      "line": 168
+    }
+  ],
+  "static_trajectory_projection": [
+    {
+      "expression": "json.loads(item.trajectories)[0]['trajectory']",
+      "line": 115
+    }
+  ],
+  "tool_backend_contacts": 0,
+  "upstream": {
+    "bytes": 16069,
+    "commit": "c2caa539f4c95ae1c39ed24dc8a99cb3651e1d5d",
+    "path": "utu/practice/experience_updater.py",
+    "repo": "TencentCloudADP/youtu-agent",
+    "sha256": "301d4a51136f6c0da620f1f2042d59316af494cee4b4c3329338ba1a1b937d04",
+    "url": "https://raw.githubusercontent.com/TencentCloudADP/youtu-agent/c2caa539f4c95ae1c39ed24dc8a99cb3651e1d5d/utu/practice/experience_updater.py"
+  },
+  "upstream_runtime_imported": false
+}

@@ -1,5 +1,29 @@
 # Handoff to Fable 5.1: training-free RL continuation
 
+## Latest algorithm-source finding: TF-GRPO needs a speech/feedback bridge
+
+Read the final section of
+docs/readiness/2026-09-25-training-free-rl-baseline-fidelity.md and the receipt
+docs/receipts/continuation/2026-09-25-tfgrpo-feedback-interface-audit.json.
+Root executed six synthetic cases through the pinned upstream grouping/filter
+prefix, without model setup or research-outcome reads.
+
+The upstream interface groups by question text, selects mixed binary-reward
+groups through their mean, and uses one switch for both reference-answer and
+reward visibility. Different recordings sharing instructions can merge;
+distinct signed utility can be discarded; hiding answer text also hides group
+reward. Its summary reads the first top-level trajectory entry. The SLURP
+bridge therefore needs input-identity grouping, separately permitted numeric
+feedback, explicit continuous-feedback eligibility and one complete episode
+per trajectory entry. Preserve all ties and failures in collection/evaluation.
+Do not call this audit an algorithm flight or an efficacy result.
+
+Keep the same admissible system action/context space across scholarly baselines.
+The full semantic summary/comparison/group-update/batch-update/reexecution loop
+remains required; the existing cumulative-mean bandit does not complete it.
+The active GPU campaign and detached paired-read worker remain unchanged.
+Their outcome analysis is still pending; no new contact was authorized.
+
 ## Current root decision: whole-system continuation, not component credit
 
 The owner's system-level requirement is now made concrete in the final section

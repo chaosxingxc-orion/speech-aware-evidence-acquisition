@@ -102,3 +102,83 @@ rounds with logged action probabilities and frozen policies; verify that the
 state exists before the action; freeze policy and provenance; evaluate against
 the strongest fixed action; replicate before claiming stable gains. Keep new
 DEV and test access closed under the existing data boundary.
+
+
+## Verified TF-GRPO feedback-interface adaptation requirements
+
+On 2026-09-25, root rechecked the pinned experience_updater.py and executed
+only its grouping/filter prefix, extracted through Python AST before model
+setup. All six synthetic cases passed the asserted source behavior. No research
+outcome, model, scorer or backend tool was contacted. See
+docs/receipts/continuation/2026-09-25-tfgrpo-feedback-interface-audit.json.
+These findings constrain the future SLURP bridge; they do not show an error
+in the upstream binary-reward/text-task setting or an efficacy result.
+
+The existing high-level source audit is insufficient to implement the bridge
+unchanged. Four specific differences must be declared:
+
+1. Group by the registered speech input identity, not instruction text.
+   The upstream grouping at lines 82-85 uses raw_question. In the synthetic
+   case, two different recordings with two repeats each and identical task
+   instructions collapse into one four-member group. Bind the SLURP split,
+   sample ID, original speech packet and round before grouping. Repeats must
+   share the original input; their internal states and actions may differ.
+   Preserve the rendered task text separately from this identity. Do not
+   substitute a reference transcript as a convenient grouping key.
+
+2. Separate numeric feedback from reference-answer disclosure.
+   The upstream given_ground_truth switch controls both answer insertion
+   (lines 116 and 180) and reward visibility (line 168). Setting it false
+   also redacts the group reward. A SLURP adaptation must retain authorized
+   construction counts/utility/intent feedback for the offline updater while
+   keeping reference-answer text out of model contexts and all task feedback
+   out of actor contexts. Merely setting the upstream switch false is not a
+   feedback-preserving bridge. Inspect the critique field as well; it must
+   not become an indirect reference-answer channel.
+
+3. Replace the binary-reward group eligibility rule explicitly.
+   At lines 90-95, and again at 151-156, the upstream rule retains groups
+   whose mean reward is strictly between zero and one. With binary rewards,
+   this identifies groups containing successes and failures. It is not a
+   general test for different outcomes: the exact prefix retained two tied
+   rewards of 0.2, but dropped the distinct signed utilities [-2, 1] and
+   [2, 3]. The false-ground-truth mode bypasses this filter, but also hides
+   the reward as described above.
+
+   Use the existing complete-system grouping artifact to retain every input,
+   all ties, official count differences, intent differences and empty-target
+   errors. If a later semantic-update registration selects informative groups,
+   define eligibility prospectively from those separate feedback fields and
+   report every excluded group. Do not convert signed utility to boolean or
+   shift/clip it into a success score merely to satisfy this source filter.
+   Empty-group and all-tie behavior must be defined before any update contact.
+
+4. Serialize a complete system episode as one trajectory.
+   Line 115 reads only json.loads(item.trajectories)[0]["trajectory"].
+   An adapter that places Perception, Solver, Reviewer and Planner in separate
+   top-level entries would expose only the first entry to this summary path.
+   Bind one complete ordered episode, including tool results, revisions,
+   finite failures and final delivery, with links to its verified sources.
+   This does not imply upstream trajectories are inherently incomplete; it
+   identifies an incompatible carrier mapping to avoid.
+   Preserve update failures and missing summaries explicitly instead of
+   silently treating successful summaries as the entire collection.
+
+For fidelity, preserve the full upstream algorithmic stages: per-trajectory
+summary, semantic group comparison, group-level experience operations, batch
+consolidation, and execution using the updated frozen experience. A numeric
+advantage table is not a substitute for the semantic stages. Register all
+updater contacts, retry bounds and local frozen-core usage before execution;
+the read-only audit adds no authority for those contacts.
+
+Before a same-space comparison, bind the permitted role/context locations of
+learned memory and the executable system actions for every algorithm. A semantic
+method must not silently receive new tools, facts, routes or revision limits
+unavailable to the numeric comparator. If the semantic updater is constrained
+to conditional choices over the admitted complete-policy catalog, label that
+restriction as an adaptation. If it can alter a wider policy surface, evaluate
+and report that as a different search space rather than an algorithm-only win.
+
+The active fixed evidence-path pair remains unchanged. Its complete terminal
+evidence still determines the next system-action question. This audit neither
+reopens semantic-delta nor enables a new contextual policy or semantic update.
