@@ -157,10 +157,27 @@ remains at 3ade29ff. Later VERIFY-1 code is integrated only at a run boundary.
    not an RL improvement. Multistep optimization waits for useful downstream
    evidence-acquisition and revision actions.
 
-## Latest custody issue
+## Resolved receipt custody issue
 
-VERIFY-1 preparation currently refuses a historical ROLL-1 session-receipt hash:
-the manifest names a mutable resident-session path that changed on a restart.
-Do not modify sealed manifests or suppress verification. Locate exact original
-bytes, preserve them by content hash, and establish a versioned relocation rule
-before any VERIFY-1 contact. The active VAR-1 arm does not consume this source.
+Service restart replaced the old resident session receipt. The root recovered its
+exact bytes from the preserved wrapper identity and the append-only startup log.
+The reconstructed raw SHA-256 equals the original manifest's required
+8dc2bbda40f74824946701ad6b3a660bd220b7bc396e184f9f99cd0b0e812d52.
+The missing startup hash came from observed log bytes at offset 135805607, length
+2921; no event value was invented. Original manifest and current receipt are
+unchanged. See docs/receipts/continuation/2026-09-25-session-receipt-custody-recovery.json.
+
+Commit 46e03f3d preserves replaced session receipts by content hash and permits
+only exact-hash session-receipt archive resolution. Other artifact checks are
+unchanged. Session/bundle tests: 210 passed, 6 skipped. The earlier claim that a
+different canonical stop hash established preexisting corruption was rejected:
+canonical JSON hashes differ from raw-file hashes. The full VERIFY-1 material
+build and offline dry run now pass again, with zero model contacts.
+
+## Current implementation evidence
+
+VERIFY-1 sealed source binding, balanced presentation, shared actual-request fit
+path, parser and analysis reader have landed on master. 206 relevant phase,
+selector and status tests pass. Shared OpenJiuwen proof covers role visibility,
+rail rejection, iteration bounds and tool round trips. Readiness remains held
+until the clean-tree registration/decision repin; a code merge is not a flight.

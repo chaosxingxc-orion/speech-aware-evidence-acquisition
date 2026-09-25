@@ -1,0 +1,18 @@
+{
+  "matched": true,
+  "required_sha256": "8dc2bbda40f74824946701ad6b3a660bd220b7bc396e184f9f99cd0b0e812d52",
+  "wrapper_path": "/home/chao/serving-slurp-native-np4-20260923T040653Z.log",
+  "wrapper_sha256": "94ff772e489e24bdf57e02bd1826458154919587f97abbff2540b50bbfae9d6d",
+  "server_log_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1/server.log",
+  "startup_byte_offset": 135805607,
+  "startup_byte_length": 2921,
+  "startup_stdout_sha256": "c1e9f06260ac41a310a5c2f558aa7277d52317c85a402c56a74dd23afcdee69f",
+  "recovered_path": "/home/chao/recovered-roll1-session-receipt-exact.json",
+  "method": "Copy full session identity from preserved wrapper document; enumerate observed log startup prefixes under historical 65536-byte cap; accept only exact original manifest SHA-256.",
+  "archived_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1/session-receipt.json.archive/8dc2bbda40f74824946701ad6b3a660bd220b7bc396e184f9f99cd0b0e812d52.json",
+  "current_receipt_sha256": "13af719e189a6438ee60272231148d8a739024b478dab9753dcafc1d896ae304",
+  "original_manifest_unchanged": true,
+  "current_receipt_unchanged": true,
+  "model_contacts": 0,
+  "cause": "Resident receipt path overwritten on restart. Canonical stop-receipt hashes and raw file hashes are different; the prior canonical hash does not establish earlier corruption."
+}

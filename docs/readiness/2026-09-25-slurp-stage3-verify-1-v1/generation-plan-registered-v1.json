@@ -16,7 +16,7 @@
   },
   "comparator": null,
   "comparator_reason": "None is FLOWN. The comparison columns -- the five single-sample arms, their mean, the medoid rule and the oracle -- already exist in the SEALED ROLL-1 rollout and in the offline aggregation read derived from it, so this cell adds the CHOICE and re-flies nothing. The read is not plan_cell_read.py.",
-  "composed_config_hash": "ffd733033123a08a64d46e2a95d94e76a58b8b839d03c22ef6f19eea684cb134",
+  "composed_config_hash": "a33b5b046885ff285315ab910306d80e4cd11b96de6683f8b06a76922832497e",
   "decision_rule": {
     "status": "DESCRIPTIVE",
     "registered_before_contact": true,
@@ -34,7 +34,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 1250,
     "planned_speech_audio_seconds": 5454,
-    "protocol_hash": "10f0acb28972f6ee270e37d6cf45a6abac9231c11d5c94663466978bb65f3c9e",
+    "protocol_hash": "aef0fb0f358e916798c0338d7041f3ab812e01c9a2a0a2a7b4d002e8f0dea403",
     "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
@@ -88,7 +88,7 @@
   },
   "plan_kind": "generation",
   "prepared_phase_supply": {
-    "note": "NONE, and none is minted at the flip: the single phase declares knowledge 'none' and the fragment binds no phase_supply and no knowledge_stores, so there is no first-phase supply artifact to prepare. The per-row material is derived at contact time from the sealed ROLL-1 manifest bytes and the pinned permutation seed, and the committed model-free record docs/receipts/verify1/slurp-stage3-verify-1-material-v1.json (sha256 5f90ec58a3ae593c8bd47a1e5ddd3a34eb859ccfa1491f64156cf0c397ac44cf) is the READ's resolution table, not a flight input."
+    "note": "NONE, and none is minted at the flip: the single phase declares knowledge 'none' and the fragment binds no phase_supply and no knowledge_stores, so there is no first-phase supply artifact to prepare. The per-row material is derived at contact time from the sealed ROLL-1 manifest bytes and the pinned permutation seed, and the committed model-free record docs/receipts/verify1/slurp-stage3-verify-1-material-v1.json (sha256 e8154290564f6adb653c8200e2fc97ee676a5a1433c6bc79fa9516bf4743f5f5) is the READ's resolution table, not a flight input."
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-25-slurp-stage3-verify-1-v1/protocol-registered-v1.json",

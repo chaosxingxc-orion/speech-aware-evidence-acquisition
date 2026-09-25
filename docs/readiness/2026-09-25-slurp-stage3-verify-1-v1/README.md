@@ -1,8 +1,8 @@
 # VERIFY-1 readiness
 
 Owner-approved continuation of Fable route F11. Source fable-verify1b is preserved.
-The earlier model-free dry run passed. A subsequent source recheck refuses a historical
-session-receipt hash after service restart; resolve exact-byte custody before admission.
+The complete model-free dry run passes after exact historical receipt recovery.
+The source manifest is unchanged; its original receipt bytes match the sealed hash.
 Estimates never replace complete-roster live_phase_fit.
 Use the existing FlightRuntime, registered one-phase program and resident decoder-only
 np4 service. Run smoke then full roster through the independent WSL scheduled batch

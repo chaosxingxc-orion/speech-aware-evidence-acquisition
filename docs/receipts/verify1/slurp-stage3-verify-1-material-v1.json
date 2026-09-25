@@ -17,7 +17,7 @@
   "position_bias_control_single_answer": 205,
   "rows": 625,
   "rows_with_unparseable_sample": 6,
-  "ruling": "All 625 rows fly. The informative population is the rows rendering >= 2 DISTINCT candidates and carries the probe's reading; the single-answer rows are a POSITION-BIAS CONTROL (every position is equally correct there). A row carrying an unparseable sample flies and is excluded from the informative population. The two populations are reported separately and never pooled.",
+  "ruling": "All 625 rows are the primary population. Report the 420 content-distinct rows, 414 content-distinct rows with all candidates parsed, 205 identical-answer controls, and 225 row-F1-disagreeing rows separately. Preserve the six rows containing nine malformed source samples; flag their canonical empty renderings. Invalid verifier responses fall back to sealed source sample index 0. Do not exclude failures from complete-roster estimates. Position histograms are descriptive, not tests of semantic selection.",
   "unparseable_samples": 9
  },
  "position_of_sample_index": {

@@ -12,20 +12,20 @@
     "arm": {
       "attempt_id": "attempt-slurp-native-stage3-verify-1-v1-generation",
       "cell_id": "slurp-native-stage3-verify-1-v1",
-      "composed_config_hash": "ffd733033123a08a64d46e2a95d94e76a58b8b839d03c22ef6f19eea684cb134",
+      "composed_config_hash": "a33b5b046885ff285315ab910306d80e4cd11b96de6683f8b06a76922832497e",
       "fit_attempt_id": "attempt-slurp-native-stage3-verify-1-v1-fit",
       "fit_run_id": "SAEA-SLURP-STAGE3-VERIFY-1-FIT-V1",
-      "protocol_hash": "10f0acb28972f6ee270e37d6cf45a6abac9231c11d5c94663466978bb65f3c9e",
+      "protocol_hash": "aef0fb0f358e916798c0338d7041f3ab812e01c9a2a0a2a7b4d002e8f0dea403",
       "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-V1",
       "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"
     },
     "smoke": {
       "attempt_id": "attempt-slurp-native-stage3-verify-1-smoke-4-v1-generation",
       "cell_id": "slurp-native-stage3-verify-1-smoke-4-v1",
-      "composed_config_hash": "44c743b6e82e191958cc0e02c5319e94e63d988a6c4bbcba35ccfea00e7b1655",
+      "composed_config_hash": "1d34025fc4f096d081b6c9a74f1246c5901dbcd7ecd20755547475873bfa2702",
       "fit_attempt_id": "attempt-slurp-native-stage3-verify-1-smoke-4-v1-fit",
       "fit_run_id": "SAEA-SLURP-STAGE3-VERIFY-1-SMOKE-4-FIT-V1",
-      "protocol_hash": "917800f1bfa947f7525259051cde95f01f18a59a7bd8d91b66e0577050d9dded",
+      "protocol_hash": "aab7422b9efd5305743121e04a199a9dd73d0c43581486b6d947cdf4bd917833",
       "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-SMOKE-4-V1",
       "split_identity_hash": "2657110d135195dafbf1ebd12850470b0ae8dc28ffa1d61494266d047e349efd"
     }
@@ -36,7 +36,7 @@
     "campaign_plan": "configs/campaign/slurp-native-stage3-verify-1-v1.json",
     "material_record": {
       "relpath": "docs/receipts/verify1/slurp-stage3-verify-1-material-v1.json",
-      "sha256": "5f90ec58a3ae593c8bd47a1e5ddd3a34eb859ccfa1491f64156cf0c397ac44cf"
+      "sha256": "e8154290564f6adb653c8200e2fc97ee676a5a1433c6bc79fa9516bf4743f5f5"
     },
     "phase_program": "configs/policy/phase-slurp-verify-select-v1.json",
     "probe_templates": {

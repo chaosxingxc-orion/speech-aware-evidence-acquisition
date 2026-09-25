@@ -17,7 +17,7 @@
     "parser_of_record": "rails.artifact_results.parse_slurp_verifier_choice",
     "permutation_record": {
       "relpath": "docs/receipts/verify1/slurp-stage3-verify-1-material-v1.json",
-      "sha256": "5f90ec58a3ae593c8bd47a1e5ddd3a34eb859ccfa1491f64156cf0c397ac44cf"
+      "sha256": "e8154290564f6adb653c8200e2fc97ee676a5a1433c6bc79fa9516bf4743f5f5"
     },
     "sealed_rollout_scores": "$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1 -- the five per-sample official score files and per_row.json S3-3 sealed"
   },
