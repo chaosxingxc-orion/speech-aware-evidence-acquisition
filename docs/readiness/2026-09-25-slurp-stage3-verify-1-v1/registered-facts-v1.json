@@ -12,10 +12,10 @@
     "arm": {
       "attempt_id": "attempt-slurp-native-stage3-verify-1-v1-generation",
       "cell_id": "slurp-native-stage3-verify-1-v1",
-      "composed_config_hash": "a33b5b046885ff285315ab910306d80e4cd11b96de6683f8b06a76922832497e",
+      "composed_config_hash": "7011bf9c8e9903fd28082006cad8b58208816d08cb58c8eb42337e07a4f049e9",
       "fit_attempt_id": "attempt-slurp-native-stage3-verify-1-v1-fit",
       "fit_run_id": "SAEA-SLURP-STAGE3-VERIFY-1-FIT-V1",
-      "protocol_hash": "aef0fb0f358e916798c0338d7041f3ab812e01c9a2a0a2a7b4d002e8f0dea403",
+      "protocol_hash": "b25b91c5142c62968c775470c95be1821e8f8709f7c54d5ca37ed8de6de900b7",
       "run_id": "SAEA-SLURP-STAGE3-VERIFY-1-V1",
       "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"
     },

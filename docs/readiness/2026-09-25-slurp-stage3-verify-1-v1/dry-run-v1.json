@@ -2,7 +2,7 @@
  "cells": {
   "arm": {
    "cell_id": "slurp-native-stage3-verify-1-v1",
-   "composed_config_hash": "a33b5b046885ff285315ab910306d80e4cd11b96de6683f8b06a76922832497e",
+   "composed_config_hash": "7011bf9c8e9903fd28082006cad8b58208816d08cb58c8eb42337e07a4f049e9",
    "experiment": "slurp-native-stage3-verify-1-v1",
    "per_row_ceiling": 2,
    "phase_material_receipt_sha256": "e661eb9979077c3f9214bb16027c588b2793fa1654707e246f4e738c57de2998",
@@ -10,7 +10,7 @@
     "choose"
    ],
    "program_id": "phase-slurp-verify-select-v1",
-   "protocol_hash": "aef0fb0f358e916798c0338d7041f3ab812e01c9a2a0a2a7b4d002e8f0dea403",
+   "protocol_hash": "b25b91c5142c62968c775470c95be1821e8f8709f7c54d5ca37ed8de6de900b7",
    "response_format_ids": {
     "choose": "slurp-verifier-choice-v1"
    },
