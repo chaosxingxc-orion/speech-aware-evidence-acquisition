@@ -1,0 +1,28 @@
+{
+  "schema": "saea-system-wire-context-preparation-receipt-v1",
+  "created_at": "2026-09-26T07:44:22.568804+00:00",
+  "source_worker": "/home/chao/saea-worktrees/codex-system-batch001-20260926",
+  "source_commit": "d56ad054ad06df36b2a2e508ab5e765cc2549085",
+  "index": {
+    "relpath": "coordination/slurp-system-batch001-v1/semantic-wire-v1/index.json",
+    "sha256": "f28d2e06c3850c4602e882a4007a8f8a364148d14c811a14fa42e286a3b91eb1"
+  },
+  "all_original_request_fit_bodies_verified": 67,
+  "complete_episode_count": 16,
+  "focused_tests_passed": 49,
+  "model_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "representation_spec": "docs/readiness/2026-09-26-system-batch001-summary-wire-view-v1.md",
+  "offline_checks_passed": [
+    "engineering_base",
+    "harness_admission",
+    "results_ledger",
+    "tool_catalog",
+    "experiment_handoff",
+    "openjiuwen_native_reuse",
+    "derived_media_confinement",
+    "stage3_algorithm_label",
+    "finite_completion_policy"
+  ],
+  "validation_logs": "coordination/slurp-system-batch001-v1/wire-validation"
+}

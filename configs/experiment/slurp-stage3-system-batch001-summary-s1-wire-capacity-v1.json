@@ -1,0 +1,90 @@
+{
+  "experiment_id": "SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S1-WIRE-CAPACITY-V1",
+  "date": "2026-09-26",
+  "purpose": "Capacity-only diagnostic of complete system trajectories. No generation or scoring is authorized.",
+  "cells": [
+    {
+      "cell_id": "slurp-stage3-system-batch001-summary-s1-wire-capacity-v1",
+      "run_id": "SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S1-WIRE-CAPACITY-V1",
+      "attempt_id": "attempt-slurp-stage3-system-batch001-summary-s1-wire-capacity-v1",
+      "model_fragment": "q4km-mmproj-free-system-np2-ctx24k-resource-guard-v1",
+      "dataset_fragment": "slurp-speech-system-batch001-r01c-v1",
+      "baseline_fragment": "system-trajectory-summary-wire-text-v1",
+      "allowed_execution_stages": [
+        "check",
+        "prompt-fit"
+      ],
+      "readiness": {
+        "state": "ready",
+        "reason": "Four complete actor sources are finalized and source-bound; admit only capacity diagnosis.",
+        "requirements": []
+      }
+    }
+  ],
+  "serving_slots": 2,
+  "serving_slot_tokens": 24576,
+  "split_id": "SYSTEM-BATCH001-R01C-V1",
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-system-batch001-r01c-v1",
+      "ids": [
+        "slurp:train:000049:audio-1434542455",
+        "slurp:train:000051:audio-1434531302-headset",
+        "slurp:train:000234:audio-1499688528",
+        "slurp:train:000260:audio-1488549919"
+      ]
+    }
+  ],
+  "stage3_algorithm": {
+    "id": "tfgrpo-system-memory-disjoint-v1",
+    "operators_used": [
+      "credit_assignment"
+    ],
+    "note": "Capacity-only precursor for complete-system summary; no semantic inference or update yet."
+  },
+  "prepared_training_feedback": {
+    "schema": "saea-prepared-system-summary-v1",
+    "artifact": {
+      "relpath": "coordination/slurp-system-batch001-v1/semantic-wire-v1/s1-summary-contexts.json",
+      "sha256": "23c82574eae41aea9ee08e9412d9d5be8491687e78aba6149b4e50a684c0f359"
+    },
+    "source_bindings": {
+      "relpath": "coordination/slurp-system-batch001-v1/semantic-wire-v1/s1-summary-source.json",
+      "sha256": "f588a2f108559d83a7f93769c0f943d0448f85cfd0d585ccaa232301df225a07"
+    },
+    "language": "en",
+    "max_context_bytes": 2000000
+  },
+  "artifact_result": {
+    "schema": "saea-artifact-result-binding-v1",
+    "role": "training-feedback-proposal",
+    "construction_roster": {
+      "repo_relpath": "docs/receipts/rosters/slurp-system-batch001-r01c-v1.json",
+      "sha256": "740d8d31e3ec33e63cd398d654dc5d5771612178703b4a528094898741a6f19b"
+    }
+  },
+  "live_phase_fit": {
+    "run_id": "SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S1-WIRE-CAPACITY-V1-GENERATION-FIT-HELD",
+    "attempt_id": "attempt-slurp-stage3-system-batch001-summary-s1-wire-capacity-v1-generation-fit-held",
+    "contact_cap": 9
+  },
+  "knowledge_snapshot_relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json",
+  "knowledge_snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+  "knowledge_custody_note": "Required shared phase-runner custody only; no fresh supply. Validate every actual prepared-text request and render it without posting before fit.",
+  "request_decoding_overrides": {
+    "temperature": 0,
+    "seed": 2026092605,
+    "max_tokens": 2048
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 9,
+    "planned_gpu_hours": 0.2,
+    "planned_speech_audio_seconds": 18
+  },
+  "service_session": "serving-slurp-system-batch001-np2-v1",
+  "registration": "docs/readiness/2026-09-26-system-batch001-summary-wire-capacity-v1/protocol.json",
+  "failure_policy": "Preserve and stop on operational failure. A measured nonfit is a completed diagnostic and permits no generation. No shortening, omitted source group, automatic retry or server restart."
+}

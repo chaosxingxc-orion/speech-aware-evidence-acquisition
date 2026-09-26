@@ -37,9 +37,12 @@ def build_system_summary_contexts(source_pin, *, data_root):
     data_root = Path(data_root)
     binding, binding_sha = _read_pinned_json(
         source_pin, data_root=data_root, field="summary source binding")
-    if (not isinstance(binding, Mapping) or set(binding) != {
-        "schema", "round_id", "source_repo_root", "manifest", "phases", "construction_roster",
-    } or binding["schema"] != "saea-system-summary-source-v1"):
+    fields = {"schema", "round_id", "source_repo_root", "manifest", "phases", "construction_roster"}
+    wire_view = isinstance(binding, Mapping) and binding.get("schema") == "saea-system-summary-source-v2"
+    if wire_view:
+        fields.add("wire_requests")
+    if (not isinstance(binding, Mapping) or set(binding) != fields
+            or binding["schema"] not in {"saea-system-summary-source-v1", "saea-system-summary-source-v2"}):
         raise PreparedFeedbackError("summary source binding has wrong fields")
     checkout = binding["source_repo_root"]
     if not isinstance(checkout, str) or not Path(checkout).is_absolute():
@@ -69,14 +72,25 @@ def build_system_summary_contexts(source_pin, *, data_root):
         report = materialize_semantic_trajectories(source, round_id=binding["round_id"])
     except (ValueError, TypeError, KeyError, OSError, RuntimeError) as error:
         raise PreparedFeedbackError(f"cannot verify complete summary source: {error}") from error
+    wire_requests = None
+    if wire_view:
+        from ..analysis.system_wire_context import load_actor_wire_requests
+
+        wire_requests = load_actor_wire_requests(
+            source, report, binding["wire_requests"], data_root=data_root)
     contexts = []
     for episode in report["episodes"]:
         # The upstream first trajectory slot is the whole episode. Present the
         # same object without nested escaped JSON strings to the shared model.
         fields = tfgrpo_summary_fields(episode)
+        trajectory = episode
+        if wire_requests is not None:
+            from ..analysis.system_wire_context import compact_wire_episode
+
+            trajectory = compact_wire_episode(episode, wire_requests)
         context = {
             "stage": "complete-system-trajectory-summary",
-            "raw_question": fields["raw_question"], "trajectory": episode,
+            "raw_question": fields["raw_question"], "trajectory": trajectory,
         }
         _canonical_context(context)
         contexts.append({
@@ -101,6 +115,11 @@ def summary_preparation_inputs(document):
     paths = [Path(__file__), *(Path(module.__file__) for module in (
         native_episode_source, system_semantic_trajectory, system_trajectory, prepared_feedback,
     ))]
+    if any(row["model_context"]["trajectory"].get("schema") == "saea-complete-episode-wire-view-v1"
+           for row in document["contexts"]):
+        from ..analysis import shared_json, system_wire_context
+
+        paths.extend(Path(module.__file__) for module in (shared_json, system_wire_context))
     return {
         "document_sha256": content_hash(document),
         "implementation_sha256": content_hash({

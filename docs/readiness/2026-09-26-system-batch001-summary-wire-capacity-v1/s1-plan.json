@@ -1,0 +1,27 @@
+{
+  "schema": "saea-flight-execution-plan-v1",
+  "status": "registered-before-contact",
+  "plan_kind": "fit",
+  "experiment": "slurp-stage3-system-batch001-summary-s1-wire-capacity-v1",
+  "cell": "slurp-stage3-system-batch001-summary-s1-wire-capacity-v1",
+  "composed_config_hash": "013e501082db839a14d4abf142deaf974b44337f94e1a5ec0f054fb4def2388a",
+  "execution_plan": {
+    "run_id": "SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S1-WIRE-CAPACITY-V1",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
+    "planned_model_calls": 9,
+    "planned_gpu_hours": 0.2,
+    "planned_speech_audio_seconds": 18,
+    "protocol_hash": "42cc286ce7468985cad04ff22ead5270f992b16a9a7e89399ba3076939b51737",
+    "attempt_id": "attempt-slurp-stage3-system-batch001-summary-s1-wire-capacity-v1",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-26-system-batch001-summary-wire-capacity-v1/protocol.json",
+    "sha256": "74215e21bf1dc3d892a3c42a8a8e60e6768cae59314ed6a572206f732226714d"
+  },
+  "read_rule": "Read operational capacity metadata only; no semantic output exists."
+}

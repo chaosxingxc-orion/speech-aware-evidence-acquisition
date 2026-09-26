@@ -185,7 +185,7 @@ def test_prepared_complete_episode_reaches_actual_shared_fit_and_send(summary_wo
 
 
 def exercise_shared_fit_and_send(world_inputs, tmp_path, text_only, *, prepared_spec=None,
-                                 baseline=None, comparison=False, group_update=False, batch_update=False,
+                                 baseline=None, comparison=False, group_update=False, batch_update=False, wire_view=False,
                                  output_text="The whole episode ends in ACCEPT."):
     """Exercise the production binding, executor, request gate and artifact output."""
     from types import SimpleNamespace
@@ -324,7 +324,14 @@ def exercise_shared_fit_and_send(world_inputs, tmp_path, text_only, *, prepared_
             assert receipt["input_stage"] == "complete-system-semantic-comparison"
         else:
             episode = context["trajectory"]
-            assert len(episode["contacts"]) == 5 and len(episode["tool_records"]) == 2
+            if wire_view:
+                from speech_aware_evidence_acquisition.analysis.shared_json import restore_json
+
+                assert episode["schema"] == "saea-complete-episode-wire-view-v1"
+                restored = restore_json(episode["context"])
+                assert len(restored["contacts"]) == 5 and len(restored["actual_tool_records"]) == 2
+            else:
+                assert len(episode["contacts"]) == 5 and len(episode["tool_records"]) == 2
         assert all(row.metrics == {} for row in summary.results)
         assert not any(kind == "SCORE" for kind, _, _ in trace.records)
         runtime._output_rows = FlightRuntime._rows_from_phase_summaries(

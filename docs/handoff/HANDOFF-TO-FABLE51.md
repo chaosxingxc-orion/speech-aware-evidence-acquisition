@@ -5,6 +5,26 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Compact wire-view preparation complete; capacity successor registered
+
+Checkpoint: 2026-09-26. All67 actual actor request bodies match their original
+per-contact fit hashes. All16 complete trajectories now have a compact,
+versioned wire-context view,47800--75413 UTF-8 bytes. Forty-nine focused tests
+pass. Read [representation and verification](../readiness/2026-09-26-system-batch001-summary-wire-view-v1.md).
+
+The archive preserves all model-visible context, raw responses, actual tools,
+control, revision and delivery; original internal custody stays immutable
+outside the prompt. Short references share repeated content and reconstruct
+the declared view exactly. Original episode hashes still join terminal feedback.
+This is not an information-lossless copy of every internal custody field.
+
+The four cells under
+docs/readiness/2026-09-26-system-batch001-summary-wire-capacity-v1
+authorize only36 tokenizer endpoints for all16 exact requests, zero generation,
+scoring or media. They keep the same service,2048 output and3072 reserve.
+No semantic inference, learned memory or next actor batch is admitted yet.
+The old oversized capacity verdict remains valid for its original view.
+
 ## Capacity verdict: actor batch safe in observed window; summary blocked
 
 Latest checkpoint: 2026-09-26. All four registered v2 capacity diagnostics
