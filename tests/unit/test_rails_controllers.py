@@ -41,6 +41,24 @@ _SHA_A = "a" * 64
 _SHA_B = "b" * 64
 
 _EXPECTED_PROGRAM_SHAPES = {
+    # 2026-09-26: four programs were shipped and registered while this table was not
+    # extended, so the registry/table equality test failed at 41 vs 37. The shapes below are
+    # read from the shipped configs, not chosen: a stale oracle is a defect in the oracle.
+    # All four are single-visit artifact programs -- they ask the frozen core for one
+    # analysis or one selection, not for a task answer -- which is why none of them carries
+    # the four-node native-role-episode shape.
+    "phase-knowledge-value-edit-v1": (
+        ("direct",), 1, "always-run-full-program"
+    ),
+    "phase-slurp-verify-select-v1": (
+        ("choose",), 2, "always-run-full-program"
+    ),
+    "phase-system-batch-operations-v1": (
+        ("direct",), 1, "always-run-full-program"
+    ),
+    "phase-system-group-operations-v1": (
+        ("direct",), 1, "always-run-full-program"
+    ),
     "phase-audio2tool-native-candidate-recovery-tools-v1": (
         ("perception", "reviewer", "planner", "solver"), 14, "native-role-episode"
     ),
