@@ -1,0 +1,45 @@
+{
+  "schema": "saea-scientific-read-authorization-v1",
+  "recorded_at": "2026-09-26T10:45:00.707220+00:00",
+  "scope": "Root compares original summary-only credit with recorded-event credit on identical actors/summaries/terminal outcomes. Retain all raw proposals; no root edits, runtime memory or next actor.",
+  "manifest": {
+    "relpath": "runs/SAEA-SLURP-STAGE3-SYSTEM-EVENT-CREDIT001-NP1-RUN-V1/attempt-slurp-stage3-system-event-credit001-np1-run-v1/SAEA-SLURP-STAGE3-SYSTEM-EVENT-CREDIT001-NP1-RUN-V1.run-manifest.json",
+    "sha256": "5ed0aa3a8a1e460375dc7f07009408b350560e81885f2036ca6d93ea455b53ab"
+  },
+  "worker_commit": "fa68d26eb567ada8971dc99f9e0ef4e80bf47ca6",
+  "closure": {
+    "mode": "arm",
+    "run_id": "SAEA-SLURP-STAGE3-SYSTEM-EVENT-CREDIT001-NP1-RUN-V1",
+    "attempt_id": "attempt-slurp-stage3-system-event-credit001-np1-run-v1",
+    "pass": true,
+    "fails": [],
+    "attempt_state": "FINALIZED",
+    "actual": {
+      "audio_seconds": 3.5835,
+      "calls": 1
+    },
+    "result_kind": "artifact",
+    "bundle_verified": true,
+    "manifest_status": "COMPLETED",
+    "study_commit": "fa68d26eb567ada8971dc99f9e0ef4e80bf47ca6",
+    "dirt": [],
+    "rows": 1,
+    "distinct": 1,
+    "dispositions": {},
+    "contacts_per_row_hist": {},
+    "score_jobs": 0,
+    "expected_score_jobs": 0,
+    "requests": 1,
+    "requests_with_tool_schemas": 0,
+    "sha256_run-manifest": "5ed0aa3a8a1e460375dc7f07009408b350560e81885f2036ca6d93ea455b53ab",
+    "sha256_outputs": "c4eda337c8fcd2b17db8a8c967a7076e055f6c02f45a2c22e25bd8d4a3dce869"
+  },
+  "launch_epoch": {
+    "at": "2026-09-26T10:42:26Z",
+    "event": "driver-start",
+    "detail": {
+      "flight_commit": "fa68d26eb567ada8971dc99f9e0ef4e80bf47ca6",
+      "queue": "/home/chao/batch-queue.json"
+    }
+  }
+}

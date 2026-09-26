@@ -1,0 +1,44 @@
+{
+  "schema": "saea-system-event-credit-no-update-v1",
+  "comparison_manifest": {
+    "relpath": "runs/SAEA-SLURP-STAGE3-SYSTEM-EVENT-CREDIT001-NP1-RUN-V1/attempt-slurp-stage3-system-event-credit001-np1-run-v1/SAEA-SLURP-STAGE3-SYSTEM-EVENT-CREDIT001-NP1-RUN-V1.run-manifest.json",
+    "sha256": "5ed0aa3a8a1e460375dc7f07009408b350560e81885f2036ca6d93ea455b53ab"
+  },
+  "prepared_group": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/event-credit-v1/group-prepared-no-update.json",
+    "sha256": "f8c107cc1c0e3a5df29f4c11c9390cc53c201f5a346e1b225b9a9fba8f96c7ae",
+    "cache": "cold",
+    "contact_class": "model-free"
+  },
+  "full_construction_inputs": 4,
+  "population": [
+    {
+      "sample_id": "slurp:train:000049:audio-1434542455",
+      "disposition": "no-update-no-experience",
+      "extraction": {
+        "status": "missing-block",
+        "text": ""
+      }
+    },
+    {
+      "sample_id": "slurp:train:000051:audio-1434531302-headset",
+      "disposition": "no-update-terminal-tie",
+      "extraction": null
+    },
+    {
+      "sample_id": "slurp:train:000234:audio-1499688528",
+      "disposition": "no-update-terminal-tie",
+      "extraction": null
+    },
+    {
+      "sample_id": "slurp:train:000260:audio-1488549919",
+      "disposition": "no-update-terminal-tie",
+      "extraction": null
+    }
+  ],
+  "next_group_generation_contacts": 0,
+  "batch_synthesis_contacts": 0,
+  "base_snapshot_sha256": "5ee2cc1d118a71c6ad03c201451f370b6cb89e50aba29e6da07a0f4479288e23",
+  "runtime_memory_authorized": false,
+  "task_gain_established": false
+}

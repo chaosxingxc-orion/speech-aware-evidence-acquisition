@@ -1,0 +1,26 @@
+{
+  "schema": "saea-independent-launch-receipt-v1",
+  "at": "2026-09-26T10:43:47.384402+00:00",
+  "dispatch": {
+    "relpath": "coordination/slurp-system-batch001-v1/event-credit-v1/generation-dispatch.json",
+    "sha256": "b6cdce409377e94e283a62fbeebf302d61155bbb1bd6a968b27b88f5b8ce0175"
+  },
+  "driver_epoch": "2026-09-26T10:42:26Z",
+  "campaign_start": "2026-09-26T10:42:29Z",
+  "worker_commit": "fa68d26eb567ada8971dc99f9e0ef4e80bf47ca6",
+  "worker_path": "/home/chao/saea-worktrees/codex-system-event-credit-20260926",
+  "windows_task": "SAEA-Batch-Driver",
+  "network_required": false,
+  "automatic_restart_count": 0,
+  "contacts": {
+    "generation_cap": 1,
+    "live_fit_cap": 3,
+    "scores": 0
+  },
+  "static_fit": {
+    "input_tokens": 26126,
+    "output_reserved": 2048,
+    "margin_tokens": 20976
+  },
+  "runtime_memory_authorized": false
+}

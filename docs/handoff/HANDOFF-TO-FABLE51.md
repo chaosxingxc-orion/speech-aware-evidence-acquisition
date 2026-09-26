@@ -5,6 +5,62 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Event-grounded credit comparison closed: no qualified update
+
+Checkpoint: 2026-09-26T10:44:09Z. The independent driver is COMPLETE.
+One score-free generation sealed after source-bound recorded-event input;
+input26126/output1572 of2048. Root registered reading and completed a
+whole-system content audit. The response still invents tool execution and
+misstates official fractional counts/metric meanings. Chronology improved
+partly, but semantic credit is unqualified. The Experiences closing tag is
+missing despite normal completion. Shared preparation returns zero next
+contexts: one no-experience group, three terminal ties. No automatic repair,
+retry, group/synthesis generation, runtime memory or next actor occurred.
+
+Read docs/results/2026-09-26-system-event-credit001-verdict.md and the
+event-credit001 launch/read/resource/no-update receipts. Preserve worker
+/home/chao/saea-worktrees/codex-system-event-credit-20260926 at
+fa68d26eb567ada8971dc99f9e0ef4e80bf47ca6. It is merged to master, branch deleted.
+Its completed queue and idle healthy resident service are known terminal
+state, not an actionable stall. All upstream frozen workers remain retained.
+
+The earlier three-record baseline candidate remains provisional and separate.
+Next close the planned learned/empty-memory full-system actor bindings with
+the SAME capability/prompt correction, real fits and disjoint TRAIN inputs.
+No task gain is established. Before extending the system action space, read
+docs/readiness/2026-09-26-intent-entity-order-system-design-v1.md:
+Top-K already selects associated slot cards; candidate-specific entity
+hypotheses and actual semantic consumption are a distinct prospective question.
+Do not silently change frozen actors or reopen closed candidate flights.
+Keep four inputs/four trajectories, two actor slots, common prefixes and
+batch-boundary updates. B1080 evaluation/replication remain pending.
+DEV6570/test13078 remain closed. No owner decision blocks authorized work.
+
+## Recorded-event whole-system credit comparison running independently
+
+Checkpoint: 2026-09-26T10:42:29Z. SAEA-Batch-Driver launched the registered
+comparison at 10:42:29Z in epoch 10:42:26Z. Worker
+/home/chao/saea-worktrees/codex-system-event-credit-20260926 is frozen at
+fa68d26eb567ada8971dc99f9e0ef4e80bf47ca6, merged to master; branch deleted.
+Read operational metadata until FINALIZED, then root registers reading.
+Launch receipt: docs/receipts/continuation/2026-09-26-system-event-credit001-launch.json.
+
+This compares the same original actors, summaries, terminal feedback and option
+order with actual recorded events and explicit feedback-channel semantics.
+All 16 episodes/four input groups remain in lineage; one group is eligible.
+Legacy preparation reconstructed exactly. 69 targeted tests, Ruff and nine
+offline gates passed. Actual input26126/output reserve2048/margin20976 fits
+the unchanged one-slot49152 decoder-only service. One generation, three live
+fits and zero official scores; no actor rerun or fresh audio.
+No automatic restart, runtime memory activation or next actor dispatch.
+
+Owner now asks about intent-first versus entity-first candidate construction.
+Audit the existing candidate-conditioned slot supply and explain the distinction
+between knowledge scoping and a hard output constraint; record the prospective
+system action separately. Do not alter this active comparison or reopen closed
+candidate flights. Keep Windows/GPU guards, batch-boundary updates, four inputs
+and four full trajectories; DEV6570/test13078 remain closed.
+
 ## First provisional system memory created; quality and consumption unproven
 
 Checkpoint: 2026-09-26T10:18:25Z. The sole typed batch-interface successor
