@@ -2,9 +2,9 @@
   "schema": "saea-stage2-results-ledger-v1",
   "study": "speech-aware-evidence-acquisition",
   "authority": "owner Decision 14-Q, 2026-09-09",
-  "generated_on": "2026-09-09",
+  "generated_on": "2026-09-26",
   "profile": "model-free-check: zero model, GPU, tool, embedder, tokenizer, network and audio-decode contacts",
-  "scope": "every cell decided by a verdict note dated 2026-09-04 to 2026-09-09, plus the four entries of docs/receipts/harness-admission.json and registered cells whose scientific decisions remain pending; the 2026-09-09 owner recovery adds operational completion for all seven KV flights without inspecting their score values",
+  "scope": "every cell decided by a verdict note dated 2026-09-04 to 2026-09-09, plus the four entries of docs/receipts/harness-admission.json and registered cells whose scientific decisions remain pending; the 2026-09-09 owner recovery adds operational completion for all seven KV flights without inspecting their score values; and, added 2026-09-26, one row per Stage-3 cell (2026-09-22 to 2026-09-26) so this machine-readable authority covers the stage its markdown twin already carries. A Stage-3 row's numbers and status word are that cell's own verdict note's, cited in the row's source fields; where a cell has no verdict note the row is PENDING and states no number.",
   "sign_convention": "minus signs are ASCII; every value is the cited verdict's or receipt's own",
   "exposure_ledger": "docs/exposure-ledger.md",
   "harness_admission_receipt": "docs/receipts/harness-admission.json",
@@ -45,7 +45,25 @@
       "TIER 8 ALIGNED; TIERS 2 AND 5 FAIL (Audio2Tool tiers 2/5/8)",
       "NONE (three instrument cells that decide nothing)",
       "NOT MEASURED (the Audio2Tool own null, which does not exist)",
-      "PENDING (registered, not decided)"
+      "PENDING (registered, not decided)",
+      "DESCRIPTIVE (ROLL-AA, B6)",
+      "STRUCTURAL READ (SLURP ADV-1)",
+      "NEUTRAL by width; NON-INFERIORITY NOT PROVEN (CELL-1, CELL-2, CELL-1-GEPA, R-PRIM, P1, P0)",
+      "HARMFUL on the SLU guard by the registered rule (CELL-3; corrected by the 2026-09-26 instrument)",
+      "NO SYSTEM ADMISSION (SLURP VERIFY-1)",
+      "NO ADMISSION OR TEST CLAIM (SLURP VAR-1)",
+      "CLOSED WITHOUT AN EFFECTIVENESS RESULT (SLURP VAR-2)",
+      "BENEFIT_NOT_PROVEN; NOT_QUALIFIED; CLOSED (SLURP F10)",
+      "NOT QUALIFIED (SLURP evidence path)",
+      "PASS (structural) (E21 E35)",
+      "CLOSED WITHOUT A MEMORY UPDATE (system batch001)",
+      "STRUCTURAL USABILITY, NOT FACTUAL FIDELITY (system summary001)",
+      "OBSERVED ERRORS IN SEMANTIC CREDIT (system comparison001)",
+      "VALID OPERATIONS, SEMANTIC CREDIT UNRESOLVED (system group-update001 format)",
+      "SEALED ARTIFACT, INVALID MEMORY PLAN (system batch-synthesis001)",
+      "CREATED, NOT EVALUATED (system batch-synthesis001 format)",
+      "NO QUALIFIED UPDATE (system event-credit001)",
+      "NO DEMONSTRATED TASK IMPROVEMENT (system memory batch002)"
     ],
     "note": "ADMITTED-provisional is spelled here as status ADMITTED plus a `provisional` field, because that is what the KC-E1f v2 re-decision's own first line says: \"**ADMITTED**, provisionally and with a replication obligation fixed in section 3\"."
   },
@@ -55,15 +73,16 @@
       "comparator_locked_at": "corpus WER 8.19952 % / ConEC PERSON 22.48886 on all 44 discovery calls (SAEA-E21-FULL44-DIRECT-BASELINE-V2, 2026-09-04)",
       "own_null_measured": "MEASURED 2026-09-08 - corpus WER half-width 0.05793, PERSON 0.25009, ORG 0.35609, non-entity 0.06475, numeric 0.15651, semantic 0.00148 (advisory, its null excludes zero)",
       "own_null_source": "docs/readiness/2026-09-08-e21-own-null-replicate-v1-verdict.md",
-      "cells_flown": 8,
+      "cells_flown": 9,
       "admitted": 2,
       "aligned": 1,
       "neutral": 1,
       "rejected": 4,
-      "instrument": 1,
+      "instrument": 2,
       "closed_unread": 0,
       "pending": 3,
-      "rows": 12
+      "rows": 13,
+      "stage_note": "These counts span this carrier's Stage-1, Stage-2 and Stage-3 rows; a row's own `layer` says which stage it belongs to. comparator_locked_at and own_null_measured above describe the Stage-1/Stage-2 comparator only; each Stage-3 row names the null its own verdict used."
     },
     {
       "carrier": "Earnings-22",
@@ -78,22 +97,24 @@
       "instrument": 1,
       "closed_unread": 0,
       "pending": 1,
-      "rows": 11
+      "rows": 11,
+      "stage_note": "These counts span this carrier's Stage-1, Stage-2 and Stage-3 rows; a row's own `layer` says which stage it belongs to. comparator_locked_at and own_null_measured above describe the Stage-1/Stage-2 comparator only; each Stage-3 row names the null its own verdict used."
     },
     {
       "carrier": "SLURP",
       "comparator_locked_at": "intent 73.10 / micro SLU-F1 35.80 on DEV-1000 under slurp-slu-official-projected-v2 (SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1 re-locked 2026-09-06)",
       "own_null_measured": "MEASURED 2026-09-09 - intent half-width 0.9195, micro SLU-F1 1.1804, scenario 0.8255, action 0.9790, per-row SLU-F1 0.8188",
       "own_null_source": "docs/readiness/2026-09-09-slurp-own-null-replicate-v1-verdict.md",
-      "cells_flown": 15,
+      "cells_flown": 42,
       "admitted": 1,
       "aligned": 0,
-      "neutral": 0,
-      "rejected": 4,
-      "instrument": 5,
-      "closed_unread": 1,
-      "pending": 8,
-      "rows": 19
+      "neutral": 6,
+      "rejected": 10,
+      "instrument": 17,
+      "closed_unread": 3,
+      "pending": 12,
+      "rows": 49,
+      "stage_note": "These counts span this carrier's Stage-1, Stage-2 and Stage-3 rows; a row's own `layer` says which stage it belongs to. comparator_locked_at and own_null_measured above describe the Stage-1/Stage-2 comparator only; each Stage-3 row names the null its own verdict used."
     },
     {
       "carrier": "Audio2Tool",
@@ -108,7 +129,8 @@
       "instrument": 0,
       "closed_unread": 0,
       "pending": 3,
-      "rows": 11
+      "rows": 11,
+      "stage_note": "These counts span this carrier's Stage-1, Stage-2 and Stage-3 rows; a row's own `layer` says which stage it belongs to. comparator_locked_at and own_null_measured above describe the Stage-1/Stage-2 comparator only; each Stage-3 row names the null its own verdict used."
     }
   ],
   "rows": [
@@ -3183,6 +3205,1685 @@
       "tally": "pending",
       "flown": false,
       "provisional": null
+    },
+    {
+      "cell_id": "SLURP-ROLL-1",
+      "carrier": "SLURP",
+      "layer": "Stage-3 rollout substrate",
+      "title": "ROLL-1 - the grouped-Solver trajectory rollout that produces the Stage-3 sample pool (samples 5, temperature 0.7, commit saea-commit-plurality-support-v1 at min_support 3) on the 625-row R01C construction roster",
+      "date": "2026-09-23",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-ROLLOUT-R01-V1"
+      ],
+      "verdict_note": null,
+      "receipt": "docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1/",
+      "preregistration": "docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1-preregistration.md",
+      "status": "PENDING",
+      "status_source": "flown and closed, but no verdict note reads ROLL-1 as a cell of its own",
+      "status_quote": "",
+      "comparator": {
+        "text": "none - ROLL-1 is a substrate that produces a sealed sample pool, not a contrast.",
+        "source": "docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1-preregistration.md"
+      },
+      "rule": {
+        "text": "see the preregistration; no decision rule was applied to ROLL-1 itself.",
+        "source": "docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1-preregistration.md"
+      },
+      "primary": {
+        "text": "not measured - no verdict note decides ROLL-1. What the record does state about its sealed bytes is structural: the delivered bytes of the registered commit policy were re-derived on 625 of 625 rows under invariant I7g.",
+        "source": "docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md"
+      },
+      "margin": {
+        "text": "none - a substrate cell has no guard.",
+        "source": "docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1-preregistration.md"
+      },
+      "margin_kind": "none - substrate",
+      "guards": {
+        "text": "not evaluated as a cell. Sample custody under I7g was re-derived on 625 of 625 rows by the offline aggregation read.",
+        "source": "docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "5,344 sealed role contacts over 625 rows = 8.5504 per row at N=5; per-stage contacts per row perception 1.0000, solver 5.4000, review 1.0752, planner 1.0752; N=5 is 2.09x the locked plan's 4.1 contacts per row. These are ROLL-1's own metered figures as read by the offline aggregation read (section 7), which is a read of ROLL-1's sealed bytes and NOT a verdict on the ROLL-1 cell.",
+        "source": "docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md"
+      },
+      "next_step": {
+        "text": "ROLL-2 moves the same form to the v2.0 lock roster (TRAIN Fold A, 1,080 rows) because the program has a sealed pool on R01C and none on the lock roster.",
+        "source": "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1-preregistration.md"
+      },
+      "umbrella_values": [],
+      "notes": "ROLL-1 flew and its exposure-ledger row is closed, but no *-verdict / *-read note in this repository decides it as a cell, so this row is PENDING and states no number of its own. The consequence is a reported cross-check: a pending row naming a closed run id. Every figure above is attributed to the record that states it, never inferred.  The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "pending",
+      "flown": true,
+      "pending": true,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-ROLL-AA",
+      "carrier": "SLURP",
+      "layer": "Stage-3 instrument (within-flight A/A null)",
+      "title": "ROLL-AA - the within-flight A/A null of the locked v2.0 plan (Solver grouped at samples 2 under the greedy-repeat marker, both samples temperature 0) on the first 200 R01C rows",
+      "date": "2026-09-24",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-ROLL-AA-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md",
+      "receipt": "docs/readiness/2026-09-24-slurp-stage3-roll-aa-v1/",
+      "preregistration": "docs/readiness/2026-09-24-slurp-stage3-roll-aa-v1-preregistration.md",
+      "status": "DESCRIPTIVE (a null; no admission, superiority or generalisation claim)",
+      "status_source": "the standalone status line after the note's opening paragraph",
+      "status_quote": "Status: **DESCRIPTIVE** (a null; no admission, superiority or generalisation claim).",
+      "comparator": {
+        "text": "the two passes of the same flight against each other - sample 2 minus sample 1 on byte-identical prompts.",
+        "source": "docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md"
+      },
+      "rule": {
+        "text": "none - the cell measures a null and decides nothing.",
+        "source": "docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md"
+      },
+      "primary": {
+        "text": "byte-identical delivered output between the two samples 183 / 200 = 91.5 %; delivered intent flips 0 / 200 = 0.0 %; entity-set flips 15 / 200 = 7.5 %; paired per-row SLU-F1 delta (sample 2 - sample 1) mean -0.284 pp, sd 5.287, CI95 [-1.096, +0.373]; h_within (SLU) 0.735 pp, h_within (intent) 0.000 pp.",
+        "source": "docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md"
+      },
+      "margin": {
+        "text": "this cell IS the margin: h_within 0.735 SLU / 0.000 intent at n = 200. Reported beside it as context and never as a comparator: the cross-flight own nulls h_SLU 1.2485 / h_intent 0.9943 on TRAIN Fold A (n = 1,080) and h_SLU 1.2525 / h_intent 1.1520 on DEV-2000-ADDED (n = 1,000).",
+        "source": "docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md"
+      },
+      "margin_kind": "own-null (within-flight, this cell measures it)",
+      "guards": {
+        "text": "custody check 200 rows, one temperature set [0.0, 0.0], one seed set; manifest COMPLETED, scored once; dispositions revision_limit 1, finite_completion 2, planner_action_illegal 1.",
+        "source": "docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "1,030 contacts (5.15 per row), 4,064.3 s of repeated speech audio, 8,402,999 prompt / 55,430 completion tokens; the four-row smoke added 20 contacts.",
+        "source": "docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md"
+      },
+      "next_step": {
+        "text": "wherever the harness allows per-row variant interleaving inside one campaign, that is where variants should be compared; the VAR-1 family, which flies one campaign per variant, pays the between-flight penalty.",
+        "source": "docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md"
+      },
+      "umbrella_values": [],
+      "notes": "This is one of the two floors the Stage-3 record rests on: inside one flight the locked plan is nearly deterministic (91.5 % byte-identical, 0 intent flips), so the roughly 1.25 pp cross-flight band is a BETWEEN-flight phenomenon, not decoding. h_within is roster-specific: the 200 rows cover nine of eighteen scenarios. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "instrument",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-ADV-1",
+      "carrier": "SLURP",
+      "layer": "Stage-3 credit assignment",
+      "title": "ADV-1 - the SYSTEM-level semantic-advantage contact on the 225 disagreeing ROLL-1 rows (one contact per row)",
+      "date": "2026-09-23",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-ADVANTAGE-R01-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-23-slurp-stage3-advantage-r01-read.md",
+      "receipt": "docs/readiness/2026-09-22-slurp-stage3-advantage-r01-v1/",
+      "preregistration": "docs/readiness/2026-09-22-slurp-stage3-advantage-r01-v1-preregistration.md",
+      "status": "STRUCTURAL READ (no effectiveness claim)",
+      "status_source": "first-paragraph",
+      "status_quote": "Structural read by the preregistration's decision rule (section 5): no effectiveness claim; the effect of the resulting deltas is read at CELL-1 against the sealed PLAN arm (decision 99 order).",
+      "comparator": {
+        "text": "none - the read is structural; the effect of the resulting deltas is read at CELL-1 against the sealed PLAN arm.",
+        "source": "docs/results/2026-09-23-slurp-stage3-advantage-r01-read.md"
+      },
+      "rule": {
+        "text": "the preregistration's decision rule, section 5: a structural parse rule, not an effect rule.",
+        "source": "docs/readiness/2026-09-22-slurp-stage3-advantage-r01-v1-preregistration.md"
+      },
+      "primary": {
+        "text": "legal statement sets 225 / 225 (100 %), all in the registered JSON form; illegal blocks 0; blocks per row 1: 130 rows, 2: 19 rows, 3: 76 rows, total 396 blocks; NODE distribution perception 124, solver 159, reviewer 99, planner 14; DELTA-KIND distribution slot-contract 155, intent-boundary 121, reviewer-criterion 99, planner-rule 13, exemplar-note 6, perception-hint 2.",
+        "source": "docs/results/2026-09-23-slurp-stage3-advantage-r01-read.md"
+      },
+      "margin": {
+        "text": "none - a structural read has no guard.",
+        "source": "docs/results/2026-09-23-slurp-stage3-advantage-r01-read.md"
+      },
+      "margin_kind": "none - structural read",
+      "guards": {
+        "text": "dispositions none (no abstention, no truncation-triggered disposition); the four-row form smoke SAEA-SLURP-STAGE3-ADVANTAGE-R01-SMOKE-4-V1 read 4 / 4 rows, structural PASS.",
+        "source": "docs/results/2026-09-23-slurp-stage3-advantage-r01-read.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "225 rows / 225 contacts (one per row, ceiling 1); prompt tokens 122,389; completion tokens 19,345; speech seconds metered 1,025.29 although the contact is text-only and sends zero audio parts; about 0.07 GPU-h.",
+        "source": "docs/results/2026-09-23-slurp-stage3-advantage-r01-read.md"
+      },
+      "next_step": {
+        "text": "S3-5 curation and release into stage3-deltas-v1 and its twin, then CELL-1 + twin on TRAIN A against the sealed PLAN arm.",
+        "source": "docs/results/2026-09-23-slurp-stage3-advantage-r01-read.md"
+      },
+      "umbrella_values": [],
+      "notes": "The read's own reading: more than half the credit assignment lands OUTSIDE the Solver (perception 124 + reviewer 99 + planner 14 of 396 blocks), which is the system-level signal owner decision 106 asked for, while the grouped rollout only sampled the Solver. Algorithm label recorded by the read: tfgrpo-semantic-advantage-v1 (credit assignment). The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "instrument",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-CELL-1",
+      "carrier": "SLURP",
+      "layer": "Stage-3 context application (Training-Free GRPO, iteration 1)",
+      "title": "CELL-1 - the locked v2.0 plan plus the per-node stage3-deltas-v1r store (379 node-targeted deltas curated from the sealed ADV-1 statements; Solver 8 / Reviewer 4 / Planner 4 candidate-bound, Perception unconditional 4) on TRAIN Fold A",
+      "date": "2026-09-23",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-DELTA-CELL-R01-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-23-slurp-stage3-delta-cell-r01-verdict.md",
+      "receipt": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1/",
+      "preregistration": "docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1-preregistration.md",
+      "status": "NEUTRAL by width; NON-INFERIORITY NOT PROVEN on either metric",
+      "status_source": "section 1 verdict table, status row",
+      "status_quote": "**NEUTRAL by width; NON-INFERIORITY NOT PROVEN on either metric (no observable positive gain on TRAIN Fold A; the twin reproduces the arm within noise, so the delta store's content moves nothing at the pooled level)**",
+      "comparator": {
+        "text": "the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 at the plan's own null (h_SLU 1.2485 / h_intent 0.9943), read cross-flight.",
+        "source": "docs/results/2026-09-23-slurp-stage3-delta-cell-r01-verdict.md"
+      },
+      "rule": {
+        "text": "ADMITTED = the CI95 lower bound of the paired official pooled SLU-F1 delta is above zero AND the CI95 lower bound of the paired intent delta exceeds -0.9943; NEUTRAL = both guards non-inferior (SLU lower bound above -1.2485, intent above -0.9943) without a proven SLU gain; HARMFUL = a measured loss on either guard (decision 25 Method B). Width alone is NEUTRAL, never HARMFUL. TWIN = attribution, never admission.",
+        "source": "docs/results/2026-09-23-slurp-stage3-delta-cell-r01-verdict.md"
+      },
+      "primary": {
+        "text": "official pooled SLU-F1 63.15 vs 63.63, -0.48 pp CI95 [-2.18, +1.24]; intent (joint scenario+action) 81.48 vs 82.22, -0.74 pp CI95 [-2.17, +0.57]; the derangement twin reads 63.19 (-0.44, CI95 [-1.94, +0.99]) and 82.31 (+0.09, CI95 [-1.19, +1.30]); arm minus twin -0.04 pp SLU and -0.83 pp intent (descriptive).",
+        "source": "docs/results/2026-09-23-slurp-stage3-delta-cell-r01-verdict.md"
+      },
+      "margin": {
+        "text": "the plan's own null h_SLU 1.2485 / h_intent 0.9943 (cross-flight A/A on TRAIN Fold A, n = 1,080).",
+        "source": "docs/results/2026-09-23-slurp-stage3-delta-cell-r01-verdict.md"
+      },
+      "margin_kind": "own-null (cross-flight, TRAIN Fold A)",
+      "guards": {
+        "text": "both guards decide by width only. Contacts compacted 0, one receipt per row True, receipt dispositions {'context_compaction_contacts': 0, 'context_compaction_rows': 0, 'finite_completion_rows': 7, 'planner_action_illegal_rows': 1}. The derangement twin is a genuine FORM control on 363 of 379 rows (95.8 %).",
+        "source": "docs/results/2026-09-23-slurp-stage3-delta-cell-r01-verdict.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "contacts 4553 (4.216 per row) vs the comparator's 4424 (4.096); GPU-h per 1,080 rows 1.8021 vs 1.7579; contacts per minute 39.8 vs 39.9; prefilled tokens per row 9265 vs 8353; cost lower than the base: False.",
+        "source": "docs/results/2026-09-23-slurp-stage3-delta-cell-r01-verdict.md"
+      },
+      "next_step": {
+        "text": "owner decision 83's per-scenario x frontier retention (iteration 2: 200 kept / 179 retired), flown as CELL-2.",
+        "source": "docs/results/2026-09-23-slurp-stage3-delta-cell-r01-verdict.md"
+      },
+      "umbrella_values": [],
+      "notes": "The binding 2026-09-26 measurement instrument (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md, \"binding for every Stage-3 claim from this date\") corrects this record: CELL-1 was read cross-flight against a sealed comparator with no in-chain replicate, and under the instrument's rule 4 \"none of those three numbers supports a verdict in either direction; their NEUTRAL labels are consistent with that\" (CELL-2 +0.64, CELL-1 -0.48, CELL-1-GEPA -0.04). The verdict's own status word is carried verbatim above and is not overwritten. Record defect, reported and not resolved here: the caveat block '**Four launch failures** preceded this flight, metering 320 contacts in total on retired attempts' appears verbatim, with the same four-attempt table, in all three delta-cell verdicts (CELL-1, CELL-2, CELL-1-GEPA); whether the CELL-2 and CELL-1-GEPA blocks record three separate 320-contact events or are a copied caveat cannot be decided from these records, so this ledger attributes the 320 contacts to no cell and leaves the ambiguity standing. The form twin SAEA-SLURP-STAGE3-DELTA-CELL-TWIN-V1 is not named in run_ids: Registered in docs/exposure-ledger.md but its row is NOT recorded closed by the ledger's own closure vocabulary (COMPLETED / FINALIZED / FLOWN AND COMPLETE / ROW CLOSED / CLOSED <date>), so this row cannot name it in run_ids without failing rule 1 of scripts/checks/results_ledger_check.py: its notes cell says 'SEALED:' where the parser needs a closure token. Algorithm label per the verdict's section 9: tfgrpo-semantic-advantage-v1, operators update + context_application. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "neutral",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-CELL-2",
+      "carrier": "SLURP",
+      "layer": "Stage-3 context application (Training-Free GRPO, iteration 2)",
+      "title": "CELL-2 - the locked v2.0 plan plus the per-node stage3-deltas-v2 store (the 200 values owner decision 83's per-scenario x frontier retention kept out of the 379 v1r deltas) on TRAIN Fold A",
+      "date": "2026-09-24",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-DELTA-CELL-R02-V1",
+        "SAEA-SLURP-STAGE3-DELTA-CELL-R02-PAIRED-ANALYSIS-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-24-slurp-stage3-delta-cell-r02-verdict.md",
+      "receipt": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r02-v1/",
+      "preregistration": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r02-v1-preregistration.md",
+      "status": "NEUTRAL by width; NON-INFERIORITY NOT PROVEN on intent",
+      "status_source": "section 1 verdict table, status row",
+      "status_quote": "**NEUTRAL by width; NON-INFERIORITY NOT PROVEN on intent (SLU non-inferior and positive but unproven); iteration 2 moves the arm in the right direction without a proven gain**",
+      "comparator": {
+        "text": "the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 at the plan's own null (h_SLU 1.2485 / h_intent 0.9943), read cross-flight.",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-r02-verdict.md"
+      },
+      "rule": {
+        "text": "the same registered decision-99 TRAIN lock as CELL-1: ADMITTED needs the SLU CI95 lower bound above zero and the intent lower bound above -0.9943; width alone is NEUTRAL, never HARMFUL; the twin decides attribution, never admission.",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-r02-verdict.md"
+      },
+      "primary": {
+        "text": "official pooled SLU-F1 64.27 vs 63.63, +0.64 pp CI95 [-0.76, +1.92] (non-inferior at the 1.2485 margin, gain unproven); intent 82.13 vs 82.22, -0.09 pp CI95 [-1.22, +0.96] (the lower bound sits 0.23 pp beyond the -0.9943 margin, so non-inferiority is NOT proven by width, not by a measured loss); per-row SLU mean +1.30 pp CI95 [-0.04, +2.67], CI90 [+0.16, +2.44], saves 87 / harms 70; TRAIN symmetric scorer agrees in sign (+0.66); arm minus twin +0.59 pp SLU and +0.83 pp intent (descriptive).",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-r02-verdict.md"
+      },
+      "margin": {
+        "text": "the plan's own null h_SLU 1.2485 / h_intent 0.9943 (cross-flight A/A on TRAIN Fold A, n = 1,080).",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-r02-verdict.md"
+      },
+      "margin_kind": "own-null (cross-flight, TRAIN Fold A)",
+      "guards": {
+        "text": "SLU non-inferior, intent by width only. Contacts compacted 0, one receipt per row True, receipt dispositions {'context_compaction_contacts': 0, 'context_compaction_rows': 0, 'finite_completion_rows': 5, 'planner_action_illegal_rows': 0}.",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-r02-verdict.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "contacts 4483 (4.151 per row) vs 4424 (4.096); GPU-h per 1,080 rows 1.7679 vs 1.7579; contacts per minute 40.4 vs 39.9; prefilled tokens per row 8905 vs 8353; cost lower than the base: False. CELL-2 sits on both the GPU-h and token frontiers.",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-r02-verdict.md"
+      },
+      "next_step": {
+        "text": "iteration 3, the scenario-gated application policy (provisional decision 110), flown as CELL-3 on DEV-2000-ADDED.",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-r02-verdict.md"
+      },
+      "umbrella_values": [],
+      "notes": "The binding 2026-09-26 measurement instrument (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md, \"binding for every Stage-3 claim from this date\") corrects this record: CELL-2 was read cross-flight against a sealed comparator with no in-chain replicate, and under the instrument's rule 4 \"none of those three numbers supports a verdict in either direction; their NEUTRAL labels are consistent with that\". The verdict's own status word is carried verbatim above. Internal inconsistency in this verdict, recorded and not resolved: section 1's reading gives the twin as '63.68 (+0.05, CI95 [-1.52, +1.62])' while section 3's twin table gives '+0.05 | [-1.53, +1.51]' for the same quantity; this ledger transcribes neither interval as authoritative. The 'four launch failures / 320 metered contacts' caveat block is the same verbatim text as CELL-1's and CELL-1-GEPA's (see the CELL-1 row). The form twin SAEA-SLURP-STAGE3-DELTA-CELL-R02-TWIN-V1 is not named in run_ids: Registered in docs/exposure-ledger.md but its row is NOT recorded closed by the ledger's own closure vocabulary (COMPLETED / FINALIZED / FLOWN AND COMPLETE / ROW CLOSED / CLOSED <date>), so this row cannot name it in run_ids without failing rule 1 of scripts/checks/results_ledger_check.py: its notes cell carries no closure token. Algorithm label per the verdict's section 9: tfgrpo-semantic-advantage-v1, operators update + context_application. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "neutral",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-GEPA-R01",
+      "carrier": "SLURP",
+      "layer": "Stage-3 proposer (GEPA reflective mutation)",
+      "title": "GEPA-R01 - the reflective proposer contact, one per (scenario, node) group over the sealed ROLL-1 trajectories",
+      "date": "2026-09-24",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-GEPA-R01-V1"
+      ],
+      "verdict_note": null,
+      "receipt": "docs/readiness/2026-09-24-slurp-stage3-gepa-r01-v1/README.md",
+      "preregistration": "docs/readiness/2026-09-24-slurp-stage3-gepa-r01-v1-preregistration.md",
+      "status": "PENDING",
+      "status_source": "flown and closed, but no verdict note reads the proposer contact as a cell of its own",
+      "status_quote": "",
+      "comparator": {
+        "text": "none - the proposer produces a store; its effect is read at CELL-1-GEPA against the sealed PLAN arm.",
+        "source": "docs/readiness/2026-09-24-slurp-stage3-gepa-r01-v1/README.md"
+      },
+      "rule": {
+        "text": "the readiness package registers six structural reads and says where the EFFECT is read instead; no effect rule applies to the proposer contact.",
+        "source": "docs/readiness/2026-09-24-slurp-stage3-gepa-r01-v1/README.md"
+      },
+      "primary": {
+        "text": "not measured - no verdict note decides GEPA-R01. The figures the readiness package registers for it (68 groups = contacts; the curated release of 448 rows = 248 new GEPA rows + 200 retained iteration-1 rows) are registered design values, not a verdict's measurements.",
+        "source": "docs/readiness/2026-09-24-slurp-stage3-gepa-r01-v1/README.md"
+      },
+      "margin": {
+        "text": "none - a proposer contact has no guard.",
+        "source": "docs/readiness/2026-09-24-slurp-stage3-gepa-r01-v1/README.md"
+      },
+      "margin_kind": "none - proposer contact",
+      "guards": {
+        "text": "not evaluated in any verdict note. The readiness package records a prompt-size scan over all 68 contacts and a transport text-only construction gate as PASSED before the flight; that is preregistered engineering evidence, not a read of the flown contact.",
+        "source": "docs/readiness/2026-09-24-slurp-stage3-gepa-r01-v1/README.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "not stated in any verdict note. docs/exposure-ledger.md registers the row at 68 calls.",
+        "source": "docs/exposure-ledger.md"
+      },
+      "next_step": {
+        "text": "curate and release with gepa_to_deltas.sh, then register and fly CELL-1-GEPA.",
+        "source": "docs/readiness/2026-09-24-slurp-stage3-gepa-r01-v1/README.md"
+      },
+      "umbrella_values": [],
+      "notes": "GEPA-R01 flew and its exposure-ledger row is closed, but the only record of it in this repository is its readiness package, whose own status line reads 'Status: **HELD**' because it was written before contact. A readiness package is a preregistration, not a verdict, so this row states no measured number and is PENDING; the consequence is a reported cross-check (a pending row naming a closed run id).  The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "pending",
+      "flown": true,
+      "pending": true,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-CELL-1-GEPA",
+      "carrier": "SLURP",
+      "layer": "Stage-3 context application (GEPA)",
+      "title": "CELL-1-GEPA - the locked v2.0 plan plus the per-node stage3-deltas-gepa-v1 store (448 values: 248 curated by the decision-83 frontier rule from the sealed GEPA-R01 proposer contact plus the 200 iteration-1 values decision 83 retained) on TRAIN Fold A",
+      "date": "2026-09-24",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-V1",
+        "SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-PAIRED-ANALYSIS-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-24-slurp-stage3-delta-cell-gepa-r01-verdict.md",
+      "receipt": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-gepa-r01-v1/",
+      "preregistration": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-gepa-r01-v1-preregistration.md",
+      "status": "NEUTRAL by width; NON-INFERIORITY NOT PROVEN on both metrics",
+      "status_source": "section 1 verdict table, status row",
+      "status_quote": "**NEUTRAL by width; NON-INFERIORITY NOT PROVEN on both metrics (no observable gain on TRAIN Fold A; the GEPA family reproduces the Training-Free GRPO family's shape: fuller reach, no pooled effect, the same strata lose)**",
+      "comparator": {
+        "text": "the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 at the plan's own null (h_SLU 1.2485 / h_intent 0.9943), read cross-flight.",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-gepa-r01-verdict.md"
+      },
+      "rule": {
+        "text": "the same registered decision-99 TRAIN lock as CELL-1 and CELL-2.",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-gepa-r01-verdict.md"
+      },
+      "primary": {
+        "text": "official pooled SLU-F1 63.60 vs 63.63, -0.04 pp CI95 [-1.58, +1.39]; intent 82.13 vs 82.22, -0.09 pp CI95 [-1.54, +1.32]; both guards fail by width only, with intervals wider than CELL-2's; the derangement twin reads 62.87 (-0.76, CI95 [-2.39, +0.76]) and 81.94 (-0.28, CI95 [-1.51, +0.89]); arm minus twin +0.73 pp SLU and +0.19 pp intent (descriptive). Reach: 299 of 448 values supplied; Solver 93 %, Reviewer 91 %, Planner 90 % of rows against 68 / 64 / 18 %.",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-gepa-r01-verdict.md"
+      },
+      "margin": {
+        "text": "the plan's own null h_SLU 1.2485 / h_intent 0.9943 (cross-flight A/A on TRAIN Fold A, n = 1,080).",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-gepa-r01-verdict.md"
+      },
+      "margin_kind": "own-null (cross-flight, TRAIN Fold A)",
+      "guards": {
+        "text": "both guards decide by width only. Contacts compacted 0, one receipt per row True, receipt dispositions {'context_compaction_contacts': 0, 'context_compaction_rows': 0, 'finite_completion_rows': 10, 'planner_action_illegal_rows': 0}.",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-gepa-r01-verdict.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "contacts 4508 (4.174 per row) vs 4424 (4.096); GPU-h per 1,080 rows 1.8628 vs 1.7579; contacts per minute 38.3 vs 39.9; prefilled tokens per row 9536 vs 8353; cost lower than the base: False.",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-gepa-r01-verdict.md"
+      },
+      "next_step": {
+        "text": "the lever is WHERE the store is applied (iteration 3, provisional decision 110, the scenario-gated application policy flown as CELL-3), not which family authored it; a head-to-head GEPA versus Training-Free GRPO read is a separate preregistration and is not made here.",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-gepa-r01-verdict.md"
+      },
+      "umbrella_values": [],
+      "notes": "The binding 2026-09-26 measurement instrument (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md, \"binding for every Stage-3 claim from this date\") corrects this record: CELL-1-GEPA was read cross-flight against a sealed comparator with no in-chain replicate, and under the instrument's rule 4 \"none of those three numbers supports a verdict in either direction; their NEUTRAL labels are consistent with that\". Record defect, reported and NOT resolved here: this verdict states three different algorithm labels for the same cell. Its title says 'label gepa-reflective-pareto-v1, operators update + selection + context_application'; its own section 9 says 'Stage-3 algorithm label (owner decision 101): tfgrpo-semantic-advantage-v1, operators update + context_application'; and the GEPA readiness README declares operators credit_assignment + update. This ledger records all three statements and picks none. A second record defect, from the same reading: src/speech_aware_evidence_acquisition/core/stage3_algorithms.py still carries gepa-reflective-pareto-v1 and inference-time-verification-v1 as status='planned' although CELL-1-GEPA and VERIFY-1 have flown and sealed. The 'four launch failures / 320 metered contacts' caveat block is the same verbatim text as CELL-1's and CELL-2's. The form twin SAEA-SLURP-STAGE3-DELTA-CELL-GEPA-R01-TWIN-V1 is not named in run_ids: Registered in docs/exposure-ledger.md but its row is NOT recorded closed by the ledger's own closure vocabulary (COMPLETED / FINALIZED / FLOWN AND COMPLETE / ROW CLOSED / CLOSED <date>), so this row cannot name it in run_ids without failing rule 1 of scripts/checks/results_ledger_check.py: its notes cell carries no closure token. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "neutral",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-CELL-3",
+      "carrier": "SLURP",
+      "layer": "Stage-3 application policy (scenario gate)",
+      "title": "CELL-3 - the coverage-gated stage3-deltas-v2 store on the fresh roster DEV-2000-ADDED (355 of 1,000 rows gate-closed, 568 supplied, 120 of 200 values reached; the Perception unconditional route dropped)",
+      "date": "2026-09-24",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-V1",
+        "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-TWIN-V1",
+        "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-REPLICATE-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-24-slurp-stage3-delta-cell-r03-gate-verdict.md",
+      "receipt": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1/",
+      "preregistration": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1-preregistration.md",
+      "status": "HARMFUL on the SLU guard by the registered rule",
+      "status_source": "section 1 verdict table, status row",
+      "status_quote": "**HARMFUL on the SLU guard by the registered rule (decision 25 Method B: CI95 upper bound below zero); intent NEUTRAL.** The twin is NEUTRAL, so the loss is attributed to the store's CONTENT on this roster, not to the form of carrying a supply.",
+      "comparator": {
+        "text": "the sealed B6 PLAN arm on DEV-2000-ADDED (SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1, official SLU-F1 65.40 / intent 76.60), with an own null sealed before the arm's contrast: PLAN vs PLANr-DEV2000 (4,090 contacts, 1.649 GPU-h) SLU -0.25 [-1.52, +0.98], intent +0.20 [-0.99, +1.31].",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-r03-gate-verdict.md"
+      },
+      "rule": {
+        "text": "the registered rule of protocol-registered-v1.json under decision 25 Method B: HARMFUL on a measured loss (a CI95 upper bound below zero, or a point estimate beyond the margin).",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-r03-gate-verdict.md"
+      },
+      "primary": {
+        "text": "official pooled SLU-F1 65.40 -> 63.95, -1.44 pp CI95 [-2.88, -0.05] against the margin 1.2525 (FAILS: measured loss); intent 76.60 -> 76.60, 0.00 pp CI95 [-1.01, +1.00] against 1.1520 (non-inferior); span-F1 micro 57.05 -> 54.91, -2.14 [-3.92, -0.41] (diagnostic); per-row SLU-F1 mean 47.35 -> 46.99, -0.36 [-1.47, +0.78], saves 57 / harms 69. The twin reads 65.78 (+0.38 [-0.97, +1.75]); arm minus twin -1.82 pp SLU, 0.00 intent (descriptive).",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-r03-gate-verdict.md"
+      },
+      "margin": {
+        "text": "OWN-NULL, sealed before the arm's contrast: h_SLU 1.2525 / h_intent 1.1520 from PLAN vs PLANr on DEV-2000-ADDED.",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-r03-gate-verdict.md"
+      },
+      "margin_kind": "own-null (in-chain, sealed before the contrast)",
+      "guards": {
+        "text": "SLU FAILS (measured loss), intent non-inferior. The gate itself is stable (replay 1000/1000; 2.2 % flips under PLAN's own candidates).",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-r03-gate-verdict.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "contacts per row arm 4.178 / twin 4.084 / comparator 4.071; GPU-h per 1,000 rows arm 1.742 vs comparator 1.655; prompt tokens per row arm 37,686 vs comparator 35,913.",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-r03-gate-verdict.md"
+      },
+      "next_step": {
+        "text": "owner decision 111 (2026-09-24) closes the semantic-delta application line; the next route is inference-time aggregation and construction-variant rollouts (decision 112).",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-r03-gate-verdict.md"
+      },
+      "umbrella_values": [],
+      "notes": "The binding 2026-09-26 measurement instrument (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md, \"binding for every Stage-3 claim from this date\") corrects this record: CELL-3 \"was declared HARMFUL under the rule as it then stood. Its in-chain replicate read -0.25 with half-width 1.25, so the arm's loss does not exceed the offset bound: the honest reading is \"not distinguishable from flight variance\", not \"harmful\". Owner decision 111 (close the semantic-delta application line) still stands, because it rests on the absence of a demonstrated benefit across four cells, not on that single loss.\" The verdict's own status word is carried verbatim above and is not overwritten, and the tally follows that word, not the correction. CELL-3 is the one delta cell that flew its own null in chain. The loss diagnostic adds that the store's attributable part on supplied rows is -0.35 pp above its own null, that harm is diffuse over 120 values, and that a perfect gate reaches only 64.89 (-0.51 [-1.40, +0.37]). The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "rejected",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-AGG-1",
+      "carrier": "SLURP",
+      "layer": "Stage-3 offline selection / commit read (best-of-N)",
+      "title": "AGG-1 - inference-time sample aggregation over the sealed ROLL-1 rollout: fourteen delivery rules evaluated offline on the same 625 R01C rows at zero GPU (owner decision 112, step 1)",
+      "date": "2026-09-24",
+      "run_ids": [],
+      "verdict_note": "docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md",
+      "receipt": null,
+      "preregistration": null,
+      "status": "NONE (decides no cell, admits no mechanism, authorises no flight)",
+      "status_source": "the closing sentence of the note's opening exposure paragraph",
+      "status_quote": "This read decides no cell, admits no mechanism and authorises no flight.",
+      "comparator": {
+        "text": "R0-mean-single, the mean of the five single-sample arms over the same sealed ROLL-1 samples; no new generation, so no flight offset enters.",
+        "source": "docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md"
+      },
+      "rule": {
+        "text": "none registered as an admission rule - the read asks whether committing N Solver samples by a deterministic rule beats delivering a single sample, and reports each rule's CI95 against R0-mean-single.",
+        "source": "docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md"
+      },
+      "primary": {
+        "text": "R1-medoid (verbatim) 57.91, +0.03 pp CI95 [-0.63, +0.71]; R2-intent-plurality-medoid (verbatim) 57.84, -0.04 [-0.71, +0.65]; R3-support-3-of-5 (edited, I7g) 59.28, +1.40 [+0.55, +2.29]; PS-registered-support-3, the policy ROLL-1 already flew (edited, I7g) 59.50, +1.62 [+0.77, +2.51]; PS-registered-support-2 56.76, -1.12 [-1.94, -0.28]; R3-support-4-of-5 58.94, +1.06 [-0.07, +2.21]; ORACLE best-of-5 (upper bound only) 64.43, +6.55 [+5.56, +7.56]. On the 225 rows where the five samples disagree not one rule's CI95 excludes zero, while the oracle reads +12.55 pp [+10.99, +14.15] there.",
+        "source": "docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md"
+      },
+      "margin": {
+        "text": "the read's own comparison is against a SLURP own-null half-width of about 1.25 pp (h_SLU 1.2485 on DEV-1000, 1.2525 on DEV-2000-ADDED; R01C has no own null of its own yet).",
+        "source": "docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md"
+      },
+      "margin_kind": "own-null (imported from the DEV rosters; R01C has none)",
+      "guards": {
+        "text": "custody: invariant I7g, re-derived on 625 of 625 rows - every raw sample's response bytes are in the trace under that sample's contact id, the commit policy resolves in core.base.COMMIT_POLICIES and is deterministic, and re-running it reproduces the delivered bytes.",
+        "source": "docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "zero model, tokenizer, encoder, ASR, embedder, server, network, GPU and paid-API contacts; seven scorer-on-copies runs only. The pool it reads cost 8.5504 contacts per row at N=5, 2.09x the locked plan's 4.1.",
+        "source": "docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md"
+      },
+      "next_step": {
+        "text": "the cheapest experiment the data points to is the N=1 form of the same idea: an entity-abstention rule at the delivery node, a registered core.base.DELIVERY_NORMALISERS entry under I7n, 1x contacts, no grouped Solver. The read recommends against spending GPU on a sample-aggregation cell as framed.",
+        "source": "docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md"
+      },
+      "umbrella_values": [],
+      "notes": "One of only two effects in the Stage-3 record that clear their own design's floor lives here: the entity support filter at s=3, +1.40 pp [+0.55, +2.29], read over one sealed sample pool where h_offline is about 0.67 pp at n = 625 (the binding measurement instrument, section 4). The read is explicit that the gain is not what the operator was proposed for: it is pooled false-positive suppression (FP mass -16.2 % for FN +1.4 %), 30.6 % of the rows carry no gold entity at all, and the winning rule is the one ROLL-1 already flew. run_ids is empty on purpose: this read's own exposure-ledger row SAEA-SLURP-STAGE3-ROLLOUT-R01-SCORE-V1 stands at 0 calls and is not recorded closed, so naming it would fail rule 1 of the gate.  The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "instrument",
+      "flown": false,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-VERIFY-1",
+      "carrier": "SLURP",
+      "layer": "Stage-3 live selection (best-of-N with the core as its own verifier)",
+      "title": "VERIFY-1 - the frozen core reads a row's five sealed ROLL-1 candidate answers and names one, 625 rows, one extra contact per row (recovery flight)",
+      "date": "2026-09-25",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-VERIFY-1-V1",
+        "SAEA-SLURP-STAGE3-VERIFY-1-RECOVERY-V1",
+        "SAEA-SLURP-STAGE3-VERIFY-1-RECOVERY-READ-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-25-slurp-verify1-complete-evidence.md",
+      "receipt": "docs/receipts/continuation/2026-09-25-verify1-recovery-preflight.json",
+      "preregistration": "docs/readiness/2026-09-25-slurp-stage3-verify-1-recovery-v1-preregistration.md",
+      "status": "NO SYSTEM ADMISSION (task benefit not established)",
+      "status_source": "first-paragraph",
+      "status_quote": "Status: completed TRAIN construction read; task benefit not established. No system admission.",
+      "comparator": {
+        "text": "mean_single (the expected official counts pooled over the five source samples) and medoid, over the same sealed pool; paired utterance-cluster bootstrap, 10,000 draws, seed 20260915.",
+        "source": "docs/results/2026-09-25-slurp-verify1-complete-evidence.md"
+      },
+      "rule": {
+        "text": "a primary SLU-F1 benefit gate plus a registered operational non-inferiority guard on intent: the primary SLU-F1 benefit gate does not pass; the intent guard does.",
+        "source": "docs/results/2026-09-25-slurp-verify1-complete-evidence.md"
+      },
+      "primary": {
+        "text": "chosen official pooled SLU-F1 58.5816 against mean_single 57.8807, sample0 58.2154, medoid 57.9064, row_f1_oracle 64.4664, utility_oracle 66.6360. Chosen minus mean-single +0.7009 pp CI95 [-0.2551, 1.6507]; chosen minus medoid +0.6751 pp CI95 [-0.3923, 1.7348]; intent +0.5440 pp versus mean-single CI95 [0.0320, 1.0880]. Equal-scenario SLU-F1 54.2728 versus 53.6613 (+0.6115 pp).",
+        "source": "docs/results/2026-09-25-slurp-verify1-complete-evidence.md"
+      },
+      "margin": {
+        "text": "not stated in the verdict as a number - the note records that 'the registered operational noninferiority guard passes' on intent without printing the guard's margin.",
+        "source": "docs/results/2026-09-25-slurp-verify1-complete-evidence.md"
+      },
+      "margin_kind": "registered operational non-inferiority guard (margin not stated in the verdict)",
+      "guards": {
+        "text": "625 / 625 rows, every choice parsed, every row one contact, no malformed source placeholder selected. All 205 identical-answer rows selected position 1, which the verdict calls compatible with deterministic tie-breaking and not by itself evidence of harmful position bias; among content-distinct rows position 1 is selected 170/420 times; no causal position-effect claim.",
+        "source": "docs/results/2026-09-25-slurp-verify1-complete-evidence.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "625 model calls (1.00 per row); 1,794,164 prompt tokens, 15,440 completion tokens; monitored active generation time 0.08165 GPU hours, which is not total wall time including fits, preparation, idle waits or analysis.",
+        "source": "docs/results/2026-09-25-slurp-verify1-complete-evidence.md"
+      },
+      "next_step": {
+        "text": "do not promote this selector, enlarge sampling, or automatically open the evidence-driven Reviewer successor; close VERIFY-1 as benefit not proven, not as proof that all verification mechanisms are ineffective.",
+        "source": "docs/results/2026-09-25-slurp-verify1-complete-evidence.md"
+      },
+      "umbrella_values": [],
+      "notes": "The second of only two Stage-3 effects that clear their own design's floor is this cell's intent gain, +0.544 [+0.032, +1.088], read over one sealed sample pool at about the 0.67 pp grade (the binding measurement instrument, section 4, which also calls VERIFY-1 and the aggregation rules 'the program's most trustworthy' numbers because no flight offset enters). The verdict still refuses promotion in its own words. Two subgroup figures are label-dependent and the verdict says so: 420 content-distinct rows +0.9973 [-0.2734, 2.2731] and 225 source-differing rows +2.0621 [0.3987, 3.7842], the latter unusable as an online trigger. Record defect noted while reading: core/stage3_algorithms.py still carries inference-time-verification-v1 as status='planned' although this cell has flown and sealed. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "rejected",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-VAR-1",
+      "carrier": "SLURP",
+      "layer": "Stage-3 construction variants (six arms, one campaign each)",
+      "title": "VAR-1 - the six construction-variant arms (plan, exdiv, exk10, exk30, perk16c5, planr) on the 625-row R01C TRAIN construction roster",
+      "date": "2026-09-25",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1",
+        "SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-V1",
+        "SAEA-SLURP-STAGE3-VAR1-EX-K10-R01C-V1",
+        "SAEA-SLURP-STAGE3-VAR1-EX-K30-R01C-V1",
+        "SAEA-SLURP-STAGE3-VAR1-EX-DIV-R01C-V1",
+        "SAEA-SLURP-STAGE3-VAR1-PER-K16C5-R01C-V1",
+        "SAEA-SLURP-STAGE3-VAR1-VARIANT-READ-V1",
+        "SAEA-SLURP-STAGE3-VAR1-READ-CORRECTION-V2",
+        "SAEA-SLURP-STAGE3-VAR1-OWN-NULL-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-25-slurp-var1-complete-evidence.md",
+      "receipt": "docs/receipts/continuation/2026-09-25-r01c-own-null-calibration-v2.json",
+      "preregistration": "docs/readiness/2026-09-24-slurp-stage3-var1-v1-preregistration.md",
+      "status": "NO ADMISSION OR TEST CLAIM (not qualified winners)",
+      "status_source": "the opening paragraph plus the 'Action status' line of the root interpretation and action catalog",
+      "status_quote": "This is an aggregate data extraction without an admission or test claim.",
+      "comparator": {
+        "text": "each variant minus VAR1-PLAN, paired whole-utterance bootstrap, 10,000 draws, seed 20260915; and, as a post-read descriptive sensitivity that is not a new preregistered efficacy test, each variant against VAR1-PLANR.",
+        "source": "docs/results/2026-09-25-slurp-var1-complete-evidence.md"
+      },
+      "rule": {
+        "text": "the registered contrasts are variant minus VAR1-PLAN; the PLANR comparison is recorded as a post-read descriptive sensitivity, not a new preregistered efficacy test.",
+        "source": "docs/results/2026-09-25-slurp-var1-complete-evidence.md"
+      },
+      "primary": {
+        "text": "official pooled SLU-F1 / intent per arm: plan 58.51 / 70.56; exdiv 58.68 / 70.88 (+0.17 SLU CI95 [-1.50, 1.88]); exk10 60.44 / 69.76 (+1.94 CI95 [0.36, 3.52]); exk30 60.46 / 70.72 (+1.95 CI95 [0.48, 3.45]); perk16c5 58.67 / 70.88 (+0.16 CI95 [-1.36, 1.69]); planr 60.38 / 69.28 (+1.87 CI95 [0.41, 3.36]). Against PLANR the note's own root interpretation states: 'K10 and K30 improve pooled SLU-F1 by 1.9373 and 1.9540 pp versus PLAN, while the unchanged PLANR improves by 1.8689 pp. Their point differences versus PLANR are only 0.0684 and 0.0851 pp.'",
+        "source": "docs/results/2026-09-25-slurp-var1-complete-evidence.md"
+      },
+      "margin": {
+        "text": "own-null cross-flight R01C CI95 half-widths: pooled SLU-F1 1.4739 pp; intent 1.7600 pp. The note adds that the reader's CI95 half-width (1.4739) and the root's prospective CI90 half-width (1.2413) are different interval summaries and neither is a universal detection guarantee.",
+        "source": "docs/results/2026-09-25-slurp-var1-complete-evidence.md"
+      },
+      "margin_kind": "own-null (cross-flight, R01C construction roster)",
+      "guards": {
+        "text": "candidate parse failures 0 on all six arms; MALFORMED 0 (plan, exdiv) and 1 (exk10, exk30, perk16c5, planr); compacted rows 0 on all six; tool calls 0 on all six.",
+        "source": "docs/results/2026-09-25-slurp-var1-complete-evidence.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "generation contacts per 625-row arm: plan 2590 (4.144 per row, 1.059 GPU-h), exdiv 2598 (4.157, 1.000), exk10 2576 (4.122, 1.002), exk30 2572 (4.115, 1.044), perk16c5 2576 (4.122, 1.147), planr 2591 (4.146, 1.029). The note states that GPU-hour entries are the report's measured cost convention, not a promise of wall-clock completion time.",
+        "source": "docs/results/2026-09-25-slurp-var1-complete-evidence.md"
+      },
+      "next_step": {
+        "text": "default20 remains the fallback; K10, K30 and EX-DIV remain executable discovery actions for VAR-2, not qualified winners; K16/C5 stays a combined Perception intervention VAR-2 cannot express; F10 changes knowledge representation and therefore uses a separate complete-system cell.",
+        "source": "docs/results/2026-09-25-slurp-var1-complete-evidence.md"
+      },
+      "umbrella_values": [],
+      "notes": "The binding 2026-09-26 measurement instrument (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md, \"binding for every Stage-3 claim from this date\") corrects this record: \"VAR-1 is the one family that measured its own offset - it flew PLANR - and therefore read its variants correctly: EX-K10 and EX-K30 are +0.07 / +0.09 pp over PLANR, not +1.94 / +1.95 over PLAN. The design was right; the lesson is that every cross-flight cell must copy it.\" The verdict's own registered contrasts (against PLAN) are carried verbatim above and are not overwritten; the PLANR reading is the one the instrument makes binding, and the verdict's own root interpretation already reaches the same point differences (0.0684 and 0.0851 pp). The verdict is explicit that 'the original positive PLAN contrasts alone therefore do not establish a repeatable optimization benefit'. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "instrument",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-VAR-1-AA",
+      "carrier": "SLURP",
+      "layer": "Stage-3 instrument (cross-flight A/A null)",
+      "title": "VAR1-PLAN versus VAR1-PLANR - the request-identical pair inside one chain that measures the cross-flight A/A offset on the 625-row R01C roster",
+      "date": "2026-09-25",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1",
+        "SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-V1",
+        "SAEA-SLURP-STAGE3-VAR1-OWN-NULL-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-25-slurp-var1-complete-evidence.md",
+      "receipt": "docs/receipts/continuation/2026-09-25-r01c-own-null-calibration-v2.json",
+      "preregistration": "docs/readiness/2026-09-24-slurp-stage3-var1-v1-preregistration.md",
+      "status": "NONE (an A/A null inside the VAR-1 family read, not a decided cell)",
+      "status_source": "the same note's opening paragraph: an aggregate data extraction without an admission or test claim",
+      "status_quote": "This is an aggregate data extraction without an admission or test claim.",
+      "comparator": {
+        "text": "PLANR minus PLAN - the same 625 R01C rows, the same plan, the same knowledge, the same serving geometry, two consecutive campaigns of one chain.",
+        "source": "docs/results/2026-09-25-slurp-var1-complete-evidence.md"
+      },
+      "rule": {
+        "text": "none - the pair is registered as the family's own null, not as an intervention.",
+        "source": "docs/results/2026-09-25-slurp-var1-complete-evidence.md"
+      },
+      "primary": {
+        "text": "pooled SLU-F1 58.51 (plan) versus 60.38 (planr), +1.87 pp CI95 [0.41, 3.36]; intent 70.56 versus 69.28, -1.28 pp; exact entity TP / FP / FN 345 / 454 / 399 (plan) versus 366 / 439 / 378 (planr).",
+        "source": "docs/results/2026-09-25-slurp-var1-complete-evidence.md"
+      },
+      "margin": {
+        "text": "own-null cross-flight R01C CI95 half-widths: pooled SLU-F1 1.4739 pp; intent 1.7600 pp.",
+        "source": "docs/results/2026-09-25-slurp-var1-complete-evidence.md"
+      },
+      "margin_kind": "own-null (cross-flight, this pair measures it)",
+      "guards": {
+        "text": "not applicable - no intervention was applied; both arms are request-identical.",
+        "source": "docs/results/2026-09-25-slurp-var1-complete-evidence.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "plan 2590 contacts (4.144 per row, 1.059 GPU-h); planr 2591 contacts (4.146 per row, 1.029 GPU-h), each over 625 rows.",
+        "source": "docs/results/2026-09-25-slurp-var1-complete-evidence.md"
+      },
+      "next_step": {
+        "text": "every cross-flight cell must fly a request-identical replicate in its own chain; at n = 625 the readable bar is about 3 pp and at n = 1,080 about 2.5 pp.",
+        "source": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md"
+      },
+      "umbrella_values": [],
+      "notes": "This row exists because the binding measurement instrument makes this pair the load-bearing Stage-3 measurement: 'A pure A/A contrast at n = 625 can be statistically significant' and 'the two headline metrics can move in OPPOSITE directions from flight variance alone' (+1.87 SLU with -1.28 intent, from no intervention at all). Its numbers are transcribed from the VAR-1 evidence note, which is the record that measured them; the instrument is cited for the law it draws from them, never for a number. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "instrument",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-VAR-2",
+      "carrier": "SLURP",
+      "layer": "Stage-3 supply variants (per-row interleaving at the Solver)",
+      "title": "VAR-2 - per-row supply-variant interleaving at the Solver on the R01C roster; engineering-closed without a number after its sole recovery aborted",
+      "date": "2026-09-25",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-V1",
+        "SAEA-SLURP-STAGE3-VAR2-SUPPLY-VARIANTS-R01C-RECOVERY-V1",
+        "SAEA-SLURP-STAGE3-VAR2-SUPPLY-READ-V1",
+        "SAEA-SLURP-STAGE3-VAR2-RECOVERY-SUPPLY-READ-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-25-slurp-var2-closed-engineering-failure.md",
+      "receipt": "docs/receipts/continuation/2026-09-25-var2-final-closure.json",
+      "preregistration": "docs/readiness/2026-09-25-slurp-stage3-var2-recovery-v1-preregistration.md",
+      "status": "CLOSED WITHOUT AN EFFECTIVENESS RESULT",
+      "status_source": "the note's first sentence, under the title 'VAR-2 closure after its sole recovery failed'",
+      "status_quote": "VAR-2 is closed without an effectiveness result.",
+      "comparator": {
+        "text": "none reached - neither full attempt has a complete manifest or official score.",
+        "source": "docs/results/2026-09-25-slurp-var2-closed-engineering-failure.md"
+      },
+      "rule": {
+        "text": "not applied - no partial answers, task scores, winner selection or selective row reuse was performed.",
+        "source": "docs/results/2026-09-25-slurp-var2-closed-engineering-failure.md"
+      },
+      "primary": {
+        "text": "not measured. The note states, in its own spacing: 'The original full arm aborted after224 model contacts. Its only registered recovery aborted at 2026-09-25 10:36:23 UTC after441 contacts and1,619.87425 seconds of repeated speech.'",
+        "source": "docs/results/2026-09-25-slurp-var2-closed-engineering-failure.md"
+      },
+      "margin": {
+        "text": "none - no contrast was read.",
+        "source": "docs/results/2026-09-25-slurp-var2-closed-engineering-failure.md"
+      },
+      "margin_kind": "none - no number",
+      "guards": {
+        "text": "the boundary correctly refused the over-cardinality request before sending it: 'exk10 carried40 cumulative evidence items while its declared max_supplied_items was38'.",
+        "source": "docs/results/2026-09-25-slurp-var2-closed-engineering-failure.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "'Each engineering smoke used28 calls, giving721 model contacts across both attempts and both smoke proofs.' Fit endpoint records remain in the original contact artifacts and are not included in that 721 generation-call total.",
+        "source": "docs/results/2026-09-25-slurp-var2-closed-engineering-failure.md"
+      },
+      "next_step": {
+        "text": "this note authorizes no new VAR-2 contact; a future design using grouped supply actions must define whether the bound covers one visit or the complete allowed revision horizon, then prove the maximum reachable cumulative supply and fit actual requests. Proceed with independent F10.",
+        "source": "docs/results/2026-09-25-slurp-var2-closed-engineering-failure.md"
+      },
+      "umbrella_values": [],
+      "notes": "The note is explicit about what must not be read into the closure: 'Do not interpret this engineering failure as evidence that the supply actions are ineffective. Do not append a third attempt, enlarge the bound and silently resume, or rename the same recovery as another experiment.' The named cause is a cumulative-cardinality envelope the recovery proof did not cover, and the note calls that a limitation of the preparation and root review, not a GPU, network or model-quality diagnosis. The binding measurement instrument lists this family's two open prerequisites: re-authorisation is an owner decision, and core/bundle/outputs.py must learn supply_variants before any number from it is reported. Quotations preserve the source note's own missing spaces before numerals. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "closed-unread",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-F10",
+      "carrier": "SLURP",
+      "layer": "Stage-3 knowledge representation (empty-entity form)",
+      "title": "F10 - the explicit empty-answer demonstration form in the exemplar view (the empty example's trailing field becomes the literal fragment for an empty entity list), complete paired 625-row control versus treatment on R01C",
+      "date": "2026-09-25",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-F10-CONTROL-R01C-V1",
+        "SAEA-SLURP-STAGE3-F10-EMPTY-R01C-V1",
+        "SAEA-SLURP-STAGE3-F10-OFFICIAL-READ-V1",
+        "SAEA-SLURP-STAGE3-F10-MINUS-R01-KNOWLEDGE-BUILD-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-25-slurp-f10-complete-verdict.md",
+      "receipt": "docs/receipts/continuation/2026-09-25-f10-complete-verdict.json",
+      "preregistration": "docs/readiness/2026-09-25-slurp-stage3-f10-v1-preregistration.md",
+      "status": "BENEFIT_NOT_PROVEN; NOT_QUALIFIED; CLOSED",
+      "status_source": "first-paragraph",
+      "status_quote": "Status: BENEFIT_NOT_PROVEN; NOT_QUALIFIED; CLOSED.",
+      "comparator": {
+        "text": "the fresh control arm on the same 625 R01C rows, paired; 10,000 paired utterance-cluster bootstrap draws, seed 20260915.",
+        "source": "docs/results/2026-09-25-slurp-f10-complete-verdict.md"
+      },
+      "rule": {
+        "text": "the prospectively registered primary criterion: the natural-mixture pooled SLU-F1 CI95 lower endpoint must exceed zero, with an intent one-sided 95 % lower bound above the registered -1.44 pp protection margin. Passing protection cannot replace primary efficacy.",
+        "source": "docs/results/2026-09-25-slurp-f10-complete-verdict.md"
+      },
+      "primary": {
+        "text": "official pooled word/character SLU-F1 59.5717 -> 59.9083, +0.3366 pp, primary natural-mixture CI95 [-1.4185, +2.2853]; intent accuracy 70.72 -> 70.88, +0.16 pp; mean per-row SLU-F1 44.9684 -> 44.2910, -0.6774 pp; equal-scenario SLU-F1 delta +1.4275 pp CI95 [-0.6905, +3.4153]; equal-scenario intent delta +0.3193 pp CI95 [-1.2166, +1.9048]. Empty-gold exact-entity FP 142 -> 120 (-22), empty-gold rows with any FP 108 -> 105, nonempty-gold FP 325 -> 319, nonempty-gold FN 384 -> 397 (+13), unparsed delivered rows 1 -> 0.",
+        "source": "docs/results/2026-09-25-slurp-f10-complete-verdict.md"
+      },
+      "margin": {
+        "text": "the registered -1.44 pp intent protection margin; the intent one-sided 95 % lower bound is -1.12 pp, strictly above it, so that guard passes.",
+        "source": "docs/results/2026-09-25-slurp-f10-complete-verdict.md"
+      },
+      "margin_kind": "registered protection margin (intent, -1.44 pp)",
+      "guards": {
+        "text": "the intent protection guard passes; the primary quality criterion fails because the CI95 lower endpoint does not exceed zero. Both complete attempts are FINALIZED, each with exactly one official scoring job; all 625 rows retained, including finite-completion and revision-limit outcomes; the first Solver request uses exactly 20 examples on all 625 rows in both arms with identical ordered example IDs on all 625 pairs.",
+        "source": "docs/results/2026-09-25-slurp-f10-complete-verdict.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "model contacts control 2,585 / treatment 2,552; prompt tokens 21,715,276 / 21,430,801; completion tokens 162,048 / 161,279; repeated speech seconds 11,295.7366 / 11,148.6175; the smoke adds 16 model contacts, for 5,153 contacts across this family. Campaign wall times 75m47s (control) and 70m23s (treatment) are not GPU utilization-integral hours.",
+        "source": "docs/results/2026-09-25-slurp-f10-complete-verdict.md"
+      },
+      "next_step": {
+        "text": "continue with a coordinated evidence/review/repair system using the incumbent knowledge view; the existing native target-knowledge tool path is preferable to the diagnosed raw-review lexical key construction and still needs its own matched complete-system registration and execution.",
+        "source": "docs/results/2026-09-25-slurp-f10-complete-verdict.md"
+      },
+      "umbrella_values": [],
+      "notes": "The verdict refuses every rescue in its own words: 'Do not change the default knowledge view, replicate this variant for admission, adjust the margin, or rescue it through a selected scenario.' The empty-target reduction is concentrated (QA contributes -21 of the net -22 exact FP) and the verdict says that cannot justify a post-hoc QA-only application. A reader defect is recorded inside the verdict: the first derived comparison undercounted terminal dispositions, comparison.json is preserved as superseded and comparison-v2.json is the one to use, with all task metrics byte-equivalent after the fix. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "rejected",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-EVIDENCE-PATH",
+      "carrier": "SLURP",
+      "layer": "Stage-3 evidence-path policy (tools availability)",
+      "title": "EVIDENCE-PATH - the tools-availability policy as a fixed complete-system comparison: native lookup schemas exposed in every Reviewer request versus a tool-free control, two full 625-input R01C arms",
+      "date": "2026-09-25",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-EVIDENCE-PATH-CONTROL-R01C-V1",
+        "SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-R01C-V1",
+        "SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1",
+        "SAEA-SLURP-STAGE3-EVIDENCE-PATH-PREPARE-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-25-slurp-evidence-path-system-verdict.md",
+      "receipt": "docs/receipts/continuation/2026-09-25-evidence-path-system-closure.json",
+      "preregistration": "docs/readiness/2026-09-25-slurp-stage3-evidence-path-v1-preregistration.md",
+      "status": "NOT QUALIFIED",
+      "status_source": "h1",
+      "status_quote": "# Evidence-path complete-system result: NOT QUALIFIED",
+      "comparator": {
+        "text": "the tool-free control arm on the same 625 R01C inputs, paired; 10,000 utterance-cluster bootstrap draws, seed 20260915; differences are tools minus control.",
+        "source": "docs/results/2026-09-25-slurp-evidence-path-system-verdict.md"
+      },
+      "rule": {
+        "text": "the registered terminal SLU improvement rule (the pooled SLU-F1 CI95 lower bound must be above zero) plus the intent protection rule (the CI90 lower bound must be above the frozen operational margin -1.44). Neither passes.",
+        "source": "docs/results/2026-09-25-slurp-evidence-path-system-verdict.md"
+      },
+      "primary": {
+        "text": "official pooled SLU-F1 60.9636 -> 61.5083, +0.5448 CI95 [-0.8827, +1.9986]; intent exact accuracy 71.84 -> 71.20, -0.64 CI90 [-2.24, +0.96]; equal-scenario pooled SLU-F1 difference +0.0734 CI95 [-1.8012, +1.7752]; equal-scenario intent difference -0.6325 CI90 [-2.2117, +0.9837]; mean per-row SLU-F1 45.8035 -> 46.1991, +0.3956 (descriptive); strict complete-task exact rate 26.56 -> 27.36, +0.80 (descriptive); initial candidate coverage 76.64 -> 76.16, -0.48 (diagnostic); empty-target exact entity FP 124 -> 128; nonempty-target FN 383 -> 370; nonempty-target FP 297 -> 298; unparsed delivered answers 2 -> 1.",
+        "source": "docs/results/2026-09-25-slurp-evidence-path-system-verdict.md"
+      },
+      "margin": {
+        "text": "the frozen operational intent margin -1.44; the intent CI90 lower bound -2.24 is not above it. The verdict adds that failure to establish protection is not proof of a statistically established intent loss.",
+        "source": "docs/results/2026-09-25-slurp-evidence-path-system-verdict.md"
+      },
+      "margin_kind": "frozen operational margin (intent, -1.44)",
+      "guards": {
+        "text": "both registered rules fail. The treatment exposes native lookup schemas in all 701 Reviewer requests and records zero tool attempts, accepted calls, rejected calls or result events across all 625 episodes; the control also has zero tool events.",
+        "source": "docs/results/2026-09-25-slurp-evidence-path-system-verdict.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "frozen-core generation contacts control 2,704 / tools 2,728; prompt tokens 23,143,991 / 24,639,917; completion tokens 158,738 / 163,367; repeated speech seconds 11,891.7161 / 11,956.5544; observed generation utilization integral 0.8493 / 2.0944 GPU-h at mean observed utilization 76.08 % / 87.12 %. The engineering smoke added 16 core contacts and zero tool calls.",
+        "source": "docs/results/2026-09-25-slurp-evidence-path-system-verdict.md"
+      },
+      "next_step": {
+        "text": "advance the planned F4 question as a complete candidate-recovery policy; before GPU admission, prove rendered-prefix identity, bounded proposal provenance, original evidence retention, actual request fit and full closure.",
+        "source": "docs/results/2026-09-25-slurp-evidence-path-system-verdict.md"
+      },
+      "umbrella_values": [],
+      "notes": "The verdict withdraws its own attribution in a post-hoc audit and this row carries that withdrawal rather than the original reading: 'A post-hoc source audit also identifies a rendering difference before the Reviewer boundary. Retain the complete policy results, but withdraw the interpretation that this isolates only Reviewer tool-schema availability.' The measured defect is an input-isolation failure: all 625 paired first-Perception requests share the same speech-packet hash, task instruction, history, empty tool-schema list and supplied evidence IDs, but none has identical evidence bytes - the tools arm adds a named-store prefix to each card before any Reviewer decision, 293,938 extra characters over 625 requests. The row therefore records a fixed-policy system comparison, never a learned training-free RL result, in the verdict's own words. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "rejected",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-R-PRIM",
+      "carrier": "SLURP",
+      "layer": "Stage-3 measurability base (Reviewer verdict primitives)",
+      "title": "R-PRIM - the Reviewer verdict as a closed set of primitives (item E37, owner decision 84), one factor on the locked default-plan base",
+      "date": "2026-09-22",
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-REVIEW-PRIMITIVES-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-22-slurp-review-primitives-verdict.md",
+      "receipt": "docs/readiness/2026-09-22-slurp-review-primitives-v1/",
+      "preregistration": "docs/readiness/2026-09-22-slurp-review-primitives-v1-preregistration.md",
+      "status": "NEUTRAL (non-inferiority NOT PROVEN on intent, by width, not by loss)",
+      "status_source": "section 1 verdict table, status row",
+      "status_quote": "**NEUTRAL (non-inferiority NOT PROVEN on intent, by width, not by loss)**: official pooled SLU-F1 +0.58 pp [-0.82, +1.80] clears the plan's own-null margin 1.2485 (non-inferior); intent -0.09 pp [-1.16, +0.94] misses the margin 0.9943 by 0.17 pp of CI width (the B1-notool precedent, decisions 25 / 61)",
+      "comparator": {
+        "text": "the sealed PLAN arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943).",
+        "source": "docs/results/2026-09-22-slurp-review-primitives-verdict.md"
+      },
+      "rule": {
+        "text": "non-inferiority at the plan's own-null margins, with width-only failures recorded as NEUTRAL under owner decisions 25 / 61 and the B1-notool precedent.",
+        "source": "docs/results/2026-09-22-slurp-review-primitives-verdict.md"
+      },
+      "primary": {
+        "text": "official pooled SLU-F1 +0.58 pp [-0.82, +1.80] (non-inferior at 1.2485); intent -0.09 pp [-1.16, +0.94], missing the 0.9943 margin by 0.17 pp of CI width. The frontier row records R-PRIM at official SLU 64.21 / intent 82.13. Against the B5e official lock 62.34 / 80.09 the arm reads +1.87 SLU [+0.46, +3.26] and +2.04 intent [+0.81, +3.25].",
+        "source": "docs/results/2026-09-22-slurp-review-primitives-verdict.md"
+      },
+      "margin": {
+        "text": "the plan's own null h_SLU 1.2485 / h_intent 0.9943.",
+        "source": "docs/results/2026-09-22-slurp-review-primitives-verdict.md"
+      },
+      "margin_kind": "own-null (cross-flight, TRAIN Fold A)",
+      "guards": {
+        "text": "measurability, the purpose of item E37: parse rate 100 % (1,091 legal Reviewer visits over 1,080 rows); tokens ACCEPT 1,073 / REVISE-INTENT 7 / REVISE-SLOT-VALUE 11 / other primitives 0; REVISE precision 0.909, recall 0.0167 against 598 actually-wrong rows; Planner routed REVISE on 11 of the 18 REVISE tokens; cross-visit agreement rate 0.636 on 11 multi-visit rows.",
+        "source": "docs/results/2026-09-22-slurp-review-primitives-verdict.md"
+      },
+      "harness_admission": {
+        "module": "Reviewer verdict as a closed set of primitives (saea-review-primitives-v1)",
+        "carrier": "slurp",
+        "switch": "native_episode.reviewer_verdict",
+        "status": "NEUTRAL",
+        "plan_entry": "the verdict records that v2.0 stays on cell PLAN as flown and R-PRIM enters no plan by itself; it is the measurable-Reviewer base for the pruning cells only",
+        "source": "docs/receipts/harness-admission.json"
+      },
+      "citable_sentence": "none",
+      "cost": {
+        "text": "contacts 4353 (4.031 per row) vs the comparator's 4424 (4.096); GPU-h per 1,080 rows 1.5688 measured vs 1.76 (PLAN estimate); contacts per minute 44.2 vs 39.9; prefilled tokens per row 8346.5; cache-hit share 0.751 vs 0.7545; cost lower than the base: True.",
+        "source": "docs/results/2026-09-22-slurp-review-primitives-verdict.md"
+      },
+      "next_step": {
+        "text": "R-PRIM is NOT HARMFUL, so the decision-85 pruning cells (P1 Reviewer 3 -> 1, P0 review-off) fly on the R-PRIM base and read the primitive distribution beside SLU / intent.",
+        "source": "docs/results/2026-09-22-slurp-review-primitives-verdict.md"
+      },
+      "umbrella_values": [],
+      "notes": "The measurability finding is the point of the cell: the closed vocabulary is parseable on every visit (0 of 2,167 anchor reviews parsed before E37), but the Reviewer under the locked plan says ACCEPT on 98.4 % of visits and flags 11 of the 598 wrong rows. Record defect, reported and not repaired here: this verdict's section 2 'Headline contrasts' table is emitted with a header and no data rows, so the SLU and intent figures above are transcribed from the section 1 status row and the section 6 frontier row instead; the same empty-table defect appears in the P1 and P0 verdicts, which share the driver. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "neutral",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-P1",
+      "carrier": "SLURP",
+      "layer": "Stage-3 pruning",
+      "title": "P1 - Reviewer 3 -> 1 (native_episode.roles.reviewer.max_iterations) on the measurable-Reviewer base R-PRIM",
+      "date": "2026-09-23",
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-PRUNE-REVIEWER1-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-23-slurp-prune-reviewer1-verdict.md",
+      "receipt": "docs/readiness/2026-09-22-slurp-prune-reviewer1-v1/",
+      "preregistration": "docs/readiness/2026-09-22-slurp-prune-reviewer1-v1-preregistration.md",
+      "status": "NEUTRAL (non-inferiority NOT PROVEN on SLU by width, not by loss)",
+      "status_source": "section 1 verdict table, status row",
+      "status_quote": "**NEUTRAL (non-inferiority NOT PROVEN on SLU by width, not by loss): SLU -0.15 pp [-1.38, +1.24] misses the margin 1.2485 by 0.13 pp of CI width, intent +0.09 pp [-0.69, +0.90] non-inferior**",
+      "comparator": {
+        "text": "the sealed R-PRIM arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943).",
+        "source": "docs/results/2026-09-23-slurp-prune-reviewer1-verdict.md"
+      },
+      "rule": {
+        "text": "non-inferiority at the plan's own-null margins; owner decision 85 admits a pruning only on a proven non-inferior read.",
+        "source": "docs/results/2026-09-23-slurp-prune-reviewer1-verdict.md"
+      },
+      "primary": {
+        "text": "SLU -0.15 pp [-1.38, +1.24] against the 1.2485 margin, missed by 0.13 pp of CI width; intent +0.09 pp [-0.69, +0.90], non-inferior. The frontier row records P1 at official SLU 64.06 / intent 82.22.",
+        "source": "docs/results/2026-09-23-slurp-prune-reviewer1-verdict.md"
+      },
+      "margin": {
+        "text": "the plan's own null h_SLU 1.2485 / h_intent 0.9943.",
+        "source": "docs/results/2026-09-23-slurp-prune-reviewer1-verdict.md"
+      },
+      "margin_kind": "own-null (cross-flight, TRAIN Fold A)",
+      "guards": {
+        "text": "intent non-inferior, SLU by width. Dispositions finite stops 0, planner-action-illegal 0, other terminal 0; reviewer contacts per row {'1': 1074, '2': 6} against the comparator's {'1': 1069, '2': 11}.",
+        "source": "docs/results/2026-09-23-slurp-prune-reviewer1-verdict.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "contacts 4338 (4.017 per row) vs R-PRIM's 4353 (4.031); GPU-h per 1,080 rows 1.3829 vs 1.569; contacts per minute 47.8 vs 44.2; prefilled tokens per row 8302 vs 8346; cost lower than the base: True.",
+        "source": "docs/results/2026-09-23-slurp-prune-reviewer1-verdict.md"
+      },
+      "next_step": {
+        "text": "the review-budget question is answered by P0 (review-off), not by P1; decision 97 stands, not HARMFUL.",
+        "source": "docs/results/2026-09-23-slurp-prune-reviewer1-verdict.md"
+      },
+      "umbrella_values": [],
+      "notes": "The verdict calls the factor 'nearly a no-op on this base': the R-PRIM Reviewer already used one visit per row on 1,069 of 1,080 rows, so P1 removes at most the second Reviewer contact of 11 rows, and it reads the GPU-h drop 1.57 -> 1.38 as throughput noise, not a budget saving. Stage-3 algorithm label per the verdict: none (decision 101). The section 2 headline contrasts table is emitted empty (header only), the same driver defect as R-PRIM's and P0's, so the figures above come from the section 1 status row and the section 4 frontier row. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "neutral",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-P0",
+      "carrier": "SLURP",
+      "layer": "Stage-3 pruning",
+      "title": "P0 - review-off (Reviewer 0, Planner 0, no revision: Perception -> Solver -> Delivery) on the measurable-Reviewer base R-PRIM",
+      "date": "2026-09-23",
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-PRUNE-REVIEW-OFF-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-23-slurp-prune-review-off-verdict.md",
+      "receipt": "docs/readiness/2026-09-22-slurp-prune-review-off-v1/",
+      "preregistration": "docs/readiness/2026-09-22-slurp-prune-review-off-v1-preregistration.md",
+      "status": "NEUTRAL (non-inferiority NOT PROVEN on both metrics by width, not by measured loss)",
+      "status_source": "section 1 verdict table, status row",
+      "status_quote": "**NEUTRAL (non-inferiority NOT PROVEN on both metrics by width, not by measured loss): SLU -0.36 pp [-1.45, +0.78] vs margin 1.2485; intent -0.56 pp [-1.60, +0.52] vs margin 0.9943; no CI95 upper bound below zero, no point estimate beyond a margin (decision 25 Method B)**",
+      "comparator": {
+        "text": "the sealed R-PRIM arm at the plan's own null (h_SLU 1.2485 / h_intent 0.9943).",
+        "source": "docs/results/2026-09-23-slurp-prune-review-off-verdict.md"
+      },
+      "rule": {
+        "text": "non-inferiority at the plan's own-null margins under decision 25 Method B; owner decision 85 admits a pruning only on a proven non-inferior read.",
+        "source": "docs/results/2026-09-23-slurp-prune-review-off-verdict.md"
+      },
+      "primary": {
+        "text": "SLU -0.36 pp [-1.45, +0.78] against the 1.2485 margin; intent -0.56 pp [-1.60, +0.52] against 0.9943; no CI95 upper bound below zero and no point estimate beyond a margin. The frontier row records P0 at official SLU 63.85 / intent 81.57.",
+        "source": "docs/results/2026-09-23-slurp-prune-review-off-verdict.md"
+      },
+      "margin": {
+        "text": "the plan's own null h_SLU 1.2485 / h_intent 0.9943.",
+        "source": "docs/results/2026-09-23-slurp-prune-review-off-verdict.md"
+      },
+      "margin_kind": "own-null (cross-flight, TRAIN Fold A)",
+      "guards": {
+        "text": "both guards by width, neither by measured loss. Dispositions finite stops 0, planner-action-illegal 0, other terminal 0; reviewer contacts per row {'0': 1080}.",
+        "source": "docs/results/2026-09-23-slurp-prune-review-off-verdict.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "contacts 2160 (2.000 per row) vs R-PRIM's 4353 (4.031); GPU-h per 1,080 rows 1.2565 vs 1.569; contacts per minute 26.1 vs 44.2; prefilled tokens per row 7802 vs 8346; cost lower than the base: True.",
+        "source": "docs/results/2026-09-23-slurp-prune-review-off-verdict.md"
+      },
+      "next_step": {
+        "text": "the locked plan keeps its Reviewer + Planner, and a request-identical replicate would be needed to narrow the interval before any plan change.",
+        "source": "docs/results/2026-09-23-slurp-prune-review-off-verdict.md"
+      },
+      "umbrella_values": [],
+      "notes": "The verdict's summary of the review loop across the three cells: 'Together with P1 (no-op) and R-PRIM (98.4 % ACCEPT, recall 0.017), the review loop on the locked plan is a 2-contact-per-row insurance whose measurable value is within the null band.' Removing it halves the contacts (2.00 vs 4.03 per row) for at most -0.36 SLU / -0.56 intent by point estimate, unproven in either direction at this width. Stage-3 algorithm label per the verdict: none (decision 101). The section 2 headline contrasts table is emitted empty (header only), the same driver defect as R-PRIM's and P1's. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "neutral",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-B6",
+      "carrier": "SLURP",
+      "layer": "Stage-3 system-over-core read (fresh roster)",
+      "title": "B6 - the locked v2.0 default plan against the bare core on the fresh DEV-2000-ADDED roster (1,000 rows, paired)",
+      "date": "2026-09-22",
+      "run_ids": [
+        "SAEA-SLURP-DIRECT-MAX512-DEV2000-ADDED-V1",
+        "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1",
+        "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-REPLICATE-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-22-slurp-b6-dev2000-added-direct-vs-plan-read.md",
+      "receipt": "docs/readiness/2026-09-22-slurp-b6-dev2000-added-v1/",
+      "preregistration": "docs/readiness/2026-09-22-slurp-b6-dev2000-added-v1-preregistration.md",
+      "status": "DESCRIPTIVE",
+      "status_source": "h1",
+      "status_quote": "# DESCRIPTIVE -- cell B6: the locked v2.0 default plan against the bare core on the fresh DEV-2000-ADDED roster (1,000 rows, paired)",
+      "comparator": {
+        "text": "the bare core, the sealed slurp-direct-max512 form (phase-direct-only-v1, closed-list task instruction, 512 completion tokens, np4), paired on the same 1,000 rows; utterance-clustered bootstrap, 10,000 draws, seed 20260915.",
+        "source": "docs/results/2026-09-22-slurp-b6-dev2000-added-direct-vs-plan-read.md"
+      },
+      "rule": {
+        "text": "none - a report-only read with no verdict and no bar; the decision-76a comparison of the pure driven model against the system-level agent.",
+        "source": "docs/results/2026-09-22-slurp-b6-dev2000-added-direct-vs-plan-read.md"
+      },
+      "primary": {
+        "text": "official pooled SLU-F1 38.09 -> 65.40, +27.30 pp CI90 [+24.59, +30.01] CI95 [+24.05, +30.50]; intent (scenario_action) 61.7 -> 76.6, +14.90 pp CI90 [+12.28, +17.49] CI95 [+11.78, +18.03]; scenario 69.4 -> 81.6, +12.20; action 65.5 -> 79.2, +13.70; span-F1 pooled micro 25.19 -> 57.05, +31.86; slot-F1 exact per row 15.48 -> 40.61, +25.12; every McNemar p < 0.001. Per channel far-field 540 rows intent +13.5, headset 460 rows +16.5.",
+        "source": "docs/results/2026-09-22-slurp-b6-dev2000-added-direct-vs-plan-read.md"
+      },
+      "margin": {
+        "text": "none - the read has no bar. The plan's request-identical replicate on the same roster reads SLU -0.25 [-1.52, +0.98] and intent +0.20 [-0.99, +1.31], h_SLU 1.2525 / h_intent 1.1520, as the CELL-3 verdict records it.",
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-r03-gate-verdict.md"
+      },
+      "margin_kind": "none - report-only read (its own null is recorded by the CELL-3 verdict)",
+      "guards": {
+        "text": "both arms FINALIZED, manifests COMPLETED at the flight commit, roster identity reproduced, one score job each, aggregates reproduced from per-sample scores to 1e-6. Plan arm: E13 finite-completion rows 10, revision-limit 1, 0 ReAct exhaustions, 0 tool calls, 0 compactions, 27 rows revised. Direct arm: 1,000 single contacts, 0 tool calls.",
+        "source": "docs/results/2026-09-22-slurp-b6-dev2000-added-direct-vs-plan-read.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "direct 1,000 contacts (1.0 per row), 2,983.5 repeated speech seconds, 0.087 GPU hours, 428 s wall, 140 contacts/min, 2,280 prompt tokens per row; plan 4,071 contacts (4.07 per row), 12,150.4 repeated speech seconds, 1.655 GPU hours, 6,453 s wall, 37.9 contacts/min, 35,913 client prompt tokens per row, mean utilisation 80 %. The gain costs 19x the GPU time of the bare core on this geometry.",
+        "source": "docs/results/2026-09-22-slurp-b6-dev2000-added-direct-vs-plan-read.md"
+      },
+      "next_step": {
+        "text": "not settled by this read: any test-set number (decision 29: one read after Stage 3), the per-scenario picture on dev, and the Acquisition node.",
+        "source": "docs/results/2026-09-22-slurp-b6-dev2000-added-direct-vs-plan-read.md"
+      },
+      "umbrella_values": [],
+      "notes": "This is the Stage-3 families' centre of gravity: a +27.30 pp system-over-core advantage built by structure alone on a roster no SLURP cell had ever touched, with no learning at all. The read is explicitly report-only ('no verdict, no bar') and is a development number on a dev roster, never a test claim, which is why the tally is instrument rather than an admission. The per-scenario table and equal-scenario weighting are NOT AVAILABLE for this roster: the roster receipt withholds the per-item stratum and deriving one would require gold, which the read refuses. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "instrument",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-ROLL-2",
+      "carrier": "SLURP",
+      "layer": "Stage-3 rollout substrate (pending)",
+      "title": "ROLL-2 - ROLL-1's grouped-Solver form (samples 5, temperature 0.7) moved to the v2.0 lock roster TRAIN Fold A (1,080 rows), to create a sealed sample pool where the lock lives",
+      "date": "2026-09-26",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1"
+      ],
+      "verdict_note": null,
+      "receipt": "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1/",
+      "preregistration": "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1-preregistration.md",
+      "status": "PENDING",
+      "status_source": "registered before contact on 2026-09-26; the flight row is open and no verdict note exists",
+      "status_quote": "Registered before contact on 2026-09-26 at study commit `e0a8d20d`, worktree `/home/chao/saea-worktrees/fable-roll2`, branch `fable/roll2`. Both cells are **held**. Nothing in this note authorises a flight, a readiness flip, a scoring job or an admission entry.",
+      "comparator": {
+        "text": "none - ROLL-2 is an asset, not a comparison: it has no comparator, no gate number, no bar and no expected effect of its own.",
+        "source": "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1-preregistration.md"
+      },
+      "rule": {
+        "text": "none - status DESCRIPTIVE; it states no superiority, transfer, generalisation, component-causal or confirmatory conclusion.",
+        "source": "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1-preregistration.md"
+      },
+      "primary": {
+        "text": "not measured.",
+        "source": "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1-preregistration.md"
+      },
+      "margin": {
+        "text": "none - an asset cell declares no margin. The floor it is built to serve is about 0.67 pp at n = 625 and about 0.51 pp at n = 1,080 for a read over a sealed sample pool.",
+        "source": "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1-preregistration.md"
+      },
+      "margin_kind": "none - asset cell",
+      "guards": {
+        "text": "not evaluated; the preregistration carries the measurement-floor declaration that scripts/checks/stage3_effect_floor_check.py reads.",
+        "source": "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1-preregistration.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "registered ceiling 20,520 calls, with a 82,080-call fit row and a 76-call four-row smoke.",
+        "source": "docs/exposure-ledger.md"
+      },
+      "next_step": {
+        "text": "the secondary products are all free once the pool is sealed - the within-flight sample spread on Fold A, the oracle best-of-5 ceiling on Fold A, and the material for a verifier-selection arm - and each is read offline under its own separately registered read id before any number is looked at.",
+        "source": "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1-preregistration.md"
+      },
+      "umbrella_values": [],
+      "notes": "Registered today (2026-09-26) and in the air while this ledger was generated. No result was read, waited for or inferred for this row, and none may be added to it except from ROLL-2's own verdict note once one exists. Its reason for existing is the binding instrument's rule 1: the program has a sealed pool on R01C and none on the roster the v2.0 lock lives on, so no selection, commit, verification, projection or re-ranking policy can be evaluated at the 0.67 pp floor where the lock lives until this pool exists. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "pending",
+      "flown": false,
+      "pending": true,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-SYSTEM-BATCH001",
+      "carrier": "SLURP",
+      "layer": "Stage-3 system-memory construction (batch 001, actor round and first group update)",
+      "title": "SYSTEM-BATCH001 - the first system-learning batch: four frozen TRAIN inputs, four complete Perception/Solver/Reviewer/Planner trajectories each, then one semantic comparison and one group-update generation",
+      "date": "2026-09-26",
+      "run_ids": [],
+      "verdict_note": "docs/results/2026-09-26-system-batch001-no-update-diagnostic.md",
+      "receipt": "docs/receipts/continuation/2026-09-26-system-batch001-no-update-closure.json",
+      "preregistration": "docs/readiness/2026-09-26-slurp-system-batch001-v1-preregistration.md",
+      "status": "CLOSED WITHOUT A MEMORY UPDATE",
+      "status_source": "h1",
+      "status_quote": "# First system-learning batch: closed without a memory update",
+      "comparator": {
+        "text": "none - a construction/protocol diagnostic, not an effectiveness screen.",
+        "source": "docs/results/2026-09-26-system-batch001-no-update-diagnostic.md"
+      },
+      "rule": {
+        "text": "the registered no-update disposition for tied groups; the strict parser decides whether an emitted update is valid.",
+        "source": "docs/results/2026-09-26-system-batch001-no-update-diagnostic.md"
+      },
+      "primary": {
+        "text": "not measured as a task effect: 'Natural-mixture and equal-stratum task-effect estimates are not newly computed; four inputs cannot establish improvement or generalization.' What is measured is structural: all 16 episodes sealed with 67 generation contacts and one official score per complete actor manifest; all 16 trajectory summaries finalized; one terminal-disagreement group completed semantic comparison and group-update generation; three tied groups retained their registered no-update disposition; the updater emitted a fenced JSON array of three UPDATE operations whose IDs were whole generated lessons of 695, 664 and 648 characters against an empty existing pool, so zero valid updates were published.",
+        "source": "docs/results/2026-09-26-system-batch001-no-update-diagnostic.md"
+      },
+      "margin": {
+        "text": "none - four inputs cannot establish improvement.",
+        "source": "docs/results/2026-09-26-system-batch001-no-update-diagnostic.md"
+      },
+      "margin_kind": "none - a batch under about 200 rows is a form proof, never evidence of benefit",
+      "guards": {
+        "text": "the strict parser rejected the fence first, then three independently invalid targets; the frozen empty pool's successor digest equals its base digest; no batch synthesis generation, forced ADD conversion, repair retry or new memory activation followed. The source request was 9779 tokens and generation ended normally after 751 of 2048 available output tokens, so neither truncation nor memory pressure explains the structural failure.",
+        "source": "docs/results/2026-09-26-system-batch001-no-update-diagnostic.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "67 generation contacts over 16 episodes, and four official scores.",
+        "source": "docs/results/2026-09-26-system-batch001-no-update-diagnostic.md"
+      },
+      "next_step": {
+        "text": "extend the source-bound output-format abstraction so the update stage can emit valid typed operations; the constrained successor is the group-update001 format cell.",
+        "source": "docs/results/2026-09-26-system-group-update001-format-verdict.md"
+      },
+      "umbrella_values": [],
+      "notes": "run_ids is empty on purpose. The cell's registered rows - SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S1..S4-RUN-V1 (44 calls each) and SAEA-SLURP-STAGE3-SYSTEM-GROUP-UPDATE001-NP1-RUN-V1 - are all in docs/exposure-ledger.md, but none is recorded closed by the ledger's own closure vocabulary: the actor rows say 'Consumed and complete' and the update row says 'Finalized score-free comparison', where the parser needs COMPLETED, FINALIZED, FLOWN AND COMPLETE, ROW CLOSED or CLOSED <date>. Naming them here would fail rule 1 of scripts/checks/results_ledger_check.py, so they are named in this note instead. This is the single largest reason the Stage-3 flights cannot be bound to decided ledger rows and it is reported, not worked around. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "closed-unread",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-SYSTEM-SUMMARY001",
+      "carrier": "SLURP",
+      "layer": "Stage-3 system-memory construction (batch 001 trajectory summaries)",
+      "title": "SYSTEM-SUMMARY001 - the complete-system trajectory summaries of batch001 and the feedback they carry",
+      "date": "2026-09-26",
+      "run_ids": [
+        "SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S1-CAPACITY-V2",
+        "SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S2-CAPACITY-V2",
+        "SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S3-CAPACITY-V2",
+        "SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S4-CAPACITY-V2"
+      ],
+      "verdict_note": "docs/results/2026-09-26-system-summary001-fidelity-and-feedback-diagnostic.md",
+      "receipt": "docs/receipts/continuation/2026-09-26-system-summary001-read-authorization.json",
+      "preregistration": "docs/readiness/2026-09-26-system-batch001-summary-generation-v2/",
+      "status": "STRUCTURAL USABILITY, NOT FACTUAL FIDELITY",
+      "status_source": "the closing sentence of the note's first paragraph",
+      "status_quote": "This structural usability does not imply factual",
+      "comparator": {
+        "text": "none - a fidelity and feedback diagnostic over sealed summaries.",
+        "source": "docs/results/2026-09-26-system-summary001-fidelity-and-feedback-diagnostic.md"
+      },
+      "rule": {
+        "text": "structural checks only: source/hash, population, output-completion and request reconstruction.",
+        "source": "docs/results/2026-09-26-system-summary001-fidelity-and-feedback-diagnostic.md"
+      },
+      "primary": {
+        "text": "not a task effect. Structural: all four summary artifacts are FINALIZED with 16 text generations, 36 live-fit endpoints and zero official scoring jobs; every summary passes source/hash, population, output-completion and request-reconstruction checks; no output reached its 2048-token cap.",
+        "source": "docs/results/2026-09-26-system-summary001-fidelity-and-feedback-diagnostic.md"
+      },
+      "margin": {
+        "text": "none - a structural diagnostic has no guard.",
+        "source": "docs/results/2026-09-26-system-summary001-fidelity-and-feedback-diagnostic.md"
+      },
+      "margin_kind": "none - structural diagnostic",
+      "guards": {
+        "text": "every summary passes source/hash, population, output-completion and request-reconstruction checks; no output reached its 2048-token cap.",
+        "source": "docs/results/2026-09-26-system-summary001-fidelity-and-feedback-diagnostic.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "16 text generations, 36 live-fit endpoints, zero official scoring jobs.",
+        "source": "docs/results/2026-09-26-system-summary001-fidelity-and-feedback-diagnostic.md"
+      },
+      "next_step": {
+        "text": "the summaries feed the semantic comparison and the group-update stages of the same batch.",
+        "source": "docs/results/2026-09-26-system-batch001-no-update-diagnostic.md"
+      },
+      "umbrella_values": [],
+      "notes": "The four run ids named above are this cell's tokenizer-only CAPACITY-V2 rows, which ARE recorded closed ('COMPLETED: 9 tokenizer endpoints, zero generation/media/scoring; every request does not fit'). The generation rows SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S1..S4-NP1-RUN-V1 and -V2 (4 calls each) are registered in docs/exposure-ledger.md and are NOT recorded closed ('All four sources finalized', lower case, which the ledger's closure parser does not accept), so they are named here rather than in run_ids. The status_quote is the verdict's own sentence, which its source breaks across a line at that point. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "instrument",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-SYSTEM-COMPARISON001",
+      "carrier": "SLURP",
+      "layer": "Stage-3 system-memory construction (batch 001 semantic comparison)",
+      "title": "SYSTEM-COMPARISON001 - the whole-system semantic comparison of the single eligible construction group of batch001",
+      "date": "2026-09-26",
+      "run_ids": [],
+      "verdict_note": "docs/results/2026-09-26-system-comparison001-learning-diagnostic.md",
+      "receipt": "docs/receipts/continuation/2026-09-26-system-comparison001-read-authorization.json",
+      "preregistration": "docs/readiness/2026-09-26-system-comparison001-generation-v1/",
+      "status": "OBSERVED ERRORS IN SEMANTIC CREDIT",
+      "status_source": "h1",
+      "status_quote": "# Whole-system comparison: observed errors in semantic credit",
+      "comparator": {
+        "text": "none - a baseline construction step, read for credit correctness, not for a task effect.",
+        "source": "docs/results/2026-09-26-system-comparison001-learning-diagnostic.md"
+      },
+      "rule": {
+        "text": "not an effect rule: the read inspects the generated comparison for credit errors.",
+        "source": "docs/results/2026-09-26-system-comparison001-learning-diagnostic.md"
+      },
+      "primary": {
+        "text": "not a task effect. Structural: the score-free artifact finalized at 2026-09-26T08:51:13Z with one generation and three live-fit endpoints, after three separately registered static capacity endpoints; the single eligible construction group completed its registered comparison through the shared prepared-text controller, FlightRuntime and OpenJiuwen executor.",
+        "source": "docs/results/2026-09-26-system-comparison001-learning-diagnostic.md"
+      },
+      "margin": {
+        "text": "none.",
+        "source": "docs/results/2026-09-26-system-comparison001-learning-diagnostic.md"
+      },
+      "margin_kind": "none - construction step",
+      "guards": {
+        "text": "one generation and three live-fit endpoints; zero official scores; the source chain is verified recursively.",
+        "source": "docs/results/2026-09-26-system-comparison001-learning-diagnostic.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "one generation and three live-fit endpoints; zero official scores.",
+        "source": "docs/results/2026-09-26-system-comparison001-learning-diagnostic.md"
+      },
+      "next_step": {
+        "text": "the group-update generation of the same batch consumes this comparison.",
+        "source": "docs/results/2026-09-26-system-batch001-no-update-diagnostic.md"
+      },
+      "umbrella_values": [],
+      "notes": "run_ids is empty on purpose: SAEA-SLURP-STAGE3-SYSTEM-COMPARISON001-NP1-RUN-V1 is registered in docs/exposure-ledger.md at 1 call and is NOT recorded closed ('Finalized score-free comparison', mixed case), so naming it would fail rule 1 of the gate. This row deliberately carries no number the note does not state; the note's own scope line is that four construction inputs cannot establish effectiveness. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "instrument",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-SYSTEM-GROUP-UPDATE001-FORMAT",
+      "carrier": "SLURP",
+      "layer": "Stage-3 system-memory construction (constrained group-update interface)",
+      "title": "SYSTEM-GROUP-UPDATE001-FORMAT - the source-bound response-format successor to the invalid first group update: valid operations, semantic credit unresolved",
+      "date": "2026-09-26",
+      "run_ids": [],
+      "verdict_note": "docs/results/2026-09-26-system-group-update001-format-verdict.md",
+      "receipt": "docs/receipts/continuation/2026-09-26-system-group-update001-format-read-authorization.json",
+      "preregistration": "docs/readiness/2026-09-26-system-group-update001-format-generation-v1/",
+      "status": "VALID OPERATIONS, SEMANTIC CREDIT UNRESOLVED",
+      "status_source": "h1",
+      "status_quote": "# Whole-system group-update interface successor: valid operations, semantic credit unresolved",
+      "comparator": {
+        "text": "the failed source request, whose exact model-visible history, task instruction and non-format decoding this successor matches.",
+        "source": "docs/results/2026-09-26-system-group-update001-format-verdict.md"
+      },
+      "rule": {
+        "text": "an interface rule, not an effect rule: the shared source-bound response-format contract must produce valid typed operations. 'grammar validity does not establish lesson correctness'.",
+        "source": "docs/results/2026-09-26-system-group-update001-format-verdict.md"
+      },
+      "primary": {
+        "text": "not a task effect: 'Four construction inputs cannot establish effectiveness. Natural-mixture and equal-stratum task-effect estimates are not newly computed. Existing official actor scores are unchanged.' Structural: three valid ADD operations with null IDs for the empty frozen memory pool; three tied source groups remain no-update-terminal-tie; input 9779 tokens, reserved output 2048, remaining context margin 37323, generated response 198 output tokens.",
+        "source": "docs/results/2026-09-26-system-group-update001-format-verdict.md"
+      },
+      "margin": {
+        "text": "none - four construction inputs cannot establish effectiveness.",
+        "source": "docs/results/2026-09-26-system-group-update001-format-verdict.md"
+      },
+      "margin_kind": "none - a four-input construction round",
+      "guards": {
+        "text": "147 targeted tests, Ruff and nine offline gates passed before generation; the explicit prepared-text control namespace preserves the old model-visible prefix; zero official scores; no runtime memory activation, batch synthesis generation, new actor episode or second successor followed.",
+        "source": "docs/results/2026-09-26-system-group-update001-format-verdict.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "one generation, three live-fit endpoints and zero official scores, after a separate three-endpoint capacity check. The campaign has 39 guard samples: peak GPU allocation 20456 MiB, minimum GPU free 3682 MiB, minimum measured Windows availability 29.452 GiB.",
+        "source": "docs/results/2026-09-26-system-group-update001-format-verdict.md"
+      },
+      "next_step": {
+        "text": "complete bounded batch synthesis only with its own source binding, capacity receipt and registration; a prospective event-grounded credit branch must supply deterministic actual tool events, chronological role responses and control transitions, final delivery and distinct entity/intent/format feedback.",
+        "source": "docs/results/2026-09-26-system-group-update001-format-verdict.md"
+      },
+      "umbrella_values": [],
+      "notes": "The verdict's own semantic assessment refuses the content it validated: one lesson relies on tool validation or failure despite zero actual tool events, another describes Planner dependence on Reviewer judgment without resolving unsupported evidence, and the candidate-noise lesson cannot establish causal credit because the same distractor also appears in correct source trajectories. 'The constrained decoder solved operation identity; it did not repair incorrect event or outcome attribution.' run_ids is empty on purpose: SAEA-SLURP-STAGE3-SYSTEM-GROUP-UPDATE001-FORMAT-NP1-RUN-V1 is registered at 1 call and is NOT recorded closed ('Finalized score-free constrained group update'). The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "instrument",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-SYSTEM-BATCH-SYNTHESIS001",
+      "carrier": "SLURP",
+      "layer": "Stage-3 system-memory construction (bounded batch synthesis)",
+      "title": "SYSTEM-BATCH-SYNTHESIS001 - the first bounded batch synthesis over the three valid group proposals: sealed artifact, invalid memory plan",
+      "date": "2026-09-26",
+      "run_ids": [],
+      "verdict_note": "docs/results/2026-09-26-system-batch-synthesis001-rejection.md",
+      "receipt": "docs/receipts/continuation/2026-09-26-system-batch-synthesis001-read-authorization.json",
+      "preregistration": "docs/readiness/2026-09-26-system-batch-synthesis001-generation-v1/",
+      "status": "SEALED ARTIFACT, INVALID MEMORY PLAN",
+      "status_source": "h1",
+      "status_quote": "# First bounded batch synthesis: sealed artifact, invalid memory plan",
+      "comparator": {
+        "text": "none - a construction diagnostic.",
+        "source": "docs/results/2026-09-26-system-batch-synthesis001-rejection.md"
+      },
+      "rule": {
+        "text": "the strict provisional materializer's parse rule; the response must be valid typed JSON with the required record_id field.",
+        "source": "docs/results/2026-09-26-system-batch-synthesis001-rejection.md"
+      },
+      "primary": {
+        "text": "not a task effect: 'Four inputs do not support an effectiveness estimate; no new natural/equal-stratum task estimate or official rescore exists.' Structural: zero valid published batch-memory records. The response begins and ends with a Markdown fence, which the JSON parser rejects; diagnostic inspection inside the fence reveals three ADD operations all missing the required record_id field. Exact input 1041, output 697 of 8192.",
+        "source": "docs/results/2026-09-26-system-batch-synthesis001-rejection.md"
+      },
+      "margin": {
+        "text": "none - four inputs do not support an effectiveness estimate.",
+        "source": "docs/results/2026-09-26-system-batch-synthesis001-rejection.md"
+      },
+      "margin_kind": "none - a four-input construction round",
+      "guards": {
+        "text": "the strict materializer retained a rejection artifact; no candidate snapshot or runtime memory was published; all source proposals and the four-input population were preserved; output headroom was ample. The 42 resource samples have peak GPU 20456 MiB, minimum GPU free 3682 MiB and minimum Windows available 29.390 GiB.",
+        "source": "docs/results/2026-09-26-system-batch-synthesis001-rejection.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "one generation, three live fits and zero official scores.",
+        "source": "docs/results/2026-09-26-system-batch-synthesis001-rejection.md"
+      },
+      "next_step": {
+        "text": "extend the existing source-bound output-format abstraction to typed batch operations and reuse the shared proposal schema; any sole named interface successor needs a fresh registration, real fit and unchanged source content. No automatic retry or manual ADD/record_id repair is authorized.",
+        "source": "docs/results/2026-09-26-system-batch-synthesis001-rejection.md"
+      },
+      "umbrella_values": [],
+      "notes": "The verdict separates the structural failure from the semantic one and refuses to repair either: 'The proposed content also preserves unsupported tool/Reviewer credit... These are model-authored proposals, not root-endorsed rules or causal evidence. Structural repair cannot establish semantic quality.' run_ids is empty on purpose: SAEA-SLURP-STAGE3-SYSTEM-BATCH-SYNTHESIS001-NP1-RUN-V1 is registered at 1 call and is NOT recorded closed ('Finalized score-free synthesis'). The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "rejected",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-SYSTEM-BATCH-SYNTHESIS001-FORMAT",
+      "carrier": "SLURP",
+      "layer": "Stage-3 system-memory construction (first provisional memory)",
+      "title": "SYSTEM-BATCH-SYNTHESIS001-FORMAT - the typed batch-interface successor that created the first provisional whole-system memory: created, not evaluated",
+      "date": "2026-09-26",
+      "run_ids": [],
+      "verdict_note": "docs/results/2026-09-26-system-batch001-provisional-memory-verdict.md",
+      "receipt": "docs/receipts/continuation/2026-09-26-system-batch001-provisional-memory-closure.json",
+      "preregistration": "docs/readiness/2026-09-26-system-batch-synthesis001-format-generation-v1/",
+      "status": "CREATED, NOT EVALUATED",
+      "status_source": "h1",
+      "status_quote": "# First provisional whole-system memory: created, not evaluated",
+      "comparator": {
+        "text": "the rejected predecessor, whose source document contents, phase instruction, task instruction and non-format decoding are equal to this successor's.",
+        "source": "docs/results/2026-09-26-system-batch001-provisional-memory-verdict.md"
+      },
+      "rule": {
+        "text": "the strict shared materializer must accept the emitted operations; acceptance is an interface result, never a task result.",
+        "source": "docs/results/2026-09-26-system-batch001-provisional-memory-verdict.md"
+      },
+      "primary": {
+        "text": "not a task effect: 'Four construction inputs provide no task-effect estimate; natural/equal-stratum quality differences are not claimed.' Structural: the successor finalized at 2026-09-26T10:18:05Z; one generation and three live-fit endpoints completed with zero scores and no fresh audio; the strict shared materializer accepted three ADD operations; the actual successor request has 1040 input tokens and 728 generated tokens against an 8192 cap, leaving 39918 tokens after reserving the full output. Three provisional records were sourced, all from the datetime stratum.",
+        "source": "docs/results/2026-09-26-system-batch001-provisional-memory-verdict.md"
+      },
+      "margin": {
+        "text": "none - four construction inputs provide no task-effect estimate.",
+        "source": "docs/results/2026-09-26-system-batch001-provisional-memory-verdict.md"
+      },
+      "margin_kind": "none - a four-input construction round",
+      "guards": {
+        "text": "104 targeted cases passed across the main run and one corrected fixture recheck; Ruff and nine offline gates passed; source attestation replayed the actual materializer and recovered the same artifact; no handwritten plan or lesson correction was substituted. Across 41 resource samples, peak GPU allocation is 20456 MiB, minimum GPU free 3682 MiB and minimum Windows availability 29.366 GiB.",
+        "source": "docs/results/2026-09-26-system-batch001-provisional-memory-verdict.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "one generation and three live-fit endpoints; zero official scores; no fresh audio.",
+        "source": "docs/results/2026-09-26-system-batch001-provisional-memory-verdict.md"
+      },
+      "next_step": {
+        "text": "implement the separately designed event-grounded comparison on the same actors, raw summaries and terminal feedback; bind a real full candidate pack and a matched empty-memory pack to the same disjoint TRAIN roster before the next actor generation. 'No runtime activation or next actor is authorized by this memory-creation report alone.'",
+        "source": "docs/results/2026-09-26-system-batch001-provisional-memory-verdict.md"
+      },
+      "umbrella_values": [],
+      "notes": "The verdict names a second learning-to-execution gap from an exhaustive three-boolean projection of the generated applicability conditions: under the explicitly assumed normal first-review state only record 2 matches, with all three present only record 1 matches, and record 3 matches only absent knowledge and prior response plus a tool result. It calls this a diagnostic, 'not an observed new actor run, a measured selection rate or proof that a record can never be reached'. Its three root objections to the generated records (tool credit without tool events, Planner acceptance without resolving unsupported evidence, an unestablished distractor effect) are carried as the verdict's own words, not adjudicated here. run_ids is empty on purpose: SAEA-SLURP-STAGE3-SYSTEM-BATCH-SYNTHESIS001-FORMAT-NP1-RUN-V1 is registered at 1 call and is NOT recorded closed ('Finalized score-free synthesis'). The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "instrument",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-SYSTEM-EVENT-CREDIT001",
+      "carrier": "SLURP",
+      "layer": "Stage-3 system-memory construction (event-grounded semantic credit)",
+      "title": "SYSTEM-EVENT-CREDIT001 - the recorded-event whole-system semantic credit branch: no qualified update",
+      "date": "2026-09-26",
+      "run_ids": [],
+      "verdict_note": "docs/results/2026-09-26-system-event-credit001-verdict.md",
+      "receipt": "docs/receipts/continuation/2026-09-26-system-event-credit001-no-update-closure.json",
+      "preregistration": "docs/readiness/2026-09-26-system-event-credit001-generation-v1/",
+      "status": "NO QUALIFIED UPDATE",
+      "status_source": "h1",
+      "status_quote": "# Recorded-event whole-system semantic credit: no qualified update",
+      "comparator": {
+        "text": "the one registered comparison of the same construction group, with no original actor, summary, speech encoder, ASR or official scorer rerun.",
+        "source": "docs/results/2026-09-26-system-event-credit001-verdict.md"
+      },
+      "rule": {
+        "text": "a qualification rule on the emitted update, not a task-effect rule.",
+        "source": "docs/results/2026-09-26-system-event-credit001-verdict.md"
+      },
+      "primary": {
+        "text": "not a task effect. Structural: the one registered comparison completed in the independent driver epoch 2026-09-26T10:42:26Z through 10:44:09Z; the score-free artifact passed seal inspection at 10:43:49Z; it used one generation and three live-fit endpoints after three separately registered capacity endpoints.",
+        "source": "docs/results/2026-09-26-system-event-credit001-verdict.md"
+      },
+      "margin": {
+        "text": "none stated.",
+        "source": "docs/results/2026-09-26-system-event-credit001-verdict.md"
+      },
+      "margin_kind": "none - a four-input construction round",
+      "guards": {
+        "text": "seal inspection passed; the source worker is merged into master with its temporary branch deleted and its detached checkout retained; no original actor, summary, speech encoder, ASR or official scorer was rerun.",
+        "source": "docs/results/2026-09-26-system-event-credit001-verdict.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "one generation and three live-fit endpoints, after three separately registered capacity endpoints.",
+        "source": "docs/results/2026-09-26-system-event-credit001-verdict.md"
+      },
+      "next_step": {
+        "text": "the next semantic update must receive actual chronological tool results, role decisions and final feedback, through the existing typed atomic update path.",
+        "source": "docs/results/2026-09-26-system-memory-batch002-consumption-verdict.md"
+      },
+      "umbrella_values": [],
+      "notes": "run_ids is empty on purpose: SAEA-SLURP-STAGE3-SYSTEM-EVENT-CREDIT001-NP1-RUN-V1 is registered in docs/exposure-ledger.md at 1 call and is NOT recorded closed ('Finalized score-free comparison'). This row carries only what the verdict states; its title's status word is the verdict's own. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "rejected",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-SYSTEM-MEMORY-BATCH002",
+      "carrier": "SLURP",
+      "layer": "Stage-3 system-memory construction (batch 002 consumption round)",
+      "title": "SYSTEM-MEMORY-BATCH002 - provisional memory against empty memory over four distinct TRAIN inputs, four stochastic trajectories per arm, 32 complete episodes",
+      "date": "2026-09-26",
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S1-RUN-V1",
+        "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S2-RUN-V1",
+        "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S3-RUN-V1",
+        "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S4-RECOVERY1-RUN-V1",
+        "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S1-RUN-V1",
+        "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S2-RUN-V1",
+        "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S3-RUN-V1",
+        "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S4-RECOVERY1-RUN-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-26-system-memory-batch002-consumption-verdict.md",
+      "receipt": "docs/receipts/continuation/2026-09-26-system-memory-batch002-read-authorization.json",
+      "preregistration": "docs/readiness/2026-09-26-system-memory-batch002-v1/",
+      "status": "NO DEMONSTRATED TASK IMPROVEMENT",
+      "status_source": "h1",
+      "status_quote": "# Memory batch002: consumed guidance, no demonstrated task improvement",
+      "comparator": {
+        "text": "the empty-memory arm on the same four TRAIN input identities, four stochastic trajectories per arm.",
+        "source": "docs/results/2026-09-26-system-memory-batch002-consumption-verdict.md"
+      },
+      "rule": {
+        "text": "none as an effect rule: 'This is a construction diagnostic, not an effectiveness, equivalence or generalization claim.'",
+        "source": "docs/results/2026-09-26-system-memory-batch002-consumption-verdict.md"
+      },
+      "primary": {
+        "text": "arithmetic mean of four roster-level scores: provisional memory 54.1962 against empty memory 55.7598, a mean difference of -1.5636 percentage points; per draw empty / memory 51.3211 / 51.3211 (s1), 58.2272 / 58.2272 (s2), 59.7806 / 53.5261 (s3), 53.7104 / 53.7104 (s4); complete-task exactness 1/16 (empty) against 0/16 (memory); intent 15/16 in both arms; natural-mixture intent accuracy 93.75 % in both arms and equal-scenario 95.8333 %; the inverse-roster-size weighted four-draw means are 47.3002 versus 44.9589.",
+        "source": "docs/results/2026-09-26-system-memory-batch002-consumption-verdict.md"
+      },
+      "margin": {
+        "text": "none - repeated episodes on four inputs, not sixteen independent samples.",
+        "source": "docs/results/2026-09-26-system-memory-batch002-consumption-verdict.md"
+      },
+      "margin_kind": "none - a four-input construction round",
+      "guards": {
+        "text": "all eight selected actors finalized with exactly one official complete score each; the 32 complete episodes use 160 model generations, 32 local memory dispatches, eight official scores and no fallback; wire finishes are 128 stop and 32 tool_calls, none by length; no output truncation or context overflow. For each input all eight actors share identical initial Perception task text, history, supplied evidence, tool schemas and speech packet/features.",
+        "source": "docs/results/2026-09-26-system-memory-batch002-consumption-verdict.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "160 model generations, 32 local memory dispatches, eight official scores; model-contact audio 605.1125 seconds on 15.1278125 unique input seconds; prompt-token sum 1,318,198, output-token sum 8,195, summed request latency 614.96 seconds, which is not wall time or utilization-integrated GPU time. The failed eighteen generations of the original memory-s4 remain additional costs in their original receipts.",
+        "source": "docs/results/2026-09-26-system-memory-batch002-consumption-verdict.md"
+      },
+      "next_step": {
+        "text": "use the four learned actors in round-policy-v3 for the next batch update; controls remain diagnostic, not learner samples; B1080 matched evaluation and same-roster replication remain pending.",
+        "source": "docs/results/2026-09-26-system-memory-batch002-consumption-verdict.md"
+      },
+      "umbrella_values": [],
+      "notes": "The verdict refuses its own headline number as an effect, in its own words: 'The mean difference is -1.5636 percentage points. It is not a causal estimate of harmful memory: the only different paired Solver output occurs before the memory tool is called. The two Perception histories already differ there. Fifteen of sixteen paired Solver output strings are identical. Every Planner chooses ACCEPT, no episode revises, and final delivery preserves the first Solver output.' What the batch does establish is textual uptake - the selected record reaches Reviewer and Planner in all sixteen learned episodes - plus three named system failure modes: advisory authority displacing evidence checking, misrepresentation of the tool result, and a missing objection read as positive confirmation. The binding measurement instrument's rule 5 puts this design in its 'not readable' row: a batch under about 200 rows is a form proof, never evidence of benefit. An operational correction is recorded inside the verdict: the server did not remain resident, its stop receipt records a resource-guard SIGTERM under a backward wall-clock observation, and the verdict forbids describing it as an OOM or retrying any actor. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "instrument",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-CAND-SUPPORT",
+      "carrier": "SLURP",
+      "layer": "Stage-3 offline coverage read (candidate support)",
+      "title": "CAND-SUPPORT - the complete-prefix candidate-support read: is a missing initial candidate already represented among the labels of the exemplars actually supplied to the first Solver, on the sealed VAR1-PLAN and VAR1-PLANR 625-row prefixes",
+      "date": "2026-09-25",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-CANDIDATE-SUPPORT-READ-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-25-slurp-candidate-support-diagnostic.md",
+      "receipt": "docs/receipts/continuation/2026-09-25-slurp-candidate-support-read.json",
+      "preregistration": "docs/readiness/2026-09-25-slurp-candidate-support-read-v1.json",
+      "status": "NO SYSTEM-GAIN VERDICT",
+      "status_source": "first-paragraph",
+      "status_quote": "Status: completed model-free construction read; no system-gain verdict or new GPU flight. The active evidence-path control/tools results remain unread.",
+      "comparator": {
+        "text": "none - a label-pool coverage read over two sealed prefixes, not a contrast between arms.",
+        "source": "docs/results/2026-09-25-slurp-candidate-support-diagnostic.md"
+      },
+      "rule": {
+        "text": "none as an admission rule; caps of 5 and 8 were fixed in the read registration and no reference answer influences selection. The owner's 95 % coverage target is the reference point.",
+        "source": "docs/results/2026-09-25-slurp-candidate-support-diagnostic.md"
+      },
+      "primary": {
+        "text": "gold-intent coverage of the candidate set, PLAN / PLANR: original normalized candidates 486/625 = 77.76 % (mean width 2.6240) / 483/625 = 77.28 % (2.5984); preserve and append at most 5, 564/625 = 90.24 % / 561/625 = 89.76 %; at most 8, 582/625 = 93.12 % in both; all labels in original candidates plus actual exemplars, 586/625 = 93.76 % in both. Exemplar labels alone cover 565/625 = 90.40 % in each repeat. At least 594/625 inputs must be covered to reach 95 %: the cap of 8 remains twelve short and the full union eight short, so neither meets the target. Each union misses 39 rows, 38 of them shared between the repeats.",
+        "source": "docs/results/2026-09-25-slurp-candidate-support-diagnostic.md"
+      },
+      "margin": {
+        "text": "none - the read states that the complete union is a label-pool coverage ceiling, not achievable model accuracy or an upper bound on the full system.",
+        "source": "docs/results/2026-09-25-slurp-candidate-support-diagnostic.md"
+      },
+      "margin_kind": "none - coverage ceiling, not an effect",
+      "guards": {
+        "text": "all actor prefixes, original state hashes, full trajectory identities, the frozen minus-R01 exemplar source and row order were checked before the offline label join; four focused projection tests and all nine offline gates passed.",
+        "source": "docs/results/2026-09-25-slurp-candidate-support-diagnostic.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "no new model, tokenizer, ASR, encoder, server, scorer or network contact; the read took 727.24 seconds, chiefly the existing governed TRAIN filesystem validation.",
+        "source": "docs/results/2026-09-25-slurp-candidate-support-diagnostic.md"
+      },
+      "next_step": {
+        "text": "prioritize a bounded candidate-recovery system action after the active complete-system pair is sealed and interpreted: preserve the initial candidate identities and provenance, bind a separate derived proposal, supply the added candidates' distinguishing intent information and slot contracts through the existing knowledge interfaces, and keep a matched complete fixed-system comparator over all 625 inputs.",
+        "source": "docs/results/2026-09-25-slurp-candidate-support-diagnostic.md"
+      },
+      "umbrella_values": [],
+      "notes": "The read refuses the two inferences its own numbers invite: 'This is evidence of diminishing coverage opportunity within this pool, not evidence about actual model response to larger inputs', and 'This diagnostic does not admit an RL policy, select an action from gold, set a new reward, or establish stable benefit.' It supports the original plan's F4 direction 'as a system hypothesis, not declared effective'. Zero model contacts, so flown is false. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "instrument",
+      "flown": false,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-CAND-REC",
+      "carrier": "SLURP",
+      "layer": "Stage-3 candidate-recovery policy (F4)",
+      "title": "CAND-REC - the bounded candidate-recovery complete-system pair (control and expand arms) on the 625-row R01C roster, and its seal recovery",
+      "date": "2026-09-26",
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-V1",
+        "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-R01C-V1",
+        "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-SEAL-RECOVERY1-V1",
+        "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-R01C-SEAL-RECOVERY1-V1"
+      ],
+      "verdict_note": null,
+      "receipt": "docs/receipts/continuation/2026-09-25-candidate-seal-recovery1-runtime-failure.json",
+      "preregistration": "docs/readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1-preregistration.md",
+      "status": "PENDING",
+      "status_source": "no verdict note exists; the closure receipt records the disposition 'execution-closed-without-comparative-verdict'",
+      "status_quote": "\"scientific_disposition\": \"execution-closed-without-comparative-verdict\"",
+      "comparator": {
+        "text": "the matched control arm on the same 625 R01C inputs, as registered; no comparative read was produced.",
+        "source": "docs/readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1-preregistration.md"
+      },
+      "rule": {
+        "text": "see the preregistration; not applied - the family closed without a comparative verdict.",
+        "source": "docs/readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1-preregistration.md"
+      },
+      "primary": {
+        "text": "not measured. No verdict or result note in this repository reads this family, and its closure receipt records automatic_replay_permitted false with the disposition 'execution-closed-without-comparative-verdict'.",
+        "source": "docs/receipts/continuation/2026-09-25-candidate-seal-recovery1-runtime-failure.json"
+      },
+      "margin": {
+        "text": "none - no contrast was read.",
+        "source": "docs/receipts/continuation/2026-09-25-candidate-seal-recovery1-runtime-failure.json"
+      },
+      "margin_kind": "none - no number",
+      "guards": {
+        "text": "receipt-sourced, not verdict-sourced: the control seal-recovery1 arm inspected as FINALIZED with manifest COMPLETED, 625 rows, 625 distinct, and no dirt. A seal defect was root-caused and repaired first: 'Seal validation incorrectly treated a reduced distinct-label authority set as the raw Perception position bound', repaired with 116 related tests and an eight-case four-shape proof over a synthetic model transport at zero research-model contacts.",
+        "source": "docs/receipts/continuation/2026-09-25-candidate-recovery-seal-repair.json"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "receipt-sourced, not verdict-sourced: the control seal-recovery1 arm records 3,657 calls and 16,056.869125 audio seconds; the four-row control smoke records 25 calls and 106.19025 audio seconds. docs/exposure-ledger.md registers each of the four generation rows at a 6,875-call ceiling.",
+        "source": "docs/receipts/continuation/2026-09-25-candidate-seal-recovery1-runtime-failure.json"
+      },
+      "next_step": {
+        "text": "the candidate-support read sets the design the next attempt must follow, and the evidence-path verdict repeats it: before GPU admission, prove rendered-prefix identity, bounded proposal provenance, original evidence retention, actual request fit and full closure.",
+        "source": "docs/results/2026-09-25-slurp-evidence-path-system-verdict.md"
+      },
+      "umbrella_values": [],
+      "notes": "This is the Stage-3 cell with the largest registered spend and no read at all: four generation rows at a 6,875-call ceiling each. It is PENDING because no verdict note exists, and every figure above is explicitly marked receipt-sourced rather than verdict-sourced so no reader mistakes a receipt for a decision. All four run ids are registered in docs/exposure-ledger.md and none is recorded closed, which is consistent with a family that closed its execution without a comparative verdict; the row is pending, so the gate reports neither a failure nor a finding for them. The offline whole-trajectory attribution receipt of 2026-09-25 records learned_update_performed and active_family_partial_outcomes_read, and this ledger reads neither. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "pending",
+      "flown": true,
+      "pending": true,
+      "provisional": null
+    },
+    {
+      "cell_id": "E21-E35",
+      "carrier": "Earnings-21",
+      "layer": "Stage-3 carrier structural read",
+      "title": "E35 - the Earnings21 + ConEC carrier on FlightRuntime: the six-node system form against the bare core on 10 discovery calls / 342 windows",
+      "date": "2026-09-22",
+      "run_ids": [
+        "SAEA-E21-NATIVE-WINDOW-DIRECT-FOUR-ROW-V1",
+        "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-V1",
+        "SAEA-E21-NATIVE-WINDOW-DIRECT-SUB10-V1",
+        "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-22-e21-native-window-flightruntime-e35-read.md",
+      "receipt": "docs/readiness/2026-09-22-e21-native-window-flightruntime-e35-v1/",
+      "preregistration": "docs/readiness/2026-09-22-e21-native-window-flightruntime-e35-v1/",
+      "status": "PASS (structural); the six-node form is NOT admitted for Earnings",
+      "status_source": "section 1 verdict table, the structural row and the disposition row",
+      "status_quote": "**PASS**: both arms flew through `core.flight.FlightRuntime` and the OpenJiuwen executor on the E21 geometry",
+      "comparator": {
+        "text": "the bare-core direct arm on the same 10 calls / 342 windows, scored once per manifest with the Whisper normaliser.",
+        "source": "docs/results/2026-09-22-e21-native-window-flightruntime-e35-read.md"
+      },
+      "rule": {
+        "text": "none as an effectiveness rule: n = 10 calls, below the n >= 400 rule, so the read states 'no effectiveness claim of any kind'. The structural rule of owner decision 89 (Earnings joins FlightRuntime) is what PASSES.",
+        "source": "docs/results/2026-09-22-e21-native-window-flightruntime-e35-read.md"
+      },
+      "primary": {
+        "text": "descriptive contrast, the system form as flown against the bare core: corpus WER 7.24 % -> 28.63 % (0.0724 -> 0.2863 over 75,751 reference words), per-call mean WER 0.0774 -> 0.2927 with 0 calls improved and 10 worse, numeric-value accuracy 92.39 % -> 71.06 % (0.9239 -> 0.7106 over 2,246 expected numeric words), semantic high-impact error rate 0.0002 -> 0.0013; delivered words 76,619 -> 58,700 (0.77x). conec-entity-wer-official is NOT MEASURED in either arm (official_tool_run = false).",
+        "source": "docs/results/2026-09-22-e21-native-window-flightruntime-e35-read.md"
+      },
+      "margin": {
+        "text": "none - n = 10 calls is below the n >= 400 rule and no margin is applied.",
+        "source": "docs/results/2026-09-22-e21-native-window-flightruntime-e35-read.md"
+      },
+      "margin_kind": "none - below the n >= 400 rule",
+      "guards": {
+        "text": "structural PASS: the system arm walked all six nodes, 1,597 contacts on 342 windows, per-window receipts joined to execution_unit_delivery.sources[*] 342 / 342 and 1,597 / 1,597; all four manifests COMPLETED.",
+        "source": "docs/results/2026-09-22-e21-native-window-flightruntime-e35-read.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "four-row direct 4 contacts / 360 speech s; four-row system 13 / 1,170; sub10 direct 342 / 30,407; sub10 system 1,597 / 142,418. The system arm used 4.67 contacts per window against the planned 11, and 105 of 162 REVISE -> ACCEPT windows produced a byte-identical second Solver draft (315 contacts for nothing).",
+        "source": "docs/results/2026-09-22-e21-native-window-flightruntime-e35-read.md"
+      },
+      "next_step": {
+        "text": "item E39: native_episode.finite_completion_scope = answering-node, per-role max_completion_tokens, a tool-free Reviewer template v2 for E21, and a HELD four-row dry-run cell on the E21 geometry, before the six-node form is admitted for Earnings.",
+        "source": "docs/results/2026-09-22-e21-native-window-flightruntime-e35-read.md"
+      },
+      "umbrella_values": [],
+      "notes": "The read names the cause and refuses to blame the carrier or the core: 'one harness defect, not the carrier and not the core'. E13 finite_completion_policy = deliver-latest-or-abstain is scoped to the whole episode, so a length-truncated PERCEPTION contact (75 of 342 windows) ends the episode before the Solver runs and delivers the empty string; 76 empty windows hold 22.9 % of the reference words and 95.6 % of the extra error mass; had they scored like the direct arm the system corpus WER would read 7.78 % against the direct arm's 7.24 %, and on the 234 windows that reached a Planner ACCEPT direct 7.07 % vs system 7.22 % (WER-neutral). The row is tallied as an instrument cell because the read forbids any effectiveness claim at n = 10. Its section 5 classifies the repair (item E39) as 'engineering, Stage-2 base repair; not a Stage-3 cell', so the E39 and E39b four-row dry-run reads of 2026-09-23 are deliberately not given rows here. The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
+      "tally": "instrument",
+      "flown": true,
+      "pending": false,
+      "provisional": null
     }
   ],
   "operational_recovery": {
@@ -3855,5 +5556,57 @@
         "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S4-RECOVERY1-RUN-V1"
       ]
     }
-  ]
+  ],
+  "stage3_measurement_instrument": {
+    "text": "Binding for every Stage-3 claim from 2026-09-26. Where an earlier Stage-3 verdict conflicts with it, it wins and the earlier verdict is corrected by a successor note rather than rewritten. Its corrections are carried in each affected row's notes, never applied over the verdict's own status word or over this ledger's tally, so both readings stay visible: CELL-3's HARMFUL label is corrected to 'not distinguishable from flight variance'; CELL-1, CELL-2 and CELL-1-GEPA were read cross-flight with no in-chain replicate and support no verdict in either direction; VAR-1's exemplar-k variants are +0.07 / +0.09 pp over PLANR, not +1.94 / +1.95 over PLAN. Floor table: offline read over one sealed sample pool 0.67 pp at n = 625; two passes inside one flight 0.735 pp (intent 0.000) at n = 200; cross-flight at n = 625 a bar of about 3 pp with a measured +1.87 pp A/A offset; cross-flight at n = 1,080 about 2.5 pp; terminal feedback on 4 to 16 trajectories not readable.",
+    "source": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md"
+  },
+  "stage3_summary": {
+    "rows_added_on": "2026-09-26",
+    "cells": [
+      "E21-E35",
+      "SLURP-ADV-1",
+      "SLURP-AGG-1",
+      "SLURP-B6",
+      "SLURP-CAND-REC",
+      "SLURP-CAND-SUPPORT",
+      "SLURP-CELL-1",
+      "SLURP-CELL-1-GEPA",
+      "SLURP-CELL-2",
+      "SLURP-CELL-3",
+      "SLURP-EVIDENCE-PATH",
+      "SLURP-F10",
+      "SLURP-GEPA-R01",
+      "SLURP-P0",
+      "SLURP-P1",
+      "SLURP-R-PRIM",
+      "SLURP-ROLL-1",
+      "SLURP-ROLL-2",
+      "SLURP-ROLL-AA",
+      "SLURP-SYSTEM-BATCH-SYNTHESIS001",
+      "SLURP-SYSTEM-BATCH-SYNTHESIS001-FORMAT",
+      "SLURP-SYSTEM-BATCH001",
+      "SLURP-SYSTEM-COMPARISON001",
+      "SLURP-SYSTEM-EVENT-CREDIT001",
+      "SLURP-SYSTEM-GROUP-UPDATE001-FORMAT",
+      "SLURP-SYSTEM-MEMORY-BATCH002",
+      "SLURP-SYSTEM-SUMMARY001",
+      "SLURP-VAR-1",
+      "SLURP-VAR-1-AA",
+      "SLURP-VAR-2",
+      "SLURP-VERIFY-1"
+    ],
+    "algorithm_registry": {
+      "text": "Owner decision 101 requires every Stage-3 cell to carry a stage3_algorithm label that resolves in core.base.STAGE3_ALGORITHMS. Two record defects observed while these rows were written and reported rather than repaired: gepa-reflective-pareto-v1 and inference-time-verification-v1 are both status='planned' although CELL-1-GEPA and VERIFY-1 have flown and sealed; and the CELL-1-GEPA verdict states three different label/operator sets for one cell (see that row's notes).",
+      "source": "src/speech_aware_evidence_acquisition/core/stage3_algorithms.py"
+    },
+    "umbrella_gap": {
+      "text": "The umbrella page wiki/experiments/speech-aware-evidence-acquisition/published-baselines.md carries no Stage-3 row and no Stage-3 headline, so every Stage-3 row here declares an empty umbrella_values rather than asserting a comparison the umbrella cannot answer. Closing that gap is an umbrella edit and is out of this file's ownership.",
+      "source": "docs/exposure-ledger.md"
+    },
+    "closure_vocabulary_defect": {
+      "text": "Many registered Stage-3 flight rows are not recorded closed by the closure vocabulary this ledger's gate parses (COMPLETED, FINALIZED, FLOWN AND COMPLETE, ROW CLOSED, CLOSED <date>): the delta-cell form twins say 'SEALED:', the batch001 actor rows say 'Consumed and complete', and the 2026-09-26 system rows say 'Finalized' in mixed case. A non-pending row may not name such a run id without failing rule 1, so those run ids are named in the affected rows' notes instead of in run_ids. Repairing the wording is an exposure-ledger edit and is out of this file's ownership.",
+      "source": "docs/exposure-ledger.md"
+    }
+  }
 }
