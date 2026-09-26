@@ -13,6 +13,15 @@ slots, no mmproj and total49152 context tokens. Initial loaded observation:
 20410MiB GPU used,3728MiB free and approximately31GiB Windows available.
 These are loaded readings, not complete-rollout peak or stability proof.
 
+First-replica generation is complete and official scoring is in progress.
+Operational metadata shows maximum actual prompt10476 tokens, completion184
+tokens and16 stop finishes; no length finish was observed in that replica.
+The sampled resource peak so far is20432MiB GPU used, with at least3706MiB GPU
+free and27.38GiB Windows available. No pressure latch occurred. This does not
+prove later full-trajectory summary/batch synthesis fits or long-run stability.
+See [the operational receipt](../receipts/continuation/2026-09-26-system-batch001-first-replica-resources.json).
+Scientific results remain unread until all four replicas seal and score.
+
 The existing Windows-owned batch driver dispatched the registered four-replica
 queue at06:28:52Z. First campaign started at06:28:55Z. Worker:
  /home/chao/saea-worktrees/codex-system-batch001-20260926
