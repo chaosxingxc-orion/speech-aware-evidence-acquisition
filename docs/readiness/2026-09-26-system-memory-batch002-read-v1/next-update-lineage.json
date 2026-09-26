@@ -1,0 +1,26 @@
+{
+  "schema": "saea-next-system-update-lineage-v1",
+  "status": "prepared-no-model-authority",
+  "round_policy": {
+    "data_relpath": "coordination/slurp-system-memory-batch002-v1/round-policy.json",
+    "sha256": "784d9bc16c7f30a0a0690e0f15249dd93a1a20baad2196eff6153def08e30248"
+  },
+  "current_construction_roster": {
+    "repo_relpath": "docs/receipts/rosters/slurp-system-batch002-r01c-v1.json",
+    "sha256": "a357828e4a70a5dd88931af99fd018c4598192fa836fa71aada85491a7ada7bc"
+  },
+  "cumulative_construction_roster": {
+    "repo_relpath": "docs/receipts/rosters/slurp-system-memory-cumulative-batch002-v1.json",
+    "sha256": "eee21337170cc39f8c25fc200a01669e123fa97829ac9d1716d9e1cee5f21616"
+  },
+  "update_source_schema": "saea-system-group-update-source-v2",
+  "shared_scope_extension": "rails.experience_consolidation.extend_candidate_construction",
+  "required_before_next_contact": [
+    "all eight source actors finalized and officially scored once",
+    "registered root read",
+    "source-pinned full learned trajectories and official feedback",
+    "exact summary/comparison/group/batch capacity under the selected geometry",
+    "separate execution/exposure registration"
+  ],
+  "base_memory_semantic_status": "Source-valid and semantically unqualified; runtime evaluation is not promotion. No manual record/tag filtering."
+}

@@ -5,6 +5,24 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Operational pipeline handoff pending at the first scoring boundary
+
+Checkpoint: 2026-09-26T11:26:02.453254+00:00. Root suspended only the verified shell
+scheduler PID78141 with SIGSTOP to prevent dispatch of the remaining unstarted actors. Current campaign/scorer continue normally; do not signal or replay them.
+The current launched actor continues; earlier completed actors stay sealed.
+No task result has been read. Exact started/remaining identities are recorded
+in DATA/coordination/slurp-system-memory-batch002-v1/pipeline-schedule-hold.json.
+
+Reason: one-cell outer campaigns serialize scoring and leave the GPU idle.
+The existing multi-cell FlightQueue supports serial generation with one
+background scorer. Root will regroup only the unstarted cells using
+that existing path, preserving their order, configs, seeds, service and budget.
+The old frozen worker remains untouched. New source/queue and exact provenance
+must be recorded before dispatch. No extra generation or scoring is authorized.
+Until the newer launch receipt exists, this held scheduler is intentional,
+not a crashed service or permission to restart. Current service remains
+serving-slurp-system-memory-batch002-np2-v1. Eight-arm read embargo remains.
+
 ## Matched full-system memory batch002 running independently
 
 Checkpoint: 2026-09-26T11:14:15.589080+00:00. Independent driver epoch11:12:56Z,
