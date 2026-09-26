@@ -1,0 +1,181 @@
+{
+  "schema": "saea-system-summary-shared-runtime-validation-v1",
+  "recorded_at_utc": "2026-09-26T00:58:53.745491+00:00",
+  "scope": "offline full-source preparation and synthetic shared request connection",
+  "environment": "WSL Ubuntu-24.04; /home/chao/.venvs/speechrl/bin/python; explicit main src PYTHONPATH",
+  "base_commit": "267256f115ee1663b70846b275274b000248f1b0",
+  "source_files": [
+    {
+      "path": "src/speech_aware_evidence_acquisition/rails/prepared_feedback.py",
+      "sha256": "64eaddf1fbb1318a21dbc9a417220106dd2ccf3297469488bd2eb862baa368fc"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/rails/system_summary_context.py",
+      "sha256": "e378ffd96e29e847468d305745d94c2fe360675b30a9d4b8b72facc925062560"
+    },
+    {
+      "path": "configs/baseline/system-trajectory-summary-v1.json",
+      "sha256": "2f331338c3e7b904e96873226876f736f880d05657daac550964ec670f394f53"
+    },
+    {
+      "path": "configs/probes/system_trajectory_summary_v1.txt",
+      "sha256": "229faa87bea8abb692254e673ba13a771403fb9b7dfb8a3f16289b53db6faad2"
+    },
+    {
+      "path": "tests/unit/test_system_summary_preparation.py",
+      "sha256": "57e095f829724cf2b148572b984f0b9dd7a0f92e6083459b27879159b211d1f1"
+    }
+  ],
+  "research_model_contacts": 0,
+  "research_scorer_contacts": 0,
+  "research_task_quality_reads": 0,
+  "runtime_activation": false,
+  "tests": {
+    "passed": 61,
+    "new_cases": 19,
+    "exit_code": 0,
+    "log": "/home/chao/system-summary-runtime-validation-v1/instruction-final-tests.txt",
+    "log_sha256": "813ec395c2e03114f8ed922d172cb5f50b56e677d319dba3e365639d84f80128",
+    "warnings": "Three existing dependency deprecation warnings"
+  },
+  "ruff": {
+    "exit_code": 0,
+    "log": "/home/chao/system-summary-runtime-validation-v1/instruction-final-lint.txt",
+    "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "offline_gates": [
+    {
+      "name": "engineering_base_check",
+      "exit_code": 0,
+      "log": "/home/chao/system-summary-runtime-validation-v1/final-gates/engineering_base_check.txt",
+      "log_sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "name": "harness_admission_check",
+      "exit_code": 0,
+      "log": "/home/chao/system-summary-runtime-validation-v1/final-gates/harness_admission_check.txt",
+      "log_sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+    },
+    {
+      "name": "results_ledger_check",
+      "exit_code": 0,
+      "log": "/home/chao/system-summary-runtime-validation-v1/final-gates/results_ledger_check.txt",
+      "log_sha256": "ec9367bbd838063e612f82f2497a4e042f439e1b778d78d55e5f4c6117904d6f"
+    },
+    {
+      "name": "tool_catalog_check",
+      "exit_code": 0,
+      "log": "/home/chao/system-summary-runtime-validation-v1/final-gates/tool_catalog_check.txt",
+      "log_sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+    },
+    {
+      "name": "experiment_handoff_check",
+      "exit_code": 0,
+      "log": "/home/chao/system-summary-runtime-validation-v1/final-gates/experiment_handoff_check.txt",
+      "log_sha256": "74935cf6765b4b6a1c879ee2889b7db3ed84a0e0df6ed32ad120f54aac8e0bd6"
+    },
+    {
+      "name": "openjiuwen_native_reuse_check",
+      "exit_code": 0,
+      "log": "/home/chao/system-summary-runtime-validation-v1/final-gates/openjiuwen_native_reuse_check.txt",
+      "log_sha256": "2e3dd7ff3ed9c44de3c5128dd9a2f19c9e44abb3bcde55b15d39bfd50a37f52b"
+    },
+    {
+      "name": "derived_media_confinement_check",
+      "exit_code": 0,
+      "log": "/home/chao/system-summary-runtime-validation-v1/final-gates/derived_media_confinement_check.txt",
+      "log_sha256": "4d61e86b6be573386592d0435d53062ed89cb2540b214d469a7508e1de62b8cd"
+    },
+    {
+      "name": "stage3_algorithm_label_check",
+      "exit_code": 0,
+      "log": "/home/chao/system-summary-runtime-validation-v1/final-gates/stage3_algorithm_label_check.txt",
+      "log_sha256": "772a0ea23eb2cbd08e1649908f386c524c8a78941bf58e74e26004da7cf524ca"
+    },
+    {
+      "name": "finite_completion_policy_check",
+      "exit_code": 0,
+      "log": "/home/chao/system-summary-runtime-validation-v1/final-gates/finite_completion_policy_check.txt",
+      "log_sha256": "20bc3dc18154a13c2956dd6455da6de859f1e724b864fd06bcaec02b0734cc22"
+    }
+  ],
+  "status": "passed",
+  "connected_test_boundary": {
+    "real": [
+      "Prepared source loader and runtime artifact authority",
+      "Configured prompt rendering",
+      "Shared OpenJiuwen controller execution",
+      "Actual fit/send payload identity",
+      "ORG trace and canonical raw artifact output",
+      "Actual RuntimeSlurpAdapter uses the summary instruction instead of its original SLU-answer instruction; ontology loading is substituted."
+    ],
+    "substituted": [
+      "Historical source verifier in the connected fixture",
+      "Model transport"
+    ],
+    "input_limit": "The existing artifact arm also attaches original sample speech. It is not a text-only TF-GRPO reproduction."
+  },
+  "remaining": [
+    "Register the exact updater input protocol and actual capacity before model contact.",
+    "Execute semantic group comparison, typed proposals, model-side consolidation and frozen full-system reexecution.",
+    "Resolve disjoint TRAIN memory-use scheduling; require full terminal evaluation and matched replication."
+  ],
+  "initial_offline_gates": [
+    {
+      "name": "engineering_base_check",
+      "exit_code": 0,
+      "log": "/home/chao/system-summary-runtime-validation-v1/gates/engineering_base_check.txt",
+      "log_sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "name": "harness_admission_check",
+      "exit_code": 0,
+      "log": "/home/chao/system-summary-runtime-validation-v1/gates/harness_admission_check.txt",
+      "log_sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+    },
+    {
+      "name": "results_ledger_check",
+      "exit_code": 0,
+      "log": "/home/chao/system-summary-runtime-validation-v1/gates/results_ledger_check.txt",
+      "log_sha256": "ec9367bbd838063e612f82f2497a4e042f439e1b778d78d55e5f4c6117904d6f"
+    },
+    {
+      "name": "tool_catalog_check",
+      "exit_code": 0,
+      "log": "/home/chao/system-summary-runtime-validation-v1/gates/tool_catalog_check.txt",
+      "log_sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+    },
+    {
+      "name": "experiment_handoff_check",
+      "exit_code": 1,
+      "log": "/home/chao/system-summary-runtime-validation-v1/gates/experiment_handoff_check.txt",
+      "log_sha256": "642096f293c2751a5651d93a121275a044d49da2a69e06fdbf562961d946c81c"
+    },
+    {
+      "name": "openjiuwen_native_reuse_check",
+      "exit_code": 0,
+      "log": "/home/chao/system-summary-runtime-validation-v1/gates/openjiuwen_native_reuse_check.txt",
+      "log_sha256": "cc0e551b120209a5abf71bd81dab9cb8e38ab6ad06a4e920da779ee74fd4fc14"
+    },
+    {
+      "name": "derived_media_confinement_check",
+      "exit_code": 0,
+      "log": "/home/chao/system-summary-runtime-validation-v1/gates/derived_media_confinement_check.txt",
+      "log_sha256": "dd064c60a714a8e90932b92c841d9e160a0f94ada20d2bd322404d35358a1c0c"
+    },
+    {
+      "name": "stage3_algorithm_label_check",
+      "exit_code": 0,
+      "log": "/home/chao/system-summary-runtime-validation-v1/gates/stage3_algorithm_label_check.txt",
+      "log_sha256": "772a0ea23eb2cbd08e1649908f386c524c8a78941bf58e74e26004da7cf524ca"
+    },
+    {
+      "name": "finite_completion_policy_check",
+      "exit_code": 0,
+      "log": "/home/chao/system-summary-runtime-validation-v1/gates/finite_completion_policy_check.txt",
+      "log_sha256": "20bc3dc18154a13c2956dd6455da6de859f1e724b864fd06bcaec02b0734cc22"
+    }
+  ],
+  "initial_gate_limit": "The initial handoff check could not read Git metadata. The unchanged gate passed on the final rerun; no gate was relaxed.",
+  "runtime_limit": "The local speech service later failed during the separate expanded smoke. The registered recovery was closed. No summary inference or new GPU contact occurred in this change."
+}

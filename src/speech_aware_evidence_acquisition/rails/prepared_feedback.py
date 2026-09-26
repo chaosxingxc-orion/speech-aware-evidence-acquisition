@@ -292,6 +292,13 @@ def load_prepared_feedback(
     ):
         raise PreparedFeedbackError("active construction cohort must have unique sample IDs")
     roster_sha = _sha256(construction_roster_sha256, field="construction_roster_sha256")
+    if isinstance(spec, Mapping) and spec.get("schema") == "saea-prepared-system-summary-v1":
+        from .system_summary_context import load_system_summary_feedback
+
+        return load_system_summary_feedback(
+            spec, data_root=Path(data_root), sample_ids=active_ids,
+            construction_roster_sha256=roster_sha,
+        )
     artifact_pin, source_pin, maximum = _validate_spec(spec)
     source_bindings, source_bindings_sha256 = _read_pinned_json(
         source_pin, data_root=Path(data_root), field="source_bindings"
@@ -353,6 +360,18 @@ def load_prepared_feedback(
         by_sample[sample_id] = context
     if set(by_sample) != set(active_ids) or len(by_sample) != len(active_ids):
         raise PreparedFeedbackError("prepared proposal contexts differ from active cohort")
+    return states_from_contexts(
+        by_sample, active_ids=active_ids, prepared_sha256=prepared_sha256,
+        source_bindings_sha256=source_bindings_sha256, roster_sha=roster_sha, maximum=maximum,
+    )
+
+
+def states_from_contexts(
+    by_sample, *, active_ids, prepared_sha256, source_bindings_sha256, roster_sha, maximum,
+):
+    """Serialize already source-verified contexts through the common ORG state."""
+    if set(by_sample) != set(active_ids) or len(by_sample) != len(active_ids):
+        raise PreparedFeedbackError("prepared contexts differ from active cohort")
     states: dict[str, PreparedFeedbackStateArtifact] = {}
     for sample_id in active_ids:
         context = by_sample[sample_id]

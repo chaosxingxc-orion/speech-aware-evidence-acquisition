@@ -92,3 +92,12 @@ candidate proposal modes, four role interruptions, annotation exclusion and
 legacy rollout grouping. Research model and official scorer contacts added: 0.
 
 Receipt: docs/receipts/continuation/2026-09-25-system-semantic-trajectory-preparation.json.
+
+## Shared runtime successor
+
+The [shared runtime connection](2026-09-25-system-summary-shared-runtime.md)
+now consumes this complete-episode representation through prepared ORG state
+and the existing artifact request path. Its current speech-feature arm also
+attaches the original sample speech, an explicit multimodal input adaptation.
+The earlier representation proof above remains unchanged; it is not evidence
+of text-only inference or an executed full semantic update cycle.

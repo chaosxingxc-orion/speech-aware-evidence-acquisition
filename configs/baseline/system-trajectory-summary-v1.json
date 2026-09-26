@@ -1,0 +1,23 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "policy": "phase-direct-only-v1",
+  "result_kind": "artifact",
+  "scorers": [],
+  "whole_roster_wave_barrier": true,
+  "phase_material": {
+    "direct": {
+      "instruction_template": "probes/system_trajectory_summary_v1.txt",
+      "instruction_fill": null,
+      "predecessor_binding": "none"
+    }
+  },
+  "what_this_is": "Complete-episode summary preparation through the shared controller. Requires a registered TRAIN source, artifact binding, live fit and service lease. The speech-feature arm also attaches the original sample speech; this is not a text-only TF-GRPO reproduction.",
+  "task_instruction": "Write a scoreless summary of the complete recorded agentic-system trajectory. Follow the current phase instruction. Treat any appended SLURP ontology as background task semantics; do not answer the original spoken command.",
+  "task_instruction_template": null,
+  "task_instruction_template_active": false,
+  "task_instruction_fill": null,
+  "task_instruction_fill_params": null,
+  "slurp_task_contract_view": "legacy-ontology"
+}

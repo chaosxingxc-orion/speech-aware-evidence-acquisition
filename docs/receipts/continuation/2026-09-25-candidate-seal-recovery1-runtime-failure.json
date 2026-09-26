@@ -1,0 +1,162 @@
+{
+  "schema": "saea-runtime-failure-receipt-v1",
+  "recorded_at_utc": "2026-09-26T00:53:42.179597+00:00",
+  "scientific_disposition": "execution-closed-without-comparative-verdict",
+  "registration": "docs/readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1-preregistration.md",
+  "automatic_replay_permitted": false,
+  "control_seal_metadata": {
+    "at": "2026-09-25T23:15:09Z",
+    "event": "arm-inspect",
+    "detail": {
+      "mode": "arm",
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-SEAL-RECOVERY1-V1",
+      "attempt_id": "attempt-slurp-native-stage3-candidate-recovery-control-r01c-seal-recovery1-v1-generation",
+      "pass": true,
+      "fails": [],
+      "attempt_state": "FINALIZED",
+      "actual": {
+        "audio_seconds": 16056.869125000032,
+        "calls": 3657
+      },
+      "manifest_status": "COMPLETED",
+      "study_commit": "60d5719728f7a79f374000bcbd742508785c9894",
+      "dirt": [],
+      "rows": 625,
+      "distinct": 625,
+      "dispositions": {
+        "revision_limit": 81,
+        "finite_completion": 1
+      },
+      "contacts_per_row_hist": {},
+      "cost": {
+        "calls_used": 3657,
+        "audio_seconds_used": 16056.869125000032,
+        "prompt_tokens_total": 33726476,
+        "completion_tokens_total": 219506,
+        "tool_calls": 0
+      },
+      "score_jobs": 1,
+      "requests": 3657,
+      "requests_with_tool_schemas": 0,
+      "sha256_run-manifest": "8d559b75e444b32adaa157b19bf81b879437aa99435f838834308a082583588e",
+      "sha256_scores": "88658a2acad632638bf8bccf7e9d97f8221a78e9f34a2d35a41ca0d290718bbf",
+      "sha256_outputs": "30d7b512455dcd9bc5928d42f8516fae38a79e77128dd9737f113b46d873d68f"
+    }
+  },
+  "queue_stop": {
+    "at": "2026-09-25T23:17:00Z",
+    "event": "STOP",
+    "detail": "smoke worker exit 1 on step 2 (speech_aware_evidence_acquisition.reproduction.ojw.native_episode.NativeEpisodeError: native episode node failed: [100054] component 'reviewer_0_role' execute 'invoke' error, reason='Remote end closed connection without response', workflow='ecb48b92cb8e4508a651f559da5b5d9a')"
+  },
+  "attempts": [
+    {
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-SEAL-RECOVERY1-V1",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-SEAL-RECOVERY1-V1/attempt-slurp-native-stage3-candidate-recovery-control-r01c-seal-recovery1-v1-generation.json",
+      "sha256": "810837ca6edd4768b3cb9ae74db3020a712ad37c0bbb5c51236692cf840f0433",
+      "state": "FINALIZED",
+      "status": null,
+      "actual": {
+        "audio_seconds": 16056.869125000032,
+        "calls": 3657
+      }
+    },
+    {
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-SMOKE-4-R01C-SEAL-RECOVERY1-V1",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-SMOKE-4-R01C-SEAL-RECOVERY1-V1/attempt-slurp-native-stage3-candidate-recovery-control-smoke-4-r01c-seal-recovery1-v1-generation.json",
+      "sha256": "4fb1d642f62adb9f8a41595e4d9c28d218248b13c9eab3cf2531064506e4371b",
+      "state": "OPENED",
+      "status": null,
+      "actual": {
+        "audio_seconds": 96.17025000000001,
+        "calls": 22
+      }
+    },
+    {
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-R01C-SEAL-RECOVERY1-V1",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-R01C-SEAL-RECOVERY1-V1/attempt-slurp-native-stage3-candidate-recovery-expand-r01c-seal-recovery1-v1-generation.json",
+      "exists": false
+    },
+    {
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-SMOKE-4-R01C-SEAL-RECOVERY1-V1",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-SMOKE-4-R01C-SEAL-RECOVERY1-V1/attempt-slurp-native-stage3-candidate-recovery-expand-smoke-4-r01c-seal-recovery1-v1-generation.json",
+      "sha256": "8d1ca03d68c0e2b9b7f88686308fa6c71bba32c32e96b9bcc1ab58c8d25cf078",
+      "state": "OPENED",
+      "status": null,
+      "actual": {
+        "audio_seconds": 55.456250000000004,
+        "calls": 13
+      }
+    }
+  ],
+  "service": {
+    "running": false,
+    "old_pid": 714,
+    "gpu_utilization_percent_observed": 0,
+    "gpu_memory_mib_observed": 0,
+    "server_log_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1/server.log",
+    "server_log_sha256": "749f6420440a8ef1652d021a3b918c3541ad14d8ec8c0cf1dd3fe6da75b4e399",
+    "fatal_lines": [
+      "1033.13.109.394 E ggml_cuda_compute_forward: MUL_MAT failed",
+      "/home/chao/llama.cpp-featcache/ggml/src/ggml-cuda/ggml-cuda.cu:104: CUDA error",
+      "1033.13.109.498 E CUDA error: an illegal memory access was encountered"
+    ],
+    "interpretation": "The local inference backend reported a CUDA illegal memory access during matrix multiplication. The underlying kernel, driver or hardware cause is not established."
+  },
+  "windows": {
+    "last_boot_utc": "2026-09-25T23:31:02.5000000Z",
+    "event_provider": "Microsoft-Windows-WER-SystemErrorReporting",
+    "event_id": 1001,
+    "record_id": 61904,
+    "event_time_utc": "2026-09-25T23:31:19.1896111Z",
+    "bugcheck": "0x00000116",
+    "parameters": [
+      "0xffff970bcbf8f010",
+      "0xfffff8024faa1050",
+      "0xffffffffc000009a",
+      "0x0000000000000004"
+    ],
+    "dump_path": "C:/Windows/Minidump/092526-16953-01.dmp",
+    "dump_read": false,
+    "official_definition": "Display-driver timeout recovery/reset failure; this does not by itself identify the underlying cause.",
+    "definition_source": "https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/bug-check-0x116---video-tdr-failure",
+    "timing_limit": "Event report time and queue failure time differ; no exact common-cause timeline is asserted."
+  },
+  "preserved_files": [
+    {
+      "path": "/home/chao/batch-queue.json",
+      "sha256": "2c5878b3f954e476549d0116a61585b21c355dab811f11c3c1c3aeedcb718177"
+    },
+    {
+      "path": "/home/chao/batch-status.jsonl",
+      "sha256": "f95c5637b4db7cf08b960cd3bb03c26c759d50dd2590ed55dc99bed6c7ff3df8"
+    },
+    {
+      "path": "/home/chao/batch-STOP",
+      "sha256": "afb16b9e77905b1889f366a1a23a465575d8a31bbbf4c25745bdc732cf9c07c2"
+    },
+    {
+      "path": "/home/chao/batch-smoke-2-worker.log",
+      "sha256": "b8a9533af5061c2a898d90d4a65a9b2b66736fb4fee9c6559b26a6809ffee1b7"
+    }
+  ],
+  "task_quality_read": false,
+  "actions": [
+    "Preserved queue, STOP, source checkout and failed attempt.",
+    "Did not restart the server, campaign or official scorer.",
+    "Did not change GPU driver, service geometry, power mode or TDR settings."
+  ],
+  "next": "Diagnose the backend/host fault before any new GPU registration. The failed comparison has no effectiveness verdict and no automatic second recovery.",
+  "failed_smoke_abort": {
+    "at_utc": "2026-09-26T00:55:01.652370+00:00",
+    "frozen_source_commit": "60d5719728f7a79f374000bcbd742508785c9894",
+    "before_snapshot": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-stage3-candidate-seal-recovery1-v1/runtime-failure/expanded-smoke-attempt-before-abort.json",
+    "before_sha256": "8d1ca03d68c0e2b9b7f88686308fa6c71bba32c32e96b9bcc1ab58c8d25cf078",
+    "after_sha256": "ef7569527e7bd5e1b17413006e35000edaf26798e0c203effaf8cc569c85442a",
+    "state": "ABORTED",
+    "actual": {
+      "audio_seconds": 55.456250000000004,
+      "calls": 13
+    },
+    "changed": true
+  }
+}

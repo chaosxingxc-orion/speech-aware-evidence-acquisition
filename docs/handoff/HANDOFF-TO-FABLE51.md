@@ -7,16 +7,32 @@ for their own flights. Do not interpret old plans as permission to restart them.
 
 ## Checkpoint and research objective
 
-Checkpoint: 2026-09-25T21:40:18Z. The sole named seal recovery is running
-through the existing Windows-owned WSL task. All eight clean preflights and
-nine offline gates passed. Control smoke4 passed at 21:40:08Z with 22 model
-contacts, four distinct rows and no tools or official scoring. The 625-row
-control campaign began at 21:40:18Z. Expanded remains queued, with its own
-structural smoke required. No task quality is read.
-The worker is frozen at 60d5719728f7a79f374000bcbd742508785c9894 in
-/home/chao/saea-worktrees/codex-stage3-continuation-20260925. Do not edit or
-advance this checkout through both complete scores. Read the
-[launch receipt](../receipts/continuation/2026-09-25-candidate-seal-recovery1-launch.json).
+Checkpoint: 2026-09-26T00:48:16Z. The sole seal recovery is now
+execution-closed without a comparative verdict. Control625 sealed and passed
+structural inspection at 2026-09-25T23:15:09Z: 625 distinct rows, 3,657 model
+contacts, 16,056.869125 audio seconds and one full official scoring job.
+Its attempt is FINALIZED. No quality metric has been read.
+
+Expanded smoke4 failed at 23:17:00Z when the local service closed a Reviewer
+connection. Server.log records MUL_MAT failure and CUDA illegal memory access.
+Expanded full625 never started. The failed smoke consumed 13 contacts and
+55.45625 audio seconds; after confirming no worker/driver/server process was
+live, root preserved its OPENED record and closed it ABORTED through the frozen
+worker's existing attempt API. Successful control and smoke records are retained.
+
+Windows subsequently reported bugcheck 0x116 (display-driver timeout recovery
+failure), record 61904 at 23:31:19Z, and boot at 23:31:02Z. The record timestamp
+does not prove the precise crash onset or the underlying kernel/driver/hardware
+cause. At the checkpoint, the Windows task was Ready, no llama-server or
+campaign was running, and GPU use/memory were zero. Do not use stale telemetry
+as live health. No service restart, driver change or automatic second recovery.
+
+Read the [failure receipt](../receipts/continuation/2026-09-25-candidate-seal-recovery1-runtime-failure.json).
+The queue, STOP and all source artifacts remain intact. Preserve the worker at
+60d5719728f7a79f374000bcbd742508785c9894 in
+/home/chao/saea-worktrees/codex-stage3-continuation-20260925 for source verification.
+The [launch receipt](../receipts/continuation/2026-09-25-candidate-seal-recovery1-launch.json)
+records the original authority, now exhausted by this execution failure.
 
 The old control remains ABORTED with 625 outputs, 3,723 model contacts and
 zero official scores. Its worker remains at 9f6a949f. Root verified owner
@@ -81,8 +97,8 @@ Never invent substitute IDs or consume a new attempt without registration.
 
 Use the [fresh recovery registration](../readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1-preregistration.md),
 [package](../readiness/2026-09-25-slurp-stage3-candidate-seal-recovery1-v1/README.md)
-and launch receipt above. Runtime pointers now select the recovery, not the
-prior failed queue. Ordered work is control smoke4/control625/expanded
+and launch receipt above. Runtime pointers still identify the recovery for diagnosis, not permission
+to replay it. Its queue has stopped and the service is absent. Ordered work is control smoke4/control625/expanded
 smoke4/expanded625, with unique step names candidate-seal-recovery1-control-v1
 and candidate-seal-recovery1-expand-v1. The same resident session and geometry
 remain in use. The fifteen-minute slurp monitor stays quiet on unchanged state.
@@ -148,6 +164,7 @@ move that checkout merely to run newer readers.
 | TF-GRPO cross-round consolidation source audit | Seven synthetic exact-source cases; sparse-ID ADD can overwrite prior experience after deletion. Require stable IDs and explicit atomic operations in the future adapter; no runtime change or task claim |
 | Atomic candidate consolidation | Shared ADD/UPDATE/DELETE over existing provisional experience records; immutable revision lineage and all-or-nothing failure; 143 related tests and 9 gates passed. Model-facing semantic stages and real runtime reexecution remain outstanding |
 | Consolidated candidate source replay | Existing materializer, attestation and runtime reader now accept a distinct verified consolidation-chain output. 84 related tests and 9 offline gates pass; connected synthetic native execution reaches Reviewer tool and Solver revision; model-facing semantic stages and real reexecution remain outstanding |
+| Complete-system summary runtime connection | Shared full-source preparation and ORG/request path, configured summary prompt and baseline; 61 related tests and 9 gates pass, with synthetic fit/send and raw artifact-output proof. No real summary generation yet; the existing arm also attaches original speech |
 | Contextual complete-continuation learner | Still outstanding at the real post-Perception/pre-Solver boundary; no learned continuation-selector has run |
 
 Test populations overlap; do not add them into one coverage claim. These are
@@ -164,10 +181,34 @@ for contracts and proof receipts. Read the new
 for the source-replay connection and its exact test boundary. Raw task answers
 stay outside Git.
 
+## Whole-system summary runtime connection
+
+The model-facing summary input now has a shared preparation/loader/baseline
+path. Read the [runtime contract](../readiness/2026-09-25-system-summary-shared-runtime.md).
+It re-verifies the full frozen TRAIN source, retains all role/tool/revision/
+delivery content and feeds the existing ORG serializer, controller, OpenJiuwen,
+actual request fitting and raw artifact output. No new research model/scorer
+contact or generation-worker change occurred.
+
+The shared artifact arm also attaches original sample speech. Register that
+exposure as a multimodal adaptation, or implement and verify a governed
+text-only route before claiming the upstream text-only summary protocol.
+The summary context contains no scores or reference answers, though the source
+bundle verifier checks score-file integrity. This connection is not a complete
+executed TF-GRPO cycle. Semantic group comparison, typed proposals, model-side
+consolidation and frozen reexecution are still required.
+
+Optimize coordinated complete policies and use terminal task return. Local
+role improvements remain diagnostics until they survive full delivery and
+matched replication. Resolve disjoint TRAIN memory-use scheduling before
+multi-round registration; never self-apply provisional experience silently.
+
 ## Next algorithm boundary
 
-1. Finish and interpret the current whole-system pair under its registered
-   rule. Root personally owns attribution and scientific decisions.
+1. Preserve the execution-closed incomplete pair and diagnose the CUDA/host
+   failure. It has no comparative effectiveness verdict. Do not read isolated
+   control quality or automatically replay the failed expanded attempt.
+   Root personally owns any new registration and scientific interpretation.
 2. Admit a small, explicit space of coordinated complete continuations from
    terminal evidence. A Solver branch score is not a system return.
 3. Put each decision at a boundary where its state is actually available.
