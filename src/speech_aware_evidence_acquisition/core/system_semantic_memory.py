@@ -65,7 +65,7 @@ def parse_batch_operations(raw_text, document, anchor):
 def synthesize_records(operations, document, *, manifest_sha, protocol_sha, response_sha, config_sha):
     """Assign provenance to new model content from exact composite source groups."""
     groups = {row["label"]: row for row in document["source_groups"]}
-    full_sha = document["source_construction_roster_sha256"]
+    full_sha = document["base_snapshot"]["train_construction_sha256"]
     records, plan = {}, []
     decision_sha = content_hash({"materialization_config_sha256": config_sha,
                                  "operations_sha256": content_hash(operations), "admission": "none"})
@@ -144,7 +144,8 @@ def prepare_system_semantic_memory(*, config_path, expected_config_sha256, data_
             producer=lambda: rejection,
             contact_class="model-free")
         raise materialization.MaterializationError(f"semantic batch rejected; retained at {refusal['path']}: {error}") from error
-    full_sha = document["source_construction_roster_sha256"]
+    full_sha = document["base_snapshot"]["train_construction_sha256"]
+    memory_ids = document.get("memory_construction", {}).get("sample_ids", document["full_construction_sample_ids"])
     output = {
         "schema": OUTPUT_SCHEMA, "status": "provisional", "materialization_id": config["materialization_id"],
         "provenance": {
@@ -153,7 +154,7 @@ def prepare_system_semantic_memory(*, config_path, expected_config_sha256, data_
             "group_operation_report_sha256": document["group_operation_report"]["content_sha256"],
             "proposal_artifact_sha256": proposed["sha256"]},
         "samples": [{"source_sample_id": sid, "records": [r for r in snapshot["records"]
-                     if r["source"]["source_sample_id"] == sid]} for sid in document["full_construction_sample_ids"]],
+                     if r["source"]["source_sample_id"] == sid]} for sid in memory_ids],
         "candidate_snapshot": snapshot, "consolidation_receipts": [receipt],
         "interpretation": "Model-synthesized provisional content, not validation or runtime admission.",
     }

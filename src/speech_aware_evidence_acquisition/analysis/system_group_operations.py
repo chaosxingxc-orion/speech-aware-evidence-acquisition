@@ -82,5 +82,6 @@ def read_system_group_operations(manifest_pin, *, repo_root, data_root):
         "runtime_authorized": False, "model_contacts_added": 0, "scorer_contacts_added": 0,
         "claim_boundary": "Provisional operation proposals; batch consolidation and typed source materialization remain required.",
     }
+    report.update({k: document[k] for k in ("memory_construction", "round_policy_receipt") if k in document})
     report["content_sha256"] = content_hash(report)
     return report

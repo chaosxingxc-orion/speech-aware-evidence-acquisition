@@ -271,6 +271,39 @@ truncate or select a subset. A new explicit adaptation would be needed if
 the real batch does not fit. No GPU service was restarted, no isolated control
 quality was read, and no RL benefit is established.
 
+## Disjoint system-update round continuation
+
+CPU implementation checkpoint: 2026-09-26T03:16:31.010177+00:00.
+The [round contract](../readiness/2026-09-26-system-update-round-runtime.md)
+separates the sampled frozen memory, current actor cohort and cumulative
+construction exposure. The explicit v2 path verifies actual sealed actor
+identities/configurations and the full ordered memory pool against the round
+contract. It preserves old record bytes and provenance while adding a disjoint
+cohort. Deleted guidance never erases exposure. A connected synthetic run
+reaches Reviewer memory-tool use, Solver revision and final delivery; a
+subsequent attempt to evaluate a deleted record's source sample is refused.
+
+377 targeted tests, Ruff and all nine offline gates passed. The three measured modules have 99%
+combined branch-inclusive coverage; the new actor-round verifier has 100%.
+Read the linked validation receipt for offline gate results and substitutions.
+This is not real capacity, model usefulness, prospective authorization or an
+executed RL round. Contract membership proves neither semantic memory use nor
+sampling from a common stochastic policy.
+
+The metadata audit found R01C625, Fold A1080 and Fold B1080 mutually disjoint
+by sample and utterance. R01 has only 175 samples outside R01C, too few for the
+required paired effectiveness claim. A proposed forward schedule uses R01C
+for M1 construction, A for M2 construction and B for frozen M1/M2/default/fixed
+comparison and matched replication. All are historically exposed. This is an
+explicit disjoint-round adaptation, not unchanged repeated-cohort TF-GRPO.
+The schedule is not registered: knowledge exclusions, final configuration
+bindings, complete sampling protocol and contact bounds remain to be closed.
+
+Next finish those concrete admission inputs, then execute real semantic update
+and full-system evaluation when the GPU fault is resolved. Do not extend the
+closed candidate recovery, read its isolated control quality, or open DEV6570/
+test13078. No research contacts, source worker, queue, STOP or service changed.
+
 ## Whole-system summary runtime connection
 
 The model-facing summary input now has a shared preparation/loader/baseline

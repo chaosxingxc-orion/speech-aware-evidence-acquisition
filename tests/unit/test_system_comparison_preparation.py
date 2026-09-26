@@ -25,6 +25,8 @@ def comparison_world(summary_world, monkeypatch):  # noqa: F811
     for i in range(2):
         value = copy.deepcopy(actor)
         value.plan.run_id = f"actor-{i}"
+        value.plan.protocol_hash = "a"*64
+        value.bundle.manifest["study_commit"] = "b"*40
         report = materialize_semantic_trajectories(value, round_id="round-1")
         episode = report["episodes"][0]
         sid = value.sample_ids[0]
@@ -83,7 +85,7 @@ def comparison_world(summary_world, monkeypatch):  # noqa: F811
                "members": members, "comparison_roster": base_binding["construction_roster"]}
     source_pin = pin(data, "comparison-source.json", binding)
     return dict(data=data, actor=actor, binding=binding, source_pin=source_pin, summaries=summaries,
-                feedbacks=feedbacks, groups=groups, calls=calls)
+                feedbacks=feedbacks, groups=groups, calls=calls, actors=actors)
 
 
 def prepared(world):

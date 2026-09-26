@@ -1,0 +1,268 @@
+{
+  "schema": "saea-system-update-round-validation-v1",
+  "checked_at": "2026-09-26T03:18:49.147554+00:00",
+  "parent_commit": "7a9493e6c117786570733098a3bac62993e82b87",
+  "environment": "WSL Ubuntu-24.04; /home/chao/.venvs/speechrl/bin/python; explicit checkout PYTHONPATH",
+  "tests": {
+    "passed": 377,
+    "skipped": 0,
+    "files": [
+      "tests/unit/test_system_summary_source.py",
+      "tests/unit/test_system_semantic_comparison.py",
+      "tests/unit/test_system_comparison_preparation.py",
+      "tests/unit/test_system_summary_preparation.py",
+      "tests/unit/test_system_semantic_feedback.py",
+      "tests/unit/test_system_rollout_groups.py",
+      "tests/unit/test_system_semantic_trajectory.py",
+      "tests/unit/test_system_feedback.py",
+      "tests/unit/test_system_trajectory.py",
+      "tests/unit/test_prepared_feedback.py",
+      "tests/unit/test_prepared_feedback_runtime.py",
+      "tests/unit/test_prepared_feedback_serialization.py",
+      "tests/unit/test_artifact_result_kind.py",
+      "tests/unit/test_system_group_update.py",
+      "tests/unit/test_system_group_operations.py",
+      "tests/unit/test_experience_consolidation.py",
+      "tests/unit/test_provisional_candidate_materialization.py",
+      "tests/unit/test_provisional_candidate_consolidation.py",
+      "tests/unit/test_candidate_experience_memory.py",
+      "tests/unit/test_system_batch_update.py",
+      "tests/unit/test_system_semantic_memory.py",
+      "tests/unit/test_training_feedback_artifacts.py",
+      "tests/unit/test_experience_construction_scope.py",
+      "tests/unit/test_system_update_round.py"
+    ],
+    "log": "/home/chao/system-round-scope-validation-v1/tests-final.log",
+    "sha256": "f39f9521baa4f4ce629f5673321f9501d9dc05180554516eee48a01d6cfe2b3a"
+  },
+  "coverage": {
+    "scope": "analysis.system_update_round, rails.experience_consolidation, rails.system_group_update_context only, including branches",
+    "combined_percent_rounded": 99,
+    "round_verifier_percent": 100,
+    "log": "/home/chao/system-round-scope-validation-v1/coverage.log",
+    "sha256": "ad760ee522ab7d3cf51fbb25534a1d9baebb151c1c89da6252695090dd598cf1"
+  },
+  "lint": {
+    "result": "passed",
+    "files": [
+      "src/speech_aware_evidence_acquisition/analysis/system_update_round.py",
+      "src/speech_aware_evidence_acquisition/analysis/system_group_operations.py",
+      "src/speech_aware_evidence_acquisition/rails/experience_consolidation.py",
+      "src/speech_aware_evidence_acquisition/rails/system_group_update_context.py",
+      "src/speech_aware_evidence_acquisition/rails/system_batch_update_context.py",
+      "src/speech_aware_evidence_acquisition/core/system_semantic_memory.py",
+      "src/speech_aware_evidence_acquisition/rails/candidate_experience_memory.py",
+      "tests/unit/test_system_comparison_preparation.py",
+      "tests/unit/test_experience_construction_scope.py",
+      "tests/unit/test_system_update_round.py"
+    ],
+    "log": "/home/chao/system-round-scope-validation-v1/lint.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "gates": [
+    {
+      "check": "engineering_base",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-scope-validation-v1/engineering_base.log",
+      "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "check": "harness_admission",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-scope-validation-v1/harness_admission.log",
+      "sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+    },
+    {
+      "check": "results_ledger",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-scope-validation-v1/results_ledger.log",
+      "sha256": "ec9367bbd838063e612f82f2497a4e042f439e1b778d78d55e5f4c6117904d6f"
+    },
+    {
+      "check": "tool_catalog",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-scope-validation-v1/tool_catalog.log",
+      "sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+    },
+    {
+      "check": "experiment_handoff",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-scope-validation-v1/experiment_handoff.log",
+      "sha256": "f240db74d77074252dd552bd7bfe35cd3c7a880f80d46466c82bb617d0c6f2ff"
+    },
+    {
+      "check": "openjiuwen_native_reuse",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-scope-validation-v1/openjiuwen_native_reuse.log",
+      "sha256": "983dfabec17ba1df03f3b623c0fb788e12c2b35de21622d04454d8d48d6259d9",
+      "output": "/home/chao/system-round-scope-validation-v1/native-proof.json"
+    },
+    {
+      "check": "derived_media_confinement",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-scope-validation-v1/derived_media_confinement.log",
+      "sha256": "2579c14f85a9e04620bd281ee36dec27513d7158b0a4b6bf6f52291ebdc073c9",
+      "output": "/home/chao/system-round-scope-validation-v1/derived-media-proof"
+    },
+    {
+      "check": "stage3_algorithm_label",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-scope-validation-v1/stage3_algorithm_label.log",
+      "sha256": "772a0ea23eb2cbd08e1649908f386c524c8a78941bf58e74e26004da7cf524ca"
+    },
+    {
+      "check": "finite_completion_policy",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-scope-validation-v1/finite_completion_policy.log",
+      "sha256": "20bc3dc18154a13c2956dd6455da6de859f1e724b864fd06bcaec02b0734cc22"
+    }
+  ],
+  "gates_state": "passed",
+  "existing_train_roster_metadata_audit": {
+    "schema": "saea-existing-train-roster-overlap-audit-v1",
+    "read_scope": "Existing TRAIN roster metadata only; no task outcomes, labels, DEV or test read.",
+    "rosters": [
+      {
+        "name": "slurp-stage3-construction-r01.json",
+        "sha256": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0",
+        "count": 800,
+        "roster_role": "construction",
+        "split_role": "discovery",
+        "all_train": true,
+        "utterance_identity_available": true
+      },
+      {
+        "name": "slurp-stage3-construction-r01c.json",
+        "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd",
+        "count": 625,
+        "roster_role": "construction",
+        "split_role": "discovery",
+        "all_train": true,
+        "utterance_identity_available": true
+      },
+      {
+        "name": "slurp-evo-fold-a-v2.json",
+        "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+        "count": 1080,
+        "roster_role": "construction",
+        "split_role": "discovery",
+        "all_train": true,
+        "utterance_identity_available": true
+      },
+      {
+        "name": "slurp-evo-fold-b-v2.json",
+        "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+        "count": 1080,
+        "roster_role": "construction",
+        "split_role": "discovery",
+        "all_train": true,
+        "utterance_identity_available": true
+      }
+    ],
+    "pairwise": [
+      {
+        "first": "slurp-stage3-construction-r01.json",
+        "second": "slurp-stage3-construction-r01c.json",
+        "sample_overlap": 625,
+        "utterance_overlap": 625
+      },
+      {
+        "first": "slurp-stage3-construction-r01.json",
+        "second": "slurp-evo-fold-a-v2.json",
+        "sample_overlap": 0,
+        "utterance_overlap": 0
+      },
+      {
+        "first": "slurp-stage3-construction-r01.json",
+        "second": "slurp-evo-fold-b-v2.json",
+        "sample_overlap": 0,
+        "utterance_overlap": 0
+      },
+      {
+        "first": "slurp-stage3-construction-r01c.json",
+        "second": "slurp-evo-fold-a-v2.json",
+        "sample_overlap": 0,
+        "utterance_overlap": 0
+      },
+      {
+        "first": "slurp-stage3-construction-r01c.json",
+        "second": "slurp-evo-fold-b-v2.json",
+        "sample_overlap": 0,
+        "utterance_overlap": 0
+      },
+      {
+        "first": "slurp-evo-fold-a-v2.json",
+        "second": "slurp-evo-fold-b-v2.json",
+        "sample_overlap": 0,
+        "utterance_overlap": 0
+      }
+    ],
+    "launch_authority": false
+  },
+  "proof_boundaries": [
+    "Synthetic sealed actor and official-count fixtures substitute original bundle/scorer readers; no research task outcomes read.",
+    "Prior candidate source replay and the offline actor memory loader are substituted in the multi-round fixture. The contract checks actual fixture source identities and memory-pool hashes.",
+    "Scope extension, old record preservation, cumulative snapshot validation, shared atomic consolidation, prepared-text reconstruction, semantic materialization and source attestation use production implementations.",
+    "The connected native runtime uses the production candidate-memory loader, real shared preflight/Reviewer tool/Solver revision/delivery dispatch and a simulated answering transport.",
+    "Deleting an old record retains its source in cumulative exposure; a subsequent actual runtime load with that source in the evaluation roster is refused.",
+    "Registered membership and available memory are not proof of semantic use, on-policy sampling, common actor policy or registration before contact.",
+    "Existing v1 paths remain covered. Preparation implementation hashes change; historical receipts are not rewritten.",
+    "The initial added deletion regression failed because it attempted to overwrite an immutable synthetic roster. It was corrected to write and pin a distinct roster, without weakening the production restriction."
+  ],
+  "remaining": [
+    "Freeze the actual complete-system sampling policy, group size, stochastic settings and prospective round contract; do not substitute Solver-only samples.",
+    "Audit knowledge exclusion and preparation bindings for the proposed historically exposed R01C/Fold A/Fold B schedule, then register role-specific receipts and whole contact bounds.",
+    "Measure real full-batch capacity and execute sampling, feedback, semantic updates, frozen full-system comparison and matched replication.",
+    "Diagnose the CUDA/host failure before new GPU authority. Preserve the closed recovery and isolated control quality-read embargo."
+  ],
+  "model_contacts_added": 0,
+  "tokenizer_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "runtime_authorized": false,
+  "rl_benefit_established": false,
+  "implementation_and_tests": {
+    "src/speech_aware_evidence_acquisition/analysis/system_update_round.py": "aa9967ffca58ce5402db8526180c38697c8387773e9c8849aa8bb0d01ec9e0f1",
+    "src/speech_aware_evidence_acquisition/analysis/system_group_operations.py": "aa7fd16fec7d9c689872771ddd07dfec93be972fe07ba39430b2824a95f6375d",
+    "src/speech_aware_evidence_acquisition/rails/experience_consolidation.py": "ace3d508d18c4b27f56b9ba06f6fc5c6a8825a8d97f8897079a3b55e564caf7a",
+    "src/speech_aware_evidence_acquisition/rails/system_group_update_context.py": "e4dc8efb68db7926aafaeeac0af0026da1c753d238a9b0c2893821165b5062e4",
+    "src/speech_aware_evidence_acquisition/rails/system_batch_update_context.py": "4978a16842af91895938fb193fd0aea263d82e68d733c2ee19fcd88b8cf8110b",
+    "src/speech_aware_evidence_acquisition/core/system_semantic_memory.py": "38222ec2fdc6860426cad65e310f3b131fd1ae55bf6f852421980e70f132a8bd",
+    "src/speech_aware_evidence_acquisition/rails/candidate_experience_memory.py": "b20b1e0b0d9f89ac82a3ec202c54094f14a4d39e9a5f5b41edc8b3a8f14c249c",
+    "tests/unit/test_system_comparison_preparation.py": "1f3af241c6eea3de57009de092668218d51156f94a3360c545a30ca4f40c73ad",
+    "tests/unit/test_experience_construction_scope.py": "33c38c7765a248c7f517aa4ac392a85a745b675236e0831d206dfa1bdb1ea1db",
+    "tests/unit/test_system_update_round.py": "2875a0b8bd046ad2c0a239c9270f34776c5936087b4a6e7a3fb83c8d8db8fd35"
+  },
+  "gate_limits": [
+    "Results ledger retains 104 historical cross-check findings; none is changed here.",
+    "Handoff gate has no errors and warns about newer HEAD and implementation changes; it grants no launch authority.",
+    "Native reuse and derived-media proofs were written to new external paths; historical receipts were not overwritten.",
+    "No new experiment fragment, exposure registration or GPU attempt is introduced."
+  ],
+  "closed_flight_preservation": [
+    {
+      "path": "/home/chao/batch-queue.json",
+      "sha256": "2c5878b3f954e476549d0116a61585b21c355dab811f11c3c1c3aeedcb718177",
+      "matches_failure_receipt": true
+    },
+    {
+      "path": "/home/chao/batch-status.jsonl",
+      "sha256": "f95c5637b4db7cf08b960cd3bb03c26c759d50dd2590ed55dc99bed6c7ff3df8",
+      "matches_failure_receipt": true
+    },
+    {
+      "path": "/home/chao/batch-STOP",
+      "sha256": "afb16b9e77905b1889f366a1a23a465575d8a31bbbf4c25745bdc732cf9c07c2",
+      "matches_failure_receipt": true
+    },
+    {
+      "path": "/home/chao/batch-smoke-2-worker.log",
+      "sha256": "b8a9533af5061c2a898d90d4a65a9b2b66736fb4fee9c6559b26a6809ffee1b7",
+      "matches_failure_receipt": true
+    }
+  ],
+  "frozen_worker": {
+    "path": "/home/chao/saea-worktrees/codex-stage3-continuation-20260925",
+    "commit": "60d5719728f7a79f374000bcbd742508785c9894",
+    "changed": false
+  }
+}

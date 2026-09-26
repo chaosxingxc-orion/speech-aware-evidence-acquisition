@@ -15,6 +15,7 @@ from .experience_memory import ExperienceMemoryError, ExperienceRecord
 from .hashing import content_hash
 
 SNAPSHOT_SCHEMA = "saea-candidate-experience-snapshot-v1"
+SCOPED_SNAPSHOT_SCHEMA = "saea-candidate-experience-snapshot-v2"
 RECEIPT_SCHEMA = "saea-experience-consolidation-receipt-v1"
 _SOURCE_KEYS = {
     "complete_system_feedback_sha256", "proposal_artifact_sha256",
@@ -46,12 +47,16 @@ def _signed(value):
     return {**value, "content_sha256": content_hash(value)}
 
 
-def _candidate(record, construction, roster):
+def _candidate(record, construction, roster, scopes=None):
     _require(isinstance(record, ExperienceRecord), "proposal must be an ExperienceRecord")
     record.validate()
     _require(record.validation.status == "provisional"
              and record.superseded_by_record_id is None,
              "only active provisional experience is eligible")
+    if scopes is not None:
+        _require(record.train_construction_sha256 in scopes, "proposal has an unknown construction scope")
+        construction = record.train_construction_sha256
+        roster = frozenset(scopes[construction])
     _require(record.train_construction_sha256 == construction
              and record.validation.roster_sha256 == construction,
              "proposal construction binding differs")
@@ -63,10 +68,10 @@ def _candidate(record, construction, roster):
              "proposal support and contradiction must remain TRAIN-only")
 
 
-def _records(records, construction, roster):
+def _records(records, construction, roster, scopes=None):
     seen_ids, seen_semantics = set(), set()
     for record in records:
-        _candidate(record, construction, roster)
+        _candidate(record, construction, roster, scopes)
         _require(record.record_id not in seen_ids, "duplicate active record identity")
         _require(record.semantic_hash() not in seen_semantics,
                  "duplicate active experience content")
@@ -107,10 +112,13 @@ def _load_snapshot(snapshot):
         "schema", "scope", "memory_id", "train_construction_sha256", "train_sample_ids",
         "parent_snapshot_sha256", "records", "issued_record_ids", "content_sha256",
     }
+    scoped = snapshot.get("schema") == SCOPED_SNAPSHOT_SCHEMA
+    if scoped:
+        expected.add("construction_scopes")
     _require(set(snapshot) == expected, "snapshot fields differ")
     unsigned = {k: v for k, v in snapshot.items() if k != "content_sha256"}
     _require(snapshot["content_sha256"] == content_hash(unsigned), "snapshot fingerprint differs")
-    _require(snapshot["schema"] == SNAPSHOT_SCHEMA
+    _require(snapshot["schema"] in {SNAPSHOT_SCHEMA, SCOPED_SNAPSHOT_SCHEMA}
              and snapshot["scope"] == "provisional-construction-only", "snapshot scope differs")
     _text(snapshot["memory_id"], "memory ID")
     construction = _sha(snapshot["train_construction_sha256"], "construction")
@@ -122,16 +130,66 @@ def _load_snapshot(snapshot):
                  and all(isinstance(s, str) and s.strip() for s in values),
                  f"{name} is malformed")
         _require(values == sorted(set(values)), f"{name} must be sorted and unique")
+    scopes = None
+    if scoped:
+        scopes = snapshot["construction_scopes"]
+        _require(isinstance(scopes, Mapping) and scopes.get(construction) == roster,
+                 "cumulative construction scope differs")
+        for sha, ids in scopes.items():
+            _sha(sha, "source construction scope")
+            _require(isinstance(ids, list) and ids and all(isinstance(s, str) and s for s in ids)
+                     and ids == sorted(set(ids)) and set(ids) <= set(roster),
+                     "source construction scope is outside cumulative exposure")
     _require(isinstance(snapshot["records"], list), "snapshot records must be a list")
     try:
         records = tuple(ExperienceRecord.from_json(value) for value in snapshot["records"])
-        _records(records, construction, frozenset(roster))
+        _records(records, construction, frozenset(roster), scopes)
     except ExperienceMemoryError as error:
         raise ConsolidationError(str(error)) from error
     _require(all(record.record_id in issued
                  and (record.supersedes_record_id is None or record.supersedes_record_id in issued)
                  for record in records), "snapshot lost issued record identities")
     return records
+
+
+
+def extend_candidate_construction(snapshot, *, round_construction_sha256, round_sample_ids,
+                                  cumulative_construction_sha256, cumulative_sample_ids):
+    """Extend verified exposure; do not rebase old records or authorize self-application.
+
+    The caller verifies the roster files and frozen predecessor. This pure
+    operation checks set semantics and preserves every previously issued ID.
+    """
+    _load_snapshot(snapshot)
+    current_sha = _sha(round_construction_sha256, "round construction")
+    cumulative_sha = _sha(cumulative_construction_sha256, "cumulative construction")
+    _require(not isinstance(round_sample_ids, (str, bytes)), "round roster must be a sequence")
+    current = tuple(round_sample_ids)
+    _require(current and all(isinstance(s, str) and s.strip() for s in current),
+             "round roster is empty or malformed")
+    _require(len(current) == len(set(current)), "round roster is duplicated")
+    old = set(snapshot["train_sample_ids"])
+    _require(not old & set(current), "round construction and previous exposure overlap")
+    _require(not isinstance(cumulative_sample_ids, (str, bytes)), "cumulative roster must be a sequence")
+    cumulative = tuple(cumulative_sample_ids)
+    _require(all(isinstance(s, str) and s.strip() for s in cumulative)
+             and len(cumulative) == len(set(cumulative))
+             and set(cumulative) == old | set(current),
+             "cumulative exposure must be the exact prior/current union")
+    scopes = copy.deepcopy(snapshot.get("construction_scopes", {
+        snapshot["train_construction_sha256"]: snapshot["train_sample_ids"]}))
+    for sha, ids in ((current_sha, sorted(current)), (cumulative_sha, sorted(cumulative))):
+        _require(sha not in scopes or scopes[sha] == ids, "construction scope hash aliases a different roster")
+        scopes[sha] = ids
+    result = _signed({
+        **{k: copy.deepcopy(v) for k, v in snapshot.items() if k != "content_sha256"},
+        "schema": SCOPED_SNAPSHOT_SCHEMA,
+        "parent_snapshot_sha256": snapshot["content_sha256"],
+        "train_construction_sha256": cumulative_sha, "train_sample_ids": sorted(cumulative),
+        "construction_scopes": scopes,
+    })
+    _load_snapshot(result)
+    return result
 
 
 def consolidate_experience_candidates(
@@ -187,7 +245,7 @@ def consolidate_experience_candidates(
         construction = snapshot["train_construction_sha256"]
         roster = frozenset(snapshot["train_sample_ids"])
         for proposal in proposals.values():
-            _candidate(proposal, construction, roster)
+            _candidate(proposal, construction, roster, snapshot.get("construction_scopes"))
             _require(proposal.revision == 1, "use unmodified materialized proposal roots")
         active = {record.record_id: record for record in records}
         base_ids = frozenset(active)
@@ -237,7 +295,7 @@ def consolidate_experience_candidates(
                 "old_record_id": target, "new_record_id": new_id,
                 "proposal_id": operation.get("proposal_id"),
             })
-        _records(tuple(active.values()), construction, roster)
+        _records(tuple(active.values()), construction, roster, snapshot.get("construction_scopes"))
         if not applied:
             successor, status = copy.deepcopy(snapshot), "unchanged"
         else:

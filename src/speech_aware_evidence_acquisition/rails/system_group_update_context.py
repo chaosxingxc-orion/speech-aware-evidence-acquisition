@@ -10,7 +10,7 @@ from ..analysis.prepared_text_source import verify_prepared_text_source
 from ..core.preparation import hash_stable_file, load_artifact, prepare_artifact
 from ..core.provisional_candidate_materialization import prepare_provisional_candidates, ARTIFACT_KIND
 from ..core.roster import verify_roster
-from .experience_consolidation import initialize_candidate_snapshot, _load_snapshot
+from .experience_consolidation import initialize_candidate_snapshot, _load_snapshot, extend_candidate_construction
 from .experience_memory import ExperienceRecord
 from .hashing import content_hash
 from .prepared_feedback import (
@@ -20,6 +20,7 @@ from .prepared_feedback import (
 from .system_comparison_context import PREPARED_COMPARISON_SCHEMA, build_system_comparison_contexts
 
 SOURCE_SCHEMA = "saea-system-group-update-source-v1"
+ROUND_SOURCE_SCHEMA = "saea-system-group-update-source-v2"
 PREPARED_SCHEMA = "saea-prepared-system-group-update-v1"
 KIND = "system-group-update-contexts"
 
@@ -59,7 +60,7 @@ def _roster(pin, data, name):
     return ids, sha
 
 
-def _base_memory(binding, data, full_ids, full_sha):
+def _base_memory(binding, data, full_ids, full_sha, *, same_population=True):
     pin = binding["base_memory"]
     memory_id = binding["memory_id"]
     _require(isinstance(memory_id, str) and bool(memory_id.strip()), "memory ID must be nonempty")
@@ -81,22 +82,24 @@ def _base_memory(binding, data, full_ids, full_sha):
     _require(Path(result["path"]).resolve() == path and result["sha256"] == artifact_sha,
              "base memory differs from replayed source")
     output = load_artifact(path, expected_sha256=artifact_sha, kind=ARTIFACT_KIND, inputs=wrapper["inputs"])
-    _require(output["provenance"]["construction_roster_sha256"] == full_sha
-             and [s["source_sample_id"] for s in output["samples"]] == full_ids,
-             "base memory construction must cover the full source population")
+    source_sha = output["provenance"]["construction_roster_sha256"]
+    source_ids = [s["source_sample_id"] for s in output["samples"]]
+    if same_population:
+        _require(source_sha == full_sha and source_ids == full_ids,
+                 "base memory construction must cover the full source population")
     if "candidate_snapshot" in output:
         snapshot = output["candidate_snapshot"]
         _load_snapshot(snapshot)
     else:
         snapshot = initialize_candidate_snapshot(
-            memory_id=memory_id, train_construction_sha256=full_sha,
-            expected_train_sample_ids=full_ids,
+            memory_id=memory_id, train_construction_sha256=source_sha,
+            expected_train_sample_ids=source_ids,
             records=tuple(ExperienceRecord.from_json(rec)
                           for sample in output["samples"] for rec in sample["records"]))
     _require(snapshot["content_sha256"] == pin["snapshot_sha256"]
              and snapshot["memory_id"] == memory_id
-             and snapshot["train_construction_sha256"] == full_sha
-             and snapshot["train_sample_ids"] == sorted(full_ids),
+             and snapshot["train_construction_sha256"] == source_sha
+             and snapshot["train_sample_ids"] == sorted(source_ids),
              "frozen base snapshot identity differs")
     return snapshot
 
@@ -113,10 +116,14 @@ def build_system_group_update_contexts(source_pin, *, data_root):
 
 def _build(source_pin, data):
     binding, binding_sha = _read_pinned_json(source_pin, data_root=data, field="group update source")
-    _require(isinstance(binding, Mapping) and set(binding) == {
-        "schema", "comparison_manifest", "comparison_repo_root", "source_construction_roster",
-        "update_roster", "memory_id", "base_memory",
-    } and binding["schema"] == SOURCE_SCHEMA, "group update source fields differ")
+    _require(isinstance(binding, Mapping), "group update source must be an object")
+    scoped = binding.get("schema") == ROUND_SOURCE_SCHEMA
+    fields = {"schema", "comparison_manifest", "comparison_repo_root", "source_construction_roster",
+              "update_roster", "memory_id", "base_memory"}
+    if scoped:
+        fields |= {"round_policy", "cumulative_construction_roster"}
+    _require(set(binding) == fields and binding["schema"] in {SOURCE_SCHEMA, ROUND_SOURCE_SCHEMA},
+             "group update source fields differ")
     repo = binding["comparison_repo_root"]
     _require(isinstance(repo, str) and Path(repo).is_absolute(), "comparison checkout must be absolute")
     source = verify_system_comparisons(binding["comparison_manifest"], repo_root=repo, data_root=data)
@@ -126,7 +133,26 @@ def _build(source_pin, data):
              and [g["sample_id"] for g in report["groups"]] == full_ids,
              "full construction population differs from comparison sources")
     _require(set(source.rows) == set(report["ready_sample_ids"]), "comparison output population differs")
-    snapshot = _base_memory(binding, data, full_ids, full_sha)
+    snapshot = _base_memory(binding, data, full_ids, full_sha, same_population=not scoped)
+    round_fields = {}
+    if scoped:
+        from ..analysis.system_update_round import verify_system_update_round
+        receipt = verify_system_update_round(
+            binding["round_policy"], source, base_memory_pin=binding["base_memory"],
+            base_snapshot=snapshot, sample_ids=full_ids, round_id=report["round_id"], data_root=data)
+        cumulative_ids, cumulative_sha = _roster(binding["cumulative_construction_roster"], data,
+                                                "cumulative construction roster")
+        if binding["base_memory"] is None:
+            _require(cumulative_sha == full_sha and cumulative_ids == full_ids,
+                     "initial cumulative construction must equal the current roster")
+        else:
+            snapshot = extend_candidate_construction(
+                snapshot, round_construction_sha256=full_sha, round_sample_ids=full_ids,
+                cumulative_construction_sha256=cumulative_sha, cumulative_sample_ids=cumulative_ids)
+        round_fields = {
+            "round_policy_receipt": receipt,
+            "memory_construction": {"roster_sha256": cumulative_sha, "sample_ids": cumulative_ids},
+        }
     memory = [{k: copy.deepcopy(record[k]) for k in
                ("record_id", "kind", "diagnosis", "guidance", "limitations", "applicability")}
               for record in snapshot["records"]]
@@ -173,16 +199,16 @@ def _build(source_pin, data):
         "construction_roster_sha256": active_sha, "source_construction_roster_sha256": full_sha,
         "full_construction_sample_ids": full_ids, "round_id": report["round_id"],
         "comparison_manifest_sha256": source.manifest_sha256, "population": population,
-        "base_snapshot": snapshot, "contexts": contexts, "ready_sample_ids": ready,
+        "base_snapshot": snapshot, "contexts": contexts, "ready_sample_ids": ready, **round_fields,
         "model_contacts_added": 0, "scorer_contacts_added": 0,
     }
 
 
 def preparation_inputs(document):
-    from ..analysis import prepared_text_source
+    from ..analysis import prepared_text_source, system_update_round
     from ..core import provisional_candidate_materialization, provisional_candidate_consolidation
     from . import experience_consolidation, system_comparison_context
-    modules = (prepared_text_source, provisional_candidate_materialization,
+    modules = (prepared_text_source, system_update_round, provisional_candidate_materialization,
                provisional_candidate_consolidation, experience_consolidation, system_comparison_context)
     paths = [Path(__file__), *(Path(m.__file__) for m in modules)]
     return {"document_sha256": content_hash(document),

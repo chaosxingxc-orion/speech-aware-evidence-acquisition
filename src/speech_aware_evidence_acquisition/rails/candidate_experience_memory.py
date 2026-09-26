@@ -158,6 +158,19 @@ def _records(output: Mapping[str, object], construction_sha: str) -> tuple[Exper
     samples = output.get("samples")
     if not isinstance(samples, list):
         raise CandidateExperienceMemoryError("candidate artifact samples must be a list")
+    from .experience_consolidation import SCOPED_SNAPSHOT_SCHEMA, _load_snapshot
+    snapshot = output.get("candidate_snapshot")
+    scoped_records = None
+    if isinstance(snapshot, Mapping) and snapshot.get("schema") == SCOPED_SNAPSHOT_SCHEMA:
+        if (not consolidated or provenance.get("source_kind") != "sealed-system-semantic-batch"
+                or snapshot.get("train_construction_sha256") != construction_sha):
+            raise CandidateExperienceMemoryError("cumulative candidate source differs")
+        try:
+            scoped_records = _load_snapshot(snapshot)
+        except ValueError as error:
+            raise CandidateExperienceMemoryError(str(error)) from error
+        if {row.get("source_sample_id") for row in samples} != set(snapshot["train_sample_ids"]):
+            raise CandidateExperienceMemoryError("candidate lost cumulative construction exposure")
     found: list[ExperienceRecord] = []
     seen: set[str] = set()
     for row in samples:
@@ -184,7 +197,7 @@ def _records(output: Mapping[str, object], construction_sha: str) -> tuple[Exper
                 raise CandidateExperienceMemoryError(f"invalid candidate record: {error}") from error
             if (
                 record.validation.status != "provisional"
-                or record.train_construction_sha256 != construction_sha
+                or (scoped_records is None and record.train_construction_sha256 != construction_sha)
                 or record.source.partition_role != "train"
                 or record.source.source_sample_id != sample_id
             ):
@@ -195,6 +208,9 @@ def _records(output: Mapping[str, object], construction_sha: str) -> tuple[Exper
                    and not (semantic and ref == system_group_hash_source_ref(ref.sha256)) for ref in refs):
                 raise CandidateExperienceMemoryError("candidate source reference is not canonical")
             found.append(record)
+    if scoped_records is not None and {r.record_sha256: r.as_json() for r in found} != {
+            r.record_sha256: r.as_json() for r in scoped_records}:
+        raise CandidateExperienceMemoryError("candidate records differ from cumulative snapshot")
     hashes = [record.record_sha256 for record in found]
     if len(hashes) != len(set(hashes)):
         raise CandidateExperienceMemoryError("candidate record hashes must be unique")

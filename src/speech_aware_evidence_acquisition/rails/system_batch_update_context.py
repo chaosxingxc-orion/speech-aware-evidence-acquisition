@@ -82,8 +82,10 @@ def _build(source_pin, data):
     _require(full_ids and [g["sample_id"] for g in report["population"]] == full_ids,
              "batch lost full construction population")
     snapshot = report["base_snapshot"]
-    _require(snapshot["train_sample_ids"] == sorted(full_ids)
-             and snapshot["train_construction_sha256"] == report["source_construction_roster_sha256"],
+    memory_scope = report.get("memory_construction", {
+        "sample_ids": full_ids, "roster_sha256": report["source_construction_roster_sha256"]})
+    _require(snapshot["train_sample_ids"] == sorted(memory_scope["sample_ids"])
+             and snapshot["train_construction_sha256"] == memory_scope["roster_sha256"],
              "batch base memory construction differs")
     visible, bindings = [], []
     for group in report["population"]:
@@ -129,6 +131,7 @@ def _build(source_pin, data):
         "source_construction_roster_sha256": report["source_construction_roster_sha256"],
         "full_construction_sample_ids": full_ids, "round_id": report["round_id"],
         "group_operation_report": report, "base_snapshot": snapshot, "source_groups": bindings,
+        **{k: report[k] for k in ("memory_construction", "round_policy_receipt") if k in report},
         "proposal_contract": dict(contract), "max_operations": maximum,
         "contexts": [{"source_sample_id": anchor, "source_feedback_sha256": report["content_sha256"],
                       "model_context": context, "model_context_sha256": content_hash(context)}] if bindings else [],
