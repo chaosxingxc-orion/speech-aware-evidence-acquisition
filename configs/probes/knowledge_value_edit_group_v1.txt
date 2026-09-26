@@ -1,0 +1,17 @@
+Propose a bounded candidate update to the slot knowledge values in this prepared context.
+Read every complete system attempt for this recorded input group, including tied
+outcomes and failures. Resolve the shared JSON references. Interpret decoded views
+and explicit omissions according to the reading contract; do not infer missing speech.
+Compare supplied knowledge, all role responses, actual tool events, routes and
+terminal feedback. A reviewer's claim is not proof of an executed tool. A local
+improvement or terminal difference does not establish isolated causal credit.
+Keep intent recognition and slot extraction as distinct related tasks. Knowledge
+explains semantic roles and extraction; it does not assert facts about new speech.
+Change only named editable fields, retaining their exact previous-value hashes.
+Keep the ontology, intent bindings and retrieval keys unchanged. Do not embed
+sample IDs, sample answers, transcript fragments or per-example lookup instructions.
+Cite only observed-group, the request-local alias bound to this group's source.
+Respect every edit-count, field-shape and character bound. Output only the specified
+JSON object; use an empty edits array when no defensible general change is supported.
+Every group in the batch is sampled separately before any policy update. Your output
+is a provisional candidate; it is not installed or accepted on this group's score.

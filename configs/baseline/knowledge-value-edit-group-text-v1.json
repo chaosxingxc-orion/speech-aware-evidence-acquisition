@@ -1,0 +1,25 @@
+{
+  "arm": "prepared-context-text",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "policy": "phase-knowledge-value-edit-v1",
+  "result_kind": "artifact",
+  "scorers": [],
+  "whole_roster_wave_barrier": true,
+  "phase_material": {
+    "direct": {
+      "instruction_template": "probes/knowledge_value_edit_group_v1.txt",
+      "instruction_fill": null,
+      "predecessor_binding": "none",
+      "response_format_id": "slot-value-edits-v1",
+      "fill_params": {}
+    }
+  },
+  "what_this_is": "One provisional knowledge candidate per complete input group. Bind the verified v2 source, prepared contexts and exact response format in the experiment; update only after the complete batch and full-system evaluation.",
+  "task_instruction": "Analyze only the registered prepared context and follow the current phase instruction. Produce the requested artifact; do not answer the original spoken task. No fresh speech or task knowledge is supplied.",
+  "task_instruction_template": null,
+  "task_instruction_template_active": false,
+  "task_instruction_fill": null,
+  "task_instruction_fill_params": null,
+  "slurp_task_contract_view": "legacy-ontology"
+}

@@ -5,6 +5,34 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Complete-system group contexts ready for knowledge proposal registration
+
+The all-group 1,065,214-byte input remains archived and unfit. Its prospective
+successor uses explicit source v2 and one proposal context per recorded input group,
+including all four groups and all sixteen complete episodes. This changes candidate
+sampling granularity, not the batch update boundary. No group is filtered by score.
+Read docs/readiness/2026-09-26-knowledge-group-proposal-design-v1.md.
+
+The shared event view retains eighty role contacts, thirty-two actual tool records,
+all supplied knowledge bodies, control/delivery events and terminal feedback. Known
+custody/timing fields and card source-support ID lists have explicit source-hashed
+omissions; unknown fields and malformed JSON remain literal. Each context is now
+150,600--157,401 bytes. Byte bounds are NOT tokenizer fit or generation admission.
+The common local evidence alias keeps all proposals on one source-bound output schema.
+
+Preparation and public-loader warm revalidation succeeded. Sixty-eight focused tests,
+100-percent statement coverage for the two affected modules, Ruff and engineering
+checks pass. No model, tokenizer, encoder or scorer contacts occurred. Exact pins are
+in docs/receipts/continuation/2026-09-26-knowledge-group-context-readiness-v1.json.
+The ready-to-register binding recipe is under
+DATA/coordination/slurp-system-knowledge-value001-group-v1/proposal-binding-v1.json.
+
+Next: register full-request fits and four provisional proposal generations through
+the existing prepared-text actor, with fresh guarded np1/48k service identity and
+full output reserve. Then validate/release candidates and compare complete systems
+on the same next registered construction batch; update only after the whole batch.
+No candidate exists yet, no service or queue was started, and no RL gain is claimed.
+
 ## Task knowledge reuse audit: slot view already implemented, not enabled
 
 Read docs/readiness/2026-09-26-task-specific-knowledge-stores-and-views-v4.md first.

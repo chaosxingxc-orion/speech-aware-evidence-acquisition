@@ -181,7 +181,10 @@ def test_terminal_ties_are_retained_without_generation_filter(world):
     assert result["model_contacts_added"] == result["scorer_contacts_added"] == 0
 
 
-def test_exact_fit_and_delivery_use_common_controller_and_openjiuwen(world, tmp_path):
+@pytest.mark.parametrize("per_input", [False, True])
+def test_exact_fit_and_delivery_use_common_controller_and_openjiuwen(
+    world, tmp_path, per_input
+):
     from test_system_summary_preparation import exercise_shared_fit_and_send
     from speech_aware_evidence_acquisition.rails.controllers import (
         default_phase_program,
@@ -191,11 +194,16 @@ def test_exact_fit_and_delivery_use_common_controller_and_openjiuwen(world, tmp_
     )
 
     w = world
+    if per_input:
+        w["source_pin"] = group_source(w)
     spec = prepared(w)
     project = Path(__file__).resolve().parents[2]
-    values = json.loads(
-        (project / "configs/baseline/knowledge-value-edit-text-v1.json").read_text()
+    baseline = (
+        "knowledge-value-edit-group-text-v1"
+        if per_input
+        else "knowledge-value-edit-text-v1"
     )
+    values = json.loads((project / f"configs/baseline/{baseline}.json").read_text())
     values["prepared_training_feedback"] = spec
     values["phase_material"]["direct"]["fill_params"] = {
         "prepared_contexts": copy.deepcopy(spec["artifact"])
@@ -233,3 +241,123 @@ def test_exact_fit_and_delivery_use_common_controller_and_openjiuwen(world, tmp_
         knowledge_edit=True,
         output_text=raw,
     )
+
+
+def group_source(w, maximum=250000):
+    binding = copy.deepcopy(w["binding"])
+    binding.update(
+        schema="saea-knowledge-edit-source-v2",
+        context_view="complete-system-events-per-input-v1",
+        max_context_bytes=maximum,
+    )
+    return pin(w["data"], "group-source.json", binding)
+
+
+def test_group_view_preserves_whole_attempts_and_uses_one_local_evidence_alias(world):
+    w = world
+    result = module.build_knowledge_edit_contexts(group_source(w), data_root=w["data"])
+    context = result["contexts"][0]["model_context"]
+    evidence = restore_json(context["evidence"])
+    assert context["context_view"] == "complete-system-events-per-input-v1"
+    assert evidence["groups"][0]["group_id"] == "observed-group"
+    assert evidence["groups"][0]["source_group_id"] == "g1"
+    assert len(evidence["groups"][0]["attempts"]) == 2
+    assert all(
+        len(a["episode"]["contacts"]) == 5 for a in evidence["groups"][0]["attempts"]
+    )
+    assert context["edit_contract"] == result["edit_contract"]
+    assert set(result["edit_contract"]["evidence_groups"]) == {"observed-group"}
+    assert (
+        evidence["base_slot_rows"][0]["missing_behavior"]
+        == rows()[0]["missing_behavior"]
+    )
+    assert "source_support" not in evidence["base_slot_rows"][0]
+    assert evidence["base_slot_rows"][0]["source_support_binding"]["source_sha256"]
+    assert result["contexts"][0]["source_sample_id"] == w["actor"].sample_ids[0]
+
+
+def test_group_view_is_bounded_by_refusal_not_truncation(world):
+    with pytest.raises(PreparedFeedbackError, match="context byte bound"):
+        module.build_knowledge_edit_contexts(
+            group_source(world, 10), data_root=world["data"]
+        )
+
+
+def test_group_view_retains_ties_and_revalidates_prepared_source(world):
+    w = world
+    for group in w["groups"].values():
+        group["rows"][0]["fp"] = 0
+    w["source_pin"] = group_source(w)
+    spec = prepared(w)
+    states, _ = load_prepared_feedback(
+        spec,
+        repo_root=Path(__file__).resolve().parents[2],
+        data_root=w["data"],
+        sample_ids=w["actor"].sample_ids,
+        construction_roster_sha256=w["binding"]["proposal_roster"]["sha256"],
+        result_kind="artifact",
+        artifact_role="training-feedback-proposal",
+    )
+    context = json.loads(next(iter(states.values())).content)
+    assert len(restore_json(context["evidence"])["groups"][0]["attempts"]) == 2
+    assert (
+        module.prepare_knowledge_edit_contexts(
+            w["source_pin"], w["data"] / "context.json", data_root=w["data"]
+        )["cache"]
+        == "warm"
+    )
+    w["feedbacks"][next(iter(w["feedbacks"]))] = {"changed": True}
+    with pytest.raises(PreparedFeedbackError):
+        module.prepare_knowledge_edit_contexts(
+            w["source_pin"], w["data"] / "context.json", data_root=w["data"]
+        )
+
+
+def test_partition_covers_all_inputs_without_mixing_local_aliases(world):
+    w = world
+    document = module.build_knowledge_edit_contexts(
+        w["source_pin"], data_root=w["data"]
+    )
+    old = document["contexts"][0]["model_context"]
+    evidence = restore_json(old["evidence"])
+    groups = [copy.deepcopy(evidence["groups"][0]) for _ in range(2)]
+    groups[1]["group_id"] = "g2"
+    ids = ["slurp:train:1", "slurp:train:2"]
+    args = (
+        groups,
+        {"g1": ids[0], "g2": ids[1]},
+        ids,
+        evidence["base_slot_rows"],
+        old["edit_contract"],
+        old["feedback_definition"],
+        "a" * 64,
+        250000,
+    )
+    contexts = module._group_contexts(*args)
+    assert [c["source_sample_id"] for c in contexts] == ids
+    for i, context in enumerate(contexts):
+        group = restore_json(context["model_context"]["evidence"])["groups"][0]
+        assert group["group_id"] == "observed-group"
+        assert group["source_group_id"] == f"g{i + 1}"
+        assert len(group["attempts"]) == 2
+    with pytest.raises(PreparedFeedbackError, match="every input group"):
+        module._group_contexts(groups, args[1], ids[:1], *args[3:])
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("context_view", "unknown"),
+        ("max_context_bytes", True),
+        ("max_context_bytes", 0),
+    ],
+)
+def test_group_view_requires_explicit_valid_limits(world, field, value):
+    w = world
+    source = group_source(w)
+    raw = json.loads((w["data"] / source["relpath"]).read_text())
+    raw[field] = value
+    with pytest.raises(PreparedFeedbackError, match="view or byte bound"):
+        module.build_knowledge_edit_contexts(
+            pin(w["data"], "bad-group-source.json", raw), data_root=w["data"]
+        )

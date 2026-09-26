@@ -1,0 +1,88 @@
+{
+  "actual_tool_records": 32,
+  "ancestry_inputs": 8,
+  "complete_episodes": 16,
+  "complete_groups": 4,
+  "contacts_added": {
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "contexts": [
+    {
+      "attempts": 4,
+      "contacts": 20,
+      "context_bytes": 156560,
+      "model_context_sha256": "26b94fccf0ce01d5b368aa0d16ccd06338e5d71ff4cecbac46c993bb449dbfd3",
+      "sample_id": "slurp:train:000282:audio-1502114155",
+      "source_group_id": "g1",
+      "tool_records": 8
+    },
+    {
+      "attempts": 4,
+      "contacts": 20,
+      "context_bytes": 152555,
+      "model_context_sha256": "bcf5a0003efe682cb7cddddb3c9b94bdb80764f8c64da6974de58c60959377b3",
+      "sample_id": "slurp:train:000308:audio-1488905475",
+      "source_group_id": "g2",
+      "tool_records": 8
+    },
+    {
+      "attempts": 4,
+      "contacts": 20,
+      "context_bytes": 157401,
+      "model_context_sha256": "7482e5c0bb8b3c7e9466c3e0614f9a92976fcec624275f757d34ec9009241035",
+      "sample_id": "slurp:train:000309:audio-1490018206",
+      "source_group_id": "g3",
+      "tool_records": 8
+    },
+    {
+      "attempts": 4,
+      "contacts": 20,
+      "context_bytes": 150600,
+      "model_context_sha256": "211f7c1ec4c5268301e783ad54aee4cf1d1968a68be2114cdd287a173bbbefa8",
+      "sample_id": "slurp:train:000351:audio-1499689684",
+      "source_group_id": "g4",
+      "tool_records": 8
+    }
+  ],
+  "limitations": [
+    "Byte bounds are not tokenizer capacity admission.",
+    "Each group produces an independent provisional candidate; this is not a global batch synthesis or a deployed policy update.",
+    "Candidates still need source-bound generation validation, ordinary release and complete-system evaluation before selection.",
+    "All groups must finish before any batch update; old read and actor artifacts remain immutable."
+  ],
+  "max_context_bytes": 200000,
+  "prepared": {
+    "relpath": "coordination/slurp-system-knowledge-value001-group-v1/prepared-contexts-v1.json",
+    "sha256": "f1a865efd70b87fcf960372127d6b081e042c8e70ca205a018cfa7aa1eb5219a"
+  },
+  "proposal_binding": {
+    "relpath": "coordination/slurp-system-knowledge-value001-group-v1/proposal-binding-v1.json",
+    "sha256": "ed619880a61c72065d0f691e19acd8161bb67ad5566ea3d84ded4bfde2c933f8"
+  },
+  "proposal_roster": {
+    "relpath": "coordination/slurp-system-knowledge-value001-group-v1/proposal-roster-v1.json",
+    "sha256": "a357828e4a70a5dd88931af99fd018c4598192fa836fa71aada85491a7ada7bc"
+  },
+  "public_loader_state_count": 4,
+  "recorded_at_utc": "2026-09-26T14:01:55.211093+00:00",
+  "role_contacts": 80,
+  "schema": "saea-knowledge-group-context-readiness-v1",
+  "shared_response_format": true,
+  "source": {
+    "relpath": "coordination/slurp-system-knowledge-value001-group-v1/source-v1.json",
+    "sha256": "2fd3ac7c84373e1661a6153992b2411a97dc6ca1810d14cd15da69adf12133e8"
+  },
+  "status": "PREPARED_NOT_REGISTERED_OR_FIT",
+  "tests": {
+    "context_module_statement_coverage_percent": 100,
+    "engineering_base_check": "PASS",
+    "event_view_statement_coverage_percent": 100,
+    "passed": 68,
+    "ruff": "PASS",
+    "shared_fit_send": "fixture transport through common controller/OpenJiuwen; no endpoint"
+  },
+  "warm_cache": "warm"
+}

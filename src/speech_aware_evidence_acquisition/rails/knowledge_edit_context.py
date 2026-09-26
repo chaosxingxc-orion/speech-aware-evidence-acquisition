@@ -20,6 +20,7 @@ from ..analysis.system_rollout_groups import (
 from ..analysis.system_semantic_trajectory import materialize_semantic_trajectories
 from ..analysis.system_semantic_feedback import prepare_semantic_feedback_groups
 from ..analysis.shared_json import share_json, restore_json
+from ..analysis.system_event_view import VIEW_ID, project_system_events
 from ..core.preparation import hash_stable_file, prepare_artifact, load_artifact
 from .hashing import content_hash
 from .prepared_feedback import (
@@ -37,6 +38,7 @@ from .system_group_update_context import _roster
 from .system_summary_context import _source_path
 
 SOURCE_SCHEMA = "saea-knowledge-edit-source-v1"
+GROUP_SOURCE_SCHEMA = "saea-knowledge-edit-source-v2"
 PREPARED_SCHEMA = "saea-prepared-knowledge-edit-v1"
 DOCUMENT_SCHEMA = "saea-knowledge-edit-contexts-v1"
 KIND = "knowledge-edit-contexts"
@@ -128,22 +130,35 @@ def _build(source_pin, data):
     binding, source_sha = _read_pinned_json(
         source_pin, data_root=data, field="knowledge edit source"
     )
+    per_input = (
+        isinstance(binding, Mapping) and binding.get("schema") == GROUP_SOURCE_SCHEMA
+    )
     _require(
         isinstance(binding, Mapping)
         and set(binding)
-        == {
-            "schema",
-            "round_id",
-            "frozen_f0",
-            "members",
-            "construction_roster",
-            "proposal_roster",
-            "base_authored",
-            "edit_contract",
-        }
-        and binding["schema"] == SOURCE_SCHEMA,
+        == (
+            {
+                "schema",
+                "round_id",
+                "frozen_f0",
+                "members",
+                "construction_roster",
+                "proposal_roster",
+                "base_authored",
+                "edit_contract",
+            }
+            | ({"context_view", "max_context_bytes"} if per_input else set())
+        )
+        and binding["schema"] in {SOURCE_SCHEMA, GROUP_SOURCE_SCHEMA},
         "knowledge edit source fields differ",
     )
+    if per_input:
+        _require(
+            binding["context_view"] == VIEW_ID
+            and type(binding["max_context_bytes"]) is int
+            and binding["max_context_bytes"] > 0,
+            "group context view or byte bound differs",
+        )
     ancestry, ancestry_sha = _roster(
         binding["construction_roster"], data, "cumulative construction"
     )
@@ -151,8 +166,8 @@ def _build(source_pin, data):
         binding["proposal_roster"], data, "proposal anchor"
     )
     _require(
-        len(active_ids) == 1 and set(active_ids) <= set(ancestry),
-        "one construction anchor required",
+        (per_input or len(active_ids) == 1) and set(active_ids) <= set(ancestry),
+        "construction anchors differ from the declared partition",
     )
     members = binding["members"]
     _require(
@@ -236,8 +251,15 @@ def _build(source_pin, data):
         "edit contract differs from full groups, base or cumulative ancestry",
     )
     episodes = {e["content_sha256"]: e for r in reports for e in r["episodes"]}
-    groups = []
+    groups, group_samples = [], {}
     for i, group in enumerate(joined["groups"]):
+        group_id = f"g{i + 1}"
+        sample_ids = {
+            episodes[m["episode_sha256"]]["trajectory"]["sample_id"]
+            for m in group["comparison_feedback"]["members"]
+        }
+        _require(len(sample_ids) == 1, "input group spans different samples")
+        group_samples[group_id] = next(iter(sample_ids))
         attempts = [
             {
                 "terminal_feedback": copy.deepcopy(m),
@@ -247,7 +269,7 @@ def _build(source_pin, data):
         ]
         groups.append(
             {
-                "group_id": f"g{i + 1}",
+                "group_id": group_id,
                 "input_group_sha256": group["input_group_sha256"],
                 "outcome_variation": group["comparison_feedback"]["eligibility"],
                 "attempts": attempts,
@@ -285,6 +307,33 @@ def _build(source_pin, data):
         },
     }
     _canonical_context(context)
+    contexts = [
+        {
+            "source_sample_id": active_ids[0],
+            "source_feedback_sha256": joined["content_sha256"],
+            "model_context": context,
+            "model_context_sha256": content_hash(context),
+        }
+    ]
+    if per_input:
+        contract = slot_value_edit_contract(
+            base["rows"],
+            slot_ids=slots,
+            fields=fields,
+            evidence_groups={"observed-group": ancestry},
+            max_edits=contract["max_edits"],
+            max_field_chars=contract["max_field_chars"],
+        )
+        contexts = _group_contexts(
+            groups,
+            group_samples,
+            active_ids,
+            evidence["base_slot_rows"],
+            contract,
+            context["feedback_definition"],
+            joined["content_sha256"],
+            binding["max_context_bytes"],
+        )
     return {
         "schema": DOCUMENT_SCHEMA,
         "source_bindings_sha256": source_sha,
@@ -295,17 +344,71 @@ def _build(source_pin, data):
         "source_group_sha256": grouped["content_sha256"],
         "edit_contract": contract,
         "feedback_summary": joined["summary"],
-        "contexts": [
-            {
-                "source_sample_id": active_ids[0],
-                "source_feedback_sha256": joined["content_sha256"],
-                "model_context": context,
-                "model_context_sha256": content_hash(context),
-            }
-        ],
+        "contexts": contexts,
         "model_contacts_added": 0,
         "scorer_contacts_added": 0,
     }
+
+
+def _group_contexts(
+    groups, samples, active_ids, rows, contract, feedback, feedback_sha, maximum
+):
+    """Partition only by recorded input identity; include ties and every attempt."""
+    _require(
+        set(samples.values()) == set(active_ids) and len(samples) == len(active_ids),
+        "group proposal roster must cover every input group exactly once",
+    )
+    cards = []
+    for row in rows:
+        card = copy.deepcopy(row)
+        support = card.pop("source_support")
+        card["source_support_binding"] = {
+            "source_sha256": content_hash(support),
+            "entries": len(support),
+            "field": f"base_authored.rows[{row['slot_id']}].source_support",
+            "disposition": "custody-list-omitted; canonical source and full ancestry retained",
+        }
+        cards.append(card)
+    by_sample = {}
+    for group in groups:
+        observed = copy.deepcopy(group)
+        observed["source_group_id"] = group["group_id"]
+        observed["group_id"] = "observed-group"
+        for attempt in observed["attempts"]:
+            attempt["episode"] = project_system_events(attempt["episode"])
+        evidence = {"groups": [observed], "base_slot_rows": cards}
+        shared = share_json(evidence)
+        _require(restore_json(shared) == evidence, "group evidence sharing differs")
+        context = {
+            "stage": "complete-system-knowledge-edit",
+            "context_view": VIEW_ID,
+            "edit_contract": contract,
+            "evidence": shared,
+            "feedback_definition": feedback,
+            "reading_contract": (
+                "This is one recorded input group from a complete batch, not an outcome-selected subset. "
+                "Resolve shared JSON references and read every full-system attempt, including ties. "
+                "Every role response, supplied knowledge body, actual tool result, route and delivery is retained. "
+                "Control/tool-history JSON and wire responses have explicit decoded views, not literal wire copies. "
+                "Only listed custody, timing and source-support lists are omitted; source hashes address originals. "
+                "Unknown fields and malformed JSON remain literal. Speech and gold answers are not supplied. "
+                "Cite only observed-group; its source_group_id and input hash bind this local alias. "
+                "Do not attribute terminal differences causally to a single component. "
+                "Generate a provisional general knowledge candidate or no edit; update no policy within this batch."
+            ),
+        }
+        _require(
+            len(_canonical_context(context).encode("utf-8")) <= maximum,
+            "group proposal exceeds its context byte bound; no truncation permitted",
+        )
+        sample_id = samples[group["group_id"]]
+        by_sample[sample_id] = {
+            "source_sample_id": sample_id,
+            "source_feedback_sha256": feedback_sha,
+            "model_context": context,
+            "model_context_sha256": content_hash(context),
+        }
+    return [by_sample[sample_id] for sample_id in active_ids]
 
 
 def preparation_inputs(document):
@@ -316,6 +419,7 @@ def preparation_inputs(document):
         system_semantic_feedback,
         system_semantic_trajectory,
         shared_json,
+        system_event_view,
     )
     from . import prepared_feedback, semantic_knowledge_edits, semantic_knowledge_build
 
@@ -326,6 +430,7 @@ def preparation_inputs(document):
         system_semantic_feedback,
         system_semantic_trajectory,
         shared_json,
+        system_event_view,
         prepared_feedback,
         semantic_knowledge_edits,
         semantic_knowledge_build,
