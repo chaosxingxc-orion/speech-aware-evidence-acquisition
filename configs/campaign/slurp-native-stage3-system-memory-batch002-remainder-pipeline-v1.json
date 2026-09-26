@@ -1,0 +1,29 @@
+{
+  "schema": "saea-campaign-plan-v1",
+  "cells": [
+    {
+      "experiment": "slurp-native-stage3-system-memory-batch002-memory-s2-run-v1",
+      "cell": "slurp-native-stage3-system-memory-batch002-memory-s2-run-v1"
+    },
+    {
+      "experiment": "slurp-native-stage3-system-memory-batch002-empty-s2-run-v1",
+      "cell": "slurp-native-stage3-system-memory-batch002-empty-s2-run-v1"
+    },
+    {
+      "experiment": "slurp-native-stage3-system-memory-batch002-empty-s3-run-v1",
+      "cell": "slurp-native-stage3-system-memory-batch002-empty-s3-run-v1"
+    },
+    {
+      "experiment": "slurp-native-stage3-system-memory-batch002-memory-s3-run-v1",
+      "cell": "slurp-native-stage3-system-memory-batch002-memory-s3-run-v1"
+    },
+    {
+      "experiment": "slurp-native-stage3-system-memory-batch002-memory-s4-run-v1",
+      "cell": "slurp-native-stage3-system-memory-batch002-memory-s4-run-v1"
+    },
+    {
+      "experiment": "slurp-native-stage3-system-memory-batch002-empty-s4-run-v1",
+      "cell": "slurp-native-stage3-system-memory-batch002-empty-s4-run-v1"
+    }
+  ]
+}
