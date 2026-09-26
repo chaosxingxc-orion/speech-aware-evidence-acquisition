@@ -1,0 +1,27 @@
+{
+  "schema": "saea-flight-execution-plan-v1",
+  "status": "registered-before-contact",
+  "plan_kind": "fit",
+  "experiment": "slurp-stage3-system-batch001-summary-s2-np1-capacity-v1",
+  "cell": "slurp-stage3-system-batch001-summary-s2-np1-capacity-v1",
+  "composed_config_hash": "410ec7afc9143be59f2516f28d53cb5ec5da42c136f35b0cfb499b6ae3a982e2",
+  "execution_plan": {
+    "run_id": "SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S2-NP1-CAPACITY-V1",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
+    "planned_model_calls": 9,
+    "planned_gpu_hours": 0.2,
+    "planned_speech_audio_seconds": 18,
+    "protocol_hash": "2ef59d01d2f8e7f0cad8a03e4483ad3c1bb82b2fa86105361fecbae758111b24",
+    "attempt_id": "attempt-slurp-stage3-system-batch001-summary-s2-np1-capacity-v1",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-26-system-batch001-summary-np1-capacity-v1/protocol.json",
+    "sha256": "d5bd5c3fa9c70b375539ed818ae2a6775efd4b2e4177cb02b2f03e2d544fa05f"
+  },
+  "read_rule": "Read operational capacity metadata only; no semantic output exists."
+}

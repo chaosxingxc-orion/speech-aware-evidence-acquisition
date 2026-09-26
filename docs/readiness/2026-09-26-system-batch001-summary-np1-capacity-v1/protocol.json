@@ -1,0 +1,114 @@
+{
+  "schema": "saea-system-summary-capacity-protocol-v1",
+  "status": "registered-before-contact",
+  "purpose": "Fit every actual full-trajectory summary request before semantic generation.",
+  "stage3_algorithm": "tfgrpo-system-memory-disjoint-v1",
+  "source_index": {
+    "relpath": "coordination/slurp-system-batch001-v1/semantic-wire-v1/index.json",
+    "sha256": "f28d2e06c3850c4602e882a4007a8f8a364148d14c811a14fa42e286a3b91eb1"
+  },
+  "source_worker": "/home/chao/saea-worktrees/codex-system-batch001-20260926",
+  "source_commit": "d56ad054ad06df36b2a2e508ab5e765cc2549085",
+  "service_session": "serving-slurp-system-summary001-np1-v1",
+  "sources": [
+    {
+      "label": "s1",
+      "summary_source": {
+        "relpath": "coordination/slurp-system-batch001-v1/semantic-wire-v1/s1-summary-source.json",
+        "sha256": "f588a2f108559d83a7f93769c0f943d0448f85cfd0d585ccaa232301df225a07"
+      },
+      "summary_contexts": {
+        "relpath": "coordination/slurp-system-batch001-v1/semantic-wire-v1/s1-summary-contexts.json",
+        "sha256": "23c82574eae41aea9ee08e9412d9d5be8491687e78aba6149b4e50a684c0f359"
+      },
+      "context_bytes": [
+        61778,
+        70087,
+        65818,
+        47800
+      ],
+      "source_materialization_sha256": "575ce7ca410dd6a9c0ea9e32d7af30176360fd06d8f986587904f6369f513e6e",
+      "contacts": 16
+    },
+    {
+      "label": "s2",
+      "summary_source": {
+        "relpath": "coordination/slurp-system-batch001-v1/semantic-wire-v1/s2-summary-source.json",
+        "sha256": "0e58948739a0cea9ee5ea8afac57ebfb09e81fdb34592947ef4392d8afaf350a"
+      },
+      "summary_contexts": {
+        "relpath": "coordination/slurp-system-batch001-v1/semantic-wire-v1/s2-summary-contexts.json",
+        "sha256": "3ecb5739905446c5476ee5ff2739bcc97d8837d681d6b22c7c67e7272dc82f9f"
+      },
+      "context_bytes": [
+        75413,
+        72055,
+        66474,
+        51028
+      ],
+      "source_materialization_sha256": "bfb4619b047e57bb5b79b363b7187ac12d88e409c7e8149ad964bd4886df9049",
+      "contacts": 19
+    },
+    {
+      "label": "s3",
+      "summary_source": {
+        "relpath": "coordination/slurp-system-batch001-v1/semantic-wire-v1/s3-summary-source.json",
+        "sha256": "e895f71c0a11da389e3b7569684a6e5d6fe84cef8158f2912ca93ea4fce6b052"
+      },
+      "summary_contexts": {
+        "relpath": "coordination/slurp-system-batch001-v1/semantic-wire-v1/s3-summary-contexts.json",
+        "sha256": "c1a2049d935a14b9b1ef6c5e1f0ae49104bfa61de35a24e74b87795e81f979ed"
+      },
+      "context_bytes": [
+        61058,
+        68606,
+        69173,
+        49002
+      ],
+      "source_materialization_sha256": "6aebc1d78572eef3474044c5d8f781c3633bdc4a083142fee54b421c3f296d2b",
+      "contacts": 16
+    },
+    {
+      "label": "s4",
+      "summary_source": {
+        "relpath": "coordination/slurp-system-batch001-v1/semantic-wire-v1/s4-summary-source.json",
+        "sha256": "c5226150051b1b7ab10e422b39960099f61cf3a007d25fa9b3fcfaec1c22792d"
+      },
+      "summary_contexts": {
+        "relpath": "coordination/slurp-system-batch001-v1/semantic-wire-v1/s4-summary-contexts.json",
+        "sha256": "38dbb0a86af153df3ed963114a0e1894763c64c185b09ecb16765be88caaa1d9"
+      },
+      "context_bytes": [
+        59200,
+        69334,
+        67768,
+        49475
+      ],
+      "source_materialization_sha256": "96be7a349be73c87c2c9c1ce0f6838268ccf9d09b4e7003478fb30e13ca8bfeb",
+      "contacts": 16
+    }
+  ],
+  "input_count": 4,
+  "replicas": 4,
+  "complete_summary_context_count": 16,
+  "endpoint_protocol": [
+    "GET /props once per source",
+    "POST /apply-template once per input",
+    "POST /tokenize once per input"
+  ],
+  "fit_contacts_per_source": 9,
+  "total_fit_contacts": 36,
+  "generation_contacts": 0,
+  "scoring_contacts": 0,
+  "fresh_media_contacts": 0,
+  "completion_tokens": 2048,
+  "operational_reserve_tokens": 3072,
+  "special_tokens": 2,
+  "slot_tokens": 49152,
+  "admission": "Every actual request must have at least 3072 margin tokens after its 2048 completion and two special tokens. Shared receipt retains physical fit and root separately checks this stricter threshold.",
+  "failure_policy": "Preserve and stop on operational failure. A measured nonfit is a completed diagnostic and permits no generation. No shortening, omitted source group, automatic retry or server restart.",
+  "execution_route": "Root-issued attach-only lease and shared FlightRuntime prompt-fit; retain independently owned Windows serving and monitor tasks.",
+  "created_at": "2026-09-26T07:59:48.184454+00:00",
+  "representation": "Exact original fitted wire requests, raw responses, actual tools, control and delivery; repeated JSON values shared reversibly; internal non-model custody retained in original source.",
+  "supersedes_capacity_representation": "Compact requests all physically fit the two-slot service, but one fails reserve3072. This successor keeps the exact compact view and output2048, uses one49152 slot at unchanged total49152 context, and checks all16 on a new full service identity."
+}

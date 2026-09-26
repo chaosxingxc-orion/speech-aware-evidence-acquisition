@@ -1,0 +1,28 @@
+{
+  "schema": "saea-planned-serving-handoff-v1",
+  "registered_at": "2026-09-26T08:00:55.633148+00:00",
+  "from_session": "serving-slurp-system-batch001-np2-v1",
+  "to_session": "serving-slurp-system-summary001-np1-v1",
+  "model_fragment": "q4km-mmproj-free-system-np1-ctx48k-resource-guard-v1",
+  "worker_path": "/home/chao/saea-worktrees/codex-system-summary001-20260926",
+  "reason": "All16 compact requests physically fit the two-slot service, but one violates the preserved3072-token operational reserve. Repartition unchanged total49152 context into one slot; no output reduction.",
+  "gpu_payload": "same2448 MiB analytical Q8_0 KV; total peak unproven until observed",
+  "entry_conditions": [
+    "no live flight or lease",
+    "no STOP",
+    "source actor finalized and frozen",
+    "old service identity revalidated and busy_slots=0",
+    "Windows available >=32 GiB before new load"
+  ],
+  "execution": [
+    "Root graceful stop of owned old service",
+    "Retain old receipts and stop record",
+    "Rebind Windows-owned serving and10-second monitor tasks without network/credit dependency",
+    "Start exactly one new owned service; no automatic restart",
+    "Measure all16 exact requests under separate registered capacity plans",
+    "Generation remains held until all fits satisfy output2048+special2+reserve3072"
+  ],
+  "source_actor_worker": "/home/chao/saea-worktrees/codex-system-batch001-20260926",
+  "source_actor_commit": "d56ad054ad06df36b2a2e508ab5e765cc2549085",
+  "generation_authorized_by_this_receipt": false
+}
