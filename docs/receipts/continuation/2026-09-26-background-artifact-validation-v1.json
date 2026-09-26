@@ -1,0 +1,149 @@
+{
+  "schema": "saea-background-artifact-validation-v1",
+  "checked_at": "2026-09-26T04:51:39.344624+00:00",
+  "parent_commit": "7003b87a6420bd458340d9cbb4a57adc371b2c0e",
+  "environment": "WSL Ubuntu-24.04; explicit checkout PYTHONPATH; /home/chao/.venvs/speechrl/bin/python",
+  "tests": {
+    "passed": 226,
+    "log": {
+      "path": "/home/chao/system-background-artifact-validation-v1/regressions-final.log",
+      "sha256": "aa44aeaddf3235dd055e59d121010537ee4cb53be8724c19ae5a59a3c282411b"
+    },
+    "overlap_note": "Includes earlier inspector and bundle tests; do not add prior pass totals."
+  },
+  "red_phase": {
+    "path": "/home/chao/system-background-artifact-validation-v1/red.log",
+    "sha256": "82cef49be5e7012e1bb3d59ad8cd40e28c084d973043985e53992117d8a926a6"
+  },
+  "coverage": {
+    "scope": "Existing batch inspector CLI only; subprocess branch coverage. Not full driver or repository coverage.",
+    "summary": {
+      "covered_lines": 141,
+      "num_statements": 143,
+      "percent_covered": 97.1830985915493,
+      "percent_covered_display": "97",
+      "missing_lines": 2,
+      "excluded_lines": 0,
+      "percent_statements_covered": 98.6013986013986,
+      "percent_statements_covered_display": "99",
+      "num_branches": 70,
+      "num_partial_branches": 4,
+      "covered_branches": 66,
+      "missing_branches": 4,
+      "percent_branches_covered": 94.28571428571429,
+      "percent_branches_covered_display": "94"
+    },
+    "raw": {
+      "path": "/home/chao/system-background-artifact-validation-v1/coverage-final.json",
+      "sha256": "52332d175d5c2d6d5f6b426c5f0e8277e73d59dae0c8a6b2f66c82491dd64d4d"
+    }
+  },
+  "gates": [
+    {
+      "check": "engineering-base-final",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-background-artifact-validation-v1/engineering-base-final.log",
+        "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+      }
+    },
+    {
+      "check": "harness_admission",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-background-artifact-validation-v1/harness_admission.log",
+        "sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+      }
+    },
+    {
+      "check": "results_ledger",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-background-artifact-validation-v1/results_ledger.log",
+        "sha256": "ec9367bbd838063e612f82f2497a4e042f439e1b778d78d55e5f4c6117904d6f"
+      }
+    },
+    {
+      "check": "tool_catalog",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-background-artifact-validation-v1/tool_catalog.log",
+        "sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+      }
+    },
+    {
+      "check": "experiment_handoff",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-background-artifact-validation-v1/experiment_handoff.log",
+        "sha256": "b08366c6a78f605d35fac05c4d2a8c0ddaa9bf0983b326000a3a5c1840c6c6df"
+      }
+    },
+    {
+      "check": "openjiuwen_native_reuse",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-background-artifact-validation-v1/openjiuwen_native_reuse.log",
+        "sha256": "d917e6eda2335494d003237ba93eb67efc0b0555053c5b4700b56f4ea4cd26a6"
+      }
+    },
+    {
+      "check": "derived_media_confinement",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-background-artifact-validation-v1/derived_media_confinement.log",
+        "sha256": "f07d80c09bef31a6c73eda3ea980bef2a79aabdc158e6a5e33bf075645822d6d"
+      }
+    },
+    {
+      "check": "stage3_algorithm_label",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-background-artifact-validation-v1/stage3_algorithm_label.log",
+        "sha256": "0babba877cb30edfaacddeade30cd7cffdc917856bd912bb6f6459850fcb9229"
+      }
+    },
+    {
+      "check": "finite_completion_policy",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-background-artifact-validation-v1/finite_completion_policy.log",
+        "sha256": "20bc3dc18154a13c2956dd6455da6de859f1e724b864fd06bcaec02b0734cc22"
+      }
+    }
+  ],
+  "lint": {
+    "path": "/home/chao/system-background-artifact-validation-v1/lint-final.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "shell_syntax": {
+    "path": "/home/chao/system-background-artifact-validation-v1/bash-syntax.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "proof_boundaries": [
+    "Public inspector CLI reads an actual synthetic finalized artifact bundle; core source and trace verification are not substituted.",
+    "Fixture answering transport and execution gate are simulated. The official artifact scorer is replaced with a function that raises if invoked.",
+    "Historical task-answer acceptance fixtures are structural, not official task-quality evidence.",
+    "Wrong kind or forged artifact labeling cannot bypass the score requirement; model text is not emitted.",
+    "Verified output and trace paths govern artifact metadata even when unrelated matching files exist.",
+    "Driver argument forwarding and validation are source-reviewed with bash syntax validation; no Windows task or real background flight was run."
+  ],
+  "known_gate_warnings": [
+    "104 historical results-ledger cross-check findings.",
+    "Handoff check reports newer HEAD and local changes; no launch authority."
+  ],
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "official_scorer": 0,
+    "research_network": 0
+  },
+  "launch_authority": false,
+  "remaining": [
+    "Prospective complete semantic/actor stage dependency and configuration bindings.",
+    "Per-batch cadence accepted; derive capacity-bound batch size, complete output envelopes and budgets.",
+    "GPU fault diagnosis before separate new admission.",
+    "Real complete-system sampling, semantic update, frozen evaluation and matched replication."
+  ]
+}

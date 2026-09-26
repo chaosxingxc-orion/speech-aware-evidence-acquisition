@@ -1,0 +1,77 @@
+{
+  "schema": "saea-system-training-schedule-design-v1",
+  "status": "HELD-NOT-AN-EXECUTION-PLAN",
+  "stage3_algorithm": "tfgrpo-system-memory-disjoint-v1",
+  "owner_decision": {
+    "repo_relpath": "docs/readiness/2026-09-26-slurp-system-batch-cadence-owner-decision-v1.md",
+    "sha256": "829a00dd36e7b8945a143ae826ee3d8b77980de79cf54fb8964bbb2eaf362c3b"
+  },
+  "assets_configuration": {
+    "repo_relpath": "configs/analysis/slurp-system-update-round-assets-v1.json",
+    "sha256": "494da45907c5ea96e81761911a923e45cf6afcdc620e4cb81695832d3fecdcb8"
+  },
+  "batch": {
+    "max_inputs": null,
+    "replicas_per_input": 4,
+    "keep_tail": true,
+    "freeze_policy_and_memory_within_batch": true,
+    "update_after_complete_batch_scoring": true,
+    "max_memory_records": 32,
+    "capacity_candidates": [
+      4,
+      8
+    ],
+    "size_status": "UNFROZEN-PENDING-RESOURCE-AND-TOKEN-CAPACITY"
+  },
+  "construction": [
+    {
+      "cohort": "R01C625",
+      "batches": null,
+      "tail_inputs": null,
+      "checkpoint": "M1"
+    },
+    {
+      "cohort": "FoldA1080",
+      "batches": null,
+      "tail_inputs": null,
+      "checkpoint": "M2"
+    }
+  ],
+  "evaluation": {
+    "cohort": "FoldB1080",
+    "use_complete_roster": true,
+    "arms": [
+      "default",
+      "empty-memory-interface",
+      "M1",
+      "M2"
+    ],
+    "primary": "M2",
+    "update_from_evaluation": false,
+    "conditional_repeat_arms": [
+      "default",
+      "empty-memory-interface",
+      "M2"
+    ]
+  },
+  "workload_ceiling": {
+    "actor_episodes": 6820,
+    "construction_score_jobs": "4 * admitted_batch_count",
+    "update_opportunities": "admitted_batch_count",
+    "semantic_generation_contacts": "10230 + admitted_batch_count",
+    "generation_contacts_with_conditional_repeat": "168410 + admitted_batch_count"
+  },
+  "launch_authority": false,
+  "owner_resource_amendment": {
+    "repo_relpath": "docs/readiness/2026-09-26-slurp-system-resource-and-prefix-amendment-v1.md",
+    "sha256": "7daa9bca2d8404aa8d72368f86b9d33f6c1ad0699e4cbc781e79ac3f5bcd9cca"
+  },
+  "resource_admission": {
+    "windows_min_available_gib": 10,
+    "windows_admission_drain_gib": 12,
+    "candidate_slots": 2,
+    "candidate_slot_context_tokens": 24576,
+    "geometry_status": "UNPROVEN-NOT-LAUNCHABLE",
+    "output_tokens_by_stage": "UNFROZEN-PENDING-ACTUAL-ENVELOPES"
+  }
+}

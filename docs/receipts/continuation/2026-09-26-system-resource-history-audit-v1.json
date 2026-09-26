@@ -1,0 +1,238 @@
+{
+  "schema": "saea-system-resource-history-audit-v1",
+  "recorded_at": "2026-09-26T05:04:58.199185+00:00",
+  "method": "Read operational request/usage/cache/finish metadata only. Do not read scores, answer text, task accuracy or comparative quality. Group contacts by trace request ID and USE role; unreturned contacts have unknown usage.",
+  "source_head": "7003b87a6420bd458340d9cbb4a57adc371b2c0e",
+  "telemetry_source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1/monitor.jsonl",
+    "sha256": "1985ef2b862b535bebcb484959e8c4bde9018a545a15bb2856c99f5a51e349e7",
+    "bytes": 37997262
+  },
+  "session_source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1/session.json",
+    "sha256": "c6c436380fef1a47f42ef4cdcbddca19ae0c3e34a1442612ee66e03d86873208",
+    "bytes": 12100
+  },
+  "window": {
+    "start": "2026-09-25T21:38:46Z",
+    "first": "2026-09-25T21:38:56.556988+00:00",
+    "last": "2026-09-25T23:16:39.839291+00:00",
+    "samples": 514,
+    "gpu_memory_used_mib": {
+      "minimum": 22988.0,
+      "maximum": 22988.0,
+      "last": 22988.0,
+      "count": 514
+    },
+    "windows_free_gib": {
+      "minimum": 15.97259521484375,
+      "maximum": 21.810832977294922,
+      "last": 18.352935791015625,
+      "count": 514
+    },
+    "wsl_available_gib": {
+      "minimum": 36.15648651123047,
+      "maximum": 40.713985443115234,
+      "last": 38.757537841796875,
+      "count": 514
+    },
+    "windows_below_10_gib": 0
+  },
+  "request_metadata": [
+    {
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-SEAL-RECOVERY1-V1",
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-SEAL-RECOVERY1-V1/attempt-slurp-native-stage3-candidate-recovery-control-r01c-seal-recovery1-v1-generation/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-SEAL-RECOVERY1-V1.trace.jsonl",
+        "sha256": "16a7576a254629c1dc5e7b78f3d8b53eba4b105308ed3dcd73d8cf7d84e641c0",
+        "bytes": 335953074
+      },
+      "requests": 3657,
+      "by_role": {
+        "perception": {
+          "requests": 625,
+          "responses": 625,
+          "prompt_tokens_min": 2691,
+          "prompt_tokens_max": 3811,
+          "completion_tokens_max": 160,
+          "maximum_reserved_total_tokens": 4323,
+          "cache_tokens_sum": 1395245,
+          "prompt_tokens_sum": 2259685,
+          "weighted_cache_fraction": 0.6174511049106401,
+          "finish_reason_counts": {
+            "stop": 625
+          }
+        },
+        "planner": {
+          "requests": 1010,
+          "responses": 1010,
+          "prompt_tokens_min": 5495,
+          "prompt_tokens_max": 14408,
+          "completion_tokens_max": 3,
+          "maximum_reserved_total_tokens": 14920,
+          "cache_tokens_sum": 10200378,
+          "prompt_tokens_sum": 10566700,
+          "weighted_cache_fraction": 0.9653324122005924,
+          "finish_reason_counts": {
+            "stop": 1010
+          }
+        },
+        "reviewer": {
+          "requests": 1011,
+          "responses": 1011,
+          "prompt_tokens_min": 5428,
+          "prompt_tokens_max": 14362,
+          "completion_tokens_max": 512,
+          "maximum_reserved_total_tokens": 14874,
+          "cache_tokens_sum": 10106183,
+          "prompt_tokens_sum": 10505681,
+          "weighted_cache_fraction": 0.9619731457675138,
+          "finish_reason_counts": {
+            "stop": 1010,
+            "length": 1
+          }
+        },
+        "solver": {
+          "requests": 1011,
+          "responses": 1011,
+          "prompt_tokens_min": 5332,
+          "prompt_tokens_max": 14264,
+          "completion_tokens_max": 99,
+          "maximum_reserved_total_tokens": 14776,
+          "cache_tokens_sum": 6064652,
+          "prompt_tokens_sum": 10394410,
+          "weighted_cache_fraction": 0.5834532214911669,
+          "finish_reason_counts": {
+            "stop": 1011
+          }
+        }
+      }
+    },
+    {
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-SMOKE-4-R01C-SEAL-RECOVERY1-V1",
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-SMOKE-4-R01C-SEAL-RECOVERY1-V1/attempt-slurp-native-stage3-candidate-recovery-expand-smoke-4-r01c-seal-recovery1-v1-generation/SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-EXPAND-SMOKE-4-R01C-SEAL-RECOVERY1-V1.trace.jsonl",
+        "sha256": "ada62f14a9fafbaa96ba1d7e398bb26ab3b2453717c6dcdec99ae29404ebaca3",
+        "bytes": 1004518
+      },
+      "requests": 13,
+      "by_role": {
+        "perception": {
+          "requests": 4,
+          "responses": 4,
+          "prompt_tokens_min": 3599,
+          "prompt_tokens_max": 3678,
+          "completion_tokens_max": 145,
+          "maximum_reserved_total_tokens": 4190,
+          "cache_tokens_sum": 8900,
+          "prompt_tokens_sum": 14488,
+          "weighted_cache_fraction": 0.6143014908890116,
+          "finish_reason_counts": {
+            "stop": 4
+          }
+        },
+        "reviewer": {
+          "requests": 1,
+          "responses": 1,
+          "prompt_tokens_min": 12840,
+          "prompt_tokens_max": 12840,
+          "completion_tokens_max": 110,
+          "maximum_reserved_total_tokens": 13352,
+          "cache_tokens_sum": 12439,
+          "prompt_tokens_sum": 12840,
+          "weighted_cache_fraction": 0.9687694704049844,
+          "finish_reason_counts": {
+            "stop": 1
+          }
+        },
+        "solver": {
+          "requests": 4,
+          "responses": 4,
+          "prompt_tokens_min": 11138,
+          "prompt_tokens_max": 15353,
+          "completion_tokens_max": 45,
+          "maximum_reserved_total_tokens": 15865,
+          "cache_tokens_sum": 13520,
+          "prompt_tokens_sum": 53137,
+          "weighted_cache_fraction": 0.25443664489903456,
+          "finish_reason_counts": {
+            "stop": 4
+          }
+        },
+        "unsettled": {
+          "requests": 4,
+          "responses": 0,
+          "prompt_tokens_min": null,
+          "prompt_tokens_max": null,
+          "completion_tokens_max": null,
+          "maximum_reserved_total_tokens": null,
+          "cache_tokens_sum": 0,
+          "prompt_tokens_sum": 0,
+          "weighted_cache_fraction": null,
+          "finish_reason_counts": {
+            "unreturned": 4
+          }
+        }
+      }
+    }
+  ],
+  "geometry": {
+    "decoder_only": true,
+    "mmproj": false,
+    "slots": 4,
+    "tokens_per_slot": 24576,
+    "total_context": 98304,
+    "batch_tokens": 2048,
+    "microbatch_tokens": 512,
+    "kv_types": [
+      "q8_0",
+      "q8_0"
+    ],
+    "cache_ram": 0,
+    "no_cache_idle_slots": true
+  },
+  "analytical_kv_estimate": {
+    "layers": 48,
+    "kv_heads": 4,
+    "key_length": 128,
+    "value_length": 128,
+    "q8_0_block_bytes": 34,
+    "q8_0_block_elements": 32,
+    "source": "Pinned GGUF metadata and local ggml q8_0 block layout; analytical tensor payload only, not measured total VRAM.",
+    "four_slot_mib": 4896,
+    "two_slot_same_length_mib": 2448,
+    "estimated_reduction_mib": 2448,
+    "layout_source": {
+      "path": "/home/chao/llama.cpp-featcache/ggml/src/ggml-common.h",
+      "sha256": "33667042e675da25d8ea0c6d5d0999506f1edfce2b7d97c2d78830ac5fb3fa46"
+    }
+  },
+  "existing_gaps": [
+    "GPU free/total memory and per-slot token progress were not recorded in old monitor samples.",
+    "Monitor samples stop about 20 seconds before failure; no final-moment GPU/host peak is proven.",
+    "Existing startup host-memory default is 12 GiB, but it fails open on unavailable Windows readings. Runtime monitor only warns below 6 GiB; there is no continuous 10 GiB admission guard.",
+    "Existing batch prelaunch runs a separate torch matmul warmup while the model is resident. This creates another CUDA context and buffers; contribution to the failure is unknown.",
+    "A local tool call releases the native runner slot. Slot reacquisition may reduce prefix reuse; cache enabled does not guarantee a hit."
+  ],
+  "owner_constraints": {
+    "minimum_windows_available_gib": 10,
+    "cadence": "update after each complete sampling batch",
+    "batch_input_count": "unfrozen pending capacity",
+    "keep_shared_prefix_consistent": true,
+    "reserve_output_for_each_stage": true
+  },
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "official_scorer": 0
+  },
+  "launch_authority": false,
+  "task_quality_read": false,
+  "current_configuration": {
+    "windows_total_gib": 63.43492889404297,
+    "wsl_memory_cap_gib": 44,
+    "wsl_swap_gib": 16,
+    "autoMemoryReclaim": "dropcache",
+    "note": "These limits do not guarantee 10 GiB actual Windows availability during a run."
+  }
+}

@@ -2416,8 +2416,8 @@ def test_verify_bundle_accepts_legitimate_study_commit_config_hash_and_scorers(
     assert len(bundle.manifest["config"]["config_hash"]) == 64
 
 
-def test_finalize_artifact_bundle_skips_task_scorers_and_finalizes(
-    synthetic_world, bundled_repo, tmp_path, monkeypatch
+def _finalized_artifact_bundle(
+    synthetic_world, bundled_repo, tmp_path, monkeypatch, *, run_dir_name="run-artifact"
 ):
     from speech_aware_evidence_acquisition.contracts import TraceRecord
     from speech_aware_evidence_acquisition.core.bundle import finalize as finalizer
@@ -2430,7 +2430,7 @@ def test_finalize_artifact_bundle_skips_task_scorers_and_finalizes(
         tmp_path,
         run_id="SAEA-E-000-artifact",
         attempt_id="attempt-artifact",
-        run_dir_name="run-artifact",
+        run_dir_name=run_dir_name,
     )
     manifest = _read_manifest(manifest_path)
     sample_ids = manifest["split"]["ids"]
@@ -2557,6 +2557,14 @@ def test_finalize_artifact_bundle_skips_task_scorers_and_finalizes(
     assert _read_manifest(manifest_path)["scores"] is None
     store = AttemptStore(synthetic_world.data_root / "attempts")
     assert store.handle(plan.run_id, plan.attempt_id).state() == "FINALIZED"
+
+    return manifest_path, plan
+
+
+def test_finalize_artifact_bundle_skips_task_scorers_and_finalizes(
+    synthetic_world, bundled_repo, tmp_path, monkeypatch
+):
+    _finalized_artifact_bundle(synthetic_world, bundled_repo, tmp_path, monkeypatch)
 
 
 def test_bundle_result_kind_keeps_task_answer_scorers_and_artifact_binding_strict(

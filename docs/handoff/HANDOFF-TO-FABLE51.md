@@ -5,6 +5,36 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Latest owner resource amendment: do not freeze 32-input batches
+
+The owner retained per-batch updates but required VRAM/token sizing before
+choosing the batch size, at least 10 GiB actual Windows availability, consistent
+prefixes and sufficient output capacity. This supersedes the 32-input/54-update/
+216-score arithmetic in the earlier cadence section below. The earlier
+decision bytes are retained as history. Read the
+[resource and prefix amendment](../readiness/2026-09-26-slurp-system-resource-and-prefix-amendment-v1.md)
+and the [operational audit](../receipts/continuation/2026-09-26-system-resource-history-audit-v1.json).
+
+The analysis schedule now leaves batch size and stage output limits unfrozen.
+Four/eight input batches and a two-slot/24576-context service are sizing
+candidates only. Complete trajectories are streamed through bounded slots;
+an update batch is not GPU concurrency. New semantic batch inputs can still
+outgrow context and must fit with output reserve. Windows 10 GiB is a hard
+owner reserve, while current startup/runtime monitoring does not yet enforce
+it continuously. Preserve and extend the shared implementation; no new runner.
+
+Root's metadata-only audit found 514 recovery-window samples: GPU used
+22988 MiB, minimum Windows available 15.97 GiB, with the final ~20 seconds
+unobserved. Completed control prompt maximum is 14408; one Reviewer response
+reached 512 output tokens. Prefix reuse already exists in returned cache
+metadata. No quality outcome of the isolated recovery control was read.
+
+No GPU process was started, stopped or reconfigured. STOP, closed flight,
+retained workers, queue and source artifacts remain unchanged. The missing
+dump does not block this resource analysis. The next work is actual batch/
+output sizing and the shared admission guard, then a separately registered
+new-family fit/form proof and real update cycle.
+
 ## Checkpoint and research objective
 
 Checkpoint: 2026-09-26T00:48:16Z. The sole seal recovery is now
@@ -407,6 +437,52 @@ changed. The current GPU crash dump copy remains absent. Next freeze the
 selected cadence and concrete semantic/actor plans, resolve the backend/host
 fault, then execute real sampling, update and complete-system evaluation.
 Stable learned-policy benefit remains unproven.
+
+## Accepted owner cadence: complete sampling then update each batch
+
+Owner decision recorded at 2026-09-26T04:53:30.895558+00:00: use the proposed batches of at most
+32 TRAIN inputs, four separate complete trajectories per input, retain both
+tails, and update only after each complete batch is scored and sealed.
+This supersedes earlier "pending" notes and the two-whole-cohort-update draft.
+There are at most 54 update opportunities and 6820 actor episodes; M1/M2
+denote cohort-end checkpoints. Full B1080 matched evaluation is unchanged.
+
+Read the [decision](../readiness/2026-09-26-slurp-system-batch-cadence-owner-decision-v1.md)
+and held schedule design configs/analysis/slurp-system-training-schedule-design-v1.json.
+The existing full-cohort cells remain HELD templates; do not launch them as
+batch cells. Derive actual batch/cumulative rosters and successor bindings
+through shared interfaces. This is scientific schedule authorization, not a
+new ExecutionPlan, service-restart instruction or reopening of the closed flight.
+
+## Background semantic-stage inspection and owner status
+
+CPU continuation checkpoint: 2026-09-26T04:51:39.344624+00:00.
+The [background artifact contract](../readiness/2026-09-26-background-artifact-stages.md)
+connects the existing driver to FlightRuntime's finalized scoreless artifact
+semantics. Queue steps now explicitly distinguish task-answer from artifact;
+task full arms still require one score job, while artifacts require zero,
+full source verification and FINALIZED state even for smoke. The inspector
+uses verified manifest-bound output/trace files, not an arbitrary glob match.
+No scorer, worker retry or new execution framework is introduced.
+
+226 related tests, Ruff, shell syntax and all nine offline gates passed.
+The inspector's subprocess branch-inclusive coverage is 97.18%; it is not
+whole-driver coverage. Synthetic finalized bundles exercise real verification,
+while answering transport and the fixture gate are simulated. No Windows task
+or real semantic campaign was dispatched. Existing queue, STOP and frozen
+generation sources remain unchanged.
+
+The [owner status and next-flight explanation](2026-09-26-owner-status-and-next-flight.md)
+summarizes completed scientific evidence, whole-system interpretation and the
+accepted batch cadence. Held whole-cohort cells still require explicit
+derivation into source-bound batch cells before execution.
+The 04:44:46Z operational check found no live model/driver/campaign/scorer,
+GPU 0% / 0 MiB, retained STOP and no staged current crash dump.
+
+Next close concrete dynamic dependencies for the accepted batch schedule,
+stage outputs, source/configuration bindings and budgets; diagnose the GPU fault; then register and execute the
+new complete-system learning family. Engineering readiness is not a learned
+policy result, and this fixes no scientific outcome in advance.
 
 ## Whole-system summary runtime connection
 

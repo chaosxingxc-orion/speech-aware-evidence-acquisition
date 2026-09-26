@@ -8,6 +8,8 @@
 #   campaign_plan (repo-relative), run_id, fit_run_id, gen_attempt_id, smoke_run_id, smoke_attempt_id,
 #   expected_rows, contacts_per_row, ceiling_per_row, notool (true|false), owner.
 #   Optional smoke_notool overrides notool for a smoke with different tool authority.
+#   result_kind defaults to task-answer; artifact requires zero scoring jobs and
+#   verified finalized artifact bytes. smoke_result_kind defaults to result_kind.
 # Status: /home/chao/batch-status.jsonl (one line per event); STOP marker: /home/chao/batch-STOP.
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
 export MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
@@ -86,6 +88,10 @@ for ((i=0; i<N; i++)); do
   gatt=$(field $i gen_attempt_id); srun=$(field $i smoke_run_id); satt=$(field $i smoke_attempt_id)
   rows=$(field $i expected_rows); ceil=$(field $i ceiling_per_row); notool=$(field $i notool); owner=$(field $i owner)
   [ "$notool" = "true" ] && nt=1 || nt=0
+  result_kind=$(field $i result_kind); result_kind=${result_kind:-task-answer}
+  smoke_result_kind=$(field $i smoke_result_kind); smoke_result_kind=${smoke_result_kind:-$result_kind}
+  case "$result_kind" in task-answer|artifact) ;; *) stop "invalid result_kind on step $order" ;; esac
+  case "$smoke_result_kind" in task-answer|artifact) ;; *) stop "invalid smoke_result_kind on step $order" ;; esac
   if grep -q "\"step-done\".*\"short\":\"$short\"" "$STATUS" 2>/dev/null; then log "step-skip-done" "{\"step\":$order,\"short\":\"$short\"}"; continue; fi
   log "step-start" "{\"step\":$order,\"short\":\"$short\",\"kind\":\"$kind\",\"cell\":\"$cell\"}"
   prelaunch $order
@@ -94,7 +100,7 @@ for ((i=0; i<N; i++)); do
     [ -n "$smoke_notool" ] || smoke_notool=$notool
     case "$smoke_notool" in true) smoke_nt=1 ;; false) smoke_nt=0 ;; *) stop "invalid smoke_notool on step $order" ;; esac
     fly_smoke $order "$sexp" "$scell" "$owner"
-    out=$($PY -B $SP/batch_inspect.py "$DATA" "$srun" "$satt" smoke 4 "$ceil" $smoke_nt "$FLIGHT_COMMIT"); rc=$?
+    out=$($PY -B $SP/batch_inspect.py "$DATA" "$srun" "$satt" smoke 4 "$ceil" $smoke_nt "$FLIGHT_COMMIT" --result-kind "$smoke_result_kind"); rc=$?
     log "smoke-inspect" "$out"
     [ $rc -eq 0 ] || stop "smoke structural check failed on step $order"
     sleep 10
@@ -106,7 +112,7 @@ for ((i=0; i<N; i++)); do
     --campaign-plan "$REPO/$plan" --owner "$owner" --expected-session-id "$SESSION" > "$LOGF" 2>&1
   rc=$?
   log "arm-exit" "{\"step\":$order,\"rc\":$rc}"
-  out=$($PY -B $SP/batch_inspect.py "$DATA" "$run" "$gatt" arm "$rows" "$ceil" $nt "$FLIGHT_COMMIT"); irc=$?
+  out=$($PY -B $SP/batch_inspect.py "$DATA" "$run" "$gatt" arm "$rows" "$ceil" $nt "$FLIGHT_COMMIT" --result-kind "$result_kind"); irc=$?
   log "arm-inspect" "$out"
   [ $rc -eq 0 ] && [ $irc -eq 0 ] || stop "arm failed on step $order (campaign rc $rc, inspect rc $irc); see $LOGF"
   log "step-done" "{\"step\":$order,\"short\":\"$short\"}"
