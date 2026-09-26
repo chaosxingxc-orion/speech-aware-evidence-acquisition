@@ -9,12 +9,12 @@
         "w_prior": 0.0
       },
       "cell": "slurp-native-stage3-conv-fold-a-70-v1",
-      "composed_config_hash": "28923aa33d1e050e9ffdd4e9fc613670f6c09936ec990d6041476db6c7fb4117",
+      "composed_config_hash": "54bd45ee5b42066541695fe9cafff1113972a2ed7cb9ecb23ed6e53a4c2e56e4",
       "declares_agreement_source": true,
       "experiment": "slurp-native-stage3-conv-fold-a-70-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-conv-fold-a-70-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-CONV-FOLD-A-70-FIT-V1",
-      "protocol_hash": "53cdf41ac4ef039e99d4b132a5b9b0e4f8acd23df466760c4f79ca41535c9054",
+      "protocol_hash": "905b58b72681b47032553eeef97589b78d397aa4c3fa1afd7828212ad4567baa",
       "rows": 70,
       "run_id": "SAEA-SLURP-STAGE3-CONV-FOLD-A-70-V1",
       "split_identity_hash": "57c6f278d8ab35dafa0f1183938c13b6084a4f3d9d9438cfb3e55bbf73ff335c"

@@ -15,8 +15,8 @@ decisions 28 and 86); never a test claim.
 | in-chain replicate | none, and none is owed: the design is `form-proof`, no cross-flight contrast is computed, and the comparator's per-row verdict is constant on this population |
 | runs | `SAEA-SLURP-STAGE3-CONV-FOLD-A-70-V1` / `SAEA-SLURP-STAGE3-CONV-FOLD-A-70-FIT-V1` |
 | rows | 70 |
-| composed config hash | `28923aa33d1e050e9ffdd4e9fc613670f6c09936ec990d6041476db6c7fb4117` |
-| protocol hash | `53cdf41ac4ef039e99d4b132a5b9b0e4f8acd23df466760c4f79ca41535c9054` |
+| composed config hash | `54bd45ee5b42066541695fe9cafff1113972a2ed7cb9ecb23ed6e53a4c2e56e4` |
+| protocol hash | `905b58b72681b47032553eeef97589b78d397aa4c3fa1afd7828212ad4567baa` |
 | split identity | `57c6f278d8ab35dafa0f1183938c13b6084a4f3d9d9438cfb3e55bbf73ff335c` |
 | id-list sha256 | `5920bd6c99d1d5935881c0ca85c8454c7ec8eed096d950b7242c0ec7d8fbf73b` |
 | authority | the committed replication receipt `docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/production-replication-v1.json` (sha256 `7cd1f6d338731ea7b6eef34408e5d37453c852670900319445968ddc2a1dc624`); docs/results/2026-09-26-slurp-intent-retrieval-rank-diagnostic.md; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md (rule 5); docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md; docs/results/2026-09-24-slurp-plan-bad-case-bank.md; owner decisions 28, 86 and 101 |

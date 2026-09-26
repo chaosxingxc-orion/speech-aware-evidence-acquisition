@@ -14,8 +14,22 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "Cell CONV, the conversion probe of cell AGREE, registered before contact on 2026-09-26 from the registered AGREE arm's own fragments by script (decision 58). Treatment only: the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 holds these rows' comparator answers and is never re-flown. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16) and appends the preparation requirement. The requirements list is empty by design and --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
-        "requirements": [],
-        "state": "held"
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-conv-fold-a-70-admission-v1",
+            "relpath": "coordination/slurp-stage3-conv-fold-a-70-v1/root-admission-v1.json",
+            "sha256": "c7fae253dcdf66ee6a96cd601202d42cce448105da26a8e49b98342dc89e1e10",
+            "reason": "Decision slurp-stage3-conv-fold-a-70-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-CONV-FOLD-A-70-V1/phase-supply-v1.json",
+            "sha256": "191910667b77db7d49aed076d4ed90ca1e1dd9b487671a6f9d2d0e9c2aa66a41",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-CONV-FOLD-A-70-V1"
     }

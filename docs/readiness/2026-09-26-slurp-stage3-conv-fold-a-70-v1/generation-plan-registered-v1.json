@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-conv-fold-a-70-v1",
-  "composed_config_hash": "28923aa33d1e050e9ffdd4e9fc613670f6c09936ec990d6041476db6c7fb4117",
+  "composed_config_hash": "54bd45ee5b42066541695fe9cafff1113972a2ed7cb9ecb23ed6e53a4c2e56e4",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-conv-fold-a-70-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 770,
     "planned_speech_audio_seconds": 1899,
-    "protocol_hash": "53cdf41ac4ef039e99d4b132a5b9b0e4f8acd23df466760c4f79ca41535c9054",
+    "protocol_hash": "905b58b72681b47032553eeef97589b78d397aa4c3fa1afd7828212ad4567baa",
     "run_id": "SAEA-SLURP-STAGE3-CONV-FOLD-A-70-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "57c6f278d8ab35dafa0f1183938c13b6084a4f3d9d9438cfb3e55bbf73ff335c",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-26-slurp-stage3-conv-fold-a-70-v1/protocol-registered-v1.json",
-    "sha256": "4adbc6885267cd79fc8a533d35c8bef8d8eca4ea562fe325aa61ae03ed9a2b3f"
+    "sha256": "421a02dd4736cafeefe3ba458833e99ac9523ae08d2db8a6d74fd23a1b170218"
   },
   "purpose": "SAEA-SLURP-STAGE3-CONV-FOLD-A-70-V1: cell CONV, the conversion probe. There is no verdict and no admission. The deliverable is a NUMBER: m, the count of the 70 rows whose intent verdict moves from wrong to gold, reported as m / 70 with a binomial CI95 (Wilson score interval, the exact Clopper-Pearson interval reported beside it), plus the reverse count -- which is zero by construction on this population, because every row is already intent-wrong in the comparator, and that structural zero is reported as a LIMIT of the cell rather than as a result. Beside it: how many rows stay wrong with a byte-identical answer versus a different wrong intent, and the flown delivery check (did the arm actually deliver the gold intent's boundary entry on all 70 rows the offline derivation says it would?). A delivery rate the derivation did not predict is an engineering defect, not a conversion measurement, and closes the read.",
   "quality_read_gate": "No read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for this cell, and before the flown delivery check agrees with the offline derivation on all 70 rows. A partial manifest is never scored and never read.",
