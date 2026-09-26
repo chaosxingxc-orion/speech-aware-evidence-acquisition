@@ -1,7 +1,11 @@
 # Cell ROLL-2 -- the offline four-row dry run
 
-Run model-free at study commit `e0a8d20d` from worktree `/home/chao/saea-worktrees/fable-roll2`,
-branch `fable/roll2`, by `scripts/flights/batch/roll2_dry_run.py` over the REGISTERED four-row smoke
+Run model-free twice. First at study commit `e0a8d20d` from worktree
+`/home/chao/saea-worktrees/fable-roll2`, branch `fable/roll2`, before the readiness flip; then RE-RUN on
+`master` at `88eee136` after the flip re-pinned this cell's fragments, because the re-pin changes the
+composed bytes and a dry run that quotes a superseded hash is not evidence about what will fly. Every
+number below is the RE-RUN's, and the two runs agree on all three proofs. By
+`scripts/flights/batch/roll2_dry_run.py` over the REGISTERED four-row smoke
 cell `slurp-native-stage3-roll-2-fold-a-smoke-4-v1` composed from its committed fragments. **Verdict: `ok = true` -- all three proofs
 hold.**
 
@@ -30,7 +34,7 @@ roster -- is the production one.
 | roles (perception / solver / reviewer / planner) | 1 / 1 / 3 / 1 | 1 / 1 / 3 / 1 | yes |
 
 `form.agrees = true`, no disagreements. Composed config hash of the smoke cell
-`a88709063a7b7d052ecf1a441b9d87a5ac0caba598da1ef7b0965f4e6f114ca0`.
+`dc6f8e55bd35b330767479d2e3ceba3b7a0bbb164db29a037d823b2d4d9be9f2`.
 
 Two absences are part of the form and were measured, not assumed:
 
@@ -38,8 +42,10 @@ Two absences are part of the form and were measured, not assumed:
   node. The sealed lock arm PLAN carries `saea-deliver-normalise-v3`; ROLL-2 does not, because
   ROLL-2 is cell ROLL-1's form on the lock roster and not the lock arm with a Solver group bolted
   on. This is a registered difference from the lock arm, stated before contact.
-- `prepared_phase_supply` is **`ABSENT (minted at the flip, item E16)`**: the cell carries no committed pin, so the readiness flip
-  mints its own under its own run id and `--allow-output-change` must never be passed.
+- `prepared_phase_supply` carried **no committed pin** before the flip, exactly as item E16 requires, so the
+  readiness flip minted this cell's OWN first-phase supply under its own run id. The re-run measured it
+  PRESENT at `f6ab4280f0c25bbdba1b6a4565bbef17c3c8563092fc90ab626a7ddce025781a`, which is the artefact
+  the smoke will actually read; `--allow-output-change` must never be passed.
 
 ## Proof 2 -- IDENTITY: the five samples are one request drawn five times
 
