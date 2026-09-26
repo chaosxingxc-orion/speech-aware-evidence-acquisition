@@ -100,7 +100,7 @@
     "No utterance text, gold label or transcript printed or persisted by any read of this pool."
   ],
   "registered_at_utc": "2026-09-26T00:00:00.000000+00:00",
-  "registration_base_commit": "8291d7c3",
+  "registration_base_commit": "e0a8d20d",
   "roster": {
     "audio_seconds_total": 3084.5284375,
     "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",

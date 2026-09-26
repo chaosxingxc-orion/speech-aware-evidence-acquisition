@@ -1,6 +1,6 @@
 # Preregistration -- Stage-3 cell ROLL-2: the sealed five-sample pool on the v2.0 lock roster
 
-Registered before contact on 2026-09-26 at study commit `8291d7c3`, worktree
+Registered before contact on 2026-09-26 at study commit `e0a8d20d`, worktree
 `/home/chao/saea-worktrees/fable-roll2`, branch `fable/roll2`. Both cells are **held**. Nothing in
 this note authorises a flight, a readiness flip, a scoring job or an admission entry.
 

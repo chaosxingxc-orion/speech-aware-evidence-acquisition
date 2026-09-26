@@ -1,6 +1,6 @@
 # Stage-3 cell ROLL-2 -- the sealed five-sample pool on the v2.0 lock roster
 
-Registered before contact 2026-09-26 at study commit `8291d7c3`; both cells **held**. Nothing here
+Registered before contact 2026-09-26 at study commit `e0a8d20d`; both cells **held**. Nothing here
 authorises a flight, a flip or an admission entry.
 
 Cell ROLL-1's grouped-Solver form (samples 5, temperature 0.7, seed_offset 0, plurality commit at

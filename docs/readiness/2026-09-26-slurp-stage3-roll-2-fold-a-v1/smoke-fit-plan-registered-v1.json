@@ -12,7 +12,7 @@
     },
     "not_run_by_this_registration": "DELIBERATELY NOT RUN. core.flight.cli check touches the runtime root and the coordination tree, which the coordinator owns, so this package registers the cells without it; the coordinator's own clean-tree re-pin cycle (scripts/flights/batch/repin_cell_generic.sh, ARM=1) runs check on the minted receipt and asserts the runtime-derived hashes agree with the ones registered here. A disagreement stops the flip, which is the intended failure mode.",
     "readiness_state": "held",
-    "study_commit": "8291d7c3"
+    "study_commit": "e0a8d20d"
   },
   "comparator": null,
   "comparator_reason": "NONE, by design. ROLL-2 is an asset: it collects a sealed five-sample pool on the lock roster so that later actions over that pool are readable offline at about 0.51 pp at n = 1,080. No sealed arm is re-flown, re-scored or compared against, the read is never scripts/analysis/plan_cell_read.py, and no number this cell produces is gated.",
@@ -100,12 +100,12 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "6d5260773f13d80af30120ec8b3ed2d0e139fdbad54123e7acd0c33da664bf8c"
+    "sha256": "e756646523e8bb95ad80701c68616e7ae0f43bdd0a10c78534d356ad3b026e97"
   },
   "purpose": "DESCRIPTIVE. This cell is an ASSET and makes NO comparison, no admission claim, no gate, no superiority, transfer, generalisation, component-causal or confirmatory statement. Its only deliverable is a sealed five-sample pool on TRAIN Fold A plus the structural proof that the pool is well formed. Any later read over that pool is registered separately.",
   "quality_read_gate": "No read of any kind before the complete sealed manifest and the exact ordered outputs with exactly five custodied solver_group samples per row exist. A partial manifest is never read; a failed smoke stops the arm and it does not open.",
   "registered_at_utc": "2026-09-26T00:00:00.000000+00:00",
-  "registration_base_commit": "8291d7c3",
+  "registration_base_commit": "e0a8d20d",
   "schema": "saea-registered-generation-plan-v1",
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-roll2, branch fable/roll2",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
