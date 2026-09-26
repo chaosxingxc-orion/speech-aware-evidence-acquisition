@@ -25,10 +25,10 @@
         "w_prior": 0.0
       },
       "cell": "slurp-native-stage3-agree-aa-fold-a-v1",
-      "composed_config_hash": "43724db7cb5246f36aad726f128b068ad9abbec4720eb23d44f20a96f208deac",
+      "composed_config_hash": "4e55d2958b8ecc954bf264db3d07e15fca83653f8ed44a190babd1e40f777eb6",
       "declares_agreement_source": false,
       "fit_run_id": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-FIT-V1",
-      "protocol_hash": "b1997a6316862e513e504cf47cf5c7bfd26abac6280040873e90b4dc73f775b5",
+      "protocol_hash": "8007009b17cbeb619bdbe8cf2b89ccfbfcda75a2b63ef0259d7cddef271e8451",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1"
     },
@@ -39,10 +39,10 @@
         "w_prior": 0.0
       },
       "cell": "slurp-native-stage3-agree-w1-fold-a-v1",
-      "composed_config_hash": "ad9eaed0a1af16a7fe17e54ab720880c4b9b4a04237d175b67ab7d7e98c85846",
+      "composed_config_hash": "80994f4a0173f8f4e7891b60c2bc3f99df04c56925015016dbe76973dd0d6a7b",
       "declares_agreement_source": true,
       "fit_run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-FIT-V1",
-      "protocol_hash": "1930d062a102a269a737c67cce47f41cb7ff3eaadb5bf6ed2cc13cee6af7a436",
+      "protocol_hash": "90abf80ca48725c92e0245e425f0837d729049eb4ce632bde39d4b208efbfca3",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
     },
@@ -53,10 +53,10 @@
         "w_prior": 0.0
       },
       "cell": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
-      "composed_config_hash": "b28799e911a7662c4e4e2c13f807461ed1c633dc17dade85a3d1a65ca4c018f0",
+      "composed_config_hash": "bb4ba16be36d2bc16b45c4645d99317324714970dd29a5811eabcf3a3a8e57c3",
       "declares_agreement_source": true,
       "fit_run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-SMOKE-4-FIT-V1",
-      "protocol_hash": "aca95825805ae4ce0ea06aeacfd869a6520429a3ad5eb17fa3fa7cd0e3c108af",
+      "protocol_hash": "917ad0260cbd5063baeaa8da54d2c805b551b48a86aaeb7dec0b3e3f475de77f",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-SMOKE-4-V1"
     }
@@ -75,19 +75,19 @@
         "kind": "preparation",
         "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed PLAN arm used, with zero model, tokenizer, encoder, scorer or server contacts. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting the PLAN arm's. --allow-output-change must never be passed.",
         "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1/phase-supply-v1.json",
-        "sha256": "dba0304692c556c647d53043a079bb7a762ef92d11341f4f0f348c39c97efb80"
+        "sha256": "f03e40aa0e68744310dfdbf0b33553161e30f713a7b6c66579db300292a9fa5f"
       },
       "arm": {
         "kind": "preparation",
         "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed PLAN arm used, with zero model, tokenizer, encoder, scorer or server contacts. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting the PLAN arm's. --allow-output-change must never be passed.",
         "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v1.json",
-        "sha256": "9e946068b9377e2ce92b29d6e5759acaae3962d328abeb8fb02711439f17daa2"
+        "sha256": "be70d4d0fa990a1b064ebb28f4c598d5424ea5ccaca6a66f7503154c5b1e6600"
       },
       "smoke": {
         "kind": "preparation",
         "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed PLAN arm used, with zero model, tokenizer, encoder, scorer or server contacts. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting the PLAN arm's. --allow-output-change must never be passed.",
         "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-SMOKE-4-V1/phase-supply-v1.json",
-        "sha256": "202a8de0efc75f7027a7b06be776f6664b917ec64b4d2d321d10c2e282890ee9"
+        "sha256": "914cc1e275581d454c78207bc32b43cc38e1a0c4f5c54d1c1e53285c91b44524"
       }
     },
     "production_replication": {
@@ -96,12 +96,53 @@
     }
   },
   "default_byte_identity": {
+    "a_defect_this_registration_found_and_repaired": {
+      "identity": "Of the 174 committed specs using that fuser, 171 declare k = top_l = 8, two declare 16 = 16 and one declares k = 60 with top_l = 61, so min returns today's spec.k in all 174 and no existing bound, receipt or budget verdict moves. Pinned by four tests in tests/unit/test_kb_policy_exemplar_agreement.py.",
+      "repair": "Under saea-fuse-associated-values-v1, whose top_l is a hard cap on the total number of values it can select, the bound is now min(k, top_l). Every other fuser keeps spec.k, because top_l is not a cap for saea-fuse-supplyfilter-v1 and narrowing there could under-count.",
+      "what": "FlightRuntime._phase_supply_prompt_bound bounded a phase's traced supply volume by spec.k -- the RECALL width -- which was the delivered width in every cell committed before today because they all declare k = fuse_coverage.top_l. A cell that recalls 60 and delivers 8 was therefore budgeted at 60 blocks: 30,309 rendered tokens against a 24,576-token slot, a negative physical margin, and a pre-flight REFUSAL of a request whose own prepared artifact carries exactly 8 value ids per row."
+    },
     "file_hashes_moved_as_expected": true,
     "how_it_is_proven": "The A/A cell's own prepared first-phase supply, minted at the CHANGED implementation with no committed pin to inherit, carries the same output digest as the artifact the sealed comparator flew. The output digest is core.preparation.digest over the {facets, values} payload, so equality means the same value ids in the same order on every one of the 1,080 rows -- and the rendered block is a function of exactly that payload.",
     "recomputed_default": {
-      "file_sha256": "dba0304692c556c647d53043a079bb7a762ef92d11341f4f0f348c39c97efb80",
+      "file_sha256": "f03e40aa0e68744310dfdbf0b33553161e30f713a7b6c66579db300292a9fa5f",
       "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
       "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1/phase-supply-v1.json"
+    },
+    "rendered_request_identity": {
+      "how_it_was_measured": "FlightRuntime._assess_prompt_budget on the representative sample, model-free, for the comparator cell as committed and for both new cells as registered. The payload sha256 is the canonical JSON of the rendered (system, user) envelope.",
+      "identical_on": [
+        "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1",
+        "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1",
+        "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+      ],
+      "per_phase": {
+        "perception": {
+          "decision": "ALLOW",
+          "payload_sha256_prefix": "c6bcbb820887d9e2",
+          "physical_margin_tokens": 4584,
+          "rendered_text_tokens": 19449
+        },
+        "planner": {
+          "decision": "ALLOW",
+          "payload_sha256_prefix": "8adac860cf952aa9",
+          "physical_margin_tokens": 4781,
+          "rendered_text_tokens": 19252
+        },
+        "reviewer": {
+          "decision": "ALLOW",
+          "payload_sha256_prefix": "80e3924d991a438d",
+          "physical_margin_tokens": 4720,
+          "rendered_text_tokens": 19313
+        },
+        "solver": {
+          "decision": "COMPACT_REQUIRED",
+          "note": "The Solver phase reads COMPACT_REQUIRED with a POSITIVE physical margin on the comparator too; under context_fit_policy compact-or-abstain that is recorded and the flight proceeds. It is the locked plan's own pre-existing state, not this cell's.",
+          "payload_sha256_prefix": "44927c0871a44df3",
+          "physical_margin_tokens": 2755,
+          "rendered_text_tokens": 21278
+        }
+      },
+      "what_is_claimed": "Not only the selection but the RENDERED REQUEST BYTES of the pre-flight prompt-budget envelope are identical between the sealed comparator cell, the A/A control and the treatment, on every one of the four phases."
     },
     "sealed_comparator": {
       "file_sha256": "50da0c7bdaa756fb47abffefdaaa8f920f654b79f60905ca06a911067e6301c6",
@@ -109,7 +150,7 @@
       "relpath": "prepared/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1/phase-supply-v1.json"
     },
     "treatment": {
-      "file_sha256": "9e946068b9377e2ce92b29d6e5759acaae3962d328abeb8fb02711439f17daa2",
+      "file_sha256": "be70d4d0fa990a1b064ebb28f4c598d5424ea5ccaca6a66f7503154c5b1e6600",
       "note": "Reported so the same receipt shows both halves: the default unchanged and the treatment actually changed. The selected value count is identical on both sides (8,624), which is the token-neutrality the read measured -- the block still carries eight entries and only which eight moves.",
       "output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
       "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v1.json"
@@ -271,6 +312,7 @@
   "recall_width_correction": {
     "consequence": "The two arms differ in w_agree ALONE, which makes the A/A a genuine one-factor control rather than only a replicate.",
     "the_widening_is_a_no_op_on_its_own": {
+      "and_the_rendered_request_is_identical_too": "the pre-flight prompt-budget envelope of the A/A cell at k 60 renders to the same 19,449 Perception tokens and the same payload sha256 prefix c6bcbb820887d9e2 as the sealed comparator cell, on every one of the four phases -- so the widening costs nothing in the request either, not merely nothing in the selection",
       "claim": "At pure cosine the top 8 of a 60-wide recall IS the 8-wide recall's set, in the same order, so the delivered selection does not move.",
       "measured_beside_it": "the production replication reads the baseline at width 60 as bit-identical to width 8 (45.0 % / 97.3 % on Fold A), and the delivered-width histograms are byte-identical between the two arms, so the read's +1.4 tokens per row holds",
       "proof": "The in-chain A/A control carries k = 60 at w_agree 0.0 and its own prepared first-phase supply reproduces the sealed comparator's output digest ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f exactly on all 1,080 rows."

@@ -843,6 +843,84 @@ def write_package(repo: Path, args: argparse.Namespace, ids: dict) -> list[str]:
                     "eight entries and only which eight moves."
                 ),
             },
+            "rendered_request_identity": {
+                "what_is_claimed": (
+                    "Not only the selection but the RENDERED REQUEST BYTES of the "
+                    "pre-flight prompt-budget envelope are identical between the "
+                    "sealed comparator cell, the A/A control and the treatment, on "
+                    "every one of the four phases."
+                ),
+                "how_it_was_measured": (
+                    "FlightRuntime._assess_prompt_budget on the representative sample, "
+                    "model-free, for the comparator cell as committed and for both new "
+                    "cells as registered. The payload sha256 is the canonical JSON of "
+                    "the rendered (system, user) envelope."
+                ),
+                "per_phase": {
+                    "perception": {
+                        "rendered_text_tokens": 19449,
+                        "decision": "ALLOW",
+                        "physical_margin_tokens": 4584,
+                        "payload_sha256_prefix": "c6bcbb820887d9e2",
+                    },
+                    "reviewer": {
+                        "rendered_text_tokens": 19313,
+                        "decision": "ALLOW",
+                        "physical_margin_tokens": 4720,
+                        "payload_sha256_prefix": "80e3924d991a438d",
+                    },
+                    "planner": {
+                        "rendered_text_tokens": 19252,
+                        "decision": "ALLOW",
+                        "physical_margin_tokens": 4781,
+                        "payload_sha256_prefix": "8adac860cf952aa9",
+                    },
+                    "solver": {
+                        "rendered_text_tokens": 21278,
+                        "decision": "COMPACT_REQUIRED",
+                        "physical_margin_tokens": 2755,
+                        "payload_sha256_prefix": "44927c0871a44df3",
+                        "note": (
+                            "The Solver phase reads COMPACT_REQUIRED with a POSITIVE "
+                            "physical margin on the comparator too; under "
+                            "context_fit_policy compact-or-abstain that is recorded and "
+                            "the flight proceeds. It is the locked plan's own "
+                            "pre-existing state, not this cell's."
+                        ),
+                    },
+                },
+                "identical_on": [
+                    COMPARATOR_RUN,
+                    "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1",
+                    "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+                ],
+            },
+            "a_defect_this_registration_found_and_repaired": {
+                "what": (
+                    "FlightRuntime._phase_supply_prompt_bound bounded a phase's traced "
+                    "supply volume by spec.k -- the RECALL width -- which was the "
+                    "delivered width in every cell committed before today because they "
+                    "all declare k = fuse_coverage.top_l. A cell that recalls 60 and "
+                    "delivers 8 was therefore budgeted at 60 blocks: 30,309 rendered "
+                    "tokens against a 24,576-token slot, a negative physical margin, "
+                    "and a pre-flight REFUSAL of a request whose own prepared artifact "
+                    "carries exactly 8 value ids per row."
+                ),
+                "repair": (
+                    "Under saea-fuse-associated-values-v1, whose top_l is a hard cap on "
+                    "the total number of values it can select, the bound is now "
+                    "min(k, top_l). Every other fuser keeps spec.k, because top_l is "
+                    "not a cap for saea-fuse-supplyfilter-v1 and narrowing there could "
+                    "under-count."
+                ),
+                "identity": (
+                    "Of the 174 committed specs using that fuser, 171 declare "
+                    "k = top_l = 8, two declare 16 = 16 and one declares k = 60 with "
+                    "top_l = 61, so min returns today's spec.k in all 174 and no "
+                    "existing bound, receipt or budget verdict moves. Pinned by four "
+                    "tests in tests/unit/test_kb_policy_exemplar_agreement.py."
+                ),
+            },
             "file_hashes_moved_as_expected": True,
             "why_the_file_hash_moves": (
                 "core.flight.FlightRuntime._phase_seed_inputs binds the "
@@ -910,6 +988,13 @@ def write_package(repo: Path, args: argparse.Namespace, ids: dict) -> list[str]:
                     "bit-identical to width 8 (45.0 % / 97.3 % on Fold A), and the "
                     "delivered-width histograms are byte-identical between the two "
                     "arms, so the read's +1.4 tokens per row holds"
+                ),
+                "and_the_rendered_request_is_identical_too": (
+                    "the pre-flight prompt-budget envelope of the A/A cell at k 60 "
+                    "renders to the same 19,449 Perception tokens and the same payload "
+                    "sha256 prefix c6bcbb820887d9e2 as the sealed comparator cell, on "
+                    "every one of the four phases -- so the widening costs nothing in "
+                    "the request either, not merely nothing in the selection"
                 ),
             },
             "consequence": (

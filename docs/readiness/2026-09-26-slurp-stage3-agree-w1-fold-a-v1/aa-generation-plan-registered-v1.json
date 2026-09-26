@@ -6,7 +6,7 @@
     "verified": true
   },
   "cell": "slurp-native-stage3-agree-aa-fold-a-v1",
-  "composed_config_hash": "43724db7cb5246f36aad726f128b068ad9abbec4720eb23d44f20a96f208deac",
+  "composed_config_hash": "4e55d2958b8ecc954bf264db3d07e15fca83653f8ed44a190babd1e40f777eb6",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-agree-aa-fold-a-generation-v1",
     "carrier_lock_key": "slurp",
@@ -14,7 +14,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "b1997a6316862e513e504cf47cf5c7bfd26abac6280040873e90b4dc73f775b5",
+    "protocol_hash": "8007009b17cbeb619bdbe8cf2b89ccfbfcda75a2b63ef0259d7cddef271e8451",
     "run_id": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -41,11 +41,11 @@
   "prepared_phase_supply": {
     "note": "THIS CELL'S OWN artifact, built model-free under its own run id by core.flight.cli prepare-supply in this registration (item E16). --allow-output-change must never be passed.",
     "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1/phase-supply-v1.json",
-    "sha256": "dba0304692c556c647d53043a079bb7a762ef92d11341f4f0f348c39c97efb80"
+    "sha256": "f03e40aa0e68744310dfdbf0b33553161e30f713a7b6c66579db300292a9fa5f"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "3a2e7afb8faa11047210e0feec3519e83c28ca36df8250f5d8c5a67d67f146f6"
+    "sha256": "5ff1ecbd2700d85a54065f37708d7f40a4d37765277efb4bf849e296cd0129ae"
   },
   "purpose": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1: The in-chain A/A replicate of cell AGREE. It supplies the within-chain null the AGREE delta is read at and makes no claim of its own.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the AGREE arm and its in-chain A/A replicate. A verdict computed against the sealed comparator alone is refused.",

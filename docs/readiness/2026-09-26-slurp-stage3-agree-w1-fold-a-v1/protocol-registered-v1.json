@@ -9,12 +9,12 @@
         "w_prior": 0.0
       },
       "cell": "slurp-native-stage3-agree-aa-fold-a-v1",
-      "composed_config_hash": "43724db7cb5246f36aad726f128b068ad9abbec4720eb23d44f20a96f208deac",
+      "composed_config_hash": "4e55d2958b8ecc954bf264db3d07e15fca83653f8ed44a190babd1e40f777eb6",
       "declares_agreement_source": false,
       "experiment": "slurp-native-stage3-agree-aa-fold-a-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-agree-aa-fold-a-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-FIT-V1",
-      "protocol_hash": "b1997a6316862e513e504cf47cf5c7bfd26abac6280040873e90b4dc73f775b5",
+      "protocol_hash": "8007009b17cbeb619bdbe8cf2b89ccfbfcda75a2b63ef0259d7cddef271e8451",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1",
       "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
@@ -27,12 +27,12 @@
         "w_prior": 0.0
       },
       "cell": "slurp-native-stage3-agree-w1-fold-a-v1",
-      "composed_config_hash": "ad9eaed0a1af16a7fe17e54ab720880c4b9b4a04237d175b67ab7d7e98c85846",
+      "composed_config_hash": "80994f4a0173f8f4e7891b60c2bc3f99df04c56925015016dbe76973dd0d6a7b",
       "declares_agreement_source": true,
       "experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-FIT-V1",
-      "protocol_hash": "1930d062a102a269a737c67cce47f41cb7ff3eaadb5bf6ed2cc13cee6af7a436",
+      "protocol_hash": "90abf80ca48725c92e0245e425f0837d729049eb4ce632bde39d4b208efbfca3",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
       "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
@@ -45,12 +45,12 @@
         "w_prior": 0.0
       },
       "cell": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
-      "composed_config_hash": "b28799e911a7662c4e4e2c13f807461ed1c633dc17dade85a3d1a65ca4c018f0",
+      "composed_config_hash": "bb4ba16be36d2bc16b45c4645d99317324714970dd29a5811eabcf3a3a8e57c3",
       "declares_agreement_source": true,
       "experiment": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-SMOKE-4-FIT-V1",
-      "protocol_hash": "aca95825805ae4ce0ea06aeacfd869a6520429a3ad5eb17fa3fa7cd0e3c108af",
+      "protocol_hash": "917ad0260cbd5063baeaa8da54d2c805b551b48a86aaeb7dec0b3e3f475de77f",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-SMOKE-4-V1",
       "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"

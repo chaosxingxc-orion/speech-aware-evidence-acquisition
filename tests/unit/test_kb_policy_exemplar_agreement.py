@@ -527,3 +527,99 @@ def test_an_agreement_source_with_no_explicit_rank_weights_is_refused():
     spec.pop("rank_weights")
     with pytest.raises(PhaseSupplyError, match="requires explicit rank_weights"):
         PhaseSupplySpec(**spec).validate()
+
+
+# ---------------------------------------------------------------------------
+# the pre-flight prompt bound must count what the fuser DELIVERS
+# ---------------------------------------------------------------------------
+
+
+def _prompt_bound(*, k: int, top_l: int, fuse_policy: str) -> int:
+    """``len(blocks)`` from ``FlightRuntime._phase_supply_prompt_bound`` for a
+    one-phase stub, called unbound so the test needs no repo and no data root."""
+
+    from types import SimpleNamespace
+
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+    from speech_aware_evidence_acquisition.rails import controllers as rc
+
+    program = rc.default_phase_program("phase-direct-evidence-alpha-blend-v1")
+    snapshot = KnowledgeSnapshot(
+        snapshot_id="bound-test-v1",
+        source_split_identity_hash=_SHA,
+        source_sample_ids=tuple(f"train:{n}" for n in range(60)),
+        builder_policy_id="test-builder-v1",
+        facets=tuple(
+            KeyFacet(f"facet:content:{n}", "content", "text", "k" * (10 + n), (f"train:{n}",))
+            for n in range(60)
+        ),
+        values=tuple(
+            ValueBundle(
+                value_id=f"value:{n}",
+                content="v" * (10 + n),
+                associated_facet_ids=(f"facet:content:{n}",),
+                source_sample_ids=(f"train:{n}",),
+                provenance_refs=(f"sample:train:{n}",),
+            )
+            for n in range(60)
+        ),
+    ).validate()
+    stub = SimpleNamespace(
+        _composed=SimpleNamespace(
+            values={
+                "phase_supply": {
+                    "evidence": {
+                        "provider": "kb-facet-v1",
+                        "rank_policy": kb_policy.RANK_POLICY_ID,
+                        "fuse_policy": fuse_policy,
+                        "k": k,
+                        "tau": 0.0,
+                        "dimensions": ["content"],
+                        "expose_facets": False,
+                        "fuse_coverage": {"m": 8, "c": 1, "top_l": top_l},
+                        "query_source": {
+                            "kind": "sealed-vectors",
+                            "relpath": "v/q.jsonl",
+                            "sha256": _SHA,
+                            "tool_contact_ledger_row": "TEST-EMB-0001",
+                            "embedded_signal": "speech: synthetic",
+                        },
+                    }
+                }
+            }
+        ),
+        _load_knowledge_snapshot=lambda: snapshot,
+    )
+    return len(FlightRuntime._phase_supply_prompt_bound(stub, program)["evidence"])
+
+
+def test_the_prompt_bound_counts_the_delivered_width_under_the_associated_fuser():
+    """THE DEFECT THIS PINS. The bound counted ``k`` values -- the RECALL width
+    -- which was the delivered width in every cell committed before the
+    agreement cell, and is 7.5x too many for a cell that recalls 60 and delivers
+    8. Counting a request at 30,309 tokens when its own prepared artifact carries
+    8 value ids per row is not conservatism, it is a wrong refusal."""
+
+    assert _prompt_bound(
+        k=60, top_l=8, fuse_policy=kb_policy.ASSOCIATED_VALUES_FUSE_POLICY_ID
+    ) == 8
+
+
+@pytest.mark.parametrize("k, top_l", [(8, 8), (16, 16), (60, 61)])
+def test_the_narrowing_is_an_identity_on_every_committed_shape(k, top_l):
+    """Of the committed specs using this fuser, 171 declare k = top_l = 8, two
+    declare 16 = 16 and one declares k = 60 with top_l = 61, so ``min`` returns
+    ``k`` in every one of them and no existing bound moves."""
+
+    assert _prompt_bound(
+        k=k, top_l=top_l, fuse_policy=kb_policy.ASSOCIATED_VALUES_FUSE_POLICY_ID
+    ) == k
+
+
+def test_every_other_fuser_keeps_the_recall_width_as_its_bound():
+    """``saea-fuse-supplyfilter-v1`` selects up to ``c`` values per
+    ``task_target`` over ``top_l`` targets and one facet may carry several
+    values, so ``top_l`` is not a cap for it and narrowing there could
+    UNDER-count. It is deliberately left alone."""
+
+    assert _prompt_bound(k=60, top_l=8, fuse_policy=kb_policy.FUSE_POLICY_ID) == 60

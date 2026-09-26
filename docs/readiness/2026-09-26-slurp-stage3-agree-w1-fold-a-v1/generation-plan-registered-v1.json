@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-agree-w1-fold-a-v1",
-  "composed_config_hash": "ad9eaed0a1af16a7fe17e54ab720880c4b9b4a04237d175b67ab7d7e98c85846",
+  "composed_config_hash": "80994f4a0173f8f4e7891b60c2bc3f99df04c56925015016dbe76973dd0d6a7b",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "1930d062a102a269a737c67cce47f41cb7ff3eaadb5bf6ed2cc13cee6af7a436",
+    "protocol_hash": "90abf80ca48725c92e0245e425f0837d729049eb4ce632bde39d4b208efbfca3",
     "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -35,11 +35,11 @@
   "prepared_phase_supply": {
     "note": "THIS CELL'S OWN artifact, built model-free under its own run id by core.flight.cli prepare-supply in this registration (item E16). --allow-output-change must never be passed.",
     "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v1.json",
-    "sha256": "9e946068b9377e2ce92b29d6e5759acaae3962d328abeb8fb02711439f17daa2"
+    "sha256": "be70d4d0fa990a1b064ebb28f4c598d5424ea5ccaca6a66f7503154c5b1e6600"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "3a2e7afb8faa11047210e0feec3519e83c28ca36df8250f5d8c5a67d67f146f6"
+    "sha256": "5ff1ecbd2700d85a54065f37708d7f40a4d37765277efb4bf849e296cd0129ae"
   },
   "purpose": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1: Cell AGREE. NEUTRAL: both guards non-inferior at the plan's own null -- the CI95 lower bound of the paired official pooled SLU-F1 delta above -h_slu and of the intent delta above -h_intent, each measured against the IN-CHAIN A/A arm, not against the sealed comparator alone. ADMITTED: NEUTRAL and the SLU CI95 lower bound above zero against the in-chain A/A. HARMFUL: a measured loss on either guard (decision 25). Every verdict carries the per-stratum table in both weightings, the frontier row (decision 75), the delivery-rate check (did the flown arm deliver the gold intent's boundary entry on the rows the offline replication says it would?) and the measured token delta.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the AGREE arm and its in-chain A/A replicate. A verdict computed against the sealed comparator alone is refused.",
