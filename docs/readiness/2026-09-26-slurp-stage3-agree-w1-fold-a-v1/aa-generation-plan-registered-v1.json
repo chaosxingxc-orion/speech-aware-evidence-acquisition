@@ -35,7 +35,7 @@
     "official_complete_scoring_jobs": 1,
     "repeated_speech_audio_seconds_cap": 33930
   },
-  "one_factor": "The intent-boundary Perception channel reads its own registered w_agree term over a pre-computed, self-excluded exemplar-intent vote: w_agree 1.0, k unchanged at 8, w_cos unchanged at 1.0, w_prior unchanged at 0.0. Nothing else moves.",
+  "one_factor": "The intent-boundary Perception channel reads its own registered w_agree term over a pre-computed, self-excluded exemplar-intent vote: w_agree 1.0, w_cos unchanged at 1.0, w_prior unchanged at 0.0, and the DELIVERED width unchanged at 8 entries (fuse_coverage m 8 / c 1 / top_l 8). The RECALL width k moves from 8 to the store's full 60, because k is the provider's top_k_per_dimension and truncates by cosine BEFORE the ranker runs -- at 8 the agreement term is inert, measured. The widening is a proven no-op on its own: the in-chain A/A control carries k 60 at w_agree 0.0 and reproduces the sealed comparator's first-phase output digest AND its rendered request bytes exactly, so the two arms differ in w_agree alone. Nothing else moves.",
   "plan_kind": "generation",
   "preparation_base_commit": "c452c048",
   "prepared_phase_supply": {
@@ -45,7 +45,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "5ff1ecbd2700d85a54065f37708d7f40a4d37765277efb4bf849e296cd0129ae"
+    "sha256": "55336318a1c07bdde8a2b8d690d310282217639a77da94ab9262a6702d74b6e1"
   },
   "purpose": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1: The in-chain A/A replicate of cell AGREE. It supplies the within-chain null the AGREE delta is read at and makes no claim of its own.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the AGREE arm and its in-chain A/A replicate. A verdict computed against the sealed comparator alone is refused.",

@@ -29,7 +29,7 @@
     "official_complete_scoring_jobs": 1,
     "repeated_speech_audio_seconds_cap": 33930
   },
-  "one_factor": "The intent-boundary Perception channel reads its own registered w_agree term over a pre-computed, self-excluded exemplar-intent vote: w_agree 1.0, k unchanged at 8, w_cos unchanged at 1.0, w_prior unchanged at 0.0. Nothing else moves.",
+  "one_factor": "The intent-boundary Perception channel reads its own registered w_agree term over a pre-computed, self-excluded exemplar-intent vote: w_agree 1.0, w_cos unchanged at 1.0, w_prior unchanged at 0.0, and the DELIVERED width unchanged at 8 entries (fuse_coverage m 8 / c 1 / top_l 8). The RECALL width k moves from 8 to the store's full 60, because k is the provider's top_k_per_dimension and truncates by cosine BEFORE the ranker runs -- at 8 the agreement term is inert, measured. The widening is a proven no-op on its own: the in-chain A/A control carries k 60 at w_agree 0.0 and reproduces the sealed comparator's first-phase output digest AND its rendered request bytes exactly, so the two arms differ in w_agree alone. Nothing else moves.",
   "plan_kind": "generation",
   "preparation_base_commit": "c452c048",
   "prepared_phase_supply": {
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "5ff1ecbd2700d85a54065f37708d7f40a4d37765277efb4bf849e296cd0129ae"
+    "sha256": "55336318a1c07bdde8a2b8d690d310282217639a77da94ab9262a6702d74b6e1"
   },
   "purpose": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1: Cell AGREE. NEUTRAL: both guards non-inferior at the plan's own null -- the CI95 lower bound of the paired official pooled SLU-F1 delta above -h_slu and of the intent delta above -h_intent, each measured against the IN-CHAIN A/A arm, not against the sealed comparator alone. ADMITTED: NEUTRAL and the SLU CI95 lower bound above zero against the in-chain A/A. HARMFUL: a measured loss on either guard (decision 25). Every verdict carries the per-stratum table in both weightings, the frontier row (decision 75), the delivery-rate check (did the flown arm deliver the gold intent's boundary entry on the rows the offline replication says it would?) and the measured token delta.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the AGREE arm and its in-chain A/A replicate. A verdict computed against the sealed comparator alone is refused.",

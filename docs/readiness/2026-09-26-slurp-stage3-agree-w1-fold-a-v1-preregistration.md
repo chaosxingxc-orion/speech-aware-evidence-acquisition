@@ -9,7 +9,7 @@ claim.
 | item | value |
 | --- | --- |
 | base | the locked v2.0 plan, the sealed PLAN arm `SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1` (63.6304 / 82.2222) |
-| factor | The intent-boundary Perception channel reads its own registered w_agree term over a pre-computed, self-excluded exemplar-intent vote: w_agree 1.0, k unchanged at 8, w_cos unchanged at 1.0, w_prior unchanged at 0.0. Nothing else moves. |
+| factor | The intent-boundary Perception channel reads its own registered w_agree term over a pre-computed, self-excluded exemplar-intent vote: w_agree 1.0, w_cos unchanged at 1.0, w_prior unchanged at 0.0, and the DELIVERED width unchanged at 8 entries (fuse_coverage m 8 / c 1 / top_l 8). The RECALL width k moves from 8 to the store's full 60, because k is the provider's top_k_per_dimension and truncates by cosine BEFORE the ranker runs -- at 8 the agreement term is inert, measured. The widening is a proven no-op on its own: the in-chain A/A control carries k 60 at w_agree 0.0 and reproduces the sealed comparator's first-phase output digest AND its rendered request bytes exactly, so the two arms differ in w_agree alone. Nothing else moves. |
 | unchanged | roster (TRAIN Fold A 1,080), geometry (np4 x 24,576), session, program and its 11-contact ceiling, all three stores and their pins, exemplar k = 20, role graph, templates, normaliser, scorers, budgets |
 | comparator | `SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1`, sealed, never re-flown |
 | in-chain replicate | `SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1`, the locked form re-flown in the SAME campaign chain |

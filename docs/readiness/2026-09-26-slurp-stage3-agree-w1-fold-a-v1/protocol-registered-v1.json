@@ -98,7 +98,7 @@
       "receipt_sha256": "7cd1f6d338731ea7b6eef34408e5d37453c852670900319445968ddc2a1dc624"
     }
   },
-  "one_factor": "The intent-boundary Perception channel reads its own registered w_agree term over a pre-computed, self-excluded exemplar-intent vote: w_agree 1.0, k unchanged at 8, w_cos unchanged at 1.0, w_prior unchanged at 0.0. Nothing else moves.",
+  "one_factor": "The intent-boundary Perception channel reads its own registered w_agree term over a pre-computed, self-excluded exemplar-intent vote: w_agree 1.0, w_cos unchanged at 1.0, w_prior unchanged at 0.0, and the DELIVERED width unchanged at 8 entries (fuse_coverage m 8 / c 1 / top_l 8). The RECALL width k moves from 8 to the store's full 60, because k is the provider's top_k_per_dimension and truncates by cosine BEFORE the ranker runs -- at 8 the agreement term is inert, measured. The widening is a proven no-op on its own: the in-chain A/A control carries k 60 at w_agree 0.0 and reproduces the sealed comparator's first-phase output digest AND its rendered request bytes exactly, so the two arms differ in w_agree alone. Nothing else moves.",
   "prohibitions": "No paper-scale profile. No confirmatory or test-split contact. No Fold B or DEV read from this cell. No re-flying of the sealed comparator. No second factor. No w_prior change. No k change. No store rebuild or release. No admission entry from this registration, and no flight before root mints the decision receipt and all three cells are flipped.",
   "protocol_id": "slurp-stage3-agree-w1-fold-a-protocol-v1",
   "registered_at_utc": "2026-09-26T12:00:00.000000+00:00",

@@ -356,10 +356,17 @@ def write_package(repo: Path, args: argparse.Namespace, ids: dict) -> list[str]:
             "(development numbers), 101 (the Stage-3 algorithm label) and 110"
         ),
         "one_factor": (
-            "The intent-boundary Perception channel reads its own registered "
-            "w_agree term over a pre-computed, self-excluded exemplar-intent vote: "
-            "w_agree 1.0, k unchanged at 8, w_cos unchanged at 1.0, w_prior "
-            "unchanged at 0.0. Nothing else moves."
+            "The intent-boundary Perception channel reads its own registered w_agree "
+            "term over a pre-computed, self-excluded exemplar-intent vote: w_agree "
+            "1.0, w_cos unchanged at 1.0, w_prior unchanged at 0.0, and the DELIVERED "
+            "width unchanged at 8 entries (fuse_coverage m 8 / c 1 / top_l 8). The "
+            "RECALL width k moves from 8 to the store's full 60, because k is the "
+            "provider's top_k_per_dimension and truncates by cosine BEFORE the ranker "
+            "runs -- at 8 the agreement term is inert, measured. The widening is a "
+            "proven no-op on its own: the in-chain A/A control carries k 60 at w_agree "
+            "0.0 and reproduces the sealed comparator's first-phase output digest AND "
+            "its rendered request bytes exactly, so the two arms differ in w_agree "
+            "alone. Nothing else moves."
         ),
         "why_w_prior_is_untouched": (
             "It is DEAD on this channel, not merely zeroed. Measured on the released "
@@ -1116,13 +1123,22 @@ Nothing here authorises a flight, a flip or an admission entry.
 
 **Why.** [`{DIAGNOSTIC}`]({DIAGNOSTIC[5:]}) measured where the gold intent
 actually ranks in the flown Perception boundary retrieval: median rank 10-14 on intent-wrong rows
-against 1 on correct rows, spread down the whole tail, so widening `k` is not the fix -- `k` 16
-leaves over two thirds still missing, and `k` 30 buys the same delivery as this change for +3,262.3
-tokens a row instead of +1.4. The exemplar channel already ranks the gold intent first on 76.1 % of
-rows against the boundary cosine's 65.6 %, so this change lets the boundary ranker borrow a signal
-the system already computes. Selected from 27 candidates by a rule fixed before the numbers were
-read; measured delivery on intent-wrong rows 45.0 % -> 81.7 % on the fit roster, with a +30.4-point
-floor on the two rosters the weight was not fitted on.
+against 1 on correct rows, spread down the whole tail, so widening what the channel DELIVERS is not
+the fix -- delivering 16 leaves over two thirds still missing, and delivering 30 buys the same
+delivery as this change for +3,262.3 tokens a row instead of +1.4. The exemplar channel already ranks
+the gold intent first on 76.1 % of rows against the boundary cosine's 65.6 %, so this change lets the
+boundary ranker borrow a signal the system already computes. Selected from 27 candidates by a rule
+fixed before the numbers were read; measured delivery on intent-wrong rows 45.0 % -> 81.7 % on the fit
+roster, with a +30.4-point floor on the two rosters the weight was not fitted on.
+
+**One correction to the brief this implements, and it is load-bearing.** `PhaseSupplySpec.k` is the
+provider's `top_k_per_dimension`, so the recall truncates by cosine BEFORE the ranker runs: left at 8,
+the agreement term can only permute the eight the cosine already chose and cannot reach a gold intent
+at rank 9-60, which is the whole population the read measured. Measured through the production path,
+at `k` 8 the treatment is **inert** -- wrong-row delivery 45.0 % to 45.0 % on all three rosters. The
+read's own simulation recalled at 60 and delivered 8, and that is what is registered here: `k` 60 with
+`fuse_coverage` m 8 / c 1 / top_l 8. The delivered width does not move, the selected-value count is
+8,624 on both arms, and the widening alone is proven inert -- see **Byte identity** below.
 
 | file | what it holds |
 | --- | --- |
@@ -1133,7 +1149,7 @@ floor on the two rosters the weight was not fitted on.
 | `aa-generation-plan-registered-v1.json` / `aa-fit-plan-registered-v1.json` | the in-chain A/A replicate's plans |
 | `smoke-generation-plan-registered-v1.json` / `smoke-fit-plan-registered-v1.json` | the four-row form smoke's plans |
 | `analysis-recipe-v1.json` | how the sealed output is read offline, under its own later-registered read id |
-| `identity-proof-v1.json` | the byte-identity proof: the default's selection is unchanged |
+| `identity-proof-v1.json` | the byte-identity proof: the default's selection is unchanged at the changed implementation |
 | `production-replication-v1.json` | the production path reproducing the read's own delivery numbers |
 
 **Three cells, one chain.** The campaign plan `configs/campaign/slurp-native-stage3-agree-w1-fold-a-v1.json`
@@ -1153,9 +1169,16 @@ declaration to clear a bar is the one move this registration refuses. A NEUTRAL 
 conversion is below what this design can see -- mode (iv) of the read, and the programme's next
 question.
 
-**Byte identity of the default.** The A/A cell's own prepared first-phase supply, minted at the
-changed implementation, carries output SHA-256 `{PLAN_SUPPLY_OUTPUT_SHA}` -- the sealed comparator's
-own digest, on all 1,080 rows. The treatment's differs, so the change is not inert.
+**Byte identity of the default, three ways.** (1) The A/A cell's own prepared first-phase supply,
+minted at the changed implementation with the widened recall and no committed pin to inherit, carries
+output SHA-256 `{PLAN_SUPPLY_OUTPUT_SHA}` -- the sealed comparator's own digest, on all 1,080 rows.
+(2) Its pre-flight prompt-budget envelope renders to the comparator's own token counts and payload
+digests on every one of the four phases (perception 19,449 / `c6bcbb82`, reviewer 19,313 /
+`80e3924d`, planner 19,252 / `8adac860`, solver 21,278 / `44927c08`), so the widened recall costs
+nothing in the request either. (3) With the recall forced back to 8 the A/A renders the identical
+payloads again, which is the widening's no-op stated as a measurement. The treatment's selection
+digest differs (`eab5c61e`), so the change is not inert -- while its selected-value count is the same
+8,624, which is the token neutrality the read measured.
 
 **Mint, flip, queue.** Root mints `coordination/slurp-stage3-agree-w1-fold-a-v1/root-admission-v1.json`
 (id `slurp-stage3-agree-w1-fold-a-admission-v1`) with the six eligible run ids and this family's
