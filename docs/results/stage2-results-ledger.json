@@ -3835,6 +3835,25 @@
         "SAEA-SLURP-STAGE3-EVIDENCE-PATH-CONTROL-R01C-V1",
         "SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-R01C-V1"
       ]
+    },
+    {
+      "date": "2026-09-26",
+      "cell_id": "SLURP-SYSTEM-MEMORY-BATCH002-V1",
+      "status": "CONSTRUCTION_COMPLETE_NO_DEMONSTRATED_MEMORY_GAIN",
+      "source": "docs/results/2026-09-26-system-memory-batch002-consumption-verdict.md",
+      "source_sha256": "1204fca9d3e57a43cbe75a9c453a7e2484d51eb461345187476074803a9d23a2",
+      "meaning": "Four distinct TRAIN inputs, four trajectories per arm; all eight actors fully scored. Sixteen learned memory calls select record2, but all Planner actions ACCEPT and no task corrections occur. The sole paired output difference predates memory exposure. No efficacy claim; next update remains unregistered.",
+      "supersedes_historical_cell_ids": [],
+      "run_ids": [
+        "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S1-RUN-V1",
+        "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S1-RUN-V1",
+        "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S2-RUN-V1",
+        "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S2-RUN-V1",
+        "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S3-RUN-V1",
+        "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S3-RUN-V1",
+        "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S4-RECOVERY1-RUN-V1",
+        "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S4-RECOVERY1-RUN-V1"
+      ]
     }
   ]
 }

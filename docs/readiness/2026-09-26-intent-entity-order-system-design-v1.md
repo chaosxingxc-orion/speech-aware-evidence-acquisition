@@ -1,5 +1,10 @@
 # Intent/entity ordering as a complete-system optimization space
 
+The focused successor is
+`docs/readiness/2026-09-26-intent-slot-task-coupling-design-v2.md`.
+Use it for the owner's task-coupling question; retain this earlier note as
+the implementation audit and candidate-interface diagnostic history.
+
 ## Owner scope correction: two related prediction tasks
 
 The owner clarified that the question concerns the relationship between intent

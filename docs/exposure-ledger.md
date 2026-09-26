@@ -5495,3 +5495,23 @@ All16 summaries are registered together. Preserve all sources; no task scorer or
 | date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 2026-09-26 | SAEA-SLURP-SYSTEM-MEMORY-BATCH002-READ-V1 | model-free-check | Full-system memory consumption, paired terminal feedback and cross-task diagnostics | shared source, official-feedback and tool-exposure readers; no model or scorer rerun | SLURP TRAIN batch002 next4 | discovery | 5a374c143ca8a146e176edb388fe9130c3694dff1cc9c1ab540baf52f3bf5512 | no | 0 | 0 | 0 | Six original complete actors plus two fresh recovery actors;32 complete episodes on4 distinct inputs. Preserve original aborted18contacts separately. | docs/receipts/continuation/2026-09-26-system-memory-batch002-read-authorization.json | REGISTERED BEFORE RESULT READING; eight full seals and exactly one score each verified. Authorization SHA256 4e97d08ff79ca261be3e9e55bdd15d48e1e47241b95e8a03b33292160b4e60c6. Construction only, no efficacy claim or automatic memory promotion. |
+
+## Memory batch002 complete-family interpretation closure
+
+**SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S1-RUN-V1 FINALIZED**: four complete rows and exactly one official score; selected source in read-registration-v4.
+
+**SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S1-RUN-V1 FINALIZED**: four complete rows and exactly one official score; selected source in read-registration-v4.
+
+**SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S2-RUN-V1 FINALIZED**: four complete rows and exactly one official score; selected source in read-registration-v4.
+
+**SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S2-RUN-V1 FINALIZED**: four complete rows and exactly one official score; selected source in read-registration-v4.
+
+**SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S3-RUN-V1 FINALIZED**: four complete rows and exactly one official score; selected source in read-registration-v4.
+
+**SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S3-RUN-V1 FINALIZED**: four complete rows and exactly one official score; selected source in read-registration-v4.
+
+**SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S4-RECOVERY1-RUN-V1 FINALIZED**: four complete rows and exactly one official score; selected source in read-registration-v4.
+
+**SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S4-RECOVERY1-RUN-V1 FINALIZED**: four complete rows and exactly one official score; selected source in read-registration-v4.
+
+**SAEA-SLURP-SYSTEM-MEMORY-BATCH002-READ-V1 COMPLETED**: shared CPU read and root interpretation; zero additional model/scorer contacts. docs/results/2026-09-26-system-memory-batch002-consumption-verdict.md (SHA-256 1204fca9d3e57a43cbe75a9c453a7e2484d51eb461345187476074803a9d23a2). The failed original memory-s4 and unstarted original empty-s4 are not substituted or replayed. Four distinct inputs cannot establish efficacy.

@@ -5,7 +5,48 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
-## Memory batch002 fully scored; registered CPU interpretation in progress
+## Memory batch002 read complete; task coupling and knowledge optimization
+
+Root completed the registered full-family read and inspected actual model/tool
+events. Read docs/results/2026-09-26-system-memory-batch002-consumption-verdict.md.
+The32 complete episodes use four distinct TRAIN inputs, not32 independent
+inputs. Both arms have15/16 correct intents; exact slots are1/16 empty versus0/16
+memory. All32 Planner actions ACCEPT, with no revisions. All16 learned memory
+calls return record2 and expose it downstream; some reviews repeat its guidance
+but also misreport nonempty tool results as empty. No useful memory-mediated
+task correction is established. The single paired answer difference predates
+the memory call and must not be called a causal memory regression.
+
+DATA/coordination/slurp-system-memory-batch002-v1/read-v1/batch-read.json
+SHA2565b84857927b17f444a569cc9b0528f3597567bd41f93cc07a1a386047ba60327.
+Root inspection successor root-inspection-v2.json SHA256
+5d4f140397340afd25fab9cc1da9ebdc358bb05131486d9ac49292d7e9ef2083.
+The next semantic update is not registered. Use round-policy-v3's four learned
+actors and cumulative construction provenance; controls are diagnostic only.
+B1080 evaluation and same-roster replication remain pending.
+
+The owner clarified intent recognition and slot extraction as separate related
+tasks, then proposed training-free optimization of knowledge keys and values.
+Read docs/readiness/2026-09-26-intent-slot-task-coupling-design-v2.md and
+docs/readiness/2026-09-26-system-knowledge-rsi-design-v1.md. Optimize descriptions
+through complete-system rollout feedback, keeping separate intent/slot stores.
+Important implementation facts: current intent activation text affects both
+key and value, while slot supply uses intent-ID bindings rather than free-text
+slot-key retrieval. Do not call these independent key-only edits without
+implementing the corresponding shared field boundary. No new GPU flight or
+external generator API contact is registered by the design notes.
+
+Operational correction: the service is STOPPED, not resident. Its stop receipt
+records resource-guard SIGTERM at12:09:34Z, with sampled_at greater than
+completed_at by0.1685s. The guard rejects backward wall-clock observations;
+Windows free24.96GiB and GPU free3706MiB do not indicate OOM. The external clock
+cause is unknown. All eight actors nevertheless sealed/scored and the driver
+finished12:14:26Z with exit0. Live server/driver processes are absent; the
+monitor remains alive. Do not auto-restart or retry this completed flight.
+Resolve clock-safe observation duration before a separately registered next
+GPU phase, without relaxing resource floors. Preserve source and stop receipts.
+
+## Previous checkpoint: memory batch002 scored; CPU interpretation pending
 
 All eight selected complete actors finalized with one official score each by
 2026-09-26T12:14:26Z: six original actors plus both sole-recovery actors.
