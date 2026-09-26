@@ -55,6 +55,24 @@ remain request parameters. Measure actual prompt/completion/cache metadata
 and memory through the registered work. Semantic successors still need their
 actual sealed sources, exposure plans and strict fit before contact.
 
+## Next disjoint inputs prepared while batch001 runs
+
+The next four frozen-order R01C inputs (positions5 through8) and the exact
+prospective eight-input cumulative roster are prepared. Sample and utterance
+overlap with batch001 is zero; all four existing feature packets pass their
+pinned byte/audio/decoder/encoder checks. No encoding or model contact was
+added. These inputs remain HELD pending the first real memory update and its
+source-attested next-actor configuration. The cumulative preparation does not
+claim future exposure. Read
+[the preparation receipt](../receipts/continuation/2026-09-26-system-batch002-input-preparation.json).
+
+The first replica sealed with16 contacts and one official score at06:38:19Z;
+its quality remains unread. The second replica started at06:38:44Z. The active
+queue is unchanged. The current one-cell campaigns wait for their own scoring;
+the existing shared multi-cell campaign already supports overlapping scoring
+with subsequent independent generation. Use that existing grouping in the next
+registered batch, without introducing another scheduler or changing this flight.
+
 ## Earlier registration checkpoint: first actor batch
 
 The four initial complete-system replicas now have successor run configurations,

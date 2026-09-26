@@ -1,0 +1,105 @@
+{
+  "authority": "Owner retained per-batch updates and required resource sizing before baseline admission.",
+  "carrier_lock_key": "slurp",
+  "excluded_count": 0,
+  "items": [
+    {
+      "audio_seconds": 3.5835,
+      "draw_rank": 28,
+      "headset": false,
+      "min_cosine_to_selected": 0.9066923378304634,
+      "sample_id": "slurp:train:000049:audio-1434542455",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:000049"
+    },
+    {
+      "audio_seconds": 5.76,
+      "draw_rank": 16,
+      "headset": true,
+      "min_cosine_to_selected": 0.884093998135618,
+      "sample_id": "slurp:train:000051:audio-1434531302-headset",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:000051"
+    },
+    {
+      "audio_seconds": 4.3514375,
+      "draw_rank": 9,
+      "headset": false,
+      "min_cosine_to_selected": 0.8848146785103139,
+      "sample_id": "slurp:train:000234:audio-1499688528",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:000234"
+    },
+    {
+      "audio_seconds": 3.34,
+      "draw_rank": 29,
+      "headset": false,
+      "min_cosine_to_selected": 0.9498944492701951,
+      "sample_id": "slurp:train:000260:audio-1488549919",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:000260"
+    },
+    {
+      "audio_seconds": 4.2493125,
+      "draw_rank": 6,
+      "headset": false,
+      "min_cosine_to_selected": 0.8355860616426394,
+      "sample_id": "slurp:train:000282:audio-1502114155",
+      "stratum": "news",
+      "utterance_id": "slurp:train:000282"
+    },
+    {
+      "audio_seconds": 4.8633125,
+      "draw_rank": 36,
+      "headset": false,
+      "min_cosine_to_selected": 0.9097050016309809,
+      "sample_id": "slurp:train:000308:audio-1488905475",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:000308"
+    },
+    {
+      "audio_seconds": 3.5835,
+      "draw_rank": 15,
+      "headset": false,
+      "min_cosine_to_selected": 0.8827992452708608,
+      "sample_id": "slurp:train:000309:audio-1490018206",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:000309"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "draw_rank": 35,
+      "headset": false,
+      "min_cosine_to_selected": 0.9094866517756106,
+      "sample_id": "slurp:train:000351:audio-1499689684",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:000351"
+    }
+  ],
+  "launch_authority": false,
+  "parent": {
+    "repo_relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+    "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd"
+  },
+  "per_stratum": {
+    "alarm": 1,
+    "audio": 1,
+    "datetime": 2,
+    "news": 1,
+    "takeaway": 3
+  },
+  "roster_id": "SLURP-SYSTEM-THROUGH-BATCH002-R01C-V1",
+  "roster_role": "construction",
+  "schema": "saea-roster-receipt-v1",
+  "seed": 20260922,
+  "selection_rule": "Exact ordered union of batch001 and the prospective next four inputs. Preparation does not assert these future inputs have already been exposed.",
+  "split_identity_hash": "7a4b4767adb6ccff4c8efe44a865189c9b7a101e134264132c602807a79c46cd",
+  "split_role": "discovery",
+  "strata_counts": {
+    "alarm": 1,
+    "audio": 1,
+    "datetime": 2,
+    "news": 1,
+    "takeaway": 3
+  }
+}

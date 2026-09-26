@@ -1,0 +1,65 @@
+{
+  "authority": "Owner retained per-batch updates and required resource sizing before baseline admission.",
+  "carrier_lock_key": "slurp",
+  "excluded_count": 0,
+  "items": [
+    {
+      "audio_seconds": 4.2493125,
+      "draw_rank": 6,
+      "headset": false,
+      "min_cosine_to_selected": 0.8355860616426394,
+      "sample_id": "slurp:train:000282:audio-1502114155",
+      "stratum": "news",
+      "utterance_id": "slurp:train:000282"
+    },
+    {
+      "audio_seconds": 4.8633125,
+      "draw_rank": 36,
+      "headset": false,
+      "min_cosine_to_selected": 0.9097050016309809,
+      "sample_id": "slurp:train:000308:audio-1488905475",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:000308"
+    },
+    {
+      "audio_seconds": 3.5835,
+      "draw_rank": 15,
+      "headset": false,
+      "min_cosine_to_selected": 0.8827992452708608,
+      "sample_id": "slurp:train:000309:audio-1490018206",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:000309"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "draw_rank": 35,
+      "headset": false,
+      "min_cosine_to_selected": 0.9094866517756106,
+      "sample_id": "slurp:train:000351:audio-1499689684",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:000351"
+    }
+  ],
+  "launch_authority": false,
+  "parent": {
+    "repo_relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+    "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd"
+  },
+  "per_stratum": {
+    "datetime": 1,
+    "news": 1,
+    "takeaway": 2
+  },
+  "roster_id": "SLURP-SYSTEM-BATCH002-R01C-V1",
+  "roster_role": "construction",
+  "schema": "saea-roster-receipt-v1",
+  "seed": 20260922,
+  "selection_rule": "Use positions5 through8 of the frozen R01C order. Prepared independently of batch001 outcomes; keep held until exact memory and launch registration exist.",
+  "split_identity_hash": "5a374c143ca8a146e176edb388fe9130c3694dff1cc9c1ab540baf52f3bf5512",
+  "split_role": "discovery",
+  "strata_counts": {
+    "datetime": 1,
+    "news": 1,
+    "takeaway": 2
+  }
+}

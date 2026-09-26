@@ -1,0 +1,49 @@
+{
+  "schema": "saea-next-system-batch-preparation-v1",
+  "rosters": {
+    "batch002": {
+      "repo_relpath": "docs/receipts/rosters/slurp-system-batch002-r01c-v1.json",
+      "sha256": "a357828e4a70a5dd88931af99fd018c4598192fa836fa71aada85491a7ada7bc"
+    },
+    "through-batch002": {
+      "repo_relpath": "docs/receipts/rosters/slurp-system-through-batch002-r01c-v1.json",
+      "sha256": "e69642b485185fad1d8a348a004280ae79686088308d86532359fa807f894bf7"
+    }
+  },
+  "dataset": {
+    "repo_relpath": "configs/dataset/slurp-speech-system-batch002-r01c-v1.json",
+    "sha256": "04522df692c4bde8d93d87d254838566c2493af449a1596952ca7e91a791fe21"
+  },
+  "disjoint_samples": true,
+  "disjoint_utterances": true,
+  "batch001_task_outcomes_read": false,
+  "new_model_contacts": 0,
+  "new_encoder_contacts": 0,
+  "launch_authority": false,
+  "next_batch_size_is_prospective": true,
+  "runtime_memory_binding": "PENDING first complete semantic update; do not apply source guidance to batch001 itself.",
+  "execution_grouping": "For the next registered four-replica batch, use one shared multi-cell campaign so existing FlightQueue can overlap serial official scoring with the next independent generation. Do not modify the active batch001 queue.",
+  "verified_feature_packets": [
+    {
+      "sample_id": "slurp:train:000282:audio-1502114155",
+      "packet_sha256": "95751d3a5d0270c6d91d1f2e6b9111b5da87bc53a613849b8b51989c568b340d",
+      "audio_sha256": "ae5e1e77a6c7c81e0ef85ee63db3321039eb91be7853534e55d0e11b96bafb66"
+    },
+    {
+      "sample_id": "slurp:train:000308:audio-1488905475",
+      "packet_sha256": "d739ae4e611a9e28a9e97aeedef4b96532961b5cb316c384f55d300afb2f8d37",
+      "audio_sha256": "f4d44d49e0d71a827eb71163bcddd634a816d7d44d78cb6e1bbcda60c441a8a4"
+    },
+    {
+      "sample_id": "slurp:train:000309:audio-1490018206",
+      "packet_sha256": "3cbb7c3e194d72d9044f0940bbbad188ddcaac300098409ce38ff5d3aa93cf75",
+      "audio_sha256": "53ece90d4fa162e8504f9d6b0e03f68d27d1025f14be93fffffb1ba5e6a3fab8"
+    },
+    {
+      "sample_id": "slurp:train:000351:audio-1499689684",
+      "packet_sha256": "62e40eb2da4336e8a5473ed9575fe89e81689d7a69df9a8d656adcd92f367a29",
+      "audio_sha256": "d782c247e4f3bee99174f22de1eb8a07f426ba318698f8a5c5a0f85137161480"
+    }
+  ],
+  "promotion_receipt_sha256": "a1664e34742dcd2d59c226da701395edf41d150bbbf8db4acc0cdae9c3c0250f"
+}

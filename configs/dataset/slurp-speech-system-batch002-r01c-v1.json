@@ -1,0 +1,51 @@
+{
+  "carrier_lock_key": "slurp",
+  "d1_manifest_sha256": "f45c630715cf0786f1f2e2d47516c3d15d22535dc5e9f0abcbfed7c6a538c57a",
+  "d1_media_supplement": "receipts/artifacts/d1-slurp-stage3-construction-r01.json",
+  "d1_media_supplement_sha256": "7cf5f978dbff16645866ce6bee501efbb9fb48d69b1a5243ba2781491a4d9f56",
+  "schema": "saea-speech-native-runtime-view-v1",
+  "seed": 20260922,
+  "source_binding_sha256": "07ea0b7159ee2895183e1ac8e20935a349969b2bf168f5de49a0cd20f28cd3ca",
+  "split_role": "discovery",
+  "study": "speech-aware-evidence-acquisition",
+  "items": [
+    {
+      "audio_seconds": 4.2493125,
+      "audio_sha256": "ae5e1e77a6c7c81e0ef85ee63db3321039eb91be7853534e55d0e11b96bafb66",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502114155.flac",
+      "packet_id": "slurp/train/000282/audio-1502114155",
+      "sample_id": "slurp:train:000282:audio-1502114155",
+      "sample_rate_hz": 16000
+    },
+    {
+      "audio_seconds": 4.8633125,
+      "audio_sha256": "f4d44d49e0d71a827eb71163bcddd634a816d7d44d78cb6e1bbcda60c441a8a4",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488905475.flac",
+      "packet_id": "slurp/train/000308/audio-1488905475",
+      "sample_id": "slurp:train:000308:audio-1488905475",
+      "sample_rate_hz": 16000
+    },
+    {
+      "audio_seconds": 3.5835,
+      "audio_sha256": "53ece90d4fa162e8504f9d6b0e03f68d27d1025f14be93fffffb1ba5e6a3fab8",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490018206.flac",
+      "packet_id": "slurp/train/000309/audio-1490018206",
+      "sample_id": "slurp:train:000309:audio-1490018206",
+      "sample_rate_hz": 16000
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "audio_sha256": "d782c247e4f3bee99174f22de1eb8a07f426ba318698f8a5c5a0f85137161480",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499689684.flac",
+      "packet_id": "slurp/train/000351/audio-1499689684",
+      "sample_id": "slurp:train:000351:audio-1499689684",
+      "sample_rate_hz": 16000
+    }
+  ],
+  "count": 4,
+  "audio_seconds_total": 15.127812500000001,
+  "split_identity_hash": "5a374c143ca8a146e176edb388fe9130c3694dff1cc9c1ab540baf52f3bf5512",
+  "split_name": "SYSTEM-BATCH002-R01C-V1",
+  "status": "HELD MODEL-FREE NEXT-INPUT PREPARATION; NO MEMORY OR LAUNCH AUTHORITY",
+  "runtime_view_sha256": "56d5e23f8b30a0f1dc48171b0baac92917b8cddd5a67c75d885e03698ca82e18"
+}
