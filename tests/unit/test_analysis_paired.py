@@ -16,14 +16,17 @@ import random
 import pytest
 
 from speech_aware_evidence_acquisition.analysis.paired import (
+    BootstrapResult,
     PairedAnalysisError,
     mcnemar_exact,
     paired_contrast,
+    paired_contrast_bootstrap_tasks,
     per_sample_scores_from_score_file,
     per_stratum_table,
     render_markdown,
     resampled_statistic,
 )
+from speech_aware_evidence_acquisition.analysis.parallel import map_by_key
 
 
 # ---------------------------------------------------------------------------
@@ -644,3 +647,150 @@ def test_resampled_statistic_refuses_a_duplicate_id():
         resampled_statistic(
             sample_ids=["a", "a"], statistic=lambda ids: 0.0, seed=1, n_replicates=2
         )
+
+
+# ---------------------------------------------------------------------------
+# One bootstrap is one unit of work (2026-09-26): the task factory must agree
+# with the function that consumes it, to the last bit, at any worker count.
+# ---------------------------------------------------------------------------
+
+
+def _paired_fixture(rows: int = 60):
+    """A deterministic paired set with a cluster key and two metrics."""
+
+    left, right = {}, {}
+    for index in range(rows):
+        sample_id = f"row-{index:03d}"
+        left[sample_id] = {
+            "exact": float(index % 3 == 0),
+            "f1": 0.10 + 0.01 * (index % 11),
+        }
+        right[sample_id] = {
+            "exact": float(index % 4 == 0),
+            "f1": 0.12 + 0.01 * ((index * 3) % 11),
+        }
+    cluster_of = (lambda sid: f"c{int(sid.split('-')[1]) // 3:02d}")
+    return left, right, cluster_of
+
+
+@pytest.mark.parametrize("cluster", [False, True])
+def test_bootstrap_tasks_reproduce_paired_contrast_exactly(cluster):
+    """The seam is only safe if the tasks are the SAME bootstraps, with the
+    same ``seed + position`` offsets, that ``paired_contrast`` would have run."""
+
+    left, right, cluster_of = _paired_fixture()
+    kwargs = dict(
+        metrics=["exact", "f1"],
+        sample_ids=sorted(left),
+        seed=20260915,
+        n_replicates=200,
+        ci_level=0.95,
+        cluster_of=cluster_of if cluster else None,
+    )
+    inline = paired_contrast(left, right, **kwargs)
+    tasks = paired_contrast_bootstrap_tasks(left, right, **kwargs)
+    assert sorted(tasks) == ["exact", "f1"]
+    supplied = paired_contrast(
+        left, right, bootstraps={key: task() for key, task in tasks.items()}, **kwargs
+    )
+    for metric in ("exact", "f1"):
+        assert supplied[metric] == inline[metric], metric
+        assert supplied[metric].bootstrap.replicates == inline[metric].bootstrap.replicates
+        assert supplied[metric].bootstrap.seed == inline[metric].bootstrap.seed
+
+
+def test_bootstrap_tasks_carry_the_positional_seed_offset():
+    left, right, cluster_of = _paired_fixture(20)
+    tasks = paired_contrast_bootstrap_tasks(
+        left, right, metrics=["exact", "f1"], sample_ids=sorted(left),
+        seed=1000, n_replicates=20, ci_level=0.95, cluster_of=cluster_of,
+    )
+    assert tasks["exact"]().seed == 1000
+    assert tasks["f1"]().seed == 1001
+
+
+@pytest.mark.parametrize("workers", [1, 4])
+def test_bootstrap_tasks_through_the_fan_out_are_worker_count_invariant(workers):
+    left, right, cluster_of = _paired_fixture()
+    tasks = paired_contrast_bootstrap_tasks(
+        left, right, metrics=["exact", "f1"], sample_ids=sorted(left),
+        seed=20260915, n_replicates=200, ci_level=0.95, cluster_of=cluster_of,
+    )
+    through_pool = map_by_key(tasks, workers=workers)
+    assert list(through_pool) == ["exact", "f1"]
+    for metric, task in sorted(tasks.items()):
+        assert through_pool[metric] == task(), metric
+
+
+def test_supplied_bootstraps_refuse_a_missing_metric():
+    left, right, _ = _paired_fixture(20)
+    tasks = paired_contrast_bootstrap_tasks(
+        left, right, metrics=["exact", "f1"], sample_ids=sorted(left),
+        seed=1, n_replicates=10, ci_level=0.95,
+    )
+    with pytest.raises(PairedAnalysisError, match="no entry for requested metric 'f1'"):
+        paired_contrast(
+            left, right, metrics=["exact", "f1"], sample_ids=sorted(left),
+            seed=1, n_replicates=10, ci_level=0.95,
+            bootstraps={"exact": tasks["exact"]()},
+        )
+
+
+def test_supplied_bootstraps_refuse_a_wrong_type():
+    left, right, _ = _paired_fixture(20)
+    with pytest.raises(PairedAnalysisError, match="must be a BootstrapResult"):
+        paired_contrast(
+            left, right, metrics=["exact"], sample_ids=sorted(left),
+            seed=1, n_replicates=10, ci_level=0.95, bootstraps={"exact": 0.5},
+        )
+
+
+def test_supplied_bootstraps_refuse_a_non_mapping():
+    left, right, _ = _paired_fixture(20)
+    with pytest.raises(PairedAnalysisError, match="bootstraps must be a mapping"):
+        paired_contrast(
+            left, right, metrics=["exact"], sample_ids=sorted(left),
+            seed=1, n_replicates=10, ci_level=0.95, bootstraps=[1, 2],
+        )
+
+
+def test_bootstrap_tasks_refuse_a_repeated_metric():
+    left, right, _ = _paired_fixture(20)
+    with pytest.raises(PairedAnalysisError, match="requested twice"):
+        paired_contrast_bootstrap_tasks(
+            left, right, metrics=["exact", "exact"], sample_ids=sorted(left),
+            seed=1, n_replicates=10, ci_level=0.95,
+        )
+
+
+def test_bootstrap_tasks_share_paired_contrast_refusals():
+    left, right, _ = _paired_fixture(20)
+    with pytest.raises(PairedAnalysisError, match="non-empty sequence of metric names"):
+        paired_contrast_bootstrap_tasks(
+            left, right, metrics=[], sample_ids=sorted(left), seed=1, n_replicates=10
+        )
+    with pytest.raises(PairedAnalysisError, match="seed must be an integer"):
+        paired_contrast_bootstrap_tasks(
+            left, right, metrics=["exact"], sample_ids=sorted(left),
+            seed="x", n_replicates=10,
+        )
+
+
+def test_several_independent_bootstraps_do_not_depend_on_execution_order():
+    """The VAR-1 shape: many arm pairs' bootstraps in one flat batch."""
+
+    left, right, cluster_of = _paired_fixture(40)
+    third = {key: {"exact": 1.0 - value["exact"], "f1": value["f1"] * 0.5}
+             for key, value in right.items()}
+    tasks = {}
+    for prefix, other in (("pairA", right), ("pairB", third)):
+        for metric, task in paired_contrast_bootstrap_tasks(
+            left, other, metrics=["exact", "f1"], sample_ids=sorted(left),
+            seed=20260915, n_replicates=100, ci_level=0.95, cluster_of=cluster_of,
+        ).items():
+            tasks[f"{prefix}|{metric}"] = task
+    serial = map_by_key(tasks, workers=1)
+    parallel = map_by_key(tasks, workers=4)
+    assert serial == parallel
+    assert list(serial) == sorted(tasks) == list(parallel)
+    assert all(isinstance(value, BootstrapResult) for value in serial.values())

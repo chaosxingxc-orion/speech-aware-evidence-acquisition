@@ -20,7 +20,9 @@ import pytest
 from speech_aware_evidence_acquisition.data.lock import load_lock
 from speech_aware_evidence_acquisition.data.slurp import (
     _missing_media_paths,
+    _prefetch_audio_seconds,
     load_slurp_ontology,
+    load_slurp_split,
     load_slurp_train_material,
 )
 
@@ -116,3 +118,85 @@ def test_train_material_refuses_a_malformed_entity_type(slurp_world):
 
     with pytest.raises(Exception, match="entity type"):
         load_slurp_train_material(lock, slurp_world.data_root)
+
+
+# ---------------------------------------------------------------------------
+# The flac-header prefetch (2026-09-26). load_slurp_split re-verifies EVERY
+# recording against its flac header -- 50,628 files for the real ``train``, all
+# of it waiting on the filesystem -- so the probe is now a bounded thread pool.
+# What it must never change: the records, their durations, or any refusal.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("workers", [1, 2, 4, 8])
+def test_load_slurp_split_is_worker_count_invariant(slurp_world, workers):
+    lock = load_lock(slurp_world.lock_path)
+    reference = load_slurp_split(lock, slurp_world.data_root, "devel", workers=1)
+    measured = load_slurp_split(lock, slurp_world.data_root, "devel", workers=workers)
+    assert measured == reference
+    assert [record.sample_id for record in measured] == [
+        record.sample_id for record in reference
+    ]
+    assert [record.audio_seconds for record in measured] == [
+        record.audio_seconds for record in reference
+    ]
+
+
+def test_prefetch_returns_the_same_durations_as_the_serial_probe(slurp_world):
+    lock = load_lock(slurp_world.lock_path)
+    serial = {
+        Path(record.media_relpath).name: record.audio_seconds
+        for record in load_slurp_split(lock, slurp_world.data_root, "devel", workers=1)
+    }
+    rows = [
+        json.loads(line)
+        for line in (slurp_world.metadata_dir / "devel.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+        if line.strip()
+    ]
+    prefetched = _prefetch_audio_seconds(
+        rows, slurp_world.audio_root / "slurp_real", workers=4
+    )
+    assert prefetched, "the prefetch resolved nothing"
+    for path, seconds in prefetched.items():
+        if path.name in serial:
+            assert seconds == serial[path.name], path
+
+
+def test_prefetch_is_best_effort_and_never_raises(tmp_path):
+    """A missing or unreadable file is simply left out, so the serial parse
+    still raises the real LoaderError itself, for the same file, in order."""
+
+    rows = [{"recordings": [{"file": "does-not-exist.flac"},
+                            {"file": "also-missing.flac"}]}]
+    assert _prefetch_audio_seconds(rows, tmp_path, workers=4) == {}
+
+
+@pytest.mark.parametrize("workers", [1, 4])
+def test_a_missing_recording_still_refuses_identically(slurp_world, workers):
+    """The prefetch swallows its own failures, so the SERIAL parse is still
+    what raises -- at both worker counts, with the same message."""
+
+    lock = load_lock(slurp_world.lock_path)
+    records = load_slurp_split(lock, slurp_world.data_root, "devel", workers=1)
+    victim = slurp_world.data_root / records[0].media_relpath
+    assert victim.is_file()
+    victim.unlink()
+    with pytest.raises(Exception, match="media missing"):
+        load_slurp_split(lock, slurp_world.data_root, "devel", workers=workers)
+
+
+def test_prefetch_skips_malformed_recording_entries(tmp_path):
+    rows = [
+        {"recordings": "not-a-list"},
+        {"recordings": ["not-an-object"]},
+        {"recordings": [{"file": 7}, {"file": "no-extension"}]},
+        {},
+    ]
+    assert _prefetch_audio_seconds(rows, tmp_path, workers=4) == {}
+
+
+def test_prefetch_stays_serial_below_two_candidates(tmp_path):
+    rows = [{"recordings": [{"file": "one.flac"}]}]
+    assert _prefetch_audio_seconds(rows, tmp_path, workers=4) == {}

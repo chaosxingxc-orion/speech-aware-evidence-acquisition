@@ -291,3 +291,65 @@ def test_pairs_stage_without_a_prior_render_refuses(tmp_path, sealed_run):
     ]
     with pytest.raises(mod.Stage3ScoreError):
         mod.main(argv)
+
+
+# ---------------------------------------------------------------------------
+# The 2026-09-26 fan-out: one COMPLETE scoring per worker, never a shard.
+# ---------------------------------------------------------------------------
+
+
+def _render_and_score(sealed_run, tmp_path, name: str, workers: int):
+    _register_fake_scorer()
+    data_root, run_id, attempt_id, repo_root = sealed_run
+    roster, _, _ = mod.load_roster(repo_root, "roster.json")
+    directory = mod.run_dir(data_root, run_id, attempt_id)
+    out = tmp_path / name
+    manifest = mod.render(directory, run_id, roster, SAMPLES, out)
+    scored = mod.score(FAKE_SCORER_ID, manifest, out, {}, data_root, workers=workers)
+    return out, manifest, scored
+
+
+def _without_timing(scored):
+    return {
+        name: {key: value for key, value in side.items() if key != "scoring_seconds"}
+        for name, side in scored.items()
+    }
+
+
+@pytest.mark.parametrize("workers", [1, 2, 4])
+def test_score_stage_is_worker_count_invariant(sealed_run, tmp_path, workers):
+    """One complete scoring per copy; the numbers cannot depend on how many
+    of them ran at once, and the copy names come back sorted, never in
+    completion order."""
+
+    out, _manifest, scored = _render_and_score(sealed_run, tmp_path, f"w{workers}", workers)
+    assert list(scored) == [f"sample_{index}" for index in range(SAMPLES)]
+    serial_out, _m, serial = _render_and_score(sealed_run, tmp_path, f"ref{workers}", 1)
+    assert _without_timing(scored) == _without_timing(serial)
+    for index in range(SAMPLES):
+        stem = f"sample_{index}-{FAKE_SCORER_ID}-scores.json"
+        assert (out / stem).read_bytes() == (serial_out / stem).read_bytes(), stem
+
+
+def test_score_stage_verifies_every_copy_before_the_first_scoring(sealed_run, tmp_path):
+    """A drifted copy must refuse BEFORE any scorer contact, not after some."""
+
+    _register_fake_scorer()
+    data_root, run_id, attempt_id, repo_root = sealed_run
+    roster, _, _ = mod.load_roster(repo_root, "roster.json")
+    directory = mod.run_dir(data_root, run_id, attempt_id)
+    out = tmp_path / "drift"
+    manifest = mod.render(directory, run_id, roster, SAMPLES, out)
+    last = Path(manifest["copies"][f"sample_{SAMPLES - 1}"]["path"])
+    last.write_text(last.read_text(encoding="utf-8") + "\n", encoding="utf-8")
+    with pytest.raises(mod.Stage3ScoreError, match="drifted from its render manifest"):
+        mod.score(FAKE_SCORER_ID, manifest, out, {}, data_root, workers=4)
+    assert not list(out.glob(f"*-{FAKE_SCORER_ID}-scores.json"))
+
+
+def test_score_stage_reuses_the_cached_result_file_at_any_worker_count(sealed_run, tmp_path):
+    data_root = sealed_run[0]
+    out, manifest, first = _render_and_score(sealed_run, tmp_path, "cached", 4)
+    second = mod.score(FAKE_SCORER_ID, manifest, out, {}, data_root, workers=4)
+    assert all(side["scoring_seconds"] == 0.0 for side in second.values())
+    assert _without_timing(second) == _without_timing(first)

@@ -301,7 +301,22 @@ def _validate_recording_filename(filename: object, context: str) -> str:
     return filename
 
 
-def _audio_seconds(path: Path, context: str) -> float:
+def _audio_seconds(
+    path: Path, context: str, cache: Mapping[Path, float] | None = None
+) -> float:
+    """One recording's duration from its flac header.
+
+    ``cache`` is an already-resolved ``{path: seconds}`` mapping (see
+    :func:`_prefetch_audio_seconds`). A hit returns the same float this
+    function would have computed; a miss falls through to the real probe, so
+    a caller that passes a partial cache -- which the prefetch deliberately
+    is -- gets identical values and identical refusals.
+    """
+
+    if cache is not None:
+        cached = cache.get(path)
+        if cached is not None:
+            return cached
     if not path.is_file():
         raise LoaderError(f"{context}: media missing: {path}")
     import soundfile  # deferred: heavy import stays function-local (repo convention)
@@ -318,12 +333,87 @@ def _audio_seconds(path: Path, context: str) -> float:
     return duration
 
 
+def _audio_probe_workers(requested: object) -> int:
+    """How many threads probe flac headers, decided in ONE place.
+
+    Deferred import on purpose: ``analysis.parallel`` is stdlib-only, but this
+    loader's module-level import graph stays exactly as light as it was.
+    """
+
+    from ..analysis.parallel import resolve_workers  # noqa: PLC0415
+
+    return resolve_workers(requested)
+
+
+def _prefetch_audio_seconds(
+    rows: Sequence[Mapping[str, object]], audio_dir: Path, *, workers: int
+) -> dict[Path, float]:
+    """Resolve every recording's flac-header duration concurrently, best-effort.
+
+    BEST-EFFORT is the whole safety argument: a probe that raises is simply
+    left out of the returned mapping, so the serial :func:`_parse_record` loop
+    still reaches that file, still calls :func:`_audio_seconds` on it, and
+    still raises the same :class:`LoaderError` with the same message at the
+    same point in the same order. Nothing here validates anything; it only
+    pays the filesystem latency ahead of time, in parallel.
+
+    Threads rather than processes: both ``Path.is_file`` and
+    ``soundfile.info`` release the GIL for the duration of the syscall, so a
+    thread pool is the right tool and carries none of a fork's hazards. The
+    durations are a pure function of the file, so the mapping does not depend
+    on how many threads resolved it.
+    """
+
+    candidates: list[Path] = []
+    seen: set[Path] = set()
+    for raw in rows:
+        recordings = raw.get("recordings")
+        if not isinstance(recordings, list):
+            continue
+        for recording in recordings:
+            if not isinstance(recording, Mapping):
+                continue
+            filename = recording.get("file")
+            if not isinstance(filename, str) or not filename.endswith(".flac"):
+                continue
+            path = audio_dir / filename
+            if path in seen:
+                continue
+            seen.add(path)
+            candidates.append(path)
+    if len(candidates) < 2 or workers <= 1:
+        return {}
+
+    import soundfile  # noqa: F401, PLC0415 -- load it BEFORE any thread needs it
+
+    def probe(path: Path) -> float | None:
+        try:
+            return _audio_seconds(path, "prefetch")
+        except LoaderError:
+            return None
+
+    worker_count = min(workers, len(candidates))
+    if worker_count == 1:
+        return {}
+    with ThreadPoolExecutor(
+        max_workers=worker_count,
+        thread_name_prefix="saea-slurp-flac",
+    ) as pool:
+        measured = tuple(pool.map(probe, candidates))
+    return {
+        path: seconds
+        for path, seconds in zip(candidates, measured, strict=True)
+        if seconds is not None
+    }
+
+
 def _parse_record(
     raw: Mapping[str, object],
     split_id: str,
     audio_dir_relpath: str,
     audio_dir: Path,
     line_no: int,
+    durations: Mapping[Path, float] | None = None,
 ) -> list[SlurpRecord]:
     context = f"SLURP {split_id}.jsonl line {line_no}"
     slurp_id = raw.get("slurp_id")
@@ -366,7 +456,7 @@ def _parse_record(
                 utterance_id=str(slurp_id),
                 split=split_id,
                 media_relpath=f"{audio_dir_relpath}/{filename}",
-                audio_seconds=_audio_seconds(media_path, context),
+                audio_seconds=_audio_seconds(media_path, context, durations),
                 scenario=scenario,
                 action=action,
                 intent=intent,
@@ -926,10 +1016,19 @@ def load_slurp_split(
     *,
     allow_heldout: bool = False,
     allow_synthetic: bool = False,
+    workers: int | None = None,
 ) -> list[SlurpRecord]:
     """Every SLURP (sentence, recording) sample in ``split_id``, sorted by
     sample id, with media re-verified against the flac headers (module
-    docstring: split discipline + entity-filler derivation)."""
+    docstring: split discipline + entity-filler derivation).
+
+    ``workers`` bounds the THREAD pool that pays the flac-header latency ahead
+    of the parse (:func:`_prefetch_audio_seconds`); ``None`` takes
+    ``analysis.parallel``'s own default, the campaign preparation cap. The
+    records this returns -- their order, their durations, and every refusal
+    the parse can raise -- do not depend on it: the prefetch is best-effort
+    and the parse is the same serial loop it always was.
+    """
 
     if split_id not in _SPLIT_FILES:
         raise LoaderError(f"unknown SLURP split {split_id!r}; known splits are {sorted(_SPLIT_FILES)}")
@@ -956,10 +1055,19 @@ def load_slurp_split(
     if not metadata_path.is_file():
         raise LoaderError(f"SLURP split metadata file missing: {metadata_path}")
 
+    rows = _read_jsonl(metadata_path)
+    # Pay the ~50,000 flac-header round-trips concurrently, THEN parse exactly
+    # as before. Only successful probes are cached, so the parse below still
+    # raises every LoaderError itself, for the same file, in the same order.
+    durations = _prefetch_audio_seconds(
+        rows, audio_dir, workers=_audio_probe_workers(workers)
+    )
     records: list[SlurpRecord] = []
     seen_ids: set[str] = set()
-    for line_no, raw in enumerate(_read_jsonl(metadata_path), start=1):
-        for record in _parse_record(raw, split_id, audio_dir_relpath, audio_dir, line_no):
+    for line_no, raw in enumerate(rows, start=1):
+        for record in _parse_record(
+            raw, split_id, audio_dir_relpath, audio_dir, line_no, durations
+        ):
             if record.sample_id in seen_ids:
                 raise LoaderError(f"duplicate SLURP sample id {record.sample_id!r}")
             seen_ids.add(record.sample_id)
