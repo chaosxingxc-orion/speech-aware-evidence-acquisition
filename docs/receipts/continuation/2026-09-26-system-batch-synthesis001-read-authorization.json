@@ -1,0 +1,45 @@
+{
+  "schema": "saea-scientific-read-authorization-v1",
+  "recorded_at": "2026-09-26T10:02:54.217698+00:00",
+  "scope": "Root verifies the sealed bounded batch synthesis and uses the strict shared provisional materializer. Preserve invalid or unfaithful content; no handwritten correction, runtime admission or next actor.",
+  "manifest": {
+    "relpath": "runs/SAEA-SLURP-STAGE3-SYSTEM-BATCH-SYNTHESIS001-NP1-RUN-V1/attempt-slurp-stage3-system-batch-synthesis001-np1-run-v1/SAEA-SLURP-STAGE3-SYSTEM-BATCH-SYNTHESIS001-NP1-RUN-V1.run-manifest.json",
+    "sha256": "6ef8db7f81d2c7a448f4b1d291518240e9c8e2c0a0c42a16b8f87c02ae921e81"
+  },
+  "worker_commit": "8ea64944859521cc071d0c151684f0608da9c89e",
+  "closure": {
+    "mode": "arm",
+    "run_id": "SAEA-SLURP-STAGE3-SYSTEM-BATCH-SYNTHESIS001-NP1-RUN-V1",
+    "attempt_id": "attempt-slurp-stage3-system-batch-synthesis001-np1-run-v1",
+    "pass": true,
+    "fails": [],
+    "attempt_state": "FINALIZED",
+    "actual": {
+      "audio_seconds": 3.5835,
+      "calls": 1
+    },
+    "result_kind": "artifact",
+    "bundle_verified": true,
+    "manifest_status": "COMPLETED",
+    "study_commit": "8ea64944859521cc071d0c151684f0608da9c89e",
+    "dirt": [],
+    "rows": 1,
+    "distinct": 1,
+    "dispositions": {},
+    "contacts_per_row_hist": {},
+    "score_jobs": 0,
+    "expected_score_jobs": 0,
+    "requests": 1,
+    "requests_with_tool_schemas": 0,
+    "sha256_run-manifest": "6ef8db7f81d2c7a448f4b1d291518240e9c8e2c0a0c42a16b8f87c02ae921e81",
+    "sha256_outputs": "657a3b1a8cbc7e3b1b9804f2b90c5a66c457d2e709260492f94efaef07db2f46"
+  },
+  "launch_epoch": {
+    "at": "2026-09-26T10:01:02Z",
+    "event": "driver-start",
+    "detail": {
+      "flight_commit": "8ea64944859521cc071d0c151684f0608da9c89e",
+      "queue": "/home/chao/batch-queue.json"
+    }
+  }
+}

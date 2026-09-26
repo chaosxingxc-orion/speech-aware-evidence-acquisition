@@ -5,6 +5,31 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Bounded batch synthesis sealed; strict materialization rejected its format
+
+Checkpoint: 2026-09-26T10:02:11Z. The first batch synthesis finalized with
+one generation, three live fits and zero scores. Root registered reading.
+Input 1041, output 697 of 8192. The response is Markdown-fenced; all three
+ADD operations also omit record_id. Shared strict materialization retained
+the rejection, with no candidate snapshot, runtime memory or next actor.
+Read docs/results/2026-09-26-system-batch-synthesis001-rejection.md.
+
+The driver epoch started 10:01:02Z and completed 10:02:11Z. Its completed queue
+and healthy resident idle service are known. Worker
+/home/chao/saea-worktrees/codex-system-batch-synthesis001-20260926 remains
+frozen at 8ea64944859521cc071d0c151684f0608da9c89e, already merged to master;
+its temporary branch is deleted. All earlier source workers remain frozen.
+
+Next extend the shared source-bound operation contract to the typed batch
+format. Register at most one named interface successor; preserve this artifact,
+all original proposed content and the strict parser. Do not hand-fill record_id,
+strip fences into a published plan, automatically retry or activate memory.
+Event-grounded credit remains the separate algorithm comparison described in
+docs/readiness/2026-09-26-system-event-grounded-credit-design-v1.md.
+Keep four-input/four-trajectory construction and batch-boundary updates.
+Batch002, runtime memory, DEV6570/test13078 and closed flights remain held/closed.
+No new owner decision is needed for the authorized bounded continuation.
+
 ## Operation-interface successor complete; semantic learning is still unqualified
 
 Checkpoint: 2026-09-26T09:47:38Z. The one-shot constrained group updater
