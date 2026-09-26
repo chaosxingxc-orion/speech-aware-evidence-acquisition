@@ -5,6 +5,68 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## First provisional system memory created; quality and consumption unproven
+
+Checkpoint: 2026-09-26T10:18:25Z. The sole typed batch-interface successor
+FINALIZED at 10:18:05Z with one generation, three live fits and zero scores.
+Root registered reading. Shared strict materialization created three provisional
+records, and independent source attestation replayed the same artifact.
+All four construction inputs remain in scope; three tied groups contribute no
+records. No next actor, runtime activation or learned task benefit exists yet.
+
+Candidate: DATA/provisional/experience-candidates/slurp-system-batch001-typed-synthesis-v1.json
+Candidate SHA: e632a0a153221ede44f1ad6481b26a8ef49289132224546df965a5ed4a9f9a0f
+Snapshot SHA: 4a32b07d9a753dd27215a44765bec69d1f963363135d2aa77591fa0d48d69f96
+Bindings and attestation: DATA/coordination/slurp-system-batch001-v1/batch-format-recovery1-v1/
+Read docs/results/2026-09-26-system-batch001-provisional-memory-verdict.md and
+docs/receipts/continuation/2026-09-26-system-batch001-provisional-memory-closure.json.
+
+The driver epoch 10:17:17Z is COMPLETE at 10:18:25Z. Its completed queue and
+healthy idle resident service are known, not a new stall. Preserve worker
+/home/chao/saea-worktrees/codex-system-batch-format-20260926 at
+334180f4f0ea0682e65a7145a7b8d8904832dc92, merged to master with branch deleted.
+Keep rejected batch 8ea64944, group-format 30847ec6, original group a2473a3d,
+comparison e9e597ee, summaries 733c1c6f and actors d56ad054 frozen.
+
+Root found unsupported tool/Reviewer credit still present. The shared matcher
+also exposes a potential consumption gap: only record 2 matches an assumed
+first-review state with knowledge/prior response and no tool result; record 3
+requires neither knowledge nor prior response but an existing tool result.
+This is a synthetic full truth-table diagnostic, not new actor behavior.
+Do not manually repair the guidance/tags or remove unfavorable records.
+
+Next implement the event-grounded whole-system comparison on unchanged source
+actors/summaries/feedback; its prospective design is already in docs/readiness/.
+Then separately consider runtime-informed applicability if needed. Bind updated
+and empty-memory actors identically apart from memory selection, correct the
+tool/prompt mismatch in both, fit actual requests and register before contact.
+Keep four inputs/four trajectories, two actor slots and batch-boundary updates.
+B1080 matched evaluation and replication remain pending. DEV6570/test13078 and
+closed flights stay closed. No immediate owner decision blocks this work.
+
+## Sole typed batch-interface successor running independently
+
+Checkpoint: 2026-09-26T10:17:19Z. SAEA-Batch-Driver started epoch 10:17:17Z
+and launched the registered constrained batch synthesis at 10:17:19Z.
+Worker /home/chao/saea-worktrees/codex-system-batch-format-20260926 stays
+frozen at 334180f4f0ea0682e65a7145a7b8d8904832dc92. It is merged to master;
+the temporary branch is deleted. Do not restart this sole named successor.
+Read only operational metadata until FINALIZED; then root registers reading.
+
+Real fit input 1040, output allowance 8192, margin 39918 on the same resident
+one-slot decoder-only service. Shared typed proposal schema is reused;
+the original source document is identical. The opaque prepared state ID
+changes with its implementation fingerprint and is explicitly recorded.
+No task-quality or isolated causal format-effect claim follows.
+
+Launch receipt: docs/receipts/continuation/2026-09-26-system-batch-synthesis001-format-launch.json.
+After sealing, use strict shared provisional materialization; do not hand-fill
+missing fields or rewrite lessons. Invalid output closes this interface flight;
+no second recovery. No runtime memory or next actor is admitted by this launch.
+Preserve the failed synthesis worker 8ea64944 and all upstream source workers.
+Next algorithm work remains the separate event-grounded whole-system credit
+design. DEV6570/test13078 and closed flights remain closed.
+
 ## Bounded batch synthesis sealed; strict materialization rejected its format
 
 Checkpoint: 2026-09-26T10:02:11Z. The first batch synthesis finalized with

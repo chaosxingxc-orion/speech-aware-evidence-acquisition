@@ -1,0 +1,40 @@
+{
+  "schema": "saea-system-learning-round-closure-v1",
+  "at": "2026-09-26T10:24:16.433816+00:00",
+  "status": "provisional-memory-created-not-evaluated",
+  "manifest": {
+    "relpath": "runs/SAEA-SLURP-STAGE3-SYSTEM-BATCH-SYNTHESIS001-FORMAT-NP1-RUN-V1/attempt-slurp-stage3-system-batch-synthesis001-format-np1-run-v1/SAEA-SLURP-STAGE3-SYSTEM-BATCH-SYNTHESIS001-FORMAT-NP1-RUN-V1.run-manifest.json",
+    "sha256": "2366106e9f6d56bd326e60d7f91e189b99caaaad81c527f8a1e78fd02dcc11bd"
+  },
+  "candidate": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/provisional/experience-candidates/slurp-system-batch001-typed-synthesis-v1.json",
+    "sha256": "e632a0a153221ede44f1ad6481b26a8ef49289132224546df965a5ed4a9f9a0f",
+    "cache": "cold",
+    "contact_class": "model-free"
+  },
+  "source_attestation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/batch-format-recovery1-v1/source-attestation.json",
+    "sha256": "63041f32953f2e31388383767e62618cdd3929595a09f031f089a084f873f6d0",
+    "cache": "cold",
+    "contact_class": "model-free"
+  },
+  "materialization_config": {
+    "relpath": "coordination/slurp-system-batch001-v1/batch-format-recovery1-v1/materialization-config.json",
+    "sha256": "479e469d8f30d1f1b88a32bc2cc32b89f2c294edc3737dcd118392221f8c61ed"
+  },
+  "full_construction_inputs": 4,
+  "candidate_records": 3,
+  "snapshot_sha256": "4a32b07d9a753dd27215a44765bec69d1f963363135d2aa77591fa0d48d69f96",
+  "runtime_authorized": false,
+  "next_actor_started": false,
+  "task_gain_established": false,
+  "applicability_diagnostic": {
+    "relpath": "coordination/slurp-system-batch001-v1/batch-format-recovery1-v1/applicability-truth-table.json",
+    "sha256": "cc2dafca5201cd73ffcfc573e032976621e17e17c70d7e9b6bcf46a1364ff02b"
+  },
+  "source_content_comparison": {
+    "relpath": "coordination/slurp-system-batch001-v1/batch-format-recovery1-v1/source-content-match.json",
+    "sha256": "2783975f985118f2d26a2fe7791346535b10b653d92eac665953f0ba678040eb"
+  },
+  "qualification": "Structural update and source correspondence only. Root found unsupported tool/Reviewer credit and a potential runtime applicability mismatch."
+}
