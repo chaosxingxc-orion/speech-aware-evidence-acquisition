@@ -1,0 +1,77 @@
+{
+  "authority": "The Stage-3 measurement instrument note docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md (the 0.67 pp offline sealed-pool instrument against the measured +1.87 pp cross-flight A/A offset). Substrate: cell ROLL-1, docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md section S3-2, re-pointed onto the v2.0 lock roster TRAIN Fold A. Stage-3 algorithm label: owner decision 101. Contract: umbrella wiki/experiments/speech-aware-evidence-acquisition/2026-08-04-owner-consolidated-execution-contract.md.",
+  "cell_kind": "ASSET -- a sealed five-sample Solver pool on the v2.0 lock roster. DESCRIPTIVE: no admission verdict, no comparator, no gate.",
+  "claim_boundary": "DESCRIPTIVE. This cell is an ASSET and makes NO comparison, no admission claim, no gate, no superiority, transfer, generalisation, component-causal or confirmatory statement. Its only deliverable is a sealed five-sample pool on TRAIN Fold A plus the structural proof that the pool is well formed. Any later read over that pool is registered separately.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": 5,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "decision_rule": {
+    "output": "The sealed pool's own descriptive read: the per-sample official SLU-F1 and intent for each of the five samples, the within-flight sample spread on Fold A (the paired per-row delta distribution across sample indices), the oracle best-of-5 ceiling on Fold A, and the delivered (plurality-commit) score beside both. All five numbers are descriptive.",
+    "rule": "NONE -- this cell has no gating decision rule. Its read is DESCRIPTIVE."
+  },
+  "execution_profile": "model-free-check (the read); bounded-discovery-probe (the flight itself)",
+  "measurement_design": {
+    "canonical_declaration": "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1/registered-facts-v1.json, top-level 'stage3_measurement' -- the block scripts/checks/stage3_effect_floor_check.py resolves. The same block is repeated in the preregistration's fenced json for readability; the registered-facts copy has precedence.",
+    "no_comparison_sentence": "This cell makes no comparison: it is an ASSET. It flies one arm and one arm only, has no comparator cell, no paired contrast and no gate number, so expected_effect_pp is 0.0 with claims_benefit false. Its deliverable is the sealed five-sample pool itself, over which later actions become computable offline at about 0.51 pp at n = 1,080 and at zero GPU cost.",
+    "stage3_measurement": {
+      "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-SMOKE-4-V1": {
+        "claims_benefit": false,
+        "expected_effect_pp": 0.0,
+        "measurement_design": "form-proof",
+        "note": "The four-row structural form smoke of ROLL-2 proves FORM and nothing else: five custodied Solver samples per row, the plurality-commit replay, zero native task-contract calls, every request fitting. It is scored by no one and read by no one, and under docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 3 rule 5 a batch of four rows can never be evidence of benefit.",
+        "primary_metric": "slu_f1",
+        "rows": 4
+      },
+      "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1": {
+        "claims_benefit": false,
+        "expected_effect_pp": 0.0,
+        "measurement_design": "offline-sealed-pool",
+        "note": "ROLL-2 makes no effectiveness claim of its own: it seals a 1,080-row x 5-sample pool on TRAIN Fold A so that commit, selection and verification rules can be read offline at the 0.67 pp floor of docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d, on the roster where the composed policy will later be flown. Any benefit claim belongs to the read over this pool, which declares its own block.",
+        "primary_metric": "slu_f1",
+        "rows": 1080
+      }
+    },
+    "why_offline_sealed_pool": "The measurement instrument note docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md establishes that a cross-flight contrast at this scale carries a measured +1.87 pp A/A offset (two request-identical flights differed by +1.87 pp SLU with a CI95 excluding zero while intent moved -1.28 pp), so such a contrast needs an in-chain A/A replicate and about 3 pp of effect. The only 0.67 pp instrument the program has is an offline read over one sealed sample pool, and that pool exists on R01C but NOT on the lock roster. This cell creates the missing pool."
+  },
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-READ-V1",
+    "files": [
+      "per_row.json -- one object per row: sample_id, stratum, each of the five samples' official SLU-F1 and scenario_action_exact, the per-row best / worst / delivered scores and the sample-level raw-response digests. Ids, stratum names, sample indices, scores, flags and hashes only.",
+      "spread.json -- the within-flight sample spread on Fold A: the pooled paired delta between sample indices with CI95 by paired row bootstrap (10,000 draws, seed 20260915), the byte-identical / intent-flip / entity-set-flip shares and the per-stratum table.",
+      "ceiling.json -- the oracle best-of-5 ceiling on Fold A beside the delivered score, stated as an UPPER BOUND that no selection policy can exceed, never as an achieved result.",
+      "the per-sample-index outputs copies and their score jsonl, sha256-pinned, written by scripts/analysis/stage3_rollout_score.py under the read's own analysis root."
+    ],
+    "privacy": "No utterance text, gold label, transcript or model output is printed or persisted by the read's summary files; they carry ids, stratum names, sample indices, scores, flags and hashes only."
+  },
+  "recipe_id": "slurp-stage3-roll-2-fold-a-sealed-pool-v1",
+  "roster": {
+    "audio_seconds_total": 3084.5284375,
+    "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+    "roster_id": "SLURP-EVO-FOLD-A-V2",
+    "roster_role": "construction",
+    "rows": 1080,
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "stratum_coverage": "18 of 18 SLURP scenarios, 60 rows each -- the full stratified lock roster."
+  },
+  "row_accounting_required": "1,080 in, 1,080 out; every row's solver_group carries exactly 5 samples in custody (I7g) with seeds 1249110493, 1249110494, 1249110495, 1249110496, 1249110497 and temperature 0.7 on each; the commit replay of saea-commit-plurality-support-v1 at min_support 3 / similarity 0.8 reproduces the sealed delivered answer for every row; zero native task-contract calls.",
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1",
+    "fit": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-FIT-V1",
+    "read": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-READ-V1",
+    "smoke": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-SMOKE-4-V1",
+    "smoke_fit": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-SMOKE-4-FIT-V1"
+  },
+  "schema": "saea-stage3-rollout-analysis-recipe-v1",
+  "stages": {
+    "1_render": "scripts/analysis/stage3_rollout_score.py --stage render: one outputs COPY per Solver sample index (0..4), each row's solver_group.samples[index].parsed_answer rendered through the canonical analysis path, exactly as cell ROLL-1's own read ran.",
+    "2_score": "scripts/analysis/stage3_rollout_score.py --stage score --scorer-id slurp-slu-official-projected-v3-train: each of the five copies scored ONCE through the registered scorer. Never core.scoring_batch (every copy is a derived read, not a manifest score).",
+    "3_pairs": "scripts/analysis/stage3_rollout_score.py --stage pairs: per-row best / worst and the sealed delivered score, as for cell ROLL-1. This is where the oracle best-of-5 ceiling on Fold A comes from.",
+    "4_spread": "the within-flight spread read: per row and per sample-index pair, delta_slu and delta_intent, the pooled distributions with CI95 by paired row bootstrap (10,000 draws, seed 20260915), the three flip shares and the per-stratum table. REGISTERED SEPARATELY as run id SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-READ-V1 before any number is read."
+  },
+  "what_is_not_here": "No comparator block, no margins block and no gate: ROLL-2 is an asset, not a comparison. The cross-flight own-null half-widths on this roster (h_SLU 1.2485 / h_intent 0.9943 at n = 1,080) and the measured +1.87 pp A/A cross-flight offset are recorded as CONTEXT in the preregistration, never as this cell's comparator or bar."
+}

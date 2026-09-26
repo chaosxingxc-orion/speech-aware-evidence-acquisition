@@ -1,0 +1,113 @@
+{
+  "ceiling_accounting": "20,520 = 1,080 TRAIN Fold A rows x 19 and 76 = 4 rows x 19, where 19 is the grouped-Solver graph's OWN ceiling at samples 5 as rails.native_episode_config.load_native_episode_config resolves it: perception.max_iterations + (max_revisions + 1) x (solver.max_iterations x solver.samples + reviewer.max_iterations + planner.max_iterations) = 1 + 2 x (1 x 5 + 3 + 1) = 19. Verified offline at registration: the composed program phase-native-candidates-review-revise-samples5-v1 declares max_contacts 19 and the loader's own graph ceiling resolves to 19 (a disagreement is refused by name). FIT: 82,080 = 20,520 x (1 speech packet + 3 endpoints) and 304 = 76 x 4 -- cell ROLL-1's own native_contact_fit mode and multiplier, rescaled to this roster.",
+  "cell": "slurp-native-stage3-roll-2-fold-a-v1",
+  "check_receipt": {
+    "command": "python -m speech_aware_evidence_acquisition.core.flight.cli check --repo-root <repo> --data-root <data> --runtime-root /home/chao --lock-path <umbrella datasets.lock.json> --experiment <exp> --cell <cell>",
+    "contacts": {
+      "encoder": 0,
+      "model": 0,
+      "network": 0,
+      "scorer": 0,
+      "tokenizer": 0
+    },
+    "not_run_by_this_registration": "DELIBERATELY NOT RUN. core.flight.cli check touches the runtime root and the coordination tree, which the coordinator owns, so this package registers the cells without it; the coordinator's own clean-tree re-pin cycle (scripts/flights/batch/repin_cell_generic.sh, ARM=1) runs check on the minted receipt and asserts the runtime-derived hashes agree with the ones registered here. A disagreement stops the flip, which is the intended failure mode.",
+    "readiness_state": "held",
+    "study_commit": "e0a8d20d"
+  },
+  "comparator": null,
+  "comparator_reason": "NONE, by design. ROLL-2 is an asset: it collects a sealed five-sample pool on the lock roster so that later actions over that pool are readable offline at about 0.51 pp at n = 1,080. No sealed arm is re-flown, re-scored or compared against, the read is never scripts/analysis/plan_cell_read.py, and no number this cell produces is gated.",
+  "composed_config_hash": "2987b5b394122dd7dcd8d899bbd51c5a51daba78faf5c9e1c0f6c35501704099",
+  "decision_rule": {
+    "no_gate_number": "No threshold is pre-registered on any number this cell produces. There is no comparator: one arm is flown and nothing is contrasted against it.",
+    "output": "A sealed manifest with 1,080 of 1,080 rows delivered and exactly five custodied Solver samples per row in solver_group (invariant I7g), one official complete score, and the sealed per-sample custody from which the within-flight sample spread on Fold A, the oracle best-of-5 ceiling on Fold A and any verifier-selection arm are read OFFLINE at zero further GPU cost.",
+    "rule": "DESCRIPTIVE, structural acceptance only: a clean seal, every row delivered, exactly five custodied Solver samples per row with seeds 1249110493, 1249110494, 1249110495, 1249110496, 1249110497 and temperature 0.7 on each, the plurality-commit replay (min_support 3, similarity 0.8) reproducing the sealed delivered answer, zero native task-contract calls, every request fitting the 24,576-token live slot with its one-eighth operational reserve."
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-roll-2-fold-a-v1-generation",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 20520,
+    "planned_speech_audio_seconds": 58607,
+    "protocol_hash": "c1d279ca9d1903769314f0e01ed27b91fbf74cd1732ff45cecd07109c644982f",
+    "run_id": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan configs/campaign/slurp-native-stage3-roll-2-fold-a-v1.json; the campaign acquires its own GenerationLease against the resident session serving-slurp-native-candidate-five-train-a-np4-v1 (attach only, never spawn or stop) and schedules ONE official complete score at finalize so the manifest seals in the standard shape. The four-row smoke flies through core.flight.cli worker under its own lease. Queued through the SAEA-Batch-Driver scheduled task (decision 77) by scripts/flights/batch/batch_chain_roll2.sh: one step, smoke then arm.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-roll-2-fold-a-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 82080,
+    "generation_calls_cap": 20520,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 58607
+  },
+  "fit": {
+    "arithmetic": "1,080 rows x 19 native contacts x (1 speech packet + 3 endpoints) = 82,080; 4 rows x 19 x 4 = 304 -- cell ROLL-1's own native_contact_fit mode and multiplier, rescaled to this roster.",
+    "contact_cap": 82080,
+    "coordinate_fit": "must NOT be run, or the FIT rows are double-charged",
+    "measured_prompt_budget": {
+      "decision": "NOT MEASURED BY THIS REGISTRATION",
+      "measured_by": "core.flight.cli check's _assess_prompt_budget, which runs in the coordinator's clean-tree re-pin cycle on the minted receipt. The prompt form is cell ROLL-1's own, unchanged, and the sealed Fold A lock arm's requests fit at this same geometry, so the expectation is a pass and the flip is where it is proven.",
+      "operational_reserve_tokens": 3072,
+      "slot_limit_tokens": 24576
+    },
+    "mode": "native_contact_fit",
+    "what_is_configured": "configs/baseline/slurp-native-stage3-roll-2-fold-a-baseline-v1.json declares native_contact_fit with max_speech_packets 1 and the contact cap above, and no live_phase_fit. The FIT run ids are registered so that any endpoint spend lands against a row written before the result was read."
+  },
+  "measurement_design": {
+    "canonical_declaration": "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1/registered-facts-v1.json, top-level 'stage3_measurement' -- the block scripts/checks/stage3_effect_floor_check.py resolves. The same block is repeated in the preregistration's fenced json for readability; the registered-facts copy has precedence.",
+    "no_comparison_sentence": "This cell makes no comparison: it is an ASSET. It flies one arm and one arm only, has no comparator cell, no paired contrast and no gate number, so expected_effect_pp is 0.0 with claims_benefit false. Its deliverable is the sealed five-sample pool itself, over which later actions become computable offline at about 0.51 pp at n = 1,080 and at zero GPU cost.",
+    "stage3_measurement": {
+      "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-SMOKE-4-V1": {
+        "claims_benefit": false,
+        "expected_effect_pp": 0.0,
+        "measurement_design": "form-proof",
+        "note": "The four-row structural form smoke of ROLL-2 proves FORM and nothing else: five custodied Solver samples per row, the plurality-commit replay, zero native task-contract calls, every request fitting. It is scored by no one and read by no one, and under docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 3 rule 5 a batch of four rows can never be evidence of benefit.",
+        "primary_metric": "slu_f1",
+        "rows": 4
+      },
+      "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1": {
+        "claims_benefit": false,
+        "expected_effect_pp": 0.0,
+        "measurement_design": "offline-sealed-pool",
+        "note": "ROLL-2 makes no effectiveness claim of its own: it seals a 1,080-row x 5-sample pool on TRAIN Fold A so that commit, selection and verification rules can be read offline at the 0.67 pp floor of docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d, on the roster where the composed policy will later be flown. Any benefit claim belongs to the read over this pool, which declares its own block.",
+        "primary_metric": "slu_f1",
+        "rows": 1080
+      }
+    },
+    "why_offline_sealed_pool": "The measurement instrument note docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md establishes that a cross-flight contrast at this scale carries a measured +1.87 pp A/A offset (two request-identical flights differed by +1.87 pp SLU with a CI95 excluding zero while intent moved -1.28 pp), so such a contrast needs an in-chain A/A replicate and about 3 pp of effect. The only 0.67 pp instrument the program has is an offline read over one sealed sample pool, and that pool exists on R01C but NOT on the lock roster. This cell creates the missing pool."
+  },
+  "modules": {
+    "base": "Cell ROLL-1 (configs/baseline/slurp-native-stage3-rollout-baseline-v1.json), which is itself the locked v2.0 default plan (cell PLAN) with the grouped-Solver factor. ROLL-2 changes NOTHING in that form; it changes the roster.",
+    "declared_keys_that_are_not_factors": "native_episode.finite_completion_policy 'deliver-latest-or-abstain' and native_episode.react_exhaustion_policy 'continue-without-answer' are declared, inherited verbatim from cell ROLL-1, and checked by scripts/checks/finite_completion_policy_check.py. stage3_algorithm (owner decision 101) is declared as shared-rollout / operator rollout, with the note that this is trajectory collection for the sealed-pool instrument and not a policy arm.",
+    "factor": "ZERO factors against cell ROLL-1's form. native_episode.roles.solver keeps samples 5, decoding_overrides {temperature 0.7, seed_offset 0} and commit {saea-commit-plurality-support-v1, min_support 3, similarity_threshold 0.8}; the policy program stays phase-native-candidates-review-revise-samples5-v1 at max_contacts 19; there is deliberately NO deliver_normaliser node (a grouped Solver forbids it, cell ROLL-AA's own registered reason). What moves is the ROSTER and only the roster: the roster-bound artifacts are re-pointed from R01C to TRAIN Fold A and each takes the value the sealed Fold A lock arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 already flew.",
+    "roster_is_part_of_the_form": "The flown population is the full 1,080 rows of docs/receipts/rosters/slurp-evo-fold-a-v2.json (split identity 61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6), 60 rows in each of 18 scenarios -- the STRATIFIED lock roster, not a first-N prefix. The four-row smoke flies the first four of them under split identity 4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb, the same four rows and the same split identity the sealed lock smoke SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-SMOKE-4-V1 flew.",
+    "why_the_roster_is_the_point": "The program's sealed sample pool lives on R01C, a 625-row construction subset; the v2.0 lock, its own null (h_SLU 1.2485 / h_intent 0.9943 at n = 1,080) and every lock-facing number live on TRAIN Fold A. An offline action over a sealed pool is readable at about 0.67 pp at n = 625 and about 0.51 pp at n = 1,080; a cross-flight contrast is not, because it carries a measured +1.87 pp A/A offset. Moving the pool onto the lock roster is therefore the whole deliverable.",
+    "zero_tool_authority": "No phase carries phase_tools; the native task-contract call ceiling is 0 and no tools array is rendered on any request (cell ROLL-1's own form, unchanged)."
+  },
+  "plan_kind": "generation",
+  "prepared_phase_supply": {
+    "note": "NONE pinned. core.flight.repin mints this cell's OWN model-free first-phase supply under its own run id at the readiness flip (item E16); nothing is inherited from cell ROLL-1 or cell PLAN and --allow-output-change must never be passed."
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "e756646523e8bb95ad80701c68616e7ae0f43bdd0a10c78534d356ad3b026e97"
+  },
+  "purpose": "DESCRIPTIVE. This cell is an ASSET and makes NO comparison, no admission claim, no gate, no superiority, transfer, generalisation, component-causal or confirmatory statement. Its only deliverable is a sealed five-sample pool on TRAIN Fold A plus the structural proof that the pool is well formed. Any later read over that pool is registered separately.",
+  "quality_read_gate": "No read of any kind before the complete sealed manifest and the exact ordered outputs with exactly five custodied solver_group samples per row exist. A partial manifest is never read; a failed smoke stops the arm and it does not open.",
+  "registered_at_utc": "2026-09-26T00:00:00.000000+00:00",
+  "registration_base_commit": "e0a8d20d",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-roll2, branch fable/roll2",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}
