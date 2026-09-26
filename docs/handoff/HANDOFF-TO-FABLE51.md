@@ -19,6 +19,13 @@ one complete official score and1.0 fit-inclusive GPU hour. All four complete
 replicas and scores must finish before scientific comparison. Sampling provides
 the operational load proof; no extra performance-only contacts are planned.
 
+A source preflight exposed two pre-contact binding defects: native fit
+deferral requires the already registered strict/no-clipping context policy,
+and raw preflight role-cap validation ignored the request-only1024 override.
+Both are corrected through existing shared paths;118 focused/native graph
+tests pass. No research contact occurred during these refusals. See
+[the capacity correction](../receipts/continuation/2026-09-26-native-request-output-cap-resolution.json).
+
 Clean source checks, guarded service loading and durable queue dispatch are
 still pending at this checkpoint. The old STOP and queue have not changed.
 No new model, tokenizer or official scorer contact has occurred.

@@ -781,16 +781,22 @@ FINITE_COMPLETION_SCOPES = ("episode", "answering-node")
 
 
 def _serving_geometry_max_tokens(values: Mapping) -> int | None:
-    """Item E39: the composed configuration's own completion cap, or ``None``.
+    """Resolve the actual request output cap for every role admission path.
 
-    ``serving_geometry.max_tokens`` is the model fragment's declaration and is
-    what a per-role cap is bounded by. Some fragments (the Earnings hbmfree
-    family, for one) declare no ``serving_geometry`` block at all, and there
-    the request's own ``decoding_params.max_tokens`` IS the cap, so it is read
-    as the fallback. ``None`` when neither is a positive integer, which is
-    refused only for a configuration that declares a per-role cap at all --
-    every config written before E39 never reaches that refusal.
+    A registered request-only max_tokens override takes precedence, with the
+    shared decoding validation. Without it, preserve historical explicit
+    serving_geometry precedence over decoding_params. Missing positive caps
+    return None and are refused when a role explicitly declares its own cap.
     """
+
+    # A request-only output override governs both raw preflight and live
+    # dispatch. Resolve it through the shared validator; unrelated overrides
+    # retain the historical explicit-geometry precedence below.
+    overrides = values.get("request_decoding_overrides")
+    if isinstance(overrides, Mapping) and "max_tokens" in overrides:
+        from ..core.config import effective_request_decoding_params
+
+        return int(effective_request_decoding_params(values)["max_tokens"])
 
     for block in ("serving_geometry", "decoding_params"):
         holder = values.get(block)

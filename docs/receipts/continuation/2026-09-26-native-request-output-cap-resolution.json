@@ -1,0 +1,20 @@
+{
+  "schema": "saea-offline-validation-v1",
+  "scope": "Shared native role output ceiling honors request-only max_tokens in raw preflight and effective live configurations.",
+  "root_cause": "Preflight passed raw composed values to the role loader, so Reviewer1024 was compared with inherited model512 despite an actual request1024 override.",
+  "tests_passed": 118,
+  "red_phase": "Five of six new focused cases failed before the fix.",
+  "changed_helper_statement_coverage": {
+    "covered": 12,
+    "missing": 0,
+    "percent": 100.0
+  },
+  "logs_root": "/home/chao/native-cap-resolution-validation-v1",
+  "ruff_passed": true,
+  "model_contacts": 0,
+  "tokenizer_contacts": 0,
+  "runtime_change": "Resolve explicit request-only output overrides through core.config.effective_request_decoding_params. Preserve original explicit geometry precedence without an output override.",
+  "new_test": "tests/unit/test_native_request_cap_resolution.py",
+  "file_sha256": "fb24db7f342ea1274eb7a309a367154d6fa07530007f15308b0844b29fd37a72",
+  "limits": "Unit and native graph regression transport is synthetic. Real source preflight and loaded service proof remain separate."
+}
