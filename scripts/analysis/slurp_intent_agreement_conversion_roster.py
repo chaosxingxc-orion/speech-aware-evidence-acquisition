@@ -445,7 +445,15 @@ def main(argv: list[str] | None = None) -> int:
                 "split_identity_hash": probe_split_identity,
                 "audio_seconds_total": round(audio_seconds, 7),
                 "differences": diffs,
-                "output": str(out.relative_to(repo)).replace("\\", "/"),
+                # A re-run that writes OUTSIDE the repository is the way this
+                # derivation is proven byte-reproducible without dirtying the
+                # tree, so an out-of-repo path is reported as itself rather
+                # than crashing after the file is already written.
+                "output": (
+                    str(out.relative_to(repo)).replace("\\", "/")
+                    if out.is_relative_to(repo)
+                    else str(out)
+                ),
                 "output_sha256": digest_file(out),
             },
             indent=2,
