@@ -5,6 +5,23 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Whole-system comparison capacity passed; one diagnostic generation registered
+
+The comparison input contains the unchanged four generated summaries and
+their separate official terminal entity/intent/format feedback. Its source is
+the one eligible group; all four source groups remain in the derived record.
+All three tokenizer endpoints completed: input 7595, output reserved 2048,
+remaining margin 39507, exceeding the 3072 requirement. No fresh media or scores.
+
+The generation registration is
+docs/readiness/2026-09-26-system-comparison001-generation-v1. It permits one
+comparison plus three live-fit endpoints on the existing single-slot service.
+The root admission uses the required campaign schema and passes readiness.
+Preserve unsupported source narratives; this measures the defined learning
+chain and does not activate memory or license a new actor batch.
+The comparison worker currently contains capacity commit 7bf22fa7 and may
+advance only before its first generation; retain it frozen once that runs.
+
 ## All summaries closed; system-level fidelity defect identified
 
 Checkpoint: 2026-09-26T08:33:22Z. All four summary v2 artifacts finalized:

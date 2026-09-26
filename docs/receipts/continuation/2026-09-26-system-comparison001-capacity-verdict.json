@@ -1,0 +1,16 @@
+{
+  "schema": "saea-semantic-stage-capacity-verdict-v1",
+  "at": "2026-09-26T08:48:29.398553+00:00",
+  "stage": "complete-system-semantic-comparison",
+  "receipt": {
+    "relpath": "coordination/slurp-system-batch001-v1/comparison-v1/request-fit.json",
+    "sha256": "5ef28443beb707da40b941e12548206566be1a4ebfcb25f89df3104639dcddfc"
+  },
+  "contacts": 3,
+  "generations": 0,
+  "input_tokens": 7595,
+  "output_tokens": 2048,
+  "minimum_margin_tokens": 39507,
+  "reserve_tokens": 3072,
+  "decision": "ADMIT THE SEPARATELY REGISTERED ONE-ROW COMPARISON; no memory or actor authority."
+}
