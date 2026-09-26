@@ -5,6 +5,24 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## First actor batch registered; launch pending
+
+The four initial complete-system replicas now have successor run configurations,
+eight generation/fit plan records, shared model-free supply, a root eligibility
+receipt and a prospective queue. Read
+[the registration](../readiness/2026-09-26-slurp-system-batch001-v1-preregistration.md).
+The earlier held sizing configurations remain unchanged. This admits a new
+TRAIN construction batch, not another recovery of the closed candidate family.
+
+Each replica has four inputs, at most44 generations and176 fit endpoint calls,
+one complete official score and1.0 fit-inclusive GPU hour. All four complete
+replicas and scores must finish before scientific comparison. Sampling provides
+the operational load proof; no extra performance-only contacts are planned.
+
+Clean source checks, guarded service loading and durable queue dispatch are
+still pending at this checkpoint. The old STOP and queue have not changed.
+No new model, tokenizer or official scorer contact has occurred.
+
 ## First resource-sized construction batch configured
 
 Checkpoint: 2026-09-26. Read the

@@ -1,0 +1,93 @@
+{
+  "schema": "saea-system-first-batch-protocol-v1",
+  "status": "registered-before-contact",
+  "authority": "docs/readiness/2026-09-26-slurp-system-batch001-v1-preregistration.md",
+  "stage3_algorithm": "tfgrpo-system-memory-disjoint-v1",
+  "scope": "Four initial complete-system rollout replicas; exact source-bound semantic stages require successor plans.",
+  "frozen_f0": 0.5850661976193667,
+  "execution_order": [
+    "s1",
+    "s2",
+    "s3",
+    "s4"
+  ],
+  "cells": {
+    "s1": {
+      "experiment": "slurp-native-stage3-system-batch001-r01c-s1-run-v1",
+      "cell_id": "slurp-native-stage3-system-batch001-r01c-s1-run-v1",
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S1-RUN-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s1-run-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S1-RUN-V1-FIT",
+      "fit_attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s1-run-v1-fit",
+      "composed_config_hash": "026b1db868956e1a75a4ec97f9b17efc6fad1afe1a811460e73ec375815e838a",
+      "protocol_hash": "f4be372fc535953fd869e38f9419a8a89342a14b361c676cc72e4da95ac67b8c",
+      "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
+      "rows": 4,
+      "baseline": "slurp-native-stage3-system-batch001-r01c-registered-base-v1",
+      "gen_cap": 44,
+      "fit_cap": 176,
+      "audio_cap": 188,
+      "gpu_hours": 1.0
+    },
+    "s2": {
+      "experiment": "slurp-native-stage3-system-batch001-r01c-s2-run-v1",
+      "cell_id": "slurp-native-stage3-system-batch001-r01c-s2-run-v1",
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S2-RUN-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s2-run-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S2-RUN-V1-FIT",
+      "fit_attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s2-run-v1-fit",
+      "composed_config_hash": "7f41412f78ff313a69cfcfc9382e40af2ed3860fa1d9de624c60a17bf40dde38",
+      "protocol_hash": "462cca33f044db7e94292b6fd2236f18d8374faf435bb1cb9df005534ed67981",
+      "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
+      "rows": 4,
+      "baseline": "slurp-native-stage3-system-batch001-r01c-registered-base-v1",
+      "gen_cap": 44,
+      "fit_cap": 176,
+      "audio_cap": 188,
+      "gpu_hours": 1.0
+    },
+    "s3": {
+      "experiment": "slurp-native-stage3-system-batch001-r01c-s3-run-v1",
+      "cell_id": "slurp-native-stage3-system-batch001-r01c-s3-run-v1",
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S3-RUN-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s3-run-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S3-RUN-V1-FIT",
+      "fit_attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s3-run-v1-fit",
+      "composed_config_hash": "434a93e3be511679a9dde45cb58c1a3980bc178314da423e2e82368ac3df343b",
+      "protocol_hash": "f6fcb0d270ec26ffeaeb32c901f837b98d8db400c4d5b3c085be97ce010d8c5f",
+      "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
+      "rows": 4,
+      "baseline": "slurp-native-stage3-system-batch001-r01c-registered-base-v1",
+      "gen_cap": 44,
+      "fit_cap": 176,
+      "audio_cap": 188,
+      "gpu_hours": 1.0
+    },
+    "s4": {
+      "experiment": "slurp-native-stage3-system-batch001-r01c-s4-run-v1",
+      "cell_id": "slurp-native-stage3-system-batch001-r01c-s4-run-v1",
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S4-RUN-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s4-run-v1",
+      "fit_run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S4-RUN-V1-FIT",
+      "fit_attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s4-run-v1-fit",
+      "composed_config_hash": "c9b5ff4afef0f8dd60e646784d0ad7507e678cd5d95810547c9f0d641a9bd15d",
+      "protocol_hash": "1af9fa11bc01ca82f0d34f23d2e5d0446a66e67ed6eb69ac6937e7a156c4930c",
+      "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
+      "rows": 4,
+      "baseline": "slurp-native-stage3-system-batch001-r01c-registered-base-v1",
+      "gen_cap": 44,
+      "fit_cap": 176,
+      "audio_cap": 188,
+      "gpu_hours": 1.0
+    }
+  },
+  "limits": {
+    "generation": 176,
+    "fit": 704,
+    "audio_seconds": 752,
+    "gpu_hours_fit_inclusive": 4.0,
+    "official_scores": 4
+  },
+  "read_rule": "Operational metadata only until all four complete manifests seal and each scores once.",
+  "service_session": "serving-slurp-system-batch001-np2-v1"
+}

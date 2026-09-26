@@ -1,0 +1,111 @@
+{
+  "experiment_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S3-RUN-V1",
+  "date": "2026-09-26",
+  "purpose": "Registered complete-system construction replica of batch001 under the resource envelope. Preserve all four whole trajectories per input, including harms, abstentions and tool-loop exhaustion; no standalone effectiveness claim.",
+  "cells": [
+    {
+      "cell_id": "slurp-native-stage3-system-batch001-r01c-s3-run-v1",
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S3-RUN-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s3-run-v1",
+      "model_fragment": "q4km-mmproj-free-system-np2-ctx24k-resource-guard-v1",
+      "dataset_fragment": "slurp-speech-system-batch001-r01c-v1",
+      "baseline_fragment": "slurp-native-stage3-system-batch001-r01c-registered-base-v1",
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign",
+        "prepare-supply"
+      ],
+      "readiness": {
+        "state": "ready",
+        "reason": "Root admits this new construction replica subject to the guarded resident service and exact per-contact capacity.",
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-system-batch001-admission-v1",
+            "relpath": "coordination/slurp-system-batch001-v1/root-admission-v1.json",
+            "sha256": "ffaab9e526aad743eacdcf258535f80651dc9285b2a67e53fab216037908e157",
+            "reason": "New first-batch eligibility; no closed-family restart."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-SYSTEM-BATCH001-V1/phase-supply-v1.json",
+            "sha256": "277d4a61fe2cd16553334ccef2785302c98361d4922947cf7e2273e70b12a91a",
+            "reason": "Shared model-free first-phase supply; zero new encoding."
+          }
+        ]
+      }
+    }
+  ],
+  "split_id": "SYSTEM-BATCH001-R01C-V1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-system-batch001-r01c-v1",
+    "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
+    "role": "exposed TRAIN construction"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-system-batch001-r01c-v1",
+      "ids": [
+        "slurp:train:000049:audio-1434542455",
+        "slurp:train:000051:audio-1434531302-headset",
+        "slurp:train:000234:audio-1499688528",
+        "slurp:train:000260:audio-1488549919"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "stage3_algorithm": {
+    "id": "shared-rollout",
+    "operators_used": [
+      "rollout",
+      "scoring"
+    ],
+    "note": "Prospective whole-system sampling substrate; no update occurs in an actor cell."
+  },
+  "structural_workload": {
+    "complete_episodes": 4,
+    "maximum_contacts_per_episode": 11,
+    "generation_contact_ceiling": 44,
+    "official_full_scores_after_complete_seal": 1,
+    "launch_authority": true
+  },
+  "native_contact_fit": {
+    "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S3-RUN-V1-FIT",
+    "attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s3-run-v1-fit",
+    "contact_cap": 176,
+    "max_speech_packets": 1
+  },
+  "request_decoding_overrides": {
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "top_k": 0,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "frequency_penalty": 0.0,
+    "seed": 2026092603,
+    "max_tokens": 1024
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 188,
+    "split_role": "discovery"
+  },
+  "service_session": "serving-slurp-system-batch001-np2-v1",
+  "failure_policy": "Stop and preserve on any failure; no automatic restart, retry, partial replay or scorer replay. Root diagnosis is required before any separate recovery registration.",
+  "family_budget": {
+    "generation_calls_cap": 44,
+    "fit_endpoint_calls_cap": 176,
+    "gpu_hours_fit_inclusive": 1.0,
+    "repeated_speech_audio_seconds_cap": 188,
+    "official_complete_scoring_jobs": 1,
+    "encoder_calls": 0,
+    "asr_calls": 0,
+    "native_tool_calls": 0,
+    "ceilings_are_not_targets": true
+  }
+}
