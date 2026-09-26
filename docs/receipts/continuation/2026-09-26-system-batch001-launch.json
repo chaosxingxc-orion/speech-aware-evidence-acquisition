@@ -1,0 +1,115 @@
+{
+  "schema": "saea-system-batch001-launch-v1",
+  "recorded_at": "2026-09-26T06:30:14.253421+00:00",
+  "source_commit": "d56ad054ad06df36b2a2e508ab5e765cc2549085",
+  "worker": "/home/chao/saea-worktrees/codex-system-batch001-20260926",
+  "queue": {
+    "schema": "saea-batch-queue-install-v1",
+    "installed_at": "2026-09-26T06:28:51.123868+00:00",
+    "worker": "/home/chao/saea-worktrees/codex-system-batch001-20260926",
+    "commit": "d56ad054ad06df36b2a2e508ab5e765cc2549085",
+    "queue_sha256": "fdabecb4ec1eadf6d5a8723fb9556a8ad4bcf69d970227afdae74ff6287a831d",
+    "session_id": "serving-slurp-system-batch001-np2-v1",
+    "old_runtime_archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/prior-runtime",
+    "stop_removed_only_after_new_queue_and_live_service_validation": true
+  },
+  "driver_dispatch_event": {
+    "at": "2026-09-26T06:28:52Z",
+    "event": "driver-start",
+    "detail": {
+      "flight_commit": "d56ad054ad06df36b2a2e508ab5e765cc2549085",
+      "queue": "/home/chao/batch-queue.json"
+    }
+  },
+  "events_observed": [
+    {
+      "at": "2026-09-26T06:28:52Z",
+      "event": "driver-start",
+      "detail": {
+        "flight_commit": "d56ad054ad06df36b2a2e508ab5e765cc2549085",
+        "queue": "/home/chao/batch-queue.json"
+      }
+    },
+    {
+      "at": "2026-09-26T06:28:53Z",
+      "event": "step-start",
+      "detail": {
+        "step": 1,
+        "short": "system-batch001-s1-v1",
+        "kind": "cell",
+        "cell": "slurp-native-stage3-system-batch001-r01c-s1-run-v1"
+      }
+    },
+    {
+      "at": "2026-09-26T06:28:55Z",
+      "event": "prelaunch-ok",
+      "detail": {
+        "step": 1,
+        "warmup": "registered-model-work-only"
+      }
+    },
+    {
+      "at": "2026-09-26T06:28:55Z",
+      "event": "arm-start",
+      "detail": {
+        "step": 1,
+        "log": "/home/chao/batch-campaign-1-system-batch001-s1-v1-20260926T062855Z.log"
+      }
+    }
+  ],
+  "service_session_id": "serving-slurp-system-batch001-np2-v1",
+  "service_pid": 659,
+  "service_started_at": "2026-09-26T06:27:30.906953+00:00",
+  "service_receipt_sha256": "0d6002d5e20dae96ab8cbcd225591abee11e5141813d970bf73987b06be597c7",
+  "live_driver_pid_observed": 874,
+  "live_campaign_pid_observed": 951,
+  "revalidate_pids_before_action": true,
+  "scheduled_tasks": {
+    "serving": "SAEA-System-Batch001-Serving",
+    "monitor": "SAEA-System-Batch001-Monitor",
+    "driver": "SAEA-Batch-Driver"
+  },
+  "task_properties": {
+    "network_required": false,
+    "execution_timeout": "PT0S",
+    "automatic_restart_count": 0
+  },
+  "operational_resource_observation": {
+    "completed_at": 1790404214.152892,
+    "decision": "admit",
+    "gpu": {
+      "clocks_sm_mhz": 180.0,
+      "memory_free_mib": 3728.0,
+      "memory_total_mib": 24463.0,
+      "memory_used_mib": 20410.0,
+      "power_watts": 6.11,
+      "pstate": "P8",
+      "utilization_percent": 0.0
+    },
+    "host_memory": {
+      "host_free_gb": 28.61383056640625,
+      "host_memory_source": "windows+vm",
+      "host_total_gb": 63.43492889404297,
+      "vm_available_gb": 39.887088775634766,
+      "vm_total_gb": 43.105587005615234,
+      "vmmem_ws_gb": 21.737049102783203
+    },
+    "observed_decision": "admit",
+    "policy_sha256": "a083b6cdf9be10990505a6af7838e974c90636e6a0084c4187bccf0afec20ed6",
+    "reasons": [],
+    "sampled_at": 1790404213.627057,
+    "schema": "saea-serving-resource-state-v1",
+    "session": {
+      "pid": 659,
+      "session_id": "serving-slurp-system-batch001-np2-v1",
+      "started_at": "2026-09-26T06:27:30.906953+00:00"
+    }
+  },
+  "loaded_reading_is_not_rollout_peak_proof": true,
+  "prior_runtime_preserved": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/prior-runtime",
+  "preload_refusal": "Old absent process retained a stale resident receipt; verified stale through the shared stop API before fresh service load. No new service or research contact existed at the refusal.",
+  "task_configuration_note": "Existing serving/monitor task actions were access-denied; new same-principal manual tasks invoke the unchanged shared WSL entry points. Existing tasks remain untouched. Driver action updated successfully.",
+  "read_rule": "Operational metadata only until all four complete replicas seal and each has one official score.",
+  "new_semantic_contacts_authorized": false,
+  "old_closed_flight_restarted": false
+}

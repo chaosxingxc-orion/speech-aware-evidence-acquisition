@@ -5,7 +5,48 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
-## First actor batch registered; launch pending
+## First actor batch dispatched; loaded resource proof in progress
+
+Checkpoint: 2026-09-26T06:29Z. Four clean actual-worker preflights and all nine
+offline gates passed. The new guarded decoder service loaded with two24576-token
+slots, no mmproj and total49152 context tokens. Initial loaded observation:
+20410MiB GPU used,3728MiB free and approximately31GiB Windows available.
+These are loaded readings, not complete-rollout peak or stability proof.
+
+The existing Windows-owned batch driver dispatched the registered four-replica
+queue at06:28:52Z. First campaign started at06:28:55Z. Worker:
+ /home/chao/saea-worktrees/codex-system-batch001-20260926
+at d56ad054ad06df36b2a2e508ab5e765cc2549085. Preserve it through scoring.
+Read [the launch receipt](../receipts/continuation/2026-09-26-system-batch001-launch.json)
+and [clean admission](../receipts/continuation/2026-09-26-system-batch001-clean-admission.json).
+No scientific outcome is claimed or read at dispatch.
+
+Service/monitor tasks are SAEA-System-Batch001-Serving and
+SAEA-System-Batch001-Monitor; the driver remains SAEA-Batch-Driver. They call
+shared WSL entry points, with no network condition, timeout or automatic restart.
+The two older support task actions could not be changed under the current
+Windows account; they remain untouched and idle. Their replacement tasks use
+the same user/principal and no administrator change. Before loading, the shared
+stale-stop API verified the old service absent and recorded its stop. The old
+queue, status, STOP and worker pointers are preserved under
+DATA/coordination/slurp-system-batch001-v1/prior-runtime.
+
+Monitor the new session serving-slurp-system-batch001-np2-v1 using the existing
+continuation_status.py and its resource-state.json/resource-history.jsonl.
+The observed driverPID874, campaignPID951 and serverPID659 are observations,
+not restart targets. Revalidate identity, freshness and current driver epoch.
+Read operational metadata only until all four complete manifests seal with
+one official score each. Stop/preserve on failure; no automatic recovery,
+scorer replay, closed-line dispatch or silent capacity clipping.
+
+The four-input batch has four complete replicas and at most two concurrent
+episodes; sixteen trajectories are not sixteen simultaneous GPU requests.
+Keep role/query prefixes and memory frozen within the batch; sampling seeds
+remain request parameters. Measure actual prompt/completion/cache metadata
+and memory through the registered work. Semantic successors still need their
+actual sealed sources, exposure plans and strict fit before contact.
+
+## Earlier registration checkpoint: first actor batch
 
 The four initial complete-system replicas now have successor run configurations,
 eight generation/fit plan records, configuration-bound receipts for identical model-free supply, a root eligibility
@@ -31,9 +72,8 @@ Each replica now binds its own receipt through the shared preparation entry poin
 all four selected supply outputs equal the original exactly. No audio was encoded.
 See [the rebinding receipt](../receipts/continuation/2026-09-26-system-batch001-preparation-binding.json).
 
-Clean source checks, guarded service loading and durable queue dispatch are
-still pending at this checkpoint. The old STOP and queue have not changed.
-No new model, tokenizer or official scorer contact has occurred.
+The subsequent launch checkpoint above supersedes this registration-only state.
+The model-free admission corrections did not consume any research contact.
 
 ## First resource-sized construction batch configured
 

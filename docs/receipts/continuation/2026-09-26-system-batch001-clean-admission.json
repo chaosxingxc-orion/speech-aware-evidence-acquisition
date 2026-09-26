@@ -1,0 +1,68 @@
+{
+  "schema": "saea-system-first-batch-clean-admission-v1",
+  "worker": "/home/chao/saea-worktrees/codex-system-batch001-20260926",
+  "commit": "d56ad054ad06df36b2a2e508ab5e765cc2549085",
+  "preflights": [
+    {
+      "check": "slurp-native-stage3-system-batch001-r01c-s1-run-v1",
+      "exit_code": 0,
+      "identity_and_readiness_verified": true
+    },
+    {
+      "check": "slurp-native-stage3-system-batch001-r01c-s2-run-v1",
+      "exit_code": 0,
+      "identity_and_readiness_verified": true
+    },
+    {
+      "check": "slurp-native-stage3-system-batch001-r01c-s3-run-v1",
+      "exit_code": 0,
+      "identity_and_readiness_verified": true
+    },
+    {
+      "check": "slurp-native-stage3-system-batch001-r01c-s4-run-v1",
+      "exit_code": 0,
+      "identity_and_readiness_verified": true
+    }
+  ],
+  "gates": [
+    {
+      "check": "engineering_base",
+      "exit_code": 0
+    },
+    {
+      "check": "harness_admission",
+      "exit_code": 0
+    },
+    {
+      "check": "results_ledger",
+      "exit_code": 0
+    },
+    {
+      "check": "tool_catalog",
+      "exit_code": 0
+    },
+    {
+      "check": "experiment_handoff",
+      "exit_code": 0
+    },
+    {
+      "check": "openjiuwen_native_reuse",
+      "exit_code": 0
+    },
+    {
+      "check": "derived_media_confinement",
+      "exit_code": 0
+    },
+    {
+      "check": "stage3_algorithm_label",
+      "exit_code": 0
+    },
+    {
+      "check": "finite_completion_policy",
+      "exit_code": 0
+    }
+  ],
+  "capacity": "Estimate only; exact inline native request fit remains mandatory.",
+  "model_contacts": 0,
+  "logs": "/home/chao/system-batch001-admission-validation-v5"
+}
