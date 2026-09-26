@@ -1,0 +1,378 @@
+{
+  "schema": "saea-slurp-system-round-assets-audit-v1",
+  "checked_at": "2026-09-26T03:28:12.655074+00:00",
+  "implementation_sha256": "120309a1db59a9a7dcadfb163a9492319bd43be1d519f109bdb86962de2323da",
+  "knowledge_baseline": {
+    "root": "repository",
+    "path": "configs/baseline/slurp-native-stage3-var1-plan-r01c-baseline-v1.json",
+    "sha256": "29f4e6c679657d0b99d8f1638e608db98a00e566e2835014007e0c39113fdf9e"
+  },
+  "cohorts": [
+    {
+      "name": "R01C625",
+      "count": 625,
+      "pins": {
+        "name": "R01C625",
+        "count": 625,
+        "roster": {
+          "root": "repository",
+          "path": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+          "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd"
+        },
+        "segment_vectors": {
+          "root": "data",
+          "path": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-segments.jsonl",
+          "sha256": "ebaa743241a67a2cb759353fa8a9f58a3f09d27c00c8c66cb3172958dcccc1b8"
+        },
+        "content_vectors": {
+          "root": "data",
+          "path": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-content-v1.jsonl",
+          "sha256": "dd3b2924cda10810487b2b114e61380beaf8477634c602096b875e461ae44baa"
+        },
+        "promotion": {
+          "root": "absolute",
+          "path": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/STAGE3-CONSTRUCTION-R01-promotion.json",
+          "sha256": "a1664e34742dcd2d59c226da701395edf41d150bbbf8db4acc0cdae9c3c0250f"
+        }
+      },
+      "utterances": 625,
+      "feature_packets_verified": 625,
+      "content_vectors_equal_parent": true,
+      "audio_seconds": 2726.8471875,
+      "feature_tokens_total": 39377,
+      "feature_tokens_max": 195,
+      "decoder_gguf_sha256s": [
+        "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      ],
+      "mmproj_sha256s": [
+        "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+      ]
+    },
+    {
+      "name": "FoldA1080",
+      "count": 1080,
+      "pins": {
+        "name": "FoldA1080",
+        "count": 1080,
+        "roster": {
+          "root": "repository",
+          "path": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+          "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+        },
+        "segment_vectors": {
+          "root": "data",
+          "path": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+          "sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b"
+        },
+        "content_vectors": {
+          "root": "data",
+          "path": "vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl",
+          "sha256": "d0f06ed21c6a576d8118d5a914e34807c24a3d3523d89e7b30d90575d24104ff"
+        },
+        "promotion": {
+          "root": "absolute",
+          "path": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+          "sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247"
+        }
+      },
+      "utterances": 1080,
+      "feature_packets_verified": 1080,
+      "content_vectors_equal_parent": true,
+      "audio_seconds": 3084.5284375,
+      "feature_tokens_total": 47229,
+      "feature_tokens_max": 143,
+      "decoder_gguf_sha256s": [
+        "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      ],
+      "mmproj_sha256s": [
+        "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+      ]
+    },
+    {
+      "name": "FoldB1080",
+      "count": 1080,
+      "pins": {
+        "name": "FoldB1080",
+        "count": 1080,
+        "roster": {
+          "root": "repository",
+          "path": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+          "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8"
+        },
+        "segment_vectors": {
+          "root": "data",
+          "path": "vectors/slurp-intent-boundaries-train-fold-b-1080-v1/query-vectors-speech-segments.jsonl",
+          "sha256": "83c5da6190fb2a65edf98a8f9ef35ff2cb310eb4e4b94eba9e04f9eedce9f299"
+        },
+        "content_vectors": {
+          "root": "data",
+          "path": "vectors/slurp-system-update-fold-b-v1/query-vectors-speech-content-v1.jsonl",
+          "sha256": "573a8a37a63d790d6b849c11676b9463de28c92eeb92ab3e99177181a947c67f"
+        },
+        "promotion": {
+          "root": "absolute",
+          "path": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+          "sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247"
+        }
+      },
+      "utterances": 1080,
+      "feature_packets_verified": 1080,
+      "content_vectors_equal_parent": true,
+      "audio_seconds": 3154.797375,
+      "feature_tokens_total": 47710,
+      "feature_tokens_max": 260,
+      "decoder_gguf_sha256s": [
+        "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      ],
+      "mmproj_sha256s": [
+        "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+      ]
+    }
+  ],
+  "pairwise": [
+    {
+      "first": "R01C625",
+      "second": "FoldA1080",
+      "samples": 0,
+      "utterances": 0
+    },
+    {
+      "first": "R01C625",
+      "second": "FoldB1080",
+      "samples": 0,
+      "utterances": 0
+    },
+    {
+      "first": "FoldA1080",
+      "second": "FoldB1080",
+      "samples": 0,
+      "utterances": 0
+    }
+  ],
+  "stores": [
+    {
+      "store": "intent-boundaries",
+      "values": 60,
+      "facets": 60,
+      "release": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+        "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+      },
+      "source": {
+        "relpath": "prepared/SAEA-SLURP-SEMANTIC-AUTHORING-PREPARE-V1/authored-intent-boundaries-v2.json",
+        "sha256": "1950c4a3a8bed73d0cf810c10a9f32d42b683b3d317cdc24634366faa0808fb1"
+      },
+      "snapshot_content_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+      "snapshot_file_sha256": "4579079c949e7da71125047c8d57027a55f0b90c3fc6db5704ba3c9322e6afd3",
+      "source_partition_role": "train",
+      "overlaps": {
+        "snapshot": {
+          "source_samples": 2037,
+          "cohorts": {
+            "R01C625": {
+              "samples": 0,
+              "utterances": 0
+            },
+            "FoldA1080": {
+              "samples": 0,
+              "utterances": 0
+            },
+            "FoldB1080": {
+              "samples": 0,
+              "utterances": 0
+            }
+          }
+        },
+        "facets": {
+          "source_samples": 2037,
+          "cohorts": {
+            "R01C625": {
+              "samples": 0,
+              "utterances": 0
+            },
+            "FoldA1080": {
+              "samples": 0,
+              "utterances": 0
+            },
+            "FoldB1080": {
+              "samples": 0,
+              "utterances": 0
+            }
+          }
+        },
+        "values": {
+          "source_samples": 2037,
+          "cohorts": {
+            "R01C625": {
+              "samples": 0,
+              "utterances": 0
+            },
+            "FoldA1080": {
+              "samples": 0,
+              "utterances": 0
+            },
+            "FoldB1080": {
+              "samples": 0,
+              "utterances": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "store": "slot-contracts",
+      "values": 54,
+      "facets": 54,
+      "release": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v2/release.json",
+        "sha256": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b"
+      },
+      "source": {
+        "relpath": "prepared/SAEA-SLURP-SEMANTIC-AUTHORING-PREPARE-V2/authored-slot-contracts-v2.json",
+        "sha256": "fc34b243f2e48e4e0bc3fe10d328d25601b1f1fa7c190c049d696c3ca0db4dd2"
+      },
+      "snapshot_content_sha256": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec",
+      "snapshot_file_sha256": "a48ed83eb7878e9eaedfe4dbdf4ea747e3e582e08899ff1f0edfdfe438ae8904",
+      "source_partition_role": "train",
+      "overlaps": {
+        "snapshot": {
+          "source_samples": 3162,
+          "cohorts": {
+            "R01C625": {
+              "samples": 0,
+              "utterances": 0
+            },
+            "FoldA1080": {
+              "samples": 0,
+              "utterances": 0
+            },
+            "FoldB1080": {
+              "samples": 0,
+              "utterances": 0
+            }
+          }
+        },
+        "facets": {
+          "source_samples": 3162,
+          "cohorts": {
+            "R01C625": {
+              "samples": 0,
+              "utterances": 0
+            },
+            "FoldA1080": {
+              "samples": 0,
+              "utterances": 0
+            },
+            "FoldB1080": {
+              "samples": 0,
+              "utterances": 0
+            }
+          }
+        },
+        "values": {
+          "source_samples": 3162,
+          "cohorts": {
+            "R01C625": {
+              "samples": 0,
+              "utterances": 0
+            },
+            "FoldA1080": {
+              "samples": 0,
+              "utterances": 0
+            },
+            "FoldB1080": {
+              "samples": 0,
+              "utterances": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "store": "train-exemplars",
+      "values": 8554,
+      "facets": 8554,
+      "release": {
+        "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/release.json",
+        "sha256": "83620eb0b02f12424a00cd5572904f4df48a49c329b1b0e1a9321d4b9ec14fd0"
+      },
+      "source": {
+        "relpath": "datasets/slurp/metadata/train.jsonl",
+        "sha256": "4a05a3de6c7f028aff298c4a90196e6a3fecd1938d96fb1c125d6fd10d5e301e"
+      },
+      "snapshot_content_sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+      "snapshot_file_sha256": "f549466f22bb0cae00a99849a1a811889eb82af9b632305c815fa123ad5795ca",
+      "source_partition_role": "train",
+      "overlaps": {
+        "snapshot": {
+          "source_samples": 34474,
+          "cohorts": {
+            "R01C625": {
+              "samples": 0,
+              "utterances": 0
+            },
+            "FoldA1080": {
+              "samples": 0,
+              "utterances": 0
+            },
+            "FoldB1080": {
+              "samples": 0,
+              "utterances": 0
+            }
+          }
+        },
+        "facets": {
+          "source_samples": 34474,
+          "cohorts": {
+            "R01C625": {
+              "samples": 0,
+              "utterances": 0
+            },
+            "FoldA1080": {
+              "samples": 0,
+              "utterances": 0
+            },
+            "FoldB1080": {
+              "samples": 0,
+              "utterances": 0
+            }
+          }
+        },
+        "values": {
+          "source_samples": 34474,
+          "cohorts": {
+            "R01C625": {
+              "samples": 0,
+              "utterances": 0
+            },
+            "FoldA1080": {
+              "samples": 0,
+              "utterances": 0
+            },
+            "FoldB1080": {
+              "samples": 0,
+              "utterances": 0
+            }
+          }
+        }
+      }
+    }
+  ],
+  "status": "verified-assets-only",
+  "limits": [
+    "No outcomes, reference labels or new DEV/test read.",
+    "Feature bytes and positions are verified with the production loader; no encoding or inference.",
+    "Promotion file pins and contained packets are verified; a final execution must independently bind its runtime and dataset view.",
+    "Source disjointness does not turn historically exposed TRAIN lists into independent holdout.",
+    "No real request capacity, complete executable cell or prospective generation authority is established."
+  ],
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "scorer": 0,
+    "network": 0
+  },
+  "launch_authority": false,
+  "config_sha256": "494da45907c5ea96e81761911a923e45cf6afcdc620e4cb81695832d3fecdcb8"
+}

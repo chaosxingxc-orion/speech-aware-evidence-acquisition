@@ -990,7 +990,10 @@ def _connected_candidate_native_source(
     }
 
 
+@pytest.mark.parametrize("empty_pack", [False, True])
 def test_verified_source_reaches_runtime_dispatch_and_exact_native_memory_history(
-    source_pair, synthetic_world, tmp_path, monkeypatch
+    source_pair, synthetic_world, tmp_path, monkeypatch, empty_pack
 ):
-    _connected_candidate_native_source(source_pair, synthetic_world, tmp_path, monkeypatch)
+    _connected_candidate_native_source(
+        source_pair, synthetic_world, tmp_path, monkeypatch, empty_pack=empty_pack
+    )

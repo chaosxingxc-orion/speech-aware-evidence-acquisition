@@ -304,6 +304,40 @@ and full-system evaluation when the GPU fault is resolved. Do not extend the
 closed candidate recovery, read its isolated control quality, or open DEV6570/
 test13078. No research contacts, source worker, queue, STOP or service changed.
 
+## Shared TRAIN assets and sampling preparation
+
+CPU preparation checkpoint: 2026-09-26T03:33:46.723584+00:00.
+The [asset and sampling protocol](../readiness/2026-09-26-slurp-system-round-assets-and-sampling.md)
+now has a reusable pinned audit configuration and a completed real asset check.
+All 2785 R01C/A/B speech packets passed the production manifest, feature-byte
+and position-byte validators. All query vectors cover their rosters, bind the
+same audio hashes, and preserve exact values across the content derivative.
+Fold B's missing content derivative was produced by the existing shared
+model-free builder after registration, with no new encoding.
+
+All three common knowledge stores have zero sample and utterance source
+overlap with every cohort, checked at snapshot/facet/value levels. Use the
+R01C minus-R01 exemplar pool consistently; it differs from historical Fold A
+PLAN, so new matched controls are required. The shared audit writes no model
+output or raw task text. Its full pins and limits are in the linked audit
+receipt. Existing TRAIN exposure and the closed DEV/test boundaries remain.
+
+The proposed sampler uses four complete-system trajectories per input at
+temperature 0.7, with explicit replica seeds; final comparison remains greedy.
+These are proposed adaptation settings, not upstream defaults or a registered
+flight. Retain complete independent downstream paths rather than Solver-only
+branches. Final B evaluation adds an empty-memory tool control alongside
+matched default, M1 and primary M2. This separates learned guidance from
+the interface change. The existing empty-pack path is verified through the
+same native runtime, including Reviewer dispatch and Solver revision.
+
+The asset/derivative regressions passed 27 tests, and the memory-control
+regressions passed three tests with simulated answering transport. Ruff and all
+nine offline gates passed; the protocol links the exact validation receipt. No RL outcome is claimed. Next derive
+actual common actor/model fragments and held evaluation templates, then finish
+prospective request/plan registration. GPU fault diagnosis remains required;
+no service restart or closed-flight replay occurred.
+
 ## Whole-system summary runtime connection
 
 The model-facing summary input now has a shared preparation/loader/baseline

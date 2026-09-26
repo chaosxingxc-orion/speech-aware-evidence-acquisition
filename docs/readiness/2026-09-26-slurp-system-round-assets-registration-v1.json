@@ -1,0 +1,26 @@
+{
+  "schema": "saea-model-free-preparation-registration-v1",
+  "recorded_at": "2026-09-26T03:24:46.206568+00:00",
+  "registration_id": "SAEA-SLURP-SYSTEM-ROUND-ASSETS-PREPARE-V1",
+  "execution_profile": "model-free-check",
+  "purpose": "Prepare and verify shared assets for prospective disjoint complete-system semantic-update rounds.",
+  "authorized_inputs": "Existing TRAIN R01C625, Fold A1080, Fold B1080 roster metadata, sealed knowledge releases and feature/vector bytes only. No task outcomes or new DEV/test reads.",
+  "derivative": {
+    "source_relpath": "vectors/slurp-intent-boundaries-train-fold-b-1080-v1/query-vectors-speech-segments.jsonl",
+    "source_sha256": "83c5da6190fb2a65edf98a8f9ef35ff2cb310eb4e4b94eba9e04f9eedce9f299",
+    "out_dir": "vectors/slurp-system-update-fold-b-v1",
+    "out_name": "query-vectors-speech-content-v1.jsonl",
+    "generator": "scripts/build_slurp_query_content_derivative.py",
+    "transform": "Rename the single full-utterance vector dimension intent-boundary to content, preserving all IDs and every value."
+  },
+  "verification": "Use existing released knowledge loader and speech feature packet loader; check sample and utterance source exclusion, full roster coverage and exact derivative equality.",
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "scorer": 0,
+    "network": 0
+  },
+  "gpu_authority": false,
+  "unchanged": "Do not change historical bytes, active queue, STOP, frozen source workers, algorithms or prior verdicts."
+}

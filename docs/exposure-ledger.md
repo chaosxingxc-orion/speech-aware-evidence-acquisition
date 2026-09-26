@@ -5247,3 +5247,46 @@ an official task score; no official smoke scoring ran. The full control
 campaign began at 21:40:18Z. Both full arms must seal and complete their one
 official score before task-quality read. See
 docs/receipts/continuation/2026-09-25-candidate-seal-recovery1-launch.json.
+
+
+## 2026-09-26 prospective system-round asset preparation
+
+Register SAEA-SLURP-SYSTEM-ROUND-ASSETS-PREPARE-V1 before the new Fold B
+content-vector derivative is written. The model-free scope and input/output
+pins are in docs/readiness/2026-09-26-slurp-system-round-assets-registration-v1.json.
+Reuse the existing query derivative, released-knowledge and speech-packet
+implementations. Read existing TRAIN metadata and sealed preparation bytes
+only; perform zero model, tokenizer, encoder, scorer, GPU or network contacts.
+This entry authorizes no generation, restart, task-quality read or new split.
+
+Completed the registered model-free preparation: 1080 Fold B content vectors
+were derived without re-encoding, and all 2785 R01C/A/B feature packets were
+verified. Common knowledge-source overlap is zero by sample and utterance.
+Read docs/receipts/continuation/2026-09-26-slurp-system-round-assets-audit-v1.json.
+All registered contact counts remain zero; this is no generation authority.
+
+## English successor for preserved historical owner quotations
+
+The following translations supersede the non-English quotations for reading
+only. Original registered records remain unchanged. Source: commit
+93745fa0d77758ca2af665f8a917733aff0d15ac, docs/exposure-ledger.md, lines below.
+These historical authorizations do not authorize a new or repeated flight.
+
+| Source line | Complete English translation of the quotation |
+| --- | --- |
+| 892 | Use 60-second windows for the scientific experiments and a 10-second probe. |
+| 900 | GO: start the id_slot benchmark. |
+| 904 | Implement the V1 patch and the combined benchmark. |
+| 905 | After the decode probe finishes, give me the attribution results. |
+| 913 | Approve the llama.cpp upgrade benchmark. |
+| 917 | Schedule R4 with n=10. |
+| 919 | Do W1 and W2 now. |
+| 925 | Run W3, then lock a baseline configuration. |
+| 929 | Also run the W4 probe and close this phase. |
+| 953 | Align WER. |
+| 959 | Schedule it; run the tail=0 comparison first. |
+| 963 | Continue. |
+| 965 | There is no need to compare wave1 again; proceed directly to step2. |
+| 967 | Proceed directly to step2. |
+| 977 | Lock featcache first; once everything is locked, package the baseline. |
+| 985 | If probe A passes its threshold, proceed directly to run probe B with 81920. |

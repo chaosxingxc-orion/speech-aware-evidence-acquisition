@@ -1,0 +1,82 @@
+{
+  "schema": "saea-slurp-system-round-assets-v1",
+  "knowledge_baseline": {
+    "root": "repository",
+    "path": "configs/baseline/slurp-native-stage3-var1-plan-r01c-baseline-v1.json",
+    "sha256": "29f4e6c679657d0b99d8f1638e608db98a00e566e2835014007e0c39113fdf9e"
+  },
+  "cohorts": [
+    {
+      "name": "R01C625",
+      "count": 625,
+      "roster": {
+        "root": "repository",
+        "path": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+        "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd"
+      },
+      "segment_vectors": {
+        "root": "data",
+        "path": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-segments.jsonl",
+        "sha256": "ebaa743241a67a2cb759353fa8a9f58a3f09d27c00c8c66cb3172958dcccc1b8"
+      },
+      "content_vectors": {
+        "root": "data",
+        "path": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-content-v1.jsonl",
+        "sha256": "dd3b2924cda10810487b2b114e61380beaf8477634c602096b875e461ae44baa"
+      },
+      "promotion": {
+        "root": "absolute",
+        "path": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/STAGE3-CONSTRUCTION-R01-promotion.json",
+        "sha256": "a1664e34742dcd2d59c226da701395edf41d150bbbf8db4acc0cdae9c3c0250f"
+      }
+    },
+    {
+      "name": "FoldA1080",
+      "count": 1080,
+      "roster": {
+        "root": "repository",
+        "path": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+        "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+      },
+      "segment_vectors": {
+        "root": "data",
+        "path": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+        "sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b"
+      },
+      "content_vectors": {
+        "root": "data",
+        "path": "vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl",
+        "sha256": "d0f06ed21c6a576d8118d5a914e34807c24a3d3523d89e7b30d90575d24104ff"
+      },
+      "promotion": {
+        "root": "absolute",
+        "path": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+        "sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247"
+      }
+    },
+    {
+      "name": "FoldB1080",
+      "count": 1080,
+      "roster": {
+        "root": "repository",
+        "path": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+        "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8"
+      },
+      "segment_vectors": {
+        "root": "data",
+        "path": "vectors/slurp-intent-boundaries-train-fold-b-1080-v1/query-vectors-speech-segments.jsonl",
+        "sha256": "83c5da6190fb2a65edf98a8f9ef35ff2cb310eb4e4b94eba9e04f9eedce9f299"
+      },
+      "content_vectors": {
+        "root": "data",
+        "path": "vectors/slurp-system-update-fold-b-v1/query-vectors-speech-content-v1.jsonl",
+        "sha256": "573a8a37a63d790d6b849c11676b9463de28c92eeb92ab3e99177181a947c67f"
+      },
+      "promotion": {
+        "root": "absolute",
+        "path": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+        "sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247"
+      }
+    }
+  ]
+}

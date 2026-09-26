@@ -1,0 +1,140 @@
+{
+  "schema": "saea-slurp-system-round-assets-validation-v1",
+  "checked_at": "2026-09-26T03:36:32.174557+00:00",
+  "parent_commit": "93745fa0d77758ca2af665f8a917733aff0d15ac",
+  "environment": "WSL Ubuntu-24.04; explicit main-checkout PYTHONPATH; /home/chao/.venvs/speechrl/bin/python",
+  "asset_audit": {
+    "path": "docs/receipts/continuation/2026-09-26-slurp-system-round-assets-audit-v1.json",
+    "sha256": "28795b636ba6af5a1f1002c6d11f62f47dbb5d7e9d1b98b360caccf118d5a93f",
+    "verified_packets": 2785
+  },
+  "tests": [
+    {
+      "passed": 27,
+      "files": [
+        "tests/unit/test_build_slurp_query_content_derivative.py",
+        "tests/unit/test_knowledge_stores.py"
+      ],
+      "log": "/home/chao/system-round-assets-validation-v1/tests.log",
+      "sha256": "ae2d2541df5dc961a3960f25e6851d88750ce099f711cc42c23f2f1ae1bbeb3b"
+    },
+    {
+      "passed": 3,
+      "cases": [
+        "test_verified_source_reaches_runtime_dispatch_and_exact_native_memory_history[False]",
+        "test_verified_source_reaches_runtime_dispatch_and_exact_native_memory_history[True]",
+        "test_empty_pack_is_explicit_and_supplies_no_guidance"
+      ],
+      "log": "/home/chao/system-round-assets-validation-v1/empty-control-tests.log",
+      "sha256": "90be44f2b38c3fa4b2370e52d65289ca8756ed2475a62fec3fd60b79424e4067"
+    }
+  ],
+  "negative_audit_checks": [
+    {
+      "case": "wrong-source-hash",
+      "exit_code": 1,
+      "expected_error": "pin mismatch"
+    },
+    {
+      "case": "existing-output",
+      "exit_code": 1,
+      "expected_error": "refuse to overwrite"
+    }
+  ],
+  "lint": {
+    "result": "passed",
+    "log": "/home/chao/system-round-assets-validation-v1/lint.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "gates": [
+    {
+      "check": "engineering_base",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-assets-validation-v1/engineering_base.log",
+      "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "check": "harness_admission",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-assets-validation-v1/harness_admission.log",
+      "sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+    },
+    {
+      "check": "results_ledger",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-assets-validation-v1/results_ledger-final.log",
+      "sha256": "ec9367bbd838063e612f82f2497a4e042f439e1b778d78d55e5f4c6117904d6f"
+    },
+    {
+      "check": "tool_catalog",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-assets-validation-v1/tool_catalog.log",
+      "sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+    },
+    {
+      "check": "experiment_handoff",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-assets-validation-v1/experiment_handoff-final.log",
+      "sha256": "bc69e03288ea1d409aa7301fc790ad8ef81d3b07ff669bbeae265041844b7abc"
+    },
+    {
+      "check": "openjiuwen_native_reuse",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-assets-validation-v1/openjiuwen_native_reuse.log",
+      "sha256": "64e519d2c26848d0cb9e5b5aba6d78c1e2c4d960ce3e53dab2f7e306c383c343",
+      "output": "/home/chao/system-round-assets-validation-v1/native-proof.json"
+    },
+    {
+      "check": "derived_media_confinement",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-assets-validation-v1/derived_media_confinement.log",
+      "sha256": "e5600bc23bc68d92209cbf0a33c4d7557ee8c8f165a6d9b2a23f1a2d6172ca91",
+      "output": "/home/chao/system-round-assets-validation-v1/derived-media-proof"
+    },
+    {
+      "check": "stage3_algorithm_label",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-assets-validation-v1/stage3_algorithm_label.log",
+      "sha256": "772a0ea23eb2cbd08e1649908f386c524c8a78941bf58e74e26004da7cf524ca"
+    },
+    {
+      "check": "finite_completion_policy",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-assets-validation-v1/finite_completion_policy.log",
+      "sha256": "20bc3dc18154a13c2956dd6455da6de859f1e724b864fd06bcaec02b0734cc22"
+    }
+  ],
+  "gate_limits": [
+    "Results ledger retains 104 historical cross-check findings.",
+    "Handoff check has no errors; newer HEAD and working changes are warned, and no launch is authorized.",
+    "Native and derived-media proofs use new external output paths."
+  ],
+  "proof_boundaries": [
+    "The asset audit reads real pinned TRAIN knowledge releases and query/feature bytes, using production loaders and no model transport.",
+    "All three cohorts have matching recorded decoder/encoder identities; final runtime and dataset-view binding remains separate.",
+    "The connected populated and empty memory tests use synthetic source/scorer fixtures and simulated answering transport, with real source materialization, attestation, runtime fit, Reviewer tool dispatch, Solver revision and delivery.",
+    "The audit CLI rejects an incorrect baseline hash before publishing output and refuses to overwrite an existing audit.",
+    "Sampling settings and episode counts are prospective design, not executable cells or observed algorithm effectiveness."
+  ],
+  "remaining": [
+    "Build actual shared actor/sampling fragments and held M1/M2/default/empty-memory evaluation templates.",
+    "Bind complete effective sampling parameters, prospective actor contracts and all generation/fit/audio/scoring budgets.",
+    "Resolve GPU/backend fault, then separately register and execute whole-system sampling/update/frozen evaluation and matched replication."
+  ],
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "scorer": 0,
+    "network": 0
+  },
+  "launch_authority": false,
+  "rl_benefit_established": false,
+  "files": {
+    "scripts/audit_slurp_system_round_assets.py": "120309a1db59a9a7dcadfb163a9492319bd43be1d519f109bdb86962de2323da",
+    "configs/analysis/slurp-system-update-round-assets-v1.json": "494da45907c5ea96e81761911a923e45cf6afcdc620e4cb81695832d3fecdcb8",
+    "tests/unit/test_provisional_candidate_materialization.py": "0869445b6ebeba3d218f273f7280fad09b3608d3fc5369c19a5632ea3c4f1e11",
+    "docs/readiness/2026-09-26-slurp-system-round-assets-registration-v1.json": "fa307a7074074c94d58f930ab507a1ab59cc0922b1022a6c9c80ef064b9fe271"
+  },
+  "historical_language_handling": "Sixteen pre-existing non-English owner quotations in immutable historical ledger records were preserved exactly; complete English successor translations now identify their source commit and lines. They grant no new authority."
+}
