@@ -580,3 +580,119 @@ def test_the_real_repository_terminates_with_a_documented_exit_code() -> None:
     """The gate runs on the real tree and returns one of its two exit codes."""
 
     assert gate.main(["--repo-root", str(_REPO)]) in (0, 1)
+
+
+# --------------------------------------------------------------------------
+# owner decision 127: the no-harm admission of an engineering-base item
+# --------------------------------------------------------------------------
+
+
+def test_a_cell_that_claims_nothing_is_not_measured_against_the_benefit_floor(
+    tmp_path: Path,
+) -> None:
+    """The comparison only means something for a cell registered to LOOK for an effect.
+
+    Before 2026-09-26 it ran regardless of ``claims_benefit``, so every collection cell and
+    every form proof drew a spurious ``effect-below-floor`` -- cell ROLL-2 did, on the day it
+    was registered, with the honest declaration ``expected_effect_pp`` 0.0.
+    """
+
+    _build(
+        tmp_path,
+        declaration=_declaration(expected_effect_pp=0.0, claims_benefit=False),
+        registered_date="2026-09-28",
+    )
+    data = gate.evaluate(tmp_path)
+    assert "effect-below-floor" not in _kinds(data)
+    assert data["passed"] is True
+
+
+def test_a_no_harm_admission_must_preregister_the_margin_it_may_not_breach(
+    tmp_path: Path,
+) -> None:
+    _build(
+        tmp_path,
+        declaration=_declaration(
+            expected_effect_pp=0.0, claims_benefit=False, admission="no-harm"
+        ),
+        registered_date="2026-09-28",
+    )
+    data = gate.evaluate(tmp_path)
+    assert _kinds(data) == ["missing-harm-margin"]
+    assert "0.6700 pp" in data["findings"][0]["message"]
+    assert data["passed"] is False
+
+
+def test_a_harm_margin_tighter_than_the_floor_is_refused(tmp_path: Path) -> None:
+    """A margin the design cannot see is not a bound on harm.
+
+    It is a bound the cell will appear to satisfy whatever happens, which is the one way a
+    no-harm reading can be worse than no reading at all.
+    """
+
+    _build(
+        tmp_path,
+        declaration=_declaration(
+            expected_effect_pp=0.0,
+            claims_benefit=False,
+            admission="no-harm",
+            harm_margin_pp=0.2,
+        ),
+        registered_date="2026-09-28",
+    )
+    data = gate.evaluate(tmp_path)
+    assert _kinds(data) == ["harm-margin-below-floor"]
+    assert "0.6700 pp" in data["findings"][0]["message"]
+    assert data["passed"] is False
+
+
+def test_a_harm_margin_at_the_floor_is_admitted(tmp_path: Path) -> None:
+    _build(
+        tmp_path,
+        declaration=_declaration(
+            expected_effect_pp=0.0,
+            claims_benefit=False,
+            admission="no-harm",
+            harm_margin_pp=0.67,
+        ),
+        registered_date="2026-09-28",
+    )
+    data = gate.evaluate(tmp_path)
+    assert _kinds(data) == []
+    assert data["passed"] is True
+
+
+def test_a_no_harm_admission_may_not_also_claim_a_benefit(tmp_path: Path) -> None:
+    _build(
+        tmp_path,
+        declaration=_declaration(
+            expected_effect_pp=1.5,
+            claims_benefit=True,
+            admission="no-harm",
+            harm_margin_pp=0.67,
+        ),
+        registered_date="2026-09-28",
+    )
+    data = gate.evaluate(tmp_path)
+    assert "no-harm-claims-benefit" in _kinds(data)
+    assert data["passed"] is False
+
+
+def test_an_unknown_admission_and_a_non_positive_margin_are_refused(
+    tmp_path: Path,
+) -> None:
+    for overrides, needle in (
+        ({"admission": "by-fiat"}, "admission is 'by-fiat'"),
+        ({"admission": "no-harm", "harm_margin_pp": 0.0}, "harm margin is a positive number"),
+        ({"admission": "no-harm", "harm_margin_pp": -1.0}, "harm margin is a positive number"),
+    ):
+        target = tmp_path / needle[:12].replace(" ", "-").replace("'", "")
+        _build(
+            target,
+            declaration=_declaration(claims_benefit=False, **overrides),
+            registered_date="2026-09-28",
+        )
+        data = gate.evaluate(target)
+        assert _kinds(data) == ["unparsable-declaration"], needle
+        assert needle in data["findings"][0]["message"], needle
+        assert data["passed"] is False

@@ -38,6 +38,17 @@ DECLARED effect, before the GPU hours are spent rather than after.
 * ``claims_benefit`` -- optional, default ``true``. ``false`` says the cell
   proves FORM, not benefit, and is the only legal value for ``form-proof``
   and for a cell under :data:`MIN_BENEFIT_ROWS` rows.
+* ``admission`` -- optional, default ``benefit``. ``benefit`` is owner decision
+  115's rule: the CI95 lower bound above zero. ``no-harm`` is owner decision
+  127's ENGINEERING-BASE mode -- sound logic, a stated ceiling, and a reading
+  that the primary metric did not fall below a preregistered margin. A
+  ``no-harm`` cell claims no benefit, may never be reported as one, and must
+  carry ``harm_margin_pp``.
+* ``harm_margin_pp`` -- required by ``admission`` ``no-harm``: the positive
+  number of percentage points the primary metric may not fall below. It may not
+  be TIGHTER than the measured floor of its own design, because a margin the
+  design cannot see is not a bound on harm -- it is a bound the cell will appear
+  to satisfy whatever happens.
 * ``replicate_run_id`` -- required by
   ``cross-flight-with-in-chain-replicate``: the run id of the
   request-identical replicate that flies in the SAME chain (rule 3).
@@ -488,6 +499,14 @@ def _block_for(blocks: Any, run_id: str | None, cell_id: str | None) -> Any:
     return blocks
 
 
+#: How a cell asks to be admitted. ``benefit`` is decision 115's rule -- the CI95 lower bound
+#: above zero -- and is the default when nothing says otherwise. ``no-harm`` is owner decision
+#: 127's ENGINEERING-BASE mode: sound logic, a stated ceiling and a reading that the primary metric
+#: did not fall below a preregistered margin. A no-harm cell claims no benefit and may never be
+#: reported as one, and its margin may not be tighter than what its design can actually see.
+_ADMISSIONS: frozenset[str] = frozenset({"benefit", "no-harm"})
+
+
 @dataclass
 class Declaration:
     """One cell's parsed declaration, or the reason it is not one."""
@@ -498,6 +517,8 @@ class Declaration:
     rows: int | None = None
     rows_source: str | None = None
     claims_benefit: bool = True
+    admission: str | None = None
+    harm_margin_pp: float | None = None
     replicate_run_id: str | None = None
     primary_metric: str | None = None
     note: str | None = None
@@ -544,6 +565,25 @@ def _parse_declaration(
         parsed.rows = declared_rows
         parsed.rows_source = "the declaration"
 
+    admission = block.get("admission")
+    if admission is not None:
+        if not isinstance(admission, str) or admission not in _ADMISSIONS:
+            parsed.problems.append(
+                f"admission is {admission!r}; it must be one of {sorted(_ADMISSIONS)}"
+            )
+        else:
+            parsed.admission = admission
+    margin = block.get("harm_margin_pp")
+    if margin is not None:
+        if isinstance(margin, bool) or not isinstance(margin, (int, float)):
+            parsed.problems.append(f"harm_margin_pp is {margin!r}; it must be a number")
+        elif float(margin) <= 0.0:
+            parsed.problems.append(
+                f"harm_margin_pp is {float(margin):g}; a harm margin is a positive number of "
+                "percentage points, because it bounds how much loss the design could still see"
+            )
+        else:
+            parsed.harm_margin_pp = float(margin)
     claims = block.get("claims_benefit", True)
     if not isinstance(claims, bool):
         parsed.problems.append(f"claims_benefit is {claims!r}; it must be true or false")
@@ -694,7 +734,56 @@ def _findings_for(record: dict[str, Any], parsed: Declaration | None) -> list[di
         )
 
     floor, arithmetic = floor_for(str(design), int(rows))
-    if floor is not None and parsed.effect_pp is not None and parsed.effect_pp < floor:
+
+    # Owner decision 127: an engineering-base item is admitted on sound logic, a stated ceiling and
+    # a NO-HARM reading, and never has to demonstrate a gain. Two consequences are enforced here.
+    if parsed.admission == "no-harm":
+        if parsed.claims_benefit:
+            findings.append(
+                {
+                    "kind": "no-harm-claims-benefit",
+                    "message": (
+                        f"{cell}: admission 'no-harm' with claims_benefit true; a base item is "
+                        "admitted on a no-harm reading and may never be reported as a gain "
+                        "(owner decision 127), so set claims_benefit false"
+                    ),
+                }
+            )
+        if parsed.harm_margin_pp is None:
+            findings.append(
+                {
+                    "kind": "missing-harm-margin",
+                    "message": (
+                        f"{cell}: admission 'no-harm' without harm_margin_pp; a no-harm reading "
+                        "is only a reading if the margin it must not breach was preregistered "
+                        f"-- the measured floor of {design} at n = {rows} is "
+                        f"{'unbounded' if floor is None else format(floor, '.4f') + ' pp'}"
+                    ),
+                }
+            )
+        elif floor is not None and parsed.harm_margin_pp < floor:
+            findings.append(
+                {
+                    "kind": "harm-margin-below-floor",
+                    "message": (
+                        f"{cell}: harm_margin_pp {parsed.harm_margin_pp:g} is tighter than the "
+                        f"{design} floor {floor:.4f} pp at n = {rows} "
+                        f"[{'; '.join(arithmetic)}]; a margin the design cannot see is not a "
+                        f"bound on harm, it is a bound this cell will appear to satisfy whatever "
+                        f"happens -- source: {rule.source}"
+                    ),
+                }
+            )
+
+    # A cell that claims nothing cannot have an effect below the floor: the comparison only means
+    # something for a cell registered to LOOK for an effect. Before 2026-09-26 it ran regardless,
+    # and every collection and form-proof cell drew a spurious advisory from it.
+    if (
+        parsed.claims_benefit
+        and floor is not None
+        and parsed.effect_pp is not None
+        and parsed.effect_pp < floor
+    ):
         findings.append(
             {
                 "kind": "effect-below-floor",
