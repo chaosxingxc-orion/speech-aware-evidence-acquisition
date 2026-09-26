@@ -89,7 +89,7 @@ that small can never be evidence of benefit. The canonical copy is the top-level
 | campaign plan | `configs/campaign/slurp-native-stage3-roll-2-fold-a-v1.json` |
 | serving session (attach only) | `serving-slurp-native-candidate-five-train-a-np4-v1` |
 
-Composed config hash `2987b5b394122dd7dcd8d899bbd51c5a51daba78faf5c9e1c0f6c35501704099`, protocol hash `c1d279ca9d1903769314f0e01ed27b91fbf74cd1732ff45cecd07109c644982f` (arm); `a88709063a7b7d052ecf1a441b9d87a5ac0caba598da1ef7b0965f4e6f114ca0` / `cf653d852732e7e011af82b24f1ce2494de5823d4917bd79a51cd472065955f1`
+Composed config hash `2987b5b394122dd7dcd8d899bbd51c5a51daba78faf5c9e1c0f6c35501704099`, protocol hash `c1d279ca9d1903769314f0e01ed27b91fbf74cd1732ff45cecd07109c644982f` (arm); `dc6f8e55bd35b330767479d2e3ceba3b7a0bbb164db29a037d823b2d4d9be9f2` / `6ba9e2cd995a75bf7c68f1b00483455d6ad2c292d144476336df7040da2bbf3f`
 (smoke). Every one of these MOVES at the readiness flip, which re-pins this cell's own prepared
 phase supply into the baseline fragment; `scripts/flights/batch/repin_loop_generic.sh` rewrites
 each document that quotes them, including this one and the exposure-ledger rows.
