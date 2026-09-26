@@ -1,0 +1,39 @@
+{
+  "complete_actor_sources": 4,
+  "construction_roster": {
+    "relpath": "coordination/slurp-system-knowledge-value001-v1/construction-roster-v1.json",
+    "sha256": "eee21337170cc39f8c25fc200a01669e123fa97829ac9d1716d9e1cee5f21616"
+  },
+  "context_bytes": 1065214,
+  "encoder_contacts_added": 0,
+  "feedback_summary": {
+    "eligible_groups": 3,
+    "episodes": 16,
+    "groups": 4,
+    "ineligible_groups": 1
+  },
+  "full_construction_inputs": 8,
+  "model_contacts_added": 0,
+  "next": "Define a bounded generator evidence view and perform registered actual request fit. Separately freeze knowledge and sample consumption policies; current integration does not implement learned retrieval.",
+  "prepared_context": {
+    "relpath": "coordination/slurp-system-knowledge-value001-v1/prepared-contexts-v1.json",
+    "sha256": "db227b22474036b23f71fcd6b0cce4d6162dd9373e5e8142c252d24b0fa1003a"
+  },
+  "proposal_anchor": {
+    "relpath": "coordination/slurp-system-knowledge-value001-v1/proposal-roster-v1.json",
+    "sha256": "2fb2c1b997ef078c0ff4f8e54436b1f7093a819a0d56eb986f5932101a4a9689"
+  },
+  "schema": "saea-knowledge-edit-context-readiness-v1",
+  "scorer_contacts_added": 0,
+  "source": {
+    "relpath": "coordination/slurp-system-knowledge-value001-v1/source-v1.json",
+    "sha256": "782dc542680bd72de318803d14d6c6f9f29306108bcad2c13ce1bfd73b7b8d61"
+  },
+  "status": "MODEL_FREE_INPUT_VERIFIED_NOT_FIT_OR_GENERATION_ADMITTED",
+  "tests": {
+    "context_module_statement_coverage_percent": 100,
+    "passed": 79,
+    "scope": "Shared source/preparation/controller/OpenJiuwen fit-and-send exercised using fixture transport. No real endpoint."
+  },
+  "tokenizer_contacts_added": 0
+}

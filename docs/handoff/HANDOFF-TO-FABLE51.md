@@ -5,7 +5,44 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
-## Shared knowledge-edit contract ready; runtime input integration pending
+## Owner separates construction and consumption; shared proposal path integrated
+
+Read docs/readiness/2026-09-26-knowledge-construction-consumption-optimization-v2.md.
+Construction optimizes accurate, compact, discriminative knowledge. Consumption
+samples retrieval/selection policies over a frozen knowledge version and supplies
+only relevant bounded packets. Retrieval quality is an explicit diagnostic and
+optimization target, but complete-system outcomes decide promotion. Alternate
+updates after each complete sampling batch; never update within a batch.
+
+The proposal path now reuses verified native actors, existing official feedback,
+rollout grouping, immutable preparation, the shared controller and OpenJiuwen.
+It retains all four learned groups and sixteen complete episodes, including ties.
+Source-specific output grammar is bound to the exact prepared input. Seventy-nine
+focused tests pass, including identical fit/send payloads through the common
+executor; the new context module has 100% statement coverage. No live endpoint,
+scorer, encoder or GPU contact occurred. See
+docs/receipts/continuation/2026-09-26-knowledge-edit-context-readiness-v1.json.
+
+The full reconstructed context is 1,065,214 bytes despite deterministic sharing.
+It is NOT capacity-admitted or generation-ready. Before a GPU launch, prepare an
+explicit bounded evidence view or registered hierarchical input, preserving all
+groups and system events; then perform actual request fit with full output reserve.
+Do not send this archival context as-is or silently truncate it. The current
+knowledge policy and historical actors remain unchanged; no new candidate exists.
+
+Consumption sampling is not implemented by this proposal route. The existing
+complete-policy catalog does not rebind knowledge routing, and VAR-2 Solver side
+branches lack their own downstream trajectories. First compare frozen complete
+K0/C0, K1/C0 and K0/C1 configurations through the common actor; add K1/C1 only when
+useful. Select the consistent locked actor explicitly, retaining the incumbent.
+Then extend the common policy binding for logged stochastic retrieval decisions
+and full-system credit. Do not label local supply scores as system RL returns.
+
+No next generation is registered or queued. The previously recorded stopped
+service needs a fresh identity only after a new flight is ready; do not restart
+the completed queue. The clock fix below is already committed and tested.
+
+## Shared knowledge-edit contract ready
 
 The pure slot-value edit compiler is implemented and passes 28 focused tests.
 It preserves key representations and intent bindings, rejects stale or malformed

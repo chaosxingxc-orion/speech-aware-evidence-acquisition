@@ -185,7 +185,7 @@ def test_prepared_complete_episode_reaches_actual_shared_fit_and_send(summary_wo
 
 
 def exercise_shared_fit_and_send(world_inputs, tmp_path, text_only, *, prepared_spec=None,
-                                 baseline=None, comparison=False, group_update=False, batch_update=False, wire_view=False,
+                                 baseline=None, comparison=False, group_update=False, batch_update=False, wire_view=False, knowledge_edit=False,
                                  baseline_overrides=None,
                                  output_text="The whole episode ends in ACCEPT."):
     """Exercise the production binding, executor, request gate and artifact output."""
@@ -312,7 +312,10 @@ def exercise_shared_fit_and_send(world_inputs, tmp_path, text_only, *, prepared_
         else:
             assert sent["speech_feature_parts"]
         context = json.loads(sent["history"][0]["content"])
-        if batch_update:
+        if knowledge_edit:
+            assert context["stage"] == "complete-system-knowledge-edit"
+            assert receipt["input_stage"] == "complete-system-knowledge-edit"
+        elif batch_update:
             assert context["stage"] == "complete-system-batch-update"
             assert context["group_operations"] and context["existing_experiences"] == []
             assert receipt["input_stage"] == "complete-system-batch-update"

@@ -1545,6 +1545,7 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-direct-only-v1": "phase-direct-only-v1.json",
     "phase-system-group-operations-v1": "phase-system-group-operations-v1.json",
     "phase-system-batch-operations-v1": "phase-system-batch-operations-v1.json",
+    "phase-knowledge-value-edit-v1": "phase-knowledge-value-edit-v1.json",
     # Stage-3 S3-4 (2026-09-22): one phase ("advantage"), one contact, the
     # SAME one-phase shape ``phase-direct-only-v1`` uses. What differs is
     # what the fragment binds it to: the "construction-advantage-text" arm
@@ -1823,6 +1824,11 @@ def register_phase_programs_v1() -> None:
         AGENT_CONTROLLERS.register(
             "phase-system-batch-operations-v1",
             default_controller_factory(default_phase_program("phase-system-batch-operations-v1")),
+        )
+    if "phase-knowledge-value-edit-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-knowledge-value-edit-v1",
+            default_controller_factory(default_phase_program("phase-knowledge-value-edit-v1")),
         )
     if "phase-stage3-advantage-v1" not in registered:
         AGENT_CONTROLLERS.register(
@@ -2145,6 +2151,10 @@ def register_response_formats_v1() -> None:
         from .system_operation_contract import batch_operations_response_format
 
         RESPONSE_FORMATS.register("system-batch-operations-v1", batch_operations_response_format)
+    if "slot-value-edits-v1" not in registered:
+        from .system_operation_contract import knowledge_edit_response_format
+
+        RESPONSE_FORMATS.register("slot-value-edits-v1", knowledge_edit_response_format)
     if "training-feedback-proposal-v1" not in registered:
         from .training_feedback_artifacts import training_feedback_response_format
 

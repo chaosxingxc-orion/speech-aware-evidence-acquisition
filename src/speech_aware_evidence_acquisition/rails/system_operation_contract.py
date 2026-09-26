@@ -14,7 +14,15 @@ FORMAT_ID = "system-group-operations-v1"
 INPUT_SCHEMA = "saea-prepared-system-group-update-v1"
 BATCH_FORMAT_ID = "system-batch-operations-v1"
 FORMAT_INPUTS = {FORMAT_ID: INPUT_SCHEMA,
-                 BATCH_FORMAT_ID: "saea-prepared-system-batch-update-v1"}
+                 BATCH_FORMAT_ID: "saea-prepared-system-batch-update-v1",
+                 "slot-value-edits-v1": "saea-prepared-knowledge-edit-v1"}
+
+
+def knowledge_edit_response_format(lock, root, *, prepared_contexts):
+    """Resolve after controller registration to avoid importing actor readers early."""
+    from .knowledge_edit_context import knowledge_edit_response_format as render
+
+    return render(lock, root, prepared_contexts=prepared_contexts)
 
 
 def validate_operation_format_binding(values, program):

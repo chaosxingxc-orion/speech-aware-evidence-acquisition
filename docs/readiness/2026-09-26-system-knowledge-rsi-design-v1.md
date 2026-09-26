@@ -1,5 +1,10 @@
 # Knowledge construction and consumption as a system-level optimization policy
 
+The owner subsequently separated construction quality from sampled retrieval and
+consumption optimization. Follow
+[the two-stage successor](2026-09-26-knowledge-construction-consumption-optimization-v2.md)
+for the next comparison order and implementation boundaries.
+
 ## Owner direction and scope
 
 The owner proposes a second optimization object alongside task-execution

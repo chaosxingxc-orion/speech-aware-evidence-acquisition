@@ -1,0 +1,16 @@
+Propose a bounded candidate update to the slot knowledge values in the prepared context.
+Read the entire batch of complete system trajectories and their terminal feedback,
+including ties and failures. Resolve the shared JSON references before comparing.
+Use the recorded knowledge supply, role responses, actual tool events, routes and
+final delivery to identify a testable interpretation improvement. A local response
+or review opinion is not the final system outcome and does not establish causal credit.
+Keep intent recognition and slot extraction as distinct related tasks. Knowledge
+explains semantic roles and extraction; it does not assert facts about new speech.
+Change only a named editable field, preserving its exact previous-value hash.
+Keep the ontology, intent bindings and retrieval keys unchanged. Do not embed
+sample IDs, sample answers, transcript fragments or per-example lookup instructions.
+Cite the observed evidence groups supporting each proposal. Respect the complete
+edit contract, including field shapes, maximum edits and total field characters.
+Output only the specified JSON object. Use an empty edits array when the evidence
+does not support a defensible candidate. A proposal is provisional until evaluated
+through the complete unchanged agent system on a later registered batch.

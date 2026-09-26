@@ -1,0 +1,15 @@
+{
+  "schema": "saea-phase-program-v1",
+  "program_id": "phase-knowledge-value-edit-v1",
+  "phases": [
+    {
+      "name": "direct",
+      "purpose": "direct-decode",
+      "knowledge": "none",
+      "response_format_id": "slot-value-edits-v1",
+      "barrier": false
+    }
+  ],
+  "max_contacts": 1,
+  "stop_rule": "always-run-full-program"
+}

@@ -316,6 +316,11 @@ def load_prepared_feedback(
         return load_system_batch_update(
             spec, data_root=Path(data_root), sample_ids=active_ids,
             construction_roster_sha256=roster_sha)
+    if isinstance(spec, Mapping) and spec.get("schema") == "saea-prepared-knowledge-edit-v1":
+        from .knowledge_edit_context import load_knowledge_edit_feedback
+        return load_knowledge_edit_feedback(
+            spec, data_root=Path(data_root), sample_ids=active_ids,
+            construction_roster_sha256=roster_sha)
     artifact_pin, source_pin, maximum = _validate_spec(spec)
     source_bindings, source_bindings_sha256 = _read_pinned_json(
         source_pin, data_root=Path(data_root), field="source_bindings"
