@@ -5,6 +5,30 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Compact capacity closed; single-slot summary profile is next
+
+Latest checkpoint: 2026-09-26. All36 registered wire-view tokenizer endpoints
+finished normally in a detached WSL process; all root leases released.
+No generation, new media or scoring occurred. All16 exact requests physically
+fit;15 also pass the3072-token operational margin. The longest input is21528
+tokens and leaves998 after2048 output plus2 special tokens. The group is NOT
+admitted for generation. No execution failure or automatic retry occurred.
+Read [the verdict](../receipts/continuation/2026-09-26-system-batch001-wire-capacity-verdict.json).
+
+Next prepare a one-slot semantic profile with the same49152 total context,
+Q8_0 K/V, decoder-only no-mmproj and existing prefill geometry. This keeps the
+analytical total KV payload at2448 MiB and assigns the full context to each
+summary; it does not prove unchanged total peak VRAM. Keep2048 output and3072
+reserve, rebind full service identity, refit every exact request, then verify
+actual resource telemetry during registered work. Do not run it on the old
+two-slot identity or call the held profile a validated baseline.
+
+The completed actor batch still establishes only observed two-slot execution
+safety, not a32-input baseline or learned gain. The next four inputs remain held
+until the actual summary/comparison/batch-update chain seals. Maintain separate
+batch inputs, replicas per input, concurrent episodes and semantic context size.
+Apply policy/memory/prefix changes to all next-batch replicas together.
+
 ## Compact wire-view preparation complete; capacity successor registered
 
 Checkpoint: 2026-09-26. All67 actual actor request bodies match their original

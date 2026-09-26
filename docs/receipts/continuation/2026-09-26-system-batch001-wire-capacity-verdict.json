@@ -1,0 +1,91 @@
+{
+  "schema": "saea-system-wire-summary-capacity-verdict-v1",
+  "at": "2026-09-26T07:54:09.871229+00:00",
+  "status": "completed-not-admitted",
+  "worker_commit": "c7078fc5",
+  "capacity_contacts": 36,
+  "generation_contacts": 0,
+  "media_contacts": 0,
+  "scorer_contacts": 0,
+  "completion_tokens": 2048,
+  "required_operational_margin": 3072,
+  "slot_tokens": 24576,
+  "rows": [
+    {
+      "label": "s1",
+      "receipt": {
+        "relpath": "coordination/slurp-system-batch001-v1/summary-wire-capacity-v1/s1-request-fit.json",
+        "sha256": "25b66b6df8eafe3d96f80355816acb2d8d272a77acfd8d1f9932af5eb773c175"
+      },
+      "text_tokens": [
+        18496,
+        16764,
+        17816,
+        13901
+      ],
+      "physical_fit": true,
+      "minimum_margin_tokens": 4030,
+      "operational_fit": true
+    },
+    {
+      "label": "s2",
+      "receipt": {
+        "relpath": "coordination/slurp-system-batch001-v1/summary-wire-capacity-v1/s2-request-fit.json",
+        "sha256": "b716bd4182f7d271754ed676a72c364663c30ea62bac4572ea4a8c3a39240401"
+      },
+      "text_tokens": [
+        21528,
+        19005,
+        18024,
+        14758
+      ],
+      "physical_fit": true,
+      "minimum_margin_tokens": 998,
+      "operational_fit": false
+    },
+    {
+      "label": "s3",
+      "receipt": {
+        "relpath": "coordination/slurp-system-batch001-v1/summary-wire-capacity-v1/s3-request-fit.json",
+        "sha256": "3f5263f41ca37b398fb100d866433ee38f87ca603141e9de1990920813456758"
+      },
+      "text_tokens": [
+        18227,
+        16679,
+        18441,
+        14183
+      ],
+      "physical_fit": true,
+      "minimum_margin_tokens": 4085,
+      "operational_fit": true
+    },
+    {
+      "label": "s4",
+      "receipt": {
+        "relpath": "coordination/slurp-system-batch001-v1/summary-wire-capacity-v1/s4-request-fit.json",
+        "sha256": "71880b7004bbf13866c8ad1357bfe8b8df54e2e569d8ad40ccb35bca640be96f"
+      },
+      "text_tokens": [
+        16265,
+        18317,
+        18201,
+        14395
+      ],
+      "physical_fit": true,
+      "minimum_margin_tokens": 4209,
+      "operational_fit": true
+    }
+  ],
+  "decision": "All16 physically fit;15 satisfy operational reserve. One21528-token input leaves998 tokens; no semantic generation is admitted. Do not lower output or reserve.",
+  "next_design": "Prepare a single24576x2-total-context slot:49152 total and49152 per slot, decoder-only, same K/V type and prefill geometry. Refit actual requests and verify resource window before generation. This changes scheduling, not information or output allowance.",
+  "background_launch": {
+    "relpath": "coordination/slurp-system-batch001-v1/summary-wire-capacity-v1/launch.json",
+    "sha256": "e5a5c8a4ed7921cae3aa92728495adbe502f71d0d2aa4f88980d137687e444b5"
+  },
+  "latest_resource_state": {
+    "decision": "admit",
+    "age_seconds": 1.2134912014007568,
+    "gpu_free_mib": 3706.0,
+    "windows_available_gib": 47.98805618286133
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 420,
+  "runtime_receipt": "receipts/runtime-q4km-mmproj-free.json",
+  "server_args": [
+    "-c",
+    "49152",
+    "-np",
+    "1",
+    "-b",
+    "2048",
+    "-ub",
+    "512",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "--cache-prompt",
+    "--cache-ram",
+    "0",
+    "--no-cache-idle-slots",
+    "--slot-prompt-similarity",
+    "0"
+  ],
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260913,
+    "max_tokens": 2048,
+    "id_slot": "per-sample"
+  },
+  "prompt_order": "speech-query-prefix-v2",
+  "profile_slot_count": 1,
+  "speech_feature_root": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+  "server_env": {
+    "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+    "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+  },
+  "geometry_basis": "HELD semantic-stage profile: one49152-token decoder-only slot, same total49152 context and Q8_0 K/V as the observed two-slot actor service. Analytical total KV payload stays2448 MiB; total VRAM and long-prefill stability require observation. Keep resource guard, output2048 and3072 operational reserve. Requires a new full service identity and independently registered exact fit/generation. This fragment alone authorizes no contact.",
+  "serving_resource_limits": {
+    "schema": "saea-serving-resource-limits-v1",
+    "windows_start_gib": 32.0,
+    "windows_admit_gib": 12.0,
+    "windows_stop_gib": 10.0,
+    "gpu_admit_free_mib": 2048.0,
+    "gpu_stop_free_mib": 1024.0,
+    "max_sample_age_seconds": 15.0
+  }
+}
