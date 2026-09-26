@@ -8,7 +8,7 @@ for their own flights. Do not interpret old plans as permission to restart them.
 ## First actor batch registered; launch pending
 
 The four initial complete-system replicas now have successor run configurations,
-eight generation/fit plan records, shared model-free supply, a root eligibility
+eight generation/fit plan records, configuration-bound receipts for identical model-free supply, a root eligibility
 receipt and a prospective queue. Read
 [the registration](../readiness/2026-09-26-slurp-system-batch001-v1-preregistration.md).
 The earlier held sizing configurations remain unchanged. This admits a new
@@ -25,6 +25,11 @@ and raw preflight role-cap validation ignored the request-only1024 override.
 Both are corrected through existing shared paths;118 focused/native graph
 tests pass. No research contact occurred during these refusals. See
 [the capacity correction](../receipts/continuation/2026-09-26-native-request-output-cap-resolution.json).
+
+The strict policy change also invalidated the old shared preparation identity.
+Each replica now binds its own receipt through the shared preparation entry point;
+all four selected supply outputs equal the original exactly. No audio was encoded.
+See [the rebinding receipt](../receipts/continuation/2026-09-26-system-batch001-preparation-binding.json).
 
 Clean source checks, guarded service loading and durable queue dispatch are
 still pending at this checkpoint. The old STOP and queue have not changed.

@@ -288,9 +288,5 @@
   "task_instruction_template_active": true,
   "what_the_train_exemplars_store_is": "Twenty speech-retrieved TRAIN exemplars from the common minus-R01 release; identical knowledge and selection across R01C, A and B. Each cohort binds its own sealed speech query vectors. Snapshot/facet/value provenance excludes all three cohorts, as recorded by the system-round asset audit.",
   "what_this_is": "Registered first complete-system construction batch: two slots, unchanged common knowledge and graph, Reviewer1024 and other roles512, four whole-system sampled replicas. All realized contacts require exact native fitting. No task tools or learned memory in this initial batch. This is not a continuation of the closed candidate family.",
-  "preflight_budget_mode": "defer-to-native-contact-fit",
-  "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-SYSTEM-BATCH001-V1/phase-supply-v1.json",
-    "sha256": "277d4a61fe2cd16553334ccef2785302c98361d4922947cf7e2273e70b12a91a"
-  }
+  "preflight_budget_mode": "defer-to-native-contact-fit"
 }

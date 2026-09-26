@@ -4,7 +4,7 @@
   "plan_kind": "fit",
   "experiment": "slurp-native-stage3-system-batch001-r01c-s4-run-v1",
   "cell": "slurp-native-stage3-system-batch001-r01c-s4-run-v1",
-  "composed_config_hash": "ff921b97abcd4f4ef96fcc1a028b3a8af5bd7416cbe6e51d526ee952d9ae6f49",
+  "composed_config_hash": "32fd046714d9c27283c6561d230bd71afff8e38fd9c0feb7ce210c16c7830b6b",
   "execution_plan": {
     "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S4-RUN-V1-FIT",
     "execution_profile": "bounded-discovery-probe",
@@ -14,14 +14,14 @@
     "planned_model_calls": 176,
     "planned_gpu_hours": 1.0,
     "planned_speech_audio_seconds": 188,
-    "protocol_hash": "15c4c2829fecdf9b542a7bad8d7a3a51401c29adef21bfd39ffa0c7c7727a15d",
+    "protocol_hash": "7effb7a7432cb224c0ecfc012085bd30af89dd725284e4a510e0bd06bb5cb9f5",
     "attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s4-run-v1-fit",
     "schema": "saea-execution-plan-v1",
     "study": "speech-aware-evidence-acquisition"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-26-slurp-system-batch001-v1/protocol-registered-v1.json",
-    "sha256": "0c8e18424e0d6cf3872ef9eab2fbced0c2a21e6927a1593d19d60bc639b1a69f"
+    "sha256": "de2b214606dda2493405d12a7c6a71fa432909d6848c447f2c6d542ac05bdcee"
   },
   "read_rule": "Operational metadata only until all four complete manifests seal and each scores once."
 }

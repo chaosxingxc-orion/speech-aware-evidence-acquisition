@@ -1,0 +1,52 @@
+{
+  "schema": "saea-model-free-preparation-rebinding-v1",
+  "reason": "Strict context policy and per-replica composed identities require distinct preparation receipts. Keep common supply content and shared runtime.",
+  "superseded_pin": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-BATCH001-V1/phase-supply-v1.json",
+    "sha256": "277d4a61fe2cd16553334ccef2785302c98361d4922947cf7e2273e70b12a91a"
+  },
+  "pins": {
+    "slurp-native-stage3-system-batch001-r01c-s1-run-v1": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S1-RUN-V1/phase-supply-v1.json",
+      "sha256": "42a4dcf7429c9f66bb9a61de0066fa8342010a3b79de2b3a5f164b3b46cd14b7"
+    },
+    "slurp-native-stage3-system-batch001-r01c-s2-run-v1": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S2-RUN-V1/phase-supply-v1.json",
+      "sha256": "e62e2882700fba1607f8538228677b02a2100e0f9d94388a0f847e3c01635404"
+    },
+    "slurp-native-stage3-system-batch001-r01c-s3-run-v1": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S3-RUN-V1/phase-supply-v1.json",
+      "sha256": "2876076f2a8834eab5ee4cc6edbe0060c9d255fa2d568a437eaaf59c24e166a2"
+    },
+    "slurp-native-stage3-system-batch001-r01c-s4-run-v1": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S4-RUN-V1/phase-supply-v1.json",
+      "sha256": "027cf4750292dab117ee74968c0e62cb3c11c6e71f0fa2a1eb57c3043552fa18"
+    }
+  },
+  "all_prepared_output_equal_to_original": true,
+  "model_contacts": 0,
+  "encoder_contacts": 0,
+  "attempts_started": 0,
+  "rewritten_files": {
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-26-slurp-system-batch001-v1/protocol-registered-v1.json": 8,
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-26-slurp-system-batch001-v1/s1-fit-plan-registered-v1.json": 3,
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-26-slurp-system-batch001-v1/s1-generation-plan-registered-v1.json": 3,
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-26-slurp-system-batch001-v1/s2-fit-plan-registered-v1.json": 3,
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-26-slurp-system-batch001-v1/s2-generation-plan-registered-v1.json": 3,
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-26-slurp-system-batch001-v1/s3-fit-plan-registered-v1.json": 3,
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-26-slurp-system-batch001-v1/s3-generation-plan-registered-v1.json": 3,
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-26-slurp-system-batch001-v1/s4-fit-plan-registered-v1.json": 3,
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-26-slurp-system-batch001-v1/s4-generation-plan-registered-v1.json": 3,
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/exposure-ledger.md": 8
+  },
+  "hash_mapping": {
+    "002c8e39f712883d1bf5a5be3bdc637447839ca2162692dd30ba09b84a53e4db": "0656500bd966b364b7e71618a6e308899d3ced040fbce1c6784ab646326c64aa",
+    "3bbb1a7263c7e5424adc5415311a8be0273515a7675c651ecf04cddbc5ae3186": "c2d718d9f72f8c761f9ae4e533085539d33aa279a830d2f708db6afcf1879094",
+    "5dbc1080c377a1b918a19d3ff5bd7e64341a488e3cd5cab8d5bd8f2f87c52e34": "f4412b4ac43c4475be7fa0743b10abfd76a3bd2a8095e24c61f7b5311aef4b43",
+    "f0e545bd3b6c6636107ec3e04891cc841e84d3eb8f7f819349fa922589bd1286": "053b0ef74d3f3ff11de6c495884cf76218124440067f86a363fda43b3c4827a6",
+    "ac49af5e794d38c107a5f3adf1321df26ef96b242652c4128f7805f4d996b120": "c1fe4034eb9bc3289fc4d2cc3c0b49f5f6d875e4a8dab140d026e8e60fbb75fb",
+    "bce4c0be5f57dd5a7099c192d1eb4355dcc4d70af271865374c8a53e628aaf7d": "323968ecb10ff40a6e55a4d08debdf603110595bf451123ac2658efe4216deef",
+    "ff921b97abcd4f4ef96fcc1a028b3a8af5bd7416cbe6e51d526ee952d9ae6f49": "32fd046714d9c27283c6561d230bd71afff8e38fd9c0feb7ce210c16c7830b6b",
+    "15c4c2829fecdf9b542a7bad8d7a3a51401c29adef21bfd39ffa0c7c7727a15d": "7effb7a7432cb224c0ecfc012085bd30af89dd725284e4a510e0bd06bb5cb9f5"
+  }
+}

@@ -29,8 +29,8 @@
           },
           {
             "kind": "preparation",
-            "relpath": "prepared/SAEA-SLURP-SYSTEM-BATCH001-V1/phase-supply-v1.json",
-            "sha256": "277d4a61fe2cd16553334ccef2785302c98361d4922947cf7e2273e70b12a91a",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S1-RUN-V1/phase-supply-v1.json",
+            "sha256": "42a4dcf7429c9f66bb9a61de0066fa8342010a3b79de2b3a5f164b3b46cd14b7",
             "reason": "Shared model-free first-phase supply; zero new encoding."
           }
         ]
@@ -107,5 +107,9 @@
     "asr_calls": 0,
     "native_tool_calls": 0,
     "ceilings_are_not_targets": true
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S1-RUN-V1/phase-supply-v1.json",
+    "sha256": "42a4dcf7429c9f66bb9a61de0066fa8342010a3b79de2b3a5f164b3b46cd14b7"
   }
 }
