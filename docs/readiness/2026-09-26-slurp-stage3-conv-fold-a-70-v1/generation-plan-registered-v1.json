@@ -1,0 +1,51 @@
+{
+  "cell": "slurp-native-stage3-conv-fold-a-70-v1",
+  "composed_config_hash": "28923aa33d1e050e9ffdd4e9fc613670f6c09936ec990d6041476db6c7fb4117",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-conv-fold-a-70-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 770,
+    "planned_speech_audio_seconds": 1899,
+    "protocol_hash": "53cdf41ac4ef039e99d4b132a5b9b0e4f8acd23df466760c4f79ca41535c9054",
+    "run_id": "SAEA-SLURP-STAGE3-CONV-FOLD-A-70-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "57c6f278d8ab35dafa0f1183938c13b6084a4f3d9d9438cfb3e55bbf73ff335c",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over the committed campaign plan configs/campaign/slurp-native-stage3-conv-fold-a-70-v1.json, a single-cell chain; the campaign acquires its own GenerationLease against the resident session and schedules one official score over the complete manifest at finalize.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-conv-fold-a-70-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 3080,
+    "generation_calls_cap": 770,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 420,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 1899
+  },
+  "one_factor": "None. This cell changes NO factor: it is the registered AGREE treatment, byte-for-byte in every knob, flown on a smaller roster. The only differences from SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 are the population (70 derived ids instead of 1,080) and the ceilings rescaled to it.",
+  "plan_kind": "generation",
+  "preparation_base_commit": "c6ced983",
+  "prepared_phase_supply": {
+    "note": "NONE COMMITTED, by design. The agreement merge moved the implementation sha256 of rails.kb_policy, rails.knowledge_provider and rails.phase_supply, which FlightRuntime._phase_seed_inputs binds, so every prepared_phase_supply pin in the repository is invalidated and any cell awaiting a flip must be re-pinned. This cell carries no pin at all: the flip mints its own under its own run id (item E16) and --allow-output-change must never be passed.",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-CONV-FOLD-A-70-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-26-slurp-stage3-conv-fold-a-70-v1/protocol-registered-v1.json",
+    "sha256": "4adbc6885267cd79fc8a533d35c8bef8d8eca4ea562fe325aa61ae03ed9a2b3f"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-CONV-FOLD-A-70-V1: cell CONV, the conversion probe. There is no verdict and no admission. The deliverable is a NUMBER: m, the count of the 70 rows whose intent verdict moves from wrong to gold, reported as m / 70 with a binomial CI95 (Wilson score interval, the exact Clopper-Pearson interval reported beside it), plus the reverse count -- which is zero by construction on this population, because every row is already intent-wrong in the comparator, and that structural zero is reported as a LIMIT of the cell rather than as a result. Beside it: how many rows stay wrong with a byte-identical answer versus a different wrong intent, and the flown delivery check (did the arm actually deliver the gold intent's boundary entry on all 70 rows the offline derivation says it would?). A delivery rate the derivation did not predict is an engineering defect, not a conversion measurement, and closes the read.",
+  "quality_read_gate": "No read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for this cell, and before the flown delivery check agrees with the offline derivation on all 70 rows. A partial manifest is never scored and never read.",
+  "registered_at_utc": "2026-09-26T18:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-conv, branch fable/conv",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}
