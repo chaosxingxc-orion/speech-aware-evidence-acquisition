@@ -5,6 +5,29 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Summary v2 running independently; resource baseline remains four inputs
+
+Checkpoint: 2026-09-26T08:25Z. The sole named summary successor launched through
+SAEA-Batch-Driver at 08:24:26Z. Root verified the live driver and campaign
+processes and an OPENED first attempt. Current worker is frozen at
+733c1c6f19bf041e1beee863d49f030c2e06f4df in
+/home/chao/saea-worktrees/codex-system-summary001-20260926.
+Read the generation-v2 launch receipt under docs/receipts/continuation/.
+Keep that source unchanged through recursive summary verification.
+
+The service is serving-slurp-system-summary001-np1-v1, one 49152-token slot,
+decoder-only no-mmproj. Queue order is s1 through s4, each four text artifacts,
+2048 output tokens; zero official scores. All four declared-readiness checks
+and all 16 materializations passed before dispatch; all nine offline gates pass.
+The former STOP marker is preserved in the v1-precontact-refusal-backup directory,
+not erased from history. No automatic retry or second recovery is permitted.
+
+Read operational metadata only until all four summary sources finalize.
+Then root registers scientific reading and verifies source-to-summary joins
+before comparison and memory update. The actor source remains frozen at d56ad054.
+Next four inputs remain held. Thirty-two-input batches remain unfrozen.
+Read [the batch/prefix/capacity baseline](../results/2026-09-26-system-rollout-batch-prefix-capacity-baseline.md).
+
 ## Summary launch held before contact; sole receipt successor prepared
 
 At 08:11:56Z the driver stopped without opening an attempt or making any

@@ -1,0 +1,119 @@
+{
+  "schema": "saea-independent-launch-receipt-v1",
+  "recorded_at": "2026-09-26T08:25:55.360312+00:00",
+  "task_name": "SAEA-Batch-Driver",
+  "epoch_started_at": "2026-09-26T08:24:26Z",
+  "worker_commit": "733c1c6f19bf041e1beee863d49f030c2e06f4df",
+  "worker_path": "/home/chao/saea-worktrees/codex-system-summary001-20260926",
+  "dispatch": {
+    "relpath": "coordination/slurp-system-summary001-v1/generation-v2-dispatch.json",
+    "sha256": "f0a20402ac85a767383cd4ef76f9054167ec08d790d7fd0f179786a003e80a23"
+  },
+  "processes_at_check": [
+    {
+      "pid": 21003,
+      "argv": [
+        "bash",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+      ]
+    },
+    {
+      "pid": 21081,
+      "argv": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "-m",
+        "speech_aware_evidence_acquisition.core.flight.cli",
+        "campaign",
+        "--repo-root",
+        "/home/chao/saea-worktrees/codex-system-summary001-20260926",
+        "--data-root",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        "--runtime-root",
+        "/home/chao",
+        "--lock-path",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+        "--campaign-plan",
+        "/home/chao/saea-worktrees/codex-system-summary001-20260926/configs/campaign/slurp-stage3-system-batch001-summary-s1-np1-run-v2.json",
+        "--owner",
+        "codex-root-system-summary001",
+        "--expected-session-id",
+        "serving-slurp-system-summary001-np1-v1"
+      ]
+    }
+  ],
+  "current_epoch_events": [
+    {
+      "at": "2026-09-26T08:24:26Z",
+      "event": "driver-start",
+      "detail": {
+        "flight_commit": "733c1c6f19bf041e1beee863d49f030c2e06f4df",
+        "queue": "/home/chao/batch-queue.json"
+      }
+    },
+    {
+      "at": "2026-09-26T08:24:26Z",
+      "event": "step-start",
+      "detail": {
+        "step": 1,
+        "short": "system-summary001-s1-v2",
+        "kind": "cell",
+        "cell": "slurp-stage3-system-batch001-summary-s1-np1-run-v2"
+      }
+    },
+    {
+      "at": "2026-09-26T08:24:28Z",
+      "event": "prelaunch-ok",
+      "detail": {
+        "step": 1,
+        "warmup": "registered-model-work-only"
+      }
+    },
+    {
+      "at": "2026-09-26T08:24:28Z",
+      "event": "arm-start",
+      "detail": {
+        "step": 1,
+        "log": "/home/chao/batch-campaign-1-system-summary001-s1-v2-20260926T082428Z.log"
+      }
+    }
+  ],
+  "resource_state_at_check": {
+    "completed_at": 1790411154.463231,
+    "decision": "admit",
+    "gpu": {
+      "clocks_sm_mhz": 180.0,
+      "memory_free_mib": 3684.0,
+      "memory_total_mib": 24463.0,
+      "memory_used_mib": 20454.0,
+      "power_watts": 97.22,
+      "pstate": "P2",
+      "utilization_percent": 94.0
+    },
+    "host_memory": {
+      "host_free_gb": 30.05646514892578,
+      "host_memory_source": "windows+vm",
+      "host_total_gb": 63.43492889404297,
+      "vm_available_gb": 41.274993896484375,
+      "vm_total_gb": 43.105587005615234,
+      "vmmem_ws_gb": 19.967792510986328
+    },
+    "observed_decision": "admit",
+    "policy_sha256": "a083b6cdf9be10990505a6af7838e974c90636e6a0084c4187bccf0afec20ed6",
+    "reasons": [],
+    "sampled_at": 1790411153.3447754,
+    "schema": "saea-serving-resource-state-v1",
+    "session": {
+      "pid": 16961,
+      "session_id": "serving-slurp-system-summary001-np1-v1",
+      "started_at": "2026-09-26T08:03:19.017299+00:00"
+    }
+  },
+  "summary_run_suffix": "NP1-RUN-V2",
+  "registered_generation_contacts": 16,
+  "registered_live_fit_contacts": 36,
+  "official_scores": 0,
+  "failure_policy": "Sole named successor. Stop on further failure; do not restart or replay.",
+  "read_rule": "Operational metadata only until all four summary artifacts finalize; register scientific reading afterward.",
+  "independence": "Windows-owned WSL scheduled task; network not required; no automatic restart; not owned by chat or credits."
+}
