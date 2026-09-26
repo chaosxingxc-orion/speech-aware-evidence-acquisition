@@ -1,0 +1,25 @@
+{
+  "schema": "saea-flight-execution-plan-v1",
+  "status": "registered-before-contact",
+  "experiment": "slurp-stage3-system-group-update001-np1-capacity-v1",
+  "cell": "slurp-stage3-system-group-update001-np1-capacity-v1",
+  "composed_config_hash": "f38c7c998680ab0f8325d80a472ee4d330f1c6cbbafa26bbbdb461ccf9b9d001",
+  "execution_plan": {
+    "run_id": "SAEA-SLURP-STAGE3-SYSTEM-GROUP-UPDATE001-NP1-CAPACITY-V1",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "d9b66071e332cc9bf9af1aec206e7a0d07daa19e3e69e7414b514f3384f1db4e",
+    "planned_model_calls": 3,
+    "planned_gpu_hours": 0.5,
+    "planned_speech_audio_seconds": 4,
+    "protocol_hash": "786d9d061b87e2134f693667f74f970ec579140b1d70651aaf7027131295885d",
+    "attempt_id": "attempt-slurp-stage3-system-group-update001-np1-capacity-v1",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-26-system-group-update001-capacity-v1/protocol.json",
+    "sha256": "84a38fa925a00dbeee30ac99fa01d2182db8019586781f2be1891a3fdc62b9a8"
+  }
+}

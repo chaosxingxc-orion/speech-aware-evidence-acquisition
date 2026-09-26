@@ -1,0 +1,86 @@
+{
+  "experiment_id": "SAEA-SLURP-STAGE3-SYSTEM-GROUP-UPDATE001-NP1-CAPACITY-V1",
+  "date": "2026-09-26",
+  "purpose": "Measure the actual whole-system group-update input with unchanged comparison lessons and an explicitly empty initial memory. Zero generation.",
+  "cells": [
+    {
+      "cell_id": "slurp-stage3-system-group-update001-np1-capacity-v1",
+      "run_id": "SAEA-SLURP-STAGE3-SYSTEM-GROUP-UPDATE001-NP1-CAPACITY-V1",
+      "attempt_id": "attempt-slurp-stage3-system-group-update001-np1-capacity-v1",
+      "model_fragment": "q4km-mmproj-free-system-np1-ctx48k-resource-guard-v1",
+      "dataset_fragment": "slurp-speech-system-comparison001-v1",
+      "baseline_fragment": "system-group-update-text-v1",
+      "allowed_execution_stages": [
+        "check",
+        "prompt-fit"
+      ],
+      "readiness": {
+        "state": "ready",
+        "reason": "Sealed complete-system comparison and verified v2 round policy. Capacity measurement only."
+      }
+    }
+  ],
+  "serving_slots": 1,
+  "serving_slot_tokens": 49152,
+  "split_id": "SYSTEM-COMPARISON001-V1",
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-system-comparison001-v1",
+      "ids": [
+        "slurp:train:000049:audio-1434542455"
+      ]
+    }
+  ],
+  "stage3_algorithm": {
+    "id": "tfgrpo-system-memory-disjoint-v1",
+    "operators_used": [
+      "credit_assignment"
+    ],
+    "note": "Frozen TF-GRPO system adaptation: propose memory operations using whole-system terminal feedback and unchanged generated comparison experiences. Capacity only."
+  },
+  "prepared_training_feedback": {
+    "schema": "saea-prepared-system-group-update-v1",
+    "artifact": {
+      "relpath": "coordination/slurp-system-batch001-v1/group-update-v1/prepared-contexts.json",
+      "sha256": "d4a57914d547bf015e99b1641f2a05057645fbb3a7dd8a53984f1af80157678e"
+    },
+    "source_bindings": {
+      "relpath": "coordination/slurp-system-batch001-v1/group-update-v1/source.json",
+      "sha256": "d14361167559e84e2e67b0e29347f6c81e8535b278e0b1cc960920dbf1800a5f"
+    },
+    "language": "en",
+    "max_context_bytes": 2000000
+  },
+  "artifact_result": {
+    "schema": "saea-artifact-result-binding-v1",
+    "role": "training-feedback-proposal",
+    "construction_roster": {
+      "repo_relpath": "docs/receipts/rosters/slurp-system-comparison001-v1.json",
+      "sha256": "8340b8fdc8a399fbcca30908a941b319c0d809f971d4b3c948500f9178a5d03b"
+    }
+  },
+  "knowledge_snapshot_relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json",
+  "knowledge_snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+  "knowledge_custody_note": "Required shared phase-runner custody only; no fresh supply. Validate every actual prepared-text request and render it without posting before fit.",
+  "request_decoding_overrides": {
+    "temperature": 0,
+    "seed": 2026092605,
+    "max_tokens": 2048
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 3,
+    "planned_gpu_hours": 0.5,
+    "planned_speech_audio_seconds": 4
+  },
+  "service_session": "serving-slurp-system-summary001-np1-v1",
+  "registration": "docs/readiness/2026-09-26-system-group-update001-capacity-v1/protocol.json",
+  "failure_policy": "Preserve and stop on operational failure. A measured nonfit is a completed diagnostic and permits no generation. No shortening, omitted source group, automatic retry or server restart.",
+  "live_phase_fit": {
+    "run_id": "SAEA-SLURP-STAGE3-SYSTEM-GROUP-UPDATE001-NP1-CAPACITY-V1-GENERATION-FIT-HELD",
+    "attempt_id": "attempt-slurp-stage3-system-group-update001-np1-capacity-v1-generation-fit-held",
+    "contact_cap": 3
+  }
+}

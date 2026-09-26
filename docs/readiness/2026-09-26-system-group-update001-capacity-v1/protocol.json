@@ -1,0 +1,22 @@
+{
+  "schema": "saea-system-semantic-stage-protocol-v1",
+  "registered_at": "2026-09-26T09:04:48.204322+00:00",
+  "stage": "whole-system-group-update-capacity",
+  "purpose": "Measure the actual whole-system group-update input with unchanged comparison lessons and an explicitly empty initial memory. Zero generation.",
+  "source": {
+    "relpath": "coordination/slurp-system-batch001-v1/group-update-v1/source.json",
+    "sha256": "d14361167559e84e2e67b0e29347f6c81e8535b278e0b1cc960920dbf1800a5f"
+  },
+  "contacts": 3,
+  "generation_contacts": 0,
+  "official_scores": 0,
+  "fresh_audio": 0,
+  "output_tokens": 2048,
+  "reserve_tokens": 3072,
+  "slot_tokens": 49152,
+  "service_session": "serving-slurp-system-summary001-np1-v1",
+  "full_construction_inputs": 4,
+  "ready_group_count": 1,
+  "empty_initial_memory": true,
+  "read_rule": "Preserve source narratives. No runtime memory authority or future actor dispatch. Stop on failure; never retry automatically."
+}
