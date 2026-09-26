@@ -18,7 +18,9 @@ four independently testable, task-independent stages:
    describes (content/speaker are embeddable; label/prior are TRAIN-derived
    statistics, "V ... carries priors and is modeled against the TRAIN set").
 2. The ranker registered under :data:`RANK_POLICY_ID` -- a weighted sum of
-   max cosine, max prior mass, and cross-dimension agreement, each term first
+   max cosine, max prior mass, and agreement (the cross-dimension fraction,
+   or, when the recall carries an :data:`AGREEMENT_DIMENSIONS` entry, that
+   supplied per-row signal instead), each term first
    brought onto one common scale by :func:`_dimension_scales` so the sum
    compares like with like, emitting a contract-valid, hash-bound
    :class:`~.knowledge.RankResult`. That normalisation is an exact identity
@@ -126,6 +128,23 @@ _EVIDENCE_CONTACT_ID = "evidence-decode"
 # here), matching ruling section 1.3's "K is multi-dimensional ... a further
 # dimension" language.
 PRIOR_MASS_DIMENSIONS = frozenset({"label", "prior"})
+
+#: The reserved recall dimension the EXEMPLAR-INTENT AGREEMENT signal travels
+#: on. No snapshot declares it and no builder emits it: a facet carries it
+#: only when the caller MERGES a pre-computed, hash-pinned per-row agreement
+#: table into the recall scores (``rails.phase_supply``'s ``agreement_source``,
+#: produced by ``scripts/build_slurp_intent_exemplar_agreement.py``). Each
+#: score is the share of the row's own top-``k`` exemplar recall whose frozen
+#: build-time ``task_target`` equals this facet's target: a fraction in
+#: ``[0, 1]``, self-excluded, speech-keyed, and gold-free.
+EXEMPLAR_INTENT_AGREEMENT_DIMENSION = "agreement:exemplar-intent"
+
+#: Dimensions the ranker reads as its AGREEMENT term rather than as a cosine
+#: or a prior mass. Symmetrical with :data:`PRIOR_MASS_DIMENSIONS`: a
+#: dimension named here contributes to neither ``max_cosine`` nor
+#: ``max_prior``, is not counted in the cross-dimension total, and is not a
+#: percept-admission cosine for either fuser.
+AGREEMENT_DIMENSIONS = frozenset({EXEMPLAR_INTENT_AGREEMENT_DIMENSION})
 
 _CONFIG_SCHEMA = "saea-kb-policy-v1"
 _REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -486,6 +505,29 @@ def multidim_segment_recall(
 _DIMENSION_SCORE_BOUND = 1.0
 
 
+def cosine_dimension_items(
+    dim_scores: Mapping[str, float],
+) -> list[tuple[str, float]]:
+    """``(dimension, score)`` for this candidate's COSINE dimensions: every
+    dimension that is neither a prior mass (:data:`PRIOR_MASS_DIMENSIONS`) nor
+    an agreement signal (:data:`AGREEMENT_DIMENSIONS`).
+
+    ONE definition for the three sites that need it -- the ranker's
+    ``max_cosine`` and both fusers' percept admission -- so an agreement score
+    can never be read as a cosine by one of them and not the others. With no
+    agreement dimension present it yields exactly the pairs each site walked
+    inline before, in the same order, so it is an exact identity on every
+    recall this repository has flown.
+    """
+
+    return [
+        (dimension, float(score))
+        for dimension, score in dim_scores.items()
+        if dimension not in PRIOR_MASS_DIMENSIONS
+        and dimension not in AGREEMENT_DIMENSIONS
+    ]
+
+
 def _dimension_scales(
     recall_scores: Mapping[str, Mapping[str, float]],
 ) -> dict[str, float]:
@@ -631,7 +673,47 @@ def _rank_weighted_cosine_prior_agreement(
     if not isinstance(recall_scores, Mapping):
         raise RailsError("rank: recall_scores must be a mapping")
 
-    dims_total = len({dim for scores in recall_scores.values() for dim in scores})
+    # THE AGREEMENT TERM HAS TWO SOURCES, and which one is in force is a
+    # property of the RECALL, never of a weight (authority: the 2026-09-26
+    # intent-boundary retrieval read,
+    # ``docs/results/2026-09-26-slurp-intent-retrieval-rank-diagnostic.md``
+    # sections 3 and 6).
+    #
+    #   * NO candidate carries an :data:`AGREEMENT_DIMENSIONS` entry -- every
+    #     recall this repository has flown to date -- and the term is the
+    #     CROSS-DIMENSION FRACTION it has always been: the share of the
+    #     recalled dimensions that admitted this candidate. This is
+    #     byte-for-byte the pre-change arithmetic, because ``agreement_dims``
+    #     is then empty, ``dims_total`` counts exactly the dimensions it
+    #     counted before, and the fraction is computed from the same
+    #     ``len(dim_scores)``.
+    #   * SOME candidate carries one -- only when a caller merged a
+    #     pre-computed, hash-pinned agreement table into the recall -- and the
+    #     term is THAT SIGNAL: this candidate's own agreement score, or 0.0
+    #     when the signal gives it none. An intent that received no vote is a
+    #     ZERO vote, not a missing input; a missing INPUT is refused upstream,
+    #     in ``rails.knowledge_provider.KbFacetProvider.candidates``, never
+    #     scored as zero here.
+    #
+    # Replacing rather than adding is deliberate. The cross-dimension fraction
+    # is a CONSTANT on a single-dimension channel -- 1.0 for every candidate,
+    # so it cannot affect the order -- and the channel this signal was
+    # measured for recalls one dimension; summing the two would make one
+    # weight mean two different things at once.
+    agreement_dims = {
+        dim
+        for scores in recall_scores.values()
+        for dim in scores
+        if dim in AGREEMENT_DIMENSIONS
+    }
+    dims_total = len(
+        {
+            dim
+            for scores in recall_scores.values()
+            for dim in scores
+            if dim not in AGREEMENT_DIMENSIONS
+        }
+    )
     # Cross-dimension commensurability (see :func:`_dimension_scales`): an
     # identity transform on every dimension that already respects its own
     # bound, which is why the locked SLURP cell is byte-unchanged.
@@ -639,9 +721,8 @@ def _rank_weighted_cosine_prior_agreement(
     candidates: list[RankedFacet] = []
     for facet_id, dim_scores in recall_scores.items():
         cosine_scores = [
-            float(score) / scales[dim]
-            for dim, score in dim_scores.items()
-            if dim not in PRIOR_MASS_DIMENSIONS
+            score / scales[dim]
+            for dim, score in cosine_dimension_items(dim_scores)
         ]
         prior_scores = [
             float(score) / scales[dim]
@@ -650,7 +731,15 @@ def _rank_weighted_cosine_prior_agreement(
         ]
         max_cosine = max(cosine_scores) if cosine_scores else 0.0
         max_prior = max(prior_scores) if prior_scores else 0.0
-        agreement = len(dim_scores) / dims_total if dims_total else 0.0
+        if agreement_dims:
+            supplied = [
+                float(score)
+                for dim, score in dim_scores.items()
+                if dim in AGREEMENT_DIMENSIONS
+            ]
+            agreement = max(supplied) if supplied else 0.0
+        else:
+            agreement = len(dim_scores) / dims_total if dims_total else 0.0
         score = (
             weights.w_cos * max_cosine
             + weights.w_prior * max_prior
@@ -714,9 +803,11 @@ def _fuse_supply_filter(
     top_m_id_set = set(top_m_ids)
 
     def admitted(facet_id: str) -> bool:
-        dim_scores = recall_scores.get(facet_id, {})
+        # Percept admission is a COSINE floor, so it reads cosine dimensions
+        # only: an agreement score is not evidence that this row's speech
+        # matched this key (:func:`cosine_dimension_items`).
         cosine_scores = [
-            score for dim, score in dim_scores.items() if dim not in PRIOR_MASS_DIMENSIONS
+            score for _dim, score in cosine_dimension_items(recall_scores.get(facet_id, {}))
         ]
         return bool(cosine_scores) and max(cosine_scores) >= knobs.tau
 
@@ -834,9 +925,13 @@ def fuse_associated_values_factory(
         seen = set(visible)
         for candidate in rank_result.candidates[:resolved.m]:
             facet_id = candidate.facet_id
+            # A cosine floor, never an agreement floor
+            # (:func:`cosine_dimension_items`).
             cosines = [
-                score for dimension, score in recall_scores.get(facet_id, {}).items()
-                if dimension not in PRIOR_MASS_DIMENSIONS
+                score
+                for _dimension, score in cosine_dimension_items(
+                    recall_scores.get(facet_id, {})
+                )
             ]
             if not cosines or max(cosines) < resolved.tau:
                 continue
@@ -1640,7 +1735,10 @@ register_kb_policy_v1()
 
 
 __all__ = [
+    "AGREEMENT_DIMENSIONS",
     "ASSOCIATED_VALUES_FUSE_POLICY_ID",
+    "EXEMPLAR_INTENT_AGREEMENT_DIMENSION",
+    "cosine_dimension_items",
     "fuse_associated_values_factory",
     "CONTROLLER_POLICY_ID",
     "DEFAULT_POLICY_CONFIG_PATH",

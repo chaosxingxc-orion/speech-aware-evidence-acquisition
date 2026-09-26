@@ -1,0 +1,84 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-agree-w1-fold-a-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Four-row form smoke of cell AGREE, registered before contact on 2026-09-26 from the sealed cell PLAN smoke fragments by script (decision 58). HELD until root mints the admission receipt and re-pins with --set-ready. Structural form proof only: no score, no read, no claim.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors, through the same rails.phase_supply.build_bootstrap_selection recall/rank/fuse the flight runs at the Solver -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 rows with a self-excluded exemplar (the pool excludes every Fold A recording by construction, and the exclusion is implemented and tested anyway), 0 rows with no vote, 0 pool values without a build-time target, all 60 boundary facets reachable.",
+            "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
+            "sha256": "018ca6ef0d10bbf8d19645994420820faf7f31961cf91a6080116e4b434016c1"
+          },
+          {
+            "kind": "preparation",
+            "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed PLAN arm used, with zero model, tokenizer, encoder, scorer or server contacts. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting the PLAN arm's. --allow-output-change must never be passed.",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "202a8de0efc75f7027a7b06be776f6664b917ec64b4d2d321d10c2e282890ee9"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-26",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops cell PLAN and the arm does not open. The resume-recovery clause of owner decision 22 applies to the arm, not to a four-row form smoke, which is re-flown whole if it is re-flown at all.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The same unchanged TRAIN Fold A roster the sealed anchor, cell B1 and cell B1r flew; every row is preserved so the paired contrast against the sealed B1 arm covers the whole roster.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row structural form smoke of cell AGREE: that the agreement signal loads, that the boundary channel still delivers eight entries, that every request fits and that the episode completes. It is scored by no one and read by no one: four rows can never be evidence of benefit. The intent-boundary Perception channel's rank policy reads its own w_agree term over a pre-computed, self-excluded exemplar-intent vote: w_agree 1.0, the DELIVERED width unchanged at 8 entries (fuse_coverage m 8 / c 1 / top_l 8). The RECALL width moves from 8 to the store's full 60, because PhaseSupplySpec.k is the provider's top_k_per_dimension and truncates by cosine BEFORE the ranker runs -- left at 8 the agreement term can only permute the eight the cosine already chose and the change is inert (measured: 45.0 % -> 45.0 % wrong-row delivery on all three rosters). Widening the recall alone is a proven no-op: the in-chain A/A control carries k 60 at w_agree 0.0 and reproduces the sealed comparator's own first-phase output digest exactly, so the two arms differ in w_agree alone. Authority: the model-free read docs/results/2026-09-26-slurp-intent-retrieval-rank-diagnostic.md, whose section 6 selection rule picked this candidate out of 27 by a rule fixed before the numbers were read (a gain on all three rosters, correct-row delivery loss at most one point, token-neutral, smallest weight). Measured delivery of the row's own gold-intent boundary entry on intent-wrong rows: TRAIN Fold A 45.0 % to 81.7 %, with a floor of +30.4 points on the two rosters the weight was not fitted on, and correct-row delivery rising to 98.2-99.6 %. Measured token cost +1.4 tokens per row against the flown 1,195.4-token block; the k=30 alternative buys the same delivery for +3,262.3, about 2,330 times the form cost that sank the index arm at SLU -7.37. DELIVERY IS NOT CORRECTNESS: the conversion rate is unmeasured.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "This cell carries NO training-free RL operator and says so explicitly. It is a one-factor retrieval change on the locked plan: one rank weight and one pre-computed model-free input, chosen by an offline diagnostic over sealed bytes, with no rollout, no per-sample scoring, no credit assignment, no update operator and no evolving store. The family whose description covers a typed construction/consumption action of this shape is sealed-credit-system-policy-v1, and this cell is deliberately NOT labelled with it: that id's first instance is reserved for the composed system policy, and a single weight is not a policy search.",
+    "operators_used": []
+  }
+}

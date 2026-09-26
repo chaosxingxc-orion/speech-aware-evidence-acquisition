@@ -1,0 +1,49 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "comparator": {
+      "attempt_id": "attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1",
+      "role": "gating comparator, sealed, never re-flown",
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1"
+    },
+    "in_chain_replicate": {
+      "attempt_id": "attempt-slurp-native-stage3-agree-aa-fold-a-generation-v1",
+      "outputs_sha256": "PENDING_SEAL",
+      "role": "the within-chain null the delta is read at",
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    }
+  },
+  "boundary": "A development read on a TRAIN construction fold (owner decisions 28 and 86); never a test claim, never a generalisation claim, and it admits nothing by itself.",
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-PAIRED-ANALYSIS-V1"
+  },
+  "recipe_id": "slurp-stage3-agree-w1-fold-a-paired-analysis-v1",
+  "registered_at_utc": "2026-09-26T12:00:00.000000+00:00",
+  "reported_beside_every_verdict": [
+    "the per-scenario table in both the natural-mixture and the equal-stratum weighting",
+    "the frontier row: effect x prefilled tokens per row x GPU hours per 1,080 rows",
+    "the measured token delta of the Perception block, against the read's +1.4 tokens per row",
+    "the DELIVERY CHECK: on how many rows did the flown arm actually deliver the row's own gold intent boundary entry, and does that agree with the offline replication's prediction? A delta with a delivery rate the replication did not predict is an engineering defect, not an effect",
+    "the CONVERSION, finally measured: of the rows that newly received their gold intent's boundary entry, how many answered the intent correctly. This is the number the registration could not know, and it is the cell's most valuable output whatever the verdict",
+    "the per-class table over the bad-case bank's INTENT-UNCOVERED and INTENT-COVERED rows"
+  ],
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "metrics": [
+      "slu_f1_f1",
+      "scenario_action_exact"
+    ],
+    "seed": 20260926,
+    "unit": "row (paired)"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "title": "Cell AGREE -- the paired read against the sealed PLAN arm, at the in-chain A/A null flown beside it"
+}

@@ -1,0 +1,2236 @@
+{
+  "agreement_builder_sha256": "61808ae88f5db02c205480ea5375459dbe5810a761504249d989241b751e53f3",
+  "arms": {
+    "dev2000-added-plan": {
+      "at_the_committed_recall_width": {
+        "note": "At the width the cell commits, the RECALL truncates to that many candidates by cosine before the ranker runs, so the agreement term can only permute the already-delivered set. These two numbers being equal is the finding, not a defect of the signal.",
+        "treatment_is_inert": true,
+        "wrong_base_pct": 35.7759,
+        "wrong_treat_pct": 35.7759
+      },
+      "attempt_id": "attempt-slurp-native-default-plan-dev2000-added-generation-v1",
+      "baseline_fragment": "slurp-native-default-plan-dev2000-added-baseline-v1",
+      "by_recall_width": {
+        "60": {
+          "boundary_channel": {
+            "candidates_recalled_histogram": {
+              "0": 1,
+              "1": 1,
+              "11": 1,
+              "12": 1,
+              "13": 1,
+              "15": 2,
+              "17": 1,
+              "18": 1,
+              "19": 2,
+              "2": 1,
+              "20": 2,
+              "21": 1,
+              "22": 1,
+              "23": 1,
+              "24": 1,
+              "25": 1,
+              "26": 2,
+              "28": 1,
+              "29": 4,
+              "32": 1,
+              "33": 1,
+              "34": 2,
+              "36": 2,
+              "37": 1,
+              "38": 2,
+              "4": 2,
+              "40": 1,
+              "41": 2,
+              "42": 5,
+              "43": 1,
+              "44": 1,
+              "46": 2,
+              "47": 1,
+              "48": 3,
+              "49": 3,
+              "50": 3,
+              "51": 8,
+              "52": 6,
+              "53": 6,
+              "54": 6,
+              "55": 5,
+              "56": 11,
+              "57": 8,
+              "58": 11,
+              "59": 36,
+              "60": 841,
+              "7": 1,
+              "8": 1,
+              "9": 1
+            },
+            "delivered_width_histogram": {
+              "0": 1,
+              "1": 1,
+              "2": 1,
+              "4": 2,
+              "7": 1,
+              "8": 994
+            },
+            "facet_source": {
+              "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+              "kind": "sealed-vectors",
+              "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+              "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+              "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+            },
+            "fuse_coverage": {
+              "c": 1,
+              "m": 8,
+              "top_l": 8
+            },
+            "fuse_policy": "saea-fuse-associated-values-v1",
+            "k_committed": 8,
+            "k_used_as_recall_width": 60,
+            "query_source": {
+              "embedded_signal": "speech: complete original DEV-2000-ADDED recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+              "kind": "sealed-segment-vectors",
+              "relpath": "vectors/slurp-dev2000-added-v1/query-vectors-speech-segments.jsonl",
+              "sha256": "e2a5fd046dac7c87fcf53830955e41e69d20402a2305a02ebf2bfc1a33001b9d",
+              "tool_contact_ledger_row": "SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1"
+            },
+            "rank_weights_flown": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "rank_weights_used": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "segments_per_row": {
+              "1": 1000
+            },
+            "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+            "tau": 0.0
+          },
+          "delivery": {
+            "classes": {
+              "CORRECT": {
+                "base_fused": 376,
+                "base_fused_pct": 94.4724,
+                "base_ranked": 376,
+                "base_ranked_pct": 94.4724,
+                "rows": 398,
+                "treat_fused": 396,
+                "treat_fused_pct": 99.4975,
+                "treat_ranked": 396,
+                "treat_ranked_pct": 99.4975
+              },
+              "ENTITY-FN-ONLY": {
+                "base_fused": 61,
+                "base_fused_pct": 93.8462,
+                "base_ranked": 61,
+                "base_ranked_pct": 93.8462,
+                "rows": 65,
+                "treat_fused": 64,
+                "treat_fused_pct": 98.4615,
+                "treat_ranked": 64,
+                "treat_ranked_pct": 98.4615
+              },
+              "ENTITY-FP-ONLY": {
+                "base_fused": 104,
+                "base_fused_pct": 96.2963,
+                "base_ranked": 104,
+                "base_ranked_pct": 96.2963,
+                "rows": 108,
+                "treat_fused": 108,
+                "treat_fused_pct": 100.0,
+                "treat_ranked": 108,
+                "treat_ranked_pct": 100.0
+              },
+              "ENTITY-MIXED": {
+                "base_fused": 189,
+                "base_fused_pct": 96.9231,
+                "base_ranked": 189,
+                "base_ranked_pct": 96.9231,
+                "rows": 195,
+                "treat_fused": 193,
+                "treat_fused_pct": 98.9744,
+                "treat_ranked": 193,
+                "treat_ranked_pct": 98.9744
+              },
+              "INTENT-WRONG": {
+                "base_fused": 83,
+                "base_fused_pct": 35.7759,
+                "base_ranked": 83,
+                "base_ranked_pct": 35.7759,
+                "rows": 232,
+                "treat_fused": 181,
+                "treat_fused_pct": 78.0172,
+                "treat_ranked": 181,
+                "treat_ranked_pct": 78.0172
+              },
+              "MALFORMED": {
+                "base_fused": 2,
+                "base_fused_pct": 100.0,
+                "base_ranked": 2,
+                "base_ranked_pct": 100.0,
+                "rows": 2,
+                "treat_fused": 2,
+                "treat_fused_pct": 100.0,
+                "treat_ranked": 2,
+                "treat_ranked_pct": 100.0
+              }
+            },
+            "fusion_vs_rank_disagreements": 0,
+            "plan_class_split": {
+              "CORRECT": {
+                "delivered_after": 396,
+                "delivered_before": 376,
+                "newly_delivered": 20,
+                "newly_lost": 0,
+                "rows": 398
+              },
+              "ENTITY-FN-ONLY": {
+                "delivered_after": 64,
+                "delivered_before": 61,
+                "newly_delivered": 3,
+                "newly_lost": 0,
+                "rows": 65
+              },
+              "ENTITY-FP-ONLY": {
+                "delivered_after": 108,
+                "delivered_before": 104,
+                "newly_delivered": 4,
+                "newly_lost": 0,
+                "rows": 108
+              },
+              "ENTITY-MIXED": {
+                "delivered_after": 193,
+                "delivered_before": 189,
+                "newly_delivered": 4,
+                "newly_lost": 0,
+                "rows": 195
+              },
+              "INTENT-COVERED": {
+                "delivered_after": 62,
+                "delivered_before": 53,
+                "newly_delivered": 9,
+                "newly_lost": 0,
+                "rows": 63
+              },
+              "INTENT-UNCOVERED": {
+                "delivered_after": 119,
+                "delivered_before": 30,
+                "newly_delivered": 94,
+                "newly_lost": 5,
+                "rows": 169
+              },
+              "MALFORMED": {
+                "delivered_after": 2,
+                "delivered_before": 2,
+                "newly_delivered": 0,
+                "newly_lost": 0,
+                "rows": 2
+              }
+            },
+            "sealed_boundary_agreement": {
+              "baseline_fusion_equals_sealed": 1000,
+              "rows": 1000
+            },
+            "skipped": {}
+          },
+          "treatment_boundary_channel": {
+            "candidates_recalled_histogram": {
+              "0": 1,
+              "1": 1,
+              "11": 1,
+              "12": 1,
+              "13": 1,
+              "15": 2,
+              "17": 1,
+              "18": 1,
+              "19": 2,
+              "2": 1,
+              "20": 2,
+              "21": 1,
+              "22": 1,
+              "23": 1,
+              "24": 1,
+              "25": 1,
+              "26": 2,
+              "28": 1,
+              "29": 4,
+              "32": 1,
+              "33": 1,
+              "34": 2,
+              "36": 2,
+              "37": 1,
+              "38": 2,
+              "4": 2,
+              "40": 1,
+              "41": 2,
+              "42": 5,
+              "43": 1,
+              "44": 1,
+              "46": 2,
+              "47": 1,
+              "48": 3,
+              "49": 3,
+              "50": 3,
+              "51": 8,
+              "52": 6,
+              "53": 6,
+              "54": 6,
+              "55": 5,
+              "56": 11,
+              "57": 8,
+              "58": 11,
+              "59": 36,
+              "60": 841,
+              "7": 1,
+              "8": 1,
+              "9": 1
+            },
+            "delivered_width_histogram": {
+              "0": 1,
+              "1": 1,
+              "2": 1,
+              "4": 2,
+              "7": 1,
+              "8": 994
+            },
+            "facet_source": {
+              "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+              "kind": "sealed-vectors",
+              "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+              "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+              "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+            },
+            "fuse_coverage": {
+              "c": 1,
+              "m": 8,
+              "top_l": 8
+            },
+            "fuse_policy": "saea-fuse-associated-values-v1",
+            "k_committed": 8,
+            "k_used_as_recall_width": 60,
+            "query_source": {
+              "embedded_signal": "speech: complete original DEV-2000-ADDED recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+              "kind": "sealed-segment-vectors",
+              "relpath": "vectors/slurp-dev2000-added-v1/query-vectors-speech-segments.jsonl",
+              "sha256": "e2a5fd046dac7c87fcf53830955e41e69d20402a2305a02ebf2bfc1a33001b9d",
+              "tool_contact_ledger_row": "SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1"
+            },
+            "rank_weights_flown": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "rank_weights_used": {
+              "w_agree": 1.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "segments_per_row": {
+              "1": 1000
+            },
+            "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+            "tau": 0.0
+          }
+        },
+        "8": {
+          "boundary_channel": {
+            "candidates_recalled_histogram": {
+              "0": 1,
+              "1": 1,
+              "2": 1,
+              "4": 2,
+              "7": 1,
+              "8": 994
+            },
+            "delivered_width_histogram": {
+              "0": 1,
+              "1": 1,
+              "2": 1,
+              "4": 2,
+              "7": 1,
+              "8": 994
+            },
+            "facet_source": {
+              "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+              "kind": "sealed-vectors",
+              "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+              "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+              "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+            },
+            "fuse_coverage": {
+              "c": 1,
+              "m": 8,
+              "top_l": 8
+            },
+            "fuse_policy": "saea-fuse-associated-values-v1",
+            "k_committed": 8,
+            "k_used_as_recall_width": 8,
+            "query_source": {
+              "embedded_signal": "speech: complete original DEV-2000-ADDED recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+              "kind": "sealed-segment-vectors",
+              "relpath": "vectors/slurp-dev2000-added-v1/query-vectors-speech-segments.jsonl",
+              "sha256": "e2a5fd046dac7c87fcf53830955e41e69d20402a2305a02ebf2bfc1a33001b9d",
+              "tool_contact_ledger_row": "SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1"
+            },
+            "rank_weights_flown": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "rank_weights_used": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "segments_per_row": {
+              "1": 1000
+            },
+            "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+            "tau": 0.0
+          },
+          "delivery": {
+            "classes": {
+              "CORRECT": {
+                "base_fused": 376,
+                "base_fused_pct": 94.4724,
+                "base_ranked": 376,
+                "base_ranked_pct": 94.4724,
+                "rows": 398,
+                "treat_fused": 376,
+                "treat_fused_pct": 94.4724,
+                "treat_ranked": 376,
+                "treat_ranked_pct": 94.4724
+              },
+              "ENTITY-FN-ONLY": {
+                "base_fused": 61,
+                "base_fused_pct": 93.8462,
+                "base_ranked": 61,
+                "base_ranked_pct": 93.8462,
+                "rows": 65,
+                "treat_fused": 61,
+                "treat_fused_pct": 93.8462,
+                "treat_ranked": 61,
+                "treat_ranked_pct": 93.8462
+              },
+              "ENTITY-FP-ONLY": {
+                "base_fused": 104,
+                "base_fused_pct": 96.2963,
+                "base_ranked": 104,
+                "base_ranked_pct": 96.2963,
+                "rows": 108,
+                "treat_fused": 104,
+                "treat_fused_pct": 96.2963,
+                "treat_ranked": 104,
+                "treat_ranked_pct": 96.2963
+              },
+              "ENTITY-MIXED": {
+                "base_fused": 189,
+                "base_fused_pct": 96.9231,
+                "base_ranked": 189,
+                "base_ranked_pct": 96.9231,
+                "rows": 195,
+                "treat_fused": 189,
+                "treat_fused_pct": 96.9231,
+                "treat_ranked": 189,
+                "treat_ranked_pct": 96.9231
+              },
+              "INTENT-WRONG": {
+                "base_fused": 83,
+                "base_fused_pct": 35.7759,
+                "base_ranked": 83,
+                "base_ranked_pct": 35.7759,
+                "rows": 232,
+                "treat_fused": 83,
+                "treat_fused_pct": 35.7759,
+                "treat_ranked": 83,
+                "treat_ranked_pct": 35.7759
+              },
+              "MALFORMED": {
+                "base_fused": 2,
+                "base_fused_pct": 100.0,
+                "base_ranked": 2,
+                "base_ranked_pct": 100.0,
+                "rows": 2,
+                "treat_fused": 2,
+                "treat_fused_pct": 100.0,
+                "treat_ranked": 2,
+                "treat_ranked_pct": 100.0
+              }
+            },
+            "fusion_vs_rank_disagreements": 0,
+            "plan_class_split": {
+              "CORRECT": {
+                "delivered_after": 376,
+                "delivered_before": 376,
+                "newly_delivered": 0,
+                "newly_lost": 0,
+                "rows": 398
+              },
+              "ENTITY-FN-ONLY": {
+                "delivered_after": 61,
+                "delivered_before": 61,
+                "newly_delivered": 0,
+                "newly_lost": 0,
+                "rows": 65
+              },
+              "ENTITY-FP-ONLY": {
+                "delivered_after": 104,
+                "delivered_before": 104,
+                "newly_delivered": 0,
+                "newly_lost": 0,
+                "rows": 108
+              },
+              "ENTITY-MIXED": {
+                "delivered_after": 189,
+                "delivered_before": 189,
+                "newly_delivered": 0,
+                "newly_lost": 0,
+                "rows": 195
+              },
+              "INTENT-COVERED": {
+                "delivered_after": 53,
+                "delivered_before": 53,
+                "newly_delivered": 0,
+                "newly_lost": 0,
+                "rows": 63
+              },
+              "INTENT-UNCOVERED": {
+                "delivered_after": 30,
+                "delivered_before": 30,
+                "newly_delivered": 0,
+                "newly_lost": 0,
+                "rows": 169
+              },
+              "MALFORMED": {
+                "delivered_after": 2,
+                "delivered_before": 2,
+                "newly_delivered": 0,
+                "newly_lost": 0,
+                "rows": 2
+              }
+            },
+            "sealed_boundary_agreement": {
+              "baseline_fusion_equals_sealed": 1000,
+              "rows": 1000
+            },
+            "skipped": {}
+          },
+          "treatment_boundary_channel": {
+            "candidates_recalled_histogram": {
+              "0": 1,
+              "1": 1,
+              "2": 1,
+              "4": 2,
+              "7": 1,
+              "8": 994
+            },
+            "delivered_width_histogram": {
+              "0": 1,
+              "1": 1,
+              "2": 1,
+              "4": 2,
+              "7": 1,
+              "8": 994
+            },
+            "facet_source": {
+              "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+              "kind": "sealed-vectors",
+              "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+              "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+              "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+            },
+            "fuse_coverage": {
+              "c": 1,
+              "m": 8,
+              "top_l": 8
+            },
+            "fuse_policy": "saea-fuse-associated-values-v1",
+            "k_committed": 8,
+            "k_used_as_recall_width": 8,
+            "query_source": {
+              "embedded_signal": "speech: complete original DEV-2000-ADDED recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+              "kind": "sealed-segment-vectors",
+              "relpath": "vectors/slurp-dev2000-added-v1/query-vectors-speech-segments.jsonl",
+              "sha256": "e2a5fd046dac7c87fcf53830955e41e69d20402a2305a02ebf2bfc1a33001b9d",
+              "tool_contact_ledger_row": "SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1"
+            },
+            "rank_weights_flown": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "rank_weights_used": {
+              "w_agree": 1.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "segments_per_row": {
+              "1": 1000
+            },
+            "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+            "tau": 0.0
+          }
+        }
+      },
+      "cell_id": "slurp-native-default-plan-dev2000-added-v1",
+      "committed_recall_width": 8,
+      "dataset_fragment": "slurp-speech-native-dev2000-added",
+      "delivery": {
+        "classes": {
+          "CORRECT": {
+            "base_fused": 376,
+            "base_fused_pct": 94.4724,
+            "base_ranked": 376,
+            "base_ranked_pct": 94.4724,
+            "rows": 398,
+            "treat_fused": 396,
+            "treat_fused_pct": 99.4975,
+            "treat_ranked": 396,
+            "treat_ranked_pct": 99.4975
+          },
+          "ENTITY-FN-ONLY": {
+            "base_fused": 61,
+            "base_fused_pct": 93.8462,
+            "base_ranked": 61,
+            "base_ranked_pct": 93.8462,
+            "rows": 65,
+            "treat_fused": 64,
+            "treat_fused_pct": 98.4615,
+            "treat_ranked": 64,
+            "treat_ranked_pct": 98.4615
+          },
+          "ENTITY-FP-ONLY": {
+            "base_fused": 104,
+            "base_fused_pct": 96.2963,
+            "base_ranked": 104,
+            "base_ranked_pct": 96.2963,
+            "rows": 108,
+            "treat_fused": 108,
+            "treat_fused_pct": 100.0,
+            "treat_ranked": 108,
+            "treat_ranked_pct": 100.0
+          },
+          "ENTITY-MIXED": {
+            "base_fused": 189,
+            "base_fused_pct": 96.9231,
+            "base_ranked": 189,
+            "base_ranked_pct": 96.9231,
+            "rows": 195,
+            "treat_fused": 193,
+            "treat_fused_pct": 98.9744,
+            "treat_ranked": 193,
+            "treat_ranked_pct": 98.9744
+          },
+          "INTENT-WRONG": {
+            "base_fused": 83,
+            "base_fused_pct": 35.7759,
+            "base_ranked": 83,
+            "base_ranked_pct": 35.7759,
+            "rows": 232,
+            "treat_fused": 181,
+            "treat_fused_pct": 78.0172,
+            "treat_ranked": 181,
+            "treat_ranked_pct": 78.0172
+          },
+          "MALFORMED": {
+            "base_fused": 2,
+            "base_fused_pct": 100.0,
+            "base_ranked": 2,
+            "base_ranked_pct": 100.0,
+            "rows": 2,
+            "treat_fused": 2,
+            "treat_fused_pct": 100.0,
+            "treat_ranked": 2,
+            "treat_ranked_pct": 100.0
+          }
+        },
+        "fusion_vs_rank_disagreements": 0,
+        "plan_class_split": {
+          "CORRECT": {
+            "delivered_after": 396,
+            "delivered_before": 376,
+            "newly_delivered": 20,
+            "newly_lost": 0,
+            "rows": 398
+          },
+          "ENTITY-FN-ONLY": {
+            "delivered_after": 64,
+            "delivered_before": 61,
+            "newly_delivered": 3,
+            "newly_lost": 0,
+            "rows": 65
+          },
+          "ENTITY-FP-ONLY": {
+            "delivered_after": 108,
+            "delivered_before": 104,
+            "newly_delivered": 4,
+            "newly_lost": 0,
+            "rows": 108
+          },
+          "ENTITY-MIXED": {
+            "delivered_after": 193,
+            "delivered_before": 189,
+            "newly_delivered": 4,
+            "newly_lost": 0,
+            "rows": 195
+          },
+          "INTENT-COVERED": {
+            "delivered_after": 62,
+            "delivered_before": 53,
+            "newly_delivered": 9,
+            "newly_lost": 0,
+            "rows": 63
+          },
+          "INTENT-UNCOVERED": {
+            "delivered_after": 119,
+            "delivered_before": 30,
+            "newly_delivered": 94,
+            "newly_lost": 5,
+            "rows": 169
+          },
+          "MALFORMED": {
+            "delivered_after": 2,
+            "delivered_before": 2,
+            "newly_delivered": 0,
+            "newly_lost": 0,
+            "rows": 2
+          }
+        },
+        "sealed_boundary_agreement": {
+          "baseline_fusion_equals_sealed": 1000,
+          "rows": 1000
+        },
+        "skipped": {}
+      },
+      "diagnostic": {
+        "correct_base_pct": 94.5,
+        "correct_rows": 398,
+        "correct_treat_pct": 99.5,
+        "wrong_base_n": 83,
+        "wrong_base_pct": 35.8,
+        "wrong_rows": 232,
+        "wrong_treat_n": null,
+        "wrong_treat_pct": 78.0
+      },
+      "population": {
+        "raw_classes": {
+          "CORRECT": 398,
+          "ENTITY-FN-ONLY": 65,
+          "ENTITY-FP-ONLY": 108,
+          "ENTITY-MIXED": 195,
+          "INTENT-COVERED": 63,
+          "INTENT-UNCOVERED": 169,
+          "MALFORMED": 2
+        },
+        "sha256": "26231b86b86f35251fed2b7d7c59bf33e8806b5ef71739b74bf9d5bc2b8a3ccf",
+        "source": "bad-case bank roster dev2000-added"
+      },
+      "read_recall_width": 60,
+      "roster_rows": 1000,
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1",
+      "sealed_exemplar_agreement": {
+        "exact": 1000,
+        "recomputed_width_20": 1000,
+        "rows": 1000,
+        "sealed_nonempty": 1000
+      },
+      "sealed_phase_artefact": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1/attempt-slurp-native-default-plan-dev2000-added-generation-v1/SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1.phases.json",
+        "sha256": "7853313714c58b434f306ebbc2df7de8b05801feb8695dbee4663dfacae4aed1"
+      },
+      "side_by_side": {
+        "correct_base_pct": {
+          "diagnostic": 94.5,
+          "read": 94.4724
+        },
+        "correct_rows": {
+          "diagnostic": 398,
+          "read": 398
+        },
+        "correct_treat_pct": {
+          "diagnostic": 99.5,
+          "read": 99.4975
+        },
+        "wrong_base_pct": {
+          "diagnostic": 35.8,
+          "read": 35.7759
+        },
+        "wrong_rows": {
+          "diagnostic": 232,
+          "read": 232
+        },
+        "wrong_treat_pct": {
+          "diagnostic": 78.0,
+          "read": 78.0172
+        }
+      },
+      "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
+      "vote_channel": {
+        "facet_source": {
+          "embedded_signal": "text: Omni-Embed-Nemotron-3B over the 11,514 governed SLURP TRAIN utterance texts, prompt 'passage: ', mean-pooled and L2-normalised; one vector per content facet id facet:content:<slurp_id>. The KEY side is knowledge text by construction and is unconstrained by the owner's 2026-09-06 query-signal rule.",
+          "kind": "sealed-vectors",
+          "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+          "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+          "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+        },
+        "fuse_coverage": {
+          "c": 20,
+          "m": 20,
+          "top_l": 20
+        },
+        "fuse_policy": "saea-fuse-supplyfilter-v1",
+        "k": 20,
+        "measured": {
+          "distinct_facets_ever_voted_for": 59,
+          "pool_values_without_a_build_time_target": 0,
+          "rows_with_a_self_excluded_exemplar": 0,
+          "rows_with_no_vote": 0,
+          "self_excluded_exemplars": 0,
+          "vote_total_histogram": {
+            "20": 1000
+          }
+        },
+        "query_source": {
+          "embedded_signal": "speech: complete original DEV-2000-ADDED recordings represented by the sealed full-utterance speech vector of the row's own recording, in the content retrieval dimension; flattened from the sealed intent-boundary full-utterance SEGMENT vectors (vectors/slurp-dev2000-added-v1/query-vectors-speech-content-v1.provenance.json -- one segment per row, dimension renamed intent-boundary to content, every float byte-identical to the parent) because docs/results/2026-09-17-slurp-a2-exemplar-headroom-audit-v1.md establishes intent-boundary as an alias of the content embedding space; no flattening of MEANING, re-encoding, transcript, answer or future turn enters this query.",
+          "kind": "sealed-vectors",
+          "relpath": "vectors/slurp-dev2000-added-v1/query-vectors-speech-content-v1.jsonl",
+          "sha256": "7d4ebdce553fd897fa86cc6b6d878ebf2298e19ee509eeceaf1aa0aca4855ee0",
+          "tool_contact_ledger_row": "SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1"
+        },
+        "rank_weights": {
+          "w_agree": 0.0,
+          "w_cos": 1.0,
+          "w_prior": 0.0
+        },
+        "snapshot_sha256": "4c498dc0282055b9fe036ed7e950af519bd48b5f26e76876d0250727196a72e9"
+      }
+    },
+    "roll1": {
+      "at_the_committed_recall_width": {
+        "note": "At the width the cell commits, the RECALL truncates to that many candidates by cosine before the ranker runs, so the agreement term can only permute the already-delivered set. These two numbers being equal is the finding, not a defect of the signal.",
+        "treatment_is_inert": true,
+        "wrong_base_pct": 44.5652,
+        "wrong_treat_pct": 44.5652
+      },
+      "attempt_id": "attempt-slurp-native-stage3-rollout-r01-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-rollout-baseline-v1",
+      "by_recall_width": {
+        "60": {
+          "boundary_channel": {
+            "candidates_recalled_histogram": {
+              "1": 1,
+              "10": 1,
+              "11": 1,
+              "17": 2,
+              "19": 1,
+              "2": 1,
+              "20": 1,
+              "24": 1,
+              "25": 2,
+              "26": 2,
+              "27": 1,
+              "28": 2,
+              "29": 3,
+              "31": 1,
+              "32": 3,
+              "36": 3,
+              "38": 2,
+              "39": 2,
+              "41": 2,
+              "42": 2,
+              "43": 4,
+              "44": 2,
+              "45": 4,
+              "46": 2,
+              "47": 2,
+              "48": 3,
+              "49": 4,
+              "5": 1,
+              "50": 3,
+              "51": 2,
+              "52": 6,
+              "53": 4,
+              "54": 9,
+              "55": 3,
+              "56": 10,
+              "57": 17,
+              "58": 18,
+              "59": 22,
+              "6": 1,
+              "60": 473,
+              "9": 1
+            },
+            "delivered_width_histogram": {
+              "1": 1,
+              "2": 1,
+              "5": 1,
+              "6": 1,
+              "8": 621
+            },
+            "facet_source": {
+              "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+              "kind": "sealed-vectors",
+              "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+              "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+              "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+            },
+            "fuse_coverage": {
+              "c": 1,
+              "m": 8,
+              "top_l": 8
+            },
+            "fuse_policy": "saea-fuse-associated-values-v1",
+            "k_committed": 8,
+            "k_used_as_recall_width": 60,
+            "query_source": {
+              "embedded_signal": "speech: complete original SLURP-STAGE3-CONSTRUCTION-R01C recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension. The file is a pure id SELECTION of the sealed R01 segment vectors (parent vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-segments.jsonl, exposure row SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1): every kept line is the parent's own line bytes. Segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+              "kind": "sealed-segment-vectors",
+              "relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-segments.jsonl",
+              "sha256": "ebaa743241a67a2cb759353fa8a9f58a3f09d27c00c8c66cb3172958dcccc1b8",
+              "tool_contact_ledger_row": "SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1"
+            },
+            "rank_weights_flown": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "rank_weights_used": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "segments_per_row": {
+              "1": 625
+            },
+            "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+            "tau": 0.0
+          },
+          "delivery": {
+            "classes": {
+              "CORRECT": {
+                "base_fused": 155,
+                "base_fused_pct": 95.092,
+                "base_ranked": 155,
+                "base_ranked_pct": 95.092,
+                "rows": 163,
+                "treat_fused": 161,
+                "treat_fused_pct": 98.773,
+                "treat_ranked": 161,
+                "treat_ranked_pct": 98.773
+              },
+              "ENTITY-FN-ONLY": {
+                "base_fused": 40,
+                "base_fused_pct": 97.561,
+                "base_ranked": 40,
+                "base_ranked_pct": 97.561,
+                "rows": 41,
+                "treat_fused": 41,
+                "treat_fused_pct": 100.0,
+                "treat_ranked": 41,
+                "treat_ranked_pct": 100.0
+              },
+              "ENTITY-FP-ONLY": {
+                "base_fused": 62,
+                "base_fused_pct": 89.8551,
+                "base_ranked": 62,
+                "base_ranked_pct": 89.8551,
+                "rows": 69,
+                "treat_fused": 65,
+                "treat_fused_pct": 94.2029,
+                "treat_ranked": 65,
+                "treat_ranked_pct": 94.2029
+              },
+              "ENTITY-MIXED": {
+                "base_fused": 156,
+                "base_fused_pct": 92.8571,
+                "base_ranked": 156,
+                "base_ranked_pct": 92.8571,
+                "rows": 168,
+                "treat_fused": 167,
+                "treat_fused_pct": 99.4048,
+                "treat_ranked": 167,
+                "treat_ranked_pct": 99.4048
+              },
+              "INTENT-WRONG": {
+                "base_fused": 82,
+                "base_fused_pct": 44.5652,
+                "base_ranked": 82,
+                "base_ranked_pct": 44.5652,
+                "rows": 184,
+                "treat_fused": 138,
+                "treat_fused_pct": 75.0,
+                "treat_ranked": 138,
+                "treat_ranked_pct": 75.0
+              }
+            },
+            "fusion_vs_rank_disagreements": 0,
+            "plan_class_split": {},
+            "sealed_boundary_agreement": {
+              "baseline_fusion_equals_sealed": 625,
+              "rows": 625
+            },
+            "skipped": {}
+          },
+          "treatment_boundary_channel": {
+            "candidates_recalled_histogram": {
+              "1": 1,
+              "10": 1,
+              "11": 1,
+              "17": 2,
+              "19": 1,
+              "2": 1,
+              "20": 1,
+              "24": 1,
+              "25": 2,
+              "26": 2,
+              "27": 1,
+              "28": 2,
+              "29": 3,
+              "31": 1,
+              "32": 3,
+              "36": 3,
+              "38": 2,
+              "39": 2,
+              "41": 2,
+              "42": 2,
+              "43": 4,
+              "44": 2,
+              "45": 4,
+              "46": 2,
+              "47": 2,
+              "48": 3,
+              "49": 4,
+              "5": 1,
+              "50": 3,
+              "51": 2,
+              "52": 6,
+              "53": 4,
+              "54": 9,
+              "55": 3,
+              "56": 10,
+              "57": 17,
+              "58": 18,
+              "59": 22,
+              "6": 1,
+              "60": 473,
+              "9": 1
+            },
+            "delivered_width_histogram": {
+              "1": 1,
+              "2": 1,
+              "5": 1,
+              "6": 1,
+              "8": 621
+            },
+            "facet_source": {
+              "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+              "kind": "sealed-vectors",
+              "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+              "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+              "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+            },
+            "fuse_coverage": {
+              "c": 1,
+              "m": 8,
+              "top_l": 8
+            },
+            "fuse_policy": "saea-fuse-associated-values-v1",
+            "k_committed": 8,
+            "k_used_as_recall_width": 60,
+            "query_source": {
+              "embedded_signal": "speech: complete original SLURP-STAGE3-CONSTRUCTION-R01C recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension. The file is a pure id SELECTION of the sealed R01 segment vectors (parent vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-segments.jsonl, exposure row SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1): every kept line is the parent's own line bytes. Segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+              "kind": "sealed-segment-vectors",
+              "relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-segments.jsonl",
+              "sha256": "ebaa743241a67a2cb759353fa8a9f58a3f09d27c00c8c66cb3172958dcccc1b8",
+              "tool_contact_ledger_row": "SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1"
+            },
+            "rank_weights_flown": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "rank_weights_used": {
+              "w_agree": 1.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "segments_per_row": {
+              "1": 625
+            },
+            "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+            "tau": 0.0
+          }
+        },
+        "8": {
+          "boundary_channel": {
+            "candidates_recalled_histogram": {
+              "1": 1,
+              "2": 1,
+              "5": 1,
+              "6": 1,
+              "8": 621
+            },
+            "delivered_width_histogram": {
+              "1": 1,
+              "2": 1,
+              "5": 1,
+              "6": 1,
+              "8": 621
+            },
+            "facet_source": {
+              "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+              "kind": "sealed-vectors",
+              "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+              "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+              "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+            },
+            "fuse_coverage": {
+              "c": 1,
+              "m": 8,
+              "top_l": 8
+            },
+            "fuse_policy": "saea-fuse-associated-values-v1",
+            "k_committed": 8,
+            "k_used_as_recall_width": 8,
+            "query_source": {
+              "embedded_signal": "speech: complete original SLURP-STAGE3-CONSTRUCTION-R01C recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension. The file is a pure id SELECTION of the sealed R01 segment vectors (parent vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-segments.jsonl, exposure row SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1): every kept line is the parent's own line bytes. Segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+              "kind": "sealed-segment-vectors",
+              "relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-segments.jsonl",
+              "sha256": "ebaa743241a67a2cb759353fa8a9f58a3f09d27c00c8c66cb3172958dcccc1b8",
+              "tool_contact_ledger_row": "SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1"
+            },
+            "rank_weights_flown": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "rank_weights_used": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "segments_per_row": {
+              "1": 625
+            },
+            "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+            "tau": 0.0
+          },
+          "delivery": {
+            "classes": {
+              "CORRECT": {
+                "base_fused": 155,
+                "base_fused_pct": 95.092,
+                "base_ranked": 155,
+                "base_ranked_pct": 95.092,
+                "rows": 163,
+                "treat_fused": 155,
+                "treat_fused_pct": 95.092,
+                "treat_ranked": 155,
+                "treat_ranked_pct": 95.092
+              },
+              "ENTITY-FN-ONLY": {
+                "base_fused": 40,
+                "base_fused_pct": 97.561,
+                "base_ranked": 40,
+                "base_ranked_pct": 97.561,
+                "rows": 41,
+                "treat_fused": 40,
+                "treat_fused_pct": 97.561,
+                "treat_ranked": 40,
+                "treat_ranked_pct": 97.561
+              },
+              "ENTITY-FP-ONLY": {
+                "base_fused": 62,
+                "base_fused_pct": 89.8551,
+                "base_ranked": 62,
+                "base_ranked_pct": 89.8551,
+                "rows": 69,
+                "treat_fused": 62,
+                "treat_fused_pct": 89.8551,
+                "treat_ranked": 62,
+                "treat_ranked_pct": 89.8551
+              },
+              "ENTITY-MIXED": {
+                "base_fused": 156,
+                "base_fused_pct": 92.8571,
+                "base_ranked": 156,
+                "base_ranked_pct": 92.8571,
+                "rows": 168,
+                "treat_fused": 156,
+                "treat_fused_pct": 92.8571,
+                "treat_ranked": 156,
+                "treat_ranked_pct": 92.8571
+              },
+              "INTENT-WRONG": {
+                "base_fused": 82,
+                "base_fused_pct": 44.5652,
+                "base_ranked": 82,
+                "base_ranked_pct": 44.5652,
+                "rows": 184,
+                "treat_fused": 82,
+                "treat_fused_pct": 44.5652,
+                "treat_ranked": 82,
+                "treat_ranked_pct": 44.5652
+              }
+            },
+            "fusion_vs_rank_disagreements": 0,
+            "plan_class_split": {},
+            "sealed_boundary_agreement": {
+              "baseline_fusion_equals_sealed": 625,
+              "rows": 625
+            },
+            "skipped": {}
+          },
+          "treatment_boundary_channel": {
+            "candidates_recalled_histogram": {
+              "1": 1,
+              "2": 1,
+              "5": 1,
+              "6": 1,
+              "8": 621
+            },
+            "delivered_width_histogram": {
+              "1": 1,
+              "2": 1,
+              "5": 1,
+              "6": 1,
+              "8": 621
+            },
+            "facet_source": {
+              "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+              "kind": "sealed-vectors",
+              "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+              "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+              "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+            },
+            "fuse_coverage": {
+              "c": 1,
+              "m": 8,
+              "top_l": 8
+            },
+            "fuse_policy": "saea-fuse-associated-values-v1",
+            "k_committed": 8,
+            "k_used_as_recall_width": 8,
+            "query_source": {
+              "embedded_signal": "speech: complete original SLURP-STAGE3-CONSTRUCTION-R01C recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension. The file is a pure id SELECTION of the sealed R01 segment vectors (parent vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-segments.jsonl, exposure row SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1): every kept line is the parent's own line bytes. Segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+              "kind": "sealed-segment-vectors",
+              "relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-segments.jsonl",
+              "sha256": "ebaa743241a67a2cb759353fa8a9f58a3f09d27c00c8c66cb3172958dcccc1b8",
+              "tool_contact_ledger_row": "SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1"
+            },
+            "rank_weights_flown": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "rank_weights_used": {
+              "w_agree": 1.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "segments_per_row": {
+              "1": 625
+            },
+            "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+            "tau": 0.0
+          }
+        }
+      },
+      "cell_id": "slurp-native-stage3-rollout-r01-v1",
+      "committed_recall_width": 8,
+      "dataset_fragment": "slurp-speech-native-stage3-construction-r01c",
+      "delivery": {
+        "classes": {
+          "CORRECT": {
+            "base_fused": 155,
+            "base_fused_pct": 95.092,
+            "base_ranked": 155,
+            "base_ranked_pct": 95.092,
+            "rows": 163,
+            "treat_fused": 161,
+            "treat_fused_pct": 98.773,
+            "treat_ranked": 161,
+            "treat_ranked_pct": 98.773
+          },
+          "ENTITY-FN-ONLY": {
+            "base_fused": 40,
+            "base_fused_pct": 97.561,
+            "base_ranked": 40,
+            "base_ranked_pct": 97.561,
+            "rows": 41,
+            "treat_fused": 41,
+            "treat_fused_pct": 100.0,
+            "treat_ranked": 41,
+            "treat_ranked_pct": 100.0
+          },
+          "ENTITY-FP-ONLY": {
+            "base_fused": 62,
+            "base_fused_pct": 89.8551,
+            "base_ranked": 62,
+            "base_ranked_pct": 89.8551,
+            "rows": 69,
+            "treat_fused": 65,
+            "treat_fused_pct": 94.2029,
+            "treat_ranked": 65,
+            "treat_ranked_pct": 94.2029
+          },
+          "ENTITY-MIXED": {
+            "base_fused": 156,
+            "base_fused_pct": 92.8571,
+            "base_ranked": 156,
+            "base_ranked_pct": 92.8571,
+            "rows": 168,
+            "treat_fused": 167,
+            "treat_fused_pct": 99.4048,
+            "treat_ranked": 167,
+            "treat_ranked_pct": 99.4048
+          },
+          "INTENT-WRONG": {
+            "base_fused": 82,
+            "base_fused_pct": 44.5652,
+            "base_ranked": 82,
+            "base_ranked_pct": 44.5652,
+            "rows": 184,
+            "treat_fused": 138,
+            "treat_fused_pct": 75.0,
+            "treat_ranked": 138,
+            "treat_ranked_pct": 75.0
+          }
+        },
+        "fusion_vs_rank_disagreements": 0,
+        "plan_class_split": {},
+        "sealed_boundary_agreement": {
+          "baseline_fusion_equals_sealed": 625,
+          "rows": 625
+        },
+        "skipped": {}
+      },
+      "diagnostic": {
+        "correct_base_pct": 95.1,
+        "correct_rows": 163,
+        "correct_treat_pct": 98.8,
+        "wrong_base_n": 82,
+        "wrong_base_pct": 44.6,
+        "wrong_rows": 184,
+        "wrong_treat_n": null,
+        "wrong_treat_pct": 75.0
+      },
+      "population": {
+        "raw_classes": {
+          "CORRECT": 163,
+          "ENTITY-FN-ONLY": 41,
+          "ENTITY-FP-ONLY": 69,
+          "ENTITY-MIXED": 168,
+          "INTENT-WRONG": 184
+        },
+        "sha256": "70247697eca510e9dc699983f23996bcb77113d43c94ba340d764083bb04f76d",
+        "source": "slurp-slu-official-projected-v3-train"
+      },
+      "read_recall_width": 60,
+      "roster_rows": 625,
+      "run_id": "SAEA-SLURP-STAGE3-ROLLOUT-R01-V1",
+      "sealed_exemplar_agreement": {
+        "exact": 625,
+        "recomputed_width_20": 625,
+        "rows": 625,
+        "sealed_nonempty": 625
+      },
+      "sealed_phase_artefact": {
+        "relpath": "runs/SAEA-SLURP-STAGE3-ROLLOUT-R01-V1/attempt-slurp-native-stage3-rollout-r01-generation-v1/SAEA-SLURP-STAGE3-ROLLOUT-R01-V1.phases.json",
+        "sha256": "203aab4861e503a088af6cd67662164c908d0ecf66149ce8bf97bf1706aa4f9d"
+      },
+      "side_by_side": {
+        "correct_base_pct": {
+          "diagnostic": 95.1,
+          "read": 95.092
+        },
+        "correct_rows": {
+          "diagnostic": 163,
+          "read": 163
+        },
+        "correct_treat_pct": {
+          "diagnostic": 98.8,
+          "read": 98.773
+        },
+        "wrong_base_pct": {
+          "diagnostic": 44.6,
+          "read": 44.5652
+        },
+        "wrong_rows": {
+          "diagnostic": 184,
+          "read": 184
+        },
+        "wrong_treat_pct": {
+          "diagnostic": 75.0,
+          "read": 75.0
+        }
+      },
+      "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
+      "vote_channel": {
+        "facet_source": {
+          "embedded_signal": "text: Omni-Embed-Nemotron-3B over the 11,514 governed SLURP TRAIN utterance texts, prompt 'passage: ', mean-pooled and L2-normalised; one vector per content facet id facet:content:<slurp_id>. The KEY side is knowledge text by construction and is unconstrained by the owner's 2026-09-06 query-signal rule.",
+          "kind": "sealed-vectors",
+          "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+          "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+          "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+        },
+        "fuse_coverage": {
+          "c": 20,
+          "m": 20,
+          "top_l": 20
+        },
+        "fuse_policy": "saea-fuse-supplyfilter-v1",
+        "k": 20,
+        "measured": {
+          "distinct_facets_ever_voted_for": 59,
+          "pool_values_without_a_build_time_target": 0,
+          "rows_with_a_self_excluded_exemplar": 0,
+          "rows_with_no_vote": 0,
+          "self_excluded_exemplars": 0,
+          "vote_total_histogram": {
+            "20": 625
+          }
+        },
+        "query_source": {
+          "embedded_signal": "speech: complete original SLURP-STAGE3-CONSTRUCTION-R01C recordings represented by the sealed full-utterance speech vector of the row's own recording, in the content retrieval dimension. The file is a pure id SELECTION of the sealed R01 content derivative (parent vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-content-v1.jsonl, exposure row SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1): every kept line is the parent's own line bytes. No flattening of MEANING, re-encoding, transcript, answer or future turn enters this query.",
+          "kind": "sealed-vectors",
+          "relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-content-v1.jsonl",
+          "sha256": "dd3b2924cda10810487b2b114e61380beaf8477634c602096b875e461ae44baa",
+          "tool_contact_ledger_row": "SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1"
+        },
+        "rank_weights": {
+          "w_agree": 0.0,
+          "w_cos": 1.0,
+          "w_prior": 0.0
+        },
+        "snapshot_sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63"
+      }
+    },
+    "train-fold-a-plan": {
+      "at_the_committed_recall_width": {
+        "note": "At the width the cell commits, the RECALL truncates to that many candidates by cosine before the ranker runs, so the agreement term can only permute the already-delivered set. These two numbers being equal is the finding, not a defect of the signal.",
+        "treatment_is_inert": true,
+        "wrong_base_pct": 45.0262,
+        "wrong_treat_pct": 45.0262
+      },
+      "attempt_id": "attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1",
+      "baseline_fragment": "slurp-native-default-plan-lock-baseline-v1",
+      "by_recall_width": {
+        "60": {
+          "boundary_channel": {
+            "candidates_recalled_histogram": {
+              "1": 1,
+              "11": 1,
+              "12": 1,
+              "13": 2,
+              "15": 1,
+              "16": 1,
+              "17": 1,
+              "19": 1,
+              "20": 1,
+              "21": 1,
+              "23": 1,
+              "24": 1,
+              "26": 1,
+              "27": 1,
+              "29": 1,
+              "3": 1,
+              "30": 2,
+              "31": 1,
+              "33": 1,
+              "34": 1,
+              "35": 1,
+              "36": 2,
+              "37": 1,
+              "38": 2,
+              "39": 2,
+              "41": 3,
+              "42": 2,
+              "43": 2,
+              "44": 2,
+              "45": 5,
+              "46": 1,
+              "47": 5,
+              "48": 4,
+              "49": 2,
+              "5": 1,
+              "50": 2,
+              "51": 3,
+              "52": 10,
+              "53": 4,
+              "54": 6,
+              "55": 9,
+              "56": 8,
+              "57": 9,
+              "58": 17,
+              "59": 25,
+              "60": 928,
+              "7": 1,
+              "9": 1
+            },
+            "delivered_width_histogram": {
+              "1": 1,
+              "3": 1,
+              "5": 1,
+              "7": 1,
+              "8": 1076
+            },
+            "facet_source": {
+              "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+              "kind": "sealed-vectors",
+              "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+              "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+              "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+            },
+            "fuse_coverage": {
+              "c": 1,
+              "m": 8,
+              "top_l": 8
+            },
+            "fuse_policy": "saea-fuse-associated-values-v1",
+            "k_committed": 8,
+            "k_used_as_recall_width": 60,
+            "query_source": {
+              "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+              "kind": "sealed-segment-vectors",
+              "relpath": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+              "sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b",
+              "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+            },
+            "rank_weights_flown": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "rank_weights_used": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "segments_per_row": {
+              "1": 1080
+            },
+            "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+            "tau": 0.0
+          },
+          "delivery": {
+            "classes": {
+              "CORRECT": {
+                "base_fused": 467,
+                "base_fused_pct": 97.2917,
+                "base_ranked": 467,
+                "base_ranked_pct": 97.2917,
+                "rows": 480,
+                "treat_fused": 478,
+                "treat_fused_pct": 99.5833,
+                "treat_ranked": 478,
+                "treat_ranked_pct": 99.5833
+              },
+              "ENTITY-FN-ONLY": {
+                "base_fused": 82,
+                "base_fused_pct": 97.619,
+                "base_ranked": 82,
+                "base_ranked_pct": 97.619,
+                "rows": 84,
+                "treat_fused": 83,
+                "treat_fused_pct": 98.8095,
+                "treat_ranked": 83,
+                "treat_ranked_pct": 98.8095
+              },
+              "ENTITY-FP-ONLY": {
+                "base_fused": 124,
+                "base_fused_pct": 94.6565,
+                "base_ranked": 124,
+                "base_ranked_pct": 94.6565,
+                "rows": 131,
+                "treat_fused": 130,
+                "treat_fused_pct": 99.2366,
+                "treat_ranked": 130,
+                "treat_ranked_pct": 99.2366
+              },
+              "ENTITY-MIXED": {
+                "base_fused": 187,
+                "base_fused_pct": 96.8912,
+                "base_ranked": 187,
+                "base_ranked_pct": 96.8912,
+                "rows": 193,
+                "treat_fused": 192,
+                "treat_fused_pct": 99.4819,
+                "treat_ranked": 192,
+                "treat_ranked_pct": 99.4819
+              },
+              "INTENT-WRONG": {
+                "base_fused": 86,
+                "base_fused_pct": 45.0262,
+                "base_ranked": 86,
+                "base_ranked_pct": 45.0262,
+                "rows": 191,
+                "treat_fused": 156,
+                "treat_fused_pct": 81.6754,
+                "treat_ranked": 156,
+                "treat_ranked_pct": 81.6754
+              },
+              "MALFORMED": {
+                "base_fused": 1,
+                "base_fused_pct": 100.0,
+                "base_ranked": 1,
+                "base_ranked_pct": 100.0,
+                "rows": 1,
+                "treat_fused": 1,
+                "treat_fused_pct": 100.0,
+                "treat_ranked": 1,
+                "treat_ranked_pct": 100.0
+              }
+            },
+            "fusion_vs_rank_disagreements": 0,
+            "plan_class_split": {
+              "CORRECT": {
+                "delivered_after": 478,
+                "delivered_before": 467,
+                "newly_delivered": 11,
+                "newly_lost": 0,
+                "rows": 480
+              },
+              "ENTITY-FN-ONLY": {
+                "delivered_after": 83,
+                "delivered_before": 82,
+                "newly_delivered": 1,
+                "newly_lost": 0,
+                "rows": 84
+              },
+              "ENTITY-FP-ONLY": {
+                "delivered_after": 130,
+                "delivered_before": 124,
+                "newly_delivered": 6,
+                "newly_lost": 0,
+                "rows": 131
+              },
+              "ENTITY-MIXED": {
+                "delivered_after": 192,
+                "delivered_before": 187,
+                "newly_delivered": 5,
+                "newly_lost": 0,
+                "rows": 193
+              },
+              "INTENT-COVERED": {
+                "delivered_after": 59,
+                "delivered_before": 59,
+                "newly_delivered": 2,
+                "newly_lost": 2,
+                "rows": 61
+              },
+              "INTENT-UNCOVERED": {
+                "delivered_after": 97,
+                "delivered_before": 27,
+                "newly_delivered": 70,
+                "newly_lost": 0,
+                "rows": 130
+              },
+              "MALFORMED": {
+                "delivered_after": 1,
+                "delivered_before": 1,
+                "newly_delivered": 0,
+                "newly_lost": 0,
+                "rows": 1
+              }
+            },
+            "sealed_boundary_agreement": {
+              "baseline_fusion_equals_sealed": 1080,
+              "rows": 1080
+            },
+            "skipped": {}
+          },
+          "treatment_boundary_channel": {
+            "candidates_recalled_histogram": {
+              "1": 1,
+              "11": 1,
+              "12": 1,
+              "13": 2,
+              "15": 1,
+              "16": 1,
+              "17": 1,
+              "19": 1,
+              "20": 1,
+              "21": 1,
+              "23": 1,
+              "24": 1,
+              "26": 1,
+              "27": 1,
+              "29": 1,
+              "3": 1,
+              "30": 2,
+              "31": 1,
+              "33": 1,
+              "34": 1,
+              "35": 1,
+              "36": 2,
+              "37": 1,
+              "38": 2,
+              "39": 2,
+              "41": 3,
+              "42": 2,
+              "43": 2,
+              "44": 2,
+              "45": 5,
+              "46": 1,
+              "47": 5,
+              "48": 4,
+              "49": 2,
+              "5": 1,
+              "50": 2,
+              "51": 3,
+              "52": 10,
+              "53": 4,
+              "54": 6,
+              "55": 9,
+              "56": 8,
+              "57": 9,
+              "58": 17,
+              "59": 25,
+              "60": 928,
+              "7": 1,
+              "9": 1
+            },
+            "delivered_width_histogram": {
+              "1": 1,
+              "3": 1,
+              "5": 1,
+              "7": 1,
+              "8": 1076
+            },
+            "facet_source": {
+              "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+              "kind": "sealed-vectors",
+              "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+              "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+              "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+            },
+            "fuse_coverage": {
+              "c": 1,
+              "m": 8,
+              "top_l": 8
+            },
+            "fuse_policy": "saea-fuse-associated-values-v1",
+            "k_committed": 8,
+            "k_used_as_recall_width": 60,
+            "query_source": {
+              "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+              "kind": "sealed-segment-vectors",
+              "relpath": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+              "sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b",
+              "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+            },
+            "rank_weights_flown": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "rank_weights_used": {
+              "w_agree": 1.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "segments_per_row": {
+              "1": 1080
+            },
+            "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+            "tau": 0.0
+          }
+        },
+        "8": {
+          "boundary_channel": {
+            "candidates_recalled_histogram": {
+              "1": 1,
+              "3": 1,
+              "5": 1,
+              "7": 1,
+              "8": 1076
+            },
+            "delivered_width_histogram": {
+              "1": 1,
+              "3": 1,
+              "5": 1,
+              "7": 1,
+              "8": 1076
+            },
+            "facet_source": {
+              "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+              "kind": "sealed-vectors",
+              "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+              "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+              "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+            },
+            "fuse_coverage": {
+              "c": 1,
+              "m": 8,
+              "top_l": 8
+            },
+            "fuse_policy": "saea-fuse-associated-values-v1",
+            "k_committed": 8,
+            "k_used_as_recall_width": 8,
+            "query_source": {
+              "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+              "kind": "sealed-segment-vectors",
+              "relpath": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+              "sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b",
+              "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+            },
+            "rank_weights_flown": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "rank_weights_used": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "segments_per_row": {
+              "1": 1080
+            },
+            "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+            "tau": 0.0
+          },
+          "delivery": {
+            "classes": {
+              "CORRECT": {
+                "base_fused": 467,
+                "base_fused_pct": 97.2917,
+                "base_ranked": 467,
+                "base_ranked_pct": 97.2917,
+                "rows": 480,
+                "treat_fused": 467,
+                "treat_fused_pct": 97.2917,
+                "treat_ranked": 467,
+                "treat_ranked_pct": 97.2917
+              },
+              "ENTITY-FN-ONLY": {
+                "base_fused": 82,
+                "base_fused_pct": 97.619,
+                "base_ranked": 82,
+                "base_ranked_pct": 97.619,
+                "rows": 84,
+                "treat_fused": 82,
+                "treat_fused_pct": 97.619,
+                "treat_ranked": 82,
+                "treat_ranked_pct": 97.619
+              },
+              "ENTITY-FP-ONLY": {
+                "base_fused": 124,
+                "base_fused_pct": 94.6565,
+                "base_ranked": 124,
+                "base_ranked_pct": 94.6565,
+                "rows": 131,
+                "treat_fused": 124,
+                "treat_fused_pct": 94.6565,
+                "treat_ranked": 124,
+                "treat_ranked_pct": 94.6565
+              },
+              "ENTITY-MIXED": {
+                "base_fused": 187,
+                "base_fused_pct": 96.8912,
+                "base_ranked": 187,
+                "base_ranked_pct": 96.8912,
+                "rows": 193,
+                "treat_fused": 187,
+                "treat_fused_pct": 96.8912,
+                "treat_ranked": 187,
+                "treat_ranked_pct": 96.8912
+              },
+              "INTENT-WRONG": {
+                "base_fused": 86,
+                "base_fused_pct": 45.0262,
+                "base_ranked": 86,
+                "base_ranked_pct": 45.0262,
+                "rows": 191,
+                "treat_fused": 86,
+                "treat_fused_pct": 45.0262,
+                "treat_ranked": 86,
+                "treat_ranked_pct": 45.0262
+              },
+              "MALFORMED": {
+                "base_fused": 1,
+                "base_fused_pct": 100.0,
+                "base_ranked": 1,
+                "base_ranked_pct": 100.0,
+                "rows": 1,
+                "treat_fused": 1,
+                "treat_fused_pct": 100.0,
+                "treat_ranked": 1,
+                "treat_ranked_pct": 100.0
+              }
+            },
+            "fusion_vs_rank_disagreements": 0,
+            "plan_class_split": {
+              "CORRECT": {
+                "delivered_after": 467,
+                "delivered_before": 467,
+                "newly_delivered": 0,
+                "newly_lost": 0,
+                "rows": 480
+              },
+              "ENTITY-FN-ONLY": {
+                "delivered_after": 82,
+                "delivered_before": 82,
+                "newly_delivered": 0,
+                "newly_lost": 0,
+                "rows": 84
+              },
+              "ENTITY-FP-ONLY": {
+                "delivered_after": 124,
+                "delivered_before": 124,
+                "newly_delivered": 0,
+                "newly_lost": 0,
+                "rows": 131
+              },
+              "ENTITY-MIXED": {
+                "delivered_after": 187,
+                "delivered_before": 187,
+                "newly_delivered": 0,
+                "newly_lost": 0,
+                "rows": 193
+              },
+              "INTENT-COVERED": {
+                "delivered_after": 59,
+                "delivered_before": 59,
+                "newly_delivered": 0,
+                "newly_lost": 0,
+                "rows": 61
+              },
+              "INTENT-UNCOVERED": {
+                "delivered_after": 27,
+                "delivered_before": 27,
+                "newly_delivered": 0,
+                "newly_lost": 0,
+                "rows": 130
+              },
+              "MALFORMED": {
+                "delivered_after": 1,
+                "delivered_before": 1,
+                "newly_delivered": 0,
+                "newly_lost": 0,
+                "rows": 1
+              }
+            },
+            "sealed_boundary_agreement": {
+              "baseline_fusion_equals_sealed": 1080,
+              "rows": 1080
+            },
+            "skipped": {}
+          },
+          "treatment_boundary_channel": {
+            "candidates_recalled_histogram": {
+              "1": 1,
+              "3": 1,
+              "5": 1,
+              "7": 1,
+              "8": 1076
+            },
+            "delivered_width_histogram": {
+              "1": 1,
+              "3": 1,
+              "5": 1,
+              "7": 1,
+              "8": 1076
+            },
+            "facet_source": {
+              "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+              "kind": "sealed-vectors",
+              "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+              "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+              "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+            },
+            "fuse_coverage": {
+              "c": 1,
+              "m": 8,
+              "top_l": 8
+            },
+            "fuse_policy": "saea-fuse-associated-values-v1",
+            "k_committed": 8,
+            "k_used_as_recall_width": 8,
+            "query_source": {
+              "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+              "kind": "sealed-segment-vectors",
+              "relpath": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+              "sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b",
+              "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+            },
+            "rank_weights_flown": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "rank_weights_used": {
+              "w_agree": 1.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "segments_per_row": {
+              "1": 1080
+            },
+            "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+            "tau": 0.0
+          }
+        }
+      },
+      "cell_id": "slurp-native-default-plan-lock-v1",
+      "committed_recall_width": 8,
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "delivery": {
+        "classes": {
+          "CORRECT": {
+            "base_fused": 467,
+            "base_fused_pct": 97.2917,
+            "base_ranked": 467,
+            "base_ranked_pct": 97.2917,
+            "rows": 480,
+            "treat_fused": 478,
+            "treat_fused_pct": 99.5833,
+            "treat_ranked": 478,
+            "treat_ranked_pct": 99.5833
+          },
+          "ENTITY-FN-ONLY": {
+            "base_fused": 82,
+            "base_fused_pct": 97.619,
+            "base_ranked": 82,
+            "base_ranked_pct": 97.619,
+            "rows": 84,
+            "treat_fused": 83,
+            "treat_fused_pct": 98.8095,
+            "treat_ranked": 83,
+            "treat_ranked_pct": 98.8095
+          },
+          "ENTITY-FP-ONLY": {
+            "base_fused": 124,
+            "base_fused_pct": 94.6565,
+            "base_ranked": 124,
+            "base_ranked_pct": 94.6565,
+            "rows": 131,
+            "treat_fused": 130,
+            "treat_fused_pct": 99.2366,
+            "treat_ranked": 130,
+            "treat_ranked_pct": 99.2366
+          },
+          "ENTITY-MIXED": {
+            "base_fused": 187,
+            "base_fused_pct": 96.8912,
+            "base_ranked": 187,
+            "base_ranked_pct": 96.8912,
+            "rows": 193,
+            "treat_fused": 192,
+            "treat_fused_pct": 99.4819,
+            "treat_ranked": 192,
+            "treat_ranked_pct": 99.4819
+          },
+          "INTENT-WRONG": {
+            "base_fused": 86,
+            "base_fused_pct": 45.0262,
+            "base_ranked": 86,
+            "base_ranked_pct": 45.0262,
+            "rows": 191,
+            "treat_fused": 156,
+            "treat_fused_pct": 81.6754,
+            "treat_ranked": 156,
+            "treat_ranked_pct": 81.6754
+          },
+          "MALFORMED": {
+            "base_fused": 1,
+            "base_fused_pct": 100.0,
+            "base_ranked": 1,
+            "base_ranked_pct": 100.0,
+            "rows": 1,
+            "treat_fused": 1,
+            "treat_fused_pct": 100.0,
+            "treat_ranked": 1,
+            "treat_ranked_pct": 100.0
+          }
+        },
+        "fusion_vs_rank_disagreements": 0,
+        "plan_class_split": {
+          "CORRECT": {
+            "delivered_after": 478,
+            "delivered_before": 467,
+            "newly_delivered": 11,
+            "newly_lost": 0,
+            "rows": 480
+          },
+          "ENTITY-FN-ONLY": {
+            "delivered_after": 83,
+            "delivered_before": 82,
+            "newly_delivered": 1,
+            "newly_lost": 0,
+            "rows": 84
+          },
+          "ENTITY-FP-ONLY": {
+            "delivered_after": 130,
+            "delivered_before": 124,
+            "newly_delivered": 6,
+            "newly_lost": 0,
+            "rows": 131
+          },
+          "ENTITY-MIXED": {
+            "delivered_after": 192,
+            "delivered_before": 187,
+            "newly_delivered": 5,
+            "newly_lost": 0,
+            "rows": 193
+          },
+          "INTENT-COVERED": {
+            "delivered_after": 59,
+            "delivered_before": 59,
+            "newly_delivered": 2,
+            "newly_lost": 2,
+            "rows": 61
+          },
+          "INTENT-UNCOVERED": {
+            "delivered_after": 97,
+            "delivered_before": 27,
+            "newly_delivered": 70,
+            "newly_lost": 0,
+            "rows": 130
+          },
+          "MALFORMED": {
+            "delivered_after": 1,
+            "delivered_before": 1,
+            "newly_delivered": 0,
+            "newly_lost": 0,
+            "rows": 1
+          }
+        },
+        "sealed_boundary_agreement": {
+          "baseline_fusion_equals_sealed": 1080,
+          "rows": 1080
+        },
+        "skipped": {}
+      },
+      "diagnostic": {
+        "correct_base_pct": 97.3,
+        "correct_rows": 480,
+        "correct_treat_pct": 99.6,
+        "wrong_base_n": 86,
+        "wrong_base_pct": 45.0,
+        "wrong_rows": 191,
+        "wrong_treat_n": 156,
+        "wrong_treat_pct": 81.7
+      },
+      "population": {
+        "raw_classes": {
+          "CORRECT": 480,
+          "ENTITY-FN-ONLY": 84,
+          "ENTITY-FP-ONLY": 131,
+          "ENTITY-MIXED": 193,
+          "INTENT-COVERED": 61,
+          "INTENT-UNCOVERED": 130,
+          "MALFORMED": 1
+        },
+        "sha256": "26231b86b86f35251fed2b7d7c59bf33e8806b5ef71739b74bf9d5bc2b8a3ccf",
+        "source": "bad-case bank roster train-fold-a"
+      },
+      "read_recall_width": 60,
+      "roster_rows": 1080,
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1",
+      "sealed_exemplar_agreement": {
+        "exact": 1080,
+        "recomputed_width_20": 1080,
+        "rows": 1080,
+        "sealed_nonempty": 1080
+      },
+      "sealed_phase_artefact": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1/attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1.phases.json",
+        "sha256": "7cac358a39c446c7aa13fcec70722a4669814ea0fad4fc76e9bf291d7b4b8e6f"
+      },
+      "side_by_side": {
+        "correct_base_pct": {
+          "diagnostic": 97.3,
+          "read": 97.2917
+        },
+        "correct_rows": {
+          "diagnostic": 480,
+          "read": 480
+        },
+        "correct_treat_pct": {
+          "diagnostic": 99.6,
+          "read": 99.5833
+        },
+        "wrong_base_pct": {
+          "diagnostic": 45.0,
+          "read": 45.0262
+        },
+        "wrong_rows": {
+          "diagnostic": 191,
+          "read": 191
+        },
+        "wrong_treat_pct": {
+          "diagnostic": 81.7,
+          "read": 81.6754
+        }
+      },
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+      "vote_channel": {
+        "facet_source": {
+          "embedded_signal": "text: Omni-Embed-Nemotron-3B over the 11,514 governed SLURP TRAIN utterance texts, prompt 'passage: ', mean-pooled and L2-normalised; one vector per content facet id facet:content:<slurp_id>. The KEY side is knowledge text by construction and is unconstrained by the owner's 2026-09-06 query-signal rule.",
+          "kind": "sealed-vectors",
+          "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+          "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+          "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+        },
+        "fuse_coverage": {
+          "c": 20,
+          "m": 20,
+          "top_l": 20
+        },
+        "fuse_policy": "saea-fuse-supplyfilter-v1",
+        "k": 20,
+        "measured": {
+          "distinct_facets_ever_voted_for": 60,
+          "pool_values_without_a_build_time_target": 0,
+          "rows_with_a_self_excluded_exemplar": 0,
+          "rows_with_no_vote": 0,
+          "self_excluded_exemplars": 0,
+          "vote_total_histogram": {
+            "20": 1080
+          }
+        },
+        "query_source": {
+          "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by the sealed full-utterance speech vector of the row's own recording, in the content retrieval dimension; flattened from the sealed intent-boundary full-utterance SEGMENT vectors (docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json's sibling provenance vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.provenance.json -- one segment per row, dimension renamed intent-boundary to content, every float byte-identical to the parent) because docs/results/2026-09-17-slurp-a2-exemplar-headroom-audit-v1.md establishes intent-boundary as an alias of the content embedding space; no flattening of MEANING, re-encoding, transcript, answer or future turn enters this query.",
+          "kind": "sealed-vectors",
+          "relpath": "vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl",
+          "sha256": "d0f06ed21c6a576d8118d5a914e34807c24a3d3523d89e7b30d90575d24104ff",
+          "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+        },
+        "rank_weights": {
+          "w_agree": 0.0,
+          "w_cos": 1.0,
+          "w_prior": 0.0
+        },
+        "snapshot_sha256": "4c498dc0282055b9fe036ed7e950af519bd48b5f26e76876d0250727196a72e9"
+      }
+    }
+  },
+  "bad_case_bank_sha256": "26231b86b86f35251fed2b7d7c59bf33e8806b5ef71739b74bf9d5bc2b8a3ccf",
+  "boundary": "ZERO model, server, encoder, embedder, scorer, network, GPU and paid-API contacts: no server was started, stopped or probed, no waveform decoded and no embedding computed. Every number is arithmetic over receipt-pinned vector files and frozen snapshots, each verified against its configured sha256 by this repository's own loaders before a value was taken from it, through this repository's own rails.phase_supply / rails.knowledge_provider / rails.kb_policy seams. A DIAGNOSTIC COMPARISON, never a gate: it registers no cell, admits no mechanism, releases no store, authorises no flight and states no effectiveness, superiority or generalisation claim. Every roster is a discovery or dev roster and every number is a development number (owner decisions 28 and 86). No utterance text, transcript, gold label, intent name, knowledge body or delivered answer is printed or persisted: every cell is an id, a count, a rate or a hash.",
+  "contact_class": "model-free",
+  "contacts": {
+    "embedder": 0,
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api": 0,
+    "scorer": 0,
+    "server": 0
+  },
+  "generated_at": "2026-09-26T21:27:06.626138+00:00",
+  "lock_path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+  "read_id": "SAEA-SLURP-INTENT-AGREEMENT-PRODUCTION-REPLICATION-V1",
+  "recall_width": 60,
+  "recipe": "slurp-intent-agreement-production-replication-v1",
+  "schema": "saea-agreement-production-replication-v1",
+  "the_finding": "The delivered width and the RECALL width are the same knob in the flown cell: PhaseSupplySpec.k is passed to the provider as top_k_per_dimension AND the fuser's coverage is m=top_l=8, so at k=8 the recall truncates to eight candidates by cosine BEFORE the ranker runs and an agreement reweighting can only permute the eight it already delivers. The 2026-09-26 diagnostic simulated a full-width recall (60) followed by a delivery of eight. This read measures both widths: at the committed width the treatment is inert, and at width 60 with fuse_coverage unchanged it reproduces the diagnostic. The registered cell therefore has to widen k while leaving fuse_coverage at m=8/c=1/top_l=8 -- which costs no rendered entry, as the delivered-width histogram beside each block shows.",
+  "wiring_probe_max_rows": 0,
+  "workers": 4
+}

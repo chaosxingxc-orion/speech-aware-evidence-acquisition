@@ -1,0 +1,337 @@
+{
+  "_note": "Every model-free measured fact this registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py resolves. The same block is repeated in the preregistration's fenced json for readability; this copy has precedence.",
+  "agreement_vote_facts": {
+    "distinct_boundary_facets_ever_voted_for": 60,
+    "gold_free": "The vote key is each pool value's own frozen build-time task_target, a released-store property. No gold label, reference transcript, test annotation or future turn enters the artifact, the query or the weight.",
+    "pool_values_without_a_build_time_target": 0,
+    "roster_rows": 1080,
+    "rows_with_a_self_excluded_exemplar": 0,
+    "rows_with_no_vote": 0,
+    "self_exclusion_note": "0 rows, because the exemplar pool excludes every Fold A recording by construction. The exclusion is implemented, tested and reported anyway: the 2026-09-26 read measured the same 0 on all three rosters and required that it be preserved.",
+    "source": "the agreement receipt pinned above",
+    "speech_keyed": "The vote summarises the row's OWN sealed speech vector recalled against the frozen pool, so the standing ruling that a retrieval query is speech or speech-plus-state holds.",
+    "vote_total_per_row": 20
+  },
+  "authority_relpaths": [
+    "docs/results/2026-09-26-slurp-intent-retrieval-rank-diagnostic.md",
+    "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+    "docs/results/2026-09-24-slurp-plan-bad-case-bank.md"
+  ],
+  "cells": {
+    "aa": {
+      "boundary_rank_weights": {
+        "w_agree": 0.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "cell": "slurp-native-stage3-agree-aa-fold-a-v1",
+      "composed_config_hash": "43724db7cb5246f36aad726f128b068ad9abbec4720eb23d44f20a96f208deac",
+      "declares_agreement_source": false,
+      "fit_run_id": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-FIT-V1",
+      "protocol_hash": "b1997a6316862e513e504cf47cf5c7bfd26abac6280040873e90b4dc73f775b5",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1"
+    },
+    "arm": {
+      "boundary_rank_weights": {
+        "w_agree": 1.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "cell": "slurp-native-stage3-agree-w1-fold-a-v1",
+      "composed_config_hash": "ad9eaed0a1af16a7fe17e54ab720880c4b9b4a04237d175b67ab7d7e98c85846",
+      "declares_agreement_source": true,
+      "fit_run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-FIT-V1",
+      "protocol_hash": "1930d062a102a269a737c67cce47f41cb7ff3eaadb5bf6ed2cc13cee6af7a436",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+    },
+    "smoke": {
+      "boundary_rank_weights": {
+        "w_agree": 1.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "cell": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
+      "composed_config_hash": "b28799e911a7662c4e4e2c13f807461ed1c633dc17dade85a3d1a65ca4c018f0",
+      "declares_agreement_source": true,
+      "fit_run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-SMOKE-4-FIT-V1",
+      "protocol_hash": "aca95825805ae4ce0ea06aeacfd869a6520429a3ad5eb17fa3fa7cd0e3c108af",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-SMOKE-4-V1"
+    }
+  },
+  "committed_artifacts": {
+    "agreement_receipt": {
+      "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/receipt.json",
+      "sha256": "abf1830e3b765ce267ca7abc30855fb0148190931a12d505dc0f6f1dccd5ee2b"
+    },
+    "agreement_table": {
+      "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
+      "sha256": "018ca6ef0d10bbf8d19645994420820faf7f31961cf91a6080116e4b434016c1"
+    },
+    "prepared_supplies": {
+      "aa": {
+        "kind": "preparation",
+        "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed PLAN arm used, with zero model, tokenizer, encoder, scorer or server contacts. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting the PLAN arm's. --allow-output-change must never be passed.",
+        "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1/phase-supply-v1.json",
+        "sha256": "dba0304692c556c647d53043a079bb7a762ef92d11341f4f0f348c39c97efb80"
+      },
+      "arm": {
+        "kind": "preparation",
+        "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed PLAN arm used, with zero model, tokenizer, encoder, scorer or server contacts. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting the PLAN arm's. --allow-output-change must never be passed.",
+        "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v1.json",
+        "sha256": "9e946068b9377e2ce92b29d6e5759acaae3962d328abeb8fb02711439f17daa2"
+      },
+      "smoke": {
+        "kind": "preparation",
+        "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed PLAN arm used, with zero model, tokenizer, encoder, scorer or server contacts. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting the PLAN arm's. --allow-output-change must never be passed.",
+        "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "202a8de0efc75f7027a7b06be776f6664b917ec64b4d2d321d10c2e282890ee9"
+      }
+    },
+    "production_replication": {
+      "relpath": "analysis/SAEA-SLURP-INTENT-AGREEMENT-PRODUCTION-REPLICATION-V1/replication-v1.json",
+      "sha256": "7cd1f6d338731ea7b6eef34408e5d37453c852670900319445968ddc2a1dc624"
+    }
+  },
+  "default_byte_identity": {
+    "file_hashes_moved_as_expected": true,
+    "how_it_is_proven": "The A/A cell's own prepared first-phase supply, minted at the CHANGED implementation with no committed pin to inherit, carries the same output digest as the artifact the sealed comparator flew. The output digest is core.preparation.digest over the {facets, values} payload, so equality means the same value ids in the same order on every one of the 1,080 rows -- and the rendered block is a function of exactly that payload.",
+    "recomputed_default": {
+      "file_sha256": "dba0304692c556c647d53043a079bb7a762ef92d11341f4f0f348c39c97efb80",
+      "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+      "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1/phase-supply-v1.json"
+    },
+    "sealed_comparator": {
+      "file_sha256": "50da0c7bdaa756fb47abffefdaaa8f920f654b79f60905ca06a911067e6301c6",
+      "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+      "relpath": "prepared/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1/phase-supply-v1.json"
+    },
+    "treatment": {
+      "file_sha256": "9e946068b9377e2ce92b29d6e5759acaae3962d328abeb8fb02711439f17daa2",
+      "note": "Reported so the same receipt shows both halves: the default unchanged and the treatment actually changed. The selected value count is identical on both sides (8,624), which is the token-neutrality the read measured -- the block still carries eight entries and only which eight moves.",
+      "output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+      "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v1.json"
+    },
+    "what_is_claimed": "With w_agree 0.0 and no agreement_source declared, the rendered Perception bytes are exactly what flies today.",
+    "why_the_file_hash_moves": "core.flight.FlightRuntime._phase_seed_inputs binds the implementation sha256 of rails.kb_policy, rails.knowledge_provider, rails.phase_supply, rails.knowledge_stores and core.flight.runtime. This change edits three of them, so every prepared artifact in the repository becomes stale and must be re-minted by its cell's own re-pin. That is the designed behaviour, not a side effect of this cell."
+  },
+  "delivery_facts_from_the_read": {
+    "_note": "The read's own figures. The production-replication receipt reproduces every one of the six delivery cells EXACTLY at recall width 60 and delivered width 8, and validates first that the recomputed exemplar top-20 equals the sealed selection on 1080/1080, 625/625 and 1000/1000 rows and that the baseline boundary fusion equals what each flight sealed on every row.",
+    "dev2000-added-plan": {
+      "correct_row_delivery_pct": {
+        "w_agree_0": 94.5,
+        "w_agree_1": 99.5
+      },
+      "intent_wrong_rows": 232,
+      "wrong_row_delivery_pct": {
+        "w_agree_0": 35.8,
+        "w_agree_1": 78.0
+      },
+      "wrong_rows_delivered": {
+        "w_agree_0": 83,
+        "w_agree_1": 181
+      }
+    },
+    "floor_across_the_two_unfitted_rosters_pp": 30.4,
+    "flown_block_tokens": 1195.4,
+    "k30_alternative_token_cost_per_row": 3262.3,
+    "per_class_gain_dev2000_added": {
+      "INTENT-COVERED": {
+        "after": 62,
+        "before": 53,
+        "gained": 9,
+        "lost": 0,
+        "rows": 63
+      },
+      "INTENT-UNCOVERED": {
+        "after": 119,
+        "before": 30,
+        "gained": 94,
+        "lost": 5,
+        "rows": 169
+      }
+    },
+    "per_class_gain_fold_a": {
+      "INTENT-COVERED": {
+        "after": 59,
+        "before": 59,
+        "gained": 2,
+        "lost": 2,
+        "rows": 61
+      },
+      "INTENT-UNCOVERED": {
+        "after": 97,
+        "before": 27,
+        "gained": 70,
+        "lost": 0,
+        "rows": 130
+      }
+    },
+    "production_path_agreement": "EXACT on all six delivery cells of all three rosters. Sealed-exemplar agreement 1080/1080, 625/625, 1000/1000; sealed-boundary agreement at the flown width 1080/1080, 625/625, 1000/1000; 0 rows skipped; fusion-based and rank-based delivery agree on every row.",
+    "roll1": {
+      "correct_row_delivery_pct": {
+        "w_agree_0": 95.1,
+        "w_agree_1": 98.8
+      },
+      "intent_wrong_rows": 184,
+      "wrong_row_delivery_pct": {
+        "w_agree_0": 44.6,
+        "w_agree_1": 75.0
+      },
+      "wrong_rows_delivered": {
+        "w_agree_0": 82,
+        "w_agree_1": 138
+      }
+    },
+    "token_cost_per_row": 1.4,
+    "train-fold-a-plan": {
+      "correct_row_delivery_pct": {
+        "w_agree_0": 97.3,
+        "w_agree_1": 99.6
+      },
+      "intent_wrong_rows": 191,
+      "wrong_row_delivery_pct": {
+        "w_agree_0": 45.0,
+        "w_agree_1": 81.7
+      },
+      "wrong_rows_delivered": {
+        "w_agree_0": 86,
+        "w_agree_1": 156
+      }
+    }
+  },
+  "expected_effect_derivation": {
+    "arithmetic": [
+      "per-row SLU headroom, INTENT-UNCOVERED = 5.41 / 130 = 0.041615 pp",
+      "per-row SLU headroom, INTENT-COVERED   = 2.35 / 61 = 0.038525 pp",
+      "net newly delivered: 70 uncovered, 0 covered",
+      "ceiling at conversion 1.0 = 70 x 0.041615 + 0 x 0.038525 = 2.9131 pp SLU-F1",
+      "conversion = persuasion 0.5 (UNMEASURED) x P(correct | covered) 0.9358 (measured, an upper bound: 889 of 950) = 0.4679",
+      "declared expectation = 2.9131 x 0.4679 = 1.3630 pp SLU-F1"
+    ],
+    "ceiling_at_perfect_conversion_pp": {
+      "intent_accuracy": 6.4831,
+      "slu_f1": 2.9131
+    },
+    "conversion_rate": {
+      "p_correct_given_covered": 0.935789,
+      "persuasion_factor": 0.5,
+      "status": "ONE MEASURED FACTOR (an upper bound) TIMES ONE UNMEASURED FACTOR. The unmeasured one is the whole unknown.",
+      "value": 0.467895,
+      "why_this_value": "P(correct | covered) is measured at 889 of 950 covered Fold A rows, an upper bound. The persuasion factor is the midpoint of [0, 1], the only interval any evidence bounds; it is not reverse-engineered from any admission bar and it is deliberately not the ceiling. Perception already holds the full 60-label inventory in its task contract, so this change argues for an intent rather than admitting one -- which is why the persuasion factor cannot be inferred from the coverage counts."
+    },
+    "expected_effect_pp": 1.363,
+    "expected_intent_effect_pp": 3.0334,
+    "honest_statement": "DELIVERY IS NOT CORRECTNESS. Every measured quantity above is a count of rows that would RECEIVE their own gold intent's boundary entry; not one of them is a count of rows that would then ANSWER correctly. The conversion between the two is unmeasured, so the declared expected_effect_pp is a construction. It is stated at the midpoint conversion and is reported beside its own ceiling and its whole sweep. It is not a prediction, it is not evidence, and it must not be read as either.",
+    "measured_inputs": {
+      "already_delivered_and_still_intent_wrong": {
+        "of_intent_wrong_rows": 191,
+        "rate_pct": 45.0,
+        "rows": 86,
+        "what_it_bounds": "the only directly observable conversion evidence on this population, and it is zero: every row in this group receives the gold intent's boundary entry and is intent-wrong anyway"
+      },
+      "fold_a_rows": 1080,
+      "intent_covered_rows": 61,
+      "intent_uncovered_rows": 130,
+      "intent_wrong_rows": 191,
+      "newly_delivered_covered": 2,
+      "newly_delivered_uncovered": 70,
+      "newly_undelivered_covered": 2,
+      "newly_undelivered_uncovered": 0,
+      "perfect_repair_headroom_intent_pp": {
+        "intent_covered": 5.65,
+        "intent_uncovered": 12.04
+      },
+      "perfect_repair_headroom_slu_pp": {
+        "intent_covered": 2.35,
+        "intent_uncovered": 5.41
+      },
+      "where_the_gain_lands": "ALL 70 of the intent-wrong delivery gain lands on INTENT-UNCOVERED -- the coverage-failure class, the only class a coverage repair can act on -- 70 of its 130 rows (53.8 %). INTENT-COVERED is a 2-for-2 wash, correctly, because delivery was never the binding constraint there. Only 4 rows in the whole 1,080-row roster lose delivery and all four are inside INTENT-COVERED. The arithmetic below therefore charges the change only against the class it actually moves."
+    },
+    "sweep_slu_pp_by_conversion": {
+      "persuasion 0": 0.0,
+      "persuasion 0.1": 0.2726,
+      "persuasion 0.25": 0.6815,
+      "persuasion 0.5": 1.363,
+      "persuasion 0.75": 2.0445,
+      "persuasion 1": 2.726
+    }
+  },
+  "measurement_design": {
+    "canonical_declaration": "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/registered-facts-v1.json, top-level 'stage3_measurement' -- the block scripts/checks/stage3_effect_floor_check.py resolves. The same block is repeated in the preregistration's fenced json for readability; the registered-facts copy has precedence.",
+    "declared_expectation_clears_the_floor": false,
+    "design": "cross-flight-with-in-chain-replicate",
+    "floor_at_n_1080_pp": 2.5,
+    "if_it_does_not_clear": "Reported, never engineered around. The honest options are: accept that the read may be NEUTRAL by width and treat the measured conversion as the cell's deliverable; or measure the conversion first on a smaller probe and re-declare. Inflating expected_effect_pp to clear the bar would be the one move this registration refuses.",
+    "why_an_in_chain_replicate": "Rule 4 of the measurement instrument refuses a cross-flight contrast with no in-chain replicate outright; the A/A cell is that replicate and flies in the same campaign chain.",
+    "why_not_offline_sealed_pool": "The effect is a change to what Perception CONSUMES, so it cannot be read off a sealed pool: no sealed sample was produced under the new ranking. The GPU is the only instrument for it."
+  },
+  "recall_width_correction": {
+    "consequence": "The two arms differ in w_agree ALONE, which makes the A/A a genuine one-factor control rather than only a replicate.",
+    "the_widening_is_a_no_op_on_its_own": {
+      "claim": "At pure cosine the top 8 of a 60-wide recall IS the 8-wide recall's set, in the same order, so the delivered selection does not move.",
+      "measured_beside_it": "the production replication reads the baseline at width 60 as bit-identical to width 8 (45.0 % / 97.3 % on Fold A), and the delivered-width histograms are byte-identical between the two arms, so the read's +1.4 tokens per row holds",
+      "proof": "The in-chain A/A control carries k = 60 at w_agree 0.0 and its own prepared first-phase supply reproduces the sealed comparator's output digest ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f exactly on all 1,080 rows."
+    },
+    "what_is_registered": "w_agree 1.0, DELIVERED width left at 8 (fuse_coverage m 8 / c 1 / top_l 8), RECALL width k moved from 8 to 60",
+    "what_the_brief_said": "w_agree 1.0, k left at 8",
+    "why": "PhaseSupplySpec.k is top_k_per_dimension: the recall truncates by cosine before the ranker runs, so at k = 8 the agreement term can only permute the eight the cosine already chose. Measured through the production path: at k = 8 wrong-row delivery is 45.0 % -> 45.0 % on all three rosters -- the treatment is INERT. The read's own simulation recalled at 60 and delivered 8."
+  },
+  "registered_at_utc": "2026-09-26T12:00:00.000000+00:00",
+  "reported_beside": {
+    "cross_flight_aa_offset_pp": 1.87,
+    "note": "CONTEXT ONLY. None of these is this cell's comparator or bar.",
+    "train_fold_a_own_null": {
+      "h_intent": 0.9943,
+      "h_slu": 1.2485,
+      "n": 1080
+    },
+    "train_fold_a_plan": {
+      "intent_accuracy": 82.2222,
+      "official_slu_f1": 63.6304,
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1"
+    }
+  },
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "metrics": [
+      "slu_f1_f1",
+      "scenario_action_exact"
+    ],
+    "seed": 20260926,
+    "unit": "row (paired)"
+  },
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "The A/A replicate is the INSTRUMENT, not a claim: it re-flies the locked plan's own form so the AGREE delta is read against a within-chain null. Its expected effect is exactly zero by construction, and a non-zero read on it is a measurement of the instrument, which is what it is for.",
+      "primary_metric": "slu_f1",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+      "rows": 1080
+    },
+    "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four rows prove FORM and nothing else: that the agreement table loads and hash-verifies, that the boundary channel still delivers eight entries, that every request fits and that the episode completes. Scored by no one, read by no one; under the measurement instrument's rule 5 a batch of four rows can never be evidence of benefit.",
+      "primary_metric": "slu_f1",
+      "rows": 4
+    },
+    "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1": {
+      "claims_benefit": true,
+      "expected_effect_pp": 1.363,
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "Cell AGREE claims a benefit and is the first cell of this programme to do so on well-evidenced grounds. The expectation is DERIVED, not guessed: the measured newly-delivered row counts per bad-case class times that class's measured perfect-repair headroom, times a STATED conversion of 0.467895 that is UNMEASURED. Delivery is not correctness; the conversion is the cell's own primary unknown, and the declared number is a construction, not a prediction. Ceiling at conversion 1.0 is 2.9131 pp, so this design's 2.5 pp admission bar at n = 1,080 is NOT cleared by the declared expectation -- reported, not engineered around.",
+      "primary_metric": "slu_f1",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1",
+      "rows": 1080
+    }
+  },
+  "study_commit_at_registration": "c452c048"
+}
