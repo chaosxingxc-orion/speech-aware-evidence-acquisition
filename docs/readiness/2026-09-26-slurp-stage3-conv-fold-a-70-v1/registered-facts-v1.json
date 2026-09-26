@@ -1,0 +1,165 @@
+{
+  "_note": "Every model-free measured fact this registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py resolves. The same block is repeated in the preregistration's fenced json for readability; this copy has precedence.",
+  "authority_relpaths": [
+    "docs/results/2026-09-26-slurp-intent-retrieval-rank-diagnostic.md",
+    "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+    "docs/results/2026-09-24-slurp-plan-bad-case-bank.md",
+    "docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md",
+    "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/README.md",
+    "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/production-replication-v1.json"
+  ],
+  "budget_arithmetic": {
+    "contacts_per_row_program_ceiling": 11,
+    "derivation": [
+      "generation_calls_cap = 70 rows x 11 contacts per row (perception 1, solver 1, reviewer 3, planner 1, max_revisions 1 -> 1 + 2 * (3 + 1 + 1)) = 770",
+      "fit_endpoint_calls_cap = 4 x 770 = 3080, the parent family's own ratio",
+      "native_task_contract_calls_cap = 70 x 6 = 420, the parent family's own per-row figure",
+      "repeated_speech_audio_seconds_cap = ceil(172.605125 roster seconds x 11) = 1899",
+      "gpu_hours_fit_inclusive = 1.0, a ceiling: the sealed PLAN arm's own 3.6819 h per 5,425 contacts puts the whole 770-contact ceiling at about 0.52 h and the expected 352 contacts at about 0.24 h",
+      "official_complete_scoring_jobs = 1, one job over the complete 70-row manifest through core.scoring_batch, never sharded"
+    ],
+    "expected_contacts": 352,
+    "family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 3080,
+      "generation_calls_cap": 770,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 420,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 1899
+    },
+    "run_cumulative": "every cap binds across ALL attempts of this run id, so the one permitted recovery re-registration spends from the same ceiling"
+  },
+  "committed_artifacts": {
+    "agreement_table": {
+      "embedded_signal": "derived: the share of this row's own top-20 sealed TRAIN-exemplar recall whose frozen build-time task_target equals each boundary intent, self-excluded by the row's utterance identity and normalised to 1. Speech-keyed by construction -- the recall it summarises is the row's own sealed speech vector against the frozen pool -- and gold-free: the key is a released store property, never a label, transcript or future turn. Built model-free by scripts/build_slurp_intent_exemplar_agreement.py with zero model, server, encoder, embedder, scorer, network and GPU contacts; receipt beside the artifact.",
+      "kind": "sealed-agreement",
+      "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
+      "sha256": "018ca6ef0d10bbf8d19645994420820faf7f31961cf91a6080116e4b434016c1",
+      "tool_contact_ledger_row": "SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1"
+    },
+    "note": "The agreement table is pinned where the loader verifies it -- agreement_source.sha256 in the baseline -- plus its build receipt in preparation_source_receipts. It is deliberately NOT repeated as a readiness 'preparation' requirement: core.flight.repin._set_preparation_requirement rewrites EVERY such entry to the freshly minted first-phase supply pin at the flip, so a second preparation requirement would be silently clobbered. This cell's requirements list is empty and the flip appends exactly one.",
+    "prepared_phase_supply": "NONE COMMITTED, by design. The agreement merge moved the implementation sha256 of rails.kb_policy, rails.knowledge_provider and rails.phase_supply, which FlightRuntime._phase_seed_inputs binds, so every prepared_phase_supply pin in the repository is invalidated and any cell awaiting a flip must be re-pinned. This cell carries no pin at all: the flip mints its own under its own run id (item E16) and --allow-output-change must never be passed."
+  },
+  "comparator": {
+    "attempt_id": "attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1",
+    "per_row_intent_verdict_authority": {
+      "note": "the same digest the committed replication receipt pinned as bad_case_bank_sha256; the read re-derives the comparator's per-row verdict from the sealed PLAN arm's own official score as well and refuses on any disagreement.",
+      "relpath": "analysis/SLURP-PLAN-BAD-CASE-BANK-V1/bank.jsonl",
+      "sha256": "26231b86b86f35251fed2b7d7c59bf33e8806b5ef71739b74bf9d5bc2b8a3ccf"
+    },
+    "role": "sealed, already flown, never re-flown and not part of this campaign. It holds these 70 rows' comparator answers, and every one of them is intent-WRONG there: INTENT-UNCOVERED collapses to INTENT-WRONG in the bad-case bank's own convention. The probe therefore flies the TREATMENT ONLY and the contrast is per-row and offline.",
+    "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1"
+  },
+  "gold_selection": "THE ROSTER IS SELECTED USING GOLD, OFFLINE. The bad-case bank's plan_class and each row's gold intent were read on the scoring side only, in the committed roster derivation, before this cell existed. That is legitimate for a CONDITIONAL estimate on a TRAIN roster and it is legitimate for nothing else: NO POOLED OR ROSTER-LEVEL CLAIM MAY EVER BE MADE FROM THIS CELL, because its population was chosen by the mechanism's own effect. Gold reaches no query, no key, no weight, no selector and no runtime, and no gold label, intent name, transcript or utterance text is printed or persisted anywhere in this package.",
+  "headroom_registered_by_the_parent": {
+    "intent_pp_per_row": 0.092615,
+    "re_declaration_rule": "the AGREE arm's re-declared expected_effect_pp = (rows of this roster that move from a wrong intent to the gold intent) x 0.041615 pp SLU-F1, and x 0.092615 pp intent accuracy. Equivalently, 2.9131 pp x the measured conversion.",
+    "slu_pp_per_row": 0.041615,
+    "source": "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/registered-facts-v1.json, expected_effect_derivation: INTENT-UNCOVERED perfect-repair headroom 5.41 pp SLU-F1 and 12.04 pp intent accuracy over 130 rows. Not re-derived here."
+  },
+  "identity": {
+    "arm": "speech-feature-query-native-tools",
+    "attempt_id": "attempt-slurp-native-stage3-conv-fold-a-70-generation-v1",
+    "baseline_fragment": "slurp-native-stage3-conv-fold-a-70-baseline-v1",
+    "boundary_channel": {
+      "fuse_coverage": {
+        "c": 1,
+        "m": 8,
+        "top_l": 8
+      },
+      "k": 60,
+      "rank_weights": {
+        "w_agree": 1.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      }
+    },
+    "cell": "slurp-native-stage3-conv-fold-a-70-v1",
+    "composed_config_hash": "28923aa33d1e050e9ffdd4e9fc613670f6c09936ec990d6041476db6c7fb4117",
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "declares_prepared_phase_supply": false,
+    "experiment": "slurp-native-stage3-conv-fold-a-70-v1",
+    "fit_attempt_id": "attempt-slurp-native-stage3-conv-fold-a-70-fit-v1",
+    "fit_run_id": "SAEA-SLURP-STAGE3-CONV-FOLD-A-70-FIT-V1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "native_episode_policies": {
+      "finite_completion_policy": "deliver-latest-or-abstain",
+      "react_exhaustion_policy": "continue-without-answer"
+    },
+    "protocol_hash": "53cdf41ac4ef039e99d4b132a5b9b0e4f8acd23df466760c4f79ca41535c9054",
+    "run_id": "SAEA-SLURP-STAGE3-CONV-FOLD-A-70-V1",
+    "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "split_identity_hash": "57c6f278d8ab35dafa0f1183938c13b6084a4f3d9d9438cfb3e55bbf73ff335c"
+  },
+  "no_pooled_claim": "This cell reads ONE quantity: the per-row intent verdict on a gold-selected subset. It may never be reported as a pooled SLU-F1 or intent-accuracy effect, as an admission, as a replication, or as evidence about any roster. Its population is the mechanism's own beneficiaries; a pooled number computed over it would be a selection artefact by construction. The cell also cannot see harm: every row here is already intent-wrong in the comparator, so the rows where the mechanism could COST a correct intent are outside this roster and remain the AGREE arm's own question.",
+  "prohibitions": [
+    "No pooled, roster-level, effectiveness, superiority or generalisation claim from this cell, ever -- its population was selected with gold.",
+    "No admission entry and no admission mode: the cell claims nothing and asks for nothing.",
+    "No test-split, Fold B or DEV contact or read.",
+    "No re-flying of the sealed comparator.",
+    "No second factor, no w_agree, w_cos, w_prior, k, tau or fuse_coverage change, no store rebuild or release.",
+    "No paper-scale profile.",
+    "No flight before root mints the decision receipt and the cell is flipped."
+  ],
+  "registered_at_utc": "2026-09-26T18:00:00.000000+00:00",
+  "roster": {
+    "audio_seconds_total": 172.605125,
+    "count": 70,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "derivation": {
+      "relpath": "docs/readiness/2026-09-26-slurp-stage3-conv-fold-a-70-v1/roster-derivation-v1.json",
+      "sha256": "865d3fe0432bc8f18e9d19b26636e1560bcc82f2d7a9fedae32eadb5cb208dba"
+    },
+    "id_list_sha256": "5920bd6c99d1d5935881c0ca85c8454c7ec8eed096d950b7242c0ec7d8fbf73b",
+    "proven_against": {
+      "committed_plan_class_split": {
+        "delivered_after": 97,
+        "delivered_before": 27,
+        "newly_delivered": 70,
+        "newly_lost": 0,
+        "rows": 130
+      },
+      "differences": [],
+      "note": "The committed receipt records the COUNT (70 newly delivered of 130 INTENT-UNCOVERED, 0 lost) and carries NO row ids -- its own text discipline chose counts. The roster is therefore RECONSTRUCTED from that receipt's own recipe, imported byte-unchanged, and the reconstruction is proven by reproducing every cell the receipt committed for this arm at this width before a single id is taken.",
+      "receipt_relpath": "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/production-replication-v1.json",
+      "receipt_sha256": "7cd1f6d338731ea7b6eef34408e5d37453c852670900319445968ddc2a1dc624",
+      "recipe_relpath": "scripts/analysis/slurp_intent_agreement_production_replication.py",
+      "recipe_sha256": "62c175d5fda67ca8a3743a25a309e433941607f13be648d997f245c8901cd17d",
+      "reconstructed_plan_class_split": {
+        "newly_delivered": 70,
+        "newly_lost": 0,
+        "rows": 130
+      }
+    },
+    "split_identity_hash": "57c6f278d8ab35dafa0f1183938c13b6084a4f3d9d9438cfb3e55bbf73ff335c"
+  },
+  "rows": 70,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-CONV-FOLD-A-70-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "The cell measures a CONDITIONAL RATE and makes NO effectiveness claim. Its 70 rows are under the measurement instrument's MIN_BENEFIT_ROWS, so under rule 5 this is a form proof by size and claims_benefit is false; expected_effect_pp is 0.0 because the cell registers no effect to look for. What it delivers is the AGREE arm's unmeasured persuasion factor, measured: of the rows whose gold intent's boundary entry the agreement term newly delivers, the proportion that move from a wrong intent to the gold intent. Multiplying that proportion by the registered per-row headroom of the class the gain lands on gives the AGREE arm's re-declared expectation. It is NOT an admission request: no admission mode is declared, no harm margin is claimed, and no pooled or roster-level number may ever be read off this cell, whose population was selected with gold, offline.",
+      "primary_metric": "per-row intent correctness (official scorer's scenario_action_exact), reported as the conditional rate P(correct | newly delivered) with a binomial CI95",
+      "rows": 70
+    }
+  },
+  "study_commit_at_registration": "c6ced983",
+  "the_unmeasured_quantity": {
+    "arm_admission_bar_pp_at_n_1080": 2.5,
+    "arm_ceiling_at_perfect_conversion_pp": 2.9131,
+    "arm_declared_conversion": 0.467895,
+    "arm_declared_conversion_is": "the product of a MEASURED P(correct | covered) of 0.935789 (889 of 950 covered Fold A rows, itself an upper bound) and an UNMEASURED persuasion factor of 0.5, which is the midpoint of [0, 1] and nothing more.",
+    "arm_declared_expectation_pp": 1.363,
+    "conversion_the_arm_needs": 0.8582,
+    "name": "P(correct | newly delivered) -- the persuasion factor",
+    "rows_of_this_roster_that_would_clear_the_arm_bar": 61,
+    "the_only_directly_observable_prior": "86 of the 191 intent-wrong Fold A rows ALREADY receive the gold intent's boundary entry in the sealed comparator and are intent-wrong anyway (the parent package's own measured_inputs), so the only directly observable conversion evidence on this population is zero. That is a reason to measure the factor, not a prediction of it, and this cell is registered without a predicted value on purpose.",
+    "why_measure_it_first": "The AGREE arm plus its in-chain A/A costs about 7 GPU hours (2 x about 3.7) to learn this one number as a by-product of a read its own declaration does not expect to clear. This cell measures it directly for about 0.52 GPU hours at the expected spend and at most 1.0 at the registered ceiling. The parent package names this option itself: 'measure the conversion first on a smaller probe and re-declare'."
+  },
+  "why_intent_and_not_slu_f1": "The within-flight null (docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md) measured 0 intent flips out of 200 request-identical rows, so an intent flip is ATTRIBUTABLE rather than noise and a per-row intent read is legible at n = 70. Pooled SLU-F1 is not: its own measured noise would swamp 70 rows, and the official SLU-F1 is entity-only while this mechanism acts on the intent. The official scorer still produces the number -- the read takes its per-sample scenario_action_exact field and nothing else -- so the standard-scoring rule is intact."
+}
