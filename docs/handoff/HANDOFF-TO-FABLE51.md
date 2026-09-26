@@ -338,6 +338,43 @@ actual common actor/model fragments and held evaluation templates, then finish
 prospective request/plan registration. GPU fault diagnosis remains required;
 no service restart or closed-flight replay occurred.
 
+## Complete-system actor configuration continuation
+
+CPU configuration checkpoint: 2026-09-26T04:11:49.858682+00:00.
+The [actor and memory configuration contract](../readiness/2026-09-26-slurp-system-round-configs.md)
+now has four held R01C complete-trajectory cells, common R01C/A/B baseline
+fragments and a matched greedy Fold B default. Explicit request sampling
+changes experiment/request identity while reusing the same model fragment and
+resident service identity. Sampling-only changes preserve legacy completion
+reserves. All four roles and Solver revision receive the actual configured
+settings in the connected simulated-transport proof.
+
+Memory-dependent round-two/E/M1/M2 templates remain outside executable
+experiments until their real candidate, attestation, cumulative/disjoint rosters
+and decisions exist. They expose the existing corrective-memory tool only to
+Reviewer; Planner controls continuation and Solver retains answer authority.
+The runtime's existing 32-record bound is now explicit: no silent subset may
+replace the full frozen pool. Complete batch/pool capacity and a compatible
+prospective consolidation contract remain unresolved admission inputs.
+
+364 targeted regressions passed; the final request/fit proof passed 37 tests.
+These sets overlap. The changed request resolver and effective-value functions
+have 100% branch-inclusive coverage; this is not whole-repository coverage.
+Ruff and nine offline gates passed. Two pre-existing test failures were
+reproduced using parent source, then corrected at the fixture/assertion level;
+the immutable historical empty-receipt configuration remains refused.
+The validation receipt linked from the contract records all boundaries and
+historical ledger/handoff warnings. Thirty-one common-baseline source pins and
+four pinned backend source files were verified without model contact.
+
+These cells are check-only, HELD and deliberately lack an execution plan.
+They grant no generation, fitting or scoring authority and are not queued.
+Next close the complete semantic-round contracts, output/capacity limits,
+budgets and prospective registration, then run sampling/update/frozen system
+evaluation and replication only after GPU fault resolution. No real semantic
+update, memory evaluation or stable RL benefit is established. The closed
+recovery, isolated control embargo, frozen worker, queue and STOP are unchanged.
+
 ## Whole-system summary runtime connection
 
 The model-facing summary input now has a shared preparation/loader/baseline

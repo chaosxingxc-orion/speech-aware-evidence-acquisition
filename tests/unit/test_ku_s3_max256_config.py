@@ -68,10 +68,19 @@ def test_max256_successor_has_registered_budgets_and_valid_active_pins(path):
 
 
 @pytest.mark.parametrize("path", CONFIGS)
-def test_max256_composition_preserves_override_and_held_pending_state(path, tmp_path):
+def test_max256_composition_preserves_valid_overrides_and_historical_refusal(path, tmp_path):
     document = read(path)
     control = "control" in path.stem
     baseline = "slurp-phase-slots-given-intent-schema-v1" if control else ("slurp-phase-slots-supplied-fillers-twin-v1" if "twin" in path.stem else "slurp-phase-slots-supplied-fillers-speech-v1")
+    if control:
+        # Preserve the immutable historical fragment's empty-list defect.
+        # Current composition must refuse it; do not relax the shared validator
+        # or rewrite old experiment bytes to make a historical cell launchable.
+        from speech_aware_evidence_acquisition.core.config import ConfigError
+        assert document["preparation_source_receipts"] == []
+        with pytest.raises(ConfigError, match="preparation_source_receipts must be a non-empty list"):
+            compose(REPO, model=MODEL, dataset=DATASET, baseline=baseline, experiment=path.stem)
+        return
     composed = compose(REPO, model=MODEL, dataset=DATASET, baseline=baseline, experiment=path.stem)
     assert composed.values["experiment_id"] == document["experiment_id"]
     assert composed.values["request_decoding_overrides"] == {"max_tokens": 256}

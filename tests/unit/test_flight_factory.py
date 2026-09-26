@@ -362,6 +362,7 @@ def test_window_fit_inputs_bind_window_sources_and_payload_boundary(tmp_path):
     from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
 
     runtime = object.__new__(FlightRuntime)
+    runtime._composed = SimpleNamespace(values={"arm": "bare-core"})
     runtime.preparation_context = lambda: {
         "values": {"arm": "bare-core"},
         "split_identity_hash": "0" * 64,

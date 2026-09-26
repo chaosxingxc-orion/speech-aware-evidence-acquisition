@@ -1,0 +1,322 @@
+{
+  "schema": "saea-system-memory-arm-design-templates-v1",
+  "launch_authority": false,
+  "stage3_algorithm": "tfgrpo-system-memory-disjoint-v1",
+  "arms": [
+    {
+      "name": "round2",
+      "status": "requires-sealed-memory-binding",
+      "prospective_experiment": "slurp-native-stage3-system-round2-fold-a-v1",
+      "base_baseline": "slurp-native-stage3-system-common-fold-a-v1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "memory_source": "M1",
+      "ordered_selection": "all-records-in-frozen-snapshot-order",
+      "baseline_patch": {
+        "phase_tools": {
+          "reviewer": {
+            "mode": "native-tools",
+            "allowed_tools": [
+              "saea-tool-corrective-memory-v1"
+            ],
+            "knowledge_views": [
+              "text"
+            ],
+            "source_authority_role": "reviewer"
+          }
+        },
+        "phase_material": {
+          "reviewer": {
+            "fill_params": {},
+            "instruction_fill": null,
+            "instruction_template": "probes/slurp_native_role_reviewer_memory_v1.txt",
+            "predecessor_binding": "none",
+            "response_format_id": null,
+            "state_fill": null
+          }
+        }
+      },
+      "patch_semantics": "Replace only the named phase_material reviewer entry; keep all other roles unchanged. Add phase_tools. Instantiate a distinct baseline after all source bindings exist; this document is not runtime inheritance.",
+      "request_settings": {
+        "replica_seeds": [
+          2026092601,
+          2026092602,
+          2026092603,
+          2026092604
+        ],
+        "temperature": 0.7,
+        "top_p": 1.0,
+        "top_k": 0,
+        "min_p": 0.0,
+        "presence_penalty": 0.0,
+        "frequency_penalty": 0.0
+      },
+      "required_runtime_bindings": [
+        "candidate_experience_memory",
+        "native_contact_fit",
+        "prepared_phase_supply"
+      ],
+      "required_memory_fields": [
+        "artifact",
+        "source_attestation",
+        "construction_roster",
+        "evaluation_roster",
+        "evaluation_decision",
+        "ordered_record_sha256s",
+        "task_id",
+        "component_tags",
+        "allowed_roles"
+      ],
+      "required_before_generation": [
+        "complete sealed memory source and attestation",
+        "role-specific disjoint evaluation roster",
+        "exact source-bound empty or full pack decision",
+        "prospective execution plan and exposure row",
+        "real fit for complete pool and all native requests",
+        "resolved GPU fault and root admission"
+      ],
+      "memory_binding_constants": {
+        "task_id": "slurp",
+        "component_tags": [
+          "obs",
+          "org",
+          "supply",
+          "use"
+        ],
+        "allowed_roles": [
+          "reviewer"
+        ]
+      },
+      "runtime_pool_limit": 32,
+      "oversized_pool_policy": "Refuse admission if the complete frozen pool exceeds the existing 32-record runtime limit. Do not silently select or delete records. Register the batch consolidation contract or an explicit algorithm adaptation before any new contact."
+    },
+    {
+      "name": "E",
+      "status": "requires-sealed-memory-binding",
+      "prospective_experiment": "slurp-native-stage3-system-e-fold-b-v1",
+      "base_baseline": "slurp-native-stage3-system-common-fold-b-v1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "memory_source": "M2",
+      "ordered_selection": [],
+      "baseline_patch": {
+        "phase_tools": {
+          "reviewer": {
+            "mode": "native-tools",
+            "allowed_tools": [
+              "saea-tool-corrective-memory-v1"
+            ],
+            "knowledge_views": [
+              "text"
+            ],
+            "source_authority_role": "reviewer"
+          }
+        },
+        "phase_material": {
+          "reviewer": {
+            "fill_params": {},
+            "instruction_fill": null,
+            "instruction_template": "probes/slurp_native_role_reviewer_memory_v1.txt",
+            "predecessor_binding": "none",
+            "response_format_id": null,
+            "state_fill": null
+          }
+        }
+      },
+      "patch_semantics": "Replace only the named phase_material reviewer entry; keep all other roles unchanged. Add phase_tools. Instantiate a distinct baseline after all source bindings exist; this document is not runtime inheritance.",
+      "request_settings": {
+        "model_fragment_decoding_unchanged": true
+      },
+      "required_runtime_bindings": [
+        "candidate_experience_memory",
+        "native_contact_fit",
+        "prepared_phase_supply"
+      ],
+      "required_memory_fields": [
+        "artifact",
+        "source_attestation",
+        "construction_roster",
+        "evaluation_roster",
+        "evaluation_decision",
+        "ordered_record_sha256s",
+        "task_id",
+        "component_tags",
+        "allowed_roles"
+      ],
+      "required_before_generation": [
+        "complete sealed memory source and attestation",
+        "role-specific disjoint evaluation roster",
+        "exact source-bound empty or full pack decision",
+        "prospective execution plan and exposure row",
+        "real fit for complete pool and all native requests",
+        "resolved GPU fault and root admission"
+      ],
+      "memory_binding_constants": {
+        "task_id": "slurp",
+        "component_tags": [
+          "obs",
+          "org",
+          "supply",
+          "use"
+        ],
+        "allowed_roles": [
+          "reviewer"
+        ]
+      },
+      "runtime_pool_limit": 32,
+      "oversized_pool_policy": "Refuse admission if the complete frozen pool exceeds the existing 32-record runtime limit. Do not silently select or delete records. Register the batch consolidation contract or an explicit algorithm adaptation before any new contact."
+    },
+    {
+      "name": "M1",
+      "status": "requires-sealed-memory-binding",
+      "prospective_experiment": "slurp-native-stage3-system-m1-fold-b-v1",
+      "base_baseline": "slurp-native-stage3-system-common-fold-b-v1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "memory_source": "M1",
+      "ordered_selection": "all-records-in-frozen-snapshot-order",
+      "baseline_patch": {
+        "phase_tools": {
+          "reviewer": {
+            "mode": "native-tools",
+            "allowed_tools": [
+              "saea-tool-corrective-memory-v1"
+            ],
+            "knowledge_views": [
+              "text"
+            ],
+            "source_authority_role": "reviewer"
+          }
+        },
+        "phase_material": {
+          "reviewer": {
+            "fill_params": {},
+            "instruction_fill": null,
+            "instruction_template": "probes/slurp_native_role_reviewer_memory_v1.txt",
+            "predecessor_binding": "none",
+            "response_format_id": null,
+            "state_fill": null
+          }
+        }
+      },
+      "patch_semantics": "Replace only the named phase_material reviewer entry; keep all other roles unchanged. Add phase_tools. Instantiate a distinct baseline after all source bindings exist; this document is not runtime inheritance.",
+      "request_settings": {
+        "model_fragment_decoding_unchanged": true
+      },
+      "required_runtime_bindings": [
+        "candidate_experience_memory",
+        "native_contact_fit",
+        "prepared_phase_supply"
+      ],
+      "required_memory_fields": [
+        "artifact",
+        "source_attestation",
+        "construction_roster",
+        "evaluation_roster",
+        "evaluation_decision",
+        "ordered_record_sha256s",
+        "task_id",
+        "component_tags",
+        "allowed_roles"
+      ],
+      "required_before_generation": [
+        "complete sealed memory source and attestation",
+        "role-specific disjoint evaluation roster",
+        "exact source-bound empty or full pack decision",
+        "prospective execution plan and exposure row",
+        "real fit for complete pool and all native requests",
+        "resolved GPU fault and root admission"
+      ],
+      "memory_binding_constants": {
+        "task_id": "slurp",
+        "component_tags": [
+          "obs",
+          "org",
+          "supply",
+          "use"
+        ],
+        "allowed_roles": [
+          "reviewer"
+        ]
+      },
+      "runtime_pool_limit": 32,
+      "oversized_pool_policy": "Refuse admission if the complete frozen pool exceeds the existing 32-record runtime limit. Do not silently select or delete records. Register the batch consolidation contract or an explicit algorithm adaptation before any new contact."
+    },
+    {
+      "name": "M2",
+      "status": "requires-sealed-memory-binding",
+      "prospective_experiment": "slurp-native-stage3-system-m2-fold-b-v1",
+      "base_baseline": "slurp-native-stage3-system-common-fold-b-v1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "memory_source": "M2",
+      "ordered_selection": "all-records-in-frozen-snapshot-order",
+      "baseline_patch": {
+        "phase_tools": {
+          "reviewer": {
+            "mode": "native-tools",
+            "allowed_tools": [
+              "saea-tool-corrective-memory-v1"
+            ],
+            "knowledge_views": [
+              "text"
+            ],
+            "source_authority_role": "reviewer"
+          }
+        },
+        "phase_material": {
+          "reviewer": {
+            "fill_params": {},
+            "instruction_fill": null,
+            "instruction_template": "probes/slurp_native_role_reviewer_memory_v1.txt",
+            "predecessor_binding": "none",
+            "response_format_id": null,
+            "state_fill": null
+          }
+        }
+      },
+      "patch_semantics": "Replace only the named phase_material reviewer entry; keep all other roles unchanged. Add phase_tools. Instantiate a distinct baseline after all source bindings exist; this document is not runtime inheritance.",
+      "request_settings": {
+        "model_fragment_decoding_unchanged": true
+      },
+      "required_runtime_bindings": [
+        "candidate_experience_memory",
+        "native_contact_fit",
+        "prepared_phase_supply"
+      ],
+      "required_memory_fields": [
+        "artifact",
+        "source_attestation",
+        "construction_roster",
+        "evaluation_roster",
+        "evaluation_decision",
+        "ordered_record_sha256s",
+        "task_id",
+        "component_tags",
+        "allowed_roles"
+      ],
+      "required_before_generation": [
+        "complete sealed memory source and attestation",
+        "role-specific disjoint evaluation roster",
+        "exact source-bound empty or full pack decision",
+        "prospective execution plan and exposure row",
+        "real fit for complete pool and all native requests",
+        "resolved GPU fault and root admission"
+      ],
+      "memory_binding_constants": {
+        "task_id": "slurp",
+        "component_tags": [
+          "obs",
+          "org",
+          "supply",
+          "use"
+        ],
+        "allowed_roles": [
+          "reviewer"
+        ]
+      },
+      "runtime_pool_limit": 32,
+      "oversized_pool_policy": "Refuse admission if the complete frozen pool exceeds the existing 32-record runtime limit. Do not silently select or delete records. Register the batch consolidation contract or an explicit algorithm adaptation before any new contact."
+    }
+  ]
+}

@@ -5110,9 +5110,14 @@ class FlightRuntime:
 
     def _completion_token_ceiling(self) -> int:
         """Return the configured request cap used by preflight and fitting."""
-        if self._composed.values.get("request_decoding_overrides") is None:
+        override = self._composed.values.get("request_decoding_overrides")
+        if override is None:
             return int(self._adapter.serving_geometry()["max_tokens"])
         decoding = self._decoding_params() or {}
+        # Sampling-only overrides must not reduce a legacy adapter's reserve.
+        # Validate through _decoding_params before inspecting override keys.
+        if "max_tokens" not in override:
+            return int(self._adapter.serving_geometry()["max_tokens"])
         maximum = decoding.get("max_tokens")
         if isinstance(maximum, int) and not isinstance(maximum, bool) and maximum > 0:
             return maximum

@@ -191,6 +191,26 @@ TFGRPO_SEMANTIC_ADVANTAGE_V1 = _register(
     )
 )
 
+TFGRPO_SYSTEM_MEMORY_DISJOINT_V1 = _register(
+    Stage3Algorithm(
+        id="tfgrpo-system-memory-disjoint-v1",
+        family="training-free-grpo",
+        display_name="Training-Free GRPO adapted to disjoint complete-system rounds",
+        citation="docs/readiness/2026-09-26-slurp-system-round-configs.md",
+        operators=("rollout", "scoring", "credit_assignment", "update", "context_application"),
+        status="planned",
+        what_it_changes=(
+            "Frozen-core full-system trajectories and official terminal counts feed sealed "
+            "summary, semantic comparison, group operations and model-synthesized atomic "
+            "batch memory updates. Forward construction cohorts are disjoint; frozen "
+            "source-attested guidance is made available through the Reviewer memory tool. "
+            "Typed guidance, stable IDs, terminal feedback and disjoint rounds are explicit "
+            "repository adaptations. No real update/reexecution cycle or RL benefit is "
+            "established; the historical candidate-bound delta route remains closed."
+        ),
+    )
+)
+
 
 FINITE_ACTION_BANDIT_V1 = _register(
     Stage3Algorithm(

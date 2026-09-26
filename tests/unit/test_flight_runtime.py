@@ -3459,7 +3459,7 @@ def test_completion_override_preserves_the_legacy_adapter_reserve_when_absent(tm
 
 @pytest.mark.parametrize(
     "override",
-    [{"temperature": 1}, {"max_tokens": True}, {"max_tokens": 0}],
+    [{"server_args": []}, {"max_tokens": True}, {"max_tokens": 0}],
 )
 def test_request_completion_override_refuses_unknown_boolean_or_nonpositive(tmp_path, override):
     runtime = _cap_runtime(

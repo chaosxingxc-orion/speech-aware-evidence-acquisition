@@ -40,6 +40,7 @@ EXPECTED_IDS = {
     "none",
     "shared-rollout",
     "tfgrpo-semantic-advantage-v1",
+    "tfgrpo-system-memory-disjoint-v1",
 }
 
 LABELLED_FRAGMENTS = {

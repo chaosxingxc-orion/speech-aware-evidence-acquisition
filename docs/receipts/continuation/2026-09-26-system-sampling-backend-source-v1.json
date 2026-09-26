@@ -1,0 +1,81 @@
+{
+  "schema": "saea-system-sampling-backend-source-audit-v1",
+  "checked_at": "2026-09-26T04:00:52.734973+00:00",
+  "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+  "runtime_receipt": "docs/receipts/runtime-q4km-mmproj-free.json",
+  "source_files": [
+    {
+      "path": "/home/chao/llama.cpp-featcache/common/common.h",
+      "sha256": "9e61ef16896c09f72a87f462801a699cd1e22e16d05ceca9c3b9ddb7c4e1195a",
+      "matches_build_commit": true
+    },
+    {
+      "path": "/home/chao/llama.cpp-featcache/include/llama.h",
+      "sha256": "74381910d947f3796395e4bf7fab181165b0a33bcbeea0310447b9f0969c43e2",
+      "matches_build_commit": true
+    },
+    {
+      "path": "/home/chao/llama.cpp-featcache/tools/server/server-schema.cpp",
+      "sha256": "d1cd92db64f7d08a6f440114dd15eeba02f7a91628d1d1c3b2cbe27c86653794",
+      "matches_build_commit": true
+    },
+    {
+      "path": "/home/chao/llama.cpp-featcache/tools/server/server-task.cpp",
+      "sha256": "777e80a3827e3412da19d8130ae6e33fa06eb97d44978b13050a4cfabdea7891",
+      "matches_build_commit": true
+    }
+  ],
+  "declared_request_sampling": {
+    "temperature": 0.7,
+    "top_k": 0,
+    "top_p": 1.0,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "frequency_penalty": 0.0,
+    "seed_per_replica": [
+      2026092601,
+      2026092602,
+      2026092603,
+      2026092604
+    ]
+  },
+  "pinned_defaults": {
+    "typical_p": 1.0,
+    "dynatemp_range": 0.0,
+    "dynatemp_exponent": 1.0,
+    "repeat_penalty": 1.0,
+    "repeat_last_n": 64,
+    "dry_multiplier": 0.0,
+    "xtc_probability": 0.0,
+    "xtc_threshold": 0.1,
+    "adaptive_target": -1.0,
+    "mirostat": 0,
+    "top_n_sigma": -1.0,
+    "ignore_eos": false
+  },
+  "sampler_order": [
+    "penalties",
+    "dry",
+    "top_n_sigma",
+    "top_k",
+    "typical_p",
+    "top_p",
+    "min_p",
+    "xtc",
+    "temperature"
+  ],
+  "random_seed_sentinel": 4294967295,
+  "sentinel_rejected_by_request_override": true,
+  "limits": [
+    "Read-only source proof, no service startup or generation.",
+    "Server defaults still require a fresh process/props check before GPU admission.",
+    "Pinned seeds do not establish independent trajectories or action probabilities.",
+    "Role-owned structured-response and native-tool grammars remain active."
+  ],
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "scorer": 0
+  }
+}

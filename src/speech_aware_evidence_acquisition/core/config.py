@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -131,39 +132,63 @@ def assert_preparation_source_receipts_are_well_formed(
             )
 
 
-def effective_request_decoding_params(values: Mapping[str, object]) -> object:
-    """Resolve the experiment-scoped completion cap without changing service identity.
+_REQUEST_INTEGER_BOUNDS = {
+    "max_tokens": (1, None),
+    "seed": (0, 2**32 - 2),  # UINT32_MAX asks llama.cpp for a random seed.
+    "top_k": (0, None),
+}
+_REQUEST_NUMERIC_BOUNDS = {
+    "temperature": (0, 2),
+    "top_p": (0, 1),
+    "min_p": (0, 1),
+    "presence_penalty": (-2, 2),
+    "frequency_penalty": (-2, 2),
+}
 
-    ``request_decoding_overrides`` is intentionally limited to one request
-    field. It changes bytes sent to the frozen core and the fit reserve, while
-    server geometry and the model identity remain those of the model fragment.
+
+def effective_request_decoding_params(values: Mapping[str, object]) -> object:
+    """Resolve explicit request sampling/caps without changing serving identity.
+
+    Preserve the original mapping when no override is declared. Request-only
+    fields change the composed experiment hash and actual request bytes, never
+    weights, geometry, slot allocation, tool controls or role-owned schemas.
     """
     declared = values.get("decoding_params")
     override = values.get("request_decoding_overrides")
     if override is None:
         return declared
-    if not isinstance(override, Mapping) or set(override) != {"max_tokens"}:
+    allowed = _REQUEST_INTEGER_BOUNDS.keys() | _REQUEST_NUMERIC_BOUNDS.keys()
+    if not isinstance(override, Mapping) or not override or not set(override) <= allowed:
         raise ConfigError(
-            "request_decoding_overrides must contain exactly the supported "
-            "field 'max_tokens'"
+            "request_decoding_overrides must be a non-empty mapping of supported "
+            f"request-only fields: {sorted(allowed)}"
         )
-    maximum = override["max_tokens"]
-    if isinstance(maximum, bool) or not isinstance(maximum, int) or maximum <= 0:
-        raise ConfigError(
-            "request_decoding_overrides.max_tokens must be a positive integer"
-        )
+    for key, value in override.items():
+        integer = key in _REQUEST_INTEGER_BOUNDS
+        low, high = (_REQUEST_INTEGER_BOUNDS if integer else _REQUEST_NUMERIC_BOUNDS)[key]
+        valid_type = isinstance(value, int) if integer else isinstance(value, (int, float))
+        if (
+            isinstance(value, bool) or not valid_type
+            or (isinstance(value, float) and not math.isfinite(value))
+            or value < low or (high is not None and value > high)
+        ):
+            raise ConfigError(
+                f"request_decoding_overrides.{key} must be a "
+                f"{'non-boolean integer' if integer else 'finite number'} "
+                f"in [{low}, {high if high is not None else 'unbounded'}]"
+            )
     if declared is None:
         resolved: dict[str, object] = {}
     elif isinstance(declared, Mapping):
         resolved = dict(declared)
     else:
         raise ConfigError("decoding_params must be a mapping when declared")
-    resolved["max_tokens"] = maximum
+    resolved.update(override)
     return resolved
 
 
 def effective_request_values(values: Mapping[str, object]) -> Mapping[str, object]:
-    """Return values with a declared request completion cap applied purely."""
+    """Return values with declared request sampling and caps applied purely."""
     decoded = effective_request_decoding_params(values)
     if values.get("request_decoding_overrides") is None:
         return values

@@ -1,0 +1,215 @@
+{
+  "schema": "saea-system-round-config-validation-v1",
+  "checked_at": "2026-09-26T04:11:49.858682+00:00",
+  "parent_commit": "dbbcc044758a74d370896553e29481b5117341d2",
+  "environment": "WSL Ubuntu-24.04; explicit checkout PYTHONPATH; /home/chao/.venvs/speechrl/bin/python",
+  "tests": [
+    {
+      "passed": 364,
+      "log": {
+        "path": "/home/chao/system-round-config-validation-v1/regressions-final.log",
+        "sha256": "f14575d40a2eff6ab3933d105923ff1a254a0b84de8219e3f65f8c0992c98686"
+      }
+    },
+    {
+      "passed": 37,
+      "log": {
+        "path": "/home/chao/system-round-config-validation-v1/request-fit-final.log",
+        "sha256": "b272425af280a65bcb48b29705c625936854d1a47f4e06e3ea2e8a768d539526"
+      },
+      "overlaps_previous": true
+    }
+  ],
+  "coverage": {
+    "changed_functions": {
+      "effective_request_decoding_params": {
+        "covered_lines": 20,
+        "num_statements": 20,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 0,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 12,
+        "num_partial_branches": 0,
+        "covered_branches": 12,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      },
+      "effective_request_values": {
+        "covered_lines": 6,
+        "num_statements": 6,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 0,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 2,
+        "num_partial_branches": 0,
+        "covered_branches": 2,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      },
+      "FlightRuntime._completion_token_ceiling": {
+        "covered_lines": 9,
+        "num_statements": 10,
+        "percent_covered": 87.5,
+        "percent_covered_display": "88",
+        "missing_lines": 1,
+        "excluded_lines": 0,
+        "percent_statements_covered": 90.0,
+        "percent_statements_covered_display": "90",
+        "num_branches": 6,
+        "num_partial_branches": 1,
+        "covered_branches": 5,
+        "missing_branches": 1,
+        "percent_branches_covered": 83.33333333333333,
+        "percent_branches_covered_display": "83"
+      }
+    },
+    "raw": {
+      "path": "/home/chao/system-round-config-validation-v1/coverage-final.json",
+      "sha256": "a8212c5aeefb1209b0b2f97da883264d21efaf88b3fe49b794c3a6250c7820b0"
+    },
+    "scope_note": "Only named functions are claimed; the focused regression run measured 76% of the wider config module and 85% of the algorithm registry. Not repository-wide coverage."
+  },
+  "red_phase_logs": [
+    {
+      "path": "/home/chao/system-round-config-validation-v1/sampling-red-corrected.log",
+      "sha256": "b2985f88d64115b2089578ec7a92f1298ee28499c8c932271d419d62501ee34c"
+    },
+    {
+      "path": "/home/chao/system-round-config-validation-v1/config-red.log",
+      "sha256": "3fee0a65db99e9ee3960b59468f58a62b448495d1e07fe19f56b95e73363cebc"
+    }
+  ],
+  "preexisting_failures": {
+    "parent_source_log": {
+      "path": "/home/chao/system-round-config-validation-v1/parent-existing-failures-complete.log",
+      "sha256": "9ba7c69b0cb1d38924ed519f8f62a865af441ff44ba54050a4fb36a958873e89"
+    },
+    "parent_source_import_verified": true,
+    "failures": [
+      "Window-fit fixture lacked initialized composed arm.",
+      "Immutable historical KU-S3 control declares an empty preparation receipt list refused by existing composition."
+    ],
+    "resolution": "Initialize the fixture arm; assert the historical composition refusal. Historical experiment bytes and production source receipt validation are unchanged."
+  },
+  "gates": [
+    {
+      "check": "engineering_base",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-config-validation-v1/engineering_base.log",
+      "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "check": "harness_admission",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-config-validation-v1/harness_admission.log",
+      "sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+    },
+    {
+      "check": "results_ledger",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-config-validation-v1/results_ledger.log",
+      "sha256": "ec9367bbd838063e612f82f2497a4e042f439e1b778d78d55e5f4c6117904d6f"
+    },
+    {
+      "check": "tool_catalog",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-config-validation-v1/tool_catalog.log",
+      "sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+    },
+    {
+      "check": "experiment_handoff",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-config-validation-v1/experiment_handoff-final.log",
+      "sha256": "82f32bdece850b5372366d07f3bb60f194f5cf602b477ed596fc01345e62ec21"
+    },
+    {
+      "check": "openjiuwen_native_reuse",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-config-validation-v1/openjiuwen_native_reuse.log",
+      "sha256": "0b6fcd5f68b1d2fe5948845d62d01d3b3897ae9ca682f7f8187e97b1f01a2825"
+    },
+    {
+      "check": "derived_media_confinement",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-config-validation-v1/derived_media_confinement.log",
+      "sha256": "0dc04ce8b2b4557e35a1f852f1410364e5d87e5715468abb185587ea05d236c8"
+    },
+    {
+      "check": "stage3_algorithm_label",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-config-validation-v1/stage3_algorithm_label.log",
+      "sha256": "0babba877cb30edfaacddeade30cd7cffdc917856bd912bb6f6459850fcb9229"
+    },
+    {
+      "check": "finite_completion_policy",
+      "exit_code": 0,
+      "log": "/home/chao/system-round-config-validation-v1/finite_completion_policy.log",
+      "sha256": "20bc3dc18154a13c2956dd6455da6de859f1e724b864fd06bcaec02b0734cc22"
+    }
+  ],
+  "lint": {
+    "path": "/home/chao/system-round-config-validation-v1/lint-final.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "source_pins": {
+    "path": "/home/chao/system-round-config-validation-v1/common-baseline-source-pins.json",
+    "sha256": "d6165d77689fc52910e07c14999a26be0eb8cae39407ebc4fd2ccf91b1ba99a0"
+  },
+  "proof_boundaries": [
+    "Actual new actor fragments feed the shared native runner with synthetic task material, simulated answering transport and real request rendering/gating.",
+    "Four-role fit/send equality and revised Solver path are checked for all four seeds.",
+    "Resident reuse is tested with injected session startup; no real service starts.",
+    "New held cells are refused for generating/fitting modes and contain no execution plans.",
+    "Memory arm templates are unbound design inputs, not executable memory runs.",
+    "Source file hashes match actual bytes; live service default and capacity checks remain outstanding."
+  ],
+  "known_gate_warnings": [
+    "Results ledger retains 104 historical cross-check findings.",
+    "Handoff gate reports newer HEAD/working changes; no launch authority."
+  ],
+  "remaining": [
+    "Finalize prospective common actor/semantic round contracts and complete budgets.",
+    "Register compatible full-memory consolidation under the existing 32-record bound, without silent truncation.",
+    "Resolve CUDA/host fault and separately register real fit, sampling, scoring, semantic update, frozen evaluation and matched replication."
+  ],
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "official_scorer": 0,
+    "research_network": 0
+  },
+  "launch_authority": false,
+  "rl_benefit_established": false,
+  "files": {
+    "configs/baseline/slurp-native-stage3-system-common-fold-a-v1.json": "abc7a02676f7368a52a7e908ee7b50b794932059f09126c0f8a144d4e36cc85b",
+    "configs/baseline/slurp-native-stage3-system-common-fold-b-v1.json": "1b3b701d27bf06c70ca8ae4138c31c91962248fcf61c33be8b398c4d3e66d308",
+    "configs/baseline/slurp-native-stage3-system-common-r01c-v1.json": "4574e0fd3cd9754ee5bbb1584fe5d353dbeb423a70b41a07b08ed14fef87a48c",
+    "configs/experiment/slurp-native-stage3-system-eval-default-fold-b-v1.json": "77e0380531975d28600e7d9ff872269b8e77af3476581504b83dee2a7d2bacbd",
+    "configs/experiment/slurp-native-stage3-system-round1-r01c-s1-v1.json": "b3bb5c474671853afa670bc222dcb72976e90b78070e9e75fb45ec351af1992b",
+    "configs/experiment/slurp-native-stage3-system-round1-r01c-s2-v1.json": "5e003f186da86a4280ed1f153bec72db8d46a1497ca576e38c5c1f45cd13a661",
+    "configs/experiment/slurp-native-stage3-system-round1-r01c-s3-v1.json": "994db75addfa5725d404b980c2a56f490f164cd72b6cf05630da33a7d378e428",
+    "configs/experiment/slurp-native-stage3-system-round1-r01c-s4-v1.json": "1a4eedb77032f340f23d6e5bd51b209c8de2449598505059f750dc87b155b994",
+    "configs/probes/slurp_native_role_reviewer_memory_v1.txt": "9179ca6f7bdbac6c5384e42843fb0e3c43f874c3f6804d104f8065df5725bd30",
+    "docs/readiness/2026-09-26-slurp-system-round-configs.md": "cfb3b9ffbe2373351adec8fdc45cdb87dbf4c866f2ffd50c200d9adc21eafd25",
+    "docs/readiness/2026-09-26-slurp-system-round-configs/memory-arm-templates.json": "cd6da770607e39d7054206f5d1563eeb5c298e30582f29ba4fedcfe6390c6284",
+    "docs/receipts/continuation/2026-09-26-system-sampling-backend-source-v1.json": "a645407a6e577c17d7e8913905415d573b105029307c077832521dfeb0127fb3",
+    "src/speech_aware_evidence_acquisition/core/config.py": "caa0994ba70f96969f955cfca7075d9a5837bc0a05b71b346c6c752840c0381b",
+    "src/speech_aware_evidence_acquisition/core/flight/runtime.py": "08feb38bbff1dba1f1aaa4a9d19f514f76aa5ab9e91d6087a432963780142545",
+    "src/speech_aware_evidence_acquisition/core/stage3_algorithms.py": "44dbad18989d2c79d01ec69a29094239a1ecbb6a19b77a688be46d06dcd1ccad",
+    "tests/unit/test_flight_factory.py": "9ab9466c414a64a877d91a94dad8f84747526be92c3185a35e4e7eb3604ed19b",
+    "tests/unit/test_flight_runtime.py": "d1b7ae859744b29091d8ebd64953e59120f4cf918507b73baeeba8f303a92b77",
+    "tests/unit/test_ku_s3_max256_config.py": "260b8ff6bc705ba2699fb845c2804bd2d105f9c1fbc3ec55c51b5d57a5902e6d",
+    "tests/unit/test_request_sampling_overrides.py": "4f6c7902572a4a7e32cb9b9a49e85ef007cc623c51f2bbe04e979f9d3ee55439",
+    "tests/unit/test_stage3_algorithm_labels.py": "9a837674f2e2017a70d4c065f069a7557de6d02e00b9d993d6e507016bb7b89a",
+    "tests/unit/test_system_round_configurations.py": "1951f29da40377ad7fef543f0ddcc09c25b4c6618cb9cfebe7ca96cd79d07a5e"
+  }
+}
