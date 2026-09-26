@@ -1,0 +1,43 @@
+{
+  "schema": "saea-resource-snapshot-recovery-proof-v1",
+  "recorded_at": "2026-09-26T11:55:09.220519+00:00",
+  "named_defect": "Transient ENOENT when WSL DrvFS readers open an os.replace-published resource-state.json.",
+  "terminal_traceback": "FileNotFoundError [Errno 2] at the resource-state.json open in the failed memory-s4 actor.",
+  "original_attempt": "attempt-slurp-native-stage3-system-memory-batch002-memory-s4-run-v1",
+  "before": {
+    "relpath": "coordination/slurp-system-memory-batch002-v1/resource-io-diagnostic-20260926T115000Z.json",
+    "sha256": "fc2f78f4ff8f04cc00331dd6bf0454cd1a5cae3e45099915ff8be63d13dc6a0a",
+    "windows_read_failures": 421,
+    "wsl_native_read_failures": 0
+  },
+  "after": {
+    "relpath": "coordination/slurp-system-memory-batch002-v1/resource-io-diagnostic-20260926T115313Z.json",
+    "sha256": "f0e94666e51c756551b2d4655c773a74e4803e7ee2325e2e2b028696b790a7be",
+    "windows_read_failures": 0,
+    "recovered_transient_read_events": 166,
+    "wsl_native_read_failures": 0
+  },
+  "tests": {
+    "red_log": {
+      "relpath": "coordination/slurp-system-memory-batch002-v1/resource-repair-red.txt",
+      "sha256": "6821e4285188ad7e8cd20efa52fe8c3ef3ceceaab57a25554c4a590894191528"
+    },
+    "green_log": {
+      "relpath": "coordination/slurp-system-memory-batch002-v1/resource-repair-green.txt",
+      "sha256": "e940862b069098868cadfc3cc698f3eb6888574701a1791c241b5fb56b1507b6"
+    },
+    "passed": 42,
+    "coverage_percent": 93
+  },
+  "repair": "At most five snapshot opens and four 10ms waits for ENOENT only; then validate the newly read receipt. No cached admission and no model request retries.",
+  "unchanged": [
+    "service identity",
+    "model request bytes",
+    "decoding",
+    "resource floors",
+    "receipt freshness bound",
+    "full role output reserve",
+    "no automatic actor restart"
+  ],
+  "model_contacts": 0
+}

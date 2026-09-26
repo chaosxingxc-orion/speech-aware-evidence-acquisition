@@ -1,0 +1,13 @@
+{
+  "schema": "saea-campaign-plan-v1",
+  "cells": [
+    {
+      "experiment": "slurp-native-stage3-system-memory-batch002-memory-s4-recovery1-run-v1",
+      "cell": "slurp-native-stage3-system-memory-batch002-memory-s4-recovery1-run-v1"
+    },
+    {
+      "experiment": "slurp-native-stage3-system-memory-batch002-empty-s4-recovery1-run-v1",
+      "cell": "slurp-native-stage3-system-memory-batch002-empty-s4-recovery1-run-v1"
+    }
+  ]
+}

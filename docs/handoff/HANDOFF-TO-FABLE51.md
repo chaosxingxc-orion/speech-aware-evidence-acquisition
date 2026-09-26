@@ -5,6 +5,37 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Named resource-receipt recovery prepared; not yet dispatched
+
+The original campaign exited at2026-09-26T11:47:32Z and STOP is retained.
+All six complete actors finished their one official score. Original memory-s4
+is ABORTED after18contacts; original empty-s4 never started. Task answers and
+quality remain unread.
+
+The final traceback identifies FileNotFoundError at resource-state.json.
+A model-free concurrent publisher/reader reproduces421 transient ENOENT failures
+on the Windows data mount; the WSL-native control has zero. The shared guard
+now reopens only missing receipts, at most five opens/four10ms waits, then
+validates fresh identity, age and resource floors. No cached permission or
+model retry is added. Recovered read events are logged. The same stress check
+after repair has zero failures;42guard tests pass with93%coverage,18memory
+regression tests and nine offline gates pass.
+
+Sole recovery registration:
+docs/readiness/2026-09-26-system-memory-batch002-recovery1-v1.
+Run fresh memory-s4-recovery1 then empty-s4-recovery1 under new identities and
+the same resident two-slot service. Retain original three matched pairs.
+No scientific settings, prompts, memory, seed or output budgets change.
+New contact ceilings:88generation/352fit/48local memory dispatches/two scores.
+This is recovery1; a further failure closes this family, with no second recovery.
+Do not run this queue until frozen source, fresh service/resource admission,
+all-six closure and launch receipt are completed. Never replay the old queue.
+
+Read only after six original actors plus both fresh recovery actors close.
+Do not reinterpret an incomplete batch as a learning outcome. Preserve the
+aborted attempt's exposure and cost separately, with no partial trajectory
+reuse. Future memory update still requires complete matched batch feedback.
+
 ## Memory batch002 stopped on a resource-receipt read failure
 
 Checkpoint: 2026-09-26T11:45:30.369675+00:00. At 11:37:23Z, memory-s4 aborted after18

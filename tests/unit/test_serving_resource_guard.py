@@ -379,3 +379,114 @@ def test_unreadable_resource_observer_stops_the_owned_service(tmp_path, monkeypa
     assert result == 1 and stops == [SESSION.pid]
     doc = json.loads((tmp_path / serving.SESSION_STOP_NAME).read_text())
     assert doc["server_exit"]["resource"]["error_type"] == "OSError"
+
+
+def test_transient_snapshot_replacement_dispatches_original_request_once(
+    tmp_path, monkeypatch, caplog
+):
+    from pathlib import Path
+
+    sample(tmp_path)
+    real_read = Path.read_text
+    opens = []
+
+    def transient_read(path, *args, **kwargs):
+        if path.name == guard.SNAPSHOT_NAME:
+            opens.append(path)
+            if len(opens) <= 2:
+                raise FileNotFoundError(2, "snapshot replacement gap", str(path))
+        return real_read(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "read_text", transient_read)
+    monkeypatch.setattr(guard.time, "sleep", lambda seconds: None)
+    calls = []
+    transport = guard.ResourceCheckedTransport(
+        lambda raw: calls.append(raw) or b"ok",
+        tmp_path, SESSION, LIMITS, now=lambda: 102,
+    )
+    assert transport(b"unchanged bytes") == b"ok"
+    assert calls == [b"unchanged bytes"]
+    assert len(opens) == 3
+    assert "replacement gap" in caplog.text
+
+
+@pytest.mark.parametrize(
+    "recovered", ["stale", "wrong-session", "pressure", "latched", "corrupt"]
+)
+def test_reopened_receipt_still_must_pass_every_admission_gate(
+    tmp_path, monkeypatch, recovered
+):
+    from pathlib import Path
+
+    doc = sample(tmp_path)
+    path = tmp_path / guard.SNAPSHOT_NAME
+    if recovered == "wrong-session":
+        doc["session"]["pid"] += 1
+    elif recovered == "pressure":
+        doc["host_memory"]["host_free_gb"] = 9
+    elif recovered == "latched":
+        doc["decision"], doc["reasons"] = "drain", ["windows-admission-floor"]
+    path.write_text("{" if recovered == "corrupt" else json.dumps(doc))
+    original = Path.read_text
+    opens = []
+
+    def read_snapshot(path, *args, **kwargs):
+        opens.append(path)
+        if len(opens) == 1:
+            raise FileNotFoundError(2, "replacement gap", str(path))
+        return original(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "read_text", read_snapshot)
+    monkeypatch.setattr(guard.time, "sleep", lambda seconds: None)
+    calls = []
+    transport = guard.ResourceCheckedTransport(
+        lambda raw: calls.append(raw),
+        tmp_path, SESSION, LIMITS,
+        now=lambda: 116 if recovered == "stale" else 102,
+    )
+    with pytest.raises(guard.ResourceAdmissionError):
+        transport(b"must not post")
+    assert len(opens) == 2
+    assert not calls
+
+
+def test_permanently_missing_receipt_has_bounded_wait_and_no_dispatch(
+    tmp_path, monkeypatch
+):
+    from pathlib import Path
+
+    opens, waits, calls = [], [], []
+
+    def missing(path, *args, **kwargs):
+        opens.append(path)
+        raise FileNotFoundError(2, "permanently absent", str(path))
+
+    monkeypatch.setattr(Path, "read_text", missing)
+    monkeypatch.setattr(guard.time, "sleep", waits.append)
+    transport = guard.ResourceCheckedTransport(
+        lambda raw: calls.append(raw), tmp_path, SESSION, LIMITS, now=lambda: 100,
+    )
+    with pytest.raises(guard.ResourceAdmissionError) as caught:
+        transport(b"must not post")
+    assert 1 < len(opens) <= 5
+    assert len(waits) == len(opens) - 1
+    assert sum(waits) <= 0.1
+    assert isinstance(caught.value.__cause__, FileNotFoundError)
+    assert not calls
+
+
+@pytest.mark.parametrize("error", [PermissionError("denied"), ValueError("bad JSON")])
+def test_non_missing_read_errors_fail_without_wait(tmp_path, monkeypatch, error):
+    from pathlib import Path
+
+    waits = []
+
+    def broken(*args, **kwargs):
+        raise error
+
+    monkeypatch.setattr(Path, "read_text", broken)
+    monkeypatch.setattr(guard.time, "sleep", waits.append)
+    with pytest.raises(guard.ResourceAdmissionError) as caught:
+        guard.assert_admission(tmp_path, SESSION, LIMITS)
+    assert caught.value.__cause__ is error
+    assert not waits

@@ -1,0 +1,37 @@
+{
+  "schema": "saea-system-memory-batch-preparation-v1",
+  "entries": [
+    {
+      "experiment": "slurp-native-stage3-system-memory-batch002-memory-s4-recovery1-run-v1",
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S4-RECOVERY1-RUN-V1/phase-supply-v2.json",
+        "sha256": "d75e5b6b6abcb3f959b0ee897c06dde5f0e6adb3fc156aba4e6c130aef58fdb5"
+      },
+      "composed_config_hash": "39de2ee22c93ef53a13863303cf8afa49031ad0b8a9cd3c9f06a075493dd428d",
+      "geometry": {
+        "slots": 2,
+        "slot_tokens": 24576,
+        "max_tokens": 1024
+      },
+      "sample_count": 4
+    },
+    {
+      "experiment": "slurp-native-stage3-system-memory-batch002-empty-s4-recovery1-run-v1",
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S4-RECOVERY1-RUN-V1/phase-supply-v2.json",
+        "sha256": "c0bdff09d8ef4daaab21085b8dec9cf7726ee42de4d44a64dc159dad082fa7ed"
+      },
+      "composed_config_hash": "b034c7bdc6b9f8fed9bd37cd667e7ffa93fac880a645d0547eb032ceaccfe6ba",
+      "geometry": {
+        "slots": 2,
+        "slot_tokens": 24576,
+        "max_tokens": 1024
+      },
+      "sample_count": 4
+    }
+  ],
+  "first_phase_supply_outputs_identical": true,
+  "model_contacts": 0,
+  "encoder_contacts": 0,
+  "tool_contacts": 0
+}

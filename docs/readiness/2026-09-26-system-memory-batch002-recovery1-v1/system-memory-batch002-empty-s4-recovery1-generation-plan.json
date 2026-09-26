@@ -1,0 +1,27 @@
+{
+  "schema": "saea-flight-execution-plan-v1",
+  "status": "registered-before-contact",
+  "plan_kind": "generation",
+  "experiment": "slurp-native-stage3-system-memory-batch002-empty-s4-recovery1-run-v1",
+  "cell": "slurp-native-stage3-system-memory-batch002-empty-s4-recovery1-run-v1",
+  "composed_config_hash": "b034c7bdc6b9f8fed9bd37cd667e7ffa93fac880a645d0547eb032ceaccfe6ba",
+  "execution_plan": {
+    "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S4-RECOVERY1-RUN-V1",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "5a374c143ca8a146e176edb388fe9130c3694dff1cc9c1ab540baf52f3bf5512",
+    "planned_model_calls": 44,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 170,
+    "protocol_hash": "c15300de7d30c128e65a74602a7d6aeaf335fd5bce1177ab857e84b4cef73cdb",
+    "attempt_id": "attempt-slurp-native-stage3-system-memory-batch002-empty-s4-recovery1-run-v1",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-26-system-memory-batch002-recovery1-v1/protocol.json",
+    "sha256": "9ac0513b8731454a70ca4d038f82e7ddc16fd8bfe227f8356ab65ff8e8db4cea"
+  },
+  "read_rule": "Read task outcomes only after the six original completed actors and both fresh pair4 recovery actors each seal with one official complete score. Preserve and separately report failed contacts; do not score or include the aborted partial actor. Any further execution failure closes the family; no second recovery."
+}

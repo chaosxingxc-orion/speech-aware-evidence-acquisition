@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import math
 import os
 import tempfile
@@ -116,15 +117,31 @@ def _decision(host, gpu, limits):
 
 
 def _read(path):
-    try:
-        doc = json.loads(Path(path).read_text())
-        if not isinstance(doc, Mapping):
-            raise ValueError("not an object")
+    # DrvFS replacement can briefly hide the destination from another reader.
+    # Reopen only ENOENT, with at most 40 ms of waiting. Never reuse cached
+    # permission: the returned receipt still passes identity, age and floors.
+    for attempt in range(5):
+        try:
+            doc = json.loads(Path(path).read_text())
+            if not isinstance(doc, Mapping):
+                raise ValueError("not an object")
+        except FileNotFoundError as error:
+            if attempt == 4:
+                raise ResourceAdmissionError(
+                    "resource receipt unavailable after bounded reopen"
+                ) from error
+            time.sleep(0.01)
+            continue
+        except (OSError, ValueError, UnicodeError) as error:
+            raise ResourceAdmissionError(
+                "resource receipt unavailable or malformed"
+            ) from error
+        if attempt:
+            logging.getLogger(__name__).warning(
+                "Resource receipt replacement gap resolved after %d reopen(s): %s",
+                attempt, path,
+            )
         return doc
-    except (OSError, ValueError, UnicodeError) as error:
-        raise ResourceAdmissionError(
-            "resource receipt unavailable or malformed"
-        ) from error
 
 
 def publish_sample(

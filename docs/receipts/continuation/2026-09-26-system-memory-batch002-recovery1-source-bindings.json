@@ -1,0 +1,22 @@
+{
+  "schema": "saea-system-memory-binding-validation-v1",
+  "entries": [
+    {
+      "experiment": "slurp-native-stage3-system-memory-batch002-memory-s4-recovery1-run-v1",
+      "selected_record_count": 3,
+      "source_attestation_passed": true,
+      "disjoint_roster_passed": true,
+      "exact_decision_passed": true
+    },
+    {
+      "experiment": "slurp-native-stage3-system-memory-batch002-empty-s4-recovery1-run-v1",
+      "selected_record_count": 0,
+      "source_attestation_passed": true,
+      "disjoint_roster_passed": true,
+      "exact_decision_passed": true
+    }
+  ],
+  "model_contacts": 0,
+  "encoder_contacts": 0,
+  "tool_contacts": 0
+}
