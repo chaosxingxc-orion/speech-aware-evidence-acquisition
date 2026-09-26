@@ -1,0 +1,31 @@
+{
+  "schema": "saea-model-free-admission-correction-v1",
+  "issue": "Inherited compact-or-abstain conflicts with explicit strict native contact-fit deferral.",
+  "correction": "Use existing context_fit_policy=raise in the new registered baseline. This implements the already registered no-clipping admission rule.",
+  "model_contacts": 0,
+  "tokenizer_contacts": 0,
+  "attempts_started": 0,
+  "source_failure_logs": "/home/chao/system-batch001-admission-validation-v2",
+  "rewritten_files": [
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-26-slurp-system-batch001-v1/protocol-registered-v1.json",
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-26-slurp-system-batch001-v1/s1-fit-plan-registered-v1.json",
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-26-slurp-system-batch001-v1/s1-generation-plan-registered-v1.json",
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-26-slurp-system-batch001-v1/s2-fit-plan-registered-v1.json",
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-26-slurp-system-batch001-v1/s2-generation-plan-registered-v1.json",
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-26-slurp-system-batch001-v1/s3-fit-plan-registered-v1.json",
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-26-slurp-system-batch001-v1/s3-generation-plan-registered-v1.json",
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-26-slurp-system-batch001-v1/s4-fit-plan-registered-v1.json",
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-26-slurp-system-batch001-v1/s4-generation-plan-registered-v1.json",
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/exposure-ledger.md"
+  ],
+  "old_new_hashes": {
+    "026b1db868956e1a75a4ec97f9b17efc6fad1afe1a811460e73ec375815e838a": "002c8e39f712883d1bf5a5be3bdc637447839ca2162692dd30ba09b84a53e4db",
+    "f4be372fc535953fd869e38f9419a8a89342a14b361c676cc72e4da95ac67b8c": "3bbb1a7263c7e5424adc5415311a8be0273515a7675c651ecf04cddbc5ae3186",
+    "7f41412f78ff313a69cfcfc9382e40af2ed3860fa1d9de624c60a17bf40dde38": "5dbc1080c377a1b918a19d3ff5bd7e64341a488e3cd5cab8d5bd8f2f87c52e34",
+    "462cca33f044db7e94292b6fd2236f18d8374faf435bb1cb9df005534ed67981": "f0e545bd3b6c6636107ec3e04891cc841e84d3eb8f7f819349fa922589bd1286",
+    "434a93e3be511679a9dde45cb58c1a3980bc178314da423e2e82368ac3df343b": "ac49af5e794d38c107a5f3adf1321df26ef96b242652c4128f7805f4d996b120",
+    "f6fcb0d270ec26ffeaeb32c901f837b98d8db400c4d5b3c085be97ce010d8c5f": "bce4c0be5f57dd5a7099c192d1eb4355dcc4d70af271865374c8a53e628aaf7d",
+    "c9b5ff4afef0f8dd60e646784d0ad7507e678cd5d95810547c9f0d641a9bd15d": "ff921b97abcd4f4ef96fcc1a028b3a8af5bd7416cbe6e51d526ee952d9ae6f49",
+    "1af9fa11bc01ca82f0d34f23d2e5d0446a66e67ed6eb69ac6937e7a156c4930c": "15c4c2829fecdf9b542a7bad8d7a3a51401c29adef21bfd39ffa0c7c7727a15d"
+  }
+}

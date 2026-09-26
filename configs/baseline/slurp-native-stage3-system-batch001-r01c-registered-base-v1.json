@@ -130,7 +130,7 @@
       "acquire": "ACQUIRE",
       "revise": "REVISE"
     },
-    "context_fit_policy": "compact-or-abstain",
+    "context_fit_policy": "raise",
     "deliver_normaliser": {
       "normaliser": "saea-deliver-normalise-v3"
     },
