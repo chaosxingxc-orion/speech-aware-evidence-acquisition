@@ -38,6 +38,7 @@ EXPECTED_IDS = {
     "gepa-reflective-pareto-v1",
     "inference-time-verification-v1",
     "none",
+    "sealed-credit-system-policy-v1",
     "shared-rollout",
     "tfgrpo-semantic-advantage-v1",
     "tfgrpo-system-memory-disjoint-v1",

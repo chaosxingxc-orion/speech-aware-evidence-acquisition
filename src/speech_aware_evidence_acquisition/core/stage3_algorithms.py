@@ -307,6 +307,59 @@ INFERENCE_TIME_VERIFICATION_V1 = _register(
 )
 
 
+SEALED_CREDIT_SYSTEM_POLICY_V1 = _register(
+    Stage3Algorithm(
+        id="sealed-credit-system-policy-v1",
+        family="sealed-credit-system-policy",
+        display_name=(
+            "Sealed-credit system policy search (this repository's departure from the "
+            "locked families)"
+        ),
+        citation=(
+            "this repository: docs/readiness/"
+            "2026-09-26-slurp-stage3-measurement-instrument-v1.md (the measured floors "
+            "and the four failure modes it names) with "
+            "docs/results/2026-09-24-slurp-plan-bad-case-bank.md (the typed classes and "
+            "their headroom). No external identifier is recorded for it here because it "
+            "is not an external algorithm."
+        ),
+        operators=(
+            "rollout",
+            "scoring",
+            "credit_assignment",
+            "update",
+            "selection",
+            "context_application",
+        ),
+        status="planned",
+        what_it_changes=(
+            "Four departures from the locked families, one per failure mode this "
+            "repository measured. (i) The update is a TYPED, EXECUTABLE construction or "
+            "consumption action -- which knowledge view a node consumes, which candidate "
+            "set a proposal broadens to, which rule commits the answer -- not prose "
+            "appended to a node's context, because injected prose paid a form cost and "
+            "moved little (IDX -7.37 form loss; CELL-1 / CELL-2 within flight variance). "
+            "(ii) Credit is assigned over DELIBERATE VARIANTS of the system policy "
+            "carried in one campaign, not over decoding noise: two request-identical "
+            "flights differ by 1.87 pp SLU at n=625 while 91.5 percent of delivered "
+            "answers inside one flight are byte-identical, so the signal a between-flight "
+            "group would score is mostly the instrument. (iii) SELECTION IS PART OF THE "
+            "POLICY -- the episode commits the better of its own trajectories under a "
+            "rule whose effect was read offline over sealed samples -- because the only "
+            "two effects in the Stage-3 record that clear their design's floor are a "
+            "deterministic support filter (+1.40) and the core's own self-selection "
+            "(intent +0.544), both of which act on what the system already produced. "
+            "(iv) An update is ADMITTED TO RE-EXECUTION only when its predicted effect "
+            "exceeds the measured floor of the design that would read it, so the inner "
+            "optimisation runs over sealed bytes at 0.67 pp and a flight is spent only on "
+            "a composed policy large enough to be seen. The loop is therefore "
+            "sealed-credit: rollout and scoring produce a custodied pool once, credit and "
+            "the update are computed over that pool, and the GPU is re-entered for the "
+            "composed policy and its in-chain replicate."
+        ),
+    )
+)
+
 SHARED_ROLLOUT = _register(
     Stage3Algorithm(
         id="shared-rollout",
