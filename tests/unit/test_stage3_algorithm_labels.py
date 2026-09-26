@@ -93,12 +93,15 @@ def test_three_families_plus_a_shared_substrate_and_a_none_record() -> None:
     assert isinstance(none.reason, str) and none.reason.strip()
 
 
-def test_the_inference_time_verification_record_is_a_planned_selection_family() -> None:
+def test_the_inference_time_verification_record_is_a_flown_selection_family() -> None:
     """The VERIFY-1 line's own record (coordinator authorisation, 2026-09-25).
 
-    ``planned`` and nothing more: registering the family lets a fragment name it
-    without asserting that any cell was built, exactly as the GEPA and ACE records
-    did before their own cells existed. The operator pair is what a verifier
+    The record read ``planned`` while the family had already flown, which the
+    2026-09-26 academic-baseline report caught: VERIFY-1 spent 625 contacts on this
+    family and sealed a verdict, so ``base-loop`` -- implemented and flown as a
+    registered cell family -- is the true status and ``planned`` was a stale claim
+    that no cell existed. A status is a fact about this repository, not a label of
+    intent. The operator pair is what a verifier
     changes -- it scores the core's own samples and selects one -- and neither
     ``update`` nor ``context_application`` is among them, because no store, view
     or instruction text is touched.
@@ -106,7 +109,7 @@ def test_the_inference_time_verification_record_is_a_planned_selection_family() 
 
     record = registry.resolve_stage3_algorithm("inference-time-verification-v1")
     assert record.family == "test-time-scaling"
-    assert record.status == "planned"
+    assert record.status == "base-loop"
     assert record.operators == ("scoring", "selection")
     assert record.reason is None
     assert "2026-09-24-slurp-sample-aggregation-offline-read.md" in record.citation
