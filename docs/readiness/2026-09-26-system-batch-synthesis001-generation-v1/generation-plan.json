@@ -1,0 +1,27 @@
+{
+  "schema": "saea-flight-execution-plan-v1",
+  "status": "registered-before-contact",
+  "plan_kind": "generation",
+  "experiment": "slurp-stage3-system-batch-synthesis001-np1-run-v1",
+  "cell": "slurp-stage3-system-batch-synthesis001-np1-run-v1",
+  "composed_config_hash": "739be09fc15ffc84868db1e0de0bdab8ed2068e104a5ef38f8f9b35768424c92",
+  "execution_plan": {
+    "run_id": "SAEA-SLURP-STAGE3-SYSTEM-BATCH-SYNTHESIS001-NP1-RUN-V1",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "d9b66071e332cc9bf9af1aec206e7a0d07daa19e3e69e7414b514f3384f1db4e",
+    "planned_model_calls": 1,
+    "planned_gpu_hours": 0.5,
+    "planned_speech_audio_seconds": 4,
+    "protocol_hash": "11fdbd60d68f2bb8df9320b51244baf8953f4ca4b992fc94aae0e8522c2e02ab",
+    "attempt_id": "attempt-slurp-stage3-system-batch-synthesis001-np1-run-v1",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-26-system-batch-synthesis001-generation-v1/protocol.json",
+    "sha256": "7ab5dc60cc40a6e76cba515442b1b34752039e34ffc6ffe44b3b9f71424fbafd"
+  },
+  "read_rule": "Preserve raw response. Read only after the complete score-free artifact finalizes and root registers the read. Unusable/empty/capped/malformed output is retained; never silently retry or repair. No runtime memory authority."
+}
