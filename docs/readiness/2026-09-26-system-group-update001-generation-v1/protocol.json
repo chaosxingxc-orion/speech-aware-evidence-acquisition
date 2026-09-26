@@ -1,0 +1,34 @@
+{
+  "schema": "saea-system-semantic-stage-protocol-v1",
+  "registered_at": "2026-09-26T09:08:05.720005+00:00",
+  "stage": "complete-system-group-update",
+  "purpose": "Propose memory operations from the unedited sealed system comparison and the frozen empty memory. Preserve known narrative errors as baseline evidence. No runtime memory activation or next actor batch.",
+  "source_config": "slurp-stage3-system-group-update001-np1-capacity-v1",
+  "generation_contacts": 1,
+  "live_fit_contacts": 3,
+  "fresh_media_contacts": 0,
+  "official_scoring_jobs": 0,
+  "output_tokens": 2048,
+  "reserve_tokens": 3072,
+  "slots": 1,
+  "slot_tokens": 49152,
+  "service_session": "serving-slurp-system-summary001-np1-v1",
+  "source_groups": 4,
+  "eligible_groups": 1,
+  "eligibility": "terminal-outcome-vector-disagreement-v1; no root selection by narrative quality",
+  "root_admission": {
+    "relpath": "coordination/slurp-system-batch001-v1/group-update-v1/root-generation-admission.json",
+    "sha256": "c6ce7547d2f5679ffc1ed60647e196e52448a136b6e5d8f63307ad7d11b1333c"
+  },
+  "capacity": {
+    "relpath": "coordination/slurp-system-batch001-v1/group-update-v1/request-fit.json",
+    "sha256": "646f0526f7d76063adca6e1bef72ccc53a947af003715ff9663d23a004e33200"
+  },
+  "decoding": {
+    "temperature": 0,
+    "seed": 2026092605,
+    "max_tokens": 2048
+  },
+  "read_rule": "Preserve raw response. Read only after the complete score-free artifact finalizes and root registers the read. Unusable/empty/capped/malformed output is retained; never silently retry or repair. No runtime memory authority.",
+  "failure_policy": "Stop on failure. No automatic retry, scorer or service restart."
+}
