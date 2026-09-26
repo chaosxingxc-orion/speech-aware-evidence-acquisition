@@ -1,0 +1,31 @@
+{
+  "arm": "prepared-context-text",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "policy": "phase-system-batch-operations-v1",
+  "result_kind": "artifact",
+  "scorers": [],
+  "whole_roster_wave_barrier": true,
+  "phase_material": {
+    "direct": {
+      "instruction_template": "probes/system_batch_update_bounded_v1.txt",
+      "instruction_fill": null,
+      "predecessor_binding": "none",
+      "response_format_id": "system-batch-operations-v1",
+      "fill_params": {
+        "prepared_contexts": {
+          "relpath": "coordination/slurp-system-batch001-v1/batch-format-recovery1-v1/prepared-contexts.json",
+          "sha256": "43c3c0fd9ca79bdd6ee82905ae57d5274946921a5d0333f9283d99281cc35eb9"
+        }
+      }
+    }
+  },
+  "what_this_is": "The unchanged bounded batch-synthesis prompt with source-bound typed operations and shared proposal constraints. Bind fill_params.prepared_contexts to the actual prepared input; preserve strict postvalidation and provisional-only status.",
+  "task_instruction": "Analyze only the registered prepared context and follow the current phase instruction. Produce the requested artifact; do not answer the original spoken task. No fresh speech or task knowledge is supplied.",
+  "task_instruction_template": null,
+  "task_instruction_template_active": false,
+  "task_instruction_fill": null,
+  "task_instruction_fill_params": null,
+  "slurp_task_contract_view": "legacy-ontology",
+  "prepared_text_control_namespace": "phase-direct-only-v1"
+}

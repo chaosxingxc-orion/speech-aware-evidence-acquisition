@@ -8,7 +8,7 @@ from collections.abc import Mapping
 
 PREPARED_TEXT_ARM = "prepared-context-text"
 PREPARED_TEXT_SCHEMA = "saea-prepared-text-v1"
-PREPARED_TEXT_POLICIES = frozenset({"phase-direct-only-v1", "phase-system-group-operations-v1"})
+PREPARED_TEXT_POLICIES = frozenset({"phase-direct-only-v1", "phase-system-group-operations-v1", "phase-system-batch-operations-v1"})
 PREPARED_TEXT_INSTRUCTION = (
     "Analyze only the registered prepared context and follow the current phase "
     "instruction. Produce the requested artifact; do not answer the original "

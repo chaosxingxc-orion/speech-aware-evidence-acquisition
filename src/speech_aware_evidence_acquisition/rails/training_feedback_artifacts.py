@@ -329,10 +329,8 @@ def training_feedback_validator_for_options(contract, options, source_sha):
     )
 
 
-def training_feedback_response_format(
-    _lock: Mapping[str, object], root: Path, **params: object
-) -> Mapping[str, object]:
-    validator = build_training_feedback_artifact_validator(params, data_root=root)
+def training_feedback_proposal_schema(validator):
+    """Share exact typed guidance constraints across proposal and batch formats."""
     legal_options = sorted(
         set().union(*(set(labels) for labels in validator.options_by_sample.values()))
     )
@@ -362,6 +360,14 @@ def training_feedback_response_format(
             "contradicting_options": {"type": "array", "maxItems": validator.max_option_refs, "uniqueItems": True, "items": option},
         },
     }
+    return proposal
+
+
+def training_feedback_response_format(
+    _lock: Mapping[str, object], root: Path, **params: object
+) -> Mapping[str, object]:
+    validator = build_training_feedback_artifact_validator(params, data_root=root)
+    proposal = training_feedback_proposal_schema(validator)
     return {
         "type": "json_schema",
         "json_schema": {
