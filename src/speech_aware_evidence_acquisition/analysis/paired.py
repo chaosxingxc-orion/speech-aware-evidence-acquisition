@@ -60,10 +60,29 @@ resampling machinery for an arbitrary caller-supplied statistic, so a pooled rat
 gets the identical draws (same seed, same rule, same replicate sequence) as the
 mean does -- one resampler, two estimators, never a second implementation of
 "resample clusters with replacement".
+
+One bootstrap is one unit of work (2026-09-26)
+-----------------------------------------------
+A percentile bootstrap of 10,000 draws over a 625-row roster is minutes of
+pure-Python arithmetic, and a read asks for a dozen of them. They are
+independent -- :func:`_bootstrap_result` seeds a FRESH ``random.Random`` per
+bootstrap, so a bootstrap's replicate sequence is a function of its seed
+alone and never of how many ran before it in the same process -- which is
+what makes them safe to run in any order, in any process.
+
+:func:`paired_contrast_bootstrap_tasks` exposes exactly that: one
+zero-argument callable per metric, carrying the SAME statistic, the SAME
+resampling rule and the SAME ``seed + offset`` this module has always used,
+so a caller can hand them to ``analysis.parallel.map_by_key`` and give the
+results back to :func:`paired_contrast` through its ``bootstraps`` argument.
+The seed-offset convention stays HERE, in one place; a caller never
+reconstructs it. ``paired_contrast`` with no ``bootstraps`` is byte-for-byte
+what it always was.
 """
 
 from __future__ import annotations
 
+import functools
 import json
 import math
 import random
@@ -391,19 +410,25 @@ def _stratum_row(
     )
 
 
-def paired_contrast(
+def _paired_contrast_plan(
     left: Mapping[str, Mapping[str, float]],
     right: Mapping[str, Mapping[str, float]],
     *,
     metrics: Sequence[str],
-    sample_ids: Sequence[str] | None = None,
-    strata_of: Callable[[str], str] | None = None,
+    sample_ids: Sequence[str] | None,
+    strata_of: Callable[[str], str] | None,
     seed: int,
-    n_replicates: int = 10_000,
-    ci_level: float = 0.90,
-    cluster_of: Callable[[str], str] | None = None,
-) -> dict[str, PairedContrast]:
-    """Build one :class:`PairedContrast` per metric. ``delta = right - left``."""
+    n_replicates: int,
+    ci_level: float,
+    cluster_of: Callable[[str], str] | None,
+) -> tuple[tuple[str, ...], Mapping[str, tuple[str, ...]], Mapping[str, tuple[str, ...]]]:
+    """:func:`paired_contrast`'s validation and grouping, once, so the task
+    factory beside it cannot drift from the function that consumes it.
+
+    The checks run in exactly the order and with exactly the messages
+    ``paired_contrast`` has always used; the per-metric NAME check stays in
+    each caller's own loop, where it always was.
+    """
 
     _validate_scores(left, "left")
     _validate_scores(right, "right")
@@ -419,6 +444,119 @@ def paired_contrast(
     ids = _resolve_sample_ids(left, right, sample_ids)
     strata = _grouped_strata(ids, strata_of)
     clusters = _grouped_clusters(ids, cluster_of)
+    return ids, strata, clusters
+
+
+def _paired_metric_statistic(
+    left: Mapping[str, Mapping[str, float]],
+    right: Mapping[str, Mapping[str, float]],
+    metric: str,
+) -> Callable[[Sequence[str]], float]:
+    """The mean paired difference on one metric -- this module's own bootstrap
+    statistic, defined once and used by both the in-line and the task path."""
+
+    def statistic(resampled_ids: Sequence[str], metric_name: str = metric) -> float:
+        total = 0.0
+        for sid in resampled_ids:
+            total += _metric_value(right, sid, metric_name, "right") - _metric_value(
+                left, sid, metric_name, "left"
+            )
+        return total / len(resampled_ids)
+
+    return statistic
+
+
+def paired_contrast_bootstrap_tasks(
+    left: Mapping[str, Mapping[str, float]],
+    right: Mapping[str, Mapping[str, float]],
+    *,
+    metrics: Sequence[str],
+    sample_ids: Sequence[str] | None = None,
+    strata_of: Callable[[str], str] | None = None,
+    seed: int,
+    n_replicates: int = 10_000,
+    ci_level: float = 0.90,
+    cluster_of: Callable[[str], str] | None = None,
+) -> dict[str, Callable[[], BootstrapResult]]:
+    """``{metric: zero-argument callable}`` -- one independent bootstrap each.
+
+    Every callable is the bootstrap :func:`paired_contrast` would have run
+    for that metric: the same statistic, the same ids, the same stratum /
+    cluster grouping and the same ``seed + offset``, where ``offset`` is the
+    metric's position in ``metrics`` (the convention this module has always
+    used, kept here so no caller has to reproduce it). Each seeds a fresh
+    ``random.Random``, so the results do not depend on execution order and
+    the callables may be run in any order, in any process.
+
+    Hand the returned mapping to ``analysis.parallel.map_by_key`` and give
+    the results back to :func:`paired_contrast` as ``bootstraps=``.
+    """
+
+    ids, strata, clusters = _paired_contrast_plan(
+        left, right, metrics=metrics, sample_ids=sample_ids, strata_of=strata_of,
+        seed=seed, n_replicates=n_replicates, ci_level=ci_level, cluster_of=cluster_of,
+    )
+    tasks: dict[str, Callable[[], BootstrapResult]] = {}
+    for offset, metric in enumerate(metrics):
+        if not isinstance(metric, str) or not metric:
+            raise PairedAnalysisError("every metric name must be non-empty text")
+        if metric in tasks:
+            raise PairedAnalysisError(f"metric {metric!r} is requested twice")
+        tasks[metric] = functools.partial(
+            _bootstrap_result,
+            ids=ids,
+            statistic=_paired_metric_statistic(left, right, metric),
+            n_replicates=n_replicates,
+            seed=seed + offset,
+            ci_level=ci_level,
+            strata=strata,
+            clusters=clusters,
+        )
+    return tasks
+
+
+def paired_contrast(
+    left: Mapping[str, Mapping[str, float]],
+    right: Mapping[str, Mapping[str, float]],
+    *,
+    metrics: Sequence[str],
+    sample_ids: Sequence[str] | None = None,
+    strata_of: Callable[[str], str] | None = None,
+    seed: int,
+    n_replicates: int = 10_000,
+    ci_level: float = 0.90,
+    cluster_of: Callable[[str], str] | None = None,
+    bootstraps: Mapping[str, BootstrapResult] | None = None,
+) -> dict[str, PairedContrast]:
+    """Build one :class:`PairedContrast` per metric. ``delta = right - left``.
+
+    ``bootstraps`` accepts the results of
+    :func:`paired_contrast_bootstrap_tasks` for THESE metrics -- the same
+    bootstraps, already computed elsewhere (in parallel, typically) -- and
+    then no bootstrap is run here. Every requested metric must be present;
+    a missing or wrongly-typed entry fails closed rather than silently
+    falling back to recomputing it, because a silent fallback would hide a
+    caller that paired the wrong seeds.
+    """
+
+    ids, strata, clusters = _paired_contrast_plan(
+        left, right, metrics=metrics, sample_ids=sample_ids, strata_of=strata_of,
+        seed=seed, n_replicates=n_replicates, ci_level=ci_level, cluster_of=cluster_of,
+    )
+    if bootstraps is not None:
+        if not isinstance(bootstraps, Mapping):
+            raise PairedAnalysisError("bootstraps must be a mapping metric -> BootstrapResult")
+        for metric in metrics:
+            if not isinstance(metric, str) or not metric:
+                continue  # the per-metric loop below raises with the usual message
+            if metric not in bootstraps:
+                raise PairedAnalysisError(
+                    f"bootstraps has no entry for requested metric {metric!r}"
+                )
+            if not isinstance(bootstraps[metric], BootstrapResult):
+                raise PairedAnalysisError(
+                    f"bootstraps[{metric!r}] must be a BootstrapResult"
+                )
 
     results: dict[str, PairedContrast] = {}
     for offset, metric in enumerate(metrics):
@@ -432,23 +570,18 @@ def paired_contrast(
         left_mean = sum(left_values) / len(ids)
         right_mean = sum(right_values) / len(ids)
 
-        def statistic(resampled_ids: Sequence[str], metric_name: str = metric) -> float:
-            total = 0.0
-            for sid in resampled_ids:
-                total += _metric_value(right, sid, metric_name, "right") - _metric_value(
-                    left, sid, metric_name, "left"
-                )
-            return total / len(resampled_ids)
-
-        bootstrap = _bootstrap_result(
-            ids=ids,
-            statistic=statistic,
-            n_replicates=n_replicates,
-            seed=seed + offset,
-            ci_level=ci_level,
-            strata=strata,
-            clusters=clusters,
-        )
+        if bootstraps is not None:
+            bootstrap = bootstraps[metric]
+        else:
+            bootstrap = _bootstrap_result(
+                ids=ids,
+                statistic=_paired_metric_statistic(left, right, metric),
+                n_replicates=n_replicates,
+                seed=seed + offset,
+                ci_level=ci_level,
+                strata=strata,
+                clusters=clusters,
+            )
 
         per_stratum = {
             name: _stratum_row(name, members, left, right, metric)

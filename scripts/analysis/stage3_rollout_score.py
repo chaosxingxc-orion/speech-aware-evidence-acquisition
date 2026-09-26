@@ -70,6 +70,22 @@ closed-vocabulary parser (``rails.review_primitives.parse_review_primitive``),
 which is the same reading the armed path would have sealed, and the block
 says which source it used.
 
+Parallelism (2026-09-26)
+------------------------
+``--workers`` fans the ``score`` stage out over the rendered copies through
+``analysis.parallel.map_by_key``: one worker process per COMPLETE official
+scoring, collected by copy name and read back in sorted name order. Nothing
+is sharded -- each task is the same whole ``score_copy`` over the same whole
+copy -- and the numbers do not depend on the worker count.
+
+``render`` and ``pairs`` stay in one process: they are seconds of work beside
+minutes of scoring. ``--mode supply-variants``'s own scoring stays serial too,
+deliberately: it validates each arm's row identities AGAINST THE PREVIOUS
+arm's while it iterates, and each call writes an exclusive source-bound
+receipt through ``core.scoring_batch.score_complete_derived_copy``, so making
+it concurrent is a change to that receipt's exclusivity rather than a
+scheduling change.
+
 Run in WSL2::
 
     PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<repo>/src python \\
@@ -84,13 +100,14 @@ Run in WSL2::
 from __future__ import annotations
 
 import argparse
+import functools
 import hashlib
 import json
 import re
 import sys
 import time
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any, Callable, Mapping, Sequence
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT / "src") not in sys.path:
@@ -704,6 +721,31 @@ def render(
 # ---------------------------------------------------------------------------
 
 
+def map_by_key(tasks, *, workers):
+    """``analysis.parallel.map_by_key``, imported lazily.
+
+    This module is executed as a COPY beside a read (``cp`` then ``python
+    stage3_rollout_score.py``), so it resolves the package only through
+    ``sys.path`` at call time, exactly as every other package use here does.
+    """
+
+    from speech_aware_evidence_acquisition.analysis.parallel import (  # noqa: PLC0415
+        map_by_key as _map_by_key,
+    )
+
+    return _map_by_key(tasks, workers=workers)
+
+
+def resolve_workers(requested, *, cap=None):
+    """``analysis.parallel.resolve_workers``, imported lazily (see above)."""
+
+    from speech_aware_evidence_acquisition.analysis.parallel import (  # noqa: PLC0415
+        resolve_workers as _resolve_workers,
+    )
+
+    return _resolve_workers(requested, cap=cap)
+
+
 def score_copy(
     scorer_id: str, outputs_copy: Path, result_path: Path, lock: Mapping[str, object], root: Path
 ) -> tuple[dict[str, Any], float]:
@@ -728,19 +770,50 @@ def score_copy(
 
 
 def score(
-    scorer_id: str, manifest: Mapping[str, Any], out_dir: Path, lock: Mapping[str, object], root: Path
+    scorer_id: str, manifest: Mapping[str, Any], out_dir: Path, lock: Mapping[str, object],
+    root: Path, *, workers: int | None = None,
 ) -> dict[str, Any]:
-    scored: dict[str, Any] = {}
-    for name, copy_entry in sorted(manifest["copies"].items()):
+    """One complete registered scoring per rendered copy, the copies in parallel.
+
+    Each task is a WHOLE :func:`score_copy` over a complete manifest copy --
+    five complete official scorings, never one scoring sharded five ways -- so
+    the engineering-base rule that the paper-facing number comes from the
+    standard scorer run once per complete manifest is untouched. The official
+    ``evaluate.py`` subprocess inside each task stays exactly as serial as it
+    always was; what runs concurrently is whole scorings of DIFFERENT copies.
+
+    Every copy's render-manifest hash is verified BEFORE any scoring starts
+    (it used to be verified just before that copy's own scoring), so a drifted
+    copy now refuses before the first scorer contact rather than after some of
+    them. Results are collected by copy name and read back in sorted name
+    order, so ``scored`` is populated exactly as the serial loop populated it.
+    """
+
+    copies = sorted(manifest["copies"].items())
+    verified: dict[str, str] = {}
+    for name, copy_entry in copies:
         path = Path(copy_entry["path"])
         measured = sha256_file(path)
         if measured != copy_entry["sha256"]:
             raise Stage3ScoreError(f"{path} drifted from its render manifest sha256")
-        result, elapsed = score_copy(
-            scorer_id, path, out_dir / f"{name}-{scorer_id}-scores.json", lock, root
+        verified[name] = measured
+    tasks: dict[str, Callable[[], tuple[dict[str, Any], float]]] = {
+        name: functools.partial(
+            score_copy,
+            scorer_id,
+            Path(copy_entry["path"]),
+            out_dir / f"{name}-{scorer_id}-scores.json",
+            lock,
+            root,
         )
+        for name, copy_entry in copies
+    }
+    outcomes = map_by_key(tasks, workers=resolve_workers(workers, cap=len(tasks)))
+    scored: dict[str, Any] = {}
+    for name, _copy_entry in copies:
+        result, elapsed = outcomes[name]
         scored[name] = {
-            "outputs_sha256": measured,
+            "outputs_sha256": verified[name],
             "official_slu_f1_pp": 100 * float(result["aggregate"]["official"]["slu_f1"]),
             "official_intent_pp": 100 * float(result["aggregate"]["official"]["intent_accuracy"]),
             "per_sample": {str(r["sample_id"]): correctness_fields(r) for r in result["per_sample"]},
@@ -1302,6 +1375,17 @@ def main(argv: Sequence[str] | None = None) -> int:
             "resolves the label from the experiment fragment that owns --run"
         ),
     )
+    from speech_aware_evidence_acquisition.analysis.parallel import (  # noqa: PLC0415
+        add_workers_argument,
+    )
+
+    add_workers_argument(
+        parser,
+        help_suffix=(
+            "Here a unit is ONE complete official scoring of ONE rendered copy; "
+            "no scoring is ever sharded."
+        ),
+    )
     args = parser.parse_args(argv)
 
     from speech_aware_evidence_acquisition.core.stage3_algorithms import (  # noqa: PLC0415
@@ -1338,7 +1422,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     scored = None
     if args.stage in ("score", "all"):
-        scored = score(args.scorer_id, manifest, out_dir, lock, root)
+        scored = score(args.scorer_id, manifest, out_dir, lock, root, workers=args.workers)
         print(json.dumps(
             {"stage": "score", "sides": {k: v["official_slu_f1_pp"] for k, v in scored.items()}},
             indent=2,

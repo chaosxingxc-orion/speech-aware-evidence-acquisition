@@ -1239,3 +1239,79 @@ def test_no_utterance_or_filler_text_is_persisted(completed, world):
     assert "alarm" in blob
     assert "date" in blob
     assert RUN_OF["plan"] in blob
+
+
+def test_two_runs_at_different_worker_counts_are_byte_identical(world, tmp_path):
+    """The read's OWN acceptance test for the 2026-09-26 fan-out.
+
+    Every one of this read's twenty-four cluster bootstraps is an independent
+    unit handed to ``analysis.parallel.map_by_key``. If a replicate sequence
+    ever became a function of how many workers ran it -- a shared RNG, a
+    completion-ordered collection, a mutated table -- this is the test that
+    fails, and it fails on the bytes rather than on a tolerance.
+    """
+
+    one = tmp_path / "workers-1"
+    four = tmp_path / "workers-4"
+    assert _run(world, one, "--workers", "1") == 0
+    assert _run(world, four, "--workers", "4") == 0
+    for name in drv.ARTEFACTS:
+        left = (one / name).read_text(encoding="utf-8")
+        right = (four / name).read_text(encoding="utf-8")
+        assert _strip_timestamps(left) == _strip_timestamps(right), name
+        differing = [
+            (a, b) for a, b in zip(left.splitlines(), right.splitlines()) if a != b
+        ]
+        assert all(
+            "generated_at_utc" in a or a.startswith("Generated at:")
+            for a, _ in differing
+        ), (name, differing[:3])
+
+
+def test_the_worker_count_never_reaches_a_recorded_number(world, tmp_path):
+    """No artefact may record the worker count: it is not part of the read."""
+
+    out = tmp_path / "out"
+    assert _run(world, out, "--workers", "3") == 0
+    blob = "\n".join((out / name).read_text(encoding="utf-8") for name in drv.ARTEFACTS)
+    assert "workers" not in blob.lower()
+
+
+def test_contrast_tasks_are_one_flat_batch_of_four_per_arm_pair():
+    """The granularity is the BOOTSTRAP, not the arm pair: four keyed tasks per
+    pair, named so the collected mapping sorts reviewably. Twenty-four of these
+    keys -- four for the own null, twenty for the five variants -- are what the
+    read hands to the fan-out."""
+
+    class _Stub:
+        def __init__(self, table):
+            self.rows_table = table
+
+    ids = tuple(f"row-{index:02d}" for index in range(12))
+    # Every sealed count field the two pooled estimands are pooled from, taken
+    # from the registry itself so the stub cannot drift from the real tables.
+    fields = tuple(
+        {field for _, field in drv.ROW_METRICS}
+        | {
+            name
+            for group_key in drv.POOLED_METRICS.values()
+            for group in drv.MICRO_METRICS[group_key]
+            for name in group
+        }
+    )
+    left = _Stub({sid: {field: 1.0 for field in fields} for sid in ids})
+    right = _Stub({sid: {field: 2.0 for field in fields} for sid in ids})
+    tasks = drv._contrast_tasks(
+        left, right, ids,
+        cluster_of=lambda sid: sid, seed=20260915, draws=5, prefix="planr",
+    )
+    assert sorted(tasks) == [
+        "planr|pooled|pooled_slu_f1",
+        "planr|pooled|span_f1",
+        "planr|row|scenario_action_exact",
+        "planr|row|slu_f1_f1",
+    ]
+    # Independent by construction: run them in either order and they agree.
+    ascending = {key: tasks[key]() for key in sorted(tasks)}
+    descending = {key: tasks[key]() for key in sorted(tasks, reverse=True)}
+    assert ascending == {key: descending[key] for key in ascending}
