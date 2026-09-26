@@ -7,6 +7,22 @@ for their own flights. Do not interpret old plans as permission to restart them.
 
 ## Owner separates construction and consumption; shared proposal path integrated
 
+Latest clarification: build intent and slot knowledge separately, even if sharing
+physical storage, and consume distinct task/phase views. Read
+docs/readiness/2026-09-26-task-specific-knowledge-stores-and-views-v3.md.
+The existing released stores already implement this separation at the store level.
+The unresolved consumption issue is finer: slot values include every intent-role
+binding, not only those relevant to the current candidates. Do not add a second
+database or claim these stores did not exist.
+
+Reuse correction after the previous checkpoint: finite_supply_policy.py ALREADY
+implements sampled exemplar-route selection, before Solver, with one action held
+through full-system execution and logged probabilities. The complete native-policy
+catalog has a different scope. Do not rebuild either or confuse them with VAR-2.
+Task-specific semantic-card view sampling and its verified credit path still need
+work. Historical VAR-1 K10/K30 are executable hypotheses, not stable winners over
+PLANR; no new GPU queue has been started on the strength of those results.
+
 Read docs/readiness/2026-09-26-knowledge-construction-consumption-optimization-v2.md.
 Construction optimizes accurate, compact, discriminative knowledge. Consumption
 samples retrieval/selection policies over a frozen knowledge version and supplies

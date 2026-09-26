@@ -1,5 +1,9 @@
 # Separate knowledge construction from sampled knowledge consumption
 
+For the owner's subsequent intent/slot separation and a correction about the
+existing finite supply sampler, read
+[task-specific stores and consumption views](2026-09-26-task-specific-knowledge-stores-and-views-v3.md).
+
 ## Owner clarification and resulting experiment order
 
 The owner requires two optimization stages. Construction must produce accurate,
@@ -69,7 +73,11 @@ revision when chosen, and delivery. Existing VAR-2 non-delivering Solver branche
 do not supply whole-system returns. The existing complete-system policy catalog
 currently permits native behavior and tool settings only; it does not rebuild
 knowledge routing per selected action. Register and validate that shared binding
-extension before claiming online learned retrieval. Serial full configurations
+extension before claiming online learned retrieval through that catalog. The
+separate finite_supply_policy path already supports sampled exemplar-route
+actions and complete downstream execution; reuse it within its supported scope.
+It does not yet sample semantic-card views or provide the corresponding verified
+credit updater. Serial full configurations
 are sufficient for the first matched policy comparison and require no new runner.
 
 ## Feedback and learning
