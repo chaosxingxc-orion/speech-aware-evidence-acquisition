@@ -68,7 +68,8 @@ def read_system_group_operations(manifest_pin, *, repo_root, data_root):
                 raise ValueError("unregistered update output for a held group")
             parsed, disposition = None, group["disposition"]
         entries.append({"sample_id": group["sample_id"], "disposition": disposition,
-                        "update_response": row, "parsed": parsed})
+                        "update_response": row, "parsed": parsed,
+                        "experience_source": group["experience_source"]})
     if set(source.rows) != set(document["ready_sample_ids"]):
         raise ValueError("sealed group update population differs")
     report = {
@@ -77,6 +78,7 @@ def read_system_group_operations(manifest_pin, *, repo_root, data_root):
         "source_construction_roster_sha256": document["source_construction_roster_sha256"],
         "full_construction_sample_ids": document["full_construction_sample_ids"],
         "base_snapshot": document["base_snapshot"], "population": entries,
+        "round_id": document["round_id"],
         "runtime_authorized": False, "model_contacts_added": 0, "scorer_contacts_added": 0,
         "claim_boundary": "Provisional operation proposals; batch consolidation and typed source materialization remain required.",
     }

@@ -146,7 +146,11 @@ def _load_config(path: Path, expected_sha256: str) -> tuple[dict[str, object], s
         raise MaterializationError("materialization config hash mismatch")
     from .provisional_candidate_consolidation import CONFIG_SCHEMA as CONSOLIDATION_CONFIG_SCHEMA
 
+    from .system_semantic_memory import CONFIG_SCHEMA as SEMANTIC_CONFIG_SCHEMA
     schemas = {
+        SEMANTIC_CONFIG_SCHEMA: {
+            "schema", "materialization_id", "max_candidates", "batch_manifest", "batch_repo_root",
+        },
         CONFIG_SCHEMA: _CONFIG_KEYS,
         CONSOLIDATION_CONFIG_SCHEMA: {
             "schema", "materialization_id", "memory_id", "max_candidates",
@@ -483,6 +487,10 @@ def prepare_provisional_candidates(
     config, config_sha, config_fingerprint = _load_config(
         config_path, expected_config_sha256
     )
+    from .system_semantic_memory import CONFIG_SCHEMA as SEMANTIC_CONFIG_SCHEMA, prepare_system_semantic_memory
+    if config["schema"] == SEMANTIC_CONFIG_SCHEMA:
+        return prepare_system_semantic_memory(
+            config_path=config_path, expected_config_sha256=config_sha, data_root=data_root)
     if config["schema"] != CONFIG_SCHEMA:
         from .provisional_candidate_consolidation import prepare_consolidated_candidates
 

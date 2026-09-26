@@ -296,6 +296,12 @@ def build_training_feedback_artifact_validator(
         raise TrainingFeedbackArtifactError("TRAIN proposal content contract has wrong fields")
     if contract.get("id") != TRAINING_FEEDBACK_CONTENT_ID:
         raise TrainingFeedbackArtifactError("TRAIN proposal content contract id is invalid")
+    options, source_sha = _prepared_contexts(contract, Path(data_root))
+    return training_feedback_validator_for_options(contract, options, source_sha)
+
+
+def training_feedback_validator_for_options(contract, options, source_sha):
+    """Use the same typed-guidance rules after an authenticated source reader binds labels."""
     scope = contract.get("applicability")
     if not isinstance(scope, Mapping) or set(scope) != {
         "allowed_task_ids", "allowed_roles", "allowed_component_tags"
@@ -308,7 +314,6 @@ def build_training_feedback_artifact_validator(
     allowed_components = _string_set(scope["allowed_component_tags"], "allowed_component_tags")
     if not allowed_components <= COMPONENT_TAGS:
         raise TrainingFeedbackArtifactError("allowed_component_tags contains an unknown component")
-    options, source_sha = _prepared_contexts(contract, Path(data_root))
     return TrainingFeedbackArtifactValidator(
         options_by_sample=options,
         source_sha256=source_sha,

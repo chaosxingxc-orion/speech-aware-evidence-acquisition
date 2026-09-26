@@ -53,9 +53,9 @@ def test_sealed_update_reader_keeps_full_population_and_base(monkeypatch, state,
         manifest_sha256="a"*64, prepared_document={
             "base_snapshot": base, "source_construction_roster_sha256": "b"*64,
             "full_construction_sample_ids": ["train-001", "train-002"],
-            "ready_sample_ids": ["train-001"],
-            "population": [{"sample_id": "train-001", "disposition": "ready"},
-                           {"sample_id": "train-002", "disposition": "no-update-terminal-tie"}],
+            "ready_sample_ids": ["train-001"], "round_id": "round-1",
+            "population": [{"sample_id": "train-001", "disposition": "ready", "experience_source": {"fixture": 1}},
+                           {"sample_id": "train-002", "disposition": "no-update-terminal-tie", "experience_source": {"fixture": 2}}],
         },
         rows={"train-001": {"text": "[]", "status": state}})
     before = copy.deepcopy(source.prepared_document)

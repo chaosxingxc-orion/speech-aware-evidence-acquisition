@@ -135,7 +135,8 @@ def _build(source_pin, data):
         sid = group["sample_id"]
         if group["disposition"] != "ready":
             population.append({"sample_id": sid, "disposition": group["disposition"],
-                               "comparison": None, "extraction": None})
+                               "comparison": None, "extraction": None,
+                               "experience_source": copy.deepcopy(group["experience_source"])})
             continue
         row = copy.deepcopy(source.rows[sid])
         _require(row["source_context_sha256"] == content_hash(group),
@@ -145,7 +146,8 @@ def _build(source_pin, data):
                        else "ready" if extraction["status"] == "ready"
                        else "no-update-no-experience" if extraction["status"] in {"empty-block", "missing-block"}
                        else "blocked-ambiguous-experience")
-        entry = {"sample_id": sid, "disposition": disposition, "comparison": row, "extraction": extraction}
+        entry = {"sample_id": sid, "disposition": disposition, "comparison": row, "extraction": extraction,
+                 "experience_source": copy.deepcopy(group["experience_source"])}
         population.append(entry)
         if disposition == "ready":
             context = {

@@ -245,6 +245,32 @@ to the updater base; the input reader alone does not establish that alignment.
 No real updater contact, memory activation, system reexecution or RL benefit
 has occurred. GPU failure and closed-flight restrictions are unchanged.
 
+## Model-synthesized batch memory continuation
+
+CPU implementation checkpoint: 2026-09-26T02:45:01.777152+00:00.
+The [batch synthesis contract](../readiness/2026-09-26-system-batch-update-runtime.md)
+connects all valid group proposals and frozen memory to the shared prepared-text
+runtime. The model may synthesize new typed guidance across groups. Host-side
+binding attaches complete paired system trajectories and terminal feedback,
+then uses the existing atomic ADD/UPDATE/DELETE consolidator, candidate
+materializer and source attestation. The full construction exposure survives
+even when one anchor carries the batch request. Composite group source
+references do not imply a winning actor or component-level causal credit.
+
+350 targeted regressions, Ruff and all nine offline gates passed. Coverage for the two new implementation
+modules is 98% including branches; this is not repository-wide coverage.
+The connected synthetic test reaches Reviewer memory-tool use, Solver revision
+and final delivery. Research model/scorer contacts remain zero. Read the linked
+validation receipt for the final offline gates and exact substituted boundaries.
+
+The remaining full-round requirements are actual actor-policy/base-memory
+alignment, a disjoint multi-round TRAIN schedule, real capacity and exposure
+registration, semantic generation, frozen full-system reexecution and matched
+replication. Every valid group proposal must fit together; do not silently
+truncate or select a subset. A new explicit adaptation would be needed if
+the real batch does not fit. No GPU service was restarted, no isolated control
+quality was read, and no RL benefit is established.
+
 ## Whole-system summary runtime connection
 
 The model-facing summary input now has a shared preparation/loader/baseline

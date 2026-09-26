@@ -21,7 +21,7 @@ from .experience_memory_runtime import (
     COMPONENT_TAGS, MAX_RUNTIME_RECORDS, PROJECTED_CONDITION_TAGS, ExperienceMemorySelection,
     _project_conditions, _visible_guidance,
 )
-from .experience_memory_sources import reward_link_hash_source_ref
+from .experience_memory_sources import reward_link_hash_source_ref, system_group_hash_source_ref
 
 SOURCE_ATTESTATION_SCHEMA = "saea-provisional-experience-source-attestation-v1"
 SOURCE_ATTESTATION_KIND = "provisional-experience-source-attestation"
@@ -190,8 +190,10 @@ def _records(output: Mapping[str, object], construction_sha: str) -> tuple[Exper
             ):
                 raise CandidateExperienceMemoryError("candidate record source or status differs")
             refs = record.supporting_source_refs + record.contradicting_source_refs
-            if any(ref != reward_link_hash_source_ref(ref.sha256) for ref in refs):
-                raise CandidateExperienceMemoryError("candidate reward-link reference is not canonical")
+            semantic = provenance.get("source_kind") == "sealed-system-semantic-batch"
+            if any(ref != reward_link_hash_source_ref(ref.sha256)
+                   and not (semantic and ref == system_group_hash_source_ref(ref.sha256)) for ref in refs):
+                raise CandidateExperienceMemoryError("candidate source reference is not canonical")
             found.append(record)
     hashes = [record.record_sha256 for record in found]
     if len(hashes) != len(set(hashes)):

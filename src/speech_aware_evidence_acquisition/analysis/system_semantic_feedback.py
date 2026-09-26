@@ -128,6 +128,7 @@ def _prepare(group_report, semantic_reports):
         _require([m["source_label"] for m in members] == labels,
                  "group members differ from ordered complete sources")
         summary_inputs, feedback_members, group_hashes = [], [], set()
+        source_members = []
         for source, member in zip(sources, members):
             episode = episode_indexes[_identity(source)][sid]
             trajectory = episode["trajectory"]
@@ -152,6 +153,17 @@ def _prepare(group_report, semantic_reports):
                      and math.isfinite(member["utility"]) and member["utility"] == utility,
                      "recorded utility differs from frozen official-count feedback")
             group_hashes.add(episode["input_group_sha256"])
+            source_members.append({
+                "run_id": source["run_id"], "attempt_id": source["attempt_id"],
+                "official_feedback_sha256": source["feedback_sha256"],
+                "episode_sha256": episode["content_sha256"],
+                "trajectory_sha256": trajectory["trajectory_sha256"],
+                "action_sha256": content_hash({
+                    "role_visits": trajectory["role_visits"], "tool_events": trajectory["tool_events"],
+                    "delivery": trajectory["delivery"]}),
+                "response_sha256": trajectory["final_output"]["delivered_text_sha256"],
+                "outcome": {field: copy.deepcopy(member[field]) for field in OUTCOME_FIELDS},
+            })
             binding = {
                 "source_label": source["label"], "run_id": source["run_id"],
                 "attempt_id": source["attempt_id"],
@@ -176,6 +188,11 @@ def _prepare(group_report, semantic_reports):
         prepared.append({
             "sample_id": sid, "input_group_sha256": group_hash,
             "summary_inputs": summary_inputs,
+            "experience_source": {
+                "schema": "saea-complete-system-feedback-group-source-v1",
+                "sample_id": sid, "input_group_sha256": group_hash,
+                "members": source_members, "frozen_f0": f0,
+            },
             "comparison_feedback": {
                 "input_group_sha256": group_hash,
                 "scope": "offline construction; complete delivered system",
@@ -282,6 +299,7 @@ def join_recorded_summaries(feedback, summaries):
             "disposition": disposition, "unusable_summaries": unusable,
             "model_context": context, "model_context_sha256": content_hash(context),
             "candidate_bindings": custody,
+            "experience_source": copy.deepcopy(group["experience_source"]),
         })
     _require(wanted == set(index), "unknown or extra summary episodes")
     report = {

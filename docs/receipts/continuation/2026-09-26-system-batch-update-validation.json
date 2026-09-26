@@ -1,0 +1,192 @@
+{
+  "schema": "saea-system-batch-update-validation-v1",
+  "checked_at": "2026-09-26T02:48:48.424776+00:00",
+  "parent_commit": "95c2e1498ed11b10f572c2f4165d03e8485e932d",
+  "environment": "WSL Ubuntu-24.04; /home/chao/.venvs/speechrl/bin/python; explicit checkout PYTHONPATH",
+  "tests": {
+    "passed": 350,
+    "skipped": 0,
+    "files": [
+      "tests/unit/test_system_summary_source.py",
+      "tests/unit/test_system_semantic_comparison.py",
+      "tests/unit/test_system_comparison_preparation.py",
+      "tests/unit/test_system_summary_preparation.py",
+      "tests/unit/test_system_semantic_feedback.py",
+      "tests/unit/test_system_rollout_groups.py",
+      "tests/unit/test_system_semantic_trajectory.py",
+      "tests/unit/test_system_feedback.py",
+      "tests/unit/test_system_trajectory.py",
+      "tests/unit/test_prepared_feedback.py",
+      "tests/unit/test_prepared_feedback_runtime.py",
+      "tests/unit/test_prepared_feedback_serialization.py",
+      "tests/unit/test_artifact_result_kind.py",
+      "tests/unit/test_system_group_update.py",
+      "tests/unit/test_system_group_operations.py",
+      "tests/unit/test_experience_consolidation.py",
+      "tests/unit/test_provisional_candidate_materialization.py",
+      "tests/unit/test_provisional_candidate_consolidation.py",
+      "tests/unit/test_candidate_experience_memory.py",
+      "tests/unit/test_system_batch_update.py",
+      "tests/unit/test_system_semantic_memory.py",
+      "tests/unit/test_training_feedback_artifacts.py"
+    ],
+    "log": "/home/chao/system-batch-update-validation-v1/tests.log",
+    "sha256": "b098b6eaad0b8d519f57c92d620518c388942abad484cfdddba5e4640812203c"
+  },
+  "coverage": {
+    "scope": "Only rails.system_batch_update_context and core.system_semantic_memory, including branches",
+    "combined_percent": 98,
+    "semantic_memory_percent": 100,
+    "batch_context_percent": 97,
+    "log": "/home/chao/system-batch-update-validation-v1/coverage.log",
+    "sha256": "65fb3e94c1738fbf6f95649bbef21e1c4f5564a52bf873a459463e6ecbabe837"
+  },
+  "lint": {
+    "result": "passed",
+    "files": [
+      "src/speech_aware_evidence_acquisition/analysis/system_group_operations.py",
+      "src/speech_aware_evidence_acquisition/analysis/system_semantic_feedback.py",
+      "src/speech_aware_evidence_acquisition/core/flight/runtime.py",
+      "src/speech_aware_evidence_acquisition/core/provisional_candidate_materialization.py",
+      "src/speech_aware_evidence_acquisition/core/system_semantic_memory.py",
+      "src/speech_aware_evidence_acquisition/rails/candidate_experience_memory.py",
+      "src/speech_aware_evidence_acquisition/rails/experience_memory_sources.py",
+      "src/speech_aware_evidence_acquisition/rails/prepared_feedback.py",
+      "src/speech_aware_evidence_acquisition/rails/system_group_update_context.py",
+      "src/speech_aware_evidence_acquisition/rails/system_batch_update_context.py",
+      "src/speech_aware_evidence_acquisition/rails/training_feedback_artifacts.py",
+      "tests/unit/test_system_summary_source.py",
+      "tests/unit/test_system_summary_preparation.py",
+      "tests/unit/test_system_group_operations.py",
+      "tests/unit/test_system_group_update.py",
+      "tests/unit/test_system_batch_update.py",
+      "tests/unit/test_system_semantic_memory.py"
+    ],
+    "log": "/home/chao/system-batch-update-validation-v1/lint.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "gates": [
+    {
+      "check": "engineering_base",
+      "exit_code": 0,
+      "log": "/home/chao/system-batch-update-validation-v1/engineering_base.log",
+      "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "check": "harness_admission",
+      "exit_code": 0,
+      "log": "/home/chao/system-batch-update-validation-v1/harness_admission.log",
+      "sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+    },
+    {
+      "check": "results_ledger",
+      "exit_code": 0,
+      "log": "/home/chao/system-batch-update-validation-v1/results_ledger.log",
+      "sha256": "ec9367bbd838063e612f82f2497a4e042f439e1b778d78d55e5f4c6117904d6f"
+    },
+    {
+      "check": "tool_catalog",
+      "exit_code": 0,
+      "log": "/home/chao/system-batch-update-validation-v1/tool_catalog.log",
+      "sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+    },
+    {
+      "check": "experiment_handoff",
+      "exit_code": 0,
+      "log": "/home/chao/system-batch-update-validation-v1/experiment_handoff.log",
+      "sha256": "922adfe2253c7866d8d511d5df35caceef8aec6c0ff7e357edcc9dddc9aa607b"
+    },
+    {
+      "check": "openjiuwen_native_reuse",
+      "exit_code": 0,
+      "log": "/home/chao/system-batch-update-validation-v1/openjiuwen_native_reuse.log",
+      "output": "/home/chao/system-batch-update-validation-v1/native-proof.json",
+      "sha256": "1c457484a7d2a7c15dd31393ad053fd8456f7b2a6b1f5b37cf1aa98a9c56d1f4"
+    },
+    {
+      "check": "derived_media_confinement",
+      "exit_code": 0,
+      "log": "/home/chao/system-batch-update-validation-v1/derived_media_confinement.log",
+      "output": "/home/chao/system-batch-update-validation-v1/derived-media-proof",
+      "sha256": "cc12da4177bdacb003ce3be1e666def1fedd335799c9a2da7f217917e8d9b721"
+    },
+    {
+      "check": "stage3_algorithm_label",
+      "exit_code": 0,
+      "log": "/home/chao/system-batch-update-validation-v1/stage3_algorithm_label.log",
+      "sha256": "772a0ea23eb2cbd08e1649908f386c524c8a78941bf58e74e26004da7cf524ca"
+    },
+    {
+      "check": "finite_completion_policy",
+      "exit_code": 0,
+      "log": "/home/chao/system-batch-update-validation-v1/finite_completion_policy.log",
+      "sha256": "20bc3dc18154a13c2956dd6455da6de859f1e724b864fd06bcaec02b0734cc22"
+    }
+  ],
+  "gate_limits": [
+    "Results ledger retains 104 historical cross-check findings; none is changed by this implementation.",
+    "Handoff gate has no errors, warns about newer HEAD and implementation changes, and grants no launch authority.",
+    "The first native-reuse invocation omitted its mandatory output path and returned usage only; the corrected invocation passed.",
+    "The derived-media check initially used its historical default output; those two files were restored byte-for-byte from HEAD and their archived manifest hashes verified. The final proof uses an external output directory.",
+    "No new experiment fragment, exposure registration or GPU attempt is introduced."
+  ],
+  "restored_historical_receipt": [
+    {
+      "path": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-derived-media-confinement/MANIFEST.sha256",
+      "restored_head_sha256": "3dcd72dc80e8a5debe8ebf1a5029656bf6f22c92c49a3bdef524001873342968"
+    },
+    {
+      "path": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-derived-media-confinement/derived-media-confinement.json",
+      "restored_head_sha256": "034026fe06be4dde0fa0fcdec3ba25e84c5fc5bab32a141b6797a6805d27f892"
+    }
+  ],
+  "upstream_source": {
+    "repository": "https://github.com/TencentCloudADP/youtu-agent",
+    "commit": "c2caa539f4c95ae1c39ed24dc8a99cb3651e1d5d",
+    "path": "utu/practice/experience_updater.py",
+    "sha256": "301d4a51136f6c0da620f1f2042d59316af494cee4b4c3329338ba1a1b937d04",
+    "action": "Re-read and hash-verified the pinned local batch synthesis path; no upstream execution."
+  },
+  "proof_boundaries": [
+    "Synthetic complete actor and official-count source fixtures substitute upstream bundle/scorer readers; no research outcomes were read.",
+    "Frozen config and prepared artifact reconstruction, exact history verification, typed parsing, composite group hashes, atomic update and candidate source replay use production implementations.",
+    "Shared fit/send/artifact integration uses a capturing transport and synthetic speech metadata; no model/tokenizer call or real capacity claim.",
+    "Connected native runtime preflight and dispatch expose source-attested synthesized guidance to the Reviewer tool and Solver revision; model transport is simulated.",
+    "Two-group full-construction scope test substitutes the already-verified upstream report; all downstream batch preparation, sealed source reading and materialization are real.",
+    "Operation tests cover new wording, source/scope refusal, duplicate keys, unchanged memory, capped output, candidate cap, stable immutable revisions, deleted IDs and all-or-nothing publication.",
+    "Legacy prepared stages, typed proposal validation and reward-link candidate paths remain covered."
+  ],
+  "remaining": [
+    "Bind sampled actor policy and actual memory to the updater base.",
+    "Define multi-round disjoint TRAIN evaluation and cumulative exposure without provisional self-application.",
+    "Measure real complete-batch fit using a registered contact and prospective output bound; refuse rather than truncate.",
+    "Register and execute real sampling, update, frozen system reexecution and matched replication.",
+    "Resolve CUDA/host failure before new GPU authority; do not restart the closed candidate recovery."
+  ],
+  "model_contacts_added": 0,
+  "tokenizer_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "runtime_authorized": false,
+  "rl_benefit_established": false,
+  "implementation_and_tests": {
+    "src/speech_aware_evidence_acquisition/analysis/system_group_operations.py": "9abdb24e27b6e67c9bdc4e4733fd8dcceb3ea23a26783730d997f6b9e8540daf",
+    "src/speech_aware_evidence_acquisition/analysis/system_semantic_feedback.py": "19d751d882ed140c7fa1971494c9acb53003c9c3f963e6d06fd6179d147d7bf6",
+    "src/speech_aware_evidence_acquisition/core/flight/runtime.py": "f887de518403951604acd39a5a594f3c06759276bd4bac3eb622ddc8d3297dd7",
+    "src/speech_aware_evidence_acquisition/core/provisional_candidate_materialization.py": "9a5470646a6dd5d476f3e72e5a2e37d67dadac0006567c9dc7a13de4d09823b8",
+    "src/speech_aware_evidence_acquisition/core/system_semantic_memory.py": "105f629cde9f1fdac235dbc06eaa730a95f37c7ceb5a5e7b049bf9778dd0a920",
+    "src/speech_aware_evidence_acquisition/rails/candidate_experience_memory.py": "e0d2a5ac0aed45df86d336beccdfff2151cfa275f7ccb456f1d01a61ee480d78",
+    "src/speech_aware_evidence_acquisition/rails/experience_memory_sources.py": "4e7adf6c5668f1657c8884066ce2fbb3414d6496835c6c3dc502726dfac302bb",
+    "src/speech_aware_evidence_acquisition/rails/prepared_feedback.py": "fdd79ca22dbf5a2e2cc5442b27f2d27b90a886526f494550735e875ebd15d1bb",
+    "src/speech_aware_evidence_acquisition/rails/system_group_update_context.py": "f73e8c35360f8cdbc35be80f63c564fe97b85fe9c67eb99efb08345e8d9e3085",
+    "src/speech_aware_evidence_acquisition/rails/system_batch_update_context.py": "ae468f903961950b8a3c4c807025c80a44dd7e297e30500a04301a2510f724ea",
+    "src/speech_aware_evidence_acquisition/rails/training_feedback_artifacts.py": "8aae36b6b9771d799e13e1016971c435cf76fa7d8d314100fd2738c81602948e",
+    "tests/unit/test_system_summary_source.py": "119cddc7809ffb4963875f857bd548f070ad64538e36ead0badf01d4e1a2184b",
+    "tests/unit/test_system_summary_preparation.py": "aad3e7b63a280469080768dd67be90ff226ce629e37e0d3a79f9afb225a29807",
+    "tests/unit/test_system_group_operations.py": "b1dd58f94cc977e3d9dc7db17c4a0f5d5d0c645d8b8d11b73e971e43bff1a6ba",
+    "tests/unit/test_system_group_update.py": "bb623d046f3a1172faaf1984abcc6e883fe994c498efbc5b28be21ab4e5ccd4b",
+    "tests/unit/test_system_batch_update.py": "e6196a8ef48b89d7076b12452a62305d72f2d90eff5e7917404ba33eab715a9d",
+    "tests/unit/test_system_semantic_memory.py": "34ca2cca8b60db78cc01688721601db7be59f3b3d4167188344e022816bc76d7",
+    "configs/baseline/system-batch-update-text-v1.json": "6958bfb0bd2b56bceab07cec8d8bbbdb83809f411521d4c9f668e6a712fdbfaa",
+    "configs/probes/system_batch_update_v1.txt": "95b67f20032360afbecdfca0b225239629a7d1d0f020a397a12bf27cfe6e9242"
+  }
+}

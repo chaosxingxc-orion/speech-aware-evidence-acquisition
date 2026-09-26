@@ -228,3 +228,11 @@ def load_verified_memory_sources(catalog, path, *, expected_sha256):
         return _validate_proof(catalog, output)
     except (OSError, UnicodeError, json.JSONDecodeError, PreparationError) as error:
         raise MemorySourceVerificationError(f"cannot load source verification: {error}") from error
+
+
+def system_group_hash_source_ref(group_sha256: str) -> SourceRef:
+    """Reference a verified full-system comparison group, never a legacy reward link."""
+    return SourceRef(
+        "complete-system-group:" + _sha_value(group_sha256, "system group SHA-256"),
+        group_sha256, "train",
+    )

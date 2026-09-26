@@ -25,16 +25,16 @@ def summary_source(summary_world, tmp_path, monkeypatch):  # noqa: F811
 
 
 def make_text_stage_source(world, tmp_path, monkeypatch, *, prepared_spec=None,
-                           baseline="system-trajectory-summary-text-v1"):
+                           baseline="system-trajectory-summary-text-v1", stage_name="summary"):
     data, actor, binding, _source_pin, _calls = world
     spec = prepared_spec if prepared_spec is not None else prepared(world)[0]
     states, _ = load(world, spec)
     sid = actor.sample_ids[0]
     project = Path(__file__).parents[2]
-    repo = tmp_path / "summary-source"
+    repo = tmp_path / (stage_name + "-source")
     roster_rel = "docs/receipts/rosters/construction.json"
     (repo / roster_rel).parent.mkdir(parents=True)
-    (repo / roster_rel).write_bytes((data / "roster.json").read_bytes())
+    (repo / roster_rel).write_bytes((data / binding["construction_roster"]["relpath"]).read_bytes())
     values = json.loads((project / "configs/baseline" / (baseline + ".json")).read_text())
     values.update(prepared_training_feedback=spec, live_phase_fit={
         "run_id": "summary-fit", "attempt_id": "summary-fit-1", "contact_cap": 3},
@@ -64,7 +64,7 @@ def make_text_stage_source(world, tmp_path, monkeypatch, *, prepared_spec=None,
     authority = validate_artifact_result_binding(values, plan=artifact_plan(actor.plan.split_identity_hash),
                                                  repo_root=repo, sample_ids=(sid,), data_root=data)
     text = "Solver revised; Planner accepted; final delivery retained the revision."
-    rid = "summary:1"
+    rid = stage_name + ":1"
     payload = {
         "request_id": rid, "carrier_lock_key": "slurp", "sample_id": sid,
         "speech_ref": "slurp/" + sid, "media_relpath": "audio/source.wav",
@@ -84,16 +84,21 @@ def make_text_stage_source(world, tmp_path, monkeypatch, *, prepared_spec=None,
         "arm": values["arm"], "config": {"fragments": names, "config_hash": composed.config_hash},
         "artifact_result": authority, "plan": asdict(plan),
     }
-    source_pin = pin(data, "summary-run/manifest.json", manifest)
+    source_pin = pin(data, stage_name + "-run/manifest.json", manifest)
     bundle = VerifiedBundle(data / source_pin["relpath"], manifest, None, (output,), {
         rid + "/request": {"payload": payload, "payload_sha256": content_hash(payload)},
         rid + "/response": response,
     }, frozenset((sid,)), "FINALIZED")
     monkeypatch.setattr(module, "verify_bundle", lambda _path: bundle)
     from speech_aware_evidence_acquisition.analysis import prepared_text_source
-    monkeypatch.setattr(prepared_text_source, "verify_bundle", lambda _path: bundle)
+    previous_verifier = prepared_text_source.verify_bundle
+    def verified(path):
+        if Path(path) == data / source_pin["relpath"]:
+            return bundle
+        return previous_verifier(path)
+    monkeypatch.setattr(prepared_text_source, "verify_bundle", verified)
     return dict(pin=source_pin, repo=repo, data=data, bundle=bundle, payload=payload,
-                response=response, output=output, spec=spec)
+                response=response, output=output, spec=spec, request_id=rid)
 
 
 def verify(world):

@@ -140,7 +140,7 @@ def test_full_population_includes_groups_that_never_reached_comparison(update_wo
     source = module.verify_system_comparisons(w["stage"]["pin"], repo_root=w["stage"]["repo"], data_root=w["data"])
     document = copy.deepcopy(source.prepared_document)
     sid = "slurp:train:2"
-    document["comparison"]["groups"].append({"sample_id": sid, "disposition": "no-update-terminal-tie"})
+    document["comparison"]["groups"].append({"sample_id": sid, "disposition": "no-update-terminal-tie", "experience_source": {"fixture": True}})
     roster = json.loads((w["data"] / "roster.json").read_text())
     roster["items"].append({"sample_id": sid, "stratum": "all"})
     from speech_aware_evidence_acquisition.core.roster import split_identity_hash

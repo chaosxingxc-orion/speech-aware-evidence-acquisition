@@ -185,7 +185,7 @@ def test_prepared_complete_episode_reaches_actual_shared_fit_and_send(summary_wo
 
 
 def exercise_shared_fit_and_send(world_inputs, tmp_path, text_only, *, prepared_spec=None,
-                                 baseline=None, comparison=False, group_update=False,
+                                 baseline=None, comparison=False, group_update=False, batch_update=False,
                                  output_text="The whole episode ends in ACCEPT."):
     """Exercise the production binding, executor, request gate and artifact output."""
     from types import SimpleNamespace
@@ -213,7 +213,7 @@ def exercise_shared_fit_and_send(world_inputs, tmp_path, text_only, *, prepared_
     repo = tmp_path / "updater-repo"
     roster_path = repo / "docs/receipts/rosters/construction.json"
     roster_path.parent.mkdir(parents=True)
-    roster_path.write_bytes((data / "roster.json").read_bytes())
+    roster_path.write_bytes((data / binding["construction_roster"]["relpath"]).read_bytes())
     project = Path(__file__).resolve().parents[2]
     values = json.loads((project / "configs/baseline/system-trajectory-summary-v1.json").read_text())
     if text_only:
@@ -309,7 +309,11 @@ def exercise_shared_fit_and_send(world_inputs, tmp_path, text_only, *, prepared_
         else:
             assert sent["speech_feature_parts"]
         context = json.loads(sent["history"][0]["content"])
-        if group_update:
+        if batch_update:
+            assert context["stage"] == "complete-system-batch-update"
+            assert context["group_operations"] and context["existing_experiences"] == []
+            assert receipt["input_stage"] == "complete-system-batch-update"
+        elif group_update:
             assert context["stage"] == "complete-system-group-update"
             assert context["new_experiences"] and context["existing_experiences"] == []
             assert receipt["input_stage"] == "complete-system-group-update"

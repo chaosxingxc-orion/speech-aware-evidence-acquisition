@@ -405,7 +405,8 @@ def validate_artifact_result_binding(
     prepared_spec = values.get("prepared_training_feedback")
     if (isinstance(prepared_spec, Mapping)
             and prepared_spec.get("schema") in {"saea-prepared-system-comparison-v1",
-                                               "saea-prepared-system-group-update-v1"}
+                                               "saea-prepared-system-group-update-v1",
+                                               "saea-prepared-system-batch-update-v1"}
             and not prepared_text):
         raise FlightRuntimeError("semantic update stages require the prepared text arm")
     if prepared_text:
