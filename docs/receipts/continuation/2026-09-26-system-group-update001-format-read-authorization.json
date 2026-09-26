@@ -1,0 +1,46 @@
+{
+  "schema": "saea-scientific-read-authorization-v1",
+  "recorded_at": "2026-09-26T09:47:53.300078+00:00",
+  "scope": "Root reads and verifies the sealed whole-system group-update proposal before bounded batch synthesis. Preserve all raw proposals; no manual correction or runtime memory activation.",
+  "manifest": {
+    "relpath": "runs/SAEA-SLURP-STAGE3-SYSTEM-GROUP-UPDATE001-FORMAT-NP1-RUN-V1/attempt-slurp-stage3-system-group-update001-format-np1-run-v1/SAEA-SLURP-STAGE3-SYSTEM-GROUP-UPDATE001-FORMAT-NP1-RUN-V1.run-manifest.json",
+    "sha256": "31cfd4c0fc8c9484563073529e29900caef60ebd810a8d415001952f7ca43fbe"
+  },
+  "worker_commit": "30847ec6a457973d59d2a1204dbf5f050d357754",
+  "closure": {
+    "mode": "arm",
+    "run_id": "SAEA-SLURP-STAGE3-SYSTEM-GROUP-UPDATE001-FORMAT-NP1-RUN-V1",
+    "attempt_id": "attempt-slurp-stage3-system-group-update001-format-np1-run-v1",
+    "pass": true,
+    "fails": [],
+    "attempt_state": "FINALIZED",
+    "actual": {
+      "audio_seconds": 3.5835,
+      "calls": 1
+    },
+    "result_kind": "artifact",
+    "bundle_verified": true,
+    "manifest_status": "COMPLETED",
+    "study_commit": "30847ec6a457973d59d2a1204dbf5f050d357754",
+    "dirt": [],
+    "rows": 1,
+    "distinct": 1,
+    "dispositions": {},
+    "contacts_per_row_hist": {},
+    "score_jobs": 0,
+    "expected_score_jobs": 0,
+    "requests": 1,
+    "requests_with_tool_schemas": 0,
+    "sha256_run-manifest": "31cfd4c0fc8c9484563073529e29900caef60ebd810a8d415001952f7ca43fbe",
+    "sha256_outputs": "b963eca1aa4334378bb238418972b88f500aaab895777369a4a1a97d7ca37d30"
+  },
+  "launch_epoch": {
+    "at": "2026-09-26T09:46:32Z",
+    "event": "driver-start",
+    "detail": {
+      "flight_commit": "30847ec6a457973d59d2a1204dbf5f050d357754",
+      "queue": "/home/chao/batch-queue.json"
+    }
+  },
+  "source_dispatch": "coordination/slurp-system-batch001-v1/group-update-format-v1/generation-dispatch.json"
+}

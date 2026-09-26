@@ -1,0 +1,24 @@
+{
+  "schema": "saea-semantic-stage-resource-audit-v1",
+  "start_at": "2026-09-26T09:46:32Z",
+  "end_at": "2026-09-26T09:47:38Z",
+  "manifest": {
+    "relpath": "runs/SAEA-SLURP-STAGE3-SYSTEM-GROUP-UPDATE001-FORMAT-NP1-RUN-V1/attempt-slurp-stage3-system-group-update001-format-np1-run-v1/SAEA-SLURP-STAGE3-SYSTEM-GROUP-UPDATE001-FORMAT-NP1-RUN-V1.run-manifest.json",
+    "sha256": "31cfd4c0fc8c9484563073529e29900caef60ebd810a8d415001952f7ca43fbe"
+  },
+  "generation_contacts": 1,
+  "live_fit_contacts": 3,
+  "separate_capacity_contacts": 3,
+  "official_scores": 0,
+  "prompt_tokens": 9779,
+  "completion_tokens": 198,
+  "output_cap": 2048,
+  "resource_samples": 39,
+  "peak_gpu_used_mib": 20456.0,
+  "min_gpu_free_mib": 3682.0,
+  "min_windows_available_gib": 29.452220916748047,
+  "decisions": {
+    "admit": 39
+  },
+  "scope": "Observed campaign window. Structural validity is not semantic fidelity or task efficacy."
+}

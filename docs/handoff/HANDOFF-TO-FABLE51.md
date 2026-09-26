@@ -5,6 +5,39 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Operation-interface successor complete; semantic learning is still unqualified
+
+Checkpoint: 2026-09-26T09:47:38Z. The one-shot constrained group updater
+FINALIZED with one generation, three live fits and zero official scores.
+Root registered reading and verified three valid ADD/null operations, with
+the other three source groups retaining their terminal-tie dispositions.
+Input 9779 / output 198 of 2048; real fit margin 37323. Raw source history,
+task instruction and non-format decoding match the original updater.
+
+This resolves the named operation-identity interface case, not semantic
+credit. Generated lessons still rely on nonexistent tool events and unsupported
+attribution. No runtime memory, batch synthesis or next actor batch has run.
+Read docs/results/2026-09-26-system-group-update001-format-verdict.md.
+The earlier first-batch no-update closure remains immutable for its own branch.
+
+The current driver epoch started 09:46:32Z and completed 09:47:38Z; its completed
+queue and healthy resident idle service are known, not a new stall.
+The launch, read and resource receipts use the system-group-update001-format
+prefix. New worker /home/chao/saea-worktrees/codex-system-operation-format-20260926
+is frozen at 30847ec6a457973d59d2a1204dbf5f050d357754. Its branch was merged to
+master and deleted before generation. Preserve all older source workers.
+
+Next finish bounded provisional synthesis with registered real fit, then test
+machine-grounded whole-system event/transition credit as a distinct algorithm
+variant. Do not hand-rewrite lessons or call format validity an RL gain.
+Any next actor comparison must uniformly repair the tool/prompt mismatch in
+learned and empty-memory controls. Keep four inputs/four trajectories and
+two actor slots; update after each complete batch, with prefixes frozen within it.
+Full B1080 matched evaluation and same-roster replication remain required.
+Batch002 and runtime memory remain held pending those concrete bindings.
+DEV6570/test13078 and all closed research lines remain closed.
+No immediate owner decision is needed for the already authorized next work.
+
 ## First learning batch closed: no update; interface and credit failures separated
 
 Checkpoint: 2026-09-26T09:15:28Z. The one-row group updater finalized with
