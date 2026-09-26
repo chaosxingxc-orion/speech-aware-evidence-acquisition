@@ -77,6 +77,8 @@ from .a2t_selected_tool_ground import SelectedToolDecisionGround
 from .errors import RailsError
 from .hashing import content_hash
 from .kb_policy import (
+    AGREEMENT_DIMENSIONS,
+    EXEMPLAR_INTENT_AGREEMENT_DIMENSION,
     FUSE_POLICY_ID,
     RANK_POLICY_ID,
     FuseKnobs,
@@ -532,6 +534,49 @@ def _render_kb_supply_packet(
     ).validate()
 
 
+def _validated_agreement_scores(
+    table: Mapping[str, Mapping[str, float]],
+) -> dict[str, dict[str, float]]:
+    """Shape-check a per-row agreement table before it can reach a ranker.
+
+    ``{sample_id: {facet_id: share}}`` with every share a finite float in
+    ``[0, 1]``. Fail-closed on anything else, because the ranker sums this
+    number against a cosine and an out-of-range value would silently
+    outrank the whole recalled set (the defect
+    ``rails.kb_policy._dimension_scales`` documents for prior mass).
+    """
+
+    if not isinstance(table, Mapping):
+        raise RailsError("KbFacetProvider: agreement_scores must be a mapping")
+    checked: dict[str, dict[str, float]] = {}
+    for sample_id, row in table.items():
+        if not isinstance(sample_id, str) or not sample_id:
+            raise RailsError("KbFacetProvider: agreement_scores keys must be sample ids")
+        if not isinstance(row, Mapping):
+            raise RailsError(
+                f"KbFacetProvider: agreement_scores[{sample_id!r}] must be a mapping"
+            )
+        decoded: dict[str, float] = {}
+        for facet_id, score in row.items():
+            if not isinstance(facet_id, str) or not facet_id:
+                raise RailsError(
+                    f"KbFacetProvider: agreement_scores[{sample_id!r}] keys must be facet ids"
+                )
+            if (
+                isinstance(score, bool)
+                or not isinstance(score, (int, float))
+                or not math.isfinite(float(score))
+                or not 0.0 <= float(score) <= 1.0
+            ):
+                raise RailsError(
+                    f"KbFacetProvider: agreement_scores[{sample_id!r}][{facet_id!r}] "
+                    "must be a finite share within [0, 1]"
+                )
+            decoded[facet_id] = float(score)
+        checked[sample_id] = decoded
+    return checked
+
+
 class KbFacetProvider(KnowledgeProvider):
     """Wraps the SLURP facet-KB layer: ``build`` resolves and calls a
     ``core.base.KNOWLEDGE_BUILDERS``-registered builder (e.g.
@@ -556,6 +601,8 @@ class KbFacetProvider(KnowledgeProvider):
         top_k_per_dimension: int = 5,
         facet_vectors: Callable[[str], Mapping[str, Sequence[float]]] | None = None,
         prepared_recall: Mapping[str, Mapping[str, Mapping[str, float]]] | None = None,
+        agreement_scores: Mapping[str, Mapping[str, float]] | None = None,
+        agreement_dimension: str = EXEMPLAR_INTENT_AGREEMENT_DIMENSION,
     ) -> None:
         super().__init__(provider_id=provider_id)
         self._build_spec = build_spec
@@ -572,6 +619,16 @@ class KbFacetProvider(KnowledgeProvider):
         self._top_k_per_dimension = top_k_per_dimension
         self._facet_vectors = facet_vectors or (lambda facet_id: {})
         self._prepared_recall = prepared_recall
+        if agreement_dimension not in AGREEMENT_DIMENSIONS:
+            raise RailsError(
+                "KbFacetProvider: agreement_dimension must name a reserved "
+                f"rails.kb_policy.AGREEMENT_DIMENSIONS entry, got "
+                f"{agreement_dimension!r}"
+            )
+        self._agreement_dimension = agreement_dimension
+        self._agreement_scores = (
+            None if agreement_scores is None else _validated_agreement_scores(agreement_scores)
+        )
         self._last_query_state: QueryState | None = None
         self._last_recall_scores: Mapping[str, Mapping[str, float]] | None = None
         self._last_rank_result: object | None = None
@@ -596,6 +653,54 @@ class KbFacetProvider(KnowledgeProvider):
     def _built_sample_ids(self) -> frozenset[str]:
         snapshot: KnowledgeSnapshot = self._built_object()
         return frozenset(snapshot.source_sample_ids)
+
+    def _merge_agreement(
+        self,
+        query_state: object,
+        recall_scores: Mapping[str, Mapping[str, float]],
+    ) -> Mapping[str, Mapping[str, float]]:
+        """Add this row's AGREEMENT signal to the recalled candidates, or
+        return the recall untouched when no signal was supplied.
+
+        Three properties, each of them a refusal rather than a default.
+
+        NO SIGNAL, NO CHANGE. Without ``agreement_scores`` the recall is
+        returned as the identical object, so the ranker sees byte-identical
+        input and the legacy cross-dimension agreement term stays in force
+        (``rails.kb_policy._rank_weighted_cosine_prior_agreement``).
+
+        A MISSING ROW IS REFUSED, NEVER SCORED ZERO. A row the signal does not
+        cover is a preparation defect -- its exemplar recall was never
+        computed -- and scoring it 0.0 would quietly fly the comparator's
+        ranking under the treatment's identity on that row. The 2026-09-26
+        retrieval read found exactly this shape of silent ``.get()``/``continue``
+        skip elsewhere; it is not reproduced here.
+
+        ONLY RECALLED CANDIDATES ARE TOUCHED. A facet the recall did not admit
+        gains no entry, because no downstream stage ranks an unrecalled facet
+        (same read, section 2: an entry at or below zero cosine has no rank and
+        no reweighting reaches it). Within a covered row, a recalled facet the
+        table gives no share is a ZERO vote, which is a real measurement, and
+        is recorded as ``0.0``.
+        """
+
+        if self._agreement_scores is None:
+            return recall_scores
+        sample_id = getattr(query_state, "query_sample_id", None)
+        if not isinstance(sample_id, str) or sample_id not in self._agreement_scores:
+            raise RailsError(
+                "KbFacetProvider: the supplied agreement signal has no row for "
+                f"query sample {sample_id!r}; a missing row is refused rather than "
+                "scored 0.0"
+            )
+        row = self._agreement_scores[sample_id]
+        return {
+            facet_id: {
+                **dim_scores,
+                self._agreement_dimension: row.get(facet_id, 0.0),
+            }
+            for facet_id, dim_scores in recall_scores.items()
+        }
 
     def candidates(self, query: object, *, k: int) -> Ranking:
         if isinstance(k, bool) or not isinstance(k, int) or k <= 0:
@@ -635,6 +740,7 @@ class KbFacetProvider(KnowledgeProvider):
                     "KbFacetProvider: prepared recall lacks this query sample"
                 )
             recall_scores = self._prepared_recall[sample_id]
+        recall_scores = self._merge_agreement(query_state, recall_scores)
         rank_result = self._ranker(
             snapshot_sha256=self.snapshot_sha256(),
             query_state=query_state,

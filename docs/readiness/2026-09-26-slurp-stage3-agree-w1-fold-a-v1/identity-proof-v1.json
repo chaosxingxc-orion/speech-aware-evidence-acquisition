@@ -1,0 +1,89 @@
+{
+  "contact_class": "model-free",
+  "contacts": {
+    "embedder": 0,
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api": 0,
+    "scorer": 0,
+    "server": 0
+  },
+  "recomputed_default_at_this_implementation": {
+    "contact_class": "model-free",
+    "file_sha256": "f03e40aa0e68744310dfdbf0b33553161e30f713a7b6c66579db300292a9fa5f",
+    "implementation": {
+      "runtime": "ee97b82a20cb34feaf7987e61c810592fdc84e796a42777a893140a0f825e1b8",
+      "speech_aware_evidence_acquisition.rails.kb_policy": "92cf457a2fcf1594050a4b23fe4d9443ff27927fbb0498e838d95638f5a49b8a",
+      "speech_aware_evidence_acquisition.rails.knowledge_provider": "5c7f1ae485f62fc8dc64ad4c24a2ef6846f5372d923bc80c0d69b31876b245db",
+      "speech_aware_evidence_acquisition.rails.knowledge_stores": "2740d2e262de8c29f4309c378b4c08c51a206f2ab8ee542b46919cf32099368a",
+      "speech_aware_evidence_acquisition.rails.phase_supply": "c315c35959489cc89fd07aeaf408c32cd73123ae8f19e61b91c1f123093f10ce"
+    },
+    "kind": "phase-supply",
+    "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1/phase-supply-v1.json",
+    "rows": 1080,
+    "selected_value_ids": 8624,
+    "supply_spec_declares_agreement_source": false,
+    "supply_spec_rank_weights": {
+      "w_agree": 0.0,
+      "w_cos": 1.0,
+      "w_prior": 0.0
+    }
+  },
+  "schema": "saea-agreement-default-identity-proof-v1",
+  "sealed_comparator": {
+    "contact_class": "model-free",
+    "file_sha256": "50da0c7bdaa756fb47abffefdaaa8f920f654b79f60905ca06a911067e6301c6",
+    "implementation": {
+      "runtime": "daa4c9fb7b2269d8b3ecf7fd7f8855867d207cce2d2d6182760189b3cd631409",
+      "speech_aware_evidence_acquisition.rails.kb_policy": "327e3858d8a68ac6dd923109fe633506eba26e7d4d88cbb5fffce5d47ee32995",
+      "speech_aware_evidence_acquisition.rails.knowledge_provider": "f399bbd1be8e10dc96fd72975e152e4b1350c7d73baad3af1ebffec6c42c4f00",
+      "speech_aware_evidence_acquisition.rails.knowledge_stores": "11c6fc246bb05811064903dcabd693a70360e4761b4ff34256fa8d25eb969e21",
+      "speech_aware_evidence_acquisition.rails.phase_supply": "c7c87d99f309604efca6d8b73617b125162be55620510f7d8665de8eb4d144f2"
+    },
+    "kind": "phase-supply",
+    "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "relpath": "prepared/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1/phase-supply-v1.json",
+    "rows": 1080,
+    "selected_value_ids": 8624,
+    "supply_spec_declares_agreement_source": false,
+    "supply_spec_rank_weights": {
+      "w_agree": 0.0,
+      "w_cos": 1.0,
+      "w_prior": 0.0
+    }
+  },
+  "treatment": {
+    "contact_class": "model-free",
+    "file_sha256": "be70d4d0fa990a1b064ebb28f4c598d5424ea5ccaca6a66f7503154c5b1e6600",
+    "implementation": {
+      "runtime": "ee97b82a20cb34feaf7987e61c810592fdc84e796a42777a893140a0f825e1b8",
+      "speech_aware_evidence_acquisition.rails.kb_policy": "92cf457a2fcf1594050a4b23fe4d9443ff27927fbb0498e838d95638f5a49b8a",
+      "speech_aware_evidence_acquisition.rails.knowledge_provider": "5c7f1ae485f62fc8dc64ad4c24a2ef6846f5372d923bc80c0d69b31876b245db",
+      "speech_aware_evidence_acquisition.rails.knowledge_stores": "2740d2e262de8c29f4309c378b4c08c51a206f2ab8ee542b46919cf32099368a",
+      "speech_aware_evidence_acquisition.rails.phase_supply": "c315c35959489cc89fd07aeaf408c32cd73123ae8f19e61b91c1f123093f10ce"
+    },
+    "kind": "phase-supply",
+    "output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v1.json",
+    "rows": 1080,
+    "selected_value_ids": 8624,
+    "supply_spec_declares_agreement_source": true,
+    "supply_spec_rank_weights": {
+      "w_agree": 1.0,
+      "w_cos": 1.0,
+      "w_prior": 0.0
+    }
+  },
+  "verdict": {
+    "default_file_hash_moved_as_expected": true,
+    "default_implementation_moved": true,
+    "default_output_identical": true,
+    "rows_match": true,
+    "selected_value_ids_match": true,
+    "treatment_output_differs_from_default": true
+  },
+  "what_this_does_and_does_not_prove": "PROVES: at w_agree 0.0 and with no agreement_source declared, the first-phase selection this repository prepares at the changed implementation is byte-identical to the selection a real flight already consumed -- same value ids, same order, same canonical bytes, on every row -- so the rendered Perception block is unchanged. DOES NOT PROVE: anything about the treatment's effect on any score. The treatment digest is reported only to show the change is not inert."
+}

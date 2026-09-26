@@ -2128,7 +2128,10 @@ class FlightRuntime:
     ) -> dict[str, tuple[tuple[str, str], ...]]:
         """Return a coarse UTF-8 volume envelope for traced supply blocks.
 
-        Ordinary retrieval contributes the longest values allowed by k and,
+        Ordinary retrieval contributes the longest values its fuser can
+        DELIVER -- ``min(k, top_l)`` under ``saea-fuse-associated-values-v1``,
+        whose ``top_l`` is a hard cap on the total, and ``k`` under every other
+        fuser, where it is not (see the inline note at ``value_width``) -- and,
         when exposed, the longest facets allowed by m. Candidate-conditioned
         retrieval contributes the longest rendered values allowed by
         max_total_values unless the route is withheld. These are conservative
@@ -2148,6 +2151,7 @@ class FlightRuntime:
         from ...rails.candidate_semantic_supply import (  # noqa: PLC0415
             load_candidate_semantic_supply_specs,
         )
+        from ...rails import kb_policy as _kb_policy  # noqa: PLC0415 (cycle guard)
         from ...rails.phase_supply import (  # noqa: PLC0415 (cycle guard)
             load_phase_supply_specs,
         )
@@ -2199,7 +2203,44 @@ class FlightRuntime:
                                 f"{visible['text']}"
                             )
                         blocks.append((text, "key"))
-                for value in by_length[: spec.k]:
+                # THE DELIVERED WIDTH, NOT THE RECALL WIDTH (2026-09-26).
+                #
+                # ``spec.k`` is the provider's ``top_k_per_dimension`` -- how
+                # many candidates the RECALL admits -- and it bounded the block
+                # volume here because in every cell committed before today
+                # ``k == fuse_coverage.top_l == fuse_coverage.m``, so the two
+                # widths were the same number and the docstring above could say
+                # "the longest values allowed by k" without ambiguity.
+                #
+                # They are not the same number once a cell recalls wider than it
+                # delivers, which is what the intent-boundary agreement cell does
+                # (recall 60, deliver 8): counting 60 blocks for a request that
+                # carries 8 made the pre-flight budget refuse 30,309 rendered
+                # tokens against a 24,576-token slot for a request whose own
+                # prepared first-phase artifact contains exactly 8 value ids per
+                # row. A bound that refuses a request it has itself proven to be
+                # 19,449 tokens is not conservative, it is wrong.
+                #
+                # THE NARROWING IS PROVABLY SAFE AND IS APPLIED ONLY WHERE IT IS.
+                # ``saea-fuse-associated-values-v1`` stops at ``top_l`` values
+                # OVERALL -- ``if len(selected) == resolved.top_l: break`` in
+                # ``rails.kb_policy`` -- so ``top_l`` is a hard cap on the number
+                # of values that fuser can ever select, whatever ``k`` admits.
+                # Every OTHER fuser keeps ``spec.k`` exactly as before, because
+                # ``saea-fuse-supplyfilter-v1`` selects up to ``c`` values per
+                # ``task_target`` over ``top_l`` targets and a single facet may
+                # carry several values, so ``top_l`` is not a cap for it and
+                # narrowing there could UNDER-count.
+                #
+                # IDENTITY ON EVERY COMMITTED CELL: of the 174 committed specs
+                # using this fuser, 171 declare k = top_l = 8, two declare
+                # 16 = 16, and one declares k = 60 with top_l = 61 -- so
+                # ``min`` returns today's ``spec.k`` in all 174 cases and no
+                # existing bound, receipt or budget verdict moves.
+                value_width = spec.k
+                if spec.fuse_policy == _kb_policy.ASSOCIATED_VALUES_FUSE_POLICY_ID:
+                    value_width = min(spec.k, spec.fuse_knobs().top_l)
+                for value in by_length[:value_width]:
                     if store_id is None:
                         text = f"[evidence {value.value_id}] {value.content}"
                     else:

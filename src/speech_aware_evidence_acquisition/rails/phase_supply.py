@@ -113,6 +113,7 @@ from .controllers import PhaseProgram, PhaseSupply
 from .errors import RailsError
 from .knowledge import KnowledgeSnapshot, QueryState
 from .kb_policy import (
+    EXEMPLAR_INTENT_AGREEMENT_DIMENSION,
     FuseKnobs,
     RankWeights,
     _argmax_labels,
@@ -133,9 +134,21 @@ SEALED_SEGMENT_VECTORS_KIND = "sealed-segment-vectors"
 #: contact. Declaring it keeps the refusal specific instead of generic.
 EMBEDDING_SERVER_KIND = "embedding-server"
 
+#: A pre-computed, receipt-pinned per-row AGREEMENT table -- the same
+#: bootstrap shape as :data:`SEALED_VECTORS_KIND`: a JSONL file under
+#: ``SPEECHRL_DATA_DIR``, produced BEFORE the flight under its own
+#: tool-contact ledger row, hash-verified by its reader. It is legal on
+#: ``agreement_source`` only, never on a query or a facet source, because it
+#: carries no vector: see :func:`load_sealed_agreement`.
+SEALED_AGREEMENT_KIND = "sealed-agreement"
+
 VECTOR_SOURCE_KINDS = frozenset(
     {SEALED_VECTORS_KIND, SEALED_SEGMENT_VECTORS_KIND, EMBEDDING_SERVER_KIND}
 )
+
+#: The kinds :func:`_validated_source` accepts at all. ``sealed-agreement``
+#: is gated to the agreement slot inside that function.
+SOURCE_KINDS = VECTOR_SOURCE_KINDS | {SEALED_AGREEMENT_KIND}
 
 _SPEC_KEYS = frozenset(
     {
@@ -147,6 +160,7 @@ _SPEC_KEYS = frozenset(
         "dimensions",
         "query_source",
         "facet_source",
+        "agreement_source",
         "rank_weights",
         "fuse_coverage",
         "alpha",
@@ -161,6 +175,12 @@ _FUSE_COVERAGE_KEYS = frozenset({"m", "c", "top_l"})
 _SOURCE_AUDIO_BINDING_KEYS = frozenset(
     {"packet_id", "packet_sha256", "source_audio_sha256"}
 )
+
+#: How far a row's agreement shares may drift from 1.0 before
+#: :func:`load_sealed_agreement` refuses the file. A share set is a vote count
+#: divided by its own total, so the only legal drift is IEEE-754 accumulation
+#: over at most a few dozen terms.
+_AGREEMENT_SUM_TOLERANCE = 1e-9
 
 _SHA256_CHARS = frozenset("0123456789abcdef")
 
@@ -438,7 +458,12 @@ def assert_phase_supply_queries_carry_speech(values: Mapping[str, object]) -> No
 
 
 def _validated_source(
-    source: object, *, field: str, required: bool, is_query: bool = False
+    source: object,
+    *,
+    field: str,
+    required: bool,
+    is_query: bool = False,
+    is_agreement: bool = False,
 ) -> Mapping[str, object] | None:
     if source is None:
         if required:
@@ -453,9 +478,21 @@ def _validated_source(
             f"{sorted(_SOURCE_KEYS)}"
         )
     kind = source.get("kind")
-    if kind not in VECTOR_SOURCE_KINDS:
+    if kind not in SOURCE_KINDS:
         raise PhaseSupplyError(
-            f"{field}.kind must be one of {sorted(VECTOR_SOURCE_KINDS)}, got {kind!r}"
+            f"{field}.kind must be one of {sorted(SOURCE_KINDS)}, got {kind!r}"
+        )
+    # ``sealed-agreement`` carries shares, not vectors, so it is legal in the
+    # agreement slot ONLY -- and that slot takes nothing else, because every
+    # other kind would have to be recalled against and this one is merged.
+    if is_agreement and kind != SEALED_AGREEMENT_KIND:
+        raise PhaseSupplyError(
+            f"{field}.kind must be {SEALED_AGREEMENT_KIND!r}, got {kind!r}"
+        )
+    if kind == SEALED_AGREEMENT_KIND and not is_agreement:
+        raise PhaseSupplyError(
+            f"{field}.kind={SEALED_AGREEMENT_KIND!r} is agreement-only; a query or "
+            "facet source must carry a vector kind"
         )
     if kind == EMBEDDING_SERVER_KIND:
         # Structurally legal to DECLARE so the refusal below can name it, but
@@ -497,6 +534,15 @@ class PhaseSupplySpec:
     dimensions: tuple[str, ...]
     query_source: Mapping[str, object]
     facet_source: Mapping[str, object] | None = None
+    #: A pre-computed per-row AGREEMENT table, pinned exactly the way
+    #: ``facet_source`` pins the key vectors: ``kind``
+    #: :data:`SEALED_AGREEMENT_KIND`, ``relpath``, ``sha256``,
+    #: ``tool_contact_ledger_row``, ``embedded_signal``. When present, the
+    #: provider merges this row's shares into the recall under
+    #: ``rails.kb_policy.EXEMPLAR_INTENT_AGREEMENT_DIMENSION``, so the
+    #: registered ranker's own ``w_agree`` reads it. The flown default declares
+    #: nothing here and is byte-unchanged.
+    agreement_source: Mapping[str, object] | None = None
     rank_weights: Mapping[str, object] | None = None
     fuse_coverage: Mapping[str, object] | None = None
     alpha: float | None = None
@@ -545,6 +591,20 @@ class PhaseSupplySpec:
             field=f"phase_supply[{self.phase!r}].facet_source",
             required=False,
         )
+        _validated_source(
+            self.agreement_source,
+            field=f"phase_supply[{self.phase!r}].agreement_source",
+            required=False,
+            is_agreement=True,
+        )
+        if self.agreement_source is not None and self.rank_weights is None:
+            # A supplied agreement signal that no weight reads is dead config,
+            # and the flown default's w_agree is 0.0, so the weights must be
+            # explicit for the declaration to mean anything.
+            raise PhaseSupplyError(
+                f"phase_supply[{self.phase!r}].agreement_source requires explicit "
+                "rank_weights; the agreement signal is read only through w_agree"
+            )
         if self.rank_weights is not None:
             if (
                 not isinstance(self.rank_weights, Mapping)
@@ -577,8 +637,21 @@ class PhaseSupplySpec:
         return self
 
     def as_json(self) -> dict[str, object]:
+        """The identity view every prepared artifact binds
+        (``core.flight.FlightRuntime._phase_seed_inputs``, key ``supply_spec``).
+
+        ``agreement_source`` is emitted ONLY when declared, unlike the other
+        optional keys, which emit ``None``. That asymmetry is deliberate and is
+        the narrower of the two honest options: a cell that declares no
+        agreement signal keeps a byte-identical ``supply_spec``, so the only
+        thing that moves its prepared-artifact identity is the ``implementation``
+        hash every edit to this module moves anyway. Emitting ``None`` here
+        would additionally perturb the identity of every cell in the repository
+        for no information gain.
+        """
+
         self.validate()
-        return {
+        document: dict[str, object] = {
             "phase": self.phase,
             "provider": self.provider,
             "rank_policy": self.rank_policy,
@@ -599,6 +672,9 @@ class PhaseSupplySpec:
             "alpha": self.alpha,
             "expose_facets": self.expose_facets,
         }
+        if self.agreement_source is not None:
+            document["agreement_source"] = dict(self.agreement_source)
+        return document
 
     def rank_weights_or_none(self) -> RankWeights | None:
         if self.rank_weights is None:
@@ -682,12 +758,139 @@ def load_phase_supply_specs(
             ),
             query_source=entry.get("query_source"),
             facet_source=entry.get("facet_source"),
+            agreement_source=entry.get("agreement_source"),
             rank_weights=entry.get("rank_weights"),
             fuse_coverage=entry.get("fuse_coverage"),
             alpha=entry.get("alpha"),
             expose_facets=bool(entry.get("expose_facets", False)),
         ).validate()
     return specs
+
+
+#: The JSONL schema :func:`load_sealed_agreement` accepts, stamped on every
+#: line by its producer so a file of another shape is refused by name.
+SEALED_AGREEMENT_SCHEMA = "saea-phase-agreement-v1"
+
+#: The exact key set one ``saea-phase-agreement-v1`` line carries.
+_AGREEMENT_LINE_KEYS = frozenset(
+    {"schema", "id", "dimension", "scores", "vote_total", "self_excluded"}
+)
+
+
+def load_sealed_agreement(
+    path: Path,
+    *,
+    expected_sha256: str,
+    dimension: str,
+    facet_ids: Sequence[str] | None = None,
+) -> Mapping[str, Mapping[str, float]]:
+    """``{sample_id: {facet_id: share}}`` from a receipt-pinned JSONL file.
+
+    The AGREEMENT half of the boundary channel's own pre-flight bootstrap:
+    the key vectors are pinned by ``facet_source`` and read by
+    :func:`load_sealed_vectors`; this table is pinned by ``agreement_source``
+    and read here, under the same discipline -- the file exists, its bytes
+    hash to the configured digest, every line is well-formed, and nothing is
+    defaulted.
+
+    Fail-closed on: a missing file; a sha256 that is not the configured one; a
+    malformed or unexpectedly-keyed line; a line stamped with another schema or
+    another dimension; a duplicate sample id; a share that is not a finite
+    number in ``[0, 1]``; a vote total or self-exclusion count that is not a
+    non-negative integer; a row whose shares do not sum to 1 (within
+    :data:`_AGREEMENT_SUM_TOLERANCE`) while it claims a positive vote total;
+    and -- when ``facet_ids`` is given -- a facet id absent from the target
+    snapshot, which would be a share the ranker can never reach.
+    """
+
+    resolved = Path(path)
+    if not resolved.is_file():
+        raise PhaseSupplyError(f"sealed agreement file {resolved} does not exist")
+    raw = resolved.read_bytes()
+    measured = hashlib.sha256(raw).hexdigest()
+    if measured != _require_sha256(expected_sha256, field="expected_sha256"):
+        raise PhaseSupplyError(
+            f"sealed agreement file {resolved} hashes to {measured}, not the configured "
+            f"{expected_sha256}"
+        )
+    _require_text(dimension, field="load_sealed_agreement dimension")
+    allowed_facets = None if facet_ids is None else set(facet_ids)
+    table: dict[str, Mapping[str, float]] = {}
+    for number, line in enumerate(raw.decode("utf-8").splitlines(), start=1):
+        if not line.strip():
+            continue
+        try:
+            document = json.loads(line)
+        except json.JSONDecodeError as error:
+            raise PhaseSupplyError(
+                f"{resolved} line {number} is not valid JSON: {error}"
+            ) from None
+        if not isinstance(document, Mapping) or set(document) != _AGREEMENT_LINE_KEYS:
+            raise PhaseSupplyError(
+                f"{resolved} line {number} must be an object with exactly "
+                f"{sorted(_AGREEMENT_LINE_KEYS)}"
+            )
+        if document["schema"] != SEALED_AGREEMENT_SCHEMA:
+            raise PhaseSupplyError(
+                f"{resolved} line {number} declares schema {document['schema']!r}, not "
+                f"{SEALED_AGREEMENT_SCHEMA!r}"
+            )
+        if document["dimension"] != dimension:
+            raise PhaseSupplyError(
+                f"{resolved} line {number} declares dimension "
+                f"{document['dimension']!r}, not the configured {dimension!r}"
+            )
+        entry_id = _require_text(document["id"], field=f"{resolved} line {number} id")
+        if entry_id in table:
+            raise PhaseSupplyError(f"{resolved} has a duplicate id {entry_id!r}")
+        for name in ("vote_total", "self_excluded"):
+            count = document[name]
+            if isinstance(count, bool) or not isinstance(count, int) or count < 0:
+                raise PhaseSupplyError(
+                    f"{resolved} line {number} {name!r} must be a non-negative integer"
+                )
+        scores = document["scores"]
+        if not isinstance(scores, Mapping):
+            raise PhaseSupplyError(
+                f"{resolved} line {number} 'scores' must be an object"
+            )
+        row: dict[str, float] = {}
+        for facet_id, share in scores.items():
+            if not isinstance(facet_id, str) or not facet_id:
+                raise PhaseSupplyError(
+                    f"{resolved} line {number} 'scores' keys must be facet ids"
+                )
+            if allowed_facets is not None and facet_id not in allowed_facets:
+                raise PhaseSupplyError(
+                    f"{resolved} line {number} scores a facet id the target snapshot "
+                    "does not declare"
+                )
+            if (
+                isinstance(share, bool)
+                or not isinstance(share, (int, float))
+                or not math.isfinite(float(share))
+                or not 0.0 <= float(share) <= 1.0
+            ):
+                raise PhaseSupplyError(
+                    f"{resolved} line {number} carries a share that is not a finite "
+                    "number within [0, 1]"
+                )
+            row[facet_id] = float(share)
+        total = sum(row.values())
+        if document["vote_total"] > 0:
+            if abs(total - 1.0) > _AGREEMENT_SUM_TOLERANCE:
+                raise PhaseSupplyError(
+                    f"{resolved} line {number} claims {document['vote_total']} votes but "
+                    f"its shares sum to {total!r}, not 1.0"
+                )
+        elif row:
+            raise PhaseSupplyError(
+                f"{resolved} line {number} claims no votes yet carries shares"
+            )
+        table[entry_id] = row
+    if not table:
+        raise PhaseSupplyError(f"{resolved} carries no agreement rows")
+    return table
 
 
 def load_sealed_vectors(
@@ -975,6 +1178,7 @@ def build_supply_for_phase(
         str, Mapping[str, Mapping[str, tuple[float, ...]]] | Mapping[str, SealedSegmentQuery]
     ] = {}
     facet_tables: dict[str, Mapping[str, Mapping[str, tuple[float, ...]]]] = {}
+    agreement_tables: dict[str, Mapping[str, Mapping[str, float]] | None] = {}
     provider_factories: dict[str, Callable[[], object]] = {}
     for phase, spec in sorted(specs.items()):
         query_tables[phase] = _load_query_source(
@@ -987,6 +1191,21 @@ def build_supply_for_phase(
                 spec, spec.facet_source, data_root, label="facet_source"
             )
         )
+        # The AGREEMENT table is loaded exactly where and when the key vectors
+        # are: from the same ``data_root``, against the same config-pinned
+        # sha256, before the first decision. Absent declaration, absent load,
+        # absent signal -- so the flown default reaches the provider with
+        # ``agreement_scores=None`` and the recall it ranks is byte-identical.
+        agreement_tables[phase] = (
+            None
+            if spec.agreement_source is None
+            else load_sealed_agreement(
+                data_root / str(spec.agreement_source["relpath"]),
+                expected_sha256=str(spec.agreement_source["sha256"]),
+                dimension=EXEMPLAR_INTENT_AGREEMENT_DIMENSION,
+                facet_ids=sorted(facet.facet_id for facet in snapshot.facets),
+            )
+        )
         provider_factories[phase] = _provider_factory(
             spec,
             snapshot=snapshot,
@@ -994,6 +1213,7 @@ def build_supply_for_phase(
             facet_vectors=facet_tables[phase],
             provider_for_phase=provider_for_phase,
             prepared_recall=(None if prepared_recall_by_phase is None else prepared_recall_by_phase.get(phase)),
+            agreement_scores=agreement_tables[phase],
         )
 
     seeded = set(seed_phases)
@@ -1165,6 +1385,13 @@ def build_supply_for_phase(
     supply_for_phase.facet_vector_rows = {  # type: ignore[attr-defined]
         phase: len(table) for phase, table in facet_tables.items()
     }
+    # Only the phases that DECLARED an agreement signal appear, so a receipt
+    # never claims a table a cell does not carry.
+    supply_for_phase.agreement_rows = {  # type: ignore[attr-defined]
+        phase: len(table)
+        for phase, table in agreement_tables.items()
+        if table is not None
+    }
     supply_for_phase.source_audio_bindings = (  # type: ignore[attr-defined]
         validated_source_bindings
     )
@@ -1179,6 +1406,7 @@ def _provider_factory(
     facet_vectors: Mapping[str, Mapping[str, tuple[float, ...]]],
     provider_for_phase: ProviderForPhase | None,
     prepared_recall: Mapping[str, Mapping[str, Mapping[str, float]]] | None = None,
+    agreement_scores: Mapping[str, Mapping[str, float]] | None = None,
 ) -> Callable[[], object]:
     """A zero-argument factory producing a provider ready for ONE decision.
 
@@ -1191,6 +1419,15 @@ def _provider_factory(
 
     if prepared_recall is not None and (provider_for_phase is not None or spec.provider != "kb-facet-v1"):
         raise PhaseSupplyError("prepared recall requires the shared kb-facet-v1 provider")
+    if agreement_scores is not None and (
+        provider_for_phase is not None or spec.provider != "kb-facet-v1"
+    ):
+        # An INJECTED provider owns its own ranking, so handing it an agreement
+        # table would silently drop the signal the config declared. Refused by
+        # name rather than ignored.
+        raise PhaseSupplyError(
+            "an agreement signal requires the shared kb-facet-v1 provider"
+        )
     if provider_for_phase is not None:
         provider = provider_for_phase(spec.phase)
         if provider is not None:
@@ -1215,6 +1452,7 @@ def _provider_factory(
             top_k_per_dimension=spec.k,
             facet_vectors=lambda facet_id: facet_vectors.get(facet_id, {}),
             prepared_recall=prepared_recall,
+            agreement_scores=agreement_scores,
         )
         provider.adopt(
             snapshot,
@@ -1428,10 +1666,14 @@ __all__ = [
     "EMBEDDING_SERVER_KIND",
     "QUERY_SIGNAL_MODALITIES",
     "QUERY_SIGNAL_SEPARATOR",
+    "SEALED_AGREEMENT_KIND",
+    "SEALED_AGREEMENT_SCHEMA",
     "SEALED_SEGMENT_VECTORS_KIND",
     "SEALED_VECTORS_KIND",
     "SEED_QUERY_ID_PREFIX",
+    "SOURCE_KINDS",
     "VECTOR_SOURCE_KINDS",
+    "load_sealed_agreement",
     "PhaseSupplyError",
     "PhaseSupplySpec",
     "SealedSegmentQuery",

@@ -1,0 +1,57 @@
+{
+  "byte_identity_obligation": {
+    "note": "The A/A cell is the byte-identity proof: its own prepared first-phase supply, minted at the changed implementation, reproduces the sealed comparator's output digest exactly.",
+    "sealed_comparator_output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "this_cell_output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "verified": true
+  },
+  "cell": "slurp-native-stage3-agree-aa-fold-a-v1",
+  "composed_config_hash": "4e55d2958b8ecc954bf264db3d07e15fca83653f8ed44a190babd1e40f777eb6",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-agree-aa-fold-a-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 11880,
+    "planned_speech_audio_seconds": 33930,
+    "protocol_hash": "8007009b17cbeb619bdbe8cf2b89ccfbfcda75a2b63ef0259d7cddef271e8451",
+    "run_id": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over the committed campaign plan configs/campaign/slurp-native-stage3-agree-w1-fold-a-v1.json, which carries the A/A replicate AND the AGREE arm so the two fly in ONE chain; the campaign acquires its own GenerationLease against the resident session and schedules one official score per generation cell at finalize.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-agree-aa-fold-a-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "one_factor": "The intent-boundary Perception channel reads its own registered w_agree term over a pre-computed, self-excluded exemplar-intent vote: w_agree 1.0, w_cos unchanged at 1.0, w_prior unchanged at 0.0, and the DELIVERED width unchanged at 8 entries (fuse_coverage m 8 / c 1 / top_l 8). The RECALL width k moves from 8 to the store's full 60, because k is the provider's top_k_per_dimension and truncates by cosine BEFORE the ranker runs -- at 8 the agreement term is inert, measured. The widening is a proven no-op on its own: the in-chain A/A control carries k 60 at w_agree 0.0 and reproduces the sealed comparator's first-phase output digest AND its rendered request bytes exactly, so the two arms differ in w_agree alone. Nothing else moves.",
+  "plan_kind": "generation",
+  "preparation_base_commit": "c452c048",
+  "prepared_phase_supply": {
+    "note": "THIS CELL'S OWN artifact, built model-free under its own run id by core.flight.cli prepare-supply in this registration (item E16). --allow-output-change must never be passed.",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1/phase-supply-v1.json",
+    "sha256": "f03e40aa0e68744310dfdbf0b33553161e30f713a7b6c66579db300292a9fa5f"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "55336318a1c07bdde8a2b8d690d310282217639a77da94ab9262a6702d74b6e1"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1: The in-chain A/A replicate of cell AGREE. It supplies the within-chain null the AGREE delta is read at and makes no claim of its own.",
+  "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the AGREE arm and its in-chain A/A replicate. A verdict computed against the sealed comparator alone is refused.",
+  "registered_at_utc": "2026-09-26T12:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-agree, branch fable/agree",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}
