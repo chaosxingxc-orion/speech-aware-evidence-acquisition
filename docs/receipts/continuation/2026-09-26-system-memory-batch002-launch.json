@@ -1,0 +1,42 @@
+{
+  "schema": "saea-independent-launch-receipt-v1",
+  "at": "2026-09-26T11:14:15.589080+00:00",
+  "dispatch": {
+    "relpath": "coordination/slurp-system-memory-batch002-v1/generation-dispatch.json",
+    "sha256": "478cccde8651c986d7a8dcc436048a2db352997bf8b3f1e1bd7331b727251cf8"
+  },
+  "driver_epoch": "2026-09-26T11:12:56Z",
+  "campaign_start": "2026-09-26T11:12:59Z",
+  "worker_commit": "569613df788f7c8368203b1adb44946eebe395d8",
+  "worker_path": "/home/chao/saea-worktrees/codex-system-memory-batch002-20260926",
+  "service": {
+    "pid": 77850,
+    "session_id": "serving-slurp-system-memory-batch002-np2-v1",
+    "started_at": "2026-09-26T11:10:59.545653+00:00"
+  },
+  "driver_pid_observed": 78141,
+  "windows_task": "SAEA-Batch-Driver",
+  "network_required": false,
+  "automatic_restart_count": 0,
+  "execution_time_limit": "unlimited",
+  "contacts": {
+    "generation_cap": 352,
+    "live_fit_cap": 1408,
+    "native_tool_dispatch_upper_bound": 192,
+    "complete_official_scores": 8
+  },
+  "actual_live_slots": 2,
+  "unique_inputs": 4,
+  "complete_trajectories_per_input_per_arm": 4,
+  "memory": "Frozen provisional three-record candidate versus empty ordered selection; same prompt/tool correction both arms.",
+  "read_rule": "Operational metadata only until all eight complete seals and one official score each; root alone interprets full-system results.",
+  "resources": {
+    "startup_windows_free_gib_observed": 38.44108963012695,
+    "dispatch_windows_free_gib_observed": 30.611454010009766,
+    "dispatch_gpu_free_mib_observed": 3728.0,
+    "clean_page_cache_reclaimed_after_preflight": true,
+    "windows_stop_gib": 10,
+    "gpu_stop_free_mib": 1024
+  },
+  "interpretation": "Construction and actual memory-consumption measurement, not efficacy evidence; B1080 evaluation and replication remain pending."
+}

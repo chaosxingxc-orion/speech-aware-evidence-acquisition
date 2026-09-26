@@ -5,6 +5,65 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Matched full-system memory batch002 running independently
+
+Checkpoint: 2026-09-26T11:14:15.589080+00:00. Independent driver epoch11:12:56Z,
+first empty-arm campaign started11:12:59Z; driver PID78141 observed.
+Revalidate identity before action. Worker
+/home/chao/saea-worktrees/codex-system-memory-batch002-20260926 stays frozen at
+569613df788f7c8368203b1adb44946eebe395d8, merged to master; branch deleted.
+Launch: docs/receipts/continuation/2026-09-26-system-memory-batch002-launch.json.
+
+Resident session is serving-slurp-system-memory-batch002-np2-v1,
+started11:10:59Z, observed PID77850. Two decoder-only24576-token slots;
+no mmproj, full role outputs and3072-token fit reserve. The old np1 service
+was gracefully stopped. After clean-cache reclamation, startup Windows free
+was38.44GiB; dispatch30.61GiB, GPU free3728MiB. Guard decisions remain mandatory.
+Ten-second monitor and15-minute heartbeat now reference the new session.
+All tasks are Windows-owned WSL, network-independent, unlimited-duration,
+no automatic restart. Do not manually restart this queue.
+
+Queue: empty1/memory1/memory2/empty2/empty3/memory3/memory4/empty4.
+Four fixed new TRAIN inputs, four complete trajectories per input per arm.
+Reviewer prompt/tool capability is identical; only full frozen three-record
+versus empty memory selection differs. No manual lesson correction or silent
+candidate-slot architecture change. Both arms preserve the same base graph.
+All eight preflights, source bindings and preparations passed;18 tests and
+nine offline gates passed. Read operational metadata ONLY until all eight
+manifests seal with one official complete score each. On failure stop the
+family and register diagnostic reading; never retry automatically.
+
+Root then audits actual memory calls, record matches, Reviewer/Planner use,
+Solver revisions, final delivery, harms and official feedback. Four inputs
+cannot establish efficacy. Memory is frozen within this batch; a separately
+registered successor update uses complete learned trajectories after closure.
+B1080 whole-system evaluation and replication remain pending. DEV6570/test13078
+and closed lines stay closed. No owner decision blocks this bounded work.
+
+## Matched memory actors committed; service handoff underway
+
+Checkpoint: 2026-09-26T11:11:43.753393+00:00.
+All eight real preflights passed with committed worker
+/home/chao/saea-worktrees/codex-system-memory-batch002-20260926 at
+569613df788f7c8368203b1adb44946eebe395d8, merged to master and detached.
+The development branch is deleted; source stays frozen through scoring.
+
+Root gracefully stopped the old np1 service at 11:09:26Z after verifying its
+process and idle slots, with no active driver or lease. WSL clean page cache
+from weight verification was reclaimed after preflights. New service startup
+was admitted with Windows38.44GiB free. The independent serving task now starts
+serving-slurp-system-memory-batch002-np2-v1 using the guarded two-slot fragment.
+Telemetry is being rebound to this replacement session. Driver has NOT been
+dispatched; the old completed queue is not a current stall. Root will attach
+only after health, identity and fresh resource admission succeed.
+
+Use the batch002 protocol/queue, eight exact memory decisions and preparation/
+binding/validation receipts. Operational metadata only through all eight complete
+seals and one official score each. No automatic restart, scorer replay or held
+stage dispatch. This construction flight measures memory consumption, not
+efficacy. Four inputs, four trajectories per arm, two slots, frozen memory and
+full output reserve remain mandatory. No new owner decision is needed.
+
 ## Next-batch matched memory actors prepared; dispatch pending
 
 Checkpoint: 2026-09-26T11:07:48.893234+00:00. Eight actor configs and source-bound
