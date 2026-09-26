@@ -1,0 +1,132 @@
+{
+  "schema": "saea-system-memory-batch-read-registration-v2",
+  "read_id": "SAEA-SLURP-SYSTEM-MEMORY-BATCH002-READ-V1",
+  "recorded_at": "2026-09-26T11:29:43.669611+00:00",
+  "execution_profile": "model-free-check",
+  "feedback_role": "construction",
+  "scope": "Complete32-episode memory consumption and terminal-outcome diagnostic; no efficacy claim.",
+  "source_protocol": {
+    "repo_relpath": "docs/readiness/2026-09-26-system-memory-batch002-v1/protocol.json",
+    "sha256": "17cb0d4ac80ba7c44e13b62974403ed37f77aac8d25e9a368c975010c1251230"
+  },
+  "arms": {
+    "empty-s1": {
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S1-RUN-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-memory-batch002-empty-s1-run-v1",
+      "expected_rows": 4,
+      "expected_official_scores": 1,
+      "source_repo_root": "/home/chao/saea-worktrees/codex-system-memory-batch002-20260926",
+      "source_commit": "569613df788f7c8368203b1adb44946eebe395d8"
+    },
+    "memory-s1": {
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S1-RUN-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-memory-batch002-memory-s1-run-v1",
+      "expected_rows": 4,
+      "expected_official_scores": 1,
+      "source_repo_root": "/home/chao/saea-worktrees/codex-system-memory-batch002-20260926",
+      "source_commit": "569613df788f7c8368203b1adb44946eebe395d8"
+    },
+    "memory-s2": {
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S2-RUN-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-memory-batch002-memory-s2-run-v1",
+      "expected_rows": 4,
+      "expected_official_scores": 1,
+      "source_repo_root": "/home/chao/saea-worktrees/codex-system-memory-pipeline-20260926",
+      "source_commit": "7a8c8071ac2d48c5610bdb4696a10ceeb682406c"
+    },
+    "empty-s2": {
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S2-RUN-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-memory-batch002-empty-s2-run-v1",
+      "expected_rows": 4,
+      "expected_official_scores": 1,
+      "source_repo_root": "/home/chao/saea-worktrees/codex-system-memory-pipeline-20260926",
+      "source_commit": "7a8c8071ac2d48c5610bdb4696a10ceeb682406c"
+    },
+    "empty-s3": {
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S3-RUN-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-memory-batch002-empty-s3-run-v1",
+      "expected_rows": 4,
+      "expected_official_scores": 1,
+      "source_repo_root": "/home/chao/saea-worktrees/codex-system-memory-pipeline-20260926",
+      "source_commit": "7a8c8071ac2d48c5610bdb4696a10ceeb682406c"
+    },
+    "memory-s3": {
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S3-RUN-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-memory-batch002-memory-s3-run-v1",
+      "expected_rows": 4,
+      "expected_official_scores": 1,
+      "source_repo_root": "/home/chao/saea-worktrees/codex-system-memory-pipeline-20260926",
+      "source_commit": "7a8c8071ac2d48c5610bdb4696a10ceeb682406c"
+    },
+    "memory-s4": {
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S4-RUN-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-memory-batch002-memory-s4-run-v1",
+      "expected_rows": 4,
+      "expected_official_scores": 1,
+      "source_repo_root": "/home/chao/saea-worktrees/codex-system-memory-pipeline-20260926",
+      "source_commit": "7a8c8071ac2d48c5610bdb4696a10ceeb682406c"
+    },
+    "empty-s4": {
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S4-RUN-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-memory-batch002-empty-s4-run-v1",
+      "expected_rows": 4,
+      "expected_official_scores": 1,
+      "source_repo_root": "/home/chao/saea-worktrees/codex-system-memory-pipeline-20260926",
+      "source_commit": "7a8c8071ac2d48c5610bdb4696a10ceeb682406c"
+    }
+  },
+  "read_gate": "Every registered arm is FINALIZED and has one complete official score. Operational metadata may verify this gate. On a failure root must record a separate diagnostic-read exception and preserve the unfinished family. No partial score lookahead or scorer replay.",
+  "paired_comparisons": [
+    [
+      "empty-s1",
+      "memory-s1"
+    ],
+    [
+      "empty-s2",
+      "memory-s2"
+    ],
+    [
+      "empty-s3",
+      "memory-s3"
+    ],
+    [
+      "empty-s4",
+      "memory-s4"
+    ]
+  ],
+  "shared_readers": {
+    "feedback": "analysis.system_feedback.load_system_feedback",
+    "source": "analysis.native_episode_source.verify_native_episode_source",
+    "memory": "analysis.candidate_memory_evaluation.verify_candidate_memory_evaluation_source",
+    "attribution": "scripts/analysis/slurp_system_trajectory_read.py:analyze_arm",
+    "grouping": "analysis.system_rollout_groups.group_complete_system_sources",
+    "semantic_material": "analysis.system_semantic_trajectory.materialize_semantic_trajectories"
+  },
+  "reward": {
+    "frozen_f0": 0.5850661976193667,
+    "standard_deviation_floor": 1e-08,
+    "intent_and_format": "Separate channels; never infer them from scalar entity utility."
+  },
+  "grouping": "Group the four learned replicas separately from four empty controls. Do not mix controls into the learner update. Descriptive matched paired changes use the same input and seed.",
+  "model_contacts_added": 0,
+  "tokenizer_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "output_relpath": "coordination/slurp-system-memory-batch002-v1/read-v1",
+  "required_reports": [
+    "memory availability, actual call and record matching",
+    "exact later result exposure; semantic use remains root interpretation",
+    "role transitions, first/final Solver and final delivered outcome",
+    "per-input/per-stratum and natural/equal-stratum descriptive metrics",
+    "full-output reserve, actual token counts, common-prefix identity and resources",
+    "all failures, abstentions, no-call and empty-return cases"
+  ],
+  "supersedes": {
+    "repo_relpath": "docs/readiness/2026-09-26-system-memory-batch002-read-v1/registration.json",
+    "sha256": "1756c85f2ad18f1b5f050d5b0143ce06ffeb45e64eb83772bd32847ac77af242"
+  },
+  "source_transition": "Pair1 remains on the original retained source. Pairs2,3,4 use a new retained checkout with identical src/scripts/actor/model/dataset/baseline/prompt bytes; only a multi-cell campaign and operational documentation are added. All paired comparisons retain identical implementation and service process.",
+  "round_policy": {
+    "data_relpath": "coordination/slurp-system-memory-batch002-v1/round-policy-v2.json",
+    "sha256": "6d6c9b910e3f71cb58098b113738c62e33fd8af995dc46877da5cfa26103620e"
+  }
+}

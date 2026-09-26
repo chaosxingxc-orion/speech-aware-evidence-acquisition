@@ -5,6 +5,45 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Memory batch002 resumed through the shared scoring pipeline
+
+Checkpoint: 2026-09-26T11:32:08.272336+00:00. First pair empty-s1/memory-s1
+each finalized4rows with one official score and20 model generations. Root
+has NOT read task answers or quality. Both remain on original worker569613df.
+The intentionally held old scheduler78141 was terminated only after its current
+campaign and scorer exited; no generation, score or service was interrupted.
+
+New independent driver epoch2026-09-26T11:31:05Z,
+campaign start2026-09-26T11:31:07Z, observed PID81188.
+Revalidate live identity. It runs the six previously unstarted cells as ONE
+existing multi-cell campaign, preserving order memory2/empty2/empty3/memory3/
+memory4/empty4. Generation is serial with two slots; the shared queue overlaps
+one complete scorer with the next generation. Service/session/PID77850 remain
+unchanged: serving-slurp-system-memory-batch002-np2-v1.
+
+Frozen remainder worker:
+/home/chao/saea-worktrees/codex-system-memory-pipeline-20260926 at
+7a8c8071ac2d48c5610bdb4696a10ceeb682406c. Merged to master, branch deleted.
+All runtime, existing scripts and scientific config bytes match original569613df.
+Only a campaign grouping and operational docs were added. All six prepared
+artifacts verify from the relocated source. No extra contacts or scores.
+
+Read docs/receipts/continuation/2026-09-26-system-memory-batch002-pipeline-launch.json.
+The outer queue now has ONE entry with six campaign_members. Its representative
+cell status is NOT the whole family's progress. Inspect each member's attempt
+state and flight-receipts stages with scripts, using operational fields only.
+Require all eight original family arms FINALIZED with one full score each before
+scientific reading. Use read-registration-v2 and round-policy-v2: pair1 source
+is569613df; pairs2-4 source is7a8c8071. Do not rebuild the old all-eight queue,
+restart attempts/scorers, or infer rows from service totals.
+
+All work remains Windows-owned WSL and independent of network/ChatGPT credits.
+No held scheduler remains. Four-input/four-trajectory construction, memory
+frozen within batch, two slots, full output reserve, Windows10GiB stop floor,
+closed DEV6570/test13078 and closed research lines remain unchanged.
+Root interprets complete-system memory selection/use and task outcomes after
+the full seal. Four inputs still cannot establish efficacy.
+
 ## Operational pipeline handoff pending at the first scoring boundary
 
 Checkpoint: 2026-09-26T11:26:02.453254+00:00. Root suspended only the verified shell

@@ -1,0 +1,31 @@
+{
+  "schema": "saea-independent-pipeline-launch-v1",
+  "recorded_at": "2026-09-26T11:32:08.272336+00:00",
+  "driver_epoch": "2026-09-26T11:31:05Z",
+  "campaign_start": "2026-09-26T11:31:07Z",
+  "driver_pid_observed": 81188,
+  "dispatch": {
+    "relpath": "coordination/slurp-system-memory-batch002-v1/pipeline-dispatch-ready.json",
+    "sha256": "910354b56e96fe94b8c4b9d9905d850f140d186aa8d80eedfe1e44ca6e2f6b2c"
+  },
+  "first_pair_source": {
+    "path": "/home/chao/saea-worktrees/codex-system-memory-batch002-20260926",
+    "commit": "569613df788f7c8368203b1adb44946eebe395d8"
+  },
+  "remaining_source": {
+    "path": "/home/chao/saea-worktrees/codex-system-memory-pipeline-20260926",
+    "commit": "7a8c8071ac2d48c5610bdb4696a10ceeb682406c"
+  },
+  "completed_prior_actors": 2,
+  "pipeline_members": 6,
+  "service_process_unchanged": true,
+  "service_session": "serving-slurp-system-memory-batch002-np2-v1",
+  "generation": "serial experiment, two native slots",
+  "full_official_scoring_workers": 1,
+  "network_required": false,
+  "restart_count": 0,
+  "source_equivalence": "No src, existing scripts, actor/model/dataset/baseline/prompt byte changes; only campaign grouping and operational documents differ. Both arms of each pair use the same source commit.",
+  "read_registration": "docs/readiness/2026-09-26-system-memory-batch002-read-v1/registration-v2.json",
+  "round_policy": "coordination/slurp-system-memory-batch002-v1/round-policy-v2.json",
+  "read_embargo": "All8family actors must seal and score once. The outer queue describes one six-cell campaign and inspects only its representative first cell; that check alone is not sufficient for reading or family completion."
+}

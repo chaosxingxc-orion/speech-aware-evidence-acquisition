@@ -1,0 +1,21 @@
+{
+  "schema": "saea-operational-source-transition-v1",
+  "recorded_at": "2026-09-26T11:29:43.669611+00:00",
+  "registration": {
+    "repo_relpath": "docs/readiness/2026-09-26-system-memory-batch002-read-v1/registration-v2.json",
+    "sha256": "c55e11092701cdb2e9cd9c8f4e037ae873f9396f69dbffd2ca258dc3bf50872d"
+  },
+  "previous_round_policy": {
+    "data_relpath": "coordination/slurp-system-memory-batch002-v1/round-policy.json",
+    "sha256": "784d9bc16c7f30a0a0690e0f15249dd93a1a20baad2196eff6153def08e30248"
+  },
+  "next_round_policy": {
+    "data_relpath": "coordination/slurp-system-memory-batch002-v1/round-policy-v2.json",
+    "sha256": "6d6c9b910e3f71cb58098b113738c62e33fd8af995dc46877da5cfa26103620e"
+  },
+  "per_pair_source_consistent": true,
+  "all_runtime_and_actor_config_bytes_unchanged": true,
+  "new_model_contacts": 0,
+  "new_scoring_jobs": 0,
+  "task_results_read": false
+}
