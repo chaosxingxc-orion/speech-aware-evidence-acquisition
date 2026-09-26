@@ -1,0 +1,23 @@
+{
+  "schema": "saea-offline-validation-v1",
+  "recorded_at": "2026-09-26T08:22:37.814546+00:00",
+  "checks": {
+    "engineering_base_check": "PASS",
+    "harness_admission_check": "PASS",
+    "results_ledger_check": "PASS",
+    "tool_catalog_check": "PASS",
+    "experiment_handoff_check": "PASS",
+    "openjiuwen_native_reuse_check": "PASS",
+    "derived_media_confinement_check": "PASS",
+    "stage3_algorithm_label_check": "PASS",
+    "finite_completion_policy_check": "PASS"
+  },
+  "materialized_requests": 16,
+  "declared_readiness_ready": 4,
+  "model_contacts": 0,
+  "native_proof": {
+    "relpath": "coordination/slurp-system-summary001-v1/generation-v2-validation/native-reuse.json",
+    "sha256": "635d25008a5d87610958b46e50e7df9e9636b5faa7e2d1f6161d5d539b9ef464"
+  },
+  "notes": "Only immutable registration/config successors and documentation changed. Two initial native-check invocations refused on CLI/output-path usage; the fresh correctly invoked deterministic proof passed. No model contact or production code change."
+}

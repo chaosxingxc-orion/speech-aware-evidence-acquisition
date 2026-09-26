@@ -1,0 +1,27 @@
+{
+  "schema": "saea-flight-execution-plan-v1",
+  "status": "registered-before-contact",
+  "plan_kind": "live-fit",
+  "experiment": "slurp-stage3-system-batch001-summary-s3-np1-run-v2",
+  "cell": "slurp-stage3-system-batch001-summary-s3-np1-run-v2",
+  "composed_config_hash": "0a9a287ee9c9ff09e5726b7c427823055fd7d44d672c46569c0ce56806de07ab",
+  "execution_plan": {
+    "run_id": "SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S3-NP1-RUN-V2-FIT",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
+    "planned_model_calls": 9,
+    "planned_gpu_hours": 0.5,
+    "planned_speech_audio_seconds": 18,
+    "protocol_hash": "9c3cea223e698c7eefd7a712298fb32805ee5aaaa66eef2e9221e2dbc4db3f0d",
+    "attempt_id": "attempt-slurp-stage3-system-batch001-summary-s3-np1-run-v2-fit",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-26-system-batch001-summary-generation-v2/protocol.json",
+    "sha256": "90196ff49fdc6b00feff7d7d9bb693026f40089b03c2e6821eee6037ec01804c"
+  },
+  "read_rule": "Read only operational/closure metadata until all four registered summary sources finalize; then register scientific reading and reverify each summary-to-actor binding. Empty, capped, malformed and unusable outputs are retained and quarantined; no silent retry."
+}

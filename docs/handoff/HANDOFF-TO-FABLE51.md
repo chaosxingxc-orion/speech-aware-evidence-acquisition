@@ -5,6 +5,22 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Summary launch held before contact; sole receipt successor prepared
+
+At 08:11:56Z the driver stopped without opening an attempt or making any
+generation/live-fit contact. Root's admission receipt omitted the required
+saea-campaign-decision-v1 schema. The existing campaign correctly held it.
+This is a registration defect, not a GPU crash. Preserve the v1 configuration,
+receipt and log; read the precontact-refusal receipt under continuation/.
+
+The sole successor is summary-generation-v2. It uses fresh run identities and
+the corrected immutable admission receipt, retaining all 16 actual inputs,
+the current one-slot service, 2048 output and 3072 reserve. Root verifies
+declared readiness and complete materialization before launch. Any subsequent
+execution failure stops this flight; no second recovery or automatic restart.
+The current STOP marker must remain until root explicitly admits this successor.
+No summary content or later-batch result has been read.
+
 ## Single-slot capacity passed; all16 summaries registered
 
 All36 np1 tokenizer endpoints completed. Every actual input has the same token
