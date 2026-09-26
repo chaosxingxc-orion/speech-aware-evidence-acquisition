@@ -179,7 +179,8 @@ def test_warm_source_refusal_precedes_cached_artifact(summary_world, monkeypatch
         load(summary_world, spec)
 
 
-def test_prepared_complete_episode_reaches_actual_shared_fit_and_send(summary_world, tmp_path):
+@pytest.mark.parametrize("text_only", [False, True])
+def test_prepared_complete_episode_reaches_actual_shared_fit_and_send(summary_world, tmp_path, text_only):
     from types import SimpleNamespace
 
     from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
@@ -208,6 +209,8 @@ def test_prepared_complete_episode_reaches_actual_shared_fit_and_send(summary_wo
     roster_path.write_bytes((data / "roster.json").read_bytes())
     project = Path(__file__).resolve().parents[2]
     values = json.loads((project / "configs/baseline/system-trajectory-summary-v1.json").read_text())
+    if text_only:
+        values = json.loads((project / "configs/baseline/system-trajectory-summary-text-v1.json").read_text())
     values.update(
         carrier_lock_key="slurp", prepared_training_feedback=spec,
         artifact_result={"schema": "saea-artifact-result-binding-v1",
@@ -233,25 +236,53 @@ def test_prepared_complete_episode_reaches_actual_shared_fit_and_send(summary_wo
     )
     world = _World(tmp_path / "consumer")
     world.samples = world.samples[:1]
-    feature_root, _packet, packets = _speech_feature_world(world, tmp_path / "consumer")
+    feature_root, _packet, packets = (
+        (None, None, {}) if text_only
+        else _speech_feature_world(world, tmp_path / "consumer")
+    )
     sid = value.sample_ids[0]
     world.samples = [replace(world.samples[0], sample_id=sid)]
-    packets = {sid: packets["s1"]}
+    packets = ({sid: {"packet_id": world.samples[0].audio_ref.path,
+                      "sha256": world.samples[0].audio_ref.sha256}}
+               if text_only else {sid: packets["s1"]})
     transport = _CapturingTransport(lambda _payload: "The whole episode ends in ACCEPT.")
     plan = _plan(planned_model_calls=1)
     client, _, _ = _client(world, tmp_path / "consumer", plan=plan, transport=transport,
-                          arm=values["arm"], speech_feature_root=feature_root,
-                          speech_packet_bindings=packets)
+                          arm=values["arm"], **({} if text_only else {
+                              "speech_feature_root": feature_root,
+                              "speech_packet_bindings": packets}))
     fitted, trace = [], TraceBuffer(plan.run_id)
+    adapter = _FakeAdapter(samples=tuple(world.samples))
+    if text_only:
+        def forbidden(*_args, **_kwargs):
+            raise AssertionError("Text summaries must not load a fresh task prompt or ontology")
+        adapter.assemble_prompt = forbidden
+        adapter.build_task_contract = forbidden
+    if text_only:
+        template = repo / "configs/probes/system_trajectory_summary_v1.txt"
+        template.parent.mkdir(parents=True)
+        template.write_bytes((project / "configs/probes/system_trajectory_summary_v1.txt").read_bytes())
+        runtime._lock = {}
+        runtime._adapter = adapter
+        runtime._split_id = "all"
+        runtime.execution_unit_roster = lambda: None
+        runtime._load_knowledge_snapshot = _knowledge_snapshot
+        runtime._phase_tool_trace_sink = None
+        bound = runtime._default_phase_program_binding(program, client)
+        assert bound["query_source"] == "speech_audio"
+        assert bound["speech_packet_bindings"] == packets
+        assert bound["initial_feedback_states"] == states
+        material = bound["material_for_phase"]
     def fit(phase, requests):
         assert phase == "direct" and not transport.calls
         fitted.extend(r.as_payload() for r in requests)
     try:
         summary = run_continuous_program(
-            program=program, adapter=_FakeAdapter(samples=tuple(world.samples)),
+            program=program, adapter=adapter,
             plan=plan, data_root=world.data_root, core_client=client, split_id="all",
             knowledge_snapshot=_knowledge_snapshot(), speech_packet_bindings=packets,
             trace_sink=trace, decoding_params={"max_tokens": 512}, material_for_phase=material,
+            query_source="speech_audio" if text_only else "speech_features",
             result_kind="artifact", whole_roster_wave_barrier=True,
             request_batch_gate=fit, slot_count=1, queue_depth=1, initial_feedback_states=states,
         )
@@ -260,7 +291,13 @@ def test_prepared_complete_episode_reaches_actual_shared_fit_and_send(summary_wo
         assert boundary_identity((fitted[0],)) == boundary_identity((sent,))
         assert sent["history"][0]["content"] == states[sid].content
         assert text == sent["history"][-1]["content"]
-        assert sent["speech_feature_parts"]  # Never pretend this route is text-only.
+        if text_only:
+            assert sent["prepared_text"] == "saea-prepared-text-v1"
+            assert "speech_feature_parts" not in sent and "raw_speech_query" not in sent
+            assert receipt["runtime_input_contract"] == "shared-prepared-text-artifact"
+            assert "Task contract:" not in sent["task_instruction"]
+        else:
+            assert sent["speech_feature_parts"]
         episode = json.loads(sent["history"][0]["content"])["trajectory"]
         assert len(episode["contacts"]) == 5 and len(episode["tool_records"]) == 2
         assert all(row.metrics == {} for row in summary.results)

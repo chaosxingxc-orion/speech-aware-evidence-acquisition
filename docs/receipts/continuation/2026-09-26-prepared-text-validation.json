@@ -1,0 +1,119 @@
+{
+  "schema": "saea-prepared-text-validation-v1",
+  "checked_at": "2026-09-26T01:28:08.094341+00:00",
+  "parent_commit": "08a2a4644cb8e7b2b33b8e62bb2f8379ef74afad",
+  "environment": "WSL Ubuntu-24.04; /home/chao/.venvs/speechrl/bin/python; explicit checkout PYTHONPATH",
+  "tests": [
+    {
+      "scope": "summary preparation, artifact binding, live fitting, transport, frozen client, legacy construction client, staged requests, D2 generators",
+      "passed": 326,
+      "skipped": 1,
+      "log": "/home/chao/prepared-text-validation-v1/tests.txt",
+      "sha256": "c23f43075ce7448b48a95f7a82b34aa4c5b80217ac95937d9dcb2e57bd5429d4"
+    },
+    {
+      "scope": "legacy prepared-feedback loader/runtime/serialization and explicit zero-media cost assertion",
+      "passed": 19,
+      "skipped": 0,
+      "log": "/home/chao/prepared-text-validation-v1/legacy-feedback-and-cost.txt",
+      "sha256": "72d9636652dde66f8fd32f6020b264c6a48d267428c3794e8712c29ee3353863"
+    }
+  ],
+  "test_population_note": "The latter run includes one test repeated from the primary run. Do not add test totals into a unique coverage count.",
+  "lint": {
+    "result": "passed",
+    "log": "/home/chao/prepared-text-validation-v1/lint.txt",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "gates": [
+    {
+      "check": "engineering_base",
+      "exit_code": 0,
+      "log": "/home/chao/prepared-text-validation-v1/engineering_base.txt",
+      "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "check": "harness_admission",
+      "exit_code": 0,
+      "log": "/home/chao/prepared-text-validation-v1/harness_admission.txt",
+      "sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+    },
+    {
+      "check": "results_ledger",
+      "exit_code": 0,
+      "log": "/home/chao/prepared-text-validation-v1/results_ledger.txt",
+      "sha256": "ec9367bbd838063e612f82f2497a4e042f439e1b778d78d55e5f4c6117904d6f"
+    },
+    {
+      "check": "tool_catalog",
+      "exit_code": 0,
+      "log": "/home/chao/prepared-text-validation-v1/tool_catalog.txt",
+      "sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+    },
+    {
+      "check": "experiment_handoff",
+      "exit_code": 0,
+      "log": "/home/chao/prepared-text-validation-v1/experiment_handoff.txt",
+      "sha256": "d4411f360b8723b8f55577b4f975723736fb6c07b5fd835bef06d652e4e5a68d"
+    },
+    {
+      "check": "openjiuwen_native_reuse",
+      "exit_code": 0,
+      "log": "/home/chao/prepared-text-validation-v1/openjiuwen_native_reuse.txt",
+      "sha256": "19a78b5b740323eb4c5952602262a930ca13ae5e552770f3a025122ec3d0f56c"
+    },
+    {
+      "check": "derived_media_confinement",
+      "exit_code": 0,
+      "log": "/home/chao/prepared-text-validation-v1/derived_media_confinement.txt",
+      "sha256": "31e2f0e3880a454b3cd4d2034ba953dcefb8ce6c5195b56437ad86247b5a3268"
+    },
+    {
+      "check": "stage3_algorithm_label",
+      "exit_code": 0,
+      "log": "/home/chao/prepared-text-validation-v1/stage3_algorithm_label.txt",
+      "sha256": "772a0ea23eb2cbd08e1649908f386c524c8a78941bf58e74e26004da7cf524ca"
+    },
+    {
+      "check": "finite_completion_policy",
+      "exit_code": 0,
+      "log": "/home/chao/prepared-text-validation-v1/finite_completion_policy.txt",
+      "sha256": "20bc3dc18154a13c2956dd6455da6de859f1e724b864fd06bcaec02b0734cc22"
+    }
+  ],
+  "d2_receipt": {
+    "repo_relpath": "docs/receipts/continuation/2026-09-26-prepared-text-d2.json",
+    "sha256": "90a862db1990b615b767a4f8f91a04386780bf3ed02196ba0a9ad2ca9c0056e2"
+  },
+  "implementation_and_tests": {
+    "src/speech_aware_evidence_acquisition/rails/prepared_text.py": "0c7c2db94b230b1cf5e38a56ab12d86363b726c9ce821ef792b5f6a1ad2efbd6",
+    "src/speech_aware_evidence_acquisition/rails/core_client.py": "f1751d8c899584642d8ec9e007df292079ca5c7e829b329253c8b74108435a33",
+    "src/speech_aware_evidence_acquisition/rails/runner.py": "4003a72b98f0b5b1ed4b9f728bbafd2be2bbf5a2ef7d57b063ccf00e2b48e9db",
+    "src/speech_aware_evidence_acquisition/core/model/transport.py": "069a029b4e8f9d1e3122b39d6effe5e13a76036c6b79255371477494f0c084d1",
+    "src/speech_aware_evidence_acquisition/core/flight/runtime.py": "d585a6227e4d3feb136664dcd80f3b940c75df022f7adb0f794a0152f3226ae3",
+    "src/speech_aware_evidence_acquisition/core/preparation_fit.py": "43c7c4d9196c9731c119552a7e30aac916539e5ee33b1956a31174afa00e58f9",
+    "src/speech_aware_evidence_acquisition/e0/d2_leakage.py": "4ed735a38929df515e5954d49f866100a3ed8c52a66c6ea5544d24d6830e0f87",
+    "configs/baseline/system-trajectory-summary-text-v1.json": "d15011f63a4abc665e77bc862d83c046e9282995d4c79459e64ec897a1d2a614",
+    "tests/unit/test_system_summary_preparation.py": "7bcfaf8b6610395b9af53b078ec604c6f33f108d3cc778d1909d65de62f69704",
+    "tests/unit/test_artifact_result_kind.py": "d5b1f0adac52b701c5f4841498bbfcd282bc86790d2dc06a39fb5070698bc102",
+    "tests/unit/test_llama_server_transport.py": "4d8af01ecd3cbd6e65a4efc4129c2c816b9dd78fb5afbf7c338b6bad11d6fd9f"
+  },
+  "proof": [
+    "Default FlightRuntime phase binding reaches the shared OpenJiuwen controller with source-verified prepared context; tests substitute the original sealed-source verifier and model transport.",
+    "Real request renderer under three feature prompt orders preserves context and control once without opening fresh media.",
+    "Registered live fit uses the rendered send messages, zero media and zero speech tokens, three tokenizer endpoints for one text row including properties.",
+    "Legacy multimodal and construction-gold arm tests remain passing."
+  ],
+  "limits": [
+    "No real summary generation, real tokenizer capacity measurement or new complete research bundle finalization.",
+    "No semantic comparison/update/consolidation/reexecution cycle has run.",
+    "Conservative legacy anchor audio-budget charge remains separate from zero fresh model audio exposure.",
+    "No stable training-free RL effectiveness result follows from these checks."
+  ],
+  "research_contacts_added": {
+    "model": 0,
+    "tokenizer": 0,
+    "scorer": 0
+  },
+  "operational_change": "None: closed candidate flight, frozen worker, STOP, queue and server state preserved."
+}

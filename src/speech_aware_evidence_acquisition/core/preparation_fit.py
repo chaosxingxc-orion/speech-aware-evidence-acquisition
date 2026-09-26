@@ -639,15 +639,19 @@ def validate_live_phase_fit_config(values, program):
     return dict(spec)
 
 
-def complete_phase_endpoint_count(phase_count: int, row_count: int) -> int:
-    """Count fit endpoints: one properties call plus three per row, per phase."""
+def complete_phase_endpoint_count(
+    phase_count: int, row_count: int, *, media_count: int = 1,
+) -> int:
+    """Count properties, template and text-segment tokenization endpoints."""
     if (
         isinstance(phase_count, bool) or not isinstance(phase_count, int)
         or phase_count < 1 or isinstance(row_count, bool)
         or not isinstance(row_count, int) or row_count < 1
     ):
         raise PreparationError("live fit requires positive phase and row counts")
-    return phase_count * (1 + 3 * row_count)
+    if isinstance(media_count, bool) or not isinstance(media_count, int) or media_count < 0:
+        raise PreparationError("live fit media count must be a nonnegative integer")
+    return phase_count * (1 + (2 + media_count) * row_count)
 
 
 def build_live_phase_fit_gate(
@@ -691,9 +695,10 @@ def build_live_phase_fit_gate(
         raise PreparationError(
             "tokenizer fit requires distinct run and attempt identities"
         )
-    if not runtime.uses_speech_feature_packets():
+    prepared_text = values.get("arm") == "prepared-context-text"
+    if not runtime.uses_speech_feature_packets() and not prepared_text:
         raise PreparationError(
-            "live phase fitting currently requires validated feature packets"
+            "live phase fitting requires validated feature packets or prepared text"
         )
     if runtime._session is None or runtime._transport is None:
         raise PreparationError("live phase fitting requires an attached root session")
@@ -701,7 +706,9 @@ def build_live_phase_fit_gate(
         raise PreparationError("active_roster must derive the roster from prior decisions")
     expected_ids = tuple(sample.sample_id for sample in runtime._samples)
     phases = tuple(program.phase_names())
-    required_contacts = complete_phase_endpoint_count(len(phases), len(expected_ids))
+    required_contacts = complete_phase_endpoint_count(
+        len(phases), len(expected_ids), media_count=0 if prepared_text else 1,
+    )
     if spec["contact_cap"] != required_contacts:
         raise PreparationError(
             "live fit cap must equal the registered complete phase endpoint count: "
@@ -747,6 +754,13 @@ def build_live_phase_fit_gate(
         ):
             raise PreparationError("live fit requires immutable prepared core requests")
         payloads = tuple(request.as_payload() for request in batch)
+        if prepared_text:
+            from ..rails.prepared_text import validate_prepared_text_payload
+            try:
+                for payload in payloads:
+                    validate_prepared_text_payload(payload)
+            except ValueError as error:
+                raise PreparationError(str(error)) from error
         payload_ids = tuple(payload.get("sample_id") for payload in payloads)
         if native_active_roster:
             if not completed:
@@ -843,10 +857,12 @@ def build_live_phase_fit_gate(
                     expected_sample_ids=wave_ids,
                     transport=runtime._transport,
                     client=guarded,
-                    speech_counts=lambda payload: packet_token_counts(
-                        payload,
-                        feature_root=Path(str(values["speech_feature_root"])),
-                        decoder_sha256=decoder_sha256,
+                    speech_counts=lambda payload: (
+                        () if prepared_text else packet_token_counts(
+                            payload,
+                            feature_root=Path(str(values["speech_feature_root"])),
+                            decoder_sha256=decoder_sha256,
+                        )
                     ),
                     media_marker=marker,
                     slot_tokens=int(runtime._adapter.serving_geometry()["slot_tokens"]),

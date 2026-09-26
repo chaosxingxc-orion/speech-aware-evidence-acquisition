@@ -398,7 +398,28 @@ def validate_artifact_result_binding(
 ) -> Mapping[str, object] | None:
     """Validate one registered scoreless artifact-result binding."""
 
+    from ...rails.prepared_text import PREPARED_TEXT_ARM, PREPARED_TEXT_INSTRUCTION
+
     result_kind = values.get("result_kind", "task-answer")
+    prepared_text = values.get("arm") == PREPARED_TEXT_ARM
+    if prepared_text:
+        if (
+            result_kind != "artifact" or values.get("policy") != "phase-direct-only-v1"
+            or values.get("prepared_training_feedback") is None
+            or values.get("task_instruction") != PREPARED_TEXT_INSTRUCTION
+            or values.get("task_instruction_template_active", False)
+            or values.get("evidence_source") != "none"
+            or not values.get("whole_roster_wave_barrier")
+            or not values.get("live_phase_fit")
+        ):
+            raise FlightRuntimeError("prepared text requires a fitted TRAIN artifact stage")
+        for field in (
+            "phase_supply", "phase_review", "phase_tools", "phase_planner", "observe",
+            "native_episode", "prepared_execution_units", "knowledge_stores",
+            "candidate_experience_memory", "system_episode_policy", "knowledge_views",
+        ):
+            if values.get(field):
+                raise FlightRuntimeError(f"prepared text cannot add {field}")
     declared = values.get("artifact_result")
     if result_kind == "task-answer":
         if declared is not None:
@@ -445,9 +466,11 @@ def validate_artifact_result_binding(
             "artifact results require a registered phase program"
         ) from error
     arm = values.get("arm")
-    if SPEECH_FEATURE_ARM_FIELD not in ARM_VISIBLE_FIELDS.get(str(arm), ()):
+    if prepared_text and not (legacy or typed_proposals):
+        raise FlightRuntimeError("prepared text is limited to TRAIN proposal artifacts")
+    if SPEECH_FEATURE_ARM_FIELD not in ARM_VISIBLE_FIELDS.get(str(arm), ()) and not prepared_text:
         raise FlightRuntimeError(
-            "artifact results require the speech-feature packet path"
+            "artifact results require the speech-feature packet path or prepared text"
         )
     expected_role = "discovery" if legacy or typed_proposals else "dev"
     if getattr(plan, "execution_profile", None) != "bounded-discovery-probe" or getattr(
@@ -6982,7 +7005,7 @@ class FlightRuntime:
         from ..model import speech_features
         from ..preparation import artifact_inputs
         from ...rails.adapters import runtime_view
-        from ...rails import core_client
+        from ...rails import core_client, prepared_text
 
         context = self.preparation_context()
         sources = {
@@ -6999,6 +7022,8 @@ class FlightRuntime:
                 "config": _sha256_file(Path(config_module.__file__)),
                 "runtime_view": _sha256_file(Path(runtime_view.__file__)),
                 "core_client": _sha256_file(Path(core_client.__file__)),
+                **({"prepared_text": _sha256_file(Path(prepared_text.__file__))}
+                   if self._arm() == prepared_text.PREPARED_TEXT_ARM else {}),
                 "speech_features": _sha256_file(Path(speech_features.__file__)),
 
             },
@@ -8764,6 +8789,12 @@ class FlightRuntime:
                     raise FlightRuntimeError(
                         "rebuilt prepared feedback differs from typed artifact source pin"
                     )
+            if values.get("arm") == "prepared-context-text":
+                receipt = {
+                    **receipt, "runtime_input_contract": "shared-prepared-text-artifact",
+                    "fresh_audio_observations": 0, "fresh_task_knowledge": False,
+                    "anchor_audio_budget_semantics": "conservative-source-duration",
+                }
             return states, receipt
         except PreparedFeedbackError as error:
             raise FlightRuntimeError(str(error)) from error
@@ -8806,7 +8837,8 @@ class FlightRuntime:
             _protected_knowledge_material,
         )
 
-        raw_phase = self._arm() == "raw-speech-agent-native-tools"
+        prepared_text = self._arm() == "prepared-context-text"
+        raw_phase = self._arm() == "raw-speech-agent-native-tools" or prepared_text
         if not self.uses_speech_feature_packets() and not raw_phase:
             raise FlightRuntimeError("phase programs require an explicit feature or raw speech arm")
         units = self.execution_unit_roster()

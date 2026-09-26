@@ -1334,6 +1334,7 @@ def _agent_messages(
     knowledge_index: object = None,
     index_role_kind: str | None = None,
     index_sink: object = None,
+    prepared_text: bool = False,
 ) -> tuple[Mapping[str, object], ...]:
     """The two messages one contact is composed from.
 
@@ -1349,6 +1350,18 @@ def _agent_messages(
     branches are unreachable and the returned messages are byte-identical.
     """
 
+    if prepared_text:
+        from .prepared_text import PREPARED_TEXT_INSTRUCTION
+        if (
+            task_contract != PREPARED_TEXT_INSTRUCTION
+            or query_state.visible_facet_ids or query_state.retrieved_value_ids
+            or knowledge_value_renderer is not None or knowledge_index is not None
+        ):
+            raise RailsRunnerError("prepared text cannot consume fresh task knowledge")
+        return (
+            {"role": "system", "content": PREPARED_TEXT_INSTRUCTION},
+            {"role": "user", "content": []},
+        )
     base_messages = tuple(adapter.assemble_prompt(sample, None))
     if len(base_messages) != 2:
         raise RailsRunnerError(
@@ -1706,8 +1719,11 @@ def _run_agent_trajectory(
             query_state=query_state,
             agent_states=context.agent_states,
             knowledge_value_renderer=knowledge_value_renderer,
+            prepared_text=getattr(core_client, "arm", None) == "prepared-context-text",
         )
         source_arguments = (
+            {"text_only_sample_id": prepared.sample.sample_id}
+            if getattr(core_client, "arm", None) == "prepared-context-text" else
             {"raw_agent_sample_id": prepared.sample.sample_id}
             if query_state.query_source == "speech_audio"
             else {
@@ -4390,6 +4406,7 @@ def _run_agent_openjiuwen(
             query_state=state.query_state,
             agent_states=context.agent_states,
             knowledge_value_renderer=knowledge_value_renderer,
+            prepared_text=getattr(core_client, "arm", None) == "prepared-context-text",
         )
         nodes: list[_AgentContactNode] = []
         for branch_index, plan in enumerate(plans):
@@ -4444,6 +4461,8 @@ def _run_agent_openjiuwen(
         if slot_id is not None:
             decoding_params["id_slot"] = slot_id
         source_arguments = (
+            {"text_only_sample_id": node.context.sample_id}
+            if getattr(core_client, "arm", None) == "prepared-context-text" else
             {"raw_agent_sample_id": node.context.sample_id}
             if node.context.query_state.query_source == "speech_audio"
             else {
@@ -5178,9 +5197,19 @@ def run_speech_native_agent_loop(
         }
         and max_contacts == 1
     )
+    prepared_text = getattr(core_client, "arm", None) == "prepared-context-text"
+    if prepared_text and (
+        not raw_direct_only or query_source != "speech_audio"
+        or result_kind != ARTIFACT_RESULT_KIND or initial_feedback_states is None
+        or request_batch_gate is None or not whole_roster_wave_barrier
+        or native_episode_binding is not None or observe_step is not None
+        or execution_units is not None or bootstrap_facet_ids or bootstrap_value_ids
+        or knowledge_value_renderer is not None
+    ):
+        raise RailsRunnerError("prepared text requires a fitted scoreless direct-only prepared stage")
     if query_source == "speech_audio" and (
         not isinstance(core_client, FrozenCoreClient)
-        or core_client.arm != raw_native_arm
+        or (core_client.arm != raw_native_arm and not prepared_text)
         or not (native_episode_binding is not None or raw_direct_only)
     ):
         raise RailsRunnerError(
@@ -5291,7 +5320,11 @@ def run_speech_native_agent_loop(
     )
     for index, (sample, unit) in enumerate(tasks):
         obs = default_obs_packet(sample)
-        task_contract = adapter.build_task_contract(sample, obs)
+        if prepared_text:
+            from .prepared_text import PREPARED_TEXT_INSTRUCTION
+            task_contract = PREPARED_TEXT_INSTRUCTION
+        else:
+            task_contract = adapter.build_task_contract(sample, obs)
         if not isinstance(task_contract, str) or not task_contract.strip():
             raise RailsRunnerError(
                 "TaskAdapter.build_task_contract must return non-empty English text"

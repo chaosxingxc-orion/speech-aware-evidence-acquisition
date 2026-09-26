@@ -3837,3 +3837,119 @@ def test_the_real_adv1_payloads_render_under_the_real_np4_prompt_order(
         assert body["messages"][0]["content"] == payload["task_instruction"]
         assert body["messages"][1]["content"] == []
         assert "input_audio" not in json.dumps(body)
+
+
+def _prepared_text_payload(tmp_path):
+    from speech_aware_evidence_acquisition.rails.core_client import _agent_history
+    from speech_aware_evidence_acquisition.rails.prepared_feedback import states_from_contexts
+    from speech_aware_evidence_acquisition.rails.hashing import content_hash
+    from speech_aware_evidence_acquisition.rails.prepared_text import (
+        PREPARED_TEXT_SCHEMA, PREPARED_TEXT_INSTRUCTION,
+    )
+    context = {"trajectory": {"contacts": ["First answer", "Review", "Revision"],
+                              "delivered_text": "Final answer"}}
+    contexts = [{"source_sample_id": "s1", "source_feedback_sha256": "a"*64,
+                 "model_context": context, "model_context_sha256": content_hash(context)}]
+    states, _ = states_from_contexts({"s1": contexts[0]}, active_ids=("s1",),
+                                    prepared_sha256="b"*64, source_bindings_sha256="d"*64,
+                                    roster_sha="c"*64, maximum=10000)
+    history = _agent_history(agent_state=(states["s1"].as_json(),),
+                             agent_contact_id="summary", contact_instruction="Summarize all visits.")
+    payload = _boundary_payload(tmp_path, task_instruction=PREPARED_TEXT_INSTRUCTION,
+                                history=history, prepared_text=PREPARED_TEXT_SCHEMA)
+    from speech_aware_evidence_acquisition.e0.d2_leakage import ARM_VISIBLE_FIELDS
+    return {key: payload[key] for key in ARM_VISIBLE_FIELDS["prepared-context-text"]}
+
+
+@pytest.mark.parametrize("prompt_order", ["speech-query-prefix-v2", "speech-features-text-keys-v1", "knowledge-speech-state-v2"])
+def test_prepared_text_preserves_whole_context_with_no_media_on_fit_and_send(tmp_path, monkeypatch, prompt_order):
+    import speech_aware_evidence_acquisition.core.model.transport as module
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("No fresh media may be loaded")
+    monkeypatch.setattr(module, "_load_audio_part", forbidden)
+    captured = []
+    def post(_url, body):
+        captured.append(json.loads(body))
+        return _canned_response()
+    transport = _speech_order_transport(tmp_path, post=post, prompt_order=prompt_order)
+    payload = _prepared_text_payload(tmp_path)
+    body, receipt = transport.render_request_with_receipt(canonical_bytes(payload))
+    assert receipt["text_only_prepared"] is True
+    assert receipt["observed_audio_seconds"] == receipt["audio_parts"] == receipt["speech_packets"] == 0
+    assert len(body["messages"][1]["content"]) == 2
+    assert payload["history"][0]["content"] in body["messages"][1]["content"][0]["text"]
+    assert payload["history"][1]["content"] in body["messages"][1]["content"][1]["text"]
+    assert all(part["type"] == "text" for part in body["messages"][1]["content"])
+    transport(canonical_bytes(payload))
+    assert captured == [body]
+
+
+@pytest.mark.parametrize("change", ["speech", "evidence", "gold", "schema", "control-only", "hash", "instruction"])
+def test_prepared_text_refuses_undeclared_inputs_and_damaged_context(tmp_path, change):
+    payload = _prepared_text_payload(tmp_path)
+    if change == "speech":
+        payload["speech_feature_parts"] = []
+    elif change == "evidence":
+        payload["supplied_evidence"] = []
+    elif change == "gold":
+        payload["construction_targets"] = [{"target": "gold"}]
+    elif change == "schema":
+        payload["prepared_text"] = False
+    elif change == "control-only":
+        payload["history"] = payload["history"][1:]
+    elif change == "hash":
+        payload["history"][0]["content"] += "tamper"
+    else:
+        payload["task_instruction"] += "Extra task ontology"
+    with pytest.raises(FrozenCoreError):
+        _speech_order_transport(tmp_path).render_request(canonical_bytes(payload))
+
+
+def test_prepared_text_actual_body_has_zero_media_and_registered_live_fit_cost(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.core.preparation_fit import (
+        build_live_phase_fit_gate, complete_phase_endpoint_count,
+    )
+    from speech_aware_evidence_acquisition.rails.controllers import default_phase_program
+    from speech_aware_evidence_acquisition.rails.core_client import PreparedCoreRequest
+    from test_live_phase_fit import Runtime, Sample, plan, values
+    import speech_aware_evidence_acquisition.core.preparation_fit as fitting
+
+    payload = _prepared_text_payload(tmp_path)
+    payload["sample_id"] = "s1"
+    payload["decoding_params"] = {"max_tokens": 4}
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("A text fit must not read feature packets")
+    monkeypatch.setattr(fitting, "packet_token_counts", forbidden)
+    captured, calls = [], []
+    def post(_url, raw):
+        captured.append(json.loads(raw))
+        return _canned_response()
+    transport = _speech_order_transport(tmp_path, post=post)
+    class TextTokenizer:
+        def request_json(self, method, path, body):
+            calls.append((method, path, body))
+            if path == "/props":
+                return {"media_marker": "<media>"}
+            if path == "/apply-template":
+                return {"prompt": json.dumps(body["messages"])}
+            if path == "/tokenize":
+                return {"tokens": [1, 2, 3]}
+            raise AssertionError(path)
+    v = values(arm="prepared-context-text")
+    v.pop("speech_feature_root")
+    v["live_phase_fit"]["contact_cap"] = complete_phase_endpoint_count(1, 1, media_count=0)
+    runtime = Runtime(tmp_path, v)
+    runtime._samples = (Sample("s1"),)
+    runtime._transport = transport
+    runtime.uses_speech_feature_packets = lambda: False
+    gate = build_live_phase_fit_gate(runtime, default_phase_program("phase-direct-only-v1"),
+                                    plan(), client_factory=lambda **_k: TextTokenizer())
+    gate("direct", (PreparedCoreRequest(canonical_bytes(payload), object()),))
+    output = json.loads((tmp_path / "prepared" / gate.execution_plan.run_id /
+                         gate.execution_plan.attempt_id / "direct.request-fit.json").read_text())["output"]
+    assert output["contacts"] == len(calls) == 3
+    assert output["rows"][0]["media_count"] == output["rows"][0]["speech_tokens"] == 0
+    assert output["every_request_fits"]
+    transport(canonical_bytes(payload))
+    assert captured[0]["messages"] == next(body["messages"] for _, path, body in calls
+                                          if path == "/apply-template")

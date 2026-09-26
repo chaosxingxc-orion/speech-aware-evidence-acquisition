@@ -1,0 +1,502 @@
+{
+  "artifact_kind": "saea-e0-d2-leakage-v1",
+  "generated": "2026-09-25",
+  "runtime_visible_fields_by_arm": {
+    "prepared-context-text": {
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "prepared_text"
+      ],
+      "clean_payload_accepted": true
+    },
+    "bare-core": {
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params"
+      ],
+      "clean_payload_accepted": true
+    },
+    "bare-core-native-tools": {
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "tool_schemas"
+      ],
+      "clean_payload_accepted": true
+    },
+    "raw-speech-agent-native-tools": {
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "supplied_evidence",
+        "evidence_provenance",
+        "tool_schemas",
+        "raw_speech_query"
+      ],
+      "clean_payload_accepted": true
+    },
+    "construction-proposer-text": {
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "construction_targets"
+      ],
+      "clean_payload_accepted": true
+    },
+    "construction-advantage-text": {
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "construction_targets"
+      ],
+      "clean_payload_accepted": true
+    },
+    "fixed-legal-context": {
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "supplied_evidence",
+        "evidence_provenance"
+      ],
+      "clean_payload_accepted": true
+    },
+    "fixed-retrieval": {
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "retrieval_query",
+        "retrieved_evidence",
+        "evidence_provenance"
+      ],
+      "clean_payload_accepted": true
+    },
+    "exemplar-context": {
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "supplied_evidence",
+        "evidence_provenance",
+        "exemplar_bank"
+      ],
+      "clean_payload_accepted": true
+    },
+    "fixed-legal-context-replay": {
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "supplied_evidence",
+        "evidence_provenance",
+        "exemplar_bank",
+        "delta_candidates"
+      ],
+      "clean_payload_accepted": true
+    },
+    "speech-feature-query": {
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "supplied_evidence",
+        "evidence_provenance",
+        "speech_feature_parts",
+        "speech_packet_sha256",
+        "query_source",
+        "key_representation_id",
+        "matcher_policy_id",
+        "mmproj_loaded"
+      ],
+      "clean_payload_accepted": true
+    },
+    "speech-feature-query-native-tools": {
+      "visible_fields": [
+        "request_id",
+        "carrier_lock_key",
+        "sample_id",
+        "speech_ref",
+        "media_relpath",
+        "audio_seconds",
+        "sample_rate_hz",
+        "task_instruction",
+        "history",
+        "decoding_params",
+        "supplied_evidence",
+        "evidence_provenance",
+        "speech_feature_parts",
+        "speech_packet_sha256",
+        "query_source",
+        "key_representation_id",
+        "matcher_policy_id",
+        "mmproj_loaded",
+        "tool_schemas"
+      ],
+      "clean_payload_accepted": true
+    }
+  },
+  "construction_gold_visibility": {
+    "field": "construction_targets",
+    "arms": [
+      "construction-advantage-text",
+      "construction-proposer-text"
+    ],
+    "arms_declaring_the_field": [
+      "construction-advantage-text",
+      "construction-proposer-text"
+    ],
+    "no_other_arm_declares_it": true,
+    "boundary_argument": "Owner decision 2026-09-05. The frozen core may act as a PROPOSER over CONSTRUCTION rows with their gold labels, on this text-only arm alone. (1) Construction identities only: the gate (contracts.gate_exposure._require_construction_role_for_visible_targets) refuses the touch unless the plan's split identity hash equals a committed roster receipt whose carrier is the plan's own and whose roster_role is 'construction', and whose split role is 'discovery'. (2) Block-disjoint from every evaluation identity by construction: a construction roster is drawn from the exposure-free block partition and its zero overlap with the exposure union is recomputed and refused fail-closed before the receipt is written. The exposure union excludes construction-role rosters by design, so the two sets can never converge. (3) Outputs are ARTIFACTS -- proposed prompt text -- never answers to a scored row; they reach an evaluation contact only through the audited instruction fields, hash-pinned in a committed config fragment. (4) The contact is text-only and every FORBIDDEN_RUNTIME_FIELDS name is still rejected inside this payload, exactly as in every other arm. The legality class is the same as TRAIN gold entering a knowledge-base build."
+  },
+  "forbidden_runtime_fields": [
+    "answer_key",
+    "future_turn",
+    "future_turns",
+    "gold",
+    "gold_answer",
+    "gold_label",
+    "gold_transcript",
+    "reference",
+    "reference_answer",
+    "reference_transcript",
+    "test_annotation",
+    "test_label"
+  ],
+  "negative_controls": {
+    "boundary_injections": {
+      "executed": 36,
+      "all_rejected": true,
+      "shapes_per_field": [
+        "top_level",
+        "nested",
+        "list_nested"
+      ],
+      "results": [
+        {
+          "field": "answer_key",
+          "shape": "top_level",
+          "rejected": true
+        },
+        {
+          "field": "answer_key",
+          "shape": "nested",
+          "rejected": true
+        },
+        {
+          "field": "answer_key",
+          "shape": "list_nested",
+          "rejected": true
+        },
+        {
+          "field": "future_turn",
+          "shape": "top_level",
+          "rejected": true
+        },
+        {
+          "field": "future_turn",
+          "shape": "nested",
+          "rejected": true
+        },
+        {
+          "field": "future_turn",
+          "shape": "list_nested",
+          "rejected": true
+        },
+        {
+          "field": "future_turns",
+          "shape": "top_level",
+          "rejected": true
+        },
+        {
+          "field": "future_turns",
+          "shape": "nested",
+          "rejected": true
+        },
+        {
+          "field": "future_turns",
+          "shape": "list_nested",
+          "rejected": true
+        },
+        {
+          "field": "gold",
+          "shape": "top_level",
+          "rejected": true
+        },
+        {
+          "field": "gold",
+          "shape": "nested",
+          "rejected": true
+        },
+        {
+          "field": "gold",
+          "shape": "list_nested",
+          "rejected": true
+        },
+        {
+          "field": "gold_answer",
+          "shape": "top_level",
+          "rejected": true
+        },
+        {
+          "field": "gold_answer",
+          "shape": "nested",
+          "rejected": true
+        },
+        {
+          "field": "gold_answer",
+          "shape": "list_nested",
+          "rejected": true
+        },
+        {
+          "field": "gold_label",
+          "shape": "top_level",
+          "rejected": true
+        },
+        {
+          "field": "gold_label",
+          "shape": "nested",
+          "rejected": true
+        },
+        {
+          "field": "gold_label",
+          "shape": "list_nested",
+          "rejected": true
+        },
+        {
+          "field": "gold_transcript",
+          "shape": "top_level",
+          "rejected": true
+        },
+        {
+          "field": "gold_transcript",
+          "shape": "nested",
+          "rejected": true
+        },
+        {
+          "field": "gold_transcript",
+          "shape": "list_nested",
+          "rejected": true
+        },
+        {
+          "field": "reference",
+          "shape": "top_level",
+          "rejected": true
+        },
+        {
+          "field": "reference",
+          "shape": "nested",
+          "rejected": true
+        },
+        {
+          "field": "reference",
+          "shape": "list_nested",
+          "rejected": true
+        },
+        {
+          "field": "reference_answer",
+          "shape": "top_level",
+          "rejected": true
+        },
+        {
+          "field": "reference_answer",
+          "shape": "nested",
+          "rejected": true
+        },
+        {
+          "field": "reference_answer",
+          "shape": "list_nested",
+          "rejected": true
+        },
+        {
+          "field": "reference_transcript",
+          "shape": "top_level",
+          "rejected": true
+        },
+        {
+          "field": "reference_transcript",
+          "shape": "nested",
+          "rejected": true
+        },
+        {
+          "field": "reference_transcript",
+          "shape": "list_nested",
+          "rejected": true
+        },
+        {
+          "field": "test_annotation",
+          "shape": "top_level",
+          "rejected": true
+        },
+        {
+          "field": "test_annotation",
+          "shape": "nested",
+          "rejected": true
+        },
+        {
+          "field": "test_annotation",
+          "shape": "list_nested",
+          "rejected": true
+        },
+        {
+          "field": "test_label",
+          "shape": "top_level",
+          "rejected": true
+        },
+        {
+          "field": "test_label",
+          "shape": "nested",
+          "rejected": true
+        },
+        {
+          "field": "test_label",
+          "shape": "list_nested",
+          "rejected": true
+        }
+      ]
+    },
+    "trace_axis_smuggling": {
+      "executed": 4,
+      "all_rejected": true,
+      "results": [
+        {
+          "channel": "OBS",
+          "rejected": true
+        },
+        {
+          "channel": "ORG",
+          "rejected": true
+        },
+        {
+          "channel": "SUPPLY",
+          "rejected": true
+        },
+        {
+          "channel": "USE",
+          "rejected": true
+        }
+      ]
+    }
+  },
+  "general_audio_exclusion": {
+    "excluded_lock_keys_source": "configs/experiment/e0-model-free-closure.yaml",
+    "excluded_lock_keys": [
+      "fsd50k",
+      "audioset-metadata-features",
+      "esc-50"
+    ],
+    "configured_lock_keys": [
+      "conec",
+      "earnings21-original",
+      "earnings22-original",
+      "qwen3-omni-30b-a3b-instruct-gguf"
+    ],
+    "package_source_mentions": [],
+    "umbrella_lock_profiles": {
+      "fsd50k": [
+        "retained-cross-domain"
+      ],
+      "audioset-metadata-features": [
+        "retained-cross-domain"
+      ],
+      "esc-50": [
+        "retained-cross-domain"
+      ]
+    },
+    "note": "Excluded general-audio assets are named only by the experiment config and this receipt; package code never references them."
+  },
+  "dependency_surface": {
+    "project_dependencies": [],
+    "note": "No dataset/audio library can pull excluded assets into the E0 dependency graph."
+  },
+  "enforcement_points": [
+    "contracts.assert_information_boundary (runtime payload choke point)",
+    "contracts.TraceRecord.validate (axis namespace separation)",
+    "data.loader.SampleRef.runtime_view (loader-side boundary check)",
+    "tests/contract (CI-enforced, fails closed)"
+  ]
+}

@@ -328,6 +328,7 @@ _CONSTRUCTION_TARGETS_FIELD = CONSTRUCTION_VISIBLE_FIELD
 _CONSTRUCTION_PROPOSER_ARM_FIELDS = _ZERO_SUPPLY_ARM_FIELDS | frozenset(
     {_CONSTRUCTION_TARGETS_FIELD}
 )
+_PREPARED_TEXT_ARM_FIELDS = _ZERO_SUPPLY_ARM_FIELDS | {"prepared_text"}
 _ACCEPTED_ARM_FIELD_SETS = frozenset(
     {
         _SUPPORTED_ARM_FIELDS,
@@ -338,6 +339,7 @@ _ACCEPTED_ARM_FIELD_SETS = frozenset(
         _ZERO_SUPPLY_ARM_FIELDS,
         _NATIVE_TOOLS_ZERO_SUPPLY_ARM_FIELDS,
         _CONSTRUCTION_PROPOSER_ARM_FIELDS,
+        _PREPARED_TEXT_ARM_FIELDS,
     }
 )
 _SPEECH_FEATURE_FAMILY_ARM_FIELDS = frozenset(
@@ -1469,6 +1471,7 @@ class FrozenCoreClient:
             )
         self._is_speech_feature_arm = arm_fields in _SPEECH_FEATURE_FAMILY_ARM_FIELDS
         self._is_native_tools_arm = _NATIVE_TOOLS_FIELD in arm_fields
+        self._is_prepared_text_arm = arm_fields == _PREPARED_TEXT_ARM_FIELDS
         self._is_construction_proposer_arm = _CONSTRUCTION_TARGETS_FIELD in arm_fields
         # Read off the arm's OWN declared fields, never a hardcoded arm-name
         # list -- the same discipline core.policies.FixedPolicy.run_sample
@@ -2124,11 +2127,11 @@ class FrozenCoreClient:
     def bound_raw_speech_identity(
         self, sample_id: str, media_relpath: str
     ) -> dict[str, str]:
-        """Return the source identity admitted by this raw-native client."""
+        """Return a raw-native observation or prepared-text custody anchor identity."""
 
-        if self._arm != _RAW_NATIVE_ARM:
+        if self._arm != _RAW_NATIVE_ARM and not self._is_prepared_text_arm:
             raise FrozenCoreClientError(
-                "raw speech identity is available only on the explicit raw native arm"
+                "raw speech identity requires the raw native or prepared text arm"
             )
         return self._raw_speech_identity(sample_id, media_relpath)
 
@@ -2211,7 +2214,11 @@ class FrozenCoreClient:
             agent_contact_id=agent_contact_id,
             contact_instruction=contact_instruction,
         )
-        if history and speech_feature_sample_id is None and not raw_native:
+        if self._is_prepared_text_arm and (
+            text_only_sample_id is None or speech_feature_sample_id is not None or raw_native
+        ):
+            raise FrozenCoreClientError("prepared text requires an explicit text-only anchor")
+        if history and speech_feature_sample_id is None and not raw_native and not self._is_prepared_text_arm:
             raise FrozenCoreClientError(
                 "Agent state/control requires an explicit feature or raw native decision call"
             )
@@ -2410,6 +2417,13 @@ class FrozenCoreClient:
             "history": history,
             "decoding_params": dict(decoding_params) if decoding_params else {},
         }
+        if self._is_prepared_text_arm:
+            from .prepared_text import PREPARED_TEXT_SCHEMA, validate_prepared_text_payload
+            payload["prepared_text"] = PREPARED_TEXT_SCHEMA
+            try:
+                validate_prepared_text_payload(payload)
+            except ValueError as error:
+                raise FrozenCoreClientError(str(error)) from error
         if raw_native:
             payload["raw_speech_query"] = self._raw_speech_identity(sample_id, media_relpath)
         if self._carries_evidence:

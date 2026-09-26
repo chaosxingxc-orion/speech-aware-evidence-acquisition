@@ -181,6 +181,24 @@ for contracts and proof receipts. Read the new
 for the source-replay connection and its exact test boundary. Raw task answers
 stay outside Git.
 
+## Prepared-text summary continuation
+
+CPU implementation checkpoint: 2026-09-26T01:24:30Z.
+The new [prepared-text path](../readiness/2026-09-26-prepared-text-system-summary.md)
+uses system-trajectory-summary-text-v1 and the distinct D2 arm
+prepared-context-text. It keeps verified whole-episode ORG input, shared
+controller/OpenJiuwen and exact fitting, while sending no fresh speech or task
+ontology. The default runtime binding and request renderer are covered by
+synthetic connected tests; 326 targeted regressions passed with one existing
+skip; all nine offline gates and Ruff passed. A separate nineteen-test run
+confirms legacy feedback and zero-media cost behavior. Read the final validation
+receipt linked in that document for test boundaries and log hashes.
+
+The older multimodal summary config is retained unchanged. The new input mode
+does not complete the semantic comparison/update/reexecution loop or establish
+an RL benefit. GPU state remains the execution-closed failure checkpoint above.
+No source worker, queue, STOP, service or research result was changed.
+
 ## Whole-system summary runtime connection
 
 The model-facing summary input now has a shared preparation/loader/baseline
@@ -190,9 +208,10 @@ delivery content and feeds the existing ORG serializer, controller, OpenJiuwen,
 actual request fitting and raw artifact output. No new research model/scorer
 contact or generation-worker change occurred.
 
-The shared artifact arm also attaches original sample speech. Register that
-exposure as a multimodal adaptation, or implement and verify a governed
-text-only route before claiming the upstream text-only summary protocol.
+The older shared artifact arm also attaches original sample speech. Register
+that exposure as a multimodal adaptation. The new prepared-text route above
+removes fresh media and task knowledge; its existence does not imply that an
+upstream-equivalent algorithm cycle has run.
 The summary context contains no scores or reference answers, though the source
 bundle verifier checks score-file integrity. This connection is not a complete
 executed TF-GRPO cycle. Semantic group comparison, typed proposals, model-side

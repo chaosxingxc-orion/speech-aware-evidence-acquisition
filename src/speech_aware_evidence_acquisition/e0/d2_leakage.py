@@ -37,6 +37,13 @@ from .artifacts import REPO_ROOT, ArtifactError, today
 E0_CONFIG_RELPATH = "configs/experiment/e0-model-free-closure.yaml"
 
 ARM_VISIBLE_FIELDS: dict[str, tuple[str, ...]] = {
+    # Text-only TRAIN artifact analysis. No construction gold, fresh speech,
+    # evidence or tools; verified prepared ORG context and phase control only.
+    "prepared-context-text": (
+        "request_id", "carrier_lock_key", "sample_id", "speech_ref",
+        "media_relpath", "audio_seconds", "sample_rate_hz", "task_instruction",
+        "history", "decoding_params", "prepared_text",
+    ),
     "bare-core": (
         "request_id",
         "carrier_lock_key",

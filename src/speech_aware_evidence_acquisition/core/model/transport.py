@@ -877,7 +877,8 @@ class LlamaServerTransport:
         # loading those bytes onto the wire would both contradict the arm's own
         # registered scope ("zero audio parts are sent") and be refused outright
         # by an mmproj-free server, which is what every EVO cell serves.
-        text_only = CONSTRUCTION_VISIBLE_FIELD in payload
+        prepared_text = "prepared_text" in payload
+        text_only = CONSTRUCTION_VISIBLE_FIELD in payload or prepared_text
         if self._prompt_order not in _SPEECH_FEATURE_PROMPT_ORDERS and not text_only:
             audio_relpath, audio_part = _load_audio_part(
                 self._data_root, payload["media_relpath"], "transport media_relpath"
@@ -936,7 +937,25 @@ class LlamaServerTransport:
             text_only and self._prompt_order in _SPEECH_FEATURE_PROMPT_ORDERS
         )
         construction_receipt: dict[str, object] | None = None
-        if text_only_construction:
+        if prepared_text:
+            from ...rails.prepared_text import validate_prepared_text_payload
+            try:
+                validate_prepared_text_payload(payload)
+            except ValueError as error:
+                raise FrozenCoreError(str(error)) from error
+            if evidence_projection is not None or self._user_turn_text is not None:
+                raise FrozenCoreError("prepared text cannot add a projection or user-turn text")
+            self._assert_system_message_suppression_is_lossless(payload, evidence_texts=[])
+            state_texts = _speech_history_texts(payload["history"])
+            messages = self._messages(str(payload["task_instruction"]), [
+                {"type": "text", "text": text} for text in state_texts
+            ])
+            construction_receipt = {
+                "text_only_prepared": True, "prompt_order": self._prompt_order,
+                "observed_audio_seconds": 0, "audio_parts": 0, "speech_packets": 0,
+                "prepared_artifact_sha256": payload["history"][0]["prepared_artifact_sha256"],
+            }
+        elif text_only_construction:
             _assert_text_only_construction_payload(payload, self._prompt_order)
             if evidence_projection is not None:
                 raise FrozenCoreError(
@@ -1322,8 +1341,9 @@ class LlamaServerTransport:
         # ``native-evidence-projection`` event for a contact that never had
         # one. Only the projection receipt reaches the trace, exactly as
         # before this branch existed.
-        if projection_receipt is not None and not projection_receipt.get(
-            "text_only_construction"
+        if projection_receipt is not None and not (
+            projection_receipt.get("text_only_construction")
+            or projection_receipt.get("text_only_prepared")
         ):
             from ..tracing import TraceBuffer, get_current_trace_buffer
 

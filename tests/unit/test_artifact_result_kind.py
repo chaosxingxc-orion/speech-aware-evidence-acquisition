@@ -162,3 +162,27 @@ def test_typed_train_binding_rejects_slurp_non_train_construction_roster(
             sample_ids=devel_samples,
             data_root=data_root,
         )
+
+
+@pytest.mark.parametrize("change", [
+    {}, {"result_kind": "task-answer"}, {"prepared_training_feedback": None},
+    {"phase_supply": {"direct": {"provider": "unexpected"}}},
+    {"phase_tools": {"direct": ["extra"]}},
+    {"scorers": ["slurp-slu-official-train"]}, {"whole_roster_wave_barrier": False},
+    {"task_instruction": "Answer the original task"}, {"policy": "phase-direct-then-slots-v1"},
+])
+def test_prepared_text_admits_only_registered_train_artifact_stages(tmp_path, change):
+    from speech_aware_evidence_acquisition.rails.prepared_text import PREPARED_TEXT_INSTRUCTION
+    samples, identity, path, sha = _roster(tmp_path)
+    values = _values(path, sha, arm="prepared-context-text",
+                     prepared_training_feedback={"source": "verified by later loader"},
+                     task_instruction=PREPARED_TEXT_INSTRUCTION, evidence_source="none",
+                     whole_roster_wave_barrier=True, live_phase_fit={"registered": True})
+    values.update(change)
+    if change:
+        with pytest.raises(FlightRuntimeError):
+            validate_artifact_result_binding(values, plan=_plan(identity), repo_root=tmp_path,
+                                            sample_ids=samples)
+    else:
+        assert validate_artifact_result_binding(values, plan=_plan(identity), repo_root=tmp_path,
+                                                sample_ids=samples)["role"] == "training-feedback-proposal"
