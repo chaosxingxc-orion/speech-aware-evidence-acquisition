@@ -80,6 +80,32 @@ If an explicit recovery action allows outside candidates, account for that
 recovery branch separately. Current prompt compliance alone does not prove
 strict restriction. Record actual outside-candidate predictions.
 
+A candidate-specific search target is
+
+    (I_hat, E_hat) = argmax over i in C_K(X), E in H_i(X)
+                    [log P(i|X) + log P(E|i,X)].
+
+Here H_i(X) contains speech-supported entity hypotheses interpreted with the
+candidate's slot explanations. It is not a hard whitelist learned from observed
+TRAIN pairs. The equation describes a target joint inference problem; the
+current frozen model does not expose calibrated probabilities for this score,
+and self-reported confidence must not be substituted without validation.
+
+Keep the intent-to-entity-role relation, rather than taking an unlabelled union
+of all candidate slot types. The latter removes which role belongs to which
+candidate and permits incompatible combinations. Knowledge narrows plausible
+interpretations; it never establishes that a value occurred in the speech.
+Optional slots and no-entity utterances must remain admissible.
+
+For a strictly candidate-constrained final intent, define
+c = P(gold intent in C_K) and
+q = P(final intent correct | gold intent in C_K).
+Then final intent accuracy equals c*q. For exact joint task accuracy, replace q
+with the conditional probability that both intent and the entire entity output
+are correct. These identities separate proposal failure from within-candidate
+resolution failure; they do not bound entity-only micro F1 in the same way.
+An outside-candidate recovery policy requires an additional branch term.
+
 An entity-first alternative should preserve span/type uncertainty and reread X;
 using only a single extracted E can discard operation words and relations.
 Shared entities across several intents are weak discriminators. This is a
@@ -87,7 +113,7 @@ testable alternate system action, not a universally inferior factorization.
 
 ## Bounded prospective experiment sequence
 
-Keep the current event-credit flight unchanged and close its registered work.
+Keep all active or frozen actor configurations unchanged and close their registered work.
 First audit complete existing traces for:
 - candidate coverage and conditional final selection;
 - candidate-to-slot-card mappings and supplied binding scope;

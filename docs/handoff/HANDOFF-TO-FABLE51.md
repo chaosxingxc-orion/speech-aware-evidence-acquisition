@@ -5,6 +5,28 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Memory batch002 stopped on a resource-receipt read failure
+
+Checkpoint: 2026-09-26T11:45:30.369675+00:00. At 11:37:23Z, memory-s4 aborted after18
+generation contacts when Reviewer dispatch could not read a valid resource
+receipt. Empty-s4 remains unstarted. No automatic retry, scorer replay or
+memory update is authorized. The campaign is draining already submitted
+complete-manifest scorers; retain every frozen worker and source.
+
+Read docs/receipts/continuation/2026-09-26-system-memory-batch002-resource-read-failure.json.
+The resource samples around the failure all admitted work: minimum Windows
+free20.88GiB and GPU free3706MiB. The model server remained healthy and idle.
+These observations do not establish an out-of-memory failure. The propagated
+error discarded the underlying I/O/parse cause, which remains unresolved.
+Do not relax the resource floors, infer a crash, or restart the service.
+
+The all-eight scientific-read gate cannot release this incomplete batch.
+Only operational metadata has been read. Any failed-family scientific
+diagnosis requires a separately registered scope; no partial result may be
+selected as the matched batch outcome. Future recovery, if warranted, needs
+a named defect, model-free proof and its own pre-registration. No recovery
+has been launched. The previous running statements below are historical.
+
 ## Memory batch002 resumed through the shared scoring pipeline
 
 Checkpoint: 2026-09-26T11:32:08.272336+00:00. First pair empty-s1/memory-s1

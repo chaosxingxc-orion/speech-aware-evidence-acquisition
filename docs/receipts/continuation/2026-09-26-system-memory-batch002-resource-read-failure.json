@@ -1,0 +1,180 @@
+{
+  "arms": {
+    "empty-s1": {
+      "actual": {
+        "audio_seconds": 75.63906250000001,
+        "calls": 20
+      },
+      "attempt_receipt": {
+        "relpath": "attempts/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S1-RUN-V1/attempt-slurp-native-stage3-system-memory-batch002-empty-s1-run-v1.json",
+        "sha256": "608482ecf749a27d933cf641e76bf7c73058290f454cb9fe2a91e9476bf5c012"
+      },
+      "failure_reason": null,
+      "source_commit": "569613df788f7c8368203b1adb44946eebe395d8",
+      "stages": [
+        "preflight",
+        "preprocess",
+        "run_phases",
+        "score",
+        "seal",
+        "serve"
+      ],
+      "state": "FINALIZED"
+    },
+    "empty-s2": {
+      "actual": {
+        "audio_seconds": 75.6390625,
+        "calls": 20
+      },
+      "attempt_receipt": {
+        "relpath": "attempts/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S2-RUN-V1/attempt-slurp-native-stage3-system-memory-batch002-empty-s2-run-v1.json",
+        "sha256": "9af7f866cb2f9397a11d2feb149c9881abc79c63ce39bd41139a065644bcc164"
+      },
+      "failure_reason": null,
+      "source_commit": "7a8c8071ac2d48c5610bdb4696a10ceeb682406c",
+      "stages": [
+        "preflight",
+        "preprocess",
+        "run_phases",
+        "seal",
+        "serve"
+      ],
+      "state": "FINALIZED"
+    },
+    "empty-s3": {
+      "actual": {
+        "audio_seconds": 75.63906250000001,
+        "calls": 20
+      },
+      "attempt_receipt": {
+        "relpath": "attempts/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S3-RUN-V1/attempt-slurp-native-stage3-system-memory-batch002-empty-s3-run-v1.json",
+        "sha256": "ef0fef3c7950cb0b4236558f4c6eb8a98e0ba1e6aff2b3d08706dd6f64cb5110"
+      },
+      "failure_reason": null,
+      "source_commit": "7a8c8071ac2d48c5610bdb4696a10ceeb682406c",
+      "stages": [
+        "preflight",
+        "preprocess",
+        "run_phases",
+        "seal",
+        "serve"
+      ],
+      "state": "FINALIZED"
+    },
+    "empty-s4": {
+      "actual": null,
+      "failure_reason": null,
+      "source_commit": "7a8c8071ac2d48c5610bdb4696a10ceeb682406c",
+      "stages": [],
+      "state": "not_started"
+    },
+    "memory-s1": {
+      "actual": {
+        "audio_seconds": 75.63906250000001,
+        "calls": 20
+      },
+      "attempt_receipt": {
+        "relpath": "attempts/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S1-RUN-V1/attempt-slurp-native-stage3-system-memory-batch002-memory-s1-run-v1.json",
+        "sha256": "91e40e61a0efa115bbe5cba27aad49a5eeb0e85b5f2f17e686b5aacaa528a739"
+      },
+      "failure_reason": null,
+      "source_commit": "569613df788f7c8368203b1adb44946eebe395d8",
+      "stages": [
+        "preflight",
+        "preprocess",
+        "run_phases",
+        "score",
+        "seal",
+        "serve"
+      ],
+      "state": "FINALIZED"
+    },
+    "memory-s2": {
+      "actual": {
+        "audio_seconds": 75.63906250000001,
+        "calls": 20
+      },
+      "attempt_receipt": {
+        "relpath": "attempts/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S2-RUN-V1/attempt-slurp-native-stage3-system-memory-batch002-memory-s2-run-v1.json",
+        "sha256": "cf6772c79cf986f8b5a5d5820da125e1bdf99576ec6e41a808a541aa389d94da"
+      },
+      "failure_reason": null,
+      "source_commit": "7a8c8071ac2d48c5610bdb4696a10ceeb682406c",
+      "stages": [
+        "preflight",
+        "preprocess",
+        "run_phases",
+        "seal",
+        "serve"
+      ],
+      "state": "FINALIZED"
+    },
+    "memory-s3": {
+      "actual": {
+        "audio_seconds": 75.6390625,
+        "calls": 20
+      },
+      "attempt_receipt": {
+        "relpath": "attempts/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S3-RUN-V1/attempt-slurp-native-stage3-system-memory-batch002-memory-s3-run-v1.json",
+        "sha256": "7dfd7d89f04d46b5026af66b100ed13fe570b4b97e898fcbeb774945e5be1b2e"
+      },
+      "failure_reason": null,
+      "source_commit": "7a8c8071ac2d48c5610bdb4696a10ceeb682406c",
+      "stages": [
+        "preflight",
+        "preprocess",
+        "run_phases",
+        "seal",
+        "serve"
+      ],
+      "state": "OPENED"
+    },
+    "memory-s4": {
+      "actual": {
+        "audio_seconds": 65.91243750000002,
+        "calls": 18
+      },
+      "attempt_receipt": {
+        "relpath": "attempts/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S4-RUN-V1/attempt-slurp-native-stage3-system-memory-batch002-memory-s4-run-v1.json",
+        "sha256": "25906414a13742e8b0e36e876348ad0df97b677e74888658ec605ebecece936d"
+      },
+      "failure_reason": "generation failed during run_phases or seal: NativeEpisodeError: native episode node failed: [100054] component 'reviewer_0_role' execute 'invoke' error, reason='resource receipt unavailable or malformed', workflow='5cb91767723f48979d5cc5bba7fa4b8d'",
+      "source_commit": "7a8c8071ac2d48c5610bdb4696a10ceeb682406c",
+      "stages": [
+        "preflight",
+        "preprocess",
+        "serve"
+      ],
+      "state": "ABORTED"
+    }
+  },
+  "disposition": {
+    "completed_scorers": "Allow existing complete manifests to finish their one official score.",
+    "failed_actor": "Immutable, unscored; do not replay or resume.",
+    "memory_update": "Not eligible from this incomplete matched batch.",
+    "model_service": "Healthy at inspection, same resident process; no automatic restart.",
+    "recovery": "No recovery registered or launched.",
+    "scientific_read": "All-eight release condition remains unsatisfied. Only operational metadata read. A separate diagnostic registration is required for failed-family scientific reading.",
+    "unstarted_empty_s4": "Held; no automatic dispatch."
+  },
+  "driver_epoch": "2026-09-26T11:31:05Z",
+  "failed_arm": "memory-s4",
+  "failure_class": "ResourceAdmissionError: resource receipt unavailable or malformed",
+  "failure_time_utc": "2026-09-26T11:37:23.807236Z",
+  "new_model_or_tool_contacts": 0,
+  "quality_or_answers_read": false,
+  "recorded_at": "2026-09-26T11:45:30.369675+00:00",
+  "resource_evidence": {
+    "decisions": [
+      "admit"
+    ],
+    "minimum_gpu_free_mib": 3706.0,
+    "minimum_windows_free_gib": 20.88312530517578,
+    "relpath": "coordination/slurp-system-memory-batch002-v1/resource-read-failure-observations.json",
+    "samples": 102,
+    "sha256": "5e46a88ec3b1729f0b535c1cbe7bb055dc91250b2a434f7e4f90a7f825e9e2ed"
+  },
+  "schema": "saea-system-memory-operational-failure-v1",
+  "session_id": "serving-slurp-system-memory-batch002-np2-v1",
+  "underlying_io_or_parse_error": "Not retained in the available propagated operational error; root cause unresolved."
+}
