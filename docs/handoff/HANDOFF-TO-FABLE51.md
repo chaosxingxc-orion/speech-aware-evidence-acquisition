@@ -5,6 +5,27 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Task knowledge reuse audit: slot view already implemented, not enabled
+
+Read docs/readiness/2026-09-26-task-specific-knowledge-stores-and-views-v4.md first.
+It corrects the incomplete implementation audit below and in v3: the shared
+native-candidate-slot-view-v1 already projects source-bound slot-role explanations.
+Do not implement another renderer. The current Stage-3 common actor does not enable
+it. Forty-six focused tests pass in WSL; the current released v2 source binds and
+retains all global guidance under the source-only projection audit. Evidence is in
+docs/receipts/continuation/2026-09-26-task-knowledge-reuse-audit-v1.json.
+
+The historical proof aborted after four Perception contacts before Solver generation
+on a plain/prefixed body mismatch; repair 23b4ec0e is already integrated. Its proposed
+successor remains held. There is no established complete-system benefit and no new
+generation admission or queue. Preserve the closed proof and all frozen sources.
+
+Keep intent and slot construction, keys and consumed values logically separate,
+with shared canonical facts. Use the ordinary Stage-3 actor for a matched view
+comparison, not the memory-specific Reviewer by accident. Reuse the registered
+projection and shared execution path. Semantic-view sampling and verified system
+credit remain distinct future work; deterministic filtering does not implement RL.
+
 ## Owner separates construction and consumption; shared proposal path integrated
 
 Latest clarification: build intent and slot knowledge separately, even if sharing

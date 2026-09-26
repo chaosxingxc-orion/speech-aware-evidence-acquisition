@@ -1,0 +1,84 @@
+{
+  "schema": "saea-task-knowledge-reuse-audit-v1",
+  "recorded_at_utc": "2026-09-26T13:43:05.116845+00:00",
+  "code_commit": "5e7d922a1deecdbf8312cc5d1d3fa2b0a44185d9",
+  "base_config": {
+    "relpath": "configs/baseline/slurp-native-stage3-system-common-r01c-v1.json",
+    "sha256": "4574e0fd3cd9754ee5bbb1584fe5d353dbeb423a70b41a07b08ed14fef87a48c"
+  },
+  "prospective_overlay": {
+    "native_evidence_projection": "native-candidate-slot-view-v1",
+    "native_evidence_projection_params": {
+      "store_id": "slot-contracts",
+      "consumer_roles": [
+        "solver",
+        "reviewer",
+        "planner"
+      ]
+    }
+  },
+  "context_sha256": "c67ad50192a6eb287f766bad6a36693ad2b3a762ffb44f4799ed6c22613504bc",
+  "slot_source": {
+    "relpath": "prepared/SAEA-SLURP-SEMANTIC-AUTHORING-PREPARE-V2/authored-slot-contracts-v2.json",
+    "sha256": "fc34b243f2e48e4e0bc3fe10d328d25601b1f1fa7c190c049d696c3ca0db4dd2"
+  },
+  "slot_release": {
+    "relpath": "knowledge/slurp/semantic/slot-contracts-v2/release.json",
+    "sha256": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b"
+  },
+  "current_base_projection_enabled": null,
+  "slot_values": 54,
+  "legal_intents": 60,
+  "slot_intent_bindings": 402,
+  "source_only_validation": {
+    "synthetic_scope": [
+      "alarm_query",
+      "alarm_remove",
+      "alarm_set"
+    ],
+    "tested_representations": [
+      "canonical-plain-v1",
+      "named-store-prefixed-v1"
+    ],
+    "cases": 108,
+    "dispositions": {
+      "full-body-no-excluded-bindings": 2,
+      "full-body-fallback": 86,
+      "projected": 20
+    },
+    "global_guidance_exact": true,
+    "canonical_snapshot_unchanged": true,
+    "full_body_bytes": 169564,
+    "view_body_bytes_before_wire_metadata": 149510,
+    "limitation": "Synthetic scope over every card; not actual retrieved selections, task evidence, final wire size, token capacity, or runtime admission."
+  },
+  "tests": {
+    "platform": "WSL Ubuntu-24.04 Python 3.12",
+    "passed": 46,
+    "files": [
+      "tests/unit/test_slot_binding_view.py",
+      "tests/unit/test_native_slot_binding_view.py",
+      "tests/unit/test_native_slot_view_transport.py",
+      "tests/unit/test_slot_view_shared_rendering.py"
+    ],
+    "includes": [
+      "canonical plain/prefixed bodies",
+      "source tamper rejection",
+      "candidate and draft scope",
+      "raw/feature actual render to fake POST equivalence",
+      "projection-off compatibility"
+    ]
+  },
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "official_scorer": 0
+  },
+  "historical_status": {
+    "first_proof": "Closed after four Perception contacts; first Solver projection rejected representation mismatch before Solver generation.",
+    "repair_commit": "23b4ec0eade972f98d961442dd7856c9fa87ec2c",
+    "successor": "slurp-candidate-slot-view-rendering-proof4-v1 remains held; no new launch or re-registration in this audit."
+  },
+  "scientific_status": "No established complete-system gain for the candidate slot view. Sampling among semantic views and verified system credit are not implemented by this deterministic projector."
+}
