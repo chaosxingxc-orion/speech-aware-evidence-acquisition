@@ -1,0 +1,152 @@
+{
+  "experiment_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S2-RUN-V1",
+  "date": "2026-09-26",
+  "purpose": "Does a source-valid but semantically unqualified algorithm-produced memory get invoked, selected, consumed and change complete terminal trajectories on disjoint next-batch TRAIN inputs?",
+  "cells": [
+    {
+      "cell_id": "slurp-native-stage3-system-memory-batch002-empty-s2-run-v1",
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S2-RUN-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-memory-batch002-empty-s2-run-v1",
+      "model_fragment": "q4km-mmproj-free-system-np2-ctx24k-resource-guard-v1",
+      "dataset_fragment": "slurp-speech-system-batch002-r01c-v1",
+      "baseline_fragment": "slurp-native-stage3-system-memory-batch002-common-base-v1",
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign",
+        "prepare-supply"
+      ],
+      "readiness": {
+        "state": "ready",
+        "reason": "Disjoint source-bound provisional memory evaluation with the same common capability and real per-contact fits.",
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "system-memory-batch002-admission-v1",
+            "relpath": "coordination/slurp-system-memory-batch002-v1/root-admission.json",
+            "sha256": "76b692a1e6255ca74cb040cc7a8dccbef3fff65e6a50f28bebd47d941e19b2e1",
+            "reason": "New matched construction/consumption flight; no closed-line restart."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S2-RUN-V1/phase-supply-v1.json",
+            "sha256": "25b81f9e2acb910374540d965d2c12d512996d9c4bf89d3ad2b20e5975283120",
+            "reason": "Shared cached first-phase supply; zero encoder/tokenizer contacts."
+          }
+        ]
+      }
+    }
+  ],
+  "split_id": "SYSTEM-BATCH002-R01C-V1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-system-batch002-r01c-v1",
+    "split_identity_hash": "5a374c143ca8a146e176edb388fe9130c3694dff1cc9c1ab540baf52f3bf5512",
+    "role": "exposed TRAIN construction; disjoint provisional memory evaluation"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-system-batch002-r01c-v1",
+      "ids": [
+        "slurp:train:000282:audio-1502114155",
+        "slurp:train:000308:audio-1488905475",
+        "slurp:train:000309:audio-1490018206",
+        "slurp:train:000351:audio-1499689684"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "stage3_algorithm": {
+    "id": "tfgrpo-system-memory-disjoint-v1",
+    "operators_used": [
+      "rollout",
+      "scoring",
+      "context_application"
+    ],
+    "note": "Algorithm-produced provisional memory is frozen through this full-system sampling batch. No actor cell updates memory or establishes efficacy."
+  },
+  "structural_workload": {
+    "complete_episodes": 4,
+    "maximum_contacts_per_episode": 11,
+    "generation_contact_ceiling": 44,
+    "official_full_scores_after_complete_seal": 1,
+    "launch_authority": true
+  },
+  "native_contact_fit": {
+    "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S2-RUN-V1-FIT",
+    "attempt_id": "attempt-slurp-native-stage3-system-memory-batch002-empty-s2-run-v1-fit",
+    "contact_cap": 176,
+    "max_speech_packets": 1
+  },
+  "request_decoding_overrides": {
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "top_k": 0,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "frequency_penalty": 0.0,
+    "seed": 2026092602,
+    "max_tokens": 1024
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 170,
+    "split_role": "discovery"
+  },
+  "service_session": "serving-slurp-system-memory-batch002-np2-v1",
+  "failure_policy": "Stop and preserve; no automatic retry, scorer/service restart, selective record deletion, tag repair or result-based arm changes.",
+  "family_budget": {
+    "generation_calls_cap": 44,
+    "fit_endpoint_calls_cap": 176,
+    "gpu_hours_fit_inclusive": 1.0,
+    "repeated_speech_audio_seconds_cap": 170,
+    "official_complete_scoring_jobs": 1,
+    "encoder_calls": 0,
+    "asr_calls": 0,
+    "native_tool_calls": 24,
+    "ceilings_are_not_targets": true
+  },
+  "registration": "docs/readiness/2026-09-26-system-memory-batch002-v1/protocol.json",
+  "candidate_experience_memory": {
+    "artifact": {
+      "data_relpath": "provisional/experience-candidates/slurp-system-batch001-typed-synthesis-v1.json",
+      "sha256": "e632a0a153221ede44f1ad6481b26a8ef49289132224546df965a5ed4a9f9a0f",
+      "output_sha256": "5aad86a9ac5c3a2f04f0fe85a6408a7cac0d66ef43691ceaa5ab1aecfa8a991e"
+    },
+    "source_attestation": {
+      "data_relpath": "coordination/slurp-system-batch001-v1/batch-format-recovery1-v1/source-attestation.json",
+      "sha256": "63041f32953f2e31388383767e62618cdd3929595a09f031f089a084f873f6d0",
+      "output_sha256": "b4455f13a466bffd99510e6ae3e1d90043d18d7a0e37713c3d2c47756b03d6bf"
+    },
+    "construction_roster": {
+      "repo_relpath": "docs/receipts/rosters/slurp-system-batch001-r01c-v1.json",
+      "sha256": "740d8d31e3ec33e63cd398d654dc5d5771612178703b4a528094898741a6f19b"
+    },
+    "evaluation_roster": {
+      "repo_relpath": "docs/receipts/rosters/slurp-system-memory-batch002-evaluation-v1.json",
+      "sha256": "87d1d92d80d2fd43c32d8f317f1e999b9aa13bcdf6d272076a7a96454be3273a"
+    },
+    "evaluation_decision": {
+      "repo_relpath": "docs/readiness/2026-09-26-system-memory-batch002-v1/empty-s2-memory-decision.json",
+      "sha256": "8022fd58f293e17b4f3db7cc3f31a0ed13cc7721edcbe458a256c532572818a3"
+    },
+    "ordered_record_sha256s": [],
+    "task_id": "slurp",
+    "component_tags": [
+      "obs",
+      "org",
+      "supply",
+      "use"
+    ],
+    "allowed_roles": [
+      "reviewer"
+    ]
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S2-RUN-V1/phase-supply-v1.json",
+    "sha256": "25b81f9e2acb910374540d965d2c12d512996d9c4bf89d3ad2b20e5975283120"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "schema": "saea-system-memory-batch-validation-v1",
+  "recorded_at": "2026-09-26T11:07:48.893234+00:00",
+  "targeted_tests": {
+    "files": [
+      "tests/unit/test_candidate_experience_memory.py",
+      "tests/unit/test_system_round_configurations.py"
+    ],
+    "passed": 18
+  },
+  "offline_gates": [
+    {
+      "check": "engineering_base_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-memory-batch002-v1/offline-validation/engineering_base_check.log"
+    },
+    {
+      "check": "harness_admission_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-memory-batch002-v1/offline-validation/harness_admission_check.log"
+    },
+    {
+      "check": "results_ledger_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-memory-batch002-v1/offline-validation/results_ledger_check.log"
+    },
+    {
+      "check": "tool_catalog_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-memory-batch002-v1/offline-validation/tool_catalog_check.log"
+    },
+    {
+      "check": "experiment_handoff_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-memory-batch002-v1/offline-validation/experiment_handoff_check.log"
+    },
+    {
+      "check": "openjiuwen_native_reuse_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-memory-batch002-v1/offline-validation/openjiuwen_native_reuse_check.log"
+    },
+    {
+      "check": "derived_media_confinement_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-memory-batch002-v1/offline-validation/derived_media_confinement_check.log"
+    },
+    {
+      "check": "stage3_algorithm_label_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-memory-batch002-v1/offline-validation/stage3_algorithm_label_check.log"
+    },
+    {
+      "check": "finite_completion_policy_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-memory-batch002-v1/offline-validation/finite_completion_policy_check.log"
+    }
+  ],
+  "harness_after_complete_exposure_registration": "pass",
+  "binding_validation": "docs/receipts/continuation/2026-09-26-system-memory-batch002-source-bindings.json",
+  "preparation": "docs/receipts/continuation/2026-09-26-system-memory-batch002-preparation.json",
+  "limits": "Model-free checks do not prove live tool consumption or task benefit. Exact capacity is checked on every actual native request."
+}

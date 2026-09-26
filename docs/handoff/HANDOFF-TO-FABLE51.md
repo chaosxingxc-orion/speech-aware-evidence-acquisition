@@ -5,6 +5,31 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Next-batch matched memory actors prepared; dispatch pending
+
+Checkpoint: 2026-09-26T11:07:48.893234+00:00. Eight actor configs and source-bound
+decisions are registered in docs/readiness/2026-09-26-system-memory-batch002-v1.
+The next fixed four TRAIN inputs are disjoint from memory construction. Four
+matched replicas per arm use the same Reviewer prompt/tool capability; only
+full three-record versus empty selection differs. All other graph/knowledge
+settings stay fixed. No task benefit is assumed. Eight cached supply artifacts
+have identical first-phase outputs, zero encoding; all candidate bindings pass.
+18 targeted tests and nine gates passed. No new model/tool contact yet.
+
+The old event-credit queue is COMPLETE and old np1 service remains idle healthy.
+Root will perform the registered np1-to-new-np2 handoff, rebind monitoring,
+check fresh resources and all committed preflights, then launch independently.
+Do not dispatch or retry from this handoff snapshot. Follow the newer launch
+receipt once it exists. Keep at most two actor slots, full output reserves,
+Windows10GiB stop floor and no automatic restart.
+
+Only operational metadata may be read until all eight manifests seal with one
+official complete score each; root interprets full-system memory consumption
+and terminal outcomes afterwards. Four inputs cannot establish efficacy.
+Freeze memory through the batch. Keep B1080 evaluation and replication pending,
+DEV6570/test13078 closed, and all closed research lines closed. No owner decision
+blocks the already authorized next-batch construction.
+
 ## Event-grounded credit comparison closed: no qualified update
 
 Checkpoint: 2026-09-26T10:44:09Z. The independent driver is COMPLETE.

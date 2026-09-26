@@ -1,0 +1,27 @@
+{
+  "schema": "saea-candidate-experience-evaluation-decision-v1",
+  "action": "evaluate-provisional-pack",
+  "admission": "none",
+  "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S3-RUN-V1",
+  "attempt_id": "attempt-slurp-native-stage3-system-memory-batch002-memory-s3-run-v1",
+  "candidate_artifact_sha256": "e632a0a153221ede44f1ad6481b26a8ef49289132224546df965a5ed4a9f9a0f",
+  "candidate_output_sha256": "5aad86a9ac5c3a2f04f0fe85a6408a7cac0d66ef43691ceaa5ab1aecfa8a991e",
+  "source_attestation_sha256": "63041f32953f2e31388383767e62618cdd3929595a09f031f089a084f873f6d0",
+  "construction_roster_sha256": "740d8d31e3ec33e63cd398d654dc5d5771612178703b4a528094898741a6f19b",
+  "evaluation_roster_sha256": "87d1d92d80d2fd43c32d8f317f1e999b9aa13bcdf6d272076a7a96454be3273a",
+  "ordered_record_sha256s": [
+    "abe5eeebbf0c444f8be552d2472dc7ba0996951017526f9df6ab80c4d48f197b",
+    "9a2f7b5e6099b1bf9317b7529ab445a642a30c56cc9b39f36b0b3a3e5410b279",
+    "c8ed2ae607176d358ec574032080d118c1101805d194e416f9d6b58761429194"
+  ],
+  "task_id": "slurp",
+  "component_tags": [
+    "obs",
+    "org",
+    "supply",
+    "use"
+  ],
+  "allowed_roles": [
+    "reviewer"
+  ]
+}

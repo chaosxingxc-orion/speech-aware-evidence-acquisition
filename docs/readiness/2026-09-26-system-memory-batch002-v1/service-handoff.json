@@ -1,0 +1,23 @@
+{
+  "schema": "saea-planned-serving-handoff-v1",
+  "from_session": "serving-slurp-system-summary001-np1-v1",
+  "to_session": "serving-slurp-system-memory-batch002-np2-v1",
+  "to_model_fragment": "q4km-mmproj-free-system-np2-ctx24k-resource-guard-v1",
+  "owner": "root",
+  "reason": "Completed semantic credit stage has no pending contact; registered next full-system memory sampling uses two actor slots.",
+  "prerequisites": [
+    "prior queue COMPLETE",
+    "no live driver or active exclusive lease",
+    "fresh owned process identity and idle service slots",
+    "Windows startup memory at least32GiB",
+    "new source committed and merged before next dispatch"
+  ],
+  "actions": [
+    "gracefully stop only the source-attested old session via shared coordinator API",
+    "preserve session-stop receipt and old source workers",
+    "update independent serving task to the new frozen source and geometry",
+    "rebind10second telemetry task to the new session",
+    "verify health, full service identity and fresh resource admission before driver launch"
+  ],
+  "failure_policy": "No automatic restart. If any step fails leave the queue undispatched and record diagnostics."
+}

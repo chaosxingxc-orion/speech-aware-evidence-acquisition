@@ -1,0 +1,130 @@
+{
+  "schema": "saea-system-memory-consumption-protocol-v1",
+  "registered_at": "2026-09-26T11:01:57.351118+00:00",
+  "question": "Does a source-valid but semantically unqualified algorithm-produced memory get invoked, selected, consumed and change complete terminal trajectories on disjoint next-batch TRAIN inputs?",
+  "interpretation": "Construction and consumption baseline only. Four unique inputs are not an effectiveness screen or evidence of stable task gain. Preserve negative/harmful/no-op behavior.",
+  "arms": [
+    "full frozen ordered three-record candidate",
+    "empty selection from identical source artifact"
+  ],
+  "balanced_replica_order": [
+    {
+      "arm": "empty",
+      "seed": 2026092601,
+      "experiment": "slurp-native-stage3-system-memory-batch002-empty-s1-run-v1"
+    },
+    {
+      "arm": "memory",
+      "seed": 2026092601,
+      "experiment": "slurp-native-stage3-system-memory-batch002-memory-s1-run-v1"
+    },
+    {
+      "arm": "memory",
+      "seed": 2026092602,
+      "experiment": "slurp-native-stage3-system-memory-batch002-memory-s2-run-v1"
+    },
+    {
+      "arm": "empty",
+      "seed": 2026092602,
+      "experiment": "slurp-native-stage3-system-memory-batch002-empty-s2-run-v1"
+    },
+    {
+      "arm": "empty",
+      "seed": 2026092603,
+      "experiment": "slurp-native-stage3-system-memory-batch002-empty-s3-run-v1"
+    },
+    {
+      "arm": "memory",
+      "seed": 2026092603,
+      "experiment": "slurp-native-stage3-system-memory-batch002-memory-s3-run-v1"
+    },
+    {
+      "arm": "memory",
+      "seed": 2026092604,
+      "experiment": "slurp-native-stage3-system-memory-batch002-memory-s4-run-v1"
+    },
+    {
+      "arm": "empty",
+      "seed": 2026092604,
+      "experiment": "slurp-native-stage3-system-memory-batch002-empty-s4-run-v1"
+    }
+  ],
+  "input_roster": {
+    "repo_relpath": "docs/receipts/rosters/slurp-system-memory-batch002-evaluation-v1.json",
+    "sha256": "87d1d92d80d2fd43c32d8f317f1e999b9aa13bcdf6d272076a7a96454be3273a"
+  },
+  "memory_construction_roster": {
+    "repo_relpath": "docs/receipts/rosters/slurp-system-batch001-r01c-v1.json",
+    "sha256": "740d8d31e3ec33e63cd398d654dc5d5771612178703b4a528094898741a6f19b"
+  },
+  "candidate": {
+    "data_relpath": "provisional/experience-candidates/slurp-system-batch001-typed-synthesis-v1.json",
+    "sha256": "e632a0a153221ede44f1ad6481b26a8ef49289132224546df965a5ed4a9f9a0f",
+    "output_sha256": "5aad86a9ac5c3a2f04f0fe85a6408a7cac0d66ef43691ceaa5ab1aecfa8a991e"
+  },
+  "source_attestation": {
+    "data_relpath": "coordination/slurp-system-batch001-v1/batch-format-recovery1-v1/source-attestation.json",
+    "sha256": "63041f32953f2e31388383767e62618cdd3929595a09f031f089a084f873f6d0",
+    "output_sha256": "b4455f13a466bffd99510e6ae3e1d90043d18d7a0e37713c3d2c47756b03d6bf"
+  },
+  "ordered_record_sha256s": [
+    "abe5eeebbf0c444f8be552d2472dc7ba0996951017526f9df6ab80c4d48f197b",
+    "9a2f7b5e6099b1bf9317b7529ab445a642a30c56cc9b39f36b0b3a3e5410b279",
+    "c8ed2ae607176d358ec574032080d118c1101805d194e416f9d6b58761429194"
+  ],
+  "root_admission": {
+    "relpath": "coordination/slurp-system-memory-batch002-v1/root-admission.json",
+    "sha256": "76b692a1e6255ca74cb040cc7a8dccbef3fff65e6a50f28bebd47d941e19b2e1"
+  },
+  "common_repair": "Both arms replace the historical unavailable-task-tool Reviewer instruction with the same native corrective-memory prompt and capability. Never attribute this shared capability/prompt repair to learning.",
+  "unchanged": "Original speech, fixed next4 roster, knowledge snapshots, retrieval choices, candidate-slot associations, graph/revision bound, all other role prompts, output limits and matched decoding seeds. No intent/entity restructuring in this flight.",
+  "update_rule": "Policy, record order and prefix stay frozen throughout the batch. Only after all four learned replicas seal and score, together with their matched empty controls, may a separately registered semantic update consume learned trajectories. Never update after an individual input or replica. Controls are evaluation, not automatically pooled into learner feedback.",
+  "prefix_rule": "Common prefixes per input/role/policy. Matched memory/empty requests remain identical until actual tool result content diverges. Seed belongs to request decoding, never prompt text. Real subsequent histories remain distinct.",
+  "contacts": {
+    "generation": 352,
+    "fit": 1408,
+    "native_tool_dispatch_upper_bound": 192,
+    "repeated_audio_seconds": 1360,
+    "gpu_hours_fit_inclusive": 8,
+    "official_scores": 8
+  },
+  "tool_bound_derivation": "Only Reviewer dispatches one corrective-memory call per native iteration; parallel calls are rejected by the existing authority layer. At most three iterations and two Reviewer visits per episode yield at most6 executed calls,24 per replica,192 per family. Prompt requests exactly once per visit; deviations and rejections are recorded, not fixed by framework injection.",
+  "geometry": {
+    "session": "serving-slurp-system-memory-batch002-np2-v1",
+    "slots": 2,
+    "total_context_tokens": 49152,
+    "per_slot_tokens": 24576,
+    "output": {
+      "perception": 512,
+      "solver": 512,
+      "reviewer": 1024,
+      "planner": 512
+    },
+    "full_output_reserved": true,
+    "additional_fit_margin_tokens": 3072,
+    "mmproj": false
+  },
+  "resources": {
+    "startup_windows_free_gib": 32,
+    "admit_windows_free_gib": 12,
+    "stop_windows_free_gib": 10,
+    "admit_gpu_free_mib": 2048,
+    "stop_gpu_free_mib": 1024,
+    "stale_or_missing_measurements": "fail closed",
+    "automatic_restart": false
+  },
+  "capacity": "Fit every actual tool-bearing native request before its generation; future realized role states cannot be replaced by fictional static prompts. No truncation or output reduction to fit.",
+  "read_rule": "Operational metadata only until all eight manifests seal with exactly one official complete score each. On a failure, stop the entire queue and register diagnostic reading; no automatic retry or scorer replay.",
+  "analysis": [
+    "actual tool dispatch versus narrated tool use",
+    "matched records and unmatched applicability",
+    "tool result content reaching Reviewer and Planner",
+    "Planner route and actual Solver revision",
+    "initial versus delivered intent/entities; corrections and harms",
+    "official TP/FP/FN utility, intent, format and abstentions separately",
+    "natural-mixture and equal-stratum descriptive views; no small-sample superiority claim",
+    "actual prefix hashes, context and completion tokens, guard samples and costs"
+  ],
+  "followup": "B1080 whole-system evaluation and same-roster replication remain required before efficacy. DEV6570/test13078 and closed lines remain closed.",
+  "failure_policy": "Stop and preserve; no automatic retry, scorer/service restart, selective record deletion, tag repair or result-based arm changes."
+}

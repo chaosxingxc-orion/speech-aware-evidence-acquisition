@@ -1,0 +1,27 @@
+{
+  "schema": "saea-flight-execution-plan-v1",
+  "status": "registered-before-contact",
+  "plan_kind": "fit",
+  "experiment": "slurp-native-stage3-system-memory-batch002-memory-s4-run-v1",
+  "cell": "slurp-native-stage3-system-memory-batch002-memory-s4-run-v1",
+  "composed_config_hash": "9e6861d3986237c8db48f574bf56bb216aa4b24d4fa0d45c6d5d2d179cb6a634",
+  "execution_plan": {
+    "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S4-RUN-V1-FIT",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "5a374c143ca8a146e176edb388fe9130c3694dff1cc9c1ab540baf52f3bf5512",
+    "planned_model_calls": 176,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 170,
+    "protocol_hash": "97673a668d8022d1902cebd5438dec21c04e2dae72fe570de2cfa5f8b54b3c7b",
+    "attempt_id": "attempt-slurp-native-stage3-system-memory-batch002-memory-s4-run-v1-fit",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-26-system-memory-batch002-v1/protocol.json",
+    "sha256": "17cb0d4ac80ba7c44e13b62974403ed37f77aac8d25e9a368c975010c1251230"
+  },
+  "read_rule": "Operational metadata only until all eight manifests seal with exactly one official complete score each. On a failure, stop the entire queue and register diagnostic reading; no automatic retry or scorer replay."
+}
