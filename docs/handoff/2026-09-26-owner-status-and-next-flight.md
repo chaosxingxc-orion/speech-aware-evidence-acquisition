@@ -95,8 +95,9 @@ Windows availability, with a gap before the fatal event. The completed
 control reaches 14408 prompt tokens and one Reviewer cap at 512 output
 tokens. New semantic requests need their own larger structural reservations.
 The two-slot/24576-context proposal would analytically halve KV tensor
-payload, but has not been loaded or measured. Existing continuous Windows
-memory enforcement is insufficient and must be completed in the shared path.
+payload, but has not been loaded or measured. The [shared resource guard](../readiness/2026-09-26-serving-resource-admission-v1.md)
+is now implemented and tested; loaded-service validation and actual batch/output
+sizing remain outstanding.
 
 ## Next sequence and decision-useful optimization
 

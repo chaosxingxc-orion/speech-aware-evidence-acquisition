@@ -19,15 +19,17 @@ def _number(text: object) -> float | None:
         return None
 
 
-def read_gpu(run=subprocess.run) -> dict[str, object] | None:
+def read_gpu(run=subprocess.run, *, include_capacity=False) -> dict[str, object] | None:
     """One nvidia-smi row, or None when the card cannot be read (a monitor
     that cannot see the GPU keeps sampling the server rather than dying)."""
 
+    fields = GPU_FIELDS + (("memory_total_mib", "memory_free_mib") if include_capacity else ())
+    query = NVIDIA_SMI_QUERY + (",memory.total,memory.free" if include_capacity else "")
     try:
         completed = run(
             [
                 "nvidia-smi",
-                f"--query-gpu={NVIDIA_SMI_QUERY}",
+                f"--query-gpu={query}",
                 "--format=csv,noheader,nounits",
             ],
             capture_output=True,
@@ -40,10 +42,10 @@ def read_gpu(run=subprocess.run) -> dict[str, object] | None:
     if getattr(completed, "returncode", 1) != 0 or not rows:
         return None
     parts = [part.strip() for part in rows[0].split(",")]
-    if len(parts) != len(GPU_FIELDS):
+    if len(parts) != len(fields):
         return None
-    sample = dict(zip(GPU_FIELDS, parts))
+    sample = dict(zip(fields, parts))
     return {
         name: (sample[name] if name == "pstate" else _number(sample[name]))
-        for name in GPU_FIELDS
+        for name in fields
     }

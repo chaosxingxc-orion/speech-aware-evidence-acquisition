@@ -1288,6 +1288,10 @@ def _start(args) -> int:
     repo_root = _repo_root()
     data_root = resolve_data_root()
     profile = resolve_serving_profile(repo_root, args.model_fragment)
+    from .resource_guard import assert_start, resource_limits
+    limits = resource_limits(profile.get("values", {}))
+    if limits is not None:
+        assert_start(limits)
 
     resident = find_resident_session(data_root)
     if resident is not None:
@@ -1331,6 +1335,11 @@ def _start(args) -> int:
     # resident with NO record naming it -- an orphan nothing can attach to
     # and nothing knows to stop.
     try:
+        if limits is not None:
+            from .resource_guard import ResourceAdmissionError, publish_sample
+            resource = publish_sample(session_dir, session, limits)
+            if resource["decision"] != "admit":
+                raise ResourceAdmissionError("post-load resources do not admit a flight")
         props = _http_get_json(f"http://{args.host}:{args.port}/props", 30.0)
         document = _session_document_for(
             args, profile=profile, session=session, session_id=session_id,
@@ -1442,6 +1451,9 @@ def _hold_session_open(
     from . import stop_session  # noqa: PLC0415 (CLI-only)
     from .lifecycle import describe_wait_status, reap_child  # noqa: PLC0415 (CLI-only)
 
+    from .resource_guard import publish_sample, resource_limits
+    limits = resource_limits(profile.get("values", {}))
+    resource_failure = None
     stopping = {"asked": False}
 
     def _on_signal(_signum, _frame) -> None:
@@ -1471,12 +1483,23 @@ def _hold_session_open(
                 # adopted pid). Either way the server has exited.
                 exited_unasked = True
                 break
+            if limits is not None:
+                try:
+                    resource = publish_sample(session_dir, session, limits)
+                except Exception as error:
+                    resource = {"decision": "stop", "reasons": ["resource-observer-failed"],
+                                "error_type": type(error).__name__}
+                if resource["decision"] == "stop":
+                    resource_failure = resource
+                    exited_unasked = True
+                    break
             time.sleep(1.0)
 
         server_exit = None
         if exited_unasked:
             server_exit = {
-                "reason": "server-exited",
+                "reason": "resource-guard" if resource_failure is not None else "server-exited",
+                **({"resource": resource_failure} if resource_failure is not None else {}),
                 "reaped": exit_status is not None,
                 "status": describe_wait_status(exit_status),
                 "detected_at": datetime.now(tz=timezone.utc).isoformat(),
@@ -1507,7 +1530,8 @@ def _hold_session_open(
             return 0
         print(
             f"serving_session: server pid {session.pid} of session {session_id!r} exited "
-            f"on its own ({server_exit['status']['description']}); the stop is recorded in "
+            f"or was stopped by {server_exit['reason']} ({server_exit['status']['description']}); "
+            f"the stop is recorded in "
             f"{session_dir / SESSION_STOP_NAME} and nothing was restarted",
             file=sys.stderr,
         )

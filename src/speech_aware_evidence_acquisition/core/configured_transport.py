@@ -69,6 +69,8 @@ def build_configured_transport(
 ):
     """Build one registered transport and enforce an opted-in prepared cache."""
 
+    from .session.resource_guard import wrap_transport
+
     factory = transport_factory or TRANSPORTS.resolve(str(values["transport"]))
     configured = prepared_window_feature_cache(values)
     historical = {
@@ -77,7 +79,7 @@ def build_configured_transport(
         "runtime_root": runtime_root,
     }
     if configured is None:
-        return factory(values, data_root, **historical)
+        return wrap_transport(factory(values, data_root, **historical), values, data_root, session)
 
     server_env = values.get("server_env")
     server_args = values.get("server_args")
@@ -189,4 +191,5 @@ def build_configured_transport(
         expected_n_embd=configured["expected_n_embd"],
         data_root=root,
     )
-    return factory(values, data_root, feature_cache_guard=guard, **historical)
+    return wrap_transport(factory(values, data_root, feature_cache_guard=guard, **historical),
+                          values, data_root, session)

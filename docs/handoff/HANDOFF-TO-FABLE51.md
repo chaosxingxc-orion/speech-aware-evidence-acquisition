@@ -5,6 +5,30 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Shared runtime resource guard implemented
+
+Checkpoint: 2026-09-26. The
+[shared resource admission](../readiness/2026-09-26-serving-resource-admission-v1.md)
+is now implemented in the existing resident-owner, registered transport,
+runtime tokenizer and independent prepared-fit paths. The new two-slot
+model fragment opts in; historical configurations keep their old behavior.
+337 related tests and nine offline gates pass. These replace the earlier
+statement that the shared guard remains to be implemented.
+
+The guard binds service identity and sampling freshness, closes admission
+below 12 GiB Windows/2048 MiB GPU free, and stops the owned service below
+10 GiB Windows/1024 MiB GPU free or on missing observation. Startup requires
+32 GiB Windows free to cover loading. Pressure is latched; no automatic replay.
+The batch driver's separate torch matmul warmup requirement is removed.
+
+Actual idle reading: Windows available 46.81 GiB, GPU used 0 MiB. No model,
+campaign or batch driver was alive. This is not a loaded peak/stability proof.
+No queue, STOP, frozen worker or closed flight was changed. The next concrete
+work is capacity-bound batch/semantic configuration and dependency binding,
+then the new registered fit/form proof and first real complete update cycle.
+The two-slot model alone is not a launchable experiment; old held baselines
+still have four-slot overrides that must be derived consistently.
+
 ## Latest owner resource amendment: do not freeze 32-input batches
 
 The owner retained per-batch updates but required VRAM/token sizing before

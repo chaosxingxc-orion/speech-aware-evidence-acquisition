@@ -455,6 +455,9 @@ def fit_phase_runtime(
     path = Path(path)
 
     def produce():
+        from .session.resource_guard import assert_admission, resource_limits
+        limits = resource_limits(context["values"])
+        session, session_dir = None, None
         runtime.authorize_preparation_contacts(contact_cap=contact_cap)
 
         def guard():
@@ -463,6 +466,8 @@ def fit_phase_runtime(
                 run_id=context["run_id"],
                 attempt_id=context["attempt_id"],
             )
+            if limits is not None and session is not None:
+                assert_admission(session_dir, session, limits)
 
         guard()
         journal = path.with_name(path.name + ".contacts.jsonl")

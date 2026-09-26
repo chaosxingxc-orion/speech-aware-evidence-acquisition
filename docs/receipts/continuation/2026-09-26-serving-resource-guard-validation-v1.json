@@ -1,0 +1,172 @@
+{
+  "schema": "saea-serving-resource-guard-validation-v1",
+  "recorded_at": "2026-09-26T05:32:17.809218+00:00",
+  "parent_commit": "52ede0f9d3b15bb05b31d68761e071a5825e73a9",
+  "environment": "WSL Ubuntu-24.04; /home/chao/.venvs/speechrl; explicit checkout PYTHONPATH",
+  "regressions": {
+    "passed": 337,
+    "log": {
+      "path": "/home/chao/system-resource-guard-regressions-final.log",
+      "sha256": "03ce67a1cda54b2a855f8bc3c6867fbc40c712b22bdb15f1cf2995f1cd378b24"
+    },
+    "overlap_note": "Includes the focused guard tests; do not add earlier test counts."
+  },
+  "focused_coverage": {
+    "module": "core.session.resource_guard",
+    "totals": {
+      "covered_lines": 116,
+      "num_statements": 125,
+      "percent_covered": 90.9090909090909,
+      "percent_covered_display": "91",
+      "missing_lines": 9,
+      "excluded_lines": 0,
+      "percent_statements_covered": 92.8,
+      "percent_statements_covered_display": "93",
+      "num_branches": 40,
+      "num_partial_branches": 6,
+      "covered_branches": 34,
+      "missing_branches": 6,
+      "percent_branches_covered": 85.0,
+      "percent_branches_covered_display": "85"
+    },
+    "report": {
+      "path": "/home/chao/system-resource-guard-validation-v1/coverage.json",
+      "sha256": "853d7e26943d520462297aa00bf654735164f5c7b84332cca069301cf9831332"
+    },
+    "test_log": {
+      "path": "/home/chao/system-resource-guard-validation-v1/coverage-final.log",
+      "sha256": "707549061d4c0d96e7f72f0fa199b90270e989e80d4d59ebbf7647c8e20db99b"
+    }
+  },
+  "gates": [
+    {
+      "check": "engineering_base",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-resource-guard-validation-v1/engineering_base.log",
+        "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+      }
+    },
+    {
+      "check": "harness_admission",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-resource-guard-validation-v1/harness_admission.log",
+        "sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+      }
+    },
+    {
+      "check": "results_ledger",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-resource-guard-validation-v1/results_ledger.log",
+        "sha256": "ec9367bbd838063e612f82f2497a4e042f439e1b778d78d55e5f4c6117904d6f"
+      }
+    },
+    {
+      "check": "tool_catalog",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-resource-guard-validation-v1/tool_catalog.log",
+        "sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+      }
+    },
+    {
+      "check": "experiment_handoff",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-resource-guard-validation-v1/experiment_handoff.log",
+        "sha256": "98df54b710e12e4b13fe03c64667abad7e76648eb583a2865f894d91a2cbb47b"
+      }
+    },
+    {
+      "check": "openjiuwen_native_reuse",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-resource-guard-validation-v1/openjiuwen_native_reuse.log",
+        "sha256": "898afe4881f0966a7b792b312b366d631c86772d2bf75a0ef393dfb5dd34bbc6"
+      }
+    },
+    {
+      "check": "derived_media_confinement",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-resource-guard-validation-v1/derived_media_confinement.log",
+        "sha256": "3027fd2d8fdb5ce9620955098bf7fdeadd1f9ff526853582f3834fe89c4798c9"
+      }
+    },
+    {
+      "check": "stage3_algorithm_label",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-resource-guard-validation-v1/stage3_algorithm_label.log",
+        "sha256": "0babba877cb30edfaacddeade30cd7cffdc917856bd912bb6f6459850fcb9229"
+      }
+    },
+    {
+      "check": "finite_completion_policy",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-resource-guard-validation-v1/finite_completion_policy.log",
+        "sha256": "20bc3dc18154a13c2956dd6455da6de859f1e724b864fd06bcaec02b0734cc22"
+      }
+    }
+  ],
+  "lint": {
+    "path": "/home/chao/system-resource-guard-validation-v1/lint.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "shell_syntax": {
+    "path": "/home/chao/system-resource-guard-validation-v1/shell-syntax.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "actual_idle_resource_read": {
+    "sampled_at": 1790400499.3148105,
+    "duration_seconds": 3.430497884750366,
+    "host_memory": {
+      "host_total_gb": 63.43492889404297,
+      "host_free_gb": 46.81021499633789,
+      "vmmem_ws_gb": 2.3909454345703125,
+      "vm_total_gb": 43.105587005615234,
+      "vm_available_gb": 41.91620635986328,
+      "host_memory_source": "windows+vm"
+    },
+    "gpu": {
+      "utilization_percent": 0.0,
+      "memory_used_mib": 0.0,
+      "power_watts": 16.95,
+      "pstate": "P4",
+      "clocks_sm_mhz": 180.0,
+      "memory_total_mib": 24463.0,
+      "memory_free_mib": 24137.0
+    },
+    "model_loaded": false
+  },
+  "candidate_model": {
+    "repo_relpath": "configs/model/q4km-mmproj-free-system-np2-ctx24k-resource-guard-v1.json",
+    "sha256": "0b61ea7d112cc7ea69a709d3d8e555a49f5955a76ca294bb3c015e4daef16cca"
+  },
+  "proof_boundaries": [
+    "Guard, configured transport, independent prepared fit, runtime tokenizer callback and resident-owner loop execute real shared code.",
+    "Tests substitute model transport, process observation/stop and hardware measurements. Real stop_session process-identity checks remain in the pre-existing shared lifecycle path.",
+    "Real read-only idle host/GPU observation passed cold-start headroom; it is not a loaded-service peak or stability proof.",
+    "Resource snapshots bind session ID, PID, start epoch and limits hash; stale or malformed observations refuse dispatch.",
+    "Current pressure latches admissions for the same service identity. Hard floors or observer failure stop the service via the existing owner; no automatic restart.",
+    "No running queue, service, retained source worker, historical experiment or task outcome was changed."
+  ],
+  "known_limitations": [
+    "Observed host/GPU resource read took about 3.43 seconds. The owner loop sleeps one second in addition; this is not a claimed one-Hz sensor.",
+    "Sampled checks cannot guarantee protection against instantaneous external allocations or faults between samples.",
+    "Windows commit and WSL swap counters are not added by this change.",
+    "Actor batch size, semantic output/context envelopes, concrete stage bindings and new flight registration remain outstanding.",
+    "New profile retains max512 only as the historical actor template, not as an approved semantic-output limit."
+  ],
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "official_scorer": 0
+  },
+  "research_status": "No real new sampling-update-reexecution cycle or stable learned-policy gain.",
+  "launch_authority": false
+}

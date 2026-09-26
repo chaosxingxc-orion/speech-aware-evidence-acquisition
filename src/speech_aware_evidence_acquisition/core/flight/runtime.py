@@ -4554,6 +4554,11 @@ class FlightRuntime:
         )
         if attached is not None:
             return attached
+        from ..session.resource_guard import resource_limits
+        if resource_limits(values) is not None:
+            raise FlightRuntimeError(
+                "resource-guarded profiles require a coordinator-owned resident service"
+            )
 
         started = self._clock()
         session = self._session_starter(
@@ -4626,6 +4631,16 @@ class FlightRuntime:
             self._execution_policy.assert_lease(
                 self._data_root, run_id=self.run_id, attempt_id=self.attempt_id,
             )
+        if self._composed is not None and self._session is not None:
+            from ..session.resource_guard import assert_admission, resource_limits
+            from ..session.serving import serving_session_dir
+            limits = resource_limits(self._composed.values)
+            if limits is not None:
+                assert_admission(
+                    self._serving_session_dir or serving_session_dir(
+                        self._data_root, self._session.session_id),
+                    self._session, limits,
+                )
 
     def serving_profile_fingerprint(self) -> str:
         """Hash every declared input that builds the pinned serving identity.
