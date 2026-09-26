@@ -5597,7 +5597,7 @@
       "SLURP-VERIFY-1"
     ],
     "algorithm_registry": {
-      "text": "Owner decision 101 requires every Stage-3 cell to carry a stage3_algorithm label that resolves in core.base.STAGE3_ALGORITHMS. Two record defects observed while these rows were written and reported rather than repaired: gepa-reflective-pareto-v1 and inference-time-verification-v1 are both status='planned' although CELL-1-GEPA and VERIFY-1 have flown and sealed; and the CELL-1-GEPA verdict states three different label/operator sets for one cell (see that row's notes).",
+      "text": "Owner decision 101 requires every Stage-3 cell to carry a stage3_algorithm label that resolves in core.base.STAGE3_ALGORITHMS. Two record defects were observed while these rows were written. The first is REPAIRED since: gepa-reflective-pareto-v1 and inference-time-verification-v1 both read status='planned' although CELL-1-GEPA and VERIFY-1 had flown and sealed, and both were corrected to status='base-loop' in commit 8b18f4ef of 2026-09-26 -- a status is a fact about this repository, not a statement of intent. The second stands and is reported rather than repaired: the CELL-1-GEPA verdict states three different label/operator sets for one cell (see that row's notes), and this ledger resolves none of them.",
       "source": "src/speech_aware_evidence_acquisition/core/stage3_algorithms.py"
     },
     "umbrella_gap": {
