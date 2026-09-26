@@ -5,7 +5,25 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
-## Resource clock repair verified; knowledge-edit interface in preparation
+## Shared knowledge-edit contract ready; runtime input integration pending
+
+The pure slot-value edit compiler is implemented and passes 28 focused tests.
+It preserves key representations and intent bindings, rejects stale or malformed
+edits atomically, and includes the entire construction ancestry even if a
+proposal cites only a subset. NONE preserves the incumbent and retains optimizer
+exposure. Candidate output must still enter the ordinary knowledge release and
+source-disjoint evaluation path; this helper grants no generation authority.
+
+The actual prepared contract is bound to the released 54-slot source, with five
+editable slots (date, news_topic, place_name, order_type, business_name), three
+value fields, at most two edits, and 600 characters per replacement field.
+All four learned batch002 groups and cumulative eight-input TRAIN ancestry are
+bound. See docs/receipts/continuation/2026-09-26-knowledge-value-interface-readiness.json.
+No generated description or candidate snapshot exists yet. Next: source-verified
+complete-system feedback contexts, registered output format, actual request fit
+and a separately registered proposal flight. No model/scorer contacts occurred.
+
+## Resource clock repair verified
 
 The previous turn made progress: it closed the registered batch002 scientific
 read and landed the task-coupling and knowledge-optimization designs on master.

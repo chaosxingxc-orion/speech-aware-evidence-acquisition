@@ -1,0 +1,86 @@
+{
+  "base_authored_source": {
+    "relpath": "prepared/SAEA-SLURP-SEMANTIC-AUTHORING-PREPARE-V2/authored-slot-contracts-v2.json",
+    "sha256": "fc34b243f2e48e4e0bc3fe10d328d25601b1f1fa7c190c049d696c3ca0db4dd2"
+  },
+  "base_release_snapshot_sha256": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec",
+  "complete_read": {
+    "relpath": "coordination/slurp-system-memory-batch002-v1/read-v1/batch-read.json",
+    "sha256": "5b84857927b17f444a569cc9b0528f3597567bd41f93cc07a1a386047ba60327"
+  },
+  "construction_roster": {
+    "repo_relpath": "docs/receipts/rosters/slurp-system-memory-cumulative-batch002-v1.json",
+    "sha256": "eee21337170cc39f8c25fc200a01669e123fa97829ac9d1716d9e1cee5f21616"
+  },
+  "construction_rule": "Every description proposal sees complete groups; all eight transitive TRAIN construction IDs remain excluded from evaluation even for no-change. Controls are not learner evidence.",
+  "contract": {
+    "relpath": "coordination/slurp-system-knowledge-value001-v1/edit-contract-v1.json",
+    "sha256": "15f5503f92637294fa5f24a43d97a3c0730616517c8b377379d421bfc926400c"
+  },
+  "group_binding": [
+    {
+      "group_id": "g1",
+      "input_sha256": "d08b510e055b4189aa906b997f8bbedc39f29e444574f73330266748251de2b1",
+      "member_trajectory_sha256s": [
+        "e3792282f211e1aaaa3bfb65973f13d809d38b28e60e73e9b47e785733e6001e",
+        "968e8bc104f006dba9f82a79ead370f00aa6261339d94b3fddaf00342e90efef",
+        "b8f86aa416b1a58d152a0688f34a1bbba78642e20b57adefd90f27c8c1deb8fa",
+        "30338e79274f6d69075eaf49c8e42ce5efce6c78a9bfb32e2f48ecad2ab24a0b"
+      ],
+      "sample_id": "slurp:train:000282:audio-1502114155"
+    },
+    {
+      "group_id": "g2",
+      "input_sha256": "7f1ecdca218e0154bc15870ec06b9cb5114ad6e0c90b32dc2b664f144f932c3b",
+      "member_trajectory_sha256s": [
+        "251cef907b0e763d7ebdf428c7bda61b8fdf8165d8a53eff25667c5d092dada2",
+        "3b1692f0e560c67b791e1fe81214606887ac43045f36880d5ea1f034dea1e77a",
+        "612d7e53e68d8496e20f04e3d8c652ca3ab496d31073b33d01a00f4cda272338",
+        "8b3dd6ed0dc1e17b8082b87bf5a29561941c28933e912495d3e28796489be72d"
+      ],
+      "sample_id": "slurp:train:000308:audio-1488905475"
+    },
+    {
+      "group_id": "g3",
+      "input_sha256": "ea1ecfa2cdb2dfb02b96c1e82335aa4378d62449942bf481c925bdf64f264776",
+      "member_trajectory_sha256s": [
+        "9602363a28057d2a5882f07f00931b2ed675fe12f065daeae113e56b99292c9d",
+        "fec255aa6f1bcc8ee5083996b873f7a1fda6c3da7aca73c89a610fcf3316ad9a",
+        "85911fa6c1ace4f7ff0ba918ba61ceb1b06599200d38711f4b35f846930b5b7f",
+        "b8a51a9163d8f528f8aea25225cee3c34cd948b6fc15fedd64dc468035d82d7e"
+      ],
+      "sample_id": "slurp:train:000309:audio-1490018206"
+    },
+    {
+      "group_id": "g4",
+      "input_sha256": "59ff12135e833b00693dc7bd1445c85e77be053247a121376a1d88754db2c1a5",
+      "member_trajectory_sha256s": [
+        "45cbffeda098f6b9bf2e6ff9f28e6c7379204567b1e2fa1e63b05675f27fca48",
+        "4a86c6c09ce1628fb406f54cd6e4625209ecf93dedd23c0f1962ae13f0f66e43",
+        "1ec6029a02355f05a34c715945d8ee480908a5708290049bc88c69aa00c16f01",
+        "f12658053c2c2d313907adfebe390c67fc0f031e161cbc7bda8e15cfe4912f33"
+      ],
+      "sample_id": "slurp:train:000351:audio-1499689684"
+    }
+  ],
+  "learned_groups": {
+    "relpath": "coordination/slurp-system-memory-batch002-v1/read-v1/memory-groups.json",
+    "sha256": "6c19ef488217de7b2ec40c0164377eb4369d13c9ce00490523bfebdf5d46e92c"
+  },
+  "model_contacts_added": 0,
+  "proof": "Synthetic no-change fixture only; no generated model output is claimed and no new knowledge snapshot is released.",
+  "remaining": [
+    "source-verified model-facing complete-system projection",
+    "prepared-feedback and registered output-format runtime wiring",
+    "generation registration and actual capacity checks",
+    "verified generated-output application and shared knowledge release",
+    "complete matched system evaluation"
+  ],
+  "response_format": {
+    "relpath": "coordination/slurp-system-knowledge-value001-v1/response-format-v1.json",
+    "sha256": "52f27ff55b486aceec2503c29c0f8d4e9ab30967659773e25819d22e4e19a79b"
+  },
+  "schema": "saea-knowledge-value-interface-readiness-v1",
+  "scorer_contacts_added": 0,
+  "status": "MODEL_FREE_CONTRACT_READY_NOT_GENERATION_ADMITTED"
+}
