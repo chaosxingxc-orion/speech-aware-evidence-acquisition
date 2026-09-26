@@ -8,7 +8,7 @@
   "whole_roster_wave_barrier": true,
   "phase_material": {
     "direct": {
-      "instruction_template": "probes/system_trajectory_summary_v1.txt",
+      "instruction_template": "probes/system_trajectory_summary_text_v1.txt",
       "instruction_fill": null,
       "predecessor_binding": "none"
     }

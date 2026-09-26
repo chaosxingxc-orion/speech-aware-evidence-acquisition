@@ -402,6 +402,11 @@ def validate_artifact_result_binding(
 
     result_kind = values.get("result_kind", "task-answer")
     prepared_text = values.get("arm") == PREPARED_TEXT_ARM
+    prepared_spec = values.get("prepared_training_feedback")
+    if (isinstance(prepared_spec, Mapping)
+            and prepared_spec.get("schema") == "saea-prepared-system-comparison-v1"
+            and not prepared_text):
+        raise FlightRuntimeError("semantic comparison requires the prepared text arm")
     if prepared_text:
         if (
             result_kind != "artifact" or values.get("policy") != "phase-direct-only-v1"

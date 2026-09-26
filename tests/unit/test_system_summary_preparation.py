@@ -181,6 +181,12 @@ def test_warm_source_refusal_precedes_cached_artifact(summary_world, monkeypatch
 
 @pytest.mark.parametrize("text_only", [False, True])
 def test_prepared_complete_episode_reaches_actual_shared_fit_and_send(summary_world, tmp_path, text_only):
+    exercise_shared_fit_and_send(summary_world, tmp_path, text_only)
+
+
+def exercise_shared_fit_and_send(world_inputs, tmp_path, text_only, *, prepared_spec=None,
+                                 baseline=None, comparison=False):
+    """Exercise the production binding, executor, request gate and artifact output."""
     from types import SimpleNamespace
 
     from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
@@ -201,8 +207,8 @@ def test_prepared_complete_episode_reaches_actual_shared_fit_and_send(summary_wo
 
     if not openjiuwen_available():
         pytest.skip("OpenJiuwen unavailable")
-    data, value, binding, _, _ = summary_world
-    spec, _ = prepared(summary_world)
+    data, value, binding, _, _ = world_inputs
+    spec = prepared_spec if prepared_spec is not None else prepared(world_inputs)[0]
     repo = tmp_path / "updater-repo"
     roster_path = repo / "docs/receipts/rosters/construction.json"
     roster_path.parent.mkdir(parents=True)
@@ -211,6 +217,8 @@ def test_prepared_complete_episode_reaches_actual_shared_fit_and_send(summary_wo
     values = json.loads((project / "configs/baseline/system-trajectory-summary-v1.json").read_text())
     if text_only:
         values = json.loads((project / "configs/baseline/system-trajectory-summary-text-v1.json").read_text())
+    if baseline is not None:
+        values = json.loads((project / "configs/baseline" / (baseline + ".json")).read_text())
     values.update(
         carrier_lock_key="slurp", prepared_training_feedback=spec,
         artifact_result={"schema": "saea-artifact-result-binding-v1",
@@ -259,9 +267,10 @@ def test_prepared_complete_episode_reaches_actual_shared_fit_and_send(summary_wo
         adapter.assemble_prompt = forbidden
         adapter.build_task_contract = forbidden
     if text_only:
-        template = repo / "configs/probes/system_trajectory_summary_v1.txt"
+        template_rel = "configs/" + values["phase_material"]["direct"]["instruction_template"]
+        template = repo / template_rel
         template.parent.mkdir(parents=True)
-        template.write_bytes((project / "configs/probes/system_trajectory_summary_v1.txt").read_bytes())
+        template.write_bytes((project / template_rel).read_bytes())
         runtime._lock = {}
         runtime._adapter = adapter
         runtime._split_id = "all"
@@ -298,8 +307,15 @@ def test_prepared_complete_episode_reaches_actual_shared_fit_and_send(summary_wo
             assert "Task contract:" not in sent["task_instruction"]
         else:
             assert sent["speech_feature_parts"]
-        episode = json.loads(sent["history"][0]["content"])["trajectory"]
-        assert len(episode["contacts"]) == 5 and len(episode["tool_records"]) == 2
+        context = json.loads(sent["history"][0]["content"])
+        if comparison:
+            assert context["stage"] == "complete-system-semantic-comparison"
+            assert [a["terminal_feedback"]["fp"] for a in context["attempts"]] == [0, 2]
+            assert [a["terminal_feedback"]["utility"] for a in context["attempts"]] == [0, -1]
+            assert receipt["input_stage"] == "complete-system-semantic-comparison"
+        else:
+            episode = context["trajectory"]
+            assert len(episode["contacts"]) == 5 and len(episode["tool_records"]) == 2
         assert all(row.metrics == {} for row in summary.results)
         assert not any(kind == "SCORE" for kind, _, _ in trace.records)
         runtime._output_rows = FlightRuntime._rows_from_phase_summaries(

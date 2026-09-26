@@ -1,8 +1,8 @@
 """Prepare complete TRAIN actor episodes for the shared scoreless model path.
 
-Preparation is model-free. Runtime currently uses the existing speech-feature
-artifact arm, which also attaches the original sample speech. This is an
-explicit multimodal adaptation, not an executed text-only TF-GRPO reproduction.
+Preparation is model-free. The runtime config chooses the historical
+speech-feature artifact arm or the prepared-text arm without fresh speech.
+Neither connection alone establishes an executed TF-GRPO reproduction.
 """
 from __future__ import annotations
 

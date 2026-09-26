@@ -199,6 +199,29 @@ does not complete the semantic comparison/update/reexecution loop or establish
 an RL benefit. GPU state remains the execution-closed failure checkpoint above.
 No source worker, queue, STOP, service or research result was changed.
 
+## Recorded-summary semantic comparison continuation
+
+CPU implementation checkpoint: 2026-09-26T01:54:18.411675+00:00.
+The [comparison runtime contract](../readiness/2026-09-26-system-semantic-comparison-runtime.md)
+now binds actually generated, sealed text summaries to their exact complete
+actor episodes and separately verified official terminal feedback. The shared
+preparation/loader and system-semantic-comparison-text-v1 baseline reach the
+existing FlightRuntime/OpenJiuwen fit/send/artifact path. Empty or capped
+summaries and tied terminal groups remain visible in the full report; only
+the exact registered eligible subset can enter a comparison contact.
+The text-summary prompt now accurately states that no fresh audio is attached;
+the older multimodal baseline is unchanged.
+
+202 related tests, Ruff and all nine offline gates passed in WSL. The final
+validation receipt linked from the contract records their exact proof boundaries
+and the existing ledger/handoff warnings; it grants no launch authority. These
+tests substitute source/scorer readers or model transport at documented
+boundaries; no real summary, comparison or memory update has run. The next
+connection is sealed comparison output to typed model-generated proposals,
+atomic consolidation, frozen memory and whole-system reexecution. Do not
+claim an RL improvement from this input/runtime connection. The GPU failure,
+closed flight, STOP, frozen worker and isolated control-read embargo remain.
+
 ## Whole-system summary runtime connection
 
 The model-facing summary input now has a shared preparation/loader/baseline

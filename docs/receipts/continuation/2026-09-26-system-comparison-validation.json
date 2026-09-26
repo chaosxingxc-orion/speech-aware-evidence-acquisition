@@ -1,0 +1,141 @@
+{
+  "schema": "saea-system-semantic-comparison-validation-v1",
+  "checked_at": "2026-09-26T01:57:15.036792+00:00",
+  "parent_commit": "15c67d9b000c226276556958bd49781c6ea84881",
+  "environment": "WSL Ubuntu-24.04; /home/chao/.venvs/speechrl/bin/python; explicit checkout PYTHONPATH",
+  "tests": {
+    "passed": 202,
+    "skipped": 0,
+    "files": [
+      "tests/unit/test_system_summary_source.py",
+      "tests/unit/test_system_semantic_comparison.py",
+      "tests/unit/test_system_comparison_preparation.py",
+      "tests/unit/test_system_summary_preparation.py",
+      "tests/unit/test_system_semantic_feedback.py",
+      "tests/unit/test_system_rollout_groups.py",
+      "tests/unit/test_system_semantic_trajectory.py",
+      "tests/unit/test_system_feedback.py",
+      "tests/unit/test_system_trajectory.py",
+      "tests/unit/test_prepared_feedback.py",
+      "tests/unit/test_prepared_feedback_runtime.py",
+      "tests/unit/test_prepared_feedback_serialization.py",
+      "tests/unit/test_artifact_result_kind.py"
+    ],
+    "log": "/home/chao/system-comparison-validation-v1/tests.txt",
+    "sha256": "5faa2ec56cabf0e4f11e4f7500db7cda0eab4350e057af1844c9bf8792475ca4"
+  },
+  "lint": {
+    "result": "passed",
+    "files": [
+      "src/speech_aware_evidence_acquisition/analysis/system_semantic_feedback.py",
+      "src/speech_aware_evidence_acquisition/analysis/system_summary_source.py",
+      "src/speech_aware_evidence_acquisition/core/flight/runtime.py",
+      "src/speech_aware_evidence_acquisition/rails/prepared_feedback.py",
+      "src/speech_aware_evidence_acquisition/rails/system_summary_context.py",
+      "src/speech_aware_evidence_acquisition/rails/system_comparison_context.py",
+      "tests/unit/test_system_summary_source.py",
+      "tests/unit/test_system_semantic_comparison.py",
+      "tests/unit/test_system_comparison_preparation.py",
+      "tests/unit/test_system_summary_preparation.py"
+    ],
+    "log": "/home/chao/system-comparison-validation-v1/lint.txt",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "gates": [
+    {
+      "check": "harness_admission",
+      "exit_code": 0,
+      "log": "/home/chao/system-comparison-validation-v1/harness_admission.txt",
+      "sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+    },
+    {
+      "check": "results_ledger",
+      "exit_code": 0,
+      "log": "/home/chao/system-comparison-validation-v1/results_ledger.txt",
+      "sha256": "ec9367bbd838063e612f82f2497a4e042f439e1b778d78d55e5f4c6117904d6f"
+    },
+    {
+      "check": "tool_catalog",
+      "exit_code": 0,
+      "log": "/home/chao/system-comparison-validation-v1/tool_catalog.txt",
+      "sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+    },
+    {
+      "check": "experiment_handoff",
+      "exit_code": 0,
+      "log": "/home/chao/system-comparison-validation-v1/experiment_handoff.txt",
+      "sha256": "5939efa37b4c2a0eb074357ba319f7f873a63061f425ee926493fae6a0397649"
+    },
+    {
+      "check": "engineering_base",
+      "exit_code": 0,
+      "log": "/home/chao/system-comparison-validation-v1/engineering_base.txt",
+      "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "check": "openjiuwen_native_reuse",
+      "exit_code": 0,
+      "log": "/home/chao/system-comparison-validation-v1/openjiuwen_native_reuse.txt",
+      "sha256": "c98f5debbfbbbfc4f53c25a621c83dcb39a0fb0e986e05df684bc016bbb80f29"
+    },
+    {
+      "check": "stage3_algorithm_label",
+      "exit_code": 0,
+      "log": "/home/chao/system-comparison-validation-v1/stage3_algorithm_label.txt",
+      "sha256": "772a0ea23eb2cbd08e1649908f386c524c8a78941bf58e74e26004da7cf524ca"
+    },
+    {
+      "check": "finite_completion_policy",
+      "exit_code": 0,
+      "log": "/home/chao/system-comparison-validation-v1/finite_completion_policy.txt",
+      "sha256": "20bc3dc18154a13c2956dd6455da6de859f1e724b864fd06bcaec02b0734cc22"
+    },
+    {
+      "check": "derived_media_confinement",
+      "exit_code": 0,
+      "log": "/home/chao/system-comparison-validation-v1/derived_media_confinement.txt",
+      "sha256": "c902f2b562512a102f54e50eac77c19dd3094e469e1d738acfbc24eee8203737"
+    }
+  ],
+  "gate_limits": [
+    "Results ledger passes with 104 existing cross-check findings; this is not a claim that those historical coverage findings were repaired.",
+    "Handoff gate reports no errors, notes newer HEAD and uncommitted implementation, and explicitly does not grant launch authority.",
+    "Algorithm-label gate covers registered experiment fragments; this change adds a reusable baseline, not a registered execution flight."
+  ],
+  "implementation_and_tests": {
+    "src/speech_aware_evidence_acquisition/analysis/system_semantic_feedback.py": "ec679e785d99e30a09918298f7b5558410afb6820dee93c5203672c7771acfcb",
+    "src/speech_aware_evidence_acquisition/analysis/system_summary_source.py": "df07ff44aca7ddc35f580a9ff6eec02ee802dd9ea4110eb783698a66cdb553f6",
+    "src/speech_aware_evidence_acquisition/core/flight/runtime.py": "eea3d1fb7cca1ee0ab1870cb2c18bcf90e4aef5dc26ad11d207798632e0dfdd5",
+    "src/speech_aware_evidence_acquisition/rails/prepared_feedback.py": "041016faa55a674e74f237fbee9f47471954c488ed4ef57698a20e37d52b0132",
+    "src/speech_aware_evidence_acquisition/rails/system_summary_context.py": "94d2894da962355ebfbbdd1f65915aecf2e96f1704cc9cd005c800efece851ee",
+    "src/speech_aware_evidence_acquisition/rails/system_comparison_context.py": "ea3002a8bbd0665dbf72d6adc2ce1e87a127cfc473d7c0cd480a87054cc20a5c",
+    "tests/unit/test_system_summary_source.py": "c80185c766c7090f1f844e837da6f5c190e6d2dc2523e15053d06c1abaa4c06f",
+    "tests/unit/test_system_semantic_comparison.py": "b97f3d040bb9f24b2956f3eefae63389fe12afe64a11f8affeb05897396dc29a",
+    "tests/unit/test_system_comparison_preparation.py": "0e2448897b07a1625fd91fdb9ee9fa02aea6f8e779f37960861df2774441d57d",
+    "tests/unit/test_system_summary_preparation.py": "c9c8b482615f982329b4b98fa832b66562af95ad8c9b59c44c92a6a3d0aaaddd",
+    "configs/baseline/system-trajectory-summary-text-v1.json": "7e07077315a823e45241ac0cfdb285c4f136f58f78778c1ae7ee6ca6517efd6c",
+    "configs/baseline/system-semantic-comparison-text-v1.json": "57de86c09615e840841b389d702989567a1ec509a63f334f3eb047582f691271",
+    "configs/probes/system_trajectory_summary_text_v1.txt": "16cb3744959e1cff82d0eb70cf8490dc02ce4e85620897b6d66f5341fe3e4b5e",
+    "configs/probes/system_semantic_comparison_v1.txt": "5f05c6107b37f24ade8c072a2c54ea445f95bc74bc74a7dbcbe8d9d0260163d0"
+  },
+  "proof": [
+    "Frozen synthetic summary checkout and actual configured phase/payload reconstruction bind recorded raw summaries to complete actor contexts; bundle and actor verifiers are substituted at the documented test boundary.",
+    "Real complete-trajectory materialization, feedback grouping, source joins and immutable preparation preserve signed empty-entity signal, whole terminal ties and unusable summaries.",
+    "Warm reads rebuild source authority; wrong actor/summary/feedback/round/serving identity and wrong active cohort are refused.",
+    "Connected default FlightRuntime binding and OpenJiuwen execute the semantic comparison through identical fitted/sent payloads and raw scoreless artifact output, with synthetic source/scorer readers and model transport.",
+    "The text-summary prompt states that no fresh audio is attached; the historical multimodal baseline is retained."
+  ],
+  "limits": [
+    "No real summary or comparison generation and no actual tokenizer capacity measurement occurred.",
+    "No model-generated semantic operation, consolidation-stage inference, updated-memory reexecution or stable training-free RL benefit is established.",
+    "A registered exact ready-group roster and execution plan remain mandatory before any real comparison contact.",
+    "The full comparison report retains ties and unusable groups; any algorithm analysis must report these dispositions and cannot silently treat the ready subset as the full construction population.",
+    "Historical fixed source allocation is not reinterpreted as a sampled optimized-policy decision; action probabilities are not invented."
+  ],
+  "research_contacts_added": {
+    "model": 0,
+    "tokenizer": 0,
+    "scorer": 0
+  },
+  "operational_change": "None: closed recovery, unread isolated control quality, frozen worker, STOP, queue and absent server preserved."
+}

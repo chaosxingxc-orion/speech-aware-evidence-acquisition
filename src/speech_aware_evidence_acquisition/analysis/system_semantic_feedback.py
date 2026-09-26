@@ -222,3 +222,75 @@ def _prepare(group_report, semantic_reports):
     }
     report["content_sha256"] = content_hash(report)
     return report
+
+
+def join_recorded_summaries(feedback, summaries):
+    """Join actual summaries; keep every group, unusable output and all ties."""
+    from .system_summary_source import VerifiedSystemSummaries
+
+    _fingerprint(feedback, "content_sha256", "semantic feedback")
+    _require(feedback.get("schema") == "saea-system-semantic-feedback-inputs-v1",
+             "semantic feedback schema differs")
+    index = {}
+    for source in summaries:
+        _require(isinstance(source, VerifiedSystemSummaries), "summaries must be source-verified")
+        contexts = source.prepared_document["contexts"]
+        for context in contexts:
+            episode = context["model_context"]["trajectory"]
+            identity = _identity(episode["trajectory"]["source"])
+            sid = context["source_sample_id"]
+            key = (*identity, sid)
+            _require(key not in index and sid in source.rows, "summary identity duplicated or missing")
+            row = source.rows[sid]
+            _require(row["episode_sha256"] == episode["content_sha256"]
+                     and row["summary_response_sha256"] == hashlib.sha256(row["summary"].encode()).hexdigest(),
+                     "recorded summary episode or content differs")
+            index[key] = row
+    groups, wanted = [], set()
+    for group in feedback["groups"]:
+        sid = group["sample_id"]
+        comparisons, custody, unusable = [], [], []
+        for number, member in enumerate(group["comparison_feedback"]["members"], 1):
+            key = (*_identity(member), sid)
+            _require(key in index and key not in wanted, "summary member population differs")
+            wanted.add(key)
+            row = index[key]
+            _require(row["episode_sha256"] == member["episode_sha256"],
+                     "summary is bound to another complete episode")
+            label = f"option-{number}"
+            comparisons.append({
+                "label": label, "summary": row["summary"], "summary_status": row["status"],
+                "terminal_feedback": {field: member[field] for field in (*OUTCOME_FIELDS, "utility")},
+            })
+            custody.append({"label": label, **member,
+                            **{k: v for k, v in row.items() if k not in ("summary", "status")}})
+            if row["status"] != "usable":
+                unusable.append({"label": label, "status": row["status"]})
+        eligible = group["comparison_feedback"]["eligibility"]["eligible"]
+        disposition = ("blocked-unusable-summary" if unusable else
+                       "ready" if eligible else "no-update-terminal-tie")
+        context = {
+            "stage": "complete-system-semantic-comparison",
+            "question": group["summary_inputs"][0]["fields"]["raw_question"],
+            "attempts": comparisons,
+            "feedback_definition": {key: group["comparison_feedback"][key] for key in
+                                    ("frozen_f0", "utility_definition", "count_definition", "interpretation")},
+        }
+        groups.append({
+            "sample_id": sid, "input_group_sha256": group["input_group_sha256"],
+            "eligibility": copy.deepcopy(group["comparison_feedback"]["eligibility"]),
+            "disposition": disposition, "unusable_summaries": unusable,
+            "model_context": context, "model_context_sha256": content_hash(context),
+            "candidate_bindings": custody,
+        })
+    _require(wanted == set(index), "unknown or extra summary episodes")
+    report = {
+        "schema": "saea-system-semantic-comparison-inputs-v1",
+        "source_feedback_sha256": feedback["content_sha256"],
+        "round_id": feedback["round_id"], "groups": groups,
+        "ready_sample_ids": [g["sample_id"] for g in groups if g["disposition"] == "ready"],
+        "model_contacts_added": 0, "scorer_contacts_added": 0,
+        "claim_boundary": "Prepared semantic comparison, not an executed update or task gain.",
+    }
+    report["content_sha256"] = content_hash(report)
+    return report

@@ -1,0 +1,27 @@
+Compare the recorded complete-system trajectory summaries in the prepared context.
+This is an offline construction analysis artifact, not a new spoken-task answer.
+The attempts have the same speech input. Each summary is paired with its own
+verified terminal feedback. No fresh speech or reference answer is supplied.
+
+Analyze decisions and information transitions across the entire system:
+what Perception supplied, what Solver received and produced, how Reviewer and
+Planner affected subsequent actions, and what survived into final delivery.
+Separate observed associations from hypotheses. A locally improved component
+does not demonstrate a better system outcome. Do not manufacture causal credit.
+
+Use the official TP, FP and FN counts, intent correctness and format status
+separately. In particular, correct empty entities and false-positive entities
+differ even when a per-sample F1 would not distinguish them. Signed utility is
+neither a success probability nor a guarantee of ordering by pooled SLU-F1.
+Explain conflicting outcomes instead of silently collapsing them.
+
+Identify up to three concise, conditional system-level lessons supported by
+contrasts across these attempts. State the evidence, uncertainty and limits of
+each lesson. Preserve failures and harms. Do not invent unobserved actions,
+new tools, new answering models, additional task facts or action probabilities.
+Do not turn this construction observation into an independent validation claim.
+
+Return an English comparative analysis followed by an <Experiences> block
+containing the proposed lessons. If no supported lesson follows, explain why
+and leave the <Experiences> block empty. These proposals do not update runtime
+memory or authorize a policy change; later stages must evaluate and consolidate.

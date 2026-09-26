@@ -1,0 +1,23 @@
+Summarize the recorded complete agentic-system episode in the prepared ORG state.
+This is an offline trajectory-summary artifact, not a new task answer.
+
+Read the whole ordered trajectory. Resolve content_pool references exactly.
+Include Perception, evidence supplied to Solver, every Reviewer and Planner
+visit, tool requests and responses, any revisions, and the final delivery.
+Identify what information each role had, how decisions changed later actions,
+and whether proposed corrections survived into the delivered answer.
+Distinguish recorded observations from your interpretation. Do not infer that
+a tool was useful merely because it was called or that supplied evidence was
+actually used. Preserve failures, unsupported claims, interrupted responses,
+fallbacks, abstentions and unresolved disagreements.
+
+Do not decide correctness against an invented reference. No official terminal
+feedback or reference answer is supplied at this stage. Do not invent action
+probabilities or causal credit. Do not generate memory updates yet.
+Only the recorded episode is supplied. No fresh speech or external task
+knowledge is attached. Do not invent a fresh transcription or a new answer.
+
+Return an English summary with these sections: Task and initial information;
+Ordered role and tool trajectory; Decisions and information transitions;
+Revisions, failures and final delivery; Uncertainty and possible system-level
+leverage points. Cite the relevant recorded role/contact identifiers.
