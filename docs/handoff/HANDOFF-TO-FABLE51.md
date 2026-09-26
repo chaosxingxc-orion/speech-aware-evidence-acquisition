@@ -5,6 +5,46 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Single-slot capacity passed; all16 summaries registered
+
+All36 np1 tokenizer endpoints completed. Every actual input has the same token
+count as its two-slot counterpart. Minimum margin is25574 tokens after2048
+output and2 special tokens, exceeding the3072 reserve. Read
+[the verdict](../receipts/continuation/2026-09-26-system-summary001-np1-capacity-verdict.json).
+
+The four summary-generation cells,16 total generations and36 live-fit endpoints
+are registered under docs/readiness/2026-09-26-system-batch001-summary-generation-v1.
+Each source covers allfour actor inputs, including terminal ties. Use the
+existing background driver and same single-slot service. Do not read semantic
+content until allfour sources finalize. Then register scientific reading and
+verify all summary-to-actor bindings. No official scorer, fresh audio, hidden
+retry, memory activation or next actor batch is admitted by this registration.
+
+## Single-slot service live; exact sizing in progress
+
+Checkpoint: 2026-09-26T08:06Z. The old two-slot service stopped gracefully
+without force at08:02:45Z. The new guarded service
+serving-slurp-system-summary001-np1-v1 started at08:03:19Z with one49152-token
+slot, decoder-only no-mmproj. Its observed idle allocation is20434 MiB
+(3704 MiB free); Windows available was30.30 GiB after load. This is not
+long-prefill generation proof.
+
+The source actor worker remains frozen atd56ad054. New source preparation and
+capacity worker /home/chao/saea-worktrees/codex-system-summary001-20260926 is
+frozen at30eb5ce8a5202a628da914584781f41341437325. It materialized all16 compact
+requests successfully with zero endpoint calls. The registered36-endpoint
+capacity queue began at08:06:11Z in a detached WSL process. Read
+DATA/coordination/slurp-system-batch001-v1/summary-np1-capacity-v1/launch.json
+and its background.log. No generation is admitted before full fit closure.
+
+The existing Windows tasks SAEA-System-Batch001-Serving and
+SAEA-System-Batch001-Monitor now point to the new single-slot session and
+worker. They have no network dependency, timeout or automatic restart.
+Their original task definitions are backed up under
+DATA/coordination/slurp-system-summary001-v1/scheduled-task-backup.
+The actor driver remains complete; do not restart its old queue.
+Service launch evidence: DATA/coordination/slurp-system-summary001-v1/service-launch.json.
+
 ## Compact capacity closed; single-slot summary profile is next
 
 Latest checkpoint: 2026-09-26. All36 registered wire-view tokenizer endpoints

@@ -1,0 +1,63 @@
+{
+  "schema": "saea-system-summary-generation-protocol-v1",
+  "registered_at": "2026-09-26T08:08:19.758721+00:00",
+  "status": "registered-before-contact",
+  "purpose": "Generate all16 complete-system trajectory summaries through the shared prepared-text controller/executor. Preserve all sources including ties; actual feedback is supplied only to a later separately registered comparison.",
+  "stage3_algorithm": "tfgrpo-system-memory-disjoint-v1",
+  "service_session": "serving-slurp-system-summary001-np1-v1",
+  "model_fragment": "q4km-mmproj-free-system-np1-ctx48k-resource-guard-v1",
+  "baseline": "system-trajectory-summary-wire-text-v1",
+  "actor_source_commit": "d56ad054ad06df36b2a2e508ab5e765cc2549085",
+  "source_index": {
+    "relpath": "coordination/slurp-system-batch001-v1/semantic-wire-v1/index.json",
+    "sha256": "f28d2e06c3850c4602e882a4007a8f8a364148d14c811a14fa42e286a3b91eb1"
+  },
+  "capacity_receipts": [
+    {
+      "label": "s1",
+      "relpath": "coordination/slurp-system-batch001-v1/summary-np1-capacity-v1/s1-request-fit.json",
+      "sha256": "640eda9489005cc599ba5ae818e67eaa5eaa697a1f395f7d16ad3ddb2b3f370b",
+      "minimum_margin_tokens": 28606
+    },
+    {
+      "label": "s2",
+      "relpath": "coordination/slurp-system-batch001-v1/summary-np1-capacity-v1/s2-request-fit.json",
+      "sha256": "01ad75319d29af5b0d1d1b5da15019e553b7817f5afb5ed09490704baa229dc2",
+      "minimum_margin_tokens": 25574
+    },
+    {
+      "label": "s3",
+      "relpath": "coordination/slurp-system-batch001-v1/summary-np1-capacity-v1/s3-request-fit.json",
+      "sha256": "8c81a19a5d36cef81efae09c488d75739d92e2d571f2edd97b6e998ecf2aaae4",
+      "minimum_margin_tokens": 28661
+    },
+    {
+      "label": "s4",
+      "relpath": "coordination/slurp-system-batch001-v1/summary-np1-capacity-v1/s4-request-fit.json",
+      "sha256": "9b1bd6348023c2c744d250f28bcff75b935ab966a21e6cfbd39482aabbae11a6",
+      "minimum_margin_tokens": 28785
+    }
+  ],
+  "generation_contacts": 16,
+  "live_fit_contacts": 36,
+  "fresh_media_contacts": 0,
+  "official_scoring_jobs": 0,
+  "completed_rosters": 4,
+  "inputs_per_roster": 4,
+  "output_tokens": 2048,
+  "operational_reserve_tokens": 3072,
+  "slot_tokens": 49152,
+  "slots": 1,
+  "decoding": {
+    "temperature": 0,
+    "seed": 2026092605,
+    "max_tokens": 2048
+  },
+  "root_admission": {
+    "relpath": "coordination/slurp-system-summary001-v1/root-generation-admission.json",
+    "sha256": "aa005a9c00816baf8306bd2e9378397937b84dcbb4807bfbf3e1ec9cb9a05550"
+  },
+  "read_rule": "Read only operational/closure metadata until all four registered summary sources finalize; then register scientific reading and reverify each summary-to-actor binding. Empty, capped, malformed and unusable outputs are retained and quarantined; no silent retry.",
+  "failure_policy": "Stop the queue on any execution or source-integrity failure. No automatic retry, restart, partial replay or scorer. Any fresh recovery requires root diagnosis and a separate named registration.",
+  "downstream": "No comparison, group update, batch synthesis, runtime memory activation or next actor launch is admitted by this protocol."
+}

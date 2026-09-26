@@ -1,0 +1,157 @@
+{
+  "schema": "saea-summary-np1-capacity-verdict-v1",
+  "at": "2026-09-26T08:08:28.152676+00:00",
+  "status": "all16-admitted-for-separate-generation-registration",
+  "session_id": "serving-slurp-system-summary001-np1-v1",
+  "worker_commit": "30eb5ce8a5202a628da914584781f41341437325",
+  "generation_contacts": 0,
+  "tokenizer_contacts": 36,
+  "fresh_media_contacts": 0,
+  "scorer_contacts": 0,
+  "minimum_margin_tokens": 25574,
+  "required_margin_tokens": 3072,
+  "slot_tokens": 49152,
+  "output_tokens": 2048,
+  "rows": [
+    {
+      "label": "s1",
+      "receipt": {
+        "relpath": "coordination/slurp-system-batch001-v1/summary-np1-capacity-v1/s1-request-fit.json",
+        "sha256": "640eda9489005cc599ba5ae818e67eaa5eaa697a1f395f7d16ad3ddb2b3f370b"
+      },
+      "all_text_tokens_match_prior_geometry": true,
+      "minimum_margin_tokens": 28606,
+      "rows": [
+        {
+          "sample_id": "slurp:train:000049:audio-1434542455",
+          "text_tokens": 16764,
+          "output_tokens": 2048,
+          "margin_tokens": 30338
+        },
+        {
+          "sample_id": "slurp:train:000051:audio-1434531302-headset",
+          "text_tokens": 18496,
+          "output_tokens": 2048,
+          "margin_tokens": 28606
+        },
+        {
+          "sample_id": "slurp:train:000234:audio-1499688528",
+          "text_tokens": 17816,
+          "output_tokens": 2048,
+          "margin_tokens": 29286
+        },
+        {
+          "sample_id": "slurp:train:000260:audio-1488549919",
+          "text_tokens": 13901,
+          "output_tokens": 2048,
+          "margin_tokens": 33201
+        }
+      ]
+    },
+    {
+      "label": "s2",
+      "receipt": {
+        "relpath": "coordination/slurp-system-batch001-v1/summary-np1-capacity-v1/s2-request-fit.json",
+        "sha256": "01ad75319d29af5b0d1d1b5da15019e553b7817f5afb5ed09490704baa229dc2"
+      },
+      "all_text_tokens_match_prior_geometry": true,
+      "minimum_margin_tokens": 25574,
+      "rows": [
+        {
+          "sample_id": "slurp:train:000049:audio-1434542455",
+          "text_tokens": 21528,
+          "output_tokens": 2048,
+          "margin_tokens": 25574
+        },
+        {
+          "sample_id": "slurp:train:000051:audio-1434531302-headset",
+          "text_tokens": 19005,
+          "output_tokens": 2048,
+          "margin_tokens": 28097
+        },
+        {
+          "sample_id": "slurp:train:000234:audio-1499688528",
+          "text_tokens": 18024,
+          "output_tokens": 2048,
+          "margin_tokens": 29078
+        },
+        {
+          "sample_id": "slurp:train:000260:audio-1488549919",
+          "text_tokens": 14758,
+          "output_tokens": 2048,
+          "margin_tokens": 32344
+        }
+      ]
+    },
+    {
+      "label": "s3",
+      "receipt": {
+        "relpath": "coordination/slurp-system-batch001-v1/summary-np1-capacity-v1/s3-request-fit.json",
+        "sha256": "8c81a19a5d36cef81efae09c488d75739d92e2d571f2edd97b6e998ecf2aaae4"
+      },
+      "all_text_tokens_match_prior_geometry": true,
+      "minimum_margin_tokens": 28661,
+      "rows": [
+        {
+          "sample_id": "slurp:train:000049:audio-1434542455",
+          "text_tokens": 16679,
+          "output_tokens": 2048,
+          "margin_tokens": 30423
+        },
+        {
+          "sample_id": "slurp:train:000051:audio-1434531302-headset",
+          "text_tokens": 18227,
+          "output_tokens": 2048,
+          "margin_tokens": 28875
+        },
+        {
+          "sample_id": "slurp:train:000234:audio-1499688528",
+          "text_tokens": 18441,
+          "output_tokens": 2048,
+          "margin_tokens": 28661
+        },
+        {
+          "sample_id": "slurp:train:000260:audio-1488549919",
+          "text_tokens": 14183,
+          "output_tokens": 2048,
+          "margin_tokens": 32919
+        }
+      ]
+    },
+    {
+      "label": "s4",
+      "receipt": {
+        "relpath": "coordination/slurp-system-batch001-v1/summary-np1-capacity-v1/s4-request-fit.json",
+        "sha256": "9b1bd6348023c2c744d250f28bcff75b935ab966a21e6cfbd39482aabbae11a6"
+      },
+      "all_text_tokens_match_prior_geometry": true,
+      "minimum_margin_tokens": 28785,
+      "rows": [
+        {
+          "sample_id": "slurp:train:000049:audio-1434542455",
+          "text_tokens": 16265,
+          "output_tokens": 2048,
+          "margin_tokens": 30837
+        },
+        {
+          "sample_id": "slurp:train:000051:audio-1434531302-headset",
+          "text_tokens": 18317,
+          "output_tokens": 2048,
+          "margin_tokens": 28785
+        },
+        {
+          "sample_id": "slurp:train:000234:audio-1499688528",
+          "text_tokens": 18201,
+          "output_tokens": 2048,
+          "margin_tokens": 28901
+        },
+        {
+          "sample_id": "slurp:train:000260:audio-1488549919",
+          "text_tokens": 14395,
+          "output_tokens": 2048,
+          "margin_tokens": 32707
+        }
+      ]
+    }
+  ]
+}

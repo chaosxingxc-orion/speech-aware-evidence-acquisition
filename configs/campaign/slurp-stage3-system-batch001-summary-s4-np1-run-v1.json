@@ -1,0 +1,9 @@
+{
+  "schema": "saea-campaign-plan-v1",
+  "cells": [
+    {
+      "experiment": "slurp-stage3-system-batch001-summary-s4-np1-run-v1",
+      "cell": "slurp-stage3-system-batch001-summary-s4-np1-run-v1"
+    }
+  ]
+}
