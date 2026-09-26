@@ -1,0 +1,60 @@
+{
+  "schema": "saea-offline-validation-v1",
+  "at": "2026-09-26T10:38:41.858778+00:00",
+  "targeted_tests": {
+    "passed": 69,
+    "failed": 0,
+    "log_relpath": "coordination/slurp-system-batch001-v1/event-credit-validation-v1/targeted.log",
+    "sha256": "f8ed4604179416e897e3391ee592d0c02427f3e32ef2b56760fc7875d1f8eaff"
+  },
+  "ruff": 0,
+  "checks": [
+    {
+      "check": "engineering_base_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/event-credit-validation-v1/engineering_base_check.log"
+    },
+    {
+      "check": "harness_admission_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/event-credit-validation-v1/harness_admission_check.log"
+    },
+    {
+      "check": "results_ledger_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/event-credit-validation-v1/results_ledger_check.log"
+    },
+    {
+      "check": "tool_catalog_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/event-credit-validation-v1/tool_catalog_check.log"
+    },
+    {
+      "check": "experiment_handoff_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/event-credit-validation-v1/experiment_handoff_check.log"
+    },
+    {
+      "check": "openjiuwen_native_reuse_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/event-credit-validation-v1/openjiuwen_native_reuse_check.log"
+    },
+    {
+      "check": "derived_media_confinement_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/event-credit-validation-v1/derived_media_confinement_check.log"
+    },
+    {
+      "check": "stage3_algorithm_label_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/event-credit-validation-v1/stage3_algorithm_label_check.log"
+    },
+    {
+      "check": "finite_completion_policy_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/event-credit-validation-v1/finite_completion_policy_check.log"
+    }
+  ],
+  "real_source_semantic_match": "Legacy prepared document exactly reconstructed; all 16 event projections preserve original summaries, numeric feedback, option bindings and dispositions.",
+  "boundary": "Source-reader integration tests substitute frozen bundle/scorer readers; actual source preparation separately verifies real sealed sources. No model inference performed."
+}

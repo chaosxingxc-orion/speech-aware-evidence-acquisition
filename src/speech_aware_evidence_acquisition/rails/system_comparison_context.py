@@ -21,6 +21,7 @@ from .system_summary_context import _source_path
 
 PREPARED_COMPARISON_SCHEMA = "saea-prepared-system-comparison-v1"
 SOURCE_SCHEMA = "saea-system-comparison-source-v1"
+EVENT_SOURCE_SCHEMA = "saea-system-comparison-source-v2"
 
 
 def _require(ok, message):
@@ -40,9 +41,15 @@ def build_system_comparison_contexts(source_pin, *, data_root):
 
 def _build(source_pin, data):
     binding, binding_sha = _read_pinned_json(source_pin, data_root=data, field="comparison source")
-    _require(isinstance(binding, Mapping) and set(binding) == {
-        "schema", "round_id", "frozen_f0", "members", "comparison_roster",
-    } and binding["schema"] == SOURCE_SCHEMA, "comparison source schema differs")
+    _require(isinstance(binding, Mapping), "comparison source must be an object")
+    fields = {"schema", "round_id", "frozen_f0", "members", "comparison_roster"}
+    event_mode = binding.get("schema") == EVENT_SOURCE_SCHEMA
+    if event_mode:
+        from ..analysis.system_event_evidence import EVENT_MODE
+        fields.add("event_evidence")
+        _require(binding.get("event_evidence") == EVENT_MODE, "unknown event evidence mode")
+    _require(set(binding) == fields and binding.get("schema") in
+             (SOURCE_SCHEMA, EVENT_SOURCE_SCHEMA), "comparison source schema differs")
     members = binding["members"]
     _require(isinstance(members, list) and len(members) >= 2, "comparison needs at least two full sources")
     labels = []
@@ -90,6 +97,9 @@ def _build(source_pin, data):
     grouped = group_complete_system_sources(groups, f0=binding["frozen_f0"])
     feedback = prepare_semantic_feedback_groups(grouped, reports)
     joined = join_recorded_summaries(feedback, summaries)
+    if event_mode:
+        from ..analysis.system_event_evidence import add_recorded_event_evidence
+        joined = add_recorded_event_evidence(joined, reports, summaries)
     roster_sha = None
     if binding["comparison_roster"] is not None:
         roster, roster_sha = _read_pinned_json(binding["comparison_roster"], data_root=data, field="comparison roster")
@@ -127,6 +137,9 @@ def comparison_preparation_inputs(document):
                system_semantic_feedback, system_semantic_trajectory, system_summary_source,
                prepared_feedback, system_summary_context)
     paths = [Path(__file__), *(Path(m.__file__) for m in modules)]
+    if document["comparison"].get("event_evidence"):
+        from ..analysis import shared_json, system_event_evidence, system_wire_context
+        paths.extend(Path(m.__file__) for m in (shared_json, system_event_evidence, system_wire_context))
     return {
         "document_sha256": content_hash(document),
         "implementation_sha256": content_hash({p.name: hash_stable_file(p, "comparison implementation")[1]

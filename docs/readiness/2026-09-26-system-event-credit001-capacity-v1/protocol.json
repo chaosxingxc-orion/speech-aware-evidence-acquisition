@@ -1,0 +1,25 @@
+{
+  "schema": "saea-system-comparison-capacity-protocol-v1",
+  "registered_at": "2026-09-26T10:37:33.353882+00:00",
+  "purpose": "Measure the complete-system comparison with mechanically verified events and explicit terminal feedback meanings; preserve the same source actors, summaries and numeric outcomes. Zero generation.",
+  "service_session": "serving-slurp-system-summary001-np1-v1",
+  "source": {
+    "relpath": "coordination/slurp-system-batch001-v1/event-credit-v1/source.json",
+    "sha256": "263097e72c6651cb728429949c6de37eac1ab3a2b58041407fdb45bb0b4e74fa"
+  },
+  "source_match": {
+    "relpath": "coordination/slurp-system-batch001-v1/event-credit-v1/source-match.json",
+    "sha256": "8736d7de8c68b8befdbde997acb5504445242bad6313a3d3ada2cb82f7e6d885"
+  },
+  "full_source_groups": 4,
+  "eligible_groups": 1,
+  "contacts": 3,
+  "generation_contacts": 0,
+  "official_scores": 0,
+  "fresh_audio": 0,
+  "output_tokens": 2048,
+  "reserve_tokens": 3072,
+  "slot_tokens": 49152,
+  "controlled_factors": "Original actors, summaries, terminal feedback, candidate order, phase prompt, task instruction and decoding remain unchanged. Prepared state identity changes with new source content. Added event projection includes every response, actual tool record and control/delivery sequence. No desired lessons or gold task answer.",
+  "failure_policy": "Refuse missing or crossed evidence, inadequate capacity or stale resource state; no truncation, automatic retry or actor dispatch."
+}
