@@ -306,6 +306,11 @@ def load_prepared_feedback(
             spec, data_root=Path(data_root), sample_ids=active_ids,
             construction_roster_sha256=roster_sha,
         )
+    if isinstance(spec, Mapping) and spec.get("schema") == "saea-prepared-system-group-update-v1":
+        from .system_group_update_context import load_system_group_update
+        return load_system_group_update(
+            spec, data_root=Path(data_root), sample_ids=active_ids,
+            construction_roster_sha256=roster_sha)
     artifact_pin, source_pin, maximum = _validate_spec(spec)
     source_bindings, source_bindings_sha256 = _read_pinned_json(
         source_pin, data_root=Path(data_root), field="source_bindings"
@@ -426,3 +431,38 @@ def states_from_contexts(
         ],
     }
     return states, receipt
+
+
+def load_verified_prepared_contexts(
+    spec, *, data_root, sample_ids, construction_roster_sha256, schema,
+    build_contexts, preparation_inputs, artifact_kind, input_stage,
+):
+    """Load a verified scoreless stage through the shared immutable ORG-state path."""
+    try:
+        if spec.get("schema") != schema:
+            raise PreparedFeedbackError("prepared stage schema differs")
+        artifact_pin, source_pin, maximum = _validate_spec(dict(spec, schema=PREPARED_FEEDBACK_SCHEMA))
+        rebuilt = build_contexts(source_pin, data_root=data_root)
+        if rebuilt["construction_roster_sha256"] != construction_roster_sha256:
+            raise PreparedFeedbackError("prepared stage requires its exact registered roster")
+        envelope, prepared_sha = _read_pinned_json(artifact_pin, data_root=data_root, field="prepared stage")
+        if not isinstance(envelope, Mapping) or envelope.get("contact_class") != "model-free":
+            raise PreparedFeedbackError("prepared stage must be model-free")
+        path = _resolve_data_path(artifact_pin["relpath"], data_root=data_root, field="prepared stage")
+        output = load_artifact(path, expected_sha256=prepared_sha, kind=artifact_kind,
+                               inputs=preparation_inputs(rebuilt))
+        if output != rebuilt:
+            raise PreparedFeedbackError("prepared stage differs from verified source")
+        contexts = {c["source_sample_id"]: c for c in rebuilt["contexts"]}
+        if len(contexts) != len(rebuilt["contexts"]):
+            raise PreparedFeedbackError("prepared stage repeats a sample")
+        states, receipt = states_from_contexts(
+            contexts, active_ids=sample_ids, prepared_sha256=prepared_sha,
+            source_bindings_sha256=rebuilt["source_bindings_sha256"],
+            roster_sha=construction_roster_sha256, maximum=maximum)
+        receipt.update(input_stage=input_stage, runtime_input_contract="shared-prepared-text-artifact")
+        return states, receipt, rebuilt
+    except (ValueError, TypeError, KeyError, OSError, RuntimeError) as error:
+        if isinstance(error, PreparedFeedbackError):
+            raise
+        raise PreparedFeedbackError(f"cannot load prepared stage: {error}") from error

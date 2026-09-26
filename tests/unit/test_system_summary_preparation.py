@@ -185,7 +185,8 @@ def test_prepared_complete_episode_reaches_actual_shared_fit_and_send(summary_wo
 
 
 def exercise_shared_fit_and_send(world_inputs, tmp_path, text_only, *, prepared_spec=None,
-                                 baseline=None, comparison=False):
+                                 baseline=None, comparison=False, group_update=False,
+                                 output_text="The whole episode ends in ACCEPT."):
     """Exercise the production binding, executor, request gate and artifact output."""
     from types import SimpleNamespace
 
@@ -253,7 +254,7 @@ def exercise_shared_fit_and_send(world_inputs, tmp_path, text_only, *, prepared_
     packets = ({sid: {"packet_id": world.samples[0].audio_ref.path,
                       "sha256": world.samples[0].audio_ref.sha256}}
                if text_only else {sid: packets["s1"]})
-    transport = _CapturingTransport(lambda _payload: "The whole episode ends in ACCEPT.")
+    transport = _CapturingTransport(lambda _payload: output_text)
     plan = _plan(planned_model_calls=1)
     client, _, _ = _client(world, tmp_path / "consumer", plan=plan, transport=transport,
                           arm=values["arm"], **({} if text_only else {
@@ -308,7 +309,11 @@ def exercise_shared_fit_and_send(world_inputs, tmp_path, text_only, *, prepared_
         else:
             assert sent["speech_feature_parts"]
         context = json.loads(sent["history"][0]["content"])
-        if comparison:
+        if group_update:
+            assert context["stage"] == "complete-system-group-update"
+            assert context["new_experiences"] and context["existing_experiences"] == []
+            assert receipt["input_stage"] == "complete-system-group-update"
+        elif comparison:
             assert context["stage"] == "complete-system-semantic-comparison"
             assert [a["terminal_feedback"]["fp"] for a in context["attempts"]] == [0, 2]
             assert [a["terminal_feedback"]["utility"] for a in context["attempts"]] == [0, -1]
@@ -325,7 +330,7 @@ def exercise_shared_fit_and_send(world_inputs, tmp_path, text_only, *, prepared_
         runtime._plan = plan
         runtime._composed = SimpleNamespace(values={**values, "carrier_lock_key": "fake-carrier"})
         rows = runtime._canonical_output_rows(client)
-        assert rows[0]["text"] == "The whole episode ends in ACCEPT."
+        assert rows[0]["text"] == output_text
         assert rows[0]["sample_id"] == sid
     finally:
         client.close()

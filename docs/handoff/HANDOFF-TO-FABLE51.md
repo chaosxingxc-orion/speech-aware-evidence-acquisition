@@ -222,6 +222,29 @@ atomic consolidation, frozen memory and whole-system reexecution. Do not
 claim an RL improvement from this input/runtime connection. The GPU failure,
 closed flight, STOP, frozen worker and isolated control-read embargo remain.
 
+## Frozen-memory group update continuation
+
+CPU implementation checkpoint: 2026-09-26T02:14:27.588691+00:00.
+The [group update contract](../readiness/2026-09-26-system-group-update-runtime.md)
+connects sealed comparison lessons and one replay-bound frozen memory snapshot
+to the shared text artifact runtime. Every original construction group remains
+represented; a smaller model-contact cohort cannot erase construction exposure.
+The operation reader retains raw ADD/UPDATE/DELETE/NONE proposals and invalid
+outputs without applying them. Initial and consolidated memory use the existing
+source materializer; the summary/comparison readers share one implementation.
+
+A fidelity gap remains explicit: the older atomic consolidator only uses
+already materialized proposals, whereas upstream batch update can synthesize
+new wording. Next connect model-generated typed content and support/contradiction
+bindings at that batch stage, preserving stable IDs and full construction
+lineage. Do not call candidate selection alone a full TF-GRPO reproduction.
+306 targeted tests, Ruff and nine offline gates passed; exact synthetic-source
+boundaries and remaining historical warnings are in the linked receipt. A full
+round must additionally bind its sampled actor policy and actual memory version
+to the updater base; the input reader alone does not establish that alignment.
+No real updater contact, memory activation, system reexecution or RL benefit
+has occurred. GPU failure and closed-flight restrictions are unchanged.
+
 ## Whole-system summary runtime connection
 
 The model-facing summary input now has a shared preparation/loader/baseline

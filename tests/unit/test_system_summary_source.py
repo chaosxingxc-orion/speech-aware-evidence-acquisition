@@ -21,16 +21,21 @@ from speech_aware_evidence_acquisition.rails.hashing import content_hash
 
 @pytest.fixture
 def summary_source(summary_world, tmp_path, monkeypatch):  # noqa: F811
-    data, actor, binding, _source_pin, _calls = summary_world
-    spec, _ = prepared(summary_world)
-    states, _ = load(summary_world, spec)
+    return make_text_stage_source(summary_world, tmp_path, monkeypatch)
+
+
+def make_text_stage_source(world, tmp_path, monkeypatch, *, prepared_spec=None,
+                           baseline="system-trajectory-summary-text-v1"):
+    data, actor, binding, _source_pin, _calls = world
+    spec = prepared_spec if prepared_spec is not None else prepared(world)[0]
+    states, _ = load(world, spec)
     sid = actor.sample_ids[0]
     project = Path(__file__).parents[2]
     repo = tmp_path / "summary-source"
     roster_rel = "docs/receipts/rosters/construction.json"
     (repo / roster_rel).parent.mkdir(parents=True)
     (repo / roster_rel).write_bytes((data / "roster.json").read_bytes())
-    values = json.loads((project / "configs/baseline/system-trajectory-summary-text-v1.json").read_text())
+    values = json.loads((project / "configs/baseline" / (baseline + ".json")).read_text())
     values.update(prepared_training_feedback=spec, live_phase_fit={
         "run_id": "summary-fit", "attempt_id": "summary-fit-1", "contact_cap": 3},
         artifact_result={"schema": "saea-artifact-result-binding-v1",
@@ -85,6 +90,8 @@ def summary_source(summary_world, tmp_path, monkeypatch):  # noqa: F811
         rid + "/response": response,
     }, frozenset((sid,)), "FINALIZED")
     monkeypatch.setattr(module, "verify_bundle", lambda _path: bundle)
+    from speech_aware_evidence_acquisition.analysis import prepared_text_source
+    monkeypatch.setattr(prepared_text_source, "verify_bundle", lambda _path: bundle)
     return dict(pin=source_pin, repo=repo, data=data, bundle=bundle, payload=payload,
                 response=response, output=output, spec=spec)
 

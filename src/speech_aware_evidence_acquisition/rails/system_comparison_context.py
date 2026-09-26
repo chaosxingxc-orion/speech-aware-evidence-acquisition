@@ -10,12 +10,12 @@ from ..analysis.system_rollout_groups import load_group_source, group_complete_s
 from ..analysis.system_semantic_trajectory import materialize_semantic_trajectories
 from ..analysis.system_semantic_feedback import prepare_semantic_feedback_groups, join_recorded_summaries
 from ..analysis.system_summary_source import verify_system_summaries
-from ..core.preparation import hash_stable_file, load_artifact, prepare_artifact
+from ..core.preparation import hash_stable_file, prepare_artifact
 from ..core.roster import verify_roster
 from .hashing import content_hash
 from .prepared_feedback import (
-    PreparedFeedbackError, _read_pinned_json, _resolve_data_path, _validate_spec,
-    _canonical_context, states_from_contexts,
+    PreparedFeedbackError, _read_pinned_json, _resolve_data_path,
+    _canonical_context, load_verified_prepared_contexts,
 )
 from .system_summary_context import _source_path
 
@@ -48,6 +48,7 @@ def _build(source_pin, data):
     labels = []
     summaries, groups, reports = [], [], []
     summary_identity = None
+    source_roster = None
     for member in members:
         _require(isinstance(member, Mapping) and set(member) == {
             "label", "summary_manifest", "summary_repo_root", "feedback_export",
@@ -59,6 +60,10 @@ def _build(source_pin, data):
         _require(isinstance(repo, str) and Path(repo).is_absolute(), "summary checkout must be absolute")
         summary = verify_system_summaries(member["summary_manifest"], repo_root=repo, data_root=data)
         actor = summary.actor_binding
+        actor_roster = actor["construction_roster"]["sha256"]
+        _require(source_roster is None or source_roster == actor_roster,
+                 "full construction roster bindings differ")
+        source_roster = actor_roster
         _require(actor["round_id"] == binding["round_id"], "comparison construction round differs")
         identity = (summary.manifest["config"]["fragments"]["model"],
                     summary.manifest["session_receipt"]["sha256"])
@@ -109,15 +114,16 @@ def _build(source_pin, data):
         "schema": "saea-system-comparison-contexts-v1",
         "source_bindings_sha256": binding_sha, "construction_roster_sha256": roster_sha,
         "round_id": binding["round_id"], "comparison": joined, "contexts": contexts,
+        "source_construction_roster_sha256": source_roster,
         "model_contacts_added": 0, "scorer_contacts_added": 0,
     }
 
 
 def comparison_preparation_inputs(document):
-    from ..analysis import (native_episode_source, system_feedback, system_rollout_groups,
+    from ..analysis import (native_episode_source, prepared_text_source, system_feedback, system_rollout_groups,
                             system_semantic_feedback, system_semantic_trajectory, system_summary_source)
     from . import prepared_feedback, system_summary_context
-    modules = (native_episode_source, system_feedback, system_rollout_groups,
+    modules = (native_episode_source, prepared_text_source, system_feedback, system_rollout_groups,
                system_semantic_feedback, system_semantic_trajectory, system_summary_source,
                prepared_feedback, system_summary_context)
     paths = [Path(__file__), *(Path(m.__file__) for m in modules)]
@@ -136,27 +142,17 @@ def prepare_system_comparison_contexts(source_pin, output_path, *, data_root):
 
 
 def load_system_comparison_feedback(spec, *, data_root, sample_ids, construction_roster_sha256):
-    _require(spec.get("schema") == PREPARED_COMPARISON_SCHEMA, "comparison prepared schema differs")
-    artifact_pin, source_pin, maximum = _validate_spec(dict(spec, schema="saea-prepared-training-feedback-v1"))
-    rebuilt = build_system_comparison_contexts(source_pin, data_root=data_root)
-    _require(rebuilt["construction_roster_sha256"] == construction_roster_sha256,
-             "comparison requires its exact registered ready-group roster")
-    envelope, prepared_sha = _read_pinned_json(artifact_pin, data_root=data_root, field="comparison artifact")
-    _require(envelope.get("contact_class") == "model-free", "comparison preparation must be model-free")
-    path, _ = _source_path(artifact_pin, data_root, "comparison artifact")
-    output = load_artifact(path, expected_sha256=prepared_sha, kind="system-comparison-contexts",
-                           inputs=comparison_preparation_inputs(rebuilt))
-    _require(output == rebuilt, "comparison artifact differs from verified sources")
-    contexts = {row["source_sample_id"]: row for row in rebuilt["contexts"]}
-    states, receipt = states_from_contexts(
-        contexts, active_ids=sample_ids, prepared_sha256=prepared_sha,
-        source_bindings_sha256=rebuilt["source_bindings_sha256"],
-        roster_sha=construction_roster_sha256, maximum=maximum)
+    states, receipt, rebuilt = load_verified_prepared_contexts(
+        spec, data_root=data_root, sample_ids=sample_ids,
+        construction_roster_sha256=construction_roster_sha256,
+        schema=PREPARED_COMPARISON_SCHEMA, build_contexts=build_system_comparison_contexts,
+        preparation_inputs=comparison_preparation_inputs, artifact_kind="system-comparison-contexts",
+        input_stage="complete-system-semantic-comparison")
     receipt.update(input_stage="complete-system-semantic-comparison",
                    runtime_input_contract="shared-prepared-text-artifact",
                    comparison_sha256=rebuilt["comparison"]["content_sha256"],
                    full_group_count=len(rebuilt["comparison"]["groups"]),
-                   ready_group_count=len(contexts))
+                   ready_group_count=len(rebuilt["contexts"]))
     return states, receipt
 
 

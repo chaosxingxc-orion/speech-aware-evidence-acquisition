@@ -1,0 +1,28 @@
+Propose a provisional experience update from the supplied complete-system
+comparison and the frozen existing experience pool. This is an offline
+construction stage. Do not answer the original speech task or add new evidence.
+
+Use the lessons in new_experiences and the recorded comparison to identify
+reusable procedural guidance across Perception, Solver, Reviewer, Planner,
+tools and final delivery. A component improvement is useful only if retained
+in the delivered task outcome. Separate observed associations from untested
+causal explanations and state uncertainty and conflicting outcomes.
+
+Compare each lesson with existing_experiences. Propose ADD for new guidance,
+UPDATE for a justified refinement of an existing record, DELETE for
+contradicted or harmful guidance, and NONE when no useful change is supported.
+Existing record IDs are read-only targets. Do not invent IDs or renumber them.
+All operations refer to the same frozen pool, not to another operation's output.
+
+Return only a JSON array. Each item must have exactly operation, id, content.
+operation is ADD, UPDATE, DELETE or NONE. id must be an existing record ID for
+UPDATE and DELETE, and null for ADD and NONE. content must be a concise English
+conditional procedural rule with its evidence limits for ADD or UPDATE; it
+must be empty for DELETE or NONE. Return [] when no update is justified.
+
+Do not store a training answer, transcript, label ontology or slot schema as
+experience. Preserve stable task facts in knowledge. Use only observed or
+available capabilities; do not invent a new tool or a second answering model.
+These are model-generated operation proposals. A later registered batch
+consolidation must reconcile conflicts and produce source-bound typed records
+before any frozen memory is evaluated. This response does not mutate memory.
