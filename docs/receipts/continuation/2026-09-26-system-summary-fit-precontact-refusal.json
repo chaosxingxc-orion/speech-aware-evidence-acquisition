@@ -1,0 +1,18 @@
+{
+  "schema": "saea-summary-fit-precontact-refusal-v1",
+  "recorded_at": "2026-09-26T07:09:41.145130+00:00",
+  "run_id": "SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S1-CAPACITY-V1",
+  "source_commit": "be5e99c48146849f3ba9e9535a31922392ca72f1",
+  "reason": "The direct phase runtime requires a frozen knowledge snapshot custody binding even when evidence_source is none. Summary capacity config omitted this framework input. Refused in model-free request materialization, before contact authorization or tokenizer journal.",
+  "fit_contacts": 0,
+  "generation_contacts": 0,
+  "fit_contact_journal_present": false,
+  "fit_receipt_present": false,
+  "lease_owner_dead": true,
+  "live_fit_workers": [],
+  "server_processing_slots": 0,
+  "generation_guard_exclusively_acquired": true,
+  "preserved_lease_sha256": "04996e83ead3257857df3a485d2767fc124e6120e6d05f67307168dd3599b94e",
+  "preserved_lease_relpath": "coordination/slurp-system-batch001-v1/summary-capacity-v1/precontact-flight-lock.json",
+  "action": "Preserved stale lease outside Git after quiescence; never stopped or restarted service. Retain v1 plans. Bind the existing frozen snapshot in a successor config and validate all actual requests model-free before admission."
+}

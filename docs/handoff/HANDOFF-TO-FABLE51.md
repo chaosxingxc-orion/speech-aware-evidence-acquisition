@@ -28,8 +28,14 @@ DATA/coordination/slurp-system-batch001-v1/semantic/index.json
 The current summary representation occupies 145513 to 247977 UTF-8 bytes per
 complete trajectory. This is not a token count. Register and measure all
 16 actual text requests through shared prompt-fit before any generation:
-[capacity protocol](../readiness/2026-09-26-system-batch001-summary-capacity-v1/protocol.json).
+[capacity protocol](../readiness/2026-09-26-system-batch001-summary-capacity-v2/protocol.json).
 Preserve output2048, special2 and operational3072 tokens within each24576 slot.
+The first capacity configuration refused before any tokenizer contact because
+the shared phase runner requires a frozen snapshot custody binding. Its dead
+lease was preserved after checking process/socket quiescence. Successor v2
+binds the existing TRAIN snapshot without supplying fresh knowledge, and all
+16 actual prepared-text payloads now materialize through the real shared
+controller in a model-free check. No source or response was dropped.
 A measured nonfit is a completed diagnostic, not permission to truncate
 trajectories, lower outputs, enlarge service geometry or retry a flight.
 
