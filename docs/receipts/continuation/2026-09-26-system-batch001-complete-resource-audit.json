@@ -1,0 +1,65 @@
+{
+  "schema": "saea-system-batch001-complete-resource-audit-v1",
+  "recorded_at": "2026-09-26T07:14:33.394531+00:00",
+  "source_traces": [
+    {
+      "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S1-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s1-run-v1/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S1-RUN-V1.trace.jsonl",
+      "sha256": "4f6a78573f20cde53e31b421139b443c267f5b734dc38f90f92c417d09bcb8c4"
+    },
+    {
+      "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S2-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s2-run-v1/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S2-RUN-V1.trace.jsonl",
+      "sha256": "70d13d6481b0c148ec474b32f6fbc35341f81029f1024798e832cca34b125fd4"
+    },
+    {
+      "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S3-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s3-run-v1/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S3-RUN-V1.trace.jsonl",
+      "sha256": "297b51ab24f8c7f16753a819ee1a287c62383ef73f0b6db0ef572207f6717406"
+    },
+    {
+      "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S4-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s4-run-v1/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S4-RUN-V1.trace.jsonl",
+      "sha256": "9fb91dafb5b0a3516f9ad0669c8ca29d285a38a46cf74b2b7587e77f6e3b983e"
+    }
+  ],
+  "complete_episodes": 16,
+  "input_groups": 4,
+  "sample_replicas_per_input": 4,
+  "concurrent_episodes": 2,
+  "generation_contacts": 67,
+  "official_score_jobs": 4,
+  "token_metadata": {
+    "prompt_tokens": {
+      "min": 3599,
+      "max": 10810,
+      "sum": 510925
+    },
+    "completion_tokens": {
+      "min": 2,
+      "max": 274,
+      "sum": 4817
+    },
+    "total_tokens": {
+      "min": 3686,
+      "max": 10812,
+      "sum": 515742
+    }
+  },
+  "configured_output_caps": {
+    "512": 50,
+    "1024": 17
+  },
+  "finish_reasons": {
+    "stop": 67
+  },
+  "resource_window_end": "2026-09-26T06:52:57Z",
+  "resource_prefix_sha256": "ae27db7dfc4cd5d035bec11f9f3b25440bb8bae6907883579732f71d792e9d3e",
+  "resource_prefix_bytes": 718909,
+  "resource_samples": 889,
+  "gpu_used_mib_max": 20432.0,
+  "gpu_free_mib_min": 3706.0,
+  "windows_available_gib_min": 26.321239471435547,
+  "resource_decisions": {
+    "admit": 889
+  },
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "limits": "Sampled complete first-batch observation, not an instantaneous OOM guarantee or proof of semantic update capacity. Do not extrapolate stability to32 concurrent requests or a32-input update context."
+}

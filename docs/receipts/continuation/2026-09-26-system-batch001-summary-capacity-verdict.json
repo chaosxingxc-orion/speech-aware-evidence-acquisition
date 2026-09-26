@@ -1,0 +1,311 @@
+{
+  "schema": "saea-system-batch001-summary-capacity-verdict-v1",
+  "recorded_at": "2026-09-26T07:19:42.194749+00:00",
+  "worker_commit": "33e0507d4d528fea4b555020a147cc23d2722f41",
+  "source_actor_commit": "d56ad054ad06df36b2a2e508ab5e765cc2549085",
+  "protocol": "docs/readiness/2026-09-26-system-batch001-summary-capacity-v2/protocol.json",
+  "session_id": "serving-slurp-system-batch001-np2-v1",
+  "fit_contacts": 36,
+  "generation_contacts": 0,
+  "scorer_contacts": 0,
+  "fresh_media_contacts": 0,
+  "request_count": 16,
+  "input_tokens_min": 57386,
+  "input_tokens_max": 99721,
+  "physical_fit_count": 0,
+  "output_tokens_reserved": 2048,
+  "operational_reserve_tokens": 3072,
+  "special_tokens": 2,
+  "slot_tokens": 24576,
+  "max_admissible_input_tokens": 19454,
+  "admission": "REJECT ALL SEMANTIC GENERATION: all16 complete summary requests exceed the physical slot before the stricter operational reserve.",
+  "sources": [
+    {
+      "replica": 1,
+      "receipt": {
+        "relpath": "coordination/slurp-system-batch001-v1/summary-capacity-v2/s1-request-fit.json",
+        "sha256": "12e46b900e08a73b97508933fdffa7da85ba8d4f88c1a97ee4b3a765c198e25f"
+      },
+      "journal": {
+        "relpath": "coordination/slurp-system-batch001-v1/summary-capacity-v2/s1-request-fit.json.contacts.jsonl",
+        "sha256": "20e15e272b4dcc8746065043d18fd0950f699fc30e54ddfa067ddd8fc88d9747"
+      },
+      "contacts": 9,
+      "rows": [
+        {
+          "fit_multiple": 1.0,
+          "fits": false,
+          "margin_tokens": -42283,
+          "maximum_completion_tokens": 2048,
+          "media_count": 0,
+          "request_body_sha256": "e7a7568d8866ae898cf91051b4dd6f2fd6cd7a899de6c97606ecee84ade32843",
+          "required_tokens": 66859,
+          "sample_id": "slurp:train:000051:audio-1434531302-headset",
+          "slot_tokens": 24576,
+          "special_tokens": 2,
+          "speech_tokens": 0,
+          "text_tokens": 64809
+        },
+        {
+          "fit_multiple": 1.0,
+          "fits": false,
+          "margin_tokens": -39009,
+          "maximum_completion_tokens": 2048,
+          "media_count": 0,
+          "request_body_sha256": "9ebdadfc8a94cd43575cfd2bd17de17feed0e6d0bc3b85543a9dd79165bf4309",
+          "required_tokens": 63585,
+          "sample_id": "slurp:train:000049:audio-1434542455",
+          "slot_tokens": 24576,
+          "special_tokens": 2,
+          "speech_tokens": 0,
+          "text_tokens": 61535
+        },
+        {
+          "fit_multiple": 1.0,
+          "fits": false,
+          "margin_tokens": -41051,
+          "maximum_completion_tokens": 2048,
+          "media_count": 0,
+          "request_body_sha256": "d52674eac86f1f18a7f2128c9aefc83e1bd737660e4d2f48c29de16b8862adba",
+          "required_tokens": 65627,
+          "sample_id": "slurp:train:000234:audio-1499688528",
+          "slot_tokens": 24576,
+          "special_tokens": 2,
+          "speech_tokens": 0,
+          "text_tokens": 63577
+        },
+        {
+          "fit_multiple": 1.0,
+          "fits": false,
+          "margin_tokens": -34860,
+          "maximum_completion_tokens": 2048,
+          "media_count": 0,
+          "request_body_sha256": "e8b76562d08a9175e526e105b389e643fe37d1c7bc617ca3b7275f1b32a49d0a",
+          "required_tokens": 59436,
+          "sample_id": "slurp:train:000260:audio-1488549919",
+          "slot_tokens": 24576,
+          "special_tokens": 2,
+          "speech_tokens": 0,
+          "text_tokens": 57386
+        }
+      ],
+      "minimum_margin_tokens": -42283
+    },
+    {
+      "replica": 2,
+      "receipt": {
+        "relpath": "coordination/slurp-system-batch001-v1/summary-capacity-v2/s2-request-fit.json",
+        "sha256": "8cc023894d399707408b7270227130449b3bd1d587df89d683ba24c685bbdbbd"
+      },
+      "journal": {
+        "relpath": "coordination/slurp-system-batch001-v1/summary-capacity-v2/s2-request-fit.json.contacts.jsonl",
+        "sha256": "637889d28db7601df5a30ba9acb0df56decc41a083a6239378817c453c2318fe"
+      },
+      "contacts": 9,
+      "rows": [
+        {
+          "fit_multiple": 1.0,
+          "fits": false,
+          "margin_tokens": -77195,
+          "maximum_completion_tokens": 2048,
+          "media_count": 0,
+          "request_body_sha256": "93d91feeab6419f0c4560b6f6b6561d72717181525e154d3e02033657d1706d3",
+          "required_tokens": 101771,
+          "sample_id": "slurp:train:000049:audio-1434542455",
+          "slot_tokens": 24576,
+          "special_tokens": 2,
+          "speech_tokens": 0,
+          "text_tokens": 99721
+        },
+        {
+          "fit_multiple": 1.0,
+          "fits": false,
+          "margin_tokens": -43187,
+          "maximum_completion_tokens": 2048,
+          "media_count": 0,
+          "request_body_sha256": "7005d7bff0dab2731569a7ae064d51887759d6365ff4aa2d275cf405bc00c491",
+          "required_tokens": 67763,
+          "sample_id": "slurp:train:000051:audio-1434531302-headset",
+          "slot_tokens": 24576,
+          "special_tokens": 2,
+          "speech_tokens": 0,
+          "text_tokens": 65713
+        },
+        {
+          "fit_multiple": 1.0,
+          "fits": false,
+          "margin_tokens": -35849,
+          "maximum_completion_tokens": 2048,
+          "media_count": 0,
+          "request_body_sha256": "d3b228ecff5e17f546a814382815fa8f16805ece74b7951a4b49cfc621e4cea8",
+          "required_tokens": 60425,
+          "sample_id": "slurp:train:000260:audio-1488549919",
+          "slot_tokens": 24576,
+          "special_tokens": 2,
+          "speech_tokens": 0,
+          "text_tokens": 58375
+        },
+        {
+          "fit_multiple": 1.0,
+          "fits": false,
+          "margin_tokens": -41204,
+          "maximum_completion_tokens": 2048,
+          "media_count": 0,
+          "request_body_sha256": "82ca89232950684b73ef7b395f14e49a361df305ac5744e96269d223f19435c2",
+          "required_tokens": 65780,
+          "sample_id": "slurp:train:000234:audio-1499688528",
+          "slot_tokens": 24576,
+          "special_tokens": 2,
+          "speech_tokens": 0,
+          "text_tokens": 63730
+        }
+      ],
+      "minimum_margin_tokens": -77195
+    },
+    {
+      "replica": 3,
+      "receipt": {
+        "relpath": "coordination/slurp-system-batch001-v1/summary-capacity-v2/s3-request-fit.json",
+        "sha256": "762d231c3e939f31e53762979e104707c2226574912eadd21cc47c36707a74ab"
+      },
+      "journal": {
+        "relpath": "coordination/slurp-system-batch001-v1/summary-capacity-v2/s3-request-fit.json.contacts.jsonl",
+        "sha256": "1955fbe8d738ba1bd64f4883e4f538baee1c40dbdc456b683cda702319127f9e"
+      },
+      "contacts": 9,
+      "rows": [
+        {
+          "fit_multiple": 1.0,
+          "fits": false,
+          "margin_tokens": -39067,
+          "maximum_completion_tokens": 2048,
+          "media_count": 0,
+          "request_body_sha256": "d9903dcd0f177598d7508bbc4558ca0c0a62631e1e3ca7f9be41e0fdfccb6602",
+          "required_tokens": 63643,
+          "sample_id": "slurp:train:000049:audio-1434542455",
+          "slot_tokens": 24576,
+          "special_tokens": 2,
+          "speech_tokens": 0,
+          "text_tokens": 61593
+        },
+        {
+          "fit_multiple": 1.0,
+          "fits": false,
+          "margin_tokens": -41792,
+          "maximum_completion_tokens": 2048,
+          "media_count": 0,
+          "request_body_sha256": "ee5c12c05e759a4ac152aa448c28b8244319270c47a8c4eca79bb8f878f94b40",
+          "required_tokens": 66368,
+          "sample_id": "slurp:train:000051:audio-1434531302-headset",
+          "slot_tokens": 24576,
+          "special_tokens": 2,
+          "speech_tokens": 0,
+          "text_tokens": 64318
+        },
+        {
+          "fit_multiple": 1.0,
+          "fits": false,
+          "margin_tokens": -41652,
+          "maximum_completion_tokens": 2048,
+          "media_count": 0,
+          "request_body_sha256": "4d163c0d90f50e8ea48fbd654f96eb0a0ecf4dd4bd4302f2159a4d5ba868a769",
+          "required_tokens": 66228,
+          "sample_id": "slurp:train:000234:audio-1499688528",
+          "slot_tokens": 24576,
+          "special_tokens": 2,
+          "speech_tokens": 0,
+          "text_tokens": 64178
+        },
+        {
+          "fit_multiple": 1.0,
+          "fits": false,
+          "margin_tokens": -35033,
+          "maximum_completion_tokens": 2048,
+          "media_count": 0,
+          "request_body_sha256": "a51988a04c6eb328f44ee4427b7b79bc6c10251703d6d34c943aa77ed4f5875b",
+          "required_tokens": 59609,
+          "sample_id": "slurp:train:000260:audio-1488549919",
+          "slot_tokens": 24576,
+          "special_tokens": 2,
+          "speech_tokens": 0,
+          "text_tokens": 57559
+        }
+      ],
+      "minimum_margin_tokens": -41792
+    },
+    {
+      "replica": 4,
+      "receipt": {
+        "relpath": "coordination/slurp-system-batch001-v1/summary-capacity-v2/s4-request-fit.json",
+        "sha256": "6da8ba4f488ba8b411b7f9dcf3838fe5f3eb308a723cf829570681bd2ba657de"
+      },
+      "journal": {
+        "relpath": "coordination/slurp-system-batch001-v1/summary-capacity-v2/s4-request-fit.json.contacts.jsonl",
+        "sha256": "fb09d4b6dc2ff75edc937316e4dac255b8f466e64555cfa6599634efd136cfce"
+      },
+      "contacts": 9,
+      "rows": [
+        {
+          "fit_multiple": 1.0,
+          "fits": false,
+          "margin_tokens": -41935,
+          "maximum_completion_tokens": 2048,
+          "media_count": 0,
+          "request_body_sha256": "99dcca18b0158296c9555f9d53d1d946c4fde4b53fc31bf8e04b41a969e676e0",
+          "required_tokens": 66511,
+          "sample_id": "slurp:train:000051:audio-1434531302-headset",
+          "slot_tokens": 24576,
+          "special_tokens": 2,
+          "speech_tokens": 0,
+          "text_tokens": 64461
+        },
+        {
+          "fit_multiple": 1.0,
+          "fits": false,
+          "margin_tokens": -38234,
+          "maximum_completion_tokens": 2048,
+          "media_count": 0,
+          "request_body_sha256": "f97cd14b112671e7adf757e4b52ebc04773aa7f6a98c2f34d2a5674f1c866c99",
+          "required_tokens": 62810,
+          "sample_id": "slurp:train:000049:audio-1434542455",
+          "slot_tokens": 24576,
+          "special_tokens": 2,
+          "speech_tokens": 0,
+          "text_tokens": 60760
+        },
+        {
+          "fit_multiple": 1.0,
+          "fits": false,
+          "margin_tokens": -41439,
+          "maximum_completion_tokens": 2048,
+          "media_count": 0,
+          "request_body_sha256": "f023d3391d25ce09e08c48df293e585a7528c0bd2953de422c879390885695af",
+          "required_tokens": 66015,
+          "sample_id": "slurp:train:000234:audio-1499688528",
+          "slot_tokens": 24576,
+          "special_tokens": 2,
+          "speech_tokens": 0,
+          "text_tokens": 63965
+        },
+        {
+          "fit_multiple": 1.0,
+          "fits": false,
+          "margin_tokens": -35393,
+          "maximum_completion_tokens": 2048,
+          "media_count": 0,
+          "request_body_sha256": "cf4b0ef843db737ada46e27b2b89766d3ff81f57fef2cbe0f835f7d089503be7",
+          "required_tokens": 59969,
+          "sample_id": "slurp:train:000260:audio-1488549919",
+          "slot_tokens": 24576,
+          "special_tokens": 2,
+          "speech_tokens": 0,
+          "text_tokens": 57919
+        }
+      ],
+      "minimum_margin_tokens": -41935
+    }
+  ],
+  "leases_released": true,
+  "source_actor_results_unchanged": true,
+  "interpretation": "This is a complete capacity diagnostic, not a CUDA execution failure or RL efficacy verdict. Batch size one still cannot fit this serialization. Keep32-input schedule held. Preserve complete trajectories and adequate output; do not enlarge GPU geometry or prune source facts to force admission."
+}

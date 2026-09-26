@@ -5,6 +5,52 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Capacity verdict: actor batch safe in observed window; summary blocked
+
+Latest checkpoint: 2026-09-26. All four registered v2 capacity diagnostics
+completed: 36 tokenizer endpoints, 16 exact full-trajectory requests, zero new
+generation, media or scoring. Every request failed physical fit. Actual
+input 57386 to 99721 tokens exceeds the24576-token slot; retaining2048 output,
+3072 operational reserve and2 special tokens allows at most19454 input.
+Read [the complete capacity verdict](../receipts/continuation/2026-09-26-system-batch001-summary-capacity-verdict.json).
+This is a measured admission refusal, not another GPU crash or an RL result.
+All root leases released normally. No semantic generation is admitted.
+
+[The complete actor resource audit](../receipts/continuation/2026-09-26-system-batch001-complete-resource-audit.json)
+covers 67 generated requests and 889 resource samples through driver completion
+at06:52:57Z. Maximum prompt 10810, maximum completion 274,67 stop finishes.
+Peak GPU used20432 MiB, minimum GPU free3706 MiB, minimum Windows available
+26.321 GiB; all 889 observations admit. These supersede the first-replica
+minimum27.384 GiB for whole-batch reporting. Sampling cannot exclude a transient
+fault or establish future long-request stability.
+
+Keep 32 inputs unfrozen and the next prepared four inputs HELD. The immediate
+bottleneck is one summary's representation, even at update batch size one.
+Next derive a versioned complete-trajectory view that shares repeated context
+and uses compact references with exact source replay. Preserve every actual
+role observation, response, tool event, revision and delivered answer; keep
+immutable source/custody records. Do not activate a summary based on byte
+estimates. If lossless organization still does not fit, explicitly register a
+hierarchical summarization adaptation before contact. Do not force fit by
+reducing outputs, dropping trajectories or enlarging the service blindly.
+Then complete summary/comparison/update, freeze memory, and execute the next
+disjoint whole-system actor batch. No stable learned benefit is established.
+
+Root's initial whole-system diagnosis is in
+[the batch report](../results/2026-09-26-system-batch001-resource-and-learning-diagnostic.md).
+One informative group exhibits unsupported Reviewer tool-result claims,
+a Planner-requested revision that changes a previously correct intent, and
+terminal acceptance without restoring the earlier intent. Actual tool events
+are zero. This is a trace observation, not component causal attribution or
+a hand-authored memory rule. Equal entity utility hides this intent difference;
+the separate official intent feedback must remain visible.
+
+The current guarded service and Windows-owned monitor remain healthy and
+resident. The actor driver is complete; no generation is running and no
+successor queue is authorized. This idle is capacity/design work, not network
+or credit dependence. Never restart the completed actor driver. New semantic
+registration follows the measured fix. Current actor sources remain frozen.
+
 ## First four-input actor batch complete; exact semantic sizing next
 
 Checkpoint: 2026-09-26. All four complete replicas are FINALIZED, each with
@@ -29,7 +75,7 @@ The current summary representation occupies 145513 to 247977 UTF-8 bytes per
 complete trajectory. This is not a token count. Register and measure all
 16 actual text requests through shared prompt-fit before any generation:
 [capacity protocol](../readiness/2026-09-26-system-batch001-summary-capacity-v2/protocol.json).
-Preserve output2048, special2 and operational3072 tokens within each24576 slot.
+Preserve output 2048, special2 and operational3072 tokens within each24576 slot.
 The first capacity configuration refused before any tokenizer contact because
 the shared phase runner requires a frozen snapshot custody binding. Its dead
 lease was preserved after checking process/socket quiescence. Successor v2
@@ -39,13 +85,13 @@ controller in a model-free check. No source or response was dropped.
 A measured nonfit is a completed diagnostic, not permission to truncate
 trajectories, lower outputs, enlarge service geometry or retry a flight.
 
-The decoder-only --no-mmproj service remains resident with two24576-token
+The decoder-only --no-mmproj service remains resident with two 24576-token
 slots (total49152), SID serving-slurp-system-batch001-np2-v1. The first
-operational observation recorded peak20432MiB used, minimum3706MiB GPU free,
-and minimum27.384GiB Windows available. It does not establish long semantic
+operational observation recorded peak20432 MiB used, minimum3706 MiB GPU free,
+and minimum27.384 GiB Windows available. It does not establish long semantic
 request capacity or long-run stability. Resource admission closes below
-12GiB Windows /2048MiB GPU free and stops the owned service below
-10GiB Windows /1024MiB GPU free; missing/stale observation refuses contact.
+12 GiB Windows /2048 MiB GPU free and stops the owned service below
+10 GiB Windows /1024 MiB GPU free; missing/stale observation refuses contact.
 
 Windows-owned tasks SAEA-System-Batch001-Serving and
 SAEA-System-Batch001-Monitor remain independent of network, chat and credits.
@@ -55,11 +101,11 @@ idle. Revalidate live identities and resource freshness before contact;
 do not treat historical PIDs as targets. Use scripts, never monitoring agents.
 
 [The prefix audit](../receipts/continuation/2026-09-26-system-batch001-prefix-audit.json)
-reconstructed all67 actual requests without new model contacts. All16
+reconstructed all 67 actual requests without new model contacts. All 16
 role/visit groups shared across four replicas retain the identical first
 message. All four Perception groups also have identical complete messages.
 Later histories remain independent. Sampling seeds stay in request parameters.
-65 of67 recorded responses report positive cache reuse; this is not a measured
+65 of 67 recorded responses report positive cache reuse; this is not a measured
 speedup or a claim that all reuse comes from inter-replica prefix alignment.
 
 ## Next disjoint batch remains held
