@@ -1,0 +1,224 @@
+{
+  "_note": "Registered facts for cell ROLL-2 (the Stage-3 sealed-sample-pool asset on the v2.0 lock roster). Every value here was measured or derived MODEL-FREE at registration, before any contact: the composed and protocol hashes through core.config.compose / core.config.protocol_hash, the Solver fragment seed through rails.runner._solver_fragment_seed, the roster facts from the committed Fold A roster receipt's own items, and the Fold A artifact pins copied verbatim out of the sealed Fold A lock baseline. No model, tokenizer, encoder, scorer, server, GPU or network contact of any kind was made.",
+  "accounting": {
+    "ceiling_arithmetic": "20,520 = 1,080 TRAIN Fold A rows x 19 and 76 = 4 rows x 19, where 19 is the grouped-Solver graph's OWN ceiling at samples 5 as rails.native_episode_config.load_native_episode_config resolves it: perception.max_iterations + (max_revisions + 1) x (solver.max_iterations x solver.samples + reviewer.max_iterations + planner.max_iterations) = 1 + 2 x (1 x 5 + 3 + 1) = 19. Verified offline at registration: the composed program phase-native-candidates-review-revise-samples5-v1 declares max_contacts 19 and the loader's own graph ceiling resolves to 19 (a disagreement is refused by name). FIT: 82,080 = 20,520 x (1 speech packet + 3 endpoints) and 304 = 76 x 4 -- cell ROLL-1's own native_contact_fit mode and multiplier, rescaled to this roster.",
+    "expected_cost": {
+      "contacts_per_cell_expected": 9234,
+      "contacts_per_row_expected": 8.5504,
+      "gpu_hours_per_cell_expected": 3.5,
+      "note": "About 8.5 contacts per row, so about 9,234 contacts and about 3.5 GPU hours on the arm. Basis: cell ROLL-1 MEASURED 8.5504 contacts per row on this exact grouped-Solver form (samples 5, temperature 0.7, min_support 3) over 625 R01C rows, and nothing in this registration changes the role graph, the prompt form or the number of scheduled requests -- only the roster the same form runs on. 8.5 x 1,080 = 9,180 and 8.5504 x 1,080 = 9,234, so the registered ceiling of 20,520 is about 2.2x the expectation and the 12.0 GPU-hour ceiling about 3.4x it. A ceiling is a BOUND, never a target, and budgets are run-cumulative across every attempt of a run id."
+    },
+    "exposure_rows": [
+      "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1 (generation)",
+      "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-FIT-V1 (fit)",
+      "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-SMOKE-4-V1 (generation, four-row smoke)",
+      "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-SMOKE-4-FIT-V1 (fit, four-row smoke)"
+    ],
+    "family_scope": "FOUR registered rows, all flight identities (arm generation + fit, smoke generation + fit). The decision receipt coordination/slurp-stage3-roll-2-fold-a-v1/root-admission-v1.json (decision id slurp-stage3-roll-2-fold-a-admission-v1) lists those FOUR run ids as eligible_run_ids. The descriptive read over the sealed pool (SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-READ-V1) is registered separately, after the seal, before any number is read.",
+    "per_cell_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 82080,
+      "generation_calls_cap": 20520,
+      "gpu_hours_fit_inclusive": 12.0,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 58607
+    },
+    "plan_budget_is_run_cumulative": true,
+    "smoke_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 304,
+      "generation_calls_cap": 76,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 202
+    },
+    "speech_arithmetic": "58,607 = ceil(3084.5284375 x 19) on the 1,080 arm rows and 202 = ceil(10.5955625 x 19) on the four smoke rows. The per-row audio seconds are read from the committed Fold A roster receipt's own items[].audio_seconds (and agree with the Fold A dataset fragment's declared audio_seconds_total); no audio sample was decoded to obtain them.",
+    "unused_budget_is_not_attempt_authority": true
+  },
+  "authority_relpaths": [
+    "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+    "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1-preregistration.md",
+    "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1/protocol-registered-v1.json",
+    "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1/analysis-recipe-v1.json",
+    "docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md"
+  ],
+  "cells": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-roll-2-fold-a-v1-generation",
+      "cell_id": "slurp-native-stage3-roll-2-fold-a-v1",
+      "composed_config_hash": "2987b5b394122dd7dcd8d899bbd51c5a51daba78faf5c9e1c0f6c35501704099",
+      "fit_attempt_id": "attempt-slurp-native-stage3-roll-2-fold-a-v1-fit",
+      "fit_run_id": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-FIT-V1",
+      "protocol_hash": "c1d279ca9d1903769314f0e01ed27b91fbf74cd1732ff45cecd07109c644982f",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-roll-2-fold-a-smoke-4-v1-generation",
+      "cell_id": "slurp-native-stage3-roll-2-fold-a-smoke-4-v1",
+      "composed_config_hash": "a88709063a7b7d052ecf1a441b9d87a5ac0caba598da1ef7b0965f4e6f114ca0",
+      "fit_attempt_id": "attempt-slurp-native-stage3-roll-2-fold-a-smoke-4-v1-fit",
+      "fit_run_id": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-SMOKE-4-FIT-V1",
+      "protocol_hash": "cf653d852732e7e011af82b24f1ce2494de5823d4917bd79a51cd472065955f1",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-SMOKE-4-V1",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    }
+  },
+  "committed_artifacts": {
+    "arm_baseline": {
+      "relpath": "configs/baseline/slurp-native-stage3-roll-2-fold-a-baseline-v1.json",
+      "sha256": "8c49a24292c187948a62446759fd0302b0c0657e757f2956204c7dba8f00f1ea"
+    },
+    "arm_experiment": {
+      "relpath": "configs/experiment/slurp-native-stage3-roll-2-fold-a-v1.json",
+      "sha256": "782ce4cf666d4fd730642f03f56f8a48d9eccdbf3d0ddbc8c22dec428e3eae64"
+    },
+    "campaign_plan": {
+      "relpath": "configs/campaign/slurp-native-stage3-roll-2-fold-a-v1.json",
+      "sha256": "cbd4a4cb4ea1f4c2c2a93ade13da4858de6fd4c02a42bf761b80c9896c413cd4"
+    },
+    "smoke_baseline": {
+      "relpath": "configs/baseline/slurp-native-stage3-roll-2-fold-a-smoke-4-baseline-v1.json",
+      "sha256": "94ea0d0dfff0eb7d4d0437e49b936cab8e508d7496981ef0c4634797e1ee4016"
+    },
+    "smoke_experiment": {
+      "relpath": "configs/experiment/slurp-native-stage3-roll-2-fold-a-smoke-4-v1.json",
+      "sha256": "45ed6bfe78db4bd8be5426147a69c410ab548d33db82363ac5618d5cf96931c8"
+    }
+  },
+  "declared_episode_keys": {
+    "_the_form": "ZERO factors against cell ROLL-1's form. native_episode.roles.solver keeps samples 5, decoding_overrides {temperature 0.7, seed_offset 0} and commit {saea-commit-plurality-support-v1, min_support 3, similarity_threshold 0.8}; the policy program stays phase-native-candidates-review-revise-samples5-v1 at max_contacts 19; there is deliberately NO deliver_normaliser node (a grouped Solver forbids it, cell ROLL-AA's own registered reason). What moves is the ROSTER and only the roster: the roster-bound artifacts are re-pointed from R01C to TRAIN Fold A and each takes the value the sealed Fold A lock arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 already flew.",
+    "context_fit_policy": "compact-or-abstain",
+    "episode_id": "slurp-native-dual-store-dev1000-v1",
+    "exhaustion_policy": "deliver-latest-solver",
+    "finite_completion_policy": "deliver-latest-or-abstain",
+    "max_revisions": 1,
+    "policy_program": "phase-native-candidates-review-revise-samples5-v1",
+    "program_max_contacts": 19,
+    "react_exhaustion_policy": "continue-without-answer",
+    "review_loop": "on",
+    "roles": {
+      "perception": 1,
+      "planner": 1,
+      "reviewer": 3,
+      "solver": 1
+    },
+    "solver_commit": {
+      "min_support": 3,
+      "policy": "saea-commit-plurality-support-v1",
+      "similarity_threshold": 0.8
+    },
+    "solver_decoding_overrides": {
+      "seed_offset": 0,
+      "temperature": 0.7
+    },
+    "solver_deliver_normaliser": "ABSENT by design -- a grouped Solver forbids a deliver_normaliser node (cell ROLL-AA's registered reason). The sealed lock arm PLAN carries saea-deliver-normalise-v3; ROLL-2 does NOT, because it is cell ROLL-1's form on the lock roster and not the lock arm with a group bolted on. This is a REGISTERED DIFFERENCE from the lock arm, stated before contact.",
+    "solver_samples": 5
+  },
+  "decoding_identity_proof": {
+    "fields_that_differ_between_the_five_samples": [
+      "seed"
+    ],
+    "fragment_seed": 1249110493,
+    "fragment_seed_source": "rails.runner._solver_fragment_seed('phase-native-candidates-review-revise-samples5-v1')",
+    "how": "reproduction.ojw.native_group_solver.run_grouped_solver_samples composes 5 independent Solver invocations of ONE visit through the same metered request path, and reproduction.ojw.native_request.compose_solver_sample_decoding_params overrides exactly two request fields per sample: temperature (0.7 on all five) and seed (fragment_seed + seed_offset + sample_index). Every other byte of the five requests is the same object -- same messages, same speech packet, same supplied knowledge, same response format.",
+    "seeds": [
+      1249110493,
+      1249110494,
+      1249110495,
+      1249110496,
+      1249110497
+    ],
+    "temperature": 0.7
+  },
+  "fold_a_repoint": {
+    "checklist_source": "docs/readiness/2026-09-24-slurp-stage3-var1-v1/ wrote the same key list down for the reverse move (the lock plan re-pointed at R01C); this registration walks it in the opposite direction.",
+    "keys": [
+      "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.relpath",
+      "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.sha256",
+      "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.tool_contact_ledger_row",
+      "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.embedded_signal",
+      "knowledge_stores.train-exemplars.phase_supply.solver.query_source.relpath",
+      "knowledge_stores.train-exemplars.phase_supply.solver.query_source.sha256",
+      "knowledge_stores.train-exemplars.phase_supply.solver.query_source.tool_contact_ledger_row",
+      "knowledge_stores.train-exemplars.phase_supply.solver.query_source.embedded_signal",
+      "knowledge_stores.train-exemplars.release.relpath",
+      "knowledge_stores.train-exemplars.release.sha256",
+      "knowledge_stores.train-exemplars.snapshot.relpath",
+      "knowledge_stores.train-exemplars.snapshot.sha256",
+      "speech_packet_promotion_receipt",
+      "speech_packet_promotion_receipt_sha256",
+      "what_the_train_exemplars_store_is",
+      "preparation_source_receipts",
+      "native_contact_fit.run_id",
+      "native_contact_fit.attempt_id",
+      "native_contact_fit.contact_cap",
+      "prepared_phase_supply (REMOVED, minted at the flip)",
+      "population.count / population.dataset_fragment / population.roster_receipt / population.split_identity_hash",
+      "populations[0].dataset_fragment / populations[0].ids",
+      "split_id / cells[0].dataset_fragment",
+      "family_budget.* and execution_plan.* (rows x 19 and the Fold A roster seconds x 19)"
+    ],
+    "source_of_values": "configs/baseline/slurp-native-default-plan-lock-baseline-v1.json -- the sealed Fold A lock arm's own baseline (cell PLAN, run SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1). Nothing is newly encoded, promoted or released by this registration.",
+    "train_exemplars_store": "size-pool-annotated-exemplars, the PARENT pool the lock arm read -- NOT the minus-R01 narrowing cell ROLL-1 used. That narrowing exists only because the R01C construction roster overlapped the exemplar pool; TRAIN Fold A is disjoint from the exemplar pool by its own committed receipt (disjointness_proof.shared_utterances_fold_a_exemplars = 0)."
+  },
+  "measurement_design": {
+    "expected_effect_pp": null,
+    "measurement_design": "offline-sealed-pool",
+    "no_comparison_sentence": "This cell makes no comparison: it is an ASSET. It flies one arm and one arm only, has no comparator cell, no paired contrast, no gate number and no expected effect, so expected_effect_pp is null by construction. Its deliverable is the sealed five-sample pool itself, over which later actions become computable offline at about 0.51 pp at n = 1,080 and at zero GPU cost.",
+    "rows": 1080,
+    "why_offline_sealed_pool": "The measurement instrument note docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md establishes that a cross-flight contrast at this scale carries a measured +1.87 pp A/A offset (two request-identical flights differed by +1.87 pp SLU with a CI95 excluding zero while intent moved -1.28 pp), so such a contrast needs an in-chain A/A replicate and about 3 pp of effect. The only 0.67 pp instrument the program has is an offline read over one sealed sample pool, and that pool exists on R01C but NOT on the lock roster. This cell creates the missing pool."
+  },
+  "reported_beside": {
+    "cross_flight_aa_offset_pp": 1.87,
+    "note": "CONTEXT ONLY. None of these is this cell's comparator or bar: ROLL-2 has no comparator. They are recorded so the reason this cell exists stays legible.",
+    "sealed_pool_read_precision_pp": {
+      "n_1080": 0.51,
+      "n_625": 0.67
+    },
+    "train_fold_a_own_null": {
+      "h_intent": 0.9943,
+      "h_slu": 1.2485,
+      "n": 1080
+    },
+    "train_fold_a_plan": {
+      "intent_accuracy": 82.22,
+      "official_slu_f1": 63.63,
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1"
+    },
+    "train_fold_a_planr": {
+      "intent_accuracy": 82.5,
+      "official_slu_f1": 63.8
+    }
+  },
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "metrics": [
+      "slu_f1_f1",
+      "scenario_action_exact"
+    ],
+    "seed": 20260915,
+    "unit": "row (paired: all five of a row's samples move together)"
+  },
+  "roster_facts": {
+    "audio_seconds_total": 3084.5284375,
+    "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+    "roster_id": "SLURP-EVO-FOLD-A-V2",
+    "rows": 1080,
+    "smoke_audio_seconds_total": 10.5955625,
+    "smoke_rows": 4,
+    "smoke_split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "strata": "18 SLURP scenarios x 60 rows"
+  },
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1"
+}
