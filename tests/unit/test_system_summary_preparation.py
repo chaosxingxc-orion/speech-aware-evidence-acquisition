@@ -336,6 +336,7 @@ def exercise_shared_fit_and_send(world_inputs, tmp_path, text_only, *, prepared_
         rows = runtime._canonical_output_rows(client)
         assert rows[0]["text"] == output_text
         assert rows[0]["sample_id"] == sid
+        return {"sent": sent, "fitted": fitted[0], "canonical": rows}
     finally:
         client.close()
 

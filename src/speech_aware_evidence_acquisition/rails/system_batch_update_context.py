@@ -8,7 +8,7 @@ from pathlib import Path
 from ..analysis.system_group_operations import read_system_group_operations
 from ..core.preparation import hash_stable_file, prepare_artifact
 from .experience_memory import ExperienceSource
-from .experience_memory_runtime import PROJECTED_CONDITION_TAGS
+from .experience_memory_runtime import MAX_RUNTIME_RECORDS, PROJECTED_CONDITION_TAGS
 from .experience_memory_sources import system_group_hash_source_ref
 from .hashing import content_hash
 from .prepared_feedback import (
@@ -19,6 +19,7 @@ from .system_group_update_context import _roster
 from .training_feedback_artifacts import training_feedback_validator_for_options
 
 SOURCE_SCHEMA = "saea-system-batch-update-source-v1"
+BOUNDED_SOURCE_SCHEMA = "saea-system-batch-update-source-v2"
 PREPARED_SCHEMA = "saea-prepared-system-batch-update-v1"
 KIND = "system-batch-update-contexts"
 
@@ -64,10 +65,20 @@ def build_system_batch_update_contexts(source_pin, *, data_root):
 
 def _build(source_pin, data):
     binding, binding_sha = _read_pinned_json(source_pin, data_root=data, field="batch update source")
-    _require(isinstance(binding, Mapping) and set(binding) == {
-        "schema", "group_update_manifest", "group_update_repo_root", "batch_roster",
-        "max_operations", "proposal_contract",
-    } and binding["schema"] == SOURCE_SCHEMA, "batch source fields differ")
+    _require(isinstance(binding, Mapping), "batch source fields differ")
+    bounded = binding.get("schema") == BOUNDED_SOURCE_SCHEMA
+    fields = {"schema", "group_update_manifest", "group_update_repo_root", "batch_roster",
+              "max_operations", "proposal_contract"}
+    if bounded:
+        fields.add("max_memory_records")
+    _require(set(binding) == fields and binding["schema"] in {SOURCE_SCHEMA, BOUNDED_SOURCE_SCHEMA},
+             "batch source fields differ")
+    pool_contract = {}
+    if bounded:
+        limit = binding["max_memory_records"]
+        _require(type(limit) is int and 1 <= limit <= MAX_RUNTIME_RECORDS,
+                 f"max_memory_records must be an integer from 1 to {MAX_RUNTIME_RECORDS}")
+        pool_contract["max_memory_records"] = limit
     repo = binding["group_update_repo_root"]
     _require(isinstance(repo, str) and Path(repo).is_absolute(), "group update checkout must be absolute")
     maximum = binding["max_operations"]
@@ -117,16 +128,20 @@ def _build(source_pin, data):
               for rec in snapshot["records"]]
     context = {
         "stage": "complete-system-batch-update", "existing_experiences": memory,
+        **pool_contract,
         "group_operations": visible, "proposal_scope": scope, "max_operations": maximum,
         "source_semantics": "Each group label denotes its complete paired system trajectories and terminal feedback, not one actor or a causal component effect.",
     }
+    _require(not bounded or bindings or len(memory) <= pool_contract["max_memory_records"],
+             "unchanged memory record count exceeds max_memory_records")
     _canonical_context(context)
     roster_sha = None
     if binding["batch_roster"] is not None:
         ids, roster_sha = _roster(binding["batch_roster"], data, "batch anchor roster")
         _require(bool(bindings) and ids == [anchor], "batch anchor must be the first full construction sample with a nonempty update batch")
     return {
-        "schema": "saea-system-batch-update-contexts-v1", "source_bindings_sha256": binding_sha,
+        "schema": "saea-system-batch-update-contexts-v2" if bounded else "saea-system-batch-update-contexts-v1",
+        "source_bindings_sha256": binding_sha, **pool_contract,
         "construction_roster_sha256": roster_sha,
         "source_construction_roster_sha256": report["source_construction_roster_sha256"],
         "full_construction_sample_ids": full_ids, "round_id": report["round_id"],

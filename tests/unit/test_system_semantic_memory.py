@@ -37,11 +37,15 @@ def operation(kind="ADD", target=None):
 
 @pytest.fixture
 def semantic_world(batch_world, tmp_path, monkeypatch):  # noqa: F811
-    w = batch_world
+    return make_semantic_world(batch_world, tmp_path, monkeypatch)
+
+
+def make_semantic_world(w, tmp_path, monkeypatch, baseline="system-batch-update-text-v1"):
+    """Keep sealed-stage setup shared across source contract versions."""
     spec, _ = prepared(w)
     inputs = (w["data"], w["actor"], {"construction_roster": w["binding"]["batch_roster"]}, w["source_pin"], [])
     stage = make_text_stage_source(inputs, tmp_path, monkeypatch, prepared_spec=spec,
-                                  baseline="system-batch-update-text-v1", stage_name="batch")
+                                  baseline=baseline, stage_name="batch")
     response({"stage": stage}, json.dumps({"operations": [operation()]}))
     config = {"schema": module.CONFIG_SCHEMA, "materialization_id": "synthetic-semantic-memory",
               "max_candidates": 8,

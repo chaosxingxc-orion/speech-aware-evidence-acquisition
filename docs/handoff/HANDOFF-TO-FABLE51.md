@@ -375,6 +375,39 @@ evaluation and replication only after GPU fault resolution. No real semantic
 update, memory evaluation or stable RL benefit is established. The closed
 recovery, isolated control embargo, frozen worker, queue and STOP are unchanged.
 
+## Explicit whole-system memory capacity and cadence audit
+
+CPU continuation checkpoint: 2026-09-26T04:33:34.542757+00:00.
+The [capacity contract](../readiness/2026-09-26-system-batch-memory-capacity.md)
+adds a distinct v2 batch source and thin bounded text baseline. The updater
+now sees the final pool bound before generating. The shared materializer
+requires the same cap, counts unchanged records and atomic ADD/DELETE/UPDATE,
+and preserves invalid raw outputs without publishing proposals or candidates.
+The legacy v1 model context and prompt remain unchanged.
+
+201 related tests, Ruff and all nine gates passed. Branch-inclusive coverage
+is 100% for semantic materialization and 97.04% for batch preparation, limited
+to these two modules. Simulated answering transport and upstream source/scorer
+fixtures prove fit/send, source replay, Reviewer tool use and Solver revision;
+they establish no real-model adherence, capacity or quality benefit. The
+linked validation receipt records all proof boundaries and historical warnings.
+
+The pinned upstream trainer updates after each training batch. The
+[cadence audit](../receipts/continuation/2026-09-26-system-training-cadence-audit-v1.json)
+compares the existing two-update draft against 54 batch opportunities with
+tails retained: both have 6820 complete actor episodes, but construction
+scoring jobs become 216 rather than 8. The semantic generation ceiling changes
+from 10232 to 10284. This cadence choice remains pending; the existing held
+full-cohort cells are unchanged. A minibatch is a training unit, never an
+effectiveness screen. M1/M2 would become cohort-end checkpoints, not counts of
+updates. Keep full B1080 evaluation and matched controls/replication.
+
+No source worker, service, queue, STOP, held flight or closed quality embargo
+changed. The current GPU crash dump copy remains absent. Next freeze the
+selected cadence and concrete semantic/actor plans, resolve the backend/host
+fault, then execute real sampling, update and complete-system evaluation.
+Stable learned-policy benefit remains unproven.
+
 ## Whole-system summary runtime connection
 
 The model-facing summary input now has a shared preparation/loader/baseline

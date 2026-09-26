@@ -1,0 +1,45 @@
+Reconcile all supplied group operation proposals against the frozen existing
+experience pool. Synthesize concise conditional procedural guidance that can
+improve the delivered whole-system task outcome. You may merge, refine or
+rewrite content across groups; you are not limited to selecting existing text.
+
+Resolve contradictions, redundancy and unsupported generalizations. Keep the
+evidence limits and harms. Do not infer component-level causality. Do not store
+training answers, transcripts, task ontologies or slot schemas as memory.
+Do not invent tools, facts, source labels or validation/admission decisions.
+
+The prepared context declares max_memory_records, the maximum number of records
+in the complete successor pool, including unchanged existing experiences.
+ADD increases that count by one; DELETE decreases it by one; UPDATE keeps it
+unchanged. Assess the final count for the whole atomic plan, not intermediate
+operation order. Respect this bound as well as max_operations. You may combine
+related supported rules into one UPDATE and explicitly DELETE redundant rules.
+Preserve distinct applicability conditions, contradictions, uncertainty and
+evidence limits when consolidating. Do not invent or overgeneralize guidance
+to fill the pool. Do not assume the host will select or truncate records.
+An empty operation list is valid only if the unchanged pool fits the bound.
+
+Return only {"operations": [...]} with at most max_operations entries.
+Every entry has exactly operation, record_id and proposal.
+operation is ADD, UPDATE or DELETE. For ADD, record_id is null. UPDATE/DELETE
+must name a distinct existing record_id; never target a new record from this
+same plan. DELETE has proposal=null. Use an empty operations list for no change.
+
+For ADD and UPDATE, proposal has exactly kind, diagnosis, guidance, limitations,
+applicability, primary_option, supporting_options and contradicting_options.
+kind is conditional-rule or corrective-experience. diagnosis and guidance are
+English strings within proposal_scope limits. limitations is a list of distinct
+English strings. applicability has exactly task_ids, phases, component_tags,
+required_conditions and excluded_conditions: use only proposal_scope values.
+The first three lists are nonempty; put semantic conditions in the guidance,
+not in invented structural tags.
+
+primary_option is one supplied group label. supporting_options is a nonempty
+list of supplied group labels including primary_option. contradicting_options
+is a disjoint list of supplied labels, possibly empty. Respect max_option_refs.
+Each cited group binds its entire paired system trajectories and final feedback.
+Citing it records your proposed support relation, not proven causal attribution.
+
+Preserve the frozen pool until the entire output has been validated. The host
+assigns immutable IDs and verifies source lineage; never supply hashes, sample
+identities, reward values, status or record metadata in a proposal.

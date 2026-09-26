@@ -59,6 +59,11 @@ def parse_batch_operations(raw_text, document, anchor):
             canonical = json.loads(validator.canonicalize(
                 json.dumps({"status": "provisional", "proposals": [proposal]}), sample_id=anchor))
             normalized.append({"operation": op, "record_id": target, "proposal": canonical["proposals"][0]})
+    if "max_memory_records" in document:
+        final_count = len(targets) + sum(op["operation"] == "ADD" for op in normalized) - sum(
+            op["operation"] == "DELETE" for op in normalized)
+        _require(final_count <= document["max_memory_records"],
+                 "final memory record count exceeds registered max_memory_records; no truncation")
     return normalized
 
 
@@ -112,8 +117,12 @@ def prepare_system_semantic_memory(*, config_path, expected_config_sha256, data_
     binding = {"schema": CONFIG_SCHEMA, "materialization_config_sha256": config_sha,
                "batch_manifest_sha256": source.manifest_sha256, "batch_response": row,
                "base_snapshot_sha256": document["base_snapshot"]["content_sha256"],
-               "runtime_authorized": False}
+               "runtime_authorized": False,
+               **{k: document[k] for k in ("max_memory_records",) if k in document}}
     try:
+        if "max_memory_records" in document:
+            _require(config["max_candidates"] == document["max_memory_records"],
+                     "materialization candidate cap differs from model-visible max_memory_records")
         _require(row["status"] == "usable", "batch response is unusable; no recovery or truncation")
         operations = parse_batch_operations(row["text"], document, anchor)
         records, plan = synthesize_records(

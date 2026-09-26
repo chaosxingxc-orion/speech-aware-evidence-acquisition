@@ -1,0 +1,173 @@
+{
+  "schema": "saea-system-batch-capacity-validation-v1",
+  "checked_at": "2026-09-26T04:33:34.542757+00:00",
+  "parent_commit": "6fdc54ec76f9c0f0630dea701b11469e82b8d426",
+  "environment": "WSL Ubuntu-24.04; Python 3.12 from /home/chao/.venvs/speechrl; explicit checkout PYTHONPATH; no editable reinstall",
+  "tests": {
+    "passed": 201,
+    "log": {
+      "path": "/home/chao/system-batch-capacity-validation-v1/regressions.log",
+      "sha256": "50de082eb9f02ea2bf6d8897f51f6f8bb07a28d33c83d107f88ce26bcd1a8bb9"
+    },
+    "overlap_note": "Includes the earlier 52-test green run; counts must not be added."
+  },
+  "red_phase": {
+    "path": "/home/chao/system-batch-capacity-validation-v1/red.log",
+    "sha256": "a2d84c4269d986d44ebbc3f965ce18120a6e4ec610c1c0b4e97c9f57ae005d8c"
+  },
+  "coverage": {
+    "scope": "The two changed production modules; not whole-repository coverage.",
+    "modules": {
+      "src/speech_aware_evidence_acquisition/core/system_semantic_memory.py": {
+        "covered_lines": 105,
+        "num_statements": 105,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 0,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 18,
+        "num_partial_branches": 0,
+        "covered_branches": 18,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      },
+      "src/speech_aware_evidence_acquisition/rails/system_batch_update_context.py": {
+        "covered_lines": 114,
+        "num_statements": 117,
+        "percent_covered": 97.03703703703704,
+        "percent_covered_display": "97",
+        "missing_lines": 3,
+        "excluded_lines": 0,
+        "percent_statements_covered": 97.43589743589743,
+        "percent_statements_covered_display": "97",
+        "num_branches": 18,
+        "num_partial_branches": 1,
+        "covered_branches": 17,
+        "missing_branches": 1,
+        "percent_branches_covered": 94.44444444444444,
+        "percent_branches_covered_display": "94"
+      }
+    },
+    "raw": {
+      "path": "/home/chao/system-batch-capacity-validation-v1/coverage.json",
+      "sha256": "b21db9dc31f9787255ff7b616e8ec64df5fc5b69bd0f9066ac07ef1442718909"
+    }
+  },
+  "gates": [
+    {
+      "check": "engineering_base",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-batch-capacity-validation-v1/engineering_base.log",
+        "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+      }
+    },
+    {
+      "check": "harness_admission",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-batch-capacity-validation-v1/harness_admission.log",
+        "sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911"
+      }
+    },
+    {
+      "check": "results_ledger",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-batch-capacity-validation-v1/results_ledger.log",
+        "sha256": "ec9367bbd838063e612f82f2497a4e042f439e1b778d78d55e5f4c6117904d6f"
+      }
+    },
+    {
+      "check": "tool_catalog",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-batch-capacity-validation-v1/tool_catalog.log",
+        "sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc"
+      }
+    },
+    {
+      "check": "experiment_handoff",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-batch-capacity-validation-v1/experiment_handoff.log",
+        "sha256": "e00bd20eb0190869b35a8487d680a5265423f4c0ad0f66bc0387aa7671652678"
+      }
+    },
+    {
+      "check": "openjiuwen_native_reuse",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-batch-capacity-validation-v1/openjiuwen_native_reuse.log",
+        "sha256": "7a3601a7ad885b2c0a5b7a3cd55b81982133ba218f5913781cc45cc9b71151ec"
+      }
+    },
+    {
+      "check": "derived_media_confinement",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-batch-capacity-validation-v1/derived_media_confinement.log",
+        "sha256": "799a7772c39949b45c3b8647897ca15d206ec9b55c1b59bce8ebf391c2526be4"
+      }
+    },
+    {
+      "check": "stage3_algorithm_label",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-batch-capacity-validation-v1/stage3_algorithm_label.log",
+        "sha256": "0babba877cb30edfaacddeade30cd7cffdc917856bd912bb6f6459850fcb9229"
+      }
+    },
+    {
+      "check": "finite_completion_policy",
+      "exit_code": 0,
+      "log": {
+        "path": "/home/chao/system-batch-capacity-validation-v1/finite_completion_policy.log",
+        "sha256": "20bc3dc18154a13c2956dd6455da6de859f1e724b864fd06bcaec02b0734cc22"
+      }
+    }
+  ],
+  "lint": {
+    "path": "/home/chao/system-batch-capacity-validation-v1/lint.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "proof_boundaries": [
+    "Preparation, actual shared request fit/send equality and artifact output use the production path with simulated answering transport.",
+    "The source fixtures substitute verified upstream actor/scorer bundles; no research answers or official scorer are consumed.",
+    "Bound mismatch and overflow retain raw output before proposals or candidates publish.",
+    "Source replay and connected native execution verify Reviewer tool access and Solver revision using generated synthetic guidance.",
+    "No-operation and empty-output paths retain an empty or in-bound pool; they do not fabricate memory.",
+    "Legacy v1 model-context fields and its original prompt/baseline remain unchanged; implementation fingerprints change normally."
+  ],
+  "known_gate_warnings": [
+    "104 existing results-ledger cross-check findings.",
+    "The handoff gate reports newer HEAD and local changes, no errors, and no launch authority."
+  ],
+  "source_contract": "saea-system-batch-update-source-v2",
+  "limits": {
+    "runtime_max_memory_records": 32,
+    "new_contract_integer_range": [
+      1,
+      32
+    ],
+    "materialization_cap_must_equal_model_visible_cap": true,
+    "no_silent_truncation": true
+  },
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "official_scorer": 0,
+    "research_network": 0
+  },
+  "launch_authority": false,
+  "remaining": [
+    "Resolve the prospective two-update versus 54-batch-update cadence; held full-cohort cells have not been replaced.",
+    "Freeze actual semantic stage lengths, identities, source pins, policy, budgets and registrations.",
+    "Resolve CUDA/host failure and independently register shared-service fit, sampling/update and frozen complete-system evaluation.",
+    "Demonstrate matched repeatable task gains; no learned-policy benefit is established."
+  ]
+}

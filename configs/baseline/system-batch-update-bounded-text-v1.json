@@ -1,0 +1,23 @@
+{
+  "arm": "prepared-context-text",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "policy": "phase-direct-only-v1",
+  "result_kind": "artifact",
+  "scorers": [],
+  "whole_roster_wave_barrier": true,
+  "phase_material": {
+    "direct": {
+      "instruction_template": "probes/system_batch_update_bounded_v1.txt",
+      "instruction_fill": null,
+      "predecessor_binding": "none"
+    }
+  },
+  "what_this_is": "Synthesize a complete successor memory pool within the explicitly registered model-visible record bound. Use the v2 batch source; preserve every group proposal and apply the validated plan atomically.",
+  "task_instruction": "Analyze only the registered prepared context and follow the current phase instruction. Produce the requested artifact; do not answer the original spoken task. No fresh speech or task knowledge is supplied.",
+  "task_instruction_template": null,
+  "task_instruction_template_active": false,
+  "task_instruction_fill": null,
+  "task_instruction_fill_params": null,
+  "slurp_task_contract_view": "legacy-ontology"
+}

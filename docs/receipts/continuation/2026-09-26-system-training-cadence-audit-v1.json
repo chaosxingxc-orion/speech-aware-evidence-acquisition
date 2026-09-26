@@ -1,0 +1,110 @@
+{
+  "schema": "saea-system-training-cadence-audit-v1",
+  "checked_at": "2026-09-26T04:30:47.487692+00:00",
+  "status": "prospective-cadence-comparison-not-a-flight",
+  "asset_configuration": {
+    "path": "configs/analysis/slurp-system-update-round-assets-v1.json",
+    "sha256": "494da45907c5ea96e81761911a923e45cf6afcdc620e4cb81695832d3fecdcb8"
+  },
+  "upstream": {
+    "path": "/home/chao/saea-reference-audits/20260925/youtu-agent/utu/practice/training_free_grpo.py",
+    "sha256": "5a391c637a0a900511804877b03e08044fb4ed936428636c2c654ce57dc835d1",
+    "commit": "c2caa539f4c95ae1c39ed24dc8a99cb3651e1d5d",
+    "observations": [
+      "The training loop uses floor division for batch count and warns that remainder data will be dropped.",
+      "Each batch runs rollouts, then the experience updater, then optional evaluation.",
+      "Retaining the tail is a declared repository adaptation, not exact upstream behavior."
+    ]
+  },
+  "cohorts": [
+    {
+      "cohort": "R01C625",
+      "roster": {
+        "root": "repository",
+        "path": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+        "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd"
+      },
+      "samples": 625,
+      "distinct_utterances": 625,
+      "recordings_per_utterance_histogram": {
+        "1": 625
+      },
+      "max_batch_inputs": 32,
+      "full_batches": 19,
+      "tail_inputs": 17,
+      "batches_with_tail": 20,
+      "four_replica_episodes": 2500
+    },
+    {
+      "cohort": "FoldA1080",
+      "roster": {
+        "root": "repository",
+        "path": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+        "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+      },
+      "samples": 1080,
+      "distinct_utterances": 1080,
+      "recordings_per_utterance_histogram": {
+        "1": 1080
+      },
+      "max_batch_inputs": 32,
+      "full_batches": 33,
+      "tail_inputs": 24,
+      "batches_with_tail": 34,
+      "four_replica_episodes": 4320
+    },
+    {
+      "cohort": "FoldB1080",
+      "roster": {
+        "root": "repository",
+        "path": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+        "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8"
+      },
+      "samples": 1080,
+      "distinct_utterances": 1080,
+      "recordings_per_utterance_histogram": {
+        "1": 1080
+      },
+      "max_batch_inputs": 32,
+      "full_batches": 33,
+      "tail_inputs": 24,
+      "batches_with_tail": 34,
+      "four_replica_episodes": 4320
+    }
+  ],
+  "alternatives": {
+    "whole_cohort": {
+      "construction_update_opportunities": 2,
+      "complete_actor_manifests_and_official_scores": 8,
+      "complete_actor_episodes": 6820,
+      "semantic_generation_ceiling": 10232
+    },
+    "batch32_keep_tail": {
+      "construction_update_opportunities": 54,
+      "complete_actor_manifests_and_official_scores": 216,
+      "complete_actor_episodes": 6820,
+      "semantic_generation_ceiling": 10284,
+      "policy_freeze": "One batch across all four replicas; no within-batch memory update.",
+      "roster_rule": "Exactly one pass over all pinned construction identities; keep the 17 and 24 input tails. No outcome-based selection.",
+      "checkpoint_semantics": "M1 denotes after R01C (20 batch opportunities); M2 denotes after A (54 cumulative batch opportunities).",
+      "evaluation": "Fold B1080 full roster for each frozen arm, never a 32-input effectiveness claim."
+    }
+  },
+  "limits": [
+    "No randomized execution order or concrete batch rosters have been registered.",
+    "Existing held full-cohort actor cells cannot execute a minibatch schedule unchanged.",
+    "Memory construction must accumulate every prior batch while later actor cohorts remain disjoint from earlier experience sources.",
+    "All eligible group operations remain in their batch; no top-k filtering to pass context fit.",
+    "Batch count is an upper bound on update contacts, not proof that every batch yields usable feedback or accepted memory.",
+    "Official scoring runs once per complete actor manifest; a minibatch manifest defines its full training population and is not an arbitrary shard of an evaluation manifest.",
+    "The 32-input choice is a prospective adaptation, not an upstream default or empirical optimum.",
+    "Real service capacity, memory-content limits and registered contact budgets remain required."
+  ],
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "official_scorer": 0
+  },
+  "launch_authority": false
+}
