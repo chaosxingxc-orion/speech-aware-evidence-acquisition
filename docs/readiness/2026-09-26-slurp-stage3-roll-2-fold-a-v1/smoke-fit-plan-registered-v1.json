@@ -12,7 +12,7 @@
     },
     "not_run_by_this_registration": "DELIBERATELY NOT RUN. core.flight.cli check touches the runtime root and the coordination tree, which the coordinator owns, so this package registers the cells without it; the coordinator's own clean-tree re-pin cycle (scripts/flights/batch/repin_cell_generic.sh, ARM=1) runs check on the minted receipt and asserts the runtime-derived hashes agree with the ones registered here. A disagreement stops the flip, which is the intended failure mode.",
     "readiness_state": "held",
-    "study_commit": "2a3ad174"
+    "study_commit": "8291d7c3"
   },
   "comparator": null,
   "comparator_reason": "NONE, by design. ROLL-2 is an asset: it collects a sealed five-sample pool on the lock roster so that later actions over that pool are readable offline at about 0.51 pp at n = 1,080. No sealed arm is re-flown, re-scored or compared against, the read is never scripts/analysis/plan_cell_read.py, and no number this cell produces is gated.",
@@ -64,10 +64,26 @@
     "what_is_configured": "configs/baseline/slurp-native-stage3-roll-2-fold-a-smoke-4-baseline-v1.json declares native_contact_fit with max_speech_packets 1 and the contact cap above, and no live_phase_fit. The FIT run ids are registered so that any endpoint spend lands against a row written before the result was read."
   },
   "measurement_design": {
-    "expected_effect_pp": null,
-    "measurement_design": "offline-sealed-pool",
-    "no_comparison_sentence": "This cell makes no comparison: it is an ASSET. It flies one arm and one arm only, has no comparator cell, no paired contrast, no gate number and no expected effect, so expected_effect_pp is null by construction. Its deliverable is the sealed five-sample pool itself, over which later actions become computable offline at about 0.51 pp at n = 1,080 and at zero GPU cost.",
-    "rows": 1080,
+    "canonical_declaration": "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1/registered-facts-v1.json, top-level 'stage3_measurement' -- the block scripts/checks/stage3_effect_floor_check.py resolves. The same block is repeated in the preregistration's fenced json for readability; the registered-facts copy has precedence.",
+    "no_comparison_sentence": "This cell makes no comparison: it is an ASSET. It flies one arm and one arm only, has no comparator cell, no paired contrast and no gate number, so expected_effect_pp is 0.0 with claims_benefit false. Its deliverable is the sealed five-sample pool itself, over which later actions become computable offline at about 0.51 pp at n = 1,080 and at zero GPU cost.",
+    "stage3_measurement": {
+      "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-SMOKE-4-V1": {
+        "claims_benefit": false,
+        "expected_effect_pp": 0.0,
+        "measurement_design": "form-proof",
+        "note": "The four-row structural form smoke of ROLL-2 proves FORM and nothing else: five custodied Solver samples per row, the plurality-commit replay, zero native task-contract calls, every request fitting. It is scored by no one and read by no one, and under docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 3 rule 5 a batch of four rows can never be evidence of benefit.",
+        "primary_metric": "slu_f1",
+        "rows": 4
+      },
+      "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1": {
+        "claims_benefit": false,
+        "expected_effect_pp": 0.0,
+        "measurement_design": "offline-sealed-pool",
+        "note": "ROLL-2 makes no effectiveness claim of its own: it seals a 1,080-row x 5-sample pool on TRAIN Fold A so that commit, selection and verification rules can be read offline at the 0.67 pp floor of docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d, on the roster where the composed policy will later be flown. Any benefit claim belongs to the read over this pool, which declares its own block.",
+        "primary_metric": "slu_f1",
+        "rows": 1080
+      }
+    },
     "why_offline_sealed_pool": "The measurement instrument note docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md establishes that a cross-flight contrast at this scale carries a measured +1.87 pp A/A offset (two request-identical flights differed by +1.87 pp SLU with a CI95 excluding zero while intent moved -1.28 pp), so such a contrast needs an in-chain A/A replicate and about 3 pp of effect. The only 0.67 pp instrument the program has is an offline read over one sealed sample pool, and that pool exists on R01C but NOT on the lock roster. This cell creates the missing pool."
   },
   "modules": {
@@ -84,12 +100,12 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "10a15b79557406ca7bea22f5b2a15d731cd83aeac412f99363f4b53a300a1e3e"
+    "sha256": "6d5260773f13d80af30120ec8b3ed2d0e139fdbad54123e7acd0c33da664bf8c"
   },
   "purpose": "DESCRIPTIVE. This cell is an ASSET and makes NO comparison, no admission claim, no gate, no superiority, transfer, generalisation, component-causal or confirmatory statement. Its only deliverable is a sealed five-sample pool on TRAIN Fold A plus the structural proof that the pool is well formed. Any later read over that pool is registered separately.",
   "quality_read_gate": "No read of any kind before the complete sealed manifest and the exact ordered outputs with exactly five custodied solver_group samples per row exist. A partial manifest is never read; a failed smoke stops the arm and it does not open.",
   "registered_at_utc": "2026-09-26T00:00:00.000000+00:00",
-  "registration_base_commit": "2a3ad174",
+  "registration_base_commit": "8291d7c3",
   "schema": "saea-registered-generation-plan-v1",
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-roll2, branch fable/roll2",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
