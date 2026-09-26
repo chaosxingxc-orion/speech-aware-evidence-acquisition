@@ -1,0 +1,31 @@
+{
+  "schema": "saea-independent-recovery-launch-v1",
+  "at": "2026-09-26T12:08:21.323900+00:00",
+  "driver_epoch": "2026-09-26T12:06:52Z",
+  "campaign_start": "2026-09-26T12:06:54Z",
+  "driver_pid_observed": 87124,
+  "campaign_pid_observed": 87203,
+  "worker_path": "/home/chao/saea-worktrees/codex-system-memory-recovery1-20260926",
+  "worker_commit": "3dbc629cab7c873cfaf462c40ab2a1a05a3da7ef",
+  "service": {
+    "pid": 77850,
+    "session_id": "serving-slurp-system-memory-batch002-np2-v1",
+    "started_at": "2026-09-26T11:10:59.545653+00:00"
+  },
+  "service_process_unchanged": true,
+  "dispatch": {
+    "relpath": "coordination/slurp-system-memory-batch002-v1/recovery1-dispatch-ready.json",
+    "sha256": "b5e5aafe7f3240f6304e55d29be5aa623197c9b06910321d2efd4c69490751cb"
+  },
+  "network_required": false,
+  "automatic_restart_count": 0,
+  "execution_time_limit": "unlimited",
+  "recovery_number": 1,
+  "no_second_recovery": true,
+  "read_registration": "docs/readiness/2026-09-26-system-memory-batch002-read-v1/registration-v3.json",
+  "round_policy": "coordination/slurp-system-memory-batch002-v1/round-policy-v3.json",
+  "read_scope": "All three original complete pairs plus the fresh fourth pair, each actor with one official full score; task quality still unread.",
+  "new_generation_cap": 88,
+  "new_fit_cap": 352,
+  "new_official_score_count": 2
+}

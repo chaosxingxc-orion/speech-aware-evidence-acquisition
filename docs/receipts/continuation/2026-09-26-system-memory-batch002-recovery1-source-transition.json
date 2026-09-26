@@ -1,0 +1,16 @@
+{
+  "schema": "saea-recovery-read-source-transition-v1",
+  "recorded_at": "2026-09-26T12:03:12.666805+00:00",
+  "read_registration": "docs/readiness/2026-09-26-system-memory-batch002-read-v1/registration-v3.json",
+  "round_policy": {
+    "relpath": "coordination/slurp-system-memory-batch002-v1/round-policy-v3.json",
+    "sha256": "ccba52c7376f323643df4b3cee07a4d52497b3397e5a461da8ead8e4a59675e2"
+  },
+  "old_complete_pairs": "Original pair1 on569613df, pairs2/3 on7a8c8071",
+  "fresh_pair4": {
+    "worker_path": "/home/chao/saea-worktrees/codex-system-memory-recovery1-20260926",
+    "study_commit": "3dbc629cab7c873cfaf462c40ab2a1a05a3da7ef"
+  },
+  "read_gate": "Six original complete actors plus two fresh recovery actors, each with one official score; not the aborted or unstarted old pair4.",
+  "research_quality_read": false
+}

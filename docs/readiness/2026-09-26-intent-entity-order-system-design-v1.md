@@ -1,5 +1,50 @@
 # Intent/entity ordering as a complete-system optimization space
 
+## Owner scope correction: two related prediction tasks
+
+The owner clarified that the question concerns the relationship between intent
+recognition and slot extraction as separately defined tasks. It is not the
+relationship between retrieving intent candidates and choosing one candidate.
+Treat the earlier candidate-coverage factorization below as a secondary
+diagnostic only, not as the answer or the principal experiment objective.
+
+Intent recognition predicts the requested operation or semantic frame. Slot
+extraction predicts the speech-supported entity spans, types, roles and values.
+They have separate outputs and evaluation targets; statistical independence
+must not be assumed merely because they are separate tasks.
+
+Study the two directions explicitly:
+- Intent-to-slots: whether a tentative frame helps identify entity roles,
+  relevant type explanations, boundaries and omission behavior.
+- Slots-to-intent: whether observed entity evidence and relations help confirm
+  or revise the frame, without discarding action words and original speech.
+
+Prefer an intent-hypothesis-first schedule for initial study, retaining
+uncertainty and original speech for the slot task. Let slot evidence inform
+a later intent decision when warranted. Top-K is only a way to preserve
+uncertainty at the inter-task interface. Its recall is not the central question.
+A correctly recognized intent does not guarantee correct slots, and correct
+entities do not uniquely determine the intent.
+
+Keep separate intent and slot knowledge stores, with explicit frame-to-role
+bindings at consumption. Do not replace them with an undifferentiated union.
+Observed TRAIN bindings remain soft evidence; absent optional slots do not
+disqualify an intent, and expected slots never justify invented values.
+
+Audit complete trajectories using a joint error table: both tasks correct,
+intent correct/slots wrong, intent wrong/slots correct, and both wrong.
+Record which task changed after cross-task information, which actual evidence
+was available, and whether the correction survived Reviewer, Planner and final
+delivery. Raw error association is descriptive: utterance difficulty can affect
+both tasks, so correlation alone is not causal evidence of transfer.
+
+A subsequent registered direction comparison must retain the same speech,
+knowledge snapshots, tool permissions and matched system budgets, varying the
+order and contents of task-to-task information. Compare final intent accuracy,
+entity metrics and complete-task success separately. Preserve the full
+four-node system for evaluation; do not substitute a component-only score.
+No architecture change or new model contact is authorized by this design note.
+
 ## Owner question and root recommendation
 
 The owner asks whether the system should first propose Top-K intents and scope
@@ -54,7 +99,7 @@ absent. Existing card selection/optional filtering must not be renamed as a new
 algorithm. What is not established is reliable candidate-specific consumption
 and whether structured joint hypotheses improve the delivered whole system.
 
-## Candidate-conditioned joint inference
+## Candidate-conditioned entity interpretation and joint resolution
 
 Represent each hypothesis as (intent, applicable slot explanations, entity
 evidence, missing/ambiguous evidence). Preserve the link to the candidate instead

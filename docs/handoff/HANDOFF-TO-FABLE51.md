@@ -5,6 +5,46 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Memory batch002 sole recovery running independently
+
+Checkpoint: 2026-09-26T12:08:21.323900+00:00. Driver epoch 2026-09-26T12:06:52Z,
+campaign start 2026-09-26T12:06:54Z; observed driver PID 87124 and
+campaign PID 87203. Revalidate live identity before action.
+Launch: docs/receipts/continuation/2026-09-26-system-memory-batch002-recovery1-launch.json.
+
+Frozen recovery worker is /home/chao/saea-worktrees/codex-system-memory-recovery1-20260926
+at 3dbc629cab7c873cfaf462c40ab2a1a05a3da7ef, already on master, detached without a new branch.
+Fresh memory-s4-recovery1 then empty-s4-recovery1 run in one shared campaign,
+with one complete scorer overlapping serial two-slot generation.
+Both preflights and relocated cached preparations passed with zero new encoding.
+Resident session serving-slurp-system-memory-batch002-np2-v1 is unchanged,
+same PID77850/start identity. Dispatch Windows free29.48GiB/GPU free3706MiB.
+The Windows-owned driver requires no network/ChatGPT credits and never auto-restarts.
+
+Root reconciled the old dead-owner lease only after proving kernel-lock,
+process, socket and server-slot quiescence; metadata and STOP were archived,
+not discarded. The previous STOP belongs to the completed failed epoch.
+This is the sole named recovery; any further execution failure closes the family.
+
+Scientific reading requires six original complete actors plus BOTH fresh recovery
+actors, each with one official score. Use read-registration-v3 and round-policy-v3.
+Original memory-s4 remains aborted/unscored and original empty-s4 unstarted.
+Neither belongs to the completed read set. No task quality has been read yet.
+No source, memory, prefix, seed, candidate-slot architecture or output budget
+changes inside this batch. Four inputs cannot establish efficacy.
+The owner scope clarification below remains active for future system design.
+
+## Scientific scope clarification from the owner
+
+The intent/entity question concerns two separately defined but related tasks:
+how intent recognition helps slot extraction, and how entity evidence helps
+intent recognition. It is not primarily candidate retrieval versus selection.
+Read the owner-scope correction in
+docs/readiness/2026-09-26-intent-entity-order-system-design-v1.md.
+Keep the running/recovery memory actors unchanged. Future analysis must preserve
+separate task metrics and cross-task correction/harm through complete delivery;
+candidate coverage remains only a secondary diagnostic.
+
 ## Named resource-receipt recovery prepared; not yet dispatched
 
 The original campaign exited at2026-09-26T11:47:32Z and STOP is retained.
