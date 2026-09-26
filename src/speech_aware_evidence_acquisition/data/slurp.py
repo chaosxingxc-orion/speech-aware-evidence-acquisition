@@ -373,8 +373,12 @@ def _prefetch_audio_seconds(
         for recording in recordings:
             if not isinstance(recording, Mapping):
                 continue
-            filename = recording.get("file")
-            if not isinstance(filename, str) or not filename.endswith(".flac"):
+            try:
+                # The loader's OWN name rule, reused rather than restated: a
+                # name the parse would refuse is never probed here either, so
+                # the prefetch cannot read outside the governed audio directory.
+                filename = _validate_recording_filename(recording.get("file"), "prefetch")
+            except LoaderError:
                 continue
             path = audio_dir / filename
             if path in seen:
@@ -392,11 +396,8 @@ def _prefetch_audio_seconds(
         except LoaderError:
             return None
 
-    worker_count = min(workers, len(candidates))
-    if worker_count == 1:
-        return {}
     with ThreadPoolExecutor(
-        max_workers=worker_count,
+        max_workers=min(workers, len(candidates)),
         thread_name_prefix="saea-slurp-flac",
     ) as pool:
         measured = tuple(pool.map(probe, candidates))
