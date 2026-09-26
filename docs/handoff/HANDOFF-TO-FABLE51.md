@@ -5,6 +5,31 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Memory batch002 fully scored; registered CPU interpretation in progress
+
+All eight selected complete actors finalized with one official score each by
+2026-09-26T12:14:26Z: six original actors plus both sole-recovery actors.
+The recovery succeeded. The original aborted memory-s4 stays immutable,
+unscored and excluded; original empty-s4 stays unstarted. The GPU service
+remains resident, with no new generation queued.
+
+The complete read was authorized before task-quality reading under
+docs/receipts/continuation/2026-09-26-system-memory-batch002-read-authorization.json,
+read-registration-v4 and round-policy-v3. Its shared entry is
+scripts/analysis/system_memory_batch_read.py, which rechecks every complete
+seal/score before invoking the existing feedback, memory-exposure, trajectory
+attribution and grouping readers. Learned/control groups stay separate.
+
+The first CPU derivation stopped because the adapter passed the gold-loader
+metadata wrapper instead of its records mapping into the existing attribution
+function. Corrected the one argument and added a regression; eight reader tests
+pass. No model or scorer was rerun and no raw artifact changed.
+Continue the second CPU derivation log at
+DATA/coordination/slurp-system-memory-batch002-v1/read-run-v2.log.
+Do not infer a scientific verdict from this engineering exception or from four
+inputs. Root must inspect actual memory consumption and final outcomes.
+The next semantic update remains unregistered until that interpretation closes.
+
 ## Scientific read source-pointer correction
 
 Before any task-quality read, registration-v4 supersedes registration-v3 for

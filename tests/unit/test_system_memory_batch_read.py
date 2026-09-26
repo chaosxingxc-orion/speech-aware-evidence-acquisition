@@ -61,3 +61,44 @@ def test_last_incomplete_member_blocks_whole_family(tmp_path, defect):
         fp.write_text(json.dumps(doc))
     with pytest.raises(ValueError):
         reader().require_complete_family(tmp_path, reg)
+
+
+def test_reader_passes_records_not_gold_metadata_to_shared_attribution(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+
+    module = reader()
+    records = {"sample": object()}
+    spec = {"run_id": "run", "attempt_id": "attempt", "source_commit": "commit",
+            "source_repo_root": str(tmp_path)}
+    registration = {"schema": "saea-system-memory-batch-read-registration-v2",
+                    "feedback_role": "construction", "read_id": "read",
+                    "arms": {"arm": spec}, "output_relpath": "output"}
+    binding = {"manifest": {"relpath": "manifest", "sha256": "m"},
+               "phases": {"relpath": "phases", "sha256": "p"}}
+    authorization = {"schema": "saea-system-memory-batch-read-authorization-v1",
+                     "execution_profile": "model-free-check", "status": "sealed",
+                     "read_id": "read", "registration": {},
+                     "arms": {"arm": {"binding": binding}}}
+    monkeypatch.setattr(module, "_pinned_json", lambda root, pin, label:
+                        (authorization if "authorization" in label else registration, "hash"))
+    monkeypatch.setattr(module, "require_complete_family", lambda *args: None)
+    monkeypatch.setattr(module.var1, "load_gold", lambda *args:
+                        {"records": records, "metadata_sha256": "metadata"})
+    source = SimpleNamespace(plan=SimpleNamespace(run_id="run", attempt_id="attempt"),
+                             bundle=SimpleNamespace(manifest={"study_commit": "commit"}))
+    monkeypatch.setattr(module, "verify_native_episode_source", lambda **kwargs: source)
+    monkeypatch.setattr(module, "load_system_feedback", lambda **kwargs: {})
+    monkeypatch.setattr(module, "verify_candidate_memory_evaluation_source", lambda **kwargs: {})
+
+    class ReachedAttribution(Exception):
+        pass
+
+    def analyze(source, feedback, gold):
+        assert gold is records
+        raise ReachedAttribution
+
+    monkeypatch.setattr(module.attribution, "analyze_arm", analyze)
+    with pytest.raises(ReachedAttribution):
+        module.run(SimpleNamespace(data_root=tmp_path, lock_path=tmp_path / "lock",
+                                   authorization_relpath="authorization",
+                                   authorization_sha256="pin"))

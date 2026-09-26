@@ -105,7 +105,7 @@ def run(args):
             expected_phase_sha256=binding["phases"]["sha256"],
             repo_root=source_root, data_root=root,
         )
-        diagnostic = attribution.analyze_arm(source, feedback, gold)
+        diagnostic = attribution.analyze_arm(source, feedback, gold["records"])
         feedback_pin = publish(root, output / label / "feedback.json", feedback)
         pins[label] = {
             "feedback": feedback_pin,
@@ -150,7 +150,8 @@ def run(args):
     report = {
         "schema": "saea-system-memory-batch-read-v1",
         "read_id": registration["read_id"], "registration_sha256": registration_sha,
-        "authorization_sha256": authorization_sha, "arms": arm_reports, "artifacts": pins,
+        "authorization_sha256": authorization_sha, "gold_metadata_sha256": gold["metadata_sha256"],
+        "arms": arm_reports, "artifacts": pins,
         "groups": groups, "paired_comparisons": registration["paired_comparisons"],
         "interpretation": "Four distinct inputs with repeated trajectories; descriptive construction only. "
                           "Selection/exposure is not semantic use. Empty controls are not learner feedback.",
