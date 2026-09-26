@@ -5,6 +5,33 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Comparison finalized; semantic credit errors require a matched algorithm test
+
+Checkpoint: 2026-09-26T08:51:13Z. The one-row whole-system comparison finalized
+with one generation, three live-fit endpoints and zero scores. Root registered
+reading and recursively verified its sources. Preserve the comparison worker
+at e9e597ee47d6046df7486ad55a299cd2bfffd54e; its driver epoch started at08:50:26Z
+and completed normally. The current queue is COMPLETE. Do not restart it.
+
+The output has three proposed experiences, but root found nonexistent tool
+events treated as facts, incorrect initial-versus-revised intent ordering,
+overstated candidate contrast, and entity TP misread as intent evidence.
+Read docs/results/2026-09-26-system-comparison001-learning-diagnostic.md.
+These are whole-system learning-fidelity findings, not a component score or
+an RL improvement. Raw text is unchanged.
+
+Next complete the defined baseline group-update/batch-synthesis chain, keeping
+every source and an explicitly empty initial memory. CPU preparation uses
+coordination/slurp-system-batch001-v1/group-update-v1 and the existing v2
+round-policy verifier. It grants no endpoint or runtime-memory authority.
+A separately registered matched evidence-grounded comparison should add actual
+event/transition/metric facts while holding sources/model/decoding constant.
+Do not hand-edit lessons or attribute an actor tool/prompt repair to RL.
+
+The guarded single-slot service is healthy and resident. No GPU generation is
+currently admitted beyond completed work. Batch002, runtime memory, DEV6570,
+test13078 and closed candidate/delta lines remain held/closed as applicable.
+
 ## Whole-system comparison capacity passed; one diagnostic generation registered
 
 The comparison input contains the unchanged four generated summaries and

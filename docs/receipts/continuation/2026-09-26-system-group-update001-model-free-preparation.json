@@ -1,0 +1,37 @@
+{
+  "schema": "saea-model-free-preparation-receipt-v1",
+  "at": "2026-09-26T08:57:53.543893+00:00",
+  "data_receipt": {
+    "relpath": "coordination/slurp-system-batch001-v1/group-update-v1/preparation-receipt.json",
+    "sha256": "dae59570ba37e342760d4bc746a3fd3f601b790c3cebc8966b7731eaac2b2221"
+  },
+  "source_pins": {
+    "source": {
+      "relpath": "coordination/slurp-system-batch001-v1/group-update-v1/source.json",
+      "sha256": "d14361167559e84e2e67b0e29347f6c81e8535b278e0b1cc960920dbf1800a5f"
+    },
+    "prepared": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/group-update-v1/prepared-contexts.json",
+      "sha256": "d4a57914d547bf015e99b1641f2a05057645fbb3a7dd8a53984f1af80157678e",
+      "cache": "cold",
+      "contact_class": "model-free"
+    },
+    "round_policy": {
+      "relpath": "coordination/slurp-system-batch001-v1/group-update-v1/round-policy.json",
+      "sha256": "ac61936a23e79d4b56549f3f91ab56a54ac578188842248ae942204401de6184"
+    },
+    "full_construction_roster": {
+      "relpath": "coordination/slurp-system-batch001-v1/semantic/construction-roster.json",
+      "sha256": "740d8d31e3ec33e63cd398d654dc5d5771612178703b4a528094898741a6f19b"
+    },
+    "scope": "CPU-only prepared initial group-update input. Preserve model lessons unchanged. No generation, evaluation or runtime memory authority."
+  },
+  "full_construction_inputs": 4,
+  "ready_group_count": 1,
+  "empty_initial_memory": true,
+  "retained_terminal_ties": 3,
+  "model_contacts": 0,
+  "scoring_contacts": 0,
+  "runtime_authorized": false,
+  "next": "Register actual group-update fit and generation, then bounded batch synthesis. Do not edit the raw comparison lessons."
+}
