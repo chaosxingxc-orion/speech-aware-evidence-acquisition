@@ -16,7 +16,7 @@
   },
   "comparator": null,
   "comparator_reason": "NONE, by design. ROLL-2 is an asset: it collects a sealed five-sample pool on the lock roster so that later actions over that pool are readable offline at about 0.51 pp at n = 1,080. No sealed arm is re-flown, re-scored or compared against, the read is never scripts/analysis/plan_cell_read.py, and no number this cell produces is gated.",
-  "composed_config_hash": "2987b5b394122dd7dcd8d899bbd51c5a51daba78faf5c9e1c0f6c35501704099",
+  "composed_config_hash": "6864487942f0da788410197f380a873f5b0b558bca215ab6f278d4532d58d962",
   "decision_rule": {
     "no_gate_number": "No threshold is pre-registered on any number this cell produces. There is no comparator: one arm is flown and nothing is contrasted against it.",
     "output": "A sealed manifest with 1,080 of 1,080 rows delivered and exactly five custodied Solver samples per row in solver_group (invariant I7g), one official complete score, and the sealed per-sample custody from which the within-flight sample spread on Fold A, the oracle best-of-5 ceiling on Fold A and any verifier-selection arm are read OFFLINE at zero further GPU cost.",
@@ -29,7 +29,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 20520,
     "planned_speech_audio_seconds": 58607,
-    "protocol_hash": "c1d279ca9d1903769314f0e01ed27b91fbf74cd1732ff45cecd07109c644982f",
+    "protocol_hash": "3bac1aa103b733620f4137aa5cc0d0fbdfb0604bc561c8330b013039753be1d7",
     "run_id": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -100,7 +100,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "f882c344ca601f6a7f6b3d6a258e1b9512f72005b2d7da9be4dd6110f1e9a40e"
+    "sha256": "797359cad7eef52038dfa96428e4f4b6f09eaa981e333d52c9c9e59853349c92"
   },
   "purpose": "DESCRIPTIVE. This cell is an ASSET and makes NO comparison, no admission claim, no gate, no superiority, transfer, generalisation, component-causal or confirmatory statement. Its only deliverable is a sealed five-sample pool on TRAIN Fold A plus the structural proof that the pool is well formed. Any later read over that pool is registered separately.",
   "quality_read_gate": "No read of any kind before the complete sealed manifest and the exact ordered outputs with exactly five custodied solver_group samples per row exist. A partial manifest is never read; a failed smoke stops the arm and it does not open.",

@@ -16,19 +16,26 @@
         "reason": "Stage-3 cell ROLL-2: cell ROLL-1's grouped-Solver form (samples 5, temperature 0.7, seed_offset 0, plurality commit at min_support 3) on TRAIN Fold A, the roster the v2.0 lock lives on, to create the SEALED five-sample pool the program has on R01C and lacks on the lock roster. DESCRIPTIVE: an asset, not a comparison. HELD: root mints the admission receipt coordination/slurp-stage3-roll-2-fold-a-v1/root-admission-v1.json (decision id slurp-stage3-roll-2-fold-a-admission-v1), rewrites its eligible_run_ids to this family's FOUR run ids -- SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1, SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-FIT-V1, SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-SMOKE-4-V1, SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-SMOKE-4-FIT-V1 -- and its budget caps to this family's, then re-pins this cell with scripts/flights/repin_cell.py --set-ready, which mints this cell's OWN first-phase supply artifact under its own run id (harness item E16) and inserts the matching preparation requirement. The committed baseline carries NO prepared_phase_supply key; --allow-output-change must never be passed. The two FIT ids are SPEND identities and are never flown as generation cells.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-roll-2-fold-a-admission-v1",
+            "relpath": "coordination/slurp-stage3-roll-2-fold-a-v1/root-admission-v1.json",
+            "sha256": "0a81e14acddf6c4872e111a15a95239b465645b77633e39032b0894dc63e9378",
+            "reason": "Decision slurp-stage3-roll-2-fold-a-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The released train-exemplars store this cell retrieves from: size-pool-annotated-exemplars, the parent pool the sealed Fold A lock arm itself read (NOT the minus-R01 narrowing cell ROLL-1 used, which exists only because the R01C construction roster overlapped the exemplar pool). Nothing new is released by this cell; the requirement states what the fragment binds. The cell stays HELD on a root admission decision.",
-            "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/release.json",
-            "sha256": "171aa4a82c2b15fff2c72e907ea80298be8d72309cca0d7367eb50debb042129"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1/phase-supply-v1.json",
+            "sha256": "5ecf705cfd7873f3c05bc29a979581d5072dc5fd485a5f6465817586fd7b1c17"
           },
           {
             "kind": "preparation",
             "reason": "The TRAIN Fold A query-dimension alias both Fold A query_source pins descend from (prepared under SAEA-SLURP-INTENT-BOUNDARY-TRAIN-FOLD-A-ALIAS-V1, sealed and already consumed by the lock arm cell PLAN and its replicate PLANr). Nothing new is encoded for this cell: every Fold A vector line it reads is the sealed parent's own line bytes. The cell stays HELD on a root admission decision.",
-            "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-TRAIN-FOLD-A-ALIAS-V1/query-dimension-alias.json",
-            "sha256": "c1aaf37a678240633078a8fcca455f949a5c4b2b18d37356129976006c9dc138"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1/phase-supply-v1.json",
+            "sha256": "5ecf705cfd7873f3c05bc29a979581d5072dc5fd485a5f6465817586fd7b1c17"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1"
     }

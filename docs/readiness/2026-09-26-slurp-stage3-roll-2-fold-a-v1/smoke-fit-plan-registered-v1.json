@@ -100,7 +100,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "f882c344ca601f6a7f6b3d6a258e1b9512f72005b2d7da9be4dd6110f1e9a40e"
+    "sha256": "797359cad7eef52038dfa96428e4f4b6f09eaa981e333d52c9c9e59853349c92"
   },
   "purpose": "DESCRIPTIVE. This cell is an ASSET and makes NO comparison, no admission claim, no gate, no superiority, transfer, generalisation, component-causal or confirmatory statement. Its only deliverable is a sealed five-sample pool on TRAIN Fold A plus the structural proof that the pool is well formed. Any later read over that pool is registered separately.",
   "quality_read_gate": "No read of any kind before the complete sealed manifest and the exact ordered outputs with exactly five custodied solver_group samples per row exist. A partial manifest is never read; a failed smoke stops the arm and it does not open.",
