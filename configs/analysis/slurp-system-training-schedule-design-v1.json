@@ -73,5 +73,10 @@
     "candidate_slot_context_tokens": 24576,
     "geometry_status": "UNPROVEN-NOT-LAUNCHABLE",
     "output_tokens_by_stage": "UNFROZEN-PENDING-ACTUAL-ENVELOPES"
+  },
+  "first_batch_sizing": {
+    "repo_relpath": "configs/analysis/slurp-system-first-batch-sizing-v1.json",
+    "sha256": "ea418d2395697d56f87903b0e8be9ab4509d52956e4952aa7428a48cb7923b94",
+    "scope": "Four-input first proof only; full schedule remains unadmitted."
   }
 }

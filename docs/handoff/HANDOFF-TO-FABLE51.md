@@ -5,6 +5,30 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## First resource-sized construction batch configured
+
+Checkpoint: 2026-09-26. Read the
+[first-batch resource envelope](../readiness/2026-09-26-system-first-batch-resource-envelope-v1.md)
+and [sizing configuration](../../configs/analysis/slurp-system-first-batch-sizing-v1.json).
+The first held batch selects four inputs from the frozen R01C order, samples
+four complete-system replicas and permits two concurrent episodes. All four
+new cells use the matching two-slot baseline; Reviewer output is 1024 and
+other roles retain 512. They permit check only and have no execution plan.
+
+Semantic output targets are 2048 for summary/comparison/group proposals and
+8192 for atomic batch synthesis, with an eight-record preliminary memory cap.
+These are prospective targets, not measured fits or bound successor flights.
+The complete trajectory summary is a separate capacity risk even at batch
+size one. Preserve all trajectory information; do not silently clip it.
+
+The first packet supersedes four/eight as equally preferred starting sizes:
+test four first. It does not freeze the remaining construction schedule.
+140 related tests and all nine offline gates pass; see the
+[validation receipt](../receipts/continuation/2026-09-26-system-first-batch-sizing-validation-v1.json).
+No new model/scorer contact, queue change, STOP removal or recovery occurred.
+Next bind source-dependent stages and register exact fit plus the first real
+sampling/update cycle through the existing independent background path.
+
 ## Shared runtime resource guard implemented
 
 Checkpoint: 2026-09-26. The
@@ -44,8 +68,9 @@ Four/eight input batches and a two-slot/24576-context service are sizing
 candidates only. Complete trajectories are streamed through bounded slots;
 an update batch is not GPU concurrency. New semantic batch inputs can still
 outgrow context and must fit with output reserve. Windows 10 GiB is a hard
-owner reserve, while current startup/runtime monitoring does not yet enforce
-it continuously. Preserve and extend the shared implementation; no new runner.
+owner reserve, and the shared sampled startup/runtime guard now enforces
+admission and owned-service stop thresholds. It is not instantaneous protection; see the
+latest resource admission checkpoint. Preserve the shared implementation.
 
 Root's metadata-only audit found 514 recovery-window samples: GPU used
 22988 MiB, minimum Windows available 15.97 GiB, with the final ~20 seconds
@@ -55,9 +80,9 @@ metadata. No quality outcome of the isolated recovery control was read.
 
 No GPU process was started, stopped or reconfigured. STOP, closed flight,
 retained workers, queue and source artifacts remain unchanged. The missing
-dump does not block this resource analysis. The next work is actual batch/
-output sizing and the shared admission guard, then a separately registered
-new-family fit/form proof and real update cycle.
+dump does not block this resource analysis. The guard is implemented and the
+first sizing packet is now prepared. The remaining work is separately registered real capacity/form proof and a
+source-bound complete update cycle.
 
 ## Checkpoint and research objective
 

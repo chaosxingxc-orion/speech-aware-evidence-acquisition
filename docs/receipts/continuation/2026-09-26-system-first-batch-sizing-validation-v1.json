@@ -1,0 +1,132 @@
+{
+  "schema": "saea-offline-validation-v1",
+  "checkpoint": "2026-09-26",
+  "scope": "Resource-sized first construction batch; config-only derivations through existing shared runtime.",
+  "parent_commit": "e20cdd2d14f7cf479688ff0e925d975070e5b304",
+  "files": [
+    {
+      "repo_relpath": "configs/analysis/slurp-system-first-batch-sizing-v1.json",
+      "sha256": "ea418d2395697d56f87903b0e8be9ab4509d52956e4952aa7428a48cb7923b94"
+    },
+    {
+      "repo_relpath": "configs/analysis/slurp-system-training-schedule-design-v1.json",
+      "sha256": "bcfb7b7be192cf46431337d07473e09779919a6b0008427769509862dde0c5c0"
+    },
+    {
+      "repo_relpath": "configs/baseline/slurp-native-stage3-system-batch001-r01c-base-v1.json",
+      "sha256": "1d76d285e0336273de595fac525b8bfa177120c46a2e1ff61193af966a4a081c"
+    },
+    {
+      "repo_relpath": "configs/dataset/slurp-speech-system-batch001-r01c-v1.json",
+      "sha256": "6c347831a8536ce011fc47a4d5916defc27070402b16ef2defa220b48dc19a84"
+    },
+    {
+      "repo_relpath": "docs/receipts/rosters/slurp-system-batch001-r01c-v1.json",
+      "sha256": "740d8d31e3ec33e63cd398d654dc5d5771612178703b4a528094898741a6f19b"
+    },
+    {
+      "repo_relpath": "docs/readiness/2026-09-26-system-first-batch-resource-envelope-v1.md",
+      "sha256": "f96e01c0e5f91a072fb9c8e9528ec0f16deed347735891cd1859feb5fd6fada9"
+    },
+    {
+      "repo_relpath": "tests/unit/test_system_first_batch_sizing.py",
+      "sha256": "1880c7b4f24d29b9e5d330a92cbac296ade547a2dc7de88afad1aca85a4d1a2e"
+    },
+    {
+      "repo_relpath": "configs/experiment/slurp-native-stage3-system-batch001-r01c-s1-v1.json",
+      "sha256": "e39443bfd255a525765bd403c1c598bdffe72f05922daee769ce2124b2c9a057"
+    },
+    {
+      "repo_relpath": "configs/experiment/slurp-native-stage3-system-batch001-r01c-s2-v1.json",
+      "sha256": "09378fcb43e92db23b1c166f5396ccf45d646a14d8fb16c830c6ed0eaad32c37"
+    },
+    {
+      "repo_relpath": "configs/experiment/slurp-native-stage3-system-batch001-r01c-s3-v1.json",
+      "sha256": "ba153791f15af63b8a7dd17bce105472b4e5d2089c5ffe3fd78745a25beffed8"
+    },
+    {
+      "repo_relpath": "configs/experiment/slurp-native-stage3-system-batch001-r01c-s4-v1.json",
+      "sha256": "7aa26dee3e14bf4f4a97589c5b0f70bd20c17f2f00957cb08a23da520c557fbf"
+    }
+  ],
+  "validation": {
+    "tests_passed": 140,
+    "ruff_exit_code": 0,
+    "offline_gates": [
+      {
+        "check": "engineering_base",
+        "exit_code": 0
+      },
+      {
+        "check": "harness_admission",
+        "exit_code": 0
+      },
+      {
+        "check": "results_ledger",
+        "exit_code": 0
+      },
+      {
+        "check": "tool_catalog",
+        "exit_code": 0
+      },
+      {
+        "check": "experiment_handoff",
+        "exit_code": 0
+      },
+      {
+        "check": "openjiuwen_native_reuse",
+        "exit_code": 0
+      },
+      {
+        "check": "derived_media_confinement",
+        "exit_code": 0
+      },
+      {
+        "check": "stage3_algorithm_label",
+        "exit_code": 0
+      },
+      {
+        "check": "finite_completion_policy",
+        "exit_code": 0
+      }
+    ],
+    "logs_root": "/home/chao/system-first-batch-sizing-validation-v1",
+    "coverage_scope": "No production Python changes; no new whole-runtime or hardware coverage claim."
+  },
+  "resource_observation": {
+    "utc": "2026-09-26T05:47:52.020275+00:00",
+    "host": {
+      "host_total_gb": 63.43492889404297,
+      "host_free_gb": 46.808616638183594,
+      "vmmem_ws_gb": 2.3155670166015625,
+      "vm_total_gb": 43.105587005615234,
+      "vm_available_gb": 42.1058464050293,
+      "host_memory_source": "windows+vm"
+    },
+    "gpu": {
+      "utilization_percent": 0.0,
+      "memory_used_mib": 0.0,
+      "memory_total_mib": 24463.0,
+      "memory_free_mib": 24137.0
+    },
+    "active_research_processes": [],
+    "stop_marker_present": true
+  },
+  "proof_limits": [
+    "Source-pinned four-row selection and runtime-view integrity are validated.",
+    "All four shared compositions resolve two slots and explicit role caps; legacy held whole-cohort cells remain unchanged.",
+    "New cells reject campaign, worker and prompt-fit; no execution authority is inferred.",
+    "Real loaded VRAM/RAM peaks, model tokenization, actual prefix cache reuse and semantic adherence remain unmeasured.",
+    "The future complete-trajectory summary may exceed context even at one input. No clipping or output-cap reduction is authorized.",
+    "This is not a real sampling/update cycle, a small-roster quality screen or evidence of RL improvement."
+  ],
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "official_scorer": 0
+  },
+  "closed_flight_reopened": false,
+  "queue_changed": false,
+  "stop_marker_removed": false
+}

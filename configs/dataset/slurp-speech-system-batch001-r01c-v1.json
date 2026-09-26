@@ -1,0 +1,51 @@
+{
+  "audio_seconds_total": 17.034937499999998,
+  "carrier_lock_key": "slurp",
+  "count": 4,
+  "d1_manifest_sha256": "f45c630715cf0786f1f2e2d47516c3d15d22535dc5e9f0abcbfed7c6a538c57a",
+  "d1_media_supplement": "receipts/artifacts/d1-slurp-stage3-construction-r01.json",
+  "d1_media_supplement_sha256": "7cf5f978dbff16645866ce6bee501efbb9fb48d69b1a5243ba2781491a4d9f56",
+  "items": [
+    {
+      "audio_seconds": 3.5835,
+      "audio_sha256": "2baaa9edd2cc889caf721b4e307ec07327e89fdb1274390519e0b4d9c06a745e",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434542455.flac",
+      "packet_id": "slurp/train/000049/audio-1434542455",
+      "sample_id": "slurp:train:000049:audio-1434542455",
+      "sample_rate_hz": 16000
+    },
+    {
+      "audio_seconds": 5.76,
+      "audio_sha256": "e248c22668c47baf95258823982fad6fbbc9ac0964a0d82213bbe5ea4dc07466",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434531302-headset.flac",
+      "packet_id": "slurp/train/000051/audio-1434531302-headset",
+      "sample_id": "slurp:train:000051:audio-1434531302-headset",
+      "sample_rate_hz": 16000
+    },
+    {
+      "audio_seconds": 4.3514375,
+      "audio_sha256": "d418a44fd4ed34d2a34b952d150c62c04e1a4c6c49a858ee673b420a900c7e5d",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1499688528.flac",
+      "packet_id": "slurp/train/000234/audio-1499688528",
+      "sample_id": "slurp:train:000234:audio-1499688528",
+      "sample_rate_hz": 16000
+    },
+    {
+      "audio_seconds": 3.34,
+      "audio_sha256": "34047f635a8cbc0c788abcf396155c3929a38b404b193f299dab6a7e37638b2a",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488549919.flac",
+      "packet_id": "slurp/train/000260/audio-1488549919",
+      "sample_id": "slurp:train:000260:audio-1488549919",
+      "sample_rate_hz": 16000
+    }
+  ],
+  "schema": "saea-speech-native-runtime-view-v1",
+  "seed": 20260922,
+  "source_binding_sha256": "07ea0b7159ee2895183e1ac8e20935a349969b2bf168f5de49a0cd20f28cd3ca",
+  "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
+  "split_name": "SYSTEM-BATCH001-R01C-V1",
+  "split_role": "discovery",
+  "status": "HELD MODEL-FREE CONSTRUCTION MINIBATCH; NOT AN EXPOSURE REGISTRATION",
+  "study": "speech-aware-evidence-acquisition",
+  "runtime_view_sha256": "03c125765e52e7e35ae1af08cb0944bef602ed1f5bd588a00d11ea2934bdd75f"
+}

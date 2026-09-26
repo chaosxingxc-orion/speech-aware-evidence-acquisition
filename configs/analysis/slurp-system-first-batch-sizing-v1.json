@@ -1,0 +1,123 @@
+{
+  "schema": "saea-system-first-batch-sizing-v1",
+  "status": "HELD-PENDING-REAL-CAPACITY",
+  "launch_authority": false,
+  "stage3_algorithm": "tfgrpo-system-memory-disjoint-v1",
+  "model_fragment": "q4km-mmproj-free-system-np2-ctx24k-resource-guard-v1",
+  "sources": {
+    "parent_roster": {
+      "repo_relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+      "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd"
+    },
+    "parent_dataset": {
+      "repo_relpath": "configs/dataset/slurp-speech-native-stage3-construction-r01c.json",
+      "sha256": "36949a683739676616d4e4845fb302cad59721c8032ce4d65d18b35823a56cba"
+    },
+    "parent_baseline": {
+      "repo_relpath": "configs/baseline/slurp-native-stage3-system-common-r01c-v1.json",
+      "sha256": "4574e0fd3cd9754ee5bbb1584fe5d353dbeb423a70b41a07b08ed14fef87a48c"
+    },
+    "batch_roster": {
+      "repo_relpath": "docs/receipts/rosters/slurp-system-batch001-r01c-v1.json",
+      "sha256": "740d8d31e3ec33e63cd398d654dc5d5771612178703b4a528094898741a6f19b"
+    }
+  },
+  "batch": {
+    "inputs": 4,
+    "replicas_per_input": 4,
+    "maximum_concurrent_episodes": 2,
+    "ordering": "frozen parent order; no result-based selection",
+    "scope": "first resource/update-cycle proof only; subsequent batch size remains unadmitted",
+    "freeze_policy_and_memory_within_batch": true,
+    "update_after_complete_batch_scoring": true,
+    "initial_actor_memory": "none; register the transition to a source-attested Reviewer memory tool explicitly before batch 2"
+  },
+  "capacity": {
+    "slot_tokens": 24576,
+    "operational_reserve_tokens": 3072,
+    "special_token_reserve": 2,
+    "stages": [
+      {
+        "stage": "actor-conservative-fit",
+        "output_tokens": 1024,
+        "maximum_rendered_input_and_speech_tokens": 20478,
+        "actual_fit_status": "PENDING"
+      },
+      {
+        "stage": "trajectory-summary",
+        "output_tokens": 2048,
+        "maximum_rendered_input_and_speech_tokens": 19454,
+        "actual_fit_status": "PENDING"
+      },
+      {
+        "stage": "group-comparison",
+        "output_tokens": 2048,
+        "maximum_rendered_input_and_speech_tokens": 19454,
+        "actual_fit_status": "PENDING"
+      },
+      {
+        "stage": "group-operations",
+        "output_tokens": 2048,
+        "maximum_rendered_input_and_speech_tokens": 19454,
+        "actual_fit_status": "PENDING"
+      },
+      {
+        "stage": "batch-synthesis",
+        "output_tokens": 8192,
+        "maximum_rendered_input_and_speech_tokens": 13310,
+        "actual_fit_status": "PENDING"
+      }
+    ],
+    "actor_role_caps": {
+      "perception": 512,
+      "solver": 512,
+      "reviewer": 1024,
+      "planner": 512
+    },
+    "fit_contract": "Use the exact shared rendered request, speech packet tokens and full output allowance. No aggregate service-token inference. Actual dependent-stage contexts do not exist until predecessor seal.",
+    "over_capacity": "Stop before that stage; retain every source. Do not reduce output, silently drop episodes/memory or claim a fit from a character estimate."
+  },
+  "memory_proposal": {
+    "status": "prospective bounds for first cycle, not an optimal memory finding",
+    "max_memory_records": 8,
+    "max_operations": 8,
+    "proposal_contract": {
+      "applicability": {
+        "allowed_task_ids": [
+          "slurp"
+        ],
+        "allowed_roles": [
+          "reviewer"
+        ],
+        "allowed_component_tags": [
+          "obs",
+          "org",
+          "supply",
+          "use"
+        ]
+      },
+      "max_diagnosis_chars": 256,
+      "max_guidance_chars": 640,
+      "max_limitation_chars": 192,
+      "max_limitations": 2,
+      "max_option_refs": 4
+    }
+  },
+  "workload": {
+    "complete_actor_episodes": 16,
+    "maximum_actor_generation_contacts": 176,
+    "maximum_summary_contacts": 16,
+    "maximum_comparison_contacts": 4,
+    "maximum_group_update_contacts": 4,
+    "maximum_batch_update_contacts": 1,
+    "maximum_generation_contacts": 201,
+    "official_actor_score_jobs": 4,
+    "note": "Structural ceiling only, not an ExecutionPlan; tokenizer/fit/audio/GPU budgets and output dependencies must be bound before launch."
+  },
+  "prefix_contract": {
+    "in_batch": "Use identical role prompts, knowledge releases, ordering, tool schemas and memory bytes for all replicas. Seeds are request decoding parameters, not prompt text.",
+    "dynamic_suffix": "Preserve each trajectory own prior responses, tool results and current draft. Do not force distinct histories to match or share mutable trajectory state.",
+    "update_boundary": "Apply a new frozen memory version to every replica of the next batch together; never mid-batch.",
+    "measurement": "Record actual rendered-prefix hashes/common-prefix token counts and returned cache metadata when fitting/running. Configuration equality alone is not measured cache reuse."
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "experiment_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S4-V1",
+  "date": "2026-09-26",
+  "purpose": "HELD complete-system construction minibatch replica for resource and update-cycle admission; no small-roster effectiveness claim.",
+  "cells": [
+    {
+      "cell_id": "slurp-native-stage3-system-batch001-r01c-s4-v1",
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s4-v1",
+      "model_fragment": "q4km-mmproj-free-system-np2-ctx24k-resource-guard-v1",
+      "dataset_fragment": "slurp-speech-system-batch001-r01c-v1",
+      "baseline_fragment": "slurp-native-stage3-system-batch001-r01c-base-v1",
+      "allowed_execution_stages": [
+        "check"
+      ],
+      "readiness": {
+        "state": "held",
+        "reason": "HELD: first-batch configuration only. Bind new execution/exposure plans, actual prepared supply and fit, frozen source and independent owner before model contact. Semantic successor sources must come from sealed actors; no fabricated future hashes or old-flight recovery.",
+        "requirements": []
+      }
+    }
+  ],
+  "split_id": "SYSTEM-BATCH001-R01C-V1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-system-batch001-r01c-v1",
+    "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
+    "role": "exposed TRAIN construction"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-system-batch001-r01c-v1",
+      "ids": [
+        "slurp:train:000049:audio-1434542455",
+        "slurp:train:000051:audio-1434531302-headset",
+        "slurp:train:000234:audio-1499688528",
+        "slurp:train:000260:audio-1488549919"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "stage3_algorithm": {
+    "id": "shared-rollout",
+    "operators_used": [
+      "rollout",
+      "scoring"
+    ],
+    "note": "Prospective whole-system sampling substrate; no update occurs in an actor cell."
+  },
+  "structural_workload": {
+    "complete_episodes": 4,
+    "maximum_contacts_per_episode": 11,
+    "generation_contact_ceiling": 44,
+    "official_full_scores_after_complete_seal": 1,
+    "launch_authority": false
+  },
+  "native_contact_fit": {
+    "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S4-V1-FIT",
+    "attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s4-v1-fit",
+    "contact_cap": 176,
+    "max_speech_packets": 1
+  },
+  "request_decoding_overrides": {
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "top_k": 0,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "frequency_penalty": 0.0,
+    "seed": 2026092604,
+    "max_tokens": 1024
+  }
+}
