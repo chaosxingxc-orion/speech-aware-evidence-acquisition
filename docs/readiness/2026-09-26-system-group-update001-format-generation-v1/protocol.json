@@ -1,0 +1,34 @@
+{
+  "schema": "saea-system-semantic-stage-protocol-v1",
+  "registered_at": "2026-09-26T09:39:34.660069+00:00",
+  "stage": "complete-system-group-update",
+  "purpose": "Run the sole named source-bound operation-interface successor on the unchanged comparison and empty memory. Exact model-visible history and non-format decoding match the invalid predecessor. Measure interface validity, not learning quality; no runtime memory or next actor.",
+  "source_config": "slurp-stage3-system-group-update001-format-np1-capacity-v1",
+  "generation_contacts": 1,
+  "live_fit_contacts": 3,
+  "fresh_media_contacts": 0,
+  "official_scoring_jobs": 0,
+  "output_tokens": 2048,
+  "reserve_tokens": 3072,
+  "slots": 1,
+  "slot_tokens": 49152,
+  "service_session": "serving-slurp-system-summary001-np1-v1",
+  "source_groups": 4,
+  "eligible_groups": 1,
+  "eligibility": "terminal-outcome-vector-disagreement-v1; no root selection by narrative quality",
+  "root_admission": {
+    "relpath": "coordination/slurp-system-batch001-v1/group-update-format-v1/root-generation-admission.json",
+    "sha256": "246bacc9b3dfdf4483d39a194fbef9cf08aaf86ac5046d22362cf998da56745d"
+  },
+  "capacity": {
+    "relpath": "coordination/slurp-system-batch001-v1/group-update-format-v1/request-fit.json",
+    "sha256": "becafaaa3b2fd92c914932fee1d41d1f76f7927aa5135ccfcb6a38e5bf2ec57e"
+  },
+  "decoding": {
+    "temperature": 0,
+    "seed": 2026092605,
+    "max_tokens": 2048
+  },
+  "read_rule": "Preserve raw response. Read only after the complete score-free artifact finalizes and root registers the read. Unusable/empty/capped/malformed output is retained; never silently retry or repair. No runtime memory authority.",
+  "failure_policy": "Stop on failure or invalid output. No second interface successor, automatic retry, scorer or service restart."
+}

@@ -1,0 +1,21 @@
+[
+  {
+    "order": 1,
+    "short": "system-group-update001-format-v1",
+    "kind": "cell",
+    "experiment": "slurp-stage3-system-group-update001-format-np1-run-v1",
+    "cell": "slurp-stage3-system-group-update001-format-np1-run-v1",
+    "smoke_experiment": null,
+    "smoke_cell": null,
+    "campaign_plan": "configs/campaign/slurp-stage3-system-group-update001-format-np1-run-v1.json",
+    "run_id": "SAEA-SLURP-STAGE3-SYSTEM-GROUP-UPDATE001-FORMAT-NP1-RUN-V1",
+    "fit_run_id": "SAEA-SLURP-STAGE3-SYSTEM-GROUP-UPDATE001-FORMAT-NP1-RUN-V1-FIT",
+    "gen_attempt_id": "attempt-slurp-stage3-system-group-update001-format-np1-run-v1",
+    "expected_rows": 1,
+    "contacts_per_row": 1,
+    "ceiling_per_row": 1,
+    "notool": true,
+    "owner": "codex-root-system-group-update001-format",
+    "result_kind": "artifact"
+  }
+]
