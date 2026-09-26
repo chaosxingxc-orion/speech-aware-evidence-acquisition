@@ -1316,7 +1316,16 @@ def write_ledger_rows(args: argparse.Namespace, ids: dict) -> int:
                 FLIGHT_PROSE[key]
                 + (" -- FIT spend identity, request envelopes only, no generation" if is_fit else "")
                 + ": the intent-boundary Perception channel's own w_agree term at "
-                + ("1.0 over the pre-computed self-excluded exemplar-intent vote, k = 8" if key != "aa" else "0.0, the locked plan's own form, re-flown in the same chain as the within-chain null")
+                + (
+                    "1.0 over the pre-computed self-excluded exemplar-intent vote, "
+                    "delivered width unchanged at 8 entries, recall width 60 (at 8 the "
+                    "term is inert, measured)"
+                    if key != "aa"
+                    else "0.0 at the SAME recall width 60 -- the locked plan's own form, "
+                    "re-flown in the same chain as the within-chain null and the "
+                    "one-factor control; its prepared supply reproduces the sealed "
+                    "comparator's output digest exactly"
+                )
             )
             notes = (
                 f"REGISTERED BEFORE CONTACT (DRAFT, root countersignature pending) "
