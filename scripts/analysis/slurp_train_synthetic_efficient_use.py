@@ -263,7 +263,18 @@ def load_arm_rows(data_root: Path, spec: dict, ids: list[str]) -> dict:
         scale = 100.0 if float(published) > 1.5 else 1.0
         if abs(scale * f1(*totals) - float(published)) > 1e-6:
             raise ReadError(f"{spec['run_id']}: recomputed {metric} does not reproduce {published}")
-    return {"path": str(path), "sha256": digest(path), "rows": rows, "official": official}
+    # Only the four numeric official fields are carried forward: the sealed aggregate also holds
+    # the evaluator's own rendered report string, and a payload should carry numbers, not reports.
+    return {
+        "path": str(path),
+        "sha256": digest(path),
+        "rows": rows,
+        "official": {
+            name: float(official[name])
+            for name in ("slu_f1", "span_f1", "intent_accuracy", "action_accuracy")
+            if isinstance(official.get(name), (int, float)) and not isinstance(official.get(name), bool)
+        },
+    }
 
 
 def measure(repo: Path, data_root: Path) -> dict:
