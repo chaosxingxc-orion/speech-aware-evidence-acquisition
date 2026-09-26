@@ -14,8 +14,13 @@
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
 export MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 # Reuse an existing clean frozen checkout while retaining an older failed source.
+# 2026-09-26: the override is NAMED in the log and validated below. A stale override left by a
+# previous flight (one pointed at a worktree whose admin dir had been pruned) made this driver stop
+# with "worktree HEAD  != flight commit" -- an EMPTY head -- which says nothing about the cause.
+REPO_OVERRIDE=""
 if [ -f /home/chao/batch-flight-repo.txt ]; then
   export REPO="$(cat /home/chao/batch-flight-repo.txt)"
+  REPO_OVERRIDE=/home/chao/batch-flight-repo.txt
 else
   export REPO=/home/chao/saea-worktrees/fable-batch-flight
 fi
@@ -39,9 +44,19 @@ log() {
 stop() { log "STOP" "$1" --text; echo "$(date -u +%FT%TZ) $1" > "$STOP"; exit 9; }
 
 [ -f "$STOP" ] && { echo "STOP marker present; refusing to run: $(cat $STOP)"; exit 8; }
-[ -d "$REPO" ] || stop "batch flight worktree missing: $REPO"
+if [ -n "$REPO_OVERRIDE" ]; then
+  echo "$(date -u +%T) flight worktree OVERRIDDEN to $REPO by $REPO_OVERRIDE (archive that file to fall back to fable-batch-flight)"
+fi
+[ -d "$REPO" ] || stop "batch flight worktree missing: $REPO${REPO_OVERRIDE:+ (named by the stale override $REPO_OVERRIDE -- archive it)}"
 cd "$REPO" || stop "cannot cd $REPO"
-[ "$(git rev-parse HEAD)" = "$FLIGHT_COMMIT" ] || stop "worktree HEAD $(git rev-parse --short HEAD) != flight commit ${FLIGHT_COMMIT:0:8}"
+# A pruned worktree admin dir makes every git call inside $REPO fail; without this the HEAD compare
+# below reports an empty head. Remedy: rm -rf the checkout and re-add it from INSIDE WSL with
+# git worktree add --detach "$REPO" "$FLIGHT_COMMIT" (git worktree repair cannot restore a deleted
+# admin dir).
+git rev-parse --git-dir >/dev/null 2>&1 || stop "git does not work in $REPO: its worktree admin dir is missing or pruned${REPO_OVERRIDE:+, and this path came from the override $REPO_OVERRIDE}. Remedy: rm -rf '$REPO' && git -C $MAIN worktree add --detach '$REPO' '$FLIGHT_COMMIT' from inside WSL"
+REPO_HEAD="$(git rev-parse HEAD 2>/dev/null)"
+[ -n "$REPO_HEAD" ] || stop "cannot read HEAD in $REPO (empty rev-parse): the checkout is not a usable worktree"
+[ "$REPO_HEAD" = "$FLIGHT_COMMIT" ] || stop "worktree HEAD ${REPO_HEAD:0:8} != flight commit ${FLIGHT_COMMIT:0:8}${REPO_OVERRIDE:+ (worktree named by the override $REPO_OVERRIDE)}"
 [ -z "$(git status --short | grep -v '^??')" ] || stop "batch flight worktree has tracked changes"
 log "driver-start" "{\"flight_commit\":\"$FLIGHT_COMMIT\",\"queue\":\"$QUEUE\"}"
 

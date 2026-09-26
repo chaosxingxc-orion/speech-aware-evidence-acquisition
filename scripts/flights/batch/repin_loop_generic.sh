@@ -36,7 +36,20 @@ PY
     continue
   fi
   if grep -q "has uncommitted changes" "$ERR"; then continue; fi
-  if [ -s "$ERR" ] && grep -q '"error"' "$ERR"; then echo "REFUSAL:"; $PY -c "import json,io; print(json.load(io.open('$ERR'))['error'][:500])"; exit 4; fi
+  if [ -s "$ERR" ] && grep -q '"error"' "$ERR"; then
+    echo "REFUSAL:"; $PY -c "import json,io; print(json.load(io.open('$ERR'))['error'][:500])"
+    # 2026-09-26: the rewriter above covers the plan documents, the preregistration and the ledger rows
+    # whose artifacts column points into this package. It does NOT cover a package file that merely
+    # QUOTES a hash as the record of something already done -- a dry-run record is the case seen -- nor a
+    # ledger row the E26 scope test excludes. Name the remedy instead of leaving the operator to guess.
+    if grep -q "old hash residue remains" "$ERR"; then
+      echo "REMEDY: a package file still quotes a superseded hash. Do NOT edit the number inside a record"
+      echo "        of something that happened: re-run that record's own producer at the flipped bytes so"
+      echo "        the document becomes true (a dry run is model-free and costs zero contacts), then"
+      echo "        repair only THIS cell's own ledger rows (item E26: never another cell's row)."
+    fi
+    exit 4
+  fi
   if [ -s "$ERR" ] && grep -q "Traceback" "$ERR"; then echo "REFUSAL (traceback):"; tail -3 "$ERR" | cut -c1-300; exit 4; fi  # 2026-09-23: a raw traceback was misread as satisfied
   echo "satisfied at $(git rev-parse HEAD)"; exit 0
 done
