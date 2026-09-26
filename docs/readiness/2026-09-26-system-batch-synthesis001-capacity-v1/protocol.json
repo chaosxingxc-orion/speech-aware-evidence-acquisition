@@ -1,0 +1,23 @@
+{
+  "schema": "saea-system-semantic-stage-protocol-v1",
+  "registered_at": "2026-09-26T09:56:29.284993+00:00",
+  "stage": "complete-system-batch-synthesis-capacity",
+  "purpose": "Fit the complete bounded batch synthesis from the sealed constrained group proposals. Retain original credit errors; measure the defined baseline learner without manual lesson repair or runtime activation.",
+  "source": {
+    "relpath": "coordination/slurp-system-batch001-v1/batch-synthesis-format-v1/source.json",
+    "sha256": "98ac7656b921bc58dcd2ffc64420905e5eec34c6231440251de5a49c6d464403"
+  },
+  "contacts": 3,
+  "generation_contacts": 0,
+  "official_scores": 0,
+  "fresh_audio": 0,
+  "output_tokens": 8192,
+  "reserve_tokens": 3072,
+  "slot_tokens": 49152,
+  "service_session": "serving-slurp-system-summary001-np1-v1",
+  "max_memory_records": 8,
+  "max_operations": 8,
+  "full_source_groups": 4,
+  "operation_groups": 1,
+  "read_rule": "Preserve raw proposals and output. Strict typed materialization only; no manual correction, clipping, task-label injection, runtime activation or automatic retry."
+}
