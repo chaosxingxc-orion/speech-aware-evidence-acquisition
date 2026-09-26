@@ -58,6 +58,7 @@ supply the estimators the recipe names.
 from __future__ import annotations
 
 import argparse
+import functools
 import hashlib
 import json
 import os
@@ -78,7 +79,13 @@ if _ANALYSIS_DIR not in sys.path:
 from speech_aware_evidence_acquisition.analysis.null_calibration import pooled_f1  # noqa: E402
 from speech_aware_evidence_acquisition.analysis.paired import (  # noqa: E402
     paired_contrast,
+    paired_contrast_bootstrap_tasks,
     resampled_statistic,
+)
+from speech_aware_evidence_acquisition.analysis.parallel import (  # noqa: E402
+    add_workers_argument,
+    map_by_key,
+    resolve_workers,
 )
 
 import slurp_paired_roster_read as prr  # noqa: E402
@@ -806,34 +813,68 @@ def stage_stop(
 # --------------------------------------------------------------------------
 
 
-def _pooled_delta(
+def _pooled_statistic(
     left: Mapping[str, Mapping[str, float]],
     right: Mapping[str, Mapping[str, float]],
-    ids: Sequence[str],
     groups,
+) -> Callable[[Sequence[str]], float]:
+    """The pooled-count-F1 difference, as ``resampled_statistic`` consumes it."""
+
+    def statistic(resampled: Sequence[str]) -> float:
+        return pooled_f1(right, resampled, groups) - pooled_f1(left, resampled, groups)
+
+    return statistic
+
+
+def _contrast_tasks(
+    left: Arm,
+    right: Arm,
+    ids: Sequence[str],
     *,
     cluster_of: Callable[[str], str],
     seed: int,
     draws: int,
-) -> dict:
-    def statistic(resampled: Sequence[str]) -> float:
-        return pooled_f1(right, resampled, groups) - pooled_f1(left, resampled, groups)
+    prefix: str,
+) -> dict[str, Callable[[], object]]:
+    """One arm pair's FOUR bootstraps, as four independent zero-argument tasks.
 
-    result = resampled_statistic(
+    Each is 10,000 draws over the roster and each seeds its own
+    ``random.Random``, so the four -- and the four of every other arm pair --
+    are mutually independent and may run in any order, in any process. The
+    keys are ``<prefix>|pooled|<estimand>`` and ``<prefix>|row|<sealed
+    field>``, which is what makes the collected mapping sorted and reviewable.
+
+    The per-row seed offsets are NOT reconstructed here: they come from
+    ``analysis.paired.paired_contrast_bootstrap_tasks``, the one place that
+    owns the ``seed + position-in-metrics`` convention, so the tasks cannot
+    drift from the ``paired_contrast`` call that consumes them.
+    """
+
+    tasks: dict[str, Callable[[], object]] = {}
+    for name, group_key in sorted(POOLED_METRICS.items()):
+        tasks[f"{prefix}|pooled|{name}"] = functools.partial(
+            resampled_statistic,
+            sample_ids=ids,
+            statistic=_pooled_statistic(
+                left.rows_table, right.rows_table, MICRO_METRICS[group_key]
+            ),
+            seed=seed,
+            n_replicates=draws,
+            ci_level=0.95,
+            cluster_of=cluster_of,
+        )
+    for field_name, task in paired_contrast_bootstrap_tasks(
+        left.rows_table,
+        right.rows_table,
+        metrics=[field_name for _, field_name in ROW_METRICS],
         sample_ids=ids,
-        statistic=statistic,
+        cluster_of=cluster_of,
         seed=seed,
         n_replicates=draws,
         ci_level=0.95,
-        cluster_of=cluster_of,
-    )
-    return {
-        "estimand": "pooled count F1",
-        "left_pct": 100 * pooled_f1(left, ids, groups),
-        "right_pct": 100 * pooled_f1(right, ids, groups),
-        "delta_pp": 100 * result.point_estimate,
-        "cluster_bootstrap": interval_block(result.replicates, result.point_estimate, seed),
-    }
+    ).items():
+        tasks[f"{prefix}|row|{field_name}"] = task
+    return tasks
 
 
 def _contrast(
@@ -844,20 +885,30 @@ def _contrast(
     cluster_of: Callable[[str], str],
     seed: int,
     draws: int,
+    prefix: str,
+    bootstraps: Mapping[str, object],
 ) -> dict:
-    """One arm pair's four reported estimands -- two pooled micro-F1 and two per-row means."""
+    """One arm pair's four reported estimands -- two pooled micro-F1 and two per-row means.
+
+    ``bootstraps`` is the collected result of this pair's own
+    :func:`_contrast_tasks`, so this function does no resampling at all: it
+    reads point estimates and replicate sequences that are already computed
+    and turns them into the reported blocks.
+    """
 
     metrics: dict[str, dict] = {}
     for name, group_key in sorted(POOLED_METRICS.items()):
-        metrics[name] = _pooled_delta(
-            left.rows_table,
-            right.rows_table,
-            ids,
-            MICRO_METRICS[group_key],
-            cluster_of=cluster_of,
-            seed=seed,
-            draws=draws,
-        )
+        groups = MICRO_METRICS[group_key]
+        result = bootstraps[f"{prefix}|pooled|{name}"]
+        metrics[name] = {
+            "estimand": "pooled count F1",
+            "left_pct": 100 * pooled_f1(left.rows_table, ids, groups),
+            "right_pct": 100 * pooled_f1(right.rows_table, ids, groups),
+            "delta_pp": 100 * result.point_estimate,
+            "cluster_bootstrap": interval_block(
+                result.replicates, result.point_estimate, seed
+            ),
+        }
     contrasts = paired_contrast(
         left.rows_table,
         right.rows_table,
@@ -867,6 +918,10 @@ def _contrast(
         seed=seed,
         n_replicates=draws,
         ci_level=0.95,
+        bootstraps={
+            field_name: bootstraps[f"{prefix}|row|{field_name}"]
+            for _, field_name in ROW_METRICS
+        },
     )
     for name, field_name in ROW_METRICS:
         contrast = contrasts[field_name]
@@ -931,6 +986,17 @@ def stage_own_null(
 
     ids = roster["ids"]
     cluster_of = roster["cluster"].__getitem__
+    tasks = _contrast_tasks(
+        arms[COMPARATOR_ARM],
+        arms[OWN_NULL_ARM],
+        ids,
+        cluster_of=cluster_of,
+        seed=args.seed,
+        draws=args.draws,
+        prefix=OWN_NULL_ARM,
+    )
+    # The own null is READ FIRST and sealed before any variant contrast, so its
+    # bootstraps are their own fan-out rather than part of the variant batch.
     metrics = _contrast(
         arms[COMPARATOR_ARM],
         arms[OWN_NULL_ARM],
@@ -938,6 +1004,10 @@ def stage_own_null(
         cluster_of=cluster_of,
         seed=args.seed,
         draws=args.draws,
+        prefix=OWN_NULL_ARM,
+        bootstraps=map_by_key(
+            tasks, workers=resolve_workers(args.workers, cap=len(tasks))
+        ),
     )
     h_slu = metrics["pooled_slu_f1"]["cluster_bootstrap"]["ci95_half_width_pp"]
     h_intent = metrics["intent_exact"]["cluster_bootstrap"]["ci95_half_width_pp"]
@@ -992,10 +1062,26 @@ def stage_variants(
         )
     ids = roster["ids"]
     cluster_of = roster["cluster"].__getitem__
+    variant_keys = tuple(key for key in sorted(arms) if key != COMPARATOR_ARM)
+    # Every variant's four bootstraps in ONE flat batch: five arms x four
+    # estimands is twenty independent units, and batching them flat keeps the
+    # workers busy to the last unit instead of draining one arm at a time.
+    tasks: dict[str, Callable[[], object]] = {}
+    for key in variant_keys:
+        tasks.update(
+            _contrast_tasks(
+                arms[COMPARATOR_ARM],
+                arms[key],
+                ids,
+                cluster_of=cluster_of,
+                seed=args.seed,
+                draws=args.draws,
+                prefix=key,
+            )
+        )
+    bootstraps = map_by_key(tasks, workers=resolve_workers(args.workers, cap=len(tasks)))
     variants: dict[str, dict] = {}
-    for key in sorted(arms):
-        if key == COMPARATOR_ARM:
-            continue
+    for key in variant_keys:
         metrics = _contrast(
             arms[COMPARATOR_ARM],
             arms[key],
@@ -1003,6 +1089,8 @@ def stage_variants(
             cluster_of=cluster_of,
             seed=args.seed,
             draws=args.draws,
+            prefix=key,
+            bootstraps=bootstraps,
         )
         variants[key] = {
             "run_id": arms[key].run_id,
@@ -2035,6 +2123,10 @@ class Args:
     min_state_rows: int
     expect_arms: tuple[str, ...]
     now: str
+    #: Worker processes for this read's independent bootstraps. ``None`` means
+    #: ``analysis.parallel``'s own default (the campaign preparation cap). The
+    #: numbers this read produces never depend on it.
+    workers: int | None = None
 
 
 def parse_args(argv: Sequence[str] | None = None) -> Args:
@@ -2065,6 +2157,11 @@ def parse_args(argv: Sequence[str] | None = None) -> Args:
         default=",".join(EXPECTED_ARMS),
         help="the arm keys the recipe must carry; the default is the registered VAR-1 family",
     )
+    add_workers_argument(
+        parser,
+        help_suffix="This read has 24 independent bootstraps: 4 for the own null, 20 for the "
+        "five variants.",
+    )
     ns = parser.parse_args(argv)
     if not ns.data_root:
         parser.error("--data-root is required (or set SPEECHRL_DATA_DIR)")
@@ -2088,6 +2185,7 @@ def parse_args(argv: Sequence[str] | None = None) -> Args:
         min_state_rows=ns.min_state_rows,
         expect_arms=tuple(part for part in ns.expect_arms.split(",") if part),
         now=datetime.now(timezone.utc).isoformat(),
+        workers=ns.workers,
     )
 
 
