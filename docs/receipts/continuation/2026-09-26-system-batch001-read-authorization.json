@@ -1,0 +1,232 @@
+{
+  "schema": "saea-system-batch001-read-authorization-v1",
+  "recorded_at": "2026-09-26T06:52:58.989255+00:00",
+  "authority": "docs/readiness/2026-09-26-slurp-system-batch001-v1-preregistration.md",
+  "all_four_complete_and_officially_scored_once": true,
+  "source_worker": "/home/chao/saea-worktrees/codex-system-batch001-20260926",
+  "source_commit": "d56ad054ad06df36b2a2e508ab5e765cc2549085",
+  "source_pins": [
+    {
+      "label": "s1",
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S1-RUN-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s1-run-v1",
+      "manifest": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S1-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s1-run-v1/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S1-RUN-V1.run-manifest.json",
+        "sha256": "bcc92c9e4eacf4e0675c841e12a74ab537518cd40e70cf03651accd76dc5706c"
+      },
+      "phases": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S1-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s1-run-v1/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S1-RUN-V1.phases.json",
+        "sha256": "fe80e11d9a93122c3186e910b4a471a79b19ff3cc53b1efa39b55f73d7480c8b"
+      },
+      "flight_receipts": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S1-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s1-run-v1/flight-receipts.json",
+        "sha256": "82a4b2d7372298946b44788c8d4762812c1259f618ecaa62b59d037050dca7a0"
+      },
+      "score_jobs": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S1-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s1-run-v1/score-jobs.jsonl",
+        "sha256": "64d15aee662fbdc19524c5b9ee9e95a23444cdd57ffd91e03371936b3a2054e0"
+      },
+      "actual": {
+        "mode": "arm",
+        "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S1-RUN-V1",
+        "attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s1-run-v1",
+        "pass": true,
+        "fails": [],
+        "attempt_state": "FINALIZED",
+        "actual": {
+          "audio_seconds": 68.13975000000002,
+          "calls": 16
+        },
+        "result_kind": "task-answer",
+        "manifest_status": "COMPLETED",
+        "study_commit": "d56ad054ad06df36b2a2e508ab5e765cc2549085",
+        "dirt": [],
+        "rows": 4,
+        "distinct": 4,
+        "dispositions": {},
+        "contacts_per_row_hist": {},
+        "cost": {
+          "calls_used": 16,
+          "audio_seconds_used": 68.13975000000002,
+          "prompt_tokens_total": 121039,
+          "completion_tokens_total": 917,
+          "tool_calls": 0
+        },
+        "score_jobs": 1,
+        "expected_score_jobs": 1,
+        "requests": 16,
+        "requests_with_tool_schemas": 0,
+        "sha256_run-manifest": "bcc92c9e4eacf4e0675c841e12a74ab537518cd40e70cf03651accd76dc5706c",
+        "sha256_scores": "a2d8f945ed39287566b0d6322e1564885f6969ecc900e71827d120efad251243",
+        "sha256_outputs": "dfb8df79dc750be5d0ebaaec506d2fb05f2d0033e1abbd5fe22625b3a7791c17"
+      }
+    },
+    {
+      "label": "s2",
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S2-RUN-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s2-run-v1",
+      "manifest": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S2-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s2-run-v1/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S2-RUN-V1.run-manifest.json",
+        "sha256": "8adfebdee502c6a8778187f2677800a7b140fe01586587d6e5b96f10eee2b29a"
+      },
+      "phases": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S2-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s2-run-v1/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S2-RUN-V1.phases.json",
+        "sha256": "a815cfcd4550f62b9513a9427725352c1950081ab6909fd38bb492028388cf28"
+      },
+      "flight_receipts": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S2-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s2-run-v1/flight-receipts.json",
+        "sha256": "7d55fe0984025c8301c4cf91e50118f857ba4db40c3e0ee663e9aa811432cfc3"
+      },
+      "score_jobs": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S2-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s2-run-v1/score-jobs.jsonl",
+        "sha256": "e1cb9e6253a7823d770ada95db0f1997d98152c1dd3acd85ab48676e2733296a"
+      },
+      "actual": {
+        "mode": "arm",
+        "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S2-RUN-V1",
+        "attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s2-run-v1",
+        "pass": true,
+        "fails": [],
+        "attempt_state": "FINALIZED",
+        "actual": {
+          "audio_seconds": 78.89025000000002,
+          "calls": 19
+        },
+        "result_kind": "task-answer",
+        "manifest_status": "COMPLETED",
+        "study_commit": "d56ad054ad06df36b2a2e508ab5e765cc2549085",
+        "dirt": [],
+        "rows": 4,
+        "distinct": 4,
+        "dispositions": {},
+        "contacts_per_row_hist": {},
+        "cost": {
+          "calls_used": 19,
+          "audio_seconds_used": 78.89025000000002,
+          "prompt_tokens_total": 149945,
+          "completion_tokens_total": 1549,
+          "tool_calls": 0
+        },
+        "score_jobs": 1,
+        "expected_score_jobs": 1,
+        "requests": 19,
+        "requests_with_tool_schemas": 0,
+        "sha256_run-manifest": "8adfebdee502c6a8778187f2677800a7b140fe01586587d6e5b96f10eee2b29a",
+        "sha256_scores": "6ed66db87ecd68e88284210b2243e07edee86ac974d9e409dbd09e3bbd66c5e2",
+        "sha256_outputs": "85b0d425fe804a1fe6a3bd08abbf1cf7d366e750fd293a52e054a98e3370f8eb"
+      }
+    },
+    {
+      "label": "s3",
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S3-RUN-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s3-run-v1",
+      "manifest": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S3-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s3-run-v1/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S3-RUN-V1.run-manifest.json",
+        "sha256": "807c662a8576925db8f021aa6549a881b697abfa3c9f334b6da354b9e1391016"
+      },
+      "phases": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S3-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s3-run-v1/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S3-RUN-V1.phases.json",
+        "sha256": "1500646390f1977db3a3ed5efca3b4af9206b79dc8a429a6dd98a889c419a108"
+      },
+      "flight_receipts": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S3-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s3-run-v1/flight-receipts.json",
+        "sha256": "fe320ece7f659ae3daf5b804098ddd51058cf5a6c26d45f5bf5fa83cf89cc874"
+      },
+      "score_jobs": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S3-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s3-run-v1/score-jobs.jsonl",
+        "sha256": "d93b3054ff484b0f60dbe62934afc234e3c86eda6f580cf3cb25e2ba55dfc327"
+      },
+      "actual": {
+        "mode": "arm",
+        "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S3-RUN-V1",
+        "attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s3-run-v1",
+        "pass": true,
+        "fails": [],
+        "attempt_state": "FINALIZED",
+        "actual": {
+          "audio_seconds": 68.13975000000002,
+          "calls": 16
+        },
+        "result_kind": "task-answer",
+        "manifest_status": "COMPLETED",
+        "study_commit": "d56ad054ad06df36b2a2e508ab5e765cc2549085",
+        "dirt": [],
+        "rows": 4,
+        "distinct": 4,
+        "dispositions": {},
+        "contacts_per_row_hist": {},
+        "cost": {
+          "calls_used": 16,
+          "audio_seconds_used": 68.13975000000002,
+          "prompt_tokens_total": 120359,
+          "completion_tokens_total": 1173,
+          "tool_calls": 0
+        },
+        "score_jobs": 1,
+        "expected_score_jobs": 1,
+        "requests": 16,
+        "requests_with_tool_schemas": 0,
+        "sha256_run-manifest": "807c662a8576925db8f021aa6549a881b697abfa3c9f334b6da354b9e1391016",
+        "sha256_scores": "1057338663a560b39d36a299a76f6fa5cf8ea91dc4c4e68e22a8cc6ca807448b",
+        "sha256_outputs": "c7a7595534ef6d0f4d0d18cd6e9fd0ba4aeb3098edaafc65834be942b2c35400"
+      }
+    },
+    {
+      "label": "s4",
+      "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S4-RUN-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s4-run-v1",
+      "manifest": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S4-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s4-run-v1/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S4-RUN-V1.run-manifest.json",
+        "sha256": "f9c0a0ffd1d8eb86bb116c952023dd0e3a0988628da3b4cc7c633db77a2066d3"
+      },
+      "phases": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S4-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s4-run-v1/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S4-RUN-V1.phases.json",
+        "sha256": "cba5dabeb5e8c1352f96d3d0e9b4438149e7e9531345413caf7ae2cbe8749999"
+      },
+      "flight_receipts": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S4-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s4-run-v1/flight-receipts.json",
+        "sha256": "e7f90fe5e32a9e52f35ea5c27534d92fb2237ca9677bae9dcd523a1b1173d043"
+      },
+      "score_jobs": {
+        "relpath": "runs/SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S4-RUN-V1/attempt-slurp-native-stage3-system-batch001-r01c-s4-run-v1/score-jobs.jsonl",
+        "sha256": "b13c8361e2825f525f2b6f509fc426ff64683645600823a8713b2958926f37f6"
+      },
+      "actual": {
+        "mode": "arm",
+        "run_id": "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-BATCH001-R01C-S4-RUN-V1",
+        "attempt_id": "attempt-slurp-native-stage3-system-batch001-r01c-s4-run-v1",
+        "pass": true,
+        "fails": [],
+        "attempt_state": "FINALIZED",
+        "actual": {
+          "audio_seconds": 68.13975000000002,
+          "calls": 16
+        },
+        "result_kind": "task-answer",
+        "manifest_status": "COMPLETED",
+        "study_commit": "d56ad054ad06df36b2a2e508ab5e765cc2549085",
+        "dirt": [],
+        "rows": 4,
+        "distinct": 4,
+        "dispositions": {},
+        "contacts_per_row_hist": {},
+        "cost": {
+          "calls_used": 16,
+          "audio_seconds_used": 68.13975000000002,
+          "prompt_tokens_total": 119582,
+          "completion_tokens_total": 1178,
+          "tool_calls": 0
+        },
+        "score_jobs": 1,
+        "expected_score_jobs": 1,
+        "requests": 16,
+        "requests_with_tool_schemas": 0,
+        "sha256_run-manifest": "f9c0a0ffd1d8eb86bb116c952023dd0e3a0988628da3b4cc7c633db77a2066d3",
+        "sha256_scores": "822880212f6df7afbfcfe6abafb09315a4ee67cdd5fd3e52bef739c982dd7ba8",
+        "sha256_outputs": "18a76066d5bf692bbad411adf92eb74aa52f5cac3284f39113306fc9be68a9d1"
+      }
+    }
+  ],
+  "frozen_f0": 0.5850661976193667,
+  "scope": "Four-input full-system construction feedback; no effectiveness claim; zero new model/scorer contacts."
+}

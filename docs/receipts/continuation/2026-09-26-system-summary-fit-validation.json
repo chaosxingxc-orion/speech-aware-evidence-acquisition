@@ -1,0 +1,63 @@
+{
+  "schema": "saea-summary-independent-fit-validation-v1",
+  "recorded_at": "2026-09-26T07:05:30.919256+00:00",
+  "tests": {
+    "command": "pytest tests/unit/test_preparation_fit.py tests/unit/test_phase_prompt_fit.py tests/unit/test_system_summary_preparation.py -q",
+    "passed": 62,
+    "research_contacts": 0,
+    "boundary": "Tokenizer/model test doubles; actual shared rendering paths. No real capacity conclusion."
+  },
+  "checks": [
+    {
+      "check": "derived_media_confinement_check",
+      "log_sha256": "4f6abeeb52be7c0e9b7a7b0320417f9203745614a49cb98c6b7aed2b93e285c9",
+      "exit_code": 0
+    },
+    {
+      "check": "engineering_base_check",
+      "log_sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0",
+      "exit_code": 0
+    },
+    {
+      "check": "experiment_handoff_check",
+      "log_sha256": "c27ccba46e981c216034c1885634274302c551f6767ab90b20b08c666884b4e9",
+      "exit_code": 0
+    },
+    {
+      "check": "finite_completion_policy_check",
+      "log_sha256": "57bb7550835516f1b306cc6852c9c503d6b6acd8a500b51f7a929df94b595139",
+      "exit_code": 0
+    },
+    {
+      "check": "harness_admission_check",
+      "log_sha256": "a250d8e920e95f22cb39fdd4831e4d4a9900b9588d212f03238afdffb9502911",
+      "exit_code": 0
+    },
+    {
+      "check": "openjiuwen_native_reuse_check",
+      "log_sha256": "31d7a35be532e89a32050ad46f3eb3cb946d14dc07485ffb477b48e403208450",
+      "exit_code": 0
+    },
+    {
+      "check": "results_ledger_check",
+      "log_sha256": "ec9367bbd838063e612f82f2497a4e042f439e1b778d78d55e5f4c6117904d6f",
+      "exit_code": 0
+    },
+    {
+      "check": "ruff",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "exit_code": 0
+    },
+    {
+      "check": "stage3_algorithm_label_check",
+      "log_sha256": "6a590f3c54304f9e969de5f6ef0e2f18167c4e86f585ffa75927d504296de50c",
+      "exit_code": 0
+    },
+    {
+      "check": "tool_catalog_check",
+      "log_sha256": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc",
+      "exit_code": 0
+    }
+  ],
+  "note": "Initial native-check invocation lacked required --output and did not run the check; corrected invocation passed. The derived-media check wrote its legacy default reports; exact HEAD bytes were restored. Historical ledger/handoff warnings retained."
+}

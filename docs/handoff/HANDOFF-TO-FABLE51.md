@@ -5,73 +5,71 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
-## First actor batch dispatched; loaded resource proof in progress
+## First four-input actor batch complete; exact semantic sizing next
 
-Checkpoint: 2026-09-26T06:29Z. Four clean actual-worker preflights and all nine
-offline gates passed. The new guarded decoder service loaded with two24576-token
-slots, no mmproj and total49152 context tokens. Initial loaded observation:
-20410MiB GPU used,3728MiB free and approximately31GiB Windows available.
-These are loaded readings, not complete-rollout peak or stability proof.
+Checkpoint: 2026-09-26. All four complete replicas are FINALIZED, each with
+four inputs and exactly one official score. The driver ended normally.
+There are 16 complete system trajectories and 67 generation contacts. Source
+worker /home/chao/saea-worktrees/codex-system-batch001-20260926 remains clean
+at d56ad054ad06df36b2a2e508ab5e765cc2549085 and must remain available for recursive
+source verification. Read
+[the scientific-read authorization](../receipts/continuation/2026-09-26-system-batch001-read-authorization.json).
 
-First-replica generation is complete and official scoring is in progress.
-Operational metadata shows maximum actual prompt10476 tokens, completion184
-tokens and16 stop finishes; no length finish was observed in that replica.
-The sampled resource peak so far is20432MiB GPU used, with at least3706MiB GPU
-free and27.38GiB Windows available. No pressure latch occurred. This does not
-prove later full-trajectory summary/batch synthesis fits or long-run stability.
-See [the operational receipt](../receipts/continuation/2026-09-26-system-batch001-first-replica-resources.json).
-Scientific results remain unread until all four replicas seal and score.
+The shared feedback export preserves all four groups: one has differing
+terminal entity/intent outcomes; three tie. This is a construction observation,
+not a four-row effectiveness claim. The one informative group includes two
+replicas with equal entity utility but different intent correctness; retain
+the separate intent field rather than calling equal entity utility equal
+system quality. No learned memory, semantic generation or stable RL gain
+exists yet. Full source-bound prepared contexts and feedback are in
+DATA/coordination/slurp-system-batch001-v1/semantic/index.json
+(SHA256 89efe456f7e9a1db246076b8cf0e292b4366bf582a3c80371c954c88b965c31d).
 
-The existing Windows-owned batch driver dispatched the registered four-replica
-queue at06:28:52Z. First campaign started at06:28:55Z. Worker:
- /home/chao/saea-worktrees/codex-system-batch001-20260926
-at d56ad054ad06df36b2a2e508ab5e765cc2549085. Preserve it through scoring.
-Read [the launch receipt](../receipts/continuation/2026-09-26-system-batch001-launch.json)
-and [clean admission](../receipts/continuation/2026-09-26-system-batch001-clean-admission.json).
-No scientific outcome is claimed or read at dispatch.
+The current summary representation occupies 145513 to 247977 UTF-8 bytes per
+complete trajectory. This is not a token count. Register and measure all
+16 actual text requests through shared prompt-fit before any generation:
+[capacity protocol](../readiness/2026-09-26-system-batch001-summary-capacity-v1/protocol.json).
+Preserve output2048, special2 and operational3072 tokens within each24576 slot.
+A measured nonfit is a completed diagnostic, not permission to truncate
+trajectories, lower outputs, enlarge service geometry or retry a flight.
 
-Service/monitor tasks are SAEA-System-Batch001-Serving and
-SAEA-System-Batch001-Monitor; the driver remains SAEA-Batch-Driver. They call
-shared WSL entry points, with no network condition, timeout or automatic restart.
-The two older support task actions could not be changed under the current
-Windows account; they remain untouched and idle. Their replacement tasks use
-the same user/principal and no administrator change. Before loading, the shared
-stale-stop API verified the old service absent and recorded its stop. The old
-queue, status, STOP and worker pointers are preserved under
-DATA/coordination/slurp-system-batch001-v1/prior-runtime.
+The decoder-only --no-mmproj service remains resident with two24576-token
+slots (total49152), SID serving-slurp-system-batch001-np2-v1. The first
+operational observation recorded peak20432MiB used, minimum3706MiB GPU free,
+and minimum27.384GiB Windows available. It does not establish long semantic
+request capacity or long-run stability. Resource admission closes below
+12GiB Windows /2048MiB GPU free and stops the owned service below
+10GiB Windows /1024MiB GPU free; missing/stale observation refuses contact.
 
-Monitor the new session serving-slurp-system-batch001-np2-v1 using the existing
-continuation_status.py and its resource-state.json/resource-history.jsonl.
-The observed driverPID874, campaignPID951 and serverPID659 are observations,
-not restart targets. Revalidate identity, freshness and current driver epoch.
-Read operational metadata only until all four complete manifests seal with
-one official score each. Stop/preserve on failure; no automatic recovery,
-scorer replay, closed-line dispatch or silent capacity clipping.
+Windows-owned tasks SAEA-System-Batch001-Serving and
+SAEA-System-Batch001-Monitor remain independent of network, chat and credits.
+SAEA-Batch-Driver completed its actor queue. Never restart it to perform
+semantic work without a new registered queue. The old support tasks remain
+idle. Revalidate live identities and resource freshness before contact;
+do not treat historical PIDs as targets. Use scripts, never monitoring agents.
 
-The four-input batch has four complete replicas and at most two concurrent
-episodes; sixteen trajectories are not sixteen simultaneous GPU requests.
-Keep role/query prefixes and memory frozen within the batch; sampling seeds
-remain request parameters. Measure actual prompt/completion/cache metadata
-and memory through the registered work. Semantic successors still need their
-actual sealed sources, exposure plans and strict fit before contact.
+[The prefix audit](../receipts/continuation/2026-09-26-system-batch001-prefix-audit.json)
+reconstructed all67 actual requests without new model contacts. All16
+role/visit groups shared across four replicas retain the identical first
+message. All four Perception groups also have identical complete messages.
+Later histories remain independent. Sampling seeds stay in request parameters.
+65 of67 recorded responses report positive cache reuse; this is not a measured
+speedup or a claim that all reuse comes from inter-replica prefix alignment.
 
-## Next disjoint inputs prepared while batch001 runs
+## Next disjoint batch remains held
 
-The next four frozen-order R01C inputs (positions5 through8) and the exact
-prospective eight-input cumulative roster are prepared. Sample and utterance
-overlap with batch001 is zero; all four existing feature packets pass their
-pinned byte/audio/decoder/encoder checks. No encoding or model contact was
-added. These inputs remain HELD pending the first real memory update and its
-source-attested next-actor configuration. The cumulative preparation does not
-claim future exposure. Read
-[the preparation receipt](../receipts/continuation/2026-09-26-system-batch002-input-preparation.json).
+Frozen R01C positions5 through8, the prospective cumulative eight-input roster
+and four existing feature packets are verified; no encoding was added.
+Read [input preparation](../receipts/continuation/2026-09-26-system-batch002-input-preparation.json).
+The successor still requires actual memory output, a source-attested actor
+transition, exact fit and registration. Do not freeze32 inputs: batch size,
+four trajectories per input, two concurrent episodes and single-request
+semantic context are separate capacity dimensions.
 
-The first replica sealed with16 contacts and one official score at06:38:19Z;
-its quality remains unread. The second replica started at06:38:44Z. The active
-queue is unchanged. The current one-cell campaigns wait for their own scoring;
-the existing shared multi-cell campaign already supports overlapping scoring
-with subsequent independent generation. Use that existing grouping in the next
-registered batch, without introducing another scheduler or changing this flight.
+Keep policy/prefix/memory fixed within each batch, then update at the boundary.
+Use the existing multi-cell campaign to overlap one scorer with subsequent
+independent generation in the next registered actor batch. The first batch's
+one-cell campaigns serialized scoring; do not introduce another scheduler.
 
 ## Earlier registration checkpoint: first actor batch
 

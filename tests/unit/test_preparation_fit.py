@@ -619,3 +619,48 @@ def test_fit_counts_effective_rendered_query_and_historical_packets_once():
     assert result["rows"][0]["media_count"] == 3
     assert transport.calls == 1
     assert payload["speech_feature_parts"] == [query]
+
+def test_independent_prepared_text_fit_has_zero_media_and_keeps_output_reserve(tmp_path):
+    from speech_aware_evidence_acquisition.core.preparation_fit import fit_phase_runtime
+    from speech_aware_evidence_acquisition.e0.d2_leakage import ARM_VISIBLE_FIELDS
+    from speech_aware_evidence_acquisition.rails.prepared_text import (
+        PREPARED_TEXT_INSTRUCTION, PREPARED_TEXT_SCHEMA,
+    )
+
+    runtime, _policy, _attach, client, kwargs = fit_fixture(tmp_path)
+    context = runtime.preparation_context()
+    context["values"]["arm"] = "prepared-context-text"
+    payload = dict.fromkeys(ARM_VISIBLE_FIELDS["prepared-context-text"])
+    payload.update(
+        sample_id="s1", prepared_text=PREPARED_TEXT_SCHEMA,
+        task_instruction=PREPARED_TEXT_INSTRUCTION,
+        history=[
+            {"role": "agent_state", "state_kind": "prepared-training-feedback"},
+            {"role": "control"},
+        ],
+    )
+    runtime.materialize_phase_requests = lambda: [payload]
+
+    class TextRenderer:
+        def render_request(self, raw):
+            assert json.loads(raw) == payload
+            return {"messages": [{"content": 0}], "max_tokens": 2048}
+
+    kwargs["transport_factory"] = lambda *a, **k: TextRenderer()
+    kwargs["speech_counter"] = lambda _payload: pytest.fail("text cannot read speech packets")
+    path = tmp_path / "text-fit.json"
+    fit_phase_runtime(runtime, path, **kwargs)
+    result = json.loads(path.read_bytes())["output"]
+    assert result["contacts"] == len(client.calls) == 3
+    assert result["generation_contacts"] == 0
+    row = result["rows"][0]
+    assert row["media_count"] == row["speech_tokens"] == 0
+    assert row["maximum_completion_tokens"] == 2048
+    assert row["required_tokens"] == 2051
+    assert result["every_request_fits"] is False
+
+    payload["tool_schemas"] = []
+    before = len(client.calls)
+    with pytest.raises(PreparationError, match="undeclared fields"):
+        fit_phase_runtime(runtime, tmp_path / "invalid-text-fit.json", **kwargs)
+    assert len(client.calls) == before

@@ -452,6 +452,14 @@ def fit_phase_runtime(
     if window_batch is not None:
         if {p["sample_id"] for p in payloads} != set(context["sample_ids"]):
             raise PreparationError("window fit does not cover the runtime call roster")
+    prepared_text = context["values"].get("arm") == "prepared-context-text"
+    if prepared_text:
+        from ..rails.prepared_text import validate_prepared_text_payload
+        try:
+            for payload in payloads:
+                validate_prepared_text_payload(payload)
+        except ValueError as error:
+            raise PreparationError(str(error)) from error
     path = Path(path)
 
     def produce():
@@ -541,6 +549,8 @@ def fit_phase_runtime(
             decoder_sha256 = next(iter(decoder_hashes))
 
             def counts(payload):
+                if prepared_text:
+                    return ()
                 if speech_counter is not None:
                     return speech_counter(payload)
                 return packet_token_counts(
