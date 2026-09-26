@@ -5,6 +5,55 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## First learning batch closed: no update; interface and credit failures separated
+
+Checkpoint: 2026-09-26T09:15:28Z. The one-row group updater finalized with
+one generation, three live fits and zero scores. Its output used 751 of 2048
+tokens and contains three invalid UPDATE targets despite an empty memory pool.
+A Markdown fence is an additional format defect. Root registered reading;
+the unmodified response and all four population dispositions are preserved.
+
+The shared batch preparer returns no-change-no-operation, zero contexts.
+The original empty pool stays unchanged. No batch-synthesis model contact,
+automatic repair, ADD substitution, learned memory activation or next actor
+batch occurred. The current driver epoch is COMPLETE and service remains
+resident; completion/idle is already known, not a new monitoring incident.
+
+Read docs/results/2026-09-26-system-batch001-no-update-diagnostic.md and the
+no-update closure/resource receipts under docs/receipts/continuation/.
+Keep the group source worker frozen at a2473a3d, comparison at e9e597ee,
+summaries at 733c1c6f and actors at d56ad054.
+
+Next implement a source-bound operation output contract through the existing
+response-format registry, preserving the failed baseline and raw lessons.
+Register any prospective interface test before fit/generation; do not reopen
+the completed attempt. Then separately test machine-grounded event/transition
+credit. Neither interface validity nor faithful attribution proves system gain.
+Batch002, runtime memory, DEV6570/test13078 and closed research lines remain
+held/closed until their own requirements are fulfilled. No owner decision is
+needed to continue this already authorized bounded engineering/algorithm work.
+
+## Whole-system group-update generation dispatched independently
+
+Checkpoint: 2026-09-26T09:10:05Z. The group-update campaign started under
+SAEA-Batch-Driver, using frozen worker
+/home/chao/saea-worktrees/codex-system-group-update001-20260926 at
+a2473a3dfa69c119c3d28c12c6648aa10d189b98. Preserve it through downstream
+source verification. Do not restart this one-shot attempt.
+
+The exact input fit uses 9779 tokens, reserves 2048 output and leaves 37323
+tokens on the resident single-slot 49152-token service. This stage permits
+one generation and three live-fit endpoints, with zero scoring. All original
+comparison lessons remain unchanged, including their documented credit errors.
+After finalization, register reading and parse provisional operations; then
+prepare bounded batch synthesis with eight records maximum and 8192 output.
+No runtime memory or next actor batch is admitted yet.
+
+The launch receipt is docs/receipts/continuation/2026-09-26-system-group-update001-launch.json.
+Read operational metadata only until this artifact finalizes. The Windows task
+requires no network and has no automatic restart. Earlier actors, summaries and
+comparison workers remain frozen at d56ad054, 733c1c6f and e9e597ee respectively.
+
 ## Comparison finalized; semantic credit errors require a matched algorithm test
 
 Checkpoint: 2026-09-26T08:51:13Z. The one-row whole-system comparison finalized

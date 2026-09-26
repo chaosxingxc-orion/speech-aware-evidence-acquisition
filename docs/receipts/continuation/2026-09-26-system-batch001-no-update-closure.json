@@ -1,0 +1,42 @@
+{
+  "schema": "saea-system-learning-round-closure-v1",
+  "at": "2026-09-26T09:15:28.405215+00:00",
+  "round_id": "slurp-system-batch001-v1",
+  "source_manifest": {
+    "relpath": "runs/SAEA-SLURP-STAGE3-SYSTEM-GROUP-UPDATE001-NP1-RUN-V1/attempt-slurp-stage3-system-group-update001-np1-run-v1/SAEA-SLURP-STAGE3-SYSTEM-GROUP-UPDATE001-NP1-RUN-V1.run-manifest.json",
+    "sha256": "dfc6a56342239a14cc235fbaf38ef51bd21a7de2b05552460c113252f298022a"
+  },
+  "batch_preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/batch-update-v1/prepared-no-operation.json",
+    "sha256": "5b9aa597afa4c79aa6b6cbc6809d8dc4dea2214524a60b2ddb866352b4c6388e",
+    "cache": "cold",
+    "contact_class": "model-free"
+  },
+  "status": "no-update-invalid-model-operation",
+  "batch_synthesis_contacts": 0,
+  "full_input_count": 4,
+  "population": [
+    {
+      "sample_id": "slurp:train:000049:audio-1434542455",
+      "disposition": "blocked-invalid-operation"
+    },
+    {
+      "sample_id": "slurp:train:000051:audio-1434531302-headset",
+      "disposition": "no-update-terminal-tie"
+    },
+    {
+      "sample_id": "slurp:train:000234:audio-1499688528",
+      "disposition": "no-update-terminal-tie"
+    },
+    {
+      "sample_id": "slurp:train:000260:audio-1488549919",
+      "disposition": "no-update-terminal-tie"
+    }
+  ],
+  "base_snapshot_sha256": "5ee2cc1d118a71c6ad03c201451f370b6cb89e50aba29e6da07a0f4479288e23",
+  "successor_snapshot_sha256": "5ee2cc1d118a71c6ad03c201451f370b6cb89e50aba29e6da07a0f4479288e23",
+  "active_memory_records": 0,
+  "recovery_attempted": false,
+  "runtime_authorized": false,
+  "notes": "The sealed response contains Markdown fences and UPDATE operations whose IDs are lesson text, despite an empty frozen pool. Removing fences only for root diagnosis still yields three unknown targets. No parser repair or ADD substitution is published. The batch has no admissible operations and requires no synthesis contact."
+}
