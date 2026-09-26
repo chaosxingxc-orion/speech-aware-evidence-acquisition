@@ -22,7 +22,7 @@ SESSION = SimpleNamespace(
 
 
 def sample(tmp_path, *, host=20, gpu=4000, now=100):
-    return guard.publish_sample(
+    doc = guard.publish_sample(
         tmp_path,
         SESSION,
         LIMITS,
@@ -34,6 +34,12 @@ def sample(tmp_path, *, host=20, gpu=4000, now=100):
             "memory_total_mib": 24463,
         },
     )
+    # Preserve the historical v1 receipt cases; v2 boot-clock cases live in
+    # test_serving_resource_clock.py and use the current publisher unchanged.
+    doc["schema"] = guard.LEGACY_SCHEMA
+    doc.pop("elapsed_clock")
+    (tmp_path / guard.SNAPSHOT_NAME).write_text(json.dumps(doc))
+    return doc
 
 
 @pytest.mark.parametrize(
@@ -130,7 +136,8 @@ def test_sampling_latency_is_included_in_freshness(tmp_path):
         tmp_path,
         SESSION,
         LIMITS,
-        now=lambda: next(times),
+        now=lambda: 100,
+        elapsed_clock=lambda: next(times),
         host_reader=lambda: {"host_free_gb": 30},
         gpu_reader=lambda: {"memory_free_mib": 5000},
     )

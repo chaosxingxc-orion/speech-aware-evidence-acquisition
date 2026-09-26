@@ -1,0 +1,20 @@
+{
+  "injected_elapsed_seconds": 1,
+  "interpretation": "Deterministic clock-discontinuity regression using source resource readings; elapsed duration is injected, not a claim about the historical sampling duration. Full UTC audit timestamps retained. No running service is contacted.",
+  "model_contacts": 0,
+  "original_decision": "stop",
+  "original_wall_elapsed_seconds": -0.1684880256652832,
+  "replayed_resource_readings": {
+    "gpu_free_mib": 3706.0,
+    "host_free_gb": 24.95708465576172
+  },
+  "schema": "saea-model-free-resource-clock-proof-v1",
+  "scorer_contacts": 0,
+  "source_stop_relpath": "serving/serving-slurp-system-memory-batch002-np2-v1/session-stop.json",
+  "source_stop_sha256": "7ed81437b926b3fa9cf508b2e7e88dfd5fa79603ce8a291f759930f2a9492ac1",
+  "successor_decision": "admit",
+  "tests": {
+    "passed": 54,
+    "resource_guard_coverage_percent": 92
+  }
+}

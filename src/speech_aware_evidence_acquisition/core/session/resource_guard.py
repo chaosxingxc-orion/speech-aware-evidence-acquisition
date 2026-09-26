@@ -16,7 +16,8 @@ from . import SessionError
 
 SNAPSHOT_NAME = "resource-state.json"
 LOG_NAME = "resource-history.jsonl"
-SCHEMA = "saea-serving-resource-state-v1"
+LEGACY_SCHEMA = "saea-serving-resource-state-v1"
+SCHEMA = "saea-serving-resource-state-v2"
 FIELDS = {
     "schema",
     "windows_start_gib",
@@ -89,6 +90,22 @@ def _gpu():
     return read_gpu(include_capacity=True)
 
 
+def _boottime():
+    # Linux boot time includes suspend, unlike a process-local elapsed timer.
+    # UTC remains useful for audit but can jump during WSL clock correction.
+    return time.clock_gettime(time.CLOCK_BOOTTIME)
+
+
+def _boot_id():
+    try:
+        value = Path("/proc/sys/kernel/random/boot_id").read_text().strip()
+    except OSError as error:
+        raise ResourceAdmissionError("resource clock boot identity unavailable") from error
+    if not value:
+        raise ResourceAdmissionError("resource clock boot identity unavailable")
+    return value
+
+
 def assert_start(limits, *, host_reader=None):
     """Reserve loading headroom separately from the post-load running floor."""
     _policy_hash(limits)
@@ -145,14 +162,19 @@ def _read(path):
 
 
 def publish_sample(
-    session_dir, session, limits, *, now=time.time, host_reader=None, gpu_reader=None
+    session_dir, session, limits, *, now=time.time, host_reader=None, gpu_reader=None,
+    elapsed_clock=_boottime, boot_id_reader=_boot_id,
 ):
     """Write one sample atomically; any pressure is latched for this process."""
+    boot_id = boot_id_reader()
+    elapsed_start = elapsed_clock()
     started = now()
     host, gpu = (host_reader or _host)(), (gpu_reader or _gpu)()
     finished = now()
+    elapsed_end = elapsed_clock()
     decision, reasons = _decision(host, gpu, limits)
-    if finished < started or finished - started > limits["max_sample_age_seconds"]:
+    if (not _number(elapsed_start) or not _number(elapsed_end)
+            or not 0 <= elapsed_end - elapsed_start <= limits["max_sample_age_seconds"]):
         decision, reasons = "stop", ["observation-too-old"]
     observed = decision
     root = Path(session_dir)
@@ -186,6 +208,10 @@ def publish_sample(
         "policy_sha256": policy_hash,
         "sampled_at": started,
         "completed_at": finished,
+        "elapsed_clock": {
+            "kind": "linux-boottime", "boot_id": boot_id,
+            "sampled_at": elapsed_start, "completed_at": elapsed_end,
+        },
         "host_memory": clean(host),
         "gpu": clean(gpu),
         "observed_decision": observed,
@@ -207,12 +233,27 @@ def publish_sample(
     return doc
 
 
-def assert_admission(session_dir, session, limits, *, now=time.time):
+def assert_admission(
+    session_dir, session, limits, *, now=time.time,
+    elapsed_clock=_boottime, boot_id_reader=_boot_id,
+):
     doc = _read(Path(session_dir) / SNAPSHOT_NAME)
-    sampled = doc.get("sampled_at")
-    age = now() - sampled if _number(sampled) else float("inf")
+    age = float("inf")
+    if doc.get("schema") == SCHEMA:
+        clock = doc.get("elapsed_clock")
+        current = elapsed_clock()
+        if (isinstance(clock, Mapping) and clock.get("kind") == "linux-boottime"
+                and clock.get("boot_id") == boot_id_reader()
+                and _number(current) and _number(clock.get("sampled_at"))
+                and _number(clock.get("completed_at"))
+                and clock["sampled_at"] <= clock["completed_at"] <= current):
+            age = current - clock["sampled_at"]
+    elif doc.get("schema") == LEGACY_SCHEMA:
+        # Read old pinned receipts without rewriting or upgrading their bytes.
+        sampled = doc.get("sampled_at")
+        age = now() - sampled if _number(sampled) else float("inf")
     if (
-        doc.get("schema") != SCHEMA
+        doc.get("schema") not in {SCHEMA, LEGACY_SCHEMA}
         or doc.get("session") != _identity(session)
         or doc.get("policy_sha256") != _policy_hash(limits)
         or not 0 <= age <= limits["max_sample_age_seconds"]
@@ -232,12 +273,19 @@ def assert_admission(session_dir, session, limits, *, now=time.time):
 class ResourceCheckedTransport:
     """Keep rendering and request bytes unchanged; gate only actual dispatch."""
 
-    def __init__(self, transport, session_dir, session, limits, *, now=time.time):
+    def __init__(
+        self, transport, session_dir, session, limits, *, now=time.time,
+        elapsed_clock=_boottime, boot_id_reader=_boot_id,
+    ):
         self.transport, self.session_dir = transport, session_dir
         self.session, self.limits, self.now = session, limits, now
+        self.elapsed_clock, self.boot_id_reader = elapsed_clock, boot_id_reader
 
     def __call__(self, request_bytes):
-        assert_admission(self.session_dir, self.session, self.limits, now=self.now)
+        assert_admission(
+            self.session_dir, self.session, self.limits, now=self.now,
+            elapsed_clock=self.elapsed_clock, boot_id_reader=self.boot_id_reader,
+        )
         return self.transport(request_bytes)
 
     def __getattr__(self, name):

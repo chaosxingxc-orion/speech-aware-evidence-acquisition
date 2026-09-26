@@ -5,6 +5,31 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Resource clock repair verified; knowledge-edit interface in preparation
+
+The previous turn made progress: it closed the registered batch002 scientific
+read and landed the task-coupling and knowledge-optimization designs on master.
+The next operational prerequisite is now repaired in the shared resource guard.
+New v2 receipts measure sampling duration and admission freshness using Linux
+CLOCK_BOOTTIME plus kernel boot identity; UTC timestamps remain unchanged for
+audit. This includes suspend time and rejects stale, future, malformed or
+other-boot receipts. The old v1 reader remains available for historical source
+compatibility. Resource floors, pressure latches and request bytes are unchanged.
+
+Fifty-four focused tests pass with 92% resource-guard coverage; Ruff passes.
+The exact historical negative wall-time pair and recorded healthy resources
+were replayed with an explicitly injected positive elapsed duration, yielding
+admission without any model or scorer contact. This does not reconstruct the
+historical elapsed time. See
+docs/receipts/continuation/2026-09-26-resource-clock-model-free-proof.json.
+No service has been restarted and no actor retried. The next GPU phase still
+needs its own registration, full actual request fit and fresh service identity.
+
+Current implementation work targets a bounded shared slot-value edit interface,
+preserving keys and intent bindings. It supports generated candidate versions
+and provenance, not manually installing a preferred lesson. Continue the
+knowledge design while preserving complete-system feedback and batch updates.
+
 ## Memory batch002 read complete; task coupling and knowledge optimization
 
 Root completed the registered full-family read and inspected actual model/tool
