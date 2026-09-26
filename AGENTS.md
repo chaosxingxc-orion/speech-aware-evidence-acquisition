@@ -89,6 +89,12 @@ build commit plus per-file GGUF SHA-256. Record every model or tool contact in
   `native_episode.react_exhaustion_policy` as `"continue-without-answer"` (item E22, the
   ReAct-exhaustion disposition, not the Earnings-22 carrier; the B8b-anchor arm lost 2,016
   contacts to the same default).
+- Stage-3 measurement gates (2026-09-26): `stage3_effect_floor_check.py` refuses a cell whose
+  declared `stage3_measurement` block is missing, whose design is a cross-flight contrast without an
+  in-chain A/A replicate, or whose expected effect sits under the measured floor of its design
+  (`docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md`); a batch under 200 rows is
+  a form proof and must not claim benefit. `handoff_freshness_check.py` fails when a result or a
+  results-ledger entry is newer than the refresh stamp of `docs/handoff/HANDOFF-TO-CHATGPT.md`.
 - Inference: llama.cpp llama-server. Reproduction entry point: `bash scripts/reproduce.sh`
   (active from R0 onward).
 - This repository currently declares no `speechrl_common` dependency; first consumption must pin

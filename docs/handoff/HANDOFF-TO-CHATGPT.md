@@ -1,7 +1,7 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-26T14:30:00Z · maintainer: Fable 5.1 (root coordinator) · HEAD at writing
-`1a82c9f8` on `master`, tree clean.
+Last refreshed: 2026-09-26T14:59:17Z · maintainer: Fable 5.1 (root coordinator) · HEAD at writing
+`bfd2ca1e`+ on `master` (the two measurement gates merged), tree clean, the np4 core resident and idle.
 
 This is the standing counterpart to your `docs/handoff/HANDOFF-TO-FABLE51.md`: one short file,
 refreshed **in place** after every landed result, no log section. Skeleton is fixed — state, what I
@@ -27,9 +27,12 @@ number in this program must be read. It is written up in
 | work | artefact | state |
 | --- | --- | --- |
 | Landed your uncommitted per-group knowledge-proposal work unchanged so the tree is clean (a dirty tree refuses `core.flight.cli check`) | `15c13a00` — knowledge_edit_context per-group contexts, the group text baseline and probe, the system event view, 23 tests, design note, readiness receipt | merged |
-| Stopped the stale Running scheduled task `SAEA-System-Batch001-Monitor` | — | no SAEA task is Running; no driver, no `flight.lock`, `batch-done` at 2026-09-26T12:14:46Z, GPU idle | done |
+| Stopped the stale Running scheduled task `SAEA-System-Batch001-Monitor`, then brought the resident np4 session back up so the core is loaded before the next registration lands | `SAEA-Serving` Running, llama-server pid 712, `-np 4 -c 98304` (24,576 per slot), 22,954 MiB, no `flight.lock`, no `batch-STOP` | done |
 | Wrote the measurement instrument law | `1a82c9f8` — `docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md` | binding |
-| In flight as I write: one decision registry (rows 115+), the five record debts (VAR-1 / VAR-2 / VERIFY-1 / F10 / evidence-path results-ledger entries and exposure closures), the two enforcement checks | branches `fable/decisions`, `fable/records`, `fable/checks` | merging today |
+| Made the numbered decisions note the single registry again: your dated rulings are rows 115–125, with the missing outcome lines for 112–114 | `2e6274eb` — `docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md` | merged |
+| Closed the five record debts: results-ledger entries and exposure closures for VAR-1, VAR-2, VERIFY-1, F10 and the evidence-path policy (53 exposure rows consumed) | `a88798c2` | merged |
+| Landed the two enforcement checks with 70 passing tests, and added them to the study guide's gate list | `bfd2ca1e` — `scripts/checks/stage3_effect_floor_check.py`, `scripts/checks/handoff_freshness_check.py` | merged, live |
+| In flight as I write: ROLL-2 registration (Fold A 1,080 × 5 samples), the combined-commit offline read, the academic-baseline report | branches `fable/roll2`, `fable/commit`, `fable/baseline` | landing today |
 
 ## 3. The numbers that matter (all from sealed arms; nothing re-run)
 
@@ -91,17 +94,33 @@ Open and needing an owner decision, not mine to take: re-authorising the `supply
 (closed family, but it is the only sub-1 pp instrument for actions that need new contacts), and the
 `core/bundle/outputs.py` I7g gap that must close before any interleaved number is reported.
 
+**Two things that now bind your cells too.** (1) `stage3_effect_floor_check.py` is live: every cell
+registered from **2026-09-27** must carry a top-level `stage3_measurement` block —
+`{measurement_design, expected_effect_pp, rows, primary_metric, claims_benefit, replicate_run_id}` —
+in `registered-facts-v*.json`, in a fenced `json` block of its preregistration, or in the fragment;
+a cross-flight design without `replicate_run_id` is refused outright. The 16 cells registered today
+(the 8 candidate-recovery R01C cells and the 8 batch001 summary cells) are advisory only because they
+predate the note by hours. (2) I found an audit defect I have not fixed yet:
+`docs/results/stage2-results-ledger.json`, which `results_ledger_check.py` reads as the
+machine-readable authority, was generated **2026-09-09** and carries 53 Stage-1 / Stage-2 rows — not
+one Stage-3 cell (no CELL-1/2/3, GEPA, B6, ROLL, VAR, VERIFY, F10, evidence-path). The markdown
+ledger is current; its twin is blind, so the check has been passing over a stage it cannot see. I am
+repairing it after the baseline report lands, one row per cell sourced from that cell's verdict note.
+
 ## 7. My next action
 
-Phase 1 of `D:\.claude\plans\…-rustling-hennessy.md`, all zero-contact: (a) the combined-commit
-offline read — *model selects the answer* composed with the *deterministic support filter over its
-entities*, plus per-field variants and checker pruning, over ROLL-1's sealed 625×5 samples and
-VERIFY-1's sealed choices, at the 0.67 pp floor; (b) the academic-baseline report covering the four
-locked families as implemented here, each with its faithful-implementation statement, measured effect,
-cost and named failure mode (ACE is registered but never flown — I will either fly it once cheaply or
-record it as not-run with the reason); (c) assemble SYS-1, one whole-system policy variant whose
-predicted effect clears the cross-flight bar by construction, and register it with an in-chain
-replicate. GPU stays free for your queued knowledge-proposal generations until SYS-1 is registered.
+GPU first, per the owner's standing instruction that research, analysis and summarisation run in
+parallel with a loaded core. In order: (a) **ROLL-2** — 1,080 Fold A rows × 5 samples, ceiling 19 per
+row, ≈ 9,180 contacts ≈ 3.5 GPU-h, which buys the 0.67 pp offline instrument *on the lock roster*
+where SYS-1 will be read; registration is in flight, then I mint, converge the re-pin at one HEAD,
+countersign and launch through the batch driver. (b) In parallel, zero-contact: the combined-commit
+offline read (model-selects-the-answer ∘ deterministic entity support filter, per-field variants,
+checker pruning, over ROLL-1's sealed 625×5 and VERIFY-1's sealed choices) and the academic-baseline
+report over the four locked families, each with its faithful-implementation statement, measured
+effect, cost and named failure mode. (c) Then **SYS-1**: one whole-system policy variant whose
+predicted effect clears the cross-flight bar by construction — gold-free-triggered candidate
+broadening against INTENT-UNCOVERED, N-sample generation with the winning commit rule, and the best
+intent-view and slot-view consumption per node — registered with an in-chain A/A replicate.
 
 ## 8. Housekeeping we share
 
