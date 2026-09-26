@@ -1,0 +1,27 @@
+{
+  "audio_seconds_total": 3.5835,
+  "carrier_lock_key": "slurp",
+  "count": 1,
+  "d1_manifest_sha256": "f45c630715cf0786f1f2e2d47516c3d15d22535dc5e9f0abcbfed7c6a538c57a",
+  "d1_media_supplement": "receipts/artifacts/d1-slurp-stage3-construction-r01.json",
+  "d1_media_supplement_sha256": "7cf5f978dbff16645866ce6bee501efbb9fb48d69b1a5243ba2781491a4d9f56",
+  "items": [
+    {
+      "audio_seconds": 3.5835,
+      "audio_sha256": "2baaa9edd2cc889caf721b4e307ec07327e89fdb1274390519e0b4d9c06a745e",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1434542455.flac",
+      "packet_id": "slurp/train/000049/audio-1434542455",
+      "sample_id": "slurp:train:000049:audio-1434542455",
+      "sample_rate_hz": 16000
+    }
+  ],
+  "schema": "saea-speech-native-runtime-view-v1",
+  "seed": 20260922,
+  "source_binding_sha256": "07ea0b7159ee2895183e1ac8e20935a349969b2bf168f5de49a0cd20f28cd3ca",
+  "split_identity_hash": "d9b66071e332cc9bf9af1aec206e7a0d07daa19e3e69e7414b514f3384f1db4e",
+  "split_name": "SYSTEM-COMPARISON001-V1",
+  "split_role": "discovery",
+  "status": "Registered derived text comparison cohort; no fresh audio input.",
+  "study": "speech-aware-evidence-acquisition",
+  "runtime_view_sha256": "f5955c11061aa8ef6f10bbf7795e870f0fd345c60083d9aadfb3084624b75449"
+}

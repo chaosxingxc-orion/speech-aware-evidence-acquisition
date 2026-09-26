@@ -5,6 +5,29 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## All summaries closed; system-level fidelity defect identified
+
+Checkpoint: 2026-09-26T08:33:22Z. All four summary v2 artifacts finalized:
+16 generations, 36 live fits, zero scores, no output caps reached. Root
+registered reading and verified every source/request/episode binding.
+Keep the summary worker frozen at 733c1c6f and the actor worker at d56ad054.
+
+All four summaries in the sole informative group mistake Reviewer assertions
+for executed tool results, despite zero actual tool events. Root also found
+that the tool-free initial actor retained a prompt demanding a task-contract
+tool call. These are separate summary-fidelity and actor-configuration issues.
+Read the fidelity-and-feedback diagnostic under docs/results/.
+Do not hand-edit summaries or claim an algorithmic gain from a prompt/tool fix.
+
+A model-free comparison join needed a compact-envelope compatibility repair.
+It now keys the wire view by verified original episode digest; 95 focused
+tests and Ruff pass, and the nine offline gates pass. No GPU replay occurred.
+Three terminal-tie groups remain in the diagnostic, one group is eligible.
+Prepare and register the actual comparison request, preserving raw summaries
+and complete terminal feedback, then measure its capacity before generation.
+No runtime memory or next actor batch is yet authorized. The independent
+guarded single-slot service remains resident; the summary driver is complete.
+
 ## Summary v2 running independently; resource baseline remains four inputs
 
 Checkpoint: 2026-09-26T08:25Z. The sole named summary successor launched through

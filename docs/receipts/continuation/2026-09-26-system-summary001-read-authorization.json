@@ -1,0 +1,163 @@
+{
+  "schema": "saea-scientific-read-authorization-v1",
+  "recorded_at": "2026-09-26T08:33:55.319706+00:00",
+  "scope": "Read all 16 sealed complete-system summaries and rejoin the already authorized actor/official feedback sources. Root performs semantic analysis.",
+  "worker_commit": "733c1c6f19bf041e1beee863d49f030c2e06f4df",
+  "sources": [
+    {
+      "label": "s1",
+      "manifest": {
+        "relpath": "runs/SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S1-NP1-RUN-V2/attempt-slurp-stage3-system-batch001-summary-s1-np1-run-v2/SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S1-NP1-RUN-V2.run-manifest.json",
+        "sha256": "944371620b7dcb90264141fc8ec95c3f5d7439eed45f054202eff7c68a21228f"
+      }
+    },
+    {
+      "label": "s2",
+      "manifest": {
+        "relpath": "runs/SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S2-NP1-RUN-V2/attempt-slurp-stage3-system-batch001-summary-s2-np1-run-v2/SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S2-NP1-RUN-V2.run-manifest.json",
+        "sha256": "3c523548d5ae7cb2e7485023f00357a0f625ddf6ec29a9528e560ea10b2b05e7"
+      }
+    },
+    {
+      "label": "s3",
+      "manifest": {
+        "relpath": "runs/SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S3-NP1-RUN-V2/attempt-slurp-stage3-system-batch001-summary-s3-np1-run-v2/SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S3-NP1-RUN-V2.run-manifest.json",
+        "sha256": "f7c92f60214c796805ecde7dd4fc8914df202139995914fad97432142a1198a7"
+      }
+    },
+    {
+      "label": "s4",
+      "manifest": {
+        "relpath": "runs/SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S4-NP1-RUN-V2/attempt-slurp-stage3-system-batch001-summary-s4-np1-run-v2/SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S4-NP1-RUN-V2.run-manifest.json",
+        "sha256": "ec78b4fcbcd49f147a9ab907be464a87afdc06b7fbd47ab4065cee85034ae96c"
+      }
+    }
+  ],
+  "closures": [
+    {
+      "at": "2026-09-26T08:26:20Z",
+      "event": "arm-inspect",
+      "detail": {
+        "mode": "arm",
+        "run_id": "SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S1-NP1-RUN-V2",
+        "attempt_id": "attempt-slurp-stage3-system-batch001-summary-s1-np1-run-v2",
+        "pass": true,
+        "fails": [],
+        "attempt_state": "FINALIZED",
+        "actual": {
+          "audio_seconds": 17.034937499999998,
+          "calls": 4
+        },
+        "result_kind": "artifact",
+        "bundle_verified": true,
+        "manifest_status": "COMPLETED",
+        "study_commit": "733c1c6f19bf041e1beee863d49f030c2e06f4df",
+        "dirt": [],
+        "rows": 4,
+        "distinct": 4,
+        "dispositions": {},
+        "contacts_per_row_hist": {},
+        "score_jobs": 0,
+        "expected_score_jobs": 0,
+        "requests": 4,
+        "requests_with_tool_schemas": 0,
+        "sha256_run-manifest": "944371620b7dcb90264141fc8ec95c3f5d7439eed45f054202eff7c68a21228f",
+        "sha256_outputs": "63c565f35cbd1a0649d0ae29c2f43f0959d23fcd0f3c0a5719a63619601f96c8"
+      }
+    },
+    {
+      "at": "2026-09-26T08:28:36Z",
+      "event": "arm-inspect",
+      "detail": {
+        "mode": "arm",
+        "run_id": "SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S2-NP1-RUN-V2",
+        "attempt_id": "attempt-slurp-stage3-system-batch001-summary-s2-np1-run-v2",
+        "pass": true,
+        "fails": [],
+        "attempt_state": "FINALIZED",
+        "actual": {
+          "audio_seconds": 17.034937499999998,
+          "calls": 4
+        },
+        "result_kind": "artifact",
+        "bundle_verified": true,
+        "manifest_status": "COMPLETED",
+        "study_commit": "733c1c6f19bf041e1beee863d49f030c2e06f4df",
+        "dirt": [],
+        "rows": 4,
+        "distinct": 4,
+        "dispositions": {},
+        "contacts_per_row_hist": {},
+        "score_jobs": 0,
+        "expected_score_jobs": 0,
+        "requests": 4,
+        "requests_with_tool_schemas": 0,
+        "sha256_run-manifest": "3c523548d5ae7cb2e7485023f00357a0f625ddf6ec29a9528e560ea10b2b05e7",
+        "sha256_outputs": "55d58bd1b7c25cca7cc32be1b53f3da20de3450d9c530f685fed3daaee9ea8ee"
+      }
+    },
+    {
+      "at": "2026-09-26T08:30:49Z",
+      "event": "arm-inspect",
+      "detail": {
+        "mode": "arm",
+        "run_id": "SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S3-NP1-RUN-V2",
+        "attempt_id": "attempt-slurp-stage3-system-batch001-summary-s3-np1-run-v2",
+        "pass": true,
+        "fails": [],
+        "attempt_state": "FINALIZED",
+        "actual": {
+          "audio_seconds": 17.034937499999998,
+          "calls": 4
+        },
+        "result_kind": "artifact",
+        "bundle_verified": true,
+        "manifest_status": "COMPLETED",
+        "study_commit": "733c1c6f19bf041e1beee863d49f030c2e06f4df",
+        "dirt": [],
+        "rows": 4,
+        "distinct": 4,
+        "dispositions": {},
+        "contacts_per_row_hist": {},
+        "score_jobs": 0,
+        "expected_score_jobs": 0,
+        "requests": 4,
+        "requests_with_tool_schemas": 0,
+        "sha256_run-manifest": "f7c92f60214c796805ecde7dd4fc8914df202139995914fad97432142a1198a7",
+        "sha256_outputs": "974e9f4b3211b724fd0b62a805c30b65161529a7cbdc6b0046d8af7edc4467e5"
+      }
+    },
+    {
+      "at": "2026-09-26T08:33:02Z",
+      "event": "arm-inspect",
+      "detail": {
+        "mode": "arm",
+        "run_id": "SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S4-NP1-RUN-V2",
+        "attempt_id": "attempt-slurp-stage3-system-batch001-summary-s4-np1-run-v2",
+        "pass": true,
+        "fails": [],
+        "attempt_state": "FINALIZED",
+        "actual": {
+          "audio_seconds": 17.034937499999998,
+          "calls": 4
+        },
+        "result_kind": "artifact",
+        "bundle_verified": true,
+        "manifest_status": "COMPLETED",
+        "study_commit": "733c1c6f19bf041e1beee863d49f030c2e06f4df",
+        "dirt": [],
+        "rows": 4,
+        "distinct": 4,
+        "dispositions": {},
+        "contacts_per_row_hist": {},
+        "score_jobs": 0,
+        "expected_score_jobs": 0,
+        "requests": 4,
+        "requests_with_tool_schemas": 0,
+        "sha256_run-manifest": "ec78b4fcbcd49f147a9ab907be464a87afdc06b7fbd47ab4065cee85034ae96c",
+        "sha256_outputs": "ccc90aca938181dea5231768169e897a7e5fff8b0fd316a68f7adb971fd5394c"
+      }
+    }
+  ],
+  "prohibition": "No manual summary replacement, output repair, retry, runtime memory activation, new generation or scorer is authorized by this read. Preserve empty/capped/invalid outputs with their status."
+}

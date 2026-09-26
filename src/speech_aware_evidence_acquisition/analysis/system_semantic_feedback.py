@@ -248,18 +248,35 @@ def join_recorded_summaries(feedback, summaries):
     _fingerprint(feedback, "content_sha256", "semantic feedback")
     _require(feedback.get("schema") == "saea-system-semantic-feedback-inputs-v1",
              "semantic feedback schema differs")
+    # Display schemas may change; the verified original episode digest still
+    # binds its full actor identity and is shared with official terminal feedback.
+    episode_identities = {}
+    for group in feedback["groups"]:
+        for member in group["comparison_feedback"]["members"]:
+            digest = member["episode_sha256"]
+            key = (*_identity(member), group["sample_id"])
+            _require(digest not in episode_identities, "feedback episode identity duplicated")
+            episode_identities[digest] = key
     index = {}
     for source in summaries:
         _require(isinstance(source, VerifiedSystemSummaries), "summaries must be source-verified")
         contexts = source.prepared_document["contexts"]
         for context in contexts:
             episode = context["model_context"]["trajectory"]
-            identity = _identity(episode["trajectory"]["source"])
             sid = context["source_sample_id"]
-            key = (*identity, sid)
+            if episode.get("schema") == "saea-complete-episode-wire-view-v1":
+                episode_sha = episode.get("source_episode_sha256")
+                _require(isinstance(episode_sha, str) and episode_sha in episode_identities,
+                         "compact summary has an unknown complete episode")
+                key = episode_identities[episode_sha]
+                _require(key[-1] == sid and context.get("source_feedback_sha256") == episode_sha,
+                         "compact summary sample or episode custody differs")
+            else:
+                episode_sha = episode["content_sha256"]
+                key = (*_identity(episode["trajectory"]["source"]), sid)
             _require(key not in index and sid in source.rows, "summary identity duplicated or missing")
             row = source.rows[sid]
-            _require(row["episode_sha256"] == episode["content_sha256"]
+            _require(row["episode_sha256"] == episode_sha
                      and row["summary_response_sha256"] == hashlib.sha256(row["summary"].encode()).hexdigest(),
                      "recorded summary episode or content differs")
             index[key] = row

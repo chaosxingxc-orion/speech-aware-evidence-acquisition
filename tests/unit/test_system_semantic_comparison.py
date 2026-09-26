@@ -88,3 +88,39 @@ def test_wrong_summary_identity_or_content_is_refused(change):
         summaries[0] = {}
     with pytest.raises(SemanticFeedbackError):
         join_recorded_summaries(feedback, summaries)
+
+
+def compact_summaries(summaries):
+    from speech_aware_evidence_acquisition.analysis.system_wire_context import compact_wire_episode
+    for source in summaries:
+        for context in source.prepared_document["contexts"]:
+            episode = context["model_context"]["trajectory"]
+            requests = {c["request_record_id"]: {"messages": []} for c in episode["contacts"]}
+            context["source_feedback_sha256"] = episode["content_sha256"]
+            context["model_context"]["trajectory"] = compact_wire_episode(episode, requests)
+
+
+def test_compact_wire_summaries_join_to_same_whole_episode_feedback():
+    feedback, summaries = summary_fixture()
+    expected = join_recorded_summaries(feedback, summaries)
+    compact_summaries(summaries)
+    before = copy.deepcopy(summaries)
+    assert join_recorded_summaries(feedback, summaries) == expected
+    assert summaries == before
+
+
+@pytest.mark.parametrize("change", ["unknown-episode", "wrong-sample", "wrong-custody", "wrong-row"])
+def test_compact_wire_join_rejects_wrong_episode_bindings(change):
+    feedback, summaries = summary_fixture()
+    compact_summaries(summaries)
+    context = summaries[0].prepared_document["contexts"][0]
+    if change == "unknown-episode":
+        context["model_context"]["trajectory"]["source_episode_sha256"] = "f"*64
+    elif change == "wrong-sample":
+        context["source_sample_id"] = "other"
+    elif change == "wrong-custody":
+        context["source_feedback_sha256"] = "f"*64
+    else:
+        summaries[0].rows["s1"]["episode_sha256"] = "f"*64
+    with pytest.raises(SemanticFeedbackError):
+        join_recorded_summaries(feedback, summaries)

@@ -1,0 +1,53 @@
+{
+  "schema": "saea-complete-summary-resource-audit-v1",
+  "recorded_at": "2026-09-26T08:42:22.825632+00:00",
+  "start_at": "2026-09-26T08:24:26Z",
+  "end_at": "2026-09-26T08:33:22Z",
+  "sources": [
+    {
+      "label": "s1",
+      "manifest": {
+        "relpath": "runs/SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S1-NP1-RUN-V2/attempt-slurp-stage3-system-batch001-summary-s1-np1-run-v2/SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S1-NP1-RUN-V2.run-manifest.json",
+        "sha256": "944371620b7dcb90264141fc8ec95c3f5d7439eed45f054202eff7c68a21228f"
+      }
+    },
+    {
+      "label": "s2",
+      "manifest": {
+        "relpath": "runs/SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S2-NP1-RUN-V2/attempt-slurp-stage3-system-batch001-summary-s2-np1-run-v2/SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S2-NP1-RUN-V2.run-manifest.json",
+        "sha256": "3c523548d5ae7cb2e7485023f00357a0f625ddf6ec29a9528e560ea10b2b05e7"
+      }
+    },
+    {
+      "label": "s3",
+      "manifest": {
+        "relpath": "runs/SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S3-NP1-RUN-V2/attempt-slurp-stage3-system-batch001-summary-s3-np1-run-v2/SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S3-NP1-RUN-V2.run-manifest.json",
+        "sha256": "f7c92f60214c796805ecde7dd4fc8914df202139995914fad97432142a1198a7"
+      }
+    },
+    {
+      "label": "s4",
+      "manifest": {
+        "relpath": "runs/SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S4-NP1-RUN-V2/attempt-slurp-stage3-system-batch001-summary-s4-np1-run-v2/SAEA-SLURP-STAGE3-SYSTEM-BATCH001-SUMMARY-S4-NP1-RUN-V2.run-manifest.json",
+        "sha256": "ec78b4fcbcd49f147a9ab907be464a87afdc06b7fbd47ab4065cee85034ae96c"
+      }
+    }
+  ],
+  "generation_contacts": 16,
+  "live_fit_contacts": 36,
+  "official_scores": 0,
+  "max_prompt_tokens": 21528,
+  "max_completion_tokens": 1801,
+  "output_cap": 2048,
+  "finishes": {
+    "stop": 16
+  },
+  "resource_samples": 294,
+  "peak_gpu_used_mib": 20456.0,
+  "min_gpu_free_mib": 3682.0,
+  "min_windows_available_gib": 29.442584991455078,
+  "decisions": {
+    "admit": 294
+  },
+  "scope": "Observed complete summary window, not instantaneous protection or task efficacy."
+}

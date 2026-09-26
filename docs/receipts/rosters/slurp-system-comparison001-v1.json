@@ -1,0 +1,34 @@
+{
+  "authority": "Root registers construction comparison after complete summary-family closure.",
+  "carrier_lock_key": "slurp",
+  "excluded_count": 0,
+  "items": [
+    {
+      "audio_seconds": 3.5835,
+      "draw_rank": 28,
+      "headset": false,
+      "min_cosine_to_selected": 0.9066923378304634,
+      "sample_id": "slurp:train:000049:audio-1434542455",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:000049"
+    }
+  ],
+  "launch_authority": false,
+  "parent": {
+    "repo_relpath": "docs/receipts/rosters/slurp-system-batch001-r01c-v1.json",
+    "sha256": "740d8d31e3ec33e63cd398d654dc5d5771612178703b4a528094898741a6f19b"
+  },
+  "per_stratum": {
+    "datetime": 1
+  },
+  "roster_id": "SLURP-SYSTEM-COMPARISON001-V1",
+  "roster_role": "construction",
+  "schema": "saea-roster-receipt-v1",
+  "seed": 20260922,
+  "selection_rule": "Exactly the ordered groups eligible under terminal-outcome-vector-disagreement-v1 with all four structurally usable summaries. Retain every source group in the diagnostic. No root filtering of summary quality.",
+  "split_identity_hash": "d9b66071e332cc9bf9af1aec206e7a0d07daa19e3e69e7414b514f3384f1db4e",
+  "split_role": "discovery",
+  "strata_counts": {
+    "datetime": 1
+  }
+}
