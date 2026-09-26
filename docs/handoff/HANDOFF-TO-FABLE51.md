@@ -5,6 +5,17 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Scientific read source-pointer correction
+
+Before any task-quality read, registration-v4 supersedes registration-v3 for
+memory batch002. It corrects the inherited round-policy pointer to v3 and the
+source-transition prose: recovery pair4 uses3dbc629c with bounded resource
+receipt reopening; it does not use the unchanged pipeline source. Actor
+membership, roster, memory, seed, read gate and analysis scope are unchanged.
+Use docs/readiness/2026-09-26-system-memory-batch002-read-v1/registration-v4.json
+and DATA/coordination/slurp-system-memory-batch002-v1/round-policy-v3.json.
+The recovery continues independently; this metadata correction changes no run.
+
 ## Memory batch002 sole recovery running independently
 
 Checkpoint: 2026-09-26T12:08:21.323900+00:00. Driver epoch 2026-09-26T12:06:52Z,

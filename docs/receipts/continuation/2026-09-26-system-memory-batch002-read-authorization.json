@@ -1,0 +1,16 @@
+{
+  "schema": "saea-system-memory-read-authorization-receipt-v1",
+  "read_id": "SAEA-SLURP-SYSTEM-MEMORY-BATCH002-READ-V1",
+  "authorized_at": "2026-09-26T12:18:27.003551+00:00",
+  "authorization": {
+    "relpath": "coordination/slurp-system-memory-batch002-v1/read-authorization-v1.json",
+    "sha256": "4e97d08ff79ca261be3e9e55bdd15d48e1e47241b95e8a03b33292160b4e60c6"
+  },
+  "complete_actors": 8,
+  "official_scores": 8,
+  "unique_inputs": 4,
+  "complete_episodes": 32,
+  "original_aborted_actor_excluded": true,
+  "model_contacts_added": 0,
+  "scorer_contacts_added": 0
+}
