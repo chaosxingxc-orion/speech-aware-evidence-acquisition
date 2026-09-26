@@ -1,0 +1,25 @@
+{
+  "arm": "prepared-context-text",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "policy": "phase-system-group-operations-v1",
+  "result_kind": "artifact",
+  "scorers": [],
+  "whole_roster_wave_barrier": true,
+  "phase_material": {
+    "direct": {
+      "instruction_template": "probes/system_group_update_v1.txt",
+      "instruction_fill": null,
+      "predecessor_binding": "none",
+      "response_format_id": "system-group-operations-v1"
+    }
+  },
+  "what_this_is": "The unchanged group-update prompt with a source-bound operation schema. The experiment must bind phase_material.direct.fill_params.prepared_contexts to its exact prepared feedback artifact. No semantic repair or memory admission.",
+  "task_instruction": "Analyze only the registered prepared context and follow the current phase instruction. Produce the requested artifact; do not answer the original spoken task. No fresh speech or task knowledge is supplied.",
+  "task_instruction_template": null,
+  "task_instruction_template_active": false,
+  "task_instruction_fill": null,
+  "task_instruction_fill_params": null,
+  "slurp_task_contract_view": "legacy-ontology",
+  "prepared_text_control_namespace": "phase-direct-only-v1"
+}

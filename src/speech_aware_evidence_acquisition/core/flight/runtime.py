@@ -398,7 +398,7 @@ def validate_artifact_result_binding(
 ) -> Mapping[str, object] | None:
     """Validate one registered scoreless artifact-result binding."""
 
-    from ...rails.prepared_text import PREPARED_TEXT_ARM, PREPARED_TEXT_INSTRUCTION
+    from ...rails.prepared_text import PREPARED_TEXT_ARM, PREPARED_TEXT_INSTRUCTION, PREPARED_TEXT_POLICIES
 
     result_kind = values.get("result_kind", "task-answer")
     prepared_text = values.get("arm") == PREPARED_TEXT_ARM
@@ -411,7 +411,7 @@ def validate_artifact_result_binding(
         raise FlightRuntimeError("semantic update stages require the prepared text arm")
     if prepared_text:
         if (
-            result_kind != "artifact" or values.get("policy") != "phase-direct-only-v1"
+            result_kind != "artifact" or values.get("policy") not in PREPARED_TEXT_POLICIES
             or values.get("prepared_training_feedback") is None
             or values.get("task_instruction") != PREPARED_TEXT_INSTRUCTION
             or values.get("task_instruction_template_active", False)
@@ -8779,6 +8779,14 @@ class FlightRuntime:
     def _prepared_feedback_binding(self, program):
         """Verify TRAIN feedback for the common initial ORG history and real fit path."""
         values = self._composed.values
+        from ...rails.system_operation_contract import validate_operation_format_binding
+        from ...rails.prepared_text import prepared_text_control_namespace
+
+        try:
+            prepared_text_control_namespace(values, program.program_id)
+            validate_operation_format_binding(values, program)
+        except ValueError as error:
+            raise FlightRuntimeError(str(error)) from error
         spec = values.get("prepared_training_feedback")
         if spec is None:
             return None, None
@@ -8864,6 +8872,8 @@ class FlightRuntime:
             _protected_knowledge_material,
         )
 
+        from ...rails.prepared_text import prepared_text_control_namespace
+
         prepared_text = self._arm() == "prepared-context-text"
         raw_phase = self._arm() == "raw-speech-agent-native-tools" or prepared_text
         if not self.uses_speech_feature_packets() and not raw_phase:
@@ -8934,7 +8944,7 @@ class FlightRuntime:
             **({"execution_units": units} if units is not None else {}),
             "material_for_phase": build_material_for_phase(
                 specs,
-                program_id=program.program_id,
+                program_id=prepared_text_control_namespace(self._composed.values, program.program_id),
                 static_text_by_phase=static_text,
                 response_format_by_phase=formats,
                 per_sample_states=per_sample_states,

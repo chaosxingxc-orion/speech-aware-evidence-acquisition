@@ -5188,16 +5188,16 @@ def run_speech_native_agent_loop(
         raise RailsRunnerError(
             "query_source must be 'speech_features' or 'speech_audio'"
         )
+    from .prepared_text import PREPARED_TEXT_POLICIES
+
     raw_native_arm = "raw-speech-agent-native-tools"
+    prepared_text = getattr(core_client, "arm", None) == "prepared-context-text"
+    direct_programs = PREPARED_TEXT_POLICIES if prepared_text else {"phase-direct-only-v1"}
     raw_direct_only = (
         native_episode_binding is None
-        and controller_policy_id in {
-            "phase-direct-only-v1",
-            "phase-direct-only-v1:direct",
-        }
+        and any(controller_policy_id in {policy, policy + ":direct"} for policy in direct_programs)
         and max_contacts == 1
     )
-    prepared_text = getattr(core_client, "arm", None) == "prepared-context-text"
     if prepared_text and (
         not raw_direct_only or query_source != "speech_audio"
         or result_kind != ARTIFACT_RESULT_KIND or initial_feedback_states is None

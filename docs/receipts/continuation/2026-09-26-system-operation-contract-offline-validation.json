@@ -1,0 +1,58 @@
+{
+  "schema": "saea-offline-validation-v1",
+  "targeted_tests": 147,
+  "pytest_log": "/home/chao/system-operation-contract-tests-v5.log",
+  "ruff": "pass",
+  "scope": "Empty/nonempty target pools, tampered inputs, mismatched bindings, old and constrained actual shared fit/send with identical model-visible history, prefix validation, and downstream operation/memory rules. No model contacts. The historical source verifier remains unchanged to preserve original prepared bytes.",
+  "offline_gates": [
+    {
+      "check": "engineering_base_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/operation-format-validation-final-v1/engineering_base_check.log"
+    },
+    {
+      "check": "harness_admission_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/operation-format-validation-final-v1/harness_admission_check.log"
+    },
+    {
+      "check": "results_ledger_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/operation-format-validation-final-v1/results_ledger_check.log"
+    },
+    {
+      "check": "tool_catalog_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/operation-format-validation-final-v1/tool_catalog_check.log"
+    },
+    {
+      "check": "experiment_handoff_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/operation-format-validation-final-v1/experiment_handoff_check.log"
+    },
+    {
+      "check": "openjiuwen_native_reuse_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/operation-format-validation-final-v1/openjiuwen_native_reuse_check.log"
+    },
+    {
+      "check": "derived_media_confinement_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/operation-format-validation-final-v1/derived_media_confinement_check.log"
+    },
+    {
+      "check": "stage3_algorithm_label_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/operation-format-validation-final-v1/stage3_algorithm_label_check.log"
+    },
+    {
+      "check": "finite_completion_policy_check",
+      "returncode": 0,
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-batch001-v1/operation-format-validation-final-v1/finite_completion_policy_check.log"
+    }
+  ],
+  "real_input_match": {
+    "relpath": "coordination/slurp-system-batch001-v1/group-update-format-v1/model-free-wire-match.json",
+    "sha256": "a3b726dbbc7a3ed1bac592274d07619904cd333cc922785516e0607e160c4f69"
+  }
+}

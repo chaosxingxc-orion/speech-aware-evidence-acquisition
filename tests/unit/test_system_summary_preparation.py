@@ -186,6 +186,7 @@ def test_prepared_complete_episode_reaches_actual_shared_fit_and_send(summary_wo
 
 def exercise_shared_fit_and_send(world_inputs, tmp_path, text_only, *, prepared_spec=None,
                                  baseline=None, comparison=False, group_update=False, batch_update=False, wire_view=False,
+                                 baseline_overrides=None,
                                  output_text="The whole episode ends in ACCEPT."):
     """Exercise the production binding, executor, request gate and artifact output."""
     from types import SimpleNamespace
@@ -220,6 +221,8 @@ def exercise_shared_fit_and_send(world_inputs, tmp_path, text_only, *, prepared_
         values = json.loads((project / "configs/baseline/system-trajectory-summary-text-v1.json").read_text())
     if baseline is not None:
         values = json.loads((project / "configs/baseline" / (baseline + ".json")).read_text())
+    if baseline_overrides is not None:
+        values.update(baseline_overrides)
     values.update(
         carrier_lock_key="slurp", prepared_training_feedback=spec,
         artifact_result={"schema": "saea-artifact-result-binding-v1",
