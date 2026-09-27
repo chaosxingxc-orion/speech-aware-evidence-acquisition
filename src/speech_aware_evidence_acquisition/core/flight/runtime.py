@@ -2309,11 +2309,14 @@ class FlightRuntime:
                     rendered,
                     key=lambda block: (-len(block[0].encode("utf-8")), block[0]),
                 )[:selection_limit]
-                narrowed_blocks = self._legality_narrowed_candidate_blocks(
-                    spec, store, rendered, selection_count=selection_count,
-                )
-                if narrowed_blocks is not None:
-                    blocks = narrowed_blocks
+                if getattr(spec, "candidate_legality_source", None) is not None:
+                    # W1: only a route that declares a legality table reaches
+                    # the narrowed bound; every other route keeps the line above.
+                    narrowed_blocks = FlightRuntime._legality_narrowed_candidate_blocks(
+                        self, spec, store, rendered, selection_count=selection_count,
+                    )
+                    if narrowed_blocks is not None:
+                        blocks = narrowed_blocks
                 if spec.exemplar_candidate_proposal is not None:
                     # Conservative preparation only. The actual native request
                     # gate still measures every exact sent request. Include the
