@@ -23,8 +23,8 @@ this hardware? Nobody has measured a single-slot, prompt-cache-off server. This 
 | design | pass A then pass B, two cells that differ only in their run/attempt/FIT identities and prose, consecutively in ONE chain on ONE resident session (the VAR1 PLAN / PLANR shape) |
 | roster | the first 50 rows of TRAIN Fold A in roster order, `docs/receipts/rosters/slurp-stage3-det-fold-a-50-v1.json` (`SLURP-STAGE3-DET-FOLD-A-50-V1`); 10 of 18 scenarios; the same first 50 rows PLAN flew |
 | runs | A `SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-V1` / `SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-FIT-V1`; B `SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-V1` / `SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-FIT-V1`; read `SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-READ-V1` |
-| composed config hashes | A `658e8032585f7214133d21528d5b7b2afebabe8ebfb48432c6645cf45a2d2ac9`; B `068fcbbf2e460b539d849b3a5229144f35953f34b6d96dfbc406fcafc8a2397d` |
-| protocol hashes | A `3c915405b94fac53bb59d91d34f098a56ac85adb3f0b9ff74cbf472dd5b77931`; B `d149258acbdc21711b38c94b7dac1c6d114b902baebdd27016cd7bb1b2e88a43` |
+| composed config hashes | A `658e8032585f7214133d21528d5b7b2afebabe8ebfb48432c6645cf45a2d2ac9`; B `26b248f6541989f25205169a6c963b66bc00c345ee362e89ad963b5277c6de78` |
+| protocol hashes | A `3c915405b94fac53bb59d91d34f098a56ac85adb3f0b9ff74cbf472dd5b77931`; B `6548e1ff67469a5318badf614cd96c70ea5ea9e01e3f6760dda835cc49e3fc53` |
 | split identity | `af8154d5dedd3768b145a9d5f5ef6d90eb0ab0f6611a02ee82b2f22fd73a07fa` |
 | id-list sha256 | `1fed658cdf96580f021887e54b1964d544dd55e8d70afd39a7e3744640f2f4b5` |
 | comparator | none: the pair is its own control; the sealed np4 answers of the same 50 rows (PLAN) are available offline for a third, descriptive comparison |

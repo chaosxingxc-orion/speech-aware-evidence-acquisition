@@ -14,8 +14,22 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np1-nocache-ctx24k-max512-v1",
       "readiness": {
         "reason": "Cell DET pass B, registered before contact on 2026-09-26 from the sealed PLAN lock fragments by script (decision 58): the locked plan on a single-slot, prompt-cache-off serving geometry, flown twice in one chain. HELD: root stops the resident np4 session, starts serving-slurp-native-det-np1-nocache-v1 from q4km-mmproj-free-slurp-native-bounded-perception-proof-np1-nocache-ctx24k-max512-v1, mints coordination/slurp-stage3-det-np1-fold-a-50-v1/root-admission-v1.json (decision id slurp-stage3-det-np1-fold-a-50-admission-v1) with the four eligible run ids and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16) and appends the preparation requirement. The requirements list is empty by design (core.flight.repin._set_preparation_requirement rewrites every preparation entry) and --allow-output-change must never be passed: pass B's supply must reproduce pass A's byte for byte. Nothing here authorises a flight, a readiness flip or an admission entry.",
-        "requirements": [],
-        "state": "held"
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-det-np1-fold-a-50-admission-v1",
+            "relpath": "coordination/slurp-stage3-det-np1-fold-a-50-v1/root-admission-v1.json",
+            "sha256": "a825151a83c3a9de04e15504b6c43167a641546d04b00bf3f9947966f8993497",
+            "reason": "Decision slurp-stage3-det-np1-fold-a-50-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-V1/phase-supply-v1.json",
+            "sha256": "b7ff96612bae6ea71176030128dbd830143c38610965595e2f5d928038bd534e",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-V1"
     }

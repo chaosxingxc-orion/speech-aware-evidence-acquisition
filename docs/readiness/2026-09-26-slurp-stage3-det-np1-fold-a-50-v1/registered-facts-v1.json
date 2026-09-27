@@ -94,7 +94,7 @@
       "baseline_fragment": "slurp-native-stage3-det-np1-fold-a-50-b-baseline-v1",
       "campaign_plan": "configs/campaign/slurp-native-stage3-det-np1-fold-a-50-b-v1.json",
       "cell_id": "slurp-native-stage3-det-np1-fold-a-50-b-v1",
-      "composed_config_hash": "068fcbbf2e460b539d849b3a5229144f35953f34b6d96dfbc406fcafc8a2397d",
+      "composed_config_hash": "26b248f6541989f25205169a6c963b66bc00c345ee362e89ad963b5277c6de78",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "declares_prepared_phase_supply": false,
       "decoding_params": {
@@ -132,7 +132,7 @@
       },
       "pass": "b",
       "policy": "phase-native-candidates-review-revise-v1",
-      "protocol_hash": "d149258acbdc21711b38c94b7dac1c6d114b902baebdd27016cd7bb1b2e88a43",
+      "protocol_hash": "6548e1ff67469a5318badf614cd96c70ea5ea9e01e3f6760dda835cc49e3fc53",
       "run_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-V1",
       "scorers": [
         "slurp-slu-official-train",

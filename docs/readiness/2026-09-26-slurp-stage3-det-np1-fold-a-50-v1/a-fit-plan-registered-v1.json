@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-26-slurp-stage3-det-np1-fold-a-50-v1/protocol-registered-v1.json",
-    "sha256": "8ce0ed5266c991f2838af24495f02dd9c056e9b1f9755de4233d75b462f530a1"
+    "sha256": "5288ad8b362f2d599c8e0b58094a985de075d7f6d3bad6b8f88d593e9dd60b97"
   },
   "purpose": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-FIT-V1: cell DET pass A FIT identity. It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No read before BOTH passes' complete sealed manifests, exact ordered outputs, native phase summaries and single successful complete official TRAIN scores exist, and before the stop stage of scripts/analysis/slurp_det_pair_read.py has verified both attempts FINALIZED, both manifests COMPLETED on the 50-row split identity, and every delivered text re-hashing to its recorded digest. A partial manifest is never scored and never read.",

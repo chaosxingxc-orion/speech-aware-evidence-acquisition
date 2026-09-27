@@ -105,7 +105,7 @@ about 850 contacts assumed 8.5 per row; PLAN realised 5.0.
 | pass | run id | FIT run id | composed config | protocol |
 | --- | --- | --- | --- | --- |
 | A | `SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-V1` | `SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-FIT-V1` | `658e8032585f7214133d21528d5b7b2afebabe8ebfb48432c6645cf45a2d2ac9` | `3c915405b94fac53bb59d91d34f098a56ac85adb3f0b9ff74cbf472dd5b77931` |
-| B | `SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-V1` | `SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-FIT-V1` | `068fcbbf2e460b539d849b3a5229144f35953f34b6d96dfbc406fcafc8a2397d` | `d149258acbdc21711b38c94b7dac1c6d114b902baebdd27016cd7bb1b2e88a43` |
+| B | `SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-V1` | `SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-FIT-V1` | `26b248f6541989f25205169a6c963b66bc00c345ee362e89ad963b5277c6de78` | `6548e1ff67469a5318badf614cd96c70ea5ea9e01e3f6760dda835cc49e3fc53` |
 
 Split identity `af8154d5dedd3768b145a9d5f5ef6d90eb0ab0f6611a02ee82b2f22fd73a07fa`; id-list sha256 `1fed658cdf96580f021887e54b1964d544dd55e8d70afd39a7e3744640f2f4b5`; roster
 `docs/receipts/rosters/slurp-stage3-det-fold-a-50-v1.json`. Every configs/baseline and configs/experiment hash moves at the flip and the re-pin

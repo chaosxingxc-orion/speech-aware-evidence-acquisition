@@ -25,7 +25,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-26-slurp-stage3-det-np1-fold-a-50-v1/protocol-registered-v1.json",
-      "sha256": "8ce0ed5266c991f2838af24495f02dd9c056e9b1f9755de4233d75b462f530a1"
+      "sha256": "5288ad8b362f2d599c8e0b58094a985de075d7f6d3bad6b8f88d593e9dd60b97"
     },
     "read_driver": {
       "path": "scripts/analysis/slurp_det_pair_read.py",
@@ -121,8 +121,8 @@
     "note": "the values of the fragments exactly as committed at 9255ac71 (readiness held, no decision requirement); repin_cell.py recomputes them at the flip.",
     "pass_a_composed_config": "658e8032585f7214133d21528d5b7b2afebabe8ebfb48432c6645cf45a2d2ac9",
     "pass_a_protocol": "3c915405b94fac53bb59d91d34f098a56ac85adb3f0b9ff74cbf472dd5b77931",
-    "pass_b_composed_config": "068fcbbf2e460b539d849b3a5229144f35953f34b6d96dfbc406fcafc8a2397d",
-    "pass_b_protocol": "d149258acbdc21711b38c94b7dac1c6d114b902baebdd27016cd7bb1b2e88a43"
+    "pass_b_composed_config": "26b248f6541989f25205169a6c963b66bc00c345ee362e89ad963b5277c6de78",
+    "pass_b_protocol": "6548e1ff67469a5318badf614cd96c70ea5ea9e01e3f6760dda835cc49e3fc53"
   },
   "schema": "saea-campaign-decision-v1",
   "service": {

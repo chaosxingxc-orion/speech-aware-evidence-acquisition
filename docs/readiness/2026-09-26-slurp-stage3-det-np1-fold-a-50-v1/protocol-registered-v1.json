@@ -17,11 +17,11 @@
       "attempt_id": "attempt-slurp-native-stage3-det-np1-fold-a-50-b-generation-v1",
       "campaign_plan": "configs/campaign/slurp-native-stage3-det-np1-fold-a-50-b-v1.json",
       "cell_id": "slurp-native-stage3-det-np1-fold-a-50-b-v1",
-      "composed_config_hash": "068fcbbf2e460b539d849b3a5229144f35953f34b6d96dfbc406fcafc8a2397d",
+      "composed_config_hash": "26b248f6541989f25205169a6c963b66bc00c345ee362e89ad963b5277c6de78",
       "experiment": "slurp-native-stage3-det-np1-fold-a-50-b-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-det-np1-fold-a-50-b-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-FIT-V1",
-      "protocol_hash": "d149258acbdc21711b38c94b7dac1c6d114b902baebdd27016cd7bb1b2e88a43",
+      "protocol_hash": "6548e1ff67469a5318badf614cd96c70ea5ea9e01e3f6760dda835cc49e3fc53",
       "run_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-V1",
       "service_session": "serving-slurp-native-det-np1-nocache-v1",
       "split_identity_hash": "af8154d5dedd3768b145a9d5f5ef6d90eb0ab0f6611a02ee82b2f22fd73a07fa"
