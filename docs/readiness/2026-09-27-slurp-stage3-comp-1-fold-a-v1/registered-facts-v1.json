@@ -106,7 +106,7 @@
       },
       "boundary_facet_source_sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
       "cell": "slurp-native-stage3-comp1-fold-a-v1",
-      "composed_config_hash": "6758750b713fe45358d9eb3c0f4a18d3e32ed0d3a84c85da195c6bfaad536b9b",
+      "composed_config_hash": "356884d1d44e05fbaa474505a2e4639c107b34658209e8648d1a5ef90189fc2b",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "declares_agreement_source": true,
       "deliver_normaliser": {
@@ -118,7 +118,7 @@
       "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "policy": "phase-native-candidates-review-revise-cited-v1",
-      "protocol_hash": "255019cd07fe8eec84484d906076eeefe171f9883ade9bd2f7f95b5d9443cb7a",
+      "protocol_hash": "80d7c91f89ec17edef99efe117ad402a9d750e084ccd1f29a488a23321b9e34d",
       "readiness_state": "held",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1",
@@ -551,7 +551,7 @@
         "arm": {
           "blockers": null,
           "check_path": "/home/chao/saea-worktrees/.comp1-checks/check-slurp-native-stage3-comp1-fold-a-v1.json",
-          "config_hash": "6758750b713fe45358d9eb3c0f4a18d3e32ed0d3a84c85da195c6bfaad536b9b",
+          "config_hash": "356884d1d44e05fbaa474505a2e4639c107b34658209e8648d1a5ef90189fc2b",
           "prompt_budget_per_phase": [
             {
               "completion_token_ceiling": 512,
@@ -598,7 +598,7 @@
               "speech_feature_tokens": 29
             }
           ],
-          "protocol_hash": "255019cd07fe8eec84484d906076eeefe171f9883ade9bd2f7f95b5d9443cb7a",
+          "protocol_hash": "80d7c91f89ec17edef99efe117ad402a9d750e084ccd1f29a488a23321b9e34d",
           "scientific_readiness": {
             "reason": "Cell COMP-1 registered before contact on 2026-09-27 from the sealed cell PLAN fragments by script (decision 58) with the agreement term (as AGREE), the centroid key (as KPROBE) and the citation contract composed. Comparator: the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1, never re-flown, read at the in-chain A/A replicate SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1 flown in the same campaign chain. HELD: the coordinator declares expected_effect_pp from the AGREE and KPROBE reads, root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16). --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
             "state": "held"
