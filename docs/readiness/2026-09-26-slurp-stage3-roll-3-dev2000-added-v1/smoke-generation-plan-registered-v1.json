@@ -16,7 +16,7 @@
   },
   "comparator": null,
   "comparator_reason": "NONE, by design. ROLL-3 is an asset: it collects a sealed five-sample pool on the evaluation roster so that later actions over that pool are readable offline at about 0.53 pp at n = 1,000. No sealed arm is re-flown, re-scored or compared against, the read is never scripts/analysis/plan_cell_read.py, and no number this cell produces is gated.",
-  "composed_config_hash": "fb153e85b17327ed41743dd7c1fff6165f6fb618222c998a895e088903b00fcc",
+  "composed_config_hash": "5e91c6f83983da147e8d9931cbf74599499c95c6da2d9064fdfabfdafed89786",
   "decision_rule": {
     "no_gate_number": "No threshold is pre-registered on any number this cell produces. There is no comparator: one arm is flown and nothing is contrasted against it.",
     "output": "A sealed manifest with 1,000 of 1,000 rows delivered and exactly five custodied Solver samples per row in solver_group (invariant I7g), one official complete score, and the sealed per-sample custody from which the within-flight sample spread on DEV-2000-ADDED, the oracle best-of-5 ceiling on DEV-2000-ADDED and any verifier-selection arm are read OFFLINE at zero further GPU cost.",
@@ -29,7 +29,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 76,
     "planned_speech_audio_seconds": 155,
-    "protocol_hash": "f0897ea06f3a2455cd39cd0fde59c981e7f844de20581ca6a2052e6d16a18ced",
+    "protocol_hash": "f61458df3365ea3313f4f12829e7c1f76e96b43fdee7e9b1b120d61c8cccd466",
     "run_id": "SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "fee83441e514473dc4ab798f8554882bc5753c7fc4924eda0e72c7af7ed51ef0",
@@ -100,7 +100,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-26-slurp-stage3-roll-3-dev2000-added-v1/protocol-registered-v1.json",
-    "sha256": "8c22aa93b57708a2185226f1c0f5e6c0235f51d9e97ecc87f0c90492f3dec2c2"
+    "sha256": "b0a40cd3fe4c9f324170870c45a0ff2034989ef3e4a000fdc3940f0919dea892"
   },
   "purpose": "DESCRIPTIVE. This cell is an ASSET and makes NO comparison, no admission claim, no gate, no superiority, transfer, generalisation, component-causal or confirmatory statement. Its only deliverable is a sealed five-sample pool on DEV-2000-ADDED plus the structural proof that the pool is well formed. Any later read over that pool is registered separately.",
   "quality_read_gate": "No read of any kind before the complete sealed manifest and the exact ordered outputs with exactly five custodied solver_group samples per row exist. A partial manifest is never read; a failed smoke stops the arm and it does not open.",
