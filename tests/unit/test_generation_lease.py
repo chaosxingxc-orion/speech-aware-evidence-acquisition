@@ -80,7 +80,9 @@ def test_live_legacy_lock_blocks_new_lease(tmp_path):
         acquire(tmp_path)
 
 
-@pytest.mark.parametrize("pid", [999999999, os.getpid()])
+# Explicit ids: the default id embedded os.getpid(), so the node id changed with every process and could not be
+# re-selected by id (a collected id list replayed in another process reported "not found").
+@pytest.mark.parametrize("pid", [999999999, os.getpid()], ids=["dead-owner", "reused-pid"])
 def test_unreconciled_dead_owner_or_reused_pid_never_clears_metadata(tmp_path, pid):
     path = tmp_path / "locks/flight.lock"
     path.parent.mkdir()
