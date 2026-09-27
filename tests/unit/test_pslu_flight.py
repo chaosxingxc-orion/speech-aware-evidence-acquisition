@@ -6250,7 +6250,20 @@ def test_speech_native_contact_dispatch_queues_each_multistep_call_independently
                 self.active += 1
                 self.max_active = max(self.max_active, self.active)
                 self.stages.append(kwargs["matcher_policy_id"])
-            time.sleep(0.01)
+            if kwargs["matcher_policy_id"].endswith(":intent-factors"):
+                # The dispatcher admits the four tasks on four task threads, each of which submits its first
+                # contact on start. A bare 10 ms sleep let task 0's SECOND contact overtake a task thread that
+                # a loaded host started late (seen in a full reverse-order suite run), so the ordering below
+                # asserted thread-start latency, not dispatch. Hold each first-stage contact until all four
+                # task threads are alive, plus a margin for them to reach their first submission.
+                deadline = time.monotonic() + 5.0
+                while time.monotonic() < deadline and sum(
+                    thread.name.startswith("saea-speech-native_") for thread in threading.enumerate()
+                ) < 4:
+                    time.sleep(0.001)
+                time.sleep(0.05)
+            else:
+                time.sleep(0.01)
             with self.lock:
                 self.active -= 1
             if kwargs["matcher_policy_id"].endswith(":intent-factors"):
