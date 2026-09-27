@@ -451,11 +451,15 @@ def test_every_committed_cell_rewrites_byte_identically_unless_the_legacy_tool_w
                     if not own and isinstance(entry, Mapping) and entry.get("kind") == "preparation":
                         protected.append((fragment.stem, cell_id, str(entry.get("relpath"))))
 
-    # The three registered AGREE cells are exactly the protected shape.
+    # The registered cells that rank with the agreement table are exactly the protected shape: AGREE's arm and
+    # smoke, and -- since COMP-1's registration (3667e01d), which carries "exactly the artifact cell AGREE
+    # registered" beside its own supply -- COMP-1's arm and smoke (its in-chain A/A carries no table).
     agree = {(stem, cell_id) for stem, cell_id, relpath in protected if relpath == AGREEMENT_TABLE_RELPATH}
     assert agree == {
         (AGREE_W1_FRAGMENT.stem, AGREE_ARM_CELL),
         (AGREE_SMOKE_FRAGMENT.stem, AGREE_SMOKE_CELL),
+        ("slurp-native-stage3-comp1-fold-a-v1", "slurp-native-stage3-comp1-fold-a-v1"),
+        ("slurp-native-stage3-comp1-fold-a-smoke-4-v1", "slurp-native-stage3-comp1-fold-a-smoke-4-v1"),
     }
     assert counts["one requirement, its own supply: byte-identical"] > 0
     assert counts["pin source: composed"] > 0
