@@ -62,6 +62,17 @@ dataset view -- or (c) run-id / budget / prose bookkeeping. `native_episode`, th
 releases, snapshots, scorers, geometry and packets are ROLL-2's byte for byte.
 `tests/unit/test_filler_family.py` re-proves it from the committed files with its own implementation.
 
+## Model-free proofs run at registration
+
+- `build_filler_roster.py --check`: all eight roster receipts reproduce byte for byte.
+- An in-memory build of chunk c01's first-phase Perception supply through the flight runtime's own seam
+  (`build_flight_runtime` -> `phase_supply_artifact_identity` -> `build_supply_for_phase` ->
+  `build_bootstrap_selection`, with the runtime's source-audio bindings; nothing written): 180 rows, the filler
+  agreement table loaded (1,080 rows), eight boundary entries delivered on every row, and 145 of the 180 rows
+  receive a different delivered boundary list than the same rows under the FILLER BASE's w_agree 0.0.
+- `core.flight.cli check` at the registration commit: c01 and its smoke are **held**, sample counts 180 / 4,
+  config and protocol hashes equal to the registered plans.
+
 ## Chunks, caps and time
 
 | chunk | rows | generation cap | FIT cap | speech cap (s) | GPU-h cap | expected contacts | expected GPU-min |
