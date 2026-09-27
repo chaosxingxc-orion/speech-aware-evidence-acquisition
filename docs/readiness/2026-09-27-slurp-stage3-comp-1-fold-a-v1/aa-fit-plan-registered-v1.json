@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "22e642f79041c831c93e6b4db9177b68a103516e358eaa03e57d03a81e806b60"
+    "sha256": "9e8c6ef1e2616cb64dfc5f6c45fbb8e537c3566f774571d8d262d00fac154612"
   },
   "purpose": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1: It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the COMP-1 arm and its in-chain A/A replicate, and before the coordinator's declared expected_effect_pp is on the record. A verdict computed against the sealed comparator alone is refused.",

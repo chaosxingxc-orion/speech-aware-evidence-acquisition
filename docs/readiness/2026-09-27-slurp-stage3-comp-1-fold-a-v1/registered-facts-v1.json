@@ -151,7 +151,7 @@
       },
       "boundary_facet_source_sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
       "cell": "slurp-native-stage3-comp1-fold-a-smoke-4-v1",
-      "composed_config_hash": "a47d1dc1db89cd7b401b1716e83b285048d39aef51494738db1598df610d4ff4",
+      "composed_config_hash": "acfab83e4b75590053452bc5e325e2612022973e39cab75c080cf3e2d101ac95",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "declares_agreement_source": true,
       "deliver_normaliser": {
@@ -163,7 +163,7 @@
       "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-SMOKE-4-FIT-V1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "policy": "phase-native-candidates-review-revise-cited-v1",
-      "protocol_hash": "7a5f7854851bb793d8b37e66e5c7c38de9e0bd6e25d3b49c6ff409cc7b978b48",
+      "protocol_hash": "4bce171c405c098173cb626e22a75475d049c805df9ae5f0d927822e18b688bf",
       "readiness_state": "held",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-SMOKE-4-V1",
@@ -607,7 +607,7 @@
         "smoke": {
           "blockers": null,
           "check_path": "/home/chao/saea-worktrees/.comp1-checks/check-slurp-native-stage3-comp1-fold-a-smoke-4-v1.json",
-          "config_hash": "a47d1dc1db89cd7b401b1716e83b285048d39aef51494738db1598df610d4ff4",
+          "config_hash": "acfab83e4b75590053452bc5e325e2612022973e39cab75c080cf3e2d101ac95",
           "prompt_budget_per_phase": [
             {
               "completion_token_ceiling": 512,
@@ -654,7 +654,7 @@
               "speech_feature_tokens": 29
             }
           ],
-          "protocol_hash": "7a5f7854851bb793d8b37e66e5c7c38de9e0bd6e25d3b49c6ff409cc7b978b48",
+          "protocol_hash": "4bce171c405c098173cb626e22a75475d049c805df9ae5f0d927822e18b688bf",
           "scientific_readiness": {
             "reason": "Four-row form smoke of cell COMP-1, registered before contact on 2026-09-27 from the sealed cell PLAN smoke fragments by script (decision 58). HELD until root mints the admission receipt and re-pins with --set-ready, which re-mints this cell's own first-phase supply (item E16); --allow-output-change must never be passed. Structural form proof only: no score, no read, no claim.",
             "state": "held"
@@ -732,7 +732,7 @@
     },
     "smoke": {
       "contact_class": "model-free",
-      "file_sha256": "af53ea707e9ca742c8383c5d2fa7379c4c18c5dbb83c22acdaa3a9e97000d732",
+      "file_sha256": "af1acd831ee9638d4227f86e9ec50f5dfa52c4022503333faeb4b585c7c34906",
       "implementation": {
         "runtime": "e80659065b153cadd05d6239a0c557dc38e3d468812fafd7dcff3289f46ccd5f",
         "speech_aware_evidence_acquisition.rails.kb_policy": "92cf457a2fcf1594050a4b23fe4d9443ff27927fbb0498e838d95638f5a49b8a",

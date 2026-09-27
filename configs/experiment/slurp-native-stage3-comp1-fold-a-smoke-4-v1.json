@@ -30,8 +30,8 @@
           {
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors, the CENTROID key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and the sealed agreement table, with zero model, tokenizer, encoder, scorer or server contacts. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own. --allow-output-change must never be passed.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-SMOKE-4-V1/phase-supply-v2.json",
-            "sha256": "af53ea707e9ca742c8383c5d2fa7379c4c18c5dbb83c22acdaa3a9e97000d732"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-SMOKE-4-V1/phase-supply-v3.json",
+            "sha256": "af1acd831ee9638d4227f86e9ec50f5dfa52c4022503333faeb4b585c7c34906"
           }
         ],
         "state": "ready"
