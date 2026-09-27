@@ -1,0 +1,2318 @@
+{
+  "arm_window_driver_utc": [
+    "2026-09-26T16:00:01+00:00",
+    "2026-09-26T18:22:39+00:00"
+  ],
+  "attempt_id": "attempt-slurp-native-stage3-roll-2-fold-a-v1-generation",
+  "card_selection_bound": {
+    "admissible_card_tokens": {
+      "max": 6953,
+      "mean": 3569.4,
+      "n": 7915,
+      "p50": 3637,
+      "p90": 5121,
+      "sum": 28252061
+    },
+    "cards_admissible_per_contact": {
+      "max": 17,
+      "mean": 7.8,
+      "n": 7915,
+      "p50": 8,
+      "p90": 12,
+      "sum": 61907
+    },
+    "cards_not_admissible_per_contact": {
+      "max": 12,
+      "mean": 4.0,
+      "n": 7915,
+      "p50": 4,
+      "p90": 8,
+      "sum": 31923
+    },
+    "contacts_measured": 7915,
+    "method": "slot type admissible iff listed for any of the row's Perception candidate intents in slurp-intent-slot-schema-v1 (train-derived, gold-free at runtime)",
+    "not_admissible_card_tokens": {
+      "max": 4652,
+      "mean": 1647.0,
+      "n": 7915,
+      "p50": 1511,
+      "p90": 3340,
+      "sum": 13036344
+    },
+    "schema_intents": 60
+  },
+  "day_accounting": {
+    "arm_minutes": {
+      "arm:conv": 5,
+      "arm:roll2": 143,
+      "arm:system-batch-synthesis001-format-v1": 1,
+      "arm:system-batch-synthesis001-v1": 1,
+      "arm:system-batch001-s1-v1": 9,
+      "arm:system-batch001-s2-v1": 4,
+      "arm:system-batch001-s3-v1": 4,
+      "arm:system-batch001-s4-v1": 5,
+      "arm:system-comparison001-v1": 1,
+      "arm:system-event-credit001-v1": 2,
+      "arm:system-group-update001-v1": 1,
+      "arm:system-memory-batch002-empty-s1": 9,
+      "arm:system-memory-batch002-memory-s1": 9,
+      "arm:system-memory-batch002-recovery1-pipeline": 7,
+      "arm:system-memory-batch002-remainder-pipeline-v1": 17,
+      "arm:system-summary001-s1-v2": 2,
+      "arm:system-summary001-s2-v2": 2,
+      "arm:system-summary001-s3-v2": 2,
+      "arm:system-summary001-s4-v2": 2
+    },
+    "busy_definition": "a minute is busy when any monitor sample in it has utilization >= 5.0 % or a busy slot; unmonitored = no sample from any of the four sessions",
+    "busy_minutes": 182,
+    "by_driver_state": {
+      "between-drivers:nothing-registered": {
+        "busy": 17,
+        "idle": 745,
+        "unmonitored": 23
+      },
+      "between-drivers:stopped-waiting": {
+        "idle": 33,
+        "unmonitored": 388
+      },
+      "driver-idle": {
+        "busy": 2,
+        "idle": 4
+      },
+      "in-flight": {
+        "busy": 162,
+        "idle": 64
+      },
+      "prelaunch+smoke": {
+        "busy": 1,
+        "idle": 1
+      }
+    },
+    "day_utc": "2026-09-26",
+    "driver_spans": [
+      [
+        "2026-09-26T00:00:00+00:00",
+        "2026-09-26T06:28:52+00:00",
+        "between-drivers:stopped-waiting"
+      ],
+      [
+        "2026-09-26T06:28:52+00:00",
+        "2026-09-26T06:28:53+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T06:28:53+00:00",
+        "2026-09-26T06:28:55+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T06:28:55+00:00",
+        "2026-09-26T06:38:19+00:00",
+        "arm:system-batch001-s1-v1"
+      ],
+      [
+        "2026-09-26T06:38:19+00:00",
+        "2026-09-26T06:38:42+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T06:38:42+00:00",
+        "2026-09-26T06:38:44+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T06:38:44+00:00",
+        "2026-09-26T06:43:13+00:00",
+        "arm:system-batch001-s2-v1"
+      ],
+      [
+        "2026-09-26T06:43:13+00:00",
+        "2026-09-26T06:43:36+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T06:43:36+00:00",
+        "2026-09-26T06:43:38+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T06:43:38+00:00",
+        "2026-09-26T06:47:57+00:00",
+        "arm:system-batch001-s3-v1"
+      ],
+      [
+        "2026-09-26T06:47:57+00:00",
+        "2026-09-26T06:48:18+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T06:48:18+00:00",
+        "2026-09-26T06:48:20+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T06:48:20+00:00",
+        "2026-09-26T06:52:37+00:00",
+        "arm:system-batch001-s4-v1"
+      ],
+      [
+        "2026-09-26T06:52:37+00:00",
+        "2026-09-26T06:52:57+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T06:52:57+00:00",
+        "2026-09-26T08:11:53+00:00",
+        "between-drivers:nothing-registered"
+      ],
+      [
+        "2026-09-26T08:11:53+00:00",
+        "2026-09-26T08:11:54+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T08:11:54+00:00",
+        "2026-09-26T08:11:55+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T08:11:55+00:00",
+        "2026-09-26T08:11:56+00:00",
+        "arm:system-summary001-s1"
+      ],
+      [
+        "2026-09-26T08:11:56+00:00",
+        "2026-09-26T08:24:26+00:00",
+        "between-drivers:stopped-waiting"
+      ],
+      [
+        "2026-09-26T08:24:26+00:00",
+        "2026-09-26T08:24:28+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T08:24:28+00:00",
+        "2026-09-26T08:26:20+00:00",
+        "arm:system-summary001-s1-v2"
+      ],
+      [
+        "2026-09-26T08:26:20+00:00",
+        "2026-09-26T08:26:21+00:00",
+        "inspect+seal"
+      ],
+      [
+        "2026-09-26T08:26:21+00:00",
+        "2026-09-26T08:26:45+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T08:26:45+00:00",
+        "2026-09-26T08:26:46+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T08:26:46+00:00",
+        "2026-09-26T08:26:47+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T08:26:47+00:00",
+        "2026-09-26T08:28:32+00:00",
+        "arm:system-summary001-s2-v2"
+      ],
+      [
+        "2026-09-26T08:28:32+00:00",
+        "2026-09-26T08:28:36+00:00",
+        "inspect+seal"
+      ],
+      [
+        "2026-09-26T08:28:36+00:00",
+        "2026-09-26T08:28:56+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T08:28:56+00:00",
+        "2026-09-26T08:28:58+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T08:28:58+00:00",
+        "2026-09-26T08:30:48+00:00",
+        "arm:system-summary001-s3-v2"
+      ],
+      [
+        "2026-09-26T08:30:48+00:00",
+        "2026-09-26T08:30:49+00:00",
+        "inspect+seal"
+      ],
+      [
+        "2026-09-26T08:30:49+00:00",
+        "2026-09-26T08:31:12+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T08:31:12+00:00",
+        "2026-09-26T08:31:13+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T08:31:13+00:00",
+        "2026-09-26T08:31:14+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T08:31:14+00:00",
+        "2026-09-26T08:33:02+00:00",
+        "arm:system-summary001-s4-v2"
+      ],
+      [
+        "2026-09-26T08:33:02+00:00",
+        "2026-09-26T08:33:22+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T08:33:22+00:00",
+        "2026-09-26T08:50:26+00:00",
+        "between-drivers:nothing-registered"
+      ],
+      [
+        "2026-09-26T08:50:26+00:00",
+        "2026-09-26T08:50:28+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T08:50:28+00:00",
+        "2026-09-26T08:51:13+00:00",
+        "arm:system-comparison001-v1"
+      ],
+      [
+        "2026-09-26T08:51:13+00:00",
+        "2026-09-26T08:51:33+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T08:51:33+00:00",
+        "2026-09-26T09:10:03+00:00",
+        "between-drivers:nothing-registered"
+      ],
+      [
+        "2026-09-26T09:10:03+00:00",
+        "2026-09-26T09:10:05+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T09:10:05+00:00",
+        "2026-09-26T09:10:51+00:00",
+        "arm:system-group-update001-v1"
+      ],
+      [
+        "2026-09-26T09:10:51+00:00",
+        "2026-09-26T09:10:52+00:00",
+        "inspect+seal"
+      ],
+      [
+        "2026-09-26T09:10:52+00:00",
+        "2026-09-26T09:11:12+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T09:11:12+00:00",
+        "2026-09-26T09:46:32+00:00",
+        "between-drivers:nothing-registered"
+      ],
+      [
+        "2026-09-26T09:46:32+00:00",
+        "2026-09-26T09:46:33+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T09:46:33+00:00",
+        "2026-09-26T09:46:35+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T09:46:35+00:00",
+        "2026-09-26T09:47:15+00:00",
+        "arm:system-group-update001-format-v1"
+      ],
+      [
+        "2026-09-26T09:47:15+00:00",
+        "2026-09-26T09:47:38+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T09:47:38+00:00",
+        "2026-09-26T10:01:02+00:00",
+        "between-drivers:nothing-registered"
+      ],
+      [
+        "2026-09-26T10:01:02+00:00",
+        "2026-09-26T10:01:03+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T10:01:03+00:00",
+        "2026-09-26T10:01:05+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T10:01:05+00:00",
+        "2026-09-26T10:01:51+00:00",
+        "arm:system-batch-synthesis001-v1"
+      ],
+      [
+        "2026-09-26T10:01:51+00:00",
+        "2026-09-26T10:02:11+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T10:02:11+00:00",
+        "2026-09-26T10:17:17+00:00",
+        "between-drivers:nothing-registered"
+      ],
+      [
+        "2026-09-26T10:17:17+00:00",
+        "2026-09-26T10:17:19+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T10:17:19+00:00",
+        "2026-09-26T10:18:04+00:00",
+        "arm:system-batch-synthesis001-format-v1"
+      ],
+      [
+        "2026-09-26T10:18:04+00:00",
+        "2026-09-26T10:18:05+00:00",
+        "inspect+seal"
+      ],
+      [
+        "2026-09-26T10:18:05+00:00",
+        "2026-09-26T10:18:25+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T10:18:25+00:00",
+        "2026-09-26T10:42:26+00:00",
+        "between-drivers:nothing-registered"
+      ],
+      [
+        "2026-09-26T10:42:26+00:00",
+        "2026-09-26T10:42:27+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T10:42:27+00:00",
+        "2026-09-26T10:42:29+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T10:42:29+00:00",
+        "2026-09-26T10:43:48+00:00",
+        "arm:system-event-credit001-v1"
+      ],
+      [
+        "2026-09-26T10:43:48+00:00",
+        "2026-09-26T10:43:49+00:00",
+        "inspect+seal"
+      ],
+      [
+        "2026-09-26T10:43:49+00:00",
+        "2026-09-26T10:44:09+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T10:44:09+00:00",
+        "2026-09-26T11:12:56+00:00",
+        "between-drivers:nothing-registered"
+      ],
+      [
+        "2026-09-26T11:12:56+00:00",
+        "2026-09-26T11:12:57+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T11:12:57+00:00",
+        "2026-09-26T11:12:58+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T11:12:58+00:00",
+        "2026-09-26T11:12:59+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T11:12:59+00:00",
+        "2026-09-26T11:21:35+00:00",
+        "arm:system-memory-batch002-empty-s1"
+      ],
+      [
+        "2026-09-26T11:21:35+00:00",
+        "2026-09-26T11:21:36+00:00",
+        "inspect+seal"
+      ],
+      [
+        "2026-09-26T11:21:36+00:00",
+        "2026-09-26T11:21:56+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T11:21:56+00:00",
+        "2026-09-26T11:21:58+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T11:21:58+00:00",
+        "2026-09-26T11:30:43+00:00",
+        "arm:system-memory-batch002-memory-s1"
+      ],
+      [
+        "2026-09-26T11:30:43+00:00",
+        "2026-09-26T11:31:05+00:00",
+        "between-drivers:stopped-waiting"
+      ],
+      [
+        "2026-09-26T11:31:05+00:00",
+        "2026-09-26T11:31:07+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T11:31:07+00:00",
+        "2026-09-26T11:47:32+00:00",
+        "arm:system-memory-batch002-remainder-pipeline-v1"
+      ],
+      [
+        "2026-09-26T11:47:32+00:00",
+        "2026-09-26T12:06:52+00:00",
+        "between-drivers:stopped-waiting"
+      ],
+      [
+        "2026-09-26T12:06:52+00:00",
+        "2026-09-26T12:06:53+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T12:06:53+00:00",
+        "2026-09-26T12:06:54+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T12:06:54+00:00",
+        "2026-09-26T12:14:25+00:00",
+        "arm:system-memory-batch002-recovery1-pipeline"
+      ],
+      [
+        "2026-09-26T12:14:25+00:00",
+        "2026-09-26T12:14:26+00:00",
+        "inspect+seal"
+      ],
+      [
+        "2026-09-26T12:14:26+00:00",
+        "2026-09-26T12:14:46+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T12:14:46+00:00",
+        "2026-09-26T15:56:39+00:00",
+        "between-drivers:nothing-registered"
+      ],
+      [
+        "2026-09-26T15:56:39+00:00",
+        "2026-09-26T15:58:21+00:00",
+        "between-drivers:stopped-waiting"
+      ],
+      [
+        "2026-09-26T15:58:21+00:00",
+        "2026-09-26T15:58:24+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T15:58:24+00:00",
+        "2026-09-26T15:59:51+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T15:59:51+00:00",
+        "2026-09-26T16:00:01+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T16:00:01+00:00",
+        "2026-09-26T18:22:39+00:00",
+        "arm:roll2"
+      ],
+      [
+        "2026-09-26T18:22:39+00:00",
+        "2026-09-26T18:22:49+00:00",
+        "inspect+seal"
+      ],
+      [
+        "2026-09-26T18:22:49+00:00",
+        "2026-09-26T18:23:09+00:00",
+        "driver-idle"
+      ],
+      [
+        "2026-09-26T18:23:09+00:00",
+        "2026-09-26T23:55:11+00:00",
+        "between-drivers:nothing-registered"
+      ],
+      [
+        "2026-09-26T23:55:11+00:00",
+        "2026-09-26T23:55:15+00:00",
+        "prelaunch+smoke"
+      ],
+      [
+        "2026-09-26T23:55:15+00:00",
+        "2026-09-27T00:00:00+00:00",
+        "arm:conv"
+      ]
+    ],
+    "minutes": 1440,
+    "monitored_minutes": 1029,
+    "np4_or_other_server_resident_minutes": 1285
+  },
+  "generated_at": "2026-09-27T01:01:54+00:00",
+  "geometry": {
+    "device_line": "- CUDA0   : NVIDIA GeForce RTX 5090 Laptop GPU (24462 MiB, 23119 MiB free)",
+    "fit_all": {
+      "intercept_mib": 17868,
+      "kib_per_token_q4_0_derived": 28.11,
+      "kib_per_token_q8_0": 53.1,
+      "note": "q4_0 block = 18 bytes / 32 elements vs q8_0 34 bytes",
+      "points": [
+        [
+          49152,
+          20410.0
+        ],
+        [
+          49152,
+          20434.0
+        ],
+        [
+          49152,
+          20410.0
+        ],
+        [
+          98304,
+          22954.0
+        ],
+        [
+          36864,
+          19776
+        ],
+        [
+          65536,
+          21272
+        ],
+        [
+          98304,
+          22976
+        ]
+      ]
+    },
+    "fit_day_only": {
+      "intercept_mib": 17882,
+      "kib_per_token": 52.83,
+      "points": [
+        [
+          49152,
+          20410.0
+        ],
+        [
+          49152,
+          20434.0
+        ],
+        [
+          49152,
+          20410.0
+        ],
+        [
+          98304,
+          22954.0
+        ]
+      ]
+    },
+    "free_at_load_mib": 23119,
+    "np4_peak_used_mib_during_day": 23988.0,
+    "rows": [
+      {
+        "fits_free_at_load": true,
+        "geometry": "np4 x 24,576 (as flown)",
+        "kv_type": "q8_0",
+        "margin_mib_vs_free_at_load": 153,
+        "total_context": 98304,
+        "vram_mib_estimated": 22966
+      },
+      {
+        "fits_free_at_load": true,
+        "geometry": "np4 x 24,576 (as flown)",
+        "kv_type": "q4_0 (derived)",
+        "margin_mib_vs_free_at_load": 2552,
+        "total_context": 98304,
+        "vram_mib_estimated": 20567
+      },
+      {
+        "fits_free_at_load": false,
+        "geometry": "np5 x 24,576",
+        "kv_type": "q8_0",
+        "margin_mib_vs_free_at_load": -1122,
+        "total_context": 122880,
+        "vram_mib_estimated": 24241
+      },
+      {
+        "fits_free_at_load": true,
+        "geometry": "np5 x 24,576",
+        "kv_type": "q4_0 (derived)",
+        "margin_mib_vs_free_at_load": 1877,
+        "total_context": 122880,
+        "vram_mib_estimated": 21242
+      },
+      {
+        "fits_free_at_load": false,
+        "geometry": "np6 x 24,576",
+        "kv_type": "q8_0",
+        "margin_mib_vs_free_at_load": -2396,
+        "total_context": 147456,
+        "vram_mib_estimated": 25515
+      },
+      {
+        "fits_free_at_load": true,
+        "geometry": "np6 x 24,576",
+        "kv_type": "q4_0 (derived)",
+        "margin_mib_vs_free_at_load": 1202,
+        "total_context": 147456,
+        "vram_mib_estimated": 21917
+      },
+      {
+        "fits_free_at_load": false,
+        "geometry": "np8 x 24,576",
+        "kv_type": "q8_0",
+        "margin_mib_vs_free_at_load": -4945,
+        "total_context": 196608,
+        "vram_mib_estimated": 28064
+      },
+      {
+        "fits_free_at_load": false,
+        "geometry": "np8 x 24,576",
+        "kv_type": "q4_0 (derived)",
+        "margin_mib_vs_free_at_load": -147,
+        "total_context": 196608,
+        "vram_mib_estimated": 23266
+      },
+      {
+        "fits_free_at_load": false,
+        "geometry": "np4 x 32,768",
+        "kv_type": "q8_0",
+        "margin_mib_vs_free_at_load": -1547,
+        "total_context": 131072,
+        "vram_mib_estimated": 24666
+      },
+      {
+        "fits_free_at_load": true,
+        "geometry": "np4 x 32,768",
+        "kv_type": "q4_0 (derived)",
+        "margin_mib_vs_free_at_load": 1652,
+        "total_context": 131072,
+        "vram_mib_estimated": 21467
+      },
+      {
+        "fits_free_at_load": false,
+        "geometry": "np6 x 32,768",
+        "kv_type": "q8_0",
+        "margin_mib_vs_free_at_load": -4945,
+        "total_context": 196608,
+        "vram_mib_estimated": 28064
+      },
+      {
+        "fits_free_at_load": false,
+        "geometry": "np6 x 32,768",
+        "kv_type": "q4_0 (derived)",
+        "margin_mib_vs_free_at_load": -147,
+        "total_context": 196608,
+        "vram_mib_estimated": 23266
+      }
+    ],
+    "server_log_prints_kv_buffer_sizes": false,
+    "sessions": {
+      "serving-slurp-native-candidate-five-train-a-np4-v1": {
+        "first_after_load_mib": 22954.0,
+        "idle_median_mib": 22954.0,
+        "idle_min_mib": 22744.0,
+        "peak_mib": 23988.0,
+        "slot_tokens": 24576,
+        "slots": 4,
+        "total_context": 98304
+      },
+      "serving-slurp-system-batch001-np2-v1": {
+        "first_after_load_mib": 20410.0,
+        "idle_median_mib": 20432.0,
+        "idle_min_mib": 20410.0,
+        "peak_mib": 20432.0,
+        "slot_tokens": 24576,
+        "slots": 2,
+        "total_context": 49152
+      },
+      "serving-slurp-system-memory-batch002-np2-v1": {
+        "first_after_load_mib": 20410.0,
+        "idle_median_mib": 20432.0,
+        "idle_min_mib": 5.0,
+        "peak_mib": 20432.0,
+        "slot_tokens": 24576,
+        "slots": 2,
+        "total_context": 49152
+      },
+      "serving-slurp-system-summary001-np1-v1": {
+        "first_after_load_mib": 20434.0,
+        "idle_median_mib": 20456.0,
+        "idle_min_mib": 292.0,
+        "peak_mib": 20456.0,
+        "slot_tokens": 49152,
+        "slots": 1,
+        "total_context": 49152
+      }
+    }
+  },
+  "join_report": {
+    "offset_histogram": {
+      "-1,0": 8994
+    },
+    "skipped_tasks": 2,
+    "unmatched_contacts": 2
+  },
+  "joined_contacts": 8994,
+  "lever_model_rates": {
+    "aggregate_decode_tok_s_while_computing": 51.2,
+    "aggregate_prefill_tok_s_while_prefilling": 2267.0,
+    "mean_per_slot_decode_tok_s": 22.2
+  },
+  "levers_ranked": [
+    {
+      "changes_for_nodes": "nothing (same bytes; batch composition changes as in every dispatcher change)",
+      "contacts_per_gpu_hour": 5416.0,
+      "empty_slot_s": 8997.4,
+      "gain_pct": 37.6,
+      "lever": "fill the slots: no empty slot-seconds (async dispatch; upper bound, per-slot service unchanged)",
+      "mean_busy_slots": 2.906,
+      "needs": "runtime change + own-null read of batch-composition noise",
+      "wall_s_removed_est": 2249.4
+    },
+    {
+      "changes_for_nodes": "nothing",
+      "contacts_per_gpu_hour": 4515.0,
+      "gain_pct": 14.7,
+      "lever": "remove only the all-slots-idle time",
+      "needs": "runtime change",
+      "wall_s_removed_est": 1055.3
+    },
+    {
+      "changes_for_nodes": "nothing",
+      "contacts_per_gpu_hour": 4334.0,
+      "gain_pct": 10.1,
+      "gap_mean_s": 2.67,
+      "gap_slot_s": 3023.7,
+      "lever": "overlap the Solver#1 supply acquisition (client gap before the first Solver contact)",
+      "needs": "runtime change (start acquisition while Perception decodes)",
+      "wall_s_removed_est": 755.9
+    },
+    {
+      "cards_per_contact_not_admissible": 4.0,
+      "changes_for_nodes": "removes cards about types the row's own candidates exclude; Reviewer/Planner still see every card the Solver saw",
+      "contacts_per_gpu_hour": 4210.0,
+      "gain_pct": 7.0,
+      "lever": "slot-contract cards whose slot type no candidate intent can carry (selection, gold-free)",
+      "needs": "form change (selection) -> no-harm cell; the owner ruling on global state does not forbid it",
+      "wall_s_removed_est": 536.8
+    },
+    {
+      "changes_for_nodes": "same parsed answer; the core's own sampling path changes",
+      "contacts_per_gpu_hour": 4198.0,
+      "gain_pct": 6.7,
+      "lever": "compact JSON output (perception): whitespace/newlines out of the emitted JSON",
+      "needs": "form change on the output side -> no-harm cell (grammar/response_format)",
+      "wall_s_removed_est": 514.8,
+      "whitespace_char_share": 0.2071
+    },
+    {
+      "changes_for_nodes": "same facts, stated once",
+      "contacts_per_gpu_hour": 4194.0,
+      "gain_pct": 6.6,
+      "lever": "repeated content lines across evidence items (state once per contact)",
+      "needs": "form change -> no-harm cell",
+      "tokens_on_wire_per_contact": 1139.0,
+      "wall_s_removed_est": 507.7
+    },
+    {
+      "changes_for_nodes": "nothing",
+      "contacts_per_gpu_hour": 4079.0,
+      "gain_pct": 3.7,
+      "lever": "prefix cache: bring every byte-identical block into the cached prefix (the brief's hypothesis)",
+      "measured_cache_share_of_prompt_tokens": 0.8894,
+      "needs": "nothing -- already realised as flown (see validation)",
+      "wall_s_removed_est": 290.2
+    },
+    {
+      "changes_for_nodes": "removes the addressable id in front of each body (nodes cite ids in evidence_refs)",
+      "contacts_per_gpu_hour": 4043.0,
+      "gain_pct": 2.7,
+      "lever": "[evidence <id>] labels removed or shortened (prefill; only the processed share counts)",
+      "needs": "form change -> no-harm cell",
+      "tokens_on_wire_per_contact": 529.0,
+      "wall_s_removed_est": 218.5
+    },
+    {
+      "changes_for_nodes": "same parsed answer; the core's own sampling path changes",
+      "contacts_per_gpu_hour": 4018.0,
+      "gain_pct": 2.1,
+      "lever": "compact JSON output (reviewer): whitespace/newlines out of the emitted JSON",
+      "needs": "form change on the output side -> no-harm cell (grammar/response_format)",
+      "wall_s_removed_est": 168.5,
+      "whitespace_char_share": 0.0868
+    },
+    {
+      "changes_for_nodes": "card structure changes",
+      "contacts_per_gpu_hour": 3985.0,
+      "gain_pct": 1.3,
+      "lever": "repeated heading-like lines across evidence items (<=40 chars or ending ':')",
+      "needs": "form change -> no-harm cell",
+      "tokens_on_wire_per_contact": 239.0,
+      "wall_s_removed_est": 102.2
+    },
+    {
+      "changes_for_nodes": "removes remaining-revisions/actions the Planner reads",
+      "contacts_per_gpu_hour": 3948.0,
+      "gain_pct": 0.3,
+      "lever": "Native episode limits line (always in the processed tail)",
+      "needs": "form change -> no-harm cell",
+      "tokens_on_wire_per_contact": 50.0,
+      "wall_s_removed_est": 25.7
+    },
+    {
+      "changes_for_nodes": "Perception schema change; later nodes read the same candidates",
+      "contacts_per_gpu_hour": 3939.0,
+      "gain_pct": 0.1,
+      "lever": "Perception output: string values repeated across candidates (state once)",
+      "needs": "form change -> no-harm cell",
+      "repeated_value_char_share": 0.0026,
+      "wall_s_removed_est": 6.6
+    },
+    {
+      "changes_for_nodes": "same parsed answer; the core's own sampling path changes",
+      "contacts_per_gpu_hour": 3936.0,
+      "gain_pct": 0.0,
+      "lever": "compact JSON output (solver#1): whitespace/newlines out of the emitted JSON",
+      "needs": "form change on the output side -> no-harm cell (grammar/response_format)",
+      "wall_s_removed_est": 0.0,
+      "whitespace_char_share": 0.0
+    },
+    {
+      "changes_for_nodes": "same parsed answer; the core's own sampling path changes",
+      "contacts_per_gpu_hour": 3936.0,
+      "gain_pct": 0.0,
+      "lever": "compact JSON output (solver#2-5(full hit)): whitespace/newlines out of the emitted JSON",
+      "needs": "form change on the output side -> no-harm cell (grammar/response_format)",
+      "wall_s_removed_est": 1.7,
+      "whitespace_char_share": 0.0008
+    },
+    {
+      "changes_for_nodes": "same parsed answer; the core's own sampling path changes",
+      "contacts_per_gpu_hour": 3936.0,
+      "gain_pct": 0.0,
+      "lever": "compact JSON output (planner): whitespace/newlines out of the emitted JSON",
+      "needs": "form change on the output side -> no-harm cell (grammar/response_format)",
+      "wall_s_removed_est": 0.1,
+      "whitespace_char_share": 0.0012
+    },
+    {
+      "changes_for_nodes": "nothing semantic",
+      "contacts_per_gpu_hour": 3936.0,
+      "gain_pct": 0.0,
+      "lever": "whitespace runs inside evidence bodies",
+      "needs": "byte-identity-of-meaning proof",
+      "wall_s_removed_est": 0.0
+    },
+    {
+      "contacts_per_gpu_hour": 3936.0,
+      "gain_pct": 0.0,
+      "lever": "baseline as flown",
+      "wall_s_removed_est": 0.0
+    },
+    {
+      "changes_for_nodes": "nothing in the bytes; an unflown KV type changes the core's arithmetic",
+      "contacts_per_gpu_hour": null,
+      "gain_pct": null,
+      "lever": "np6 x 24,576 with q4_0 KV (the only wider geometry that fits): more decode batch",
+      "measured_decode_scaling_2_to_4_slots_tok_s": [
+        57.4,
+        107.5
+      ],
+      "needs": "a flown session to measure (no number claimed here) + serving-identity change -> owner ruling + no-harm read; worthless until the slots are kept full",
+      "per_slot_decode_tok_s_at_4_no_prefill": 26.9,
+      "wall_s_removed_est": null
+    }
+  ],
+  "per_role": {
+    "perception": {
+      "cache_hit_share_of_prompt": 0.6195,
+      "cache_shortfall_vs_same_content_tokens": {
+        "max": 1223.0,
+        "mean": 362.0,
+        "n": 1075,
+        "p50": 320.0,
+        "p90": 716.0,
+        "sum": 389179.0
+      },
+      "cached_tokens": {
+        "max": 3402,
+        "mean": 2228.3,
+        "n": 1079,
+        "p50": 2224,
+        "p90": 2224,
+        "sum": 2404284
+      },
+      "card_tokens": {
+        "max": 0,
+        "mean": 0.0,
+        "n": 1079,
+        "p50": 0,
+        "p90": 0,
+        "sum": 0
+      },
+      "client_latency_s": {
+        "max": 14.3,
+        "mean": 5.4,
+        "n": 1079,
+        "p50": 5.11,
+        "p90": 8.48,
+        "sum": 5826.58
+      },
+      "completion_tokens": {
+        "max": 163,
+        "mean": 117.9,
+        "n": 1079,
+        "p50": 134,
+        "p90": 144,
+        "sum": 127201
+      },
+      "contacts": 1079,
+      "decode_rate_tok_s_per_request": {
+        "max": 120.2,
+        "mean": 30.9,
+        "n": 1079,
+        "p50": 27.4,
+        "p90": 49.9,
+        "sum": 33351.7
+      },
+      "decode_slot_seconds": 4831.5,
+      "duplicate_content_tokens_est": {
+        "max": 546.6,
+        "mean": 512.5,
+        "n": 1079,
+        "p50": 513.3,
+        "p90": 521.2,
+        "sum": 552933.6
+      },
+      "duplicate_distinct_lines": {
+        "max": 5,
+        "mean": 5.0,
+        "n": 1079,
+        "p50": 5,
+        "p90": 5,
+        "sum": 5390
+      },
+      "duplicate_heading_like_tokens_est": {
+        "max": 74.5,
+        "mean": 69.9,
+        "n": 1079,
+        "p50": 70.0,
+        "p90": 71.1,
+        "sum": 75400.0
+      },
+      "duplicate_line_tokens_est": {
+        "max": 621.1,
+        "mean": 582.3,
+        "n": 1079,
+        "p50": 583.3,
+        "p90": 592.3,
+        "sum": 628333.6
+      },
+      "eval_ms": {
+        "max": 13492.0,
+        "mean": 4477.7,
+        "n": 1079,
+        "p50": 4208.6,
+        "p90": 7297.1,
+        "sum": 4831469.0
+      },
+      "evidence_tokens_by_store_est": {
+        "intent-boundaries": 1124.1
+      },
+      "first_differing_class": {
+        "no-previous": 4,
+        "packet": 1075
+      },
+      "label_tokens": {
+        "max": 133,
+        "mean": 118.0,
+        "n": 1079,
+        "p50": 118,
+        "p90": 122,
+        "sum": 127375
+      },
+      "lcp_tokens_est": {
+        "max": 2218.0,
+        "mean": 2218.0,
+        "n": 1075,
+        "p50": 2218.0,
+        "p90": 2218.0,
+        "sum": 2384086.0
+      },
+      "limits_tokens": {
+        "max": 50,
+        "mean": 50.0,
+        "n": 1079,
+        "p50": 50,
+        "p90": 50,
+        "sum": 53950
+      },
+      "n_cards": {
+        "max": 0,
+        "mean": 0.0,
+        "n": 1079,
+        "p50": 0,
+        "p90": 0,
+        "sum": 0
+      },
+      "prefill_rate_tok_s_per_request": {
+        "max": 2903.0,
+        "mean": 2279.0,
+        "n": 1079,
+        "p50": 2463.0,
+        "p90": 2592.0,
+        "sum": 2459041.0
+      },
+      "prefill_share_of_server_time": 0.1246,
+      "prefill_slot_seconds": 687.4,
+      "processed_prompt_tokens": {
+        "max": 1531,
+        "mean": 1367.7,
+        "n": 1079,
+        "p50": 1368,
+        "p90": 1425,
+        "sum": 1475776
+      },
+      "prompt_ms": {
+        "max": 2011.0,
+        "mean": 637.1,
+        "n": 1079,
+        "p50": 559.4,
+        "p90": 909.0,
+        "sum": 687430.2
+      },
+      "prompt_tokens": {
+        "max": 3756,
+        "mean": 3597.0,
+        "n": 1079,
+        "p50": 3593,
+        "p90": 3650,
+        "sum": 3881139
+      },
+      "query_tokens_excl_limits": {
+        "max": 188,
+        "mean": 188.0,
+        "n": 1079,
+        "p50": 188,
+        "p90": 188,
+        "sum": 202852
+      },
+      "response_chars": {
+        "max": 666,
+        "mean": 458.7,
+        "n": 1079,
+        "p50": 508,
+        "p90": 558,
+        "sum": 494983
+      },
+      "response_compact_share": 0.7929,
+      "response_json_parsed_share": 1.0,
+      "response_repeated_value_share": 0.0026,
+      "same_content_bound_tokens_est": {
+        "max": 3447.0,
+        "mean": 2586.0,
+        "n": 1075,
+        "p50": 2544.0,
+        "p90": 2940.0,
+        "sum": 2779979.0
+      },
+      "state_label_tokens_est": {
+        "max": 0.0,
+        "mean": 0.0,
+        "n": 1079,
+        "p50": 0.0,
+        "p90": 0.0,
+        "sum": 0.0
+      },
+      "turnaround_before_s": {
+        "max": 4.47,
+        "mean": 0.52,
+        "n": 1075,
+        "p50": 0.28,
+        "p90": 0.94,
+        "sum": 557.49
+      },
+      "turnaround_slot_seconds": 557.5,
+      "whitespace_run_tokens_est": {
+        "max": 0.0,
+        "mean": 0.0,
+        "n": 1079,
+        "p50": 0.0,
+        "p90": 0.0,
+        "sum": 0.0
+      }
+    },
+    "planner": {
+      "cache_hit_share_of_prompt": 0.9741,
+      "cache_shortfall_vs_same_content_tokens": {
+        "max": 173.0,
+        "mean": 72.0,
+        "n": 1118,
+        "p50": 72.0,
+        "p90": 83.0,
+        "sum": 80565.0
+      },
+      "cached_tokens": {
+        "max": 13570,
+        "mean": 9649.9,
+        "n": 1118,
+        "p50": 9926,
+        "p90": 11819,
+        "sum": 10788576
+      },
+      "card_tokens": {
+        "max": 9185,
+        "mean": 5232.8,
+        "n": 1118,
+        "p50": 5516,
+        "p90": 7299,
+        "sum": 5850269
+      },
+      "client_latency_s": {
+        "max": 10.8,
+        "mean": 1.12,
+        "n": 1118,
+        "p50": 0.33,
+        "p90": 3.17,
+        "sum": 1250.19
+      },
+      "completion_tokens": {
+        "max": 34,
+        "mean": 2.1,
+        "n": 1118,
+        "p50": 2,
+        "p90": 2,
+        "sum": 2324
+      },
+      "contacts": 1118,
+      "decode_rate_tok_s_per_request": {
+        "max": 154.9,
+        "mean": 40.8,
+        "n": 1118,
+        "p50": 49.2,
+        "p90": 59.7,
+        "sum": 45561.8
+      },
+      "decode_slot_seconds": 207.9,
+      "duplicate_content_tokens_est": {
+        "max": 1930.5,
+        "mean": 1244.1,
+        "n": 1118,
+        "p50": 1244.4,
+        "p90": 1550.9,
+        "sum": 1390910.5
+      },
+      "duplicate_distinct_lines": {
+        "max": 10,
+        "mean": 10.0,
+        "n": 1118,
+        "p50": 10,
+        "p90": 10,
+        "sum": 11171
+      },
+      "duplicate_heading_like_tokens_est": {
+        "max": 451.0,
+        "mean": 266.7,
+        "n": 1118,
+        "p50": 269.2,
+        "p90": 351.5,
+        "sum": 298187.5
+      },
+      "duplicate_line_tokens_est": {
+        "max": 2381.5,
+        "mean": 1510.8,
+        "n": 1118,
+        "p50": 1514.4,
+        "p90": 1904.8,
+        "sum": 1689098.0
+      },
+      "eval_ms": {
+        "max": 1746.7,
+        "mean": 185.9,
+        "n": 1118,
+        "p50": 40.7,
+        "p90": 766.1,
+        "sum": 207885.3
+      },
+      "evidence_tokens_by_store_est": {
+        "intent-boundaries": 1269.2,
+        "slot-contracts": 5473.2,
+        "train-exemplars": 556.9
+      },
+      "first_differing_class": {
+        "state:phase:reviewer": 1118
+      },
+      "label_tokens": {
+        "max": 740.8,
+        "mean": 585.6,
+        "n": 1118,
+        "p50": 588.2,
+        "p90": 657.1,
+        "sum": 654752.3
+      },
+      "lcp_tokens_est": {
+        "max": 13643.0,
+        "mean": 9722.0,
+        "n": 1118,
+        "p50": 10000.0,
+        "p90": 11892.0,
+        "sum": 10869141.0
+      },
+      "limits_tokens": {
+        "max": 50,
+        "mean": 49.8,
+        "n": 1118,
+        "p50": 50,
+        "p90": 50,
+        "sum": 55635
+      },
+      "n_cards": {
+        "max": 23,
+        "mean": 11.9,
+        "n": 1118,
+        "p50": 12,
+        "p90": 17,
+        "sum": 13295
+      },
+      "prefill_rate_tok_s_per_request": {
+        "max": 2337.0,
+        "mean": 1099.0,
+        "n": 1118,
+        "p50": 1205.0,
+        "p90": 1621.0,
+        "sum": 1228408.0
+      },
+      "prefill_share_of_server_time": 0.657,
+      "prefill_slot_seconds": 398.3,
+      "processed_prompt_tokens": {
+        "max": 562,
+        "mean": 255.9,
+        "n": 1118,
+        "p50": 232,
+        "p90": 339,
+        "sum": 286049
+      },
+      "prompt_ms": {
+        "max": 1887.0,
+        "mean": 356.2,
+        "n": 1118,
+        "p50": 190.7,
+        "p90": 953.5,
+        "sum": 398264.6
+      },
+      "prompt_tokens": {
+        "max": 13851,
+        "mean": 9906.7,
+        "n": 1118,
+        "p50": 10151,
+        "p90": 12069,
+        "sum": 11075743
+      },
+      "query_tokens_excl_limits": {
+        "max": 36,
+        "mean": 36.0,
+        "n": 1118,
+        "p50": 36,
+        "p90": 36,
+        "sum": 40248
+      },
+      "response_chars": {
+        "max": 114,
+        "mean": 6.1,
+        "n": 1118,
+        "p50": 6,
+        "p90": 6,
+        "sum": 6816
+      },
+      "response_compact_share": 0.9988,
+      "response_json_parsed_share": 0.0009,
+      "response_repeated_value_share": 0.0,
+      "same_content_bound_tokens_est": {
+        "max": 13643.0,
+        "mean": 9722.0,
+        "n": 1118,
+        "p50": 10000.0,
+        "p90": 11892.0,
+        "sum": 10869141.0
+      },
+      "state_label_tokens_est": {
+        "max": 273.4,
+        "mean": 120.9,
+        "n": 1118,
+        "p50": 117.5,
+        "p90": 123.3,
+        "sum": 135189.8
+      },
+      "turnaround_before_s": {
+        "max": 4.15,
+        "mean": 0.77,
+        "n": 1118,
+        "p50": 0.33,
+        "p90": 2.11,
+        "sum": 858.46
+      },
+      "turnaround_slot_seconds": 858.5,
+      "whitespace_run_tokens_est": {
+        "max": 0.0,
+        "mean": 0.0,
+        "n": 1118,
+        "p50": 0.0,
+        "p90": 0.0,
+        "sum": 0.0
+      }
+    },
+    "reviewer": {
+      "cache_hit_share_of_prompt": 0.9746,
+      "cache_shortfall_vs_same_content_tokens": {
+        "max": 121.0,
+        "mean": 63.0,
+        "n": 1133,
+        "p50": 63.0,
+        "p90": 70.0,
+        "sum": 71156.0
+      },
+      "cached_tokens": {
+        "max": 13466,
+        "mean": 9518.2,
+        "n": 1133,
+        "p50": 9778,
+        "p90": 11688,
+        "sum": 10784166
+      },
+      "card_tokens": {
+        "max": 9185,
+        "mean": 5214.0,
+        "n": 1133,
+        "p50": 5516,
+        "p90": 7295,
+        "sum": 5907443
+      },
+      "client_latency_s": {
+        "max": 25.66,
+        "mean": 4.24,
+        "n": 1133,
+        "p50": 3.32,
+        "p90": 8.26,
+        "sum": 4801.46
+      },
+      "completion_tokens": {
+        "max": 512,
+        "mean": 87.6,
+        "n": 1133,
+        "p50": 62,
+        "p90": 168,
+        "sum": 99284
+      },
+      "contacts": 1133,
+      "decode_rate_tok_s_per_request": {
+        "max": 98.1,
+        "mean": 27.4,
+        "n": 1133,
+        "p50": 25.8,
+        "p90": 37.3,
+        "sum": 31054.0
+      },
+      "decode_slot_seconds": 4123.9,
+      "duplicate_content_tokens_est": {
+        "max": 1919.7,
+        "mean": 1231.1,
+        "n": 1133,
+        "p50": 1230.7,
+        "p90": 1535.0,
+        "sum": 1394780.5
+      },
+      "duplicate_distinct_lines": {
+        "max": 10,
+        "mean": 10.0,
+        "n": 1133,
+        "p50": 10,
+        "p90": 10,
+        "sum": 11321
+      },
+      "duplicate_heading_like_tokens_est": {
+        "max": 448.5,
+        "mean": 263.8,
+        "n": 1133,
+        "p50": 266.3,
+        "p90": 348.9,
+        "sum": 298841.8
+      },
+      "duplicate_line_tokens_est": {
+        "max": 2368.2,
+        "mean": 1494.8,
+        "n": 1133,
+        "p50": 1497.4,
+        "p90": 1884.7,
+        "sum": 1693622.2
+      },
+      "eval_ms": {
+        "max": 25383.8,
+        "mean": 3639.8,
+        "n": 1133,
+        "p50": 2718.6,
+        "p90": 7597.8,
+        "sum": 4123874.2
+      },
+      "evidence_tokens_by_store_est": {
+        "intent-boundaries": 1258.1,
+        "slot-contracts": 5408.7,
+        "train-exemplars": 550.9
+      },
+      "first_differing_class": {
+        "state:phase:solver": 1133
+      },
+      "label_tokens": {
+        "max": 740.8,
+        "mean": 585.1,
+        "n": 1133,
+        "p50": 587.8,
+        "p90": 657.1,
+        "sum": 662904.7
+      },
+      "lcp_tokens_est": {
+        "max": 13527.0,
+        "mean": 9581.0,
+        "n": 1133,
+        "p50": 9841.0,
+        "p90": 11760.0,
+        "sum": 10855322.0
+      },
+      "limits_tokens": {
+        "max": 50,
+        "mean": 49.8,
+        "n": 1133,
+        "p50": 50,
+        "p90": 50,
+        "sum": 56385
+      },
+      "n_cards": {
+        "max": 23,
+        "mean": 11.8,
+        "n": 1133,
+        "p50": 12,
+        "p90": 17,
+        "sum": 13425
+      },
+      "prefill_rate_tok_s_per_request": {
+        "max": 2021.0,
+        "mean": 1215.0,
+        "n": 1133,
+        "p50": 1300.0,
+        "p90": 1525.0,
+        "sum": 1376771.0
+      },
+      "prefill_share_of_server_time": 0.0691,
+      "prefill_slot_seconds": 306.3,
+      "processed_prompt_tokens": {
+        "max": 390,
+        "mean": 247.4,
+        "n": 1133,
+        "p50": 248,
+        "p90": 264,
+        "sum": 280307
+      },
+      "prompt_ms": {
+        "max": 2017.5,
+        "mean": 270.4,
+        "n": 1133,
+        "p50": 189.2,
+        "p90": 656.9,
+        "sum": 306322.2
+      },
+      "prompt_tokens": {
+        "max": 13707,
+        "mean": 9766.6,
+        "n": 1133,
+        "p50": 10018,
+        "p90": 11945,
+        "sum": 11065606
+      },
+      "query_tokens_excl_limits": {
+        "max": 82,
+        "mean": 82.0,
+        "n": 1133,
+        "p50": 82,
+        "p90": 82,
+        "sum": 92906
+      },
+      "response_chars": {
+        "max": 2206,
+        "mean": 341.8,
+        "n": 1133,
+        "p50": 220,
+        "p90": 709,
+        "sum": 387248
+      },
+      "response_compact_share": 0.9132,
+      "response_json_parsed_share": 0.6037,
+      "response_repeated_value_share": 0.0002,
+      "same_content_bound_tokens_est": {
+        "max": 13527.0,
+        "mean": 9581.0,
+        "n": 1133,
+        "p50": 9841.0,
+        "p90": 11760.0,
+        "sum": 10855322.0
+      },
+      "state_label_tokens_est": {
+        "max": 223.9,
+        "mean": 81.6,
+        "n": 1133,
+        "p50": 77.7,
+        "p90": 81.3,
+        "sum": 92495.6
+      },
+      "turnaround_before_s": {
+        "max": 5.0,
+        "mean": 0.6,
+        "n": 1133,
+        "p50": 0.29,
+        "p90": 1.72,
+        "sum": 681.07
+      },
+      "turnaround_slot_seconds": 681.1,
+      "whitespace_run_tokens_est": {
+        "max": 0.0,
+        "mean": 0.0,
+        "n": 1133,
+        "p50": 0.0,
+        "p90": 0.0,
+        "sum": 0.0
+      }
+    },
+    "solver#1": {
+      "cache_hit_share_of_prompt": 0.3719,
+      "cache_shortfall_vs_same_content_tokens": {
+        "max": 184.0,
+        "mean": 103.0,
+        "n": 1133,
+        "p50": 105.0,
+        "p90": 140.0,
+        "sum": 116970.0
+      },
+      "cached_tokens": {
+        "max": 12249,
+        "mean": 3637.8,
+        "n": 1133,
+        "p50": 3352,
+        "p90": 3428,
+        "sum": 4121629
+      },
+      "card_tokens": {
+        "max": 9185,
+        "mean": 5214.0,
+        "n": 1133,
+        "p50": 5516,
+        "p90": 7295,
+        "sum": 5907443
+      },
+      "client_latency_s": {
+        "max": 14.34,
+        "mean": 6.44,
+        "n": 1133,
+        "p50": 6.41,
+        "p90": 10.2,
+        "sum": 7294.27
+      },
+      "completion_tokens": {
+        "max": 142,
+        "mean": 24.4,
+        "n": 1133,
+        "p50": 24,
+        "p90": 35,
+        "sum": 27600
+      },
+      "contacts": 1133,
+      "decode_rate_tok_s_per_request": {
+        "max": 118.5,
+        "mean": 20.2,
+        "n": 1133,
+        "p50": 19.3,
+        "p90": 35.6,
+        "sum": 22886.7
+      },
+      "decode_slot_seconds": 2430.9,
+      "duplicate_content_tokens_est": {
+        "max": 1908.7,
+        "mean": 1219.2,
+        "n": 1133,
+        "p50": 1219.0,
+        "p90": 1525.0,
+        "sum": 1381342.7
+      },
+      "duplicate_distinct_lines": {
+        "max": 10,
+        "mean": 10.0,
+        "n": 1133,
+        "p50": 10,
+        "p90": 10,
+        "sum": 11321
+      },
+      "duplicate_heading_like_tokens_est": {
+        "max": 445.9,
+        "mean": 261.3,
+        "n": 1133,
+        "p50": 263.6,
+        "p90": 346.3,
+        "sum": 296029.7
+      },
+      "duplicate_line_tokens_est": {
+        "max": 2354.6,
+        "mean": 1480.5,
+        "n": 1133,
+        "p50": 1482.2,
+        "p90": 1871.0,
+        "sum": 1677372.4
+      },
+      "eval_ms": {
+        "max": 10275.0,
+        "mean": 2145.6,
+        "n": 1133,
+        "p50": 1307.6,
+        "p90": 4872.2,
+        "sum": 2430947.1
+      },
+      "evidence_tokens_by_store_est": {
+        "intent-boundaries": 1245.2,
+        "slot-contracts": 5359.3,
+        "train-exemplars": 545.3
+      },
+      "first_differing_class": {
+        "evidence:train-exemplars": 1080,
+        "state:phase:planner": 53
+      },
+      "label_tokens": {
+        "max": 740.8,
+        "mean": 585.1,
+        "n": 1133,
+        "p50": 587.8,
+        "p90": 657.1,
+        "sum": 662904.7
+      },
+      "lcp_tokens_est": {
+        "max": 12290.0,
+        "mean": 3741.0,
+        "n": 1133,
+        "p50": 3456.0,
+        "p90": 3553.0,
+        "sum": 4238564.0
+      },
+      "limits_tokens": {
+        "max": 50,
+        "mean": 49.8,
+        "n": 1133,
+        "p50": 50,
+        "p90": 50,
+        "sum": 56438
+      },
+      "n_cards": {
+        "max": 23,
+        "mean": 11.8,
+        "n": 1133,
+        "p50": 12,
+        "p90": 17,
+        "sum": 13425
+      },
+      "prefill_rate_tok_s_per_request": {
+        "max": 3113.0,
+        "mean": 1958.0,
+        "n": 1133,
+        "p50": 2060.0,
+        "p90": 2501.0,
+        "sum": 2218873.0
+      },
+      "prefill_share_of_server_time": 0.6132,
+      "prefill_slot_seconds": 3854.1,
+      "processed_prompt_tokens": {
+        "max": 10368,
+        "mean": 6142.3,
+        "n": 1133,
+        "p50": 6575,
+        "p90": 8560,
+        "sum": 6959171
+      },
+      "prompt_ms": {
+        "max": 13216.1,
+        "mean": 3401.7,
+        "n": 1133,
+        "p50": 3241.5,
+        "p90": 5474.2,
+        "sum": 3854118.8
+      },
+      "prompt_tokens": {
+        "max": 13729,
+        "mean": 9781.1,
+        "n": 1133,
+        "p50": 10041,
+        "p90": 11951,
+        "sum": 11081933
+      },
+      "query_tokens_excl_limits": {
+        "max": 208,
+        "mean": 208.0,
+        "n": 1133,
+        "p50": 208,
+        "p90": 208,
+        "sum": 235664
+      },
+      "response_chars": {
+        "max": 493,
+        "mean": 94.8,
+        "n": 1133,
+        "p50": 93,
+        "p90": 138,
+        "sum": 107454
+      },
+      "response_compact_share": 1.0,
+      "response_json_parsed_share": 0.9974,
+      "response_repeated_value_share": 0.0047,
+      "same_content_bound_tokens_est": {
+        "max": 12290.0,
+        "mean": 3741.0,
+        "n": 1133,
+        "p50": 3456.0,
+        "p90": 3553.0,
+        "sum": 4238564.0
+      },
+      "state_label_tokens_est": {
+        "max": 176.4,
+        "mean": 44.3,
+        "n": 1133,
+        "p50": 39.7,
+        "p90": 41.4,
+        "sum": 50187.2
+      },
+      "turnaround_before_s": {
+        "max": 9.04,
+        "mean": 2.67,
+        "n": 1133,
+        "p50": 2.59,
+        "p90": 3.9,
+        "sum": 3023.67
+      },
+      "turnaround_slot_seconds": 3023.7,
+      "whitespace_run_tokens_est": {
+        "max": 0.0,
+        "mean": 0.0,
+        "n": 1133,
+        "p50": 0.0,
+        "p90": 0.0,
+        "sum": 0.0
+      }
+    },
+    "solver#2-5(full hit)": {
+      "cache_hit_share_of_prompt": 0.9998,
+      "cache_shortfall_vs_same_content_tokens": {
+        "max": 0.0,
+        "mean": 0.0,
+        "n": 4531,
+        "p50": 0.0,
+        "p90": 0.0,
+        "sum": 0.0
+      },
+      "cached_tokens": {
+        "max": 13727,
+        "mean": 9778.8,
+        "n": 4531,
+        "p50": 10039,
+        "p90": 11949,
+        "sum": 44307612
+      },
+      "card_tokens": {
+        "max": 9185,
+        "mean": 5213.7,
+        "n": 4531,
+        "p50": 5516,
+        "p90": 7295,
+        "sum": 23623250
+      },
+      "client_latency_s": {
+        "max": 10.78,
+        "mean": 1.34,
+        "n": 4531,
+        "p50": 0.93,
+        "p90": 2.57,
+        "sum": 6067.78
+      },
+      "completion_tokens": {
+        "max": 131,
+        "mean": 24.4,
+        "n": 4531,
+        "p50": 24,
+        "p90": 35,
+        "sum": 110363
+      },
+      "contacts": 4531,
+      "decode_rate_tok_s_per_request": {
+        "max": 115.8,
+        "mean": 30.1,
+        "n": 4531,
+        "p50": 30.0,
+        "p90": 39.7,
+        "sum": 136489.0
+      },
+      "decode_slot_seconds": 4936.5,
+      "duplicate_content_tokens_est": {
+        "max": 1908.7,
+        "mean": 1219.1,
+        "n": 4531,
+        "p50": 1219.0,
+        "p90": 1525.0,
+        "sum": 5523955.3
+      },
+      "duplicate_distinct_lines": {
+        "max": 10,
+        "mean": 10.0,
+        "n": 4531,
+        "p50": 10,
+        "p90": 10,
+        "sum": 45274
+      },
+      "duplicate_heading_like_tokens_est": {
+        "max": 445.9,
+        "mean": 261.3,
+        "n": 4531,
+        "p50": 263.6,
+        "p90": 346.3,
+        "sum": 1183808.5
+      },
+      "duplicate_line_tokens_est": {
+        "max": 2354.6,
+        "mean": 1480.4,
+        "n": 4531,
+        "p50": 1482.2,
+        "p90": 1871.0,
+        "sum": 6707763.8
+      },
+      "eval_ms": {
+        "max": 10137.2,
+        "mean": 1089.5,
+        "n": 4531,
+        "p50": 807.2,
+        "p90": 1928.3,
+        "sum": 4936455.7
+      },
+      "evidence_tokens_by_store_est": {
+        "intent-boundaries": 1245.2,
+        "slot-contracts": 5359.0,
+        "train-exemplars": 545.3
+      },
+      "first_differing_class": {
+        "none": 4531
+      },
+      "label_tokens": {
+        "max": 740.8,
+        "mean": 585.1,
+        "n": 4531,
+        "p50": 587.8,
+        "p90": 657.1,
+        "sum": 2650992.6
+      },
+      "lcp_tokens_est": {
+        "max": 13727.0,
+        "mean": 9779.0,
+        "n": 4531,
+        "p50": 10039.0,
+        "p90": 11949.0,
+        "sum": 44307612.0
+      },
+      "limits_tokens": {
+        "max": 50,
+        "mean": 49.8,
+        "n": 4531,
+        "p50": 50,
+        "p90": 50,
+        "sum": 225702
+      },
+      "n_cards": {
+        "max": 23,
+        "mean": 11.8,
+        "n": 4531,
+        "p50": 12,
+        "p90": 17,
+        "sum": 53685
+      },
+      "prefill_rate_tok_s_per_request": {
+        "max": 93.0,
+        "mean": 25.0,
+        "n": 4531,
+        "p50": 24.0,
+        "p90": 36.0,
+        "sum": 113909.0
+      },
+      "prefill_share_of_server_time": 0.0672,
+      "prefill_slot_seconds": 355.4,
+      "processed_prompt_tokens": {
+        "max": 1,
+        "mean": 1.0,
+        "n": 4531,
+        "p50": 1,
+        "p90": 1,
+        "sum": 4531
+      },
+      "prompt_ms": {
+        "max": 1271.6,
+        "mean": 78.4,
+        "n": 4531,
+        "p50": 42.3,
+        "p90": 55.0,
+        "sum": 355372.0
+      },
+      "prompt_tokens": {
+        "max": 13729,
+        "mean": 9780.8,
+        "n": 4531,
+        "p50": 10041,
+        "p90": 11951,
+        "sum": 44316674
+      },
+      "query_tokens_excl_limits": {
+        "max": 208,
+        "mean": 208.0,
+        "n": 4531,
+        "p50": 208,
+        "p90": 208,
+        "sum": 942448
+      },
+      "response_chars": {
+        "max": 493,
+        "mean": 94.8,
+        "n": 4531,
+        "p50": 94,
+        "p90": 139,
+        "sum": 429350
+      },
+      "response_compact_share": 0.9992,
+      "response_json_parsed_share": 0.9938,
+      "response_repeated_value_share": 0.0036,
+      "same_content_bound_tokens_est": {
+        "max": 13727.0,
+        "mean": 9779.0,
+        "n": 4531,
+        "p50": 10039.0,
+        "p90": 11949.0,
+        "sum": 44307612.0
+      },
+      "state_label_tokens_est": {
+        "max": 176.4,
+        "mean": 44.3,
+        "n": 4531,
+        "p50": 39.7,
+        "p90": 41.4,
+        "sum": 200708.8
+      },
+      "turnaround_before_s": {
+        "max": 4.31,
+        "mean": 0.48,
+        "n": 4531,
+        "p50": 0.27,
+        "p90": 1.08,
+        "sum": 2166.59
+      },
+      "turnaround_slot_seconds": 2166.6,
+      "whitespace_run_tokens_est": {
+        "max": 0.0,
+        "mean": 0.0,
+        "n": 4531,
+        "p50": 0.0,
+        "p90": 0.0,
+        "sum": 0.0
+      }
+    }
+  },
+  "run_id": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1",
+  "schema": "saea-slurp-throughput-baseline-and-levers-v1",
+  "server_log_segments_in_file": 12,
+  "server_tasks_in_arm_window": 8996,
+  "session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "session_started_at": "2026-09-26T14:42:06.369705+00:00",
+  "sources": {
+    "driver_out": "/home/chao/batch-driver.out",
+    "manifest_cost": {
+      "audio_seconds_used": 25712.076937500056,
+      "calls_used": 8996,
+      "completion_tokens_total": 366929,
+      "latency_seconds_total": 25247.343916008656,
+      "prompt_tokens_total": 81435827,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+    },
+    "server_log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1/server.log",
+    "trace": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1/attempt-slurp-native-stage3-roll-2-fold-a-v1-generation/SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1.trace.jsonl"
+  },
+  "time_split": {
+    "aggregate_decode_tok_s_over_wall": 44.6,
+    "aggregate_prefill_tok_s_over_prefill_active": 2267.0,
+    "all_slots_idle_marks_in_window": 734,
+    "arm_wall_s_driver": 8558.0,
+    "contact_window_utc": [
+      "2026-09-26T16:01:48+00:00",
+      "2026-09-26T18:18:56+00:00"
+    ],
+    "contacts_per_gpu_hour_arm_wall": 3783.0,
+    "contacts_per_gpu_hour_contact_window": 3936.0,
+    "contacts_per_minute": 65.59,
+    "decode_batch_scaling": [
+      {
+        "aggregate_decode_tok_s": 0.0,
+        "decoded_tokens": 0,
+        "per_slot_decode_tok_s": null,
+        "seconds": 697.2,
+        "slots_decoding": 0,
+        "slots_prefilling": 0
+      },
+      {
+        "aggregate_decode_tok_s": 47.2,
+        "decoded_tokens": 14226,
+        "per_slot_decode_tok_s": 47.2,
+        "seconds": 301.1,
+        "slots_decoding": 1,
+        "slots_prefilling": 0
+      },
+      {
+        "aggregate_decode_tok_s": 57.4,
+        "decoded_tokens": 32145,
+        "per_slot_decode_tok_s": 28.7,
+        "seconds": 559.7,
+        "slots_decoding": 2,
+        "slots_prefilling": 0
+      },
+      {
+        "aggregate_decode_tok_s": 77.6,
+        "decoded_tokens": 81158,
+        "per_slot_decode_tok_s": 25.9,
+        "seconds": 1046.4,
+        "slots_decoding": 3,
+        "slots_prefilling": 0
+      },
+      {
+        "aggregate_decode_tok_s": 107.5,
+        "decoded_tokens": 138326,
+        "per_slot_decode_tok_s": 26.9,
+        "seconds": 1286.2,
+        "slots_decoding": 4,
+        "slots_prefilling": 0
+      },
+      {
+        "aggregate_decode_tok_s": 0.0,
+        "decoded_tokens": 0,
+        "per_slot_decode_tok_s": null,
+        "seconds": 335.6,
+        "slots_decoding": 0,
+        "slots_prefilling": 1
+      },
+      {
+        "aggregate_decode_tok_s": 11.4,
+        "decoded_tokens": 4651,
+        "per_slot_decode_tok_s": 11.4,
+        "seconds": 406.5,
+        "slots_decoding": 1,
+        "slots_prefilling": 1
+      },
+      {
+        "aggregate_decode_tok_s": 29.7,
+        "decoded_tokens": 21541,
+        "per_slot_decode_tok_s": 14.8,
+        "seconds": 725.3,
+        "slots_decoding": 2,
+        "slots_prefilling": 1
+      },
+      {
+        "aggregate_decode_tok_s": 50.5,
+        "decoded_tokens": 61913,
+        "per_slot_decode_tok_s": 16.8,
+        "seconds": 1226.2,
+        "slots_decoding": 3,
+        "slots_prefilling": 1
+      },
+      {
+        "aggregate_decode_tok_s": 0.0,
+        "decoded_tokens": 0,
+        "per_slot_decode_tok_s": null,
+        "seconds": 268.3,
+        "slots_decoding": 0,
+        "slots_prefilling": 2
+      },
+      {
+        "aggregate_decode_tok_s": 7.5,
+        "decoded_tokens": 2174,
+        "per_slot_decode_tok_s": 7.5,
+        "seconds": 287.9,
+        "slots_decoding": 1,
+        "slots_prefilling": 2
+      },
+      {
+        "aggregate_decode_tok_s": 20.6,
+        "decoded_tokens": 8230,
+        "per_slot_decode_tok_s": 10.3,
+        "seconds": 400.1,
+        "slots_decoding": 2,
+        "slots_prefilling": 2
+      },
+      {
+        "aggregate_decode_tok_s": 0.0,
+        "decoded_tokens": 0,
+        "per_slot_decode_tok_s": null,
+        "seconds": 113.8,
+        "slots_decoding": 0,
+        "slots_prefilling": 3
+      },
+      {
+        "aggregate_decode_tok_s": 9.7,
+        "decoded_tokens": 1537,
+        "per_slot_decode_tok_s": 9.7,
+        "seconds": 159.2,
+        "slots_decoding": 1,
+        "slots_prefilling": 3
+      },
+      {
+        "aggregate_decode_tok_s": 0.0,
+        "decoded_tokens": 0,
+        "per_slot_decode_tok_s": null,
+        "seconds": 40.8,
+        "slots_decoding": 0,
+        "slots_prefilling": 4
+      }
+    ],
+    "decode_only_concurrency_s": {
+      "1": 301.1,
+      "2": 559.7,
+      "3": 1046.4,
+      "4": 1280.0,
+      "5": 5.2,
+      "6": 1.0,
+      "7": 0.0
+    },
+    "decoded_tokens_total": 366772,
+    "manifest_latency_seconds_total": 25247.343916008656,
+    "mean_busy_slots": 2.906,
+    "monitor_summary_in_attach_receipt": {
+      "active_seconds": 7538.128300189972,
+      "mean_power_watts": 83.33584905660376,
+      "mean_utilization_percent": 75.41644204851752,
+      "parked_fraction": 0.08236385093030993,
+      "parked_seconds": 676.5963571071625
+    },
+    "prefill_concurrency_s": {
+      "1": 2700.7,
+      "2": 958.3,
+      "3": 273.1,
+      "4": 41.3
+    },
+    "processed_prompt_tokens_total": 9005834,
+    "sealed_prompt_tokens_total": 81421095,
+    "slot_capacity": {
+      "client_turnaround_slot_s": 7287.3,
+      "empty_slot_s": 8997.4,
+      "in_slot_overhead_slot_s": 1779.1,
+      "server_compute_slot_s": 22132.1,
+      "slot_seconds_total": 32908.6
+    },
+    "states_s": {
+      "all_idle": 1055.3,
+      "decode_only": 3193.3,
+      "prefill_active": 3973.3,
+      "slot_busy_no_compute": 5.2,
+      "slot_seconds_busy": 23911.2
+    },
+    "states_share": {
+      "all_idle": 0.1283,
+      "decode_only": 0.3881,
+      "prefill_active": 0.4829,
+      "slot_busy_no_compute": 0.0006
+    },
+    "sum_client_latency_s": 25240.3,
+    "sum_eval_ms_all_slots_s": 16530.6,
+    "sum_prompt_ms_all_slots_s": 5601.5,
+    "wall_s": 8227.2
+  },
+  "tokenizer": {
+    "binary": "/home/chao/llama.cpp/build/bin/llama-tokenize",
+    "calls_this_run": 0,
+    "distinct_texts": 380,
+    "label_summary": {
+      "intent-boundaries": {
+        "distinct_ids": 60,
+        "mean_tokens_per_label": 14.88,
+        "sampled": 60
+      },
+      "slot-contracts": {
+        "distinct_ids": 54,
+        "mean_tokens_per_label": 13.94,
+        "sampled": 54
+      },
+      "train-exemplars": {
+        "distinct_ids": 4990,
+        "mean_tokens_per_label": 15.3,
+        "sampled": 200
+      }
+    },
+    "note": "vocab-only llama-tokenize, sha256-keyed count cache; no model, server, encoder or scorer contact"
+  },
+  "trace_contacts": 8996,
+  "validation": {
+    "full_hit_contacts_server": 4531,
+    "full_hit_lcp_est_minus_prompt_tokens": {
+      "max": -2.0,
+      "mean": -2.0,
+      "n": 4531,
+      "p50": -2.0,
+      "p90": -2.0,
+      "sum": -9062.0
+    },
+    "lcp_est_minus_server_cached_all": {
+      "max": 183.8,
+      "mean": 29.1,
+      "n": 8990,
+      "p50": 0.0,
+      "p90": 88.1,
+      "sum": 261942.3
+    },
+    "system_only_hits": {
+      "count": 1075,
+      "server_cached_tokens": {
+        "max": 2224,
+        "mean": 2224.0,
+        "n": 1075,
+        "p50": 2224,
+        "p90": 2224,
+        "sum": 2390800
+      },
+      "system_tokens": {
+        "max": 2217,
+        "mean": 2217.0,
+        "n": 1075,
+        "p50": 2217,
+        "p90": 2217,
+        "sum": 2383275
+      }
+    },
+    "trace_order_per_slot_monotone": true
+  }
+}
