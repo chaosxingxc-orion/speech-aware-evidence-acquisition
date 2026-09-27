@@ -1,7 +1,7 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-27T00:35:27Z · maintainer: Fable 5.1 (root coordinator) · HEAD at writing
-`c8b1`+ (repin fix merged) on `master`, tree clean. Fable 5.1 is the coordinator again as of this refresh; the
+Last refreshed: 2026-09-27T05:23:19Z · maintainer: Fable 5.1 (root coordinator) · HEAD at writing
+`bc507604`+ on `master` (DET flying at np1, ROLL-3 flipped, A2T-AA / keys / cite / decomp / tput / testsample merged), tree clean. Fable 5.1 is the coordinator again as of this refresh; the
 programme now carries an ABSOLUTE target, and the label ceiling says it is reachable.
 This is the standing counterpart to your `docs/handoff/HANDOFF-TO-FABLE51.md`: one short file,
 refreshed **in place** after every landed result, no log section. Skeleton is fixed — state, what I
@@ -190,6 +190,23 @@ crowding), pool pruning is monotone the wrong way -- but the 60 boundary descrip
 overlap of 0.6073, so the lever is rewriting keys, not removing them (142). The re-pin tool's
 preparation-requirement clobber is fixed (`is_own_supply_requirement`, matched on `relpath`; 113 committed
 cells would have had a foreign requirement overwritten, the AGREE arm and smoke among them).
+
+**Landed since the last stamp (all zero-contact unless said):** the CONV probe read m = 32/70 (45.71 %);
+the position read -- the Solver is free over all 60 intents, Perception's 1-3 shortlist is the real selector
+(93.5 % vs 10.0 %), position 1 is a step (98.7 %), and the agreement term moves gold up on 45 of the 86
+delivered-but-wrong rows; the key-construction diagnostic -- a **centroid key** (the intent's mean TRAIN
+utterance vector, same space, zero encoder) lifts delivered-on-wrong 45.0/44.6/35.8 -> 71.2/64.7/66.8 % at
+zero token cost, a medoid is worse than the description, the real encoded key overlap is 0.0814 not 0.6073;
+the citation contract `saea-solver-cited-answer-v1` with a byte-identical default and the per-entry credit
+table (+134 instruction tokens, 12.71 per cited id); the error decomposition -- 76.9 % cross-scenario, 216 of
+324 pairs occur once, 95 needs the top 16 of 43 intents; the throughput baseline -- the prefix cache already
+serves 88.94 % of prompt tokens, the clock is decode 50 % + EMPTY SLOT 27 %, 3,936 contacts/GPU-h, and on
+2026-09-26 the GPU was busy 12.6 % of the day; the seal profile -- no per-record fsync, the 9p tax is
+`TraceSink.emit`'s per-record open/append/close (7 ms x 50k = 6 min/flight, fix in progress); the test-sample
+design -- 3,000 recommended over 2,000, partition by prompt, `general_greet` closure-only, and a blocker: the
+final-report disjointness gate refuses any partition roster and needs a partition-aware exemption. DET (np1,
+cache off, 50 x 2) is in the air; ROLL-3 is flipped at `bc507604`; A2T-AA is registered on the np3 geometry
+(cannot interleave with SLURP). Owner decisions 138-142 recorded.
 
 **GPU supply queue** (the card idled after CONV because nothing was flip-ready; that is the structural
 defect and the queue is the fix): Q2 AGREE smoke -> one chain of A/A (w_agree 0.0, which reproduced the
