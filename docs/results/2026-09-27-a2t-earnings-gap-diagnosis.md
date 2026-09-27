@@ -4,7 +4,7 @@ Written 2026-09-27 by the analysis agent (Claude Opus 5.5, worktree `/home/chao/
 `fable/xcarrier`) for the analysis track of owner decision 163: for the two carriers other than SLURP, where do the
 current gains and harms come from, where does the raw knowledge fall short, and which capability must be added.
 Model-free: exposure row `SAEA-XC-MF-A2T-EARNINGS-GAP-DIAGNOSIS-V1` was registered before any new number was computed
-(commit `a32c34a2`); zero model, tokenizer, encoder, scorer, server, GPU and network contacts. Reference annotations
+(commit `2c1bba8d`, rebased from `a32c34a2`); zero model, tokenizer, encoder, scorer, server, GPU and network contacts. Reference annotations
 and transcripts were read offline through sealed first-score alignments and the 2026-09-15 attribution artifacts only;
 this note carries ids, tier / domain / category / tool / key / entity-type NAMES, counts and rates, never a transcript,
 reference text, argument value or model output. Development rows only (owner decisions 28 and 86): every table below is
