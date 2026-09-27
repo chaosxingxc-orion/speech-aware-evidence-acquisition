@@ -360,6 +360,38 @@ SEALED_CREDIT_SYSTEM_POLICY_V1 = _register(
     )
 )
 
+REVIEWER_NODE_SEALED_CREDIT_V1 = _register(
+    Stage3Algorithm(
+        id="reviewer-node-sealed-credit-v1",
+        family="gepa",
+        display_name=(
+            "Node-scoped reflective policy search with sealed per-visit credit (the Reviewer, owner "
+            "decision 165)"
+        ),
+        citation=(
+            "arXiv:2507.19457 (GEPA: reflective prompt evolution over execution traces), restricted to "
+            "one node and scored over sealed trajectories as this repository's instrument requires: "
+            "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/README.md (design) and "
+            "scripts/analysis/slurp_reviewer_credit_table.py (the credit operator)"
+        ),
+        operators=("scoring", "credit_assignment", "update", "selection", "context_application"),
+        status="planned",
+        what_it_changes=(
+            "One node's policy -- the Reviewer's instruction, the evidence it is shown, when its verdict "
+            "may change the answer and what a revision may change -- is optimised on its own. Credit is "
+            "assigned per Reviewer VISIT over sealed trajectories, where the pre-review draft is sealed "
+            "beside the post-review answer, so the node's effect is a paired within-trajectory contrast "
+            "with no flight offset (scored offline against gold on the scoring side only). The update is "
+            "a reflective proposal over that credit table (GEPA's move, one node at a time); selection "
+            "among candidate policies runs over sealed pools of TRAIN rows outside the read fold, exactly "
+            "where the candidate is computable from sealed bytes (gates and revision scopes over existing "
+            "revisions) and by the node's measured loop value where it is not (instruction forms that "
+            "some sealed arm already flew). The GPU is re-entered only for the selected policy beside its "
+            "in-chain replicate, and that flight's sealed Reviewer visits are the next round's credit."
+        ),
+    )
+)
+
 SHARED_ROLLOUT = _register(
     Stage3Algorithm(
         id="shared-rollout",
