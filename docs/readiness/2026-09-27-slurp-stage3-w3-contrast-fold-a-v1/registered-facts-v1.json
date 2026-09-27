@@ -260,7 +260,7 @@
         }
       },
       "relpath": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/preflight-proofs-v1.json",
-      "sha256": "d8e6655ff8dab9a1091e8754c3883818ea25457019d261f60174e6c4a0bd16e3"
+      "sha256": "31bd7f9833836c8a2989e26ce85882390d6683f64411773a4abc92338c31cbf2"
     },
     "w3_spends": "none by construction on the cards (every card at or below its flown token count, all 60 together -457 tokens); the capped block still carries 20 exemplars, whose lengths differ row by row",
     "what_must_be_freed": "nothing for W3 alone; W1's saving is not needed and is not spent"
@@ -524,7 +524,7 @@
       "rows": 1080
     }
   },
-  "study_commit_at_registration": "359df4c9",
+  "study_commit_at_registration": "701bd63a",
   "the_item": {
     "evidence": {
       "K1": "docs/results/2026-09-27-slurp-knowledge-content-audit.md section 1: every card has exactly one activation sentence and one confusable exclusion, 57.7 % of each card is boilerplate; on 75 of the AGREE arm's 153 intent-wrong rows both the right and the chosen card are delivered and neither names the other; 119 distinct confusion pairs",

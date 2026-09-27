@@ -1,6 +1,6 @@
 # Cell W3: intent contrast cards + a per-intent exemplar cap
 
-Registered before contact 2026-09-27 at study commit `359df4c9` (owner decision 164,
+Registered before contact 2026-09-27 at study commit `701bd63a` (owner decision 164,
 knowledge-wave item W3); both cells **held**. Nothing here authorises a flight, a flip or an admission entry.
 
 **Why.** [`docs/results/2026-09-27-slurp-knowledge-content-audit.md`](../../results/2026-09-27-slurp-knowledge-content-audit.md) K1: every intent card carries one

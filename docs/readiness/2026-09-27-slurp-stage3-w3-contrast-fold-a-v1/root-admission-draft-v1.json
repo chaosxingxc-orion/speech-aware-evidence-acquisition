@@ -28,7 +28,7 @@
     },
     "preflight_proofs": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/preflight-proofs-v1.json",
-      "sha256": "d8e6655ff8dab9a1091e8754c3883818ea25457019d261f60174e6c4a0bd16e3"
+      "sha256": "31bd7f9833836c8a2989e26ce85882390d6683f64411773a4abc92338c31cbf2"
     },
     "preregistration": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1-preregistration.md",
@@ -36,7 +36,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/protocol-registered-v1.json",
-      "sha256": "5faf0b019aa63b7333f39407fa3509299965491bc0b9b3e7f70b2fccabcfa46d"
+      "sha256": "988d82247948672ab110f13f4255297a30ab14c405a7294287a6d0d8cefb5683"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/README.md",
@@ -44,9 +44,9 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/registered-facts-v1.json",
-      "sha256": "14397aaf4024649a59fbeebe54881d62cf5633fff0725387b5bc2e1863c044e9"
+      "sha256": "ec3b1ee0984a69414d736acacd97e1f5ce9514e1fb75fe8b290f86af3e49d099"
     },
-    "registration_base_commit": "359df4c9"
+    "registration_base_commit": "701bd63a"
   },
   "authorization_basis": "Owner decision 164 (the knowledge wave); rows 139, 133, 28, 86, 101, 77; the binding instrument note docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md.",
   "budget": {
@@ -113,7 +113,7 @@
       "composed_config": "7fb4ac8be839915f22540c8e0534fd6da39f8a1f3faee3afe43397c2888d8440",
       "protocol": "7ab0b5e542e430f73a62654d80e702ecdcedab37227a27bdd843af6b0dfdb71f"
     },
-    "note": "the values of the fragments exactly as committed at 359df4c9; repin_cell.py recomputes them at the flip.",
+    "note": "the values of the fragments exactly as committed at 701bd63a; repin_cell.py recomputes them at the flip.",
     "smoke": {
       "composed_config": "5659772a480bf05093c8ab4efb4218233907275f8f050ab4fcaf635b3c61671f",
       "protocol": "1427acfe320836a4067664738f66761e5e1b493698045d877670e58efdc1ead1"

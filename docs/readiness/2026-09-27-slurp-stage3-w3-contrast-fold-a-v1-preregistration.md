@@ -1,6 +1,6 @@
 # Preregistration: cell W3 -- intent contrast cards + a per-intent exemplar cap (TRAIN Fold A 1,080)
 
-Registered before contact 2026-09-27T16:30:00.000000+00:00 at study commit `359df4c9` by the W3 registration agent
+Registered before contact 2026-09-27T16:30:00.000000+00:00 at study commit `701bd63a` by the W3 registration agent
 (worktree `/home/chao/saea-worktrees/fable-w3`, branch `fable/w3`). Owner decision 164. The package README
 (`docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/README.md`) carries the evidence, the card format, the tuning table and the Fold A table; this note fixes
 the question, the arms, the rule and the fence.
